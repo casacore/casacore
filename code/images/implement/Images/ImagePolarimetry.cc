@@ -60,10 +60,12 @@
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Quanta/QC.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
+#include <strstream.h>
 
 // Public functions
 
@@ -283,9 +285,12 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
 
 // Check image shape
 
-   if (!cpol.shape().isEqual(singleStokesShape())) {
+   CoordinateSystem dCS;
+   Stokes::StokesTypes dType = Stokes::Plinear;
+   IPosition shape = singleStokesShape(dCS, dType);
+   if (!cpol.shape().isEqual(shape)) {
       os << "The provided  image has the wrong shape " << cpol.shape() << endl;
-      os << "It should be of shape " << singleStokesShape() << LogIO::EXCEPTION;
+      os << "It should be of shape " << shape  << LogIO::EXCEPTION;
    }
 
 // Make Complex (Q,U) image
@@ -321,13 +326,20 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
    ImageFFT fftserver;
    fftserver.fft(ie, axes);
 
-// Recover result. Coordinates are updated to include Fourier coordinate,
+// Recover Complex result. Coordinates are updated to include Fourier coordinate,
 // miscellaneous things (MiscInfo, ImageInfo, units, history) and mask
 // (if output has one) are copied to cpol
 
    fftserver.getComplex(cpol);
-   fiddleStokesCoordinate(cpol, Stokes::Plinear);
+
+// Fiddle time coordinate to be a RotationMeasure coordinate
+
    fiddleTimeCoordinate(cpol, f, coord);
+
+// The Stokes coordinate should already be correct, but overwrite it anyway
+// to make sure
+
+   fiddleStokesCoordinate(cpol, Stokes::Plinear);
 }
 
 
@@ -437,84 +449,83 @@ ImageExpr<Float> ImagePolarimetry::sigmaLinPolPosAng(Bool radians, Float clip, F
 Float ImagePolarimetry::sigma(Float clip)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "noise(...)", WHERE));
+   Float sigma2 = 0.0;
    if (itsStokesPtr[ImagePolarimetry::V]!=0) {
-      os << LogIO::NORMAL << "Determining noise from V image" << LogIO::POST;
-      return ImagePolarimetry::sigma(ImagePolarimetry::V, clip);
+      os << LogIO::NORMAL << "Determed noise from V image to be ";
+      sigma2 = ImagePolarimetry::sigma(ImagePolarimetry::V, clip);
    } else if (itsStokesPtr[ImagePolarimetry::Q]!=0 &&
               itsStokesPtr[ImagePolarimetry::U]!=0) {
-      os << LogIO::NORMAL << "Determining noise from Q&U images" << LogIO::POST;
+      os << LogIO::NORMAL << "Determined noise from Q&U images to be ";
       Float sq = ImagePolarimetry::sigma(ImagePolarimetry::Q, clip);
       Float su = ImagePolarimetry::sigma(ImagePolarimetry::U, clip);
-      return (sq+su)/2.0;
+      sigma2 = (sq+su)/2.0;
    } else if (itsStokesPtr[ImagePolarimetry::Q]!=0) {
-      os << LogIO::NORMAL << "Determining noise from Q image" << LogIO::POST;
-      return ImagePolarimetry::sigma(ImagePolarimetry::Q, clip);
+      os << LogIO::NORMAL << "Determined noise from Q image to be " << LogIO::POST;
+      sigma2 = ImagePolarimetry::sigma(ImagePolarimetry::Q, clip);
    } else if (itsStokesPtr[ImagePolarimetry::U]!=0) {
-      os << LogIO::NORMAL << "Determining noise from U image" << LogIO::POST;
-      return ImagePolarimetry::sigma(ImagePolarimetry::U, clip);
+      os << LogIO::NORMAL << "Determined noise from U image to be " << LogIO::POST;
+      sigma2 = ImagePolarimetry::sigma(ImagePolarimetry::U, clip);
    } else if (itsStokesPtr[ImagePolarimetry::I]!=0) {
-      os << LogIO::NORMAL << "Determining noise from I image" << LogIO::POST;
-      return ImagePolarimetry::sigma(ImagePolarimetry::I, clip);
+      os << LogIO::NORMAL << "Determined noise from I image to be " << LogIO::POST;
+      sigma2 = ImagePolarimetry::sigma(ImagePolarimetry::I, clip);
    }
-   return 0.0;
+   os << sigma2 << LogIO::POST;
+   return sigma2;
 }
 
 
 
-void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterface<Float>& rmOutError,
-                                       Int axis, Float sigma, Float rmFg, Float rmMax, Float maxPaErr)
+void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageInterface<Float>*& rmOutErrorPtr,
+                                       ImageInterface<Float>*& pa0OutPtr, ImageInterface<Float>*& pa0OutErrorPtr,
+                                       Int axis,  Float rmMax, Float maxPaErr,                       
+                                       Float sigma, Float rmFg)
 {
    LogIO os(LogOrigin("ImagePolarimetry", "rotationMeasure(...)", WHERE));
 
+// Do we have anything to do ?
 
-// Find expected shape of output image (Stokes and spectral axes gone)
-
-   IPosition shape;
-   CoordinateSystem cSys;
-   uInt fAxis, sAxis;
-   rotationMeasureShape(shape, cSys, fAxis, sAxis, os, axis);
-
-// Check image shape
-
-   if (!rmOut.shape().isEqual(shape)) {
-      os << "The provided Rotation Measure image has the wrong shape " << rmOut.shape() << endl;
-      os << "It should be of shape " << shape << LogIO::EXCEPTION;
-   }
-   if (!rmOutError.shape().isEqual(shape)) {
-      os << "The provided Rotation Measure error image has the wrong shape " << rmOutError.shape() << endl;
-      os << "It should be of shape " << shape << LogIO::EXCEPTION;
+   if (!rmOutPtr && !rmOutErrorPtr && !pa0OutPtr && !pa0OutErrorPtr) {
+      os << "No output images specified" << LogIO::EXCEPTION;
    }
 
-// Generate linear polarization position angle image and error in radians
+// Find expected shape of output RM images (Stokes and spectral axes gone)
+
+   CoordinateSystem cSysRM;
+   Int fAxis, sAxis;
+   IPosition shapeRM = rotationMeasureShape(cSysRM, fAxis, sAxis, os, axis);
+
+// Check RM image shapes
+
+   if (rmOutPtr && !rmOutPtr->shape().isEqual(shapeRM)) {
+      os << "The provided Rotation Measure image has the wrong shape " << rmOutPtr->shape() << endl;
+      os << "It should be of shape " << shapeRM << LogIO::EXCEPTION;
+   }
+   if (rmOutErrorPtr && !rmOutErrorPtr->shape().isEqual(shapeRM)) {
+      os << "The provided Rotation Measure error image has the wrong shape " << rmOutErrorPtr->shape() << endl;
+      os << "It should be of shape " << shapeRM << LogIO::EXCEPTION;
+   }
+
+// Check position angle image shapes
+
+   CoordinateSystem cSysPA;
+   IPosition shapePA = positionAngleShape(cSysPA, fAxis, sAxis, os, axis);
+   if (pa0OutPtr && !pa0OutPtr->shape().isEqual(shapePA)) {
+      os << "The provided position angle at zero frequency image has the wrong shape " << pa0OutPtr->shape() << endl;
+      os << "It should be of shape " << shapePA << LogIO::EXCEPTION;
+   }
+   if (pa0OutErrorPtr && !pa0OutErrorPtr->shape().isEqual(shapePA)) {
+      os << "The provided position angle at zero frequency image has the wrong shape " << pa0OutErrorPtr->shape() << endl;
+      os << "It should be of shape " << shapePA << LogIO::EXCEPTION;
+   }
+
+// Generate linear polarization position angle image expressions
+// and error in radians
 
    Bool radians = True;
    Float clip = 10.0;
    ImageExpr<Float> pa = linPolPosAng(radians);
    ImageExpr<Float> paerr = sigmaLinPolPosAng(radians, clip, sigma);
    CoordinateSystem cSys0 = pa.coordinates();
-
-
-// Do we have enough frequency pixels ?
-
-   const uInt nFreq = pa.shape()(fAxis);
-   if (nFreq < 3) {
-      os << "This image only has " << nFreq << "frequencies, this is not enough"
-         << LogIO::EXCEPTION;
-   }
-
-// Overwrite output CS
-
-   if (!rmOut.setCoordinateInfo(cSys)) {
-      os << "Failed to set the CoordinateSystem in the output Rotation Measure image" << LogIO::EXCEPTION;
-   }
-   if (!rmOutError.setCoordinateInfo(cSys)) {
-      os << "Failed to set the CoordinateSystem in the output Rotation Measure error image" << LogIO::EXCEPTION;
-   }
-
-// Copy miscellaneous things over
-
-   copyMiscellaneous(rmOut);
-   copyMiscellaneous(rmOutError);
 
 // Set frequency axis units to Hz
 
@@ -529,6 +540,36 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
       os << "Failed to set frequency axis units to Hz because " 
          << cSys0.errorMessage() << LogIO::EXCEPTION;
    }
+
+// Do we have enough frequency pixels ?
+
+   const uInt nFreq = pa.shape()(fAxis);
+   if (nFreq < 3) {
+      os << "This image only has " << nFreq << "frequencies, this is not enough"
+         << LogIO::EXCEPTION;
+   }
+
+// Copy miscellaneous things over and set units
+
+   if (rmOutPtr) {
+      copyMiscellaneous(*rmOutPtr);
+      rmOutPtr->setUnits(Unit("rad/m/m"));
+   }
+   if (rmOutErrorPtr) {
+      copyMiscellaneous(*rmOutErrorPtr);
+      rmOutErrorPtr->setUnits(Unit("rad/m/m"));
+   }      
+
+// Copy miscellaneous things over and set units
+
+   if (pa0OutPtr) {
+      copyMiscellaneous(*pa0OutPtr);
+      pa0OutPtr->setUnits(Unit("deg"));
+   }
+   if (pa0OutErrorPtr) {
+      copyMiscellaneous(*pa0OutErrorPtr);
+      pa0OutErrorPtr->setUnits(Unit("deg"));
+   }   
 
 // Get lambda squared in m**2
 
@@ -554,15 +595,13 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
    GenSortIndirect<Float>::sort (sortidx, wsq, Sort::Ascending, Sort::QuickSort|Sort::NoDuplicates);
    Vector<Float> wsqsort(sortidx.nelements());
    for (uInt i=0; i<wsqsort.nelements(); i++) wsqsort(i) = wsq(sortidx(i));
-/*
-   cout << "wsq = " << wsq << endl;
-   cout << "wsqsort = " << wsqsort << endl;
-*/
 
 // Copy the input mask to the output if we can
 
-   copyMask(rmOut, *itsInImagePtr);
-   copyMask(rmOutError, *itsInImagePtr);
+   if (rmOutPtr) copyMask(*rmOutPtr, *itsInImagePtr);
+   if (rmOutErrorPtr) copyMask(*rmOutErrorPtr, *itsInImagePtr);
+   if (pa0OutPtr) copyMask(*pa0OutPtr, *itsInImagePtr);
+   if (pa0OutErrorPtr) copyMask(*pa0OutErrorPtr, *itsInImagePtr);
  
 // Make fitter
 
@@ -587,31 +626,71 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
       itsFitterPtr->setFunction(comb);
    }
 
+// Deal with masks
 
-// Make iterator
+   IPosition whereRM, wherePA;
+//
+   Bool isMaskedRM = False;
+   Lattice<Bool>* outRMMaskPtr = 0;
+   if (rmOutPtr) {
+      isMaskedRM = rmOutPtr->isMasked() && rmOutPtr->hasPixelMask() &&
+                   rmOutPtr->pixelMask().isWritable();
+      if (isMaskedRM) outRMMaskPtr = &rmOutPtr->pixelMask();
+//
+      whereRM.resize(rmOutPtr->ndim());
+      whereRM = 0;
+   }
+//
+   Bool isMaskedRMErr = False;
+   Lattice<Bool>* outRMErrMaskPtr = 0;
+   if (rmOutErrorPtr) {
+      isMaskedRMErr = rmOutErrorPtr->isMasked() && rmOutErrorPtr->hasPixelMask() &&
+                      rmOutErrorPtr->pixelMask().isWritable();
+      if (isMaskedRMErr) outRMErrMaskPtr = &rmOutErrorPtr->pixelMask();
+//
+      whereRM.resize(rmOutErrorPtr->ndim());
+      whereRM = 0;
+   }
+//
+   Bool isMaskedPa0 = False;
+   Lattice<Bool>* outPa0MaskPtr = 0;
+   if (pa0OutPtr) {
+      isMaskedPa0 = pa0OutPtr->isMasked() && pa0OutPtr->hasPixelMask() &&
+                    pa0OutPtr->pixelMask().isWritable();
+      if (isMaskedPa0) outPa0MaskPtr = &pa0OutPtr->pixelMask();
+//
+      wherePA.resize(pa0OutPtr->ndim());
+      wherePA = 0;
+   }
+//
+   Bool isMaskedPa0Err = False;
+   Lattice<Bool>* outPa0ErrMaskPtr = 0;
+   if (pa0OutErrorPtr) {
+      isMaskedPa0Err = pa0OutErrorPtr->isMasked() && pa0OutErrorPtr->hasPixelMask() &&
+                       pa0OutErrorPtr->pixelMask().isWritable();
+      if (isMaskedPa0Err) outPa0ErrMaskPtr = &pa0OutErrorPtr->pixelMask();
+//
+      wherePA.resize(pa0OutErrorPtr->ndim());
+      wherePA = 0;
+   }
+//
+   Array<Bool> tmpMaskRM(IPosition(shapeRM.nelements(), 1), True);
+   Array<Float> tmpValueRM(IPosition(shapeRM.nelements(), 1), 0.0);
+   Array<Bool> tmpMaskPA(IPosition(shapePA.nelements(), 1), True);
+   Array<Float> tmpValuePA(IPosition(shapePA.nelements(), 1), 0.0);
+
+// Iterate
 
    const IPosition tileShape = pa.niceCursorShape();
    TiledLineStepper ts(pa.shape(), tileShape, fAxis);
    RO_LatticeIterator<Float> it(pa, ts);
-
-// Iterate
-
+//
    Float rm, rmErr, pa0, pa0Err, rChiSq;
-   IPosition where(rmOut.shape().nelements(),0);
-   uInt j;
+   uInt j, k;
 //
-   Bool isMasked = rmOut.isMasked() && rmOut.hasPixelMask() &&
-                   rmOut.pixelMask().isWritable();
-   Lattice<Bool>* outMaskPtr = 0;
-   if (isMasked) outMaskPtr = &rmOut.pixelMask();
-//
-   Lattice<Bool>* outErrMaskPtr = 0;
-   Bool isMaskedErr = rmOutError.isMasked() && rmOutError.hasPixelMask() &&
-                      rmOutError.pixelMask().isWritable();
-   if (isMaskedErr) outErrMaskPtr = &rmOutError.pixelMask();
-//
-   Array<Bool> tmpMask(IPosition(rmOut.ndim(), 1), True);
-   Array<Float> tmpValue(IPosition(rmOut.ndim(), 1), 0.0);
+   maxPaErr *= C::pi / 180.0;
+   Bool doRM = whereRM.nelements() > 0;
+   Bool doPA = wherePA.nelements() > 0;
 //
    for (it.reset(); !it.atEnd(); it++) {
 
@@ -619,7 +698,8 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
 
       Bool ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, 
                                      sortidx, wsqsort, it.vectorCursor(),
-                                     paerr.getSlice(it.position(),it.cursor().shape()),
+                                     pa.getMaskSlice(it.position(),it.cursorShape()),
+                                     paerr.getSlice(it.position(),it.cursorShape()),
                                      rmFg, rmMax, maxPaErr);
 
 // Plonk values into output  image.  This is slow and clunky, but should be relatively fast
@@ -628,86 +708,73 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>& rmOut, ImageInterf
 // instead, the path would be regular and then I could buffer, but then the iteration 
 // would be less efficient !!!
 
-        j = 0;
-        for (uInt i=0; i<it.position().nelements(); i++) {
-           if (i!=fAxis && i!=sAxis) {
-              where(j) = it.position()(i);
+        j = k = 0;
+        for (Int i=0; i<Int(it.position().nelements()); i++) {
+           if (doRM && i!=fAxis && i!=sAxis) {
+              whereRM(j) = it.position()(i);
               j++;
+           }
+           if (doPA && i!=fAxis) {
+              wherePA(k) = it.position()(i);
+              k++;
            }
         }
 //
-        if (isMasked) {
-           tmpMask.set(ok);
-           outMaskPtr->putSlice (tmpMask, where);
+        if (isMaskedRM) {
+           tmpMaskRM.set(ok);
+           outRMMaskPtr->putSlice (tmpMaskRM, whereRM);
         }
-        if (isMaskedErr) {
-           tmpMask.set(ok);
-           outErrMaskPtr->putSlice (tmpMask, where);
+        if (isMaskedRMErr) {
+           tmpMaskRM.set(ok);
+           outRMErrMaskPtr->putSlice (tmpMaskRM, whereRM);
+        }
+        if (isMaskedPa0) {
+           tmpMaskPA.set(ok);
+           outPa0MaskPtr->putSlice (tmpMaskPA, wherePA);
+        }
+        if (isMaskedPa0Err) {
+           tmpMaskPA.set(ok);
+           outPa0ErrMaskPtr->putSlice (tmpMaskPA, wherePA);
         }
 
 // If the output value is masked, the value itself is 0
 
-        tmpValue.set(rm);
-        rmOut.putSlice(tmpValue, where);
-        tmpValue.set(rmErr);
-        rmOutError.putSlice(tmpValue, where);
+        if (rmOutPtr) {
+           tmpValueRM.set(rm);
+           rmOutPtr->putSlice(tmpValueRM, whereRM);
+        }
+//
+        if (rmOutErrorPtr) {
+           tmpValueRM.set(rmErr);
+           rmOutErrorPtr->putSlice(tmpValueRM, whereRM);
+        }
+
+// Position angles in degrees
+
+        if (pa0OutPtr) {
+           tmpValuePA.set(pa0*180/C::pi);
+           pa0OutPtr->putSlice(tmpValuePA, wherePA);
+        }
+//
+        if (pa0OutErrorPtr) {
+           tmpValuePA.set(pa0Err*180/C::pi);
+           pa0OutErrorPtr->putSlice(tmpValuePA, wherePA);
+        }
    }
 }
 
-void ImagePolarimetry::rotationMeasureShape(IPosition& shape, CoordinateSystem& cSys, 
-                                            uInt& fAxis, uInt& sAxis, LogIO& os, Int axis) const
+IPosition ImagePolarimetry::rotationMeasureShape(CoordinateSystem& cSys, Int& fAxis, 
+                                                 Int& sAxis, LogIO& os, Int spectralAxis) const
 {
 
 // Construction image CS
 
    CoordinateSystem cSys0 = coordinates();
 
-// Find spectral and stokes axes
+// Find frequency axis
 
-   Int spectralCoord = -1;
-   if (axis >=0) {
-      if (axis < Int(cSys0.nPixelAxes())) { 
-         fAxis = axis;
-         Int axisInCoordinate;
-         cSys0.findPixelAxis(spectralCoord, axisInCoordinate, fAxis);
-
-// Check coordinate type is one of expected types
-
-         Bool ok = cSys0.type(spectralCoord)==Coordinate::TABULAR ||
-                   cSys0.type(spectralCoord)==Coordinate::LINEAR ||  
-                   cSys0.type(spectralCoord)==Coordinate::SPECTRAL;
-         if (!ok) {
-            os << "The specified axis of type " << cSys0.showType(spectralCoord) 
-               << " cannot be a frequency axis" << LogIO::EXCEPTION;
-         }
-      } else {
-         os << "Illegal spectral axis " << axis+1 << " given" << LogIO::EXCEPTION;
-      }
-   } else {   
-      spectralCoord = findSpectralCoordinate(cSys0, os, False);
-      if (spectralCoord < 0) {
-         for (uInt i=0; i<cSys0.nCoordinates(); i++) {
-            if (cSys0.type(i)==Coordinate::TABULAR ||
-                cSys0.type(i)==Coordinate::LINEAR ||
-                cSys0.type(i)==Coordinate::SPECTRAL) {
-               Vector<String> axisNames = cSys.coordinate(i).worldAxisNames();
-               String tmp = axisNames(0);
-               tmp.upcase();
-               if (tmp.contains(String("FREQ"))) {
-                  spectralCoord = i;
-                  break;
-               }
-            }
-         }
-      }
-      if (spectralCoord < 0) {
-         os << "Cannot find SpectralCoordinate in this image" << LogIO::EXCEPTION;
-      } else {
-         Vector<Int> pixelAxes = cSys0.pixelAxes(spectralCoord);
-         fAxis = pixelAxes(0);
-      }
-   }
-   os << "Conclude pixel axis " << fAxis+1 << " is the frequency axis" << LogIO::POST;
+   Int spectralCoord;
+   findFrequencyAxis (spectralCoord, fAxis, cSys0, spectralAxis);
 
 // Find Stokes axis (we know it has one)
 
@@ -716,20 +783,18 @@ void ImagePolarimetry::rotationMeasureShape(IPosition& shape, CoordinateSystem& 
    Vector<Int> pixelAxes = cSys0.pixelAxes(stokesCoord);
    sAxis = pixelAxes(0);
 
-
 // What shape should the image be ?  Frequency and stokes axes should be gone.
 
-   IPosition shape2 = ImagePolarimetry::shape();
-   shape.resize(shape2.nelements()-2);
+   IPosition shape0 = ImagePolarimetry::shape();
+   IPosition shape(shape0.nelements()-2);
 //
-   uInt j = 0;
-   for (uInt i=0; i<shape2.nelements(); i++) {
+   Int j = 0;
+   for (Int i=0; i<Int(shape0.nelements()); i++) {
       if (i!=fAxis && i!=sAxis) {
-        shape(j) = shape2(i);
+        shape(j) = shape0(i);
         j++;
       }
    }
-
 
 // Create output coordinate system
 
@@ -740,9 +805,65 @@ void ImagePolarimetry::rotationMeasureShape(IPosition& shape, CoordinateSystem& 
          cSys.addCoordinate(cSys0.coordinate(i));
       }
    }
-   if (cSys.nCoordinates()<=0) {
-      os << "RotationMeasure CoordinateSystem is empty !" << LogIO::EXCEPTION;
+//
+   return shape;
+}
+
+
+IPosition ImagePolarimetry::positionAngleShape(CoordinateSystem& cSys, 
+                                               Int& fAxis, Int& sAxis, LogIO& os, Int spectralAxis) const
+{
+
+// Construction image CS
+
+   CoordinateSystem cSys0 = coordinates();
+
+// Find frequency axis
+
+   Int spectralCoord = -1;
+   findFrequencyAxis (spectralCoord, fAxis, cSys0, spectralAxis);
+
+// Find Stokes axis (we know it has one)
+
+   Int afterCoord = -1;
+   Int stokesCoord = cSys0.findCoordinate(Coordinate::STOKES, afterCoord);
+   Vector<Int> pixelAxes = cSys0.pixelAxes(stokesCoord);
+   sAxis = pixelAxes(0);
+
+// Fiddle StokesCoordinate
+
+   fiddleStokesCoordinate(cSys0, Stokes::Pangle);
+
+// Create output coordinate system
+
+   CoordinateSystem tmp;
+   cSys = tmp;
+   for (Int i=0;i<Int(cSys0.nCoordinates()); i++) {
+      if (i!=spectralCoord) {
+         cSys.addCoordinate(cSys0.coordinate(i));
+      }
    }
+
+// What shape should the image be ?  Frequency axis should be gone.
+// and Stokes length 1
+
+   IPosition shape0 = ImagePolarimetry::shape();
+   IPosition shape(shape0.nelements()-1);
+//
+   Int j = 0;
+   for (Int i=0; i<Int(shape0.nelements()); i++) {
+      if (i==sAxis) {
+         shape(j) = 1;
+         j++;
+      } else {         
+        if (i!=fAxis) {
+           shape(j) = shape0(i);
+           j++;
+        }
+      }
+   }
+//
+   return shape;
 }
 
 
@@ -855,18 +976,21 @@ Float ImagePolarimetry::sigmaTotPolInt(Float clip, Float sigma)
 }
 
 
-IPosition ImagePolarimetry::singleStokesShape() const
+IPosition ImagePolarimetry::singleStokesShape(CoordinateSystem& cSys, Stokes::StokesTypes type) const
 {
 // We know the image has a Stokes coordinate or it
 // would have failed at construction
 
-   const CoordinateSystem& cSys = itsInImagePtr->coordinates();
-   Int afterCoord = -1;
-   Int iStokes = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
-   Vector<Int> pixelAxes = cSys.pixelAxes(iStokes);
+   CoordinateSystem cSys0 = itsInImagePtr->coordinates();
+   fiddleStokesCoordinate(cSys0, type);   
+   cSys = cSys0;
 //
+   Int afterCoord = -1;
+   Int iStokes = cSys0.findCoordinate(Coordinate::STOKES, afterCoord);
+   Vector<Int> pixelAxes = cSys0.pixelAxes(iStokes);
    IPosition shape = itsInImagePtr->shape();
    shape(pixelAxes(0)) = 1;
+//
    return shape;
 }
 
@@ -938,6 +1062,56 @@ void ImagePolarimetry::copyMiscellaneous (ImageInterface<Float>& out) const
 }   
 
 
+void ImagePolarimetry::findFrequencyAxis (Int& spectralCoord, Int& fAxis, 
+                                          const CoordinateSystem& cSys, Int spectralAxis) const
+{
+   LogIO os(LogOrigin("ImagePolarimetry", "findFrequencyAxis(...)", WHERE));
+   spectralCoord = -1;
+   fAxis = -1;
+   if (spectralAxis >=0) {
+      if (spectralAxis < Int(cSys.nPixelAxes())) { 
+         fAxis = spectralAxis;
+         Int axisInCoordinate;
+         cSys.findPixelAxis(spectralCoord, axisInCoordinate, fAxis);
+
+// Check coordinate type is one of expected types
+
+         Bool ok = cSys.type(spectralCoord)==Coordinate::TABULAR ||
+                   cSys.type(spectralCoord)==Coordinate::LINEAR ||  
+                   cSys.type(spectralCoord)==Coordinate::SPECTRAL;
+         if (!ok) {
+            os << "The specified axis of type " << cSys.showType(spectralCoord) 
+               << " cannot be a frequency axis" << LogIO::EXCEPTION;
+         }
+      } else {
+         os << "Illegal spectral axis " << spectralAxis+1 << " given" << LogIO::EXCEPTION;
+      }
+   } else {   
+      spectralCoord = findSpectralCoordinate(cSys, os, False);
+      if (spectralCoord < 0) {
+         for (uInt i=0; i<cSys.nCoordinates(); i++) {
+            if (cSys.type(i)==Coordinate::TABULAR ||
+                cSys.type(i)==Coordinate::LINEAR) {
+               Vector<String> axisNames = cSys.coordinate(i).worldAxisNames();
+               String tmp = axisNames(0);
+               tmp.upcase();
+               if (tmp.contains(String("FREQ"))) {
+                  spectralCoord = i;
+                  break;
+               }
+            }
+         }
+      }
+      if (spectralCoord < 0) {
+         os << "Cannot find SpectralCoordinate in this image" << LogIO::EXCEPTION;
+      } else {
+         Vector<Int> pixelAxes = cSys.pixelAxes(spectralCoord);
+         fAxis = pixelAxes(0);
+      }
+   }
+}
+
+
 void ImagePolarimetry::findStokes()
 {
    LogIO os(LogOrigin("ImagePolarimetry", "findStokes(...)", WHERE));
@@ -996,11 +1170,15 @@ void ImagePolarimetry::findStokes()
 }
 
 
+void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Float>& im, Stokes::StokesTypes type) const
+{
+   CoordinateSystem cSys = im.coordinates();
+   fiddleStokesCoordinate(cSys, type);
+   im.setCoordinateInfo(cSys);
+}
 
-void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const
+void ImagePolarimetry::fiddleStokesCoordinate(CoordinateSystem& cSys, Stokes::StokesTypes type) const
 {   
-   CoordinateSystem cSys = ie.coordinates();
-//
    Int afterCoord = -1;
    Int iStokes = cSys.findCoordinate(Coordinate::STOKES, afterCoord);
 //
@@ -1008,7 +1186,6 @@ void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes:
    which(0) = Int(type);
    StokesCoordinate stokes(which);
    cSys.replaceCoordinate(stokes, iStokes);   
-   ie.setCoordinateInfo(cSys);
 }
 
 void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Complex>& ie, Stokes::StokesTypes type) const
@@ -1099,8 +1276,9 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                                             Float& pa0Fitted, Float& pa0ErrFitted, 
                                             Float& rChiSqFitted, const Vector<uInt>& sortidx,
                                             const Vector<Float>& wsq2, const Vector<Float>& pa2, 
-                                            const Array<Float>& paerr2, Float rmFg, 
-                                            Float rmMax, Float maxPaErr)
+                                            const Array<Bool>& paMask2, 
+                                            const Array<Float>& paerr2, 
+                                            Float rmFg, Float rmMax, Float maxPaErr)
 //
 // wsq is lambda squared in m**2 in increasing wavelength order
 // pa is position angle in radians
@@ -1110,6 +1288,9 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 // rmmax is a user specified maximum RM
 //
 {
+   static Vector<Float> paerr;
+   static Vector<Float> pa;
+   static Vector<Float> wsq;
 
 // Abandon if less than 2 points
 
@@ -1117,30 +1298,31 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
    rmFitted = rmErrFitted = pa0Fitted = pa0ErrFitted = rChiSqFitted = 0.0;
    if (n<2) return False;
 
-// Sort into order of decreasing frequency (increasing wavelength)
-// Better for user to do this when they make the image. Warn them.
-
-   Vector<Float> paerr1(paerr2.nonDegenerate(0));
-   Vector<Float> paerr(sortidx.nelements());
-   Vector<Float> pa(sortidx.nelements());
-   Vector<Float> wsq(sortidx.nelements());
-
 // Sort into decreasing frequency order and correct for foreground rotation
-// Remember wsq already sorted.  Discard points that are too noisy.
+// Remember wsq already sorted.  Discard points that are too noisy or masked
 
+   const Vector<Float>& paerr1(paerr2.nonDegenerate(0));
+   const Vector<Bool>& paMask1(paMask2.nonDegenerate(0));
+   paerr.resize(n);
+   pa.resize(n);
+   wsq.resize(n);
+//
+   maxPaErr = abs(maxPaErr);
    uInt j = 0;
    for (uInt i=0; i<n; i++) {
-      if (paerr1(sortidx(i)) < maxPaErr) {
-         pa(j) = pa2(sortidx(i)) - rmFg*wsq(i);
+      if (abs(paerr1(sortidx(i)))<maxPaErr && paMask1(sortidx(i))) {
+         pa(j) = pa2(sortidx(i)) - rmFg*wsq2(i);
          paerr(j) = paerr1(sortidx(i));
          wsq(j) = wsq2(i);
          j++;
       }
    }
    n = j;
+   if (n<=1) return False;
+//
    pa.resize(n,True);
    paerr.resize(n,True);
-   wsq.resize(n);
+   wsq.resize(n, True);
 
 // Treat supplementary and primary points separately
 
@@ -1155,10 +1337,11 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 
 // Put position angle into the range 0->pi
 
+   static MVAngle tmpMVA1;
    if (ok) {
-      Float tmp = fmod(pa0Fitted, C::pi);  
-      if (tmp < 0.0) tmp += C::pi;   
-      pa0Fitted = tmp;
+      MVAngle tmpMVA0(pa0Fitted);
+      tmpMVA1 = tmpMVA0.binorm(0.0);
+      pa0Fitted = tmpMVA1.radian();
 
 // Add foreground back on
 
@@ -1266,6 +1449,11 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
                                     const Vector<Float>& pa, const Vector<Float>& paerr, 
                                     Float rmMax)
 {
+   static Vector<Float> storeRm;
+   static Vector<Float> storeRmErr;
+   static Vector<Float> storePa0;
+   static Vector<Float> storePa0Err;
+   static Vector<Float> storeRChiSq;
 
 // Assign position angle to longest wavelength consistent with
 // RM < RMMax
@@ -1275,73 +1463,88 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& rmFitted, Float& rmErrFitted,
 //
    Float ppa = abs(rmMax)*dwsq + pa(0);
    Float diff = ppa - pa(n-1);
-//cout << "diff0 = " << diff << endl;
    Float t = 0.5;
    if (diff < 0) t = -0.5;
-   Int maxnpi = ifloor(diff/C::pi + t);
+   Int maxnpi = Int(diff/C::pi + t);
 //
    ppa = -abs(rmMax)*dwsq + pa(0);
    diff = ppa - pa(n-1);
-//cout << "diff1 = " << diff << endl;
    t = 0.5;
    if (diff < 0) t = -0.5;
-   Int minnpi = ifloor(diff/C::pi + t);
+   Int minnpi = Int(diff/C::pi + t);
 // cout << "primary:: minnpi, maxnpi=" << minnpi << ", " << maxnpi << endl;
 //
    uInt istore = 0;
    const uInt nstore = maxnpi - minnpi + 1;
-   Vector<Float> storeRm(nstore);
-   Vector<Float> storeRmErr(nstore);
-   Vector<Float> storePa0(nstore);
-   Vector<Float> storePa0Err(nstore);
-   Vector<Float> storeRChiSq(nstore);
+
+// Resizes are fast if no change
+
+   storeRm.resize(nstore);
+   storeRmErr.resize(nstore);
+   storePa0.resize(nstore);
+   storePa0Err.resize(nstore);
+   storeRChiSq.resize(nstore);
+
+// Make plotter
+
+/*
+   Int nxy;
+   Int nplots = abs(minnpi) + abs(maxnpi) + 1;
+   nxy = max(1,Int(sqrt(Double(nplots))));
+   PGPlotter pl("/xs");
+   pl.subp(nxy, nxy);
+*/
 
 // Loop over range of n*pi ambiguity
 
    Vector<Float> fitpa(n);
    Vector<Float> pars;
-   Float rm0;
-   Int npi;
    for (Int h=minnpi; h<=maxnpi; h++) {
-//cout << "h=" << h << endl;
      fitpa(n-1) = pa(n-1) + C::pi*h;
-//cout << "fitps(n-1) = " << fitpa(n-1) << endl;
-     rm0 = (fitpa(n-1) - pa(0))/ dwsq;
+     Float rm0 = (fitpa(n-1) - pa(0))/ dwsq;
 
 // Assign position angles to remaining wavelengths
 
-     for (uInt k=1; k<n-2; k++) {
+     for (uInt k=1; k<n-1; k++) {
        ppa = pa(0) + rm0*(wsq(k)-wsq(0));
        diff = ppa - pa(k);
 //
        t = 0.5;
        if (diff < 0) t = -0.5;
-       npi = ifloor(diff/C::pi + t);
+       Int npi = Int(diff/C::pi + t);
        fitpa(k) = pa(k) + npi*C::pi;
-/*
-cout  << "rm0, k, npi, pa(k), fitpa(k) = " << rm0 << ", " << k << ", " << npi << ", " 
-      << pa(k) << ", " << fitpa(k) << endl;
-*/
      }
      fitpa(0) = pa(0);
 
+// Make plot
 /*
-   PGPlotter pl("/xs");
+   Vector<Float> tt0(pa.copy());
+   tt0 *= Float(180.0) / Float(C::pi);
+   Vector<Float> tt1(fitpa.copy());
+   tt1 *= Float(180.0) / Float(C::pi);
+
    Float minVal, maxVal;
-   minMax(minVal, maxVal, pa);
+   minMax(minVal, maxVal, tt0);
+   Float minVal2, maxVal2;
+   minMax(minVal2, maxVal2, tt1);
+   minVal = min(minVal, minVal2);
+   maxVal = max(maxVal, maxVal2);
+//
+   pl.page();
    pl.sci(1);
-   pl.env(wsq(0), wsq(n-1), minVal, maxVal, 0, 0);
-   pl.line(wsq, pa);
+   pl.swin(wsq(0), wsq(n-1), minVal, maxVal);
+   pl.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+   ostrstream oss;
+   oss << "h=" << h << ends;
+   pl.lab("wsq (m**2)", "Position Angle (deg)", String(oss));
+   pl.line(wsq, tt0);
+
+   pl.sci(7);
+   pl.line(wsq, tt1);
+   pl.pt(wsq, tt1, 17);
 */
-//   pl.sci(7);
-//   pl.line(wsq, fitpa);
-
-
 
 // Do least squares fit
-// ***** get rid of following line when it all works
-
-//     fitpa = pa;
 
      if (!rmLsqFit (pars, wsq, fitpa, paerr)) return False;
 
@@ -1352,6 +1555,7 @@ cout  << "rm0, k, npi, pa(k), fitpa(k) = " << rm0 << ", " << k << ", " << npi <<
      storePa0(istore) = pars(2);     // Fitted intrinsic angle
      storePa0Err(istore) = pars(3);  // Error in angle
      storeRChiSq(istore) = pars(4);  // Reduced chi squared
+     istore++;
    }
 
 // Find the best fit
@@ -1433,30 +1637,20 @@ Bool ImagePolarimetry::rmLsqFit (Vector<Float>& pars, const Vector<Float>& wsq,
 
 // Perform fit on unmasked data
 
-//   uInt n = pa.nelements();
-//   cout << "pa = " << pa << endl;
-//   cout << "paerr = " << paerr << endl;
-//
-   Vector<Float> solution;
+   static Vector<Float> solution;
    try {
      solution = itsFitterPtr->fit(wsq, pa, paerr);
    } catch (AipsError x) {
-      return False;
+     return False;
    } end_try;
-
-  
-// Return values of fit
-
-//   cout << "Solution = " << solution << endl;
-   Vector<Double> cv = itsFitterPtr->compuCovariance().diagonal();
 //
+   const Vector<Double>& cv = itsFitterPtr->compuCovariance().diagonal();
    pars.resize(5);
    pars(0) = solution(1);
    pars(1) = sqrt(cv(1));
    pars(2) = solution(0);
    pars(3) = sqrt(cv(0));
    pars(4) = itsFitterPtr->chiSquare(wsq, pa, paerr, solution);
-
 // 
    return True;
 }
