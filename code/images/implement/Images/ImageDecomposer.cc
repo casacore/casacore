@@ -880,7 +880,7 @@ uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
 }
 
 template <class T>
-void ImageDecomposer<T>::decomposeImage(T thresholdVal, T maximumError)
+void ImageDecomposer<T>::decomposeImage(T thresholdVal, T maximumRMS)
 {
 
 // Find contiguous regions via thresholding
@@ -892,7 +892,7 @@ void ImageDecomposer<T>::decomposeImage(T thresholdVal, T maximumError)
 // to ascertain whether there are multiple components to be
 // fit within it.
 
-  fitRegions(maximumError);
+  fitRegions(maximumRMS);
 }
 
 
@@ -900,8 +900,8 @@ void ImageDecomposer<T>::decomposeImage(T thresholdVal, T maximumError)
 template <class T>
 void ImageDecomposer<T>::decomposeImage(T thresholdVal, 
                                         uInt nContour,
-                                        T maximumError,
-                                        Bool varyContours)
+                                        T maximumRMS,
+                                        Bool varyContours=True)
 {
   const Bool showProcess = False;
 
@@ -1001,7 +1001,7 @@ void ImageDecomposer<T>::decomposeImage(T thresholdVal,
 
 // Fit gaussians to region
 
-    subpmap.fitComponents(maximumError);  
+    subpmap.fitComponents(maximumRMS);  
     if (showProcess) {
       cout << "Object " << r+1 << " subcomponents: " << endl;
       subpmap.printComponents(); 
@@ -1346,7 +1346,7 @@ Bool ImageDecomposer<T>::isDecomposed() const
 }
 
 template <class T>
-Matrix<T> ImageDecomposer<T>::fitRegion(Int nregion, T maximumError)
+Matrix<T> ImageDecomposer<T>::fitRegion(Int nregion, T maximumRMS)
 {
 cerr << "Fit Region " << nregion << endl;
 
@@ -1439,13 +1439,13 @@ cerr << "pos = " << positions  << endl;
 
 // Fit for nGaussians simultaneously
 
-  solution = fitGauss(positions, dataValues, nGaussians, initestimate, maximumError);
+  solution = fitGauss(positions, dataValues, nGaussians, initestimate, maximumRMS);
   return solution;  
 
 }
 
 template <class T>
-void ImageDecomposer<T>::fitRegions(T maximumError)
+void ImageDecomposer<T>::fitRegions(T maximumRMS)
 {
 // Fits gaussians to an image; multiple gaussians per region in the pmap.
 // The regions are fit sequentially and independently, so this function 
@@ -1458,14 +1458,14 @@ void ImageDecomposer<T>::fitRegions(T maximumError)
   if (itsDim == 3) ngpar = 9;
 
   if (itsNRegions == 0)  { //not deblended.
-    itsList = fitRegion(0, maximumError);
+    itsList = fitRegion(0, maximumRMS);
     return;
   }
 //
   for (uInt r = 1; r <= itsNRegions; r++) {
     Matrix<T> subitsList;
     Matrix<T> olditsList;
-    subitsList = fitRegion(r, maximumError);
+    subitsList = fitRegion(r, maximumRMS);
     olditsList = itsList;
     itsList.resize(itsNComponents + subitsList.nrow(), ngpar);
 //
@@ -1488,7 +1488,7 @@ void ImageDecomposer<T>::fitRegions(T maximumError)
 
 
 template <class T>
-void ImageDecomposer<T>::fitComponents(T maximumError)  
+void ImageDecomposer<T>::fitComponents(T maximumRMS)  
 {
 // Fits gaussians to an image; one gaussian per region in the pmap.
 // This function is intended to be used only by ImageDecomposer on its
@@ -1590,7 +1590,7 @@ void ImageDecomposer<T>::fitComponents(T maximumError)
 
 
   solution = fitGauss(positions, dataValues, ngaussians, initestimate, 
-                      maximumError);
+                      maximumRMS);
 //
   itsNComponents = ngaussians;     
   itsList.resize(solution.shape());
@@ -1604,7 +1604,7 @@ Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions,
                                        const Vector<T>& dataValues, 
                                        uInt ngaussians,
                                        const Matrix<T>& initestimate,
-                                       T maximumError) const
+                                       T maximumRMS) const
 {
 // Fits the specified number of 3D gaussians to the data, and returns 
 // solution in image (world) coordinates.
@@ -1650,7 +1650,7 @@ Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions,
     rt(6,4) = 1;   rt(6,5) = 1;   rt(6,6) = 1;   rt(6,7) =-0.5; rt(6,8) =-0.5;
   }
 //
-  return fitGauss(positions, dataValues, ngaussians, initestimate, rt, maximumError);
+  return fitGauss(positions, dataValues, ngaussians, initestimate, rt, maximumRMS);
 }
 
 
@@ -1660,7 +1660,7 @@ Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions,
                                        uInt ngaussians,
                                        const Matrix<T>& initestimate,
 				       const Matrix<T>& retrymatrix,
-                                       T maximumError) const
+                                       T maximumRMS) const
                                          
 {
 // Fits the specified number of 3D gaussians to the data, and returns 
@@ -1681,7 +1681,7 @@ Matrix<T> ImageDecomposer<T>::fitGauss(const Matrix<T>& positions,
   fitter.setRetryFactors(retrymatrix);
 
   try{ 
-    solution = fitter.fit(positions, dataValues, maximumError);
+    solution = fitter.fit(positions, dataValues, maximumRMS);
   } catch (AipsError fiterr) {
     string errormsg;
     errormsg = fiterr.getMesg(); 
@@ -1883,11 +1883,14 @@ void ImageDecomposer<T>::correctBlcTrc(IPosition& blc, IPosition& trc) const
 }
 
 template <class T>
-Bool ImageDecomposer<T>::increment(IPosition& pos,const IPosition& limit) const
+inline Bool ImageDecomposer<T>::increment(IPosition& pos,
+                                          const IPosition& limit) const
 {
 // N-Dimensional looping function: use in place of nested for loops
 // Returns False when pos reaches limit.
 // Use as follows:    while(increment(pos,limit))
+// IMPR: this function probably should be global or in IPosition.  Or even
+// better, omitted completely by using LatticeIterators.
 
   pos(itsDim-1)++;
   for (uInt i = itsDim-1; i>0; i--) { 
@@ -1907,7 +1910,7 @@ Bool ImageDecomposer<T>::increment(IPosition& pos,const IPosition& limit) const
 }
 
 template <class T>
-void ImageDecomposer<T>::decrement(IPosition& pos) const
+inline void ImageDecomposer<T>::decrement(IPosition& pos) const
 {
   //To ensure while loop starts at 0,0,0..., decrement before first increment
   pos(itsDim-1)--;
