@@ -122,7 +122,7 @@ public:
 
   // Construct from a MeasurementSet (set pointer), set formatting string,
   // and initialise listing with os.
-  MSLister (MeasurementSet& ms, LogIO& os);
+  MSLister (const MeasurementSet& ms, LogIO& os);
 
   // Copy constructor, this will initialise the MSLister's MS with other's MS
   MSLister (MSLister& other);
