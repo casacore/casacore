@@ -29,7 +29,7 @@
 
 %{
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=msSPWGramInput(buf,max_size)
+#define YY_INPUT(buf,result,max_size) result=msSpwGramInput(buf,max_size)
 
 #undef YY_DECL
 #define YY_DECL int MSSpwGramlex (YYSTYPE* lvalp)
@@ -68,62 +68,62 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
 %%
 
-"["       { msSPWGramPosition() += yyleng;
+"["       { msSpwGramPosition() += yyleng;
             return LBRACKET;
           }
-"("       { msSPWGramPosition() += yyleng;
+"("       { msSpwGramPosition() += yyleng;
             return LPAREN;
           }
-"]"       { msSPWGramPosition() += yyleng;
+"]"       { msSpwGramPosition() += yyleng;
             return RBRACKET;
           }
-")"       { msSPWGramPosition() += yyleng;
+")"       { msSpwGramPosition() += yyleng;
             return RPAREN;
           }
 
-":"       { msSPWGramPosition() += yyleng;
+":"       { msSpwGramPosition() += yyleng;
             return COLON; }
-"=="      { msSPWGramPosition() += yyleng;
+"=="      { msSpwGramPosition() += yyleng;
             return EQ; }
-"="       { msSPWGramPosition() += yyleng;
+"="       { msSpwGramPosition() += yyleng;
             return EQASS; }
-"!="      { msSPWGramPosition() += yyleng;
+"!="      { msSpwGramPosition() += yyleng;
             return NE; }
-"<>"      { msSPWGramPosition() += yyleng;
+"<>"      { msSpwGramPosition() += yyleng;
             return NE; }
-">="      { msSPWGramPosition() += yyleng;
+">="      { msSpwGramPosition() += yyleng;
             return GE; }
-">"       { msSPWGramPosition() += yyleng;
+">"       { msSpwGramPosition() += yyleng;
             return GT; }
-"<="      { msSPWGramPosition() += yyleng;
+"<="      { msSpwGramPosition() += yyleng;
             return LE; }
-"<"       { msSPWGramPosition() += yyleng;
+"<"       { msSpwGramPosition() += yyleng;
             return LT; }
-"&&"      { msSPWGramPosition() += yyleng;
+"&&"      { msSpwGramPosition() += yyleng;
             return AND; }
-"||"      { msSPWGramPosition() += yyleng;
+"||"      { msSpwGramPosition() += yyleng;
             return OR; }
-"!"       { msSPWGramPosition() += yyleng;
+"!"       { msSpwGramPosition() += yyleng;
             return NOT; }
-"^"       { msSPWGramPosition() += yyleng;
+"^"       { msSpwGramPosition() += yyleng;
             return POWER; }
-"*"       { msSPWGramPosition() += yyleng;
+"*"       { msSpwGramPosition() += yyleng;
             return TIMES; }
-"/"       { msSPWGramPosition() += yyleng;
+"/"       { msSpwGramPosition() += yyleng;
             return DIVIDE; }
-"%"       { msSPWGramPosition() += yyleng;
+"%"       { msSpwGramPosition() += yyleng;
             return PERCENT; }
-"+"       { msSPWGramPosition() += yyleng;
+"+"       { msSpwGramPosition() += yyleng;
             return PLUS; }
-"-"       { msSPWGramPosition() += yyleng;
+"-"       { msSpwGramPosition() += yyleng;
             return DASH; }
-"{"       { msSPWGramPosition() += yyleng;
+"{"       { msSpwGramPosition() += yyleng;
             return LBRACE; }
-"}"       { msSPWGramPosition() += yyleng;
+"}"       { msSpwGramPosition() += yyleng;
             return RBRACE; }
-"'"       { msSPWGramPosition() += yyleng;
+"'"       { msSpwGramPosition() += yyleng;
             return SQUOTE; }
-","       { msSPWGramPosition() += yyleng;
+","       { msSpwGramPosition() += yyleng;
             return COMMA;
           }
 
