@@ -511,10 +511,14 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   // Set the default Storage Manager to be the Incr one
   IncrementalStMan incrStMan ("ISMData");
   newtab.bindAll(incrStMan, True);
-  // bind ANTENNA2 to the standardStMan as it changes every row
-  // set a reasonable bucketsize
+
+  // Bind ANTENNA1, ANTENNA2 and DATA_DESC_ID to the standardStMan 
+  // as they may change sufficiently frequently to make the
+  // incremental storage manager inefficient for these columns.
   StandardStMan aipsStMan(32768);
+  newtab.bindColumn(MS::columnName(MS::ANTENNA1), aipsStMan);
   newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
+  newtab.bindColumn(MS::columnName(MS::DATA_DESC_ID), aipsStMan);
 
   if (useTSM) {
     // Choose an appropriate tileshape
