@@ -31,6 +31,8 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
+#include <aips/Containers/Record.h>
+#include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
@@ -63,16 +65,12 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TiledLineStepper.h>
-               
+#include <trial/Tasking/ApplicationEnvironment.h>
+#include <trial/Tasking/PGPlotter.h>
+
 #include <strstream.h>
 #include <iomanip.h>
 
-
-// C wrappers for PGPLOT
-   
-extern "C" {
-#include <cpgplot.h>
-};
 
 
 
@@ -101,7 +99,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
    stdDeviation_p = 0.0;
    yMin_p = 0.0;
    yMax_p = 0.0;
-   device_p = "";
    out_p = "";
    psfOut_p = "";
    smoothOut_p = "";
@@ -144,7 +141,7 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         stdDeviation_p(other.stdDeviation_p),
                         yMin_p(other.yMin_p),
                         yMax_p(other.yMax_p),
-                        device_p(other.device_p),
+                        plotter_p(other.plotter_p),
                         out_p(other.out_p),
                         psfOut_p(other.psfOut_p),
                         smoothOut_p(other.smoothOut_p),
@@ -181,7 +178,7 @@ ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
                         stdDeviation_p(other.stdDeviation_p),
                         yMin_p(other.yMin_p),
                         yMax_p(other.yMax_p),
-                        device_p(other.device_p),
+                        plotter_p(other.plotter_p),
                         out_p(other.out_p),
                         psfOut_p(other.psfOut_p),
                         smoothOut_p(other.smoothOut_p),
@@ -239,7 +236,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       stdDeviation_p = other.stdDeviation_p;
       yMin_p = other.yMin_p;
       yMax_p = other.yMax_p;
-      device_p = other.device_p;
+      plotter_p = other.plotter_p;
       out_p = other.out_p;
       psfOut_p = other.psfOut_p;
       smoothOut_p = other.smoothOut_p;
@@ -660,7 +657,7 @@ Bool ImageMoments<T>::setSmoothOutName(const String& smoothOutU)
 
 
 template <class T>
-Bool ImageMoments<T>::setPlotting(const String& deviceU,
+Bool ImageMoments<T>::setPlotting(const PGPlotter& plotterU,
                                   const Vector<Int>& nxyU,
                                   const Bool yIndU)
 //   
@@ -673,7 +670,7 @@ Bool ImageMoments<T>::setPlotting(const String& deviceU,
       return False;
    }
 
-   device_p = deviceU;
+   plotter_p = plotterU;
    fixedYLimits_p = ToBool(!yIndU);
    nxy_p.resize(0);
    nxy_p = nxyU;
@@ -807,7 +804,7 @@ Bool ImageMoments<T>::createMoments()
    Bool windowMethod = False;
    Bool fitMethod = False;
    Bool clipMethod = False;
-   Bool doPlot = ToBool(!device_p.empty());
+   Bool doPlot = plotter_p.isAttached();
 
    if (doSmooth_p && !doWindow_p) {
       smoothClipMethod = True;      
@@ -975,17 +972,14 @@ Bool ImageMoments<T>::createMoments()
    }
 
 
-// Open plot device 
+// Set up some plotting things
          
    if (doPlot) {
-      if(cpgbeg(0, device_p.chars(), nxy_p(0), nxy_p(1)) != 1) {
-         os_p << LogIO::SEVERE << "Could not open display device" << LogIO::POST;
-         return False;
-       }
-       cpgsch (1.5);
-       cpgvstd();
+      plotter_p.subp(nxy_p(0), nxy_p(1));
+      plotter_p.ask(True);
+      plotter_p.sch(1.5);
+      plotter_p.vstd();
    }        
-
    
 
 // Create appropriate MomentCalculator object 
@@ -1057,7 +1051,7 @@ Bool ImageMoments<T>::checkMethod ()
 // Plotting can be invoked passively for other methods.
 
    if ( ((doWindow_p && !doAuto_p) ||
-         (!doWindow_p && doFit_p && !doAuto_p)) && device_p.empty()) {
+         (!doWindow_p && doFit_p && !doAuto_p)) && !plotter_p.isAttached()) {
       os_p << LogIO::SEVERE << "You have not given a plotting device" << LogIO::POST;
       return False;
    } 
@@ -1220,27 +1214,30 @@ template <class T>
 void ImageMoments<T>::drawHistogram (const T& dMin,
                                      const Int& nBins,
                                      const T& binWidth,
-                                     const Vector<T>& y)
+                                     const Vector<T>& y,
+                                     PGPlotter& plotter)
 //
 // Draw a histogram on the current window
 //
 { 
-   cpgbox ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   cpglab ("Intensity", "Number", "");
+   plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+   plotter.lab ("Intensity", "Number", "");
 
-   const float width = float(binWidth)/2.0;
-   float centre = float(dMin) + width;
+   const Float width = float(binWidth)/2.0;
+   Float centre = Float(dMin) + width;
+   Float xx,yy;
+
    for (Int i=0; i<nBins; i++) {
-      float xx = centre - width;
-      float yy = float(y(i));
-      cpgmove (xx, 0.0);
-      cpgdraw (xx, yy);
-      cpgmove (xx, yy);
+      xx = centre - width;
+      yy = float(y(i));
+      plotter.move (xx, 0.0);
+      plotter.draw (xx, yy);
+      plotter.move (xx, yy);
 
       xx = centre + width;
-      cpgdraw (xx, yy);
-      cpgmove (xx, yy);
-      cpgdraw (xx, 0.0);
+      plotter.draw (xx, yy);
+      plotter.move (xx, yy);
+      plotter.draw (xx, 0.0);
       
       centre += binWidth;
    }                     
@@ -1249,26 +1246,28 @@ void ImageMoments<T>::drawHistogram (const T& dMin,
 
 template <class T> 
 void ImageMoments<T>::drawVertical (const T& loc,
-                               const T& yMin,
-                               const T& yMax)
+                                    const T& yMin,
+                                    const T& yMax,
+                                    PGPlotter& plotter) 
 {
 // If the colour index is zero, we are trying to rub something
 // out, so don't monkey with the ci then
 
    Int ci;
-   cpgqci (&ci);
-   if (ci!=0) cpgsci (3);
+   ci = plotter.qci();
+   if (ci!=0) plotter.sci (3);
 
-   cpgmove (float(loc), float(yMin));
-   cpgdraw (float(loc), float(yMax));
-   cpgupdt();
-   cpgsci (ci);
+   plotter.move (Float(loc), Float(yMin));
+   plotter.draw (Float(loc), Float(yMax));
+   plotter.updt();
+   plotter.sci (ci);
 }
 
 
 template <class T> 
 void ImageMoments<T>::drawLine (const Vector<T>& x,
-                                const Vector<T>& y)
+                                const Vector<T>& y,
+                                PGPlotter& plotter)
 //
 // Draw  a spectrum on the current panel
 // with the box already drawn
@@ -1277,44 +1276,44 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 // Copy from templated floating type to float
 
    const int n = x.nelements();
-   float* pX = new float[n];
-   float* pY = new float[n];
+   Vector<Float> xData(n);
+   Vector<Float> yData(n);
    for (Int i=0; i<n; i++) {
-      pX[i] = float(x(i));
-      pY[i] = float(y(i));
+      xData(i) = x(i);
+      yData(i) = y(i);
    }
-   cpgline (n, pX, pY);
-   cpgupdt ();
-   delete [] pX;
-   delete [] pY;
+   plotter.line (xData, yData);
+   plotter.updt ();
 }
 
 
 
 template <class T> 
 Bool ImageMoments<T>::getLoc (T& x,
-                              T& y)
+                              T& y,
+                              PGPlotter& plotter,
+                              LogIO& os)
 //
 // Read the PGPLOT cursor and return its coordinates if not off the plot
 //
 {
 // Fish out window
 
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
 
 // Position and read cursor
 
-   float xx = float(x);
-   float yy = float(y);
-   char ch;
-   cpgcurs (&xx, &yy, &ch);
+   Float xx = x;
+   Float yy = y;
+   String str;
 
-   if (xx >= xMin && xx <= xMax && yy >= yMin && yy <= yMax) {
+   readCursor(plotter, xx, yy, str);
+   if (xx >= minMax(0) && xx <= minMax(1) && yy >= minMax(2) && yy <= minMax(3)) {
          x = xx;
          y = yy;
    } else {
-      os_p << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
+      os << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
       return False;
    }
    return True;
@@ -1793,9 +1792,9 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    xMin = dMin - (dMax-dMin)/20.0;
    xMax = dMax + (dMax-dMin)/20.0;
 
-   if (!device_p.empty()) {
-      if (cpgbeg (0, device_p.chars(), 1, 1) != 1) return False;
-      cpgswin (float(xMin), float(xMax), float(yMin), float(yMax));
+   if (plotter_p.isAttached()) {
+      plotter_p.subp(1,1);
+      plotter_p.swin (Float(xMin), Float(xMax), Float(yMin), Float(yMax));
    }
 
    Int iMin, iMax;
@@ -1805,9 +1804,9 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
 // Plot histogram
 
-      if (!device_p.empty()) {
-         cpgpage();
-         drawHistogram (dMin, nBins, binWidth, y);
+      if (plotter_p.isAttached()) {
+         plotter_p.page();
+         drawHistogram (dMin, nBins, binWidth, y, plotter_p);
       }
 
       if (first) {
@@ -1834,15 +1833,15 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
 // Draw on plot
 
-         if (!device_p.empty()) {
+         if (plotter_p.isAttached()) {
             x1 = dMin + binWidth/2 + iMin*binWidth;
             x2 = dMin + binWidth/2 + iMax*binWidth;
-            drawVertical (x1, yMin, yMax);
-            drawVertical (x2, yMin, yMax);
+            drawVertical (x1, yMin, yMax, plotter_p);
+            drawVertical (x2, yMin, yMax, plotter_p);
          }
          first = False;
 
-      } else if (!device_p.empty()) {
+      } else if (plotter_p.isAttached()) {
 
 // We are redoing the fit so let the user mark where they think
 // the window fit should be done
@@ -1854,20 +1853,20 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
   
          os_p << LogIO::NORMAL << "Mark the locations for the window" << LogIO::POST;
          while (i1==i2) {
-            while (!getLoc(x1, y1)) {};
+            while (!getLoc(x1, y1, plotter_p, os_p)) {};
             i1 = Int((x1 -dMin)/binWidth - 0.5);
             x1 = dMin + binWidth/2 + i1*binWidth;
-            drawVertical (x1, yMin, yMax);
+            drawVertical (x1, yMin, yMax, plotter_p);
 
             T x2 = x1;
-            while (!getLoc(x2, y1)) {};
+            while (!getLoc(x2, y1, plotter_p, os_p)) {};
             i2 = Int((x2 -dMin)/binWidth - 0.5);
-            drawVertical (x2, yMin, yMax);
+            drawVertical (x2, yMin, yMax, plotter_p);
 
             if (i1 == i2) {
                os_p << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
-               cpgeras ();
-               drawHistogram (dMin, nBins, binWidth, y);
+               plotter_p.eras ();
+               drawHistogram (dMin, nBins, binWidth, y, plotter_p);
             }
          }
 
@@ -1927,7 +1926,7 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
 // Now plot the fit 
 
-         if (!device_p.empty()) {
+         if (plotter_p.isAttached()) {
             Int nGPts = 100;
             T dx = (xMax - xMin)/nGPts;
 
@@ -1940,28 +1939,26 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
                xG(i) = xx;
                yG(i) = gauss(xx) * yMax;
             }
-            cpgsci (7);
-            drawLine (xG, yG);
-            cpgsci (1);
+            plotter_p.sci (7);
+            drawLine (xG, yG, plotter_p);
+            plotter_p.sci (1);
          }
       } else {
          os_p << LogIO::NORMAL << "The fit to determine the noise level failed." << endl;
          os_p << "Try inputting it directly" << endl;
-         if (!device_p.empty()) os_p << "or try a different window " << LogIO::POST;
+         if (plotter_p.isAttached()) os_p << "or try a different window " << LogIO::POST;
       }
 
 // Another go
 
-      if (!device_p.empty()) {
+      if (plotter_p.isAttached()) {
          os_p << LogIO::NORMAL << LogIO::POST << 
            "Accept (click left), redo (click middle), give up (click right)" << LogIO::POST;
 
-         float xx = float(xMin+xMax)/2;
-         float yy = float(yMin+yMax)/2;
-         char ch;
-         cpgcurs (&xx, &yy, &ch);
-
-         String str = ch;
+         Float xx = float(xMin+xMax)/2;
+         Float yy = float(yMin+yMax)/2;
+         String str;
+         readCursor(plotter_p, xx, yy, str);
          str.upcase();
  
          if (str == "D") {
@@ -1974,6 +1971,21 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
          more = False;
    }
      
-   if (!device_p.empty()) cpgend();
    return True;
 }
+
+
+template <class T> 
+Bool ImageMoments<T>::readCursor (PGPlotter& plotter, Float& x,
+                                  Float& y, String& ch)
+{
+   Record r;
+   r = plotter.curs(x, y);
+   Bool gotCursor;
+   r.get(RecordFieldId(0), gotCursor);
+   r.get(RecordFieldId(1), x);
+   r.get(RecordFieldId(2), y);
+   r.get(RecordFieldId(3), ch);
+   return gotCursor;
+}
+ 

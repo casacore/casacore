@@ -43,8 +43,10 @@ template <class T> class MomentCalcBase;
 class CoordinateSystem;
 class IPosition;
 class LogIO;
+class PGPlotter;
 class String;
 class Unit;
+
 
 //
 // <summary> This class generates moments from an image. </summary>
@@ -473,7 +475,7 @@ enum KernelTypes {
 // Plotting is not invoked for all states of the class.  It is only
 // needed for the interactive methods.  If you ask for a method that
 // needs to determine the noise from the image, and you set the
-// plottig device, then this will be done interactively.  Similarly,
+// plotting device, then this will be done interactively.  Similarly,
 // if you invoke the automatic window or fit methods, but set the
 // plotting device, then you will see plots of the spectra and
 // the selected windows and fits, respectively.
@@ -483,7 +485,7 @@ enum KernelTypes {
 // <src>nxy</src> then the latter is set to [1,1].   A return value
 // of <src>False</src> indicates that you gave roo many values in the
 // <src>nxy</src> vector.
-   Bool setPlotting(const String& device,
+   Bool setPlotting(const PGPlotter& device,
                     const Vector<Int>& nxy,
                     const Bool yInd=False);
 
@@ -544,7 +546,8 @@ private:
    Double stdDeviation_p;
    Float yMin_p, yMax_p;
 
-   String device_p; 
+   PGPlotter plotter_p;
+
    String out_p;
    String psfOut_p;
    String smoothOut_p;
@@ -554,27 +557,35 @@ private:
    Bool fixedYLimits_p;
 
 
+
+
 // Check that the combination of methods that the user has requested is valid
 // List a handy dandy table if not.
    Bool checkMethod    ();
 
 // Plot a histogram                     
-   void drawHistogram  (const T& dMin,
-                        const Int& nBins,
-                        const T& binWidth,
-                        const Vector<T>& counts);
+   static void drawHistogram  (const T& dMin,
+                               const Int& nBins,
+                               const T& binWidth,
+                               const Vector<T>& counts,
+                               PGPlotter& plotter);
 
 // Plot a line 
-   void drawLine       (const Vector<T>& x,
-                        const Vector<T>& y);
+   static void drawLine       (const Vector<T>& x,
+                               const Vector<T>& y,
+                               PGPlotter& plotter);
                      
 // Draw a vertical line of the given length at a given abcissa 
-   void drawVertical   (const T& x,
-                        const T& yMin,
-                        const T& yMax);
+   static void drawVertical   (const T& x,
+                               const T& yMin,
+                               const T& yMax,
+                               PGPlotter& plotter);
+
 // Read the cursor and return its coordinates 
-   Bool getLoc         (T& x,
-                        T& y);
+   static Bool getLoc (T& x,
+                       T& y,
+                       PGPlotter& plotter,
+                       LogIO& os);
 
 // Increase an integer to the next odd integer
    Bool makeOdd        (Int& i);
@@ -582,6 +593,10 @@ private:
 // Generate the PSF
    void makePSF        (Array<T>& psf,
                         Matrix<T>& psfSep);
+
+// Fish out cursor values
+   static Bool readCursor (PGPlotter& plotter, Float& x,
+                           Float& y, String& ch);
 
 // Save a lattice to disk as a PagedImage
    void saveLattice (const Lattice<T>* const pLattice,

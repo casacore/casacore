@@ -30,6 +30,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Containers/Record.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Functionals/Polynomial.h>
 #include <aips/Functionals/SumFunction.h>
@@ -42,12 +43,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-
-// C wrappers for PGPLOT
-
-extern "C" {
-#include <cpgplot.h>
-};
 
 
 // Base class MomentCalcBase 
@@ -173,9 +168,9 @@ void MomentCalcBase<T>::costlyMoments(ImageMoments<T>& iMom,
 
 
 template <class T>
-String& MomentCalcBase<T>::device(ImageMoments<T>& iMom)
+PGPlotter& MomentCalcBase<T>::device(ImageMoments<T>& iMom)
 {
-   return iMom.device_p;
+   return iMom.plotter_p;
 }
 
 
@@ -196,22 +191,24 @@ Bool MomentCalcBase<T>::doCoordCalc(ImageMoments<T>& iMom)
 
 
 template <class T>
-void MomentCalcBase<T>::drawHorizontal(const T& y)
+void MomentCalcBase<T>::drawHorizontal(const T& y,
+                                       PGPlotter& plotter) 
+
 //
 // Draw a horizontal line across the full x range of the plot
 //
 {
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
 
-   cpgmove (xMin, float(y));
-   cpgdraw (xMax, float(y));
+   plotter.move (minMax(0), Float(y));
+   plotter.draw (minMax(1), Float(y));
 }
 
 template <class T>
-void MomentCalcBase<T>::drawLine (ImageMoments<T>& iMom,
-                                  const Vector<T>& x,
-                                  const Vector<T>& y)
+void MomentCalcBase<T>::drawLine (const Vector<T>& x,
+                                  const Vector<T>& y,
+                                  PGPlotter& plotter) 
 //
 // Draw  a spectrum on the current panel
 // with the box already drawn
@@ -219,20 +216,20 @@ void MomentCalcBase<T>::drawLine (ImageMoments<T>& iMom,
 {
 // Pass it on to ImageMoments who has to do this too
 
-   iMom.drawLine(x, y);
+   ImageMoments<T>::drawLine(x, y, plotter);
 } 
 
 
 template <class T>
-void MomentCalcBase<T>::drawLine (ImageMoments<T>& iMom,
-                                  const Vector<T>& x,
+void MomentCalcBase<T>::drawLine (const Vector<T>& x,
                                   const Vector<T>& y,
                                   const Bool fixedYLimits,
                                   const Float yMinAuto,
                                   const Float yMaxAuto,
                                   const String xLabel,
                                   const String yLabel,
-                                  const String title)
+                                  const String title,
+                                  PGPlotter& plotter) 
 //
 // Draw and label a spectrum on the current panel
 //
@@ -257,58 +254,60 @@ void MomentCalcBase<T>::drawLine (ImageMoments<T>& iMom,
 // Plot
  
    if (fixedYLimits) {
-      cpgswin (float(xMin), float(xMax), yMinAuto, yMaxAuto);
+      plotter.swin (xMin, xMax, yMinAuto, yMaxAuto);
    } else {  
-      cpgswin (float(xMin), float(xMax), yMinF, yMaxF);
+      plotter.swin (xMin, xMax, yMinF, yMaxF);
    }
-   cpgbox ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-   drawLine (iMom, x, y);
-   cpglab (xLabel.chars(), yLabel.chars(), "");
-   cpgmtxt ("T", 1.0, 0.5, 0.5, title.chars());
+   plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+   drawLine (x, y, plotter);
+   plotter.lab (xLabel.chars(), yLabel.chars(), "");
+   plotter.mtxt ("T", 1.0, 0.5, 0.5, title.chars());
 }
 
 template <class T>
 void MomentCalcBase<T>::drawMeanSigma (const T dMean,
-                                       const T dSigma)
+                                       const T dSigma,
+                                       PGPlotter& plotter) 
+
 //
 // Draw a horizontal line on the spectrum plot at
 // the mean value, and 2 horizontal lines at
 // mean +/- sigma
 //    
 {
-   cpgsci(7);
-   drawHorizontal(dMean);
-   cpgsci(5);
-   drawHorizontal(dMean+dSigma);  
-   drawHorizontal(dMean-dSigma);
-   cpgsci(1);
+   plotter.sci(7);
+   drawHorizontal(dMean, plotter);
+   plotter.sci(5);
+   drawHorizontal(dMean+dSigma, plotter);
+   drawHorizontal(dMean-dSigma, plotter);
+   plotter.sci(1);
 }
 
 
 template <class T>
-void MomentCalcBase<T>::drawVertical (ImageMoments<T>& iMom,
-                                      const T loc,
+void MomentCalcBase<T>::drawVertical (const T loc,
                                       const T yMin,
-                                      const T yMax)
+                                      const T yMax,
+                                      PGPlotter& plotter) 
 {  
 // Pass it on to ImageMoments
 
-   iMom.drawVertical(loc, yMin, yMax);
+   ImageMoments<T>::drawVertical(loc, yMin, yMax, plotter);
 }
   
 
 
 template <class T>
-void MomentCalcBase<T>::drawWindow(ImageMoments<T>& iMom,
-                                   const Vector<Int>& window)
+void MomentCalcBase<T>::drawWindow(const Vector<Int>& window,
+                                   PGPlotter& plotter) 
 //
 // Mark the current window on the plot
 //
 {  
-   float x1, x2, y1, y2;
-   cpgqwin (&x1, &x2, &y1, &y2);
-   drawVertical (iMom, float(window(0)), y1, y2);
-   drawVertical (iMom, float(window(1)), y1, y2);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
+   drawVertical (window(0), minMax(2), minMax(3), plotter);
+   drawVertical (window(1), minMax(2), minMax(3), plotter);
 }
 
 
@@ -405,13 +404,12 @@ Bool& MomentCalcBase<T>::fixedYLimits(ImageMoments<T>& iMom)
 
 
 template <class T>
-Bool MomentCalcBase<T>::getAutoGaussianFit (ImageMoments<T>& iMom,
-                                            Vector<T>& gaussPars,
+Bool MomentCalcBase<T>::getAutoGaussianFit (Vector<T>& gaussPars,
                                             const Vector<T>& x,
                                             const Vector<T>& y,
                                             const Double peakSNR,
                                             const Double stdDeviation,
-                                            const Bool doPlot,
+                                            PGPlotter& plotter,
                                             const Bool fixedYLimits,
                                             const Float yMinAuto,
                                             const Float yMaxAuto,
@@ -424,7 +422,7 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (ImageMoments<T>& iMom,
 //
 // Inputs:
 //   x,y        Vector containing the data
-//   doPlot     Plot spectrum and optionally the  window
+//   plotter    Plot spectrum and optionally the  window
 //   x,yLabel   Labels
 //   title
 // Output:
@@ -437,10 +435,10 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (ImageMoments<T>& iMom,
    
 // Plot spectrum if desired
       
-   if (doPlot) {
-      cpgpage();
-      drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                xLabel, yLabel, title);
+   if (plotter.isAttached()) {
+      plotter.page();
+      drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+                xLabel, yLabel, title, plotter);
    }
 
 // See if this spectrum is all noise first.  If so, forget it.
@@ -451,9 +449,9 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (ImageMoments<T>& iMom,
 // Draw on mean and sigma
   
    const T sigma = stdDeviation;
-   if (doPlot) {
-      drawMeanSigma (dMean, sigma);
-      if (noisy) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
+   if (plotter.isAttached()) {
+      drawMeanSigma (dMean, sigma, plotter);
+      if (noisy) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }  
    if (noisy) {
       gaussPars = 0;  
@@ -483,7 +481,7 @@ Bool MomentCalcBase<T>::getAutoGaussianFit (ImageMoments<T>& iMom,
    
 // Plot the fit
    
-   if (doPlot) showGaussFit (iMom, peak, pos, width, level, x, y);
+   if (plotter.isAttached()) showGaussFit (peak, pos, width, level, x, y, plotter);
    
    return True;
 }
@@ -524,14 +522,13 @@ void MomentCalcBase<T>::getAutoGaussianGuess (T& peakGuess,
 
 
 template <class T>
-void MomentCalcBase<T>::getAutoWindow (ImageMoments<T>& iMom,
-                                       Vector<Int>& window,
+void MomentCalcBase<T>::getAutoWindow (Vector<Int>& window,
                                        const Vector<T>& x,
                                        const Vector<T>& y,
                                        const Double peakSNR,
                                        const Double stdDeviation,
                                        const Bool doFit,
-                                       const Bool doPlot,
+                                       PGPlotter& plotter,
                                        const Bool fixedYLimits,                 
                                        const Float yMinAuto,                 
                                        const Float yMaxAuto,                 
@@ -545,7 +542,7 @@ void MomentCalcBase<T>::getAutoWindow (ImageMoments<T>& iMom,
 //
 // Inputs:
 //   x,y        Spectrum
-//   doPlot     Plot spectrum and optionally the  window
+//   plotter    Plot spectrum and optionally the  window
 //   x,yLabel   x label for plots
 //   title 
 // Output:
@@ -555,8 +552,8 @@ void MomentCalcBase<T>::getAutoWindow (ImageMoments<T>& iMom,
 {
    if (doFit) {
       Vector<T> gaussPars(4);
-      if (!getAutoGaussianFit (iMom, gaussPars, x, y, peakSNR, stdDeviation, 
-                               doPlot, fixedYLimits, yMinAuto, yMaxAuto, 
+      if (!getAutoGaussianFit (gaussPars, x, y, peakSNR, stdDeviation, 
+                               plotter, fixedYLimits, yMinAuto, yMaxAuto, 
                                xLabel, yLabel, title)) {
          window = 0;
          return;
@@ -573,8 +570,8 @@ void MomentCalcBase<T>::getAutoWindow (ImageMoments<T>& iMom,
    } else {
 // Invoke Albert's method (see AJ, 86, 1791)
 
-      if (!getBosmaWindow (iMom, window, x, y, peakSNR, stdDeviation, 
-                           doPlot, fixedYLimits, yMinAuto, yMaxAuto, 
+      if (!getBosmaWindow (window, x, y, peakSNR, stdDeviation, 
+                           plotter, fixedYLimits, yMinAuto, yMaxAuto, 
                            xLabel, yLabel, title)) {
          window = 0;
          return;
@@ -583,19 +580,18 @@ void MomentCalcBase<T>::getAutoWindow (ImageMoments<T>& iMom,
    
 // Plot window if desired
  
-   if (doPlot) drawWindow (iMom, window);
+   if (plotter.isAttached()) drawWindow (window, plotter);
                                
 }
 
 
 template <class T>
-Bool MomentCalcBase<T>::getBosmaWindow (ImageMoments<T>& iMom,
-                                        Vector<Int>& window,
+Bool MomentCalcBase<T>::getBosmaWindow (Vector<Int>& window,
                                         const Vector<T>& x,
                                         const Vector<T>& y,
                                         const Double peakSNR,
                                         const Double stdDeviation,
-                                        const Bool doPlot,
+                                        PGPlotter& plotter,
                                         const Bool fixedYLimits,
                                         const Float yMinAuto,
                                         const Float yMaxAuto,
@@ -608,7 +604,7 @@ Bool MomentCalcBase<T>::getBosmaWindow (ImageMoments<T>& iMom,
 //    
 // Inputs: 
 //   x,y       Spectrum
-//   doPlot    Plot device active if True
+//   plotter   Plot device active if True
 //   x,yLabel  Labels for plots
 // Output:
 //   window    The window
@@ -616,13 +612,13 @@ Bool MomentCalcBase<T>::getBosmaWindow (ImageMoments<T>& iMom,
 //
 {
       
-   if (doPlot) {
+   if (plotter.isAttached()) {
    
 // Plot spectrum 
       
-      cpgpage();
-      drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                xLabel, yLabel, title);
+      plotter.page();
+      drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+                xLabel, yLabel, title, plotter);
    }
 
 
@@ -634,9 +630,9 @@ Bool MomentCalcBase<T>::getBosmaWindow (ImageMoments<T>& iMom,
 // Draw on mean and sigma
  
    const T sigma = stdDeviation;
-   if (doPlot) {
-      drawMeanSigma (dMean, sigma);
-      if (noisy1) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
+   if (plotter.isAttached()) {
+      drawMeanSigma (dMean, sigma, plotter);
+      if (noisy1) plotter.mtxt ("T", 1.0, 0.0, 0.0, "NOISE");
    }
    if (noisy1) {
       window = 0;
@@ -711,7 +707,8 @@ Bool MomentCalcBase<T>::getBosmaWindow (ImageMoments<T>& iMom,
 
 template <class T>
 void MomentCalcBase<T>::getButton(Bool& ditch,
-                                  Bool& redo)
+                                  Bool& redo,
+                                  PGPlotter& plotter) 
 //
 // Read the PGPLOT cursor and interpret the button
 // pushed
@@ -719,31 +716,30 @@ void MomentCalcBase<T>::getButton(Bool& ditch,
 {
 // Fish out window
  
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
 
-   float x = (xMin+xMax)/2;
-   float y = (yMin+yMax)/2;
-   char ch;
-   cpgcurs (&x, &y, &ch);
-   
-   String str = ch;
+
+   Float x = (minMax(0)+minMax(1))/2;
+   Float y = (minMax(2)+minMax(3))/2;
+   String str;
+   ImageMoments<T>::readCursor (plotter, x, y, str);
    str.upcase();
    ditch = False;
    redo = False;  
-   if (str == "X")
+   if (str == "X") {
       ditch = True;
-   else if (str == "D")
+   } else if (str == "D") {
       redo = True;
+   }
 
 }
-    
+
 
 
 
 template <class T>
-void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
-                                              Bool& allSubsequent,
+void MomentCalcBase<T>::getInterDirectWindow (Bool& allSubsequent,
                                               LogIO& os,
                                               Vector<Int>& window,
                                               const Vector<T>& x,
@@ -753,9 +749,11 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
                                               const Float yMaxAuto,
                                               const String xLabel,
                                               const String yLabel,
-                                              const String title)
+                                              const String title,
+                                              PGPlotter& plotter) 
+
 //
-// With the cursor, mark the range_p for the window method
+// With the cursor, mark the range for the window method
 //
 // Outputs:
 //  window    The window (pixels)
@@ -764,15 +762,15 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
  
 // First plot the spectrum
    
-   cpgpage();
-   drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-             xLabel, yLabel, title);
+   plotter.page();
+   drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+             xLabel, yLabel, title, plotter);
 
-       
+
 // Try and get a decent range_p from user   
       
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
    Bool more = True;
    Bool ditch, redo;
    const Int nPts = y.nelements();   
@@ -785,7 +783,7 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
       Bool final = False;
       T x1 = nPts/2;
       allSubsequent = True;
-      while (!getLoc(x1, allSubsequent, ditch, redo, os, final)) {};
+      while (!getLoc(x1, allSubsequent, ditch, redo, os, final, plotter)) {};
       if (ditch) {
          window = 0;
          return;
@@ -794,9 +792,9 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
       if (!redo) {
          window(0) = max(0,Int(x1+0.5));
          tX = window(0);
-         tY1 = yMin;
-         tY2 = yMax;
-         drawVertical (iMom, tX, tY1, tY2);
+         tY1 = minMax(2);
+         tY2 = minMax(3);
+         drawVertical (tX, tY1, tY2, plotter);
   
 
 // Get and draw second location
@@ -804,18 +802,18 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
          T x2 = Float(window(0));
          final = True;
          allSubsequent = True;
-         while (!getLoc(x2, allSubsequent, ditch, redo, os, final)) {};
+         while (!getLoc(x2, allSubsequent, ditch, redo, os, final, plotter)) {};
          if (ditch) {
             window = 0;
             return;
          } else if (redo) {
-            cpgeras();
-            drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                      xLabel, yLabel, title);
+            plotter.eras();
+            drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+                      xLabel, yLabel, title, plotter);
          } else {
             window(1) = min(nPts-1,Int(x2+0.5));
             tX = window(1);
-            drawVertical (iMom, tX, tY1, tY2);
+            drawVertical (tX, tY1, tY2, plotter);
          
 // Set window
          
@@ -828,9 +826,9 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
          
             if (window(0) == window(1)) {
                os << LogIO::NORMAL << "Degenerate window, try again" << LogIO::POST;
-               cpgeras();
-               drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                         xLabel, yLabel, title);
+               plotter.eras();
+               drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+                         xLabel, yLabel, title, plotter);
 
             } else
                more = False;
@@ -842,8 +840,7 @@ void MomentCalcBase<T>::getInterDirectWindow (ImageMoments<T>& iMom,
 
 
 template <class T>
-Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
-                                             Vector<T>& gaussPars,
+Bool MomentCalcBase<T>::getInterGaussianFit (Vector<T>& gaussPars,
                                              LogIO& os,
                                              const Vector<T>& x,
                                              const Vector<T>& y,
@@ -852,8 +849,9 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
                                              const Float yMaxAuto,
                                              const String xLabel,
                                              const String yLabel,
-                                             const String title)
-// 
+                                             const String title,
+                                             PGPlotter& plotter)
+//
 // With the cursor, define a guess for a Gaussian fit,
 // and do the fit over and over until they are happy.
 // Then return the Gaussian parameters.
@@ -870,9 +868,9 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
    
 // First draw the spectrum
          
-   cpgpage();
-   drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-             xLabel, yLabel, title);
+   plotter.page();
+   drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+             xLabel, yLabel, title, plotter);
 
 // Get users guess and fit until satisfied
 
@@ -888,8 +886,8 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
 
       T peakGuess, posGuess, widthGuess, levelGuess, level;
       Bool reject;
-      getInterGaussianGuess (iMom, peakGuess, posGuess, widthGuess, window,
-                             reject, os, y.nelements());
+      getInterGaussianGuess (peakGuess, posGuess, widthGuess, window,
+                             reject, os, y.nelements(), plotter);
       if (reject) {
          gaussPars = 0;   
          return False;
@@ -917,7 +915,7 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
        
 // Show fit
 
-         showGaussFit (iMom, peak, pos, width, level, x, y);
+         showGaussFit (peak, pos, width, level, x, y, plotter);
       } else {
          os << LogIO::NORMAL << "Fit did not converge" << LogIO::POST;
       }
@@ -927,7 +925,7 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
 
    
       os << LogIO::NORMAL << "Accept (left),  redo (middle), reject (right)" << LogIO::POST;
-      getButton(ditch, redo);
+      getButton(ditch, redo, plotter);
       if (ditch) {
          os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
          gaussPars = 0;
@@ -936,9 +934,9 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
    
 // Redraw spectrum
                        
-         cpgeras();
-         drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto,
-                   xLabel, yLabel, title);
+         plotter.eras();
+         drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto,
+                   xLabel, yLabel, title, plotter);
       } else {
          
 // OK, set parameters of fit
@@ -957,14 +955,15 @@ Bool MomentCalcBase<T>::getInterGaussianFit (ImageMoments<T>& iMom,
 
 
 template <class T>
-void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
-                                              T& peakGuess,
+void MomentCalcBase<T>::getInterGaussianGuess(T& peakGuess,
                                               T& posGuess,
                                               T& widthGuess,
                                               Vector<Int>& window,
                                               Bool& reject,
                                               LogIO& os,
-                                              const Int nPts)
+                                              const Int nPts,
+                                              PGPlotter& plotter) 
+
 //
 // Use the cursor to get the user's guess for the
 // Gaussian peak, position and width (fwhm)
@@ -974,34 +973,35 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
    os << LogIO::NORMAL << "Mark the location of the peak and position" << endl;
    os << "Press right button to reject spectrum" << LogIO::POST;
 
-   float x1, x2, y1, y2;
-   cpgqwin (&x1, &x2, &y1, &y2);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
     
    
 // Peak/pos first
 
-   char ch;
-   static float x = (x1+x2)/2;
-   static float y = (y1+y2)/2;
+   String str;
+   static Float x = (minMax(0)+minMax(1))/2;
+   static Float y = (minMax(2)+minMax(3))/2;
    Bool miss=True;
    while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
+     ImageMoments<T>::readCursor(plotter, x, y, str);
+     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
      if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
-   String str(ch);    
-   str.upcase();
    reject = False;
+   str.upcase();
    
    if (str == "X") {
      os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
      reject = True;
      return;
    }
-   cpgsci(3);
-   cpgpt (1, &x, &y, 2);
-   cpgupdt ();
-   cpgsci (1);
+   plotter.sci(3);
+   Vector<Float> xData(1), yData(1);
+   xData(0) = x; yData(0) = y;
+   plotter.pt (xData, yData, 2);
+   plotter.updt ();
+   plotter.sci (1);
    posGuess = x;
    peakGuess = y; 
    
@@ -1013,21 +1013,21 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
    os << "Press right button to reject spectrum" << LogIO::POST;
    miss = True;   
    while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
+     ImageMoments<T>::readCursor(plotter, x, y, str);
+     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
      if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
-   str = ch;  
    str.upcase();
    if (str == "X") {
      os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
      reject = True;
    }
-   cpgsci (3);
-   cpgpt (1, &x, &y, 2);
-   cpgsci (1);
+   plotter.sci (3);
+   xData(0) = x; yData(0) = y;
+   plotter.pt (xData, yData, 2);
+   plotter.sci (1);
    y = float(peakGuess)/2;
-   cpgupdt (); 
+   plotter.updt (); 
    widthGuess = 2*abs(posGuess-x);
   
 // Now window
@@ -1038,11 +1038,10 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
    os << "Press middle button to fit the whole spectrum" << LogIO::POST;
    miss=True;
    while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
+     ImageMoments<T>::readCursor(plotter, x, y, str);
+     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
      if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
-   str = ch;   
    str.upcase();
    if (str == "X") {
      os << LogIO::NORMAL << "Rejecting spectrum" << LogIO::POST;
@@ -1055,15 +1054,15 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
      return; 
    }
    T tX = x;
-   T tY1 = y1;
-   T tY2 = y2;
-   drawVertical (iMom, tX, tY1, tY2);
+   T tY1 = minMax(2);
+   T tY2 = minMax(3);
+   drawVertical (tX, tY1, tY2, plotter);
    window(0) = Int(x+0.5);
    
    miss = True;
    while (miss) {
-     cpgcurs (&x, &y, &ch);
-     miss = ToBool(x<x1 || x>x2 || y<y1 || y>y2);
+     ImageMoments<T>::readCursor(plotter, x, y, str);
+     miss = ToBool(x<minMax(0) || x>minMax(1) || y<minMax(2) || y>minMax(3));
      if (miss) os << LogIO::NORMAL << "Cursor off image" << LogIO::POST;
    }
    str.upcase();   
@@ -1078,9 +1077,9 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
      return;
    }
    tX = x;
-   tY1 = y1;
-   tY2 = y2;
-   drawVertical (iMom, tX, tY1, tY2);
+   tY1 = minMax(2);
+   tY2 = minMax(3);
+   drawVertical (tX, tY1, tY2, plotter);
    window(1) = Int(x+0.5);
    Int iTemp = window(0);
    window(0) = min(iTemp, window(1));
@@ -1088,7 +1087,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
    window(0) = max(0,window(0));
    window(1) = min(nPts-1,window(1));
    
-   cpgsci(1);
+   plotter.sci(1);
 //   cout << "Guess:peak,pos,width=" << peakGuess << "," << posGuess
 //        << "," << widthGuess << LogIO::POST;   
 
@@ -1099,8 +1098,7 @@ void MomentCalcBase<T>::getInterGaussianGuess(ImageMoments<T>& iMom,
 
 
 template <class T>
-void MomentCalcBase<T>::getInterWindow(ImageMoments<T>& iMom,
-                                       Bool& allSubsequent, 
+void MomentCalcBase<T>::getInterWindow(Bool& allSubsequent, 
                                        LogIO& os,
                                        Vector<Int>& window,
                                        const Bool doFit,
@@ -1111,7 +1109,8 @@ void MomentCalcBase<T>::getInterWindow(ImageMoments<T>& iMom,
                                        const Float yMaxAuto,
                                        const String xLabel,
                                        const String yLabel,
-                                       const String title)
+                                       const String title,
+                                       PGPlotter& plotter) 
 //
 // Interactively select the moment window by fitting a Gaussian
 // or directly setting the window with the cursor.
@@ -1134,8 +1133,8 @@ void MomentCalcBase<T>::getInterWindow(ImageMoments<T>& iMom,
 // We interactively fit a Gaussian and choose +/- 3 sigma limits as the range
       
       Vector<T> gaussPars(4);
-      if (!getInterGaussianFit (iMom, gaussPars, os, x, y, fixedYLimits, yMinAuto, 
-                                yMaxAuto, xLabel, yLabel, title)) {
+      if (!getInterGaussianFit (gaussPars, os, x, y, fixedYLimits, yMinAuto, 
+                                yMaxAuto, xLabel, yLabel, title, plotter)) {
          window = 0;
          return;
       } else {
@@ -1150,18 +1149,18 @@ void MomentCalcBase<T>::getInterWindow(ImageMoments<T>& iMom,
 
 // Mark window on plot
          
-         cpgeras ();
-         drawLine (iMom, x, y, fixedYLimits, yMinAuto, yMaxAuto, 
-                   xLabel, yLabel, title);
-         drawWindow (iMom, window);
+         plotter.eras ();
+         drawLine (x, y, fixedYLimits, yMinAuto, yMaxAuto, 
+                   xLabel, yLabel, title, plotter);
+         drawWindow (window, plotter);
       }
       allSubsequent = False;
    } else {
 
 // The user just marks the range with the cursor
 
-      getInterDirectWindow (iMom, allSubsequent, os, window, x, y, fixedYLimits, 
-                            yMinAuto, yMaxAuto, xLabel, yLabel, title);
+      getInterDirectWindow (allSubsequent, os, window, x, y, fixedYLimits, 
+                            yMinAuto, yMaxAuto, xLabel, yLabel, title, plotter);
    }
   
    return;
@@ -1175,7 +1174,8 @@ Bool MomentCalcBase<T>::getLoc (T& x,
                                 Bool& ditch,
                                 Bool& redo,
                                 LogIO& os,
-                                const Bool final)
+                                const Bool final,
+                                PGPlotter& plotter) 
 //
 // Read the PGPLOT cursor and return its coordinates if not off the plot
 // Also interpret which button was pressed
@@ -1197,19 +1197,18 @@ Bool MomentCalcBase<T>::getLoc (T& x,
 {
 // Fish out window
       
-   float xMin, xMax, yMin, yMax;
-   cpgqwin (&xMin, &xMax, &yMin, &yMax);
+   Vector<Float> minMax(4);
+   minMax = plotter.qwin();
       
 // Position and read cursor
       
-   float xx = float(x);
-   static float yy = 0.0;
-   char ch;
-   cpgcurs (&xx, &yy, &ch);
+   Float xx = float(x);
+   static Float yy = 0.0;
+   String str;
+   ImageMoments<T>::readCursor(plotter, xx, yy, str);
        
 // Interpret location and character
 
-   String str = ch;
    str.upcase();
    ditch = False;
    redo = False;
@@ -1222,7 +1221,7 @@ Bool MomentCalcBase<T>::getLoc (T& x,
       os << LogIO::NORMAL << "Redoing window for this spectrum" << LogIO::POST;
       redo = True;
    } else {
-      if (xx >= xMin && xx <= xMax) {
+      if (xx >= minMax(0) && xx <= minMax(1)) {
          x = xx;
       } else {
          os << LogIO::NORMAL << "Cursor out of range" << LogIO::POST;
@@ -1553,13 +1552,13 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 
 
 template <class T>
-void MomentCalcBase<T>::showGaussFit(ImageMoments<T>& iMom,
-                                     const T peak,
+void MomentCalcBase<T>::showGaussFit(const T peak,
                                      const T pos,
                                      const T width,
                                      const T level,
                                      const Vector<T>& x,
-                                     const Vector<T>& y)
+                                     const Vector<T>& y,
+                                     PGPlotter& plotter)
 // 
 // Plot the Gaussian fit and residual
 //
@@ -1589,8 +1588,8 @@ void MomentCalcBase<T>::showGaussFit(ImageMoments<T>& iMom,
       xG(i) = xx;
       yG(i) = gauss(xx) + level;
    }
-   cpgsci (7);
-   drawLine (iMom, xG, yG);
+   plotter.sci (7);
+   drawLine (xG, yG, plotter);
 
 
 // Now difference
@@ -1599,9 +1598,9 @@ void MomentCalcBase<T>::showGaussFit(ImageMoments<T>& iMom,
    for (i=0; i<nDPts; i++) {
       d(i) = y(i) - gauss(x(i));
    }
-   cpgsci (2);
-   drawLine (iMom, x, d);
-   cpgsci (1);
+   plotter.sci (2);
+   drawLine (x, d, plotter);
+   plotter.sci (1);
 }
 
 
@@ -1633,9 +1632,9 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
                           ImageMoments<T>& iMom,
                           LogIO& os,
                           const Int nLatticeOut)
-                  : pMaskLattice_p(pMaskLattice),
-                    iMom_p(iMom),
-                    os_p(os)
+: pMaskLattice_p(pMaskLattice),
+  iMom_p(iMom),
+  os_p(os)
 {
 
 // Set moment selection vector
@@ -1682,7 +1681,7 @@ MomentClip<T>::MomentClip(Lattice<T>* pMaskLattice,
 
 // Are we plotting ?
 
-   doPlot_p = ToBool(!device(iMom_p).empty());
+   plotter_p = device(iMom_p);
 
 // What is the axis type of the moment axis
 
@@ -1748,8 +1747,8 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
 
 
 // Plot spectrum if asked
-      
-   if (doPlot_p) {
+   
+   if (plotter_p.isAttached()) {
       makeAbcissa(abcissa_p, pMaskProfile_p->nelements());
       String xLabel;
       if (momAxisType_p.empty()) {
@@ -1761,26 +1760,26 @@ Vector<T>& MomentClip<T>::multiProcess(const Vector<T>& profile,
       String title;
       setPosLabel (title, inPos);
 
-      cpgpage();
-      drawLine (iMom_p, abcissa_p, *pMaskProfile_p, fixedYLimits_p, 
-                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title);
+      plotter_p.page();
+      drawLine (abcissa_p, *pMaskProfile_p, fixedYLimits_p, 
+                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title, plotter_p);
 
 
 // Draw on clip levels and arrows
 
       if (doInclude_p || doExclude_p) {
-         cpgsci (5);
-         drawHorizontal(T(range_p(0)));
-         drawHorizontal(T(range_p(1)));
+         plotter_p.sci (5);
+         drawHorizontal(T(range_p(0)), plotter_p);
+         drawHorizontal(T(range_p(1)), plotter_p);
       
-         float xMin, xMax, yMin, yMax;
-         cpgqwin (&xMin, &xMax, &yMin, &yMax);
-         float x = xMin + 0.05*(xMax-xMin);
-         float y = range_p(1) - 0.2*range_p(1);
-         cpgarro (x, float(range_p(1)), x, y);
+         Vector<Float> minMax(4);
+         minMax = plotter_p.qwin();
+         Float x = minMax(0) + 0.05*(minMax(1)-minMax(0));
+         Float y = range_p(1) - 0.2*range_p(1);
+         plotter_p.arro (x, range_p(1), x, y);
          y = range_p(0) + 0.2*range_p(0);
-         cpgarro (x, y, x, float(range_p(0)));
-         cpgsci(1);
+         plotter_p.arro (x, y, x, range_p(0));
+         plotter_p.sci(1);
       }
    }
 
@@ -1975,9 +1974,9 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
                               ImageMoments<T>& iMom,
                               LogIO& os,
                               const Int nLatticeOut)
-                  : pMaskLattice_p(pMaskLattice),
-                    iMom_p(iMom),
-                    os_p(os)
+: pMaskLattice_p(pMaskLattice),
+  iMom_p(iMom),
+  os_p(os)
 {
 // Set moment selection vector
 
@@ -2019,7 +2018,7 @@ MomentWindow<T>::MomentWindow(Lattice<T>* pMaskLattice,
 
 // Are we plotting ?
 
-   doPlot_p = ToBool(!device(iMom_p).empty());
+   plotter_p = device(iMom_p);
 
 // What is the axis type of the moment axis
    
@@ -2070,7 +2069,7 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
 // Fish out masking image slice if needed.  Stupid slice functions require
 // me to create the slice empty every time so degenerate axes can 
 // be chucked out.  The masking Lattice is only as big as the region that 
-// was requested in ImageMoments, so we have to subtract of the blc in 
+// was requested in ImageMoments, so we have to subtract off the blc in 
 // dealing with positions.
 
 
@@ -2082,7 +2081,7 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
    }
 
 
-// Set up a pointer to the primary or ancillairy profile Vector object
+// Set up a pointer to the primary or ancilliary profile Vector object
 // Also make a pointer that we can use for fast access to the Vector
  
    const T* pProfile = 0;      
@@ -2123,8 +2122,8 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
 // Define the window automatically
 
       Vector<T> gaussPars;
-      getAutoWindow (iMom_p, window,  abcissa_p, *pProfile_p, peakSNR_p, 
-                     stdDeviation_p, doFit_p, doPlot_p, fixedYLimits_p, 
+      getAutoWindow (window,  abcissa_p, *pProfile_p, peakSNR_p, 
+                     stdDeviation_p, doFit_p, plotter_p, fixedYLimits_p, 
                      yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title);
    } else {
 
@@ -2139,14 +2138,14 @@ Vector<T>& MomentWindow<T>::multiProcess(const Vector<T>& profile,
       }
 
       if (!allSubsequent) {
-         getInterWindow (iMom_p, allSubsequent, os_p, window, doFit_p, abcissa_p, 
+         getInterWindow (allSubsequent, os_p, window, doFit_p, abcissa_p, 
                          *pProfile_p, fixedYLimits_p, yMinAuto_p, yMaxAuto_p, 
-                         xLabel, yLabel, title);
+                         xLabel, yLabel, title, plotter_p);
       } else if (nPts != 0) {
-         cpgpage();
-         drawLine (iMom_p, abcissa_p, *pProfile_p, fixedYLimits_p, yMinAuto_p, 
-                   yMaxAuto_p, xLabel, yLabel, title);
-         drawWindow (iMom_p, window);
+         plotter_p.page();
+         drawLine (abcissa_p, *pProfile_p, fixedYLimits_p, yMinAuto_p, 
+                   yMaxAuto_p, xLabel, yLabel, title, plotter_p);
+         drawWindow (window, plotter_p);
       }
    }
    nPts = window(1) - window(0) + 1;
@@ -2250,8 +2249,8 @@ template <class T>
 MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
                         LogIO& os,
                         const Int nLatticeOut)
-                  : iMom_p(iMom),
-                    os_p(os)
+: iMom_p(iMom),
+  os_p(os)
 {
 // Set moment selection vector
 
@@ -2276,7 +2275,7 @@ MomentFit<T>::MomentFit(ImageMoments<T>& iMom,
    costlyMoments(iMom_p, doMedianI_p, doMedianV_p, doAbsDev_p);
 
 // Are we plotting ?
-   doPlot_p = ToBool(!device(iMom_p).empty());
+   plotter_p = device(iMom_p);
 
 // What is the axis type of the moment axis
 
@@ -2347,8 +2346,8 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
 
 // Automatic
 
-      if (!getAutoGaussianFit (iMom_p, gaussPars, abcissa_p, profile, peakSNR_p, 
-                               stdDeviation_p, doPlot_p, fixedYLimits_p,
+      if (!getAutoGaussianFit (gaussPars, abcissa_p, profile, peakSNR_p, 
+                               stdDeviation_p, plotter_p, fixedYLimits_p,
                                yMinAuto_p, yMaxAuto_p, xLabel, yLabel, title)) {
          retMoments_p = 0;   
          return retMoments_p;
@@ -2358,9 +2357,9 @@ Vector<T>& MomentFit<T>::multiProcess(const Vector<T>& profile,
 
 // Interactive
    
-       if (!getInterGaussianFit(iMom_p, gaussPars, os_p, abcissa_p, profile, 
+       if (!getInterGaussianFit(gaussPars, os_p, abcissa_p, profile, 
                                 fixedYLimits_p, yMinAuto_p, yMaxAuto_p,
-                                xLabel, yLabel, title)) {
+                                xLabel, yLabel, title, plotter_p)) {
          retMoments_p = 0;   
          return retMoments_p;
       }

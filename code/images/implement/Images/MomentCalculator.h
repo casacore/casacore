@@ -32,11 +32,11 @@
 #include <aips/aips.h>
 #include <trial/Lattices/LineCollapser.h>
 #include <aips/Functionals/Gaussian1D.h>
+#include <trial/Tasking/PGPlotter.h>
 
 //# Forward Declarations
 template <class T> class Vector;
 template <class T> class ImageMoments;
-
 
 // <summary>
 // Abstract base class for moment calculator classes
@@ -175,8 +175,8 @@ protected:
 // (expensive).  It should only be filled if doCoordCalc_p is True
    Vector<Double> sepWorldCoord_p;
 
-// This Bool tells whether we are going to do some plotting or not
-   Bool doPlot_p;
+// This gives the plotter name.  If no plotting, it won't be attached
+   PGPlotter plotter_p;
 
 // This Bool tells us whether we want to see all profiles plotted with the 
 // Y range or whether they are to be scaled individually
@@ -233,8 +233,8 @@ protected:
                       Bool& doMedianV,
                       Bool& doAbsDev);
 
-// Return plotting device name from ImageMoments object
-   String& device(ImageMoments<T>& iMom);
+// Return plotting device from ImageMoments object
+   PGPlotter& device(ImageMoments<T>& iMom);
 
 // Return automatic/interactive switch from the ImageMoments object
    Bool& doAuto(ImageMoments<T>& iMom);
@@ -248,37 +248,40 @@ protected:
    Bool& doFit(ImageMoments<T>& iMom);
 
 // Draw a horizontal line across the full x range of the plot
-   void drawHorizontal(const T& y);
+   void drawHorizontal(const T& y,
+                       PGPlotter& plotter);
 
 // Draw a spectrum on the current panel with the box already drawn on
-   void drawLine (ImageMoments<T>& iMom,
-                  const Vector<T>& x,
-                  const Vector<T>& y);
+   void drawLine (const Vector<T>& x,
+                  const Vector<T>& y,
+                  PGPlotter& plotter);
 
 // Draw and label a spectrum on the current panel
-   void drawLine (ImageMoments<T>& iMom,
-                  const Vector<T>& x,
+   void drawLine (const Vector<T>& x,
                   const Vector<T>& y,
                   const Bool fixedYLimits,
                   const Float yMinAuto,
                   const Float yMaxAuto,
                   const String xLabel, 
                   const String yLabel, 
-                  const String title);
+                  const String title,
+                  PGPlotter& plotter);
 
 // Draw on lines marking the mean and +/- sigma
    void drawMeanSigma  (const T dMean,
-                        const T dSigma);
+                        const T dSigma,
+                        PGPlotter& plotter);
+
 
 // Draw a vertical line of the given length at a given abcissa
-   void drawVertical(ImageMoments<T>& iMom,
-                     const T x,
+   void drawVertical(const T x,
                      const T yMin,
-                     const T yMax);
+                     const T yMax,
+                     PGPlotter& plotter);
 
 // Draw two vertical lines marking a spectral window
-   void drawWindow(ImageMoments<T>& iMom,
-                   const Vector<Int>& window);
+   void drawWindow(const Vector<Int>& window,
+                   PGPlotter& plotter);
 
 // Fit a Gaussian to x and y arrays given guesses for the gaussian parameters
    Bool fitGaussian (T& peak,
@@ -298,13 +301,12 @@ protected:
 
 // Automatically fit a Gaussian to a spectrum, including finding the
 // starting guesses.
-   Bool getAutoGaussianFit(ImageMoments<T>& iMom,
-                           Vector<T>& gaussPars,
+   Bool getAutoGaussianFit(Vector<T>& gaussPars,
                            const Vector<T>& x,
                            const Vector<T>& y,
                            const Double peakSNR,
                            const Double stdDeviation,
-                           const Bool doPlot, 
+                           PGPlotter& plotter,
                            const Bool fixedYLimits,
                            const Float yMinAuto,
                            const Float yMaxAuto,
@@ -320,14 +322,13 @@ protected:
                              const Vector<T>& y);
 
 // Automatically determine the spectral window
-   void getAutoWindow(ImageMoments<T>& iMom,
-                      Vector<Int>& window,
+   void getAutoWindow(Vector<Int>& window,
                       const Vector<T>& x,
                       const Vector<T>& y,
                       const Double peakSNR,
                       const Double stdDeviation,
                       const Bool doFit,
-                      const Bool doPlot,
+                      PGPlotter& plotter,
                       const Bool fixedYLimits,                 
                       const Float yMinAuto,                 
                       const Float yMaxAuto,                 
@@ -336,13 +337,12 @@ protected:
                       const String title);
 
 // Automatically determine the spectral window via Bosma's algorithm
-   Bool getBosmaWindow (ImageMoments<T>& iMom,
-                        Vector<Int>& window,
+   Bool getBosmaWindow (Vector<Int>& window,
                         const Vector<T>& x,
                         const Vector<T>& y,
                         const Double peakSNR,
                         const Double stdDeviation,
-                        const Bool doPlot,
+                        PGPlotter& plotter,
                         const Bool fixedYLimits,
                         const Float yMinAuto,
                         const Float yMaxAuto,
@@ -352,11 +352,12 @@ protected:
 
 // Read the cursor button
    void getButton(Bool& reject,
-                  Bool& redo);
+                  Bool& redo,
+                  PGPlotter& plotter);
+
 
 // Interactively specify the spectral window with the cursor
-   void getInterDirectWindow(ImageMoments<T>& iMom,
-                             Bool& allSubsequent,
+   void getInterDirectWindow(Bool& allSubsequent,
                              LogIO& os,
                              Vector<Int>& window,
                              const Vector<T>& x,
@@ -366,12 +367,12 @@ protected:
                              const Float yMaxAuto,
                              const String xLabel,
                              const String yLabel,
-                             const String title);
+                             const String title,
+                             PGPlotter& plotter);
 
 // Interactively define a guess for a Gaussian fit, and then
 // do the fit.  Do this repeatedly  until the user is content.
-   Bool getInterGaussianFit(ImageMoments<T>& iMom,
-                            Vector<T>& gaussPars,
+   Bool getInterGaussianFit(Vector<T>& gaussPars,
                             LogIO& os,
                             const Vector<T>& x,
                             const Vector<T>& y,  
@@ -380,22 +381,21 @@ protected:
                             const Float yMaxAuto,
                             const String xLabel,
                             const String yLabel,
-                            const String title);
-
+                            const String title,
+                            PGPlotter& plotter);
 
 // Interactively define a guess for the Gaussian parameters
-   void getInterGaussianGuess(ImageMoments<T>& iMom,
-                              T& peakGuess,
+   void getInterGaussianGuess(T& peakGuess,
                               T& posGuess,
                               T& widthGuess,
                               Vector<Int>& window,
                               Bool& reject,
                               LogIO& os,
-                              const Int nPts);
+                              const Int nPts,
+                              PGPlotter& plotter);
 
 // Interactively define the spectral window
-   void getInterWindow (ImageMoments<T>& iMom,
-                        Bool& allSubsequent,
+   void getInterWindow (Bool& allSubsequent,
                         LogIO& os,
                         Vector<Int>& window,
                         const Bool doFit,
@@ -406,7 +406,8 @@ protected:
                         const Float yMaxAuto,
                         const String xLabel,
                         const String yLabel,
-                        const String title);
+                        const String title,
+                        PGPlotter& plotter);
 
 // Read the cursor and return its coordinates if not off the plot.
 // Also interpret which button was pressed
@@ -415,7 +416,8 @@ protected:
                Bool& ditch,
                Bool& redo,
                LogIO& os,
-               const Bool final);  
+               const Bool final,
+               PGPlotter& plotter);
                         
 // Compute the world coordinate for the given moment axis pixel   
    Double getMomentCoord(ImageMoments<T>& iMom,
@@ -492,13 +494,13 @@ protected:
                      LogIO& os);
 
 // Plot the Gaussian fit
-   void showGaussFit(ImageMoments<T>& iMom,
-                     const T peak,
+   void showGaussFit(const T peak,
                      const T pos,    
                      const T width,
                      const T level,
                      const Vector<T>& x,
-                     const Vector<T>& y);  
+                     const Vector<T>& y,
+                     PGPlotter& plotter);
 
 // Return standard deviation of image from ImageMoments object
    Double& stdDeviation(ImageMoments<T>& iMom);
