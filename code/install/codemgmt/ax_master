@@ -2335,3 +2335,4 @@
 11 199 src mv trial/implement/Display/WCMotionEH.h trial/implement/DisplayEvents/WCMotionEH.h
 11 199 src mv trial/implement/Display/WCMotionEvent.cc trial/implement/DisplayEvents/WCMotionEvent.cc
 11 199 src mv trial/implement/Display/WCMotionEvent.h trial/implement/DisplayEvents/WCMotionEvent.h
+11 199 src mv trial/implement/Display/WCPositionEH.cc trial/implement/DisplayEvents/WCPositionEH.cc
