@@ -1,5 +1,5 @@
 //# DirectionCoordinate.cc: this defines the DirectionCoordinate class
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,7 +109,6 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                              xform, refX, refY, longPole, latPole);
     setDefaultWorldMixRanges();
     setRotationMatrix();
-    makeConversionMachines();
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -180,7 +179,6 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                             dLongPole, dLatPole);
    setDefaultWorldMixRanges();
    setRotationMatrix();
-   makeConversionMachines();
 }
 
 
@@ -209,8 +207,6 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
     copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
                            c_crval_p, other.celprm_p, other.prjprm_p,
                            other.wcs_p, other.c_ctype_p, other.c_crval_p);
-//
-    makeConversionMachines();
 }
 
 
@@ -238,8 +234,14 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
 	to_radians_p = other.to_radians_p.copy();
         rot_p = other.rot_p;
 //
-        if (pConversionMachineTo_p) delete pConversionMachineTo_p;
-        if (pConversionMachineFrom_p) delete pConversionMachineFrom_p;
+        if (pConversionMachineTo_p) {
+           delete pConversionMachineTo_p;
+           pConversionMachineTo_p = 0;
+        }
+        if (pConversionMachineFrom_p) {
+           delete pConversionMachineFrom_p;
+           pConversionMachineFrom_p = 0;
+        }
         makeConversionMachines();
 //
         canDoToMix_p = other.canDoToMix_p;
@@ -290,12 +292,23 @@ uInt DirectionCoordinate::nWorldAxes() const
     return 2;
 }
 
-void DirectionCoordinate::setConversionDirectionType (MDirection::Types directionType)
+void DirectionCoordinate::setConversion (MDirection::Types directionType)
+//
+// The type_p and conversionType_p are initialized to be the
+// same unless this function is called.  The machines are not
+// made or invoked unless the types are different.
+//
 {
    conversionType_p = directionType;
 //
-   if (pConversionMachineTo_p) delete pConversionMachineTo_p;
-   if (pConversionMachineFrom_p) delete pConversionMachineFrom_p;
+   if (pConversionMachineTo_p) {
+      delete pConversionMachineTo_p;      
+      pConversionMachineTo_p = 0;
+   }
+   if (pConversionMachineFrom_p) {
+      delete pConversionMachineFrom_p;
+      pConversionMachineFrom_p = 0;
+   }
 //
    makeConversionMachines();
 }
@@ -1395,7 +1408,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
        MDirection::Types cSystem;
        Bool ok = MDirection::getType(cSystem, conversionSystem);
        if (ok) {
-          retval->setConversionDirectionType(cSystem);
+          retval->setConversion(cSystem);
        }
     }
 //
@@ -1954,17 +1967,23 @@ void DirectionCoordinate::setRotationMatrix ()
 
 void DirectionCoordinate::makeConversionMachines ()
 {
-   MDirection::Ref oldType(type_p);
-   MDirection::Ref newType(conversionType_p);
-   pConversionMachineTo_p   = new MDirection::Convert(oldType, newType);
-   pConversionMachineFrom_p = new MDirection::Convert(newType, oldType);
+   if (type_p != conversionType_p) {
+      MDirection::Ref oldType(type_p);
+      MDirection::Ref newType(conversionType_p);
+      pConversionMachineTo_p   = new MDirection::Convert(oldType, newType);
+      pConversionMachineFrom_p = new MDirection::Convert(newType, oldType);
+   }
 }
 
 
 void DirectionCoordinate::convertTo (Vector<Double>& world) const
 {
    static MVDirection inMV;
-   if (type_p != conversionType_p) {
+
+// I can't set the machine to operate in the native units because
+// the user can set them differently for lon and lat
+
+   if (pConversionMachineTo_p) {
       inMV.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
       world  = (*pConversionMachineTo_p)(inMV).getValue().get() / to_radians_p;
    }
@@ -1973,7 +1992,11 @@ void DirectionCoordinate::convertTo (Vector<Double>& world) const
 void DirectionCoordinate::convertFrom (Vector<Double>& world) const
 {
    static MVDirection inMV;
-   if (type_p != conversionType_p) {
+
+// I can't set the machine to operate in the native units because
+// the user can set them differently for lon and lat
+
+   if (pConversionMachineFrom_p) {
       inMV.setAngle(world[0]*to_radians_p[0], world[1]*to_radians_p[1]);
       world = (*pConversionMachineFrom_p)(inMV).getValue().get() / to_radians_p;
    }
