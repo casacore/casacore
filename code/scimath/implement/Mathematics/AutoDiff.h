@@ -1,5 +1,5 @@
 //# AutoDiff.h: An automatic differentiating class for functions
-//# Copyright (C) 1995,1998,1999,2001
+//# Copyright (C) 1995,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,16 +130,17 @@ template <class T> class AutoDiff;
 // </srcblock>
 // In actual practice, there are a few rules to obey for the structure of
 // the function object if you want to use the function object and its
-// derivatives in non-linear least squares fitting procedures in the Fitting
+// derivatives in least squares fitting procedures in the Fitting
 // module. The major one is to view the function object having 'fixed' and
 // 'variable' parameters. I.e., rather than viewing the function as
 // depending on parameters <em>a, b, x</em> (<src>f(a,b,x)</src>), the 
 // function is considered to be <src>f(x; a,b)</src>, where <em>a, b</em> 
 // are 'fixed' parameters, and <em>x</em> a variable parameter.
 // Fixed parameters should be contained in a 
-// <linkto class=Parameterized>Parameterized</linkto> container object;
+// <linkto class=FunctionParam>FunctionParam</linkto> container object;
 // while the variable parameter(s) are given in the function
-// <src>operator()</src>.
+// <src>operator()</src>. See <linkto class=Function>Function</linkto> class
+// for details.
 //
 // A Gaussian spectral profile would in general have the center frequency,
 // the width and the amplitude as fixed parameters, and the frequency as
@@ -243,7 +244,7 @@ template <class T> class AutoDiff;
 // </example>
 //
 // <motivation>
-// The creation of the class was motivated by least-squares nonlinear fit where
+// The creation of the class was motivated by least-squares non-linear fit where
 // partial derivatives of a fitted function are needed. It would be tedious
 // to create functionals for all partial derivatives of a function.
 // </motivation>
