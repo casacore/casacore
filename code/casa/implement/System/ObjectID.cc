@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,8 @@
 
 #include <strstream.h>
 #include <iostream.h>
+#include <stdio.h>                  // needed for sprintf
+
 
 ObjectID::ObjectID(Bool makeNull)
   : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostname_p("")
@@ -142,7 +144,8 @@ Bool ObjectID::fromString(String &error, const String &in)
 
     // Allow for extra fields.
     String parsed[8]; // keyword=value for each String
-    Int found = split(in, parsed, sizeof(parsed)/sizeof(String), RXwhite);
+    Int found = split(in, parsed, sizeof(parsed)/sizeof(String),
+		      Regex("[ \t,]+"));
     if (found <= 0) {
 	error = String("Could not parse string: ") + in;
 	return False;
@@ -212,4 +215,39 @@ ostream &operator<<(ostream &os, const ObjectID &id)
     id.toString(tmp);
     cout << "[" << tmp << "]";
     return os;
+}
+
+
+String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
+			     const String& command)
+{
+    objectIDs.resize (0, True, True);
+    String error;
+    String result;
+    String str = command;
+    // Extract object-id from the command, convert it to an
+    // ObjectID in the block, and put its index into the command.
+    Int index = str.index ("'ObjectID=[");
+    while (index >= 0) {
+        result += str.before(index);
+	index += 11;
+	Int pos = str.index ("]'", index);
+	ObjectID oid;
+	// Convert to ObjectID.
+	// If not succesfull, put original back.
+	if (! oid.fromString (error, str(index, pos-index))) {
+	    result += str(index-11, pos-index+13);
+	} else {
+	    uInt n = objectIDs.nelements() + 1;
+	    objectIDs.resize (n);
+	    objectIDs[n-1] = oid;
+	    char buf[8];
+	    sprintf (buf, "$%i", n);
+	    result += buf;
+	    str = str.after(pos+1);
+	}
+	index = str.index ("'ObjectID=[");
+    }
+    result += str;
+    return result;
 }
