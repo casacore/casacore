@@ -36,10 +36,10 @@ FuncExprData::FuncExprData() :
   una2_p(), una1_p(), bin2_p(), bin1_p(),
   spop_p(), func_p() {
   static const ExprOperator olist[] = {
-    {UNAMIN, 	"-",		UNA1,	RTLPRI+4, 	1, 0, 0, 0, NONE},
-    {UNAPLUS, 	"+",	   	UNA1,	RTLPRI+4, 	1, 0, 0, 0, NONE},
+    {UNAMIN, 	"-",		UNA1,	RTLPRI, 	1, 0, 0, 0, NONE},
+    {UNAPLUS, 	"+",	   	UNA1,	RTLPRI, 	1, 0, 0, 0, NONE},
     {NON, 	"!",		UNA1,	28, 		1, 0, 0, 0, NONE},
-    {POW, 	"**",		BIN2,	RTLPRI,		2, 0, 1, 0, NONE},
+    {POW, 	"**",		BIN2,	RTLPRI+4,      	2, 0, 1, 0, NONE},
     {GTE, 	">=",		BIN2,	32,		2, 0, 1, 0, NONE},
     {LTE, 	"<=",		BIN2,	32, 		2, 0, 1, 0, NONE},
     {EQ, 	"==",		BIN2,	32, 		2, 0, 1, 0, NONE},
@@ -50,7 +50,7 @@ FuncExprData::FuncExprData() :
     {SUB, 	"-",		BIN1,	36, 		2, 0, 1, 0, NONE},
     {MUL, 	"*",		BIN1,	40, 		2, 0, 1, 0, NONE},
     {DIV, 	"/",		BIN1,	40, 		2, 0, 1, 0, NONE},
-    {POW, 	"^",		BIN1,	RTLPRI, 	2, 0, 1, 0, NONE},
+    {POW, 	"^",		BIN1,	RTLPRI+4, 	2, 0, 1, 0, NONE},
     {GT, 	">",		BIN1,	32, 		2, 0, 1, 0, NONE},
     {LT, 	"<",		BIN1,	32, 		2, 0, 1, 0, NONE},
     {CONDEX,	"?",		BIN1,	16,		2, 0, 1, 0, SAVENV},
