@@ -63,7 +63,8 @@ template<class T>
 void ScalarColumnData<T>::createDataManagerColumn()
 {
     dataColPtr_p = dataManPtr_p->createScalarColumn
-	            (originalName_p, colDescPtr_p->dataType(),
+	            (colDescPtr_p->name(),
+		     colDescPtr_p->dataType(),
 		     colDescPtr_p->dataTypeId());
     //# Set the maximum length of an item.
     dataColPtr_p->setMaxLength (colDescPtr_p->maxLength());
@@ -313,4 +314,3 @@ void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
 }
 
 } //# NAMESPACE CASA - END
-

@@ -67,11 +67,13 @@ void ArrayColumnData<T>::createDataManagerColumn()
     if ((colDescPtr_p->options() & ColumnDesc::Direct)
 	                                   == ColumnDesc::Direct) {
 	dataColPtr_p = dataManPtr_p->createDirArrColumn
-	                      (originalName_p, colDescPtr_p->dataType(),
+	                      (colDescPtr_p->name(),
+			       colDescPtr_p->dataType(),
 			       colDescPtr_p->dataTypeId());
     }else{
 	dataColPtr_p = dataManPtr_p->createIndArrColumn
-	                      (originalName_p, colDescPtr_p->dataType(),
+	                      (colDescPtr_p->name(),
+			       colDescPtr_p->dataType(),
 			       colDescPtr_p->dataTypeId());
     }
     //# Check if the shape is defined in case fixed.
@@ -358,4 +360,3 @@ void ArrayColumnData<T>::getFileDerived (AipsIO& ios,
 }
 
 } //# NAMESPACE CASA - END
-

@@ -59,7 +59,7 @@ void ScalarRecordColumnData::createDataManagerColumn()
     // The records are stored as an array.
     // Because their lengths can vary, it has to be indirect.
     dataColPtr_p = dataManPtr_p->createIndArrColumn
-	                        (originalName_p, TpUChar, "");
+                                (colDescPtr_p->name(), TpUChar, "");
 }
 
 
@@ -266,4 +266,3 @@ void ScalarRecordColumnData::getFileDerived (AipsIO& ios,
 }
 
 } //# NAMESPACE CASA - END
-
