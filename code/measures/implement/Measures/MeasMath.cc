@@ -441,6 +441,115 @@ void MeasMath::deapplyGALtoSUPERGAL(MVPosition &in) {
   in *= MeasTable::galToSupergal();
 }
 
+void MeasMath::applyTOPOtoHADEC(MVPosition &in) {
+  getInfo(LASTR);
+  getInfo(TDB);
+  getInfo(RADIUS);
+  getInfo(LAT);
+  g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
+  MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
+  MVPOS3.readjust(g2);
+  in += MVPOS3;
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR];
+  ROTMAT1 = RotMatrix(EULER1);
+  in *= ROTMAT1;
+  in(1) = -in(1);
+  in.adjust();
+}
+
+void MeasMath::deapplyTOPOtoHADEC(MVPosition &in) {
+  getInfo(LASTR);
+  getInfo(TDB);
+  getInfo(RADIUS);
+  getInfo(LAT);
+  g2 = MeasTable::diurnalAber(info_p[RADIUS], info_p[TDB]);
+  MVPOS3 = MVDirection(info_p[LASTR], info_p[LAT]);
+  MVPOS3.readjust(g2);
+  in(1) = -in(1);
+  EULER1 = MeasTable::polarMotion(info_p[TDB]);
+  EULER1(2) = info_p[LASTR];
+  ROTMAT1 = RotMatrix(EULER1);
+  in = ROTMAT1 * in;
+  in -= MVPOS3;
+  in.adjust();
+}
+
+void MeasMath::applyAZELtoAZELSW(MVPosition &in) {
+  in(0) = -in(0);
+  in(1) = -in(1);
+}
+
+void MeasMath::applyECLIPtoJ2000(MVPosition &in) {
+  ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
+  in = ROTMAT1 * in;
+}
+
+void MeasMath::deapplyECLIPtoJ2000(MVPosition &in) {
+  ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
+  in *= ROTMAT1;
+}
+
+void MeasMath::applyMECLIPtoJMEAN(MVPosition &in) {
+  getInfo(TDB);
+  ROTMAT1 = 
+    RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+					   MeasData::MJD2000)/
+					  MeasData::JDCEN), 1, 0, 0));
+  in = ROTMAT1 * in;
+}
+
+void MeasMath::deapplyMECLIPtoJMEAN(MVPosition &in) {
+  getInfo(TDB);
+  ROTMAT1 = 
+    RotMatrix(Euler(MeasTable::fundArg(0)((info_p[TDB] - 
+					   MeasData::MJD2000)/
+					  MeasData::JDCEN), 1, 0, 0));
+  in *= ROTMAT1;
+}
+
+void MeasMath::applyTECLIPtoJTRUE(MVPosition &in) {
+  getInfo(TDB);
+  ROTMAT1 = 
+    RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2), 1, 0, 0));
+  in = ROTMAT1 * in;
+}
+
+void MeasMath::deapplyTECLIPtoJTRUE(MVPosition &in) {
+  getInfo(TDB);
+  ROTMAT1 = 
+    RotMatrix(Euler(-Nutation(Nutation::STANDARD)(info_p[TDB])(2), 1, 0, 0));
+  in *= ROTMAT1;
+}
+
+void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len) {
+  if (len != 0) {
+    getInfo(LASTR);
+    getInfo(LONG);
+    getInfo(LAT);
+    getInfo(RADIUS);
+    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], (uInt) 3));
+    MVPOS1 = MVPosition(Quantity(info_p[RADIUS], "m"),
+			info_p[LONG], info_p[LAT]);
+    in -= (ROTMAT1 * MVPOS1) * (1.0/len);
+    in.adjust();
+  };
+}
+
+void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len) {
+  if (len != 0) {
+    getInfo(LASTR);
+    getInfo(LONG);
+    getInfo(LAT);
+    getInfo(RADIUS);
+    ROTMAT1 = RotMatrix(Euler(info_p[LASTR] - info_p[LONG], (uInt) 3));
+    MVPOS1 = MVPosition(Quantity(info_p[RADIUS], "m"),
+			info_p[LONG], info_p[LAT]);
+    in += (ROTMAT1 * MVPOS1) * (1.0/len);
+    in.adjust();
+  };
+}
+
 // general support
 void MeasMath::getInfo(FrameInfo i) {
   // Frame information groups

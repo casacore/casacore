@@ -33,8 +33,6 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MCFrame.h>
-#include <aips/Quanta/RotMatrix.h>
-#include <aips/Quanta/Euler.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
@@ -84,8 +82,6 @@ uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
 
 //# Constructors
 MCDirection::MCDirection() :
-  ROTMAT1(0),
-  EULER1(0),
   MVPOS1(0), MVPOS2(0), MVPOS3(0),
   VEC61(0), VEC62(0), VEC63(0), measMath() {
   if (!stateMade_p) {
@@ -139,8 +135,6 @@ void MCDirection::getConvert(MConvertBase &mc,
 }
 
 void MCDirection::clearConvert() {
-  delete ROTMAT1;    ROTMAT1 = 0;
-  delete EULER1;     EULER1 = 0;
   delete MVPOS1;     MVPOS1 = 0;
   delete MVPOS2;     MVPOS2 = 0;
   delete MVPOS3;     MVPOS3 = 0;
@@ -153,11 +147,9 @@ void MCDirection::clearConvert() {
 void MCDirection::initConvert(uInt which, MConvertBase &mc) {
 
   if (False) initConvert(which, mc);	// Stop warning
-  if (!ROTMAT1) ROTMAT1 = new RotMatrix();
   if (!MVPOS1)  MVPOS1 = new MVPosition();
   if (!MVPOS2)  MVPOS2 = new MVPosition();
   if (!MVPOS3)  MVPOS3 = new MVPosition();
-  if (!EULER1)  EULER1 = new Euler();
   if (!VEC61)   VEC61 = new Vector<Double>(6);
   if (!VEC62)   VEC62 = new Vector<Double>(6);
   if (!VEC63)   VEC63 = new Vector<Double>(6);
@@ -345,30 +337,8 @@ void MCDirection::doConvert(MVDirection &in,
       measMath.deapplyPrecNutatB1950(in);
       break;
     
-    case TOPO_HADEC: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getLASTr(g1);
-      ((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
-	getRadius(lengthE);
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      ((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
-	getLat(g3);
-      g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS3 = MVDirection(g1, g3);
-      MVPOS3->readjust(g2);
-      in += *MVPOS3;
-      *EULER1 = MeasTable::polarMotion(tdbTime);
-      EULER1->operator()(2) = g1;
-      *ROTMAT1 = RotMatrix(*EULER1);
-      in *= *ROTMAT1;
-      in(1) = -in(1);
-      in.adjust();
-    }
+    case TOPO_HADEC: 
+      measMath.applyTOPOtoHADEC(in);
     break;
     
     case HADEC_AZEL:
@@ -379,133 +349,47 @@ void MCDirection::doConvert(MVDirection &in,
       measMath.deapplyHADECtoAZEL(in);
     break;
     
-    case HADEC_TOPO: {
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getLASTr(g1);
-      ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getRadius(lengthE);
-      ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		   getMCFramePoint()))->
-	getTDB(tdbTime);
-      ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getLat(g3);
-      g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS3 = MVDirection(g1, g3);
-      MVPOS3->readjust(g2);
-      in(1) = -in(1);
-      *EULER1 = MeasTable::polarMotion(tdbTime);
-      EULER1->operator()(2) = g1;
-      *ROTMAT1 = RotMatrix(*EULER1);
-      in = *ROTMAT1 * in;
-      in -= *MVPOS3;
-      in.adjust();
-    }
+    case HADEC_TOPO: 
+      measMath.deapplyTOPOtoHADEC(in);
     break;
     
-    case APP_TOPO: {
-      if (lengthP != 0) {
-	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		     getMCFramePoint()))->
-	  getLASTr(g1);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLong(g3);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLat(g2);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getRadius(lengthE);
-	*ROTMAT1 = RotMatrix(Euler(g1-g3, (uInt) 3));
-	*MVPOS1 = MVPosition(Quantity(lengthE, "m"), g3, g2);
-	in -= (*ROTMAT1 * *MVPOS1) * (1.0/lengthP);
-	in.adjust();
-      };
-    }
-    break;
+    case APP_TOPO: 
+      measMath.applyAPPtoTOPO(in, lengthP);
+      break;
     
     case R_COMET:
       if (comID == MDirection::APP) break;
-    case TOPO_APP: {
-      if (lengthP != 0) {
-	((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
-		     getMCFramePoint()))->
-	  getLASTr(g1);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLong(g3);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getLat(g2);
-	((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		     getMCFramePoint()))->
-	  getRadius(lengthE);
-	*ROTMAT1 = RotMatrix(Euler(g1-g3, (uInt) 3));
-	*MVPOS1 = MVPosition(Quantity(lengthE, "m"), g3, g2);
-	in += (*ROTMAT1 * *MVPOS1) * (1.0/lengthP);
-	in.adjust();
-      };
-    }
-    break;
+    case TOPO_APP: 
+      measMath.deapplyAPPtoTOPO(in, lengthP);
+      break;
 
     case AZEL_AZELSW: 
-    case AZELSW_AZEL: {
-      in(0) = -in(0);
-      in(1) = -in(1);
-    }
-    break;
+    case AZELSW_AZEL: 
+      measMath.applyAZELtoAZELSW(in);
+      break;
 
     case ECLIP_J2000:
-      *ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
-      in = *ROTMAT1 * in;
+      measMath.applyECLIPtoJ2000(in);
       break;
 
     case J2000_ECLIP:
-      *ROTMAT1 = RotMatrix(Euler(MeasTable::fundArg(0)(0), 1, 0, 0));
-      in *= *ROTMAT1;
+      measMath.deapplyECLIPtoJ2000(in);
       break;
 
     case MECLIP_JMEAN:
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-                   getMCFramePoint()))->
-        getTDB(tdbTime);
-      *ROTMAT1 = 
-	RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime - 
-					       MeasData::MJD2000)/
-					      MeasData::JDCEN), 1, 0, 0));
-      in = *ROTMAT1 * in;
+      measMath.applyMECLIPtoJMEAN(in);
       break;
 
     case JMEAN_MECLIP:
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-                   getMCFramePoint()))->
-        getTDB(tdbTime);
-      *ROTMAT1 =
-        RotMatrix(Euler(MeasTable::fundArg(0)((tdbTime -
-                                               MeasData::MJD2000)/
-                                              MeasData::JDCEN), 1, 0, 0));
-      in *= *ROTMAT1;
+      measMath.deapplyMECLIPtoJMEAN(in);
       break;
 
     case TECLIP_JTRUE:
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-                   getMCFramePoint()))->
-        getTDB(tdbTime);
-      *ROTMAT1 = 
-	RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
-      in = *ROTMAT1 * in;
-      break;
+      measMath.applyTECLIPtoJTRUE(in);
+     break;
 
     case JTRUE_TECLIP:
-      ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
-                   getMCFramePoint()))->
-        getTDB(tdbTime);
-      *ROTMAT1 =
-        RotMatrix(Euler(-Nutation(Nutation::STANDARD)(tdbTime)(2), 1, 0, 0));
-      in *= *ROTMAT1;
+      measMath.deapplyTECLIPtoJTRUE(in);
       break;
 
     case GAL_SUPERGAL:

@@ -40,8 +40,6 @@
 
 //# Forward Declarations
 class MCDirection;
-class Euler;
-class RotMatrix;
 class String;
 template <class T> class Vector;
 
@@ -172,8 +170,6 @@ private:
   //# Enumerations
   
   //# Cached Data
-  RotMatrix *ROTMAT1;
-  Euler *EULER1;
   MVPosition *MVPOS1, *MVPOS2, *MVPOS3;
   Vector<Double> *VEC61, *VEC62, *VEC63;
   MeasMath measMath;

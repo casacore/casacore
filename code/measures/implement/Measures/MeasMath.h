@@ -31,6 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Quanta/Euler.h>
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Measures/MeasFrame.h>
@@ -173,6 +174,17 @@ public:
   void deapplyGALtoB1950(MVPosition &in);
   void applyGALtoSUPERGAL(MVPosition &in);
   void deapplyGALtoSUPERGAL(MVPosition &in);
+  void applyTOPOtoHADEC(MVPosition &in);
+  void deapplyTOPOtoHADEC(MVPosition &in);
+  void applyAZELtoAZELSW(MVPosition &in);
+  void applyECLIPtoJ2000(MVPosition &in);
+  void deapplyECLIPtoJ2000(MVPosition &in);
+  void applyMECLIPtoJMEAN(MVPosition &in);
+  void deapplyMECLIPtoJMEAN(MVPosition &in);
+  void applyTECLIPtoJTRUE(MVPosition &in);
+  void deapplyTECLIPtoJTRUE(MVPosition &in);
+  void applyAPPtoTOPO(MVPosition &in, const Double len);
+  void deapplyAPPtoTOPO(MVPosition &in, const Double len);
   // </group>
   // </group>
 
@@ -222,6 +234,7 @@ private:
   // </group>
   // Workspace
   // <group>
+  Euler EULER1;
   RotMatrix ROTMAT1;
   MVPosition MVPOS1, MVPOS2, MVPOS3;
   Double g1, g2, g3, lengthE;
