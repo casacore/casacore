@@ -1092,6 +1092,27 @@ EOT
      done
   }
 
+#------------------------------------------------------------------------------
+# Set up Glish keys
+#------------------------------------------------------------------------------
+  echo ""
+  echo ""
+  echo "Create directories for Glish keys"
+  echo "---------------------------------"
+  
+  for DIR in keys keys/users keys/hosts
+  do
+    if [ ! -d $AIPSROOT/$DIR ]
+    then
+      mkdir $AIPSROOT/$DIR
+      echo "Created $AIPSROOT/$DIR"
+      chmod a+w $AIPSROOT/$DIR
+    fi
+  done
+  chmod g-w $AIPSROOT/keys/hosts
+  chmod o-w $AIPSROOT/keys/hosts
+  chmod a+w $AIPSROOT/keys/users
+
 # Reset vital parameters.
   set $AIPSPATH
   HOST=$1 ; shift
