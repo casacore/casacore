@@ -36,7 +36,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
-main() {
+Int main() {
   try {
     cout << "Test QuantumHolder  " << endl;
     cout << "----------------------------------------------------" << endl;
@@ -52,7 +52,7 @@ main() {
     cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00() << endl;
+	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -61,7 +61,7 @@ main() {
     };
     if (QuantumHolder(x00).toRecord(error, z00)) {
       if (q00.fromRecord(error, z00)) {
-	cout <<"Glish output quantity:       " << q00() << endl;
+	cout <<"Glish output quantity:       " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -112,7 +112,7 @@ main() {
     cout << "Input quantity:              " << (QBase &)x01 << endl;
     if (QuantumHolder(x01).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output quantity:      " << q00() << endl;
+	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };

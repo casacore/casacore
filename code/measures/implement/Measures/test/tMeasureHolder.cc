@@ -41,7 +41,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
-main() {
+Int main() {
 
   try {
 
@@ -59,8 +59,8 @@ main() {
 	  x00.getRefString() << ")" << endl;
     if (MeasureHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output value:      " << q00() << " (" <<
-	  q00().getRefString() << ")" << endl;
+	cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	  q00.asMeasure().getRefString() << ")" << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -69,8 +69,8 @@ main() {
     };
     if (MeasureHolder(x00).toRecord(error, z00)) {
       if (q00.fromRecord(error, z00)) {
-	cout <<"Glish output value:       " << q00() << " (" <<
-	  q00().getRefString() << ")" << endl;
+	cout <<"Glish output value:       " << q00.asMeasure() << " (" <<
+	  q00.asMeasure().getRefString() << ")" << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -95,8 +95,8 @@ main() {
     if (MeasureHolder(x00).toRecord(error, y00)) {
       y00.renameField("units", RecordFieldId("refer"));
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output value:      " << q00() << " (" <<
-	  q00().getRefString() << ")" << endl;
+	cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	  q00.asMeasure().getRefString() << ")" << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -120,8 +120,8 @@ main() {
 	  x00.getRefString() << ")" << endl;
     if (MeasureHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
-	cout <<"Record output value:      " << q00() << " (" <<
-	  q00().getRefString() << ")" << endl;
+	cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	  q00.asMeasure().getRefString() << ")" << endl;
       } else {
 	cout << "From error: " << error << endl;
       };
@@ -146,8 +146,8 @@ main() {
 	x00.getRefString() << ")" << endl;
       if (MeasureHolder(x00).toRecord(error, y00)) {
 	if (q00.fromRecord(error, y00)) {
-	  cout <<"Record output value:      " << q00() << " (" <<
-	    q00().getRefString() << ")" << endl;
+	  cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	    q00.asMeasure().getRefString() << ")" << endl;
 	} else {
 	  cout << "From error: " << error << endl;
 	};
@@ -167,8 +167,8 @@ main() {
 	x00.getRefString() << ")" << endl;
       if (MeasureHolder(x00).toRecord(error, y00)) {
 	if (q00.fromRecord(error, y00)) {
-	  cout <<"Record output value:      " << q00() << " (" <<
-	    q00().getRefString() << ")" << endl;
+	  cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	    q00.asMeasure().getRefString() << ")" << endl;
 	} else {
 	  cout << "From error: " << error << endl;
 	};
@@ -188,8 +188,8 @@ main() {
 	x00.getRefString() << ")" << endl;
       if (MeasureHolder(x00).toRecord(error, y00)) {
 	if (q00.fromRecord(error, y00)) {
-	  cout <<"Record output value:      " << q00() << " (" <<
-	    q00().getRefString() << ")" << endl;
+	  cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	    q00.asMeasure().getRefString() << ")" << endl;
 	} else {
 	  cout << "From error: " << error << endl;
 	};
@@ -210,8 +210,8 @@ main() {
 	x00.getRefString() << ")" << endl;
       if (MeasureHolder(x00).toRecord(error, y00)) {
 	if (q00.fromRecord(error, y00)) {
-	  cout <<"Record output value:      " << q00() << " (" <<
-	    q00().getRefString() << ")" << endl;
+	  cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	    q00.asMeasure().getRefString() << ")" << endl;
 	} else {
 	  cout << "From error: " << error << endl;
 	};
@@ -231,8 +231,8 @@ main() {
 	x00.getRefString() << ")" << endl;
       if (MeasureHolder(x00).toRecord(error, y00)) {
 	if (q00.fromRecord(error, y00)) {
-	  cout <<"Record output value:      " << q00() << " (" <<
-	    q00().getRefString() << ")" << endl;
+	  cout <<"Record output value:      " << q00.asMeasure() << " (" <<
+	    q00.asMeasure().getRefString() << ")" << endl;
 	} else {
 	  cout << "From error: " << error << endl;
 	};
