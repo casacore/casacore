@@ -6297,3 +6297,4 @@
 17 334 src mv trial/implement/vector.h aips/implement/vector.h
 17 335 src rm aips/implement/stdlibmap.h
 17 369 src mv trial/apps/simulator/newsimulator.help trial/apps/newsimulator/newsimulator.help
+17 369 src mv trial/apps/simulator/newsimulator.cc trial/apps/newsimulator/newsimulator.cc
