@@ -41,7 +41,6 @@
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TempLattice.h>
-#include <trial/Lattices/LCBox.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>
@@ -2278,7 +2277,7 @@ void LatticeStatistics<T>::summStats ()
       if (hasBeam) {
          os_p << "Flux density  = ";
          os0 << sum/beamArea;
-         os_p.output() << setw(oWidth) << String(os1) << " Jy" << endl;
+         os_p.output() << setw(oWidth) << String(os0) << " Jy" << endl;
       }
 //
       os1 << sum; os2 << mean; os3 << var; os5 << rms;
@@ -2320,9 +2319,9 @@ void LatticeStatistics<T>::summStats ()
          }
          os_p << endl;
       }
-   } else
+   } else {
       os_p << "No valid points found " << endl;
-
+   }
    os_p << endl << endl;
    os_p.post();
 }
