@@ -233,6 +233,9 @@ public:
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
 
+    // Is the table used (i.e. open) in this process.
+    static Bool isOpened (const String& tableName);
+
     // Is the table used (i.e. open) in another process.
     Bool isMultiUsed() const;
 

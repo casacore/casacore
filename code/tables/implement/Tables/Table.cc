@@ -277,6 +277,12 @@ void Table::throwIfNull() const
 }
 
 
+Bool Table::isOpened (const String& tableName)
+{
+    return ToBool (PlainTable::tableCache (tableName) != 0);
+}
+
+
 // Check if the table data has changed.
 Bool Table::hasDataChanged()
 {
