@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1999,2000
+#   Copyright (C) 1992-1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -198,15 +198,9 @@
 #       Try to deduce the site name by looking for aipsrc or makedefs file
 #       in a subdirectory of the architecture (with possible extension).
 #       The first subdirectory is the site name.
-        set a_temp = $a_root/$a_arch/*/aipsrc
-        if ("$a_temp" == "$a_root/$a_arch/*/aipsrc") then
-           set a_temp = $a_root/$a_arch*/*/aipsrc
-           if ("$a_temp" == "$a_root/$a_arch*/*/aipsrc") then
-              set a_temp = $a_root/$a_arch/*/makedefs
-              if ("$a_temp" == "$a_root/$a_arch/*/makedefs") then
-                 set a_temp = $a_root/$a_arch*/*/makedefs
-              endif
-           endif
+        set a_temp = $a_root/$a_arch*/*/aipsrc
+        if ("$a_temp" == "$a_root/$a_arch*/*/aipsrc") then
+           set a_temp = $a_root/$a_arch*/*/makedefs
         endif
 
         set noglob
@@ -317,10 +311,16 @@
      alias aipsinit "set aips_ext = (\!*) ; set a_root = $a_root ; source $a_root/aipsinit.csh"
   endif
 
-# Increase number of available file descriptor
+# Increase number of available file descriptors.
+# Do not exceed the hard limit.
   set a_fds = `limit descriptors | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/'`
   if ("$a_fds" < 1024) then
-     limit descriptors 1024
+     set a_fds = `limit -h descriptors | sed 's/[^0-9]*\([0-9][0-9]*\).*/\1/'`
+     if ("$a_fds" > 1024) then
+        limit descriptors 1024
+     else
+        limit descriptors $a_fds
+     endif
   endif
 
 # Source possible local AIPS++ initialization files.
