@@ -1946,3 +1946,4 @@
 08 037 src mv trial/apps/guimisc/aipsbrowser.g trial/implement/guiutils/aipsbroswer.g
 08 037 src mv trial/apps/guimisc/bug.g trial/implement/guiutils/bug.g
 08 050 src mv trial/apps/measures aips/apps/measures
+08 052 src mv aips/apps/measures trial/apps/measures
