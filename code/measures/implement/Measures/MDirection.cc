@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -348,6 +348,15 @@ void MDirection::shiftLatitude(Double lat, Bool trueAngle) {
 
 void MDirection::shift(const MVDirection &shft, Bool trueAngle) {
   data.shift(shft, trueAngle);
+}
+
+void MDirection::shiftAngle(const Quantum<Double> &off,
+			    const Quantum<Double> &pa) {
+  data.shiftAngle(off, pa);
+}
+
+void MDirection::shiftAngle(Double off, Double pa) {
+  data.shiftAngle(off, pa);
 }
 
 Measure *MDirection::clone() const {

@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -312,14 +312,16 @@ public:
   // Tell me if you are a pure model (e.g. a planet)
   virtual Bool isModel() const;
 
-// Get Measure data
-// <group>
-    Quantum<Vector<Double> > getAngle() const;
-    Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
-// </group>
+  // Get Measure data
+  // <group>
+  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
+  // </group>
   // Shift the direction in longitude (radians if Double) and/or latitude.
   // If the trueAngle switch is True, the longitude shift will be in
-  // angular units perpendicular to the direction to pole.
+  // angular units perpendicular to the direction to pole, along a great
+  // circle. See <linkto class=MVDirection>MVDirection</linkto>
+  // for more details.
   // <group>
   void shift(const Quantum<Double> &lng,
 	     const Quantum<Double> &lat, Bool trueAngle=False);
@@ -329,6 +331,15 @@ public:
   void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
   void shiftLatitude(Double lat, Bool trueAngle=False);
   void shift(const MVDirection &shft, Bool trueAngle=False);
+  // </group>
+  // Shift over an angle off in the direction pa. pa is measured from North,
+  // in the direction of increasing longitude.
+  // See <linkto class=MVDirection>MVDirection</linkto>
+  // for implementation.
+  // <group>
+  void shiftAngle(const Quantum<Double> &off,
+		  const Quantum<Double> &pa);
+  void shiftAngle(Double off, Double pa);
   // </group>
 
 // Make a copy
