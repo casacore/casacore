@@ -2015,3 +2015,4 @@
 08 200 src rm trial/implement/Functionals/BinaryCombEnums.h
 08 200 src rm trial/implement/Functionals/BinaryOperation.cc
 08 200 src rm trial/implement/Functionals/BinaryOperation.h
+08 200 src rm trial/implement/Functionals/BinaryTranEnums.h
