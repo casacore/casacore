@@ -41,6 +41,7 @@
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/SkyComponent.h>
+#include <aips/Fitting/FitLSQ.h>
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Fitting/Fit2D.h>
 #include <aips/Functionals/Gaussian2D.h>
