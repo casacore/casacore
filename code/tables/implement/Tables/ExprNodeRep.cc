@@ -1,5 +1,5 @@
 //# ExprNodeRep.cc: Representation class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,9 +105,9 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
     for (uInt i=0; i<indent; i++) {
 	os << ' ';
     }
-    os << dtype_p << ' ' << vtype_p << ' ' << optype_p << ' ' << exprtype_p
-       << ' '<< argtype_p << ' ' << ndim_p << ' ' << shape_p << ' '
-       << baseTabPtr_p << endl;
+    os << Int(dtype_p) << ' ' << Int(vtype_p) << ' ' << Int(optype_p)
+       << ' ' << Int(exprtype_p) << ' '<< Int(argtype_p) << ' '
+       << ndim_p << ' ' << shape_p << ' ' << baseTabPtr_p << endl;
 }
 
 void TableExprNodeRep::replaceTablePtr (const Table&,

@@ -811,7 +811,7 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     // All field names, except last one, should be records.
     uInt last = fieldNames.nelements() - 1;
     String keyword;
-    Int fieldnr;
+    Int fieldnr = 0;
     for (uInt i=0; i<=last; i++) {
 	if (i > 0) {
 	    keyword += '.';
