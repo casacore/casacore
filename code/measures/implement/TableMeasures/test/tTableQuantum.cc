@@ -480,7 +480,7 @@ int main(int argc)
 	Array<Quantum<Double> > qArr1(shape);
 	Bool deleteIt;
 	Quantum<Double>* q_p1 = qArr1.getStorage(deleteIt);
-	for (uInt i=0; i<10; i++, q_p1++) {
+	for (uInt i=0; i < qArr1.nelements(); i++, q_p1++) {
 	    q_p1->setValue(1.2 * i);
 	}
 	qArr1.putStorage(q_p1, deleteIt);
