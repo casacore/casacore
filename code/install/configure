@@ -355,7 +355,7 @@ EOT
         echo "verbose" >> /tmp/ftp$$
         echo "binary" >> /tmp/ftp$$
         echo "hash" >> /tmp/ftp$$
-        echo "cd pub/aips++/import_ftp" >> /tmp/ftp$$
+        echo "cd pub/import" >> /tmp/ftp$$
         echo "mget $FETCH" >> /tmp/ftp$$
         echo "get VERSION" >> /tmp/ftp$$
         echo "quit" >> /tmp/ftp$$
