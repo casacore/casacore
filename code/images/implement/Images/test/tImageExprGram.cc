@@ -26,11 +26,13 @@
 //# $Id$
 
 #include <trial/Images/ImageExprParse.h>
+#include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Containers/Block.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
@@ -139,8 +141,15 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+('c'+d)" << endl;
-    a.copyData(ImageExprParse::command ("b+('c'+d)"));
+    cout << "Expr:  a = b+('c'+d)     (using $n notation)" << endl;
+    PagedArray<Double> b("b");
+    PagedArray<Double> c("c");
+    PagedArray<Double> d("d");
+    Block<LatticeExprNode> temps(3);
+    temps[0] = LatticeExprNode(b);
+    temps[1] = LatticeExprNode(c);
+    temps[2] = LatticeExprNode(d);
+    a.copyData(ImageExprParse::command ("$1+($2+$3)", temps));
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       aArr.shape(), IPosition(aArr.ndim(),1));
     Double result = bVal + cVal + dVal;
