@@ -43,7 +43,7 @@
      $           (weight(ichan,irow).gt.0.0)) then
                call sgridft(uvw(1,irow), freq(ichan), c, scale, offset,
      $              sampling, pos, loc, off)
-               if (ogridft(nx, ny, loc, sampling)) then
+               if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
                      if((.not.flag(ipol,ichan,irow)).and.
@@ -115,7 +115,7 @@
             if((achan.ge.1).and.(achan.le.nchan)) then
                call sgridft(uvw(1,irow), freq(ichan), c, scale, offset,
      $              sampling, pos, loc, off)
-               if (ogridft(nx, ny, loc, sampling)) then
+               if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
                      if((.not.flag(ipol,ichan,irow)).and.
