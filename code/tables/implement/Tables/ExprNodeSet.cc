@@ -1,5 +1,5 @@
 //# ExprNodeSet.cc: Classes representing an set in table select expression
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -536,14 +536,16 @@ TableExprNodeSet::TableExprNodeSet()
 : TableExprNodeRep (NTNumeric, VTSet, OtUndef, 0),
   itsSingle        (True),
   itsDiscrete      (True),
-  itsBounded       (True)
+  itsBounded       (True),
+  itsCheckTypes    (True)
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
 : TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
   itsSingle        (True),
   itsDiscrete      (True),
-  itsBounded       (True)
+  itsBounded       (True),
+  itsCheckTypes    (False)
 {
     uInt n = indices.nelements();
     itsElems.resize (n);
@@ -556,7 +558,8 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
 : TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
   itsSingle        (False),
   itsDiscrete      (True),
-  itsBounded       (True)
+  itsBounded       (True),
+  itsCheckTypes    (False)
 {
     TableExprNode start;
     TableExprNode end;
@@ -584,7 +587,8 @@ TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
   itsElems         (n),
   itsSingle        (elem.isSingle()),
   itsDiscrete      (elem.isDiscrete()),
-  itsBounded       (True)
+  itsBounded       (True),
+  itsCheckTypes    (False)
 {
     // Set is not bounded if the element is not discrete and if end is defined.
     if (!(itsSingle  ||  (itsDiscrete && elem.end() != 0))) {
@@ -599,7 +603,8 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
 : TableExprNodeRep (that),
   itsSingle        (that.itsSingle),
   itsDiscrete      (that.itsDiscrete),
-  itsBounded       (that.itsBounded)
+  itsBounded       (that.itsBounded),
+  itsCheckTypes    (that.itsCheckTypes)
 {
     uInt n = that.itsElems.nelements();
     itsElems.resize (n);
@@ -634,13 +639,20 @@ void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
     }
     if (n == 0) {
 	dtype_p = elem.dataType();
-    }else{
-	if (dtype_p != elem.dataType()) {
-	    throw (TableInvExpr ("Set elements must have equal data types"));
-	}
     }
     checkTablePtr (itsElems[n]);
     fillExprType  (itsElems[n]);
+}
+
+void TableExprNodeSet::checkEqualDataTypes() const
+{
+    if (itsCheckTypes) {
+        for (uInt i=0; i<itsElems.nelements(); i++) {
+	    if (itsElems[i]->dataType() != dtype_p) {
+	        throw TableInvExpr ("Set elements must have equal data types");
+	    }
+	}
+    }
 }
 
 void TableExprNodeSet::show (ostream& os, uInt indent) const
