@@ -1,9 +1,18 @@
 Begin tTableQuantum.cc.
 Adding column descriptors to the table...
+Testing TableQuantumDesc constructor exceptions...
+A no such column message should follow
+TableQuantum::checkColumn; No such column: SillyName
+A no such unit's column message should follow
+TableQuantum::checkUnitsColumn; No such column: SillyName
+A message about an incorrect variable unit's type...
+TableQuantum::checkUnitsColumn; Type of column should be String: testvarcolumn
 Column's name is: ScaQuantDouble
 Column's name is: ScaQuantComplex
 Creating a null ScaQuantumCol()
 Check if isNull and then throwIfNull
+Catch an AipsError. Column is null...
+Invalid Table operation: Quantum table column is null
 Object says it is null...attach a column
 No longer null...good
 Column's quantum units are: deg
@@ -35,6 +44,8 @@ Quantum<Double> (units (GHz)) 6.24e-09 GHz.m
 Finished test of Quantum scalar column...........
 
 Start test of Quantum array column...........
+Catch an AipsError. Array column is null...
+Invalid Table operation: Quantum table column is null
 Array Quantum Column is initially null.
 Array quantum column: units are variable.
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
@@ -47,6 +58,7 @@ Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  0.0260421 m/s.m-1.s.rad, 1.22e+09 m/s.m-1
  1411.1 m/s.m-1, 0.00109091 m/s.m-1.kg.s]
 
+Array quantum column: units are variable.
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
 [1.41212 deg, 1.4003 deg
  1.4921 deg, 1.22 deg
@@ -58,6 +70,10 @@ Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  0.0246283 m/s.m-1.s.rad, 0.01904 m/s.m-1.s.rad]
 
 Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
+[1.41212 deg, 1.4003 deg
+ 1.4921 deg, 1.22 deg
+ 1.4111 deg, 1.09091 deg]
+Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
 [1.41212 m/s, 1.4003 m/s
  1.4921 m/s, 1.22 m/s
  1.4111 m/s, 1.09091 m/s]
@@ -67,4 +83,5 @@ Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  85.491 deg.m.s-1.rad-1, 69.9009 deg.m.s-1.rad-1
  80.8501 deg.m.s-1.rad-1, 62.5045 deg.m.s-1.rad-1]
 
+deg
 End tTableQuantum.cc.
