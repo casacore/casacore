@@ -6228,3 +6228,4 @@
 17 191 src mv ./aips/implement/Functionals/NQSimButterworthBandpass.h ./aips/implement/Functionals/SimButterworthBandpass.h
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1D.cc ./aips/implement/Functionals/Sinusoid1D.cc
 17 191 src mv ./aips/implement/Functionals/NQSinusoid1D.h ./aips/implement/Functionals/Sinusoid1D.h
+17 191 src mv ./aips/implement/Functionals/NQSinusoid1D2.cc ./aips/implement/Functionals/Sinusoid1D2.cc
