@@ -93,7 +93,13 @@ NAMELAT   [A-Za-z0-9._\~$]+
 	  }
 {INT}     {
             latticeGramPosition() += yyleng;
-            lvalp->val = new LatticeParse (atoi(LatticeGramtext));
+            Int ival = atoi(LatticeGramtext);
+            Double dval = atof(LatticeGramtext);
+            if (ival < dval-0.1  ||  ival > dval+0.1) {
+                lvalp->val = new LatticeParse (dval);
+            } else {
+                lvalp->val = new LatticeParse (ival);
+            }
             return LITERAL;
 	  }
 
