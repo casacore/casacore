@@ -127,8 +127,9 @@ private:
     MSPointing *msPointing_p;
     MSPointingColumns *msPointingCols_p;
 
-    Int antId_p, ntimes_p;
-    Double time_p, minTime_p, maxTime_p;
+    Double time_p;
+
+    Int antId_p;
     MDirection direction_p;
     Matrix<Double> directionPoly_p;
     Vector<Double> directionRate_p;
