@@ -503,7 +503,6 @@ private:
     // degrees and the currently requested units.
     Double to_degrees_p[2];
     Double to_radians_p[2];
-    Double piOver180_p;
 
     // Axis names.
     Vector<String> names_p;

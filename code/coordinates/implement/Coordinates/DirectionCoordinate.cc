@@ -504,8 +504,8 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
       to_degrees_p[0] /= factor(0);
       to_degrees_p[1] /= factor(1);
 //
-      to_radians_p[0] = to_degrees_p[0] * piOver180_p;
-      to_radians_p[1] = to_degrees_p[1] * piOver180_p;
+      to_radians_p[0] = to_degrees_p[0] * C::degree;
+      to_radians_p[1] = to_degrees_p[1] * C::degree;
     } else {
       set_error(error);
     }
@@ -743,7 +743,7 @@ String DirectionCoordinate::format(String& units,
    
 // Convert to radians first
 
-   Double worldValue2 = C::pi * worldValue * to_degrees_p[axis] / 180.0;
+   Double worldValue2 = C::degree * worldValue * to_degrees_p[axis];
    MVAngle mVA(worldValue2);
    units = "rad";
 
@@ -1180,11 +1180,11 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     longPole = latPole = 999.0;            // Optional
     if (subrec.isDefined("longpole")) {    
        subrec.get("longpole", longPole);   // Always degrees
-       longPole *= C::pi / 180.0;
+       longPole *= C::degree;
     }
     if (subrec.isDefined("latpole")) {
        subrec.get("latpole", latPole);     // Always degrees
-       latPole *= C::pi / 180.0;
+       latPole *= C::degree;
     }
 //    
     if (!subrec.isDefined("axes")) {
@@ -1394,7 +1394,7 @@ void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDo
     Bool isNCP = False;
     Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, True);
     Vector<String> ctype = make_Direction_FITS_ctype(isNCP, proj, axisNames, 
-                                                     refLat*C::pi/180.0, False);
+                                                     refLat*C::degree, False);
     strncpy (c_ctype[0], ctype(0).chars(), 9);
     strncpy (c_ctype[1], ctype(1).chars(), 9);
 //
@@ -1535,12 +1535,11 @@ void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
 {
 // Initially we are in radians
 
-    to_degrees_p[0] = 180.0 / C::pi;
+    to_degrees_p[0] = 1.0 / C::degree;
     to_degrees_p[1] = to_degrees_p[0];
     to_radians_p[0] = 1.0;
     to_radians_p[1] = 1.0; 
     units_p = "rad";
-    piOver180_p = C::pi / 180.0;
 //
     Vector<Double> crval(2), cdelt(2), crpix(2);
     crval(0) = refLong; 
@@ -1590,7 +1589,7 @@ void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
 //   
     static Double cosLat1, tLong;
 //
-    cosLat1 = cos(celprm_p->ref[1] * piOver180_p);
+    cosLat1 = cos(celprm_p->ref[1] * C::degree);
     tLong = world(0)*to_degrees_p[0] - celprm_p->ref[0];
     if (tLong > 180.0) {
       tLong -= 360.0;
@@ -1611,8 +1610,9 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 //   
     static Double cosLat2;
 //
-    cosLat2 = cos(celprm_p->ref[1] * piOver180_p);
+    cosLat2 = cos(celprm_p->ref[1] * C::degree);
     world(0) = (world(0)/cosLat2) + (celprm_p->ref[0]/to_degrees_p[0]);
     world(1) += celprm_p->ref[1] / to_degrees_p[1];
 }
+
 
