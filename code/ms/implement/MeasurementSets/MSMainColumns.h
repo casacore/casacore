@@ -95,7 +95,6 @@ class NewMeasurementSet;
 class RONewMSMainColumns
 {
 public:
-
   // Create a columns object that accesses the data in the specified Table
   RONewMSMainColumns(const NewMeasurementSet& ms);
 
@@ -170,6 +169,9 @@ public:
   const ROArrayColumn<Float>& weightSpectrum() const {return weightSpectrum_p;}
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return antenna1_p.nrow();}
+  
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

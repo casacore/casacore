@@ -110,6 +110,9 @@ public:
   const ROScalarColumn<Int>& phasedArrayId() const {return phasedArrayId_p;}
   // </group>
 
+  // Convenience function that returns the number of rows in any of the columns
+  uInt nrow() const {return dishDiameter_p.nrow();}
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
