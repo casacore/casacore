@@ -1,5 +1,5 @@
 //# Interpolate2D.cc:  this implements Interpolate2D
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,19 +36,16 @@
 template<class T> 
 Interpolate2D<T>::Interpolate2D()
 :  itsMaskPtr(0)
-{
-}
+{}
 
 template<class T> 
 Interpolate2D<T>::Interpolate2D(const Interpolate2D& other)
 :  itsMaskPtr(0)
-{
-}
+{}
 
 template<class T> 
 Interpolate2D<T>::~Interpolate2D()
-{
-};
+{}
 
 template<class T> 
 Interpolate2D<T>& Interpolate2D<T>::operator=(const Interpolate2D& other)
@@ -177,7 +174,7 @@ Bool Interpolate2D<T>::interpLinear(T& result,
 template<class T> 
 Bool Interpolate2D<T>::interpCubic(T& result, 
                                    const Vector<Double>& where, 
-                                   const Matrix<T>& data)
+                                   const Matrix<T>& data) 
 //
 // bi-cubic interpolation
 //
@@ -185,7 +182,7 @@ Bool Interpolate2D<T>::interpCubic(T& result,
 
 // Temporaries
 
-  static Double TT, UU, d1, d2;
+  Double TT, UU, d1, d2;
   static Vector<T> Y(4), Y1(4), Y2(4), Y12(4);
   static Matrix<T> C(4,4);
 //
@@ -228,7 +225,7 @@ Bool Interpolate2D<T>::interpCubic(T& result,
   Y12(3) =  data(itsI+1, itsJ+2) + data(itsI-1, itsJ) - 
                data(itsI-1, itsJ+2) - data(itsI+1, itsJ);
 //
-  bcucof(Y, Y1, Y2, Y12, d1, d2, C);
+  bcucof(C, Y, Y1, Y2, Y12, d1, d2);
 //  
   result = 0.0;
   for (Int i=3; i>=0; i--) {
@@ -240,8 +237,9 @@ Bool Interpolate2D<T>::interpCubic(T& result,
 
 
 template<class T>  
-void Interpolate2D<T>::bcucof (Vector<T> y, Vector<T> y1, Vector<T> y2, Vector<T> y12,
-                               Double d1, Double d2, Matrix<T> c)
+void Interpolate2D<T>::bcucof (Matrix<T>& c, const Vector<T>& y, const Vector<T>& y1, 
+                               const Vector<T>& y2, const Vector<T>& y12,
+                               Double d1, Double d2) const
 //
 // Numerical recipes 3.6 (p99)
 //
@@ -289,7 +287,7 @@ void Interpolate2D<T>::bcucof (Vector<T> y, Vector<T> y1, Vector<T> y2, Vector<T
     CL(i) = xx;
   }
 
-// Unpack the result inot the output table
+// Unpack the result into the output table
 
   l = 0;
   for (i=0;i<4;i++) {
@@ -378,8 +376,8 @@ Interpolate2D<T>::Method Interpolate2D<T>::stringToMethod (const String& method)
 template<class T> 
 Bool Interpolate2D<T>::anyBadMaskPixels ()
 {
-   for (Int j=itsMinJ; j<itsMaxJ; j++) {
-      for (Int i=itsMinI; i<itsMaxI; i++) {   
+   for (Int j=itsMinJ; j<=itsMaxJ; j++) {
+      for (Int i=itsMinI; i<=itsMaxI; i++) {   
          if (! (*itsMaskPtr)(i,j)) return True;
        }
     }
