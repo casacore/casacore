@@ -89,7 +89,7 @@ void FFT2DReal2Complex(Lattice<Complex> & result,
     for (uInt p = 0; p < npol; p++){
       isARef = input.getSlice(inputArrPtr,
                               Slicer(start,inputSliceShape), True);
-      resultArray = FFT2D.rcnyfft(*inputArrPtr);
+      FFT2D.fft(resultArray, *inputArrPtr);
       result.putSlice(resultArray, start);
       start(2) += 1;
     }
