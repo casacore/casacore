@@ -1,5 +1,5 @@
 //# ScalarMeasColumn.h: Definition of a Measure in a Table.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -121,7 +121,7 @@ public:
     void attach(const Table& tab, const String& columnName); 
  
     // Get the measure in the default outref.
-    void get(Array<M>& meas, uInt rownr, Bool resize = False) const;
+    void get(uInt rownr, Array<M>& meas, Bool resize = False) const;
     Array<M> operator()(uInt rownr) const;
           
     // Get the column's reference.

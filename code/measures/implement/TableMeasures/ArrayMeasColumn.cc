@@ -1,4 +1,4 @@
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -182,7 +182,7 @@ void ROArrayMeasColumn<M, MV>::attach(const Table& tab,
 }
  
 template<class M, class MV>
-void ROArrayMeasColumn<M, MV>::get(Array<M>& meas, uInt rownr,
+void ROArrayMeasColumn<M, MV>::get(uInt rownr, Array<M>& meas,
 	    	    	    	   Bool resize) const
 {
     // This will fail if array in rownr is undefined.
@@ -230,7 +230,7 @@ void ROArrayMeasColumn<M, MV>::get(Array<M>& meas, uInt rownr,
     Bool deleteOffset;
     if (offsetPerElem) {
 //	offsetArr.reference((*itsArrOffsetCol)(rownr));
-	itsArrOffsetCol->get(offsetArr, rownr, True);
+	itsArrOffsetCol->get(rownr, offsetArr, True);
 	os_p = offsetArr.getStorage(deleteOffset);
     } else {
 	if (itsOffsetCol != 0) {
@@ -299,7 +299,7 @@ template<class M, class MV>
 Array<M> ROArrayMeasColumn<M, MV>::operator()(uInt rownr) const
 {
     Array<M> meas;
-    get(meas, rownr);
+    get(rownr, meas);
     return meas;
 }
 
