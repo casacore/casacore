@@ -1369,3 +1369,10 @@
 11 039 src mv trial/apps/ms/UVFitsWriter.cc trial/implement/MeasurementSet/MSFitsOutput.cc
 11 039 src mv trial/apps/ms/msImpl.cc trial/implement/MeasurementSet/DOms.cc
 11 039 src mv trial/apps/ms/msImpl.h trial/implement/MeasurementSet/DOms.h
+11 047 src rm aips/implement/Containers/test/tDlist.exec
+11 047 src rm aips/implement/Containers/test/tList.exec
+11 047 src rm aips/implement/Containers/test/tListMap.exec
+11 047 src rm aips/implement/Containers/test/tListMap2.exec
+11 047 src rm aips/implement/Containers/test/tOrdMap.exec
+11 047 src rm aips/implement/Containers/test/tOrdMap2.exec
+11 047 src rm aips/implement/Containers/test/tSimOrdMap.exec
