@@ -977,10 +977,9 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
 
    for (uInt i=0; i<nCoord; i++) {
 
-// For each coordinate, putt the appropriate pixel or
-// replacement values in the pixel temporary, call the
-// coordinates own toMix, and then copy the output values
-// from the world temporary to the world coordinate
+// For each coordinate, put the appropriate pixel or replacement values 
+// in the pixel temporary, call the coordinates own toMix, and then copy 
+// the output values from the world temporary to the world coordinate
 
       const uInt nAxes = world_maps_p[i]->nelements();
       const uInt nPixelAxes = pixel_maps_p[i]->nelements();
