@@ -233,8 +233,9 @@ public:
 
     // Change the units. If <src>adjust</src> is True, adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
-    // the units must be known <linkto class=Unit>Unit</linkto> strings, and that
-    // they must be compatible, e.g. they can't change from time to length.
+    // the units must be known <linkto class=Unit>Unit</linkto> strings, and
+    // that they must be compatible, e.g. they can't change from time to
+    // length.
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
@@ -264,12 +265,20 @@ public:
     // the keywords are vectors, it is expected that the actual FITS code will
     // split them into scalars and upcase the names. Returns False if one of the
     // keywords is already taken.
+    // 
+    // If writeWCS is True, attempt to write the WCS convention (Greisen and
+    // Calabretta "Representation of celestial coordinates in FITS"). This is
+    // a DRAFT convention evolving rapidly. It is not recommended that you
+    // write this convention in general.
+    //# Much of the work in to/from fits should be moved to the individual
+    //# classes.
     Bool toFITSHeader(RecordInterface &header, Bool oneRelative, 
-		      char prefix = 'c') const;
+		      char prefix = 'c', Bool writeWCS=False) const;
 
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
+    //# cf comment in toFITS.
     static Bool fromFITSHeader(CoordinateSystem &coordsys, 
 			       const RecordInterface &header,
 			       Bool oneRelative,

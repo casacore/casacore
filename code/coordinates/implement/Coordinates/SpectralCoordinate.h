@@ -33,6 +33,9 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <aips/Measures/MFrequency.h>
 
+template<class Domain, class Range> class Interpolate1D;
+class LogIO;
+
 // <summary>
 // Map a channel number to frequency.
 // </summary>
@@ -58,10 +61,13 @@
 // See the example in <linkto module=Coordinates>Coordinates.h</linkto>.
 // </example>
 //
-// <todo asof="1997/01/15">
+// <todo asof="1997/05/20">
 //   <li> Allow non-regularly gridded axes?
 //   <li> Do velocity calculations directly for the user rather than going
 //        through the measures system?
+//   <li> Allow other than linear interpolations for frequency lookup.
+//   <li> Be able to get out the original frequency table and the pixel
+//        corrector.
 // </todo>
 
 class SpectralCoordinate : public Coordinate
@@ -75,6 +81,20 @@ public:
     // with setWorldAxisUnits().
     SpectralCoordinate(MFrequency::Types type, Double f0, Double inc, 
 		       Double refChan, Double restFrequency = 0.0);
+
+    // Construct a SpectralCoordinate with the specified frequencies. The increments
+    // and related functions return the <src>average</src> values (calculated from
+    // the first and last pixels frequencies).
+    //
+    // A linear interpolation/extrapolation is used for channels which are
+    // not supplied. The refrence channel (pixel) is chosen to be 0.
+    // The frequencies must increase or decreas monotonically (otherwise
+    // the toPixel lookup would not be possible).
+    SpectralCoordinate(MFrequency::Types type, const Vector<Double> &freqs,
+		       Double restFrequency = 0.0);
+    
+    // Equivalent to SpectralCoordinate(MFrequency::TOPO, 0.0, 0.0, 0.0)
+    SpectralCoordinate();
 
     // Overwrite this SpectralCoordinate with other (copy semantics).
     // <group>
@@ -134,6 +154,27 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
+    // This will be of length>0 when the SpectralCoordinate is constructed
+    // from a frequency table. Basically it maps the channel number to the
+    // channel required to get the correct input frequency. It corresponds
+    // to the pixel correction image in the draft WCS paper.
+    Vector<Double> pixelCorrections() const;
+
+    // Restore ourself from a FITS header. Returns False if axis 'axisNumber'
+    // (0-relative) does not appear to be a spectral axis.
+    Bool fromFITS(const RecordInterface &fitsHeader, Int axisNumber);
+
+    // ctype, crval, crpix, and cdelt must already be created. Other header
+    // words are created as needed.
+    void toFITS(RecordInterface &header, uInt whichAxis, 
+		LogIO &logger, Bool oneRelative=True,
+		Bool preferVelocity=True, Bool opticalVelDef=True) const;
+
+    static Bool fromFITS(SpectralCoordinate &out, String &error,
+			 const RecordInterface &header, 
+			 uInt whichAxis,
+			 LogIO &logger, Bool oneRelative=True);
+
     // Set the unit. If adjust is True, the unit must be compatible with
     // frequency.
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
@@ -160,11 +201,15 @@ private:
     Double matrix_p;
     Double restfreq_p;
 
+    // Channel_True = channel_corrections_p(channel_in). Corresponds to the
+    // draft WCS pixel correction image.
+    // <group>
+    Interpolate1D<Double,Double> *channel_corrector_p;
+    Interpolate1D<Double,Double> *channel_corrector_rev_p;
+    // </group>
+
     // Undefined and inaccessible
-    SpectralCoordinate();
 };
 
 
 #endif
-
-
