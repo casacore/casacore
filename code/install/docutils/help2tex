@@ -529,11 +529,15 @@ sub make_tex_file{
       s/\\end{ahobject}/$end_section/g;
       s/\\end{ahtool}/$end_section/g;
    
+    $changelogfile = "../../../docs/project/releasenotes/changelogs/changelog_Tool_$iname.html";
+    if(-e $changelogfile){
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
    \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionO{$1}{$pack}{$mname}
      \\begin{htmlonly}
      \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\htmladdnormallink{Changelog of current development cycle}{..\/..\/project\/releasenotes\/changelogs\/changelog_Tool_$iname.html}
      \\vspace{.10in}
      \\end{htmlonly}
    $2\\\\
@@ -550,6 +554,27 @@ sub make_tex_file{
      \\end{htmlonly}
    $2\\\\
    /g;
+   } else {
+      s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   
+      s/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 - Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+     \\begin{htmlonly}
+     \\htmladdnormallink{Postscript file available}{$psfile}
+     \\vspace{.10in}
+     \\end{htmlonly}
+   $2\\\\
+   /g;
+   }
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
