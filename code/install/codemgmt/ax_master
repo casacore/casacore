@@ -4780,3 +4780,4 @@
 14 316 sys rm libexec/dish_blman.g
 14 316 src rm trial/apps/dish/dish_calcman.g
 14 316 sys rm libexec/dish_calcman.g
+14 316 src rm trial/apps/dish/dish_evalwin.g
