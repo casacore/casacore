@@ -220,6 +220,12 @@ sub make_tex_file{
             $dum =~ s/[\n\']/ /g;
             print "$pack.$miname.d := '$dum';\n";}
       }
+      if(/\\begin{ahrecord}\s*{($mtext)}/){
+        $recname = "$1.";
+      }
+      if(/\\end{ahrecord}/){
+        $recname = '';
+      }
       if(/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
          $terminateObject = 0;
@@ -391,15 +397,15 @@ sub make_tex_file{
      \\hline
      \\endfoot/g;
      s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{}\s*{}/
-       $recIndent $1 \& $2\\\\/g;
+       $recname$1 \& $2\\\\/g;
      s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{}/
-       $recIndent $1 \& $2\\\\
+       $recname$1 \& $2\\\\
           \& Default: $3\\\\/g;
      s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{}\s*{($mtext)}/
-          $recIndent $1 \& $2\\\\
+          $recname$1 \& $2\\\\
           \& Allowed: $3\\\\/g;
      s/\\ahdatum{($mtext)}\s*{($mtext)}\s*{($mtext)}\s*{($mtext)}/
-       $recIndent $1 \& $2\\\\
+       $recname$1 \& $2\\\\
           \& Allowed: $4\\\\
           \& Default: $3\\\\/g;
 
@@ -419,7 +425,7 @@ sub make_tex_file{
    \\hline/g;
 
      s/\\end{ahargslong}/\\end{longtable}/g;
-   
+  
      s/\\begin{ahargslong}/$wlabel*{Arguments}
    \\hfill \\\\
    \\begin{longtable}{|p{1in}p{0.39in}p{2.79in}|}
