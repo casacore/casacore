@@ -1,5 +1,5 @@
 //# aips.cc: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993,1994,1996
+//# Copyright (C) 1993,1994,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,6 +65,10 @@ void *operator new (size_t size)
 	}
     }
     *((size_t *)ptr) = size;
+    if (sizeof(size_t)*2 <= offset) {
+	// Write it twice if it will fit as a sanity check.
+	*((size_t *)ptr+1) = size;
+    }
     total += size;
     return ptr+offset;
 }
@@ -75,12 +79,19 @@ void operator delete (void *ptr)
 	char *alias = (char *)ptr;
 	alias -= offset;
 	size_t size = *((size_t*)alias);
+	if (sizeof(size_t)*2 <= offset) {
+	    if (size != *((size_t*)alias+1)) {
+		fprintf(stderr, "ERROR: delete'ing memory not allocated "
+			"with new!\n");
+		exit(999);
+	    }
+	}
 	total -= size;
 	free(alias);
     }
 }
 
-//------ Just copies of the above
+//------ Just copies of the above with [] added
 
 void *operator new[] (size_t size)
 {
@@ -96,6 +107,10 @@ void *operator new[] (size_t size)
 	}
     }
     *((size_t *)ptr) = size;
+    if (sizeof(size_t)*2 <= offset) {
+	// Write it twice if it will fit as a sanity check.
+	*((size_t *)ptr+1) = size;
+    }
     total += size;
     return ptr+offset;
 }
@@ -106,6 +121,13 @@ void operator delete[] (void *ptr)
 	char *alias = (char *)ptr;
 	alias -= offset;
 	size_t size = *((size_t*)alias);
+	if (sizeof(size_t)*2 <= offset) {
+	    if (size != *((size_t*)alias+1)) {
+		fprintf(stderr, "ERROR: delete'ing memory not allocated "
+			"with new!\n");
+		exit(999);
+	    }
+	}
 	total -= size;
 	free(alias);
     }
