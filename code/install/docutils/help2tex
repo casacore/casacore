@@ -49,7 +49,7 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "\\begin{tabular}{|l p{0.36in}p{2.79in}|}\n";
    print "}\n";
    print "\\begin{htmlonly}\n";
-   print "\\renewcommand{\\starthelptab}{\n";
+   print "\\newcommand{\\starthelptab}{\n";
    print "\\begin{tabular}{|l p{0.75in}p{2.38in}|}\n";
    print "}\n";
    print "\\end{htmlonly}\n";
@@ -361,7 +361,7 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsubsection{$1 -- Function\\label{$miname:$oiname.$iname}\\index{$mname.$oname.$1}\\index{$1}}
+   \\subsubsection{$oname.$1 -- Function\\label{$miname:$oiname.$iname}\\index{$mname.$oname.$1}\\index{$1}}
    \\subsectionM{$oname.$1}{$pack}{$mname}{$oname}
    $2\\\\
    \\ahsynopsis{$1}
