@@ -76,8 +76,8 @@ class String;
 // element corresponding to the Stokes I component only
 // <li> <src>addFreqAxis</src> this adds a spectral axis with a reference
 // frequency of 1.415GHz on channel 0. The channel bandwidth (pixel
-// increment) is 1kHz, and the reference frame is the Local Standard of
-// rest (<linkto class="MFrequency">MFrequency</linkto>::LSR). 
+// increment) is 1kHz, and the reference frame is the kinematical Local Standard of
+// rest (<linkto class="MFrequency">MFrequency</linkto>::LSRK). 
 // </ul>
 //
 // The <src>defaultCoords</src> functions, create from scratch a
