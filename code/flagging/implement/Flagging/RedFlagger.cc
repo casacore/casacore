@@ -42,8 +42,9 @@
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/ProgressMeter.h>
-#include <stdio.h>
-#include <math.h>
+#include <aips/stdio.h>
+#include <aips/math.h>
+#include <stdarg.h>
 
  LogIO RedFlagger::os( LogOrigin("RedFlagger") );
  static char str[256];
