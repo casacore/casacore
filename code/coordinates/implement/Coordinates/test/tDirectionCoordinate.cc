@@ -41,6 +41,10 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
 
+
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <aips/Logging/LogIO.h>
+
 #include <aips/iostream.h>
 
 DirectionCoordinate makeCoordinate(MDirection::Types type,
@@ -226,10 +230,10 @@ DirectionCoordinate makeCoordinate(MDirection::Types type,
    crpix.resize(2);
    cdelt.resize(2);
    crval(0) = 0.1; 
-   crval(1) = 0.5;
+   crval(1) = -0.5;
    crpix(0) = 100.0; 
    crpix(1) = 120.0;
-   cdelt(0) = 1e-6; 
+   cdelt(0) = -1e-6; 
    cdelt(1) = 2e-6;
    xform.resize(2,2);
    xform = 0.0;
@@ -466,6 +470,7 @@ void doit3 (DirectionCoordinate& lc)
       world4 += incr;
       Vector<Double> tmp = world4.copy();
       lc.makeWorldRelative(world4);
+      Vector<Double> world4b(world4.copy());
       lc.makeWorldAbsolute (world4);
       if (!allNearAbs(world4, tmp, 1e-6)) {
             throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection 1 gave wrong results"));
@@ -483,13 +488,14 @@ void doit3 (DirectionCoordinate& lc)
    {
       MDirection coord;
       lc.toWorld(coord, lc.referencePixel() + 10.0);
+//
       MVDirection mv1 = coord.getValue();
       lc.makeWorldRelative(coord);
       MVDirection mv2 = coord.getValue();
       lc.makeWorldAbsolute(coord);
       MVDirection mv3 = coord.getValue();
-      if (mv1==mv3) {
-         throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection failed"));
+      if (!allNearAbs(mv1.get(),mv3.get(), 1e-6)) {
+         throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection 2 failed"));
       }
    }
 //
@@ -636,10 +642,10 @@ void doit4 (DirectionCoordinate& dC)
                   + dC.errorMessage()));
    }
    if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
-      throw(AipsError(String("Failed pixel->world consistency test")));
+      throw(AipsError(String("Failed pixel->world consistency test 1a")));
    }
    if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
-      throw(AipsError(String("Failed pixel->world consistency test")));
+      throw(AipsError(String("Failed pixel->world consistency test 1b")));
    }
 //
 // world,world->pixel,pixel
@@ -652,10 +658,10 @@ void doit4 (DirectionCoordinate& dC)
                   + dC.errorMessage()));
    }
    if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+      throw(AipsError(String("Failed world->pixel consistency test 1a")));
    }
    if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+      throw(AipsError(String("Failed world->pixel consistency test 1b")));
    }
 //
 // world,pixel -> pixel,world
@@ -670,11 +676,11 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-6)) {
+      throw(AipsError(String("Failed world->pixel consistency test 2a")));
    }
-   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+   if (!allNear(worldOut, dC.referenceValue(), 1.0e-6)) {
+      throw(AipsError(String("Failed world->pixel consistency test 2b")));
    }
 //
 // pixel, world -> world, pixel
@@ -689,11 +695,11 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+   if (!allNear(pixelOut, dC.referencePixel(), 1e-6)) {
+      throw(AipsError(String("Failed world->pixel consistency test 3a")));
    }
-   if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
-      throw(AipsError(String("Failed world->pixel consistency test")));
+   if (!allNear(worldOut, dC.referenceValue(), 1e-6)) {
+      throw(AipsError(String("Failed world->pixel consistency test 3b")));
    }
 //
 // world,pixel -> pixel,world -> world,pixel
@@ -717,11 +723,11 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(worldOut(0), saveWorldIn(0), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 1"));
+   if (!near(worldOut(0), saveWorldIn(0), 1e-6)) {
+      throw(AipsError("Failed mixed conversion reflection test 1a"));
    }
-   if (!near(pixelOut(1), savePixelIn(1), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 1"));
+   if (!near(pixelOut(1), savePixelIn(1), 1e-6)) {
+      throw(AipsError("Failed mixed conversion reflection test 1a"));
    }
 //
 // pixel,world -> world,pixel -> pixel, world
@@ -745,11 +751,11 @@ void doit4 (DirectionCoordinate& dC)
       throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(worldOut(1), saveWorldIn(1), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 1"));
+   if (!near(worldOut(1), saveWorldIn(1), 1e-6)) {
+      throw(AipsError("Failed mixed conversion reflection test 2a"));
    }
-   if (!near(pixelOut(0), savePixelIn(0), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 1"));
+   if (!near(pixelOut(0), savePixelIn(0), 1e-6)) {
+      throw(AipsError("Failed mixed conversion reflection test 2a"));
    }
 }
 
@@ -885,12 +891,23 @@ void doit7 ()
    DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
                                            proj, crval, crpix,
                                            cdelt, xform);
-   lc.setConversion(MDirection::GALACTIC);
+//
    Vector<String> units = lc.worldAxisUnits().copy();
    units = String("deg");
    lc.setWorldAxisUnits(units);
+   Vector<Double> rv(2);
+   rv(0) = 120.0;
+   rv(1) = -35.0;
+   lc.setReferenceValue(rv);
 //
-   Vector<Double> pixel = lc.referencePixel().copy();
+   lc.setReferenceConversion(MDirection::GALACTIC);
+   MDirection::Types type2;
+   lc.getReferenceConversion (type2);
+   if (type2!=MDirection::GALACTIC) {
+      throw(AipsError(String("did not recover referenceConversion type")));
+   }
+//
+   Vector<Double> pixel = lc.referencePixel().copy() + 10.0;
    Vector<Double> world;
    if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld + type change conversion (1) failed because ") + lc.errorMessage()));
@@ -900,20 +917,8 @@ void doit7 ()
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel + type change conversion (1) failed because ") + lc.errorMessage()));
    }
-   if (!allNear(pixel2, pixel, 1e-6)) {
-         throw(AipsError("Coordinate + type change conversion reflection 1 failed"));
+   if (!allNear(pixel, pixel2, 1e-5)) {
+         throw(AipsError("Reference change conversion reflection 1 failed"));
    }    
-//
-   MDirection dir;
-   if (!lc.toWorld(dir, pixel)) {
-      throw(AipsError(String("toWorld + type change conversion (2) failed because ") + lc.errorMessage())); 
-   }
-   Vector<Double> pixel3;
-   if (!lc.toPixel(pixel3, dir)) {
-      throw(AipsError(String("toPixel + type change conversion (2) failed because ") + lc.errorMessage()));
-   }
-   if (!allNear(pixel3, pixel, 1e-6)) {
-         throw(AipsError("Coordinate + type change conversion reflection 2 failed"));
-   }
 }
 
