@@ -1,5 +1,5 @@
 //# ReadAsciiTable.cc: Filling a table from an Ascii file
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,11 +108,15 @@ void getTypesAsciiTable (const Char* in, Int leng,
 {
     Int at = 0;
     Int i = 0;
+    //# When constructing str in the while loop (in the else branch),
+    //# a compiler bug appeared on RH systems.
+    //# Therefore assignment is used instead.
+    String str;
     while (readAsciiTableGetNext (in, leng, string2, at) >= 0) {
         if (string2[0] == '\0') {
 	    string1[0] = 'A';
 	} else {
-	    String str(string2);
+	    str = string2;
 	    if (str.matches (RXint)) {
 	        string1[0] = 'I';
 	    } else if (str.matches (RXdouble)) {
