@@ -132,6 +132,7 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
     matrix_p = other.matrix_p;
     restfreq_p = other.restfreq_p;
     channel_corrector_p = 0;
+    channel_corrector_rev_p = 0;
     if (other.channel_corrector_p) {
       channel_corrector_p = 
 	  new Interpolate1D<Double,Double>(*other.channel_corrector_p);
@@ -155,6 +156,7 @@ SpectralCoordinate &SpectralCoordinate::operator=(
 	matrix_p = other.matrix_p;
 	restfreq_p = other.restfreq_p;
 	channel_corrector_p = 0;
+	channel_corrector_rev_p = 0;
 	if (other.channel_corrector_p) {
 	    channel_corrector_p = 
 		new Interpolate1D<Double,Double>(*other.channel_corrector_p);
@@ -211,7 +213,7 @@ Bool SpectralCoordinate::toPixel(Vector<Double> &pixel,
     AlwaysAssert(world.nelements() == 1 && pixel.nelements() == 1, AipsError);
     Double channel = (world(0) - crval_p) / (cdelt_p * matrix_p) + crpix_p;
     if (channel_corrector_rev_p) {
-	channel -= (*channel_corrector_rev_p)(channel);
+      channel -= (*channel_corrector_rev_p)(channel);
     }
     pixel(0) = channel;
     return True;
@@ -455,19 +457,20 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     subrec.get("restfreq", restfreq);
 
     SpectralCoordinate *retval = 
-	new SpectralCoordinate(sys, 0, 1, 0, 0);
+	new SpectralCoordinate(sys, 0.0, 1.0, 0.0, 0.0);
     AlwaysAssert(retval, AipsError);
 
     // We have to do the units first since they will change the
     // reference value and increment if we do them too late.
     retval->setWorldAxisUnits(units);
     retval->setWorldAxisNames(axes);
-    retval-> setIncrement(cdelt);
+    retval->setIncrement(cdelt);
     retval->setReferenceValue(crval);
     retval->setReferencePixel(crpix);
     retval->setRestFrequency(restfreq);
 
-    if (subrec.isDefined("pixelcorrections")) {
+    //    if (subrec.isDefined("pixelcorrections")) {
+    if (0) {
 	Vector<Double> pixrec;
 	subrec.get("pixelcorrections", pixrec);
 	Vector<Double> channs(pixrec.nelements());
@@ -475,7 +478,7 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
 	ScalarSampledFunctional<Double> c_in(channs), c_diff(pixrec);
 	retval->channel_corrector_p = 
 	    new Interpolate1D<Double,Double>(c_in, c_diff, True, True);
-	retval->channel_corrector_p = 
+	retval->channel_corrector_rev_p = 
 	    new Interpolate1D<Double,Double>(c_diff, c_in, True, True);
 	AlwaysAssert(retval->channel_corrector_p != 0 &&
 		     retval->channel_corrector_rev_p != 0, AipsError);
@@ -483,6 +486,10 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
 			       Interpolate1D<Double,Double>::linear);
 	retval->channel_corrector_rev_p->setMethod(
 			       Interpolate1D<Double,Double>::linear);
+    }
+    else {
+	retval->channel_corrector_p = 0;
+	retval->channel_corrector_rev_p = 0;
     }
 							  
     return retval;
@@ -567,7 +574,7 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
     crpix(whichAxis) = Crpix;
     cdelt(whichAxis) = Cdelt;
     if (cunit.nelements() > 0) {
-	if (Ctype.contains("FELO")) {
+	if (Ctype.contains("VELO")) {
 	    cunit(whichAxis) = "M/S";
 	} else if (Ctype.contains("FREQ")) {
 	    cunit(whichAxis) = "HZ";
