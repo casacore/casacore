@@ -68,9 +68,9 @@ main()
     return 0;                           // exit with success status
 }
 
-void init (Matrix<float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
+void init (Matrix<Float>& array, Matrix<Bool>& arrayb, Matrix<Complex>& arrayc)
 {
-    indgen (array.ac());
+    indgen ((Array<Float>)array.ac());
     uInt i=0;
     for (uInt k=0; k<20; k++) {
 	for (uInt j=0; j<12; j++) {
