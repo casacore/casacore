@@ -1,5 +1,5 @@
 //# dImageInterface.cc:  Illustrates the use of the ImageInterface base class
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Measures/SkyPosition.h>
-#include <trial/Measures/MeasuredValue.h>
 #include <aips/Mathematics/Constants.h>
 
 Float sumPixels(const ImageInterface<Float>& image){
