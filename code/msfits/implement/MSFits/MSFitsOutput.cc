@@ -1075,13 +1075,20 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 	id[a] = a + 1; // 1 relative antenna numbers in FITS
       }
     }
-    for (uInt antnum=0; antnum<nant; antnum++) {
-      String nm = inantname(antnum);
-      if (nm == "station") {
-	*anname = antid(antnum);
-      } else {
-	*anname = nm;             // WSRT uses STATION for NAME
+    // A hack for old WSRT observations which stored the antenna name
+    // in the STATION column instead of the NAME column.
+    // So if all NAMES are equal use STATIONS (unless they are all equal).
+    Vector<String> anames = antid.getColumn();
+    if (anames.nelements() > 0) {
+      if (allEQ (anames, anames(0))) {
+	Vector<String> stations = inantname.getColumn();
+	if (! allEQ (stations, stations(0))) {
+	  anames = stations;
+	}
       }
+    }
+    for (uInt antnum=0; antnum<nant; antnum++) {
+      *anname = anames(antnum);
 
       // Get antenna position in ITRF coordinates.
       // Take difference with array position.
@@ -1368,7 +1375,7 @@ Bool MSFitsOutput::writeTY(FitsOutput *output, const MeasurementSet &ms,
   const MSSysCal subtable(syscal);
   ROMSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
-  if (nrow == 0) {
+  if (nrow == 0  ||  sysCalColumns.tsys().isNull()) {
     os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
     return False;
   }
@@ -1511,8 +1518,8 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
     nrspw = nrif;
     nrif = 1;
   }
-  // Get #pol by taking shape of first trx in the column.
-  const Int npol = ROMSSysCalColumns(ms.sysCal()).trx().shape(0)(0);
+  // Get #pol from 1st row in FEED table.
+  const Int npol = ROMSFeedColumns(ms.feed()).numReceptors()(0);
   IPosition ifShape(1,nrif);
   const uInt nentries = nrant*nrspw;
 
