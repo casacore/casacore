@@ -126,8 +126,7 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
 {
 }
 
-SpectralCoordinate &SpectralCoordinate::operator=(
-					  const SpectralCoordinate &other)
+SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
 {
     if (this != &other) {
         Coordinate::operator=(other);
@@ -340,7 +339,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	case MFrequency::LSRD: system = "LSRD"; break;
 	case MFrequency::LSRK: system = "LSRK"; break;
 	case MFrequency::BARY: system = "BARY"; break;
-	case MFrequency::GEO: system = "GEO"; break;
+	case MFrequency::GEO:  system = "GEO";  break;
 	case MFrequency::TOPO: system = "TOPO"; break;
 	case MFrequency::GALACTO: system = "GALACTO"; break;
 	case MFrequency::N_Types: // Fallthrough
@@ -356,9 +355,8 @@ Bool SpectralCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-SpectralCoordinate *SpectralCoordinate::restore(
-					const RecordInterface &container,
-					const String &fieldName)
+SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container,
+                                                const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
 	return 0;
@@ -371,28 +369,22 @@ SpectralCoordinate *SpectralCoordinate::restore(
     if (! subrec.isDefined("system")) {
 	return 0;
     }
+
+
     String system;
     subrec.get("system", system);
     MFrequency::Types sys;
-    if (system == "REST") {
-      sys = MFrequency::REST;
-    } else if (system == "LSR") {
+
+    if (system == "LSR") {
+
+// LSR is perpetuated in old images but is now deprecated in Measures
+// So we must still read old ones not handled by MFrequency::getType
+
       sys = MFrequency::LSRK;
-    } else if (system == "LSRD") {
-      sys = MFrequency::LSRD;
-    } else if (system == "LSRK") {
-      sys = MFrequency::LSRK;
-    } else if (system == "BARY") {
-      sys = MFrequency::BARY;
-    } else if (system == "GEO") {
-      sys = MFrequency::GEO;
-    } else if (system == "TOPO") {
-      sys = MFrequency::TOPO;
-    } else if (system == "GALACTO") {
-      sys = MFrequency::GALACTO;
     } else {
-      return 0;
+      if (!MFrequency::getType(sys, system)) return 0;
     }
+//
     if (!subrec.isDefined("restfreq")) {
 	return 0;
     }
