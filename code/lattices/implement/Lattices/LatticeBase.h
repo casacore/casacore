@@ -110,6 +110,14 @@ public:
   virtual Bool hasLock (FileLocker::LockType) const;
   // </group>
 
+  // Resynchronize the Lattice object with the lattice file.
+  // This function is only useful if no read-locking is used, ie.
+  // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
+  // In that cases the table system does not acquire a read-lock, thus
+  // does not synchronize itself automatically.
+  // <br>By default the function does not do anything at all.
+  virtual void resync();
+
   // Return the name of the current Lattice object. This will generally 
   // be a file name for lattices that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
