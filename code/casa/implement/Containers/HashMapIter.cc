@@ -1,5 +1,5 @@
 //# HashMap.cc: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,8 @@
 template<class key, class val> void ConstHashMapIter<key,val>::toStart() {
     if (!isValid())
 	throw_invalid_hashmapiter_error();
-    for (uInt i=0; i < Container->availableBuckets() && ! Container->blk[i]; i++) ;
+    uInt i;
+    for (i=0; i < Container->availableBuckets() && ! Container->blk[i]; i++) ;
 
     curBucket = i;
     if ( curBucket < Container->availableBuckets() ) {
@@ -51,7 +52,8 @@ template<class key, class val> void ConstHashMapIter<key,val>::step() {
     if ( ! iter.atEnd() )
 	++iter;
     if ( iter.atEnd() ) {
-	for (uInt i=curBucket+1; i < Container->availableBuckets() && ! Container->blk[i]; i++) ;
+        uInt i;
+	for (i=curBucket+1; i < Container->availableBuckets() && ! Container->blk[i]; i++) ;
 	curBucket = i;
 	if ( curBucket < Container->availableBuckets() ) {
 	    iter = Container->blk[curBucket];
@@ -90,7 +92,8 @@ template<class key, class val> Bool ConstHashMapIter<key,val>::atStart() const {
 	return False;
     if ( ! iter.isValid() )
 	return False;
-    for (uInt i=0; i < Container->availableBuckets() && 
+    uInt i;
+    for (i=0; i < Container->availableBuckets() && 
 		       (! Container->blk[i] || ! Container->blk[i]->len()) ; i++) ;
 
     if ( i < Container->availableBuckets() )
@@ -100,7 +103,10 @@ template<class key, class val> Bool ConstHashMapIter<key,val>::atStart() const {
 }
 
 template<class key, class val> ConstHashMapIter<key,val>::ConstHashMapIter(const HashMap<key,val> &st) :
-			atEnd_(False), curBucket(0), Container((HashMap<key,val>*)&st) {
+  Container((HashMap<key,val>*)&st),
+  curBucket(0),
+  atEnd_(False)
+{
     toStart();
 }
  
@@ -112,8 +118,12 @@ ConstHashMapIter<key,val> &ConstHashMapIter<key,val>::operator=(const HashMap<ke
 }
     
 template<class key, class val>
-ConstHashMapIter<key,val>::ConstHashMapIter(const ConstHashMapIter<key,val> &st) : atEnd_(st.atEnd_),
-			iter(st.iter), Container(st.Container), curBucket(st.curBucket) { }
+ConstHashMapIter<key,val>::ConstHashMapIter(const ConstHashMapIter<key,val> &st) :
+  iter(st.iter),
+  Container(st.Container),
+  curBucket(st.curBucket),
+  atEnd_(st.atEnd_)
+{ }
 
 template<class key, class val>
 ConstHashMapIter<key,val> &ConstHashMapIter<key,val>::operator=(const ConstHashMapIter<key,val> &other) {

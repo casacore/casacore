@@ -1,5 +1,5 @@
 //# <HashMap.h>: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,7 +141,7 @@ public:
     //
     // Default constructor creates an invalid Map iterator.
     //
-    ConstHashMapIter() : Container(0), atEnd_(False), curBucket(0) {}
+    ConstHashMapIter() : Container(0), curBucket(0), atEnd_(False) {}
 
   
     //
