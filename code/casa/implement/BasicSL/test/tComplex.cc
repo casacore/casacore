@@ -1,5 +1,5 @@
 //# tComplex.cc: This program tests the Complex class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -157,6 +157,9 @@ main() {
   cout << endl;
 
   cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
+  // reset f1 to nominal values at it will have been corrupted (due to
+  // roundoff) by all the earlier calculations.
+  f1 = Complex(33.417, 13.412);
   cout << "sin(" << f1 << ") = " << sin(f1) << endl;
   cout << "cos(" << f1 << ") = " << cos(f1) << endl;
   cout << "sinh(" << f1 << ") = " << sinh(f1) << endl;
