@@ -5853,3 +5853,4 @@
 16 229 src mv ./trial/implement/Mathematics/AutoDiffRep.cc ./aips/implement/Mathematics/AutoDiffRep.cc
 16 229 src mv ./trial/implement/Mathematics/AutoDiffRep.h ./aips/implement/Mathematics/AutoDiffRep.h
 16 229 src mv ./trial/implement/Functionals/Gaussian1D2.cc ./aips/implement/Functionals/Gaussian1D2.cc
+16 229 src mv ./trial/implement/Functionals/Gaussian1D2.h ./aips/implement/Functionals/Gaussian1D2.h
