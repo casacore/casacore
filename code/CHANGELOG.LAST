@@ -26,3 +26,24 @@ selection of various reference codes for measures
 
 Some bugs have also been fixed but since this is very ugly code
 some new bugs may be present!
+
+change id: 0019
+ author:   Tim Cornwell
+ date:     2000/07/11
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   tabdialog tabdialogtest
+ type:     Code
+ category: Change
+ summary:  Added delete capability
+
+Tabs can now be deleted and new ones inserted in their place. This
+required a substantial change to the internals. A grid of button
+locations is created on construction, and then filled in as needed.
+This could be streamlined a bit in future but the logic is cleaner
+this way.
+
+tabdialog is now used in toolmanager.
+
+I've also changed tabdialogtest to test deletion.
