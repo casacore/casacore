@@ -51,6 +51,7 @@
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <trial/Coordinates.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
@@ -309,7 +310,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 
    momentAxis_p= momentAxisU;
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
+     momentAxis_p = findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << "There is no spectral axis in this image -- specify the axis" << LogIO::POST;
        goodParameterStatus_p = False;
@@ -361,11 +362,12 @@ Bool ImageMoments<T>::setRegion(const IPosition& blcU,
    }
 
 // For now there is no region selection in TiledStepper
-
-   blc_p = 0;
+   
+   blc_p = 0;   
    trc_p = pInImage_p->shape() - 1;
-   inc_p = 1;
-    
+   inc_p = 1;   
+
+
    return True;
 }
  
@@ -759,7 +761,7 @@ Bool ImageMoments<T>::createMoments()
    }
  
    if (momentAxis_p == momentAxisDefault_p) {
-     momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
+     momentAxis_p = findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
        os_p << LogIO::SEVERE << endl << "There is no spectral axis in this image -- specify "
 	 "the axis" << LogIO::POST;
@@ -860,10 +862,10 @@ Bool ImageMoments<T>::createMoments()
    TiledStepper navigator (pInImage_p->shape(), 
                            pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
                            momentAxis_p);
-//      navigator.subSection(blc_p, trc_p);
+//   navigator.subSection(blc_p, trc_p);
 //   IPosition latticeShape = navigator.subLatticeShape();
-
    IPosition latticeShape = navigator.latticeShape();
+
    RO_LatticeIterator<T> imageIterator(*pInImage_p, navigator);
 
 
