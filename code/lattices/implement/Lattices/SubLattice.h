@@ -1,5 +1,5 @@
-//# SubLattice.h: A subset of a Lattice
-//# Copyright (C) 1997
+//# SubLattice.h: A subset of a Lattice or MaskedLattice
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,14 +32,14 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/PixelRegion.h>
+#include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/LatticeRegion.h>
 
 //# Forward Declarations
 
 
 // <summary>
-// A subset of a Lattice
+// A subset of a Lattice or MaskedLattice
 // </summary>
 
 // <use visibility=export>
@@ -49,12 +49,12 @@
 
 // <prerequisite>
 //   <li> <linkto class="Lattice">Lattice</linkto>
-//   <li> <linkto class="PixelRegion">PixelRegion</linkto>
+//   <li> <linkto class="LCRegion">LCRegion</linkto>
 // </prerequisite>
 
 // <synopsis>
 // A SubLattice is a lattice referencing a subset of another lattice
-// by means of a <linkto class="PixelRegion">PixelRegion</linkto> object.
+// by means of a <linkto class="Slicer">Slicer</linkto> object.
 // <br>It is useful when only a subset of a lattice needs to be accessed.
 // <p>
 // When the SubLattice is created from a const <src>Lattice</src> object,
@@ -74,7 +74,7 @@
 //# <todo asof="yyyy/mm/dd">
 //# </todo>
 
-template<class T> class SubLattice: public Lattice<T>
+template<class T> class SubLattice: public MaskedLattice<T>
 {
 public:
   // The default constructor creates a SubLattice that is useless for just
@@ -82,17 +82,39 @@ public:
   // operator.
   SubLattice();
 
-  // Create a SubLattice from the given lattice and region.
-  // The "const Lattice" version yields a non-writable SubLattice,
+  // Create a SubLattice from a Lattice.
+  // This results in a SubLattice without a real mask.
+  // <br>The "const Lattice" version yields a non-writable SubLattice,
   // while for the non-const version one has to specify if the SubLattice
   // should be writable (if the original lattice is non-writable, the
   // SubLattice is always set to non-writable).
+  // <group>
+  SubLattice (const Lattice<T>& lattice);
+  SubLattice (Lattice<T>& lattice, Bool writableIfPossible);
+  // </group>
+
+  // Create a SubLattice from the given MaskedLattice and region.
   // <br>An exception is thrown if the lattice shape used in the region
   // differs from the shape of the lattice.
   // <group>
-  SubLattice (const Lattice<T>& lattice, const PixelRegion& region);
-  SubLattice (Lattice<T>& lattice, const PixelRegion& region,
+  SubLattice (const Lattice<T>& lattice, const LCRegion& region);
+  SubLattice (Lattice<T>& lattice, const LCRegion& region,
 	      Bool writableIfPossible);
+  SubLattice (const MaskedLattice<T>& lattice, const LCRegion& region);
+  SubLattice (MaskedLattice<T>& lattice, const LCRegion& region,
+	      Bool writableIfPossible);
+  // </group>
+  
+  // Create a SubLattice from the given (Masked)Lattice and slicer.
+  // The slicer can be strided.
+  // <br>An exception is thrown if the slicer exceeds the lattice shape.
+  // <group>
+  SubLattice (const Lattice<T>& lattice, const Slicer& slicer);
+  SubLattice (Lattice<T>& lattice, const Slicer& slicer,
+	      Bool writableIfPossible);
+  SubLattice (const MaskedLattice<T>& lattice, const Slicer& slicer);
+  SubLattice (MaskedLattice<T>& lattice, const Slicer& slicer,
+  	      Bool writableIfPossible);
   // </group>
   
   // Copy constructor (reference semantics).
@@ -104,10 +126,21 @@ public:
   SubLattice<T>& operator= (const SubLattice<T>& other);
 
   // Make a copy of the object (reference semantics).
+  // <group>
   virtual Lattice<T>* clone() const;
+  virtual MaskedLattice<T>* cloneML() const;
+  // </group>
 
   // Is the SubLattice writable?
   virtual Bool isWritable() const;
+
+  // Is the SubLattice really masked?
+  // False means that it is only a rectangular box and that it is
+  // not needed to look at the mask.
+  virtual Bool isMasked() const;
+
+  // Get the region/mask object describing this sublattice.
+  virtual const LatticeRegion& region() const;
 
   // Returns the shape of the SubLattice including all degenerate axes
   // (i.e. axes with a length of one).
@@ -124,82 +157,11 @@ public:
   // the same shape, otherwise returns a value of "False".
   virtual Bool conform (const Lattice<T>& other) const;
   
-  // Functions which extract an Array of values from a Lattice. All the
-  // IPosition arguments must have the same number of axes as the underlying
-  // Lattice, otherwise, an exception is thrown. <br>
-  // The parameters are:
-  // <ul>
-  // <li> buffer: a <src>COWPtr<Array<T>></src> or an <src>Array<T></src>. See
-  //      the <linkto class="Lattice">Lattice</linkto> class for an example of
-  //      how to use a COWPtr.
-  // <li> start: The starting position (or Bottom Left Corner), within 
-  //      the Lattice, of the data to be extracted.
-  // <li> shape: The shape of the data to be extracted.  This is not a
-  //      position within the Lattice but the actual shape the buffer will 
-  //      have after this function is called.  This argument added
-  //      to the "start" argument minus one should be the "Top Right Corner".
-  // <li> stride: The increment for each axis.  A stride of
-  //      one will return every data element, a stride of two will return
-  //      every other element.  The IPosition elements may be different for
-  //      each respective axis.  Thus, a stride of IPosition(3,1,2,3) says:
-  //      fill the buffer with every element whose position has a first 
-  //      index between start(0) and start(0)+shape(0), a second index
-  //      which is every other element between start(1) and 
-  //      (start(1)+shape(1))*2, and a third index of every third element 
-  //      between start(2) and (start(2)+shape(2))*3.
-  // <li> section: An alternate way of specifying the start, shape and stride
-  // <li> removeDegenerateAxes: a Bool which dictates whether to remove 
-  //      "empty" axis created in buffer. (e.g. extracting an n-dimensional 
-  //      from an (n+1)-dimensional will fill 'buffer' with an array that 
-  //      has a degenerate axis (i.e. one axis will have a length = 1.) 
-  //      Setting removeDegenerateAxes = True will return a buffer with 
-  //      a shape that doesn't reflect these superfluous axes.)
-  // </ul>
-  // These functions return 'True' if "buffer" is a reference to Lattice data
-  // and 'False' if it is a copy.
-  // <group>   
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start,
-			 const IPosition& shape, const IPosition& stride,
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (Array<T>& buffer, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride, 
-			 Bool removeDegenerateAxes=False);
-  virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
-			 Bool removeDegenerateAxes=False);
-  // </group>   
-  
-  // A function which places an Array of values within this instance of the
-  // Lattice at the location specified by the IPosition "where", incrementing 
-  // by "stride".  All of the IPosition arguments must be of the same
-  // dimensionality as the Lattice.  The sourceBuffer array may (and probably
-  // will) have less axes than the Lattice. The stride defaults to one if
-  // not specified. 
-  // <group>   
-  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
-			 const IPosition& stride);
-  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
-  // </group>   
-  
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
   virtual uInt maxPixels() const;
 
-  // Help the user pick a cursor for most efficient access if they only want
-  // pixel values and don't care about the order or dimension of the
-  // cursor. Usually the tile shape is the best cursor shape, and this can
-  // be obtained using:<br>
-  // <src>IPosition shape = pa.niceCursorShape()</src> where
-  // <src>pa</src> is a PagedArray object.
-  // <br>The default argument is the result of <src>maxPixels()</src>.
-  // <group>
-  virtual IPosition niceCursorShape (uInt maxPixels) const;
-  IPosition niceCursorShape() const
-    { return niceCursorShape (maxPixels()); }
-  // </group>
-
-  // Get a put a single element in the lattice.
+  // Get or put a single element in the lattice.
   // <group>
   virtual T getAt (const IPosition& where) const;
   virtual void putAt (const T& value, const IPosition& where);
@@ -214,10 +176,45 @@ public:
   virtual LatticeIterInterface<T>*
                       makeIter (const LatticeNavigator& navigator) const;
 
+protected:
+  // Do the actual get of the mask data.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+
+  // Do the actual getting of an array of values.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+
+  // Do the actual getting of an array of values.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
+  
+  // Get the best cursor shape.
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Set the various pointer needed to construct the object.
+  // One of the pointers should be zero.
+  // It takes over the pointer and deletes the object in the destructor.
+  void setPtr (Lattice<T>* latticePtr,
+	       MaskedLattice<T>* maskLatPtr,
+	       Bool writableIfPossible);
+
+  // Set the region object.
+  // It also fills in the parent pointer when the SubLattice is taken
+  // from a MaskedLattice.
+  // The default region is the entire lattice.
+  // <group>
+  void setRegion (const LatticeRegion& region);
+  void setRegion (const LCRegion& region);
+  void setRegion (const Slicer& slicer);
+  void setRegion();
+  // </group>
+
+
 private:
-  Lattice<T>*  itsLatticePtr;
-  PixelRegion* itsRegionPtr;
-  Bool         itsWritable;
+  Lattice<T>*       itsLatticePtr;
+  MaskedLattice<T>* itsMaskLatPtr;
+  LatticeRegion     itsRegion;
+  Bool              itsWritable;
 };
 
 
