@@ -62,10 +62,10 @@ class String;
 // (using <src>measures.<table>.directory</src>)
 // mechanism. If not provided they are assumed to reside in standard places
 // (i.e. they are looked for in (udir in following normally given by
-// program as aips/Measures) '.', './data', '~/aips++/data/udir',
+// program as ephemerides or geodetic) '.', './data', '~/aips++/data/udir',
 // '$AIPSROOT/data/udir', '~/aips++/code/trial/apps/measures',
 // '$AIPSROOT/data/udir' (last two only ad interim)). They are also looked
-// for in <src>data/{earth,ephemerides,sources}</src> (root and user aips++).
+// for in <src>data/{ephemerides,geodetic}</src> (root and user aips++).
 //
 // Tables are assumed to have the
 // VS_VERSION, VS_DATE, VS_CREATE and VS_TYPE keywords, and be of type IERS,

@@ -175,10 +175,9 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
 			Int N, const String rfn[],
 			const String &name,
 			const String &rc, const String &dir) {
-  const String path[3] = {
-    "earth/",
-    "ephemerides/",
-    "sources/" };
+  const String path[2] = {
+    "/data/ephemerides/",
+    "/data/geodetic/" };
   String ldir;
   Bool ok = True;
   if (Aipsrc::find(ldir, rc)) {
@@ -191,13 +190,13 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
       ldir = "./data/";
       if (!Table::isReadable(ldir + name)) {
 	Bool found = False;
-	for (Int i=0; i<3; i++) {
-	  ldir = Aipsrc::aipsHome() + "/data/" + path[i];
+	for (Int i=0; i<2; i++) {
+	  ldir = Aipsrc::aipsHome() + path[i];
 	  if (Table::isReadable(ldir + name)) {
 	    found = True;
 	    break;
 	  };
-	  ldir = Aipsrc::aipsRoot() + "/data/" + path[i];
+	  ldir = Aipsrc::aipsRoot() + path[i];
 	  if (Table::isReadable(ldir + name)) {
 	    found = True;
 	    break;
