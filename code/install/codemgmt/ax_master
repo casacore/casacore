@@ -6271,3 +6271,4 @@
 17 206 src rm trial/apps/dish/dishpf.g
 17 206 sys rm libexec/dishpf.g
 17 206 src rm bima/apps/bimatester/bima.g
+17 210 src mv bima/apps/bimatester/tablecomparer.g trial/apps/table/tablecomparer.g
