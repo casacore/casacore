@@ -485,9 +485,11 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 	ftype = TableExprFuncNode::timeFUNC;
     } else if (funcName == "strlength" ||  funcName == "len") {
 	ftype = TableExprFuncNode::strlengthFUNC;
-    } else if (funcName == "upcase"    ||  funcName == "upper") {
+    } else if (funcName == "upcase"    ||  funcName == "upper"  ||
+	       funcName == "toupper"   ||  funcName == "to_upper") {
 	ftype = TableExprFuncNode::upcaseFUNC;
-    } else if (funcName == "downcase"  ||  funcName == "lower") {
+    } else if (funcName == "downcase"  ||  funcName == "lower"  ||
+	       funcName == "tolower"   ||  funcName == "to_lower") {
 	ftype = TableExprFuncNode::downcaseFUNC;
     } else if (funcName == "trim") {
 	ftype = TableExprFuncNode::trimFUNC;
