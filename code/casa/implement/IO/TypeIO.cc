@@ -172,16 +172,16 @@ uInt TypeIO::read (uInt nvalues, DComplex* value)
     return n;
 }
 
-uInt TypeIO::read (uInt nvalues, String* string)
-{
+uInt TypeIO::read (uInt nvalues, String* str) {
     uInt n=0;
     for (uInt i=0; i<nvalues; i++) {
-	uInt len;
-	n += read (1, &len);
-	string[i].alloc (len);                     // resize storage
-	Char* ptr = (Char*)string[i].chars();      // get actual string pointer
-	n += read (len, ptr);                           // read string
-	ptr[len] = '\0';
-    }
+      uInt len;
+      n += read (1, &len);
+      str[i].alloc (len);                     // resize storage
+      Char* ptr = const_cast<Char *>(str[i].chars()); // get actual string
+                                              // pointer -- yack
+      n += read (len, ptr);                   // read string
+      if (len != 0) ptr[len] = '\0';
+    };
     return n;
 }
