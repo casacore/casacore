@@ -295,6 +295,7 @@ private:
 };
 inline Int MSSelector::nrow() const { return selms_p.nrow();}
 inline Int MSSelector::dataDescId() const { return dataDescId_p;}
+inline Table MSSelector::selectedTable() const {return selms_p;}
 inline Bool MSSelector::selected() const {return initSel_p;}
 
 #endif
