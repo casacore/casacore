@@ -98,6 +98,12 @@ Bool RegionHandler::defineRegion (Table& table,
   return True;
 }
 
+Bool RegionHandler::hasRegion (const Table& table, const String& name,
+			       RegionHandler::GroupType type)
+{
+  return ToBool (findRegionGroup (table, name, type, False) >= 0);
+}
+
 Bool RegionHandler::removeRegion (Table& table, const String& name,
 				  RegionHandler::GroupType type,
 				  Bool throwIfUnknown)

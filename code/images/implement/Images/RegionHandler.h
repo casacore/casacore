@@ -102,7 +102,7 @@ public:
 
     // Set the default mask to the mask with the given name.
     // It constructs a ImageRegion object for the new default mask.
-    // If the image table is writable, the setting is persistent by writing
+    // If the table is writable, the setting is persistent by writing
     // the name as a keyword.
     // If the given maskName is the empty string, the default mask is unset.
     static void setDefaultMask (Table& table, const String& maskName);
@@ -111,7 +111,7 @@ public:
     // An empty string is returned if no default mask.
     static String getDefaultMask (const Table& table);
     
-    // Define a region belonging to the image.
+    // Define a region belonging to the table.
     // The group type determines if it stored as a region or mask.
     // If overwrite=False, an exception will be thrown if the region
     // already exists in the "regions" or "masks" keyword.
@@ -122,7 +122,12 @@ public:
 			      RegionHandler::GroupType,
 			      Bool overwrite = False);
     
-    // Get a region belonging to the image.
+    // Does the table have a region with the given name?
+    static Bool hasRegion (const Table& table,
+			   const String& name,
+			   RegionHandler::GroupType = RegionHandler::Any);
+
+    // Get a region belonging to the table.
     // A zero pointer is returned if the region does not exist.
     // The caller has to delete the <src>ImageRegion</src> object created.
     // <br>No exception is thrown if the region does not exist.
@@ -130,7 +135,7 @@ public:
 				   RegionHandler::GroupType = Any,
 				   Bool throwIfUnknown = True);
     
-    // Remove a region belonging to the image.
+    // Remove a region belonging to the table.
     // <br>Optionally an exception is thrown if the region does not exist.
     // <br>A False status is returned if the table is not writable
     static Bool removeRegion (Table& table, const String& name,

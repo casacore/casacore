@@ -310,6 +310,10 @@ public:
 			     RegionHandler::GroupType,
 			     Bool overwrite = False);
 
+  // Does the image have a region with the given name?
+  virtual Bool hasRegion (const String& regionName,
+			  RegionHandler::GroupType = RegionHandler::Any) const;
+
   // Get a region/mask belonging to the image from the given group
   // (which can be Any).
   // <br>Optionally an exception is thrown if the region does not exist.

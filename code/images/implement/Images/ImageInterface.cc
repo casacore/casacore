@@ -155,6 +155,10 @@ void ImageInterface<T>::defineRegion (const String&, const ImageRegion&,
 				      RegionHandler::GroupType, Bool)
 {}
 template <class T>
+Bool ImageInterface<T>::hasRegion (const String&,
+				   RegionHandler::GroupType) const
+{ return False; }
+template <class T>
 ImageRegion* ImageInterface<T>::getImageRegionPtr (const String&,
 						   RegionHandler::GroupType,
 						   Bool) const

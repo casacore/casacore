@@ -725,6 +725,12 @@ void PagedImage<T>::defineRegion (const String& name,
   RegionHandler::defineRegion (table_p, name, region, type, overwrite);
 }
 template<class T> 
+Bool PagedImage<T>::hasRegion (const String& name,
+			       RegionHandler::GroupType type) const
+{
+  return RegionHandler::hasRegion (table_p, name, type);
+}
+template<class T> 
 void PagedImage<T>::removeRegion (const String& name,
 				  RegionHandler::GroupType type,
 				  Bool throwIfUnknown)

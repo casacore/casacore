@@ -222,6 +222,10 @@ public:
   virtual String getDefaultMask() const;
   // </group>
 
+  // Does the image have a region with the given name?
+  virtual Bool hasRegion (const String& regionName,
+			  RegionHandler::GroupType = RegionHandler::Any) const;
+
   // Get a region belonging to the image.
   // An exception is thrown if the region does not exist.
   ImageRegion getRegion (const String& regionName,
