@@ -827,6 +827,7 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
   ROScalarColumn<Float> polangleA(anTab,"POLAA");
   ROScalarColumn<Float> polangleB(anTab,"POLAB");
   // add antenna info to table
+  ant.setPositionRef(MPosition::ITRF);
   Int row=ms_p.antenna().nrow()-1;
   for (Int i=0; i<nAnt; i++) {
     ms_p.antenna().addRow(); row++;
@@ -852,7 +853,6 @@ void NewMSFitsInput::fillAntennaTable(BinaryTable& bt)
     receptorAngle_p(2*i+0)=polangleA(i)*C::degree;
     receptorAngle_p(2*i+1)=polangleB(i)*C::degree;
   }
-  ant.setPositionRef(MPosition::ITRF);
 
   // store these items in non-standard keywords for now
   ant.name().rwKeywordSet().define("ARRAY_NAME",arrnam);
@@ -1016,7 +1016,14 @@ void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     "Input Source id's not sequential, adding empty rows in output"
 				   << LogIO::POST;
   Int outRow=-1;
-  MDirection::Types epochRef;
+
+  // set the DIRECTION MEASURE REFERENCE for appropriate columns
+  MDirection::Types epochRef=MDirection::J2000;
+  if (nearAbs(epoch(id(0)-1),1950.0,0.01)) {
+    epochRef=MDirection::B1950;
+  }
+  msc_p->setDirectionRef(epochRef);
+  
   for (Int inRow=0; inRow<(Int)suTab.nrow(); inRow++) {
     Int fld = id(inRow)-1;
     // add empty rows until the row number in the output matches the source id
@@ -1052,18 +1059,14 @@ void NewMSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     if (nearAbs(epoch(fld),2000.0,0.01)) {
       msField.time().put(fld, MeasData::MJD2000*C::day);
       // assume UTC epoch
-      epochRef=MDirection::J2000;
     } else if (nearAbs(epoch(fld),1950.0,0.01)) {
       msField.time().put(fld, MeasData::MJDB1950*C::day);
-      epochRef=MDirection::B1950;
     } else {
       os << LogIO::SEVERE  << " Cannot handle epoch in SU table: " << 
 	epoch(fld) <<LogIO::POST;
     }
     msField.flagRow().put(fld,False);
   }
-  // set the DIRECTION MEASURE REFERENCE for appropriate columns
-  msc_p->setDirectionRef(epochRef);
 }
 
 // single source fits case
@@ -1075,6 +1078,12 @@ void NewMSFitsInput::fillFieldTable(Int nField)
   if (nField>1) {
     msc_p->fieldId().fillColumn(0);
   }
+  // set the DIRECTION MEASURE REFERENCE for appropriate columns
+  MDirection::Types epochRef=MDirection::J2000;
+  if (nearAbs(epoch_p,1950.0,0.01)) epochRef=MDirection::B1950;
+  msc_p->setDirectionRef(epochRef);
+
+
   NewMSFieldColumns& msField(msc_p->field());
   ms_p.field().addRow();
   Int fld=0;
@@ -1090,19 +1099,14 @@ void NewMSFitsInput::fillFieldTable(Int nField)
   msField.referenceDirMeasCol().put(fld,radecMeas);
 
   // Need to convert epoch in years to MJD time
-  MDirection::Types epochRef;
   if (nearAbs(epoch_p,2000.0,0.01)) {
     msField.time().put(fld, MeasData::MJD2000*C::day);
     // assume UTC epoch
-    epochRef=MDirection::J2000;
   } else if (nearAbs(epoch_p,1950.0,0.01)) {
     msField.time().put(fld, MeasData::MJDB1950*C::day);
-    epochRef=MDirection::B1950;
   } else {
     os << LogIO::SEVERE  << " Cannot handle epoch in Pr Group header: "<< epoch_p <<LogIO::POST;
   }
-  // set the DIRECTION MEASURE REFERENCE for appropriate columns
-  msc_p->setDirectionRef(epochRef);
 }
 
 void NewMSFitsInput::fillFeedTable() {
