@@ -438,23 +438,22 @@ public:
     // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
 
-    // Batch up a lot of transformations. The first (most rapidly varying) axis
-    // of the matrices contain the coordinates. Return the number of failures.
-    // The failures array will be at least as long as the returned number of
-    // failures, and contains the indicies of the failed transformations.
-    // <src>errorMessage()</src> will be set to the error from the FIRST failure. A default
-    // implementation is provided that works with the "single" version of
-    // <src>toWorld</src> and <src>toPixel</src>, but for maximum efficiency these should be
-    // overridden. If failures is longer than the return value, the value
-    // in the excess locations is undefined.
-    // <group>
-    virtual uInt toWorldMany(Matrix<Double> &world,
-                              const Matrix<Double> &pixel,
-                              Vector<Int> &failures) const;
-    virtual uInt toPixelMany(Matrix<Double> &pixel,
-                              const Matrix<Double> &world,
-                              Vector<Int> &failures) const;
-    // </group>
+     // Batch up a lot of transformations. The first (most rapidly varying) axis
+     // of the matrices contain the coordinates. Return the number of failures.
+     // The failures array will be at least as long as the returned number of
+     // failures, and contains the indicies of the failed transformations.
+     // <src>errorMessage()</src> will be set to the error from the FIRST failure. 
+     // If failures is longer than the return value, the value
+     // in the excess locations is undefined.
+     // <group>
+     virtual uInt toWorldMany(Matrix<Double> &world,
+                               const Matrix<Double> &pixel,
+                               Vector<Int> &failures) const;
+     virtual uInt toPixelMany(Matrix<Double> &pixel,
+                               const Matrix<Double> &world,
+                               Vector<Int> &failures) const;
+     // </group>
+
 
 
     // Mixed pixel/world coordinate conversion.
