@@ -311,7 +311,7 @@ Parentheses can be used to group subexpressions.
 \htmlref{table keywords}{TAQL:KEYWORDS},
 \htmlref{constants}{TAQL:CONSTANTS},
 \htmlref{functions}{TAQL:FUNCTIONS},
-\htmlref{sets}{TAQL:SETS}, and
+\htmlref{sets and intervals}{TAQL:SETS}, and
 \htmlref{subqueries}{TAQL:SUBQUERIES}.
 \\The \htmlref{index operator}{TAQL:INDEXING} can be used to take a
 single element or a subsection from an array expression.
@@ -561,7 +561,7 @@ These functions can be used on a scalar or an array argument.
   \item[ \texttt{DateTime DATETIME(string),  DateTime CTOD(string)} ]
        Parse the string and convert it to a date/time. The syntax of
        date/time is explained in class
-       \htmladdnormallink{MVTime}{../../aips/implement/Measures/VelocityMachine.html}.
+       \htmladdnormallink{MVTime}{../../aips/implement/Quanta/MVTime.html}.
   \item[ \texttt{DateTime MJDTODATE(double)} ]
        The double value, which has to be a MJD (ModifiedJulianDate), is
        converted to a DateTime.
@@ -705,10 +705,13 @@ They are meant for an array. but can also be used for a scalar.
 \end{description}
 
 \subsubsection{Array to array reduction functions}
-These functions reduce an array to a smaller array by collapsing the
-the given axes using the function. The axes are the last argument(s).
+These functions reduce an array to a smaller array by collapsing
+the given axes using the given function. The axes are the last argument(s).
 They can be given in two ways:
 \\- As a single set argument; for example, \texttt{maxs(ARRAY,[1:2])}
+\\  It has the advantage that the the end value can be left out. This
+if a column can contain differently dimensioned arrays, giving
+\texttt{maxs(ARRAY,[2:])} always gives a 1-dim result.
 \\- As individual function arguments; for example, \texttt{maxs(ARRAY,1,2)}
 \\For example, using
 \texttt{MINS(array,1,2)} for a 3-dim array results in a 1-dim array
@@ -907,7 +910,7 @@ The second form results in reading the entire array.
 \\From this example it should be clear that indexing an array
 expression has to be done with care.
 
-\subsection{\label{TAQL:SETS}Sets}
+\subsection{\label{TAQL:SETS}Sets and intervals}
 As in SQL the operator \texttt{IN} can be used to do a selection
 based on an array or a set. E.g.
 \begin{verbatim}
@@ -976,7 +979,7 @@ The following examples show how bounded and half-bounded,
 \end{enumerate}
 Each element in a set can have its own form, i.e., one element can
 be a single value while another can be an interval.
-When a set consists of single or bounded
+When a set consists of single or bounded discrete
 \texttt{start:end:incr} values only, the set will be expanded to an
 array.
 This makes it possible for array operators and functions
@@ -1067,7 +1070,9 @@ in the \htmlref{syntax section}{TAQL:GIVING}). E.g.
 The set expression in the GIVING clause is filled with the
 results from the subquery and used in the main query. So when
 the subquery results in 5 rows, the resulting set contains 5
-intervals.
+intervals. Thereafter the resulting intervals are sorted and combined
+where possible. In this way the minimum number of intervals have to be
+examined by the main query.
 
 \item
 In AIPS++ the other table will often be the name of a subtable,
