@@ -3655,3 +3655,4 @@
 13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanMasked.cc
 13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanModel.cc
 13 377 src rm trial/implement/MeasurementEquations/test/tHogbomCleanStokes.cc
+13 379 src mv trial/apps/measures/measures_data.help trial/apps/measures/measuresdata.help
