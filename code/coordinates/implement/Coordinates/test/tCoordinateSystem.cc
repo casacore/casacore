@@ -922,22 +922,34 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
    {
       cSys.restoreOriginal();
-      Vector<Int> originShift(cSys.nPixelAxes());
-      Vector<Int> pixinc(cSys.nPixelAxes());
+      Vector<Float> originShift(cSys.nPixelAxes());
+      Vector<Float> pixinc(cSys.nPixelAxes());
 //
       {
         originShift = 1.0;
         pixinc = 1.0;
         Vector<Int> newShape;
+//
         CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
         if (cSys.nCoordinates() != cSys2.nCoordinates()) {
-           throw(AipsError("Failed originShift creation test"));
+           throw(AipsError("Failed originShift creation test 1"));
         }
         Vector<Double> pixel = cSys.referencePixel();
         Vector<Double> pixel2 = cSys2.referencePixel() + 1.0;
         pixel2(stokesPixelAxis) = pixel(stokesPixelAxis);
         if (!allNear(pixel, pixel2, 1e-6)) {
-           throw(AipsError("Failed originShift test"));
+           throw(AipsError("Failed originShift test 1"));
+        }   
+//
+        CoordinateSystem cSys3(cSys);
+        cSys3.subImageInSitu (originShift, pixinc, newShape);
+        if (cSys.nCoordinates() != cSys3.nCoordinates()) {
+           throw(AipsError("Failed originShift creation test 2"));
+        }
+        Vector<Double> pixel3 = cSys3.referencePixel() + 1.0;
+        pixel3(stokesPixelAxis) = pixel(stokesPixelAxis);
+        if (!allNear(pixel, pixel3, 1e-6)) {
+           throw(AipsError("Failed originShift test 2"));
         }   
       }
 //
@@ -945,15 +957,30 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
         originShift = 1.0;
         pixinc = 2.0;
         Vector<Int> newShape;
-        CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
-//   
-         Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
-         Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
-         Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
-                                         IPosition(1,oldStokes.nelements()-1),
-                                         IPosition(1,2));
-         if (!allEQ(newStokes, newStokes2)) {
-            throw(AipsError("Failed Stokes originShift Stokes test"));
+//
+        {
+           CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
+           Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
+           Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
+           Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
+                                              IPosition(1,oldStokes.nelements()-1),
+                                              IPosition(1,2));
+           if (!allEQ(newStokes, newStokes2)) {
+              throw(AipsError("Failed Stokes originShift Stokes test"));
+           } 
+        }
+//
+        {
+           CoordinateSystem cSys2(cSys);
+           cSys2.subImageInSitu (originShift, pixinc, newShape);
+           Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
+           Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
+           Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
+                                              IPosition(1,oldStokes.nelements()-1),
+                                              IPosition(1,2));
+           if (!allEQ(newStokes, newStokes2)) {
+              throw(AipsError("Failed Stokes originShift Stokes test"));
+           }
          }
       }
    }
