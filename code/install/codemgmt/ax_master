@@ -2021,3 +2021,4 @@
 08 202 src rm trial/implement/Functionals/BinaryArithEnums.h
 08 202 src rm trial/implement/Functionals/Lorentzian1D.cc
 08 206 src rm aips/implement/Functionals/BinaryArithEnums.h
+08 206 src rm aips/implement/Functionals/test/tBinaryOperation.cc
