@@ -1,5 +1,5 @@
 //# ArrayLogical.cc: Element by element logical operations on arrays.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,10 +29,6 @@
 #include <aips/Arrays/ArrayError.h>
 //# For scalar near() functions.
 #include <aips/Mathematics/Math.h>
-
-#ifdef __GNUG__
-typedef Array<Bool> gpp_arraylogical_bug1;
-#endif
 
 #define ARRLOG_B_ALLFUNC_AA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \

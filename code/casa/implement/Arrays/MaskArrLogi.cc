@@ -1,5 +1,5 @@
 //# MaskArrLogi.cc: Element by element logical operations on arrays.
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,11 +28,6 @@
 #include <aips/Arrays/MaskArrLogi.h>
 #include <aips/Arrays/ArrayError.h>
 #include <aips/Arrays/ArrayLogical.h>
-
-#if defined(__GNUG__)
-typedef MaskedArray<Bool> gpp_bug1;
-typedef Array<Bool> gpp_bug2;
-#endif
 
 #define MARRLOGI_B_ALLFUNC_MA(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
