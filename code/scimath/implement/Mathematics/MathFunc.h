@@ -79,7 +79,7 @@ float sphfn(Int ialf, Int im, float eta);
 
 // <summary>
 // Enum used to identify function type for
-// <linkto class=MathFunc>MathFunc</linkto> class
+// MathFunc class
 // </summary>
 
 // <synopsis>
