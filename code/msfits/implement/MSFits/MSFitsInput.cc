@@ -61,6 +61,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/Table.h>
@@ -70,6 +71,8 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
+#include <aips/Tables/TiledDataStMan.h>
+#include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Utilities/Fallible.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Regex.h>
@@ -224,6 +227,7 @@ void MSFitsInput::readFitsFile()
   getPrimaryGroupAxisInfo();
 
   Bool useTSM=True;
+
   setupMeasurementSet(msFile_p, useTSM);
           
   // fill the OBSERVATION table
@@ -480,10 +484,11 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   // still create a column that has a variable shape as this will permit MS's
   // with other shapes to be appended.
   MS::addColumnToDesc(td, MS::DATA, 2);
+
   // add this optional column because random group fits has a
   // weight per visibility
   MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
-  
+
   if (useTSM) {
     td.defineHypercolumn("TiledData",3,
  			 stringToVector(MS::columnName(MS::DATA)));
@@ -491,10 +496,14 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
  			 stringToVector(MS::columnName(MS::FLAG)));
     td.defineHypercolumn("TiledFlagCategory",4,
  			 stringToVector(MS::columnName(MS::FLAG_CATEGORY)));
-    td.defineHypercolumn("TiledWeight",3,
+    td.defineHypercolumn("TiledWgtSpectrum",3,
  			 stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
     td.defineHypercolumn("TiledUVW",2,
  			 stringToVector(MS::columnName(MS::UVW)));
+    td.defineHypercolumn("TiledWgt",2,
+			 stringToVector(MS::columnName(MS::WEIGHT)));
+    td.defineHypercolumn("TiledSigma", 2,
+			 stringToVector(MS::columnName(MS::SIGMA)));
   }
   SetupNewTable newtab(MSFileName, td, Table::New);
   
@@ -505,7 +514,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   // set a reasonable bucketsize
   StandardStMan aipsStMan(32768);
   newtab.bindColumn(MS::columnName(MS::ANTENNA2), aipsStMan);
-  
+
   if (useTSM) {
     Int tileSize=nChan/10+1;
     // make the tile about 128k big
@@ -518,17 +527,24 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
     TiledShapeStMan tiledStMan1fc("TiledFlagCategory",
 				  IPosition(4,nCorr,tileSize,1,
  					   16384/nCorr/tileSize));
-    TiledShapeStMan tiledStMan2("TiledWeight",
+    TiledShapeStMan tiledStMan2("TiledWgtSpectrum",
  				IPosition(3,nCorr, tileSize,
  					  16384/nCorr/tileSize));
     TiledColumnStMan tiledStMan3("TiledUVW",
  				 IPosition(2,3,1024));
+    TiledShapeStMan tiledStMan4("TiledWgt", 
+				IPosition(2,nCorr,16384/nCorr/tileSize));
+    TiledShapeStMan tiledStMan5("TiledSigma", 
+				IPosition(2,nCorr,16384/nCorr/tileSize));
+
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
     newtab.bindColumn(MS::columnName(MS::DATA),tiledStMan1);
     newtab.bindColumn(MS::columnName(MS::FLAG),tiledStMan1f);
     newtab.bindColumn(MS::columnName(MS::FLAG_CATEGORY),tiledStMan1fc);
     newtab.bindColumn(MS::columnName(MS::WEIGHT_SPECTRUM),tiledStMan2);
     newtab.bindColumn(MS::columnName(MS::UVW),tiledStMan3);
+    newtab.bindColumn(MS::columnName(MS::WEIGHT),tiledStMan4);
+    newtab.bindColumn(MS::columnName(MS::SIGMA),tiledStMan5);
   } else {
     newtab.bindColumn(MS::columnName(MS::DATA),aipsStMan);
     newtab.bindColumn(MS::columnName(MS::FLAG),aipsStMan);
@@ -807,7 +823,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       msc.flagCategory().put(row,flagCat);
       Bool rowFlag=allEQ(flag,True);
       if (rowFlag!=lastRowFlag) {
- 	msc.flagRow().put(row,rowFlag);
+	msc.flagRow().put(row,rowFlag);
  	lastRowFlag=rowFlag;
       }
 
@@ -874,6 +890,20 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   // fill the receptorAngle with defaults, just in case there is no AN table
   receptorAngle_p=0;
   // set the Measure References
+
+
+  // Extract and print data manager cache statistics 
+  // for flag and weight spectrum
+  // ROTiledStManAccessor dmFlag(ms_p, "TiledFlag");
+  //  cout << "TiledFlag statistics" << endl;
+  //  dmFlag.showCacheStatistics(cout);
+  //  cout << "---------------------------------------------------" << endl;
+
+  //  cout << endl;
+  //  cout << "TiledWgtSpectrum statistics" << endl;
+  //  ROTiledStManAccessor dmWeight(ms_p, "TiledWgtSpectrum");
+  //  dmWeight.showCacheStatistics(cout);
+  //  cout << "---------------------------------------------------" << endl;
 }
 
 void MSFitsInput::fillAntennaTable(BinaryTable& bt)
