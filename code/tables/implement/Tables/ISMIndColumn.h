@@ -1,5 +1,5 @@
 //# ISMIndColumn.h: A column in Incremental storage manager for indirect arrays
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -225,6 +225,9 @@ public:
 
     // Let the column object open an existing file.
     virtual void getFile (uInt nrrow);
+
+    // Flush and optionally fsync the data.
+    virtual Bool flush (uInt nrrow, Bool fsync);
 
     // Let the column reopen its data files for read/write access.
     virtual void reopenRW();
