@@ -29,12 +29,12 @@
 #include <aips/Tables/StandardStMan.h>
 
 
-StandardStMan::StandardStMan (uInt aBucketSize, uInt aCacheSize)
+StandardStMan::StandardStMan (Int aBucketSize, uInt aCacheSize)
 : SSMBase (aBucketSize, aCacheSize)
 {}
 
 StandardStMan::StandardStMan (const String& aDataManagerName,
-			      uInt aBucketSize,
+			      Int aBucketSize,
 			      uInt aCacheSize)
 : SSMBase (aDataManagerName, aBucketSize, aCacheSize)
 {}

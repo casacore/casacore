@@ -88,13 +88,11 @@ class SSMBase: public DataManager
 {
 public:
   // Create a Standard storage manager without default name SSM.
-  // The bucket size has to be given in bytes.
-  explicit SSMBase (uInt aBucketSize=32768, uInt aCacheSize=1);
+  explicit SSMBase (Int aBucketSize=0, uInt aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
-  // The bucket size has to be given in bytes.
   explicit SSMBase (const String& aDataManName,
-		    uInt aBucketSize=32768,
+		    Int aBucketSize=0,
 		    uInt aCacheSize=1);
   
   ~SSMBase();
@@ -132,7 +130,7 @@ public:
   // Show Statistics of the Base offsets/index etc.
   void showBaseStatistics (ostream & anOs) const;
 
-  // Get the bucket size (in bytes).
+  // Get the bucket size.
   uInt getBucketSize() const;
   
   // Have the data to be stored in canonical format?
@@ -348,6 +346,7 @@ private:
   
   // The bucket size.
   uInt itsBucketSize;
+  uInt itsBucketRows;
   
   // The assembly of all columns.
   PtrBlock<SSMColumn*> itsPtrColumn;

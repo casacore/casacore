@@ -137,19 +137,30 @@
 class StandardStMan : public SSMBase
 {
 public:
-    // Create an Standard storage manager with the given name.
-    // If no name is used, it is set to "StandardStMan"
+    // Create a Standard storage manager with the given name.
+    // If no name is used, it is set to "SSM"
     // The name can be used to construct a
     // <linkto class=ROStandardStManAccessor>ROStandardStManAccessor
     // </linkto> object (e.g. to set the cache size).
     // <br>
-    // The bucket size has to be given in bytes and the cache size in buckets.
-    // The default bucketsize will be 32768 bytes
+    // The cache size has to be given in buckets.
+    // <br>
+    // The bucket size can be given in 2 ways:
+    // <br>- A positive number gives the bucket size in bytes.
+    // The number of rows per bucket will be calculated from it.
+    // <br>- A negative number gives the number of rows per bucket.
+    // The bucket size in bytes will be calculated from it.
+    // Note that in this way the maximum bucketsize is 65536 (minimum is 256).
+    // <br>- The default 0 means that 32 rows fill be stored in a bucket.
+    // <br>Note that the default is only suitable for small tables.
+    // In general it makes sense to give the expected number of table rows.
+    // In that way the buckets will be small enough for small tables
+    // and not too small for large tables.
     // <group>
-    explicit StandardStMan (uInt aBucketSize = 32768,
+    explicit StandardStMan (Int aBucketSize = 0,
 			    uInt aCacheSize = 1);
     explicit StandardStMan (const String& dataManagerName,
-			    uInt aBucketSize = 32768,
+			    Int aBucketSize = 0,
 			    uInt aCacheSize = 1);
     // </group>
 
