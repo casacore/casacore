@@ -1,5 +1,5 @@
 //# NullTable.cc: Class indicating a null Table object
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,7 +114,7 @@ Bool NullTable::isWritable() const
   return False;
 }
 
-void NullTable::deepCopy (const String&, int, Bool) const
+void NullTable::deepCopy (const String&, const Record&, int, Bool) const
 {
   throwError ("deepCopy");
 }
