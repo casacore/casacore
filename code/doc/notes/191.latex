@@ -10,10 +10,10 @@
 
 \newcommand{\definetable}[2]
 {
-        %\clearpage
+        \clearpage
 	\vfill
         %\eject
-	%\subsection{#1}
+	\subsection{#1}
         \vspace{0.15in}
         \small
 
