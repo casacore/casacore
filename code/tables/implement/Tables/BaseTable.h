@@ -43,6 +43,7 @@ class TableLock;
 class BaseColumn;
 class ColumnDesc;
 class TableRecord;
+class Record;
 class TableExprNode;
 class BaseTableIterator;
 class DataManager;
@@ -223,9 +224,15 @@ public:
     Bool isMarkedForDelete() const
 	{ return delete_p; }
     
-    // Get access to the table description.
+    // Get the table description.
     const TableDesc& tableDesc() const
-	{ return *tdescPtr_p; }
+	{ return (tdescPtr_p == 0  ?  makeTableDesc() : *tdescPtr_p); }
+
+    // Get the actual table description.
+    virtual TableDesc actualTableDesc() const = 0;
+
+    // Get the data manager info.
+    virtual Record dataManagerInfo() const = 0;
 
     // Get readonly access to the table keyword set.
     virtual TableRecord& keywordSet() = 0;
@@ -345,17 +352,25 @@ public:
 			    const DataManager& dataManager);
     // </group>
 
-    // Test if a column can be removed.
-    virtual Bool canRemoveColumn (const String& columnName) const;
+    // Test if columns can be removed.
+    virtual Bool canRemoveColumn (const Vector<String>& columnNames) const = 0;
 
-    // Remove a column.
-    virtual void removeColumn (const String& columnName);
+    // Remove columns.
+    virtual void removeColumn (const Vector<String>& columnNames) = 0;
+
+    // Check if the set of columns can be removed.
+    // It checks if columns have not been specified twice and it
+    // checks if they exist.
+    // If the flag is set an exception is thrown if errors are found.
+    Bool checkRemoveColumn (const Vector<String>& columnNames,
+			    Bool throwException) const;
 
     // Test if a column can be renamed.
-    virtual Bool canRenameColumn (const String& columnName) const;
+    virtual Bool canRenameColumn (const String& columnName) const = 0;
 
     // Rename a column.
-    virtual void renameColumn (const String& newName, const String& oldName);
+    virtual void renameColumn (const String& newName,
+			       const String& oldName) = 0;
 
     // Get a vector of row numbers.
     // By default it returns the row numbers 0..nrrow()-1.
@@ -465,6 +480,12 @@ private:
     // Get the rownrs of the table in ascending order to be
     // used in the logical operation on the table.
     uInt logicRows (uInt*& rownrs, Bool& allocated);
+
+    // Make an empty table description.
+    // This is used if one asks for the description of a NullTable.
+    // Creating an empty TableDesc in the NullTable takes too much time.
+    // Furthermore it causes static initialization order problems.
+    const TableDesc& makeTableDesc() const;
 };
 
 
