@@ -1,5 +1,5 @@
 //# MeasurementSet.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1996,1997,1998,2000,2001
+//# Copyright (C) 1996,1997,1998,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,6 +44,8 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ForwardCol.h>
+#include <aips/Tables/IncrementalStMan.h>
+#include <aips/Tables/StandardStMan.h>
 #include <aips/Utilities/String.h>
 
 MeasurementSet::MeasurementSet():hasBeenDestroyed_p(True) { }
@@ -352,7 +354,7 @@ void MeasurementSet::init()
 		  "Observation subtable. Project, observer, schedule.");
 	// POINTING
 	keyMapDef(POINTING,"POINTING",TpTable,
-		  "Pointing subrable. Antenna poining info.");
+		  "Pointing subtable. Antenna pointing info.");
 	// POLARIZATION
 	keyMapDef(POLARIZATION,"POLARIZATION",TpTable,
 		  "Polarization set up subtable");
@@ -537,6 +539,12 @@ void MeasurementSet::createDefaultSubtables(Table::TableOption option)
 			       Table(observationSetup));
     SetupNewTable pointingSetup(pointingTableName(),
 			       MSPointing::requiredTableDesc(),option);
+    // Pointing table can be large, set some sensible defaults for storageMgrs
+    IncrementalStMan ismPointing ("ISMPointing");
+    StandardStMan ssmPointing("SSMPointing",32768);
+    pointingSetup.bindAll(ismPointing,True);
+    pointingSetup.bindColumn(MSPointing::columnName(MSPointing::ANTENNA_ID),
+			     ssmPointing);
     rwKeywordSet().defineTable(MS::keywordName(MS::POINTING),
 			       Table(pointingSetup));
     SetupNewTable polarizationSetup(polarizationTableName(),
@@ -658,8 +666,4 @@ void MeasurementSet::checkVersion()
     throw(AipsError("These data are not in MSv2 format - use ms1toms2 to convert"));
   }
 }
-
-
-
-
 
