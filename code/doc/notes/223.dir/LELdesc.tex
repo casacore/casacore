@@ -447,23 +447,21 @@ The user can optimize by specifying the expression carefully.
 It is strongly recommended to combine scalars into a subexpression to
 avoid unnecessary scalar-lattice operations. E.g.
 \begin{verbatim}
-  mean(lat1) * lat1 * pi()
+  2 * lat1 * pi()
 \end{verbatim}
 should be written as
 \begin{verbatim}
-  lat1 * (mean(lat1) * pi())
+  lat1 * (2 * pi())
+or
+  2 * pi() * lat1
 \end{verbatim}
-because in the latter way the scalars form a scalar subexpression
+because in that way the scalars form a scalar subexpression
 which is calculated only once. Note that the subexpression parentheses
-are strongly recommended. In general one cannot tell how the
-expression tree is built, thus if LEL recognizes scalar
-subexpressions. E.g. in
-\begin{verbatim}
-  mean(lat1) * pi() * lat1
-\end{verbatim}
-the tree may be such that the second multiplication is done before
-the first one.
-\\In the future LEL will be optimized to shuffle the operands where needed.
+are needed in the first case, because multiplications are done from
+left to right.
+\\In the future LEL will be optimized to shuffle the operands when
+possible and needed.
+
 \item
 It is important to be careful with the automatic data type promotion
 of single precision lattices. Several scalar functions (e.g. pi)
@@ -498,6 +496,24 @@ or \texttt{POW(LAT,0.5)}
 than
 \\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
 \texttt{SQRT} function.
+
+\item
+LEL can be used with disk-based lattices and/or memory-based lattices.
+When used with memory-based lattices it is better to make
+subexpressions the first operand in another subexpression or a
+function. E.g.
+\\\texttt{lat1*lat2 + lat3}
+\\is better than
+\\\texttt{lat3 + lat1*lat2}
+\\The reason is that in the first case no copy needs to be made of the
+lattice data which already reside in memory. All LEL operators and
+functions try to reference the data of their latter operands instead
+of making a copy.
+\\In general this optimization does not apply to LEL expression.
+However, when using the true \htmlref{C++ interface}{LEL::GLISHC}
+to classes like \texttt{LatticeExprNode}, one can easily use
+memory-based lattices. In that case it can be advantageous to pay
+attention to this optimization.
 
 \end{itemize}
 
