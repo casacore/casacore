@@ -1,5 +1,5 @@
 //# Timer.cc: Timing facility
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ void Timer::mark()
 #if defined (DOS) || defined (MSDOS)
  usage0 = clock();
  ftime(&real0);
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  real0 = times (&usage0);
 #else
  getrusage(0, &usage0);
@@ -67,7 +67,7 @@ double Timer::real() const
  ms = ms * 0.001 + s;
  return (ms);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -101,7 +101,7 @@ double Timer::user() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -126,7 +126,7 @@ double Timer::system() const
 #if defined (DOS) || defined (MSDOS)
  return(0L);
 
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
 
  clock_t real1;       // current time
  tms usage1;          // current tms structure
@@ -157,7 +157,7 @@ double Timer::all() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -190,7 +190,7 @@ register clock_t  usage1;
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -216,7 +216,7 @@ double Timer::system_usec() const
 #if defined (DOS) || defined (MSDOS)
  return(0.0);
 
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 
@@ -247,7 +247,7 @@ double Timer::all_usec() const
  else   /* error: Processor time not available */
     return (0.0);
  
-#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined (AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
  clock_t real1;       // current time
  tms usage1;          // current tms structure
 

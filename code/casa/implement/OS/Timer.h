@@ -1,5 +1,5 @@
 //# Timer.h:  measure the time it takes to execute parts of a program
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,10 +46,6 @@ extern "C" {
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
 #include <sys/times.h>
 #include <unistd.h>
-#if defined(AIPS_LINUX)
-#include <sys/timeb.h>
-#include <sys/resource.h>
-#endif
 
 #else
 #include <sys/timeb.h>
@@ -57,7 +53,6 @@ extern "C" {
 extern "C" int getrusage(int, struct rusage*);
 extern "C" int ftime(struct timeb*);
 #include <sys/resource.h>
-
 #endif
 
 #include <aips/aips.h>
@@ -188,7 +183,7 @@ private:
 #if defined(DOS) || defined(MSDOS)
     clock_t usage0;
     timeb   real0;          //# elapsed real time at last mark
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__)
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
     tms     usage0;         //# tms structure at last mark
     clock_t real0;          //# elapsed real time at last mark
 #else
