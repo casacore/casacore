@@ -93,3 +93,25 @@ I also added:
                 execution
  </description>
 </change>
+
+<change id=0090>
+ <author> Wim Brouw </author>
+ <date> 2001/04/05 </date>
+ <avers> 1.5 </avers>
+ <area> System </area>
+ <package> System </package>
+ <module> UPlock </module>
+ <type> Code Documentation </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Added locker info
+ </summary>
+ <description>
+UPlock now shows the locker as well, and has some options.
+E.g.:
+UPlock -al x
+will now produce a list of all RCS locked files, the revision and the
+locker.
+ </description>
+</change>
