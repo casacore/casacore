@@ -3279,3 +3279,4 @@
 13 189 src mv atnf/implement/pks/Monitor.h atnf/apps/pksmonitor/Monitor.h
 13 189 src mv atnf/implement/pks/Monitor.cc atnf/apps/pksmonitor/Monitor.cc
 13 208 src rm aips/glish/glish/clients/make/config.h
+13 210 src mv doc/user/SythesisRef.dir doc/user/SynthesisRef.dir
