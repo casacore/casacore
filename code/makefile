@@ -112,8 +112,8 @@ docscan docextr :
 	  done
 
 changelogs :
-	-@ rm -rf $(AIPSROOT)/docs/project/changelogs
-	   mkdir $(AIPSROOT)/docs/project/changelogs
+	-@ rm -rf $(AIPSROOT)/docs/project/releasenotes/changelogs
+	   mkdir $(AIPSROOT)/docs/project/releasenotes/changelogs
 	   buildchangelog -split module -dir $(AIPSROOT)/docs/project/releasenotes/changelogs $(AIPSROOT)/code
 
 runtests :
