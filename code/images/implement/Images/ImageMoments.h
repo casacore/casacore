@@ -33,7 +33,7 @@
 
 #include <aips/aips.h>
 
-template <class T> class PagedImage;
+template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class ArrayLattice;
 class LogIO;
@@ -47,7 +47,7 @@ class IPosition;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> PagedImage
+//   <li> ImageInterface
 // </prerequisite>
 //
 // <etymology>
@@ -188,7 +188,7 @@ class IPosition;
 // </note>
 //
 // <note role=caution>
-// Note that if the <src>PagedImage</src> goes out of scope, this
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
 // class will retrieve and generate rubbish as it just maintains a pointer
 // to the image.
 // </note>
@@ -210,7 +210,6 @@ class IPosition;
 //        range and number of bins)
 //   <li> better algorithm for seeing if spectrum is pure noise
 //   <li> Make this class extensible so users could add their own method.
-//   <li> Can I write it in terms of ImageInterface rather than PagedImage ?
 // </todo>
  
 
@@ -219,11 +218,17 @@ template <class T> class ImageMoments
 public:
 
 
-// Constructor takes the image and a <src>LogIO</src> object for logging purposes.
-   ImageMoments (const PagedImage<T>& image, LogIO &os);
+// Constructor takes an image and a <src>LogIO</src> object for logging purposes.
+   ImageMoments (const ImageInterface<T>& image, LogIO &os);
+
+// Copy constructor
+   ImageMoments(const ImageMoments<T> &other);
 
 // Destructor
   ~ImageMoments();
+
+// Assignment operator
+   ImageMoments<T> &operator=(const ImageMoments<T> &other);
 
 // This <src>enum MomentTypes</src> is provided for use with the
 // <src>setMoments</src> function.  It gives the allowed moment
@@ -450,9 +455,9 @@ enum KernelTypes {
    Bool createMoments();
 
 
-// Set a new PagedImage.  A return value of <src>False</src> indicates the 
+// Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
-   Bool setNewImage (const PagedImage<T>& image);
+   Bool setNewImage (const ImageInterface<T>& image);
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -476,31 +481,30 @@ private:
 // set functions.
 
    LogIO& os_p;
-   const PagedImage<T>* pInImage_p;
-   const CoordinateSystem* pInCoordSys_p;
-   Vector<Double> worldOut_p;
-   Vector<Double> pixelIn_p;
+   const ImageInterface<T>* pInImage_p;
 
-   Vector<Int> moments_p;
    Int momentAxis_p;
-   Vector<Int> smoothAxes_p;
+   Int momentAxisDefault_p;
+
    Vector<Int> kernelTypes_p;
    Vector<Double> kernelWidths_p;   
+   Vector<Int> nxy_p;
+   Vector<Double> pixelIn_p;
+   Vector<Int> moments_p;
+   Vector<Float> range_p;
+   Vector<Int> smoothAxes_p;
+   Vector<Double> worldOut_p;
+
    Double peakSNR_p;
    Double stdDeviation_p;
+
+   String device_p; 
    String out_p;
    String psfOut_p;
    String smoothOut_p;
-   String device_p; 
-   Vector<Int> nxy_p;
-
-
-// These are internals
 
    Bool goodParameterStatus_p;
    Bool doWindow_p, doFit_p, doAuto_p, doSmooth_p, noInclude_p, noExclude_p;
-   Vector<Float> range_p;
-   Int momentAxisDefault_p;
 
 
 

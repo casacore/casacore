@@ -47,6 +47,7 @@
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <trial/Coordinates.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageMoments.h>
@@ -67,7 +68,7 @@ extern "C" {
 
 
 template <class T> 
-ImageMoments<T>::ImageMoments (const PagedImage<T>& image, 
+ImageMoments<T>::ImageMoments (const ImageInterface<T>& image, 
                                LogIO &os) : os_p(os)
 //
 // Constructor. 
@@ -93,6 +94,44 @@ ImageMoments<T>::ImageMoments (const PagedImage<T>& image,
    }
 }
 
+template <class T>
+ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
+                      : os_p(other.os_p),
+                        momentAxis_p(other.momentAxis_p),
+                        momentAxisDefault_p(other.momentAxisDefault_p),
+                        kernelTypes_p(other.kernelTypes_p),
+                        kernelWidths_p(other.kernelWidths_p),
+                        nxy_p(other.nxy_p),
+                        pixelIn_p(other.pixelIn_p),
+                        moments_p(other.moments_p),
+                        range_p(other.range_p),
+                        smoothAxes_p(other.smoothAxes_p),
+                        worldOut_p(other.worldOut_p),
+                        peakSNR_p(other.peakSNR_p),
+                        stdDeviation_p(other.stdDeviation_p),
+                        device_p(other.device_p),
+                        out_p(other.out_p),
+                        psfOut_p(other.psfOut_p),
+                        smoothOut_p(other.smoothOut_p),
+                        goodParameterStatus_p(other.goodParameterStatus_p),
+                        doWindow_p(other.doWindow_p),
+                        doFit_p(other.doFit_p),
+                        doAuto_p(other.doAuto_p),
+                        doSmooth_p(other.doSmooth_p),
+                        noInclude_p(other.noInclude_p),
+                        noExclude_p(other.noExclude_p)
+//
+// Copy constructor
+//
+{
+   
+// Assign to image pointer 
+   
+   pInImage_p = other.pInImage_p;
+   
+}
+
+
 
 template <class T> 
 ImageMoments<T>::~ImageMoments ()
@@ -101,8 +140,55 @@ ImageMoments<T>::~ImageMoments ()
 //
 {}
 
+
+template <class T>
+ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
+//
+// Assignment operator
+//
+{
+   if (this != &other) {
+      
+// Assign to image pointer
+      
+      pInImage_p = other.pInImage_p;  
+      
+
+// Do the rest
+      
+      os_p = other.os_p;
+      momentAxis_p = other.momentAxis_p;
+      momentAxisDefault_p = other.momentAxisDefault_p;
+      kernelTypes_p = other.kernelTypes_p;
+      kernelWidths_p = other.kernelWidths_p;
+      nxy_p = other.nxy_p;
+      pixelIn_p = other.pixelIn_p;
+      moments_p = other.moments_p;
+      range_p = other.range_p;
+      smoothAxes_p = other.smoothAxes_p;
+      worldOut_p = other.worldOut_p;
+      peakSNR_p = other.peakSNR_p;
+      stdDeviation_p = other.stdDeviation_p;
+      device_p = other.device_p;
+      out_p = other.out_p;
+      psfOut_p = other.psfOut_p;
+      smoothOut_p = other.smoothOut_p;
+      goodParameterStatus_p = other.goodParameterStatus_p;
+      doWindow_p = other.doWindow_p;
+      doFit_p = other.doFit_p;
+      doAuto_p = other.doAuto_p;
+      doSmooth_p = other.doSmooth_p;
+      noInclude_p = other.noInclude_p;
+      noExclude_p = other.noExclude_p;
+
+      return *this;
+   }
+   
+}
+
+
 template <class T> 
-Bool ImageMoments<T>::setNewImage(const PagedImage<T>& image)
+Bool ImageMoments<T>::setNewImage(const ImageInterface<T>& image)
 //
 // Assign pointer to image
 //
@@ -112,8 +198,8 @@ Bool ImageMoments<T>::setNewImage(const PagedImage<T>& image)
       return False;
    }
 
-   pInImage_p = &image;
-   DataType imageType = imagePixelType(pInImage_p->name());
+   T *dummy = 0;
+   DataType imageType = whatType(dummy);
 
    if (imageType !=TpFloat && imageType != TpDouble) {
        os_p << LogIO::SEVERE << "Moments can only be evaluated from images of type : " <<
@@ -123,7 +209,9 @@ Bool ImageMoments<T>::setNewImage(const PagedImage<T>& image)
       return False;
    }
 
+// Assign pointer 
 
+   pInImage_p = &image;
 
    return True;
 }
@@ -553,9 +641,7 @@ Bool ImageMoments<T>::createMoments()
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
       << pInImage_p->coordinates().worldAxisNames()(momentAxis_p) << LogIO::POST;
 
-   CoordinateSystem inImageCoord = pInImage_p->coordinates();
-   pInCoordSys_p = &inImageCoord;
-   CoordinateSystem outImageCoord = inImageCoord;
+   CoordinateSystem outImageCoord = pInImage_p->coordinates();
 
    uInt removeAxis = momentAxis_p;
    outImageCoord.removePixelAxis(removeAxis, 1.0);
@@ -2003,7 +2089,7 @@ Double ImageMoments<T>::getMomentCoord (const Double& momentPixel)
 // for the other axes are input already set 
 {
    pixelIn_p(momentAxis_p) = momentPixel;
-   Bool ok = pInCoordSys_p->toWorld(worldOut_p, pixelIn_p);
+   Bool ok = pInImage_p->coordinates().toWorld(worldOut_p, pixelIn_p);
    return worldOut_p(momentAxis_p);
 }
 
