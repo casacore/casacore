@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -741,16 +741,12 @@ void MDirection::doConvert(MVDirection &in,
 	MDirection::Ref::frameEpoch(outref, inref).getTDB(tdbTime);
 	solpos = (MVPosition *) mc.getStruct(MDirection::MVPOS1);
 	prot = (RotMatrix *) mc.getStruct(MDirection::ROTMAT1);
-// Aberration
-	*solpos =  ((Aberration *) 
-		    mc.getStruct(MDirection::ABERFROM))->
-	  operator()(tdbTime);
-// Get length
-	lengthE = solpos->radius();
-// Beta^-1 (g1)
-	g1 = sqrt(1 - lengthE * lengthE);
-	g2 = in * *solpos;
-	in = (g1*in + (1+g2/(1+g1)) * *solpos)*(1.0/(1.0+g2));
+// E-terms
+	*solpos = MeasData::AberETerm(0);
+	g1 = in * *solpos;
+	in += g1 * in;
+	in -= *solpos;
+	in.adjust();
 // Precession
 	*prot = (((Precession *) 
 		  mc.getStruct(MDirection::PRECESFROM))->
@@ -760,6 +756,12 @@ void MDirection::doConvert(MVDirection &in,
 		   mc.getStruct(MDirection::NUTATFROM))->
 		  operator()(tdbTime));
 	in *= *prot;
+// Aberration
+	*solpos =  ((Aberration *) 
+		    mc.getStruct(MDirection::ABERFROM))->
+	  operator()(tdbTime);
+	in += *solpos;
+	in.adjust();
       }
       break;
 
@@ -769,6 +771,12 @@ void MDirection::doConvert(MVDirection &in,
 	trypos = (MVPosition *) mc.getStruct(MDirection::MVPOS2);
 	respos = (MVPosition *) mc.getStruct(MDirection::MVPOS3);
 	prot = (RotMatrix *) mc.getStruct(MDirection::ROTMAT1);
+// Aberration
+	*solpos =  ((Aberration *) 
+		    mc.getStruct(MDirection::ABERTO))->
+	  operator()(tdbTime);
+	in -= *solpos;
+	in.adjust();
 // Nutation
 	*prot = (((Nutation *) 
 		  mc.getStruct(MDirection::NUTATTO))->
@@ -778,33 +786,12 @@ void MDirection::doConvert(MVDirection &in,
 		   mc.getStruct(MDirection::PRECESTO))->
 		  operator()(tdbTime));
 	in = *prot * in;
-// Aberration
-	*solpos =  ((Aberration *) 
-		    mc.getStruct(MDirection::ABERTO))->
-	  operator()(tdbTime);
-// Get length
-	lengthE = solpos->radius();
-// Beta^-1 (g1)
-	g1 = sqrt(1 - lengthE * lengthE);
-// First guess
-	*trypos = in - *solpos;
-// Solve for aberration solution
-	do {
-	  g2 = *trypos * *solpos;
-	  *respos = ((g1 * *trypos + 
-		      (1+g2/(1+g1)) * *solpos)*(1.0/(1.0+g2)));
-	  respos->adjust();
-	  for (Int j=0; j<3; j++) {
-	    g3 = solpos->operator()(j);
-	    trypos->operator()(j) -= 
-	      (respos->operator()(j) - in(j))/
-	      (((g1+g3*g3/(1+g1))-
-		g3*respos->operator()(j))/(1+g2));
-	  };
-	  *respos -= in;
-	}
-	while (respos->radius() > 1e-10);
-	in = *trypos;
+// E-terms
+	*solpos = MeasData::AberETerm(0);
+	g1 = in * *solpos;
+	in += g1 * in;
+	in += *solpos;
+	in.adjust();
       }
       break;
 
