@@ -114,13 +114,21 @@ public:
   uInt nrow() const {return dishDiameter_p.nrow();}
 
   // returns the last row that contains an antenna at the specified position,
-  // to within the specified tolerance. The tolerance is the maximum allowed
-  // distance between the two positions and the supplied Quantum must have
-  // dimensions of length. This is checked when compiled in debug mode and an
-  // AIpsError exception is thrown if the dimensions are wrong. Returns -1 if
-  // no match could be found.
-  Int matchPosition(const MPosition& antennaPosition,
-		    const Quantum<Double>& tolerance);
+  // to within the specified tolerance. The reference frame of the supplied
+  // position MUST be the same as the one for the POSITION columns. If not an
+  // AipsError is thrown as such an argument will never match any row of the
+  // Table. The tolerance is the maximum allowed distance between the two
+  // positions and the supplied Quantum must have dimensions of length. This is
+  // checked when compiled in debug mode and an AipsError exception is thrown
+  // if the dimensions are wrong. Returns -1 if no match could be found. Falged
+  // rows can never match.
+  Int matchAntenna(const MPosition& antennaPos,
+		   const Quantum<Double>& tolerance);
+
+  // Same as the previous function except that the antenna name must also
+  // match.
+  Int matchAntenna(const String& antName, const MPosition& antennaPos,
+		   const Quantum<Double>& tolerance);
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -138,6 +146,13 @@ private:
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSAntenna& msAntenna);
   
+  //# Functions which check the supplied values against the relevant column and
+  //# the specified row.
+  Bool matchName(uInt row, const String& antName) const;
+  Bool matchPosition(uInt row, const Vector<Double>& antPosInM,	
+		     const Double tolInM) const;
+
+
   //# required columns
   ROScalarColumn<Double> dishDiameter_p;
   ROScalarColumn<Bool> flagRow_p;

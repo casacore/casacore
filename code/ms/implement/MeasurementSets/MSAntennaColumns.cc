@@ -32,9 +32,9 @@
 #include <aips/Tables/TableRecord.h>
 
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MPosition.h>
-#include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVPosition.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/UnitVal.h>
@@ -125,28 +125,81 @@ void RONewMSAntennaColumns::attachOptionalCols(const NewMSAntenna& msAntenna)
   }
 }
 
-Int RONewMSAntennaColumns::matchPosition(const MPosition& antennaPosition,
-					 const Quantum<Double>& tolerance) {
-  DebugAssert(tolerance.check(UnitVal::LENGTH), AipsError);
+Int RONewMSAntennaColumns::matchAntenna(const MPosition& antennaPos,
+					const Quantum<Double>& tolerance) {
   uInt r = nrow();
   if (r == 0) return -1;
-  // convert the supplied position to the same reference frame as the ones in
-  // the Table. It would be nice if this converter could be cached somewhere.
-  MPosition::Convert c(antennaPosition, positionMeas().getMeasRef());
-  const MVPosition newPos = c().getValue();
-  const Double tolInM = tolerance.getValue(Unit("m"));
-
-  Vector<Double> rowPos(3); 
+  // Convert the antenna position to something in m.
+  const MPosition::Types refType =
+    MPosition::castType(antennaPos.getRef().getType());
+  // If the type does not match then throw an exception! If someone is trying
+  // to do this then they should be doing the conversions elsewhere and the
+  // sooner they know about this error the better.
+  if (MPosition::castType(positionMeas().getMeasRef().getType()) != refType) {
+    throw(AipsError("RONewMSAntennaColumns::matchAntenna(...) - "
+		    " cannot match when reference frames differ"));
+  }
+  // Convert the tolerance to meters
+  const Unit m("m");
+  DebugAssert(tolerance.check(m.getValue()), AipsError);
+  const Double tolInM = tolerance.getValue(m);
+  // Convert the position to meters
+  const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
+  // Main matching loop
   while (r > 0) {
     r--;
-    if (flagRow()(r) == False) {
-      position().get(r, rowPos);
-      if (newPos.nearAbs(MVPosition(rowPos), tolInM)) {
-	return r;
-      }
+    if (!flagRow()(r) &&
+	matchPosition(r, antPosInM, tolInM)) {
+      return r;
     }
   }
   return -1;
+}
+
+Int RONewMSAntennaColumns::matchAntenna(const String& antName,
+					const MPosition& antennaPos,
+					const Quantum<Double>& tolerance) {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the antenna position to something in m.
+  const MPosition::Types refType =
+    MPosition::castType(antennaPos.getRef().getType());
+  // If the type does not match then throw an exception! If someone is trying
+  // to do this then they should be doing the conversions elsewhere and the
+  // sooner they know about this error the better.
+  if (MPosition::castType(positionMeas().getMeasRef().getType()) != refType) {
+    throw(AipsError("RONewMSAntennaColumns::matchAntenna(...) - "
+		    " cannot match when reference frames differ"));
+  }
+  // Convert the tolerance to meters
+  const Unit m("m");
+  DebugAssert(tolerance.check(m.getValue()), AipsError);
+  const Double tolInM = tolerance.getValue(m);
+  // Convert the position to meters
+  const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
+  // Main matching loop
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	matchName(r, antName) &&
+	matchPosition(r, antPosInM, tolInM)) {
+      return r;
+    }
+  }
+  return -1;
+}
+
+Bool RONewMSAntennaColumns::matchName(uInt row, const String& antName) const {
+  DebugAssert(row < nrow(), AipsError);
+  return antName.matches(name()(row));
+}
+
+Bool RONewMSAntennaColumns::
+matchPosition(uInt row, const Vector<Double>& antPosInM,
+	      const Double tolInM) const {
+  DebugAssert(row < nrow(), AipsError);
+  DebugAssert(antPosInM.nelements() == 3, AipsError);
+  return allNearAbs(position()(row), antPosInM, tolInM);
 }
 
 NewMSAntennaColumns::NewMSAntennaColumns(NewMSAntenna& msAntenna):
