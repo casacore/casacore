@@ -375,18 +375,23 @@ void LatticeExprNode::replaceScalarExpr()
    switch (dataType()) {
    case TpFloat:
       LELInterface<Float>::replaceScalarExpr (pExprFloat_p);
+      pAttr_p = &pExprFloat_p->getAttribute();
       break;
    case TpDouble:
       LELInterface<Double>::replaceScalarExpr (pExprDouble_p);
+      pAttr_p = &pExprDouble_p->getAttribute();
       break;
    case TpComplex:
       LELInterface<Complex>::replaceScalarExpr (pExprComplex_p);
+      pAttr_p = &pExprComplex_p->getAttribute();
       break;
    case TpDComplex:
       LELInterface<DComplex>::replaceScalarExpr (pExprDComplex_p);
+      pAttr_p = &pExprDComplex_p->getAttribute();
       break;
    case TpBool:
       LELInterface<Bool>::replaceScalarExpr (pExprBool_p);
+      pAttr_p = &pExprBool_p->getAttribute();
       break;
    default:
       throw (AipsError ("LatticeExpr::replaceScalarExpr - unknown data type"));
