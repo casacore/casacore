@@ -625,7 +625,9 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
     else{
       ms.field().addRow(nField); //INTERFEROMETER CASE
     }
-    ms.pointing().addRow(nField*nAnt_p);
+    Double numofpointingcycle=(Tend_p-Tstart_p)/((Tgap_p+Tint_p)*nField);
+    ms.pointing().addRow(Int(numofpointingcycle*nField)*nAnt_p);
+    Int numpointrows=Int(numofpointingcycle*nField)*nAnt_p;
     fieldc.code().fillColumn("");
     fieldc.time().fillColumn(Tstart_p);
     pointingc.time().fillColumn(Tstart_p);
@@ -635,45 +637,47 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
     pointingc.interval().fillColumn(-1);
     pointingc.tracking().fillColumn(True);
     Vector<MDirection> direction(1);
-
     Int row=0;
     Int pointrow=0;
     Double pointtime=Tstart_p;
-    for (Int i=0; i<nSources_p; i++) {
-      if(nAnt_p==1) row=i;
+    while(pointtime < Tend_p){
+      row=0;
+      for (Int i=0; i<nSources_p; i++) {
+	if(nAnt_p==1) row=i;
 	Double lambda = C::c / startFreq_p(0);
 	Double spacing = lambda / (2.0 * antDiam_p(0));
 	if (mosSpacing_p(i) > 0.0) {
 	  spacing *= mosSpacing_p(i);
 	}
 	for (Int j=0; j<nMos_p(0,i); j++) {
-	    for (Int k=0; k<nMos_p(1,i); k++) {
-	      if (radecRefFrame_p == "J2000") {
-		direction(0)=MDirection
-		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
-			       spacing / cos(radec_p(1,i)),
+	  for (Int k=0; k<nMos_p(1,i); k++) {
+	    if (radecRefFrame_p == "J2000") {
+	      direction(0)=MDirection
+		(MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			     spacing / cos(radec_p(1,i)),
+			     radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		 MDirection::J2000);
+	    } else {
+	      direction(0)=MDirection
+		(MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			     spacing / cos(radec_p(1,i)),
 			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
-		   MDirection::J2000);
-	      } else {
-		direction(0)=MDirection
-		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
-			       spacing / cos(radec_p(1,i)),
-			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
-		   MDirection::B1950);
-	      }
-	      fieldc.sourceId().put(row,i);
-	      fieldc.delayDirMeasCol().put(row,direction);
-	      fieldc.phaseDirMeasCol().put(row,direction);
-	      fieldc.referenceDirMeasCol().put(row,direction);
-	      ostrstream name;
-	      if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
-		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
-	      } else {
-		name << flush <<srcName_p(i) << ends;
-	      }
-	      char* pName=name.str();
-	      fieldc.name().put(row,String(pName));
-	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
+		 MDirection::B1950);
+	    }
+	    fieldc.sourceId().put(row,i);
+	    fieldc.delayDirMeasCol().put(row,direction);
+	    fieldc.phaseDirMeasCol().put(row,direction);
+	    fieldc.referenceDirMeasCol().put(row,direction);
+	    ostrstream name;
+	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
+	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	    } else {
+	      name << flush <<srcName_p(i) << ends;
+	    }
+	    char* pName=name.str();
+	    fieldc.name().put(row,String(pName));
+	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
+	    if(pointrow < numpointrows){
 	      for (Int m=0; m < nAnt_p ; m++){
 		pointingc.time().put(pointrow, pointtime);
 		pointingc.interval().put(pointrow, pinterval);
@@ -681,18 +685,19 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
 		pointingc.targetMeasCol().put(pointrow,direction);
-		pointtime=pointtime+
-		  nIntFld_p(i)*qIntegrationTime_p.getValue("s")
-		  +qGapTime_p.getValue("s");
 		pointrow++;
 	      }
-	      // os << pName << LogIO::POST;
-	      delete pName;
-	      if(nAnt_p > 1) row++;
 	    }
+	    pointtime=pointtime+
+		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+	      +qGapTime_p.getValue("s");
+	    // os << pName << LogIO::POST;
+	    delete pName;
+	    if(nAnt_p > 1) row++;
+	  }
 	}
+      }
     }
-    
     // init counters past end
     if(nAnt_p ==1) nField=nSources_p;
     Int FldId=nField-1;
@@ -732,7 +737,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    SpWCount = 0;
 	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
 	}
-	if (++counter > loopCount) {
+	if (++counter >=  loopCount) {
 	  // insert gap
 	  Time+=Tgap_p;
 	  counter=0;
@@ -1111,7 +1116,9 @@ void MSSimulator::extendMS(MeasurementSet & ms)
       ms.field().addRow(nField); //INTERFEROMETER CASE
       newFieldRows=nField;
     }
-    ms.pointing().addRow(nField*nAnt_p);
+    Double numofpointingcycle=(Tend_p-Tstart_p)/((Tgap_p+Tint_p)*nField);
+    ms.pointing().addRow(Int(numofpointingcycle*nField)*nAnt_p);
+    Int numpointrows=numPointing+Int(numofpointingcycle*nField)*nAnt_p;
     fieldc.code().fillColumn("");
     for (Int m=numField; m < numField+newFieldRows; m++){
       fieldc.time().put(m, Tstart_p);
@@ -1125,62 +1132,66 @@ void MSSimulator::extendMS(MeasurementSet & ms)
       pointingc.tracking().put(m,True);
     }
     Vector<MDirection> direction(1);
-
     Int row=numField;
     Int pointrow=numPointing;
     Double pointtime=Tstart_p;
-    for (Int i=0; i<nSources_p; i++) {
-      if(nAnt_p==1) row=numField+i;
+    while(pointtime < Tend_p){
+      row=numField;
+      for (Int i=0; i<nSources_p; i++) {
+	if(nAnt_p==1) row=numField+i;
 	Double lambda = C::c / startFreq_p(0);
 	Double spacing = lambda / (2.0 * antDiam_p(0));
 	if (mosSpacing_p(i) > 0.0) {
 	  spacing *= mosSpacing_p(i);
 	}
 	for (Int j=0; j<nMos_p(0,i); j++) {
-	    for (Int k=0; k<nMos_p(1,i); k++) {
-	      if (radecRefFrame_p == "J2000") {
-		direction(0)=MDirection
-		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
-			       spacing / cos(radec_p(1,i)),
-			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
-		   MDirection::J2000);
-	      } else {
-		direction(0)=MDirection
-		  (MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
-			       spacing / cos(radec_p(1,i)),
-			       radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
-		   MDirection::B1950);
-	      } 
-	      fieldc.sourceId().put(row,i);
-	      fieldc.delayDirMeasCol().put(row,direction);
-	      fieldc.phaseDirMeasCol().put(row,direction);
-	      fieldc.referenceDirMeasCol().put(row,direction);
-	      ostrstream name;
-	      if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
-		name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
-	      } else {
-		name << flush <<srcName_p(i) << ends;
-	      }
-	      char* pName=name.str();
-	      fieldc.name().put(row,String(pName));
-	      Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
+	  for (Int k=0; k<nMos_p(1,i); k++) {
+	    if (radecRefFrame_p == "J2000") {
+	      direction(0)=MDirection
+		(MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			     spacing / cos(radec_p(1,i)),
+			     radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		 MDirection::J2000);
+	    } else {
+	      direction(0)=MDirection
+		(MVDirection(radec_p(0,i)+(j-nMos_p(0,i)/2)*
+			     spacing / cos(radec_p(1,i)),
+			     radec_p(1,i)+(k-nMos_p(1,i)/2)*spacing),
+		 MDirection::B1950);
+	    } 
+	    fieldc.sourceId().put(row,i);
+	    fieldc.delayDirMeasCol().put(row,direction);
+	    fieldc.phaseDirMeasCol().put(row,direction);
+	    fieldc.referenceDirMeasCol().put(row,direction);
+	    ostrstream name;
+	    if ((nMos_p(0,i)*nMos_p(1,i)>1) && (nAnt_p > 1)) {
+	      name << flush <<srcName_p(i) <<"_"<<j<<"_"<<k<<ends;
+	    } else {
+	      name << flush <<srcName_p(i) << ends;
+	    }
+	    char* pName=name.str();
+	    fieldc.name().put(row,String(pName));
+	    Double pinterval=nIntFld_p(i)*qIntegrationTime_p.getValue("s");
+	    if(pointrow < numpointrows){
 	      for (Int m=0; m < nAnt_p ; m++){
 		pointingc.time().put(pointrow, pointtime);
 		pointingc.interval().put(pointrow, pinterval);
 		pointingc.antennaId().put(pointrow, m+numOfAnt);
 		pointingc.name().put(pointrow, String(pName));
 		pointingc.directionMeasCol().put(pointrow,direction);
-		pointingc.targetMeasCol().put(pointrow,direction);
-		pointtime=pointtime+
-		  nIntFld_p(i)*qIntegrationTime_p.getValue("s")
-		  +qGapTime_p.getValue("s");
+		pointingc.targetMeasCol().put(pointrow,direction);             
 		pointrow++;
 	      }
-	      // os << pName << LogIO::POST;
-	      delete pName;
-	      if(nAnt_p > 1) row++;
 	    }
+	    pointtime=pointtime+
+	      nIntFld_p(i)*qIntegrationTime_p.getValue("s")
+	      +qGapTime_p.getValue("s");
+	    // os << pName << LogIO::POST;
+	    delete pName;
+	    if(nAnt_p > 1) row++;
+	  }
 	}
+      }
     }
     
     // init counters past end
@@ -1230,7 +1241,7 @@ void MSSimulator::extendMS(MeasurementSet & ms)
 	    SpWCount = 0;
 	    if (uInt(++SpWId) >= nIntSpW_p.nelements()) SpWId = 0;
 	}
-	if (++counter > loopCount) {
+	if (++counter >= loopCount) {
 	  // insert gap
 	  Time+=Tgap_p;
 	  counter=0;
