@@ -26,176 +26,157 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
-#include <aips/Measures/MVAngle.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/String.h>
+#include <trial/ComponentModels/ComponentShape.h>
+#include <trial/ComponentModels/ConstantSpectrum.h>
 #include <trial/ComponentModels/Flux.h>
-#include <trial/ComponentModels/PointCompRep.h>
+#include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/PointShape.h>
 #include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/StokesCoordinate.h>
-#include <trial/Images/PagedImage.h>
+#include <trial/ComponentModels/SpectralIndex.h>
+#include <trial/ComponentModels/SpectralModel.h>
+// #include <aips/Arrays/Vector.h>
+// #include <aips/Lattices/IPosition.h>
+// #include <aips/Measures/MVAngle.h>
+// #include <trial/Coordinates/CoordinateSystem.h>
+// #include <trial/Coordinates/CoordinateUtil.h>
+// #include <trial/Coordinates/StokesCoordinate.h>
+// #include <trial/Images/PagedImage.h>
+#include <iostream.h>
 
 int main() {
   try {
-    SkyCompRep * skyPtr = new PointCompRep;
-    Vector<Double> flux;
+    //  SkyCompRep();
+    const SkyCompRep constComp;
+//   virtual const Flux<Double> & flux() const;
+    AlwaysAssert(near(constComp.flux().value(0), 1.0, C::dbl_epsilon), 
+		 AipsError);
+//   virtual const ComponentShape & shape() const;
+    AlwaysAssert(constComp.shape().type() == ComponentType::POINT, AipsError);
+//   virtual const SpectralModel & spectrum() const;
+    AlwaysAssert(constComp.spectrum().type() == 
+		 ComponentType::CONSTANT_SPECTRUM, AipsError);
+//   virtual const String & label() const;
+    AlwaysAssert(constComp.label() == String(""), AipsError);
+//   SkyCompRep(const ComponentType::Shape & shape);
+    SkyCompRep gComp(ComponentType::GAUSSIAN);
+    AlwaysAssert(gComp.shape().type() == ComponentType::GAUSSIAN,
+		 AipsError);
+    AlwaysAssert(gComp.spectrum().type() == 
+		 ComponentType::CONSTANT_SPECTRUM, AipsError);
+//   SkyCompRep(const ComponentType::Shape & shape,
+//  	     const ComponentType::SpectralShape & spectrum);
+    SkyCompRep siComp(ComponentType::POINT, ComponentType::SPECTRAL_INDEX);
+    AlwaysAssert(siComp.shape().type() == ComponentType::POINT, AipsError);
+    AlwaysAssert(siComp.spectrum().type() == 
+		 ComponentType::SPECTRAL_INDEX, AipsError);
+//   SkyCompRep & operator=(const SkyCompRep & other);
     {
-      Flux<Double> compFlux(2.0, 0.5, 0.1, 0.1);
-      compFlux.setUnit("Jy");
-      compFlux.value(flux);
-      skyPtr -> flux() = compFlux;
+      Flux<Double> flux(10, 5, 2, 1);
+      PointShape shape(MDirection(Quantity(1, "deg"), 
+				  Quantity(2, "deg"), 
+				  MDirection::B1950));
+      SpectralIndex spectrum(MFrequency(Quantity(100, "MHz"),MFrequency::TOPO),
+			     -0.2);
+      gComp = SkyCompRep(flux, shape, spectrum);
+      gComp.label() = String("Original component");
+      flux.setValue(20.0);
+      shape.setRefDirection(MDirection(Quantity(10, "deg"), 
+				       Quantity(20, "deg"), 
+				       MDirection::J2000));
+      spectrum.setRefFrequency(MFrequency(Quantity(1, "GHz"),MFrequency::LSR));
+      spectrum.setIndex(1.0, Stokes::I);
     }
-    MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
-    MDirection coord00(ra0dec0, MDirection::J2000);
-    skyPtr -> setDirection(coord00);
+    AlwaysAssert(near(gComp.flux().value(0), 10, C::dbl_epsilon), AipsError);
+    AlwaysAssert(gComp.shape().type() == ComponentType::POINT,
+		 AipsError);
+    AlwaysAssert(gComp.shape().refDirection().getValue().near
+		 (MVDirection(Quantity(1, "deg"), Quantity(2, "deg")), 
+		  C::dbl_epsilon), AipsError);
+    AlwaysAssert(gComp.shape().refDirection().getRef().getType() == 
+		 MDirection::B1950, AipsError);
+    AlwaysAssert(gComp.spectrum().type() == 
+		 ComponentType::SPECTRAL_INDEX, AipsError);
+    AlwaysAssert(gComp.spectrum().refFrequency().getValue().near
+		 (MVFrequency(Quantity(100, "MHz")), C::dbl_epsilon),
+		 AipsError);
+    AlwaysAssert(gComp.spectrum().refFrequency().getRef().getType() == 
+		 MFrequency::TOPO, AipsError);
+    {
+      const SpectralIndex & si((const SpectralIndex &) gComp.spectrum());
+      AlwaysAssert(near(si.index(Stokes::I), -0.2, C::dbl_epsilon), AipsError);
+    }
+    AlwaysAssert(gComp.label() == String("Original component"), AipsError);
+//   SkyCompRep(const SkyCompRep & other);
+    SkyCompRep saveComp(gComp);
+//   virtual Flux<Double> & flux();
+    gComp.flux() = Flux<Double>(100,99,98,97);
+//   virtual ComponentShape & shape();
+    gComp.setShape(GaussianShape());
+//   virtual SpectralModel & spectrum();
+    gComp.setSpectrum(ConstantSpectrum());
+//   virtual String & label();
+    gComp.label() = String("New one"); 
+    AlwaysAssert(near(saveComp.flux().value(0), 10, C::dbl_epsilon), AipsError);
+    AlwaysAssert(saveComp.shape().type() == ComponentType::POINT,
+		 AipsError);
+    AlwaysAssert(saveComp.shape().refDirection().getValue().near
+		 (MVDirection(Quantity(1, "deg"), Quantity(2, "deg")), 
+		  C::dbl_epsilon), AipsError);
+    AlwaysAssert(saveComp.shape().refDirection().getRef().getType() == 
+		 MDirection::B1950, AipsError);
+    AlwaysAssert(saveComp.spectrum().type() == 
+		 ComponentType::SPECTRAL_INDEX, AipsError);
+    AlwaysAssert(saveComp.spectrum().refFrequency().getValue().near
+		 (MVFrequency(Quantity(100, "MHz")), C::dbl_epsilon),
+		 AipsError);
+    AlwaysAssert(saveComp.spectrum().refFrequency().getRef().getType() == 
+		 MFrequency::TOPO, AipsError);
+    {
+      const SpectralIndex & si((const SpectralIndex &) saveComp.spectrum());
+      AlwaysAssert(near(si.index(Stokes::I), -0.2, C::dbl_epsilon), AipsError);
+    }
+    AlwaysAssert(saveComp.label() == String("Original component"), AipsError);
+    AlwaysAssert(near(gComp.flux().value(0), 100, C::dbl_epsilon), AipsError);
+    AlwaysAssert(gComp.shape().type() == ComponentType::GAUSSIAN,
+		 AipsError);
+    AlwaysAssert(gComp.shape().refDirection().getValue().nearAbs
+		 (MVDirection(Quantity(0, "deg"), Quantity(90, "deg")), 
+		  C::dbl_epsilon), AipsError);
+    AlwaysAssert(gComp.shape().refDirection().getRef().getType() == 
+		 MDirection::J2000, AipsError);
+    AlwaysAssert(gComp.spectrum().type() == 
+		 ComponentType::CONSTANT_SPECTRUM, AipsError);
+    AlwaysAssert(gComp.spectrum().nParameters() == 0, AipsError);
+    AlwaysAssert(gComp.label() == String("New one"), AipsError);
+//   virtual Flux<Double> sample(const MDirection & direction, 
+// 			      const MVAngle & pixelSize, 
+// 			      const MFrequency & centerFrequency) const;
+//   virtual void project(ImageInterface<Float> & plane) const;
+//   virtual Flux<Double> visibility(const Vector<Double> & uvw,
+// 				  const Double & frequency) const;
+//   virtual Bool fromRecord(String & errorMessage, 
+// 			  const RecordInterface & record);
+//   virtual Bool toRecord(String & errorMessage, 
+// 			RecordInterface & record) const;
 
-    // Test the project function
-    const uInt imSize = 6;
+//   virtual Bool ok() const;
     {
-      CoordinateSystem coords = CoordinateUtil::defaultCoords2D();
-      PagedImage<Float> image(IPosition(2,imSize,imSize), 
-			      coords, "tSkyCompRep_tmp.image");
-      image.set(0.0f);
-      
-      skyPtr -> SkyCompRep::project(image);
-      IPosition ptPos(2,2,1);
-      AlwaysAssert(near(image.getAt(ptPos), flux(0), C::flt_epsilon),
-		   AipsError);
-      image.putAt(0.0f, ptPos);
-      for (uInt y = 0; y < imSize; y++) {
- 	ptPos(1) = y;
- 	for (uInt x = 0; x < imSize; x++) {
- 	  ptPos(0) = x;
- 	  AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
- 	}
-      }
-      image.table().markForDelete();
+      AlwaysAssert(constComp.ok() == True, AipsError);
+      AlwaysAssert(gComp.ok() == True, AipsError);
+      AlwaysAssert(siComp.ok() == True, AipsError);
     }
-    const uInt nChan = 3;
-    {
-      CoordinateSystem coords = CoordinateUtil::defaultCoords3D();
-      {
- 	Vector<Int> whichStokes(1);
- 	whichStokes = Stokes::U;
- 	coords.addCoordinate(StokesCoordinate(whichStokes));
-      }
-      PagedImage<Float> image(IPosition(4, imSize, imSize, nChan, 1), 
- 			      coords, "tSkyCompRep_tmp.image");
-      image.set(0.0f);
-      
-      skyPtr -> SkyCompRep::project(image);
-      IPosition ptPos(4,2,1,0,0);
-      for (uInt f1 = 0; f1 < nChan; f1++) {
- 	ptPos(2) = f1;
- 	AlwaysAssert(near(image.getAt(ptPos), flux(2), C::flt_epsilon),
-		     AipsError);
- 	image.putAt(0.0f, ptPos);
-      }
-      for (uInt f = 0; f < nChan; f++) {
-  	ptPos(2) = f;
- 	for (uInt y = 0; y < imSize; y++) {
- 	  ptPos(1) = y;
- 	  for (uInt x = 0; x < imSize; x++) {
- 	    ptPos(0) = x;
- 	    AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
- 	  }
- 	}
-      }
-      image.table().markForDelete();
-    }
-    {
-      CoordinateSystem coords = CoordinateUtil::defaultCoords2D();
-      {
-	Vector<Int> whichStokes(3);
-	whichStokes(0) = Stokes::I;
-	whichStokes(1) = Stokes::Q;
-	whichStokes(2) = Stokes::V;
-	coords.addCoordinate(StokesCoordinate(whichStokes));
-      }
-      PagedImage<Float> image(IPosition(3, imSize, imSize, 3), 
-			      coords, "tSkyCompRep_tmp.image");
-      image.set(0.0f);
-   
-      skyPtr -> SkyCompRep::project(image);
-      IPosition ptPos(3,2,1,0);
-      uInt sf;
-      for (uInt s1 = 0; s1 < 3; s1++) {
- 	ptPos(2) = s1;
-	if (s1 == 2) {
-	  sf = 3;
-	} else {
-	  sf = s1;
-	}
- 	AlwaysAssert(near(image.getAt(ptPos), flux(sf), C::flt_epsilon), 
- 		     AipsError);
- 	image.putAt(0.0f, ptPos);
-      }
-      for (uInt s = 0; s < 3; s++) {
-  	ptPos(2) = s;
- 	for (uInt y = 0; y < imSize; y++) {
- 	  ptPos(1) = y;
- 	  for (uInt x = 0; x < imSize; x++) {
- 	    ptPos(0) = x;
- 	    AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
- 	  }
- 	}
-      }
-      image.table().markForDelete();
-    }
-    {
-      CoordinateSystem coords = CoordinateUtil::defaultCoords4D();
-      PagedImage<Float> image(IPosition(4, imSize, imSize, 4, nChan), 
-			      coords, "tSkyCompRep_tmp.image");
-      image.set(0.0f);
-   
-      skyPtr -> SkyCompRep::project(image);
-      IPosition ptPos(4,2,1,0,0);
-      for (uInt s1 = 0; s1 < 4; s1++) {
- 	ptPos(2) = s1;
-	for (uInt f1 = 0; f1 < nChan; f1++) {
-	  ptPos(3) = f1;
-	  AlwaysAssert(near(image.getAt(ptPos), flux(s1), C::flt_epsilon), 
-		       AipsError);
-	  image.putAt(0.0f, ptPos);
-	}
-      }
-      for (uInt f = 0; f < nChan; f++) {
-	ptPos(3) = f;
-	for (uInt s = 0; s < 4; s++) {
-	  ptPos(2) = s;
-	  for (uInt y = 0; y < imSize; y++) {
-	    ptPos(1) = y;
-	    for (uInt x = 0; x < imSize; x++) {
-	      ptPos(0) = x;
-	      AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
-	    }
-	  }
-  	}
-      }
-      image.table().markForDelete();
-    }
-    // test the label functions
-    {
-      skyPtr -> SkyCompRep::setLabel(String("A dummy label"));
-      String label;
-      skyPtr -> SkyCompRep::label(label);
-      AlwaysAssert(label == "", AipsError);
-    }
-    // test the ok function
-    {
-      AlwaysAssert(skyPtr -> SkyCompRep::ok() == True, AipsError);
-    }
-    delete skyPtr;
+//   virtual ~SkyCompRep();
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
