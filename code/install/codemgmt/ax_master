@@ -5611,3 +5611,4 @@
 15 249 src rm nrao/apps/vlatoms
 15 249 sys rm bin/vlatoms
 15 249 src rm doc/notes/237.dir
+15 249 src rm doc/notes/241.dir
