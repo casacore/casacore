@@ -148,12 +148,14 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
   // Assignment operator.  Assign a constant to variable.  All derivatives
   // are zero.
   AutoDiffA<T> &operator=(const T &v) {
-    return AutoDiff<T>::operator=(v);
+    AutoDiff<T>::operator=(v);
+    return *this;
   };
 
   // Assign one to another.
   AutoDiff<T> &operator=(const AutoDiff<T> &other) {
-    return AutoDiff<T>::operator=(other);
+    AutoDiff<T>::operator=(other);
+    return *this;
   };
 
  private:
