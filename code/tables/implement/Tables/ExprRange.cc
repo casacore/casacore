@@ -1,5 +1,5 @@
 //# ExprRange.cc: Select range of a column in an select expression
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/TableColumn.h>
 #include <aips/Arrays/Slice.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 
 TableExprRange::TableExprRange()

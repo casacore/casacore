@@ -35,6 +35,7 @@
 #include <aips/Tables/BucketCache.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/ArrayUtil.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordField.h>
 #include <aips/Containers/Block.h>

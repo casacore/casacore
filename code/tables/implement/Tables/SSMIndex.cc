@@ -29,7 +29,9 @@
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/BinarySearch.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 

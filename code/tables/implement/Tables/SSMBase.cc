@@ -44,6 +44,7 @@
 #include <aips/IO/CanonicalIO.h>
 #include <aips/OS/CanonicalConversion.h>
 #include <aips/IO/FiledesIO.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Tables/DataManError.h>
 #include <iostream.h>
 

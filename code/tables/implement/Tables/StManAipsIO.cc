@@ -34,6 +34,7 @@
 #include <aips/Utilities/DataType.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Copy.h>
 #include <aips/Tables/DataManError.h>

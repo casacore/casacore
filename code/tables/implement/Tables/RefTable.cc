@@ -33,8 +33,8 @@
 #include <aips/Containers/SimOrdMapIO.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Utilities/Copy.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/OS/Path.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Utilities/Assert.h>
 

@@ -36,6 +36,7 @@
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/MRBase.h>
+#include <aips/Mathematics/Math.h>
 
 //# Constructors
 MeasMath::MeasMath() :

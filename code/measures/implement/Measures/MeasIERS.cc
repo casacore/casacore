@@ -29,6 +29,7 @@
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/OS/Time.h>
 #include <aips/Logging.h>
