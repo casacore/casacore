@@ -305,6 +305,24 @@ system :
 	-@ set WARNING $(GLISHLIBD) $(GLISHLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
+	-@ echo "GLISHLOROOT=$(GLISHLOROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(GLISHLOROOT) ; $(CheckDir)
+    endif
+	-@ echo "GLISHLODEFS=$(GLISHLODEFS)"
+	-@ echo "GLISHLOINCD=$(GLISHLOINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(GLISHLOINCD) ; $(CheckDir)
+    endif
+	-@ echo "GLISHLOLIBD=$(GLISHLOLIBD)"
+    ifdef DO_TEST
+	-@ set WARNING $(GLISHLOLIBD) ; $(CheckDir)
+    endif
+	-@ echo "GLISHLOLIB =$(GLISHLOLIB)"
+    ifdef DO_TEST
+	-@ set WARNING $(GLISHLOLIBD) $(GLISHLOLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "WCSLIBROOT=$(WCSLIBROOT)"
     ifdef DO_TEST
 	-@ set WARNING $(WCSLIBROOT) ; $(CheckDir)
@@ -412,6 +430,24 @@ system :
 	-@ echo "X11LIB  =$(X11LIB)"
     ifdef DO_TEST
 	-@ set WARNING $(X11LIBD) $(X11LIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
+	-@ echo "XPMROOT =$(XPMROOT)"
+    ifdef DO_TEST
+	-@ set WARNING $(XPMROOT) ; $(CheckDir)
+    endif
+	-@ echo "XPMDEFS =$(XPMDEFS)"
+	-@ echo "XPMINCD =$(XPMINCD)"
+    ifdef DO_TEST
+	-@ set WARNING $(XPMINCD) ; $(CheckDir)
+    endif
+	-@ echo "XPMLIBD =$(XPMLIBD)"
+    ifdef DO_TEST
+	-@ set WARNING $(XPMLIBD) ; $(CheckDir)
+    endif
+	-@ echo "XPMLIB  =$(XPMLIB)"
+    ifdef DO_TEST
+	-@ set WARNING $(XPMLIBD) $(XPMLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
 	-@ echo "LAPACKROOT=$(LAPACKROOT)"
