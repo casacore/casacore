@@ -87,7 +87,7 @@ main()
     
     // test reference nature
     AlwaysAssert(near(al3(IPosition(1,0)), 0.0f, 1E-6), AipsError);
-    al5(IPosition(1,0)) = 33.0;
+    al5.putAt (33.0, IPosition(1,0));
     AlwaysAssert(near(al3(IPosition(1,0)), 33.0f, 1E-6), AipsError);
 
     // the assignment operator.  typical use would be to create a new
@@ -96,7 +96,7 @@ main()
 
     // test copy nature
     AlwaysAssert(near(al0(IPosition(2,0)), 0.0f, 1E-6), AipsError);
-    al0(IPosition(2,0)) = 33.0;
+    al0.putAt (33.0, IPosition(2,0));
     AlwaysAssert(near(al4(IPosition(2,0)), 33.0f, 1E-6) == False, AipsError);
 
     ArrayLattice<Int> al6(IPosition(4,5,6,7,8));
@@ -106,34 +106,6 @@ main()
     
     // function which extracts an Array of values from a Lattice - a read-only 
     // operation. 
-    // getSlice parameters:
-    // <ul>
-    // <li> buffer: an Array<T> with a shape that is unimportant.  The 
-    //      sub-class implementation should always call Array::resize(uInt) 
-    //      in order to match the Array<T> shape to the "shape" argument.
-    // <li> start: an IPosition which must have the same number of axes
-    //      as the underlying Lattice, otherwise, throw an exception.
-    // <li> shape: an IPosition which must have equal or fewer axes than the 
-    //      true shape od the Lattice, otherwise, throw an exception
-    // <li> stride: an IPosition which must have the same number of axes
-    //      as the underlying Lattice, otherwise, throw an exception.
-    // <li> removeDegenerateAxes: a Bool which dictates whether to remove 
-    //      "empty" axis created in buffer. (e.g. extracting an n-dimensional 
-    //      from an (n+1)-dimensional will fill 'buffer' with an array that 
-    //      has a degenerate axis (i.e. one axis will have a length = 1.))
-    // </ul>
-    // 
-    // The sub-class implementation of these functions return
-    // 'True' if Array <T> buffer contains a reference when this function
-    // returns, and 'False' if it contains a copy.
-    // <note role=tip> 
-    // In most cases, it will be more efficient in execution, if you
-    // use a LatticeIterator class to move through the Lattice. 
-    // LatticeIterators are optimized for that purpose.  If you are doing 
-    // unsystematic traversal, or random gets and puts, then getSlice and 
-    // putSlice or operator() may be the right tools to use.
-    // </note>
-    // <group>   
     COWPtr<Array<Float> > buffer1;
     IPosition start(2, 0, 0), shape(2, 128, 64), stride(2, 2, 2);
     AlwaysAssert(!al4.getSlice(buffer1, start, shape, stride), AipsError);
@@ -197,14 +169,9 @@ main()
     
 // -------------------inherited from Lattice-----------------------------
 
-    // returns the value of the single element located at the argument 
-    // IPosition.  The return type should be assumed to be of the template 
-    // <class T>.  The actual return type (LatticeValueRef<T>) may be ignored.
-    // For details, see "Advanced C++" by James O. Coplien, pp 49-52.
-    al6(IPosition(4,0)) = 99;
-    
     // returns the value of the single element located at the argument
     // IPosition.  
+    al6.putAt(99, IPosition(4,0));
     AlwaysAssert(al6.getAt(IPosition(4,0)) == 99, AipsError);
     
     // returns the number of axes in this Lattice.
