@@ -4518,3 +4518,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSObsColumns.h aips/implement/MeasurementSets/MSObsColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSObsEnums.h aips/implement/MeasurementSets/MSObsEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSObservation.cc aips/implement/MeasurementSets/MSObservation.cc
+14 296 src mv aips/implement/MeasurementSets/NewMSObservation.h aips/implement/MeasurementSets/MSObservation.h
