@@ -2646,3 +2646,4 @@
 10 010 src mv aips/implement/Measures/MVAngle.h aips/implement/Quanta/MVAngle.h
 10 010 src mv aips/implement/Measures/MVTime.cc aips/implement/Quanta/MVTime.cc
 10 010 src mv aips/implement/Measures/MVTime.h aips/implement/Quanta/MVTime.h
+10 010 src mv aips/implement/Measures/Euler.cc aips/implement/Quanta/Euler.cc
