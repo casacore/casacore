@@ -273,7 +273,6 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
   uInt blkst = st * itsBufSize - itsOffset;
   uInt sz = 0;
   if (st < end) {
-    sz = (end-st) * itsBufSize;
     // There are one or more full blocks.
     // Read them all.
     // Handle the case that one of them is the current buffer.
@@ -282,26 +281,29 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
     char* bufp = bufc+blkst;
     if (stoff <= itsBufOffset  &&  endoff >= itsBufOffset+itsBufSize) {
       if (stoff < itsBufOffset) {
-	readBuffer (stoff, bufp, itsBufOffset-stoff, throwException);
-	bufp += itsBufOffset-stoff;
+	sz = itsBufOffset-stoff;
+	AlwaysAssert (readBuffer (stoff, bufp, sz, throwException) == sz,
+		      AipsError);
+	bufp += sz;
       }
       // Do the get of the current block via readBlock to handle
       // the (hardly possible) case that itsBufSize!=itsBufLen.
       Int64 savoff = itsOffset;
       itsOffset = itsBufOffset;
-      readBlock (itsBufSize, bufp, throwException);
+      sz += readBlock (itsBufSize, bufp, throwException);
       itsOffset = savoff;
       stoff = itsBufOffset + itsBufSize;
     }
     // Read the remaining full blocks.
-    readBuffer (stoff, bufp, endoff-stoff, throwException);
+    sz += readBuffer (stoff, bufp, endoff-stoff, throwException);
   }
   // Read the start of the user buffer (if needed).
+  uInt total = sz;
   if (blkst > 0) {
     if (blkst > size) {
       blkst = size;
     }
-    readBlock (blkst, bufc, throwException);
+    total += readBlock (blkst, bufc, throwException);
   }
   // Read the remainder of the user buffer (if needed).
   // First update the offset in the stream.
@@ -309,10 +311,10 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
   itsOffset += blkst;
   if (blkst < size) {
     sz = size - blkst;
-    readBlock (sz, bufc+blkst, throwException);
+    total += readBlock (sz, bufc+blkst, throwException);
     itsOffset += sz;
   }
-  return size;
+  return total;
 }
 
 void FilebufIO::writeBlock (uInt size, const char* buf)
@@ -337,12 +339,12 @@ void FilebufIO::writeBlock (uInt size, const char* buf)
   }
 }
 
-void FilebufIO::readBlock (uInt size, char* buf, Bool throwException)
+uInt FilebufIO::readBlock (uInt size, char* buf, Bool throwException)
 {
   // Read a part of a block.
   // It is ensured that the buffer fits in a single block and that it
   // is not a full block.
-  // Read current buffer if needed. Flush if reading.
+  // Read current buffer if needed. Flush if current block is dirty.
   if (itsOffset < itsBufOffset || itsOffset >= itsBufOffset + itsBufSize) {
     if (itsDirty) {
       flush();
@@ -358,11 +360,15 @@ void FilebufIO::readBlock (uInt size, char* buf, Bool throwException)
     itsBufLen = st+size;
   }
 #endif
-  if (st+size > itsBufLen  &&  throwException) {
-    throw AipsError ("FilebufIO::readBlock - incorrect number of bytes"
-		     " read for file " + fileName());
+  if (st+size > itsBufLen) {
+    if (throwException) {
+      throw AipsError ("FilebufIO::readBlock - incorrect number of bytes"
+		       " read for file " + fileName());
+    }
+    size = itsBufLen-st;
   }
   memcpy (buf, itsBuffer+st, size);
+  return size;
 }
 
 Int64 FilebufIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
