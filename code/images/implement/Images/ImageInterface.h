@@ -258,7 +258,10 @@ public:
   // </group>
   
   // Allow messages to be logged to this ImageInterface.
+  // <group>
   LogIO &logSink() {return log_p;}
+  const LogIO &logSink() const {return log_p;}
+  // </group>
   
   // These are the true implementations of the paren operator.
   // <note> Not for public use </note>
