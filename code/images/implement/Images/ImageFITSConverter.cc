@@ -196,26 +196,21 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 
     if (header.isDefined("bmaj") && header.isDefined("bmin") &&
         header.isDefined("bpa")) {
-       if (header.dataType("bmaj")==TpDouble &&
-           header.dataType("bmin")==TpDouble &&
-           header.dataType("bpa")==TpFloat) {
-
-          Double bmaj = header.asDouble("bmaj");
-          Double bmin = header.asDouble("bmin");
-          Double bpa = Double(header.asFloat("bpa"));
+       Double bmaj = header.asDouble("bmaj");
+       Double bmin = header.asDouble("bmin");
+       Double bpa = header.asDouble("bpa");
 //
-          ImageInfo imageInfo;
-          Quantum<Double> bmajq(max(bmaj,bmin), "deg");
-          Quantum<Double> bminq(min(bmaj,bmin), "deg");
-          bmajq.convert(Unit("arcsec")); 
-          bminq.convert(Unit("arcsec"));
-          imageInfo.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
-          newImage->setImageInfo(imageInfo);
+       ImageInfo imageInfo;
+       Quantum<Double> bmajq(max(bmaj,bmin), "deg");
+       Quantum<Double> bminq(min(bmaj,bmin), "deg");
+       bmajq.convert(Unit("arcsec")); 
+       bminq.convert(Unit("arcsec"));
+       imageInfo.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
+       newImage->setImageInfo(imageInfo);
 //
-          header.removeField("bmaj");
-          header.removeField("bmin");
-          header.removeField("bpa");
-       }
+       header.removeField("bmaj");
+       header.removeField("bmin");
+       header.removeField("bpa");
     }
 
 // Put whatever is left in the header into the MiscInfo bucket
