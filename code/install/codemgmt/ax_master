@@ -3471,3 +3471,4 @@
 13 285 src mv trial/implement/Lattices/ArrayLattice.h aips/implement/Lattices/ArrayLattice.h
 13 285 src mv trial/implement/Lattices/ArrayLattice.cc aips/implement/Lattices/ArrayLattice.cc
 13 285 src mv trial/implement/Lattices/ArrLatticeIter.h aips/implement/Lattices/ArrLatticeIter.h
+13 285 src mv trial/implement/Lattices/ArrLatticeIter.cc aips/implement/Lattices/ArrLatticeIter.cc
