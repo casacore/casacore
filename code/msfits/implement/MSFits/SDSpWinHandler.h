@@ -115,8 +115,7 @@ public:
     Int spWindowId() {return rownr_p;}
 private:
     RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p;
-    RecordFieldPtr<Double> refFreqKey_p, freqresKey_p, bwKey_p, f0Key_p, 
-	fdeltKey_p;
+    RecordFieldPtr<Double> freqresKey_p, bwKey_p, f0Key_p, fdeltKey_p;
     // the cache table is the one that is indexed
     ColumnsIndex *index_p;
     // temporary table to hold the fields we are indexing on, can't index on array column
@@ -126,7 +125,7 @@ private:
 
     // the columns in the cache table
     TableColumn idCol_p, nchanCol_p, freqRefTypeCol_p, 
-	refFreqCol_p, bwCol_p, f0Col_p, fdeltCol_p, freqresCol_p, ifConvChainCol_p;
+	bwCol_p, f0Col_p, fdeltCol_p, freqresCol_p, ifConvChainCol_p;
 
     // the next row number to use in the cached
     uInt nextCacheRow_p;
@@ -139,7 +138,7 @@ private:
 
     // fields possibly mined from the SDFITS row
     // floating point fields that we can't be certain of their type
-    Int obsfreqField_p, bandwidField_p, freqresField_p;
+    Int bandwidField_p, freqresField_p;
 
     // fields from a previous life as a MS
     RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p;
