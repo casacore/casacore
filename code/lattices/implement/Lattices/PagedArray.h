@@ -454,6 +454,12 @@ public:
   // Returns the current table name (ie. filename) of this PagedArray.
   const String& tableName() const;
 
+  // Return the current table object.
+  // <group>
+  Table& table();
+  const Table& table() const;
+  // </group>
+
   // Returns the current Table column name of this PagedArray.
   const String& columnName() const;
 
@@ -610,9 +616,16 @@ inline ArrayColumn<T>& PagedArray<T>::getRWArray()
 }
 
 template<class T>
-inline const String& PagedArray<T>::tableName() const
+inline Table& PagedArray<T>::table()
 {
-  return itsTableName;
+  doReopen();
+  return itsTable;
+}
+template<class T>
+inline const Table& PagedArray<T>::table() const
+{
+  doReopen();
+  return itsTable;
 }
 
 template<class T>
