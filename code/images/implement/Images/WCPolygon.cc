@@ -559,7 +559,7 @@ void WCPolygon::checkAxes (const IPosition& pixelAxes,
 
 void WCPolygon::unitInit() 
 {
-   static doneUnitInit = False;
+   static Bool doneUnitInit = False;
    if (!doneUnitInit) {
       UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
       UnitMap::putUser("frac",UnitVal(1.0), "fractional units");
