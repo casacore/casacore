@@ -34,10 +34,21 @@
 \setboolean{isModule}{false}
 }
 %
+\newenvironment{ahtool}[2]
+{
+\setboolean{isObject}{true}
+\subsection{ #1 - Tool\label{#1}{\index{#1}}}
+#2\\
+}{
+\vspace{.18in}
+\hrule
+\setboolean{isObject}{false}
+}
+%
 \newenvironment{ahobject}[2]
 {
 \setboolean{isObject}{true}
-\subsection{ #1 - Object\label{#1}{\index{#1}}}
+\subsection{ #1 - Tool\label{#1}{\index{#1}}}
 #2\\
 }{
 \vspace{.18in}
