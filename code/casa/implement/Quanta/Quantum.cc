@@ -281,7 +281,8 @@ Bool Quantum<Qtype>::read(Quantity &res, const String &in) {
   MUString tmp(in);
   // The next construct is to cater for an unexplained error in
   // the Linux egcs stream input library
-  if (!in.empty() && in[0] == 'n') {
+  if (!in.empty() && (in[0] == 'n' || in[0] == 'N' || in[0] == 'y' ||
+		      in[0] == 'Y')) {
     tmp = MUString(String('0') + in);		// Pointed non-const String
   };
   return Quantum<Qtype>::read(res, tmp);
