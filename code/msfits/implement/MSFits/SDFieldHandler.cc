@@ -38,6 +38,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Mathematics/Math.h>
 
 SDFieldHandler::SDFieldHandler() 
     : msField_p(0), msFieldCols_p(0), rownr_p(-1)

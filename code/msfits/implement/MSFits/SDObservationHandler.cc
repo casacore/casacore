@@ -41,6 +41,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Mathematics/Math.h>
 
 SDObservationHandler::SDObservationHandler() 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)

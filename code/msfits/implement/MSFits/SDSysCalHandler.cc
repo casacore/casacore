@@ -37,6 +37,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayLogical.h>
 
 SDSysCalHandler::SDSysCalHandler() 
