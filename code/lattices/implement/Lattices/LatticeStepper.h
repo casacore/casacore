@@ -140,10 +140,10 @@
 // If the LatticeStepper::RESIZE option is used at construction time the cursor
 // shape does change to a smaller value when near the edge of the Lattice so
 // that it is just big enough. For example with a Lattice shape of 10x10 and a
-// cursor of 8x8 the cursor shape will start initally be 8x8, then resize to
-// 2x8 on the first step, then resize to 8x2 on the second step and finally
-// resize to 2x2. The hangover function will return True for the last three
-// steps, even though the cursor has resized.
+// cursor of 8x8 the cursor shape will initally be 8x8, then resize to 2x8 on
+// the first step, then resize to 8x2 on the second step and finally resize to
+// 2x2. The hangover function will return True for the last three steps, even
+// though the cursor has resized.
 
 // The portion of the Lattice that the cursor will traverse can be
 // restricted to a region defined by a top right corner, bottom left corner
