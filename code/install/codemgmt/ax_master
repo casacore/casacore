@@ -6218,3 +6218,4 @@
 17 191 src mv ./aips/implement/Functionals/NQHyperPlane.h ./aips/implement/Functionals/HyperPlane.h
 17 191 src mv ./aips/implement/Functionals/NQHyperPlane2.cc ./aips/implement/Functionals/HyperPlane2.cc
 17 191 src mv ./aips/implement/Functionals/NQHyperPlaneParam.cc ./aips/implement/Functionals/HyperPlaneParam.cc
+17 191 src mv ./aips/implement/Functionals/NQHyperPlaneParam.h ./aips/implement/Functionals/HyperPlaneParam.h
