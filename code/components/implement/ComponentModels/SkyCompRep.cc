@@ -49,6 +49,7 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
+#include <iostream.h>
 
 SkyCompRep::~SkyCompRep()
 {
@@ -88,9 +89,11 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   // possible but still minimize the number of tiles in the cache.
   IPosition elementShape = imageShape;
   IPosition chunckShape = imageShape;
+  uInt axis;
   {
     const IPosition tileShape(image.niceCursorShape(image.maxPixels()));
-    uInt axis;
+    cout << "Image shape: " << image.shape() << endl;
+    cout << "Tile shape: " << tileShape << endl;
     for (uInt k = 0; k < nPixAxes; k++) {
       axis = dirAxes(k);
       elementShape(axis) = 1;
@@ -125,44 +128,52 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 
   LatticeIterator<Float> chunkIter(image, chunckShape);
   Vector<Double> pixelVal(4);
+  IPosition chunkOrigin(naxis), elementPosition(naxis);
   for (chunkIter.reset(); !chunkIter.atEnd(); chunkIter++) {
     ArrayLattice<Float> array(chunkIter.cursor());
     ArrLatticeIter<Float> elementIter(array, elementShape);
+    chunkOrigin = chunkIter.position();
     for (elementIter.reset(); !elementIter.atEnd(); elementIter++) {
-      for (uInt k = 0; k < nPixAxes; k++) 
-	pixelCoord(k) = elementIter.position()(dirAxes(k));
-      AlwaysAssert(dirCoord.toWorld(worldCoord, pixelCoord) == True, 
-		   AipsError);
-      dirVal(0).setValue(worldCoord(0));
-      dirVal(1).setValue(worldCoord(1));
-      pixelDir.set(MVDirection(dirVal));
-      sample(pixelVal, pixelDir, pixelSize);
-      if (nStokes == 1) {
-	switch (stokes(0)) {
-	case Stokes::I:
-	  elementIter.cursor() += Float(pixelVal(0)); break;
-	case Stokes::Q:
-	  elementIter.cursor() += Float(pixelVal(1)); break;
-	case Stokes::U:
-	  elementIter.cursor() += Float(pixelVal(2)); break;
-	case Stokes::V:
-	  elementIter.cursor() += Float(pixelVal(3)); break;
-	}
+      elementPosition = elementIter.position();
+      for (uInt k = 0; k < nPixAxes; k++) {
+	axis = dirAxes(k);
+	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
       }
-      else if (elementShape.product() == nStokes)
-	for (uInt p = 0; p < nStokes; p++) {
-	  switch (stokes(p)) {
+      if (dirCoord.toWorld(worldCoord, pixelCoord) == False) {
+ 	cerr << " SkyCompRep::Pixel at " << pixelCoord 
+ 	     << " cannot be projected" << endl;
+      }
+      else {
+	dirVal(0).setValue(worldCoord(0));
+	dirVal(1).setValue(worldCoord(1));
+	pixelDir.set(MVDirection(dirVal));
+	sample(pixelVal, pixelDir, pixelSize);
+	if (nStokes == 1) {
+	  switch (stokes(0)) {
 	  case Stokes::I:
-	    elementIter.cursor()(blc[p]) += Float(pixelVal(0)); break;
+	    elementIter.cursor() += Float(pixelVal(0)); break;
 	  case Stokes::Q:
-	    elementIter.cursor()(blc[p]) += Float(pixelVal(1)); break;
+	    elementIter.cursor() += Float(pixelVal(1)); break;
 	  case Stokes::U:
-	    elementIter.cursor()(blc[p]) += Float(pixelVal(2)); break;
+	    elementIter.cursor() += Float(pixelVal(2)); break;
 	  case Stokes::V:
-	    elementIter.cursor()(blc[p]) += Float(pixelVal(3)); break;
+	    elementIter.cursor() += Float(pixelVal(3)); break;
 	  }
 	}
-      else
+	else if (elementShape.product() == nStokes)
+	  for (uInt p = 0; p < nStokes; p++) {
+	    switch (stokes(p)) {
+	    case Stokes::I:
+	      elementIter.cursor()(blc[p]) += Float(pixelVal(0)); break;
+	    case Stokes::Q:
+	      elementIter.cursor()(blc[p]) += Float(pixelVal(1)); break;
+	    case Stokes::U:
+	      elementIter.cursor()(blc[p]) += Float(pixelVal(2)); break;
+	    case Stokes::V:
+	      elementIter.cursor()(blc[p]) += Float(pixelVal(3)); break;
+	    }
+	  }
+	else
 	for (uInt p = 0; p < nStokes; p++) {
 	  switch (stokes(p)) {
 	  case Stokes::I:
@@ -175,6 +186,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	    elementIter.cursor()(blc[p], trc[p]).ac() += Float(pixelVal(3)); break;
 	  }
 	}
+      }
     }
   }
 };
