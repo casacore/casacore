@@ -1,5 +1,5 @@
 //# TableDesc.h:  specify structure of aips++ tables
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TABLEDESC_H)
 #define AIPS_TABLEDESC_H
 
-#if defined(_AIX)
-#pragma implementation ("TableDesc.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -399,6 +396,14 @@ public:
     // </dl>
     // It will be checked if the given columns exists and have
     // an appropriate type.
+    // <br>
+    // The default data manager type of the columns involved will be set
+    // to TiledColumnStMan is all data columns have a fixed shape.
+    // Otherwise they are set to TiledShapeStMan.
+    // The storage manager group of all columns involved will be set to
+    // the hypercolumn name. In that way binding columns to storage managers
+    // during the table creation process is easier because a simple
+    // <code>bindGroup</code> can be used.
     // <p>
     // For example:<br>
     // A table contains data matrices with axes pol and freq.
