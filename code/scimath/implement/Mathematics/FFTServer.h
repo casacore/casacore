@@ -32,9 +32,10 @@
 #include <aips/aips.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
+
 //# Forward Declarations
 template <class T> class Array;
-
+template <class S> class Matrix;
 // <summary>Lists the different types of FFT's that can be done</summary>
 // <synopsis>This enumerator is brought out as a separate class because g++
 // currently cannot handle enumerators in a templated class. When it can this
@@ -265,9 +266,6 @@ public:
   // <group>
   void fft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
   void fft(Array<S> & cResult, const Array<T> & rData);
-
-  void myfft(Array<S> & cResult, Array<T> & rData, const Bool constInput=False);
-  void myfft(Array<S> & cResult, const Array<T> & rData);
   // </group>
 
   // Complex to real fft. The origin of the transform is in the centre of the
@@ -282,9 +280,6 @@ public:
   // <group>
   void fft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
   void fft(Array<T> & rResult, const Array<S> & cData);
-
-  void myfft(Array<T> & rResult, Array<S> & cData, const Bool constInput=False);
-  void myfft(Array<T> & rResult, const Array<S> & cData);
   // </group>
 
   // Complex to complex in-place fft. The origin of the transform is in the
@@ -293,7 +288,6 @@ public:
   // transform is performed. If False a backward or frequency to time transform
   // is done. Scaling is always done on the backward transform.
   void fft(Array<S> & cValues, const Bool toFrequency=True);
-  void fft(Array<S> & cValues,uInt doFlip,const Bool toFrequency=True);
 
   // Complex to complex fft. The origin of the transform is in the centre of
   // the Array. The direction of the transform is controlled by the toFrequency
@@ -303,8 +297,8 @@ public:
   // must either either contain no elements or be the same as the input Array,
   // ie. <src>shape = [cx, cy, cz,...]</src>.  Otherwise an AipsError is
   // thrown.
-  void fft(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True);
-  void fft(Array<S> & cResult, const Array<S> & cData,uInt doFlip, const Bool toFrequency=True);
+  void fft(Array<S> & cResult, const Array<S> & cData,
+	   const Bool toFrequency=True);
 
   // The <src>fft0</src> functions are equivalent to the <src>fft</src>
   // functions described above except that the origin of the transform is the
@@ -322,8 +316,8 @@ public:
   void fft0(Array<S> & cResult, const Array<S> & cData,
 	    const Bool toFrequency=True);
   //# void fft0(Array<T> & rValues, const Bool toFrequency=True);
+
   // </group>
-private:
   //# Flips the quadrants in a complex Array so that the point at
   //# cData.shape()/2 moves to the origin. This moves, for example, the point
   //# at [8,3] to the origin ([0,0]) in an array of shape [16,7]. Usually two
@@ -340,6 +334,10 @@ private:
   void flip(Array<T> & rData, const Bool toZero, const Bool isHermitian);
   void flip(Array<S> & cData, const Bool toZero, const Bool isHermitian);
   // </group>
+private:
+  // function instead of flip for complex data only
+  Int phaseRotate(Matrix<S> & cData);
+
   //# finds the shape of the output array when doing complex->real transforms
   IPosition determineShape(const IPosition & rShape, const Array<S> & cData);
   //# The size of the last FFT done by this object
