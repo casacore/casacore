@@ -396,14 +396,14 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
          Int worldAxis = 
             pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
-         pixels(0) = Double(locInLattice(dPos)(j));
+         pixels(0) = Double(locInLattice(dPos,False)(j));
 //
          if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
                                      displayAxes_p(j), cursorAxes_p,
                                      blc, trc, pixels, -1)) return;
 //
          oss <<  ImageUtilities::shortAxisName(name)
-             << " = " << locInLattice(dPos)(j)+1 << " (" << sWorld(0) << ")";
+             << " = " << locInLattice(dPos,True)(j)+1 << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) oss << ", ";
       }
       hLabel = String(oss);
