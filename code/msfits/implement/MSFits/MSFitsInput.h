@@ -30,15 +30,18 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Containers/Block.h>
+#include <aips/FITS/fits.h>
 #include <aips/FITS/hdu.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
-#include <aips/MeasurementSets/MSColumns.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Utilities/String.h>
 
 class FitsInput;
-template<class T> class PrimaryGroup;
 class BinaryTable;
+class MSColumns;
 
 // <summary>
 // A helper class for MSFitsInput
@@ -101,15 +104,15 @@ public:
   { return pf ? pf->cdelt(i) : (pl ? pl->cdelt(i) : ps->cdelt(i));}
 
   // Keyword of given type
-  const FitsKeyword* kw(FITS::ReservedName &n)
+  const FitsKeyword* kw(const FITS::ReservedName& n)
   { return hdu_p->kw(n);}
 
   // All keywords
-  ConstFitsKeywordList &kwlist()
+  ConstFitsKeywordList& kwlist()
   { return hdu_p->kwlist();}
 
   // Advance to next keyword
-  const FitsKeyword *nextkw()
+  const FitsKeyword* nextkw()
   { return hdu_p->nextkw();}
 
   // Number of groups
@@ -181,7 +184,7 @@ public:
 
   // Has the filler been constructed ok? If false, do not use any other
   // member functions.
-  Bool ok() {return ok_p;}
+  Bool ok() {return True;}
 
   // read the FITS file and create the MeasurementSet
   Bool readFitsFile();
@@ -192,9 +195,9 @@ protected:
   // Returns False if not ok.
   Bool checkInput(FitsInput& infile);
 
-  // Read the axis info of the primary group, returns False if required axes
-  // are missing.
-  Bool getPrimaryGroupAxisInfo();
+  // Read the axis info of the primary group, throws an exception if required
+  // axes are missing.
+  void getPrimaryGroupAxisInfo();
 
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
   // If useTSM is True, the Tiled Storage Manager will be used to store
@@ -233,10 +236,9 @@ private:
   FitsInput* infile_p;
   String msFile_p;
   MSPrimaryGroupHolder priGroup_p;
-  Bool ok_p;
   MeasurementSet ms_p;
   MSColumns* msc_p;
-  Int nAxis_p, nIF_p;
+  Int nIF_p;
   Vector<Int> nPixel_p,corrType_p;
   Block<Int> corrIndex_p;
   Matrix<Int> corrProduct_p;
@@ -248,9 +250,7 @@ private:
   Vector<Double> receptorAngle_p;
   MFrequency::Types freqsys_p;
   Double restfreq_p;
-
+  LogIO itsLog;
 };
 
-
 #endif
-
