@@ -68,7 +68,7 @@ void LELUnaryBool::eval(Array<Bool>& result,
       break;
    }
    default:
-      throw(AipsError("LELUnaryBool: unknown operation"));
+      throw(AipsError("LELUnaryBool::eval - unknown operation"));
    }
 }
 
@@ -82,7 +82,7 @@ Bool LELUnaryBool::getScalar() const
    case LELUnaryEnums::NOT :
       return ToBool (!(pExpr_p->getScalar()));
    default:
-      throw(AipsError("LELUnaryBool: unknown operation"));
+      throw(AipsError("LELUnaryBool::getScalar - unknown operation"));
    }
    return False;                     // Make compiler happy
 }
