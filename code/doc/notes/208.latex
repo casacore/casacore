@@ -1,0 +1,28 @@
+\documentclass[11pt]{article}
+\usepackage{html, epsf}
+\setlength{\textheight}{7in}
+\setlength{\textwidth}{8in}
+\setlength{\topmargin}{-0.5in}
+\special{landscape}
+%%-----------------------------------------------------------------------------
+
+\begin{document}
+
+\title{NOTE 205 -- AIPS++ TALK SLIDES}
+  
+
+\author{Tim Cornwell}
+
+\date{May 9 1997}
+
+\maketitle
+%%---------------------------------------------------------------------------
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../208.ps}
+\end{htmlonly}
+
+%\tableofcontents
+\newpage
+      
+\input{talkslides.tex}
+\end{document}
