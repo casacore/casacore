@@ -142,9 +142,9 @@ String MSSelection::indexExprStr(Vector<Int> index)
   for(uInt i=0; i<index.nelements(); i++)
   {
     if(i==0)
-      expression = index[i];
+      expression = String::toString(index[i]);
     else
-      expression = expression + ", " + index[i];
+      expression = expression + ", " + String::toString(index[i]);
   }
 
   return expression;
@@ -161,7 +161,7 @@ String MSSelection::nameExprStr(Vector<String> name)
   for(uInt i=0; i<name.nelements(); i++)
   {
     if(i==0)
-      expression = name[i];
+      expression = expression + name[i];
     else
       expression = expression + ", " + name[i];
   }
