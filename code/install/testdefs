@@ -2,7 +2,7 @@
 # testdefs: Test makedefs variable definitions
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-1997
+#   Copyright (C) 1996-1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -327,6 +327,7 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(WCSLIBLIBD) $(WCSLIBLIB) ; $(CheckLibs)
     endif
+	-@ echo "WCSLIBTRIG=$(WCSLIBTRIG)"
 	-@ echo ""
 	-@ echo "PGPLOTROOT=$(PGPLOTROOT)"
     ifdef DO_TEST
