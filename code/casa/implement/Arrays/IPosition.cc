@@ -465,6 +465,20 @@ Bool IPosition::isEqual (const IPosition& other, uInt nrCompare) const
 }
 
 
+Bool IPosition::isSubSet (const IPosition& other) const
+{
+    uInt nrthis = nelements();
+    uInt nrthat = other.nelements();
+    uInt j=0;
+    for (uInt i=0; i<nrthis; i++) {
+	if (j < nrthat  &&  data_p[i] == other(j)) {
+	    j++;
+	}
+    }
+    return (j == nrthat);
+}
+
+
 // <thrown>
 //    <item> ArrayConformanceError
 // </thrown>
