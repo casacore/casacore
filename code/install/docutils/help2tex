@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl5
 #
-#   Copyright (C) 1996,1997
+#   Copyright (C) 1996,1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify it
@@ -325,6 +325,7 @@ sub make_tex_file{
           $dum = $4;
           $glish_arg =~ s/\\_/_/g;
           $glish_arg =~ s/\.\.\./dots/g;
+          $glish_arg =~ s/\\ldots/dots/g;
           $glish_arg =~ s/ /_/g;
           $desc =~ s/[\n\']/ /g;
           print "$argroot.a.$glish_arg := [=];\n";
