@@ -1,5 +1,5 @@
 //# UnitMap.cc: defines the UnitMap class containing standard unit definitions
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -502,9 +502,7 @@ Bool UnitMap::getUnit(const String& s, UnitName &name) {
 void UnitMap::putCache(const String& s, const UnitVal& val) {
   UnitMap::initUM();
   if (! s.empty()) {
-    if (mapCache->ndefined() > 200) {
-      clearCache();
-    };
+    if (mapCache->ndefined() > 200) clearCache();
     mapCache->define(s,val);
   };
 }
@@ -522,9 +520,9 @@ void UnitMap::putUser(const String& s, const UnitVal& val,
 
 void UnitMap::putUser(const UnitName& name) {
   UnitMap::initUM();
-  if (mapUser->isDefined(name.getName())) {
-    clearCache();
-  };
+  if (mapUser->isDefined(name.getName()) ||
+      mapCust->isDefined(name.getName()) ||
+      mapSI->isDefined(name.getName())) clearCache();
   mapUser->define(name.getName(),name);
 }
 
