@@ -64,8 +64,8 @@ MS1ToMS2Converter::MS1ToMS2Converter(const String& ms2,
   ms2_p    (ms2),
   inPlace_p(inPlace)
 {
-  LogOrigin or("MS1ToMS2Converter", "MS1ToMS2Converter()", WHERE);
-  os_p = LogIO(or);
+  LogOrigin OR("MS1ToMS2Converter", "MS1ToMS2Converter()", WHERE);
+  os_p = LogIO(OR);
   if (inPlace_p) {
     ms2_p = ms1_p;
   }

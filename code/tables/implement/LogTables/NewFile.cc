@@ -1,5 +1,5 @@
 //# NewFile.cc: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,10 +65,10 @@ NewFile::~NewFile()
 
 Bool NewFile::valueOK(const String &value, String &error) const
 {
-    LogOrigin or("NewFile", 
+    LogOrigin OR("NewFile", 
 		 "valueOK(const String &value, String &error) const",
 			WHERE);
-    LogMessage msg(or);
+    LogMessage msg(OR);
 
     error = "";
     Bool retval = False;

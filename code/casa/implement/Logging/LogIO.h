@@ -184,9 +184,9 @@ public:
     // about memory management.
     LogIO(LogSink &sink);
     // Attach this LogIO object to the supplied origin and global sink.
-    LogIO(const LogOrigin &or);
+    LogIO(const LogOrigin &OR);
     // Attach this LogIO object to the supplied origin and sink.
-    LogIO(const LogOrigin &or, LogSink &sink);
+    LogIO(const LogOrigin &OR, LogSink &sink);
     
     // Copying uses reference semantics, i.e. the same sink will be shared
     // by both copies.
@@ -199,15 +199,9 @@ public:
     // been posted.
     ~LogIO();
     
-    // Post the accumulated message.  If you wish, you can post the messages
-    // only locally to the sink.
+    // Post the accumulated message.
     // After the post the priority is reset to NORMAL.
     void post();
-
-    // Post the accumulated message locally.
-    // After the post the priority is reset to NORMAL.
-    void postLocally();
-
     // Post the accumulated message at SEVERE priority and then throw an
     // exception.
     // After the post the priority is reset to NORMAL.
@@ -256,7 +250,7 @@ private:
 // <group name=command>
 LogIO &operator<<(LogIO &os, LogIO::Command item);
 LogIO &operator<<(LogIO &os, const SourceLocation *item);
-LogIO &operator<<(LogIO &os, const LogOrigin &or);
+LogIO &operator<<(LogIO &os, const LogOrigin &OR);
 // </group>
 
 

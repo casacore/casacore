@@ -1,4 +1,4 @@
-//# LogIO.cc: this defines LogIO which provides a stream like interface for logging
+//# <ClassFileName.h>: this defines <ClassName>, which ...
 //# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -41,12 +41,12 @@ LogIO::LogIO(LogSink &sink)
     : sink_p(sink), text_p(0)
 {}
 
-LogIO::LogIO(const LogOrigin &or)
-    : sink_p(), msg_p(or), text_p(0)
+LogIO::LogIO(const LogOrigin &OR)
+    : sink_p(), msg_p(OR), text_p(0)
 {}
 
-LogIO::LogIO(const LogOrigin &or, LogSink &sink)
-    : sink_p(sink),  msg_p(or), text_p(0)
+LogIO::LogIO(const LogOrigin &OR, LogSink &sink)
+    : sink_p(sink),  msg_p(OR), text_p(0)
 {}
 
 LogIO::LogIO(const LogIO &other)
@@ -77,19 +77,7 @@ void LogIO::post()
 	msg_p.message(*text_p);
 	delete text_p;
 	text_p = 0;
-        sink_p.post(msg_p);
-    }
-    // Reset priority.
-    msg_p.priority(LogMessage::NORMAL);
-}
-
-void LogIO::postLocally()
-{
-    if (text_p) {
-	msg_p.message(*text_p);
-	delete text_p;
-	text_p = 0;
-        sink_p.postLocally(msg_p);
+	sink_p.post(msg_p);
     }
     // Reset priority.
     msg_p.priority(LogMessage::NORMAL);
@@ -119,9 +107,9 @@ void LogIO::sourceLocation(const SourceLocation *where)
     msg_p.sourceLocation(where);
 }
 
-void LogIO::origin(const LogOrigin &or)
+void LogIO::origin(const LogOrigin &OR)
 {
-    msg_p.origin(or);
+    msg_p.origin(OR);
 }
 
 ostream &LogIO::output()
@@ -157,9 +145,9 @@ LogIO &operator<<(LogIO &os, const SourceLocation *item)
     return os;
 }
 
-LogIO &operator<<(LogIO &os, const LogOrigin &or)
+LogIO &operator<<(LogIO &os, const LogOrigin &OR)
 {
-    os.origin(or);
+    os.origin(OR);
     return os;
 }
 

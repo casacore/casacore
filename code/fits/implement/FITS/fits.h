@@ -28,6 +28,7 @@
 # if !defined(AIPS_FITS)
 # define AIPS_FITS
 
+# include <stdlib.h>
 # include <ctype.h>
 # include <aips/aips.h>
 # include <aips/iostream.h>

@@ -434,9 +434,12 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
    NonLinearFitLM<T> fitter;
 
 // Create and set the functionals
-   
-   const Gaussian1D<AutoDiff<T> > gauss; 
-   const Polynomial<AutoDiff<T> > poly;  
+
+// gcc 2.96 fails to compile the const version???
+//    const Gaussian1D<AutoDiff<T> > gauss; 
+//    const Polynomial<AutoDiff<T> > poly;  
+   Gaussian1D<AutoDiff<T> > gauss; 
+   Polynomial<AutoDiff<T> > poly;  
    SumFunction<AutoDiff<T>,AutoDiff<T> > func;
    func.addFunction(gauss);
    func.addFunction(poly);         

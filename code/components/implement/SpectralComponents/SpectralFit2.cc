@@ -44,8 +44,11 @@ Bool SpectralFit::fit(const Vector<MT> &y,
   NonLinearFitLM<MT> fitter;
   iter_p = 0;
   // The functions to fit
-  const Gaussian1D<AutoDiff<MT> > gauss;
-  const Polynomial<AutoDiff<MT> > poly;
+// gcc 2.96 fails to compile the const version???
+//   const Gaussian1D<AutoDiff<MT> > gauss;
+//   const Polynomial<AutoDiff<MT> > poly;
+  Gaussian1D<AutoDiff<MT> > gauss;
+  Polynomial<AutoDiff<MT> > poly;
   SumFunction<AutoDiff<MT>,AutoDiff<MT> > func;
   Int npar(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {

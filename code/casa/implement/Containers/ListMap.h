@@ -1,5 +1,5 @@
 //# ListMap.h: Map with list ordering/operations
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,7 +101,7 @@ public:
   //
   //+grp
   DefineOrder getOrder() const { return deforder;}
-  void setOrder(DefineOrder or) { deforder = or;}
+  void setOrder(DefineOrder OR) { deforder = OR;}
   //-grp
 
   enum {ListMapRepVersion = 1};
@@ -182,9 +182,9 @@ public:
            v == ListMapRep<key,value>::Prepend ? Prepend :
            Undefined;
   }
-  void setOrder(DefineOrder or) { 
-    ((ListMapRep<key,value> *)Rep)->setOrder(or == Append ? ListMapRep<key,value>::Append :
-		  or == Prepend ? ListMapRep<key,value>::Prepend :
+  void setOrder(DefineOrder OR) { 
+    ((ListMapRep<key,value> *)Rep)->setOrder(OR == Append ? ListMapRep<key,value>::Append :
+		  OR == Prepend ? ListMapRep<key,value>::Prepend :
 		  ListMapRep<key,value>::Undefined);
   }
   //-grp

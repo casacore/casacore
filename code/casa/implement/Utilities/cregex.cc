@@ -2134,10 +2134,10 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	case charset:
 	case charset_not:
 	  {
-	    int not = 0;	    /* Nonzero for charset_not.  */
+	    int NOT = 0;	    /* Nonzero for charset_not.  */
 	    register int c;
 	    if (*(p - 1) == (unsigned char) charset_not)
-	      not = 1;
+	      NOT = 1;
 
 	    PREFETCH;	    /* Fetch a data character. */
 
@@ -2148,11 +2148,11 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 
 	    if (c < (int)(*p * BYTEWIDTH)
 		&& p[1 + c / BYTEWIDTH] & (1 << (c % BYTEWIDTH)))
-	      not = !not;
+	      NOT = !NOT;
 
 	    p += 1 + *p;
 
-	    if (!not) goto fail;
+	    if (!NOT) goto fail;
 	    SET_REGS_MATCHED;
             d++;
 	    break;
@@ -2222,13 +2222,13 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 		else if (p1[3] == (unsigned char) charset
 			 || p1[3] == (unsigned char) charset_not)
 		  {
-		    int not = p1[3] == (unsigned char) charset_not;
+		    int NOT = p1[3] == (unsigned char) charset_not;
 		    if (c < (int)(p1[4] * BYTEWIDTH)
 			&& p1[5 + c / BYTEWIDTH] & (1 << (c % BYTEWIDTH)))
-		      not = !not;
+		      NOT = !NOT;
 		    /* `not' is 1 if c would match.  */
 		    /* That means it is not safe to finalize.  */
-		    if (!not)
+		    if (!NOT)
 		      p[-3] = (unsigned char) finalize_jump;
 		  }
 	      }

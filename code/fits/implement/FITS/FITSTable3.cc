@@ -220,8 +220,8 @@ void FITSGroupWriter::write()
 
 void FITSGroupWriter::check_error(const char *extra_info)
 {
-    static LogOrigin or("FITSGroupWriter", "");
-    static LogMessage msg(or, LogMessage::SEVERE);
+    static LogOrigin OR("FITSGroupWriter", "");
+    static LogMessage msg(OR, LogMessage::SEVERE);
 
     if (group_p) {
 	HeaderDataUnit::HDUErrs err = HeaderDataUnit::HDUErrs(group_p->err());
