@@ -2824,18 +2824,18 @@ void LatticeStatistics<T>::stretchMinMax (T& dMin, T& dMax) const
 //   dMin,Max     The range to stretch
 // 
 {    
-   T delta = 0.05*(dMax-dMin);
+   T delta = T(0.05)*(dMax-dMin);
    T absmax = max(abs(dMax),abs(dMin));
-   if (delta < 1.0e-5*absmax) delta = 0.01 * absmax;
+   if (delta < T(1.0e-5)*absmax) delta = T(0.01) * absmax;
                                  
    if (dMin==dMax) {
-      if (dMin==0.0) {
-         dMin = -1.0;
-         dMax = 1.0;
+      if (dMin==T(0.0)) {
+         dMin = T(-1.0);
+         dMax = T(1.0);
       }  
       else {
-         dMin = dMin - 0.05*dMin;
-         dMax = dMax + 0.05*dMax;
+         dMin = dMin - T(0.05)*dMin;
+         dMax = dMax + T(0.05)*dMax;
       }  
    }
    else {
