@@ -1,5 +1,5 @@
 //# LatticeUtilities.h: useful global functions for Lattices
-//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,18 +66,21 @@ class LatticeUtilities
 {
    public:
 
-// Collapse the specified axes by averaging
-// <group>
+// Collapse the specified axes by averaging and recover the
+// pixel values.
    template <class T>
-   static void collapse (Array<T>& out, const IPosition& axes,
+   static void collapse (Array<T>& data, const IPosition& axes,
                          const MaskedLattice<T>& in,
                          Bool dropDegenerateAxes);
 //
+// Collapse the specified axes by averaging and recover either/and
+// the pixel values and mask.
    template <class T>
    static void collapse (Array<T>& data, Array<Bool>& mask,
                          const IPosition& axes, 
                          const MaskedLattice<T>& lat,
-                         Bool dropDegenerateAxes);
+                         Bool dropDegenerateAxes,
+                         Bool getPixels=True, Bool getMask=True);
 // </group>
 
 // Copy data and mask from input to output.  If the input has no mask,
