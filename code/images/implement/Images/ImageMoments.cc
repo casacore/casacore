@@ -1193,14 +1193,15 @@ void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
 //
 {
    if (in.isMasked()) {
+      os_p << LogIO::NORMAL << "Copy input (and zero masked pixels) to smoothed image" << LogIO::POST;
+//
       LatticeIterator<T> outIter(out);
       Bool deleteDataIn, deleteMaskIn, deleteDataOut;
-      Array<T> dataIn(outIter.woCursor().shape());
-      Array<Bool> maskIn(outIter.woCursor().shape());
+      IPosition shape = outIter.woCursor().shape();        
+      Array<T> dataIn(shape);
+      Array<Bool> maskIn(shape);
 //
-      outIter.reset();
-      IPosition shape;
-      while (!outIter.atEnd()) {
+      for (outIter.reset(); !outIter.atEnd(); outIter++) {
          shape = outIter.woCursor().shape();        
          if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
          if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
@@ -1214,7 +1215,7 @@ void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
          Array<T>& dataOut = outIter.woCursor();
          T* pDataOut = dataOut.getStorage(deleteDataOut);
 //
-         for (uInt i=0; i<shape.nelements(); i++) {
+         for (Int i=0; i<shape.product(); i++) {
             pDataOut[i] = pDataIn[i];
             if (!pMaskIn[i]) pDataOut[i] = 0.0;
          }
@@ -1223,10 +1224,9 @@ void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
          dataIn.freeStorage(pDataIn, deleteDataIn);
          maskIn.freeStorage(pMaskIn, deleteMaskIn);
          dataOut.putStorage(pDataOut, deleteDataOut);
-//
-         outIter++;
       }
    } else {
+      os_p << LogIO::NORMAL << "Copy input to smoothed image" << LogIO::POST;
       out.copyData(in);
    }
 }
@@ -1669,9 +1669,17 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 
 // Smooth in situ.  PSF is separable so convolve by rows for each axis.  
 
+
+   IPosition niceShape = 
+        pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels());
    for (uInt i=0; i<psf.ndim(); i++) {
       if (psf.shape()(i) > 1) {
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
+         const Int n = pSmoothedImage->shape()(i)/niceShape(i);
+         if (n*niceShape(i)!=pSmoothedImage->shape()(i)) {
+            os_p << LogIO::WARN << "The tile shape is not integral along this axis, performance may degrade" << LogIO::POST;
+         }
+//
          Vector<T> psfRow = psfSep.column(i);
          psfRow.resize(psf.shape()(i),True);
          smoothProfiles (*pSmoothedImage, i, psfRow);
