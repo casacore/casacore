@@ -1,5 +1,5 @@
 //# LatticeIterInterface.h: A base class for concrete Lattice iterators
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,6 +119,10 @@ friend class LatticeIterator<T>;
 friend class RO_LatticeIterator<T>;
 
 public:
+  // Construct with the given navigator.
+  LatticeIterInterface (const Lattice<T>& lattice,
+			const LatticeNavigator& navigator);
+
   // A virtual destructor. A virtual is needed to ensure that derived
   // classes declared as pointers to a LatticeIterInterface will scope their
   // destructor to the derived class destructor.
@@ -127,10 +131,6 @@ public:
 protected:
   // Default constructor (for derived classes).
   LatticeIterInterface();
-
-  // Construct with the given navigator.
-  LatticeIterInterface (const Lattice<T>& lattice,
-			const LatticeNavigator& navigator);
 
   // Copy constructor (copy semantics).
   LatticeIterInterface (const LatticeIterInterface<T>& other);
