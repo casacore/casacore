@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 // 
    Input inputs(1);
    inputs.version ("$Revision$");
-   inputs.create("noise", "0.0", "Noise");
+   inputs.create("noise", "0.0001", "Noise");
    inputs.create("height", "3.0", "Height");
    inputs.create("xcen", "0.0", "xcen");
    inputs.create("ycen", "0.0", "ycen");
@@ -267,7 +267,6 @@ int main(int argc, char **argv)
  } catch (AipsError x) {
       cout << "Failed with message " << x.getMesg() << endl;
  }   
- 
 }
 
 
