@@ -173,19 +173,31 @@ public:
    ImageStatistics (const ImageInterface<T>& image, 
                     LogIO& os);
 
-// Copy constructor
+// Copy constructor.  Copy semantics are followed.  Therefore any storage image 
+// that has already been created for <src>other</src> is copied to <src>*this</src>
    ImageStatistics(const ImageStatistics<T> &other);
 
 // Destructor
   ~ImageStatistics ();
 
-// Assignment operator
+// Assignment operator.  Deletes any storage image associated with
+// the object being assigned to and copies any storage image that has
+// already been created for "other".
    ImageStatistics<T> &operator=(const ImageStatistics<T> &other);
 
 // Set the cursor axes (0 relative).  A return value of <src>False</src>
-//  indicates you have asked for an invalid axis.  The default state of the class
+// indicates you have asked for an invalid axis.  The default state of the class
 // is to set the cursor axes to all axes in the image.
    Bool setAxes (const Vector<Int>& cursorAxes);
+
+// Set the region of interest of the image.    Currently, just a blc and trc 
+// are available (the increment is always set to unity at present),  In the 
+// future, a more sophisticated selection method will be available.  The default 
+// state of the class is to use the entire image.
+   Bool setRegion (const IPosition &blc, 
+                   const IPosition &trc,
+                   const IPosition &inc,
+                   const Bool& listRegion=True);
 
 // You may specify a pixel intensity range as either one for which 
 // all pixels in that range are included or one for which all pixels 
@@ -271,13 +283,10 @@ private:
    String device_p; 
    Bool doList_p;
    Bool noInclude_p, noExclude_p;
-   IPosition cursorShape_p, minPos_p, maxPos_p;
-
    Bool goodParameterStatus_p;
    Bool needStorageImage_p;
    Bool doneSomeGoodPoints_p, someGoodPointsValue_p;
-   Int nVirCursorIter_p;   
-
+   IPosition minPos_p, maxPos_p, blc_p, trc_p, inc_p;
    PagedArray<Double>* pStoreImage_p;
 
 
@@ -285,8 +294,9 @@ private:
 
 // Accumulate statistics from this cursor chunk
    void accumulate       (Int& nIter,
+                          const Int& nVirCursorIter,
                           const IPosition& cursorPos,
-                          const Array<Float>& cursor);
+                          const Array<T>& cursor);
 
 // Update accumulation sums from this datum
    void accumulate2      (Double& sum,
@@ -301,30 +311,31 @@ private:
                           const Double& datum);
 
 // Calculate statistic from accumulation image and return in an array
-   void calculateStatistic (Array<T>& slice, const Int& ISTAT);
+   Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
 
 // Copy the cursor into the output array
    void copyArray        (Array<T>& slice, 
                           const Array<Double>& cursor);
 
+
+// Copy storage image from other object to *this object
+   void copyStorageImage(const ImageStatistics<T> &other);
+
 // Create a new storage image
-   void generateStorageImage
-                          ();
+   Bool generateStorageImage ();
 
 // List the statistics
-   void listStats         (const IPosition& dPos, 
-                           const Int& n1,
+   Bool listStats         (const IPosition& dPos, 
                            const Matrix<Float>& ord);
 
 // Plot the statistics
    Bool plotStats         (const IPosition& dPos,
-                           const Int& n,
                            const Matrix<Float>& ord);
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (Int& iFound,
                            const Int& n,
-                           const float* pn,
+                           const float* const pn,
                            const Int& iStart,
                            const Bool& findGood);
 
@@ -338,12 +349,17 @@ private:
    void lineSegments      (Int& nSeg, 
                            Vector<Int>& start,
                            Vector<Int>& nPts,
-                           const float* pn,
+                           const float* const pn,
                            const Int& n);
 
-// Find the location in the statistics storage image for the start
-// of a statistics slice at the given location in the input image
-   IPosition locInStats   (const IPosition& imageCursorPos);
+// Find the location in the statistics storage image for the start of a
+// statistics slice at the given location in the input image.
+   IPosition locInStats   (const IPosition& imagePosition);
+
+// Given a location in the storage image, convert those locations on the
+// non-statistics axis (the last one) to account for the lattice subsectioning
+   IPosition locInImage (const IPosition& storagePosition);
+
 
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (const String& LRLoc,
@@ -368,10 +384,6 @@ private:
 
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours);
-
-// Find the world axis of the given pixel axis
-   Int pixelAxisToWorldAxis(const CoordinateSystem& cSys,
-                            const Int& pixelAxis);
 
 // Convert pixel coordinate to world coordinate string
    void pix2World         (Vector<String>& sWorld,
