@@ -534,7 +534,7 @@ Bool LSQFit::invertRect() {
   };
   // Save solution
   for (uInt i=0; i<nun_p; i++) {
-    Double *j0 = nceq_p->row(i);			//output row
+    Double *j0 = nceq_p->row(i);		//output row
     Double *j1 = rowru(i);			//input row
     for (uInt i1=i; i1<nun_p; i1++) j0[i1] = j1[i1];
   };
@@ -553,11 +553,12 @@ void LSQFit::extendConstraints(uInt n) {
     delete [] constr_p; constr_p = 0;
   } else {
     Double *newcon = new Double[n*nun_p];	// Newly sized area
-    Double *newknw = new Double[n];
+    Double *newknw = new Double[n+nun_p];
     Double *cptr = newcon;			// Prepare copying
     Double *vptr = newknw;
     Double *inc = constr_p;
     Double *inv = known_p;
+    for (uInt j=0; j<nun_p; ++j) *vptr++ =  *inv++;
     for (uInt i=0; i<ncon_p && i<n; ++i) {
       for (uInt j=0; j<nun_p; ++j) *cptr++ =  *inc++;
       *vptr++ = *inv++;
