@@ -41,11 +41,13 @@
 int main(int argc, char **argv) {
       
   // Inputs
+  cout << ">>>" << endl;
   Input inputs(1);
   inputs.version("$Id$");
   inputs.create("plotter", "", "plotter"); 
   inputs.readArguments(argc, argv);
   const String device = inputs.getString("plotter"); 
+  cout << "<<<" << endl;
 
   PGPlotter plotter(device, 3, 3);
   // get estimates
