@@ -954,8 +954,9 @@ endif
 # they don't have an additional function.
 #-----------------------------------------------------------------------------
 # General phony targets.
-.PHONY : all allsys chkout clean cleaner cleanest cleancode cleandocs \
-    cleansys command dependsys diagnostics docextr docscan docsys eval_vars \
+.PHONY : all allsys changelogs chkout clean cleaner cleanest \
+    cleancode cleandocs cleanpure cleansys \
+    command dependsys diagnostics docextr docscan docsys eval_vars \
     FORCE null printenv recurse runtests show_all show_aux show_global \
     show_local show_prg show_sys show_vars sysdirs test_all test_aux \
     test_global test_prg test_sys versions
