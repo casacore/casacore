@@ -33,6 +33,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/String.h>
+#include <aips/Exceptions/Error.h>
 
 
 void RegionHandler::setDefaultMask (Table& table,
