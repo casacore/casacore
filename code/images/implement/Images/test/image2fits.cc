@@ -1,5 +1,5 @@
 //# image2fits.cc: conversion from aips++ native tables to FITS
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 //#
 //-----------------------------------------------------------------------------
 #include <aips/aips.h>
+#include <aips/Tasking/Aipsrc.h>
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageFITSConverter.h>
@@ -52,7 +53,10 @@ Int main(int argc, char *argv[])
 	// Inputs
 	Input inp(1);
 	inp.Version(""); // By setting to null, we turn of the announcement
-	inp.Create("in", "in.image", "Input AIPS++ Image name", "string");
+
+        String root = Aipsrc::aipsRoot();
+        String name = root + "/code/trial/implement/Images/test/test_image";
+	inp.Create("in", name, "Input AIPS++ Image name", "string");
 	inp.Create("out", "out.fits", "Output FITS file name", "string");
 	inp.Create("overwrite", "False", "Allow output to be overwritten?",
 		   "Bool");
