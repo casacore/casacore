@@ -17,8 +17,8 @@ License along with this library; if not, write to the Free Software
 Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef aips_generic_h
-#define aips_generic_h 1
+#ifndef AIPS_GENERIC_H
+#define AIPS_GENERIC_H
 
 /*
  *	See the CPP manual, argument prescan section for explanation
@@ -57,4 +57,5 @@ typedef int (*GPT)(int,char*);
 #define g_callerror(gen,type,a,b) (*g_errorhandler(gen,type))(a,b)
 
 // </group>
-#endif /* generic_h */
+
+#endif
