@@ -1,5 +1,5 @@
 //# tRecord.cc: Test the Record class
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -180,7 +180,6 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 {
     Int subField  = desc.fieldNumber ("SubRecord");
     Int subField1 = desc.fieldNumber ("SubRecord1");
-    const RecordDesc& subDesc  = desc.subRecord (subField);
     Record record(desc);
     RecordFieldPtr<Record> sub (record, subField);
     RecordFieldPtr<Record> sub1 (record, subField1);
@@ -280,6 +279,11 @@ void doIt (Bool doExcp)
 
     // Do some incorrect add's.
     if (doExcp) {
+	try {
+	    record.define (record.nfields()+1, (Int)0);
+	} catch (AipsError x) {
+	    cout << x.getMesg() << endl;           // index too high
+	} end_try;
 	try {
 	    record.define ("", (Int)0);
 	} catch (AipsError x) {
@@ -476,7 +480,7 @@ void doIt (Bool doExcp)
     *subref = 9.0;
 
     // Record& rwSubRecord (Int whichField);
-    // addRecord (const String& name, const Record&);
+    // defineRecord (const String& name, const Record&);
     // RecordFieldPtr::define (const Record&);
     // RecordFieldPtr::operator= (const Record&);
     Record& subrec1 = record.rwSubRecord (record.fieldNumber ("SubRecord1"));
@@ -617,10 +621,20 @@ void doIt (Bool doExcp)
     AlwaysAssertExit(record5.conform(record));
     check (record5, -1234566, 34);
 
-    // Check removing a sub record.
+    // Check defining and removing a subrecord.
+    record5.defineRecord (34, record);
+    AlwaysAssertExit (record5.name(34) == "*35");
+    record5.renameField ("abcd", 34);
     record5.defineRecord ("abcd", record);
     check (record5, -1234566, 35);
     record5.removeField (record5.fieldNumber("abcd"));
+    check (record5, -1234566, 34);
+
+    // Check defining a field by number.
+    record5.define (34, Int(2));
+    check (record5, -1234566, 35);
+    AlwaysAssertExit (record5.asInt("*35") == 2);
+    record5.removeField (34);
     check (record5, -1234566, 34);
 
     // Check field merge.
