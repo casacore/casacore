@@ -2242,3 +2242,4 @@
 11 173 src mv nrao/implement/MeasurementSets/SDIterFieldCopier.cc trial/implement/SDIterators/SDIterFieldCopier.cc
 11 173 src mv nrao/implement/MeasurementSets/SDIterFieldCopier.h trial/implement/SDIterators/SDIterFieldCopier.h
 11 173 src mv nrao/implement/MeasurementSets/SDIterator.cc trial/implement/SDIterators/SDIterator.cc
+11 173 src mv nrao/implement/MeasurementSets/SDIterator.h trial/implement/SDIterators/SDIterator.h
