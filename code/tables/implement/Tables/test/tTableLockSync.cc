@@ -96,31 +96,40 @@ void b()
     Matrix<float> dataValues(IPosition(2,16,25));
     Int opt, rownr, val;
     while (True) {
-	cout << "0=quit, 1=rdlock, 2=wrlock, 3=get, 4=put, 5=changed, 6=unlock: ";
+	cout << "0=quit, 1=quit/delete, 2=rdlock, 3=rdlockwait, 4=wrlock, 5=wrlockwait" << endl;
+	cout << "6=get, 7=put, 8=unlock, 9=hasChanged, 10=multiUsed: ";
 	cin >> opt;
-	if (opt == 0) {
+	if (opt <= 1) {
 	    break;
-	}
-	if (opt == 1) {
+	} else if (opt == 2) {
 	    if (! tab.lock (False, 1)) {
 		cout << "Could not acquire a read lock" << endl;
 	    }
-	} else if (opt == 2) {
+	} else if (opt == 3) {
+	    if (! tab.lock (False, 0)) {
+		cout << "Could not acquire a read lock" << endl;
+	    }
+	} else if (opt == 4) {
 	    if (! tab.lock (True, 1)) {
 		cout << "Could not acquire a write lock" << endl;
 	    }
 	} else if (opt == 5) {
-	    Bool ch = tab.hasDataChanged();
-	    cout << "hasDataChanged = " << ch << endl;
-	} else if (opt == 6) {
+	    if (! tab.lock (True, 0)) {
+		cout << "Could not acquire a write lock" << endl;
+	    }
+	} else if (opt == 8) {
 	    tab.unlock();
+	} else if (opt == 9) {
+	    cout << "hasDataChanged = " << tab.hasDataChanged() << endl;
+	} else if (opt == 10) {
+	    cout << "isMultiUsed = " << tab.isMultiUsed() << endl;
 	} else {
-	    if (! tab.hasLock (ToBool(opt==4))) {
+	    if (! tab.hasLock (ToBool(opt==7))) {
 		cout << "Cannot get/put; table is not locked" << endl;
 	    }else{
 		cout << "rownr: ";
 		cin >> rownr;
-		if (opt == 4) {
+		if (opt == 7) {
 		    cout << "value: ";
 		    cin >> val;
 		    if (rownr >= tab.nrow()) {
@@ -153,6 +162,9 @@ void b()
 		}
 	    }
 	}
+    }
+    if (opt == 1) {
+	Table tabd ("tTableLockSync_tmp.tab", Table::Delete);
     }
 }
 
