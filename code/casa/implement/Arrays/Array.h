@@ -1,5 +1,5 @@
 //# Array.h: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,7 +33,6 @@
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/CountedPtr.h>
-#include <aips/Arrays/ArrayRtti.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/LogiArray.h>
 #include <aips/Arrays/MaskLogiArrFwd.h>
@@ -41,9 +40,9 @@
 
 //# Forward Declarations
 class AipsIO;
+class Slice;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
-template<class T> class Matrix;
 template<class Domain, class Range> class Functional;
 
 
@@ -487,10 +486,6 @@ public:
     // enum did not work properly with cfront 3.0.1), so replaced
     // by a static inline function. Users won't normally use this.
     static uInt arrayVersion() {return 3;}
-
-    // Macro to define the typeinfo member functions.
-    rtti_dcl_mbrf(Array<T>);
-
 
 protected:
     // Remove the degenerate axes from the Array object.
