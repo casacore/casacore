@@ -1,6 +1,6 @@
 %% Updating VLA Observe
 %%----------------------------------------------------------------------------
-\documentclass[11pt]{article}
+\documentclass{article}
 \usepackage{html}
 \usepackage{longtable}
 %%-----------------------------------------------------------------------------
