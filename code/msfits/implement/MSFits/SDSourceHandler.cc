@@ -135,6 +135,23 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	uInt rownr = 0;
 	Vector<uInt> foundRows = index_p->getRowNumbers();
 	Bool found = False;
+	String transition = "";
+	if (transiti_p.isAttached()) transition = *transiti_p;
+	if (molecule_p.isAttached()) {
+	    // always add the "," delimiter so that the molecule string can be recovered on the end
+	    // assumes that the molecule string has no commas in it.
+	    transition += ", ";
+	    transition += *molecule_p;
+	}
+	Double restfreq = 0.0;
+	if (restfreq_p >= 0) restfreq = row.asDouble(restfreq_p);
+	Double sysvel = 0.0;
+	if (rvsys_p >= 0) {
+	    sysvel = row.asDouble(rvsys_p);
+	    if (vframe_p >= 0) {
+		sysvel -= row.asDouble(vframe_p);
+	    }
+	}
 	if (foundRows.nelements() > 0) {
 	    // we have at least 1 candidate, look for a matching spectral window ID
 	    uInt whichOne = 0;
@@ -142,18 +159,33 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		if (spectralWindowId == msSourceCols_p->spectralWindowId()(foundRows(whichOne))) {
 		    found = True;
 		    rownr = foundRows(whichOne);
-		    found = found && calibrationGroupField_p.isAttached() && 
-			msSourceCols_p->calibrationGroup()(rownr) == *calibrationGroupField_p;
-		    found = found && timeField_p.isAttached() && 
-			msSourceCols_p->time()(rownr) == *timeField_p;
-		    found = found && intervalField_p.isAttached() && 
-			msSourceCols_p->interval()(rownr) == *intervalField_p;
-		    found = found && directionField_p.isAttached() && 
-			allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
-		    found = found && positionField_p.isAttached() && 
-			allEQ(msSourceCols_p->position()(rownr),*positionField_p);
-		    found = found && properMotionField_p.isAttached() && 
-			allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
+		    if (found && calibrationGroupField_p.isAttached()) {
+			found = msSourceCols_p->calibrationGroup()(rownr) == *calibrationGroupField_p;
+		    }
+		    if (found && timeField_p.isAttached()) {
+			found = msSourceCols_p->time()(rownr) == *timeField_p;
+		    }
+		    if (found && intervalField_p.isAttached()) {
+			found = msSourceCols_p->interval()(rownr) == *intervalField_p;
+		    }
+		    if (found && directionField_p.isAttached()) {
+			found = allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
+		    }
+		    if (found && positionField_p.isAttached()) {
+			found = allEQ(msSourceCols_p->position()(rownr),*positionField_p);
+		    }
+		    if (found && properMotionField_p.isAttached()) {
+			found = allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
+		    }
+		    if (found && hasTransition_p) {
+			found = allEQ(msSourceCols_p->transition()(rownr), transition);
+		    }
+		    if (found && hasRestFreq_p) {
+			found = allEQ(msSourceCols_p->restFrequency()(rownr), restfreq);
+		    }
+		    if (found && hasSysVel_p) {
+			found = allEQ(msSourceCols_p->sysvel()(rownr), sysvel);
+		    }
 		    if (found && pulsarIdField_p.isAttached()) {
 			if (msSourceCols_p->pulsarId().isNull()) found = !(*pulsarIdField_p>=0);
 			else found = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
@@ -179,8 +211,20 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		msSourceCols_p->interval().put(rownr,0.0);
 	    }
 	    msSourceCols_p->spectralWindowId().put(rownr, spectralWindowId);
-	    // num lines and related are filled in later
-	    msSourceCols_p->numLines().put(rownr, 0);
+	    if (hasRestFreq_p || hasTransition_p || hasSysVel_p) {
+		msSourceCols_p->numLines().put(rownr, 1);
+	    } else {
+		msSourceCols_p->numLines().put(rownr, 0);
+	    }
+	    if (hasTransition_p) {
+		msSourceCols_p->transition().put(rownr,Vector<String>(1,transition));
+	    }
+	    if (hasRestFreq_p) {
+		msSourceCols_p->restFrequency().put(rownr,Vector<Double>(1,restfreq));
+	    }
+	    if (hasSysVel_p) {
+		msSourceCols_p->sysvel().put(rownr,Vector<Double>(1,sysvel));
+	    }
 	    String name = "";
 	    if (object_p.isAttached()) name = *object_p;
 	    msSourceCols_p->name().put(rownr,name);
@@ -225,75 +269,9 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		}
 	    }
 	    // transition, rest_frequency, sysvel are inserted outside this loop
-	}
-	// only do this if these columns exist in the MS
-	if (hasRestFreq_p || hasTransition_p || hasSysVel_p) {
-	    String transition = "";
-	    if (transiti_p.isAttached()) transition = *transiti_p;
-	    if (molecule_p.isAttached()) {
-		// always add the "," delimiter so that the molecule string can be recovered on the end
-		// assumes that the molecule string has no commas in it.
-		transition += ", ";
-		transition += *molecule_p;
-	    }
-	    Double restfreq = 0.0;
-	    if (restfreq_p >= 0) {
-		restfreq = row.asDouble(restfreq_p);
-	    }
-	    Double sysvel = 0.0;
-	    if (rvsys_p >= 0) {
-		sysvel = row.asDouble(rvsys_p);
-		if (vframe_p >= 0) {
-		    sysvel -= row.asDouble(vframe_p);
-		}
-	    }
-	    Int nlines = msSourceCols_p->numLines()(rownr);
-	    if (nlines == 0) {
-		msSourceCols_p->numLines().put(rownr,1);
-		if (hasTransition_p) {
-		    msSourceCols_p->transition().put(rownr,Vector<String>(1,transition));
-		}
-		if (hasRestFreq_p) {
-		    msSourceCols_p->restFrequency().put(rownr,Vector<Double>(1,restfreq));
-		}
-		if (hasSysVel_p) {
-		    msSourceCols_p->sysvel().put(rownr,Vector<Double>(1,sysvel));
-		}
-	    } else {
-		// see if this combination is already in use
-		Vector<String> vtrans(nlines,"");
-		Vector<Double> vrestfreq(nlines,0.0), vsysvel(nlines,0.0);
-		if (hasTransition_p) vtrans = msSourceCols_p->transition()(rownr);
-		if (hasRestFreq_p) vrestfreq = msSourceCols_p->restFrequency()(rownr);
-		if (hasSysVel_p) vsysvel = msSourceCols_p->sysvel()(rownr);
-		Int whichLine = 0;
-		Bool foundLine = False;
-		while (!foundLine && whichLine < nlines) {
-		    if (vtrans(whichLine) == transition &&
-			vrestfreq(whichLine) == restfreq &&
-			vsysvel(whichLine) == sysvel) foundLine = True;
-		}
-		if (!foundLine) {
-		    // a new line
-		    nlines++;
-		    msSourceCols_p->numLines().put(rownr,nlines);
-		    if (hasTransition_p) {
-			vtrans.resize(nlines, True);
-			vtrans(nlines-1) = transition;
-			msSourceCols_p->transition().put(rownr,vtrans);
-		    }
-		    if (hasRestFreq_p) {
-			vrestfreq.resize(nlines, True);
-			vrestfreq(nlines-1) = restfreq;
-			msSourceCols_p->restFrequency().put(rownr,vrestfreq);
-		    }
-		    if (hasSysVel_p) {
-			vsysvel.resize(nlines, True);
-			vsysvel(nlines-1) = sysvel;
-			msSourceCols_p->sysvel().put(rownr,vsysvel);
-		    }
-		}
-	    }
+	} else {
+	    // set the source ID to what was actually found
+	  sourceId_p = msSourceCols_p->sourceId()(rownr);
 	}
     }
 }
