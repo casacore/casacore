@@ -1,5 +1,5 @@
 //# MSIter.cc: Step through MeasurementSet by table
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,7 +52,7 @@ Int MSInterval::compare(const void * obj1, const void * obj2)
     Double t1, t2;
     t1 = *(const Double*)obj1 - offset_p;
     t2 = *(const Double*)obj2 - offset_p;
-    return ((Int(t1/interval_p)==Int(t2/interval_p)) ? 0 : (t1 < t2) ? -1 : 1);
+    return (( trunc(t1/interval_p)==trunc(t2/interval_p) ) ? 0 : (t1 < t2) ? -1 : 1);
 }
  
 
