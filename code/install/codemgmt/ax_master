@@ -4294,3 +4294,4 @@
 14 183 src mv atnf/apps/pksmswriter atnf/apps/pkswriter
 14 183 src mv atnf/apps/pkswriter/pksmswriter.cc atnf/apps/pkswriter/pkswriter.cc
 14 183 src mv atnf/apps/pksmsreader atnf/apps/pksreader
+14 183 src mv atnf/apps/pksreader/pksmsreader.cc atnf/apps/pksreader/pksreader.cc
