@@ -59,6 +59,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       t = exec_p.back();
       exec_p.pop_back();
     };
+    
     switch (pos->code) {
     case  FuncExprData::UNAMIN:
       exec_p.back() = -exec_p.back();
@@ -100,7 +101,8 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       break;
 
     case  FuncExprData::CONST:
-      exec_p.push_back(T(*(constp++)));
+      exec_p.push_back(T(*constp));
+      constp++;
       break;
     case FuncExprData::PARAM:
       exec_p.push_back(T(param_p[pos->narg]));
@@ -220,6 +222,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 /// for now
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
+#include <aips/Mathematics/AutoDiffIO.h>
 template class vector<AutoDiff<Double> >;
 AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Double>)
 template class vector<AutoDiff<DComplex> >;
