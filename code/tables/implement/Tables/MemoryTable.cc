@@ -86,7 +86,10 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 }
 
 MemoryTable::~MemoryTable()
-{}
+{
+  delete lockPtr_p;
+  delete colSetPtr_p;
+}
 
 void MemoryTable::reopenRW()
 {}
