@@ -6584,3 +6584,4 @@
 18 756 src mv nrao/implement/FITS/GBTSpecTable.cc nrao/implement/FITS/GBTACSTable.cc
 18 756 src mv nrao/implement/GBTFillers/GBTSpectrometerFiller.h nrao/implement/GBTFillers/GBTACSFiller.h
 18 756 src mv nrao/implement/GBTFillers/GBTSpectrometerFiller.cc nrao/implement/GBTFillers/GBTACSFiller.cc
+19 111 src mv aips/wcslib/proj.h aips/wcslib/prj.h
