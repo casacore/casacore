@@ -2025,3 +2025,4 @@
 08 208 src mv trial/implement/Arrays/MaskArrMath2.cc aips/implement/Arrays/MaskArrMath2.cc
 08 209 src mv trial/implement/Lattices/test/tArrayLattice.cc trial/implement/Lattices/test/tArrayLatticeOld.cc
 08 210 src mv admin/system/depstat install/codedevl/depstat
+08 216 src rm trial/scripts/TkPGPLOT_demo_scripts/pgtkdemo1.g
