@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2002
+#   Copyright (C) 1992-2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -409,6 +409,7 @@ ifeq "$(MAKEMODE)" "programmer"
 	          -e 's%.*"./\(.*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
 	          -e 's%.*"\([^</].*\)".*%'"$$TARGET"'$$(THISDIR)/\1%p' \
 	          -e 's%.*"$(CODEDIR)/\(.*\)".*%'"$$TARGET"'\1%p' \
+	          -e 's%.*"$(dir $(CODEDIR))\(.*\)".*%'"$$TARGET"'../\1%p' \
 	          -e 's%.*"$(PGMRCODE)/\(include/.*\)".*%'"$$TARGET"'$$(PGMRCODE)/\1%p' \
 	          -e 's%.*"$(CODEINCD)/\(.*\)".*%'"$$TARGET"'\1%p' | \
 	      sort -u | sort -m - $(PGMRLOCK) > $(PGMRLIST).$(PID)
