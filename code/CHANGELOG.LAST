@@ -47,3 +47,30 @@ this way.
 tabdialog is now used in toolmanager.
 
 I've also changed tabdialogtest to test deletion.
+
+change id: 0020
+ author:   Tim Cornwell
+ date:     2000/07/11
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   toolmanager stdtoolguiserver
+ type:     Code
+ category: Change Bugfix
+ summary:  Improvements to interface, use tabs, fix bugs
+
+I've changed the interface in a number of ways:
+
+	- Tabs are used instead of the Windows menu to keep track
+of various views. This allows the user to see all tools, etc at a
+glance.
+	- The location of Go, Commands, Inputs has been changed to
+be aligned with the function arguments. George (and others) pointed
+out that this is more logical than under the list of functions.
+	- I've changed some of the frame relief's to clarify groupings.
+	- I changed Web to Function Help and Tool Help.
+	- widgetserver is now used throughout (pretty easy actually).
+
+I *think* these are all improvements but comments are welcome.
+	- One can now Exit AIPS++ from the File menu (the one place
+where this is appropriate, I think).
