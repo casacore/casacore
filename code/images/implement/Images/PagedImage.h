@@ -209,6 +209,10 @@ public:
   // Make a copy of the object (reference semantics).
   virtual ImageInterface<T>* cloneII() const;
 
+  // Add the TableLogSink from other to this one.
+  // This is where the history is kept.
+  virtual void mergeTableLogSink (const ImageInterface<T>& other);
+
   // A PagedImage is always paged to disk.
   virtual Bool isPaged() const;
 
