@@ -163,6 +163,8 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 	    }
 	}
     }
+
+
     Timer tim;
     Int n = genSort (arr, nr, ord, type);
     if (!showFlag) {
@@ -198,4 +200,18 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 	    }
 	}
     }
+
+    // Save the original array.
+    Int* cparr = new Int[nr];
+    memcpy (cparr, arr, nr*sizeof(Int));
+    // Find middle element.
+    tim.mark();
+    Int kth = GenSort<Int>::kthLargest (cparr, nr, nr/2);
+    cout << ">>> kthLar:  ";
+    tim.show();
+    cout << "<<<" << endl;
+    if (kth != arr[nr/2]) {
+	cout << "kthLargest is " << kth << "; should be " << arr[nr/2] << endl;
+    }
+    delete [] cparr;
 }
