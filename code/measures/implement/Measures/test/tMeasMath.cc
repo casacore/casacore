@@ -240,14 +240,7 @@ main()
 	for (eq=45837.; eq<45884.; eq++) {
 	    Int i,j;
 	    MVPosition mypcd;
-	    MVPosition pcd;
-	    pcd = sp1.baryEarth(eq) * facAU;
-	    for (i=0; i<3; i++) {
-		mypcd(i) = 0;
-		for (j=0; j<3; j++) {
-		    mypcd(i) += pcd(j) * fromE(i,j);
-		}
-	    }
+	    mypcd = sp1.baryEarth(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
 		mypcd << endl;
 	}
@@ -256,14 +249,7 @@ main()
 	for (eq=45837.; eq<45884.; eq++) {
 	    Int i,j;
 	    MVPosition mypcd;
-	    MVPosition pcd;
-	    pcd = sp1.barySun(eq) * facAU;
-	    for (i=0; i<3; i++) {
-		mypcd(i) = 0;
-		for (j=0; j<3; j++) {
-		    mypcd(i) += pcd(j) * fromE(i,j);
-		}
-	    }
+	    mypcd = sp1.barySun(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
 		mypcd << endl;
 	}
@@ -281,14 +267,7 @@ main()
 	for (eq=45837.; eq<45884.; eq++) {
 	    Int i,j;
 	    MVPosition mypcd;
-	    MVPosition pcd;
-	    pcd = sp1(eq) * facAU;
-	    for (i=0; i<3; i++) {
-		mypcd(i) = 0;
-		for (j=0; j<3; j++) {
-		    mypcd(i) += pcd(j) * fromE(i,j);
-		}
-	    }
+	    mypcd = sp1(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
 		mypcd << endl;
 	}
