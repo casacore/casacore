@@ -1738,10 +1738,6 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
                                                          const CoordinateSystem& cSysIn,
                                                          const IPosition& inShape,
                                                          Int momentAxis, Bool removeAxis)
-//
-// This function asssumes no axes have been removed/transposed etc
-// in the input CS.  Should really check for this...
-//
 {
 
 // Find the Coordinate corresponding to the moment axis
@@ -1770,10 +1766,20 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
 //
       if (c.nPixelAxes()==1 && c.nWorldAxes()==1) {
 
-// We can remove the coordinate and axis
+// We can physically remove the coordinate and axis
 
          for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
-            if (Int(i) != coord) {
+
+// If this coordinate is not the moment axis coordinate,
+// and it has not been virtually removed in the input
+// we add it to the output.  We don't cope with transposed 
+// CoordinateSystems yet.
+
+            Vector<Int> pixelAxes = cSysIn.pixelAxes(i);
+            Vector<Int> worldAxes = cSysIn.worldAxes(i);
+//
+            if (Int(i)!=coord &&
+                pixelAxes[0]>=0 && worldAxes[0]>=0) {
               cSysOut.addCoordinate(cSysIn.coordinate(i));
             }
          }
