@@ -2,7 +2,7 @@
 * sai_master: Setuid wrapper for sai_master.sh, a non-setuid copy of 'ai_master'
 *-----------------------------------------------------------------------------
 *
-*   Copyright (C) 1997
+*   Copyright (C) 1997,1998
 *   Associated Universities, Inc. Washington DC, USA.
 *
 *   This program is free software; you can redistribute it and/or modify
@@ -74,5 +74,6 @@ main (int argc, char *argv[])
   aipsroot = strtok (aipspath, " ");
   toexec = (char *)malloc (strlen (aipsroot) + strlen (MASTERSH) + 1);
   sprintf (toexec, "%s%s", aipsroot, MASTERSH);
+  printf ("uid: %d, euid: %d\n", getuid(), geteuid());
   return (execv (toexec, argv)); 
 }
