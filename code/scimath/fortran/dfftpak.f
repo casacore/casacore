@@ -75,7 +75,7 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of drfftf or drfftb.
 C
       SUBROUTINE DRFFTI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1)
+      DOUBLE PRECISION WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -85,8 +85,8 @@ C
       END
 C
       SUBROUTINE DRFTI1 (N,WA,IFAC)
-      DOUBLE PRECISION WA(1), ARG, ARGH, ARGLD, FI, TPI
-      INTEGER IFAC(1), NTRYH(4)
+      DOUBLE PRECISION WA(*), ARG, ARGH, ARGLD, FI, TPI
+      INTEGER IFAC(*), NTRYH(4)
       DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /4, 2, 3, 5/
       DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
 C
@@ -207,7 +207,7 @@ C wsave   contains results which must not be destroyed between
 C         calls of drfftf or drfftb.
 C
       SUBROUTINE DRFFTF (N,R,WSAVE)
-      DOUBLE PRECISION R(1), WSAVE(1)
+      DOUBLE PRECISION R(*), WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -217,7 +217,7 @@ C
       END
 C
       SUBROUTINE DRADF2 (IDO,L1,CC,CH,WA1)
-      DOUBLE PRECISION CC(IDO,L1,2), CH(IDO,2,L1), WA1(1), TI2, TR2
+      DOUBLE PRECISION CC(IDO,L1,2), CH(IDO,2,L1), WA1(*), TI2, TR2
 C
       DO 101 K=1,L1
          CH(1,1,K) = CC(1,K,1)+CC(1,K,2)
@@ -248,7 +248,7 @@ C
       END
 C
       SUBROUTINE DRADF3 (IDO,L1,CC,CH,WA1,WA2)
-      DOUBLE PRECISION CC(IDO,L1,3), CH(IDO,3,L1), WA1(1), WA2(1),
+      DOUBLE PRECISION CC(IDO,L1,3), CH(IDO,3,L1), WA1(*), WA2(*),
      1     CI2, CR2, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TI3, TR2, TR3
       DATA TAUR / -0.5 D0 /
       DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
@@ -288,8 +288,8 @@ C
       END
 C
       SUBROUTINE DRADF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
-      DOUBLE PRECISION CC(IDO,L1,4), CH(IDO,4,L1), WA1(1), WA2(1),
-     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, HSQT2, TI1, TI2, TI3,
+      DOUBLE PRECISION CC(IDO,L1,4), CH(IDO,4,L1), WA1(*), WA2(*),
+     1     WA3(*), CI2, CI3, CI4, CR2, CR3, CR4, HSQT2, TI1, TI2, TI3,
      2     TI4, TR1, TR2, TR3, TR4
       DATA HSQT2 /   .7071067811 8654752440 0844362104 85 D0 /
 C
@@ -347,8 +347,8 @@ C
       END
 C
       SUBROUTINE DRADF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
-      DOUBLE PRECISION CC(IDO,L1,5), CH(IDO,5,L1), WA1(1), WA2(1),
-     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
+      DOUBLE PRECISION CC(IDO,L1,5), CH(IDO,5,L1), WA1(*), WA2(*),
+     1     WA3(*), WA4(*), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
      2     DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3, TI4,
      3     TI5, TR11, TR12, TR2, TR3, TR4, TR5
       DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
@@ -415,7 +415,7 @@ C
 C
       SUBROUTINE DRADFG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
-     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), AI1, AI2, AR1, AR1H, AR2,
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(*), AI1, AI2, AR1, AR1H, AR2,
      2     AR2H, ARG, DC2, DCP, DS2, DSP, TPI
       DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
 C
@@ -594,8 +594,8 @@ C
       END
 C
       SUBROUTINE DRFTF1 (N,C,CH,WA,IFAC)
-      DOUBLE PRECISION C(1), CH(1), WA(1)
-      INTEGER IFAC(1)
+      DOUBLE PRECISION C(*), CH(*), WA(*)
+      INTEGER IFAC(*)
 C
       NF = IFAC(2)
       NA = 1
@@ -721,7 +721,7 @@ C wsave   contains results which must not be destroyed between
 C         calls of drfftb or drfftf.
 C
       SUBROUTINE DRFFTB (N,R,WSAVE)
-      DOUBLE PRECISION R(1), WSAVE(1)
+      DOUBLE PRECISION R(*), WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -731,7 +731,7 @@ C
       END
 C
       SUBROUTINE DRADB2 (IDO,L1,CC,CH,WA1)
-      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(*), TI2, TR2
 C
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)
@@ -762,7 +762,7 @@ C
       END
 C
       SUBROUTINE DRADB3 (IDO,L1,CC,CH,WA1,WA2)
-      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(*), WA2(*),
      1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
       DATA TAUR / -0.5 D0 /
       DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
@@ -804,8 +804,8 @@ C
       END
 C
       SUBROUTINE DRADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
-      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
-     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, SQRT2, TI1, TI2, TI3,
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(*), WA2(*),
+     1     WA3(*), CI2, CI3, CI4, CR2, CR3, CR4, SQRT2, TI1, TI2, TI3,
      *     TI4,TR1, TR2, TR3, TR4
       DATA SQRT2 /  1.414213562 3730950488 0168872420 970 D0 /
 C
@@ -867,8 +867,8 @@ C
       END
 C
       SUBROUTINE DRADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
-      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
-     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(*), WA2(*),
+     1     WA3(*), WA4(*), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
      2     DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3,
      3     TI4, TI5, TR11, TR12, TR2, TR3, TR4, TR5
       DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
@@ -939,7 +939,7 @@ C
 C
       SUBROUTINE DRADBG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
-     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), AI1, AI2, AR1, AR1H, AR2,
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(*), AI1, AI2, AR1, AR1H, AR2,
      2     AR2H, ARG, DC2, DCP, DS2, DSP, TPI
       DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
 C
@@ -1114,8 +1114,8 @@ C
       END
 C
       SUBROUTINE DRFTB1 (N,C,CH,WA,IFAC)
-      DOUBLE PRECISION C(1), CH(1), WA(1)
-      INTEGER IFAC(1)
+      DOUBLE PRECISION C(*), CH(*), WA(*)
+      INTEGER IFAC(*)
 C
       NF = IFAC(2)
       NA = 0
@@ -1230,7 +1230,7 @@ C
 C
 C                       VERSION 3  JUNE 1979
 C
-      DOUBLE PRECISION R(1), AZERO, A(1), B(1), WSAVE(1), CF, CFM
+      DOUBLE PRECISION R(*), AZERO, A(*), B(*), WSAVE(*), CF, CFM
 C
       IF (N-2) 101,102,103
  101  AZERO = R(1)
@@ -1267,7 +1267,7 @@ C
       END
 C
       SUBROUTINE DEFFTI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1)
+      DOUBLE PRECISION WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -1277,9 +1277,9 @@ C
       END
 C
       SUBROUTINE DEFFT1 (N,WA,IFAC)
-      DOUBLE PRECISION WA(1), ARG1, ARGH, CH1, CH1H, DCH1, DSH1, SH1,
+      DOUBLE PRECISION WA(*), ARG1, ARGH, CH1, CH1H, DCH1, DSH1, SH1,
      1     TPI
-      INTEGER IFAC(1), NTRYH(4)
+      INTEGER IFAC(*), NTRYH(4)
       DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /4, 2, 3, 5/
       DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
 C
@@ -1430,7 +1430,7 @@ C              sin(beta(k))=-b(k)/alpha(k)
 C 
 C
       SUBROUTINE DEFFTB (N,R,AZERO,A,B,WSAVE)
-      DOUBLE PRECISION R(1), AZERO, A(1), B(1), WSAVE(1)
+      DOUBLE PRECISION R(*), AZERO, A(*), B(*), WSAVE(*)
 C
       IF (N-2) 101,102,103
  101  R(1) = AZERO
@@ -1483,7 +1483,7 @@ C         of n. the contents of wsave must not be changed between
 C         calls of dsint.
 C 
       SUBROUTINE DSINTI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1), DT, FK, PI
+      DOUBLE PRECISION WSAVE(*), DT, FK, PI
       DATA PI /  3.141592653 5897932384 6264338327 950 D0 /
 C
       IF (N .LE. 1) RETURN
@@ -1554,7 +1554,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of dsint.
 C 
       SUBROUTINE DSINT (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), SQRT3, T1, T2, X1, XH, XIM1
+      DOUBLE PRECISION X(*), WSAVE(*), SQRT3, T1, T2, X1, XH, XIM1
       DATA SQRT3 /  1.7320508075 6887729352 7446341505 87237D0/
 C
       IF (N-2) 101,102,103
@@ -1618,7 +1618,7 @@ C         of n. the contents of wsave must not be changed between
 C         calls of dcost.
 C 
       SUBROUTINE DCOSTI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1), DT, FK, PI
+      DOUBLE PRECISION WSAVE(*), DT, FK, PI
       DATA PI /  3.141592653 5897932384 6264338327 950 D0 /
 C
       IF (N .LE. 3) RETURN
@@ -1692,7 +1692,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of dcost.
 C 
       SUBROUTINE DCOST (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), C1, T1, T2, TX2, X1H, X1P3, XI,
+      DOUBLE PRECISION X(*), WSAVE(*), C1, T1, T2, TX2, X1H, X1P3, XI,
      1     XIM2
 C
       NM1 = N-1
@@ -1767,7 +1767,7 @@ C         wsave must not be changed between calls of dsinqf or
 C         dsinqb.
 C 
       SUBROUTINE DSINQI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1)
+      DOUBLE PRECISION WSAVE(*)
 C
       CALL DCOSQI (N,WSAVE)
 C
@@ -1827,7 +1827,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of dsinqf or dsinqb.
 C 
       SUBROUTINE DSINQF (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), XHOLD
+      DOUBLE PRECISION X(*), WSAVE(*), XHOLD
 C
       IF (N .EQ. 1) RETURN
 C
@@ -1899,7 +1899,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of dsinqb or dsinqf.
 C 
       SUBROUTINE DSINQB (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), XHOLD
+      DOUBLE PRECISION X(*), WSAVE(*), XHOLD
 C
       IF (N .GT. 1) GO TO 101
       X(1) = 4.D0*X(1)
@@ -1948,7 +1948,7 @@ C         wsave must not be changed between calls of dcosqf or
 C         dcosqb.
 C 
       SUBROUTINE DCOSQI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1), DT, FK, PIH
+      DOUBLE PRECISION WSAVE(*), DT, FK, PIH
       DATA PIH /  1.570796326 7948966192 3132169163 975 D0 /
 C
       DT = PIH/DFLOAT(N)
@@ -2014,7 +2014,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of dcosqf or dcosqb.
 C 
       SUBROUTINE DCOSQF (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), SQRT2, TSQX
+      DOUBLE PRECISION X(*), WSAVE(*), SQRT2, TSQX
       DATA SQRT2 /  1.414213562 3730950488 0168872420 970 D0 /
 C
       IF (N-2) 102,101,103
@@ -2029,7 +2029,7 @@ C
       END
 C
       SUBROUTINE DCSQF1 (N,X,W,XH)
-      DOUBLE PRECISION X(1), W(1), XH(1), XIM1
+      DOUBLE PRECISION X(*), W(*), XH(*), XIM1
 C
       NS2 = (N+1)/2
       NP2 = N+2
@@ -2110,7 +2110,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of dcosqb or dcosqf.
 C 
       SUBROUTINE DCOSQB (N,X,WSAVE)
-      DOUBLE PRECISION X(1), WSAVE(1), TSQRT2, X1
+      DOUBLE PRECISION X(*), WSAVE(*), TSQRT2, X1
       DATA TSQRT2 /  2.828427124 7461900976 0337744841 94 D0 /
 C
       IF (N-2) 101,102,103
@@ -2128,7 +2128,7 @@ C
 C
       END
       SUBROUTINE DCSQB1 (N,X,W,XH)
-      DOUBLE PRECISION X(1), W(1), XH(1), XIM1
+      DOUBLE PRECISION X(*), W(*), XH(*), XIM1
 C
       NS2 = (N+1)/2
       NP2 = N+2
@@ -2184,7 +2184,7 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of dcfftf or dcfftb.
 C 
       SUBROUTINE DCFFTI (N,WSAVE)
-      DOUBLE PRECISION WSAVE(1)
+      DOUBLE PRECISION WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -2195,8 +2195,8 @@ C
       RETURN
       END
       SUBROUTINE DCFTI1 (N,WA,IFAC)
-      DOUBLE PRECISION WA(1), ARG, ARGH, ARGLD, FI, TPI
-      INTEGER IFAC(1), NTRYH(4)
+      DOUBLE PRECISION WA(*), ARG, ARGH, ARGLD, FI, TPI
+      INTEGER IFAC(*), NTRYH(4)
       DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /3, 4, 2, 5/
       DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
 C
@@ -2312,7 +2312,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of subroutine dcfftf or dcfftb
 C 
       SUBROUTINE DCFFTF (N,C,WSAVE)
-      DOUBLE PRECISION C(1), WSAVE(1)
+      DOUBLE PRECISION C(*), WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -2323,8 +2323,8 @@ C
       RETURN
       END
       SUBROUTINE DCFTF1 (N,C,CH,WA,IFAC)
-      DOUBLE PRECISION C(1), CH(1), WA(1)
-      INTEGER IFAC(1)
+      DOUBLE PRECISION C(*), CH(*), WA(*)
+      INTEGER IFAC(*)
 C
       NF = IFAC(2)
       NA = 0
@@ -2394,7 +2394,7 @@ C
       END
       SUBROUTINE DPSSF (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
-     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), WAI, WAR
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(*), WAI, WAR
 C
       IDOT = IDO/2
       NT = IP*IDL1
@@ -2521,7 +2521,7 @@ C
       RETURN
       END
       SUBROUTINE DPSSF2 (IDO,L1,CC,CH,WA1)
-      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(*), TI2, TR2
 C
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
@@ -2546,7 +2546,7 @@ C
       RETURN
       END
       SUBROUTINE DPSSF3 (IDO,L1,CC,CH,WA1,WA2)
-      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(*), WA2(*),
      1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
       DATA TAUR / -0.5 D0 /
       DATA TAUI  / -0.8660254037 8443864676 3723170752 93618D0/
@@ -2592,8 +2592,8 @@ C
       RETURN
       END
       SUBROUTINE DPSSF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
-      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
-     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4,
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(*), WA2(*),
+     1     WA3(*), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4,
      2     TR1, TR2, TR3, TR4
 C
       IF (IDO .NE. 2) GO TO 102
@@ -2647,8 +2647,8 @@ C
       RETURN
       END
       SUBROUTINE DPSSF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
-      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
-     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(*), WA2(*),
+     1     WA3(*), WA4(*), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
      2     DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3, TI4,
      3     TI5, TR11, TR12, TR2, TR3, TR4, TR5
       DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
@@ -2777,7 +2777,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of subroutine dcfftf or dcfftb
 C
       SUBROUTINE DCFFTB (N,C,WSAVE)
-      DOUBLE PRECISION C(1), WSAVE(1)
+      DOUBLE PRECISION C(*), WSAVE(*)
 C
       IF (N .EQ. 1) RETURN
 C
@@ -2788,8 +2788,8 @@ C
       RETURN
       END
       SUBROUTINE DCFTB1 (N,C,CH,WA,IFAC)
-      DOUBLE PRECISION C(1), CH(1), WA(1)
-      INTEGER IFAC(1)
+      DOUBLE PRECISION C(*), CH(*), WA(*)
+      INTEGER IFAC(*)
 C
       NF = IFAC(2)
       NA = 0
@@ -2859,7 +2859,7 @@ C
       END
       SUBROUTINE DPSSB (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
-     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), WAI, WAR
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(*), WAI, WAR
 C
       IDOT = IDO/2
       NT = IP*IDL1
@@ -2986,7 +2986,7 @@ C
       RETURN
       END
       SUBROUTINE DPSSB2 (IDO,L1,CC,CH,WA1)
-      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(*), TI2, TR2
 C
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
@@ -3011,7 +3011,7 @@ C
       RETURN
       END
       SUBROUTINE DPSSB3 (IDO,L1,CC,CH,WA1,WA2)
-      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(*), WA2(*),
      1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
       DATA TAUR / -0.5 D0 /
       DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
@@ -3059,8 +3059,8 @@ C
       RETURN
       END
       SUBROUTINE DPSSB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
-      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
-     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4, TR1
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(*), WA2(*),
+     1     WA3(*), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4, TR1
      *     ,TR2, TR3, TR4
 C
       IF (IDO .NE. 2) GO TO 102
@@ -3114,8 +3114,8 @@ C
       RETURN
       END
       SUBROUTINE DPSSB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
-      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
-     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(*), WA2(*),
+     1     WA3(*), WA4(*), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
      2     DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3,
      3     TI4, TI5, TR11, TR12, TR2, TR3, TR4, TR5
       DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/

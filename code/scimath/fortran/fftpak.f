@@ -87,14 +87,14 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of rfftf or rfftb.
 C
       SUBROUTINE RFFTI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL RFFTI1 (N,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
 C
       SUBROUTINE RFFTI1 (N,WA,IFAC)
-      DIMENSION       WA(1)      ,IFAC(1)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/4,2,3,5/
       NL = N
       NF = 0
@@ -211,14 +211,14 @@ C wsave   contains results which must not be destroyed between
 C         calls of rfftf or rfftb.
 C
       SUBROUTINE RFFTF (N,R,WSAVE)
-      DIMENSION       R(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL RFFTF1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
 C
       SUBROUTINE RFFTF1 (N,C,CH,WA,IFAC)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(1)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 1
       L2 = N
@@ -279,7 +279,7 @@ C
 C
       SUBROUTINE RADF2 (IDO,L1,CC,CH,WA1)
       DIMENSION       CH(IDO,2,L1)           ,CC(IDO,L1,2)           ,
-     1     WA1(1)
+     1     WA1(*)
       DO 101 K=1,L1
          CH(1,1,K) = CC(1,K,1)+CC(1,K,2)
          CH(IDO,2,K) = CC(1,K,1)-CC(1,K,2)
@@ -307,7 +307,7 @@ C
 C
       SUBROUTINE RADF3 (IDO,L1,CC,CH,WA1,WA2)
       DIMENSION       CH(IDO,3,L1)           ,CC(IDO,L1,3)           ,
-     1     WA1(1)     ,WA2(1)
+     1     WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5,.866025403784439/
       DO 101 K=1,L1
          CR2 = CC(1,K,2)+CC(1,K,3)
@@ -343,7 +343,7 @@ C
 C
       SUBROUTINE RADF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
       DIMENSION       CC(IDO,L1,4)           ,CH(IDO,4,L1)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)
       DATA HSQT2 /.7071067811865475/
       DO 101 K=1,L1
          TR1 = CC(1,K,2)+CC(1,K,4)
@@ -397,7 +397,7 @@ C
 C
       SUBROUTINE RADF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
       DIMENSION       CC(IDO,L1,5)           ,CH(IDO,5,L1)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /.309016994374947,.951056516295154,
      1     -.809016994374947,.587785252292473/
       DO 101 K=1,L1
@@ -458,7 +458,7 @@ C
       SUBROUTINE RADFG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
      1     C1(IDO,L1,IP)          ,C2(IDL1,IP),
-     2     CH2(IDL1,IP)           ,WA(1)
+     2     CH2(IDL1,IP)           ,WA(*)
       DATA TPI/6.28318530717959/
       ARG = TPI/FLOAT(IP)
       DCP = COS(ARG)
@@ -680,14 +680,14 @@ C wsave   contains results which must not be destroyed between
 C         calls of rfftb or rfftf.
 C
       SUBROUTINE RFFTB (N,R,WSAVE)
-      DIMENSION       R(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL RFFTB1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
 C
       SUBROUTINE RFFTB1 (N,C,CH,WA,IFAC)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(1)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -748,7 +748,7 @@ C
 C
       SUBROUTINE RADB2 (IDO,L1,CC,CH,WA1)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1     WA1(1)
+     1     WA1(*)
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)
          CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)
@@ -776,7 +776,7 @@ C
 C
       SUBROUTINE RADB3 (IDO,L1,CC,CH,WA1,WA2)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1     WA1(1)     ,WA2(1)
+     1     WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5,.866025403784439/
       DO 101 K=1,L1
          TR2 = CC(IDO,2,K)+CC(IDO,2,K)
@@ -814,7 +814,7 @@ C
 C
       SUBROUTINE RADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)
       DATA SQRT2 /1.414213562373095/
       DO 101 K=1,L1
          TR1 = CC(1,1,K)-CC(IDO,4,K)
@@ -872,7 +872,7 @@ C
 C
       SUBROUTINE RADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /.309016994374947,.951056516295154,
      1     -.809016994374947,.587785252292473/
       DO 101 K=1,L1
@@ -937,7 +937,7 @@ C
       SUBROUTINE RADBG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
      1     C1(IDO,L1,IP)          ,C2(IDL1,IP),
-     2     CH2(IDL1,IP)           ,WA(1)
+     2     CH2(IDL1,IP)           ,WA(*)
       DATA TPI/6.28318530717959/
       ARG = TPI/FLOAT(IP)
       DCP = COS(ARG)
@@ -1118,14 +1118,14 @@ C         as long as n remains unchanged. different wsave arrays
 C         are required for different values of n.
 C
       SUBROUTINE EZFFTI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL EZFFT1 (N,WSAVE(2*N+1),WSAVE(3*N+1))
       RETURN
       END
 C
       SUBROUTINE EZFFT1 (N,WA,IFAC)
-      DIMENSION       WA(1)      ,IFAC(1)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/4,2,3,5/
      1     ,TPI/6.28318530717959/
       NL = N
@@ -1240,7 +1240,7 @@ C
 C
 C                       VERSION 3  JUNE 1979
 C
-      DIMENSION       R(1)       ,A(1)       ,B(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
       IF (N-2) 101,102,103
  101  AZERO = R(1)
       RETURN
@@ -1349,7 +1349,7 @@ C
 C              sin(beta(k))=-b(k)/alpha(k)
 C
       SUBROUTINE EZFFTB (N,R,AZERO,A,B,WSAVE)
-      DIMENSION       R(1)       ,A(1)       ,B(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
       IF (N-2) 101,102,103
  101  R(1) = AZERO
       RETURN
@@ -1391,7 +1391,7 @@ C         of n. the contents of wsave must not be changed between
 C         calls of sint.
 C
       SUBROUTINE SINTI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PI /3.14159265358979/
       IF (N .LE. 1) RETURN
       NS2 = N/2
@@ -1454,7 +1454,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of sint.
 C
       SUBROUTINE SINT (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       NP1 = N+1
       IW1 = N/2+1
       IW2 = IW1+NP1
@@ -1464,7 +1464,7 @@ C
       END
 C
       SUBROUTINE SINT1(N,WAR,WAS,XH,X,IFAC)
-      DIMENSION WAR(1),WAS(1),X(1),XH(1),IFAC(1)
+      DIMENSION WAR(*),WAS(*),X(*),XH(*),IFAC(*)
       DATA SQRT3 /1.73205080756888/
       DO 100 I=1,N
          XH(I) = WAR(I)
@@ -1528,7 +1528,7 @@ C         of n. the contents of wsave must not be changed between
 C         calls of cost.
 C
       SUBROUTINE COSTI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PI /3.14159265358979/
       IF (N .LE. 3) RETURN
       NM1 = N-1
@@ -1598,7 +1598,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of cost.
 C
       SUBROUTINE COST (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       NM1 = N-1
       NP1 = N+1
       NS2 = N/2
@@ -1665,7 +1665,7 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of sinqf or sinqb.
 C
       SUBROUTINE SINQI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       CALL COSQI (N,WSAVE)
       RETURN
       END
@@ -1723,7 +1723,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of sinqf or sinqb.
 C
       SUBROUTINE SINQF (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       NS2 = N/2
       DO 101 K=1,NS2
@@ -1790,7 +1790,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of sinqb or sinqf.
 C
       SUBROUTINE SINQB (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       IF (N .GT. 1) GO TO 101
       X(1) = 4.*X(1)
       RETURN
@@ -1833,7 +1833,7 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of cosqf or cosqb.
 C
       SUBROUTINE COSQI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PIH /1.57079632679491/
       DT = PIH/FLOAT(N)
       FK = 0.
@@ -1896,7 +1896,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of cosqf or cosqb.
 C
       SUBROUTINE COSQF (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       DATA SQRT2 /1.4142135623731/
       IF (N-2) 102,101,103
  101  TSQX = SQRT2*X(2)
@@ -1908,7 +1908,7 @@ C
       END
 C
       SUBROUTINE COSQF1 (N,X,W,XH)
-      DIMENSION       X(1)       ,W(1)       ,XH(1)
+      DIMENSION       X(*)       ,W(*)       ,XH(*)
       NS2 = (N+1)/2
       NP2 = N+2
       DO 101 K=2,NS2
@@ -1984,7 +1984,7 @@ C wsave   contains initialization calculations which must not
 C         be destroyed between calls of cosqb or cosqf.
 C
       SUBROUTINE COSQB (N,X,WSAVE)
-      DIMENSION       X(1)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       DATA TSQRT2 /2.82842712474619/
       IF (N-2) 101,102,103
  101  X(1) = 4.*X(1)
@@ -1998,7 +1998,7 @@ C
       END
 C
       SUBROUTINE COSQB1 (N,X,W,XH)
-      DIMENSION       X(1)       ,W(1)       ,XH(1)
+      DIMENSION       X(*)       ,W(*)       ,XH(*)
       NS2 = (N+1)/2
       NP2 = N+2
       DO 101 I=3,N,2
@@ -2049,7 +2049,7 @@ C         are required for different values of n. the contents of
 C         wsave must not be changed between calls of cfftf or cfftb.
 C
       SUBROUTINE CFFTI (N,WSAVE)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -2058,7 +2058,7 @@ C
       END
 C
       SUBROUTINE CFFTI1 (N,WA,IFAC)
-      DIMENSION       WA(1)      ,IFAC(1)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/3,4,2,5/
       NL = N
       NF = 0
@@ -2167,7 +2167,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of subroutine cfftf or cfftb
 C
       SUBROUTINE CFFTF (N,C,WSAVE)
-      DIMENSION       C(1)       ,WSAVE(1)
+      DIMENSION       C(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -2176,7 +2176,7 @@ C
       END
 C
       SUBROUTINE CFFTF1 (N,C,CH,WA,IFAC)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(1)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -2239,7 +2239,7 @@ C
 C
       SUBROUTINE PASSF (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1     C1(IDO,L1,IP)          ,WA(1)      ,C2(IDL1,IP),
+     1     C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
      2     CH2(IDL1,IP)
       IDOT = IDO/2
       NT = IP*IDL1
@@ -2356,7 +2356,7 @@ C
 C
       SUBROUTINE PASSF2 (IDO,L1,CC,CH,WA1)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1     WA1(1)
+     1     WA1(*)
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
@@ -2380,7 +2380,7 @@ C
 C
       SUBROUTINE PASSF3 (IDO,L1,CC,CH,WA1,WA2)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1     WA1(1)     ,WA2(1)
+     1     WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5,-.866025403784439/
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -2423,7 +2423,7 @@ C
 C
       SUBROUTINE PASSF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
          TI1 = CC(2,1,K)-CC(2,3,K)
@@ -2475,7 +2475,7 @@ C
 C
       SUBROUTINE PASSF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /.309016994374947,-.951056516295154,
      1     -.809016994374947,-.587785252292473/
       IF (IDO .NE. 2) GO TO 102
@@ -2597,7 +2597,7 @@ C wsave   contains initialization calculations which must not be
 C         destroyed between calls of subroutine cfftf or cfftb
 C
       SUBROUTINE CFFTB (N,C,WSAVE)
-      DIMENSION       C(1)       ,WSAVE(1)
+      DIMENSION       C(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -2606,7 +2606,7 @@ C
       END
 C
       SUBROUTINE CFFTB1 (N,C,CH,WA,IFAC)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(1)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -2669,7 +2669,7 @@ C
 C
       SUBROUTINE PASSB (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1     C1(IDO,L1,IP)          ,WA(1)      ,C2(IDL1,IP),
+     1     C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
      2     CH2(IDL1,IP)
       IDOT = IDO/2
       NT = IP*IDL1
@@ -2786,7 +2786,7 @@ C
 C
       SUBROUTINE PASSB2 (IDO,L1,CC,CH,WA1)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1     WA1(1)
+     1     WA1(*)
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
@@ -2810,7 +2810,7 @@ C
 C
       SUBROUTINE PASSB3 (IDO,L1,CC,CH,WA1,WA2)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1     WA1(1)     ,WA2(1)
+     1     WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5,.866025403784439/
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -2853,7 +2853,7 @@ C
 C
       SUBROUTINE PASSB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
          TI1 = CC(2,1,K)-CC(2,3,K)
@@ -2905,7 +2905,7 @@ C
 C
       SUBROUTINE PASSB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1     WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1     WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /.309016994374947,.951056516295154,
      1     -.809016994374947,.587785252292473/
       IF (IDO .NE. 2) GO TO 102
