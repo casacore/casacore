@@ -207,14 +207,19 @@ void GaussianShape::sample(Vector<Double>& scale,
   if (deleteValue) delete compDirValue;
 }
 
-void GaussianShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
-			       const Double& frequency) const {
+DComplex GaussianShape::visibility(const Vector<Double>& uvw,
+				   const Double& frequency) const {
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
   const Double wavenumber = frequency/C::c;
-  const Double scaleFactor = itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber);
-  flux.scaleValue(scaleFactor, scaleFactor, scaleFactor, scaleFactor);
+  return DComplex(itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber), 0.0);
+}
+
+void GaussianShape::visibility(Vector<DComplex>& scale,
+			       const Matrix<Double>& uvw,
+			       const Double& frequency) const {
+  ComponentShape::visibility(scale, uvw, frequency);
 }
 
 ComponentShape* GaussianShape::clone() const {

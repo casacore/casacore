@@ -154,9 +154,12 @@ template <class T> class Vector;
 //   <li> Nothing so far
 // </todo>
 
-// <linkfrom anchor="GaussianCompRep" classes="SkyCompRep GaussianComponent">
-//  <here>GaussianCompRep</here> - a gaussian component with copy semantics
+// <linkfrom anchor="GaussianShape" 
+//           classes="ComponentShape TwoSidedShape PointShape DiskShape">
+//  <here>GaussianShape</here>
+// - a Gaussian variation in the sky brightness
 // </linkfrom>
+
 
 class GaussianShape: public TwoSidedShape
 {
@@ -240,7 +243,10 @@ public:
 
   // The total flux of the component must be supplied in the flux variable and
   // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+  virtual DComplex visibility(const Vector<Double>& uvw,
+			      const Double& frequency) const;
+
+  virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const;
 
   // Return a pointer to a copy of this object upcast to a ComponentShape
