@@ -30,6 +30,7 @@
 #if !defined (AIPS_MALLOC_H)
 #define AIPS_MALLOC_H
 
+
 /* 
   A version of malloc/free/realloc written by Doug Lea and released to the 
   public domain.  Send questions/comments/complaints/performance data
@@ -614,6 +615,17 @@ do {                                                                          \
 #if HAVE_USR_INCLUDE_MALLOC_H
 #include "/usr/include/malloc.h"
 #else
+
+// <summary>
+// A version of malloc/free/realloc written by Doug Lea.
+// </summary>
+// <synopsis>
+// A version of malloc/free/realloc written by Doug Lea and released to the 
+// public domain.  Send questions/comments/complaints/performance data
+// to dl@cs.oswego.edu
+// <br>
+// See the source file for more information.
+// </synopsis>
 
 /* SVID2/XPG mallinfo structure */
 
