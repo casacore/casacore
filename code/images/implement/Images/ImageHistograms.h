@@ -38,6 +38,7 @@ template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
 class IPosition;
 class LogIO;
+class CoordinateSystem;
 
 // <summary> Displays histograms of regions from an image</summary>
 // <use visibility=export>
@@ -114,7 +115,7 @@ class LogIO;
 // </example>
 //
 // <note role=caution>
-// Note that if the <src>PagedImage</src> goes out of scope, this
+// Note that if the <src>ImageInterface</src> object goes out of scope, this
 // class will retrieve and generate rubbish as it just maintains a pointer
 // to the image.
 // </note>
@@ -142,9 +143,7 @@ template <class T> class ImageHistograms
 {
 public:
 
-// Attach this histogram calculator to some image and logging sink.
-// Note that the image must live as long as the histogram calculator 
-// since no internal memory management occurs.
+// Constructor takes the image and a <src>LogIO</src> object for logging.
    ImageHistograms(const ImageInterface<T>& image, 
                    LogIO& os);
 
@@ -241,20 +240,14 @@ private:
    ArrayLattice<Int>* pHistImage_p;
    ArrayLattice<T>* pMinMaxImage_p;
    ArrayLattice<Double>* pStatsImage_p;
-
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
-
    const ImageInterface<T>* pInImage_p;
-
    Int nBins_p, nVirCursorIter_p;   
-
    IPosition cursorShape_p;
-
    LogIO &os_p;
-
    String device_p; 
-
+   Vector<Int> cursorAxes_p;
    Vector<Int> displayAxes_p;
    Vector<Int> nxy_p;
    Vector<Float> range_p;
@@ -268,7 +261,7 @@ private:
    Bool displayHistograms ();
 
 // Display one histogram
-   void displayOneHistogram (const Vector<Int>& intCounts,
+   Bool displayOneHistogram (const Vector<Int>& intCounts,
                              const IPosition& histPos,
                              const Vector<T>& range,
                              const Int& nPts,
@@ -323,6 +316,16 @@ private:
                          Float& yMax,
                          const Int& nBins);
 
+// Find the world axis of the given pixel axis
+   Int pixelAxisToWorldAxis (const CoordinateSystem& cSys,
+                             const Int& pixelAxis);
+
+// Convert pixel coordinate to world coordinate string
+   Bool pix2World (Vector<String>& sWorld,
+                   const Int& worldAxis,
+                   const Vector<Double>& pixel,
+                   const Int& prec);
+
 // Plot one histogram
    void plotHist  (const Int& n,
                    const float* px,
@@ -352,7 +355,7 @@ private:
                     const T& datum);
 
 // Write values of display axes on plots
-   void writeDispAxesValues (const IPosition& startPos,
+   Bool writeDispAxesValues (const IPosition& startPos,
                              const Float& xMin,
                              const Float& yMax);
 

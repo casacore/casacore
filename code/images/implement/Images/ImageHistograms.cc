@@ -34,9 +34,11 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
   
+#include <trial/Coordinates.h>  
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageHistograms.h>
 #include <trial/Images/ImageInterface.h>
@@ -90,6 +92,7 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& imageU,
 
   
    if (setNewImage(imageU)) {
+
 // Default cursor axes are entire image
 
       Vector<Int> cursorAxes(pInImage_p->ndim());
@@ -116,6 +119,8 @@ ImageHistograms<T>::ImageHistograms(const ImageHistograms<T> &other)
                         nVirCursorIter_p(other.nVirCursorIter_p),
                         cursorShape_p(other.cursorShape_p),
                         device_p(other.device_p),
+                        cursorAxes_p(other.cursorAxes_p),
+                        displayAxes_p(other.displayAxes_p),
                         nxy_p(other.nxy_p),
                         range_p(other.range_p)
 //
@@ -195,13 +200,14 @@ ImageHistograms<T> &ImageHistograms<T>::operator=(const ImageHistograms<T> &othe
       nBins_p = other.nBins_p;
       nVirCursorIter_p = other.nVirCursorIter_p;
       cursorShape_p = other.cursorShape_p;
+      cursorAxes_p = other.cursorAxes_p;
+      displayAxes_p = other.displayAxes_p;
       device_p = other.device_p;
       nxy_p = other.nxy_p;
       range_p = other.range_p;
 
       return *this;
    }
-  
 }
 
  
@@ -241,6 +247,7 @@ Bool ImageHistograms<T>::setNBins (const Int& nBinsU)
 // Signal that we need a new accumulation image
 
    needStorageImage_p = True;
+
    return True;
 }
 
@@ -484,6 +491,7 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
       extractOneHistogram (valuesIterator.vector(), countsIterator.vector(), range, 
                            histIterator.vectorCursor());
    }
+
    return True;
 }
 
@@ -670,8 +678,8 @@ Bool ImageHistograms<T>::displayHistograms ()
    
 // Display the histogram
  
-      displayOneHistogram (histIterator.vectorCursor(), histIterator.position(),
-                           range, nStatsPts, sum, mean, sigma, var);
+      if (!displayOneHistogram (histIterator.vectorCursor(), histIterator.position(),
+                                range, nStatsPts, sum, mean, sigma, var)) return False;
  
    }
       
@@ -684,7 +692,7 @@ Bool ImageHistograms<T>::displayHistograms ()
  
 
 template <class T>
-void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
+Bool ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
                                               const IPosition& histPos,   
                                               const Vector<T>& range,
                                               const Int& nStatsPts,
@@ -694,7 +702,12 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
                                               const Double& statsVar)
 //
 // Display the histogram and optionally the equivalent Gaussian
-// 
+//
+//  Inputs
+//    histPos    location in histogram storage image of start of 
+//               this histogram. Remember that the first axis
+//               of the storage image has the counts.
+//
 {
     
 // Are we going to see the Gaussian ?
@@ -760,13 +773,27 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
 // Write statistics to a LogIO object
 
    if (doList_p) {
+
+// List coordinates of display axes for this histogram
+
       os_p << endl;
       Int nDisplayAxes = displayAxes_p.nelements();
       if (nDisplayAxes > 0) {   
-        for (Int i=0; i<nDisplayAxes; i++) {
-          os_p << pInImage_p->coordinates().worldAxisNames()(displayAxes_p(i))
-               << "=" << histPos(i+1)+1 << "  ";
-        }
+         Vector<String> sWorld(1);
+         Vector<Double> pixel(1);
+         Int oPrec = 6;
+
+         for (Int j=0; j<nDisplayAxes; j++) {
+            pixel(0) = histPos(j+1);
+            if (!pix2World (sWorld, displayAxes_p(j), pixel, oPrec)) return False;
+
+            Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+            String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+
+            os_p <<  ImageUtilities::shortAxisName(name)
+                 << "=" << histPos(j+1)+1 << " (" << sWorld(0) << ")";
+            if (j < nDisplayAxes-1) os_p << ", ";
+         }
       }
 
 // Have to convert LogIO object to ostream before can apply 
@@ -858,8 +885,9 @@ void ImageHistograms<T>::displayOneHistogram (const Vector<Int>& intCounts,
       
 // Write values of the display axes on the plot
  
-   writeDispAxesValues (histPos, xMin, yMax);
+   if (!writeDispAxesValues (histPos, xMin, yMax)) return False;
    
+   return True;
 }
  
 
@@ -1216,6 +1244,144 @@ void ImageHistograms<T>::makeLogarithmic (Vector<Float>& counts,
 }
                 
 
+template <class T>
+Bool ImageHistograms<T>::pix2World (Vector<String>& sWorld,
+                                    const Int& pixelAxis,
+                                    const Vector<Double>& pixel,
+                                    const Int& prec) 
+//
+// Convert the vector of pixel coordinates to a formatted Vector
+// of strings giving the world coordinate in the specified world axis.
+// 
+// Inputs
+//   pixelAxis   The pixel axis whose coordinates we are interested in
+//   pixel       Vector of pixel coordinates (0 rel) to transform
+//               for the pixel axis of interest
+//   prec        Precision to format output of scientific
+//               formatted numbers (linear axes etc)
+// Outputs
+//   sWorld      Vector of formatted strings of world coordinates
+//               for the pixel axis
+//
+{
+   Int n1 = pixel.nelements();
+   sWorld.resize(n1);
+   
+// Get coordinate system.
+   
+   CoordinateSystem cSys = pInImage_p->coordinates();
+
+
+// Create pixel and world vectors for all pixel axes. Initialize pixel values
+// to reference pixel, but if an axis is a cursor axis (whose coordinate is
+// essentially being averaged) set the pixel to the mean pixel.
+
+   Vector<Double> pix(cSys.nPixelAxes());
+   Vector<Double> world(cSys.nPixelAxes());
+   pix = cSys.referencePixel(); 
+   for (Int i=0; i<pix.nelements(); i++) {
+     if (ImageUtilities::inVector(i, cursorAxes_p)) {
+       pix(i) = Double(pInImage_p->shape()(i)) / 2.0;
+     }
+   }
+         
+            
+// Find the world axis for this pixel axis
+            
+   Int worldAxis = pixelAxisToWorldAxis (cSys, pixelAxis);
+            
+            
+// Find coordinate for this pixel axis
+            
+   Int coordinate, axisInCoordinate, otherAxisInCoordinate;
+   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+
+          
+// Convert to world and format depending upon coordinate type
+
+   if (cSys.type(coordinate) == Coordinate::DIRECTION) {
+
+         
+// Find name of pixel axis
+
+      String tString = cSys.worldAxisNames()(worldAxis);
+      tString.upcase();
+         
+         
+// Loop over list of pixel coordinates and convert to world
+         
+      for (Int i=0; i<n1; i++) {
+         pix(pixelAxis) = pixel(i);
+
+         if (!cSys.toWorld(world,pix)) return False;
+         MVAngle mVA(world(pixelAxis));
+         
+         if (tString.contains("RIGHT ASCENSION")) {
+            sWorld(i) = mVA.string(MVAngle::TIME,8);
+         } else if (tString.contains("DECLINATION")) {
+            sWorld(i) = mVA.string(MVAngle::DIG2,8);
+         } else {
+            ostrstream oss;
+            oss.setf(ios::scientific, ios::floatfield);
+            oss.setf(ios::left);
+            oss.precision(prec);
+            oss << mVA.degree() << ends;
+            String temp(oss.str());
+            sWorld(i) = temp;   
+         }
+      }
+   } else if (cSys.type(coordinate) == Coordinate::SPECTRAL) {
+      for (Int i=0; i<n1; i++) {
+         pix(pixelAxis) = pixel(i);
+         if (!cSys.toWorld(world,pix)) return False;
+         
+         ostrstream oss;
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.setf(ios::left);
+         oss.precision(prec);
+         oss << world(pixelAxis) << ends;
+         String temp(oss.str());
+         sWorld(i) = temp;
+      }
+   } else if (cSys.type(coordinate) == Coordinate::LINEAR) {
+      for (Int i=0; i<n1; i++) {
+         pix(pixelAxis) = pixel(i);
+         if (!cSys.toWorld(world,pix)) return False;
+
+         ostrstream oss;
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.setf(ios::left);
+         oss.precision(prec);
+         oss << world(pixelAxis) << ends;
+         String temp(oss.str());
+         sWorld(i) = temp;
+      }
+   } else if (cSys.type(coordinate) == Coordinate::STOKES) {
+      const StokesCoordinate coord = cSys.stokesCoordinate(coordinate);
+      for (Int i=0; i<n1; i++) {
+         Stokes::StokesTypes iStokes;
+         Int pix = Int(pixel(i));
+         if (!coord.toWorld(iStokes, pix)) return False;
+         sWorld(i) = Stokes::name(Stokes::type(iStokes));
+      }
+   }
+   return True;
+}
+
+template <class T>
+Int ImageHistograms<T>::pixelAxisToWorldAxis(const CoordinateSystem& cSys,
+                                             const Int& pixelAxis)
+//       
+// Find the world axis for the given pixel axis
+// in a coordinate system
+//
+{
+   Int coordinate, axisInCoordinate;
+   cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+   return cSys.worldAxes(coordinate)(axisInCoordinate);
+}
+ 
+
 
 template <class T>
 void ImageHistograms<T>::plotHist (const Int& n, 
@@ -1346,44 +1512,50 @@ inline void ImageHistograms<T>::statsAccum (Double& sum,
 
 
 template <class T>
-void ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
+Bool ImageHistograms<T>::writeDispAxesValues (const IPosition& histPos,
                                               const Float& xMin,
                                               const Float& yMax)
 {
    
-   const int BUFL=64;
-   char buf[BUFL];
-   ostrstream oss(buf,BUFL,ios::out);
- 
- 
-// Fill the string stream with the name and value of each higher order
-// display axis than the one used for the abcissa, if there are any
+// Fill the string stream with the name and value of each display axis
   
+   ostrstream oss;
    Int nDisplayAxes = displayAxes_p.nelements();
    if (nDisplayAxes > 0) {
-     for (Int i=0; i<nDisplayAxes; i++) {
-       oss << "  " << pInImage_p->coordinates().worldAxisNames()(displayAxes_p(i))
-           << "="  << histPos(i+1) + 1;
-     }           
-     oss << ends;
-     char* tLabel = oss.str();
+      Vector<String> sWorld(1);
+      Vector<Double> pixel(1);
+
+      for (Int j=0; j<nDisplayAxes; j++) {
+         pixel(0) = histPos(j+1);
+         if (!pix2World (sWorld, displayAxes_p(j), pixel, 6)) return False;
+
+         Int worldAxis = pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
+         String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+
+         oss << "  " << ImageUtilities::shortAxisName(name)
+             << "="  << histPos(j+1)+1 << " (" << sWorld(0) << ")";
+      }           
+      oss << ends;
+      char* tLabel = oss.str();
    
 // Write on plot
  
-     float xb[4], yb[4];
-     cpgqtxt (0.0, 0.0, 0.0, 0.0, "X", xb, yb);
-     float dx = xb[3] - xb[0];
-     cpgqtxt (0.0, 0.0, 0.0, 0.0, tLabel, xb, yb);
-     float dy = yb[1] - yb[0];
+      float xb[4], yb[4];
+      cpgqtxt (0.0, 0.0, 0.0, 0.0, "X", xb, yb);
+      float dx = xb[3] - xb[0];
+      cpgqtxt (0.0, 0.0, 0.0, 0.0, tLabel, xb, yb);
+      float dy = yb[1] - yb[0];
                            
-     float mx = xMin + dx; 
-     float my = yMax + 0.5*dy;
+      float mx = xMin + dx; 
+      float my = yMax + 0.5*dy;
       
-     int tbg;
-     cpgqtbg(&tbg);
-     cpgstbg(0);
-     cpgptxt (mx, my, 0.0, 0.0, tLabel);
-     cpgstbg(tbg);
+      int tbg;
+      cpgqtbg(&tbg);
+      cpgstbg(0);
+      cpgptxt (mx, my, 0.0, 0.0, tLabel);
+      cpgstbg(tbg);
    }
+
+   return True;
 }
 
