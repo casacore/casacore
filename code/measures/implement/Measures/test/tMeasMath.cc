@@ -1,5 +1,5 @@
 //# tMeasMath.cc: This program test MeasMath functions
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -75,7 +75,6 @@ main()
 	Quantum<Vector<Double> > qu2(vec2,"arcsec");
 	cout << "Euler(30, 40 arcsec):  " << Euler(qu2) << endl;
 
-
 	cout << "Direction cosines  (MVDirection)..." << endl;
 	cout << "--------------------------------------" << endl;
 	
@@ -91,6 +90,70 @@ main()
 	cout << "10 deg, 20 deg:      " << MVDirection(Quantity(10.,"deg"),
 					     Quantity(20.,"deg")) << endl;
 	cout << "Re-angle:            " << dc3.getAngle("deg") << endl;
+
+	cout << "Shifts  (MVDirection)..." << endl;
+	cout << "--------------------------------------" << endl;
+	
+	dc2 = MVDirection(Quantity(0, "deg"), Quantity(0, "deg"));
+	cout << "Start:       " << dc2 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"));
+	cout << "dl = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"));
+	cout << "db = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"));
+	cout << "dl,b = 10 deg:" << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc2 = MVDirection(Quantity(0, "deg"), Quantity(60, "deg"));
+	cout << "Start:       " << dc2 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"));
+	cout << "dl = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"));
+	cout << "db = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"));
+	cout << "dl,b = 10 deg:" << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc2 = MVDirection(Quantity(30, "deg"), Quantity(60, "deg"));
+	cout << "Start:       " << dc2 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"));
+	cout << "dl = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLongitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"));
+	cout << "db = 10 deg:  " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shiftLatitude(Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"));
+	cout << "dl,b = 10 deg:" << dc3 << endl;
+	dc3 = dc2;
+	dc3.shift(Quantity(10, "deg"), Quantity(10, "deg"), True);
+	cout << "... true:    " << dc3 << endl;
 
 	cout << "Positions (MVPosition)..." << endl;
 	cout << "--------------------------------------" << endl;
