@@ -34,37 +34,40 @@
 
 
 AxesMapping::AxesMapping()
-: itsReordered (False)
+: itsRemoved   (False),
+  itsReordered (False)
 {}
 
 AxesMapping::AxesMapping (const IPosition& oldToNew)
-: itsToNew (oldToNew),
-  itsToOld (oldToNew.nelements(), -1),
+: itsToNew     (oldToNew),
+  itsToOld     (oldToNew.nelements(), -1),
+  itsRemoved   (False),
   itsReordered (False)
 {
   Int naxes = itsToNew.nelements();
   uInt nnew = 0;
   for (Int i=0; i<naxes; i++) {
     if (itsToNew(i) < 0) {
-      itsReordered = True;
+      itsRemoved = True;
     } else {
       AlwaysAssert (itsToNew(i)<naxes, AipsError);
       itsToOld(itsToNew(i)) = i;
-      if (itsToNew(i) != i) {
-	itsReordered = True;
-      }
       nnew++;
     }
   }
   for (uInt i=0; i<nnew; i++) {
     AlwaysAssert (itsToOld(i)>=0, AipsError);
+    if (i > 0  && itsToOld(i) < itsToOld(i-1)) {
+      itsReordered = True;
+    }
   }
   itsToOld.resize (nnew);
 }
 
 AxesMapping::AxesMapping (const AxesMapping& that)
-: itsToNew (that.itsToNew),
-  itsToOld (that.itsToOld),
+: itsToNew     (that.itsToNew),
+  itsToOld     (that.itsToOld),
+  itsRemoved   (that.itsRemoved),
   itsReordered (that.itsReordered)
 {}
 
@@ -75,6 +78,7 @@ AxesMapping& AxesMapping::operator= (const AxesMapping& that)
     itsToNew = that.itsToNew;
     itsToOld.resize (that.itsToOld.nelements(), False);
     itsToOld = that.itsToOld;
+    itsRemoved   = that.itsRemoved;
     itsReordered = that.itsReordered;
   }
   return *this;

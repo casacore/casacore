@@ -90,6 +90,8 @@ public:
 
   // Construct it with the mapping from old to new axes order.
   // A value of -1 means that the old axes is ignored in the new one.
+  // Another value gives the new axis number.
+  // <br>It determines if axes are removed and/or reordered.
   explicit AxesMapping (const IPosition& oldToNew);
 
   // Copy constructor (copy semantics).
@@ -100,6 +102,10 @@ public:
   // Assignment (copy semantics).
   // This and that do not have to have the same length.
   AxesMapping& operator= (const AxesMapping& other);
+
+  // Are axes removed?
+  Bool isRemoved() const
+    { return itsRemoved; }
 
   // Is the axes order reordered?
   Bool isReordered() const
@@ -137,6 +143,7 @@ public:
 private:
   IPosition itsToNew;
   IPosition itsToOld;
+  Bool      itsRemoved;
   Bool      itsReordered;
 };
 
