@@ -1,5 +1,5 @@
 //# ArrayColumn.cc: Access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -249,7 +249,12 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
         if (arr.nelements() > 0) {
 	    ArrayIterator<T> iter(arr, arr.ndim()-1);
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        baseColPtr_p->get (rownr, &(iter.array()));
+	        Array<T>& darr = iter.array();
+		if (! darr.shape().isEqual (baseColPtr_p->shape (rownr))) {
+		  throw TableArrayConformanceError("ArrayColumn::getColumn - "
+						   "varying array shapes");
+		}
+	        baseColPtr_p->get (rownr, &darr);
 		iter.next();
 	    }
 	}
