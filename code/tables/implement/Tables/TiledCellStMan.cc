@@ -1,5 +1,5 @@
 //# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,6 +88,13 @@ IPosition TiledCellStMan::defaultTileShape() const
 Bool TiledCellStMan::canChangeShape() const
 {
     return True;
+}
+
+void TiledCellStMan::setShape (uInt, TSMCube* hypercube,
+			       const IPosition& shape,
+			       const IPosition& tileShape)
+{
+    hypercube->setShape (shape, tileShape);
 }
 
 
