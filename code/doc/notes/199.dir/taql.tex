@@ -1038,11 +1038,22 @@ and classes form the programmer interface.
   \htmlref{\texttt{utility}}{utility} of the
   \htmladdnormallink{User Reference
   Manual}{../../user/Refman/Refman.html}.
-  \\Since substitute uses the eval function of glish, care has to
-  be taken when used in a function. Eval looks first in the global
-  scope and one may get surprised by that. So when using a local function
-  variable in substitution, its name should be very specific by e.g.
-  giving it a unique prefix.
+  \\The substitution mechanism uses the eval function in glish.
+  As of 8-Jul-1998 eval only looks at global variables. This means
+  that in a function one needs to create a global variable (with
+  a unique name) if the variable is to be used in a TaQL command.
+  The global variable should be deleted at the end of the function.
+  The name can be made unique by using the function name as a suffix.
+  E.g.:
+  \begin{verbatim}
+    myfunc := function() {
+      tab := table('mytable')
+      global coldata_in_myfunc;
+      coldata_in_myfunc := tab.getcol ('col');
+      seltab := tab.query ('col > $(sum(coldata)/len(coldata))')
+      symbol_delete ('coldata_in_myfunc');
+    }
+  \end{verbatim}
   
 \item
   The C++ interface consists of 2 parts.
