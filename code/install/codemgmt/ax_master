@@ -5993,3 +5993,4 @@
 17 011 src mv trial/implement/Functionals/NQGaussianNDParam.cc aips/implement/Functionals/NQGaussianNDParam.cc
 17 012 src mv trial/implement/Functionals/test/dNQGaussianND.cc aips/implement/Functionals/test/dNQGaussianND.cc
 17 012 src mv trial/implement/Functionals/test/tNQGaussianND.cc aips/implement/Functionals/test/tNQGaussianND.cc
+17 030 src rm npoi/implement/HDS/test/templates
