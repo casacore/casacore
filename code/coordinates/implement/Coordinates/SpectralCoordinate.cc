@@ -41,10 +41,6 @@
 #include <aips/Logging/LogOrigin.h>
 #include <trial/FITS/FITSUtil.h>
 
-#if defined(__GNUG__)
-typedef Interpolate1D<Double,Double> gpp_bug;
-#endif
-
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
 				       Double f0, Double inc, Double refChan,
 				       Double restFrequency)

@@ -39,10 +39,6 @@
 #include <aips/Mathematics/Math.h>
 #include <trial/FITS/FITSUtil.h>
 
-#if defined(__GNUG__)
-typedef Interpolate1D<Double,Double> gpp_bug;
-#endif
-
 TabularCoordinate::TabularCoordinate()
   : Coordinate(),
     crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
