@@ -34,6 +34,8 @@
 # include <casa/BasicSL/String.h>
 # include <casa/iostream.h>
 # include <casa/stdlib.h>
+# include <casa/namespace.h>
+
 
 # include <casa/Arrays/Vector.h>
 

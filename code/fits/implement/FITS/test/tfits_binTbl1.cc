@@ -34,6 +34,8 @@
 
 # include <casa/iostream.h>
 # include <casa/stdlib.h>
+# include <casa/namespace.h>
+
 
 int main()
 {
