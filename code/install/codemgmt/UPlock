@@ -42,18 +42,30 @@ set usage = 'Usage: UPlock <typ>'
 #
 # Get general info
 #
-set x = "`which UPinfo`"
+if (! $?AIPSPATH) then
+   echo "No AIPSPATH environment set, initialize aips++ first"
+      exit 1
+endif
+set x = "`which UPfind`"
 if (-x "$x") then
    set uppath = $x:h
 else
    set x = ( $AIPSPATH )
-   set uppath = $x[1]
+   set uppath = $x[1]/$x[2]/bin
 endif
 unset x
+if ("$uppath" == ".") then
+   set uppath = `pwd`
+endif
+if (! -r $uppath/UPinfo) then
+   echo "Cannot find the UPinfo source script in $uppath"
+   echo "Check your aips++ installation"
+endif
 source $uppath/UPinfo
 if (! $ok) exit 1
-
-if (! -r $ldir/${tp}.found) then
+#
+# Get specific data
+#                                                                               if (! -r $ldir/${tp}.found) then
    echo "No ${tp}.found present. Cannot proceed."
    echo "Execute UPfind first"
    exit (1)
@@ -75,7 +87,3 @@ echo $a[1] files in ${tp}.locked
 unset a
 
 exit 0
-
-
-
-
