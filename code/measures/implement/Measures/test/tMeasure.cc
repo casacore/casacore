@@ -31,6 +31,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures.h>
 #include <aips/Measures/Aberration.h>
+#include <aips/Measures/MeasData.h>
+#include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
