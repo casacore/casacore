@@ -235,6 +235,7 @@ User list after FITS:
     M         (meter)                      1 m
     METERS    (meter)                      1 m
     PASCAL    (pascal)                     1 m-1.kg.s-2
+    PIXEL     (dimensionless pixel)        1
     SEC       (second)                     1 s
     SECONDS   (second)                     1 s
     VOLTS     (volt)                       1 m2.kg.s-3.A-1
