@@ -1,5 +1,5 @@
 //# tTableRow.cc: Test program for class (RO)TableRow
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,6 +72,7 @@ void a (Bool)
     td.addColumn (ScalarColumnDesc<DComplex>("ag"));
     td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
     td.addColumn (ArrayColumnDesc<String>("arr2",0));
+    td.addColumn (ArrayColumnDesc<float>("arr3",0));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tTableRow_tmp.data", td, Table::New);
@@ -82,7 +83,7 @@ void a (Bool)
     Vector<String> arrs(stringToVector ("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
 					"cdefghij,klmnopqrs,tuvwxyzabc"));
     indgen (arrf.ac());
-    TableRow row (tab, False);
+    TableRow row (tab, stringToVector("ab,ad,ag,arr1,arr2"));
     AlwaysAssertExit (row.rowNumber() == -1);
     TableRecord rec (row.record().description(), RecordInterface::Variable);
     AlwaysAssertExit (row.record().nfields() == 5);
@@ -91,6 +92,7 @@ void a (Bool)
     RecordFieldPtr<DComplex>       ag(rec, 2);
     RecordFieldPtr<Array<float> >  arr1(rec, 3);
     RecordFieldPtr<Array<String> > arr2(rec, 4);
+    ArrayColumn<float> arr3(tab, "arr3");
     Int i;
     for (i=0; i<10; i++) {
 	ab.define (i);
@@ -99,6 +101,9 @@ void a (Bool)
 	arr1.define (arrf);
 	arr2.define (arrs(Slice(0,i)));
 	row.put (i, rec);
+	if (i%2 == 0) {
+	    arr3.put (i, arrf);
+	}
 	arrf.ac() += (float)(arrf.nelements());
     }
     // Test if the record has an extra field.
@@ -111,10 +116,12 @@ void a (Bool)
     ROScalarColumn<DComplex> colag (tab, "ag");
     ROArrayColumn<float> colarr1 (tab, "arr1");
     ROArrayColumn<String> colarr2 (tab, "arr2");
+    ROArrayColumn<float> colarr3 (tab, "arr3");
     Int abval;
     uInt adval;
     DComplex agval;
     Cube<float> arrval(IPosition(3,2,3,4));
+    Cube<float> arr3val;
     Array<String> arrstr;
     arrf.ac() -= (float)(arrf.nelements()*tab.nrow());
     for (i=0; i<10; i++) {
@@ -134,6 +141,15 @@ void a (Bool)
 	AlwaysAssertExit (arrstr.shape()(0) == i);
 	if (!allEQ (arrstr, arrs(Slice(0,i)).ac())) {
 	    cout << "error in arr2 in row " << i << endl;
+	}
+	if (i%2 == 0) {
+	    colarr3.get (i, arr3val, True);
+	    AlwaysAssertExit (arr3val.ndim() == 3);
+	    if (!allEQ (arr3val.ac(), arrf.ac())) {
+		cout << "error in arr3 in row " << i << endl;
+	    }
+	}else{
+	    AlwaysAssertExit (! colarr3.isDefined (i));
 	}
 	arrf.ac() += (float)(arrf.nelements());
     }
@@ -175,6 +191,7 @@ void b (Bool doExcp)
     RORecordFieldPtr<DComplex>       ag(rowy.record(), 1);
     RORecordFieldPtr<Array<float> >  arr1(rowx.record(), 1);
     RORecordFieldPtr<Array<String> > arr2(rowy.record(), 2);
+    RORecordFieldPtr<Array<float> >  arr3(rowy.record(), 3);
     Cube<float> arrf(IPosition(3,2,3,4));
     Vector<String> arrs(stringToVector ("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
 					"cdefghij,klmnopqrs,tuvwxyzabc"));
@@ -195,6 +212,15 @@ void b (Bool doExcp)
 	if (!allEQ (*arr2, arrs(Slice(0,i)).ac())) {
 	    cout << "error in arr2 in row " << i << endl;
 	}
+	if (i%2 == 0) {
+	    if (!allEQ (*arr3, arrf.ac())) {
+		cout << "error in arr3 in row " << i << endl;
+	    }
+	}else{
+	    if ((*arr3).ndim() != 0) {
+		cout << "error in arr3 in row " << i << endl;
+	    }
+	}		
 	arrf.ac() += (float)(arrf.nelements());
     }
 
