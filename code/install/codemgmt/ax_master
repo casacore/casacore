@@ -4062,3 +4062,4 @@
 14 065 src mv trial/implement/DisplayDatas/DisplayData.h trialdisplay/implement/DisplayDatas/DisplayData.h
 14 065 src mv trial/implement/DisplayDatas/DisplayMethod.h trialdisplay/implement/DisplayDatas/DisplayMethod.h
 14 065 src mv trial/implement/DisplayDatas/DrawingDisplayData.h trialdisplay/implement/DisplayDatas/DrawingDisplayData.h
+14 065 src mv trial/implement/DisplayDatas/DrawingDisplayMethod.h trialdisplay/implement/DisplayDatas/DrawingDisplayMethod.h
