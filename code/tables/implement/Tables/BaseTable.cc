@@ -610,7 +610,7 @@ Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
     { return True; }
 
 // Do the row selection.
-BaseTable* BaseTable::select (const TableExprNode& node)
+BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# First check if the node is a Bool.
@@ -636,7 +636,11 @@ BaseTable* BaseTable::select (const TableExprNode& node)
     for (uInt i=0; i<nrrow; i++) {
 	node.get (i, val);
 	if (val) {
-	    resultTable->addRownr (i);                  // get rownr
+	    resultTable->addRownr (i);                  // add row
+	    // Stop if max #rows reached (note that maxRow==0 means no limit).
+	    if (resultTable->nrow() == maxRow) {
+	        break;
+	    }
 	}
     }
     adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);

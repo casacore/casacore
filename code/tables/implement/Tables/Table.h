@@ -654,7 +654,9 @@ public:
     // All rows for which the expression is true, will be selected and
     // "stored" in the result.
     // You need to include ExprNode.h for this purpose.
-    Table operator() (const TableExprNode&) const;
+    // <br>If <src>maxRow>0</src>, the selection process will stop
+    // when <src>maxRow</src> matching rows are found.
+    Table operator() (const TableExprNode&, uInt maxRow=0) const;
 
     // Select rows using a vector of row numbers.
     // This can, for instance, be used to select the same rows as

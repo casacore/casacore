@@ -313,7 +313,7 @@ public:
 	              (const String& dataManagerName) const = 0;
 
     // Select rows using the given expression.
-    BaseTable* select (const TableExprNode&);
+    BaseTable* select (const TableExprNode&, uInt maxRow);
 
     // Select rows using a vector of row numbers.
     BaseTable* select (const Vector<uInt>& rownrs);
