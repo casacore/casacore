@@ -8,15 +8,25 @@ rows from an arbitrary table based on the contents of its
 columns and keywords. It supports arbitrary complex
 expressions including regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
-Furthermore TaQL has a command to update the data in a subset of a table.
-\\
-The first sections explain the syntax and show the options.
+Furthermore TaQL has commands to modify data in a subset of a table.
+
+TaQL is modeled after SQL and contains most of SQL's functionality.
+The main features lacking are joins and GROUPBY/HAVING. On the other
+hand does TaQL have full support for arrays and an advanced way
+specifying intervals.
+
+The first sections of this document explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
 The Glish interface makes it possible to embed Glish
 variables and expressions in a TaQL command.
 
 \section{Syntax}
-The TaQL syntax is based on SQL. The full SELECT command looks like
+TaQL contains four commands.
+In the commands shown below the square brackets are not part of the
+syntax, but indicate the optional parts of the commands.
+
+\begin{itemize}
+\item selection
 \begin{verbatim}
   SELECT [[DISTINCT] column_list] [INTO table]
     FROM table_list [WHERE expression]
@@ -24,14 +34,16 @@ The TaQL syntax is based on SQL. The full SELECT command looks like
     [LIMIT expression] [OFFSET expression] [GIVING table|set]
 \end{verbatim}
 It can be used to get an optionally sorted subset from a table.
-\\The full UPDATE command looks like
+
+\item updating
 \begin{verbatim}
   UPDATE table_list SET update_list [FROM table_list]
     [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]
 \end{verbatim}
 It can be used to update data in (a subset of) the first table in the
 table list. 
-\\The full INSERT command looks like
+
+\item addition
 \begin{verbatim}
   INSERT INTO table_list [(column_list)] VALUES (expr_list)
 or
@@ -39,25 +51,24 @@ or
 \end{verbatim}
 It can be used to add and fill new rows in the first table in the
 table list.
-\\The full DELETE command looks like
+
+\item deletion
 \begin{verbatim}
   DELETE FROM table_list
     [WHERE ...] [ORDERBY ...] [LIMIT ...] [OFFSET ...]
 \end{verbatim}
 It can be used to delete some or all rows from the first table
 in the table list.
-\\\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
+\end{itemize}
+\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
 UPDATE, INSERT, and DELETE command in more detail.
 
-The square brackets shown are not part of the syntax, but indicate
-that the clauses enclosed in them are optional. The command is
-case-insensitive, but of course case is important in string values and
+The commands and verbs in them are
+case-insensitive, but case is important in string values and
 in names of columns and keywords. Whitespace (blanks and tabs) can
 be used at will.
 The various clauses have the following meaning:
 \begin{description}
-  \item[ SELECT ]
-       indicates the beginning of the command and is a mandatory verb.
   \item[ column\_list]
        is a comma-separated list of column names which have to be selected
        from the primary table in the table\_list (see below).
@@ -70,10 +81,11 @@ The various clauses have the following meaning:
        \\If a column\_list is given and if all columns are scalars, the
        column\_list can be preceeded by the word DISTINCT.
        It means that the result is made unique by removing the rows
-       for which all columns in the column\_list have equal values.
-       Instead of DISTINCT the synonym NODUPLICATES or UNIQUE can be used.
-       When finding duplicate values, some temporary sorting is done,
-       but the final order of the resulting table is not changed.
+       with duplicate values in the columns of the column\_list.
+       Instead of DISTINCT the synonym NODUPLICATES or UNIQUE can also
+       be used.
+       To find duplicate values, some temporary sorting is done,
+       but the original order of the remaining rows is not changed.
        \\Note that support of this keyword is mainly done for SQL
        compliance. The same (and more) can be achieved with the
        DISTINCT keyword in the \htmlref{ORDERBY}{TAQL:ORDERBY} clause
@@ -86,10 +98,13 @@ The various clauses have the following meaning:
        written to a table (with the given name). This table is a
        so-called reference table.
        \\The standard TaQL way to define the output table is the
-       \htmlref{GIVING table}{TAQL::GIVING} clause. INTO is available
+       \htmlref{GIVING}{TAQL::GIVING} clause. INTO is available
        for SQL compliance.
   \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
-       is a comma-separated list and indicates which tables are used in
+       is a comma-separated list of table names which can contain
+       path specification and environment variables or the UNIX
+       \verb+~+ notation.
+       It indicates which tables are used in
        the SELECT command. The first table in the list is the primary
        table and is used for all columns in the other clauses.
        Usually only one table is used, so the list consists of only one
@@ -110,12 +125,12 @@ The various clauses have the following meaning:
        \end{verbatim}
        As shown in the example above a qualifying name
        can be used in the WHERE
-       clause to qualify from which table a field has to be taken.
-       When no qualifying name is given, the keyword (or column) is taken
+       clause to specify from which table a keyword has to be taken.
+       If no qualifying name is given, the keyword (or column) is taken
        from the primary table (i.e., the first table in the table\_list).
        This means that qualifying names are only needed in special cases.
        The qualifying name can not contain special characters like a slash.
-       Therefore a table\_name needs an explicit shorthand when it contains
+       Therefore a table\_name needs an explicit shorthand if it contains
        special characters.
        \\The full table\_list syntax is:
        \\
@@ -132,7 +147,7 @@ The various clauses have the following meaning:
        \begin{verbatim}
        SELECT FROM mytable AS my, other IN ~user/othertable
        \end{verbatim}
-       Note that when using \texttt{IN}, the shorthand has to preceed
+       Note that if using \texttt{IN}, the shorthand has to preceed
        the table name. It can be seen as an iterator variable.
 
        There are three special ways to specify a table:
@@ -159,12 +174,12 @@ The various clauses have the following meaning:
        In this example the keyword \texttt{key1} is taken from the
        subtable given by the table keyword \texttt{key} in the main
        table.
-       \\When a keyword is used as the table name, the keyword is
+       \\If a keyword is used as the table name, the keyword is
        searched
        in one of the tables previously given. The search starts at
        the current query level and proceeds outwards (i.e., up to the
-       main query level). When a shorthand is given, only tables with
-       that shorthand are taken into account. When no shorthand is
+       main query level). If a shorthand is given, only tables with
+       that shorthand are taken into account. If no shorthand is
        given, only primary tables are taken into account.
 
        \item
@@ -205,7 +220,7 @@ The various clauses have the following meaning:
        function executing the TaQL command. In the TaQL command a
        \$-sign followed by a sequence number has to be given to
        indicate the correct object containing the transient table.
-       E.g. when two
+       E.g. if two
        table objects are passed \$1 indicates the first table, while \$2
        indicates the second one.
      \end{enumerate}
@@ -213,16 +228,13 @@ The various clauses have the following meaning:
   \item[WHERE expression]
        defines the selection expression which must have a boolean
        scalar result. A row in the primary table
-       is selected when the expression is true for the values in that row.
+       is selected if the expression is true for the values in that row.
        The syntax of the expression is explained
-       \htmlref{below}{TAQL:EXPRESSIONS}.
+       in a \htmlref{later section}{TAQL:EXPRESSIONS}.
   \item[ \label{TAQL:ORDERBY}ORDERBY sort\_list]
        defines the order in which the result of the WHERE clause
        has to be sorted. The sort\_list is a comma separated list of
        expressions.
-       Each expression is in the sort\_list can optionally be
-       followed by \texttt{ASC} or \texttt{DESC}
-       (indicating ascending or descending).
        \\The sort\_list can be preceeded by the word \texttt{ASC} or
        \texttt{DESC} indicating if the given expressions are by
        default sorted in ascending or descending order (default is ASC).
@@ -279,7 +291,7 @@ The various clauses have the following meaning:
        \\Another (more SQL compliant) way to define the output table
        is the \htmlref{INTO}{TAQL:INTO} clause.
        \\It is also possible to specify a set in the GIVING clause
-       instead of a table name. This can be useful when the result of a
+       instead of a table name. This can be useful if the result of a
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
        Such a \htmlref{set}{TAQL:SETS} can contain only one element.
        The parts of this element can be any expression resulting in a scalar.
@@ -289,7 +301,8 @@ The various clauses have the following meaning:
        used instead of GIVING. Whitespace can be given between SAVE and TO.
  
 \end{description}
-Although the clauses column\_list, WHERE, and ORDERBY are optional,
+Although the clauses column\_list, WHERE, ORDERBY, LIMIT, and OFFSET
+are optional,
 at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
 Also the GIVING clause with a value set is seen as an operation.
@@ -297,11 +310,13 @@ Also the GIVING clause with a value set is seen as an operation.
 
 \section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
-key in the ORDERBY clause, or in the set in the GIVING clause.
+key in the ORDERBY clause, in the set in the GIVING clause, or in
+values in the INSERT or UPDATE command.
 Note that the expression result must be
-a boolean scalar when used in the WHERE clause. When used in ORDERBY
-the result can also be a numeric or string scalar. When used in 
-GIVING it can also be a DateTime scalar.
+a boolean scalar if used in the WHERE clause. If used in ORDERBY
+the result can also be a numeric or string scalar. If used in 
+GIVING it can also be a DateTime scalar. If used as a new value in
+the UPDASTE or INSERT command it can also be an array.
 \\The expression in the clause can be as complex as one likes
 using the standard
 \htmlref{arithmetic, comparison, and logical operators}{TAQL:OPERATORS}.
@@ -315,7 +330,7 @@ Parentheses can be used to group subexpressions.
 \htmlref{subqueries}{TAQL:SUBQUERIES}.
 \\The \htmlref{index operator}{TAQL:INDEXING} can be used to take a
 single element or a subsection from an array expression.
-E.g.
+\\E.g.
 \begin{verbatim}
   column1 > 10
   column1 + arraycolumn[index] >= min (column2, column3)
@@ -336,9 +351,9 @@ TaQL knows the following data types:
   \item[ DateTime ] which represents a date/time. There are several functions
        acting on a date/time. Also operator + and - can be used.
 \end{description}
-All these data types can be used for scalars and, except for Regex,
-they can also be used for arrays.
-\\When an operand or function argument with a non-matching data type
+Scalars and arbitrarily shaped arrays of these data types can be used.
+Only arrays of Regex arte not possible.
+\\If an operand or function argument with a non-matching data type
 is used, TaQL can do the following automatic conversions:
 \\- from Double to Complex
 \\- from String to DateTime
@@ -367,8 +382,8 @@ Scalar constants of the various data types can be formed as follows
          \item A dot-separated position.
               E.g. \texttt{12.34.34.5}
        \end{itemize}
-  \item The imaginary part of a DComplex constant is formed by a Double
-       constant immediately followed by a lowercase \textbf{i}. A full DComplex
+  \item The imaginary part of a Complex constant is formed by a Double
+       constant immediately followed by a lowercase \textbf{i}. A full Complex
        constant is formed by adding another Double constant as the
        real part. E.g.
        \begin{verbatim}
@@ -376,7 +391,7 @@ Scalar constants of the various data types can be formed as follows
        2i+1.5            is identical
        \end{verbatim}
        Note that a full Complex constant has to be enclosed
-       in parentheses when, say, a multiplication is performed on it. E.g.
+       in parentheses if, say, a multiplication is performed on it. E.g.
        \begin{verbatim}
        2 * (1.5+2i)
        \end{verbatim}
@@ -389,10 +404,12 @@ Scalar constants of the various data types can be formed as follows
              which results in constant  ab'cdef"gh
        \end{verbatim}
   \item A Regex constant has to be given as \texttt{m/regex/} or
-       \texttt{p/pattern/} after operator ~ or !~.
-       Besides /, the characters \% and \# can also be used as
+       \texttt{p/pattern/} after operator \verb+~+ or \verb+!~+.
+       Instead of /, the characters \% and \# can also be used as
        delimiter, as long as the same delimiter is used on both sides.
-       The delimiter can not be part of the regex itself.
+       The delimiter can not be part of the regex or pattern itself.
+       \\A regex is a UNIX-like extended regular expression.
+       \\A pattern is a UNIX-like shell (file name) pattern.
        \begin{verbatim}
          name ~ m/[a-zA-Z][a-zA-Z0-9]*/
          name !~ p#3c*#
@@ -403,7 +420,7 @@ Scalar constants of the various data types can be formed as follows
        \begin{verbatim}
          name LIKE '3c%'
        \end{verbatim}
-       Note that the string does not need to be a constant.
+       Note that the string after LIKE does not need to be a constant.
 
        Finally a Regex can be formed from a String
        by the function \texttt{regex}, \texttt{pattern}, or
@@ -437,9 +454,9 @@ Scalar constants of the various data types can be formed as follows
               case-insensitive name of the month (at least 3 letters).
               \\- YYYY//DDD or DDD--YYYY where DDD is the day number in
               the year.
-              \\In the DMY format, 2000 is added when year$<$50 and
-              1900 is added when 50$<=$year$<$100.
-              \\When MM$>$12, YYYY will be incremented accordingly.
+              \\In the DMY format, 2000 is added if year$<$50 and
+              1900 is added if 50$<=$year$<$100.
+              \\If MM$>$12, YYYY will be incremented accordingly.
               \\The general time format in a DateTime constant is:
               \\- hh:mm:ss.s
               \\where the delimiter \textbf{h} or \textbf{H} can be used
@@ -466,12 +483,12 @@ Scalar constants of the various data types can be formed as follows
 \end{itemize}
 Constant N-dimensional arrays cannot be formed directly.
 It is possible though to form a constant bounded discrete
-\htmlref{set}{TAQL:SETS}. When needed such a set is automatically
-transformed to a 1-dimensional array and can be used. E.g.
+\htmlref{set}{TAQL:SETS}. If needed such a set is automatically
+transformed to a 1-dimensional array. E.g.
 \begin{verbatim}
      [1:10]
 \end{verbatim}
-is equal to a 1D array with 10 elements with values 1..10.
+is equal to a 1D array of 10 elements with values 1..10.
 
 Furthermore it is possible to use the \texttt{array} function to
 transform an array to another shape. This function is very similar to
@@ -529,19 +546,20 @@ precedence) for scalars:
        They use the norm for Complex values.
        \\To be compliant with SQL $=$ can be used for
        $==$ and $<>$ can be used for $!=$.
-  \item[] \textbf{~, $!~$}, and \textbf{LIKE} and \textbf{NOT LIKE}.
-       \\~ and $!~$ have to be used with regular expression
+  \item[] \verb+~+, \verb+!~+, and \textbf{LIKE} and
+	  \textbf{NOT LIKE}.
+       \\\verb+~+ and \verb+!~+ have to be used with regular expression
        \htmlref{constants}{TAQL:CONSTANTS}.
        \\LIKE exists for SQL compliancy. It operates on a string
        giving a pattern with special characters \% (0 or more
-       characters) and \_ (any character). 
+       characters) and \verb+_+ (any character). 
   \item[] \textbf{IN} and \textbf{NOT IN}
        \\Can be used to test if a value is an element in a set of
        values, ranges, and/or intervals.
        (See the discussion of \htmlref{sets}{TAQL:SETS}).
   \item[] \textbf{BETWEEN} and \textbf{NOT BETWEEN}
        \\Is a special form of IN with a single closed interval.
-       It exist for SQL compliance.
+       It exists for SQL compliance.
        It can be used to test if a value is between two other values.
        E.g.
        \\\texttt{   col BETWEEN 1 AND 3}  and  \texttt{col in [1=:=3]}
@@ -560,7 +578,7 @@ precedence) for scalars:
        \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
-       \\\texttt{$==, !=, >, >=, <, <=, IN$}
+       \\\texttt{$==, !=, >, >=, <, <=, IN, BETWEEN$}, \verb+~+, \verb+!~+
        \\\texttt{\&\&}
        \\\texttt{$\mid\mid$}
 \end{description}
@@ -611,7 +629,7 @@ These functions can only be used on a scalar argument.
        convert it to a regular expression.
        An SQL-style pattern has two special character:
        \\ \% for zero or more arbitrary characters
-       \\ \_ for one arbitrary character
+       \\ \verb+_+ for one arbitrary character
 \end{description}
 A regex formed this way can only be used in a comparison == or !=. E.g.
 \\\texttt{upcase(object) == pattern('3C*')}
@@ -632,7 +650,7 @@ These functions can be used on a scalar or an array argument.
   \item[ \texttt{DateTime DATE(DateTime)}]
         Get the date (i.e., remove the time part). This function is needed in
        \\\texttt{date(column) == 12Feb1997}
-       \\when the column contains date/times with times$>$0.
+       \\if the column contains date/times with times$>$0.
   \item[ \texttt{double MJD(DateTime)}]
         Get the DateTime as a MJD (ModifiedJulianDate).
   \item[ \texttt{double YEAR(DateTime)}]
@@ -664,27 +682,28 @@ function DATETIME is used implicitly).
 
 \subsubsection{Comparison functions}
 Two functions make it possible to compare 2 double or complex
-values within a range.
+values within a tolerance.
 They can be used on scalar and array arguments (and a mix of them).
 The tolerance must be a scalar though.
 \begin{description}
-  \item[ \texttt{bool ISNAN(numeric val)}]
-    Tests if a numeric value is a NaN (not-a-number).
   \item[ \texttt{bool NEAR(numeric val1, numeric val2, double tol)}]
     Tests in a relative way if a value is near another. Relative
     means that the
     magnitude of the numbers is taken into account.
-    Returns \texttt{abs(val2 - val1)/max(abs(val1),abs(val2)) < tol}.
-    If \texttt{tol<=0}, returns \texttt{val1==val2}.
-    If either val is 0.0, takes
+    \\It returns
+    \texttt{abs(val2 - val1)/max(abs(val1),abs(val2)) < tol}.
+    \\If \texttt{tol<=0}, it returns \texttt{val1==val2}.
+    If either val is 0.0, it takes
     care of area around the minimum number that can be represented.
     The default tolerance is 1.0e-13.
   \item[ \texttt{bool NEARABS(numeric val1, numeric val2, double tol)}]
     Tests in an absolute way if a value is near another. Absolute
     means that the
     magnitude of the numbers is not taken into account.
-    Returns \texttt{abs(val2 - val1) < tol}.
+    \\It returns \texttt{abs(val2 - val1) < tol}.
     The default tolerance is 1.0e-13.
+  \item[ \texttt{bool ISNAN(numeric val)}]
+    Tests if a numeric value is a NaN (not-a-number).
 \end{description}
 
 \subsubsection{Mathematical functions}
@@ -754,14 +773,16 @@ They are meant for an array. but can also be used for a scalar.
   \item[ \texttt{double MEAN(double), double AVG(double)}]
     Return mean of all array elements.
   \item[ \texttt{double VARIANCE(double)}] Return variance
-    (the sum of \texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
+    (the sum of
+    \\\texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
   \item[ \texttt{double STDDEV(double)}] Return standard
     deviation (the square root of the variance).
   \item[ \texttt{double AVDEV(double)}] Return average deviation.
-    (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
+    (the sum of
+    \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
   \item[ \texttt{double MEDIAN(double)}] Return median (the
     middle element).
-    When the array has an even number of elements, the mean of
+    If the array has an even number of elements, the mean of
     the two middle elements is returned.
   \item[ \texttt{double FRACTILE(double, doublescalar fraction)}]
        Return the value of the element at the given fraction.
@@ -779,8 +800,8 @@ They can be given in two ways:
 where each value is the minimum of each plane in the cube.
 \\Axes numbers are 1-relative, thus 1 is the first axis.
 \\Axes numbers exceeding the dimensionality of the array are ignored.
-Thus, for example, \texttt{maxs(ARRAY,[2:10])} works for virtually
-any array and results in a 1-dim array.
+Thus, for example, \texttt{maxs(ARRAY,[2:10])} works for arrays
+of any dimensionality and results in a 1-dim array.
 \\The function names are the 'plural' forms of the
 functions in the previous table.
 They can only be used for arrays, thus not for scalars.
@@ -798,14 +819,16 @@ They can only be used for arrays, thus not for scalars.
   \item[ \texttt{double MEANS(double), double AVG(double)}]
     Return mean of elements.
   \item[ \texttt{double VARIANCES(double)}] Return variance
-    (the sum of \texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
+    (the sum of
+    \\\texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
   \item[ \texttt{double STDDEVS(double)}] Return standard
     deviation (the square root of the variance).
   \item[ \texttt{double AVDEVS(double)}] Return average deviation.
-    (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
+    (the sum of 
+    \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
   \item[ \texttt{double MEDIANS(double)}] Return median (the
     middle element).
-    When the array has an even number of elements, the mean of
+    If the array has an even number of elements, the mean of
     the two middle elements is returned.
   \item[ \texttt{double FRACTILES(double, doublescalar fraction)}]
        Return the value of the element at the given fraction.
@@ -827,8 +850,8 @@ They can only be used for arrays, thus not for scalars.
     Return shape of an array (returns an empty array for a scalar).
   \item[ \texttt{double ROWNUMBER()}]
        Return the row number being tested (first row is row number 1).
-       \\This can, for instance, be used to select the first N rows
-       of a sorted table to get the rows with the highest values).
+       \\In combination with function RAND it can, for instance,
+       be used to select arbitrary rows from a table.
   \item[ \texttt{double ROWID()}]
        Return the row number in the original table. This is especially
        useful for returning the result of a selection of a subtable
@@ -850,7 +873,7 @@ They can only be used for arrays, thus not for scalars.
        virtually expanded to arrays.
        IIF evaluates the condition for each element. If True, it takes
        the corresponding element of \texttt{arg1}, otherwise of \texttt{arg2}.
-  \item[ \texttt{anytype ARRAY(anytype,shape)}]
+  \item[ \texttt{anytypearray ARRAY(anytype,shape)}]
        This function creates an array of the given type and shape.
        The shape is given in the last argument(s).
        It can be given in two ways:
@@ -898,7 +921,7 @@ them with a backslash. E.g. \verb+\+\texttt{IN}.
 by another backslash. E.g. in Glish:
 \texttt{tab.query('DATE}\verb+\\+\texttt{-OBS$>$10MAR1996')}.
 
-When a column contains a record, one has to specify a field in it
+If a column contains a record, one has to specify a field in it
 using the dot operator; e.g. \texttt{col.fld} means use field
 \texttt{fld} in the column. It is fully recursive, so
 \texttt{col.fld.subfld} can be used if field \texttt{fld} is a record
@@ -910,22 +933,22 @@ fields, but thereafter an error message will be given.
 It is possible to use table or column keywords, which can have
 a scalar or an array value. A table keyword has to be specified
 as \texttt{::key}. In an expression the \texttt{::} part can be omitted
-when there is no column with such a name.
+if there is no column with such a name.
 A column keyword has to be specified as \texttt{column::key}.
 \\Note that the \texttt{::} syntax is chosen, because it is similar
 to the scope operator in C++.
 \\
 As explained in the \htmlref{FROM clause}{TAQL:TABLE_LIST} of the syntax
 section, keywords from the primary table and from secondary tables
-can be used. When used from a secondary table, it has to be qualified
+can be used. If used from a secondary table, it has to be qualified
 with the (shorthand) name of the table. E.g.
 \\\texttt{sh.key} or \texttt{sh.::key}
 \\takes table keyword \texttt{key} from the table with the shorthand name
 \texttt{sh}.
 
-When a keyword is a record in itself, it is possible to use
+If a keyword value is a record, it is possible to use
 a field in it using the dot operator. E.g. \texttt{::key.fld}
-to use field \texttt{fld}. It is fully recursive, so when the
+to use field \texttt{fld}. It is fully recursive, so if the
 field is a record in itself, a subfield can be used like
 \texttt{col::key.fld.subfld}
 
@@ -947,29 +970,30 @@ Taking a subsection can be done as:
 \begin{verbatim}
   array[start1:end1:incr1, start2:end2:incr2, ...]
 \end{verbatim}
-When a start value is left out it defaults to the beginning of
+If a start value is left out it defaults to the beginning of
 that axis. An end value defaults to the end of the axis and
-an increment defaults to one. When an entire axis is left out,
+an increment defaults to one. If an entire axis is left out,
 it defaults to the entire axis.
 \\E.g. an array with shape [10,15,20] can be subsectioned as:
 \begin{verbatim}
-  [,,3]              resulting in an array [10,15,1]
-  [2:4, ::3, 2:15:2  resulting in an array [3,5,7]
+  [,,3]              resulting in an array of shape [10,15,1]
+  [2:4, ::3, 2:15:2  resulting in an array of shape[3,5,7]
 \end{verbatim}
 The examples show that an index can be a simple constant (as it will
-usually be), but it can also be an expression which can be as complex
-as one likes. The expression has to result in a double value.
+usually be). It can also be an expression which can be as complex
+as one likes. The expression has to result in a positive double value
+which will be truncated to an integer length.
 \textbf{Note} that as in Glish, array indices start at 1.
 \\For fixed shaped arrays checking if array bounds are exceeded
 is done at parse time.
 For variable shaped arrays
 it can only be done per row. If array bounds are exceeded,
 an exception is thrown. In the future a special undefined value
-will be assigned when bounds of variable shaped arrays are exceeded
+will be assigned if bounds of variable shaped arrays are exceeded
 to prevent the selection process from aborting due to the exception.
 
 Note that the index operator will be applied directly
-to a column. This results in reading only that part of the
+to a column. This results in reading only the required part of the
 array from the table column on disk.
 It is, however, also possible to apply it to a
 subexpression (enclosed in parentheses) resulting in an array.
@@ -1007,7 +1031,7 @@ consists of one or more values (which
 can be arbitrary expressions) separated by commas and enclosed in
 square brackets. The elements in a set have to be scalars and their
 data types have to be the same. The square brackets can be left out if
-the set consists of only one set element. For SQL compliance
+the set consists of only one element. For SQL compliance
 parentheses can be used instead of square brackets.
 \\An element in a set can, however, be more complicated and can
 define multiple values or an interval. The possible forms of
@@ -1030,7 +1054,7 @@ These examples show constants only, but \texttt{start}, \texttt{end},
 and \texttt{incr} can be any expression.
 \\Note that :: used here can conflict with the :: in the
 \htmlref{keywords}{TAQL:KEYWORDS}. E.g. \texttt{a::b} is scanned as
-a keyword specification. When the intention is \texttt{start::incr}
+a keyword specification. If the intention is \texttt{start::incr}
 it should be specified as \texttt{a: :b}. In practice this conflict
 will hardly ever occur.
 \item Continuous intervals can be specified for double, string, and datetime.
@@ -1053,9 +1077,12 @@ The following examples show how bounded and half-bounded,
   :<5  {,5>  <,5>   means x<5       right-bounded open
 \end{verbatim}
 \end{enumerate}
+It is very important to note that the 2nd form results in
+discrete values, while the 3rd form results in a continuous interval.
+
 Each element in a set can have its own form, i.e., one element can
 be a single value while another can be an interval.
-When a set consists of single or bounded discrete
+If a set consists of single or bounded discrete
 \texttt{start:end:incr} values only, the set will be expanded to an
 array.
 This makes it possible for array operators and functions
@@ -1063,8 +1090,6 @@ This makes it possible for array operators and functions
 \begin{verbatim}
   WHERE column > mean([10,30:100:5])
 \end{verbatim}
-It is very important to note that the 2nd form results in
-discrete values, while the 3rd form results in a continuous interval.
 
 Another form of constructing a set is using a
 \htmlref{subquery}{TAQL:SUBQUERIES} as shown below.
@@ -1144,7 +1169,7 @@ in the \htmlref{syntax section}{TAQL:GIVING}). E.g.
            giving [TIME-INTERVAL/2 =:= TIME+INTERVAL/2]]
 \end{verbatim}
 The set expression in the GIVING clause is filled with the
-results from the subquery and used in the main query. So when
+results from the subquery and used in the main query. So if
 the subquery results in 5 rows, the resulting set contains 5
 intervals. Thereafter the resulting intervals are sorted and combined
 where possible. In this way the minimum number of intervals have to be
@@ -1191,17 +1216,17 @@ radians, so it can be used easily in functions like \texttt{SIN}.
 Since a time constant has exactly the same format, it is
 also converted to radians, while the user may expect it to be
 expressed in seconds. The user has to take this into account
-when times are used in a comparison. For example, \texttt{timecol $>$ 3h4m}
-is only correct when \texttt{timecol} has unit radians.
+if times are used in a comparison. For example, \texttt{timecol $>$ 3h4m}
+is only correct if \texttt{timecol} has unit radians.
 \\To make life easier the function \texttt{TIME} results in a value
 in radians, so it can be used directly in a comparison. For example,
 \texttt{TIME(datecolumn) $>$ 3h4m}.
-\\In the future this may change when units are handled in their full glory.
+\\In the future this may change if units are handled in their full glory.
 
 \subsection{Optimization}
 A lot of development work can be done to improve the query optimization.
 At this stage a few optimizations are done.
-\begin{enumerate}
+\begin{itemize}
 \item Constant subexpressions are calculated only once. E.g.
 \\in \texttt{COL*sin(180/pi)} the part \texttt{sin(180/pi)} is
 evaluated once.
@@ -1213,17 +1238,14 @@ sumsqr(DIRECTION[1])>0 giving [TIME-INTERVAL/2=:=TIME+INTERVAL/2]]
 \end{verbatim}
 can generate many identical or overlapping intervals. They are
 sorted and combined where possible to make the set as small as possible.
-\end{enumerate}
+\end{itemize}
 
 However, the user can optimize a query by specifying the expression
 carefully. Especially when using operator $\mid\mid$ or \&\&,
 attention should be
 paid to the contents of the left and right branches. Both operators
-evaluate the right branch only when needed, so the left branch
+evaluate the right branch only if needed, so the left branch
 should be the shortest one, i.e., the fastest to evaluate.
-\\In the future the selection process may do automatic optimization
-by swapping the branches. This means that one should not count on
-the order of evaluation (as you can do in the C(++) language).
 
 The user should also use functions, operators, and subqueries in a careful way.
 \begin{itemize}
@@ -1279,7 +1301,7 @@ and
 \end{verbatim}
 give the same result.
 Operator \texttt{IN} is faster because it stops when it finds a
-match. When using \texttt{ANY} all elements are compared first and thereafter
+match. If using \texttt{ANY} all elements are compared first and thereafter
 \texttt{ANY} tests the resulting bool array.
 
 \item
@@ -1322,7 +1344,7 @@ It is also possible to update part of an array using
   UPDATE vla.ms SET FLAG[1,1]=T
   UPDATE vla.ms SET FLAG[1,]=T
 \end{verbatim}
-The first example sets the first element only, while the second
+The first example sets only the first array element, while the second
 one sets an entire row in the array. The second example also
 shows that it is possible to set an array to a scalar value.
 
@@ -1348,7 +1370,7 @@ The \texttt{INSERT} command adds rows to the table. It can take two forms:
   INSERT INTO table_list [(column_list)] SELECT_command
 \end{verbatim}
 The first form adds one row to the table and puts the values given in
-the expression list into the columns given into the column list.
+the expression list into the columns given in the column list.
 If the column list is not given, it defaults to all stored columns in
 the table in the order as they appear in the table description.
 Each expression in the expression list can be as complex as needed;
@@ -1357,8 +1379,8 @@ evaluated before the new row is added, so the new row is not taken
 into account if the subquery is done on the table being modified.
 \\It should be clear that the number of columns has to match the
 number of expressions.
-\\Note that columns in the row not mentioned in the column list,
-are not written, thus will contain rubbish.
+\\Note that row cells not mentioned in the column list,
+are not written, thus may contain rubbish.
 \\The data types of expressions and columns have to match in the same way
 as for the UPDATE command; values have to be promotable or demotable
 to the column data type.
@@ -1385,7 +1407,7 @@ Please note that only the original number of rows is copied.
   INSERT INTO my.ms (ANTENNA1,ANTENNA2) select ANTENNA2,ANTENNA1
    FROM other.ms WHERE ANTENNA1>0
 \end{verbatim}
-copies rows from \texttt{other.ms} where ANTENNA1>0. It swaps the
+copies rows from \texttt{other.ms} where ANTENNA1$>$0. It swaps the
 values of ANTENNA1 and ANTENNA2. All other columns are not written,
 thus may contain rubbish.
 
@@ -1536,8 +1558,8 @@ Rows will be deleted from the first table mentioned in the FROM part.
       \\copies all unflagged rows from OTHER.MS to MY.MS.
 
   \item[] \texttt{ insert into MY.MS/DATA\_DESCRIPTION}
-          \texttt{(SPECTRAL\_WINDOW\_ID,POLARIZATION\_ID,FLAG\_ROW)}
-          \texttt{values (1,0,F)}
+          \\\texttt{(SPECTRAL\_WINDOW\_ID,POLARIZATION\_ID,FLAG\_ROW)}
+          \\\texttt{values (1,0,F)}
       \\adds a row to the DATA\_DESCRIPTION subtable and initializes it.
                    
 \end{description}
@@ -1672,31 +1694,20 @@ and classes form the programmer interface.
 In the near or far future TaQL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
-  \item When a branch in an \texttt{OR} or \texttt{AND} node is a
+  \item If a branch in an \texttt{OR} or \texttt{AND} node is a
     constant scalar, it might be possible to reduce the node to
     one of its branches.
-  \item Optimize by removing an \texttt{IN} node when the righthand
-    operand is empty. This cannot be done when the lefthand operand
+  \item Optimize by removing an \texttt{IN} node if the righthand
+    operand is empty. This cannot be done if the lefthand operand
     is variable shaped.
   \item Handle invalid subexpressions (e.g. exceeding array bounds)
     as undefined values
     which can be tested with the function ISDEFINED.
-  \item Develop versions of the array functions that can project
-    an array to an array with a smaller dimensionality. The projection
-    is an operation collapsing slices into single values.
-    The second argument has to be a set giving the
-    dimension(s) forming the slice. E.g.
-    \\\texttt{ntrueproject (array, [2,3])}
-    \\means that slices consisting of the 2nd and 3rd dimensions are
-    taken. When \texttt{array} has dimensionality (n1,n2,n3,n4), the result is
-    an array of dimensionality (n1,n4). Each element in the result is
-    the number of true flags in the corresponding input slice.
   \item Interpret column units defined in a column keyword UNIT.
   \item Add a function (say POSITIONINCIRCLE or PINC) to search in a circle
        around a position.
   \item Maybe functions to convert positions from one equinox or system
        to another (using the Measures system).
-  \item Use of fields in records by means of operator \texttt{.}.
   \item Optimize using a B+ tree index.
   \item Expressions in the selected column-list to calculate new columns. E.g.
        \\\texttt{SELECT SQUARE(UVW[1])+SQUARE(UVW[2]) UVWNORM FROM ...}
