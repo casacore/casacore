@@ -128,7 +128,6 @@ main (int argc, char *argv[])
     bB.set(bBVal);
     Bool cBVal = True;
     cB.set(cBVal);
-    Array<Bool> BArr(shape);
 
 
 
@@ -143,7 +142,6 @@ main (int argc, char *argv[])
     bF.set(1.0);
     Float cFVal = 2.0;
     cF.set(cFVal);
-    Array<Float> FArr(shape);
 
 
 // Double Lattices
@@ -157,8 +155,6 @@ main (int argc, char *argv[])
     bD.set(1.0);
     Double cDVal = 2.0;
     cD.set(cDVal);
-    Array<Double> DArr(shape);
-    Array<Double> DArr2(shape);
 
 
 // Complex Lattices
@@ -175,7 +171,6 @@ main (int argc, char *argv[])
     cC.set(cCVal);
     Complex dCVal = Complex(3.0,3.0);
     dC.set(dCVal);
-    Array<Complex> CArr(shape);
 
 
 // DComplex Lattices
@@ -192,16 +187,7 @@ main (int argc, char *argv[])
     cDC.set(cDCVal);
     DComplex dDCVal = DComplex(3.0,3.0);
     dDC.set(dDCVal);
-    Array<DComplex> DCArr(shape);
 
-
-    IPosition origin(2,0,0);
-    PixelBox region(origin, shape-1, shape);
-    Float FResult, FResult2;
-    Double DResult, DResult2;
-    Complex CResult, CResult2;
-    DComplex DCResult, DCResult2;
-    Bool BResult, BResult2;
     Bool ok = True;
 
 //
@@ -1768,7 +1754,7 @@ Bool compareScalarFloat (const LatticeExprNode expr,
       Array<Float> Arr(shape);
       Array<Float> Arr2(shape);
       Float Result, Result2;
-      IPosition origin(2,0,0);
+      IPosition origin(shape); origin = 0;
       PixelBox region(origin, shape-1, shape);
       Bool ok = True;
 
@@ -1822,7 +1808,7 @@ Bool compareScalarDouble (const LatticeExprNode expr,
       Array<Double> Arr(shape);
       Array<Double> Arr2(shape);
       Double Result, Result2;
-      IPosition origin(2,0,0);
+      IPosition origin(shape); origin = 0;
       PixelBox region(origin, shape-1, shape);
       Bool ok = True;
 
@@ -1877,7 +1863,7 @@ Bool compareScalarComplex (const LatticeExprNode expr,
       Array<Complex> Arr(shape);
       Array<Complex> Arr2(shape);
       Complex Result, Result2;
-      IPosition origin(2,0,0);
+      IPosition origin(shape); origin = 0;
       PixelBox region(origin, shape-1, shape);
       Bool ok = True;
 
@@ -1932,7 +1918,7 @@ Bool compareScalarDComplex (const LatticeExprNode expr,
       Array<DComplex> Arr(shape);
       Array<DComplex> Arr2(shape);
       DComplex Result, Result2;
-      IPosition origin(2,0,0);
+      IPosition origin(shape); origin = 0;
       PixelBox region(origin, shape-1, shape);
       Bool ok = True;
 
@@ -1989,7 +1975,7 @@ Bool compareScalarBool (const LatticeExprNode expr,
       Array<Bool> Arr(shape);
       Array<Bool> Arr2(shape);
       Bool Result, Result2;
-      IPosition origin(2,0,0);
+      IPosition origin(shape); origin = 0;
       PixelBox region(origin, shape-1, shape);
       Bool ok = True;
 
@@ -2046,7 +2032,7 @@ Bool checkFloat (const LatticeExprNode& expr,
     Bool ok = True;  
     Float Result2;
     Array<Float> Arr(shape);
-    IPosition origin(2,0,0);
+    IPosition origin(shape); origin = 0;
     PixelBox region(origin, shape-1, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2105,7 +2091,7 @@ Bool checkDouble (const LatticeExprNode& expr,
     Bool ok = True;  
     Double Result2;
     Array<Double> Arr(shape);
-    IPosition origin(2,0,0);
+    IPosition origin(shape); origin = 0;
     PixelBox region(origin, shape-1, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2164,7 +2150,7 @@ Bool checkComplex (const LatticeExprNode& expr,
     Bool ok = True;  
     Complex Result2;
     Array<Complex> Arr(shape);
-    IPosition origin(2,0,0);
+    IPosition origin(shape); origin = 0;
     PixelBox region(origin, shape-1, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2223,7 +2209,7 @@ Bool checkDComplex (const LatticeExprNode& expr,
     Bool ok = True;  
     DComplex Result2;
     Array<DComplex> Arr(shape);
-    IPosition origin(2,0,0);
+    IPosition origin(shape); origin = 0;
     PixelBox region(origin, shape-1, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
@@ -2283,7 +2269,7 @@ Bool checkBool (const LatticeExprNode& expr,
     Bool ok = True;  
     Bool Result2;
     Array<Bool> Arr(shape);
-    IPosition origin(2,0,0);
+    IPosition origin(shape); origin = 0;
     PixelBox region(origin, shape-1, shape);
 
     if (shouldBeScalar && !expr.isScalar()) {
