@@ -1347,7 +1347,7 @@ EOT
   echo ""
   echo "Setting memory to $mem and number of processors to $psr"
   echo "in the $AIPSARCH/$SITE/aipsrc file."
-  echo "system.resource.memory: $mem" >>$AIPSARCH/$SITE/aipsrc
+  echo "system.resources.memory: $mem" >>$AIPSARCH/$SITE/aipsrc
   echo "system.resources.numcpu: $psr" >>$AIPSARCH/$SITE/aipsrc
 
   echo ""
