@@ -55,10 +55,10 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 // width is FWHM
 
       const Double sigma = width / sqrt(Double(8.0) * C::ln2);
-      if (useShapeExactly > 0) {
+      if (useShapeExactly) {
          nPixels = shape;
       } else {
-         nPixels = max(shape, (uInt(5*sigma + 0.5) + 1) * 2);
+         nPixels = max(shape,(uInt(5*sigma + 0.5) + 1) * 2);
       }
       kernel.resize(nPixels);
 //
@@ -72,20 +72,30 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       const Gaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
    } else if (kernelType == BOXCAR) {
-      if (useShapeExactly> 0) {
+      uInt iWidth = uInt(width+0.5);
+      if (useShapeExactly) {
          nPixels =  shape;
       } else {
-         nPixels = max(shape, uInt(width+0.5));
+         nPixels = max(shape,iWidth+1);
       }
       kernel.resize(nPixels);
+
+// Try and center kernel
+
+      uInt startPix = max(0u,(nPixels - iWidth)/2);
+      uInt endPix = min(nPixels,startPix+iWidth-1);
+//
       Double norm;
       if (peakIsUnity)  {
          norm = 1.0;
       } else {
-         norm = Double(nPixels);
+         norm = Double(iWidth);
       }
 //
-      for (uInt i=0; i<nPixels; i++) kernel(i) = 1.0 / norm;
+      kernel = 0.0;
+      for (uInt i=startPix; i<=endPix; i++) {
+         kernel(i) = 1.0 / norm;
+      }
    } else if (kernelType == HANNING) {
 
 // kernel always shape 3
@@ -102,6 +112,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
          kernel(2) = 0.25;
       }
    }
+//
    return kernel;
 }
 
