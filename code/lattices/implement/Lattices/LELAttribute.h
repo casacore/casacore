@@ -81,7 +81,8 @@ public:
    LELAttribute();
 
 // Constructor sets it as lattice with given attributes.
-   LELAttribute(const IPosition& shape,
+   LELAttribute(Bool isMasked,
+		const IPosition& shape,
 		const IPosition& tileShape,
 		const LatticeCoordinates& coordinates);
 
@@ -101,6 +102,9 @@ public:
 // Is expression a scalar
    const Bool isScalar() const { return isScalar_p; }
 
+// Is the expression result masked?
+    const Bool isMasked() const { return isMasked_p; }
+
 // What is the shape of the expression
    const IPosition& shape() const { return shape_p; }
 
@@ -112,6 +116,7 @@ public:
 
 private:
    Bool      isScalar_p;
+   Bool      isMasked_p;
    IPosition shape_p;
    IPosition tileShape_p;
    LatticeCoordinates coords_p;
