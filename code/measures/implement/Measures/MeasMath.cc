@@ -421,7 +421,7 @@ void MeasMath::getInfo(FrameInfo i) {
       (((MCFrame *)(applyFrame_p[InfoType[i]].
 		    getMCFramePoint()))->*InfoFrame[i])(info_p[i]);
     } else {
-      throw(AipsError("Missing information in Frame " +
+      throw(AipsError(String("Missing information in Frame ") +
 		      "specified for conversion"));
     };
     infoOK_p[i] = True;
