@@ -56,16 +56,17 @@ Bool MeasIERS::get(Double &returnValue,
 		 f : MeasIERS::INTV)) {
     res = False;			// do predict
   };
-  MeasIERS::Files which = MeasIERS::DEFAULT;
+  MeasIERS::Files which = MeasIERS::MEASURED;
   if (res) {
-    res = initMeas(MeasIERS::MEASURED);
+    res = initMeas(which);
     if (res) {
-      res = fillMeas(MeasIERS::MEASURED, date);
+      res = fillMeas(which, date);
     };
   };
   if (!res) {				// Retry for predicted
-    if (!initMeas(MeasIERS::PREDICTED)) return False;
-    if (!fillMeas(MeasIERS::PREDICTED, date)) {
+    which = MeasIERS::PREDICTED;
+    if (!initMeas(which)) return False;
+    if (!fillMeas(which, date)) {
       if (!msgDone) {
 	msgDone = True;
 	LogIO os(LogOrigin("MeasIERS",
