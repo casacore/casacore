@@ -5415,3 +5415,4 @@
 15 179 src rm npoi/implement/Cuttlefish/geoparm.g
 15 183 sys rm bin/newms
 15 204 src rm trial/implement/Lattices/CopyLattice.h
+15 204 src rm trial/implement/Lattices/CopyLattice.cc
