@@ -62,6 +62,21 @@ int main()
          if (proj.type(proj.name()) != type) {
            throw(AipsError("Type recovery inconsistent"));
          }
+//
+         Bool isZen = Projection::isZenithal (type);
+         Bool ok = False;
+         if (isZen) {
+            if (type==Projection::AZP || type==Projection::TAN || type==Projection::SIN ||      
+                type==Projection::STG || type==Projection::ARC || type==Projection::ZPN ||      
+                type==Projection::ZEA || type==Projection::AIR) ok = True;
+         } else {
+            if (type!=Projection::AZP && type!=Projection::TAN && type!=Projection::SIN &&
+                type!=Projection::STG && type!=Projection::ARC && type!=Projection::ZPN &&      
+                type!=Projection::ZEA && type!=Projection::AIR) ok = True;
+         }
+         if (!ok) {
+           throw(AipsError("isZenithal fails"));
+         }
       }
       
 // Test near function
@@ -107,6 +122,7 @@ int main()
            throw(AipsError("Copy constructor fails"));
          }
       }
+
    } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
