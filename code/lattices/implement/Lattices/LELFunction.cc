@@ -573,7 +573,8 @@ LELFunctionND<T>::LELFunctionND(const LELFunctionEnums::Function function,
       Block<Int> argType(2);
       argType[0] = whatType((T*)0);
       argType[1] = whatType((T*)0);
-      setAttr (LatticeExprNode::checkArg (arg_p, argType, False));
+      LatticeExprNode::checkArg (arg_p, argType, False);
+      setAttr (arg_p[0].getAttribute());
       break;
    }
    default:
