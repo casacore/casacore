@@ -49,9 +49,7 @@ template <class T> class Vector;
 
 //# Typedefs
 
-// <summary>
-//  MDirection conversion routines 
-// </summary>
+// <summary> MDirection conversion routines  </summary>
 
 // <use visibility=local>
 
@@ -80,8 +78,8 @@ template <class T> class Vector;
 // <motivation>
 // </motivation>
 //
-// <todo asof="1996/02/21">
-//	<li>
+// <todo asof="1998/09/20">
+//	<li> Use MeasMath routines
 // </todo>
 
 class MCDirection : public MCBase { 
@@ -179,6 +177,14 @@ private:
   Nutation *NUTATFROM, *NUTATTO;
   Precession *PRECESFROM, *PRECESTO;
   Vector<Double> *VEC61, *VEC62, *VEC63;
+
+  //# State machine data
+  // Has state matrix been made
+  static Bool stateMade_p;
+  // Transition list
+  static uInt ToRef_p[N_Routes][3];
+  // Transition matrix
+  static uInt FromTo_p[MDirection::N_Types][MDirection::N_Types];
 
   //# Constructors
   // Copy constructor (not implemented)
