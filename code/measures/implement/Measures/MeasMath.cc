@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -361,6 +361,20 @@ void MeasMath::deapplyHADECtoITRF(MVPosition &in) {
   in = ROTMAT1 * in;
 }
 
+void MeasMath::applyHADECtoAZEL(MVPosition &in) {
+  getInfo(LAT);
+  ROTMAT1 = RotMatrix(Euler(C::pi_2 - info_p[LAT] ,(uInt) 2,
+			    C::pi, (uInt) 3));
+  in *= ROTMAT1;
+}
+
+void MeasMath::deapplyHADECtoAZEL(MVPosition &in) {
+  getInfo(LAT);
+  ROTMAT1 = RotMatrix(Euler(C::pi_2 - info_p[LAT] ,(uInt) 2,
+			    C::pi, (uInt) 3));
+  in = ROTMAT1 * in;
+}
+
 void MeasMath::applyJ2000toB1950(MVPosition &in) {
   // Frame rotation
   ROTMAT1 = MeasData::MToB1950(4);
@@ -401,6 +415,30 @@ void MeasMath::deapplyETerms(MVPosition &in) {
   } while (MVPOS3.radius() > 1e-10);
   in = MVPOS2;
   in.adjust();
+}
+
+void MeasMath::applyGALtoJ2000(MVPosition &in) {
+  in = MeasData::GALtoJ2000() * in;
+}
+
+void MeasMath::deapplyGALtoJ2000(MVPosition &in) {
+  in = MeasData::J2000toGAL() * in;
+}
+
+void MeasMath::applyGALtoB1950(MVPosition &in) {
+  in = MeasData::GALtoB1950() * in;
+}
+
+void MeasMath::deapplyGALtoB1950(MVPosition &in) {
+  in = MeasData::B1950toGAL() * in;
+}
+
+void MeasMath::applyGALtoSUPERGAL(MVPosition &in) {
+  in = MeasTable::galToSupergal() * in;
+}
+
+void MeasMath::deapplyGALtoSUPERGAL(MVPosition &in) {
+  in *= MeasTable::galToSupergal();
 }
 
 // general support

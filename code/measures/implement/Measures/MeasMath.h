@@ -1,5 +1,5 @@
 //# MeasMath.h: Measure conversion aid routines
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,7 +58,7 @@ class Aberration;
 // </prerequisite>
 //
 // <etymology>
-// Measureand Mathematics
+// Measure and Mathematics
 // </etymology>
 //
 // <synopsis>
@@ -161,10 +161,18 @@ public:
   // <group>
   void applyHADECtoITRF(MVPosition &in);
   void deapplyHADECtoITRF(MVPosition &in);
+  void applyHADECtoAZEL(MVPosition &in);
+  void deapplyHADECtoAZEL(MVPosition &in);
   void applyJ2000toB1950(MVPosition &in);
   void deapplyJ2000toB1950(MVPosition &in);
   void applyETerms(MVPosition &in);
   void deapplyETerms(MVPosition &in);
+  void applyGALtoJ2000(MVPosition &in);
+  void deapplyGALtoJ2000(MVPosition &in);
+  void applyGALtoB1950(MVPosition &in);
+  void deapplyGALtoB1950(MVPosition &in);
+  void applyGALtoSUPERGAL(MVPosition &in);
+  void deapplyGALtoSUPERGAL(MVPosition &in);
   // </group>
   // </group>
 
