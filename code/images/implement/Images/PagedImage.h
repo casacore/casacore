@@ -228,7 +228,7 @@ public:
   virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
 
   // Allow messages to be logged to this ImageInterface.
-  virtual LogIO &logSink();
+  virtual LogIO & logSink();
 
   // check for symmetry in data members
   virtual Bool ok() const;
@@ -270,10 +270,10 @@ public:
   virtual IPosition niceCursorShape(uInt maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  uInt cacheSize() const;
+  uInt maximumCacheSize() const;
 
   // Set the maximum (allowd) cache size as indicated.
-  void setCacheSize(uInt howManyPixels);
+  void setMaximumCacheSize(uInt howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   void setCacheSizeFromPath(const IPosition& sliceShape,
@@ -286,26 +286,22 @@ public:
 
   // Report on cache success
   void showCacheStatistics(ostream &os);
-protected:
+private:  
+  // the default constructor -- useless.
+  PagedImage();
+  void restore_units();
+  void save_units();
+  void report_mask();
+  void check_conformance(const Lattice<T> &other);
+  void openTable(const String &filename);
+  void openTable(const String &filename) const;
+  void setTableType();
+
   Table table_p;
   PagedArray<T> map_p;
   PagedArray<Bool> *mask_p;
   T defaultvalue_p;
-
-private:  
-
-  // helper functions
-  void buildTable(const String &filename);
-  void buildTable(const String &filename) const;
   LogIO sink_p;
-  void setTableType();
-  // the default constructor -- useless.
-  PagedImage();
-
-   void restore_units();
-   void save_units();
-   void report_mask();
-   void check_conformance(const Lattice<T> &other);
 };
 
 
