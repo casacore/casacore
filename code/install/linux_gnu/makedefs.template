@@ -2,7 +2,7 @@
 # makedefs: Installation-specific definitions used by AIPS++ makefiles
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1997,1998
+#   Copyright (C) 1997,1998,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -178,11 +178,11 @@ RANLIB := true
 #                 dbg    opt    dbg    opt    dbg    opt
 #               ------------- ------------- -------------
 #                                                          Kernel
-LIBaips      := defeat static defeat defeat defeat static
+#LIBaips      := defeat static defeat defeat defeat static
 #                                                          Auxiliary
-LIBtrial     := defeat static defeat defeat defeat static
+#LIBtrial     := defeat static defeat defeat defeat static
 #                                                          Consortia
-LIBnrao      := defeat static defeat defeat defeat defeat
+#LIBnrao      := defeat static defeat defeat defeat defeat
 
 # Absolute pathnames of perl-4 and perl-5 executables (if available).
 PERL4 := /usr/bin/perl
