@@ -872,9 +872,18 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
   // Calculate GSTIA0, DEGPDY, UT1UTC, and IATUTC.
 
   ROScalarQuantColumn<Double> intime(ms, MS::columnName(MS::TIME));
-  MEpoch utctime (intime(0), MEpoch::UTC);
-  MEpoch iattime = MEpoch::Convert (utctime, MEpoch::IAT) ();
-  MEpoch ut1time = MEpoch::Convert (utctime, MEpoch::UT1) ();
+
+  MEpoch measTime = ROMSColumns(ms).timeMeas()(0);
+
+  cout << "measTime.getRefString() = " << measTime.getRefString() << endl;
+  cout << "measTime  = " << measTime << endl;
+
+  MEpoch utctime = MEpoch::Convert (measTime, MEpoch::UTC) ();
+  MEpoch iattime = MEpoch::Convert (measTime, MEpoch::IAT) ();
+  MEpoch ut1time = MEpoch::Convert (measTime, MEpoch::UT1) ();
+  cout << "utctime   = " << utctime << endl;
+  cout << "iattime   = " << iattime << endl;
+  cout << "ut1time   = " << ut1time << endl;
   Double utcsec = utctime.get("s").getValue();
   Double ut1sec = ut1time.get("s").getValue();
   Double iatsec = iattime.get("s").getValue();
@@ -883,10 +892,20 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
   Double iatday = floor(iattime.get("d").getValue());
   Double gstday, gstday1;
   {
+    //    Quantum<Double> itime(iatday, "d");
+    //    MEpoch ia0time (itime, MEpoch::IAT);
+    //    MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
+    //    gstday = gsttime.get("d").getValue();
     Quantum<Double> itime(iatday, "d");
     MEpoch ia0time (itime, MEpoch::IAT);
     MEpoch gsttime = MEpoch::Convert (ia0time, MEpoch::GMST) ();
     gstday = gsttime.get("d").getValue();
+    cout << "iatday  = " << iatday << endl;
+    cout << "itime   = " << itime << endl;
+    cout << "ia0time = " << ia0time << endl;
+    cout << "gsttime = " << gsttime << endl;
+    cout << "gstday  = " << gstday << endl;
+
   }
   Double gstdeg = 360 * (gstday - floor(gstday));
   {
@@ -935,12 +954,12 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
     header.define("GSTIA0", gstdeg);                 // GSTIA0
     header.define("DEGPDY", degpdy);                 // DEGPDY
     header.define("FREQ", refFreq);                  // FREQ
-    header.define("RDATE", toFITSDate(intime(0)));   // RDATE
+    header.define("RDATE", toFITSDate(measTime.get("s")));   // RDATE
     header.define("POLARX", -polarMotion(0) * 6356752.31);  // POLARX
     header.define("POLARY", -polarMotion(1) * 6356752.31);  // POLARY
     header.define("UT1UTC", ut1sec-utcsec);          // UT1UTC
     header.define("IATUTC", iatsec-utcsec);          // IATUTC
-    header.define("TIMSYS", "UTC");                  // TIMSYS
+    header.define("TIMSYS", measTime.getRefString()); // TIMSYS
     header.define("ARRNAM", inarrayname(arraynum));  // ARRNAM
     header.define("NUMORB", 0);                      // NUMORB
     header.define("NOPCAL", 0);                      // NOPCAL
@@ -1118,18 +1137,26 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   const ROScalarColumn<String>& inname=msfc.name();
 
   // If source table exists, access it
+
+  // This is for case where SOURCE guaranteed to exist:
+  //  MSSource sourceTable(ms.source());
+  //  ROMSSourceColumns sourceColumns(sourceTable);
+  //  ColumnsIndex srcInx(sourceTable, "SOURCE_ID");
+  //  RecordFieldPtr<Int> srcInxFld(srcInx.accessKey(), "SOURCE_ID");
+
+  // This is for case where SOURCE may not exist:
+  //   (doesn't work yet!)
   //  MSSource sourceTable();
   //  ROMSSourceColumns sourceColumns();
   //  ColumnsIndex srcInx();
   //  RecordFieldPtr<Int> srcInxFld();
   //  if (!ms.source().isNull()) {
-  //    sourceTable=ms.source();
-  //   sourceColumns = ROMSSourceColumns(sourceTable);
+  //    sourceTable = ms.source();
+  //    sourceColumns = ROMSSourceColumns(sourceTable);
     // Create an index for the SOURCE table.
     // Make a RecordFieldPtr for the SOURCE_ID field in the index key record.
   //    srcInx=ColumnsIndex(sourceTable, "SOURCE_ID");
-  //   srcInxFld=RecordFieldPtr<Int>(srcInx.accessKey(), "SOURCE_ID");
-
+  //    srcInxFld=RecordFieldPtr<Int>(srcInx.accessKey(), "SOURCE_ID");
   //  }
 
   MSSpectralWindow spectralTable(ms.spectralWindow());
@@ -1266,29 +1293,31 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       // Use info from SOURCE table if available.
       // Try to find the SOURCE_ID in the SOURCE table.
       // If multiple rows found, use the first one.
+
+      //  Optional access to SOURCE table doesn't work yet!
       //      if (!sourceTable.isNull()) {
-      //	*srcInxFld = insrcid(fieldnum);
-      //	Vector<uInt> rownrs = srcInx.getRowNumbers();
-      ///	if (rownrs.nelements() > 0) {
-      //	  uInt rownr = rownrs(0);
-      //	  *source = sourceColumns.name()(rownr);
+      //      	*srcInxFld = insrcid(fieldnum);
+      //      	Vector<uInt> rownrs = srcInx.getRowNumbers();
+      //      	if (rownrs.nelements() > 0) {
+      //      	  uInt rownr = rownrs(0);
+      //      	  *source = sourceColumns.name()(rownr);
       //	  *lsrvel = sourceColumns.sysvel()(rownr);
-      //	  if (sourceColumns.properMotion().isDefined(rownr)) {
-      //	    Vector<Double> pm = sourceColumns.properMotion()(rownr);
-      //	    *pmra = pm(0);
-      //	    *pmdec = pm(1);
-      //	  }
-      //	  *qual = sourceColumns.calibrationGroup()(rownr);
-      //	  *calcode = sourceColumns.code()(rownr);
-      //	  
-      //	  // Directions have to be converted from radians to degrees.
-      //	  if (sourceColumns.direction().isDefined(rownr)) {
-      //	    dir = sourceColumns.directionMeas()(rownr);
-      //	  }
-      //	  if (dir.type()==MDirection::B1950) {
-      //	    *epoch = 1950.;
-      //	  }
-      //	}
+      //      	  if (sourceColumns.properMotion().isDefined(rownr)) {
+      //      	    Vector<Double> pm = sourceColumns.properMotion()(rownr);
+      //      	    *pmra = pm(0);
+      //      	    *pmdec = pm(1);
+      //      	  }
+      //      	  *qual = sourceColumns.calibrationGroup()(rownr);
+      //      	  *calcode = sourceColumns.code()(rownr);
+      //      	  
+      //      	  // Directions have to be converted from radians to degrees.
+      //      	  if (sourceColumns.direction().isDefined(rownr)) {
+      //      	    dir = sourceColumns.directionMeas()(rownr);
+      //      	  }
+      //      	  if (dir.type()==MDirection::B1950) {
+      //      	    *epoch = 1950.;
+      //      	  }
+      //      	}
       //      }
 
 
