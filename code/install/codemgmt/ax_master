@@ -2724,3 +2724,4 @@
 10 060 src mv aips/implement/Measures/MVEarthMagnetic.cc aips/implement/Quanta/MVEarthMagnetic.cc
 10 060 src mv aips/implement/Measures/MVEarthMagnetic.h aips/implement/Quanta/MVEarthMagnetic.h
 10 060 src mv aips/implement/Measures/MVEpoch.cc aips/implement/Quanta/MVEpoch.cc
+10 060 src mv aips/implement/Measures/MVEpoch.h aips/implement/Quanta/MVEpoch.h
