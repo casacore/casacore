@@ -1,5 +1,5 @@
 //# tMemory.cc: Test tMemory class.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,8 @@ int main()
     // Not much testing is possible.
     char *ptrs[1000];
     size_t alloc = 0;
-    for (uint i=0; i<sizeof(ptrs)/sizeof(char*); i++) {
+    uint i;
+    for (i=0; i<sizeof(ptrs)/sizeof(char*); i++) {
 	ptrs[i] = new char[100];
 	alloc += 100;
     }
