@@ -30,7 +30,6 @@
 
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MUString.h>
 #include <aips/Utilities/String.h>
 
@@ -236,78 +235,6 @@ uInt SpectralElement::getDegree() const {
   checkPoly();
   return n_p;
 };
-
-void SpectralElement::set(SpectralElement::Types tp,
-			  const Vector<Double> &param) {
-  tp_p = tp;
-  n_p = 0;
-  uInt n = 0;
-  if (tp_p == GAUSSIAN) {
-    if (param.nelements() != 3) {
-      throw(AipsError("SpectralElement: GAUSSIAN must have "
-		      "3 parameters"));
-    };
-    n = 3;
-  } else if (tp_p == POLYNOMIAL) {
-    if (param.nelements() == 0) {
-      throw(AipsError("SpectralElement: POLYNOMIAL must have "
-		      "at least 1 parameter"));
-    };
-    n_p = param.nelements()-1;
-    n = n_p+1;
-  };
-  par_p.resize(n);
-  err_p.resize(n);
-  fix_p.resize(n);
-  par_p = param;
-  err_p = 0;
-  fix_p = False;
-  check();
-}
-
-void SpectralElement::set(SpectralElement::Types tp,
-			  const Vector<Float> &param) {
-  tp_p = tp;
-  n_p = 0;
-  uInt n = 0;
-  if (tp_p == GAUSSIAN) {
-    if (param.nelements() != 3) {
-      throw(AipsError("SpectralElement: GAUSSIAN must have "
-		      "3 parameters"));
-    };
-    n = 3;
-  } else  if (tp_p == POLYNOMIAL) {
-    if (param.nelements() == 0) {
-      throw(AipsError("SpectralElement: POLYNOMIAL must have "
-		      "at least 1 parameter"));
-    };
-    n_p = param.nelements()-1;
-    n = n_p+1;
-  };
-  par_p.resize(n);
-  err_p.resize(n);
-  fix_p.resize(n);
-  for (uInt i=0; i<par_p.nelements(); i++) par_p(i) = param(i);
-  err_p = 0;
-  fix_p = False;
-  check();
-}
-
-void SpectralElement::set(const Vector<Double> &param) {
-    if (param.nelements() != par_p.nelements()) {
-      throw(AipsError("SpectralElement: setting incorrect number of "
-		      "parameters in the element"));
-    };
-    par_p = param;
-}
-
-void SpectralElement::set(const Vector<Float> &param) {
-    if (param.nelements() != par_p.nelements()) {
-      throw(AipsError("SpectralElement: setting incorrect number of "
-		      "parameters in the element"));
-    };
-    for (uInt i=0; i<par_p.nelements(); i++) par_p(i) = param(i);
-}
 
 void SpectralElement::setError(const Vector<Double> &err) {
     if (err.nelements() != err_p.nelements()) {

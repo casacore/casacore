@@ -202,13 +202,13 @@ class SpectralElement : public RecordTransformable {
   // <group>
   // Reset a complete element
   // <group>
-  void set(SpectralElement::Types tp, const Vector<Double> &param);
-  void set(SpectralElement::Types tp, const Vector<Float> &param);
+  template <class MT>
+    void set(SpectralElement::Types tp, const Vector<MT> &param);
   // </group>
   // Reset the parameter values only (i.e zero errors and nothing fixed)
   // <group>
-  void set(const Vector<Double> &param);
-  void set(const Vector<Float> &param);
+  template <class MT>
+    void set(const Vector<MT> &param);
   // </group>
   // </group>
   // Set the error fields
