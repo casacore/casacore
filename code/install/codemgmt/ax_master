@@ -4150,3 +4150,4 @@
 14 065 src mv trial/apps/gDisplay/GWCRTRegion.cc trialdisplay/apps/gDisplay/GWCRTRegion.cc
 14 065 src mv trial/apps/gDisplay/GWCRTRegion.h trialdisplay/apps/gDisplay/GWCRTRegion.h
 14 065 src mv trial/apps/gDisplay/GWCRTZoomer.cc trialdisplay/apps/gDisplay/GWCRTZoomer.cc
+14 065 src mv trial/apps/gDisplay/GWCRTZoomer.h trialdisplay/apps/gDisplay/GWCRTZoomer.h
