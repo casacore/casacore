@@ -27,7 +27,9 @@
 
 #include <trial/Images/TempImage.h>
 #include <trial/Images/RegionHandlerMemory.h>
+#include <trial/Images/ImageRegion.h>
 #include <aips/Lattices/TempLattice.h>
+#include <trial/Lattices/LatticeRegion.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
