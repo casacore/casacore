@@ -1,0 +1,17 @@
+
+change id: 0066
+ author:   Neil Killeen
+ date:     2001/01/10
+ avers:    1.5
+ area:     Library
+ package:  trialdisplay
+ module:   DisplayDatas
+ type:     Code
+ category: New
+ summary:  added LatticeAsVector class
+I have added LatticeAsVector to support the display of
+vector fields from Complex and Float data sources.
+
+In addition, an OTF mask keyword has been added to the
+LatticeAsRAster, LatticeAsContour and LatticeAsVector
+adjust GUIs via LatticePADisplayData
