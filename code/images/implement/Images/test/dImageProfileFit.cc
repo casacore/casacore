@@ -1,5 +1,5 @@
-//# tImageProfileFit.cc: 
-//# Copyright (C) 1996,1997,1999,2000,2001,2002,2003
+//# dImageProfileFit.cc: 
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Tasking/Aipsrc.h>
+#include <aips/Tables/Table.h>
 #include <aips/Utilities/String.h>
 #include <aips/Containers/Record.h>
 
@@ -53,7 +54,7 @@ try {
    String root = Aipsrc::aipsRoot();
    String name = root + "/data/demo/Images/test_image";
    inputs.create("in", name, "Input file name");
-   inputs.create("out", "dImageProfileFit_output", "Output root image name");
+   inputs.create("out", "dImageProfileFit_tmp", "Output root image name");
    inputs.create("axis", "2", "axis to fit (default is 2)");
    inputs.readArguments(argc, argv);
 //
@@ -83,11 +84,14 @@ try {
       cout << "Axis must be <=" << inImage.ndim() << endl;
       exit(1);
    }
+//
+   String outFitName(out+String(".fit"));
    PagedImage<Float>* pOutFit = new PagedImage<Float>(TiledShape(inImage.shape()),
-                            inImage.coordinates(), out+String(".fit"));
+                            inImage.coordinates(), outFitName);
 
+   String outResidName(out+String(".residual"));
    PagedImage<Float>* pOutResid = new PagedImage<Float>(TiledShape(inImage.shape()),
-                              inImage.coordinates(), out+String(".residual"));
+                              inImage.coordinates(), outResidName);
 // Make fitter
 
    ImageProfileFit fitter;
@@ -111,6 +115,8 @@ try {
 //
    delete pOutFit;
    delete pOutResid;
+   Table::deleteTable (outFitName, True);
+   Table::deleteTable (outResidName, True);
 
 } catch (AipsError x) {
    cerr << "aipserror: error " << x.getMesg() << endl;

@@ -1,5 +1,5 @@
 //# tImageFFT.cc: test ImageFFT class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,106 +99,121 @@ try {
 
       PagedImage<Float> inImage(in, True);
 //
-      IPosition outShape(inImage.shape());
-      PagedImage<Float> outReal(outShape, inImage.coordinates(), "tImageFFT_real.img");
-      if (inImage.isMasked()) makeMask(outReal);
-      PagedImage<Float> outImag(outShape, inImage.coordinates(), "tImageFFT_imag.img");
-      if (inImage.isMasked()) makeMask(outImag);
-      PagedImage<Float> outAmp(outShape, inImage.coordinates(), "tImageFFT_amp.img");
-      if (inImage.isMasked()) makeMask(outAmp);
-      PagedImage<Float> outPhase(outShape, inImage.coordinates(), "tImageFFT_phase.img");
-      if (inImage.isMasked()) makeMask(outPhase);
-      PagedImage<Complex> outComplex(outShape, inImage.coordinates(), "tImageFFT_complex.img");
-      if (inImage.isMasked()) makeMask(outComplex);
+      {
+        IPosition outShape(inImage.shape());
+        PagedImage<Float> outReal(outShape, inImage.coordinates(), "tImageFFT_tmp_real.img");
+        if (inImage.isMasked()) makeMask(outReal);
+        PagedImage<Float> outImag(outShape, inImage.coordinates(), "tImageFFT_tmp_imag.img");
+        if (inImage.isMasked()) makeMask(outImag);
+        PagedImage<Float> outAmp(outShape, inImage.coordinates(), "tImageFFT_tmp_amp.img");
+        if (inImage.isMasked()) makeMask(outAmp);
+        PagedImage<Float> outPhase(outShape, inImage.coordinates(), "tImageFFT_tmp_phase.img");
+        if (inImage.isMasked()) makeMask(outPhase);
+        PagedImage<Complex> outComplex(outShape, inImage.coordinates(), "tImageFFT_tmp_complex.img");
+        if (inImage.isMasked()) makeMask(outComplex);
 
 // FFT the sky only
 
-      {
-         os << LogIO::NORMAL << "FFT the sky" << LogIO::POST;
-         ImageFFT fft;
-         fft.fftsky(inImage);
-         Array<Float> rArray0 = inImage.get();
+        {
+           os << LogIO::NORMAL << "FFT the sky" << LogIO::POST;
+           ImageFFT fft;
+           fft.fftsky(inImage);
+           Array<Float> rArray0 = inImage.get();
 //
-         os << LogIO::NORMAL << "Get FFT and check values" << LogIO::POST;
-         fft.getReal(outReal);
-         fft.getImaginary(outImag);
-         fft.getAmplitude(outAmp);
-         fft.getPhase(outPhase);
-         fft.getComplex(outComplex);
+           os << LogIO::NORMAL << "Get FFT and check values" << LogIO::POST;
+           fft.getReal(outReal);
+           fft.getImaginary(outImag);
+           fft.getAmplitude(outAmp);
+           fft.getPhase(outPhase);
+           fft.getComplex(outComplex);
 //
-         checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex);
+           checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                        outComplex);
 
 // Copy constructor
 
-         os << LogIO::NORMAL << "Copy constructor, get FFT and check values" << LogIO::POST;
-         ImageFFT fft2(fft);
-         fft2.getReal(outReal);
-         fft2.getImaginary(outImag);
-         fft2.getAmplitude(outAmp);
-         fft2.getPhase(outPhase);
-         fft2.getComplex(outComplex);
+           os << LogIO::NORMAL << "Copy constructor, get FFT and check values" << LogIO::POST;
+           ImageFFT fft2(fft);
+           fft2.getReal(outReal);
+           fft2.getImaginary(outImag);
+           fft2.getAmplitude(outAmp);
+           fft2.getPhase(outPhase);
+           fft2.getComplex(outComplex);
 //
-         checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex);
+           checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                        outComplex);
 
 // Assignment operator
 
-         os << LogIO::NORMAL << "Assignment operator, get FFT and check values" << LogIO::POST;
-         ImageFFT fft3;
-         fft3 = fft2;
-         fft3.getReal(outReal);
-         fft3.getImaginary(outImag);
-         fft3.getAmplitude(outAmp);
-         fft3.getPhase(outPhase);
-         fft3.getComplex(outComplex);
+           os << LogIO::NORMAL << "Assignment operator, get FFT and check values" << LogIO::POST;
+           ImageFFT fft3;
+           fft3 = fft2;
+           fft3.getReal(outReal);
+           fft3.getImaginary(outImag);
+           fft3.getAmplitude(outAmp);
+           fft3.getPhase(outPhase);
+           fft3.getComplex(outComplex);
 //
-         checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex);
-      }
+           checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
+                        outComplex);
+        }
 
 
 // Multi dimensional FFT.  
 
-      {
-         os << LogIO::NORMAL << "FFT all dimensions" << LogIO::POST;
-         IPosition outShape(inImage.shape());
-         PagedImage<Float> outReal2(outShape, inImage.coordinates(), "tImageFFT_real2.img");
-         if (inImage.isMasked()) makeMask(outReal2);
-         PagedImage<Float> outImag2(outShape, inImage.coordinates(), "tImageFFT_imag2.img");
-         if (inImage.isMasked()) makeMask(outImag2);
-         PagedImage<Float> outAmp2(outShape, inImage.coordinates(), "tImageFFT_amp2.img");
-         if (inImage.isMasked()) makeMask(outAmp2);
-         PagedImage<Float> outPhase2(outShape, inImage.coordinates(), "tImageFFT_phase2.img");
-         if (inImage.isMasked()) makeMask(outPhase2);
-         PagedImage<Complex> outComplex2(outShape, inImage.coordinates(), "tImageFFT_complex2.img");
-         if (inImage.isMasked()) makeMask(outComplex2);
+        {
+           os << LogIO::NORMAL << "FFT all dimensions" << LogIO::POST;
+           IPosition outShape(inImage.shape());
+           PagedImage<Float> outReal2(outShape, inImage.coordinates(), "tImageFFT_tmp_real2.img");
+           if (inImage.isMasked()) makeMask(outReal2);
+           PagedImage<Float> outImag2(outShape, inImage.coordinates(), "tImageFFT_tmp_imag2.img");
+           if (inImage.isMasked()) makeMask(outImag2);
+           PagedImage<Float> outAmp2(outShape, inImage.coordinates(), "tImageFFT_tmp_amp2.img");
+           if (inImage.isMasked()) makeMask(outAmp2);
+           PagedImage<Float> outPhase2(outShape, inImage.coordinates(), "tImageFFT_tmp_phase2.img");
+           if (inImage.isMasked()) makeMask(outPhase2);
+           PagedImage<Complex> outComplex2(outShape, inImage.coordinates(), "tImageFFT_tmp_complex2.img");
+           if (inImage.isMasked()) makeMask(outComplex2);
 //
-         Vector<Bool> which(inImage.ndim(), True);
-         if (axes.nelements()==1 && axes[0]==-10) {
-            ;
-         } else {
-            for (uInt i=0; i<inImage.ndim(); i++) {
-               Bool found = False;
-               for (uInt j=0; j<axes.nelements(); j++) {
-                 if (axes[j]==Int(i)) found = True;
-               }
-               which(i) = found;
-            }
-         }
+           Vector<Bool> which(inImage.ndim(), True);
+           if (axes.nelements()==1 && axes[0]==-10) {
+              ;
+           } else {
+              for (uInt i=0; i<inImage.ndim(); i++) {
+                 Bool found = False;
+                 for (uInt j=0; j<axes.nelements(); j++) {
+                   if (axes[j]==Int(i)) found = True;
+                 }
+                 which(i) = found;
+              }
+           }
 //
-         ImageFFT fft;
-         fft.fft(inImage, which);
-         fft.getReal(outReal2);
-         fft.getImaginary(outImag2);
-         fft.getAmplitude(outAmp2);
-         fft.getPhase(outPhase2);
-         fft.getComplex(outComplex2);
+           ImageFFT fft;
+           fft.fft(inImage, which);
+           fft.getReal(outReal2);
+           fft.getImaginary(outImag2);
+           fft.getAmplitude(outAmp2);
+           fft.getPhase(outPhase2);
+           fft.getComplex(outComplex2);
 //
-         checkNumbers (inImage, outReal2, outImag2, outAmp2, outPhase2, 
-                       outComplex2, which);
-
+           checkNumbers (inImage, outReal2, outImag2, outAmp2, outPhase2, 
+                         outComplex2, which);
+        }
       }
+
+// Delete output files
+
+      Table::deleteTable(String("tImageFFT_tmp_real.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_imag.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_amp.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_phase.img"), True);      
+      Table::deleteTable(String("tImageFFT_tmp_complex.img"), True);
+//
+      Table::deleteTable(String("tImageFFT_tmp_real2.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_imag2.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_amp2.img"), True);
+      Table::deleteTable(String("tImageFFT_tmp_phase2.img"), True);      
+      Table::deleteTable(String("tImageFFT_tmp_complex2.img"), True);
    } else {
       os << LogIO::NORMAL << "images of type " << Int(imageType)
 	 << " not yet supported" << LogIO::POST;
