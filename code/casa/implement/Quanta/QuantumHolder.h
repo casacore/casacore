@@ -1,5 +1,5 @@
 //# QuantumHolder.h: A holder for Quantities to enable record conversions
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,9 +32,9 @@
 #include <aips/aips.h>
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Utilities/RecordTransformable.h>
-#include <aips/Mathematics/Complex.h>
 
 //# Forward Declarations
+#include <aips/Mathematics/Complexfwd.h>
 class QBase;
 class String;
 class RecordInterface;

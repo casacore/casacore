@@ -1,5 +1,5 @@
 //# QuantumHolder.cc: A holder for Quantum to enable record conversions
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Arrays/Vector.h>
 
 //# Constructors
