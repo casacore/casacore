@@ -1722,9 +1722,9 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	if (stokes.nelements() > 1) {
 	    inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) - 
 		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
-	    for (uInt i=2; i<stokes.nelements(); i++) {
-		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(i))) - 
-		     Stokes::FITSValue(Stokes::StokesTypes(stokes(i-1)))) !=
+	    for (uInt k=2; k<stokes.nelements(); k++) {
+		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(k))) - 
+		     Stokes::FITSValue(Stokes::StokesTypes(stokes(k-1)))) !=
 		    inc) {
 		    inorder = False;
 		}
@@ -1807,8 +1807,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     header.define(sprefix + "unit", cunit);
     if (!isNCP && projp.nelements() > 0) {
 	if (!writeWCS) {
-	    for (uInt i=0; i<projp.nelements(); i++) {
-		if (!::nearAbs(projp(i), 0.0)) {
+	    for (uInt k=0; k<projp.nelements(); k++) {
+		if (!::nearAbs(projp(k), 0.0)) {
 		    os << LogIO::NORMAL << 
 			"PROJPn not all zero.Information lost in FITS"
 			" conversion. Try WCS?." <<
@@ -2146,31 +2146,31 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	Vector<Int> stokes(4); // at most 4 stokes
 	// Must be stokes.nelements() since the default switch might resize
 	// the vector.
-	for (uInt i=0; i<stokes.nelements(); i++) {
+	for (uInt k=0; k<stokes.nelements(); k++) {
 	    Double tmp = crval(stokesAxis) + 
-		(i - crpix(stokesAxis))*cdelt(stokesAxis);
+		(k - crpix(stokesAxis))*cdelt(stokesAxis);
 	    if (tmp >= 0) {
-		stokes(i) = Int(floor(tmp + 0.01));
+		stokes(k) = Int(floor(tmp + 0.01));
 	    } else {
-		stokes(i) = Int(floor(tmp - 0.01));
+		stokes(k) = Int(floor(tmp - 0.01));
 	    }
-	    switch (stokes(i)) {
-	    case 1: stokes(i) = Stokes::I; break;
-	    case 2: stokes(i) = Stokes::Q; break;
-	    case 3: stokes(i) = Stokes::U; break;
-	    case 4: stokes(i) = Stokes::V; break;
-	    case -1: stokes(i) = Stokes::RR; break;
-	    case -2: stokes(i) = Stokes::LL; break;
-	    case -3: stokes(i) = Stokes::RL; break;
-	    case -4: stokes(i) = Stokes::LR; break;
-	    case -5: stokes(i) = Stokes::XX; break;
-	    case -6: stokes(i) = Stokes::YY; break;
-	    case -7: stokes(i) = Stokes::XY; break;
-	    case -8: stokes(i) = Stokes::YX; break;
+	    switch (stokes(k)) {
+	    case 1: stokes(k) = Stokes::I; break;
+	    case 2: stokes(k) = Stokes::Q; break;
+	    case 3: stokes(k) = Stokes::U; break;
+	    case 4: stokes(k) = Stokes::V; break;
+	    case -1: stokes(k) = Stokes::RR; break;
+	    case -2: stokes(k) = Stokes::LL; break;
+	    case -3: stokes(k) = Stokes::RL; break;
+	    case -4: stokes(k) = Stokes::LR; break;
+	    case -5: stokes(k) = Stokes::XX; break;
+	    case -6: stokes(k) = Stokes::YY; break;
+	    case -7: stokes(k) = Stokes::XY; break;
+	    case -8: stokes(k) = Stokes::YX; break;
 	    default:
-		os << LogIO::NORMAL << "There are at most " << i << " known "
+		os << LogIO::NORMAL << "There are at most " << k << " known "
 		    "Stokes values on the Stokes axis" << LogIO::POST;
-		stokes.resize(i, True);
+		stokes.resize(k, True);
 	    }
 	}
 	try {

@@ -286,7 +286,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
    if (worldReplacement.nelements() != nRemove) {
       worldReplacement.resize(nRemove);
-      for (uInt i=0; i<nRemove; i++) {
+      for (i=0; i<nRemove; i++) {
          worldReplacement(i) = cSys.referenceValue()(remove(i));
       }
    }
