@@ -66,11 +66,11 @@ int main()
      {
          LinearCoordinate lc = makeCoordinate(names, units, crpix, crval, cdelt, xform);
          LinearCoordinate lc2 = makeCoordinate(names, units, crpix, crval, cdelt, xform);
-         if (!lc.near(&lc)) {
+         if (!lc.near(&lc2)) {
             throw(AipsError("Failed near test 1"));
          }
          Vector<Int> excludeAxes(1, 1);
-         if (!lc.near(&lc, excludeAxes)) {
+         if (!lc.near(&lc2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
      } 
