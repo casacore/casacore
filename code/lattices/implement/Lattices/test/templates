@@ -14,9 +14,6 @@
      template void indgen(Array<Complex> &, Complex, Complex) 
 1000 casa/Utilities/GenSort.cc casa/BasicSL/Complex.h 
      template class GenSort<Complex> 
-1000 lattices/Lattices/ArrayLattice.cc casa/BasicSL/Complex.h 
-     template class ArrayLattice<Double> 
-     template class ArrayLattice<DComplex> 
 ######################################################################
 # Needed for dLatticeStatistics
 1000 lattices/Lattices/CLInterpolator2D.cc 
@@ -46,15 +43,6 @@
      template class TiledCollapser<Complex, DComplex> 
 ######################################################################
 # Needed for tExtendLattice
-1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<Complex> 
-     template class CountedConstPtr<Lattice<Complex> > 
-     template class CountedPtr<Lattice<Complex> > 
-     template class PtrRep<Lattice<Complex> > 
-     template class SimpleCountedConstPtr<Lattice<Complex> > 
-     template class SimpleCountedPtr<Lattice<Complex> > 
 1010 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
      = casa/Utilities/CountedPtr.cc 
      = lattices/Lattices/Lattice.h 
