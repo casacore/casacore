@@ -539,7 +539,9 @@ void Input::readArguments (Int ac, char *av[])
   // Pass through keyword=value and turn -keyword value into keyword=value
   for (i=1; i<ac; i++) {
     thisarg = av[i];
-    if (thisarg[0] == '-') {
+    // The next statement uses elem() rather than [] to cater for sgi-32b
+    // problem
+    if (thisarg.elem(0) == '-') {
       if (i >= ac - 1) {
 	throw(AipsError("Input::ReadArguments:"
 			"-keyword not followed by value"));
