@@ -1,0 +1,14 @@
+
+change id: 0051
+ author:   Tim Cornwell
+ date:     2000/09/22
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   ftp.g
+ type:     Code Documentation
+ category: New
+ summary:  Interface to ftp
+
+This tool provides a simple interface to ftp. Only a few
+operations are supported: get, send, binary, ascii, cd, list.
