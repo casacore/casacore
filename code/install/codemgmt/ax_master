@@ -1760,3 +1760,4 @@
 11 085 src rm nrao/apps/otfgridder/otfgridder.cc
 11 085 src rm nrao/apps/otfgridder/templates
 11 085 src rm nrao/apps/otfgridder/makefile
+11 085 sys rm bin/otfgridder
