@@ -34,7 +34,7 @@
 
 //# Forward Declarations
 template <class T> class Array;
-
+class IPosition;
 
 // <summary>
 // Abstract base class to collapse chunks for LatticeApply
