@@ -374,6 +374,10 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    AlwaysAssert(worldMin.nelements()==nWorld, AipsError);
    AlwaysAssert(worldMax.nelements()==nWorld, AipsError);
 //
+/*
+cerr << "DC:: pixelAxes, worldAxes = " << pixelAxes << worldAxes << endl;
+cerr << "DC::worldIn, pixelIn = " << worldIn << pixelIn << endl;
+*/
    for (uInt i=0; i<nPixel; i++) {   
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - duplicate pixel/world axes");
@@ -382,7 +386,7 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - each coordinate must be either pixel or world");
          return False;
-        }
+      }
    }
 //
    if (worldOut.nelements()!=nWorldAxes()) worldOut.resize(nWorldAxes());
@@ -1395,20 +1399,20 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Do it
 //
-    mix_vstep = 1.0;
-    mix_viter = 2;
+//    mix_vstep = 1.0;
+    mix_vstep = 0.0;
+//
+    mix_viter = 5;
     prjprm_p->flag = -1;                    // Return a solution, even if ambiguous
 
 /*
-cout << "ctype = " << c_ctype_p[0] << " " << c_ctype_p[1] << endl;
-cout << "mixpix = " << mixpix << endl;
-cout << "mixcel = " << mixcel << endl;
-cout << "vspan = " << mix_vspan[0] << ", " << mix_vspan[1] << endl;
-cerr << "vstep = " << mix_vstep << endl;
-cerr << "viter = " << mix_viter << endl;
+cout << "ctype = " << c_ctype_p[0] << " " << c_ctype_p[1];
+cout << "   crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl;
+cout << "mixpix, mixcel = " << mixpix << mixcel << endl;
+cout << "vspan = " << mix_vspan[0] << ", " << mix_vspan[1];
+cerr << "  vstep, viter = " << mix_vstep << ", " << mix_viter << endl;
 cout << "input world = " << mix_world[0] << ", " << mix_world[1] << endl;
 cout << "input pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
-cout << "crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl << endl;
 */
 
     int iret = wcsmix(c_ctype_p, wcs_p, mixpix, mixcel, mix_vspan, 
@@ -1420,8 +1424,9 @@ cout << "crval = " << c_crval_p[0] << " " << c_crval_p[1] << endl << endl;
 cerr << "iret = " << iret << endl;
 cout << "output world = " << mix_world[0] << ", " << mix_world[1] << endl;
 cout << "output pixel = " << mix_pixcrd[0] << ", " << mix_pixcrd[1] << endl;
-cout << "phi, theta=" << mix_phi << ", " << mix_theta << endl;
+cout << "phi, theta=" << mix_phi << ", " << mix_theta << endl << endl;
 */
+
     if (iret!=0) {
         errorMsg= "wcs wcsmix_error: ";
         errorMsg += wcsmix_errmsg[iret];
@@ -1764,12 +1769,13 @@ Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
 // axis (user may have removed a pixel axis in CoordinateSystem)
 // Use default value in this case
 
+   Float frac = 0.5;
    for (uInt i=0; i<2; i++) {
       fac = 1.0;
       if (i==0) fac = cosdec;
 //
       if (shape(i) > 0) { 
-         Int n2 = (shape(i) + Int(0.5*shape(i))) / 2;
+         Int n2 = (shape(i) + Int(frac*shape(i))) / 2;
          worldMin_p(i) = world(i) - abs(cdelt(i))*n2/fac;    
          worldMin_p(i) = max(worldMin_p(i), dwMin(i));
          worldMax_p(i) = world(i) + abs(cdelt(i))*n2/fac;
