@@ -222,11 +222,13 @@ static Int findSpectralAxis(const CoordinateSystem & coords);
 static void findSpectralAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
                              const CoordinateSystem & coords);
 
-// Find which pixel axes correspond to the DirectionCoordinate in the supplied coordinate
-// system and return this as a Vector. If there is no DirectionCoordinate in
-// the CoordinateSystem then return a Vector of zero length. Normally the
-// returned Vector will have a length of two.  
-static Vector<uInt> findDirectionAxes(const CoordinateSystem & coords);
+// Find which pixel axes correspond to the DirectionCoordinate in the 
+// supplied coordinate system and return this as a Vector. If there is no 
+// DirectionCoordinate in the CoordinateSystem then return a Vector of zero 
+// length. Normally the returned Vector will have a length of two.  
+// However, if the pixel axis has been removed, then the resultant
+// vector will take the value -1 for that axis.
+static Vector<Int> findDirectionAxes(const CoordinateSystem & coords);
 
 // Find which pixel axes correspond to the DirectionCoordinate in the supplied coordinate
 // system and return the most general description of where it is. If there is 
