@@ -105,12 +105,11 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   
   // We need to guess the memory use. For the moment, we'll assume
   // that about 5 scales will be used, giving about 32 TempLattices
-  // in all. We multiply by a priority number to bias some 
-  // to be in memory
+  // in all. Also we'll try not to take more that half of the memory
 
   // Ah, but when we are doing a mosaic, its actually worse than this!
   // So, we pass it in
-  itsMemoryMB=Double(AppInfo::memoryInMB())/32.0;
+  itsMemoryMB=Double(AppInfo::memoryInMB())/64.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
@@ -253,6 +252,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       os << "Scale " << scale+1 << ", peak of PSF " << maxPsfConvScales(scale)
 	 << " at "   << positionPeakPsfConvScales+1 << LogIO::POST;
     }
+    itsPsfConvScales[scale]->tempClose();
   }
 
 
@@ -285,7 +285,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
-  for (itsIteration=itsStartingIter; itsIteration < itsMaxNiter; itsIteration++) {
+  for (itsIteration=itsStartingIter; itsIteration < itsMaxNiter;
+       itsIteration++) {
 
 
     // Find the peak residual
@@ -299,7 +300,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
 
       if (itsMask) {
-	findMaxAbsMaskLattice(dirtySub, *(scaleMaskSubs[scale]), maxima(scale), posMaximum[scale]);
+	findMaxAbsMaskLattice(dirtySub, *(scaleMaskSubs[scale]),
+			      maxima(scale), posMaximum[scale]);
       } else {
 	findMaxAbsLattice(dirtySub, maxima(scale), posMaximum[scale]);
       }
@@ -313,6 +315,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
         strengthOptimum=maxima(scale);
 	positionOptimum=posMaximum[scale];
       }
+      itsDirtyConvScales[scale]->tempClose();
     }
 
     AlwaysAssert(optimumScale<nScalesToClean, AipsError);
@@ -386,6 +389,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 			       subRegionPsf, True);
       LatticeExpr<T> sub(dirtySub-scaleFactor*psfSub);
       dirtySub.copyData(sub);
+      itsDirtyConvScales[scale]->tempClose();
+      itsPsfConvScales[index(scale,optimumScale)]->tempClose();
     }
   }
   // End of iteration
@@ -594,7 +599,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     cWork.copyData(ppsExpr);
     LatticeFFT::cfft2d(cWork, False);
     itsPsfConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						 2*itsMemoryMB);
+						 itsMemoryMB);
     AlwaysAssert(itsPsfConvScales[scale], AipsError);
     LatticeExpr<T> realWork(real(cWork));
     itsPsfConvScales[scale]->copyData(realWork);
@@ -604,7 +609,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     cWork.copyData(dpsExpr);
     LatticeFFT::cfft2d(cWork, False);
     itsDirtyConvScales[scale] = new TempLattice<T>(itsDirty->shape(),
-						   4*itsMemoryMB);
+						   itsMemoryMB);
     AlwaysAssert(itsDirtyConvScales[scale], AipsError);
 
     LatticeExpr<T> realWork2(real(cWork));
@@ -620,10 +625,11 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
       cWork.copyData(ppsoExpr);
       LatticeFFT::cfft2d(cWork, False);
       itsPsfConvScales[index(scale,otherscale)] =
-	new TempLattice<T>(itsDirty->shape(), 4*itsMemoryMB);
+	new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
       AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
       LatticeExpr<T> realWork3(real(cWork));
       itsPsfConvScales[index(scale,otherscale)]->copyData(realWork3);
+      itsPsfConvScales[index(scale,otherscale)]->tempClose();
     }
   }
 
