@@ -31,9 +31,12 @@
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/SpectralModel.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ArrayQuantColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/TableMeasures/TableMeasDesc.h>
 #include <aips/TableMeasures/TableMeasRefDesc.h>
 #include <aips/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/TableQuantumDesc.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -59,12 +62,30 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Sort.h>
 #include <aips/Utilities/String.h>
+
+const String fluxName = "Flux";
+const String fluxUnitName = "Flux_Unit";
+const String fluxPolName = "Flux_Polarisation";
+const String fluxErrName = "Flux_Error";
+const String shapeName = "Shape";
+const String refDirName = "Reference_Direction";
+const String dirErrName = "Direction_Error";
+const String shapeParName = "Shape_Parameters";
+const String shapeErrName = "Shape_Error";
+const String spectrumName = "Spectrum_Shape";
+const String refFreqName = "Reference_Frequency";
+const String freqErrName = "Frequency_Error";
+const String spectParName = "Spectral_Parameters";
+const String spectErrName = "Spectral_Error";
+const String labelName = "Label";
+
 
 ComponentList::ComponentList()
   :itsList(),
@@ -101,15 +122,17 @@ ComponentList::ComponentList(const ComponentList& other)
 }
 
 ComponentList::~ComponentList() {
-  if ((itsROFlag == False) && (itsTable.isNull() == False))
+  if ((itsROFlag == False) && (itsTable.isNull() == False)) {
     writeTable();
+  }
   AlwaysAssert(ok(), AipsError);
 }
 
 ComponentList& ComponentList::operator=(const ComponentList& other){
   if (this != &other) {
-    if ((itsROFlag == False) && (itsTable.isNull() == False))
+    if ((itsROFlag == False) && (itsTable.isNull() == False)) {
       writeTable();
+    }
     itsList = other.itsList;
     itsNelements = other.itsNelements;
     itsTable = other.itsTable;
@@ -125,7 +148,8 @@ Bool ComponentList::isPhysical(const Vector<Int>& indices) const {
   DebugAssert(ok(), AipsError);
 // The static_casts are a workaround for an SGI compiler bug
   DebugAssert(allGE(static_cast<const Vector<Int> &>(indices), 0), AipsError);
-  DebugAssert(allLT(static_cast<const Vector<Int> &>(indices), static_cast<Int>(nelements())), AipsError);
+  DebugAssert(allLT(static_cast<const Vector<Int> &>(indices), 
+		    static_cast<Int>(nelements())), AipsError);
   Bool retVal = True;
   uInt c = indices.nelements();
   while (retVal && c > 0) {
@@ -616,26 +640,30 @@ Bool ComponentList::ok() const {
 void ComponentList::createTable(const String& fileName,
 				const Table::TableOption option) {
   // Build a default table description
-  TableDesc td("ComponentListDescription", "3", TableDesc::Scratch);  
+  TableDesc td("ComponentListDescription", "4", TableDesc::Scratch);  
   td.comment() = "A description of a component list";
   {
     {
       const ArrayColumnDesc<DComplex> 
-	fluxValCol("Flux", "Flux values", IPosition(1,4), ColumnDesc::Direct);
+	fluxValCol(fluxName, "Flux values", IPosition(1,4), ColumnDesc::Direct);
       td.addColumn(fluxValCol);
       const ScalarColumnDesc<String>
-	fluxUnitCol("Flux_Unit", "Flux units", ColumnDesc::Direct);
+	fluxUnitCol(fluxUnitName, "Flux units", ColumnDesc::Direct);
       td.addColumn(fluxUnitCol);
       const ScalarColumnDesc<String> 
-	fluxPolCol("Flux_Polarisation", "Flux polarisation representation", 
+	fluxPolCol(fluxPolName, "Flux polarisation representation", 
 		   ColumnDesc::Direct);
       td.addColumn(fluxPolCol);
+      const ArrayColumnDesc<DComplex> 
+ 	fluxErrCol(fluxErrName, "Flux errors", IPosition(1,4), 
+ 		   ColumnDesc::Direct);
+      td.addColumn(fluxErrCol);
     }
     {
       const ScalarColumnDesc<String> 
-	shapeCol("Shape", "Shape of the Component", ColumnDesc::Direct);
+	shapeCol(shapeName, "Shape of the Component", ColumnDesc::Direct);
       td.addColumn(shapeCol);
-      const String dirValColName = "Reference_Direction";
+      const String dirValColName = refDirName;
       const ArrayColumnDesc<Double> 
 	dirValCol(dirValColName, "Reference direction values",
 		  IPosition(1,2), ColumnDesc::Direct);
@@ -645,21 +673,41 @@ void ComponentList::createTable(const String& fileName,
 	dirRefCol(dirRefColName, "The reference direction frame", 
 		  ColumnDesc::Direct);
       td.addColumn(dirRefCol);
-      const TableMeasRefDesc dirRefTMCol(td, dirRefColName);
-      const TableMeasValueDesc dirValTMCol(td, dirValColName);
-      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
-      dirTMCol.write(td);
+      {
+	const TableMeasRefDesc dirRefTMCol(td, dirRefColName);
+	const TableMeasValueDesc dirValTMCol(td, dirValColName);
+	TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
+	dirTMCol.write(td);
+      }
+      const ArrayColumnDesc<Double>
+ 	dirErrCol(dirErrName, "Error in the reference direction values",
+ 		  IPosition(1,2), ColumnDesc::Direct);
+      td.addColumn(dirErrCol);
+      const String dirErrUnitName = "Direction_Error_Units";
+      const ArrayColumnDesc<String>
+	dirErrUnitCol(dirErrUnitName, "Units of the direction error", 
+		      IPosition(1,2), ColumnDesc::Direct);
+      td.addColumn(dirErrUnitCol);
+      {
+	TableQuantumDesc dirErrTMCol(td, dirErrName, dirErrUnitName);
+	dirErrTMCol.write(td);
+      }
+
       const ArrayColumnDesc<Double> 
-	shapeParmCol("Shape_Parameters",
+	shapeParmCol(shapeParName,
 		     "Parameters specific to the component shape", 1);
       td.addColumn(shapeParmCol);
+      const ArrayColumnDesc<Double> 
+	shapeErrCol(shapeErrName,
+		     "Error in the shape parameters", 1);
+      td.addColumn(shapeErrCol);
     }
     {
       const ScalarColumnDesc<String>
-	freqShapeCol("Spectrum_Shape", "Shape of the spectrum", 
+	freqShapeCol(spectrumName, "Shape of the spectrum", 
 		     ColumnDesc::Direct);
       td.addColumn (freqShapeCol);
-      const String freqValColName = "Reference_Frequency";
+      const String freqValColName = refFreqName;
       const ScalarColumnDesc<Double>
 	freqValCol(freqValColName, "The reference frequency values", 
 		   ColumnDesc::Direct);
@@ -669,18 +717,37 @@ void ComponentList::createTable(const String& fileName,
 	freqRefCol(freqRefColName, "The reference frequency frame", 
 		   ColumnDesc::Direct);
       td.addColumn(freqRefCol);
-      const TableMeasRefDesc freqRefTMCol(td, freqRefColName);
-      const TableMeasValueDesc freqValTMCol(td, freqValColName);
-      TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
-      freqTMCol.write(td);
+      {
+	const TableMeasRefDesc freqRefTMCol(td, freqRefColName);
+	const TableMeasValueDesc freqValTMCol(td, freqValColName);
+	TableMeasDesc<MFrequency> freqTMCol(freqValTMCol, freqRefTMCol);
+	freqTMCol.write(td);
+      }
+      const ScalarColumnDesc<Double> 
+ 	freqErrCol(freqErrName, "Error in the reference frequency",
+		   ColumnDesc::Direct);
+      td.addColumn(freqErrCol);
+      const String freqErrUnitName = "Frequency_Error_Units";
+      const ScalarColumnDesc<String>
+	freqErrUnitCol(freqErrUnitName, "Units of the frequency error", 
+		       ColumnDesc::Direct);
+      td.addColumn(freqErrUnitCol);
+      {
+	TableQuantumDesc freqErrTMCol(td, freqErrName, freqErrUnitName);
+	freqErrTMCol.write(td);
+      }
       const ArrayColumnDesc<Double> 
-	specParmCol("Spectral_Parameters", 
+	specParmCol(spectParName, 
 		    "Parameters specific to the components spectrum", 1);
       td.addColumn(specParmCol);
+      const ArrayColumnDesc<Double> 
+ 	specErrCol(spectErrName, 
+		   "Errors in the spectral parameters", 1);
+      td.addColumn(specErrCol);
     }
     {
       const ScalarColumnDesc<String> 
-	labelCol("Label", "An arbitrary label for the user",
+	labelCol(labelName, "An arbitrary label for the user",
 		 ColumnDesc::Direct);
       td.addColumn (labelCol);
     }
@@ -712,34 +779,88 @@ void ComponentList::writeTable() {
       itsTable.removeRow(rows);
     }
   }
-  ArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
-  ScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
-  ScalarColumn<String> fluxPolCol(itsTable, "Flux_Polarisation");
-  ScalarColumn<String> shapeCol(itsTable, "Shape");
-  MDirection::ScalarColumn dirCol(itsTable, "Reference_Direction");
-  ArrayColumn<Double> shapeParmCol(itsTable, "Shape_Parameters");
-  ScalarColumn<String> specShapeCol(itsTable, "Spectrum_Shape");
-  MFrequency::ScalarColumn freqCol(itsTable, "Reference_Frequency");
-  ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral_Parameters");
-  ScalarColumn<String> labelCol(itsTable, "Label");
-
+  ArrayColumn<DComplex> fluxValCol(itsTable, fluxName);
+  ScalarColumn<String> fluxUnitCol(itsTable, fluxUnitName);
+  ScalarColumn<String> fluxPolCol(itsTable, fluxPolName);
+  ScalarColumn<String> shapeCol(itsTable, shapeName);
+  MDirection::ScalarColumn dirCol(itsTable, refDirName);
+  ArrayColumn<Double> shapeParmCol(itsTable, shapeParName);
+  ScalarColumn<String> specShapeCol(itsTable, spectrumName);
+  MFrequency::ScalarColumn freqCol(itsTable, refFreqName);
+  ArrayColumn<Double> specShapeParmCol(itsTable, spectParName);
+  ScalarColumn<String> labelCol(itsTable, labelName);
+  ArrayColumn<DComplex> fluxErrCol;
+  ArrayQuantColumn<Double> dirErrCol;
+  ArrayColumn<Double> shapeErrCol;
+  ScalarQuantColumn<Double> freqErrCol;
+  ArrayColumn<Double> spectErrCol;
+  {
+    const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
+    if (!cds.isDefined(fluxErrName)) {
+      itsTable.addColumn
+	(ArrayColumnDesc<DComplex>(fluxErrName, "Flux errors", IPosition(1,4), 
+				   ColumnDesc::Direct));
+    }
+    fluxErrCol.attach(itsTable, fluxErrName);
+    if (!cds.isDefined(dirErrName)) {
+//       const ArrayColumnDesc<Double>
+//  	dirErrCol(dirErrName, "Error in the reference direction values",
+//  		  IPosition(1,2), ColumnDesc::Direct);
+//       itsTable.addColumn(dirErrCol);
+//       const String dirErrUnitName = "Direction_Error_Units";
+//       const ArrayColumnDesc<String>
+// 	dirErrUnitCol(dirErrUnitName, "Units of the direction error", 
+// 		      IPosition(1,2), ColumnDesc::Direct);
+//       itsTable.addColumn(dirErrUnitCol);
+//       {
+// 	TableQuantumDesc dirErrTMCol(td, dirErrName, dirErrUnitName);
+// 	dirErrTMCol.write(td);
+//       }
+    }
+    dirErrCol.attach(itsTable, dirErrName);
+    if (!cds.isDefined(shapeErrName)) {
+      itsTable.addColumn
+	(ArrayColumnDesc<Double>(shapeErrName,
+				 "Error in the shape parameters", 1));
+    }
+    shapeErrCol.attach(itsTable, shapeErrName);
+    if (!cds.isDefined(freqErrName)) {
+    }
+    freqErrCol.attach(itsTable, freqErrName);
+    if (!cds.isDefined(spectErrName)) {
+      itsTable.addColumn
+	(ArrayColumnDesc<Double>(spectErrName,
+				 "Error in the spectral parameters", 1));
+    }
+    spectErrCol.attach(itsTable, spectErrName);
+  }
+  
+  Vector<Quantum<Double> > dirErr(2);
   for (uInt i = 0; i < nelements(); i++) {
     {
-      fluxValCol.put(i, component(i).flux().value());
-      fluxUnitCol.put(i, component(i).flux().unit().getName());
-      fluxPolCol.put(i, ComponentType::name(component(i).flux().pol()));
+      const Flux<Double>& flux = component(i).flux();
+      fluxValCol.put(i, flux.value());
+      fluxUnitCol.put(i, flux.unit().getName());
+      fluxPolCol.put(i, ComponentType::name(flux.pol()));
+      fluxErrCol.put(i, flux.errors());
     }
     {
       const ComponentShape& compShape = component(i).shape();
       shapeCol.put(i, compShape.ident());
       dirCol.put(i, compShape.refDirection());
+      dirErr(0) = compShape.refDirectionErrorLat();
+      dirErr(1) = compShape.refDirectionErrorLong();
+      dirErrCol.put(i, dirErr);
       shapeParmCol.put(i, compShape.parameters());
+      shapeErrCol.put(i, compShape.errors());
     }
     {
       const SpectralModel& compSpectrum = component(i).spectrum();
       specShapeCol.put(i, compSpectrum.ident());
       freqCol.put(i, compSpectrum.refFrequency());
+      freqErrCol.put(i, compSpectrum.refFrequencyError());
       specShapeParmCol.put(i, compSpectrum.parameters());
+      spectErrCol.put(i, compSpectrum.errors());
     }
     {
       labelCol.put(i, component(i).label());
@@ -751,28 +872,49 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
   {
     if (readOnly) {
       AlwaysAssert(Table::isReadable(fileName), AipsError);
-//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Old);
-      //      itsTable = Table(fileName, Table::Old);
-      itsTable = Table(fileName, Table::Update);
+      itsTable = Table(fileName, Table::Old);
     }
     else {
       AlwaysAssert(Table::isWritable(fileName), AipsError);
-//       itsTable = Table(fileName, TableLock::PermanentLocking, Table::Update);
-      //      itsTable = Table(fileName, Table::Old);
-      itsTable = Table(fileName, Table::Update);
+      itsTable = Table(fileName, TableLock(TableLock::PermanentLocking),
+		       Table::Update);
     }
   }
-  const ROArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
-  const ROScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
-  const ROScalarColumn<String> fluxPolCol(itsTable, "Flux_Polarisation");
-  const ROScalarColumn<String> shapeCol(itsTable, "Shape");
-  const MDirection::ROScalarColumn dirCol(itsTable, "Reference_Direction");
-  const ROArrayColumn<Double> shapeParmCol(itsTable, "Shape_Parameters");
-  const ROScalarColumn<String> specShapeCol(itsTable, "Spectrum_Shape");
-  const MFrequency::ROScalarColumn freqCol(itsTable, "Reference_Frequency");
-  const ROArrayColumn<Double> specShapeParmCol(itsTable,
-					       "Spectral_Parameters");
-  const ROScalarColumn<String> labelCol(itsTable, "Label");
+  const ROArrayColumn<DComplex> fluxValCol(itsTable, fluxName);
+  const ROScalarColumn<String> fluxUnitCol(itsTable, fluxUnitName);
+  const ROScalarColumn<String> fluxPolCol(itsTable, fluxPolName);
+  const ROScalarColumn<String> shapeCol(itsTable, shapeName);
+  const MDirection::ROScalarColumn dirCol(itsTable, refDirName);
+  const ROArrayColumn<Double> shapeParmCol(itsTable, shapeParName);
+  const ROScalarColumn<String> specShapeCol(itsTable, spectrumName);
+  const MFrequency::ROScalarColumn freqCol(itsTable, refFreqName);
+  const ROArrayColumn<Double> spectralParmCol(itsTable,spectParName); 
+  const ROScalarColumn<String> labelCol(itsTable, labelName);
+
+  ROArrayColumn<DComplex> fluxErrCol;
+  ROArrayQuantColumn<Double> dirErrCol;
+  ROArrayColumn<Double> shapeErrCol;
+  ROScalarQuantColumn<Double> freqErrCol;
+  ROArrayColumn<Double> spectralErrCol;
+  {// Old componentlist tables may not have the error columns
+    const ColumnDescSet& cds=itsTable.tableDesc().columnDescSet();
+    if (cds.isDefined(fluxErrName)) {
+      fluxErrCol.attach(itsTable, fluxErrName);
+    }
+    if (cds.isDefined(dirErrName)) {
+      dirErrCol.attach(itsTable, dirErrName);
+    }
+    if (cds.isDefined(shapeErrName)) {
+      shapeErrCol.attach(itsTable, shapeErrName);
+    }
+    if (cds.isDefined(freqErrName)) {
+      freqErrCol.attach(itsTable, freqErrName);
+    }
+    if (cds.isDefined(spectErrName)) {
+      spectralErrCol.attach(itsTable, spectErrName);
+    }
+  }
+
   SkyComponent currentComp;
   const uInt nComp = fluxValCol.nrow();
   Vector<DComplex> compFlux(4);
@@ -780,11 +922,13 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
   String compName, compLabel, compFluxPol, compFluxUnit, compSpectrum;
   MDirection compDir;
   MFrequency compFreq;
+  Vector<Quantum<Double> > newDirErr(2);
+  Quantum<Double> newFreqErr;
   for (uInt i = 0; i < nComp; i++) {
     shapeCol.get(i, compName);
     specShapeCol.get(i, compSpectrum);
     currentComp = SkyComponent(ComponentType::shape(compName),
-			       ComponentType::spectralShape(compSpectrum));
+ 			       ComponentType::spectralShape(compSpectrum));
     {
       fluxValCol.get(i, compFlux);
       currentComp.flux().setValue(compFlux);
@@ -792,22 +936,41 @@ void ComponentList::readTable(const String& fileName, const Bool readOnly) {
       currentComp.flux().setUnit(compFluxUnit);
       fluxPolCol.get(i, compFluxPol); 
       currentComp.flux().setPol(ComponentType::polarisation(compFluxPol));
+      if (!fluxErrCol.isNull()) {
+	fluxErrCol.get(i, compFlux);
+	currentComp.flux().setErrors(compFlux(0), compFlux(1), 
+				     compFlux(2), compFlux(3));
+      }
     }
     {
-      dirCol.get(i, compDir);
       ComponentShape& compShape = currentComp.shape();
+      dirCol.get(i, compDir);
       compShape.setRefDirection(compDir);
-      shapeParms.resize(0);
-      shapeParmCol.get(i, shapeParms);
+      if (!dirErrCol.isNull()) {
+	dirErrCol.get(i, newDirErr);
+	compShape.setRefDirectionError(newDirErr(0), newDirErr(1));
+      }
+      shapeParmCol.get(i, shapeParms, True);
       compShape.setParameters(shapeParms);
+      if (!shapeErrCol.isNull()) {
+	shapeErrCol.get(i, shapeParms);
+	compShape.setErrors(shapeParms);
+      }
     }
     {
       freqCol.get(i, compFreq);
       SpectralModel& compSpectrum = currentComp.spectrum();
       compSpectrum.setRefFrequency(compFreq);
-      spectralParms.resize(0);
-      specShapeParmCol.get(i, spectralParms);
+      if (!freqErrCol.isNull()) {
+	freqErrCol.get(i, newFreqErr);
+	compSpectrum.setRefFrequencyError(newFreqErr);
+      }
+      spectralParmCol.get(i, spectralParms, True);
       compSpectrum.setParameters(spectralParms);
+      if (!spectralErrCol.isNull()) {
+	spectralErrCol.get(i, spectralParms);
+	compSpectrum.setErrors(spectralParms);
+      }
     }
     {
       labelCol.get(i, currentComp.label());
