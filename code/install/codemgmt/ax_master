@@ -1397,3 +1397,4 @@
 11 075 src rm trial/apps/ms/templates
 11 075 src mv trial/apps/image/image.g trial/implement/Images/image.g
 11 075 src mv trial/apps/image/image.help trial/implement/Images/image.help
+11 075 src mv trial/apps/image/image_meta.g trial/implement/Images/image_meta.g
