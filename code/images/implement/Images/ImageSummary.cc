@@ -200,7 +200,7 @@ Vector<String> ImageSummary<T>::axisUnits () const
    for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
       cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
       Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
-      units(pixelAxis) = cSys.worldAxisNames()(worldAxis);
+      units(pixelAxis) = cSys.worldAxisUnits()(worldAxis);
    }
    return units;
 }
