@@ -4299,3 +4299,4 @@
 14 192 sys rm libexec/dltplot.g
 14 192 sys rm libexec/pksstats.g
 14 192 sys rm libexec/tgplot.g
+14 206 src rm trial/apps/newdish/dish_itbrowser.g
