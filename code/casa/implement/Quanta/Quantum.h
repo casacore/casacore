@@ -199,7 +199,11 @@ typedef Quantum<Double> Quantity;
 //			value of myval expressed in canonical units
 //     </note>
 //   <li> getValue(Unit unit)	return the value (as converted to unit)
-//   <li> getUnit()		return the units (as a String) of the quantum
+//   <li> getUnit()		return the String part of the unit of the
+//				quantum (use getFullUnit if interested in
+//				the complete Unit, e.g. for re-use)
+//   <li> getFullUnit()	        return the complete unit of the Quantum (use
+//				getUnit() if interested in String part only)
 //   <li> setValue(Type val)	replace the value of the quantum with val,
 //				leaving the units the same
 //   <li> scale(Type val)	multiply the value (leaving units same) by the
@@ -278,136 +282,137 @@ typedef Quantum<Double> Quantity;
 // </todo>
 
 template <class Qtype> class Quantum : public QBase{
-//# Friends
-// Input, only quantity is supported now
+  //# Friends
+  // Input, only quantity is supported now
   friend istream& operator>> (istream &is, Quantity &ku);
-public:
-//# Constructors
-// Default constructor, generates '0'
-    Quantum();
-// Copy constructor
-    Quantum(const Quantum<Qtype> &other);
-// Construct undimensioned quantum (i.e. unit="")
-    Quantum(const Qtype &factor);
-// Construct dimensioned quantum (e.g. '1.23 km/Mpc')
-// <thrown>
-//   <li> AipsError if non-matching unit dimensions
-// </thrown>
-// <grp>
-    Quantum(const Qtype &factor, const Unit &s);
-// </grp>
-// Construct quantum with unit copied from existing quantum
-    Quantum(const Qtype &factor, const QBase &other);
-
-// Destructor
-    ~Quantum();
-
-//# Operators
-// Assignment (copy)
-    Quantum<Qtype> &operator=(const Quantum<Qtype> &other);
-
-
-// Unary operations
-// <group>
-    const Quantum<Qtype> &operator+() const;
-    Quantum<Qtype> operator-() const;
-// </group>
-
-// In place arithmetic functions: left hand side changed in place
-// <thrown>
-//   <li> AipsError if non-conforming units (+ and -)
-//   <li> AipsError if illegal result unit (* and /; programming error)
-// </thrown>
-// <group>
-    Quantum<Qtype> &operator+=(const Quantum<Qtype> &other);
-    Quantum<Qtype> &operator+=(const Qtype &other);
-    Quantum<Qtype> &operator-=(const Quantum<Qtype> &other);
-    Quantum<Qtype> &operator-=(const Qtype &other);
-    Quantum<Qtype> &operator*=(const Quantum<Qtype> &other);
-    Quantum<Qtype> &operator*=(const Qtype &other);
-    Quantum<Qtype> &operator/=(const Quantum<Qtype> &other);
-    Quantum<Qtype> &operator/=(const Qtype &other);
-// </group>
-
-// Arithmetic operators: return Quantum<T>
-// <thrown>
-//   <li> AipsError if non-conforming units (+ and -)
-// </thrown>
-// See <linkto group="QMath#Quantum mathematical operations">QMath</linkto> class for unequal argument types
-// <group>
-Quantum<Qtype> operator+(const Quantum<Qtype> &other) const;
-Quantum<Qtype> operator-(const Quantum<Qtype> &other) const;
-Quantum<Qtype> operator*(const Quantum<Qtype> &other) const;
-Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
-// </group>
-
-//# General member functions
-// Get value of quantum in current units (i.e. in units specified in quantum)
+ public:
+  //# Constructors
+  // Default constructor, generates '0'
+  Quantum();
+  // Copy constructor
+  Quantum(const Quantum<Qtype> &other);
+  // Construct undimensioned quantum (i.e. unit="")
+  Quantum(const Qtype &factor);
+  // Construct dimensioned quantum (e.g. '1.23 km/Mpc')
+  // <thrown>
+  //   <li> AipsError if non-matching unit dimensions
+  // </thrown>
   // <group>
-    const Qtype &getValue() const;
-    Qtype &getValue();
+  Quantum(const Qtype &factor, const Unit &s);
   // </group>
-// Get value in canonical base units
-    Qtype getBaseValue() const;
-// Get value in specified units
-    Qtype getValue(const Unit &other) const;
-// Get the full unit specification
-    virtual const Unit &getFullUnit() const;
+  // Construct quantum with unit copied from existing quantum
+  Quantum(const Qtype &factor, const QBase &other);
+  
+  // Destructor
+  ~Quantum();
 
-// Re-specify parts of a quantum
-// <group name="set value">
-// Scale ( i.e. multiply) the value of the Quantum without changing units
-    void scale(const Qtype &factor);
-// Set the value without changing units
-    void setValue(const Qtype &val);
-// Set the value and unit deduced from input string
+  //# Operators
+  // Assignment (copy)
+  Quantum<Qtype> &operator=(const Quantum<Qtype> &other);
+  
+  
+  // Unary operations
+  // <group>
+  const Quantum<Qtype> &operator+() const;
+  Quantum<Qtype> operator-() const;
+  // </group>
+  
+  // In place arithmetic functions: left hand side changed in place
+  // <thrown>
+  //   <li> AipsError if non-conforming units (+ and -)
+  //   <li> AipsError if illegal result unit (* and /; programming error)
+  // </thrown>
+  // <group>
+  Quantum<Qtype> &operator+=(const Quantum<Qtype> &other);
+  Quantum<Qtype> &operator+=(const Qtype &other);
+  Quantum<Qtype> &operator-=(const Quantum<Qtype> &other);
+  Quantum<Qtype> &operator-=(const Qtype &other);
+  Quantum<Qtype> &operator*=(const Quantum<Qtype> &other);
+  Quantum<Qtype> &operator*=(const Qtype &other);
+  Quantum<Qtype> &operator/=(const Quantum<Qtype> &other);
+  Quantum<Qtype> &operator/=(const Qtype &other);
+  // </group>
+  
+  // Arithmetic operators: return Quantum<T>
+  // <thrown>
+  //   <li> AipsError if non-conforming units (+ and -)
+  // </thrown>
+  // See <linkto group="QMath#Quantum mathematical operations">QMath</linkto> class for unequal argument types
+  // <group>
+  Quantum<Qtype> operator+(const Quantum<Qtype> &other) const;
+  Quantum<Qtype> operator-(const Quantum<Qtype> &other) const;
+  Quantum<Qtype> operator*(const Quantum<Qtype> &other) const;
+  Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
+  // </group>
+  
+  //# General member functions
+  // Get value of quantum in current units (i.e. in units specified in quantum)
+  // <group>
+  const Qtype &getValue() const;
+  Qtype &getValue();
+  // </group>
+  // Get value in canonical base units
+  Qtype getBaseValue() const;
+  // Get value in specified units
+  Qtype getValue(const Unit &other) const;
+  // Get the unit (as Unit) that is attached to the Quantum. (use getUnit() if
+  // interested in the String part only, e.g. for output)
+  virtual const Unit &getFullUnit() const;
+  
+  // Re-specify parts of a quantum
+  // <group name="set value">
+  // Scale ( i.e. multiply) the value of the Quantum without changing units
+  void scale(const Qtype &factor);
+  // Set the value without changing units
+  void setValue(const Qtype &val);
+  // Set the value and unit deduced from input string
   // <note role=caution> At the moment the implementation can only convert
   // scalars to the appropiate Quantum. If format for Array input defined,
   // it could easily be changed. In addition recognition of date/time/angle
   // still has to be added </note>
   // <group>
-    static Bool read(Quantity &res, const String &in);
-    static Bool read(Quantity &res, MUString &in);
+  static Bool read(Quantity &res, const String &in);
+  static Bool read(Quantity &res, MUString &in);
   // </group>
-// </group>
-
-// Check if of specified type
-    Bool check(const UnitVal &uv) const;
-
-// Assert correct kind
-// <thrown>
-//   <li> AipsError if non-conforming unit dimensions
-// </thrown>
-    void assert(const UnitVal &uv) const;
-
-// Return a Quantum converted to specified units
-// <group name="get">
-// Convert to canonical units
-    Quantum<Qtype> get() const;
-// Convert to specified units; any remainder will be expressed in canonical
-// units. E.g. conversion of Jy/pc into W/ly2 will result in W/ly2.m-1.s .
-// <thrown>
-//   <li> AipsError if illegal unit
-// </thrown>
-    Quantum<Qtype> get(const Unit &s) const;
-// Convert a Quantum to units from specified quantum (ibid example)
-    Quantum<Qtype> get(const Quantum<Qtype> &other) const;
-// </group>
-
-// Convert a Quantum to specified units
-// <group name="convert">
-// Convert to canonical units
-    void convert();
-// Convert to specified units; any remainder will be expressed in canonical
-// units. E.g. conversion of Jy/pc into W/ly2 will result in W/ly2.m-1.s .
-// <thrown>
-//   <li> AipsError if illegal unit
-// </thrown>
-    void convert(const Unit &s);
-// Convert a Quantum to units from specified quantum (ibid example)
-    void convert(const Quantum<Qtype> &other) ;
-// </group>
-// Get a copy of Quantum
+  // </group>
+  
+  // Check if of specified type
+  Bool check(const UnitVal &uv) const;
+  
+  // Assert correct kind
+  // <thrown>
+  //   <li> AipsError if non-conforming unit dimensions
+  // </thrown>
+  void assert(const UnitVal &uv) const;
+  
+  // Return a Quantum converted to specified units
+  // <group name="get">
+  // Convert to canonical units
+  Quantum<Qtype> get() const;
+  // Convert to specified units; any remainder will be expressed in canonical
+  // units. E.g. conversion of Jy/pc into W/ly2 will result in W/ly2.m-1.s .
+  // <thrown>
+  //   <li> AipsError if illegal unit
+  // </thrown>
+  Quantum<Qtype> get(const Unit &s) const;
+  // Convert a Quantum to units from specified quantum (ibid example)
+  Quantum<Qtype> get(const Quantum<Qtype> &other) const;
+  // </group>
+  
+  // Convert a Quantum to specified units
+  // <group name="convert">
+  // Convert to canonical units
+  void convert();
+  // Convert to specified units; any remainder will be expressed in canonical
+  // units. E.g. conversion of Jy/pc into W/ly2 will result in W/ly2.m-1.s .
+  // <thrown>
+  //   <li> AipsError if illegal unit
+  // </thrown>
+  void convert(const Unit &s);
+  // Convert a Quantum to units from specified quantum (ibid example)
+  void convert(const Quantum<Qtype> &other) ;
+  // </group>
+  // Get a copy of Quantum
   virtual QBase *clone() const;
   // Print a Quantum
   virtual void print(ostream &os) const;
@@ -416,10 +421,10 @@ Quantum<Qtype> operator/(const Quantum<Qtype> &other) const;
   virtual uInt type() const;
   static uInt myType();
   // </group>
-
+  
 private:
-//# Data members
-    Qtype qVal;
+  //# Data members
+  Qtype qVal;
 };
 
 

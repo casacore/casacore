@@ -77,55 +77,56 @@
 // </todo>
 
 class QBase {
-//# Friends
+  //# Friends
 
 public:
-//# Constructors
-// Default constructor, generates ""
-    QBase();
-// Copy constructor
-    QBase(const QBase &other);
-// Construct dimensioned QBase (e.g. 'km/Mpc')
-// <thrown>
-//   <li> AipsError if non-matching unit dimensions
-// </thrown>
-// <grp>
-    QBase(const Unit &s);
-// </grp>
-
-// Destructor
+  //# Constructors
+  // Default constructor, generates ""
+  QBase();
+  // Copy constructor
+  QBase(const QBase &other);
+  // Construct dimensioned QBase (e.g. 'km/Mpc')
+  // <thrown>
+  //   <li> AipsError if non-matching unit dimensions
+  // </thrown>
+  // <group>
+  QBase(const Unit &s);
+  // </group>
+  
+  // Destructor
   virtual ~QBase();
-
-//# Operators
-// Assignment (copy)
-    QBase &operator=(const QBase &other);
-
-//# Member functions
-// Get units of QBase
-// <group name="get">
-// Return the current units attached to QBase
-    const String &getUnit() const;
-// </group>
-
-// Re-specify parts of a QBase
-// <group name="set">
-// Set new unit, without changing value
-    void setUnit(const Unit &s);
-// Set new unit, copied from specified QBase, without changing value
-    void setUnit(const QBase &other);
-// </group>
-
-// Check for conformal matching units (e.g. dam and Mpc)
-// <group name="check">
-// Using specified units
-    Bool isConform(const Unit &s) const;
-// Using units specified in QBase
-    Bool isConform(const QBase &other) const;
-// </group>
-
+  
+  //# Operators
+  // Assignment (copy)
+  QBase &operator=(const QBase &other);
+  
+  //# Member functions
+  // Get units of QBase
+  // <group name="get">
+  // Return the string representation of the current units attached to QBase
+  const String &getUnit() const;
+  // </group>
+  
+  // Re-specify parts of a QBase
+  // <group name="set">
+  // Set new unit, without changing value
+  void setUnit(const Unit &s);
+  // Set new unit, copied from specified QBase, without changing value
+  void setUnit(const QBase &other);
+  // </group>
+  
+  // Check for conformal matching units (e.g. dam and Mpc)
+  // <group name="check">
+  // Using specified units
+  Bool isConform(const Unit &s) const;
+  // Using units specified in QBase
+  Bool isConform(const QBase &other) const;
+  // </group>
+  
   // Get a copy of Quantum
   virtual QBase *clone() const = 0;
-  // Get the full unit specification
+  // Get the unit attached to the Quantum (use getUnit() if only interested in
+  // the String part of the unit)
   virtual const Unit &getFullUnit() const = 0;
   // Print a Quantum
   virtual void print(ostream &os) const = 0;
@@ -133,10 +134,10 @@ public:
   // All should have:
   // static uInt myType();
   virtual uInt type() const = 0;
-
+  
 protected:
-//# Data members
-    Unit qUnit;
+  //# Data members
+  Unit qUnit;
 };
 
 //# Inline Implementations
