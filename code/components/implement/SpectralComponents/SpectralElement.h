@@ -49,7 +49,7 @@ class GlishRecord;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <ahlink module=Functionals>Functionals</ahlink> module
+//   <li> <linkto module=Functionals>Functionals</linkto> module
 //   <li> <linkto class=RecordInterface>RecordInterface</linkto> class
 // </prerequisite>
 //
@@ -63,8 +63,8 @@ class GlishRecord;
 // related lines (like a doublet or so).
 //
 // The element can be used in the
-// <ahlink class=SpectralFit>SpectralFit</ahlink> class and in the
-// <ahlink class=SpectralEstimate>SpectralEstimate</ahlink> class.
+// <linkto class=SpectralFit>SpectralFit</linkto> class and in the
+// <linkto class=SpectralEstimate>SpectralEstimate</linkto> class.
 //
 // The default type is a Gaussian, defined as:
 // <srcblock>
@@ -77,7 +77,7 @@ class GlishRecord;
 // </example>
 //
 // <motivation>
-// To have a contained fitting of spectral profiles to an observed spectrum
+// To have a container for fitting of spectral profiles to an observed spectrum
 // </motivation>
 //
 // <todo asof="2001/02/04">
