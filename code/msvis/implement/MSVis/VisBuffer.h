@@ -1,5 +1,5 @@
 //# VisBuffer.h: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,10 @@ public:
   // Assignment, looses synchronization with iterator: only use buffer for 
   // current iteration (or reattach)
   VisBuffer& operator=(const VisBuffer& vb);
+
+  // Assignment, optionally without copying the data across; with copy=True
+  // this is identical to normal assignment operator
+  VisBuffer& assign(const VisBuffer& vb, Bool copy=True);
 
   // subtraction: return the difference of the visibilities, flags of
   // this and other are or-ed. An exception is thrown if the number of
@@ -220,6 +224,12 @@ public:
 
   // Frequency average the buffer
   void freqAverage();
+
+  // Update coordinate info - useful for copied VisBuffers that need
+  // to retain some state for later reference.
+  // Presently this fills antenna, feed, field and spectralWindow ids, time,
+  // frequency and number of rows. Add more as needed.
+  void updateCoordInfo();
 
   // Set the visibility to a constant, note that this only changes the buffer,
   // no values are written back to tables from here.

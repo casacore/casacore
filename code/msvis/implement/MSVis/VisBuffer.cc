@@ -1,5 +1,5 @@
 //# VisBuffer.cc: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,13 +49,21 @@ This(this)
 VisBuffer& VisBuffer::operator=(const VisBuffer& other)
 {
   if (this!=&other) {
+    assign(other);
+  }
+  return *this;
+}
+
+VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
+{
+  if (this!=&other) {
     if (visIter_p!=static_cast<ROVisibilityIterator*>(0) && twoWayConnection_p) 
       visIter_p->detachVisBuffer(*this);
     visIter_p=other.visIter_p;
     twoWayConnection_p=False;
     if (visIter_p == static_cast<ROVisibilityIterator*>(0)) {
       validate();
-    } else {
+    } else if (copy) {
       nChannelOK_p=other.nChannelOK_p;
       nRowOK_p=other.nRowOK_p;
       channelOK_p=other.channelOK_p;
@@ -83,96 +91,100 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
       correctedVisCubeOK_p=other.correctedVisCubeOK_p;
       weightOK_p=other.weightOK_p;
       weightMatOK_p=other.weightMatOK_p;
+    } else {
+      invalidate();
     }
-    if (nChannelOK_p) nChannel_p=other.nChannel_p;
-    if (nRowOK_p) nRow_p=other.nRow_p;
-    if (channelOK_p) {
-      channel_p.resize(other.channel_p.nelements()); 
-      channel_p=other.channel_p;
-    }
-    if (ant1OK_p) {
-      antenna1_p.resize(other.antenna1_p.nelements()); 
-      antenna1_p=other.antenna1_p;
-    }
-    if (ant2OK_p) {
-      antenna2_p.resize(other.antenna2_p.nelements()); 
-      antenna2_p=other.antenna2_p;
-    }
-    if (corrTypeOK_p) {
-      corrType_p.resize(other.corrType_p.nelements()); 
-      corrType_p=other.corrType_p;
-    }
-    if (cjonesOK_p) {
-      cjones_p.resize(other.cjones_p.nelements()); 
-      cjones_p=other.cjones_p;
-    }
-    if (fieldIdOK_p) fieldId_p=other.fieldId_p;
-    if (flagOK_p) {
-      flag_p.resize(other.flag_p.shape()); 
-      flag_p=other.flag_p;
-    }
-    if (flagCubeOK_p) {
-      flagCube_p.resize(other.flagCube_p.shape()); 
-      flagCube_p=other.flagCube_p;
-    }
-    if (flagRowOK_p) {
-      flagRow_p.resize(other.flagRow_p.nelements());
-      flagRow_p=other.flagRow_p;
-    }
-    if (freqOK_p) {
-      frequency_p.resize(other.frequency_p.nelements()); 
-      frequency_p=other.frequency_p;
-    }
-    if (lsrFreqOK_p) {
-      lsrFrequency_p.resize(other.lsrFrequency_p.nelements()); 
-      lsrFrequency_p=other.lsrFrequency_p;
-    }
-    if (phaseCenterOK_p) phaseCenter_p=other.phaseCenter_p;
-    if (polFrameOK_p) polFrame_p=other.polFrame_p;
-    if (sigmaOK_p) {
-      sigma_p.resize(other.sigma_p.shape()); 
-      sigma_p=other.sigma_p;
-    }
-    if (spwOK_p) spectralWindow_p=other.spectralWindow_p;
-    if (timeOK_p) {
-      time_p.resize(other.time_p.nelements()); 
-      time_p=other.time_p;
-    }
-    if (uvwOK_p) {
-      uvw_p.resize(other.uvw_p.nelements()); 
-      uvw_p=other.uvw_p;
-    }
-    if (visOK_p) {
-      visibility_p.resize(other.visibility_p.shape());
-      visibility_p=other.visibility_p;
-    }
-    if (modelVisOK_p) {
-      modelVisibility_p.resize(other.modelVisibility_p.shape());
-      modelVisibility_p=other.modelVisibility_p;
-    }
-    if (correctedVisOK_p) {
-      correctedVisibility_p.resize(other.correctedVisibility_p.shape());
-      correctedVisibility_p=other.correctedVisibility_p;
-    }
-    if (visCubeOK_p) {
-      visCube_p.resize(other.visCube_p.shape());
-      visCube_p=other.visCube_p;
-    }
-    if (modelVisCubeOK_p) {
-      modelVisCube_p.resize(other.modelVisCube_p.shape());
-      modelVisCube_p=other.modelVisCube_p;
-    }
-    if (correctedVisCubeOK_p) {
-      correctedVisCube_p.resize(other.correctedVisCube_p.shape());
-      correctedVisCube_p=other.correctedVisCube_p;
-    }
-    if (weightOK_p) {
-      weight_p.resize(other.weight_p.nelements()); 
-      weight_p=other.weight_p;
-    }
-    if (weightMatOK_p) {
-      weightMat_p.resize(other.weightMat_p.shape()); 
-      weightMat_p=other.weightMat_p;
+    if (copy) {
+      if (nChannelOK_p) nChannel_p=other.nChannel_p;
+      if (nRowOK_p) nRow_p=other.nRow_p;
+      if (channelOK_p) {
+	channel_p.resize(other.channel_p.nelements()); 
+	channel_p=other.channel_p;
+      }
+      if (ant1OK_p) {
+	antenna1_p.resize(other.antenna1_p.nelements()); 
+	antenna1_p=other.antenna1_p;
+      }
+      if (ant2OK_p) {
+	antenna2_p.resize(other.antenna2_p.nelements()); 
+	antenna2_p=other.antenna2_p;
+      }
+      if (corrTypeOK_p) {
+	corrType_p.resize(other.corrType_p.nelements()); 
+	corrType_p=other.corrType_p;
+      }
+      if (cjonesOK_p) {
+	cjones_p.resize(other.cjones_p.nelements()); 
+	cjones_p=other.cjones_p;
+      }
+      if (fieldIdOK_p) fieldId_p=other.fieldId_p;
+      if (flagOK_p) {
+	flag_p.resize(other.flag_p.shape()); 
+	flag_p=other.flag_p;
+      }
+      if (flagCubeOK_p) {
+	flagCube_p.resize(other.flagCube_p.shape()); 
+	flagCube_p=other.flagCube_p;
+      }
+      if (flagRowOK_p) {
+	flagRow_p.resize(other.flagRow_p.nelements());
+	flagRow_p=other.flagRow_p;
+      }
+      if (freqOK_p) {
+	frequency_p.resize(other.frequency_p.nelements()); 
+	frequency_p=other.frequency_p;
+      }
+      if (lsrFreqOK_p) {
+	lsrFrequency_p.resize(other.lsrFrequency_p.nelements()); 
+	lsrFrequency_p=other.lsrFrequency_p;
+      }
+      if (phaseCenterOK_p) phaseCenter_p=other.phaseCenter_p;
+      if (polFrameOK_p) polFrame_p=other.polFrame_p;
+      if (sigmaOK_p) {
+	sigma_p.resize(other.sigma_p.shape()); 
+	sigma_p=other.sigma_p;
+      }
+      if (spwOK_p) spectralWindow_p=other.spectralWindow_p;
+      if (timeOK_p) {
+	time_p.resize(other.time_p.nelements()); 
+	time_p=other.time_p;
+      }
+      if (uvwOK_p) {
+	uvw_p.resize(other.uvw_p.nelements()); 
+	uvw_p=other.uvw_p;
+      }
+      if (visOK_p) {
+	visibility_p.resize(other.visibility_p.shape());
+	visibility_p=other.visibility_p;
+      }
+      if (modelVisOK_p) {
+	modelVisibility_p.resize(other.modelVisibility_p.shape());
+	modelVisibility_p=other.modelVisibility_p;
+      }
+      if (correctedVisOK_p) {
+	correctedVisibility_p.resize(other.correctedVisibility_p.shape());
+	correctedVisibility_p=other.correctedVisibility_p;
+      }
+      if (visCubeOK_p) {
+	visCube_p.resize(other.visCube_p.shape());
+	visCube_p=other.visCube_p;
+      }
+      if (modelVisCubeOK_p) {
+	modelVisCube_p.resize(other.modelVisCube_p.shape());
+	modelVisCube_p=other.modelVisCube_p;
+      }
+      if (correctedVisCubeOK_p) {
+	correctedVisCube_p.resize(other.correctedVisCube_p.shape());
+	correctedVisCube_p=other.correctedVisCube_p;
+      }
+      if (weightOK_p) {
+	weight_p.resize(other.weight_p.nelements()); 
+	weight_p=other.weight_p;
+      }
+      if (weightMatOK_p) {
+	weightMat_p.resize(other.weightMat_p.shape()); 
+	weightMat_p=other.weightMat_p;
+      }
     }
   }
   return *this;
@@ -262,6 +274,17 @@ void VisBuffer::freqAverage()
   flag_p.reference(newFlag);
   visibility_p.reference(newVisibility);
   frequency_p.resize(1); frequency_p(0)=newFrequency;
+}
+
+void VisBuffer::updateCoordInfo()
+{
+  antenna1();
+  antenna2();
+  fieldId();
+  spectralWindow();
+  time();
+  frequency();
+  nRow();
 }
 
 void VisBuffer::setVisCube(Complex c)
