@@ -28,7 +28,8 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: squiz [-c <category>] [-e|-E <expression>] [-F] [-p <package>] [file]
+# Usage: squiz [-c <category>] [-e|-E <expression>] [-F] [-p <package>] [-l]
+#              [file]
 #-----------------------------------------------------------------------------
 # squiz searches for AIPS++ source files and optionally searches for strings
 # inside the files it finds.  Wildcarding is allowed in the file specification
@@ -46,6 +47,8 @@
 #          Case-sensitive version of the -e option.
 #   -F     Do a case-sensitive search on the file specification rather than
 #          the default case-insensitive search.
+#   -l     List filenames that contain a pattern match; this is less verbose
+#          than the default behaviour.
 #   -p <package>
 #          Restrict the search to a particular package.  The default is to
 #          search all packages.
@@ -76,6 +79,7 @@
   EXPRESSION=""
   FILE=""
   FILECASE=0
+  LISTMATCH=0
   PACKAGE="*"
 
   while [ "$#" -gt 0 ]
@@ -115,6 +119,9 @@
      -F)
         FILECASE=1
         ;;
+     -l)
+        LISTMATCH=1
+        ;;
      -p*)
         case $1 in
         -p)
@@ -131,7 +138,7 @@
      -*)
         exec 1>&2
         echo ""
-        echo "Usage: squiz [-c <category>] [-e|-E <expression>] [-F]" \
+        echo "Usage: squiz [-c <category>] [-e|-E <expression>] [-F] [-l]" \
              "[-p <package>] [file]"
         exit 1
         ;;
@@ -209,13 +216,25 @@
      ;;
   esac
 
+# List filenames only?
+  ACTION="-print"
+  if [ $LISTMATCH -eq 1 ] ; then
+     if [ "$EXPRESSION" != "" ] ; then
+	GREP="$GREP -l"
+	ACTION=""
+     fi
+  fi
 
 # Do it.
   if [ "$EXPRESSION" = "" ]
   then
-     find $PACKAGE -type f -name "$FILE" -print
+     [ $LOGNAME = "pmurphy" ] && \
+      echo find $PACKAGE -type f -name "$FILE" $ACTION
+     find $PACKAGE -type f -name "$FILE" $ACTION
   else
-     find $PACKAGE -type f -name "$FILE" -print \
+     [ $LOGNAME = "pmurphy" ] && \
+      echo find $PACKAGE -type f -name "$FILE" $ACTION -exec $GREP "$EXPRESSION" {} \;
+     find $PACKAGE -type f -name "$FILE" $ACTION \
         -exec $GREP "$EXPRESSION" {} \;
   fi
 
