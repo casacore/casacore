@@ -35,7 +35,7 @@
 
 template <class T> class ImageInterface;
 template <class T> class Vector;
-template <class T> class ArrayLattice;
+template <class T> class PagedArray;
 class LogIO;
 class String;
 class IPosition;
@@ -740,8 +740,8 @@ private:
                      
 // Generate a mask based on pixel intensity inclusion or
 // exclusion ranges
-   void makeMask       (ArrayLattice<Bool>* pMask,
-                        const ArrayLattice<T>* pSmoothedImage);
+   void makeMask       (Lattice<Bool>* pMask,
+                        const Lattice<T>* pSmoothedImage);
                      
 // Generate the PSF
    Bool makePSF        (Array<T>& psf, 
@@ -800,7 +800,7 @@ private:
                         const Vector<T>& y);
 
 // Smooth an image   
-   Bool smoothImage    (ArrayLattice<T>* smoothedImage);
+   Bool smoothImage    (Lattice<T>* smoothedImage);
 
 
 // Determine the noise by fitting a Gaussian to a histogram 
