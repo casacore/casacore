@@ -229,8 +229,15 @@ public:
   // references to the dynamic memory is greater than one.  Copying is always
   // done if the constructor is given an argument of "readOnly = True".  
   // <note> The only copying done (if ever) is upon a call to 
-  // COWPtr<T>::rwRef().</note>
+  // COWPtr<T>::rwRef().
+  // </note>
+  // The <src>setReadOnly</src> function is the same as <src>set</src>, but
+  // forces <src>deleteIt=False</src> and <src>ReadOnly=True</src>. In
+  // that way a const object can also be safely referenced by COWPtr.
+  // <group>
   void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
+  void setReadOnly (const T *obj);
+  // </group>
 
   // return a const reference to the object.
   inline const T &ref() const;
@@ -262,6 +269,8 @@ protected:
   Bool const_p;
 };
 
+
+
 // Make our own default pointer - deleteIt==True by default, const_p==False
 template <class T> inline COWPtr<T>::COWPtr()
 :obj_p((T *)0, True), const_p(False)
@@ -285,6 +294,11 @@ inline COWPtr<T> &COWPtr<T>::operator=(const COWPtr<T> &other)
     const_p = other.const_p;
   }
   return *this;
+}
+
+template <class T> inline void COWPtr<T>::setReadOnly (const T *obj)
+{
+  set ((T*)obj, False, True);
 }
 
 template <class T> inline const T *COWPtr<T>::operator->() const
@@ -325,8 +339,3 @@ template <class T> inline Bool COWPtr<T>::isUnique() const
 
 
 #endif
-
-
-
-
-
