@@ -242,7 +242,7 @@ private:
   
   // Initialize part of the object and open/create the file.
   // It is used by doCreate and getFile.
-  void init (ByteIO::OpenOption aFileOption);
+  void init();
   
   // Read the shape at the given row.
   // This will cache the information in the StIndArray
