@@ -42,6 +42,7 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Utilities/Register.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/sstream.h>
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
