@@ -155,7 +155,7 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
 	noValue = True;
 	break;
       default:
-	throw(AipsError("FITSTable::reopen() - unknown keyword type"
+	throw(AipsError("FITSTablular::keywordsFromHDU() - unknown keyword type"
 			" (cannot happen!)"));
       }
       // Don't comment keywords without a value (e.g. END).
@@ -444,6 +444,15 @@ TableDesc FITSTabular::tableDesc(const FITSTabular &fitstabular)
 	}
     }
     return td;
+}
+
+FITSTable::FITSTable(uInt whichHDU, Bool allKeywords)
+    : hdu_nr_p(whichHDU), row_nr_p(-1), raw_table_p(0), io_p(0),
+      row_p(RecordInterface::Variable), allKeys_p(allKeywords),
+      nfields_p(0), row_fields_p(0), field_types_p(0), vatypes_p(0),
+      vaptr_p(0), va_p(0), theheap_p(0)
+{
+    isValid_p = False;
 }
 
 FITSTable::FITSTable(const String &fileName, uInt whichHDU, 
