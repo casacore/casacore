@@ -1,5 +1,5 @@
 //# OS.h: Classes for operating system services, and assorted other things
-//# Copyright (C) 1995,1996,1998,1999
+//# Copyright (C) 1995,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #if !defined (AIPS_OS_H)
-#define <AIPS_OS_H>
+#define AIPS_OS_H
 
 //# Includes
 #include <aips/OS/EnvVar.h>
