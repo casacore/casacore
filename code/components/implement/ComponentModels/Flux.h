@@ -1,5 +1,5 @@
 //# Flux.h:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -317,7 +317,7 @@ public:
   // </group>
 
   // Set/get the errors in the flux
-  // </group>
+  // <group>
   void setErrors(const NumericTraits<T>::ConjugateType& error0,
 		 const NumericTraits<T>::ConjugateType& error1,
 		 const NumericTraits<T>::ConjugateType& error2,
@@ -603,7 +603,7 @@ public:
   // </group>
 
   // Set/get the errors in the flux
-  // </group>
+  // <group>
   void setErrors(const NumericTraits<T>::ConjugateType& error0,
 		 const NumericTraits<T>::ConjugateType& error1,
 		 const NumericTraits<T>::ConjugateType& error2,
