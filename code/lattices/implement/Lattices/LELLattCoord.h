@@ -1,5 +1,5 @@
-//# LattCoord.h: The base letter class for lattice coordinates
-//# Copyright (C) 1998
+//# LELLattCoord.h: The base letter class for lattice coordinates in LEL
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,19 +25,22 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTCOORD_H)
-#define AIPS_LATTCOORD_H
+#if !defined(AIPS_LELLATTCOORD_H)
+#define AIPS_LELLATTCOORD_H
+
 
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
-class ImageCoord;
+class LELImageCoord;
+class LatticeExprNode;
+class LattRegionHolder;
 
 
 // <summary>
-// The base letter class for lattice coordinates.
+// The base letter class for lattice coordinates in LEL.
 // </summary>
 //
 // <use visibility=export>
@@ -47,16 +50,16 @@ class ImageCoord;
 //
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
-//   <li> <linkto class="LatticeCoordinates"> LatticeCoordinates</linkto>
+//   <li> <linkto class="LELCoordinates"> LELCoordinates</linkto>
 // </prerequisite>
 //
 // <synopsis>
 // This base class is the basic letter for the envelope class
-// <linkto class=LatticeCoordinates>LatticeCoordinates</linkto>.
+// <linkto class=LELCoordinates>LELCoordinates</linkto>.
 // It does not do anything, but makes it possible that derived classes
-// (like ImageCoord) implement their own behaviour.  LattCoord is
+// (like LELImageCoord) implement their own behaviour.  LELLattCoord is
 // not an abstract base class.  Thus it can be constructed and
-// used to return null LatticeCoordinate objects for Lattices that 
+// used to return null LELCoordinate objects for Lattices that 
 // don't have Coordinates (e.g. ArrayLattice, PagedArray)
 // </synopsis> 
 //
@@ -74,29 +77,34 @@ class ImageCoord;
 // </todo>
 
 
-class LattCoord
+class LELLattCoord
 {
 public:
-    LattCoord();
+    LELLattCoord();
 
-    // A virtual destructor is needed so that it will use the actual destructor
-    // in the derived class.
-    virtual ~LattCoord();
+    // A virtual destructor is needed so that it will use the actual
+    // destructor in the derived class.
+    virtual ~LELLattCoord();
 
     // Does the class have true coordinates?
     // <br>The default implementation returns False.
     virtual Bool hasCoordinates() const;
+
+    // Create a SubLattice for an expression node.
+    virtual LatticeExprNode makeSubLattice
+                                    (const LatticeExprNode& expr,
+				     const LattRegionHolder& region) const;
 
     // The name of the class.
     virtual String classname() const;
 
     // Check if the coordinates of this and that conform.
     // <br>The default implementation returns True.
-    virtual Bool conform (const LattCoord& other) const;
+    virtual Bool conform (const LELLattCoord& other) const;
 
     // Check if the coordinates of this and that image conform.
     // <br>The default implementation returns True.
-    virtual Bool doConform (const ImageCoord& other) const;
+    virtual Bool doConform (const LELImageCoord& other) const;
 };
 
 
