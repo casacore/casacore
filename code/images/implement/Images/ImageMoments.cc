@@ -1216,7 +1216,7 @@ void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
 //
          for (uInt i=0; i<shape.nelements(); i++) {
             pDataOut[i] = pDataIn[i];
-            if (pMaskIn[i]) pDataOut[i] = 0.0;
+            if (!pMaskIn[i]) pDataOut[i] = 0.0;
          }
          maskOut.putSlice(maskIn, outIter.position());         
 //
@@ -1506,55 +1506,55 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    Bool goodAxisUnits = ToBool(!momentAxisUnits.empty());
 
    if (moment == AVERAGE) {
-      suffix = ".MAverage";
+      suffix = ".average";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == INTEGRATED) {
-      suffix = ".MIntegrated";
+      suffix = ".integrated";
       temp = imageUnits.getName() + "." + momentAxisUnits;
       goodUnits = ToBool(goodImageUnits && goodAxisUnits);
    } else if (moment == WEIGHTED_MEAN_COORDINATE) {
-      suffix = ".MWeighted_Mean_Coord";
+      suffix = ".weighted_mean_coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == WEIGHTED_DISPERSION_COORDINATE) {
-      suffix = ".MWeighted_Dispersion_Coord";
+      suffix = ".weighted_dispersion_coord";
       temp = momentAxisUnits + "." + momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN) {
-      suffix = ".MMedian";
+      suffix = ".median";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == STANDARD_DEVIATION) {
-      suffix = ".MStandard_Deviation";
+      suffix = ".standard_deviation";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == RMS) {
-      suffix = ".MRms";
+      suffix = ".rms";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == ABS_MEAN_DEVIATION) {
-      suffix = ".MAbs_Mean_Dev";
+      suffix = ".abs_mean_dev";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MAXIMUM) {
-      suffix = ".MMaximum";
+      suffix = ".maximum";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MAXIMUM_COORDINATE) {
-      suffix = ".MMaximum_Coord";
+      suffix = ".maximum_Coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MINIMUM) {
-      suffix = ".MMinimum";
+      suffix = ".minimum";
       temp = imageUnits.getName();
       goodUnits = goodImageUnits;
    } else if (moment == MINIMUM_COORDINATE) {
-      suffix = ".MMinimum_Coord";
+      suffix = ".minimum_coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    } else if (moment == MEDIAN_COORDINATE) {
-      suffix = ".MMedian_Coord";
+      suffix = ".median_coord";
       temp = momentAxisUnits;
       goodUnits = goodAxisUnits;
    }
@@ -1655,9 +1655,7 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 // First copy input to output. We must replace masked pixels
 // by zeros.  We also set the output mask to the input mask
 
-   if (pInImage_p->isMasked()) {
-      copyAndZero(*pSmoothedImage, *pMask, *pInImage_p);
-   }
+   copyAndZero(*pSmoothedImage, *pMask, *pInImage_p);
 
 //
 // Make the mask known to the image
