@@ -26,17 +26,18 @@
 //# $Id$
 
 #include <trial/ComponentModels/ComponentShape.h>
-#include <trial/Measures/DOmeasures.h>
-#include <trial/Tasking/MeasureParameterAccessor.h>
-#include <trial/Tasking/ParameterSet.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <trial/Measures/DOmeasures.h>
+#include <trial/Tasking/MeasureParameterAccessor.h>
+#include <trial/Tasking/ParameterSet.h>
 
 ComponentShape::~ComponentShape() {
   DebugAssert(ok(), AipsError);
@@ -45,12 +46,6 @@ ComponentShape::~ComponentShape() {
 void ComponentShape::refDirection(MDirection & refDir) const {
   DebugAssert(ok(), AipsError);
   refDir = refDirection();
-}
-
-void ComponentShape::scale(Double & scaleFactor, const MDirection & direction, 
-			   const MVAngle & pixelSize) const {
-  DebugAssert(ok(), AipsError);
-  scaleFactor = scale(direction, pixelSize);
 }
 
 Bool ComponentShape::readDir(String & errorMessage,
@@ -72,6 +67,32 @@ Bool ComponentShape::addDir(String & errorMessage,
   gDirRecord.toRecord(dirRecord);
   record.defineRecord(RecordFieldId("direction"), dirRecord);
   return True;
+}
+
+ComponentType::Shape ComponentShape::getType(String & errorMessage,
+					     const RecordInterface & record) {
+  const String typeString("type");
+  if (!record.isDefined(typeString)) {
+    errorMessage += 
+      String("\nThe 'shape' record does not have a 'type' field.");
+    return ComponentType::UNKNOWN_SHAPE;
+  }
+  const RecordFieldId type(typeString);
+  if (record.shape(type) != IPosition(1,1)) {
+    errorMessage += String("\nThe 'type' field, in the shape record,") + 
+      String(" must have only 1 element");
+    return ComponentType::UNKNOWN_SHAPE;
+  }      
+  String typeVal;
+  try {
+    typeVal = record.asString(type);
+  }
+  catch (AipsError x) {
+    errorMessage += String("\nThe 'type' field, in the shape record,") + 
+      String(" must be a String");
+    return ComponentType::UNKNOWN_SHAPE;
+  } end_try;
+  return ComponentType::shape(typeVal);
 }
 
 // Local Variables: 
