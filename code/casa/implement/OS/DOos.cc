@@ -69,7 +69,7 @@ Vector<String> DOos::fileNames (const String& directoryName,
     String name = iter.name();
     if (name[0] != '.'  ||  all) {
       if (check) {
-	File file(name);
+	File file(directoryName + '/' + name);
 	if (checkType) {
 	  if (!(   (takeRegular && file.isRegular (follow))
 		|| (takeDirectory && file.isDirectory (follow))
