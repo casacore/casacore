@@ -6295,3 +6295,4 @@
 17 326 src rm nrao/apps/e2echromepipe/e2eforms.pl
 17 326 src rm nrao/apps/e2echromepipe/mysockd.cc
 17 334 src mv trial/implement/vector.h aips/implement/vector.h
+17 335 src rm aips/implement/stdlibmap.h
