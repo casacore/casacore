@@ -163,6 +163,9 @@ public:
   // Correct for one-based indexing if oneBased is True.
   Bool select(const GlishRecord& items, Bool oneBased=False);
 
+  // Select the MS based on the TaQL selection string
+  Bool select(const String& msSelect);
+
   // Return the data for the items requested, all returned values
   // will be arrays, the last dimension of these is the table row number.
   // The data arrays are normally 3D with axes: polarization, frequency, row.

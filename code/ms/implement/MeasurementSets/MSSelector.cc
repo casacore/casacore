@@ -47,6 +47,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableIter.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableParse.h>
 #include <aips/Utilities/GenSort.h>
 #include <trial/MeasurementSets/MSIter.h>
 #include <trial/MeasurementSets/MSRange.h>
@@ -536,6 +537,23 @@ Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
       break;
     }
   }
+  if (selms_p.nrow()==0) {
+    os << LogIO::WARN << " Selected Table is now empty - use selectinit"
+       << LogIO::POST;
+    return False;
+  }
+  return True;
+}
+
+Bool MSSelector::select(const String& msSelect)
+{
+  LogIO os;
+  // check that a selection was given
+  Int len = msSelect.length();
+  Int nspace = msSelect.freq(' ');
+  if (msSelect.empty() || nspace==len) return False;
+  String parseString="select from $1 where " + msSelect;
+  selms_p=tableCommand(parseString,selms_p);
   if (selms_p.nrow()==0) {
     os << LogIO::WARN << " Selected Table is now empty - use selectinit"
        << LogIO::POST;
