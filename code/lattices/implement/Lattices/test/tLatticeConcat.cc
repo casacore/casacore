@@ -97,13 +97,67 @@ int main() {
       im1.put(a1); im2.put(a2);
       makeMask(im1, True, True);
       makeMask(im2, False, True);
-
+      Lattice<Bool>& mask1 = im1.pixelMask();
+      mask1.set(True);
+      Lattice<Bool>& mask2 = im2.pixelMask();
+      mask2.set(False);
+//
+      {
+         cout << "tempClose/reopen/resync/flush" << endl;
+         LatticeConcat<Float> lc(0, True);
+         lc.setLattice(ml1);
+         lc.setLattice(im1);
+         lc.reopen();
+         lc.tempClose();
+         lc.tempClose(0);
+         lc.tempClose(1);
+         lc.reopen(0);
+         lc.reopen(1);
+         lc.tempClose();
+//
+         lc.resync();
+         lc.flush();
+//
+         IPosition outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==2, AipsError);
+         AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.pixelMask().isWritable()==False, AipsError);
+         AlwaysAssert(lc.pixelMask().shape()==outShape, AipsError);
+         AlwaysAssert(lc.axis()==0, AipsError);
+         AlwaysAssert(lc.nlattices()==2, AipsError);
+         Lattice<Bool>& pixelMask = lc.pixelMask();
+         check6(0, pixelMask, mask1, mask1);
+      }
+//
+      {
+         cout << "partly pixelMask" << endl;
+         LatticeConcat<Float> lc(0, True);
+         lc.setLattice(im2);
+         lc.setLattice(ml1);
+//
+         IPosition outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==2, AipsError);
+         AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.pixelMask().isWritable()==False, AipsError);
+         AlwaysAssert(lc.pixelMask().shape()==outShape, AipsError);
+         AlwaysAssert(lc.axis()==0, AipsError);
+         AlwaysAssert(lc.nlattices()==2, AipsError);
+         Lattice<Bool>& pixelMask = lc.pixelMask();
+         check6(0, pixelMask, mask2, mask1);
+      }
+//
       {
          cout << "Axis 0, ArrayLattices, no masks" << endl;
 
 // Concatenate along axis 0
 
-         LatticeConcat<Float> lc(0);
+         LatticeConcat<Float> lc(0, False);
          lc.setLattice(ml1);
          lc.setLattice(ml2);
 
@@ -114,6 +168,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
 
@@ -137,7 +192,7 @@ int main() {
 
 // Concatenate along axis 1
 
-         LatticeConcat<Float> lc (1);
+         LatticeConcat<Float> lc (1, True);
          lc.setLattice(ml1);
          lc.setLattice(ml2);
 
@@ -148,6 +203,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==1, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
 
@@ -183,6 +239,7 @@ int main() {
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(outShape(2)=2, AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
 
@@ -217,6 +274,9 @@ int main() {
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(outShape(2)=2, AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.pixelMask().isWritable()==True, AipsError);
+         AlwaysAssert(lc.pixelMask().shape()==outShape, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
 
@@ -229,7 +289,7 @@ int main() {
 // Do it
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
         
@@ -271,7 +331,7 @@ int main() {
 // Do it
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Now look at funny slices
 
@@ -345,8 +405,6 @@ int main() {
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==8, AipsError);
          AlwaysAssert(lc.isWritable(), AipsError);
-         AlwaysAssert(lc.isMaskWritable(), AipsError);
-         AlwaysAssert(im1.isMaskWritable(), AipsError);
 
 
 // Now look at funny slices
@@ -365,7 +423,7 @@ int main() {
             check4(sl, lc, tmp0);
 //
             Array<Bool> btmp0(sl.length()); btmp0.set(False);
-            lc.putMaskSlice(btmp0, sl.start(), sl.stride());
+            lc.pixelMask().putSlice(btmp0, sl.start(), sl.stride());
             check5(sl, lc, btmp0);
          }
          {
@@ -383,7 +441,7 @@ int main() {
             check4(sl, lc, tmp0);
 //
             Array<Bool> btmp0(sl.length()); btmp0.set(False);
-            lc.putMaskSlice(btmp0, sl.start(), sl.stride());
+            lc.pixelMask().putSlice(btmp0, sl.start(), sl.stride());
             check5(sl, lc, btmp0);
          }
          {
@@ -400,7 +458,7 @@ int main() {
             check4(sl, lc, tmp0);
 //
             Array<Bool> btmp0(sl.length()); btmp0.set(False);
-            lc.putMaskSlice(btmp0, sl.start(), sl.stride());
+            lc.pixelMask().putSlice(btmp0, sl.start(), sl.stride());
             check5(sl, lc, btmp0);
          }
          {
@@ -418,7 +476,7 @@ int main() {
             check4(sl, lc, tmp0);
 //
             Array<Bool> btmp0(sl.length()); btmp0.set(False);
-            lc.putMaskSlice(btmp0, sl.start(), sl.stride());
+            lc.pixelMask().putSlice(btmp0, sl.start(), sl.stride());
             check5(sl, lc, btmp0);
          }
       }
@@ -452,7 +510,7 @@ int main() {
 // Do it
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Check values
 
@@ -493,7 +551,7 @@ int main() {
 // Copy to output.
 
          ml3.copyData(lc);
-         ml3.putMask(lc.getMask());
+         ml3.pixelMask().put(lc.getMask());
 
 // Now look at funny slices
 
@@ -663,7 +721,7 @@ int main() {
          AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          Bool ok;
          try {
-            Lattice<Bool>& pixelMask = lc.pixelMask();
+            lc.pixelMask();
             ok = False;
          } catch (AipsError x) {
             ok = True;
@@ -677,11 +735,6 @@ int main() {
          lc.setLattice(im1);
          lc.setLattice(im2);
 //
-         Lattice<Bool>& mask1 = im1.pixelMask();
-         mask1.set(True);
-         Lattice<Bool>& mask2 = im2.pixelMask();
-         mask2.set(False);
-//
          AlwaysAssert(lc.hasPixelMask(), AipsError);
          Lattice<Bool>& pixelMask = lc.pixelMask();
          check6(0, pixelMask, mask1, mask2);
@@ -694,22 +747,25 @@ int main() {
          LatticeConcat<Float> lc (0);
          lc.setLattice(ml1);
          lc.setLattice(ml2);
-         AlwaysAssert(lc.lock(FileLocker::Read, 1), AipsError);
-         AlwaysAssert(lc.hasLock(FileLocker::Read), AipsError);
-         AlwaysAssert(lc.lock(FileLocker::Write, 1), AipsError);
-         AlwaysAssert(lc.hasLock(FileLocker::Write), AipsError);
+	 AlwaysAssert(lc.lock(FileLocker::Read, 1), AipsError);
+	 AlwaysAssert(lc.hasLock(FileLocker::Read), AipsError);
+	 AlwaysAssert(lc.lock(FileLocker::Write, 1), AipsError);
+	 AlwaysAssert(lc.hasLock(FileLocker::Write), AipsError);
 
-// ArrayLattices will return True for hasLock
+// ArrayLattices will always return True for hasLock
 
          lc.unlock();
+         AlwaysAssert(lc.hasLock(FileLocker::Read), AipsError);
+         AlwaysAssert(lc.hasLock(FileLocker::Write), AipsError);
 //
-         LatticeConcat<Float> lc2 (0);
+         LatticeConcat<Float> lc2 (0, False);
          lc2.setLattice(im1);
          lc2.setLattice(im2);
          AlwaysAssert(lc2.lock(FileLocker::Read, 1), AipsError);
          AlwaysAssert(lc2.hasLock(FileLocker::Read), AipsError);
          AlwaysAssert(lc2.lock(FileLocker::Write, 1), AipsError);
          AlwaysAssert(lc2.hasLock(FileLocker::Write), AipsError);
+//
          lc2.unlock();
          AlwaysAssert(!lc2.hasLock(FileLocker::Read), AipsError);
          AlwaysAssert(!lc2.hasLock(FileLocker::Write), AipsError);
@@ -900,9 +956,6 @@ void check6 (uInt axis, Lattice<Bool>& ml,
 
 
 void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
-{
-   LCPagedMask mask = LCPagedMask(RegionHandler::makeMask (im, "mask0"));
-   if (set) mask.set(maskValue);
-   im.defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
-   im.setDefaultMask("mask0");
+{  
+   im.makeMask ("mask0", True, True, set, maskValue);
 }
