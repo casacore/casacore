@@ -1575,6 +1575,14 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
       }   
    }
 
+
+// If no points make moments zero. Blank at a later date.
+
+   if (nPts==0) {
+      calcMoments = 0.0;
+      return;
+   }
+
     
 // Absolute deviations of I from mean needs an extra pass.
                
@@ -1705,7 +1713,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 // Automatic
 
       if (!getAutoGaussianFit (gaussPars, abcissa, data, doPlot, xLabel, yLabel, title)) {
-//         calcMoments = 0;
+         calcMoments = 0;
          return;
       }
    
@@ -1714,7 +1722,7 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
 // Interactive
    
       if (!getInterGaussianFit (gaussPars, abcissa, data, xLabel, yLabel, title)) {
-//         calcMoments = 0;
+         calcMoments = 0;
          return;
       }
    }
@@ -1913,6 +1921,14 @@ void ImageMoments<T>::doMomSm(Vector<T>& calcMoments,
    nPts = j;
 
 
+// If no points make moments zero. Blank at a later date.
+
+   if (nPts==0) {
+      calcMoments = 0.0;
+      return;
+   }
+
+
 // Absolute deviations of I from mean.  Requires a second pass
 
    Double sumAbsDev = 0.0;
@@ -2033,7 +2049,14 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
       }
    }
    nPts = window(1) - window(0) + 1;
-   
+
+
+// If no points make moments zero. Blank at a later date.
+
+   if (nPts==0) {
+      calcMoments = 0.0;
+      return;
+   }
 
 // Assign array for median.  
 
