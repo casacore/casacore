@@ -1,5 +1,5 @@
 //# Input.h: A simple command-line argument method for applications.
-//# Copyright (C) 1993,1994,1995,1999,2000
+//# Copyright (C) 1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Inputs/Param.h>
 #include <aips/Containers/List.h>
-#include <iostream.h>
-#include <fstream.h>
 #include <stdarg.h>
 
 template<class T> class Vector;
