@@ -31,9 +31,7 @@
 #include <aips/aips.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Images/WCRegion.h>
-#include <trial/Lattices/RegionType.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 class LCRegion;
@@ -175,25 +173,6 @@ class IPosition;
 // coordinates. 
 // </motivation>
 //
-// <note>
-//  In all the constructors, you have to specifiy which plane
-//  the polygon lies in.  You do this by specifying the *PIXEL AXES*
-//  (not the world axes) as this is the natural thing the user
-//  will want to specify.
-// </note>
-//
-// <note>
-//  For the constructors specifying the world values as simple doubles,
-//  it is *ASSUMED* that the units of those doubles are the same as
-//  the native units of the <src>CoordinateSystem</src> for each axis.
-// </note>
-//  
-// <note>
-//  World coordinates may be specified as absolute or offset.  If the
-//  latter, they are offset with respect to the reference pixel of
-//  the <src>CoordinateSystem</src>.
-//  </note>
-//
 // <todo asof="1998/05/20">
 // <li> 
 // </todo>
@@ -203,19 +182,29 @@ class WCPolygon : public WCRegion
 public:
     WCPolygon();
 
-   // Construct from two vectors of world coordinates 
-   // defining the polygon vertices.  
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the polygon vertices.  The world coordinate
+   // axes pertaining to the x and y vectors, respectively, are given
+   // in the vector <src>worldAxes</src>.   If <src>isOffset</src> is 
+   // True, then the world coordinates are offset relative to the 
+   // reference pixel of the  supplied <src>CoordinateSystem</src>.
    // <group>
-   WCPolygon(const Vector<Quantum<Double> >& x,
-             const Vector<Quantum<Double> >& y,
-             const Vector<uInt>& pixelAxes,
+   WCPolygon(const Vector<Double>& x,
+             const Vector<Double>& y,
+             const Vector<Int>& worldAxes,
              const CoordinateSystem& cSys,
-             const RegionType::AbsRelType absRel=RegionType::Abs);
+             const Bool isOffset=False);
+   WCPolygon(const Vector<Float>& x,
+             const Vector<Float>& y,
+             const Vector<Int>& worldAxes,
+             const CoordinateSystem& cSys,
+             const Bool isOffset=False);
    // </group>
 
-   // Construct from an <src>LCPolygon</src>. 
+   // Construct from an <src>LCPolygon</src>. You specify which world axes
+   // the polygon belongs to (x and then y)
    WCPolygon(const LCPolygon& polygon,
-             const Vector<uInt>& pixelAxes,
+             const Vector<Int>& worldAxes,
              const CoordinateSystem& cSys);
 
    // Copy constructor (reference semantics).
@@ -255,18 +244,12 @@ public:
 
 
 private:
-   Vector<Quantum<Double> > itsX;
-   Vector<Quantum<Double> > itsY;
-   Vector<uInt> itsPixelAxes;   
+   Vector<Double> itsXWC;
+   Vector<Double> itsYWC;
+   Vector<Int> itsWorldAxes;   // must be Int not uInt as no uInt in Glish
    CoordinateSystem itsCSys;
-   RegionType::AbsRelType itsAbsRel;
-   Bool itsNull;
+   Bool itsIsOffset;
 
-   void checkAxes (Vector<Int>& worldAxes,
-                   const Vector<uInt>& pixelAxes,
-                   const CoordinateSystem& cSys) const;
-
-   static void unitInit();
 };
 
 

@@ -35,165 +35,141 @@
 #include <trial/Lattices/LCPolygon.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
-#include <aips/Quanta/QLogical.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+
+//#include <iostream.h>
+
+
+// Force the compiler to know about these
+
+typedef Vector<String> gppBug_VectorString;
 
 
 WCPolygon::WCPolygon()
 //
 //Default constructor
 // 
-: itsNull(True)
+: itsIsOffset(False)
+{}
+
+WCPolygon::WCPolygon(const Vector<Double>& xWC,
+                     const Vector<Double>& yWC,
+                     const Vector<Int>& worldAxes,
+                     const CoordinateSystem& cSys,
+                     const Bool isOffset)
+//
+// Constructor from Double vectors
+// worldAxes is Int rather than uInt because there is
+// no unsigned integer in Glish. Therefore, when the 
+// axes are stored in a Record and converted to a GlishRecord
+// and then sent to Glish, they must be Int
+// 
+: itsXWC(xWC.copy()),
+  itsYWC(yWC.copy()),
+  itsWorldAxes(worldAxes.copy()),
+  itsCSys(cSys),
+  itsIsOffset(isOffset)
 {
-   unitInit();
+   AlwaysAssert (itsXWC.nelements() == itsYWC.nelements(), AipsError);
+   AlwaysAssert (itsWorldAxes.nelements() == 2, AipsError);
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(0) != itsWorldAxes(1), AipsError);
+   AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
+   AlwaysAssert (itsIsOffset == False, AipsError);
+  
 }
 
-WCPolygon::WCPolygon(const Vector<Quantum<Double> >& x,
-                     const Vector<Quantum<Double> >& y,
-                     const Vector<uInt>& pixelAxes,
+
+WCPolygon::WCPolygon(const Vector<Float>& xWC,
+                     const Vector<Float>& yWC,
+                     const Vector<Int>& worldAxes,
                      const CoordinateSystem& cSys,
-                     const RegionType::AbsRelType absRel)
-: itsX(x.copy()),
-  itsY(y.copy()),
-  itsPixelAxes(pixelAxes.copy()),
+                     const Bool isOffset)
+//
+// Constructor from Float vectors
+//
+: itsWorldAxes(worldAxes.copy()),
   itsCSys(cSys),
-  itsAbsRel(absRel),
-  itsNull(False)
-//
+  itsIsOffset(isOffset)
 {
-   AlwaysAssert (itsCSys.nPixelAxes() >= 2, AipsError);
-   AlwaysAssert (itsCSys.nWorldAxes() >= 2, AipsError);
-   String msg;
-//
-   if (itsX.nelements() != itsY.nelements()) {
-      msg = String("WCPolygon - the  X and Y vectors must be the same length");
-      throw (AipsError (msg));
-   }
-   if (itsX.nelements() < 3) {
-      msg = String("WCPolygon - you must give at least 3 vertices");
-      throw (AipsError (msg));
-   }
-   if (itsPixelAxes.nelements() != 2) {
-      msg = String("WCPolygon - you must give 2 pixel axes");
-      throw (AipsError (msg));
-   }
-   if (itsPixelAxes(0) > itsCSys.nPixelAxes()-1 ||
-       itsPixelAxes(1) > itsCSys.nPixelAxes()-1) {
-      msg = String("WCPolygon - the specified pixel axes are greater than") +
-            String("the number of pixel axes in the CoordinateSystem");
-      throw (AipsError (msg));
-   }
-   if (itsPixelAxes(0) == itsPixelAxes(1)) {
-      msg = String("WCPolygon - you have specified the same pixel axis twice !");
-      throw (AipsError (msg));
-   }
-   if (itsAbsRel != RegionType::Abs) {
-      throw (AipsError ("WCPolygon - cannot handle relative coordinates yet"));
-   }         
-//
-   unitInit();
-   Vector<Int> worldAxes;
-   checkAxes (worldAxes, itsPixelAxes, itsCSys);
+   AlwaysAssert (xWC.nelements() == yWC.nelements(), AipsError);
+   AlwaysAssert (itsWorldAxes.nelements() == 2, AipsError);
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(0) != itsWorldAxes(1), AipsError);
+   AlwaysAssert (itsIsOffset == False, AipsError);
 
-// Check units
+// Copy Float to double
 
-   Vector<String> units = cSys.worldAxisUnits();
-   Quantum<Double> tmp;
-   uInt i;
-//
-   for (i=0; i<itsX.nelements(); i++) {
-      tmp = itsX(i);
-      if (tmp.getFullUnit() != Unit(units(worldAxes(0)))) {
-         String error = 
-          "WCPolygon - units of X vector (" + tmp.getUnit() + 
-          ") inconsistent with units of CoordinateSystem (" +
-          units(worldAxes(0)) + ")";
-         throw (AipsError (error));
-      }
-   }
-//
-   for (i=0; i<itsY.nelements(); i++) {
-      tmp = itsY(i);
-      if (tmp.getFullUnit() != Unit(units(worldAxes(1)))) {
-         String error = 
-          "WCPolygon - units of Y vector (" + tmp.getUnit() + 
-          ") inconsistent with units of CoordinateSystem (" +
-          units(worldAxes(1)) + ")";
-         throw (AipsError (error));
-      }
+   itsXWC.resize(xWC.nelements());
+   itsYWC.resize(yWC.nelements());
+   for (uInt i=0; i<itsXWC.nelements(); i++) {
+      itsXWC(i) = Double(xWC(i));
+      itsYWC(i) = Double(yWC(i));
    }
 }
 
 
 WCPolygon::WCPolygon(const LCPolygon& polyLC,
-                     const Vector<uInt>& pixelAxes,
+                     const Vector<Int>& worldAxes,
                      const CoordinateSystem& cSys)
 //
 // Constructor from an LCPolygon
 //
-: itsPixelAxes(pixelAxes.copy()),
+: itsWorldAxes(worldAxes.copy()),
   itsCSys(cSys),
-  itsAbsRel(RegionType::Abs),
-  itsNull(False)
+  itsIsOffset(False)
 {
-   AlwaysAssert (itsCSys.nPixelAxes() >= 2, AipsError);
-   AlwaysAssert (itsCSys.nWorldAxes() >= 2, AipsError);
-   String msg;
-//
-   if (itsPixelAxes.nelements() != 2) {
-      msg = String("WCPolygon - you must give 2 pixel axes");
-      throw (AipsError (msg));
-   }
-   if (itsPixelAxes(0) > itsCSys.nPixelAxes()-1 ||
-       itsPixelAxes(1) > itsCSys.nPixelAxes()-1) {
-      msg = String("WCPolygon - the specified pixel axes are greater than") +
-            String("the number of pixel axes in the CoordinateSystem");
-      throw (AipsError (msg));
-   }
-   if (itsPixelAxes(0) == itsPixelAxes(1)) {
-      msg = String("WCPolygon - you have specified the same pixel axis twice !");
-      throw (AipsError (msg));
-   }
-   if (itsAbsRel != RegionType::Abs) {
-      throw (AipsError ("WCPolygon - cannot handle relative coordinates yet"));
-   }
-//
-   unitInit();
-   Vector<Int> worldAxes;
-   checkAxes (worldAxes, itsPixelAxes, itsCSys);
+   AlwaysAssert (worldAxes.nelements() == 2,AipsError);
+   AlwaysAssert (itsCSys.nPixelAxes() >= 2,AipsError);
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
 
 // Get polygon x and y 
 
    Vector<Float> x = polyLC.x();
    Vector<Float> y = polyLC.y();
-   itsX.resize(x.nelements());
-   itsY.resize(y.nelements());
+   itsXWC.resize(x.nelements());
+   itsYWC.resize(y.nelements());
+
+
+// Find pixel axes for the specified world axes
+
+   Int xPixelAxis = itsCSys.worldAxisToPixelAxis(worldAxes(0));
+   Int yPixelAxis = itsCSys.worldAxisToPixelAxis(worldAxes(1));
+   if (xPixelAxis == -1 || yPixelAxis==-1) {
+      throw (AipsError ("WCPolygon - the pixel axes correspoding to the given world axes have been removed"));
+   }
+
 
 // Create vectors for conversions
  
    Vector<Double> world(itsCSys.nWorldAxes());
-   Vector<Double> pixel(itsCSys.referencePixel().copy());
-   String xUnits = itsCSys.worldAxisUnits()(worldAxes(0));
-   String yUnits = itsCSys.worldAxisUnits()(worldAxes(1));
+   Vector<Double> pixel(itsCSys.referencePixel());
+
 
 // Convert to world
 
    for (uInt i=0; i<x.nelements(); i++) {
-      pixel(itsPixelAxes(0)) = x(i);
-      pixel(itsPixelAxes(1)) = y(i);
+      pixel(xPixelAxis) = x(i);
+      pixel(yPixelAxis) = y(i);
       if (!itsCSys.toWorld(world,pixel)) {
-
          throw (AipsError ("WCPolygon - Cannot convert LCPolygon vertices because "+cSys.errorMessage()));
       }
 
 // Assign world coordinates of polygon
  
-      itsX(i) = Quantum<Double>(world(worldAxes(0)), xUnits);
-      itsY(i) = Quantum<Double>(world(worldAxes(1)), yUnits);
+      itsXWC(i) = world(worldAxes(0));
+      itsYWC(i) = world(worldAxes(1));
    }
 }
 
@@ -209,12 +185,11 @@ WCPolygon::WCPolygon (const WCPolygon& that)
 //
 // Copy constructor (reference semantics)
 //
-: itsX(that.itsX),   
-  itsY(that.itsY),
-  itsPixelAxes(that.itsPixelAxes),
+: itsXWC(that.itsXWC),   
+  itsYWC(that.itsYWC),
+  itsWorldAxes(that.itsWorldAxes),
   itsCSys(that.itsCSys),             // This one makes a copy
-  itsAbsRel(that.itsAbsRel),
-  itsNull(that.itsNull)
+  itsIsOffset(that.itsIsOffset)
 {}
  
 WCPolygon& WCPolygon::operator= (const WCPolygon& that)
@@ -223,16 +198,15 @@ WCPolygon& WCPolygon::operator= (const WCPolygon& that)
 //
 {
    if (this != &that) {
-      itsX.resize(that.itsX.nelements());
-      itsY.resize(that.itsY.nelements());
-      itsPixelAxes.resize(that.itsPixelAxes.nelements());
+      itsXWC.resize(that.itsXWC.nelements());
+      itsYWC.resize(that.itsYWC.nelements());
+      itsWorldAxes.resize(that.itsWorldAxes.nelements());
 
-      itsX = that.itsX;
-      itsY = that.itsY;
-      itsPixelAxes = that.itsPixelAxes;
+      itsXWC = that.itsXWC;
+      itsYWC = that.itsYWC;
+      itsWorldAxes = that.itsWorldAxes;
       itsCSys = that.itsCSys;
-      itsAbsRel = that.itsAbsRel;
-      itsNull = that.itsNull;  
+      itsIsOffset = that.itsIsOffset;
     }
     return *this;
 }
@@ -249,19 +223,31 @@ Bool WCPolygon::operator== (const WCRegion& other) const
 
 // Check private data
 
-   if (itsAbsRel != that.itsAbsRel) return False;
-   if (itsNull != that.itsNull) return False;
-   if (itsX.nelements() != that.itsX.nelements()) return False;
-   if (itsY.nelements() != that.itsY.nelements()) return False;
-//
-   for (uInt i=0; i<itsX.nelements(); i++) {
-      if (itsX(i) != that.itsX(i)) return False;
-      if (itsY(i) != that.itsY(i)) return False;
+   if (itsIsOffset != that.itsIsOffset) return False;
+
+   if (itsXWC.nelements() != that.itsXWC.nelements()) return False;
+   if (itsYWC.nelements() != that.itsYWC.nelements()) return False;
+
+   Bool deleteX1, deleteY1;
+   Bool deleteX2, deleteY2;
+   const Double* pX1 = itsXWC.getStorage(deleteX1);
+   const Double* pY1 = itsYWC.getStorage(deleteY1);
+   const Double* pX2 = that.itsXWC.getStorage(deleteX2);
+   const Double* pY2 = that.itsYWC.getStorage(deleteY2);
+   for (uInt i=0; i<itsXWC.nelements(); i++) {
+      if (!near(pX1[i], pX2[i])) return False;
+      if (!near(pY1[i], pY2[i])) return False;
    }
-   if (itsPixelAxes.nelements() != that.itsPixelAxes.nelements()) return False;
-   for (i=0; i<itsPixelAxes.nelements(); i++) {
-      if (itsPixelAxes(i) != that.itsPixelAxes(i)) return False;
+   itsXWC.freeStorage(pX1, deleteX1);
+   itsYWC.freeStorage(pY1, deleteY1);
+   that.itsXWC.freeStorage(pX2, deleteX2);
+   that.itsYWC.freeStorage(pY2, deleteY2);
+ 
+   if (itsWorldAxes.nelements() != that.itsWorldAxes.nelements()) return False;
+   for (i=0; i<itsWorldAxes.nelements(); i++) {
+      if (itsWorldAxes(i) != that.itsWorldAxes(i)) return False;
    }
+
    if (!itsCSys.near(&(that.itsCSys))) return False;
 
    return True;
@@ -276,64 +262,12 @@ WCRegion* WCPolygon::cloneRegion() const
 
 TableRecord WCPolygon::toRecord(const String&) const
 {
-// Create record
-
    TableRecord rec;
    defineRecordFields(rec, className());  
-
-// Convert pixelAxes to Int from uInt because Glish
-// can't handle uInt.  Convert to 1-rel.
- 
-   Vector<Int> pAxes(itsPixelAxes.nelements());
-   for (uInt i=0; i<pAxes.nelements(); i++) pAxes(i) = Int(itsPixelAxes(i)) + 1;
-   rec.define("oneRel", True);
-   rec.define ("pixelAxes", pAxes);
-
-// Save polygon. Convert abspix to one rel
-
-   Int nX = Int(itsX.nelements());
-   Int nY = Int(itsY.nelements());
-   rec.define("nX", nX);
-   rec.define("nY", nY);
-   Quantum<Double> tmpQ;
-   Double tmpD;
-//
-   String error;
-   TableRecord rec2;
-   Int j;
-   for (j=0; j<nX; j++) {
-      tmpQ = itsX(j);
-      if (tmpQ.getUnit() == "pix") {
-         tmpD = tmpQ.getValue();
-         if (itsAbsRel == RegionType::Abs) tmpD += 1.0;  
-         tmpQ.setValue(tmpD);
-      }
-      QuantumHolder h(tmpQ);
-      ostrstream oss;
-      oss << j;
-      String num(oss);
-      if (!h.toRecord(error, rec2)) {
-         throw (AipsError ("WCPolygon::toRecord - could not save X vector because "+error));
-      }
-      rec.defineRecord("x"+num, rec2);
-   }
-   for (j=0; j<nY; j++) {
-      tmpQ = itsY(j);
-      if (tmpQ.getUnit() == "pix") {
-         tmpD = tmpQ.getValue();
-         if (itsAbsRel == RegionType::Abs) tmpD += 1.0;  
-         tmpQ.setValue(tmpD);
-      }
-      QuantumHolder h(tmpQ);
-      ostrstream oss;
-      oss << j;
-      String num(oss);
-      if (!h.toRecord(error, rec2)) {
-         throw (AipsError ("WCPolygon::toRecord - could not save Y vector because "+error));
-      }
-      rec.defineRecord("y"+num, rec2);
-   }
-   rec.define ("absrel", Int(itsAbsRel));
+   rec.define ("x", itsXWC);
+   rec.define ("y", itsYWC);
+   rec.define ("worldAxes", itsWorldAxes);
+   rec.define ("isOffset", itsIsOffset);
    if (!itsCSys.save(rec, "coordinates")) {
       throw (AipsError ("WCPolygon::toRecord: could not save Coordinate System"));
    }
@@ -344,75 +278,50 @@ TableRecord WCPolygon::toRecord(const String&) const
 
 WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
                                   const String&)
+//
+// The record is always stored by this class with
+// the field "worldAxes"   However, for the Glish function
+// wcpolygon, it is also useful to be able to specify the
+// axes as pixel axes (try and protect Glish users from the
+// distinction).  Thus, we allow a field "pixelAxes".
+// If this is present, we convert the pixel axes to world
+// axes before reconstituting the WCPolygon
+//
 {
-// Get CoordinateSystem
-
    CoordinateSystem* pCSys =  CoordinateSystem::restore(rec,"coordinates");
-
-// Get pixel axes and convert to uInt and zero rel.  
-
-   Vector<Int> pixelAxes = Vector<Int>(rec.asArrayInt ("pixelAxes"));
-   Vector<uInt> pixelAxes2(pixelAxes.nelements());
-   Bool oneRel = rec.asBool("oneRel");
-   RegionType::AbsRelType absRel = RegionType::AbsRelType(rec.asInt("absrel"));
-   for (uInt i=0; i<pixelAxes.nelements(); i++) pixelAxes2(i) = uInt(pixelAxes(i)) - 1;
+   if (rec.isDefined("worldAxes")) {
+      WCPolygon* pPoly = new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                                       Vector<Double>(rec.asArrayDouble ("y")),
+                                       Vector<Int>(rec.asArrayInt ("worldAxes")),
+                                       *pCSys, rec.asBool("isOffset"));
+      delete pCSys;
+      return pPoly;
+   } else if (rec.isDefined("pixelAxes")) {
 //
-   WCPolygon* pPoly = 0;
-   Int nX = rec.asInt("nX");
-   Int nY = rec.asInt("nY");
-   Vector<Quantum<Double> > x(nX);
-   Vector<Quantum<Double> > y(nY);
-   QuantumHolder h;
-   String error;
-   Double tmpD;
+// Convert pixel axes to world axes
 //
-   Int j;
-   for (j=0; j<nX; j++) {
-      ostrstream oss;
-      oss << j;
-      String num(oss);
-      const RecordInterface& subRecord = rec.asRecord("x"+num);
-      if (!h.fromRecord(error, subRecord)) {
-         throw (AipsError ("WCPolygon::fromRecord - could not recover X vector because "+error));
-      }
-      x(j) = h.asQuantumDouble();
-
-// Convert from 1-rel to 0-rel for absolute pixel units
-
-      if (oneRel) {     
-         if (x(j).getUnit() == "pix") {
-            tmpD = x(j).getValue();
-            if (absRel == RegionType::Abs) tmpD -= 1.0;
-            x(j).setValue(tmpD);   
+      Vector<Int> worldAxes(pCSys->nWorldAxes());
+      Vector<Int> pixelAxes = Vector<Int>(rec.asArrayInt ("pixelAxes"));
+      for (uInt i=0; i<pixelAxes.nelements(); i++) {
+         Int worldAxis = pCSys->pixelAxisToWorldAxis(pixelAxes(i));
+         if (worldAxis == -1) {
+            throw (AipsError ("WCPolygon::fromRecord - some of the pixel axes have no world axis"));
+         } else {
+            worldAxes(i) = worldAxis;
          }
+//
+// Return the WCPolygon
+// 
+         WCPolygon* pPoly = new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                                          Vector<Double>(rec.asArrayDouble ("y")),
+                                           worldAxes, *pCSys, rec.asBool("isOffset"));
+         delete pCSys;
+         return pPoly;
       }
+   } else {
+      throw (AipsError ("WCPolygon::fromRecord - record has neither worldAxes nor pixelAxes fields defined"));
    }
-   for (j=0; j<nY; j++) {
-      ostrstream oss;
-      oss << j;
-      String num(oss);
-      const RecordInterface& subRecord = rec.asRecord("y"+num);
-      if (!h.fromRecord(error, subRecord)) {
-         throw (AipsError ("WCPolygon::fromRecord - could not recover Y vector because "+error));
-      }
-      y(j) = h.asQuantumDouble();
-
-// Convert from 1-rel to 0-rel for absolute pixel units
-
-      if (oneRel) {     
-         if (y(j).getUnit() == "pix") {
-            tmpD = y(j).getValue();
-            if (absRel == RegionType::Abs) tmpD -= 1.0;
-            y(j).setValue(tmpD);   
-         }
-      }
-   }
-   for (j=0;j<Int(x.nelements());j++) {
-    cout << "x,y=" << x(j) << ", " << y(j) << endl;
-   }
-   pPoly = new WCPolygon(x, y, pixelAxes2, *pCSys, absRel);
-   delete pCSys;
-   return pPoly;
+   return 0;
 }
 
 
@@ -421,10 +330,10 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
 {
 
 // Make sure that we are not using a null Polygon 
+ 
+   AlwaysAssert (itsXWC.nelements() > 0, AipsError); 
+   AlwaysAssert (itsWorldAxes.nelements() > 0, AipsError); 
 
-   if (itsNull) {
-      throw (AipsError ("WCPolygon:toLCregion - this is a null WCPolygon object"));
-   }
 
 // Some checks.  The supplied CS must have at least two pixel axes,
 // although at this point we don't know if they are the right ones !
@@ -433,11 +342,6 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
    AlwaysAssert (cSys.nPixelAxes()>=2, AipsError);
    AlwaysAssert (cSys.nWorldAxes() > 0, AipsError);
 
-
-// Find the world axes corresponding to the construction pixel axes
-
-   Vector<Int> worldAxes;
-   checkAxes(worldAxes, itsPixelAxes, itsCSys);
 
 // Make a world axis map.  worldAxisMap(i) says where world axis i from
 // the construction CS is in the supplied CS.  worldAxisTranspose(i) is 
@@ -450,22 +354,21 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
       throw (AipsError ("WCPolygon::toLCregion: "+cSys.errorMessage()));
    }
 //   cout << "map=" << worldAxisMap.ac() << endl;
-   
-   if (worldAxisMap(worldAxes(0)) != -1 &&
-       worldAxisMap(worldAxes(1)) != -1) {
+
+   if (worldAxisMap(itsWorldAxes(0)) != -1 &&
+       worldAxisMap(itsWorldAxes(1)) != -1) {
 /*
       cout << "Construction world axes are "
-           << itsCSys.worldAxisNames()(worldAxes(0))
+           << itsCSys.worldAxisNames()(itsWorldAxes(0))
            << " and " 
-           << itsCSys.worldAxisNames()(worldAxes(1)) << endl;
+           << itsCSys.worldAxisNames()(itsWorldAxes(1)) << endl;
       cout << "Supplied polygon world axes are "
-           << cSys.worldAxisNames()(worldAxisMap(worldAxes(0)))
+           << cSys.worldAxisNames()(worldAxisMap(itsWorldAxes(0)))
            << " and " 
-           << cSys.worldAxisNames()(worldAxisMap(worldAxes(1))) << endl;
+           << cSys.worldAxisNames()(worldAxisMap(itsWorldAxes(1))) << endl;
 */
    } else {
-      throw (AipsError 
-        ("WCPolygon::toLCRegion: supplied CoordinateSystem does not contain needed world axes"));
+      throw (AipsError ("WCPolygon::toLCRegion: supplied CoordinateSystem does not contain needed world axes"));
    }
 
 
@@ -474,13 +377,14 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
 
    CoordinateSystem cSysTmp(cSys);
 
+
 // Assign indexers for output world->pixel conversion vectors
 // The world and pixel axes are not necessarily in the same order
 
-   uInt pXWC = worldAxisMap(worldAxes(0));
-   uInt pYWC = worldAxisMap(worldAxes(1));
-   Int  pXLC = cSysTmp.worldAxisToPixelAxis(pXWC);
-   Int  pYLC = cSysTmp.worldAxisToPixelAxis(pYWC);
+   uInt pXWC = worldAxisMap(itsWorldAxes(0));
+   uInt pYWC = worldAxisMap(itsWorldAxes(1));
+   Int  pXLC = cSys.worldAxisToPixelAxis(pXWC);
+   Int  pYLC = cSys.worldAxisToPixelAxis(pYWC);
    if (pXLC == -1 || pYLC == -1) {
       throw (AipsError ("WCPolygon::toLCRegion: could not find output pixel axes in supplied CoordinateSystem"));
    }
@@ -488,55 +392,49 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
 //   cout << "pXLC,pYLC=" << pXLC << ", " << pYLC << endl;
 
 
-// Get units
+// Set units
 
    Vector<String> units(cSysTmp.worldAxisUnits().copy());
-/*
-   units(pXWC) = itsCSys.worldAxisUnits()(worldAxes(0));
-   units(pYWC) = itsCSys.worldAxisUnits()(worldAxes(1));
+   units(pXWC) = itsCSys.worldAxisUnits()(itsWorldAxes(0));
+   units(pYWC) = itsCSys.worldAxisUnits()(itsWorldAxes(1));
    if (!cSysTmp.setWorldAxisUnits(units, True)) {
       throw (AipsError ("WCPolygon::toLCRegion: world axis units of CoordinateSystems do not conform"));
    }
-*/
+
 
 // Create vectors for conversion.  We must pad the world coordinates with the 
 // reference values for the other dimensions other than the polygon world axes
 
-   Vector<Double> xLC(itsX.nelements());
-   Vector<Double> yLC(itsY.nelements());
+   Vector<Double> xLC(itsXWC.nelements());
+   Vector<Double> yLC(itsYWC.nelements());
    Vector<Double> world(cSysTmp.referenceValue().copy());
    Vector<Double> pixel(cSysTmp.nPixelAxes());
+
 
 // Make the conversions to pixels with the supplied CS
 // for each polygon vertex.  
 
-   for (uInt i=0; i<itsX.nelements(); i++) {
-      world(pXWC) = itsX(i).getValue(units(worldAxes(0)));
-      world(pYWC) = itsY(i).getValue(units(worldAxes(1)));
+   for (uInt i=0; i<itsXWC.nelements(); i++) {
+      world(pXWC) = itsXWC(i);
+      world(pYWC) = itsYWC(i);
       if (!cSysTmp.toPixel(pixel, world)) {
          throw (AipsError ("WCPolygon::toLCRegion: "+cSysTmp.errorMessage()));
       }
 
 // Assign polygon pixel coordinates
 
-      if (itsX(i).getUnit() == "pix") {
-         xLC(i) = itsX(i).getValue();
-      } else {
-         xLC(i) = pixel(pXLC);
-      }
-      if (itsY(i).getUnit() == "pix") {
-         yLC(i) = itsY(i).getValue();
-      } else {
-         yLC(i) = pixel(pYLC);
-      }
+      xLC(i) = pixel(pXLC);
+      yLC(i) = pixel(pYLC);
    }
 
 
 // Return the LCPolygon.  The latticeShape axes are in one to one 
 // correspondence with the pixel axes corresponding to 
-// pixelAxes(0) and pixelAxes(1), respectively.
+// worldAxes(0) and worldAxes(1), respectively.
 
    return LCPolygon(xLC, yLC, latticeShape).cloneRegion();
+
+
 }
 
 
@@ -550,28 +448,4 @@ String WCPolygon::type() const
   return className();
 }
 
-
-void WCPolygon::checkAxes (Vector<Int>& worldAxes,
-                           const Vector<uInt>& pixelAxes,
-                           const CoordinateSystem& cSys) const
-{
-   worldAxes.resize(2);
-   worldAxes(0) = cSys.pixelAxisToWorldAxis(pixelAxes(0));
-   if (worldAxes(0) == -1) {
-      throw (AipsError ("WCPolygon::checkAxes - pixelAxes(0) has no corresponding world axis"));
-   }
-   worldAxes(1) = cSys.pixelAxisToWorldAxis(pixelAxes(1));
-   if (worldAxes(1) == -1) {
-      throw (AipsError ("WCPolygon::checkAxes - pixelAxes(1) has no corresponding world axis"));
-   }
-}
-
-void WCPolygon::unitInit() 
-{
-   static doneUnitInit = False;
-   if (!doneUnitInit) {
-      UnitMap::putUser("pix",UnitVal(1.0), "absolute pixel units");
-      doneUnitInit = True;
-   }
-}
 

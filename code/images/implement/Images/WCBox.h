@@ -31,9 +31,7 @@
 #include <aips/aips.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Images/WCRegion.h>
-#include <trial/Lattices/RegionType.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 class LCRegion;
@@ -57,7 +55,7 @@ class IPosition;
 // </prerequisite>
 //
 // <synopsis> 
-// The corners of the box are specified in world  coordinates, but the 
+// The corners of the box are given by world  coordinates, but the 
 // region enclosed by those corners is a box in lattice coordinates.
 // Thus, the volume enclosed does not follow world coordinate contours.
 //
@@ -76,7 +74,7 @@ class IPosition;
 //
 // During construction, the length of the world coordinate vectors may be
 // smaller than the number world axes in the supplied <src>CoordinateSystem</src>.
-// It is assumed that the units of the world coordinates are the same as those
+// It is that the units of the world coordinates are the same as those
 // encapsulated in the construction <src>CoordinateSystem</src> and in the same
 // order as specified (either intrinsically, or by the world axes 
 // specification vectors).
@@ -130,19 +128,19 @@ class IPosition;
 // <srcblock>
 // cSys = [ra, dec, freq];
 // cSys2 = [ra, dec];
-// blc = [,,];
-// trc = [,,];
+// blcWC = [,,];
+// trcWC = [,,];
 // shape = [,];
-// WCBox box(blc, trc, cSys);
+// WCBox box(blcWC, trcWC, cSys);
 // LCRegion* pR = box.toLCRegion(cSys2, shape);
 // </srcblock>
 // The resultant LCBox will have corners converted
 // according to
 // <srcblock>
-// blcLC(0) <- blc(0);
-// blcLC(1) <- blc(1);
-// trcLC(0) <- trc(0);
-// trcLC(1) <- trc(1);
+// blcLC(0) <- blcWC(0);
+// blcLC(1) <- blcWC(1);
+// trcLC(0) <- trcWC(0);
+// trcLC(1) <- trcWC(1);
 // </srcblock>
 // 
 // </example>
@@ -151,10 +149,10 @@ class IPosition;
 // <srcblock>
 // cSys = [ra, dec, freq];
 // cSys2 = [freq, stokes];
-// blc = [,,];
-// trc = [,,];
+// blcWC = [,,];
+// trcWC = [,,];
 // shape = [,];
-// WCBox box(blc, trc, cSys);
+// WCBox box(blcWC, trcWC, cSys);
 // LCRegion* pR = box.toLCRegion(cSys2, shape);
 // </srcblock>
 //
@@ -162,9 +160,9 @@ class IPosition;
 // according to
 //
 // <srcblock>
-// blcLC(0) <- blc(2);
+// blcLC(0) <- blcWC(2);
 // blcLC(1) = 0;
-// trcLC(0) <- trc(2);
+// trcLC(0) <- trcWC(2);
 // trcLC(1) = shape(1) - 1;
 // </srcblock>
 // 
@@ -174,10 +172,10 @@ class IPosition;
 // <srcblock>
 // cSys = [ra, dec];
 // cSys2 = [ra, dec, freq];
-// blc = [,];
-// trc = [,];
+// blcWC = [,];
+// trcWC = [,];
 // shape = [,,];
-// WCBox box(blc, trc, cSys);
+// WCBox box(blcWC, trcWC, cSys);
 // LCRegion* pR = box.toLCRegion(cSys2, shape);
 // </srcblock>
 //
@@ -185,11 +183,11 @@ class IPosition;
 // according to
 //
 // <srcblock>
-// blcLC(0) <- blc(0);
-// blcLC(1) <- blc(1);
+// blcLC(0) <- blcWC(0);
+// blcLC(1) <- blcWC(1);
 // blcLC(2) = 0l
-// trcLC(0) <- trc(0);
-// trcLC(1) <- trc(1);
+// trcLC(0) <- trcWC(0);
+// trcLC(1) <- trcWC(1);
 // trcLC(2) = shape(2)-1;
 // </srcblock>
 //
@@ -199,10 +197,10 @@ class IPosition;
 // <srcblock>
 // cSys = [ra, dec, freq];
 // cSys2 = [freq, ra, dec];
-// blc = [,,];
-// trc = [,,];
+// blcWC = [,,];
+// trcWC = [,,];
 // shape = [,,];
-// WCBox box(blc, trc, cSys);
+// WCBox box(blcWC, trcWC, cSys);
 // LCRegion* pR = box.toLCRegion(cSys2, shape);
 // </srcblock>
 //
@@ -210,12 +208,12 @@ class IPosition;
 // according to
 //
 // <srcblock>
-// blcLC(0) <- blc(2);
-// blcLC(1) <- blc(0);
-// blcLC(2) <- blc(1);
-// trcLC(0) <- trc(2);
-// trcLC(1) <- trc(0);
-// trcLC(2) <- trc(1);
+// blcLC(0) <- blcWC(2);
+// blcLC(1) <- blcWC(0);
+// blcLC(2) <- blcWC(1);
+// trcLC(0) <- trcWC(2);
+// trcLC(1) <- trcWC(0);
+// trcLC(2) <- trcWC(1);
 // </srcblock>
 //
 // </example>
@@ -229,10 +227,10 @@ class IPosition;
 // <srcblock>
 // cSys = [ra, dec, freq], [0, 1, 2];
 // cSys2 = [freq, ra, dec, stokes], [3, 0, 2, 1];
-// blc = [,,];
-// trc = [,,];
+// blcWC = [,,];
+// trcWC = [,,];
 // shape = [,,,];
-// WCBox box(blc, trc, cSys);
+// WCBox box(blcWC, trcWC, cSys);
 // LCRegion* pR = box.toLCRegion(cSys2, shape);
 // </srcblock>
 //
@@ -247,14 +245,14 @@ class IPosition;
 //
 // <srcblock>
 // blcLC(0) = 0
-// blcLC(1) <- blc(2);
-// blcLC(2) <- blc(1);
-// blcLC(3) <- blc(0);
+// blcLC(1) <- blcWC(2);
+// blcLC(2) <- blcWC(1);
+// blcLC(3) <- blcWC(0);
 // 
 // trcLC(0) = shape(0)-1;
-// trcLC(1) <- trc(2);
-// trcLC(2) <- trc(1);
-// trcLC(3) <- trc(0);
+// trcLC(1) <- trcWC(2);
+// trcLC(2) <- trcWC(1);
+// trcLC(3) <- trcWC(0);
 // </srcblock>
 // </example>
 //
@@ -263,53 +261,51 @@ class IPosition;
 // coordinates. 
 // </motivation>
 //
-// <note>
-//  In all of the constructors, the order of the specified world
-//  coordinates is that of the *PIXEL AXES* (not world axes) in the 
-//  <src>CoordinateSystem</src>.  This is the natural order for a user to want 
-//  to specify them in.
-// </note>
-//
-// <note>
-//  For the constructors specifying the world values as simple doubles,
-//  it is *ASSUMED* that the units of those doubles are the same as
-//  the native units of the <src>CoordinateSystem</src> for each axis.
-// </note>
-//  
-// <note>
-//  World coordinates may be specified as absolute or offset.  If the
-//  latter, they are offset with respect to the reference pixel of
-//  the <src>CoordinateSystem</src>.
-// </note>
 // <todo asof="1998/05/20">
-//   <li> Implement offset coordinates
+//   <li>
 // </todo>
 
 class WCBox : public WCRegion
 {
 public:
-   WCBox();
+    WCBox();
 
-   // Construct from vectors of world coordinates 
-   // defining the box corners.  It is assumed that the
-   // order of the values is in the order of the pixel axes.
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the box corners. 
+   // If  <src>isOffset</src> is True, then the world coordinates
+   // are offset relative to the reference pixel of the supplied 
+   // <src>CoordinateSystem</src>.  
    // <group>
-   WCBox(const Vector<Quantum<Double> >& blc,
-         const Vector<Quantum<Double> >& trc,
+   WCBox(const Vector<Double>& blcWC,
+         const Vector<Double>& trcWC,
          const CoordinateSystem& cSys,
-         const RegionType::AbsRelType absRel=RegionType::Abs);
+         const Bool isOffset=False);
+   WCBox(const Vector<Float>& blcWC,
+         const Vector<Float>& trcWC,
+         const CoordinateSystem& cSys,
+         const Bool isOffset=False);
    // </group>
 
-   // Construct from vectors of world coordinates 
-   // defining the box corners.   You specify the pixel 
-   // axis order of the world values.
+   // Construct from two vectors of world coordinates (absolute
+   // or offset) defining the box corners. 
+   // If  <src>isOffset</src> is True, then the world coordinates
+   // are offset relative to the reference pixel of the supplied 
+   // <src>CoordinateSystem</src>.  You specify which world axes in
+   // the <src>CoordinateSystem</src> the world coordinates 
+   // vectors refer to.
    // <group>
-   WCBox(const Vector<Quantum<Double> >& blc,
-         const Vector<Quantum<Double> >& trc,
-         const Vector<uInt>& blcPixelAxes,
-         const Vector<uInt>& trcPixelAxes,
+   WCBox(const Vector<Double>& blcWC,
+         const Vector<Double>& trcWC,
+         const Vector<uInt> blcWorldAxes,
+         const Vector<uInt> trcWorldAxes,
          const CoordinateSystem& cSys,
-         const RegionType::AbsRelType absRel=RegionType::Abs);
+         const Bool isOffset=False);
+   WCBox(const Vector<Float>& blcWC,
+         const Vector<Float>& trcWC,
+         const Vector<uInt> blcWorldAxes,
+         const Vector<uInt> trcWorldAxes,
+         const CoordinateSystem& cSys,
+         const Bool isOffset=False);
    // </group>
 
    // Construct from the bounding box of an  <src>LCRegion</src>.  
@@ -354,38 +350,23 @@ public:
  
 
 private:
-   Vector<Quantum<Double> > itsBlc;
-   Vector<Quantum<Double> > itsTrc;
-   Vector<uInt> itsBlcPixelAxes;
-   Vector<uInt> itsTrcPixelAxes;
+   Vector<Double> itsBlcWC;
+   Vector<Double> itsTrcWC;
+   Vector<uInt> itsBlcWorldAxes;
+   Vector<uInt> itsTrcWorldAxes;
    CoordinateSystem itsCSys;
-   RegionType::AbsRelType itsAbsRel;
+   Bool itsIsOffset;
    Bool itsNull;
-
-
-// Check units of quanta are consistent with CoordinateSystem
-   void checkUnits (Vector<uInt>& pixelAxes,
-                    const Vector<Quantum<Double> >& values,
-                    const CoordinateSystem& cSys);
-
-// Convert absolute pixel to relative
-   void convertPixel(Double& pixel,
-                     const RegionType::AbsRelType absRel,
-                     const Double refPix,
-                     const Int shape) const;
 
 // Convert world corners to floating pixels
    Bool setFloatingBox(Vector<Double>& blcLC,
                        Vector<Double>& trcLC,
-                       const Vector<Double>& blc,
-                       const Vector<Double>& trc,
+                       const Vector<Double>& blcWC,
+                       const Vector<Double>& trcWC,
                        CoordinateSystem& cSys,
                        const Vector<String>& blcUnits,
                        const Vector<String>& trcUnits,
-                       const RegionType::AbsRelType absRel) const;
-
-   static void unitInit();
-
+                       const Bool isOffset) const;
 
 };
 
