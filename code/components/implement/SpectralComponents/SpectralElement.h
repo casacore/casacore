@@ -173,7 +173,16 @@ class SpectralElement : public RecordTransformable {
   // </group>
   // Get all parameters
   void get(Vector<Double> &param) const;
-  // get error estimates of parameters
+  // Get amplitude error estimate
+  Double getAmplErr() const;
+  // Get center value error estimate
+  Double getCenterErr() const;
+  // Get the width error estimate
+  // <group>
+  Double getSigmaErr() const;
+  Double getFWHMErr() const;
+  // </group>
+  // Get error estimates of parameters
   void getError(Vector<Double> &err) const;
   // Get the degree of e.g. polynomial
   uInt getDegree() const;
@@ -209,13 +218,41 @@ class SpectralElement : public RecordTransformable {
   //   <li> AipsError if non GAUSSIAN
   //   <li> AipsError if sigma == 0.0
   // </thrown>
+  // <group>
   void setSigma(Double sigma);
+  void setFWHM(Double fwhm);
+  // </group>
   // </group>
   // Set degree
   // <thrown>
   //   <li> AipsError if non POLYNOMIAL
   // </thrown>
   void setDegree(uInt n);
+
+  // Set fixed parameters (True) or unset them (False)
+  // <thrown>
+  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
+  // </thrown>
+  // <group>
+  void fixAmpl(const Bool fix=True);
+  void fixCenter(const Bool fix=True);
+  void fixSigma(const Bool fix=True);
+  void fixFWHM(const Bool fix=True);
+  // Fix/unfix all in one go
+  void fix(const Vector<Bool> &fix);
+  // </group>
+
+  // Get the fix state[s]
+  // <thrown>
+  //   <li> AipsError if incorrect number of parameters (e.g. not 3 for GAUSSIAN)
+  // </thrown>
+  // <group>
+  Bool fixedAmpl() const;
+  Bool fixedCenter() const;
+  Bool fixedSigma() const;
+  Bool fixedFWHM() const;
+  const Vector<Bool> &fixed() const;
+  // </group>
 
   // Construct from record.  Must hold fields "type" (String) and 
   // "parameters" (Vector<Double>).  For type=GAUSSIAN, parameters
@@ -266,6 +303,9 @@ class SpectralElement : public RecordTransformable {
   Vector<Double> par_p;
   // The errors of the parameters
   Vector<Double> err_p;
+  // The indication if the parameter has to be fixed (True) or solved (False).
+  // Solved is the default.
+  Vector<Bool> fix_p;
 
   //# Member functions
   // Check if GAUSSIAN type
