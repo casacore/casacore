@@ -216,6 +216,7 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
       return False;
    }
 
+
 // Assign cursor axes.
 
    cursorAxes_p.resize(0);
@@ -227,6 +228,13 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
        
       cursorAxes_p.resize(pInImage_p->ndim());
       for (Int i=0; i<pInImage_p->ndim(); i++) cursorAxes_p(i) = i;
+   } else {
+      for (Int i=0; i<cursorAxes_p.nelements(); i++) {
+         if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > pInImage_p->ndim()-1) {
+            os_p << LogIO::SEVERE << "Invalid cursor axes" << LogIO::POST;
+            return False;
+         }
+      }
    }
 
 // Signal that we have changed the axes and need a new accumulaiton
@@ -468,13 +476,13 @@ Bool ImageStatistics<T>::display()
    Matrix<Float> ord(n1,NSTATS);
 
 
-// Iterate through storage image. The cursor may be of > 2 dimensions, but 
-// only the first (first display axis) and last (statistics) axes are of 
-// non-unit size, so it is effectively a matrix.  
+// Iterate through storage image by planes (first and last axis of storage image)
+// We discard degenerate axes but make sure we start discarding at axis=1 as axis 0
+// (of size n1) is only constrained to be n1 >= 1
 
    IPosition cursorShape(pStoreImage_p->ndim(),1);
    cursorShape(0) = pStoreImage_p->shape()(0);
-   cursorShape(pStoreImage_p->ndim()-1) = NACCUM;
+   cursorShape(pStoreImage_p->ndim()-1) = pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
    RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
 
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
@@ -482,7 +490,7 @@ Bool ImageStatistics<T>::display()
 // Convert accumulations to  mean, sigma, and rms. Make sure we do all 
 // calculations with double precision values. 
  
-      Matrix<Double> matrix(pixelIterator.matrixCursor());
+      Matrix<Double>  matrix(pixelIterator.cursor().nonDegenerate(1));
       for (Int i=0; i<n1; i++) {
          const Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
@@ -499,12 +507,12 @@ Bool ImageStatistics<T>::display()
       }
 
 
-// Extract the direct values from the cursor matrix into the plot matrix
+// Extract the direct (NPTS, SUM etc) values from the cursor matrix into the plot matrix
 // There is no easy way to do this other than as I have
 
       Int j;
       for (i=0; i<NACCUM; i++) {
-         for (j=0; j<n1; j++) ord(j,i) = pixelIterator.matrixCursor()(j,i);
+         for (j=0; j<n1; j++) ord(j,i) = matrix(j,i);
       }
 
 
@@ -744,7 +752,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
                                      const Array<T>& cursor)
 //
 // Main work routine which takes the data in the current cursor and
-// accumulates it into a storage or accumulation image at the appropriate
+// accumulate it into a storage or accumulation image at the appropriate
 // locations.  Thus it collapses all data on the cursor axes and accumulates
 // as a function of the display axes.
 //
@@ -1180,19 +1188,17 @@ Bool ImageStatistics<T>::generateStorageImage()
    Int nVirCursorIter;
 
    if (cursorAxes_p.nelements() == 1) {
+
+// Set TiledStepper for profiles.  There is no hangover possible with this navigator
+
       TiledStepper imageNavigator (pInImage_p->shape(), 
                                    pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
                                    cursorAxes_p(0));
 
 // Apply region and get shape of Lattice that we are iterating through
 
-//      imageNavigator.subSection(blc_p, trc_p);
-//      latticeShape = imageNavigator.subLatticeShape();
-// Temporary FUDGE
-
-      latticeShape = imageNavigator.latticeShape();
-      blc_p = 0;
-      trc_p = pInImage_p->shape() - 1;
+      imageNavigator.subSection(blc_p, trc_p);
+      latticeShape = imageNavigator.subLatticeShape();
 
 // Create the image iterator
 
@@ -1275,20 +1281,24 @@ Bool ImageStatistics<T>::generateStorageImage()
 
 // Iterate through image and accumulate statistical sums
 
-/*
-   Double min = Double(0);
-   Double max = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
-   ProgressMeter clock(min, max, String("Generate Storage Image"), String(""), 
-                       String(""), String(""), True, Int(max/20));
-   Double value = 0.0;
-*/
+
+   Double meterMax = Double(latticeShape.product())/Double(pPixelIterator->cursor().shape().product());
+   ProgressMeter clock(0.0, meterMax, String("Generate Storage Image"), String(""), 
+                       String(""), String(""), True, Int(meterMax/10));
+   Double meterValue = 0.0;
+
    os_p << LogIO::NORMAL << "Begin accumulation" << LogIO::POST;
    Int nIter =0;
    for (pPixelIterator->reset(); !pPixelIterator->atEnd(); (*pPixelIterator)++) {
+
+// Note that the cursor position reflects the full image (i.e. there
+// are no subsectioning offsets)
+
       accumulate (nIter, nVirCursorIter, pPixelIterator->position(), 
                   pPixelIterator->cursor());
-//      clock.update(value);
-//      value += 1.0;
+
+      clock.update(meterValue);
+      meterValue += 1.0;
    }  
    needStorageImage_p = False;     
    doneSomeGoodPoints_p = False;
@@ -1378,14 +1388,11 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    const Int oIWidth = max(5, logNMax);
    const Int oDWidth = 15;
    const Int oSWidth = 7;
-   const Int oPrec = 6;
-
 
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
 
    os_p.output().fill(' '); 
-   os_p.output().precision(oPrec);
    os_p.output().setf(ios::scientific, ios::floatfield);
    os_p.output().setf(ios::left, ios::adjustfield);
 
@@ -1397,14 +1404,14 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
       Vector<Double> pixels(1);
 
       for (j=1; j<nDisplayAxes; j++) {
-         pixels(0) = Double(locInImage(dPos)(j));
-         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
-                                     displayAxes_p(j), cursorAxes_p,
-                                     blc_p, trc_p, pixels, oPrec)) return False;
          Int worldAxis = 
             ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
-
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+         pixels(0) = Double(locInImage(dPos)(j));
+
+         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+                                     displayAxes_p(j), cursorAxes_p,
+                                     blc_p, trc_p, pixels, -1)) return False;
          os_p <<  ImageUtilities::shortAxisName(name)
               << " = " << locInImage(dPos)(j)+1 << " (" << sWorld(0) << ")";
          if (j < nDisplayAxes-1) os_p << ", ";
@@ -1412,6 +1419,18 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
    }
 
 
+// Find the width of the field into which we are going to write the coordinate value
+// of the first display axis.  Do this by formatting a dummy value.
+
+   Vector<String> sWorld(1);
+   Vector<Double> pixels(1);
+   pixels(0) = 1.0;
+   ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
+                              displayAxes_p(0), cursorAxes_p, 
+                              blc_p, trc_p, pixels, -1);
+   String cName = ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
+   Int oCWidth = max(cName.length(), sWorld(0).length()) + 1;
+   
 // Write headers
 
    os_p << endl;
@@ -1433,28 +1452,8 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
       len0 = 11;
    }
 
-// If the first display axis is a Stokes axis, then we list its value (in
-// column 2) non numerically (e.g. I or Q).  Thus we must find this out and
-// set the width of the field appropriately
 
-   const CoordinateSystem cSys = pInImage_p->coordinates();
-   Int coord, axisInCoordinate;
-   cSys.findPixelAxis (coord, axisInCoordinate, displayAxes_p(0));
-   Int width2;
-   if (cSys.type(coord) == Coordinate::STOKES) {
-      width2 = oSWidth;
-   } else {
-      width2 = oDWidth;
-   }
-
-// Now this is all getting rather ugly.  Width2 is not guarenteed to be wide enough 
-// to take the name of the first display axis.   The shortAxisNames function passes 
-// unknown types back as is so we have to make one more check and fiddle.
-
-   String temp = ImageUtilities::shortAxisName(pInImage_p->coordinates().worldAxisNames()(displayAxes_p(0)));
-   if (temp.length() > width2) width2 = temp.length() + 1;
-
-   os_p.output() << setw(width2) << temp;
+   os_p.output() << setw(oCWidth) << cName;
    os_p.output() << setw(oIWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    os_p.output() << setw(oDWidth) << "Mean"; 
@@ -1466,19 +1465,19 @@ Bool ImageStatistics<T>::listStats (const IPosition& dPos,
 
 // Convert pixel coordinates Vector of the first display axis to world coordinates
 
-   Vector<String> sWorld(n1);
-   Vector<Double> pixels(n1);
+   sWorld.resize(n1);
+   pixels.resize(n1);
    for (j=0; j<n1; j++) pixels(j) = Double(j)+blc_p(displayAxes_p(0));
    if (!ImageUtilities::pixToWorld(sWorld, pInImage_p->coordinates(),
                               displayAxes_p(0), cursorAxes_p, 
-                              blc_p, trc_p, pixels, oPrec)) return False;
+                              blc_p, trc_p, pixels, -1)) return False;
 
 
 // Write statistics to logger
 
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+blc_p(displayAxes_p(0))+1;
-      os_p.output() << setw(width2)   << sWorld(j);
+      os_p.output() << setw(oCWidth)   << sWorld(j);
       os_p.output() << setw(oIWidth)   << Int(stats.column(NPTS)(j)+0.1);
 
       if (Int(stats.column(NPTS)(j)+0.1) > 0) {
@@ -1843,14 +1842,14 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       Vector<Double> pixels(1);
 
       for (Int j=1; j<displayAxes_p.nelements(); j++) {
-         pixels(0) = Double(locInImage(dPos)(j));
-         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
-                                     displayAxes_p(j), cursorAxes_p,
-                                     blc_p, trc_p, pixels, 6)) return False;
          Int worldAxis = 
             ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), displayAxes_p(j));
          String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+         pixels(0) = Double(locInImage(dPos)(j));
 
+         if (!ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+                                     displayAxes_p(j), cursorAxes_p,
+                                     blc_p, trc_p, pixels, -1)) return False;
          oss << "  " << ImageUtilities::shortAxisName(name)
              << "=" << locInImage(dPos)(j)+1 << " (" << sWorld(0) << ")";
       }   
@@ -2146,18 +2145,18 @@ Bool ImageStatistics<T>::someGoodPoints ()
          return someGoodPointsValue_p;
       } else {
 
-// Iterate through storage image. The cursor may be of > 2 dimensions, but 
-// only the first (first display axis) and last (statistics) axes are of 
-// non-unit size, so it  is effectively a matrix.  
+// Iterate through storage image by planes (first and last axis of storage image)
+// We discard degenerate axes but make sure we start discarding at axis=1 as axis 0 
+// (of size n1) is only constrained to be n1 >= 1   
 
-
-         IPosition cursorShape = statsSliceShape();
+         IPosition cursorShape(pStoreImage_p->ndim(),1);
          const Int n1 = pStoreImage_p->shape()(0);
          cursorShape(0) = n1;
+         cursorShape(pStoreImage_p->ndim()-1) = pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
          RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
 
          for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-            Matrix<Double> matrix(pixelIterator.matrixCursor());
+            Matrix<Double>  matrix(pixelIterator.cursor().nonDegenerate(1));
             for (Int i=0; i<n1; i++) {
                if (Int(matrix(i,NPTS)+0.1) > 0) {
                   someGoodPointsValue_p = True;
