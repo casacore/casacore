@@ -42,7 +42,8 @@
 
 template<class T>
 RebinLattice<T>::RebinLattice ()
-: itsLatticePtr(0)
+: itsLatticePtr(0),
+  itsAllUnity(False)
 {}
 
 
@@ -105,6 +106,7 @@ RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other)
 //
     itsBin.resize(0);
     itsBin = other.itsBin;
+    itsAllUnity = other.itsAllUnity;
   }
   return *this;
 }
@@ -204,7 +206,8 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 // If we already have the result for this section don't get it again
 
    if (section==itsSlicer && itsData.nelements()>0) {
-      buffer.reference(itsData);
+//      buffer.reference(itsData);
+      buffer = itsData;
       return False;
    }
 
@@ -214,7 +217,8 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
    if (itsAllUnity) {
       isRef = getDataAndMask (itsData, itsMask, section);
       buffer.resize(itsData.shape());
-      buffer.reference(itsData);
+//      buffer.reference(itsData);
+      buffer = itsData;
    } else {
       Array<T> dataIn;
       Array<Bool> maskIn;
@@ -227,7 +231,9 @@ Bool RebinLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
       itsMask.resize(shapeOut);
 //
       bin (itsData, itsMask, dataIn, maskIn);
-      buffer.reference(itsData);
+//      buffer.reference(itsData);
+      buffer.resize(shapeOut);
+      buffer = itsData;
       isRef = False;
    }
 //
@@ -259,7 +265,8 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 // If we already have the result for this section don't get it again
 
    if (section==itsSlicer && itsMask.nelements()>0) {
-      buffer.reference(itsMask);
+//      buffer.reference(itsMask);
+      buffer = itsMask;
       return False;
    }
 //
@@ -269,7 +276,8 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
       if (itsAllUnity) {
          isRef = getDataAndMask (itsData, itsMask, section);
          buffer.resize(itsMask.shape());
-         buffer.reference(itsMask);
+//         buffer.reference(itsMask);
+         buffer = itsMask;
       } else {
 
 // Get input data
@@ -283,13 +291,17 @@ Bool RebinLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
          itsData.resize(shapeOut);
          itsMask.resize(shapeOut);
          bin (itsData, itsMask, dataIn, maskIn);
-         buffer.reference(itsMask);
+//         buffer.reference(itsMask);
+         buffer.resize(shapeOut);
+         buffer = itsMask;
          isRef = True;
       }
    } else {
        itsMask.resize(shapeOut);
        itsMask = True;
-       buffer.reference(itsMask);
+//       buffer.reference(itsMask);
+       buffer.resize(shapeOut);
+       buffer = itsMask;
        isRef = False;
    }
 //
