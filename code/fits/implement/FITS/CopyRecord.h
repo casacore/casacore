@@ -1,5 +1,5 @@
 //# CopyRecord.h: Copy all the fields from some Record to certain columns of a table.
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,6 +119,7 @@ private:
  
     // We could just hahve a TableColumn for scalars, but we'd need all of
     // the array types anyway.
+    PtrBlock<ScalarColumn<Bool> *> table_bool;
     PtrBlock<ScalarColumn<uChar> *> table_char;
     PtrBlock<ScalarColumn<Short> *> table_short;
     PtrBlock<ScalarColumn<Int> *> table_int;
@@ -127,6 +128,7 @@ private:
     PtrBlock<ScalarColumn<Complex> *> table_complex;
     PtrBlock<ScalarColumn<DComplex> *> table_dcomplex;
     PtrBlock<ScalarColumn<String> *> table_string;
+    PtrBlock<ArrayColumn<Bool> *> table_array_bool;
     PtrBlock<ArrayColumn<uChar> *> table_array_char;
     PtrBlock<ArrayColumn<Short> *> table_array_short;
     PtrBlock<ArrayColumn<Int> *> table_array_int;
@@ -136,6 +138,7 @@ private:
     PtrBlock<ArrayColumn<DComplex> *> table_array_dcomplex;
     PtrBlock<ArrayColumn<String> *> table_array_string;
  
+    Block<RORecordFieldPtr<Bool> > record_bool;
     Block<RORecordFieldPtr<uChar> > record_char;
     Block<RORecordFieldPtr<Short> > record_short;
     Block<RORecordFieldPtr<Int> > record_int;
@@ -144,6 +147,7 @@ private:
     Block<RORecordFieldPtr<Complex> > record_complex;
     Block<RORecordFieldPtr<DComplex> > record_dcomplex;
     Block<RORecordFieldPtr<String> > record_string;
+    Block<RORecordFieldPtr<Array<Bool> > > record_array_bool;
     Block<RORecordFieldPtr<Array<uChar> > > record_array_char;
     Block<RORecordFieldPtr<Array<Short> > > record_array_short;
     Block<RORecordFieldPtr<Array<Int> > > record_array_int;
@@ -189,6 +193,7 @@ private:
     CopyRecordToRecord(const CopyRecordToRecord &);
     CopyRecordToRecord &operator=(const CopyRecordToRecord &);
  
+    Block<RORecordFieldPtr<Bool> > in_record_bool;
     Block<RORecordFieldPtr<uChar> > in_record_char;
     Block<RORecordFieldPtr<Short> > in_record_short;
     Block<RORecordFieldPtr<Int> > in_record_int;
@@ -197,6 +202,7 @@ private:
     Block<RORecordFieldPtr<Complex> > in_record_complex;
     Block<RORecordFieldPtr<DComplex> > in_record_dcomplex;
     Block<RORecordFieldPtr<String> > in_record_string;
+    Block<RORecordFieldPtr<Array<Bool> > > in_record_array_bool;
     Block<RORecordFieldPtr<Array<uChar> > > in_record_array_char;
     Block<RORecordFieldPtr<Array<Short> > > in_record_array_short;
     Block<RORecordFieldPtr<Array<Int> > > in_record_array_int;
@@ -206,6 +212,7 @@ private:
     Block<RORecordFieldPtr<Array<DComplex> > > in_record_array_dcomplex;
     Block<RORecordFieldPtr<Array<String> > > in_record_array_string;
 
+    Block<RecordFieldPtr<Bool> > out_record_bool;
     Block<RecordFieldPtr<uChar> > out_record_char;
     Block<RecordFieldPtr<Short> > out_record_short;
     Block<RecordFieldPtr<Int> > out_record_int;
@@ -214,6 +221,7 @@ private:
     Block<RecordFieldPtr<Complex> > out_record_complex;
     Block<RecordFieldPtr<DComplex> > out_record_dcomplex;
     Block<RecordFieldPtr<String> > out_record_string;
+    Block<RecordFieldPtr<Array<Bool> > > out_record_array_bool;
     Block<RecordFieldPtr<Array<uChar> > > out_record_array_char;
     Block<RecordFieldPtr<Array<Short> > > out_record_array_short;
     Block<RecordFieldPtr<Array<Int> > > out_record_array_int;

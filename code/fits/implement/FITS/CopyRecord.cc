@@ -1,5 +1,5 @@
 //# CopyRecord.cc:  definition of CopyRecordToTable
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,6 +46,9 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
         counts[inputBuffer.description().type(i)]++;
     }
     uInt total = 0;
+    table_bool.resize(counts[TpBool]); record_bool.resize(counts[TpBool]);
+    total += counts[TpBool];
+ 
     table_char.resize(counts[TpUChar]); record_char.resize(counts[TpUChar]);
     total += counts[TpUChar];
  
@@ -74,10 +77,14 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
     record_string.resize(counts[TpString]);
     total += counts[TpString];
  
+    table_array_bool.resize(counts[TpArrayBool]);
+    record_array_bool.resize(counts[TpArrayBool]);
+    total += counts[TpArrayBool];
+ 
     table_array_char.resize(counts[TpArrayUChar]);
     record_array_char.resize(counts[TpArrayUChar]);
     total += counts[TpArrayUChar];
- 
+
     table_array_short.resize(counts[TpArrayShort]);
     record_array_short.resize(counts[TpArrayShort]);
     total += counts[TpArrayShort];
@@ -116,6 +123,12 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
     for (i=0; i < inputMap.nelements(); i++) {
         uInt which = where[inputBuffer.description().type(i)];
         switch(inputBuffer.description().type(i)) {
+         case TpBool:
+            record_bool[which].attachToRecord(inputBuffer, i);
+            table_bool[which] = new ScalarColumn<Bool>(outputTable,
+                                                       colnames(inputMap(i)));
+            AlwaysAssert(table_bool[which] != 0, AipsError);
+            break;
          case TpUChar:
             record_char[which].attachToRecord(inputBuffer, i);
             table_char[which] = new ScalarColumn<uChar>(outputTable,
@@ -163,6 +176,12 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
             table_string[which] = new ScalarColumn<String>(outputTable,
                                                        colnames(inputMap(i)));
             AlwaysAssert(table_string[which] != 0, AipsError);
+            break;
+        case TpArrayBool:
+            record_array_bool[which].attachToRecord(inputBuffer, i);
+            table_array_bool[which] = new ArrayColumn<Bool>(outputTable,
+						       colnames(inputMap(i)));
+            AlwaysAssert(table_array_bool[which] != 0, AipsError);
             break;
         case TpArrayUChar:
             record_array_char[which].attachToRecord(inputBuffer, i);
@@ -224,6 +243,11 @@ CopyRecordToTable::~CopyRecordToTable()
 {
     uInt i;
  
+    for (i=0; i < table_bool.nelements(); i++) {
+        delete table_bool[i];
+    }
+    table_bool.set((ScalarColumn<Bool>*)0);
+ 
     for (i=0; i < table_char.nelements(); i++) {
         delete table_char[i];
     }
@@ -263,6 +287,11 @@ CopyRecordToTable::~CopyRecordToTable()
         delete table_string[i];
     }
     table_string.set((ScalarColumn<String>*)0);
+ 
+    for (i=0; i < table_array_bool.nelements(); i++) {
+        delete table_array_bool[i];
+    }
+    table_array_bool.set((ArrayColumn<Bool>*)0);
  
     for (i=0; i < table_array_char.nelements(); i++) {
         delete table_array_char[i];
@@ -309,6 +338,10 @@ void CopyRecordToTable::copy(uInt rownr)
 {
     uInt i;
 
+    for (i=0; i < table_bool.nelements(); i++) {
+        table_bool[i]->put(rownr, *(record_bool[i]));
+    }
+ 
     for (i=0; i < table_char.nelements(); i++) {
         table_char[i]->put(rownr, *(record_char[i]));
     }
@@ -341,6 +374,10 @@ void CopyRecordToTable::copy(uInt rownr)
         table_string[i]->put(rownr, *(record_string[i]));
     }
   
+    for (i=0; i < table_array_bool.nelements(); i++) {
+        table_array_bool[i]->put(rownr, *(record_array_bool[i]));
+    }
+ 
     for (i=0; i < table_array_char.nelements(); i++) {
         table_array_char[i]->put(rownr, *(record_array_char[i]));
     }
@@ -391,6 +428,9 @@ void addRecordDesc(TableDesc &tableDescription,
         String colname = fullPrefix + recDesc.name(i);
         if (recDesc.isScalar(i)) {
             switch(recDesc.type(i)) {
+            case TpBool:
+                tableDescription.addColumn(ScalarColumnDesc<Bool>(colname));
+                break;
             case TpUChar:
                 tableDescription.addColumn(ScalarColumnDesc<uChar>(colname));
                 break;
@@ -423,6 +463,15 @@ void addRecordDesc(TableDesc &tableDescription,
 //            if (recDesc.shape(i) != varShape) options = ColumnDesc::Direct;
 	    if (recDesc.shape(i).product() != 0) options = ColumnDesc::Direct;
             switch(recDesc.type(i)) {
+            case TpArrayBool:
+		if (options != 0) {
+		    tableDescription.addColumn(ArrayColumnDesc<Bool>(colname,
+                             recDesc.shape(i), options));
+		} else {
+		    tableDescription.addColumn(ArrayColumnDesc<Bool>(colname,
+                             options));
+		}
+                break;
             case TpArrayUChar:
 		if (options != 0) {
 		    tableDescription.addColumn(ArrayColumnDesc<uChar>(colname,
@@ -516,6 +565,9 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
     uInt total = 0;
+    out_record_bool.resize(counts[TpBool]); in_record_bool.resize(counts[TpBool]);
+    total += counts[TpBool];
+ 
     out_record_char.resize(counts[TpUChar]); in_record_char.resize(counts[TpUChar]);
     total += counts[TpUChar];
  
@@ -543,6 +595,10 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
     out_record_string.resize(counts[TpString]);
     in_record_string.resize(counts[TpString]);
     total += counts[TpString];
+ 
+    out_record_array_bool.resize(counts[TpArrayBool]);
+    in_record_array_bool.resize(counts[TpArrayBool]);
+    total += counts[TpArrayBool];
  
     out_record_array_char.resize(counts[TpArrayUChar]);
     in_record_array_char.resize(counts[TpArrayUChar]);
@@ -583,6 +639,11 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
         if (inputMap(i) != -1) {
 	    uInt which = where[inputBuffer.description().type(i)];
 	    switch(inputBuffer.description().type(i)) {
+	    case TpBool:
+		in_record_bool[which].attachToRecord(inputBuffer, i);
+		out_record_bool[which].attachToRecord(outputBuffer,
+						      inputMap(i));
+		break;
 	    case TpUChar:
 		in_record_char[which].attachToRecord(inputBuffer, i);
 		out_record_char[which].attachToRecord(outputBuffer,
@@ -622,6 +683,11 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
 		in_record_string[which].attachToRecord(inputBuffer, i);
 		out_record_string[which].attachToRecord(outputBuffer,
 							inputMap(i));
+		break;
+	    case TpArrayBool:
+		in_record_array_bool[which].attachToRecord(inputBuffer, i);
+		out_record_array_bool[which].attachToRecord(outputBuffer,
+							    inputMap(i));
 		break;
 	    case TpArrayUChar:
 		in_record_array_char[which].attachToRecord(inputBuffer, i);
@@ -681,6 +747,10 @@ void CopyRecordToRecord::copy()
 {
     uInt i;
 
+    for (i=0; i < out_record_bool.nelements(); i++) {
+        *(out_record_bool[i]) = *(in_record_bool[i]);
+    }
+ 
     for (i=0; i < out_record_char.nelements(); i++) {
         *(out_record_char[i]) = *(in_record_char[i]);
     }
@@ -713,6 +783,10 @@ void CopyRecordToRecord::copy()
         *(out_record_string[i]) = *(in_record_string[i]);
     }
   
+    for (i=0; i < out_record_array_bool.nelements(); i++) {
+        *(out_record_array_bool[i]) = *(in_record_array_bool[i]);
+    }
+ 
     for (i=0; i < out_record_array_char.nelements(); i++) {
         *(out_record_array_char[i]) = *(in_record_array_char[i]);
     }
