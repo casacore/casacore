@@ -173,15 +173,19 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
 			    MaskedLattice<T>* maskLatPtr,
 			    Bool writableIfPossible)
 {
-  if (maskLatPtr == 0  ||  maskLatPtr->getRegionPtr() == 0) {
+  if (maskLatPtr == 0) {
     itsLatticePtr = latticePtr;
     itsMaskLatPtr = 0;
   } else {
     itsLatticePtr = maskLatPtr;
-    itsMaskLatPtr = maskLatPtr;
+    if (maskLatPtr->getRegionPtr() == 0) {
+      itsMaskLatPtr = 0;
+    } else {
+      itsMaskLatPtr = maskLatPtr;
+    }
   }
   itsWritable = writableIfPossible;
-  if (itsWritable  &&  latticePtr->isWritable()) {
+  if (itsWritable  &&  itsLatticePtr->isWritable()) {
     itsWritable = True;
   }
 }
