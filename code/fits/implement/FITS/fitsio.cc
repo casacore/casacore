@@ -444,7 +444,7 @@ found in name field.\n\tEnd of keywords assumed.");
 	        return (int)err_status;
 	}
 	item_size = FITS::fitssize(data_type);
-	int n = data_size / FitsRecSize; // compute number of records to skip
+	uInt n = data_size / FitsRecSize; // compute number of records to skip
 	if (data_size % FitsRecSize) 
 		n++;
 	if (n) {
@@ -536,7 +536,7 @@ found in name field.\n\tEnd of keywords assumed.");
 	item_size = FITS::fitssize(data_type);
 	curr_size = data_size;
         header_done = True;
-	if (data_size > 0) {
+	if (((uInt)data_size) > 0) {
 		curr = fin.read();
 		got_rec = True;
 		if (!curr) {
@@ -564,13 +564,13 @@ found in name field.\n\tEnd of keywords assumed.");
 	return 0;
 }
 
-int FitsInput::read_all(FITS::HDUType t, char *addr) { // read all data into addr
+uInt FitsInput::read_all(FITS::HDUType t, char *addr) { // read all data into addr
 	if (curr_size <= 0 || curr_size != data_size ||
 	    rec_type != FITS::HDURecord || t != hdu_type || (!header_done)) {
 		errmsg(BADOPER,"Illegal operation on FITS input");
 		return 0;
 	}
-	while (curr_size >= FitsRecSize) {
+	while (curr_size >= uInt(FitsRecSize)) {
 	    memcpy(addr,curr,FitsRecSize);
 	    addr += FitsRecSize;
 	    curr_size -= FitsRecSize;
@@ -604,7 +604,7 @@ int FitsInput::read(FITS::HDUType t, char *addr, int nb) {
 		read_header_rec();
 		return 0;
 	}
-	if (nb > curr_size)
+	if (uInt(nb) > curr_size)
 		nb = curr_size;
 	int n = nb;
 	if (bytepos == FitsRecSize) {
@@ -660,9 +660,9 @@ int FitsInput::skip(FITS::HDUType t, int nb) { // skip next nb bytes
 		read_header_rec();
 		return 0;
 	}
-	if (nb > curr_size)
+	if (uInt(nb) > curr_size)
 		nb = curr_size;
-	int n = nb;
+	uInt n = nb;
 	if (bytepos == FitsRecSize) {
 		curr = fin.read();
 	    	if (!curr) {
@@ -678,7 +678,7 @@ int FitsInput::skip(FITS::HDUType t, int nb) { // skip next nb bytes
 		bytepos = 0;
 	}
 	do {
-	    if (n <= (FitsRecSize - bytepos)) {
+	    if (n <= uInt(FitsRecSize - bytepos)) {
 	    	bytepos += n;
 	    	curr_size -= n;
 		n = 0;
@@ -714,7 +714,7 @@ void FitsInput::skip_all(FITS::HDUType t) { // skip all remaining data
 		return;
 	}
 	if (bytepos < FitsRecSize) {
-	    if ((FitsRecSize - bytepos) >= curr_size) {
+	    if (uInt(FitsRecSize - bytepos) >= curr_size) {
 		bytepos = FitsRecSize;
 		curr_size = 0;
 		read_header_rec();
@@ -811,7 +811,7 @@ int FitsOutput::write_all(FITS::HDUType t, char *addr, char pad) {
 	    errmsg(BADOPER,"Illegal operation -- incorrect HDU type");
 	    return -1;
 	}
-	while ((data_size - curr_size) >= FitsRecSize) {
+	while ((data_size - curr_size) >= uInt(FitsRecSize)) {
 	    memcpy(curr,addr,FitsRecSize);
 	    fout.write(curr);
 	    addr += FitsRecSize;
