@@ -262,19 +262,19 @@ void MCDirection::doConvert(MVDirection &in,
       break;
      
     case GAL_J2000:
-      in = MeasData::GALtoJ2000() * in;
+      measMath.applyGALtoJ2000(in);
       break;
       
     case GAL_B1950:
-      in = MeasData::GALtoB1950() * in;
+      measMath.applyGALtoB1950(in);
       break;
       
     case J2000_GAL:
-      in = MeasData::J2000toGAL() * in;
+      measMath.deapplyGALtoJ2000(in);
       break;
       
     case B1950_GAL:
-      in = MeasData::B1950toGAL() * in;
+      measMath.deapplyGALtoB1950(in);
       break;
       
     case J2000_B1950:
@@ -372,21 +372,11 @@ void MCDirection::doConvert(MVDirection &in,
     break;
     
     case HADEC_AZEL:
-      ((MCFrame *)(MDirection::Ref::framePosition(outref, inref).
-		   getMCFramePoint()))->
-	getLat(g1);
-    *ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2,
-			       C::pi, (uInt) 3));
-    in *= *ROTMAT1;
+      measMath.applyHADECtoAZEL(in);
     break;
     
     case AZEL_HADEC:
-      ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
-		   getMCFramePoint()))->
-	getLat(g1);
-    *ROTMAT1 = RotMatrix(Euler(C::pi_2-g1 ,(uInt) 2,
-			       C::pi, (uInt) 3));
-    in = *ROTMAT1 * in;
+      measMath.deapplyHADECtoAZEL(in);
     break;
     
     case HADEC_TOPO: {
@@ -519,11 +509,11 @@ void MCDirection::doConvert(MVDirection &in,
       break;
 
     case GAL_SUPERGAL:
-      in = MeasTable::galToSupergal() * in;
+      measMath.applyGALtoSUPERGAL(in);
       break;
       
     case SUPERGAL_GAL:
-      in *= MeasTable::galToSupergal();
+      measMath.deapplyGALtoSUPERGAL(in);
       break;
     
     case R_PLANET0: {
