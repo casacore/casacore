@@ -1,5 +1,5 @@
 //# EarthMagneticMachine.cc: Calculates magnetic field in a direction
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,51 +36,83 @@
 
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :
-  fex_p(False), pex_p(False), fil_p(0), inx_p(False), clx_p(False) {
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
     init();
 }
 
 EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 					   const Quantum<Double> &hgt,
 					   MeasFrame &frame) :
-  fex_p(False), pex_p(False), fil_p(0), inx_p(False), clx_p(False) {
-    inref_p = in;
-    inref_p.set(frame);
-    hgt_p = hgt.getValue("m");
-    MCFrame::make(inref_p.getFrame());
-    if (!frame.getITRF(pos_p)) {
-      throw(AipsError("No position in frame for EarthMagneticMachine"));
-    };
-    if (!frame.getTDB(epo_p)) {
-      throw(AipsError("No epoch in frame for EarthMagneticMachine"));
-    };
-    fil_p = 15;
-    init();
-  }
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  inref_p = in;
+  inref_p.set(frame);
+  hgt_p = hgt.getValue("m");
+  MCFrame::make(inref_p.getFrame());
+  if (!frame.getITRF(pos_p)) {
+    throw(AipsError("No position in frame for EarthMagneticMachine"));
+  };
+  if (!frame.getTDB(epo_p)) {
+    throw(AipsError("No epoch in frame for EarthMagneticMachine"));
+  };
+  fil_p = 15;
+  init();
+}
 
 EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 					   const Quantum<Double> &hgt,
 					   const MPosition &pos,
 					   const MEpoch &tm) :
-  fex_p(False), pex_p(False), fil_p(0), inx_p(False), clx_p(False) {
-    inref_p = in;
-    hgt_p = hgt.getValue("m");
-    pos_p = MPosition::Convert(pos, MPosition::ITRF)().getValue();
-    epo_p = MEpoch::Convert(tm, MEpoch::TDB)().getValue().get();
-    fil_p = 15;
-    init();
-  }
-
-EarthMagneticMachine::EarthMagneticMachine(const EarthMagneticMachine &other) {
-  copy(other);
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  inref_p = in;
+  hgt_p = hgt.getValue("m");
+  pos_p = MPosition::Convert(pos, MPosition::ITRF)().getValue();
+  epo_p = MEpoch::Convert(tm, MEpoch::TDB)().getValue().get();
+  fil_p = 15;
   init();
+}
+
+EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
+					   const MVDirection &dir,
+					   MeasFrame &frame) :
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  inref_p = in;
+  inref_p.set(frame);
+  rin_p = dir;
+  MCFrame::make(inref_p.getFrame());
+  if (!frame.getITRF(pos_p)) {
+    throw(AipsError("No position in frame for EarthMagneticMachine"));
+  };
+  if (!frame.getTDB(epo_p)) {
+    throw(AipsError("No epoch in frame for EarthMagneticMachine"));
+  };
+  fil_p = 29;
+  init();
+}
+
+EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
+					   const MVDirection &dir,
+					   const MPosition &pos,
+					   const MEpoch &tm) :
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  inref_p = in;
+  rin_p = dir;
+  pos_p = MPosition::Convert(pos, MPosition::ITRF)().getValue();
+  epo_p = MEpoch::Convert(tm, MEpoch::TDB)().getValue().get();
+  fil_p = 29;
+  init();
+}
+
+EarthMagneticMachine::EarthMagneticMachine(const EarthMagneticMachine &other) :
+  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  copy(other);
+  reCalculate();
 }
 
 EarthMagneticMachine 
 &EarthMagneticMachine::operator=(const EarthMagneticMachine &other) {
   if (this != &other) {
     copy(other);
-    init();
+    reCalculate();
   };
   return *this;
 }
@@ -106,9 +138,28 @@ Quantum<Double> EarthMagneticMachine::operator()(const MVDirection &in,
   return getLOSField(in, un);
 }
 
+Double EarthMagneticMachine::operator()(const Quantum<Double> &in) {
+  return getLOSField(in);
+}
+
+Quantum<Double> EarthMagneticMachine::operator()(const Quantum<Double> &in,
+						 const Unit &un) {
+  return getLOSField(in, un);
+}
+
+Double EarthMagneticMachine::operator()(const Double in) {
+  return getLOSField(in);
+}
+
+Quantum<Double> EarthMagneticMachine::operator()(const Double in,
+						 const Unit &un) {
+  return getLOSField(in, un);
+}
+
 //# Member functions
 
 void EarthMagneticMachine::reCalculate() {
+  fil_p = cumf_p;
   init();
 }
 
@@ -143,6 +194,12 @@ void EarthMagneticMachine::set(const MEpoch &tm) {
   init();
 }
 
+void EarthMagneticMachine::set(const MVDirection &dir) {
+  rin_p = dir;
+  fil_p |= 16;
+  init();
+}
+
 Double EarthMagneticMachine::getLOSField() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
@@ -156,7 +213,17 @@ Double EarthMagneticMachine::getLOSField() {
 
 Double EarthMagneticMachine::getLOSField(const MVDirection &in) {
   calculate(in);
-  return getLOSField();;
+  return getLOSField();
+}
+
+Double EarthMagneticMachine::getLOSField(const Quantum<Double> &in) {
+  calculate(in);
+  return getLOSField();
+}
+
+Double EarthMagneticMachine::getLOSField(const Double in) {
+  calculate(in);
+  return getLOSField();
 }
 
 Quantum<Double> EarthMagneticMachine::getLOSField(const Unit &un) {
@@ -164,6 +231,18 @@ Quantum<Double> EarthMagneticMachine::getLOSField(const Unit &un) {
 }
 
 Quantum<Double> EarthMagneticMachine::getLOSField(const MVDirection &in,
+						  const Unit &un) {
+  calculate(in);
+  return getLOSField(un);
+}
+
+Quantum<Double> EarthMagneticMachine::getLOSField(const Quantum<Double> &in,
+						  const Unit &un) {
+  calculate(in);
+  return getLOSField(un);
+}
+
+Quantum<Double> EarthMagneticMachine::getLOSField(const Double in,
 						  const Unit &un) {
   calculate(in);
   return getLOSField(un);
@@ -220,38 +299,53 @@ const MVPosition &EarthMagneticMachine::getPosition(const MVDirection &in) {
 }
 
 Bool EarthMagneticMachine::calculate(const MVDirection &in) {
-  if (!inx_p) return False;
-  in_p = in;
-  in_p.adjust();
-  in_p = conv_p(in_p).getValue();
-  // Angle between direction and Earth radius
-  Double an = pos_p * in_p;
-  Double x = sqrt(abs(an*an + subl_p));
-  x = min(abs(-an + x), abs(-an - x));
-  sub_p = pos_p + (x*in_p);
-  fld_p = fldc_p(sub_p);
-  pex_p = False;
-  fex_p = False;
-  clx_p = True;
+  if ((cumf_p ^ 15) & 15) return False;
+  rin_p = in;
+  fil_p |= 16;
+  calculate();
+  return clx_p;
+}
+
+Bool EarthMagneticMachine::calculate(const Quantum<Double> &hgt) {
+  if ((cumf_p ^ 29) & 29) return False;
+  hgt_p = hgt.getValue("m");
+  fil_p |= 2;
+  calculate();
+  return clx_p;
+}
+
+Bool EarthMagneticMachine::calculate(const Double hgt) {
+  if ((cumf_p ^ 29) & 29) return False;
+  hgt_p = hgt;
+  fil_p |= 2;
+  calculate();
   return clx_p;
 }
 
 //# Private member functions
 void EarthMagneticMachine::init() {
-  if (fil_p == 15) {
+  cumf_p |= fil_p;
+  if (fil_p) {
     // Initialise the direction conversion engine
-    conv_p = MDirection::Convert(inref_p, MDirection::ITRF);
+    if (fil_p & 1) conv_p = MDirection::Convert(inref_p, MDirection::ITRF);
     // Distance of observer to Earth centre
-    posl_p = pos_p.radius();
+    if (fil_p & 4) posl_p = pos_p.radius();
     // Squared difference between posl_p and distance to sub-point
-    subl_p = hgt_p*(hgt_p + 2*posl_p);
+    if (((fil_p & 2) && (cumf_p & 4)) ||
+	((fil_p & 4) && (cumf_p & 2))) subl_p = hgt_p*(hgt_p + 2*posl_p);
     // Field calculator
-    fldc_p = EarthField(EarthField::STANDARD, epo_p);
-    inx_p = True;
+    if (fil_p & 8) fldc_p = EarthField(EarthField::STANDARD, epo_p);
+    if (((fil_p & 16) && (cumf_p & 1)) ||
+	((fil_p & 1) && (cumf_p & 16))) {
+      in_p = rin_p;
+      in_p.adjust();
+      in_p = conv_p(in_p).getValue();
+    };
+    fil_p = 0;
+    pex_p = False;
+    fex_p = False;
+    clx_p = False;
   };
-  pex_p = False;
-  fex_p = False;
-  clx_p = False;
 }
 
 void EarthMagneticMachine::copy(const EarthMagneticMachine &other) {
@@ -261,5 +355,21 @@ void EarthMagneticMachine::copy(const EarthMagneticMachine &other) {
   epo_p = other.epo_p;
   conv_p = other.conv_p;
   fil_p = other.fil_p;
-  inx_p = False;
+  cumf_p = other.cumf_p;
+  pex_p = False;
+  fex_p = False;
+  clx_p = False;
+}
+
+void EarthMagneticMachine::calculate() {
+  init();
+  // Angle between direction and Earth radius
+  Double an = pos_p * in_p;
+  Double x = sqrt(abs(an*an + subl_p));
+  x = min(abs(-an + x), abs(-an - x));
+  sub_p = pos_p + (x*in_p);
+  fld_p = fldc_p(sub_p);
+  pex_p = False;
+  fex_p = False;
+  clx_p = True;
 }

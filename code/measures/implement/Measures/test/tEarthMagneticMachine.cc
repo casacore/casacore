@@ -1,5 +1,5 @@
 //# tEarthMagneticMachine.cc: This program tests the EarthMagneticMachine class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/Measures/MEpoch.h>
 #include <aips/Arrays/Vector.h>
 
-Int main() {
+int main() {
 
   try {
     cout << "Test Earth Magnetic field machine" << endl;
@@ -212,6 +212,21 @@ Int main() {
       EarthMagneticMachine fm2(fm1);
       fm2.calculate(mvd);
       cout << "LOS:           " << fm2("G") << endl;
+      cout << "------------- iterate height ------------" << endl;
+      Quantum<Double> qhgt(200, "km"); 
+      cout << "LOS:           " << fm1("G") << endl;
+      cout << "LOS:           " << fm1(qhgt) << endl;
+      cout << "LOS:           " << fm1(qhgt, "G") << endl;
+      cout << "Long:          " << fm1.getLong() << endl;
+      cout << "Long:          " << fm1.getLong("deg") << endl;
+      cout << "Field:         " << fm1.getField() << endl;
+      cout << "Pos:           " << fm1.getPosition() << endl;
+      qhgt = Quantum<Double>(190, "km");
+      cout << "LOS 190:       " << fm1(qhgt, "G") << endl;
+      qhgt = Quantum<Double>(200, "km");
+      cout << "LOS 200:       " << fm1(qhgt, "G") << endl;
+      qhgt = Quantum<Double>(210, "km");
+      cout << "LOS 210:       " << fm1(qhgt, "G") << endl;
     }
     
   } catch (AipsError x) {

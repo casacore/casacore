@@ -1,5 +1,5 @@
 //# EarthMagneticMachine.h: Calculates magnetic field in a direction  
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,7 +116,9 @@ public:
   //# Constructors
   // Construct an empty machine (probably not usable unles set() used)
   EarthMagneticMachine();
-  // Construct a machine from the input values
+  // Construct a machine from the input values. Either a height or direction
+  // is normally specified. The other can be set(), or can be iterated
+  // over in the () operator or the getLOSfield().
   // <thrown>
   //   <li> AipsError if frame does not contain position and time
   // </thrown>
@@ -124,6 +126,10 @@ public:
   EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
 		       MeasFrame &frame);
   EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
+		       const MPosition &pos, const MEpoch &tm);
+  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir,
+		       MeasFrame &frame);
+  EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir,
 		       const MPosition &pos, const MEpoch &tm);
   // </group>
   // Copy constructor
@@ -136,12 +142,16 @@ public:
 
   //# Operators
   // Return line-of-sight field (nT or given units) (from previous calculate
-  // if no direction given)
+  // if no direction or height given)
   // <group>
   Double operator()();
   Quantum<Double> operator()(const Unit &un);
   Double operator()(const MVDirection &in);
   Quantum<Double> operator()(const MVDirection &in, const Unit &un);
+  Double operator()(const Quantum<Double> &in);
+  Quantum<Double> operator()(const Quantum<Double> &in, const Unit &un);
+  Double operator()(const Double in);
+  Quantum<Double> operator()(const Double in, const Unit &un);
   // </group>
 
   //# Member functions
@@ -152,20 +162,29 @@ public:
   void set(MeasFrame &frame);
   void set(const MPosition &pos);
   void set(const MEpoch &tm);
+  void set(const MVDirection &dir);
   //</group>
-  // Calculate a value
+  // Calculate a value from direction or height (in m if not Quantity)
+  // <group>
   Bool calculate(const MVDirection &in);
+  Bool calculate(const Quantum<Double> &hgt);
+  Bool calculate(const Double hgt);
+  // </group>
   // Return data
   // <group>
   // Line-of-sight field in nT
   // <group>
   Double getLOSField();
   Double getLOSField(const MVDirection &in);
+  Double getLOSField(const Quantum<Double> &in);
+  Double getLOSField(const Double in);
   // </group>
   // Line-of-sight field in specified units (e.g. G)
   // <group>
   Quantum<Double> getLOSField(const Unit &un);
   Quantum<Double> getLOSField(const MVDirection &in, const Unit &un);
+  Quantum<Double> getLOSField(const Quantum<Double> &in, const Unit &un);
+  Quantum<Double> getLOSField(const Double in, const Unit &un);
   // </group>
   // Field (in nT, in ITRF)
   // <group>
@@ -210,6 +229,8 @@ private:
   MDirection::Convert conv_p;
   // Input position
   MVDirection in_p;
+  // Re-typed input position
+  MVDirection rin_p;
   // Extension calculated
   // <group>
   Bool fex_p;
@@ -227,8 +248,8 @@ private:
   Vector<Double> pl_p;
   // Fields filled
   Int fil_p;
-  // Init done
-  Bool inx_p;
+  // Cumulative filled fields
+  Int cumf_p;
   // Calc done
   Bool clx_p;
 
@@ -237,6 +258,8 @@ private:
   void init();
   // Copy data members
   void copy(const EarthMagneticMachine &other);
+  // Calculate field
+  void calculate();
 };
 
 #endif
