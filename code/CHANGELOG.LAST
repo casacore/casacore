@@ -16,3 +16,19 @@ fractile of 0.5.
 
 It is used in LEL which got the new functions fractile and
 fractilerange (see the description in note 223).
+
+change id: 0074
+ author:   Ger van Diepen
+ date:     2001/02/14
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: New
+ summary:  Support for access to arrays in arbitrary files
+The class TiledFileAccess is created. It gives access to data arrays
+in any file on any offset. The data can be in canonical or in local
+format.
+Using this class it is possible to access, for example, the primary
+array in a FITS image as if it is normal AIPS++ data.
