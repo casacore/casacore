@@ -1559,10 +1559,16 @@ Bool CoordinateSystem::save(RecordInterface &container,
 {
     Record subrec;
     if (container.isDefined(fieldName)) {
-	return False;
+       set_error(String("The fieldName is already defined in the supplied record"));
+       return False;
     }
 
     uInt nc = coordinates_p.nelements();
+    if (nc==0) {
+       set_error(String("The CoordinateSystem is empty"));
+       return False;
+    }
+//
     for (uInt i=0; i<nc; i++)
     {
 	// Write eaach string into a field it's type plus coordinate
@@ -1593,6 +1599,10 @@ Bool CoordinateSystem::save(RecordInterface &container,
     // Write the obsinfo
     String error;
     Bool ok = obsinfo_p.toRecord(error, subrec);
+    if (!ok) {
+       set_error (error);
+       return False;
+    }
 
     // Write some of the info out again in a different order in a 
     // more convenient format for use.  This is used in regionmanager.g
@@ -1632,9 +1642,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
    subrec.define("coordinateTypes", coordinateTypes);
    subrec.define("toWorldAxisMap", toWorldMap);
    subrec.define("toPixelAxisMap", toPixelMap);
-
 #
-
     if (ok) {
 	container.defineRecord(fieldName, subrec);
     }    
