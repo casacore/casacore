@@ -24,10 +24,24 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
+
 //# $Id$
 
-#ifndef MS_MSSELECTION_H
+
+#if !defined MS_MSSELECTION_H
 #define MS_MSSELECTION_H
+
+/*
+#include <aips/aips.h>
+#include <aips/Utilities/String.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MRadialVelocity.h>
+#include <aips/Tables/ExprNode.h>
+#include <aips/MeasurementSets/MeasurementSet.h>
+*/
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
@@ -82,8 +96,8 @@ class MSSelection
    MSSelection();
    virtual ~MSSelection();
 
-   // Construct from a record representing a selection item
-   // at the or user interface level.
+   // Construct from a Glish record representing a selection item
+   // at the Glish or user interface level.
    MSSelection(const Record& selectionItem);
 
    // Copy constructor
@@ -114,13 +128,24 @@ class MSSelection
    void setMSSelect(const String& msSelect);
    void setObsModes(const Vector<String>& obsModes);
    void setCalGrps(const Vector<String>& calGrps);
+   
+   //Add for ms selection
+   //   void setSelectionMS(TableExprNode nd);
+   //   MeasurementSet& getSelectionMS();
 
    // Convert to TableExprNode format (C++ interface to TaQL)
    TableExprNode toTableExprNode(const MeasurementSet& ms);
 
+   //TableExprNode msTableExprNode;
+   static TableExprNode *msTableExprNode;
+
+   // add for ms selection 
+   static TableExprNode *msFieldTableExprNode;
+   static TableExprNode *msSpwTableExprNode;
+
  private:
-   // Initialize from a Record representing a selection
-   // item from the user interface or  CLI
+   // Initialize from a GlishRecord representing a selection
+   // item from the user interface or Glish CLI
    void fromSelectionItem(const Record& selectionItem);
 
    // Check if record field exists and is not unset
@@ -140,6 +165,8 @@ class MSSelection
      antennaIds_p, feedIds_p, arrayIds_p;
    String msSelect_p;
    Int nchan_p, start_p, step_p;
+   //Add for ms selection
+   //   static MeasurementSet mssel;
 
    // Flags to indicate which selections are active
    Bool selectStartTime_p, selectEndTime_p, selectFieldIds_p, 
