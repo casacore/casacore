@@ -468,9 +468,11 @@
 
         if [ "$BLESSEDVERSN" != "" ]
         then
+           BLESSEDMAJOR=`echo $BLESSEDVERSN | awk -F. '{print $1}'`
            BLESSEDMINOR=`echo $BLESSEDVERSN | awk -F. '{print $2}'`
 
-           if [ "$BLESSEDMINOR" -le "$OLDMINOR" ]
+           if [ "$BLESSEDMINOR" -le "$OLDMINOR" -a \
+                "$BLESSEDMAJOR" -eq "$OLDMAJOR" ]
            then
               echo "inhale: Nothing to do...no new blessings."
               echo "        Current version: $OLDVERSN"
@@ -486,11 +488,17 @@
               exit 0
            fi
 
-           echo "inhale: Using blessed version $BLESSEDVERSN"
-           NEWVERSN="$BLESSEDVERSN"
-           NEWMAJOR=`echo $NEWVERSN | awk -F. '{print $1}'`
-           NEWMINOR=`echo $NEWVERSN | awk -F. '{print $2}'`
-           MAJMIN="$NEWMAJOR.$NEWMINOR"
+           if [ "$BLESSEDMAJOR" -lt "$NEWMAJOR" ]
+           then
+              echo "inhale: Last blessing was for base release $BLESSEDMAJOR."
+              echo "        IGNORING BLESSINGS!"
+           else
+              echo "inhale: Using blessed version $BLESSEDVERSN"
+              NEWVERSN="$BLESSEDVERSN"
+              NEWMAJOR=`echo $NEWVERSN | awk -F. '{print $1}'`
+              NEWMINOR=`echo $NEWVERSN | awk -F. '{print $2}'`
+              MAJMIN="$NEWMAJOR.$NEWMINOR"
+           fi
         else
 #          Should I do this, or just default to a normal inhale?
 #          I'll be conservative/paranoid for now and abort the inhale....
@@ -500,7 +508,7 @@
            exit 2
         fi
      else
-        echo "inhale: No blessed versions exist, defaulting to normal inhale"
+        echo "inhale: No blessed versions exist, defaulting to normal inhale."
      fi
   fi
 
