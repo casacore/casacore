@@ -3551,3 +3551,4 @@
 13 308 src mv trial/implement/OS/TableExprId.h aips/implement/Tables/TableExprId.h
 13 308 src mv trial/implement/OS/TableExprId.cc aips/implement/Tables/TableExprId.cc
 13 317 src rm trial/apps/ms/ms_standard.gp
+13 317 sys rm libexec/ms_standard.gp
