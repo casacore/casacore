@@ -722,10 +722,10 @@ PGMRPTRD  = $(PGMRARCH)/ptrepository
 #-----------------------------------------------------------------------------
 
 # Purify options, always added to each tool.
-PUREOPTIONS = -cache-dir=$(PGMRARCH)/pure_cache -always-use-cache-dir -chain-length=50
+PUREOPTIONS = -cache-dir=$(PGMRARCH)/pure_cache -always-use-cache-dir
 
 ifdef PURIFY
-   PURE := purify -best-effort
+   PURE := purify -best-effort -chain-length=50
 endif
 
 ifdef QUANTIFY
@@ -735,6 +735,8 @@ endif
 ifdef PURECOV
    PURE := purecov
 endif
+
+export PURIFY_DEMANGLER_RESPOND_TIME := 100000
 
 # Reset programmer flags; "-k" or "-i" can be added on the command line.
 ifeq "$(MAKEMODE)" "programmer"
