@@ -932,7 +932,7 @@ void TableExprNodeIndex::checkIndexValues (const TableExprNodeRep* arrayNode)
     Int ndim = arrayNode->ndim();
     uInt n = start_p.nelements();
     // Check against dimensionality (if fixed).
-    if (ndim >= 0  &&  n != ndim) {
+    if (ndim >= 0  &&  ndim != Int(n)) {
 	throw (TableInvExpr ("#indices mismatches array dimensionality"));
     }
     // Check start and increment values.

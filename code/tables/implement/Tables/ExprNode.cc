@@ -975,6 +975,8 @@ DataType TableExprNode::dataType() const
 	    return TpDComplex;
 	case TableExprNodeRep::NTString:
 	    return TpString;
+	default:
+	    break;
 	}
     }
     throwInvDT ("(of expression result)");

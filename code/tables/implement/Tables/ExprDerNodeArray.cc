@@ -48,6 +48,8 @@ Array<Double> TableExprNodeArrayPlusDouble::getArrayDouble (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) + rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) + rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) + rnode_p->getArrayDouble (rownr);
 }
@@ -65,6 +67,8 @@ Array<DComplex> TableExprNodeArrayPlusDComplex::getArrayDComplex (uInt rownr)
 	return lnode_p->getArrayDComplex (rownr) + rnode_p->getDComplex (rownr);
     case ScaArr:
 	return lnode_p->getDComplex (rownr) + rnode_p->getArrayDComplex (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex (rownr) + rnode_p->getArrayDComplex (rownr);
 }
@@ -145,6 +149,8 @@ Array<Double> TableExprNodeArrayMinusDouble::getArrayDouble (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) - rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) - rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) - rnode_p->getArrayDouble (rownr);
 }
@@ -162,6 +168,8 @@ Array<DComplex> TableExprNodeArrayMinusDComplex::getArrayDComplex (uInt rownr)
 	return lnode_p->getArrayDComplex (rownr) - rnode_p->getDComplex (rownr);
     case ScaArr:
 	return lnode_p->getDComplex (rownr) - rnode_p->getArrayDComplex (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex (rownr) - rnode_p->getArrayDComplex (rownr);
 }
@@ -180,6 +188,8 @@ Array<Double> TableExprNodeArrayTimesDouble::getArrayDouble (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) * rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) * rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) * rnode_p->getArrayDouble (rownr);
 }
@@ -197,6 +207,8 @@ Array<DComplex> TableExprNodeArrayTimesDComplex::getArrayDComplex (uInt rownr)
 	return lnode_p->getArrayDComplex (rownr) * rnode_p->getDComplex (rownr);
     case ScaArr:
 	return lnode_p->getDComplex (rownr) * rnode_p->getArrayDComplex (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex (rownr) * rnode_p->getArrayDComplex (rownr);
 }
@@ -215,6 +227,8 @@ Array<Double> TableExprNodeArrayDivideDouble::getArrayDouble (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) / rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) / rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) / rnode_p->getArrayDouble (rownr);
 }
@@ -232,6 +246,8 @@ Array<DComplex> TableExprNodeArrayDivideDComplex::getArrayDComplex (uInt rownr)
 	return lnode_p->getArrayDComplex (rownr) / rnode_p->getDComplex (rownr);
     case ScaArr:
 	return lnode_p->getDComplex (rownr) / rnode_p->getArrayDComplex (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex (rownr) / rnode_p->getArrayDComplex (rownr);
 }
@@ -258,6 +274,8 @@ Array<Double> TableExprNodeArrayModuloDouble::getArrayDouble (uInt rownr)
 	return fmod (makeArray (arr.shape(), lnode_p->getDouble (rownr)),
 		     arr);
     }
+    default:
+	break;
     }
     return fmod (lnode_p->getArrayDouble (rownr),
 		 rnode_p->getArrayDouble (rownr));
@@ -278,6 +296,8 @@ Array<Bool> TableExprNodeArrayEQBool::getArrayBool (uInt rownr)
 	return lnode_p->getArrayBool (rownr) == rnode_p->getBool (rownr);
     case ScaArr:
 	return lnode_p->getBool (rownr) == rnode_p->getArrayBool (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayBool (rownr) == rnode_p->getArrayBool (rownr);
 }
@@ -295,6 +315,8 @@ Array<Bool> TableExprNodeArrayEQDouble::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) == rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) == rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) == rnode_p->getArrayDouble (rownr);
 }
@@ -312,6 +334,8 @@ Array<Bool> TableExprNodeArrayEQDComplex::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDComplex(rownr) == rnode_p->getDComplex(rownr);
     case ScaArr:
 	return lnode_p->getDComplex(rownr) == rnode_p->getArrayDComplex(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex(rownr) == rnode_p->getArrayDComplex(rownr);
 }
@@ -329,6 +353,8 @@ Array<Bool> TableExprNodeArrayEQString::getArrayBool (uInt rownr)
 	return lnode_p->getArrayString (rownr) == rnode_p->getString (rownr);
     case ScaArr:
 	return lnode_p->getString (rownr) == rnode_p->getArrayString (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayString (rownr) == rnode_p->getArrayString (rownr);
 }
@@ -369,6 +395,8 @@ Array<Bool> TableExprNodeArrayEQDate::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDate(rownr) != rnode_p->getDate(rownr);
     case ScaArr:
 	return lnode_p->getDate(rownr) != rnode_p->getArrayDate(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDate(rownr) != rnode_p->getArrayDate(rownr);
 }
@@ -387,6 +415,8 @@ Array<Bool> TableExprNodeArrayNEBool::getArrayBool (uInt rownr)
 	return lnode_p->getArrayBool (rownr) != rnode_p->getBool (rownr);
     case ScaArr:
 	return lnode_p->getBool (rownr) != rnode_p->getArrayBool (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayBool (rownr) != rnode_p->getArrayBool (rownr);
 }
@@ -404,6 +434,8 @@ Array<Bool> TableExprNodeArrayNEDouble::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDouble (rownr) != rnode_p->getDouble (rownr);
     case ScaArr:
 	return lnode_p->getDouble (rownr) != rnode_p->getArrayDouble (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble (rownr) != rnode_p->getArrayDouble (rownr);
 }
@@ -421,6 +453,8 @@ Array<Bool> TableExprNodeArrayNEDComplex::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDComplex(rownr) != rnode_p->getDComplex(rownr);
     case ScaArr:
 	return lnode_p->getDComplex(rownr) != rnode_p->getArrayDComplex(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex(rownr) != rnode_p->getArrayDComplex(rownr);
 }
@@ -438,6 +472,8 @@ Array<Bool> TableExprNodeArrayNEString::getArrayBool (uInt rownr)
 	return lnode_p->getArrayString (rownr) != rnode_p->getString (rownr);
     case ScaArr:
 	return lnode_p->getString (rownr) != rnode_p->getArrayString (rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayString (rownr) != rnode_p->getArrayString (rownr);
 }
@@ -478,6 +514,8 @@ Array<Bool> TableExprNodeArrayNEDate::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDate(rownr) != rnode_p->getDate(rownr);
     case ScaArr:
 	return lnode_p->getDate(rownr) != rnode_p->getArrayDate(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDate(rownr) != rnode_p->getArrayDate(rownr);
 }
@@ -496,6 +534,8 @@ Array<Bool> TableExprNodeArrayGTDouble::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDouble(rownr) > rnode_p->getDouble(rownr);
     case ScaArr:
 	return lnode_p->getDouble(rownr) > rnode_p->getArrayDouble(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble(rownr) > rnode_p->getArrayDouble(rownr);
 }
@@ -513,6 +553,8 @@ Array<Bool> TableExprNodeArrayGTDComplex::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDComplex(rownr) > rnode_p->getDComplex(rownr);
     case ScaArr:
 	return lnode_p->getDComplex(rownr) > rnode_p->getArrayDComplex(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex(rownr) > rnode_p->getArrayDComplex(rownr);
 }
@@ -530,6 +572,8 @@ Array<Bool> TableExprNodeArrayGTString::getArrayBool (uInt rownr)
 	return lnode_p->getArrayString(rownr) > rnode_p->getString(rownr);
     case ScaArr:
 	return lnode_p->getString(rownr) > rnode_p->getArrayString(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayString(rownr) > rnode_p->getArrayString(rownr);
 }
@@ -547,6 +591,8 @@ Array<Bool> TableExprNodeArrayGTDate::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDate(rownr) > rnode_p->getDate(rownr);
     case ScaArr:
 	return lnode_p->getDate(rownr) > rnode_p->getArrayDate(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDate(rownr) > rnode_p->getArrayDate(rownr);
 }
@@ -565,6 +611,8 @@ Array<Bool> TableExprNodeArrayGEDouble::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDouble(rownr) >= rnode_p->getDouble(rownr);
     case ScaArr:
 	return lnode_p->getDouble(rownr) >= rnode_p->getArrayDouble(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDouble(rownr) >= rnode_p->getArrayDouble(rownr);
 }
@@ -582,6 +630,8 @@ Array<Bool> TableExprNodeArrayGEDComplex::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDComplex(rownr) >= rnode_p->getDComplex(rownr);
     case ScaArr:
 	return lnode_p->getDComplex(rownr) >= rnode_p->getArrayDComplex(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDComplex(rownr) >= rnode_p->getArrayDComplex(rownr);
 }
@@ -599,6 +649,8 @@ Array<Bool> TableExprNodeArrayGEString::getArrayBool (uInt rownr)
 	return lnode_p->getArrayString(rownr) >= rnode_p->getString(rownr);
     case ScaArr:
 	return lnode_p->getString(rownr) >= rnode_p->getArrayString(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayString(rownr) >= rnode_p->getArrayString(rownr);
 }
@@ -616,6 +668,8 @@ Array<Bool> TableExprNodeArrayGEDate::getArrayBool (uInt rownr)
 	return lnode_p->getArrayDate(rownr) >= rnode_p->getDate(rownr);
     case ScaArr:
 	return lnode_p->getDate(rownr) >= rnode_p->getArrayDate(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayDate(rownr) >= rnode_p->getArrayDate(rownr);
 }
@@ -798,6 +852,8 @@ Array<Bool> TableExprNodeArrayOR::getArrayBool (uInt rownr)
 	return lnode_p->getArrayBool(rownr) || rnode_p->getBool(rownr);
     case ScaArr:
 	return lnode_p->getBool(rownr) || rnode_p->getArrayBool(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayBool(rownr) || rnode_p->getArrayBool(rownr);
 }
@@ -815,6 +871,8 @@ Array<Bool> TableExprNodeArrayAND::getArrayBool (uInt rownr)
 	return lnode_p->getArrayBool(rownr) && rnode_p->getBool(rownr);
     case ScaArr:
 	return lnode_p->getBool(rownr) && rnode_p->getArrayBool(rownr);
+    default:
+	break;
     }
     return lnode_p->getArrayBool(rownr) && rnode_p->getArrayBool(rownr);
 }

@@ -187,7 +187,7 @@ const IPosition& TableExprNodeRep::shape (uInt rownr)
     }
     return getShape (rownr);
 }
-const IPosition& TableExprNodeRep::getShape (uInt rownr)
+const IPosition& TableExprNodeRep::getShape (uInt)
 {
     throw (TableInvExpr ("getShape not implemented"));
     return shape_p;
@@ -533,16 +533,16 @@ TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
 					  OperType oper,
 					  const BaseTable* baseTablePtr)
 : TableExprNodeRep (tp, vtype, oper, baseTablePtr),
-  rnode_p          (0),
-  lnode_p          (0)
+  lnode_p          (0),
+  rnode_p          (0)
 {}
     
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
 					  const TableExprNodeRep& that,
 					  OperType oper)
 : TableExprNodeRep (that),
-  rnode_p          (0),
-  lnode_p          (0)
+  lnode_p          (0),
+  rnode_p          (0)
 {
     dtype_p  = tp;
     optype_p = oper;
@@ -847,18 +847,19 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
 				     NodeDataType dtOut,
 				     const PtrBlock<TableExprNodeRep*>& nodes)
 {
-    dtypeOper.resize (nodes.nelements());
+    uInt nelem = nodes.nelements();
+    dtypeOper.resize (nelem);
     dtypeOper.set (dtIn);
     if (dtIn == NTAny) {
 	return dtOut;
     }
-    Int i;
+    uInt i;
     NodeDataType resultType = dtIn;
     // NTNumeric -> dtIn must be NTComplex or NTDouble
     //              and set resultType to the highest type of dtIn
     if (dtIn == NTNumeric) {
 	resultType = NTDouble;
-	for (i=0; i<nodes.nelements(); i++) {
+	for (i=0; i<nelem; i++) {
 	    if (nodes[i]->dataType() == NTComplex) {
 		resultType = NTComplex;
 	    } else if (nodes[i]->dataType() != NTDouble) {
@@ -867,7 +868,7 @@ TableExprNodeRep::NodeDataType TableExprNodeMulti::checkDT
 	}
     } else {
 	// Data types of the nodes must match dtIn
-	for (i=0; i<nodes.nelements(); i++) {
+	for (i=0; i<nelem; i++) {
 	    // String to Date conversion is possible.
 	    if (nodes[i]->dataType() != dtIn) {
 		if (nodes[i]->dataType() != NTString  ||  dtIn != NTDate) {

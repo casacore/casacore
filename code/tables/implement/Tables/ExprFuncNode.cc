@@ -423,11 +423,11 @@ String TableExprFuncNode::getString (uInt rownr)
     case trimFUNC:
 	{
 	    String str = operands_p[0]->getString (rownr);
-	    int pos = str.length();
+	    Int pos = str.length();
 	    while (--pos >= 0  &&  str[pos] == ' ' ) ;
 	    if (pos < 0) {
 		return "";
-	    } else if (pos+1 < str.length()) {
+	    } else if (pos+1 < Int(str.length())) {
 		return str.through(pos);
 	    }
 	    return str;
@@ -556,6 +556,8 @@ Array<Double> TableExprFuncNode::getArrayDouble (uInt rownr)
 		doub[i] = fmod (Double(val[i]), 1.) * C::_2pi;
 	    }
 	    break;
+	default:
+	    break;
 	}
 	values.freeStorage (val, deleteVal);
 	doubles.putStorage (doub, deleteDoub);
@@ -594,18 +596,21 @@ Array<String> TableExprFuncNode::getArrayString (uInt rownr)
 	case trimFUNC:
 	    for (i=0; i<n; i++) {
 		String& s = str[i];
-		int pos = s.length();
+		Int pos = s.length();
 		while (--pos >= 0  &&  s[pos] == ' ' ) ;
 		if (pos < 0) {
 		    s = "";
-		} else if (pos+1 < s.length()) {
+		} else if (pos+1 < Int(s.length())) {
 		    s = s.through(pos);
 		}
 	    }
 	    break;
+	default:
+	    break;
 	}
 	strings.putStorage (str, deleteStr);
 	return strings;
+	break;
     }
     case cmonthFUNC:
     case cdowFUNC:	
@@ -627,6 +632,8 @@ Array<String> TableExprFuncNode::getArrayString (uInt rownr)
 	    for (i=0; i<n; i++) {
 		str[i] = val[i].dayName();
 	    }
+	    break;
+	default:
 	    break;
 	}
 	values.freeStorage (val, deleteVal);
@@ -702,7 +709,7 @@ Array<MVTime> TableExprFuncNode::getArrayDate (uInt rownr)
 
 TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
                                  (Block<Int>& dtypeOper,
-				  ValueType& resVT, Block<Int>& vtypeOper,
+				  ValueType& resVT, Block<Int>&,
 				  FunctionType fType,
 				  PtrBlock<TableExprNodeRep*>& nodes)
 {
@@ -755,6 +762,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case isdefFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTAny, NTBool, nodes);
+    default:
+	break;
     }
     // The following functions accept scalars and arrays.
     // The return a scalar or array (same as the input argument).
@@ -821,6 +830,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	nodes.resize (1);
 	nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
 	return NTString;
+    default:
+	break;
     }
     // The following functions accept scalars only.
     // In the future they may also need to support arrays.

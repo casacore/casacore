@@ -627,7 +627,7 @@ TableExprNodeRandom::TableExprNodeRandom (const BaseTable* tabptr)
 {}
 TableExprNodeRandom::~TableExprNodeRandom ()
 {}
-Double TableExprNodeRandom::getDouble (uInt rownr)
+Double TableExprNodeRandom::getDouble (uInt)
 {
     return random_p();
 }
@@ -727,7 +727,7 @@ void TableExprNodeOR::ranges (Block<TableExprRange>& blrange)
     //# gets created is a superset of the original blocks.
     blrange.resize(0,True);
     uInt nr=0;
-    Int i,j;
+    uInt i,j;
     for (i=0; i<left.nelements(); i++) {
 	for (j=0; j<right.nelements(); j++) {
 	    if (right[j].getColumn().columnDesc().name() ==
@@ -763,7 +763,7 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     //# Keep a vector with flags for non-processed other ones.
     Vector<Int> vec(other.nelements());
     vec = 0;
-    Int i,j;
+    uInt i,j;
     for (i=0; i<blrange.nelements(); i++) {
 	for (j=0; j<other.nelements(); j++) {
 	    if (other[j].getColumn().columnDesc().name() ==
