@@ -48,8 +48,8 @@ static Short vals=-3;
 static uShort valus=2;
 static Int vali=1000;
 static uInt valui=32768;
-static Long vall=-14793;
-static uLong valul=17;
+static Int64 vall=-14793;
+static uInt64 valul=17;
 static float valf=1.2;
 static double vald=-3.14;
 
@@ -72,11 +72,11 @@ void checkValues (ByteIO& fio, uShort incr)
     uInt resui;
     fio.read (sizeof(uInt), &resui);
     AlwaysAssertExit (resui == valui);
-    Long resl;
-    fio.read (sizeof(Long), &resl);
+    Int64 resl;
+    fio.read (sizeof(Int64), &resl);
     AlwaysAssertExit (resl == vall);
-    uLong resul;
-    fio.read (sizeof(uLong), &resul);
+    uInt64 resul;
+    fio.read (sizeof(uInt64), &resul);
     AlwaysAssertExit (resul == valul);
     float resf;
     fio.read (sizeof(float), &resf);
@@ -101,10 +101,10 @@ void doIt (ByteIO& fio)
     checkLength (fio, length, sizeof(Int));
     fio.write (sizeof(uInt), &valui);
     checkLength (fio, length, sizeof(uInt));
-    fio.write (sizeof(Long), &vall);
-    checkLength (fio, length, sizeof(Long));
-    fio.write (sizeof(uLong), &valul);
-    checkLength (fio, length, sizeof(uLong));
+    fio.write (sizeof(Int64), &vall);
+    checkLength (fio, length, sizeof(Int64));
+    fio.write (sizeof(uInt64), &valul);
+    checkLength (fio, length, sizeof(uInt64));
     fio.write (sizeof(float), &valf);
     checkLength (fio, length, sizeof(float));
     fio.write (sizeof(double), &vald);
@@ -112,19 +112,19 @@ void doIt (ByteIO& fio)
     
     checkValues (fio, 0);
     
-    fio.seek (sizeof(Bool));
+    fio.seek (Int(sizeof(Bool)));
     AlwaysAssertExit (fio.length() == length);
     uShort incr = 100;
     Short vals1 = vals - incr;
     Short ress;
     fio.write (sizeof(Short), &vals1);
-    fio.seek (sizeof(Bool));
+    fio.seek (Int(sizeof(Bool)));
     fio.read (sizeof(Short), &ress);
     AlwaysAssertExit (ress == vals1);
     uShort valus1 = valus + incr;
     uShort resus;
     fio.write (sizeof(uShort), &valus1);
-    fio.seek (-sizeof(uShort), ByteIO::Current);
+    fio.seek (Int(-sizeof(uShort)), ByteIO::Current);
     fio.read (sizeof(uShort), &resus);
     AlwaysAssertExit (resus == valus1);
     Int resi;
@@ -142,16 +142,16 @@ void checkReopen()
 	RegularFileIO fio(rfile);
 	checkValues (fio, 100);
 	fio.reopenRW();
-	fio.seek (sizeof(Bool));
+	fio.seek (Int64(sizeof(Bool)));
 	Short vals;
 	fio.read (sizeof(Short), &vals);
 	vals -= 50;
-	fio.seek (sizeof(Bool));
+	fio.seek (Int64(sizeof(Bool)));
 	fio.write (sizeof(Short), &vals);
 	uShort valus;
 	fio.read (sizeof(uShort), &valus);
 	valus += 50;
-	fio.seek (-sizeof(uShort), ByteIO::Current);
+	fio.seek (Int(-sizeof(uShort)), ByteIO::Current);
 	fio.write (sizeof(uShort), &valus);
 	checkValues (fio, 150);
     }
@@ -177,15 +177,15 @@ void testMemoryIO()
 	MemoryIO membuf (buf, sizeof(buf), ByteIO::New, 6);
 	doIt (membuf);
 	AlwaysAssertExit (membuf.getBuffer() != (const uChar*)&buf);
-	uLong length = membuf.length();
-	uInt incr = 20;
+	Int64 length = membuf.length();
+	Int incr = 20;
 	membuf.seek (incr, ByteIO::End);
 	AlwaysAssertExit (membuf.length() == length+incr);
 	checkValues (membuf, 100);
 	char val;
-	Long lincr = incr;
+	Int64 lincr = incr;
 	membuf.seek (-lincr, ByteIO::End);
-	for (int i=0; i<incr; i++) {
+	for (Int i=0; i<incr; i++) {
 	    membuf.read (1, &val);
 	    AlwaysAssertExit (val == 0);
 	}
@@ -195,11 +195,11 @@ void testMemoryIO()
 	    cout << x.getMesg() << endl;         // read beyond object
 	} 
 	try {
-	    membuf.seek (-(length + incr + 1), ByteIO::Current);
+	    membuf.seek (Int(-(length + incr + 1)), ByteIO::Current);
 	} catch (AipsError x) {
 	    cout << x.getMesg() << endl;         // negative seek
 	} 
-	membuf.seek (-(length + incr), ByteIO::Current);
+	membuf.seek (Int(-(length + incr)), ByteIO::Current);
     }
     {
 	char buf[10];
@@ -234,7 +234,7 @@ void testMemoryIO()
 }
 
 
-main()
+int main()
 {
     try {
 	testMemoryIO();
