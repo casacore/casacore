@@ -200,7 +200,7 @@ Bool Projection::near(const Projection &other, Double tol) const
    if (which_p != other.which_p) return False;
    if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
    
-   for (Int i=0; i<parameters_p.nelements(); i++) {
+   for (uInt i=0; i<parameters_p.nelements(); i++) {
      if (!::near(parameters_p(i),other.parameters_p(i),tol)) return False;
    }
    

@@ -297,9 +297,9 @@ Bool LinearXform::near(const LinearXform& other,
 
    Vector<Bool> exclude(nWorldAxes());
    exclude = False;
-   Int j = 0;
-   for (Int i=0; i<nWorldAxes(); i++) {
-      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
+   uInt j = 0;
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      if(ImageUtilities::inVector(Int(i),excludeAxes) >=0) exclude(j++) = True;
    }
 
 
