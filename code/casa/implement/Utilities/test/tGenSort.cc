@@ -1,5 +1,5 @@
 //# tGenSort.cc: This program tests the global templated sort routines
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Utilities/GenSort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/OS/Timer.h>
 #include <aips/stdlib.h>
 #include <aips/iomanip.h>
@@ -43,11 +43,11 @@ main(int argc, char** argv)
     int type=Sort::HeapSort;
     Sort::Order ord = Sort::Ascending;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> nr;
     }
     if (argc > 2) {
-	istrstream istr(argv[2]);
+	istringstream istr(argv[2]);
 	istr >> type;
     }
     if (argc > 3) {

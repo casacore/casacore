@@ -1,5 +1,5 @@
 //# tSort_1.cc: This program tests the performance of the Sort class
-//# Copyright (C) 1993,1994,1995,1996,1997,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #include <aips/Utilities/Sort.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Timer.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/stdlib.h>
 
 //# Forward Declarations
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     Bool success = True;
     uInt nr=5000;
     if (argc > 1) {
-	istrstream istr(argv[1]);
+	istringstream istr(argv[1]);
 	istr >> nr;
     }
     cout << nr << " elements" << endl;

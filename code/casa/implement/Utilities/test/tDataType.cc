@@ -1,5 +1,5 @@
 //# tDataType.cc: This program tests the DataType related functions
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,158 +29,156 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 #include <aips/iostream.h>
 
 void simpleTests()
 {
     // First check the << operator
-    char null = 0;
-    char buffer[100];
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpBool << null; 
-	AlwaysAssertExit(String(buffer) == "Bool");
+	ostringstream formatter;
+	formatter << TpBool;
+	AlwaysAssertExit(String(formatter) == "Bool");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpChar << null; 
-	AlwaysAssertExit(String(buffer) == "Char");
+	ostringstream formatter;
+	formatter << TpChar;
+	AlwaysAssertExit(formatter.str() == "Char");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpUChar << null; 
-	AlwaysAssertExit(String(buffer) == "uChar");
+	ostringstream formatter;
+	formatter << TpUChar; 
+	AlwaysAssertExit(formatter.str() == "uChar");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpShort << null; 
-	AlwaysAssertExit(String(buffer) == "Short");
+	ostringstream formatter;
+	formatter << TpShort; 
+	AlwaysAssertExit(formatter.str() == "Short");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpUShort << null; 
-	AlwaysAssertExit(String(buffer) == "uShort");
+	ostringstream formatter;
+	formatter << TpUShort; 
+	AlwaysAssertExit(formatter.str() == "uShort");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpInt << null; 
-	AlwaysAssertExit(String(buffer) == "Int");
+	ostringstream formatter;
+	formatter << TpInt; 
+	AlwaysAssertExit(formatter.str() == "Int");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpUInt << null; 
-	AlwaysAssertExit(String(buffer) == "uInt");
+	ostringstream formatter;
+	formatter << TpUInt; 
+	AlwaysAssertExit(formatter.str() == "uInt");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpFloat << null; 
-	AlwaysAssertExit(String(buffer) == "float");
+	ostringstream formatter;
+	formatter << TpFloat; 
+	AlwaysAssertExit(formatter.str() == "float");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpDouble << null; 
-	AlwaysAssertExit(String(buffer) == "double");
+	ostringstream formatter;
+	formatter << TpDouble; 
+	AlwaysAssertExit(formatter.str() == "double");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpComplex << null; 
-	AlwaysAssertExit(String(buffer) == "Complex");
+	ostringstream formatter;
+	formatter << TpComplex; 
+	AlwaysAssertExit(formatter.str() == "Complex");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpDComplex << null; 
-	AlwaysAssertExit(String(buffer) == "DComplex");
+	ostringstream formatter;
+	formatter << TpDComplex; 
+	AlwaysAssertExit(formatter.str() == "DComplex");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpString << null; 
-	AlwaysAssertExit(String(buffer) == "String");
+	ostringstream formatter;
+	formatter << TpString; 
+	AlwaysAssertExit(formatter.str() == "String");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpTable << null; 
-	AlwaysAssertExit(String(buffer) == "Table");
+	ostringstream formatter;
+	formatter << TpTable; 
+	AlwaysAssertExit(formatter.str() == "Table");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayBool << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Bool>");
+	ostringstream formatter;
+	formatter << TpArrayBool; 
+	AlwaysAssertExit(formatter.str() == "Array<Bool>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayChar << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Char>");
+	ostringstream formatter;
+	formatter << TpArrayChar; 
+	AlwaysAssertExit(formatter.str() == "Array<Char>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayUChar << null; 
-	AlwaysAssertExit(String(buffer) == "Array<uChar>");
+	ostringstream formatter;
+	formatter << TpArrayUChar; 
+	AlwaysAssertExit(formatter.str() == "Array<uChar>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayShort << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Short>");
+	ostringstream formatter;
+	formatter << TpArrayShort; 
+	AlwaysAssertExit(formatter.str() == "Array<Short>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayUShort << null; 
-	AlwaysAssertExit(String(buffer) == "Array<uShort>");
+	ostringstream formatter;
+	formatter << TpArrayUShort; 
+	AlwaysAssertExit(formatter.str() == "Array<uShort>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayInt << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Int>");
+	ostringstream formatter;
+	formatter << TpArrayInt; 
+	AlwaysAssertExit(formatter.str() == "Array<Int>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayUInt << null; 
-	AlwaysAssertExit(String(buffer) == "Array<uInt>");
+	ostringstream formatter;
+	formatter << TpArrayUInt; 
+	AlwaysAssertExit(formatter.str() == "Array<uInt>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayFloat << null; 
-	AlwaysAssertExit(String(buffer) == "Array<float>");
+	ostringstream formatter;
+	formatter << TpArrayFloat; 
+	AlwaysAssertExit(formatter.str() == "Array<float>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayDouble << null; 
-	AlwaysAssertExit(String(buffer) == "Array<double>");
+	ostringstream formatter;
+	formatter << TpArrayDouble; 
+	AlwaysAssertExit(formatter.str() == "Array<double>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayComplex << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Complex>");
+	ostringstream formatter;
+	formatter << TpArrayComplex; 
+	AlwaysAssertExit(formatter.str() == "Array<Complex>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayDComplex << null; 
-	AlwaysAssertExit(String(buffer) == "Array<DComplex>");
+	ostringstream formatter;
+	formatter << TpArrayDComplex; 
+	AlwaysAssertExit(formatter.str() == "Array<DComplex>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayString << null; 
-	AlwaysAssertExit(String(buffer) == "Array<String>");
+	ostringstream formatter;
+	formatter << TpArrayString; 
+	AlwaysAssertExit(formatter.str() == "Array<String>");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpRecord << null; 
-	AlwaysAssertExit(String(buffer) == "Record");
+	ostringstream formatter;
+	formatter << TpRecord; 
+	AlwaysAssertExit(formatter.str() == "Record");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpOther << null; 
-	AlwaysAssertExit(String(buffer) == "Other");
+	ostringstream formatter;
+	formatter << TpOther; 
+	AlwaysAssertExit(formatter.str() == "Other");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpQuantity << null; 
-	AlwaysAssertExit(String(buffer) == "Quantity");
+	ostringstream formatter;
+	formatter << TpQuantity; 
+	AlwaysAssertExit(formatter.str() == "Quantity");
     }
     {
-	ostrstream formatter(buffer, 100);
-	formatter << TpArrayQuantity << null; 
-	AlwaysAssertExit(String(buffer) == "Array<Quantity>");
+	ostringstream formatter;
+	formatter << TpArrayQuantity; 
+	AlwaysAssertExit(formatter.str() == "Array<Quantity>");
     }
 
     // Now check the whatType() functions

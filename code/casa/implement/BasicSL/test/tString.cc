@@ -1,5 +1,5 @@
 //# tString.cc: This program tests Strings
-//# Copyright (C) 1993-1999,2000,2001,2002
+//# Copyright (C) 1993-1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 // Next one for atoi and atof
 #include <aips/stdlib.h>
 #include <aips/iostream.h>
-#include <aips/strstream.h>
+#include <aips/sstream.h>
 
 // Generally used variables
 String X = "Hello";
@@ -306,7 +306,7 @@ void iotest() {
   String z = "Della and the Dealer\n and a dog named Jake,\n and a cat named Kalamazoo";
   cout << "word =" << z << " ";
   cout << "length = " << z.length() << endl;
-  ostrstream os;
+  ostringstream os;
   os << "Test stream: " << "length = " << z.length();
   String zx(os);
   cout << zx << endl;
