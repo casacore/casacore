@@ -49,7 +49,7 @@ ROVisibilityIterator::ROVisibilityIterator(const MeasurementSet &ms,
 : msIter_p(ms,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
-lastUT_p(0),velSelection_p(False)
+floatDataFound_p(False),lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -60,7 +60,7 @@ ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
 : msIter_p(mss,sortColumns,timeInterval),
 curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
-lastUT_p(0),velSelection_p(False)
+floatDataFound_p(False),lastUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
 }
@@ -117,6 +117,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   uvwMat_p.resize(other.uvwMat_p.shape()); uvwMat_p=other.uvwMat_p;
   pa_p.resize(other.pa_p.nelements()); pa_p=other.pa_p;
   azel_p.resize(other.azel_p.nelements()); azel_p=other.azel_p;
+  floatDataFound_p=other.floatDataFound_p;
 
   msd_p=other.msd_p;
   lastUT_p=other.lastUT_p;
@@ -139,12 +140,9 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colWeight.reference(other.colWeight);
   colImagingWeight.reference(other.colImagingWeight);
   colVis.reference(other.colVis);
+  colFloatVis.reference(other.colFloatVis);
   colModelVis.reference(other.colModelVis);
   colCorrVis.reference(other.colCorrVis);
-  colVisPtr.resize(3);
-  colVisPtr[0]=&colVis;
-  colVisPtr[1]=&colModelVis;
-  colVisPtr[2]=&colCorrVis;
   colSigma.reference(other.colSigma);
   colFlag.reference(other.colFlag);
   colFlagRow.reference(other.colFlagRow);
@@ -346,14 +344,16 @@ void ROVisibilityIterator::attachColumns()
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
   colVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
+    colFloatVis.attach(selTable_p,MS::columnName(MS::FLOAT_DATA));
+    floatDataFound_p=True;
+  } else {
+    floatDataFound_p=False;
+  };
   if (cds.isDefined("MODEL_DATA")) 
     colModelVis.attach(selTable_p,"MODEL_DATA");
   if (cds.isDefined("CORRECTED_DATA"))
     colCorrVis.attach(selTable_p,"CORRECTED_DATA");
-  colVisPtr.resize(3);
-  colVisPtr[0]=&colVis;
-  colVisPtr[1]=&colModelVis;
-  colVisPtr[2]=&colCorrVis;
   colUVW.attach(selTable_p,MS::columnName(MS::UVW));
   colFlag.attach(selTable_p,MS::columnName(MS::FLAG));
   colFlagRow.attach(selTable_p,MS::columnName(MS::FLAG_ROW));
@@ -515,8 +515,8 @@ ROVisibilityIterator::visibility(Cube<Complex>& vis, DataColumn whichOne) const
     }
     vis.resize(visCube_p.shape()); vis=visCube_p;
   } else { 
-    if (useSlicer_p) colVisPtr[whichOne]->getColumn(slicer_p,vis,True);
-    else colVisPtr[whichOne]->getColumn(vis,True);
+    if (useSlicer_p) getDataColumn(whichOne,slicer_p,vis);
+    else getDataColumn(whichOne,vis);
   }
   return vis;
 }
@@ -622,13 +622,61 @@ void ROVisibilityIterator::getInterpolatedVisFlagWeight(DataColumn whichOne)
   transpose(This->imagingWeight_p,intWt);
 }
 
+void ROVisibilityIterator::getDataColumn(DataColumn whichOne, 
+					 const Slicer& slicer,
+					 Cube<Complex>& data)
+{
+  // Return the visibility (observed, model or corrected);
+  // deal with DATA and FLOAT_DATA seamlessly for observed data.
+  switch (whichOne) {
+  case Observed:
+    if (floatDataFound_p) {
+      Cube<Float> dataFloat;
+      colFloatVis.getColumn(slicer,dataFloat,True);
+      data=RealToComplex(dataFloat);
+    } else {
+      colVis.getColumn(slicer,data,True);
+    };
+    break;
+  case Corrected:
+    colCorrVis.getColumn(slicer,data,True);
+    break;
+  case Model:
+    colModelVis.getColumn(slicer,data,True);
+    break;
+  };
+};
+
+void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
+					 Cube<Complex>& data)
+{
+  // Return the visibility (observed, model or corrected);
+  // deal with DATA and FLOAT_DATA seamlessly for observed data.
+  switch (whichOne) {
+  case Observed:
+    if (floatDataFound_p) {
+      Cube<Float> dataFloat;
+      colFloatVis.getColumn(dataFloat,True);
+      data=RealToComplex(dataFloat);
+    } else {
+      colVis.getColumn(data,True);
+    };
+    break;
+  case Corrected:
+    colCorrVis.getColumn(data,True);
+    break;
+  case Model:
+    colModelVis.getColumn(data,True);
+    break;
+  };
+};  
+
 Matrix<CStokesVector>& 
 ROVisibilityIterator::visibility(Matrix<CStokesVector>& vis,
 				 DataColumn whichOne) const
 {
-  if (useSlicer_p) colVisPtr[whichOne]->
-		     getColumn(slicer_p,This->visCube_p,True);
-  else colVisPtr[whichOne]->getColumn(This->visCube_p,True);
+  if (useSlicer_p) getDataColumn(whichOne,slicer_p,This->visCube_p);
+  else getDataColumn(whichOne,This->visCube_p);
   vis.resize(channelGroupSize_p,curNumRow_p);
   Bool deleteIt;
   Complex* pcube=This->visCube_p.getStorage(deleteIt);
@@ -904,12 +952,9 @@ VisibilityIterator::operator=(const VisibilityIterator& other)
 	ROVisibilityIterator::operator=(other);
 	RWcolFlag.reference(other.RWcolFlag);
 	RWcolVis.reference(other.RWcolVis);
+	RWcolFloatVis.reference(other.RWcolFloatVis);
 	RWcolModelVis.reference(other.RWcolModelVis);
 	RWcolCorrVis.reference(other.RWcolCorrVis);
-	RWcolVisPtr.resize(3);
-	RWcolVisPtr[0]=&RWcolVis;
-	RWcolVisPtr[1]=&RWcolModelVis;
-	RWcolVisPtr[2]=&RWcolCorrVis;
 	RWcolWeight.reference(other.RWcolWeight);
 	RWcolSigma.reference(other.RWcolSigma);
 	RWcolImagingWeight.reference(other.RWcolImagingWeight);
@@ -937,14 +982,16 @@ void VisibilityIterator::attachColumns()
   //todo: should cache this (update once per ms)
   const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
   RWcolVis.attach(selTable_p,MS::columnName(MS::DATA));
+  if (cds.isDefined(MS::columnName(MS::FLOAT_DATA))) {
+    floatDataFound_p=True;
+    RWcolFloatVis.attach(selTable_p,MS::columnName(MS::FLOAT_DATA));
+  } else {
+    floatDataFound_p=False;
+  };
   if (cds.isDefined("MODEL_DATA")) 
     RWcolModelVis.attach(selTable_p,"MODEL_DATA");
   if (cds.isDefined("CORRECTED_DATA")) 
     RWcolCorrVis.attach(selTable_p,"CORRECTED_DATA");
-  RWcolVisPtr.resize(3);
-  RWcolVisPtr[0]=&RWcolVis;
-  RWcolVisPtr[1]=&RWcolModelVis;
-  RWcolVisPtr[2]=&RWcolCorrVis;
   RWcolWeight.attach(selTable_p,MS::columnName(MS::WEIGHT));
   RWcolSigma.attach(selTable_p,MS::columnName(MS::SIGMA));
   RWcolFlag.attach(selTable_p,MS::columnName(MS::FLAG));
@@ -1011,8 +1058,8 @@ void VisibilityIterator::setVis(const Matrix<CStokesVector> & vis,
       }
     }
   }
-  if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
-  else RWcolVisPtr[whichOne]->putColumn(visCube_p);
+  if (useSlicer_p) putDataColumn(whichOne,slicer_p,visCube_p);
+  else putDataColumn(whichOne,visCube_p);
 }
 
 void VisibilityIterator::setVisAndFlag(const Cube<Complex>& vis,
@@ -1021,13 +1068,13 @@ void VisibilityIterator::setVisAndFlag(const Cube<Complex>& vis,
 {
   if (velSelection_p) {
     setInterpolatedVisFlag(vis,flag);
-    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
-    else RWcolVisPtr[whichOne]->putColumn(visCube_p);
+    if (useSlicer_p) putDataColumn(whichOne,slicer_p,visCube_p);
+    else putDataColumn(whichOne,visCube_p);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
     else RWcolFlag.putColumn(flagCube_p);
   } else {
-    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,vis);
-    else RWcolVisPtr[whichOne]->putColumn(vis);
+    if (useSlicer_p) putDataColumn(whichOne,slicer_p,vis);
+    else putDataColumn(whichOne,vis);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flag);
     else RWcolFlag.putColumn(flag);
   }
@@ -1037,11 +1084,11 @@ void VisibilityIterator::setVis(const Cube<Complex>& vis, DataColumn whichOne)
 {
   if (velSelection_p) {
     setInterpolatedVisFlag(vis,flagCube_p);
-    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
-    else RWcolVisPtr[whichOne]->putColumn(visCube_p);
+    if (useSlicer_p) putDataColumn(whichOne,slicer_p,visCube_p);
+    else putDataColumn(whichOne,visCube_p);
   } else {
-    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,vis);
-    else RWcolVisPtr[whichOne]->putColumn(vis);
+    if (useSlicer_p) putDataColumn(whichOne,slicer_p,vis);
+    else putDataColumn(whichOne,vis);
   }
 }
 
@@ -1144,6 +1191,52 @@ void VisibilityIterator::setInterpolatedWeight(const Matrix<Float>& wt)
   transpose(imagingWeight_p,intWt);
 }
 
+void VisibilityIterator::putDataColumn(DataColumn whichOne,
+				       const Slicer& slicer,
+				       const Cube<Complex>& data)
+{
+  // Set the visibility (observed, model or corrected);
+  // deal with DATA and FLOAT_DATA seamlessly for observed data.
+  switch (whichOne) {
+  case Observed:
+    if (floatDataFound_p) {
+      Cube<Float> dataFloat=ComplexToReal(data);
+      RWcolFloatVis.putColumn(slicer,dataFloat);
+    } else {
+      RWcolVis.putColumn(slicer,data);
+    };
+    break;
+  case Corrected:
+    RWcolCorrVis.putColumn(slicer,data);
+    break;
+  case Model:
+    RWcolModelVis.putColumn(slicer,data);
+    break;
+  };
+};  
+
+void VisibilityIterator::putDataColumn(DataColumn whichOne,
+				       const Cube<Complex>& data)
+{
+  // Set the visibility (observed, model or corrected);
+  // deal with DATA and FLOAT_DATA seamlessly for observed data.
+  switch (whichOne) {
+  case Observed:
+    if (floatDataFound_p) {
+      Cube<Float> dataFloat=ComplexToReal(data);
+      RWcolFloatVis.putColumn(dataFloat);
+    } else {
+      RWcolVis.putColumn(data);
+    };
+    break;
+  case Corrected:
+    RWcolCorrVis.putColumn(data);
+    break;
+  case Model:
+    RWcolModelVis.putColumn(data);
+    break;
+  };
+};  
 
 
 
