@@ -1,5 +1,5 @@
 //# MSSelector.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -324,6 +324,18 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
     }
   } else {
     convert_p=True;
+  }
+  // check if wanted is just a subset or permutation of inputPol
+  subSet_p=True;
+  for (Int j=0; j<n; j++) {
+    Bool found=False;
+    for (Int i=0; i<numCorr; i++) {
+      if (wanted(j)==inputPol(i)) found=True;
+    }
+    if (!found) { 
+      subSet_p=False; 
+      break;
+    }
   }
 
   if (convert_p) {
@@ -1224,7 +1236,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       || wantOR || wantObsCorrGain) {
     // get the data
     Array<Complex> data;
-    if (convert_p) {
+    if (convert_p && !subSet_p) {
       os << LogIO::WARN << "Polarization conversion of uncalibrated"
 	 << " data may give incorrect results"<< LogIO::POST;
     }

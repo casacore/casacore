@@ -1,5 +1,5 @@
 //# MSSelector.h: this defines MSSelector, which specifies MS selections
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -251,7 +251,7 @@ private:
   Bool useSlicer_p, haveSlicer_p;
   Slicer slicer_p;
   Int wantedOne_p;
-  Bool convert_p;
+  Bool convert_p, subSet_p;
   StokesConverter stokesConverter_p;
   Vector<String> polSelection_p;
   Vector<Int> ifrSelection_p;
