@@ -34,21 +34,17 @@
 #include <trial/Lattices/LatticeIndexer.h>
 #include <aips/Lattices/IPosition.h>
 
-#if defined(_AIX)
-#pragma implementation ("TileStepper.cc")
-#endif 
 
 // <summary>
 // traverse a Tiled Lattice optimally with a tile cursor
 // </summary>
+
 // <use visibility=export>
 
 // <reviewed reviewer="" date="" tests="">
 
 // <prerequisite>
-// <list>
 //   <li> <linkto class=LatticeNavigator> LatticeNavigator </linkto>
-// </list>
 // </prerequisite>
 
 // <etymology>
@@ -61,9 +57,9 @@
 // will usually create a LatticeIterator.  Once created, you may attach a
 // LatticeNavigator to the iterator. A TileStepper, is a concrete class
 // derived from the abstract LatticeNavigator that allows you to move
-// a Vector cursor through the Lattice in a way that will minimise the
-// amount of cache memory consumed.
-//
+// through the Lattice in an way that will minimise the amount of cache
+// memory consumed and maximise the speed.
+// <p>
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
 // tiles. For an N-dimensional Lattice a tile is an N-dimensional
 // subsection with fewer elements along each axis. For example a Lattice of
@@ -75,58 +71,22 @@
 // number of tiles held in the cache. But it is also desirable to minimise
 // the number of times a tiles must be read into or written from the
 // cache as this may require a time consuming operation like disk I/O.
-//
-// Now suppose you wanted to traverse a Lattice with a Vector cursor of
-// length 512 pixel aligned along the x-axis. Using a
-// <linkto class=LatticeStepper>LatticeStepper</linkto>, each Vector is
-// retrieved from the Lattice sequentially and without any consideration of
-// the underlying tile shape. What is the optimal cache size for the above
-// example?
-//
-// Suppose we have a cache size of 16 ie., the number of tiles along the
-// x-axis. Then Vectors beginning at positions [0,0,0,0] to [0,15,0,0] will
-// be stored in the cache. But the next Vector beginning at position
-// [0,16,0,0] will flush the cache and read in another 16 tiles. This I/O
-// takes time and will occur 16 times for each plane in the four dimensional
-// Lattice. Further when the cursor moves to position [0,0,1,0] the 16 tiles
-// that where initially in the cache will need to be read again. To avoid
-// all this cache I/O it is better to have a bigger cache.
-//
-// Suppose the cache size is 16*32 (=512) ie., enough tiles to contain an
-// (x,y)-plane. Then the cache size will not be flushed until the cursor is
-// moved to position [0,0,0,16]. Further the cache will never need to read
-// back into memory tiles that had previously been stored in there. The
-// cache is big enough to store tiles until they have been completely
-// used. But this cache is 64MBytes in size, and consumes too much memory
-// for many computers.
-//
-// This where a tileStepper is useful. Because it knows the shape of the
-// tiles in the underlying Lattice it moves the cursor to return all the
-// Vectors in the smallest possible cache of tiles before moving on to the
-// next set of tiles. Using the above example again, the tileStepper will
-// move the beginning of the Vector cursor in the following pattern.
-// <srcblock>
-// [0,0,0,0], [0,1,0,0], [0,2,0,0], ... [0,15,0,0]
-// [0,0,1,0], [0,1,1,0],            ... [0,15,1,0], 
-//                                  ... [0,15,3,0],
-// [0,0,0,1], ...                       [0,15,3,15]
-// </srcblock>
-// Moving the Vector cursor through all 16*4*16 (=1024 positions) can be
-// done by caching only 16 tiles in memory (those along the x-axis). Hence
-// the cache size need only be 2MBytes in size. Further once all 1024
-// vectors have been returned it is not necessary to read these 16 tiles
-// back into memory. All the data in those tiles has already been
-// accessed. Using a TileStepper rather than a LatticeStepper has, in this
-// example, resulted in a drop in the required cache size from 64MBytes down
-// to 2MBytes. 
-//
+// <p>
+// TileStepper steps through a lattice in a tile-by-tile way.
+// This means that the cache contains 1 tile only and that a tile is
+// accessed only once.
+// It should be clear that traversing a lattice in this way cannot
+// be used if an entire vector or plane is needed. It is, however, very
+// well suited for purposes like initialising a lattice, where the
+// order in which the lattice pixels are accessed is not important.
+// <p>
 // In constructing a TileStepper, you specify the Lattice shape, the
-// tile shape and the axis the Vector cursor will be aligned with. Specifying
-// an axis=0 will align the cursor with the x-axis and axis=2 will produce a
-// cursor that is along the z-axis. The length of the cursor is always the
-// same as the number of elements in the Lattice along the axis the cursor
-// is aligned with.
-//
+// tile shape and optionally the axis path. The axis path defines the order
+// in which the tiles are fetched from the lattice. Default is the natural
+// order (thus x-axis in the inner loop).
+// <br>It is possible to use the function <src>subSection</src> to
+// traverse only a subsection of the lattice.
+// <p>
 // The cursor position can be incremented or decremented to retrieve the next
 // or previous Vector in the Lattice. The position of the next Vector in the
 // Lattice will depend on the tile shape, and is described above. Within a tile
@@ -135,91 +95,64 @@
 // dimensions will be exhausted (within a tile) before moving the cursor
 // through higher dimensions. This intra-tile behaviour for cursor movement
 // extends to the inter-tile movement of the cursor between tiles. 
-//
-// This navigator does not currently support sub-sectioning.
-//
 // </synopsis> 
 
 // <example>
-// This example is of a global function that will do a 2-D inplace
-// complex Fourier transform of an arbitrary large Lattice (which
-// must have at least two dimensions).
-//
-// A two dimensional transform is done by successive one dimensional
-// transforms along all the rows and then all the columns in the
-// lattice. Scoping is used to destroy iterators once they have been
-// used. This frees up the cache memory associated with the cursor in each
-// iterator.
-//
+// This example initializes a lattice with the given value..
 // <srcblock>
-// void FFT2DComplex(Lattice<Complex>& cArray,
-// 		  const Int direction)
+// void init (Lattice<Complex>& cArray, Complex value)
 // {
-//   const uInt ndim = cArray.ndim();
-//   AlwaysAssert(ndim > 1, AipsError);
-//   const IPosition latticeShape = cArray.shape();
-//   const uInt nx=latticeShape(0);
-//   const uInt ny=latticeShape(1);
-//   const IPosition tileShape = cArray.niceCursorShape(cArray.maxPixels());
 //
-//   {
-//     TileStepper tsx(latticeShape, tileShape, 0);
-//     LatticeIterator<Complex> lix(cArray, tsx);
-//     FFTServer<Float,Complex> fftx(IPosition(1, nx));
-//     for (lix.reset();!lix.atEnd();lix++)
-//       fftx.cxfft(lix.vectorCursor(), direction);
+//   const IPosition latticeShape = cArray.shape();
+//   const IPosition tileShape = cArray.niceCursorShape();
+//   TileStepper tsx(latticeShape, tileShape);
+//   LatticeIterator<Complex> lix(cArray, tsx);
+//   for (lix.reset();!lix.atEnd();lix++)
+//     lix.woCursor() = value;
 //   }
-//   {
-//     TileStepper tsy(latticeShape, tileShape, 1);
-//     LatticeIterator<Complex> liy(cArray, tsy);
-//     FFTServer<Float,Complex> ffty(IPosition(1, ny));
-//     for (liy.reset();!liy.atEnd();liy++)
-//       ffty.cxfft(liy.vectorCursor(), direction);
-//   }
-// };
+// }
 // </srcblock>
 // </example>
 
 // <motivation>
-// Moving through a Lattice by equal sized chunks, and without regard
-// to the nature of the data, is a basic and common procedure.  
+// This class makes it possible to traverse a lattice in the optimal way.
 // </motivation>
 //
-// <todo asof="1997/03/28">
-//  <li> Provide support for Matrix and higher dimensional cursors
-//       can be used.
-//  <li> Provide support for Lattice subsectioning.
+// <todo asof="1997/11/21">
+//  <li> Provide subsectioning
 // </todo>
 
 class TileStepper: public LatticeNavigator {
 public:
 
-  // Construct a TileStepper by specifying the Lattice shape, a tile shape
-  // and the axis along which the Vector cursor will lie (0 means the
-  // x-axis). Is is nearly always advisable to make the tileShape identical
+  // Construct a TileStepper by specifying the Lattice shape, a tile shape,
+  // and an optional axis path (default is natural order).
+  // Is is nearly always advisable to make the tileShape identical
   // to the Lattice tileShape. This can be obtained by
-  // <src>lat.niceCursorShape(lat.maxPixels())</src> where <src>lat</src> is
+  // <src>lat.niceCursorShape()</src> where <src>lat</src> is
   // a Lattice object.
+  // <group>
   TileStepper (const IPosition& latticeShape, 
 	       const IPosition& tileShape);
+  TileStepper (const IPosition& latticeShape, 
+	       const IPosition& tileShape,
+	       const IPosition& axisPath);
+  // </group>
 
-  // the copy constructor which uses copy semantics.
+  // Copy constructor (copy semantics).
   TileStepper (const TileStepper& other);
     
-  // destructor (does nothing)
   ~TileStepper();
 
-  // The assignment operator which uses copy semantics.
+  // Assignment (copy semantics).
   TileStepper& operator= (const TileStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.  Both functions
-  // do the same thing.
+  // forward one step. Returns True if the cursor was moved.
   virtual Bool operator++(Int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved. Both
-  // functions do the same thing.
+  // backwards one step. Returns True if the cursor was moved.
   virtual Bool operator--(Int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
@@ -240,12 +173,6 @@ public:
   // N-incremensts followed by N-decrements will always leave the cursor in
   // the original position.
   virtual uInt nsteps() const;
-
-  // Function which returns the current position of the beginning of the
-  // cursor. The <src>relativePosition</src> function is relative to the
-  // subSection (i.e. the bottom left corner of the sub Lattice).
-  // <group>
-  // </group>
 
   // Function which returns the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origins
@@ -271,20 +198,14 @@ public:
   // </group>
 
   // Function which returns the shape of the cursor. This always includes
-  // all axes (ie. it includes degenerates axes)
+  // all axes (i.e. it includes degenerates axes)
   virtual IPosition cursorShape() const;
 
   // Function which returns the axes of the cursor.
   virtual IPosition cursorAxes() const;
 
   // Function which returns the shape of the "tile" the cursor will iterate
-  // through before moving onto the next tile. THIS IS NOT THE SAME AS THE
-  // TILE SHAPE USED BY THE LATTICE. It is nearly the same except that the
-  // axis the cursor is aligned with is replaced by the shape of the Lattice
-  // on that axis. eg., If a Lattice has a shape of [512,512,4,32] and a
-  // tile shape of [32,16,4,16] then <src>tileShape()</src> will return
-  // [512,16,4,16] if the cursor is along the x-axis and [32,512,4,16] if the
-  // cursor is along the y-axis.
+  // through before moving onto the next tile.
   IPosition tileShape() const;
 
   // Function which returns "True" if the increment/decrement operators have
@@ -342,7 +263,7 @@ private:
   LatticeIndexer itsSubSection;  //# The current subsection
   LatticeIndexer itsTiler;       //# For moving between tiles
   IPosition itsTilerCursorPos;   //# The current position of the iterator
-  IPosition itsTileShape;        //# The tile shape (= theTiler cursor shape)
+  IPosition itsTileShape;        //# The tile shape (= itsTiler cursor shape)
   IPosition itsAxisPath;         //# Path for traversing
   IPosition itsCurBlc;           //# Blc of the current position.
   IPosition itsCurTrc;           //# Trc of the current position.
@@ -350,5 +271,6 @@ private:
   Bool itsEnd;                   //# Is the cursor beyond the end?
   Bool itsStart;                 //# Is the cursor at the beginning?
 };
+
 
 #endif
