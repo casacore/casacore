@@ -103,10 +103,6 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    } else {
       goodParameterStatus_p = False;
    }
-
-// Avoid double deletion by LogIO::cleanup
-   os_p.makePermanent();
-
 }
 
 

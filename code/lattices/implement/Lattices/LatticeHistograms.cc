@@ -101,10 +101,6 @@ LatticeHistograms<T>::LatticeHistograms (const MaskedLattice<T>& lattice,
    } else {
       os_p << error_p << LogIO::EXCEPTION;
    }
-
-// Avoid double deletion by LogIO::cleanup
-   os_p.makePermanent();
-
 }
 
 
