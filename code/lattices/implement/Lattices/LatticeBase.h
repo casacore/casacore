@@ -33,7 +33,7 @@
 #include <trial/Lattices/LELCoordinates.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/IO/FileLocker.h>
-
+class LogIO;
 
 // <summary>
 // A non-templated, abstract base class for array-like objects.
@@ -153,6 +153,40 @@ public:
   // <br>The default implementation tries to fit as many axes
   // as possible given <src>maxPixels</src>.
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Maximum cache size - not necessarily all used. In pixels.
+  // Default implementation does nothing
+  virtual uInt maximumCacheSize() const {;};
+
+  // Set the maximum (allowed) cache size as indicated.
+  // Default implementation does nothing
+  virtual void setMaximumCacheSize (uInt howManyPixels) {;};
+
+  // Set the actual cache size for this Array to be be big enough for the
+  // indicated number of tiles. This cache is not shared with PagedArrays
+  // in other rows and is always clipped to be less than the maximum value
+  // set using the setMaximumCacheSize member function.
+  // tiles. Tiles are cached using a first in first out algorithm.
+  // Default implementation does nothing
+  virtual void setCacheSizeInTiles (uInt howManyTiles) {;};
+
+
+  // Set the cache size as to "fit" the indicated path.
+  // Default implementation does nothing
+  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
+                             const IPosition& windowStart,
+                             const IPosition& windowLength,
+                             const IPosition& axisPath) {;};
+
+  // Clears and frees up the caches, but the maximum allowed cache size is
+  // unchanged from when setCacheSize was called
+  // Default implementation does nothign
+  virtual void clearCache() {;};
+
+  // Report on cache success.
+  // Default implementation does nothing
+  virtual void showCacheStatistics (ostream& os) const {;};
+
 
 protected:
   // Define default constructor to satisfy compiler.
