@@ -191,7 +191,7 @@ Double MUString::getDouble() {
     istrstream instr(str.chars() + ptr);
     streampos tmp(instr.tellg());
     instr >> res;
-    if (instr.tellg() == -1) {		// if eof seen (at least for sgi)
+    if (instr.tellg() == streampos(-1)) {		// if eof seen (at least for sgi)
       adjustPtr(len);
     } else {
       adjustPtr(ptr + (instr.tellg()-tmp));
