@@ -273,6 +273,33 @@ void MSTableIndex::nearestTime()
 	    // out of range, no match possible
 	    nearestFound_p = False;
 	}
+	// If this were in a separate function, some code duplication could
+	// be avoided.
+	if (!nearestFound_p) {
+	    // it might belong to a neighboring interval
+	    if (hasInterval_p) {
+		nearestFound_p = True;
+		if (time_p<timeVals_p[lastNearest_p]) lastNearest_p--;
+		else lastNearest_p++;
+		if (lastNearest_p >= 0 && lastNearest_p < nElem) {
+		    // double check
+		    Double width = intervalVals_p[lastNearest_p];
+		    thisLowTime = timeVals_p[lastNearest_p] - width/2.0;
+		    thisHighTime = thisLowTime + width;
+		    searchLowTime = time_p - interval_p/2.0;
+		    searchHighTime = searchLowTime + interval_p;
+		    if (thisHighTime < searchLowTime || thisLowTime > searchHighTime) {
+			// out of range, no match possible
+			nearestFound_p = False;
+		    }
+		} else {
+		    // nope, it really isn't there
+		    if (lastNearest_p < 0) lastNearest_p = 0;
+		    else lastNearest_p = nElem -1;
+		    nearestFound_p = False;
+		}
+	    }
+	}
     }
 	    
     lastSearch_p.freeStorage(rowPtr, deleteIt);
