@@ -63,7 +63,7 @@ void a (uInt nrrow)
     // Now create a new table from the description.
     // Use copy constructor to test if it works fine.
     // (newtab and newtabcp have the same underlying object).
-    SetupNewTable newtab("tTable_tmp.data", td, Table::New);
+    SetupNewTable newtab("tTable_3_tmp.data", td, Table::New);
     IncrementalStMan stman2;
     newtab.bindColumn ("ad", stman2);
     Table tab(newtab, TableLock(TableLock::PermanentLocking), nrrow);
