@@ -74,7 +74,8 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
 						   const Array<Range>& yin,
 						   const Array<Bool>& yinFlags,
 						   Int method,
-                                                   Bool goodIsTrue)
+                                                   Bool goodIsTrue,
+						   Bool extrapolate)
 {
   Int nxin=xin.nelements(), nxout=xout.nelements();
   IPosition yinShape=yin.shape();
@@ -108,7 +109,7 @@ void InterpolateArray1D<Domain,Range>::interpolate(Array<Range>& yout,
     youtFlagPtrs[i]=pyoutFlags+i*yStep;
   }
   interpolatePtr(youtPtrs, youtFlagPtrs, yStep, xout, xin, yinPtrs,
-		 yinFlagPtrs, method, goodIsTrue);
+		 yinFlagPtrs, method, goodIsTrue, extrapolate);
 
   yin.freeStorage(pyin,deleteYin);
   yinFlags.freeStorage(pyinFlags,deleteYinFlags);
@@ -274,10 +275,12 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 						      const PtrBlock<const Range*>& yin, 
 						      const PtrBlock<const Bool*>& yinFlags, 
 						      Int method,
-						       Bool goodIsTrue)
+						      Bool goodIsTrue,
+						      Bool extrapolate)
 {
   uInt nElements=xin.nelements();
   Domain x_req;
+  Bool flag = !(goodIsTrue);
   switch (method) {
   case nearestNeighbour: // This does nearest neighbour interpolation
     {
@@ -288,14 +291,14 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	if (where == nElements) {
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[nElements-1][j];
-	    youtFlags[i][j]=yinFlags[nElements-1][j];
+	    youtFlags[i][j]=(extrapolate ? yinFlags[nElements-1][j] : flag);
 	  }
 	}
 	else if (where == 0) {
 	  for (Int j=0; j<ny; j++) {
 	    yout[i][j]=yin[0][j];
-	    youtFlags[i][j]=yinFlags[0][j];
-	  }
+	    youtFlags[i][j]=((x_req==xin[0])||extrapolate ? yinFlags[0][j] : flag);
+	  } 
 	}
 	else if (xin[where] - x_req < static_cast<Domain>(.5)) {
             //static_cast required to get .5 coerced for SGI compiler
@@ -318,11 +321,16 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
       for (Int i=0; i<Int(xout.nelements()); i++) {
 	x_req=xout[i];
 	Bool found;
+	Bool discard = False;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
-	if (where == nElements)
+	if (where == nElements) {
+	  discard=!extrapolate;
 	  where--;
-	else if (where == 0)
+	} 
+	else if (where == 0) {
+	  discard=(x_req!=xin[0])&&(!extrapolate);
 	  where++;
+	}
 	Domain x2 = xin[where]; Int ind2 = where;
 	where--;
 	Domain x1 = xin[where]; Int ind1 = where; 
@@ -335,12 +343,14 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
         if (goodIsTrue) {
    	   for (Int j=0; j<ny; j++) {
 	     yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
-	     youtFlags[i][j] = yinFlags[ind1][j] && yinFlags[ind2][j];
+	     youtFlags[i][j] = (discard ? flag : 
+				yinFlags[ind1][j] && yinFlags[ind2][j]);
            }
         } else {
    	   for (Int j=0; j<ny; j++) {
 	     yout[i][j] = yin[ind1][j] + frac * (yin[ind2][j] - yin[ind1][j]);
-	     youtFlags[i][j] = yinFlags[ind1][j] || yinFlags[ind2][j];
+	     youtFlags[i][j] = ( discard ? flag : 
+				 yinFlags[ind1][j] || yinFlags[ind2][j]);
            }
         }
       }
@@ -353,21 +363,28 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
       for (uInt i=0; i<xout.nelements(); i++) {
 	Domain x_req=xout[i];
 	Bool found;
+	Bool discard = False;
 	uInt where = binarySearchBrackets(found, xin, x_req, nElements);
-	if (where == nElements)
+	if (where == nElements) {
 	  where--;
-	else if (where == 0)
+	  discard = !extrapolate;
+	}
+	else if (where == 0) {
 	  where++;
+	  discard=(x_req!=xin[0])&&(!extrapolate);
+	}
 	Int ind2 = where;
 	where--;
 	Int ind1 = where; 
         if (goodIsTrue) {
 	  for (Int j=0; j<ny; j++) {
-	    youtFlags[i][j] = yinFlags[ind1][j] && yinFlags[ind2][j];
+	    youtFlags[i][j] = (discard ? 
+			       flag : yinFlags[ind1][j] && yinFlags[ind2][j]);
 	  }
         } else {
 	  for (Int j=0; j<ny; j++) {
-	    youtFlags[i][j] = yinFlags[ind1][j] || yinFlags[ind2][j];
+	    youtFlags[i][j] = (discard ? 
+			       flag : yinFlags[ind1][j] || yinFlags[ind2][j]);
 	  }
         }
       }
@@ -430,11 +447,16 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	for (i=0; i<Int(xout.nelements()); i++) {
 	  x_req=xout[i];
 	  Bool found;
+	  Bool discard = False;
 	  uInt where = binarySearchBrackets(found, xin, x_req, nElements);
-	  if (where == nElements)
+	  if (where == nElements) {
 	    where--;
-	  else if (where == 0)
+	    discard = !extrapolate;
+	  }
+	  else if (where == 0) {
 	    where++;
+	    discard=(x_req!=xin[0])&&(!extrapolate);
+	  }
 	  
 	  Domain dx, h, a, b, x1, x2;
 	  Range y1v, y2v, y1d, y2d;
@@ -456,8 +478,8 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
 	  b = Domain(1)-a;
 	  h = dx*dx/6.;
 	  yout[i][j] = a*y1v + b*y2v + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
-	  if (goodIsTrue) youtFlags[i][j] = f1 && f2;
-	  else youtFlags[i][j] = f1 || f2;
+	  if (goodIsTrue) youtFlags[i][j] = (discard ? flag : f1 && f2);
+	  else youtFlags[i][j] = (discard ? flag : f1 || f2);
 	}
       }
       return;
@@ -501,9 +523,9 @@ void InterpolateArray1D<Domain,Range>::polynomialInterpolation
     for (Int j=0; j<ny; j++) {
       Int offset=where;
       // copy the x, y data into the working arrays
-      for (i = 0; i < n; i++){
-	d[i] = c[i] = yin[offset][j]; 
-	x[i] = xin[offset];
+      for (Int i2 = 0; i2 < n; i2++){
+	d[i2] = c[i2] = yin[offset][j]; 
+	x[i2] = xin[offset];
 	offset++;
       }
       // Now do the interpolation using the rather opaque algorithm
