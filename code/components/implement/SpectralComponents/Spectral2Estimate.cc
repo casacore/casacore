@@ -62,6 +62,9 @@ template <class MT>
 const SpectralList& SpectralEstimate::estimate(const Vector<MT>& x,
                                                const Vector<MT>& y)
 {
+  if (x.nelements() != y.nelements()) {
+     throw(AipsError("Abcissa and ordinate vectors must be the same length"));
+  }
   // Get pixel-based estimate
   const SpectralList& list = estimate(y);
   // Convert

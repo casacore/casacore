@@ -131,7 +131,8 @@ class SpectralEstimate {
   // vector must be monotonic); if the pixel-based center is out of range 
   // of the supplied abcissa vector the conversion is done via extrapolation.
   // The der pointer is meant for debugging, and can return 
-  // the derivative profile.
+  // the derivative profile.  The second function throw an AipsError
+  // if the vectors are not the same length.
   // <group>
   template <class MT>
     const SpectralList& estimate(const Vector<MT>& ordinate,
