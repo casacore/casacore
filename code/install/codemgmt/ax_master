@@ -4323,3 +4323,5 @@
 14 231 src mv atnf/apps/pksmeasurementset/PKSMSwriter.cc atnf/implement/PKSIO/PKSMS1writer.cc
 14 231 src mv atnf/apps/pkswriter/PKSMS2writer.h atnf/implement/PKSIO/PKSMS2writer.h
 14 231 src mv atnf/apps/pkswriter/PKSMS2writer.cc atnf/implement/PKSIO/PKSMS2writer.cc
+14 231 src rm atnf/apps/pkswriter
+14 231 sys rm bin/pkswriter
