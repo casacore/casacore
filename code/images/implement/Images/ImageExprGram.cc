@@ -1,5 +1,5 @@
 //# ImageExprGram.cc: Grammar for image expressions
-//# Copyright (C) 1998,1999,2001
+//# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -88,7 +88,7 @@ int imageExprGramInput (char* buf, int max_size)
 void ImageExprGramerror (char*)
 {
     throw (AipsError ("Image Expression: Parse error at or near '" +
-		      String(yytext) + "'"));
+		      String(ImageExprGramtext) + "'"));
 }
 
 String imageExprGramRemoveEscapes (const String& in)
