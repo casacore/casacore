@@ -273,6 +273,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    os_p.output() << setw(oDWidth) << "Sum";
    if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
    os_p.output() << setw(oDWidth) << "Mean"; 
+   if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Sigma";
    os_p.output() << setw(oDWidth) << "Minimum";
@@ -307,14 +308,15 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // I hate ostrstreams.  The bloody things are one shot.
    
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
-         setStream(os6, oPrec); setStream(os7, oPrec);
+         setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec);
 //
          os0 << stats.column(SUM)(j);
          if (hasBeam) os1 << stats.column(FLUX)(j);
          os2 << stats.column(MEAN)(j);
+         if (doRobust_p) os8 << stats.column(MEDIAN)(j);
          os3 << stats.column(RMS)(j);
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
@@ -323,6 +325,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
          os_p.output() << setw(oDWidth)   << String(os2);
+         if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
          os_p.output() << setw(oDWidth)   << String(os3);
          os_p.output() << setw(oDWidth)   << String(os4);
          os_p.output() << setw(oDWidth)   << String(os5);
@@ -410,127 +413,34 @@ void ImageStatistics<T>::getLabels(String& hLabel, String& xLabel, const IPositi
    }
 }
 
+
 template <class T>
-void ImageStatistics<T>::summStats ()
-//
-// List the summary of the statistics to the logger in the
-// case that the statistics storage lattice is 1D only
-// 
-{   
-
-// Fish out statistics with a slice
-
-   const IPosition shape = statsSliceShape();
-   Array<T> stats(shape);
-   pStoreLattice_p->getSlice (stats, IPosition(1,0), shape, IPosition(1,1));
-//
-   IPosition pos(1);
-//
-   pos(0) = NPTS;
-   T nPts = stats(pos);
-//
-   pos(0) = SUM;
-   T sum = stats(pos);   
-//
-   pos(0) = SUMSQ;
-   T sumSq = stats(pos);
-//
-   T mean = LattStatsSpecialize::getMean(sum, nPts);
-   T var = LattStatsSpecialize::getVariance(sum, sumSq, nPts);
-   T rms = LattStatsSpecialize::getRms(sumSq, nPts);
-   T sigma = LattStatsSpecialize::getSigma(var);
-// 
-   pos(0) = MIN;
-   T dMin = stats(pos);
-   pos(0) = MAX;
-   T dMax = stats(pos);
-
-// Get beam
-      
-   Double beamArea;
-   Bool hasBeam = getBeamArea(beamArea);
-         
-// Have to convert LogIO object to ostream before can apply
-// the manipulators.  Also formatting Complex numbers with
-// the setw manipulator fails, so I go to a lot of trouble
-// with ostrstreams (which are useable only once).
-   const Int oPrec = 6;
-   Int oWidth = 14;
-   T* dummy = 0;
-   DataType type = whatType(dummy);
-   if (type==TpComplex) {
-       oWidth = 32;
-   }
-   setStream(os_p.output(), oPrec);
-   ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7;
-   setStream(os00, oPrec);
-   setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
-   setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
-   setStream(os6, oPrec); setStream(os7, oPrec);
-//
-   os_p << endl;
-   if (LattStatsSpecialize::hasSomePoints(nPts)) {
-      os_p << "Number points = ";
-      os00 << nPts;
-      os_p.output() << setw(oWidth) << String(os00) << endl;
-// 
-      if (hasBeam) {
-         os_p << "Flux density  = ";
-         os0 << sum/beamArea;
-         os_p.output() << setw(oWidth) << String(os0) << " Jy" << endl;
-      }
-//
-      os1 << sum; os2 << mean; os3 << var; os5 << rms;
-      os6 << dMin; os7 << dMax;
-//
-      os_p << "Sum           = ";
-      os_p.output() << setw(oWidth) << String(os1) << "       Mean     = ";
-      os_p.output() << setw(oWidth) << String(os2) << endl;
-//
-      os_p << "Variance      = ";
-      os_p.output() << setw(oWidth) << String(os3);
-//
-      if (var > 0.0) {
-         os4 << sigma;
-         os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << String(os4) << endl;
-      } else { 
-         os_p << endl;
-      }
-// 
-      os_p << "Rms           = ";
-      os_p.output() << setw(oWidth) << String(os5) << endl;
-      os_p << endl;
-  
-// Min/max locations only meaningful for Float images currently.
-// Min/max locations only meaningful for Float images currently.
-  
-      if (!fixedMinMax_p) {
+void ImageStatistics<T>::listMinMax(ostrstream& osMin,
+                                    ostrstream& osMax,
+                                    Int oWidth, DataType type)
+{
+   if (!fixedMinMax_p) {
 
 // Find world coordinates of min and max. We list pixel coordinates
 // of min/max relative to the start of the parent lattice
 
-         String minPosString = formatCoordinate (minPos_p);
-         String maxPosString = formatCoordinate (maxPos_p);
-//
-         os_p << "Minimum value "; 
-         os_p.output() << setw(oWidth) << String(os6);
-         if (type==TpFloat) {
-            os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
-         }
-         os_p << endl;
-//
-         os_p << "Maximum value ";
-         os_p.output() << setw(oWidth) << String(os7);
-         if (type==TpFloat) {
-            os_p <<  " at " << blcParent_p + maxPos_p+1 << " (" << maxPosString << ")" << endl;
-         }
-         os_p << endl;
-      }
-   } else {
-      os_p << "No valid points found " << endl;
-   }   
-   os_p << endl << endl;
-   os_p.post();
-}
 
+      String minPosString = formatCoordinate (minPos_p);
+      String maxPosString = formatCoordinate (maxPos_p);
+//
+      os_p << "Minimum value "; 
+      os_p.output() << setw(oWidth) << String(osMin);
+      if (type==TpFloat) {
+         os_p <<  " at " << blcParent_p + minPos_p+1 << " (" << minPosString << ")" << endl;
+      }
+      os_p.post();
+//
+      os_p << "Maximum value ";
+      os_p.output() << setw(oWidth) << String(osMax);
+      if (type==TpFloat) {
+         os_p <<  " at " << blcParent_p + maxPos_p+1 << " (" << maxPosString << ")" << endl;
+      }
+      os_p << endl;
+      os_p.post();
+   }
+}
