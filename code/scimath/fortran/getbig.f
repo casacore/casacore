@@ -2,7 +2,7 @@
 *     GETBIG: find the pixels with the biggest absolute value
 *-----------------------------------------------------------------------
 *
-*     Copyright (C) 1997,1998
+*     Copyright (C) 1997
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -139,7 +139,7 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
 *-----------------------------------------------------------------------
@@ -172,7 +172,7 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
 *-----------------------------------------------------------------------
@@ -209,7 +209,7 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
 *-----------------------------------------------------------------------
@@ -242,7 +242,7 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
 *-----------------------------------------------------------------------
@@ -278,7 +278,7 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
 *-----------------------------------------------------------------------
@@ -319,6 +319,6 @@
             END IF
  20      CONTINUE
  10   CONTINUE
-      MAXPIX = NPIX
+      MAXPIX = NPIX - MAXPIX
       RETURN
       END
