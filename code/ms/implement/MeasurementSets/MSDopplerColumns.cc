@@ -32,7 +32,10 @@ RONewMSDopplerColumns::RONewMSDopplerColumns(const NewMSDoppler& msDoppler):
   isNull_p(True),
   dopplerId_p(),
   sourceId_p(),
-  transitionId_p()
+  transitionId_p(),
+  velDef_p(),
+  velDefMeas_p(),
+  velDefQuant_p()
 {
   attach(msDoppler);
 }
@@ -43,7 +46,10 @@ RONewMSDopplerColumns::RONewMSDopplerColumns():
   isNull_p(True),
   dopplerId_p(),
   sourceId_p(),
-  transitionId_p()
+  transitionId_p(),
+  velDef_p(),
+  velDefMeas_p(),
+  velDefQuant_p()
 {
 }
 
@@ -57,6 +63,11 @@ void RONewMSDopplerColumns::attach(const NewMSDoppler& msDoppler)
 		      columnName(NewMSDoppler::SOURCE_ID));
     transitionId_p.attach(msDoppler, NewMSDoppler::
 			  columnName(NewMSDoppler::TRANSITION_ID));
+    velDef_p.attach(msDoppler, NewMSDoppler::columnName(NewMSDoppler::VELDEF));
+    velDefMeas_p.attach(msDoppler, NewMSDoppler::
+			columnName(NewMSDoppler::VELDEF));
+    velDefQuant_p.attach(msDoppler, NewMSDoppler::
+			 columnName(NewMSDoppler::VELDEF));
   }
 }
 
@@ -64,7 +75,10 @@ NewMSDopplerColumns::NewMSDopplerColumns(NewMSDoppler& msDoppler):
   RONewMSDopplerColumns(),
   dopplerId_p(),
   sourceId_p(),
-  transitionId_p()
+  transitionId_p(),
+  velDef_p(),
+  velDefMeas_p(),
+  velDefQuant_p()
 {
   attach(msDoppler);
 }
@@ -75,7 +89,10 @@ NewMSDopplerColumns::NewMSDopplerColumns():
   RONewMSDopplerColumns(),
   dopplerId_p(),
   sourceId_p(),
-  transitionId_p()
+  transitionId_p(),
+  velDef_p(),
+  velDefMeas_p(),
+  velDefQuant_p()
 {
 }
 
@@ -89,6 +106,11 @@ void NewMSDopplerColumns::attach(NewMSDoppler& msDoppler)
 		      columnName(NewMSDoppler::SOURCE_ID));
     transitionId_p.attach(msDoppler, NewMSDoppler::
 			  columnName(NewMSDoppler::TRANSITION_ID));
+    velDef_p.attach(msDoppler, NewMSDoppler::columnName(NewMSDoppler::VELDEF));
+    velDefMeas_p.attach(msDoppler, NewMSDoppler::
+			columnName(NewMSDoppler::VELDEF));
+    velDefQuant_p.attach(msDoppler, NewMSDoppler::
+			 columnName(NewMSDoppler::VELDEF));
   }
 }
 // Local Variables: 

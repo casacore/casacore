@@ -69,8 +69,11 @@ public:
     // Transition id, index into list of transitions in SOURCE table<BR>
     // Int
     TRANSITION_ID,
+    // Velocity definition for Doppler shift
+    // Double - m/s - DOPPLER
+    VELDEF,
     // Number of required columns
-    NUMBER_REQUIRED_COLUMNS=TRANSITION_ID,
+    NUMBER_REQUIRED_COLUMNS=VELDEF,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=NUMBER_REQUIRED_COLUMNS
     };

@@ -128,6 +128,10 @@ public:
     static void init();
 
 private:
+    // temporary function to add the VELDEF
+    // column if it isn't there yet. 2000/09/12
+    // remove this and the calls next MS update
+    void addVelDef();
 
     // required by the need to throw an exception in the destructor
     Bool hasBeenDestroyed_p;

@@ -29,7 +29,10 @@
 #define AIPS_NEWMSDOPPLERCOLUMNS_H
 
 #include <aips/aips.h>
+#include <aips/Measures/MDoppler.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
 
 class NewMSDoppler;
 
@@ -83,6 +86,9 @@ public:
   const ROScalarColumn<Int>& dopplerId() const {return dopplerId_p;}
   const ROScalarColumn<Int>& sourceId() const {return sourceId_p;}
   const ROScalarColumn<Int>& transitionId() const {return transitionId_p;}
+  const ROScalarColumn<Double>& velDef() const {return velDef_p;}
+  const ROScalarQuantColumn<Double>& velDefQuant() const {return velDefQuant_p;}
+  const ROScalarMeasColumn<MDoppler>& velDefMeas() const {return velDefMeas_p;}
   // </group>
   
   // Convenience function that returns the number of rows in any of the
@@ -110,6 +116,14 @@ private:
   ROScalarColumn<Int> dopplerId_p;
   ROScalarColumn<Int> sourceId_p;
   ROScalarColumn<Int> transitionId_p;
+  ROScalarColumn<Double> velDef_p;
+
+  //# Access to Measure columns
+  ROScalarMeasColumn<MDoppler> velDefMeas_p;
+
+  //# Access to Quantum columns
+  ROScalarQuantColumn<Double> velDefQuant_p;
+
 };
 
 // <summary>
@@ -158,6 +172,9 @@ public:
   ScalarColumn<Int>& dopplerId() {return dopplerId_p;}
   ScalarColumn<Int>& sourceId() {return sourceId_p;}
   ScalarColumn<Int>& transitionId() {return transitionId_p;}
+  ScalarColumn<Double>& velDef() {return velDef_p;}
+  ScalarQuantColumn<Double>& velDefQuant(){return velDefQuant_p;}
+  ScalarMeasColumn<MDoppler>& velDefMeas() {return velDefMeas_p;}
   // </group>
 
   // Read-only access to required columns
@@ -168,6 +185,12 @@ public:
     return RONewMSDopplerColumns::sourceId();}
   const ROScalarColumn<Int>& transitionId() const {
     return RONewMSDopplerColumns::transitionId();}
+  const ROScalarColumn<Double>& velDef() const {
+    return RONewMSDopplerColumns::velDef();}
+  const ROScalarQuantColumn<Double>& velDefQuant() const {
+    return RONewMSDopplerColumns::velDefQuant();}
+  const ROScalarMeasColumn<MDoppler>& velDefMeas() const {
+    return RONewMSDopplerColumns::velDefMeas();}
   // </group>
   
 protected:
@@ -188,6 +211,13 @@ private:
   ScalarColumn<Int> dopplerId_p;
   ScalarColumn<Int> sourceId_p;
   ScalarColumn<Int> transitionId_p;
+  ScalarColumn<Double> velDef_p;
+
+  //# Access to Measure columns
+  ScalarMeasColumn<MDoppler> velDefMeas_p;
+
+  //# Access to Quantum columns
+  ScalarQuantColumn<Double> velDefQuant_p;
 };
 
 #endif

@@ -32,6 +32,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/ScaColDesc.h>
+#include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/StManAipsIO.h>
 #include <aips/Tables/ForwardCol.h>
@@ -46,9 +47,31 @@ NewMSDoppler::NewMSDoppler(const String &tableName,
       PredefinedKeywords>(tableName, option),hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addVelDef();
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMSDoppler(String &, TableOption) - "
 			 "table is not a valid NewMSDoppler"));
+}
+
+void NewMSDoppler::addVelDef()
+{
+  // For a transition period: add the VELDEF column
+  // silently if it is not there - 2000/09/12, remove next MS update.
+  if (tableDesc().isColumn(columnName(TRANSITION_ID))) {
+    // we probably have a MSDoppler table
+    if (!tableDesc().isColumn(columnName(VELDEF))) {
+      if (!isWritable()) {
+	throw (AipsError("Missing VELDEF column in MSDoppler table -"
+			"please open MS table R/W to have it added"));
+      } else {
+	TableDesc td; 
+	addColumnToDesc(td,VELDEF);
+	addColumn(td[0]);
+	ScalarColumn<Double> velDef(*this,columnName(VELDEF));
+	velDef.fillColumn(0);
+      }
+    }
+  }
 }
 
 NewMSDoppler::NewMSDoppler(const String& tableName, const String &tableDescName,
@@ -58,6 +81,7 @@ NewMSDoppler::NewMSDoppler(const String& tableName, const String &tableDescName,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addVelDef();
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMSDoppler(String &, String &, TableOption) - "
 			 "table is not a valid NewMSDoppler"));
@@ -70,6 +94,7 @@ NewMSDoppler::NewMSDoppler(SetupNewTable &newTab, uInt nrrow,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addVelDef();
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMSDoppler(SetupNewTable &, uInt, Bool) - "
 			 "table is not a valid NewMSDoppler"));
@@ -80,6 +105,7 @@ NewMSDoppler::NewMSDoppler(const Table &table)
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addVelDef();
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMSDoppler(const Table &) - "
 			 "table is not a valid NewMSDoppler"));
@@ -92,6 +118,7 @@ NewMSDoppler::NewMSDoppler(const NewMSDoppler &other)
 {
     // verify that other is valid
     if (&other != this) 
+        addVelDef();
 	if (! validate(this->tableDesc()))
 	    throw (AipsError("NewMSDoppler(const NewMSDoppler &) - "
 			     "table is not a valid NewMSDoppler"));
@@ -137,7 +164,9 @@ void NewMSDoppler::init()
 	// TRANSITION_ID
 	colMapDef(TRANSITION_ID,"TRANSITION_ID",TpInt,
 		  "Pointer to list of transitions in SOURCE table","","");
-
+	// VELDEF
+	colMapDef(VELDEF, "VELDEF", TpDouble, 
+		  "Velocity Definition for Doppler shift","m/s","Doppler");
 	// PredefinedKeywords
 
 	// init requiredTableDesc
