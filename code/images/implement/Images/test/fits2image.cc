@@ -50,7 +50,8 @@ int main(int argc, char **argv)
     String root = Aipsrc::aipsRoot();
     String name = root + "/data/demo/Images/test_image.fits";
     inp.create("in", name, "Input FITS file name", "string");
-    inp.create("out", "out.image", "Output AIPS++ Image name", "string");
+    inp.create("out", "fits2image_tmp.out", "Output AIPS++ Image name",
+	       "string");
     inp.create("overwrite", "True", "Allow output to be overwritten?",
                 "Bool");
     inp.create("zero", "False", "Zero blanks?", "Bool");
