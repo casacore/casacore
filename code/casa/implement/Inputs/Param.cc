@@ -1,5 +1,5 @@
 //# Param.cc: Helper class for key=value user interface
-//# Copyright (C) 1993,1994,1995,1999,2001
+//# Copyright (C) 1993,1994,1995,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <aips/Inputs/Param.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/iostream.h>
 
 
 Param::Param()			// default constructor; doesn't do anything
@@ -154,7 +155,7 @@ Param::getDoubleArray (Bool prompt) const	// Double value
             z = val.after(idx);
             idx += z.index(",") + 1;
         }
-        x[i] = atof(z);
+        x[i] = atof(z.chars());
     }
     return x;
 }
@@ -189,7 +190,7 @@ Param::getIntArray (Bool prompt) const
             z = val.after(idx);
             idx += z.index(",") + 1;
         }
-        x[i] = atoi(z);
+        x[i] = atoi(z.chars());
     }
     return x;
 }
