@@ -63,10 +63,10 @@ MSConcat::MSConcat(MeasurementSet& ms):
   itsMS(ms),
   itsFixedShape(isFixedShape(ms.tableDesc()))
 {
-  if (ms.tableInfo().subType() != "UVFITS") {
-    throw(AipsError("MSConcat::MSConcat(..) - Measurement set was not created"
-		    " from a UVFITS file."));
-  }
+  // if (ms.tableInfo().subType() != "UVFITS") {
+  // throw(AipsError("MSConcat::MSConcat(..) - Measurement set was not created"
+  //		    " from a UVFITS file."));
+  //}
 }
 
 IPosition MSConcat::isFixedShape(const TableDesc& td) {
@@ -115,10 +115,10 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 void MSConcat::concatenate(const MeasurementSet& otherMS)
 {
   LogIO log(LogOrigin("MSConcat", "concatenate"));
-  if (otherMS.tableInfo().subType() != "UVFITS") {
-    log << "Measurement set was not created from a UVFITS file."
-	<< LogIO::EXCEPTION;
-  }
+  //  if (otherMS.tableInfo().subType() != "UVFITS") {
+  //    log << "Measurement set was not created from a UVFITS file."
+  //	<< LogIO::EXCEPTION;
+  //}
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
   const ROMSMainColumns otherMainCols(otherMS);
@@ -240,6 +240,12 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   } 
 }
 
+void MSConcat::setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol){
+
+  itsFreqTol=freqTol;
+  itsDirTol=dirTol;
+}
+
 void MSConcat::checkShape(const IPosition& otherShape) const 
 {
   const uInt nAxes = min(itsFixedShape.nelements(), otherShape.nelements());
@@ -347,7 +353,7 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
   const uInt nFlds = otherFld.nrow();
   Block<uInt> fldMap(nFlds);
-  const Quantum<Double> tolerance(.1, "mas");
+  const Quantum<Double> tolerance=itsDirTol;
   const ROMSFieldColumns otherFieldCols(otherFld);
   MSFieldColumns& fieldCols = field();
 
@@ -416,15 +422,17 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
   const ROMSDataDescColumns otherDDCols(otherDD);
   MSDataDescColumns& ddCols = dataDescription();
   // Get a guess at the tolerance
-  Double tolerance;
+  /*  Double tolerance;
   {
     ROArrayColumn<Double> frequencies(spw,
 		    MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
     Vector<Double> frequ=frequencies(0);
     tolerance=max(frequ)/1.0e6;
   }
+  
   const Quantum<Double> freqTol(tolerance, "Hz");
-
+  */
+  const Quantum<Double> freqTol=itsFreqTol;
   const String& spwIdxName = 
     MSDataDescription::columnName(MSDataDescription::SPECTRAL_WINDOW_ID);
   const String& polIdxName = 

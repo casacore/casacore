@@ -1,5 +1,5 @@
 //# MSConcat.h: A class for concatenating MeasurementSets.
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,7 @@ class MSConcat: public MSColumns
 public:
   MSConcat(MeasurementSet& ms);
   void concatenate(const MeasurementSet& otherMS);
+  void setTolerance(Quantum<Double>& freqTol, Quantum<Double>& dirTol); 
 private:
   MSConcat();
   static IPosition isFixedShape(const TableDesc& td);
@@ -111,7 +112,10 @@ private:
 
   MeasurementSet itsMS;
   IPosition itsFixedShape;
+  Quantum<Double> itsFreqTol;
+  Quantum<Double> itsDirTol;
 };
 #endif
+
 
 
