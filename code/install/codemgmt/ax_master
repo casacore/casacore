@@ -4658,3 +4658,4 @@
 14 300 src mv trial/apps/oldms/newms.g trial/apps/ms/ms.g
 14 300 src mv trial/implement/MeasurementSets/MSReader.h trial/implement/MeasurementSets/OldMSReader.h
 14 300 src mv trial/implement/MeasurementSets/MSReader.cc trial/implement/MeasurementSets/OldMSReader.cc
+14 300 src rm atnf/apps/rpfitsfiller
