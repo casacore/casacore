@@ -37,10 +37,13 @@
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <trial/Measures/VelocityMachine.h>
+#include <aips/Utilities/ValType.h>
 
 #include <iomanip.h>
 #include <iostream.h>
@@ -54,6 +57,8 @@ ImageSummary<T>::ImageSummary (const ImageInterface<T>& image)
 // will get rubbish.
 //
 {
+   cSys_p = image.coordinates();
+   obsInfo_p = cSys_p.obsInfo();
    pImage_p = &image;
 }
 
@@ -63,6 +68,8 @@ ImageSummary<T>::ImageSummary (const ImageSummary<T> &other)
 // Copy constructor
 //
 {
+   cSys_p = other.cSys_p;
+   obsInfo_p = other.obsInfo_p;
    pImage_p = other.pImage_p;
 }
 
@@ -79,7 +86,11 @@ ImageSummary<T> &ImageSummary<T>::operator=(const ImageSummary<T> &other)
 // Assignment operator
 //
 {
-   if (this != &other) pImage_p = other.pImage_p;
+   if (this != &other) {
+      cSys_p = other.cSys_p;
+      obsInfo_p = other.obsInfo_p;
+      pImage_p = other.pImage_p;
+   }
    return *this;
 }
 
@@ -120,14 +131,16 @@ gpp_VS ImageSummary<T>::axisNames () const
 // Get axis names for the pixel axes
 //
 {
-   CoordinateSystem cSys = pImage_p->coordinates();
-   Int coordinate, axisInCoordinate;
-   Vector<String> names(cSys.nPixelAxes());
+   Vector<String> names(cSys_p.nPixelAxes());
+   Vector<String> worldNames(cSys_p.worldAxisNames());
 
-   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
-      names(pixelAxis) = cSys.worldAxisNames()(worldAxis);
+   for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
+      Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+      if (worldAxis != -1) {
+         names(pixelAxis) = worldNames(worldAxis);
+      } else {
+         names(pixelAxis) = "removed";
+      }
    }
    return names;
 }
@@ -141,15 +154,7 @@ Vector<Double> ImageSummary<T>::referencePixels () const
 // Get reference pixels for the pixel axes
 //
 {
-   CoordinateSystem cSys = pImage_p->coordinates();
-   Int coordinate, axisInCoordinate;
-   Vector<Double> refPix(cSys.nPixelAxes());
- 
-   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-      refPix(pixelAxis) = cSys.referencePixel()(pixelAxis) + 1.0;
-   }
-   return refPix;
+   return cSys_p.referencePixel().ac()+Vector<Double>(cSys_p.nPixelAxes(),1.0).ac();
 }
 
 
@@ -159,14 +164,16 @@ Vector<Double> ImageSummary<T>::referenceValues () const
 // Get reference values for the pixel axes
 //
 {
-   CoordinateSystem cSys = pImage_p->coordinates();
-   Int coordinate, axisInCoordinate;
-   Vector<Double> refVals(cSys.nPixelAxes());
- 
-   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
-      refVals(pixelAxis) = cSys.referenceValue()(worldAxis);
+   Vector<Double> refVals(cSys_p.nPixelAxes());
+   Vector<Double> refValues(cSys_p.referenceValue());
+// 
+   for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
+      Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+      if (worldAxis != -1) {
+         refVals(pixelAxis) = refValues(worldAxis);
+      } else {
+         refVals(pixelAxis) = ValType::undefDouble();
+      }
    }
    return refVals;
 }
@@ -178,14 +185,16 @@ Vector<Double> ImageSummary<T>::axisIncrements () const
 // Get axis increments for the pixel axes
 //
 {
-   CoordinateSystem cSys = pImage_p->coordinates();
-   Int coordinate, axisInCoordinate;
-   Vector<Double> incs(cSys.nPixelAxes());
- 
-   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
-      incs(pixelAxis) = cSys.increment()(worldAxis);
+   Vector<Double> incs(cSys_p.nPixelAxes());
+   Vector<Double> worldIncs(cSys_p.increment());
+
+   for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
+      Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+      if (worldAxis != -1) {
+         incs(pixelAxis) = worldIncs(worldAxis);
+      } else {
+         incs(pixelAxis) = ValType::undefDouble();
+      }
    }
    return incs;
 }
@@ -196,15 +205,16 @@ Vector<String> ImageSummary<T>::axisUnits () const
 // Get axis units for the pixel axes
 //
 {
-   CoordinateSystem cSys = pImage_p->coordinates();
-   Int coordinate, axisInCoordinate;
- 
-   Vector<String> units(cSys.nPixelAxes());
- 
-   for (uInt pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
-      units(pixelAxis) = cSys.worldAxisUnits()(worldAxis);
+   Vector<String> units(cSys_p.nPixelAxes());
+   Vector<String> worldUnits(cSys_p.worldAxisUnits());
+
+   for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
+      Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
+      if (worldAxis != -1) {
+         units(pixelAxis) = worldUnits(worldAxis);
+      } else {
+         units(pixelAxis) = "removed";
+      }
    }
    return units;
 }
@@ -233,13 +243,46 @@ String ImageSummary<T>::name () const
 
 
 template <class T> 
+String ImageSummary<T>::observer() const
+//
+// Get observer name
+//
+{
+   return obsInfo_p.observer();
+}
+
+
+template <class T> 
+String ImageSummary<T>::obsDate(MEpoch& epoch) const
+//
+// Get epoch 
+//
+{
+   epoch = obsInfo_p.obsDate();
+   MVTime time = MVTime(epoch.getValue());
+   return time.string(MVTime::YMD);   
+}
+
+
+template <class T> 
+String ImageSummary<T>::telescope() const
+//
+// Get telescope
+//
+{
+   return obsInfo_p.telescope();
+}
+
+
+
+
+template <class T> 
 Bool ImageSummary<T>::hasAMask () const
 //
 // See if image has a mask
 //
 {
-  //   return pImage_p->isMasked();
-  return False;
+   return False;
 }
 
 
@@ -261,48 +304,54 @@ void ImageSummary<T>::list (LogIO& os,
 {
 
    os << LogIO::NORMAL << endl;
-
+   MEpoch epoch;
+   obsDate(epoch);
 
 // List random things
-
-   os << "Image name       : " << this->name() << endl;
-   if (this->hasAMask()) {
+   
+   os << "Image name       : " << name() << endl;
+   if (telescope() != "UNKNOWN") {
+      os << "Telescope        : " << telescope() << endl;
+   }
+   if (observer() != "UNKNOWN") {
+      os << "Observer         : " << observer() << endl;
+   }
+   if (epoch.getValue().getDay() != Double(0.0)) { 
+      os << "Date observation : " << obsDate(epoch) << endl;
+   }
+   if (hasAMask()) {
       os << "Image mask       : Present" << endl;
    } else {
       os << "Image mask       : Absent" << endl;
    }
-   if (!this->units().getName().empty()) 
+   if (!units().getName().empty()) 
       os << "Image units      : " << this->units().getName() << endl << endl;
 
 
-// Obtain CoordinateSystem
-
-   const CoordinateSystem cSys = pImage_p->coordinates();
-
 // List DirectionCoordinate type from the first DirectionCoordinate we find
 
-   Vector<uInt> directionAxes = CoordinateUtil::findDirectionAxes(cSys);
+   Vector<uInt> directionAxes = CoordinateUtil::findDirectionAxes(cSys_p);
    if (directionAxes.nelements() != 0) {
-      Int coordinate = cSys.findCoordinate(Coordinate::DIRECTION);
+      Int coordinate = cSys_p.findCoordinate(Coordinate::DIRECTION);
       if (coordinate >= 0) {           
          os << "Direction system : " 
-            << MDirection::showType(cSys.directionCoordinate(uInt(coordinate)).directionType()) << endl;
+            << MDirection::showType(cSys_p.directionCoordinate(uInt(coordinate)).directionType()) << endl;
       }
    }
 
 // List rest frequency and reference frame from the first spectral axis we find
 
-   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys);
+   Int spectralAxis = CoordinateUtil::findSpectralAxis(cSys_p);
 
    if (spectralAxis >= 0) {
       Int coordinate, axisInCoordinate;
-      cSys.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
-//      const Double restFreq = cSys.spectralCoordinate(coordinate).restFrequency();
+      cSys_p.findPixelAxis (coordinate, axisInCoordinate, spectralAxis);
+//      const Double restFreq = cSys_p.spectralCoordinate(coordinate).restFrequency();
       Quantum<Double> restFreq;
-      restFreq.setValue(cSys.spectralCoordinate(coordinate).restFrequency());
-      restFreq.setUnit(cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
+      restFreq.setValue(cSys_p.spectralCoordinate(coordinate).restFrequency());
+      restFreq.setUnit(cSys_p.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate));
 
-      MFrequency::Types freqType = cSys.spectralCoordinate(uInt(coordinate)).frequencySystem();
+      MFrequency::Types freqType = cSys_p.spectralCoordinate(uInt(coordinate)).frequencySystem();
       os << "Frequency system : " << MFrequency::showType(freqType) << endl;
       os << "Velocity  system : " << MDoppler::showType(velocityType) << endl;
 
@@ -335,7 +384,7 @@ void ImageSummary<T>::list (LogIO& os,
                    precRefValRADEC, precRefPixFloat,
                    precIncSci, nameName, nameProj, nameShape, 
                    nameTile, nameRefValue, nameRefPixel, nameInc, 
-                   nameUnits, nativeFormat, cSys, velocityType);
+                   nameUnits, nativeFormat, cSys_p, velocityType);
 
 
 // Write headers
@@ -382,16 +431,16 @@ void ImageSummary<T>::list (LogIO& os,
 
    uInt pixelAxis;
    Int coordinate, axisInCoordinate;
-   for (pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+   for (pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
 
 
 // Find coordinate number for this pixel axis
  
-      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      cSys_p.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
 
 // List it
 
-      Coordinate* pc = cSys.coordinate(coordinate).clone();
+      Coordinate* pc = cSys_p.coordinate(coordinate).clone();
 //      cout << "type = " << pc->type() << endl;
 
       listHeader(os, pc, widthName, widthProj, widthShape, widthTile, 
@@ -421,22 +470,22 @@ void ImageSummary<T>::list (LogIO& os,
 // associated coordinate information.
 
    uInt worldAxis;
-   for (worldAxis=0; worldAxis<cSys.nWorldAxes(); worldAxis++) {
+   for (worldAxis=0; worldAxis<cSys_p.nWorldAxes(); worldAxis++) {
 
 
 // Find coordinate number for this pixel axis
  
-      cSys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
+      cSys_p.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
 
 
 // See if this world axis has an associated removed pixel axis
       
-      Vector<Int> pixelAxes = cSys.pixelAxes(coordinate);
+      Vector<Int> pixelAxes = cSys_p.pixelAxes(coordinate);
       if (pixelAxes(axisInCoordinate) == -1) {
 
 // List it
 
-        Coordinate* pc = cSys.coordinate(coordinate).clone();
+        Coordinate* pc = cSys_p.coordinate(coordinate).clone();
         listHeader(os, pc, widthName, widthProj, widthShape, 
                    widthTile, widthRefValue, widthRefPixel, 
                    widthInc, widthUnits, False, axisInCoordinate, 
