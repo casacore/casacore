@@ -413,7 +413,7 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	return floor    (operands()[0]->getArrayDouble(id));
     case TableExprFuncNode::ceilFUNC:
 	return ceil     (operands()[0]->getArrayDouble(id));
-    case TableExprFuncNode::TableExprFuncNode::shapeFUNC:
+    case TableExprFuncNode::shapeFUNC:
       {
 	Array<Int> shp = operands()[0]->shape(id).asVector();
 	Array<Double> result(shp.shape());
