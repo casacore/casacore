@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl5
 #
-#   Copyright (C) 1996,1997,1998
+#   Copyright (C) 1996,1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify it
@@ -138,7 +138,7 @@ sub term_module{
        }
        s/\\ahobjs{}/
 \\flushleft
-\\textbf{Objects}\\
+\\textbf{Tools}\\\\
 \\begin{longtable}{ll}
 $objItems
 \\end{longtable}/g;
@@ -192,13 +192,13 @@ sub term_object{
      }
      s/\\ahmethods{}/
    \\flushleft
-   \\textbf{Functions}\\
+   \\textbf{Functions}\\\\
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/g;
      s/\\ahfuncs{}/
    \\flushleft
-   \\textbf{Functions}\\
+   \\textbf{Functions}\\\\
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/;
