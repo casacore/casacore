@@ -1,5 +1,5 @@
 //# LattRegionHolder.cc: Class to hold a region of interest in a lattice
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,10 +39,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-
-typedef Vector<Int> LattRegionHolder_gppbug1;
-typedef Vector<Double> LattRegionHolder_gppbug2;
-
 
 LattRegionHolder::LattRegionHolder (uInt ndim)
 : itsLC     (0),

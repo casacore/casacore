@@ -1,5 +1,5 @@
 //# LCConcatenation.cc: Combine multiple LCRegion's into a new dimension
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,9 +32,6 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-
-typedef Vector<Int> lcconcatenation_gppbug1;
-
 
 LCConcatenation::LCConcatenation()
 {}

@@ -35,9 +35,6 @@
 #include <aips/iostream.h>
 #include <aips/strstream.h>
 
-typedef Vector<Int> lcellipsoid_gppbug1;
-
-
 LCEllipsoid::LCEllipsoid()
 {}
 

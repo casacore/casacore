@@ -34,9 +34,6 @@
 #include <aips/iostream.h>
 #include <aips/strstream.h>
 
-typedef Vector<Int> lcbox_gppbug1;
-
-
 LCBox::LCBox()
 {}
 

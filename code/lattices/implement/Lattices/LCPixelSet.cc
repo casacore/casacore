@@ -31,9 +31,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-typedef Vector<Int> lcpixelset_gppbug1;
-
-
 LCPixelSet::LCPixelSet()
 {}
 

@@ -1034,9 +1034,6 @@ Bool MomentCalcBase<T>::getLoc (T& x,
    return True;
 }
 
-
-typedef Vector<Bool> gpp_Vector_Bool;
-typedef Vector<uInt> gpp_Vector_uInt;
 template <class T>
 void MomentCalcBase<T>::lineSegments (uInt& nSeg,
                                       gpp_Vector_uInt& start, 

@@ -41,10 +41,6 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-typedef Vector<Int> imageregion_gppbug1;
-typedef Vector<Double> imageregion_gppbug2;
-
-
 ImageRegion::ImageRegion()
 : LattRegionHolder (uInt(0)),
   itsWC            (0)
