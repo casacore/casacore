@@ -33,6 +33,7 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <aips/Containers/Record.h>
+#include <aips/Quanta/Unit.h>
 
 
 
@@ -157,11 +158,9 @@ public:
 			   const IPosition& where,
 			   const IPosition& stride);
 
-  // Function which get and set the units associated with the image
-  // pixels (i.e. the "brightness" unit). <src>setUnits()</src> throws
-  // an exception as ImageExpr is not writable. <src>getUnits</src>
-  // returns an empty Unit as ImageExpr does not have access to 
-  // units yet.
+  // Functions which get and set the units associated with the image
+  // pixels (i.e. the "brightness" unit).
+  // Initially the unit is empty.
   // <group>   
   virtual Bool setUnits(const Unit& newUnits);
   virtual Unit units() const;
@@ -169,15 +168,7 @@ public:
 
   // Return the name of the current ImageInterface object. 
   // Returns the expression string given in the constructor.
-  virtual String name(const Bool stripPath=False) const;
-  
-  // Functions to set or replace the coordinate information.
-  // Although the ImageExpr is not writable, you can change the
-  // CoordinateSystem (as long as it is consistent with the old one)
-  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
-  
-  // Function to get a LELCoordinate object containing the coordinates.
-  virtual LELCoordinates lelCoordinates() const;
+  virtual String name (Bool stripPath=False) const;
   
   // Often we have miscellaneous information we want to attach to an image.
   // <src>setMiscInfo</src> throws an exception as ImageExpr is not
@@ -195,32 +186,38 @@ public:
   virtual LatticeIterInterface<T> *makeIter(
                                  const LatticeNavigator &navigator) const;
 
-// Returns False, as the ImageExpr is not writable.
+  // Returns False, as the ImageExpr is not writable.
    virtual Bool isWritable() const;
 
-// Help the user pick a cursor for most efficient access if they only want
-// pixel values and don't care about the order or dimension of the
-// cursor. 
+  // Help the user pick a cursor for most efficient access if they only want
+  // pixel values and don't care about the order or dimension of the
+  // cursor. 
    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
-  // Handle the (un)locking and syncing..
+  // Handle the (un)locking and syncing.
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();
   virtual Bool hasLock (FileLocker::LockType) const;
   virtual void resync();
+  virtual void tempClose();
+  virtual void reopen();
   // </group>
+
+  // Get the lattice expression.
+  const LatticeExpr<T>& expression() const
+    { return latticeExpr_p; }
 
 
 private:  
   LatticeExpr<T> latticeExpr_p;
+  Unit unit_p;
 
 // These are used to return null object by reference
 
   Lattice<Bool>* pBool_p;  
   Record rec_p;
   String name_p;
-
 };
 
 
