@@ -61,7 +61,7 @@ class Notice {
 public:
     Notice() {}
 
-    ~Notice() {}
+    virtual ~Notice();
 
     // Return the identification number of the <src>Notice</src> type.
     virtual uInt type() const = 0;
@@ -103,7 +103,7 @@ public:
 
     NoticeSource() : curIters(0) {}
 
-    ~NoticeSource();
+    virtual ~NoticeSource();
 
     // Sends the <src>note</src> to all <src>NoticeTarget</src>s in the
     // target list.
@@ -152,7 +152,7 @@ public:
     friend class NoticeSource;
     
     // Destructs this <src>NoticeTarget</src>.
-    ~NoticeTarget() { unlink();  }
+    virtual ~NoticeTarget();
     
     // Returns a boolean value telling whether this <src>NoticeTarget</src>
     // is still "valid".
@@ -178,14 +178,14 @@ protected:
     // Creates an unlinked, "invalid" <src>NoticeTarget</src>. An invalid
     // <src>NoticeTarget</src> does not occur in the target list of any
     // <src>NoticeSource</src>.
-    NoticeTarget() : ilink(0), valid(False), container(0)  {}
+    NoticeTarget() : ilink(0), container(0), valid(False)  {}
     
     // Creates a "valid" <src>NoticeTarget</src> linked to the specified
     // <src>NoticeSource</src>. The <src>NoticeTarget</src> will be added
     // to the target list in that <src>NoticeSource</src>.
     // <group>
-    NoticeTarget(NoticeSource *v) : ilink(0), valid(False), container(0) {attach(v);}
-    NoticeTarget(NoticeSource &v) : ilink(0), valid(False), container(0) {attach(v);}
+    NoticeTarget(NoticeSource *v) : ilink(0), container(0), valid(False) {attach(v);}
+    NoticeTarget(NoticeSource &v) : ilink(0),container(0), valid(False) {attach(v);}
     // </group>
     
     // Creates a "valid" <src>NoticeTarget</src> linked to the same
@@ -193,9 +193,9 @@ protected:
     // So, both <src>NoticeTarget</src>s will occur in the same target
     // list.
     // <group>
-    NoticeTarget(NoticeTarget &other) : ilink(0), valid(False), container(0)
+    NoticeTarget(NoticeTarget &other) : ilink(0), container(0), valid(False)
 		{ if (other.isValid()) attach(other.container);}
-    NoticeTarget(NoticeTarget *other) : ilink(0), valid(False), container(0) 
+    NoticeTarget(NoticeTarget *other) : ilink(0), container(0), valid(False)
 		{ if (other && other->isValid()) attach( (*other).container );}
 
     // </group>

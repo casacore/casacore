@@ -199,7 +199,7 @@ public:
     // This destructor only deletes the really stored data when it was
     // initialized as deletable and the reference count is zero.
     //
-    ~SimpleCountedConstPtr();
+    virtual ~SimpleCountedConstPtr();
 
     // The <src>SimpleCountedConstPtr</src> indirection operator simply
     // returns a reference to the value being protected. If the pointer
@@ -241,7 +241,7 @@ public:
     SimpleCountedConstPtr<t> &operator=(const SimpleCountedConstPtr<t> &val) {
 	if (ref && --(*ref).count == 0)
 	    delete ref;
-	if (ref = val.ref)
+	if ((ref = val.ref) != 0)
 	    (*ref).count++;
 	return *this;
     }

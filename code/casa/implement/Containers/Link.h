@@ -158,7 +158,7 @@ public:
     // beginning of the list, i.e. before the next element but with
     // no previous element.
     //
-    Link(t e,Link<t> *p=0,Link<t> *n=0) : Prev(p), store(e) {
+    Link(t e,Link<t> *p=0,Link<t> *n=0) : store(e), Prev(p) {
 	if (Prev) {
 	    Next = (*Prev).Next;
 	    (*Prev).Next = this;

@@ -101,7 +101,7 @@ public:
     // Replace this description with other.
     RecordDescRep& operator= (const RecordDescRep& other);
 
-    ~RecordDescRep();
+    virtual ~RecordDescRep();
 
     // Add scalar or array field. If of array type, the shape is set to [-1],
     // which indicates a variable sized array. Returns the number of fields in

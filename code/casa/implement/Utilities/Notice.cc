@@ -27,6 +27,11 @@
 
 #include <aips/Utilities/Notice.h>
 
+Notice::~Notice()
+{
+    // Nothing
+}
+
 NoticeSource::~NoticeSource(){
   while (head()) head()->val()->unlink();
 }
@@ -37,6 +42,11 @@ void NoticeSource::notify(const Notice &note) {
      t = (*tmp).next();
      tmp->val()->notify(note);
    }
+}
+
+NoticeTarget::~NoticeTarget()
+{ 
+    unlink();  
 }
 
 void NoticeTarget::unlink() {
@@ -85,3 +95,4 @@ void NoticeTarget::link(const NoticeTarget *other) {
     valid = True;
   }
 }
+

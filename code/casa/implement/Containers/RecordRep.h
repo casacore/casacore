@@ -113,7 +113,7 @@ public:
     RecordRep& operator= (const RecordRep& other);
     
     // Delete all data.
-    ~RecordRep();
+    virtual ~RecordRep();
 
     // Get the comment for this field.
     const String& comment (Int whichField) const;

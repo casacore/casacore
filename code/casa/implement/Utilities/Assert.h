@@ -139,6 +139,10 @@ public:
     assert_(int expr, const char *msg, const char* file, Int line);
     assert_(const void *ptr, const char *msg, const char* file, Int line);
     // </group>
+
+    // A no-op, but it keeps g++ from complaining about "variable not used"
+    // errors
+    void null() {}
 };
 
 //  These marcos are provided for use instead of simply using the
@@ -153,9 +157,9 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {assert_<exception > dummy_(expr, "Failed AlwaysAssertExit " #expr,__FILE__,(Int)__LINE__);}
+    {assert_<exception > dummy_(expr, "Failed AlwaysAssertExit " #expr,__FILE__,(Int)__LINE__); dummy_.null(); }
 #define AlwaysAssertExit(expr) \
-    {assert_<AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(Int)__LINE__);}
+    {assert_<AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
 
 #if defined(AIPS_DEBUG)
 
@@ -170,9 +174,9 @@ public:
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
 
 #define DebugAssert(expr, exception) \
-    {assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__);}
+    {assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
 #define DebugAssertExit(expr) \
-    {assert_<AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__);}
+    {assert_<AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__); dummy_.null();}
 
 #else
 

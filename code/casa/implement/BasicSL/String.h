@@ -250,7 +250,7 @@ protected:
   // <note> There are no public constructors for SubString.
   //        SubStrings are always created via String operations.</note>
   //<group> 
-  SubString(String &x, int p, int l);
+  SubString(String &x, unsigned int p, unsigned int l);
   SubString(const SubString &x);
   //</group>
 
@@ -564,7 +564,7 @@ public:
   // </group>
 
   // return the char element at position "i".
-  char elem(int i) const;
+  char elem(unsigned int i) const;
 
   // return the first char of the String
   char firstchar() const;
@@ -702,7 +702,7 @@ protected:
   int match(int, int, int, const char*, int = -1) const;
   int _gsub(const char*, int, const char *,int);
   int _gsub(const Regex&, const char*, int);
-  SubString _substr(int, int);
+  SubString _substr(unsigned int, unsigned int);
   //</group>
 
 };
@@ -977,7 +977,7 @@ inline String::String(char c)
 
 inline SubString::SubString(const SubString &x)
   :S(x.S), pos(x.pos), len(x.len) {}
-inline SubString::SubString(String &x, int first, int l)
+inline SubString::SubString(String &x, unsigned int first, unsigned int l)
   :S(x), pos(first), len(first+l > x.length()  ?  x.length()-first : l) {}
 
 inline SubString::~SubString() {}
@@ -1258,7 +1258,7 @@ inline char String::operator [] (int i) const
   return rep->s[i];
 }
 
-inline char String::elem (int i) const
+inline char String::elem (unsigned int i) const
 { 
   if (i >= length()) {
     stringThrowError("invalid index");
@@ -1413,7 +1413,7 @@ inline int SubString::contains(const Regex &r) const
 
 inline int SubString::matches(const Regex &r) const
 {
-  return r.match(chars(), len, 0) == len;
+  return r.match(chars(), len, 0) == int(len);
 }
 
 
@@ -1455,9 +1455,9 @@ inline ostream &operator<<(ostream &s, const String &x)
 // This is a helper needed by at, before, etc.
 //
 
-inline SubString String::_substr(int first, int l)
+inline SubString String::_substr(unsigned int first, unsigned int l)
 {
-  if (first < 0  ||  first >= length() )
+  if (first >= length() )
     return SubString(_nilString, 0, 0) ;
   else 
     return SubString(*this, first, l);
