@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Functionals/FunctionParam.h>
+#include <aips/Functionals/FunctionParam.h>
 #include <aips/iostream.h>
 
 template<class T>

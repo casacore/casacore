@@ -31,7 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Functionals/Functional.h>
-#include <trial/Functionals/FunctionParam.h>
+#include <aips/Functionals/FunctionParam.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 
@@ -85,7 +85,7 @@
 // <srcblock>
 //   //# Sinusoid.h
 //   #include <aips/aips.h>
-//   #include <trial/Functionals/Function.h>
+//   #include <aips/Functionals/Function.h>
 //   #include <aips/Mathematics/Constants.h>
 //   #include <aips/Mathematics/Math.h>
 //   // The sinusoid class
@@ -132,7 +132,7 @@
 // <srcblock>
 //   //# Sinusoid.h
 //   #include <aips/aips.h>
-//   #include <trial/Functionals/Function.h>
+//   #include <aips/Functionals/Function.h>
 //   #include <aips/Mathematics/Constants.h>
 //   #include <aips/Mathematics/Math.h>
 //   template<class T> class Sinusoid : public Function<T> {
