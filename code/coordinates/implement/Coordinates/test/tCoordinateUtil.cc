@@ -1,5 +1,5 @@
 //# tCoordinateUtil.cc: Test program for CoordinateUtil class
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
