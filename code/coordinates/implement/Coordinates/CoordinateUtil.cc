@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,7 +38,11 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/OS/Time.h>
 #include <aips/Quanta/QC.h>
+#include <aips/Quanta/MVTime.h>
+#include <aips/Quanta/MVEpoch.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
@@ -389,6 +393,23 @@ CoordinateSystem CoordinateUtil::makeCoordinateSystem(const IPosition& shape,
 {         
    const uInt n = shape.nelements();
    CoordinateSystem cSys;
+
+// Attach an ObsInfo record so images that are made
+// with this have something sensible
+
+   ObsInfo obsInfo;
+   obsInfo.setObserver(String("NoY2K"));
+   obsInfo.setTelescope(String("ATCA"));
+
+// It must be easier than this...  USe 0.0001
+// so that roundoff does not tick the 0 to 24
+
+   Time time(2000, 1, 1, 0, 0, 0.0001);
+   MVTime time2(time);
+   MVEpoch time4(time2);
+   MEpoch date(time4);
+   obsInfo.setObsDate(date);
+   cSys.setObsInfo(obsInfo);
 //
    if (doLinear) {
       Vector<String> names(n);
