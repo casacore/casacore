@@ -1,5 +1,5 @@
 *=======================================================================
-*     Copyright (C) 1999,2001,2002
+*     Copyright (C) 1999,2001,2002,2003
 *     Associated Universities, Inc. Washington DC, USA.
 *
 *     This library is free software; you can redistribute it and/or
@@ -88,7 +88,7 @@ C-------------------------------------------------
 * Local
       INTEGER ZANT, I, IA, IB, NANTM1, J,
      $JA, IC, IL, KN, KP, K, L, ITER, INFO
-      REAL*8  WI, XI, WN, WW, WWW, TEST, YI, XCAP, X1, XN, D, WSS(1000)
+      REAL*8  WI, XI, WN, WW, WWW, TEST, YI, XCAP, X1, XN, D, WSS(4000)
 C------------------------------------------------------------------------
 C Code
 c
@@ -1358,12 +1358,12 @@ C     REF_ANT    INTEGER   reference antenna
 
 C------------------------------------------------------------------------
 * Dummy variables:
-      REAL*4 W(435), WANT(30)
-      COMPLEX Z(435), ZANT(30), CMPL2
-      INTEGER REF_ANT, IANT(435), JANT(435)
+      REAL*4 W(2016), WANT(64)
+      COMPLEX Z(2016), ZANT(64), CMPL2
+      INTEGER REF_ANT, IANT(2016), JANT(2016)
 * Local variables:
-      REAL*4 PHA(30), AMP(30), AA, FAZ, WA, ADD, AJI, AKI, AJK,
-     $PHA0(30), C(435)
+      REAL*4 PHA(64), AMP(64), AA, FAZ, WA, ADD, AJI, AKI, AJK,
+     $PHA0(64), C(2016)
       INTEGER IB, IA, J_I, K_I, J_K, JA, KA, BASE, IREF, ITRY, I
       LOGICAL RETRO, REFOK
       PARAMETER (RETRO=.FALSE.)
