@@ -168,7 +168,8 @@ template <class T> PagedImage<T>::~PagedImage()
 	if (table_p.keywordSet().isDefined("coords")) {
 	    table_p.rwKeywordSet().removeField("coords");
 	}
-	AlwaysAssert(coords_p.save(table_p.keywordSet(), "coords"), AipsError);
+	AlwaysAssert(coords_p.save(table_p.rwKeywordSet(), "coords"),
+		     AipsError);
     }
 }
 
@@ -247,7 +248,7 @@ Bool PagedImage<T>::setCoordinateInfo(const CoordinateSystem &coords)
 	    if (table_p.keywordSet().isDefined("coords")) {
 		table_p.rwKeywordSet().removeField("coords");
 	    }
-	    if (!(coords_p.save(table_p.keywordSet(), "coords"))) {
+	    if (!(coords_p.save(table_p.rwKeywordSet(), "coords"))) {
 		logSink() << LogIO::SEVERE << "Error saving coordinates in "
 		    "table" << LogIO::POST;
 		ok = False;
