@@ -40,3 +40,70 @@ make any changes.
 We use mailman 
 (maintained in Charlottesville) to handle the mailing lists although messages are
 sent to local aips++ logs in /export/aips++/Mail on tarzan.
+
+\section{Compiler updates}
+One of they joys is porting to new compilers or updating the compiler.  Use the following
+change proposal template to initiate the process.
+
+\begin{verbatim}
+
+Title:                  Adopt gcc X.X as project compiler
+ Person responsible:     The Boss (bossdude@nrao.edu)
+ Originator of proposal: The Worker (workerdude@nrao.edu)
+ Exploders targeted:     aips2-lib
+ Time table:
+ Date of issue:          200X Mth XX
+ Comments due:           200X Mth XX
+ Revised proposal:       200X Mth XX
+ Final comments due:     200X Mth XX
+ Decision date:          200X Mth XX
+ 
+ Statement of goals:
+ 
+ Adopt gcc X.X as project compiler.
+ 
+ Background:
+
+ Gcc-X.X is the latest version of the gcc compiler series.  It has been adopted as the default
+ compiler by most of the major Linux releases.  
+
+ [--- additional back ground text goes here ---]
+
+ For those looking for further details please visit http://www.gnu.org/software/gcc/gcc.html and
+ http://www.gnu.org/software/gcc/gcc-3.1/changes.html
+ 
+ Summary:
+ --------
+
+ All that should be required is a switch to the new compiler in the local makedefs.
+
+
+ Expected Impact:
+ ----------------
+
+ [ Address the following points for both solaris and linux ]
+
+ Changes to exsisting code:
+     [ Detail any changes to existing code here, in particular what needed changing and possibly why
+       include filename and line numbers ]
+
+ Unit test conformance:
+     [ Run runtests and report differences, and how to resolve unexpected failures (with modified code)]
+    
+
+ Assay results:
+     [ Run the assay, should give the same results as the old compiler ]
+
+ Benchmark tests
+     [ Run a set of benchmarks, current test is imagertester().runtests('mftest'), possibly get a more
+       complete set from Sanjay. ] Summarize results.
+
+ Support Tools
+    [ Try a few of our standard tools and see if there are any problems and what work arounds may be
+      necessary ]
+
+    Rational
+    Debugger
+ 
+ ---------------------------------------
+\end{verbatim}
