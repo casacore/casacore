@@ -164,23 +164,22 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 					      sizeof(Float),
 					      sizeof(HDUType::ElementType),
 					      memoryInMB);
-    for (i=0; i<ndim; i++) {
-	cursorOrder(i) = i;
-    }
 
     os << LogIO::NORMAL << "Copy FITS file to " << newImage->name() << ". " <<
-	report;
-
-    LatticeStepper stepper(shape, cursorShape, cursorOrder);
+	report << LogIO::POST;
+    LatticeStepper stepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
     LatticeIterator<Float> imiter(*newImage, stepper);
 
-    ProgressMeter meter(0.0, 1.0*newImage->shape().product(), "FITS to Image",
-			"Pixels copied", "", "", 
-			True, newImage->shape().product()/cursorShape.product()/
-			100);
+    Int nIter = max(1,newImage->shape().product()/cursorShape.product());
+    Int iUpdate = max(1,nIter/20);
+    ProgressMeter meter(0.0, Double(newImage->shape().product()), "FITS to Image",
+                        "Pixels copied", "", "",  True, iUpdate);
+    Double nPixPerIter = cursorShape.product();
+    Double meterValue;
+
     try {
 	Int bufferSize = cursorShape.product();
-	for (imiter.reset(); !imiter.atEnd(); imiter++) {
+	for (imiter.reset(),meterValue=0.0; !imiter.atEnd(); imiter++) {
 	    fitsImage.read(bufferSize);                  // Read from FITS
 	    if (fitsImage.err()) {
 		error = "Error reading from FITS image";
@@ -193,6 +192,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	    Float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
 	    fitsImage.copy(ptr, bufferSize);             // Copy
 	    cursor.putStorage(ptr, deletePtr);
+
+            meterValue += nPixPerIter;
+            meter.update(meterValue);
 	}
     } catch (AipsError x) {
 	error = String("Error writing pixel values to image: " ) + x.getMesg();
