@@ -467,18 +467,18 @@ struct wcsprm *wcs;
       wcs->csyer[i] = UNDEFINED;
    }
    wcs->radesys[0] = '\0';
-   wcs->equinox = UNDEFINED;
+   wcs->equinox    = UNDEFINED;
    wcs->specsys[0] = '\0';
    wcs->ssysobs[0] = '\0';
-   wcs->velosys = UNDEFINED;
-   wcs->vsource = UNDEFINED;
-   wcs->zsource = UNDEFINED;
-   wcs->obsgeo[0] = UNDEFINED;
-   wcs->obsgeo[1] = UNDEFINED;
-   wcs->obsgeo[2] = UNDEFINED;
+   wcs->velosys    = UNDEFINED;
+   wcs->ssyssrc[0] = '\0';
+   wcs->zsource    = UNDEFINED;
+   wcs->obsgeo[0]  = UNDEFINED;
+   wcs->obsgeo[1]  = UNDEFINED;
+   wcs->obsgeo[2]  = UNDEFINED;
    wcs->dateobs[0] = '\0';
-   wcs->mjdobs = UNDEFINED;
-   wcs->mjdavg = UNDEFINED;
+   wcs->mjdobs     = UNDEFINED;
+   wcs->mjdavg     = UNDEFINED;
 
    /* Reset derived values. */
    strcpy(wcs->lngtyp, "    ");
@@ -561,7 +561,6 @@ struct wcsprm *wcsdst;
             stokes    = !stokes;
          }
 
-         axis = 0;
          for (i = 0; i < naxis; i++) {
             ctypei = (char *)(wcssrc->ctype + i);
 
@@ -807,7 +806,7 @@ struct wcsprm *wcsdst;
    strncpy(wcsdst->specsys, wcssrc->specsys, 72);
    strncpy(wcsdst->ssysobs, wcssrc->ssysobs, 72);
    wcsdst->velosys = wcssrc->velosys;
-   wcsdst->vsource = wcssrc->vsource;
+   strncpy(wcsdst->ssyssrc, wcssrc->ssyssrc, 72);
    wcsdst->zsource = wcssrc->zsource;
 
    wcsdst->obsgeo[0] = wcssrc->obsgeo[0];
@@ -1083,10 +1082,10 @@ const struct wcsprm *wcs;
       printf("    velosys: %9f\n", wcs->velosys);
    }
 
-   if (undefined(wcs->vsource)) {
-      printf("    vsource: UNDEFINED\n");
+   if (wcs->ssyssrc[0] == '\0') {
+      printf("    ssyssrc: UNDEFINED\n");
    } else {
-      printf("    vsource: %9f\n", wcs->vsource);
+      printf("    ssyssrc: \"%s\"\n", wcs->ssyssrc);
    }
 
    if (undefined(wcs->zsource)) {
@@ -1098,9 +1097,9 @@ const struct wcsprm *wcs;
    printf("     obsgeo: ");
    for (i = 0; i < 3; i++) {
       if (undefined(wcs->obsgeo[i])) {
-         printf("  UNDEFINED   ");
+         printf("UNDEFINED     ");
       } else {
-         printf("  %- 11.4g", wcs->obsgeo[i]);
+         printf("%- 11.4g  ", wcs->obsgeo[i]);
       }
    }
    printf("\n");
@@ -1455,17 +1454,17 @@ struct wcsprm *wcs;
 
       } else if (wcs->altlin & 4) {
          /* Construct PCi_ja from CROTAia. */
-         i = wcs->lng;
-         j = wcs->lat;
-         rho = wcs->crota[j];
+         if ((i = wcs->lng) >= 0 && (j = wcs->lat) >= 0) {
+            rho = wcs->crota[j];
 
-         if (wcs->cdelt[i] == 0.0) return 3;
-         lambda = wcs->cdelt[j]/wcs->cdelt[i];
+            if (wcs->cdelt[i] == 0.0) return 3;
+            lambda = wcs->cdelt[j]/wcs->cdelt[i];
 
-         *(pc + i*naxis + i) = *(pc + j*naxis + j) = cosd(rho);
-         *(pc + i*naxis + j) = *(pc + j*naxis + i) = sind(rho);
-         *(pc + i*naxis + j) *= -lambda;
-         *(pc + j*naxis + i) /=  lambda;
+            *(pc + i*naxis + i) = *(pc + j*naxis + j) = cosd(rho);
+            *(pc + i*naxis + j) = *(pc + j*naxis + i) = sind(rho);
+            *(pc + i*naxis + j) *= -lambda;
+            *(pc + j*naxis + i) /=  lambda;
+         }
       }
    }
 
