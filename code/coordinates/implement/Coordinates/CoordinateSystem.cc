@@ -374,7 +374,7 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
    worldAxisMap = -1;
    worldAxisTranspose.resize(nWorldAxes());
    worldAxisTranspose = -1;
-   refChange.resize(other.nWorldAxes());
+   refChange.resize(nWorldAxes());
    refChange = False;
 //
    if (other.nWorldAxes() ==0) {
@@ -458,7 +458,6 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
       }
    }
 
-
 // How many world and pixel axes for these coordinates
 
    uInt nWorld1 = cSys1.worldAxes(coord1).nelements();
@@ -477,17 +476,18 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
    Vector<Int> pixel1 = cSys1.pixelAxes(coord1);
    Vector<Int> world2 = cSys2.worldAxes(coord2);
    Vector<Int> pixel2 = cSys2.pixelAxes(coord2);
- 
+   const Vector<String>& units1 = cSys1.coordinate(coord1).worldAxisUnits();
+   const Vector<String>& units2 = cSys2.coordinate(coord2).worldAxisUnits();
+
 // Compare quantities for the world axes.  
 
    for (uInt j=0; j<nWorld2; j++) {
       if (world2(j) != -1) {
          if (world1(j) != -1) {
 
-// Compare intrinsic axis units
+// Compare intrinsic axis units.  Should never fail.
 
-            if (Unit(cSys1.coordinate(coord1).worldAxisUnits()(j)) !=
-                Unit(cSys2.coordinate(coord2).worldAxisUnits()(j))) return False;
+            if (Unit(units1(j)) != Unit(units2(j))) return False;
 
 // Set the world axis maps
 
