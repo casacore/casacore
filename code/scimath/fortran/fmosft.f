@@ -250,16 +250,13 @@ C
                      apol=polmap(ipol)+1
                      if((flag(ipol,ichan,irow).ne.1).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
-
                         nvalue=0.0
                         do iy=-support,support
-                           iloc(2)=convsize/2+1+sampling*iy
-     $                          +off(2)
+                           iloc(2)=convsize/2+1+sampling*iy+off(2)
                            do ix=-support,support
                               iloc(1)=convsize/2+1
      $                             +sampling*ix+off(1)
-                              cwt=conjg(convfunc(iloc(1),
-     $                             iloc(2)))
+                              cwt=conjg(convfunc(iloc(1), iloc(2)))
                               if(doshift) then
                                  cwt=cwt*shiftx(ix)*shifty(iy)
                               end if
