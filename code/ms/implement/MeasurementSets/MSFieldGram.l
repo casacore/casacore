@@ -52,8 +52,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-NAME      [A-Za-z0-9]*|[A-Za-z0-9]*"*"
-CODE      ([A-Za-z])*
+NAMEORCODE [A-Za-z0-9]*[+-]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -130,14 +129,11 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             lvalp->ival = atoi(MSFieldGramtext);
             return INDEX;
 	  }
-{CODE}  {
-            msFieldGramPosition() += yyleng;
-	    return CODE;
-	  }
-{NAME}  {
-            msFieldGramPosition() += yyleng;
-	    return NAME;
-	  }
+{NAMEORCODE}  {
+                msFieldGramPosition() += yyleng;
+                lvalp->str = MSFieldGramtext;
+	        return NAMEORCODE;
+              }
 
 %%
 
