@@ -31,7 +31,7 @@
 
 //# Constructors
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
-		       Bool EW=False) 
+		       Bool EW) 
   : ew_p(EW), zp_p(True), in_p(in) {
     outref_p = out;
     conv_p = MDirection::Convert(in, outref_p);
@@ -41,7 +41,7 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
 }
 
 UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
-	     Bool EW=False)
+	     Bool EW)
   : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
     conv_p = MDirection::Convert(in, outref_p);
@@ -50,7 +50,7 @@ UVWMachine::UVWMachine(const MDirection &out, const MDirection &in,
   }
 
 UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
-		       const MeasFrame &frame, Bool EW=False)
+		       const MeasFrame &frame, Bool EW)
   : ew_p(EW), zp_p(True), in_p(in) {
     outref_p = out;
     outref_p.set(frame);
@@ -61,7 +61,7 @@ UVWMachine::UVWMachine(const MDirection::Ref &out, const MDirection &in,
   }
   
 UVWMachine::UVWMachine(const MDirection &out, const MDirection &in, 
-		       const MeasFrame &frame, Bool EW=False)
+		       const MeasFrame &frame, Bool EW)
   : ew_p(EW), zp_p(False), in_p(in), out_p(out) {
     outref_p = out.getRef();
     outref_p.set(frame);
