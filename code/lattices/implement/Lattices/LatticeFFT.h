@@ -1,5 +1,5 @@
 //# LatticeFFT.h: Definitions for Lattice FFT functions
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,9 +35,7 @@
 template <class T> class Vector;
 template <class T> class Lattice;
 
-// <summary>
-// Functions for Fourier transforming Lattices
-// </summary>
+// <summary>Functions for Fourier transforming Lattices</summary>
 
 // <reviewed reviewer="" date="" tests="" demos="">
 // </reviewed>
@@ -111,6 +109,4 @@ public:
 		    const Bool doShift=True);
   // </group>
 };
-
-
 #endif
