@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1995-1999,2000-2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -354,9 +354,12 @@ public:
   // for Soma et al. analytical expression
   static const RotMatrix &rectToPos();
   // Get the rotation matrix from galactic to supergalactic.
-  // Based on matrix as available in Miriad, leading to Euler Angles
-  // of 90, 83.68, 47.34 degrees
+  // Based on De Vaucouleurs 1976:  Pole at 47.37/6.32 deg; 137.37 l0
+  // Euler angles: 90, 83.68, 47.37 degrees
   static const RotMatrix &galToSupergal();
+  // Get the rotation matrix from ICRS to J2000/FK5.
+  // Based on the IAU 2000 resolutions (the bias matrix)
+  static const RotMatrix &ICRSToJ2000();
   // </group>
   
   // Position related routines
