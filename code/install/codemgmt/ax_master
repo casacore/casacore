@@ -2253,3 +2253,4 @@
 11 173 src mv nrao/data/dishparkes.fits trial/data/dishdemo/dishparkes.fits
 11 173 src mv nrao/data/dishspecproc.fits trial/data/dishdemo/dishspecproc.fits
 11 173 src mv nrao/apps/sditerator trial/apps/sditerator
+11 173 src mv nrao/apps/dishplot trial/apps/dishplot
