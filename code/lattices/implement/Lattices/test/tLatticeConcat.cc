@@ -35,16 +35,10 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
-
-#include <trial/Coordinates/CoordinateUtil.h>
-
 #include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LatticeConcat.h>
-#include <trial/Lattices/LCPagedMask.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageRegion.h>
 #include <aips/iostream.h>
 
 
@@ -60,8 +54,8 @@ void check5 (const Slicer& sl, MaskedLattice<Float>& ml1,
              Array<Bool>& ml2);
 void check6 (uInt axis, Lattice<Bool>& ml,
              Lattice<Bool>& ml1, Lattice<Bool>& ml2);
+void check7 (const Slicer& sl, LatticeConcat<Float>& lc, Float val, Bool valMask);
 
-void makeMask (ImageInterface<Float>& a, Bool maskValue, Bool set);
 
 int main() {
   try {
@@ -80,26 +74,30 @@ int main() {
       }
       ArrayLattice<Float> l1(a1);
       ArrayLattice<Float> l2(a2);
+      ArrayLattice<Float> l3(shape);
+      l3.set(1.0);
 
-// Make MaskedLattices
+// Make MaskedLattices with no mask
 
       SubLattice<Float> ml1(l1, True);
       SubLattice<Float> ml2(l2, True);
+      SubLattice<Float> ml3(l3, True);
 
+// Make some MaskedLattices and give them a mask
 
-// Make some PagedImages and give them a mask
-
-      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
-                            "tLatticeConcat_tmp1.img");
-      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
-                            "tLatticeConcat_tmp2.img");
-      im1.put(a1); im2.put(a2);
-      makeMask(im1, True, True);
-      makeMask(im2, False, True);
-      Lattice<Bool>& mask1 = im1.pixelMask();
+      SubLattice<Float> im1(l1,True);
+      SubLattice<Float> im2(l2, True);
+      SubLattice<Float> im3(l3, True);
+//
+      ArrayLattice<Bool> mask1(shape);
       mask1.set(True);
-      Lattice<Bool>& mask2 = im2.pixelMask();
+      ArrayLattice<Bool> mask2(shape);
       mask2.set(False);
+      ArrayLattice<Bool> mask3(shape);
+      mask3.set(True);
+      im1.setPixelMask(mask1,False);
+      im2.setPixelMask(mask2,False);
+      im3.setPixelMask(mask3,False);
 //
       {
          cout << "tempClose/reopen/resync/flush" << endl;
@@ -170,19 +168,8 @@ int main() {
          AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-   
-         ArrayLattice<Float> l3(outShape);
-         SubLattice<Float> ml3(l3, True);
-
-// Do it
-
-         ml3.copyData(lc);
-
-// Check values
-
-         check (0, ml3, ml1, ml2);
+//
+         check (0, lc, ml1, ml2);
       }
 
       {
@@ -205,22 +192,10 @@ int main() {
          AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==1, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-   
-         ArrayLattice<Float> l3(outShape);
-         SubLattice<Float> ml3(l3, True);
-
-// Do it
-
-         ml3.copyData(lc);
-
-// Check values
-        
-         check (1, ml3, ml1, ml2);
+//        
+         check (1, lc, ml1, ml2);
       }
-
-
+//
       {
          cout << "Increase dimensionality by 1, ArrayLattices, no masks" << endl;
 
@@ -241,23 +216,12 @@ int main() {
          AlwaysAssert(lc.hasPixelMask()==False, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-   
-         ArrayLattice<Float> l3(outShape);
-         SubLattice<Float> ml3(l3, True);
-
-// Do it
-
-         ml3.copyData(lc);
-
-// Check values
-        
-         check2 (ml3, ml1, ml2);
+//        
+         check2 (lc, ml1, ml2);
       }
 
       {
-         cout << "Increase dimensionality by 1, PagedImages,  masks" << endl;
+         cout << "Increase dimensionality by 1, masks" << endl;
 
 // Create axis 2
 
@@ -278,37 +242,23 @@ int main() {
          AlwaysAssert(lc.pixelMask().shape()==outShape, AipsError);
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords3D(),
-                               "tLatticeConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-// Do it
-
-         ml3.copyData(lc);
-         ml3.pixelMask().put(lc.getMask());
-
-// Check values
-        
-         check2 (ml3, im1, im2);
+//        
+         check2 (lc, im1, im2);
       }
       {
-         cout << "Increase dimensionality by 1, PagedImages,  masks, various getslices" << endl;
+         cout << "Increase dimensionality by 1,  masks, various getslices" << endl;
 
 // Create axis 2
 
          LatticeConcat<Float> lc (2);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
 
 // Find output shape
 
@@ -321,17 +271,6 @@ int main() {
          AlwaysAssert(lc.axis()==2, AipsError);
          AlwaysAssert(lc.nlattices()==8, AipsError);
 
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords3D(),
-                               "tLatticeConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-// Do it
-
-         ml3.copyData(lc);
-         ml3.pixelMask().put(lc.getMask());
-
 // Now look at funny slices
 
          {
@@ -342,7 +281,7 @@ int main() {
             trc(2) = 0;
             IPosition stride(outShape.nelements(),1);
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  All in lattice 1 + non-unit strides" << endl;
@@ -353,7 +292,7 @@ int main() {
             IPosition stride(outShape.nelements(),1);
             stride(0) = 2; stride(1) = 3;
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  Many lattices" << endl;
@@ -363,7 +302,7 @@ int main() {
             trc(2) = 6;
             IPosition stride(outShape.nelements(),1);
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  Many lattices + non-unit strides" << endl;
@@ -374,24 +313,23 @@ int main() {
             IPosition stride(outShape.nelements(),1);
             stride(0) = 2; stride(1) = 3; stride(2) = 2;
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
       }
       {
-         cout << "Increase dimensionality by 1, PagedImages,  masks, various putslices" << endl;
+         cout << "Increase dimensionality by 1,  masks, various putslices" << endl;
 
 // Create axis 2
 
          LatticeConcat<Float> lc (2);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-         lc.setLattice(im1);
-
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
 
 // Find output shape
 
@@ -479,10 +417,9 @@ int main() {
             check5(sl, lc, btmp0);
          }
       }
-
-
+//
       {
-         cout << "Axis 0, PagedImages, masks" << endl;
+         cout << "Axis 0, masks" << endl;
 
 // Concatenate along axis 0
 
@@ -499,21 +436,8 @@ int main() {
          AlwaysAssert(lc.isMasked()==True, AipsError);
          AlwaysAssert(lc.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
-                               "tLatticeConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-// Do it
-
-         ml3.copyData(lc);
-         ml3.pixelMask().put(lc.getMask());
-
-// Check values
-
-         check (0, ml3, im1, im2);
+//
+         check (0, lc, im1, im2);
       }
 
       {
@@ -523,13 +447,16 @@ int main() {
 // make sure slices are correct when straddling lattice
 // boundaries etc.
 //
-         cout << "Axis 0, PagedImages, masks, various getslices" << endl;
+         cout << "Axis 0, masks, various getslices" << endl;
 
 // Concatenate along axis 0
 
          LatticeConcat<Float> lc (0);
-         lc.setLattice(im1);
-         lc.setLattice(im2);
+         im3.set(1.0);
+         Lattice<Bool>& pixelMask = im3.pixelMask();
+         pixelMask.set(True);
+         lc.setLattice(im3);
+         lc.setLattice(im3);
 
 // Find output shape
 
@@ -541,17 +468,6 @@ int main() {
          AlwaysAssert(lc.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
 
-// Make output
-
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
-                               "tLatticeConcat_tmp3.img");
-         makeMask(ml3, True, False);
-
-// Copy to output.
-
-         ml3.copyData(lc);
-         ml3.pixelMask().put(lc.getMask());
-
 // Now look at funny slices
 
          {
@@ -560,7 +476,7 @@ int main() {
             IPosition trc(shape-1);
             IPosition stride(outShape.nelements(),1);
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  All in lattice 1 + non-unit strides" << endl;
@@ -569,7 +485,7 @@ int main() {
             IPosition stride(outShape.nelements(),1);
             stride(0) = 2; stride(1) = 3;
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  Straddle boundary" << endl;
@@ -578,7 +494,7 @@ int main() {
             trc(0) = shape(0) + 30;
             IPosition stride(outShape.nelements(),1);
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  Straddle boundary and non-unit strides" << endl;
@@ -588,7 +504,7 @@ int main() {
             IPosition stride(outShape.nelements(),1);
             stride(0) = 2; stride(1) = 3;
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  All in lattice 2" << endl;
@@ -598,7 +514,7 @@ int main() {
             IPosition trc(blc+20);
             IPosition stride(outShape.nelements(),1);
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
          {
             cout << "  All in lattice 2 and non-unit strides" << endl;
@@ -609,7 +525,7 @@ int main() {
             IPosition stride(outShape.nelements(),1);
             stride(0) = 2; stride(1) = 3;
             Slicer sl(blc, trc, stride, Slicer::endIsLast);
-            check3(sl, lc, ml3);
+            check7(sl, lc, 1.0, True);
          }
       }
 
@@ -756,18 +672,6 @@ int main() {
          lc.unlock();
          AlwaysAssert(lc.hasLock(FileLocker::Read), AipsError);
          AlwaysAssert(lc.hasLock(FileLocker::Write), AipsError);
-//
-         LatticeConcat<Float> lc2 (0, False);
-         lc2.setLattice(im1);
-         lc2.setLattice(im2);
-         AlwaysAssert(lc2.lock(FileLocker::Read, 1), AipsError);
-         AlwaysAssert(lc2.hasLock(FileLocker::Read), AipsError);
-         AlwaysAssert(lc2.lock(FileLocker::Write, 1), AipsError);
-         AlwaysAssert(lc2.hasLock(FileLocker::Write), AipsError);
-//
-         lc2.unlock();
-         AlwaysAssert(!lc2.hasLock(FileLocker::Read), AipsError);
-         AlwaysAssert(!lc2.hasLock(FileLocker::Write), AipsError);
      }
 
 
@@ -787,19 +691,8 @@ int main() {
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
          AlwaysAssert(lc2.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-   
-         ArrayLattice<Float> l3(lc2.shape());
-         SubLattice<Float> ml3(l3, True);
-
-// Do it
-
-         ml3.copyData(lc);
-
-// Check values
-
-         check (0, ml3, ml1, ml2);
+//
+         check (0, lc, ml1, ml2);
      }
 
 // Test assignment 
@@ -818,19 +711,8 @@ int main() {
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
          AlwaysAssert(lc2.axis()==0, AipsError);
          AlwaysAssert(lc.nlattices()==2, AipsError);
-
-// Make output
-   
-         ArrayLattice<Float> l3(lc2.shape());
-         SubLattice<Float> ml3(l3, True);
-
-// Do it
-
-         ml3.copyData(lc2);
-
-// Check values
-
-         check (0, ml3, ml1, ml2);
+//
+         check (0, lc, ml1, ml2);
      }
 
 // Some forced errors
@@ -952,9 +834,9 @@ void check6 (uInt axis, Lattice<Bool>& ml,
    }
 }
 
-
-
-void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
-{  
-   im.makeMask ("mask0", True, True, set, maskValue);
+void check7 (const Slicer& sl, LatticeConcat<Float>& lc, Float val, Bool valMask)
+{
+   Double tol(1.0e-6);
+   AlwaysAssert(allNear(lc.getSlice(sl),val,tol),AipsError);
+   AlwaysAssert(allEQ(lc.getMaskSlice(sl),valMask),AipsError);
 }
