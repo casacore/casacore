@@ -1,5 +1,5 @@
 //# BlockIO.cc: Functions to perform IO for the Block class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,10 +31,11 @@
 
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk, Int nr)
 {
-    if (nr < 0)
+    if (nr < 0) {
 	nr = 0;
-    if (nr > blk.nelements())
+    } else if (nr > Int(blk.nelements())) {
 	nr = blk.nelements();
+    }
     ios.putstart("Block", 1);
     putAipsIO(ios, (uInt)nr, blk.storage());
     ios.putend();
@@ -54,14 +55,16 @@ template<class T> void getBlock (AipsIO& ios, Block<T>& blk)
 
 template<class T> void showBlock (ostream& ios, const Block<T>& blk, Int nr)
 {
-    if (nr < 0)
+    if (nr < 0) {
 	nr = 0;
-    if (nr > Int(blk.nelements()))
+    } else if (nr > Int(blk.nelements())) {
 	nr = blk.nelements();
+    }
     ios << "[";
     for (Int i=0; i<nr; i++) {
-	if (i > 0)
+        if (i > 0) {
 	    ios << ", ";
+	}
 	ios << blk[i];
     }
     ios << "]";
