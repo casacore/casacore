@@ -55,6 +55,14 @@ size_t Memory::allocatedMemoryInBytes()
    total = rus.ru_maxrss;
 #else
 
+   // Ger van Diepen   25-5-2004
+   // For IntelCC (with -cxxlib-gcc) mallinfo hangs if called before any
+   // malloc is done. So do a new to prevent that from happening.
+# if defined(AIPS_INTELCC)
+    char* ptr = new char[4];
+    delete [] ptr;
+# endif
+
     struct mallinfo m = mallinfo();
     total = m.hblkhd + m.usmblks + m.uordblks;
 
