@@ -776,7 +776,7 @@ void Normal::variance(Double x) {
 }
 
 void Normal::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
@@ -828,7 +828,7 @@ void LogNormal::setState() {
 }
 
 void LogNormal::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
   variance(pars(1));
 }
@@ -864,7 +864,7 @@ void NegativeExpntl::mean(Double x) {
 }
 
 void NegativeExpntl::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 1, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
 }
 
@@ -906,7 +906,7 @@ void Poisson::mean(Double x) {
 }
 
 void Poisson::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 1, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   mean(pars(0));
 }
 
@@ -954,7 +954,7 @@ void Uniform::range(Double low, Double high) {
 }
 
 void Uniform::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   range(pars(0), pars(1));
 }
 
@@ -1002,7 +1002,7 @@ void Weibull::beta(Double x) {
 }
 
 void Weibull::setParameters(const Vector<Double>& pars) {
-  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  AlwaysAssert(checkParameters(pars), AipsError);
   alpha(pars(0));
   beta(pars(1));
 }
