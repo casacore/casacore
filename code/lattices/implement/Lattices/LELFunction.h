@@ -346,7 +346,7 @@ private:
 //
 // There is a further function for which the input Lattice expression
 // type can be anything.  This is <src>nelements</src> with 
-// equivalent in the enum of NELEMENTS.
+// equivalent in the enum of NELEM.
 //
 // A description of the implementation details of the LEL classes can
 // be found in <a href="../../../notes/216/216.html">Note 216</a>
