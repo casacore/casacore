@@ -50,14 +50,14 @@
 
 SDSpWindowHandler::SDSpWindowHandler()
     : index_p(0), theCache_p(0), msSpWin_p(0), msSpWinCols_p(0), nextCacheRow_p(0),
-      cacheSize_p(1000), rownr_p(-1), obsfreqField_p(-1), bandwidField_p(-1),
+      cacheSize_p(1000), rownr_p(-1), bandwidField_p(-1),
       freqresField_p(-1)
 {;}
 
 SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				     const Record &row) 
     : index_p(0), theCache_p(0), msSpWin_p(0), msSpWinCols_p(0), nextCacheRow_p(0),
-      cacheSize_p(1000), rownr_p(-1), obsfreqField_p(-1), bandwidField_p(-1),
+      cacheSize_p(1000), rownr_p(-1), bandwidField_p(-1),
       freqresField_p(-1)
 {
     initAll(ms, handledCols, row);
@@ -65,7 +65,7 @@ SDSpWindowHandler::SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCo
 
 SDSpWindowHandler::SDSpWindowHandler(const SDSpWindowHandler &other) 
     : index_p(0), theCache_p(0), msSpWin_p(0), msSpWinCols_p(0), nextCacheRow_p(0),
-      cacheSize_p(1000), rownr_p(-1), obsfreqField_p(-1), bandwidField_p(-1),
+      cacheSize_p(1000), rownr_p(-1), bandwidField_p(-1),
       freqresField_p(-1)
 {
     *this = other;
@@ -84,7 +84,6 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
 	nchanKey_p.attachToRecord(index_p->accessKey(), "NCHAN");
 	freqRefTypeKey_p.attachToRecord(index_p->accessKey(), "FREQREFTYPE");
 	ifConvChainKey_p.attachToRecord(index_p->accessKey(), "IF_CONV_CHAIN");
-	refFreqKey_p.attachToRecord(index_p->accessKey(), "REFFREQ");
 	bwKey_p.attachToRecord(index_p->accessKey(), "BW");
 	f0Key_p.attachToRecord(index_p->accessKey(), "F0");
 	fdeltKey_p.attachToRecord(index_p->accessKey(), "FDELT");
@@ -95,7 +94,6 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
 	nchanCol_p.attach(*theCache_p, "NCHAN");
 	freqRefTypeCol_p.attach(*theCache_p, "FREQREFTYPE");
 	ifConvChainCol_p.attach(*theCache_p, "IF_CONV_CHAIN");
-	refFreqCol_p.attach(*theCache_p, "REFFREQ");
 	bwCol_p.attach(*theCache_p, "BW");
 	f0Col_p.attach(*theCache_p, "F0");
 	fdeltCol_p.attach(*theCache_p, "FDELT");
@@ -111,7 +109,6 @@ SDSpWindowHandler &SDSpWindowHandler::operator=(const SDSpWindowHandler &other)
 
 	rownr_p = other.rownr_p;
 
-	obsfreqField_p = other.obsfreqField_p;
 	bandwidField_p = other.bandwidField_p;
 	freqresField_p = other.freqresField_p;
 
@@ -142,12 +139,6 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
     if (msSpWin_p) {
 	*nchanKey_p = frequency.nelements();
 	*freqRefTypeKey_p = freqRefType;
-	if (obsfreqField_p >= 0) {
-	    // assumes units are Hz (fix that later)
-	    *refFreqKey_p = row.asDouble(obsfreqField_p);
-	} else {
-	    *refFreqKey_p = 0.0;
-	}
 	if (bandwidField_p >= 0) {
 	    *bwKey_p = row.asDouble(bandwidField_p);
 	} else {
@@ -197,7 +188,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 	    if (spWinIdField_p.isAttached() && *spWinIdField_p >= 0 && uInt(*spWinIdField_p) < msSpWin_p->nrow()) {
 		Int rownr = *spWinIdField_p;
 		found = msSpWinCols_p->numChan()(rownr) == nchan;
-		found = found && msSpWinCols_p->refFrequency()(rownr) == *refFreqKey_p;
+		found = found && msSpWinCols_p->refFrequency()(rownr) == 0.0;
 		found = found && allEQ(msSpWinCols_p->chanFreq()(rownr),frequency);
 		found = found && allEQ(msSpWinCols_p->chanWidth()(rownr), chWidth);
 		found = found && msSpWinCols_p->measFreqRef()(rownr) == freqRefType;
@@ -212,7 +203,7 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 		msSpWin_p->addRow();
 		msSpWinCols_p->numChan().put(rownr_p, nchan);
 		msSpWinCols_p->name().put(rownr_p, "");
-		msSpWinCols_p->refFrequency().put(rownr_p, *refFreqKey_p);
+		msSpWinCols_p->refFrequency().put(rownr_p, 0.0);
 		msSpWinCols_p->chanFreq().put(rownr_p, frequency);
 		msSpWinCols_p->chanWidth().put(rownr_p, chWidth);
 		msSpWinCols_p->measFreqRef().put(rownr_p, freqRefType);
@@ -232,7 +223,6 @@ void SDSpWindowHandler::fill(const Record &row, const Vector<Double> &frequency,
 	    idCol_p.putScalar(nextCacheRow_p, spWindowId());
 	    nchanCol_p.putScalar(nextCacheRow_p, nchan);
 	    freqRefTypeCol_p.putScalar(nextCacheRow_p, freqRefType);
-	    refFreqCol_p.putScalar(nextCacheRow_p, *refFreqKey_p);
 	    bwCol_p.putScalar(nextCacheRow_p, *bwKey_p);
 	    f0Col_p.putScalar(nextCacheRow_p, *f0Key_p);
 	    fdeltCol_p.putScalar(nextCacheRow_p, *fdeltKey_p);
@@ -265,7 +255,7 @@ void SDSpWindowHandler::clearAll()
 
 void SDSpWindowHandler::clearRow()
 {
-    obsfreqField_p = bandwidField_p = freqresField_p = -1;
+    bandwidField_p = freqresField_p = -1;
     spWinIdField_p.detach();
     ifConvChainField_p.detach();
     rownr_p = -1;
@@ -285,13 +275,12 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     td.addColumn(ScalarColumnDesc<Int>("ID"));
     td.addColumn(ScalarColumnDesc<Int>("NCHAN"));
     td.addColumn(ScalarColumnDesc<Int>("FREQREFTYPE"));
-    td.addColumn(ScalarColumnDesc<Double>("REFFREQ"));
     td.addColumn(ScalarColumnDesc<Double>("BW"));
     td.addColumn(ScalarColumnDesc<Double>("F0"));
     td.addColumn(ScalarColumnDesc<Double>("FDELT"));
     td.addColumn(ScalarColumnDesc<Double>("FREQRES"));
     td.addColumn(ScalarColumnDesc<Int>("IF_CONV_CHAIN"));
-    SetupNewTable newTab("",td,Table::Scratch);
+    SetupNewTable newTab("",td,Table::New);
     theCache_p = new Table(newTab, TableLock::PermanentLocking);
     AlwaysAssert(theCache_p, AipsError);
 
@@ -299,7 +288,6 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     idCol_p.attach(*theCache_p, "ID");
     nchanCol_p.attach(*theCache_p, "NCHAN");
     freqRefTypeCol_p.attach(*theCache_p, "FREQREFTYPE");
-    refFreqCol_p.attach(*theCache_p, "REFFREQ");
     bwCol_p.attach(*theCache_p, "BW");
     f0Col_p.attach(*theCache_p, "F0");
     fdeltCol_p.attach(*theCache_p, "FDELT");
@@ -308,12 +296,11 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 
     // create the index
     index_p = new ColumnsIndex(*theCache_p,
-			       stringToVector("NCHAN,FREQREFTYPE,REFFREQ,BW,F0,FDELT,FREQRES,IF_CONV_CHAIN"));
+			       stringToVector("NCHAN,FREQREFTYPE,BW,F0,FDELT,FREQRES,IF_CONV_CHAIN"));
     AlwaysAssert(index_p, AipsError);
     // and attach the key fields
     nchanKey_p.attachToRecord(index_p->accessKey(), "NCHAN");
     freqRefTypeKey_p.attachToRecord(index_p->accessKey(), "FREQREFTYPE");
-    refFreqKey_p.attachToRecord(index_p->accessKey(), "REFFREQ");
     bwKey_p.attachToRecord(index_p->accessKey(), "BW");
     f0Key_p.attachToRecord(index_p->accessKey(), "F0");
     fdeltKey_p.attachToRecord(index_p->accessKey(), "FDELT");
@@ -328,9 +315,6 @@ void SDSpWindowHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
 void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 {
     AlwaysAssert(handledCols.nelements()==row.description().nfields(), AipsError);
-
-    obsfreqField_p = row.fieldNumber("OBSFREQ");
-    if (obsfreqField_p >= 0) handledCols(obsfreqField_p) = True;
 
     bandwidField_p = row.fieldNumber("BANDWID");
     if (bandwidField_p < 0) {
