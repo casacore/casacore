@@ -260,7 +260,8 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
 // Make sure the world axes are valid
 
-   for (uInt i=0; i<worldAxes.nelements(); i++) {
+   uInt i,j;
+   for (i=0; i<worldAxes.nelements(); i++) {
       if (worldAxes(i) >= cSys.nWorldAxes()) return False;         
    }
 
@@ -273,7 +274,6 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
       remove = worldAxes;
       GenSort<uInt>::sort(remove, Sort::Ascending, Sort::NoDuplicates);
    } else {
-      uInt i,j;
       for (i=0,j=0; i<cSys.nWorldAxes(); i++) {
          if (!anyEQ(worldAxes.ac(), i)) remove(j++) = i;
       }

@@ -2215,7 +2215,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	Vector<Double> lincrpix(nlin), lincdelt(nlin), lincrval(nlin);
 	Vector<String> linctype(nlin), lincunit(nlin);
 	Int where_i = 0;
-	for (Int i=0; i<n; i++) {
+	for (i=0; i<n; i++) {
 	    if (i != longAxis && i != latAxis && i != stokesAxis &&
 		i != specAxis) {
 		lincrpix(where_i) = crpix(i);
