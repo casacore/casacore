@@ -114,5 +114,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
       (*ptr_derive_p)[i].value() = sol[i];
     };    
   };	
+  solved_p = converge_p;
   return converge_p;
 }
