@@ -91,6 +91,7 @@ sub fetch_raw_help{
       s/%.*//g;
       s/escapedpercent/\\%/g;
       s/(\\begin{ahmodule})/beginaips2module $1/g;
+      s/(\\begin{ahtool})/beginaips2object $1/g;
       s/(\\begin{ahobject})/beginaips2object $1/g;
       s/(\\begin{ahfunction})/beginaips2help $1/g;
       s/(\\begin{ahconstructor})/beginaips2help $1/g;
@@ -241,6 +242,26 @@ sub make_tex_file{
       if(/\\end{ahrecord}/){
         $recname = '';
       }
+      if(/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/){
+         $oname = $1;
+         $terminateObject = 0;
+         $objs{$1} = $2;
+         push @objsid, $1;
+         $isObj = 1;
+         $wlabel = "\\subsubsection";
+         $has_methods = 0;
+         $iname = $1;
+         $dum = $2;
+         $iname =~ s/\\_/_/g;
+         $oiname = $iname;
+         if($opt_glish == 1){
+            print "$pack.$miname.objs.$oiname := [=];\n";
+            print "$pack.$miname.objs.$oiname.m := [=];\n";
+            $argroot ='';
+            $dum =~ s/[\n\']/ /g;
+            print "$pack.$miname.objs.$oiname.d := '$dum';\n";}
+         undef @methodsid{$oname};
+      }
       if(/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/){
          $oname = $1;
          $terminateObject = 0;
@@ -375,13 +396,20 @@ sub make_tex_file{
    /sg;
       } 
 
-      if(/\\end{ahobject}/ || /\\end{ahmodule}/){
+      if(/\\end{ahobject}/ || /\\end{ahtool}/|| /\\end{ahmodule}/){
          $isObj = 0;
       }
       s/\\end{ahobject}/$end_section/g;
+      s/\\end{ahtool}/$end_section/g;
    
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 -- Object\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 -- Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsectionO{$1}{$pack}{$mname}
+   $2\\\\
+   /g;
+   
+      s/\\begin{ahtool}\s*{($mtext)}\s*{($mtext)}/
+   \\subsection{$1 -- Tool\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionO{$1}{$pack}{$mname}
    $2\\\\
    /g;
