@@ -34,7 +34,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/Stokes.h>
 //
-#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MDirection.h>        // For enums
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MeasConvert.h>
 
@@ -43,6 +43,8 @@ class DirectionCoordinate;
 class ObsInfo;
 class String;
 class LogIO;
+class MEpoch;
+class MPosition;
 
 
 // <summary>Functions for creating default CoordinateSystems</summary>
@@ -349,13 +351,11 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 // Returns True if the machine was needed and set.  Returns False
 // if the machine was not needed and not set.    
    static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
-                                    MFrequency::Types typeTo, 
-                                    MFrequency::Types typeFrom,
-                                    const MDirection& dirTo, 
-                                    const MDirection& dirFrom,
-                                    const ObsInfo& obsTo, 
-                                    const ObsInfo& obsFrom);
-//
+                                    MFrequency::Types typeTo, MFrequency::Types typeFrom,
+                                    const MDirection& dirTo, const MDirection& dirFrom,
+                                    const MEpoch& epochTo, const MEpoch& epochFrom,
+                                    const MPosition& posTo, const MPosition& posTo);
+
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
 // in the CS the DirectionCoordinate axes are (long then lat)
@@ -423,4 +423,3 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
 };
 
 #endif
-
