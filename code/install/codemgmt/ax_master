@@ -2620,3 +2620,4 @@
 11 391 src rm trial/apps/simulater/simulater.cc
 11 391 src rm trial/apps/simulater/simulaterFactory.cc
 11 391 src rm trial/apps/simulater/simulaterFactory.h
+11 391 src rm trial/implement/MeasurementEquations/DOsimulater.h
