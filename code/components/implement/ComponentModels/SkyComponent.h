@@ -1,5 +1,5 @@
 //# SkyComponent.h: this defines SkyComponent.h
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,7 +124,7 @@ public:
   // Return the intensity (in Jy/pixel) of the component at the specified
   // directions.  Default implementation calls the scalar sample function
   // iteratively.
-  virtual Vector<StokesVector> operator()(const Vector<MDirection>& samplePos)
+  virtual Vector<StokesVector> operator()(const Vector<MDirection> & samplePos)
                                    const = 0;
 
   // Project the component onto an Image. The default implementation calls
@@ -134,7 +134,7 @@ public:
   // or polarisation axis. If there are fewer elements than four elemnts
   // then only the necessary polarisation terms are sampled (order is
   // I,Q,U,V)
-  virtual void operator()(ImageInterface<Float>& plane) const = 0;
+  virtual void operator()(ImageInterface<Float> & plane) const = 0;
 
   // Project the component onto an Image and convolve with the psf. The
   // default implementation uses the above routine to project the image
@@ -144,8 +144,8 @@ public:
   // convolution will be done successively over all requied axes. Eg. A two
   // dimensional psf will be successively convolved over each of the
   // polarisation components of a three dimensional plane. 
-  virtual void operator()(ImageInterface<Float>& plane,
-			  const ImageInterface<Float>& psf) const = 0;
+  virtual void operator()(ImageInterface<Float> & plane,
+			  const ImageInterface<Float> & psf) const = 0;
 
   // set/get the integrated flux (in Jy) of the component
   virtual void setFlux( StokesVector newFlux) = 0;
@@ -156,7 +156,7 @@ public:
   virtual MDirection position() const = 0;
 
   // get the actual type of the component (as a string)
-  virtual const String& type() const = 0;				   
+  virtual const String & type() const = 0;				   
 };
 
 #endif
