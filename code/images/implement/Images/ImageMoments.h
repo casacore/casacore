@@ -47,6 +47,8 @@ class IPosition;
 class LogIO;
 class String;
 class Unit;
+class LCPagedMask;
+
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
