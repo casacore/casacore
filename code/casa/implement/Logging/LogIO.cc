@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,31 +36,31 @@
 LogIO::LogIO()
     : sink_p(), text_p(0)
 {
-    // Nothing
+    sink_p.makePermanent();
 }
 
 LogIO::LogIO(LogSink &sink)
     : sink_p(sink), text_p(0)
 {
-    // Nothign
+    sink_p.makePermanent();
 }
 
 LogIO::LogIO(const LogOrigin &or)
     : sink_p(), msg_p(or), text_p(0)
 {
-    // Nothign
+    sink_p.makePermanent();
 }
 
 LogIO::LogIO(const LogOrigin &or, LogSink &sink)
     : sink_p(sink),  msg_p(or), text_p(0)
 {
-    // Nothing
+    sink_p.makePermanent();
 }
 
 LogIO::LogIO(const LogIO &other)
     : sink_p(other.sink_p), msg_p(other.msg_p), text_p(0)
 {
-    // Nothing
+    sink_p.makePermanent();
 }
 
 LogIO& LogIO::operator=(const LogIO &other)
@@ -68,9 +68,9 @@ LogIO& LogIO::operator=(const LogIO &other)
     if (this != &other) {
 	post();
 	sink_p = other.sink_p;
+	sink_p.makePermanent();
 	msg_p = other.msg_p;
     }
-
     return *this;
 }
 
