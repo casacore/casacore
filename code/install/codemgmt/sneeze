@@ -410,13 +410,16 @@
            (cd $BASEROOT && tar pvxf -)
      fi
 
-#    Remake the root directory.
-     echo ""
-     echo "sneeze: Remaking files in $BASEROOT..."
-     cp $AIPSROOT/aipshosts $BASEROOT
-     ( AIPSPATH="$BASEROOT $ARCH $SITE $HOST" ; \
-       export AIPSPATH ; \
-       gmake -C $BASEROOT/code/install aipsroot )
+     if [ -d "$BASEROOT/code/install" ]
+     then
+#       Remake the root directory.
+        echo ""
+        echo "sneeze: Remaking files in $BASEROOT..."
+        cp $AIPSROOT/aipshosts $BASEROOT
+        ( AIPSPATH="$BASEROOT $ARCH $SITE $HOST" ; \
+          export AIPSPATH ; \
+          gmake -C $BASEROOT/code/install aipsroot )
+     fi
 
 #    Preserve the base documentation but only if we build it. 
      BASEDOCS=`getrc -i sneeze.base.docs.preserve 2> /dev/null`
