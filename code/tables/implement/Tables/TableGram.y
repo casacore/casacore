@@ -480,29 +480,25 @@ relexpr:   arithexpr
 	       delete $3;
 	   }
          | arithexpr EQREGEX REGEX {
-	       TableExprNode node (TableParseSelect::currentSelect()->
-				   handleLiteral ($3));
+	       TableExprNode node (TableParseSelect::handleLiteral ($3));
 	       $$ = new TableExprNode (*$1 == regex(node));
 	       delete $1;
 	       delete $3;
 	   }
          | arithexpr NEREGEX REGEX {
-	       TableExprNode node (TableParseSelect::currentSelect()->
-				   handleLiteral ($3));
+	       TableExprNode node (TableParseSelect::handleLiteral ($3));
 	       $$ = new TableExprNode (*$1 != regex(node));
 	       delete $1;
 	       delete $3;
 	   }
          | arithexpr EQREGEX PATTERN {
-	       TableExprNode node (TableParseSelect::currentSelect()->
-				   handleLiteral ($3));
+	       TableExprNode node (TableParseSelect::handleLiteral ($3));
 	       $$ = new TableExprNode (*$1 == pattern(node));
 	       delete $1;
 	       delete $3;
 	   }
          | arithexpr NEREGEX PATTERN {
-	       TableExprNode node (TableParseSelect::currentSelect()->
-				   handleLiteral ($3));
+	       TableExprNode node (TableParseSelect::handleLiteral ($3));
 	       $$ = new TableExprNode (*$1 != pattern(node));
 	       delete $1;
 	       delete $3;
@@ -613,8 +609,7 @@ arithexpr: inxexpr
 
 inxexpr:   simexpr
          | simexpr LBRACKET subscripts RBRACKET {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                 handleSlice (*$1, *$3));
+	       $$ = new TableExprNode (TableParseSelect::handleSlice (*$1, *$3));
 	       delete $1;
 	       delete $3;
 	   }
@@ -644,13 +639,11 @@ simexpr:   LPAREN orexpr RPAREN
 	       delete $1;
 	   }
          | LITERAL {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                 handleLiteral ($1));
+	       $$ = new TableExprNode (TableParseSelect::handleLiteral ($1));
 	       delete $1;
 	   }
          | STRINGLITERAL {
-	       $$ = new TableExprNode (TableParseSelect::currentSelect()->
-                                                 handleLiteral ($1));
+	       $$ = new TableExprNode (TableParseSelect::handleLiteral ($1));
 	       delete $1;
 	   }
          | set {
