@@ -74,6 +74,16 @@
 # provides a convenient mechanism for interactively switching between
 # architecture extensions.  Note that aipsinit always undefines "aips_ext".
 #
+# The "aipshosts" file may contain a catch-all entry, "DEFAULT", which applies
+# for hosts which are not specifically listed.  An architecture type of "NONE"
+# signals that the particular host does not have an AIPS++ installation and
+# causes AIPS++ initialization to be skipped.  Thus an "aipshosts" entry of
+#
+#    DEFAULT    NONE
+#
+# defeats AIPS++ initialization for all hosts other than those specifically
+# listed.
+#
 # Notes:
 #    1) There are some subtleties in the way the spacing of PATH
 #       elements is handled.  In particular, advantage is made of the
@@ -87,6 +97,8 @@
 #
 #    2) The "exit" command does not work as expected here.
 #
+#    3) Environment variables used as temporaries are prefixed with "a_".
+#
 # Original: 1992/09/03 by Darrell Schiebel, NRAO.
 # $Id$
 #=============================================================================
@@ -97,38 +109,45 @@
 
 #------------------ Do not change anything below this line. ------------------
 
-# Function which invokes aipsinit with "aips_ext" as a command line argument.
-  fn aipsinit { aips_ext=$* ; . $a_root/aipsinit.rc }
-
 # Rederive the host name.
   a_host=`{uname -n | awk -F. '{ print $1 }'}
 
 # Look for this host in the AIPS++ hosts database.
   if (test -f $a_root/aipshosts) {
      a_temp=`{egrep '^[ 	]*'^$a_host^'[ 	]' $a_root/aipshosts}
+     if (~ $a_temp) {
+#       Look for a DEFAULT entry.
+        a_temp=`{egrep '^[ 	]*'^DEFAULT^'[ 	]' $a_root/aipshosts}
+     }
   } else {
      echo aipsinit: Please create the $a_root/aipshosts database.
      a_temp=()
   }
 
+# Request an update to aipshosts.
+  if (~ ($AIPSPATH $a_temp) () ) {
+     echo aipsinit: Please add an entry for $a_host to $a_root/aipshosts.
+  }
+
 # Set the architecture and site.
-  if (~ $a_temp) {
-#    Look for a DEFAULT entry.
-     if (test -f $a_root/aipshosts) {
-        a_temp=`{egrep '^[ 	]*'^DEFAULT^'[ 	]' $a_root/aipshosts}
-        if (test $^a_temp) {
-           a_arch=$a_temp(2)
-           a_site=$a_temp(3)
-        }
-     }
+  a_arch=$a_temp(2)
+  a_site=$a_temp(3)
 
-#    Request an update to aipshosts.
-     if (~ ($AIPSPATH $a_temp) () ) {
-        echo aipsinit: Please add an entry for $a_host to $a_root/aipshosts.
+  if (~ $a_arch NONE) {
+#    Remove aips_bin and aips_doc from PATH and MANPATH.
+     PATH=`{echo ':'^$PATH^':' |
+           sed -e 's#:aips_bin:#:#g' \
+               -e 's#^:##' \
+               -e 's#:$##'}
+     if (test $^MANPATH) {
+        MANPATH=`{echo ':'^$MANPATH^':' |
+           sed -e 's#:aips_doc:#:#g' \
+               -e 's#^:##' \
+               -e 's#:$##'}
      }
-
-#    Try to deduce the architecture.
+  } else {
      if (~ $a_arch) {
+#       Try to deduce the architecture.
         if (~ `{uname -s} SunOS) {
            if (~ `{uname -r} 5.*) {
               a_arch=sun4sol
@@ -148,7 +167,7 @@
                     if (~ `{uname -m} alpha) {
                        a_arch=alpha
                     } else {
-                       a_arch=ARCH
+                       a_arch=UNKNOWN_ARCH
                     }
                  }
               }
@@ -156,96 +175,91 @@
         }
      }
 
-     a_temp=$a_root/$a_arch^*
-     a_arch=`{echo $a_temp(1) | awk -F/ '{ print $NF }'}
-     if (~ $a_arch *\*) {
-        a_arch=ARCH
-        a_site=SITE
+     if (~ $a_site) {
+#       Try to deduce the site name.
+        a_temp=$a_root/$a_arch/*/makedefs
+        a_site=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
+        if (test $a_site '=' '*') a_site=UNKNOWN_SITE
+     }
+
+#    Reset the architecture extension if required.
+     if (test $^aips_ext) {
+        if (test $aips_ext '=' '_' -o $aips_ext '=' ' ' -o $aips_ext '=' '') {
+           a_arch=`{echo $a_arch | sed -e 's/_.*//'}
+        } else {
+           a_arch=`{echo $a_arch^_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'}
+        }
+
+        aips_ext=()
+     }
+
+#    Is AIPSPATH already defined?
+     if (test $^AIPSPATH) {
+        a_och=`{echo $AIPSPATH | awk '{print $2}'}
+        a_old=`{echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'}
      } else {
-        if (~ $a_site) {
-#          Try to deduce the site name.
-           a_temp=$a_root/$a_arch/*/makedefs
-           a_site=`{echo $a_temp(1) | awk -F/ '{ print $(NF-1) }'}
-           if (test $a_site '=' '*') a_site=SITE
+        a_och=$a_arch
+        a_old=$a_root/$a_arch
+     }
+
+     if (! test -d $a_root/$a_arch) {
+        echo 'Warning: '^$a_root/$a_arch^' does not exist.'
+     } else {
+        if (! test -d $a_root/$a_arch/$a_site) {
+           echo 'Warning: '^$a_root/$a_arch/$a_site^' does not exist.'
         }
      }
 
-     echo aipsinit: Assuming architecture $a_arch, and site $a_site.
-  } else {
-     a_arch=$a_temp(2)
-     a_site=$a_temp(3)
-  }
-
-# Reset the architecture extension if required.
-  if (test $^aips_ext) {
-     if (test $aips_ext '=' '_' -o $aips_ext '=' ' ' -o $aips_ext '=' '') {
-        a_arch=`{echo $a_arch | sed -e 's/_.*//'}
-     } else {
-        a_arch=`{echo $a_arch^_$aips_ext | sed -e '{s/ .*//;s/_.*_/_/;}'}
-     }
-
-     aips_ext=()
-  }
-
-# Is AIPSPATH already defined?
-  if (test $^AIPSPATH) {
-     a_och=`{echo $AIPSPATH | awk '{print $2}'}
-     a_old=`{echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'}
-  } else {
-     a_och=$a_arch
-     a_old=$a_root/$a_arch
-  }
-
-  if (! test -d $a_root/$a_arch) {
-     echo 'Warning: '^$a_root/$a_arch^' does not exist.'
-  }
-
-# Define AIPSPATH.
-  a_temp=($a_root $a_arch $a_site $a_host)
-  AIPSPATH=$^a_temp
+#    Define AIPSPATH.
+     a_temp=($a_root $a_arch $a_site $a_host)
+     AIPSPATH=$^a_temp
  
-# Update the prompt string.
-  cd .
+#    Update the prompt string.
+     cd .
 
 
-# Reset PATH.
-  a_new=`{echo ' '^$PATH^' ' | \
-     sed -e 's#::*# #g' \
-         -e 's# '^$a_old/bin^' # aips_bin #g' \
-         -e 's#/aips++/'^$a_och^'/#/aips++/'^$a_arch^'/#g' \
-         -e 's# aips_bin # '^$a_root/$a_arch/bin^' #g'}
-
-# Ensure that some AIPS++ bin area got into PATH.
-  echo ' '^$a_new^' ' | grep ' '^$a_root/$a_arch/bin^' ' > /dev/null >[2=1]
-  if (~ 1 $status(2)) {
-#    Leave "." first, and put the AIPS++ areas next.
-     a_temp=$a_new(1)
-     if (test $a_temp '=' '.') {
-        a_new=`{echo $a_new | sed -e 's#^\. #. '^$a_root/$a_arch/bin^' #'}
-     } else {
-        a_new=($a_root/$a_arch/bin $a_new)
-     }
-  }
-
-# Reset it, with sanity check!
-  test $^a_new && path=$a_new
-
-# Reset MANPATH.
-  if (test $^MANPATH) {
-     a_new=`{echo ' '^$MANPATH^' ' |
+#    Reset PATH.
+     a_new=`{echo ' '^$PATH^' ' | \
         sed -e 's#::*# #g' \
-            -e 's# '^$a_old/doc^' # aips_doc #g' \
-            -e 's# aips_doc # '^$a_root/$a_arch/doc^' #g'}
+            -e 's# '^$a_old/bin^' # aips_bin #g' \
+            -e 's#/aips++/'^$a_och^'/#/aips++/'^$a_arch^'/#g' \
+            -e 's# aips_bin # '^$a_root/$a_arch/bin^' #g'}
 
-#    Ensure that some AIPS++ man area got into MANPATH.
-     echo ' '^$a_new^' ' | grep $a_root/$a_arch/doc > /dev/null >[2=1]
+#    Ensure that some AIPS++ bin area got into PATH.
+     echo ' '^$a_new^' ' | grep ' '^$a_root/$a_arch/bin^' ' > /dev/null >[2=1]
      if (~ 1 $status(2)) {
-        a_new=($a_root/$a_arch/doc $a_new)
+#       Leave "." first, and put the AIPS++ areas next.
+        a_temp=$a_new(1)
+        if (test $a_temp '=' '.') {
+           a_new=`{echo $a_new | sed -e 's#^\. #. '^$a_root/$a_arch/bin^' #'}
+        } else {
+           a_new=($a_root/$a_arch/bin $a_new)
+        }
      }
 
 #    Reset it, with sanity check!
-     a_new=`{echo $a_new | sed -e 's# #:#g'}
-     test $^a_new && MANPATH=$a_new
+     test $^a_new && path=$a_new
+
+#    Reset MANPATH.
+     if (test $^MANPATH) {
+        a_new=`{echo ' '^$MANPATH^' ' |
+           sed -e 's#::*# #g' \
+               -e 's# '^$a_old/doc^' # aips_doc #g' \
+               -e 's# aips_doc # '^$a_root/$a_arch/doc^' #g'}
+
+#       Ensure that some AIPS++ man area got into MANPATH.
+        echo ' '^$a_new^' ' | grep $a_root/$a_arch/doc > /dev/null >[2=1]
+        if (~ 1 $status(2)) {
+           a_new=($a_root/$a_arch/doc $a_new)
+        }
+
+#       Reset it, with sanity check!
+        a_new=`{echo $a_new | sed -e 's# #:#g'}
+        test $^a_new && MANPATH=$a_new
+     }
+
+#    Function which invokes aipsinit with "aips_ext" as a command line argument.
+     fn aipsinit { aips_ext=$* ; . $a_root/aipsinit.rc }
   }
 
 
