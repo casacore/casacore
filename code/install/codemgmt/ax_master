@@ -1767,3 +1767,7 @@
 11 085 src rm nrao/apps/gOTF/makefile
 11 085 sys rm bin/gOTF
 11 085 sys rm libexec/tgOTF.g
+11 085 src rm nrao/apps/sddfiller/gsdd-helper.g
+11 085 src rm nrao/apps/sddfiller/makefile
+11 085 src rm nrao/apps/sddfiller/sddfiller.cc
+11 085 src rm nrao/apps/sddfiller/sddfiller.notes
