@@ -1,5 +1,5 @@
 //# tSkyCompRep.cc:
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,7 +94,8 @@ int main() {
       shape.setRefDirection(MDirection(Quantity(10, "deg"), 
 				       Quantity(20, "deg"), 
 				       MDirection::J2000));
-      spectrum.setRefFrequency(MFrequency(Quantity(1, "GHz"),MFrequency::LSR));
+      spectrum.setRefFrequency(MFrequency(Quantity(1, "GHz"),
+					  MFrequency::LSRK));
       spectrum.setIndex(1.0);
     }
     AlwaysAssert(near(gComp.flux().value(0), 10, C::dbl_epsilon), AipsError);
