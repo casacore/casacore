@@ -1268,7 +1268,7 @@ void MomentCalcBase<T>::setUpCoords (ImageMoments<T>& iMom,
 //
       Vector<Double> frequency(iMom.pInImage_p->shape()(iMom.momentAxis_p));
       if (doCoordProfile) {
-         for (uInt i=0; i<sepWorldCoord.nelements(); i++) {
+         for (uInt i=0; i<frequency.nelements(); i++) {
             frequency(i) = getMomentCoord(iMom, pixelIn, worldOut, Double(i));
          }
       }
