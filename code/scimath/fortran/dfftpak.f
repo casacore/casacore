@@ -1,63 +1,62 @@
-C 
-C                          FFTPACK
-C 
+C     Correspondence concerning AIPS++ should be addressed as follows:
+C            Internet email: aips2-request@nrao.edu.
+C            Postal address: AIPS++ Project Office
+C                            National Radio Astronomy Observatory
+C                            520 Edgemont Road
+C                            Charlottesville, VA 22903-2475 USA
+C
+C     $Id$
+C
+C downloaded from http://www.netlib.org/bihar/ on Nov 1997
+C
 C * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-C 
-C                   version 4  april 1985
-C 
-C      a package of fortran subprograms for the fast fourier
+C                   version 3  june 1979
+C   a package of fortran subprograms for the fast fourier
 C       transform of periodic and other symmetric sequences
-C 
-C                          by
-C 
-C                   paul n swarztrauber
-C 
+C   paul n swarztrauber
 C   national center for atmospheric research  boulder,colorado 80307
-C 
 C    which is sponsored by the national science foundation
+C   modified by P. Bjorstad
 C 
 C * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 C 
+C 1.   drffti    initialize  drfftf and drfftb
+C 2.   drfftf    forward transform of a real periodic sequence
+C 3.   drfftb    backward transform of a real coefficient array
 C 
-C this package consists of programs which perform fast fourier
-C transforms for both complex and real periodic sequences and
-C certian other symmetric sequences that are listed below.
+C 4.   defftf    a simplified real periodic forward transform
+C 5.   defftb    a simplified real periodic backward transform
 C 
-C 1.   rffti     initialize  rfftf and rfftb
-C 2.   rfftf     forward transform of a real periodic sequence
-C 3.   rfftb     backward transform of a real coefficient array
+C 6.   dsinti    initialize dsint
+C 7.   dsint     sine transform of a real odd sequence
 C 
-C 4.   ezffti    initialize ezfftf and ezfftb
-C 5.   ezfftf    a simplified real periodic forward transform
-C 6.   ezfftb    a simplified real periodic backward transform
+C 8.   dcosti    initialize dcost
+C 9.   dcost     cosine transform of a real even sequence
 C 
-C 7.   sinti     initialize sint
-C 8.   sint      sine transform of a real odd sequence
+C 10.  dsinqi    initialize dsinqf and dsinqb
+C 11.  dsinqf    forward sine transform with odd wave numbers
+C 12.  dsinqb    unnormalized inverse of dsinqf
 C 
-C 9.   costi     initialize cost
-C 10.  cost      cosine transform of a real even sequence
+C 13.  dcosqi    initialize dcosqf and dcosqb
+C 14.  dcosqf    forward cosine transform with odd wave numbers
+C 15.  dcosqb    unnormalized inverse of dcosqf
 C 
-C 11.  sinqi     initialize sinqf and sinqb
-C 12.  sinqf     forward sine transform with odd wave numbers
-C 13.  sinqb     unnormalized inverse of sinqf
+C 16.  dcffti     initialize dcfftf and dcfftb
+C 17.  dcfftf     forward transform of a complex periodic sequence
+C 18.  dcfftb     unnormalized inverse of dcfftf
 C 
-C 14.  cosqi     initialize cosqf and cosqb
-C 15.  cosqf     forward cosine transform with odd wave numbers
-C 16.  cosqb     unnormalized inverse of cosqf
+C Each subroutine is described below. the names used refer to
+C the double precision version, but the same description
+C applies for the single precision version.
 C 
-C 17.  cffti     initialize cfftf and cfftb
-C 18.  cfftf     forward transform of a complex periodic sequence
-C 19.  cfftb     unnormalized inverse of cfftf
+C ****************************************************************
 C 
+C subroutine drffti(n,wsave)
 C 
-C ******************************************************************
+C ****************************************************************
 C 
-C subroutine rffti(n,wsave)
-C 
-C   ****************************************************************
-C 
-C subroutine rffti initializes the array wsave which is used in
-C both rfftf and rfftb. the prime factorization of n together with
+C subroutine drffti initializes the array wsave which is used in
+C both drfftf and drfftb. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -68,18 +67,91 @@ C
 C output parameter
 C 
 C wsave   a work array which must be dimensioned at least 2*n+15.
-C         the same work array can be used for both rfftf and rfftb
+C         the same work array can be used for both drfftf and drfftb
 C         as long as n remains unchanged. different wsave arrays
 C         are required for different values of n. the contents of
-C         wsave must not be changed between calls of rfftf or rfftb.
+C         wsave must not be changed between calls of drfftf or drfftb.
+C
+      SUBROUTINE DRFFTI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      CALL DRFTI1 (N,WSAVE(N+1),WSAVE(2*N+1))
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRFTI1 (N,WA,IFAC)
+      DOUBLE PRECISION WA(1), ARG, ARGH, ARGLD, FI, TPI
+      INTEGER IFAC(1), NTRYH(4)
+      DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /4, 2, 3, 5/
+      DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
+C
+      NL = N
+      NF = 0
+      J = 0
+C
+ 101  J = J+1
+      IF (J.LE.4) NTRY = NTRYH(J)
+      IF (J.GT.4) NTRY = NTRY + 2
+ 104  NQ = NL/NTRY
+      NR = NL-NTRY*NQ
+      IF (NR.NE.0) GO TO 101
+C
+ 105  NF = NF+1
+      IFAC(NF+2) = NTRY
+      NL = NQ
+      IF (NTRY .NE. 2) GO TO 107
+      IF (NF .EQ. 1) GO TO 107
+      DO 106 I=2,NF
+         IB = NF-I+2
+         IFAC(IB+2) = IFAC(IB+1)
+ 106  CONTINUE
+      IFAC(3) = 2
+ 107  IF (NL .NE. 1) GO TO 104
+      IFAC(1) = N
+      IFAC(2) = NF
+C
+      ARGH = TPI/DFLOAT(N)
+      IS = 0
+      NFM1 = NF-1
+      L1 = 1
+      IF (NFM1 .EQ. 0) RETURN
+      DO 110 K1=1,NFM1
+         IP = IFAC(K1+2)
+         LD = 0
+         L2 = L1*IP
+         IDO = N/L2
+         IPM = IP-1
+         DO 109 J=1,IPM
+            LD = LD+L1
+            I = IS
+            ARGLD = DFLOAT(LD)*ARGH
+            FI = 0.D0
+            DO 108 II=3,IDO,2
+               I = I+2
+               FI = FI+1.D0
+               ARG = FI*ARGLD
+               WA(I-1) = DCOS(ARG)
+               WA(I) = DSIN(ARG)
+ 108        CONTINUE
+            IS = IS+IDO
+ 109     CONTINUE
+C
+         L1 = L2
+ 110  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine drfftf(n,r,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine rfftf(n,r,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine rfftf computes the fourier coefficients of a real
+C subroutine drfftf computes the fourier coefficients of a real
 C perodic sequence (fourier analysis). the transform is defined
 C below at output parameter r.
 C 
@@ -93,13 +165,13 @@ C r       a real array of length n which contains the sequence
 C         to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 2*n+15.
-C         in the program that calls rfftf. the wsave array must be
-C         initialized by calling subroutine rffti(n,wsave) and a
+C         in the program that calls drfftf. the wsave array must be
+C         initialized by calling subroutine drffti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
 C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by rfftf and rfftb.
+C         the same wsave array can be used by drfftf and drfftb.
 C 
 C 
 C output parameters
@@ -125,21 +197,477 @@ C
 C                   (-1)**(i-1)*r(i)
 C 
 C  *****  note
-C              this transform is unnormalized since a call of rfftf
-C              followed by a call of rfftb will multiply the input
+C              this transform is unnormalized since a call of drfftf
+C              followed by a call of drfftb will multiply the input
 C              sequence by n.
 C 
 C wsave   contains results which must not be destroyed between
-C         calls of rfftf or rfftb.
+C         calls of drfftf or drfftb.
+C
+      SUBROUTINE DRFFTF (N,R,WSAVE)
+      DOUBLE PRECISION R(1), WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      CALL DRFTF1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADF2 (IDO,L1,CC,CH,WA1)
+      DOUBLE PRECISION CC(IDO,L1,2), CH(IDO,2,L1), WA1(1), TI2, TR2
+C
+      DO 101 K=1,L1
+         CH(1,1,K) = CC(1,K,1)+CC(1,K,2)
+         CH(IDO,2,K) = CC(1,K,1)-CC(1,K,2)
+ 101  CONTINUE
+C
+      IF (IDO-2) 107,105,102
+ 102  IDP2 = IDO+2
+      DO 104 K=1,L1
+         DO 103 I=3,IDO,2
+            IC = IDP2-I
+            TR2 = WA1(I-2)*CC(I-1,K,2)+WA1(I-1)*CC(I,K,2)
+            TI2 = WA1(I-2)*CC(I,K,2)-WA1(I-1)*CC(I-1,K,2)
+            CH(I,1,K) = CC(I,K,1)+TI2
+            CH(IC,2,K) = TI2-CC(I,K,1)
+            CH(I-1,1,K) = CC(I-1,K,1)+TR2
+            CH(IC-1,2,K) = CC(I-1,K,1)-TR2
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      IF (MOD(IDO,2) .EQ. 1) RETURN
+ 105  DO 106 K=1,L1
+         CH(1,2,K) = -CC(IDO,K,2)
+         CH(IDO,1,K) = CC(IDO,K,1)
+ 106  CONTINUE
+C
+ 107  RETURN
+      END
+C
+      SUBROUTINE DRADF3 (IDO,L1,CC,CH,WA1,WA2)
+      DOUBLE PRECISION CC(IDO,L1,3), CH(IDO,3,L1), WA1(1), WA2(1),
+     1     CI2, CR2, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TI3, TR2, TR3
+      DATA TAUR / -0.5 D0 /
+      DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
+C
+      DO 101 K=1,L1
+         CR2 = CC(1,K,2)+CC(1,K,3)
+         CH(1,1,K) = CC(1,K,1)+CR2
+         CH(1,3,K) = TAUI*(CC(1,K,3)-CC(1,K,2))
+         CH(IDO,2,K) = CC(1,K,1)+TAUR*CR2
+ 101  CONTINUE
+C
+      IF (IDO .EQ. 1) RETURN
+      IDP2 = IDO+2
+      DO 103 K=1,L1
+         DO 102 I=3,IDO,2
+            IC = IDP2-I
+            DR2 = WA1(I-2)*CC(I-1,K,2)+WA1(I-1)*CC(I,K,2)
+            DI2 = WA1(I-2)*CC(I,K,2)-WA1(I-1)*CC(I-1,K,2)
+            DR3 = WA2(I-2)*CC(I-1,K,3)+WA2(I-1)*CC(I,K,3)
+            DI3 = WA2(I-2)*CC(I,K,3)-WA2(I-1)*CC(I-1,K,3)
+            CR2 = DR2+DR3
+            CI2 = DI2+DI3
+            CH(I-1,1,K) = CC(I-1,K,1)+CR2
+            CH(I,1,K) = CC(I,K,1)+CI2
+            TR2 = CC(I-1,K,1)+TAUR*CR2
+            TI2 = CC(I,K,1)+TAUR*CI2
+            TR3 = TAUI*(DI2-DI3)
+            TI3 = TAUI*(DR3-DR2)
+            CH(I-1,3,K) = TR2+TR3
+            CH(IC-1,2,K) = TR2-TR3
+            CH(I,3,K) = TI2+TI3
+            CH(IC,2,K) = TI3-TI2
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
+      DOUBLE PRECISION CC(IDO,L1,4), CH(IDO,4,L1), WA1(1), WA2(1),
+     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, HSQT2, TI1, TI2, TI3,
+     2     TI4, TR1, TR2, TR3, TR4
+      DATA HSQT2 /   .7071067811 8654752440 0844362104 85 D0 /
+C
+      DO 101 K=1,L1
+         TR1 = CC(1,K,2)+CC(1,K,4)
+         TR2 = CC(1,K,1)+CC(1,K,3)
+         CH(1,1,K) = TR1+TR2
+         CH(IDO,4,K) = TR2-TR1
+         CH(IDO,2,K) = CC(1,K,1)-CC(1,K,3)
+         CH(1,3,K) = CC(1,K,4)-CC(1,K,2)
+ 101  CONTINUE
+C
+      IF (IDO-2) 107,105,102
+ 102  IDP2 = IDO+2
+      DO 104 K=1,L1
+         DO 103 I=3,IDO,2
+            IC = IDP2-I
+            CR2 = WA1(I-2)*CC(I-1,K,2)+WA1(I-1)*CC(I,K,2)
+            CI2 = WA1(I-2)*CC(I,K,2)-WA1(I-1)*CC(I-1,K,2)
+            CR3 = WA2(I-2)*CC(I-1,K,3)+WA2(I-1)*CC(I,K,3)
+            CI3 = WA2(I-2)*CC(I,K,3)-WA2(I-1)*CC(I-1,K,3)
+            CR4 = WA3(I-2)*CC(I-1,K,4)+WA3(I-1)*CC(I,K,4)
+            CI4 = WA3(I-2)*CC(I,K,4)-WA3(I-1)*CC(I-1,K,4)
+            TR1 = CR2+CR4
+            TR4 = CR4-CR2
+            TI1 = CI2+CI4
+            TI4 = CI2-CI4
+            TI2 = CC(I,K,1)+CI3
+            TI3 = CC(I,K,1)-CI3
+            TR2 = CC(I-1,K,1)+CR3
+            TR3 = CC(I-1,K,1)-CR3
+            CH(I-1,1,K) = TR1+TR2
+            CH(IC-1,4,K) = TR2-TR1
+            CH(I,1,K) = TI1+TI2
+            CH(IC,4,K) = TI1-TI2
+            CH(I-1,3,K) = TI4+TR3
+            CH(IC-1,2,K) = TR3-TI4
+            CH(I,3,K) = TR4+TI3
+            CH(IC,2,K) = TR4-TI3
+ 103     CONTINUE
+ 104  CONTINUE
+      IF (MOD(IDO,2) .EQ. 1) RETURN
+ 105  CONTINUE
+C
+      DO 106 K=1,L1
+         TI1 = -HSQT2*(CC(IDO,K,2)+CC(IDO,K,4))
+         TR1 = HSQT2*(CC(IDO,K,2)-CC(IDO,K,4))
+         CH(IDO,1,K) = TR1+CC(IDO,K,1)
+         CH(IDO,3,K) = CC(IDO,K,1)-TR1
+         CH(1,2,K) = TI1-CC(IDO,K,3)
+         CH(1,4,K) = TI1+CC(IDO,K,3)
+ 106  CONTINUE
+C
+ 107  RETURN
+      END
+C
+      SUBROUTINE DRADF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
+      DOUBLE PRECISION CC(IDO,L1,5), CH(IDO,5,L1), WA1(1), WA2(1),
+     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
+     2     DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3, TI4,
+     3     TI5, TR11, TR12, TR2, TR3, TR4, TR5
+      DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
+      DATA TI11  /  0.9510565162 9515357211 6439333379 38214D0/
+      DATA TR12  / -0.8090169943 7494742410 2293417182 81906D0/
+      DATA TI12  /  0.5877852522 9247312916 8705954639 07277D0/
+C
+      DO 101 K=1,L1
+         CR2 = CC(1,K,5)+CC(1,K,2)
+         CI5 = CC(1,K,5)-CC(1,K,2)
+         CR3 = CC(1,K,4)+CC(1,K,3)
+         CI4 = CC(1,K,4)-CC(1,K,3)
+         CH(1,1,K) = CC(1,K,1)+CR2+CR3
+         CH(IDO,2,K) = CC(1,K,1)+TR11*CR2+TR12*CR3
+         CH(1,3,K) = TI11*CI5+TI12*CI4
+         CH(IDO,4,K) = CC(1,K,1)+TR12*CR2+TR11*CR3
+         CH(1,5,K) = TI12*CI5-TI11*CI4
+ 101  CONTINUE
+C
+      IF (IDO .EQ. 1) RETURN
+      IDP2 = IDO+2
+      DO 103 K=1,L1
+         DO 102 I=3,IDO,2
+            IC = IDP2-I
+            DR2 = WA1(I-2)*CC(I-1,K,2)+WA1(I-1)*CC(I,K,2)
+            DI2 = WA1(I-2)*CC(I,K,2)-WA1(I-1)*CC(I-1,K,2)
+            DR3 = WA2(I-2)*CC(I-1,K,3)+WA2(I-1)*CC(I,K,3)
+            DI3 = WA2(I-2)*CC(I,K,3)-WA2(I-1)*CC(I-1,K,3)
+            DR4 = WA3(I-2)*CC(I-1,K,4)+WA3(I-1)*CC(I,K,4)
+            DI4 = WA3(I-2)*CC(I,K,4)-WA3(I-1)*CC(I-1,K,4)
+            DR5 = WA4(I-2)*CC(I-1,K,5)+WA4(I-1)*CC(I,K,5)
+            DI5 = WA4(I-2)*CC(I,K,5)-WA4(I-1)*CC(I-1,K,5)
+            CR2 = DR2+DR5
+            CI5 = DR5-DR2
+            CR5 = DI2-DI5
+            CI2 = DI2+DI5
+            CR3 = DR3+DR4
+            CI4 = DR4-DR3
+            CR4 = DI3-DI4
+            CI3 = DI3+DI4
+            CH(I-1,1,K) = CC(I-1,K,1)+CR2+CR3
+            CH(I,1,K) = CC(I,K,1)+CI2+CI3
+            TR2 = CC(I-1,K,1)+TR11*CR2+TR12*CR3
+            TI2 = CC(I,K,1)+TR11*CI2+TR12*CI3
+            TR3 = CC(I-1,K,1)+TR12*CR2+TR11*CR3
+            TI3 = CC(I,K,1)+TR12*CI2+TR11*CI3
+            TR5 = TI11*CR5+TI12*CR4
+            TI5 = TI11*CI5+TI12*CI4
+            TR4 = TI12*CR5-TI11*CR4
+            TI4 = TI12*CI5-TI11*CI4
+            CH(I-1,3,K) = TR2+TR5
+            CH(IC-1,2,K) = TR2-TR5
+            CH(I,3,K) = TI2+TI5
+            CH(IC,2,K) = TI5-TI2
+            CH(I-1,5,K) = TR3+TR4
+            CH(IC-1,4,K) = TR3-TR4
+            CH(I,5,K) = TI3+TI4
+            CH(IC,4,K) = TI4-TI3
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADFG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
+      DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), AI1, AI2, AR1, AR1H, AR2,
+     2     AR2H, ARG, DC2, DCP, DS2, DSP, TPI
+      DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
+C
+      ARG = TPI/DFLOAT(IP)
+      DCP = DCOS(ARG)
+      DSP = DSIN(ARG)
+      IPPH = (IP+1)/2
+      IPP2 = IP+2
+      IDP2 = IDO+2
+      NBD = (IDO-1)/2
+      IF (IDO .EQ. 1) GO TO 119
+      DO 101 IK=1,IDL1
+         CH2(IK,1) = C2(IK,1)
+ 101  CONTINUE
+      DO 103 J=2,IP
+         DO 102 K=1,L1
+            CH(1,K,J) = C1(1,K,J)
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      IF (NBD .GT. L1) GO TO 107
+      IS = -IDO
+      DO 106 J=2,IP
+         IS = IS+IDO
+         IDIJ = IS
+         DO 105 I=3,IDO,2
+            IDIJ = IDIJ+2
+            DO 104 K=1,L1
+               CH(I-1,K,J) = WA(IDIJ-1)*C1(I-1,K,J)+WA(IDIJ)*C1(I,K,J)
+               CH(I,K,J) = WA(IDIJ-1)*C1(I,K,J)-WA(IDIJ)*C1(I-1,K,J)
+ 104        CONTINUE
+ 105     CONTINUE
+ 106  CONTINUE
+      GO TO 111
+C
+ 107  IS = -IDO
+      DO 110 J=2,IP
+         IS = IS+IDO
+         DO 109 K=1,L1
+            IDIJ = IS
+            DO 108 I=3,IDO,2
+               IDIJ = IDIJ+2
+               CH(I-1,K,J) = WA(IDIJ-1)*C1(I-1,K,J)+WA(IDIJ)*C1(I,K,J)
+               CH(I,K,J) = WA(IDIJ-1)*C1(I,K,J)-WA(IDIJ)*C1(I-1,K,J)
+ 108        CONTINUE
+ 109     CONTINUE
+ 110  CONTINUE
+C
+ 111  IF (NBD .LT. L1) GO TO 115
+      DO 114 J=2,IPPH
+         JC = IPP2-J
+         DO 113 K=1,L1
+            DO 112 I=3,IDO,2
+               C1(I-1,K,J) = CH(I-1,K,J)+CH(I-1,K,JC)
+               C1(I-1,K,JC) = CH(I,K,J)-CH(I,K,JC)
+               C1(I,K,J) = CH(I,K,J)+CH(I,K,JC)
+               C1(I,K,JC) = CH(I-1,K,JC)-CH(I-1,K,J)
+ 112        CONTINUE
+ 113     CONTINUE
+ 114  CONTINUE
+      GO TO 121
+C
+ 115  DO 118 J=2,IPPH
+         JC = IPP2-J
+         DO 117 I=3,IDO,2
+            DO 116 K=1,L1
+               C1(I-1,K,J) = CH(I-1,K,J)+CH(I-1,K,JC)
+               C1(I-1,K,JC) = CH(I,K,J)-CH(I,K,JC)
+               C1(I,K,J) = CH(I,K,J)+CH(I,K,JC)
+               C1(I,K,JC) = CH(I-1,K,JC)-CH(I-1,K,J)
+ 116        CONTINUE
+ 117     CONTINUE
+ 118  CONTINUE
+      GO TO 121
+C
+ 119  DO 120 IK=1,IDL1
+         C2(IK,1) = CH2(IK,1)
+ 120  CONTINUE
+C
+ 121  DO 123 J=2,IPPH
+         JC = IPP2-J
+         DO 122 K=1,L1
+            C1(1,K,J) = CH(1,K,J)+CH(1,K,JC)
+            C1(1,K,JC) = CH(1,K,JC)-CH(1,K,J)
+ 122     CONTINUE
+ 123  CONTINUE
+C
+      AR1 = 1.D0
+      AI1 = 0.D0
+      DO 127 L=2,IPPH
+         LC = IPP2-L
+         AR1H = DCP*AR1-DSP*AI1
+         AI1 = DCP*AI1+DSP*AR1
+         AR1 = AR1H
+         DO 124 IK=1,IDL1
+            CH2(IK,L) = C2(IK,1)+AR1*C2(IK,2)
+            CH2(IK,LC) = AI1*C2(IK,IP)
+ 124     CONTINUE
+         DC2 = AR1
+         DS2 = AI1
+         AR2 = AR1
+         AI2 = AI1
+         DO 126 J=3,IPPH
+            JC = IPP2-J
+            AR2H = DC2*AR2-DS2*AI2
+            AI2 = DC2*AI2+DS2*AR2
+            AR2 = AR2H
+            DO 125 IK=1,IDL1
+               CH2(IK,L) = CH2(IK,L)+AR2*C2(IK,J)
+               CH2(IK,LC) = CH2(IK,LC)+AI2*C2(IK,JC)
+ 125        CONTINUE
+ 126     CONTINUE
+ 127  CONTINUE
+C
+      DO 129 J=2,IPPH
+         DO 128 IK=1,IDL1
+            CH2(IK,1) = CH2(IK,1)+C2(IK,J)
+ 128     CONTINUE
+ 129  CONTINUE
+C
+      IF (IDO .LT. L1) GO TO 132
+      DO 131 K=1,L1
+         DO 130 I=1,IDO
+            CC(I,1,K) = CH(I,K,1)
+ 130     CONTINUE
+ 131  CONTINUE
+      GO TO 135
+C
+ 132  DO 134 I=1,IDO
+         DO 133 K=1,L1
+            CC(I,1,K) = CH(I,K,1)
+ 133     CONTINUE
+ 134  CONTINUE
+C
+ 135  DO 137 J=2,IPPH
+         JC = IPP2-J
+         J2 = J+J
+         DO 136 K=1,L1
+            CC(IDO,J2-2,K) = CH(1,K,J)
+            CC(1,J2-1,K) = CH(1,K,JC)
+ 136     CONTINUE
+ 137  CONTINUE
+C
+      IF (IDO .EQ. 1) RETURN
+      IF (NBD .LT. L1) GO TO 141
+      DO 140 J=2,IPPH
+         JC = IPP2-J
+         J2 = J+J
+         DO 139 K=1,L1
+            DO 138 I=3,IDO,2
+               IC = IDP2-I
+               CC(I-1,J2-1,K) = CH(I-1,K,J)+CH(I-1,K,JC)
+               CC(IC-1,J2-2,K) = CH(I-1,K,J)-CH(I-1,K,JC)
+               CC(I,J2-1,K) = CH(I,K,J)+CH(I,K,JC)
+               CC(IC,J2-2,K) = CH(I,K,JC)-CH(I,K,J)
+ 138        CONTINUE
+ 139     CONTINUE
+ 140  CONTINUE
+      RETURN
+C
+ 141  DO 144 J=2,IPPH
+         JC = IPP2-J
+         J2 = J+J
+         DO 143 I=3,IDO,2
+            IC = IDP2-I
+            DO 142 K=1,L1
+               CC(I-1,J2-1,K) = CH(I-1,K,J)+CH(I-1,K,JC)
+               CC(IC-1,J2-2,K) = CH(I-1,K,J)-CH(I-1,K,JC)
+               CC(I,J2-1,K) = CH(I,K,J)+CH(I,K,JC)
+               CC(IC,J2-2,K) = CH(I,K,JC)-CH(I,K,J)
+ 142        CONTINUE
+ 143     CONTINUE
+ 144  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRFTF1 (N,C,CH,WA,IFAC)
+      DOUBLE PRECISION C(1), CH(1), WA(1)
+      INTEGER IFAC(1)
+C
+      NF = IFAC(2)
+      NA = 1
+      L2 = N
+      IW = N
+      DO 111 K1=1,NF
+         KH = NF-K1
+         IP = IFAC(KH+3)
+         L1 = L2/IP
+         IDO = N/L2
+         IDL1 = IDO*L1
+         IW = IW-(IP-1)*IDO
+         NA = 1-NA
+         IF (IP .NE. 4) GO TO 102
+C
+         IX2 = IW+IDO
+         IX3 = IX2+IDO
+         IF (NA .NE. 0) GO TO 101
+         CALL DRADF4 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3))
+         GO TO 110
+ 101     CALL DRADF4 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3))
+         GO TO 110
+C
+ 102     IF (IP .NE. 2) GO TO 104
+         IF (NA .NE. 0) GO TO 103
+         CALL DRADF2 (IDO,L1,C,CH,WA(IW))
+         GO TO 110
+ 103     CALL DRADF2 (IDO,L1,CH,C,WA(IW))
+         GO TO 110
+C
+ 104     IF (IP .NE. 3) GO TO 106
+         IX2 = IW+IDO
+         IF (NA .NE. 0) GO TO 105
+         CALL DRADF3 (IDO,L1,C,CH,WA(IW),WA(IX2))
+         GO TO 110
+ 105     CALL DRADF3 (IDO,L1,CH,C,WA(IW),WA(IX2))
+         GO TO 110
+C
+ 106     IF (IP .NE. 5) GO TO 108
+         IX2 = IW+IDO
+         IX3 = IX2+IDO
+         IX4 = IX3+IDO
+         IF (NA .NE. 0) GO TO 107
+         CALL DRADF5 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+         GO TO 110
+ 107     CALL DRADF5 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+         GO TO 110
+C
+ 108     IF (IDO .EQ. 1) NA = 1-NA
+         IF (NA .NE. 0) GO TO 109
+         CALL DRADFG (IDO,IP,L1,IDL1,C,C,C,CH,CH,WA(IW))
+         NA = 1
+         GO TO 110
+ 109     CALL DRADFG (IDO,IP,L1,IDL1,CH,CH,CH,C,C,WA(IW))
+         NA = 0
+C
+ 110     L2 = L1
+ 111  CONTINUE
+C
+      IF (NA .EQ. 1) RETURN
+      DO 112 I=1,N
+         C(I) = CH(I)
+ 112  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
 C 
+C subroutine drfftb(n,r,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine rfftb(n,r,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine rfftb computes the real perodic sequence from its
+C subroutine drfftb computes the real perodic sequence from its
 C fourier coefficients (fourier synthesis). the transform is defined
 C below at output parameter r.
 C 
@@ -153,13 +681,13 @@ C r       a real array of length n which contains the sequence
 C         to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 2*n+15.
-C         in the program that calls rfftb. the wsave array must be
-C         initialized by calling subroutine rffti(n,wsave) and a
+C         in the program that calls drfftb. the wsave array must be
+C         initialized by calling subroutine drffti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
 C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by rfftf and rfftb.
+C         the same wsave array can be used by drfftf and drfftb.
 C 
 C 
 C output parameters
@@ -183,47 +711,488 @@ C
 C                  -2.*r(2*k-1)*sin((k-1)*(i-1)*2*pi/n)
 C 
 C  *****  note
-C              this transform is unnormalized since a call of rfftf
-C              followed by a call of rfftb will multiply the input
+C              this transform is unnormalized since a call of drfftf
+C              followed by a call of drfftb will multiply the input
 C              sequence by n.
 C 
 C wsave   contains results which must not be destroyed between
-C         calls of rfftb or rfftf.
+C         calls of drfftb or drfftf.
+C
+      SUBROUTINE DRFFTB (N,R,WSAVE)
+      DOUBLE PRECISION R(1), WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      CALL DRFTB1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADB2 (IDO,L1,CC,CH,WA1)
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+C
+      DO 101 K=1,L1
+         CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)
+         CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)
+ 101  CONTINUE
+C
+      IF (IDO-2) 107,105,102
+ 102  IDP2 = IDO+2
+      DO 104 K=1,L1
+         DO 103 I=3,IDO,2
+            IC = IDP2-I
+            CH(I-1,K,1) = CC(I-1,1,K)+CC(IC-1,2,K)
+            TR2 = CC(I-1,1,K)-CC(IC-1,2,K)
+            CH(I,K,1) = CC(I,1,K)-CC(IC,2,K)
+            TI2 = CC(I,1,K)+CC(IC,2,K)
+            CH(I-1,K,2) = WA1(I-2)*TR2-WA1(I-1)*TI2
+            CH(I,K,2) = WA1(I-2)*TI2+WA1(I-1)*TR2
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      IF (MOD(IDO,2) .EQ. 1) RETURN
+ 105  DO 106 K=1,L1
+         CH(IDO,K,1) = CC(IDO,1,K)+CC(IDO,1,K)
+         CH(IDO,K,2) = -(CC(1,2,K)+CC(1,2,K))
+ 106  CONTINUE
+C
+ 107  RETURN
+      END
+C
+      SUBROUTINE DRADB3 (IDO,L1,CC,CH,WA1,WA2)
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+     1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
+      DATA TAUR / -0.5 D0 /
+      DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
+C
+      DO 101 K=1,L1
+         TR2 = CC(IDO,2,K)+CC(IDO,2,K)
+         CR2 = CC(1,1,K)+TAUR*TR2
+         CH(1,K,1) = CC(1,1,K)+TR2
+         CI3 = TAUI*(CC(1,3,K)+CC(1,3,K))
+         CH(1,K,2) = CR2-CI3
+         CH(1,K,3) = CR2+CI3
+ 101  CONTINUE
+C
+      IF (IDO .EQ. 1) RETURN
+      IDP2 = IDO+2
+      DO 103 K=1,L1
+         DO 102 I=3,IDO,2
+            IC = IDP2-I
+            TR2 = CC(I-1,3,K)+CC(IC-1,2,K)
+            CR2 = CC(I-1,1,K)+TAUR*TR2
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2
+            TI2 = CC(I,3,K)-CC(IC,2,K)
+            CI2 = CC(I,1,K)+TAUR*TI2
+            CH(I,K,1) = CC(I,1,K)+TI2
+            CR3 = TAUI*(CC(I-1,3,K)-CC(IC-1,2,K))
+            CI3 = TAUI*(CC(I,3,K)+CC(IC,2,K))
+            DR2 = CR2-CI3
+            DR3 = CR2+CI3
+            DI2 = CI2+CR3
+            DI3 = CI2-CR3
+            CH(I-1,K,2) = WA1(I-2)*DR2-WA1(I-1)*DI2
+            CH(I,K,2) = WA1(I-2)*DI2+WA1(I-1)*DR2
+            CH(I-1,K,3) = WA2(I-2)*DR3-WA2(I-1)*DI3
+            CH(I,K,3) = WA2(I-2)*DI3+WA2(I-1)*DR3
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
+     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, SQRT2, TI1, TI2, TI3,
+     *     TI4,TR1, TR2, TR3, TR4
+      DATA SQRT2 /  1.414213562 3730950488 0168872420 970 D0 /
+C
+      DO 101 K=1,L1
+         TR1 = CC(1,1,K)-CC(IDO,4,K)
+         TR2 = CC(1,1,K)+CC(IDO,4,K)
+         TR3 = CC(IDO,2,K)+CC(IDO,2,K)
+         TR4 = CC(1,3,K)+CC(1,3,K)
+         CH(1,K,1) = TR2+TR3
+         CH(1,K,2) = TR1-TR4
+         CH(1,K,3) = TR2-TR3
+         CH(1,K,4) = TR1+TR4
+ 101  CONTINUE
+C
+      IF (IDO-2) 107,105,102
+ 102  IDP2 = IDO+2
+      DO 104 K=1,L1
+         DO 103 I=3,IDO,2
+            IC = IDP2-I
+            TI1 = CC(I,1,K)+CC(IC,4,K)
+            TI2 = CC(I,1,K)-CC(IC,4,K)
+            TI3 = CC(I,3,K)-CC(IC,2,K)
+            TR4 = CC(I,3,K)+CC(IC,2,K)
+            TR1 = CC(I-1,1,K)-CC(IC-1,4,K)
+            TR2 = CC(I-1,1,K)+CC(IC-1,4,K)
+            TI4 = CC(I-1,3,K)-CC(IC-1,2,K)
+            TR3 = CC(I-1,3,K)+CC(IC-1,2,K)
+            CH(I-1,K,1) = TR2+TR3
+            CR3 = TR2-TR3
+            CH(I,K,1) = TI2+TI3
+            CI3 = TI2-TI3
+            CR2 = TR1-TR4
+            CR4 = TR1+TR4
+            CI2 = TI1+TI4
+            CI4 = TI1-TI4
+            CH(I-1,K,2) = WA1(I-2)*CR2-WA1(I-1)*CI2
+            CH(I,K,2) = WA1(I-2)*CI2+WA1(I-1)*CR2
+            CH(I-1,K,3) = WA2(I-2)*CR3-WA2(I-1)*CI3
+            CH(I,K,3) = WA2(I-2)*CI3+WA2(I-1)*CR3
+            CH(I-1,K,4) = WA3(I-2)*CR4-WA3(I-1)*CI4
+            CH(I,K,4) = WA3(I-2)*CI4+WA3(I-1)*CR4
+ 103     CONTINUE
+ 104  CONTINUE
+      IF (MOD(IDO,2) .EQ. 1) RETURN
+C
+ 105  CONTINUE
+      DO 106 K=1,L1
+         TI1 = CC(1,2,K)+CC(1,4,K)
+         TI2 = CC(1,4,K)-CC(1,2,K)
+         TR1 = CC(IDO,1,K)-CC(IDO,3,K)
+         TR2 = CC(IDO,1,K)+CC(IDO,3,K)
+         CH(IDO,K,1) = TR2+TR2
+         CH(IDO,K,2) = SQRT2*(TR1-TI1)
+         CH(IDO,K,3) = TI2+TI2
+         CH(IDO,K,4) = -SQRT2*(TR1+TI1)
+ 106  CONTINUE
+C
+ 107  RETURN
+      END
+C
+      SUBROUTINE DRADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
+     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
+     2     DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3,
+     3     TI4, TI5, TR11, TR12, TR2, TR3, TR4, TR5
+      DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
+      DATA TI11  /  0.9510565162 9515357211 6439333379 38214D0/
+      DATA TR12  / -0.8090169943 7494742410 2293417182 81906D0/
+      DATA TI12  /  0.5877852522 9247312916 8705954639 07277D0/
+C
+      DO 101 K=1,L1
+         TI5 = CC(1,3,K)+CC(1,3,K)
+         TI4 = CC(1,5,K)+CC(1,5,K)
+         TR2 = CC(IDO,2,K)+CC(IDO,2,K)
+         TR3 = CC(IDO,4,K)+CC(IDO,4,K)
+         CH(1,K,1) = CC(1,1,K)+TR2+TR3
+         CR2 = CC(1,1,K)+TR11*TR2+TR12*TR3
+         CR3 = CC(1,1,K)+TR12*TR2+TR11*TR3
+         CI5 = TI11*TI5+TI12*TI4
+         CI4 = TI12*TI5-TI11*TI4
+         CH(1,K,2) = CR2-CI5
+         CH(1,K,3) = CR3-CI4
+         CH(1,K,4) = CR3+CI4
+         CH(1,K,5) = CR2+CI5
+ 101  CONTINUE
+      IF (IDO .EQ. 1) RETURN
+C
+      IDP2 = IDO+2
+      DO 103 K=1,L1
+         DO 102 I=3,IDO,2
+            IC = IDP2-I
+            TI5 = CC(I,3,K)+CC(IC,2,K)
+            TI2 = CC(I,3,K)-CC(IC,2,K)
+            TI4 = CC(I,5,K)+CC(IC,4,K)
+            TI3 = CC(I,5,K)-CC(IC,4,K)
+            TR5 = CC(I-1,3,K)-CC(IC-1,2,K)
+            TR2 = CC(I-1,3,K)+CC(IC-1,2,K)
+            TR4 = CC(I-1,5,K)-CC(IC-1,4,K)
+            TR3 = CC(I-1,5,K)+CC(IC-1,4,K)
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2+TR3
+            CH(I,K,1) = CC(I,1,K)+TI2+TI3
+            CR2 = CC(I-1,1,K)+TR11*TR2+TR12*TR3
+            CI2 = CC(I,1,K)+TR11*TI2+TR12*TI3
+            CR3 = CC(I-1,1,K)+TR12*TR2+TR11*TR3
+            CI3 = CC(I,1,K)+TR12*TI2+TR11*TI3
+            CR5 = TI11*TR5+TI12*TR4
+            CI5 = TI11*TI5+TI12*TI4
+            CR4 = TI12*TR5-TI11*TR4
+            CI4 = TI12*TI5-TI11*TI4
+            DR3 = CR3-CI4
+            DR4 = CR3+CI4
+            DI3 = CI3+CR4
+            DI4 = CI3-CR4
+            DR5 = CR2+CI5
+            DR2 = CR2-CI5
+            DI5 = CI2-CR5
+            DI2 = CI2+CR5
+            CH(I-1,K,2) = WA1(I-2)*DR2-WA1(I-1)*DI2
+            CH(I,K,2) = WA1(I-2)*DI2+WA1(I-1)*DR2
+            CH(I-1,K,3) = WA2(I-2)*DR3-WA2(I-1)*DI3
+            CH(I,K,3) = WA2(I-2)*DI3+WA2(I-1)*DR3
+            CH(I-1,K,4) = WA3(I-2)*DR4-WA3(I-1)*DI4
+            CH(I,K,4) = WA3(I-2)*DI4+WA3(I-1)*DR4
+            CH(I-1,K,5) = WA4(I-2)*DR5-WA4(I-1)*DI5
+            CH(I,K,5) = WA4(I-2)*DI5+WA4(I-1)*DR5
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DRADBG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
+      DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), AI1, AI2, AR1, AR1H, AR2,
+     2     AR2H, ARG, DC2, DCP, DS2, DSP, TPI
+      DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
+C
+      ARG = TPI/DFLOAT(IP)
+      DCP = DCOS(ARG)
+      DSP = DSIN(ARG)
+      IDP2 = IDO+2
+      NBD = (IDO-1)/2
+      IPP2 = IP+2
+      IPPH = (IP+1)/2
+      IF (IDO .LT. L1) GO TO 103
+      DO 102 K=1,L1
+         DO 101 I=1,IDO
+            CH(I,K,1) = CC(I,1,K)
+ 101     CONTINUE
+ 102  CONTINUE
+      GO TO 106
+C
+ 103  DO 105 I=1,IDO
+         DO 104 K=1,L1
+            CH(I,K,1) = CC(I,1,K)
+ 104     CONTINUE
+ 105  CONTINUE
+C
+ 106  DO 108 J=2,IPPH
+         JC = IPP2-J
+         J2 = J+J
+         DO 107 K=1,L1
+            CH(1,K,J) = CC(IDO,J2-2,K)+CC(IDO,J2-2,K)
+            CH(1,K,JC) = CC(1,J2-1,K)+CC(1,J2-1,K)
+ 107     CONTINUE
+ 108  CONTINUE
+C
+      IF (IDO .EQ. 1) GO TO 116
+      IF (NBD .LT. L1) GO TO 112
+      DO 111 J=2,IPPH
+         JC = IPP2-J
+         DO 110 K=1,L1
+            DO 109 I=3,IDO,2
+               IC = IDP2-I
+               CH(I-1,K,J) = CC(I-1,2*J-1,K)+CC(IC-1,2*J-2,K)
+               CH(I-1,K,JC) = CC(I-1,2*J-1,K)-CC(IC-1,2*J-2,K)
+               CH(I,K,J) = CC(I,2*J-1,K)-CC(IC,2*J-2,K)
+               CH(I,K,JC) = CC(I,2*J-1,K)+CC(IC,2*J-2,K)
+ 109        CONTINUE
+ 110     CONTINUE
+ 111  CONTINUE
+      GO TO 116
+C
+ 112  DO 115 J=2,IPPH
+         JC = IPP2-J
+         DO 114 I=3,IDO,2
+            IC = IDP2-I
+            DO 113 K=1,L1
+               CH(I-1,K,J) = CC(I-1,2*J-1,K)+CC(IC-1,2*J-2,K)
+               CH(I-1,K,JC) = CC(I-1,2*J-1,K)-CC(IC-1,2*J-2,K)
+               CH(I,K,J) = CC(I,2*J-1,K)-CC(IC,2*J-2,K)
+               CH(I,K,JC) = CC(I,2*J-1,K)+CC(IC,2*J-2,K)
+ 113        CONTINUE
+ 114     CONTINUE
+ 115  CONTINUE
+C
+ 116  AR1 = 1.
+      AI1 = 0.
+      DO 120 L=2,IPPH
+         LC = IPP2-L
+         AR1H = DCP*AR1-DSP*AI1
+         AI1 = DCP*AI1+DSP*AR1
+         AR1 = AR1H
+         DO 117 IK=1,IDL1
+            C2(IK,L) = CH2(IK,1)+AR1*CH2(IK,2)
+            C2(IK,LC) = AI1*CH2(IK,IP)
+ 117     CONTINUE
+         DC2 = AR1
+         DS2 = AI1
+         AR2 = AR1
+         AI2 = AI1
+         DO 119 J=3,IPPH
+            JC = IPP2-J
+            AR2H = DC2*AR2-DS2*AI2
+            AI2 = DC2*AI2+DS2*AR2
+            AR2 = AR2H
+            DO 118 IK=1,IDL1
+               C2(IK,L) = C2(IK,L)+AR2*CH2(IK,J)
+               C2(IK,LC) = C2(IK,LC)+AI2*CH2(IK,JC)
+ 118        CONTINUE
+ 119     CONTINUE
+ 120  CONTINUE
+C
+      DO 122 J=2,IPPH
+         DO 121 IK=1,IDL1
+            CH2(IK,1) = CH2(IK,1)+CH2(IK,J)
+ 121     CONTINUE
+ 122  CONTINUE
+C
+      DO 124 J=2,IPPH
+         JC = IPP2-J
+         DO 123 K=1,L1
+            CH(1,K,J) = C1(1,K,J)-C1(1,K,JC)
+            CH(1,K,JC) = C1(1,K,J)+C1(1,K,JC)
+ 123     CONTINUE
+ 124  CONTINUE
+C
+      IF (IDO .EQ. 1) GO TO 132
+      IF (NBD .LT. L1) GO TO 128
+      DO 127 J=2,IPPH
+         JC = IPP2-J
+         DO 126 K=1,L1
+            DO 125 I=3,IDO,2
+               CH(I-1,K,J) = C1(I-1,K,J)-C1(I,K,JC)
+               CH(I-1,K,JC) = C1(I-1,K,J)+C1(I,K,JC)
+               CH(I,K,J) = C1(I,K,J)+C1(I-1,K,JC)
+               CH(I,K,JC) = C1(I,K,J)-C1(I-1,K,JC)
+ 125        CONTINUE
+ 126     CONTINUE
+ 127  CONTINUE
+      GO TO 132
+C
+ 128  DO 131 J=2,IPPH
+         JC = IPP2-J
+         DO 130 I=3,IDO,2
+            DO 129 K=1,L1
+               CH(I-1,K,J) = C1(I-1,K,J)-C1(I,K,JC)
+               CH(I-1,K,JC) = C1(I-1,K,J)+C1(I,K,JC)
+               CH(I,K,J) = C1(I,K,J)+C1(I-1,K,JC)
+               CH(I,K,JC) = C1(I,K,J)-C1(I-1,K,JC)
+ 129        CONTINUE
+ 130     CONTINUE
+ 131  CONTINUE
+ 132  CONTINUE
+C
+      IF (IDO .EQ. 1) RETURN
+      DO 133 IK=1,IDL1
+         C2(IK,1) = CH2(IK,1)
+ 133  CONTINUE
+C
+      DO 135 J=2,IP
+         DO 134 K=1,L1
+            C1(1,K,J) = CH(1,K,J)
+ 134     CONTINUE
+ 135  CONTINUE
+C
+      IF (NBD .GT. L1) GO TO 139
+      IS = -IDO
+      DO 138 J=2,IP
+         IS = IS+IDO
+         IDIJ = IS
+         DO 137 I=3,IDO,2
+            IDIJ = IDIJ+2
+            DO 136 K=1,L1
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)
+ 136        CONTINUE
+ 137     CONTINUE
+ 138  CONTINUE
+      GO TO 143
+C
+ 139  IS = -IDO
+      DO 142 J=2,IP
+         IS = IS+IDO
+         DO 141 K=1,L1
+            IDIJ = IS
+            DO 140 I=3,IDO,2
+               IDIJ = IDIJ+2
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)
+ 140        CONTINUE
+ 141     CONTINUE
+ 142  CONTINUE
+C
+ 143  RETURN
+      END
+C
+      SUBROUTINE DRFTB1 (N,C,CH,WA,IFAC)
+      DOUBLE PRECISION C(1), CH(1), WA(1)
+      INTEGER IFAC(1)
+C
+      NF = IFAC(2)
+      NA = 0
+      L1 = 1
+      IW = 1
+      DO 116 K1=1,NF
+         IP = IFAC(K1+2)
+         L2 = IP*L1
+         IDO = N/L2
+         IDL1 = IDO*L1
+         IF (IP .NE. 4) GO TO 103
+         IX2 = IW+IDO
+         IX3 = IX2+IDO
+         IF (NA .NE. 0) GO TO 101
+         CALL DRADB4 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3))
+         GO TO 102
+ 101     CALL DRADB4 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3))
+ 102     NA = 1-NA
+         GO TO 115
+C
+ 103     IF (IP .NE. 2) GO TO 106
+         IF (NA .NE. 0) GO TO 104
+         CALL DRADB2 (IDO,L1,C,CH,WA(IW))
+         GO TO 105
+ 104     CALL DRADB2 (IDO,L1,CH,C,WA(IW))
+ 105     NA = 1-NA
+         GO TO 115
+C
+ 106     IF (IP .NE. 3) GO TO 109
+         IX2 = IW+IDO
+         IF (NA .NE. 0) GO TO 107
+         CALL DRADB3 (IDO,L1,C,CH,WA(IW),WA(IX2))
+         GO TO 108
+ 107     CALL DRADB3 (IDO,L1,CH,C,WA(IW),WA(IX2))
+ 108     NA = 1-NA
+         GO TO 115
+C
+ 109     IF (IP .NE. 5) GO TO 112
+         IX2 = IW+IDO
+         IX3 = IX2+IDO
+         IX4 = IX3+IDO
+         IF (NA .NE. 0) GO TO 110
+         CALL DRADB5 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+         GO TO 111
+ 110     CALL DRADB5 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+ 111     NA = 1-NA
+         GO TO 115
+C
+ 112     IF (NA .NE. 0) GO TO 113
+         CALL DRADBG (IDO,IP,L1,IDL1,C,C,C,CH,CH,WA(IW))
+         GO TO 114
+ 113     CALL DRADBG (IDO,IP,L1,IDL1,CH,CH,CH,C,C,WA(IW))
+ 114     IF (IDO .EQ. 1) NA = 1-NA
+ 115     L1 = L2
+         IW = IW+(IP-1)*IDO
+ 116  CONTINUE
+C
+      IF (NA .EQ. 0) RETURN
+      DO 117 I=1,N
+         C(I) = CH(I)
+ 117  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
 C 
+C subroutine defftf(n,r,azero,a,b,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine ezffti(n,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine ezffti initializes the array wsave which is used in
-C both ezfftf and ezfftb. the prime factorization of n together with
-C a tabulation of the trigonometric functions are computed and
-C stored in wsave.
-C 
-C input parameter
-C 
-C n       the length of the sequence to be transformed.
-C 
-C output parameter
-C 
-C wsave   a work array which must be dimensioned at least 3*n+15.
-C         the same work array can be used for both ezfftf and ezfftb
-C         as long as n remains unchanged. different wsave arrays
-C         are required for different values of n.
-C 
-C 
-C ******************************************************************
-C 
-C subroutine ezfftf(n,r,azero,a,b,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine ezfftf computes the fourier coefficients of a real
+C subroutine defftf computes the fourier coefficients of a real
 C perodic sequence (fourier analysis). the transform is defined
-C below at output parameters azero,a and b. ezfftf is a simplified
-C but slower version of rfftf.
+C below at output parameters azero,a and b. defftf is a simplified
+C version of drfftf. it is not as fast as drfftf since scaling
+C and initialization are computed for each transform. the repeated
+C initialization can be suppressed by removeing the statment
+C ( call deffti(n,wsave) ) from both defftf and defftb and inserting
+C it at the appropriate place in your program.
 C 
 C input parameters
 C 
@@ -233,15 +1202,7 @@ C
 C r       a real array of length n which contains the sequence
 C         to be transformed. r is not destroyed.
 C 
-C 
-C wsave   a work array which must be dimensioned at least 3*n+15.
-C         in the program that calls ezfftf. the wsave array must be
-C         initialized by calling subroutine ezffti(n,wsave) and a
-C         different wsave array must be used for each different
-C         value of n. this initialization does not have to be
-C         repeated so long as n remains unchanged thus subsequent
-C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by ezfftf and ezfftb.
+C wsave   a work array with at least 3*n+15 locations.
 C 
 C output parameters
 C 
@@ -262,18 +1223,144 @@ C
 C              b(k) equals the sum from i=1 to i=n of
 C 
 C                   2./n*r(i)*sin(k*(i-1)*2*pi/n)
+C
+      SUBROUTINE DEFFTF (N,R,AZERO,A,B,WSAVE)
+C
+C                       VERSION 3  JUNE 1979
+C
+      DOUBLE PRECISION R(1), AZERO, A(1), B(1), WSAVE(1), CF, CFM
+C
+      IF (N-2) 101,102,103
+ 101  AZERO = R(1)
+      RETURN
+C
+ 102  AZERO = .5D0*(R(1)+R(2))
+      A(1) = .5D0*(R(1)-R(2))
+      RETURN
+C
+C     to supress repeated initialization, remove the following statement
+C     ( call deffti(n,wsave) ) from both defftf and defftb and insert it
+C     at the beginning of your program following the definition of n.
+C
+ 103  CALL DEFFTI (N,WSAVE)
+C
+      DO 104 I=1,N
+         WSAVE(I) = R(I)
+ 104  CONTINUE
+C
+      CALL DRFFTF (N,WSAVE,WSAVE(N+1))
+C
+      CF = 2.D0/DFLOAT(N)
+      CFM = -CF
+      AZERO = .5D0*CF*WSAVE(1)
+      NS2 = (N+1)/2
+      NS2M = NS2-1
+      DO 105 I=1,NS2M
+         A(I) = CF*WSAVE(2*I)
+         B(I) = CFM*WSAVE(2*I+1)
+ 105  CONTINUE
+      IF (MOD(N,2) .EQ. 0) A(NS2) = .5D0*CF*WSAVE(N)
+C
+      RETURN
+      END
+C
+      SUBROUTINE DEFFT1 (N,WA,IFAC)
+      DOUBLE PRECISION WA(1), ARG1, ARGH, CH1, CH1H, DCH1, DSH1, SH1,
+     1     TPI
+      INTEGER IFAC(1), NTRYH(4)
+      DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /4, 2, 3, 5/
+      DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
+C
+      NL = N
+      NF = 0
+      J = 0
+C
+ 101  J = J+1
+      IF (J.LE.4) NTRY = NTRYH(J)
+      IF (J.GT.4) NTRY = NTRY + 2
+ 104  NQ = NL/NTRY
+      NR = NL-NTRY*NQ
+      IF (NR.NE.0) GO TO 101
+C
+ 105  NF = NF+1
+      IFAC(NF+2) = NTRY
+      NL = NQ
+      IF (NTRY .NE. 2) GO TO 107
+      IF (NF .EQ. 1) GO TO 107
+      DO 106 I=2,NF
+         IB = NF-I+2
+         IFAC(IB+2) = IFAC(IB+1)
+ 106  CONTINUE
+      IFAC(3) = 2
+C
+ 107  IF (NL .NE. 1) GO TO 104
+C
+      IFAC(1) = N
+      IFAC(2) = NF
+      ARGH = TPI/DFLOAT(N)
+      IS = 0
+      NFM1 = NF-1
+      L1 = 1
+      IF (NFM1 .EQ. 0) RETURN
+C
+      DO 111 K1=1,NFM1
+         IP = IFAC(K1+2)
+         L2 = L1*IP
+         IDO = N/L2
+         IPM = IP-1
+         ARG1 = DFLOAT(L1)*ARGH
+         CH1 = 1.D0
+         SH1 = 0.D0
+         DCH1 = DCOS(ARG1)
+         DSH1 = DSIN(ARG1)
+C
+         DO 110 J=1,IPM
+            CH1H = DCH1*CH1-DSH1*SH1
+            SH1 = DCH1*SH1+DSH1*CH1
+            CH1 = CH1H
+            I = IS+2
+            WA(I-1) = CH1
+            WA(I) = SH1
+            IF (IDO .LT. 5) GO TO 109
+            DO 108 II=5,IDO,2
+               I = I+2
+               WA(I-1) = CH1*WA(I-3)-SH1*WA(I-2)
+               WA(I) = CH1*WA(I-2)+SH1*WA(I-3)
+ 108        CONTINUE
+ 109        IS = IS+IDO
+ 110     CONTINUE
+C
+         L1 = L2
+ 111  CONTINUE
+C
+      RETURN
+      END
+C
+      SUBROUTINE DEFFTI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      CALL DEFFT1 (N,WSAVE(2*N+1),WSAVE(3*N+1))
+C
+      RETURN
+      END
+C
+C ******************************************************************
 C 
+C subroutine defftb(n,r,azero,a,b,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine ezfftb(n,r,azero,a,b,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine ezfftb computes a real perodic sequence from its
+C subroutine defftb computes a real perodic sequence from its
 C fourier coefficients (fourier synthesis). the transform is
-C defined below at output parameter r. ezfftb is a simplified
-C but slower version of rfftb.
+C defined below at output parameter r. defftb is a simplified
+C version of drfftb. it is not as fast as drfftb since scaling and
+C initialization are computed for each transform. the repeated
+C initialization can be suppressed by removeing the statment
+C ( call deffti(n,wsave) ) from both defftf and defftb and inserting
+C ( call deffti(n,wsave) ) from both defftf and defftb and inserting
+C it at the appropriate place in your program.
 C 
 C input parameters
 C 
@@ -291,14 +1378,7 @@ C
 C         if n is even n/2    locations are required
 C         if n is odd (n-1)/2 locations are required
 C 
-C wsave   a work array which must be dimensioned at least 3*n+15.
-C         in the program that calls ezfftb. the wsave array must be
-C         initialized by calling subroutine ezffti(n,wsave) and a
-C         different wsave array must be used for each different
-C         value of n. this initialization does not have to be
-C         repeated so long as n remains unchanged thus subsequent
-C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by ezfftf and ezfftb.
+C wsave   a work array with at least 3*n+15 locations.
 C 
 C 
 C output parameters
@@ -346,14 +1426,45 @@ C              cos(beta(k))=a(k)/alpha(k)
 C 
 C              sin(beta(k))=-b(k)/alpha(k)
 C 
+C
+      SUBROUTINE DEFFTB (N,R,AZERO,A,B,WSAVE)
+      DOUBLE PRECISION R(1), AZERO, A(1), B(1), WSAVE(1)
+C
+      IF (N-2) 101,102,103
+ 101  R(1) = AZERO
+      RETURN
+C
+ 102  R(1) = AZERO+A(1)
+      R(2) = AZERO-A(1)
+      RETURN
+C
+C     to supress repeated initialization, remove the following statement
+C     ( call deffti(n,wsave) ) from both defftf and defftb and insert it
+C     at the beginning of your program following the definition of n.
+C
+ 103  CALL DEFFTI (N,WSAVE)
+C
+      NS2 = (N-1)/2
+      DO 104 I=1,NS2
+         R(2*I) = .5D0*A(I)
+         R(2*I+1) = -.5D0*B(I)
+ 104  CONTINUE
+      R(1) = AZERO
+      IF (MOD(N,2) .EQ. 0) R(N) = A(NS2+1)
+C
+      CALL DRFFTB (N,R,WSAVE(N+1))
+C
+      RETURN
+      END
+C
 C ******************************************************************
 C 
-C subroutine sinti(n,wsave)
+C subroutine dsinti(n,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine sinti initializes the array wsave which is used in
-C subroutine sint. the prime factorization of n together with
+C subroutine dsinti initializes the array wsave which is used in
+C subroutine dsint. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -367,24 +1478,43 @@ C
 C wsave   a work array with at least int(2.5*n+15) locations.
 C         different wsave arrays are required for different values
 C         of n. the contents of wsave must not be changed between
-C         calls of sint.
+C         calls of dsint.
+C 
+      SUBROUTINE DSINTI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1), DT, FK, PI
+      DATA PI /  3.141592653 5897932384 6264338327 950 D0 /
+C
+      IF (N .LE. 1) RETURN
+      NP1 = N+1
+      NS2 = N/2
+      DT = PI/DFLOAT(NP1)
+      FK = 0.D0
+      DO 101 K=1,NS2
+         FK = FK+1.D0
+         WSAVE(K) = 2.D0*DSIN(FK*DT)
+ 101  CONTINUE
+C
+      CALL DRFFTI (NP1,WSAVE(NS2+1))
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dsint(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine sint(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine sint computes the discrete fourier sine transform
+C subroutine dsint computes the discrete fourier sine transform
 C of an odd sequence x(i). the transform is defined below at
 C output parameter x.
 C 
-C sint is the unnormalized inverse of itself since a call of sint
-C followed by another call of sint will multiply the input sequence
+C dsint is the unnormalized inverse of itself since a call of dsint
+C followed by another call of dsint will multiply the input sequence
 C x by 2*(n+1).
 C 
-C the array wsave which is used by subroutine sint must be
-C initialized by calling subroutine sinti(n,wsave).
+C the array wsave which is used by subroutine dsint must be
+C initialized by calling subroutine dsinti(n,wsave).
 C 
 C input parameters
 C 
@@ -393,10 +1523,13 @@ C         is most efficient when n+1 is the product of small primes.
 C 
 C x       an array which contains the sequence to be transformed
 C 
+C               ************important*************
+C 
+C               x must be dimensioned at least n+1
 C 
 C wsave   a work array with dimension at least int(2.5*n+15)
-C         in the program that calls sint. the wsave array must be
-C         initialized by calling subroutine sinti(n,wsave) and a
+C         in the program that calls dsint. the wsave array must be
+C         initialized by calling subroutine dsinti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -410,22 +1543,63 @@ C              x(i)= the sum from k=1 to k=n
 C 
 C                   2*x(k)*sin(k*i*pi/(n+1))
 C 
-C              a call of sint followed by another call of
-C              sint will multiply the sequence x by 2*(n+1).
-C              hence sint is the unnormalized inverse
+C              a call of dsint followed by another call of
+C              dsint will multiply the sequence x by 2*(n+1).
+C              hence dsint is the unnormalized inverse
 C              of itself.
 C 
 C wsave   contains initialization calculations which must not be
-C         destroyed between calls of sint.
+C         destroyed between calls of dsint.
+C 
+      SUBROUTINE DSINT (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), SQRT3, T1, T2, X1, XH, XIM1
+      DATA SQRT3 /  1.7320508075 6887729352 7446341505 87237D0/
+C
+      IF (N-2) 101,102,103
+ 101  X(1) = X(1)+X(1)
+      RETURN
+C
+ 102  XH = SQRT3*(X(1)+X(2))
+      X(2) = SQRT3*(X(1)-X(2))
+      X(1) = XH
+      RETURN
+C
+ 103  NP1 = N+1
+      NS2 = N/2
+      X1 = X(1)
+      X(1) = 0.D0
+      DO 104 K=1,NS2
+         KC = NP1-K
+         T1 = X1-X(KC)
+         T2 = WSAVE(K)*(X1+X(KC))
+         X1 = X(K+1)
+         X(K+1) = T1+T2
+         X(KC+1) = T2-T1
+ 104  CONTINUE
+      MODN = MOD(N,2)
+      IF (MODN .NE. 0) X(NS2+2) = 4.D0*X1
+C
+      CALL DRFFTF (NP1,X,WSAVE(NS2+1))
+C
+      X(1) = .5D0*X(1)
+      DO 105 I=3,N,2
+         XIM1 = X(I-1)
+         X(I-1) = -X(I)
+         X(I) = X(I-2)+XIM1
+ 105  CONTINUE
+      IF (MODN.EQ.0) X(N) = -X(N+1)
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcosti(n,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine costi(n,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine costi initializes the array wsave which is used in
-C subroutine cost. the prime factorization of n together with
+C subroutine dcosti initializes the array wsave which is used in
+C subroutine dcost. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -439,24 +1613,47 @@ C
 C wsave   a work array which must be dimensioned at least 3*n+15.
 C         different wsave arrays are required for different values
 C         of n. the contents of wsave must not be changed between
-C         calls of cost.
+C         calls of dcost.
+C 
+      SUBROUTINE DCOSTI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1), DT, FK, PI
+      DATA PI /  3.141592653 5897932384 6264338327 950 D0 /
+C
+      IF (N .LE. 3) RETURN
+C
+      NM1 = N-1
+      NP1 = N+1
+      NS2 = N/2
+      DT = PI/DFLOAT(NM1)
+      FK = 0.D0
+      DO 101 K=2,NS2
+         KC = NP1-K
+         FK = FK+1.D0
+         WSAVE(K) = 2.D0*DSIN(FK*DT)
+         WSAVE(KC) = 2.D0*DCOS(FK*DT)
+ 101  CONTINUE
+C
+      CALL DRFFTI (NM1,WSAVE(N+1))
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcost(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cost(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cost computes the discrete fourier cosine transform
+C subroutine dcost computes the discrete fourier cosine transform
 C of an even sequence x(i). the transform is defined below at output
 C parameter x.
 C 
-C cost is the unnormalized inverse of itself since a call of cost
-C followed by another call of cost will multiply the input sequence
+C dcost is the unnormalized inverse of itself since a call of dcost
+C followed by another call of dcost will multiply the input sequence
 C x by 2*(n-1). the transform is defined below at output parameter x
 C 
-C the array wsave which is used by subroutine cost must be
-C initialized by calling subroutine costi(n,wsave).
+C the array wsave which is used by subroutine dcost must be
+C initialized by calling subroutine dcosti(n,wsave).
 C 
 C input parameters
 C 
@@ -467,8 +1664,8 @@ C
 C x       an array which contains the sequence to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15
-C         in the program that calls cost. the wsave array must be
-C         initialized by calling subroutine costi(n,wsave) and a
+C         in the program that calls dcost. the wsave array must be
+C         initialized by calling subroutine dcosti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -478,28 +1675,78 @@ C output parameters
 C 
 C x       for i=1,...,n
 C 
-C             x(i) = x(1)+(-1)**(i-1)*x(n)
+C            x(i) = x(1)+(-1)**(i-1)*x(n)
 C 
 C              + the sum from k=2 to k=n-1
 C 
-C                  2*x(k)*cos((k-1)*(i-1)*pi/(n-1))
+C                2*x(k)*cos((k-1)*(i-1)*pi/(n-1))
 C 
-C              a call of cost followed by another call of
-C              cost will multiply the sequence x by 2*(n-1)
-C              hence cost is the unnormalized inverse
+C              a call of dcost followed by another call of
+C              dcost will multiply the sequence x by 2*(n-1)
+C              hence dcost is the unnormalized inverse
 C              of itself.
 C 
 C wsave   contains initialization calculations which must not be
-C         destroyed between calls of cost.
+C         destroyed between calls of dcost.
+C 
+      SUBROUTINE DCOST (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), C1, T1, T2, TX2, X1H, X1P3, XI,
+     1     XIM2
+C
+      NM1 = N-1
+      NP1 = N+1
+      NS2 = N/2
+      IF (N-2) 106,101,102
+ 101  X1H = X(1)+X(2)
+      X(2) = X(1)-X(2)
+      X(1) = X1H
+      RETURN
+C
+ 102  IF (N .GT. 3) GO TO 103
+      X1P3 = X(1)+X(3)
+      TX2 = X(2)+X(2)
+      X(2) = X(1)-X(3)
+      X(1) = X1P3+TX2
+      X(3) = X1P3-TX2
+      RETURN
+C
+ 103  C1 = X(1)-X(N)
+      X(1) = X(1)+X(N)
+      DO 104 K=2,NS2
+         KC = NP1-K
+         T1 = X(K)+X(KC)
+         T2 = X(K)-X(KC)
+         C1 = C1+WSAVE(KC)*T2
+         T2 = WSAVE(K)*T2
+         X(K) = T1-T2
+         X(KC) = T1+T2
+ 104  CONTINUE
+      MODN = MOD(N,2)
+      IF (MODN .NE. 0) X(NS2+1) = X(NS2+1)+X(NS2+1)
+C
+      CALL DRFFTF (NM1,X,WSAVE(N+1))
+C
+      XIM2 = X(2)
+      X(2) = C1
+      DO 105 I=4,N,2
+         XI = X(I)
+         X(I) = X(I-2)-X(I-1)
+         X(I-1) = XIM2
+         XIM2 = XI
+ 105  CONTINUE
+      IF (MODN .NE. 0) X(N) = XIM2
+C
+ 106  RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dsinqi(n,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine sinqi(n,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine sinqi initializes the array wsave which is used in
-C both sinqf and sinqb. the prime factorization of n together with
+C subroutine dsinqi initializes the array wsave which is used in
+C both dsinqf and dsinqb. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -511,28 +1758,37 @@ C
 C output parameter
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15.
-C         the same work array can be used for both sinqf and sinqb
+C         the same work array can be used for both dsinqf and dsinqb
 C         as long as n remains unchanged. different wsave arrays
 C         are required for different values of n. the contents of
-C         wsave must not be changed between calls of sinqf or sinqb.
+C         wsave must not be changed between calls of dsinqf or
+C         dsinqb.
+C 
+      SUBROUTINE DSINQI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1)
+C
+      CALL DCOSQI (N,WSAVE)
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dsinqf(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine sinqf(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine sinqf computes the fast fourier transform of quarter
-C wave data. that is , sinqf computes the coefficients in a sine
+C subroutine dsinqf computes the fast fourier transform of quarter
+C wave data. that is , dsinqf computes the coefficients in a sine
 C series representation with only odd wave numbers. the transform
 C is defined below at output parameter x.
 C 
-C sinqb is the unnormalized inverse of sinqf since a call of sinqf
-C followed by a call of sinqb will multiply the input sequence x
+C dsinqb is the unnormalized inverse of dsinqf -- a call of dsinqf
+C followed by a call of dsinqb will multiply the input sequence x
 C by 4*n.
 C 
-C the array wsave which is used by subroutine sinqf must be
-C initialized by calling subroutine sinqi(n,wsave).
+C the array wsave which is used by subroutine dsinqf must be
+C initialized by calling subroutine dsinqi(n,wsave).
 C 
 C 
 C input parameters
@@ -543,8 +1799,8 @@ C
 C x       an array which contains the sequence to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15.
-C         in the program that calls sinqf. the wsave array must be
-C         initialized by calling subroutine sinqi(n,wsave) and a
+C         in the program that calls dsinqf. the wsave array must be
+C         initialized by calling subroutine dsinqi(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -560,31 +1816,53 @@ C                 + the sum from k=1 to k=n-1 of
 C 
 C                 2*x(k)*sin((2*i-1)*k*pi/(2*n))
 C 
-C              a call of sinqf followed by a call of
-C              sinqb will multiply the sequence x by 4*n.
-C              therefore sinqb is the unnormalized inverse
-C              of sinqf.
+C              a call of dsinqf followed by a call of
+C              dsinqb will multiply the sequence x by 4*n.
+C              therefore dsinqb is the unnormalized inverse
+C              of dsinqf.
 C 
 C wsave   contains initialization calculations which must not
-C         be destroyed between calls of sinqf or sinqb.
+C         be destroyed between calls of dsinqf or dsinqb.
+C 
+      SUBROUTINE DSINQF (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), XHOLD
+C
+      IF (N .EQ. 1) RETURN
+C
+      NS2 = N/2
+      DO 101 K=1,NS2
+         KC = N-K
+         XHOLD = X(K)
+         X(K) = X(KC+1)
+         X(KC+1) = XHOLD
+ 101  CONTINUE
+C
+      CALL DCOSQF (N,X,WSAVE)
+C
+      DO 102 K=2,N,2
+         X(K) = -X(K)
+ 102  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dsinqb(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine sinqb(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine sinqb computes the fast fourier transform of quarter
-C wave data. that is , sinqb computes a sequence from its
+C subroutine dsinqb computes the fast fourier transform of quarter
+C wave data. that is , dsinqb computes a sequence from its
 C representation in terms of a sine series with odd wave numbers.
 C the transform is defined below at output parameter x.
 C 
-C sinqf is the unnormalized inverse of sinqb since a call of sinqb
-C followed by a call of sinqf will multiply the input sequence x
+C dsinqf is the unnormalized inverse of dsinqb -- a call of dsinqb
+C followed by a call of dsinqf will multiply the input sequence x
 C by 4*n.
 C 
-C the array wsave which is used by subroutine sinqb must be
-C initialized by calling subroutine sinqi(n,wsave).
+C the array wsave which is used by subroutine dsinqb must be
+C initialized by calling subroutine dsinqi(n,wsave).
 C 
 C 
 C input parameters
@@ -595,8 +1873,8 @@ C
 C x       an array which contains the sequence to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15.
-C         in the program that calls sinqb. the wsave array must be
-C         initialized by calling subroutine sinqi(n,wsave) and a
+C         in the program that calls dsinqb. the wsave array must be
+C         initialized by calling subroutine dsinqi(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -610,22 +1888,46 @@ C              x(i)= the sum from k=1 to k=n of
 C 
 C                4*x(k)*sin((2k-1)*i*pi/(2*n))
 C 
-C              a call of sinqb followed by a call of
-C              sinqf will multiply the sequence x by 4*n.
-C              therefore sinqf is the unnormalized inverse
-C              of sinqb.
+C              a call of dsinqb followed by a call of
+C              dsinqf will multiply the sequence x by 4*n.
+C              therefore dsinqf is the unnormalized inverse
+C              of dsinqb.
 C 
 C wsave   contains initialization calculations which must not
-C         be destroyed between calls of sinqb or sinqf.
+C         be destroyed between calls of dsinqb or dsinqf.
+C 
+      SUBROUTINE DSINQB (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), XHOLD
+C
+      IF (N .GT. 1) GO TO 101
+      X(1) = 4.D0*X(1)
+      RETURN
+C
+ 101  NS2 = N/2
+      DO 102 K=2,N,2
+         X(K) = -X(K)
+ 102  CONTINUE
+C
+      CALL DCOSQB (N,X,WSAVE)
+C
+      DO 103 K=1,NS2
+         KC = N-K
+         XHOLD = X(K)
+         X(K) = X(KC+1)
+         X(KC+1) = XHOLD
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcosqi(n,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cosqi(n,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cosqi initializes the array wsave which is used in
-C both cosqf and cosqb. the prime factorization of n together with
+C subroutine dcosqi initializes the array wsave which is used in
+C both dcosqf and dcosqb. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -637,28 +1939,45 @@ C
 C output parameter
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15.
-C         the same work array can be used for both cosqf and cosqb
+C         the same work array can be used for both dcosqf and dcosqb
 C         as long as n remains unchanged. different wsave arrays
 C         are required for different values of n. the contents of
-C         wsave must not be changed between calls of cosqf or cosqb.
+C         wsave must not be changed between calls of dcosqf or
+C         dcosqb.
+C 
+      SUBROUTINE DCOSQI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1), DT, FK, PIH
+      DATA PIH /  1.570796326 7948966192 3132169163 975 D0 /
+C
+      DT = PIH/DFLOAT(N)
+      FK = 0.D0
+      DO 101 K=1,N
+         FK = FK+1.D0
+         WSAVE(K) = DCOS(FK*DT)
+ 101  CONTINUE
+C
+      CALL DRFFTI (N,WSAVE(N+1))
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcosqf(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cosqf(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cosqf computes the fast fourier transform of quarter
-C wave data. that is , cosqf computes the coefficients in a cosine
+C subroutine dcosqf computes the fast fourier transform of quarter
+C wave data. that is , dcosqf computes the coefficients in a cosine
 C series representation with only odd wave numbers. the transform
 C is defined below at output parameter x
 C 
-C cosqf is the unnormalized inverse of cosqb since a call of cosqf
-C followed by a call of cosqb will multiply the input sequence x
+C dcosqf is the unnormalized inverse of dcosqb -- a call of dcosqf
+C followed by a call of dcosqb will multiply the input sequence x
 C by 4*n.
 C 
-C the array wsave which is used by subroutine cosqf must be
-C initialized by calling subroutine cosqi(n,wsave).
+C the array wsave which is used by subroutine dcosqf must be
+C initialized by calling subroutine dcosqi(n,wsave).
 C 
 C 
 C input parameters
@@ -669,8 +1988,8 @@ C
 C x       an array which contains the sequence to be transformed
 C 
 C wsave   a work array which must be dimensioned at least 3*n+15
-C         in the program that calls cosqf. the wsave array must be
-C         initialized by calling subroutine cosqi(n,wsave) and a
+C         in the program that calls dcosqf. the wsave array must be
+C         initialized by calling subroutine dcosqi(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -684,31 +2003,77 @@ C              x(i) = x(1) plus the sum from k=2 to k=n of
 C 
 C                 2*x(k)*cos((2*i-1)*(k-1)*pi/(2*n))
 C 
-C              a call of cosqf followed by a call of
-C              cosqb will multiply the sequence x by 4*n.
-C              therefore cosqb is the unnormalized inverse
-C              of cosqf.
+C              a call of dcosqf followed by a call of
+C              dcosqb will multiply the sequence x by 4*n.
+C              therefore dcosqb is the unnormalized inverse
+C              of dcosqf.
 C 
 C wsave   contains initialization calculations which must not
-C         be destroyed between calls of cosqf or cosqb.
+C         be destroyed between calls of dcosqf or dcosqb.
+C 
+      SUBROUTINE DCOSQF (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), SQRT2, TSQX
+      DATA SQRT2 /  1.414213562 3730950488 0168872420 970 D0 /
+C
+      IF (N-2) 102,101,103
+ 101  TSQX = SQRT2*X(2)
+      X(2) = X(1)-TSQX
+      X(1) = X(1)+TSQX
+ 102  RETURN
+C
+ 103  CALL DCSQF1 (N,X,WSAVE,WSAVE(N+1))
+C
+      RETURN
+      END
+C
+      SUBROUTINE DCSQF1 (N,X,W,XH)
+      DOUBLE PRECISION X(1), W(1), XH(1), XIM1
+C
+      NS2 = (N+1)/2
+      NP2 = N+2
+      DO 101 K=2,NS2
+         KC = NP2-K
+         XH(K) = X(K)+X(KC)
+         XH(KC) = X(K)-X(KC)
+ 101  CONTINUE
+      MODN = MOD(N,2)
+      IF (MODN .EQ. 0) XH(NS2+1) = X(NS2+1)+X(NS2+1)
+C
+      DO 102 K=2,NS2
+         KC = NP2-K
+         X(K) = W(K-1)*XH(KC)+W(KC-1)*XH(K)
+         X(KC) = W(K-1)*XH(K)-W(KC-1)*XH(KC)
+ 102  CONTINUE
+      IF (MODN .EQ. 0) X(NS2+1) = W(NS2)*XH(NS2+1)
+C
+      CALL DRFFTF (N,X,XH)
+C
+      DO 103 I=3,N,2
+         XIM1 = X(I-1)-X(I)
+         X(I) = X(I-1)+X(I)
+         X(I-1) = XIM1
+ 103  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcosqb(n,x,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cosqb(n,x,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cosqb computes the fast fourier transform of quarter
-C wave data. that is , cosqb computes a sequence from its
+C subroutine dcosqb computes the fast fourier transform of quarter
+C wave data. that is , dcosqb computes a sequence from its
 C representation in terms of a cosine series with odd wave numbers.
 C the transform is defined below at output parameter x.
 C 
-C cosqb is the unnormalized inverse of cosqf since a call of cosqb
-C followed by a call of cosqf will multiply the input sequence x
+C dcosqb is the unnormalized inverse of dcosqf -- a call of dcosqb
+C followed by a call of dcosqf will multiply the input sequence x
 C by 4*n.
 C 
-C the array wsave which is used by subroutine cosqb must be
-C initialized by calling subroutine cosqi(n,wsave).
+C the array wsave which is used by subroutine dcosqb must be
+C initialized by calling subroutine dcosqi(n,wsave).
 C 
 C 
 C input parameters
@@ -719,8 +2084,8 @@ C
 C x       an array which contains the sequence to be transformed
 C 
 C wsave   a work array that must be dimensioned at least 3*n+15
-C         in the program that calls cosqb. the wsave array must be
-C         initialized by calling subroutine cosqi(n,wsave) and a
+C         in the program that calls dcosqb. the wsave array must be
+C         initialized by calling subroutine dcosqi(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
@@ -734,22 +2099,73 @@ C              x(i)= the sum from k=1 to k=n of
 C 
 C                4*x(k)*cos((2*k-1)*(i-1)*pi/(2*n))
 C 
-C              a call of cosqb followed by a call of
-C              cosqf will multiply the sequence x by 4*n.
-C              therefore cosqf is the unnormalized inverse
-C              of cosqb.
+C              a call of dcosqb followed by a call of
+C              dcosqf will multiply the sequence x by 4*n.
+C              therefore dcosqf is the unnormalized inverse
+C              of dcosqb.
 C 
 C wsave   contains initialization calculations which must not
-C         be destroyed between calls of cosqb or cosqf.
+C         be destroyed between calls of dcosqb or dcosqf.
+C 
+      SUBROUTINE DCOSQB (N,X,WSAVE)
+      DOUBLE PRECISION X(1), WSAVE(1), TSQRT2, X1
+      DATA TSQRT2 /  2.828427124 7461900976 0337744841 94 D0 /
+C
+      IF (N-2) 101,102,103
+ 101  X(1) = 4.D0*X(1)
+      RETURN
+C
+ 102  X1 = 4.D0*(X(1)+X(2))
+      X(2) = TSQRT2*(X(1)-X(2))
+      X(1) = X1
+      RETURN
+C
+ 103  CALL DCSQB1 (N,X,WSAVE,WSAVE(N+1))
+C
+      RETURN
+C
+      END
+      SUBROUTINE DCSQB1 (N,X,W,XH)
+      DOUBLE PRECISION X(1), W(1), XH(1), XIM1
+C
+      NS2 = (N+1)/2
+      NP2 = N+2
+      DO 101 I=3,N,2
+         XIM1 = X(I-1)+X(I)
+         X(I) = X(I)-X(I-1)
+         X(I-1) = XIM1
+ 101  CONTINUE
+      X(1) = X(1)+X(1)
+      MODN = MOD(N,2)
+      IF (MODN .EQ. 0) X(N) = X(N)+X(N)
+C
+      CALL DRFFTB (N,X,XH)
+C
+      DO 102 K=2,NS2
+         KC = NP2-K
+         XH(K) = W(K-1)*X(KC)+W(KC-1)*X(K)
+         XH(KC) = W(K-1)*X(K)-W(KC-1)*X(KC)
+ 102  CONTINUE
+C
+      IF (MODN .EQ. 0) X(NS2+1) = W(NS2)*(X(NS2+1)+X(NS2+1))
+      DO 103 K=2,NS2
+         KC = NP2-K
+         X(K) = XH(K)+XH(KC)
+         X(KC) = XH(K)-XH(KC)
+ 103  CONTINUE
+      X(1) = X(1)+X(1)
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcffti(n,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cffti(n,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cffti initializes the array wsave which is used in
-C both cfftf and cfftb. the prime factorization of n together with
+C subroutine dcffti initializes the array wsave which is used in
+C both dcfftf and dcfftb. the prime factorization of n together with
 C a tabulation of the trigonometric functions are computed and
 C stored in wsave.
 C 
@@ -760,28 +2176,108 @@ C
 C output parameter
 C 
 C wsave   a work array which must be dimensioned at least 4*n+15
-C         the same work array can be used for both cfftf and cfftb
+C         the same work array can be used for both dcfftf and dcfftb
 C         as long as n remains unchanged. different wsave arrays
 C         are required for different values of n. the contents of
-C         wsave must not be changed between calls of cfftf or cfftb.
+C         wsave must not be changed between calls of dcfftf or dcfftb.
+C 
+      SUBROUTINE DCFFTI (N,WSAVE)
+      DOUBLE PRECISION WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      IW1 = N+N+1
+      IW2 = IW1+N+N
+      CALL DCFTI1 (N,WSAVE(IW1),WSAVE(IW2))
+C
+      RETURN
+      END
+      SUBROUTINE DCFTI1 (N,WA,IFAC)
+      DOUBLE PRECISION WA(1), ARG, ARGH, ARGLD, FI, TPI
+      INTEGER IFAC(1), NTRYH(4)
+      DATA NTRYH(1), NTRYH(2), NTRYH(3), NTRYH(4) /3, 4, 2, 5/
+      DATA TPI   /  6.2831853071 7958647692 5286766559 00577D0/
+C
+      NL = N
+      NF = 0
+      J = 0
+C
+ 101  J = J+1
+      IF (J.LE.4) NTRY = NTRYH(J)
+      IF (J.GT.4) NTRY = NTRY + 2
+ 104  NQ = NL/NTRY
+      NR = NL-NTRY*NQ
+      IF (NR.NE.0) GO TO 101
+C
+ 105  NF = NF+1
+      IFAC(NF+2) = NTRY
+      NL = NQ
+      IF (NTRY .NE. 2) GO TO 107
+      IF (NF .EQ. 1) GO TO 107
+      DO 106 I=2,NF
+         IB = NF-I+2
+         IFAC(IB+2) = IFAC(IB+1)
+ 106  CONTINUE
+      IFAC(3) = 2
+C
+ 107  IF (NL .NE. 1) GO TO 104
+C
+      IFAC(1) = N
+      IFAC(2) = NF
+C
+      ARGH = TPI/DFLOAT(N)
+      I = 2
+      L1 = 1
+      DO 110 K1=1,NF
+         IP = IFAC(K1+2)
+         LD = 0
+         L2 = L1*IP
+         IDO = N/L2
+         IDOT = IDO+IDO+2
+         IPM = IP-1
+C
+         DO 109 J=1,IPM
+            I1 = I
+            WA(I-1) = 1.D0
+            WA(I) = 0.D0
+            LD = LD+L1
+            FI = 0.D0
+            ARGLD = DFLOAT(LD)*ARGH
+            DO 108 II=4,IDOT,2
+               I = I+2
+               FI = FI+1.D0
+               ARG = FI*ARGLD
+               WA(I-1) = DCOS(ARG)
+               WA(I) = DSIN(ARG)
+ 108        CONTINUE
+            IF (IP .LE. 5) GO TO 109
+            WA(I1-1) = WA(I-1)
+            WA(I1) = WA(I)
+ 109     CONTINUE
+C
+         L1 = L2
+ 110  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcfftf(n,c,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cfftf(n,c,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cfftf computes the forward complex discrete fourier
-C transform (the fourier analysis). equivalently , cfftf computes
+C subroutine dcfftf computes the forward complex discrete fourier
+C transform (the fourier analysis). equivalently , dcfftf computes
 C the fourier coefficients of a complex periodic sequence.
 C the transform is defined below at output parameter c.
 C 
 C the transform is not normalized. to obtain a normalized transform
-C the output must be divided by n. otherwise a call of cfftf
-C followed by a call of cfftb will multiply the sequence by n.
+C the output must be divided by n. otherwise a call of dcfftf
+C followed by a call of dcfftb will multiply the sequence by n.
 C 
-C the array wsave which is used by subroutine cfftf must be
-C initialized by calling subroutine cffti(n,wsave).
+C the array wsave which is used by subroutine dcfftf must be
+C initialized by calling subroutine dcffti(n,wsave).
 C 
 C input parameters
 C 
@@ -792,43 +2288,461 @@ C
 C c      a complex array of length n which contains the sequence
 C 
 C wsave   a real work array which must be dimensioned at least 4n+15
-C         in the program that calls cfftf. the wsave array must be
-C         initialized by calling subroutine cffti(n,wsave) and a
+C         in the program that calls dcfftf. the wsave array must be
+C         initialized by calling subroutine dcffti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
 C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by cfftf and cfftb.
+C         the same wsave array can be used by dcfftf and dcfftb.
 C 
 C output parameters
 C 
-C c      for j=1,...,n
+C       for j=1,...,n
 C 
 C            c(j)=the sum from k=1,...,n of
 C 
-C                  c(k)*exp(-i*(j-1)*(k-1)*2*pi/n)
+C                  c(k)*exp(-i*j*k*2*pi/n)
 C 
 C                        where i=sqrt(-1)
 C 
 C wsave   contains initialization calculations which must not be
-C         destroyed between calls of subroutine cfftf or cfftb
+C         destroyed between calls of subroutine dcfftf or dcfftb
+C 
+      SUBROUTINE DCFFTF (N,C,WSAVE)
+      DOUBLE PRECISION C(1), WSAVE(1)
+C
+      IF (N .EQ. 1) RETURN
+C
+      IW1 = N+N+1
+      IW2 = IW1+N+N
+      CALL DCFTF1 (N,C,WSAVE,WSAVE(IW1),WSAVE(IW2))
+C
+      RETURN
+      END
+      SUBROUTINE DCFTF1 (N,C,CH,WA,IFAC)
+      DOUBLE PRECISION C(1), CH(1), WA(1)
+      INTEGER IFAC(1)
+C
+      NF = IFAC(2)
+      NA = 0
+      L1 = 1
+      IW = 1
+      DO 116 K1=1,NF
+         IP = IFAC(K1+2)
+         L2 = IP*L1
+         IDO = N/L2
+         IDOT = IDO+IDO
+         IDL1 = IDOT*L1
+         IF (IP .NE. 4) GO TO 103
+         IX2 = IW+IDOT
+         IX3 = IX2+IDOT
+         IF (NA .NE. 0) GO TO 101
+         CALL DPSSF4 (IDOT,L1,C,CH,WA(IW),WA(IX2),WA(IX3))
+         GO TO 102
+ 101     CALL DPSSF4 (IDOT,L1,CH,C,WA(IW),WA(IX2),WA(IX3))
+ 102     NA = 1-NA
+         GO TO 115
+C
+ 103     IF (IP .NE. 2) GO TO 106
+         IF (NA .NE. 0) GO TO 104
+         CALL DPSSF2 (IDOT,L1,C,CH,WA(IW))
+         GO TO 105
+ 104     CALL DPSSF2 (IDOT,L1,CH,C,WA(IW))
+ 105     NA = 1-NA
+         GO TO 115
+C
+ 106     IF (IP .NE. 3) GO TO 109
+         IX2 = IW+IDOT
+         IF (NA .NE. 0) GO TO 107
+         CALL DPSSF3 (IDOT,L1,C,CH,WA(IW),WA(IX2))
+         GO TO 108
+ 107     CALL DPSSF3 (IDOT,L1,CH,C,WA(IW),WA(IX2))
+ 108     NA = 1-NA
+         GO TO 115
+C
+ 109     IF (IP .NE. 5) GO TO 112
+         IX2 = IW+IDOT
+         IX3 = IX2+IDOT
+         IX4 = IX3+IDOT
+         IF (NA .NE. 0) GO TO 110
+         CALL DPSSF5 (IDOT,L1,C,CH,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+         GO TO 111
+ 110     CALL DPSSF5 (IDOT,L1,CH,C,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+ 111     NA = 1-NA
+         GO TO 115
+C
+ 112     IF (NA .NE. 0) GO TO 113
+         CALL DPSSF (NAC,IDOT,IP,L1,IDL1,C,C,C,CH,CH,WA(IW))
+         GO TO 114
+ 113     CALL DPSSF (NAC,IDOT,IP,L1,IDL1,CH,CH,CH,C,C,WA(IW))
+ 114     IF (NAC .NE. 0) NA = 1-NA
+C
+ 115     L1 = L2
+         IW = IW+(IP-1)*IDOT
+ 116  CONTINUE
+      IF (NA .EQ. 0) RETURN
+C
+      N2 = N+N
+      DO 117 I=1,N2
+         C(I) = CH(I)
+ 117  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSF (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
+      DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), WAI, WAR
+C
+      IDOT = IDO/2
+      NT = IP*IDL1
+      IPP2 = IP+2
+      IPPH = (IP+1)/2
+      IDP = IP*IDO
+C
+      IF (IDO .LT. L1) GO TO 106
+      DO 103 J=2,IPPH
+         JC = IPP2-J
+         DO 102 K=1,L1
+            DO 101 I=1,IDO
+               CH(I,K,J) = CC(I,J,K)+CC(I,JC,K)
+               CH(I,K,JC) = CC(I,J,K)-CC(I,JC,K)
+ 101        CONTINUE
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      DO 105 K=1,L1
+         DO 104 I=1,IDO
+            CH(I,K,1) = CC(I,1,K)
+ 104     CONTINUE
+ 105  CONTINUE
+      GO TO 112
+C
+ 106  DO 109 J=2,IPPH
+         JC = IPP2-J
+         DO 108 I=1,IDO
+            DO 107 K=1,L1
+               CH(I,K,J) = CC(I,J,K)+CC(I,JC,K)
+               CH(I,K,JC) = CC(I,J,K)-CC(I,JC,K)
+ 107        CONTINUE
+ 108     CONTINUE
+ 109  CONTINUE
+C
+      DO 111 I=1,IDO
+         DO 110 K=1,L1
+            CH(I,K,1) = CC(I,1,K)
+ 110     CONTINUE
+ 111  CONTINUE
+C
+ 112  IDL = 2-IDO
+      INC = 0
+      DO 116 L=2,IPPH
+         LC = IPP2-L
+         IDL = IDL+IDO
+         DO 113 IK=1,IDL1
+            C2(IK,L) = CH2(IK,1)+WA(IDL-1)*CH2(IK,2)
+            C2(IK,LC) = -WA(IDL)*CH2(IK,IP)
+ 113     CONTINUE
+         IDLJ = IDL
+         INC = INC+IDO
+         DO 115 J=3,IPPH
+            JC = IPP2-J
+            IDLJ = IDLJ+INC
+            IF (IDLJ .GT. IDP) IDLJ = IDLJ-IDP
+            WAR = WA(IDLJ-1)
+            WAI = WA(IDLJ)
+            DO 114 IK=1,IDL1
+               C2(IK,L) = C2(IK,L)+WAR*CH2(IK,J)
+               C2(IK,LC) = C2(IK,LC)-WAI*CH2(IK,JC)
+ 114        CONTINUE
+ 115     CONTINUE
+ 116  CONTINUE
+C
+      DO 118 J=2,IPPH
+         DO 117 IK=1,IDL1
+            CH2(IK,1) = CH2(IK,1)+CH2(IK,J)
+ 117     CONTINUE
+ 118  CONTINUE
+C
+      DO 120 J=2,IPPH
+         JC = IPP2-J
+         DO 119 IK=2,IDL1,2
+            CH2(IK-1,J) = C2(IK-1,J)-C2(IK,JC)
+            CH2(IK-1,JC) = C2(IK-1,J)+C2(IK,JC)
+            CH2(IK,J) = C2(IK,J)+C2(IK-1,JC)
+            CH2(IK,JC) = C2(IK,J)-C2(IK-1,JC)
+ 119     CONTINUE
+ 120  CONTINUE
+C
+      NAC = 1
+      IF (IDO .EQ. 2) RETURN
+      NAC = 0
+C
+      DO 121 IK=1,IDL1
+         C2(IK,1) = CH2(IK,1)
+ 121  CONTINUE
+C
+      DO 123 J=2,IP
+         DO 122 K=1,L1
+            C1(1,K,J) = CH(1,K,J)
+            C1(2,K,J) = CH(2,K,J)
+ 122     CONTINUE
+ 123  CONTINUE
+C
+      IF (IDOT .GT. L1) GO TO 127
+      IDIJ = 0
+      DO 126 J=2,IP
+         IDIJ = IDIJ+2
+         DO 125 I=4,IDO,2
+            IDIJ = IDIJ+2
+            DO 124 K=1,L1
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)+WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)-WA(IDIJ)*CH(I-1,K,J)
+ 124        CONTINUE
+ 125     CONTINUE
+ 126  CONTINUE
+      RETURN
+C
+ 127  IDJ = 2-IDO
+      DO 130 J=2,IP
+         IDJ = IDJ+IDO
+         DO 129 K=1,L1
+            IDIJ = IDJ
+            DO 128 I=4,IDO,2
+               IDIJ = IDIJ+2
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)+WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)-WA(IDIJ)*CH(I-1,K,J)
+ 128        CONTINUE
+ 129     CONTINUE
+ 130  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSF2 (IDO,L1,CC,CH,WA1)
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+C
+      IF (IDO .GT. 2) GO TO 102
+      DO 101 K=1,L1
+         CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
+         CH(1,K,2) = CC(1,1,K)-CC(1,2,K)
+         CH(2,K,1) = CC(2,1,K)+CC(2,2,K)
+         CH(2,K,2) = CC(2,1,K)-CC(2,2,K)
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            CH(I-1,K,1) = CC(I-1,1,K)+CC(I-1,2,K)
+            TR2 = CC(I-1,1,K)-CC(I-1,2,K)
+            CH(I,K,1) = CC(I,1,K)+CC(I,2,K)
+            TI2 = CC(I,1,K)-CC(I,2,K)
+            CH(I,K,2) = WA1(I-1)*TI2-WA1(I)*TR2
+            CH(I-1,K,2) = WA1(I-1)*TR2+WA1(I)*TI2
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSF3 (IDO,L1,CC,CH,WA1,WA2)
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+     1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
+      DATA TAUR / -0.5 D0 /
+      DATA TAUI  / -0.8660254037 8443864676 3723170752 93618D0/
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TR2 = CC(1,2,K)+CC(1,3,K)
+         CR2 = CC(1,1,K)+TAUR*TR2
+         CH(1,K,1) = CC(1,1,K)+TR2
+         TI2 = CC(2,2,K)+CC(2,3,K)
+         CI2 = CC(2,1,K)+TAUR*TI2
+         CH(2,K,1) = CC(2,1,K)+TI2
+         CR3 = TAUI*(CC(1,2,K)-CC(1,3,K))
+         CI3 = TAUI*(CC(2,2,K)-CC(2,3,K))
+         CH(1,K,2) = CR2-CI3
+         CH(1,K,3) = CR2+CI3
+         CH(2,K,2) = CI2+CR3
+         CH(2,K,3) = CI2-CR3
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TR2 = CC(I-1,2,K)+CC(I-1,3,K)
+            CR2 = CC(I-1,1,K)+TAUR*TR2
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2
+            TI2 = CC(I,2,K)+CC(I,3,K)
+            CI2 = CC(I,1,K)+TAUR*TI2
+            CH(I,K,1) = CC(I,1,K)+TI2
+            CR3 = TAUI*(CC(I-1,2,K)-CC(I-1,3,K))
+            CI3 = TAUI*(CC(I,2,K)-CC(I,3,K))
+            DR2 = CR2-CI3
+            DR3 = CR2+CI3
+            DI2 = CI2+CR3
+            DI3 = CI2-CR3
+            CH(I,K,2) = WA1(I-1)*DI2-WA1(I)*DR2
+            CH(I-1,K,2) = WA1(I-1)*DR2+WA1(I)*DI2
+            CH(I,K,3) = WA2(I-1)*DI3-WA2(I)*DR3
+            CH(I-1,K,3) = WA2(I-1)*DR3+WA2(I)*DI3
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
+     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4,
+     2     TR1, TR2, TR3, TR4
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TI1 = CC(2,1,K)-CC(2,3,K)
+         TI2 = CC(2,1,K)+CC(2,3,K)
+         TR4 = CC(2,2,K)-CC(2,4,K)
+         TI3 = CC(2,2,K)+CC(2,4,K)
+         TR1 = CC(1,1,K)-CC(1,3,K)
+         TR2 = CC(1,1,K)+CC(1,3,K)
+         TI4 = CC(1,4,K)-CC(1,2,K)
+         TR3 = CC(1,2,K)+CC(1,4,K)
+         CH(1,K,1) = TR2+TR3
+         CH(1,K,3) = TR2-TR3
+         CH(2,K,1) = TI2+TI3
+         CH(2,K,3) = TI2-TI3
+         CH(1,K,2) = TR1+TR4
+         CH(1,K,4) = TR1-TR4
+         CH(2,K,2) = TI1+TI4
+         CH(2,K,4) = TI1-TI4
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TI1 = CC(I,1,K)-CC(I,3,K)
+            TI2 = CC(I,1,K)+CC(I,3,K)
+            TI3 = CC(I,2,K)+CC(I,4,K)
+            TR4 = CC(I,2,K)-CC(I,4,K)
+            TR1 = CC(I-1,1,K)-CC(I-1,3,K)
+            TR2 = CC(I-1,1,K)+CC(I-1,3,K)
+            TI4 = CC(I-1,4,K)-CC(I-1,2,K)
+            TR3 = CC(I-1,2,K)+CC(I-1,4,K)
+            CH(I-1,K,1) = TR2+TR3
+            CR3 = TR2-TR3
+            CH(I,K,1) = TI2+TI3
+            CI3 = TI2-TI3
+            CR2 = TR1+TR4
+            CR4 = TR1-TR4
+            CI2 = TI1+TI4
+            CI4 = TI1-TI4
+            CH(I-1,K,2) = WA1(I-1)*CR2+WA1(I)*CI2
+            CH(I,K,2) = WA1(I-1)*CI2-WA1(I)*CR2
+            CH(I-1,K,3) = WA2(I-1)*CR3+WA2(I)*CI3
+            CH(I,K,3) = WA2(I-1)*CI3-WA2(I)*CR3
+            CH(I-1,K,4) = WA3(I-1)*CR4+WA3(I)*CI4
+            CH(I,K,4) = WA3(I-1)*CI4-WA3(I)*CR4
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
+     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5, DI2,
+     2     DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3, TI4,
+     3     TI5, TR11, TR12, TR2, TR3, TR4, TR5
+      DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
+      DATA TI11  / -0.9510565162 9515357211 6439333379 38214D0/
+      DATA TR12  / -0.8090169943 7494742410 2293417182 81906D0/
+      DATA TI12  / -0.5877852522 9247312916 8705954639 07277D0/
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TI5 = CC(2,2,K)-CC(2,5,K)
+         TI2 = CC(2,2,K)+CC(2,5,K)
+         TI4 = CC(2,3,K)-CC(2,4,K)
+         TI3 = CC(2,3,K)+CC(2,4,K)
+         TR5 = CC(1,2,K)-CC(1,5,K)
+         TR2 = CC(1,2,K)+CC(1,5,K)
+         TR4 = CC(1,3,K)-CC(1,4,K)
+         TR3 = CC(1,3,K)+CC(1,4,K)
+         CH(1,K,1) = CC(1,1,K)+TR2+TR3
+         CH(2,K,1) = CC(2,1,K)+TI2+TI3
+         CR2 = CC(1,1,K)+TR11*TR2+TR12*TR3
+         CI2 = CC(2,1,K)+TR11*TI2+TR12*TI3
+         CR3 = CC(1,1,K)+TR12*TR2+TR11*TR3
+         CI3 = CC(2,1,K)+TR12*TI2+TR11*TI3
+         CR5 = TI11*TR5+TI12*TR4
+         CI5 = TI11*TI5+TI12*TI4
+         CR4 = TI12*TR5-TI11*TR4
+         CI4 = TI12*TI5-TI11*TI4
+         CH(1,K,2) = CR2-CI5
+         CH(1,K,5) = CR2+CI5
+         CH(2,K,2) = CI2+CR5
+         CH(2,K,3) = CI3+CR4
+         CH(1,K,3) = CR3-CI4
+         CH(1,K,4) = CR3+CI4
+         CH(2,K,4) = CI3-CR4
+         CH(2,K,5) = CI2-CR5
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TI5 = CC(I,2,K)-CC(I,5,K)
+            TI2 = CC(I,2,K)+CC(I,5,K)
+            TI4 = CC(I,3,K)-CC(I,4,K)
+            TI3 = CC(I,3,K)+CC(I,4,K)
+            TR5 = CC(I-1,2,K)-CC(I-1,5,K)
+            TR2 = CC(I-1,2,K)+CC(I-1,5,K)
+            TR4 = CC(I-1,3,K)-CC(I-1,4,K)
+            TR3 = CC(I-1,3,K)+CC(I-1,4,K)
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2+TR3
+            CH(I,K,1) = CC(I,1,K)+TI2+TI3
+            CR2 = CC(I-1,1,K)+TR11*TR2+TR12*TR3
+            CI2 = CC(I,1,K)+TR11*TI2+TR12*TI3
+            CR3 = CC(I-1,1,K)+TR12*TR2+TR11*TR3
+            CI3 = CC(I,1,K)+TR12*TI2+TR11*TI3
+            CR5 = TI11*TR5+TI12*TR4
+            CI5 = TI11*TI5+TI12*TI4
+            CR4 = TI12*TR5-TI11*TR4
+            CI4 = TI12*TI5-TI11*TI4
+            DR3 = CR3-CI4
+            DR4 = CR3+CI4
+            DI3 = CI3+CR4
+            DI4 = CI3-CR4
+            DR5 = CR2+CI5
+            DR2 = CR2-CI5
+            DI5 = CI2-CR5
+            DI2 = CI2+CR5
+            CH(I-1,K,2) = WA1(I-1)*DR2+WA1(I)*DI2
+            CH(I,K,2) = WA1(I-1)*DI2-WA1(I)*DR2
+            CH(I-1,K,3) = WA2(I-1)*DR3+WA2(I)*DI3
+            CH(I,K,3) = WA2(I-1)*DI3-WA2(I)*DR3
+            CH(I-1,K,4) = WA3(I-1)*DR4+WA3(I)*DI4
+            CH(I,K,4) = WA3(I-1)*DI4-WA3(I)*DR4
+            CH(I-1,K,5) = WA4(I-1)*DR5+WA4(I)*DI5
+            CH(I,K,5) = WA4(I-1)*DI5-WA4(I)*DR5
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+C
+C ******************************************************************
+C 
+C subroutine dcfftb(n,c,wsave)
 C 
 C ******************************************************************
 C 
-C subroutine cfftb(n,c,wsave)
-C 
-C ******************************************************************
-C 
-C subroutine cfftb computes the backward complex discrete fourier
-C transform (the fourier synthesis). equivalently , cfftb computes
+C subroutine dcfftb computes the backward complex discrete fourier
+C transform (the fourier synthesis). equivalently , dcfftb computes
 C a complex periodic sequence from its fourier coefficients.
 C the transform is defined below at output parameter c.
 C 
-C a call of cfftf followed by a call of cfftb will multiply the
+C a call of dcfftf followed by a call of dcfftb will multiply the
 C sequence by n.
 C 
-C the array wsave which is used by subroutine cfftb must be
-C initialized by calling subroutine cffti(n,wsave).
+C the array wsave which is used by subroutine dcfftb must be
+C initialized by calling subroutine dcffti(n,wsave).
 C 
 C input parameters
 C 
@@ -839,1999 +2753,448 @@ C
 C c      a complex array of length n which contains the sequence
 C 
 C wsave   a real work array which must be dimensioned at least 4n+15
-C         in the program that calls cfftb. the wsave array must be
-C         initialized by calling subroutine cffti(n,wsave) and a
+C         in the program that calls dcfftb. the wsave array must be
+C         initialized by calling subroutine dcffti(n,wsave) and a
 C         different wsave array must be used for each different
 C         value of n. this initialization does not have to be
 C         repeated so long as n remains unchanged thus subsequent
 C         transforms can be obtained faster than the first.
-C         the same wsave array can be used by cfftf and cfftb.
+C         the same wsave array can be used by dcfftf and dcfftb.
 C 
 C output parameters
 C 
-C c      for j=1,...,n
+C       for j=1,...,n
 C 
 C            c(j)=the sum from k=1,...,n of
 C 
-C                  c(k)*exp(i*(j-1)*(k-1)*2*pi/n)
+C                  c(k)*exp(i*j*k*2*pi/n)
 C 
 C                        where i=sqrt(-1)
 C 
 C wsave   contains initialization calculations which must not be
-C         destroyed between calls of subroutine cfftf or cfftb
-C 
-C 
-C 
-C 
-
+C         destroyed between calls of subroutine dcfftf or dcfftb
 C
-C These subroutines are from the FFTPAK collection
-C by Paul N. Swarztrauber
+      SUBROUTINE DCFFTB (N,C,WSAVE)
+      DOUBLE PRECISION C(1), WSAVE(1)
 C
-C They were modified to double precision versions by AGW, Oct 1992
+      IF (N .EQ. 1) RETURN
 C
-      subroutine dcffti (n,wsave)
-
-      double precision wsave(*)
-      integer n
-      integer iw1, iw2
-
-      if (n .eq. 1) return
-      iw1 = n+n+1
-      iw2 = iw1+n+n
-      call dcffti1 (n,wsave(iw1),wsave(iw2))
-      return
-      end
-
-      subroutine dcffti1 (n,wa,ifac)
-
-      double precision wa(*)
-      integer n, ifac(*)
-
-      integer ntryh(4), nl, nf, ntry, nq, nr, i, j, ib, l1, l2, ld, k1 
-      integer ip, ido, idot, ipm, i1, ii
-      double precision tpi, argh, argld, fi, arg
-      data ntryh(1),ntryh(2),ntryh(3),ntryh(4)/3,4,2,5/
-
-      nl = n
-      nf = 0
-      j = 0
-  101 j = j+1
-      if (j-4) 102,102,103
-  102 ntry = ntryh(j)
-      go to 104
-  103 ntry = ntry+2
-  104 nq = nl/ntry
-      nr = nl-ntry*nq
-      if (nr) 101,105,101
-  105 nf = nf+1
-      ifac(nf+2) = ntry
-      nl = nq
-      if (ntry .ne. 2) go to 107
-      if (nf .eq. 1) go to 107
-      do 106 i=2,nf
-         ib = nf-i+2
-         ifac(ib+2) = ifac(ib+1)
-  106 continue
-      ifac(3) = 2
-  107 if (nl .ne. 1) go to 104
-      ifac(1) = n
-      ifac(2) = nf
-      tpi = 6.28318530717959D0
-      argh = tpi/float(n)
-      i = 2
-      l1 = 1
-      do 110 k1=1,nf
-         ip = ifac(k1+2)
-         ld = 0
-         l2 = l1*ip
-         ido = n/l2
-         idot = ido+ido+2
-         ipm = ip-1
-         do 109 j=1,ipm
-            i1 = i
-            wa(i-1) = 1.
-            wa(i) = 0.
-            ld = ld+l1
-            fi = 0.
-            argld = float(ld)*argh
-            do 108 ii=4,idot,2
-               i = i+2
-               fi = fi+1.
-               arg = fi*argld
-               wa(i-1) = cos(arg)
-               wa(i) = sin(arg)
-  108       continue
-            if (ip .le. 5) go to 109
-            wa(i1-1) = wa(i-1)
-            wa(i1) = wa(i)
-  109    continue
-         l1 = l2
-  110 continue
-      return
-      end
-
-      subroutine dcfftf (n,c,wsave)
-
-      integer n
-      double precision c(*), wsave(*)
-
-      integer iw1, iw2, iw3
-      logical dzerochk
-
-      if (n .eq. 1) return
-      iw3 = n+n
-      if (dzerochk(iw3,c)) return
-      iw1 = n+n+1
-      iw2 = iw1+n+n
-      call dcfftf1 (n,c,wsave,wsave(iw1),wsave(iw2))
-      return
-      end
-
-      subroutine dcfftf1 (n,c,ch,wa,ifac)
-
-      integer n, ifac(*)
-      double precision ch(*), c(*), wa(*)
-
-      integer nf, na, l1, l2, iw, k1, ip, ido, idot, idl1, ix2, ix3, ix4 
-      integer nac, n2, i
-
-      nf = ifac(2)
-      na = 0
-      l1 = 1
-      iw = 1
-      do 116 k1=1,nf
-         ip = ifac(k1+2)
-         l2 = ip*l1
-         ido = n/l2
-         idot = ido+ido
-         idl1 = idot*l1
-         if (ip .ne. 4) go to 103
-         ix2 = iw+idot
-         ix3 = ix2+idot
-         if (na .ne. 0) go to 101
-         call dpassf4 (idot,l1,c,ch,wa(iw),wa(ix2),wa(ix3))
-         go to 102
-  101    call dpassf4 (idot,l1,ch,c,wa(iw),wa(ix2),wa(ix3))
-  102    na = 1-na
-         go to 115
-  103    if (ip .ne. 2) go to 106
-         if (na .ne. 0) go to 104
-         call dpassf2 (idot,l1,c,ch,wa(iw))
-         go to 105
-  104    call dpassf2 (idot,l1,ch,c,wa(iw))
-  105    na = 1-na
-         go to 115
-  106    if (ip .ne. 3) go to 109
-         ix2 = iw+idot
-         if (na .ne. 0) go to 107
-         call dpassf3 (idot,l1,c,ch,wa(iw),wa(ix2))
-         go to 108
-  107    call dpassf3 (idot,l1,ch,c,wa(iw),wa(ix2))
-  108    na = 1-na
-         go to 115
-  109    if (ip .ne. 5) go to 112
-         ix2 = iw+idot
-         ix3 = ix2+idot
-         ix4 = ix3+idot
-         if (na .ne. 0) go to 110
-         call dpassf5 (idot,l1,c,ch,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-         go to 111
-  110    call dpassf5 (idot,l1,ch,c,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-  111    na = 1-na
-         go to 115
-  112    if (na .ne. 0) go to 113
-         call dpassf (nac,idot,ip,l1,idl1,c,c,c,ch,ch,wa(iw))
-         go to 114
-  113    call dpassf (nac,idot,ip,l1,idl1,ch,ch,ch,c,c,wa(iw))
-  114    if (nac .ne. 0) na = 1-na
-  115    l1 = l2
-         iw = iw+(ip-1)*idot
-  116 continue
-      if (na .eq. 0) return
-      n2 = n+n
-      do 117 i=1,n2
-         c(i) = ch(i)
-  117 continue
-      return
-      end
-      
-      subroutine dcfftb (n,c,wsave)
-
-      double precision c(*), wsave(*)
-      integer n
-
-      integer iw1, iw2, iw3
-      logical dzerochk
-
-      if (n .eq. 1) return
-      iw3 = n+n
-      if (dzerochk(iw3,c)) return
-      iw1 = n+n+1
-      iw2 = iw1+n+n
-      call dcfftb1 (n,c,wsave,wsave(iw1),wsave(iw2))
-      return
-      end
-
-      subroutine dcfftb1 (n,c,ch,wa,ifac)
-
-      integer n, ifac(*)
-      double precision ch(*), c(*), wa(*)
-
-      integer nf, na, l1, l2, iw, k1, ip, nac, n2, i, ido, idot, idl1
-      integer ix2, ix3, ix4
-
-      nf = ifac(2)
-      na = 0
-      l1 = 1
-      iw = 1
-      do 116 k1=1,nf
-         ip = ifac(k1+2)
-         l2 = ip*l1
-         ido = n/l2
-         idot = ido+ido
-         idl1 = idot*l1
-         if (ip .ne. 4) go to 103
-         ix2 = iw+idot
-         ix3 = ix2+idot
-         if (na .ne. 0) go to 101
-         call dpassb4 (idot,l1,c,ch,wa(iw),wa(ix2),wa(ix3))
-         go to 102
-  101    call dpassb4 (idot,l1,ch,c,wa(iw),wa(ix2),wa(ix3))
-  102    na = 1-na
-         go to 115
-  103    if (ip .ne. 2) go to 106
-         if (na .ne. 0) go to 104
-         call dpassb2 (idot,l1,c,ch,wa(iw))
-         go to 105
-  104    call dpassb2 (idot,l1,ch,c,wa(iw))
-  105    na = 1-na
-         go to 115
-  106    if (ip .ne. 3) go to 109
-         ix2 = iw+idot
-         if (na .ne. 0) go to 107
-         call dpassb3 (idot,l1,c,ch,wa(iw),wa(ix2))
-         go to 108
-  107    call dpassb3 (idot,l1,ch,c,wa(iw),wa(ix2))
-  108    na = 1-na
-         go to 115
-  109    if (ip .ne. 5) go to 112
-         ix2 = iw+idot
-         ix3 = ix2+idot
-         ix4 = ix3+idot
-         if (na .ne. 0) go to 110
-         call dpassb5 (idot,l1,c,ch,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-         go to 111
-  110    call dpassb5 (idot,l1,ch,c,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-  111    na = 1-na
-         go to 115
-  112    if (na .ne. 0) go to 113
-         call dpassb (nac,idot,ip,l1,idl1,c,c,c,ch,ch,wa(iw))
-         go to 114
-  113    call dpassb (nac,idot,ip,l1,idl1,ch,ch,ch,c,c,wa(iw))
-  114    if (nac .ne. 0) na = 1-na
-  115    l1 = l2
-         iw = iw+(ip-1)*idot
-  116 continue
-      if (na .eq. 0) return
-      n2 = n+n
-      do 117 i=1,n2
-         c(i) = ch(i)
-  117 continue
-      return
-      end
-
-      subroutine dpassf (nac,ido,ip,l1,idl1,cc,c1,c2,ch,ch2,wa)
-
-      integer nac, ido, ip, l1, idl1
-      double precision ch(ido,l1,ip), cc(ido,ip,l1), c1(ido,l1,ip),
-     1                 wa(*), c2(idl1,ip), ch2(idl1,ip)
-
-      integer idot, nt, ipp2, ipph, idp, j, jc, i, k, idl, inc, l, lc
-      integer ik, idlj, idij, idj
-      double precision war, wai
-
-      idot = ido/2
-      nt = ip*idl1
-      ipp2 = ip+2
-      ipph = (ip+1)/2
-      idp = ip*ido
-c
-      if (ido .lt. l1) go to 106
-      do 103 j=2,ipph
-         jc = ipp2-j
-         do 102 k=1,l1
-            do 101 i=1,ido
-               ch(i,k,j) = cc(i,j,k)+cc(i,jc,k)
-               ch(i,k,jc) = cc(i,j,k)-cc(i,jc,k)
-  101       continue
-  102    continue
-  103 continue
-      do 105 k=1,l1
-         do 104 i=1,ido
-            ch(i,k,1) = cc(i,1,k)
-  104    continue
-  105 continue
-      go to 112
-  106 do 109 j=2,ipph
-         jc = ipp2-j
-         do 108 i=1,ido
-            do 107 k=1,l1
-               ch(i,k,j) = cc(i,j,k)+cc(i,jc,k)
-               ch(i,k,jc) = cc(i,j,k)-cc(i,jc,k)
-  107       continue
-  108    continue
-  109 continue
-      do 111 i=1,ido
-         do 110 k=1,l1
-            ch(i,k,1) = cc(i,1,k)
-  110    continue
-  111 continue
-  112 idl = 2-ido
-      inc = 0
-      do 116 l=2,ipph
-         lc = ipp2-l
-         idl = idl+ido
-         do 113 ik=1,idl1
-            c2(ik,l) = ch2(ik,1)+wa(idl-1)*ch2(ik,2)
-            c2(ik,lc) = -wa(idl)*ch2(ik,ip)
-  113    continue
-         idlj = idl
-         inc = inc+ido
-         do 115 j=3,ipph
-            jc = ipp2-j
-            idlj = idlj+inc
-            if (idlj .gt. idp) idlj = idlj-idp
-            war = wa(idlj-1)
-            wai = wa(idlj)
-            do 114 ik=1,idl1
-               c2(ik,l) = c2(ik,l)+war*ch2(ik,j)
-               c2(ik,lc) = c2(ik,lc)-wai*ch2(ik,jc)
-  114       continue
-  115    continue
-  116 continue
-      do 118 j=2,ipph
-         do 117 ik=1,idl1
-            ch2(ik,1) = ch2(ik,1)+ch2(ik,j)
-  117    continue
-  118 continue
-      do 120 j=2,ipph
-         jc = ipp2-j
-         do 119 ik=2,idl1,2
-            ch2(ik-1,j) = c2(ik-1,j)-c2(ik,jc)
-            ch2(ik-1,jc) = c2(ik-1,j)+c2(ik,jc)
-            ch2(ik,j) = c2(ik,j)+c2(ik-1,jc)
-            ch2(ik,jc) = c2(ik,j)-c2(ik-1,jc)
-  119    continue
-  120 continue
-      nac = 1
-      if (ido .eq. 2) return
-      nac = 0
-      do 121 ik=1,idl1
-         c2(ik,1) = ch2(ik,1)
-  121 continue
-      do 123 j=2,ip
-         do 122 k=1,l1
-            c1(1,k,j) = ch(1,k,j)
-            c1(2,k,j) = ch(2,k,j)
-  122    continue
-  123 continue
-      if (idot .gt. l1) go to 127
-      idij = 0
-      do 126 j=2,ip
-         idij = idij+2
-         do 125 i=4,ido,2
-            idij = idij+2
-            do 124 k=1,l1
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)+wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)-wa(idij)*ch(i-1,k,j)
-  124       continue
-  125    continue
-  126 continue
-      return
-  127 idj = 2-ido
-      do 130 j=2,ip
-         idj = idj+ido
-         do 129 k=1,l1
-            idij = idj
-            do 128 i=4,ido,2
-               idij = idij+2
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)+wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)-wa(idij)*ch(i-1,k,j)
-  128       continue
-  129    continue
-  130 continue
-      return
-      end
-
-      subroutine dpassf2 (ido,l1,cc,ch,wa1)
-
-      integer ido, l1
-      double precision cc(ido,2,l1), ch(ido,l1,2), wa1(*)
-
-      integer i, k
-      double precision tr2, ti2
-
-      if (ido .gt. 2) go to 102
-      do 101 k=1,l1
-         ch(1,k,1) = cc(1,1,k)+cc(1,2,k)
-         ch(1,k,2) = cc(1,1,k)-cc(1,2,k)
-         ch(2,k,1) = cc(2,1,k)+cc(2,2,k)
-         ch(2,k,2) = cc(2,1,k)-cc(2,2,k)
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ch(i-1,k,1) = cc(i-1,1,k)+cc(i-1,2,k)
-            tr2 = cc(i-1,1,k)-cc(i-1,2,k)
-            ch(i,k,1) = cc(i,1,k)+cc(i,2,k)
-            ti2 = cc(i,1,k)-cc(i,2,k)
-            ch(i,k,2) = wa1(i-1)*ti2-wa1(i)*tr2
-            ch(i-1,k,2) = wa1(i-1)*tr2+wa1(i)*ti2
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassf3 (ido,l1,cc,ch,wa1,wa2)
-
-      integer ido, l1
-      double precision cc(ido,3,l1), ch(ido,l1,3), wa1(*), wa2(*)
-
-      integer i, k
-      double precision tr2, ti2, cr2, ci2, taur, taui 
-      double precision cr3, ci3, dr2, di2, dr3, di3
-
-      data taur,taui /-.5,-.866025403784439/
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         tr2 = cc(1,2,k)+cc(1,3,k)
-         cr2 = cc(1,1,k)+taur*tr2
-         ch(1,k,1) = cc(1,1,k)+tr2
-         ti2 = cc(2,2,k)+cc(2,3,k)
-         ci2 = cc(2,1,k)+taur*ti2
-         ch(2,k,1) = cc(2,1,k)+ti2
-         cr3 = taui*(cc(1,2,k)-cc(1,3,k))
-         ci3 = taui*(cc(2,2,k)-cc(2,3,k))
-         ch(1,k,2) = cr2-ci3
-         ch(1,k,3) = cr2+ci3
-         ch(2,k,2) = ci2+cr3
-         ch(2,k,3) = ci2-cr3
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            tr2 = cc(i-1,2,k)+cc(i-1,3,k)
-            cr2 = cc(i-1,1,k)+taur*tr2
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2
-            ti2 = cc(i,2,k)+cc(i,3,k)
-            ci2 = cc(i,1,k)+taur*ti2
-            ch(i,k,1) = cc(i,1,k)+ti2
-            cr3 = taui*(cc(i-1,2,k)-cc(i-1,3,k))
-            ci3 = taui*(cc(i,2,k)-cc(i,3,k))
-            dr2 = cr2-ci3
-            dr3 = cr2+ci3
-            di2 = ci2+cr3
-            di3 = ci2-cr3
-            ch(i,k,2) = wa1(i-1)*di2-wa1(i)*dr2
-            ch(i-1,k,2) = wa1(i-1)*dr2+wa1(i)*di2
-            ch(i,k,3) = wa2(i-1)*di3-wa2(i)*dr3
-            ch(i-1,k,3) = wa2(i-1)*dr3+wa2(i)*di3
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassf4 (ido,l1,cc,ch,wa1,wa2,wa3)
-
-      integer ido, l1
-      double precision cc(ido,4,l1), ch(ido,l1,4)
-      double precision wa1(*), wa2(*), wa3(*)
-
-      integer i, k
-      double precision tr1, ti1, tr2, ti2, tr3, ti3, tr4, ti4
-      double precision cr2, ci2, cr3, ci3, cr4, ci4
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         ti1 = cc(2,1,k)-cc(2,3,k)
-         ti2 = cc(2,1,k)+cc(2,3,k)
-         tr4 = cc(2,2,k)-cc(2,4,k)
-         ti3 = cc(2,2,k)+cc(2,4,k)
-         tr1 = cc(1,1,k)-cc(1,3,k)
-         tr2 = cc(1,1,k)+cc(1,3,k)
-         ti4 = cc(1,4,k)-cc(1,2,k)
-         tr3 = cc(1,2,k)+cc(1,4,k)
-         ch(1,k,1) = tr2+tr3
-         ch(1,k,3) = tr2-tr3
-         ch(2,k,1) = ti2+ti3
-         ch(2,k,3) = ti2-ti3
-         ch(1,k,2) = tr1+tr4
-         ch(1,k,4) = tr1-tr4
-         ch(2,k,2) = ti1+ti4
-         ch(2,k,4) = ti1-ti4
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ti1 = cc(i,1,k)-cc(i,3,k)
-            ti2 = cc(i,1,k)+cc(i,3,k)
-            ti3 = cc(i,2,k)+cc(i,4,k)
-            tr4 = cc(i,2,k)-cc(i,4,k)
-            tr1 = cc(i-1,1,k)-cc(i-1,3,k)
-            tr2 = cc(i-1,1,k)+cc(i-1,3,k)
-            ti4 = cc(i-1,4,k)-cc(i-1,2,k)
-            tr3 = cc(i-1,2,k)+cc(i-1,4,k)
-            ch(i-1,k,1) = tr2+tr3
-            cr3 = tr2-tr3
-            ch(i,k,1) = ti2+ti3
-            ci3 = ti2-ti3
-            cr2 = tr1+tr4
-            cr4 = tr1-tr4
-            ci2 = ti1+ti4
-            ci4 = ti1-ti4
-            ch(i-1,k,2) = wa1(i-1)*cr2+wa1(i)*ci2
-            ch(i,k,2) = wa1(i-1)*ci2-wa1(i)*cr2
-            ch(i-1,k,3) = wa2(i-1)*cr3+wa2(i)*ci3
-            ch(i,k,3) = wa2(i-1)*ci3-wa2(i)*cr3
-            ch(i-1,k,4) = wa3(i-1)*cr4+wa3(i)*ci4
-            ch(i,k,4) = wa3(i-1)*ci4-wa3(i)*cr4
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassf5 (ido,l1,cc,ch,wa1,wa2,wa3,wa4)
-
-      integer ido, l1
-      double precision cc(ido,5,l1), ch(ido,l1,5) 
-      double precision wa1(*), wa2(*), wa3(*), wa4(*)
-
-      integer i, k
-      double precision cr2, ci2, cr3, ci3, cr4, ci4, cr5, ci5
-      double precision dr2, di2, dr3, di3, dr4, di4, dr5, di5
-      double precision tr2, ti2, tr3, ti3, tr4, ti4, tr5, ti5
-      double precision tr11, ti11, tr12, ti12
-
-      data tr11,ti11,tr12,ti12 /.309016994374947,-.951056516295154,
-     1-.809016994374947,-.587785252292473/
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         ti5 = cc(2,2,k)-cc(2,5,k)
-         ti2 = cc(2,2,k)+cc(2,5,k)
-         ti4 = cc(2,3,k)-cc(2,4,k)
-         ti3 = cc(2,3,k)+cc(2,4,k)
-         tr5 = cc(1,2,k)-cc(1,5,k)
-         tr2 = cc(1,2,k)+cc(1,5,k)
-         tr4 = cc(1,3,k)-cc(1,4,k)
-         tr3 = cc(1,3,k)+cc(1,4,k)
-         ch(1,k,1) = cc(1,1,k)+tr2+tr3
-         ch(2,k,1) = cc(2,1,k)+ti2+ti3
-         cr2 = cc(1,1,k)+tr11*tr2+tr12*tr3
-         ci2 = cc(2,1,k)+tr11*ti2+tr12*ti3
-         cr3 = cc(1,1,k)+tr12*tr2+tr11*tr3
-         ci3 = cc(2,1,k)+tr12*ti2+tr11*ti3
-         cr5 = ti11*tr5+ti12*tr4
-         ci5 = ti11*ti5+ti12*ti4
-         cr4 = ti12*tr5-ti11*tr4
-         ci4 = ti12*ti5-ti11*ti4
-         ch(1,k,2) = cr2-ci5
-         ch(1,k,5) = cr2+ci5
-         ch(2,k,2) = ci2+cr5
-         ch(2,k,3) = ci3+cr4
-         ch(1,k,3) = cr3-ci4
-         ch(1,k,4) = cr3+ci4
-         ch(2,k,4) = ci3-cr4
-         ch(2,k,5) = ci2-cr5
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ti5 = cc(i,2,k)-cc(i,5,k)
-            ti2 = cc(i,2,k)+cc(i,5,k)
-            ti4 = cc(i,3,k)-cc(i,4,k)
-            ti3 = cc(i,3,k)+cc(i,4,k)
-            tr5 = cc(i-1,2,k)-cc(i-1,5,k)
-            tr2 = cc(i-1,2,k)+cc(i-1,5,k)
-            tr4 = cc(i-1,3,k)-cc(i-1,4,k)
-            tr3 = cc(i-1,3,k)+cc(i-1,4,k)
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2+tr3
-            ch(i,k,1) = cc(i,1,k)+ti2+ti3
-            cr2 = cc(i-1,1,k)+tr11*tr2+tr12*tr3
-            ci2 = cc(i,1,k)+tr11*ti2+tr12*ti3
-            cr3 = cc(i-1,1,k)+tr12*tr2+tr11*tr3
-            ci3 = cc(i,1,k)+tr12*ti2+tr11*ti3
-            cr5 = ti11*tr5+ti12*tr4
-            ci5 = ti11*ti5+ti12*ti4
-            cr4 = ti12*tr5-ti11*tr4
-            ci4 = ti12*ti5-ti11*ti4
-            dr3 = cr3-ci4
-            dr4 = cr3+ci4
-            di3 = ci3+cr4
-            di4 = ci3-cr4
-            dr5 = cr2+ci5
-            dr2 = cr2-ci5
-            di5 = ci2-cr5
-            di2 = ci2+cr5
-            ch(i-1,k,2) = wa1(i-1)*dr2+wa1(i)*di2
-            ch(i,k,2) = wa1(i-1)*di2-wa1(i)*dr2
-            ch(i-1,k,3) = wa2(i-1)*dr3+wa2(i)*di3
-            ch(i,k,3) = wa2(i-1)*di3-wa2(i)*dr3
-            ch(i-1,k,4) = wa3(i-1)*dr4+wa3(i)*di4
-            ch(i,k,4) = wa3(i-1)*di4-wa3(i)*dr4
-            ch(i-1,k,5) = wa4(i-1)*dr5+wa4(i)*di5
-            ch(i,k,5) = wa4(i-1)*di5-wa4(i)*dr5
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassb (nac,ido,ip,l1,idl1,cc,c1,c2,ch,ch2,wa)
-
-      integer nac, ido, ip, l1, idl1
-      double precision ch(ido,l1,ip), cc(ido,ip,l1), c1(ido,l1,ip) 
-      double precision wa(*), c2(idl1,ip), ch2(idl1,ip)
-
-      integer idot, nt, ipp2, ipph, idp, j, jc, k, i, idl, inc, l, lc
-      integer ik, idlj, idij, idj
-      double precision war, wai
-
-      idot = ido/2
-      nt = ip*idl1
-      ipp2 = ip+2
-      ipph = (ip+1)/2
-      idp = ip*ido
-c
-      if (ido .lt. l1) go to 106
-      do 103 j=2,ipph
-         jc = ipp2-j
-         do 102 k=1,l1
-            do 101 i=1,ido
-               ch(i,k,j) = cc(i,j,k)+cc(i,jc,k)
-               ch(i,k,jc) = cc(i,j,k)-cc(i,jc,k)
-  101       continue
-  102    continue
-  103 continue
-      do 105 k=1,l1
-         do 104 i=1,ido
-            ch(i,k,1) = cc(i,1,k)
-  104    continue
-  105 continue
-      go to 112
-  106 do 109 j=2,ipph
-         jc = ipp2-j
-         do 108 i=1,ido
-            do 107 k=1,l1
-               ch(i,k,j) = cc(i,j,k)+cc(i,jc,k)
-               ch(i,k,jc) = cc(i,j,k)-cc(i,jc,k)
-  107       continue
-  108    continue
-  109 continue
-      do 111 i=1,ido
-         do 110 k=1,l1
-            ch(i,k,1) = cc(i,1,k)
-  110    continue
-  111 continue
-  112 idl = 2-ido
-      inc = 0
-      do 116 l=2,ipph
-         lc = ipp2-l
-         idl = idl+ido
-         do 113 ik=1,idl1
-            c2(ik,l) = ch2(ik,1)+wa(idl-1)*ch2(ik,2)
-            c2(ik,lc) = wa(idl)*ch2(ik,ip)
-  113    continue
-         idlj = idl
-         inc = inc+ido
-         do 115 j=3,ipph
-            jc = ipp2-j
-            idlj = idlj+inc
-            if (idlj .gt. idp) idlj = idlj-idp
-            war = wa(idlj-1)
-            wai = wa(idlj)
-            do 114 ik=1,idl1
-               c2(ik,l) = c2(ik,l)+war*ch2(ik,j)
-               c2(ik,lc) = c2(ik,lc)+wai*ch2(ik,jc)
-  114       continue
-  115    continue
-  116 continue
-      do 118 j=2,ipph
-         do 117 ik=1,idl1
-            ch2(ik,1) = ch2(ik,1)+ch2(ik,j)
-  117    continue
-  118 continue
-      do 120 j=2,ipph
-         jc = ipp2-j
-         do 119 ik=2,idl1,2
-            ch2(ik-1,j) = c2(ik-1,j)-c2(ik,jc)
-            ch2(ik-1,jc) = c2(ik-1,j)+c2(ik,jc)
-            ch2(ik,j) = c2(ik,j)+c2(ik-1,jc)
-            ch2(ik,jc) = c2(ik,j)-c2(ik-1,jc)
-  119    continue
-  120 continue
-      nac = 1
-      if (ido .eq. 2) return
-      nac = 0
-      do 121 ik=1,idl1
-         c2(ik,1) = ch2(ik,1)
-  121 continue
-      do 123 j=2,ip
-         do 122 k=1,l1
-            c1(1,k,j) = ch(1,k,j)
-            c1(2,k,j) = ch(2,k,j)
-  122    continue
-  123 continue
-      if (idot .gt. l1) go to 127
-      idij = 0
-      do 126 j=2,ip
-         idij = idij+2
-         do 125 i=4,ido,2
-            idij = idij+2
-            do 124 k=1,l1
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)-wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)+wa(idij)*ch(i-1,k,j)
-  124       continue
-  125    continue
-  126 continue
-      return
-  127 idj = 2-ido
-      do 130 j=2,ip
-         idj = idj+ido
-         do 129 k=1,l1
-            idij = idj
-            do 128 i=4,ido,2
-               idij = idij+2
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)-wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)+wa(idij)*ch(i-1,k,j)
-  128       continue
-  129    continue
-  130 continue
-      return
-      end
-
-      subroutine dpassb2 (ido,l1,cc,ch,wa1)
-
-      integer ido, l1
-      double precision cc(ido,2,l1), ch(ido,l1,2), wa1(*)
-
-      integer k, i
-      double precision tr2, ti2
-
-      if (ido .gt. 2) go to 102
-      do 101 k=1,l1
-         ch(1,k,1) = cc(1,1,k)+cc(1,2,k)
-         ch(1,k,2) = cc(1,1,k)-cc(1,2,k)
-         ch(2,k,1) = cc(2,1,k)+cc(2,2,k)
-         ch(2,k,2) = cc(2,1,k)-cc(2,2,k)
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ch(i-1,k,1) = cc(i-1,1,k)+cc(i-1,2,k)
-            tr2 = cc(i-1,1,k)-cc(i-1,2,k)
-            ch(i,k,1) = cc(i,1,k)+cc(i,2,k)
-            ti2 = cc(i,1,k)-cc(i,2,k)
-            ch(i,k,2) = wa1(i-1)*ti2+wa1(i)*tr2
-            ch(i-1,k,2) = wa1(i-1)*tr2-wa1(i)*ti2
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassb3 (ido,l1,cc,ch,wa1,wa2)
-
-      integer ido, l1
-      double precision cc(ido,3,l1), ch(ido,l1,3), wa1(*), wa2(*)
-
-      integer k, i
-      double precision tr2, ti2, cr2, ci2, cr3, ci3, dr2, di2
-      double precision dr3, di3, taur, taui
-
-      data taur,taui /-.5,.866025403784439/
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         tr2 = cc(1,2,k)+cc(1,3,k)
-         cr2 = cc(1,1,k)+taur*tr2
-         ch(1,k,1) = cc(1,1,k)+tr2
-         ti2 = cc(2,2,k)+cc(2,3,k)
-         ci2 = cc(2,1,k)+taur*ti2
-         ch(2,k,1) = cc(2,1,k)+ti2
-         cr3 = taui*(cc(1,2,k)-cc(1,3,k))
-         ci3 = taui*(cc(2,2,k)-cc(2,3,k))
-         ch(1,k,2) = cr2-ci3
-         ch(1,k,3) = cr2+ci3
-         ch(2,k,2) = ci2+cr3
-         ch(2,k,3) = ci2-cr3
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            tr2 = cc(i-1,2,k)+cc(i-1,3,k)
-            cr2 = cc(i-1,1,k)+taur*tr2
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2
-            ti2 = cc(i,2,k)+cc(i,3,k)
-            ci2 = cc(i,1,k)+taur*ti2
-            ch(i,k,1) = cc(i,1,k)+ti2
-            cr3 = taui*(cc(i-1,2,k)-cc(i-1,3,k))
-            ci3 = taui*(cc(i,2,k)-cc(i,3,k))
-            dr2 = cr2-ci3
-            dr3 = cr2+ci3
-            di2 = ci2+cr3
-            di3 = ci2-cr3
-            ch(i,k,2) = wa1(i-1)*di2+wa1(i)*dr2
-            ch(i-1,k,2) = wa1(i-1)*dr2-wa1(i)*di2
-            ch(i,k,3) = wa2(i-1)*di3+wa2(i)*dr3
-            ch(i-1,k,3) = wa2(i-1)*dr3-wa2(i)*di3
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassb4 (ido,l1,cc,ch,wa1,wa2,wa3)
-
-      integer ido, l1
-      double precision cc(ido,4,l1), ch(ido,l1,4)
-      double precision wa1(*), wa2(*), wa3(*)
-                 
-      integer k, i
-      double precision cr2, ci2, cr3, ci3, cr4, ci4, tr1, ti1
-      double precision tr2, ti2, tr3, ti3, tr4, ti4
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         ti1 = cc(2,1,k)-cc(2,3,k)
-         ti2 = cc(2,1,k)+cc(2,3,k)
-         tr4 = cc(2,4,k)-cc(2,2,k)
-         ti3 = cc(2,2,k)+cc(2,4,k)
-         tr1 = cc(1,1,k)-cc(1,3,k)
-         tr2 = cc(1,1,k)+cc(1,3,k)
-         ti4 = cc(1,2,k)-cc(1,4,k)
-         tr3 = cc(1,2,k)+cc(1,4,k)
-         ch(1,k,1) = tr2+tr3
-         ch(1,k,3) = tr2-tr3
-         ch(2,k,1) = ti2+ti3
-         ch(2,k,3) = ti2-ti3
-         ch(1,k,2) = tr1+tr4
-         ch(1,k,4) = tr1-tr4
-         ch(2,k,2) = ti1+ti4
-         ch(2,k,4) = ti1-ti4
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ti1 = cc(i,1,k)-cc(i,3,k)
-            ti2 = cc(i,1,k)+cc(i,3,k)
-            ti3 = cc(i,2,k)+cc(i,4,k)
-            tr4 = cc(i,4,k)-cc(i,2,k)
-            tr1 = cc(i-1,1,k)-cc(i-1,3,k)
-            tr2 = cc(i-1,1,k)+cc(i-1,3,k)
-            ti4 = cc(i-1,2,k)-cc(i-1,4,k)
-            tr3 = cc(i-1,2,k)+cc(i-1,4,k)
-            ch(i-1,k,1) = tr2+tr3
-            cr3 = tr2-tr3
-            ch(i,k,1) = ti2+ti3
-            ci3 = ti2-ti3
-            cr2 = tr1+tr4
-            cr4 = tr1-tr4
-            ci2 = ti1+ti4
-            ci4 = ti1-ti4
-            ch(i-1,k,2) = wa1(i-1)*cr2-wa1(i)*ci2
-            ch(i,k,2) = wa1(i-1)*ci2+wa1(i)*cr2
-            ch(i-1,k,3) = wa2(i-1)*cr3-wa2(i)*ci3
-            ch(i,k,3) = wa2(i-1)*ci3+wa2(i)*cr3
-            ch(i-1,k,4) = wa3(i-1)*cr4-wa3(i)*ci4
-            ch(i,k,4) = wa3(i-1)*ci4+wa3(i)*cr4
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine dpassb5 (ido,l1,cc,ch,wa1,wa2,wa3,wa4)
-
-      integer ido, l1
-      double precision cc(ido,5,l1), ch(ido,l1,5)
-      double precision wa1(*), wa2(*), wa3(*), wa4(*)
-           
-      integer k, i
-      double precision cr2, ci2, cr3, ci3, cr4, ci4, cr5, ci5
-      double precision  tr2, ti2, tr3, ti3
-      double precision tr4, ti4, tr5, ti5, tr11, ti11, tr12, ti12
-      double precision dr2, di2, dr3, di3, dr4, di4, dr5, di5
-
-      data tr11,ti11,tr12,ti12 /.309016994374947,.951056516295154,
-     1-.809016994374947,.587785252292473/
-
-      if (ido .ne. 2) go to 102
-      do 101 k=1,l1
-         ti5 = cc(2,2,k)-cc(2,5,k)
-         ti2 = cc(2,2,k)+cc(2,5,k)
-         ti4 = cc(2,3,k)-cc(2,4,k)
-         ti3 = cc(2,3,k)+cc(2,4,k)
-         tr5 = cc(1,2,k)-cc(1,5,k)
-         tr2 = cc(1,2,k)+cc(1,5,k)
-         tr4 = cc(1,3,k)-cc(1,4,k)
-         tr3 = cc(1,3,k)+cc(1,4,k)
-         ch(1,k,1) = cc(1,1,k)+tr2+tr3
-         ch(2,k,1) = cc(2,1,k)+ti2+ti3
-         cr2 = cc(1,1,k)+tr11*tr2+tr12*tr3
-         ci2 = cc(2,1,k)+tr11*ti2+tr12*ti3
-         cr3 = cc(1,1,k)+tr12*tr2+tr11*tr3
-         ci3 = cc(2,1,k)+tr12*ti2+tr11*ti3
-         cr5 = ti11*tr5+ti12*tr4
-         ci5 = ti11*ti5+ti12*ti4
-         cr4 = ti12*tr5-ti11*tr4
-         ci4 = ti12*ti5-ti11*ti4
-         ch(1,k,2) = cr2-ci5
-         ch(1,k,5) = cr2+ci5
-         ch(2,k,2) = ci2+cr5
-         ch(2,k,3) = ci3+cr4
-         ch(1,k,3) = cr3-ci4
-         ch(1,k,4) = cr3+ci4
-         ch(2,k,4) = ci3-cr4
-         ch(2,k,5) = ci2-cr5
-  101 continue
-      return
-  102 do 104 k=1,l1
-         do 103 i=2,ido,2
-            ti5 = cc(i,2,k)-cc(i,5,k)
-            ti2 = cc(i,2,k)+cc(i,5,k)
-            ti4 = cc(i,3,k)-cc(i,4,k)
-            ti3 = cc(i,3,k)+cc(i,4,k)
-            tr5 = cc(i-1,2,k)-cc(i-1,5,k)
-            tr2 = cc(i-1,2,k)+cc(i-1,5,k)
-            tr4 = cc(i-1,3,k)-cc(i-1,4,k)
-            tr3 = cc(i-1,3,k)+cc(i-1,4,k)
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2+tr3
-            ch(i,k,1) = cc(i,1,k)+ti2+ti3
-            cr2 = cc(i-1,1,k)+tr11*tr2+tr12*tr3
-            ci2 = cc(i,1,k)+tr11*ti2+tr12*ti3
-            cr3 = cc(i-1,1,k)+tr12*tr2+tr11*tr3
-            ci3 = cc(i,1,k)+tr12*ti2+tr11*ti3
-            cr5 = ti11*tr5+ti12*tr4
-            ci5 = ti11*ti5+ti12*ti4
-            cr4 = ti12*tr5-ti11*tr4
-            ci4 = ti12*ti5-ti11*ti4
-            dr3 = cr3-ci4
-            dr4 = cr3+ci4
-            di3 = ci3+cr4
-            di4 = ci3-cr4
-            dr5 = cr2+ci5
-            dr2 = cr2-ci5
-            di5 = ci2-cr5
-            di2 = ci2+cr5
-            ch(i-1,k,2) = wa1(i-1)*dr2-wa1(i)*di2
-            ch(i,k,2) = wa1(i-1)*di2+wa1(i)*dr2
-            ch(i-1,k,3) = wa2(i-1)*dr3-wa2(i)*di3
-            ch(i,k,3) = wa2(i-1)*di3+wa2(i)*dr3
-            ch(i-1,k,4) = wa3(i-1)*dr4-wa3(i)*di4
-            ch(i,k,4) = wa3(i-1)*di4+wa3(i)*dr4
-            ch(i-1,k,5) = wa4(i-1)*dr5-wa4(i)*di5
-            ch(i,k,5) = wa4(i-1)*di5+wa4(i)*dr5
-  103    continue
-  104 continue
-      return
-      end
-
-      subroutine drffti (n,wsave)
-
-      integer n
-      double precision wsave(*)
-
-      if (n .eq. 1) return
-      call drffti1 (n,wsave(n+1),wsave(2*n+1))
-      return
-      end
-
-      subroutine drffti1 (n,wa,ifac)
-
-      integer n, ifac(*) 
-      double precision wa(*)
-
-      integer nl, nf, j, ntry, nq, nr, i, ib, is, nfm1, l1, k1, ip
-      integer ld, l2, ido, ipm, ii
-
-      double precision ntryh(4), tpi, argh, argld, fi, arg
-
-      data ntryh(1),ntryh(2),ntryh(3),ntryh(4)/4,2,3,5/
-
-      nl = n
-      nf = 0
-      j = 0
-  101 j = j+1
-      if (j-4) 102,102,103
-  102 ntry = ntryh(j)
-      go to 104
-  103 ntry = ntry+2
-  104 nq = nl/ntry
-      nr = nl-ntry*nq
-      if (nr) 101,105,101
-  105 nf = nf+1
-      ifac(nf+2) = ntry
-      nl = nq
-      if (ntry .ne. 2) go to 107
-      if (nf .eq. 1) go to 107
-      do 106 i=2,nf
-         ib = nf-i+2
-         ifac(ib+2) = ifac(ib+1)
-  106 continue
-      ifac(3) = 2
-  107 if (nl .ne. 1) go to 104                
-      ifac(1) = n
-      ifac(2) = nf
-      tpi = 6.28318530717959D0
-      argh = tpi/float(n)
-      is = 0
-      nfm1 = nf-1
-      l1 = 1
-      if (nfm1 .eq. 0) return
-      do 110 k1=1,nfm1
-         ip = ifac(k1+2)
-         ld = 0
-         l2 = l1*ip
-         ido = n/l2
-         ipm = ip-1
-         do 109 j=1,ipm
-            ld = ld+l1
-            i = is
-            argld = float(ld)*argh
-            fi = 0.
-            do 108 ii=3,ido,2
-               i = i+2
-               fi = fi+1.
-               arg = fi*argld
-               wa(i-1) = cos(arg)
-               wa(i) = sin(arg)
-  108       continue
-            is = is+ido
-  109    continue
-         l1 = l2
-  110 continue
-      return
-      end
-
-      subroutine drfftf (n,r,wsave)
-
-      integer n
-      double precision r(*), wsave(*)
-      logical dzerochk
-
-      if (n .eq. 1) return
-      if (dzerochk(n,r)) return
-      call drfftf1 (n,r,wsave,wsave(n+1),wsave(2*n+1))
-      return
-      end
-
-      subroutine drfftf1 (n,c,ch,wa,ifac)
-
-      integer n, ifac(*)
-      double precision       ch(*)      ,c(*)       ,wa(*)
-
-      integer nf, na, l2, iw, k1, kh, ip, l1, ido, idl1, ix2, ix3
-      integer ix4, i
-
-      nf = ifac(2)
-      na = 1
-      l2 = n
-      iw = n
-      do 111 k1=1,nf
-         kh = nf-k1
-         ip = ifac(kh+3)
-         l1 = l2/ip
-         ido = n/l2
-         idl1 = ido*l1
-         iw = iw-(ip-1)*ido
-         na = 1-na
-         if (ip .ne. 4) go to 102
-         ix2 = iw+ido
-         ix3 = ix2+ido
-         if (na .ne. 0) go to 101
-         call dradf4 (ido,l1,c,ch,wa(iw),wa(ix2),wa(ix3))
-         go to 110
-  101    call dradf4 (ido,l1,ch,c,wa(iw),wa(ix2),wa(ix3))
-         go to 110
-  102    if (ip .ne. 2) go to 104
-         if (na .ne. 0) go to 103
-         call dradf2 (ido,l1,c,ch,wa(iw))
-         go to 110
-  103    call dradf2 (ido,l1,ch,c,wa(iw))
-         go to 110
-  104    if (ip .ne. 3) go to 106
-         ix2 = iw+ido
-         if (na .ne. 0) go to 105
-         call dradf3 (ido,l1,c,ch,wa(iw),wa(ix2))
-         go to 110
-  105    call dradf3 (ido,l1,ch,c,wa(iw),wa(ix2))
-         go to 110
-  106    if (ip .ne. 5) go to 108
-         ix2 = iw+ido
-         ix3 = ix2+ido
-         ix4 = ix3+ido
-         if (na .ne. 0) go to 107
-         call dradf5 (ido,l1,c,ch,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-         go to 110
-  107    call dradf5 (ido,l1,ch,c,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-         go to 110
-  108    if (ido .eq. 1) na = 1-na
-         if (na .ne. 0) go to 109
-         call dradfg (ido,ip,l1,idl1,c,c,c,ch,ch,wa(iw))
-         na = 1
-         go to 110
-  109    call dradfg (ido,ip,l1,idl1,ch,ch,ch,c,c,wa(iw))
-         na = 0
-  110    l2 = l1
-  111 continue
-      if (na .eq. 1) return
-      do 112 i=1,n
-         c(i) = ch(i)
-  112 continue
-      return
-      end
-
-      subroutine drfftb (n,r,wsave)
-
-      integer n
-      double precision       r(*)       ,wsave(*)
-      logical dzerochk
-
-      if (n .eq. 1) return
-      if (dzerochk(n,r)) return
-      call drfftb1 (n,r,wsave,wsave(n+1),wsave(2*n+1))
-      return
-      end
-
-      subroutine drfftb1 (n,c,ch,wa,ifac)
-
-      integer n, ifac(*)
-      double precision       ch(*)      ,c(*)       ,wa(*)
-
-      integer nf, na, l1, l2, i, iw, k1, ip, ido, idl1, ix2, ix3, ix4
-
-      nf = ifac(2)
-      na = 0
-      l1 = 1
-      iw = 1
-      do 116 k1=1,nf
-         ip = ifac(k1+2)
-         l2 = ip*l1
-         ido = n/l2
-         idl1 = ido*l1
-         if (ip .ne. 4) go to 103
-         ix2 = iw+ido
-         ix3 = ix2+ido
-         if (na .ne. 0) go to 101
-         call dradb4 (ido,l1,c,ch,wa(iw),wa(ix2),wa(ix3))
-         go to 102
-  101    call dradb4 (ido,l1,ch,c,wa(iw),wa(ix2),wa(ix3))
-  102    na = 1-na
-         go to 115
-  103    if (ip .ne. 2) go to 106
-         if (na .ne. 0) go to 104
-         call dradb2 (ido,l1,c,ch,wa(iw))
-         go to 105
-  104    call dradb2 (ido,l1,ch,c,wa(iw))
-  105    na = 1-na
-         go to 115
-  106    if (ip .ne. 3) go to 109
-         ix2 = iw+ido
-         if (na .ne. 0) go to 107
-         call dradb3 (ido,l1,c,ch,wa(iw),wa(ix2))
-         go to 108
-  107    call dradb3 (ido,l1,ch,c,wa(iw),wa(ix2))
-  108    na = 1-na
-         go to 115
-  109    if (ip .ne. 5) go to 112
-         ix2 = iw+ido
-         ix3 = ix2+ido
-         ix4 = ix3+ido
-         if (na .ne. 0) go to 110
-         call dradb5 (ido,l1,c,ch,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-         go to 111
-  110    call dradb5 (ido,l1,ch,c,wa(iw),wa(ix2),wa(ix3),wa(ix4))
-  111    na = 1-na
-         go to 115
-  112    if (na .ne. 0) go to 113
-         call dradbg (ido,ip,l1,idl1,c,c,c,ch,ch,wa(iw))
-         go to 114
-  113    call dradbg (ido,ip,l1,idl1,ch,ch,ch,c,c,wa(iw))
-  114    if (ido .eq. 1) na = 1-na
-  115    l1 = l2
-         iw = iw+(ip-1)*ido
-  116 continue
-      if (na .eq. 0) return
-      do 117 i=1,n
-         c(i) = ch(i)
-  117 continue
-      return
-      end
-
-      subroutine dradf2 (ido,l1,cc,ch,wa1)
-
-      integer ido, l1
-      double precision ch(ido,2,l1), cc(ido,l1,2), wa1(*)
-
-      integer k, idp2, i, ic
-      double precision tr2, ti2
-
-      do 101 k=1,l1
-         ch(1,1,k) = cc(1,k,1)+cc(1,k,2)
-         ch(ido,2,k) = cc(1,k,1)-cc(1,k,2)
-  101 continue
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
-      do 104 k=1,l1
-         do 103 i=3,ido,2
-            ic = idp2-i
-            tr2 = wa1(i-2)*cc(i-1,k,2)+wa1(i-1)*cc(i,k,2)
-            ti2 = wa1(i-2)*cc(i,k,2)-wa1(i-1)*cc(i-1,k,2)
-            ch(i,1,k) = cc(i,k,1)+ti2
-            ch(ic,2,k) = ti2-cc(i,k,1)
-            ch(i-1,1,k) = cc(i-1,k,1)+tr2
-            ch(ic-1,2,k) = cc(i-1,k,1)-tr2
-  103    continue
-  104 continue
-      if (mod(ido,2) .eq. 1) return
-  105 do 106 k=1,l1
-         ch(1,2,k) = -cc(ido,k,2)
-         ch(ido,1,k) = cc(ido,k,1)
-  106 continue
-  107 return
-      end
-
-      subroutine dradf3 (ido,l1,cc,ch,wa1,wa2)
-
-      integer ido, l1
-      double precision ch(ido,3,l1), cc(ido,l1,3), wa1(*), wa2(*)
-
-      integer k, idp2, i, ic
-      double precision cr2, ci2, dr2, di2, dr3, di3, tr2, ti2
-      double precision tr3, ti3, taur, taui
-
-      data taur,taui /-.5,.866025403784439/
-
-      do 101 k=1,l1
-         cr2 = cc(1,k,2)+cc(1,k,3)
-         ch(1,1,k) = cc(1,k,1)+cr2
-         ch(1,3,k) = taui*(cc(1,k,3)-cc(1,k,2))
-         ch(ido,2,k) = cc(1,k,1)+taur*cr2
-  101 continue
-      if (ido .eq. 1) return
-      idp2 = ido+2
-      do 103 k=1,l1
-         do 102 i=3,ido,2
-            ic = idp2-i
-            dr2 = wa1(i-2)*cc(i-1,k,2)+wa1(i-1)*cc(i,k,2)
-            di2 = wa1(i-2)*cc(i,k,2)-wa1(i-1)*cc(i-1,k,2)
-            dr3 = wa2(i-2)*cc(i-1,k,3)+wa2(i-1)*cc(i,k,3)
-            di3 = wa2(i-2)*cc(i,k,3)-wa2(i-1)*cc(i-1,k,3)
-            cr2 = dr2+dr3
-            ci2 = di2+di3
-            ch(i-1,1,k) = cc(i-1,k,1)+cr2
-            ch(i,1,k) = cc(i,k,1)+ci2
-            tr2 = cc(i-1,k,1)+taur*cr2
-            ti2 = cc(i,k,1)+taur*ci2
-            tr3 = taui*(di2-di3)
-            ti3 = taui*(dr3-dr2)
-            ch(i-1,3,k) = tr2+tr3
-            ch(ic-1,2,k) = tr2-tr3
-            ch(i,3,k) = ti2+ti3
-            ch(ic,2,k) = ti3-ti2
-  102    continue
-  103 continue
-      return
-      end
-
-      subroutine dradf4 (ido,l1,cc,ch,wa1,wa2,wa3)
-
-      integer ido, l1
-      double precision cc(ido,l1,4), ch(ido,4,l1)
-      double precision wa1(*), wa2(*), wa3(*)
-
-      integer k, idp2, i, ic
-      double precision tr1, ti1, tr2, ti2, tr3, ti3, tr4, ti4
-      double precision cr2, ci2, cr3, ci3, cr4, ci4, hsqt2
-
-      data hsqt2 /.7071067811865475/
-
-      do 101 k=1,l1
-         tr1 = cc(1,k,2)+cc(1,k,4)
-         tr2 = cc(1,k,1)+cc(1,k,3)
-         ch(1,1,k) = tr1+tr2
-         ch(ido,4,k) = tr2-tr1
-         ch(ido,2,k) = cc(1,k,1)-cc(1,k,3)
-         ch(1,3,k) = cc(1,k,4)-cc(1,k,2)
-  101 continue
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
-      do 104 k=1,l1
-         do 103 i=3,ido,2
-            ic = idp2-i
-            cr2 = wa1(i-2)*cc(i-1,k,2)+wa1(i-1)*cc(i,k,2)
-            ci2 = wa1(i-2)*cc(i,k,2)-wa1(i-1)*cc(i-1,k,2)
-            cr3 = wa2(i-2)*cc(i-1,k,3)+wa2(i-1)*cc(i,k,3)
-            ci3 = wa2(i-2)*cc(i,k,3)-wa2(i-1)*cc(i-1,k,3)
-            cr4 = wa3(i-2)*cc(i-1,k,4)+wa3(i-1)*cc(i,k,4)
-            ci4 = wa3(i-2)*cc(i,k,4)-wa3(i-1)*cc(i-1,k,4)
-            tr1 = cr2+cr4
-            tr4 = cr4-cr2
-            ti1 = ci2+ci4
-            ti4 = ci2-ci4
-            ti2 = cc(i,k,1)+ci3
-            ti3 = cc(i,k,1)-ci3
-            tr2 = cc(i-1,k,1)+cr3
-            tr3 = cc(i-1,k,1)-cr3
-            ch(i-1,1,k) = tr1+tr2
-            ch(ic-1,4,k) = tr2-tr1
-            ch(i,1,k) = ti1+ti2
-            ch(ic,4,k) = ti1-ti2
-            ch(i-1,3,k) = ti4+tr3
-            ch(ic-1,2,k) = tr3-ti4
-            ch(i,3,k) = tr4+ti3
-            ch(ic,2,k) = tr4-ti3
-  103    continue
-  104 continue
-      if (mod(ido,2) .eq. 1) return
-  105 continue
-      do 106 k=1,l1
-         ti1 = -hsqt2*(cc(ido,k,2)+cc(ido,k,4))
-         tr1 = hsqt2*(cc(ido,k,2)-cc(ido,k,4))
-         ch(ido,1,k) = tr1+cc(ido,k,1)
-         ch(ido,3,k) = cc(ido,k,1)-tr1
-         ch(1,2,k) = ti1-cc(ido,k,3)
-         ch(1,4,k) = ti1+cc(ido,k,3)
-  106 continue
-  107 return
-      end
-
-      subroutine dradf5 (ido,l1,cc,ch,wa1,wa2,wa3,wa4)
-
-      integer ido, l1
-      double precision cc(ido,l1,5), ch(ido,5,l1)
-      double precision wa1(*), wa2(*), wa3(*), wa4(*)
-
-      integer k, idp2, i, ic
-      double precision dr2, di2, dr3, di3, dr4, di4, dr5, di5
-      double precision cr2, ci2, cr3, ci3
-      double precision cr4, ci4, cr5, ci5, tr2, ti2, tr3, ti3
-      double precision tr4, ti4, tr5, ti5
-      double precision tr11, ti11, tr12, ti12
-
-      data tr11,ti11,tr12,ti12 /.309016994374947,.951056516295154,
-     1-.809016994374947,.587785252292473/
-
-      do 101 k=1,l1
-         cr2 = cc(1,k,5)+cc(1,k,2)
-         ci5 = cc(1,k,5)-cc(1,k,2)
-         cr3 = cc(1,k,4)+cc(1,k,3)
-         ci4 = cc(1,k,4)-cc(1,k,3)
-         ch(1,1,k) = cc(1,k,1)+cr2+cr3
-         ch(ido,2,k) = cc(1,k,1)+tr11*cr2+tr12*cr3
-         ch(1,3,k) = ti11*ci5+ti12*ci4
-         ch(ido,4,k) = cc(1,k,1)+tr12*cr2+tr11*cr3
-         ch(1,5,k) = ti12*ci5-ti11*ci4
-  101 continue
-      if (ido .eq. 1) return
-      idp2 = ido+2
-      do 103 k=1,l1
-         do 102 i=3,ido,2
-            ic = idp2-i
-            dr2 = wa1(i-2)*cc(i-1,k,2)+wa1(i-1)*cc(i,k,2)
-            di2 = wa1(i-2)*cc(i,k,2)-wa1(i-1)*cc(i-1,k,2)
-            dr3 = wa2(i-2)*cc(i-1,k,3)+wa2(i-1)*cc(i,k,3)
-            di3 = wa2(i-2)*cc(i,k,3)-wa2(i-1)*cc(i-1,k,3)
-            dr4 = wa3(i-2)*cc(i-1,k,4)+wa3(i-1)*cc(i,k,4)
-            di4 = wa3(i-2)*cc(i,k,4)-wa3(i-1)*cc(i-1,k,4)
-            dr5 = wa4(i-2)*cc(i-1,k,5)+wa4(i-1)*cc(i,k,5)
-            di5 = wa4(i-2)*cc(i,k,5)-wa4(i-1)*cc(i-1,k,5)
-            cr2 = dr2+dr5
-            ci5 = dr5-dr2
-            cr5 = di2-di5
-            ci2 = di2+di5
-            cr3 = dr3+dr4
-            ci4 = dr4-dr3
-            cr4 = di3-di4
-            ci3 = di3+di4
-            ch(i-1,1,k) = cc(i-1,k,1)+cr2+cr3
-            ch(i,1,k) = cc(i,k,1)+ci2+ci3
-            tr2 = cc(i-1,k,1)+tr11*cr2+tr12*cr3
-            ti2 = cc(i,k,1)+tr11*ci2+tr12*ci3
-            tr3 = cc(i-1,k,1)+tr12*cr2+tr11*cr3
-            ti3 = cc(i,k,1)+tr12*ci2+tr11*ci3
-            tr5 = ti11*cr5+ti12*cr4
-            ti5 = ti11*ci5+ti12*ci4
-            tr4 = ti12*cr5-ti11*cr4
-            ti4 = ti12*ci5-ti11*ci4
-            ch(i-1,3,k) = tr2+tr5
-            ch(ic-1,2,k) = tr2-tr5
-            ch(i,3,k) = ti2+ti5
-            ch(ic,2,k) = ti5-ti2
-            ch(i-1,5,k) = tr3+tr4
-            ch(ic-1,4,k) = tr3-tr4
-            ch(i,5,k) = ti3+ti4
-            ch(ic,4,k) = ti4-ti3
-  102    continue
-  103 continue
-      return
-      end
-
-      subroutine dradfg (ido,ip,l1,idl1,cc,c1,c2,ch,ch2,wa)
-
-      integer ido, ip, l1, idl1
-      double precision ch(ido,l1,ip), cc(ido,ip,l1), c1(ido,l1,ip)
-      double precision c2(idl1,ip), ch2(idl1,ip), wa(*)
-
-      integer ipph, ipp2, idp2, nbd, ik, j, k, is, idij, i, jc, l, lc
-      integer j2, ic
-      double precision arg, tpi, dcp, dsp, ar1, ai1, ar1h
-      double precision ar2, ai2, ar2h, dc2, ds2
-
-      data tpi/6.28318530717959D0/
-
-      arg = tpi/float(ip)
-      dcp = cos(arg)
-      dsp = sin(arg)
-      ipph = (ip+1)/2
-      ipp2 = ip+2
-      idp2 = ido+2
-      nbd = (ido-1)/2
-      if (ido .eq. 1) go to 119
-      do 101 ik=1,idl1
-         ch2(ik,1) = c2(ik,1)
-  101 continue
-      do 103 j=2,ip
-         do 102 k=1,l1
-            ch(1,k,j) = c1(1,k,j)
-  102    continue
-  103 continue
-      if (nbd .gt. l1) go to 107
-      is = -ido
-      do 106 j=2,ip
-         is = is+ido
-         idij = is
-         do 105 i=3,ido,2
-            idij = idij+2
-            do 104 k=1,l1
-               ch(i-1,k,j) = wa(idij-1)*c1(i-1,k,j)+wa(idij)*c1(i,k,j)
-               ch(i,k,j) = wa(idij-1)*c1(i,k,j)-wa(idij)*c1(i-1,k,j)
-  104       continue
-  105    continue
-  106 continue
-      go to 111
-  107 is = -ido
-      do 110 j=2,ip
-         is = is+ido
-         do 109 k=1,l1
-            idij = is
-            do 108 i=3,ido,2
-               idij = idij+2
-               ch(i-1,k,j) = wa(idij-1)*c1(i-1,k,j)+wa(idij)*c1(i,k,j)
-               ch(i,k,j) = wa(idij-1)*c1(i,k,j)-wa(idij)*c1(i-1,k,j)
-  108       continue
-  109    continue
-  110 continue
-  111 if (nbd .lt. l1) go to 115
-      do 114 j=2,ipph
-         jc = ipp2-j
-         do 113 k=1,l1
-            do 112 i=3,ido,2
-               c1(i-1,k,j) = ch(i-1,k,j)+ch(i-1,k,jc)
-               c1(i-1,k,jc) = ch(i,k,j)-ch(i,k,jc)
-               c1(i,k,j) = ch(i,k,j)+ch(i,k,jc)
-               c1(i,k,jc) = ch(i-1,k,jc)-ch(i-1,k,j)
-  112       continue
-  113    continue
-  114 continue
-      go to 121
-  115 do 118 j=2,ipph
-         jc = ipp2-j
-         do 117 i=3,ido,2
-            do 116 k=1,l1
-               c1(i-1,k,j) = ch(i-1,k,j)+ch(i-1,k,jc)
-               c1(i-1,k,jc) = ch(i,k,j)-ch(i,k,jc)
-               c1(i,k,j) = ch(i,k,j)+ch(i,k,jc)
-               c1(i,k,jc) = ch(i-1,k,jc)-ch(i-1,k,j)
-  116       continue
-  117    continue
-  118 continue
-      go to 121
-  119 do 120 ik=1,idl1
-         c2(ik,1) = ch2(ik,1)
-  120 continue
-  121 do 123 j=2,ipph
-         jc = ipp2-j
-         do 122 k=1,l1
-            c1(1,k,j) = ch(1,k,j)+ch(1,k,jc)
-            c1(1,k,jc) = ch(1,k,jc)-ch(1,k,j)
-  122    continue
-  123 continue
-c
-      ar1 = 1.
-      ai1 = 0.
-      do 127 l=2,ipph
-         lc = ipp2-l
-         ar1h = dcp*ar1-dsp*ai1
-         ai1 = dcp*ai1+dsp*ar1
-         ar1 = ar1h
-         do 124 ik=1,idl1
-            ch2(ik,l) = c2(ik,1)+ar1*c2(ik,2)
-            ch2(ik,lc) = ai1*c2(ik,ip)
-  124    continue
-         dc2 = ar1
-         ds2 = ai1
-         ar2 = ar1
-         ai2 = ai1
-         do 126 j=3,ipph
-            jc = ipp2-j
-            ar2h = dc2*ar2-ds2*ai2
-            ai2 = dc2*ai2+ds2*ar2
-            ar2 = ar2h
-            do 125 ik=1,idl1
-               ch2(ik,l) = ch2(ik,l)+ar2*c2(ik,j)
-               ch2(ik,lc) = ch2(ik,lc)+ai2*c2(ik,jc)
-  125       continue
-  126    continue
-  127 continue
-      do 129 j=2,ipph
-         do 128 ik=1,idl1
-            ch2(ik,1) = ch2(ik,1)+c2(ik,j)
-  128    continue
-  129 continue
-c
-      if (ido .lt. l1) go to 132
-      do 131 k=1,l1
-         do 130 i=1,ido
-            cc(i,1,k) = ch(i,k,1)
-  130    continue
-  131 continue
-      go to 135
-  132 do 134 i=1,ido
-         do 133 k=1,l1
-            cc(i,1,k) = ch(i,k,1)
-  133    continue
-  134 continue
-  135 do 137 j=2,ipph
-         jc = ipp2-j
-         j2 = j+j
-         do 136 k=1,l1
-            cc(ido,j2-2,k) = ch(1,k,j)
-            cc(1,j2-1,k) = ch(1,k,jc)
-  136    continue
-  137 continue
-      if (ido .eq. 1) return
-      if (nbd .lt. l1) go to 141
-      do 140 j=2,ipph
-         jc = ipp2-j
-         j2 = j+j
-         do 139 k=1,l1
-            do 138 i=3,ido,2
-               ic = idp2-i
-               cc(i-1,j2-1,k) = ch(i-1,k,j)+ch(i-1,k,jc)
-               cc(ic-1,j2-2,k) = ch(i-1,k,j)-ch(i-1,k,jc)
-               cc(i,j2-1,k) = ch(i,k,j)+ch(i,k,jc)
-               cc(ic,j2-2,k) = ch(i,k,jc)-ch(i,k,j)
-  138       continue
-  139    continue
-  140 continue
-      return
-  141 do 144 j=2,ipph
-         jc = ipp2-j
-         j2 = j+j
-         do 143 i=3,ido,2
-            ic = idp2-i
-            do 142 k=1,l1
-               cc(i-1,j2-1,k) = ch(i-1,k,j)+ch(i-1,k,jc)
-               cc(ic-1,j2-2,k) = ch(i-1,k,j)-ch(i-1,k,jc)
-               cc(i,j2-1,k) = ch(i,k,j)+ch(i,k,jc)
-               cc(ic,j2-2,k) = ch(i,k,jc)-ch(i,k,j)
-  142       continue
-  143    continue
-  144 continue
-      return
-      end
-
-      subroutine dradb2 (ido,l1,cc,ch,wa1)
-
-      integer ido, l1
-      double precision cc(ido,2,l1), ch(ido,l1,2), wa1(*)
-                      
-      integer k, idp2, i, ic
-      double precision tr2, ti2
-
-      do 101 k=1,l1
-         ch(1,k,1) = cc(1,1,k)+cc(ido,2,k)
-         ch(1,k,2) = cc(1,1,k)-cc(ido,2,k)
-  101 continue
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
-      do 104 k=1,l1
-         do 103 i=3,ido,2
-            ic = idp2-i
-            ch(i-1,k,1) = cc(i-1,1,k)+cc(ic-1,2,k)
-            tr2 = cc(i-1,1,k)-cc(ic-1,2,k)
-            ch(i,k,1) = cc(i,1,k)-cc(ic,2,k)
-            ti2 = cc(i,1,k)+cc(ic,2,k)
-            ch(i-1,k,2) = wa1(i-2)*tr2-wa1(i-1)*ti2
-            ch(i,k,2) = wa1(i-2)*ti2+wa1(i-1)*tr2
-  103    continue
-  104 continue
-      if (mod(ido,2) .eq. 1) return
-  105 do 106 k=1,l1
-         ch(ido,k,1) = cc(ido,1,k)+cc(ido,1,k)
-         ch(ido,k,2) = -(cc(1,2,k)+cc(1,2,k))
-  106 continue
-  107 return
-      end
-
-      subroutine dradb3 (ido,l1,cc,ch,wa1,wa2)
-
-      integer ido, l1
-      double precision cc(ido,3,l1), ch(ido,l1,3), wa1(*), wa2(*)
-
-      integer k, idp2, i, ic
-      double precision tr2, ti2, cr2, ci2, cr3, ci3, dr2, di2
-      double precision dr3, di3, taur, taui
-
-      data taur,taui /-.5,.866025403784439/
-
-      do 101 k=1,l1
-         tr2 = cc(ido,2,k)+cc(ido,2,k)
-         cr2 = cc(1,1,k)+taur*tr2
-         ch(1,k,1) = cc(1,1,k)+tr2
-         ci3 = taui*(cc(1,3,k)+cc(1,3,k))
-         ch(1,k,2) = cr2-ci3
-         ch(1,k,3) = cr2+ci3
-  101 continue
-      if (ido .eq. 1) return
-      idp2 = ido+2
-      do 103 k=1,l1
-         do 102 i=3,ido,2
-            ic = idp2-i
-            tr2 = cc(i-1,3,k)+cc(ic-1,2,k)
-            cr2 = cc(i-1,1,k)+taur*tr2
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2
-            ti2 = cc(i,3,k)-cc(ic,2,k)
-            ci2 = cc(i,1,k)+taur*ti2
-            ch(i,k,1) = cc(i,1,k)+ti2
-            cr3 = taui*(cc(i-1,3,k)-cc(ic-1,2,k))
-            ci3 = taui*(cc(i,3,k)+cc(ic,2,k))
-            dr2 = cr2-ci3
-            dr3 = cr2+ci3
-            di2 = ci2+cr3
-            di3 = ci2-cr3
-            ch(i-1,k,2) = wa1(i-2)*dr2-wa1(i-1)*di2
-            ch(i,k,2) = wa1(i-2)*di2+wa1(i-1)*dr2
-            ch(i-1,k,3) = wa2(i-2)*dr3-wa2(i-1)*di3
-            ch(i,k,3) = wa2(i-2)*di3+wa2(i-1)*dr3
-  102    continue
-  103 continue
-      return
-      end
-
-      subroutine dradb4 (ido,l1,cc,ch,wa1,wa2,wa3)
-
-      integer ido, l1
-      double precision cc(ido,4,l1), ch(ido,l1,4)
-      double precision wa1(*), wa2(*), wa3(*)
-
-      integer k, idp2, i, ic
-      double precision tr1, ti1, tr2, ti2, tr3, ti3, tr4, ti4
-      double precision cr2, ci2, cr3, ci3, cr4, ci4, sqrt2
-
-      data sqrt2 /1.414213562373095/
-
-      do 101 k=1,l1
-         tr1 = cc(1,1,k)-cc(ido,4,k)
-         tr2 = cc(1,1,k)+cc(ido,4,k)
-         tr3 = cc(ido,2,k)+cc(ido,2,k)
-         tr4 = cc(1,3,k)+cc(1,3,k)
-         ch(1,k,1) = tr2+tr3
-         ch(1,k,2) = tr1-tr4
-         ch(1,k,3) = tr2-tr3
-         ch(1,k,4) = tr1+tr4
-  101 continue
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
-      do 104 k=1,l1
-         do 103 i=3,ido,2
-            ic = idp2-i
-            ti1 = cc(i,1,k)+cc(ic,4,k)
-            ti2 = cc(i,1,k)-cc(ic,4,k)
-            ti3 = cc(i,3,k)-cc(ic,2,k)
-            tr4 = cc(i,3,k)+cc(ic,2,k)
-            tr1 = cc(i-1,1,k)-cc(ic-1,4,k)
-            tr2 = cc(i-1,1,k)+cc(ic-1,4,k)
-            ti4 = cc(i-1,3,k)-cc(ic-1,2,k)
-            tr3 = cc(i-1,3,k)+cc(ic-1,2,k)
-            ch(i-1,k,1) = tr2+tr3
-            cr3 = tr2-tr3
-            ch(i,k,1) = ti2+ti3
-            ci3 = ti2-ti3
-            cr2 = tr1-tr4
-            cr4 = tr1+tr4
-            ci2 = ti1+ti4
-            ci4 = ti1-ti4
-            ch(i-1,k,2) = wa1(i-2)*cr2-wa1(i-1)*ci2
-            ch(i,k,2) = wa1(i-2)*ci2+wa1(i-1)*cr2
-            ch(i-1,k,3) = wa2(i-2)*cr3-wa2(i-1)*ci3
-            ch(i,k,3) = wa2(i-2)*ci3+wa2(i-1)*cr3
-            ch(i-1,k,4) = wa3(i-2)*cr4-wa3(i-1)*ci4
-            ch(i,k,4) = wa3(i-2)*ci4+wa3(i-1)*cr4
-  103    continue
-  104 continue
-      if (mod(ido,2) .eq. 1) return
-  105 continue
-      do 106 k=1,l1
-         ti1 = cc(1,2,k)+cc(1,4,k)
-         ti2 = cc(1,4,k)-cc(1,2,k)
-         tr1 = cc(ido,1,k)-cc(ido,3,k)
-         tr2 = cc(ido,1,k)+cc(ido,3,k)
-         ch(ido,k,1) = tr2+tr2
-         ch(ido,k,2) = sqrt2*(tr1-ti1)
-         ch(ido,k,3) = ti2+ti2
-         ch(ido,k,4) = -sqrt2*(tr1+ti1)
-  106 continue
-  107 return
-      end
-
-      subroutine dradb5 (ido,l1,cc,ch,wa1,wa2,wa3,wa4)
-
-      integer ido, l1
-      double precision cc(ido,5,l1), ch(ido,l1,5)
-      double precision wa1(*), wa2(*), wa3(*), wa4(*)
-
-      integer k, idp2, i, ic
-      double precision tr2, ti2, tr3, ti3, tr4, ti4, tr5, ti5
-      double precision cr2, ci2, cr3, ci3
-      double precision cr4, ci4, cr5, ci5, dr2, di2, dr3, di3
-      double precision dr4, di4, dr5, di5
-      double precision tr11, ti11, tr12, ti12
-
-      data tr11,ti11,tr12,ti12 /.309016994374947,.951056516295154,
-     1-.809016994374947,.587785252292473/
-
-      do 101 k=1,l1
-         ti5 = cc(1,3,k)+cc(1,3,k)
-         ti4 = cc(1,5,k)+cc(1,5,k)
-         tr2 = cc(ido,2,k)+cc(ido,2,k)
-         tr3 = cc(ido,4,k)+cc(ido,4,k)
-         ch(1,k,1) = cc(1,1,k)+tr2+tr3
-         cr2 = cc(1,1,k)+tr11*tr2+tr12*tr3
-         cr3 = cc(1,1,k)+tr12*tr2+tr11*tr3
-         ci5 = ti11*ti5+ti12*ti4
-         ci4 = ti12*ti5-ti11*ti4
-         ch(1,k,2) = cr2-ci5
-         ch(1,k,3) = cr3-ci4
-         ch(1,k,4) = cr3+ci4
-         ch(1,k,5) = cr2+ci5
-  101 continue
-      if (ido .eq. 1) return
-      idp2 = ido+2
-      do 103 k=1,l1
-         do 102 i=3,ido,2
-            ic = idp2-i
-            ti5 = cc(i,3,k)+cc(ic,2,k)
-            ti2 = cc(i,3,k)-cc(ic,2,k)
-            ti4 = cc(i,5,k)+cc(ic,4,k)
-            ti3 = cc(i,5,k)-cc(ic,4,k)
-            tr5 = cc(i-1,3,k)-cc(ic-1,2,k)
-            tr2 = cc(i-1,3,k)+cc(ic-1,2,k)
-            tr4 = cc(i-1,5,k)-cc(ic-1,4,k)
-            tr3 = cc(i-1,5,k)+cc(ic-1,4,k)
-            ch(i-1,k,1) = cc(i-1,1,k)+tr2+tr3
-            ch(i,k,1) = cc(i,1,k)+ti2+ti3
-            cr2 = cc(i-1,1,k)+tr11*tr2+tr12*tr3
-            ci2 = cc(i,1,k)+tr11*ti2+tr12*ti3
-            cr3 = cc(i-1,1,k)+tr12*tr2+tr11*tr3
-            ci3 = cc(i,1,k)+tr12*ti2+tr11*ti3
-            cr5 = ti11*tr5+ti12*tr4
-            ci5 = ti11*ti5+ti12*ti4
-            cr4 = ti12*tr5-ti11*tr4
-            ci4 = ti12*ti5-ti11*ti4
-            dr3 = cr3-ci4
-            dr4 = cr3+ci4
-            di3 = ci3+cr4
-            di4 = ci3-cr4
-            dr5 = cr2+ci5
-            dr2 = cr2-ci5
-            di5 = ci2-cr5
-            di2 = ci2+cr5
-            ch(i-1,k,2) = wa1(i-2)*dr2-wa1(i-1)*di2
-            ch(i,k,2) = wa1(i-2)*di2+wa1(i-1)*dr2
-            ch(i-1,k,3) = wa2(i-2)*dr3-wa2(i-1)*di3
-            ch(i,k,3) = wa2(i-2)*di3+wa2(i-1)*dr3
-            ch(i-1,k,4) = wa3(i-2)*dr4-wa3(i-1)*di4
-            ch(i,k,4) = wa3(i-2)*di4+wa3(i-1)*dr4
-            ch(i-1,k,5) = wa4(i-2)*dr5-wa4(i-1)*di5
-            ch(i,k,5) = wa4(i-2)*di5+wa4(i-1)*dr5
-  102    continue
-  103 continue
-      return
-      end
-
-      subroutine dradbg (ido,ip,l1,idl1,cc,c1,c2,ch,ch2,wa)
-
-      integer ido, ip, l1, idl1
-      double precision ch(ido,l1,ip), cc(ido,ip,l1),
-     1                c1(ido,l1,ip)          ,c2(idl1,ip),
-     2                ch2(idl1,ip)           ,wa(*)
-
-      integer idp2, nbd, ipp2, ipph, k, i, j, jc, j2, ic, l, lc, ik
-      integer is, idij
-      double precision arg, tpi, dcp, dsp, ar1, ai1, ar1h, ar2, ai2
-      double precision ar2h, dc2, ds2
-
-      data tpi/6.28318530717959D0/
-
-      arg = tpi/float(ip)
-      dcp = cos(arg)
-      dsp = sin(arg)
-      idp2 = ido+2
-      nbd = (ido-1)/2
-      ipp2 = ip+2
-      ipph = (ip+1)/2
-      if (ido .lt. l1) go to 103
-      do 102 k=1,l1
-         do 101 i=1,ido
-            ch(i,k,1) = cc(i,1,k)
-  101    continue
-  102 continue
-      go to 106
-  103 do 105 i=1,ido
-         do 104 k=1,l1
-            ch(i,k,1) = cc(i,1,k)
-  104    continue
-  105 continue
-  106 do 108 j=2,ipph
-         jc = ipp2-j
-         j2 = j+j
-         do 107 k=1,l1
-            ch(1,k,j) = cc(ido,j2-2,k)+cc(ido,j2-2,k)
-            ch(1,k,jc) = cc(1,j2-1,k)+cc(1,j2-1,k)
-  107    continue
-  108 continue
-      if (ido .eq. 1) go to 116
-      if (nbd .lt. l1) go to 112
-      do 111 j=2,ipph
-         jc = ipp2-j
-         do 110 k=1,l1
-            do 109 i=3,ido,2
-               ic = idp2-i
-               ch(i-1,k,j) = cc(i-1,2*j-1,k)+cc(ic-1,2*j-2,k)
-               ch(i-1,k,jc) = cc(i-1,2*j-1,k)-cc(ic-1,2*j-2,k)
-               ch(i,k,j) = cc(i,2*j-1,k)-cc(ic,2*j-2,k)
-               ch(i,k,jc) = cc(i,2*j-1,k)+cc(ic,2*j-2,k)
-  109       continue
-  110    continue
-  111 continue
-      go to 116
-  112 do 115 j=2,ipph
-         jc = ipp2-j
-         do 114 i=3,ido,2
-            ic = idp2-i
-            do 113 k=1,l1
-               ch(i-1,k,j) = cc(i-1,2*j-1,k)+cc(ic-1,2*j-2,k)
-               ch(i-1,k,jc) = cc(i-1,2*j-1,k)-cc(ic-1,2*j-2,k)
-               ch(i,k,j) = cc(i,2*j-1,k)-cc(ic,2*j-2,k)
-               ch(i,k,jc) = cc(i,2*j-1,k)+cc(ic,2*j-2,k)
-  113       continue
-  114    continue
-  115 continue
-  116 ar1 = 1.
-      ai1 = 0.
-      do 120 l=2,ipph
-         lc = ipp2-l
-         ar1h = dcp*ar1-dsp*ai1
-         ai1 = dcp*ai1+dsp*ar1
-         ar1 = ar1h
-         do 117 ik=1,idl1
-            c2(ik,l) = ch2(ik,1)+ar1*ch2(ik,2)
-            c2(ik,lc) = ai1*ch2(ik,ip)
-  117    continue
-         dc2 = ar1
-         ds2 = ai1
-         ar2 = ar1
-         ai2 = ai1
-         do 119 j=3,ipph
-            jc = ipp2-j
-            ar2h = dc2*ar2-ds2*ai2
-            ai2 = dc2*ai2+ds2*ar2
-            ar2 = ar2h
-            do 118 ik=1,idl1
-               c2(ik,l) = c2(ik,l)+ar2*ch2(ik,j)
-               c2(ik,lc) = c2(ik,lc)+ai2*ch2(ik,jc)
-  118       continue
-  119    continue
-  120 continue
-      do 122 j=2,ipph
-         do 121 ik=1,idl1
-            ch2(ik,1) = ch2(ik,1)+ch2(ik,j)
-  121    continue
-  122 continue
-      do 124 j=2,ipph
-         jc = ipp2-j
-         do 123 k=1,l1
-            ch(1,k,j) = c1(1,k,j)-c1(1,k,jc)
-            ch(1,k,jc) = c1(1,k,j)+c1(1,k,jc)
-  123    continue
-  124 continue
-      if (ido .eq. 1) go to 132
-      if (nbd .lt. l1) go to 128
-      do 127 j=2,ipph
-         jc = ipp2-j
-         do 126 k=1,l1
-            do 125 i=3,ido,2
-               ch(i-1,k,j) = c1(i-1,k,j)-c1(i,k,jc)
-               ch(i-1,k,jc) = c1(i-1,k,j)+c1(i,k,jc)
-               ch(i,k,j) = c1(i,k,j)+c1(i-1,k,jc)
-               ch(i,k,jc) = c1(i,k,j)-c1(i-1,k,jc)
-  125       continue
-  126    continue
-  127 continue
-      go to 132
-  128 do 131 j=2,ipph
-         jc = ipp2-j
-         do 130 i=3,ido,2
-            do 129 k=1,l1
-               ch(i-1,k,j) = c1(i-1,k,j)-c1(i,k,jc)
-               ch(i-1,k,jc) = c1(i-1,k,j)+c1(i,k,jc)
-               ch(i,k,j) = c1(i,k,j)+c1(i-1,k,jc)
-               ch(i,k,jc) = c1(i,k,j)-c1(i-1,k,jc)
-  129       continue
-  130    continue
-  131 continue
-  132 continue
-      if (ido .eq. 1) return
-      do 133 ik=1,idl1
-         c2(ik,1) = ch2(ik,1)
-  133 continue
-      do 135 j=2,ip
-         do 134 k=1,l1
-            c1(1,k,j) = ch(1,k,j)
-  134    continue
-  135 continue
-      if (nbd .gt. l1) go to 139
-      is = -ido
-      do 138 j=2,ip
-         is = is+ido
-         idij = is
-         do 137 i=3,ido,2
-            idij = idij+2
-            do 136 k=1,l1
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)-wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)+wa(idij)*ch(i-1,k,j)
-  136       continue
-  137    continue
-  138 continue
-      go to 143
-  139 is = -ido
-      do 142 j=2,ip
-         is = is+ido
-         do 141 k=1,l1
-            idij = is
-            do 140 i=3,ido,2
-               idij = idij+2
-               c1(i-1,k,j) = wa(idij-1)*ch(i-1,k,j)-wa(idij)*ch(i,k,j)
-               c1(i,k,j) = wa(idij-1)*ch(i,k,j)+wa(idij)*ch(i-1,k,j)
-  140       continue
-  141    continue
-  142 continue
-  143 return
-      end
-
-      logical function dzerochk(n,r)
-      integer n
-      double precision r(*)
-     
-      integer i
-
-      dzerochk = .TRUE.
-      do 100 i = 1,n
-         if (r(i) .NE. 0.0D0) then
-            dzerochk = .FALSE.
-            return
-         endif
-  100 continue
-      return
-      end
+      IW1 = N+N+1
+      IW2 = IW1+N+N
+      CALL DCFTB1 (N,C,WSAVE,WSAVE(IW1),WSAVE(IW2))
+C
+      RETURN
+      END
+      SUBROUTINE DCFTB1 (N,C,CH,WA,IFAC)
+      DOUBLE PRECISION C(1), CH(1), WA(1)
+      INTEGER IFAC(1)
+C
+      NF = IFAC(2)
+      NA = 0
+      L1 = 1
+      IW = 1
+      DO 116 K1=1,NF
+         IP = IFAC(K1+2)
+         L2 = IP*L1
+         IDO = N/L2
+         IDOT = IDO+IDO
+         IDL1 = IDOT*L1
+         IF (IP .NE. 4) GO TO 103
+         IX2 = IW+IDOT
+         IX3 = IX2+IDOT
+         IF (NA .NE. 0) GO TO 101
+         CALL DPSSB4 (IDOT,L1,C,CH,WA(IW),WA(IX2),WA(IX3))
+         GO TO 102
+ 101     CALL DPSSB4 (IDOT,L1,CH,C,WA(IW),WA(IX2),WA(IX3))
+ 102     NA = 1-NA
+         GO TO 115
+C
+ 103     IF (IP .NE. 2) GO TO 106
+         IF (NA .NE. 0) GO TO 104
+         CALL DPSSB2 (IDOT,L1,C,CH,WA(IW))
+         GO TO 105
+ 104     CALL DPSSB2 (IDOT,L1,CH,C,WA(IW))
+ 105     NA = 1-NA
+         GO TO 115
+C
+ 106     IF (IP .NE. 3) GO TO 109
+         IX2 = IW+IDOT
+         IF (NA .NE. 0) GO TO 107
+         CALL DPSSB3 (IDOT,L1,C,CH,WA(IW),WA(IX2))
+         GO TO 108
+ 107     CALL DPSSB3 (IDOT,L1,CH,C,WA(IW),WA(IX2))
+ 108     NA = 1-NA
+         GO TO 115
+C
+ 109     IF (IP .NE. 5) GO TO 112
+         IX2 = IW+IDOT
+         IX3 = IX2+IDOT
+         IX4 = IX3+IDOT
+         IF (NA .NE. 0) GO TO 110
+         CALL DPSSB5 (IDOT,L1,C,CH,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+         GO TO 111
+ 110     CALL DPSSB5 (IDOT,L1,CH,C,WA(IW),WA(IX2),WA(IX3),WA(IX4))
+ 111     NA = 1-NA
+         GO TO 115
+C
+ 112     IF (NA .NE. 0) GO TO 113
+         CALL DPSSB (NAC,IDOT,IP,L1,IDL1,C,C,C,CH,CH,WA(IW))
+         GO TO 114
+ 113     CALL DPSSB (NAC,IDOT,IP,L1,IDL1,CH,CH,CH,C,C,WA(IW))
+ 114     IF (NAC .NE. 0) NA = 1-NA
+C
+ 115     L1 = L2
+         IW = IW+(IP-1)*IDOT
+ 116  CONTINUE
+      IF (NA .EQ. 0) RETURN
+C
+      N2 = N+N
+      DO 117 I=1,N2
+         C(I) = CH(I)
+ 117  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSB (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
+      DOUBLE PRECISION CC(IDO,IP,L1), C1(IDO,L1,IP), C2(IDL1,IP),
+     1     CH(IDO,L1,IP), CH2(IDL1,IP), WA(1), WAI, WAR
+C
+      IDOT = IDO/2
+      NT = IP*IDL1
+      IPP2 = IP+2
+      IPPH = (IP+1)/2
+      IDP = IP*IDO
+C
+      IF (IDO .LT. L1) GO TO 106
+      DO 103 J=2,IPPH
+         JC = IPP2-J
+         DO 102 K=1,L1
+            DO 101 I=1,IDO
+               CH(I,K,J) = CC(I,J,K)+CC(I,JC,K)
+               CH(I,K,JC) = CC(I,J,K)-CC(I,JC,K)
+ 101        CONTINUE
+ 102     CONTINUE
+ 103  CONTINUE
+C
+      DO 105 K=1,L1
+         DO 104 I=1,IDO
+            CH(I,K,1) = CC(I,1,K)
+ 104     CONTINUE
+ 105  CONTINUE
+      GO TO 112
+C
+ 106  DO 109 J=2,IPPH
+         JC = IPP2-J
+         DO 108 I=1,IDO
+            DO 107 K=1,L1
+               CH(I,K,J) = CC(I,J,K)+CC(I,JC,K)
+               CH(I,K,JC) = CC(I,J,K)-CC(I,JC,K)
+ 107        CONTINUE
+ 108     CONTINUE
+ 109  CONTINUE
+C
+      DO 111 I=1,IDO
+         DO 110 K=1,L1
+            CH(I,K,1) = CC(I,1,K)
+ 110     CONTINUE
+ 111  CONTINUE
+C
+ 112  IDL = 2-IDO
+      INC = 0
+      DO 116 L=2,IPPH
+         LC = IPP2-L
+         IDL = IDL+IDO
+         DO 113 IK=1,IDL1
+            C2(IK,L) = CH2(IK,1)+WA(IDL-1)*CH2(IK,2)
+            C2(IK,LC) = WA(IDL)*CH2(IK,IP)
+ 113     CONTINUE
+         IDLJ = IDL
+         INC = INC+IDO
+         DO 115 J=3,IPPH
+            JC = IPP2-J
+            IDLJ = IDLJ+INC
+            IF (IDLJ .GT. IDP) IDLJ = IDLJ-IDP
+            WAR = WA(IDLJ-1)
+            WAI = WA(IDLJ)
+            DO 114 IK=1,IDL1
+               C2(IK,L) = C2(IK,L)+WAR*CH2(IK,J)
+               C2(IK,LC) = C2(IK,LC)+WAI*CH2(IK,JC)
+ 114        CONTINUE
+ 115     CONTINUE
+ 116  CONTINUE
+C
+      DO 118 J=2,IPPH
+         DO 117 IK=1,IDL1
+            CH2(IK,1) = CH2(IK,1)+CH2(IK,J)
+ 117     CONTINUE
+ 118  CONTINUE
+C
+      DO 120 J=2,IPPH
+         JC = IPP2-J
+         DO 119 IK=2,IDL1,2
+            CH2(IK-1,J) = C2(IK-1,J)-C2(IK,JC)
+            CH2(IK-1,JC) = C2(IK-1,J)+C2(IK,JC)
+            CH2(IK,J) = C2(IK,J)+C2(IK-1,JC)
+            CH2(IK,JC) = C2(IK,J)-C2(IK-1,JC)
+ 119     CONTINUE
+ 120  CONTINUE
+C
+      NAC = 1
+      IF (IDO .EQ. 2) RETURN
+      NAC = 0
+C
+      DO 121 IK=1,IDL1
+         C2(IK,1) = CH2(IK,1)
+ 121  CONTINUE
+C
+      DO 123 J=2,IP
+         DO 122 K=1,L1
+            C1(1,K,J) = CH(1,K,J)
+            C1(2,K,J) = CH(2,K,J)
+ 122     CONTINUE
+ 123  CONTINUE
+C
+      IF (IDOT .GT. L1) GO TO 127
+      IDIJ = 0
+      DO 126 J=2,IP
+         IDIJ = IDIJ+2
+         DO 125 I=4,IDO,2
+            IDIJ = IDIJ+2
+            DO 124 K=1,L1
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)
+ 124        CONTINUE
+ 125     CONTINUE
+ 126  CONTINUE
+      RETURN
+C
+ 127  IDJ = 2-IDO
+      DO 130 J=2,IP
+         IDJ = IDJ+IDO
+         DO 129 K=1,L1
+            IDIJ = IDJ
+            DO 128 I=4,IDO,2
+               IDIJ = IDIJ+2
+               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)
+               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)
+ 128        CONTINUE
+ 129     CONTINUE
+ 130  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSB2 (IDO,L1,CC,CH,WA1)
+      DOUBLE PRECISION CC(IDO,2,L1), CH(IDO,L1,2), WA1(1), TI2, TR2
+C
+      IF (IDO .GT. 2) GO TO 102
+      DO 101 K=1,L1
+         CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
+         CH(1,K,2) = CC(1,1,K)-CC(1,2,K)
+         CH(2,K,1) = CC(2,1,K)+CC(2,2,K)
+         CH(2,K,2) = CC(2,1,K)-CC(2,2,K)
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            CH(I-1,K,1) = CC(I-1,1,K)+CC(I-1,2,K)
+            TR2 = CC(I-1,1,K)-CC(I-1,2,K)
+            CH(I,K,1) = CC(I,1,K)+CC(I,2,K)
+            TI2 = CC(I,1,K)-CC(I,2,K)
+            CH(I,K,2) = WA1(I-1)*TI2+WA1(I)*TR2
+            CH(I-1,K,2) = WA1(I-1)*TR2-WA1(I)*TI2
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSB3 (IDO,L1,CC,CH,WA1,WA2)
+      DOUBLE PRECISION CC(IDO,3,L1), CH(IDO,L1,3), WA1(1), WA2(1),
+     1     CI2, CI3, CR2, CR3, DI2, DI3, DR2, DR3, TAUI, TAUR, TI2, TR2
+      DATA TAUR / -0.5 D0 /
+      DATA TAUI  /  0.8660254037 8443864676 3723170752 93618D0/
+C
+C     ONE HALF SQRT(3) = .866025.....  .
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TR2 = CC(1,2,K)+CC(1,3,K)
+         CR2 = CC(1,1,K)+TAUR*TR2
+         CH(1,K,1) = CC(1,1,K)+TR2
+         TI2 = CC(2,2,K)+CC(2,3,K)
+         CI2 = CC(2,1,K)+TAUR*TI2
+         CH(2,K,1) = CC(2,1,K)+TI2
+         CR3 = TAUI*(CC(1,2,K)-CC(1,3,K))
+         CI3 = TAUI*(CC(2,2,K)-CC(2,3,K))
+         CH(1,K,2) = CR2-CI3
+         CH(1,K,3) = CR2+CI3
+         CH(2,K,2) = CI2+CR3
+         CH(2,K,3) = CI2-CR3
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TR2 = CC(I-1,2,K)+CC(I-1,3,K)
+            CR2 = CC(I-1,1,K)+TAUR*TR2
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2
+            TI2 = CC(I,2,K)+CC(I,3,K)
+            CI2 = CC(I,1,K)+TAUR*TI2
+            CH(I,K,1) = CC(I,1,K)+TI2
+            CR3 = TAUI*(CC(I-1,2,K)-CC(I-1,3,K))
+            CI3 = TAUI*(CC(I,2,K)-CC(I,3,K))
+            DR2 = CR2-CI3
+            DR3 = CR2+CI3
+            DI2 = CI2+CR3
+            DI3 = CI2-CR3
+            CH(I,K,2) = WA1(I-1)*DI2+WA1(I)*DR2
+            CH(I-1,K,2) = WA1(I-1)*DR2-WA1(I)*DI2
+            CH(I,K,3) = WA2(I-1)*DI3+WA2(I)*DR3
+            CH(I-1,K,3) = WA2(I-1)*DR3-WA2(I)*DI3
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
+      DOUBLE PRECISION CC(IDO,4,L1), CH(IDO,L1,4), WA1(1), WA2(1),
+     1     WA3(1), CI2, CI3, CI4, CR2, CR3, CR4, TI1, TI2, TI3, TI4, TR1
+     *     ,TR2, TR3, TR4
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TI1 = CC(2,1,K)-CC(2,3,K)
+         TI2 = CC(2,1,K)+CC(2,3,K)
+         TR4 = CC(2,4,K)-CC(2,2,K)
+         TI3 = CC(2,2,K)+CC(2,4,K)
+         TR1 = CC(1,1,K)-CC(1,3,K)
+         TR2 = CC(1,1,K)+CC(1,3,K)
+         TI4 = CC(1,2,K)-CC(1,4,K)
+         TR3 = CC(1,2,K)+CC(1,4,K)
+         CH(1,K,1) = TR2+TR3
+         CH(1,K,3) = TR2-TR3
+         CH(2,K,1) = TI2+TI3
+         CH(2,K,3) = TI2-TI3
+         CH(1,K,2) = TR1+TR4
+         CH(1,K,4) = TR1-TR4
+         CH(2,K,2) = TI1+TI4
+         CH(2,K,4) = TI1-TI4
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TI1 = CC(I,1,K)-CC(I,3,K)
+            TI2 = CC(I,1,K)+CC(I,3,K)
+            TI3 = CC(I,2,K)+CC(I,4,K)
+            TR4 = CC(I,4,K)-CC(I,2,K)
+            TR1 = CC(I-1,1,K)-CC(I-1,3,K)
+            TR2 = CC(I-1,1,K)+CC(I-1,3,K)
+            TI4 = CC(I-1,2,K)-CC(I-1,4,K)
+            TR3 = CC(I-1,2,K)+CC(I-1,4,K)
+            CH(I-1,K,1) = TR2+TR3
+            CR3 = TR2-TR3
+            CH(I,K,1) = TI2+TI3
+            CI3 = TI2-TI3
+            CR2 = TR1+TR4
+            CR4 = TR1-TR4
+            CI2 = TI1+TI4
+            CI4 = TI1-TI4
+            CH(I-1,K,2) = WA1(I-1)*CR2-WA1(I)*CI2
+            CH(I,K,2) = WA1(I-1)*CI2+WA1(I)*CR2
+            CH(I-1,K,3) = WA2(I-1)*CR3-WA2(I)*CI3
+            CH(I,K,3) = WA2(I-1)*CI3+WA2(I)*CR3
+            CH(I-1,K,4) = WA3(I-1)*CR4-WA3(I)*CI4
+            CH(I,K,4) = WA3(I-1)*CI4+WA3(I)*CR4
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
+      SUBROUTINE DPSSB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
+      DOUBLE PRECISION CC(IDO,5,L1), CH(IDO,L1,5), WA1(1), WA2(1),
+     1     WA3(1), WA4(1), CI2, CI3, CI4, CI5, CR2, CR3, CR4, CR5,
+     2     DI2, DI3, DI4, DI5, DR2, DR3, DR4, DR5, TI11, TI12, TI2, TI3,
+     3     TI4, TI5, TR11, TR12, TR2, TR3, TR4, TR5
+      DATA TR11  /  0.3090169943 7494742410 2293417182 81906D0/
+      DATA TI11  /  0.9510565162 9515357211 6439333379 38214D0/
+      DATA TR12  / -0.8090169943 7494742410 2293417182 81906D0/
+      DATA TI12  /  0.5877852522 9247312916 8705954639 07277D0/
+C
+C     SIN(PI/10) = .30901699....    .
+C     COS(PI/10) = .95105651....    .
+C     SIN(PI/5 ) = .58778525....    .
+C     COS(PI/5 ) = .80901699....    .
+C
+      IF (IDO .NE. 2) GO TO 102
+      DO 101 K=1,L1
+         TI5 = CC(2,2,K)-CC(2,5,K)
+         TI2 = CC(2,2,K)+CC(2,5,K)
+         TI4 = CC(2,3,K)-CC(2,4,K)
+         TI3 = CC(2,3,K)+CC(2,4,K)
+         TR5 = CC(1,2,K)-CC(1,5,K)
+         TR2 = CC(1,2,K)+CC(1,5,K)
+         TR4 = CC(1,3,K)-CC(1,4,K)
+         TR3 = CC(1,3,K)+CC(1,4,K)
+         CH(1,K,1) = CC(1,1,K)+TR2+TR3
+         CH(2,K,1) = CC(2,1,K)+TI2+TI3
+         CR2 = CC(1,1,K)+TR11*TR2+TR12*TR3
+         CI2 = CC(2,1,K)+TR11*TI2+TR12*TI3
+         CR3 = CC(1,1,K)+TR12*TR2+TR11*TR3
+         CI3 = CC(2,1,K)+TR12*TI2+TR11*TI3
+         CR5 = TI11*TR5+TI12*TR4
+         CI5 = TI11*TI5+TI12*TI4
+         CR4 = TI12*TR5-TI11*TR4
+         CI4 = TI12*TI5-TI11*TI4
+         CH(1,K,2) = CR2-CI5
+         CH(1,K,5) = CR2+CI5
+         CH(2,K,2) = CI2+CR5
+         CH(2,K,3) = CI3+CR4
+         CH(1,K,3) = CR3-CI4
+         CH(1,K,4) = CR3+CI4
+         CH(2,K,4) = CI3-CR4
+         CH(2,K,5) = CI2-CR5
+ 101  CONTINUE
+      RETURN
+C
+ 102  DO 104 K=1,L1
+         DO 103 I=2,IDO,2
+            TI5 = CC(I,2,K)-CC(I,5,K)
+            TI2 = CC(I,2,K)+CC(I,5,K)
+            TI4 = CC(I,3,K)-CC(I,4,K)
+            TI3 = CC(I,3,K)+CC(I,4,K)
+            TR5 = CC(I-1,2,K)-CC(I-1,5,K)
+            TR2 = CC(I-1,2,K)+CC(I-1,5,K)
+            TR4 = CC(I-1,3,K)-CC(I-1,4,K)
+            TR3 = CC(I-1,3,K)+CC(I-1,4,K)
+            CH(I-1,K,1) = CC(I-1,1,K)+TR2+TR3
+            CH(I,K,1) = CC(I,1,K)+TI2+TI3
+            CR2 = CC(I-1,1,K)+TR11*TR2+TR12*TR3
+            CI2 = CC(I,1,K)+TR11*TI2+TR12*TI3
+            CR3 = CC(I-1,1,K)+TR12*TR2+TR11*TR3
+            CI3 = CC(I,1,K)+TR12*TI2+TR11*TI3
+            CR5 = TI11*TR5+TI12*TR4
+            CI5 = TI11*TI5+TI12*TI4
+            CR4 = TI12*TR5-TI11*TR4
+            CI4 = TI12*TI5-TI11*TI4
+            DR3 = CR3-CI4
+            DR4 = CR3+CI4
+            DI3 = CI3+CR4
+            DI4 = CI3-CR4
+            DR5 = CR2+CI5
+            DR2 = CR2-CI5
+            DI5 = CI2-CR5
+            DI2 = CI2+CR5
+            CH(I-1,K,2) = WA1(I-1)*DR2-WA1(I)*DI2
+            CH(I,K,2) = WA1(I-1)*DI2+WA1(I)*DR2
+            CH(I-1,K,3) = WA2(I-1)*DR3-WA2(I)*DI3
+            CH(I,K,3) = WA2(I-1)*DI3+WA2(I)*DR3
+            CH(I-1,K,4) = WA3(I-1)*DR4-WA3(I)*DI4
+            CH(I,K,4) = WA3(I-1)*DI4+WA3(I)*DR4
+            CH(I-1,K,5) = WA4(I-1)*DR5-WA4(I)*DI5
+            CH(I,K,5) = WA4(I-1)*DI5+WA4(I)*DR5
+ 103     CONTINUE
+ 104  CONTINUE
+C
+      RETURN
+      END
