@@ -128,7 +128,7 @@ void TableRecord::assign (const RecordInterface& that)
     // is variable and empty.
     // Operator= does not always preserve the type of subrecords,
     // so we do a hack by setting the type explicitly.
-    Bool var = (nfields() == 0  &&  !isFixed());
+    Bool var = ToBool (nfields() == 0  &&  !isFixed());
     *this = TableRecord (that);
     if (var) {
 	setRecordType (Variable);
