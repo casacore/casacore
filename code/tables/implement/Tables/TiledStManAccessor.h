@@ -153,13 +153,15 @@ imported class ostream;
 class ROTiledStManAccessor : public RODataManAccessor
 {
 public:
+    // Default constructor should be used with care.
+    // The resulting object cannot be used for any other operation
+    // until a 'true' ROTiledStManAccessor object is assigned to it.
+    ROTiledStManAccessor ();
 
     // Construct the object for the data manager in the table.
     // An exception is thrown if the data manager type does not
     // match the type of this TiledDataStManAccessor object.
-    // Also an exception is thrown if the table is not open for read/write.
     ROTiledStManAccessor (const Table& table, const String& dataManagerName);
-    ROTiledStManAccessor ();
 
     ~ROTiledStManAccessor();
 
