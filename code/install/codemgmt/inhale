@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000
+#   Copyright (C) 1992-1997,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -475,10 +475,16 @@
      echo ""
      echo "inhale: Blessed inhale requested...checking availability."
 
-     if [ "$MODE" = base ]
-     then
-        echo "inhale: Blessed request overridden by new base release."
-     elif [ -f BLESSED ]
+#
+# Original behaviour was to grab the base release after an uprev, this
+# is not particularly desireable since the uprev isn't necessarily stable.
+# So I've commented out base release test, so the base release won't be
+# loaded until after a stable has been declared (I hope). wky 2001/05/09
+#     if [ "$MODE" = base ]
+#     then
+#        echo "inhale: Blessed request overridden by new base release."
+#     elif [ -f BLESSED ]
+     if [ -f BLESSED ]
      then
         BLESSEDVERSN=`sed 's/#.*//' BLESSED | \
          awk "{ for (i = 2; i <= NF; i++)
