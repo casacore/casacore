@@ -366,7 +366,7 @@ Float RFADiffBase::setDiff ( uInt ich,uInt ifr,Float d,Bool &flagged )
 // -----------------------------------------------------------------------
 RFADiffMapBase::RFADiffMapBase (  RFChunkStats &ch,const RecordInterface &parm ) 
   : RFADiffBase(ch,parm),
-    RFDataMapper(parm.asString(RF_COLUMN),parm.asArrayString(RF_EXPR))
+    RFDataMapper(parm.asArrayString(RF_EXPR),parm.asString(RF_COLUMN))
 {
 }
 
