@@ -109,7 +109,7 @@ void PointShape::sample(Flux<Double> & flux, const MDirection & direction,
     dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
   }
   if (!itsDirValue.near(dirVal, pixelSize.get()/2.0)) {
-    flux.scaleValue(0.0);
+    flux.scaleValue(0.0, 0.0, 0.0, 0.0);
   }
 }
 
