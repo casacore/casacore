@@ -1,0 +1,14 @@
+
+change id: 0029
+ author:   Mark Holdaway
+ date:     2000/08/03
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   imager
+ type:     Code Documentation
+ category: Change
+ summary:  new setmfcontrol() function for controlling mf and wf deconvolutions
+Previously, cycle control parameters cluttered up the interface to the
+clean and mem functions.  Now they have been moved to the setmfcontrol()
+function.
