@@ -113,11 +113,15 @@ private:
     const IPosition& getCollapseAxes (const TableExprId& id,
 				      Int ndim, uInt axarg=1);
 
+    // Get the shape for the array function.
+    // axarg gives the argument nr of the shape.
+    const IPosition& getArrayShape (const TableExprId& id, uInt axarg=1);
+
     TableExprFuncNode node_p;
     Int               origin_p;        //# axes origin 0 for C++; 1 for TaQL
     Bool              constAxes_p;     //# True = collapse axes are constant
-    IPosition         collapseAxes_p;  //# the constant collapse axes
-    IPosition         corrCollAxes_p;  //# the possibly corrected axes after
+    IPosition         ipos_p;          //# the (maybe constant) axes or shape
+    IPosition         corrCollAxes_p;  //# the possibly corrected collapse axes
                                        //# (in case an axis exceeds ndim)
 };
 

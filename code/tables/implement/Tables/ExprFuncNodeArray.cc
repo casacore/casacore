@@ -100,7 +100,13 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::ntruesFUNC:
     case TableExprFuncNode::nfalsesFUNC:
         if (operands()[axarg]->isConstant()) {
-	    collapseAxes_p = getCollapseAxes (0, 1000000, axarg);
+	    ipos_p = getCollapseAxes (0, 1000000, axarg);
+	    constAxes_p = True;
+	}
+        break;
+    case TableExprFuncNode::arrayFUNC:
+        if (operands()[axarg]->isConstant()) {
+	    ipos_p = getArrayShape (0, axarg);
 	    constAxes_p = True;
 	}
         break;
@@ -118,33 +124,49 @@ const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
     Array<Double> ax(operands()[axarg]->getArrayDouble(id));
     AlwaysAssert (ax.ndim() == 1, AipsError);
     AlwaysAssert (ax.contiguousStorage(), AipsError);
-    collapseAxes_p.resize (ax.nelements());
+    ipos_p.resize (ax.nelements());
     for (uInt i=0; i<ax.nelements(); i++) {
-      collapseAxes_p(i) = Int(ax.data()[i]) - origin_p;
+      ipos_p(i) = Int(ax.data()[i]) - origin_p;
     }
   }
   // Check if an axis exceeds the dimensionality.
   uInt nr = 0;
-  for (uInt i=0; i<collapseAxes_p.nelements(); i++) {
-    if (collapseAxes_p(i) < 0) {
+  for (uInt i=0; i<ipos_p.nelements(); i++) {
+    if (ipos_p(i) < 0) {
         throw TableInvExpr ("collapseAxis < 0 used in xxxP function");
     }
-    if (collapseAxes_p(i) < ndim) {
+    if (ipos_p(i) < ndim) {
         nr++;
     }
   }
-  if (nr == collapseAxes_p.nelements()) {
-      return collapseAxes_p;
+  if (nr == ipos_p.nelements()) {
+      return ipos_p;
   }
   // Remove axes exceeding dimensionality.
   corrCollAxes_p.resize(nr);
   uInt j=0;
-  for (uInt i=0; i<collapseAxes_p.nelements(); i++) {
-      if (collapseAxes_p(i) < ndim) {
-	  corrCollAxes_p(j++) = collapseAxes_p(i);
+  for (uInt i=0; i<ipos_p.nelements(); i++) {
+      if (ipos_p(i) < ndim) {
+	  corrCollAxes_p(j++) = ipos_p(i);
       }
   }
   return corrCollAxes_p;
+}
+			   
+const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
+						       uInt axarg)
+{
+  // Get the shape if not constant.
+  if (!constAxes_p) {
+    Array<Double> ax(operands()[axarg]->getArrayDouble(id));
+    AlwaysAssert (ax.ndim() == 1, AipsError);
+    AlwaysAssert (ax.contiguousStorage(), AipsError);
+    ipos_p.resize (ax.nelements());
+    for (uInt i=0; i<ax.nelements(); i++) {
+      ipos_p(i) = Int(ax.data()[i]);
+    }
+  }
+  return ipos_p;
 }
 			   
 
@@ -278,6 +300,29 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
 	Array<uInt> res (partialNFalse (arr, getCollapseAxes(id, arr.ndim())));
 	return res == 0u;
+      }
+    case TableExprFuncNode::arrayFUNC:
+      {
+	Array<Bool> res(getArrayShape(id));
+        if (operands()[0]->valueType() == VTScalar) {
+	  res = operands()[0]->getBool(id);
+	} else {
+	  Array<Bool> arr (operands()[0]->getArrayBool(id));
+	  Bool delRes, delArr;
+	  Bool* resd = res.getStorage (delRes);
+	  const Bool* arrd = arr.getStorage (delArr);
+	  uInt j=0;
+	  uInt n = res.nelements();
+	  for (uInt i=0; i<n; i++) {
+	    resd[i] = arrd[j++];
+	    if (j >= arr.nelements()) {
+	      j = 0;
+	    }
+	  }
+	  res.putStorage (resd, delRes);
+	  arr.freeStorage (arrd, delArr);
+	}
+	return res;
       }
     case TableExprFuncNode::isnanFUNC:
       {
@@ -729,6 +774,29 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	convertArray (resd, res);
 	return resd;
       }
+    case TableExprFuncNode::arrayFUNC:
+      {
+	Array<Double> res(getArrayShape(id));
+        if (operands()[0]->valueType() == VTScalar) {
+	  res = operands()[0]->getDouble(id);
+	} else {
+	  Array<Double> arr (operands()[0]->getArrayDouble(id));
+	  Bool delRes, delArr;
+	  Double* resd = res.getStorage (delRes);
+	  const Double* arrd = arr.getStorage (delArr);
+	  uInt j=0;
+	  uInt n = res.nelements();
+	  for (uInt i=0; i<n; i++) {
+	    resd[i] = arrd[j++];
+	    if (j >= arr.nelements()) {
+	      j = 0;
+	    }
+	  }
+	  res.putStorage (resd, delRes);
+	  arr.freeStorage (arrd, delArr);
+	}
+	return res;
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -889,6 +957,29 @@ Array<DComplex> TableExprFuncNodeArray::getArrayDComplex
       {
 	Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
 	return partialSums (arr*arr, getCollapseAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::arrayFUNC:
+      {
+	Array<DComplex> res(getArrayShape(id));
+        if (operands()[0]->valueType() == VTScalar) {
+	  res = operands()[0]->getDComplex(id);
+	} else {
+	  Array<DComplex> arr (operands()[0]->getArrayDComplex(id));
+	  Bool delRes, delArr;
+	  DComplex* resd = res.getStorage (delRes);
+	  const DComplex* arrd = arr.getStorage (delArr);
+	  uInt j=0;
+	  uInt n = res.nelements();
+	  for (uInt i=0; i<n; i++) {
+	    resd[i] = arrd[j++];
+	    if (j >= arr.nelements()) {
+	      j = 0;
+	    }
+	  }
+	  res.putStorage (resd, delRes);
+	  arr.freeStorage (arrd, delArr);
+	}
+	return res;
       }
     case TableExprFuncNode::complexFUNC:
       {
@@ -1097,6 +1188,29 @@ Array<String> TableExprFuncNodeArray::getArrayString (const TableExprId& id)
 	strings.putStorage (str, deleteStr);
 	return strings;
       }
+    case TableExprFuncNode::arrayFUNC:
+      {
+	Array<String> res(getArrayShape(id));
+        if (operands()[0]->valueType() == VTScalar) {
+	  res = operands()[0]->getString(id);
+	} else {
+	  Array<String> arr (operands()[0]->getArrayString(id));
+	  Bool delRes, delArr;
+	  String* resd = res.getStorage (delRes);
+	  const String* arrd = arr.getStorage (delArr);
+	  uInt j=0;
+	  uInt n = res.nelements();
+	  for (uInt i=0; i<n; i++) {
+	    resd[i] = arrd[j++];
+	    if (j >= arr.nelements()) {
+	      j = 0;
+	    }
+	  }
+	  res.putStorage (resd, delRes);
+	  arr.freeStorage (arrd, delArr);
+	}
+	return res;
+      }
     case TableExprFuncNode::iifFUNC:
       {
 	Array<Bool> arrc;
@@ -1232,6 +1346,29 @@ Array<MVTime> TableExprFuncNodeArray::getArrayDate (const TableExprId& id)
 	values.freeStorage (val, deleteVal);
 	dates.putStorage (dat, deleteDat);
 	return dates;
+      }
+    case TableExprFuncNode::arrayFUNC:
+      {
+	Array<MVTime> res(getArrayShape(id));
+        if (operands()[0]->valueType() == VTScalar) {
+	  res = operands()[0]->getDate(id);
+	} else {
+	  Array<MVTime> arr (operands()[0]->getArrayDate(id));
+	  Bool delRes, delArr;
+	  MVTime* resd = res.getStorage (delRes);
+	  const MVTime* arrd = arr.getStorage (delArr);
+	  uInt j=0;
+	  uInt n = res.nelements();
+	  for (uInt i=0; i<n; i++) {
+	    resd[i] = arrd[j++];
+	    if (j >= arr.nelements()) {
+	      j = 0;
+	    }
+	  }
+	  res.putStorage (resd, delRes);
+	  arr.freeStorage (arrd, delArr);
+	}
+	return res;
       }
     case TableExprFuncNode::iifFUNC:
       {
