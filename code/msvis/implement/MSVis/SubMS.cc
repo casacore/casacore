@@ -166,9 +166,8 @@ Bool SubMS::makeSelection(){
   //VisSet/MSIter will check if the SORTED exists
   //and resort if necessary
   {
-    Block<int> sort(0);
     Matrix<Int> noselection;
-    VisSet vs(ms_p,sort,noselection);
+    VisSet vs(ms_p,noselection);
   }
   Table sorted=ms_p.keywordSet().asTable("SORTED_TABLE");
 
@@ -711,7 +710,7 @@ Bool SubMS::writeDiffSpwShape(String& columnName){
   Block<Int> sort(0);
   Matrix<Int> noselection;
   
-  VisSet *vs= new VisSet(mssel_p, sort, noselection);
+  VisSet *vs= new VisSet(mssel_p, noselection);
   ROVisIter& vi(vs->iter());
   VisBuffer vb(vi);
   Vector<Int> spwindex(max(spw_p)+1);
