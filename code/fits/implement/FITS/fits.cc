@@ -1,5 +1,5 @@
 //# fits.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,22 +186,22 @@ const Int FITS::minInt = INT_MIN;
 const Int FITS::maxInt = INT_MAX;
 # if defined(UNIX)
 #   if defined(GNU)
-const float FITS::minfloat = MINFLOAT;
-const float FITS::maxfloat = MAXFLOAT;
-const double FITS::mindouble = MINDOUBLE;
-const double FITS::maxdouble = MAXDOUBLE;
+const float FITS::minfloat = C::minfloat;
+const float FITS::maxfloat = C::maxfloat;
+const double FITS::mindouble = C::mindouble;
+const double FITS::maxdouble = C::maxdouble;
 #   else
-const float FITS::minfloat = FLT_MIN;
-const float FITS::maxfloat = FLT_MAX;
-const double FITS::mindouble = DBL_MIN;
-const double FITS::maxdouble = DBL_MAX;
+const float FITS::minfloat = C::flt_min;
+const float FITS::maxfloat = C::flt_max;
+const double FITS::mindouble = C::dbl_min;
+const double FITS::maxdouble = C::dbl_max;
 #   endif
 # endif
 # if defined(MSDOS)
-const float FITS::minfloat = MINFLOAT;
-const float FITS::maxfloat = MAXFLOAT;
-const double FITS::mindouble = MINDOUBLE;
-const double FITS::maxdouble = MAXDOUBLE;
+const float FITS::minfloat = C::minfloat;
+const float FITS::maxfloat = C::maxfloat;
+const double FITS::mindouble = C::mindouble;
+const double FITS::maxdouble = C::maxdouble;
 # endif
 
 ostream & operator << (ostream &o, const FitsLogical &x) {
