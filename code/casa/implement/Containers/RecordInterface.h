@@ -1,5 +1,5 @@
 //# RecordInterface.h: Abstract base class for Record classes
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -505,8 +505,12 @@ inline const Array<Double>& RecordInterface::asArrayDouble
 
 
 
+// <summary>
+// Helper class to notify class Record about changes
+// </summary>
 
 // <use visibility=local>
+
 // <reviewed reviewer="Mark Wieringa" date="1996/04/15" tests="tRecord">
 // </reviewed>
 
