@@ -114,7 +114,7 @@ GLISHROOT := $(AIPSROOT)/code/aips/glish
 GLISHDEFS :=
 GLISHINCD  = $(GLISHROOT)/include
 GLISHLIBD  = $(AIPSARCH)/lib
-GLISHLIB  := -lglish -ledit -lsds -lnpd
+GLISHLIB  := -lglish -ledit -lsos -lnpd
 
 # WCSLIB (supplied with AIPS++).
 WCSLIBROOT := $(AIPSROOT)/code/aips/wcslib
