@@ -138,6 +138,10 @@ Bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
   // When the slicer is fixed, it can be used immediately.
   // Otherwise unspecified values are to be filled in.
   if (section.isFixed()) {
+    IPosition shp(shape());
+    if (section.ndim() != shp.nelements()  ||  section.end() >= shp) {
+      throw AipsError ("Lattice::getSlice - section outside lattice");
+    }
     isARef = doGetSlice (buffer, section);
   } else {
     IPosition blc,trc,inc;
