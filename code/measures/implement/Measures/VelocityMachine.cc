@@ -115,7 +115,7 @@ const Quantum<Double> &VelocityMachine::operator()(const MVDoppler &in) {
   return resf_p;
 }
 
-const Quantum<Double> &VelocityMachine::operator()(const Quantity &in) {
+const Quantum<Double> &VelocityMachine::operator()(const Quantum<Double> &in) {
   static UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
   if (in.getFullUnit().getValue() == Velocity ||
       in.getFullUnit().getValue() == UnitVal::NODIM) {
