@@ -95,7 +95,9 @@ BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
 BucketCache::~BucketCache()
 {
     // Clear the entire cache.
-    clear();
+    // It is not flushed (that should have been done before).
+    // In that way no needless flushes are done for a temporary table.
+    clear (0, False);
     delete [] its_Buffer;
 }
 
