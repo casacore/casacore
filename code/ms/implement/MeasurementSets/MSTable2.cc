@@ -30,7 +30,7 @@
 #include <aips/MeasurementSets/NewMSTable.h>
 #include <aips/MeasurementSets/NewMeasurementSet.h>
  
-#define NeWMSTableStatics(ColEnum,KeyEnum) \
+#define NewMSTableStatics(ColEnum,KeyEnum) \
 SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::columnMap_p(""); \
 SimpleOrderedMap<Int, Int> NewMSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
 SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
@@ -50,14 +50,12 @@ NewMSTableStatics(NewMSField::PredefinedColumns,NewMSField::PredefinedKeywords)
 NewMSTableStatics(NewMSFlagCmd::PredefinedColumns,NewMSFlagCmd::PredefinedKeywords)
 NewMSTableStatics(NewMSFreqOffset::PredefinedColumns,NewMSFreqOffset::PredefinedKeywords)
 NewMSTableStatics(NewMSHistory::PredefinedColumns,NewMSHistory::PredefinedKeywords)
-NewMSTableStatics(NewMSObservation::PredefinedColumns,NewMSObservation::PredefinedKeyword
-s)
+NewMSTableStatics(NewMSObservation::PredefinedColumns,NewMSObservation::PredefinedKeywords)
 NewMSTableStatics(NewMSPointing::PredefinedColumns,NewMSPointing::PredefinedKeywords)
 NewMSTableStatics(NewMSPolarization::PredefinedColumns,NewMSPolarization::PredefinedKeywords)
 NewMSTableStatics(NewMSProcessor::PredefinedColumns,NewMSProcessor::PredefinedKeywords)
 NewMSTableStatics(NewMSSource::PredefinedColumns,NewMSSource::PredefinedKeywords)
-NewMSTableStatics(NewMSSpectralWindow::PredefinedColumns,NewMSSpectralWindow::PredefinedK
-eywords)
+NewMSTableStatics(NewMSSpectralWindow::PredefinedColumns,NewMSSpectralWindow::PredefinedKeywords)
 NewMSTableStatics(NewMSState::PredefinedColumns,NewMSState::PredefinedKeywords)
 NewMSTableStatics(NewMSSysCal::PredefinedColumns,NewMSSysCal::PredefinedKeywords)
 NewMSTableStatics(NewMSWeather::PredefinedColumns,NewMSWeather::PredefinedKeywords)
