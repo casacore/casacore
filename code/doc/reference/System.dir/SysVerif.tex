@@ -12,23 +12,32 @@ $ $Id$ $}.
 \index{assay@\exe{assay}}
 \index{system!verification!tester|see{@\exe{assay}}}
  
-Invoke an \aipspp\ test program and verify its output.
+Invoke an \aipspp\ test program or glish script, verify its output,
+and delete temporary files.
 
 \subsection*{Synopsis}
  
 \begin{synopsis}
-   \code{\exe{assay} [test executable and arguments]}
+   \code{\exe{assay} [test program and arguments]}
 \end{synopsis}
  
 \subsection*{Description}
  
-\exe{assay} invokes an \aipspp\ test program.  If the test program has an
-associated \file{.exec} file then \exe{assay} simply invokes it.  Otherwise
-\exe{assay} invokes the test executable directly, and, if there is a
-corresponding \file{.out} file, compares its output with that.
+\exe{assay} invokes an \aipspp\ test program or glish script.
+If the program name has the suffix \file{.g} then it is a test glish
+script which is executed using the \exe{glish} command.
+Otherwise it is a normal test program.
+\\If the test program or glish script has an
+associated \file{.exec} file then \exe{assay} invokes it using
+the \unixexe{exec} command.  Otherwise if it has an associated
+\file{.run} file then \exe{assay} invokes it by simply starting
+it in another process.
+\\
+If there is a corresponding \file{.out} file, \exe{assay} compares
+the output of the program or script with that.
 
 In comparing the output \exe{assay} ignores text demarked by two lines
-consisting solely of \code{>>>} and \code{<<<}.  This may be useful as in the
+starting with \code{>>>} and \code{<<<}.  This may be useful as in the
 following example, where the test program prints a quantity such as the
 execution time which is not expected to be reproducible.
 
@@ -41,13 +50,21 @@ execution time which is not expected to be reproducible.
 
 If there is a \file{.in} file associated with the test program then
 \exe{assay} redirects \file{stdin} from it.
+\\If there are \file{.in\_*} files then \exe{assay} takes care they
+exist (temporarily) in the working directory, so the test program
+can find them there.
 
-\exe{assay} recognizes Glish test scripts via their \file{.g} suffix and
-invokes \exe{glish} on them.
+At the end \exe{assay} takes care that all temporary files and
+directories are deleted. When the test program or script creates
+a temporary file or directory then it should be called
+\code{name\_tmp*} where \code{name} is the name of the test program
+or glish script (e.g. \code{tTable\_tmp1.data}).
 
 It is permissible for a \file{.exec} to invoke \exe{assay} (presumably with
 arguments for the test executable) -- the potential infinite recursion is
 trapped.
+\\Note that a \file{.run} has the advantage that one can massage the
+output before \exe{assay} gets it.
  
 \subsection*{Options}
  
@@ -84,9 +101,10 @@ status messages referring to the result of the test execution:
  
 \subsection*{Examples}
 
-\exe{assay} is mainly used by the test makefile (\file{makefile.tst}) which
+\exe{assay} is used by the test makefile (\file{makefile.tst}) which
 uses \exe{assay} to invoke the test executable without arguments.  Where test
-programs do need to be invoked with particular arguments a \file{.exec} must
+programs do need to be invoked with particular arguments a
+\file{.exec} or \file{.run}  must
 be provided.  The following example, \file{tIncrementalStMan.exec}, uses
 \exe{assay} to invoke \exe{tIncrementalStMan} multiple times with different
 arguments:
