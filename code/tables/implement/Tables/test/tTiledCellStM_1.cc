@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ void getCube (Bool trav, Bool ask);
 void traverse (const IPosition& cubeShape, const IPosition& tileShape);
 IPosition getVec (uInt nrdim, const String& prompt);
 
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
     // Get the command line arguments as cube shape, tile shape.
     if (argc < 4) {
@@ -131,9 +131,8 @@ void openPablo (char** argv)
   ostrstream oss;
   Path myname(argv[0]);
   int tracenode(0);
-  static EnvironmentVariables gevs;
-  if(gevs.isSet(String("PABLOSTATS"))) {
-     String pablostats(gevs.value(String("PABLOSTATS")));
+  if (EnvironmentVariable::isDefined("PABLOSTATS")) {
+     String pablostats(EnvironmentVariable::get("PABLOSTATS"));
      Regex lookfor(String("\:")+myname.baseName()+String("\:"));
      if(pablostats.contains(lookfor) || pablostats == String("all")){
         cout << "Writing output Pablo file" << endl;

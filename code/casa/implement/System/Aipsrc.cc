@@ -41,7 +41,6 @@
 #include <aips/iostream.h>
 #include <aips/fstream.h>
 #include <aips/strstream.h>
-#include <aips/stdlib.h>
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
@@ -149,11 +148,11 @@ const Block<String> &Aipsrc::patterns() {
 
 const String &Aipsrc::fillAips(const String &nam) {
   if (!filled) {
-    uhome = EnvironmentVariables::value("HOME");
+    uhome = EnvironmentVariable::get("HOME");
     if (uhome.empty())
       throw(AipsError(String("The HOME environment variable has not been set") +
 		      "\n\t(see system administrator)"));
-    String aipsPath = EnvironmentVariables::value("AIPSPATH");
+    String aipsPath = EnvironmentVariable::get("AIPSPATH");
     if (aipsPath.empty())
       throw(AipsError(String("The AIPSPATH environment variable has not been set") +
 		      "\n\t(see system administrator)"));

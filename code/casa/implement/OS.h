@@ -1,5 +1,5 @@
 //# OS.h: Classes for operating system services, and assorted other things
-//# Copyright (C) 1995,1996,1998,1999,2001
+//# Copyright (C) 1995,1996,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,8 +75,8 @@
 // <p>
 // The following functionality is available:
 // <ul>
-//  <li> Class <linkto class=EnvironmentVariables:description>
-//       EnvironmentVariables</linkto>
+//  <li> Class <linkto class=EnvironmentVariable:description>
+//       EnvironmentVariable</linkto>
 //       for access to environment variables.
 //  <li> Class <linkto class=Path:description>Path</linkto>,
 //       <linkto class=RegularFile:description>RegularFile</linkto>,
@@ -118,7 +118,7 @@
 // <ol>
 //    <li> Recursive deletion of a directory.
 //    <li> Access to time and date information.
-//    <li> Set and get environment variables.
+//    <li> Get and set environment variables.
 // </ol>
 // </motivation>
 
