@@ -1,4 +1,4 @@
-//# LatticeIterInterface.h: A base class for concrete Lattice iterators
+//# LatticeIterInterface.h: A base class for Lattice iterators
 //# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -50,7 +50,7 @@ template <class T> class RO_LatticeIterator;
 
 // <use visibility=local> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeIterator.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -96,8 +96,7 @@ template <class T> class RO_LatticeIterator;
 // </synopsis>
 
 // <example>
-// The class is pure virtual and isn't, itself, instantiated.  For an example 
-// derivation from LatticeIterInterface, see ArrLatticeIter.
+// For an example see <linkto class=ArrLatticeIter>ArrLatticeIter</linkto>.
 // </example>
 
 // <motivation>

@@ -1,5 +1,5 @@
 //# TileStepper.h:  Steps a cursor optimally through a tiled Lattice
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,29 +36,29 @@
 
 
 // <summary>
-// traverse a Tiled Lattice optimally with a tile cursor
+// traverse a tiled Lattice optimally with a tile cursor
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTileStepper.cc" demos="">
+// </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class=LatticeNavigator> LatticeNavigator </linkto>
 // </prerequisite>
 
 // <etymology>
-// TileStepper is used to step a Vector cursor optimally through a Lattice
-// that is tiled.
+// TileStepper is used to step optimally through a tiled Lattice.
 // </etymology>
 
 // <synopsis> 
 // When you wish to traverse a Lattice (say, a PagedArray or an Image) you
 // will usually create a LatticeIterator.  Once created, you may attach a
 // LatticeNavigator to the iterator. A TileStepper, is a concrete class
-// derived from the abstract LatticeNavigator that allows you to move
-// through the Lattice in an way that will minimise the amount of cache
-// memory consumed and maximise the speed.
+// derived from the abstract LatticeNavigator that allows you to step
+// through the Lattice in an way that will minimize the amount of cache
+// memory consumed and maximize the speed.
 // <p>
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
 // tiles. For an N-dimensional Lattice a tile is an N-dimensional
@@ -102,11 +102,23 @@
 // <srcblock>
 // void init (Lattice<Complex>& cArray, Complex value)
 // {
-//
 //   const IPosition latticeShape = cArray.shape();
 //   const IPosition tileShape = cArray.niceCursorShape();
 //   TileStepper tsx(latticeShape, tileShape);
 //   LatticeIterator<Complex> lix(cArray, tsx);
+//   for (lix.reset();!lix.atEnd();lix++)
+//     lix.woCursor() = value;
+//   }
+// }
+// </srcblock>
+// Note that a TileStepper is the default navigator for an iterator.
+// So the code above could be made simpler like shown below.
+// Also note that this example is a bit artificial, because the Lattice::set()
+// function should be used to initialize a lattice.
+// <srcblock>
+// void init (Lattice<Complex>& cArray, Complex value)
+// {
+//   LatticeIterator<Complex> lix(cArray);
 //   for (lix.reset();!lix.atEnd();lix++)
 //     lix.woCursor() = value;
 //   }
@@ -118,11 +130,13 @@
 // This class makes it possible to traverse a lattice in the optimal way.
 // </motivation>
 //
-// <todo asof="1997/11/21">
-//  <li> Provide subsectioning
-// </todo>
+//# <todo asof="1997/11/21">
+//#  <li>
+//# </todo>
 
-class TileStepper: public LatticeNavigator {
+
+class TileStepper: public LatticeNavigator
+{
 public:
 
   // Construct a TileStepper by specifying the Lattice shape, a tile shape,

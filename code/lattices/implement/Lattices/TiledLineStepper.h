@@ -1,5 +1,5 @@
-//# TiledLineStepper.h: Steps a Vector cursor optimally through a tiled Lattice
-//# Copyright (C) 1997
+//# TiledLineStepper.h: Step a Vector cursor optimally through a tiled Lattice
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 
 
 // <summary>
-// Traverse a Tiled Lattice optimally with a Vector cursor
+// Step a Vector cursor optimally through a tiled Lattice.
 // </summary>
 // <use visibility=export>
 
@@ -57,7 +57,7 @@
 // will usually create a LatticeIterator.  Once created, you may attach a
 // LatticeNavigator to the iterator. A TiledLineStepper, is a concrete class
 // derived from the abstract LatticeNavigator that allows you to move
-// a Vector cursor through the Lattice in a way that will minimise the
+// a Vector cursor through the Lattice in a way that will minimize the
 // amount of cache memory consumed.
 // <p>
 // Some Lattices (in particular PagedArrays) are stored (on disk) in
@@ -186,6 +186,7 @@
 //  <li> Support for Matrix and higher dimensional cursors can be used.
 // </todo>
 
+
 class TiledLineStepper : public LatticeNavigator
 {
 public:
@@ -200,13 +201,12 @@ public:
 		    const IPosition& tileShape, 
 		    const uInt axis);
 
-  // the copy constructor which uses copy semantics.
+  // The copy constructor uses copy semantics.
   TiledLineStepper (const TiledLineStepper& other);
     
-  // destructor (does nothing)
   ~TiledLineStepper();
 
-  // The assignment operator which uses copy semantics.
+  // The assignment operator uses copy semantics.
   TiledLineStepper& operator= (const TiledLineStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor

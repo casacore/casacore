@@ -1,5 +1,5 @@
-//# LatticeIndexer.h: A class for stepping through (sub-)Lattices
-//# Copyright (C) 1994,1995,1996,1997
+//# LatticeIndexer.h: A helper class for stepping through Lattices
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,7 +24,6 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-//#---------------------------------------------------------------------------
 
 #if !defined(AIPS_LATTICEINDEXER_H)
 #define AIPS_LATTICEINDEXER_H
@@ -33,13 +32,14 @@
 #include <aips/aips.h>
 #include <aips/Lattices/IPosition.h>
 
+
 // <summary>
-// functions for stepping through (sub)-Lattices
+// A helper class for stepping through Lattices.
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="" date="" tests="tLatticeIndexer">
 // </reviewed>
 
 // <prerequisite>
@@ -49,49 +49,48 @@
 
 // <etymology>
 // This class is does various calculations involved with indexing in
-// Lattices and sub-Lattices. LatticeIndexer is not a good name, but it is
-// better than the previous name of LatticeLayout, and sub-Lattice has too
-// broad a context for this class. 
+// Lattices. LatticeIndexer is not a good name, but it is
+// better than the previous name of LatticeLayout.
 // </etymology>
 
 // <synopsis> 
-//
 // A LatticeIndexer contains all the information necessary to define the
 // shape of a Lattice or sub-Lattice. It is currently a repository of
 // functions that provide indexing calculations.
-//
+// <p>
 // A sub-Lattice is a section of a Lattice defined by a bottom left corner
 // (blc), a top right corner (trc), and a step size or increment on each
 // axis. The blc and trc pixels will always included in the sub-Lattice
 // if the step increment one. If the step increment is greater than one
 // the pixel in top right corner may not be included in the sub-Lattice. 
-//
+// <p>
 // This class knows the shape of the parent Lattice (including all
-// degenerate axis), and allows the user to specify a sub-Lattice that is
+// degenerate axes), and allows the user to specify a sub-Lattice that is
 // embedded in the parent Lattice. The default sub-Lattice, if none is
 // specified, is one identical in shape to the main Lattice. 
-//
+// <p>
 // A sub-Lattice can be defined on the Lattice by specifying a a trc, blc,
 // and step increment using the <src>subSection</src> function, or the
 // appropriate constructor. A sub-Lattice must be smaller than (or the same
 // size) the Lattice that it is derived from. A sub-Lattice can be further
-// derived from an already existing sub-Lattice eg. <br>
+// created from an already existing sub-Lattice eg.
+// <br>
 // If we have a 128 by 128 Lattice, we can specify the centre quarter by
 // using blc=[32,32] and trc=[95,95]. By then specifying a sub-Lattice of
 // blc=[0,0] and trc = [31,31] results in a sub-Lattice that has a blc
 // of [32,32] and trc of [63,63] with respect to the parent Lattice.
-//
+// <p>
 // The only way to increase the size of a sub-Lattice is to first revert to
 // the parent Lattice (using the <src>fullSize</src> function) and then
 // generate the new, bigger sub-Lattice.
-//
+// <p>
 // Indexing calculations (eg. the <src>tiledCursorMove</src> or the
 // <src>isInside</src> function) are performed on the specified sub-Lattice.
-//
-// The role of this class id to centralise the information and functions
+// <p>
+// The role of this class is to centralise the information and functions
 // needed to operate on sub-Lattices. It will normally be used by other
-// Lattice classes, and is currently only used by the 
-// <linkto class="LatticeStepper">LatticeStepper</linkto> class
+// Lattice classes, and is currently used by navigator classes like 
+// <linkto class="LatticeStepper">LatticeStepper</linkto>.
 // </synopsis>
 
 // <motivation>
@@ -100,8 +99,9 @@
 // there are operations which apply only to the layout such as subsectioning. 
 // </motivation>
 
-// <todo asof="1997/01/12">
-// </todo>
+//# <todo asof="1997/01/12">
+//# </todo>
+
 
 class LatticeIndexer
 {
@@ -110,53 +110,52 @@ public:
   LatticeIndexer();
 
   // Specify the size of the Lattice. Assume a full size sub-Lattice. 
-  LatticeIndexer(const IPosition& shape);
+  LatticeIndexer (const IPosition& shape);
 
   // Specify a Lattice and define a sub-Lattice within it.
-  LatticeIndexer(const IPosition& shape, const IPosition& blc,
-		 const IPosition& trc, const IPosition& inc);
+  LatticeIndexer (const IPosition& shape, const IPosition& blc,
+		  const IPosition& trc, const IPosition& inc);
   
-  // Copy constructor. This uses copy semantics. 
-  LatticeIndexer(const LatticeIndexer& other);
+  // The copy constructor uses copy semantics. 
+  LatticeIndexer (const LatticeIndexer& other);
 
-  // the destructor does nothing
-  virtual ~LatticeIndexer();
+  ~LatticeIndexer();
 
-  // Assignment operator. Uses copy semantics.
-  LatticeIndexer& operator=(const LatticeIndexer& other);
+  // The assignment operator uses copy semantics.
+  LatticeIndexer& operator= (const LatticeIndexer& other);
 
-  // function to change the shape of the Lattice. Resets the sub-Lattice to
+  // Function to change the shape of the Lattice. Resets the sub-Lattice to
   // fullsize.
-  virtual void resize(const IPosition& newShape);
+  void resize (const IPosition& newShape);
 
   // Returns the length of each axis (or the requested one) in the parent
   // Lattice
   // <group>
   const IPosition& fullShape() const;
-  uInt fullShape(uInt axis) const;
+  uInt fullShape (uInt axis) const;
   // </group>
 
   // Returns the length of each axis (or the requested one) in the sub-Lattice
   // <group>
   const IPosition& shape() const;
-  uInt shape(uInt axis) const;
+  uInt shape (uInt axis) const;
   // </group>
 
-  // function to return the increments along each axis (or the requested
+  // Function to return the increments along each axis (or the requested
   // one) of the Lattice.
   // <group>
   const IPosition& increment() const;
-  uInt increment(uInt axis) const;
+  uInt increment (uInt axis) const;
   // </group>
 
-  // function to return the offset (on a specified axes) between the
+  // Function to return the offset (on a specified axes) between the
   // sub-Lattice and the parent one.
   // <group>
   const IPosition& offset() const;
-  uInt offset(uInt axis) const;
+  uInt offset (uInt axis) const;
   // </group>
 
-  // function which returns the number of dimensions in the Lattice (or
+  // Function which returns the number of dimensions in the Lattice (or
   // sub-Lattice)
   uInt ndim() const;
 
@@ -165,11 +164,11 @@ public:
   // LatticeIndexer.
   void fullSize();
 
-  // function which returns the number of elements in the sub-Lattice; 
+  // Function which returns the number of elements in the sub-Lattice; 
   // this value is equal to the product of shape().
   uInt nelements() const;
 
-  // function which increments (incr=True) or decrements (incr=False) the
+  // Function which increments (incr=True) or decrements (incr=False) the
   // cursor position (the first IPosition argument) by a cursor shape (the
   // second IPosition argument), tiling to the next/previous axis if
   // necessary.  The path of movement is based upon the third IPosition
@@ -179,20 +178,20 @@ public:
   // sub-Lattice is reached. The cursorPosition is relative to the origin of
   // the sub-Lattice. To get its location relative to the main Lattice use
   // the absolutePosition() function. 
-  Bool tiledCursorMove(Bool incr, IPosition& cursorPos, 
-		       const IPosition& cursorShape,
-		       const IPosition& cursorHeading) const;
+  Bool tiledCursorMove (Bool incr, IPosition& cursorPos, 
+			const IPosition& cursorShape,
+			const IPosition& cursorHeading) const;
   
-  // function which returns a value of True if the IPosition argument
+  // Function which returns a value of True if the IPosition argument
   // is within the sub-Lattice.  Returns False if the IPosition argument is 
   // outside the sub-Lattice or if the argument doesn't conform to the 
   // data members.
   // <note role=warning> Due to zero-origins, an index argument equal to the
   // shape of this sub-Lattice lies outside and returns False. 
   // </note>
-  Bool isInside(const IPosition& index) const;
+  Bool isInside (const IPosition& index) const;
 
-  // function which subsections a LatticeIndexer.  The argument IPositions
+  // Function which subsections a LatticeIndexer.  The argument IPositions
   // specify "bottom left" and "upper right" corners and axis increments
   // (which default to one).  The origins are cumulative. i.e. specifying a
   // blc of (2,2), and then (1,1) results in the sub-Lattice having an
@@ -205,17 +204,17 @@ public:
   // integral number of increments does not end on the trc (in which case
   // the last position below the trc will be used).
   // <group>
-  void subSection(const IPosition& blc, const IPosition& trc,
-		  const IPosition& inc);
-  void subSection(const IPosition& blc, const IPosition& trc);
+  void subSection (const IPosition& blc, const IPosition& trc,
+		   const IPosition& inc);
+  void subSection (const IPosition& blc, const IPosition& trc);
   // </group>
 
-  // function which returns an IPosition in the parent Lattice given an
+  // Function which returns an IPosition in the parent Lattice given an
   // IPostion in the sub-Lattice.  Accounting is taken of any offsets and
   // increments caused by subSectioning. No checks are made to ensure the
   // supplied IPosition or the returned one are within the bounds of the
   // Lattice(s).
-  IPosition absolutePosition(const IPosition& position) const;
+  IPosition absolutePosition (const IPosition& position) const;
 
   //# function which returns True if all the elements in this 
   //# LatticeIndexer, or LatticeIndexer subsection, are arranged contiguously, 

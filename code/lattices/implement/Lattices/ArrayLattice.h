@@ -40,6 +40,7 @@ template <class T> class COWPtr;
 template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 
+
 // <summary>
 // A memory resident Lattice
 // </summary>
@@ -66,14 +67,15 @@ template <class T> class LatticeIterInterface;
 // suitable to problems which require small Lattices that can fit into the
 // memory of a computer. 
 //
-// ArrayLattices impose another layer of function calls on top of a an
+// ArrayLattice imposes another layer of function calls on top of a an
 // Array. As a result they should not be used for generic Array
 // manipulation. They are useful if you have an Array that needs to use
-// Lattice functions or exchange data with PagedArrays or other Lattice
-// derivatives (if they ever get written). For example the LatticeIterator
-// class can iterate through an Array in more ways than any of the
-// ArrayIterator classes can. The examples below illustrate some uses for
-// ArrayLattices. 
+// Lattice functions or needs to be used with PagedArrays or other Lattice
+// derivatives (like <linkto class=LatticeExpr>LatticeExpr</linkto> or
+// <linkto class=SubLattice>SubLattice</linkto>.
+// For example the LatticeIterator class can iterate through an Array in
+// more ways than any of the ArrayIterator classes can. The examples below
+// illustrate some uses for ArrayLattices. 
 // </synopsis> 
 
 // <example>
@@ -95,7 +97,7 @@ template <class T> class LatticeIterInterface;
 // // make a PagedArray to store the data on disk
 // PagedArray<Float> myPagedArray(myLattice.shape(), "myTestData.array");
 // // now copy the data onto disk
-// CopyLattice(myPagedArray, myLattice);
+// myPagedArray.copyData (myLattice);
 // </srcblock>
 //
 // <h4>Example 2:</h4>
@@ -137,8 +139,7 @@ template <class T> class LatticeIterInterface;
 // </linkfrom>
 
 
-template<class T>
-class ArrayLattice : public Lattice<T>
+template <class T> class ArrayLattice : public Lattice<T>
 {
 public: 
   // The default constructor creates a ArrayLattice that is useless for just
@@ -147,24 +148,23 @@ public:
   ArrayLattice();
 
   // Construct an ArrayLattice with the specified shape.
-  // This results in a writable lattice.
+  // It results in a writable lattice.
   ArrayLattice (const IPosition& shape);
 
   // Construct an ArrayLattice that references the given Array.
-  // This results in a writable lattice.
+  // It results in a writable lattice.
   ArrayLattice (Array<T>& array);
 
   // Construct an ArrayLattice that references the given Array.
-  // This results in a non-writable lattice.
+  // It results in a non-writable lattice.
   ArrayLattice (const Array<T>& array);
 
-  // the copy constructor which uses reference semantics.
+  // The copy constructor uses reference semantics.
   ArrayLattice (const ArrayLattice& other);
 
-  // the destructor does very little
   ~ArrayLattice();
 
-  // the assignment operator which uses copy semantics.
+  // The assignment operator uses copy semantics.
   ArrayLattice& operator= (const ArrayLattice& other);
 
   // Make a copy of the object (reference semantics).
@@ -176,24 +176,24 @@ public:
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const; 
   
-  // functions which sets all of the elements in the Lattice to a value.
+  // Set all of the elements in the Lattice to a value.
   virtual void set (const T& value);
 
-  // functions which returns an Array of the data within this Lattice.
+  // Return the Array of the data within this Lattice.
   // <group>
   Array<T>& asArray();
   const Array<T>& asArray() const;
   // </group>
 
-  // These are the true implementations of the parenthesis operator. It will
-  // probably be more convienient to use the actual parenthesis operator
-  // defined in the Lattice base class.
-  // <group>
+  // Return the value of the single element located at the argument
+  // IPosition.  
+  // Note that operator() (defined in the base class) can also be used.
   virtual T getAt (const IPosition& where) const;
-  virtual void putAt (const T& value, const IPosition& where);
-  // </group>
   
-  // a function which checks for internal consistency. Returns False if
+  // Put the value of a single element.
+  virtual void putAt (const T& value, const IPosition& where);
+
+  // Check for internal consistency. Returns False if
   // something nasty has happened to the ArrayLattice.
   virtual Bool ok() const;
   

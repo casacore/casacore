@@ -1,5 +1,5 @@
-//# Lattices.h:  a module for the Lattice related classes
-//# Copyright (C) 1996,1997
+//# Lattices.h: Regular N-dimensional data structures.
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,40 +28,57 @@
 #if !defined (AIPS_LATTICES_H)
 #define AIPS_LATTICES_H
 
-// #include <trial/Lattices/ArrLatticeIter.h>
-// #include <trial/Lattices/ArrayLattice.h>
-// #include <trial/Lattices/CopyLattice.h>
-// #include <trial/Lattices/Lattice.h>
-// #include <trial/Lattices/LatticeIndexer.h>
-// #include <trial/Lattices/LatticeIterInterface.h>
-// #include <trial/Lattices/LatticeIterator.h>
-// #include <trial/Lattices/LatticeNavigator.h>
-// #include <trial/Lattices/LatticeStepper.h>
-// #include <trial/Lattices/PagedArrIter.h>
-// #include <trial/Lattices/PagedArray.h>
+
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slice.h>
 #include <aips/Lattices/Slicer.h>
 
+// #include <aips/Lattices/ArrayLattice.h>
+// #include <aips/Lattices/PagedArray.h>
+// #include <aips/Lattices/TempLattice.h>
+// #include <aips/Lattices/TiledShape.h>
+// #include <aips/Lattices/LatticeIterator.h>
+// #include <aips/Lattices/LatticeStepper.h>
+// #include <aips/Lattices/TileStepper.h>
+// #include <aips/Lattices/TiledLineStepper.h>
+
+// #include <trial/Lattices/SubLattice.h>
+// #include <trial/Lattices/LatticeExpr.h>
+
+// #include <trial/Lattices/LatticeRegion.h>
+// #include <trial/Lattices/LCSlicer.h>
+// #include <trial/Lattices/LCBox.h>
+// #include <trial/Lattices/LCEllipsoid.h>
+// #include <trial/Lattices/LCPolygon.h>
+// #include <trial/Lattices/LCUnion.h>
+// #include <trial/Lattices/LCIntersection.h>
+// #include <trial/Lattices/LCDifference.h>
+// #include <trial/Lattices/LCConcatenation.h>
+// #include <trial/Lattices/LCComplement.h>
+// #include <trial/Lattices/LCExtension.h>
+
+
 // <module>
-//
-// <summary>Regular N-dimensional data structures</summary>
-//
+
+// <summary>
+// Regular N-dimensional data structures.
+// </summary>
+
 // <prerequisite>
 //   <li> Programmers of new Lattice classes should understand Inheritance
 //   <li> Users of the Lattice classes should understand Polymorphism.
+//   <li> class <linkto name=IPosition>IPosition</linkto>
 // </prerequisite>
-//
-// <reviewed reviewer="Neil Killeen" date="1997/07/00" demos="">
+
+// <reviewed reviewer="" date="" demos="">
 // </reviewed>
-//
+
 // <etymology>
-//
 // Lattice: "A regular, periodic configuration of points, particles, or
 // objects, throughout an area of a space..." (American Heritage Directory)
-// This definition matches our own: an n-dimensional arrangement of data
+// This definition matches our own: an N-dimensional arrangement of data
 // on regular orthogonal axes.
-//
+// <p>
 // In AIPS++, we have used the ability to call many things by one generic
 // name (Lattice) to create a number of classes which have different storage
 // techniques (e.g. core memory, disk, etc...).  The name Lattice should
@@ -69,11 +86,10 @@
 // Lattice objects have in common.  If functions require a Lattice
 // argument, the classes described here may be used interchangeably, even
 // though their actual internal workings are very different.
-//
 // </etymology>
-//
+
 // <synopsis>
-// The Lattice module may be broken up into five areas:
+// The Lattice module may be broken up into a few areas:
 // <ol> 
 // <li> Orthogonal n-space descriptors - useful when a shape of a Lattice is
 // needed or when a sub-region within a Lattice is required.
@@ -99,24 +115,31 @@
 // Int xShape = threeSpace(0);
 // Int zShape = threeSpace(2);
 //
-// // construct another with all axis values equal to 666;
+// // construct another with all three axes values equal to 666;
 // IPosition threeSpaceAlso(3,666);
 //
 // // do math with the IPositions...
 // threeSpace += threeSpaceAlso;
 // AlwaysAssert(threeSpace(1) == 714, AipsError);
-//
 // </srcblock>
+//
 //   <li> The <linkto class="Slicer">Slicer</linkto> class name may be
 //   thought of as a short form of "n-Dimensional Slice Specifier."  
 //   This object is used to bundle into one place all the information
 //   necessary to specify a regular subregion within an Array or Lattice.
 //   In other words, Slicer holds the location of a "slice" of a
-//   greater whole.  Construction is with 3 IPositions: the location of the
-//   subspace within the greater space; the shape or end location of the
-//   subspace within the greater space; and the stride, or multipilier to be
+//   greater whole.  Construction is with 3 up to IPositions: the location of
+//   the subspace within the greater space; the shape or end location of the
+//   subspace within the greater space; and the stride, or multiplier to be
 //   used for each axis.  The stride gives the user the chance to use every
 //   ith piece of data, rather than every position on the axis.
+//   <br>
+//   It is possible to leave some values in the given start or end/length
+//   unspecified. Such unspecified values default to the boundaries of the
+//   array to which the slicer will be applied.
+//   It is also possible to use a non-zero origin when applying the slicer
+//   to an array.
+//
 // <srcblock>
 // // Define the shape of an array.
 // IPosition shape(2,20,30);
@@ -124,17 +147,18 @@
 // // Also define an origin.
 // IPosition origin(2,-5,15);
 //
-// // Now define some Slicer's, initially only specify the blc
+// // Now define some Slicer's, initially only specify the start
+// // Its length and stride will be 1.
 // Slicer ns0(IPosition(2,0,24));
 //
 // // make some IPositions as holders for the rest of the information
 // IPosition blc,trc,inc;
 //
 // // Use the shape and origin to fill our holders assuming we want to use
-// // as much of the Array as possible. // 
+// // as much of the Array as possible.
 // ns0.inferShapeFromSource (shape, origin, blc,trc,inc);
 //
-// // print out the new info ie. blc=[-5,15],trc=[14,44],inc=[1,1]
+// // print out the new info ie. blc=[5,9],trc=[5,9],inc=[1,1]
 // cout << blc << trc << inc << endl;
 //
 // // Build a slicer with temporaries for arguments. The arguments are:
@@ -145,8 +169,13 @@
 // //
 // Slicer ns1(IPosition(2,3,5), IPosition(2,13,21), IPosition(2,3,2),
 //            Slicer::endIsLast);
+// ns1.inferShapeFromSource (shape, origin, blc,trc,inc);
+// //
+// // print out the new info ie. blc=[2,5],trc=[17,15],inc=[3,2]
+// cout << blc << trc << inc << endl;
 // </srcblock>
 //   </ul>
+//
 // <li> Lattices - the actual holders of lattice-like data which all share a
 // common <linkto class="Lattice">interface</linkto>.  The following items
 // are all Lattices and may be used polymorphically wherever a Lattice is
@@ -158,9 +187,9 @@
 //   are not stored on disk.  This n-dimensional array class is the simplest
 //   of the Lattices.  Users construct the ArrayLattice with an argument
 //   which is either an IPosition which describes the array shape or a
-//   previously instantiated AIPS++ Array that may already contain data.  In
+//   previously instantiated Array object that may already contain data. In
 //   the former case, some Lattice operation must be done to fill the data.
-//   The ArrayLattice like all Lattices may be iterated through with a
+//   The ArrayLattice, like all Lattices, may be iterated through with a
 //   LatticeIterator (see below).
 // <srcblock>
 // // Make an Array of shape 3x4x5
@@ -174,26 +203,26 @@
 //     for (Int i=0; i<3; j++) 
 //       simpleArray(IPosition(3,i,j,k)) = i+j+k;
 //
-// // use the array to create an ArrayLattice and apply a function
-// // to the values within the Lattice
+// // use the array to create an ArrayLattice.
 //
 // ArrayLattice<Float> lattice(simpleArray);
-// lattice.apply(&floatFunction);
 // </srcblock>
+//
 //   <li>The <linkto class="PagedArray">PagedArray</linkto> class stores its
 //   data on disk and pages it into random access memory for use.  Paging is
 //   used here to describe the process of getting pieces of data small
 //   enough to fit into active memory even if the whole data set is much too
 //   large.  This class "feels" like an array but may hold very large amounts 
-//   of data.  The paging has an added effect, all the data may be made persistent
-//   so it stays around after the application ends.  When you use PagedArrays - use 
+//   of data.  The paging has an added effect: all the data may be made
+//   persistent, so it stays around after the application ends.
+//   When you use PagedArrays - use 
 //   them because you need persistent data and/or paging into large data sets.
-//
+//   <br>
 //   The persistence is done using a <linkto module="Tables">Table</linkto>,
 //   and uses the <linkto module="Tables#Tables:TiledStMan">tiled storage
 //   manager</linkto>.  This means that accessing the data along any axis is
-//   equally efficient.
-//
+//   equally efficient (depending on the tile shape used).
+//   <br>
 //   A PagedArray constructor allows previously created PagedArrays to be
 //   recalled from disk.  Much of the time, the PagedArray will be
 //   constructed with an IPosition argument which describes the array shape
@@ -206,21 +235,81 @@
 //
 // PagedArray<Float> lattice(fileName);
 //
-// // Create a LatticeIterator to access the Lattice in optimal tile shaped chunks.
+// // Create a LatticeIterator to access the Lattice in optimal tile
+// // shaped chunks.
 //
-// IPosition cursorShape(lattice.tileShape());
-// LatticeIterator<Float> iter(lattice, cursorShape);
+// LatticeIterator<Float> iter(lattice);
 //
 // // Iterate through and do something simple; here we just 
 // // sum up all the values in the Lattice
 //
 // Float dSum = 0;
 // for(iter.reset(); !iter.atEnd(); iter++) {
-//   dSum += dSum(iter.cursor());
+//   dSum += sum(iter.cursor());
 // }
 // </srcblock>
+//
 //  </ul>
 //
+// <li> <linkto class="MaskedLattice">MaskedLattice</linkto> - a
+// Lattice with a mask. It is an abstract base class for
+// various types of MaskedLattices. A MaskedLattice does not need
+// to contain a mask (see e.g. SubLattice below), although the user
+// can always ask for the mask. The function <src>hasMask()</src>
+// tells if there is really a mask. If not, users could take
+// advantage by shortcutting some code for better performance.
+// Of course, doing that requires more coding, so it should only
+// be done where performance is a real issue.
+//  <ul>
+//  <li> A <linkto class="SubLattice">SubLattice</linkto> represents
+//  a rectangular subset of a Lattice. The SubLattice can be a simple
+//  box, but it can also be a circle, polygon, etc..
+//  In the latter case the SubLattice contains a mask
+//  telling which pixels in the bounding box actually belong to the
+//  circle or polygon. In the case of a box there is no mask, because
+//  there is no need to (because a box is already rectangular).
+//  <br> A SubLattice can be constructed from any Lattice and a
+//  <linkto class=LatticeRegion>LatticeRegion</linkto> telling which
+//  part to take from the Lattice.
+//  If the SubLattice is constructed from a <src>const Lattice</src>,
+//  the SubLattice is not writable. Otherwise it is writable if the
+//  lattice is writable.
+//  <p>
+//  There is a rich variety of <linkto class=LCRegion>region</linkto>
+//  classes which can be used to define a LatticeRegion in pixel coordinates.
+//  The elementary ones are <linkto class=LCBox>box</linkto>,
+//  <linkto class=LCEllipsoid>ellipsoid</linkto>, and
+//  <linkto class=LCPolygon>polygon</linkto>.
+//  Compound region classes can be used to make a
+//  <linkto class=LCUnion>union</linkto>,
+//  <linkto class=LCIntersection>intersection</linkto>,
+//  <linkto class=LCDifference>difference</linkto>,
+//  <linkto class=LCConcatenation>concatenation</linkto>,
+//  <linkto class=LCComplement>complement</linkto>, or
+//  <linkto class=LCExtension>extension</linkto>
+//  from one or more regions.
+//  <br>Apart from these region classes class
+//  <linkto class=LCSLicer>LCSlicer</linkto> can be used to define
+//  a box with optional strides. It also offers the opportunity to
+//  define the box in fractions or to define it relative to the
+//  center of the lattice or relative to a reference pixel.
+//  <br>The final, and most general way, to define regions is by
+//  means of the world coordinates region classes in the
+//  <linkto module=Images>Images</linkto> module, in particular
+//  the <linkto class=ImageRegion>ImageRegion</linkto> class.
+//  
+//  <li>A <linkto class=LatticeExpr>LatticeExpr</linkto> represents
+//  a mathematical expression of lattices. All standard operators
+//  and many, many <linkto class=LatticeExprNode>functions</linkto>
+//  can be used in an expression.
+//  <br> An expression is calculated on-the-fly, thus only when
+//  the user gets a part of the lattice, the expression is calculated
+//  for that part. Subexpressions resulting in a scalar are calculated
+//  only once on get of the first part of the lattice expression.
+//  <br> Note that a lattice expression is not writable, thus using
+//  the put function on such a lattice results in an exception.
+//  </ul>
+
 // <li> <linkto class="LatticeIterator">LatticeIterator</linkto> - the
 // object which allows iteration through any Lattice's data. This comes in
 // two types: the <src>RO_LatticeIterator</src> which should be used if you
@@ -232,28 +321,33 @@
 //  (hereafter refered to as a "cursor") through a Lattice based object,
 //  from beginning to end.  Think of a window into the Lattice that moves to
 //  a new location when requested.  The Lattice doesn't change but you may
-//  see all or part of it's data as the cursor "window" moves around.  This
+//  see all or part of its data as the cursor "window" moves around.  This
 //  class allows optimized read-only iteration through any instance of a
 //  class derived from Lattice.   The cursor's shape is defined by the user and
-//  moved through the Lattice in an orderly fashion also defined by the
-//  user. Since the cursor is "read only" it can only be used to "get" the 
-//  data out of the Lattice.  LatticeIterators are constructed with  the 
-//  Lattice to be iterated as the first argument.  The second constructor 
+//  moved through the Lattice in an orderly fashion also defined by the user.
+//  Since the cursor is "read-only" it can only be used to "get" the data
+//  out of the Lattice.  RO_LatticeIterators are constructed with the Lattice
+//  to be iterated as the first argument. The optional second constructor 
 //  argument is either an IPosition which defines the shape of the cursor 
-//  or a LatticeNavigator argument.  The IPosition argument cause the iterator
+//  or a <linkto class=LatticeNavigator>LatticeNavigator</linkto> argument.
+//  The IPosition argument cause the iterator
 //  to move the cursor in a simple pattern; the cursor starts at the Lattice's
 //  origin and moves in the direction of the x-axis, then the y-axis, then 
-//  the z-axis, etc...  If a LatticeNavigator argument is given, more
-//  control over the cursor shape and path are  available.
+//  the z-axis, etc..  If a LatticeNavigator argument is given, more
+//  control over the cursor shape and path are available. If no second
+//  argument is given, the optimal
+//  <linkto class=TileStepper>TileStepper</linkto> navigator will be used.
 // <srcblock>
 // // simple route - define a cursor shape that is the xy plane of our
 // lattice.
 //
 // IPosition cursorShape(2, lattice.shape()(0), lattice.shape()(1));
 // LatticeIterator<Float> iter(lattice, cursorShape);
-// for (iter.reset(); !iter.atEnd(); iter++) 
+// for (iter.reset(); !iter.atEnd(); iter++) {
 //   minMax(iter.cursor(), min, max);
+// }
 // </srcblock>
+//
 //   <li> The <linkto class="LatticeIterator">LatticeIterator</linkto> class
 //   name reflects its role as a means of iterating a read and write cursor
 //   through a Lattice based object.  Not only does the cursor allow you to 
@@ -274,17 +368,20 @@
 //
 // // fill each plane with the "distance" of the iterator from the origin
 //
-// for(iter.reset();!iter.atEnd(); iter++)
-//    iter.cursor() = iter.nsteps();
+// for(iter.reset();!iter.atEnd(); iter++) {
+//    iter.woCursor() = iter.nsteps();
+// }
 // </srcblock>
 //  </ul>
-// <li> LatticeNavigators - the objects which define the method and path used by a
-// LatticeIterator to move the cursor through a Lattice.   Many
+//
+// <li> LatticeNavigators - the objects which define the method and path used
+// by a LatticeIterator to move the cursor through a Lattice.   Many
 // different paths are possible.  We leave it you to choose the
-// LatticeNavigator (method and path) when using a LatticeIterator.
+// <linkto class=LatticeNavigator>LatticeNavigator</linkto>
+// (method and path) when using a LatticeIterator.
 // <ul>
 //   <li> The <linkto class="LatticeStepper">LatticeStepper</linkto> class
-//   is used to define the steps which the cursor takes during it's path
+//   is used to define the steps which the cursor takes during its path
 //   through the Lattice.  Every element of the Lattice will be covered,
 //   starting at the origin and ending at the "top right corner."  This
 //   class provides the information needed by a LatticeIterator to do
@@ -320,36 +417,40 @@
 // LatticeStepper nav(latticeShape, cursorShape, order);
 // LatticeIterator<Float> iter(image, nav);
 // </srcblock>
-// <li> Another Navigator is the
-// <linkto class="TileStepper">TileStepper</linkto> 
-// class.  This Navigator allows you to iterate through a Lattice with a Vector
-// cursor.  However, it steps through the Lattice in an order which is
-// optimum with regards the I/O of the tiles with which the Table is
-// constructed.
+//
+// <li> 
+//  The <linkto class="TiledLineStepper">TiledLineStepper</linkto> class
+//  allows you to iterate through a Lattice with a Vector cursor.
+//  However, it steps through the Lattice in an order which is
+//  optimum with regard to the I/O of the tiles with which the Lattice is
+//  constructed.
 //
 // <srcblock>
 //
-// // Set up a TileStepper to return profiles along the specified
+// // Set up a TiledLineStepper to return profiles along the specified
 // // axis from a PagedArray (not all Lattices have the tileShape member
 // // function).  Then create the iterator as well.
 // 
-// TileStepper nav(lattice.shape(), lattice.tileShape(), axis);
+// TiledLineStepper nav(lattice.shape(), lattice.tileShape(), axis);
 // LatticeIterator<Complex> nav(lattice, nav);
 // </srcblock>
 //
-// </ul>
-// <li> Global functions which operate on Lattices.
-// <ul> <linkto group="CopyLattice.h#Lattice Copy Functions">CopyLattice</linkto>
-// - as the name implies, this function will transfer the lattice-like data
-// from one Lattice to another. It can also copy regions of one Lattice to
-// regions of another Lattice.
+// <li> 
+//  The <linkto class="TileStepper">TileStepper</linkto> class
+//  allows you to iterate through a Lattice in the optimum way.
+//  It steps through the lattice tile by tile minimizing I/O and memory usage.
+//  It is very well suited for pixel based operations.
+//  However, its iteration order is such that it cannot be used for
+//  a certain subset of pixels (e.g. a vector) is needed.
+//  <br>This navigator is the default when no navigator is given when
+// constructing a (RO_)LatticeIterator.
 //
 // </ul>
 // </ol>
 //
 // <note role=warning> The following are listed for low-level programmers.  
 // Lattice users need not understand them.</note>  The Lattice directory
-// contains several files relevent only to implementation.
+// contains several files relevant only to implementation.
 //
 // <ul>
 //   <li> <linkto class="Lattice">Lattice</linkto> - an abstract base class
@@ -360,54 +461,49 @@
 //   class name defines the interface used for navigating through a Lattice
 //   by iteration.  This class is an abstract base.  Classes derived from
 //   this (currently 
-//   <linkto class="LatticeStepper">LatticeStepper</linkto> and
+//   <linkto class="LatticeStepper">LatticeStepper</linkto>,
+//   <linkto class="TiledLineStepper">TiledLineStepper</linkto>, and
 //   <linkto class="TileStepper">TileStepper</linkto>) must
 //   define the path the iterator cursor follows, the size of the movement
-//   of the cursor with each iteration, and the behavior of that cursor
+//   of the cursor with each iteration, and the behaviour of that cursor
 //   shape as it moves through a Lattice.
 //   <li> The 
 //   <linkto class="LatticeIterInterface">LatticeIterInterface</linkto>
 //   class defines the interface for a specific Lattice's iterator.  This
-//   class is an abstract base class i.e. it may not be instantiated but
-//   solely is used through derivation. In order to utilize the
-//   LatticeIterator class, Lattice based classes need to
-//   derive an iterator from LatticeIterInterface.  This method will
-//   allow authors of new Lattices to optimize for the LatticeIterator
+//   class is a base class with a default iterator implementation.
+//   Lattice based classes may need to derive an iterator from
+//   LatticeIterInterface to optimize for the LatticeIterator
 //   internals which impact upon the new Lattice.
 //   <li> <linkto class="ArrLatticeIter">ArrLatticeIter</linkto> - this
 //   class is the ArrayLattice's optimized method of iterating.  It is
 //   derived from LatticeIterInterface.  This class is a "letter" utilized
-//   within the LatticeIterator "envelope" and would normally not be
+//   within the LatticeIterator "envelope" and cannot be
 //   instantiated by any user.
 //   <li> <linkto class="PagedArrIter">PagedArrIter</linkto> - this class is
 //   the PagedArray's optimized method of iterating. This class is a
-//   "letter" utilized within the LatticeIterator "envelope" and should not
-//   normally be instantiated by any user.
+//   "letter" utilized within the LatticeIterator "envelope" and cannot
+//   be instantiated by any user.
 //   <li> <linkto class="LatticeIndexer">LatticeIndexer</linkto> - this
 //   class contains the currently defined Lattice and sub-Lattice shape. It
-//   is currently used only by the LatticeStepper class as it contains
-//   member functions for moving a cursor through a defined sub-Lattice. I
-//   cannot see why users would every be interested in this class. It is
-//   mainly for use when writing classes derived from LatticeNavigator.
+//   is used only by navigator classes as it contains
+//   member functions for moving a cursor through a defined sub-Lattice.
 //   </ul>
 // </ol>
 // </synopsis>
-//
+
 // <motivation>
 // Lattices allow the various holders of data to assume a general method 
 // of treatment; by making interfaces in terms of the Lattice class,
 // the programmer can  polymorphically operate on objects derived  from the
 // Lattice class.
 // </motivation>
-//
-// <todo asof="1997/01/30">
-//   <li> More ways of navigating through the Lattice are needed. In
-//   particular Navigators which optimally allow you to access all the data
-//   in a Lattice are required. This would deprecate the need for users to
-//   use the nice cursorshape function.
-//   <li> A decent interface handling complex regions of interest is needed.
+
+// <todo asof="1998/10/10">
+//  <li> Make Lattice expressions mask aware.
+//  <li> Set cache size correctly in expressions and sublattices.
+//  <li> Make MaskedIterator class?
 // </todo>
-//
+
 // </module>
 
 #endif

@@ -1,5 +1,5 @@
-//# LatticeNavigator.h: an abstract base class to steer lattice iterators
-//# Copyright (C) 1994,1995,1996,1997
+//# LatticeNavigator.h: Abstract base class to steer lattice iterators
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_LATTICENAVIGATOR_H)
 #define AIPS_LATTICENAVIGATOR_H
 
-#if defined(_AIX)
-#pragma implementation ("LatticeNavigator.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -40,18 +37,20 @@ class IPosition;
 class ROTiledStManAccessor;
 
 
-// <summary> an abstract base class to steer lattice iterators </summary>
-//
-// <use visibility=export>
-//
-// <reviewed reviewer="" date="" tests="tPagedArrIter.cc">
+// <summary>
+// Abstract base class to steer lattice iterators.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="tLatticeStepper.cc">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class=LatticeIterator>LatticeIterator</linkto>
 //   <li> <linkto class=Lattice>Lattice</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // Lattice iteration can proceed with a number of different strategies -
 // all of which answer the question:  where do I go from here?
@@ -62,9 +61,8 @@ class ROTiledStManAccessor;
 // Concrete classes derived  from this base class implement different
 // navigation strategies - but they are all "navigators".
 // </etymology>
-//
-// <synopsis> 
 
+// <synopsis> 
 // This abstract base class defines the interface for objects which generate
 // positions for LatticeIterators. This position is not just a single point
 // in the Lattice but a region or "cursor" that is moved through the
@@ -72,39 +70,39 @@ class ROTiledStManAccessor;
 // cursor from the Lattice. This classes (and those derived from it) are
 // responsible for moving the cursor to the next position and determining
 // its shape.
-
+//
 // There may eventually be a large collection of tools for traversing
 // Lattices.  At this writing (October 1997) there are three concrete
 // classes derived from LatticeNavigator: 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> and
 // <linkto class="TiledLineStepper">TiledLineStepper</linkto>. 
 // <linkto class="TileStepper">TileStepper</linkto>. 
-
+//
 // The <src>LatticeStepper</src> class moves through a Lattice in fixed
 // steps defined by the user specified cursor, incrementing to the next
 // portion of the Lattice with each step, and wrapping around axes as
 // needed.  Other position generators might follow the brightest pixel,
 // traverse a number of predefined subregions, or change size automatically
 // when near the edges.
-
+//
 // The <src>TiledLineStepper</src> class moves a Vector cursor through a
 // Lattice, until all the lines in the set of tiles along the specified
 // axis have been exhausted. It then moves to the next set of tiles. This a
 // a memory efficient way to move a Vector cursor through a Lattice.
-
+//
 // The most important member functions of this class are those which move
 // the cursor to the next position. These are the <src>operator++</src> and
 // <src>operator--</src> member functions, (in postfix and prefix forms). 
-
+//
 // The cursor shape need not be constant as it moves through the Lattice,
 // but may change depending on its current position. For the LatticeStepper
 // and TiledLineStepper classes the cursor shape is constant as it steps
 // through the Lattice.
-
+//
 // It is not possible to randomly move the cursor to an arbitrary place in
 // the Lattice, although the cursor can be moved to the starting position at
 // any time using the <src>reset</src> member function.
-
+//
 // The position of the cursor can be queried at any time using the
 // <src>position</src> member function. This gives the position of the
 // bottom left hand corner of the cursor. The position of the top right hand
@@ -112,14 +110,14 @@ class ROTiledStManAccessor;
 // function, and the current cursor shape is obtained using the
 // <src>cursorShape</src> member function. Note that the endPosition
 // does not take an overhang into account.
-
+//
 // It is possible that for some positions of the cursor, part of it will
 // "hang over" the edge of the Lattice. When this occurs the
 // <src>hangOver</src> member function will return True. This will occur
 // with a LatticeStepper if the Lattice shape is not a multiple of the
 // cursor shape. Hangover cannot occur with the TiledLineStepper as the length
 // of the Vector cursor is defined by the Lattice Shape.
-
+//
 // It may be possible (depending on the concrete LatticeNavigator actually
 // used) to specify that only a region of the Lattice (defined by a top
 // right hand corner, bottom left hand corner, and step increment) be
@@ -127,24 +125,24 @@ class ROTiledStManAccessor;
 // <src>subSection</src> member function. At any time the region can be
 // redefined by calling the <src>subSection</src> function again. This
 // replaces the previously defined region with the new one.
-
+//
 // Using the subSection function always sets the cursor position to the
 // origin of the currently defined sub-lattice. This is a backdoor way to
 // move the cursor to random locations in the Lattice.
-
+//
 // It is an error to define a sub-lattice that is bigger than the current
 // Lattice. If using a LatticeStepper it may also be necessary to resize the
 // cursor (using the <src>setCursorShape</src> member function) prior to
 // calling the subSection function as the cursor cannot be bigger than the
 // sub-Lattice on any axis.
-
+//
 // The arguments (trc, blc and inc) to the subSection function are always
 // relative to the main Lattice. This is also true of the <src>position<src>
 // and <src>endPosition</src> functions. To get the position of the cursor
 // relative to the currently defined sub-Lattice use the
 // <src>relativePosition</src> and <src>relativeEndPosition</src> member
 // functions.
-
+//
 // Many of the LatticeIterator member functions are directly forwarded to
 // virtual functions of this class, and classes derived from it. For
 // instance, LatticeIterator<T>::operator++() calls
@@ -153,7 +151,7 @@ class ROTiledStManAccessor;
 // LatticeStepper->operator++(). Other functions like this are documented in
 // the <linkto class="LatticeIterator">LatticeIterator</linkto> class
 // </synopsis> 
-//
+
 // <example>
 // See the example in the 
 // <linkto class="LatticeStepper">LatticeStepper</linkto> class, the 
@@ -176,6 +174,7 @@ class ROTiledStManAccessor;
 //  <li> Think about how to implement Navigators which can traverse
 //  arbitrary shaped regions.
 // </todo>
+
 
 class LatticeNavigator {
 public:
@@ -267,6 +266,8 @@ public:
   virtual IPosition cursorShape() const = 0;  
 
   // Function which returns the axes of the cursor.
+  // These are the axes which should not be removed by the
+  // iterator functions <src>vectorCursor()</src>, etc..
   virtual IPosition cursorAxes() const = 0;
 
   // Function which returns "True" if the increment/decrement operators have

@@ -1,5 +1,5 @@
 //# LatticeIterator.h: Iterators for Lattices: readonly or read/write
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@ template <class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tPagedArrIter.cc">
+// <reviewed reviewer="" date="" tests="tLatticeIterator.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -59,9 +59,9 @@ template <class T> class Vector;
 // </prerequisite>
 
 // <etymology>
-// The leading "RO" is shorthand for "readonly", which indicates that 
-// RO_LatticeIterator's are used for traversing Lattices, examining and 
-// possibly extracting their contents, but not for modifying them. 
+// The leading "RO" is shorthand for "readonly", which indicates that an
+// RO_LatticeIterator is used for traversing a Lattice, examining and 
+// possibly extracting its contents, but not for modifying it.
 // </etymology>
 
 // <synopsis> 
@@ -72,10 +72,29 @@ template <class T> class Vector;
 // calling the <src>reset</src> function.  The RO_LatticeIterator gives the
 // user the opportunity to methodically walk through the data, in an
 // efficient way.
-// <br>Note that the cursor shape in each step of the iteration can be
-// different. This is especially true when the end of an axis is reached
-// for a non-integrally fitting cursor shape. But it can also be true
-// in other cases.
+// <p>
+// The supplied <linkto class=LatticeNavigator>LatticeNavigator</linkto>
+// determines how to step through the Lattice. It can, for instance,
+// be line by line, but it can also be in a more complicated way.
+// When no navigator is supplied, a default navigator will be used
+// which steps in the optimum way.
+// <p>
+// A cursor (which is an <linkto class=Array>Array</linkto> object) is
+// used to return the data for each step in the iteration process.
+// Depending on the navigator used the cursor can have a different shape
+// shape for each step of the iteration. This is especially true when the
+// end of an axis is reached for a non-integrally fitting cursor shape.
+// <br> The cursor() function returns an Array which has the same
+// dimensionality as the Lattice. It is, however, also possible to get
+// an Array with a lower dimensionality by using the correct function
+// in the group <src>vectorCursor()</src>, <src>matrixCursor()</src>, and
+// <src>cubeCursor()</src>. Those functions remove (some) degenerated axes
+// resulting in a vector, matrix or cube.
+// When, for example, a LatticeStepper with shape [64,1,1] is used, the
+// <src>vectorCursor()</src> can be used. It will remove the degenerated
+// axes (length 1) and return the cursor as a Vector object. Note that
+// <src>matrixCursor()</src> cannot be used, because removing the degenerated
+// axes results in a 1D array.
 // <p>
 // Generally iterators should not be long-lived objects - create new ones
 // when needed rather than keeping one around for a long time to be
@@ -98,11 +117,12 @@ template <class T> class Vector;
 // LatticeIterator.
 // <p>
 // Before explaining the initialization of an iterator, the LatticeNavigator
-// class must be introduced.  This is an abstract base class, from which
-// concrete navigators are derived.  After one of these is created, you
+// class must be further introduced. This is an abstract base class, from which
+// concrete navigators are derived. After one of these is created, you
 // attach it to the LatticeIterator, and it provides a specific technique
-// for navigating through the Lattice.  Different navigators deliver
-// different traversal schemes.  The most basic is LatticeStepper, which
+// for navigating through the Lattice. Different navigators deliver
+// different traversal schemes.  The most basic is
+// <linkto class=LatticeStepper>LatticeStepper</linkto>, which
 // moves a specified shape sequentially through the Lattice -- for example,
 // by moving one plane at a time, front to back, through a cube.  Another
 // (future) navigator might be designed to move a small, 2-dimensional plane
@@ -123,14 +143,17 @@ template <class T> class Vector;
 // PagedArray cache. This reduces memory usage considerably.
 //  <li> <linkto class=TileStepper>TileStepper</linkto> steps tile
 // by tile through a lattice. This navigator requires a PagedArray cache
-// of 1 tile only. However, it can be used for a few purposes only.
+// of 1 tile only. However, it can only be used for application in which
+// the iteration order is not important (e.g. addition, determining max).
 // </ol>
-//
-// Here's a typical declaration:
+// The class <linkto class=LatticeApply>LatticeApply</linkto> is very useful
+// to iterate through a Lattice while applying an algorithm. It makes it
+// possible for the user to concentrate on the algorithm.
+// <p>
+// Here's a typical iterator declaration:
 // <srcblock>
 // RO_LatticeIterator<Float> iterator(pagedArray, stepper);
 // </srcblock>
-// 
 // The template identifier <src>Float</src> defines the data type of 
 // Array object that will be the iterator's cursor. 
 //<br>
@@ -142,40 +165,28 @@ template <class T> class Vector;
 // When passed the name of a previously created PagedArray stored on disk,
 // this function will traverse the whole array, and report the average value
 // of all of the elements. Imagine that the filename contains a PagedArray
-// with dimension 64 x 64 x 8 (though this function only requires that
-// the PagedArray have dimension 2 or higher).
+// with dimension 64 x 64 x 8
 // <srcblock>
 // void demonstrateIterator (const String& filename)
 // {
 //   PagedArray<Float> pagedArray(filename);
 //   IPosition latticeShape = pagedArray.shape();
 //   cout << "paged array has shape: " << latticeShape << endl;
-//   // insist upon at least 2 axes, allowing iteration by a matrix
 // 
-//   uInt lengthOfAxis0 = latticeShape(0);
-//   uInt lengthOfAxis1 = latticeShape(1);
-//   IPosition cursorShape(2, lengthOfAxis0, lengthOfAxis1);
-// 
-//   // construct a stepper, which needs to know the shape of the PagedArray
-//   // and the shape of the iterator's cursor.  It's no coincidence that
-//   // the cursorShape is congruent with the PagedArray shape  -- this 
-//   // ensures that the stepper sees all of the PagedArray as it steps 
-//   // through it.
-//   LatticeStepper stepper(latticeShape, cursorShape);
-//  
-//   // construct the iterator.  since we only want to read the PagedArray,
+//   // Construct the iterator.  since we only want to read the PagedArray,
 //   // use the read-only class, which disallows writing back to the cursor.
-//   RO_LatticeIterator<Float> iterator(pagedArray, stepper);
+//   // No navigator is given, so the default TileStepper is used
+//   // which ensures optimum performance.
+//   RO_LatticeIterator<Float> iterator(pagedArray);
 // 
+//   // Add for each iteration step the sum of the cursor elements to the sum.
+//   // Note that the cursor is an Array object and that the function sum
+//   // is defined in ArrayMath.h.
 //   Float runningSum = 0.0;
 //   for (iterator.reset(); !iterator.atEnd(); iterator++) {
-//     for (uInt column = 0; column < cursorShape(0); column++) {
-//       for (uInt row = 0; row < cursorShape(1); row++) {
-//         runningSum += iterator.matrixCursor()(row, column);
-//       }
-//     }
-//   } // for iterator
-//   cout << "average value, from demostrateIterator: " 
+//       runningSum += sum(iterator.cursor());
+//   }
+//   cout << "average value, from demonstrateIterator: " 
 //       << runningSum / latticeShape.product() << endl;
 // }
 // </srcblock>
@@ -187,29 +198,32 @@ template <class T> class Vector;
 // to be kept hidden
 // </motivation>
 
-// <todo asof="1995/09/12">
-//  <li> IPositions are returned by value.  This a reflection of the 
-//       LatticeIterInterface base class' inability to predict the
-//       availibility of data members for references.
-// </todo>
+//# <todo asof="1995/09/12">
+//#  <li>
+//# </todo>
 
 
 template <class T> class RO_LatticeIterator
 {
 public:
 
+  // Construct the Iterator with the supplied data.
+  // It uses a TileStepper as the default iteration strategy.
+  explicit RO_LatticeIterator (const Lattice<T>& data);
+
   // Construct the Iterator with the supplied data, and iteration strategy
   RO_LatticeIterator (const Lattice<T>& data, const LatticeNavigator& method);
 
-  // Iterate through the data with a LatticeStepper that uses the
-  // supplied cursorShape.
+  // Construct the Iterator with the supplied data.
+  // It uses a LatticeStepper with the supplied cursor shape as the
+  // iteration strategy.
   RO_LatticeIterator (const Lattice<T>& data, const IPosition& cursorShape);  
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
   RO_LatticeIterator (const RO_LatticeIterator<T>& other);
  
-  // destructor (cleans up dangling references and releases memory)
+  // Destructor (cleans up dangling references and releases memory)
   ~RO_LatticeIterator();
 
   // Assignment uses reference semantics (ie. NO real copy is made).
@@ -242,18 +256,15 @@ public:
   // </group>
   
   // Function which resets the cursor to the beginning of the Lattice and
-  // resets the number of steps taken to zero. Forwarded to the current
-  // LatticeNavigator.
+  // resets the number of steps taken to zero.
   void reset();
 
   // Function which returns a value of "True" if the cursor is at the
-  // beginning of the Lattice, otherwise, returns "False". Forwarded to the
-  // current LatticeNavigator.
+  // beginning of the Lattice, otherwise, returns "False".
   Bool atStart() const;
 
   // Function which returns a value of "True" if and attempt has been made
-  // to move the cursor beyond the end of the Lattice. Forwarded to the
-  // current LatticeNavigator.
+  // to move the cursor beyond the end of the Lattice.
   Bool atEnd() const;
   
   // Function to return the number of steps (increments or decrements) taken
@@ -265,24 +276,22 @@ public:
   
   // Function which returns the current position of the beginning of the
   // cursor within the Lattice. The returned IPosition will have the same
-  // number of axes as the underlying Lattice. Forwarded to the current
-  // LatticeNavigator.
+  // number of axes as the underlying Lattice.
   IPosition position() const;
 
   // Function which returns the current position of the end of the
   // cursor. The returned IPosition will have the same number of axes as the
-  // underlying Lattice. Forwarded to the current LatticeNavigator.
+  // underlying Lattice.
   IPosition endPosition() const;
 
   // Function which returns the shape of the Lattice being iterated through.
   // The returned IPosition will always have the same number of axes as the
-  // underlying Lattice. Forwarded to the current LatticeNavigator.
+  // underlying Lattice.
   IPosition latticeShape() const;
 
   // Function which returns the shape of the cursor which is iterating
-  // through the Lattice.  The returned IPosition will have the same number
-  // of axes as the underlying Lattice. Forwarded to the current
-  // LatticeNavigator.
+  // through the Lattice. The returned IPosition will have the same number
+  // of axes as the underlying Lattice.
   IPosition cursorShape() const;
 
   // Functions which returns a window to the data in the Lattice. These are
@@ -320,7 +329,7 @@ private:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tPagedArrIter.cc">
+// <reviewed reviewer="" date="" tests="tLatticeIterator.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -337,12 +346,20 @@ private:
 // user the door to reach in and change the basic Lattice before moving to
 // another section of the Lattice.
 // <p>
-// LatticeIterator can be used in 2 ways:
+// LatticeIterator can be used in 3 ways:
+// <br> - For readonly purposes using the cursor() functions. Note that if
+// the entire iteration is readonly, it is better to use an
+// <linkto class=RO_LatticeIterator>RO_LatticeIterator</linkto> object.
 // <br> - To update (part of)the contents of the lattice (e.g. clip the value
 // of some pixels). For this purpose the <src>rwCursor</src> functions
-// should be used.
+// should be used. They read the data (if not read yet) and mark the
+// cursor for write.
 // <br> - To fill the lattice. For this purpose the <src>woCursor</src>
-// functions should be used.
+// functions should be used. They do not read the data, but only mark the
+// cursor for write.
+// <p>
+// When needed, writing the cursor data is done automatically when the
+// cursor position changes or when the iterator is destructed.
 // </synopsis>
 
 // <example>
@@ -384,11 +401,15 @@ private:
 // still readily available.
 // <example>
 
-template <class T>
-class LatticeIterator : public RO_LatticeIterator<T>
+
+template <class T> class LatticeIterator : public RO_LatticeIterator<T>
 {
 public:
   
+  // Construct the Iterator with the supplied data.
+  // It uses a TileStepper as the default iteration strategy.
+  explicit LatticeIterator (Lattice<T>& data);
+
   // Construct the Iterator with the supplied data, and iteration strategy
   LatticeIterator (Lattice<T>& data, const LatticeNavigator& method);
   

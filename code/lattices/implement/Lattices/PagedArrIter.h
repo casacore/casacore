@@ -1,5 +1,5 @@
 //# PagedArrIter.h: A concrete iterator for use with PagedArray's.
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,12 +49,11 @@ template <class T> class Vector;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tPagedArray.cc,tPagedArrIter.cc" demos="dPagedArray.cc">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeIterator.cc" demos="dPagedArray.cc">
 // </reviewed>
 
 // <prerequisite>
 //   <li> <linkto class="PagedArray">PagedArray</linkto>
-//   <li> <linkto class="Lattice">Lattice</linkto>
 //   <li> <linkto class="LatticeIterator">LatticeIterator</linkto>
 //   <li> <linkto class="LatticeIterInterface">LatticeIterInterface
 //        </linkto>
@@ -68,42 +67,35 @@ template <class T> class Vector;
 // </etymology>
 
 // <synopsis>
-// This class can be used by a user if it is known that the user will always
-// be iterating through an <linkto class="PagedArray">PagedArray</linkto>
-// object. Usually it will be more convienient to use the more general
-// <linkto class="LatticeIterator">LatticeIterator</linkto> class to iterate
-// through a <src>PagedArray</src> as this class can also iterate through
-// any other object derived from the
-// <linkto class="Lattice">Lattice</linkto> base class
-// (like an <linkto class="ArrayLattice">ArrayLattice</linkto>).
-//
-// The usage of this class is identical to the 
-// <linkto class="LatticeIterator">LatticeIterator</linkto> class, and
-// reference should be made to documentation of that class. This
-// documentation will only describe details specific to the
-// <src>PagedArrIter</src> class.
+// This class is not meant for general use. Instead class
+// <linkto class="LatticeIterator">LatticeIterator</linkto> should be used
+// to iterate through a <src>PagedArray</src> or any other
+// <linkto class="Lattice">Lattice</linkto> object
+// (like a <linkto class="ArrayLattice">ArrayLattice</linkto>).
+// <p>
+// PagedArrIter is derived from LatticeIterInterface and implements
+// the iterator for a <linkto class=PagedArray>PagedArray</linkto>
+// object. This iterator is somewhat special because it sets the
+// PagedArray cache size at the start of an iteration.
 // </synopsis>
 
 // <motivation>
-// We are hoping to allow each derivation of Lattice to make as efficient an
-// iterator as possible.  The letter/envelope scheme allowed us to hide the 
-// juicy bits in classes like the one you see here.
+// Make for each derivation of Lattice as efficient an iterator as possible.
+// The letter/envelope scheme allowed us to hide the special bits in
+// classes like the one you see here.
 // </motivation>
 
 // <templating arg=T>
-//    <li> Restricted to the type of the PagedArray argument in the 
-//constructors
+//  <li> Restricted to the type of the PagedArray argument in the 
+//   constructors
 // </templating>
 
-// <todo asof="1997/01/31">
-//   <li> Ensure that the cursor is using reference semantics wherever possible
-//   <li> Fixup the code when the cursor is overhanging the Lattice
-//   <li> try and be more efficient about when the cursor needs to be updated.
-// </todo>
+//# <todo asof="1997/01/31">
+//#   <li>
+//# </todo>
 
 
-template <class T>
-class PagedArrIter : public LatticeIterInterface<T>
+template <class T> class PagedArrIter : public LatticeIterInterface<T>
 {
 friend class PagedArray<T>;
 
@@ -117,7 +109,7 @@ protected:
   // data set. (with the same cursor shape etc.)
   PagedArrIter (const PagedArrIter<T>& other);
 
-  // destructor (cleans up dangling references and releases cursor memory)
+  // Destructor (cleans up dangling references and releases cursor memory)
   virtual ~PagedArrIter();
   
   // The assignment operator uses reference sematics for the PagedArray and
