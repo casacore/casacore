@@ -1,5 +1,5 @@
 //# fits.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -668,28 +668,40 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		    mm = FITS::digit2bin(p[5]) * 10 + FITS::digit2bin(p[6]);
 		    dd = FITS::digit2bin(p[8]) * 10 + FITS::digit2bin(p[9]);
 		    if (v_len > 10) {
+			// if there are more than 10 character, the time must
+			// be fully there up to an optional decimal point
 			if (v_len >= 19 &&
 			    FITS::isa_digit(p[11]) && FITS::isa_digit(p[12]) &&
 			    FITS::isa_digit(p[14]) && FITS::isa_digit(p[15]) &&
 			    FITS::isa_digit(p[17]) && FITS::isa_digit(p[18]) &&
 			    (p[10] == 'T') && (p[13] == ':') && 
 			    (p[16] == ':')) {
-			    if ((FITS::digit2bin(p[11]) >= 2 && 
-				 FITS::digit2bin(p[12]) >= 4) ||
-				FITS::digit2bin(p[14]) >= 6 || 
+			    // 24 is okay, more than that is not in hours field
+			    if ((FITS::digit2bin(p[11]) == 2 &&
+				 FITS::digit2bin(p[12]) > 4) ||
+				FITS::digit2bin(p[11]) > 2) {
+				msg = "Illegal time.";
+				return 1;
+			    }
+			    // 60 is okay, more than that is not in minutes field
+			    if ((FITS::digit2bin(p[14]) == 6 &&
+				 FITS::digit2bin(p[15]) > 0) ||
+				FITS::digit2bin(p[14]) > 6) {
+				msg = "Illegal time.";
+			    }
+			    // 60 is okay, more than that is not in secomds field
+			    if ((FITS::digit2bin(p[17]) == 6 &&
+				 FITS::digit2bin(p[18]) > 0) ||
 				FITS::digit2bin(p[17]) > 6) {
 				msg = "Illegal time.";
 				return 1;
 			    }
-			    if (FITS::digit2bin(p[17]) == 6 &&
-				FITS::digit2bin(p[18]) >= 1) {
-			      msg = "Illegal time.";
-			      return 1;
-			    }
+			    // decimal required at 19th char, if exists.
 			    if (v_len > 19 && !(p[19] == '.')) {
 				msg = "Illegal date format.";
 				return 1;
 			    }
+			    // digits required after decimal
 			    for (Int curr = 20;curr <= (v_len-1); curr++) {
 				if (!FITS::isa_digit(p[curr])) {
 				    msg = "Illegal date format.";
