@@ -2235,3 +2235,4 @@
 11 167 src rm trial/apps/catalog/catalog_meta.g
 11 167 sys rm libexec/catalog_meta.g
 11 173 src mv doc/user/gettingstarted doc/user/gettingstarted.dir
+11 173 src rm doc/user/gettingstarted.latex
