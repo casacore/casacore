@@ -4429,3 +4429,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSFieldColumns.cc aips/implement/MeasurementSets/OldMSFieldColumns.cc
 14 296 src mv aips/implement/MeasurementSets/MSFieldColumns.h aips/implement/MeasurementSets/OldMSFieldColumns.h
 14 296 src mv aips/implement/MeasurementSets/MSFieldEnums.h aips/implement/MeasurementSets/OldMSFieldEnums.h
+14 296 src mv aips/implement/MeasurementSets/MSMainEnums.h aips/implement/MeasurementSets/OldMSMainEnums.h
