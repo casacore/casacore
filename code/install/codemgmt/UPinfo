@@ -1,0 +1,256 @@
+#!/bin/echo Usage: source
+#-----------------------------------------------------------------------------
+# UPinfo: help and general parameters for UP scripts
+#-----------------------------------------------------------------------------
+# Copyright (C) 2000
+# Associated Universities, Inc. Washington DC, USA.
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2 of the License, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+#
+# Correspondence concerning AIPS++ should be addressed as follows:
+#        Internet email: aips2-request@nrao.edu.
+#        Postal address: AIPS++ Project Office
+#                        National Radio Astronomy Observatory
+#                        520 Edgemont Road
+#                        Charlottesville, VA 22903-2475 USA
+#
+# $Id$
+#
+# The UPinfo script is called as 'source UPinfo' from any of the UP
+# executable scripts to get general data. It is assumed that the name of the
+# calling script is in the $script variable, and $usage contains the usage.
+# If the -h switch is present, some help information is provided.
+#
+# Set the result
+set ok = 0
+# Set the non-switch arguments
+set arg = ()
+# Set the -c switch
+set clr = 0
+# Set the -d switch
+set dbg = 0
+# Set the -g switch
+set gls = 0
+# Set the -t switch
+set upreal = 1
+# Set the -mv switch
+set domv = 0
+# Set the -mk switch
+set upmake = 0
+# Set the -l switch
+set leav = 0
+# Set the -i switch
+set upaoi = 1
+# Set the -h switch
+set hlp = 0
+# Get switches and arguments
+while ($# > 0)
+      if ("$1" == "-c") then
+	 set clr = 1
+      else if ("$1" == "-d") then
+	 set dbg = 1
+	 set echo
+      else if ("$1" == "-g") then
+         set gls = 1
+      else if ("$1" == "-t") then
+         set upreal = 0
+      else if ("$1" == "-mv") then
+         set domv = 1
+      else if ("$1" == "-mk") then
+         set upmake = 1
+      else if ("$1" == "-l") then
+         set leav = 1
+      else if ("$1" == "-i") then
+         set upaoi = 0
+      else if ("$1" == "-h") then
+         set hlp = 1
+      else if ("$1" =~ -*) then
+         echo "Unknown switch $1 present"
+	 set hlp = 1
+      else
+         set arg = ($arg $1)
+      endif
+      shift
+end
+#
+# Help
+#
+if ($hlp) then
+  cat << '_EOF_'
+The following UP scripts are available (-h gives this text):
+    UPfind [-c] [-g] [-d] <typ>	    
+	   find files according to pattern in files .cc, .h and templates
+	   A list of files found is produced in <typ>.raw. Files in a set of
+	   discard rules are removed. The result will be in <typ>.found.
+	   -c	 start afresh for the given <typ>
+	   -g	 look in .g files rather than .cc, .h and templates
+	   -d    debug mode
+	   <typ> the code belonging to this set of usage (e.g. mx)
+    UPlock <typ>
+	   check if files found with UPfind are locked in the master. The
+           resulting list will be in <typ>.locked
+    UPchange script (must have x allowed)
+ 	   update all files (ao change ai) as given in <typ>.found created by
+           UPfind.  As a result the <typ>.moved list will contain the found
+           list after a move.
+           -c  will clear all relevant information
+           -mv will initiate a move before the change
+           -t  will not execute for real, but only for test
+           -l  will leave the found file names, in default case the file names
+               will be changed according to the change pattern as well.
+           -i  will not check any files in/out, but only work on files in
+               work area
+           -mk will make the changed files to test if correct
+           -d  will show some debug information
+           <typ>.done and <typ>.error give lists of files successfully
+           done or not.
+'_EOF_'
+  exit 0
+endif
+#
+# Get type
+#
+if ($#arg < 1) then
+    echo "No <typ> given for ${script}"
+    exit (1)
+endif
+set tp = $arg[1]
+shift arg
+#
+# Check directories
+#
+unset ldir
+unset dir
+unset mdir
+unset xao
+unset xai
+unset domv
+#
+set ldir = `pwd`
+if (! -w $ldir) then
+    echo "Local directory ${ldir} not writeable "
+    exit (1)
+endif
+#
+# Get info
+#
+echo "Getting info..."
+if ($clr) then
+  if ("$script" == "UPfind") then 
+    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
+    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
+    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
+  endif
+  if ("$script" == "UPchange") then
+    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
+    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
+    if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
+    if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+  endif 
+endif
+
+if (-r $ldir/${tp}.def) then
+   source $ldir/${tp}.def
+endif
+
+if (-r $ldir/${tp}.info) then
+   source $ldir/${tp}.info
+endif
+
+if (! $?dir) then
+   set dir = ($AIPSPATH)
+   set dir = $dir[1]
+   echo -n "Assuming master search tree in $dir/code. ok? (y|n) [n]: "
+   set repl=($<)
+   if ($repl != 'y') then
+      echo "Restart with proper AIPSROOT set"
+      exit (1)
+   endif
+endif 
+
+if (! $?mdir) then
+   set x = "~/aips++"
+   while (! -d $x/code) 
+      echo "Path to local aips++ tree root is not $x"
+      echo -n "Specify your local aips++ tree root: "
+      set x = "$<"
+   end
+   set mdir = "$x"
+   unset x
+endif
+
+if (! $?xao || ! $?xai) then
+   set xao = rao
+   set xai = rai
+   echo -n "Assuming use of rao/rai, rather than ao/ai. ok? (y|n) [y]: "
+   set repl=($<)
+   if ($repl == 'n' || $repl == 'N') then
+      set xao = ao
+      set xai = ai
+   endif
+endif
+
+if (! $?upgrep) then
+   set x = /usr/local/gnu/bin/grep
+   while (! -x $x)
+      echo "Path to gnu grep is not $x"
+      echo -n "Specify the path to gnu grep: "
+      set x = "$<"
+   end
+   set upgrep = "$x"
+   unset x
+endif
+
+if ("$script" == "UPchange" && ! $?domv) then
+   set domv = 0
+   echo -n "Need to move files first to new directory (y|n) [n]? "
+    set repl=($<)
+    if ($repl == 'y') then
+	echo "Note: The moving can only be done while logged into aoc, since "
+	echo "      it uses the amv command."
+	echo -n "Do you want to continue (y|n) [n]? "
+	set repl=($<)
+	if ($repl == 'y') then
+	    set domv = 1
+	endif
+    endif
+endif
+
+if (! $?uppath) then
+   set x = "`which UPfind`"
+   if (-x $x) then
+      set uppath = $x:h
+   else
+      echo "Cannot find path of UP files"
+      exit 1
+   endif
+endif
+
+if (! -e $ldir/${tp}.def) then
+   echo "set dir = $dir" >! $ldir/${tp}.def
+   echo "set mdir = $mdir" >> $ldir/${tp}.def
+   echo "set upgrep = $upgrep" >> $ldir/${tp}.def
+   echo "set xao = $xao" >> $ldir/${tp}.def
+   echo "set xai = $xai" >> $ldir/${tp}.def
+endif 
+#
+# Correct result
+#
+set ok = 1
+exit 0
+#
+
+
+
