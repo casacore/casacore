@@ -202,6 +202,31 @@ SkyComponent SkyComponent::copy() const {
   return newComp;
 }
 
+void SkyComponent::fromPixel (const Vector<Double>& parameters,
+                              const Unit& brightnessUnitIn,
+                              const Vector<Quantum<Double> >& restoringBeam,
+                              const CoordinateSystem& cSys,
+                              ComponentType::Shape componentShape,
+                              Stokes::StokesTypes stokes,
+                              Bool xIsLong)
+{
+   itsCompPtr->fromPixel(parameters, brightnessUnitIn, restoringBeam,
+                         cSys, componentShape, stokes, xIsLong);
+}
+
+Vector<Double> SkyComponent::toPixel (const Unit& brightnessUnitIn,
+                                      const Vector<Quantum<Double> >& restoringBeam,
+                                      const CoordinateSystem& cSys,
+                                      Stokes::StokesTypes stokes,  
+                                      Bool xIsLong) const
+{
+   return itsCompPtr->toPixel(brightnessUnitIn, restoringBeam,
+                              cSys, stokes, xIsLong);
+}
+
+
+
+
 Bool SkyComponent::ok() const {
   if (itsCompPtr.null()) {
     LogIO logErr(LogOrigin("SkyComponent", "ok()"));

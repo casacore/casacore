@@ -33,8 +33,10 @@
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SkyCompBase.h>
+#include <aips/Measures/Stokes.h>
 
 class ComponentShape;
+class CoordinateSystem;
 class MDirection;
 class MFrequency;
 class MVAngle;
@@ -49,6 +51,7 @@ template<class Ms> class MeasRef;
 template<class T> class Flux;
 template<class T> class Cube;
 template<class T> class Vector;
+template<class T> class Quantum;
 
 // <summary>A component of a model of the sky </summary>
 
@@ -247,6 +250,23 @@ public:
   // <linkto class="SkyCompBase">SkyCompBase</linkto>
   // class for a description of this function.
   Bool ok() const;
+
+  // Convert from and to pixel vectors
+  // <group>
+  void fromPixel (const Vector<Double>& parameters,
+                  const Unit& brightnessUnitIn,
+                  const Vector<Quantum<Double> >& restoringBeam,
+                  const CoordinateSystem& cSys,
+                  ComponentType::Shape componentShape,
+                  Stokes::StokesTypes stokes,
+                  Bool xIsLong);
+   Vector<Double> toPixel (const Unit& brightnessUnitIn,
+                           const Vector<Quantum<Double> >& restoringBeam,
+                           const CoordinateSystem& cSys,
+                           Stokes::StokesTypes stokes,  
+                           Bool xIsLong) const;
+  // </group>
+
 
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
