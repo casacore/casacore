@@ -4599,3 +4599,4 @@
 14 297 src mv trial/implement/MeasurementSets/NewMSFeedIndex.h trial/implement/MeasurementSets/MSFeedIndex.h
 14 297 src mv trial/implement/MeasurementSets/NewMSFitsInput.cc trial/implement/MeasurementSets/MSFitsInput.cc
 14 297 src mv trial/implement/MeasurementSets/NewMSFitsInput.h trial/implement/MeasurementSets/MSFitsInput.h
+14 297 src mv trial/implement/MeasurementSets/NewMSFitsOutput.cc trial/implement/MeasurementSets/MSFitsOutput.cc
