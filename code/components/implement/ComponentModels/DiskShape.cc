@@ -152,22 +152,9 @@ Double DiskShape::sample(const MDirection& direction,
       (MDirection::Convert(compDir, direction.getRef())().getValue());
     deleteValue = True;
   }
-  const MDirection::MVType& dirValue = direction.getValue();
-  const Double separation = compDirValue->separation(dirValue);
-  const Double majRad = itsMajValue/2.0; 
-  Double retVal = 0.0;
-  if (separation < majRad) {
-    const Double pa = compDirValue->positionAngle(dirValue) - itsPaValue;
-    const Double x = abs(separation*cos(pa));
-    const Double y = abs(separation*sin(pa));
-    const Double minRad = itsMinValue/2.0; 
-    if ((x <= majRad) && 
-	(y <= minRad) && 
-	(y <= minRad * sqrt(1 - square(x/majRad)))) {
-      
-      retVal = itsHeight*square(pixelSize.radian());
-    }
-  }
+  Double retVal = calcSample(*compDirValue, direction.getValue(),
+			     itsMajValue/2.0, itsMinValue/2.0, 
+			     itsHeight*square(pixelSize.radian()));
   if (deleteValue) delete compDirValue;
   return retVal;
 }
@@ -190,24 +177,12 @@ void DiskShape::sample(Vector<Double>& scale,
       (MDirection::Convert(compDir, refFrame)().getValue());
     deleteValue = True;
   }
-  Double separation, pa, x, y;
   const Double majRad = itsMajValue/2.0; 
   const Double minRad = itsMinValue/2.0; 
   const Double pixValue = square(pixelSize.radian()) * itsHeight;
   for (uInt i = 0; i < nSamples; i++) {
-    const MVDirection& dirVal = directions(i);
-    separation = compDirValue->separation(dirVal);
-    scale(i) = 0.0;
-    if (separation <= majRad) {
-      pa = compDirValue->positionAngle(dirVal);
-      x = abs(separation*cos(pa));
-      y = abs(separation*sin(pa));
-      if ((x <= majRad) && 
-       	  (y <= minRad) && 
-	  (y <= minRad * sqrt(1 - square(x/majRad)))) {
-	scale(i) = pixValue;
-      }
-    }
+    scale(i) = calcSample(*compDirValue, directions(i), 
+			  majRad, minRad, pixValue);
   }
   if (deleteValue) delete compDirValue;
 }
@@ -219,25 +194,44 @@ DComplex DiskShape::visibility(const Vector<Double>& uvw,
   DebugAssert(ok(), AipsError);
   Double u = uvw(0);
   Double v = uvw(1);
-  if (!nearAbs(itsPaValue, 0.0, C::dbl_min)) {
-    // If this function becomes a computation bottleneck then spa & cpa can be
-    // cached as can itsMinValue/itsMajValue. My tests show it is not a
-    // bottleneck at the moment.
-    const Double cpa = cos(itsPaValue);
-    const Double spa = sin(itsPaValue);
-    u = u * cpa - v * spa;
-    v = uvw(0) * spa + v * cpa;
+  if (near(u + v, 0.0)) return DComplex(1.0, 0.0);
+  if (!nearAbs(itsPaValue, 0.0)) {
+    rotateVis(u, v, cos(itsPaValue), sin(itsPaValue));
   }
-  u *= itsMinValue;
-  v *= itsMajValue;
-  const Double r = hypot(u, v) * C::pi * frequency/C::c;
-  return DComplex(2.0 * j1(r)/r, 0.0);
+  return DComplex(calcVis(u, v, C::pi * frequency/C::c), 0.0);
 }
 
 void DiskShape::visibility(Vector<DComplex>& scale,
-			       const Matrix<Double>& uvw,
-			       const Double& frequency) const {
-  ComponentShape::visibility(scale, uvw, frequency);
+			   const Matrix<Double>& uvw,
+			   const Double& frequency) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = scale.nelements();
+  DebugAssert(uvw.ncolumn() == nSamples, AipsError);
+  DebugAssert(uvw.nrow() == 3, AipsError);
+  DebugAssert(frequency > 0, AipsError);
+  
+  Bool doRotation = False;
+  Double cpa = 1.0, spa = 0.0;
+  if (!nearAbs(itsPaValue, 0.0)) {
+    doRotation = True;
+    cpa = cos(itsPaValue);
+    spa = sin(itsPaValue);
+  }
+
+  const Double factor = C::pi * frequency/C::c;
+  Double u, v;
+  for (uInt i = 0; i < nSamples; i++) {
+    u = uvw(0, i);
+    v = uvw(1, i);
+    DComplex& thisVis = scale(i);
+    thisVis.imag() = 0.0;
+    if (near(u + v, 0.0)) {
+      thisVis.real() = 1.0; // avoids dividing by zero in calcVis(...)
+    } else {
+      if (doRotation) rotateVis(u, v, cpa, spa);
+      thisVis.real() = calcVis(u, v, factor);
+    }
+  }
 }
 
 ComponentShape* DiskShape::clone() const {
@@ -279,6 +273,38 @@ Bool DiskShape::ok() const {
     return False;
   }
   return True;
+}
+
+Double DiskShape::calcVis(Double u, Double v, const Double factor) const {
+  u *= itsMinValue;
+  v *= itsMajValue;
+  const Double r = hypot(u, v) * factor;
+  return 2.0 * j1(r)/r;
+}
+
+void DiskShape::rotateVis(Double& u, Double& v, 
+			  const Double cpa, const Double spa) {
+  const Double utemp = u;
+  u = u * cpa - v * spa;
+  v = utemp * spa + v * cpa;
+}
+
+Double DiskShape::calcSample(const MDirection::MVType& compDirValue, 
+			     const MDirection::MVType& dirVal, 
+			     const Double majRad, const Double minRad, 
+			     const Double pixValue) const {
+  const Double separation = compDirValue.separation(dirVal);
+  if (separation <= majRad) {
+    const Double pa = compDirValue.positionAngle(dirVal) - itsPaValue;
+    const Double x = abs(separation*cos(pa));
+    const Double y = abs(separation*sin(pa));
+    if ((x <= majRad) && 
+	(y <= minRad) && 
+	(y <= minRad * sqrt(1 - square(x/majRad)))) {
+      return pixValue;
+    }
+  }
+  return 0.0;
 }
 
 // Local Variables: 
