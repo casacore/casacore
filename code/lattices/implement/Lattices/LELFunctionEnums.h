@@ -40,7 +40,6 @@
 //   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
 //   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
 //   <li> <linkto class="LELInterface"> LELInterface</linkto>
-//   <li> <linkto class="LELFunction"> LELFunction</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -50,7 +49,9 @@
 //
 // <synopsis>
 //  Each function name accepted by the bridging class LatticeExprNode
-//  and passed  on to the LELFunction letter classes is labelled internally 
+//  and passed on to the
+//  <linkto class="LELFunction1D">LELFunction</linkto>
+//  letter classes is labelled internally 
 //  with a value from this enum.  
 // </synopsis> 
 //
