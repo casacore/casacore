@@ -1,5 +1,5 @@
 //# Copy.h: Copy objects from one C-style array to another.
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,14 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>
-#include <string.h>
-
-
-// The following is needed because the CC under SunOS doesn't
-// have this, even though it is present in libc.a
-// The signature should be common across compilers.
-// Remove this line as soon as we stop supporting SunOS.
-extern "C" void *memmove(void* s,const void* ct, size_t n);
+#include <string.h>           // for memmove, etc.
 
 
 // <summary>
