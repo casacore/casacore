@@ -27,10 +27,46 @@
 
 #include <trial/Images/WCRegion.h>
 
+#include <aips/Exceptions/Error.h>
+#include <aips/Tables/TableRecord.h>
+#include <trial/Images/WCBox.h>
+#include <trial/Images/WCPolygon.h>
+
+
+WCRegion::WCRegion()
+{}
+
+WCRegion::WCRegion (const WCRegion&)
+// 
+// There is no private data in WCRegion so
+// nothing to do
+//
+{}
+ 
+WCRegion& WCRegion::operator= (const WCRegion&)
+//
+// There is no private data in WCRegion so
+// there is nothing to assign
+//
+{
+    return *this;
+}
+
 WCRegion::~WCRegion()
 {}
 
-WCRegion* WCRegion::fromRecord (const TableRecord&)
+
+WCRegion* WCRegion::fromRecord (const TableRecord& rec,
+                                const String& tableName)
 {
+    const String& name = rec.asString ("name");
+    if (name == WCBox::className()) {
+        return WCBox::fromRecord (rec, tableName);
+    } else if (name == WCPolygon::className()) {
+        return WCPolygon::fromRecord (rec, tableName);
+    } else {
+        throw (AipsError ("WCRegion::fromRecord - " + name +
+                          " is unknown derived WCRegion class"));
+    }
     return 0;
 }
