@@ -86,7 +86,13 @@ AIPSSITE := $(AIPSARCH)/$(word 3, $(AIPSPATH))
 AIPSHOST := $(AIPSSITE)/$(word 4, $(AIPSPATH))
 ARCHBIND := $(AIPSARCH)/bin
 
-THISDIR  := $(shell if [ -f $(ARCHBIND)/PWD ]; then $(ARCHBIND)/PWD; else pwd; fi )
+ifeq "$(shell echo `pwd | sed -e 's=^$(shell cd $(AIPSROOT); pwd)/==' -e 's=^/.*=='`)" ""
+   MAKEMODE := programmer
+   THISDIR := $(shell pwd)
+else
+   MAKEMODE := system
+   THISDIR  := $(shell if [ -f $(ARCHBIND)/PWD ]; then $(ARCHBIND)/PWD; else pwd; fi )
+endif
 THISDIR  := $(shell echo $(THISDIR) | sed -e 's=^/tmp_mnt/=/=')
 CODESUBD := $(shell echo $(THISDIR)/ | sed -e '{s=^.*/code/==;s=/*$$==;}')
 
@@ -479,14 +485,6 @@ Q := @
 PGMRROOT := $(word 1, $(subst /code/,$(space),$(THISDIR)/))
 PGMRCODE  = $(PGMRROOT)/code
 PGMRARCH  = $(PGMRROOT)/$(word 2, $(AIPSPATH))
-
-# Is this a system or programmer invocation?
-ifeq "$(shell cd $(PGMRROOT) ; /bin/pwd)" "$(shell cd $(AIPSROOT) ; /bin/pwd)"
-   MAKEMODE := system
-else
-   MAKEMODE := programmer
-endif
-
 
 # Include path for programmer compilations.
 #------------------------------------------
