@@ -47,5 +47,6 @@ z = join(w, nw, /); z =This/string/has/five/words
 word =Della and the Dealer
  and a dog named Jake,
  and a cat named Kalamazoo length = 70
+Test stream: length = 70
 
 End of test
