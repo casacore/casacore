@@ -1,5 +1,5 @@
 //# ArrayIO.cc: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ LogIO &operator<<(LogIO &os, const Array<T> &a)
 template<class T>
 AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
 {
-    ios.putstart(rtti_decode(a.id()), Array<T>::arrayVersion());
+    ios.putstart("Array", Array<T>::arrayVersion());
     // Write out dimensionality
     ios << a.ndim();
     // Write out length
@@ -157,10 +157,16 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
     // this is relatively inefficient as it makes a temporary copy.
     a.unique();
     
-    Array<T> tmp;
-    // Even if we are, say, a Vector, we were written as an Array. We only use
-    // "tmp" for its name.
-    Int version = ios.getstart(rtti_decode(tmp.id()));
+    // On 20-Nov-2000 use of the home-brew rtti was removed.
+    // It meant that a name 'Array<Int>' is now replaced by 'Array'.
+    // In order to recognize those old names, we must do something special.
+    String type = ios.getNextType();
+    Int version;
+    if (type.length() > 6  &&  type.index("Array<") == 0) {
+      version = ios.getstart(type);
+    } else {
+      version = ios.getstart("Array");
+    }
     Int ndim;
     ios >> ndim;
     IPosition shape(ndim);
@@ -433,7 +439,8 @@ Bool read(istream &s, Array<T> &x,
 	  const IPosition *ip, Bool it) {
   ///  Array<T> *to; PCAST(to, Array<T>, &x);
   ///  if (to) {
-  if (AiPs_hidden_type_(static_cast<Array<T> *>(0)) == x.idv()) {
+  // If an empty array, it can get any dimension.
+  if (x.ndim() == 0) {
     Block<T> tmp;
     Bool tr;
     IPosition p;
@@ -458,35 +465,45 @@ Bool read(istream &s, Array<T> &x,
       };
     };
   } else {
+    // Otherwise try if we can resize.
+    // This will always be possible for an Array,
+    // but e.g. not for Vector if the Array is not 1D.
     Array<T> tx;
     if (!read(s, tx, ip, it)) return False;
-    IPosition first;
-    IPosition last;
-    if (x.ndim() >= tx.ndim()) {
-      first = tx.shape();
-      last = IPosition(x.ndim() - tx.ndim()); last = Int(1);
-    } else {
-      first = tx.shape().getFirst(x.ndim() - 1);
-      last = IPosition(1, tx.shape().
-		       getLast(tx.ndim() - x.ndim() + 1).product());
-    };
-    IPosition tot(x.ndim());
-    tot.setFirst(first);
-    tot.setLast(last);
-    x.resize(tot);
-    IPosition p(x.shape());
-    uInt iptr = p.nelements() - 1;
-    IPosition iter(p); iter = Int(0);
-    Bool deleteIt; T *tmp = tx.getStorage(deleteIt);
-    for (uInt i=0; i < tx.nelements(); i++) {
-      x(iter) = tmp[i];
-      for (uInt j=0; j<=iptr; j++) {
-	iter(j) += 1;
-	if (iter(j) < p(j)) break;
-	iter(j) = 0;
+    try {
+      x.resize (tx.shape());
+      x = tx;
+    } catch (AipsError) {
+      IPosition first;
+      IPosition last;
+      if (x.ndim() >= tx.ndim()) {
+	first = tx.shape();
+	last = IPosition(x.ndim() - tx.ndim()); last = Int(1);
+      } else {
+	first = tx.shape().getFirst(x.ndim() - 1);
+	last = IPosition(1, tx.shape().
+			 getLast(tx.ndim() - x.ndim() + 1).product());
       };
-    };
-    tx.putStorage(tmp, deleteIt);
+      IPosition tot(x.ndim());
+      tot.setFirst(first);
+      tot.setLast(last);
+      x.resize(tot);
+      IPosition p(x.shape());
+      uInt iptr = p.nelements() - 1;
+      IPosition iter(p);
+      iter = Int(0);
+      Bool deleteIt;
+      const T *tmp = tx.getStorage(deleteIt);
+      for (uInt i=0; i < tx.nelements(); i++) {
+	x(iter) = tmp[i];
+	for (uInt j=0; j<=iptr; j++) {
+	  iter(j) += 1;
+	  if (iter(j) < p(j)) break;
+	  iter(j) = 0;
+	};
+      };
+      tx.freeStorage(tmp, deleteIt);
+    }
   };
   return True;
 }
