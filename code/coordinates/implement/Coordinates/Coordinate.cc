@@ -210,11 +210,6 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
    AlwaysAssert(nPixel == nPixelAxes(), AipsError);   
    AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);   
 //
-// Resize happens first time or maybe after an assignment
-//
-   if (world_tmp_p.nelements()!=nWorld) world_tmp_p.resize(nWorld);
-   if (pixel_tmp_p.nelements()!=nPixel) pixel_tmp_p.resize(nPixel);
-//
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("Coordinate::toMix - duplicate pixel/world axes");
@@ -225,6 +220,11 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
          return False;
       }
    }
+//
+// Resize happens first time or maybe after an assignment
+//
+   if (world_tmp_p.nelements()!=nWorld) world_tmp_p.resize(nWorld);
+   if (pixel_tmp_p.nelements()!=nPixel) pixel_tmp_p.resize(nPixel);
 //
 // Convert world to pixel.  Use  reference value unless
 // world value given. Copy output pixels to output vector 
