@@ -32,7 +32,7 @@
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
-#include <trial/MeasurementSet/MSMainBuffer.h>
+#include <trial/MeasurementSets/MSMainBuffer.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayMath.h>

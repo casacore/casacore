@@ -42,9 +42,9 @@
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Utilities/String.h>
 
-#include <trial/MeasurementSet/MSDerivedValues.h>
+#include <trial/MeasurementSets/MSDerivedValues.h>
 #include <trial/MeasurementEquations/StokesVector.h>
-#include <trial/MeasurementSet/MSIter.h>
+#include <trial/MeasurementSets/MSIter.h>
 
 //# forward decl
 class VisBuffer;
