@@ -1,5 +1,5 @@
 //# ExprNodeRep.h: Abstract base class for a node in a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -257,6 +257,9 @@ public:
     // Get the value type.
     ValueType valueType() const;
 
+    // Set the value type.
+    void setValueType (ValueType vtype);
+
     // Get the operator type.
     OperType operType() const;
 
@@ -513,9 +516,13 @@ protected:
 inline TableExprNodeRep::NodeDataType TableExprNodeRep::dataType() const
     { return dtype_p; }
 
-//# Get the data type of the node.
+//# Get the value type of the node.
 inline TableExprNodeRep::ValueType TableExprNodeRep::valueType() const
     { return vtype_p; }
+
+//# Get the value type of the node.
+inline void TableExprNodeRep::setValueType (TableExprNodeRep::ValueType vtype)
+    { vtype_p = vtype; }
 
 //# Get the operator type of the node.
 inline TableExprNodeRep::OperType TableExprNodeRep::operType() const
