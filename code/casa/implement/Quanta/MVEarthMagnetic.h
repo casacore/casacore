@@ -28,27 +28,11 @@
 #if !defined(AIPS_MVEARTHMAGNETIC_H)
 #define AIPS_MVEARTHMAGNETIC_H
 
-#if defined(_AIX)
-#pragma implementation ("MVEarthMagnetic.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Measures/Unit.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/MeasValue.h>
-#ifdef __GNUG__
-typedef Quantum<Double> gpp_mvearthmag_bug2;
-#endif
+#include <aips/Measures/MVPosition.h>
 
 //# Forward Declarations
-class RotMatrix;
-#if defined(AIPS_STDLIB)
-#include <iosfwd.h>
-#else
-class ostream;
-#endif
 
 
 // <summary> A 3D Earth magnetic field vector </summary>
@@ -71,7 +55,7 @@ class ostream;
 // <synopsis>
 // A MVEarthMagnetic is a 3-vector of the Earth's magnetic flux density in a
 // rectangular frame with the z-axis to astronomical North pole, and x-axis
-// towards longitude zero, in internal Units of tesla (== 10000 G).<br>
+// towards longitude zero, in internal Units of nano tesla (== 0.00001 G).<br>
 // It can be constructed with:
 // <ul>
 //   <li> MVEarthMagnetic() creates  (0,0,0)
@@ -116,12 +100,11 @@ class ostream;
 // To use in ionospheric effect calculations
 // </motivation>
 //
-// <todo asof="1997/02/19">
-//	<li> IGRF model
-//	<li> wandering pole model
+// <todo asof="1998/05/19">
+//	<li> nothing I know of
 // </todo>
 
-class MVEarthMagnetic : public MeasValue {	
+class MVEarthMagnetic : public MVPosition {	
 
 public:
 
@@ -131,7 +114,7 @@ public:
   // Default constructor generates a (0,0,0) EarthMagnetic
   MVEarthMagnetic();
   // Copy constructor
-  MVEarthMagnetic(const MVEarthMagnetic &other);
+  MVEarthMagnetic(const MVPosition &other);
   // Creates a specified vector
   MVEarthMagnetic(Double in0, Double in1, Double in2);
   // Creates a vector with specified length towards pole
@@ -187,22 +170,6 @@ public:
   MVEarthMagnetic operator-(const MVEarthMagnetic &right) const;
   // </group>
   
-  // Multiplication with rotation matrix (see also global functions)
-  // <group>
-  MVEarthMagnetic &operator*=(const RotMatrix &right);
-  // </group>
-  
-  // Multiplication with constant
-  // <group>
-  MVEarthMagnetic &operator*=(Double right);
-  // </group>
-  
-  // Obtain an element
-  // <group>
-  Double &operator()(uInt which);
-  const Double &operator()(uInt which) const;
-  // </group>
-  
   //# General Member Functions
   
   // Tell me your type
@@ -244,6 +211,9 @@ public:
   Quantity separation(const MVEarthMagnetic &other, 
 		      const Unit &unit) const;
   // </group>
+  // Produce the cross product
+  MVEarthMagnetic crossProduct(const MVEarthMagnetic &other) const;
+  
   // Print data
   virtual void print(ostream &os) const;
   // Clone
@@ -252,7 +222,7 @@ public:
   virtual Vector<Double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
   virtual void putVector(const Vector<Double> &in);
-   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
+  // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
@@ -260,11 +230,7 @@ public:
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
-  
-private:
-  //# Data
-  // EarthMagnetic vector (in T)
-  Vector<Double> xyz;
+
 };
 
 //# Global functions
@@ -276,6 +242,8 @@ MVEarthMagnetic operator*(Double left, const MVEarthMagnetic &right);
 MVEarthMagnetic operator*(const MVEarthMagnetic &left, Double right);
 Double operator*(const Vector<Double> &left, const MVEarthMagnetic &right);
 Double operator*(const MVEarthMagnetic &left, const Vector<Double> &right);
+Double operator*(const MVPosition &left, const MVEarthMagnetic &right);
+Double operator*(const MVEarthMagnetic &left, const MVPosition &right);
 // </group>
 
 #endif
