@@ -100,7 +100,16 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
 	keywords.define(name,key->asBool());
 	break;
       case FITS::STRING : 
-	keywords.define(name,key->asString());
+	// need to remvoe any trailing spaces
+	{
+	    const char * cptr = key->asString();
+	    uInt length = key->valStrlen();
+	    while (length > 0 && 
+		   (cptr[length-1] == '\0' || cptr[length-1] == ' ')) {
+	      length--;
+	    }
+	    keywords.define(name,String(cptr,length));
+	}
 	break;
       case FITS::FLOAT : 
 	keywords.define(name,key->asFloat());
@@ -247,11 +256,11 @@ Bool FITSTable::reopen(const String &fileName)
     if (raw_table_p->pcount()) {
 	raw_table_p->read(raw_table_p->nrows());
 	if (raw_table_p->notnull(raw_table_p->theap())) {
-	    int heapOffset = raw_table_p->theap() - 
+	    uInt heapOffset = raw_table_p->theap() - 
 		raw_table_p->rowsize()*raw_table_p->nrows();
 	    // skip to the start of the heap
 	    // I don't see any way except to read these bogus bytes
-	    Block<char> junk(heapOffset);
+	    Block<Char> junk(heapOffset);
 	    raw_table_p->ExtensionHeaderDataUnit::read(junk.storage(), 
 						       heapOffset);
 	}
@@ -403,7 +412,7 @@ Bool FITSTable::reopen(const String &fileName)
 	}
     }
 	
-    if (description_p.nfields() > 0) {
+    if (description_p.nfields() > 0 && raw_table_p->nrows()) {
 	fill_row();
     }
     isValid_p = True;
