@@ -84,7 +84,7 @@ const uInt N_FITS = 19;
 //   <li> Defining units: 	m, kg, s, A, K, cd, mol, rad, sr, _
 //   <li> SI units:		including a.o. Jy, AU etc)
 //   <li> Customary units:	e.g. lb, hp, ly etc
-//   <li> User defined units:	defined by user (e.g. beam, KPH, KM)
+//   <li> User defined units:	defined by user (e.g. Beam, KPH, KM)
 //   <li> Cached units:	cached unit strings for speed in operations
 // </ol>
 // The full list of known units can be viewed by running the tUnit test
