@@ -1204,7 +1204,7 @@ inline Weibull::Weibull(RNG* gen, Double alpha, Double beta)
   :Random(gen),
    itsAlpha(alpha),
    itsBeta(beta),
-   itsInvAlpha()
+   itsInvAlpha(0)
 {
   setState();
 }
