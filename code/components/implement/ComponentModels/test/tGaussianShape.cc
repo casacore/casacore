@@ -46,6 +46,7 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Quanta/RotMatrix.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
@@ -127,7 +128,7 @@ int main() {
       GaussianShape othergc(J1934);
       GaussianShape assignedgc;
       assignedgc = othergc;
-      shapePtr = (TwoSidedShape*) J1934.clone();
+      shapePtr = dynamic_cast<TwoSidedShape*>(J1934.clone());
       J1934.setWidthInRad(1., 0.5, .1);
       shapePtr->setWidth(Quantity(1000, "mas"), Quantity(0.5, "arcsec"), 
 			 Quantity(-10, "deg"));
@@ -250,8 +251,7 @@ int main() {
     }
     {
       AlwaysAssert(shapePtr->nParameters() == 3, AipsError);
-      Vector<Double> v(3);
-      shapePtr->parameters(v);
+      Vector<Double> v = shapePtr->parameters().copy();
       AlwaysAssert(near(v(0), 1.0/60/60/180.*C::pi), AipsError);
       AlwaysAssert(near(v(1), 0.5/60/60/180.*C::pi), AipsError);
       AlwaysAssert(near(v(2), 170.0/180.*C::pi), AipsError);
@@ -275,7 +275,7 @@ int main() {
   	}
       }
       try{
-  	shapePtr->parameters(v);
+  	v = shapePtr->parameters();
   	throw(AipsError("Incorrect parameter vector exception NOT thrown"));
       }
       catch (AipsError x) {
@@ -293,9 +293,21 @@ int main() {
       AlwaysAssert(errorMsg.length() == 0, AipsError);
       AlwaysAssert(rec.isDefined("type"), AipsError);
       AlwaysAssert(rec.isDefined("direction"), AipsError);
+      const RecordFieldId direction("direction");
+      AlwaysAssert(rec.dataType(direction) == TpRecord, AipsError);
+      const Record dRec = rec.asRecord(direction);
+      AlwaysAssert(dRec.isDefined("error"), AipsError);
+      const RecordFieldId error("error");
+      AlwaysAssert(dRec.dataType(error) == TpRecord, AipsError);
+      const Record eRec = dRec.asRecord(error);
+      AlwaysAssert(eRec.isDefined("latitude"), AipsError);
+      AlwaysAssert(eRec.isDefined("longitude"), AipsError);
       AlwaysAssert(rec.isDefined("majoraxis"), AipsError);
+      AlwaysAssert(rec.isDefined("majoraxiserror"), AipsError);
       AlwaysAssert(rec.isDefined("minoraxis"), AipsError);
+      AlwaysAssert(rec.isDefined("minoraxiserror"), AipsError);
       AlwaysAssert(rec.isDefined("positionangle"), AipsError);
+      AlwaysAssert(rec.isDefined("positionangleerror"), AipsError);
       String type;
       rec.get(RecordFieldId("type"), type);
       AlwaysAssert(type == "Gaussian", AipsError);
@@ -368,18 +380,27 @@ int main() {
 	Record rec;
 	qh.toRecord(errorMsg, rec);
 	shapeRec.defineRecord(RecordFieldId("majoraxis"), rec);
+	qh = QuantumHolder(Quantum<Double>(1, "arcmin"));
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("majoraxiserror"), rec);
       }
       {
 	QuantumHolder qh(Quantum<Double>(20, "arcsec"));
 	Record rec;
 	qh.toRecord(errorMsg, rec);
 	shapeRec.defineRecord(RecordFieldId("minoraxis"), rec);
+	qh = QuantumHolder(Quantum<Double>(5, "arcsec"));
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("minoraxiserror"), rec);
       }
       {
 	QuantumHolder qh(Quantum<Double>(2, "deg"));
 	Record rec;
 	qh.toRecord(errorMsg, rec);
 	shapeRec.defineRecord(RecordFieldId("positionangle"), rec);
+	qh = QuantumHolder(Quantum<Double>(.5, "deg"));
+	qh.toRecord(errorMsg, rec);
+	shapeRec.defineRecord(RecordFieldId("positionangleerror"), rec);
       }
       {
 	MVDirection val(Quantity(2, "rad"), Quantity(1, "rad"));
