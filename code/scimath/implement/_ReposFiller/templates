@@ -598,6 +598,11 @@
      template void objmove(StatAcc<Double> *, StatAcc<Double> const *, uInt) 
 1590 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
      template void objset(StatAcc<Double> *, StatAcc<Double>, uInt) 
+1600 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h
+     template void objmove(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
+1610 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h
+     = casa/BasicSL/Complex.h 
+     template void objmove(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
 1000 casa/Utilities/CountedPtr.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/Containers/Block.h 
