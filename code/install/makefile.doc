@@ -69,6 +69,7 @@ HTMLDOCS := $(filter %.html,$(AIPSSRCS))
 HTMDOCS  := $(filter %.htm,$(AIPSSRCS))
 GIFDOCS  := $(filter %.gif,$(AIPSSRCS))
 JPGDOCS  := $(filter %.jpg,$(AIPSSRCS))
+JSDOCS  := $(filter %.js,$(AIPSSRCS))
 
 
 # Paths.
@@ -306,6 +307,7 @@ docsys : $(HELPSYS) $(CHKDIR) $(DOCSAREA) \
     $(addprefix $(DOCSAREA)/,$(HTMLDOCS)) \
     $(addprefix $(DOCSAREA)/,$(HTMDOCS)) \
     $(addprefix $(DOCSAREA)/,$(GIFDOCS)) \
+    $(addprefix $(DOCSAREA)/,$(JSDOCS)) \
     $(addprefix $(DOCSAREA)/,$(JPGDOCS)) ;
 
 $(DOCSAREA) :
@@ -368,6 +370,7 @@ show_local :
 	-@ echo "HTMLDOCS=$(HTMLDOCS)"
 	-@ echo "HTMDOCS =$(HTMDOCS)"
 	-@ echo "GIFDOCS =$(GIFDOCS)"
+	-@ echo "JSDOCS =$(JSDOCS)"
 	-@ echo "JPGDOCS =$(JPGDOCS)"
 
 help ::
