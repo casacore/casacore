@@ -1944,3 +1944,4 @@
 08 031 src mv trial/implement/Tasking/progress.help trial/implement/guiutils/progress.help
 08 033 src rm bima/mirlib/bimafiller.cc
 08 037 src mv trial/apps/guimisc/aipsbrowser.g trial/implement/guiutils/aipsbroswer.g
+08 037 src mv trial/apps/guimisc/bug.g trial/implement/guiutils/bug.g
