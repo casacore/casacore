@@ -532,6 +532,24 @@ system :
 	-@ set ADVISORY $(MIRLIBLIBD) $(MIRLIBLIB) ; $(CheckLibs)
     endif
 	-@ echo ""
+	-@ echo "HDSROOT=$(HDSROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(HDSROOT) ; $(CheckDir)
+    endif
+	-@ echo "HDSDEFS=$(HDSDEFS)"
+	-@ echo "HDSINCD=$(HDSINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(HDSINCD) ; $(CheckDir)
+    endif
+	-@ echo "HDSLIBD=$(HDSLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(HDSLIBD) ; $(CheckDir)
+    endif
+	-@ echo "HDSLIB =$(HDSLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(HDSLIBD) $(HDSLIB) ; $(CheckLibs)
+    endif
+	-@ echo ""
 	-@ echo "Package-dependent shared-library link lists."
 	-@ echo "--------------------------------------------"
 	-@ echo "XLIBLIST_shared_aips=$(XLIBLIST_shared_aips)"
