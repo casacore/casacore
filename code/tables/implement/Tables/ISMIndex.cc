@@ -1,5 +1,5 @@
 //# ISMIndex.cc: The Index of the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -72,7 +72,9 @@ void ISMIndex::addBucketNr (uInt rownr, uInt bucketNr)
     uInt index = binarySearchBrackets (found, rows_p, rownr, nused_p);
     AlwaysAssert (!found, AipsError);
     objmove (&rows_p[index+1], &rows_p[index], nused_p + 1 - index);
-    objmove (&bucketNr_p[index+1], &bucketNr_p[index], nused_p - index);
+    if (nused_p > index) {
+	objmove (&bucketNr_p[index+1], &bucketNr_p[index], nused_p - index);
+    }
     rows_p[index] = rownr;
     bucketNr_p[index] = bucketNr;
     nused_p++;
