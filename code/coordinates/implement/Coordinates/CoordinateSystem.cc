@@ -40,6 +40,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Lattices/IPosition.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
@@ -1683,55 +1684,6 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 	coords[i] = 0;
     }
     for (i=0; i<nc; i++) {
-//
-// Clean out extant temporaries
-// This code does not seem necessary.
-// Comment it out for now. nebk
-/*
-        delete retval->world_tmps_p[i]; 
-        delete retval->pixel_tmps_p[i];
-//
-        delete retval->worldAxes_tmps_p[i]; 
-        delete retval->pixelAxes_tmps_p[i]; 
-        delete retval->worldOut_tmps_p[i]; 
-        delete retval->pixelOut_tmps_p[i]; 
-        delete retval->worldMin_tmps_p[i]; 
-        delete retval->worldMax_tmps_p[i]; 
-//
-	retval->world_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	retval->world_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->world_tmps_p[i], AipsError);
-//
-	retval->pixel_tmps_p[i] = 
-	    new Vector<Double>(retval->coordinates_p[i]->nPixelAxes());
-	AlwaysAssert(retval->pixel_tmps_p[i], AipsError);
-//
-	retval->worldAxes_tmps_p[i] = 
-            new Vector<Bool>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->worldAxes_tmps_p[i], AipsError);
-//
-	retval->pixelAxes_tmps_p[i] = 
-            new Vector<Bool>(retval->coordinates_p[i]->nPixelAxes());
-	AlwaysAssert(retval->pixelAxes_tmps_p[i], AipsError);
-//
-	retval->worldOut_tmps_p[i] = 
-            new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->worldOut_tmps_p[i], AipsError);
-//
-	retval->pixelOut_tmps_p[i] = 
-            new Vector<Double>(retval->coordinates_p[i]->nPixelAxes());
-	AlwaysAssert(retval->pixelOut_tmps_p[i], AipsError);
-//
-	retval->worldMin_tmps_p[i] = 
-            new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->worldMin_tmps_p[i], AipsError);
-//
-	retval->worldMax_tmps_p[i] = 
-            new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
-	AlwaysAssert(retval->worldMax_tmps_p[i], AipsError);
-*/
 //
 // Copy values
 //
