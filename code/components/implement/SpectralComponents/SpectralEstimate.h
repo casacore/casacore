@@ -107,9 +107,15 @@ class SpectralEstimate {
   SpectralEstimate &operator=(const SpectralEstimate &other);
 
   //# Member functions
-  // Get the number of estimates found in a profile. The der pointer is
+  // Generate the estimates for a profile and return the 
+  // number found.  The der pointer is
   // meant for debugging, and can return the derivative profile.
   uInt estimate(const Vector<Float> &prof, Vector<Float> *der = 0);
+
+  // Return the number of estimates found. 0 if <src>estimates</src>
+  // not ter called.
+  uInt getNElements() const {return npar_p;};
+
   // Get the data for the n-th element
   const SpectralElement element(uInt which) const;
 
