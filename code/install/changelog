@@ -67,3 +67,29 @@ Allowed the template definition to have standard C++ include files (i.e. without
 The check is made for files ending in at least 3 lc char, or ending in 646.
  </description>
 </change>
+
+<change id=0089>
+ <author> Wim Brouw </author>
+ <date> 2001/04/05 </date>
+ <avers> 1.5 </avers>
+ <area> System </area>
+ <package> System </package>
+ <module> UP scripts </module>
+ <type> Code Documentation </type>
+ <category> New Change </category>
+ <defects>  </defects>
+ <summary>
+Added UPdup, UPreident, UPload and examples
+ </summary>
+ <description>
+The UP scripts' documentation was completely revised, adding examples and
+full documentation for all of them.
+In addition their usage was streamlined and made more transparent (I hope).
+I also added:
+- UPdup         to check for duplicate templates in the code tree
+- UPreident     to redident all templates files
+- UPload        to upload information from tested UP scripts (like maybe a
+                dry run on UPmove) to the master for faster (or only)
+                execution
+ </description>
+</change>
