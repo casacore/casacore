@@ -50,7 +50,7 @@
 // 
 // <summary> A 3-D Specialization of the Array class </summary>
 //
-// Cube tools are three-dimensional specializations (e.g., more convenient
+// Cube objects are three-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want
 // to look at the Array documentation to see inherited functionality. A
 // tutorial on using the array classes in general is available in the
@@ -118,9 +118,9 @@ public:
     // is also valid here.
     Cube(const Array<T> &);
 
-    // Create a Cube of a given shape from a pointer.
+    // Create an Cube of a given shape from a pointer.
     Cube(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-    // Create a  Cube of a given shape from a pointer. Because the pointer
+    // Create an  Cube of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Cube(const IPosition &shape, const T *storage);
 
