@@ -33,6 +33,7 @@ $* = 1;
 $mtext = "[^}]*";
 $etext = "([^\}]*\{[^\}]*\}[^\}]*|[^\}]*)";
 $wlabel = "\\subsubsection";
+$tbflabel = '\\flushleft\\vspace{.20in}\\textbf';
 $theText = "";
 $args = "";
 $end_section = "\\vspace{.18in}\n\\hrule";
@@ -52,6 +53,8 @@ if($opt_noheaders == 0 && $opt_glish == 0){
    print "\\begin{tabular}{|l p{0.75in}p{2.38in}|}\n";
    print "}\n";
    print "\\end{htmlonly}\n";
+   print "\\input{aips2defs}\n";
+   $pack = $opt_package;
 }
 
 if($opt_glish == 1){
@@ -187,12 +190,12 @@ sub term_object{
         $methodItems .= "\\htmlref{$key}{$mname:$oname.$key} & $methods{$oname}{$key}\\\\\n";
      }
      s/\\ahmethods{}/
-   \\subsubsection*{Methods}
+   \\subsubsection*{Functions}
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/g;
      s/\\ahfuncs{}/
-   \\subsubsection*{Methods}
+   \\subsubsection*{Functions}
    \\begin{longtable}{ll}
    $methodItems
    \\end{longtable}/;
@@ -354,14 +357,14 @@ sub make_tex_file{
    
       if($isObj == 1){
          s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$oname.$1 - $mname.$oname:Method \\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
-   $2
+   \\subsectionM{$oname.$1\\index{$1}\\index{$mname.$oname.$1}}{$pack}{$mname}{$oname}
+   $2\\\\
    \\ahsynopsis{$1}
    /sg;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
-   \\subsection{$1 - $mname:Function \\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
-   $2
+   \\subsectionF{$1\\index{$1}\\index{$mname.$1}}{$pack}{$mname}
+   $2\\\\
    \\ahsynopsis{$1}
    /sg;
       } 
@@ -372,13 +375,14 @@ sub make_tex_file{
       s/\\end{ahobject}/$end_section/g;
    
       s/\\begin{ahobject}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname:Object \\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
-   $2\\\\/g;
+   \\subsectionO{$1\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}{$pack}{$mname}
+   $2\\\\
+   /g;
    
       s/\\end{ahconstructor}/$end_section/g;
       s/\\begin{ahconstructor}\s*{($mtext)}\s*{($mtext)}/
-   \\subsection{$1 - $mname.$oname:Constructor \\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
-   $2
+   \\subsectionC{$1\\index{$1}\\index{$mname.$1}}{$pack}{$mname}{$oname}
+   $2\\\\
    \\ahsynopsis{$1}
    /g;
   
@@ -393,7 +397,7 @@ sub make_tex_file{
    
      s/\\ahcategory{($mtext)}//g;
      s/\\end{ahdescription}//g;
-     s/\\begin{ahdescription}/$wlabel*{Description}/g;
+     s/\\begin{ahdescription}/$tbflabel {Description}\\newline/g;
      s/\\end{ahrecord}/\\hline/g;
      s/\\begin{ahrecord}{($mtext)}{($mtext)}/
        \\hline
@@ -401,7 +405,7 @@ sub make_tex_file{
 
      s/\\end{ahdata}/\\end{longtable}/g;
      s/\\begin{ahdata}/
-     $wlabel*{Attributes} -- Public Data
+     $tbflabel {Attributes} -- Public Data\\\\ 
      \\begin{longtable}{|p{1.5in}p{4.0in}|}
      \\hline
      ID & Description \\\\
@@ -424,7 +428,7 @@ sub make_tex_file{
 
      s/\\end{ahaipsrc}/\\end{tabular}/g;
    
-     s/\\begin{ahaipsrc}/$wlabel*{Aipsrc Variables}
+     s/\\begin{ahaipsrc}/$tbflabel {Aipsrc Variables} \\\\ 
    \\hfill \\\\
    \\starthelptab
    \\hline/g;
@@ -432,14 +436,14 @@ sub make_tex_file{
 #
      s/\\end{ahargs}/\\end{tabular}/g;
    
-     s/\\begin{ahargs}/$wlabel*{Arguments}
+     s/\\begin{ahargs}/$tbflabel {Arguments}\\\\
    \\hfill \\\\
    \\starthelptab
    \\hline/g;
 
      s/\\end{ahargslong}/\\end{longtable}/g;
   
-     s/\\begin{ahargslong}/$wlabel*{Arguments}
+     s/\\begin{ahargslong}/$tbflabel {Arguments}\\\\
    \\hfill \\\\
    \\begin{longtable}{|p{1in}p{0.39in}p{2.79in}|}
    \\hline/g;
@@ -460,15 +464,15 @@ sub make_tex_file{
    \& Allowed: \& $4\\\\
    \& Default: \& $3  \\\\ \\hline/g;
    
-     s/\\ahsynopsis{($mtext)}/$wlabel*{Synopsis}
+     s/\\ahsynopsis{($mtext)}/$tbflabel {Synopsis}\\newline
    $1($args)/g;
-     s/\\ahreturns{($mtext)}/$wlabel*{Returns}
+     s/\\ahreturns{($mtext)}/$tbflabel {Returns}\\newline
    $1\\\\/g;
    
      s/\\end{ahexample}//g;
-     s/\\begin{ahexample}/$wlabel*{Example}/g;
+     s/\\begin{ahexample}/$tbflabel {Example}\\newline/g;
      s/\\end{ahseealso}//g;
-     s/\\begin{ahseealso}/$wlabel*{See Also}/g;
+     s/\\begin{ahseealso}/$tbflabel {See Also}\\newline/g;
      s/\\ahkeyword{($mtext)}\s*{($mtext)}/\\index{$1}\\index{$mname.$1}/g;
      s/\\ahkeyword{($mtext)}\s*{}/\\index{$1}\\index{$mname:$1}/g;
      s/\\ahkeyword{($mtext)}/\\index{$1}\\index{$mname:$1}/g;
