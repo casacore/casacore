@@ -1940,3 +1940,4 @@
 08 031 src mv trial/scripts/guicomponents.help trial/implement/guiutils/guicomponents.help
 08 031 src mv trial/implement/Tasking/choice.help trial/implement/guiutils/choice.help
 08 031 src mv trial/implement/Tasking/choice.g trial/implement/guiutils/choice.g
+08 031 src mv trial/implement/Tasking/progress.g trial/implement/guiutils/progress.g
