@@ -45,6 +45,7 @@ RFADiffBase::RFADiffBase (  RFChunkStats &ch,const RecordInterface &parm ) :
   RFAFlagCubeBase(ch,parm),
   clip_level(parm.asDouble(RF_THR)),
   row_clip_level(parm.asDouble(RF_ROW_THR)),
+  disable_row_clip(parm.asBool(RF_ROW_DISABLE)),
   rowclipper(chunk,flag,row_clip_level,parm.asInt(RF_ROW_HW))
 {
 }
@@ -80,9 +81,11 @@ const RecordInterface & RFADiffBase::getDefaults ()
     rec.define(RF_THR,(Double)5);
     rec.define(RF_ROW_THR,(Double)10);
     rec.define(RF_ROW_HW,(Int)6);
+    rec.define(RF_ROW_DISABLE,False);
     rec.setComment(RF_THR,"Pixel flagging threshold, in AADs");
-    rec.setComment(RF_ROW_THR,"Row flagging, threshold, in AADs");
+    rec.setComment(RF_ROW_THR,"Row flagging threshold, in AADs");
     rec.setComment(RF_ROW_HW,"Row flagging, half-window of sliding median");
+    rec.setComment(RF_ROW_DISABLE,"Disable row-based flagging");
   }
   return rec;
 }
@@ -94,7 +97,10 @@ const RecordInterface & RFADiffBase::getDefaults ()
 String RFADiffBase::getDesc ()
 {
   char s[128];
-  sprintf(s,"%s=%.1f %s=%.1f",RF_THR,clip_level,RF_ROW_THR,row_clip_level);
+  if( disable_row_clip )
+    sprintf(s,"%s=%.1f",RF_THR,clip_level);
+  else
+    sprintf(s,"%s=%.1f %s=%.1f",RF_THR,clip_level,RF_ROW_THR,row_clip_level);
   String str(s);
   return str+" "+RFAFlagCubeBase::getDesc();
 }
@@ -133,18 +139,15 @@ Bool RFADiffBase::newChunk (Int &maxmem)
   RFAFlagCubeBase::newChunk(maxmem);
 // create a temp lattice to hold nchan x num(IFR) x ntime diff-medians
   diff.init(num(CHAN),num(IFR),num(TIME),mmdiff,2);
-// Average absolute deviation (AAD) is what we actually use for flagging. 
-// Flagging starts on the first pass, as soon as some AAD value is established.
-// Presumably, the AAD value stabilizes as we iterate along; we maintain a 
-// current value in aad, and an "reference" value from itime_repeat in aad0. When
-// aad deviates from aad0 by more than X (10%?), aad0 and itime_repeat is updated
-// with the current aad. At the end of the first pass, itime_repeat tells us
-// the time slot from which on the flags from the first pass can be considered
-// reliable.
-// To complete the flagging then, a second pass up to itime_repeat is
-// requested.
+// init the row-clipper object
   rowclipper.init(num(IFR),num(TIME));
   diffrow.resize(num(CHAN));
+  
+// if rows are too short, there's no point in flagging them in toto 
+// based on their noise level
+  clipping_rows = !disable_row_clip;
+  if( num(CHAN)<10 )
+    clipping_rows = False;
   
   return active=True;
 }

@@ -118,7 +118,9 @@ protected:
   virtual RFlagWord newCorrMask () =0;
 
   Double clip_level;      // clipping level, in AADs
-  Double row_clip_level;  // clipping level for rows (based on noise estimates)
+  Double row_clip_level;  // clipping level for rows (based on noise estimates), <0 for disable
+  Bool   disable_row_clip; // flag: row clipping _disabled_ globally
+  Bool   clipping_rows;    // flag: row clipping active for this chunk
   
   RFCubeLattice<Float>   diff;   // (Nchan,Nifr,Nt) lattice of deviations
   FlagCubeIterator *     pflagiter; // flag iterator used by setDiff()
