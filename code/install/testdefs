@@ -817,7 +817,7 @@ system :
 	-@ echo "AUXILIARY=$(AUXILIARY)"
     ifdef DO_TEST
 	-@ FAIL=0 ; \
-	   for i in $(AUXILIARY) ; do \
+	   for i in "$(AUXILIARY)" ; do \
 	      case $$i in \
 	      trial | contrib) \
 	         ;; \
@@ -835,7 +835,7 @@ system :
 	-@ echo "CONSORTIA=$(CONSORTIA)"
     ifdef DO_TEST
 	-@ FAIL=0 ; \
-	   for i in $(CONSORTIA) ; do \
+	   for i in "$(CONSORTIA)" ; do \
 	      case $$i in \
 	      atnf | bima | hia | nfra | nral | nrao | tifr) \
 	         ;; \
