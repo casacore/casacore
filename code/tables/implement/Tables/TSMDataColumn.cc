@@ -1,5 +1,5 @@
 //# TSMDataColumn.cc: Tiled Hypercube Storage Manager for data columns
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -194,6 +194,7 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
 {
     IPosition end;
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, end);
+    IPosition endcp (end);
     IPosition start (end);
     IPosition stride (end.nelements(), 1);
     IPosition blc, trc, inc;
@@ -215,7 +216,7 @@ void TSMDataColumn::accessCellSlice (uInt rownr, const Slicer& ns,
 	    uInt naxis = 0;
 	    IPosition axisPath (end.nelements());
 	    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
-		if (blc(i) == 0  &&  trc(i) == end(i)) {
+		if (blc(i) == 0  &&  trc(i) == endcp(i)) {
 		    axisPath(naxis++) = i;
 		}
 	    }
@@ -256,6 +257,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     TSMCube* hypercube = stmanPtr_p->singleHypercube();
     IPosition end (hypercube->cubeShape());
     end -= 1;
+    IPosition endcp (end);
     IPosition start (end.nelements(), 0);
     IPosition stride (end.nelements(), 1);
     IPosition blc, trc, inc;
@@ -279,7 +281,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	    uInt naxis = 0;
 	    IPosition axisPath (end.nelements());
 	    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
-		if (blc(i) == 0  &&  trc(i) == end(i)) {
+		if (blc(i) == 0  &&  trc(i) == endcp(i)) {
 		    axisPath(naxis++) = i;
 		}
 	    }
