@@ -778,9 +778,13 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	Int startingRow = row;
 	Double diamMax2 = square( max(antDiam_p) );
 
-        Matrix<Double> firstRot(Rot3D(2,(gmst-ra +0.25*C::_2pi)));
-	Matrix<Double> secondRot(Rot3D(0,C::pi_2-dec));
-
+        // rough transformation from antenna position difference (ant2-ant1) to uvw
+        Double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
+        Matrix<Double> trans(3,3,0);
+        trans(0,0) = -sH0;    trans(0,1) = -cH0;
+        trans(1,0) =  sd*cH0; trans(1,1) = -sd*sH0; trans(1,2) = -cd;
+        trans(2,0) = -cd*cH0; trans(2,1) = cd*sH0;  trans(2,2) = -sd; 
+        
         // We can extend the ms and the hypercube by all baselines
 	Int nBase;
         if(autoCorrelationWt_p > 0.0) {
@@ -807,13 +811,12 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		  }
 		  msc.antenna1().put(row,ant1);
 		  msc.antenna2().put(row,ant2);
-		  // this is probably wrong...
+		  // uvw is still not quite correct
 		  Double x2=antXYZ_p(0,ant2), y2=antXYZ_p(1,ant2), z2=antXYZ_p(2,ant2);
 		  uvwvec(0) = x2-x1;
 		  uvwvec(1) = y2-y1;
 		  uvwvec(2) = z2-z1;
-		  uvwvec=product(firstRot,uvwvec);
-		  uvwvec=product(secondRot,uvwvec);
+		  uvwvec=product(trans,uvwvec);
 
 		  if (ant1 != ant2) {
 		    blockage(fractionBlocked1, fractionBlocked2,
