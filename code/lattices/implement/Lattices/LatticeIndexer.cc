@@ -64,13 +64,13 @@ LatticeIndexer::LatticeIndexer(const IPosition &shape, const IPosition &blc,
    theOffset(theNdim, 0)
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(blc.nelements() == theNdim, AipsError);
-  DebugAssert(trc.nelements() == theNdim, AipsError);
-  DebugAssert(inc.nelements() == theNdim, AipsError);
+  AlwaysAssert(blc.nelements() == theNdim, AipsError);
+  AlwaysAssert(trc.nelements() == theNdim, AipsError);
+  AlwaysAssert(inc.nelements() == theNdim, AipsError);
   for (uInt i=0; i < theNdim; i++) {
-    DebugAssert(blc(i) >= 0 && blc(i) < theFullShape(i), AipsError);
-    DebugAssert(trc(i) < theFullShape(i) && trc(i) >= blc(i), AipsError);
-    DebugAssert(inc(i) > 0 && inc(i) <= theFullShape(i), AipsError);
+    AlwaysAssert(blc(i) >= 0 && blc(i) < theFullShape(i), AipsError);
+    AlwaysAssert(trc(i) < theFullShape(i) && trc(i) >= blc(i), AipsError);
+    AlwaysAssert(inc(i) > 0 && inc(i) <= theFullShape(i), AipsError);
   }
   theOffset = blc;
   theAxisInc = inc;
@@ -144,7 +144,7 @@ const IPosition &LatticeIndexer::fullShape() const
 uInt LatticeIndexer::fullShape(uInt axis) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(axis < theNdim, AipsError);
+  AlwaysAssert(axis < theNdim, AipsError);
   return theFullShape(axis);
 };
 
@@ -159,7 +159,7 @@ const IPosition &LatticeIndexer::shape() const
 uInt LatticeIndexer::shape(uInt axis) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(axis < theNdim, AipsError);
+  AlwaysAssert(axis < theNdim, AipsError);
   return theShape(axis);
 };
 
@@ -175,7 +175,7 @@ const IPosition &LatticeIndexer::increment() const
 uInt LatticeIndexer::increment(uInt axis) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(axis < theNdim, AipsError);
+  AlwaysAssert(axis < theNdim, AipsError);
   return theAxisInc(axis);
 };
 
@@ -192,7 +192,7 @@ const IPosition & LatticeIndexer::offset() const
 uInt LatticeIndexer::offset(uInt axis) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(axis < theNdim, AipsError);
+  AlwaysAssert(axis < theNdim, AipsError);
   return theOffset(axis);
 };
 
@@ -256,11 +256,11 @@ Bool LatticeIndexer::tiledCursorMove(Bool incr, IPosition &cursorPos,
   //    this is the "base" or "bottomLeftCorner" of the new cursor.
 
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(cursorPos.nelements() == theNdim, AipsError);
-  DebugAssert(cursorShape.nelements() == theNdim, AipsError);
-  DebugAssert(cursorHeading.nelements() == theNdim,AipsError);
+  AlwaysAssert(cursorPos.nelements() == theNdim, AipsError);
+  AlwaysAssert(cursorShape.nelements() == theNdim, AipsError);
+  AlwaysAssert(cursorHeading.nelements() == theNdim,AipsError);
   for (uInt i=0; i<theNdim; i++)
-    DebugAssert(cursorShape(i) > 0, AipsError);
+    AlwaysAssert(cursorShape(i) > 0, AipsError);
 
   uInt activeAxis, indexToActiveAxis = 0;
   IPosition candidateCursorPos(cursorPos);
@@ -298,7 +298,7 @@ Bool LatticeIndexer::tiledCursorMove(Bool incr, IPosition &cursorPos,
 Bool LatticeIndexer::isInside(const IPosition &index) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(index.nelements () == theNdim, AipsError);
+  AlwaysAssert(index.nelements () == theNdim, AipsError);
 
   for (uInt i=0; i<theNdim; i++)
     if ((index(i) < 0) || (index(i) >= theShape(i)))
@@ -322,14 +322,14 @@ void LatticeIndexer::subSection (const IPosition &blc, const IPosition &trc,
 				 const IPosition &inc)
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(blc.nelements() == theNdim, AipsError);
-  DebugAssert(trc.nelements() == theNdim, AipsError);
-  DebugAssert(inc.nelements() == theNdim, AipsError);
+  AlwaysAssert(blc.nelements() == theNdim, AipsError);
+  AlwaysAssert(trc.nelements() == theNdim, AipsError);
+  AlwaysAssert(inc.nelements() == theNdim, AipsError);
   for (uInt i=0; i<theNdim; i++) {
-    DebugAssert(blc(i) >= 0, AipsError);
-    DebugAssert(trc(i) < theShape(i), AipsError);
-    DebugAssert(blc(i) <= trc(i), AipsError);
-    DebugAssert(inc(i) > 0 && inc(i) <= theShape(i), AipsError);
+    AlwaysAssert(blc(i) >= 0, AipsError);
+    AlwaysAssert(trc(i) < theShape(i), AipsError);
+    AlwaysAssert(blc(i) <= trc(i), AipsError);
+    AlwaysAssert(inc(i) > 0 && inc(i) <= theShape(i), AipsError);
   }
   theShape = (trc-blc+inc)/inc;
   theOffset = theOffset+blc*theAxisInc;
@@ -351,7 +351,7 @@ void LatticeIndexer::subSection(const IPosition &blc, const IPosition &trc)
 IPosition LatticeIndexer::absolutePosition(const IPosition &position) const
 {
   DebugAssert(ok() == True, AipsError);
-  DebugAssert(position.nelements () == theNdim, AipsError);
+  AlwaysAssert(position.nelements () == theNdim, AipsError);
   return theOffset + position*theAxisInc;
 };
 
