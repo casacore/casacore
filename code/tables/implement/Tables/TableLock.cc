@@ -1,5 +1,5 @@
 //# TableLock.cc: Class to hold table lock options
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,20 +32,28 @@
 
 TableLock::TableLock (LockOption option)
 : itsOption            (option),
+  itsReadLocking       (True),
   itsMaxWait           (0),
   itsInterval          (5),
   itsIsDefaultInterval (True)
-{}
+{
+  init();
+}
+
 TableLock::TableLock (LockOption option, double inspectionInterval,
 		      uInt maxWait)
 : itsOption            (option),
+  itsReadLocking       (True),
   itsMaxWait           (maxWait),
   itsInterval          (inspectionInterval),
   itsIsDefaultInterval (False)
-{}
+{
+  init();
+}
 
 TableLock::TableLock (const TableLock& that)
 : itsOption            (that.itsOption),
+  itsReadLocking       (that.itsReadLocking),
   itsMaxWait           (that.itsMaxWait),
   itsInterval          (that.itsInterval),
   itsIsDefaultInterval (that.itsIsDefaultInterval)
@@ -53,25 +61,41 @@ TableLock::TableLock (const TableLock& that)
 
 TableLock& TableLock::operator= (const TableLock& that)
 {
-    if (this != &that) {
-	itsOption            = that.itsOption;
-	itsMaxWait           = that.itsMaxWait;
-	itsInterval          = that.itsInterval;
-	itsIsDefaultInterval = that.itsIsDefaultInterval;
-    }
-    return *this;
+  if (this != &that) {
+    itsOption            = that.itsOption;
+    itsReadLocking       = that.itsReadLocking;
+    itsMaxWait           = that.itsMaxWait;
+    itsInterval          = that.itsInterval;
+    itsIsDefaultInterval = that.itsIsDefaultInterval;
+  }
+  return *this;
+}
+
+
+void TableLock::init()
+{
+  if (itsOption == AutoNoReadLocking) {
+    itsOption      = AutoLocking;
+    itsReadLocking = False;
+  } else if (itsOption == UserNoReadLocking) {
+    itsOption      = UserLocking;
+    itsReadLocking = False;
+  }
 }
 
 
 void TableLock::merge (const TableLock& that)
 {
-    if (that.itsOption < itsOption) {
-	itsOption  = that.itsOption;
-	itsMaxWait = that.itsMaxWait;
+  if (that.itsOption < itsOption) {
+    itsOption  = that.itsOption;
+    itsMaxWait = that.itsMaxWait;
+  }
+  if (that.itsReadLocking) {
+    itsReadLocking = True;
+  }
+  if (! that.itsIsDefaultInterval) {
+    if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
+      itsInterval = that.itsInterval;
     }
-    if (! that.itsIsDefaultInterval) {
-	if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
-	    itsInterval = that.itsInterval;
-	}
-    }
+  }
 }
