@@ -188,8 +188,7 @@ private:
   RebinLattice<T>*   itsRebinPtr;
 
   // Create Coordinates for the rebinned image.
-  static CoordinateSystem makeOutputCoordinates
-                                         (const IPosition& factors,
+  CoordinateSystem makeOutputCoordinates (const IPosition& factors,
 					  const CoordinateSystem& cSysIn,
 					  const IPosition& shapeIn,
 					  const IPosition& shapeOut);
