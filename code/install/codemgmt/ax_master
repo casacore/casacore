@@ -2434,3 +2434,4 @@
 09 386 src rm trial/scripts/unique.g
 09 386 src rm trial/scripts/unique.help
 09 386 sys rm libexec/unique.g
+09 390 src rm nrao/apps/xrtgplot1d
