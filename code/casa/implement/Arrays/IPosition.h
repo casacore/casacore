@@ -262,7 +262,8 @@ public:
 
     // Is the other IPosition a subset of (or equal to) this IPosition?
     // It is a subset if zero or more axes of this IPosition do not occur
-    // in the other and if the remaining axes are in the same order.
+    // or are degenerated in the other and if the remaining axes are
+    // in the same order.
     Bool isSubSet (const IPosition& other) const;
 
     // Write an IPosition to an ostream in a simple text form.
