@@ -1,5 +1,5 @@
 //# SSMIndex.cc: The bucket index for a group of columns in the SSM
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Tables/TableError.h>
+#include <aips/iostream.h>
 
 
 SSMIndex::SSMIndex (SSMBase* aSSMPtr, uInt rowsPerBucket) 

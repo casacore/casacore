@@ -1,5 +1,5 @@
 //# Table.cc: Main interface class to table data
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@
 #include <aips/OS/File.h>
 #include <aips/OS/Directory.h>
 #include <aips/OS/DirectoryIterator.h>
+#include <aips/iostream.h>
 
 
 Table::ScratchCallback* Table::scratchCallback_p = 0;
