@@ -1,5 +1,5 @@
 //# Quanta.h:  a module for units and quantities
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -557,7 +557,7 @@
 //    deg_2     (square degree)              0.000304617419787 sr
 //    dyn       (dyne)                       1e-05 m.kg.s-2
 //    eV        (electron volt)              1.60217733e-19 m2.kg.s-2
-//    erg       (erg)                        0.001 kg.s-2
+//    erg       (erg)                        1e-07 m2.kg.s-2
 //    fl_oz     (fluid ounce (Imp))          2.84130488996e-05 m3
 //    ft        (foot)                       0.3048 m
 //    fu        (flux unit)                  1e-26 kg.s-2
