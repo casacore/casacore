@@ -691,7 +691,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
     Bool firstTime = True;
 
     uInt nShadowed = 0;
-    uInt nSubElevetaion = 0;
+    uInt nSubElevation = 0;
 
     for (Int itime=0; Time<Tend_p; itime++) {
 
@@ -741,13 +741,26 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	Int startingRow = row;
 	Double diamMax2 = square( max(antDiam_p) );
 
+        Matrix<Double> firstRot(Rot3D(2,(gmst-ra +0.25*C::_2pi)));
+	Matrix<Double> secondRot(Rot3D(0,C::pi_2-dec));
+
+        // We can extend the ms and the hypercube by all baselines
+	Int nBase;
+        if(autoCorrelationWt_p > 0.0) {
+	  nBase =nAnt_p*(nAnt_p+1)/2;
+	}
+	else {
+	  nBase =nAnt_p*(nAnt_p-1)/2;
+	}
+	ms.addRow(nBase);
+	accessor.extendHypercube(nBase,values);
 	for (Int ant1=0; ant1<nAnt_p; ant1++) {
 	    Double x1=antXYZ_p(0,ant1), y1=antXYZ_p(1,ant1), z1=antXYZ_p(2,ant1);
 	    for (Int ant2=ant1; ant2<nAnt_p; ant2++) {
 	        if ( (ant1 != ant2) ||  autoCorrelationWt_p > 0.0) {
 		  row++; 
-		  ms.addRow();
-		  accessor.extendHypercube(1,values);
+		  //		  ms.addRow();
+		  //		  accessor.extendHypercube(1,values);
 		  if (firstBaseline) {
                     msc.scanNumber().put(row,scan++);
 		    msc.fieldId().put(row,FldId);
@@ -762,8 +775,8 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		  uvwvec(0) = x2-x1;
 		  uvwvec(1) = y2-y1;
 		  uvwvec(2) = z2-z1;
-		  uvwvec=product(Rot3D(2,(gmst-ra +0.25*C::_2pi) ),uvwvec);
-		  uvwvec=product(Rot3D(0,C::pi_2-dec),uvwvec);
+		  uvwvec=product(firstRot,uvwvec);
+		  uvwvec=product(secondRot,uvwvec);
 
 		  if (ant1 != ant2) {
 		    blockage(fractionBlocked1, fractionBlocked2,
@@ -829,19 +842,20 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	    }
 	  }
 	}
+
+	// This will not work for VLBI! 
+	msd.setAntennaPositions(vpos);
+	  
+	MEpoch ep(Quantity((Time + Tint_p/2), "s"));
+	msd.setEpoch(ep);
+	      
+	msd.setFieldCenter( fc );
+	      
+	Double elevation = msd.azel().getAngle("rad").getValue("rad")(1);
 	
 	// go back and flag weights based on elevationLimit_p
 	for (Int ant1=0; ant1<nAnt_p; ant1++) {
 	  
-	  // This will not work for VLBI! 
-	  msd.setAntennaPositions(vpos);
-	  
-	  MEpoch ep(Quantity((Time + Tint_p/2), "s"));
-	  msd.setEpoch(ep);
-	      
-	  msd.setFieldCenter( fc );
-	      
-	  Double elevation = msd.azel().getAngle("rad").getValue("rad")(1);
 	  if (elevation < elevationLimit_p.getValue("rad")) {
 	    isTooLow(ant1) = True;
 	  }
@@ -866,7 +880,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 	      if ( isTooLow(ant1) || isTooLow(ant2) ) {
 		msc.flag().put(reRow,trueFlag);
 		msc.flagRow().put(reRow, True);
-		nSubElevetaion++;
+		nSubElevation++;
 	      }
 	    }
 	  }
@@ -888,7 +902,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 
     os << (row+1) << " visibilities simulated " << LogIO::POST;
     os << nShadowed << " visibilities flagged due to shadowing " << LogIO::POST;
-    os << nSubElevetaion << " visibilities flagged due to elevation limit of " << 
+    os << nSubElevation << " visibilities flagged due to elevation limit of " << 
       elevationLimit_p.getValue("deg") << " degrees " << LogIO::POST;
 
 };
