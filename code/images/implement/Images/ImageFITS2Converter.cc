@@ -1,5 +1,5 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997,1998
+//# ImageFITS2Converter.cc : non-templated FITS<->aips++ image conversion 
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
 
@@ -55,6 +56,7 @@
 
 #include <strstream.h>
 #include <iomanip.h>
+//#include <ieeefp.h>
 
 // Cure some problems seen on dec alpha - something is defining macros
 // major and minor
@@ -66,65 +68,67 @@
 #endif
 
 
-void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
+Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 				     String &error,
 				     const String &imageName,
 				     const String &fitsName, 
 				     uInt whichHDU,
-				     uInt memoryInMB)
+				     uInt memoryInMB,
+				     Bool allowOverwrite)
 {
     newImage = 0;
     error = "";
 
-    // First make sure that imageName is writable and does not already
-    // exist.
+// First make sure that imageName is writable and does not already
+// exist.  Optionally remove it if it does
 
     File imfile(imageName);
-    if (imfile.exists()) {
-	error = imageName + " already exists, will not overwrite.";
-	return;
-    }
+    if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return False;
+//
     Directory imdir = imfile.path().dirName();
     if (!imdir.exists() || !imdir.isWritable()) {
-	error = String("Direcotry ") + imdir.path().originalName() + 
+	error = String("Directory ") + imdir.path().originalName() + 
 	  " does not exist or is not writable";
-	return;
+	return False;
     }
-    
-
+//
     File fitsfile(fitsName);
     if (!fitsfile.exists() || !fitsfile.isReadable() || 
 	!fitsfile.isRegular()) {
         error = fitsName + " does not exist or is not readable";
-	return;
+	return False;
     }
-
-    // OK, now see if we can attach the FITS reading classes
+//
+// OK, now see if we can attach the FITS reading classes
+//
     FitsInput infile(fitsfile.path().expandedName(), FITS::Disk);
     if (infile.err()) {
         error = String("Cannot open file (or other I/O error): ") + fitsName;
-	return;
+	return False;
     }
-
-    // Advance to the right HDU
+//
+// Advance to the right HDU
+//
     for (uInt i=0; i<whichHDU; i++) {
 	infile.skip_hdu();
 	if (infile.err()) {
 	    error = "Error advancing to image in file: " + fitsName;
-	    return;
+	    return False;
 	}
     }
-
-    // Make sure the current spot in the FITS file is an image
+//
+// Make sure the current spot in the FITS file is an image
+//
     if (infile.rectype() != FITS::HDURecord ||
-	infile.hdutype() != FITS::PrimaryArrayHDU ||
-	infile.hdutype() != FITS::ImageExtensionHDU) {
+	(infile.hdutype() != FITS::PrimaryArrayHDU &&
+         infile.hdutype() != FITS::ImageExtensionHDU)) {
 	error = "No image at specified location in file " + fitsName;
+        return False;
     }
-    
-    // The rest has to be done in a type dependent way - hand over to template
-    // functions.
-    
+//    
+// The rest has to be done in a type dependent way - hand over to template
+// functions.
+//
     switch(infile.datatype()) {
     case FITS::BYTE:
         {
@@ -193,13 +197,14 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
         break;
     default:
         error = "Unknown datatype  - no data returned";
-	return;
+	return False;
     }
+    return True;
 
 }
 
 Bool ImageFITSConverter::ImageToFITS(String &error,
-				     const ImageInterface<Float> &image,
+				     ImageInterface<Float> &image,
 				     const String &fitsName, 
 				     uInt memoryInMB,
 				     Bool preferVelocity,
@@ -216,51 +221,25 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	// Write to stdout
 	outfile = new FitsOutput(cout);
     } else {
-	// Make sure that the fits file does not already exist, and that we
-	// can write to the directory
+
+// Make sure that the fits file does not already exist, and that we
+// can write to the directory
+
 	File fitsfile(fitsName);
-	if (fitsfile.exists()) {
-	    if (allowOverwrite) {
-		String msg;
-		try {
-		    if (fitsfile.isRegular()) {
-			RegularFile rfile(fitsfile);
-			rfile.remove();
-		    } else if (fitsfile.isDirectory()) {
-			Directory dfile(fitsfile);
-			dfile.remove();
-		    } else if (fitsfile.isSymLink()) {
-			SymLink sfile(fitsfile);
-			sfile.remove();
-		    } else {
-			msg = "Cannot remove file - unknown file type";
-		    }
-		} catch (AipsError x) {
-		    msg = x.getMesg();
-		} end_try;
-		if (fitsfile.exists()) {
-		    error = "Could not remove " + fitsName;
-		    if (msg != "") {
-			error += ": (" + msg + ")";
-		    }
-		    return False;
-		}
-	    } else {
-		error = fitsName + " already exists, will not overwrite.";
-		return False;
-	    }
-	}
+        if (!ImageFITSConverter::removeFile (error, fitsfile, fitsName, allowOverwrite)) return False;
+//
 	Directory fitsdir = fitsfile.path().dirName();
 	if (!fitsdir.exists() || !fitsdir.isWritable()) {
 	    error = String("Directory ") + fitsdir.path().originalName() + 
 		" does not exist or is not writable";
 	    return False;
 	}
-    
-	// OK, it appears to be a writable etc. file, let's try opening it.
+//    
+// OK, it appears to be a writable etc. file, let's try opening it.
+//
 	outfile = new FitsOutput(fitsfile.path().expandedName(), FITS::Disk);
     }
-
+//
     if (outfile == 0 || outfile->err()) {
 	error = String("Cannot open file for writing: ") + fitsName;
 	if (outfile != 0) { 
@@ -268,38 +247,59 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	}
 	return False;
     }
-
-
+//
+// Get coordinates and test that axis removal has been
+// mercifully absent
+//
     CoordinateSystem coordsys = image.coordinates();
     if (coordsys.nWorldAxes() != coordsys.nPixelAxes()) {
 	error = "FITS requires that the number of world and pixel axes be"
 	    " identical.";
 	return False;
     }
+//
+// Make a logger
+//
+    LogIO os;
+    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
 
+    Bool applyMask = False;
+    Array<Bool>* pMask = 0;
+    if (image.isMasked()) {
+       os << LogIO::NORMAL << "Applying mask of name '" 
+          << image.getDefaultMask() << "'" << LogIO::POST;
+       applyMask = True;
+       pMask = new Array<Bool>(IPosition(0,0));
+    } 
+//
+// Find scale factors
+//
     Record header;
-
     Double bscale, bzero;
     const Short maxshort = 32767;
     const Short minshort = -32768;
-    Bool hasBlanks = True;
+    Bool hasBlanks;
     if (BITPIX == -32) {
         bscale = 1.0;
         bzero = 0.0;
 	header.define("bitpix", BITPIX);
 	header.setComment("bitpix", "Floating point (32 bit)");
+//
+// We don't yet know if the image has blanks or not, so assume it does.
+//
+        hasBlanks = True;
     } else if (BITPIX == 16) {
 	header.define("bitpix", BITPIX);
 	header.setComment("bitpix", "Short integer (16 bit)");
         if (minPix > maxPix) {
 	    // Find the min and max of the image
-	    LogIO os;
-	    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
 	    os << LogIO::NORMAL << 
-	      "Finding scaling factors for BITPIX=16 and look for blanks" <<
+	      "Finding scaling factors for BITPIX=16 and look for masked or blanked values" <<
 		LogIO::POST;
 	    hasBlanks = False;
-
+//
+// Set up iterator
+//
 	    IPosition cursorShape(image.niceCursorShape(image.maxPixels()));
 	    IPosition shape = image.shape();
 	    RO_LatticeIterator<Float> iter(image, 
@@ -307,29 +307,56 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    ProgressMeter meter(0.0, 1.0*shape.product(), "Searching pixels", ""
 				"", True, 
 				shape.product()/cursorShape.product()/50);
+//
+// Iterate
+//
 	    uInt count = 0;
+            Bool deleteMaskPtr, deletePtr;
 	    for (iter.reset(); !iter.atEnd(); iter++) {
-		const Array<Float> &cur = iter.cursor();
-		Bool del;
-		const Float *cptr = cur.getStorage(del);
-		const uInt n = cur.nelements();
-		for (uInt i=0; i<n; i++) {
-		    if (cptr[i] != cptr[i]) {  // For a Nan, x != x
-			hasBlanks = True;
-		    } else {
-			// Not a NaN
-			if (minPix > maxPix) {
-			    // First non-Nan we have run into. Init.
-			    minPix = maxPix = cptr[i];
-			} else {
-			    if (cptr[i] < minPix) minPix = cptr[i];
-			    if (cptr[i] > maxPix) maxPix = cptr[i];
-			}
-		    }
-		}
+		const Array<Float> &cursor = iter.cursor();
+		const Float *cptr = cursor.getStorage(deletePtr);
+		const uInt n = cursor.nelements();
+// 
+                if (applyMask) {
+                   if (!pMask->shape().isEqual(cursor.shape())) pMask->resize(cursor.shape());
+                   (*pMask) = image.getMaskSlice(iter.position(), cursor.shape(), False);
+                   const Bool* maskPtr = pMask->getStorage(deleteMaskPtr);
+//
+// If a pixel is a NaN or the mask is False, it goes out as a NaN
+//
+                   for (uInt i=0; i<n; i++) {
+                      if (isNaN(cptr[i]) || !maskPtr[i]) {
+//                      if (cptr[i]!=cptr[i] || !maskPtr[i]) {
+                         hasBlanks = True;
+                      } else {
+                         if (minPix > maxPix) {
+                            minPix = maxPix = cptr[i];
+                         } else {
+                            if (cptr[i] < minPix) minPix = cptr[i];
+                            if (cptr[i] > maxPix) maxPix = cptr[i];
+                         }
+                      }
+                   }
+                   pMask->freeStorage(maskPtr, deleteMaskPtr);
+                } else {
+                   for (uInt i=0; i<n; i++) {
+                      if (isNaN(cptr[i])) {
+//                    if (cptr[i] != cptr[i]) {
+                         hasBlanks = True;
+                      } else {
+                         if (minPix > maxPix) {
+// First non-NaN we have run into. Init.
+                            minPix = maxPix = cptr[i];
+                         } else {
+                            if (cptr[i] < minPix) minPix = cptr[i];
+                            if (cptr[i] > maxPix) maxPix = cptr[i];
+                         }
+                      }
+                   }
+                }
 		count += n;
 		meter.update(count*1.0);
-		cur.freeStorage(cptr, del);
+		cursor.freeStorage(cptr, deletePtr);
 	    }
         }
 	if (hasBlanks) {
@@ -347,9 +374,14 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
         return False;
     }
 
+// At this point, for 32 floating point, we must apply the given
+// mask.  For 16bit, we may know that there are in fact no blanks
+// in the image, so we can dispense with looking at the mask again.
+
+    if (applyMask && !hasBlanks) applyMask = False;
+//
     const IPosition shape = image.shape();
     const uInt ndim = shape.nelements();
-    header.setComment("bitpix", "Floating point (32 bit)");
 
     Vector<Int> naxis(ndim);
     uInt i;
@@ -357,7 +389,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
         naxis(i) = shape(i);
     }
     header.define("NAXIS", naxis);
-
     header.define("bscale", bscale);
     header.setComment("bscale", "PHYSICAL = PIXEL*BSCALE + BZERO");
     header.define("bzero", bzero);
@@ -413,8 +444,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	header.define("NAXIS", naxis);
     }
     
-
-    // Add in the fields from miscInfo that we can
+//
+// Add in the fields from miscInfo that we can
+//
     const uInt nmisc = image.miscInfo().nfields();
     for (i=0; i<nmisc; i++) {
 	String miscname = image.miscInfo().name(i);
@@ -496,8 +528,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	}
     }
 
-
-    // DATE
+//
+// DATE
+//
     String date, timesys;
     Time nowtime;
     MVTime now(nowtime);
@@ -508,8 +541,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	header.define("timesys", timesys);
 	header.setComment("timesys", "Time system for HDU");
     }
-
-    // ORIGIN
+//
+// ORIGIN
+//
     ostrstream buffer;
     buffer << "AIPS++ version ";
     VersionInfo::report(buffer);
@@ -517,15 +551,16 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     // Set up the FITS header
     FitsKeywordList kw = FITSKeywordUtil::makeKeywordList();
-
     ok = FITSKeywordUtil::addKeywords(kw, header);
     if (! ok) {
 	error = "Error creating initial FITS header";
 	return False;
     }
 
-    // HISTORY
-    if (image.logSink().localSink().isTableLogSink()) {
+//
+// HISTORY
+//
+  if (image.logSink().localSink().isTableLogSink()) {
 	const TableLogSink &logTable = 
 	    image.logSink().localSink().castToTableLogSink();
 	Vector<String> historyChunk;
@@ -547,9 +582,14 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 					     groupType);
 	}
     }    
-    // END
+//
+// END
+//
     kw.end();
 
+//
+// Finally get around to copying the data
+//
     String report;
     IPosition cursorShape = copyCursorShape(report,
 					    shape,
@@ -557,10 +597,12 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 					    sizeof(Float),
 					    memoryInMB);
 
-    log << "Copying " << image.name() << " to " << fitsName << report << 
-      LogIO::POST;
+    log << "Copying '" << image.name() << "' to '" << fitsName << "'   "
+        << report << LogIO::POST;
 
-    // If this fails, more development is needed
+//
+// If this fails, more development is needed
+//
     AlwaysAssert(sizeof(Float) == sizeof(float), AipsError);
     AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
 
@@ -577,13 +619,13 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
                             "", True, iUpdate);
 	uInt count = 0;
 	Double curpixels = 1.0*cursorShape.product();
-
+//
 	LatticeStepper stepper(shape, cursorShape, cursorOrder);
 	RO_LatticeIterator<Float> iter(image, stepper);
 	const Int bufferSize = cursorShape.product();
-
-	PrimaryArray<Float> *fits32 = 0;
-	PrimaryArray<Short> *fits16 = 0;
+//
+	PrimaryArray<Float>* fits32 = 0;
+	PrimaryArray<Short>* fits16 = 0;
  	if (BITPIX == -32) {
 	    fits32 = new PrimaryArray<Float>(kw);
  	    if (fits32==0 || fits32->err()) {
@@ -615,16 +657,45 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    buffer16 = new Short[bufferSize];
 	    AlwaysAssert(buffer16, AipsError);
 	}
+//
+// Iterate through the image.  
+//
 	for (iter.reset(); !iter.atEnd(); iter++) {
-	    const Array<Float> &cursor = iter.cursor();
-	    Bool deleteIt;
-	    const Float *ptr = cursor.getStorage(deleteIt);
-	    meter.update((count*1.0 - 0.5)*curpixels);
-
+	    const Array<Float>& cursor = iter.cursor();
+	    Bool deletePtr;
+	    const Float* ptr = cursor.getStorage(deletePtr);
+//
+	    const Bool* maskPtr = 0;
+            Bool deleteMaskPtr;
+            if (applyMask) {
+               if (!pMask->shape().isEqual(cursor.shape())) {
+                  pMask->resize(cursor.shape());
+               }
+               (*pMask) = image.getMaskSlice(iter.position(), cursor.shape(), False);
+               maskPtr = pMask->getStorage(deleteMaskPtr);
+            }
+//
+//	    meter.update((count*1.0 - 0.5)*curpixels);
+//
+            const uInt nPts = cursor.nelements();
 	    error= "";
 	    Int n = 0;
 	    if (fits32) {
-		fits32->store(ptr, bufferSize);
+                if (applyMask) {
+                   Float* ptr2 = new float[nPts];
+                   for (uInt j=0; j<nPts; j++) {
+                      if (maskPtr[j]) {
+                         ptr2[j] = ptr[j];
+                      } else {
+                         ptr2[j] = ptr[j];
+                         setNaN(ptr2[j]);
+                      }
+                   }
+                   fits32->store(ptr2, bufferSize);
+                   delete [] ptr2;
+                } else {
+                   fits32->store(ptr, bufferSize);
+                }
 		if (!fits32->err()) {
 		    n = fits32->write(*outfile);
 		    if (n != bufferSize) {
@@ -638,21 +709,38 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		}
 	    } else if (fits16) {
 		short blankOffset = hasBlanks ? 1 : 0;
-		for (Int j=0; j<bufferSize; j++) {
-		    if (ptr[j] != ptr[j]) {
-			// NaN
-			buffer16[j] = minshort;
-		    } else {
-			// Not a NaN
-			if (ptr[j] > maxPix) {
-			    buffer16[j] = maxshort;
-			} else if (ptr[j] < minPix) {
-			    buffer16[j] = minshort + blankOffset;
-			} else {
-			    buffer16[j] = Short((ptr[j] - bzero)/bscale);
-			}
-		    }
-		}
+//
+                if (applyMask) { 
+                   for (Int j=0; j<bufferSize; j++) {
+//                    if (ptr[j] != ptr[j] || maskPtr[j]) {
+                      if (isNaN(ptr[j]) || !maskPtr[j]) {
+                         buffer16[j] = minshort;
+                      } else {
+                         if (ptr[j] > maxPix) {
+                            buffer16[j] = maxshort; 
+                         } else if (ptr[j] < minPix) {
+                            buffer16[j] = minshort + blankOffset;
+                         } else {
+                            buffer16[j] = Short((ptr[j] - bzero)/bscale);
+                         }
+                      }
+                   }
+                } else {
+                   for (Int j=0; j<bufferSize; j++) {
+//                    if (ptr[j] != ptr[j]) {
+                      if (isNaN(ptr[j])) {
+                         buffer16[j] = minshort;
+                      } else {
+                         if (ptr[j] > maxPix) {
+                            buffer16[j] = maxshort; 
+                         } else if (ptr[j] < minPix) {
+                            buffer16[j] = minshort + blankOffset;
+                         } else {
+                            buffer16[j] = Short((ptr[j] - bzero)/bscale);
+                         }
+                      }
+                   }
+                }
 		fits16->store(buffer16, bufferSize);
 		if (!fits16->err()) {
 		    n = fits16->write(*outfile);
@@ -668,7 +756,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    } else {
 		AlwaysAssert(0, AipsError); // NOTREACHED
 	    }
-	    cursor.freeStorage(ptr, deleteIt);
+//
+	    cursor.freeStorage(ptr, deletePtr);
+	    if (applyMask) pMask->freeStorage(maskPtr, deleteMaskPtr);
+//
 	    if ((fits32 && fits32->err()) ||
 		(fits16 && fits16->err()) ||
 		outfile->err()) {
@@ -687,6 +778,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	} else {
 	    AlwaysAssert(0, AipsError); // NOTREACHED
 	}
+//
+        if (pMask!=0) delete pMask;
     } catch (AipsError x) {
 	error = "Unknown error copying image to FITS file";
 	if (outfile) {
@@ -780,3 +873,44 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
     report = String(buffer);
     return cursorShape;
 }
+
+
+Bool ImageFITSConverter::removeFile (String& error, const File& outFile, 
+                                     const String& outName, Bool allowOverwrite)
+{
+   if (outFile.exists()) {
+      if (allowOverwrite) {
+         String msg;
+         try {
+            if (outFile.isRegular()) {
+		RegularFile rfile(outFile);
+		rfile.remove();
+	    } else if (outFile.isDirectory()) {
+		Directory dfile(outFile);
+		dfile.removeRecursive();
+	    } else if (outFile.isSymLink()) {
+		SymLink sfile(outFile);
+		sfile.remove();
+	    } else {
+		msg = "Cannot remove file - unknown file type";
+	    }
+         } catch (AipsError x) {
+            msg = x.getMesg();
+         } end_try;
+//
+         if (outFile.exists()) {
+	    error = "Could not remove file " + outName;
+	    if (msg != "") {
+		error += ": (" + msg + ")";
+	    }
+	    return False;
+         }
+      } else {
+         error = outName + " already exists, will not overwrite.";
+         return False;
+      }
+   }
+   return True;
+}
+
+

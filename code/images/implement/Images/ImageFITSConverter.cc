@@ -1,5 +1,5 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1996,1997,1998
+//# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,8 +28,11 @@
 
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/RegionHandler.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
+#include <trial/Lattices/LCPagedMask.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
 #include <trial/Coordinates/LinearCoordinate.h>
@@ -39,15 +42,17 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 
 #include <aips/Logging/LogIO.h>
-
+ 
 #include <aips/Containers/Record.h>
 
 #include <trial/Tasking/ProgressMeter.h>
 
 #include <strstream.h>
+#include <ieeefp.h>
 
 #if defined(__GNUG__)
 // These might not all be necessary
@@ -59,7 +64,7 @@ typedef PagedImage<Float> gppbug3;
 // At least the Coordinate and header related things could be factored out
 // into template independent code.
 template<class HDUType>
-void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
+void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 						  String &error,
 						  const String &imageName,
 						  HDUType &fitsImage,
@@ -67,7 +72,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 {
     LogIO os(LogOrigin("ImageFITSConverterImpl", "FITSToImage", WHERE));
 
-    // Crack the header and get what we need out of it
+    // Crack the header and get what we need out of it.  DOn't get tricked
+    // by the fact that HDUType is referring to the template type, not
+    // to the enum HDUType in class FITS !
 
     // ndim
     const uInt ndim = fitsImage.dims();
@@ -142,11 +149,15 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     Int bitpix;
     header.get("bitpix", bitpix);
 
-    // BLANK Find out if we are blanked.
+    // BLANK Find out if we are blanked.  This is only relevant to
+    // BITPIX > 0  For 32 bit floating point is is not required 
+    // by FITS (illegal ?) and aips++ does not write it out.
+    // Other packages may write it out, so a bit of code below
+    // to handle it.
     Bool isBlanked = fitsImage.isablank();
     Int blankVal = fitsImage.blank();
+
     if (bitpix < 0 && isBlanked) {
-	isBlanked = False; // For FP we just pass NaN's through.
 	if (blankVal != -1) {
 	    // Warn that we only deal with NaN blanked FP image HDU's.
 	    os << LogIO::WARN << WHERE <<
@@ -155,7 +166,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 		"NaN's."  << LogIO::POST;
 	}
     }
-    
+//
     ignore.resize(21); // resize as necessary
     ignore(0) = "^datamax$";  // Image pixels might change
     ignore(1) = "^datamin$";
@@ -207,16 +218,15 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     // Cool, now we just need to write it.
     IPosition cursorShape(ndim), cursorOrder(ndim);
     String report;
-    cursorShape = ImageFITSConverter::copyCursorShape(report,
-					      shape,
-					      sizeof(Float),
-					      sizeof(HDUType::ElementType),
-					      memoryInMB);
+    cursorShape = 
+      ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
+                                          sizeof(HDUType::ElementType),
+                                          memoryInMB);
 
-    os << LogIO::NORMAL << "Copy FITS file to " << newImage->name() << ". " <<
+    os << LogIO::NORMAL << "Copy FITS file to '" << newImage->name() << "' " <<
 	report << LogIO::POST;
-    LatticeStepper stepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
-    LatticeIterator<Float> imiter(*newImage, stepper);
+    LatticeStepper imStepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
+    LatticeIterator<Float> imIter(*newImage, imStepper);
 
     Int nIter = max(1,newImage->shape().product()/cursorShape.product());
     Int iUpdate = max(1,nIter/20);
@@ -226,10 +236,32 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     Double nPixPerIter = cursorShape.product();
     Double meterValue;
 
+// With floating point, we don't know ahead of time if there
+// are blanks or not.   SO we have to make the mask, and then
+// delete it if its not needed.
+
+    LCPagedMask* pMask = 0;
+    LatticeStepper* pMaskStepper = 0;
+    LatticeIterator<Bool>* pMaskIter = 0;
+
+    Bool madeMask = False;
+    if (bitpix<0 || isBlanked) {
+       pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
+       pMaskStepper = new LatticeStepper(shape, cursorShape, 
+                                         IPosition::makeAxisPath(ndim));
+       pMaskIter = new LatticeIterator<Bool>(*pMask, *pMaskStepper);
+       pMaskIter->reset();
+       madeMask = True;
+    }
+// 
+// Do the work. Iterate through in chunks.
+//
+    Bool hasBlanks = False;
     try {
 	Int bufferSize = cursorShape.product();
-	for (imiter.reset(),meterValue=0.0; !imiter.atEnd(); imiter++) {
-	    Array<Float> &cursor = imiter.woCursor();
+
+	for (imIter.reset(),meterValue=0.0; !imIter.atEnd(); imIter++) {
+	    Array<Float> &cursor = imIter.woCursor();
 	    fitsImage.read(bufferSize);                  // Read from FITS
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
@@ -241,11 +273,62 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	    }
 	    Bool deletePtr;
 	    Float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
-	    fitsImage.copy(ptr, bufferSize);             // Copy
+	    fitsImage.copy(ptr, bufferSize);             // Copy from fits
+// 
+// Deal with mask if necessary
+//
+            if (madeMask) {
+               Array<Bool>& maskCursor = pMaskIter->woCursor();
+               Bool deleteMaskPtr;
+               Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);   
+               for (uInt i=0; i<maskCursor.nelements(); i++) {
+                  if (isNaN(ptr[i])) {
+//                  if (isnanf(ptr[i])) {
+//                  if (ptr[i] != ptr[i]) {
+                     mPtr[i] = False; 
+                     hasBlanks = True;
+                  } else {
+                     mPtr[i] = True;  
+                  }
+               }
+               maskCursor.putStorage(mPtr, deleteMaskPtr);
+               pMaskIter->operator++();
+            }
+//
 	    cursor.putStorage(ptr, deletePtr);
+//
             meterValue += nPixPerIter*1.0/2.0;
             meter.update(meterValue);
-	}
+         }
+//
+// Now either delete the mask or attach it properly to the image
+//
+         if (madeMask) {
+            if (hasBlanks) {
+               os << LogIO::NORMAL << "Storing mask with name 'mask0'" << endl;
+//
+// Make mask known to the image 
+//
+               newImage->defineRegion ("mask0", ImageRegion(*pMask), 
+                                        RegionHandler::Masks);
+//
+// Make the mask the default mask. Hereafter the mask is writable
+// through newImage.
+//
+               newImage->setDefaultMask(String("mask0"));
+            } else {
+//
+// There were no blanks, so we don't need the mask
+// 
+               pMask->handleDelete();
+            }
+//
+// Clean up pointers
+//
+            delete pMask;
+            delete pMaskStepper;
+            delete pMaskIter;
+         }
     } catch (AipsError x) {
 	error = String("Error writing pixel values to image: " ) + x.getMesg();
 	delete newImage;

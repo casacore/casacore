@@ -1,5 +1,5 @@
 //# ImageFITSConverter.h: Interconvert between AIPS++ Images and FITS files
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@ template<class T> class PagedImage;
 template<class T> class ImageInterface;
 class IPosition;
 class String;
+class File;
 
 // <summary>
 // Interconvert between AIPS++ Images and FITS files.
@@ -65,6 +66,11 @@ class String;
 // We can read images from any HDU inside the FITS file (although this isn't
 // well tested). However at the moment we always write to the first HDU, i.e.
 // to the primary array, not an image extension.
+//
+// Pixels in the FITS file which are blanked are masked out (the mask
+// is set to False) in the output image.   On conversion to FITS,
+// masked values are blanked.    The mask which is read is the current
+// default mask.
 // </synopsis>
 //
 // <example>
@@ -74,19 +80,20 @@ class String;
 //    String fitsName = "exists.fits";
 //    String imageName = "new.image";
 //    String error;
-//    ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
+//    Bool ok = ImageFITSConverter::FITSToImage(image, error, imageName, fitsName);
 //    if (!image) ... error ...
 // </srcBlock>
 // A couple of things to note:
 // <ul>
+//    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
+//         will be set.
 //    <li> The pointer "image" is set if the conversion succeeds. If it is
 //         zero the conversion failed and <src>error</src> will contain an
 //         error message.
 //    <li> The caller is responsible for deleting the pointer <src>image</src>
 //         when the conversion is successful.
-//    <li> The conversion will not overwrite an existing image.
 // </ul>
-// Similarly, an image to FITS conversion may be accomplised as follows:
+// Similarly, an image to FITS conversion may be accomplished as follows:
 // <srcBlock>
 //    String imageName = argv[1];
 //    PagedImage<Float> image = ...; // An existing image from somewhere
@@ -98,7 +105,6 @@ class String;
 // <ul>
 //    <li> If <src>ok</src> is False, the conversion failed and <src>error</src>
 //         will be set.
-//    <li> The conversion will not overwrite an existing image.
 // </ul>
 // </example>
 //
@@ -106,7 +112,7 @@ class String;
 // FITS files are the fundamental transport format for images in Astronomy.
 // </motivation>
 //
-// <todo asof="1997/10/20">
+// <todo asof="1999/02/15">
 //   <li> It might be useful to have functions that convert between FITS
 //        and general lattices.
 //   <li> Add support for PagedImage<Complex>
@@ -124,7 +130,7 @@ public:
     //        conversion succeeds, the caller is responsible for deleting this
     //        pointer.
     //   <li> <src>error</src> will be set if the conversion fails.
-    //   <li> <src>imageName</src> cannot already exit.
+    //   <li> <src>imageName</src> can be optionally overwritten.
     //   <li> <src>fitsName</src> must already exist (and have an image at the
     //        indicated HDU).
     //   <li> <src>whichHDU</src> Zero-relative hdu. The default is correct for
@@ -133,13 +139,16 @@ public:
     //   <li> <src>memoryInMB</src>. Setting this to zero will result in
     //        row-by-row copying, otherwise it will attempt to with as large
     //        a chunk-size as possible, while fitting in the desired memory.
+    //   <li> <src>allowOverwrite</src> If True, allow imageName to be 
+    //        overwritten if it already exists.
     // </ul>
-    static void FITSToImage(PagedImage<Float> *&newImage,
+    static Bool FITSToImage(PagedImage<Float>*& newImage,
 			    String &error,
 			    const String &imageName,
 			    const String &fitsName, 
 			    uInt whichHDU = 0,
-			    uInt memoryInMB = 64);
+			    uInt memoryInMB = 64,
+			    Bool allowOverwrite=False);
 
     // Convert an AIPS++ image to a FITS file.
     // <ul>
@@ -168,7 +177,7 @@ public:
     //        overwritten if it already exists.
     //   </ul>
     static Bool ImageToFITS(String &error,
-			    const ImageInterface<Float> &image,
+			    ImageInterface<Float> &image,
 			    const String &fitsName, 
 			    uInt memoryInMB = 64,
 			    Bool preferVelocity = True,
@@ -185,6 +194,11 @@ public:
 				     uInt imagePixelSize,
 				     uInt fitsPixelSize,
 				     uInt memoryInMB);
+
+private:
+   static Bool removeFile (String& error, const File& outFile,
+                           const String& outName, Bool allowOverwrite);
+
 };
 
 // <synopsis>
@@ -200,6 +214,7 @@ public:
 			    const String &imageName,
 			    HDUType &fitsImage,
 			    uInt memoryInMB = 64);
+
 };
 
 #endif
