@@ -4724,3 +4724,4 @@
 14 304 src rm nrao/implement/VLA/DOoldvlafiller.h
 14 304 src rm nrao/implement/VLA/DOoldvlafiller.cc
 14 306 src mv trial/apps/newsditerator/changelog trial/apps/sditerator/changelog
+14 306 src mv trial/apps/newsditerator/makefile trial/apps/sditerator/makefile
