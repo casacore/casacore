@@ -26,9 +26,14 @@
 //# $Id$
 
 #include <trial/Images/ImageUtilities.h>
+#include <trial/Images/PagedImage.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <aips/Lattices/PagedArray.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/OS/RegularFile.h>
+#include <aips/OS/Directory.h>
+#include <aips/IO/RegularFileIO.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/iostream.h>
 
@@ -107,12 +112,75 @@ void doIt2()
 							csys1, csys2));
   }
 }
+
+void doTypes()
+{
+  {
+    PagedImage<Float> img (IPosition(2,10,10),
+			   CoordinateUtil::defaultCoords2D(),
+			   "tImageUtilities_tmp.img");
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp.img")
+		    == ImageUtilities::AIPSPP);
+  {
+    PagedArray<Float> arr (IPosition(2,10,10),
+			   "tImageUtilities_tmp.img");
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp.img")
+		    == ImageUtilities::UNKNOWN);
+  {
+    Directory dir("tImageUtilities_tmp.mir");
+    dir.create();
+    RegularFile rfile("tImageUtilities_tmp.mir/image");
+    rfile.create();
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp.mir")
+		    == ImageUtilities::UNKNOWN);
+  {
+    RegularFile rfile("tImageUtilities_tmp.mir/header");
+    rfile.create();
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp.mir")
+		    == ImageUtilities::MIRIAD);
+  {
+    Directory dir("tImageUtilities_tmp");
+    dir.create();
+    RegularFile rfile("tImageUtilities_tmp/a.image");
+    rfile.create();
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageUtilities::UNKNOWN);
+  char buf[2880];
+  memset (buf, ' ', 2880);
+  memcpy (buf, "SIMPLE  =   T  ", 17);
+  {
+    RegularFileIO file (RegularFile("tImageUtilities_tmp/a.image"),
+			ByteIO::Update);
+    file.write (2879, buf);
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageUtilities::UNKNOWN);
+  {
+    RegularFileIO file (RegularFile("tImageUtilities_tmp/a.image"),
+			ByteIO::Update);
+    file.write (2880, buf);
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageUtilities::FITS);
+  {
+    RegularFile rfile("tImageUtilities_tmp/a.descr");
+    rfile.create();
+  }
+  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageUtilities::GIPSY);
+}
   
 int main()
 {
   try {
     doIt();
     doIt2();
+    doTypes();
   } catch (AipsError& x) {
     cout << "Unexpected exception: " << x.getMesg() << endl;
     return 1;
