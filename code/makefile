@@ -106,11 +106,11 @@ atoms :
 resolvedocs :
 	grep externallabels $(addprefix $(CODEDIR)/, doc/*/*.latex)  | awk -F: '{print $$1}' | sort -u> $(ARCHTMPD)/labels.file ; \
 	grep externallabels $(addprefix $(CODEDIR)/, doc/*/*/*.latex)  | awk -F: '{print $$1}' | sort -u>> $(ARCHTMPD)/labels.file ; \
-	for filename in `cat $(ARCHTMPD)/labels.file` ; do \
+	for filename in `cat $(ARCHTMPD)/labels.file | sed -e 's/code.doc/docs/g' | sed -e 's/latex/ps.gz/g' | sed -e 's/\.dir.*gz/.ps.gz/g'` ; do \
 	  echo $$filename ; \
-          chmod u+w $$filename ; \
-          touch $$filename ; \
-          chmod u-w $$filename ; \
+          if [ -e $$filename ] ; then \
+              rm $$filename ; \
+          fi \
 	done
 	$(MAKE) -C $(addprefix $(CODEDIR)/, doc)
 
