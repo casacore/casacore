@@ -257,15 +257,8 @@ Bool ImageInterface<T>::restoreImageInfo(const RecordInterface& rec)
   }
   return ok;
 }
-   
-  
+
+
 template<class T>
-void ImageInterface<T>::mergeTableLogSink (const ImageInterface<T>& other)
-{
-  if (logSink().localSink().isTableLogSink()) {
-    if (other.logSink().localSink().isTableLogSink()) {
-      logSink().localSink().castToTableLogSink().concatenate (
-		      other.logSink().localSink().castToTableLogSink());
-    }
-  }
-}
+void ImageInterface<T>::mergeTableLogSink (const ImageInterface<T>&)
+{}
