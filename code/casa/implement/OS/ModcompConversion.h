@@ -291,7 +291,7 @@ inline uInt ModcompConversion::fromLocal(void* to, Float from) {
   return ModcompConversion::fromLocal(to, &from, 1u);
 }
 
-uInt ModcompConversion::fromLocal(void* to, Double from) {
+inline uInt ModcompConversion::fromLocal(void* to, Double from) {
   return ModcompConversion::fromLocal(to, &from, 1u);
 }
 
