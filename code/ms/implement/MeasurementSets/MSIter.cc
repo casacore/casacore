@@ -49,10 +49,14 @@ Double MSInterval::offset_p;
  
 Int MSInterval::compare(const void * obj1, const void * obj2)
 {
-    Double t1, t2;
-    t1 = *(const Double*)obj1 - offset_p;
-    t2 = *(const Double*)obj2 - offset_p;
-    return (( floor(t1/interval_p)==floor(t2/interval_p) ) ? 0 : (t1 < t2) ? -1 : 1);
+
+  // Set offset_p to current initial timestamp
+  if (offset_p==0.0) offset_p=*(Double*)obj2;
+
+  Double t1;
+  t1 = *(const Double*)obj1 - offset_p;
+  
+  return (( floor(t1/interval_p)==(Double)0.0 ) ? 0 : (t1 < (Double)0.0) ? -1 : 1);
 }
  
 
@@ -64,6 +68,7 @@ MSIter::MSIter(const MeasurementSet& ms,
 	       Bool addDefaultSortColumns)
 : msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
 {
+  interval_p=0.999999*interval_p;
   bms_p.resize(1); 
   bms_p[0]=ms;
   construct(sortColumns,addDefaultSortColumns);
@@ -172,6 +177,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   for (uInt i=0; i<cols.nelements(); i++) {
     columns[iCol++]=MS::columnName(MS::PredefinedColumns(cols[i]));
   }
+
   if (interval_p==0.0) {
     interval_p=DBL_MAX; // semi infinite
   } else {
@@ -182,13 +188,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
   }
   MSInterval::setInterval(interval_p);
-  // do not set the offset (all intervals are zero based so we can convert
-  // times to intervals easily in other classes, e.g. TimeVarVisJones)
-  // Due to flagging, intervals may not have data over their full range
-  // anyway, so we don't really loose anything here.
-  // (We could reintroduce offsets later, at some cost in evaluating
-  // the VisEquation for solve() - keep full resolution until the current
-  // VisJones is reached -> only one averaging step)
+  MSInterval::setOffset(0.0);
   
   // now find the time column and set the compare function
   PtrBlock<ObjCompareFunc*> objCompFuncs(columns.nelements());
@@ -308,7 +308,6 @@ MSIter::operator=(const MSIter& other)
 
 void MSIter::setInterval(Double timeInterval)
 {
-  interval_p=timeInterval;
   MSInterval::setInterval(interval_p);
 }
 
@@ -316,6 +315,7 @@ void MSIter::origin()
 {
   curMS_p=0;
   MSInterval::setInterval(interval_p);
+  MSInterval::setOffset(0.0);
   if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
   setState();
   newMS_p=newArray_p=newSpectralWindow_p=newField_p=newPolarizationId_p=
@@ -342,6 +342,8 @@ void MSIter::advance()
     newDataDescId_p=newField_p=checkFeed_p=False;
   // make sure we've still got the right interval
   MSInterval::setInterval(interval_p);
+  // reset origin to 0.0 so that MSInterval::compare will set it properly
+  MSInterval::setOffset(0.0);
   tabIter_p[curMS_p]->next();
   tabIterAtStart_p[curMS_p]=False;
   if (tabIter_p[curMS_p]->pastEnd()) {
