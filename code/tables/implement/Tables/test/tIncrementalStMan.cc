@@ -1,5 +1,5 @@
 //# tIncrementalStMan.cc: Test program for the IncrementalStMan storage manager
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -94,9 +94,9 @@ void init (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
     uInt n = 0;
-    for (uInt i=0; i<shape(2); i++) {
-	for (uInt j=0; j<shape(1); j++) {
-	    for (uInt k=0; k<shape(0); k++) {
+    for (Int i=0; i<shape(2); i++) {
+	for (Int j=0; j<shape(1); j++) {
+	    for (Int k=0; k<shape(0); k++) {
 		if (n++%3 == 2) {
 		    arrb(k,j,i) = True;
 		}else{
@@ -327,7 +327,7 @@ void b (const Vector<Bool>& removedRows)
 	    if (ae(rownr) != aevalues[i])
 		cout << i << "," << rownr << " ae-mismatch: "
 		    << ae(rownr) << endl;
-	    if (af(rownr).length() != afvalues[i])
+	    if (Int(af(rownr).length()) != afvalues[i])
 		cout << i << "," << rownr << " af-mismatch: "
 		    << af(rownr) << endl;
 	    if (!allEQ (arr1(rownr), arrf.ac() + 24*arr1Start[i]))
@@ -364,7 +364,7 @@ void b (const Vector<Bool>& removedRows)
 	IPosition bshape = arrb.shape();
 	Cube<Bool> arrb1 (bshape);
 	for (i=0; i<19; i++) {
-	    for (uInt j=0; j<bshape(0); j++) {
+	    for (Int j=0; j<bshape(0); j++) {
 		Array<Bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
 		arr6.getSlice (i, Slicer(IPosition(3,j,0,0),
@@ -379,7 +379,7 @@ void b (const Vector<Bool>& removedRows)
 	    if (i == 19) {
 		arrb(0,0,0) = True;
 	    }
-	    for (uInt j=0; j<bshape(0); j++) {
+	    for (Int j=0; j<bshape(0); j++) {
 		Array<Bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
 		arr7.getSlice (i, Slicer(IPosition(3,j,0,0),

@@ -1,5 +1,5 @@
 //# tBucketCache.cc: Test program for the BucketCache class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -161,7 +161,7 @@ void b (Bool)
     // Open the file.
     BucketFile file("tBucketCache_tmp.data", False);
     file.open();
-    uInt i;
+    Int i;
     Int rec[128];
     file.read ((char*)rec, 512);
     for (i=1; i<128; i++) {
@@ -218,9 +218,10 @@ void c (uInt)
     BucketCache cache (&file, 512, 32768, rec[0], 10, 0, aToLocal, aFromLocal,
 		       aInitBuffer, aDeleteBuffer);
     cache.get ((char*)rec, 512, 512 + cache.nBucket()*32768);
+    char* buf;
     for (uInt j=0; j<25; j++) {
 	for (i=0; i<100; i++) {
-	    char* buf = cache.getBucket(i);
+	    buf = cache.getBucket(i);
 	}
     }
     cout << "read 25x" << cache.nBucket() << " buckets with swap" << endl;
@@ -243,7 +244,7 @@ void d (uInt)
     cache.get ((char*)rec, 512, 512 + cache.nBucket()*32768);
     for (uInt j=0; j<50; j++) {
 	for (i=0; i<100; i++) {
-	    char* buf = cache.getBucket(i);
+	    cache.getBucket(i);
 	}
     }
     cout << "read 50x" << cache.nBucket() << " buckets without swap" << endl;

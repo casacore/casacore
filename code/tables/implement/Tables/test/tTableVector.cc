@@ -1,5 +1,5 @@
 //# tTableVector.cc: This program tests the table vectors
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -47,7 +47,7 @@
 
 void credes();
 void cretab(uInt);
-void dovec (uInt);
+void dovec (Int);
 main (int argc, char** argv) {
     uInt nr = 5000;
     if (argc > 1) {
@@ -97,7 +97,7 @@ void cretab (uInt nr)
 }
 
 
-void dovec (uInt nr) {
+void dovec (Int nr) {
     Int i;
     Vector<Int> vec(nr);
     Timer tim;

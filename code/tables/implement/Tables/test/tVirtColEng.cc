@@ -1,5 +1,5 @@
 //# tVirtColEng.cc: Test program for virtual column engine
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -148,7 +148,7 @@ void b()
 	cout << "get scalar row " << i << endl;
 	ival = data1(i);
 	dval = doub1(i);
-	if (ival != i  ||  dval != 2*i) {
+	if (ival != Int(i)  ||  dval != 2*i) {
 	    cout << "error in row " << i << ": " << ival << " " << dval << endl;
 	}
 	data2.get (i, arrvali);

@@ -1,5 +1,5 @@
 //# tTiledCellStMan.cc: Test program for the TiledCellStMan classes
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -104,7 +104,7 @@ void writeFixed()
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i, i0, i1;
+    uInt i;
     indgen (array.ac());
     for (i=0; i<101; i++) {
 	table.addRow();
@@ -153,7 +153,7 @@ void readTable()
     indgen (polValues.ac(), float(300));
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i, i0, i1;
+    uInt i;
     indgen (array.ac());
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
@@ -206,7 +206,7 @@ void writeVar()
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i, i0, i1;
+    uInt i;
     indgen (array.ac());
     for (i=0; i<5; i++) {
 	table.addRow();
@@ -260,7 +260,7 @@ void writeFixVar()
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i, i0, i1;
+    uInt i;
     indgen (array.ac());
     for (i=0; i<5; i++) {
 	table.addRow();

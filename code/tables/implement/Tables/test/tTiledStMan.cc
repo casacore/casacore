@@ -1,5 +1,5 @@
 //# tTiledStMan.cc: Test program of TiledStMan class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -71,7 +71,6 @@ main (int argc, char** argv)
 void doIt (uInt tileSize)
 {
     // Convert the command line argument to shape.
-    uInt i;
     while (True) {
 	IPosition shape = getVec (10, "cube shape (end means stop): ");
 	if (shape.nelements() == 0) {
@@ -111,4 +110,5 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	    }
 	}
     }
+    return IPosition();
 }

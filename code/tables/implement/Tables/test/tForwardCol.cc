@@ -1,5 +1,5 @@
 //# tForwardCol.cc: Test program for class ForwardColumn
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -206,7 +206,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
     ROArrayColumn<float> arr1(tab,"arr1");
     ROArrayColumn<float> arr2(tab,"arr2");
     ROArrayColumn<float> arr3(tab,"arr3");
-    uInt i;
+    Int i;
     Int abval, acval;
     uInt adval;
     float aeval;
@@ -231,7 +231,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	ag.get (i, agval);
 	sprintf (str, "V%i", i);
 	if (abval != i+abOffset  ||  acval != i+1+acOffset
-        ||  adval != i+2  ||  aeval != i+3
+        ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << acval << ", " << adval

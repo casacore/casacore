@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Test program for concurrent access to tables
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -213,7 +213,7 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
     Matrix<float> dataValues;
     Int val;
     uInt oldNrrow = 0;
-    uInt nrrow;
+    uInt nrrow = 0;
     while (True) {
 	if (userLocking) tlock (tab, False, show);
 	nrrow = tab.nrow();
@@ -259,9 +259,9 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
 	    }
 	    result = seq(rownr);
 	    uInt nr = count.nelements();
-	    if (result >= nr) {
+	    if (result >= Int(nr)) {
 		count.resize (result+1);
-		for (uInt i=nr; i<=result; i++) {
+		for (Int i=nr; i<=result; i++) {
 		    count[i] = 0;
 		}
 	    }

@@ -1,5 +1,5 @@
 //# dVirtColEng.cc: Demo of a virtual column engine
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,7 +171,7 @@ void DummyVirtualScalar::prepare (const Table& table)
 }
 void DummyVirtualScalar::open (AipsIO& ios)
 {
-    uInt version = ios.getstart ("DummyVirtualScalar");
+    ios.getstart ("DummyVirtualScalar");
     ios >> scale_p;
     ios.getend();
 }
@@ -270,7 +270,7 @@ void DummyVirtualArray::prepare (const Table& table)
 }
 void DummyVirtualArray::open (AipsIO& ios)
 {
-    uInt version = ios.getstart ("DummyVirtualArray");
+    ios.getstart ("DummyVirtualArray");
     ios >> scale_p;
     ios.getend();
 }

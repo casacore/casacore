@@ -1,5 +1,5 @@
 //# dRetypedArrayEngine.cc: Test program for class RetypedArrayEngine
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -86,8 +86,8 @@ void RetypedArrayEx2::deleteCopyInfo (void* copyInfo)
 
 RetypedArrayEx2::CopyInfo::CopyInfo (const TableRecord& record,
 				     const IPosition& shape)
-: nrTrue_p (0),
-  mask_p   (new Vector<Bool>)
+: mask_p   (new Vector<Bool>),
+  nrTrue_p (0)
 {
     Int fieldnr = record.description().fieldNumber ("mask");
     if (fieldnr >= 0) {
@@ -104,7 +104,7 @@ RetypedArrayEx2::CopyInfo::CopyInfo (const TableRecord& record,
     AlwaysAssert (shape.nelements() == 1, DataManError);
     // When a mask is given, it must match the shape.
     if (nrTrue_p > 0) {
-	AlwaysAssert (shape(0) == nrTrue_p, DataManError);
+	AlwaysAssert (shape(0) == Int(nrTrue_p), DataManError);
     }
 }
 
@@ -122,7 +122,7 @@ void RetypedArrayEx2::CopyInfo::set (void* vout,
     if (shape(0) == 4) {
 	retypedArrayEngineSet (out, in);
     }else{
-	AlwaysAssert (shape(0) == nrTrue_p, DataManError);
+	AlwaysAssert (shape(0) == Int(nrTrue_p), DataManError);
 	retypedArrayEngineSet (out, in, shape, (void*)mask_p);
     }
 }

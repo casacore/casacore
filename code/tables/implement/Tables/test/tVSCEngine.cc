@@ -1,5 +1,5 @@
 //# tVSCEngine.cc: Test program for class VSCEngine
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -111,7 +111,7 @@ void b()
     Int valx;
     float valy;
     VSCExample valA;
-    uInt i=0;
+    Int i;
     for (i=0; i<10; i++) {
 	cout << "get row " << i << endl;
 	colx.get (i, valx);

@@ -1,5 +1,5 @@
 //# tTiledCellStM_1.cc: Test program for performance of TiledCellStMan class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -305,6 +305,7 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	    }
 	}
     }
+    return IPosition();
 }
 
 
@@ -323,8 +324,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt i=0; i<cubeShape(0); i++) {
-	    for (uInt j=0; j<cubeShape(1); j++) {
+	for (Int i=0; i<cubeShape(0); i++) {
+	    for (Int j=0; j<cubeShape(1); j++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,j,0), length));
 		nr++;
@@ -346,8 +347,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(1); j++) {
-	    for (uInt i=0; i<cubeShape(0); i++) {
+	for (Int j=0; j<cubeShape(1); j++) {
+	    for (Int i=0; i<cubeShape(0); i++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,j,0), length));
 		nr++;
@@ -369,8 +370,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt i=0; i<cubeShape(0); i++) {
-	    for (uInt j=0; j<cubeShape(2); j++) {
+	for (Int i=0; i<cubeShape(0); i++) {
+	    for (Int j=0; j<cubeShape(2); j++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,0,j), length));
 		nr++;
@@ -392,8 +393,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(2); j++) {
-	    for (uInt i=0; i<cubeShape(0); i++) {
+	for (Int j=0; j<cubeShape(2); j++) {
+	    for (Int i=0; i<cubeShape(0); i++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,i,0,j), length));
 		nr++;
@@ -415,8 +416,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt i=0; i<cubeShape(1); i++) {
-	    for (uInt j=0; j<cubeShape(2); j++) {
+	for (Int i=0; i<cubeShape(1); i++) {
+	    for (Int j=0; j<cubeShape(2); j++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,0,i,j), length));
 		nr++;
@@ -438,8 +439,8 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(2); j++) {
-	    for (uInt i=0; i<cubeShape(1); i++) {
+	for (Int j=0; j<cubeShape(2); j++) {
+	    for (Int i=0; i<cubeShape(1); i++) {
 		Array<Float> arr = data.getSlice
 		                (0, Slicer (IPosition(3,0,i,j), length));
 		nr++;
@@ -461,7 +462,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(2); j++) {
+	for (Int j=0; j<cubeShape(2); j++) {
 	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,0,0,j), length));
 	    nr++;
@@ -482,7 +483,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(1); j++) {
+	for (Int j=0; j<cubeShape(1); j++) {
 	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,0,j,0), length));
 	    nr++;
@@ -503,7 +504,7 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	for (uInt j=0; j<cubeShape(0); j++) {
+	for (Int j=0; j<cubeShape(0); j++) {
 	    Array<Float> arr = data.getSlice
 		                 (0, Slicer (IPosition(3,j,0,0), length));
 	    nr++;
@@ -524,10 +525,10 @@ void traverse (const IPosition& cubeShape, const IPosition& tileShape)
 	Array<Float> result;
 	uInt nr = 0;
 	timer.mark();
-	uInt last = cubeShape(2) % tileShape(2);
+	Int last = cubeShape(2) % tileShape(2);
 	if (last == 0) last = tileShape(2);
-	uInt nrk = (cubeShape(2)-1)/tileShape(2);
-	for (uInt k=0; k<=nrk; k++) {
+	Int nrk = (cubeShape(2)-1)/tileShape(2);
+	for (Int k=0; k<=nrk; k++) {
 	    if (k==nrk) {
 		length(2) = last;
 	    }

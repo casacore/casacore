@@ -1,5 +1,5 @@
 //# tTiledDataStM_1.cc: Test program for performance of TiledDataStMan class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -153,7 +153,7 @@ void a (char** argum)
 	Array<float> array (IPosition(2,1024,nr));
 	array = 0;
 	Timer timer;
-	for (uInt i=0; i<1024; i++) {
+	for (i=0; i<1024; i++) {
 	    Array<float> result;
 	    result = array(IPosition(2,i,0), IPosition(2,i,nr-1));
 	}

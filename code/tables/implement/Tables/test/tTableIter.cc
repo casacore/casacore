@@ -1,5 +1,5 @@
 //# tTableIter.cc: Test program for table iterators
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ void cretab(uInt nr) {
     ScalarColumn<double>  col2 (tab, "col2");
     ScalarColumn<float>   col3 (tab, "col3");
     ScalarColumn<Complex> col4 (tab, "col4");
-    for (i=0; i<nr; i++) {
+    for (i=0; i<Int(nr); i++) {
 	col1.put (i, (100000+i) % 10);
 	col2.put (i, (i+1) % 105);
 	col3.put (i, (i+2) % 75);

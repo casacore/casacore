@@ -195,8 +195,8 @@ void b()
 Int tcompare (const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
 	      const Block<Int>& dataTypes, Int index)
 {
-    DebugAssert (dataTypes.nelements() == 2, AipsError);
-    DebugAssert (dataTypes[0] == TpDouble  &&  dataTypes[1] == TpFloat,
+    AlwaysAssert (dataTypes.nelements() == 2, AipsError);
+    AlwaysAssert (dataTypes[0] == TpDouble  &&  dataTypes[1] == TpFloat,
 		 AipsError);
     const Double keyTime = *(*(const RecordFieldPtr<Double>*)(fieldPtrs[0]));
     const Double time = ((const Double*)(dataPtrs[0]))[index];

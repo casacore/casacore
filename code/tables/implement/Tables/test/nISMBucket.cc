@@ -1,5 +1,5 @@
 //# nISMBucket.cc :Simulation program for bucket behaviour of IncrementalStman
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -174,9 +174,9 @@ main (int argc, char** argv)
 
     // Iterate until a bucket is filled.
     uInt used = 0;
-    uInt lastused;
+    uInt lastused = 0;
     n = 1;
-    while (used <= spare) {
+    while (Int(used) <= spare) {
 	lastused = used;
 	if (n > nrow/lowest) {
 	    break;

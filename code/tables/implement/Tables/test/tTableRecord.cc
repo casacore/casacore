@@ -1,5 +1,5 @@
 //# tTableRecord.cc: Test the TableRecord class
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -172,7 +172,7 @@ void doSubRecord (Bool doExcp, const RecordDesc& desc)
 {
     Int subField  = desc.fieldNumber ("SubRecord");
     Int subField1 = desc.fieldNumber ("SubRecord1");
-    const RecordDesc& subDesc  = desc.subRecord (subField);
+    desc.subRecord (subField);
     TableRecord record(desc);
     RecordFieldPtr<TableRecord> sub (record, subField);
     RecordFieldPtr<TableRecord> sub1 (record, subField1);
