@@ -155,6 +155,7 @@ help ::
 	-@ echo "     docsys: compile all documentation."
 	-@ echo "    docscan: scan C++ sources for class information."
 	-@ echo "    docextr: extract documentation from the C++ sources."
+	-@ echo " changelogs: build the changelog html files."
 	-@ echo "   runtests: run all test programs."
 	-@ echo ""
 	-@ echo "Programmer"
