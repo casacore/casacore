@@ -177,7 +177,6 @@ class IPosition;
 // </motivation>
 
 // <todo asof="1997/01/13">
-//   <li> Add an equivalent of wcsmix() - either here or at a higher level.
 //   <li> Undelete individual removed axes.
 //   <li> Non-integral pixel shifts/decimations in subimage operations?
 //   <li> Copy-on-write for efficiency?
