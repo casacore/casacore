@@ -38,33 +38,58 @@ template <class T> class Array;
 class PixelRegion;
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles scalar (unary) constants </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELUnaryEnums"> LELUnaryEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles scalar (unary) constants
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It
+// is used to construct LEL objects that represent scalars
+// constants.   They can be of type Float,Double,Complex,DComplex
+// and Bool.  
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  Examples of how the user
+// would indirectly use this class (through the envelope) are:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Float> x(shape); x.set(1.0);
+// ArrayLattice<Float> y(shape);
+// ArrayLattice<Float> z(shape); 
+// y.copyData(x+2.0);                 // y = x + 2.0
+// z.copyData(True);                  // z = True
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Constants are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/20">
 // </todo>
-
+ 
 
 template <class T> class LELUnaryConst : public LELInterface<T>
 {
@@ -81,7 +106,7 @@ public:
    virtual void eval (Array<T>& result,
                       const PixelRegion& region) const;
 
-// Get the constant.
+// Evaluate the scalar expression (get the constant)
    virtual T getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -96,35 +121,60 @@ private:
 
 
 
-
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles numerical unary operators </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELUnaryEnums"> LELUnaryEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical unary 
+//  operators 
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It
+// is used to construct LEL objects that apply numerical unary
+// operators to Lattice expressions.  They operate on numerical
+// Lattice (Float,Double,Complex,DComplex) expressions and return the 
+// same numerical type. The available C++ operators  
+// are  <src>+,-</src> with  equivalents in the enum 
+// of PLUS and MINUS.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  An example of how the user
+// would indirectly use this class (through the envelope) is:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Float> x(shape); x.set(1.0);
+// ArrayLattice<Float> y(shape); 
+// y.copyData(-x);                 // y = -x
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Numerical unary operations are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/20">
 // </todo>
-
-
+ 
 template <class T> class LELUnary : public LELInterface<T>
 {
 public: 
@@ -137,11 +187,11 @@ public:
 // Destructor does nothing
   ~LELUnary();
 
-// Evaluate the expression.
+// Recursively evaluate the expression.
    virtual void eval (Array<T>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression.
    virtual T getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
@@ -158,31 +208,57 @@ private:
 
 
 
-// <summary>
-// </summary>
-
+// <summary> This LEL class handles logical unary operators </summary>
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
+//   <li> <linkto class="LELUnaryEnums"> LELUnaryEnums</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles logical unary 
+//  operators 
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It
+// is used to construct LEL objects that apply logical unary
+// operators to Lattice expressions.  They operate on Bool
+// Lattice expressions only and return a Bool.
+// The available C++ operator is <src>!</src> with  the equivalent
+// in the enum  of NOT.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  An example of how the user
+// would indirectly use this class (through the envelope) is:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Bool> x(shape); x.set(True);
+// ArrayLattice<Bool> y(shape); 
+// y.copyData(!x);                 // y = !x
+// </srcblock>
 // </example>
-
+//
 // <motivation>
+// Logical unary operations are a basic mathematical expression. 
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/20">
 // </todo>
 
 
@@ -198,11 +274,11 @@ public:
 // Destructor does nothing
   ~LELUnaryBool();
 
-// Evaluate the expression.
+// Recursively evaluate the expression.
    virtual void eval (Array<Bool>& result,
                       const PixelRegion& region) const;
 
-// Get the result of a scalar subexpression.
+// Recursively evaluate the scalar expression.
    virtual Bool getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
