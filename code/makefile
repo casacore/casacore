@@ -2,7 +2,7 @@
 # AIPS++ top directory makefile.
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000
+#   Copyright (C) 1992-1997,1999,2000,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -83,7 +83,7 @@ CODESUBS := $(filter $(CODESUBS),$(ALLSYSD)) \
 #---------------------------------
 .PHONY : symlinks
 
-allsys : symlinks sysdirs $(ALLSYSD) $(DOCEXTR)
+allsys : $(MEGAUNLINK) symlinks sysdirs $(ALLSYSD) $(DOCEXTR) $(MEGALINK)
 
 .cleansys ::
 	-$Q cd $(ARCHAUXD) && $(RM) docscan docscan.* docextr.*
