@@ -1,5 +1,5 @@
 //# SpectralCoordinate.cc: this defines SpectralCoordinate
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -330,6 +330,22 @@ Bool SpectralCoordinate::toPixel(Double& pixel, const Double& world) const
        return False;
     }
 }
+
+
+uInt SpectralCoordinate::toWorldMany(Matrix<Double>& world,
+                             const Matrix<Double>& pixel,
+                             Vector<Int>& failures) const
+{
+   return worker_p.toWorldMany(world, pixel, failures);
+}
+   
+uInt SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
+                             const Matrix<Double>& world,
+                             Vector<Int>& failures) const
+{
+   return worker_p.toPixelMany(pixel, world, failures);
+}
+
 
 
 Vector<String> SpectralCoordinate::worldAxisNames() const
