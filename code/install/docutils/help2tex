@@ -149,6 +149,7 @@ $objItems
         $key = $keys[$i];
         # print $i, $key;
         $funItems .= "\\htmlref{$key}{$mname:$key} & $funcs{$key}\\\\\n";
+        delete $funcs{$key};
       }
       s/\\ahfuncs{}/
 \\subsubsection*{Functions}
