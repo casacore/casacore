@@ -61,7 +61,6 @@ int main()
       PagedImage<Float> pIm(shape, CoordinateUtil::defaultCoords2D(),
 			    "tPagedImage2_tmp.img");
       AlwaysAssertExit (! pIm.isMasked());
-      AlwaysAssertExit (! pIm.isMaskWritable());
       AlwaysAssertExit (pIm.isWritable());
       AlwaysAssertExit (pIm.isPaged());
       AlwaysAssertExit (pIm.canDefineRegion());
@@ -80,7 +79,6 @@ int main()
       pIm.setDefaultMask ("reg1");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit (! pIm.isMasked());        // Slicer does not have mask
-      AlwaysAssertExit (! pIm.isMaskWritable());
       AlwaysAssertExit (! pIm.hasPixelMask());
 
 // Check number of elements.
@@ -92,7 +90,6 @@ int main()
       PagedImage<Float> pIm ("tPagedImage2_tmp.img");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit (! pIm.isMasked());
-      AlwaysAssertExit (! pIm.isMaskWritable());
       AlwaysAssertExit (! pIm.hasPixelMask());
       AlwaysAssertExit (pIm.isWritable());
       AlwaysAssertExit (pIm.isPaged());
@@ -132,19 +129,16 @@ int main()
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
 // Create a mask and make it default region.
-      pIm.defineRegion ("reg2", RegionHandler::makeMask (pIm, "reg2"),
-			RegionHandler::Masks);
-      pIm.setDefaultMask ("reg2");
+      pIm.makeMask ("reg2", True, True);
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2");
       AlwaysAssertExit (File("tPagedImage2_tmp.img/reg2").isDirectory());
       AlwaysAssertExit (pIm.isMasked());
-      AlwaysAssertExit (pIm.isMaskWritable());
       AlwaysAssertExit (pIm.hasPixelMask());
       AlwaysAssertExit (pIm.pixelMask().isWritable());
 
 // Put a mask and check it is correct.
       mask(IPosition(2,0,0)) = False;
-      pIm.putMask (mask);
+      pIm.pixelMask().put (mask);
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
 // Rename that mask and make sure the table and  default mask are renamed too.
@@ -153,7 +147,6 @@ int main()
       AlwaysAssertExit (File("tPagedImage2_tmp.img/reg2n").isDirectory());
       AlwaysAssertExit (! File("tPagedImage2_tmp.img/reg2").exists());
       AlwaysAssertExit (pIm.isMasked());
-      AlwaysAssertExit (pIm.isMaskWritable());
 
 // Make a unique name.
       AlwaysAssertExit (pIm.makeUniqueRegionName ("reg2n") == "reg2n1");
@@ -177,7 +170,6 @@ int main()
       pIm.removeRegion ("reg2n");
       AlwaysAssertExit (pIm.getDefaultMask() == "");
       AlwaysAssertExit (! pIm.isMasked());
-      AlwaysAssertExit (! pIm.isMaskWritable());
     }
 
     cout<< "ok"<< endl;
