@@ -114,8 +114,7 @@ template <class T> class Vector;
 //   <li> 
 // </todo>
 
-class SkyCompRep: public ComponentShape,
-		  public SpectralModel
+class SkyCompRep: public RecordTransformable
 {
 public:
 
