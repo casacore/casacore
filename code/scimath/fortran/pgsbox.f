@@ -341,6 +341,11 @@
 *                           -1: Compute world coordinates from Cartesian
 *                               coordinates.
 *
+*                        N.B. NLFUNC must not change the input
+*                        coordinates; that is the world coordinates for 
+*                        OPCODEs = +2 and +1, or the Cartesian
+*                        coordinates for OPCODE = -1.
+*
 *      NLC      I        Number of elements in NLCPRM (must be >0).
 *
 *      NLI      I        Number of elements in NLIPRM (must be >0).
@@ -401,11 +406,15 @@
 *
 *   Notes on NLFUNC
 *   ---------------
-*    1) NLFUNC must define a single-valued function, that is, each
+*    1) NLFUNC must not change the input coordinates; that is the world
+*       coordinates for OPCODEs = +1 and +2, or the Cartesian coordinates
+*       for OPCODE = -1.
+*
+*    2) NLFUNC must define a single-valued function, that is, each
 *       Cartesian coordinate (x,y) must map to a unique world coordinate
 *       pair (xi,eta).
 *
-*    2) Notwithstanding the fact that PGSBOX declares NLCPRM, NLIPRM,
+*    3) Notwithstanding the fact that PGSBOX declares NLCPRM, NLIPRM,
 *       and NLDPRM as single dimension arrays of length NLC, NLI, and
 *       NLD, NLFUNC may treat these as higher-dimensional arrays, for
 *       example, NLDPRM(2,NLD).  (The FORTRAN standard requires that
@@ -423,9 +432,9 @@
 
       LOGICAL   DOEQ, GETEND, INSIDE, ISANGL(2), MAJOR, PRVIN
       INTEGER   CI(7), CI0, CJ(7), CONTRL, DENS(2), FSEG, GCODE(2), IC,
-     :          IERR, ISTEP, IWJ, IWK, IX, J, JX, K, L, LABCTL, LABDEN,
-     :          LDIV(2), LTABL(6,2:6), NC, NG(2), NG1, NG2, NLC, NLD,
-     :          NLI, NLIPRM(NLI), NP, NW(2), NX, NY, TCODE(2,4)
+     :          IERR, ISTEP, IW0, IWJ, IWK, IX, J, JX, K, L, LABCTL,
+     :          LABDEN, LDIV(2), LTABL(6,2:6), NC, NG(2), NG1, NG2, NLC,
+     :          NLD, NLI, NLIPRM(NLI), NP, NW(2), NX, NY, TCODE(2,4)
       REAL      BLC(2), S, TRC(2), WXY(4), X1, X2, XPOINT, XR(BUFSIZ),
      :          XSCL, XVP1, XVP2, Y1, Y2, YR(BUFSIZ), YSCL, YVP1, YVP2
       DOUBLE PRECISION CONTXT(20), CACHE(4,0:NC), DW(2), DX, DY, FACT,
@@ -910,6 +919,7 @@
             NW(J) = NG(J)
          ELSE
             NW(J) = NINT(DW(J)/GSTEP(J))
+            IW0 = NINT(WMIN(J)/GSTEP(J))
          END IF
 
          DO 100 IWJ = 0, NW(J)
@@ -923,7 +933,7 @@
                WORLD(2) = GRID2(IWJ)
             ELSE
 *              Internally computed.
-               WORLD(J) = WMIN(J) + IWJ*GSTEP(J)
+               WORLD(J) = (IW0 + IWJ)*GSTEP(J)
 
 *              Logarithmic?
                IF (TYPE(J).EQ.'L') THEN
@@ -1225,7 +1235,7 @@
      :          YW2, Z
       DOUBLE PRECISION CACHE(4,0:NC), TMP
       CHARACTER ESCAPE*1, EXPONT*20, FMT*8, IDENTS(3)*(*), TEXT*80,
-     :          TYPE(2)*1, TXT(2)*40
+     :          TYPE(2)*1, TXT(2)*80
 
       DATA ESCAPE /'\\'/
 *-----------------------------------------------------------------------
