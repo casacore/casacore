@@ -33,7 +33,7 @@
 #include <aips/Tables/DataManError.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/String.h>
-
+#include <aips/stdio.h>		// for sprintf
 
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr)
 : fileSeqnr_p (fileSequenceNr),
