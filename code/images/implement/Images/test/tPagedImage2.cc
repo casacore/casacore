@@ -97,13 +97,15 @@ int main()
 
 // Define the region in the regions group and check it can be found.
       pIm.defineRegion ("regr1", reg, RegionHandler::Regions);
-      AlwaysAssertExit (pIm.getImageRegionPtr
-                            ("regr1", RegionHandler::Regions, False) != 0);
+      const ImageRegion* imregptr;
+      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Regions, False);
+      AlwaysAssertExit (imregptr != 0);
+      delete imregptr;
       AlwaysAssertExit (pIm.getImageRegionPtr
                             ("regr1", RegionHandler::Masks, False) == 0);
-      AlwaysAssertExit (pIm.getImageRegionPtr
-                            ("regr1", RegionHandler::Any, False) != 0);
-      
+      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Any, False);
+      AlwaysAssertExit (imregptr != 0);
+      delete imregptr;
 
       pIm.setDefaultMask ("");
       AlwaysAssertExit (! pIm.isMasked());
