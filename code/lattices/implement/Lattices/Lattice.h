@@ -28,10 +28,7 @@
 #if !defined(AIPS_LATTICE_H)
 #define AIPS_LATTICE_H
 
-#if defined(_AIX)
-#pragma implementation ("Lattice.cc")
-#endif 
-
+//# Includes
 #include <aips/aips.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
@@ -39,12 +36,10 @@
 //# Forward Declarations
 template <class T> class Array;
 template <class T> class COWPtr;
-template <class T> class Lattice;
 template <class Domain, class Range> class Functional;
-template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
-template <class T> class LatticeValueRef;
 class LatticeNavigator;
+
 
 // <summary>
 // A templated, abstract base class for array-like objects.
@@ -228,7 +223,14 @@ public:
   // a virtual destructor is needed so that it will use the actual destructor
   // in the derived class
   virtual ~Lattice();
-  
+
+  // Make a copy of the derived object (reference semantics).
+  virtual Lattice<T>* clone() const = 0;
+
+  // Is the lattice writable?
+  // <br>Default implementation returns True.
+  virtual Bool isWritable() const;
+
   // returns the value of the single element located at the argument
   // IPosition.  
   T operator() (const IPosition& where) const;
@@ -302,14 +304,14 @@ public:
   // will) have less axes than the Lattice. The stride defaults to one if
   // not specified. 
   // <group>   
-  virtual void putSlice(const Array<T>& sourceBuffer, const IPosition& where,
-			const IPosition& stride) = 0;
-  virtual void putSlice(const Array<T>& sourceBuffer, const IPosition& where);
+  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
+			 const IPosition& stride) = 0;
+  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
   
   // </group>   
 
   // function which sets all of the elements in the Lattice to a value.
-  virtual void set(const T& value);
+  virtual void set (const T& value);
   
   // replace every element, x, of the Lattice with the result of f(x).  You
   // must pass in the address of the function -- so the function must be
@@ -323,9 +325,9 @@ public:
   // issue for large Lattices stored in memory, where disk access is not an
   // issue.
   // <group>
-  virtual void apply(T (*function)(T));
-  virtual void apply(T (*function)(const T&));
-  virtual void apply(const Functional<T,T>& function);
+  virtual void apply (T (*function)(T));
+  virtual void apply (T (*function)(const T&));
+  virtual void apply (const Functional<T,T>& function);
   // </group>
 
   // This function returns the recommended maximum number of pixels to
@@ -344,16 +346,19 @@ public:
   //             300   --> niceCursorShape = [10,20,1] 
   //             10000 --> niceCursorShape = [10,20,30] 
   // </srcblock>
-  // Usually, this function will be called with <src>maxPixels()</src> as
-  // its argument.
-  virtual IPosition niceCursorShape(uInt maxPixels) const;
+  // The default argument is the result of <src>maxPixels()</src>.
+  // <group>
+  virtual IPosition niceCursorShape (uInt maxPixels) const;
+  IPosition niceCursorShape() const
+    { return niceCursorShape (maxPixels()); }
+  // </group>
 
   // These are the true implementations of the parentheses operator.  While
   // you can use them the access methods shown in Example three above have a
   // nicer syntax and are equivalent.
   // <group>
-  virtual T getAt(const IPosition& where) const = 0;
-  virtual void putAt(const T& value, const IPosition& where) = 0;
+  virtual T getAt (const IPosition& where) const = 0;
+  virtual void putAt (const T& value, const IPosition& where) = 0;
   // </group>
   
   // Check class internals - used for debugging. Should always return True
@@ -362,8 +367,8 @@ public:
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<T>* makeIter(
-				 const LatticeNavigator& navigator) const = 0;
+  virtual LatticeIterInterface<T>* makeIter
+				(const LatticeNavigator& navigator) const = 0;
 
   // These functions were put in for the Gnu compiler which presently
   // (version 2.7.2.1) is unable to automatically cast a derived class to a
@@ -378,8 +383,12 @@ public:
   Lattice<T>& lc() {return *this;}
   const Lattice<T>& lc() const {return *this;}
   // </group>
-};
 
+protected:
+  // Assignment can only be used by derived classes.
+  Lattice<T>& operator= (const Lattice<T>&)
+    { return *this; }
+};
 
 
 #endif
