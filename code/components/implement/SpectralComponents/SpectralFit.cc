@@ -65,6 +65,10 @@ void SpectralFit::addFitElement(const SpectralList &elem) {
   slist_p.add(elem);
 }
 
+void SpectralFit::clear() {
+  slist_p.clear();
+}
+
 Bool SpectralFit::fit(const Vector<Double> &y,
 		      const Vector<Double> &x) {
   // The fitter
@@ -126,15 +130,13 @@ Bool SpectralFit::fit(const Vector<Double> &y,
     tmp.resize(slist_p[i].getOrder());
     terr.resize(slist_p[i].getOrder());
     for (uInt k=0; k<slist_p[i].getOrder(); k++) {
-      tmp(k) = sol(j);
-      terr(k) = err(j);
-      if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
-         if (k==2) {
-           tmp(k) = sol(j) / sqrt(8 * log(2.0));      // FWHM -> SIGMA
-           terr(k) = err(j) / sqrt(8 * log(2.0));
-         }
-      }
-      j++;
+      if (k==2 && slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+	tmp(k) = sol(j) / SpectralElement::SigmaToFWHM;
+	terr(k) = err(j++) / SpectralElement::SigmaToFWHM;
+      } else {
+	tmp(k) = sol(j);
+	terr(k) = err(j++);
+      };
     };
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);
@@ -202,15 +204,13 @@ Bool SpectralFit::fit(const Vector<Float> &y,
     tmp.resize(slist_p[i].getOrder());
     terr.resize(slist_p[i].getOrder());
     for (uInt k=0; k<slist_p[i].getOrder(); k++) {
-      tmp(k) = sol(j);
-      terr(k) = err(j);
-      if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
-         if (k==2) {
-           tmp(k) = sol(j) / sqrt(8 * log(2.0));      // FWHM -> SIGMA
-           terr(k) = err(j) / sqrt(8 * log(2.0));
-         }
-      }
-      j++;
+      if (k==2 && slist_p[i].getType() == SpectralElement::GAUSSIAN) {
+	tmp(k) = sol(j) / SpectralElement::SigmaToFWHM;
+	terr(k) = err(j++) /  SpectralElement::SigmaToFWHM;
+      } else {
+	tmp(k) = sol(j);
+	terr(k) = err(j++);
+      };
     };
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);

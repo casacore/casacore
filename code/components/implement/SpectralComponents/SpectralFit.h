@@ -104,6 +104,9 @@ class SpectralFit {
   void addFitElement(const SpectralList &elem);
   // </group>
 
+  // Clear the list to be fitted (for a re-use of the SpectralFit object)
+  void clear();
+
   // Get the list being fitted
   const SpectralList &list() const { return slist_p; };
 
