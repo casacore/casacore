@@ -4387,3 +4387,4 @@
 14 282 src rm doc/html/tour/aips++tour.ppt
 14 284 src rm trial/apps/simpleimage
 14 284 sys rm libexec/simpleimage.g
+14 284 sys rm libexec/simpleimage_meta.g
