@@ -662,7 +662,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 
   Vector<Double> uvw(3); // Move this temporary out of the loop
   Int lastAnt1, lastAnt2, lastArray, lastSpW, lastSourceId;
-  lastAnt1=-1; lastAnt2=-1; lastArray=-1, lastSpW=-1; lastSourceId=-1;
+  lastAnt1=-1; lastAnt2=-1; lastArray=-1; lastSpW=-1; lastSourceId=-1;
   Double lastTime=0;
   Bool lastRowFlag=False;
   Float lastWeight=0.0;
@@ -928,7 +928,7 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt)
      // If nec, reflect y-coord to yield right-handed geocentric:
      if ( doVLBIRefl ) corXYZ(1)=-corXYZ(1);
 
-     ant.position().put(row,arrayXYZ+antXYZ(i));
+     ant.position().put(row,arrayXYZ+corXYZ);
      // store the angle for use in the feed table
      receptorAngle_p(2*i+0)=polangleA(i)*C::degree;
      receptorAngle_p(2*i+1)=polangleB(i)*C::degree;
@@ -1167,7 +1167,6 @@ void MSFitsInput::fillFieldTable(Int nField)
   if (nearAbs(epoch_p,1950.0,0.01)) epochRef=MDirection::B1950;
   msc_p->setDirectionRef(epochRef);
 
-
   MSFieldColumns& msField(msc_p->field());
   ms_p.field().addRow();
   Int fld=0;
@@ -1176,7 +1175,9 @@ void MSFitsInput::fillFieldTable(Int nField)
   msField.name().put(fld,object_p);
   Vector<MDirection> radecMeas(1);
   radecMeas(0).set(MVDirection(refVal_p(getIndex(coordType_p,"RA"))*C::degree,
- 			       refVal_p(getIndex(coordType_p,"DEC"))*C::degree));
+			       refVal_p(getIndex(coordType_p,"DEC"))*
+			       C::degree), MDirection::Ref(epochRef));
+
   msField.numPoly().put(fld,0);
   msField.delayDirMeasCol().put(fld,radecMeas);
   msField.phaseDirMeasCol().put(fld,radecMeas);
