@@ -352,7 +352,6 @@ int main(int argc, char **argv) {
 	slist.evaluate(fxdat);
 	plotter.line(ffreq, fxdat);
       };
-      plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
       
       cout << "---------------------------------------------------" << endl;
       cout << "Limited number of estimates: " << endl;
