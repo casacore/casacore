@@ -28,6 +28,7 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/PlainTable.h>
 #include <aips/Tables/RefTable.h>
+#include <aips/Tables/NullTable.h>
 #include <aips/Tables/ExprDerNode.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
@@ -60,33 +61,44 @@ Table::Table()
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
-{}
+{
+    baseTabPtr_p = new NullTable();
+    baseTabPtr_p->link();
+}
 
 Table::Table (const String& name, TableOption option)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
-    { open (name, "", option, TableLock(TableLock::AutoLocking)); }
+{
+    open (name, "", option, TableLock(TableLock::AutoLocking));
+}
 
 Table::Table (const String& name, const TableLock& lockOptions,
 	      TableOption option)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
-    { open (name, "", option, lockOptions); }
+{
+    open (name, "", option, lockOptions);
+}
     
 Table::Table (const String& name, const String& type, TableOption option)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
-    { open (name, type, option, TableLock(TableLock::AutoLocking)); }
+{
+    open (name, type, option, TableLock(TableLock::AutoLocking));
+}
     
 Table::Table (const String& name, const String& type,
 	      const TableLock& lockOptions, TableOption option)
 : baseTabPtr_p     (0),
   isCounted_p      (True),
   lastModCounter_p (0)
-    { open (name, type, option, lockOptions); }
+{
+    open (name, type, option, lockOptions);
+}
 
 Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 : baseTabPtr_p     (0),

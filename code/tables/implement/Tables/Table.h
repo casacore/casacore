@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -339,7 +339,7 @@ public:
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
     Bool isNull() const
-	{ return (baseTabPtr_p == 0  ?  True : False); }
+      { return (baseTabPtr_p == 0  ?  True : baseTabPtr_p->isNull()); }
 
     // Throw an exception if the object is null, i.e.
     // if function isNull() is True.
