@@ -2698,3 +2698,4 @@
 10 020 src mv trial/apps/datalinetool/datalinetool.help trial/implement/Datalinetool/datalinetool.help
 10 020 src mv trial/apps/datalinetool/dgplot.g trial/implement/Datalinetool/dgplot.g
 10 020 src mv trial/apps/datalinetool/dlt_col.g trial/implement/Datalinetool/dlt_col.g
+10 020 src mv trial/apps/datalinetool/dlt_style.g trial/implement/Datalinetool/dlt_style.g
