@@ -51,14 +51,16 @@ int main()
 
     polint=-1;
     try {
-	cout << "polint = " << polint
-	     << ", Stokes::type(polint) = " << Stokes::type(polint)
-	     << ", Stokes::type(Stokes::type(polint)) = "
-             << Stokes::type(Stokes::type(polint))
-	     << endl  
-	     <<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polint)) 
-	     <<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polint)) 
-	     << endl;
+	cout << "polint = " << polint;
+	cout << ", Stokes::type(polint) = " << Stokes::type(polint);
+	cout << ", Stokes::type(Stokes::type(polint)) = ";
+	cout << Stokes::type(Stokes::type(polint));
+	cout << endl;
+	cout <<  " --- receptor1 = ";
+	cout << Stokes::receptor1(Stokes::type(polint));
+	cout <<  " --- receptor2 = ";
+	cout << Stokes::receptor2(Stokes::type(polint));
+	cout << endl;
     } catch(AipsError x) {
 	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
     } end_try;
@@ -86,14 +88,16 @@ int main()
 	     
     try {
     polstr="AB";
-    cout << "polstr = " << polstr
-         << ", Stokes::type(polstr) = " << Stokes::type(polstr)
-         << ", Stokes::type(Stokes::type(polstr)) = "
-         << Stokes::type(Stokes::type(polstr))
-         << endl  
-	 <<  " --- receptor1 = "<<Stokes::receptor1(Stokes::type(polstr)) 
-	 <<  " --- receptor2 = "<<Stokes::receptor2(Stokes::type(polstr)) 
-	 << endl;
+    cout << "polstr = " << polstr;
+    cout << ", Stokes::type(polstr) = " << Stokes::type(polstr);
+    cout << ", Stokes::type(Stokes::type(polstr)) = ";
+    cout << Stokes::type(Stokes::type(polstr));
+    cout << endl  ;
+    cout <<  " --- receptor1 = ";
+    cout << Stokes::receptor1(Stokes::type(polstr)) ;
+    cout <<  " --- receptor2 = ";
+    cout << Stokes::receptor2(Stokes::type(polstr)) ;
+    cout << endl;
     } catch(AipsError x) {
 	cout << " Caught exception of receptor correctly: "<<x.getMesg()<<endl;
     } end_try;
