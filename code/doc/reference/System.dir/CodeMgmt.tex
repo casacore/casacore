@@ -21,6 +21,125 @@ $ $Id$ $}.
 
 % ----------------------------------------------------------------------------
 
+\section{\exe{ac}}
+\label{ac}
+\index{ac@\exe{ac}}
+\index{master host}
+\index{code!management!changelog|see{\exe{ac}}}
+\index{changelog|see{\exe{ac}}}
+
+Add an entry to an \aipspp\ changelog file.
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{ac} [\textrm{options for} \aipsexe{ac}]}
+\end{synopsis}
+
+\subsection*{Description}
+
+\exe{ac} adds an entry to an \aipspp\ changelog file.
+
+\exe{ac} assumes that you are working within a private directory tree which
+shadows that of the \aipspp\ master source code tree, see \exeref{mktree}.
+It determines the appropriate changelog file from the current working
+directory.
+
+\exe{ac} invokes \exeref{ao} to check out the appropriate changelog
+file. It also checks out another file which is used to generate a
+unique id for each change. Thereafter a glish script is started
+to let the user fill in a form for the change and to add the
+change to the changelog file. The user has the opportunity to
+abort the operation, in which case the checked out files are unlocked.
+In the change is added, \exeref{ai} is invoked to check in the changed
+files.
+
+\subsection*{Options}
+
+\begin{description}
+\item[\exe{-i}]
+   Do only a check in of the changed files.
+   This should only be used if the normal (automatic) check in
+   failed because an \exeref{exhale} has started or due to another error.
+\end{description}
+
+\subsection*{Notes}
+
+\begin{itemize}
+\item
+   The \aipspp\ changelog files are meant to generate an overview
+   (by \exeref{buildchangelog}) of the new and changed features
+   in an \aipspp\ release.
+   It means they are higher level than the RCS changelogs which are
+   programmer oriented.
+
+\item
+   Almost every source directory has a changelog file to keep track
+   of the changes in the \aipspp\ system.
+   \\All glish subdirectories share a single changelog file in their
+   root directory. The same is true for the system and the
+   documentation subdirectories.
+
+\item
+   The DISPLAY variable needs to be set, because \exe{ac} uses
+   a GUI to let the user fill in the change form.
+
+\item
+   If checking out fails because the file does not exist yet,
+   one should create an empty file \textrm{changelog} and check it
+   in using \exeref{ai}.
+   In general this should only occur in new directories.
+
+\item
+   Checking in should normally succeed, but might fail because the
+   an \exeref{exhale} has started or because network connection is down.
+   In that case \exe{ac} should be run at a later time with the
+   \textrm{-i} flag (to only do a checkin of the files).
+\end{itemize}
+
+\subsection*{Diagnostics}
+
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: initialization error
+\\ \verb+   2+: checkout failure
+\\ \verb+   3+: checkin failure
+\\ \verb+   4+: no change entry created by user
+
+\subsection*{Examples}
+
+The command
+
+\begin{verbatim}
+   cd ~/aips++/code/aips/implement/Tables
+   ac
+\end{verbatim}
+
+\noindent
+will let the user fill in the change form and add the completed
+form to the changelog file of library module Tables.
+
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{ac} does not detect why a checkout or checkin fails.
+\end{itemize}
+
+\subsection*{See also}
+
+\exeref{rac} \aipspp\ ac for remote users.\\
+\exeref{ai} \aipspp\ code checkin utility.\\
+\exeref{ao} \aipspp\ code checkout utility.\\
+\exeref{buildchangelog} process \aipspp\ changelog files.
+
+\subsection*{Author}
+
+Original: 2000/06/05 by Ger van Diepen, NFRA
+
+% ----------------------------------------------------------------------------
+
+\newpage
 \section{\exe{ae}}
 \label{ae}
 \index{ae@\exe{ae}}
@@ -129,7 +248,6 @@ Original: 1995/02/23 by Mark Calabretta, ATNF.
 
 % ----------------------------------------------------------------------------
 
-\newpage
 \section{\exe{ai}}
 \label{ai}
 \index{ai@\exe{ai}}
@@ -1633,6 +1751,264 @@ Original: 1992/05/14 by Mark Calabretta, ATNF.
 % ----------------------------------------------------------------------------
 
 \newpage
+\section{\exe{buildchangelog}}
+\label{buildchangelog}
+\index{buildchangelog@\exe{buildchangelog}}
+\index{master host}
+\index{code!management!changelog|see{\exe{buildchangelog}}}
+\index{changelog|see{\exe{buildchangelog}}}
+
+Process \aipspp\ changelog files and transform them to
+html files containing the selected changes.
+
+\subsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{buildchangelog} [\exe{-dir[ectory]} directory]
+     [\exe{-split[file]} area|package|module] [\textrm{select-options}
+     <directory>}
+\end{synopsis}
+
+\subsection*{Description}
+
+All \aipspp\ changelog files found in the given directory and its
+subdirectories are processed and the selected changes
+are written to html files. 
+Also a few html files containing an overview of the changes are
+generated with links to the detailed html files.
+\\The given directory has to be a code directory; i.e. it has to
+end in \file{/code}.
+\\The changes can be selected in various ways using the command
+options.
+By default the changes in the currently developed release are
+selected.
+\\The output directory can be specified in the options, which defaults
+to the working directory.
+
+\exe{buildchangelog} is run by the \exeref{sneeze} script if the
+appropriate \exeref{makedefs} variable is set.
+In that case it builds html files for the changes in the currently
+developed release.
+The \aipspp\ documentation pages have links to the overview files
+generated in this way, so at all times the achievements in the
+currently developed release can be seen on the \aipspp\ web pages.
+
+One can also use \exe{buildchangelog} to find, for example, all
+changes made to glish in the last year.
+
+\subsection*{Options}
+
+\begin{description}
+\item[\exe{-dir[ectory]} directory]
+   The directory of the generated html files.
+   Default is the working directory.
+
+\item[\exe{-split[file]} value]
+   This case insensitive option determines how many html files are written.
+   \\If not given, all changes are combined in one html file.
+   \\\exe{-split area} generates an html file per area
+   with name \file{changelog\_<area>.html}.
+   \\\exe{- split package} generates an html file per package
+   with name
+   \\\file{changelog\_<area>\_<package>.html}.
+   \\\exe{-split module} generates an html file per module
+   with name
+   \\\file{changelog\_<area>\_<package>\_<module>.html}.
+   \\If the split option is given (and not blank), a summary
+   file per area ia generated with name
+   \file{changelog\_<area>\_summary.html}.
+   \\In any case an overview file is generated with name
+   \file{changelog\_summary.html}.
+
+\item[\exe{-date} ranges]
+   Select changes matching the given date range(s). Multiple ranges can be
+   given separated by commas. Each range is a start date optionally
+   followed by a colon and an end date.
+   Each date can be given as yyyy-mm-dd or as dd-mm-yyyy, but an 
+   end date has to be given in the same order as its start date.
+   The month can be given as a number or as a 3 letter case
+   insensitive name.
+   It is not necessary to give all parts of a date, so it is possible
+   to select a given year or range of years (or days or months for
+   that matter). Again, an end date and start date have to match
+   in that respect.
+   \\For example,
+\begin{verbatim}
+   -date 2000
+   -date 1-Jan-2000:31-Dec-2000
+   -date 1995,1996,1997,1998,1999,2000
+   -date 1995:2000
+\end{verbatim}
+   The first 2 examples are equivalent; select all of the year 2000.
+   \\The latter 2 examples are also equivalent; select all of years
+   1995 to 2000 (inclusive).
+
+\item[\exe{-nodate} ranges]
+   Select all changes NOT matching the given date range(s).
+
+\item[\exe{-id} ranges]
+   Select all changes matching the given id range(s).
+   Multiple ranges can be given separated by commas.
+   Each range is a start id optionally followed by a colon and an end id.
+   \\For example,
+\begin{verbatim}
+   -id 1:10,20,24:30
+\end{verbatim}
+
+\item[\exe{-noid} ranges]
+   Select all changes NOT matching the given id range(s).
+
+\item[\exe{-area} names]
+   Select all changes matching the given area name(s).
+   Multiple areas can be given separated by commas.
+   Note that the names are case sensitive.
+   \\For example,
+\begin{verbatim}
+   -area System,Glish,Tool,Library,LearnMore
+\end{verbatim}
+   This eaxmple shows all available areas.
+
+\item[\exe{-noarea} names]
+   Select all changes NOT matching the given area name(s).
+
+\item[\exe{-package} names]
+   Select all changes matching the given package name(s).
+   Multiple packages can be given separated by commas.
+   Note that the names are case sensitive.
+   \\For example,
+\begin{verbatim}
+   -package aips
+\end{verbatim}
+   Note that only areas Library and Tool have multiple packages.
+
+\item[\exe{-nopackage} packages]
+   Select all changes NOT matching the given package(s).
+
+\item[\exe{-module} names]
+   Select all changes matching the given module (or tool) name(s).
+   Multiple modules can be given separated by commas.
+   Note that the names are case sensitive.
+   \\For example,
+\begin{verbatim}
+   -module Tables,Arrays
+\end{verbatim}
+   Note that the word module is also used for the tool name, so
+   a specific tool is selected in the same way.
+
+\item[\exe{-nomodule} names]
+   Select all changes NOT matching the given module name(s).
+
+\item[\exe{-avers} ranges]
+   Select all changes matching the given \aipspp\ version range(s).
+   Multiple ranges can be given separated by commas.
+   Each range is a start version optionally followed by a colon and an
+   end version. 
+   Note that the version is treated as a float number (like 1.4).
+   \\By default only the currently developed \aipspp\ release is
+   selected. Therefore the special (case insensitive) value
+   \exe{all} can be given to indicate that all versions have to be selected.
+   \\For example,
+\begin{verbatim}
+   -avers all
+   -avers 1.4:1.9
+\end{verbatim}
+
+\item[\exe{-noavers} ranges]
+   Select all changes NOT matching the given \aipspp\ version range(s).
+
+\item[\exe{-type} types]
+   Select all changes matching the given type(s).
+   Multiple types can be given separated by commas.
+   Note that the type names are case insensitive.
+   \\For example,
+\begin{verbatim}
+   -type code,documentation,test,review
+\end{verbatim}
+   This example shows all available types.
+
+\item[\exe{-notype} types]
+   Select all changes NOT matching the given type(s).
+
+\item[\exe{-category} categories]
+   Select all changes matching the given categories.
+   Multiple categories can be given separated by commas.
+   Note that the category names are case insensitive.
+   \\For example,
+\begin{verbatim}
+   -category new,change,bugfix,removed,other
+\end{verbatim}
+   This example shows all available categories.
+
+\item[\exe{-nocategory} categories]
+   Select all changes NOT matching the given categories.
+\end{description}
+
+\subsection*{Notes}
+
+\begin{itemize}
+\item
+   The change entries have an area, package, and module component.
+   There are a few areas:
+   \begin{description}
+     \item[Library]
+       for all changes in the library code.
+     \item[Tool]
+       for all changes in the \aipspp\ tools (applications).
+     \item[Glish]
+       for all changes in glish.
+     \item[System]
+       for all changes in the system area (directory install).
+     \item[LearnMore]
+       for all changes in notes, papers, etc. (directory doc).
+   \end{description}
+\end{itemize}
+
+\subsection*{Diagnostics}
+
+Status return values
+\\ \verb+   0+: success
+\\ \verb+   1+: invalid option given
+
+\subsection*{Examples}
+
+The command
+
+\begin{verbatim}
+   buildchangelog -split module
+     -dir $(AIPSROOT)/docs/project/releasenotes/changelogs
+     $(AIPSROOT)/code
+\end{verbatim}
+\noindent
+is used in the code makefile to generate the html files
+when building the system.
+
+\begin{verbatim}
+   buildchangelog -avers all -area Glish /aips++/code
+\end{verbatim}
+\noindent
+can be used to find all changes ever made to glish.
+It will generate the files \file{./changelog.html} and
+\file{./changelog\_summary.html}.
+
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   \exe{buildchangelog} does not check if a change entry is filled in
+   correctly. 
+\end{itemize}
+
+\subsection*{See also}
+
+\exeref{ac} \aipspp\ changelog maintenance.
+
+\subsection*{Author}
+
+Original: 2000/06/05 by Ger van Diepen, NFRA
+
+% ----------------------------------------------------------------------------
+
+\newpage
 \section{\exe{doover}}
 \label{doover}
 \index{doover@\exe{doover}}
@@ -1869,6 +2245,40 @@ The manual page for \unixexe{rcsdiff}(1).\\
 
 Original: 1992/03/07 by Peter Teuben, BIMA.
  
+% ----------------------------------------------------------------------------
+ 
+\newpage
+\section{\exe{rac}}
+\label{rac}
+\index{rac@\exe{rac}}
+\index{master host}
+\index{code!management!changelog|see{\exe{rac}}}
+\index{changelog|see{\exe{rac}}}
+ 
+\exe{rac} is effectively the same as \exeref{ac}. The only difference
+is that it is using \exeref{rao} and \exeref{rai} instead of
+\exeref{ao} and \exeref{ai} to be able to update the changelog
+from a remote site.
+
+\subsection*{Synopsis}
+ 
+\begin{synopsis}
+   \code{\exe{rac} [\textrm{options for} \aipsexe{rac}]}
+\end{synopsis}
+ 
+\subsection*{Description}
+You are referred to the description of \exeref{ac}.
+
+\subsection*{See also}
+
+\exeref{rai}, \aipspp\ code checkin utility.\\
+\exeref{rao}, \aipspp\ code checkout utility.\\
+\exeref{buildchangelog} process \aipspp\ changelog files.
+ 
+\subsection*{Author}
+ 
+Original: 2000/06/05 by Ger van Diepen, NFRA.
+
 % ----------------------------------------------------------------------------
  
 \newpage
@@ -2537,15 +2947,15 @@ If no file is specified the default is to search for (i.e. list) all files.
    The default is to search everything.
 
 \item[\exe{-e} expression]
-   Perform a case-insensitive search for the specified expression in all
+   Perform a case insensitive search for the specified expression in all
    selected files.  \unixexe{grep}-type regular expressions are allowed.
    See also the \exe{-l} option.
 
 \item[\exe{-E} expression]
-   Case-sensitive version of the \exe{-e} option.
+   Case sensitive version of the \exe{-e} option.
 
 \item[\exe{-F}]
-   Do a case-sensitive search for the files named.
+   Do a case sensitive search for the files named.
 
 \item[\exe{-l}]
    Only list the names of files that contain a match to the expression 
