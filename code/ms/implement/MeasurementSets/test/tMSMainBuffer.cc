@@ -218,10 +218,14 @@ int main() {
       	buffer.uvw().put(4, uvw);
       }
       { // test the weight functions.
-	AlwaysAssert(near(buffer.weight()(0), 1.0f), AipsError);
-	AlwaysAssert(near(buffer.weight()(4), 1.0f), AipsError);
-     	buffer.weight().put(0, 0.1f);
-     	buffer.weight().put(4, 0.2f);
+	AlwaysAssert(allNear(buffer.weight()(0), 1.0f, C::flt_epsilon), 
+		     AipsError);
+	AlwaysAssert(allNear(buffer.weight()(4), 1.0f, C::flt_epsilon), 
+		     AipsError);
+      	buffer.weight().put(0, Vector<Float>(row1SigmaShape, 0.1));
+ 	Vector<Float> weight(row4SigmaShape, 0.2);
+ 	weight(0) = 0.4;
+      	buffer.weight().put(4, weight);
       }
       { // Check the assignment operator & copy constructor
     	MSMainBuffer otherBuffer(buffer);
@@ -316,8 +320,18 @@ int main() {
  	AlwaysAssert(allNear(newBuffer.uvw()(4), uvw, C::dbl_epsilon),
 		     AipsError);
       }
-      AlwaysAssert(near(newBuffer.weight()(0), 0.1f), AipsError);
-      AlwaysAssert(near(newBuffer.weight()(4), 0.2f), AipsError);
+      AlwaysAssert(newBuffer.weight()(0).shape().isEqual(row1SigmaShape), 
+ 		   AipsError);
+      AlwaysAssert(allNear(newBuffer.weight()(0), 0.1f, C::flt_epsilon),
+		   AipsError);
+      {
+  	Vector<Float> weight(row4SigmaShape, 0.2);
+  	weight(0) = 0.4;
+  	AlwaysAssert(newBuffer.weight()(4).shape().isEqual(row4SigmaShape), 
+  		     AipsError);
+  	AlwaysAssert(allNear(newBuffer.weight()(4), weight, C::flt_epsilon),
+		     AipsError);
+      }
       // check the reference semantics
       AlwaysAssert(newBuffer.antenna1()(1) ==  100, AipsError);
       AlwaysAssert(newBuffer.fieldId()(1) ==  101, AipsError);
