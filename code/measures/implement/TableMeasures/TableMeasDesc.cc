@@ -81,7 +81,7 @@ const uInt TableMeasDesc<M>::refCode(const String& refString) const
 {
     MeasRef<M> refType;
     M measure;
-    Bool succ = measure.giveMe(refString, refType);
+    Bool succ = measure.giveMe(refType, refString);
     if (!succ) {
 	throw(AipsError("TableMeasDesc: refType " + refString +
 			" unknown for measType " + type()));
