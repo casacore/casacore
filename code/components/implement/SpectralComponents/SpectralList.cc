@@ -173,7 +173,7 @@ Bool SpectralList::fromRecord (String& errMsg, const RecordInterface& container)
    return True;
 }
 
-Bool SpectralList::toRecord(RecordInterface& container)
+Bool SpectralList::toRecord(RecordInterface& container) const
 {
    String errMsg;
    for (uInt i=0; i<list_p.nelements(); i++) {

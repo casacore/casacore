@@ -159,7 +159,7 @@ class SpectralList {
   // Convert to and from a Record (see details in SpectralElement)
   // <group>
   Bool fromRecord (String& errMsg, const RecordInterface& container);
-  Bool toRecord(RecordInterface& container);
+  Bool toRecord(RecordInterface& container) const;
   //</group>
 
  private:
