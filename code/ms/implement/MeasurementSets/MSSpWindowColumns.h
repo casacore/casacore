@@ -171,7 +171,7 @@ private:
   Bool matchTotalBandwidth(uInt row, Double bandwidthInHz,
 			   Double tolInHz) const;
   Bool matchNumChan(uInt row, Int nChan) const;
-  //<group>
+  //</group>
 
 
   //# required columns
