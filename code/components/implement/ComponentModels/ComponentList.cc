@@ -368,6 +368,49 @@ void ComponentList::setSpectrumParms(const Vector<Int> & which,
   DebugAssert(ok(), AipsError);
 }
 
+void ComponentList::setRefFrequency(const Vector<Int> & which, 
+				    const MVFrequency & newFreq) {
+  uInt c;
+  MFrequency curFreq;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    SpectralModel & curSpectrum = component(c).spectrum();
+    curFreq = curSpectrum.refFrequency();
+    curFreq.set(newFreq);
+    curSpectrum.setRefFrequency(curFreq);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+void ComponentList::setRefFrequencyFrame(const Vector<Int> & which,
+					 MFrequency::Types newFrame) {
+  uInt c;
+  MFrequency curFreq;
+  const MFrequency::Ref newRef(newFrame);
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    SpectralModel & curSpectrum = component(c).spectrum();
+    curFreq = curSpectrum.refFrequency();
+    curFreq.set(newRef);
+    curSpectrum.setRefFrequency(curFreq);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+
+void ComponentList::setRefFrequencyUnit(const Vector<Int> & which,
+					const Unit & unit) {
+  uInt c;
+  for (uInt i = 0; i < which.nelements(); i++) {
+    AlwaysAssert(which(i) >= 0, AipsError);
+    c = which(i);
+    component(c).spectrum().convertFrequencyUnit(unit);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);

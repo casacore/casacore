@@ -36,12 +36,13 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/SkyComponent.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MFrequency.h>
 #include <aips/Containers/Block.h>
 #include <aips/Tables/Table.h>
 
 class String;
 class MVDirection;
-class MFrequency;
+class MVFrequency;
 class MVAngle;
 class Unit;
 template <class T> class Vector;
@@ -311,6 +312,32 @@ public:
   void setSpectrumParms(const Vector<Int> & which,
 			const SpectralModel & newSpectrum);
 
+  // set the reference frequency on the specified components to the specified
+  // frequency. The reference frame is not changed, use the
+  // <src>setRefFrequencyFrame</src> function to do that.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setRefFrequency(const Vector<Int> & which, const MVFrequency & newFreq);
+
+  // set the reference frequency frame on the specified components to the
+  // specified one. Does not convert the frequency values.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setRefFrequencyFrame(const Vector<Int> & which,
+			    MFrequency::Types newFrame);
+
+  // set the reference frequency unit on the specified components to the
+  // specified one. The unit must have the same dimensions as the Hz.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setRefFrequencyUnit(const Vector<Int> & which, const Unit & unit);
+
   // returns a reference to the specified element in the list.
   // <thrown>
   // <li> AipsError - If the list is associated with a table that was opened
@@ -376,3 +403,4 @@ private:
   Block<uInt> itsOrder;
 };
 #endif
+
