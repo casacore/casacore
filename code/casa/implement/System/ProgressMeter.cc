@@ -1,5 +1,5 @@
 //# ProgressMeter.h: Visual indication of a tasks progress.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -58,7 +58,7 @@ static Int stderr_creation_function(Double min, Double max,
 
 static void stderr_update_function(Int id, Double value)
 {
-    if (id < 0 || id > stderr_min.nelements()) {
+    if (id < 0 || id > Int(stderr_min.nelements())) {
 	cerr << __FILE__ << " illegal id " << id << endl;
 	return;
     }
