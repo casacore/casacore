@@ -40,8 +40,11 @@
 
 //# Forward Declarations
 class BitVectorHelper;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
-
+#endif
 
 // The size of a unsigned Integer ( assumes 8-bit char )
 const uInt WORDSIZE = sizeof(uInt)*8;

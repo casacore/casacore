@@ -37,7 +37,12 @@
 //# Forward declarations.
 template<class T> class Block;
 class AipsIO;
+
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 // <summary>IO functions for Block</summary>
 // <use visibility=export>

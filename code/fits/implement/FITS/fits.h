@@ -73,7 +73,7 @@ template <class TYPE>
 class NoConvert {
     public:
 	NoConvert() { }
-	void operator = (int n) { n = 0; }
+	void operator = (int) {; }
 };
 
 //<summary> FITS helper class </summary>

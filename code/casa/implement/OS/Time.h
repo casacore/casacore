@@ -35,8 +35,12 @@
 
 
 #include <aips/aips.h>
-imported class ostream;
-imported class istream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+class istream;
+#endif
 
 // <Summary> date and time enquiry functions, with some operations.
 // </summary>

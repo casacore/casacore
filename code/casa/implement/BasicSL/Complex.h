@@ -587,18 +587,10 @@ ostream& operator << (ostream& s, const G_COMPLEX(type) x)			\
 										\
 istream& operator >> (istream& s, G_COMPLEX(type)& x)				\
 {										\
-/*#ifdef _OLD_STREAMS								\
   if (!s.good())								\
   {										\
     return s;									\
   }										\
-#else*/										\
-  if (!s.ipfx(0))								\
-  {										\
-    s.clear(ios::failbit|s.rdstate()); /* Redundant if using GNU iostreams.*/	\
-    return s;									\
-  }										\
-/*#endif*/									\
   type r, i;									\
   char ch;									\
   s >> ws;									\

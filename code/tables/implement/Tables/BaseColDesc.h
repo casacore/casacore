@@ -48,7 +48,11 @@ class RefTable;
 class RefColumn;
 class TableDesc;
 class ColumnSet;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 
 
 // <summary>

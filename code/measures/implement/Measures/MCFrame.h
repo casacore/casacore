@@ -40,7 +40,11 @@
 
 //# Forward Declarations
 class MVDirection;
-imported class ostream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
+class ostream;
+#endif
 
 // <summary>
 // Measure frame calculations proxy

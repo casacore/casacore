@@ -37,8 +37,13 @@
 
 class LogSink;
 class LogOrigin;
-class ostrstream;
+#if defined(__KCC)
+#include <iosfwd.h>
+#include <strstream.h>
+#else
 class ostream;
+class ostrstream;
+#endif
 
 // <summary>
 // ostream-like interface to creating log messages.

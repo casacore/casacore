@@ -37,7 +37,11 @@
 #include <aips/Utilities/String.h>
 
 //# Forward declarations
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 class AipsIO;
 class LogIO;
 class IPosition;

@@ -43,7 +43,11 @@
 
 //# Forward declarations for functions which convert an IPosition to and from
 //# 1-D arrays.
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 imported class ostream;
+#endif
 class AipsIO;
 class LogIO;
 template<class T> class Array;

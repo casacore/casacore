@@ -29,7 +29,11 @@
 #if !defined(AIPS_VERSION_H)
 #define AIPS_VERSION_H
 
+#if defined(__KCC)
+#include <iosfwd.h>
+#else
 class ostream;
+#endif
 
 // <summary>
 // Version information for AIPS++

@@ -37,9 +37,9 @@
 #include <aips/IO/ByteIO.h>
 #include <aips/Utilities/String.h>
 
-//# Forward declarations
+#if !defined(__KCC)
 imported class filebuf;
-
+#endif
 
 // <summary> 
 // Class for IO on a file using a filebuf object.

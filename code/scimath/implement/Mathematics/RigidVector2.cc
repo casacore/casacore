@@ -58,5 +58,8 @@ RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
 	    return RigidVector<Complex,4>(v0,v1,v2,v3);
 	}
     }
+    // NOTREACHED
+    RigidVector<Complex,4> tmp;
+    return tmp;
 }
 
