@@ -294,15 +294,13 @@ int main()
             String unit;
             Double val = 20.12345;
             Quantum<Double> valq(20.12345, String(units(0)));
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, 4);
-            String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+            String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0, True, True, 4);
             if (str != "20.1234" || str2 != "20.1234") {
                throw(AipsError("Failed format test 1"));
             }
-            str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
-                      True, 4);
-            str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
-                      True, 4);
+            str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True, True, 4);
+            str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True, True, 4);
             if (str != "2.0123e+01" || str2 != "2.0123e+01") {
                throw(AipsError("Failed format test 2"));
             }
@@ -312,8 +310,7 @@ int main()
             String unit("km/s");
             Double val = lc.restFrequency();
             lc.setPreferredVelocityType (MDoppler::Z);
-            String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                                   True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("0.0000")) {
                throw(AipsError("Failed format test 3"));
             }
@@ -324,8 +321,7 @@ int main()
 //
             String unit;
             Double val = lc.restFrequency();
-            String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                                   True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("0.0000")) {
                throw(AipsError("Failed format test 4"));
             }
@@ -336,8 +332,7 @@ int main()
             lc.setRestFrequency(val);
             lc.setPreferredSpectralUnit (lc.worldAxisUnits()(0));
             lc.setPreferredVelocityType (MDoppler::Z);
-            String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                                   True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
             if (str != String("1400000000.0000")) {
                throw(AipsError("Failed format test 5"));
             }

@@ -1,5 +1,5 @@
 //# tTabularCoordinate.cc: Test program for TabularCoordinate
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -284,16 +284,16 @@ void doit (TabularCoordinate& lc,
    Double val = 20.12345;
    Quantum<Double> valq(val, Unit(units(0)));
    String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                          True, 4, True);
+                          True, True, 4);
    String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0,
-                                   True, 4, True);
+                                   True, True, 4);
    if (str != "20.1234" || str2 != "20.1234") {
       throw(AipsError("Failed format test 1"));
    }
-   str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0,
-                   True, 4, True);
-   str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0,
-                            True, 4, True);
+   str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True,
+                   True, 4);
+   str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True,
+                            True, 4);
    if (str != "2.0123e+01" || str2 != "2.0123e+01") {
       throw(AipsError("Failed format test 2"));
    }

@@ -351,7 +351,7 @@ void doit3 (StokesCoordinate& lc,
          throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
       }
 //
-      String str = lc.format(unit, Coordinate::FIXED, world(0), 0,
+      String str = lc.format(unit, Coordinate::FIXED, world(0), 0, True,
                              True, 4);
       if (str != stokesStrings(i)) {
          throw(AipsError(String("formatting failed")));
