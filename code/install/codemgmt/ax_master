@@ -1814,3 +1814,4 @@
 11 086 src rm doc/html/navpages/ref/refnavbar.html
 11 086 src rm doc/html/navpages/programmer/programmersnavbar.html
 11 088 src rm trial/apps/dog
+11 088 sys rm libexec/dog.g
