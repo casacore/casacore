@@ -118,6 +118,7 @@ class LogOrigin;
 //    os << LogIO::POST;     // From the Commands enum
 //    os.post();             // Member function
 // </srcblock>
+// Note that after a post the priority is reset to NORMAL.
 //
 // If you want to change the level of the message you can also do so with the
 // shift operator:
@@ -125,9 +126,10 @@ class LogOrigin;
 //   os << LogIO::DEBUGGING << "Boring message" << 
 //         LogIO::SEVERE << "Error!" << LogIO::POST;
 // </srcblock>
-// Note that changing the priority of the message will first post the current
-// message at its current priority, i.e. in the above example when the priority
-// is changed to SEVERE the DEBUGGING message is first emitted.
+// Note that changing the priority changes the priority of the entire
+// message. The message does not get posted until the POST is done.
+// So in the above example the DEBUGGING priority does not do anything
+// because the priority is overwritten by the SEVERE one.
 //
 // You can also change the origin information with the << operator:
 // <srcblock>
@@ -198,13 +200,15 @@ public:
     ~LogIO();
     
     // Post the accumulated message.
+    // After the post the priority is reset to NORMAL.
     void post();
     // Post the accumulated message at SEVERE priority and then throw an
     // exception.
+    // After the post the priority is reset to NORMAL.
     void postThenThrow();
 
-    // Change the priority of the message. Does NOT post the accumulated message
-    // at the old priority first, unlike <src>os << LogIO::SEVERE;</src> etc.
+    // Change the priority of the message. It does NOT post the accumulated
+    // message at the old priority first.
     void priority(LogMessage::Priority which);
     // Change the location in the origin. Almost always this is called with the
     // macro WHERE as its argument.
