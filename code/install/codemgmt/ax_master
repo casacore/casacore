@@ -2448,3 +2448,4 @@
 11 276 src rm trial/implement/Lattices/test/tf.cc
 11 278 src mv trial/apps/plotter/plotter.g nfra/apps/gplot1d/plotter.g
 11 285 src rm doc/html/navpages/images3/latestnewsoff1.gif
+11 285 src rm doc/faq/latestnews.html
