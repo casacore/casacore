@@ -1,4 +1,4 @@
-//# LatticeUtilities.cc: defines the Lattice Utilities global functions//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2003
+//# LatticeUtilities.cc: defines the Lattice Utilities global functions//# Copyright (C) 1995,1996,1997,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,7 +102,8 @@ template <class T>
 void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
                                 const IPosition& axes, 
                                 const MaskedLattice<T>& in,
-                                Bool dropDegenerateAxes) 
+                                Bool dropDegenerateAxes,
+                                Bool getPixels, Bool getMask)
 { 
    
 // These lattice are all references so should be reasonably
@@ -113,26 +114,35 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
                       
    LatticeStatistics<T> stats(in, False, False);
    stats.setAxes(axes.asVector());
-   stats.getMean(data, dropDegenerateAxes);
+//
+   if (getPixels) {
+      stats.getMean(data, dropDegenerateAxes);
+   } else {
+      data.resize(IPosition(0,0));
+   }
 
 // CLumsy way to get mask.  I should add it to LS
 
-   Array<T> n;
-   stats.getNPts(n, dropDegenerateAxes);
-   mask.resize(n.shape());
+   if (getMask) {
+      Array<T> n;
+      stats.getNPts(n, dropDegenerateAxes);
+      mask.resize(n.shape());
 //
-   Bool deleteN, deleteM;
-   const T* pN = n.getStorage(deleteN);
-   Bool* pM = mask.getStorage(deleteM);
+      Bool deleteN, deleteM;
+      const T* pN = n.getStorage(deleteN);
+      Bool* pM = mask.getStorage(deleteM);
 //
-   T lim(0.5);
-   for (Int i=0; i<n.shape().product(); i++) {
-      pM[i] = True;
-      if (pN[i] < lim) pM[i] = False;   
+      T lim(0.5);
+      for (Int i=0; i<n.shape().product(); i++) {
+         pM[i] = True;
+         if (pN[i] < lim) pM[i] = False;   
+      }
+//
+      n.freeStorage(pN, deleteN);
+      mask.putStorage(pM, deleteM);
+   } else {
+      mask.resize(IPosition(0,0));
    }
-//
-   n.freeStorage(pN, deleteN);
-   mask.putStorage(pM, deleteM);
  }
 
 
