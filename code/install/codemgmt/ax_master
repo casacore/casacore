@@ -1771,3 +1771,5 @@
 11 085 src rm nrao/apps/sddfiller/makefile
 11 085 src rm nrao/apps/sddfiller/sddfiller.cc
 11 085 src rm nrao/apps/sddfiller/sddfiller.notes
+11 085 sys rm bin/sddfiller
+11 085 sys rm libexec/gsdd-helper.g
