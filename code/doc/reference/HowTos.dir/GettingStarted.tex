@@ -183,6 +183,36 @@ master version back, and then updates the plain-text file in the \textsc{aips++}
 sources is updated immediately, and you don't have to wait for the automatic
 update delivered by the code distribution system.
 
+\paragraph{When to check in new code}
+\index{checking in new code}
+\index{ai}
+
+Since AIPS++ is a production system, we are very concerned about the
+stability of the system. As a result, one should be very careful about
+checking in new features. The overall rules are:
+
+\begin{itemize}
+\item Maintaining the stability of daily is a high priority for
+everyone in the project. Breaking daily affects the work of a large
+number of people.
+\item Maintaining the stability of weekly is essential. Breaking
+weekly is disastrous for the work of a large number of people. Our
+goal should be that every weekly can be marked as stable.
+\item Checkins of changes to existing code should be made with
+the above two goals in mind.
+\item Changes to code that is used by others must be well-tested
+on the project compiler (egcs 1.1.2) before checkin. Checkin of
+purely developmental code is less crucial but still good habits 
+should be followed. 
+\item All checkins except simple ones, and bug fixes should be
+done early in the week. Early means with two more of your inhales 
+to get it right before the final weekly.
+\item If you have a *really* substantial change, alert others
+in the project via your weekly report beforehand.
+\item All development sites should be running a daily using the
+project compiler.
+\end{itemize}
+
 \paragraph{Other code management utilities}
 \index{code management utilities}
 \index{au}
