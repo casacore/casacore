@@ -410,7 +410,19 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     scaleXfr[scale] = new TempLattice<Complex> (itsScales[scale]->shape(),
 						itsMemoryMB);
     // Now store the XFR
-    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
+    // Following doesn't work under egcs
+    //    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
+    // Do by hand (Tedious!)
+    const IPosition tileShape = itsScales[scale]->niceCursorShape();
+    TiledLineStepper ls(itsScales[scale]->shape(), tileShape, 0);
+    {
+      RO_LatticeIterator<T> scaleli(*itsScales[scale], ls);
+      LatticeIterator<Complex> xfrli(*scaleXfr[scale], ls);
+      for(scaleli.reset(),xfrli.reset();!scaleli.atEnd();scaleli++,xfrli++) {
+	convertArray(xfrli.woCursor(), scaleli.cursor());
+      }
+    }
+    // Now FFT
     LatticeFFT::cfft(*scaleXfr[scale], True);
   }
     
@@ -442,12 +454,11 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 		   AipsError);
       
       // PSF * PSF * scale * otherscale
-      itsPsfConvScales[index(scale,otherscale)] =
-	new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
-      LatticeExpr<Complex>
-	ppsoExpr((*itsXfr)*(*scaleXfr[index(scale,otherscale)])*conj(*scaleXfr[scale]));
+      LatticeExpr<Complex> ppsoExpr((*itsXfr)*(*scaleXfr[otherscale])*conj(*scaleXfr[scale]));
       cWork.copyData(ppsoExpr);
       LatticeFFT::cfft(cWork);
+      itsPsfConvScales[index(scale,otherscale)] = new TempLattice<T>(itsDirty->shape(), itsMemoryMB);
+      AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
       itsPsfConvScales[index(scale,otherscale)]->copyData(realWork);
     }
   }
