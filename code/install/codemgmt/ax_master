@@ -6300,3 +6300,4 @@
 17 369 src mv trial/apps/simulator/newsimulator.cc trial/apps/newsimulator/newsimulator.cc
 17 369 src mv trial/apps/simulator/newsimulatorFactory.h trial/apps/newsimulator/newsimulatorFactory.h
 17 369 src mv trial/apps/simulator/newsimulatorFactory.cc trial/apps/newsimulator/newsimulatorFactory.cc
+17 385 src mv ./trial/implement/Measures/ParAngleMachine.cc ./aips/implement/Measures/ParAngleMachine.cc
