@@ -303,12 +303,10 @@ void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
     u = u * cpa - v * spa;
     v = uvw(0) * spa + v * cpa;
   }
-  if (!near(itsMajValue, itsMinValue, C::dbl_epsilon)) {
-    u *= itsMinValue/itsMajValue;
-  }
-  const Double wavenumber = frequency/C::c;
-  const Double r = hypot(u * wavenumber, v * wavenumber);
-  const Double scale = j1(itsMajValue*C::pi*r)*itsMajValue/(2*r);
+  u *= itsMinValue;
+  v *= itsMajValue;
+  const Double r = hypot(u, v) * C::pi * frequency/C::c;
+  const Double scale = 2.0 * j1(r)/r;
   flux.scaleValue(scale, scale, scale, scale);
 }
 
