@@ -188,6 +188,104 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
 }
 
 
+Bool GaussianConvert::toWorld(Vector<Quantum<Double> >& world,
+                              const Vector<Double>& pixel)
+{
+   if (!itsValid) {
+      itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
+      return False;
+   }
+//
+   if (pixel.nelements() != 2) {
+      itsErrorMessage = "the pixel vector must have 2 elements";
+      return False;
+   }
+//
+   Vector<Double> pixel2(itsCSys.referencePixel().copy());
+   Int pixelAxis0 = itsCSys.worldAxisToPixelAxis(itsWorldAxes(0));
+   if (pixelAxis0==-1) {
+      itsErrorMessage = "the first world axis has no corresponding pixel axis";
+      return False;
+   }
+   Int pixelAxis1 = itsCSys.worldAxisToPixelAxis(itsWorldAxes(1));
+   if (pixelAxis1==-1) {
+      itsErrorMessage = "the second world axis has no corresponding pixel axis";
+      return False;
+   }
+   pixel2(pixelAxis0) = pixel(0);
+   pixel2(pixelAxis1) = pixel(1);
+//
+   Vector<Double> world2;
+   if (!itsCSys.toWorld(world2, pixel2)) {
+      itsErrorMessage = "failed to convert to world because" + itsCSys.errorMessage();
+      return False;
+   }
+//
+// Assign
+//
+   Vector<Quantum<Double> > world3(2);
+   {
+      Quantum<Double> tmp(world2(itsWorldAxes(0)), 
+                          itsCSys.worldAxisUnits()(itsWorldAxes(0)));
+      String unit;
+      if (world.nelements() >= 1) unit = world(0).getUnit();
+      if (!unit.empty()) tmp.convert(Unit(unit));
+      world3(0) = tmp;
+   }
+   {
+      Quantum<Double> tmp(world2(itsWorldAxes(1)), 
+                          itsCSys.worldAxisUnits()(itsWorldAxes(1)));
+      String unit;
+      if (world.nelements() >= 2) unit = world(1).getUnit();
+      if (!unit.empty()) tmp.convert(Unit(unit));
+      world3(1) = tmp;
+   }
+   world.resize(2);
+   world(0) = world3(0);
+   world(1) = world3(1);
+//
+   return True;
+}
+
+
+Bool GaussianConvert::toPixel(Vector<Double>& pixel,
+                              const Vector<Quantum<Double> >& world)
+{
+   if (!itsValid) {
+      itsErrorMessage = "the converter state is invalid; use setCoordinateSystem and/or setWorldAxes";
+      return False;
+   }
+//
+   if (world.nelements() != 2) {
+      itsErrorMessage = "the world vector must have 2 elements";
+      return False;
+   }
+//
+   Vector<Double> world2(itsCSys.referenceValue().copy());
+   Vector<String> units(itsCSys.worldAxisUnits());
+//
+   {
+      Quantum<Double> tmp = world(0);
+      tmp.convert(Unit(units(itsWorldAxes(0))));
+      world2(itsWorldAxes(0)) = tmp.getValue();
+   }
+   {
+      Quantum<Double> tmp = world(1);
+      tmp.convert(Unit(units(itsWorldAxes(1))));
+      world2(itsWorldAxes(1)) = tmp.getValue();
+   }
+//
+   if (!itsCSys.toPixel(pixel, world2)) {
+      itsErrorMessage = "failed to convert to pixel because" + itsCSys.errorMessage();
+      return False;
+   }
+//
+   return True;
+}
+
+
+// Private functions
+
 void GaussianConvert::convertAxes (Double& minorAxisOut, 
                                    Double& majorAxisOut,
                                    Quantum<Double>& positionAngleOut, 

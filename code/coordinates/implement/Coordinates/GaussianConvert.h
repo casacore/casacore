@@ -49,6 +49,7 @@ template<class T> class Quantum;
 // </prerequisite>
 
 // <synopsis> 
+// Converts Gaussian parameetrs between world and pixel
 // </synopsis> 
 
 // <example>
@@ -57,6 +58,7 @@ template<class T> class Quantum;
 // </example>
 
 // <todo asof="1998/12/11">
+// Position angle signs require more thinking in aips++
 // </todo>
 
 class GaussianConvert
@@ -106,7 +108,15 @@ public:
     Bool toPixel(Double& majorAxisOut, Double& minorAxisOut,
                  Quantum<Double>& positionAngleOut, const Quantum<Double>& majorAxisIn,
                  const Quantum<Double>& minorAxisIn, const Quantum<Double>& positionAngleIn);
-    
+
+    // Convert location
+    // <group>
+    Bool toPixel(Vector<Double>& pixel,
+                 const Vector<Quantum<Double> >& world);
+    Bool toWorld(Vector<Quantum<Double> >& world,
+                 const Vector<Double>& pixel);
+    // </group>
+
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
 
