@@ -1,10 +1,10 @@
 # $Id$
 
 # Declare LaTeX documents to be converted to HTML by setting latex2html flags.
-System   := -split 2
-HowTos   := -split 2
-Coding   := -split 3
-Glish    := -split 2
+System   := -split +2
+HowTos   := -split +2
+Coding   := -split +3
+Glish    := -split +2
 online   := -split 0 -no_navigation -info 0
 
 TIROOT := $(word 1, $(AIPSPATH))/code/doc
