@@ -39,10 +39,9 @@ WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FNUMBER   {INT}"."{DIGIT}*
+FNUMBER   {INT}|{INT}"."{DIGIT}*
 TRUE      T
 FALSE     F
-
 
 
 QSTRING   \"[^\"\n]*\"
@@ -52,11 +51,14 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-DISTANCEUNIT [Kk][Mm]
+KM           [Kk][Mm]
+M            [Mm]
 ML           [Mm][Ll]
 KL           [Kk][Ll]
 L            [Ll]
-WAVELENTHUNIT {ML}|{KL}|{L}
+WAVELENGTHUNIT   {ML}|{KL}|{L}
+DISTANCEUNIT     {KM}|{M}
+UNIT      {DISTANCEUNIT}|{WAVELENGTHUNIT}
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -127,16 +129,13 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
  /* Literals */
-{INT}     { msUvDistGramPosition() += yyleng;
-            lvalp->ival = atoi(MSUvDistGramtext);
-            return NUMBER;
-          }
-{DISTANCEUNIT}  { msUvDistGramPosition() += yyleng;
-                  return DISTANCEUNIT;
+{FNUMBER}       { msUvDistGramPosition() += yyleng;
+                  lvalp->dval = atof(MSUvDistGramtext);
+                  return FNUMBER;
                 }
-{WAVELENTHUNIT} { msUvDistGramPosition() += yyleng;
-                  return WAVELENTHUNIT;
+{UNIT}          { msUvDistGramPosition() += yyleng;
+                  lvalp->str = MSUvDistGramtext;
+                  return UNIT;
                 }
-
 %%
 
