@@ -1067,6 +1067,12 @@
 
 # List of hosts which will rebuild each architecture.
   INHOSTS=`getrc -i inhale.sneeze.hosts 2> /dev/null`
+  DELTASLEEP=`getrc -i inhale.sneeze.sleep 2> /dev/null`
+  if [ "$DELTASLEEP" == "" ]
+  then
+     DELTASLEEP=600
+  fi
+  SLEEPINV=$DELTASLEEP
 
 # Spread our germs to all specified hosts.
   GOTSYNC=
@@ -1104,8 +1110,9 @@
         EXTLIST="-e $EXTLIST"
         AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
      fi
-     SNEEZE="sneeze $EXTLIST -l -m $MODE $TARGETS"
+     SNEEZE="sneeze $EXTLIST -l -m $MODE -s $SLEEPINV $TARGETS"
      $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
+     SLEEPINV=`expr $SLEEPINV + $DELTASLEEP`
   done
 
 # Start the rebuild on this host.
