@@ -1,5 +1,5 @@
 //# tTableRow.cc: Test program for class (RO)TableRow
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,9 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ScaColDesc.h>
+#include <aips/Tables/ScaRecordColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -73,6 +75,7 @@ void a (Bool)
     td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
     td.addColumn (ArrayColumnDesc<String>("arr2",0));
     td.addColumn (ArrayColumnDesc<float>("arr3",0));
+    td.addColumn (ScalarRecordColumnDesc("rec"));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tTableRow_tmp.data", td, Table::New);
@@ -83,16 +86,18 @@ void a (Bool)
     Vector<String> arrs(stringToVector ("a,bc,def,ghij,klmno,qprstu,vxxyzab,"
 					"cdefghij,klmnopqrs,tuvwxyzabc"));
     indgen (arrf.ac());
-    TableRow row (tab, stringToVector("ab,ad,ag,arr1,arr2"));
+    TableRow row (tab, stringToVector("ab,ad,ag,arr1,arr2,rec"));
     AlwaysAssertExit (row.rowNumber() == -1);
     TableRecord rec (row.record().description(), RecordInterface::Variable);
-    AlwaysAssertExit (row.record().nfields() == 5);
+    AlwaysAssertExit (row.record().nfields() == 6);
     RecordFieldPtr<Int>            ab(rec, 0);
     RecordFieldPtr<uInt>           ad(rec, 1);
     RecordFieldPtr<DComplex>       ag(rec, 2);
     RecordFieldPtr<Array<float> >  arr1(rec, 3);
     RecordFieldPtr<Array<String> > arr2(rec, 4);
+    RecordFieldPtr<TableRecord>    recfld(rec, 5);
     ArrayColumn<float> arr3(tab, "arr3");
+    TableRecord r1;
     Int i;
     for (i=0; i<10; i++) {
 	ab.define (i);
@@ -100,6 +105,8 @@ void a (Bool)
 	ag.define (DComplex(i+3,-i-1));
 	arr1.define (arrf);
 	arr2.define (arrs(Slice(0,i)));
+	r1.define (i, i);
+	recfld.define (r1);
 	row.put (i, rec);
 	if (i%2 == 0) {
 	    arr3.put (i, arrf);
@@ -114,12 +121,14 @@ void a (Bool)
     ROScalarColumn<Int> colab (tab, "ab");
     ROScalarColumn<uInt> colad (tab, "ad");
     ROScalarColumn<DComplex> colag (tab, "ag");
+    ROScalarColumn<TableRecord> colrec (tab, "rec");
     ROArrayColumn<float> colarr1 (tab, "arr1");
     ROArrayColumn<String> colarr2 (tab, "arr2");
     ROArrayColumn<float> colarr3 (tab, "arr3");
     Int abval;
     uInt adval;
     DComplex agval;
+    TableRecord recval;
     Cube<float> arrval(IPosition(3,2,3,4));
     Cube<float> arr3val;
     Array<String> arrstr;
@@ -128,9 +137,20 @@ void a (Bool)
 	colab.get (i, abval);
 	colad.get (i, adval);
 	colag.get (i, agval);
-	if (abval != i  ||  adval != i+2  ||  agval != DComplex(i+3,-i-1)) {
+	if (abval != i  ||  Int(adval) != i+2  || agval != DComplex(i+3,-i-1)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << adval << ", " << agval << endl;
+	}
+	colrec.get (i, recval);
+	if (Int(recval.nfields()) != i+1) {
+	    cout << "error in row " << i << ": " << recval.nfields()
+		 << " fields; expected " << i+1 << endl;
+	} else {
+	    for (Int j=0; j<=i; j++) {
+		if (recval.asInt(j) != j) {
+		    cout << "error in row " << i << ": invalid record" << endl;
+		}
+	    }
 	}
 	colarr1.get (i, arrval);
 	if (!allEQ (arrval.ac(), arrf.ac())) {
@@ -202,7 +222,7 @@ void b (Bool doExcp)
 	rowx.get (i);
 	AlwaysAssertExit (rowx.rowNumber() == i);
 	rowy.get (i);
-	if (*ab != i  ||  *ad != i+2  ||  *ag != DComplex(i+3,-i-1)) {
+	if (*ab != i  ||  Int(*ad) != i+2  ||  *ag != DComplex(i+3,-i-1)) {
 	    cout << "error in row " << i << ": " << *ab
 		 << ", " << *ad << ", " << *ag << endl;
 	}
@@ -244,7 +264,7 @@ void b (Bool doExcp)
 }
 
 // This function times how fast it can read data back.
-void c (uInt nrow)
+void c (Int nrow)
 {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
