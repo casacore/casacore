@@ -1312,25 +1312,13 @@ EOT
    >>$AIPSARCH/$SITE/aipsrc
   echo "# Configure added the following estimates of required parameters:" \
    >>$AIPSARCH/$SITE/aipsrc
-  echo "# tzoffset (timezone), system memory and number of processors." \
+  echo "# system memory, number of processors." \
    >>$AIPSARCH/$SITE/aipsrc
   echo "# You must change any that have the word 'define_me' in uppercase" \
    >>$AIPSARCH/$SITE/aipsrc
   echo "" >>$AIPSARCH/$SITE/aipsrc
 
   
-  # This can fail around the turn of the hour or around the turn of the
-  # year if you are unlucky.
-  daydiff="`date -u +%j` - `date +%j`"
-  daydiff=`expr $daydiff`
-  daydiff=`expr $daydiff '*' 24`
-  tz="`date +%H` - `date -u +%H` - $daydiff"
-  tz=`expr $tz`
-
-
-  echo "system.time.tzoffset: $tz" >>$AIPSARCH/$SITE/aipsrc
-  echo "Added my best guess at timezone offset ($tz) to $AIPSARCH/$SITE/aipsrc"
-
   mem="DEFINE_ME"
   psr="DEFINE_ME"
   case $ARCH in
