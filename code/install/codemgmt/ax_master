@@ -1402,3 +1402,4 @@
 11 075 src mv doc/html/gettingstarted doc/user/gettingstarted
 11 075 src rm doc/html/navpages/images/communicate10.gif
 11 075 src rm doc/html/navpages/images/aipslabels5_7.gif
+11 075 src rm doc/html/navpages/images/aipsnewest.gif
