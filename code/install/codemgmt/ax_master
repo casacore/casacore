@@ -6205,3 +6205,4 @@
 17 191 src mv ./aips/implement/Functionals/NQGaussian1D2.cc ./aips/implement/Functionals/Gaussian1D2.cc
 17 191 src mv ./aips/implement/Functionals/NQGaussian1DParam.cc ./aips/implement/Functionals/Gaussian1DParam.cc
 17 191 src mv ./aips/implement/Functionals/NQGaussian1DParam.h ./aips/implement/Functionals/Gaussian1DParam.h
+17 191 src mv ./aips/implement/Functionals/NQGaussian2D.cc ./aips/implement/Functionals/Gaussian2D.cc
