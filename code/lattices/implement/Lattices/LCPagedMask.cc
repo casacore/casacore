@@ -120,24 +120,24 @@ LCRegion* LCPagedMask::cloneRegion() const
 void LCPagedMask::handleDelete()
 {
     // Test if the table can be deleted (i.e. is not used elsewhere).
-    Table dummy(itsMask.tableName());
-    if (dummy.isMultiUsed (True)) {
+    Table& tab(itsMask.table());
+    if (tab.isMultiUsed (True)) {
       throw (AipsError("Cannot delete the mask (used in another process)"));
     }
     // Mark the table for delete, so the destructor will delete it.
-    dummy.markForDelete();
+    tab.markForDelete();
 }
 
 void LCPagedMask::handleRename (const String& newName, Bool overwrite)
 {
     // Rename the underlying table.
     // Make sure the directory does not change.
-    Table dummy(itsMask.tableName(), Table::Update);
-    String newnm = Path(itsMask.tableName()).dirName() + '/' + newName;
+    Table tab(itsMask.tableName(), Table::Update);
+    String newnm = Path(tab.tableName()).dirName() + '/' + newName;
     if (overwrite) {
-      dummy.rename (newnm, Table::New);
+      tab.rename (newnm, Table::New);
     } else {
-      dummy.rename (newnm, Table::NewNoReplace);
+      tab.rename (newnm, Table::NewNoReplace);
     }
 }
 
@@ -199,7 +199,7 @@ TableRecord LCPagedMask::toRecord (const String& tableName) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
-    rec.defineTable ("mask", Table(itsMask.tableName()));
+    rec.defineTable ("mask", itsMask.table());
     rec.defineRecord ("box", itsBox.toRecord (tableName));
     return rec;
 }
