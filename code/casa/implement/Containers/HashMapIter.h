@@ -45,7 +45,7 @@
 //
 // <example>
 //    <srcblock>
-//    #include <aips/Containers/HashMap.h>
+//    #include <casa/Containers/HashMap.h>
 //    #include <casa/BasicSL/String.h>
 //    #include <casa/iostream.h>
 //   

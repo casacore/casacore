@@ -179,7 +179,7 @@ template <class T> class Vector;
 // <example>
 // <srcblock>
 // #include <measures/Measures.h>
-// #include <aips/Measure/MEpoch.h>
+// #include <casa/Measure/MEpoch.h>
 // // Example is only to show what can be done, not the easiest way
 // // Set up a simple reference (no offset or secondary Measures). It
 // // indicates that times are given in MJD TAI.

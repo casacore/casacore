@@ -35,14 +35,14 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-// #include <aips/Arrays/ArrayLattice.h>
-// #include <aips/Arrays/PagedArray.h>
-// #include <aips/Arrays/TempLattice.h>
-// #include <aips/Arrays/TiledShape.h>
-// #include <aips/Arrays/LatticeIterator.h>
-// #include <aips/Arrays/LatticeStepper.h>
-// #include <aips/Arrays/TileStepper.h>
-// #include <aips/Arrays/TiledLineStepper.h>
+// #include <casa/Arrays/ArrayLattice.h>
+// #include <casa/Arrays/PagedArray.h>
+// #include <casa/Arrays/TempLattice.h>
+// #include <casa/Arrays/TiledShape.h>
+// #include <casa/Arrays/LatticeIterator.h>
+// #include <casa/Arrays/LatticeStepper.h>
+// #include <casa/Arrays/TileStepper.h>
+// #include <casa/Arrays/TiledLineStepper.h>
 
 // #include <lattices/Lattices/SubLattice.h>
 // #include <lattices/Lattices/LatticeExpr.h>
