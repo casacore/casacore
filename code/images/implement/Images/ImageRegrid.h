@@ -152,6 +152,16 @@ public:
   // Enable/disable Measures Reference conversions
   void disableReferenceConversions(Bool disable=True) {itsDisableConversions = disable;};
 
+  // Helper function.  We are regridding from cSysIn to cSysOut for the
+  // specified axes.  This function returns a CoordinateSystem which,
+  // for the axes being regridded, copies the coordinates from cSysOut.
+  // For the axes not being regridded, it copies the coordinates from
+  // cSysIn.  This helps you build cSysOut for function regrid.
+  static CoordinateSystem makeCoordinateSystem(LogIO& os,
+                                               const CoordinateSystem& cSysOut,
+                                               const CoordinateSystem& cSysIn,
+                                               const IPosition& axes);
+
  private:
 
   Int itsShowLevel;
