@@ -61,7 +61,7 @@ GaussianShape::GaussianShape(const MDirection& direction,
 		 minorAxis.getFullUnit(), positionAngle.getFullUnit()),
    itsShape(1.0, 0.0, 0.0, majorAxis.getValue("rad"),
 	    minorAxis.getValue("rad")/majorAxis.getValue("rad"),
-	    positionAngle.getValue("rad")),
+	    positionAngle.getValue("rad") + C::pi_2),
    itsFT(itsShape)
 {
   // Adjust the flux of the Gaussian now that the width is correctly set
@@ -77,7 +77,7 @@ GaussianShape::GaussianShape(const MDirection& direction,
   :TwoSidedShape(direction, width.getFullUnit(),
 		 width.getFullUnit(), positionAngle.getFullUnit()),
    itsShape(1.0, 0.0, 0.0, width.getValue("rad"), axialRatio,
-	    positionAngle.getValue("rad")),
+	    positionAngle.getValue("rad") + C::pi_2),
    itsFT(itsShape)
 {
   // Adjust the flux of the Gaussian now that the width is correctly set
@@ -120,7 +120,7 @@ void GaussianShape::setWidthInRad(const Double majorAxis,
   angle(0) = majorAxis;
   angle(1) = minorAxis;
   itsShape.setWidth(angle);
-  itsShape.setPA(positionAngle);
+  itsShape.setPA(positionAngle + C::pi_2);
   // Adjusting the width normally keeps the height constant and modifies the
   // flux. Modify this behaviour by restoring the flux
   itsShape.setFlux(1.0);
@@ -145,7 +145,7 @@ Double GaussianShape::axialRatio() const {
 
 Double GaussianShape::positionAngleInRad() const {
   DebugAssert(ok(), AipsError);
-  return itsShape.PA();
+  return itsShape.PA() - C::pi_2;
 }
 
 Double GaussianShape::sample(const MDirection& direction, 
