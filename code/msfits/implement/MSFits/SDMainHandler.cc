@@ -69,7 +69,7 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
 	clearAll();
 	ms_p = new NewMeasurementSet(*(other.ms_p));
 	AlwaysAssert(ms_p, AipsError);
-	msCols_p = new NewMSMainColumns(*(other.msCols_p));
+	msCols_p = new NewMSMainColumns(*ms_p);
 	AlwaysAssert(msCols_p, AipsError);
 	dataAccessor_p = new TiledDataStManAccessor(*(other.dataAccessor_p));
 	AlwaysAssert(dataAccessor_p, AipsError);
