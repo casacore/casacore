@@ -2253,3 +2253,16 @@
 09 170 src rm trial/apps/loadMRefData/
 09 171 src rm trial/implement/Lattices/test/tPagedArrayOld.cc
 09 171 src rm trial/implement/Lattices/test/dPagedArrayOld.cc
+09 193 src rm trial/scripts/pgtkdemo1.g
+09 193 src rm trial/scripts/pgtkdemo2.g
+09 193 src rm trial/scripts/pgtkdemo3.g
+09 193 src rm trial/scripts/pgtkdemo4.g
+09 193 src rm trial/scripts/pgtkdemo5.g
+09 193 src rm trial/scripts/pgtkdemo6.g
+09 193 src rm trial/scripts/pgtkdemo7.g
+09 193 src rm trial/scripts/pgtkdemo8.g
+09 193 src rm trial/scripts/pgtkdemo9.g
+09 193 src rm trial/scripts/pgtkdemo10.g
+09 193 src rm trial/scripts/pgtkdemo11.g
+09 193 src rm trial/scripts/pgtkdemo12.g
+09 193 src rm trial/scripts/pgtkdemo13.g
