@@ -31,6 +31,7 @@
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of
 // them (e.g. <cstring>)
+#include <aips/aips.h>
 
 #include <map>
 
