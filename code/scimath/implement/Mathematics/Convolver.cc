@@ -34,7 +34,8 @@
 
 template<class FType> Convolver<FType>::
 Convolver(const Array<FType>& psf, Bool cachePsf){
-  if (cachePsf) thePsf = psf;
+  //  if (cachePsf) thePsf = psf;
+  thePsf = psf;
   valid = False;
 }
 
@@ -43,7 +44,8 @@ Convolver(const Array<FType>& psf,
 	  const IPosition& imageSize,
 	  Bool fullSize,
 	  Bool cachePsf){
-  if (cachePsf) thePsf = psf;
+  //  if (cachePsf) thePsf = psf;
+  thePsf = psf;
   valid = False;
 }
 
@@ -230,7 +232,7 @@ doConvolution(Array<FType>& result,
   
 template<class FType> void Convolver<FType>::
 setPsf(const Array<FType>& psf, Bool cachePsf){
-  if (cachePsf) thePsf = psf;
+  thePsf = psf;
   valid=False;
 }
   
@@ -239,7 +241,7 @@ setPsf(const Array<FType>& psf,
        IPosition imageSize, 
        Bool fullSize,
        Bool cachePsf){
-  if (cachePsf) thePsf = psf;
+  thePsf = psf;
   valid=False;
 }
 
@@ -278,6 +280,7 @@ circularConv(Array<FType>& result,
 
 template<class FType> const Array<FType> Convolver<FType>::
 getPsf(Bool cachePsf){
+  validate();
   Array<FType> psf;
   makePsf(psf);
   if ((cachePsf == True) && (thePsf.nelements() == 0))
