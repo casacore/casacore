@@ -77,6 +77,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
             Double value;
 	    sscanf (ImageExprGramtext, "%lf%*c", &value);
             lvalp->val = new ImageExprParse (DComplex (0, value));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {COMPLEX} {
@@ -84,16 +85,19 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
             Float value;
 	    sscanf (ImageExprGramtext, "%f%*c", &value);
             lvalp->val = new ImageExprParse (Complex (0, value));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {DOUBLE}  {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (atof(ImageExprGramtext));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {FLOAT}   {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (Float(atof(ImageExprGramtext)));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {INT}     {
@@ -105,16 +109,19 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
             } else {
                 lvalp->val = new ImageExprParse (ival);
             }
+	    ImageExprParse::addNode (lvalp->val);
             return LITERAL;
 	  }
 {TRUE}    {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (True);
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 {FALSE}   {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (False);
+	    ImageExprParse::addNode (lvalp->val);
 	    return LITERAL;
 	  }
 
@@ -122,6 +129,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 {NAME}    {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (ImageExprGramtext);
+	    ImageExprParse::addNode (lvalp->val);
 	    return NAME;
 	  }
 
@@ -129,6 +137,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 {TMPNAME} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+1));
+	    ImageExprParse::addNode (lvalp->val);
 	    return NAME;
 	  }
 
@@ -136,6 +145,7 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
 {TMPREGION} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse (atoi(ImageExprGramtext+8));
+	    ImageExprParse::addNode (lvalp->val);
 	    return TMPREG;
 	  }
 
@@ -160,18 +170,21 @@ COLONNAME ({NAME}|{ESCNAME})?":"":"?({NAME}|{ESCNAME})
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse
                              (imageExprGramRemoveEscapes (ImageExprGramtext));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LATNAME;
 	  }
 {COLONNAME} {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse
                              (imageExprGramRemoveEscapes (ImageExprGramtext));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LATNAME;
 	  }
 {STRING}  {
             imageExprGramPosition() += yyleng;
             lvalp->val = new ImageExprParse
                              (imageExprGramRemoveQuotes (ImageExprGramtext));
+	    ImageExprParse::addNode (lvalp->val);
 	    return LATNAME;
 	  }
 
