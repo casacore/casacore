@@ -490,6 +490,90 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
 }
 
 
+ 
+
+template<class T>
+CoordinateSystem ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
+                                                      const CoordinateSystem& cSysOut,
+                                                      const CoordinateSystem& cSysIn,
+                                                      const IPosition& axes) 
+//
+// We are regridding from cSysIn to cSysOut for the given axes.
+// This function adds coordinates from cSysIn to cSysOut if there
+// are any missing for the axes that are not being regridded.
+// It also discards the coordinates in cSysOut pertaining to 
+// the axes not being regridded and replaces them.
+// 
+{
+   if (cSysOut.nCoordinates()==cSysIn.nCoordinates()) return cSysOut;
+
+// Loop over pixel axes from input CS. We will create a new
+// CS called cSys2
+         
+   CoordinateSystem cSys2;
+   Int iCoordIn, axisInCoordinate;
+   Vector<Bool> done(cSysIn.nCoordinates(),False);  
+   for (uInt i=0; i<cSysIn.nPixelAxes(); i++) {
+ 
+// Is this axis one to be regridded ?
+         
+      Bool regridIt = False;                 
+      for (uInt j=0; j<axes.nelements(); j++) {
+         if (Int(i)==axes(j)) {              
+            regridIt = True;  
+            break;
+         }
+      }
+
+// Find coordinate for this pixel axis in input CS
+   
+      cSysIn.findPixelAxis(iCoordIn, axisInCoordinate, i);
+      if (!done(iCoordIn)) {
+         const Coordinate& coord = cSysIn.coordinate(iCoordIn);
+         Coordinate::Type type = coord.type();
+      
+// Find this coordinate type in output CS
+
+         Int afterCoord = -1;
+         Int iCoordOut = cSysOut.findCoordinate(type, afterCoord);
+//
+         if (regridIt) {
+
+// This is a regridding axis
+
+            if (iCoordOut==-1) {
+
+// The required coordinate does not exist in the  output CS.  Give up.
+
+               ostrstream oss;
+               oss << "A coordinate of type " << coord.showType()
+                   << " does not exist in the given CoordinateSystem" << ends;
+               os << String(oss) << LogIO::EXCEPTION;
+            }
+
+// Copy the coordinate from the output CS to cSys2
+
+            cSys2.addCoordinate(cSysOut.coordinate(iCoordOut));
+         } else {
+         
+// We don't want to regrid this axis.  Copy the coordinate from the input CS
+// to cSys2.  
+
+            cSys2.addCoordinate(coord);
+            ostrstream oss;  
+            oss << "Adding coordinate of type " << coord.showType()
+                   << " to the given CoordinateSystem" << ends;
+            os << LogIO::NORMAL << String(oss) << LogIO::POST;
+         }                                   
+//                                           
+         done(iCoordIn) = True;
+      }
+   }
+// 
+   return cSys2;
+}
+
+
 template<class T>
 void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const MaskedLattice<T>& inLattice,
@@ -1664,4 +1748,3 @@ Bool ImageRegrid<T>::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
 //
    return True;
 }
- 
