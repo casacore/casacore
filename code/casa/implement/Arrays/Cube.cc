@@ -1,5 +1,5 @@
 //# Cube.cc: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,6 +110,10 @@ template<class T> Cube<T>::~Cube()
 {}
 
 
+template<class T> void Cube<T>::resize()
+{
+    resize (IPosition(3,0));
+}
 template<class T> void Cube<T>::resize(const IPosition &len)
 {
     DebugAssert(ok(), ArrayError);
@@ -276,7 +280,7 @@ template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
 
 template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
 {
-    Cube<T> *This = (Cube<T> *)this;
+    Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
     // this should still be safe.
     return This->xyPlane(which);

@@ -522,7 +522,7 @@ template<class T> Array<T> Array<T>::reform(const IPosition &len) const
 template<class T>
 const Array<T> Array<T>::nonDegenerate (uInt startingAxis) const
 {
-    return ((Array<T>*) this)->nonDegenerate (startingAxis);
+    return (const_cast<Array<T>*>(this))->nonDegenerate (startingAxis);
 }
 
 template<class T>
@@ -548,7 +548,7 @@ void Array<T>::nonDegenerate (Array<T> &other, uInt startingAxis)
 template<class T>
 const Array<T> Array<T>::nonDegenerate (const IPosition &ignoreAxes) const
 {
-    return ((Array<T>*)this)->nonDegenerate(ignoreAxes);
+    return (const_cast<Array<T>*>(this))->nonDegenerate(ignoreAxes);
 }
 
 template<class T>
@@ -640,7 +640,7 @@ void Array<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 template<class T>
 const Array<T> Array<T>::addDegenerate(uInt numAxes) const
 {
-    Array<T> * This = (Array<T> *) this;
+    Array<T> * This = const_cast<Array<T>*>(this);
     const Array<T> tmp(This->addDegenerate(numAxes));
     return tmp;
 }
@@ -700,6 +700,10 @@ template<class T> Bool Array<T>::conform(const MaskedArray<T> &other) const
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
+template<class T> void Array<T>::resize()
+{
+    resize (IPosition());
+}
 template<class T> void Array<T>::resize(const IPosition &len)
 {
     DebugAssert(ok(), ArrayError);
@@ -1014,7 +1018,7 @@ template<class T> const T *Array<T>::getStorage(Bool &deleteIt) const
     DebugAssert(ok(), ArrayError);
 
     // The cast is OK because the return pointer will be cast to const
-    Array<T> *This = (Array<T> *)this;
+    Array<T> *This = const_cast<Array<T>*>(this);
     return This->getStorage(deleteIt);
 }
 
@@ -1055,7 +1059,7 @@ void Array<T>::freeStorage(const T*&storage, Bool deleteIt) const
     if (deleteIt) {
 	// The cast is required since you can't delete a const array; however
 	// if deleteIt is set the array came from new.
-	delete [] (T *)storage;
+	delete [] const_cast<T*>(storage);
     }
     storage = 0;
 }
@@ -1107,7 +1111,7 @@ template<class T>
 void Array<T>::takeStorage(const IPosition &shape, const T *storage)
 {
     // This cast is safe since a copy will be made
-    T *storagefake = (T *)storage;
+    T *storagefake = const_cast<T*>(storage);
     takeStorage(shape, storagefake, COPY);
 }
 

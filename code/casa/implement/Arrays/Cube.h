@@ -121,16 +121,18 @@ public:
     Cube(const IPosition &shape, const T *storage);
 
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
-    ~Cube();
+    virtual ~Cube();
 
     // Make this cube a reference to other. Other must be of dimensionality
     // 3 or less.
-    void reference(Array<T> &other);
+    virtual void reference(Array<T> &other);
 
-    // Resize to the given shape. The origin is (0,0,0).
+    // Resize to the given shape.
+    // Resize without argument is equal to resize(0,0,0).
     // <group>
     void resize(uInt nx, uInt ny, uInt nz);
-    void resize(const IPosition &);
+    virtual void resize();
+    virtual void resize(const IPosition &);
     // </group>
 
     // Copy the values from other to this cube. If this cube has zero
@@ -138,26 +140,29 @@ public:
     // other must conform to this.
     // <group>
     Cube<T> &operator=(const Cube<T> &other);
-    Array<T> &operator=(const Array<T> &other);
+    virtual Array<T> &operator=(const Array<T> &other);
     // </group>
 
     // Copy val into every element of this cube; i.e. behaves as if
     // val were a constant conformant cube.
-    Array<T> &operator=(const T &val) {return Array<T>::operator=(val);}
+    Array<T> &operator=(const T &val)
+      { return Array<T>::operator=(val); }
 
     // Copy to this those values in marray whose corresponding elements
     // in marray's mask are True.
     Cube<T> &operator= (const MaskedArray<T> &marray)
-        {Array<T> (*this) = marray; return *this;}
+      { Array<T> (*this) = marray; return *this; }
 
 
     // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
     // bounds checking is performed.
     // <group>
-    T &operator()(const IPosition &i) {return Array<T>::operator()(i);}
+    T &operator()(const IPosition &i)
+      { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
-                                      {return Array<T>::operator()(i);}
-    T &operator()(uInt i1, uInt i2, uInt i3) {
+      { return Array<T>::operator()(i); }
+    T &operator()(uInt i1, uInt i2, uInt i3)
+      {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -166,9 +171,10 @@ public:
         validateIndex(index);   // Throws an exception on failure
 #endif
         return *(begin_p + i1*xinc_p + i2*yinc_p + i3*zinc_p);
-    }
+      }
 
-    const T &operator()(uInt i1, uInt i2, uInt i3) const {
+    const T &operator()(uInt i1, uInt i2, uInt i3) const
+      {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	// It would be better performance wise for this to be static, but
 	// CFront 3.0.1 doesn't like that.
@@ -177,7 +183,7 @@ public:
         validateIndex(index);   // Throws an exception on failure
 #endif
         return *(begin_p + i1*xinc_p + i2*yinc_p + i3*zinc_p);
-    }
+      }
     // </group>
 
     // Take a slice of this cube. Slices are always indexed starting
@@ -191,14 +197,14 @@ public:
     Cube<T> operator()(const Slice &sliceX, const Slice &sliceY,
 		       const Slice &sliceZ);
 
-    // Slice using IPositions. Required to be defined because the base
+    // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
     // <group>
     Array<T> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
-        {return ((Array<T> *)this)->operator()(blc,trc,incr);}
+      { return Array<T>::operator()(blc,trc,incr); }
     Array<T> operator()(const IPosition &blc, const IPosition &trc)
-        {return ((Array<T> *)this)->operator()(blc,trc);}
+      { return Array<T>::operator()(blc,trc); }
     // </group>
 
 
@@ -208,11 +214,11 @@ public:
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask) const
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask)
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // </group>
 
@@ -225,11 +231,11 @@ public:
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask) const
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask)
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // </group>
 
@@ -245,28 +251,31 @@ public:
     // The length of each axis of the cube.
     // <group>
     void shape(Int &s1, Int &s2, Int &s3) const
-           {s1 = length_p(0); s2=length_p(1); s3=length_p(2);}
+      { s1 = length_p(0); s2=length_p(1); s3=length_p(2); }
     const IPosition &shape() const
-           {return length_p;}
+      { return length_p; }
     // </group>
 
     // The position of the last element of the cube.
-    // This is the same as origin(i) + shape(i) - 1; i.e. this is
+    // This is the same as shape(i) - 1; i.e. this is
     // a convenience funtion.
     // <group>
     void end(Int &e1, Int &e2, Int &e3) const 
-          {e1=length_p(0)-1; e2=length_p(1)-1; e3=length_p(2)-1;}
+      { e1=length_p(0)-1; e2=length_p(1)-1; e3=length_p(2)-1; }
     IPosition end() const;
     // </group>
 
     // The number of rows in the Cube, i.e. the length of the first axis.
-    uInt nrow() const {return length_p(0);}
+    uInt nrow() const
+      { return length_p(0); }
 
     // The number of columns in the Cube, i.e. the length of the 2nd axis.
-    uInt ncolumn() const {return length_p(1);}
+    uInt ncolumn() const
+      { return length_p(1); }
 
     // The number of planes in the Cube, i.e. the length of the 3rd axis.
-    uInt nplane() const {return length_p(2);}
+    uInt nplane() const
+      { return length_p(2); }
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
@@ -280,7 +289,7 @@ public:
     // </group>
 
     // Checks that the cube is consistent (invariants check out).
-    Bool ok() const;
+    virtual Bool ok() const;
 
     // Macro to define the typeinfo member functions
     rtti_dcl_mbrf_p1(Cube<T>, Array<T>);

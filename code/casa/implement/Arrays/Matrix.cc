@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,6 +107,10 @@ template<class T> Matrix<T>::~Matrix()
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
+template<class T> void Matrix<T>::resize()
+{
+    resize (IPosition(2,0));
+}
 template<class T> void Matrix<T>::resize(const IPosition &l)
 {
     DebugAssert(ok(), ArrayError);
@@ -324,7 +328,7 @@ template<class T> const Vector<T> Matrix<T>::row(uInt n) const
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T> *This = (Matrix<T> *)this;
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->row(n);
 }
 
@@ -338,7 +342,7 @@ template<class T> const Vector<T> Matrix<T>::column(uInt n) const
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T> *This = (Matrix<T> *)this;
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->column(n);
 }
 
@@ -353,7 +357,7 @@ template<class T> const Vector<T> Matrix<T>::diagonal(Int n) const
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T> *This = (Matrix<T> *)this;
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->diagonal(n);
 }
 

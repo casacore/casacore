@@ -87,8 +87,7 @@ enum StorageInitPolicy {
 // Array<Int> ai(axisLengths);         // ai is a 5 dimensional array of
 //                                     // integers; indices are 0-based
 //                                     // => ai.nelements() == 120
-// Array<Int> ai2(axisLengths);        // The first element is at index
-//                                     // "origin".
+// Array<Int> ai2(axisLengths);        // The first element is at index 0
 // IPosition zero(5); zero = 0;        // [0,0,0,0,0]
 // //...
 // </srcblock>
@@ -354,7 +353,9 @@ public:
 
     // Make this array a different shape. Presently the old values are not
     // copied over to the new array.
+    // Resize without argument is equal to resize(IPosition()).
     // <group>
+    virtual void resize();
     virtual void resize(const IPosition &newShape);
     // </group>
 

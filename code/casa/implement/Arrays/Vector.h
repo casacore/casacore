@@ -123,20 +123,22 @@ public:
 
 
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
-    ~Vector();
+    virtual ~Vector();
 
     // Create a reference to "other", which must be of dimension one.
     virtual void reference(Array<T> &other);
 
-    // Resize this Vector to the given length. Zero-origin.
+    // Resize this Vector to the given length.
     // The default copyValues flag is False.
-    //# Note that the 2nd resize function is necessary, because that
+    //# Note that the 3rd resize function is necessary, because that
     //# function is virtual in the base class (otherwise it would
     //# be hidden).
+    // Resize without argument is equal to resize(0, False).
     // <group>
     void resize(uInt len, Bool copyValues = False);
-    virtual void resize(const IPosition &len);
     void resize(const IPosition &len, Bool copyValues);
+    virtual void resize();
+    virtual void resize(const IPosition &len);
     // </group>
 
     // Assign to this Vector. If this Vector is zero-length, then resize
@@ -145,16 +147,17 @@ public:
     // <group>
     Vector<T> &operator=(const Vector<T> &other);
     // Other must be a 1-dimensional array.
-    Array<T> &operator=(const Array<T> &other);
+    virtual Array<T> &operator=(const Array<T> &other);
     // </group>
 
     // Set every element of this Vector to Val.
-    Array<T> &operator=(const T &val) {return Array<T>::operator=(val);}
+    Array<T> &operator=(const T &val)
+      { return Array<T>::operator=(val); }
 
     // Copy to this those values in marray whose corresponding elements
     // in marray's mask are True.
     Vector<T> &operator= (const MaskedArray<T> &marray)
-        {Array<T> (*this) = marray; return *this;}
+      { Array<T> (*this) = marray; return *this; }
 
     // Convert a Vector to a Block, resizing the block and copying values.
     // This is done this way to avoid having the simpler Block class 
@@ -164,10 +167,12 @@ public:
     // Single-pixel addressing. If AIPS_ARRAY_INDEX_CHECK is defined,
     // bounds checking is performed.
     // <group>
-    T &operator()(const IPosition &i) {return Array<T>::operator()(i);}
+    T &operator()(const IPosition &i)
+      { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
-                                      {return Array<T>::operator()(i);}
-    T &operator()(uInt index) {
+      { return Array<T>::operator()(i); }
+    T &operator()(uInt index)
+      {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	//# It would be better performance wise for this to be static, but
 	//# CFront 3.0.1 doesn't like that.
@@ -176,9 +181,10 @@ public:
 	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
         return *(begin_p + index*inc_p(0));
-    }
+      }
 
-    const T &operator()(uInt index) const {
+    const T &operator()(uInt index) const
+      {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
 	//# It would be better performance wise for this to be static, but
 	//# CFront 3.0.1 doesn't like that.
@@ -187,7 +193,7 @@ public:
 	validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
         return *(begin_p + index*inc_p(0));
-    }
+      }
     // </group>
 
     // Take a slice of this vector. Slices are always indexed starting
@@ -200,14 +206,14 @@ public:
     // </srcblock>
     Vector<T> operator()(const Slice &slice);
 
-    // Slice using IPositions. Required to be defined because the base
+    // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
     // <group>
     Array<T> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
-        {return ((Array<T> *)this)->operator()(blc,trc,incr);}
+      { return Array<T>::operator()(blc,trc,incr); }
     Array<T> operator()(const IPosition &blc, const IPosition &trc)
-        {return ((Array<T> *)this)->operator()(blc,trc);}
+      { return Array<T>::operator()(blc,trc); }
     // </group>
 
     // The array is masked by the input LogicalArray.
@@ -216,11 +222,11 @@ public:
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask) const
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const LogicalArray &mask)
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // </group>
 
@@ -233,11 +239,11 @@ public:
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask) const
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // Return a MaskedArray.
     MaskedArray<T> operator() (const MaskedLogicalArray &mask)
-        {return Array<T>::operator() (mask);}
+      { return Array<T>::operator() (mask); }
 
     // </group>
 
@@ -245,14 +251,15 @@ public:
     // The length of the Vector.
     // <group>
     void shape(Int &Shape) const
-            {Shape = length_p(0);}
+      { Shape = length_p(0); }
     const IPosition &shape() const
-	    {return length_p;}
+      { return length_p; }
     // </group>
 
     // The position of the last element.
     // <group>
-    void end(Int &End) const {End = length_p(0) - 1;}
+    void end(Int &End) const
+      { End = length_p(0) - 1; }
     IPosition end() const;
     // </group>
 

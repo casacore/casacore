@@ -1,5 +1,5 @@
 //# Vector.cc: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,6 +142,10 @@ template<class T> Vector<T>::~Vector()
 }
 
 
+template<class T> void Vector<T>::resize()
+{
+    resize (IPosition(1,0), False);
+}
 template<class T> void Vector<T>::resize(const IPosition &l)
 {
     resize (l, False);
