@@ -1,5 +1,5 @@
 //# ArrayColumn.cc: Access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -347,14 +347,14 @@ template<class T>
 void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape)
 {
     TABLECOLUMNCHECKROW(rownr); 
-    //# Only set shape if not defined yet.
+    //# Set shape if not defined yet or if changed (if possible).
     //# Throw exception if already defined with a different shape.
-    if (!isDefined(rownr)) {
+    if (canChangeShape_p  ||  !isDefined(rownr)) {
 	baseColPtr_p->setShape (rownr, shape);
     }else{
 	if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
 	    throw (TableInvOper
-		   ("ArrayColumn::setShape; shape already defined"));
+		   ("ArrayColumn::setShape; shape cannot be changed"));
 	}
     }
 }
@@ -366,12 +366,12 @@ void ArrayColumn<T>::setShape (uInt rownr, const IPosition& shape,
     TABLECOLUMNCHECKROW(rownr); 
     //# Only set shape if not defined yet.
     //# Throw exception if already defined with a different shape.
-    if (!isDefined(rownr)) {
+    if (canChangeShape_p  ||  !isDefined(rownr)) {
 	baseColPtr_p->setShape (rownr, shape, tileShape);
     }else{
 	if (! shape.isEqual (baseColPtr_p->shape (rownr))) {
 	    throw (TableInvOper
-		   ("ArrayColumn::setShape; shape already defined"));
+		   ("ArrayColumn::setShape; shape cannot be changed"));
 	}
     }
 }
@@ -385,10 +385,11 @@ void ArrayColumn<T>::put (uInt rownr, const Array<T>& arr)
     if (!isDefined(rownr)) {
 	setShape (rownr, arr.shape());
     }else{
-	if (!canChangeShape_p) {
-	    if (! arr.shape().isEqual (baseColPtr_p->shape (rownr))) {
+	if (! arr.shape().isEqual (baseColPtr_p->shape (rownr))) {
+	    if (!canChangeShape_p) {
 		throw (TableArrayConformanceError("ArrayColumn::put"));
 	    }
+	    setShape (rownr, arr.shape());
 	}
     }
     baseColPtr_p->put (rownr, &arr);
@@ -432,16 +433,25 @@ void ArrayColumn<T>::put (uInt thisRownr, const ROTableColumn& that,
 template<class T>
 void ArrayColumn<T>::putColumn (const Array<T>& arr)
 {
+    //# First check if number of rows matches.
     uInt nrrow = nrow();
+    IPosition shp  = arr.shape();
+    uInt last = shp.nelements() - 1;
+    if (shp(last) != nrrow) {
+	throw (TableArrayConformanceError("ArrayColumn::putColumn (nrrow)"));
+    }
+    //# Remove #rows from shape to get the shape of each cell.
+    shp.resize (last);
     //# When the array is fixed shape, check if the shape matches.
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                                     == ColumnDesc::FixedShape) {
-	IPosition shp = shapeColumn();
-	//# Total shape is array shape plus nr of table rows.
-	shp.resize (shp.nelements() + 1);
-	shp(shp.nelements()-1) = nrrow;
-	if (! shp.isEqual (arr.shape())) {
+	if (! shp.isEqual (shapeColumn())) {
 	    throw (TableArrayConformanceError("ArrayColumn::putColumn"));
+	}
+    }else{
+	//# Otherwise set the shape of each cell (as far as needed).
+	for (uInt i=0; i<nrrow; i++) {
+	    setShape (i, shp);
 	}
     }
     //# Ask if we can access the column (if that is not known yet).
