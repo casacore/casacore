@@ -1,5 +1,5 @@
 //# TypeIO.cc: Abstract base class for IO of data in a type-dependent format
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -181,13 +181,12 @@ uInt TypeIO::read (uInt nvalues, String* str) {
     for (uInt i=0; i<nvalues; i++) {
       uInt len;
       n += read (1, &len);
-      str[i].alloc (len);                     // resize storage
-      Char* ptr = const_cast<Char *>(str[i].chars()); // get actual string
-                                              // pointer -- yack
-      n += read (len, ptr);                   // read string
+      str[i].resize (len);              // resize storage which adds trailing 0
+      Char* ptr = &(str[i][0]);         // get actual string
+      n += read (len, ptr);             // read string
 #ifdef USE_OLD_STRING
       ptr[len] = '\0';
 #endif
-    };
+    }
     return n;
 }

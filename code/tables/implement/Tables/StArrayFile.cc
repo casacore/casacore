@@ -339,13 +339,12 @@ void StManArrayFile::get (Int64 fileOff, uInt arrayOff, uInt nr,
 	        *data = String();
 	    } else {
 	        setpos (buf[i]);
-		get (l);                              // read string length
-		data->alloc (l);                      // resize string
-		iofil_p->read (data->length(), (char*)(data->chars()));
-		//# Do some kind of dirty trick to set the trailing zero.
-		//# The cast is needed because String::chars() returns const.
+		get (l);                    // read string length
+		data->resize (l);   // resize storage which adds trailing 0
+		char* ptr = &((*data)[0]);  // get actual string
+		iofil_p->read (data->length(), ptr);
 #ifdef USE_OLD_STRING
-		((char*)(data->chars()))[l] = '\0';
+		ptr[l] = '\0';
 #endif
 	    }
 	    data++;
