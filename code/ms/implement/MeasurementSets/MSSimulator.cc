@@ -554,7 +554,7 @@ void NewMSSimulator::fillCoords(NewMeasurementSet & ms)
     ms.dataDescription().addRow(nSpWindows_p);
     NewMSSpWindowColumns& spwc=msc.spectralWindow();
     NewMSDataDescColumns& ddc=msc.dataDescription();
-    NewMSPolarizationColumns polc=msc.polarization();
+    NewMSPolarizationColumns& polc=msc.polarization();
     spwc.numChan().putColumn(nChan_p);
     spwc.name().fillColumn("");
     spwc.netSideband().fillColumn(1);
