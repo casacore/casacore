@@ -203,25 +203,15 @@ private:
                 Vector<Int>& worldAxes, const CoordinateSystem& cSys,
                 Bool throwIt);
 
-// Overwrite the coordinates for the sky axes
-// with Fourier coordinates
+// Overwrite the coordinate system with Fourier coordinates for sky axes only
+   void setSkyCoordinates (LogIO& os, ImageInterface<Complex>& out,
+                           const ImageInterface<Float>& in,
+                           uInt dC);
+
+// Overwrite the coordinate system with Fourier coordinates for all desginated axes
    void setCoordinates (LogIO& os,
                         ImageInterface<Complex>& out,
                         const ImageInterface<Float>& in,
-                        const Vector<Int>& pixelAxes,
-                        const Vector<Int>& worldAxes,
-                        const Int dC);
-
-// Overwrite the coordinates for the FT axes
-   void setCoordinates2 (LogIO& os,
-                         ImageInterface<Complex>& out,
-                         const ImageInterface<Float>& in,
-                         const Vector<Bool>& axes);
-
-
-// Set Fourier coordinate
-   void setInverseCoordinate (CoordinateSystem& cSys,
-                              uInt which, const IPosition& shape,
-                              const Vector<Bool>& axes);
+                        const Vector<Bool>& axes);
 };
 #endif
