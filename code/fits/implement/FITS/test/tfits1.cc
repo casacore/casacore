@@ -138,7 +138,8 @@ void do_binary_table(BinaryTableExtension &x) {
 
 	cout << "\nTable Data\n\n";
 
-	for (int i = 0; i < x.ncols(); ++i) {
+	int i;
+	for (i = 0; i < x.ncols(); ++i) {
 	    cout << "Col " << i << ": " 
 		 << x.field(i).nelements() << " "
 		 << x.field(i).fieldtype() << " "
@@ -327,6 +328,8 @@ void do_binary_table(BinaryTableExtension &x) {
 		      cout << ", " << vptr[k];
 		  }
 		  break;
+		default:
+		  break;
 		}
 	      }
 	    }
@@ -348,6 +351,7 @@ void do_binary_table(BinaryTableExtension &x) {
 		case FITS::DOUBLE: delete [] (double *)vaptr[i]; break;
 		case FITS::COMPLEX: delete [] (Complex *)vaptr[i]; break;
 		case FITS::DCOMPLEX: delete [] (DComplex *)vaptr[i]; break;
+		default: break;
 		}
 	    }
 	}
@@ -385,7 +389,8 @@ int main(int argc, char **argv) {
 	}
 	const int NMAXERRS = 100;
 
-	for(int nerrs = 0;
+	int nerrs;
+	for(nerrs = 0;
 		nerrs < NMAXERRS && fin.rectype() != FITS::EndOfFile; ) {
 	    if (fin.rectype() == FITS::HDURecord) {
 		switch (fin.hdutype()) {
@@ -412,6 +417,8 @@ int main(int argc, char **argv) {
 				paD = new PrimaryArray<double>(fin);
 				do_primary_array(*paD);
 				break;
+			    default:
+				break;
 			}
 			break;
 		    case FITS::PrimaryGroupHDU:
@@ -436,6 +443,8 @@ int main(int argc, char **argv) {
 			    case FITS::DOUBLE:
 				pgD = new PrimaryGroup<double>(fin);
 				do_primary_group(*pgD);
+				break;
+			    default:
 				break;
 			}
 			break;
@@ -471,6 +480,8 @@ int main(int argc, char **argv) {
 			    case FITS::DOUBLE:
 				paD = new ImageExtension<double>(fin);
 				do_primary_array(*paD);
+				break;
+			    default:
 				break;
 			}
 			break;
