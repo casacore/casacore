@@ -1832,3 +1832,4 @@
 08 003 sys rm bin/imoment
 08 003 sys rm bin/imstat
 08 003 sys rm bin/inputs.atoms
+08 003 sys rm bin/make_helpsystem.sh
