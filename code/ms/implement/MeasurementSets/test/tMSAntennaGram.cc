@@ -48,6 +48,10 @@ int main(int argc, char **argv)
     cout << "Original table has rows " << ms.nrow() << endl;
     if(msAntennaGramParseCommand(&ms, argv[2])==0) {
       const TableExprNode *node = msAntennaGramParseNode();
+      if(node->isNull()) {
+	cout << "NULL node " << endl;
+	exit(0);
+      }
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
