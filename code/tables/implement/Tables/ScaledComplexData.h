@@ -1,5 +1,5 @@
 //# ScaledComplexData.h: Templated virtual column engine to scale a complex table array
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,11 +177,17 @@ public:
 		       const String& offsetColumnName);
     // </group>
 
+    // Construct from a record specification as created by getmanagerSpec().
+    ScaledComplexData (const Record& spec);
+
     // Destructor is mandatory.
     ~ScaledComplexData();
 
     // Return the type name of the engine (i.e. its class name).
     String dataManagerType() const;
+
+    // Record a record containing data manager specifications.
+    virtual Record dataManagerSpec() const;
 
     // Return the name of the class.
     // This includes the names of the template arguments.
@@ -381,7 +387,8 @@ public:
     // If the engine is commonly used, its registration can be added
     // to the registerAllCtor function in DataManReg.cc. 
     // That function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerType);
+    static DataManager* makeObject (const String& dataManagerType,
+				    const Record& spec);
 };
 
 
