@@ -429,6 +429,19 @@ MeasValue *MVEarthMagnetic::clone() const {
   return (new MVEarthMagnetic(*this));
 }
 
+Vector<Double> MVEarthMagnetic::getVector() const {
+  return xyz;
+}
+
+void MVEarthMagnetic::putVector(const Vector<Double> &in) {
+  if (in.nelements() == 3) {
+    xyz = in;
+  } else {
+    xyz = 0.0;
+    for (Int i=0; i<in.nelements; i++) xyz(i) = in(i);
+  };
+}
+
 MVEarthMagnetic operator*(const RotMatrix &left, const MVEarthMagnetic &right) {
   MVEarthMagnetic result;
   for (Int i=0; i<3; i++) {

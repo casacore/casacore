@@ -163,6 +163,20 @@ Quantity MVFrequency::get(const Unit &unit) const {
   return Quantity(1.0/makeF(1.0/val, unit), unit);
 }
 
+Vector<Double> MVFrequency::getVector() const {
+  Vector<Double> x(1);
+  x(0) = val;
+  return x;
+}
+
+void MVFrequency::putVector(const Vector<Double> &in) {
+  if (in.nelements() < 1) {
+    val = 0.0;
+  } else {
+    val = in(0);
+  };
+}
+
 Double MVFrequency::makeF(Double v, const Unit &dt) const{
   static Bool needInit = True;
   static UnitVal InvTime;

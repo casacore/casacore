@@ -161,6 +161,20 @@ Quantity MVRadialVelocity::get(const Unit &unit) const {
   return Quantity(val/makeF(unit), unit);
 }
 
+Vector<Double> MVRadialVelocity::getVector() const {
+  Vector<Double> x(1);
+  x(0) = val;
+  return x;
+}
+
+void MVRadialVelocity::putVector(const Vector<Double> &in) {
+  if (in.nelements() < 1) {
+    val = 0.0;
+  } else {
+    val = in(0);
+  };
+}
+
 Double MVRadialVelocity::makeF(const Unit &dt) const{
   static Bool needInit = True;
   static UnitVal Velocity;

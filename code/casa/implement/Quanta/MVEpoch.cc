@@ -217,6 +217,23 @@ MeasValue *MVEpoch::clone() const {
   return (new MVEpoch(*this));
 }
 
+Vector<Double> MVEpoch::getVector() const {
+  Vector<Double> x(2);
+  x(0) = wday;
+  x(1) = frday;
+  return x;
+}
+
+void MVEpoch::putVector(const Vector<Double> &in) {
+  if (in.nelements() < 2) {
+    wday = 0.0; frday = 0.0;
+    if (in.nelements() == 1) addTime(in(0));
+  } else {
+    wday = in(0);
+    frday = in(1);
+  };
+}
+
 Double MVEpoch::makeDay(const Quantity &in) const {
   in.assert(UnitVal::TIME);
   return in.get("d").getValue();

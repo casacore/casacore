@@ -161,6 +161,20 @@ Quantity MVDoppler::get(const Unit &unit) const {
   return Quantity(1.0/makeD(1.0/(val*C::c), unit), unit);
 }
 
+Vector<Double> MVDoppler::getVector() const {
+  Vector<Double> x(1);
+  x(0) = val;
+  return x;
+}
+
+void MVDoppler::putVector(const Vector<Double> &in) {
+  if (in.nelements() < 1) {
+    val = 0.0;
+  } else {
+    val = in(0);
+  };
+}
+
 Double MVDoppler::makeD(Double v, const Unit &dt) const{
   static Bool needInit = True;
   static UnitVal Velocity;

@@ -159,7 +159,7 @@ MVPosition::MVPosition(const Vector<Double> &other) :
   xyz(3) {
     uInt i; i = other.nelements();
     if (i > 3 ) {
-      throw (AipsError("Illegal vector length in MVPosition condtructor"));
+      throw (AipsError("Illegal vector length in MVPosition constructor"));
     } else if (i == 3) {
       xyz = other;
     } else {
@@ -425,6 +425,19 @@ void MVPosition::print(ostream &os) const {
 
 MeasValue *MVPosition::clone() const {
   return (new MVPosition(*this));
+}
+
+Vector<Double> MVPosition::getVector() const {
+  return xyz;
+}
+
+void MVPosition::putVector(const Vector<Double> &in) {
+  if (in.nelements() == 3) {
+    xyz = in;
+  } else {
+    xyz = 0.0;
+    for (Int i=0; i<in.nelements; i++) xyz(i) = in(i);
+  };
 }
 
 MVPosition operator*(const RotMatrix &left, const MVPosition &right) {

@@ -37,6 +37,7 @@
 #include <aips/aips.h>
 
 //# Forward Declarations
+template <class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -165,7 +166,18 @@ public:
   
   // Clone a MeasValue
   virtual MeasValue *clone() const = 0;
-  
+
+  //  Get the internal value as a Vector<Double>. Note that the vector could
+  // be empty, or not be a true representation (different data sizes e.g.)
+  virtual Vector<Double> getVector() const = 0;
+
+  // Set the internal value from a Vector of values (obtained in principle
+  // with a getVector()). It will be assumed that the Vector is correctly 
+  // formatted. If Vector is too long, the remainder will be discarded.
+  // If Vector is too short, action will depend on the individual classes,
+  // but in general act the same way as a constructor with a short Vector. 
+  virtual void putVector(const Vector<Double> &in) = 0;
+
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be
   // normalised to a length of 1 and MEpoch (time) which have to have its

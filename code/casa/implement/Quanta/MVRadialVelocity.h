@@ -162,6 +162,10 @@ public:
   Quantity get() const;
   // Get the wave characteristics in (recognised) specified units
   Quantity get(const Unit &unit) const;
+  // Get the value in internal units
+  virtual Vector<Double> getVector() const;
+  // Set the value from internal units (set 0 for empty vector)
+  virtual void putVector(const Vector<Double> &in);
   
 private:
   //# Data

@@ -178,6 +178,11 @@ public:
   
   // Clone a value
   virtual MeasValue *clone() const;
+
+  // Get the value in internal units
+  virtual Vector<Double> getVector() const;
+  // Set the value from internal units (set 0 for empty vector)
+  virtual void putVector(const Vector<Double> &in);
   
 private:
   //# Data members
