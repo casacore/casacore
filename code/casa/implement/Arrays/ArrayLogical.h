@@ -338,30 +338,5 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 
 // </group>
 
-//# Work around overloading error in Sun's native compiler. Hopefully we can remove
-//# this before too much time passes.
-#if defined(AIPS_SUN_NATIVE)
-#include <aips/Arrays/Vector.h>
-
-template<class T> inline LogicalArray operator <= (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l <= (const Array<T> &)r; }
-template<class T> inline LogicalArray operator <  (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l < (const Array<T> &)r; }
-template<class T> inline LogicalArray operator >= (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l >= (const Array<T> &)r; }
-template<class T> inline LogicalArray operator >  (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l > (const Array<T> &)r; }
-template<class T> inline LogicalArray operator == (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l == (const Array<T> &)r; }
-template<class T> inline LogicalArray operator != (const Vector<T> &l, const Vector<T> &r)
-    { return (const Array<T> &)l != (const Array<T> &)r; }
-template<class T> inline LogicalArray near(const Vector<T> &l, const Vector<T> &r,
-				    Double tol)
-    { return near((const Array<T> &)l,(const Array<T> &)r,tol); }
-template<class T> inline LogicalArray nearAbs(const Vector<T> &l, const Vector<T> &r,
-				    Double tol)
-    { return nearAbs((const Array<T> &)l,(const Array<T> &)r,tol); }
-#endif
-
 
 #endif
