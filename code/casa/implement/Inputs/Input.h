@@ -32,7 +32,6 @@
 #include <aips/aips.h>
 #include <aips/Inputs/Param.h>
 #include <aips/Containers/List.h>
-#include <stdarg.h>
 
 template<class T> class Vector;
 
