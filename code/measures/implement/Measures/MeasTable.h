@@ -54,6 +54,7 @@ class Euler;
 // <prerequisite>
 //   <li> <linkto class=Measure>Measure</linkto> class 
 //   <li> <linkto class=MeasData>MeasData</linkto> class for constant data
+//   <li> <linkto class=Aipsrc>Aipsrc</linkto> class for data placement
 // </prerequisite>
 //
 // <etymology>
@@ -73,6 +74,7 @@ class Euler;
 // <br> C. Ron and J. Vondrak, Bull. Astron. Inst. Czechosl. 37, p96, 1986
 // <br> M. Soma, Th. Hirayama and H. Kinoshita, Celest. Mech. 41, p389, 1988
 // <br> V.S. Gubanov, Astron. Zh. 49, p1112, 1992
+//
 // </synopsis>
 //
 // <example>
@@ -136,6 +138,11 @@ public:
   static const Vector<Double> &mulSC(uInt which, Double T);
   static const Vector<Double> &mulSC1950(uInt which, Double T);
   // </group>
+
+  // Get nutation angles corrections for UTC T in rad.
+  // which = 0 : dPsi as given by IERS for IAU nutation theory;
+  // = 1: dEps as same.
+  static const Double dPsiEps(uInt which, Double T);
   // </group>
   
   // Aberration related data
@@ -235,6 +242,9 @@ public:
   // <logged>
   //   <li> HIGH, WARNING given if correction not obtainable
   // </logged>
+  // <thrown>
+  //  <li> AipsError if table seems to be corrupted
+  // </thrown>
   // <group>
   // Give TAI-UTC (in s) for MJD utc UTC
   static Double dUTC(Double utc);
@@ -271,7 +281,9 @@ private:
 #else
   ~MeasTable();
 #endif
+
   //# General member functions
+
   // Calculate precessionCoef
   static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			     const Double coeff[3][6]); 
