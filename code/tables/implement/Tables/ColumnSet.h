@@ -120,10 +120,12 @@ public:
     // Table object and to initialize themselves.
     void initDataManagers (uInt nrrow, Bool bigEndian, Table& tab);
 
-    // Link the ColumnSet object to the TableLockData object in the
+    // Link the ColumnSet object to the PlainTable object.
+    void linkToTable (PlainTable* plainTableObject);
+
+    // Link the ColumnSet object to the TableLockData object.
     // PlainTable object.
-    void linkToLockObject (PlainTable* plainTableObject,
-			   TableLockData* lockObject);
+    void linkToLockObject (TableLockData* lockObject);
 
     // Check if the table is locked for read or write.
     // If manual or permanent locking is in effect, it checks if the
@@ -300,10 +302,12 @@ inline uInt ColumnSet::nrow() const
 {
     return nrrow_p;
 }
-inline void ColumnSet::linkToLockObject (PlainTable* plainTableObject,
-					 TableLockData* lockObject)
+inline void ColumnSet::linkToTable (PlainTable* plainTableObject)
 {
     plainTablePtr_p = plainTableObject;
+}
+inline void ColumnSet::linkToLockObject (TableLockData* lockObject)
+{
     lockPtr_p = lockObject;
 }
 inline void ColumnSet::checkReadLock (Bool wait)
