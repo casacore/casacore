@@ -292,20 +292,20 @@ public:
 // value of <src>False</src> indicates that the internal state of 
 // the class is bad.
 // <group>
-   Bool getStatistic (Array<T>& stat, LatticeStatsBase::StatisticsTypes type);
-   Bool getNPts (Array<T>&);
-   Bool getSum (Array<T>&);
-   Bool getFluxDensity (Array<T>&);
-   Bool getSumSquared (Array<T>&);
-   Bool getMin (Array<T>&);
-   Bool getMax (Array<T>&);
-   Bool getMean (Array<T>&);
-   Bool getMedian (Array<T>&);
-   Bool getMedAbsDevMed (Array<T>&);
-   Bool getQuartile(Array<T>&);
-   Bool getVariance (Array<T>&);
-   Bool getSigma (Array<T>&);
-   Bool getRms (Array<T>&);
+   Bool getStatistic (Array<T>& stat, LatticeStatsBase::StatisticsTypes type, Bool dropDeg=True);
+   Bool getNPts (Array<T>& out, Bool dropDeg=True);
+   Bool getSum (Array<T>& out, Bool dropDeg=True);
+   Bool getFluxDensity (Array<T>& out, Bool dropDeg=True);
+   Bool getSumSquared (Array<T>& out, Bool dropDeg=True);
+   Bool getMin (Array<T>& out, Bool dropDeg=True);
+   Bool getMax (Array<T>& out, Bool dropDeg=True);
+   Bool getMean (Array<T>& out, Bool dropDeg=True);
+   Bool getMedian (Array<T>& out, Bool dropDeg=True);
+   Bool getMedAbsDevMed (Array<T>& out, Bool dropDeg=True);
+   Bool getQuartile(Array<T>& out, Bool dropDeg=True);
+   Bool getVariance (Array<T>& out, Bool dropDeg=True);
+   Bool getSigma (Array<T>& out, Bool dropDeg=True);
+   Bool getRms (Array<T>& out, Bool dropDeg=True);
    Bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
 // </group>   
 
@@ -396,7 +396,7 @@ protected:
 // Non-virtual functions
 //
 // Calculate statistic from accumulation lattice and return in an array
-   Bool calculateStatistic (Array<T>& slice, const Int& ISTAT);
+   Bool calculateStatistic (Array<T>& slice, const Int& ISTAT, Bool dropDeg);
 
 // Convert a <T> to a <Float> for plotting
    static Float convertT (const T value) {return Float(real(value));};
@@ -473,7 +473,7 @@ protected:
 // Retrieve a statistic from the accumulation lattice and return in an array
    Bool retrieveStorageStatistic
                           (Array<T>& slice, 
-                           const Int& ISTAT);
+                           const Int& ISTAT, Bool dropDeg);
 
 // Retrieve a statistic from the accumulation lattice at the specified
 // location and return in an array
