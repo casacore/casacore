@@ -253,20 +253,19 @@ g:=guiframework()					# Framework of GUIs
 \section{Single Dish}
 
 \begin{itemize}
-\item Load sddemo and create tables for reading
-\begin{verbatim}
-include 'sddemo.g'
-sddemo()
-\end{verbatim}
 \item Start the single dish environment
 \begin{verbatim}
-include 'sdavg.g'
+include 'dish.g'
+\end{verbatim}
+\item Create the demo data tables for reading
+\begin{verbatim}
+dishdemo()
 \end{verbatim}
 \item Load one of the demo tables using the File menu (select Open)
 \item Browse
 \begin{itemize}
 \item Look at a number of records and see how the plot changes
-\item Look at record 65 of sddemo.table (it's bad!)
+\item Look at record 65 of dishdemo.table (it's bad!)
 \item Select ``Browse record''
 \begin{itemize}
 \item Change to a different coordinate system for ``Direction'' by pushing
@@ -287,8 +286,8 @@ window to see them update the record browser window and the plotter.
 \begin{itemize}
 \item In the Record region of the selection pane, enter [1,64][66,256]
 to avoid the bad record
-\item Press the ``Average selected spectra'' button and look at spectrum
-(result will appear in the plotter and be selected in the result manager.
+\item Press the ``Average selected spectra'' button and look at the result
+(the result will appear in the plotter and be selected in the result manager).
 \item Browse (this just brings up the individual record browser when the focus
 is on an individual record).  Look at the history of this result.
 \item Try different alignment and weighting options.
@@ -296,7 +295,7 @@ is on an individual record).  Look at the history of this result.
 the selection operation.  You can browse more than one thing at a time.
 \item Overlay two of these results
 \begin{itemize}
-\item Select one of the results in the results manager.
+\item Select one of the average results in the results manager.
 \item On the plotter, in the Active Plot menu, select ``2''
 \item Select another of the results in the results manager.
 \item On the plotter, in the Overlays menu, select ``1'' 
@@ -305,7 +304,8 @@ the selection operation.  You can browse more than one thing at a time.
 \end{itemize}
 \item Any of these results can be examined at the glish prompt.
 For example, type ``print criteria1'' at the glish prompt.  This shows
-the selection criteria.
+the selection criteria.  The named values in the results manager are all
+global values available at the glish prompt.
 \item You can rename a variable in the results manager by typing in a
 new name and hitting return.
 \item Now do some smoothing (turn ``off'' the other operation GUIs to
@@ -330,26 +330,31 @@ typed in has not changed, but the label has).
 \end{itemize}
 \item Fit some baselines.
 \begin{itemize}
-\item Select ``Polynomial'' (sine-wave is not yet supported)
+\item Select ``Polynomial'' 
 \item Choose an order.
 \item Chose the x-axis ranges to include in the fit, using the plotter
+\item ``Sinusoidal'' also works, but, as with most sinusoidal fitters, its
+fairly sensative to the initial conditions.  It tends to work best if
+the initial guess at a period is longer than the suspected period in the data.
 \begin{itemize}
-\item click on ``Range Select''
-\item Mark ranges with the cursor - left mouse to start and end, right
+\item click on ``Cursor active'' at the bottom of the Baselines GUI.
+\item Mark some ranges with the cursor - left mouse to start and end, right
 mouse to cancel.
-\item Height of a range box is 2x the local RMS, the center Y of a 
+\item The height of a range box is 2x the local RMS, the center Y of a 
 range box is the local mean.
 \item Notice that these ranges are also displayed in the Baselines GUI.
 \item You can convert to X-axis units in the Baselines GUI.
-\item You can deselect and delete ranges in the ``Selected Ranges'' GUI.
 \end{itemize}
 \item With the ``Recalculate'' and ``Show'' options selected, press ``Apply''.
-\item Note the chi squared in the GUI, the fit overlaying the data on the 
-plotter and the original record still selected.
+\item Note the RMS in the GUI, the fit overlaying the data on the 
+plotter and the original record still selected.  The RMS value is the
+RMS of the data with respect to the fit over the baseline regions.
 \item Change the order and/or the ranges
 \item Ranges can be edited in the Baselines GUI entry - these changes will
-noy appear on the plotter until the ``Apply'' button is pressed.
-\item When you are satified that this is a baseline you want to remove,
+noy appear on the plotter until the ``Apply'' button is pressed although
+the contents of the ranges entry are used as is whenever Apply is
+pressed (even if you haven't previous hit return).
+\item When you are satisfied that this is a baseline you want to remove,
 turn off the ``Recalculate'' button and select the ``Subtract'' option
 and press ``Apply''.
 \end{itemize}
@@ -366,13 +371,36 @@ desc record, and DATA by the data record.  The operations must return
 an array of the same shape as the input data array.  Any global glish
 variable can be used here (including functions).
 \end{itemize}
-\item Play with plotting options on plotting window
-\item Turn on the ``Trace'' option and try some of these operations.
+\item Play with plotting options on plotting window (Styles, Coordinates,
+Statistics, and Options are the most useful).
+\item Turn on the ``Trace'' option and try some of these operations again.
 Note: these will eventually be equivalent to what the program is doing
 at the glish level, they are only there now to illustrate the concept.
 \item Select ``Open Eval Window'' from the ``Tools'' menu.
+\begin{itemize}
 \item Type any valid glish in the eval window.
 \item Press ``Eval Contents''
 \item marvel at the result which appears in the glish window where you
 started from.
+\end{itemize}
+\item Try the Multi-Operation Operation.
+\begin{itemize}
+\item You now have parameters set in each of the operation windows, clicking
+on one of the ``Add'' buttons add that operation to the operation
+cache.  Clicking on ``Do multi-op sequence'' executes this sequence,
+doing those operations in order using the parameters as currently set
+in each operation window (even those which aren't currently displayed).
+\item Add the operations ``Average'', ``Baseline'', and ``Smoothing'' to
+the cache and do that sequence.
+\item Store that sequency to a variable by a name by which it will be known 
+in the ``Store Cache'' entry and press the ``Store Cache'' button.
+\item Reverse the order of the baseline and smoothing operations by
+first deleteing baseline and then adding it back in.
+\item Do this sequence and save it with a different name.
+\item Restore the first sequence by selecting it (clicking on it) in the
+list of stored caches.
+\item Our current thinking is that once the user gets various parameters
+set up that DISH will be often ``driven'' from this multi-operation
+operation menu.
+\end{itemize}
 \end{itemize}
