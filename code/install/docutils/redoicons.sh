@@ -50,7 +50,7 @@ cd $3
 # be a problem as long as this script is only used inside the aips++ make
 # system.
 #
-echo $1
+#echo $1
 GIFPARENT=..
 while(true)
 do
@@ -60,12 +60,11 @@ do
    fi
    GIFPARENT=../$GIFPARENT
 done
-echo $GIFPARENT
+#echo $GIFPARENT
 #
 # Make the sed script,  how 'bout all them \\\\\'s, hey it works!
 #
 LOCALICONS=`echo $GIFPARENT/gif/latex2html | sed 's/\//\\\\\//g'`
-echo s/$ICONSERVER/$LOCALICONS/g > sedfile
 cat sedfile
 #
 # Do the translation
