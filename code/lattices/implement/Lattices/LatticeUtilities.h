@@ -34,6 +34,7 @@
 template <class T> class Array;
 template <class T> class Lattice;
 template <class T> class MaskedLattice;
+template <class T> class MaskedArray;
 class IPosition;
 class LogIO;
 class Slicer;
@@ -106,6 +107,10 @@ class LatticeUtilities
    static void replicate (Lattice<T>& lat,
                           const Slicer& region,
                           const Array<T>& pixels);
+
+// Bin up one axis of MaskedArray (uses Lattices in implementation)
+   template <class T>
+   static void bin (MaskedArray<T>& out, const MaskedArray<T>& in, uInt axis, uInt bin);
 
 // Add degenerate axes to the lattice if needed (nDim is the desired number of dimensions
 // for the output lattice).  If the shapes are the same, the returned

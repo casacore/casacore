@@ -30,8 +30,10 @@
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/Slicer.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MaskedArray.h>
 #include <casa/Arrays/IPosition.h>
 #include <lattices/Lattices/Lattice.h>
+#include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/ExtendLattice.h>
 #include <lattices/Lattices/SubLattice.h>
 #include <lattices/Lattices/MaskedLatticeIterator.h>
@@ -39,6 +41,7 @@
 #include <lattices/Lattices/MaskedLattice.h>
 #include <lattices/Lattices/LatticeStatistics.h>
 #include <lattices/Lattices/TempLattice.h>
+#include <lattices/Lattices/RebinLattice.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Exceptions/Error.h>
@@ -256,4 +259,34 @@ void  LatticeUtilities::addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T
 //
       pLatOut = new ExtendLattice<T>(latIn, newShape, newAxes, stretchAxes);
    }
+}
+
+template <typename T> 
+void LatticeUtilities::bin (MaskedArray<T>& out, const MaskedArray<T>& in, 
+                            uInt axis, uInt bin)
+{
+
+// Check
+
+   const uInt nDim = in.ndim();
+   AlwaysAssert(axis<nDim, AipsError);
+
+// Make input MaskedLattice
+
+   ArrayLattice<T> data(in.getArray());
+   ArrayLattice<Bool> mask(in.getMask());
+//
+   SubLattice<T> mLat(data);
+   mLat.setPixelMask(mask, False);
+
+// Create binner
+
+   IPosition factors(nDim,1);
+   factors(axis) = bin;
+   RebinLattice<T> binLat(mLat, factors);
+
+// Assign output MA
+
+   MaskedArray<T> tmp(binLat.get(), binLat.getMask());
+   out = tmp;
 }
