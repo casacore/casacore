@@ -1,5 +1,5 @@
 //# LatticeBase.cc: A non-templated, abstract base class for array-like classes
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,11 @@ Bool LatticeBase::isPersistent() const
 }
 
 Bool LatticeBase::isPaged() const
+{
+  return False;
+}
+
+Bool LatticeBase::canReferenceArray() const
 {
   return False;
 }
