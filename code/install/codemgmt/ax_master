@@ -2522,3 +2522,4 @@
 11 369 src rm trial/implement/test/tExample2.cc
 11 369 src rm trial/implement/test/tExample3.cc
 11 369 src rm trial/implement/test/tExample4.cc
+11 369 src rm trial/scripts/atomsaips.g
