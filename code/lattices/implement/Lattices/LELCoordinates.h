@@ -135,6 +135,10 @@ public:
     // Assignment (reference semantics).
     LELCoordinates& operator= (const LELCoordinates& that);
 
+    // Is the coordinates a null object?
+    Bool isNull() const
+      { return coords_p.null(); }
+
     // Does the class have true coordinates?
     // It returns False if this is a null object.
     Bool hasCoordinates() const;
