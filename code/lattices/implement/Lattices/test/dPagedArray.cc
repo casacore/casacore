@@ -41,16 +41,35 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/String.h>
+#include <aips/Inputs/Input.h>
 
-int main(){
+
+int main(int argc, char* argv[])
+{
   try {
-    // Create a PagedArray of Floats of shape [512,512,4,32] in a file
+    cout << ">>>" << endl;
+    Input inp(1);
+    inp.version(" ");
+    inp.create("n1", "512", "Number of pixels along the axis 1", "int");
+    inp.create("n2", "512", "Number of pixels along the axis 2", "int");
+    inp.create("n3", "4", "Number of pixels along the axis 3", "int");
+    inp.create("n4", "32", "Number of pixels along the axis 4", "int");
+    inp.readArguments(argc, argv);
+    cout << "<<<" << endl;
+
+    IPosition arrayShape(4);
+    arrayShape(0) = inp.getInt("n1");
+    arrayShape(1) = inp.getInt("n2");
+    arrayShape(2) = inp.getInt("n3");
+    arrayShape(3) = inp.getInt("n4");
+
+    // Create a PagedArray of Floats of given shape in a file
     // and initialise it to zero. This will create a directory on disk
     // called "dPagedArray_tmp.data" that contains files that
     // exceed 512*512*4*32*4 (=128MBytes) in size.
     const String filename("dPagedArray_tmp.data");
     {
-      const IPosition arrayShape(4,512,512,4,32);
+///      const IPosition arrayShape(4,512,512,4,32);
       PagedArray<Float> diskArray(arrayShape, filename);
       cout << "Created a PagedArray of shape " << diskArray.shape() 
 	   << " (" << diskArray.shape().product()/1024/1024*sizeof(Float) 
@@ -138,26 +157,26 @@ int main(){
       timer.show ("set I-pol     ");
       da.showCacheStatistics (cout);
     }
-    // Use a direct call to getSlice to access a small central region of the
-    // V-polarization in spectral channel 0 only. The region is small enough
+    // Use a direct call to getSlice to access a small region of the
+    // in spectral channel 0 only. The region is small enough
     // to not warrent constructing iterators and setting up
     // LatticeNavigators. In this example the call to the getSlice function
     // is unnecessary but is done for illustration purposes anyway.
-    {
+    if (arrayShape(0)>=100 && arrayShape(1)>=100) {
       SetupNewTable maskSetup(filename, TableDesc(), Table::New);
       Table maskTable(maskSetup);
-      PagedArray<Bool> maskArray(IPosition(4, 512, 512, 4, 32), maskTable);
+      PagedArray<Bool> maskArray(arrayShape, maskTable);
       Timer timer;
       maskArray.set(False);
       timer.show ("setmask");
       COWPtr<Array<Bool> > maskPtr;
       timer.mark();
-      maskArray.getSlice (maskPtr, IPosition(4,240,240,3,0),
+      maskArray.getSlice (maskPtr, IPosition(4,64,64,0,0),
 			  IPosition(4,32,32,1,1), IPosition(4,1));
       timer.show ("getmask      ");
       maskPtr.rwRef() = True;
       timer.mark();
-      maskArray.putSlice (*maskPtr, IPosition(4,240,240,3,1));
+      maskArray.putSlice (*maskPtr, IPosition(4,60,60,0,0));
       timer.show ("putmask");
       maskArray.showCacheStatistics (cout);
     }
@@ -166,7 +185,7 @@ int main(){
     // illustrate the results when running on an Ultra 1/140 with 64MBytes
     // of memory.
     {
-      PagedArray<Float> pa(IPosition(4,128,128,4,32), filename);
+      PagedArray<Float> pa(arrayShape, filename);
       const IPosition latticeShape = pa.shape();
       cout << "The tile shape is:" << pa.tileShape() << endl;
       // Setup to access the PagedArray a row at a time
