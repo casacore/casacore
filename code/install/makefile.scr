@@ -42,7 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-EXCLUDE  := $(sort $(EXCLUDE) makefile changelog %.help %.ps %.reference)
+EXCLUDE  := $(sort $(EXCLUDE) makefile changelog %.help %.ps %.reference CVS)
 SCRIPTS  := $(filter-out $(EXCLUDE),$(AIPSSRCS))
 
 LIBEXECS := $(filter %.g %.gp %.gm, $(SCRIPTS))
