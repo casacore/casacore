@@ -2954,8 +2954,8 @@ void StatsTiledCollapser<T>::process (uInt index1,
 //
 {
    uInt index = index1 + index3*n1_p;
-   NumericTraits<T>::PrecisionType& sum = (*pSum_p)[index];
-   NumericTraits<T>::PrecisionType& sumSq = (*pSumSq_p)[index];
+   typename NumericTraits<T>::PrecisionType& sum = (*pSum_p)[index];
+   typename NumericTraits<T>::PrecisionType& sumSq = (*pSumSq_p)[index];
    T& nPts = (*pNPts_p)[index];
    T& dataMin = (*pMin_p)[index];
    T& dataMax = (*pMax_p)[index];
@@ -3111,8 +3111,8 @@ void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
     T* res = result.getStorage (deleteRes);
     T* resptr = res;
 //
-    const NumericTraits<T>::PrecisionType* sumPtr = pSum_p->storage();
-    const NumericTraits<T>::PrecisionType* sumSqPtr = pSumSq_p->storage();
+    const typename NumericTraits<T>::PrecisionType* sumPtr = pSum_p->storage();
+    const typename NumericTraits<T>::PrecisionType* sumSqPtr = pSumSq_p->storage();
     const T* nPtsPtr = pNPts_p->storage();
     const T* minPtr = pMin_p->storage();
     const T* maxPtr = pMax_p->storage();
