@@ -1,5 +1,5 @@
 //# PagedArray.h: templated Lattice, paged from disk to memory on demand
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,6 @@ class LatticeNavigator;
 class IPosition;
 class Slicer;
 template <class T> class Array;
-template <class T> class COWPtr;
 template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 template <class T> class RO_PagedArrIter;
@@ -464,70 +463,6 @@ public:
   // returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
-  // Functions which extract an Array of values from the PagedArray. The
-  // arguments to these functions are:
-  // <ul>
-  // <li> buffer: an <src>Array<T></src> or a
-  // <src>COWPtr<Array<T>></src>. The buffer shape must be big enough to
-  // exactly contain the specified slice. Otherwise an exception will be
-  // thrown. Alternatively the buffer can be empty
-  // (buffer.nelements()==0). Then the buffer will be resized to fit the
-  // requested slice. Unlike the other arguments the buffer can have fewer
-  // axes than the underlying PagedArray, but then you must set the
-  // removeDegenerateAxes flag to True.
-  // <li> start: The starting position (or Bottom Left Corner), within the
-  // PagedArray, of the slice to be extracted. Must have the same number of
-  // axes as the PagedArray otherwise an exception will be thrown.
-  // <li> shape: The shape of the slice to be extracted. This is not a
-  // position within the PagedArray but the actual shape the buffer will
-  // have after this function is called althoug it always includes all the
-  // degenerate axes even if the buffer does not. This argument added to the
-  // "start" argument will be the "Top Right Corner", assuming the stride is
-  // one on all axes.
-  // <li> stride: The increment for each axis. A stride of one will return
-  // every data element, a stride of two will return every other
-  // element. The IPosition elements may be different for each respective
-  // axis. Thus, a stride of IPosition(2,1,2) says: fill the buffer with
-  // every element whose position has a first index between start(0) and
-  // start(0)+shape(0) and a second index which is every other element
-  // between start(1) and (start(1)+shape(1)*2). Must have the same number
-  // of axes as the PagedArray otherwise an exception will be thrown.
-  // <li> section: The preferred way of specifying the start, shape and
-  // stride.
-  // <li> removeDegenerateAxes: a Bool which indicates whether to remove axes
-  // of length one in the extracted slice. You must set this to True if the
-  // supplied buffer has fewer axes than the specified slice, otherwise an
-  // exception is thrown. If the supplied buffer is empty all degenerate
-  // axes are stripped from the returned buffer.
-  // </ul>
-  // These functions always return False indicating the returned buffer is a
-  // copy of the actual data. This is because the data is stored on disk and
-  // using these functions will copy it into memory.
-  // <group>
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride, 
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
-			 Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice (Array<T>& buffer, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride,
-			 Bool removeDegenerateAxes=False);
-  virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
-			 Bool removeDegenerateAxes=False);
-  // </group>
-
-  // A function which places an Array of values within the PagedArray at the
-  // location specified by the IPosition "where", incrementing by
-  // "stride". All of the IPosition arguments must have the same number of
-  // dimensions as the PagedArray. The sourceBuffer array may have fewer
-  // axes than the PagedArray. The stride defaults to one if not specified.
-  // <group>
-  virtual void putSlice (const Array <T>& sourceBuffer, 
-			 const IPosition& where, const IPosition& stride);
-  virtual void putSlice (const Array <T>& sourceBuffer, 
-			 const IPosition& where);
-  // </group>
-
   // functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
   // class="PagedArray:Advanced">More Details</linkto> section above)
@@ -557,19 +492,6 @@ public:
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
   virtual uInt maxPixels() const;
-
-  // Help the user pick a cursor for most efficient access if they only want
-  // pixel values and don't care about the order or dimension of the
-  // cursor. Usually the tile shape is the best cursor shape, and this can
-  // be obtained using:<br>
-  // <src>IPosition shape = pa.niceCursorShape()</src> where
-  // <src>pa</src> is a PagedArray object.
-  // <br>The default argument is the result of <src>maxPixels()</src>.
-  // <group>
-  virtual IPosition niceCursorShape (uInt maxPixels) const;
-  IPosition niceCursorShape() const
-    { return niceCursorShape (maxPixels()); }
-  // </group>
 
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
@@ -625,6 +547,17 @@ public:
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter(
                                    const LatticeNavigator& navigator) const;
+
+  // Do the actual getting of an array of values.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+
+  // Do the actual getting of an array of values.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
+  
+  // Get the best cursor shape.
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 private:
   // Set the data in the TableInfo file

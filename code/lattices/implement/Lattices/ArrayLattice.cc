@@ -33,7 +33,6 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/COWPtr.h>
 
 template<class T>
 ArrayLattice<T>::ArrayLattice()
@@ -108,76 +107,17 @@ IPosition ArrayLattice<T>::shape() const
 } 
 
 template<class T>
-Bool ArrayLattice<T>::getSlice (COWPtr<Array<T> >& bufPtr,
-				const IPosition& start, 
-				const IPosition& shape,
-				const IPosition& stride,
-				Bool removeDegenerateAxes) const
+Bool ArrayLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
-  return getSlice (bufPtr, Slicer(start, shape, stride), removeDegenerateAxes);
-}
-
-template<class T>
-Bool ArrayLattice<T>::getSlice (COWPtr<Array<T> >& bufPtr,
-				const Slicer& section, 
-				Bool removeDegenerateAxes) const
-{
-  // cast away the constness of the ArrayLattice using a pointer copy. This can
-  // be done as the COWPtr will be set to be "readonly" and hence the
-  // ArrayLattice cannot be modified without the COWPtr making a copy of the
-  // cursor
-  // The COWPtr takes over the pointer to the array.
-  ArrayLattice<T>* This = (ArrayLattice<T>*) this;
-  Array<T>* arr = new Array<T>;
-  Bool isARef = This->getSlice(*arr, section, removeDegenerateAxes);
-  bufPtr = COWPtr<Array<T> > (arr, True, isARef);
-  // While the returned array is normally a reference return "False" indicating
-  // a copy as any attempt to modify the Array will result in a copy.
-  return False;
-}
-
-template<class T>
-Bool ArrayLattice<T>::getSlice (Array<T>& buffer,
-				const IPosition& start,
-				const IPosition& shape, 
-				const IPosition& stride,
-				Bool removeDegenerateAxes)
-{
-  return getSlice (buffer, Slicer(start, shape, stride), removeDegenerateAxes);
-}
-
-template<class T>
-Bool ArrayLattice<T>::getSlice (Array<T>& buffer,
-				const Slicer& section, 
-				Bool removeDegenerateAxes)
-{
-  // The following block checks that the supplied buffer is the right size or
-  // empty. These restrictions are not required for the rest of this function
-  // to work. I impose them because they are required by the corresponding
-  // functions in the PagedArray class. If these restrictions are a performance
-  // bottleneck they can by removed (only for optimised code please).
-  if (buffer.nelements() != 0) {
-    const IPosition& shape = buffer.shape();
-    if (removeDegenerateAxes) {
-      AlwaysAssert (shape.isEqual (section.length().nonDegenerate()),
-		    AipsError);
-    } else {
-      AlwaysAssert (shape.isEqual (section.length()), AipsError);
-    }
-  }
-  Array<T> cursor = itsData(section.start(), section.end(), section.stride());
-  if (removeDegenerateAxes) {
-    buffer.nonDegenerate(cursor);
-  } else {
-    buffer.reference(cursor);
-  }
+  Array<T> tmp = itsData(section.start(), section.end(), section.stride());
+  buffer.reference (tmp);
   return True;
 }
 
 template<class T>
-void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
-				const IPosition& where, 
-				const IPosition& stride)
+void ArrayLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
+				  const IPosition& where, 
+				  const IPosition& stride)
 {
   if (!itsWritable) {
       throw (AipsError ("ArrayLattice::putSlice - non-writable lattice"));
@@ -195,26 +135,6 @@ void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
     itsData(where, 
 	    where + (allAxes.shape()-1)*stride, 
 	    stride) = allAxes;
-  }
-}
-
-template<class T>
-void ArrayLattice<T>::putSlice (const Array<T>& sourceBuffer,
-				const IPosition& where)
-{
-  if (!itsWritable) {
-      throw (AipsError ("ArrayLattice::putSlice - non-writable lattice"));
-  }
-  const uInt sdim = sourceBuffer.ndim();
-  const uInt ldim = ndim();
-  DebugAssert(ldim == where.nelements(), AipsError);
-  if (sdim == ldim) {
-    itsData(where, 
-	    where + (sourceBuffer.shape()-1)) = sourceBuffer;
-  } else {
-    Array<T> allAxes(sourceBuffer.addDegenerate(ldim-sdim));
-    itsData(where, 
-	    where + (allAxes.shape()-1)) = allAxes;
   }
 }
 
