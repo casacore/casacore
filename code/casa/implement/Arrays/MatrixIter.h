@@ -28,9 +28,6 @@
 #if !defined (AIPS_MATRIXITER_H)
 #define AIPS_MATRIXITER_H
 
-#if defined(_AIX)
-#pragma implementation ("MatrixIter.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayIter.h>

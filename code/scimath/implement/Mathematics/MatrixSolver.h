@@ -1,5 +1,5 @@
 //# MatrixSolver.h: the base class for solvers of AX=B
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_MATRIXSOLVER_H)
 #define AIPS_MATRIXSOLVER_H
 
-#if defined(_AIX)
-#pragma implementation ("MatrixSolver.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>

@@ -30,9 +30,6 @@
 
 //# There is no source file, so this pragma is not needed.
 #if 0
-#if defined(_AIX)
-#pragma implementation ("MaskLogiArr.cc")
-#endif
 #endif
 
 

@@ -28,9 +28,6 @@
 #if !defined(AIPS_IMAGEUTILITIES_H)
 #define AIPS_IMAGEUTILITIES_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageUtilities.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>

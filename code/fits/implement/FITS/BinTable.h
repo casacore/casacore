@@ -28,9 +28,6 @@
 #if !defined(AIPS_BINTABLE_H)
 #define AIPS_BINTABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("BinTable.cc")
-#endif 
 
 //# Includes
 

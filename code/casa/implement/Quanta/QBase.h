@@ -1,5 +1,5 @@
 //# QBase.h: base class for Quantum
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_QBASE_H)
 #define AIPS_QBASE_H
 
-#if defined(_AIX)
-#pragma implementation ("QBase.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

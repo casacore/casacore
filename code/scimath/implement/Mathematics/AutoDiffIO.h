@@ -1,5 +1,5 @@
 //# AutoDiffIO.h: test output for AutoDiff objects
-//# Copyright (C) 1995
+//# Copyright (C) 1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined (AIPS_AUTO_DIFF__IO_H)
 #define AIPS_AUTO_DIFF__IO_H
 
-#if defined(_AIX)
-#pragma implementation ("AutoDiffIO.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

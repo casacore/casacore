@@ -1,5 +1,5 @@
 //# <HashMap.h>: this defines HashMap, which is a hashed associative array
-//# Copyright (C) 1995,1996,1998
+//# Copyright (C) 1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,6 @@
 #if !defined(AIPS_HASHMAPITER_H_)
 #define AIPS_HASHMAPITER_H_
 
-#if defined(_AIX)
-#pragma implementation ("HashMapIter.cc")
-#endif
 
 #include <trial/Containers/HashMap.h>
 

@@ -1,5 +1,5 @@
 //# CopyRecord.h: Copy all the fields from some Record to certain columns of a table.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,6 @@
 #if !defined(AIPS_COPY_RECORD_H)
 #define AIPS_COPY_RECORD_H
 
-#if defined(_AIX)
-#pragma implementation ("CopyRecord.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Containers/Block.h>

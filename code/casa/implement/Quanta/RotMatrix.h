@@ -1,5 +1,5 @@
 //# RotMatrix.h: a 3x3 rotation matrix
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_ROTMATRIX_H)
 #define AIPS_ROTMATRIX_H
 
-#if defined(_AIX)
-#pragma implementation ("RotMatrix.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

@@ -28,9 +28,6 @@
 #if !defined (AIPS_MASKEDARRAY_H)
 #define AIPS_MASKEDARRAY_H
 
-#if defined(_AIX)
-#pragma implementation ("MaskedArray.cc")
-#endif
 
 
 

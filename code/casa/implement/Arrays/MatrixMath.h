@@ -28,10 +28,6 @@
 #if !defined(AIPS_MATRIXMATH_H)
 #define AIPS_MATRIXMATH_H
 
-#if defined(_AIX)
-#pragma implementation ("MatrixMath.cc")
-#pragma implementation ("Matrix2Math.cc")
-#endif
 
 #include <aips/aips_exit.h>
 #include <aips/aips.h>

@@ -29,9 +29,6 @@
 #if !defined(AIPS_FITS_TABLE_H)
 #define AIPS_FITS_TABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("FITSTable.h")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Containers/Record.h>

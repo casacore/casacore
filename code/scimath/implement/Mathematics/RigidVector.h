@@ -1,5 +1,5 @@
 //# RigidVector.h: Fast Vector classes with fixed (templated) length
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
  
 #if !defined(AIPS_RIGIDVECTOR_H)
 #define AIPS_RIGIDVECTOR_H
-#if defined(_AIX)
-#pragma implementation ("RigidVector.cc")
-#endif
   
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>

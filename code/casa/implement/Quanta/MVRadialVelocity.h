@@ -1,5 +1,5 @@
 //# MVRadialVelocity.h: Internal value for MRadialvelocity
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_MVRADIALVELOCITY_H)
 #define AIPS_MVRADIALVELOCITY_H
 
-#if defined(_AIX)
-#pragma implementation ("MVRadialVelocity.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

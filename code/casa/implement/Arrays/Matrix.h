@@ -28,9 +28,6 @@
 #if !defined(AIPS_MATRIX_H)
 #define AIPS_MATRIX_H
 
-#if defined(_AIX)
-#pragma implementation ("Matrix.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>

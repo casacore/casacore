@@ -1,5 +1,5 @@
 //# UnitDim.h: defines the (private) class describing basic SI dimensions
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_UNITDIM_H)
 #define AIPS_UNITDIM_H
 
-#if defined(_AIX)
-#pragma implementation ("UnitDim.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>

@@ -1,5 +1,5 @@
 //# MeasValue.h: Base class for values in a Measure
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,6 @@
 #if !defined(AIPS_MEASVALUE_H)
 #define AIPS_MEASVALUE_H
 
-#if defined(_AIX)
-#pragma implementation ("MeasValue.cc")
-#endif
 
 //# Includes
 #include <aips/aips.h>

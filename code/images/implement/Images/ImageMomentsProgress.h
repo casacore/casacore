@@ -29,9 +29,6 @@
 #if !defined(AIPS_IMAGEMOMENTSPROGRESS_H)
 #define AIPS_IMAGEMOMENTSPROGRESS_H
 
-#if defined(_AIX)
-#pragma implementation ("ImageMomentsProgress.cc")
-#endif
 
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeProgress.h>

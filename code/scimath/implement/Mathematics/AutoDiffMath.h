@@ -1,5 +1,5 @@
 //# AutoDiffMath.h: an automatic differential class for arameterized functions
-//# Copyright (C) 1995
+//# Copyright (C) 1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,6 @@
 #if !defined(AIPS_AUTO_DIFF__MATH_H)
 #define AIPS_AUTO_DIFF__MATH_H
 
-#if defined(_AIX)
-#pragma implementation ("AutoDiffMath.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayLogical.h>

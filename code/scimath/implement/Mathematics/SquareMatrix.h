@@ -1,5 +1,5 @@
 //# SquareMatrix.h: Fast Square Matrix class with fixed (templated) size
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
  
 #if !defined(AIPS_SQUAREMATRIX_H)
 #define AIPS_SQUAREMATRIX_H
-#if defined(_AIX)
-#pragma implementation ("SquareMatrix.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Complex.h>

@@ -1,5 +1,5 @@
 //# NNLSMatrixSolver.h: the base class for NNLS solvers of AX=B
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_NNLSMATRIXSOLVER_H)
 #define AIPS_NNLSMATRIXSOLVER_H
 
-#if defined(_AIX)
-#pragma implementation ("NNLSMatrixSolver.cc")
-#endif
 
 #include <aips/aips.h>
 #include <trial/Arrays/MatrixSolver.h>

@@ -1,5 +1,5 @@
 //# Error.h: Base class for all AIPS++ errors
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_ERROR_H)
 #define AIPS_ERROR_H
 
-#if defined(_AIX)
-#pragma implementation ("Error.cc")
-#endif
 
 #include <aips/aips_exit.h>
 #include <sys/types.h>
