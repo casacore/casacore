@@ -130,37 +130,22 @@ class VectorSTLIterator
   // </group>
   // Size related
   // <group>
-  size_type size() const { return cont_p.nelements(); };
-  size_type max_size() const { return size_type(-1)/sizeof(T); };
-  size_type capacity() const { return size(); };
   difference_type operator-(VectorSTLIterator<T> &x) const {
     return (iter_p-x.iter_p)/step_p; };
   // </group>
   // Comparisons
   // <group>
-  Bool operator== (iterator &other) const {
+  Bool operator== (const iterator &other) const {
     return iter_p == other.iter_p; };
-  Bool operator== (iterator &other) {
-    return iter_p == other.iter_p; };
-  Bool operator!= (iterator other) const {
+  Bool operator!= (const iterator other) const {
     return iter_p != other.iter_p; };
-  Bool operator!= (iterator other) {
-    return iter_p != other.iter_p; };
-  Bool operator< (iterator &other) const {
-    return iter_p <  other.iter_p; };
-  Bool operator< (iterator &other) {
+  Bool operator< (const iterator &other) const {
     return iter_p <  other.iter_p; };
   Bool operator== (const_pointer const pos) const {
     return iter_p == pos; };
-  Bool operator== (const_pointer const pos) {
-    return iter_p == pos; };
   Bool operator!= (const_pointer const pos) const {
     return iter_p != pos; };
-  Bool operator!= (const_pointer const pos) {
-    return iter_p != pos; };
   Bool operator< (const_pointer const pos) const {
-    return iter_p <  pos; };
-  Bool operator< (const_pointer const pos) {
     return iter_p <  pos; };
   // </group>
  protected: 
