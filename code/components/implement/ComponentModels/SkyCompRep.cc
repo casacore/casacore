@@ -33,22 +33,25 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <trial/Tasking/MeasureParameterAccessor.h>
 
-#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Block.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Glish/GlishArray.h>
 #include <aips/Glish/GlishRecord.h>
 #include <aips/Glish/GlishValue.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Measures/Quantum.h>
-#include <aips/Measures/QLogical.h>
+#include <aips/Measures/UnitVal.h>
+#include <aips/Measures/Unit.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Measures/MVDirection.h>
-#include <aips/Measures/MDirection.h>
+#include <aips/Measures/QLogical.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -199,293 +202,203 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   }
 }
 
+void SkyCompRep::setLabel(const String & newLabel) {
+  // Use newLabel for something to suppress a compiler warning
+  if (newLabel == "") {
+  }
+}
+
+void SkyCompRep::label(String & compLabel) const {
+  compLabel = "";
+}
+
 Bool SkyCompRep::ok() const {
   return True;
 }
 
-void SkyCompRep::fromRecord(Quantum<Double> & quantity, String & errorMessage, 
-			    const GlishRecord & record) {
-  // First extract the value for this quantum.
-  if (!record.exists("value"))
-    errorMessage += "\nThe record does not have a 'value' field";
-  else {
-    if (record.get("value").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'value' field cannot be a record";
-    else {
-      GlishArray valField(record.get("value"));
-      if (valField.elementType() == GlishArray::STRING)
- 	errorMessage += "\nThe 'value' field cannot be a string";
-      else {
-	const IPosition shape = valField.shape();
-	if (shape.product() != 1)
- 	  errorMessage += "\nThe 'value' field can only have one element";
-	else {
-	  Double val;
-	  if (valField.get(val) == False)
-	    errorMessage += "\nCould not read the 'value' field "
-	      "for an unknown reason";
-	  else
-	    quantity.setValue(val);
-	}
-      }
-    }
-  }
-  // Now extract the corresponding unit
-  if (!record.exists("unit"))
-    errorMessage += "\nThe record does not have a 'unit' field";
-  else {
-    if (record.get("unit").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'unit' field cannot be a record";
-    else {
-      GlishArray unitField(record.get("unit"));
-      if (unitField.elementType() != GlishArray::STRING)
- 	errorMessage += "\nThe 'unit' field must be a string";
-      else {
-	const IPosition shape = unitField.shape();
-	if (shape.product() > 1)
- 	  errorMessage += "\nThe 'unit' field"
-	    " can only have at most one element";
-	else {
-	  if (shape.product() == 0) 
-	    quantity.setUnit("");
-	  else { // shape.product() == 1
-	    String unit;
-	    if (unitField.get(unit) == False)
-	      errorMessage += "\nCould not read the 'unit' field"
-		" for an unknown reason";
-	    else
-	      quantity.setUnit(unit);
-	  }
-	}
-      }
-    }
-  }
-}
+// void SkyCompRep::fromRecord(Quantum<Double> & quantity, String & errorMessage, 
+// 			    const GlishRecord & record) {
+//   // First extract the value for this quantum.
+//   if (!record.exists("value"))
+//     errorMessage += "\nThe record does not have a 'value' field";
+//   else {
+//     if (record.get("value").type() != GlishValue::ARRAY)
+//       errorMessage += "\nThe 'value' field cannot be a record";
+//     else {
+//       GlishArray valField(record.get("value"));
+//       if (valField.elementType() == GlishArray::STRING)
+//  	errorMessage += "\nThe 'value' field cannot be a string";
+//       else {
+// 	const IPosition shape = valField.shape();
+// 	if (shape.product() != 1)
+//  	  errorMessage += "\nThe 'value' field can only have one element";
+// 	else {
+// 	  Double val;
+// 	  if (valField.get(val) == False)
+// 	    errorMessage += "\nCould not read the 'value' field "
+// 	      "for an unknown reason";
+// 	  else
+// 	    quantity.setValue(val);
+// 	}
+//       }
+//     }
+//   }
+//   // Now extract the corresponding unit
+//   if (!record.exists("unit"))
+//     errorMessage += "\nThe record does not have a 'unit' field";
+//   else {
+//     if (record.get("unit").type() != GlishValue::ARRAY)
+//       errorMessage += "\nThe 'unit' field cannot be a record";
+//     else {
+//       GlishArray unitField(record.get("unit"));
+//       if (unitField.elementType() != GlishArray::STRING)
+//  	errorMessage += "\nThe 'unit' field must be a string";
+//       else {
+// 	const IPosition shape = unitField.shape();
+// 	if (shape.product() > 1)
+//  	  errorMessage += "\nThe 'unit' field"
+// 	    " can only have at most one element";
+// 	else {
+// 	  if (shape.product() == 0) 
+// 	    quantity.setUnit("");
+// 	  else { // shape.product() == 1
+// 	    String unit;
+// 	    if (unitField.get(unit) == False)
+// 	      errorMessage += "\nCould not read the 'unit' field"
+// 		" for an unknown reason";
+// 	    else
+// 	      quantity.setUnit(unit);
+// 	  }
+// 	}
+//       }
+//     }
+//   }
+// }
 
 void SkyCompRep::toRecord(GlishRecord & record, 
-			  const Quantum<Double> & quantity) {
+ 			  const Quantum<Double> & quantity) {
   record.add("value", quantity.getValue());
   record.add("unit", quantity.getUnit());
 }
 
-void SkyCompRep::fromRecord(MDirection & direction, String & errorMessage, 
-			    const GlishRecord & record) {
-// MDirection DO_componentlist::
-// makeMDirection(String & errorMessage, const GlishRecord & posRec) {
-  if (!record.exists("type"))
-    errorMessage += "\nThe record does not have a 'type' field";
-  else {
-    if (record.get("type").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'type' field cannot be a record";
-    else {
-      GlishArray typeField(record.get("type"));
-      if (typeField.elementType() != GlishArray::STRING)
-	errorMessage += "\nThe 'type' field must be a string";
-      else {
-	if (typeField.shape().product() != 1)
-	  errorMessage += "\nThe 'type' field can only have one element";
-	else {
-	  String measureType;
-	  if (typeField.get(measureType) == False)
-	    errorMessage += "\nCould not read the 'type' field "
-	      "for an unknown reason";
-	  else {
-	    measureType.downcase();
-	    if (measureType != "direction")
-	      errorMessage += "\nThe 'type' field MUST be of type direction."
-		" The actual value is "+ measureType;
-	  }
-	}
-      }
-    }
-  }
-  if (!record.exists("refer"))
-    errorMessage += "\nThe record does not have a 'refer' field";
-  else {
-    if (record.get("refer").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'refer' field cannot be a record";
-    else {
-      GlishArray referField(record.get("refer"));
-      if (referField.elementType() != GlishArray::STRING)
-	errorMessage += "\nThe 'refer' field must be a string";
-      else {
-	if (referField.shape().product() != 1)
-	  errorMessage += "\nThe 'refer' field can only have one element";
-	else {
-	  String referType;
-	  if (referField.get(referType) == False)
-	    errorMessage += "\nCould not read the 'refer' field"
-	      " for an unknown reason";
-	  else {
-	    referType.downcase();
-	    MDirection::Ref refEnum;
-	    if (direction.giveMe(referType, refEnum) == False)
-	    errorMessage += "\nCould not translate the 'refer' field value"
-	      " of " + referType + " into a known reference frame";
-	    else
-	      direction.set(refEnum);
-	  }
-	}
-      }
-    }
-  }
-  String dirErrors = "";
-  if (!(record.exists("m0") && record.exists("m1")))
-    dirErrors += "\nThe record does not have 'm0' and 'm1' fields";
-  else {
-    if (record.get("m0").type() != GlishValue::RECORD || 
-	record.get("m1").type() != GlishValue::RECORD)
-      dirErrors += "\nBoth the 'm0' and 'm1' fields"
-	", in the position record, must be a records";
-    else {
-      GlishRecord mRec = record.get("m0");
-      String qErrors = "";
-      Quantum<Double> ra;
-      fromRecord(ra, qErrors, mRec);
-      if (qErrors != "") {
-	dirErrors += "\nThe following errors occured in reading the m0 record";
-	dirErrors += qErrors;
-	dirErrors += "\n";
-	qErrors = "";
-      }
-      mRec = record.get("m1");
-      Quantum<Double> dec;
-      fromRecord(dec, qErrors, mRec);
-      if (qErrors != "") {
-	dirErrors += "\nThe following errors occured in reading the m1 record";
-	dirErrors += qErrors;
-	dirErrors += "\n";
-      }
-      if (ra.check(UnitVal::ANGLE) == True &&
-	  dec.check(UnitVal::ANGLE) == True)
-	direction.set(MVDirection(ra, dec));
-      else 
-	dirErrors += "\nAt least one of the 'm0' and 'm1' fields"
-	  ", does not have angular units";
-    }
-  }
-  if (dirErrors != "") {
-    if (!(record.exists("ev0") && 
-	  record.exists("ev1") && record.exists("ev2"))) {
-      dirErrors += "\nThe record does not have 'ev0', 'ev1' and 'ev2' fields";
-    }
-    else {
-      if (record.get("ev0").type() != GlishValue::RECORD || 
-	  record.get("ev1").type() != GlishValue::RECORD ||
-	  record.get("ev1").type() != GlishValue::RECORD)
-	dirErrors += "\nAll of the 'ev0', 'ev1' and 'ev2' fields"
-	  " must be a records";
-      else {
-	GlishRecord evRec(record.get("ev0"));
-	String qErrors = "";
-	Vector<Quantum<Double> > lmn(3);
-	fromRecord(lmn(0), qErrors, evRec);
-	if (qErrors != "") {
-	  dirErrors += "\nThe following errors occured in reading the"
-	    " ev0 record";
-	  dirErrors += qErrors;
-	  dirErrors += "\n";
-	  qErrors = "";
-	}
-	evRec = record.get("ev1");
-	fromRecord(lmn(1), qErrors, evRec);
-	if (qErrors != "") {
-	  dirErrors += "\nThe following errors occured in reading the"
-	    " ev1 record";
-	  dirErrors += qErrors;
-	  dirErrors += "\n";
-	  qErrors = "";
-	}
-	evRec = record.get("ev2");
-	fromRecord(lmn(2), qErrors, evRec);
-	if (qErrors != "") {
-	  dirErrors += "\nThe following errors occured in reading the"
-	    " ev2 record";
-	  dirErrors += qErrors;
-	  dirErrors += "\n";
-	  qErrors = "";
-	}
- 	if (lmn(0).check(UnitVal::NODIM) &&
- 	    lmn(1).check(UnitVal::NODIM) &&
- 	    lmn(2).check(UnitVal::NODIM)) {
- 	  direction.set(MVDirection(lmn));
-	  dirErrors = "";
-	}
- 	else
- 	  dirErrors += "\nAt least one of the 'ev0', 'ev1' or 'ev2' fields"
- 	    ", is not dimensionless";
-      }
-    }
-  }
-  if (dirErrors != "")
-    errorMessage += dirErrors;
+Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
+  // The GlishRecord parameter should really be const but the ParameterAccessor
+  // needs a non-const one for an unknown reason
+  MeasureParameterAccessor<MDirection> mpa(String("direction"),
+					   ParameterSet::In, 
+					   (GlishRecord *) &record);
+  if (mpa.copyIn(errorMessage) == False) return False;
+  setDirection(mpa());
+  return True;
 }
 
-void SkyCompRep::toRecord(GlishRecord & record, 
-			  const MDirection & direction) {
-  record.add("type", "direction");
+void SkyCompRep::addDir(GlishRecord & record) const {
+  GlishRecord dirRec;
+  dirRec.add("type", "direction");
+  MDirection compDir;
+  direction(compDir);
   {
-    const String refFrame = MDirection::showType(direction.getRef().getType());
-    record.add("refer", refFrame);
+    const String refFrame = MDirection::showType(compDir.getRef().getType());
+    dirRec.add("refer", refFrame);
   }
   {
-    const Quantum<Vector<Double> > raDec = direction.getAngle("deg");
+    const Quantum<Vector<Double> > raDec = compDir.getAngle("deg");
     const Vector<Double> raDecValue = raDec.getValue();
     AlwaysAssert(raDecValue.nelements() == 2, AipsError)
     const String raDecUnit = raDec.getUnit();
     GlishRecord m;
     m.add("value", raDecValue(0));
     m.add("unit", raDecUnit);
-    record.add("m0", m);
+    dirRec.add("m0", m);
     m.add("value", raDecValue(1));
-    record.add("m1", m);
+    dirRec.add("m1", m);
   }
-  {
-    const Vector<Double> dirCosValue = direction.getValue().getValue();
-    AlwaysAssert(dirCosValue.nelements() == 3, AipsError)
-    GlishRecord ev;
-    ev.add("value", dirCosValue(0));
-    ev.add("unit", "");
-    record.add("ev0", ev);
-    ev.add("value", dirCosValue(1));
-    record.add("ev1", ev);
-    ev.add("value", dirCosValue(2));
-    record.add("ev2", ev);
-  }
+  record.add("direction", dirRec);
 }
 
-void SkyCompRep::readFlux(Vector<Double> & flux, String & errorMessage,
-			  const GlishRecord & record) {
-  AlwaysAssert(flux.nelements() == 0 || 
-	       flux.nelements() == 4, AipsError);
-  if (!record.exists("flux"))
-    errorMessage += "\nThe record does not have a 'flux' field";
-  else {
-    if (record.get("flux").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'flux' field cannot be a record";
-    else {
-      const GlishArray fluxField = record.get("flux");
-      if (fluxField.elementType() == GlishArray::STRING)
-	errorMessage += "\nThe 'flux' field cannot be a string";
-      else {
-	const IPosition shape = fluxField.shape();
-	if (shape.nelements() != 1 || shape.product() != 4)
-	  errorMessage += "\nThe 'flux' field"
-	    " must be a vector with 4 elements";
-	else {
-	  if (fluxField.get(flux.ac()) == False)
-	    errorMessage += "\nCould not read the 'flux' field"
-	      " for an unknown reason";
-	}
-      }
-    }
+Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
+  if (record.exists("flux") == False) {
+    errorMessage += "\nThe component record does not have a 'flux' field";
+    return False;
   }
+  if (record.get("flux").type() != GlishValue::RECORD) {
+    errorMessage += "\nThe 'flux' field must be a record";
+    return False;
+  }
+  Quantum<Vector<Double> > flux;
+  const GlishRecord fluxRec = record.get("flux");
+  {
+    if (fluxRec.exists("value") == False) {
+      errorMessage += "\nThe 'flux' record must have a 'value' field";
+      return False;
+    }
+    if (fluxRec.get("value").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'value' field cannot be a record";
+      return False;
+    }
+    const GlishArray valueField = fluxRec.get("value");
+    if (valueField.elementType() == GlishArray::STRING) {
+      errorMessage += "\nThe 'value' field cannot be a string";
+      return False;
+    }
+    const IPosition shape = valueField.shape();
+    if (shape.nelements() != 1 || shape.product() != 4) {
+      errorMessage += String("\nThe 'value' field in the flux record ") + 
+	String("must contain a vector with 4 elements");
+      return False;
+    }
+    Vector<Double> fluxVal(4);
+    if (valueField.get(fluxVal.ac()) == False) {
+      errorMessage += String("\nCould not read the 'value' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    flux.setValue(fluxVal);
+  }
+  {
+    if (fluxRec.exists("unit") == False) {
+      errorMessage += "\nThe 'flux' record must have a 'unit' field";
+      return False;
+    }
+    if (fluxRec.get("unit").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'unit' field cannot be a record";
+      return False;
+    }
+    const GlishArray unitField = fluxRec.get("unit");
+    if (unitField.elementType() != GlishArray::STRING) {
+      errorMessage += "\nThe 'unit' field must be a string";
+      return False;
+    }
+    if (unitField.shape().product() != 1) {
+      errorMessage += String("\nThe 'unit' field cannot be an array ");
+      return False;
+    }
+    String unitVal;
+    if (unitField.get(unitVal) == False) {
+      errorMessage += String("\nCould not read the 'unit' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    const Unit fluxUnits(unitVal);
+    const Unit jy("Jy");
+    if (fluxUnits != jy) {
+      errorMessage += String("\nThe flux units have the wrong dimensions. ") +
+	String("\nThey must be the same as the Jansky.");
+      return False;
+    }
+    flux.setUnit(fluxUnits);
+  }
+  setFlux(flux);
+  return True;
 }
 
 void SkyCompRep::addFlux(GlishRecord & record) const {
-  Vector<Double> compFlux(4);
+  Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
   flux(compFlux);
-  record.add("flux", GlishArray(compFlux.ac()));
+  GlishRecord fluxRec;
+  fluxRec.add("value", GlishArray(compFlux.getValue("Jy").ac()));
+  fluxRec.add("unit", "Jy");
+  record.add("flux", fluxRec);
 }
 
 void SkyCompRep::readParameters(Vector<Double> & parameters, 

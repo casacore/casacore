@@ -67,7 +67,7 @@ template<class T> class Vector;
 // The functions in this class allow the user to sample the intensity of the
 // component by specifying either a direction, or an image onto which the
 // component should be projected. While most of these functions are pure
-// virtual a default implementation is provided for the project function
+// virtual a default implementation is provided for the project function which
 // uses the sample function to get the intensity at the centre of each pixel.
 
 // </synopsis>
@@ -77,15 +77,15 @@ template<class T> class Vector;
 // function. 
 // <srcblock>
 // void printComponent(const SkyCompRep & component){
-//   Vector<Double> compFlux;
+//   Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
 //   component.flux(compFlux);
 //   cout << "Component has a total flux of " << compFlux;
 //   MDirection compDir;
 //   component.direction(compDir);
-//   cout << ", is centred at " << compDir;
-//   Vector<Double> peak;
-//   component.sample(peak, compDir);
-//   cout << " and an peak intensity of " << peak << " Jy/pixel" << endl;
+//   cout << ", is centred at " << compDir.getValue("deg");
+//   Vector<Double> peak(4);
+//   component.sample(peak, compDir, MVAngle(Quantity(1, "arcsec")));
+//   cout << " and an peak intensity of " << peak << " Jy/arcsec" << endl;
 // }
 // </srcblock>
 // </example>
@@ -127,17 +127,26 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the integrated flux (in Jy) of the component. The Vector specifies
-  // all the polarizations of the radiation.
+  // set/get the integrated flux of the component. The Vector specifies all the
+  // polarizations of the radiation. The units must be something has the same
+  // dimensions as Jansky's.
   // <group>
-  virtual void setFlux(const Vector<Double> & newFlux) = 0;
-  virtual void flux(Vector<Double> & compflux) const = 0;
+  virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
+  virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
   // </group>
 
   // set/get the direction (usually the centre) of the component.
   // <group>
   virtual void setDirection(const MDirection & newDirection) = 0;
   virtual void direction(MDirection & compDirection) const = 0;
+  // </group>
+
+  // set/get the label associated with this component. The default versions do
+  // not store the labels and always return an empty string. Hence by default
+  // labels are not supported.
+  // <group>
+  virtual void setLabel(const String & newLabel);
+  virtual void label(String & compLabel) const;
   // </group>
 
   // return the number of parameters in the component and set/get them.
@@ -153,11 +162,11 @@ public:
 
   // This functions convert between a glish record and a SkyCompRep. This way
   // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish. The
-  // fromRecord function appends a message to the errorMessage string if the
-  // conversion failed for any reason.
+  // way. These functions define how a component is represented in glish. 
+  // The fromRecord function returns False if the glish record is malformed
+  // and appends an error message to the supplied string giving the reason.
   // <group>
-  virtual void fromRecord(String & errorMessage, 
+  virtual Bool fromRecord(String & errorMessage, 
 			  const GlishRecord & record) = 0;
   virtual void toRecord(GlishRecord & record) const = 0;
   // </group>
@@ -177,22 +186,20 @@ public:
   // converting to and from glish records to the appropriate type ie.,
   // Quantum<Double> or MDirection.  
   // <group>
-  static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
-			 const GlishRecord & record);
+//   static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
+// 			 const GlishRecord & record);
   static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
-  static void fromRecord(MDirection & direction, String & errorMessage, 
-			 const GlishRecord & record);
-  static void toRecord(GlishRecord & record, const MDirection & direction);
   // </group>
 
 protected:
-  // These functions are also used by derived classes implementing concrete
-  // versions of the toRecord and fromRecord member functions. But they will
-  // always remain here as they are quite specific to the components module.
+  //# These functions are used by derived classes implementing concrete
+  //# versions of the toRecord and fromRecord member functions.
   // <group>
-  static void readFlux(Vector<Double> & flux, String & errorMessage,
-		       const GlishRecord & record);
+  Bool readFlux(String & errorMessage, const GlishRecord & record);
   void addFlux(GlishRecord & record) const;
+
+  Bool readDir(String & errorMessage, const GlishRecord & record);
+  void addDir(GlishRecord & record) const;
 
   void readParameters(Vector<Double> & parameters, String & errorMessage,
 		      const GlishRecord & record) const;
