@@ -31,6 +31,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Functional.h>
 #include <aips/Mathematics/Math.h>
@@ -206,8 +207,7 @@ void Lattice<T>::put (const Array<T>& sourceBuffer)
 template<class T>
 void Lattice<T>::set (const T& value)
 {
-  IPosition windowShape(niceCursorShape());
-  LatticeIterator<T> iter(*this, windowShape);
+  LatticeIterator<T> iter(*this, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.woCursor() = value;
   }
@@ -216,8 +216,7 @@ void Lattice<T>::set (const T& value)
 template<class T>
 void Lattice<T>::apply (T (*function) (T))
 {
-  IPosition windowShape(niceCursorShape());
-  LatticeIterator<T> iter(*this, windowShape);
+  LatticeIterator<T> iter(*this, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply (function);
   }
@@ -226,8 +225,7 @@ void Lattice<T>::apply (T (*function) (T))
 template<class T>
 void Lattice<T>::apply (T (*function) (const T&))
 {
-  IPosition windowShape(niceCursorShape());
-  LatticeIterator<T> iter(*this, windowShape);
+  LatticeIterator<T> iter(*this, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply(function);
   }
@@ -236,8 +234,7 @@ void Lattice<T>::apply (T (*function) (const T&))
 template<class T>
 void Lattice<T>::apply (const Functional<T,T>& function)
 {
-  IPosition windowShape(niceCursorShape());
-  LatticeIterator<T> iter(*this, windowShape);
+  LatticeIterator<T> iter(*this, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply(function);
   }
@@ -270,6 +267,12 @@ void Lattice<T>::copyData (const Lattice<T>& from)
 }
 
 template<class T>
+void Lattice<T>::handleMath (const Lattice<T>& from, int oper)
+{
+  from.handleMathTo (*this, oper);
+}
+
+template<class T>
 void Lattice<T>::copyDataTo (Lattice<T>& to) const
 {
   // Check the lattice is writable.
@@ -283,9 +286,50 @@ void Lattice<T>::copyDataTo (Lattice<T>& to) const
   // Create an iterator for the output to setup the cache.
   // It is not used, because using putSlice directly is faster and as easy.
   LatticeIterator<T> dummyIter(to, stepper);
-  RO_LatticeIterator<T> iter(*this, stepper);
+  RO_LatticeIterator<T> iter(*this, stepper, True);
   for (iter.reset(); !iter.atEnd(); iter++) {
     to.putSlice (iter.cursor(), iter.position());
+  }
+}
+
+template<class T>
+void Lattice<T>::handleMathTo (Lattice<T>& to, int oper) const
+{
+  // Check the lattice is writable.
+  // Check the shape conformance.
+  AlwaysAssert (to.isWritable(), AipsError);
+  const IPosition shapeIn  = shape();
+  const IPosition shapeOut = to.shape();
+  AlwaysAssert (shapeIn.isEqual (shapeOut), AipsError);
+  IPosition cursorShape = to.niceCursorShape();
+  LatticeStepper stepper (shapeOut, cursorShape, LatticeStepper::RESIZE);
+  // Create an iterator for the output.
+  // If possible, use reference semantics in the iterators.
+  LatticeIterator<T> toIter(to, stepper, True);
+  RO_LatticeIterator<T> iter(*this, stepper, True);
+  switch (oper) {
+  case 0:
+    for (iter.reset(); !iter.atEnd(); iter++, toIter++) {
+      toIter.rwCursor() += iter.cursor();
+    }
+    break;
+  case 1:
+    for (iter.reset(); !iter.atEnd(); iter++) {
+      toIter.rwCursor() -= iter.cursor();
+    }
+    break;
+  case 2:
+    for (iter.reset(); !iter.atEnd(); iter++) {
+      toIter.rwCursor() *= iter.cursor();
+    }
+    break;
+  case 3:
+    for (iter.reset(); !iter.atEnd(); iter++) {
+      toIter.rwCursor() /= iter.cursor();
+    }
+    break;
+  default:
+    throw AipsError ("Lattice::handleMathTo - Unknown operator");
   }
 }
 
