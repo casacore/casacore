@@ -2792,3 +2792,4 @@
 10 102 src rm trial/apps/imager/templates
 10 102 src rm trial/apps/cal
 10 104 src rm nrao/apps/gbtutils/gbt.g
+10 104 src rm trial/scripts/gbt.g
