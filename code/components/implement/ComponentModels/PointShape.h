@@ -37,6 +37,7 @@
 
 class MVAngle;
 class RecordInterface;
+class GlishRecord;
 class String;
 class doubleG_COMPLEX;
 typedef doubleG_COMPLEX DComplex;
@@ -229,8 +230,9 @@ public:
   // <group>
   virtual Bool fromRecord(String & errorMessage,
 			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage,
-			RecordInterface & record) const;
+  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
+  virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
