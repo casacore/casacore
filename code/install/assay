@@ -81,10 +81,10 @@
   if [ ! -f "$1.exec" ]
   then
 #    We don't give in easily.
-     if [ -f "RCS/$1.exec,v" ]
+     if [ -f "src/$1.exec" ]
      then
         CLEANUP="$1.exec"
-        co $1.exec
+        cp src/$1.exec .
      fi
   fi
 
@@ -124,11 +124,11 @@
   then
      COMMAND="sh $1.run"
   else
-     if [ -f "RCS/$1.run,v" ]
+     if [ -f "src/$1.run" ]
      then
         COMMAND="sh $1.run"
         CLEANUP="$CLEANUP $1.run"
-        co $1.run
+        cp src/$1.run .
      fi
   fi
 
@@ -137,25 +137,25 @@
   then
      COMMAND="$COMMAND < $1.in"
   else
-     if [ -f "RCS/$1.in,v" ]
+     if [ -f "src/$1.in" ]
      then
         COMMAND="$COMMAND < $1.in"
         CLEANUP="$CLEANUP $1.in"
-        co $1.in
+        cp src/$1.in .
      fi
   fi
 
 # Are there other .in_ files?
 # If so, check them out if needed.
-  for INFILX in RCS/$1.in_*,v
+  for INFILX in src/$1.in_*
   do
-     if [ "$INFILX" != "RCS/$1.in_*,v" ]
+     if [ "$INFILX" != "src/$1.in_*" ]
      then
-        INFILE=`echo $INFILX | sed -e 's#^RCS/##' -e 's#,v$##'`
+        INFILE=`echo $INFILX | sed -e 's#^src/##'`
         if [ ! -f "$INFILE" ]
         then
            CLEANUP="$CLEANUP $INFILE"
-           co $INFILE
+           cp src/$INFILE .
         fi
      fi
   done
@@ -164,10 +164,10 @@
   then
      if [ -f $1.out ]
      then
-        CAT=cat
-     elif [ -f RCS/$1.out,v ]
+        CAT="$1.out"
+     elif [ -f src/$1.out ]
      then
-        CAT='co -p -q'
+        CAT="src/$1.out"
      else
         echo "PASS (execution succeeded): $*"
         STATUS=0
@@ -189,13 +189,13 @@
   mv -f ${1}_tmp.out2 ${1}_tmp.out
 
 # Compare with the expected output.
-  if $CAT $1.out | sed -e '/^>>>/,/^<<</d' | diff ${1}_tmp.out -
+  if cat "$CAT" | sed -e '/^>>>/,/^<<</d' | diff ${1}_tmp.out -
   then
      echo "PASS (output verified): $*"
      STATUS=0
      exit
   else
-     $CAT $1.out | sed -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
+     cat "$CAT" | sed -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
      diff -e ${1}_tmpo.out ${1}_tmp.out > ${1}_atmp.ed
      diff -e ${1}_tmp.out ${1}_tmpo.out > ${1}_btmp.ed
      fchk=`floatcheck.sh ${1}_atmp.ed ${1}_btmp.ed`
