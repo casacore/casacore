@@ -104,10 +104,7 @@ public:
     LCRegionMulti& operator= (const LCRegionMulti& other);
 
     // Comparison 
-    // <group>
     virtual Bool operator== (const LCRegion& other) const;
-    virtual Bool operator!= (const LCRegion& other) const;
-    // </group>
 
     // Does the region have a mask?
     virtual Bool hasMask() const;

@@ -87,11 +87,6 @@ Bool LCRegion::operator== (const LCRegion& other) const
    return True;
 }
 
-Bool LCRegion::operator!= (const LCRegion& other) const
-{
-   if (LCRegion::operator==(other))  return False;
-   return True;
-}
 
 LCRegion::~LCRegion()
 {}

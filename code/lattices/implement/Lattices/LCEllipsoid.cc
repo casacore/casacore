@@ -131,7 +131,7 @@ Bool LCEllipsoid::operator== (const LCRegion& other) const
 
 // Check below us
    
-   if (LCRegionFixed::operator!=(other)) return False;
+   if (!LCRegionFixed::operator==(other)) return False;
  
 // Caste (is safe)
 
@@ -152,15 +152,6 @@ Bool LCEllipsoid::operator== (const LCRegion& other) const
    return True;
 }
 
-
-Bool LCEllipsoid::operator!= (const LCRegion& other) const
-// 
-// See if this region is different from the other region
-//
-{
-   if (LCEllipsoid::operator==(other)) return False;
-   return True;
-}
 
 LCRegion* LCEllipsoid::cloneRegion() const
 {

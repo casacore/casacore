@@ -147,7 +147,7 @@ Bool LCRegionMulti::operator== (const LCRegion& other) const
    
 // Check below us
 
-   if (LCRegion::operator!=(other)) return False;
+   if (!LCRegion::operator==(other)) return False;
 
 // Caste (is safe)
 
@@ -175,13 +175,6 @@ Bool LCRegionMulti::operator== (const LCRegion& other) const
       if (!found) return False;
    }
 
-   return True;
-}
-
-
-Bool LCRegionMulti::operator!= (const LCRegion& other) const
-{
-   if (LCRegionMulti::operator==(other)) return False;
    return True;
 }
 

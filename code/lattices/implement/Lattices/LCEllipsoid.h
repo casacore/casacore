@@ -111,10 +111,7 @@ public:
     LCEllipsoid& operator= (const LCEllipsoid& other);
 
     // Comparison
-    // <group>
     virtual Bool operator== (const LCRegion& other) const;
-    virtual Bool operator!= (const LCRegion& other) const;
-    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;

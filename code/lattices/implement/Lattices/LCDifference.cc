@@ -72,19 +72,11 @@ Bool LCDifference::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCRegionMulti::operator!=(other)) return False;
+   if (!LCRegionMulti::operator==(other)) return False;
   
    return True;
 }
     
-Bool LCDifference::operator!= (const LCRegion& other) const
-//
-// See if this region is different from the other region
-//  
-{
-   if (LCDifference::operator==(other)) return False;
-   return True;
-}
 
 LCRegion* LCDifference::cloneRegion() const
 {

@@ -99,7 +99,7 @@ Bool LCPolygon::operator== (const LCRegion& other) const
 
 // Check below us
    
-   if (LCRegionFixed::operator!=(other)) return False;
+   if (!LCRegionFixed::operator==(other)) return False;
 
 // Caste (is safe)
 
@@ -128,14 +128,6 @@ Bool LCPolygon::operator== (const LCRegion& other) const
    return True;
 }
 
-Bool LCPolygon::operator!= (const LCRegion& other) const
-// 
-// See if this region is different from the other region
-//
-{
-   if (LCPolygon::operator==(other)) return False;
-   return True;
-}
 
 LCRegion* LCPolygon::cloneRegion() const
 {

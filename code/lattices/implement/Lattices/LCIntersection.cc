@@ -90,20 +90,12 @@ Bool LCIntersection::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCRegionMulti::operator!=(other)) return False;
+   if (!LCRegionMulti::operator==(other)) return False;
     
  
    return True;
 }
  
-Bool LCIntersection::operator!= (const LCRegion& other) const
-//
-// See if this region is different from the other region
-//
-{
-   if (LCIntersection::operator==(other)) return False;
-   return True;
-}
     
 LCRegion* LCIntersection::cloneRegion() const
 {

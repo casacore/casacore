@@ -133,7 +133,7 @@ Bool LCBox::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCRegionFixed::operator!=(other)) return False;
+   if (!LCRegionFixed::operator==(other)) return False;
 
 // Caste (is safe)
 
@@ -148,15 +148,6 @@ Bool LCBox::operator== (const LCRegion& other) const
       if (!near(itsTrc(i),that.itsTrc(i))) return False;
    }
 
-   return True;
-}
-
-Bool LCBox::operator!= (const LCRegion& other) const
-// 
-// See if this region is different from the other region
-//
-{
-   if (LCBox::operator==(other)) return False;
    return True;
 }
 

@@ -93,11 +93,15 @@ public:
 
     virtual ~LCRegion();
 
-    // Comparison of private data stored in the LCRegion class
-    // <group>
+    // Equality 
     virtual Bool operator== (const LCRegion& other) const;
-    virtual Bool operator!= (const LCRegion& other) const;
-    // </group>
+
+    // Non-equality.  Be careful, in the intermediate classes
+    // such as LCRegionFixed  (i.e. not the concrete ones)
+    // you must use, e.g., ,src>if (!LCRegion::operator==(...))</src>
+    // rather than <src>if (LCRegion::operator!=(...))</src> as the
+    // latter will invoke an infinite loop.
+    Bool operator!= (const LCRegion& other) const;
 
     // Region type.  Returns className() of derived class
     virtual String type() const = 0;
@@ -213,6 +217,19 @@ inline LCRegion* LCRegion::translate (const Vector<Float>& translateVector,
 				      const IPosition& newLatticeShape) const
 {
     return doTranslate (translateVector, newLatticeShape);
+}
+
+inline Bool LCRegion::operator!= (const LCRegion& other) const
+//
+// Watch out !  You must not, in the non-concrete intermediate classes
+// (such as LCRegionFixed), invoke LCRegion::operator!=  If you do,
+// you will be stuck in a time warp, as this will just fetch the 
+// operator== of the derived class and you start all over again.
+// You must use !LCRegion::operator==.  It is ok in the derived
+// classes though to say if (x != y) where x and y are, say,
+// LCBoxes.
+{
+   return ToBool(!operator==(other));
 }
 
 #endif

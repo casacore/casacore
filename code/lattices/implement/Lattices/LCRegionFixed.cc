@@ -63,16 +63,11 @@ Bool LCRegionFixed::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCRegion::operator!=(other)) return False;
+   if (!LCRegion::operator==(other)) return False;
 
    return True;
 }
     
-Bool LCRegionFixed::operator!= (const LCRegion& other) const
-{
-   if (LCRegionFixed::operator==(other)) return False;
-   return True;
-}
 
 
 void LCRegionFixed::setMask (const Array<Bool>& mask)

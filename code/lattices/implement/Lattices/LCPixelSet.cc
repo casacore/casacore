@@ -75,7 +75,7 @@ Bool LCMask::operator== (const LCRegion& other) const
 
 // Check below us
    
-   if (LCBox::operator!=(other)) return False;
+   if (!LCBox::operator==(other)) return False;
 
 // Check the masks
 
@@ -84,15 +84,6 @@ Bool LCMask::operator== (const LCRegion& other) const
    return True;
 }
  
-Bool LCMask::operator!= (const LCRegion& other) const
-//
-// See if this region is different from the other region
-//
-{
-   if (LCMask::operator==(other)) return False;
-   return True;
-}
-    
 
 LCRegion* LCMask::cloneRegion() const
 {

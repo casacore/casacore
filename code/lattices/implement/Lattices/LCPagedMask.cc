@@ -95,7 +95,7 @@ Bool LCPagedMask::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCBox::operator!=(other)) return False;
+   if (!LCBox::operator==(other)) return False;
 
 // Check masks
 
@@ -104,11 +104,6 @@ Bool LCPagedMask::operator== (const LCRegion& other) const
    return True;
 }
 
-Bool LCPagedMask::operator!= (const LCRegion& other) const
-{
-   if (LCPagedMask::operator==(other)) return False;
-   return True;
-}
 
 LCRegion* LCPagedMask::cloneRegion() const
 {

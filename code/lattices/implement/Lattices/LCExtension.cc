@@ -103,7 +103,7 @@ Bool LCExtension::operator== (const LCRegion& other) const
 
 // Check below us
 
-   if (LCRegionMulti::operator!=(other)) return False;
+   if (!LCRegionMulti::operator==(other)) return False;
     
 // Caste(is safe)
  
@@ -119,15 +119,6 @@ Bool LCExtension::operator== (const LCRegion& other) const
    return True;
 }
  
-Bool LCExtension::operator!= (const LCRegion& other) const
-//
-// See if this region is different from the other region
-//
-{
-   if (LCExtension::operator==(other)) return False;
-   return True;
-}
-
 
 LCRegion* LCExtension::cloneRegion() const
 {

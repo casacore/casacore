@@ -84,10 +84,7 @@ public:
     LCPagedMask& operator= (const LCPagedMask& other);
 
     // Comparison
-    // <group>
     virtual Bool operator==(const LCRegion& other) const;
-    virtual Bool operator!=(const LCRegion& other) const;
-    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;

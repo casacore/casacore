@@ -92,11 +92,9 @@ public:
     // Assignment (copy semantics).
     LCBox& operator= (const LCBox& other);
 
-    // Comparison.  Mask not checked
-    // <group>
+    // Comparison.  Mask not checked. Use function 
+    // LRegionSingle::maskEqual  to do this
     virtual Bool operator== (const LCRegion& other) const;
-    virtual Bool operator!= (const LCRegion& other) const;
-    // </group>
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
