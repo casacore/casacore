@@ -1,5 +1,5 @@
 //# TableCopy.h: Class with static functions for copying a table
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -48,25 +48,22 @@
 // </prerequisite>
 
 // <synopsis> 
-// TableCopy is used to make a view on another table.
-// Usually it is a view on a subset of the table, either in vertical
-// or horizontal direction. Thus a subset of rows and/or columns.
-// It will be the result of a select, sort, project or iterate function.
-//
-// It acts to the user as a normal table. All gets and puts are
-// handled by RefColumn which directs them to the referenced column
-// while (if needed) converting the given row number to the row number
-// in the referenced table. For that purpose TableCopy maintains a
-// Vector of the row numbers in the referenced table.
-//
-// The TableCopy constructor acts in a way that it will always reference
-// the original table. This means that if a select is done on a TableCopy,
-// the resulting TableCopy will also reference the original PlainTable.
-// This is done to avoid long chains of TableCopys.
-// However, if ever some other kind of table views are introduced
-// (like a join or a concatenation of similar tables), this cannot be
-// used anymore. Most software already anticipates on that. The only
-// exception is the code anding, oring tables (refAnd, etc.).
+// TableCopy is a class for making a deep copy of a table.
+// The table can be a PlainTable or a RefTable.
+// It contains the following static functions:
+// <ol>
+//  <li> <src>makeEmptyTable</src> creates a new table using the
+//       description and storage managers of the input table.
+//       By default TiledDataStMan (which is more or less obsolete) will
+//       be replaced by TiledShapeStMan.
+//       By default the new table contains the same number of rows as the
+//       existing table.
+//  <li> <src>copyRows</src> copies the data of one to another table.
+//       It is possible to specify where to start in the input and output.
+//  <li> <src>CopyInfo</src> copies the table info data.
+//  <li> <src>copySubTables</src> copies all the subtables in table and
+//       column keywords. It is done recursively.
+// </ol>
 // </synopsis> 
 
 //# <todo asof="$DATE:$">
