@@ -36,6 +36,8 @@
 #include <aips/aips.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
+// This should be forward declared but I cannot make it work!
+#include <aips/Mathematics/Complex.h>
 
 class GlishRecord;
 template<class T> class ImageInterface;
@@ -45,6 +47,7 @@ class SkyCompRep;
 class String;
 template<class T> class Vector;
 template<class Qtype> class Quantum;
+// class DComplex;
 
 // <summary>A component of a model of the sky </summary>
 
@@ -135,11 +138,24 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the integrated flux of the component. The Vector specifies
-  // all the polarizations of the radiation.
+  // set/get the integrated flux of the component. The Vector specifies all the
+  // polarizations of the radiation. The <src>setFlux</src> and <src>flux</src>
+  // function require the flux to be represented in Stokes parameters,
+  // ie. I,Q,U,V respectively. The flux can also be represented using linear
+  // polarisations, ie. XX,XY,YX,YY resp. using the
+  // <src>{setF,f}luxLinear</src> functions (the Parrallactic angle is assumed
+  // to be zero). Similarly the flux can be represented with Circular
+  // polarisations, ie., RR, RL, LR, LL resp. using the
+  // <src>{setF,f}luxCircular</src> functions. It is expected that these six
+  // functions will be coalesced into two once a Measure that represents flux
+  // is available.
   // <group>
   virtual void setFlux(const Quantum<Vector<Double> > & newFlux);
   virtual void flux(Quantum<Vector<Double> > & compflux) const;
+  virtual void setFluxLinear(const Quantum<Vector<DComplex> > & newFlux);
+  virtual void fluxLinear(Quantum<Vector<DComplex> > & compflux) const;
+  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & newFlux);
+  virtual void fluxCircular(Quantum<Vector<DComplex> > & compflux) const;
   // </group>
 
   // set/get the direction of (usually the centre) of the component.

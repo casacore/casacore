@@ -104,6 +104,26 @@ void SkyComponent::flux(Quantum<Vector<Double> > & compFlux) const {
   DebugAssert(ok(), AipsError);
 }
 
+void SkyComponent::setFluxLinear(const Quantum<Vector<DComplex> > & newFlux) {
+  itsCompPtr->setFluxLinear(newFlux);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
+  itsCompPtr->fluxLinear(compFlux);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::setFluxCircular(const Quantum<Vector<DComplex> > & newFlux){
+  itsCompPtr->setFluxCircular(newFlux);
+  DebugAssert(ok(), AipsError);
+}
+
+void SkyComponent::fluxCircular(Quantum<Vector<DComplex> > & compFlux) const {
+  itsCompPtr->fluxCircular(compFlux);
+  DebugAssert(ok(), AipsError);
+}
+
 void SkyComponent::setDirection(const MDirection & newDir) {
   itsCompPtr->setDirection(newDir);
   DebugAssert(ok(), AipsError);
