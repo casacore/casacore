@@ -2765,3 +2765,4 @@
 10 095 src rm trial/apps/sky
 10 095 src rm trial/apps/sky/makefile
 10 095 src rm aips/implement/Mathematics/DComplex.h
+10 098 src rm trial/implement/Tasking/objectgui.g
