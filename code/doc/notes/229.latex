@@ -1490,12 +1490,29 @@ data from separate observations, as defined in Section 3.3.
 reference antenna for baseline-based correlators (True for ANTENNA1;
 False for ANTENNA2).
 
-\item[UVW] $uvw$ coordinates for the baseline between ANTENNA1 and
-ANTENNA2. This is defined at the centroid time, TIME\_CENTROID.
+\item[UVW] $uvw$ coordinates for the baseline from ANTENNE2 to ANTENNA1,
+   i.e. the
+   baseline is equal to the difference POSITION2 - POSITION1. The UVW given
+   are for the TIME\_CENTROID, and correspond in general to the reference type
+   for the PHASE\_DIR of the relevant field. I.e. J2000 if the phase reference
+   direction is given in J2000 coordinates. However, any known reference is
+   valid.
+   Note that the choice of baseline direction and UVW definition ($W$ towards
+   source direction; $V$ in plane through source and system's pole; $U$ in
+   direction of increasing longitude coordinate) also determines the sign of
+   the phase of the recorded data.
 
-\item[UVW2] $uvw$ coordinates for the baseline between ANTENNA1 and
-ANTENNA3 (triple-product data only). This is defined at the centroid
-time, TIME\_CENTROID.
+\item[UVW2] $uvw$ coordinates for the baseline from ANTENNE3 to ANTENNA1
+   (triple-product data only), i.e. the
+   baseline is equal to the difference POSITION3 - POSITION1. The UVW given
+   are for the TIME\_CENTROID, and correspond in general to the reference type
+   for the PHASE\_DIR of the relevant field. I.e. J2000 if the phase reference
+   direction is given in J2000 coordinates. However, any known reference is
+   valid.
+   Note that the choice of baseline direction and UVW definition ($W$ towards
+   source direction; $V$ in plane through source and system's pole; $U$ in
+   direction of increasing longitude coordinate) also determines the sign of
+   the phase of the recorded data.
 
 \item[DATA, FLOAT\_DATA, LAG\_DATA] At least one of these columns
 should be present in a given MeasurementSet. In special cases one or
