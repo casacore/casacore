@@ -662,7 +662,7 @@ void ComponentList::createTable(const String & fileName,
     }
   }
   SetupNewTable newTable(fileName, td, option);
-  itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), True);
+  itsTable = Table(newTable, TableLock::PermanentLocking, nelements(), False);
 }
 
 void ComponentList::writeTable() {
