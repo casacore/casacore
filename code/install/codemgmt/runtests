@@ -58,7 +58,7 @@
      echo "Summary of runtests for $AIPSPATH ($VERSION)" > $BINTESTD/runtests.summary
      echo "--------------------------------------" >> $BINTESTD/runtests.summary
      echo "" >> $BINTESTD/runtests.summary
-     ../testsum.sh $AIPSARCH  2>&1 | fgrep -A15 'Test results for ' | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
+     testsum.sh $AIPSARCH $BINTESTD/runtests.report 2>&1 | fgrep -A15 'Test results for ' | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
      echo "" >> $BINTESTD/runtests.summary
 
      # Create a summary for each package (which must have an implement dir).
@@ -70,7 +70,7 @@
          grep "${PKGNM}-" $BINTESTD/runtests.report > /dev/null 2>&1
          if [ $? = 0 ]; then
            echo "" >> $BINTESTD/runtests.summary
-           ../testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
+           testsum.sh $AIPSARCH $BINTESTD/runtests.report $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
            # Append the number of failed, etc. to the total summary.
            fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '+****' | fgrep -v '+****' >> $BINTESTD/runtests.summary
            # Append the failures.
