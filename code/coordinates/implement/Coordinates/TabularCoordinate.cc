@@ -27,8 +27,10 @@
 //# $Id$
 
 #include <trial/Coordinates/TabularCoordinate.h>
+
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Functionals/Interpolate1D.h>
@@ -564,4 +566,72 @@ Coordinate *TabularCoordinate::clone() const
     return new TabularCoordinate(*this);
 }
 
+
+
+
+Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes, 
+                                                      const Vector<Int>& shape) const
+//
+// axes says which axes in the coordinate are to be transformed
+// shape is the shape of the image for all axes in this coordinate
+//
+{   
+   if (channel_corrector_p) {
+      throw (AipsError("Cannot Fourier Transform a non-linear TabularCoordinate"));
+   }
+//
+   if (axes.nelements() != nPixelAxes()) {
+      throw (AipsError("Invalid number of specified axes"));
+   }
+   uInt nT = 0;
+   for (uInt i=0; i<nPixelAxes(); i++) if (axes(i)) nT++;
+   if (nT==0) {
+      throw (AipsError("You have not specified any axes to transform"));
+   }
+//
+   if (shape.nelements() != nPixelAxes()) {
+      throw (AipsError("Invalid number of elements in shape"));
+   }
+//
+   Vector<String> units = worldAxisUnits();
+   Vector<String> unitsCanon = worldAxisUnits();
+   Vector<String> unitsOut = worldAxisUnits();
+   Vector<String> names = worldAxisNames();
+   Vector<String> namesOut = worldAxisNames();
+//
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      if (axes(i)) {
+         fourierUnits(namesOut(i), unitsOut(i), unitsCanon(i), Coordinate::TABULAR, i, 
+                      units(i), names(i));
+      }
+   }
+
+// Make a copy of ourselves so we can change the units (else we would
+// need to make this a non-const function)
+
+    TabularCoordinate tc = *this;
+    if (!tc.setWorldAxisUnits(unitsCanon)) {
+      throw(AipsError("Could not set world axis units"));
+    }
+
+// Set the Fourier coordinate parameters.  
+
+   Vector<Double> crval = tc.referenceValue();
+   Vector<Double> crpix = tc.referencePixel();    
+   Vector<Double> cdelt = tc.increment();
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      if (axes(i)) { 
+         crval(i) = 0.0;
+         cdelt(i) = 1.0 / (shape(i) * cdelt(i));
+         crpix(i) = Int(shape(i)/2);
+      }
+   }
+
+// Now create the new output LinearCoordinate
+
+    Matrix<Double> pc(1, 1);
+    pc = 0.0; 
+    pc.diagonal() = 1.0;
+    return new LinearCoordinate(namesOut, unitsOut, crval, cdelt, pc, crpix);
+}
 

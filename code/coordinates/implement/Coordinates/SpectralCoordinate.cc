@@ -631,3 +631,15 @@ String SpectralCoordinate::format(String& units,
    return String(oss);
 }
 
+
+
+Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes, 
+                                                       const Vector<Int>& shape) const
+//
+// axes says which axes in the coordinate are to be transformed
+// shape is the shape of the image for all axes in this coordinate
+//
+{   
+   return worker_p.makeFourierCoordinate(axes, shape);
+}
+
