@@ -31,9 +31,11 @@
 #include <aips/Exceptions.h>
 #include <aips/OS/EnvVar.h>
 #include <aips/OS/File.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/Measures/MUString.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
@@ -84,6 +86,44 @@ Bool Aipsrc::find(String &value, const String &keyword,
 Bool Aipsrc::findNoHome(String &value, const String &keyword,
 			  const String &deflt) {
   return (findNoHome(value, keyword) ? True : (value = deflt, False));
+}
+
+Bool Aipsrc::find(uInt &value, const String &keyword,
+		  Int Nname, const String tname[]) {
+  String res;
+  if (find(res, keyword)) {
+    value = MUString::minimaxNC(res, Nname, tname);
+    return (value < Nname ? True : False);
+  };
+  return False;
+}
+
+Bool Aipsrc::find(uInt &value, const String &keyword,
+		  const Vector<String> &tname) {
+  String res;
+  if (find(res, keyword)) {
+    value = MUString::minimaxNC(res, tname);
+    return (value < tname.nelements() ? True : False);
+  };
+  return False;
+}
+
+Bool Aipsrc::find(uInt &value, const String &keyword,
+		  Int Nname, const String tname[], const String &deflt) {
+  if (!find(value, keyword, Nname, tname)) {
+    value = MUString::minimaxNC(deflt, Nname, tname);
+    return False;
+  };
+  return True;
+}
+
+Bool Aipsrc::find(uInt &value, const String &keyword,
+		  const Vector<String> &tname, const String &deflt) {
+  if (!find(value, keyword, tname)) {
+    value = MUString::minimaxNC(deflt, tname);
+    return False;
+  };
+  return True;
 }
 
 void Aipsrc::reRead() {
@@ -164,9 +204,32 @@ uInt Aipsrc::registerRC(const String &keyword,
   return n;
 }
 
+uInt Aipsrc::registerRC(const String &keyword,
+			Int Nname, const String tname[], 
+			const String &deflt) {
+  uInt n = Aipsrc::registerRC(keyword, ncodlst);
+  codlst.resize(n);
+  find (codlst[n-1], keyword, Nname, tname, deflt);
+  return n;
+}
+
+uInt Aipsrc::registerRC(const String &keyword,
+			const Vector<String> &tname, const String &deflt) {
+  uInt n = Aipsrc::registerRC(keyword, ncodlst);
+  codlst.resize(n);
+  find (codlst[n-1], keyword, tname, deflt);
+  return n;
+}
+
 const String &Aipsrc::get(uInt keyword) {
   AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
   return strlst[keyword-1];
+}
+
+const uInt &Aipsrc::get(uInt &code, uInt keyword) {
+  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  code = codlst[keyword-1];
+  return codlst[keyword-1];
 }
 
 void Aipsrc::set(uInt keyword, const String &deflt) {
@@ -174,7 +237,18 @@ void Aipsrc::set(uInt keyword, const String &deflt) {
   strlst[keyword-1] = deflt;
 }
 	       
+void Aipsrc::set(uInt keyword,
+		 Int Nname, const String tname[], const String &deflt) {
+  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  find (codlst[keyword-1], keyword, Nname, tname, deflt);
+}
 
+void Aipsrc::set(uInt keyword,
+		 const Vector<String> &tname, const String &deflt) {
+  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  find (codlst[keyword-1], keyword, tname, deflt);
+}
+  
 uInt Aipsrc::parse() {
   // This parse based on order HOME, AIPSROOT, AIPSHOST, AIPSSITE, AIPSARCH
   String filelist = fillAips(uhome) + String("/.aipsrc:");
@@ -292,3 +366,5 @@ String Aipsrc::uhome= String();
 Bool Aipsrc::filled = False;
 Block<String> Aipsrc::strlst(0);
 Block<String> Aipsrc::nstrlst(0);
+Block<uInt> Aipsrc::codlst(0);
+Block<String> Aipsrc::ncodlst(0);
