@@ -98,6 +98,7 @@ public:
 
 private:
   // Forbid copy constructor and assignment.
+  // <group>
   TiledFileHelper (const TiledFileHelper&);
   TiledFileHelper& operator= (const TiledFileHelper&);
   // </group>
