@@ -32,7 +32,6 @@
 #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/iostream.h>
 
 // Math functions
 /// Should be in stl

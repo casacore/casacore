@@ -31,7 +31,7 @@
 #include <aips/aips.h>
 #include <aips/math.h>
 //# The following is to get abs(int)
-#include <stdlib.h>
+#include <aips/stdlib.h>
 
 // <summary>AIPS++ interface to math.h and other scalar math functions</summary>
 

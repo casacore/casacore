@@ -35,7 +35,6 @@
 //# Includes
 #include <aips/aips.h>
 #include <complex>
-///#include <iosfwd>
 
 
 // <summary>
@@ -249,9 +248,9 @@ inline DComplex min(const DComplex &x, const DComplex &y)
 
 #include <aips/aips.h>
 #include <aips/Utilities/generic.h>
-#include <iostream.h>
+#include <aips/aipsiosfwd.h>
 #include <aips/Mathematics/Math.h>
-#include <stdlib.h>
+#include <aips/stdlib.h>
 
 
 
