@@ -188,50 +188,50 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 
   for(uInt i=0; i<exprOrder_p.nelements(); i++)
   {
-    TableExprNode node;
+    const TableExprNode *node = 0x0;
 
     switch(exprOrder_p[i])
     {
       case ANTENNA_EXPR:
         if(antennaExpr_p != "" &&
-           msAntennaGramParseCommand(ms, antennaExpr_p))
-          node = *msAntennaGramParseNode();
+           msAntennaGramParseCommand(ms, antennaExpr_p) == 0)
+          node = msAntennaGramParseNode();
         break;
       case CORR_EXPR:
         if(corrExpr_p != "" &&
-           msCorrGramParseCommand(ms, corrExpr_p))
-          node = *msCorrGramParseNode();
+           msCorrGramParseCommand(ms, corrExpr_p) == 0)
+          node = msCorrGramParseNode();
         break;
       case FIELD_EXPR:
         if(fieldExpr_p != "" &&
-           msFieldGramParseCommand(ms, fieldExpr_p))
-          node = *msFieldGramParseNode();
+           msFieldGramParseCommand(ms, fieldExpr_p) == 0)
+          node = msFieldGramParseNode();
         break;
       case SPW_EXPR:
         if(spwExpr_p != "" &&
-           msSpwGramParseCommand(ms, spwExpr_p))
-          node = *msSpwGramParseNode();
+           msSpwGramParseCommand(ms, spwExpr_p) == 0)
+          node = msSpwGramParseNode();
         break;
       case TIME_EXPR:
         if(timeExpr_p != "" &&
-           msTimeGramParseCommand(ms, timeExpr_p))
-          node = *msTimeGramParseNode();
+           msTimeGramParseCommand(ms, timeExpr_p) == 0)
+          node = msTimeGramParseNode();
         break;
       case UVDIST_EXPR:
         if(uvDistExpr_p != "" &&
-           msUvDistGramParseCommand(ms, uvDistExpr_p))
-          node = *msUvDistGramParseNode();
+           msUvDistGramParseCommand(ms, uvDistExpr_p) == 0)
+          node = msUvDistGramParseNode();
         break;
       case NO_EXPR:
       default:
         break;
     }
 
-    if(node.isNull() == False)
+    if(node && node->isNull() == False)
       if(condition.isNull() == True)
-        condition = node;
+        condition = *node;
       else
-        condition = condition && node;
+        condition = condition && *node;
   }
 
   return condition;
