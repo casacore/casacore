@@ -1,5 +1,5 @@
 //# aips.h: Global initialization for namespace management, standard types, etc.
-//# Copyright (C) 1993-1997,1998
+//# Copyright (C) 1993-1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,39 +68,8 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
-#if defined(__GNUG__)
-// Needed for g++ 2.7.2. Hopefully we can delete these at some point.
-// <group>
-inline const Bool &at_cc(const Bool &val) { return(val); };
-inline const Char &at_cc(const Char &val) { return(val); };
-inline const uChar &at_cc(const uChar &val) { return(val); };
-inline const Short &at_cc(const Short &val) { return(val); };
-inline const uShort &at_cc(const uShort &val) { return(val); };
-inline const Int &at_cc(const Int &val) { return(val); };
-inline const uInt &at_cc(const uInt &val) { return(val); };
-inline const Long &at_cc(const Long &val) { return(val); };
-inline const uLong &at_cc(const uLong &val) { return(val); };
-inline const Float &at_cc(const Float &val) { return(val); };
-inline const Double &at_cc(const Double &val) { return(val); };
-inline const lDouble &at_cc(const lDouble &val) { return(val); };
-
-inline Bool &at_c(Bool &val) { return(val); };
-inline Char &at_c(Char &val) { return(val); };
-inline uChar &at_c(uChar &val) { return(val); };
-inline Short &at_c(Short &val) { return(val); };
-inline uShort &at_c(uShort &val) { return(val); };
-inline Int &at_c(Int &val) { return(val); };
-inline uInt &at_c(uInt &val) { return(val); };
-inline Long &at_c(Long &val) { return(val); };
-inline uLong &at_c(uLong &val) { return(val); };
-inline Float &at_c(Float &val) { return(val); };
-inline Double &at_c(Double &val) { return(val); };
-inline lDouble &at_c(lDouble &val) { return(val); };
-// </group>
-#else    /* !__GNUG__ */
 #define at_c(X) X
 #define at_cc(X) X
-#endif   /* __GNUG__ */
 
 // This is an inline guaranteed-correct conversion function which converts
 // to Bool any type which has meaning in a C++ logical expression.
