@@ -1,5 +1,5 @@
 //# Register.h: Templated function to provide simple type identification
-//# Copyright (C) 1993,1994,1995,1999,2000,1999xxx
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

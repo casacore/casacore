@@ -1,5 +1,5 @@
 //# MVBaseline.cc: A 3D vector on Earth
-//# Copyright (C) 1998,1999,2000,1999xxx
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
