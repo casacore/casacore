@@ -40,7 +40,7 @@
 template <class MT>
 Bool SpectralFit::fit(const Vector<MT> &y,
 		      const Vector<MT> &x,
-		      const Vector<Bool> *const mask) {
+		      const Vector<Bool> *mask) {
   Vector<MT> sigma(x.nelements());
   sigma = 1.0;
   return fit(sigma, y, x, mask);
@@ -50,7 +50,7 @@ template <class MT>
 Bool SpectralFit::fit(const Vector<MT> &sigma,
                       const Vector<MT> &y,
 		      const Vector<MT> &x,
-		      const Vector<Bool> *const mask) {
+		      const Vector<Bool> *mask) {
   // The fitter
   NonLinearFitLM<MT> fitter;
   iter_p = 0;
@@ -115,16 +115,23 @@ Bool SpectralFit::fit(const Vector<MT> &sigma,
 //# Cater for Double and Float profiles
 template Bool SpectralFit::fit<Double>(Vector<Double> const &,
 			       Vector<Double> const &,
-			       Vector<Bool> const *);
+			       const Vector<Bool> *);
 template Bool SpectralFit::fit<Float>(Vector<Float> const &,
 			       Vector<Float> const &,
-			       Vector<Bool> const *);
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Bool> const &);
 template Bool SpectralFit::fit<Double>(Vector<Double> const &,
 			       Vector<Double> const &,
 			       Vector<Double> const &,
-			       Vector<Bool> const *);
+			       const Vector<Bool> *);
 template Bool SpectralFit::fit<Float>(Vector<Float> const &,
 			       Vector<Float> const &,
 			       Vector<Float> const &,
-			       Vector<Bool> const *);
+			       const Vector<Bool> *);
+template Bool SpectralFit::fit<Float>(Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Float> const &,
+			       Vector<Bool> const &);
 

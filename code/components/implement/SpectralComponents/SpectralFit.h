@@ -156,12 +156,12 @@ class SpectralFit {
   template <class MT>
     Bool fit(const Vector<MT> &y,
 	     const Vector<MT> &x,
-	     const Vector<Bool> *const mask);
+	     const Vector<Bool> *mask);
   template <class MT>
     Bool fit(const Vector<MT> &sigma,
              const Vector<MT> &y,
 	     const Vector<MT> &x,
-	     const Vector<Bool> *const mask);
+	     const Vector<Bool> *mask);
   // </group>
 };
 
