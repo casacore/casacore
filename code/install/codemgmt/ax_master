@@ -6266,3 +6266,4 @@
 17 204 src rm trial/implement/Utilities/maker.g
 17 204 src rm trial/implement/Utilities/maker.help
 17 206 src rm trial/apps/dish/ssa.help
+17 206 src rm trial/apps/dish/dishpfgui.g
