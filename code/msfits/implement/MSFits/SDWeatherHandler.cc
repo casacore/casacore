@@ -67,7 +67,7 @@ SDWeatherHandler &SDWeatherHandler::operator=(const SDWeatherHandler &other)
 	clearAll();
 	msWeather_p = new NewMSWeather(*(other.msWeather_p));
 	AlwaysAssert(msWeather_p, AipsError);
-	msWeatherCols_p = new NewMSWeatherColumns(*(other.msWeatherCols_p));
+	msWeatherCols_p = new NewMSWeatherColumns(*msWeather_p);
 	AlwaysAssert(msWeatherCols_p, AipsError);
 	rownr_p = other.rownr_p;
 	humidityId_p = other.humidityId_p;
