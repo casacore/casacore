@@ -53,7 +53,7 @@ main()
       HistAcc<Float> hsemif(25,2.0);     // Semi automatic (width given)
 
       Vector<Int> vvi(nv,0);         // values of required type
-      Vector<Float> vvf(nv,0);         // values of required type
+      Vector<Float> vvf(nv,0.0);         // values of required type
       Block<Float> bvf(nv);            // values of required type
 
       ACG gen(10,20);                  // random number generator

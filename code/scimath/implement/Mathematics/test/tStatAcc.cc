@@ -58,7 +58,7 @@ main()
       Vector<Int> vv(nv,0);         // values of required type
       Block<Int> bv(nv);            // values of required type
 
-      Vector<Float> ww(nv,0);          // weights are always Float
+      Vector<Float> ww(nv,0.0);          // weights are always Float
       Block<Float> bw(nv);             // weights are always Float
       
       Int i=0;                         // index
