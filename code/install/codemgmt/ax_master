@@ -3243,3 +3243,4 @@
 13 118 src rm trial/implement/DisplayEvents/WCITMapFiddler.cc
 13 118 src rm trial/implement/DisplayEvents/WCITStdFiddler.cc
 13 129 src rm trial/apps/gDisplay/templates
+13 133 src mv doc/project/toplevel_readme.html doc/project/toplevel_readme.thtml
