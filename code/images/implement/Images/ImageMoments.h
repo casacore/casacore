@@ -37,6 +37,7 @@ template <class T> class ImageInterface;
 template <class T> class PagedImage;
 template <class T> class Vector;
 template <class T> class Lattice;
+template <class T> class MomentCalcBase;
 class CoordinateSystem;
 class IPosition;
 class LogIO;
@@ -50,7 +51,9 @@ class Unit;
 // </reviewed>
 // 
 // <prerequisite>
-//   <li> ImageInterface
+//   <li> <linkto class="ImageInterface">ImageInterface</linkto>
+//   <li> <linkto class="LatticeApply">LatticeApply</linkto>   
+//   <li> <linkto class="MomentCalculator">MomentCalculator</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -101,9 +104,12 @@ class Unit;
 //  window is found (hopefully surrounding the spectral line feature) and only the 
 //  pixels in that window are used for computation.  This window can be found from the 
 //  smoothed or unsmoothed data.  The moments are always computed from the unsmoothed 
-//  data.  The window can be found (for each spectrum) interactively or automatically 
-//  (via Bosma's converging mean algorithm or by fitting Gaussians and taking 
-//  +/- 3-sigma as the window).
+//  data.  For each spectrum, the window can be found interactively or automatically.
+//  There are two interactive methods.  Either you just mark the window with the
+//  cursor, or you interactively fit a Gaussian to the profile and the +/- 3-sigma
+//  window is returned.  There are two automatic methods.  Either Bosma's converging
+//  mean algorithm is used, or an automatically  fit Gaussian +/- 3-sigma window
+//  is returned.
 //
 //  The fitting method fits Gaussians to spectral features either automatically
 //  or interactively.  The moments are then computed from the Gaussian fits
@@ -229,12 +235,21 @@ template <class T> class ImageMoments
 {
 public:
 
+// Note that if I don't put MomentCalcBase as a forward declaration
+// and use instead  "friend class MomentCalcBase<T>"  The gnu compiler
+// fails with a typedef problem.  But I can't solve it with say
+// "typedef MomentCalcBase<T> gpp_type;"  because you can only do a 
+// typedef with an actual type, not a <T> !
+   friend MomentCalcBase<T>;
 
 // Constructor takes an image and a <src>LogIO</src> object for logging purposes.
-   ImageMoments (const ImageInterface<T>& image, LogIO &os);
+   ImageMoments (ImageInterface<T>& image, LogIO &os);
 
 // Copy constructor.  Uses copy semantics.
    ImageMoments(const ImageMoments<T> &other);
+
+// Copy constructor.  Uses copy semantics.
+   ImageMoments(ImageMoments<T> &other);
 
 // Destructor
   ~ImageMoments();
@@ -290,7 +305,7 @@ enum MomentTypes {
    MINIMUM_COORDINATE,
 
 // Total number
-   NMOMENTS = 13,
+   NMOMENTS,
 
 // Default value is the integrated intensity
    DEFAULT = INTEGRATED};
@@ -336,7 +351,7 @@ enum MethodTypes {
 // Invokes interactive methods
    INTERACTIVE,
 
-   NMETHODS = 3};
+   NMETHODS};
 
 
 // The method by which you compute the moments is specified by calling
@@ -379,7 +394,7 @@ enum KernelTypes {
 // Hanning smoothing kernel
    HANNING,
 
-   NKERNELS = 3};
+   NKERNELS};
 
 // This function invokes smoothing of the input image.  Give <src>Int</src> 
 // arrays for the axes (0 relative) to be smoothed and the smoothing kernel 
@@ -487,7 +502,7 @@ enum KernelTypes {
 
 // Set a new image.  A return value of <src>False</src> indicates the 
 // image had an invalid type (this class only accepts Float or Double images).
-   Bool setNewImage (const ImageInterface<T>& image);
+   Bool setNewImage (ImageInterface<T>& image);
 
 // Helper function to convert a string containing a list of desired methods to
 // the correct <src>Vector<Int></src> required for the <src>setWinFitMethod</src> function.
@@ -505,13 +520,11 @@ enum KernelTypes {
 // will do) is present.
    static Vector<Int> toKernelTypes (const String& kernels);
 
+
 private:
 
-// These are passed in via the constructor or 
-// set functions.
-
    LogIO& os_p;
-   const ImageInterface<T>* pInImage_p;
+   ImageInterface<T>* pInImage_p;
 
    Int momentAxis_p;
    Int momentAxisDefault_p;
@@ -519,11 +532,9 @@ private:
    Vector<Int> kernelTypes_p;
    Vector<Double> kernelWidths_p;   
    Vector<Int> nxy_p;
-   Vector<Double> pixelIn_p;
    Vector<Int> moments_p;
    Vector<Float> range_p;
    Vector<Int> smoothAxes_p;
-   Vector<Double> worldOut_p;
 
    IPosition blc_p, trc_p, inc_p;
 
@@ -541,84 +552,9 @@ private:
    Bool fixedYLimits_p;
 
 
-
-// Accumulate statistical sums from a spectrum
-   void accumSums      (Double& s0,
-                        Double& s0Sq,
-                        Double& s1,
-                        Double& s2,
-                        Int& iMin,
-                        Int& iMax,
-                        Double& dMin,
-                        Double& dMax,
-                        const Int& index,   
-                        const T& datum,  
-                        const Double& coord);  
-
-// Determine if the spectrum is pure noise by comparing
-// the peak SNR with some given value 
-   Bool allNoise       (T& dMean,
-                        const Vector<T>& data);
-
-                     
-// Determine if the spectrum is pure noise with the Kolmogorov-Smirnov test
-   Bool allNoise       (const Vector<T>& data,
-                        const Double& sigma, 
-                        const Double& ks);
-
 // Check that the combination of methods that the user has requested is valid
 // List a handy dandy table if not.
    Bool checkMethod    ();
-
-// Compute moments by including or excluding pixels from a specified
-// intensity range                          
-   void doMomCl        (Vector<T>& calcmoments,
-                        const Vector<Double>& sepWorldCoord,
-                        const Vector<T>& data,
-                        const Bool doMedianI,
-                        const Bool doMedianV, 
-                        const Bool doAbsDev,
-                        const Bool doCoordCalc);
-
-// Compute moments by fitting gaussians and computing from the fits
-   void doMomFit       (Vector<T>& calcMoments,
-                        const Vector<Double>& sepWorldCoord,
-                        const Vector<T>& data,
-                        const Bool doMedianI,
-                        const Bool doMedianV,
-                        const Bool doAbsDev,
-                        const Bool doCoordCalc,
-                        const Bool doPlot,
-                        const String& momAxisType, 
-                        const IPosition& pos);
-
-// Compute moments by smoothing the input image and generating a mask
-// from inclusion or exclusion pixel intensity ranges, and then
-// applying that mask to the unwmoothed data
-   void doMomSm        (Vector<T>& calcMoments,
-                        const Vector<Double>& sepWorldCoord,
-                        const Vector<T>& data,
-                        const Vector<T>& smoothedData,
-                        const Bool doMedianI, 
-                        const Bool doMedianV,
-                        const Bool doAbsDev,
-                        const Bool doCoordCalc,
-                        const Bool doPlot,
-                        const String& momAxisType,
-                        const IPosition& pos);
-
-// Compute moments with the window method
-   void doMomWin       (Vector<T>& calcMoments,
-                        const Vector<Double>& sepWorldCoord,
-                        const Vector<T>& data,
-                        const Vector<T>& smoothedData,
-                        const Bool doMedianI,
-                        const Bool doMedianV,
-                        const Bool doAbsDev,   
-                        const Bool doCoordCalc,
-                        const Bool doPlot,
-                        const String& momAxisType,
-                        const IPosition& pos, const Double& ks);
 
 // Plot a histogram                     
    void drawHistogram  (const T& dMin,
@@ -630,148 +566,13 @@ private:
    void drawLine       (const Vector<T>& x,
                         const Vector<T>& y);
                      
-
-// Determine extrema, draw a box, plot the line and label it.
-   void drawLine       (const Vector<T>& x,   
-                        const Vector<T>& y,
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title);
-
 // Draw a vertical line of the given length at a given abcissa 
    void drawVertical   (const T& x,
                         const T& yMin,
                         const T& yMax);
-
-// Draw a horizintal line the full width of the plot
-   void drawHorizontal (const T& y);
-
-// Draw on lines marking the mean and +/- sigma                     
-   void drawMeanSigma  (const T& dMean,   
-                        const T& dSigma);
-
-// Draw two vertical lines marking a spectral window                     
-   void drawWindow     (const Vector<Int>& window);
-
-// Fit a Gaussian to x and y arrays give guesses for the gaussian parameters
-   Bool fitGaussian    (T& peak,
-                        T& pos,
-                        T& width,
-                        T& level,
-                        const Vector<T>& x,
-                        const Vector<T>& y,
-                        const T& peakGuess,
-                        const T& posGuess,
-                        const T& widthGuess,
-                        const T& levelGuess);
-
-// Automatically fit a Gaussian to a spectrum, including finding the
-// starting guesses.
-   Bool getAutoGaussianFit
-                       (Vector<T>& gaussPars,
-                        const Vector<T>& x,
-                        const Vector<T>& y,   
-                        const Bool& doPlot,  
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title);
-
-// Automatically work out a guess for the Gaussian parameters
-   void getAutoGaussianGuess
-                       (T& peakGuess,
-                        T& posGuess,
-                        T& widthGuess,   
-                        const Vector<T>& x,
-                        const Vector<T>& y);
-
-// Automatically determine the spectral window                    
-   void getAutoWindow  (Vector<Int>& window,
-                        const Vector<T>& x,
-                        const Vector<T>& y,
-                        const Bool& doPlot,
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title, const Double& ks);
-
-// Automatically determine the spectral window via Bosma's algorithm
-   Bool getBosmaWindow (Vector<Int>& window,
-                        const Vector<T>& x,
-                        const Vector<T>& y,
-                        const Bool& doPlot,
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title, const Double& ks);
-
-// Read the cursor button 
-   void getButton      (Bool& reject,
-                        Bool& redo);
-
-// Return the complementary error function (1-erf(x)) via a 
-// polynomial approximation                     
-   Double getErfC      (const Double& x);
-
-// Get the cumulative probability distribution of a Gaussian
-   Double getGaussianCumulativeProb 
-                       (const Double& sigma, const Double& x);
-
-// Interactively specify the spectral window with the cursor
-   void getInterDirectWindow
-                       (Bool& allSubsequent,
-                        Vector<Int>& window,
-                        const Vector<T>& x,
-                        const Vector<T>& y,
-                        const String& xLabel,
-                        const String& yLabel, 
-                        const String& title);
-   
-// Interactively define a guess for a Gaussian fit, and then
-// do the fit.  Do this repeatedly  until the user is content.
-   Bool getInterGaussianFit
-                       (Vector<T>& gaussPars,
-                        const Vector<T>& x,
-                        const Vector<T>& y,
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title);
-
-// Interactively define a guess for the Gaussian parameters
-   void getInterGaussianGuess
-                       (T& peakGuess,
-                        T& posGuess,   
-                        T& widthGuess,
-                        Vector<Int>& window,
-                        Bool& reject,
-                        const Int& nPts);
-
-// Interactively define the spectral window                     
-   void getInterWindow (Bool& allSubsequent,
-                        Vector<Int>& window,
-                        const Vector<T>& x, 
-                        const Vector<T>& y,
-                        const String& xLabel,
-                        const String& yLabel,
-                        const String& title);
-
-// Compute the Kolmogorov-Smirnov probability given the D statistic
-   Double getKSProbability
-                       (const uInt& n, 
-                        const Double& D);
-
-// Read the cursor and return its coordinates if not off the plot.
-// Also interpret which button was pressed
-   Bool getLoc         (T& x,
-                        Bool& allSubsequent,
-                        Bool& ditch,
-                        Bool& redo,
-                        const Bool& final);    
-
-// Read the cursor and return its coordinates if not off the plot
+// Read the cursor and return its coordinates 
    Bool getLoc         (T& x,
                         T& y);
-
-// Generate an abcissa array for plotting                     
-   void makeAbcissa    (Vector<T>& x,
-                        const Int& n);  
 
 // Increase an integer to the next odd integer
    Bool makeOdd        (Int& i);
@@ -780,9 +581,6 @@ private:
    void makePSF        (Array<T>& psf,
                         Matrix<T>& psfSep);
 
-// Compute the world coordinate for the given moment axis pixel                     
-   Double getMomentCoord     (const Double& index);
-
 // Save a lattice to disk as a PagedImage
    void saveLattice (const Lattice<T>* const pLattice,
                      const CoordinateSystem& coordinate,
@@ -790,59 +588,19 @@ private:
                      const IPosition& trc,
                      const String& fileName);
 
-// Set the output image suffixes and fill the moment
-// selection array according to what the user requests
-   Bool selectMoment (Bool& doMedianI,
-                      Bool& doMedianV,
-                      Bool& doAbsDev,
-                      String& suffix,
-                      Int& selMom,
-                      Unit& momentUnits,
-                      const Unit& imageUnits,
-                      const String& momentAxisUnits,
-                      const Int& index);
-
-// Take the fitted Gaussian parameters and set an N-sigma window.  
-// If the window is too small return a Fail condition.
-   Bool setNSigmaWindow(Vector<Int>& window,
-                        const T& pos,
-                        const T& width,
-                        const Int& nPts,
-                        const Int& N);
-
-// Fill the ouput moments array 
-   void setCalcMoments (Vector<T>& calcMoments,
-                        const T& dMedian,
-                        const T& vMedian,
-                        const Int& nPts,
-                        const Double& s0,
-                        const Double& s1,
-                        const Double& s2,
-                        const Double& s0Sq,
-                        const Double& sumAbsDev,
-                        const Double& dMin,
-                        const Double& dMax,
-                        const Int& iMin,
-                        const Int& iMax);
-
-// Make a plotting label with the current location in the lattice
-   void setPosLabel    (String& title,
-                        const IPosition& pos);
-   
-// Plot the Gaussian fit
-   void showGaussFit   (const T& peak,
-                        const T& pos,
-                        const T& width,
-                        const T& level,
-                        const Vector<T>& x,
-                        const Vector<T>& y);
+// Set the output image suffixes and units
+   Bool setOutThings(String& suffix,
+                     Unit& momentUnits,
+                     const Unit& imageUnits,
+                     const String& momentAxisUnits,
+                     const Int moment);
 
 // Smooth an image   
   Bool smoothImage (String& smoothName,
-                    PagedImage<T>*& pSmoothedImage,
-                    const IPosition& latticeShape);
+                    PagedImage<T>*& pSmoothedImage);
 
-  void smoothRow (PagedImage<T>*& pIn,
+// Smooth one row
+  void smoothRow (Lattice<T>* pIn,
                   const Int& row,
                   const Vector<T>& psf);
 
@@ -851,7 +609,11 @@ private:
 // device is set, the user can interact with this process.
    Bool whatIsTheNoise (Double& noise,
                         const Lattice<T>* pI);
+
 };
+
+
+
 
 #endif
 
