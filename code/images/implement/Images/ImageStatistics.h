@@ -300,15 +300,13 @@ private:
                           ();
 
 // List the statistics
-   void listStats         (const IPosition& dPos, 
+   Bool listStats         (const IPosition& dPos, 
                            const Int& n1,
-                           const Vector<Float>& abc,
                            const Matrix<Float>& ord);
 
 // Plot the statistics
    void plotStats         (const IPosition& dPos,
                            const Int& n,
-                           const Vector<Float>& abc,
                            const Matrix<Float>& ord);
 
 // Find the next good or bad point in an array
@@ -354,6 +352,15 @@ private:
 
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours);
+
+
+// Convert pixel coordinate to world coordinate string
+   Bool pix2World         (Vector<String>& sWorld,
+                           const Int& worldAxis,
+                           const Vector<Double>& pixel,
+                           const Int& prec,
+                           const Bool& meanOther);
+
 
 // Retrieve a statistic from the accumulation image and return in an array
    void retrieveStorageStatistic
