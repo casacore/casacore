@@ -38,6 +38,12 @@
 #include <aips/Mathematics/Random.h>
 #include <aips/Exceptions/Error.h>
 
+//# on the alpha long is 64 bits, we redefine it here to make 
+//# this nasty piece of code work
+#ifdef __alpha__
+#define long int
+#endif
+
 //
 //	This is an extension of the older implementation of Algorithm M
 //	which I previously supplied. The main difference between this
@@ -612,3 +618,6 @@ double Weibull::operator()()
 {
     return( pow(pBeta * ( - log(1 - pGenerator -> asDouble()) ), pInvAlpha) );
 }
+#ifdef __alpha__
+#undef long
+#endif
