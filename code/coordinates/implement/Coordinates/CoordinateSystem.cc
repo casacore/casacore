@@ -27,6 +27,8 @@
 //# $Id$
 
 #include <trial/Coordinates/CoordinateSystem.h>
+
+#include <trial/Coordinates/Coordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
@@ -2613,4 +2615,123 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     }
     
     return ok;
+}
+
+
+Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
+                                                     const Vector<Int>& shape) const
+{
+   LogIO os(LogOrigin("CoordinateSystem", "makeFourierCoordinate", WHERE));
+//
+   if (axes.nelements() != nPixelAxes()) {  
+      throw (AipsError("Invalid number of specified pixel axes"));
+   } 
+   if (axes.nelements()==0) {
+      throw (AipsError("There are no pixel axes in this CoordinateSystem"));
+   }
+//
+   if (allEQ(axes,False)) {
+      throw (AipsError("You have not specified any axes to transform"));
+   }
+//
+   if (shape.nelements() != nPixelAxes()) {
+      throw (AipsError("Invalid number of elements in shape"));
+   }
+
+// Make a copy of the CS.  The caste is safe.
+
+   Coordinate* pC = clone();
+   CoordinateSystem* pCS = (CoordinateSystem*)(pC);
+//
+   uInt nReplaced = 0;
+   const uInt nCoord = nCoordinates();
+   for (uInt i=0; i<nCoord; i++) {
+
+// Are there some axes True for this coordinate and are their
+// world/pixel axes not removed ?
+
+      if (checkAxesInThisCoordinate(axes, i)) {
+
+// Find the coordinate-based axes and shape vectors
+
+         nReplaced++;
+         Vector<Int> coordSysAxes = pixelAxes(i);
+         Vector<Bool> coordAxes(coordSysAxes.nelements(),False);
+         Vector<Int> coordShape(coordAxes.nelements(),0);
+//
+         for (uInt j=0; j<coordSysAxes.nelements(); j++) {
+            if (axes(coordSysAxes(j))) coordAxes(j) = True;
+            coordShape(j) = shape(coordSysAxes(j));        
+         }
+
+// Make Fourier coordinate
+
+         const Coordinate& coord = coordinate(i);
+         Coordinate* pC2 = coord.makeFourierCoordinate(coordAxes, coordShape);
+
+// Replace in CS.  Note we don't change any pixel/world axis mappings
+// or removal lists
+
+         pCS->replaceCoordinate(*pC2, i);
+         delete pC2;
+      }
+   }
+//
+   pCS = 0;
+   return pC;
+}
+
+
+Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const
+//
+// 1) See if this coordinate has any axes to be FTd
+// 2) Make sure they are all good.
+//
+{
+   LogIO os(LogOrigin("CoordinateSystem", "checkAxesInThisCoordinate", WHERE));
+//
+   Bool wantIt = False;
+
+// Loop over pixel axes in the coordinatesystem
+
+   Int coord, axisInCoord, worldAxis;
+   for (uInt i=0; i<axes.nelements(); i++) {
+
+// For axes the user wants to FT, find the coordinate
+
+      if (axes(i)) {
+         findPixelAxis(coord, axisInCoord, i);
+
+// It should not be possible for the pixel axis to be missing,
+// because that means the user gave a wrong length vector
+// for "axes" in makeFourierCoordinate and that has already been
+// checked
+
+         if (coord<0) {
+            ostrstream oss;
+            oss << "Pixel axis " << axes(i) << " has been removed" << endl;
+            os << String(oss) << LogIO::EXCEPTION;
+         }
+
+// Is it this coordinate ?
+
+         if (coord==Int(which)) {
+            wantIt = True;
+
+// If the world axis has been removed, issue a warning.  It doesn't 
+// actually matter to the Coordinate that is doing the FT (doesn't
+// know the CS has removed one of its world axes).  Possibly better for
+// the user to remain ignorant on this one !
+
+            worldAxis = pixelAxisToWorldAxis(i);
+            if (worldAxis<0) {
+//               ostrstream oss;
+//               oss << "World axis for pixel axis " << axes(i) << " has been removed" << endl;
+//               os << LogIO::WARN << String(oss) << endl;
+//               os << LogIO::WARN << "This does not affect the Fourier Transform" << LogIO::POST;
+            }
+         }
+      }
+   }
+   return wantIt;
 }
