@@ -2427,3 +2427,5 @@
 11 237 src rm trial/apps/gplot1d
 11 237 src rm trial/apps/plotter/plotter.g
 11 237 sys rm libexec/plotter.g
+11 242 src rm trial/implement/Widgets/stringentry.g
+11 242 src rm trial/implement/Widgets/rangeentry.g
