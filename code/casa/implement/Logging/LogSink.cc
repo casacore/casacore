@@ -30,6 +30,7 @@
 #include <aips/Logging/LogMessage.h>
 
 #include <aips/Logging/NullLogSink.h>
+#include <aips/Logging/MemoryLogSink.h>
 #include <aips/Logging/StreamLogSink.h>
 
 #include <aips/Utilities/PtrHolder.h>
@@ -48,11 +49,15 @@ LogSink::LogSink()
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-LogSink::LogSink(const LogFilter &filter)
-  : LogSinkInterface(filter),
-    local_sink_p(new NullLogSink(LogMessage::DEBUGGING)),
-    local_ref_to_global_p(global_sink_p)
+LogSink::LogSink(const LogFilter &filter, Bool nullSink)
+: LogSinkInterface(filter),
+  local_ref_to_global_p(global_sink_p)
 {
+    if (nullSink) {
+        local_sink_p = new NullLogSink(LogMessage::DEBUGGING);
+    } else {
+        local_sink_p = new MemoryLogSink(LogMessage::DEBUGGING);
+    }
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
@@ -140,6 +145,32 @@ void LogSink::postGloballyThenThrow(const LogMessage &message)
     }
 }
 
+uInt LogSink::nelements() const
+{
+  return local_sink_p->nelements();
+}
+
+Double LogSink::getTime (uInt i) const
+{
+  return local_sink_p->getTime(i);
+}
+String LogSink::getPriority (uInt i) const
+{
+  return local_sink_p->getPriority(i);
+}
+String LogSink::getMessage (uInt i) const
+{
+  return local_sink_p->getMessage(i);
+}
+String LogSink::getLocation (uInt i) const
+{
+  return local_sink_p->getLocation(i);
+}
+String LogSink::getObjectID (uInt i) const
+{
+  return local_sink_p->getObjectID(i);
+}
+
 const LogFilter &LogSink::filter() const
 {
     return this->LogSinkInterface::filter();
@@ -191,8 +222,10 @@ Bool LogSink::postLocally(const LogMessage &message)
 
 void LogSink::flush()
 {
-    if(!local_sink_p.null())
-       local_sink_p->flush();
-    if(!global_sink_p.null())
-       global_sink_p->flush();
+    if (!local_sink_p.null()) {
+        local_sink_p->flush();
+    }
+    if (!global_sink_p.null()) {
+        global_sink_p->flush();
+    }
 }
