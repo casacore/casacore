@@ -62,7 +62,7 @@ moments of images may be calculated. Subimaging and padding are both allowed.
 \item Logging of messages to a gui window and a table, also printing
 to a postscript printer or to ghostview.
 \item Miscellaneous useful utilities including: obtaining AIPS++ 
-configuration information, the \htmlref{{\tt help}}{utility:help} utility, 
+configuration information, the \htmlref{{\tt help}}{misc:help} utility, 
 a printer tool (including a gui), execution of shell commands, reading and 
 writing to external files using C-like commands, {\em etc.}
 \end{itemize}
