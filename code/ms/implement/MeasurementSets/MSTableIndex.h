@@ -1,5 +1,5 @@
  //# MSTableIndex: index into a MeasurementSet sub-table
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,21 +130,22 @@ private:
     // the subtable
     Table tab_p;
 
-    ROScalarColumn<Double> timeColumn_p;
+    ROScalarColumn<Double> timeColumn_p, intervalColumn_p;
+    Vector<Double> timeVec_p, intervalVec_p;
+    const Double *timeVals_p, *intervalVals_p;
+    Bool deleteItTime_p, deleteItInterval_p;
 
-    // Internal keys
+    // Internal keys - set by user
     Record *key_p;
     Block<RecordFieldPtr<Int> > intKeys_p;
-
     Double time_p, interval_p;
 
     // last known integer key values
     Vector<Int> lastKeys_p;
-
     // last known time and interval
     Double lastTime_p, lastInterval_p;
 
-    // last search
+    // last search result - matching integer keys
     Vector<uInt> lastSearch_p;
 
     // last nearest
@@ -154,29 +155,17 @@ private:
     // last known sub-table size
     uInt nrows_p;
 
-    Bool hasChanged_p, hasZeroIntervals_p;
+    Bool hasChanged_p;
 
-    ColumnsIndex *index_p, *zeroIntervalIndex_p;
-    Block<RecordFieldPtr<Int> > lowerIndexKeys_p;
-    Block<RecordFieldPtr<Int> > upperIndexKeys_p;
-    Block<RecordFieldPtr<Int> > limitedKeys_p;
-    RecordFieldPtr<Double> lowerTimeKey_p, upperTimeKey_p;
-    RecordFieldPtr<Double> limitedIntervalKey_p;
+    ColumnsIndex *index_p;
+    Block<RecordFieldPtr<Int> > indexKeys_p;
     Bool hasTime_p, hasInterval_p;
 
     void clear();
     void makeKeys();
     Bool keysChanged();
     void getInternals();
-
-    // comparison functions
-    static Int compare(const Block<void *>& fieldPtrs,
-		       const Block<void *>& dataPtrs,
-		       const Block<Int> &dataTypes,
-		       Int index);
-   
-    // test function, only used in a DebugAssert in compare
-    static Bool okDataTypes(const Block<Int> &dataTypes);
+    void nearestTime();
 };
 
 #endif

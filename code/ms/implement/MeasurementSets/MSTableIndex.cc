@@ -1,5 +1,5 @@
 //# MSTableIndex.cc:  this defined MSTableIndex
-//# Copyright (C) 2000
+//# Copyright (C) 2000, 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordDesc.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/ColumnsIndex.h>
@@ -40,26 +41,26 @@
 #include <aips/Mathematics/Math.h>
 
 MSTableIndex::MSTableIndex()
-    : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
-      lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+    : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
+      lastTime_p(0.0), lastInterval_p(0.0), lastNearest_p(0), nearestFound_p(False), 
+      nearestReady_p(False), nrows_p(0), hasChanged_p(True), index_p(0), 
       hasTime_p(False), hasInterval_p(False)
 {;}
 
 MSTableIndex::MSTableIndex(const Table &subTable,
 				 const Vector<String> &indexCols)
-    : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
-      lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+    : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
+      lastTime_p(0.0), lastInterval_p(0.0), lastNearest_p(0), nearestFound_p(False), 
+      nearestReady_p(False), nrows_p(0), hasChanged_p(True), index_p(0), 
       hasTime_p(False), hasInterval_p(False)
 {
     attach(subTable, indexCols);
 }
 
 MSTableIndex::MSTableIndex(const MSTableIndex &other)
-    : key_p(0), time_p(0.0), interval_p(0.0), lastTime_p(0.0), lastInterval_p(0.0),
-      lastNearest_p(0), nearestFound_p(False), nearestReady_p(False), nrows_p(0),
-      hasChanged_p(True), hasZeroIntervals_p(False), index_p(0), zeroIntervalIndex_p(0),
+    : timeVals_p(0), intervalVals_p(0), key_p(0), time_p(0.0), interval_p(0.0),
+      lastTime_p(0.0), lastInterval_p(0.0), lastNearest_p(0), nearestFound_p(False), 
+      nearestReady_p(False), nrows_p(0), hasChanged_p(True), index_p(0), 
       hasTime_p(False), hasInterval_p(False)
 {
     *this = other;
@@ -75,12 +76,21 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
     if (this != &other) {
 	clear();
 	tab_p = other.tab_p;
+	timeColumn_p.reference(other.timeColumn_p);
+	intervalColumn_p.reference(other.intervalColumn_p);
+	timeVec_p = other.timeVec_p;
+	if (other.timeVals_p) {
+	    timeVals_p = timeVec_p.getStorage(deleteItTime_p);
+	}
+	intervalVec_p = other.intervalVec_p;
+	if (other.intervalVals_p) {
+	    intervalVals_p = intervalVec_p.getStorage(deleteItInterval_p);
+	}
+	
 	key_p = new Record(*other.key_p);
 	AlwaysAssert(key_p, AipsError);
 	index_p = new ColumnsIndex(*other.index_p);
 	AlwaysAssert(index_p, AipsError);
-	zeroIntervalIndex_p = new ColumnsIndex(*other.zeroIntervalIndex_p);
-	AlwaysAssert(zeroIntervalIndex_p, AipsError);
 	hasTime_p = other.hasTime_p;
 	hasInterval_p = other.hasInterval_p;
 	makeKeys();
@@ -95,13 +105,12 @@ MSTableIndex &MSTableIndex::operator=(const MSTableIndex &other)
 	nearestReady_p = other.nearestReady_p;
 	nrows_p = other.nrows_p;
 	hasChanged_p = other.hasChanged_p;
-	hasZeroIntervals_p = other.hasZeroIntervals_p;
     }
     return *this;
 }
 
 void MSTableIndex::attach(const Table &subTable,
-			     const Vector<String> &indexCols)
+			  const Vector<String> &indexCols)
 {
     clear();
     tab_p = subTable;
@@ -109,37 +118,26 @@ void MSTableIndex::attach(const Table &subTable,
     hasTime_p = tab_p.tableDesc().isColumn("TIME");
     // is there an INTERVAL column, there must also be a TIME
     hasInterval_p = hasTime_p && tab_p.tableDesc().isColumn("INTERVAL");
-    // this is reset to false following each attach
-    hasZeroIntervals_p = False;
     uInt nkeys = indexCols.nelements();
-    uInt nintervalKey, ntimeKey;
-    nintervalKey = ntimeKey = 0;
-    if (hasTime_p) ntimeKey = 1;
-    if (hasInterval_p) nintervalKey = 1;
 
-    Vector<String> fullIndexCols(nkeys + ntimeKey + nintervalKey);
-    Vector<String> limitedIndexCols(nkeys + nintervalKey);
-    if (nkeys > 0) {
-	fullIndexCols(Slice(0,nkeys)) = indexCols;
-	limitedIndexCols(Slice(0,nkeys)) = indexCols;
-    }
     if (hasTime_p) {
-	fullIndexCols(nkeys) = "TIME";
-	// attach the time column here
 	timeColumn_p.attach(tab_p, "TIME");
-    }
-    if (hasInterval_p) {
-	fullIndexCols(nkeys+1) = "INTERVAL";
-	limitedIndexCols(nkeys) = "INTERVAL";
+	// fish out the values
+	timeVec_p = timeColumn_p.getColumn();
+	timeVals_p = timeVec_p.getStorage(deleteItTime_p);
+
+	// interval requires a TIME
+	if (hasInterval_p) {
+	    intervalColumn_p.attach(tab_p, "INTERVAL");
+	    // fish out the values
+	    intervalVec_p = intervalColumn_p.getColumn();
+	    intervalVals_p = intervalVec_p.getStorage(deleteItInterval_p);
+	}
     }
 
-    if (fullIndexCols.nelements() > 0) {    
-	index_p = new ColumnsIndex(tab_p, fullIndexCols, MSTableIndex::compare);
+    if (indexCols.nelements() > 0) {    
+	index_p = new ColumnsIndex(tab_p, indexCols);
 	AlwaysAssert(index_p, AipsError);
-
-	// the standard compare function works just fine here
-	zeroIntervalIndex_p = new ColumnsIndex(tab_p, limitedIndexCols);
-	AlwaysAssert(zeroIntervalIndex_p, AipsError);
 
 	RecordDesc keyDesc;
 	for (uInt i=0;i<nkeys;i++) keyDesc.addField(indexCols(i), TpInt);
@@ -150,9 +148,8 @@ void MSTableIndex::attach(const Table &subTable,
 
 	lastKeys_p = 0;
 	nrows_p = tab_p.nrow();
-    } else {
-	// if there is nothing in fullIndexCols by now, there is no way to index this,
-	// so treat this as being unattached
+    } else if (!hasTime_p) {
+	// There's nothing here that we know how to search on
 	clear();
     }
 }
@@ -171,42 +168,34 @@ Vector<uInt> MSTableIndex::getRowNumbers()
 
 uInt MSTableIndex::getNearestRow(Bool &found)
 {
+    // getInternals ensures that lastSearch_p is the match to the integer keys
     getInternals();
     if (!nearestReady_p) {
 	// search for nearest one
 	nearestFound_p = False;
 	lastNearest_p = 0;
-	if (!hasTime_p) {
-	    // just integer keys, there should be just one value, just return
-	    // the first one if there is one
-	    if (lastSearch_p.nelements() > 0) {
+	if (lastSearch_p.nelements() > 0) {
+	    if (!hasTime_p) {
+		// just integer keys, there should be just one value, just return
+		// the first one if there is one
 		nearestFound_p = True;
 		lastNearest_p = lastSearch_p(0);
-	    } // otherwise, do nothing
-	} else {
-	    uInt thisElem = 0;
-	    uInt nElem = lastSearch_p.nelements();
-	    while (!nearestFound_p && thisElem < nElem) {
-		uInt thisRow = lastSearch_p(thisElem);
-		// needs column unit conversion here to seconds
-		nearestFound_p = time_p < timeColumn_p(thisRow);
-		thisElem++;
-	    }
-	    if (nearestFound_p) {
-		thisElem--;
-		// thisElem is the element where time_p became less that the timeColumn at that row
-		// so, is it closer to thisElem or the one before
-		if (thisElem == 0) {
-		    lastNearest_p = lastSearch_p(0);
+	    } else {
+		if (hasInterval_p) {
+		    if (intervalVals_p[lastSearch_p(0)] == 0) {
+			// no time dependence, should just be one value although
+			// we don't check for that here, return the first one
+			// found
+			lastNearest_p = lastSearch_p(0);
+			nearestFound_p = True;
+		    } else {
+			// strict time search
+			nearestTime();
+		    }
 		} else {
-		    Double lowDiff = time_p - timeColumn_p(lastSearch_p(thisElem-1));
-		    Double highDiff = timeColumn_p(lastSearch_p(thisElem)) - time_p;
-		    lastNearest_p = lowDiff > highDiff ? lastSearch_p(thisElem) : lastSearch_p(thisElem-1);
+		    // strict time search
+		    nearestTime();
 		}
-	    } else if (nElem > 0) {
-	      // just return the last one
-	      nearestFound_p = True;
-	      lastNearest_p = lastSearch_p(nElem-1);
 	    }
 	}
 	nearestReady_p = True;
@@ -215,53 +204,95 @@ uInt MSTableIndex::getNearestRow(Bool &found)
     return lastNearest_p;
 }
 
+void MSTableIndex::nearestTime()
+{
+    // this is only called when we know it is a strict time search and there
+    // are elements in lastSearch_p, etc, etc.
+    // this should probably be done with a call to binSearch
+    uInt thisElem = 0;
+    uInt nElem = lastSearch_p.nelements();
+    Bool deleteIt;
+    const uInt *rowPtr = lastSearch_p.getStorage(deleteIt);
+    while (!nearestFound_p && thisElem < nElem) {
+	uInt thisRow = rowPtr[thisElem];
+	// needs column unit conversion here to seconds
+	nearestFound_p = time_p < timeVals_p[thisRow];
+	thisElem++;
+    }
+    if (nearestFound_p) {
+	thisElem--;
+	// thisElem is the element where time_p became less that the timeColumn at that row
+	// so, is it closer to thisElem or the one before
+	if (thisElem == 0) {
+	    thisElem = 0;
+	} else {
+	    Double lowDiff = time_p - timeVals_p[rowPtr[thisElem-1]];
+	    Double highDiff = timeVals_p[rowPtr[thisElem]] - time_p;
+	    thisElem = lowDiff > highDiff ? thisElem : thisElem-1;
+	}
+    } else if (nElem > 0) {
+	// just return the last one
+	thisElem = nElem-1;
+	nearestFound_p = True;
+    }
+    lastNearest_p = rowPtr[thisElem];
+    // okay, we now know where the nearest time is, but is it really the one that
+    // we wanted.
+    if (hasInterval_p && intervalVals_p[lastNearest_p] == -1) {
+	// this is an indeterminate interval
+	if (time_p < timeVals_p[lastNearest_p] && !near(time_p, timeVals_p[lastNearest_p])) {
+	    // we actually want the previous one - assumes that they are all indeterminate
+	    if (thisElem == 0) {
+		// there is no match possible here
+		nearestFound_p = False;
+	    } else {
+		lastNearest_p = rowPtr[thisElem-1];
+	    }
+	} // we have the correct one
+    } else {
+	// final check to make sure the intervals satisfy the criteria
+	Double thisLowTime, thisHighTime;
+	Double searchLowTime, searchHighTime;
+	if (hasInterval_p) {
+	    Double width = intervalVals_p[lastNearest_p];
+	    thisLowTime = timeVals_p[lastNearest_p] - width/2.0;
+	    thisHighTime = thisLowTime + width;
+	} else {
+	    thisLowTime = thisHighTime = timeVals_p[lastNearest_p];
+	}
+	searchLowTime = time_p - interval_p/2.0;
+	searchHighTime = searchLowTime + interval_p;
+	if (thisHighTime < searchLowTime || thisLowTime > searchHighTime) {
+	    // out of range, no match possible
+	    nearestFound_p = False;
+	}
+    }
+	    
+    lastSearch_p.freeStorage(rowPtr, deleteIt);
+}
+
 void MSTableIndex::makeKeys()
 {
     // resize as appropriate
     uInt nKeys = key_p->nfields();
     intKeys_p.resize(nKeys);
     lastKeys_p.resize(nKeys);
-    if (hasInterval_p) {
-	upperIndexKeys_p.resize(index_p->accessKey().nfields());
-    }
-    lowerIndexKeys_p.resize(index_p->accessKey().nfields());
-    limitedKeys_p.resize(zeroIntervalIndex_p->accessKey().nfields());
+    indexKeys_p.resize(index_p->accessKey().nfields());
 
     for (uInt i=0;i<nKeys;i++) {
 	intKeys_p[i].attachToRecord(*key_p, i);
-	if (hasInterval_p) {
-	    upperIndexKeys_p[i].attachToRecord(index_p->accessUpperKey(), i);
-	    lowerIndexKeys_p[i].attachToRecord(index_p->accessLowerKey(), i);
-	} else {
-	    lowerIndexKeys_p[i].attachToRecord(index_p->accessKey(), i);
-	}
-	limitedKeys_p[i].attachToRecord(zeroIntervalIndex_p->accessKey(), i);
+	indexKeys_p[i].attachToRecord(index_p->accessKey(), i);
     }
 
     lastKeys_p = -1;
-    if (hasTime_p) {
-	if (hasInterval_p) {
-	    upperTimeKey_p.attachToRecord(index_p->accessUpperKey(), "TIME");
-	    lowerTimeKey_p.attachToRecord(index_p->accessLowerKey(), "TIME");
-	    limitedIntervalKey_p.attachToRecord(zeroIntervalIndex_p->accessKey(), "INTERVAL");
-	    // this is always true, this key never changes value
-	    *limitedIntervalKey_p = 0.0;
-	} else {
-	    lowerTimeKey_p.attachToRecord(index_p->accessKey(), "TIME");
-	}
-    }
 }
 
 void MSTableIndex::clear() 
 {
-    hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = hasZeroIntervals_p = False;
+    hasTime_p = hasInterval_p = nearestFound_p = nearestReady_p = False;
     delete index_p;
     index_p = 0;
-    zeroIntervalIndex_p = 0;
-    upperIndexKeys_p.resize(0);
-    lowerIndexKeys_p.resize(0);
-    limitedKeys_p.resize(0);
-    hasZeroIntervals_p = False;
+    indexKeys_p.resize(0);
 
     delete key_p;
     key_p = 0;
@@ -285,49 +316,22 @@ void MSTableIndex::getInternals()
     if (!isNull() && (hasChanged_p ||
 	tab_p.nrow() != nrows_p ||
 	keysChanged())) {
-	uInt nkeys = intKeys_p.nelements();
-	lastKeys_p.resize(nkeys);
-	for (uInt i=0;i<nkeys;i++) {
-	    Int thisKey = *(intKeys_p[i]);
-	    *(lowerIndexKeys_p[i]) = thisKey;
-	    if (hasInterval_p) {
-		*(upperIndexKeys_p[i]) = thisKey;
+	nrows_p = tab_p.nrow();
+	if (index_p) {
+	    uInt nkeys = intKeys_p.nelements();
+	    lastKeys_p.resize(nkeys);
+	    for (uInt i=0;i<nkeys;i++) {
+		Int thisKey = *(intKeys_p[i]);
+		*(indexKeys_p[i]) = thisKey;
+		lastKeys_p(i) = thisKey;
 	    }
-	    *(limitedKeys_p[i]) = thisKey;
-	    lastKeys_p(i) = thisKey;
-	}
-	if (hasTime_p) {
-	    if (hasInterval_p) {
-		*lowerTimeKey_p = time_p-interval_p/2;
-		*upperTimeKey_p = time_p+interval_p/2;
-	    } else {
-		*lowerTimeKey_p = time_p;
-	    }
-	}
-	lastSearch_p.resize(0);
-	// if we already know that there are INTERVAL=0 columns, try that first
-	if (hasZeroIntervals_p) {
-	    lastSearch_p = zeroIntervalIndex_p->getRowNumbers();
-	    if (lastSearch_p.nelements() == 0) {
-		// try the other search, too
-		if (hasInterval_p) {
-		    lastSearch_p = index_p->getRowNumbers(True, True);
-		} else {
-		    lastSearch_p = index_p->getRowNumbers();
-		}
-	    }		
-	} else {
-	    if (hasInterval_p) {
-		lastSearch_p = index_p->getRowNumbers(True, True);
-	    } else {
-		lastSearch_p = index_p->getRowNumbers();
-	    }
-	    if (lastSearch_p.nelements() == 0 && hasInterval_p) {
-		// look for INTERVAL=0 columns
-		lastSearch_p = zeroIntervalIndex_p->getRowNumbers();
-		if (lastSearch_p.nelements() != 0) hasZeroIntervals_p = True;
-	    }
-	}
+	    lastSearch_p.resize(0);
+	    lastSearch_p = index_p->getRowNumbers();
+	} else if (hasTime_p) {
+	    // all rows match at this point
+	    lastSearch_p.resize(nrows_p);
+	    indgen(lastSearch_p);
+	} // nothing can match, lastSearch_p should already have zero elements
 	lastTime_p = time_p;
 	lastInterval_p = interval_p;
 	nearestReady_p = False;
@@ -349,101 +353,3 @@ Bool MSTableIndex::keysChanged()
     return result;
 }
 
-Bool MSTableIndex::okDataTypes(const Block<Int> &dataTypes) {
-    Bool result = True;
-    Bool doubleFound = False;
-    uInt nDouble = 0;
-    uInt nfield = dataTypes.nelements();
-    uInt i=0;
-    while (result && i<nfield) {
-	if (dataTypes[i] != TpInt && dataTypes[i] != TpDouble) {
-	    result = False;
-	} else if (dataTypes[i] == TpDouble) {
-	    if (doubleFound && nDouble > 2) {
-		result = False;
-	    } else {
-		doubleFound = True;
-		nDouble++;
-	    }
-	}
-	i++;
-    }
-    return result;
-}
-
-Int MSTableIndex::compare(const Block<void *>& fieldPtrs,
-			     const Block<void *>& dataPtrs,
-			     const Block<Int> &dataTypes,
-			     Int index)
-{
-    // the keys are assumed to be first the integer keys followed optionally
-    // by a TIME key followed optionally by an INTERVAL key, although the
-    // value of this INTERVAL key is never used.  Rather, the INTERVAL in the
-    // dataPtr is used during the comparison.
-    DebugAssert(okDataTypes(dataTypes), AipsError);
-    
-    Bool timeHandled = False;
-    uInt nfield = dataTypes.nelements();
-    uInt lastField = nfield;
-    if (lastField > 0) lastField--;
-    for (uInt i=0; i<nfield; i++) {
-	switch (dataTypes[i]) {
-	case TpInt:
-	    {
-		const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtrs[i]));
-		const Int right = ((const Int*)(dataPtrs[i]))[index];
-		if (left < right) {
-		    return -1;
-		} else if (left > right) {
-		    return 1;
-		} 
-	    }
-	    break;
-	case TpDouble:
-	    {
-		if (!timeHandled) {
-		    // this must be the time, get the key
-		    const Double key = *(*(RecordFieldPtr<Double>*)(fieldPtrs[i]));
-		    // get the time
-		    const Double time = ((const Double*)(dataPtrs[i]))[index];
-		    // if this isn't at the end, the next one must be an interval
-		    if (i < lastField) {
-			const Double width = ((const Double*)(dataPtrs[i+1]))[index];
-			if (width < 0) {
-			    // nope, just TIME, no interval
-			    // use NEAR instead of absolute comparison here
-			    if (!near(key,time)) {
-				if (key < time) {
-				    return -1;
-				} else if (key > time) {
-				    return 1;
-				}
-			    }
-			} else {
-			    const Double start = time - width/2;
-			    const Double end = time + width/2;
-			    if (key < start) {
-				return -1;
-			    } else if (key > end) {
-				return 1;
-			    }
-			}
-		    } else {
-			// just TIME, no interval
-			if (key < time) {
-			    return -1;
-			} else if (key > time) {
-			    return 1;
-			}
-		    }
-		    timeHandled = True;
-		} // otherwise, ignore it, its the interval and we already have used it
-	    }
-	    break;
-	default:
-	    // this should never happen
-	    throw(AipsError("myCompare: unexpected data type"));
-	}
-    }
-    return 0;
-}
