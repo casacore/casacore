@@ -2472,3 +2472,4 @@
 09 420 src rm aips/implement/Logging/test/dLogging2.exec
 09 420 src mv trial/scripts/timer.g aips/scripts/timer.g
 09 420 src mv trial/scripts/timer.help aips/scripts/timer.help
+09 420 src mv trial/scripts/ttimer.g aips/scripts/ttimer.g
