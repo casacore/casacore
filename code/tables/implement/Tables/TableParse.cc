@@ -1002,7 +1002,8 @@ Table tableCommand (const String& str,
     Table table = p->getTable();
     //# Copy the possibly selected column names.
     cols.resize (p->getColumnNames().nelements());
-    cols = p->getColumnNames();
+    Vector<String> tmp(p->getColumnNames());
+    cols = tmp;
     delete p;
     return table;
 }
