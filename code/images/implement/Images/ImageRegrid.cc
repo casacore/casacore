@@ -1288,7 +1288,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
    const Bool inIsMasked = inLattice.isMasked();
    const Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
                             outLattice.pixelMask().isWritable();
-
+//
    if (itsShowLevel>0) {
       cerr << "inIsMasked = " << inIsMasked << endl;
       cerr << "outIsMasked = " << outIsMasked << endl;
@@ -1332,12 +1332,19 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
    const uInt nIn = inShape(inPixelAxis);
    Block<Float> inX(nIn);
-   if (itsShowLevel) cerr << "inX = ";
+   if (itsShowLevel>0) cerr << "inX = ";
    for (uInt i=0; i<nIn; i++) {
       inX[i] = Float(i);
-      if (itsShowLevel) cerr << inX[i] << ",";
+      if (itsShowLevel>0) cerr << inX[i] << ",";
    }
    if (itsShowLevel>0) cerr << endl;
+//
+   if (itsShowLevel>0) cerr << "outX = ";
+   for (uInt i=0; i<outX.nelements(); i++) {
+      if (itsShowLevel>0) cerr << outX[i] << ",";
+   }
+   if (itsShowLevel>0) cerr << endl;
+//
 
 // Make navigator and iterator for output data and mask. It is vital that
 // the "niceShape" is the same for both iterators.  Because the mask and 
@@ -1402,8 +1409,9 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
 
 // Iterate through output image by line
 
+   static Vector<Bool> dummyInMask(nLine, True);
    Bool goodIsTrue = True;
-   Vector<Bool> dummyMask(nLine);
+   Vector<Bool> dummyOutMask(nLine);
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
       const IPosition& outPos = outIter.position();
       if (itsShowLevel>1) {
@@ -1436,12 +1444,12 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                         outMaskIterPtr->rwVectorCursor(),
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyMask,
+                                                        dummyOutMask,
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
             }
          } else {
             const Vector<Bool>& inMask = 
@@ -1453,25 +1461,22 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                         outMaskIterPtr->rwVectorCursor(),
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyMask,
+                                                        dummyOutMask,
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
             }
          }
       } else {
+
+// We need to use the extrapolate=False flag in the interpolator, so we
+// always need an input mask.
+
+
          if (allGood) {
-            if (itsShowLevel>1) {
-               cerr << "inMask all T" << endl;
-            }
-            InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                     outX, inX, inY, 
-                                                     method1D);
-            if (outIsMasked) outMaskIterPtr->rwVectorCursor().set(True);
-         } else {
-            const Vector<Bool>& inMask = failed;
+            const Vector<Bool>& inMask = dummyInMask;
             if (itsShowLevel>1) {
                cerr << "inMask=" << inMask << endl;
             }
@@ -1479,12 +1484,28 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
                                                         outMaskIterPtr->rwVectorCursor(),
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
             } else {
                InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
-                                                        dummyMask,
+                                                        dummyOutMask,
                                                         outX, inX, inY, 
-                                                        inMask, method1D, goodIsTrue);
+                                                        inMask, method1D, goodIsTrue, False);
+            }
+         } else {
+            const Vector<Bool>& inMask = (failed && dummyInMask);
+            if (itsShowLevel>1) {
+               cerr << "inMask=" << inMask << endl;
+            }
+            if (outIsMasked) {
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                        outMaskIterPtr->rwVectorCursor(),
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue, False);
+            } else {
+               InterpolateArray1D<Float,T>::interpolate(outIter.rwVectorCursor(),
+                                                        dummyOutMask,
+                                                        outX, inX, inY, 
+                                                        inMask, method1D, goodIsTrue, False);
             }
          }
       }
