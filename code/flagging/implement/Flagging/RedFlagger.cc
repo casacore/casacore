@@ -233,6 +233,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   try { // all exceptions to be caught below
     
 // setup plotting devices
+  cleanupPlotters();
   setupPlotters(opt);
   
 // create iterator, visbuffer & chunk manager
@@ -543,13 +544,11 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     }
     acc.resize(0);
     // clean up PGPlotters
-    if( pgp_screen.isAttached() )
-      pgp_screen.detach();
-    if( pgp_report.isAttached() )
-      pgp_report.detach();
+    cleanupPlotters();
     // throw the exception on
     throw x;
-  }
+  }  
+  cleanupPlotters();
   os<<"Flagging complete\n"<<LogIO::POST;
 }
 
@@ -614,8 +613,21 @@ void RedFlagger::setupPlotters ( const RecordInterface &opt )
   }
 }
 
+
 // -----------------------------------------------------------------------
-// PlotSummaryReport
+// cleanupPlotters
+// detaches any active PGPlotters
+// -----------------------------------------------------------------------
+void RedFlagger::cleanupPlotters ()
+{
+  if( pgp_screen.isAttached() )
+    pgp_screen.detach();
+  if( pgp_report.isAttached() )
+    pgp_report.detach();
+}
+
+// -----------------------------------------------------------------------
+// plotSummaryReport
 // Generates a summary flagging report for current chunk
 // -----------------------------------------------------------------------
 void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk,const RecordInterface &opt )

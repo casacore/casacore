@@ -98,6 +98,8 @@ protected:
   const RecordInterface & setupAgentDefaults ();
 // sets up debug and report plotting objects
   void setupPlotters     ( const RecordInterface &opt );
+// detaches from all active plotters
+  void cleanupPlotters   ();
 // plots flagging reports from individual agents
   void plotAgentReports  ( PGPlotterInterface &pgp);
 // plots a flagging summary
