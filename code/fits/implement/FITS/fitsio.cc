@@ -452,7 +452,7 @@ void FitsInput::read_header_rec() {
 	   m_curr = m_fin.read();
 	   m_got_rec = True;
 	   if (!m_curr) {
-	     cout <<"Reached the end of the FITS file. [ FitsInput::read_header_rec()] "<< endl;
+	     //cout <<"Reached the end of the FITS file. [ FitsInput::read_header_rec()] "<< endl;
 	     m_rec_type = FITS::EndOfFile;
 	     return;
 	   }
@@ -484,7 +484,7 @@ void FitsInput::read_header_rec() {
 	m_curr = m_fin.read();
 	m_got_rec = True;
 	if (!m_curr) {
-	    cout <<" Reached the end of the fit file. [ FitsInput::read_header_rec()] "<< endl;
+	    //cout <<" Reached the end of the fit file. [ FitsInput::read_header_rec()] "<< endl;
 	    m_rec_type = FITS::EndOfFile;
 	    return;
 	}
