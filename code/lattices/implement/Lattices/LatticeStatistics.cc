@@ -112,8 +112,8 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
 
 template <class T>
 LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
-                                     Bool showProgress,
-                                     Bool forceDisk)
+                                         Bool showProgress,
+                                         Bool forceDisk)
 // 
 // Constructor
 //
@@ -198,7 +198,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       noInclude_p = other.noInclude_p; 
       noExclude_p = other.noExclude_p;
       goodParameterStatus_p = other.goodParameterStatus_p;
-
+//
       doneSomeGoodPoints_p = other.doneSomeGoodPoints_p;
       someGoodPointsValue_p = other.someGoodPointsValue_p;
       haveLogger_p = other.haveLogger_p;
@@ -238,7 +238,6 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
 //
 {
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -296,7 +295,6 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
 //
 {
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -354,7 +352,6 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 {
 
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
       
@@ -374,7 +371,6 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
 //
 {     
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -441,16 +437,14 @@ template <class T>
 Bool LatticeStatistics<T>::setNewLattice(const MaskedLattice<T>& lattice)
 { 
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
 //
    T* dummy = 0;
    DataType latticeType = whatType(dummy);
-   if (latticeType !=TpFloat && latticeType != TpDouble) {
+   if (latticeType !=TpFloat && latticeType != TpDouble && latticeType!=TpComplex) {
       ostrstream oss;
-      oss << "Statistics can only be evaluated from lattices of type : " 
-           << TpFloat << " and " << TpDouble << endl;
+      oss << "Statistics cannot be evaluated from lattices of type : " << latticeType << endl;
       error_p = String(oss);
       goodParameterStatus_p = False;
       return False;
@@ -484,7 +478,6 @@ Bool LatticeStatistics<T>::display()
 //
 {
    if (!goodParameterStatus_p) {
-      error_p = "The internal status of class is bad.  You have ignored errors";
      return False;
    }
 
@@ -591,7 +584,28 @@ Bool LatticeStatistics<T>::display()
               ord(i,RMS) = sqrt(matrix(i,SUMSQ)/nPts);
            }
            break;
+//
+// It would probably be better that for Complex types, that
+// real and imaginary are treated separately.    Currently
+// owing to the use of functions like min etc, a lot of
+// stuff is done with the amplitude of the complex number
+//
          case TpComplex:
+           if (nPts > 0) {
+              ord(i,MEAN) = matrix(i,SUM) / nPts;
+              if (hasBeam) ord(i,FLUX) = matrix(i,SUM) / beamArea;
+              NumericTraits<T>::PrecisionType tmp = 0.0;
+              if (nPts > 1) tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/nPts)) / 
+                                  (nPts-1);
+              ord(i,VARIANCE) = tmp;
+              if (tmp > 0.0) {
+                 ord(i,SIGMA) = sqrt(tmp);
+              } else {
+                 ord(i,SIGMA) = 0.0;
+              }
+              ord(i,RMS) = sqrt(matrix(i,SUMSQ)/nPts);
+           }
+           break;
          case TpDComplex:
          default:
            ;
@@ -643,7 +657,6 @@ Bool LatticeStatistics<T>::getNPts(Array<T>& stats)
 // Check class status
 
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False;
    }
 
@@ -663,7 +676,6 @@ Bool LatticeStatistics<T>::getSum(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -692,7 +704,6 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -704,22 +715,23 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
 
 // Compute the rest
 
-   uInt n = Int(real(stats(NPTS))+0.1);
+   const Int n = Int(real(stats(NPTS))+0.1);
+   Float nf = n;
    if (n == 0) {
       stats.resize(0);
       return  True;
    }
 
    NumericTraits<T>::PrecisionType tmp;
-   stats(MEAN) = stats(SUM) / n;
+   stats(MEAN) = stats(SUM) / nf;
    stats(SIGMA) = convertF(0.0);
    if (n > 1) {
-      tmp = (stats(SUMSQ) - (stats(SUM)*stats(SUM)/n)) / (n-1);
+      tmp = (stats(SUMSQ) - (stats(SUM)*stats(SUM)/nf)) / Float(n-1);
       stats(VARIANCE) = tmp;
       if (tmp > 0.0) stats(SIGMA) = sqrt(tmp);
    }
    stats(RMS) = convertF(0.0);
-   if (n > 0) stats(RMS) = sqrt(stats(SUMSQ)/n);
+   if (n > 0) stats(RMS) = sqrt(stats(SUMSQ)/nf);
 
    return True;
 }
@@ -736,7 +748,6 @@ Bool LatticeStatistics<T>::getSumSquared (Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -756,7 +767,6 @@ Bool LatticeStatistics<T>::getMin(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
     }
 
@@ -776,7 +786,6 @@ Bool LatticeStatistics<T>::getMax(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -799,7 +808,6 @@ Bool LatticeStatistics<T>::getMean(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -820,7 +828,6 @@ Bool LatticeStatistics<T>::getFluxDensity(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -841,7 +848,6 @@ Bool LatticeStatistics<T>::getSigma(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -861,7 +867,6 @@ Bool LatticeStatistics<T>::getVariance(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -882,7 +887,6 @@ Bool LatticeStatistics<T>::getRms(Array<T>& stats)
 // Check class status
  
    if (!goodParameterStatus_p) {
-     error_p = "The internal status of class is bad.  You have ignored errors";
      return False; 
    }
 
@@ -1133,6 +1137,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 //
 // Iterate through the lattice and generate the accumulation lattice
 {
+cout << "Hello: generating storage lattice" << endl;
 // Delete old storage lattice
 
    if (pStoreLattice_p != 0) delete pStoreLattice_p;
@@ -1257,7 +1262,7 @@ void LatticeStatistics<T>::lineSegments (uInt& nSeg,
 
 template <class T>
 Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
-                                    const Matrix<T>& stats)
+                                      const Matrix<T>& stats)
 //
 // List the statistics for this row to the logger
 //
@@ -1275,8 +1280,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
       return True;
    }
-
    os_p << endl;
+
 
 // Get number of statistics and display axes
 
@@ -1292,15 +1297,22 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    for (j=0; j<n1; j++) nMax = max(nMax, Int(real(stats.column(NPTS)(j))+0.1));
    const Int logNMax = Int(log10(Double(nMax))) + 2;
    const uInt oIWidth = max(5, logNMax);
-   const uInt oDWidth = 15;
+   T* dummy = 0;
+   DataType type = whatType(dummy);
+   Int oDWidth;
+   if (type==TpFloat) {
+      oDWidth = 15;               // 
+   } else if (type==TpComplex) {
+      oDWidth = 33;               // (x, y)
+   }
 
 // Have to convert LogIO object to ostream before can apply
-// the manipulators
+// the manipulators. Also formatting Complex numbers with
+// the setw manipulator fails, so I go to a lot of trouble
+// with ostrstreams (which are useable only once).
 
-   os_p.output().fill(' '); 
-   os_p.output().setf(ios::scientific, ios::floatfield);
-   os_p.output().setf(ios::left, ios::adjustfield);
-
+   Int oPrec = 6;   
+   setStream(os_p.output(), oPrec);
 
 // Write the pixel and world coordinate of the higher order display axes to the logger
 
@@ -1360,20 +1372,37 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Write statistics to logger.  We write the pixel location
 // relative to the parent lattice
 
+   T small(0.5);
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
       os_p.output() << setw(oIWidth)   << Int(real(stats.column(NPTS)(j))+0.1);
 
-      if (Int(stats.column(NPTS)(j)+0.1) > 0) {
-         os_p.output() << setw(oDWidth)   << stats.column(SUM)(j);
-         if (hasBeam) os_p.output() << setw(oDWidth)   << stats.column(FLUX)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MEAN)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(RMS)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(SIGMA)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MIN)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MAX)(j);
+      if (stats.column(NPTS)(j) > small) {
+
+// I hate ostrstreams.  The bloody things are one shot.
+
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+         setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
+         setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
+         setStream(os6, oPrec); setStream(os7, oPrec); 
+//
+         os0 << stats.column(SUM)(j);
+         if (hasBeam) os1 << stats.column(FLUX)(j);
+         os2 << stats.column(MEAN)(j);
+         os3 << stats.column(RMS)(j);
+         os4 << stats.column(SIGMA)(j);
+         os5 << stats.column(MIN)(j);
+         os6 << stats.column(MAX)(j);
+//
+         os_p.output() << setw(oDWidth)   << String(os0);
+         if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
+         os_p.output() << setw(oDWidth)   << String(os2);
+         os_p.output() << setw(oDWidth)   << String(os3);
+         os_p.output() << setw(oDWidth)   << String(os4);
+         os_p.output() << setw(oDWidth)   << String(os5);
+         os_p.output() << setw(oDWidth)   << String(os6);
       }
-      os_p << endl;
+      os_p.output() << endl;
    }
    os_p.post();
 
@@ -1482,9 +1511,9 @@ void LatticeStatistics<T>::multiColourYLabel (String& label,
 
 template <class T>
 void LatticeStatistics<T>::multiPlot (PGPlotter& plotter,
-                                    const Vector<T>& x,
-                                    const Vector<T>& y,
-                                    const Vector<T>& mask) const
+                                      const Vector<T>& x,
+                                      const Vector<T>& y,
+                                      const Vector<T>& mask) const
 //
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments
@@ -1530,10 +1559,10 @@ void LatticeStatistics<T>::multiPlot (PGPlotter& plotter,
 
 template <class T>
 void LatticeStatistics<T>::minMax (Bool& none,
-                                 T& dMin, 
-                                 T& dMax,  
-                                 const Vector<T>& d,
-                                 const Vector<T>& n) const
+                                   T& dMin, 
+                                   T& dMax,  
+                                   const Vector<T>& d,
+                                   const Vector<T>& n) const
 //
 //
 // Inputs:
@@ -1584,9 +1613,9 @@ Int LatticeStatistics<T>::niceColour (Bool& initColours) const
 
 template <class T>
 Bool LatticeStatistics<T>::plotStats (Bool hasBeam, 
-                                    const IPosition& dPos,
-                                    const Matrix<T>& stats,
-                                    PGPlotter& plotter) 
+                                      const IPosition& dPos,
+                                      const Matrix<T>& stats,
+                                      PGPlotter& plotter) 
 //
 // Plot the desired statistics.    
 //
@@ -1596,6 +1625,17 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 //   stats   Statistics matrix
 //
 {
+
+// The plotting for Complex just take the real part which is
+// not very useful.  Until I do someting better, stub it out
+
+   T* dummy = 0;
+   DataType type = whatType(dummy);
+   if (type==TpComplex) {
+      os_p << LogIO::WARN << "Plotting not yet available for complex images" << LogIO::POST;
+      return True;
+   }
+
 // Work out what we are plotting
 
    const uInt n = statsToPlot_p.nelements();
@@ -1612,7 +1652,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    linearSearch(doNPts, statsToPlot_p, Int(NPTS), n);
    linearSearch(doFlux, statsToPlot_p, Int(FLUX), n);
    if (!hasBeam) doFlux = False;
-
+//
    Bool none;
    Bool first = True;
    Int nL = 0;
@@ -1636,16 +1676,19 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
    if (doMean) {
       minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS));
+cout << "Mean: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nL++;
    }
    if (doFlux) {
       minMax(none, yLMin, yLMax, stats.column(FLUX), stats.column(NPTS));
+cout << "Flux: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nL++;
    }
    if (doSum) {
       minMax(none, yMin, yMax, stats.column(SUM), stats.column(NPTS));
+cout << "Sum: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1658,6 +1701,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    }
    if (doSumSq) {
       minMax(none, yMin, yMax, stats.column(SUMSQ), stats.column(NPTS));
+cout << "SumSq: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1670,6 +1714,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    }
    if (doMin) {
       minMax(none, yMin, yMax, stats.column(MIN), stats.column(NPTS));
+cout << "Min: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1682,6 +1727,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    }
    if (doMax) {
       minMax(none, yMin, yMax, stats.column(MAX), stats.column(NPTS));
+cout << "Max: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1694,6 +1740,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    }
    if (doNPts) {
       minMax(none, yMin, yMax, stats.column(NPTS), stats.column(NPTS));
+cout << "Npts: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1711,11 +1758,13 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    first = True;
    if (doSigma) {
       minMax(none, yRMin, yRMax, stats.column(SIGMA), stats.column(NPTS));
+cout << "Sigma: yMin, yMax = " << yMin << ",  " << yMax << endl;
       first = False;
       nR++;
    }
    if (doVar) {
       minMax(none, yMin, yMax, stats.column(VARIANCE), stats.column(NPTS));
+cout << "Var: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
@@ -1728,6 +1777,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    }
    if (doRms) {
       minMax(none, yMin, yMax, stats.column(RMS), stats.column(NPTS));
+cout << "rms: yMin, yMax = " << yMin << ",  " << yMax << endl;
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
@@ -1801,7 +1851,8 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       yRLabel.del(Int(yRLabel.length()-1),1);
    }
    
-// Do plots.  Here we convert to real 
+// Do plots.  Here we convert to real  for now.  To properly
+// make this deal with Complex I will have to be cleverer
 
    Vector<uInt> lCols(nL);
    Vector<uInt> rCols(nR);
@@ -1812,10 +1863,11 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
    if (nL>0) {
       plotter.swin(real(xMin), real(xMax), real(yLMin), real(yLMax));
-      if (nR>0) 
+      if (nR>0) {
          plotter.box("BCNST", 0.0, 0, "BNST", 0.0, 0);
-      else
+      } else {
          plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+      }
       plotter.lab(xLabel, "", "");
 
       if (doMean) {
@@ -1954,12 +2006,12 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       yb = result(Slice(4,4));
       Float dy = yb(1) - yb(0);
 
-      Float mx = xMin + dx;
+      Float mx = real(xMin) + dx;
       Float my;
       if (nR > 0) {
-         my = yRMax + 0.5*dy;
+         my = real(yRMax) + 0.5*dy;
       } else {
-         my = yLMax + 0.5*dy;
+         my = real(yLMax) + 0.5*dy;
       }
 
       Int tbg;
@@ -2269,44 +2321,65 @@ void LatticeStatistics<T>::summStats ()
    Bool hasBeam = getBeamArea(beamArea);
 
 // Have to convert LogIO object to ostream before can apply
-// the manipulators
+// the manipulators.  Also formatting Complex numbers with
+// the setw manipulator fails, so I go to a lot of trouble
+// with ostrstreams (which are useable only once).
 
    const Int oPrec = 6;
-   const Int oWidth = 14;
-   os_p.output().fill(' '); 
-   os_p.output().precision(oPrec);
-   os_p.output().setf(ios::scientific, ios::floatfield);
-   os_p.output().setf(ios::left, ios::adjustfield);
-
+   Int oWidth = 14;
+   T* dummy = 0;
+   DataType type = whatType(dummy);
+   if (type==TpFloat) {
+      oWidth = 14;
+   } else if (type==TpComplex) {
+      oWidth = 32;
+   }
+   setStream(os_p.output(), oPrec);
+   ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+   setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
+   setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
+   setStream(os6, oPrec); setStream(os7, oPrec); 
+//
    os_p << endl; 
    if ( Int(nPts+0.1) > 0) {
       os_p << "Number points = ";
       os_p.output() << setw(oWidth) << Int(nPts+0.1) << endl;
+//
       if (hasBeam) {
          os_p << "Flux density  = ";
-         os_p.output() << setw(oWidth) << sum/beamArea << " Jy" << endl;
+         os0 << sum/beamArea;
+         os_p.output() << setw(oWidth) << String(os1) << " Jy" << endl;
       }
+//
+      os1 << sum; os2 << mean; os3 << var; os5 << rms;
+      os6 << dMin; os7 << dMax;
+//
       os_p << "Sum           = ";
-      os_p.output() << setw(oWidth) << sum << "       Mean     = ";
-      os_p.output() << setw(oWidth) << mean << endl;
+      os_p.output() << setw(oWidth) << String(os1) << "       Mean     = ";
+      os_p.output() << setw(oWidth) << String(os2) << endl;
+//
       os_p << "Variance      = ";
-      os_p.output() << setw(oWidth) << var;
+      os_p.output() << setw(oWidth) << String(os3);
+//
       if (var > 0.0) {
+         os4 << sqrt(var);
          os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << sqrt(var) << endl;
+         os_p.output() << setw(oWidth) << String(os4) << endl;
       } else {
          os_p << endl;
       }
+//
       os_p << "Rms           = ";
-      os_p.output() << setw(oWidth) << rms << endl;
+      os_p.output() << setw(oWidth) << String(os5) << endl;
       os_p << endl;
+//
       if (!fixedMinMax_p) {
          os_p << "Minimum value is ";
-         os_p.output() << setw(oWidth) << dMin;
+         os_p.output() << setw(oWidth) << String(os6);
          os_p <<  " at " << minPos_p+1 << endl;
 //
          os_p << "Maximum value is ";
-         os_p.output() << setw(oWidth) << dMax;
+         os_p.output() << setw(oWidth) << String(os7);
          os_p <<  " at " << maxPos_p+1 << endl;
       }
    } else
@@ -2415,6 +2488,18 @@ Bool LatticeStatistics<T>::setIncludeExclude (Vector<T>& range,
    }
    return True;
 } 
+
+
+template <class T>
+void LatticeStatistics<T>::setStream (ostream& os, Int oPrec)
+{
+   os.fill(' '); 
+   os.precision(oPrec);
+   os.setf(ios::scientific, ios::floatfield);
+   os.setf(ios::left, ios::adjustfield);
+}
+
+
 
 
 
@@ -2613,8 +2698,8 @@ void StatsTiledCollapser<T>::process (uInt index1,
 
 template <class T>
 void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
-                                                 Array<Bool>& resultMask,
-                                                 const IPosition& shape)
+                                            Array<Bool>& resultMask,
+                                            const IPosition& shape)
 { 
 
 // Reshape arrays.  The mask is always true.  Any locations
@@ -2625,61 +2710,57 @@ void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
     result.resize(shape);
     resultMask.resize(shape);
     resultMask.set(True);
-
 // 
-
     Bool deleteRes;
     T* res = result.getStorage (deleteRes);
     T* resptr = res;
-
+//
     const NumericTraits<T>::PrecisionType* sumPtr = pSum_p->storage();
     const NumericTraits<T>::PrecisionType* sumSqPtr = pSumSq_p->storage();
     const uInt* nPtsPtr = pNPts_p->storage();
     const T* minPtr = pMin_p->storage();
     const T* maxPtr = pMax_p->storage();
-
+//
     uInt i,j,k;
     T* resptr_root = resptr;
     k = 0;
     for (i=0; i<n3_p; i++) {
        resptr = resptr_root + (Int(LatticeStatsBase::NPTS) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = *nPtsPtr++;
+          *resptr++ = T(*nPtsPtr++);
        }
-
+//
        resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
           *resptr++ = *sumPtr++;
        }
-
+//
        resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
           *resptr++ = *sumSqPtr++;
        }
-
+//
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * n1_p);
        objcopy (resptr, minPtr, n1_p); 
        resptr += n1_p;
        minPtr += n1_p;
-
+//
        resptr = resptr_root + (Int(LatticeStatsBase::MAX) * n1_p);
        objcopy (resptr, maxPtr, n1_p); 
        resptr += n1_p;
        maxPtr += n1_p;
-
+//
        resptr_root += n1_p * Int(LatticeStatsBase::NACCUM);
-
     }
-
+//
     delete pSum_p;
     delete pSumSq_p;
     delete pNPts_p;
     delete pMin_p;
     delete pMax_p;
     delete pInitMinMax_p;
-
+//
     result.putStorage (res, deleteRes);
-
 }
 
 
@@ -2691,4 +2772,5 @@ void StatsTiledCollapser<T>::minMaxPos(IPosition& minPos, IPosition& maxPos)
    maxPos.resize(maxPos_p.nelements());
    maxPos = maxPos_p;
 }
+
 
