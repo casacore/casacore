@@ -253,7 +253,7 @@ void SepImageConvolver<T>::convolve(ImageInterface<T>& imageOut)
 // First copy input to output. We must replace masked pixels by zeros.  These reflect 
 // both the pixel mask and the region mask.  We also set the output mask to the input mask
  
-   LatticeUtilities::copyAndZero(itsOs, imageOut, *itsImagePtr);
+   LatticeUtilities::copyDataAndMask(itsOs, imageOut, *itsImagePtr, True);
 
 // Smooth in situ.  
       
