@@ -168,7 +168,9 @@ void TapeIO::setFixedBlockSize(uInt sizeInBytes) {
 }
 
 void TapeIO::setVariableBlockSize() {
+#if defined(AIPS_LINUX)
   setBlockSize(0);
+#endif
 }
 
 void TapeIO::setBlockSize(uInt sizeInBytes) {
