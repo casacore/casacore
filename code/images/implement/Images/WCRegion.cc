@@ -288,7 +288,11 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
    CoordinateSystem cSys2(cSys);
    Vector<Double> p(shape.nelements());
    for (uInt i=0; i<shape.nelements(); i++) {  
-      p(i) = Double(shape(i)) / 2.0;
+      if (shape(i)==1) {
+         p(i) = 0.0;
+      } else {
+         p(i) = (Double(shape(i))/2.0) - 0.5;
+      }
    }
    Vector<Double> w;
    if (!cSys2.toWorld(w,p)) {
