@@ -1682,7 +1682,9 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
     for (i=0; i<nc; i++) {
 //
 // Clean out extant temporaries
-//
+// This code does not seem necessary.
+// Comment it out for now. nebk
+/*
         delete retval->world_tmps_p[i]; 
         delete retval->pixel_tmps_p[i];
 //
@@ -1693,6 +1695,8 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
         delete retval->worldMin_tmps_p[i]; 
         delete retval->worldMax_tmps_p[i]; 
 //
+	retval->world_tmps_p[i] = 
+	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
 	retval->world_tmps_p[i] = 
 	    new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
 	AlwaysAssert(retval->world_tmps_p[i], AipsError);
@@ -1724,6 +1728,9 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 	retval->worldMax_tmps_p[i] = 
             new Vector<Double>(retval->coordinates_p[i]->nWorldAxes());
 	AlwaysAssert(retval->worldMax_tmps_p[i], AipsError);
+*/
+//
+// Copy values
 //
 	ostrstream onum;
 	onum << i;
@@ -1740,7 +1747,9 @@ CoordinateSystem* CoordinateSystem::restore(const RecordInterface &container,
 	name = String("pixelreplace") + num;
 	subrec.get(name, *(retval->pixel_replacement_values_p[i]));
     }
-    // Get the obsinfo
+//
+// Get the obsinfo
+//
     String error;
     Bool ok = retval->obsinfo_p.fromRecord(error, subrec);
     AlwaysAssert(ok, AipsError); // Should never happen
