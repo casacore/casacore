@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -662,6 +662,7 @@ private:
     // <group>
     void listDirectionSystem(LogIO& os) const; 
     void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
+    void listPointingCenter (LogIO& os) const;
     void getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoord, uInt& widthName,
                          uInt& widthProj, uInt& widthShape,
                          uInt& widthTile, uInt& widthRefValue,
