@@ -1288,7 +1288,7 @@ Bool ImageMoments<T>::allNoise (const Vector<T>& spectrum,
 
 // Maximum D
                
-      DMax = max(DMax, abs(CData-CGauss));
+      DMax = max(DMax, abs(CData-CGauss)*1.0);
    }
 
 
