@@ -49,7 +49,6 @@ NQCompoundParam<T>::NQCompoundParam(const NQCompoundParam<T> &other) :
     funpar_p[i] = other.funpar_p[i];
     locpar_p[i] = other.locpar_p[i];
   };
-  toParam_p();
 }
 
 template <class T>
@@ -80,7 +79,6 @@ operator=(const NQCompoundParam<T> &other) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
     };
-    toParam_p();
   };
   return *this;
 }
