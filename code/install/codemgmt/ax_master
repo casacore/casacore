@@ -6337,3 +6337,4 @@
 18 184 src rm nrao/apps/makegbtscanlog
 18 214 src mv doc/project/r1.51.eps doc/project/dev15report.dir/r1.51.eps
 18 214 src mv doc/project/r1.51.gif doc/project/dev15report.dir/r1.51.gif
+18 214 src mv doc/project/r1.510.eps doc/project/dev15report.dir/r1.510.eps
