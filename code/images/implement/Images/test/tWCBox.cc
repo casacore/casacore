@@ -174,7 +174,7 @@ try {
       blc3(2) = 0;
       trc3(0) = trcI(0);
       trc3(1) = trcI(1);
-      trc3(2) = shape3(3) - 1;
+      trc3(2) = shape3(2) - 1;
       LCBox checkBox3(blc3, trc3, shape3);
       AlwaysAssert(*pLCRegion==checkBox3, AipsError);
       if (pLCRegion != 0) delete pLCRegion;
