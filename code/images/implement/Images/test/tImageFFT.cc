@@ -49,8 +49,7 @@ void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& iOut,
                    const ImageInterface<Float>& aOut,
                    const ImageInterface<Float>& pOut,
-                   const ImageInterface<Complex>& cOut,
-                   const ImageInterface<Complex>& c2Out);
+                   const ImageInterface<Complex>& cOut);
 
 void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& rOut,
@@ -58,7 +57,6 @@ void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& aOut,
                    const ImageInterface<Float>& pOut,
                    const ImageInterface<Complex>& cOut,
-                   const ImageInterface<Complex>& c2Out,
                    const Vector<Bool>& axes);
 
 void makeMask(ImageInterface<Float>& out);
@@ -127,10 +125,9 @@ try {
          fft.getAmplitude(outAmp);
          fft.getPhase(outPhase);
          fft.getComplex(outComplex);
-         const ImageInterface<Complex>& outComplex2 = fft.getComplex();
 //
          checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex, outComplex2);
+                      outComplex);
 
 // Copy constructor
 
@@ -141,10 +138,9 @@ try {
          fft2.getAmplitude(outAmp);
          fft2.getPhase(outPhase);
          fft2.getComplex(outComplex);
-         const ImageInterface<Complex>& outComplex3 = fft2.getComplex();
 //
          checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex, outComplex3);
+                      outComplex);
 
 // Assignment operator
 
@@ -156,10 +152,9 @@ try {
          fft3.getAmplitude(outAmp);
          fft3.getPhase(outPhase);
          fft3.getComplex(outComplex);
-         const ImageInterface<Complex>& outComplex4 = fft3.getComplex();
 //
          checkNumbers(inImage, outReal, outImag, outAmp, outPhase, 
-                      outComplex, outComplex4);
+                      outComplex);
       }
 
 
@@ -199,10 +194,9 @@ try {
          fft.getAmplitude(outAmp2);
          fft.getPhase(outPhase2);
          fft.getComplex(outComplex2);
-         const ImageInterface<Complex>& outComplex3 = fft.getComplex();
 //
          checkNumbers (inImage, outReal2, outImag2, outAmp2, outPhase2, 
-                       outComplex2, outComplex3, which);
+                       outComplex2, which);
 
       }
    } else {
@@ -227,8 +221,7 @@ void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& iOut,
                    const ImageInterface<Float>& aOut,
                    const ImageInterface<Float>& pOut,
-                   const ImageInterface<Complex>& cOut,
-                   const ImageInterface<Complex>& c2Out)
+                   const ImageInterface<Complex>& cOut)
 //
 // Make tests on first plane of image only as ImageFFT
 // only FFTs the sky plane whereas FFTServer does a
@@ -271,7 +264,6 @@ void checkNumbers (const ImageInterface<Float>& rIn,
       AlwaysAssert(allNear(aOut.getSlice(blc,shape,True), amplitude(c), 1e-6), AipsError);
       AlwaysAssert(allNear(pOut.getSlice(blc,shape,True), phase(c), 1e-6), AipsError);
       AlwaysAssert(allNear(cOut.getSlice(blc,shape,True), c, 1e-6), AipsError);
-      AlwaysAssert(allNear(cOut.get(), c2Out.get(), 1e-6), AipsError);
 }
 
 
@@ -281,7 +273,6 @@ void checkNumbers (const ImageInterface<Float>& rIn,
                    const ImageInterface<Float>& aOut,
                    const ImageInterface<Float>& pOut,
                    const ImageInterface<Complex>& cOut,
-                   const ImageInterface<Complex>& c2Out,
                    const Vector<Bool>& axes)
 {
 
@@ -323,7 +314,6 @@ void checkNumbers (const ImageInterface<Float>& rIn,
       AlwaysAssert(allNear(aOut.get(), amplitude(c), 1e-6), AipsError);
       AlwaysAssert(allNear(pOut.get(), phase(c), 1e-6), AipsError);
       AlwaysAssert(allNear(cOut.get(), c, 1e-6), AipsError);
-      AlwaysAssert(allNear(cOut.get(), c2Out.get(), 1e-6), AipsError);
 }
 
 
