@@ -197,10 +197,10 @@ related to tables.
 \begin{ahexample}
 \begin{verbatim}
 include "table.g"
-vis:=table("3C273XC1.MS", read_only=T);
+vis:=table("3C273XC1.MS", readonly=T);
 vis.summary();
 uvw:=vis.getcol("UVW");
-spw:=table("3C273XC1.MS/SPECTRAL_WINDOW", read_only=T);
+spw:=table("3C273XC1.MS/SPECTRAL_WINDOW", readonly=T);
 freq:=spw.getcell("REFERENCE_FREQUENCY", 1);
 uvw*:=(1.420E9/freq);
 vis.putcol("UVW", uvw);
@@ -234,7 +234,7 @@ This example of object documentation comes from
 \ahaddarg{tablename}{Name of table on disk}{F}{Bool}
 \ahaddarg{tabledesc}{Table descriptor}{F}{Bool}
 \ahaddarg{nrow}{Number of rows}{0}{Int}
-\ahaddarg{read\_only}{Open Read-only?}{F}{Bool}
+\ahaddarg{readonly}{Open Read-only?}{F}{Bool}
 \ahaddarg{ack}{Acknowledge creations, etc}{T}{Bool}
 \ahaddarg{tablehandler}{Table handler to be used}{gtable}{Any tableserver}
 \ahaddarg{tablelogger}{logger to be used}{logger}{Any logger object}
