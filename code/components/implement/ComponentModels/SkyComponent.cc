@@ -28,9 +28,6 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/Flux.h>
-// #include <trial/ComponentModels/PointCompRep.h>
-// #include <trial/ComponentModels/SIPointCompRep.h>
-// #include <trial/ComponentModels/GaussianCompRep.h>
 // #include <trial/Images/ImageInterface.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
@@ -79,116 +76,6 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
   return *this;
 }
 
-Flux<Double> & SkyComponent::flux() {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->flux();
-}
-
-const Flux<Double> & SkyComponent::flux() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->flux();
-}
-
-ComponentType::Shape SkyComponent::shape() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->shape();
-}
-
-
-void SkyComponent::setRefDirection(const MDirection & newDirection) {
-  itsCompPtr->setRefDirection(newDirection);
-  DebugAssert(ok(), AipsError);
-}
-
-const MDirection & SkyComponent::refDirection() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->refDirection();
-}
-
-Flux<Double> SkyComponent::sample(const MDirection & sampleDir, 
-				  const MVAngle & pixelSize) const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->sample(sampleDir, pixelSize);
-}
-
-Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
- 				      const Double & frequency) const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->visibility(uvw, frequency);
-}
-
-void SkyComponent::setLabel(const String & newLabel) {
-  itsCompPtr->setLabel(newLabel);
-  DebugAssert(ok(), AipsError);
-}
-
-const String & SkyComponent::label() const {
-  return itsCompPtr->label();
-  DebugAssert(ok(), AipsError);
-}
-
-uInt SkyComponent::nShapeParameters() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->nShapeParameters();
-}
-
-void SkyComponent::setShapeParameters(const Vector<Double> & newParms) {
-  itsCompPtr->setShapeParameters(newParms);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::shapeParameters(Vector<Double> & compParms) const {
-  itsCompPtr->shapeParameters(compParms);
-  DebugAssert(ok(), AipsError);
-}
-
-ComponentType::SpectralShape SkyComponent::spectralShape() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->spectralShape();
-}
-
-void SkyComponent::setRefFrequency(const MFrequency & newFrequency) {
-  itsCompPtr->setRefFrequency(newFrequency);
-  DebugAssert(ok(), AipsError);
-}
-
-const MFrequency & SkyComponent::refFrequency() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->refFrequency();
-}
-
-Flux<Double> SkyComponent::sample(const MFrequency & sampleFreq) const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->sample(sampleFreq);
-}
-
-uInt SkyComponent::nSpectralParameters() const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->nSpectralParameters();
-}
-
-void SkyComponent::setSpectralParameters(const Vector<Double> & newParms) {
-  itsCompPtr->setSpectralParameters(newParms);
-  DebugAssert(ok(), AipsError);
-}
-
-void SkyComponent::spectralParameters(Vector<Double> & compParms) const {
-  itsCompPtr->spectralParameters(compParms);
-  DebugAssert(ok(), AipsError);
-}
-
-Bool SkyComponent::fromRecord(String & errorMessage, 
- 			      const RecordInterface & record) {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->fromRecord(errorMessage, record);
-}
-
-Bool SkyComponent::toRecord(String & errorMessage,
- 			    RecordInterface & record) const {
-  DebugAssert(ok(), AipsError);
-  return itsCompPtr->toRecord(errorMessage, record);
-}
-
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(shape(), spectralShape());
@@ -232,11 +119,6 @@ Bool SkyComponent::ok() const {
   }
   return True;
 }
-
-// void SkyComponent::project(ImageInterface<Float> & plane) const {
-//   itsCompPtr->project(plane);
-//   DebugAssert(ok(), AipsError);
-// }
 
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyComponent"
