@@ -1139,6 +1139,7 @@ String SpectralCoordinate::format (String& units,
                                    Bool showAsAbsolute,
                                    Int precision)
 {
+
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
     
 // Check format
@@ -1228,7 +1229,9 @@ String SpectralCoordinate::format (String& units,
       }
 //
       ostringstream oss;
-      if (form == Coordinate::SCIENTIFIC) {
+      if (form == Coordinate::MIXED) {
+         oss << worldValue;  
+      } else if (form == Coordinate::SCIENTIFIC) {
          oss.setf(ios::scientific, ios::floatfield);
          oss.precision(prec);
          oss << worldValue;  
@@ -1247,15 +1250,12 @@ String SpectralCoordinate::format (String& units,
 void SpectralCoordinate::checkFormat(Coordinate::formatType& format,
                                      const Bool ) const
 {  
-// Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
 
-   if (format == Coordinate::DEFAULT) {  
-      format = Coordinate::SCIENTIFIC;
-   } else {
-      if (format != Coordinate::SCIENTIFIC &&
-          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
-   }
+   if (format != Coordinate::SCIENTIFIC &&
+       format != Coordinate::FIXED) format = Coordinate::DEFAULT;
+//
+   if (format == Coordinate::DEFAULT) format = Coordinate::MIXED;
 }
 
 const Vector<Double>& SpectralCoordinate::restFrequencies() const

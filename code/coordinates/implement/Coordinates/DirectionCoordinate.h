@@ -503,8 +503,7 @@ public:
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
     //
-    // Formatting types that are allowed are
-    // Coordinate::SCIENTIFIC, Coordinate::FIXED, Coordinate::TIME
+    // Formatting types that are allowed are SCIENTIFIC, FIXED, MIXED, and TIME
     // If you ask for format type Coordinate::DEFAULT then the
     // selected format depends upon what the value of the enum 
     // MDirection::GlobalTypes is for this DirectionCoordinate.

@@ -161,6 +161,10 @@ public:
        SCIENTIFIC,
        // Fixed floating format (e.g. 12.134)
        FIXED,
+       // Either scientific or floating point, auto-selected by the C++
+       // STL formatting routines.  May not be available for all Coordinate
+       // types.
+       MIXED,
        // HHH:MM:SS.SSS style formatting 
        TIME };
 

@@ -475,6 +475,9 @@ public:
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
     //
+    // Format types SCIENTIFIC, FIXED, MIXED and DEFAULT are supported.
+    // DEFAULT will use MIXED.
+    //
     // The world value must always be given in native frequency units.
     // Use argument <src>unit</src> to determine what it will be 
     // converted to for formatting. If <src>unit</src> is given, it 

@@ -1124,9 +1124,10 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(prec);
       oss << value;
+   } else if (form==Coordinate::MIXED) {
+      oss << value;
    }
 //
-   // oss << ends;
    return String(oss);
 }
 
@@ -1172,8 +1173,10 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(prec);
       oss << value;
+   } else if (form==Coordinate::MIXED) {
+      oss << value;
    }
-   // oss << ends;
+//
    return String(oss);
 }
 

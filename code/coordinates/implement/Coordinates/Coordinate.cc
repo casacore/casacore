@@ -270,13 +270,11 @@ void Coordinate::checkFormat(Coordinate::formatType& format,
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
- 
-   if (format == Coordinate::DEFAULT) {
-      format = Coordinate::SCIENTIFIC;
-   } else {
-      if (format != Coordinate::SCIENTIFIC &&
-          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
-   }
+
+   if (format != Coordinate::SCIENTIFIC &&
+       format != Coordinate::FIXED) format = Coordinate::DEFAULT;
+//
+   if (format == Coordinate::DEFAULT)  format = Coordinate::MIXED;
 }
 
 
@@ -287,7 +285,7 @@ void Coordinate::getPrecision(Int &precision,
                               Int defPrecFixed,
                               Int ) const
 {
-// Scientific or fixed formats only are allowed.
+
 // Absolute or offset is irrelevant
  
    checkFormat (format, absolute);
@@ -304,6 +302,10 @@ void Coordinate::getPrecision(Int &precision,
       } else {
          precision = 6;
       }
+   } else if (format == Coordinate::MIXED) {
+
+// Auto format by STL formatter so precision not relevant
+
    }
 }
 
@@ -381,7 +383,9 @@ String Coordinate::format(String& units,
 // Format and get units.  
          
    ostringstream oss;
-   if (form == Coordinate::SCIENTIFIC) {
+   if (form == Coordinate::MIXED) {
+      oss << worldValue;
+   } else if (form == Coordinate::SCIENTIFIC) {
       oss.setf(ios::scientific, ios::floatfield);
       oss.precision(prec);
       oss << worldValue;
@@ -389,7 +393,7 @@ String Coordinate::format(String& units,
       oss.setf(ios::fixed, ios::floatfield);
       oss.precision(prec);
       oss << worldValue;        
-   }                            
+   } 
 //
    return String(oss);
 }
