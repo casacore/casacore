@@ -1,5 +1,5 @@
 //# tTableLock.cc: Test TableLock class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -127,9 +127,8 @@ int main()
   {
     TableLock lock (TableLock::UserLocking);
     lock.merge (TableLock());
-    //// commented out until temporary hack in TableLock.cc is removed.
-    ////    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
-    AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
+    AlwaysAssertExit (lock.option() == TableLock::UserLocking);
+    ////AlwaysAssertExit (lock.option() == TableLock::AutoLocking);
     AlwaysAssertExit (lock.readLocking());
     AlwaysAssertExit (! lock.isPermanent());
     lock.merge (TableLock(TableLock::AutoLocking, 20, 2));
