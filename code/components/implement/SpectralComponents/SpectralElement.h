@@ -332,23 +332,23 @@ class SpectralElement : public RecordTransformable {
   // <thrown>
   //   <li> AipsError if non-Gaussian
   // </thrown>
-  void SpectralElement::checkGauss() const;
+  void checkGauss() const;
   // Check if POLYNOMIAL type
   // <thrown>
   //   <li> AipsError if non-polynomial
   // </thrown>
-  void SpectralElement::checkPoly() const;
+  void checkPoly() const;
   // Check if COMPILED type
   // <thrown>
   //   <li> AipsError if non-compiled
   // </thrown>
-  void SpectralElement::checkCompiled() const;
+  void checkCompiled() const;
   // Check if sigma non-equal to zero and positive if a GAUSSIAN;
   // if COMPILED check for correct string
   // <thrown>
   //   <li> AipsError if illegal sigm
   // </thrown>
-  void SpectralElement::check();
+  void check();
 
   // Sigma to FWHM
   // Convert from sigma to FWHM and vice versa
