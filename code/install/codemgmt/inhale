@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -895,8 +895,20 @@
   cd $AIPSLAVE
   if [ "$MODE" != base ]
   then
-     [ -f VERSION ] && mv -f VERSION VERSION_
-     mv -f $SLAVTMPD/VERSION .
+      if [ "$BLESSED" != "" ]
+      then
+          # VERSION file which was downloaded from the master
+          # ftp directory may no longer match blessed source,
+          # so we construct one from the new slave VERSION file
+          rm -f $SLAVTMPD/VERSION
+          mv VERSION VERSION_
+          sed -e "s/[^.]*\.[^.]*\(\..*\)/$NEWVERSN\1/" VERSION_ > VERSION
+      else
+          [ -f VERSION ] && mv -f VERSION VERSION_
+          mv -f $SLAVTMPD/VERSION .
+      fi
+      echo ""
+      echo "Marked: `cat VERSION`"
   fi
 
   chmod 444 VERSION
