@@ -20,7 +20,7 @@ glish scripts are the language of \aipspp\, it is therefore desirable
 to collect useful recipes in one place where than can be used as
 written, or as practical examples from which unique data analysis
 tools can be easily developed by users.  This document describes the
-revitalized \htmladdnormallink{\aipspp\ Recipe
+revitalized \htmladdnormallink{\aipspp\ Recipes
 Repository}{../../recipes/Recipes/index.html}, and how to contribute
 to it.
 
@@ -46,9 +46,9 @@ send it to aips2-recipes@nrao.edu.
 \section{Basic Principles}
 
 A useful recipe is not simply a random glish script.  The purpose of
-the Recipe Repository is to supplement the conventional \aipspp\
+the Recipes Repository is to supplement the conventional \aipspp\
 documentation with concrete examples that will prove instructive for
-novice glish script-writers.  To make the most of the \aipspp\ Recipe
+novice glish script-writers.  To make the most of the \aipspp\ Recipes
 Repository, some guiding principles are required:
 
 \begin{itemize}
@@ -59,19 +59,19 @@ clever glish mechanism or set of closely related operations.  Such
 recipes will make it easy for a user to understand how to implement a
 particular operation and leverage it to his/her own purposes.
 
-\item Scripts intended for the Recipe Repository should generate
+\item Scripts intended for the Recipes Repository should generate
 their own data, or make use of data in the Data Repository.  When
 appropriate, datasets of reasonable size may be added to the Data
 Repository.
 
-\item Scripts submitted for the Recipe Repository must follow the
+\item Scripts submitted for the Recipes Repository must follow the
 standard format (described in detail below).  The format is
 self-contained, comment-rich, executable, and has been designed for
 readability.
 
-\item Markup of scripts for the Recipe Repository should be simple
+\item Markup of scripts for the Recipes Repository should be simple
 and require a minimum of additional information.  This is necessary
-for maintenance of the Recipe Repository web pages.  In most cases,
+for maintenance of the Recipes Repository web pages.  In most cases,
 the additional information should be limited to links to relevant
 documentation.
 
@@ -86,7 +86,7 @@ of different types, even as the Repository grows.
 
 \section{The Recipe Script Format}
 
-Scripts submitted for the Recipe Repository must follow a standard
+Scripts submitted for the Recipes Repository must follow a standard
 format.  A template {\tt .g} file is available here:
 \htmladdnormallink{recipe.g}{../../../code/doc/notes/249.dir/recipe.g}).
 The format consists of four main sections, Titles, Script, Output, and
@@ -232,14 +232,14 @@ An example of a properly formatted recipe script can be found here:
 
 \section{The Recipe \LaTeX\ Markup}
 
-This section describes the \LaTeX\ markup of recipes for the Recipe
+This section describes the \LaTeX\ markup of recipes for the Recipes
 Repository web-page.  Users submitting recipes for the Repository
 need not concern themselves with this section since \aipspp\ project
 staff will handle this part of the recipe submission if the contributed
 script is properly formatted as described above.
 
 The recipe script format described above is designed to make markup
-for the Recipe Repository web-page very simple.  \LaTeX\ macros for
+for the Recipes Repository web-page very simple.  \LaTeX\ macros for
 each of the recipe script format keywords are defined in
 \htmladdnormallink{ahrecipe.tex}{../../../code/doc/texinputs.dir/ahrecipe.tex}.
 Via these macros, the Titles and Credits sections of the script format
@@ -260,9 +260,9 @@ An example of a proper recipe \LaTeX\ markup can be found here:
 \htmladdnormallink{plotrec.latex}{../../../code/doc/recipes/General/plotrec.latex}.
 
 
-\section{Recipe Repository Implementation}
+\section{Recipes Repository Implementation}
 
-The Recipe Repository consists of two parts.  First, the recipes
+The Recipes Repository consists of two parts.  First, the recipes
 themselves are to be checked in as well-commented glish scripts (see
 above for details of the required format) in {\tt
 code/contrib/recipes}.  The build system copies the scripts to {\tt
