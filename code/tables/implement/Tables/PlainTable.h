@@ -252,11 +252,12 @@ private:
     void syncTable();
 
 
-    ColumnSet*     colSetPtr_p;              //# pointer to set of columns
-    Bool           tableChanged_p;           //# Has the main data changed?
-    Bool           addToCache_p;             //# Is table added to cache?
-    TableLockData* lockPtr_p;                //# pointer to lock object
-    TableSyncData  lockSync_p;               //# table synchronization
+    ColumnSet*     colSetPtr_p;        //# pointer to set of columns
+    Bool           tableChanged_p;     //# Has the main data changed?
+    Bool           unlockChanged_p;    //# Changed since last unlock?
+    Bool           addToCache_p;       //# Is table added to cache?
+    TableLockData* lockPtr_p;          //# pointer to lock object
+    TableSyncData  lockSync_p;         //# table synchronization
 
 };
 
