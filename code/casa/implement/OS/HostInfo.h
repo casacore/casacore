@@ -1,5 +1,5 @@
 //# HostInfo.h: Miscellaneous information about this host and process.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 
 class String;
+class HostMachineInfo;
 
 // <summary>
 // Miscellaneous information about this host and process.
@@ -85,9 +86,27 @@ class String;
 class HostInfo
 {
 public:
+
     static String hostName();
     static Int processID();
     static Double secondsFrom1970();
+
+    static Int numCPUs( );
+
+    static Int memoryTotal();
+    static Int memoryUsed();
+    static Int memoryFree();
+
+    static Int swapTotal();
+    static Int swapUsed();
+    static Int swapFree();
+
+private:
+    // we don't want folks creating these...
+    HostInfo( );
+    const HostInfo &operator=( const HostInfo & );
+
+    static HostMachineInfo *info;
 };
 
 #endif

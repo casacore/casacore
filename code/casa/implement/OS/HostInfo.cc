@@ -1,5 +1,5 @@
 //# HostInfo.h: Information about the host that this process is running on.
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,3 +115,79 @@ Double HostInfo::secondsFrom1970()
     return total;
 }
 #endif
+
+#define HOSTINFO_IMPLEMENT_MEMBERS			\
+Int HostInfo::numCPUs( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    return info->valid ? info->cpus : 0;		\
+}							\
+							\
+Int HostInfo::memoryTotal( ) 				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    return info->valid ? info->memory_total : -1;	\
+}							\
+							\
+Int HostInfo::memoryUsed( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    info->update_info( );				\
+    return info->valid ? info->memory_used : -1;	\
+}							\
+							\
+Int HostInfo::memoryFree( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    info->update_info( );				\
+    return info->valid ? info->memory_free : -1;	\
+}							\
+							\
+Int HostInfo::swapTotal( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    info->update_info( );				\
+    return info->valid ? info->swap_total : -1;		\
+}							\
+							\
+int HostInfo::swapUsed( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    info->update_info( );				\
+    return info->valid ? info->swap_used : -1;		\
+}							\
+							\
+int HostInfo::swapFree( )				\
+{							\
+    if ( ! info ) info = new HostMachineInfo( );	\
+    info->update_info( );				\
+    return info->valid ? info->swap_free : -1;		\
+}
+
+#define HOSTINFO_DO_IMPLEMENT
+#if defined(AIPS_LINUX)
+#include <aips/OS/HostInfo_linux.h>
+HOSTINFO_IMPLEMENT_MEMBERS
+#elif defined(AIPS_SOLARIS)
+#include <aips/OS/HostInfo_solaris.h>
+HOSTINFO_IMPLEMENT_MEMBERS
+#elif defined(AIPS_IRIX)
+#include <aips/OS/HostInfo_irix.h>
+HOSTINFO_IMPLEMENT_MEMBERS
+#elif defined(AIPS_OSF)
+#include <aips/OS/HostInfo_osf1.h>
+HOSTINFO_IMPLEMENT_MEMBERS
+#elif defined(__hpux__)
+#include <aips/OS/HostInfo_hpux.h>
+HOSTINFO_IMPLEMENT_MEMBERS
+#else
+Int HostInfo::numCPUs( ) { return 0; }
+Int HostInfo::memoryTotal( ) { return -1; }
+Int HostInfo::memoryUsed( ) { return -1; }
+Int HostInfo::memoryFree( ) { return -1; }
+Int HostInfo::swapTotal( ) { return -1; }
+int HostInfo::swapUsed( ) { return -1; }
+int HostInfo::swapFree( ) { return -1; }
+#endif
+
+HostMachineInfo *HostInfo::info = 0;
