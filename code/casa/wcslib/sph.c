@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -113,7 +113,11 @@ double lng[], lat[];
             dlng = atan2d(y, x);
          } else {
             /* Change of origin of longitude. */
-            dlng = dphi + 180.0;
+            if (eul[1] < 90.0) {
+               dlng =  dphi + 180.0;
+            } else {
+               dlng = -dphi;
+            }
          }
          *lngp = eul[0] + dlng;
 
@@ -220,7 +224,11 @@ double phi[], theta[];
             dphi = atan2d(y, x);
          } else {
             /* Change of origin of longitude. */
-            dphi = dlng - 180.0;
+            if (eul[1] < 90.0) {
+               dphi =  dlng - 180.0;
+            } else {
+               dphi = -dlng;
+            }
          }
          *phip = fmod(eul[2] + dphi, 360.0);
 

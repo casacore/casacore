@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -127,7 +127,7 @@ int celset(cel)
 struct celprm *cel;
 
 {
-   int dophip, status;
+   int status;
    const double tol = 1.0e-10;
    double clat0, cphip, cthe0, slat0, sphip, sthe0;
    double latp, latp1, latp2;
@@ -162,17 +162,20 @@ struct celprm *cel;
 
 
    /* Set default for native longitude of the celestial pole? */
-   dophip = (cel->ref[2] == 999.0);
+   if (cel->ref[2] == 999.0) {
+      cel->ref[2] = (cel->ref[1] < cel->theta0) ? 180.0 : 0.0;
+      cel->ref[2] += cel->phi0;
+
+      if (cel->ref[2] < -180.0) {
+         cel->ref[2] += 360.0;
+      } else if (cel->ref[2] > 180.0) {
+         cel->ref[2] -= 360.0;
+      }
+   }
 
    /* Compute celestial coordinates of the native pole. */
    if (cel->theta0 == 90.0) {
-      /* Fiducial point is at the native pole. */
-
-      if (dophip) {
-         /* Set default for longitude of the celestial pole. */
-         cel->ref[2] = 180.0;
-      }
-
+      /* Fiducial point at the native pole. */
       latp = cel->ref[1];
       cel->ref[3] = latp;
 
@@ -180,13 +183,6 @@ struct celprm *cel;
       cel->euler[1] = 90.0 - latp;
    } else {
       /* Fiducial point away from the native pole. */
-
-      /* Set default for longitude of the celestial pole. */
-      if (dophip) {
-         cel->ref[2] = (cel->ref[1] < cel->theta0) ? 180.0 : 0.0;
-         cel->ref[2] += cel->phi0;
-      }
-
       clat0 = cosd(cel->ref[1]);
       slat0 = sind(cel->ref[1]);
       cphip = cosd(cel->ref[2] - cel->phi0);
@@ -203,7 +199,14 @@ struct celprm *cel;
          }
 
          /* latp determined by LATPOLE in this case. */
+         if (cel->ref[3] > 90.0) {
+            cel->ref[3] = 90.0;
+         } else if (cel->ref[3] < -90.0) {
+            cel->ref[3] = -90.0;
+         }
+
          latp = cel->ref[3];
+
       } else {
          if (fabs(slat0/z) > 1.0) {
             return 3;
@@ -240,6 +243,15 @@ struct celprm *cel;
             }
          }
 
+         /* Account for rounding error. */
+         if (fabs(latp) < 90.0+tol) {
+            if (latp > 90.0) {
+               latp =  90.0;
+            } else if (latp < -90.0) {
+               latp = -90.0;
+            }
+         }
+
          cel->ref[3] = latp;
       }
 
@@ -250,14 +262,19 @@ struct celprm *cel;
          if (fabs(clat0) < tol) {
             /* Celestial pole at the fiducial point. */
             cel->euler[0] = cel->ref[0];
-            cel->euler[1] = 90.0 - cel->theta0;
+            if (cel->ref[1] > 0.0) {
+               /* Celestial pole at the fiducial point. */
+               cel->euler[1] = 90.0 - cel->theta0;
+            } else {
+               cel->euler[1] = 90.0 + cel->theta0;
+            }
          } else if (latp > 0.0) {
-            /* Celestial pole at the native north pole.*/
-            cel->euler[0] = cel->ref[0] + cel->ref[2] - 180.0;
+            /* Celestial north pole at the native pole.*/
+            cel->euler[0] = cel->ref[0] + cel->ref[2] - cel->phi0 - 180.0;
             cel->euler[1] = 0.0;
          } else if (latp < 0.0) {
-            /* Celestial pole at the native south pole. */
-            cel->euler[0] = cel->ref[0] - cel->ref[2];
+            /* Celestial south pole at the native pole. */
+            cel->euler[0] = cel->ref[0] - cel->ref[2] + cel->phi0;
             cel->euler[1] = 180.0;
          }
       } else {
@@ -271,9 +288,17 @@ struct celprm *cel;
 
       /* Make euler[0] the same sign as ref[0]. */
       if (cel->ref[0] >= 0.0) {
-         if (cel->euler[0] < 0.0) cel->euler[0] += 360.0;
+         if (cel->euler[0] <   0.0) {
+            cel->euler[0] += 360.0;
+         } else if (cel->euler[0] > 360.0) {
+            cel->euler[0] -= 360.0;
+         }
       } else {
-         if (cel->euler[0] > 0.0) cel->euler[0] -= 360.0;
+         if (cel->euler[0] > 0.0) {
+            cel->euler[0] -= 360.0;
+         } else if (cel->euler[0] < -360.0) {
+            cel->euler[0] += 360.0;
+         }
       }
    }
 
@@ -326,7 +351,7 @@ int stat[];
 
    nphi = (ny > 0) ? (nx*ny) : nx;
 
-   /* Compute native coordinates. */
+   /* Compute celestial coordinates. */
    sphx2s(cel->euler, nphi, 0, 1, sll, phi, theta, lng, lat);
 
    return status;
