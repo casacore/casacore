@@ -28,6 +28,7 @@
 #if !defined(AIPS_NEWMSSPWINDOWCOLUMNS_H)
 #define AIPS_NEWMSSPWINDOWCOLUMNS_H
 
+#include <aips/aips.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -86,8 +87,8 @@ public:
   const ROArrayColumn<Double>& chanFreq() const {return chanFreq_p;}
   const ROArrayQuantColumn<Double>& chanFreqQuant() const {
     return chanFreqQuant_p;}
-  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const 
-    { return chanFreqMeas_p;}
+  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const {
+    return chanFreqMeas_p;}
   const ROArrayColumn<Double>& chanWidth() const {return chanWidth_p;}
   const ROArrayQuantColumn<Double>& chanWidthQuant() const {
     return chanWidthQuant_p;}
@@ -129,6 +130,19 @@ public:
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return chanFreq_p.nrow();}
 
+  // returns the last row that contains a spectral window that has the
+  // specified reference frequency, number of channels, total-bandwidth and IF
+  // conversion chain. All frequencies need to match within the specified
+  // tolerance. Both the totalBandwidth & the tolerance arguments must have the
+  // same dimensions as the Hz and an AipsError exception is thrown, in debug
+  // mode, if the dimensions are wrong. In addition to the numerical values the
+  // frequency reference frame is checked and needs to match the value in the
+  // MEAS_FREQ_REF column. No conversions to other reference frames are
+  // done. Returns -1 if no match could be found.
+  Int matchSpw(const MFrequency& refFreq, uInt nChan, 
+	       const Quantum<Double>& bandwidth, Int ifChain,
+	       const Quantum<Double>& tolerance) const;
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -145,7 +159,21 @@ private:
 
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSSpectralWindow& msSpWindow);
-  
+
+  //# functions to match the supplied arguments against the values in the
+  //# specified row.
+  //<group>
+  Bool matchRefFrequency(uInt row, MFrequency::Types refType, 
+			 Double refFreqInHz, Double tolInHz) const;
+  Bool matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
+		     Double tolInHz) const;
+  Bool matchIfConvChain(uInt row, Int ifChain) const;
+  Bool matchTotalBandwidth(uInt row, Double bandwidthInHz,
+			   Double tolInHz) const;
+  Bool matchNumChan(uInt row, Int nChan) const;
+  //<group>
+
+
   //# required columns
   ROArrayColumn<Double> chanFreq_p;
   ROArrayColumn<Double> chanWidth_p;
@@ -267,8 +295,8 @@ public:
     return RONewMSSpWindowColumns::chanFreq();}
   const ROArrayQuantColumn<Double>& chanFreqQuant() const {
     return RONewMSSpWindowColumns::chanFreqQuant();}
-  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const 
-    { return RONewMSSpWindowColumns::chanFreqMeas();}
+  const ROArrayMeasColumn<MFrequency>& chanFreqMeas() const {
+    return RONewMSSpWindowColumns::chanFreqMeas();}
   const ROArrayColumn<Double>& chanWidth() const {
     return RONewMSSpWindowColumns::chanWidth();}
   const ROArrayQuantColumn<Double>& chanWidthQuant() const {

@@ -26,9 +26,19 @@
 //# $Id$
 
 #include <aips/MeasurementSets/NewMSSpWindowColumns.h>
+#include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/MeasurementSets/NewMSSpectralWindow.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/MVFrequency.h>
+#include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/UnitVal.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
+#include <aips/Utilities/Assert.h>
 
 RONewMSSpWindowColumns::
 RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow):
@@ -87,6 +97,36 @@ RONewMSSpWindowColumns(const NewMSSpectralWindow& msSpWindow):
 }
 
 RONewMSSpWindowColumns::~RONewMSSpWindowColumns() {}
+
+Int RONewMSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance) const {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // Convert the reference frequency to Hz
+  const MFrequency::Types refType = 
+    MFrequency::castType(refFreq.getRef().getType());
+  const Double refFreqInHz = refFreq.getValue().getValue();
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+  // Main matching loop
+  while (r > 0) {
+    r--;
+    if (matchNumChan(r, nChan) &&
+	matchIfConvChain(r, ifChain) &&
+	matchTotalBandwidth(r, bandwidthInHz, tolInHz) &&
+ 	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
+      return r;
+    }
+  }
+  return -1;
+}
 
 RONewMSSpWindowColumns::RONewMSSpWindowColumns():
   chanFreq_p(),
@@ -191,6 +231,48 @@ attachOptionalCols(const NewMSSpectralWindow& msSpWindow)
   const String& receiverId=
     NewMSSpectralWindow::columnName(NewMSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
+}
+
+Bool RONewMSSpWindowColumns::
+matchRefFrequency(uInt row, MFrequency::Types refType, 
+		  Double refFreqInHz, Double tolInHz) const {
+  DebugAssert(row < nrow(), AipsError);
+  const MFrequency rowFreq = refFrequencyMeas()(row);
+  if (MFrequency::castType(rowFreq.getRef().getType()) != refType) {
+    return False;
+  }
+  return nearAbs(rowFreq.getValue().getValue(), refFreqInHz, tolInHz);
+}
+
+Bool RONewMSSpWindowColumns::
+matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
+	      Double tolInHz) const {
+  DebugAssert(row < nrow(), AipsError);
+  DebugAssert(chanFreq().ndim(row) == 1, AipsError);
+  // Check the number of channels
+  const uInt nChan = chanFreq().shape(row)(0);
+  if (nChan != chanFreqInHz.nelements()) return False;
+  // Check the values in each channel
+  return allNearAbs(chanFreq()(row), chanFreqInHz, tolInHz);
+}
+  
+Bool RONewMSSpWindowColumns::
+matchIfConvChain(uInt row, Int ifChain) const {
+  DebugAssert(row < nrow(), AipsError);
+  return ifChain == ifConvChain()(row);
+}
+
+Bool RONewMSSpWindowColumns::
+matchTotalBandwidth(uInt row, Double bandwidthInHz,
+		    Double tolInHz) const {
+  DebugAssert(row < nrow(), AipsError);
+  return nearAbs(totalBandwidth()(row), bandwidthInHz, tolInHz);
+}
+
+Bool RONewMSSpWindowColumns::
+matchNumChan(uInt row, Int nChan) const {
+  DebugAssert(row < nrow(), AipsError);
+  return nChan == numChan()(row);
 }
 
 NewMSSpWindowColumns::NewMSSpWindowColumns(NewMSSpectralWindow& msSpWindow):
@@ -357,6 +439,8 @@ attachOptionalCols(NewMSSpectralWindow& msSpWindow)
     NewMSSpectralWindow::columnName(NewMSSpectralWindow::RECEIVER_ID);
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
+
+
 // Local Variables: 
 // compile-command: "gmake NewMSSpWindowColumns"
 // End: 
