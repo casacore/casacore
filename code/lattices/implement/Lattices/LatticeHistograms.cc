@@ -539,7 +539,7 @@ Bool LatticeHistograms<T>::getHistograms (Array<T>& values,
 // Use the LatticeStepper (default) which will guarentee the access pattern.  
 // There will be no overhang (as tile shape for first axis is length of axis)
   
-   IPosition cursorShape(1,pStoreLattice_p->ndim(),1);
+   IPosition cursorShape(pStoreLattice_p->ndim(),1);
    cursorShape(0) = pStoreLattice_p->shape()(0);
 
    IPosition vectorAxis(1,0);
@@ -550,7 +550,7 @@ Bool LatticeHistograms<T>::getHistograms (Array<T>& values,
 // (it is possible the user could ask for a histogram with one bin !)
 
    LatticeStepper histStepper(pStoreLattice_p->shape(), cursorShape,
-                          vectorAxis, IPosition::makeAxisPath(pStoreLattice_p->ndim()));
+                              vectorAxis, IPosition::makeAxisPath(pStoreLattice_p->ndim()));
    RO_LatticeIterator<T> histIterator(*pStoreLattice_p, histStepper);
 
 
@@ -721,7 +721,7 @@ Bool LatticeHistograms<T>::displayHistograms ()
 // row based rather than tile based.  There will be no overhang because
 // the tile shape for the histogram axis is the size of the histogram
 
-   IPosition cursorShape(1,pStoreLattice_p->ndim(),1);
+   IPosition cursorShape(pStoreLattice_p->ndim(),1);
    cursorShape(0) = pStoreLattice_p->shape()(0);
 
    IPosition vectorAxis(1); 
