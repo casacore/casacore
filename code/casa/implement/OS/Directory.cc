@@ -1,5 +1,5 @@
 //# Directory.cc: Class to define a Directory
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -156,9 +156,10 @@ Double Directory::freeSpace() const
 {
     struct statfs buf;
 #if defined(AIPS_IRIX)
-    if (statfs (itsFile.path().expandedName(), &buf, sizeof(buf), 0) < 0) {
+    if (statfs (itsFile.path().expandedName().chars(),
+		&buf, sizeof(buf), 0) < 0) {
 #else
-    if (statfs (itsFile.path().expandedName(), &buf) < 0) {
+    if (statfs (itsFile.path().expandedName().chars(), &buf) < 0) {
 #endif
 	throw (AipsError ("Directory::freeSpace error on " +
 			  itsFile.path().expandedName() +
@@ -190,7 +191,7 @@ void Directory::create (Bool overwrite)
 	}
 	Directory(itsFile).removeRecursive();
     }
-    if (mkdir (itsFile.path().expandedName(), 0755) < 0) {
+    if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
 	throw (AipsError ("Directory::create error on " +
 			  itsFile.path().expandedName() +
 			  ": " + strerror(errno)));
@@ -207,7 +208,7 @@ void Directory::remove()
     if (isSymLink()) {
 	removeSymLinks();
     }
-    rmdir (itsFile.path().absoluteName());
+    rmdir (itsFile.path().absoluteName().chars());
 }
 
 void Directory::removeFiles()
@@ -216,7 +217,7 @@ void Directory::removeFiles()
     while (! iter.pastEnd()) {
 	File file = iter.file();
 	if (! file.isDirectory (False)) {
-	    unlink (file.path().originalName());
+	    unlink (file.path().originalName().chars());
 	}
 	iter++;
     }
@@ -230,7 +231,7 @@ void Directory::removeRecursive()
 	if (file.isDirectory (False)) {
 	    Directory(file).removeRecursive();
 	} else {
-	    unlink (file.path().originalName());
+	    unlink (file.path().originalName().chars());
 	}
 	iter++;
     }
@@ -254,7 +255,7 @@ void Directory::copy (const Path& target, Bool overwrite,
     // Copy the entire directory recursively using the system function cp.
     String command("cp -r ");
     command += itsFile.path().expandedName() + " " + targetName.expandedName();
-    system (command);
+    system (command.chars());
     // Give write permission to user if needed.
     if (setUserWritePermission) {
 #if defined(__hpux__) || defined(AIPS_IRIX)
@@ -263,7 +264,7 @@ void Directory::copy (const Path& target, Bool overwrite,
 	command = "chmod -Rf u+w ";
 #endif
 	command += targetName.expandedName();
-	system (command);
+	system (command.chars());
     }
 }
 
