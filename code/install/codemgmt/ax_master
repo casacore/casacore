@@ -6190,3 +6190,4 @@
 17 191 src mv ./aips/implement/Functionals/NQCombi2Function.cc ./aips/implement/Functionals/Combi2Function.cc
 17 191 src mv ./aips/implement/Functionals/NQCombiFunction.cc ./aips/implement/Functionals/CombiFunction.cc
 17 191 src mv ./aips/implement/Functionals/NQCombiFunction.h ./aips/implement/Functionals/CombiFunction.h
+17 191 src mv ./aips/implement/Functionals/NQCombiParam.cc ./aips/implement/Functionals/CombiParam.cc
