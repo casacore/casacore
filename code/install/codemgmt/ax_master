@@ -2248,3 +2248,4 @@
 11 173 src mv nrao/implement/MeasurementSets/makefile trial/implement/SDIterators/makefile
 11 173 src mv nrao/implement/MeasurementSets/test trial/implement/SDIterators/test
 11 173 src mv nrao/data/dishdemo1.fits trial/data/dishdemo/dishdemo1.fits
+11 173 src mv nrao/data/dishdemo2.fits trial/data/dishdemo/dishdemo2.fits
