@@ -1,5 +1,5 @@
 //# tCoordinateSystem.cc: Test program for CoordinateSystem
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -912,7 +912,8 @@ void doit4()
    cSys.addCoordinate(lC);
    SpectralCoordinate spC = makeSpectralCoordinate();     // 1
    cSys.addCoordinate(spC);
-   DirectionCoordinate dC = makeDirectionCoordinate();    // 2 & 3
+   DirectionCoordinate dC = makeDirectionCoordinate(True);// 2 & 3
+//
    cSys.addCoordinate(dC);
 //
 //   cout << "Reference pixel = " << cSys.referencePixel() << endl;
@@ -926,11 +927,12 @@ void doit4()
    Vector<Double> worldMin(cSys.nWorldAxes());
    Vector<Double> worldMax(cSys.nWorldAxes());
 //
+   Vector<Double> dRefVal = dC.referenceValue();   
    Vector<Int> tmp = cSys.worldAxes(2);
-   worldMin(tmp(0)) = -180.0;
-   worldMin(tmp(1)) = -90.0;
-   worldMax(tmp(0)) = 180.0;
-   worldMax(tmp(1)) = 90.0;
+   worldMin(tmp(0)) = dRefVal(0) - 10.0;
+   worldMax(tmp(0)) = dRefVal(1) + 10.0;
+   worldMin(tmp(1)) = dRefVal(1) - 10.0;
+   worldMax(tmp(1)) = dRefVal(1) + 10.0;
 //
 // Force a failure.   ALl axes must be pixel or world
 //
@@ -1101,7 +1103,8 @@ void doit4()
       throw(AipsError("toMix consistency test 3 failed"));
    }
 //
-// Now reorder the CS world axes,  Gulp.
+// Now reorder the CS world axes,  Gulp
+// Linear, Spectral, Direction -> Direction, Spectral, Linear
 //
    Vector<Int> wOrder(cSys.nWorldAxes());
    Vector<Int> pOrder(cSys.nPixelAxes());
@@ -1122,10 +1125,10 @@ void doit4()
    worldAxes(3) = True;
 //
    tmp = cSys.worldAxes(2);
-   worldMin(tmp(0)) = -180.0;
-   worldMin(tmp(1)) = -90.0;
-   worldMax(tmp(0)) = 180.0;
-   worldMax(tmp(1)) = 90.0;
+   worldMin(tmp(0)) = dRefVal(0) - 10.0;
+   worldMax(tmp(0)) = dRefVal(0) + 10.0;
+   worldMin(tmp(1)) = dRefVal(1) - 10.0;
+   worldMax(tmp(1)) = dRefVal(1) + 10.0;
 //
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
@@ -1241,9 +1244,11 @@ void doit5()
       }
    }
    {
+
 // pr,pr->w,w
+
       CoordinateSystem cSys;
-      DirectionCoordinate dC = makeDirectionCoordinate();
+      DirectionCoordinate dC = makeDirectionCoordinate(True);
       cSys.addCoordinate(dC);
       cSys.removePixelAxis(0, cSys.referencePixel()(0));
       cSys.removePixelAxis(0, cSys.referencePixel()(0));
@@ -1252,18 +1257,19 @@ void doit5()
       Vector<Double> worldIn(cSys.nWorldAxes());
       Vector<Bool> pixelAxes(cSys.nPixelAxes());
       Vector<Bool> worldAxes(cSys.nWorldAxes());
-      Vector<Double> worldOut, pixelOut;
+      Vector<Double> worldOut, pixelOut;      
+      Vector<Double> dRefVal = dC.referenceValue();
 //
       Vector<Double> worldMin(cSys.nWorldAxes());
       Vector<Double> worldMax(cSys.nWorldAxes());
       Vector<Int> tmp = cSys.worldAxes(0);
       if (tmp(0)!=-1) {
-         worldMin(tmp(0)) = -180.0;
-         worldMax(tmp(0)) = 180.0;
+         worldMin(tmp(0)) = dRefVal(0) - 10.0;
+         worldMax(tmp(0)) = dRefVal(0) + 10.0;
       }
       if (tmp(1)!=-1) {
-         worldMin(tmp(1)) = -90.0;
-         worldMax(tmp(1)) = 90.0;
+         worldMin(tmp(1)) = dRefVal(1) - 10.0;
+         worldMax(tmp(1)) = dRefVal(1) + 10.0;
       }
 //
       pixelAxes.set(False);
@@ -1284,9 +1290,11 @@ void doit5()
       }
    }
    {
+
 // pr,p->w,w
+
       CoordinateSystem cSys;
-      DirectionCoordinate dC = makeDirectionCoordinate();
+      DirectionCoordinate dC = makeDirectionCoordinate(True);
       cSys.addCoordinate(dC);
       cSys.removePixelAxis(0, cSys.referencePixel()(0));
 //
@@ -1295,17 +1303,18 @@ void doit5()
       Vector<Bool> pixelAxes(cSys.nPixelAxes());
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
+      Vector<Double> dRefVal = dC.referenceValue();   
 //
       Vector<Double> worldMin(cSys.nWorldAxes());
       Vector<Double> worldMax(cSys.nWorldAxes());
       Vector<Int> tmp = cSys.worldAxes(0);
       if (tmp(0)!=-1) {
-         worldMin(tmp(0)) = -180.0;
-         worldMax(tmp(0)) = 180.0;
+         worldMin(tmp(0)) = dRefVal(0) - 10.0;
+         worldMax(tmp(0)) = dRefVal(0) + 10.0;
       }
       if (tmp(1)!=-1) {
-         worldMin(tmp(1)) = -90.0;
-         worldMax(tmp(1)) = 90.0;
+         worldMin(tmp(1)) = dRefVal(1) - 10.0;
+         worldMax(tmp(1)) = dRefVal(1) + 10.0;
       }
 //
       pixelAxes.set(False); pixelAxes(0) = True;
@@ -1329,9 +1338,11 @@ void doit5()
       } 
    }
    {
+
 // pr,w->w,p
+
       CoordinateSystem cSys;
-      DirectionCoordinate dC = makeDirectionCoordinate();
+      DirectionCoordinate dC = makeDirectionCoordinate(True);
       cSys.addCoordinate(dC);
       cSys.removePixelAxis(0, cSys.referencePixel()(0));
 //
@@ -1340,17 +1351,18 @@ void doit5()
       Vector<Bool> pixelAxes(cSys.nPixelAxes());
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
+      Vector<Double> dRefVal = dC.referenceValue();   
 //
       Vector<Double> worldMin(cSys.nWorldAxes());
       Vector<Double> worldMax(cSys.nWorldAxes());
       Vector<Int> tmp = cSys.worldAxes(0);
       if (tmp(0)!=-1) {
-         worldMin(tmp(0)) = -180.0;
-         worldMax(tmp(0)) = 180.0;
+         worldMin(tmp(0)) = dRefVal(0) - 10.0;
+         worldMax(tmp(0)) = dRefVal(0) + 10.0;
       }
       if (tmp(1)!=-1) {
-         worldMin(tmp(1)) = -90.0;
-         worldMax(tmp(1)) = 90.0;
+         worldMin(tmp(1)) = dRefVal(1) - 10.0;
+         worldMax(tmp(1)) = dRefVal(1) + 10.0;
       }
 //
       pixelAxes.set(False); 
@@ -1374,9 +1386,11 @@ void doit5()
       } 
    }
    {
+
 // w,pr->p,w
+
       CoordinateSystem cSys;
-      DirectionCoordinate dC = makeDirectionCoordinate();
+      DirectionCoordinate dC = makeDirectionCoordinate(True);
       cSys.addCoordinate(dC);
       cSys.removePixelAxis(1, cSys.referencePixel()(1));
 //
@@ -1385,17 +1399,18 @@ void doit5()
       Vector<Bool> pixelAxes(cSys.nPixelAxes());
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
+      Vector<Double> dRefVal = dC.referenceValue();   
 //
       Vector<Double> worldMin(cSys.nWorldAxes());
       Vector<Double> worldMax(cSys.nWorldAxes());
       Vector<Int> tmp = cSys.worldAxes(0);
       if (tmp(0)!=-1) {
-         worldMin(tmp(0)) = -180.0;
-         worldMax(tmp(0)) = 180.0;
+         worldMin(tmp(0)) = dRefVal(0) - 10.0;
+         worldMax(tmp(0)) = dRefVal(0) + 10.0;
       }
       if (tmp(1)!=-1) {
-         worldMin(tmp(1)) = -90.0;
-         worldMax(tmp(1)) = 90.0;
+         worldMin(tmp(1)) = dRefVal(1) - 10.0;
+         worldMax(tmp(1)) = dRefVal(1) + 10.0;
       }
 //
       pixelAxes.set(False); 
@@ -1420,9 +1435,11 @@ void doit5()
       } 
    }
    {
+
 // p,pr->w,w
+
       CoordinateSystem cSys;
-      DirectionCoordinate dC = makeDirectionCoordinate();
+      DirectionCoordinate dC = makeDirectionCoordinate(True);
       cSys.addCoordinate(dC);
       cSys.removePixelAxis(1, cSys.referencePixel()(1));
 //
@@ -1431,6 +1448,7 @@ void doit5()
       Vector<Bool> pixelAxes(cSys.nPixelAxes());
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
+      Vector<Double> dRefVal = dC.referenceValue();   
 //
       Vector<Double> worldMin(cSys.nWorldAxes());
       Vector<Double> worldMax(cSys.nWorldAxes());
@@ -1489,7 +1507,7 @@ DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees)
       Vector<String> units(2);
       units(0) = "deg";
       units(1) = "deg";
-      dC.setWorldAxisUnits(units); 
+      dC.setWorldAxisUnits(units, True); 
    }
 //
    return dC;
