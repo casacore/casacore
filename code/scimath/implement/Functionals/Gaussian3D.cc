@@ -41,9 +41,9 @@ Gaussian3D<T>::Gaussian3D()
 {}
 
 template<class T> 
-Gaussian3D<T>::Gaussian3D(T height, T xCenter, T yCenter, T zCenter, 
-                          T xWidth, T yWidth, T zWidth, 
-                          T theta, T phi) 
+Gaussian3D<T>::Gaussian3D(T &height, T &xCenter, T &yCenter, T &zCenter, 
+                          T &xWidth, T &yWidth, T &zWidth, 
+                          T &theta, T &phi) 
 : Gaussian3DParam<T>(height, xCenter, yCenter, zCenter, xWidth, yWidth,
                      zWidth, theta, phi)
 {}

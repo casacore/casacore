@@ -31,13 +31,12 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
-
+#include <aips/Functionals/Function.h>
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 
   : Function<Type>(NPAR)
 {
-  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   param_p[H] = Type(1.0);
   param_p[CX] = Type(0.0);
   param_p[CY] = Type(0.0);
@@ -47,18 +46,18 @@ Gaussian3DParam<Type>::Gaussian3DParam()
   param_p[AZ] = Type(1.0);
   param_p[THETA] = Type(0.0);
   param_p[PHI] = Type(0.0);
+  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   settrigvals();
 }
 
 
 template<class Type> 
-Gaussian3DParam<Type>::Gaussian3DParam(Type height, 
-                             Type xCenter, Type yCenter, Type zCenter, 
-                             Type xWidth, Type yWidth, Type zWidth, 
-                             Type theta, Type phi) 
+Gaussian3DParam<Type>::Gaussian3DParam(Type &height, 
+                             Type &xCenter, Type &yCenter, Type &zCenter, 
+                             Type &xWidth, Type &yWidth, Type &zWidth, 
+                             Type &theta, Type &phi) 
   : Function<Type>(NPAR)
 {
-  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   param_p[H] = height;
   param_p[CX] = xCenter;
   param_p[CY] = yCenter;
@@ -68,6 +67,7 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type height,
   param_p[AZ] = zWidth;
   param_p[THETA] = theta;
   param_p[PHI] = phi;
+  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
 
   settrigvals();  
 }
@@ -89,7 +89,7 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type height,
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam(const Gaussian3DParam<Type>& other)
-  : Function<Type>(other)
+  : Function<Type, Type>(other)
 {  
    fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
    settrigvals();   //IMPR: could set vals explicitly to speed things up

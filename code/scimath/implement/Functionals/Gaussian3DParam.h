@@ -173,9 +173,9 @@ public:
   Gaussian3DParam();
   Gaussian3DParam(Type height, const Vector<Type>& center, 
 	            const Vector<Type>& width, Type theta, Type phi);
-  Gaussian3DParam(Type height, Type xCenter, Type yCenter, Type zCenter,
-                    Type xWidth, Type yWidth, Type zWidth, 
-                    Type theta, Type phi);
+  Gaussian3DParam(Type &height, Type &xCenter, Type &yCenter, Type &zCenter,
+                    Type &xWidth, Type &yWidth, Type &zWidth, 
+                    Type &theta, Type &phi);
   // </group>
 
   // Copy construcor

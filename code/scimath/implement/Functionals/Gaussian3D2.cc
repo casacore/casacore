@@ -40,15 +40,15 @@ Gaussian3D<AutoDiff<T> >::Gaussian3D()
 {}
 
 template<class T> 
-Gaussian3D<AutoDiff<T> >::Gaussian3D(const AutoDiff<T>& height,
-                                     const AutoDiff<T>& xCenter, 
-                                     const AutoDiff<T>& yCenter,
-                                     const AutoDiff<T>& zCenter,
-                                     const AutoDiff<T>& xWidth,
-                                     const AutoDiff<T>& yWidth, 
-                                     const AutoDiff<T>& zWidth, 
-                                     const AutoDiff<T>& theta,  
-                                     const AutoDiff<T>& phi) 
+Gaussian3D<AutoDiff<T> >::Gaussian3D(AutoDiff<T> &height,
+                                     AutoDiff<T> &xCenter, 
+                                     AutoDiff<T> &yCenter,
+                                     AutoDiff<T> &zCenter,
+                                     AutoDiff<T> &xWidth,
+                                     AutoDiff<T> &yWidth, 
+                                     AutoDiff<T> &zWidth, 
+                                     AutoDiff<T> &theta,  
+                                     AutoDiff<T> &phi) 
 : Gaussian3DParam<AutoDiff<T> >(height, xCenter, yCenter, zCenter, 
                                 xWidth, yWidth, zWidth, theta, phi)
 {}

@@ -153,8 +153,8 @@ public:
   Gaussian3D();
   Gaussian3D(T height, const Vector<T>& center, 
 	     const Vector<T>& width, T theta, T phi);
-  Gaussian3D(T height, T xCenter, T yCenter, T zCenter,
-             T xWidth, T yWidth, T zWidth, T theta, T phi);
+  Gaussian3D(T &height, T &xCenter, T &yCenter, T &zCenter,
+             T &xWidth, T &yWidth, T &zWidth, T &theta, T &phi);
   // </group>
 
   // Copy constructor
@@ -201,11 +201,11 @@ public:
                 const Vector<AutoDiff<T> >& width, 
                 const AutoDiff<T>& theta,   
                 const AutoDiff<T>& phi);
-  Gaussian3D_PS(const AutoDiff<T>& height,  const AutoDiff<T>& xCenter,
-                const AutoDiff<T>& yCenter, const AutoDiff<T>& zCenter,
-                const AutoDiff<T>& xWidth,  const AutoDiff<T>& yWidth,
-                const AutoDiff<T>& zWidth,  const AutoDiff<T>& theta,
-                const AutoDiff<T>& phi);
+  Gaussian3D_PS(AutoDiff<T>& height,  AutoDiff<T>& xCenter,
+                AutoDiff<T>& yCenter, AutoDiff<T>& zCenter,
+                AutoDiff<T>& xWidth,  AutoDiff<T>& yWidth,
+                AutoDiff<T>& zWidth,  AutoDiff<T>& theta,
+                AutoDiff<T>& phi);
   Gaussian3D_PS(const Gaussian3D_PS<AutoDiff<T> > &other);
   virtual ~Gaussian3D_PS();
 //
