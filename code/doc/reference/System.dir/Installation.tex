@@ -115,49 +115,58 @@ CVSup bootstrap file, for example:
 With an editor, create a file in this directory named for the architecture
 being installed, e.g. {\tt /usr/local/aips++/sup/files/linux}. In this file, put:
 \begin{verbatim}
-    *default host=aips2.nrao.edu compress
-    *default base=/usr/local/aips++
-    *default release=linux
-    *default delete use-rel-suffix
-    bootstrap
+    bootstrap release=linux host=aips2.nrao.edu base=/usr/local/aips++
 \end{verbatim}
 If you chose a root directory other than {\tt /usr/local/aips++} for your
-installation, you should substitute your directory in the line above.
+installation, you should substitute your directory in the line above. This
+file specifies which set of bootstrap files should be fetched.
 
-The next step is to fetch the inital state for the repository:
+The next step is to use the bootstrap specification file you just created to
+fetch the bootstrap files:
 \begin{verbatim}
     bash$ cd /usr/local/aips++
     bash$ cvsup sup/files/linux &
 \end{verbatim}
 A GUI should pop up, when it does you should only need to press the {\em go}
 button, i.e. the button with the little {\bf green triangle} beside the 
-{\em exit} button. This will fetch all of the initial state for \aipspp.
-Now, you are ready to move on to bringing the code repository into sync
-with the master repository.
+{\em exit} button. This will fetch all of the \aipspp\ bootstrap files for the
+given architecture..
 
-\subsection{Updating the Code Repository}
-\label{developer release code repository}
-\index{developer release!code repository}
-
-Whether you are updating the code repository for the first time after following
-the {\em getting started} steps or have a working installation that you just
-want to update the steps are the same:
+The next step is to run the bootstrap \verb+setup+ script. This script not only
+takes care of configuration details, but it also fetches the \aipspp\ source code:
 \begin{verbatim}
     bash$ cd /usr/local/aips++
-    bash$ cvsup sup/files/rcs
-    bash$ cd code
-    bash$ gmake drupdate
-    bash$ gmake drbuild
+    bash$ linux/setup
 \end{verbatim}
-The \verb+gmake drupdate+ {\em only} needs to be done after the code repository
-has been updated via CVSup. If you run encounter problems while doing the,
-\verb+gmake drbuild+, you only need to make corrections and then rerun
-the \verb+gmake drbuild+.
+This script will first verify the \aipspp\ root directory, and then it will
+commence with downloading the source code. This may take some time, so
+patience, as well as bandwidth, is required. After the initial installation
+of the source code, however, subsequent updates should only download source
+code modifications, {\bf not} all of the source code.
 
-This procedure can be repeated to bring the installation up to date with
-the master repository at the \aipspp\ center. Subsequent updates will only download
-those portions of the code repository which have been modified or added. It
-{\bf will not} download everything again.
+Lastly, all you need to do is build \aipspp:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++/code
+    bash$ gmake allsys
+\end{verbatim}
+
+
+\subsection{Updating the Source Code}
+\label{developer release source code}
+\index{developer release!source code}
+
+If you later wish to bring your source code up to date with the current version
+available from the master repository at the \aipspp\ center, you can do this
+easily with CVSup and the ontrol scripts which the setup step generated:
+\begin{verbatim}
+    bash$ cd /usr/local/aips++
+    bash$ cvsup sup/files/code
+    bash$ cd code
+    bash$ gmake allsys
+\end{verbatim}
+This procedure can be repeated whenever you wish, and subsequent updates will
+only download those portions of the code repository which have been modified
+or added. It {\bf will not} download everything again.
 
 \subsection{Updating the Data Repository}
 \label{developer release data repository}
@@ -202,9 +211,8 @@ spent with the
 In addition to the control files mentioned above, the initial setup script
 also creates a \verb+sup/files/update+ script. This CVSup control script
 can be used to update the code and data repositories as well as the documentation
-with one CVSup invocation. After that, all that remains is the \verb+gmake drupdate+
-to bring the build area into conformance with the updated code repository and
-the \verb+gmake drbuild+ to build \aipspp.
+with one CVSup invocation. After that, all that remains is the \verb+gmake allsys+
+to build \aipspp.
 
 % ----------------------------------------------------------------------------
 
