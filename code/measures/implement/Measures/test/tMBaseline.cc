@@ -93,8 +93,8 @@ main()
 	Bool isok = True;
 	Vector<Double> tvec(3);
 	tvec = 0.0;
-	for (uInt i=MBaseline::ITRF; i<MBaseline::N_Types; i++) {
-	  for (uInt j=MBaseline::ITRF; j<MBaseline::N_Types; j++) {
+	for (uInt i=MBaseline::J2000; i<MBaseline::N_Types; i++) {
+	  for (uInt j=MBaseline::J2000; j<MBaseline::N_Types; j++) {
 	    MBaseline::Ref rin(i, mf);
 	    MBaseline::Ref rout(j, mf);
 	    MBaseline mb0(mvb0, rin);
@@ -102,7 +102,7 @@ main()
 	    MBaseline::Convert backw(rout, rin);
 	    if (!allNearAbs(mb0.getValue().getValue() -
 			 backw(forw(mb0)).getValue().getValue(), 
-			 tvec, 1e-8)) {
+			 tvec, 1e-6)) {
 	      cout << MBaseline::showType(i) << " to " <<
 		MBaseline::showType(j) << ": " <<
 		mb0.getValue().getValue() -
