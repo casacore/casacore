@@ -1,5 +1,86 @@
 Test Earth Magnetic field
 --------------------------------------
-Result:    [4.91732e-05, 1.39781e-05, 2.61402e-05]
-Strength:  0.574169 G
-Direction: [15.8685, 27.0822] deg
+Date:      1998/05/18
+Position:  [6.36457e+06, 0.115264, 0.92034]
+           [6.60417, 52.7316] deg
+Result:    [12747.6, -1091.33, 47047]
+------------------------------------------
+In ITRF:   EarthMagnetic: [12747.6, -1091.33, 47047]
+           [-4.8932, 74.7866] deg
+In AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
+           [-1.19506, 67.9342] deg
+In HADEC:  EarthMagnetic: [12788.5, 382.004, 47047]
+           [1.71097, 74.7866] deg
+------------------------------------------
+In AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
+           [-1.19506, 67.9342] deg
+In HADEC:  EarthMagnetic: [12788.5, 382.004, 47047.1]
+           [1.71096, 74.7866] deg
+In ITRF:   EarthMagnetic: [12747.6, -1091.33, 47047.1]
+           [-4.8932, 74.7866] deg
+------------------------------------------
+Model ITRF:   EarthMagnetic: [12747.6, -1091.33, 47047]
+              [-4.8932, 74.7866] deg, 0.487557 G
+Model AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
+              [-1.19506, 67.9342] deg, 0.487557 G
+Model HADEC:  EarthMagnetic: [12788.5, 382.004, 47047]
+              [1.71097, 74.7866] deg, 0.487557 G
+--------------------------------------
+Testing all conversions forward/backward
+All forward/backward conversions: ok
+--------------------------------------
+Exercise all MVEarthMagnetic function
+putValue:       [23 G, 23 G, 23 G], [0.0023, 0.0023, 0.0023]
+EarthMagneticAngle:  -0.282959
+EarthMagneticAngle:  -16.2124 deg
+get:            [0.00398372, 0.785398, 0.61548]
+getRecordValue: [0.0023 nT, 0.0023 nT, 0.0023 nT]
+separation:     3.14159
+separation:     180 deg
+crossProduct:   [110.718, -78.8887, -31.8295]
+getAngle:       [0.785398, 0.61548] rad
+getAngle:       [45, 35.2644] deg
+getlength:      3.98372e-08 G
+radius:         0.00398372
+putVector:      [30, 40, 0], [30, 40, 0]
+VQ constructor: [0.0023, 0.0023, 0.0023]
+Q constructor:  [0, 0, 0.005]
+QV constructor: [0.57735, 0.57735, 0.57735]
+QV constructor: [0.00196299, 0.00196299, 0.00196299]
+V constructor:  [30, 40, 0]
+D constructor:  [0, 0, 78]
+operator+:      [30.0023, 40.0023, 0.0023]
+operator-:      [29.9977, 39.9977, -0.0023]
+operator-pre-:  [-0.0023, -0.0023, -0.0023]
+operator*:      [0.0023, 0.00197536, 0.00258418]
+operator*:      [0.0046, 0.0046, 0.0046]
+assert:         ok
+getLength:      50 nT
+operator*:      2500
+operator*       0.161
+operator*:      2500
+clone:          [30, 40, 0]
+getVector:      [30, 40, 0]
+near:           0
+near:           0
+nearAbs:        0
+!=:             1
+==:             0
+type:           3
+All MVEarthMagnetic functions: ok
+----------------------------
+Exercise all MEarthMagnetic function
+getType:        1, 10
+giveMe:         1, Reference for an EarthMagnetic with Type: AZEL
+setRefString:   1, EarthMagnetic: [12747.6, -1091.33, 47047]
+assert:         ok
+clone:          EarthMagnetic: [12747.6, -1091.33, 47047]
+get:            [1.27476e+06, -109133, 4.7047e+06] cm.m-1.kg.s-2.A-1
+getAngle:       [-4.8932, 74.7866] deg
+getDefaultType: IGRF
+getRefString:   HADEC
+myType:         4
+type:           4
+All MEarthMagnetic functions: ok
+---------------------------
+------------------------------------------
