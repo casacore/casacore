@@ -559,6 +559,9 @@ void SSMBase::writeIndex()
   anOs.putend();  
   anOs.close();
   delete aTio;
+  // Synchronize to make sure it gets written to disk.
+  // This is needed for NFS-files under Linux (to resolve defect 2752).
+  itsFile->fsync();
 }
 
 void SSMBase::setBucketDirty()
