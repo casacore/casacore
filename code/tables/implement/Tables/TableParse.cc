@@ -664,7 +664,6 @@ Table tableCommand (const String& str, Vector<String>& cols)
     }catch (AipsError x) {
 	message = x.getMesg();
 	error = True;
-	cout << message << endl;
     } end_try;
 
     //# If an exception was thrown; throw it again with the message.
