@@ -2,15 +2,14 @@ RecordInterface::define - new fieldNumber exceeds #fields
 Record field  cannot be added: length<1
 Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
->>> Instance-specific assertion error message:
-(RecordRep.cc : 233) Failed AlwaysAssertExit whichField >= 0 && whichField < Int(nused_p) && desc_p.type(whichField) == type
-<<<
+RecordRep::defineDataField - incorrect data type used for field TpShort
 RecordRep::createDataField: unknown data type
 Array<T>::validateConformance
 Array<T>::validateConformance
 Array<T>::validateConformance
 Array<T>::validateConformance
-Record::define; fixed array conformance error
+Record::define - fixed array conformance error for field TpArrayString2
+Record::define - fixed array conformance error for field TpBool
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
 (Record.cc : 98) Failed AlwaysAssertExit conform (other)
