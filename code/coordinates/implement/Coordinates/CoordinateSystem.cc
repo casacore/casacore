@@ -553,6 +553,9 @@ uInt CoordinateSystem::nPixelAxes() const
 Bool CoordinateSystem::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
+    DebugAssert(world.nelements() == nWorldAxes() &&
+		pixel.nelements() == nPixelAxes(), AipsError);
+
     // This is neede so we can write into some temporaries
     CoordinateSystem *This = (CoordinateSystem *)this;
 
@@ -560,13 +563,15 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
-	// For each coordinate, putt the appropriate pixel or replacement values in the
-	// pixel temporary, call the coordinates own toWorld, and then copy the output
-	// values from the world temporary to the world coordinate
+	// For each coordinate, putt the appropriate pixel or
+	// replacement values in the pixel temporary, call the
+	// coordinates own toWorld, and then copy the output values
+	// from the world temporary to the world coordinate
 	const uInt npa = pixel_maps_p[i]->nelements();
 	for (uInt j=0; j<npa; j++) {
 	    Int where = pixel_maps_p[i]->operator[](j);
 	    if (where >= 0) {
+		// cerr << "i j where " << i << " " << j << " " << where <<endl;
 		This->pixel_tmps_p[i]->operator()(j) = pixel(where);
 	    } else {
 		This->pixel_tmps_p[i]->operator()(j) = 
@@ -611,6 +616,9 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 Bool CoordinateSystem::toPixel(Vector<Double> &pixel, 
 			       const Vector<Double> &world) const
 {
+    DebugAssert(world.nelements() == nWorldAxes() &&
+		pixel.nelements() == nPixelAxes(), AipsError);
+
     // This is neede so we can write into some temporaries
     CoordinateSystem *This = (CoordinateSystem *)this;
 
