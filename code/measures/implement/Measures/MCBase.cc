@@ -1,5 +1,5 @@
 //# MCBase.cc: Base for specific measure conversions
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,25 +50,21 @@ void MCBase::makeState(Bool &made, uInt *state,
   uInt *tree = new uInt[ntyp*ntyp];
   Bool *visit= new Bool[ntyp];
   uInt *mcnt = new uInt[ntyp*ntyp];
-  {
-    for (uInt j=0; j<ntyp; j++) {
-      tcnt[j] = 0;
-      visit[j] = False;
-      for (uInt i=0; i<ntyp; i++) {
-	mcnt[i*ntyp + j]  = 100*nrout;
-	state[i*ntyp + j] = nrout;
-      };
+  for (uInt j=0; j<ntyp; j++) {
+    tcnt[j] = 0;
+    visit[j] = False;
+    for (uInt i=0; i<ntyp; i++) {
+      mcnt[i*ntyp + j]  = 100*nrout;
+      state[i*ntyp + j] = nrout;
     };
-  }
-  {
-    for (uInt i=0; i<nrout; i++) {
-      tree[list[i][0]*ntyp + tcnt[list[i][0]]] = i;
-      tcnt[list[i][0]]++;
-      // Fill one-step transitions
-      mcnt[list[i][0]*ntyp + list[i][1]] = 1 + list[i][2];
-      state[list[i][0]*ntyp + list[i][1]] = i;
-    };
-  }
+  };
+  for (uInt i=0; i<nrout; i++) {
+    tree[list[i][0]*ntyp + tcnt[list[i][0]]] = i;
+    tcnt[list[i][0]]++;
+    // Fill one-step transitions
+    mcnt[list[i][0]*ntyp + list[i][1]] = 1 + list[i][2];
+    state[list[i][0]*ntyp + list[i][1]] = i;
+  };
   // Find shortest route
   for (uInt i=0; i<ntyp; i++) {
     for (uInt j=0; j<ntyp; j++) {
@@ -132,27 +128,23 @@ String MCBase::showState(Bool &made, uInt *state,
   if (!made) return String("No state made yet");
   ostrstream oss;
   oss << "   |";
-  {
-    for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;;
-    oss << "\n";
-    for (uInt j=0; j<3*ntyp+4; j++) oss << '-'; 
-    oss << "\n";
-  }
-  {
-    for (uInt i=0; i<ntyp; i++) {
-      oss << setw(3) << i << '|';
-      for (uInt j=0; j<ntyp; j++) {
-	if (i == j) oss << " --"; 
-	else oss << setw(3) << state[i*ntyp+j];
-      };
-      oss << "\n";
-      oss << "   |";
-      for (uInt k=0; k<ntyp; k++) {
-	if (i == k) oss << "   ";
-	else oss << setw(3) << list[state[i*ntyp+k]][1];
-      };
-      oss << "\n";
+  for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;;
+  oss << "\n";
+  for (uInt j=0; j<3*ntyp+4; j++) oss << '-'; 
+  oss << "\n";
+  for (uInt i=0; i<ntyp; i++) {
+    oss << setw(3) << i << '|';
+    for (uInt j=0; j<ntyp; j++) {
+      if (i == j) oss << " --"; 
+      else oss << setw(3) << state[i*ntyp+j];
     };
-  }
+    oss << "\n";
+    oss << "   |";
+    for (uInt k=0; k<ntyp; k++) {
+      if (i == k) oss << "   ";
+      else oss << setw(3) << list[state[i*ntyp+k]][1];
+    };
+    oss << "\n";
+  };
   return String(oss);
 }
