@@ -379,6 +379,4 @@
 1070 casa/Utilities/Register.cc measures/Measures/MRadialVelocity.h 
      template uInt Register(MRadialVelocity const *) 
 1080 casa/Utilities/Register.cc measures/Measures/Muvw.h 
-     = casa/Quanta/MVuvw.h 
      template uInt Register(Muvw const *) 
-     template uInt Register(MVuvw const *) 
