@@ -25,10 +25,11 @@
 //#
 //# $Id$
 
-
 #include <trial/OS/ModcompConversion.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Exceptions/Excp.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Mathematics/Constants.h>
+#include <aips/Utilities/Assert.h>
 #include <iostream.h>
 #include <iomanip.h>
 
@@ -48,11 +49,11 @@ void compare(Int& error, Char exp, Char res) {
   // Compare the results. 
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" << Int(byteExpected[0]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" << Int(byteResult[0]) << ")";
-    cout << setbase(10) << endl;
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -70,11 +71,11 @@ void compare(Int& error, uChar exp, uChar res) {
   // Compare the results. 
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" << Int(byteExpected[0]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" << Int(byteResult[0]) << ")";
-    cout << setbase(10) << endl;
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -92,15 +93,15 @@ void compare(Int& error, Short exp, Short res) {
   // Compare the results. 
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -118,15 +119,15 @@ void compare(Int& error, uShort exp, uShort res) {
   // Compare the results. 
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -144,19 +145,19 @@ void compare(Int& error, Int exp, Int res) {
   // Compare the results.
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[3]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -174,19 +175,19 @@ void compare(Int& error, uInt exp, uInt res) {
   // Compare the results.
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[3]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -204,19 +205,19 @@ void compare(Int& error, Long exp, Long res) {
   // Compare the results.
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[3]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
@@ -234,44 +235,48 @@ void compare(Int& error, uLong exp, uLong res) {
   // Compare the results.
   if (result != expected) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " (" 
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " (" 
 	 << Int(byteExpected[0]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[3]) << ")";
-    cout << setbase(10) << " got " << result;
-    cout << setbase(16) << " (" 
+    cerr << setbase(10) << " got " << result;
+    cerr << setbase(16) << " (" 
 	 << Int(byteResult[0]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[3]) << ")";
-    cout << setbase(10) << endl;
+    cerr << setbase(10) << endl;
   }
 }
 
 void checkConversion (Int& error)
 {
   {
-    Char input[2];
+    uChar input[2];
     input[0] = 'A';
     input[1] = 'B';
     Char result[2];
     result[0] = 'Z';
     result[1] = 'Z';
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 1, AipsError);
     compare(error, 'A', result[0]);
     result[0] = 'Z';
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 'A', result[0]);
     compare(error, 'B', result[1]);
     result[0] = 'a';
     result[1] = 'b';
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 'a', input[0]);
     compare(error, 'b', input[1]);
     result[0] = 'Z';
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 1, AipsError);
     compare(error, 'Z', input[0]);
   }
   {
@@ -281,19 +286,23 @@ void checkConversion (Int& error)
     uChar result[2];
     result[0] = 0x00;
     result[1] = 0x00;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 1, AipsError);
     compare(error, 0xa5, result[0]);
     result[0] = 0x00;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 0xa5, result[0]);
     compare(error, 0xff, result[1]);
     result[0] = 0xfe;
     result[1] = 0x5a;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 0xfe, input[0]);
     compare(error, 0x5a, input[1]);
     result[0] = 0x00;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 1, AipsError);
     compare(error, 0x00, input[0]);
   }
   {
@@ -305,21 +314,25 @@ void checkConversion (Int& error)
     Short result[2];
     result[0] = 0;
     result[1] = 0;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 32421, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 32421, result[0]);
     compare(error, -17, result[1]);
     result[0] = -2;
     result[1] = 30000;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0xff, input[0]);
     compare(error, 0xfe, input[1]);
     compare(error, 0x75, input[2]);
     compare(error, 0x30, input[3]);
     result[0] = 1;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 0x00, input[0]);
     compare(error, 0x01, input[1]);
   }
@@ -332,21 +345,25 @@ void checkConversion (Int& error)
     uShort result[2];
     result[0] = 0;
     result[1] = 0;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 32421, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 32421, result[0]);
     compare(error, 65519, result[1]);
     result[0] = 65534;
     result[1] = 30000;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0xff, input[0]);
     compare(error, 0xfe, input[1]);
     compare(error, 0x75, input[2]);
     compare(error, 0x30, input[3]);
     result[0] = 1;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 2, AipsError);
     compare(error, 0x00, input[0]);
     compare(error, 0x01, input[1]);
   }
@@ -363,15 +380,18 @@ void checkConversion (Int& error)
     Int result[2];
     result[0] = 0;
     result[1] = 0;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841, result[0]);
     compare(error, -1070131, result[1]);
     result[0] = -19088744;
     result[1] = 305419896;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 0xfe, input[0]);
     compare(error, 0xdc, input[1]);
     compare(error, 0xba, input[2]);
@@ -381,7 +401,8 @@ void checkConversion (Int& error)
     compare(error, 0x56, input[6]);
     compare(error, 0x78, input[7]);
     result[0] = 591751049;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0x23, input[0]);
     compare(error, 0x45, input[1]);
     compare(error, 0x67, input[2]);
@@ -400,15 +421,18 @@ void checkConversion (Int& error)
     uInt result[2];
     result[0] = 0u;
     result[1] = 0u;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841u, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841u, result[0]);
     compare(error, 4293897165u, result[1]);
     result[0] = 4275878552;
     result[1] = 305419896;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 0xfe, input[0]);
     compare(error, 0xdc, input[1]);
     compare(error, 0xba, input[2]);
@@ -418,7 +442,8 @@ void checkConversion (Int& error)
     compare(error, 0x56, input[6]);
     compare(error, 0x78, input[7]);
     result[0] = 591751049;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0x23, input[0]);
     compare(error, 0x45, input[1]);
     compare(error, 0x67, input[2]);
@@ -437,15 +462,18 @@ void checkConversion (Int& error)
     Long result[2];
     result[0] = 0;
     result[1] = 0;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841L, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841L, result[0]);
     compare(error, -1070131L, result[1]);
     result[0] = -19088744;
     result[1] = 305419896;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 0xfe, input[0]);
     compare(error, 0xdc, input[1]);
     compare(error, 0xba, input[2]);
@@ -455,7 +483,8 @@ void checkConversion (Int& error)
     compare(error, 0x56, input[6]);
     compare(error, 0x78, input[7]);
     result[0] = 591751049;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0x23, input[0]);
     compare(error, 0x45, input[1]);
     compare(error, 0x67, input[2]);
@@ -474,15 +503,18 @@ void checkConversion (Int& error)
     uLong result[2];
     result[0] = 0u;
     result[1] = 0u;
-    ModcompConversion::toLocal(result[0], input);
+    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841uL, result[0]);
     result[0] = 0;
-    ModcompConversion::toLocal(result, input, 2);
+    nbytes = ModcompConversion::toLocal(result, input, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 2124759841uL, result[0]);
     compare(error, 4293897165uL, result[1]);
     result[0] = 4275878552;
     result[1] = 305419896;
-    ModcompConversion::fromLocal(input, result, 2);
+    nbytes = ModcompConversion::fromLocal(input, result, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, 0xfe, input[0]);
     compare(error, 0xdc, input[1]);
     compare(error, 0xba, input[2]);
@@ -492,7 +524,8 @@ void checkConversion (Int& error)
     compare(error, 0x56, input[6]);
     compare(error, 0x78, input[7]);
     result[0] = 591751049;
-    ModcompConversion::fromLocal(input, result[0]);
+    nbytes = ModcompConversion::fromLocal(input, result[0]);
+    AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 0x23, input[0]);
     compare(error, 0x45, input[1]);
     compare(error, 0x67, input[2]);
@@ -517,19 +550,19 @@ void compare(Int& error, Float exp, Float res) {
   if (abs(result - expected) > 1.4013e-45) { // This number is the
                                              // smallest subnormal number
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " ("
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " ("
 	 << Int(byteExpected[3]) << ":"
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[0]) << ")";
-    cout << " got " << result;
-    cout << setbase(16) << " ("
+    cerr << " got " << result;
+    cerr << setbase(16) << " ("
 	 << Int(byteResult[3]) << ":"
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[0]) << ")";
-    cout << endl;
+    cerr << endl;
   }
 }
 
@@ -555,14 +588,16 @@ void checkFloat (Int& error)
       // negative infinity.
       data[1] = (j & 0x0003) << 6 | k; 
       expected = exponent * (Double(k)/64.0 + 1.0/(256*256*64));
-      ModcompConversion::toLocal (&result, data, 1);
+      uInt nbytes = ModcompConversion::toLocal(result, data);
+      AlwaysAssert(nbytes == 4, AipsError);
       compare(error, expected, result);
       cdata[0] = ~data[0];
       cdata[1] = ~data[1];
       cdata[2] = ~data[2];
       cdata[3] = ~data[3];
       cdata[3]++; // There can be no carry as data[3] == 0x01;
-      ModcompConversion::toLocal (&result, cdata, 1);
+      nbytes = ModcompConversion::toLocal(result, cdata);
+      AlwaysAssert(nbytes == 4, AipsError);
       compare(error, -1.0*expected, result);
     }
   }
@@ -579,7 +614,8 @@ void checkFloat (Int& error)
     data2[0] = i >> 2;
     data2[4] = data2[0] | 0x80;
     data2[5] = data2[1] = (i & 0x03) << 6;
-    ModcompConversion::toLocal (result2, data2, 2);
+    uInt nbytes = ModcompConversion::toLocal(result2, data2, 2);
+    AlwaysAssert(nbytes == 8, AipsError);
     compare(error, plusZero, result2[0]);
     compare(error, minusZero, result2[1]);
   }
@@ -601,8 +637,8 @@ void compare(Int& error, Double exp, Double res) {
   // number whereas the conversion from ModComp to IEEE rounds down.
   if (abs(result - expected) > 0) {
     error = 1;
-    cout << "expected " << expected;
-    cout << setbase(16) << " ("
+    cerr << "expected " << expected;
+    cerr << setbase(16) << " ("
 	 << Int(byteExpected[7]) << ":"
 	 << Int(byteExpected[6]) << ":"
 	 << Int(byteExpected[5]) << ":"
@@ -611,8 +647,8 @@ void compare(Int& error, Double exp, Double res) {
 	 << Int(byteExpected[2]) << ":"
 	 << Int(byteExpected[1]) << ":"
 	 << Int(byteExpected[0]) << ")";
-    cout << " got " << result;
-    cout << setbase(16) << " ("
+    cerr << " got " << result;
+    cerr << setbase(16) << " ("
 	 << Int(byteResult[7]) << ":"
 	 << Int(byteResult[6]) << ":"
 	 << Int(byteResult[5]) << ":"
@@ -621,7 +657,7 @@ void compare(Int& error, Double exp, Double res) {
 	 << Int(byteResult[2]) << ":"
 	 << Int(byteResult[1]) << ":"
 	 << Int(byteResult[0]) << ")";
-    cout << endl;
+    cerr << endl;
   }
 }
 
@@ -646,7 +682,8 @@ void checkDouble (Int& error) {
       // This tests both normalised and unnormalised numbers
       data[1] = (j & 0x0003) << 6 | k; 
       expected = exponent * (Double(k)/64.0 + 1.0/65536/65536/65536/32);
-      ModcompConversion::toLocal (&result, data, 1);
+      uInt nbytes = ModcompConversion::toLocal(result, data);
+      AlwaysAssert(nbytes == 8, AipsError);
       compare(error, expected, result);
       cdata[0] = ~data[0];
       cdata[1] = ~data[1];
@@ -657,7 +694,8 @@ void checkDouble (Int& error) {
       cdata[6] = ~data[6];
       cdata[7] = ~data[7];
       cdata[7]++; // There can be no carry as data[7] == 0x02;
-      ModcompConversion::toLocal (&result, cdata, 1);
+      nbytes = ModcompConversion::toLocal(result, cdata);
+      AlwaysAssert(nbytes == 8, AipsError);
       compare(error, -1.0*expected, result);
     }
   }
@@ -676,7 +714,8 @@ void checkDouble (Int& error) {
     data2[0] = i >> 2;
     data2[8] = data2[0] | 0x80;
     data2[9] = data2[1] = (i & 0x03) << 6;
-    ModcompConversion::toLocal (result2, data2, 2);
+    uInt nbytes = ModcompConversion::toLocal(result2, data2, 2);
+    AlwaysAssert(nbytes == 16, AipsError);
     compare(error, plusZero, result2[0]);
     compare(error, minusZero, result2[1]);
   }
@@ -684,16 +723,24 @@ void checkDouble (Int& error) {
 
 main()
 {
-    Int error = 0;
+  Int error = 0;
+  try {
     checkConversion (error);
     checkFloat (error);
     checkDouble (error);
-    // Exit when errors found.
-    if (error) {
-	return 1;
-    }
-    cout << "OK" << endl;
-    return 0;
+  } 
+  catch (AipsError x) {
+    cerr << x.getMesg() << endl;
+    cout << "FAIL" << endl;
+    return 1;
+  } end_try;
+  // Exit when errors found.
+  if (error) {
+    cout << "FAIL" << endl;
+    return 1;
+  }
+  cout << "OK" << endl;
+  return 0;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tModcompConversion"
