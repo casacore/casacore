@@ -39,6 +39,7 @@
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <trial/Mathematics/AutoDiff.h>
 #include <aips/Utilities/Assert.h>
@@ -142,7 +143,8 @@ uInt Fit2D::addModel (Fit2D::Types type,
          itsLogger << LogIO::SEVERE << "Fit2D - illegal number of mask parameters" << LogIO::POST;
       }
 //
-// Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 5 (pa)
+// Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 
+// 5 (pa - in radians and positive CCW from vertical.
 //
       for (uInt i=0; i<gauss2d.nAvailableParams(); i++) {
          if (i==4) {
@@ -473,7 +475,9 @@ Vector<Double> Fit2D::availableSolution ()
    
 Vector<Double> Fit2D::availableSolution (uInt which) 
 // 
-//  For Gaussian models, convert axial ratio to minor axis.
+//  For Gaussian models, convert axial ratio to minor axis
+//  and fiddle position angle to be that of the major axis,
+//  positive CCW from the yaxis
 // 
 {
    if (!itsValidSolution) {
@@ -503,14 +507,33 @@ Vector<Double> Fit2D::availableSolution (uInt which)
       }
    }
 //
-// Convert Gaussian solution axial ratio to major/minor axis
+// Convert Gaussian solution axial ratio to major/minor axis.
+// sol2(3) may be the major or minor axis after fitting.
 // The solution may have a negative axial ratio
 //
    if (itsTypeList(which)==Fit2D::GAUSSIAN) {
-      Double major = max(abs(sol2(3)), abs(sol2(3)*sol2(4)));
-      Double minor = min(abs(sol2(3)), abs(sol2(3)*sol2(4)));
+      Double major, minor, pa;
+      if (abs(sol2(3)) > abs(sol2(3)*sol2(4))) {
+         major = abs(sol2(3));
+         minor = abs(sol2(3)*sol2(4));
+//
+         pa = sol2(5);
+      } else {
+         major = abs(sol2(3)*sol2(4));
+         minor = abs(sol2(3));
+//
+// The major axis pa will be off by 90deg
+//
+         pa = sol2(5) + C::pi_2;
+      }
       sol2(3) = major;
       sol2(4) = minor;
+//
+// Put in the range 0->pi (consistent with Gaussian2D)
+//
+      pa = fmod(pa, C::pi);
+      if (pa < 0.0) pa += C::pi;
+      sol2(5) = pa;
    }
 //
    return sol2;
@@ -898,6 +921,7 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
 Vector<Double> Fit2D::getAvailableSolution()  const
 //
 // Returns available parameters (adjustable plus fixed)
+// 
 {
    if (!itsValidSolution) {
       Vector<Double> tmp;
