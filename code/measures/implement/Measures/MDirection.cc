@@ -125,7 +125,7 @@ const String &MDirection::showType(uInt tp) {
 }
 
 Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-    static const Int N_name = MDirection::N_Types;
+    static const Int N_name = 12;
     static const String tname[N_name] = {
 	"J2000",
 	"JMEAN",
@@ -137,7 +137,8 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	"GALACTIC",
 	"HADEC",
 	"AZEL",
-        "AZELSW"};
+        "AZELSW",
+	"AZELNE"};
 
     static const uInt oname[N_name] = {
 	MDirection::J2000,
@@ -150,7 +151,8 @@ Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
 	MDirection::GALACTIC,
 	MDirection::HADEC,
 	MDirection::AZEL,
-        MDirection::AZELSW};
+        MDirection::AZELSW,
+	MDirection::AZEL};
 
     uInt i = Measure::giveMe(in, N_name, tname);
 
