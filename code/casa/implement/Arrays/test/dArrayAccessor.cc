@@ -181,8 +181,8 @@ int main() {
 	ArrayAccessor<Int, Axis<1> > j;
 	ArrayAccessor<Int, Axis<0> > k;
 	for (i = ArrayAccessor<Int, Axis<2> >(cub); i != i.end() ; ++i) {
-	  for (j = ArrayAccessor<Int, Axis<1> >(i); j != j.end() ; ++j) {
-	    for (k = ArrayAccessor<Int, Axis<0> >(j); k != k.end() ; ++k) {
+	  for (j = i; j != j.end() ; ++j) {
+	    for (k = j; k != k.end() ; ++k) {
 	      if (*k != inx) {
 		cout << inx << ' ' << *k << endl;
 	      };
@@ -205,8 +205,8 @@ int main() {
 	ArrayAccessor<Int, Axis<1> > j;
 	ArrayAccessor<Int, Axis<0> > k;
 	for (i = ArrayAccessor<Int, Axis<2> >(cub); i != i.end() ; ++i) {
-	  for (j = ArrayAccessor<Int, Axis<1> >(i); j != j.end() ; ++j) {
-	    for (k = ArrayAccessor<Int, Axis<0> >(j); k != k.end() ; ++k) {
+	  for (j = i; j != j.end() ; ++j) {
+	    for (k = j; k != k.end() ; ++k) {
 	      *k = inx;
 	      inx++;
 	    };
@@ -223,12 +223,12 @@ int main() {
       timer.mark();
       for (uInt cnt=0; cnt<Ncnt; cnt++) {
 	Int inx=0;
-	ArrayAccessor<Int, Axis<2> > i;
+	ArrayAccessor<Int, Axis<2> > i(cub);
 	ArrayAccessor<Int, Axis<1> > j;
 	ArrayAccessor<Int, Axis<0> > k;
-	for (i = ArrayAccessor<Int, Axis<2> >(cub); i != i.end() ; ++i) {
-	  for (j = ArrayAccessor<Int, Axis<1> >(i); j != j.end() ; ++j) {
-	    for (k = ArrayAccessor<Int, Axis<0> >(j); k != k.end() ; ++k) {
+	for (; i != i.end() ; ++i) {
+	  for (j = i; j != j.end() ; ++j) {
+	    for (k = j; k != k.end() ; ++k) {
 	      inx = *k;
 	      inx++;
 	    };
