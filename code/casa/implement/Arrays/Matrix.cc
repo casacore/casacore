@@ -1,5 +1,5 @@
 //# Matrix.cc: A 2-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -312,8 +312,10 @@ template<class T> Vector<T> Matrix<T>::diagonal(Int n)
     tmp.inc_p.resize (1);
     tmp.originalLength_p.resize (1);
     tmp.nels_p = tmp.length_p(0);
-    tmp.inc_p(0) += inc_p(0)*length_p(0);
-    tmp.contiguous_p = False;
+    if (tmp.nels_p > 1) {
+        tmp.inc_p(0) += inc_p(0)*length_p(0);
+	tmp.contiguous_p = False;
+    }
 	
     return tmp;  // should match Vector<T>(const Array<T> &)
 }
