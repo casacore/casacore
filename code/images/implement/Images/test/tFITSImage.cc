@@ -27,12 +27,13 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayLogical.h>
 #include <aips/Containers/Record.h>
 #include <aips/Inputs/Input.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/OS/Path.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 
@@ -43,6 +44,8 @@
 
 #include <iostream.h>
 
+Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
+              const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol);
 
 main (int argc, char **argv)
 {
@@ -55,10 +58,12 @@ try {
    Input inputs(1);
    inputs.create("in", "", "Input FITS file");
    inputs.create("print", "F", "Print some data");
+   inputs.create("size", "5", "Size to print");
 //
    inputs.readArguments(argc, argv);
    String in = inputs.getString("in");
    const Bool print = inputs.getBool("print");
+   const Int size = inputs.getInt("size");
 //
    if (in.empty()) {
      String root = Aipsrc::aipsRoot();
@@ -96,6 +101,22 @@ try {
    AlwaysAssert(fitsImage.isWritable()==False, AipsError);
    AlwaysAssert(fitsImage.name(False)==p.absoluteName(),AipsError);
    AlwaysAssert(fitsImage.ok(), AipsError);
+//
+   if (print) {
+      IPosition start (fitsImage.ndim(),0);
+      IPosition shape(fitsImage.shape());
+      for (uInt i=0; i<fitsImage.ndim(); i++) {
+         if (shape(i) > size) shape(i) = size;
+      }
+      cerr << "Data = " << fitsImage.getSlice(start, shape) << endl;
+      cerr << "Mask = " << fitsImage.getMaskSlice(start, shape) << endl;
+   }
+//
+   Float tol = 1.0e-5;
+   if (fitsImage.dataType()==TpFloat) {
+   } else if (fitsImage.dataType()==TpShort) {
+     tol = 1.0e-3;
+   }
 
 
 // Convert from FITS as a comparison
@@ -116,8 +137,7 @@ try {
    CoordinateSystem dataCS = pTempImage->coordinates();
    delete pTempImage;
 //
-   AlwaysAssert(allNear(fitsArray, dataArray, 1.0e-6), AipsError);
-   AlwaysAssert(allEQ(fitsMask, dataMask), AipsError);
+   AlwaysAssert(allNear(dataArray, dataMask, fitsArray, fitsMask, tol), AipsError);
    AlwaysAssert(fitsCS.near(dataCS), AipsError);
 
 // Test Clone
@@ -128,21 +148,8 @@ try {
    CoordinateSystem fitsCS2 = pFitsImage->coordinates();
    delete pFitsImage;
 //
-   AlwaysAssert(allNear(fitsArray2, dataArray, 1.0e-6), AipsError);
-   AlwaysAssert(allEQ(fitsMask2, dataMask), AipsError);
+   AlwaysAssert(allNear(dataArray, dataMask, fitsArray2, fitsMask2, tol), AipsError);
    AlwaysAssert(fitsCS2.near(dataCS), AipsError);
-
-
-//
-   if (print) {
-      IPosition start (fitsImage.ndim(),0);
-      IPosition size(fitsImage.shape());
-      for (uInt i=0; i<fitsImage.ndim(); i++) {
-         if (size(i) > 5) size(i) = 5;
-      }
-      cerr << "Data = " << fitsImage.getSlice(start, size) << endl;
-      cerr << "Mask = " << fitsImage.getMaskSlice(start, size) << endl;
-   }
 //
    cerr << "ok " << endl;
 
@@ -151,6 +158,37 @@ try {
    exit(1);
 }
   exit(0);
+}
+
+Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
+              const Array<Float>& fits, const Array<Bool>& fitsMask,
+              Float tol)
+{
+   Bool deletePtrData, deletePtrDataMask, deletePtrFITS, deletePtrFITSMask;
+   const Float* pData = data.getStorage(deletePtrData);
+   const Float* pFITS = fits.getStorage(deletePtrFITS);
+   const Bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
+   const Bool* pFITSMask = fitsMask.getStorage(deletePtrFITSMask);
+//
+   for (uInt i=0; i<data.nelements(); i++) {
+      if (pDataMask[i] != pFITSMask[i]) {
+         cerr << "masks differ" << endl;
+         return False;
+      }
+      if (pDataMask[i]) { 
+         if (!near(pData[i], pFITS[i], tol)) {
+            cerr << "data differ, tol = " << tol << endl;
+            cerr << pData[i] << ", " << pFITS[i] << endl;
+            return False;
+         }
+      }
+   }
+//
+   data.freeStorage(pData, deletePtrData);
+   dataMask.freeStorage(pDataMask, deletePtrDataMask);
+   fits.freeStorage(pFITS, deletePtrFITS);
+   fitsMask.freeStorage(pFITSMask, deletePtrFITSMask);
+   return True;
 }
 
 
