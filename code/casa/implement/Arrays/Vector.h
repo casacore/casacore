@@ -273,8 +273,13 @@ public:
     // Macro to define the typeinfo member functions
     rtti_dcl_mbrf_p1(Vector<T>, Array<T>);
 
-private:
+protected:
+    // Remove the degenerate axes from other and store result in this vector.
+    // An exception is thrown if removing degenerate axes does not result
+    // in a vector.
+    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
 
+private:
     // Helper functions for constructors.
     void initVector(const Block<T> &, Int nr);      // copy semantics
 };

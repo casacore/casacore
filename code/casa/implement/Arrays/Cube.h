@@ -280,6 +280,12 @@ public:
     // Macro to define the typeinfo member functions
     rtti_dcl_mbrf_p1(Cube<T>, Array<T>);
 
+protected:
+    // Remove the degenerate axes from other and store result in this cube.
+    // An exception is thrown if removing degenerate axes does not result
+    // in a cube.
+    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
+
 private:
     // Cached constants to improve indexing.
     Int xinc_p, yinc_p, zinc_p;

@@ -323,7 +323,7 @@ public:
     // Array<Float> square(squareShape);
     // IPosition lineShape(1,25);
     // Vector<Float> line(square.reform(lineShape));
-    // // "square"'s storage may  now be accessed through Vector "line"
+    // // "square"'s storage may now be accessed through Vector "line"
     // </srcblock>
     Array<T> reform(const IPosition &shape) const;
     
@@ -335,13 +335,19 @@ public:
     // <br>
     // The functions with argument <src>ignoreAxes</src> do
     // not consider the axes given in that argument..
+    // <note role=caution> When the two functions returning void throw
+    // are invoked on a derived object (e.g. Matrix), an exception is
+    // thrown if removing the degenerate axes from other does not result
+    // in a correct number of axes.
+    // </note>
     // <group>
     Array<T> nonDegenerate(uInt startingAxis=0);
     const Array<T> nonDegenerate(uInt startingAxis=0) const;
-    void nonDegenerate(Array<T> & other, uInt startingAxis=0);
+    void nonDegenerate(Array<T> &other, uInt startingAxis=0);
     Array<T> nonDegenerate(const IPosition& ignoreAxes);
     const Array<T> nonDegenerate(const IPosition& ignoreAxes) const;
-    void nonDegenerate(Array<T> & other, const IPosition& ignoreAxes);
+    void nonDegenerate(Array<T> &other, const IPosition &ignoreAxes)
+        { doNonDegenerate (other, ignoreAxes); }
     // </group> 
 
     // These member functions return an Array reference with the specified
@@ -511,6 +517,13 @@ public:
     // </group>
 
 protected:
+    // Remove the degenerate axes from the Array object.
+    // This is the implementation of the nonDegenerate functions.
+    // It has a different name to be able to make it virtual without having
+    // the "hide virtual function" message when compiling derived classes.
+    virtual void doNonDegenerate(Array<T> &other, const IPosition &ignoreAxes);
+
+
     // Number of elements in the array. Cached rather than computed.
     uInt nels_p;
 
