@@ -1,5 +1,5 @@
 //# AxesMapping.h: Info about mapping array axes to another order
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -112,32 +112,41 @@ public:
     { return itsReordered; }
 
   // Get the mapping of old->new.
+  // The length of the resulting IPosition is the dimensionality of
+  // the original lattice. A value of -1 indicates that the corresponding
+  // axis in the original lattice is removed.
+  // Another value is the axis number in the new lattice,
   const IPosition& getToNew() const
     { return itsToNew; }
 
   // Get the mapping of new->old.
+  // The length of the resulting IPosition is the dimensionality of
+  // the new lattice. Its values give the axes in the original lattice.
   const IPosition& getToOld() const
     { return itsToOld; }
 
   // Map an old position to the new one.
-  // In debug-mode it checks if the removed axes have position 0.
+  // In debug-mode it checks if the removed axes have position 0
+  // in the input position.
   IPosition posToNew (const IPosition& pos) const;
 
-  // Map an new position or shape to the old one.
+  // Map a new position or shape to the old one.
   IPosition posToOld (const IPosition& pos) const;
 
   // Map an old shape to the new one.
-  // In debug-mode it checks if the removed axes have length 1.
+  // In debug-mode it checks if the removed axes have length 1
+  // in the input shape.
   IPosition shapeToNew (const IPosition& shape) const;
 
-  // Map an new position or shape to the old one.
+  // Map a new position or shape to the old one.
   IPosition shapeToOld (const IPosition& shape) const;
 
   // Map an old shape to the new one.
-  // In debug-mode it checks if the removed axes have length 1.
+  // In debug-mode it checks if the removed axes have length 1
+  // in the input slicer.
   Slicer slicerToNew (const Slicer& slicer) const;
 
-  // Map an new position or shape to the old one.
+  // Map a new position or shape to the old one.
   Slicer slicerToOld (const Slicer& slicer) const;
 
 private:
