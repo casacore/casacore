@@ -3,7 +3,7 @@
 # inhale: Retrieve and install the latest AIPS++ update
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996
+#   Copyright (C) 1992-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -900,18 +900,19 @@
      BASECODE=`affirm -a $BASECODE`
 
      cd $AIPSROOT
+     BASEROOT="$AIPSROOT/base-$NEWMAJOR"
 
      if [ "$BASESLAV" != false -o "$BASECODE" != false ]
      then
-        [ -d $AIPSROOT/base-$NEWMAJOR ] || mkdir $AIPSROOT/base-$NEWMAJOR
-        chgrp $PRGGROUP $AIPSROOT/base-$NEWMAJOR
-        chmod ug=rwx,g+s,o=rx $AIPSROOT/base-$NEWMAJOR
+        [ -d $BASEROOT ] || mkdir $BASEROOT
+        chgrp $PRGGROUP $BASEROOT
+        chmod ug=rwx,g+s,o=rx $BASEROOT
      fi
 
      if [ "$BASESLAV" != false ]
      then
-        echo "inhale: Copying $AIPSLAVE to $AIPSROOT/base-$NEWMAJOR/slave..."
-        tar cf - slave  | (cd $AIPSROOT/base-$NEWMAJOR && tar pvxf -)
+        echo "inhale: Copying $AIPSLAVE to $BASEROOT/slave..."
+        tar cf - slave  | (cd $BASEROOT && tar pvxf -)
      else
         echo "inhale: Preservation of the slave directories was disabled."
      fi
@@ -919,8 +920,14 @@
      echo ""
      if [ "$BASECODE" != false ]
      then
-        echo "inhale: Copying $AIPSCODE to $AIPSROOT/base-$NEWMAJOR/code..."
-        tar cf - code  | (cd $AIPSROOT/base-$NEWMAJOR && tar pvxf -)
+        echo "inhale: Copying $AIPSCODE to $BASEROOT/code..."
+        tar cf - | ($BASEROOT && tar pvxf -)
+
+#       Delete all RCS symlinks.
+        echo ""
+        echo "inhale: Deleting RCS symlinks from $BASEROOT/..."
+        cd $BASEROOT
+        find code -name RCS -type l -exec rm -f {} \;
      else
         echo "inhale: Preservation of the code directories was disabled."
      fi
@@ -928,12 +935,11 @@
      if [ "$BASESLAV" != false -a "$BASECODE" != false ]
      then
         echo ""
-        echo "inhale: Recreating RCS symlinks for $AIPSROOT/base-$NEWMAJOR..."
-        cd $AIPSROOT/base-$NEWMAJOR
+        echo "inhale: Recreating RCS symlinks for $BASEROOT/..."
+        cd $BASEROOT
         ln -s slave rcs
 
-        find code -name RCS -exec rm -f {} \;
-        ( AIPSPATH="$AIPSROOT/base-$NEWMAJOR $ARCH $SITE $HOST" ; \
+        ( AIPSPATH="$BASEROOT $ARCH $SITE $HOST" ; \
           export AIPSPATH ; \
           mktree -l -r -s )
      fi
@@ -943,6 +949,8 @@
 #-----------------------------------------------------------------------------
 # Rebuild all systems
 #-----------------------------------------------------------------------------
+  cd $AIPSROOT
+
   echo ""
   echo "inhale: Rebuild AIPS++ version $INCVERSN on all systems."
   echo "--------------------------------------------------------"
