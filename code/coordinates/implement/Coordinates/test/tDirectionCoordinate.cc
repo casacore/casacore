@@ -583,12 +583,11 @@ void doit4 (DirectionCoordinate& dC)
 {
    Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
    Vector<Bool> pixelAxes(2), worldAxes(2);
-   Vector<Double> minWorld, maxWorld;
    Vector<String> units = dC.worldAxisUnits();
    Vector<Double> refVal = dC.referenceValue();
 //
    IPosition shape(2, 512);
-   if (!dC.setMixRanges(minWorld, maxWorld, shape)) {
+   if (!dC.setWorldMixRanges(shape)) {
       throw(AipsError(String("setMixRanges failed because ") + dC.errorMessage()));
    }
 
@@ -597,6 +596,8 @@ void doit4 (DirectionCoordinate& dC)
 //
    pixelAxes.set(False);
    worldAxes.set(False);
+   Vector<Double> minWorld = dC.worldMixMin();
+   Vector<Double> maxWorld = dC.worldMixMax();
    if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Forced fail 1 of toMix did not occur")));
    }

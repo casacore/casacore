@@ -497,16 +497,29 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError("Failed increment set/recovery test"));
    }
  //
-   iC = cSys.findCoordinate(Coordinate::DIRECTION);
-   Vector<Int> worldAxes = cSys.worldAxes(iC);
-   worldAxisUnits(worldAxes(0)) = "deg";
-   worldAxisUnits(worldAxes(1)) = "arcmin";
-   if (!cSys.setWorldAxisUnits(worldAxisUnits)) {
-      throw(AipsError(String("Failed to set axis units because") 
-            + cSys.errorMessage()));
+   {
+     iC = cSys.findCoordinate(Coordinate::DIRECTION);
+     Vector<Int> worldAxes = cSys.worldAxes(iC);
+     worldAxisUnits(worldAxes(0)) = "deg";
+     worldAxisUnits(worldAxes(1)) = "arcmin";
+     if (!cSys.setWorldAxisUnits(worldAxisUnits)) {
+        throw(AipsError(String("Failed to set axis units because") 
+              + cSys.errorMessage()));
+     }
+     if (!allEQ(worldAxisUnits, cSys.worldAxisUnits())) {
+        throw(AipsError("Failed axis units set/recovery test"));
+     }
    }
-   if (!allEQ(worldAxisUnits, cSys.worldAxisUnits())) {
-      throw(AipsError("Failed axis units set/recovery test"));
+//
+   {
+     Vector<String> prefUnits = cSys.worldAxisUnits();
+     iC = cSys.findCoordinate(Coordinate::SPECTRAL);
+     Vector<Int> worldAxes = cSys.worldAxes(iC);
+     prefUnits(worldAxes(0)) = "km/s";
+     if (!cSys.setPreferredWorldAxisUnits(prefUnits)) {
+        throw(AipsError(String("Failed to set preferred units because") 
+              + cSys.errorMessage()));
+     }
    }
 //
 // Now check the pixel axis descriptors
@@ -594,7 +607,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
                         True, True)) {
          throw(AipsError(String("Failed to convert to FITS header (1)")));
       }
-//
+
 // Assigning cSys3 rather leaving it empty will force testing of 
 // more code in fromFITSHeader
 
@@ -1170,7 +1183,6 @@ void doit4()
    SpectralCoordinate spC = makeSpectralCoordinate();     // 1
    cSys.addCoordinate(spC);
    DirectionCoordinate dC = makeDirectionCoordinate(True);// 2 & 3
-//
    cSys.addCoordinate(dC);
 //
 //   cout << "Reference pixel = " << cSys.referencePixel() << endl;
@@ -1181,10 +1193,8 @@ void doit4()
    Vector<Bool> pixelAxes(cSys.nPixelAxes());
    Vector<Bool> worldAxes(cSys.nWorldAxes());
    Vector<Double> worldOut, pixelOut;
-   Vector<Double> worldMin;
-   Vector<Double> worldMax;
    IPosition shape(cSys.nPixelAxes(), 512);
-   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
+   if (!cSys.setWorldMixRanges(shape)) {
       throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
    }
 //
@@ -1195,6 +1205,8 @@ void doit4()
 //
    pixelAxes.set(False);
    worldAxes.set(False);
+   Vector<Double> worldMin = cSys.worldMixMin();
+   Vector<Double> worldMax = cSys.worldMixMax();
    if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix forced failure 1 did not occur")));
@@ -1368,9 +1380,8 @@ void doit4()
    for (uInt i=0; i<wOrder.nelements(); i++) wOrder(i) = wOrder.nelements()-i-1;
    for (uInt i=0; i<pOrder.nelements(); i++) pOrder(i) = i;
    cSys.transpose(wOrder, pOrder);
-   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
-      throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
-   }
+   worldMin = cSys.worldMixMin();
+   worldMax = cSys.worldMixMax();
 //
    pixelIn(1) = cSys.referencePixel()(1);   // Spectral pixel
    pixelIn(3) = cSys.referencePixel()(3);   // Direction lat pixel
@@ -1402,9 +1413,8 @@ void doit4()
    for (uInt i=0; i<wOrder.nelements(); i++) wOrder(i) = i;
    for (uInt i=0; i<pOrder.nelements(); i++) pOrder(i) = pOrder.nelements()-i-1;
    cSys.transpose(wOrder, pOrder);
-   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
-      throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
-   }
+   worldMin = cSys.worldMixMin();
+   worldMax = cSys.worldMixMax();
 //
    pixelIn(2) = cSys.referencePixel()(2);   // Spectral pixel
    pixelIn(0) = cSys.referencePixel()(0);   // Direction lat pixel
