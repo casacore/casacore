@@ -5325,3 +5325,4 @@
 15 034 sys rm libexec/if.g
 15 034 sys rm libexec/ndcr.g
 15 034 sys rm libexec/ptemplates.g
+15 034 sys rm libexec/pulsar.g
