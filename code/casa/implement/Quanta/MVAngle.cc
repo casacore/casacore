@@ -325,11 +325,8 @@ void MVAngle::print(ostream &oss,
     if ((intyp & MVAngle::FITS) == MVAngle::FITS) {
       if ((intyp & MVAngle::LOCAL) == MVAngle::LOCAL) {
 	MVAngle my = MVAngle::timeZone() * C::circle;
-	my.
-	  print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4),
-		True);
-      } else {
-	oss << 'Z';
+	my.print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4),
+		 True);
       };
     };
     oss.fill(sfill);

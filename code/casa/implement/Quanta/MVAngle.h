@@ -144,8 +144,8 @@ class MUString;
 //		or -12 - +12 range for hours
 //	 <li> <src>MVAngle::LOCAL</src> to indicate local time to FITS
 //		formatting only
-//	  <li> <src>MVAngle::FITS</src> to produce trailing 'Z', or, if
-//		LOCAL set as well the time zone (note that if local set
+//	  <li> <src>MVAngle::FITS</src> to produce, if
+//		LOCAL set, the time zone (note that if local set
 //		here, as opposed to in MVTime) the angle is supposed
 //		to be in local time already).
 //	</ul>

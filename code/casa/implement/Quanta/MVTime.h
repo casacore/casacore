@@ -134,7 +134,7 @@ class Time;
 //	The <src>MVTime::DMY</src> format implies TIME, and will
 //	precede the time with 'dd-Mon-yyyy/'.<br>
 //	The <src>MVTime::FITS</src> format implies TIME, and will
-//	precede the time with 'ccyy-mm-ddT' (and follow it with <src>Z</src>.
+//	precede the time with 'ccyy-mm-ddT'.
 //	<br>
 //	The output format can be modified with modifiers (specify as
 //	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)). 
@@ -175,8 +175,7 @@ class Time;
 //		aipsrc time.tzoffset). In FITS mode the time zone will
 //		be appended (as <src><sign>hh:mm</src>).
 //		<note role=caution>The adding of the timezone is not part
-//		of the FITS standard (only the 'Z' for UTC, the preferred
-//		FITS output is), but of the underlying ISO standard. It can
+//		of the FITS standard, but of the underlying ISO standard. It can
 //		be used to export local times in standard format.</note>
 //	</ul>
 // </ul>
@@ -214,8 +213,10 @@ class Time;
 //				of month name; or a month number (1 == Jan).
 //				Omitted month indicates day is day number.
 //   <li> ccyy-mm-dd[Ttime[Z|+-hh[:mm]]]  -- new FITS format the 'T' as time 
-//				separator should be UC, as should be the 'Z'
-//				(the UTC indicator, assumed as default).
+//				separator. Time should be UTC.
+//				The 'Z' separator (for UTC) is part of an
+//				earlier FITS proposal, and will be recognised
+//				for backward compatibility.
 //				A signed hh or hh:mm can be present to
 //				indicate time zone. This value will be
 //				subtracted to give UTC. To recognise this
@@ -232,7 +233,7 @@ class Time;
 //	1996/11/20	20 November 1996 0h UT
 //	1996/11/20/5:20 20 November 1996 at 5h20m
 //	20Nov96-5h20m	same (again no case dependence)
-//	1996-11-20T5:20Z same (FITS format, case dependent)
+//	1996-11-20T5:20 same (FITS format, case dependent)
 // </srcblock>
 // </synopsis>
 //

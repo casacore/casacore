@@ -475,10 +475,8 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
 	if (in.tSkipChar(':')) {
 	  r += Double(in.getuInt())/60.0;
 	};
-	res -= Quantity(s*r/24.0,"d");	// FITS time zone
-      } else if (in.tSkipChar('Z')) {	// FITS UTC
-      } else {				// FITS must have time zone (or Z)
-	in.pop(); return False;
+	res -= Quantity(s*r/24.0,"d");	// Time zone
+      } else if (in.tSkipChar('Z')) {	// FITS UTC (old format)
       };
     } else {
       in.pop(); return False;
