@@ -545,8 +545,8 @@ BaseTable* BaseTable::select (const TableExprNode& node)
 {
     AlwaysAssert (!isNull(), AipsError);
     //# First check if the node is a Bool.
-    if (node.dataType() != TpBool) {
-	throw (TableInvExpr ("", "expression result is not Bool"));
+    if (node.dataType() != TpBool  ||  !node.isScalar()) {
+	throw (TableInvExpr ("expression result is not Bool scalar"));
     }
     //# Now check if this table has been used for all columns.
     //# This also catches a case like:  tab(True);
@@ -555,7 +555,7 @@ BaseTable* BaseTable::select (const TableExprNode& node)
     //# It also catches:  tab(tab.key(name) > 5);
     //# since that also has no table (a keyword is converted to a constant).
     if (node.baseTablePtr() != this) {
-	throw (TableInvExpr ("", "expression uses different table"));
+	throw (TableInvExpr ("expression uses different table"));
     }
     //# Create an reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.
