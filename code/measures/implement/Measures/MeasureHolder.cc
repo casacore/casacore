@@ -298,22 +298,6 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
       if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
       out.defineRecord(RecordFieldId("m0"), val);
     };
-    res.resize(0);
-    res = hold_p.ptr()->getData()->getXRecordValue();
-    val = Record();
-    n = res.nelements();
-    if (n > 2) {
-      if (!QuantumHolder(res(2)).toRecord(error, val)) return False;
-      out.defineRecord(RecordFieldId("ev2"), val);
-    };
-    if (n > 1) {
-      if (!QuantumHolder(res(1)).toRecord(error, val)) return False;
-      out.defineRecord(RecordFieldId("ev1"), val);
-    };
-    if (n > 0) {
-      if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
-      out.defineRecord(RecordFieldId("ev0"), val);
-      };
     return True;
   };
   error += String("No Measure specified in MeasureHolder::toRecord\n");
