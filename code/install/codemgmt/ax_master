@@ -5590,3 +5590,4 @@
 15 211 src rm trial/implement/SDIterators/test/tOldSDIterator.exec
 15 211 src rm trial/implement/SDIterators/test/tOldSDRecord.cc
 15 221 src mv trial/implement/string.h aips/implement/string.h
+15 222 src mv trial/implement/math.h aips/implement/math.h
