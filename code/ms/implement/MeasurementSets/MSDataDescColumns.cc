@@ -53,6 +53,36 @@ RONewMSDataDescColumns(const NewMSDataDescription& msDataDesc):
 
 RONewMSDataDescColumns::~RONewMSDataDescColumns() {}
 
+Int RONewMSDataDescColumns::match(uInt spwId, uInt polId, Int tryRow=-1) {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  const Int spw = spwId;
+  const Int pol = polId;
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSDataDescColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	spectralWindowId()(tr) == spw && 
+	polarizationId()(tr) == pol) { 
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	spectralWindowId()(r) == spw && 
+	polarizationId()(r) == pol) { 
+      return r;
+    }
+  }
+  return -1;
+}
+
 void RONewMSDataDescColumns::attach(const NewMSDataDescription& msDataDesc)
 {
   flagRow_p.attach(msDataDesc, NewMSDataDescription::columnName
