@@ -87,7 +87,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (sl.isPersistent());
 	AlwaysAssertExit (!sl.isWritable());
-	AlwaysAssertExit (!sl.isMaskWritable());
 	// A copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (!sl1.isMasked());
@@ -95,7 +94,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (sl1.isPersistent());
 	AlwaysAssertExit (!sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	AlwaysAssertExit (sl1.name(True) == "tSubLattice_tmp.pa");
     }
     {
@@ -106,7 +104,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (sl.isPersistent());
 	AlwaysAssertExit (sl.isWritable());
-	AlwaysAssertExit (!sl.isMaskWritable());
 	// A RW copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (!sl1.isMasked());
@@ -114,7 +111,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (sl1.isPersistent());
 	AlwaysAssertExit (sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	// A RO copy of the SubLattice.
 	SubLattice<Int> sl2(sl, False);
 	AlwaysAssertExit (!sl2.isMasked());
@@ -122,7 +118,6 @@ void testRest()
 	AlwaysAssertExit (sl2.isPaged());
 	AlwaysAssertExit (sl2.isPersistent());
 	AlwaysAssertExit (!sl2.isWritable());
-	AlwaysAssertExit (!sl2.isMaskWritable());
 	AlwaysAssertExit (sl2.name(True) == "tSubLattice_tmp.pa");
     }
     {
@@ -133,7 +128,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (!sl.isPersistent());
 	AlwaysAssertExit (!sl.isWritable());
-	AlwaysAssertExit (!sl.isMaskWritable());
 	// A copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (sl1.isMasked());
@@ -141,7 +135,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (!sl1.isPersistent());
 	AlwaysAssertExit (!sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	AlwaysAssertExit (sl1.name(True) == "tSubLattice_tmp.pa");
     }
     {
@@ -152,7 +145,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (!sl.isPersistent());
 	AlwaysAssertExit (sl.isWritable());
-	AlwaysAssertExit (sl.isMaskWritable());
 	// A RW copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (sl1.isMasked());
@@ -160,7 +152,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (!sl1.isPersistent());
 	AlwaysAssertExit (sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	// A RO copy of the SubLattice.
 	SubLattice<Int> sl2(sl, False);
 	AlwaysAssertExit (sl2.isMasked());
@@ -168,7 +159,6 @@ void testRest()
 	AlwaysAssertExit (sl2.isPaged());
 	AlwaysAssertExit (!sl2.isPersistent());
 	AlwaysAssertExit (!sl2.isWritable());
-	AlwaysAssertExit (!sl2.isMaskWritable());
     }
     {
         // A small region of a lattice.
@@ -178,7 +168,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (!sl.isPersistent());
 	AlwaysAssertExit (sl.isWritable());
-	AlwaysAssertExit (!sl.isMaskWritable());
 	// A RW copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (!sl1.isMasked());
@@ -186,7 +175,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (!sl1.isPersistent());
 	AlwaysAssertExit (sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	// A RO copy of the SubLattice.
 	SubLattice<Int> sl2(sl, False);
 	AlwaysAssertExit (!sl2.isMasked());
@@ -194,7 +182,6 @@ void testRest()
 	AlwaysAssertExit (sl2.isPaged());
 	AlwaysAssertExit (!sl2.isPersistent());
 	AlwaysAssertExit (!sl2.isWritable());
-	AlwaysAssertExit (!sl2.isMaskWritable());
     }
     {
         // A full region of a lattice.
@@ -204,7 +191,6 @@ void testRest()
 	AlwaysAssertExit (sl.isPaged());
 	AlwaysAssertExit (sl.isPersistent());
 	AlwaysAssertExit (sl.isWritable());
-	AlwaysAssertExit (!sl.isMaskWritable());
 	// A RW copy of the SubLattice.
 	SubLattice<Int> sl1(sl, True);
 	AlwaysAssertExit (!sl1.isMasked());
@@ -212,7 +198,6 @@ void testRest()
 	AlwaysAssertExit (sl1.isPaged());
 	AlwaysAssertExit (sl1.isPersistent());
 	AlwaysAssertExit (sl1.isWritable());
-	AlwaysAssertExit (!sl1.isMaskWritable());
 	// A RO copy of the SubLattice.
 	SubLattice<Int> sl2(sl, False);
 	AlwaysAssertExit (!sl2.isMasked());
@@ -220,7 +205,6 @@ void testRest()
 	AlwaysAssertExit (sl2.isPaged());
 	AlwaysAssertExit (sl2.isPersistent());
 	AlwaysAssertExit (!sl2.isWritable());
-	AlwaysAssertExit (!sl2.isMaskWritable());
     }
 }
 
@@ -319,13 +303,11 @@ main ()
 			      arr(slicer.start(), slicer.end(),
 				  slicer.stride())));
       testVectorROIter (sublat, lattice, slicer);
-
-      // Test some other SubLattice functions.
-      testRest();
-
-      // Test the axes removal/reordering.
-      testAxes();
     }
+    // Test some other SubLattice functions.
+    testRest();
+    // Test the axes removal..
+    testAxes();
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
     cout << "FAIL" << endl;
