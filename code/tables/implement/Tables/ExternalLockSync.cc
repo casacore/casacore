@@ -58,5 +58,5 @@ Bool ExternalLockSync::acquire (Bool write, uInt nattempts)
 
 MemoryIO* ExternalLockSync::releaseCallBack (void* lockSyncObject, Bool always)
 {
-    (*(ExternalLockSync*)lockSyncObject).doReleaseCallBack (always);
+    return (*(ExternalLockSync*)lockSyncObject).doReleaseCallBack (always);
 }
