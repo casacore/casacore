@@ -193,17 +193,17 @@ Bool LinearCoordinate::toWorld(Vector<Double> &world,
    static String errorMsg;
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
    AlwaysAssert(pixel.nelements()==n, AipsError);
-   if (world.nelements()!=n) world.resize(n);
+   world.resize(n);
 //
-   Bool ok = transform_p.reverse(world, pixel, errorMsg);
-   if (!ok) {
+   if (!transform_p.reverse(world, pixel, errorMsg)) {
       set_error(errorMsg);
+      return False;
    } else {
       for (uInt i=0; i<n; i++) {
          world(i) += crval_p[i];
       }
    }
-   return ok;
+   return True;
 }
 
 Bool LinearCoordinate::toPixel(Vector<Double> &pixel, 
@@ -213,17 +213,17 @@ Bool LinearCoordinate::toPixel(Vector<Double> &pixel,
    static Vector<Double> offset;
    uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
    AlwaysAssert(world.nelements()==n, AipsError);
-   if (pixel.nelements()!=n) pixel.resize(n);
+   pixel.resize(n);
 //
-   if (offset.nelements()!=n) offset.resize(n);
+   offset.resize(n);
    for (uInt i=0; i<n; i++) {
       offset(i) = world(i) - crval_p[i];
    }
-   Bool ok = transform_p.forward(pixel, offset, errorMsg);
-   if (!ok) {
+   if (!transform_p.forward(pixel, offset, errorMsg)) {
       set_error(errorMsg);
+      return False;
    }
-   return ok;
+   return True;
 }
 
 Vector<String> LinearCoordinate::worldAxisNames() const
@@ -259,10 +259,10 @@ Vector<Double> LinearCoordinate::referencePixel() const
 Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
     Bool ok = (names.nelements() == nWorldAxes());
-    if (! ok) {
-	set_error("names vector has the wrong size");
+    if (!ok) {
+       set_error("names vector has the wrong size");
     } else {
-	names_p = names;
+       names_p = names;
     }
 
     return ok;
