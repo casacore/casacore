@@ -6,6 +6,9 @@ rows from an arbitrary table based on the contents of its
 columns and keywords. It supports arbitrary complex
 expressions including regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
+\\
+The first section explain the syntax and show the options.
+The last sections show the interface to TaQL using Glish or C++.
 
 \section{Syntax}
 The TaQL syntax is based on SQL. The full command looks like:
@@ -70,6 +73,10 @@ The various clauses have the following meaning:
        SELECT FROM mytable my, ~user/othertable other
            WHERE my.col1>other.key
        \end{verbatim}
+       There are two special ways to define a table name:
+       \begin{enumerate}
+       
+       \item
        A table name can also be taken from a keyword in a previously
        specified table. This can be useful in a
        \htmlref{subquery}{TAQL:SUBQUERIES}. The syntax for this is
@@ -97,6 +104,20 @@ The various clauses have the following meaning:
        main query level). When a shorthand is given, only tables with
        that shorthand are taken into account. When no shorthand is
        given, only primary tables are taken into account.
+
+       \item
+       Normally only persistent tables (i.e. tables on disk) can
+       be used. However, it is also possible to use transient tables
+       in a TaQL command given in \htmlref{Glish or C++}{TAQL:GLISHC}.
+       This done by passing one or more  table objects to the
+       function executing the TaQL command. In the TaQL command a
+       \$-sign followed by a sequence number has to be given to
+       indicate the correct object containing the transient table.
+       E.g. when two
+       table objects are passed \$1 indicates the first table, while \$2
+       indicates the second one.
+     \end{enumerate}
+
   \item[WHERE expression]
        defines the selection expression which must have a boolean
        scalar result. A row in the primary table
@@ -540,7 +561,7 @@ These functions can only be used on arrays.
   \item[ \texttt{double AVDEV(doublearray)}] Return average deviation.
     (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
   \item[ \texttt{double MEDIAN(doublearray)}] Return median (the
-    middle element)..
+    middle element).
     When the array has an even number of elements, the mean of
     the two middle elements is returned.
 \end{description}
@@ -865,11 +886,17 @@ It is also faster than \texttt{COL*COL}, because it accesses column
 \texttt{COL} only once.
 \\Similarly \texttt{SQRT(COL)} is faster than \texttt{COL}\verb+^+\texttt{0.5}
 or \texttt{POW(COL,0.5)}
+
 \item
 \texttt{SQUARE(U) + SQUARE(V) $<$ 1000}\verb+^+\texttt{2} is considerably faster
 than
 \\\texttt{SQRT(SQUARE(U) + SQUARE(V)) $<$ 1000}, because it avoids the
 \texttt{SQRT} function.
+
+\item
+\texttt{TIME IN [$0<:<4$]} is faster than
+\texttt{TIME$>$0 \&\& TIME$<$4}, because in the first way the column is
+accessed only once.
 
 \item
 Returning a column from a subquery can be done directly or as a
@@ -944,6 +971,84 @@ that indexing arrays should be done with care.
         cos(DEC) * cos(3h30m - RA) }
        \\finds all 3C objects inside that circle.
 \end{description}
+
+\section{Interface to TaQL}
+There exists a user and a programmer interface to TaQL.
+Glish functions form the user interface, while C++ functions
+and classes form the programmer interface.
+\begin{itemize}
+\item
+  The TaQL interface in Glish is formed by the \texttt{query}
+  function in the script \texttt{table.g}. The function can be used
+  to compose and execute a TaQL command using the various (optional)
+  arguments given to the \texttt{query} function. E.g.
+  \begin{verbatim}
+    tab := table('mytable')
+    seltab1 := tab.query ('column1 > 0')
+    seltab2 := seltab1.query (query='column2>5',
+                              sortlist='time',
+                              columns='column1,column2',
+                              name='result.tab')
+  \end{verbatim}
+  The first command opens the table \texttt{mytable}.
+  The second command does a simple query resulting in a temporary
+  table. That temporary table is used in the next command resulting in
+  a persistent table. The latter function call is transformed to
+  the TaQL command:
+  \\\texttt{SELECT column1,column2 FROM \$1 WHERE column2>5}
+  \\\texttt{ORDERBY time GIVING result.tab}
+  \\During execution \$1 is replaced by table \texttt{seltab1}.
+  \\Note that the \texttt{name} argument
+  generates the \texttt{GIVING} part to make the result persistent.
+  
+\item
+  The C++ interface consists of 2 parts.
+  \begin{enumerate}
+  \item
+    The function \texttt{tableCommand} in
+    \htmladdnormallink{TableParse.h}
+    {../../aips/implement/Tables/TableParse.html}
+    can be used to execute a TaQL command. The result is a
+    \htmladdnormallink{Table}{../../aips/implement/Tables/Table.html}
+    object. E.g.
+\begin{verbatim}
+  Table seltab1 = tableCommand
+         ("select from mytable where column1>0");
+  Table seltab2 = tableCommand
+         ("select column1,column2 from $1 where column2>5"
+          " orderby time giving result.tab", seltab1);
+\end{verbatim}
+    These examples do the same as the Glish ones shown above.
+    \\Note that in the second function call the table name
+    \texttt{\$1} is replaced by the object \texttt{seltab1}
+    passed to the function.
+
+  \item
+    The other interface is a true C++ interface having the
+    advantage that C++ variables can be used. Class
+    \htmladdnormallink{Table}{../../aips/implement/Tables/Table.html}
+    contains functions to sort a table or to select columns or rows.
+    When selecting rows class \htmladdnormallink{TableExprNode}
+    {../../aips/implement/Tables/ExprNode.html} (in ExprNode.h)
+    has to be used to
+    build a where expression which can be executed by the overloaded
+    function operator in class \texttt{Table}. E.g.
+\begin{verbatim}
+  Int limit = 0;
+  Table tab ("mytable");
+  Table seltab = tab(tab.col("column1") > limit);
+\end{verbatim}
+    does the same as the first example shown above.
+    See classes \htmladdnormallink{Table}
+    {../../aips/implement/Tables/Table.html},
+    \htmladdnormallink{TableExprNode}
+    {../../aips/implement/Tables/ExprNode.html}, and
+    \htmladdnormallink{TableExprNodeSet}
+    {../../aips/implement/Tables/ExprNodeSet.html} for more
+    information on how to construct a where expression.
+  \end{enumerate}
+  
+\end{itemize}
 
 \section{Future developments}
 In the near or far future TaQL will be enhanced by adding new
