@@ -4833,3 +4833,4 @@
 14 316 src rm trial/apps/dish/dparams.g
 14 316 sys rm libexec/dparams.g
 14 316 src rm trial/apps/dish/gaussoper.g
+14 316 sys rm libexec/gaussoper.g
