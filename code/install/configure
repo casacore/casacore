@@ -893,7 +893,7 @@ EOT
         echo "   alpha_gnu     DEC/Alpha OSF/1, GNU C++ compiler (g++)"
         echo "   hpux_gnu      Hewlett-Packard/HP9000 HPUX, GNU C++ compiler"
 	echo "   linux_egcs    Linux/RedHat-5.x, x>0 (Intel only) egcs compiler"
-	echo "   linux_gnu     same as linux_egcs
+	echo "   linux_gnu     same as linux_egcs"
         echo "   sgi           Silicon Graphics IRIX 7.x, SGI C++ compiler"
         echo "   sgi_ntv       same as sgi"
 	# Do we still support the native compiler?
