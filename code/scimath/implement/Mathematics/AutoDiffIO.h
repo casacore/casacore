@@ -40,6 +40,27 @@
 class ostream;
 #endif
 
+// <summary>
+// Implements all IO operators and functions for AutoDiff.
+// </summary>
+//
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+// <li> AutoDiff
+// </prerequisite>
+//
+// <etymology>
+// Implements all IO operators and functions for AutoDiff.
+// </etymology>
+//
+// <todo asof="yyyy/mm/dd">
+// </todo>
+ 
+// <group name="AutoDiff IO operations">
 template<class T> ostream &operator << (ostream &, const AutoDiff<T> &);
+// </group>
+
 
 #endif
