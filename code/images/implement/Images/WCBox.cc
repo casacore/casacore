@@ -123,25 +123,6 @@ WCBox::WCBox(const Vector<Quantum<Double> >& blc,
    for (i=0; i<nAxes; i++) {
      addAxisDesc (makeAxisDesc (itsCSys, i));
    }
-
-// Currently we can only handle absolute world coordinates
-
-   for (i=0; i<nAxes; i++) {
-      if (itsAbsRel(i) != RegionType::Abs) {
-         Quantity tmp = itsBlc(i);
-         if (tmp.getUnit() != "pix" &&
-             tmp.getUnit() != "frac") {
-            msg = String("WCBox - relative world coordinates cannot yet be handled");
-            throw (AipsError (msg));
-         }
-         tmp = itsTrc(i);
-         if (tmp.getUnit() != "pix" &&
-             tmp.getUnit() != "frac") {
-            msg = String("WCBox - relative world coordinates cannot yet be handled");
-            throw (AipsError (msg));
-         }
-      }
-   }
 }
 
 
@@ -207,25 +188,6 @@ WCBox::WCBox(const Vector<Quantum<Double> >& blc,
 
    for (i=0; i<itsPixelAxes.nelements(); i++) {
      addAxisDesc (makeAxisDesc (itsCSys, itsPixelAxes(i)));
-   }
-
-// Currently we can only handle absolute world coordinates
-
-   for (i=0; i<nAxes; i++) {
-      if (itsAbsRel(i) != RegionType::Abs) {
-         Quantity tmp = itsBlc(i);
-         if (tmp.getUnit() != "pix" &&
-             tmp.getUnit() != "frac") {
-            msg = String("WCBox - relative world coordinates cannot yet be handled");
-            throw (AipsError (msg));
-         }
-         tmp = itsTrc(i);
-         if (tmp.getUnit() != "pix" &&
-             tmp.getUnit() != "frac") {
-            msg = String("WCBox - relative world coordinates cannot yet be handled");
-            throw (AipsError (msg));
-         }
-      }
    }
 }
 
@@ -607,12 +569,14 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
 
 // World coordinate vectors
 
-   Vector<Double> wBlc(cSysTmp.referenceValue());
+   Vector<Double> wBlc(cSysTmp.referenceValue().copy());
    Vector<String> blcUnits(cSysTmp.worldAxisUnits().copy());
-   Vector<Double> wTrc(cSysTmp.referenceValue());
+   Vector<Double> wTrc(cSysTmp.referenceValue().copy());
    Vector<String> trcUnits(cSysTmp.worldAxisUnits().copy());
 
-// Reorder world coordinates for output CS and set units
+// Reorder world coordinates for output CS and set units.
+// "funny" values and units (default, pix, frac) are handled later and are 
+// ignored at this stage
 
    uInt i;
    for (i=0; i<itsPixelAxes.nelements(); i++) {
@@ -633,14 +597,13 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
       }
    }
 
-// Convert to pixels for all pixel axes of cSysTmp
-// Note that when relative world coordinates are
-// available, this will need redoing.
+// Convert to pixels for all pixel axes of cSysTmp for blc and trc
 
-   Vector<Double> pBlc(cSysTmp.nPixelAxes()), pTrc(cSysTmp.nPixelAxes());
    if (!cSysTmp.setWorldAxisUnits(blcUnits)) {
       throw (AipsError ("WCBox:doToLCregion - blc units are inconsistent with CoordinateSystem"));
    }
+   makeWorldAbsolute (wBlc, itsAbsRel, cSysTmp, latticeShape);
+   Vector<Double> pBlc;
    if (!cSysTmp.toPixel(pBlc, wBlc)) {
       throw (AipsError ("WCBox:doToLCregion - conversion of blc to pixel coordinates failed"));
    }
@@ -648,13 +611,14 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
    if (!cSysTmp.setWorldAxisUnits(trcUnits)) {
       throw (AipsError ("WCBox:doToLCregion - trc units are inconsistent with CoordinateSystem"));
    }
+   makeWorldAbsolute (wTrc, itsAbsRel, cSysTmp, latticeShape);
+   Vector<Double> pTrc;
    if (!cSysTmp.toPixel(pTrc, wTrc)) {
       throw (AipsError ("WCBox:doToLCregion - conversion of trc to pixel coordinates failed"));
    }
 
-
-// Now recover only those values from pBlc that we
-// actually want
+// Now recover only those values from pBlc that we actually
+// want.  Here we handle frac/pixel/default units as well.
 
    Vector<Double> refPix = cSysTmp.referencePixel();
    const uInt nAxes = outOrder.nelements();
@@ -743,9 +707,6 @@ void WCBox::checkUnits (const IPosition& pixelAxes,
 }
 
 
-
-
-
 void WCBox::unitInit() 
 {
    static Bool doneUnitInit = False;
@@ -776,25 +737,28 @@ void WCBox::convertPixel(Double& pixel,
       }
    } else {
 
-// Catch pixel or fractional coordinates
+// Deal with pixel or fractional coordinates
 
+      Bool world = True;
       if (value.getUnit() == "pix") {
          pixel = value.getValue();
+         world = False;
       } else if (value.getUnit() == "frac") {
          pixel = value.getValue() * shape;
 	 if (!isBlc) {
-	    pixel -= 1;
+ 	    pixel -= 1;
 	 }
+         world = False;
       }
 
-// Convert to absolute pixel
+// Convert to absolute pixel; rel = abs - ref
 
-      if (absRel == RegionType::RelRef) {
-         pixel += refPix;
-      } else if (absRel == RegionType::RelCen) {
-         pixel += Double(shape)/2;
+      if (!world) {
+         if (absRel == RegionType::RelRef) {
+            pixel += refPix;
+         } else if (absRel == RegionType::RelCen) {
+            pixel += Double(shape)/2;
+         }
       }
    }
 }
-
-
