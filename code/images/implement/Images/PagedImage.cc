@@ -182,7 +182,7 @@ PagedImage(Table & table, uInt rowNumber)
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(Table & table, "
 			 "uInt rowNumber)", WHERE);
-  logSink() << LogIO::NORMAL 
+  logSink() << LogIO::DEBUGGING
 	    << "Reading an image from row " << rowNumber 
 	    << " of a table called"
 	    << " '" << name() << "'" << endl
