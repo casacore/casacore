@@ -3938,3 +3938,4 @@
 14 065 src mv trial/implement/Display/X11PCDLPolyline.cc trialdisplay/implement/Display/X11PCDLPolyline.cc
 14 065 src mv trial/implement/Display/X11PCDLPopMatrix.cc trialdisplay/implement/Display/X11PCDLPopMatrix.cc
 14 065 src mv trial/implement/Display/X11PCDLPushMatrix.cc trialdisplay/implement/Display/X11PCDLPushMatrix.cc
+14 065 src mv trial/implement/Display/X11PCDLSetClearColor.cc trialdisplay/implement/Display/X11PCDLSetClearColor.cc
