@@ -110,11 +110,6 @@ public:
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
 
-    // Put a position angle into the range 0 -> pi   (units honoured)
-    static Quantum<Double> positionAngleRange(const Quantum<Double>& pa);
-
-    // Put a position angle into the range 0 -> pi assuming units of radians
-    static Double positionAngleRange(Double pa);
 
 private:
 
@@ -133,6 +128,8 @@ private:
    void checkCoordinateSystem();
 
    void checkWorldAxes();
+
+   Double positionAngleRange(Double pa);
 
 };
 
