@@ -103,17 +103,9 @@ const MDirection& ComponentShape::refDirection() const {
 void 
 ComponentShape::setRefDirectionError(const Quantum<Double>& newRefDirErrLat, 
 				     const Quantum<Double>& newRefDirErrLong) {
-  if (newRefDirErrLat.check(UnitVal::ANGLE) == False || 
-      newRefDirErrLong.check(UnitVal::ANGLE) == False) {
+  if (badError(newRefDirErrLat) || badError(newRefDirErrLong)) {
     LogIO logErr(LogOrigin("ComponentShape", "setRefDirectionError"));
     logErr << "The errors must be angular quantities."
-	   << LogIO::EXCEPTION;
-  }
-  const Double newErrLat = newRefDirErrLat.getValue();
-  const Double newErrLong = newRefDirErrLong.getValue();
-  if (newErrLat < 0 || newErrLong < 0) {
-    LogIO logErr(LogOrigin("ComponentShape", "setRefDirectionError"));
-    logErr << "The errors cannot be negative."
 	   << LogIO::EXCEPTION;
   }
   itsDirErrLat = newRefDirErrLat;
@@ -212,16 +204,14 @@ Bool ComponentShape::toRecord(String& errorMessage,
 }
 
 Bool ComponentShape::ok() const {
-  if (itsDirErrLat.getValue() < 0) {
+  if (ComponentShape::badError(itsDirErrLat)) {
     LogIO logErr(LogOrigin("ComponentShape", "ok()"));
-    logErr << LogIO::SEVERE << "The latitude error is negative."
-           << LogIO::POST;
+    logErr << LogIO::SEVERE << "The latitude error is bad." << LogIO::POST;
     return False;
   }
-  if (itsDirErrLong.getValue() < 0) {
+  if (ComponentShape::badError(itsDirErrLong)) {
     LogIO logErr(LogOrigin("ComponentShape", "ok()"));
-    logErr << LogIO::SEVERE << "The longitude error is negative."
-           << LogIO::POST;
+    logErr << LogIO::SEVERE << "The longitude error is bad." << LogIO::POST;
     return False;
   }
   return True;
@@ -287,6 +277,10 @@ Bool ComponentShape::differentRefs(const MeasRef<MDirection>& ref1,
   return frame1 == frame2;
   //# I should also check the offsets but I cannot see how to fish
   //# them out of the MeasRef<T> class
+}
+
+Bool ComponentShape::badError(const Quantum<Double>& quantum) {
+  return !(quantum.check(UnitVal::ANGLE)) || (quantum.getValue() < 0.0);
 }
 
 // Local Variables: 

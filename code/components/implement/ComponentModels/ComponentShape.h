@@ -301,6 +301,9 @@ protected:
   static Bool differentRefs(const MeasRef<MDirection>& ref1,
 			    const MeasRef<MDirection>& ref2);
 
+  // returns True if the quantum is not a non-negative angular quantity
+  static Bool badError(const Quantum<Double>& quantum);
+
 private:
   //# The reference direction of the component
   MDirection itsDir;
