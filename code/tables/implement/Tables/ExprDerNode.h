@@ -49,7 +49,7 @@ class Table;
 
 
 // <summary>
-// Constant in table select expression tree
+// Constant Bool in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -78,6 +78,27 @@ private:
     Bool value_p;
 };
 
+
+// <summary>
+// Constant Double in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
+
 class TableExprNodeConstDouble : public TableExprNodeBinary
 {
 public:
@@ -89,6 +110,27 @@ private:
     Double value_p;
 };
 
+
+// <summary>
+// Constant DComplex in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
+
 class TableExprNodeConstDComplex : public TableExprNodeBinary
 {
 public:
@@ -98,6 +140,27 @@ public:
 private:
     DComplex value_p;
 };
+
+
+// <summary>
+// Constant String in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
 
 class TableExprNodeConstString : public TableExprNodeBinary
 {
@@ -109,6 +172,27 @@ private:
     String value_p;
 };
 
+
+// <summary>
+// Constant Regex in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
+
 class TableExprNodeConstRegex : public TableExprNodeBinary
 {
 public:
@@ -118,6 +202,27 @@ public:
 private:
     Regex value_p;
 };
+
+
+// <summary>
+// Constant Date in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis> 
+// This class represents a constant in a table select expression tree.
+// This is also used to hold the value of a table keyword, which is
+// constant over the entire table.
+// </synopsis> 
 
 class TableExprNodeConstDate : public TableExprNodeBinary
 {
