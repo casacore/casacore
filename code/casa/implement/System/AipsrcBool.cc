@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <trial/Tasking/AipsrcValue.h>
+#include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 
 // This specialisation is necessary to be able to analyse all values that

@@ -27,7 +27,7 @@
 
 //# Includes
 
-#include <trial/Tasking/AipsrcValue.h>
+#include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/Quantum.h>
 #include <strstream.h>
