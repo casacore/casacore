@@ -181,7 +181,7 @@ public:
   void convertUVW(MVPosition &uv) const;
   void convertUVW(Vector<MVPosition > &uv) const;
   // </group>
-  // Get phase shift(in implied units of UVW)
+  // Get phase shift (in implied units of UVW), and change input uvw as well
   // <group>
   Double getPhase(Vector<Double> &uv) const;
   Vector<Double> getPhase(Vector<Vector<Double> > &uv) const;
