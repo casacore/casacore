@@ -92,7 +92,7 @@ template <class T, class Key> class ObjectPool {
   //# Member functions
   // Get a pointer to an object in the pool with the specified parameter. The
   // object is detached from the stack, and has to be returned with the 
-  // <src>release</src> method.
+  // <src>release</src> method. The object should not be deleted by caller.
   // <group>
   T *const get(const Key key=Key());
   // </group>
@@ -111,22 +111,19 @@ template <class T, class Key> class ObjectPool {
   void clear();
 
 private:
-  //# Constants
-  // Number of default stack entries.
-  static const uInt NDEF=8;
   //# Data
   // The default key and stack, and the last referenced one (for caching
   // purposes)
   // <group>
   Key defKey_p;
   T *defVal_p;
-  PoolStack<T> *defStack_p;
+  PoolStack<T, Key> *defStack_p;
   Key cacheKey_p;
-  PoolStack<T> *cacheStack_p;
+  PoolStack<T, Key> *cacheStack_p;
   // </group>
 
   // The pool map
-  SimpleOrderedMap<Key, PoolStack<T>* > map_p;
+  SimpleOrderedMap<Key, PoolStack<T, Key>* > map_p;
 
   //# Constructors
   // Copy and assignment constructors and assignment (not implemented)
@@ -136,8 +133,6 @@ private:
   // </group>
 
   //# Member functions
-  // Push n new objects onto the appropriate stack.
-  void pushStack(PoolStack<T> *v, const uInt n, const Key key=Key());
 };
 
 #endif

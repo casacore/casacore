@@ -32,9 +32,9 @@
 //# Constructors
 template <class T, class Key>
 ObjectPool<T, Key>::ObjectPool() :
-  defKey_p(), defVal_p(new T), defStack_p(new PoolStack<T>),
+  defKey_p(), defVal_p(new T), defStack_p(new PoolStack<T, Key>),
   cacheKey_p(), cacheStack_p(0),
-  map_p(defStack_p, NDEF) {}
+  map_p(defStack_p, PoolStack<T, Key>::NDEF) {}
 
 template <class T, class Key>
 ObjectPool<T, Key>::~ObjectPool() {
@@ -42,30 +42,29 @@ ObjectPool<T, Key>::~ObjectPool() {
 
 template <class T, class Key>
 T *const ObjectPool<T, Key>::get(const Key key) {
-  PoolStack<T> *v;
+  PoolStack<T, Key> *v;
   if (key == defKey_p) v = defStack_p;
   else if (key == cacheKey_p && cacheStack_p) v = cacheStack_p;
   else {
-    PoolStack<T> *const *v0;
+    PoolStack<T, Key> *const *v0;
     if (!(v0 = map_p.isDefined(key))) {
-      v = map_p.define(key, new PoolStack<T>);
+      v = map_p.define(key, new PoolStack<T, Key>);
     } else v = *v0;
     cacheKey_p = key;
     cacheStack_p = v;
   };
-  if (v->empty()) pushStack(v, NDEF, key);
-  return v->popVal();
+  return v->popVal(key);
 }
 
 template <class T, class Key>
 void ObjectPool<T, Key>::release(T *obj, const Key key) {
-  PoolStack<T> *v;
+  PoolStack<T, Key> *v;
   if (key == defKey_p) v = defStack_p;
   else if (key == cacheKey_p && cacheStack_p) v = cacheStack_p;
   else {
-    PoolStack<T> *const *v0;
+    PoolStack<T, Key> *const *v0;
     if (!(v0 = map_p.isDefined(key))) {
-      v = map_p.define(key, new PoolStack<T>);
+      v = map_p.define(key, new PoolStack<T, Key>);
     } else v = *v0;
   };
   v->push(obj);
@@ -81,15 +80,5 @@ void ObjectPool<T, Key>::clearStack(const Key key) {
 
 template <class T, class Key>
 void ObjectPool<T, Key>::clear() {
-}
-
-template <class T, class Key>
-void ObjectPool<T, Key>::pushStack(PoolStack<T> *v, 
-				   const uInt n, const Key key) {
-  v->addElements(NDEF);
-  for (uInt i=0; i<NDEF; i++) {
-    T *x = new T(key);
-    v->push(x);
-  };
 }
 

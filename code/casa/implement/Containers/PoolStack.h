@@ -70,12 +70,19 @@
 //  <li> the class T must have a constructor with a Key argument
 // </templating>
 //
+// <templating arg=Key>
+//  <li> the class Key must be sortable to be used as a key in the Map
+// </templating>
+//
 // <todo asof="2001/06/07">
 // <li> Nothing I know of
 // </todo>
 
-template <class T> class PoolStack {
+template <class T, class Key> class PoolStack {
  public:
+  //# Constants
+  // Number of default stack entries.
+  static const uInt NDEF=8;
   //# Constructors
   // Create the stack
   PoolStack();
@@ -83,13 +90,14 @@ template <class T> class PoolStack {
   ~PoolStack();
 
   //# Member functions
-  // Get a pointer to an object in the stack.
+  // Get a pointer to an object in the stack. The stack will be extended if
+  // no objects left.
   // <group>
-  T *const popVal();
+  T *popVal(const Key &key);
   // </group>
 
   // Return an object to the stack for re-use
-  void push(const T * obj);
+  void push(T *obj);
 
   // Add n elements
   void addElements(const uInt n);
@@ -113,8 +121,8 @@ private:
   //# Constructors
   // Copy and assignment constructors and assignment (not implemented)
   // <group>
-  PoolStack(const PoolStack<T> &other);
-  PoolStack<T> &operator=(const PoolStack<T> &other);
+  PoolStack(const PoolStack<T, Key> &other);
+  PoolStack<T, Key> &operator=(const PoolStack<T, Key> &other);
   // </group>
 
   //# Member functions

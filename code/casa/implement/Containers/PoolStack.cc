@@ -30,34 +30,39 @@
 #include <trial/Mathematics/PoolStack.h>
 
 //# Constructors
-template <class T>
-PoolStack<T>::PoolStack() :
+template <class T, class Key>
+PoolStack<T, Key>::PoolStack() :
   top_p(0), stack_p() {}
 
-template <class T>
-PoolStack<T>::~PoolStack() {
+template <class T, class Key>
+PoolStack<T, Key>::~PoolStack() {
   for (uInt i=0; i<stack_p.nelements(); i++) delete stack_p[i];
 }
 
-template <class T>
-T *const PoolStack<T>::popVal() {
+template <class T, class Key>
+T *PoolStack<T, Key>::popVal(const Key &key) {
+  // Stack is empty
+  if (!top_p) {
+    addElements(NDEF);
+    for (uInt i=0; i<NDEF; i++) push(new T(key));
+  };
   return stack_p[--top_p];
 }
 
-template <class T>
-void PoolStack<T>::push(const T *obj) {
-  stack_p[top_p++] = const_cast<T *>(obj);
+template <class T, class Key>
+void PoolStack<T, Key>::push(T *obj) {
+  stack_p[top_p++] = obj;
 }
 
-template <class T>
-void PoolStack<T>::addElements(const uInt n) {
+template <class T, class Key>
+void PoolStack<T, Key>::addElements(const uInt n) {
   stack_p.resize(stack_p.nelements() + n);
   for (uInt i=top_p; i<stack_p.nelements(); i++) {
     stack_p[i] = static_cast<T*>(0);
   };
 }
 
-template <class T>
-void PoolStack<T>::clear() {
+template <class T, class Key>
+void PoolStack<T, Key>::clear() {
 }
 
