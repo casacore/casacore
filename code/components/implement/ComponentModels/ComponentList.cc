@@ -203,7 +203,7 @@ void ComponentList::project(ImageInterface<Float> & plane) const {
     component(i).project(plane);
 }
 
-void ComponentList::add(SkyComponent & component) {
+void ComponentList::add(SkyComponent component) {
   AlwaysAssert(theROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
   uInt blockSize = theList.nelements();
