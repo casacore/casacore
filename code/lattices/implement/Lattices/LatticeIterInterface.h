@@ -28,21 +28,24 @@
 #if !defined(AIPS_LATTICEITERINTERFACE_H)
 #define AIPS_LATTICEITERINTERFACE_H
 
+
 //# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/Array.h>
 
 //# Forward Declarations
-template <class T> class Array;
 template <class T> class Vector;
 template <class T> class Matrix;
 template <class T> class Cube;
 template <class T> class Lattice;
+template <class T> class LatticeIterator;
+template <class T> class RO_LatticeIterator;
 
 
 // <summary>
-// An abstract base class for Lattice iterators
+// A base class for Lattice iterators
 // </summary>
 
 // <use visibility=local> 
@@ -111,9 +114,23 @@ template <class T> class Lattice;
 
 template <class T> class LatticeIterInterface 
 {
+friend class Lattice<T>;
+friend class LatticeIterator<T>;
+friend class RO_LatticeIterator<T>;
+
 public:
+  // A virtual destructor. A virtual is needed to ensure that derived
+  // classes declared as pointers to a LatticeIterInterface will scope their
+  // destructor to the derived class destructor.
+  virtual ~LatticeIterInterface();
+
+protected:
+  // Default constructor (for derived classes).
+  LatticeIterInterface();
+
   // Construct with the given navigator.
-  LatticeIterInterface (const LatticeNavigator& navigator);
+  LatticeIterInterface (const Lattice<T>& lattice,
+			const LatticeNavigator& navigator);
 
   // Copy constructor (copy semantics).
   LatticeIterInterface (const LatticeIterInterface<T>& other);
@@ -121,31 +138,26 @@ public:
   // Assignment (copy semantics).
   LatticeIterInterface& operator= (const LatticeIterInterface<T>& other);
    
-  // A virtual destructor. A virtual is needed to ensure that derived
-  // classes declared as pointers to a LatticeIterInterface will scope their
-  // destructor to the derived class destructor.
-  virtual ~LatticeIterInterface();
-
   // Clone the object.
-  virtual LatticeIterInterface<T>* clone() const = 0;
+  virtual LatticeIterInterface<T>* clone() const;
 
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
   Bool operator++();
-  virtual Bool operator++ (Int) = 0;
+  Bool operator++ (Int);
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
   Bool operator--();
-  virtual Bool operator-- (Int) = 0;
+  Bool operator-- (Int);
   // </group>
 
   // Function which resets the cursor to the beginning of the Lattice and
   // resets the number of steps taken to zero.
-  virtual void reset() = 0;
+  void reset();
 
   // Function which returns a value of "True" if the cursor is at the
   // beginning of the Lattice, otherwise, returns "False"
@@ -193,20 +205,54 @@ public:
   // <br>The <src>autoRewrite</src> flag indicates if the data has to be
   // rewritten when the iterator state changes (e.g. moved, destructed).
   // <group>
-  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite) = 0;
-  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite) = 0;
-  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite) = 0;
-  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite) = 0;
+  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite);
+  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite);
+  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite);
+  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite);
   //</group>
 
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False. The default
   // implementation of this function always returns True.
-  virtual Bool ok() const;
+  Bool ok() const;
 
 protected:
-  // pointer to the method of Lattice transversal
+  // Do the actual read of the data.
+  virtual void readData (Bool doRead);
+
+  // Rewrite the cursor data and clear the rewrite flag.
+  virtual void rewriteData();
+
+  // Update the cursor for the next chunk of data (resize if needed).
+  virtual void cursorUpdate();
+
+  // Allocate the internal cursor to be a pointer to the correct type
+  // Returns False if the memory could not be allocated.
+  Bool allocateCursor();
+
+  // Synchronise the storage of itsCursor with itsCurPtr.
+  void relinkArray();
+
+  // Copy the base data of the other object.
+  void copyBase (const LatticeIterInterface<T>& other);
+
+
+  // Pointer to the method of Lattice transversal
   LatticeNavigator* itsNavPtr;
+  // Pointer to the Lattice
+  Lattice<T>*       itsLattPtr;
+  // Polymorphic pointer to a subpart of the Lattice
+  Array<T>*         itsCurPtr;
+  // An Array which references the same data as the itsCurPtr, but has all
+  // the degenerate axes. This is an optimisation to avoid the overhead of
+  // having to add the degenerate axes for each iteration.
+  Array<T>          itsCursor;
+  // Have the data been read after a cursor update? (False=not read)
+  Bool              itsHaveRead;
+  // Rewrite the cursor data before moving or destructing?
+  Bool              itsRewrite;
+  // The axes forming the cursor.
+  IPosition         itsCursorAxes;
 };
 
 
