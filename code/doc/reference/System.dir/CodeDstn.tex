@@ -275,7 +275,7 @@ Retrieve \aipspp\ source code updates.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{inhale} [\exe{-c|-h}] [\exe{-D}] [\exe{-d}] [\exe{-l}] [\exe{-n}]
+   \code{\exe{inhale} [\exe{-c|-m}] [\exe{-D}] [\exe{-d}] [\exe{-l}] [\exe{-n}]
       [\exe{-r}\#] [\exe{-w}\#]}
 \end{synopsis}
 
@@ -354,12 +354,6 @@ the last slave and code updates (see \exeref{avers}).
    Force a cumulative update.  This should be done regularly (usually once a
    week) to guarantee that the slave copy does not deviate from the master.
 
-\item[\exe{-h}]
-   Perform a hybrid update: retrieve the incremental update files, then
-   invoke \exeref{sneeze} in cumulative mode.  This is useful for
-   minimizing file transfer times when performing cumulative style
-   updates over slow network links.
-
 \item[\exe{-D}]
    Fetch the latest update which has passed the \exeref{testsuite}.
 
@@ -375,6 +369,12 @@ the last slave and code updates (see \exeref{avers}).
 \item[\exe{-l}]
    Latchkey mode; fetch latchkey updates (if any) together with updates
    intended for general distribution (see \exeref{exhale}).
+
+\item[\exe{-m}]
+   Perform a ``mixed'' update: retrieve the incremental update files,
+   then invoke \exeref{sneeze} in cumulative mode.  This is useful for
+   minimizing file transfer times when performing cumulative style
+   updates over slow network links.
 
 \item[\exe{-n}]
    Don't remake the system (\code{allsys}) after installing the update.  It
