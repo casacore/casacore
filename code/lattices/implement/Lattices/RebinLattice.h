@@ -30,7 +30,6 @@
 
 
 //# Includes
-#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Slicer.h>
 #include <trial/Lattices/MaskedLattice.h>
@@ -62,7 +61,7 @@ class IPosition;
 //    IPosition shape(2, 10, 20);
 //    TiledShape tShape(shape);
 //    TempLattice<Float> latIn(tShape);
-//    Vector<uInt> factors(2); factors(0) = 2; factors(1) = 5;
+//    IPosition factors(2, 2, 5);
 //    RebinLattice<Float> rl(latIn, factors);
 //    cerr << "Binned data = " << rl.get() << endl;
 // </srcblock>
@@ -82,7 +81,7 @@ public:
 
   // Constructor.  The bins don't have to fit integrally. Whatever
   // is left over at the end is treated as a full bin.
-  RebinLattice(const MaskedLattice<T>& lattice, const Vector<uInt>& bin);
+  RebinLattice(const MaskedLattice<T>& lattice, const IPosition& bin);
 
   // Copy constructor (reference semantics)
   RebinLattice(const RebinLattice<T>& other);
@@ -170,7 +169,7 @@ public:
   // to shape to give the shape of the output lattice.  Will
   // give the same result as function 'shape'
   static IPosition rebinShape (const IPosition& shapeLatticeIn,
-                                 const Vector<uInt>& bin);  
+			       const IPosition& bin);  
 
 private:
   Slicer findOriginalSlicer (const Slicer& section) const;
@@ -179,12 +178,12 @@ private:
   void bin(const Array<T>& dataIn, const Array<Bool>& maskIn);
 //
   MaskedLattice<T>* itsLatticePtr;
-  Vector<uInt> itsBin;
-  Bool itsAllUnity;
-//
-  Array<T> itsData;
+  IPosition itsBin;
+  Bool      itsAllUnity;
+// Cache
+  Array<T>    itsData;
   Array<Bool> itsMask;
-  Slicer itsSlicer;
+  Slicer      itsSlicer;
 };
 
 

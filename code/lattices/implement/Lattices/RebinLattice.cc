@@ -27,13 +27,10 @@
 
 #include <trial/Lattices/RebinLattice.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Lattices/ArrayLattice.h>
 #include <aips/Lattices/LatticeStepper.h>
-#include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Lattices/SubLattice.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
@@ -42,15 +39,15 @@
 
 template<class T>
 RebinLattice<T>::RebinLattice ()
-: itsLatticePtr(0),
-  itsAllUnity(False)
+: itsLatticePtr (0),
+  itsAllUnity   (False)
 {}
 
 
 
 template<class T>
 RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
-                               const Vector<uInt>& bin)
+                               const IPosition& bin)
 : itsLatticePtr(lattice.cloneML())
 {
    LogIO os(LogOrigin("RebinLattice", "RebinLattice(...)", WHERE));
@@ -60,17 +57,17 @@ RebinLattice<T>::RebinLattice (const MaskedLattice<T>& lattice,
    }
 //
    itsBin.resize(bin.nelements());
-   const IPosition& shapeIn = lattice.shape();
+   const IPosition shapeIn = lattice.shape();
    itsAllUnity = True;
    for (uInt i=0; i<bin.nelements(); i++) {
       if (bin[i]==0)  {
-         os << "Binning factors vector values must be positive integers" << LogIO::EXCEPTION;
+         os << "Binning vector values must be positive integers" << LogIO::EXCEPTION;
       }
 //
       itsBin[i] = bin[i];
-      if (Int(bin[i])>shapeIn(i)) {
+      if (bin[i] > shapeIn[i]) {
          os << LogIO::WARN << "Truncating bin to lattice shape for axis " << i+1 << LogIO::POST;
-         itsBin(i) = shapeIn(i);
+         itsBin[i] = shapeIn[i];
       }
       if (bin[i] != 1) itsAllUnity = False;
    }
@@ -86,10 +83,7 @@ RebinLattice<T>::RebinLattice (const RebinLattice<T>& other)
 template<class T>
 RebinLattice<T>::~RebinLattice()
 {
-   if (itsLatticePtr) {
-      delete itsLatticePtr;
-      itsLatticePtr = 0;
-   }
+  delete itsLatticePtr;
 }
 
 template<class T>
@@ -97,14 +91,15 @@ RebinLattice<T>& RebinLattice<T>::operator=(const RebinLattice<T>& other)
 {
   if (this != &other) {
     delete itsLatticePtr;
-    itsLatticePtr = other.itsLatticePtr->cloneML();
-//
+    itsLatticePtr = 0;
+    if (other.itsLatticePtr) {
+      itsLatticePtr = other.itsLatticePtr->cloneML();
+    }
+// Clear the cache.
     itsData.resize();
-    itsData = other.itsData.copy();
     itsMask.resize();
-    itsMask = other.itsMask.copy();
+    itsSlicer = Slicer();
 //
-    itsBin.resize(0);
     itsBin = other.itsBin;
     itsAllUnity = other.itsAllUnity;
   }
@@ -310,9 +305,7 @@ void RebinLattice<T>::bin (const Array<T>& dataIn)
 // Make Lattice from Array to get decent iterators
 
    const uInt nDim = dataIn.ndim();
-   IPosition bin(itsBin.nelements());
-   for (uInt i=0; i<bin.nelements(); i++) bin(i) = itsBin[i];
-   LatticeStepper stepper (dataIn.shape(), bin, LatticeStepper::RESIZE);
+   LatticeStepper stepper (dataIn.shape(), itsBin, LatticeStepper::RESIZE);
    ArrayLattice<T> latIn (dataIn);
    RO_LatticeIterator<T> inIter(latIn, stepper);
 
@@ -329,7 +322,7 @@ void RebinLattice<T>::bin (const Array<T>& dataIn)
 // Write output
 
       const IPosition& inPos = inIter.position();
-      outPos = inPos / bin;
+      outPos = inPos / itsBin;
       itsData(outPos) = sumData;
    }
 }
@@ -347,9 +340,7 @@ void RebinLattice<T>::bin (const Array<T>& dataIn, const Array<Bool>& maskIn)
 
 // Make Lattice iterators
 
-   IPosition bin(itsBin.nelements());
-   for (uInt i=0; i<bin.nelements(); i++) bin(i) = itsBin[i];
-   LatticeStepper stepper (latIn.shape(), bin, LatticeStepper::RESIZE);
+   LatticeStepper stepper (latIn.shape(), itsBin, LatticeStepper::RESIZE);
    RO_LatticeIterator<T> inIter(latIn, stepper);
 
 // Do it
@@ -380,7 +371,7 @@ void RebinLattice<T>::bin (const Array<T>& dataIn, const Array<Bool>& maskIn)
 // Write output (perhaps could redo this with an iterator)
 
       const IPosition& inPos = inIter.position();
-      outPos = inPos / bin;
+      outPos = inPos / itsBin;
       itsData(outPos) = sumData;
       itsMask(outPos) = nSum>0;
    }
@@ -389,17 +380,17 @@ void RebinLattice<T>::bin (const Array<T>& dataIn, const Array<Bool>& maskIn)
 
 template<class T>
 IPosition RebinLattice<T>::rebinShape (const IPosition& inShape,
-                                       const Vector<uInt>& bin)
+                                       const IPosition& bin)
 {
    AlwaysAssert(inShape.nelements()==bin.nelements(), AipsError);
 //
    const uInt nDim = inShape.nelements();
    IPosition outShape(nDim);
    for (uInt i=0; i<nDim; i++) {
-      Int n = inShape(i) / bin(i);
-      Int rem = inShape(i) - n*bin(i);
-      if (rem > 0) n += 1;                   // Allow last bin to be non-integral
-      outShape(i) = n;
+      Int n = inShape[i] / bin[i];
+      Int rem = inShape[i] - n*bin[i];
+      if (rem > 0) n += 1;               // Allow last bin to be non-integral
+      outShape[i] = n;
    }
    return outShape;
 }
@@ -413,7 +404,7 @@ Slicer RebinLattice<T>::findOriginalSlicer (const Slicer& section) const
 //
 {
    const uInt nDim = itsLatticePtr->ndim();
-   const IPosition& shapeOrig = itsLatticePtr->shape();
+   const IPosition shapeOrig = itsLatticePtr->shape();
 //
    const IPosition& blc = section.start();
    const IPosition& trc = section.end();
@@ -422,19 +413,18 @@ Slicer RebinLattice<T>::findOriginalSlicer (const Slicer& section) const
    IPosition blcOrig(blc);
    IPosition trcOrig(trc);
    for (uInt i=0; i<nDim; i++) {
-      if (stride(i) != 1) {
-         throw (AipsError("Slices with non-unit stride are not yet supported"));
+      if (stride[i] != 1) {
+         throw (AipsError("RebinLattice: Slices with non-unit stride are not yet supported"));
       }
 //
-      blcOrig(i) = blc(i) * itsBin(i);
-      trcOrig(i) = trc(i) * itsBin(i) + (itsBin(i) - 1);
+      blcOrig[i] = blc[i] * itsBin[i];
+      trcOrig[i] = trc[i] * itsBin[i] + (itsBin[i] - 1);
 //
-      blcOrig(i) = max(0, min(blcOrig(i), shapeOrig(i)-1));
-      trcOrig(i) = max(0, min(trcOrig(i), shapeOrig(i)-1));
+      blcOrig[i] = max(0, min(blcOrig[i], shapeOrig[i]-1));
+      trcOrig[i] = max(0, min(trcOrig[i], shapeOrig[i]-1));
    }
 //
    IPosition strideOrig(nDim,1);
-   Slicer sliceOrig(blcOrig, trcOrig, strideOrig, Slicer::endIsLast);
-   return sliceOrig;
+   return Slicer(blcOrig, trcOrig, strideOrig, Slicer::endIsLast);
 }
 
