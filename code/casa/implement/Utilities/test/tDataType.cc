@@ -1,5 +1,5 @@
 //# tDataType.cc: This program tests the DataType related functions
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -172,6 +172,16 @@ void simpleTests()
 	formatter << TpOther << null; 
 	AlwaysAssertExit(String(buffer) == "Other");
     }
+    {
+	ostrstream formatter(buffer, 100);
+	formatter << TpQuantity << null; 
+	AlwaysAssertExit(String(buffer) == "Quantity");
+    }
+    {
+	ostrstream formatter(buffer, 100);
+	formatter << TpArrayQuantity << null; 
+	AlwaysAssertExit(String(buffer) == "Array<Quantity>");
+    }
 
     // Now check the whatType() functions
     class Goofy;
@@ -202,29 +212,35 @@ void simpleTests()
     AlwaysAssertExit( whatType((Array<DComplex> *)0) == TpArrayDComplex );
     AlwaysAssertExit( whatType((Array<String> *)0) == TpArrayString );
     AlwaysAssertExit( whatType((Record *)0) == TpRecord );
+    AlwaysAssertExit( whatType((Quantity *)0) == TpQuantity ) ;
+    AlwaysAssertExit( whatType((Array<Quantity> *)0) == TpArrayQuantity );
 
     AlwaysAssertExit (isScalar(TpBool) && isScalar(TpChar) && isScalar(TpUChar)&&
 		      isScalar(TpShort) && isScalar(TpUShort) && isScalar(TpInt) && 
 		      isScalar(TpUInt) && isScalar(TpFloat) && isScalar(TpDouble) &&
 		      isScalar(TpComplex) && isScalar(TpDComplex) && isScalar(TpString) &&
+		      isScalar(TpQuantity) &&
 		      !isScalar(TpTable) && !isScalar(TpRecord) && !isScalar(TpOther) &&
 		      !isScalar(TpArrayBool) && !isScalar(TpArrayChar) && 
 		      !isScalar(TpArrayUChar)&& !isScalar(TpArrayShort) && 
 		      !isScalar(TpArrayUShort) && !isScalar(TpArrayInt) && 
 		      !isScalar(TpArrayUInt) && !isScalar(TpArrayFloat) && 
 		      !isScalar(TpArrayDouble) && !isScalar(TpArrayComplex) &&
-		      !isScalar(TpArrayDComplex) && !isScalar(TpArrayString));
+		      !isScalar(TpArrayDComplex) && !isScalar(TpArrayString) &&
+		      !isScalar(TpArrayQuantity));
     AlwaysAssertExit (!isArray(TpBool) && !isArray(TpChar) && !isArray(TpUChar)&&
 		      !isArray(TpShort) && !isArray(TpUShort) && !isArray(TpInt) && 
 		      !isArray(TpUInt) && !isArray(TpFloat) && !isArray(TpDouble) &&
 		      !isArray(TpComplex) && !isArray(TpDComplex) && !isArray(TpString) &&
 		      !isArray(TpTable) && !isArray(TpRecord) && !isArray(TpOther) &&
+		      !isArray(TpQuantity) &&
 		      isArray(TpArrayBool) && isArray(TpArrayChar) && 
 		      isArray(TpArrayUChar)&& isArray(TpArrayShort) && 
 		      isArray(TpArrayUShort) && isArray(TpArrayInt) && 
 		      isArray(TpArrayUInt) && isArray(TpArrayFloat) && 
 		      isArray(TpArrayDouble) && isArray(TpArrayComplex) &&
-		      isArray(TpArrayDComplex) && isArray(TpArrayString));
+		      isArray(TpArrayDComplex) && isArray(TpArrayString) &&
+		      isArray(TpArrayQuantity));
     AlwaysAssertExit(asScalar(TpBool) == TpBool &&
 		     asScalar(TpChar) == TpChar &&
 		     asScalar(TpUChar) == TpUChar &&
@@ -237,6 +253,7 @@ void simpleTests()
 		     asScalar(TpComplex) == TpComplex &&
 		     asScalar(TpDComplex) == TpDComplex &&
 		     asScalar(TpString) == TpString &&
+		     asScalar(TpQuantity) == TpQuantity &&
 		     asScalar(TpArrayBool) == TpBool &&
 		     asScalar(TpArrayChar) == TpChar &&
 		     asScalar(TpArrayUChar) == TpUChar &&
@@ -248,7 +265,8 @@ void simpleTests()
 		     asScalar(TpArrayDouble) == TpDouble &&
 		     asScalar(TpArrayComplex) == TpComplex &&
 		     asScalar(TpArrayDComplex) == TpDComplex &&
-		     asScalar(TpArrayString) == TpString);
+		     asScalar(TpArrayString) == TpString &&
+		     asScalar(TpArrayQuantity) == TpQuantity);
 
     AlwaysAssertExit(asArray(TpBool) == TpArrayBool &&
 		     asArray(TpChar) == TpArrayChar &&
@@ -262,6 +280,7 @@ void simpleTests()
 		     asArray(TpComplex) == TpArrayComplex &&
 		     asArray(TpDComplex) == TpArrayDComplex &&
 		     asArray(TpString) == TpArrayString &&
+		     asArray(TpQuantity) == TpArrayQuantity &&
 		     asArray(TpArrayBool) == TpArrayBool &&
 		     asArray(TpArrayChar) == TpArrayChar &&
 		     asArray(TpArrayUChar) == TpArrayUChar &&
@@ -273,7 +292,8 @@ void simpleTests()
 		     asArray(TpArrayDouble) == TpArrayDouble &&
 		     asArray(TpArrayComplex) == TpArrayComplex &&
 		     asArray(TpArrayDComplex) == TpArrayDComplex &&
-		     asArray(TpArrayString) == TpArrayString);
+		     asArray(TpArrayString) == TpArrayString &&
+		     asArray(TpArrayQuantity) == TpArrayQuantity);
 }
 
 // to be called using types for which an exception from asScalar is expected
