@@ -1,5 +1,5 @@
 //# Function.cc: Numerical functional interface class
-//# Copyright (C) 2001,2002,2003
+//# Copyright (C) 2001,2002,2003,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 //# Includes
 #include <scimath/Functionals/Function.h>
 #include <casa/Containers/RecordInterface.h>
+#include <casa/BasicSL/String.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -57,6 +58,12 @@ U Function<T,U>::operator()(const ArgType &x, const ArgType &y,
   arg_p[0] = x; arg_p[1] = y; arg_p[2] = z;
   return this->eval(&(arg_p[0]));
 } 
+
+template<class T, class U>
+const String &Function<T,U>::name() const {
+  static String x("unknown");
+  return x;
+}
 
 template<class T, class U>
 void Function<T,U>::setMode(const RecordInterface& mode) { }

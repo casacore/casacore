@@ -1,5 +1,5 @@
 //# Gaussian1DParam.h:  Parameter handling for one-dimensional Gaussian class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function1D.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -154,6 +155,10 @@ public:
   //# Operators    
 
   //# Member functions
+  // Give name of function
+  virtual const String &name() const { static String x("gaussian1d");
+    return x; };
+
   // Get or set the peak height of the Gaussian
   // <group>
   T height() const { return param_p[HEIGHT]; };

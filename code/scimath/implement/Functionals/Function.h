@@ -1,5 +1,5 @@
 //# Function.h: Numerical functional interface class
-//# Copyright (C) 2001,2002,2003,2004
+//# Copyright (C) 2001,2002,2003,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,8 @@
 
 //# Forward declarations
 #include <casa/iosfwd.h>
+class casa::String;
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class RecordInterface;
@@ -65,6 +67,9 @@ class RecordInterface;
 //
 // The parameter interface is provided by the
 // <linkto class="FunctionParam"><src>FunctionParam</src></linkto> class.
+//
+// A Function can have a <src>name()</src> which can be used in generic
+// interfaces.
 //
 // The function calls implemented are:
 // <ul>
@@ -247,6 +252,9 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // </group>
   
   //# Member functions
+  // Specify the name associated with the function (default will be
+  // <src>unknown</src>)
+  virtual const String &name() const;
   // Manipulate the mask associated with the nth parameter
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
