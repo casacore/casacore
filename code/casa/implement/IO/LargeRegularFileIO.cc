@@ -1,5 +1,5 @@
 //# LargeRegularFileIO.cc: Class for IO on a regular large file
-//# Copyright (C) 1996,1997,1998,1999,2001
+//# Copyright (C) 1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,8 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/stdio.h>
-#include <errno.h>                // needed for errno
+#include <fcntl.h>
+#include <errno.h>                    // needed for errno
 #include <aips/string.h>               // needed for strerror
 
 
@@ -43,49 +43,55 @@ LargeRegularFileIO::LargeRegularFileIO (const RegularFile& regularFile,
   itsRegularFile (regularFile)
 {
     const String& name = itsRegularFile.path().expandedName();
-    // Open file as input and/or output.
     Bool writable = True;
-    String stropt;
+    Bool create = False;
+    Int stropt;
     switch (option) {
     case ByteIO::Old:
 	writable = False;
-	stropt = "rb";
-	break;
-    case ByteIO::New:
-    case ByteIO::Scratch:
-	stropt = "wb+";
+	stropt = O_RDONLY;
 	break;
     case ByteIO::NewNoReplace:
 	if (regularFile.exists()) {
 	    throw (AipsError ("LargeRegularFileIO: new file " + name +
 			      " already exists"));
 	}
-	stropt = "wb+";
+    case ByteIO::New:
+    case ByteIO::Scratch:
+        create = True;
+	stropt = O_RDWR | O_CREAT | O_TRUNC;
 	break;
     case ByteIO::Append:
-	stropt = "ab+";
+	stropt = O_RDWR;
 	break;
     case ByteIO::Update:
     case ByteIO::Delete:
-	stropt = "rb+";
+	stropt = O_RDWR;
 	break;
     default:
 	throw (AipsError ("LargeRegularFileIO: unknown open option"));
     }
     // Open the file.
-    FILE* file = traceFOPEN ((char *)name.chars(), (char *)stropt.chars());
-    if (file == 0) {
-	throw (AipsError ("LargeRegularFileIO: "
-			  "error in open or create of file " +
+    int file;
+    if (create) {
+      file = trace3OPEN ((char*)name.chars(), stropt, 0644);
+    } else {
+      file = trace2OPEN ((char*)name.chars(), stropt);
+    }
+    if (file < 0) {
+	throw (AipsError ("LargeRegularFileIO: error in open or create of file " +
 			  name + ": " + strerror(errno)));
     }
-    attach (file, bufferSize, True, writable);
-    fillSeekable();
+    attach (file, (bufferSize == 0 ? 16384 : bufferSize));
+    // If appending, set the stream offset to the file length.
+    if (option == ByteIO::Append) {
+        seek (length());
+    }
 }
 
 LargeRegularFileIO::~LargeRegularFileIO()
 {
-    detach();
+    detach (True);
     if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
 	itsRegularFile.remove();
     }
@@ -99,15 +105,15 @@ void LargeRegularFileIO::reopenRW()
     }
     // First try if the file can be opened as read/write.
     const String& name = itsRegularFile.path().expandedName();
-    FILE* file = traceFOPEN ((char *)name.chars(), "rb+");
-    if (file == 0) {
+    int file = trace2OPEN ((char *)name.chars(), O_RDWR);
+    if (file < 0) {
 	throw (AipsError ("LargeRegularFileIO::reopenRW "
 			  "not possible for file " +
 			  name + ": " + strerror(errno)));
     }
     uInt bufsize = bufferSize();
-    detach();
-    attach (file, bufsize, True, True);
+    detach (True);
+    attach (file, bufsize);
     // It can be reopened, so close and reopen.
     itsOption = ByteIO::Update;
 }
@@ -117,9 +123,3 @@ String LargeRegularFileIO::fileName() const
 {
     return itsRegularFile.path().expandedName();
 }
-
-void LargeRegularFileIO::flush()
-{
-    fflush (getFilePtr());
-}
-
