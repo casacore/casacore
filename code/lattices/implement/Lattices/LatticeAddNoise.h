@@ -67,7 +67,7 @@ template <class T> class Lattice;
 //    Vector<Double> pars(2):
 //    pars(0) = 0.5;          // Mean
 //    pars(1) = 0.2;          // Variance
-//    LatticeAddNoise lan(LatticeAddNoise::NORMAL, pars);
+//    LatticeAddNoise lan(Random::NORMAL, pars);
 //    ArrayLattice<Float> lat(IPosition(2,100,100));
 //    lan.add(lat);
 // </srcblock>
@@ -80,66 +80,12 @@ template <class T> class Lattice;
 class LatticeAddNoise
 {
 public:
-
-enum Types {
-
-// 2 parameters. The binomial distribution models successfully drawing items from a pool. 
-// Specify n and p. n is the number of items in the pool, 
-// and p, is the probability of each item being successfully drawn.
-// It is required that n > 0 and 0 <= p <= 1 
-   BINOMIAL,
-
-// 2 parameters. Model a uniform random variable over the closed interval. Specify the
-// values low and high. The low parameter is the lowest possible return value and 
-// the high parameter is the highest. 
-// It is required that low < high.
-   DISCRETEUNIFORM,
-
-// 2 parameters, mean and variance.  
-// It is required that the mean is non-zero and the variance is positive.
-   ERLANG, 
-
-// 1 parameters, the mean.
-// It is required that 0 <= mean < 1
-   GEOMETRIC, 
-
-// 2 parameters, mean and variance.
-// It is required that the variance is positive and that the mean is non-zero 
-// and not bigger than the square-root of the variance. 
-   HYPERGEOMETRIC,
-
-// 2 parameters, the mean and variance. 
-// It is required that the variance is positive.
-   NORMAL, 
-
-// 2 parameters, mean and variance.
-// It is required that the supplied variance is positive and that the mean is non-zero
-   LOGNORMAL,
-
-// 1 parameter, the mean.
-   NEGATIVEEXPONENTIAL,
-
-// 1 parameter, the mean. It is required that the mean is non-negative
-   POISSON, 
-
-// 2 parameters, low and high.  Model a uniform random variable over the closed 
-// interval. The low parameter is the lowest possible return value and 
-// the high parameter can never be returned.
-// It is required that low < high.
-   UNIFORM,
-
-// 2 parameters, alpha and beta. 
-// It is required that the alpha parameter is not zero.
-   WEIBULL,
-
-// Number of distributions
-   NTYPES};
-
 // Default constructor
    LatticeAddNoise();
 
-// Constructor
-   LatticeAddNoise (LatticeAddNoise::Types type,
+// Constructor. An exception will occur if we cannot generate 
+// the distribution (e.g. illegal parameters).  
+   LatticeAddNoise (Random::Types type,
                     const Vector<Double>& parameters);
 
 // Copy constructor (copy semantics)
@@ -151,12 +97,15 @@ enum Types {
 // Destructor
    ~LatticeAddNoise();
 
-// Set distribution
-   void set (LatticeAddNoise::Types type,
+// Set a new distribution.  An exception will occur if we cannot generate 
+// the distribution (e.g. illegal parameters).  
+   void set (Random::Types type,
              const Vector<Double>& parameters);
 
 // Add noise of given type to lattice.  For Complex, the
 // noise is added to real and imaginary separately.
+// Any mask is ignored when adding the noise. I.e.
+// noise is added to masked pixels.
 // <group>
    void add (MaskedLattice<Float>& lattice);
    void add (MaskedLattice<Complex>& lattice);
@@ -164,35 +113,22 @@ enum Types {
    void add (Lattice<Complex>& lattice);
 // </group>
 
-// Convert enum to string
-   static String typeToString (LatticeAddNoise::Types type);
-
-// Convert string to enum
-   static LatticeAddNoise::Types stringToType (const String& type);
-
-// A vector of parameters that couyld be used for the give
-// distribution type
-   static Vector<Double> defaultParameters (const LatticeAddNoise::Types type);
-
 private:
 
-   LatticeAddNoise::Types itsType;
+   Random::Types itsType;
    Vector<Double> itsParameters;
    MLCG itsGen;
+   Random* itsNoise;
 
-// Add noise to array
+// Add noise to array.  For Complex, noise is added to
+// real and imaginary separately.
 // <group>
-   void addNoiseToArray (Array<Float>& data, Random& noiseGen) const;
-   void addNoiseToArray (Array<Complex>& data, Random& noiseGen) const;
+   void addNoiseToArray (Array<Float>& data);
+   void addNoiseToArray (Array<Complex>& data);
 // </group>
 
-// Check parameters ok
-   void checkPars (LatticeAddNoise::Types type,
-                   const Vector<Double>& pars) const;
-
 // Make noise generator
-   Random* makeDistribution (LatticeAddNoise::Types type,
-                             const Vector<Double>& pars);
+   void makeDistribution ();
 };
 
 #endif
