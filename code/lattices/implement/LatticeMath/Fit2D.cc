@@ -125,11 +125,11 @@ uInt Fit2D::addModel (Fit2D::Types type,
    const uInt nModels = itsTypeList.nelements() + 1;
    itsTypeList.resize(nModels,True);
 //
-   if (type==Fit2D::Level) {
+   if (type==Fit2D::LEVEL) {
       itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
-   } else if (type==Fit2D::Disk) {
+   } else if (type==Fit2D::DISK) {
       itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
-   } else if (type==Fit2D::Gaussian) {
+   } else if (type==Fit2D::GAUSSIAN) {
 // 
 // Create functional
 //
@@ -141,17 +141,25 @@ uInt Fit2D::addModel (Fit2D::Types type,
          itsLogger << LogIO::SEVERE << "Fit2D - illegal number of mask parameters" << LogIO::POST;
       }
 //
-// Set parameters
+// Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 5 (pa)
 //
       for (uInt i=0; i<gauss2d.nAvailableParams(); i++) {
-         gauss2d.setAvailableParam(i, AutoDiff<Double>(parameters(i)));
+         if (i==4) {
+//
+// Convert minor axis specification to an axial ratio.
+//
+            Double ratio = parameters(4) / parameters(3);
+            gauss2d.setAvailableParam(i, AutoDiff<Double>(ratio));
+         } else {
+            gauss2d.setAvailableParam(i, AutoDiff<Double>(parameters(i)));
+         }
          gauss2d.setAvailableParamMask(i, parameterMask(i));
       }
 //
 // Add it to function we are going to fit
 //
       itsFunction.addFunction(gauss2d);
-      itsTypeList(nModels-1) = Fit2D::Gaussian;
+      itsTypeList(nModels-1) = Fit2D::GAUSSIAN;
    }
 //
    itsValid = True;
@@ -174,13 +182,47 @@ uInt Fit2D::nModels() const
 }
 
 
+Vector<Bool> Fit2D::convertMask (const String mask,
+                                   Fit2D::Types type)
+{
+   Vector<Bool> parameterMask;
+   if (type==Fit2D::LEVEL) {
+      throw (AipsError("Fit2D - Level fitting not yet implemented"));
+   } else if (type==Fit2D::DISK) {
+      throw (AipsError("Fit2D - Disk fitting not yet implemented"));
+   } else if (type==Fit2D::GAUSSIAN) {
+      parameterMask.resize(6);
+      parameterMask = True;
+      if (mask.contains("f")) parameterMask(0) = False;
+      if (mask.contains("x")) parameterMask(1) = False;
+      if (mask.contains("y")) parameterMask(2) = False;
+      if (mask.contains("a")) parameterMask(3) = False;
+      if (mask.contains("b")) parameterMask(4) = False;
+      if (mask.contains("p")) parameterMask(5) = False;
+   }
+   return parameterMask;
+}
+
+uInt Fit2D::nParameters(Fit2D::Types type)
+{
+    uInt n = 0;
+   if (type==Fit2D::LEVEL) {
+      throw (AipsError("Fit2D - Level fitting not yet implemented"));
+   } else if (type==Fit2D::DISK) {
+      throw (AipsError("Fit2D - Disk fitting not yet implemented"));
+   } else if (type==Fit2D::GAUSSIAN) {
+      n = 6;
+   }
+   return n;
+}
+
  
 Fit2D::ErrorTypes Fit2D::fit(const MaskedLattice<Float>& data, 
                              const Lattice<Float>& sigma, Bool norm)
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
-      return Fit2D::NoModels;
+      return Fit2D::NOMODELS;
    }
 //
 // Get data
@@ -212,7 +254,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Lattice<Float>& data,
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
-      return Fit2D::NoModels;
+      return Fit2D::NOMODELS;
    }
 //
    Array<Float> pixels = data.get(True);
@@ -238,7 +280,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
-      return Fit2D::NoModels;
+      return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
       itsLogger << LogIO::SEVERE << "Fit2D::fit - Array must be 2-dimensional" << LogIO::POST;
@@ -257,7 +299,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
    Array<Bool> mask;
    if (!normalizeData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
-      return Fit2D::NoGood;
+      return Fit2D::NOGOOD;
    }
    if (itsIsNormalized) normalizeModels (0);
 //
@@ -272,7 +314,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
-      return Fit2D::NoModels;
+      return Fit2D::NOMODELS;
    }
    if (data.ndim() !=2) {
       itsLogger << LogIO::SEVERE << "Fit2D::fit - Array must be 2-dimensional" << LogIO::POST;
@@ -295,7 +337,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Array<Float>& data,
    Vector<Double> weights;
    if (!normalizeData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
-      return Fit2D::NoGood;
+      return Fit2D::NOGOOD;
    }
    if (itsIsNormalized) normalizeModels (0);
 //
@@ -308,10 +350,10 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
 {
    if (!itsValid) {
       itsErrorMessage = "No models have been set - use function addModel";
-      return Fit2D::NoModels;
+      return Fit2D::NOMODELS;
    }
    if (!itsValidSolution) {
-      return Fit2D::Failed;
+      return Fit2D::FAILED;
    }
 //
    if (data.ndim() !=2) {
@@ -327,10 +369,11 @@ Fit2D::ErrorTypes Fit2D::residual(Array<Float>& resid,
       }
    }
 //
-// Create a functional with the solution
+// Create a functional with the solution (no axis conversion
+// necesary because functional interface takes axial ratio)
 //
    SumFunction<AutoDiff<Double>,AutoDiff<Double> > sumFunction(itsFunction);
-   Vector<Double> sol = availableSolution();
+   Vector<Double> sol = getAvailableSolution();
    for (uInt i=0; i<sol.nelements(); i++) {
       sumFunction.setAvailableParam(i, AutoDiff<Double>(sol(i)));
    }
@@ -386,11 +429,11 @@ void Fit2D::setExcludeRange (Double minVal, Double maxVal)
 
 String Fit2D::type(Fit2D::Types type)
 {
-   if (type==Fit2D::Level) {
+   if (type==Fit2D::LEVEL) {
       return String("Level");
-   } else if (type==Fit2D::Disk) {
+   } else if (type==Fit2D::DISK) {
       return String("Disk");
-   } else if (type==Fit2D::Gaussian) {
+   } else if (type==Fit2D::GAUSSIAN) {
       return String("Gaussian");
    }
    return String("");
@@ -407,58 +450,30 @@ Fit2D::Types Fit2D::type(uInt which)
  
 
 
-Vector<Double> Fit2D::solution()  const
+Vector<Double> Fit2D::availableSolution () 
+//
+// Conversion of Gaussian models from axial ratio
+// to minor axis is done
+//
 {
-   if (!itsValidSolution) {
-      Vector<Double> tmp;
-      return tmp;
-   }
-   return itsSolution;
-}
-
-Vector<Double> Fit2D::solution(uInt which)
-{
-   if (!itsValidSolution) {
-      Vector<Double> tmp;
-      return tmp;
-   }
-//
-   if (which+1 > itsFunction.nFunctions()) {
-      itsLogger << LogIO::SEVERE << "Fit2D::solution - illegal model index" << LogIO::POST;
-   }   
-//
-   uInt i1;
-   Vector<Double> sol = getSolution(i1, which);
-   return sol;
-}
-
-Vector<Double> Fit2D::availableSolution ()  const
-{
-   if (!itsValidSolution) {
-      Vector<Double> tmp;
-      return tmp;
-   }   
-//
-// Find the mask and parameters for the SumFunction.
-// Recover these when the mask is False (fixed)
-// otherwise recover the solution
-//
-   const uInt nParams = itsFunction.nAvailableParams(); 
-   Vector<Double> sol = solution();
-   Vector<Double> sol2(nParams);
-   uInt idx = 0;
-   for (uInt i=0; i<nParams; i++) {
-      if (itsFunction.getAvailableParamMask(i)) {
-         sol2(i) = sol(idx);
-         idx++;
-      } else {
-         sol2(i) = itsFunction.getAvailableParam(i).value();
+   const uInt nF = itsFunction.nFunctions();
+   Vector<Double> sol;
+   uInt l = 0;
+   for (uInt i=0; i<nF; i++) {
+      Vector<Double> sol2 = availableSolution(i);
+      sol.resize(l+sol2.nelements(),True);
+      for (uInt j=0; j<sol2.nelements(); j++) {
+         sol(l+j) = sol2(j);
       }
+      l = sol.nelements();
    }
-   return sol2;
+   return sol;
 } 
    
-Vector<Double> Fit2D::availableSolution (uInt which)
+Vector<Double> Fit2D::availableSolution (uInt which) 
+// 
+//  For Gaussian models, convert axial ratio to minor axis.
+// 
 {
    if (!itsValidSolution) {
       Vector<Double> tmp;
@@ -469,9 +484,8 @@ Vector<Double> Fit2D::availableSolution (uInt which)
       itsLogger << LogIO::SEVERE << "Fit2D::solution - illegal model index" << LogIO::POST;
    }
 //
-// Find the mask and parameters for this model.
-// Recover these when the mask is False (fixed)
-// otherwise recover the solution
+// Find the mask and parameters for this model. Recover these when the 
+// mask is False (fixed) otherwise recover the solution
 //
    uInt iStart;
    Vector<Double> sol = getSolution(iStart, which);
@@ -487,6 +501,17 @@ Vector<Double> Fit2D::availableSolution (uInt which)
          sol2(i) = params(i);
       }
    }
+//
+// Convert Gaussian solution axial ratio to major/minor axis
+// The solution may have a negative axial ratio
+//
+   if (itsTypeList(which)==Fit2D::GAUSSIAN) {
+      Double major = max(abs(sol2(3)), abs(sol2(3)*sol2(4)));
+      Double minor = min(abs(sol2(3)), abs(sol2(3)*sol2(4)));
+      sol2(3) = major;
+      sol2(4) = minor;
+   }
+//
    return sol2;
 }
 
@@ -700,21 +725,21 @@ void Fit2D::normalizeModels (uInt direction)
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
       if (direction==0) {
-         if (type==Fit2D::Level) {
+         if (type==Fit2D::LEVEL) {
             itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
-         } else if (type==Fit2D::Disk) {
+         } else if (type==Fit2D::DISK) {
             itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
-         } else if (type==Fit2D::Gaussian) {
+         } else if (type==Fit2D::GAUSSIAN) {
             normalize (params(0), params(1), params(2), params(3),
                        itsNormPos, itsNormVal);
             setParams(params, i);
          }
       } else {
-         if (type==Fit2D::Level) {
+         if (type==Fit2D::LEVEL) {
             itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
-         } else if (type==Fit2D::Disk) {
+         } else if (type==Fit2D::DISK) {
             itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
-         } else if (type==Fit2D::Gaussian) {
+         } else if (type==Fit2D::GAUSSIAN) {
             unNormalize (params(0), params(1), params(2), params(3),
                          itsNormPos, itsNormVal);
             setParams(params, i);
@@ -755,7 +780,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
       itsSolution = itsFitter.fit(pos, values, weights);
       if(!itsFitter.converged()) {
          itsErrorMessage = String("The fit did not converge");
-         status = Fit2D::NoConverge;
+         status = Fit2D::NOCONVERGE;
       }
 //
 // Find chi-squared.  Account for normalization factors
@@ -777,7 +802,7 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
       itsValidSolution = True;
    } catch (AipsError x) {
       itsErrorMessage = String("Fitting failed because ") + x.getMesg();
-      status = Fit2D::Failed;
+      status = Fit2D::FAILED;
    } end_try;
 //
    return status;
@@ -802,11 +827,11 @@ void Fit2D::normalizeSolution()
 
       Fit2D::Types type = (Fit2D::Types)itsTypeList(i);
 //
-      if (type==Fit2D::Level) {
+      if (type==Fit2D::LEVEL) {
          itsLogger << LogIO::SEVERE << "Fit2D - Level fitting not yet implemented" << LogIO::POST;
-      } else if (type==Fit2D::Disk) {
+      } else if (type==Fit2D::DISK) {
          itsLogger << LogIO::SEVERE << "Fit2D - Disk fitting not yet implemented" << LogIO::POST;
-      } else if (type==Fit2D::Gaussian) {
+      } else if (type==Fit2D::GAUSSIAN) {
          uInt idx = 0;
          if (mask(0)) {                         // Value
             sol(idx) = sol(idx) * itsNormVal;
@@ -839,7 +864,8 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
 {
 // 
 // Loop over models and figure out where the model of
-// interest starts in the solution vector
+// interest starts in the solution vector. Returns
+// only adjustable parameters
 //
    iStart = 0;
    for (uInt i=0; i<which; i++) {
@@ -865,4 +891,33 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
    }
    return sol;
 }
+
+
+
+Vector<Double> Fit2D::getAvailableSolution()  const
+//
+// Returns available parameters (adjustable plus fixed)
+{
+   if (!itsValidSolution) {
+      Vector<Double> tmp;
+      return tmp;
+   }   
+//
+// Find the mask and parameters for the SumFunction.
+// Recover these when the mask is False (fixed)
+// otherwise recover the solution
+//
+   const uInt nParams = itsFunction.nAvailableParams(); 
+   Vector<Double> sol2(nParams);
+   uInt idx = 0;
+   for (uInt i=0; i<nParams; i++) {
+      if (itsFunction.getAvailableParamMask(i)) {
+         sol2(i) = itsSolution(idx);
+         idx++;
+      } else {
+         sol2(i) = itsFunction.getAvailableParam(i).value();
+      }
+   }
+   return sol2;
+} 
 
