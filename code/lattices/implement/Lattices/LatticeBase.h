@@ -31,7 +31,7 @@
 
 //# Includes
 #include <trial/Lattices/LELCoordinates.h>
-#include <aips/Lattices/IPosition.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/IO/FileLocker.h>
 #include <aips/Utilities/String.h>
 
