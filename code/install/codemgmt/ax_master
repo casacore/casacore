@@ -1994,3 +1994,4 @@
 08 172 src mv trial/implement/Lattices/ExternalLockSync.h aips/implement/Tables/ExternalLockSync.h
 08 172 src mv trial/implement/Lattices/ExternalLockSync.cc aips/implement/Tables/ExternalLockSync.cc
 08 186 src mv nfra/apps/wsrtfiller/DataSource.cc nfra/implement/wsrt/DataSource.cc
+08 186 src mv nfra/apps/wsrtfiller/DataSource.h nfra/implement/wsrt/DataSource.h
