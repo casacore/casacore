@@ -28,13 +28,10 @@
 //# Includes
 #include <trial/Wnbt/SpectralElement.h>
 
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MUString.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
 #include <aips/iostream.h>
