@@ -2206,3 +2206,13 @@
 11 151 src mv trial/implement/Utilities/exist_server.help serverexists.help
 11 151 src mv serverexists.g trial/implement/Utilities/serverexists.g
 11 151 src mv serverexists.help trial/implement/Utilities/serverexists.help
+11 152 src rm trial/implement/Widgets/filewidget.help
+11 152 src rm trial/implement/Widgets/filewidget.g
+11 152 src rm trial/implement/Widgets/scalarwidget.help
+11 152 src rm trial/implement/Widgets/scalarwidget.g
+11 152 src rm trial/implement/Widgets/quantitywidget.help
+11 152 src rm trial/implement/Widgets/quantitywidget.g
+11 152 src rm trial/implement/Widgets/measurewidget.help
+11 152 src rm trial/implement/Widgets/measurewidget.g
+11 152 src rm trial/implement/Widgets/rangewidget.help
+11 152 src rm trial/implement/Widgets/rangewidget.g
