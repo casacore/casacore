@@ -89,13 +89,24 @@ main (int argc, char *argv[])
     cout << "blc = " << blc << endl;
     cout << "trc = " << trc << endl;
     cout << "inc = " << inc << endl;
-
-    TileStepper stepper(shape, tileShape);
-    stepper.subSection (blc, trc, inc);
-    while (! stepper.atEnd()) {
-	cout << stepper.position() << ' ' << stepper.endPosition() << ' '
-	     << stepper.cursorShape() << endl;
-	stepper++;
+    {
+	TileStepper stepper(shape, tileShape);
+	stepper.subSection (blc, trc, inc);
+	while (! stepper.atEnd()) {
+	    cout << stepper.position() << ' ' << stepper.endPosition() << ' '
+		 << stepper.cursorShape() << endl;
+	    stepper++;
+	}
+	cout << "nsteps = " << stepper.nsteps() << endl;
     }
-    cout << "nsteps = " << stepper.nsteps() << endl;
+    {
+	TileStepper stepper(shape, tileShape, IPosition(3,2,1,0));
+	stepper.subSection (blc, trc, inc);
+	while (! stepper.atEnd()) {
+	    cout << stepper.position() << ' ' << stepper.endPosition() << ' '
+		 << stepper.cursorShape() << endl;
+	    stepper++;
+	}
+	cout << "nsteps = " << stepper.nsteps() << endl;
+    }
 }
