@@ -122,11 +122,11 @@ void PGPlotter::erry(const Vector<Float> &x, const Vector<Float> &y1,
     worker_p->erry(x, y1, y2, t);
 }
 
-void PGPlotter::hist(const Vector<Float> &data, Float datamin, Float datamax, 
+void PGPlotter::hist(const Vector<Float> &data, Float datmin, Float datmax, 
 		    Int nbin, Int pcflag)
 {
     ok();
-    worker_p->hist(data, datamin, datamax, nbin, pcflag);
+    worker_p->hist(data, datmin, datmax, nbin, pcflag);
 }
 
 void PGPlotter::lab(const String &xlbl, const String &ylbl, 

@@ -144,7 +144,7 @@ public:
 	      const Vector<Float> &e, Float t);
     virtual void erry(const Vector<Float> &x, const Vector<Float> &y1,
 	      const Vector<Float> &y2, Float t);
-    virtual void hist(const Vector<Float> &data, Float datamin, Float datamax, 
+    virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, 
 		    Int nbin, Int pcflag);
     virtual void lab(const String &xlbl, const String &ylbl, 
 		   const String &toplbl);

@@ -122,7 +122,7 @@ public:
 	      const Vector<Float> &e, Float t) = 0;
     virtual void erry(const Vector<Float> &x, const Vector<Float> &y1,
 	      const Vector<Float> &y2, Float t) = 0;
-    virtual void hist(const Vector<Float> &data, Float datamin, Float datamax, 
+    virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, 
 		    Int nbin, Int pcflag) = 0;
     virtual void lab(const String &xlbl, const String &ylbl, 
 		   const String &toplbl) = 0;
