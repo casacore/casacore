@@ -45,6 +45,7 @@ const Double Nutation::INTV = 0.04;
 //# Static data
 uInt Nutation::interval_reg = 0;
 uInt Nutation::useiers_reg = 0;
+uInt Nutation::usejpl_reg = 0;
 
 //# Constructors
 Nutation::Nutation() :
@@ -135,6 +136,11 @@ void Nutation::fill() {
 	AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
 				      False);
     };
+    if (!Nutation::usejpl_reg) {
+      usejpl_reg =
+	AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"),
+				      False);
+    };
 }
 
 void Nutation::refresh() {
@@ -210,23 +216,32 @@ void Nutation::calcNut(Double t) {
     default:
       nval[0] = MeasTable::fundArg(0)(t); 	//eps0
       dval[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
-      for (i=0; i<5; i++) {
-	fa(i) = MeasTable::fundArg(i+1)(t);
-	dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
-      }
-      for (i=0; i<106; i++) {
-	dtmp = ddtmp = 0;
-	for (j=0; j<5; j++) {
-	  dtmp += MeasTable::mulArg(i)(j) * fa(j);
-	  ddtmp += MeasTable::mulArg(i)(j) * dfa(j);
+      if (AipsrcValue<Bool>::get(Nutation::usejpl_reg)) {
+	const Vector<Double> &mypl =
+	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch);
+	nval[1] = mypl(0);
+	nval[2] = mypl(1);
+	dval[1] = mypl(2)*MeasData::JDCEN;
+	dval[2] = mypl(3)*MeasData::JDCEN;
+      } else {
+	for (i=0; i<5; i++) {
+	  fa(i) = MeasTable::fundArg(i+1)(t);
+	  dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
 	}
-	nval[1] += MeasTable::mulSC(i,t)(0) * sin(dtmp);
-	nval[2] += MeasTable::mulSC(i,t)(1) * cos(dtmp);
-	dval[1] += MeasTable::mulSC(i,t)(2) * sin(dtmp) +
-	  MeasTable::mulSC(i,t)(0) * cos(dtmp) * ddtmp;
-	dval[2] += MeasTable::mulSC(i,t)(3) * cos(dtmp) -
-	  MeasTable::mulSC(i,t)(1) * sin(dtmp) * ddtmp;
-      }
+	for (i=0; i<106; i++) {
+	  dtmp = ddtmp = 0;
+	  for (j=0; j<5; j++) {
+	    dtmp += MeasTable::mulArg(i)(j) * fa(j);
+	    ddtmp += MeasTable::mulArg(i)(j) * dfa(j);
+	  }
+	  nval[1] += MeasTable::mulSC(i,t)(0) * sin(dtmp);
+	  nval[2] += MeasTable::mulSC(i,t)(1) * cos(dtmp);
+	  dval[1] += MeasTable::mulSC(i,t)(2) * sin(dtmp) +
+	    MeasTable::mulSC(i,t)(0) * cos(dtmp) * ddtmp;
+	  dval[2] += MeasTable::mulSC(i,t)(3) * cos(dtmp) -
+	    MeasTable::mulSC(i,t)(1) * sin(dtmp) * ddtmp;
+	};
+      };
       nval[2] += dEps;
       nval[1] += dPsi;
       break;

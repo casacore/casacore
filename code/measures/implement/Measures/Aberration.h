@@ -29,10 +29,6 @@
 #if !defined(AIPS_ABERRATION_H)
 #define AIPS_ABERRATION_H
 
-#if defined(_AIX)
-#pragma implementation ("Aberration.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MVPosition.h>
@@ -86,6 +82,12 @@
 //  <li> measures.aberration.d_interval: approximation interval as time 
 //	(fraction of days is default unit) over which linear approximation
 //	is used
+//  <li> measures.aberration.b_usejpl: use the JPL database values for IAU1980.
+//	Else analytical expression, relative error about 10<sup>-9</sup>
+//	Note that the JPL database to be used can be set with 
+//		measures.jpl.ephemeris (at the moment of writing DE200 (default),
+//		or DE405). If using the JPL database, the d_interval (and the
+//		output of derivative()) are irrelevant.
 // </ul>
 // </synopsis>
 //
@@ -99,10 +101,7 @@
 // Using MJD (JD-2400000.5) rather than JD is for precision reasons.
 // </motivation>
 //
-// <todo asof="1996/02/12">
-//   <li> B1950
-//   <li> use DE200 tape
-//   <li> add database references for VLBI
+// <todo asof="1997/12/02">
 // </todo>
 
 class Aberration
@@ -164,6 +163,8 @@ private:
     MVPosition result[4];
 // Interpolation interval
     static uInt interval_reg;
+// JPL use
+    static uInt usejpl_reg;
 
 //# Member functions
 // Copy

@@ -29,10 +29,6 @@
 #if !defined(AIPS_SOLARPOS_H)
 #define AIPS_SOLARPOS_H
 
-#if defined(_AIX)
-#pragma implementation ("SolarPos.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/MVPosition.h>
@@ -86,6 +82,11 @@
 //  <li> measures.solarpos.d_interval: approximation interval as time 
 //	(fraction of days is default unit) over which linear approximation
 //	is used
+//  <li> measures.solarpos.b_usejpl: use the JPL database for solar position.
+//	Else analytical expression, relative error about 10<sup>-9</sup>
+//	Note that the JPL database to be used can be set with 
+//		measures.jpl.ephemeris (at the moment of writing DE200 (default),
+//		or DE405)
 // </ul>
 // </synopsis>
 //
@@ -101,12 +102,9 @@
 // </motivation>
 //
 // <todo asof="1996/02/18">
-//   <li> use DE200 tape
-//   <li> add database references for VLBI
 // </todo>
 
-class SolarPos
-{
+class SolarPos {
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
@@ -177,6 +175,8 @@ private:
     MVPosition result[6];
 // Interpolation interval
     static uInt interval_reg;
+// JPL use
+    static uInt usejpl_reg;
 
 //# Member functions
 // Copy

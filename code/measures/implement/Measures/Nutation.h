@@ -29,10 +29,6 @@
 #if !defined(AIPS_NUTATION_H)
 #define AIPS_NUTATION_H
 
-#if defined(_AIX)
-#pragma implementation ("Nutation.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 #include <aips/Measures/Quantum.h>
@@ -92,9 +88,14 @@
 // <ul>
 //  <li> measures.nutation.d_interval: approximation interval as time 
 //	(fraction of days is default unit) over which linear approximation
-//	is used
+//	is used (default 0.04d (about 1 hour)).
+//  <li> measures.nutation.b_usejpl: use the JPL database nutations for IAU1980.
+//	Else analytical expression, relative error about 10<sup>-9</sup>
+//	Note that the JPL database to be used can be set with 
+//		measures.jpl.ephemeris (at the moment of writing DE200 (default),
+//		or DE405)
 //  <li> measures.nutation.b_useiers: use the IERS Database nutation corrections
-//		if using IAU1980 on top of it.
+//		for IAU1980 (default False)
 // </ul>
 // </synopsis>
 //
@@ -114,13 +115,10 @@
 // Using MJD (JD-2400000.5) rather than JD is for precision reasons.
 // </motivation>
 //
-// <todo asof="1996/08/04">
-//   <li> add planetary terms, IAU corrections
-//   <li> add database references for VLBI
+// <todo asof="1997/12/04">
 // </todo>
 
-class Nutation
-{
+class Nutation {
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
@@ -194,7 +192,8 @@ private:
     static uInt interval_reg;
 // IERS use
     static uInt useiers_reg;
-
+// JPL use
+    static uInt usejpl_reg;
 //# Member functions
 // Make a copy
     void copy(const Nutation &other);
