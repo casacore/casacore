@@ -120,7 +120,7 @@ resulting in the normal equations:
 \begin{equation}
 	\mathbf{A}\cdot\mathbf{x} = \mathbf{L}
 \end{equation}
-where $\mathbf{L}=\mathbf{C^{T}}\cdot\mathbf{l}$ and
+where $\mathbf{L}=\mathbf{C^{T}}\cdot\mathbf{Q}^{-1}\cdot\mathbf{l}$ and
 $\mathbf{Q}$ is the covariance matrix of the observations. Here only
 covariance matrices with the same value in each column $i$ (the `weight'
 $w_{i}$) are considered.
@@ -140,7 +140,7 @@ The merit function we want to minimise is:
 For the minimum of $\chi^{2}$ holds:
 
 \begin{equation}
-	\frac{\partial \chi^{2}}{\partial a_{k}} = 0
+	\frac{\partial \chi^{2}}{\partial x_{k}} = 0
 	\hspace{2cm} k=0,\ldots,n-1
 \end{equation}
 
@@ -148,7 +148,7 @@ which leads to the following set of normal equations:
 
 \begin{equation}
 	\sum_{i=0}^{N-1} \frac{\left[ l_{i} - y_{i}\right]}{\sigma_{i}^{2}}
-	\frac{\partial y_{i}}{\partial a_{k}} = 0
+	\frac{\partial y_{i}}{\partial x_{k}} = 0
 	\hspace{2cm} k=0,\ldots,n-1
 \end{equation}
 
