@@ -3268,3 +3268,4 @@
 13 176 src mv trial/implement/Display/Galaxy.cc trial/implement/DisplayDatas/Galaxy.cc
 13 177 src rm trial/implement/Widgets/test/tguientry.g
 13 177 src rm doc/faq/synthesis.html
+13 177 src rm doc/reference/online.latex
