@@ -166,21 +166,26 @@ Bool Interpolate2D::interpLinear(Float& result,
    const IPosition& shape = data.shape();
 
 // We find 4 points surrounding the one of interest.
-// Negatives will give big positive value and this fail the
-// shape test below.
+// Negatives will give big positive value for the uInt 
+// and these will fail the  shape test below.
+// Make sure we don't access i+1 or j+1 because the 
+// big positive plus 1 may become 0 and then we will spuriously
+// pass the shape test
 
    uInt i = Int(where(0));               // Assuming Int does (1.2 -> 1)
    uInt j = Int(where(1));
+   uInt si = uInt(shape(0)-1);
+   uInt sj = uInt(shape(1)-1);
 
 // Handle edge. Just move start left/down by one,
 
-   if (i==uInt(shape(0)-1)) --i;
-   if (j==uInt(shape(1)-1)) --j;
+   if (i==si) --i;
+   if (j==sj) --j;
 
 // 2x2 starting from [i,j]
 // mask==True is a good pixel
 
-   if (i+1 < uInt(shape(0)) &&  j+1 < uInt(shape(1))) {
+   if (i < si &&  j < sj) {                   
       if (maskPtr) {
          if ( !(*maskPtr)(i,j) ||
               !(*maskPtr)(i+1,j) ||
@@ -190,11 +195,11 @@ Bool Interpolate2D::interpLinear(Float& result,
 //
       Double TT = where(0) - i;
       Double UU = where(1) - j;
-//
       result = (1.0-TT)*(1.0-UU)*data(i,j) +
                TT*(1.0-UU)*data(i+1,j) +
                TT*UU*data(i+1,j+1) +
                (1.0-TT)*UU*data(i,j+1);
+//
       return True;
    } else {
       return False;
