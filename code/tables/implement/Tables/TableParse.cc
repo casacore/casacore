@@ -1061,8 +1061,8 @@ void TableParseSelect::execute (Bool setInGiving)
     }
     //# Finally give it the given name (and flush it).
     if (! resultName_p.empty()) {
-        table.flush();
 	table.rename (resultName_p, Table::New);
+        table.flush();
     }
     //# Keep the table for later.
     table_p = table;
