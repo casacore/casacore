@@ -2605,3 +2605,4 @@
 09 531 src rm trial/implement/Measures/test/tFieldMachine.cc
 09 531 src rm trial/implement/Measures/test/tFieldMachine.out
 09 533 src mv trial/implement/Lattices/RefRows.h aips/implement/Tables/RefRows.h
+09 533 src mv trial/implement/Lattices/RefRows.cc aips/implement/Tables/RefRows.cc
