@@ -124,7 +124,7 @@ GaussianShape & GaussianShape::operator=(const GaussianShape & other) {
   return *this;
 }
 
-ComponentType::Shape GaussianShape::shape() const {
+ComponentType::Shape GaussianShape::type() const {
   DebugAssert(ok(), AipsError);
   return ComponentType::GAUSSIAN;
 }
@@ -243,20 +243,20 @@ void GaussianShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   flux.scaleValue(itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber));
 }
 
-ComponentShape * GaussianShape::cloneShape() const {
+ComponentShape * GaussianShape::clone() const {
   DebugAssert(ok(), AipsError);
   ComponentShape * tmpPtr = new GaussianShape(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
 
-uInt GaussianShape::nShapeParameters() const {
+uInt GaussianShape::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 3;
 }
 
-void GaussianShape::setShapeParameters(const Vector<Double> & newParms) {
-  AlwaysAssert(newParms.nelements() == nShapeParameters(), AipsError);
+void GaussianShape::setParameters(const Vector<Double> & newParms) {
+  AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(newParms(0) >= newParms(1), AipsError);
   DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
   itsShape.setMajorAxis(newParms(0));
@@ -269,8 +269,8 @@ void GaussianShape::setShapeParameters(const Vector<Double> & newParms) {
   DebugAssert(ok(), AipsError);
 }
 
-void GaussianShape::shapeParameters(Vector<Double> & compParms) const {
-  AlwaysAssert(compParms.nelements() == nShapeParameters(), AipsError);
+void GaussianShape::parameters(Vector<Double> & compParms) const {
+  AlwaysAssert(compParms.nelements() == nParameters(), AipsError);
   compParms(0) = itsShape.majorAxis();
   compParms(1) = itsShape.minorAxis();
   compParms(2) = itsShape.PA();

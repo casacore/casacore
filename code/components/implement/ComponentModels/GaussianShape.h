@@ -186,9 +186,9 @@ public:
   // The assignment operator uses copy semantics.
   GaussianShape & operator=(const GaussianShape & other);
 
-  // get the shape of the component. This function always returns
+  // get the type of the shape. This function always returns
   // ComponentType::GAUSSIAN.
-  virtual ComponentType::Shape shape() const;
+  virtual ComponentType::Shape type() const;
 
   // set/get the reference direction of the gaussian.
   // <group>
@@ -254,7 +254,7 @@ public:
   // Return a pointer to a copy of this object upcast to a ComponentShape
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual ComponentShape * cloneShape() const;
+  virtual ComponentShape * clone() const;
 
   // set/get the shape parameters associated with the Gaussian. There are three
   // these being in order: the major axis, the minor axis and the position
@@ -263,9 +263,9 @@ public:
   // Vector supplied to and returned by the parameters function will have three
   // elements.
   // <group>
-  virtual uInt nShapeParameters() const;
-  virtual void setShapeParameters(const Vector<Double> & newParms);
-  virtual void shapeParameters(Vector<Double> & compParms) const;
+  virtual uInt nParameters() const;
+  virtual void setParameters(const Vector<Double> & newParms);
+  virtual void parameters(Vector<Double> & compParms) const;
   // </group>
 
   // This functions convert between a RecordInterface and a
