@@ -200,10 +200,10 @@ private:
   Bool inOK_p;
   Bool outOK_p;
   Bool frameOK_p[N_FrameType];
-  MeasFrame inFrame_p;
-  MeasFrame outFrame_p;
-  MeasFrame applyFrame_p[N_FrameType];
-  MeasFrame deapplyFrame_p[N_FrameType];
+  MeasFrame *inFrame_p;
+  MeasFrame *outFrame_p;
+  MeasFrame *applyFrame_p[N_FrameType];
+  MeasFrame *deapplyFrame_p[N_FrameType];
   // </group>
   // Conversion information
   // <group>
