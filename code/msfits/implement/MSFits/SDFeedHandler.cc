@@ -74,7 +74,7 @@ SDFeedHandler &SDFeedHandler::operator=(const SDFeedHandler &other)
 				    NewMSFeed::columnName(NewMSFeed::NUM_RECEPTORS));
 	msFeed_p = new NewMSFeed(*(other.msFeed_p));
 	AlwaysAssert(msFeed_p, AipsError);
-	msFeedCols_p = new NewMSFeedColumns(*(other.msFeedCols_p));
+	msFeedCols_p = new NewMSFeedColumns(*msFeed_p);
 	AlwaysAssert(msFeedCols_p, AipsError);
 	feedId_p = other.feedId_p;
 	nextFeedId_p = other.nextFeedId_p;
