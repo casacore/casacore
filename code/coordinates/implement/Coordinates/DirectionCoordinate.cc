@@ -837,9 +837,16 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
 // whose value may change depending on what computations you
 // do when
 // 
-   if (prjprm_p->r0 != dCoord->prjprm_p->r0) {
-      set_error("The DirectionCoordinates have differing WCS projection parameters");
-      return False;
+
+   if (prjprm_p->r0!=0.0 && dCoord->prjprm_p->r0!=0.0) {
+
+// 0 is the start value, and the WCS routines will change
+// it, so if either value is 0, it's ok
+
+      if (prjprm_p->r0 != dCoord->prjprm_p->r0) {
+         set_error("The DirectionCoordinates have differing WCS projection parameters");
+         return False;
+       }
    }
    for (i=0; i<10; i++) {
       if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) {
