@@ -1790,7 +1790,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      Float dy = 0.05 * (yMaxVal - yMinVal);
 //
      ostringstream oss;
-     oss << "  nT = " << nTurns << ", ChiSq = " << rChiSqFitted << ends;
+     oss << "  nT = " << nTurns << ", ChiSq = " << rChiSqFitted;
 //
      plotter.page();
      Float dx = 0.05 * (wsq(n-1) - wsq(0));

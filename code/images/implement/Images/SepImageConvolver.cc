@@ -353,7 +353,7 @@ void SepImageConvolver<T>::smoothProfiles (ImageInterface<T>& in,
         }
      }
      ostringstream oss;
-     oss << "Convolve Image Axis " << axis+1 << ends;
+     oss << "Convolve Image Axis " << axis+1;
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Spectrum Convolutions"),
                                         String(""), String(""),

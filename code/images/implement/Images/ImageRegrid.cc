@@ -961,7 +961,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
      Double nMin = 0.0;
      Double nMax = Double(outLattice.shape().product());
      ostringstream oss;
-     oss << "Axes " << outPixelAxes + 1 << " : Pixels Regridded" << ends;
+     oss << "Axes " << outPixelAxes + 1 << " : Pixels Regridded";
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Regridding"),
                                         String(""), String(""),
@@ -1758,7 +1758,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
      Double nMax = Double(outLattice.shape().product()) /
        Double(outIter.cursorShape().product());
      ostringstream oss;
-     oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded" << ends;
+     oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded";
      pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
                                         String("Regridding"),
                                         String(""), String(""),

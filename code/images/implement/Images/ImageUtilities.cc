@@ -622,7 +622,7 @@ Double ImageUtilities::worldWidthToPixel (LogIO& os, Double positionAngle,
       ostringstream oss;
       oss << "The units of the world length (" << length.getFullUnit().getName()
           << ") are not consistent with those of Coordinate System ("
-          << unit.getName() << ")" << ends;
+          << unit.getName() << ")";
       String s(oss);
       os << s << LogIO::EXCEPTION;
    }
