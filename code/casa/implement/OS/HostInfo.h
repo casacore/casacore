@@ -104,6 +104,10 @@ public:
     static Int processID();
     static Double secondsFrom1970();
 
+    // Returns True for big endian machines (like SUN).
+    // Returns False for little endian machines (like PC).
+    static Bool bigEndian();
+
     // Returns 0 if unable to determine the number of CPUs.
     static Int numCPUs( );
 
@@ -128,5 +132,16 @@ private:
 
     static HostMachineInfo *info;
 };
+
+
+inline Bool HostInfo::bigEndian()
+{
+#if defined(AIPS_LITTLE_ENDIAN)
+    return False;
+#else
+    return True;
+#endif
+}
+
 
 #endif
