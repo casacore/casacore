@@ -28,30 +28,20 @@
 #if !defined (AIPS_IPOSITION_H)
 #define AIPS_IPOSITION_H
 
-#if defined(_AIX)
-#pragma implementation ("IPosition.cc")
-#pragma implementation ("IPosition2.cc")
-#endif
-
 //# Includes
 #include <aips/aips.h>
 
-#if defined(AIPS_ARRAY_INDEX_CHECK)
-//# So that throw is defined in the below inlines
-#include<aips/Exceptions/Error.h>
-#endif
-
-//# Forward declarations for functions which convert an IPosition to and from
-//# 1-D arrays.
+//# Forward Declarations
+class AipsIO;
+class LogIO;
+template<class T> class Array;
+template<class T> class Vector;
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
 imported class ostream;
 #endif
-class AipsIO;
-class LogIO;
-template<class T> class Array;
-template<class T> class Vector;
+
 
 // <summary> A Vector of integers, for indexing into Array<T> objects. </summary>
 
@@ -142,17 +132,17 @@ public:
 	       Int val9=MIN_INT);
 
     // Makes a copy (copy, NOT reference, semantics) of other.
-    IPosition(const IPosition &other);
+    IPosition(const IPosition& other);
     
     ~IPosition();
 
     // Makes this a copy of other. "this" and "other" must either be conformant
     // (same size) or this must be 0-length, in which case it will
     // resize itself to be the same length as other.
-    IPosition &operator=(const IPosition &other);
+    IPosition& operator=(const IPosition& other);
 
     // Copy "value" into every position of this IPosition.
-    IPosition &operator=(Int value);
+    IPosition& operator=(Int value);
 
     // Construct a default axis path consisting of the values 0 .. nrdim-1.
     static IPosition makeAxisPath (uInt nrdim);
@@ -167,7 +157,7 @@ public:
     // Convert an IPosition to and from an Array<Int>. In either case, the
     // array must be one dimensional.
     // <group>
-    IPosition(const Array<Int> &other);
+    IPosition(const Array<Int>& other);
     Vector<Int> asVector() const;
     // </group>
 
@@ -193,9 +183,12 @@ public:
     // checked to ensure it is not out of bounds. If this check fails, an
     // AipsError will be thrown.
     // <group>
-    Int &operator()(uInt index);
+    Int& operator()(uInt index);
     Int operator()(uInt index) const;
     // </group>
+
+    // Get the storage.
+    const Int *storage() const;
 
     // Append this IPosition with another one (causing a resize).
     void append (const IPosition& other);
@@ -230,14 +223,14 @@ public:
     uInt nelements() const;
 
     // conform returns true if nelements() == other.nelements().
-    Bool conform(const IPosition &other) const;
+    Bool conform(const IPosition& other) const;
 
     // Element-by-element arithmetic.
     // <group>
-    void operator += (const IPosition  &other);
-    void operator -= (const IPosition  &other);
-    void operator *= (const IPosition  &other);
-    void operator /= (const IPosition  &other);
+    void operator += (const IPosition& other);
+    void operator -= (const IPosition& other);
+    void operator *= (const IPosition& other);
+    void operator /= (const IPosition& other);
     void operator += (Int val);
     void operator -= (Int val);
     void operator *= (Int val);
@@ -268,29 +261,35 @@ public:
     Bool isEqual (const IPosition& other, uInt nrCompare) const;
 
     // Write an IPosition to an ostream in a simple text form.
-    friend ostream &operator<<(ostream &os, const IPosition &ip);
+    friend ostream& operator<<(ostream& os, const IPosition& ip);
 
     // Write an IPosition to an AipsIO stream in a binary format.
-    friend AipsIO &operator<<(AipsIO &aio, const IPosition &ip);
+    friend AipsIO& operator<<(AipsIO& aio, const IPosition& ip);
 
     // Write an IPosition to a LogIO stream.
-    friend LogIO &operator<<(LogIO &io, const IPosition &ip);
+    friend LogIO& operator<<(LogIO& io, const IPosition& ip);
 
     // Read an IPosition from an AipsIO stream in a binary format.
     // Will throw an AipsError if the current IPosition Version does not match
     // that of the one on disk.
-    friend AipsIO &operator>>(AipsIO &aio, IPosition &ip);
+    friend AipsIO& operator>>(AipsIO& aio, IPosition& ip);
 
     // Is this IPosition consistent?
     Bool ok() const;
 
 private:
+    // Allocate a buffer with length size_p.
+    void allocateBuffer();
+
+    // Throw an index error exception.
+    void IPosition::throwIndexError() const;
+
     enum { IPositionVersion = 1, BufferLength = 4 };
-    uInt size;
+    uInt size_p;
     Int buffer_p[BufferLength];
     // When the iposition is length BufferSize or less data is just buffer_p,
     // avoiding calls to new and delete.
-    Int *data;
+    Int *data_p;
 };
 
 // <summary>Arithmetic Operations for IPosition's</summary>
@@ -300,25 +299,25 @@ private:
 // two IPositions must have the same number of elements otherwise an
 // exception (ArrayConformanceError) will be thrown.
 // <group>
-IPosition operator + (const IPosition &left, const IPosition &right);
-IPosition operator - (const IPosition &left, const IPosition &right);
-IPosition operator * (const IPosition &left, const IPosition &right);
-IPosition operator / (const IPosition &left, const IPosition &right);
+IPosition operator + (const IPosition& left, const IPosition& right);
+IPosition operator - (const IPosition& left, const IPosition& right);
+IPosition operator * (const IPosition& left, const IPosition& right);
+IPosition operator / (const IPosition& left, const IPosition& right);
 // </group>
 // Each operation is done by appliying the integer argument to all elements
 // of the IPosition argument. 
 // <group>
-IPosition operator + (const IPosition &left, Int val);
-IPosition operator - (const IPosition &left, Int val);
-IPosition operator * (const IPosition &left, Int val);
-IPosition operator / (const IPosition &left, Int val);
+IPosition operator + (const IPosition& left, Int val);
+IPosition operator - (const IPosition& left, Int val);
+IPosition operator * (const IPosition& left, Int val);
+IPosition operator / (const IPosition& left, Int val);
 // </group>
 // Same functions as above but with with the Int argument on the left side.
 // <group>
-IPosition operator + (Int val, const IPosition &right);
-IPosition operator - (Int val, const IPosition &right);
-IPosition operator * (Int val, const IPosition &right);
-IPosition operator / (Int val, const IPosition &right);
+IPosition operator + (Int val, const IPosition& right);
+IPosition operator - (Int val, const IPosition& right);
+IPosition operator * (Int val, const IPosition& right);
+IPosition operator / (Int val, const IPosition& right);
 // </group>
 // </group>
 
@@ -330,30 +329,30 @@ IPosition operator / (Int val, const IPosition &right);
 // two IPositions must have the same number of elements otherwise an
 // exception (ArrayConformanceError) will be thrown.
 // <group>
-Bool operator == (const IPosition &left, const IPosition &right);
-Bool operator != (const IPosition &left, const IPosition &right);
-Bool operator <  (const IPosition &left, const IPosition &right);
-Bool operator <= (const IPosition &left, const IPosition &right);
-Bool operator >  (const IPosition &left, const IPosition &right);
-Bool operator >= (const IPosition &left, const IPosition &right);
+Bool operator == (const IPosition& left, const IPosition& right);
+Bool operator != (const IPosition& left, const IPosition& right);
+Bool operator <  (const IPosition& left, const IPosition& right);
+Bool operator <= (const IPosition& left, const IPosition& right);
+Bool operator >  (const IPosition& left, const IPosition& right);
+Bool operator >= (const IPosition& left, const IPosition& right);
 // </group>
 // Each operation is done by appliying the integer argument to all elements
 // <group>
-Bool operator == (const IPosition &left, Int val);
-Bool operator != (const IPosition &left, Int val);
-Bool operator <  (const IPosition &left, Int val);
-Bool operator <= (const IPosition &left, Int val);
-Bool operator >  (const IPosition &left, Int val);
-Bool operator >= (const IPosition &left, Int val);
+Bool operator == (const IPosition& left, Int val);
+Bool operator != (const IPosition& left, Int val);
+Bool operator <  (const IPosition& left, Int val);
+Bool operator <= (const IPosition& left, Int val);
+Bool operator >  (const IPosition& left, Int val);
+Bool operator >= (const IPosition& left, Int val);
 // </group>
 // Same functions as above but with with the Int argument on the left side.
 // <group>
-Bool operator == (Int val, const IPosition &right);
-Bool operator != (Int val, const IPosition &right);
-Bool operator <  (Int val, const IPosition &right);
-Bool operator <= (Int val, const IPosition &right);
-Bool operator >  (Int val, const IPosition &right);
-Bool operator >= (Int val, const IPosition &right);
+Bool operator == (Int val, const IPosition& right);
+Bool operator != (Int val, const IPosition& right);
+Bool operator <  (Int val, const IPosition& right);
+Bool operator <= (Int val, const IPosition& right);
+Bool operator >  (Int val, const IPosition& right);
+Bool operator >= (Int val, const IPosition& right);
 // </group>
 // </group>
 
@@ -373,29 +372,13 @@ Bool operator >= (Int val, const IPosition &right);
 // Convert from offset to IPosition in an array. The second of these
 // functions requires that type T have shape and origin members which return
 // IPositions.
-// <group>
-IPosition toIPositionInArray (const uInt offset,
-                              const IPosition &shape, const IPosition &origin);
-
-template <class T>
-inline IPosition toIPositionInArray (const uInt offset, const T &array)
-{
-    return toIPositionInArray (offset, array.shape(), array.origin());
-}
-// </group>
+IPosition toIPositionInArray (const uInt offset, const IPosition& shape);
 
 // Convert from IPosition to offset in an array. The second of these
 // functions requires that type T have shape and origin members which return
 // IPositions.
-// <group>
-uInt toOffsetInArray (const IPosition &iposition,
-                      const IPosition &shape, const IPosition &origin);
-template <class T>
-inline uInt toOffsetInArray (const IPosition &iposition, const T &array)
-{
-    return toOffsetInArray (iposition, array.shape(), array.origin());
-}
-// </group>
+uInt toOffsetInArray (const IPosition& iposition, const IPosition& shape);
+
 // Determine if the given offset or IPosition is inside the array. Returns
 // True if it is inside the Array. The second and fourth of these functions
 // require that type T have shape and origin members which return
@@ -404,32 +387,27 @@ inline uInt toOffsetInArray (const IPosition &iposition, const T &array)
 //   <item> ArrayConformanceError: If all the IPositions are not the same length
 // </thrown>
 // <group>
-Bool isInsideArray (const uInt offset,
-                    const IPosition &shape, const IPosition &origin);
-template <class T>
-inline Bool isInsideArray (const uInt offset, const T &array)
-{
-    return isInsideArray (offset, array.shape(), array.origin());
-}
-Bool isInsideArray (const IPosition &iposition,
-                    const IPosition &shape, const IPosition &origin);
-template <class T>
-inline Bool isInsideArray (const IPosition &iposition, const T &array)
-{
-    return isInsideArray (iposition, array.shape(), array.origin());
-}
+Bool isInsideArray (const uInt offset, const IPosition& shape);
+Bool isInsideArray (const IPosition& iposition, const IPosition& shape);
 // </group>
 // </group>
-    
-// <summary>Inlined member functions for IPosition's</summary>
-// These functions have been inlined for efficiency. They are described in
-// more detail in the class description.
-// <group name="IPosition Inlines">
 
-#if defined(AIPS_DEBUG)
-// For throwing IndexErrors in operator()
-#include <aips/Exceptions/Error.h> 
-#endif
+
+    
+//# Inlined member functions for IPosition
+
+inline IPosition::IPosition()
+: size_p (0),
+  data_p (buffer_p)
+{}
+inline IPosition::IPosition (uInt length)
+: size_p (length),
+  data_p (buffer_p)
+{
+    if (length > BufferLength) {
+	allocateBuffer();
+    }
+}
 
 inline IPosition IPosition::makeAxisPath (uInt nrdim)
 {
@@ -438,40 +416,37 @@ inline IPosition IPosition::makeAxisPath (uInt nrdim)
 
 inline uInt IPosition::nelements() const
 {
-    return size;
+    return size_p;
 }
 
-inline Int &IPosition::operator()(uInt index)
+inline Int& IPosition::operator()(uInt index)
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (index >= nelements()) {
-        // This should be a IndexError<uInt> - but that causes multiply
-	// defined symbols with the current objectcenter.
-        throw(AipsError("IPosition::operator() - index error"));
+	throwIndexError();
     }
 #endif
-    return data[index];
+    return data_p[index];
 }
 
 inline Int IPosition::operator()(uInt index) const
 {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if (index >= nelements()) {
-        // This should be a IndexError<uInt> - but that causes multiply
-	// defined symbols with the current objectcenter.
-        throw(AipsError("IPosition::operator() - index error"));
+	throwIndexError();
     }
 #endif
-    return data[index];
+    return data_p[index];
 }
 
-inline Bool IPosition::conform(const IPosition &other) const
+inline const Int *IPosition::storage() const
 {
-    Bool result = False;
-    if (this->size == other.size) {
-	result = True;
-    }
-    return result;
+    return data_p;
+}
+
+inline Bool IPosition::conform(const IPosition& other) const
+{
+    return ToBool (size_p == other.size_p);
 }
 // </group>
 #endif
