@@ -1,8 +1,10 @@
 {
     local apath := split(shell("echo $AIPSPATH"))
     if ( len(apath) == 4 ) {
-	system.path.include := [ spaste(apath[1],'/',apath[2],'/libexec'),
-				 system.path.include ]
+	local libexec := spaste(apath[1],'/',apath[2],'/libexec')
+	system.path.include := [ '.', libexec,
+				 system.path.include[ system.path.include != '.' &
+						      system.path.include != libexec ] ]
 	if ( ! any(argv == '-notk' ) ) {
 	    include 'glishtk.g'
 	    include 'pgplot.g'
