@@ -151,23 +151,278 @@ Bool toBoolAsciiTable (const String& str)
 
 
 
+//# Read a keyword set and add it to keysets.
+void readAsciiTableHandleKeyset (Int lineSize, char* string1,
+				 char* first, char* second,
+				 TableRecord& keysets,
+				 LogIO& logger,
+				 const String& fileName,
+				 ifstream& jFile,
+				 Int& lineNumber)
+{
+  Float tempR; Short tempSH; Int tempI; Double tempD;
+  Float temp1, temp2, temp3, temp4;
+  Double temp1d, temp2d, temp3d, temp4d;
+  TableRecord keyset;
+
+  // Get the column name in case it is a column keywordset.
+  String colName;
+  Int atl = 0;
+  readAsciiTableGetNext (string1, lineSize, first, atl); 
+  Int d4 = readAsciiTableGetNext (string1, lineSize, second, atl); 
+  if (d4 > 0) {
+    colName = second;
+  }
+  while (True) {
+
+// Read the next line(s)
+
+    if (!jFile.getline(string1, lineSize)) {
+      throw (AipsError ("No .endkeywords line in " + fileName));
+    }
+    lineNumber++;
+
+// If we are at END of KEYWORDS read the next line to get NAMES OF COLUMNS
+// or to get next keyword group.
+
+    if (strncmp(string1, ".end", 4) == 0) {
+      keysets.defineRecord (colName, keyset);
+      if (!jFile.getline(string1, lineSize)) {
+	string1[0] = '\0';
+      } else {
+	lineNumber++;
+      }
+      break;
+    }
+
+// Read the first two fields of a KEYWORD line
+    Int done3, done4, at3=0;
+    done3 = readAsciiTableGetNext (string1, lineSize, first, at3); 
+    done4 = readAsciiTableGetNext (string1, lineSize, second, at3); 
+    if (done3<=0 || done4<=0) {
+      throw (AipsError ("No keyword name and type in line " +
+			String::toString(lineNumber)
+			+ " in " + fileName));
+    }
+    String keyName = String(first);
+    String keyType = String(second);
+    keyType.upcase();
+    if (keyset.isDefined (keyName)) {
+      logger << LogIO::WARN <<
+	"Keyword " << keyName << " skipped because defined twice in "
+	     << fileName << LogIO::POST;
+    } else {
+
+// Count the number of values for this key
+
+      Int savat3 = at3;
+      Int nVals = 0;
+      while (readAsciiTableGetNext (string1, lineSize,
+				    first, at3) >= 0) {
+	nVals++;
+      }
+      if (nVals == 0) {
+	throw (AipsError ("No keyword value(s) in line " +
+			  String::toString(lineNumber)
+			  + " in " + fileName));
+      }
+
+// Read the keyword value(s).
+      at3 = savat3;
+      if (keyType == "S") {
+	Vector<Short> vectShort(nVals); 
+	for (Int i21=0; i21<nVals; i21++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  istrstream(first, done3) >> tempSH;
+	  vectShort(i21) = tempSH;
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectShort);
+	} else {
+	  keyset.define (keyName, vectShort(0));
+	}
+      } else if (keyType == "I") {
+	Vector<Int> vectInt(nVals); 
+	for (Int i21=0; i21<nVals; i21++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  istrstream(first, done3) >> tempI;
+	  vectInt(i21) = tempI;
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectInt);
+	} else {
+	  keyset.define (keyName, vectInt(0));
+	}
+      } else if (keyType == "R") {
+	Vector<Float> vectFloat(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  istrstream(first, done3) >> tempR;
+	  vectFloat(i20) = tempR;
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectFloat);
+	} else {
+	  keyset.define (keyName, vectFloat(0));
+	}
+      } else if (keyType == "D") {
+	Vector<Double> vectDbl(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  istrstream(first, done3) >> tempD;
+	  vectDbl(i20) = tempD;
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectDbl);
+	} else {
+	  keyset.define (keyName, vectDbl(0));
+	}
+      } else if (keyType == "A") {
+	Vector<String> vectStr(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  vectStr(i20) = first;
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectStr);
+	} else {
+	  keyset.define (keyName, vectStr(0));
+	}
+      } else if (keyType == "B") {
+	Vector<Bool> vectStr(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  vectStr(i20) = toBoolAsciiTable (first);
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectStr);
+	} else {
+	  keyset.define (keyName, vectStr(0));
+	}
+      } else if (keyType == "X") {
+	if (nVals%2 != 0) {
+	  throw (AipsError ("Complex keyword " + keyName +
+			    " in " + fileName +
+			    " must have even number of values"));
+	}
+	nVals /= 2;
+	Vector<Complex> vectCX(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  done4 = readAsciiTableGetNext (string1, lineSize,
+					 second, at3);
+	  istrstream(first, done3) >> temp1;
+	  istrstream(second, done4) >> temp2;
+	  vectCX(i20) = Complex(temp1, temp2);
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectCX);
+	} else {
+	  keyset.define (keyName, vectCX(0));
+	}
+      } else if (keyType == "DX") {
+	if (nVals%2 != 0) {
+	  throw (AipsError ("DComplex keyword " + keyName +
+			    " in " + fileName +
+			    " must have even number of values"));
+	}
+	nVals /= 2;
+	Vector<DComplex> vectCX(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  done4 = readAsciiTableGetNext (string1, lineSize,
+					 second, at3);
+	  istrstream(first, done3) >> temp1d;
+	  istrstream(second, done4) >> temp2d;
+	  vectCX(i20) = DComplex(temp1d, temp2d);
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectCX);
+	} else {
+	  keyset.define (keyName, vectCX(0));
+	}
+      } else if (keyType == "Z") {
+	if (nVals%2 != 0) {
+	  throw (AipsError ("Complex keyword " + keyName +
+			    " in " + fileName +
+			    " must have even number of values"));
+	}
+	nVals /= 2;
+	Vector<Complex> vectCX(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  done4 = readAsciiTableGetNext (string1, lineSize,
+					 second, at3);
+	  istrstream(first, done3) >> temp1;
+	  istrstream(second, done4) >> temp2;
+	  temp2 *= 3.14159265/180.0; 
+	  temp3 = temp1 * cos(temp2);
+	  temp4 = temp1 * sin(temp2);
+	  vectCX(i20) = Complex(temp3, temp4);
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectCX);
+	} else {
+	  keyset.define (keyName, vectCX(0));
+	}
+      } else if (keyType == "DZ") {
+	if (nVals%2 != 0) {
+	  throw (AipsError ("DComplex keyword " + keyName +
+			    " in " + fileName +
+			    " must have even number of values"));
+	}
+	nVals /= 2;
+	Vector<DComplex> vectCX(nVals); 
+	for (Int i20=0; i20<nVals; i20++) {
+	  done3 = readAsciiTableGetNext (string1, lineSize,
+					 first, at3);
+	  done4 = readAsciiTableGetNext (string1, lineSize,
+					 second, at3);
+	  istrstream(first, done3) >> temp1d;
+	  istrstream(second, done4) >> temp2d;
+	  temp2d *= 3.14159265/180.0; 
+	  temp3d = temp1d * cos(temp2d);
+	  temp4d = temp1d * sin(temp2d);
+	  vectCX(i20) = DComplex(temp3d, temp4d);
+	}
+	if (nVals > 1) {
+	  keyset.define (keyName, vectCX);
+	} else {
+	  keyset.define (keyName, vectCX(0));
+	}
+      }
+    }
+  }
+  keysets.defineRecord (colName, keyset);
+}
+
+
+
 String doReadAsciiTable (const String& headerfile, const String& filein, 
 			 const String& tableproto, const String& tablename,
 			 Bool autoHeader)
 {
     const Int   lineSize = 32768;
-          char  string1[lineSize], string2[lineSize];
+          char  string1[lineSize], string2[lineSize], stringsav[lineSize];
           char  first[lineSize], second[lineSize];
     const Int   arraySize = 1000;
           String  nameOfColumn[arraySize];
           String  typeOfColumn[arraySize];
           String  keyName;
-          String  keyType;
-          Int   numberOfKeys[arraySize];
-          Int   nVals, haveKeys;
 
 	  LogIO logger(LogOrigin("readAsciiTable", WHERE));
 
+// Determine if header and data are in one file.
+    Bool oneFile = (headerfile == filein);
 
 // PART ONE
 // Define the TABLE description, i.e. define its columns.
@@ -188,82 +443,36 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	throw (AipsError ("Cannot read first header line of " + headerfile));
     }
 
-// If the first line shows that we have KEYWORDS skip until the
-// end of keywords while counting the number of keywords.
+// If the first line shows that we have KEYWORDS read until the
+// end of keywords while assembling the keywords.
 
     Int lineNumber = 1;
-    Int nKeys = 0;
-    haveKeys = 0;
-    if (strncmp(string1, ".key", 4) == 0) {
-	haveKeys = 1;
-	while (True) {
-
-// Read the next line(s)
-
-	    if (!jFile.getline(string1, lineSize)) {
-		throw (AipsError ("No .endkeywords line in " + headerfile));
-	    }
-	    lineNumber++;
-
-// If we are at END of KEYWORDS read the next line to get NAMES OF COLUMNS
-
-	    if (strncmp(string1, ".end", 4) == 0) {
-		if (!jFile.getline(string1, lineSize)) {
-		    throw (AipsError("No COLUMN NAMES line in " + headerfile));
-		}
-		lineNumber++;
-		break;
-	    }
-
-// Read the first two fields of a KEYWORD line
-	    Int done3, done4, at3=0;
-	    done3 = readAsciiTableGetNext (string1, lineSize, first, at3); 
-	    done4 = readAsciiTableGetNext (string1, lineSize, second, at3); 
-	    if (done3<=0 || done4<=0) {
-	        throw (AipsError ("No keyword name and type in line " +
-				  String::toString(lineNumber)
-				  + " in " + headerfile));
-	    }
-// Count the number of values for this key
-
-	    nVals = 0;
-	    while (readAsciiTableGetNext (string1, lineSize,
-					  first, at3) >= 0) {
-	        nVals++;
-	    }
-	    if (nVals == 0) {
-	        throw (AipsError ("No keyword value(s) in line " +
-				  String::toString(lineNumber)
-				  + " in " + headerfile));
-	    }
-	    if (nKeys >= arraySize) {
-	        throw (AipsError ("Too many keywords (max=" +
-				  String::toString(arraySize)
-				  + ") in " + headerfile));
-	    }
-
-	    numberOfKeys[nKeys] = nVals;
-	    nKeys++;        
-	}
+    TableRecord keysets;
+    while (strncmp(string1, ".key", 4) == 0) {
+        readAsciiTableHandleKeyset (lineSize, string1, first, second,
+				    keysets, logger,
+				    headerfile, jFile, lineNumber);
     }
 
+// Okay, all keywords have been read.
+// string1 contains the next line (if any). Save that line if needed.
 // Determine the types if autoheader is given.
 
-    Int nrheader = lineNumber-1;
+    stringsav[0] = '\0';
     if (autoHeader) {
+        strcpy (stringsav, string1);
         getTypesAsciiTable (string1, lineSize, string2, first);
 	strcpy (string1, first);
     } else {
 
-// Previous line is NAMES OF COLUMNS; now get TYPE OF COLUMNS line
-
+// Previous line should be NAMES OF COLUMNS; now get TYPE OF COLUMNS line
+        if (string1[0] == '\0') {
+	    throw (AipsError("No COLUMN NAMES line in " + headerfile));
+	}
         if (!jFile.getline(string2, lineSize)) {
 	    throw (AipsError("No COLUMN TYPES line in " + headerfile));
 	}
-	nrheader += 2;
     }
-    jFile.close();
-
 
 // Break up the NAME OF COLUMNS line and the TYPE OF COLUMNS line
 // Place the results in the two arrays.
@@ -325,247 +534,27 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     Float tempR; Short tempSH; Int tempI; Double tempD;
     Float temp1, temp2, temp3, temp4;
     Double temp1d, temp2d, temp3d, temp4d;
- 
 
-// Read key values if we have any.
+// Write keywordsets.
 
-    if (haveKeys) {
-	nKeys = -1;
-	TableRecord& keyset = tab.rwKeywordSet();
-	ifstream kFile;
-	kFile.open(headerfile, ios::in);
-	if (! kFile) {
-	    throw (AipsError ("Cannot reopen header file " + headerfile));
-	}
-
-// Skip the first line which has only the .key keyword on it
-
-	if (!kFile.getline(string1, lineSize)) {
-	    throw (AipsError ("Cannot reread first line in " + headerfile));
-	}
-
-// Get the following lines
-
-	lineNumber = 1;
-	while (True) {
-	    lineNumber++;
-	    nKeys++;
-	    if (!kFile.getline(string1, lineSize)) {
-	        throw (AipsError ("Cannot reread line " +
-				  String::toString(lineNumber)
-				  + " in " + headerfile));
+    for (uInt i=0; i<keysets.nfields(); i++) {
+        String colnm = keysets.name(i);
+        if (colnm.empty()) {
+	    tab.rwKeywordSet() = keysets.subRecord (i);
+	} else {
+	    if (!tab.isColumnWritable (colnm)) {
+	        throw AipsError ("Keywords given for unknown column " + colnm);
 	    }
-	    if (strncmp(string1,".end",4) == 0)
-		break;
-
-// Read the first two fields of the KEYWORD line
-
-	    Int done3, done4, at3=0;
-	    done3 = readAsciiTableGetNext (string1, lineSize, first, at3); 
-	    done4 = readAsciiTableGetNext (string1, lineSize, second, at3); 
-	    keyName = String(first);
-	    keyType = String(second);
-	    keyType.upcase();
-	    if (keyset.isDefined (keyName)) {
-	      logger << LogIO::WARN <<
-		"Keyword " << keyName << " skipped because defined twice in "
-		     << headerfile << LogIO::POST;
-	    } else {
-	      
-
-// Read the keyword value(s).
-	    
-	      nVals = numberOfKeys[nKeys];
-	      if (keyType == "S") {
-		Vector<Short> vectShort(nVals); 
-		for (Int i21=0; i21<nVals; i21++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    istrstream(first, done3) >> tempSH;
-		    vectShort(i21) = tempSH;
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectShort);
-		else
-		    keyset.define (keyName, vectShort(0));
-	      }
-
-	      if (keyType == "I") {
-		Vector<Int> vectInt(nVals); 
-		for (Int i21=0; i21<nVals; i21++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    istrstream(first, done3) >> tempI;
-		    vectInt(i21) = tempI;
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectInt);
-		else
-		    keyset.define (keyName, vectInt(0));
-	      }
-
-	      if (keyType == "R") {
-		Vector<Float> vectFloat(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    istrstream(first, done3) >> tempR;
-		    vectFloat(i20) = tempR;
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectFloat);
-		else
-		    keyset.define (keyName, vectFloat(0));
-	      }
-
-	      if (keyType == "D") {
-		Vector<Double> vectDbl(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    istrstream(first, done3) >> tempD;
-		    vectDbl(i20) = tempD;
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectDbl);
-		else
-		    keyset.define (keyName, vectDbl(0));
-	      }
-
-	      if (keyType == "A") {
-		Vector<String> vectStr(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    vectStr(i20) = first;
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectStr);
-		else
-		    keyset.define (keyName, vectStr(0));
-	      }
-
-	      if (keyType == "B") {
-		Vector<Bool> vectStr(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    vectStr(i20) = toBoolAsciiTable (first);
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectStr);
-		else
-		    keyset.define (keyName, vectStr(0));
-	      }
-
-	      if (keyType == "X") {
-		if (nVals%2 != 0) {
-		    throw (AipsError ("Complex keyword " + keyName +
-				      " in " + headerfile +
-				      " must have even number of values"));
-		}
-		nVals /= 2;
-		Vector<Complex> vectCX(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    done2 = readAsciiTableGetNext (string1, lineSize,
-						   second, at3);
-		    istrstream(first, done3) >> temp1;
-		    istrstream(second, done2) >> temp2;
-		    vectCX(i20) = Complex(temp1, temp2);
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectCX);
-		else
-		    keyset.define (keyName, vectCX(0));
-	      }
-	      if (keyType == "DX") {
-		if (nVals%2 != 0) {
-		    throw (AipsError ("DComplex keyword " + keyName +
-				      " in " + headerfile +
-				      " must have even number of values"));
-		}
-		nVals /= 2;
-		Vector<DComplex> vectCX(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    done2 = readAsciiTableGetNext (string1, lineSize,
-						   second, at3);
-		    istrstream(first, done3) >> temp1d;
-		    istrstream(second, done2) >> temp2d;
-		    vectCX(i20) = DComplex(temp1d, temp2d);
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectCX);
-		else
-		    keyset.define (keyName, vectCX(0));
-	      }
-
-	      if (keyType == "Z") {
-		if (nVals%2 != 0) {
-		    throw (AipsError ("Complex keyword " + keyName +
-				      " in " + headerfile +
-				      " must have even number of values"));
-		}
-		nVals /= 2;
-		Vector<Complex> vectCX(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    done2 = readAsciiTableGetNext (string1, lineSize,
-						   second, at3);
-		    istrstream(first, done3) >> temp1;
-		    istrstream(second, done2) >> temp2;
-		    temp2 *= 3.14159265/180.0; 
-		    temp3 = temp1 * cos(temp2);
-		    temp4 = temp1 * sin(temp2);
-		    vectCX(i20) = Complex(temp3, temp4);
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectCX);
-		else
-		    keyset.define (keyName, vectCX(0));
-	      }
-	      if (keyType == "DZ") {
-		if (nVals%2 != 0) {
-		    throw (AipsError ("DComplex keyword " + keyName +
-				      " in " + headerfile +
-				      " must have even number of values"));
-		}
-		nVals /= 2;
-		Vector<DComplex> vectCX(nVals); 
-		for (Int i20=0; i20<nVals; i20++) {
-		    done3 = readAsciiTableGetNext (string1, lineSize,
-						   first, at3);
-		    done2 = readAsciiTableGetNext (string1, lineSize,
-						   second, at3);
-		    istrstream(first, done3) >> temp1d;
-		    istrstream(second, done2) >> temp2d;
-		    temp2d *= 3.14159265/180.0; 
-		    temp3d = temp1d * cos(temp2d);
-		    temp4d = temp1d * sin(temp2d);
-		    vectCX(i20) = DComplex(temp3d, temp4d);
-		}
-		if (nVals > 1)
-		    keyset.define (keyName, vectCX);
-		else
-		    keyset.define (keyName, vectCX(0));
-	      }
-	    }
+	    TableColumn tabcol (tab, colnm);
+	    tabcol.rwKeywordSet() = keysets.subRecord (i);
 	}
-     
-	kFile.close();
     }
 
+// Now open the actual data file (if not the same as header file).
 
-// Now open the actual data file
-
-    ifstream iFile;
-    iFile.open(filein, ios::in);
-    if (! iFile) {
-        throw (AipsError ("Cannot open data file " + filein));
+    if (!oneFile) {
+        jFile.close();
+	jFile.open(filein, ios::in);
     }
 
     TableColumn* tabcol = new TableColumn[nrcol];
@@ -577,20 +566,16 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     }
     uInt rownr = 0;
 
-// Skip the header lines if headers and data are in the same file.
-
-    if (headerfile == filein) {
-        while (nrheader-- > 0) {
-	    if (!iFile.getline(string1, lineSize)) {
-	        throw (AipsError ("Error while skipping header lines in "
-				  + filein));
-	    }
-	}
-    }
-
 // OK, Now we have real data
-	
-    while(iFile.getline(string1, lineSize)) {
+// stringsav may contain the first data line.
+
+    Bool cont = True;
+    if (stringsav[0] == '\0') {
+        cont = jFile.getline(string1, lineSize);
+    } else {
+        strcpy (string1, stringsav);
+    }
+    while (cont) {
 	at1 = 0; 
 	tab.addRow();
 	for (Int i6=0; i6<nrcol; i6++) {
@@ -659,10 +644,11 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	    }
 	}
 	rownr++;
+        cont = jFile.getline(string1, lineSize);
     }
 
     delete [] tabcol;
-    iFile.close();
+    jFile.close();
     return formStr;
 }
 
