@@ -5951,3 +5951,4 @@
 16 346 src mv trial/implement/Functionals/NQWrapperData.h aips/implement/Functionals/NQWrapperData.h
 16 346 src mv trial/implement/Functionals/NQWrapperParam.h aips/implement/Functionals/NQWrapperParam.h
 16 346 src mv trial/implement/Functionals/NQFunctionWrapper.cc aips/implement/Functionals/NQFunctionWrapper.cc
+16 346 src mv trial/implement/Functionals/NQHyperPlane.cc aips/implement/Functionals/NQHyperPlane.cc
