@@ -2592,3 +2592,4 @@
 09 513 src mv doc/newsletters/jun98/newsjune.dir/newsjune.latex doc/newsletters/jun98/newsjune.latex
 09 515 src mv trial/implement/Measures/UVWMachine.h aips/implement/Measures/UVWMachine.h
 09 515 src mv trial/implement/Measures/UVWMachine.cc aips/implement/Measures/UVWMachine.cc
+09 515 src mv trial/implement/Measures/test/tUVWMachine.cc aips/implement/Measures/test/tUVWMachine.cc
