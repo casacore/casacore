@@ -30,53 +30,53 @@
 #include <aips/Arrays/ArrayError.h>
 
 Slicer::Slicer()
-: start_p (1,MimicSource),
+: asEnd_p (endIsLength),
+  start_p (1,MimicSource),
   end_p   (1,MimicSource),
   stride_p(1,1),
   len_p   (1,MimicSource),
-  asEnd_p (endIsLength),
   fixed_p (False)
 {}
 
 Slicer::Slicer (const IPosition& bl, const IPosition& tr, const IPosition& in,
 		LengthOrLast lol)
-: start_p (bl),
+: asEnd_p (lol),
+  start_p (bl),
   end_p   (tr),
   stride_p(in),
-  len_p   (tr),
-  asEnd_p (lol)
+  len_p   (tr)
 {
     fillEndLen();
 }
 
 Slicer::Slicer (const IPosition& bl, const IPosition& tr,
 		LengthOrLast lol)
-: start_p (bl),
+: asEnd_p (lol),
+  start_p (bl),
   end_p   (tr),
   stride_p(bl.nelements(), 1),
-  len_p   (tr),
-  asEnd_p (lol)
+  len_p   (tr)
 {
     fillEndLen();
 }
 
 Slicer::Slicer (const IPosition& bl)
-: start_p (bl),
-  len_p   (bl.nelements(), 1),
-  stride_p(bl.nelements(), 1),
+: asEnd_p (endIsLength),
+  start_p (bl),
   end_p   (bl),
-  asEnd_p (endIsLength)
+  stride_p(bl.nelements(), 1),
+  len_p   (bl.nelements(), 1)
 {
     fillFixed();
 }
 
 Slicer::Slicer (const Slice& x, const Slice& y, const Slice& z,
 		LengthOrLast lol)
-: start_p (3, MimicSource),
+: asEnd_p (lol),
+  start_p (3, MimicSource),
   end_p   (3, MimicSource),
   stride_p(3, 1),
-  len_p   (3, MimicSource),
-  asEnd_p (lol)
+  len_p   (3, MimicSource)
 {
     fillSlice (x, start_p(0), len_p(0), stride_p(0));
     fillSlice (y, start_p(1), len_p(1), stride_p(1));
@@ -86,11 +86,11 @@ Slicer::Slicer (const Slice& x, const Slice& y, const Slice& z,
 
 Slicer::Slicer (const Slice& x, const Slice& y,
 		LengthOrLast lol)
-: start_p (2, MimicSource),
+: asEnd_p (lol),
+  start_p (2, MimicSource),
   end_p   (2, MimicSource),
   stride_p(2, 1),
-  len_p   (2, MimicSource),
-  asEnd_p (lol)
+  len_p   (2, MimicSource)
 {
     fillSlice (x, start_p(0), len_p(0), stride_p(0));
     fillSlice (y, start_p(1), len_p(1), stride_p(1));
@@ -99,11 +99,11 @@ Slicer::Slicer (const Slice& x, const Slice& y,
 
 Slicer::Slicer (const Slice& x,
 		LengthOrLast lol)
-: start_p (1, MimicSource),
+: asEnd_p (lol),
+  start_p (1, MimicSource),
   end_p   (1, MimicSource),
   stride_p(1, 1),
-  len_p   (1, MimicSource),
-  asEnd_p (lol)
+  len_p   (1, MimicSource)
 {
     fillSlice (x, start_p(0), len_p(0), stride_p(0));
     fillEndLen();
@@ -111,11 +111,11 @@ Slicer::Slicer (const Slice& x,
 
 
 Slicer::Slicer (const Slicer& that)
-: start_p (that.start_p),
+: asEnd_p (that.asEnd_p),
+  start_p (that.start_p),
   end_p   (that.end_p),
   stride_p(that.stride_p),
   len_p   (that.len_p),
-  asEnd_p (that.asEnd_p),
   fixed_p (that.fixed_p)
 {}
 
@@ -129,11 +129,11 @@ Slicer& Slicer::operator= (const Slicer& that)
 	    stride_p.resize (nels);
 	    len_p.resize (nels);
 	}
+	asEnd_p  = that.asEnd_p;
 	start_p  = that.start_p;
 	end_p    = that.end_p;
 	stride_p = that.stride_p;
 	len_p    = that.len_p;
-	asEnd_p  = that.asEnd_p;
 	fixed_p  = that.fixed_p;
     }
     return *this;

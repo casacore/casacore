@@ -149,7 +149,7 @@ IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
     uInt i;
     IPosition keepAxes(size_p, 0);
     for (i=0; i<ignoreAxes.nelements(); i++) {
-	AlwaysAssert (ignoreAxes(i) < size_p, AipsError);
+	AlwaysAssert (ignoreAxes(i) < Int(size_p), AipsError);
 	keepAxes(ignoreAxes(i)) = 1;
     }
     // Now count all axes to keep.
@@ -916,7 +916,7 @@ Bool operator >= (Int val, const IPosition& right)
 ostream& operator<< (ostream& os, const IPosition& ip)
 {
     os << "[";
-    for (Int i=0; i<ip.nelements(); i++) {
+    for (uInt i=0; i<ip.nelements(); i++) {
 	if (i > 0) {
 	    os << ", ";
 	}
@@ -1067,7 +1067,7 @@ IPosition IPosition::makeAxisPath (uInt nrdim, const IPosition& partialPath)
     uInt i,j;
     for (i=0; i<partialPath.nelements(); i++) {
         path(i) = partialPath(i);
-        if (path(i) >= nrdim  ||  done(path(i)) != 0) {
+        if (path(i) >= Int(nrdim)  ||  done(path(i)) != 0) {
             throw (AipsError ("IPosition::makeAxisPath: invalid defined axes"));
         }
         done(path(i)) = 1;
