@@ -2,7 +2,7 @@
 # makefile.app: Generic AIPS++ applications makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999
+#   Copyright (C) 1992-1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -313,6 +313,11 @@ $(LIBICOND)/% : $(CODEDIR)/%
 	  cp $< $@
 	@ chmod 664 $@
 
+$(ARCHBIND)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 775 $@
+
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
    vpath %.cc $(CODEDIR)
@@ -413,7 +418,7 @@ allsys : $(BIN)
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
 
-bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBEXECS) $(LIBICONS) ;
+bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
 
 bindbg : $(TMPPCKGD) $(BINDBGD)/$(THISAPP) ;
 
@@ -431,11 +436,14 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 	-@ echo ""
 	 @ cd $@ && mkinst -q $<
 
-# Scripts.
+# Included scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;
 
-# Script icons.
+# Included icons.
 $(LIBICONS) : % : $(LIBICOND)/% ;
+
+# Executable scripts.
+$(BINEXECS) : % : $(ARCHBIND)/% ;
 
 # Programmer-oriented static and static pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
@@ -566,6 +574,7 @@ show_local :
 	-@ echo "AIPSIMPS=$(AIPSIMPS)"
 	-@ echo "LIBEXECS=$(LIBEXECS)"
 	-@ echo "LIBICONS=$(LIBICONS)"
+	-@ echo "BINEXECS=$(BINEXECS)"
 	-@ echo ""
 	-@ echo "AIPSINST=$(AIPSINST)"
 	-@ echo ""
