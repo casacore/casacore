@@ -64,6 +64,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/TiledStepper.h>
 #include <trial/Mathematics/AutoDiffIO.h>
+#include <trial/Tasking/ProgressMeter.h>
                
 #include <strstream.h>
 #include <iomanip.h>
@@ -360,13 +361,6 @@ Bool ImageMoments<T>::setRegion(const IPosition& blcU,
       os_p << LogIO::NORMAL << "Selected region : " << blc_p+1<< " to "
            << trc_p+1 << LogIO::POST;
    }
-
-// For now there is no region selection in TiledStepper
-   
-   blc_p = 0;   
-   trc_p = pInImage_p->shape() - 1;
-   inc_p = 1;   
-
 
    return True;
 }
@@ -862,9 +856,8 @@ Bool ImageMoments<T>::createMoments()
    TiledStepper navigator (pInImage_p->shape(), 
                            pInImage_p->niceCursorShape(pInImage_p->maxPixels()),
                            momentAxis_p);
-//   navigator.subSection(blc_p, trc_p);
-//   IPosition latticeShape = navigator.subLatticeShape();
-   IPosition latticeShape = navigator.latticeShape();
+   navigator.subSection(blc_p, trc_p);
+   IPosition latticeShape = navigator.subLatticeShape();
 
    RO_LatticeIterator<T> imageIterator(*pInImage_p, navigator);
 
@@ -1049,11 +1042,18 @@ Bool ImageMoments<T>::createMoments()
 
    const Double ks = 0.03;
 
+
+// Set up progress indicators
+
    Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
    Int percentInc = 20;
    Int percent = percentInc;
    Int inc = max(1, Int(Float(percentInc)/100.0*nProfiles));
    Int iProfile = 1;
+   ProgressMeter clock(0.0, Double(nProfiles), String("Compute Moments"), String(""),
+                       String(""), String(""), True, inc);
+   Double meterValue = 0.0;
+
 
    IPosition stride, sliceShape;
    if (pSmoothedImage) {
@@ -1067,12 +1067,14 @@ Bool ImageMoments<T>::createMoments()
 
 // Iterate through image and do all the wonderful things with each profile
 
+ 
+
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
-     if (iProfile%inc == 0) {
-         os_p << "Completed " << percent << "%" << LogIO::POST;
-         percent += percentInc;
-     }
+//     if (iProfile%inc == 0) {
+//         os_p << "Completed " << percent << "%" << LogIO::POST;
+//         percent += percentInc;
+//     }
 
 // Set pixel values of all axes (used for coordinate transformation)
 // to be start of cursor array.  The desired value for the moment axis 
@@ -1142,10 +1144,13 @@ Bool ImageMoments<T>::createMoments()
          (*(outPt[i]))(outPos) = calcMoments(selMom(i));
       }
 
-// Increment iterators
+// Increment iterators and progress meter
 
       imageIterator++;
-      iProfile++;
+      iProfile++;      
+
+      clock.update(meterValue);
+      meterValue += 1.0; 
    }
 
 // Delete memory
@@ -1169,6 +1174,10 @@ Bool ImageMoments<T>::createMoments()
    return True;
 
 }
+
+
+
+
 
 
 
