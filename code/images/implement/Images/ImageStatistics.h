@@ -334,12 +334,12 @@ private:
                            const uInt& n,
                            const Vector<T>& mask,
                            const uInt& iStart,
-                           const Bool& findGood);
+                           const Bool& findGood) const;
 
 // Find the next label in a list of comma delimitered labels
    Bool findNextLabel     (String& subLabel,
                            Int& iLab,
-                           String& label);
+                           String& label) const;
 
 // Create a new storage image
    Bool generateStorageImage (); 
@@ -349,7 +349,7 @@ private:
    void lineSegments (uInt& nSeg,
                       Vector<uInt>& start,
                       Vector<uInt>& nPts,
-                      const Vector<T>& mask);
+                      const Vector<T>& mask) const;
 
 // List the statistics
    Bool listStats         (const IPosition& dPos,
@@ -357,14 +357,14 @@ private:
 
 // Given a location in the storage image, convert those locations on the   
 // non-statistics axis (the last one) to account for the lattice subsectioning
-   IPosition locInImage (const IPosition& storagePosition);
+   IPosition locInImage (const IPosition& storagePosition) const;
  
 // Draw each Y-axis sublabel in a string with a different colour
    void multiColourYLabel (String& label,
                            PGPlotter& plotter,
                            const String& LRLoc,
                            const Vector<uInt>& colours,
-                           const Int& nLabs);
+                           const Int& nLabs) const;
 
 
 // Plot an array which may have some blanked points.
@@ -372,17 +372,17 @@ private:
    void multiPlot        (PGPlotter& plotter,
                           const Vector<T>& x,
                           const Vector<T>& y,
-                          const Vector<T>& n);
+                          const Vector<T>& n) const;
 
 // Find min and max of good data in arrays specified by pointers
    void minMax            (Bool& none,   
                            T& dMin,
                            T& dMax,
                            const Vector<T>& d,
-                           const Vector<T>& n);
+                           const Vector<T>& n) const;
 
 // Find the next nice PGPLOT colour index 
-   Int niceColour         (Bool& initColours); 
+   Int niceColour         (Bool& initColours) const; 
 
 // Convert pixel coordinate to world coordinate string
    void pix2World         (Vector<String>& sWorld,
@@ -417,13 +417,13 @@ private:
 
 // Find the shape of slice from the statistics image at one
 // spatial pixel
-   IPosition statsSliceShape (); 
+   IPosition statsSliceShape () const; 
 
 // See if there were some valid points found in the accumulation
    Bool someGoodPoints ();  
 
-// STretch min and max by 5%
-   void stretchMinMax (T& dMin, T& dMax);
+// Stretch min and max by 5%
+   void stretchMinMax (T& dMin, T& dMax) const;
 
 
 // Summarize the statistics found over the entire image
@@ -434,8 +434,7 @@ private:
 
 
 
-// <summary>
-// </summary>
+// <summary> Generate statistics, tile by tile, from a masked lattice </summary>
 //
 // <use visibility=export>
 //
@@ -444,28 +443,68 @@ private:
 //
 // <prerequisite>
 //   <li> <linkto class=LatticeApply>LatticeApply</linkto>
+//   <li> <linkto class=TiledCollapser>TiledCollapser</linkto>
 // </prerequisite>
 //
 // <etymology>
+// This class is used by <src>ImageStatistics</src> to generate
+// statistical sum from an input <src>MaskedLattice</src>.
+// The input lattice is iterated through in tile-sized chunks
+// and fed to an object of this class.
 // </etymology>
 //
 // <synopsis>
+// <src>StatsTiledCollapser</src> is derived from <src>TiledCollapser</src> which
+// is a base class used to define methods.  Objects of this base class are
+// used by <src>LatticeApply</src> functions.  In this particular case,
+// we are interested in <src>LatticeApply::tiledApply</src>.  This  function iterates
+// through a <src>MaskedLattice</src> and allows you to collapse one or more
+// axes, computing some values from it, and placing those values into
+// an output <src>MaskedLattice</src>.  It iterates through the input
+// lattice in optimal tile-sized chunks.    <src>ImageStatistics</src> 
+// uses a <src>StatsTiledCollapser</src> object which it gives to 
+// <src>LatticeApply::tiledApply</src> for digestion.  After it has
+// done its work, <src>ImageStatistics</src> then accesses the output
+// <src>Lattice</src> that it made.
 // </synopsis>
 //
 // <example>
 // <srcblock>
+//// Create collapser. Control information is passed in via the constructor
+//
+//   StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,   
+//                                    fixedMinMax_p, blcParent_p);
+// 
+//// This is the first output axis getting  collapsed values. In ImageStatistics
+//// this is the last axis of the output lattice
+// 
+//   Int newOutAxis = outLattice.ndim()-1;
+//
+//// tiledApply does the work by passing the collapser data in chunks
+//// and by writing the results into the output lattice 
+//
+//   LatticeApply<T>::tiledApply(outLattice, inLattice,
+//                               collapser, collapseAxes,
+//                               newOutAxis);
+//
 // </srcblock>
+// In this example, a collapser is made and passed to LatticeApply.
+// Afterwards, the output Lattice is available for use.
+// The Lattices must all be the correct shapes on input to tiledApply
 // </example>
 //
 // <motivation>
+// The LatticeApply classes enable the ugly details of optimal
+// Lattice iteration to be hidden from the user.
 // </motivation>
 //
-// <todo asof="1997/08/01">   
+// <todo asof="1998/05/10">   
 //   <li> 
 // </todo>
 
 template <class T>
-class ImageStatsTiledCollapser : public TiledCollapser<T>, ImageStatsBase
+class StatsTiledCollapser : public TiledCollapser<T>
+
 {
 
 public:
@@ -474,11 +513,11 @@ public:
 // and an inclusion range is given, the min and max is set to
 // that inclusion range.  It also takes the location of the start 
 // of the SubImage in the parent image
-    ImageStatsTiledCollapser(const Vector<T>& pixelRange, 
-                             Bool noInclude, 
-                             Bool noExclude,
-                             Bool fixedMinMax,
-                             const IPosition& blcParent);
+    StatsTiledCollapser(const Vector<T>& pixelRange, 
+                        Bool noInclude, 
+                        Bool noExclude,
+                        Bool fixedMinMax,
+                        const IPosition& blcParent);
 
 // Initialize process, making some checks
     virtual void init (uInt nOutPixelsPerCollapse);
@@ -514,6 +553,9 @@ private:
     Bool noInclude_p, noExclude_p, fixedMinMax_p;
     IPosition minPos_p, maxPos_p, blcParent_p;
 
+// Accumulators for sum, sum squared, number of points
+// minimum, and maximum
+
     Block<NumericTraits<T>::PrecisionType>* pSum_p;
     Block<NumericTraits<T>::PrecisionType>* pSumSq_p;
     Block<uInt>* pNPts_p;
@@ -543,7 +585,7 @@ private:
    sumSq += NumericTraits<T>::PrecisionType(datum*datum);
 
 // If fixedMinMax, then the min and max will always
-// be given by the inclusion range the user specified.
+// be given by the inclusion range that the user specified.
 // This will be set outside of here.  We have no
 // more work to do if so.
 
@@ -572,33 +614,33 @@ private:
 };
 
 
-
-// <summary> Provides a progress meter for the ImageStatistics class </summary>
+// <summary> Provides a progress meter for the <src>ImageStatistics</src> class </summary>
 // <use visibility=export>
-// 
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-// 
+//
 // <prerequisite>
-//   <li> <linkto module=Lattices>LatticeProgress</linkto> 
+//   <li> <linkto module=Lattices>LatticeProgress</linkto>
 // </prerequisite>
 //
 // <etymology>
-// Display a progress meter for the ImageStatistics class
+// Display a progress meter for the class  <src>ImageStatistics</src>
 // </etymology>
 //
 // <synopsis>
-//   Progress meters can be displayed by the LatticeApply class 
-//   which is used by ImageStatistics in order to optimally iterate
-//   through the image.  To do this,  one must derive a 
-//   class from LatticeProgress. LatticeApply calls methods declared 
-//   in LatticeProgress and  implemented in the derived class.
+//   Progress meters can be displayed by the <src>LatticeApply</src> class
+//   which is used by <src>ImageStatistics</src> in order to optimally iterate
+//   through the image.  To do this,  one must derive a
+//   class from <src>LatticeProgress</src>. <src>LatticeApply</src> calls 
+//   methods declared in <src>LatticeProgress</src> and  implemented in 
+//   the derived class.
 // </synopsis>
-//
+// 
 // <motivation>
 //  I like progress meters !
 // </motivation>
-//
+// 
 // <todo asof="1998/01/10">
 // </todo>
  
