@@ -566,7 +566,6 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
     celprm_p->flag  = 0;
     celprm_p->ref[0] = tmp(0);
     celprm_p->ref[1] = tmp(1);
-
     String name = Projection::name(projection().type());
     const char *nameptr = name.chars();
     int errnum = celset(nameptr, celprm_p, prjprm_p);
@@ -574,6 +573,7 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
     if (!ok) {
        String errmsg = "wcs celset_error: ";
        errmsg += celset_errmsg[errnum];
+       set_error(errmsg);
     }
 //
 // Fill in the silly wcs private members I have to cart about
