@@ -76,7 +76,7 @@ template <class T> class ImageInterface;
 //      grid them onto an Image
 // <li> Functions to save the components to a table and read them back 
 //      again
-// <\ul>
+// </ul>
 
 
 //#! What does the class do?  How?  For whom?  This should include code
