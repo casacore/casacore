@@ -865,7 +865,7 @@ Stokes::StokesTypes CoordinateUtil::findSingleStokes (LogIO& os, const Coordinat
 // 
 // Find out what Stokes the specified pixel belongs to.  
 // 
-      if (!stokesCoordinate.toWorld(stokes, pixel)) {
+      if (!stokesCoordinate.toWorld(stokes, Int(pixel))) {
          os << "StokesCoordinate conversion failed because "
             << stokesCoordinate.errorMessage() << LogIO::EXCEPTION;
       }
