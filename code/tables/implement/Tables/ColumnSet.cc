@@ -164,6 +164,7 @@ void ColumnSet::resync (uInt nrrow)
 	for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	    if (dataManChanged_p[i]  ||  nrrow != nrrow_p) {
 		BLOCKDATAMANVAL(i)->resync (nrrow);
+		dataManChanged_p[i] = False;
 	    }
 	}
 	nrrow_p = nrrow;
@@ -463,8 +464,12 @@ void ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 			 const String& tableName, Bool fsync)
 {
     //# Only write the table data when the flag is set.
+    uInt nrold = dataManChanged_p.nelements();
     dataManChanged_p.resize (blockDataMan_p.nelements());
     uInt i;
+    for (i=nrold; i<dataManChanged_p.nelements(); i++) {
+        dataManChanged_p[i] = False;
+    }
     if (writeTable) {
 	//# The first version of ColumnSet did not put a version.
 	//# Therefore a negative number is put as the version
@@ -493,10 +498,14 @@ void ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	}
     }
     //# Now write out the data in all data managers.
+    //# The changed flag has to be or-ed, because only after an unlock
+    //# they should be cleared. Actually they are cleared when getting
+    //# a lock (by ColumnSet::resync).
     MemoryIO memio;
     AipsIO aio(&memio);
     for (i=0; i<blockDataMan_p.nelements(); i++) {
-	dataManChanged_p[i] = BLOCKDATAMANVAL(i)->flush (aio, fsync);
+	Bool changed = BLOCKDATAMANVAL(i)->flush (aio, fsync);
+	dataManChanged_p[i] = dataManChanged_p[i] || changed;
 	if (writeTable) {
 	    ios.put (uInt(memio.length()), memio.getBuffer());
 	}
