@@ -25,20 +25,109 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NewMSHISTORYCOLUMNS_H)
-#define AIPS_NewMSHISTORYCOLUMNS_H
+#if !defined(AIPS_NEWMSHISTORYCOLUMNS_H)
+#define AIPS_NEWMSHISTORYCOLUMNS_H
 
-#include <aips/MeasurementSets/NewMSHistory.h>
+#include <aips/aips.h>
+#include <aips/Measures/MEpoch.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
-#include <aips/Quanta/Unit.h>
-#include <aips/Quanta/Quantum.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
-class MEpoch;
+#include <aips/Utilities/String.h>
+
+class NewMSHistory;
+// <summary>
+// A class to provide easy read-only access to NewMSHistory columns
+// </summary>
+
+// <use visibility=export>
+
+// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> NewMSHistory
+//   <li> ArrayColumn
+//   <li> ScalarColumn
+// </prerequisite>
+//
+// <etymology>
+// RONewMSHistoryColumns stands for Read-Only NewMeasurementSet History Table columns.
+// </etymology>
+//
+// <synopsis>
+// This class provides read-only access to the columns in the NewMSHistory
+// Table.  It does the declaration of all the Scalar and ArrayColumns with the
+// correct types, so the application programmer doesn't have to worry about
+// getting those right. There is an access function for every predefined
+// column. Access to non-predefined columns will still have to be done with
+// explicit declarations.  See <linkto class=RONewMSColumns>
+// RONewMSColumns</linkto> for an example.
+// </synopsis>
+//
+// <motivation>
+// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
+// </motivation>
+
+class RONewMSHistoryColumns
+{
+public:
+  // Create a columns object that accesses the data in the specified Table
+  RONewMSHistoryColumns(const NewMSHistory& msHistory);
+
+  // The destructor does nothing special
+  ~RONewMSHistoryColumns();
+
+  // Access to required columns
+  // <group>
+  const ROScalarColumn<String>& application() const {return application_p;}
+  const ROArrayColumn<String>& appParams() const {return appParams_p;}
+  const ROArrayColumn<String>& cliCommand() const {return cliCommand_p;}
+  const ROScalarColumn<String>& message() const {return message_p;}
+  const ROScalarColumn<Int>& objectId() const {return objectId_p;}
+  const ROScalarColumn<Int>& observationId() const {return observationId_p;}
+  const ROScalarColumn<String>& origin() const {return origin_p;}
+  const ROScalarColumn<String>& priority() const {return priority_p;}
+  const ROScalarColumn<Double>& time() const {return time_p;}
+  const ROScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ROScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
+  // </group>
+
+protected:
+  //# default constructor creates a object that is not usable. Use the attach
+  //# function correct this.
+  RONewMSHistoryColumns();
+
+  //# attach this object to the supplied table.
+  void attach(const NewMSHistory& msHistory);
+
+private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSHistoryColumns(const RONewMSHistoryColumns&);
+  RONewMSHistoryColumns& operator=(const RONewMSHistoryColumns&);
+
+  //# required columns
+  ROScalarColumn<String> application_p;
+  ROArrayColumn<String> appParams_p;
+  ROArrayColumn<String> cliCommand_p;
+  ROScalarColumn<String> message_p;
+  ROScalarColumn<Int> objectId_p;
+  ROScalarColumn<Int> observationId_p;
+  ROScalarColumn<String> origin_p;
+  ROScalarColumn<String> priority_p;
+  ROScalarColumn<Double> time_p;
+
+  //# Access to Measure columns
+  ROScalarMeasColumn<MEpoch> timeMeas_p;
+
+  //# Access to Quantum columns
+  ROScalarQuantColumn<Double> timeQuant_p;
+};
 
 // <summary>
-// A convenience class to provide easy access to NewMSHistory columns
+// A class to provide easy read-write access to NewMSHistory columns
 // </summary>
 
 // <use visibility=export>
@@ -70,15 +159,17 @@ class MEpoch;
 // See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
 // </motivation>
 
-class NewMSHistoryColumns
+class NewMSHistoryColumns: public RONewMSHistoryColumns
 {
 public:
-
+  // Create a columns object that accesses the data in the specified Table
   NewMSHistoryColumns(NewMSHistory& msHistory);
 
+  // The destructor does nothing special
   ~NewMSHistoryColumns();
 
-  // Access to columns
+  // Read-write access to required columns
+  // <group>
   ScalarColumn<String>& application() {return application_p;}
   ArrayColumn<String>& appParams() {return appParams_p;}
   ArrayColumn<String>& cliCommand() {return cliCommand_p;}
@@ -88,15 +179,51 @@ public:
   ScalarColumn<String>& origin() {return origin_p;}
   ScalarColumn<String>& priority() {return priority_p;}
   ScalarColumn<Double>& time() {return time_p;}
+  ScalarQuantColumn<Double>& timeQuant() {return timeQuant_p;}
+  ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
+  // </group>
 
-  // Access to Measure columns
-  ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
+  // Read-only access to required columns
+  // <group>
+  const ROScalarColumn<String>& application() const {
+    return RONewMSHistoryColumns::application();}
+  const ROArrayColumn<String>& appParams() const {
+    return RONewMSHistoryColumns::appParams();}
+  const ROArrayColumn<String>& cliCommand() const {
+    return RONewMSHistoryColumns::cliCommand();}
+  const ROScalarColumn<String>& message() const {
+    return RONewMSHistoryColumns::message();}
+  const ROScalarColumn<Int>& objectId() const {
+    return RONewMSHistoryColumns::objectId();}
+  const ROScalarColumn<Int>& observationId() const {
+    return RONewMSHistoryColumns::observationId();}
+  const ROScalarColumn<String>& origin() const {
+    return RONewMSHistoryColumns::origin();}
+  const ROScalarColumn<String>& priority() const {
+    return RONewMSHistoryColumns::priority();}
+  const ROScalarColumn<Double>& time() const {
+    return RONewMSHistoryColumns::time();}
+  const ROScalarQuantColumn<Double>& timeQuant() const {
+    return RONewMSHistoryColumns::timeQuant();}
+  const ROScalarMeasColumn<MEpoch>& timeMeas() const {
+    return RONewMSHistoryColumns::timeMeas();}
+  // </group>
 
-  // Access to Quantum columns
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
+protected:
+  //# default constructor creates a object that is not usable. Use the attach
+  //# function correct this.
+  NewMSHistoryColumns();
+
+  //# attach this object to the supplied table.
+  void attach(NewMSHistory& msHistory);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSHistoryColumns(const NewMSHistoryColumns&);
+  NewMSHistoryColumns& operator=(const NewMSHistoryColumns&);
 
+  //# required columns
   ScalarColumn<String> application_p;
   ArrayColumn<String> appParams_p;
   ArrayColumn<String> cliCommand_p;
@@ -107,89 +234,10 @@ private:
   ScalarColumn<String> priority_p;
   ScalarColumn<Double> time_p;
 
-  // Access to Measure columns
+  //# Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
-  // Access to Quantum columns
+  //# Access to Quantum columns
   ScalarQuantColumn<Double> timeQuant_p;
-
 };
-
-// <summary>
-// A convenience class to provide easy access to NewMSHistory columns
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="Bob Garwood" date="1997/02/01" tests="" demos="">
-// </reviewed>
-
-// <prerequisite>
-//   <li> NewMSHistory
-//   <li> ArrayColumn
-//   <li> ScalarColumn
-// </prerequisite>
-//
-// <etymology>
-// RONewMSHistoryColumns stands for Read-Only NewMeasurementSet History Table columns.
-// </etymology>
-//
-// <synopsis>
-// This class provides read-only access to the columns in the NewMSHistory Table.
-// It does the declaration of all the Scalar and ArrayColumns with the
-// correct types, so the application programmer doesn't have to
-// worry about getting those right. There is an access function
-// for every predefined column. Access to non-predefined columns will still
-// have to be done with explicit declarations.
-// See <linkto class=RONewMSColumns> RONewMSColumns</linkto> for an example.
-// </synopsis>
-//
-// <motivation>
-// See <linkto class=NewMSColumns> NewMSColumns</linkto> for the motivation.
-// </motivation>
-
-class RONewMSHistoryColumns
-{
-public:
-
-  RONewMSHistoryColumns(const NewMSHistory& msHistory);
-
-  ~RONewMSHistoryColumns();
-
-  // Access to columns
-  const ROScalarColumn<String>& application() const {return application_p;}
-  const ROArrayColumn<String>& appParams() const {return appParams_p;}
-  const ROArrayColumn<String>& cliCommand() const {return cliCommand_p;}
-  const ROScalarColumn<String>& message() const {return message_p;}
-  const ROScalarColumn<Int>& objectId() const {return objectId_p;}
-  const ROScalarColumn<Int>& observationId() const {return observationId_p;}
-  const ROScalarColumn<String>& origin() const {return origin_p;}
-  const ROScalarColumn<String>& priority() const {return priority_p;}
-  const ROScalarColumn<Double>& time() const {return time_p;}
-
-  // Access to Measure columns
-  const ROScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
-
-  // Access to Quantum columns
-  const ROScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
-
-private:
-
-  ROScalarColumn<String> application_p;
-  ROArrayColumn<String> appParams_p;
-  ROArrayColumn<String> cliCommand_p;
-  ROScalarColumn<String> message_p;
-  ROScalarColumn<Int> objectId_p;
-  ROScalarColumn<Int> observationId_p;
-  ROScalarColumn<String> origin_p;
-  ROScalarColumn<String> priority_p;
-  ROScalarColumn<Double> time_p;
-
-  // Access to Measure columns
-  ROScalarMeasColumn<MEpoch> timeMeas_p;
-
-  // Access to Quantum columns
-  ROScalarQuantColumn<Double> timeQuant_p;
-};
-
 #endif
