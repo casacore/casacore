@@ -39,17 +39,18 @@ int main(int argc, char **argv)
 {
   try {
     cout << "before ms constructor called " << endl;
-    const String msName = "3C273XC1_tmp.ms";
+    const String msName = "3C273XC1.ms";
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msSpwGramParseCommand(ms, "'2'")==0) {
-      const TableExprNode *node = &msSpwGramParseNode();
+    if(msSpwGramParseCommand(ms, "[0]")==0) {
+      const TableExprNode *node = &(msSpwGramParseNode());
       cout << "TableExprNode has rows = " << node->nrow() << endl;
-      Table tablesel(ms.tableName(), Table::Update);
+      Table tablesel(ms.tableName(), Table::New);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
       cout << "After mssel constructor called " << endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+      cout << " new name " <<  mssel->tableName() << endl;
       mssel->flush();
       if(mssel->nrow()==0) {
         cout << "Check your input, No data selected" << endl;
