@@ -31,6 +31,7 @@
 #include <aips/Arrays/Matrix.h>
 
 #include <aips/Containers/Record.h>
+#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
@@ -246,6 +247,49 @@ Bool StokesCoordinate::setReferenceValue(const Vector<Double> &refval)
     crval_p = refval(0);
     return True;
 }
+
+
+Bool StokesCoordinate::near(const Coordinate* pOther,
+                            Double tol) const
+{
+   Vector<Int> excludeAxes;
+   return near(pOther, excludeAxes, tol);
+}
+
+Bool StokesCoordinate::near(const Coordinate* pOther,
+                            const Vector<Int>& excludeAxes,
+                            Double tol) const
+{
+   if (pOther->type() != this->type()) return False;
+
+   StokesCoordinate* sCoord = (StokesCoordinate*)pOther;
+
+// Check name and units
+
+   if (name_p != sCoord->name_p) return False;
+   if (unit_p != sCoord->unit_p) return False;
+
+
+// Number of pixel and world axes is the same for a StokesCoordinate
+// and it always 1.   SO if excludeAxes contains "0" we are done.
+// Add an assertion check should this change 
+ 
+   AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
+   AlwaysAssert(nPixelAxes()==1, AipsError);
+   if (ImageUtilities::inVector(0,excludeAxes) >= 0) return True;
+
+
+// The only other thing that really matters in the STokesCoordinate
+// is the values along the axis.    Nothing else (e.g. crval_p etc)
+// is ever actually used.
+
+   for (Int i=0; i<values_p.nelements(); i++) {
+      if (!::near(values_p[i],sCoord->values_p[i],tol)) return False;
+   }
+ 
+   return True;
+}
+
 
 Bool StokesCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const

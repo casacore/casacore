@@ -29,6 +29,8 @@
 #include <trial/Coordinates/LinearXform.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Mathematics/Math.h>
+#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
 #include <wcslib/lin.h>
 #include <stdlib.h>
@@ -121,7 +123,7 @@ LinearXform::LinearXform(uInt naxis)
 }
 
 LinearXform::LinearXform(const Vector<Double> &crpix,
-				     const Vector<Double> &cdelt)
+                         const Vector<Double> &cdelt)
   : linprm_p(make_linprm(crpix.nelements()))
 {
     AlwaysAssert(linprm_p, AipsError);
@@ -134,8 +136,8 @@ LinearXform::LinearXform(const Vector<Double> &crpix,
 }
 
 LinearXform::LinearXform(const Vector<Double> &crpix,
-				     const Vector<Double> &cdelt,
-				     const Matrix<Double> &pc)
+                         const Vector<Double> &cdelt,
+			 const Matrix<Double> &pc)
   : linprm_p(make_linprm(crpix.nelements()))
 {
     AlwaysAssert(linprm_p, AipsError);
@@ -277,3 +279,75 @@ void LinearXform::pc(const Matrix<Double> &newvals)
 		 newvals.ncolumn() == newvals.nrow(), AipsError);
     *this = LinearXform(crpix(), cdelt(), newvals);
 }
+
+Bool LinearXform::near(const LinearXform& other,
+                       Double tol) const
+{
+   Vector<Int> excludeAxes;
+   return near(other, excludeAxes, tol);
+}
+
+
+Bool LinearXform::near(const LinearXform& other,
+                       const Vector<Int>& excludeAxes,
+                       Double tol) const
+{
+
+// Number of pixel and world axes is the same for a LinearXform
+
+   Vector<Bool> exclude(nWorldAxes());
+   exclude = False;
+   Int j = 0;
+   for (Int i=0; i<nWorldAxes(); i++) {
+      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
+   }
+
+
+// Compare reference pixels and increments
+
+   Vector<Double> d1 = this->crpix();
+   Vector<Double> d2 = other.crpix();
+   if (d1.nelements() != d2.nelements()) return False;
+   for (i=0; i<d1.nelements(); i++) {
+      if (!exclude(i)) {
+         if (!::near(d1(i),d2(i),tol)) return False;
+      }
+   }
+ 
+   d1 = this->cdelt();
+   d2 = other.cdelt();
+   if (d1.nelements() != d2.nelements()) return False;
+   for (i=0; i<d1.nelements(); i++) {
+      if (!exclude(i)) {
+         if (!::near(d1(i),d2(i),tol)) return False;
+      }
+   }
+
+// Check the matrix
+                                           
+   Matrix<Double> pc1 = this->pc();
+   Matrix<Double> pc2 = other.pc();
+   if (pc1.nrow()    != pc2.nrow())    return False;
+   if (pc1.ncolumn() != pc2.ncolumn()) return False;
+
+// Compare row by row.  An axis will turn up in the PC
+// matrix in any row or column with that number. E.g.,
+// values pertaining to axis "i" will be found in all 
+// entries of row "i" and all entries of column "i"
+
+   for (j=0; j<pc1.nrow(); j++) {
+      Vector<Double> r1 = pc1.row(j);
+      Vector<Double> r2 = pc2.row(j);
+      if (!exclude(j)) {
+         for (i=0; i<r1.nelements(); i++) {
+            if (!exclude(i)) {
+               if (!::near(r1(i),r2(i),tol)) return False;
+            }
+         }
+      }
+   }
+ 
+   return True;
+}
+
+

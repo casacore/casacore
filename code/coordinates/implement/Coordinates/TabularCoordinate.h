@@ -148,6 +148,15 @@ public:
     Vector<Double> worldValues() const;
     // </group>
 
+    // Comparison function. Any private Double data members are compared
+    // with the specified fractional tolerance.  
+    // <group>
+    virtual Bool near(const Coordinate* pOther, 
+                      Double tol=1e-6) const;
+    virtual Bool near(const Coordinate* pOther, 
+                      const Vector<Int>& excludeAxes,
+                      Double tol=1e-6) const;
+
     // Save ourself into the supplied record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,

@@ -139,10 +139,10 @@ public:
     Projection(Type which, const Vector<Double> &parameters);
 
     // Overwrite this projection with other (copy semantics).
-    // <gorup>
+    // <group>
     Projection(const Projection &other);
     Projection &operator=(const Projection &other);
-    // </gorup>
+    // </group>
 
     ~Projection();
 
@@ -164,6 +164,10 @@ public:
     static uInt nParameters(Type proj);
     const Vector<Double> &parameters() const;
     // </group>
+
+    // Comparison to fractional tolerance. 
+    Bool near(const Projection &other, Double Tol) const;
+
 private:
     Type which_p;
     Vector<Double> parameters_p;

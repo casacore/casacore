@@ -35,6 +35,7 @@
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
@@ -221,6 +222,35 @@ Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
     restfreq_p = newFrequency;
     return True;
 }
+
+
+
+Bool SpectralCoordinate::near(const Coordinate* pOther,
+                              Double tol) const
+{
+   Vector<Int> excludeAxes;
+   return near(pOther, excludeAxes, tol);
+}
+
+
+Bool SpectralCoordinate::near(const Coordinate* pOther,
+                              const Vector<Int>& excludeAxes,
+                              Double tol) const
+{
+   if (this->type() != pOther->type()) return False;
+
+   SpectralCoordinate* sCoord = (SpectralCoordinate*)pOther;   
+ 
+   if (type_p != sCoord->frequencySystem()) return False;
+   if (!::near(restfreq_p,sCoord->restFrequency(),tol)) return False;
+
+   TabularCoordinate* tmp = &(sCoord->worker_p);
+   return worker_p.near(tmp,excludeAxes,tol);
+
+   return True;  
+}
+
+
 
 Bool SpectralCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const

@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# <LinearCoordinate.h>: this defines LinearCoordinate
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,6 +30,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
+#include <aips/Mathematics/Math.h>
+#include <trial/Images/ImageUtilities.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
   : transform_p(naxis), crval_p(naxis), names_p(naxis), units_p(naxis)
@@ -84,6 +86,8 @@ LinearCoordinate::~LinearCoordinate()
 {
     // Nothing
 }
+
+
 
 Coordinate::Type LinearCoordinate::type() const
 {
@@ -322,6 +326,71 @@ Bool LinearCoordinate::setReferenceValue(const Vector<Double> &refval)
 
     return ok;
 }
+
+
+Bool LinearCoordinate::near(const Coordinate* pOther,
+                            Double tol) const
+{
+   Vector<Int> excludeAxes;
+   return near(pOther, excludeAxes, tol);
+}
+
+
+Bool LinearCoordinate::near(const Coordinate* pOther,
+                            const Vector<Int>& excludeAxes,
+                            Double tol) const
+{
+   if (pOther->type() != this->type()) return False;
+
+   LinearCoordinate* lCoord = (LinearCoordinate*)pOther;
+
+
+// Check descriptor vector lengths
+
+   if (names_p.nelements() != lCoord->names_p.nelements()) return False;
+   if (units_p.nelements() != lCoord->units_p.nelements()) return False;
+   if (crval_p.nelements() != lCoord->crval_p.nelements()) return False;
+
+
+// Number of pixel and world axes is the same for a LinearCoordinate
+// Add an assertion check should this change.  Other code in LC has 
+// checked that all the vectors we are comparing have the same 
+// length as nPixelAxes()
+
+   AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
+   Vector<Bool> exclude(nPixelAxes());
+   exclude = False;
+   Int j = 0;
+   for (Int i=0; i<nPixelAxes(); i++) {
+      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
+   }
+
+// Check the descriptors
+
+   for (i=0; i<names_p.nelements(); i++) {
+      if (!exclude(i)) {
+         if (names_p(i) != lCoord->names_p(i)) return False;
+      }
+   }
+   for (i=0; i<units_p.nelements(); i++) {
+      if (!exclude(i)) {
+         if (units_p(i) != lCoord->units_p(i)) return False;
+      }
+   }
+   for (i=0; i<crval_p.nelements(); i++) {
+      if (!exclude(i)) {
+         if (!::near(crval_p[i],lCoord->crval_p[i],tol)) return False;
+      }
+   }
+
+
+// Check the linear transform
+
+   if (!transform_p.near(lCoord->transform_p,excludeAxes,tol)) return False;
+
+   return True;
+}
+
 
 Bool LinearCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const

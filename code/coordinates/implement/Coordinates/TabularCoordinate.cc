@@ -35,7 +35,9 @@
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
+#include <aips/Mathematics/Math.h>
 #include <trial/FITS/FITSUtil.h>
+#include <trial/Images/ImageUtilities.h>
 
 #if defined(__GNUG__)
 typedef Interpolate1D<Double,Double> gpp_bug;
@@ -333,6 +335,70 @@ Vector<Double> TabularCoordinate::worldValues() const
     return tmp;
 }
 
+
+
+Bool TabularCoordinate::near(const Coordinate* pOther,
+                             Double tol) const
+
+{
+   Vector <Int> excludeAxes;
+   return near(pOther, excludeAxes, tol);
+}
+
+
+Bool TabularCoordinate::near(const Coordinate* pOther,
+                             const Vector<Int>& excludeAxes,
+                             Double tol) const
+
+{
+   if (pOther->type() != this->type()) return False;
+
+// The TabularCoordinate has only one axis (pixel and world).
+// Therefore, if excludeAxes contains "0", we are done.
+// Add an assertion failure check should this ever change
+
+   AlwaysAssert(nPixelAxes() == 1, AipsError);
+   AlwaysAssert(nWorldAxes() == 1, AipsError);
+   if (ImageUtilities::inVector(0,excludeAxes) >= 0) return True;
+   
+// Check units and name
+
+   if (unit_p != pOther->worldAxisUnits()(0)) return False;
+   if (name_p != pOther->worldAxisNames()(0)) return False;
+
+// Private data crval_p, cdelt_p, crpix_p, matrix_p are formed
+// from the Table values so in principle there is no need to
+// check them.  However, if they differ, that might be faster
+// than working through the table so check them anyway.
+
+   TabularCoordinate* tCoord = (TabularCoordinate*)pOther;
+   if (!::near(crval_p,tCoord->crval_p,tol)) return False;
+   if (!::near(crpix_p,tCoord->crpix_p,tol)) return False;
+   if (!::near(cdelt_p,tCoord->cdelt_p,tol)) return False;
+   if (!::near(matrix_p,tCoord->matrix_p,tol)) return False;
+
+
+
+// Check the table 
+
+   Vector<Double> data1 =   this->pixelValues();
+   Vector<Double> data2 = tCoord->pixelValues();
+   if (data1.nelements() != data2.nelements()) return False;
+   for (Int i=0; i<data1.nelements(); i++) {
+      if (!::near(data1(i),data2(i),tol)) return False;
+   }
+   data1 =   this->worldValues();
+   data2 = tCoord->worldValues();
+   if (data1.nelements() != data2.nelements()) return False;
+   for (i=0; i<data1.nelements(); i++) {
+      if (!::near(data1(i),data2(i),tol)) return False;
+   }
+
+   return True;
+}
+
+
+
 Bool TabularCoordinate::save(RecordInterface &container,
 			     const String &fieldName) const
 {
@@ -427,3 +493,5 @@ Coordinate *TabularCoordinate::clone() const
 {
     return new TabularCoordinate(*this);
 }
+
+

@@ -133,6 +133,17 @@ public:
     void pc(const Matrix<Double> &newvals);
     // </group>
 
+    // Comparison function. Any private Double data members are compared
+    // with the specified fractional tolerance.  
+    // <group>
+    Bool near(const LinearXform& other,
+              Double tol=1e-6) const;
+    Bool near(const LinearXform& other,
+              const Vector<Int>& excludeAxes,
+              Double tol=1e-6) const;
+    // </group>
+
+
 private:
     // A WCSLIB C-structure.
     linprm *linprm_p;

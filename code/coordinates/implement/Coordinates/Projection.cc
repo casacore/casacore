@@ -58,6 +58,7 @@ Projection &Projection::operator=(const Projection &other)
     return *this;
 }
 
+
 Projection::~Projection()
 {
     // Nothing
@@ -193,6 +194,19 @@ uInt Projection::nParameters(Projection::Type proj)
     }
     return 0; // NOTREACHED
 }
+
+Bool Projection::near(const Projection &other, Double tol) const
+{
+   if (which_p != other.which_p) return False;
+   if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
+   
+   for (Int i=0; i<parameters_p.nelements(); i++) {
+     if (!::near(parameters_p(i),other.parameters_p(i),tol)) return False;
+   }
+   
+   return True;
+}
+
 
 void Projection::validate()
 {
