@@ -1987,3 +1987,4 @@
 08 163 src mv trial/implement/Lattices/test/dPagedArray.cc trial/implement/Lattices/test/dPagedArrayOld.cc
 08 163 src mv trial/implement/Lattices/test/dPagedArray1.cc trial/implement/Lattices/test/dPagedArray.cc
 08 163 src mv trial/implement/Lattices/test/tPagedArray.cc trial/implement/Lattices/test/tPagedArrayOld.cc
+08 163 src mv trial/implement/Lattices/test/tPagedArray1.cc trial/implement/Lattices/test/tPagedArray.cc
