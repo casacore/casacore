@@ -63,7 +63,13 @@ class HostMachineInfo;
 // <example>
 // <srcblock>
 // cout << "I am process #" << HostInfo::processID() << " running on host " <<
-//         HostInfo::hostName() << endl;
+//         HostInfo::hostName() << ", which has " << HostInfor::numCPUs( ) << " CPUs." << endl;
+// cout << "This host has " << HostInfo::memoryTotal( ) << "K of memory [ " <<
+//         HostInfo::memoryUsed( ) << " used, " <<
+//         HostInfo::memoryFree( ) << " free ]." << endl;
+// cout << "This host has " << HostInfo::swapTotal( ) << "K of swap space [ " <<
+//         HostInfo::swapUsed( ) << " used, " <<
+//         HostInfo::swapFree( ) << " free ]." << endl;
 // Double now = HostInfo::secondsFrom1970();
 // doSomething();
 // cout << "Function doSomething() took " << 
