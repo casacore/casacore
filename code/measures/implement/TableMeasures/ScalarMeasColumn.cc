@@ -199,7 +199,7 @@ M ROScalarMeasColumn<M>::convert (uInt rownr, uInt refCode) const
 {
   M tmp;
   get (rownr, tmp);
-  return typename M::Convert(tmp, refCode)();
+  return typename M::Convert(tmp, typename M::Types(refCode))();
 }
 
 template<class M> 
