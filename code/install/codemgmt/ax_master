@@ -2127,3 +2127,5 @@
 08 374 sys rm bindbg/PWD
 08 393 src rm trial/implement/Display/ColorTables
 08 393 src rm trial/implement/Display/cubesTable.h
+08 393 src rm trial/implement/Display/X11PCDLColormap.h
+08 393 src rm trial/implement/Display/X11PCDLColormap.cc
