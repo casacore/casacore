@@ -118,7 +118,7 @@ template <class T> class Function;
 // The function to be fitted to the data can be given as an instance of the
 // <linkto class="Function">Function</linkto> class.
 // One can also form a sum of functions using the
-// <linkto class="SumFunction">SumFunction</linkto>.  
+// <linkto class="NQCompoundFunction">NQCompoundFunction</linkto>.  
 //
 // For small datasets the usage of the calls is:
 // <ul>
