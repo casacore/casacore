@@ -159,7 +159,6 @@ void c (const TableDesc& tdin)
     Table forwTab(newtab1, 20);
     cout << " canAddRow=" << forwTab.canAddRow();
     cout << " canRemoveRow=" << forwTab.canRemoveRow();
-    cout << " needToSync=" << forwTab.needToSync();
     cout << endl;
     ScalarColumn<uInt> rowCol (forwTab, "row");
     for (uInt i=0; i<20; i++) {
