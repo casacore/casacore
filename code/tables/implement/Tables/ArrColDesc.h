@@ -1,5 +1,5 @@
 //# ArrColDesc.h: Templated class to describe columns of arrays in tables
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -181,7 +181,7 @@ friend class ColumnDesc;
 
 public:
     // Construct the column with the given name and dimensionality.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStman storage manager.
     // The data manager group defaults to the data manager type.
     // Ndim <=0 means that the number of dimensions is free and will
     // be defined when creating the table (rows). Ndim>0 means that
@@ -191,7 +191,7 @@ public:
 			      int options = 0);
 
     // Construct the column with the given name, dimensionality, and comment.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStman storage manager.
     // The data manager group defaults to the data manager type.
     // Ndim <=0 means that the number of dimensions is free and will
     // be defined when creating the table (rows). Ndim>0 means that
@@ -212,7 +212,7 @@ public:
 		     Int ndim = -1, int options = 0);
 
     // Construct the column with the given name and shape.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStman storage manager.
     // The data manager group defaults to the data manager type.
     // The possible options are defined in ColumnDesc.h.
     // This constructor can only be used for FixedShape arrays, because the
@@ -221,7 +221,7 @@ public:
 		     const IPosition& shape, int options = 0);
 
     // Construct the column with the given name, shape, and comment.
-    // The data manager type defaults to the StManAipsIO storage manager.
+    // The data manager type defaults to the StandardStman storage manager.
     // The data manager group defaults to the data manager type.
     // The possible options are defined in ColumnDesc.h.
     // This constructor can only be used for FixedShape arrays, because the
