@@ -93,6 +93,11 @@ public:
     // Handle deletion of the region by deleting the associated table.
     virtual void handleDelete();
 
+    // Handle renaming the region by renaming the associated table.
+    // If overwrite=False, an exception will be thrown if a table with the
+    // new name already exists.
+    virtual void handleRename (const String& newName, Bool overwrite);
+
     // Get the class name (to store in the record).
     static String className();
 

@@ -28,6 +28,7 @@
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/OS/Path.h>
 #include <aips/Exceptions/Error.h>
 
 typedef Vector<Int> lcpagedmask_gppbug1;
@@ -122,6 +123,19 @@ void LCPagedMask::handleDelete()
 {
     // Mark the table for delete by opening it for delete.
     Table dummy(itsMask.tableName(), Table::Delete);
+}
+
+void LCPagedMask::handleRename (const String& newName, Bool overwrite)
+{
+    // Rename the underlying table.
+    // Make sure the directory does not change.
+    Table dummy(itsMask.tableName(), Table::Update);
+    String newnm = Path(itsMask.tableName()).dirName() + '/' + newName;
+    if (overwrite) {
+      dummy.rename (newnm, Table::New);
+    } else {
+      dummy.rename (newnm, Table::NewNoReplace);
+    }
 }
 
 LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,
