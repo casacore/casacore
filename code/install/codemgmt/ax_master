@@ -2064,3 +2064,4 @@
 08 249 src rm trial/implement/Images/ImageTiledCache.cc
 08 254 src rm aips/glish/rivet/tkpgplot/TkPgplot.c
 08 254 src rm aips/glish/rivet/tkpgplot/TkPgplot.h
+08 260 src rm trial/apps/image/templates
