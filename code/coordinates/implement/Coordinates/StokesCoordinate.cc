@@ -148,7 +148,8 @@ Bool StokesCoordinate::toPixel(Int &pixel, Stokes::StokesTypes stokes) const
 Bool StokesCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-    AlwaysAssert(pixel.nelements()==1 && world.nelements()==1, AipsError);
+    world.resize(1);
+    AlwaysAssert(pixel.nelements()==1, AipsError);
     Double index = floor((pixel(0) - crpix_p)*cdelt_p*matrix_p + 0.5);
     if (index < 0 || index > values_p.nelements()-1) {
 	ostrstream os;
@@ -165,7 +166,8 @@ Bool StokesCoordinate::toWorld(Vector<Double> &world,
 Bool StokesCoordinate::toPixel(Vector<Double> &pixel, 
 		     const Vector<Double> &world) const
 {
-    AlwaysAssert(pixel.nelements()==1 && world.nelements()==1, AipsError);
+    pixel.resize(1);
+    AlwaysAssert(world.nelements()==1, AipsError);
     // First find the index;
     Bool found = False;
     uInt index;
@@ -454,6 +456,15 @@ String StokesCoordinate::format(String& units,
                                 const Int) const
 {
    units = worldAxisUnits()(worldAxis);
-   const Stokes::StokesTypes sType = Stokes::type(Int(worldValue+0.5));
+//
+// This is very hard work
+//
+   Stokes::StokesTypes sType;
+   Vector<Double> pixel(1), world(1);
+   world(0) = worldValue;
+   Bool ok = toPixel(pixel, world);
+   Int pixel2 = Int(pixel(0)+0.5);
+   ok = toWorld(sType, pixel2);
+//
    return Stokes::name(sType);
 }
