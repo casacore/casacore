@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Measures/SofaTest.h>
+#include <aips/Measures/SofaTest.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Include files
-#include <trial/Measures/SofaTest.h>
+#include <aips/Measures/SofaTest.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/iostream.h>
 #include <limits.h>
