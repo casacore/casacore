@@ -349,7 +349,9 @@ Bool LatticeStatistics<T>::setInExCludeRange(const Vector<T>& include,
         (saveRange.nelements() != range_p.nelements()) ||
         (!allEQ(saveRange, range_p)) ) {
       needStorageLattice_p = True;    
+      doneFullMinMax_p = False;
    }
+//
    return True;
 }
 
