@@ -31,4 +31,9 @@
 // Define the extra non-standard types used by aips++
 // (like proposed uSize, Size)
 
+// A guaranteed 64-bit long integer (for a.o. large file systems).
+// An implementation must support the + and - operators.
+typedef long long Int64;
+typedef unsigned long long uInt64;
+
 #endif
