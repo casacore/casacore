@@ -1,5 +1,5 @@
 //# NQCombiFunction.h: Form a linear combination of Functions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,9 +73,9 @@
 // In the following example a second order polynomial is built from 3 separate
 // polynomials.
 // <srcblock>
-// Polynomial<Double> constant(0); 
-// Polynomial<Double> linear(1); 
-// Polynomial<Double> square(2);
+// NQPolynomial<Double> constant(0); 
+// NQPolynomial<Double> linear(1); 
+// NQPolynomial<Double> square(2);
 // 
 // constant.setCoefficient(0, 1.0);   // 1
 // linear.setCoefficient(1, 1.0);     // x
@@ -144,8 +144,8 @@ template <class T> class NQCombiFunction : public NQCombiParam<T> {
 // </summary>
 
 // <synopsis>
-// <note role=warning> The name <src>NQPolynomial_PS</src> is only for cxx2html
-// documentation problems. Use <src>NQPolynomial</src> in your code.</note>
+// <note role=warning> The name <src>NQCombiFunction_PS</src> is only for cxx2html
+// documentation problems. Use <src>NQCombiFunction</src> in your code.</note>
 // </synopsis>
 
 template <class T> class NQCombiFunction_PS<AutoDiff<T> > :
