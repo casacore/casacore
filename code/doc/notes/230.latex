@@ -21,8 +21,12 @@
 \begin{document}
 
 \title{NOTE 230 -- Advanced Programming with \aipspp\ and \glish}
-\author{A.G. Willis, DRAO}
-\date{Version 1.0/07 Mar 2000}
+\author{Anthony G. Willis\\
+  National Research Council of Canada\\
+  Herzberg Institute of Astrophysics\\
+  Penticton, BC V2A 6K3\\
+  Canada}
+\date{Version 1.1/12 Sep 2001}
 \maketitle
 
 \begin{htmlonly}
@@ -34,7 +38,7 @@
 \section{Introduction}
 
 This tutorial attempts to bridge the gap between the introductory
-glish programming material in 
+\glish\ programming material in 
 \htmladdnormallink{\emph{Getting Started with \glish} by Rick
 Fisher}{../195/195.html} and the very advanced material in
 \htmladdnormallink{\emph{How to Write an \aipspp\ Application} by
@@ -94,7 +98,7 @@ functions in order to do object-oriented programming with \glish.
 Firstly, you should be aware of the enhanced data types that can be
 stored in a \glish\ record.  Some of you may be familiar with
 structures from the C programming languages. A \glish record is
-somwhat similar to a C structure, but in addition to holding expected
+somewhat similar to a C structure, but in addition to holding expected
 data items of a numeric or string type, \glish\ records can also
 contain functions, as functions are just another data type in
 \glish. \glish\ records can also contain a mysterious data type called
@@ -293,7 +297,7 @@ This requirement is due to a  bug in \glish\ which should hopefully be fixed by
 the end of 1999.The problem is
 that the record (public) which is returned holds a (the only) reference
 to each of the functions, but each of the functions hold a reference to
-the record (a bit difficult to comprend, but thats what Darrell says).
+the record (a bit difficult to comprehend, but thats what Darrell says).
 
 Given
 
@@ -436,9 +440,9 @@ We shall show an example of what can
 happen if a function allows whenevers to be processed more than once
 in the section on parallel processing.
 
-Also, as we shall see in a later example, the behaviour of a subsequnce
+Also, as we shall see in a later example, the behaviour of a subsequence
 can sometimes be different from what one might intuitively expect
-because the \glish\ interpreter essentially behaves like a multithreaded
+because the \glish\ interpreter essentially behaves like a multi-threaded
 application when it handles events. In our above demo script we sent 
 two events to the subsequence
 in rapid succession, one to store the data and one to retrieve it. 
@@ -446,7 +450,7 @@ When the interpreter receives an event it opens a quasi-thread to handle
 it. That means that in our above example the thread to retrieve the
 data might have attempted to retrieve nothing if the thread to insert
 the data not not yet completed its activity.
-Luckly, in the above example, the insertion thread completed its
+Luckily, in the above example, the insertion thread completed its
 activity, before retrieval was attempted. 
 
 
@@ -518,7 +522,7 @@ well go for lunch while it is executing. (On a trivia note, the
 really alert reader might recognize that this is the array computed 
 in the fourth demo program of the PGPLOT package.)
 
-\glish\ preforms well on whole array arithmetic, but does not perform 
+\glish\ performs well on whole array arithmetic, but does not perform 
 very well when it is required to examine individual array elements
 on a one by one basis.
 
@@ -910,7 +914,7 @@ begins the processing associated with the ``findmax'' event. This single
 threaded behaviour is different from the (potentially) multi-threaded 
 behaviour of a subsequence.
 
-\section{Multithreading \glish\ clients}
+\section{Multi threading \glish\ clients}
 
 \glish\ clients are single threaded. 
 If a \glish\ client receives an event, the client will execute the function
@@ -1198,14 +1202,14 @@ resetting available
 
 \section{Parallel Processing with \aipspp\ and glish}
 
-With the advent of cheap PC-based clusters running the linux operating
+With the advent of cheap PC-based clusters running the Linux operating
 system (Beowulfs) parallel computing is available for the masses. 
 Two message passing systems that have been used to implement parallel
-processing on linux clusters are PVM and MPI. The 
+processing on Linux clusters are PVM and MPI. The 
 'Linux Parallel Processing HOWTO' by Hank Dietz contains examples
 of how the following piece of sequential c code, which
 computes the value of PI by summing the area under x squared, can be
-converted into an 'embarassingly parallel' application by using
+converted into an 'embarrassingly parallel' application by using
 the PVM or MPI message passing systems.
 
 \begin{verbatim}
@@ -1234,7 +1238,7 @@ main(int argc, char**argv)
 /************************************/
 \end{verbatim}
 
-This algorithm easily yields an ``embarassingly parallel''
+This algorithm easily yields an ``embarrassingly parallel''
 application as the number of intervals can be split up and assigned to
 different processors. 
  
@@ -1315,7 +1319,7 @@ int main(int argc, char **argv)
 //  define callback event handler
    glishStream.addTarget(computeinterval, "compute");
 
-// send message that the client started ok
+// send message that the client started OK
         glishStream.postEvent("initialized","dummy");
 
 // loop
@@ -1345,7 +1349,7 @@ const demoparallel := function() {
 # open 'hosts' file; then read in and start clients
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/aipsdevel/code/hia/apps/parallel/parallel"
+   taskname := "/home/beowulf1/twillis/bin/parallel"
    for (i in 1:numhosts) {
       hostname := hosts[i]
       private.numparallelclients := private.numparallelclients + 1
@@ -1489,7 +1493,7 @@ numdone pisum =  12 6.28319
 
 !!!!
 
-You want to avoid having a whenever executed twice. So we recaste
+You want to avoid having a whenever executed twice. So we recast
 the above script in the form:
 
 \heading{goodparallel.g}
@@ -1508,7 +1512,7 @@ const demoparallel := function() {
 # open 'hosts' file; then read in and start clients
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/aipsdevel/code/hia/apps/parallel/parallel"
+   taskname := "/home/beowulf1/twillis/bin/parallel"
    for (i in 1:numhosts) {
       hostname := hosts[i]
       private.numparallelclients := private.numparallelclients + 1
@@ -1591,7 +1595,7 @@ demoparallel := subsequence()
 
       hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
       numhosts := len(hosts)
-      taskname := "/home/beowulf1/twillis/aipsdevel/code/hia/apps/parallel/parallel"
+      taskname := "/home/beowulf1/twillis/bin/parallel"
       for (i in 1:numhosts) {
 # use split function to delete endline
          private.numparallelclients := private.numparallelclients + 1
@@ -1687,7 +1691,7 @@ system has been initialized - ready to compute
 and that's it. What has happened is the following. When the script
 is sent the first event a->start(), the \glish\ interpreter starts
 to process the startparallel() function and launch the clients.
-The subequence is then sent the event a->compute() and the glish
+The subsequence is then sent the event a->compute() and the glish
 interpreter then begins to respond to that event even though
 it has not completed doing all the work in response to the a->start()
 event. At the moment the a->compute() event is received, the interpreter
@@ -1711,7 +1715,7 @@ Here is a better subsequence:
 demoparallel := subsequence() : [reflect=T]
 {
 
-# constuctor
+# constructor
    private := [=]
 
    private.pisum := 0
@@ -1725,7 +1729,7 @@ demoparallel := subsequence() : [reflect=T]
 
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/aipsdevel/code/hia/apps/parallel/parallel"
+   taskname := "/home/beowulf1/twillis/bin/parallel"
    for (i in 1:numhosts) {
       private.numparallelclients := private.numparallelclients + 1
       hostname := hosts[i]
@@ -1841,7 +1845,7 @@ const demopipeline := function() {
    hosts := ["slave1", "slave2", "slave3"]
    numhosts := len(hosts)
    tasks := ["pipe1", "pipe2", "pipe3"]
-   taskpreface := "/home/beowulf1/twillis/aipsdevel/code/hia/apps/pipeline/"
+   taskpreface := "/home/beowulf1/twillis/aips++/code/hia/apps/pipeline/"
    for (i in 1:numhosts) {
 # use split function to delete endline
       hostname := hosts[i]
@@ -1974,7 +1978,7 @@ int main(int argc, char **argv) {
 //  define callback event handlers
    glishStream.addTarget(applyweight, "inputdata");
 
-// send message that the client started ok
+// send message that the client started OK
         glishStream.postEvent("initialized","dummy");
 
    glishStream.loop();
@@ -2043,7 +2047,7 @@ int main(int argc, char **argv) {
 //  define callback event handlers
    glishStream.addTarget(dofft, "tostep2");
 
-// send message that the client started ok
+// send message that the client started OK
         glishStream.postEvent("initialized","dummy");
 
 
@@ -2105,7 +2109,7 @@ int main(int argc, char **argv) {
 //  define callback event handlers
    glishStream.addTarget(removebaseline, "tostep3");
 
-// send message that the client started ok
+// send message that the client started OK
         glishStream.postEvent("initialized","dummy");
 
 
@@ -2198,6 +2202,79 @@ client. The list acts as a buffer between the two tasks. Of course, at some
 point, the faster task must stop generating data or you will run out of
 memory.
 
+\section{Distributed and Parallel Programming with Glish Scripts}
+
+The previous sections have focussed on the use of compiled c++ \glish\
+clients to do the bulk of the work in parallel and distributed processing.
+\glish\ scripts have been used to coordinate and pass out the work to
+compiled clients. However, a little known property of \glish\ scripts is that
+they themselves can be used to do parallel or distributed processing.
+We return to our example of section 0.6 and show how the computation
+of PI can be reformulated into a parallel processing application that makes
+use of \glish\ scripts alone. 
+
+We first rewrite our `parallelclient.cc' c++ client code as a \glish\ client
+script that can be started remotely by the controlling \glish\ script 
+`goodparallel.g'. To do this we must make use of 
+the {\tt is\_script\_client} field associated with the {\tt system} record.
+
+Here is the resulting \glish\ script client:
+
+\heading{parallelclient.g}
+\begin{verbatim}
+# glish function to extract the computation parameters and do the calculation
+computeinterval := function (parameters) {
+
+# first obtain parameters - starting position, number of intervals and 
+# number of processors
+  startpos := parameters.start
+  intervals := parameters.intervals
+  processors := parameters.numprocessors
+# now do the computation 
+  width := 1.0 / intervals
+  sum := 0
+  i := startpos
+  while (i <= intervals-1) {
+     x := (i + 0.5) * width
+     sum := sum + 4.0 /(1.0 + x * x)
+     i := i + processors
+  }
+  sum := sum * width;
+  return sum
+} # end of function definition
+
+# here is the equivalent of the main function in the c++ client
+if (system.is_script_client) {
+  print "script client starting"
+  script->initialized("dummy")
+  whenever script->compute do {
+    record := [=]
+    record.pisum := computeinterval($value)
+    script->integration(record);
+  }
+}                                        
+\end{verbatim}
+\bottomofheading
+
+In our example, running this script as a script client causes the global
+{\tt script} variable to become an {\tt agent} capable of receiving or
+sending \glish\ messages. We can start up the client \glish\ scripts
+by replacing the definition of the client task to be started in the
+following line of code from goodparallel.g
+
+\begin{verbatim}
+taskname := "/home/beowulf1/twillis/bin/parallel"
+\end{verbatim}
+
+by
+
+\begin{verbatim}
+taskname := "glish /home/beowulf1/twillis/bin/parallelclient.g"                                                                
+\end{verbatim}
+
+It is important to note that the first parameter fed to the {\tt client}
+function call in this case must {\tt glish}. Otherwise the client scripts
+will not run.
 
 \section{Further Reading}
 
