@@ -304,6 +304,10 @@ MemoryIO* PlainTable::releaseCallBack (void* plainTableObject, Bool always)
 }
 MemoryIO* PlainTable::doReleaseCallBack (Bool always)
 {
+    //# Invalidate the caches in the columns to be sure
+    //# that the next get on a column reacquires a lock.
+    colSetPtr_p->invalidateColumnCaches();
+    //# Data does not need to be written when not opened for write.
     if (!openedForWrite()) {
 	return 0;
     }
