@@ -230,6 +230,7 @@ doConvolution(Array<FType>& result,
   
 template<class FType> void Convolver<FType>::
 setPsf(const Array<FType>& psf, Bool cachePsf){
+  thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;
 }
@@ -239,6 +240,7 @@ setPsf(const Array<FType>& psf,
        IPosition imageSize, 
        Bool fullSize,
        Bool cachePsf){
+  thePsf.resize(psf.shape());
   thePsf = psf;
   valid=False;
 }
