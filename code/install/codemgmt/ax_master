@@ -2625,3 +2625,4 @@
 10 010 src mv aips/implement/Measures/QMath.h aips/implement/Quanta/QMath.h
 10 010 src mv aips/implement/Measures/QMath2.cc aips/implement/Quanta/QMath2.cc
 10 010 src mv aips/implement/Measures/Quantum.cc aips/implement/Quanta/Quantum.cc
+10 010 src mv aips/implement/Measures/Quantum.h aips/implement/Quanta/Quantum.h
