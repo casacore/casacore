@@ -206,7 +206,8 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
       *MVPOS1 = ABERTO->operator()(tdbTime);
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
-	getApp(*MVDIR1);
+	getJ2000(*MVDIR1);
+      ///	getApp(*MVDIR1);
       g1 = *MVPOS1 * *MVDIR1;
       g2 = in.getValue()/C::c;
       in = (g2 + g1)/(1 + g2 * g1) * C::c;
