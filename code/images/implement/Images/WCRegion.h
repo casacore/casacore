@@ -1,5 +1,5 @@
 //# WCRegion.h: Class to define a region of interest in an image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,12 +109,16 @@ public:
     // Clone a WCRegion object.
     virtual WCRegion* cloneRegion() const = 0;
 
-    // Return region type.  Just returns the class name of
-    // of the derived class.
+    // Return region type.
+    // Just returns the class name of the derived class.
     virtual String type() const = 0;
 
     // Get the dimensionality (i.e. the number of axes).
-    uInt ndim() const;
+    // Note that usually all axes have a description, but in some cases
+    // (e.g. WCLELMask) that may not be the case.
+    // The default implementation returns the number of axes in the
+    // axes description.
+    virtual uInt ndim() const;
 
     // Get the description of all axes.
     const Record& getAxesDesc() const;
@@ -145,9 +149,12 @@ public:
     // An exception is thrown if the region's dimensionality is more
     // than the length of the shape vector or if an axis in the region
     // is unknown in the new coordinate system..
-    // When less, the region is extended over the remaining axes.
-    LCRegion* toLCRegion (const CoordinateSystem& cSys,
-			  const IPosition& shape) const;
+    // When less, the default implementation extends the region over the
+    // remaining axes.
+    // <br>If the region does not need to have coordinates (like WCLELMask)
+    // the function has to be overridden.
+    virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
+				  const IPosition& shape) const;
 
     // Convert to an LCRegion using the given coordinate system and shape.
     // This function is meant for internal use by WCCompound objects.
@@ -161,10 +168,10 @@ public:
     // <br>Note that initially pixelAxisMap and outOrder are the same,
     // but when called for regions in compound regions they may start
     // to differ. 
-    LCRegion* toLCRegion (const CoordinateSystem& cSys,
-			  const IPosition& shape,
-			  const IPosition& pixelAxesMap,
-			  const IPosition& outOrder) const;
+    LCRegion* toLCRegionAxes (const CoordinateSystem& cSys,
+			      const IPosition& shape,
+			      const IPosition& pixelAxesMap,
+			      const IPosition& outOrder) const;
 
     // Convert the (derived) object to a record.
     // The record can be used to make the object persistent.
@@ -216,10 +223,6 @@ private:
 inline Bool WCRegion::operator!= (const WCRegion& other) const
 {
    return ToBool(!operator==(other));
-}
-inline uInt WCRegion::ndim() const
-{
-    return itsAxesDesc.nfields();
 }
 inline const String& WCRegion::comment() const
 {
