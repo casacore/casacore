@@ -1,5 +1,5 @@
 //# Vector.h: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,11 @@
 #if !defined(AIPS_VECTOR_H)
 #define AIPS_VECTOR_H
 
-
 //# Includes
 #include <aips/Arrays/Array.h>
 
+//# Forward declarations
+template <class T, class U> class vector; 
 
 // <summary> A 1-D Specialization of the Array class </summary>
 //
@@ -67,6 +68,13 @@
 // aips/ArrayMath.h and aips/ArrayLogical.h) as well as dot and cross
 // products (in aips/MatrixMath.h).
 //
+// A Vector can be constructed from an STL <src>vector</src>. The reverse
+// operation (<src>Array::tovector()</src>) can construct an STL
+// <src>vector</src> from any Array.
+// <note role=tip> To create any other STL container from an Array (or
+// the reverse), always create from/to a <src>vector</src>, and use the
+// range constructor to create from/to others (like set, list, deque). </note>
+// 
 // As with the Arrays, if the preprocessor symbol AIPS_DEBUG is
 // defined at compile time invariants will be checked on entry to most
 // member functions. Additionally, if AIPS_ARRAY_INDEX_CHECK is defined
@@ -99,8 +107,8 @@ public:
     explicit Vector(const Block<T> &other);
 
     // Create a reference to other.
-    // <note role=warning> The copy constructor should normally be avoided. More
-    //         details are available under the documentation for Array.
+    // <note role=warning> The copy constructor should normally be avoided.
+    // More details are available under the documentation for Array. </note>
     //
     Vector(const Vector<T> &other);
     
@@ -114,6 +122,15 @@ public:
     // is const, a copy is always made.
     Vector(const IPosition &shape, const T *storage);
 
+    // Create a Vector from an STL vector (see <src>tovector()</src> in
+    // <linkto class=Array>Array</linkto>  for the reverse operation).
+    // <note role=tip> Both this constructor and the tovector() are
+    // defined in <src>Vector2.cc</src>. The appropriate templates are
+    // instantiated using the macro <src>AIPS_VECTOR2_AUX_TEMPLATES(X)</src>
+    // defined in <src>Vector2.cc</src> (<src>X</src> is the template
+    // argument needed). </note>
+    template <class U>
+    Vector(const vector<T, U> &other);
 
     // Define a destructor, otherwise the (SUN) compiler makes a static one.
     virtual ~Vector();
