@@ -73,6 +73,8 @@ ImageInterface<T>::ImageInterface (const ImageInterface& other)
   coords_p     (other.coords_p),
   log_p        (other.log_p),
   imageInfo_p  (other.imageInfo_p),
+  unit_p       (other.unit_p),
+  miscInfo_p   (other.miscInfo_p),
   regHandPtr_p (0)
 {
   logSink() << LogOrigin("ImageInterface<T>",
@@ -90,6 +92,8 @@ ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
     coords_p    = other.coords_p;
     log_p       = other.log_p;
     imageInfo_p = other.imageInfo_p;
+    unit_p      = other.unit_p;
+    miscInfo_p  = other.miscInfo_p;
     delete regHandPtr_p;
     regHandPtr_p = 0;
     regHandPtr_p = other.regHandPtr_p->clone();
