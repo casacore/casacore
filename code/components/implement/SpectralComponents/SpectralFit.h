@@ -114,14 +114,14 @@ class SpectralFit {
   // at the frequencies x with values y. Weights of all points are equal.
   // The mask (if specified) means: use point if True.
   // <group>
-  Bool fit(const Vector<Double> &y,
-	   const Vector<Double> &x);
-  Bool fit(const Vector<Float> &y,
-   	   const Vector<Float> &x);
-  Bool fit(const Vector<Double> &y,
-	   const Vector<Double> &x, const Vector<Bool> &mask);
-  Bool fit(const Vector<Float> &y,
-   	   const Vector<Float> &x, const Vector<Bool> &mask);
+  template <class MT>
+    Bool fit(const Vector<MT> &y,
+	     const Vector<MT> &x) {
+    return fit(y, x, static_cast<const Vector<Bool> *const>(0)); };
+  template <class MT> 
+    Bool fit(const Vector<MT> &y,
+	     const Vector<MT> &x, const Vector<Bool> &mask) {
+    return fit(y, x, &mask); };
   // </group>
 
   // Get the number of iterations last fit
@@ -137,12 +137,10 @@ class SpectralFit {
   //# Member functions
   // Real fitters
   // <group>
-  Bool fit(const Vector<Double> &y,
-	   const Vector<Double> &x,
-	   const Vector<Bool> *const mask);
-  Bool fit(const Vector<Float> &y,
-   	   const Vector<Float> &x,
-	   const Vector<Bool> *const mask);
+  template <class MT>
+    Bool fit(const Vector<MT> &y,
+	     const Vector<MT> &x,
+	     const Vector<Bool> *const mask);
   // </group>
 };
 
