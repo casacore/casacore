@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.1 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -66,12 +66,14 @@
 *
 *   wcsp2s() and wcss2p() implement the WCS world coordinate transformations.
 *   In fact, they are high level driver routines for the WCS linear,
-*   celestial, and spectral transformation routines described in lin.h, cel.h
-*   and spc.h.
+*   celestial, spectral and tabular transformation routines described in
+*   lin.h, cel.h, spc.h and tab.h.
 *
 *   Given either the celestial longitude or latitude plus an element of the
 *   pixel coordinate a hybrid routine, wcsmix(), iteratively solves for the
 *   unknown elements.
+*
+*   wcssptr()
 *
 *
 *   Default constructor for the wcsprm struct; wcsini()
@@ -247,7 +249,9 @@
 *   it (see "Coordinate transformation parameters" below).
 *
 *   wcsset() recognizes the NCP projection and converts it to the equivalent
-*   SIN projection.  It also recognizes GLS as a synonym for SFL.
+*   SIN projection and it also recognizes GLS as a synonym for SFL.  It does
+*   alias translation for the AIPS spectral types ('FREQ-LSR', 'FELO-HEL',
+*   etc.) but without changing the input header cards.
 *
 *   Note that this routine need not be called directly; it will be invoked by
 *   wcsp2s() and wcss2p() if the "flag" struct member is anything other than a
@@ -466,6 +470,40 @@
 *                              parameters.
 *                          10: Invalid world coordinate.
 *                          11: No solution found in the specified interval.
+*
+*
+*   Spectral axis translation; wcssptr()
+*   ------------------------------------
+*   wcssptr() translates the spectral axis in a wcsprm struct.  For example, a
+*   'FREQ' axis may be translated into 'ZOPT-F2W' and vice versa.
+*
+*   Given or returned:
+*      wcs      struct wcsprm*
+*                        Coordinate transformation parameters (see below).
+*      i        int*     Index of the spectral axis (0-rel).  If given < 0 it
+*                        will be set to the first spectral axis identified
+*                        from the ctype[] cards in the wcsprm struct.
+*      ctype    char[9]  Required spectral CTYPEia.  Wildcarding may be used
+*                        as for the ctypeS2 argument to spctrn() as described
+*                        in the prologue of spc.h, i.e. if the final three
+*                        characters are specified as "???", or if just the
+*                        eighth character is specified as '?', the correct
+*                        algorithm code will be substituted and returned.
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*                           1: Null wcsprm pointer passed.
+*                           2: Memory allocation failed.
+*                           3: Linear transformation matrix is singular.
+*                           4: Inconsistent or unrecognized coordinate axis
+*                              types.
+*                           5: Invalid parameter value.
+*                           6: Invalid coordinate transformation parameters.
+*                           7: Ill-conditioned coordinate transformation
+*                              parameters.
+*                          12: Invalid subimage specification (no spectral
+*                              axis).
 *
 *
 *   Notes
@@ -821,6 +859,11 @@
 *         Spectral transformation parameters (usage is described in the
 *         prologue to spc.h).
 *
+* ...........
+*      struct tabprm *tab
+*         Tabular transformation parameters (usage is described in the
+*         prologue to tab.h).
+*
 *      int m_flag, m_naxis
 *      char (*m_cunit)[72], (*m_ctype)[72]
 *      double *m_crpix, *m_pc, *m_cdelt, *m_crval
@@ -914,6 +957,7 @@
 #include "lin.h"
 #include "cel.h"
 #include "spc.h"
+#include "tab.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -1014,13 +1058,17 @@ struct wcsprm {
    /* Information derived from the FITS header cards by wcsset().           */
    /*-----------------------------------------------------------------------*/
    char   lngtyp[8], lattyp[8];	/* Celestial axis types, e.g. RA, DEC.      */
-   int    lng, lat, spec;	/* Longitude, latitude, and spectral axis   */
+   int    lng, lat, spec;	/* Longitude, latitude and spectral axis    */
                                 /* indices (0-relative).                    */
    int    cubeface;		/* True if there is a CUBEFACE axis.        */
 
    struct linprm lin;		/* Linear    transformation parameters.     */
    struct celprm cel;		/* Celestial transformation parameters.     */
    struct spcprm spc;		/* Spectral  transformation parameters.     */
+
+   int    *types;		/* For each axis, ...                       */
+   struct tabprm *tab;		/* Tabular transformation parameters.       */
+                                /* Logarithmic...                           */
 
    int    m_flag, m_naxis;	/* The remainder are for memory management. */
    char  (*m_cunit)[72], (*m_ctype)[72];
@@ -1058,6 +1106,8 @@ int wcss2p(struct wcsprm *, int, int, const double[],
 
 int wcsmix(struct wcsprm *, int, int, const double[], double, int,
            double[], double[], double[], double[], double[]);
+
+int wcssptr(struct wcsprm *, int *, char [9]);
 
 int wcs_allEq(int, int, const double *);
 void wcs_setAll(int, int, double *);

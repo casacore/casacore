@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the spectral coordinate systems
+*   WCSLIB 4.1 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -51,11 +51,6 @@
 *      The remaining routines are all vector conversions from one spectral
 *      variable to another.  Conversion may be done "in place" by calling
 *      the routine with the output vector set to the input.
-*
-*      Logarithmic conversions
-*      ------------------------
-*      speclog()    Converts spectral values to their natural logarithm
-*      logspec()    Restores spectral values from their natural logarithm
 *
 *      Non-linear   From                    To
 *      ----------   ---------------------   ---------------------
@@ -132,32 +127,6 @@
 *                           1: Null spxprm pointer passed.
 *                           2: Invalid spectral parameters.
 *                           3: Invalid spectral variable.
-*
-*
-*   Logarithmic conversions (vector); speclog(), logspec()
-*   ---------------------------------------------------------------
-*   Vector logarithmic conversions.
-*
-*   Given:
-*      param    double   Ignored.
-*      nspec    int      Vector length, see below.
-*      instep   int
-*      outstep  int      Vector strides, see below.
-*      inspec   const double[]
-*                        Input spectral variables, in SI units.
-*
-*   Returned:
-*      outspec  double[] Output spectral variables, in SI units.
-*      stat     int[]    Status return value for each vector element:
-*                           0: Success.
-*                           1: Invalid value of inspec.
-*
-*   Function return value:
-*               int      Status return value:
-*                           0: Success.
-*                           2: Invalid spectral parameters.
-*                           4: One or more of the inspec coordinates were
-*                              invalid, as indicated by the stat vector.
 *
 *
 *   Spectral conversions (vector); freqwave(), wavefreq(), etc.
@@ -322,9 +291,6 @@ int specx(const char *, double, double, double, struct spxprm *);
 #define SPX_ARGS double, int, int, int, const double[], double[], int[]
 
 #define SPX_PROTO(CODE) int CODE(SPX_ARGS);
-
-SPX_PROTO(speclog)
-SPX_PROTO(logspec)
 
 SPX_PROTO(freqafrq)
 SPX_PROTO(afrqfreq)

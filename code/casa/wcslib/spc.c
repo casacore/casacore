@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -40,23 +40,12 @@
 #include "spx.h"
 
 /* Spectral algorithm codes. */
-const int  spc_ncode = 17;
-const char spc_codes[15][4] =
-      {"LOG",			/* Logarithmic axis.                  */
-       "F2W", "F2A", "F2V",	/* Axis linear in frequency.          */
-       "W2F", "W2A", "W2V",	/* Axis linear in vacuum wavelengths. */
-       "A2F", "A2W", "A2V",	/* Axis linear in air wavelength.     */
-       "V2F", "V2W", "V2A",	/* Axis linear in velocity.           */
-       "GRI", "GRA"};		/* Grism in vacuum or air.            */
-
-/* Spectral algorithm codes. */
-#define LOG 100;		/* Logarithmic axis.                  */
-#define F2S 200;		/* Axis linear in frequency.          */
-#define W2S 300;		/* Axis linear in vacuum wavelengths. */
-#define A2S 400;		/* Axis linear in air wavelengths.    */
-#define V2S 500;		/* Axis linear in velocity.           */
-#define GRI 600;		/* Grism in vacuum.                   */
-#define GRA 700;		/* Grism in air.                      */
+#define F2S 100;		/* Axis linear in frequency.          */
+#define W2S 200;		/* Axis linear in vacuum wavelengths. */
+#define A2S 300;		/* Axis linear in air wavelengths.    */
+#define V2S 400;		/* Axis linear in velocity.           */
+#define GRI 500;		/* Grism in vacuum.                   */
+#define GRA 600;		/* Grism in air.                      */
 
 /* S-type spectral variables. */
 #define FREQ  0;		/* Frequency-like.                    */
@@ -199,27 +188,6 @@ int spcset(struct spcprm *spc)
    spc->type[4] = '\0';
    spc->code[3] = '\0';
    spc->w[0] = 0.0;
-
-
-   /* Logarithmic axes. */
-   if (strcmp(spc->code, "LOG") == 0) {
-      if (spc->crval == 0.0) {
-         return 2;
-      }
-
-      spc->flag = LOG;
-
-      spc->w[1] = log(spc->crval);
-      spc->w[2] = 1.0/spc->crval;
-
-      spc->spxP2S = 0;
-      spc->spxS2P = 0;
-
-      spc->spxX2P = logspec;
-      spc->spxP2X = speclog;
-
-      return 0;
-   }
 
 
    /* Analyse the spectral axis type. */
@@ -648,82 +616,102 @@ int spcs2x(
 /*--------------------------------------------------------------------------*/
 
 int spctyp(
-   const char ctype[9],
-   char cname[],
+   const char ctypei[9],
+   char stype[],
+   char scode[],
+   char sname[],
    char units[],
    char *ptype,
    char *xtype,
    int  *restreq)
 
 {
-   *restreq = 0;
+   char ctype[9], ptype_t, sname_t[32], units_t[8], xtype_t;
+   int  restreq_t = 0;
+
+   strcpy(ctype, ctypei);
+
+   /* Do alias translation for AIPS spectral types. */
+   if (ctype[4] == '-') {
+      if (strcmp(ctype+5, "LSR") == 0 ||
+          strcmp(ctype+5, "HEL") == 0 ||
+          strcmp(ctype+5, "OBS") == 0) {
+         if (strncmp(ctype, "FREQ", 4) == 0 ||
+             strncmp(ctype, "VELO", 4) == 0) {
+            strcpy(ctype+4, "    ");
+         } else if (strncmp(ctype, "FELO", 4) == 0) {
+            strcpy(ctype, "VOPT-F2W");
+         }
+      }
+   }
+
 
    /* Validate the S-type spectral variable. */
    if (strncmp(ctype, "FREQ", 4) == 0) {
-      if (cname) strcpy(cname, "Frequency");
-      if (units) strcpy(units, "(Hz)");
-      *ptype = 'F';
+      strcpy(sname_t, "Frequency");
+      strcpy(units_t, "(Hz)");
+      ptype_t = 'F';
    } else if (strncmp(ctype, "AFRQ", 4) == 0) {
-      if (cname) strcpy(cname, "Angular frequency");
-      if (units) strcpy(units, "(deg/s)");
-      *ptype = 'F';
+      strcpy(sname_t, "Angular frequency");
+      strcpy(units_t, "(deg/s)");
+      ptype_t = 'F';
    } else if (strncmp(ctype, "ENER", 4) == 0) {
-      if (cname) strcpy(cname, "Photon energy");
-      if (units) strcpy(units, "(J)");
-      *ptype = 'F';
+      strcpy(sname_t, "Photon energy");
+      strcpy(units_t, "(J)");
+      ptype_t = 'F';
    } else if (strncmp(ctype, "WAVN", 4) == 0) {
-      if (cname) strcpy(cname, "Wavenumber");
-      if (units) strcpy(units, "(1/m)");
-      *ptype = 'F';
+      strcpy(sname_t, "Wavenumber");
+      strcpy(units_t, "(1/m)");
+      ptype_t = 'F';
    } else if (strncmp(ctype, "VRAD", 4) == 0) {
-      if (cname) strcpy(cname, "Radio velocity");
-      if (units) strcpy(units, "(m/s)");
-      *ptype = 'F';
-      *restreq = 1;
+      strcpy(sname_t, "Radio velocity");
+      strcpy(units_t, "(m/s)");
+      ptype_t = 'F';
+      restreq_t = 1;
    } else if (strncmp(ctype, "WAVE", 4) == 0) {
-      if (cname) strcpy(cname, "Vacuum wavelength");
-      if (units) strcpy(units, "(m)");
-      *ptype = 'W';
+      strcpy(sname_t, "Vacuum wavelength");
+      strcpy(units_t, "(m)");
+      ptype_t = 'W';
    } else if (strncmp(ctype, "VOPT", 4) == 0) {
-      if (cname) strcpy(cname, "Optical velocity");
-      if (units) strcpy(units, "(m/s)");
-      *ptype = 'W';
-      *restreq = 1;
+      strcpy(sname_t, "Optical velocity");
+      strcpy(units_t, "(m/s)");
+      ptype_t = 'W';
+      restreq_t = 1;
    } else if (strncmp(ctype, "ZOPT", 4) == 0) {
-      if (cname) strcpy(cname, "Redshift");
-      if (units) strcpy(units, "");
-      *ptype = 'W';
-      *restreq = 1;
+      strcpy(sname_t, "Redshift");
+      strcpy(units_t, "");
+      ptype_t = 'W';
+      restreq_t = 1;
    } else if (strncmp(ctype, "AWAV", 4) == 0) {
-      if (cname) strcpy(cname, "Air wavelength");
-      if (units) strcpy(units, "(m)");
-      *ptype = 'A';
+      strcpy(sname_t, "Air wavelength");
+      strcpy(units_t, "(m)");
+      ptype_t = 'A';
    } else if (strncmp(ctype, "VELO", 4) == 0) {
-      if (cname) strcpy(cname, "Relativistic velocity");
-      if (units) strcpy(units, "(m/s)");
-      *ptype = 'V';
+      strcpy(sname_t, "Relativistic velocity");
+      strcpy(units_t, "(m/s)");
+      ptype_t = 'V';
    } else if (strncmp(ctype, "BETA", 4) == 0) {
-      if (cname) strcpy(cname, "Velocity ratio (v/c)");
-      if (units) strcpy(units, "");
-      *ptype = 'V';
+      strcpy(sname_t, "Velocity ratio (v/c)");
+      strcpy(units_t, "");
+      ptype_t = 'V';
    } else {
       return 2;
    }
 
 
    /* Determine X-type and validate the spectral algorithm code. */
-   if ((*xtype = ctype[5]) == ' ') {
+   if ((xtype_t = ctype[5]) == ' ') {
       /* The algorithm code must be completely blank. */
       if (strncmp(ctype+4, "    ", 4) != 0) {
          return 2;
       }
 
-      *xtype = *ptype;
+      xtype_t = ptype_t;
 
    } else if (ctype[4] != '-') {
       return 2;
 
-   } else if (*xtype == 'G') {
+   } else if (xtype_t == 'G') {
       /* Validate the algorithm code. */
       if (ctype[6] != 'R') {
          return 2;
@@ -732,10 +720,10 @@ int spctyp(
       /* Grism coordinates... */
       if (ctype[7] == 'I') {
          /* ...in vacuum. */
-         *xtype = 'w';
+         xtype_t = 'w';
       } else if (ctype[7] == 'A') {
          /* ...in air. */
-         *xtype = 'a';
+         xtype_t = 'a';
       } else {
          return 2;
       }
@@ -744,7 +732,7 @@ int spctyp(
       /* Algorithm code has invalid syntax. */
       return 2;
 
-   } else if (ctype[7] != *ptype && ctype[7] != '?') {
+   } else if (ctype[7] != ptype_t && ctype[7] != '?') {
       /* The P-, and S-type variables are inconsistent. */
       return 2;
 
@@ -755,18 +743,32 @@ int spctyp(
 
 
    /* Rest freq/wavelength required for transformation between P and X? */
-   if (strchr("FWAwa", *xtype)) {
-      if (*ptype == 'V') {
-         *restreq += 2;
+   if (strchr("FWAwa", xtype_t)) {
+      if (ptype_t == 'V') {
+         restreq_t += 2;
       }
-   } else if (*xtype == 'V') {
-      if (strchr("FWAwa", *ptype)) {
-         *restreq += 2;
+   } else if (xtype_t == 'V') {
+      if (strchr("FWAwa", ptype_t)) {
+         restreq_t += 2;
       }
    } else {
       /* Invalid X-type variable code. */
       return 2;
    }
+
+
+   /* Copy results. */
+   if (stype) {
+      strncpy(stype, ctype, 4);
+      stype[4] = '\0';
+   }
+   if (scode) strcpy(scode, ctype+5);
+   if (sname) strcpy(sname, sname_t);
+   if (units) strcpy(units, units_t);
+   if (ptype) *ptype = ptype_t;
+   if (xtype) *xtype = xtype_t;
+   if (restreq) *restreq = restreq_t;
+
 
    return 0;
 }
@@ -785,13 +787,13 @@ int spcspx(
    double *dXdS)
 
 {
-   char type[8];
+   char scode[4], stype[5], type[8];
    int  status;
    double dPdS, dXdP;
    struct spxprm spx;
 
    /* Analyse the spectral axis code. */
-   if (spctyp(ctypeS, 0, 0, ptype, xtype, restreq)) {
+   if (spctyp(ctypeS, stype, scode, 0, 0, ptype, xtype, restreq)) {
       return 2;
    }
 
@@ -801,8 +803,7 @@ int spcspx(
    }
 
    /* Compute all spectral parameters and their derivatives. */
-   strncpy(type, ctypeS, 4);
-   type[4] = '\0';
+   strcpy(type, stype);
    if (status = specx(type, crvalS, restfrq, restwav, &spx)) {
       return 2;
    }
@@ -812,15 +813,15 @@ int spcspx(
    dPdS = 0.0;
    dXdP = 0.0;
    if (*ptype == 'F') {
-      if (strncmp(ctypeS, "FREQ", 4) == 0) {
+      if (strcmp(stype, "FREQ") == 0) {
          dPdS = 1.0;
-      } else if (strncmp(ctypeS, "AFRQ", 4) == 0) {
+      } else if (strcmp(stype, "AFRQ") == 0) {
          dPdS = spx.dfreqafrq;
-      } else if (strncmp(ctypeS, "ENER", 4) == 0) {
+      } else if (strcmp(stype, "ENER") == 0) {
          dPdS = spx.dfreqener;
-      } else if (strncmp(ctypeS, "WAVN", 4) == 0) {
+      } else if (strcmp(stype, "WAVN") == 0) {
          dPdS = spx.dfreqwavn;
-      } else if (strncmp(ctypeS, "VRAD", 4) == 0) {
+      } else if (strcmp(stype, "VRAD") == 0) {
          dPdS = spx.dfreqvrad;
       }
 
@@ -839,11 +840,11 @@ int spcspx(
       }
 
    } else if (*ptype == 'W' || *ptype == 'w') {
-      if (strncmp(ctypeS, "WAVE", 4) == 0) {
+      if (strcmp(stype, "WAVE") == 0) {
          dPdS = 1.0;
-      } else if (strncmp(ctypeS, "VOPT", 4) == 0) {
+      } else if (strcmp(stype, "VOPT") == 0) {
          dPdS = spx.dwavevopt;
-      } else if (strncmp(ctypeS, "ZOPT", 4) == 0) {
+      } else if (strcmp(stype, "ZOPT") == 0) {
          dPdS = spx.dwavezopt;
       }
 
@@ -862,7 +863,7 @@ int spcspx(
       }
 
    } else if (*ptype == 'A' || *ptype == 'a') {
-      if (strncmp(ctypeS, "AWAV", 4) == 0) {
+      if (strcmp(stype, "AWAV") == 0) {
          dPdS = 1.0;
       }
 
@@ -881,9 +882,9 @@ int spcspx(
       }
 
    } else if (*ptype == 'V') {
-      if (strncmp(ctypeS, "VELO", 4) == 0) {
+      if (strcmp(stype, "VELO") == 0) {
          dPdS = 1.0;
-      } else if (strncmp(ctypeS, "BETA", 4) == 0) {
+      } else if (strcmp(stype, "BETA") == 0) {
          dPdS = spx.dvelobeta;
       }
 
@@ -921,13 +922,13 @@ int spcxps(
    double *dSdX)
 
 {
-   char type[8];
+   char scode[4], stype[5], type[8];
    int  status;
    double dPdX, dSdP;
    struct spxprm spx;
 
    /* Analyse the spectral axis type. */
-   if (spctyp(ctypeS, 0, 0, ptype, xtype, restreq)) {
+   if (spctyp(ctypeS, stype, scode, 0, 0, ptype, xtype, restreq)) {
       return 2;
    }
 
@@ -966,19 +967,19 @@ int spcxps(
          dPdX = spx.dfreqvelo;
       }
 
-      if (strncmp(ctypeS, "FREQ", 4) == 0) {
+      if (strcmp(stype, "FREQ") == 0) {
          *crvalS = spx.freq;
          dSdP = 1.0;
-      } else if (strncmp(ctypeS, "AFRQ", 4) == 0) {
+      } else if (strcmp(stype, "AFRQ") == 0) {
          *crvalS = spx.afrq;
          dSdP = spx.dafrqfreq;
-      } else if (strncmp(ctypeS, "ENER", 4) == 0) {
+      } else if (strcmp(stype, "ENER") == 0) {
          *crvalS = spx.ener;
          dSdP = spx.denerfreq;
-      } else if (strncmp(ctypeS, "WAVN", 4) == 0) {
+      } else if (strcmp(stype, "WAVN") == 0) {
          *crvalS = spx.wavn;
          dSdP = spx.dwavnfreq;
-      } else if (strncmp(ctypeS, "VRAD", 4) == 0) {
+      } else if (strcmp(stype, "VRAD") == 0) {
          *crvalS = spx.vrad;
          dSdP = spx.dvradfreq;
       }
@@ -994,13 +995,13 @@ int spcxps(
          dPdX = spx.dwavevelo;
       }
 
-      if (strncmp(ctypeS, "WAVE", 4) == 0) {
+      if (strcmp(stype, "WAVE") == 0) {
          *crvalS = spx.wave;
          dSdP = 1.0;
-      } else if (strncmp(ctypeS, "VOPT", 4) == 0) {
+      } else if (strcmp(stype, "VOPT") == 0) {
          *crvalS = spx.vopt;
          dSdP = spx.dvoptwave;
-      } else if (strncmp(ctypeS, "ZOPT", 4) == 0) {
+      } else if (strcmp(stype, "ZOPT") == 0) {
          *crvalS = spx.zopt;
          dSdP = spx.dzoptwave;
       }
@@ -1016,7 +1017,7 @@ int spcxps(
          dPdX = spx.dawavvelo;
       }
 
-      if (strncmp(ctypeS, "AWAV", 4) == 0) {
+      if (strcmp(stype, "AWAV") == 0) {
          *crvalS = spx.awav;
          dSdP = 1.0;
       }
@@ -1032,10 +1033,10 @@ int spcxps(
          dPdX = 1.0;
       }
 
-      if (strncmp(ctypeS, "VELO", 4) == 0) {
+      if (strcmp(stype, "VELO") == 0) {
          *crvalS = spx.velo;
          dSdP = 1.0;
-      } else if (strncmp(ctypeS, "BETA", 4) == 0) {
+      } else if (strcmp(stype, "BETA") == 0) {
          *crvalS = spx.beta;
          dSdP = spx.dbetavelo;
       }
@@ -1068,7 +1069,7 @@ int spctrn(
       return status;
    }
 
-   if (strncmp(ctypeS2+5, "???", 3)) {
+   if (strncmp(ctypeS2+5, "???", 3) == 0) {
       /* Set the algorithm code if required. */
       if (xtype1 == 'w') {
          strcpy(ctypeS2+5, "GRI");
@@ -1080,7 +1081,7 @@ int spctrn(
       }
    }
 
-   if (status = spcxps(ctypeS2, crvalX, restfrq, restwav, &xtype2, &ptype2,
+   if (status = spcxps(ctypeS2, crvalX, restfrq, restwav, &ptype2, &xtype2,
                        &restreq, crvalS2, &dS2dX)) {
       return status;
    }
@@ -1092,7 +1093,7 @@ int spctrn(
 
    if (ctypeS2[7] = '?') {
       if (ptype2 == xtype2) {
-        strcpy(ctypeS2+5, "    ");
+        strcpy(ctypeS2+4, "    ");
       } else {
         ctypeS2[7] = ptype2;
       }

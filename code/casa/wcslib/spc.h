@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the spectral coordinate systems
+*   WCSLIB 4.1 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -140,12 +140,13 @@
 *
 *   Given:
 *      nx       int      Vector length, see below.
-*      sx,sspec int      Vector strides, see below.
+*      sx       int      Vector stride, see below.
+*      sspec    int      Vector stride, see below.
 *      x        const double[]
 *                        Intermediate world coordinates, in SI units.
 *
 *   Returned:
-*      spec     double[] Spectral coordinate, in SI units.
+*      spec     double[] Spectral coordinates, in SI units.
 *      stat     int[]    Status return value status for each vector element:
 *                           0: Success.
 *                           1: Invalid value of x.
@@ -170,10 +171,10 @@
 *
 *   Given:
 *      nspec    int      Vector length, see below.
-*      sspec    int
-*      sx       int      Vector strides, see below.
+*      sspec    int      Vector stride, see below.
+*      sx       int      Vector stride, see below.
 *      spec     const double[]
-*                        Spectral coordinate, in SI units.
+*                        Spectral coordinates, in SI units.
 *
 *   Returned:
 *      x        double[] Intermediate world coordinates, in SI units.
@@ -193,8 +194,13 @@
 *   Spectral CTYPEia keyword analysis; spctyp()
 *   -------------------------------------------
 *   spctyp() checks whether a CTYPEia keyvalue is a valid spectral axis type
-*   and if so return information derived from it relating to the associated
-*   S-, P-, and X-type spectral variables (explained below).
+*   and if so returns information derived from it relating to the associated
+*   S-, P-, and X-type spectral variables (explained below).  It recognizes
+*   and translates AIPS-convention spectral CTYPEia keyvalues.
+*
+*   The return arguments are guaranteed not be modified if CTYPEia is not a
+*   valid spectral type; zero-pointers may be specified for any that are not
+*   of interest.
 *
 *   Given:
 *      ctype    const char[9]
@@ -202,7 +208,15 @@
 *                        termination).
 *
 *   Returned:
-*      cname    char[]   Descriptive name of the S-type spectral variable.
+*      stype    char[]   The four-letter name of the S-type spectral variable
+*                        copied or translated from ctype.  If a non-zero
+*                        pointer is given, the array must accomodate a null-
+*                        terminated string of length 5.
+*      scode    char[]   The three-letter spectral algorithm code copied or
+*                        translated from ctype.  If a non-zero pointer is
+*                        given, the array must accomodate a null-terminated
+*                        string of length 4.
+*      sname    char[]   Descriptive name of the S-type spectral variable.
 *                        If a non-zero pointer is given, the array must
 *                        accomodate a null-terminated string of length 22.
 *      units    char[]   SI units of the S-type spectral variable.
@@ -233,13 +247,14 @@
 *   Function return value:
 *               int      Status return value:
 *                           0: Success.
-*                           2: Invalid spectral parameters.
+*                           2: Invalid spectral parameters (not a spectral
+*                              CTYPEia).
 *
 *
 *   Spectral keyword analysis; spcspx()
 *   -----------------------------------
 *   spcspx() analyses the CTYPEia and CRVALia FITS spectral axis keyword
-*   values and return information about the associated X-type spectral
+*   values and returns information about the associated X-type spectral
 *   variable.
 *
 *   Given:
@@ -257,8 +272,8 @@
 *                        set to zero.  Neither are required if the translation
 *                        is between wave-characteristic types, or between
 *                        velocity-characteristic types.  E.g., required for
-*                        'VELO-F2V' -> 'ZOPT-F2W', but not required for
-*                        'FREQ'     -> 'ZOPT-F2W'.
+*                        'FREQ'     -> 'ZOPT-F2W', but not required for
+*                        'VELO-F2V' -> 'ZOPT-F2W'.
 *
 *   Returned:
 *      ptype    char*    Character code for the P-type spectral variable
@@ -308,8 +323,8 @@
 *                        set to zero.  Neither are required if the translation
 *                        is between wave-characteristic types, or between
 *                        velocity-characteristic types.  E.g., required for
-*                        'VELO-F2V' -> 'ZOPT-F2W', but not required for
-*                        'FREQ'     -> 'ZOPT-F2W'.
+*                        'FREQ'     -> 'ZOPT-F2W', but not required for
+*                        'VELO-F2V' -> 'ZOPT-F2W'.
 *
 *   Returned:
 *      ptype    char*    Character code for the P-type spectral variable
@@ -325,8 +340,8 @@
 *                        reference point (i.e. the appropriate CRVALia
 *                        keyvalue), SI units.
 *      dSdX     double*  The derivative, dS/dX, evaluated at the reference
-*                        point, SI units.  Multiply the pixel spacing in the
-*                        X-type spectral coordinate by this to get the CDELTia
+*                        point, SI units.  Multiply this by the pixel spacing
+*                        in the X-type spectral coordinate to get the CDELTia
 *                        keyvalue.
 *
 *   Function return value:
@@ -358,8 +373,8 @@
 *                        set to zero.  Neither are required if the translation
 *                        is between wave-characteristic types, or between
 *                        velocity-characteristic types.  E.g., required for
-*                        'VELO-F2V' -> 'ZOPT-F2W', but not required for
-*                        'FREQ'     -> 'ZOPT-F2W'.
+*                        'FREQ'     -> 'ZOPT-F2W', but not required for
+*                        'VELO-F2V' -> 'ZOPT-F2W'.
 *
 *   Given and returned:
 *      ctypeS2  char[9]  Required spectral axis type (eight characters with
@@ -379,7 +394,7 @@
 *      crvalS2  double*  Value of the new S-type spectral variable at the
 *                        reference point, i.e. the new CRVALia keyvalue, SI
 *                        units.
-*      cdeltS1  double   Increment of the new S-type spectral variable at the
+*      cdeltS2  double*  Increment of the new S-type spectral variable at the
 *                        reference point, i.e. the new CDELTia keyvalue, SI
 *                        units.
 *
@@ -423,7 +438,8 @@
 *
 *              The S-type forms the first four characters of the CTYPEia
 *              keyvalue, and CRVALia and CDELTia are expressed as S-type
-*              quantities.
+*              quantities so that they provide a first-order approximation to
+*              the S-type variable at the reference point.
 *
 *      P-type: the basic spectral variable (F, W, A, or V) with which the
 *              S-type variable is associated, as in the above list.
@@ -590,9 +606,6 @@ extern const char *spc_errmsg[];
 #define spcx2s_errmsg spc_errmsg
 #define spcs2x_errmsg spc_errmsg
 
-extern const int  spc_ncode;
-extern const char spc_codes[15][4];
-
 
 struct spcprm {
    /* Initialization flag (see the prologue above).                         */
@@ -645,7 +658,8 @@ int spcprt(const struct spcprm *);
 int spcset(struct spcprm *);
 int spcx2s(struct spcprm *, int, int, int, const double[], double[], int[]);
 int spcs2x(struct spcprm *, int, int, int, const double[], double[], int[]);
-int spctyp(const char[], char[], char[], char *, char *, int *);
+int spctyp(const char[], char[], char[], char[], char[], char *, char *,
+           int *);
 int spcspx(const char[], double, double, double, char *, char *, int *,
            double *, double *);
 int spcxps(const char[], double, double, double, char *, char *, int *,

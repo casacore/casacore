@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -67,31 +67,12 @@ const char *wcs_errmsg[] = {
 
 /*--------------------------------------------------------------------------*/
 
-int wcsnpv(npvmax)
-
-int npvmax;
-
-{
-   if (npvmax >= 0) NPVMAX = npvmax;
-   return NPVMAX;
-}
-
-
-int wcsnps(npsmax)
-
-int npsmax;
-
-{
-   if (npsmax >= 0) NPSMAX = npsmax;
-   return NPSMAX;
-}
+int wcsnpv(int npvmax) { if (npvmax >= 0) NPVMAX = npvmax; return NPVMAX; }
+int wcsnps(int npsmax) { if (npsmax >= 0) NPSMAX = npsmax; return NPSMAX; }
 
 /*--------------------------------------------------------------------------*/
 
-int wcsini(alloc, naxis, wcs)
-
-int alloc, naxis;
-struct wcsprm *wcs;
+int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 
 {
    int i, j, k, status;
@@ -409,8 +390,8 @@ struct wcsprm *wcs;
 
    /* CUNITia and CTYPEia are blank by default. */
    for (i = 0; i < naxis; i++) {
-      wcs->cunit[i][0] = '\0';
-      wcs->ctype[i][0] = '\0';
+      memset(wcs->cunit[i], 0, 72);
+      memset(wcs->ctype[i], 0, 72);
    }
 
 
@@ -440,7 +421,7 @@ struct wcsprm *wcs;
    for (k = 0; k < wcs->npsmax; k++) {
      wcs->ps[k].i = 0;
      wcs->ps[k].m = 0;
-     wcs->ps[k].value[0] = '\0';
+     memset(wcs->ps[k].value, 0, 72);
    }
 
    /* Defaults for alternate linear transformations. */
@@ -458,23 +439,23 @@ struct wcsprm *wcs;
    /* Defaults for auxiliary coordinate system information. */
    wcs->alt[0] = ' ';
    wcs->colnum = 0;
-   wcs->wcsname[0] = '\0';
+   memset(wcs->wcsname, 0, 72);
    for (i = 0; i < naxis; i++) {
-      wcs->cname[i][0] = '\0';
+      memset(wcs->cname[i], 0, 72);
       wcs->crder[i] = UNDEFINED;
       wcs->csyer[i] = UNDEFINED;
    }
-   wcs->radesys[0] = '\0';
+   memset(wcs->radesys, 0, 72);
    wcs->equinox    = UNDEFINED;
-   wcs->specsys[0] = '\0';
-   wcs->ssysobs[0] = '\0';
+   memset(wcs->specsys, 0, 72);
+   memset(wcs->ssysobs, 0, 72);
    wcs->velosys    = UNDEFINED;
-   wcs->ssyssrc[0] = '\0';
+   memset(wcs->ssyssrc, 0, 72);
    wcs->zsource    = UNDEFINED;
    wcs->obsgeo[0]  = UNDEFINED;
    wcs->obsgeo[1]  = UNDEFINED;
    wcs->obsgeo[2]  = UNDEFINED;
-   wcs->dateobs[0] = '\0';
+   memset(wcs->dateobs, 0, 72);
    wcs->mjdobs     = UNDEFINED;
    wcs->mjdavg     = UNDEFINED;
 
@@ -489,17 +470,20 @@ struct wcsprm *wcs;
    celini(&(wcs->cel));
    spcini(&(wcs->spc));
 
+   wcs->types = 0;
+   wcs->tab = 0;
+
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int wcssub(alloc, wcssrc, nsub, axes, wcsdst)
-
-int alloc;
-const struct wcsprm *wcssrc;
-int *nsub, axes[];
-struct wcsprm *wcsdst;
+int wcssub(
+   int alloc,
+   const struct wcsprm *wcssrc,
+   int *nsub,
+   int axes[],
+   struct wcsprm *wcsdst)
 
 {
    char *c, ctypei[16];
@@ -840,9 +824,7 @@ dealloc:
 
 /*--------------------------------------------------------------------------*/
 
-int wcsfree(wcs)
-
-struct wcsprm *wcs;
+int wcsfree(struct wcsprm *wcs)
 
 {
    if (wcs == 0) return 1;
@@ -903,6 +885,15 @@ struct wcsprm *wcs;
    wcs->m_crder = 0;
    wcs->m_csyer = 0;
 
+   /* Free memory allocated by wcsset(). */
+   if (wcs->flag == WCSSET) {
+      if (wcs->types) free(wcs->types);
+      if (wcs->tab)   free(wcs->tab);
+   }
+
+   wcs->types = 0;
+   wcs->tab   = 0;
+
    wcs->flag = 0;
 
    return linfree(&(wcs->lin));
@@ -910,9 +901,7 @@ struct wcsprm *wcs;
 
 /*--------------------------------------------------------------------------*/
 
-int wcsprt(wcs)
-
-const struct wcsprm *wcs;
+int wcsprt(const struct wcsprm *wcs)
 
 {
    int i, j, k;
@@ -1145,6 +1134,16 @@ const struct wcsprm *wcs;
    printf("        cel: (see below)\n");
    printf("        spc: (see below)\n");
 
+   printf("      types: 0x%x\n           ", (int)wcs->types);
+   for (i = 0; i < wcs->naxis; i++) {
+      printf("%5d", wcs->types[i]);
+   }
+   printf("\n");
+
+   printf("        tab: 0x%x", (int)wcs->tab);
+   if (wcs->tab != 0) printf("  (see below)");
+   printf("\n");
+
    /* Memory management. */
    printf("     m_flag: %d\n", wcs->m_flag);
    printf("    m_naxis: %d\n", wcs->m_naxis);
@@ -1188,21 +1187,26 @@ const struct wcsprm *wcs;
    printf("   spc.*\n");
    spcprt(&(wcs->spc));
 
+   /* Tabular transformation parameters. */
+   if (wcs->tab) {
+      printf("\n");
+      printf("   tab.*\n");
+      tabprt(wcs->tab);
+   }
+
    return 0;
 }
 
 /*--------------------------------------------------------------------------*/
 
-int wcsset(wcs)
-
-struct wcsprm *wcs;
+int wcsset(struct wcsprm *wcs)
 
 {
    const int  nalias = 2;
    const char aliases [2][4] = {"NCP", "GLS"};
 
-   char ctypei[72], pcode[4], requir[9];
-   int i, j, k, m, naxis, *ndx = 0, status;
+   char ctypei[72], pcode[4], requir[9], scode[4], stype[5];
+   int i, j, k, m, naxis, *ndx = 0, status, tables;
    double lambda, rho;
    double *cd, *pc;
    struct celprm *wcscel = &(wcs->cel);
@@ -1220,8 +1224,13 @@ struct wcsprm *wcs;
    wcs->spec = -1;
    wcs->cubeface = -1;
 
+
    naxis = wcs->naxis;
+   if (wcs->types != 0) free(wcs->types);
+   wcs->types = calloc(naxis, sizeof(int));
+
    for (i = 0; i < naxis; i++) {
+      wcs->types[i] = 0;
       strncpy(ctypei, wcs->ctype[i], 72);
 
       /* Null fill. */
@@ -1241,21 +1250,9 @@ struct wcsprm *wcs;
          ctypei[k] = '\0';
       }
 
-      /* Do alias translation for AIPS spectral types. */
-      if (ctypei[4] == '-') {
-         if (strcmp(ctypei+5, "LSR") == 0 ||
-             strcmp(ctypei+5, "HEL") == 0 ||
-             strcmp(ctypei+5, "OBS") == 0) {
-            if (strncmp(ctypei, "FREQ", 4) == 0 ||
-                strncmp(ctypei, "VELO", 4) == 0) {
-               strcpy(ctypei+4, "    ");
-            } else if (strncmp(ctypei, "FELO", 4) == 0) {
-               strcpy(ctypei, "VOPT-F2W");
-            }
-         }
-      }
-
-      if (ctypei[4] != '-') {
+      /* Is CTYPEia in "4-3" form? */
+      if (ctypei[4] != '-' || ctypei[8] != '\0') {
+         /* No, but check for a CUBEFACE axis. */
          if (strcmp(ctypei, "CUBEFACE") == 0) {
             if (wcs->cubeface == -1) {
                wcs->cubeface = i;
@@ -1264,20 +1261,32 @@ struct wcsprm *wcs;
                return 4;
             }
          }
+
+         /* Linear axis. */
          continue;
       }
 
 
-      /* Got an axis qualifier, is it a recognized spectral type? */
-      for (k = 0; k < spc_ncode; k++) {
-         if (strncmp(ctypei+5, spc_codes[k], 3) == 0) {
-            /* Parse the spectral axis type. */
-            wcs->spec = i;
-            break;
-         }
+      /* Got an axis qualifier, is it a logarithmic or tabular axis? */
+      if (strncmp(ctypei+5, "LOG", 3) == 0) {
+         /* Logarithmic axis found. */
+         wcs->types[i] = 100;
+         break;
+      } else if (strncmp(ctypei+5, "TAB", 3) == 0) {
+         /* Tabular axis found. */
+         wcs->types[i] = 400;
+         break;
       }
 
-      if (k < spc_ncode) {
+
+      /* Is it a recognized spectral type? */
+      if (!spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0)) {
+         if (strcmp(scode, "   ")) {
+            /* Non-linear spectral axis found. */
+            wcs->types[i] += 300;
+            wcs->spec = i;
+         }
+
          continue;
       }
 
@@ -1288,19 +1297,21 @@ struct wcsprm *wcs;
       }
 
       if (k == prj_ncode) {
-         /* Maybe it's a projection alias. */
+         /* Not a standard projection code, maybe it's an alias. */
          for (k = 0; k < nalias; k++) {
             if (strncmp(ctypei+5, aliases[k], 3) == 0) break;
          }
 
          if (k == nalias) {
-            /* Not recognized. */
-            continue;
+            /* Not a recognized algorithm code of any type. */
+            return 4;
          }
       }
 
       /* Parse the celestial axis type. */
+      wcs->types[i] = 200;
       if (strcmp(pcode, "") == 0) {
+         /* The first of the two celestial axes. */
          sprintf(pcode, "%.3s", ctypei+5);
 
          if (strncmp(ctypei, "RA--", 4) == 0) {
@@ -1345,7 +1356,9 @@ struct wcsprm *wcs;
             wcs->lat = -1;
             return 4;
          }
+
       } else {
+         /* Looking for the complementary celestial axis. */
          if (strncmp(ctypei, requir, 8) != 0) {
             /* Inconsistent projection types. */
             wcs->lng = -1;
@@ -1358,7 +1371,7 @@ struct wcsprm *wcs;
       }
    }
 
-
+   /* Do we have a complementary pair of celestial axes? */
    if (strcmp(requir, "")) {
       /* Unmatched celestial axis. */
       wcs->lng = -1;
@@ -1450,10 +1463,9 @@ struct wcsprm *wcs;
    if (wcs->spec >= 0) {
       spcini(wcsspc);
 
-      sprintf(wcsspc->type, "%.4s", wcs->ctype[wcs->spec]);
-      sprintf(wcsspc->code, "%.3s", wcs->ctype[wcs->spec]+5);
-
       /* CRVALia, RESTFRQa, and RESTWAVa cards. */
+      strcpy(wcsspc->type, stype);
+      strcpy(wcsspc->code, scode);
       wcsspc->crval = wcs->crval[wcs->spec];
       wcsspc->restfrq = wcs->restfrq;
       wcsspc->restwav = wcs->restwav;
@@ -1475,6 +1487,12 @@ struct wcsprm *wcs;
       if (status = spcset(wcsspc)) {
          return status + 3;
       }
+   }
+
+
+   /* Tabular axes present? */
+   if (tables) {
+
    }
 
 
@@ -1523,15 +1541,16 @@ struct wcsprm *wcs;
 
 /*--------------------------------------------------------------------------*/
 
-int wcsp2s(wcs, ncoord, nelem, pixcrd, imgcrd, phi, theta, world, stat)
-
-struct wcsprm *wcs;
-int ncoord, nelem;
-const double pixcrd[];
-double imgcrd[];
-double phi[], theta[];
-double world[];
-int stat[];
+int wcsp2s(
+   struct wcsprm *wcs,
+   int ncoord,
+   int nelem,
+   const double pixcrd[],
+   double imgcrd[],
+   double phi[],
+   double theta[],
+   double world[],
+   int stat[])
 
 {
    int    face, i, iso_x, iso_y, istat, k, nx, ny, *statp, status, wcslat,
@@ -1539,6 +1558,7 @@ int stat[];
    double offset, *worldlat, *worldlng;
    register double *img, *wrl;
    struct celprm *wcscel = &(wcs->cel);
+   struct prjprm *wcsprj = &(wcscel->prj);
 
    /* Initialize if required. */
    if (wcs == 0) return 1;
@@ -1555,6 +1575,7 @@ int stat[];
       return status;
    }
 
+   /* For convenience. */
    wcslng = wcs->lng;
    wcslat = wcs->lat;
    wcspec = wcs->spec;
@@ -1578,14 +1599,14 @@ int stat[];
    }
 
    /* Convert celestial coordinates. */
-   if (wcs->lng >= 0) {
+   if (wcslng >= 0) {
       /* Do we have a CUBEFACE axis? */
       if (wcs->cubeface != -1) {
          /* Separation between faces. */
-         if (wcscel->prj.r0 == 0.0) {
+         if (wcsprj->r0 == 0.0) {
             offset = 90.0;
          } else {
-            offset = wcscel->prj.r0*PI/2.0;
+            offset = wcsprj->r0*PI/2.0;
          }
 
          /* Lay out faces in a plane. */
@@ -1663,7 +1684,7 @@ int stat[];
 
 
    /* Convert spectral coordinates. */
-   if (wcs->spec >= 0) {
+   if (wcspec >= 0) {
       /* Check for constant x. */
       nx = ncoord;
       if (iso_x = wcs_allEq(ncoord, nelem, imgcrd+wcspec)) {
@@ -1691,15 +1712,16 @@ int stat[];
 
 /*--------------------------------------------------------------------------*/
 
-int wcss2p(wcs, ncoord, nelem, world, phi, theta, imgcrd, pixcrd, stat)
-
-struct wcsprm* wcs;
-int ncoord, nelem;
-const double world[];
-double phi[], theta[];
-double imgcrd[];
-double pixcrd[];
-int stat[];
+int wcss2p(
+   struct wcsprm* wcs,
+   int ncoord,
+   int nelem,
+   const double world[],
+   double phi[],
+   double theta[],
+   double imgcrd[],
+   double pixcrd[],
+   int stat[])
 
 {
    int    i, isolat, isolng, isospec, istat, k, nlat, nlng, nspec, status,
@@ -1708,6 +1730,7 @@ int stat[];
    register const double *wrl;
    register double *img;
    struct celprm *wcscel = &(wcs->cel);
+   struct prjprm *wcsprj = &(wcscel->prj);
 
 
    /* Initialize if required. */
@@ -1720,6 +1743,7 @@ int stat[];
    /* Sanity check. */
    if (ncoord < 1 || (ncoord > 1 && nelem < wcs->naxis)) return 4;
 
+   /* For convenience. */
    wcslng = wcs->lng;
    wcslat = wcs->lat;
    wcspec = wcs->spec;
@@ -1745,7 +1769,7 @@ int stat[];
 
 
    /* Celestial coordinates. */
-   if (wcs->lng >= 0) {
+   if (wcslng >= 0) {
       /* Check for constant lng and/or lat. */
       nlng = ncoord;
       nlat = 0;
@@ -1781,10 +1805,10 @@ int stat[];
       /* Do we have a CUBEFACE axis? */
       if (wcs->cubeface != -1) {
          /* Separation between faces. */
-         if (wcscel->prj.r0 == 0.0) {
+         if (wcsprj->r0 == 0.0) {
             offset = 90.0;
          } else {
-            offset = wcscel->prj.r0*PI/2.0;
+            offset = wcsprj->r0*PI/2.0;
          }
 
          /* Stack faces in a cube. */
@@ -1816,7 +1840,7 @@ int stat[];
 
 
    /* Spectral coordinates. */
-   if (wcs->spec >= 0) {
+   if (wcspec >= 0) {
       /* Check for constant spec. */
       nspec = ncoord;
       if (isospec = wcs_allEq(ncoord, nelem, world+wcspec)) {
@@ -1850,18 +1874,18 @@ int stat[];
 
 /*--------------------------------------------------------------------------*/
 
-int wcsmix(wcs, mixpix, mixcel, vspan, vstep, viter, world, phi, theta,
-           imgcrd, pixcrd)
-
-struct wcsprm *wcs;
-int mixpix, mixcel;
-const double vspan[2];
-double vstep;
-int viter;
-double world[];
-double phi[], theta[];
-double imgcrd[];
-double pixcrd[];
+int wcsmix(
+   struct wcsprm *wcs,
+   int mixpix,
+   int mixcel,
+   const double vspan[2],
+   double vstep,
+   int viter,
+   double world[],
+   double phi[],
+   double theta[],
+   double imgcrd[],
+   double pixcrd[])
 
 {
    const int niter = 60;
@@ -1876,6 +1900,7 @@ double pixcrd[];
    double d, d0, d0m, d1, d1m, dx = 0.0;
    double dabs, dmin, lmin;
    double dphi, phi0, phi1;
+   struct celprm *wcscel = &(wcs->cel);
    struct wcsprm wcs0;
 
    /* Initialize if required. */
@@ -2323,7 +2348,7 @@ double pixcrd[];
       /* Could the celestial coordinate element map to a native pole? */
       *phi = 0.0;
       *theta = -*theta;
-      status = sphx2s(wcs->cel.euler, 1, 1, 1, 1, phi, theta, &lng, &lat);
+      status = sphx2s(wcscel->euler, 1, 1, 1, 1, phi, theta, &lng, &lat);
 
       if (mixcel == 1) {
          if (fabs(fmod(*worldlng-lng, 360.0)) > tol) continue;
@@ -2430,10 +2455,55 @@ double pixcrd[];
 
 /*--------------------------------------------------------------------------*/
 
-int wcs_allEq(ncoord, nelem, first)
+int wcssptr(
+   struct wcsprm *wcs,
+   int  *i,
+   char ctypeS2[9])
 
-int ncoord, nelem;
-const double *first;
+{
+   int    j, status;
+   double cdeltS2, crvalS2;
+
+   /* Initialize if required. */
+   if (wcs == 0) return 1;
+   if (wcs->flag != WCSSET) {
+      if (status = wcsset(wcs)) return status;
+   }
+
+   if ((j = *i) < 0 && (j = wcs->spec) < 0) {
+      /* Look for a linear spectral axis. */
+      for (j = 0; j < wcs->naxis; j++) {
+         if (!spctyp(wcs->ctype[j], 0, 0, 0, 0, 0, 0, 0)) {
+            break;
+         }
+      }
+
+      if (j >= wcs->naxis) {
+         /* No spectral axis. */
+         return 12;
+      }
+
+      *i = j;
+   }
+
+   /* Translate the spectral axis. */
+   if (status = spctrn(wcs->ctype[j], wcs->crval[j], wcs->cdelt[j],
+                       wcs->restfrq, wcs->restwav, ctypeS2, &crvalS2,
+                       &cdeltS2)) {
+      return 6;
+   }
+
+   wcs->flag = 0;
+   wcs->cdelt[j] = cdeltS2;
+   strcpy(wcs->ctype[j], ctypeS2);
+   wcs->crval[j] = crvalS2;
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int wcs_allEq(int ncoord, int nelem, const double *first)
 
 {
    double v0;
@@ -2449,10 +2519,7 @@ const double *first;
 
 /*--------------------------------------------------------------------------*/
 
-void wcs_setAll(ncoord, nelem, first)
-
-int ncoord, nelem;
-double *first;
+void wcs_setAll(int ncoord, int nelem, double *first)
 
 {
    double v0, *vp;
@@ -2465,10 +2532,7 @@ double *first;
 
 /*--------------------------------------------------------------------------*/
 
-void wcs_setAli(ncoord, nelem, first)
-
-int ncoord, nelem;
-int *first;
+void wcs_setAli(int ncoord, int nelem, int *first)
 
 {
    int v0, *vp;

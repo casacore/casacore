@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -278,73 +278,6 @@ struct spxprm *spx;
 
       spx->dawavvelo = 0.0;
       spx->dveloawav = 0.0;
-   }
-
-   return 0;
-}
-
-
-/*============================================================================
-*   Logarithmic conversions.
-*===========================================================================*/
-
-int speclog(dummy, nspec, sspec, sloge, spec, loge, stat)
-
-double dummy;
-int nspec, sspec, sloge;
-const double spec[];
-double loge[];
-int stat[];
-
-{
-   int status = 0;
-   register int ispec, *statp;
-   register const double *specp;
-   register double *logep;
-
-   specp = spec;
-   logep = loge;
-   statp = stat;
-   for (ispec = 0; ispec < nspec; ispec++) {
-      if (*specp > 0.0) {
-         *logep = log(*specp);
-         *(statp++) = 0;
-      } else {
-         *(statp++) = 1;
-         status = 4;
-      }
-
-      specp += sspec;
-      logep += sloge;
-   }
-
-   return status;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int logspec(dummy, nloge, sloge, sspec, loge, spec, stat)
-
-double dummy;
-int nloge, sloge, sspec;
-const double loge[];
-double spec[];
-int stat[];
-
-{
-   register int iloge, *statp;
-   register const double *logep;
-   register double *specp;
-
-   logep = loge;
-   specp = spec;
-   statp = stat;
-   for (iloge = 0; iloge < nloge; iloge++) {
-      *specp = exp(*logep);
-      *(statp++) = 0;
-
-      logep += sloge;
-      specp += sspec;
    }
 
    return 0;

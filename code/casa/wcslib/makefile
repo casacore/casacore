@@ -113,6 +113,8 @@ $(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/wcs.h
 
 $(WCSLIB).$(SFXSTAT)(lin.o) : $(CODEDIR)/lin.h
 
+$(WCSLIB).$(SFXSTAT)(log.o) : $(CODEDIR)/log.h
+
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/wcstrig.h
@@ -130,10 +132,12 @@ $(WCSLIB).$(SFXSTAT)(tab.o) : $(CODEDIR)/tab.h
 
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/log.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/spc.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/tab.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcstrig.h
