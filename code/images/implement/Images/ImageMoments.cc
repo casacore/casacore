@@ -137,7 +137,8 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
   noInclude_p(other.noInclude_p),
   noExclude_p(other.noExclude_p),
   fixedYLimits_p(other.fixedYLimits_p),
-  momentAxis_p(other.momentAxis_p),
+  momentAxis_p(other.momentAxis_p),  
+  worldMomentAxis_p(other.worldMomentAxis_p),
   kernelTypes_p(other.kernelTypes_p),
   kernelWidths_p(other.kernelWidths_p),
   nxy_p(other.nxy_p),
@@ -173,6 +174,7 @@ ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
   noExclude_p(other.noExclude_p),
   fixedYLimits_p(other.fixedYLimits_p),
   momentAxis_p(other.momentAxis_p),
+  worldMomentAxis_p(other.worldMomentAxis_p),
   kernelTypes_p(other.kernelTypes_p),
   kernelWidths_p(other.kernelWidths_p),
   nxy_p(other.nxy_p),
@@ -215,6 +217,7 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       os_p = other.os_p;
       showProgress_p = other.showProgress_p;
       momentAxis_p = other.momentAxis_p;
+      worldMomentAxis_p = other.worldMomentAxis_p;
       momentAxisDefault_p = other.momentAxisDefault_p;
       kernelTypes_p = other.kernelTypes_p;
       kernelWidths_p = other.kernelWidths_p;
@@ -325,7 +328,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
       return False;
    }
 
-   momentAxis_p= momentAxisU;
+   momentAxis_p = momentAxisU;
    if (momentAxis_p == momentAxisDefault_p) {
      momentAxis_p = CoordinateUtil::findSpectralAxis(pInImage_p->coordinates());
      if (momentAxis_p == -1) {
@@ -345,6 +348,7 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
          return False;
       }
    }
+   worldMomentAxis_p = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
 
    return True;
 }
@@ -788,12 +792,12 @@ Bool ImageMoments<T>::createMoments()
         goodParameterStatus_p = False;
         return False;
      }
+     worldMomentAxis_p = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
    }
-   Int worldMomentAxis = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
-   String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis);
+   String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis_p);
 //   cout << "momentAxisUnits = " << momentAxisUnits << endl;
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
-        << pInImage_p->coordinates().worldAxisNames()(worldMomentAxis) << LogIO::POST;
+        << pInImage_p->coordinates().worldAxisNames()(worldMomentAxis_p) << LogIO::POST;
 
 
 // Check the user's requests are allowed
@@ -904,8 +908,8 @@ Bool ImageMoments<T>::createMoments()
 // Account for removal of the collapsed moment axis in the coordinate system.  
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
-   Bool ok = outImageCoord.removeWorldAxis(worldMomentAxis,
-                 outImageCoord.referenceValue()(worldMomentAxis));
+   Bool ok = outImageCoord.removeWorldAxis(worldMomentAxis_p,
+                 outImageCoord.referenceValue()(worldMomentAxis_p));
    if (!ok) {
       os_p << String("Failed to remove moment axis because ") 
            << outImageCoord.errorMessage() << LogIO::EXCEPTION;
@@ -1613,37 +1617,51 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 // Create ArrayLattice
 
       ArrayLattice<T>* pPSF = new ArrayLattice<T>(psf);
-
+//
 // Fiddle CoordinateSystem
- 
+//
       CoordinateSystem psfCSys = pInImage_p->coordinates();
-      Int coordinate, axisInCoordinate, worldAxis, pixelAxis;
-      Vector<Double> refPix(smoothAxes_p.nelements());
-      Bool found;
-      Int i;
-      for (i=0,pixelAxis=0; pixelAxis<Int(psfCSys.nPixelAxes()); pixelAxis++) {
-         if(linearSearch(found, smoothAxes_p, pixelAxis, smoothAxes_p.nelements())==-1) {
-            psfCSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
-            worldAxis = psfCSys.worldAxes(coordinate)(axisInCoordinate);
-
-            psfCSys.removePixelAxis(pixelAxis, 0.0);
-            psfCSys.removeWorldAxis(worldAxis, 0.0);
-         } else {
-            refPix(i) = psf.shape()(i)/2.0;
-            i++;
-         }
+      Vector<Double> refPix(psfCSys.referencePixel().copy());
+      Vector<Double> refVal(psfCSys.referenceValue().copy());
+      for (uInt i=0; i<refPix.nelements(); i++) {
+         refVal(i) = 0.0;
+         refPix(i) = Double(pPSF->shape()(i))/2.0;
       }
-      Vector<Double> refValue(psfCSys.nWorldAxes());
-      refValue = 0.0;
-      psfCSys.setReferenceValue(refValue);
 
+/*
+      Vector<uInt> keepAxes(smoothAxes_p.nelements());
+      Vector<Double> worldReplacement(smoothAxes_p.nelements());
+      Vector<Double> refVal(smoothAxes_p.nelements());
+      Vector<Double> refPix(smoothAxes_p.nelements());
+      
+      for (uInt i=0; i<keepAxes.nelements(); i++) {
+//
+// A pixel axis always has a world axis.
+//                             
+         Int worldAxis = psfCSys.pixelAxisToWorldAxis(smoothAxes_p(i));
+         keepAxes(i) = worldAxis;
+         worldReplacement(i) = pInImage_p->coordinates().referenceValue()(worldAxis);
+//  
+// The coordinate system is laregely meaningless for the PSF
+// image, so give it a random refpix and refval
+// 
+         refVal(i) = 0.0;
+         refPix(i) = pPSF->shape()(i)/2.0;
+      }
+      CoordinateUtil::removeAxes(psfCSys, worldReplacement, keepAxes, False);  
+*/
+//
 // Save image to disk
-    
+// 
+cout << "psf shape, nPixelAxes, nWorldAxes" << pPSF->shape() << " " << psfCSys.nPixelAxes() 
+     << " " << psfCSys.nWorldAxes() << endl;
+
+      psfCSys.setReferenceValue(refVal);
+      psfCSys.setReferencePixel(refPix);
       PagedImage<T> psfOut(pPSF->shape(), psfCSys, psfOut_p);
-      psfOut.copyData(*pPSF);
+      psfOut.copyData(*pPSF);  
       delete pPSF;
    }
-
 
 // Create smoothed image as a PagedImage.  We delete it later
 // if the user doesn't want to save it
@@ -1770,6 +1788,24 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
 // one axis of the input image
 //
 {
+  ProgressMeter* pProgressMeter = 0;
+  if (showProgress_p) {
+     Double nMin = 0.0;
+     Double nMax = 1.0;
+     for (Int i=0; i<Int(in.shape().nelements()); i++) {
+        if (i!=axis) {
+           nMax *= in.shape()(i);
+        }
+     }
+     ostrstream oss;
+     oss << "Convolve Image Axis " << axis+1 << ends;
+     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+                                        String("Spectrum Convolutions"), 
+                                        String(""), String(""),
+                                        True, max(1,Int(nMax/20)));
+  }
+
+
   TiledLineStepper navIn(in.shape(),
 			 in.niceCursorShape(in.maxPixels()),
 			 axis);
@@ -1783,9 +1819,12 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
   while (!inIt.atEnd()) {
     conv.linearConv(result, inIt.vectorCursor());
     inIt.woVectorCursor() = result;
+//
+    if (showProgress_p) pProgressMeter->update(Double(i));
     inIt++;
     i++;
   }
+  if (showProgress_p) delete pProgressMeter;
 }
 
 
