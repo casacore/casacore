@@ -178,8 +178,11 @@ public:
 
   // LatticeBase virtual functions
 
+  // Is the lattice persistent ?
+  virtual Bool isPersistent() const {return True;};
+
   // Returns False, as the FITSImage is not writable.
-   virtual Bool isWritable() const;
+  virtual Bool isWritable() const;
 
   // Returns the name of the disk file.
   virtual String name (Bool stripPath=False) const;
