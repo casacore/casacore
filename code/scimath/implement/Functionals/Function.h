@@ -194,7 +194,7 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  Function() : param_p() {};
+  Function() : param_p(), arg_p(0) {};
   explicit Function(const uInt n) : param_p(n), arg_p(0) {};
   explicit Function(const Vector<T> &in) : param_p(in), arg_p(0) {};
   Function(const FunctionParam<T> &other) : param_p(other), arg_p(0) {};
