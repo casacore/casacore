@@ -64,17 +64,21 @@ void sortit (int opt)
     }
     cout << endl;
 
+    // Also test assignment.
     Sort sort2;
     sort2.sortKey (arr,TpInt,0,Sort::Descending);
-    nr = sort2.sort (inxvec,10,opt);          // same, but now descending
+    sort = sort2;
+    nr = sort.sort (inxvec,10,opt);           // same, but now descending
     for (i=0; i<nr; i++) {
 	cout << " " << arr[inxvec(i)];
     }
     cout << endl;
 
+    // Also test copy constructor.
     Sort sort3(ar2,sizeof(Int));
     sort3.sortKey (0,TpInt,Sort::Ascending);
-    nr = sort3.sort (inxvec,10,opt);          // same, but now with original
+    Sort sort3a(sort3);
+    nr = sort3a.sort (inxvec,10,opt);         // same, but now with original
     for (i=0; i<nr; i++) {                    // array in descending order
 	cout << " " << ar2[inxvec(i)];
     }
