@@ -69,52 +69,51 @@ void LCRegionSingle::setMaskPtr (Lattice<Bool>& mask)
 
 Bool LCRegionSingle::masksEqual (const LCRegion& other) const
 {
-
-// Type check
-
-   if (type() != other.type()) return False;
-
-// Do both have a mask ? 
-
-   if ( hasMask() && !other.hasMask()) return False;
-   if (!hasMask() &&  other.hasMask()) return False;
-   if (!hasMask() && !other.hasMask()) return True;
-
-// Caste (is safe)
-
-   const LCRegionSingle& that = (const LCRegionSingle&)other;
-
-
-// See if masks are the same shape.
-
-   if (itsMaskPtr->shape() != that.itsMaskPtr->shape()) return False;
-
-// Now we must check the values.  
-
-   RO_LatticeIterator<Bool> iter1(*itsMaskPtr, 
-                                  itsMaskPtr->niceCursorShape());
-   RO_LatticeIterator<Bool> iter2(*(that.itsMaskPtr), 
-                                  itsMaskPtr->niceCursorShape());
-   while (!iter1.atEnd()) {   
-      if (anyNE(iter1.cursor(),iter2.cursor())) return False;
-      iter1++; 
-      iter2++;
-   }
- 
-   return True;
+    // Object type check.
+    if (type() != other.type()) {
+	return False;
+    }
+    // Not equal if one has a mask and the other has not.
+    if (hasMask() != other.hasMask()) {
+	return False;
+    }
+    // True if both do not have a mask.
+    if (!hasMask() && !other.hasMask()) {
+	return True;
+    }
+    // Cast (is safe because object types are equal).
+    const LCRegionSingle& that = (const LCRegionSingle&)other;
+    // See if masks are the same shape.
+    if (itsMaskPtr->shape() != that.itsMaskPtr->shape()) {
+	return False;
+    }
+    // Now we must check the values.  
+    RO_LatticeIterator<Bool> iter1(*itsMaskPtr, 
+				   itsMaskPtr->niceCursorShape());
+    RO_LatticeIterator<Bool> iter2(*(that.itsMaskPtr), 
+				   itsMaskPtr->niceCursorShape());
+    while (!iter1.atEnd()) {   
+	if (anyNE (iter1.cursor(), iter2.cursor())) {
+	    return False;
+	}
+	iter1++; 
+	iter2++;
+    }
+    return True;
 }
 
 const Array<Bool> LCRegionSingle::maskArray() const
 {
-
-// Return a [] shaped array if there is no mask
-
-   IPosition shape;
-   if (hasMask()) shape = itsMaskPtr->shape();
-   COWPtr<Array<Bool> > pMask(new Array<Bool>(shape));
-   if (hasMask()) itsMaskPtr->get(pMask);
-
-   return *pMask;
+    // Return a [] shaped array if there is no mask
+    IPosition shape;
+    if (hasMask()) {
+	shape = itsMaskPtr->shape();
+    }
+    COWPtr<Array<Bool> > pMask(new Array<Bool>(shape));
+    if (hasMask()) {
+	itsMaskPtr->get (pMask);
+    }
+    return *pMask;
 }
 
 Bool LCRegionSingle::hasMask() const
