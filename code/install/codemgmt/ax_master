@@ -6071,3 +6071,4 @@
 17 136 src mv doc/recipes/recipe6/multifield doc/recipes/recipe6/multifield.dir
 17 138 src rm trial/apps/dish/naic/AOutils.g
 17 140 src mv doc/recipes/General/randstatrec doc/recipes/General/randstatrec.dir
+17 151 src rm admin/system/aips2-alma.list
