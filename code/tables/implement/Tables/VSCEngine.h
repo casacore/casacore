@@ -1,5 +1,5 @@
 //# VSCEngine.h: Base virtual column for a scalar column with any type
-//# Copyright (C) 1994,1995,1996,1999
+//# Copyright (C) 1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -283,7 +283,7 @@
 //  <li> identification         <src>static String dataTypeId();</src>
 //       This should return the (unique) name of the class, thus
 //       when T is templated in its turn, the name should contain the
-//       template argument name (AIPS++ rtti can be used for this purpose).
+//       template argument name.
 // </templating>
 
 
