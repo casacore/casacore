@@ -36,6 +36,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Assert.h>
 
 // MVTime class
 //# Static members
@@ -132,8 +133,9 @@ Time MVTime::getTime() const {
 
 const String &MVTime::dayName(uInt which) {
   static const String weekDay[7] = {
-    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
-  return weekDay[which];
+    "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+  AlwaysAssert(which > 0 && which < 8, AipsError);
+  return weekDay[which-1];
 }
 
 const String &MVTime::dayName() const {
@@ -152,7 +154,7 @@ const String &MVTime::monthName() const {
 }
 
 uInt MVTime::weekday() const {
-  return ((ifloor(val+3.)%7 + 7)%7);
+  return ((ifloor(val+2.)%7 + 7)%7 + 1);
 }
 
 uInt MVTime::month() const {
@@ -188,13 +190,20 @@ uInt MVTime::yearday() const {
   if (c%4 == 0 && (c%100 != 0 || c%400 == 0)) {
     c = (e+9)/12;
   } else {
-    c = 2 * (e+9)/12;
+    c = 2 * ((e+9)/12);
   };
   return ((275*e)/9 - c + a - 30);
 }
 
 uInt MVTime::yearweek() const {
-  return (((yearday() +12) - weekday())/7);
+  Int yd(yearday()-4);
+  uInt yw((yd+7)/7);
+  yd %= 7;
+  // Check for other week
+  if (yd >= 0) {
+    if (yd > (Int)weekday()) return yw+1;
+  } else if (yd+7 > (Int)weekday()) return yw+1;
+  return yw;
 }
 
 void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
