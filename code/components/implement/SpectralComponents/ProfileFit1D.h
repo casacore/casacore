@@ -1,5 +1,5 @@
-//# FitProfile1D.h: Class to fit profiles to vectors
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# ProfileFit1D.h: Class to fit profiles to vectors
+//# Copyright (C) 2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //#   $Id$
 
-#if !defined(AIPS_FITPROFILE1D_H)
-#define AIPS_FITPROFILE1D_H
+#if !defined(AIPS_PROFILEFIT1D_H)
+#define AIPS_PROFILEFIT1D_H
 
 //# Includes
 #include <aips/aips.h>

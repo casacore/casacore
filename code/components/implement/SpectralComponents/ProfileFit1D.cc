@@ -1,5 +1,5 @@
-//# FitProfile1D.cc: Class to fit Spectral components to vectors
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# ProfileFit1D.cc: Class to fit Spectral components to vectors
+//# Copyright (C) 2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
