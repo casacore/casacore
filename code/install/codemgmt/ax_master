@@ -2068,3 +2068,4 @@
 08 261 src rm trial/apps/image/templates
 08 264 src rm trial/implement/Display/templates
 08 269 src mv trial/implement/Lattices/ColumnCache.h aips/implement/Tables/ColumnCache.h
+08 269 src mv trial/implement/Lattices/ColumnCache.cc aips/implement/Tables/ColumnCache.cc
