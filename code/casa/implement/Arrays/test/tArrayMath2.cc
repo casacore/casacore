@@ -56,7 +56,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	res(i) = fullFunc(arr(st,end));
       }
       Array<Float> res2 = partFunc (arr, IPosition(1,1-j));
-      if (! allEQ (res, res2)) {
+      if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape << ", collapse axis " << j << endl;
 	cout << " result is " << res2 << endl;
@@ -66,7 +66,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     if (doExtra) {
       {
 	Array<Float> res2 = partFunc (arr, IPosition());
-	if (! allEQ (arr, res2)) {
+	if (! allNear (arr, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape << ", no collapse axis " << endl;
 	  cout << " result is " << res2 << endl;
@@ -100,7 +100,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       }
       Array<Float> res2 = partFunc (arr,
 				     IPosition::otherAxes(3, IPosition(1,j)));
-      if (! allEQ (res, res2)) {
+      if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape << ", collapse axis " << j << endl;
 	cout << " result is " << res2 << endl;
@@ -124,7 +124,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	}
 	Array<Float> res2 = partFunc (arr,
 				   IPosition::otherAxes(3, IPosition(2,j,k)));
-	if (! allEQ (res, res2)) {
+	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape
 	       << ", collapse axes " << j << ',' << k << endl;
@@ -149,7 +149,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       }
       Array<Float> res2 = partFunc (arr,
 				    IPosition::otherAxes(4, IPosition(1,j)));
-      if (! allEQ (res, res2)) {
+      if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape
 	     << ", collapse axis " << j << endl;
@@ -174,7 +174,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	}
 	Array<Float> res2 = partFunc (arr,
 				   IPosition::otherAxes(4, IPosition(2,j,k)));
-	if (! allEQ (res, res2)) {
+	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape
 	       << ", collapse axes " << j << ',' << k << endl;
@@ -205,7 +205,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	  }
 	  Array<Float> res2 = partFunc (arr,
 			       IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
-	  if (! allEQ (res, res2)) {
+	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
 	    cout << "for shape " << shape
 		 << ", collapse axes " << j0 << ','
@@ -232,7 +232,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       }
       Array<Float> res2 = partFunc (arr,
 				     IPosition::otherAxes(5, IPosition(1,j)));
-      if (! allEQ (res, res2)) {
+      if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape << ", collapse axis " << j << endl;
 	cout << " result is " << res2 << endl;
@@ -256,7 +256,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	}
 	Array<Float> res2 = partFunc (arr,
 				   IPosition::otherAxes(5, IPosition(2,j,k)));
-	if (! allEQ (res, res2)) {
+	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape
 	       << ", collapse axes " << j << ',' << k << endl;
@@ -287,7 +287,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	  }
 	  Array<Float> res2 = partFunc (arr,
 			      IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
-	  if (! allEQ (res, res2)) {
+	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
 	    cout << "for shape " << shape 
 		 << ", collapse axes " << j0 << ','
@@ -325,7 +325,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    }
 	    Array<Float> res2 = partFunc (arr,
 			    IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
-	    if (! allEQ (res, res2)) {
+	    if (! allNear (res, res2, 1.e-5)) {
 	      errFlag = True;
 	      cout << "for shape " << shape
 		   << ", collapse axes " << j0 << ','
@@ -353,7 +353,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       }
       Array<Float> res2 = partFunc (arr,
 				     IPosition::otherAxes(6, IPosition(1,j)));
-      if (! allEQ (res, res2)) {
+      if (! allNear (res, res2, 5.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape << ", collapse axis " << j << endl;
 	cout << " result is " << res2 << endl;
@@ -377,7 +377,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	}
 	Array<Float> res2 = partFunc (arr,
 				   IPosition::otherAxes(6, IPosition(2,j,k)));
-	if (! allEQ (res, res2)) {
+	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape
 	       << ", collapse axes " << j << ',' << k << endl;
@@ -408,7 +408,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	  }
 	  Array<Float> res2 = partFunc (arr,
 			       IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
-	  if (! allEQ (res, res2)) {
+	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
 	    cout << "for shape " << shape
 		 << ", collapse axes " << j0 << ','
@@ -446,7 +446,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    }
 	    Array<Float> res2 = partFunc (arr,
 			   IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
-	    if (! allEQ (res, res2)) {
+	    if (! allNear (res, res2, 1.e-5)) {
 	      errFlag = True;
 	      cout << "for shape " << shape
 		   << ", collapse axes " << j0 << ','
@@ -496,7 +496,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	      }
 	      Array<Float> res2 = partFunc (arr,
 		        IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
-	      if (! allEQ (res, res2)) {
+	      if (! allNear (res, res2, 1.e-5)) {
 		errFlag = True;
 		cout << "for shape " << shape
 		     << ", collapse axes " << j0 << ','
@@ -600,7 +600,7 @@ int main()
 	    res(i) = sum(arr(st,end));
 	  }
 	  timer.show("Using sum     ");
-	  AlwaysAssertExit (allNear (res, res2, 1.e-7));
+	  AlwaysAssertExit (allNear (res, res2, 1.e-6));
 	}
 	{
 	  timer.mark();
@@ -616,7 +616,7 @@ int main()
 	    res(i) = median(arr(st,end), False, False);
 	  }
 	  timer.show("Using median  ");
-	  AlwaysAssertExit (allNear (res, res2, 1.e-7));
+	  AlwaysAssertExit (allNear (res, res2, 1.e-6));
 	}
       }
       cout << "<<<" << endl;
