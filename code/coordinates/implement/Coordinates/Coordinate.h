@@ -187,6 +187,13 @@ public:
     // put into pixelOut in the appropriate pixelAxis
     // location.  Values in pixelIn are copied to
     // pixelOut
+    // worldMin and worldMax specify the range of the world
+    // coordinate (in the world axis units of that world axis
+    // in the coordinate system) being solved for in a mixed calculation
+    // for each world axis. They are only actually needed for DirectionCoordinates
+    // and for all other coordinates the relevant elements   
+    // can be undefined.   If you don't know, use -180 to 180
+    // degrees for longitude, and -90 to 90 for latitude.
     // Removed axes are handled (for example, a removed pixel
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
@@ -199,7 +206,9 @@ public:
                        const Vector<Double>& worldIn,
                        const Vector<Double>& pixelIn,
                        const Vector<Bool>& worldAxes,   
-                       const Vector<Bool>& pixelAxes) const;
+                       const Vector<Bool>& pixelAxes,
+                       const Vector<Double>& worldMin,
+                       const Vector<Double>& worldMax) const;
 
     // Batch up a lot of transformation. The first (most rapidly varying) axis
     // of the matrices contain the coordinates. Return the number of failures.

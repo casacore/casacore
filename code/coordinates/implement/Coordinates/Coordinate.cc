@@ -188,7 +188,9 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
                        const Vector<Double>& worldIn,
                        const Vector<Double>& pixelIn,
                        const Vector<Bool>& worldAxes,   
-                       const Vector<Bool>& pixelAxes) const
+                       const Vector<Bool>& pixelAxes,
+                       const Vector<Double>&,
+                       const Vector<Double>&) const
 //
 // Default implementation ok for non-coupled coordinated like
 // Linear.  Coupled coordinates like DirectionCoordinate
@@ -202,7 +204,6 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
    AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
    AlwaysAssert(nPixel == nPixelAxes(), AipsError);   
    AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);   
-
 //
 // Resize happens first time or maybe after an assignment
 //
@@ -217,7 +218,7 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("Coordinate::toMix - each axis must be either pixel or world");
          return False;
-       }
+      }
    }
 //
 // Convert world to pixel.  Use  reference value unless
