@@ -2130,3 +2130,8 @@
 11 108 src mv doc/papers/bgadass95.latex doc/papers/adass95/bgadass95.latex
 11 108 src mv doc/papers/rgadass95.latex doc/papers/adass95/rgadass95.latex
 11 110 src rm aips/glish/glish/clients/gtk/tkpgplot
+11 110 src rm aips/glish/glish/clients/gtk/Makefile.in
+11 110 src rm aips/glish/glish/clients/gtk/tkPgplot.h
+11 110 src rm aips/glish/glish/clients/gtk/tkPgplot.cc
+11 110 src rm aips/glish/glish/clients/gtk/tkAgent.cc
+11 110 src rm aips/glish/glish/clients/gtk/tkAgent.h
