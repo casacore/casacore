@@ -59,7 +59,9 @@ BucketCache::BucketCache (BucketFile* file, uInt startOffset,
   its_LRU           (cacheSize, uInt(0)),
   its_LRUCounter    (0),
   its_Cache         (cacheSize, (char*)0),
-  its_Buffer        (0)
+  its_Buffer        (0),
+  its_NrOfFree      (0),
+  its_FirstFree     (-1)
 {
     initStatistics();
     // The bucketsize must be set.
@@ -115,21 +117,26 @@ void BucketCache::clear (uInt fromSlot)
     }
 }
 
-void BucketCache::flush (uInt fromSlot)
+Bool BucketCache::flush (uInt fromSlot)
 {
-    // Initialize remaining buckets when everything is flushed.
+    // Initialize remaining buckets when everything has to be flushed.
     if (fromSlot == 0  &&  its_NewNrOfBuckets > 0) {
 	initializeBuckets (its_NewNrOfBuckets - 1);
     }
+    Bool hasWritten = False;
     for (uInt i=fromSlot; i<its_CacheSizeUsed; i++) {
 	if (its_Dirty[i]) {
 	    writeBucket (i);
+	    hasWritten = True;
 	}
     }
+    return hasWritten;
 }
 
 void BucketCache::resize (uInt cacheSize)
 {
+    // Clear the part of the cache to be deleted.
+    clear (cacheSize);
     // The cache must contain at least one slot.
     if (cacheSize == 0) {
 	cacheSize = 1;
@@ -138,9 +145,7 @@ void BucketCache::resize (uInt cacheSize)
     if (cacheSize == its_CacheSize) {
 	return;
     }
-    // Clear the part of the cache to be deleted.
-    // Then resize the cache.
-    clear (cacheSize);
+    // Resize the cache.
     its_Cache.resize    (cacheSize);
     its_BucketNr.resize (cacheSize);
     its_LRU.resize      (cacheSize);
@@ -157,6 +162,21 @@ void BucketCache::resize (uInt cacheSize)
 	its_CacheSizeUsed = cacheSize;
     }
     its_ActualSlot = 0;
+}
+
+
+void BucketCache::resync (uInt nrBucket, uInt nrOfFreeBucket,
+			  Int firstFreeBucket)
+{
+    // Clear the entire cache, so data will be reread.
+    // Set it to the new size.
+    clear();
+    if (nrBucket > its_NewNrOfBuckets) {
+	extend (nrBucket - its_NewNrOfBuckets);
+    }
+    its_CurNrOfBuckets = nrBucket;
+    its_NrOfFree       = nrOfFreeBucket;
+    its_FirstFree      = firstFreeBucket;
 }
 
 
@@ -223,17 +243,52 @@ void BucketCache::extend (uInt nrBucket)
     }
 }
     
-void BucketCache::addBucket (char* data)
+uInt BucketCache::addBucket (char* data)
 {
-    // Initialize all uninitialized buckets before the newly added bucket.
-    if (its_CurNrOfBuckets < its_NewNrOfBuckets) {
-	initializeBuckets (its_NewNrOfBuckets - 1);
+    uInt bucketNr;
+    if (its_FirstFree >= 0) {
+	// There is a free list, so get the first bucket from it.
+	bucketNr = its_FirstFree;
+	its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
+	its_file->read (its_Buffer,
+			CanonicalConversion::canonicalSize ((Int*)0));
+	CanonicalConversion::toLocal (its_FirstFree, its_Buffer);
+	its_NrOfFree--;
+    }else{
+	// No free buckets, so extend the file.
+	// Initialize all uninitialized buckets before the newly added bucket.
+	if (its_CurNrOfBuckets < its_NewNrOfBuckets) {
+	    initializeBuckets (its_NewNrOfBuckets - 1);
+	}
+	extend (1);
+	its_CurNrOfBuckets++;
+	bucketNr = its_NewNrOfBuckets - 1;
     }
-    extend (1);
-    its_CurNrOfBuckets++;
-    getSlot (its_NewNrOfBuckets - 1);
+    getSlot (bucketNr);
     its_Cache[its_ActualSlot] = data;
     its_Dirty[its_ActualSlot] = 1;
+    return bucketNr;
+}
+
+void BucketCache::removeBucket()
+{
+    // Removing a bucket means adding it to the beginning of the free list.
+    // Thus store the bucket nr of the first free in this bucket
+    // and make this bucket the first free.
+    uInt bucketNr = its_BucketNr[its_ActualSlot];
+    CanonicalConversion::fromLocal (its_Buffer, its_FirstFree);
+    its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
+    its_file->write (its_Buffer, CanonicalConversion::canonicalSize ((Int*)0));
+    its_Dirty[its_ActualSlot] = 0;
+    its_FirstFree = bucketNr;
+    its_NrOfFree++;
+    // Delete the stuff for this bucket.
+    // Set the LRU to zero, so it will be reused first.
+    its_DeleteCallBack (its_Owner, its_Cache[its_ActualSlot]);
+    its_Cache[its_ActualSlot] = 0;
+    its_SlotNr[bucketNr] = -1;
+    its_LRU[its_ActualSlot] = 0;
+    its_ActualSlot = 0;
 }
 
 
@@ -275,9 +330,11 @@ void BucketCache::getSlot (uInt bucketNr)
 	if (its_Dirty[its_ActualSlot]) {
 	    writeBucket (its_ActualSlot);
 	}
-	its_DeleteCallBack (its_Owner, its_Cache[its_ActualSlot]);
-	its_Cache[its_ActualSlot] = 0;
-	its_SlotNr[its_BucketNr[its_ActualSlot]] = -1;
+	if (its_Cache[its_ActualSlot] != 0) {
+	    its_DeleteCallBack (its_Owner, its_Cache[its_ActualSlot]);
+	    its_Cache[its_ActualSlot] = 0;
+	    its_SlotNr[its_BucketNr[its_ActualSlot]] = -1;
+	}
     }
     setLRU();
     its_BucketNr[its_ActualSlot] = bucketNr;
@@ -325,6 +382,9 @@ void BucketCache::showStatistics (ostream& os) const
 	os << "         (<  #reads + #writes!)";
     }
     os << endl;
+    if (its_NrOfFree > 0) {
+	os << "#deleted:  " << its_NrOfFree << endl;
+    }
     if (nread_p > 0) {
 	os << "#reads:    " << nread_p << endl;
     }
@@ -338,8 +398,9 @@ void BucketCache::showStatistics (ostream& os) const
     if (naccess_p > 0) {
 	os << "        hit-rate:  "
 	   << 100 * float(naccess_p - nread_p - ninit_p) /
-	                               float(naccess_p) << "%" << endl;
+	                               float(naccess_p) << "%";
     }
+    cout << endl;
 }
 
 void BucketCache::initStatistics()
