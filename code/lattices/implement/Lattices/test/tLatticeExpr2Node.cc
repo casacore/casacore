@@ -406,7 +406,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkBool (min(aF)==max(bF), emptyBArr,
 		    min(arra)==max(arrb), invalid, emptyMask, False)) ok = False;
 
-    if (!checkBool (aF!=bF, arra!=arrb,
+    if (!checkBool (LatticeExprNode(aF)!=bF, arra!=arrb,
 		    0, False, mask, False)) ok = False;
     if (!checkBool (aF!=min(bF), arra!=min(arrb),
 		    0, False, asMask, False)) ok = False;
@@ -424,7 +424,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkBool (min(aF)<max(bF), emptyBArr,
 		    min(arra)<max(arrb), invalid, emptyMask, False)) ok = False;
 
-    if (!checkBool (aF<=bF, arra<=arrb,
+    if (!checkBool (LatticeExprNode(aF)<=bF, arra<=arrb,
 		    0, False, mask, False)) ok = False;
     if (!checkBool (aF<=min(bF), arra<=min(arrb),
 		    0, False, asMask, False)) ok = False;
@@ -433,7 +433,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkBool (min(aF)<=max(bF), emptyBArr,
 		    min(arra)<=max(arrb), invalid, emptyMask, False)) ok = False;
 
-    if (!checkBool (aF>bF, arra>arrb,
+    if (!checkBool (LatticeExprNode(aF)>bF, arra>arrb,
 		    0, False, mask, False)) ok = False;
     if (!checkBool (aF>min(bF), arra>min(arrb),
 		    0, False, asMask, False)) ok = False;
@@ -442,7 +442,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
     if (!checkBool (min(aF)>max(bF), emptyBArr,
 		    min(arra)>max(arrb), invalid, emptyMask, False)) ok = False;
 
-    if (!checkBool (aF>=bF, arra>=arrb,
+    if (!checkBool (LatticeExprNode(aF)>=bF, arra>=arrb,
 		    0, False, mask, False)) ok = False;
     if (!checkBool (aF>=min(bF), arra>=min(arrb),
 		    0, False, asMask, False)) ok = False;
@@ -471,7 +471,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (aMask);
 	}
     }
-    if (!checkBool (aF!=aF && min(bF)==0, arra!=arra && min(arrb)==0,
+    if (!checkBool (LatticeExprNode(aF)!=aF && min(bF)==0,
+		    arra!=arra && min(arrb)==0,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (asMask.nelements() > 0) {
@@ -487,7 +488,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (aMask);
 	}
     }
-    if (!checkBool (aF!=aF && min(bF)!=0, arra!=arra && min(arrb)!=0,
+    if (!checkBool (LatticeExprNode(aF)!=aF && min(bF)!=0,
+		    arra!=arra && min(arrb)!=0,
 		    0, False, lmask, True)) ok = False;
 
     // Test anding of scalar and array.
@@ -505,7 +507,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bMask);
 	}
     }
-    if (!checkBool (max(aF)==0 && bF!=bF, max(arra)==0 && arrb!=arrb,
+    if (!checkBool (max(aF)==0 && LatticeExprNode(bF)!=bF,
+		    max(arra)==0 && arrb!=arrb,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (bsMask.nelements() > 0) {
@@ -513,7 +516,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bsMask);
 	}
     }
-    if (!checkBool (max(aF)!=0 && bF==bF, max(arra)!=0 && arrb==arrb,
+    if (!checkBool (max(aF)!=0 && LatticeExprNode(bF)==bF,
+		    max(arra)!=0 && arrb==arrb,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (bsMask.nelements() > 0) {
@@ -521,7 +525,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bMask);
 	}
     }
-    if (!checkBool (max(aF)!=0 && bF!=bF, max(arra)!=0 && arrb!=arrb,
+    if (!checkBool (max(aF)!=0 && LatticeExprNode(bF)!=bF,
+		    max(arra)!=0 && arrb!=arrb,
 		    0, False, lmask, True)) ok = False;
 
     // Test anding of scalar and scalar.
@@ -553,7 +558,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 
     // Test oring of array and array.
     // This is already tested more extensively in tLatticeExprNode.
-    if (!checkBool (aF==aF || bF==bF, arra==arra || arrb==arrb,
+    if (!checkBool (LatticeExprNode(aF)==aF || LatticeExprNode(bF)==bF,
+		    arra==arra || arrb==arrb,
 		    0, False, abMask, True)) ok = False;
 
     // Test oring of array and scalar.
@@ -563,7 +569,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (aMask);
 	}
     }
-    if (!checkBool (aF==aF || min(bF)==0, arra==arra || min(arrb)==0,
+    if (!checkBool (LatticeExprNode(aF)==aF || min(bF)==0,
+		    arra==arra || min(arrb)==0,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (asMask.nelements() > 0) {
@@ -571,7 +578,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (asMask);
 	}
     }
-    if (!checkBool (aF!=aF || min(bF)==0, arra!=arra || min(arrb)==0,
+    if (!checkBool (LatticeExprNode(aF)!=aF || min(bF)==0,
+		    arra!=arra || min(arrb)==0,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (asMask.nelements() > 0) {
@@ -579,7 +587,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (aMask);
 	}
     }
-    if (!checkBool (aF==aF || min(bF)!=0, arra==arra || min(arrb)!=0,
+    if (!checkBool (LatticeExprNode(aF)==aF || min(bF)!=0,
+		    arra==arra || min(arrb)!=0,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (asMask.nelements() > 0) {
@@ -587,7 +596,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (asMask);
 	}
     }
-    if (!checkBool (aF!=aF || min(bF)!=0, arra!=arra || min(arrb)!=0,
+    if (!checkBool (LatticeExprNode(aF)!=aF || min(bF)!=0,
+		    arra!=arra || min(arrb)!=0,
 		    0, False, lmask, True)) ok = False;
 
     // Test oring of scalar and array.
@@ -597,7 +607,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bMask);
 	}
     }
-    if (!checkBool (max(aF)==0 || bF==bF, max(arra)==0 || arrb==arrb,
+    if (!checkBool (max(aF)==0 || LatticeExprNode(bF)==bF,
+		    max(arra)==0 || arrb==arrb,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (bsMask.nelements() > 0) {
@@ -605,7 +616,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bsMask);
 	}
     }
-    if (!checkBool (max(aF)==0 || bF!=bF, max(arra)==0 || arrb!=arrb,
+    if (!checkBool (max(aF)==0 || LatticeExprNode(bF)!=bF,
+		    max(arra)==0 || arrb!=arrb,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (bsMask.nelements() > 0) {
@@ -613,7 +625,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bMask);
 	}
     }
-    if (!checkBool (max(aF)!=0 || bF==bF, max(arra)!=0 || arrb==arrb,
+    if (!checkBool (max(aF)!=0 || LatticeExprNode(bF)==bF,
+		    max(arra)!=0 || arrb==arrb,
 		    0, False, lmask, True)) ok = False;
     lmask.reference (emptyMask);
     if (bsMask.nelements() > 0) {
@@ -621,7 +634,8 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 	    lmask.reference (bsMask);
 	}
     }
-    if (!checkBool (max(aF)!=0 || bF!=bF, max(arra)!=0 || arrb!=arrb,
+    if (!checkBool (max(aF)!=0 || LatticeExprNode(bF)!=bF,
+		    max(arra)!=0 || arrb!=arrb,
 		    0, False, lmask, True)) ok = False;
 
     // Test oring of scalar and scalar.
@@ -750,8 +764,7 @@ Bool doIt (const SubLattice<Float>& aF, const SubLattice<Float>& bF)
 }
 
 
-main()
-{
+int main() {
     Bool ok = True;
     try {
 	IPosition shape(2,2,2);
