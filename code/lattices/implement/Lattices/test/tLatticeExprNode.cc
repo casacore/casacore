@@ -1491,6 +1491,88 @@ main (int argc, char *argv[])
 //
 //************************************************************************
 //
+// Check 3D functions
+//
+
+    cout << endl << "3-argument functions " << endl;    
+    cout << "iif" << endl;
+   {
+      cout << "  Float Scalar,Scalar,Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2(cFVal);
+      LatticeExprNode expr3 = iif(aBVal,expr1,expr2);
+      if (!checkFloat (expr3, bFVal, shape, True)) ok = False;
+      LatticeExprNode expr4 = iif(bBVal,expr1,expr2);
+      if (!checkFloat (expr4, cFVal, shape, True)) ok = False;
+   }
+   {
+      cout << "  Double Scalar,Array,Scalar" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2(cDVal);
+      LatticeExprNode expr3 = iif(aBVal,expr1,expr2);
+      if (!checkDouble (expr3, bDVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bBVal,expr1,expr2);
+      if (!checkDouble (expr4, cDVal, shape, False)) ok = False;
+   }
+   {
+      cout << "  Complex Scalar,Scalar,Array" << endl;
+      LatticeExprNode expr1(bCVal);
+      LatticeExprNode expr2(cC);
+      LatticeExprNode expr3 = iif(aBVal,expr1,expr2);
+      if (!checkComplex (expr3, bCVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bBVal,expr1,expr2);
+      if (!checkComplex (expr4, cCVal, shape, False)) ok = False;
+   }
+   {
+      cout << "  DComplex Scalar,Array,Array" << endl;
+      LatticeExprNode expr1(bDC);
+      LatticeExprNode expr2(cDC);
+      LatticeExprNode expr3 = iif(aBVal,expr1,expr2);
+      if (!checkDComplex (expr3, bDCVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bBVal,expr1,expr2);
+      if (!checkDComplex (expr4, cDCVal, shape, False)) ok = False;
+   }
+   {
+      cout << "  Float/Double Array,Scalar,Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2(cDVal);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkDouble (expr3, bDVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkDouble (expr4, cDVal, shape, False)) ok = False;
+   }
+   {
+      cout << "  Complex/Double Array,Array,Scalar" << endl;
+      LatticeExprNode expr1(bCVal);
+      LatticeExprNode expr2(cD);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkDComplex (expr3, bDCVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkDComplex (expr4, DComplex(cDVal,0), shape, False)) ok = False;
+   }
+   {
+      cout << "  Double Array,Scalar,Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2(cDVal);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkDouble (expr3, bDVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkDouble (expr4, cDVal, shape, False)) ok = False;
+   }
+   {
+      cout << "  Double Array,Array,Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2(cD);
+      LatticeExprNode expr3 = iif(aB,expr1,expr2);
+      if (!checkDouble (expr3, bDVal, shape, False)) ok = False;
+      LatticeExprNode expr4 = iif(bB,expr1,expr2);
+      if (!checkDouble (expr4, cDVal, shape, False)) ok = False;
+   }
+
+
+//
+//************************************************************************
+//
 // Test conversion functions.  The to* functions call
 // the public members makeFloat, makeDOuble, makeComplex, 
 // and makeDComplex so we don't have to test them again 
