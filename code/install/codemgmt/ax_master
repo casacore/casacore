@@ -2466,3 +2466,4 @@
 11 312 src mv trial/implement/HDS/HDSFile.cc npoi/implement/HDS/HDSFile.cc
 11 312 src mv trial/implement/HDS/HDSFile.h npoi/implement/HDS/HDSFile.h
 11 312 src mv trial/implement/HDS/DOhdsfile.cc npoi/implement/HDS/DOhdsfile.cc
+11 312 src mv trial/implement/HDS/DOhdsfile.h npoi/implement/HDS/DOhdsfile.h
