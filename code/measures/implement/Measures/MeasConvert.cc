@@ -356,6 +356,10 @@ void MeasConvert<M,F,MC>::create() {
     }
   }
   crout.resize(0, True);
+  // Make sure a reference given
+  if (model && model->getRefPtr()->empty()) {
+    ((MeasBase<F, MeasRef<M> > *)model)->set(MeasRef<M>(M::DEFAULT));
+  };
   if (model && 
       !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
