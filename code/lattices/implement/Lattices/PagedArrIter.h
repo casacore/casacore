@@ -241,11 +241,17 @@ private:
   Bool allocateCursor();
   // setup the cache in the tiled storage manager
   void setup_tile_cache();
+  // Synchronise the storage in the "degenerate axis Array" with theCurPtr
+  void relinkArray();
 
   // reference to the Lattice
   PagedArray<T> theData;
   // Polymorphic pointer to a subpart of the Lattice
   Array<T> * theCurPtr;
+  // An Array which references the same data as the theCurPtr, but has all
+  // the degenerate axes. This is an optimisation to avoid the overhead of
+  // having to add the degenerate axes for each iteration.
+  Array<T> theCursor;
   // pointer to the method of Lattice transversal
   CountedPtr<LatticeNavigator> theNavPtr;
 };
@@ -451,11 +457,18 @@ private:
   Bool allocateCursor();
   // setup the cache in the tiled storage manager
   void setup_tile_cache();
+  // Synchronise the storage in the "degenerate axis Array" with theCurPtr
+  void relinkArray();
+
 
   // reference to the Lattice
   PagedArray<T> theData;
   // Polymorphic pointer to a subpart of the Lattice
   Array<T> * theCurPtr;
+  // An Array which references the same data as the theCurPtr, but has all
+  // the degenerate axes. This is an optimisation to avoid the overhead of
+  // having to add the degenerate axes for each iteration.
+  Array<T> theCursor;
   // pointer to the method of Lattice transversal
   CountedPtr<LatticeNavigator> theNavPtr;
 };
