@@ -1,5 +1,5 @@
-//# LCMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998
+//# LCPixelSet.cc: Class to define a rectangular mask of interest
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,39 +25,39 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
-typedef Vector<Int> lcmask_gppbug1;
+typedef Vector<Int> lcpixelset_gppbug1;
 
 
-LCMask::LCMask()
+LCPixelSet::LCPixelSet()
 {}
 
-LCMask::LCMask (const Array<Bool>& mask, const LCBox& box)
+LCPixelSet::LCPixelSet (const Array<Bool>& mask, const LCBox& box)
 : LCRegionFixed (box.latticeShape()),
   itsBox        (box)
 {
     if (! mask.shape().isEqual (itsBox.shape())) {
-	throw (AipsError ("LCMask::LCMask - "
+	throw (AipsError ("LCPixelSet::LCPixelSet - "
 			  "shape of mask and box differ"));
     }
     setBoundingBox (itsBox.boundingBox());
     setMask (mask);
 }
 
-LCMask::LCMask (const LCMask& that)
+LCPixelSet::LCPixelSet (const LCPixelSet& that)
 : LCRegionFixed (that),
   itsBox        (that.itsBox)
 {}
 
-LCMask::~LCMask()
+LCPixelSet::~LCPixelSet()
 {}
 
-LCMask& LCMask::operator= (const LCMask& that)
+LCPixelSet& LCPixelSet::operator= (const LCPixelSet& that)
 {
     if (this != &that) {
 	LCRegionFixed::operator= (that);
@@ -66,45 +66,45 @@ LCMask& LCMask::operator= (const LCMask& that)
     return *this;
 }
 
-Bool LCMask::operator== (const LCRegion& other) const
+Bool LCPixelSet::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionFixed::operator== (other)) {
 	return False;
     }
-    const LCMask& that = (const LCMask&)other;
+    const LCPixelSet& that = (const LCPixelSet&)other;
     // Check the box and mask.
     return ToBool (itsBox == that.itsBox  &&  masksEqual (that));
 }
  
 
-LCRegion* LCMask::cloneRegion() const
+LCRegion* LCPixelSet::cloneRegion() const
 {
-    return new LCMask(*this);
+    return new LCPixelSet(*this);
 }
 
-LCRegion* LCMask::doTranslate (const Vector<Float>& translateVector,
-			       const IPosition& newLatticeShape) const
+LCRegion* LCPixelSet::doTranslate (const Vector<Float>& translateVector,
+				   const IPosition& newLatticeShape) const
 {
     LCBox* boxPtr = (LCBox*)(itsBox.translate (translateVector,
 					       newLatticeShape));
-    LCMask* regPtr = new LCMask (maskArray(), *boxPtr);
+    LCPixelSet* regPtr = new LCPixelSet (maskArray(), *boxPtr);
     delete boxPtr;
     return regPtr;
 }
 
-String LCMask::className()
+String LCPixelSet::className()
 {
-    return "LCMask";
+    return "LCPixelSet";
 }
 
-String LCMask::type() const
+String LCPixelSet::type() const
 {
     return className();
 }
 
-TableRecord LCMask::toRecord (const String& tableName) const
+TableRecord LCPixelSet::toRecord (const String& tableName) const
 {
     TableRecord rec;
     defineRecordFields (rec, className());
@@ -113,11 +113,12 @@ TableRecord LCMask::toRecord (const String& tableName) const
     return rec;
 }
 
-LCMask* LCMask::fromRecord (const TableRecord& rec, const String& tableName)
+LCPixelSet* LCPixelSet::fromRecord (const TableRecord& rec,
+				    const String& tableName)
 {
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
 						   tableName));
-    LCMask* regPtr = new LCMask (rec.asArrayBool ("mask"), *boxPtr);
+    LCPixelSet* regPtr = new LCPixelSet (rec.asArrayBool ("mask"), *boxPtr);
     delete boxPtr;
     return regPtr;
 }

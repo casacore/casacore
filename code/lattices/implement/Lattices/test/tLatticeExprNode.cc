@@ -36,7 +36,7 @@
 
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Lattices/Slicer.h>
 
@@ -3005,9 +3005,9 @@ main (int argc, char *argv[])
     mat2(1,0) = False;
     mat3(0,1) = False;
     LCBox box(shape);
-    LCMask mask1 (mat1, box);
-    LCMask mask2 (mat2, box);
-    LCMask mask3 (mat3, box);
+    LCPixelSet mask1 (mat1, box);
+    LCPixelSet mask2 (mat2, box);
+    LCPixelSet mask3 (mat3, box);
     
     Bool ok = True;
     if (!doIt (SubLattice<Float>(aF),
@@ -3045,7 +3045,7 @@ main (int argc, char *argv[])
 	ok = False;
     }
     mat2 = False;
-    mask2 = LCMask (mat2, box);
+    mask2 = LCPixelSet (mat2, box);
     if (!doIt (SubLattice<Float>(aF,mask1),
 	       SubLattice<Float>(bF,mask2),
 	       SubLattice<Float>(cF,mask3),

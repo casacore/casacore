@@ -35,7 +35,7 @@
 #include <trial/Lattices/LCIntersection.h>
 #include <trial/Lattices/LCDifference.h>
 #include <trial/Lattices/LCComplement.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -141,7 +141,7 @@ main()
 	Array<Bool> mat1(shape);
 	mat1 = True;
 	mat1(IPosition(2,1,0)) = False;
-	LCMask mask1 (mat1, LCBox(shape));
+	LCPixelSet mask1 (mat1, LCBox(shape));
 	SubLattice<Float> sublat (aF, mask1);
 	if (!doIt(sublat, box1, box2)) {
 	    ok = False;

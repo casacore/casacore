@@ -1,5 +1,5 @@
-//# tLCMask.cc:  mechanical test of the LCMask class
-//# Copyright (C) 1998
+//# tLCPixelSet.cc:  mechanical test of the LCPixelSet class
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <aips/Tables/TableRecord.h>
@@ -83,7 +83,8 @@ main ()
         Array<Bool> arr(latticeShape);
         arr.set(True);
         arr(IPosition(2,0,0)) = False;
-        LCMask mask(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
+        LCPixelSet mask(arr, LCBox(IPosition(2,0),
+				   latticeShape-1, latticeShape));
         cout << mask.hasMask() << mask.maskArray().ac() << endl;
     }
     {
@@ -91,7 +92,8 @@ main ()
       Array<Bool> arr(latticeShape);
       arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
       arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = False;
-      LCMask mask(arr, LCBox (IPosition(4,0), latticeShape-1, latticeShape));
+      LCPixelSet mask(arr, LCBox (IPosition(4,0),
+				  latticeShape-1, latticeShape));
       AlwaysAssertExit (! mask.isWritable());
       AlwaysAssertExit (mask.hasMask());
       AlwaysAssertExit (mask.shape() == latticeShape);
@@ -133,11 +135,13 @@ main ()
       arr.set(True);
       arr(IPosition(2,0)) = False;
       arr(latticeShape-1) = False;
-      LCMask mask1(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
-      LCMask mask2(mask1);
+      LCPixelSet mask1(arr, LCBox(IPosition(2,0),
+				  latticeShape-1, latticeShape));
+      LCPixelSet mask2(mask1);
       AlwaysAssertExit (mask2 == mask1);
       arr(latticeShape-1) = True;
-      LCMask mask3(arr, LCBox(IPosition(2,0), latticeShape-1, latticeShape));
+      LCPixelSet mask3(arr, LCBox(IPosition(2,0),
+				  latticeShape-1, latticeShape));
       AlwaysAssertExit (mask3 != mask1);
     }
   } catch (AipsError x) {

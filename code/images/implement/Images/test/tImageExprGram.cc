@@ -30,7 +30,7 @@
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <aips/Tables/Table.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Matrix.h>
@@ -180,8 +180,8 @@ main (int argc, char *argv[])
     Matrix<Bool> mask(shape-1);
     mask = False;
     mask(0,0) = True;
-    regions[0] = new ImageRegion(LCMask(mask,LCBox(IPosition(2,0),
-						   shape-2, shape)));
+    regions[0] = new ImageRegion(LCPixelSet(mask,LCBox(IPosition(2,0),
+						       shape-2, shape)));
     LatticeExpr<Double> expr(ImageExprParse::command ("nelements(b[$REGION#1])",
 						      temps, regions));
     delete regions[0];
@@ -206,10 +206,10 @@ main (int argc, char *argv[])
     mask2 = False;
     mask1(0,0) = True;
     mask2(shape-2) = True;
-    regions[0] = new ImageRegion(LCMask(mask1,LCBox(IPosition(2,0),
-						    shape-2, shape)));
-    regions[1] = new ImageRegion(LCMask(mask2,LCBox(IPosition(2,0),
-						    shape-2, shape)));
+    regions[0] = new ImageRegion(LCPixelSet(mask1,LCBox(IPosition(2,0),
+							shape-2, shape)));
+    regions[1] = new ImageRegion(LCPixelSet(mask2,LCBox(IPosition(2,0),
+							shape-2, shape)));
     LatticeExpr<Double> expr(ImageExprParse::command
 			     ("nelements(b[$REGION#1 || $REGION#2]) - "
 			      "length(b[$REGION#1],1)",

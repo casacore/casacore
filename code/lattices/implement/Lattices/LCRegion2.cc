@@ -1,5 +1,5 @@
 //# LCRegion2.cc: Implementation of LCRegion::fromRecord
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LCEllipsoid.h>
 #include <trial/Lattices/LCPolygon.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <trial/Lattices/LCIntersection.h>
 #include <trial/Lattices/LCUnion.h>
@@ -58,8 +58,8 @@ LCRegion* LCRegion::fromRecord (const TableRecord& rec,
 	regPtr = LCEllipsoid::fromRecord (rec, tableName);
     } else if (name == LCPolygon::className()) {
       	regPtr = LCPolygon::fromRecord (rec, tableName);
-    } else if (name == LCMask::className()) {
-      	regPtr = LCMask::fromRecord (rec, tableName);
+    } else if (name == LCPixelSet::className()) {
+      	regPtr = LCPixelSet::fromRecord (rec, tableName);
     } else if (name == LCPagedMask::className()) {
       	regPtr = LCPagedMask::fromRecord (rec, tableName);
     } else if (name == LCIntersection::className()) {

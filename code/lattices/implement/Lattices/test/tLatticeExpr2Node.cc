@@ -30,7 +30,7 @@
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/LCMask.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -769,8 +769,8 @@ main()
 	mat1(IPosition(2,1,0)) = False;
 	mat2 = False;
 	LCBox box(shape);
-	LCMask mask1 (mat1, box);
-	LCMask mask2 (mat2, box);
+	LCPixelSet mask1 (mat1, box);
+	LCPixelSet mask2 (mat2, box);
 	if (!doIt(SubLattice<Float>(aF), SubLattice<Float>(bF))) {
 	    ok = False;
 	}
