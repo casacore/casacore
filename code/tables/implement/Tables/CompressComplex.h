@@ -41,7 +41,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tCompressComplex.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tCompressComplex.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -346,7 +346,7 @@ public:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tCompressComplex.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tCompressComplex.cc">
 // </reviewed>
 
 // <prerequisite>

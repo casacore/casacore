@@ -36,7 +36,9 @@
 #include <aips/FITS/FITSError.h>
 
 //<category lib=aips module=FITS sect="Blocked I/O">   
-//<summary> fixed-length blocked sequentual I/O base class </summary> 
+//<summary> fixed-length blocked sequentual I/O base class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed> 
 //<synopsis>
 // BlockIO is a low level base class that implements fixed-length 
 // blocked sequential I/O. Its derived classes, BlockInput and BlockOutput
@@ -101,6 +103,8 @@ class BlockIO {
 };
 
 //<summary> fixed-length blocked sequential input base class</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<prerequisite>
 //<list>
 //   <item> BlockIO
@@ -139,6 +143,8 @@ class BlockInput : public BlockIO {
 };
 
 //<summary> fixed-length blocked sequential output base class</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<prerequisite>
 //<list>
 //   <item> BlockIO

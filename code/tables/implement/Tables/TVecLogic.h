@@ -42,7 +42,7 @@ template<class T> class TabVecRep;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -79,7 +79,7 @@ template<class T>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>

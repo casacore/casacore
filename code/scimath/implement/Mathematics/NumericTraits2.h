@@ -32,6 +32,8 @@
 #include <aips/Mathematics/Complex.h>
 
 // <summary> A specialisation for T=Float of the NumericTraits class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 template <> class NumericTraits<Float> {
 public:
   typedef Complex ConjugateType;
@@ -42,6 +44,8 @@ public:
 };
 
 // <summary> A specialisation for T=Double of the NumericTraits class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 template <> class NumericTraits<Double> {
 public:
   typedef DComplex ConjugateType;
@@ -52,6 +56,8 @@ public:
 };
 
 // <summary> A specialisation for T=Complex of the NumericTraits class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 template <> class NumericTraits<Complex> {
 public:
   typedef Float ConjugateType;
@@ -62,6 +68,8 @@ public:
 };
 
 // <summary> A specialisation for T=DComplex of the NumericTraits class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <use visibility=local>
 //
 // <synopsis>

@@ -36,7 +36,7 @@
 // <summary>
 // Enumeration of possible table vectors
 // </summary>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 // <use visibility=local>
 // <synopsis>
@@ -61,7 +61,7 @@ enum TabVecTag {
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <prerequisite>

@@ -54,7 +54,7 @@ template<class t> class List;
 // <summary>Linked list update notice</summary> 
 // <use visibility=local>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -123,7 +123,7 @@ private:
 // <summary>Doubly linked list</summary> 
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>

@@ -42,7 +42,7 @@
 // Define the type of the static read and write function.
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 
 // <synopsis>
@@ -99,7 +99,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 
 // <prerequisite>

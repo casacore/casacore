@@ -42,7 +42,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tStandardStMan.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tStandardStMan.cc">
 // </reviewed>
 
 // <prerequisite>

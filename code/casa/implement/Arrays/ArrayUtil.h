@@ -41,7 +41,7 @@ class Regex;
 // Split a String into its elements.
 // </summary>
 
-// <reviewed reviewer="" date="" tests="tArrayUtil">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil">
 
 // <prerequisite>
 //   <li> <linkto class=Vector>Vector</linkto>
@@ -106,7 +106,7 @@ Vector<String> stringToVector (const String& string, const Regex& delim);
 // Concatenate two Arrays.
 // </summary>
 
-// <reviewed reviewer="" date="" tests="tArrayUtil">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil">
 
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>
@@ -176,7 +176,7 @@ Array<T> concatenateArray (const Array<T>& left, const Array<T>& right);
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tArrayUtil2.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil2.cc">
 
 // <synopsis>
 // This function makes it possible to reorder the axes of an array.
@@ -224,7 +224,7 @@ Array<T> reorderArray (const Array<T>& array,
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tArrayUtil2.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayUtil2.cc">
 
 // <synopsis>
 // This is a specialized helper function for function reorderArray.

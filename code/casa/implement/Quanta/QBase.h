@@ -44,7 +44,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tQuantum">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tQuantum">
 //
 // <prerequisite>
 //   <li> <linkto class=Unit>Unit</linkto>

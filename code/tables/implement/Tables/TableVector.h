@@ -46,7 +46,7 @@ class String;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <prerequisite>
@@ -214,7 +214,7 @@ public:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <prerequisite>

@@ -45,7 +45,7 @@ class String;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tColumnsIndex.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tColumnsIndex.cc" demos="">
 // </reviewed>
 
 // <prerequisite>

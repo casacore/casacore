@@ -44,7 +44,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -149,7 +149,7 @@ template<class T> inline
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -181,7 +181,7 @@ template<class T> inline TableVector<T> sqrt (const ROTableVector<T>&);
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -217,7 +217,7 @@ template<class T> inline TableVector<T> tanh (const ROTableVector<T>&);
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -278,7 +278,7 @@ template<class T> inline T
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>

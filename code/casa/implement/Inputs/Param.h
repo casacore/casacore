@@ -45,7 +45,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="Timothy P. P. Roberts, troberts@NRAO.edu" date="Thu 1995/04/06 21:26:43 GMT" tests="tParam.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tParam.cc" demos="">
 //</reviewed>
 
 // <prerequisite>

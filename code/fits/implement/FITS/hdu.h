@@ -38,6 +38,8 @@ class FitsInput;
 class FitsOutput;
 
 //<summary> base class that defines a HDU </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // The class HeaderDataUnit contains what is common to all 
 // header-data-units, including the collection of keywords.
@@ -251,6 +253,8 @@ inline void HeaderDataUnit::history(const char *c) {
 	posEnd(); kwlist_.history(c); }
 
 //<summary> templated primary array base class of given type </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // A Primary Data Array is represented by the following:
 //<srcblock>
@@ -497,6 +501,8 @@ typedef PrimaryArray<double> DoublePrimaryArray;
 
 
 //<summary> IMAGE extension of given type </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<templating>
 //<srcblock>
 // typedef ImageExtension<unsigned char> ByteImageExtension;
@@ -542,6 +548,8 @@ typedef ImageExtension<float> FloatImageExtension;
 typedef ImageExtension<double> DoubleImageExtension;
 
 //<summary> Random Group datastructure </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // A Random Group Structure is represented by the following:
 //<srcblock>
@@ -627,6 +635,8 @@ typedef PrimaryGroup<float> FloatPrimaryGroup;
 typedef PrimaryGroup<double> DoublePrimaryGroup;
 
 //<summary>  base class for generalized exentensions HDU </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class ExtensionHeaderDataUnit : public HeaderDataUnit {
     public:
@@ -666,6 +676,8 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 };
 
 //<summary> helper class ??? </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsBase {
 	friend class BinaryTableExtension;
@@ -702,6 +714,8 @@ inline ostream & operator << (ostream &o, FitsBase &x) {
 }
 
 //<summary> helper class ??? </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<note>
 // Note that FitsField does not allocate space for the data.
 // Space is external to FitsField and its address is set via the
@@ -733,6 +747,8 @@ class FitsField : public FitsBase {
 };
 
 //<summary> helper class ??? </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<templating>
 //#until cxx2html can handle this, duplicate
 //<srcblock>
@@ -800,6 +816,8 @@ typedef FitsField<DComplex> DComplexFitsField;
 typedef FitsField<FitsVADesc> VADescFitsField;
 
 //<summary> FITS array of given type </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 template <class TYPE>
 class FitsArray : public FitsField<TYPE> {
     public:
@@ -819,6 +837,8 @@ class FitsArray : public FitsField<TYPE> {
 };
 
 //<summary> FITS array of FitsBit type </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 //<templating>
 //#until cxx2html can handle this, duplicate:
@@ -875,6 +895,8 @@ typedef FitsArray<DComplex> DComplexFitsArray;
 typedef FitsArray<FitsVADesc> VADescFitsArray;
 
 //<summary> BINTABLE extension </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class BinaryTableExtension : public ExtensionHeaderDataUnit {
     public:
@@ -989,6 +1011,8 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 
 
 //<summary> (ascii) TABLE extension </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class AsciiTableExtension : public BinaryTableExtension {
     public:

@@ -34,6 +34,8 @@
 
 // 
 // <summary> Iterate an IPosition through the shape of an Array </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // ArrayPositionIterator manipulates an IPosition "cursor" through some
 // volume defined by an origin and shape. This position can in turn be

@@ -38,7 +38,7 @@
 // <summary>Base class for all AIPS++ library errors</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -112,7 +112,7 @@ protected:
 // <summary>Allocation errors</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -161,7 +161,7 @@ public:
 // <summary>Base class for all indexing errors</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -201,7 +201,7 @@ public:
 // <summary>Index errors returning the bad index</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -243,7 +243,7 @@ public:
 // <summary>Duplicate key errors</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -283,7 +283,7 @@ public:
 // <summary>Duplicate key errors where the bad key is returned</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>
@@ -326,7 +326,7 @@ public:
 // <summary>Exception which halts execution</summary>
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <synopsis>

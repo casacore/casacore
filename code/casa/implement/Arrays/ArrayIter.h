@@ -35,6 +35,8 @@
 
 // 
 // <summary> Iterate an Array cursor through another Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // ArrayIterator steps an array section (the "cursor") through an array.
 // The cursor "refers" to storage in the array, so that changing the
@@ -103,6 +105,8 @@ private:
 
 // 
 // <summary> Iterate a const Array cursor through a const Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This class behaves exactly like an ArrayIterator, only it iterates through
 // const Arrays.

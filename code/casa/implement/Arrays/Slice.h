@@ -35,6 +35,8 @@
 #endif
 
 // <summary> define a (start,length,increment) along an axis </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // <synopsis>
 // A "slice" (aka Section) is a a regular sub-Array (and ultimately sub-Image)

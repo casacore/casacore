@@ -45,7 +45,7 @@ class SSMBase;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tSSMStringHandler.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tSSMStringHandler.cc">
 // </reviewed>
 
 // <prerequisite>

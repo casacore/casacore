@@ -624,6 +624,8 @@ do {                                                                          \
 // <summary>
 // A version of malloc/free/realloc written by Doug Lea.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <synopsis>
 // A version of malloc/free/realloc written by Doug Lea and released to the 
 // public domain.  Send questions/comments/complaints/performance data

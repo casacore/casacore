@@ -35,6 +35,8 @@ template<class t> class DlistIter;
 
 
 // <summary><b>Deprecated</b> use <linkto class=List>List</linkto> instead</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <h2>Deprecated use <linkto class=List><src>List</src></linkto> instead.</h2>
 //
 template<class t> class Dlist : public List<t> { 
@@ -49,6 +51,8 @@ template<class t> class Dlist : public List<t> {
 // <summary><b>Deprecated</b> use 
 // <linkto class=ConstListIter>ConstListIter</linkto>
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <h2>Deprecated use <linkto class=ConstListIter><src>ConstListIter</src></linkto> instead.</h2>
 //
 template<class t> class ConstDlistIter : virtual public ConstListIter<t> {
@@ -81,6 +85,8 @@ public:
 
 
 // <summary><b>Deprecated</b> use <linkto class=ListIter>ListIter</linkto> instead</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <h2>Deprecated use <linkto class=ListIter><src>ListIter</src></linkto> instead.</h2>
 //
 template<class t> class DlistIter : public ListIter<t>, public ConstDlistIter<t> {

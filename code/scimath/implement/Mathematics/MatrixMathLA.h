@@ -39,7 +39,7 @@
 //    Linear algebra functions on Vectors and Matrices.
 // </summary>
 //
-// <reviewed reviewer="" date="" tests="tLinAlgebra">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tLinAlgebra">
 //
 // <linkfrom anchor="Linear Algebra" classes="Vector Matrix">
 //    <here>Linear Algebra</here> -- Linear algebra functions

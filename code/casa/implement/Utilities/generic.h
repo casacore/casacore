@@ -27,6 +27,8 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 //# $Id$
 
 // <summary>Generic gnu macros</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=def>
 
 #define g_name2(a,b) gEnErIc2(a,b)

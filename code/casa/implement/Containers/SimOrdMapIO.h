@@ -36,6 +36,8 @@ class AipsIO;
 #include <aips/iosfwd.h>
 
 // <summary> Global IO functions </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // This header file defines the AipsIO functions for template SimpleOrderedMap.
 // If these functions were defined in the SimpleOrderedMap class itself,
 // it would require that AipsIO was defined for the template arguments.

@@ -39,7 +39,7 @@
 
 
 // <summary> Mathematical operations for MaskedArrays (and with Arrays) </summary>
-// <reviewed reviewer="" date="" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskArrMath0 tMaskArrMath1 tMaskArrMath2 tMaskArrExcp">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

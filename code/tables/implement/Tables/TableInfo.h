@@ -39,7 +39,7 @@
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tTable.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tTable.cc">
 // </reviewed>
 
 //# <prerequisite>

@@ -46,7 +46,7 @@ typedef Quantum<Double> Quantity;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tQuantum">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tQuantum">
 // </reviewed>
 //
 // <prerequisite>

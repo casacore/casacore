@@ -38,7 +38,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="to be reviewed" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 
 // <synopsis>
@@ -103,7 +103,7 @@ public:
 // </summary>
 
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 
 typedef void (*FITSErrorHandler) (const char* errMessage, 

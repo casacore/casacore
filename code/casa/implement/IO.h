@@ -50,7 +50,7 @@
 // Basic classes and global functions for IO and object persistency
 // </summary>
 
-// <reviewed reviewer="" date="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
 // </reviewed>
 
 // <synopsis>

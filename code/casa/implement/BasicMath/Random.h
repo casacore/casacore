@@ -36,7 +36,7 @@ template<class T> class Vector;
 // <summary>Base class for random number generators</summary>
 //
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -141,7 +141,7 @@ public:
 // <summary>Additive number generator</summary>
 //
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -253,7 +253,7 @@ private:
 // <summary> Multiplicative linear congruential generator </summary>
 
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -367,7 +367,7 @@ inline void MLCG::reseed(Int s1, Int s2)
 // <summary>Base class for random number distributions</summary>
 
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 //
 // <prerequisite>

@@ -71,7 +71,7 @@
 //   <li> class <linkto name=CoordinateSystem>CoordinateSystem</linkto>
 // </prerequisite>
 
-// <reviewed reviewer="" date="" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
 // </reviewed>
 
 // <etymology>

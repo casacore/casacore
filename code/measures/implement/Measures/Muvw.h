@@ -52,7 +52,7 @@ template <class M> class ROScalarMeasColumn;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMuvw" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMuvw" demos="">
 // </reviewed>
 
 // <prerequisite>

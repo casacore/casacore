@@ -42,6 +42,8 @@
 // <summary>
 // AIPS++ interface to math.h and other scalar math functions
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <synopsis> 
 

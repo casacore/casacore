@@ -37,6 +37,8 @@ template<class T> class Matrix;
 
 
 // <summary> A 3-D Specialization of the Array class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // Cube objects are three-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want

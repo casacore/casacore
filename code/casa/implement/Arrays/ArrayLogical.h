@@ -41,7 +41,7 @@ template <class T> class Cube;
 // <summary>
 //    Logical operations for Arrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="tArrayLogical">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArrayLogical">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

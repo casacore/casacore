@@ -41,7 +41,7 @@ template<class T> class TabVecRep;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -134,7 +134,7 @@ template<class T> TabVecRep<T>& tabVecRepvalldiv (const T&,
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -166,7 +166,7 @@ template<class T> TabVecRep<T>& tabVecRepsqrt (const TabVecRep<T>&);
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -202,7 +202,7 @@ template<class T> TabVecRep<T>& tabVecReptanh (const TabVecRep<T>&);
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>
@@ -238,7 +238,7 @@ template<class T> T tabVecRepproduct (const TabVecRep<T>&);
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis>

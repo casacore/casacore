@@ -35,6 +35,8 @@
 
 
 // <summary> The base class for all Array exception classes. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // ArrayError is the base class for all the Array-specific exception classes,
 // i.e. if it is caught you will catch (through inheritance) all Array-specific
@@ -66,6 +68,8 @@ public:
 
 
 // <summary> An error thrown when an index is out of range </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // The ArrayIndexError class, which is derived from ArrayError, is intended
 // to be thrown when an index is out-of-bounds. It contains within it
@@ -97,6 +101,8 @@ private:
 
 
 // <summary> An error thrown when two arrays do not conform </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // The ArrayConformanceError class is the base class for all errors thrown
 // because two arrays are not conformant. See also the ArrayShapeError and
@@ -117,6 +123,8 @@ public:
 
 
 // <summary> Thrown when two arrays have different dimensionality </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // An ArrayNDimError is derived from ArrayConformanceError. It is thrown when
 // two arrays are non-conformant by virtue of having different dimensionality.
@@ -136,6 +144,8 @@ private:
 
 
 // <summary> An error thrown when two arrays have different shapes </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // An ArrayShapeError is derived from ArrayConformanceError. It is thrown when
 // two arrays are non-conformant by virtue of having different shapes.
@@ -156,6 +166,8 @@ private:
 
 
 // <summary> An error thrown by an ArrayIterator </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // An ArrayIteratorError is thrown by an array iterator or related class
 // (e.g. VectorIterator).
@@ -173,6 +185,8 @@ public:
 
 
 // <summary> An error thrown by an Slicer member function </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // An ArraySlicerError is thrown by an  Slicer member function.
 class ArraySlicerError : public ArrayError

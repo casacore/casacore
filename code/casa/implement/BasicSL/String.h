@@ -93,7 +93,7 @@ private:
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tString.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tString.cc" demos="">
 // </reviewed>
 
 // <prerequisite>

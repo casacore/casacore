@@ -38,6 +38,8 @@ class String;        // Forward declaration
 
 
 //<summary> helper function for ReadFITS and WriteFITS</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // Helper functions to reduce the tedium/code replication of writing the
 // ReadFITS and WriteFITS functions. If a baseclass is introduced that
 // aboved the PrimaryArray class that contains functions like operator()

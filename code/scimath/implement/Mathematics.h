@@ -45,7 +45,7 @@
 // <prerequisite> At least high school (and preferably undergraduate
 // level) understanding of mathematics. </prerequisite>
 
-//# // <reviewed reviewer="" date="yyyy/mm/dd" demos="">
+//# // <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
 //# // </reviewed>
 
 // <etymology> 

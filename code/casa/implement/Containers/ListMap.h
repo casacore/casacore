@@ -38,6 +38,8 @@ template<class key, class value> class ListMap;
 template<class key, class value> class ListMapIterRep;
 
 // <summary>Representation of a ListMap class</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 template<class key, class value> class ListMapRep : public MapRep<key,value> {
 friend class ListMap<key,value>;
@@ -119,6 +121,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Map with list ordering/operations</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 //  This is one possible implementation of the Map class. It uses
 //  a linked list to implement an associative array. Other likely 
@@ -196,6 +200,8 @@ public:
 //
 // <category lib=aips sect="Containers">
 // <summary>ListMap iterator "letter"</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This is the "letter" which when paired (Const)MapIter "envelope"
 // allows traversal of "ListMap"s.

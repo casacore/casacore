@@ -38,6 +38,8 @@
 // <summary>
 // Single and double precision complex numbers
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <synopsis>
 // The class <src>Complex</src> is a straight typedef as the 
@@ -156,6 +158,8 @@ void setNaN(Complex& val);
 // </group>
 
 // <summary>Complex comparisons </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name="Complex comparisons">
 //# On Linux comparing the norm does not work well in debug mode
 //# for equal values. Therefore they are compared for equality first.
@@ -174,6 +178,8 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // <summary>
 // Double precision complex numbers
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <synopsis>
 // The class <src>DComplex</src> is a straight typedef as the 
@@ -187,6 +193,8 @@ void setNaN(DComplex& val);
 // </group>
 
 // <summary> DComplex comparisons </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name="DComplex comparisons">
 inline Bool operator>= (const DComplex& left, const DComplex& right)
   { return norm(left) >= norm(right); }
@@ -202,6 +210,8 @@ inline Bool operator<  (const DComplex& left, const DComplex& right)
 
 //# Global functions
 // <summary> Additional complex mathematical functions </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=math>
 inline Double fabs(const DComplex &val) { return abs(val); };
 inline Float fabs(const Complex &val) { return abs(val); };
@@ -231,6 +241,8 @@ inline Complex operator/(const Complex& val, Int f) { return val/Float(f); }
 // </group>
 
 // <summary> The near functions </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=near>
 Bool near(const Complex &val1, const Complex &val2, Double tol=1.0e-5);
 Bool near(const DComplex &val1, const DComplex &val2, Double tol=1.0e-13);
@@ -251,6 +263,8 @@ inline Bool allNearAbs(const DComplex &val1, const DComplex &val2,
 // </group>
 
 // <summary> Max and min, floor and ceil functions </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=maxmin>
 inline Complex max(const Complex &x, const Complex &y)
   { return x >= y ? x : y; }
@@ -274,12 +288,16 @@ inline DComplex ceil(const DComplex &x) {
 // </group>
 
 // <summary> fmod </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=fmod>
 DComplex fmod(const DComplex &in, const DComplex &f);
 Complex fmod(const Complex &in, const Complex &f);
 // </group>
 
 // <summary> Inverse trigonometry </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=inverse>
 // atan not valid for z == -1
 DComplex atan(const DComplex &in);
@@ -293,6 +311,8 @@ Complex atan2(const Complex &in, const Complex &t2);
 // </group>
 
 // <summary> Error function </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name=erf>
 // Preliminary to get Functionals working. erf(z) will return erf(real(z))
 // only for now.

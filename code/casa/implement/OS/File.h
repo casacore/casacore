@@ -37,6 +37,8 @@
 // <summary> 
 // Class to get file information and a base for other file classes.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <use visibility=export>
 

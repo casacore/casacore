@@ -40,6 +40,8 @@ WHATEVER_VECTOR_FORWARD_DEC;
 #endif
 
 // <summary> A 1-D Specialization of the Array class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // Vector objects are one-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want

@@ -45,7 +45,7 @@ class BaseColumn;
 // Virtual column forwarding to another column
 // </summary>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <use visibility=local>
@@ -311,7 +311,7 @@ private:
 // Virtual column engine forwarding to other columns
 // </summary>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <use visibility=export>

@@ -34,6 +34,8 @@
 // <use visibility=export>
 
 // <summary> Enums for the MeasurementSet FREQ_OFFSET table </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <etymology>
 // This class contains the enums for the MeasurementSet FREQ_OFFSET table
 // </etymology>

@@ -49,7 +49,7 @@ template <class T> class Vector;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMBaseline" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMBaseline" demos="">
 // </reviewed>
 
 // <prerequisite>

@@ -46,7 +46,7 @@ class LogOrigin;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLogIO.cc" demos="dLogging.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tLogIO.cc" demos="dLogging.cc">
 // </reviewed>
 
 // <prerequisite>

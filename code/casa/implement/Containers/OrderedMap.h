@@ -44,6 +44,8 @@ template<class t, class v> class OrderedMapIterRep;
 
 // <category lib=aips sect="Notice">
 // <summary>Message used for OrderedMap notification</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This is the message that flows between the OrderedMap
 // and the OrderedMap iterators. It allows OrderedMap
@@ -89,6 +91,8 @@ public:
 };
 
 // <summary> Representation class for an Ordered Map</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 template<class key, class value> class OrderedMapRep : public NoticeSource, public MapRep<key,value> {
 friend class OrderedMap<key,value>;
@@ -177,6 +181,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Map with keys ordered</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // OrderedMap<key,value> is a template class derived from Map.
 // It is similar to ListMap, but the keys are kept in order and
@@ -282,6 +288,8 @@ public:
 //
 // <category lib=aips sect="Containers">
 // <summary>OrderedMap iterator "letter"</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This is the "letter" which when paired (Const)MapIter "envelope"
 // allows traversal of "OrderedMap"s.

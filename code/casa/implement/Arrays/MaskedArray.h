@@ -46,7 +46,7 @@ template <class T> class Array;
 
 
 // <summary> Class for masking an Array for operations on that Array. </summary>
-// <reviewed reviewer="" date="" tests="tMaskedArray tMaskArrExcp">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskedArray tMaskArrExcp">
 // </reviewed>
 //
 // <prerequisite>
@@ -683,7 +683,7 @@ protected:
 
 
 // <summary> General global functions for MaskedArrays, and MaskedArrays and Arrays. </summary>
-// <reviewed reviewer="" date="" tests="tMaskedArray">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskedArray">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

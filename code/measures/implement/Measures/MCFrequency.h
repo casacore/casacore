@@ -51,7 +51,7 @@ class String;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasure" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasure" demos="">
 // </reviewed>
 
 // <prerequisite>

@@ -32,6 +32,8 @@
 #include <aips/Containers/Link.h>
 
 // <summary><b>Deprecated</b> use <linkto class=Link>Link</linkto> instead</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <h2>Deprecated use <linkto class=Link><src>Link</src></linkto> instead.</h2>
 //
 template<class t> class Dlink : public Link<t> {

@@ -39,7 +39,7 @@ template<class T> class Matrix;
 // <summary>
 //    Mathematical operations for Arrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="tArray">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tArray">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

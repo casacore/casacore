@@ -42,7 +42,7 @@ class String;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tMeasMath" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasMath" demos="">
 // </reviewed>
 
 // <prerequisite>

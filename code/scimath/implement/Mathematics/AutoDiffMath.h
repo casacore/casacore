@@ -39,7 +39,7 @@
 // Implements all mathematical operators and functions for AutoDiff.
 // </summary>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tAutoDiff" demos="">
 // </reviewed>
 //
 // <prerequisite>

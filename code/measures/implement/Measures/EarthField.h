@@ -46,7 +46,7 @@ const Double DER_INTV = 10000;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tEarthField" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tEarthField" demos="">
 // </reviewed>
 
 // <prerequisite>

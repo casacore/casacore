@@ -188,6 +188,8 @@ extern int obscure_syntax;
 // <summary>
 // This data structure is used to represent a compiled pattern.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <synopsis>
 // This data structure is used to represent a compiled pattern.
 // It is used by the regular expression functions in cregex.cc.
@@ -236,6 +238,8 @@ struct re_pattern_buffer
 // <summary>
 // Data structure to store register contents data in.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <synopsis>
 // This data structure is used to store register contents data in.
 // It is used by the regular expression functions in cregex.cc.

@@ -44,7 +44,7 @@ template <class T> class Vector;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSpectralFit" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tSpectralFit" demos="">
 // </reviewed>
 
 // <prerequisite>

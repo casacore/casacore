@@ -39,7 +39,7 @@
 // </summary>
 // <use visibility=local>
 //
-// <reviewed reviewer="" date="" tests="t">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="t">
 // </reviewed>
 
 // <prerequisite>

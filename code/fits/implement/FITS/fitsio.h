@@ -34,6 +34,8 @@
 
 //<category lib=aips module=FITS sect="FITS I/O">   
 //<summary> sequential FITS I/O </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // FitsIO is a base class that handles all the sequential blocked
 // FITS I/O. Special derived classes do the input and output.
@@ -135,6 +137,8 @@ class FitsIO {
 };
 
 //<summary> fixed-length sequential blocked FITS input </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<linkfrom anchor=FitsInput classes="BlockInput">
 // FitsInput
 //</linkfrom>
@@ -194,6 +198,8 @@ class FitsInput : public FitsIO {
 };
 
 //<summary> fixed-length sequential blocked FITS output </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsOutput : public FitsIO {
 	friend int HeaderDataUnit::write_hdr(FitsOutput &);
@@ -235,6 +241,8 @@ class FitsOutput : public FitsIO {
 };
 
 //<summary> FITS input from disk </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsDiskInput : public BlockInput {
     public:
@@ -246,6 +254,8 @@ class FitsDiskInput : public BlockInput {
 };
 
 //<summary> FITS output to disk </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsDiskOutput : public BlockOutput {
     public:
@@ -255,6 +265,8 @@ class FitsDiskOutput : public BlockOutput {
 };
 
 //<summary> FITS input from standard input </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsStdInput : public BlockInput {
     public:
@@ -264,6 +276,8 @@ class FitsStdInput : public BlockInput {
 };
 
 //<summary> FITS output to standard output </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsStdOutput : public BlockOutput {
     public:
@@ -273,6 +287,8 @@ class FitsStdOutput : public BlockOutput {
 };
 
 //<summary> FITS input from 9-track tape </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsTape9Input : public BlockInput {
     public:
@@ -282,6 +298,8 @@ class FitsTape9Input : public BlockInput {
 };
 
 //<summary> FITS output to 9-track tape </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsTape9Output : public BlockOutput {
     public:

@@ -37,7 +37,7 @@
 // Linear search a linear data structure.
 // </summary>
 
-// <reviewed reviewer="" date="" tests="tLinearSearch" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tLinearSearch" demos="">
 // </reviewed>
 
 // <synopsis>

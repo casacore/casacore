@@ -41,7 +41,7 @@ class Slicer;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tRefRows.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tRefRows.cc">
 // </reviewed>
 
 // <prerequisite>
@@ -152,7 +152,7 @@ private:
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tRefRows.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tRefRows.cc">
 // </reviewed>
 
 // <prerequisite>

@@ -37,7 +37,7 @@
 // <summary>
 //    Logical operations for MaskedArrays, and between MaskedArrays and Arrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="tMaskArrLogi tMaskArrExcp">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskArrLogi tMaskArrExcp">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

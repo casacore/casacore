@@ -46,7 +46,7 @@ template <class T> class Array;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tQuantumHolder" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tQuantumHolder" demos="">
 // </reviewed>
 
 // <prerequisite>

@@ -42,7 +42,7 @@ template <class T> class Vector;
 // <summary>
 // Pointed String class to aid analysis of quantity strings
 // </summary>
-// <reviewed reviewer="" date="" tests="tMeasure" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasure" demos="">
 // </reviewed>
 
 // <prerequisite>

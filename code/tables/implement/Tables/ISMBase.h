@@ -49,7 +49,7 @@ class StManArrayFile;
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tIncrementalStMan.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tIncrementalStMan.cc">
 // </reviewed>
 
 // <prerequisite>

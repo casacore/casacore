@@ -41,7 +41,7 @@ template<class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="Timothy P. P. Roberts, troberts@NRAO.edu" date="Thu 1995/04/06 21:26:43 GMT" tests="tInput.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tInput.cc" demos="">
 //</reviewed>
 
 // <prerequisite>

@@ -38,7 +38,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasMath" demos="">
 // </reviewed>
 
 // <prerequisite>

@@ -45,6 +45,8 @@ class TableColumn;
 // <summary>
 // Filling a table from an Ascii file.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <use visibility=export>
 
@@ -252,6 +254,8 @@ String readAsciiTable (const String& headerFile, const String& dataFile,
 // <summary>
 // Helper class for readAsciiTable
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <use visibility=local>
 

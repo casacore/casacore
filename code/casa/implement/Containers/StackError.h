@@ -33,6 +33,8 @@
 #include <aips/Exceptions/Error.h>
 
 // <summary> Error class for the Stack class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 class EmptyStackError : public AipsError {
 public:
   EmptyStackError(const char *msg = 0,Category c=BOUNDARY);      // normal constructor

@@ -38,6 +38,8 @@
 // <summary>  
 // Get information about, and manipulate symbolic links
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <use visibility=export>
 

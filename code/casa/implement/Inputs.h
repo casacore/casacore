@@ -42,7 +42,7 @@
 //   <li> The C language main(Int argc, char *argv[]) convention.
 // </prerequisite>
 
-// <reviewed reviewer="Timothy P. P. Roberts, troberts@NRAO.edu" date="Thu 199504/06 21:26:43 GMT" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
 //</reviewed>
 
 // <etymology> 

@@ -47,7 +47,7 @@ class Euler;
 
 // <use visibility=local>
 
-// <reviewed reviewer="tcornwel" date="yyyy/mm/dd" tests="tMeasMath" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasMath" demos="">
 // </reviewed>
 
 // <prerequisite>

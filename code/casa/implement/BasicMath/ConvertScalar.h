@@ -34,6 +34,8 @@
 // <summary>
 // Templated functions to convert scalars from one type to another.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <synopsis> 
 // Templated functions to convert scalars from one type to another.

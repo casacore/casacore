@@ -35,6 +35,8 @@
 
 // 
 // <summary> Iterate a Matrix cursor through another Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // MatrixIterator steps a Vector (the "cursor") through an array.
 // The cursor "refers" to storage in the array, so that changing the
@@ -82,6 +84,8 @@ public:
 
 // 
 // <summary> Iterate a Matrix cursor through a R/O Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // ReadOnlyMatrixIterator behaves exactly like MatrixIterator (cf.) only
 // it should be used on const Arrays.

@@ -42,7 +42,7 @@
 // <summary>
 //    Masked LogicalArrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="tMaskedArray">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskedArray">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

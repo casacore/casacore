@@ -37,6 +37,8 @@
 // <summary>
 // Path name of a file
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <prerequisite> 
 //    <li> Basic knowledge of the UNIX file system 

@@ -43,7 +43,7 @@ template<class T> class Block;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tObjectID.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tObjectID.cc" demos="">
 
 // <prerequisite>
 //   <li> none

@@ -33,6 +33,8 @@
 #include <aips/aips.h>
 
 // <summary> Forward declaration complex classes</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <synopsis>
 // The Complexfwd.h include file can be used where a forward declaration
 // of the aips++ complex classes could suffice (cf the system's iosfwd).

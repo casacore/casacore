@@ -40,6 +40,8 @@ class LogMessage;
 // <summary>
 // Class to deal with a TaQL expression to filter messages.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // This program tests the class TableExprData.
 // This example shows how a data set consisting of two vectors

@@ -38,6 +38,8 @@ class AipsIO;
 // 
 
 // <summary> Global IO functions </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // Input/output
 // <group name=inoutput>
 template<class key, class value> AipsIO& operator<<(AipsIO& ios, const OrderedPair<key,value>& op);

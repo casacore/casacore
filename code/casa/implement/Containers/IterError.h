@@ -33,6 +33,8 @@
 #include <aips/Exceptions/Error.h>
 
 // <summary>Iteration error class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class IterError : public AipsError {
 public:
@@ -41,6 +43,8 @@ public:
 };
 
 // <summary>Iteration Boundary error class</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class IterBoundaryError : public IterError {
 public:
@@ -49,6 +53,8 @@ public:
 };
 
 // <summary>Iteration initialization error</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class IterInitError : public IterError {
 public:
@@ -57,6 +63,8 @@ public:
 };
 
 // <summary>Invalide iteration error class</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class InvalidIterError : public IterError {
 public:

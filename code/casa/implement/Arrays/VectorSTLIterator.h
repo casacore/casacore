@@ -36,6 +36,8 @@
 //# Forward Declarations
 
 // <summary> AIPS++ Vector iterator </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <synopsis>
 // This class creates a random access STL iterator for an aips++ Vector. All
 // the STL functionality is present (or if something missing can be easily

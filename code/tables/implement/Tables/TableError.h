@@ -41,7 +41,7 @@
 // Base error class for storage manager
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -64,7 +64,7 @@ public:
 // Internal table error
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -84,7 +84,7 @@ public:
 // Table error; table (description) already exists
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -108,7 +108,7 @@ public:
 // Table error; table (description) not found
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -128,7 +128,7 @@ public:
 // Table error; no name given to table description
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -148,7 +148,7 @@ public:
 // Table error; invalid table (description) option
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -169,7 +169,7 @@ public:
 // Table error; table type mismatch
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -190,7 +190,7 @@ public:
 // Table error; invalid column description
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -212,7 +212,7 @@ public:
 // Table error; invalid hypercolumn description
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -234,7 +234,7 @@ public:
 // Table error; unknown column description
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -256,7 +256,7 @@ public:
 // Table error; invalid data type
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -280,7 +280,7 @@ public:
 // Table error; invalid operation
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -305,7 +305,7 @@ public:
 // Table error; non-conformant array
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -328,7 +328,7 @@ public:
 // Table error; table length conformance error
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -351,7 +351,7 @@ public:
 // Table error; invalid sort
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -374,7 +374,7 @@ public:
 // Table error; invalid logical operation
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -396,7 +396,7 @@ public:
 // Table error; invalid select expression
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -419,7 +419,7 @@ public:
 // Table error; non-conformant table vectors
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 
@@ -438,7 +438,7 @@ public:
 // Table error; invalid table command
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <synopsis> 

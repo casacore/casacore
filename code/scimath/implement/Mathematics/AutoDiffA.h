@@ -42,7 +42,7 @@ template <class T> class Vector;
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff.cc" demos="dAutoDiff.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tAutoDiff.cc" demos="dAutoDiff.cc">
 // </reviewed>
 //
 // <prerequisite>

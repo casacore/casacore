@@ -43,7 +43,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="Tim Cornwell" date="" tests="tMeasMath tMeasure"
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasMath tMeasure"
 //	 demos="dMeasure">
 
 // <prerequisite>

@@ -37,7 +37,7 @@
 // Base virtual column for a scalar column with any type
 // </summary>
 
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 // </reviewed>
 
 // <use visibility=export>

@@ -65,7 +65,7 @@
 // A module implementing multidimensional arrays and operations.
 // </summary>
 
-// <reviewed reviewer="None yet" date="yyyy/mm/dd" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" demos="">
 // </reviewed>
 
 // <etymology>

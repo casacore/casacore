@@ -51,6 +51,8 @@ template<class key, class value> class ConstMapIter;
 template<class key, class value> class Map;
 
 // <summary>Map representation class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 template<class key, class value> class MapRep {
 public:
@@ -138,6 +140,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Abstract base class for associative arrays</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 //  This is the abstract class for all "Map" classes which implement the
 //  equivalent of an associative array.
@@ -254,6 +258,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Abstract base class for associative array iterators</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This is the abstract base class for all (Const)MapIter
 // "letters". That is all Map specializations must provide
@@ -402,6 +408,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Const associative array iterator</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This class implements the mechanism for traversing constant
 // associative arrays, i.e. "Map"s. This allows one to move
@@ -562,6 +570,8 @@ protected:
 //
 // <category lib=aips sect="Containers">
 // <summary>Associative array iterator</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // This class implements the mechanism for traversing associative 
 // arrays, i.e. "Map"s. It provides the traversal mechanisms of the

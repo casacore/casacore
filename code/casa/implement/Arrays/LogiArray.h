@@ -37,7 +37,7 @@
 // <summary>
 //    Logical valued Arrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

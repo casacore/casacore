@@ -39,7 +39,7 @@ template<class T> class MaskedArray;
 // <summary>
 //    Ascii input/output operations for MaskedArrays.
 // </summary>
-// <reviewed reviewer="" date="" tests="tMaskArrIO">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMaskArrIO">
 //
 // <prerequisite>
 //   <li> <linkto class=Array>Array</linkto>

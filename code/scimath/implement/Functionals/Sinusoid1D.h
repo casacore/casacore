@@ -42,7 +42,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tSinusoid1D" 
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tSinusoid1D" 
 // demos="">
 // </reviewed>
 

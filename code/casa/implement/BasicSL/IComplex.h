@@ -37,6 +37,8 @@
 // <summary>
 // Integer complex numbers.
 // </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // <synopsis>
 // The class <src>IComplex</src> is only a container for FITS usage.

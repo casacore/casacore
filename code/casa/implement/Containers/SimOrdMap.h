@@ -39,6 +39,8 @@
 
 // <category lib=aips sect="Containers">
 // <summary>Simple map with keys ordered</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 // SimpleOrderedMap<key,value> is a template class.
 // It is similar to OrderedMap<key,value>, but lacks its

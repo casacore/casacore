@@ -41,7 +41,7 @@ class IPosition;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="dRetypedArrayEngine.cc" demos=dRetypedArrayEngine.h>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="dRetypedArrayEngine.cc" demos=dRetypedArrayEngine.h>
 // </reviewed>
 
 // <prerequisite>

@@ -40,7 +40,7 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tCompressFloat.cc">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tCompressFloat.cc">
 // </reviewed>
 
 // <prerequisite>

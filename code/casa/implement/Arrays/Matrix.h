@@ -37,6 +37,8 @@ template<class T> class Vector;
 
 
 // <summary> A 2-D Specialization of the Array class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // Matrix objects are two-dimensional specializations (e.g., more convenient
 // and efficient indexing) of the general Array class. You might also want

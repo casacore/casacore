@@ -35,6 +35,8 @@
 
 // 
 // <summary> Iterate an Vector cursor through another Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // VectorIterator steps a Vector (the "cursor") through an array.
 // The cursor "refers" to storage in the array, so that changing the
@@ -83,6 +85,8 @@ public:
 
 // 
 // <summary> Iterate an Vector cursor through another Array. </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //
 // ReadOnlyVectorIterator behaves exactly like VectorIterator (cf.) only
 // it should be used on const Arrays.

@@ -47,6 +47,8 @@ class FitsKeyword;
 class FitsParse;
 
 //<summary> FITS templated helper class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // NoConvert is a template class that is not intended for
 // general use, it is used internally.
@@ -60,6 +62,8 @@ class NoConvert {
 };
 
 //<summary> FITS helper class </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // FitsLogical is a helper class that is not intended for
 // general use. 
@@ -96,6 +100,8 @@ class FitsLogical {
 };
 
 //<summary> helper class for FITS Binary Tables </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis/
 // This class is not intended for general use.  It only has meaning
 // in the context of FITS Binary tables.  There its use is incorporated
@@ -117,6 +123,8 @@ class FitsBit {
 };
 
 //<summary>  Variable Length Array Descriptor </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class FitsVADesc { 
 	friend ostream & operator << (ostream &o, const FitsVADesc &);
@@ -137,6 +145,8 @@ class FitsVADesc {
 };
 
 //<summary> static functions and enumerations </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // Many of the static functions are utility functions used internally in the
 // implementation of the member functions of the FITS classes. They are placed
@@ -324,6 +334,8 @@ inline float FITS::tenF(Int numb, int pow) {
 }
 
 //<summary> reserved FITS keyword </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class ReservedFitsKeyword {
     public:
@@ -356,6 +368,8 @@ inline Bool ReservedFitsKeyword::isessential() const {
 	return isessential_; }
 
 //<summary> collection of reserved FITS keywords </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class ReservedFitsKeywordCollection {
     public:
@@ -414,6 +428,8 @@ inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::history()
 	const { return history_item; }
 
 //<summary> analyse the name of a header card </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // Analyse the name of a header card
 //</synopsis>
@@ -431,6 +447,8 @@ class FitsNameResult {
 };
 
 //<summary> analyse the value of a header card </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // Analyse the value of a header card
 //</synopsis>
@@ -457,6 +475,8 @@ class FitsValueResult {
 };
 
 //<summary> parse a header card </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis> 
 //  parse a header card 
 //</synopsis>
@@ -484,6 +504,8 @@ inline int FitsParse::seterr(const char *s) {
 	return no_errs_ < max_errs ? ( err_[no_errs_++] = s, 0) : -1; }
 
 //<summary> FITS keyword </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // A FITS keyword contains a name, a value and a comment.
 //</synopsis>
@@ -703,6 +725,8 @@ inline FitsKeyword & FitsKeyword::operator = (DComplex x) {
 class ConstFitsKeywordList; // forward declaration
 
 //<summary> linked list of FITS keywords </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis>
 // A linked list of FITS keywords.
 //</synopsis>
@@ -915,6 +939,8 @@ inline void FitsKeywordList::end() {
 	insert(make(FITS::END,FITS::NOVALUE,0,0)); }
 
 //<summary> list of read-only FITS keywords </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 
 class ConstFitsKeywordList {
     public:
@@ -944,6 +970,8 @@ class ConstFitsKeywordList {
 };
 
 //<summary> translator between Keyword lists and fixed FITS cars </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 //<synopsis> 
 // also contains the parser ???
 //</synopsis> 
@@ -979,6 +1007,8 @@ inline int FitsKeyCardTranslator::err_cardno(int i) const {
 	return err_cardno_[i]; }
 
 // <summary>Utility functions for floating point values</summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 class FitsFPUtil
 {
 public:

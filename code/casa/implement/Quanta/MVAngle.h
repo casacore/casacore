@@ -46,7 +46,7 @@ class MUString;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tMeasure" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tMeasure" demos="">
 // </reviewed>
 
 // <prerequisite>

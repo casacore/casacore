@@ -44,7 +44,7 @@ template <class T> class Vector;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tVelocityMachine.cc" demos="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tVelocityMachine.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
