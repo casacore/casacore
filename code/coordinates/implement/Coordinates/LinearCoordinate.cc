@@ -32,6 +32,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
 #include <trial/Images/ImageUtilities.h>
+#include <strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
   : transform_p(naxis), crval_p(naxis), names_p(naxis), units_p(naxis)
@@ -347,9 +348,18 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
 
 // Check descriptor vector lengths
 
-   if (names_p.nelements() != lCoord->names_p.nelements()) return False;
-   if (units_p.nelements() != lCoord->units_p.nelements()) return False;
-   if (crval_p.nelements() != lCoord->crval_p.nelements()) return False;
+   if (names_p.nelements() != lCoord->names_p.nelements()) {
+      set_error("The LinearCoordinates have differing numbers of world axis names");
+      return False;
+   }
+   if (units_p.nelements() != lCoord->units_p.nelements()) {
+      set_error("The LinearCoordinates have differing numbers of axis units");
+      return False;
+   }
+   if (crval_p.nelements() != lCoord->crval_p.nelements()) {
+      set_error("The LinearCoordinates have differing numbers of reference values");
+      return False;
+   }
 
 
 // Number of pixel and world axes is the same for a LinearCoordinate
@@ -367,26 +377,45 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
 
 // Check the descriptors
 
+   ostrstream oss;
    for (i=0; i<names_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (names_p(i) != lCoord->names_p(i)) return False;
+         if (names_p(i) != lCoord->names_p(i)) {
+            oss << "The LinearCoordinates have differing axis names for axis "
+                << i << ends;
+            set_error(String(oss));
+            return False;
+         }
       }
    }
    for (i=0; i<units_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (units_p(i) != lCoord->units_p(i)) return False;
+         if (units_p(i) != lCoord->units_p(i)) {
+            oss << "The LinearCoordinates have differing axis units for axis "
+                << i << ends;
+            set_error(String(oss));
+            return False;
+         }
       }
    }
    for (i=0; i<crval_p.nelements(); i++) {
       if (!exclude(i)) {
-         if (!::near(crval_p[i],lCoord->crval_p[i],tol)) return False;
+         if (!::near(crval_p[i],lCoord->crval_p[i],tol)) {
+            oss << "The LinearCoordinates have differing reference values for axis "
+                << i << ends;
+            set_error(String(oss));
+            return False;
+         }
       }
    }
 
 
 // Check the linear transform
 
-   if (!transform_p.near(lCoord->transform_p,excludeAxes,tol)) return False;
+   if (!transform_p.near(lCoord->transform_p,excludeAxes,tol)) {
+      set_error("The LinearCoordinates have differing linear transformation matrices");
+      return False;
+   }
 
    return True;
 }
