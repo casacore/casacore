@@ -112,9 +112,9 @@ public:
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
-// SHould template this function.
-   static void copyMiscellaneous (ImageInterface<Float>& out,
-                                  const ImageInterface<Float>& in);
+   template <typename T, typename U>
+   static void copyMiscellaneous (ImageInterface<T>& out,
+                                  const ImageInterface<U>& in);
 
 // Copy a mask from one image to another
    static void copyMask (ImageInterface<Float>& out,
