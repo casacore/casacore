@@ -236,7 +236,7 @@ void SkyCompRep::visibility(Cube<DComplex>& visibilities,
   DebugAssert(visibilities.ncolumn() == nFreq, AipsError);
   const uInt nVis = uvws.ncolumn();
   DebugAssert(visibilities.nplane() == nVis, AipsError);
-  DebugAssert(thisShape->isSymmetric() == nFreq, AipsError);
+  DebugAssert(itsShapePtr->isSymmetric() == nFreq, AipsError);
 
   Vector<Double> uvw(3);
   Block<DComplex> flux(4);
