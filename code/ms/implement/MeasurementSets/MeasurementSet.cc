@@ -55,11 +55,29 @@ NewMeasurementSet::NewMeasurementSet(const String &tableName,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(String &, TableOption) - "
 			 "table is not a valid NewMS"));
     initRefs();
 }
+
+void NewMeasurementSet::addCat()
+{
+  // For a transition period: add the CATEGORY keyword to the FLAG_CATEGORY
+  // column silently if it is not there - 2000/08/22, remove next MS update.
+  if (!tableDesc().columnDesc(columnName(FLAG_CATEGORY)).
+      keywordSet().isDefined("CATEGORY")) {
+    if (!isWritable()) {
+      throw (AipsError("Missing CATEGORY keyword in FLAG_CATEGORY column -"
+		       "please open MS table R/W to have it added"));
+    } else {
+      ArrayColumn<Bool> fc(*this,columnName(FLAG_CATEGORY));
+      fc.rwKeywordSet().define("CATEGORY",Vector<String>(0));
+    }
+  }
+}
+
 
 NewMeasurementSet::NewMeasurementSet(const String &tableName,
 			       const TableLock& lockOptions,
@@ -69,6 +87,7 @@ NewMeasurementSet::NewMeasurementSet(const String &tableName,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(String &, lockOptions, TableOption) - "
 			 "table is not a valid NewMS"));
@@ -82,6 +101,7 @@ NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tabl
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(String &, String &, TableOption) - "
 			 "table is not a valid NewMS"));
@@ -95,6 +115,7 @@ NewMeasurementSet::NewMeasurementSet(const String& tableName, const String &tabl
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(String &, String &, TableOption) - "
 			 "table is not a valid NewMS"));
@@ -108,6 +129,7 @@ NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab, uInt nrrow,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(SetupNewTable &, uInt, Bool) - "
 			 "table is not a valid NewMS"));
@@ -121,6 +143,7 @@ NewMeasurementSet::NewMeasurementSet(SetupNewTable &newTab,
       hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(SetupNewTable &, uInt, Bool) - "
 			 "table is not a valid NewMS"));
@@ -131,6 +154,7 @@ NewMeasurementSet::NewMeasurementSet(const Table &table)
       PredefinedKeywords>(table), hasBeenDestroyed_p(False)
 {
     // verify that the now opened table is valid 
+    addCat(); 
     if (! validate(this->tableDesc()))
 	throw (AipsError("NewMS(const Table &) - "
 			 "table is not a valid NewMS"));
@@ -143,6 +167,7 @@ NewMeasurementSet::NewMeasurementSet(const NewMeasurementSet &other)
 {
     // verify that other is valid
     if (&other != this) 
+        addCat(); 
 	if (! validate(this->tableDesc()))
 	    throw (AipsError("NewMS(const NewMeasurementSet &) - "
 			     "NewMeasurementSet is not a valid NewMS"));
@@ -389,6 +414,10 @@ void NewMeasurementSet::init()
 	     i <= NUMBER_REQUIRED_COLUMNS; i++) {
 	    addColumnToDesc(requiredTD, PredefinedColumns(i));
 	}
+        // Add the column keyword for the FLAG_CATEGORY column
+        requiredTD.rwColumnDesc("FLAG_CATEGORY").rwKeywordSet().
+	  define("CATEGORY",Vector<String>(0));
+
 	// init counted pointer to requiredTableDesc 
 	requiredTD_p=new TableDesc(requiredTD);
     }

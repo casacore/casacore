@@ -340,6 +340,11 @@ public:
 
 private:
 
+  // temporary function to add the CATEGORY keyword to the FLAG_CATEGORY
+  // column if it isn't there yet. 2000/08/22
+  //  remove this and the calls next MS update
+  void addCat();
+
   // keep references to the subtables
   NewMSAntenna antenna_p;
   NewMSDataDescription dataDesc_p;
