@@ -317,6 +317,14 @@ private:
     // Current units.
     Vector<String> units_p;
 
+    // Some kinds of DirectionCoordinate cannot be used with
+    // the toMix function (e.g. one made with MDirection::SUN)
+    // We find this out at construction time (things are set
+    // up early and cached) so we cart about the flag and
+    // error message until such time as it is needed.  Yuck.
+    Bool canDoToMix_p;
+    String canDoToMixErrorMsg_p;
+
     // Temporaries
     mutable Vector<Double> world_tmp_p;
     mutable Vector<Double> in_tmp_p;
@@ -354,12 +362,13 @@ private:
 
     // Helper functions interfacing to WCS
     // <group>
-    void make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
-                                   char c_ctype[2][9], double c_crval[2],
-                                   const Projection& proj,
-                                   MDirection::Types type,
-                                   Double refLong, Double refLat,
-                                   Double longPole, Double latPole) const;
+    void make_celprm_and_prjprm(Bool& canDoToMix, String& canDoToMixErrorMsg,
+                                celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
+                                char c_ctype[2][9], double c_crval[2],
+                                const Projection& proj,
+                                MDirection::Types type,
+                                Double refLong, Double refLat,
+                                Double longPole, Double latPole) const;
 
     void copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
                                    wcsprm* &pToWcs,
