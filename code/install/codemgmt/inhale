@@ -1157,7 +1157,7 @@
      if [ "$EXTLIST" != "" ]
      then
         EXTLIST="-e $EXTLIST"
-        AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
+        AIPSEXT=`echo "$EXTLIST" | sed -e 's/:.*//'`
      fi
      SNEEZE="sneeze $EXTLIST -l -m $MODE -s $SLEEPINV $TARGETS"
      echo $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\'
