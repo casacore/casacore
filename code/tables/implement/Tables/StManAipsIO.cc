@@ -1,5 +1,5 @@
 //# StManAipsIO.cc: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -759,8 +759,8 @@ void StManAipsIO::removeColumn (DataManagerColumn* colp)
 	if (colSet_p[i] == colp) {
 	    delete colSet_p[i];
 	    decrementNcolumn();
-	    for (; i<ncolumn(); i++) {
-		colSet_p[i-1] = colSet_p[i];
+	    for (uInt j=i; j<ncolumn(); j++) {
+		colSet_p[j] = colSet_p[j+1];
 	    }
 	    setHasPut();
 	    return;
