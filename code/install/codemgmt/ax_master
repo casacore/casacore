@@ -1958,3 +1958,8 @@
 08 066 src rm trial/implement/distributed/imagesolver.atoms
 08 068 src rm nrao/gbt/M_C/makefile
 08 068 src rm nrao/gbt/M_C
+08 068 src rm nrao/gbt/analysis/sp/sdd004.h
+08 068 src rm nrao/gbt/analysis/sp/splist.cc
+08 068 src rm nrao/gbt/analysis/sp/spsdd.cc
+08 068 src rm nrao/gbt/analysis/sp/spsdd.h
+08 068 src rm nrao/gbt/analysis/sp/makefile
