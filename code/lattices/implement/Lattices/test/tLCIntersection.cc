@@ -93,11 +93,24 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete interscop;
     }
+    {
+    // Test ordered equality.
+       LCIntersection inters1(box, cir);
+       LCIntersection inters2(inters1);
+       AlwaysAssertExit (inters1 == inters2);
+    }
+    {
+    // Test unordered equality.
+       LCIntersection inters1(box, cir);
+       LCIntersection inters2(cir, box);
+       AlwaysAssertExit (inters1 == inters2);
+    }   
 }
 
 
 main()
 {
+    Bool ok = True;
     try {
 	doIt (IPosition (2,11,20),
 	      IPosition (2,3,4), IPosition (2,7,8),
@@ -111,8 +124,8 @@ main()
 	} end_try;
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
     cout << "OK" << endl;
-    return 0;
+    exit(0);
 }
