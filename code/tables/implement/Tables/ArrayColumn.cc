@@ -311,7 +311,7 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
         if (arr.nelements() > 0) {
 	    ArrayIterator<T> iter(arr, arr.ndim()-1);
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        baseColPtr_p->getSlice (rownr, defSlicer, &(iter.array()));
+	        getSlice (rownr, defSlicer, iter.array());
 		iter.next();
 	    }
 	}
@@ -648,7 +648,7 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
         if (arr.nelements() > 0) {
 	    ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
 	    for (uInt rownr=0; rownr<nrrow; rownr++) {
-	        baseColPtr_p->putSlice (rownr, arraySection, &(iter.array()));
+	        putSlice (rownr, arraySection, iter.array());
 		iter.next();
 	    }
 	}
