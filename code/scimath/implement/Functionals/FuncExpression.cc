@@ -514,44 +514,6 @@ ostream &operator<<(ostream &os, const FuncExpression &ed) {
 
 //# Templates (for test purposes)
 template class vector<FuncExprData::ExprOperator>;
+AIPS_VECTOR_AUX_TEMPLATES(FuncExprData::ExprOperator);
 template class vector<Double>;
-
-template
-FuncExprData::ExprOperator 
-*__uninitialized_copy_aux<FuncExprData::ExprOperator *,
-  FuncExprData::ExprOperator *>(FuncExprData::ExprOperator *,
-				FuncExprData::ExprOperator *,
-				FuncExprData::ExprOperator *,
-				__false_type);
-template
-FuncExprData::ExprOperator 
-*__uninitialized_copy_aux<FuncExprData::ExprOperator const *,
-  FuncExprData::ExprOperator *>(FuncExprData::ExprOperator const *,
-				FuncExprData::ExprOperator const *,
-				FuncExprData::ExprOperator *,
-				__false_type);
-template
-FuncExprData::ExprOperator 
-*fill_n<FuncExprData::ExprOperator *, unsigned int,
-  FuncExprData::ExprOperator>(FuncExprData::ExprOperator *,
-			      unsigned int,
-			      FuncExprData::ExprOperator const &);
-template
-double
-*fill_n<double *, unsigned int,
-  double>(double *, unsigned int, double const &);
-template
-void fill<FuncExprData::ExprOperator *,
-  FuncExprData::ExprOperator>(FuncExprData::ExprOperator *,
-			      FuncExprData::ExprOperator *,
-			      FuncExprData::ExprOperator const &);
-template
-void fill<double *,
-  double>(double *, double *, double const &);
-template
-FuncExprData::ExprOperator 
-*__uninitialized_fill_n_aux<FuncExprData::ExprOperator *, unsigned int,
-  FuncExprData::ExprOperator>(FuncExprData::ExprOperator *, unsigned int,
-			      FuncExprData::ExprOperator const &,
-			      __false_type);
-
+AIPS_VECTOR_AUX_TEMPLATES(Double);

@@ -33,7 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
 #include <trial/Functionals/FuncExprData.h>
-#include <vector>
+#include <aips/vector.h>
 
 //# Forward Declarations
 #include <aips/iosfwd.h>

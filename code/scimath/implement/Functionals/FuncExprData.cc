@@ -160,25 +160,7 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
 
 //# Templates (for test purposes)
 template class map<String, FuncExprData::ExprOperator>;
+AIPS_MAP_AUX_TEMPLATES(String, FuncExprData::ExprOperator)
 template class map<FuncExprData::opTypes, FuncExprData::ExprOperator>;
+AIPS_MAP_AUX_TEMPLATES(FuncExprData::opTypes, FuncExprData::ExprOperator)
 
-// Should only be needed for gcc, solaris native, kai, and sgi not necessary.
-
-#if defined(AIPS_GCC)
-template class
-_Rb_tree<FuncExprData::opTypes,
-			 pair<FuncExprData::opTypes const,
-  FuncExprData::ExprOperator>,
-  _Select1st<pair<FuncExprData::opTypes const,
-  FuncExprData::ExprOperator> >,
-  less<FuncExprData::opTypes>,
-  allocator<FuncExprData::ExprOperator> >;
-template class
-_Rb_tree<String,
-  pair<String const,
-  FuncExprData::ExprOperator>,
-  _Select1st<pair<String const,
-  FuncExprData::ExprOperator> >, 
-  less<String>,
-  allocator<FuncExprData::ExprOperator> >;
-#endif
