@@ -113,7 +113,11 @@ makeXfr(const Array<FType>& psf,
       theFFTSize(i) = max(thePsfSize(i), convImageSize(i));
   // set up the FFT server to do transforms of the required length
   theFFT.Set(theFFTSize);
-  theXfr.resize(0); // I am to lazy to work out the correct size
+  {
+    IPosition tmp = theXfr.shape();
+    tmp = 0;
+    theXfr.resize(tmp); // I am to lazy to work out the correct size
+  }
   // Pad the psf (if necessary) 
   if (theFFTSize != thePsfSize){
     Array<FType> paddedPsf(theFFTSize);
