@@ -1,5 +1,5 @@
 //# MeasureHolder.cc: A holder for Measures to enable record conversions
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -224,14 +224,16 @@ Bool MeasureHolder::fromRecord(String &error,
     String rf;
     in.get(RecordFieldId("refer"), rf);
     if (!hold_p.ptr()->setRefString(rf)) {
-      LogIO os(LogOrigin("MeasureHolder", 
-			 String("fromRecord(String, const RecordInterface"),
-			 WHERE));
-      os << LogIO::WARN <<
-	String("Illegal or unknown reference type '") +
-	rf + "' for " + tp + " definition. DEFAULT (" + 
-	hold_p.ptr()->getDefaultType() + ") assumed." <<
-	LogIO::POST;
+      if (!rf.empty()) {
+	LogIO os(LogOrigin("MeasureHolder", 
+			   String("fromRecord(String, const RecordInterface"),
+			   WHERE));
+	os << LogIO::WARN <<
+	  String("Illegal or unknown reference type '") +
+	  rf + "' for " + tp + " definition. DEFAULT (" + 
+	  hold_p.ptr()->getDefaultType() + ") assumed." <<
+	  LogIO::POST;
+      };
     };
     if (in.isDefined(String("offset")) &&
 	in.type(in.idToNumber(RecordFieldId("offset"))) == TpRecord) {
