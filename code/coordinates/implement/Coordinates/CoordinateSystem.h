@@ -424,9 +424,9 @@ public:
                        const Vector<Double>& worldMax) const; 
 
     // Set the world min and max ranges, for use in function <src>toMix</src>,
-    // for  a lattice of the given shape (for this coordinate).
-    // The output vectors are resized.  Returns False if fails (and
-    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // for  a lattice of the given shape (for this coordinate). With
+    // the retrieval functions, the output vectors are resized.  They return 
+    // False if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
     // The <src>setDefaultWorldMixRanges</src> function
     // gives you  a useful default range if you don't know the shape.
