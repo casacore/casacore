@@ -352,7 +352,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("bitpix", "Floating point (32 bit)");
 
     Vector<Int> naxis(ndim);
-    for (Int i=0; i < Int(ndim); i++) {
+    Int i;
+    for (i=0; i < Int(ndim); i++) {
         naxis(i) = shape(i);
     }
     header.define("NAXIS", naxis);
@@ -731,7 +732,8 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
     }
 
     uInt prod = 1;
-    for (uInt i=0; Int(i)<=axis; i++) {
+    uInt i;
+    for (i=0; Int(i)<=axis; i++) {
 	prod *= shape(i);
     }
     // Correct for the probable tile shape

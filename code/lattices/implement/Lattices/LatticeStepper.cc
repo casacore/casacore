@@ -337,7 +337,8 @@ void LatticeStepper::setCursorShape (const IPosition& cursorShape,
   // check if the cursor shape for non-cursorAxes is 1.
   if (ndimCA > 0  &&  ndimCA != ndimCS) {
     for (i=0; i<ndimCS; i++) {
-      for (uInt j=0; j<ndimCA; j++) {
+      uInt j;
+      for (j=0; j<ndimCA; j++) {
 	if (Int(i) == cursorAxes(j)) {
 	  break;
 	}

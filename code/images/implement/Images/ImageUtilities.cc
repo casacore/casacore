@@ -203,7 +203,8 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    Vector<Double> world(cSys.nPixelAxes());
    pix = cSys.referencePixel(); 
    Bool found;
-   for (uInt i=0; i<pix.nelements(); i++) {
+   uInt i;
+   for (i=0; i<pix.nelements(); i++) {
      if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) != -1) {
         pix(i) = Double(blc(i) + trc(i)) / 2.0;
      }

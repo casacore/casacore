@@ -142,7 +142,8 @@ void WCCompound::multiToLCRegion (PtrBlock<const LCRegion*>& regions,
         // The used axes of the region are the first axes.
         // The latter axes are the auto-extension axes.
 	uInt na = axes.nelements();
-        for (uInt j=0; j<na; j++) {
+	uInt j;
+        for (j=0; j<na; j++) {
 	    pixAxesMap(j) = pixelAxesMap(axes(j));
 	    outOrd(j) = outOrder(axes(j));
 	    axisUsed(axes(j)) = 1;

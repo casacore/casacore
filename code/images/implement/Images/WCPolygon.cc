@@ -258,7 +258,8 @@ Bool WCPolygon::operator== (const WCRegion& other) const
    if (x1.nelements() != x2.nelements()) return False;
    if (y1.nelements() != y2.nelements()) return False;
 //
-   for (uInt i=0; i<x1.nelements(); i++) {
+   uInt i;
+   for (i=0; i<x1.nelements(); i++) {
       if (x1(i) != x2(i)) return False;
       if (y1(i) != y2(i)) return False;
    }
