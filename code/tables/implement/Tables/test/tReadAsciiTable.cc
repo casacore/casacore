@@ -1,5 +1,5 @@
 //# tReadAsciiTable.cc: Test program for the ReadAsciiTable functions
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,11 +29,14 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/iostream.h>
+#include <aips/fstream.h>
 
 // <summary> Test program for the ReadAsciiTable functions </summary>
 
@@ -51,6 +54,8 @@ void b (const String& dir, const String& suffix, Char separator,
 	Int firstLine, Int lastLine);
 void b1 (const String& dir);
 void b2 (const String& dir);
+void b3 (const String& dir, const IPosition& autoShape);
+void erronous();
 
 int main (int argc, char** argv) {
     try {
@@ -69,6 +74,15 @@ int main (int argc, char** argv) {
 	b (dir, "c", ',', "K", -1, -1);
 	b1 (dir);
 	b2 (dir);
+	b3 (dir, IPosition(1,0));
+	b3 (dir, IPosition(2,1,10));
+	b3 (dir, IPosition(1,10));
+	b3 (dir, IPosition(1,5));
+	b3 (dir, IPosition(1,15));
+	b3 (dir, IPosition(2,2,5));
+	b3 (dir, IPosition(2,3,5));
+	b3 (dir, IPosition(2,0,5));
+	erronous();
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -319,4 +333,114 @@ void b2 (const String& dir)
 	     << col7(i) << " " << col8(i) << " " << col9(i) << " "
 	     << col10(i) << endl;
     }
+}
+
+void b3 (const String& dir, const IPosition& autoShape)
+{
+    cout << ">>>" << endl;
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tkh", "",
+				     "tReadAsciiTable_tmp.data_tk", True,
+				     ' ', " #", 1, -1, autoShape);
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
+    cout << "shape=" << autoShape << endl;;
+    Table tab("tReadAsciiTable_tmp.data_tk");
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROArrayColumn<String> col1 (tab,"Column1");
+    for (uInt i=0; i<tab.nrow(); i++) {
+        cout << col1(i) << endl;
+    }
+}
+
+
+void tryerror()
+{
+  Bool ok = True;
+  try {
+    readAsciiTable ("tReadAsciiTable_tmp.header", "",
+		    "tReadAsciiTable_tmp.data_try");
+  } catch (AipsError& x) {
+    cout << x.getMesg() << endl;
+    ok = False;
+  }
+  AlwaysAssertExit (ok==False);
+}
+
+void erronous()
+{
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2 COL3" << endl;
+    ofile << "I D" << endl;
+  }
+  tryerror();      // mismatching header lines
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I D R" << endl;
+  }
+  tryerror();      // mismatching header lines
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I F" << endl;
+  }
+  tryerror();      // invalid datatype
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I0 I" << endl;
+  }
+  tryerror();      // variable length not last column
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I I0,0" << endl;
+  }
+  tryerror();      // more than one variable length axis
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I I,1" << endl;
+  }
+  tryerror();      // first axis not given
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I I1," << endl;
+  }
+  tryerror();      // second axis not given
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I I1." << endl;
+  }
+  tryerror();      // invalid axis length
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+    ofile << "I 1" << endl;
+  }
+  tryerror();      // no column datatype
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+  }
+  tryerror();      // missing NAMES line
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << "COL1 COL2" << endl;
+  }
+  tryerror();      // missing TYPES line
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << ".key" << endl;
+  }
+  tryerror();      // missing .endkey
+  {
+    ofstream ofile("tReadAsciiTable_tmp.header");
+    ofile << ".key" << endl;
+    ofile << "KEYNAME" << endl;
+  }
+  tryerror();      // missing keyword datatype
 }

@@ -540,3 +540,96 @@ KEYBV [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
 2 rows, 10 columns
 COLS COLI COLF COLD COLX COLDX COLZ COLDZ COLA COLB
 s i R d X dx z DZ A B
+>>>
+<<<
+Input format: [Column1=A0]
+shape=[0]
+2 rows, 1 columns
+[COLS, COLI, COLF, COLD, COLX, COLDX, COLZ, COLDZ, COLA, COLB]
+[s, i, R, d, X, dx, z, DZ, A, B]
+>>>
+<<<
+Input format: [Column1=A1,10]
+shape=[1, 10]
+2 rows, 1 columns
+Axis Lengths: [1, 10]  (NB: Matrix in Row/Column order)
+[COLS, COLI, COLF, COLD, COLX, COLDX, COLZ, COLDZ, COLA, COLB]
+
+Axis Lengths: [1, 10]  (NB: Matrix in Row/Column order)
+[s, i, R, d, X, dx, z, DZ, A, B]
+
+>>>
+<<<
+Input format: [Column1=A10]
+shape=[10]
+2 rows, 1 columns
+[COLS, COLI, COLF, COLD, COLX, COLDX, COLZ, COLDZ, COLA, COLB]
+[s, i, R, d, X, dx, z, DZ, A, B]
+>>>
+<<<
+Input format: [Column1=A5]
+shape=[5]
+2 rows, 1 columns
+[COLS, COLI, COLF, COLD, COLX]
+[s, i, R, d, X]
+>>>
+<<<
+Input format: [Column1=A15]
+shape=[15]
+2 rows, 1 columns
+[COLS, COLI, COLF, COLD, COLX, COLDX, COLZ, COLDZ, COLA, COLB, , , , , ]
+[s, i, R, d, X, dx, z, DZ, A, B, , , , , ]
+>>>
+<<<
+Input format: [Column1=A2,5]
+shape=[2, 5]
+2 rows, 1 columns
+Axis Lengths: [2, 5]  (NB: Matrix in Row/Column order)
+[COLS, COLF, COLX, COLZ, COLA
+ COLI, COLD, COLDX, COLDZ, COLB]
+
+Axis Lengths: [2, 5]  (NB: Matrix in Row/Column order)
+[s, R, X, z, A
+ i, d, dx, DZ, B]
+
+>>>
+<<<
+Input format: [Column1=A3,5]
+shape=[3, 5]
+2 rows, 1 columns
+Axis Lengths: [3, 5]  (NB: Matrix in Row/Column order)
+[COLS, COLD, COLZ, COLB, 
+ COLI, COLX, COLDZ, , 
+ COLF, COLDX, COLA, , ]
+
+Axis Lengths: [3, 5]  (NB: Matrix in Row/Column order)
+[s, d, z, B, 
+ i, X, DZ, , 
+ R, dx, A, , ]
+
+>>>
+<<<
+Input format: [Column1=A0,5]
+shape=[0, 5]
+2 rows, 1 columns
+Axis Lengths: [2, 5]  (NB: Matrix in Row/Column order)
+[COLS, COLF, COLX, COLZ, COLA
+ COLI, COLD, COLDX, COLDZ, COLB]
+
+Axis Lengths: [2, 5]  (NB: Matrix in Row/Column order)
+[s, R, X, z, A
+ i, d, dx, DZ, B]
+
+Mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
+Mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
+Invalid type specifier 'F'
+Only last column can have variable shaped arrays
+Multiple variable axes in type string 'I0,0'
+Invalid shape value '' in type string 'I,1'
+Invalid shape value '' in type string 'I1,'
+Invalid shape value '1.' in type string 'I1.'
+No type info in type string '1'
+Cannot read first header line of tReadAsciiTable_tmp.header
+No COLUMN TYPES line in tReadAsciiTable_tmp.header
+No .endkey line in tReadAsciiTable_tmp.header
+No keyword name or type in line 2 of tReadAsciiTable_tmp.header
