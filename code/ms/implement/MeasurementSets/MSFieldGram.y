@@ -66,6 +66,7 @@ using namespace casa;
 %type <node> fieldstatement
 %type <node> fieldexpr
 %type <node> namelist
+%type <node> indexexpr
 %type <node> indexlist
 %type <node> indexrangeexpr
 %type <node> lowindexboundexpr
@@ -85,18 +86,17 @@ int MSFieldGramlex (YYSTYPE*);
 %}
 
 %%
-fieldstatement: SQUOTE fieldexpr SQUOTE {
-                  $$ = $2 ;
-                  cout << "field selection" << endl;}
+fieldstatement:  indexexpr {
+                  $$ = $1 ;}
+                |SQUOTE fieldexpr SQUOTE {
+                  $$ = $2 ;}
                ;
+
 fieldexpr:  namelist
            |CODE {
 		 printf("field or source code\n");}
-           |indexlist
-           |indexrangeexpr
-           |lowindexboundexpr
-           |upindexboundexpr
             ;
+
 namelist : NAME {
 		 Vector<String> fieldnames(1);
                  fieldnames[0] = String($1);		
@@ -105,12 +105,22 @@ namelist : NAME {
 	         printf("For list case, this one match first\n");}
          ;
             
+indexexpr:  indexlist
+           |indexrangeexpr
+           |lowindexboundexpr
+           |upindexboundexpr
+           ;
+
 indexlist: INDEX {
                    Vector<Int> fieldids(1);
 		   fieldids[0] = $1;
 		   cout << ("field index\n") << fieldids[0] << endl;;
                    $$ = MSFieldParse().selectFieldIds(fieldids);}
-         | indexlist COMMA INDEX
+         | indexlist COMMA INDEX {
+                   Vector<Int> fieldids(1);
+		   fieldids[0] = $3;
+		   cout << ("field index\n") << fieldids[0] << endl;;
+                   $$ = MSFieldParse().selectFieldIds(fieldids);}
          ;
 
 indexrangeexpr : INDEX DASH INDEX {

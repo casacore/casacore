@@ -77,19 +77,22 @@ int MSSpwGramlex (YYSTYPE*);
 %}
 
 %%
-spwstatement: SQUOTE spwexpr SQUOTE {
-                $$ = $2;
-                cout << "Spw selection "<< endl;}
-            | LBRACKET indexlist RBRACKET {
-                $$ = $2; }
+spwstatement:  indexlist {
+                 $$ = $1;}
+             | SQUOTE spwexpr SQUOTE {
+                 $$ = $2;}
             ;
 
-indexlist: INDEX {
-                   Vector<Int> spwids(1);
-		   spwids[0] = $1;
-		   cout << ("spw index\n") << spwids[0] << endl;;
-                   $$ = MSSpwParse().selectSpwIds(spwids);}
-         | indexlist COMMA INDEX
+indexlist:  INDEX {
+              Vector<Int> spwids(1);
+              spwids[0] = $1;
+              cout << ("spw index\n") << spwids[0] << endl;;
+              $$ = MSSpwParse().selectSpwIds(spwids);}
+          | indexlist COMMA INDEX {
+              Vector<Int> spwids(1);
+	      spwids[0] = $3;
+              cout << ("spw index\n") << spwids[0] << endl;;
+              $$ = MSSpwParse().selectSpwIds(spwids);}
          ;
 
 spwexpr: SPWNAME {
