@@ -36,6 +36,7 @@
 #include <trial/Images/ImageInfo.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
@@ -133,14 +134,15 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
        shape2 = shape;
     }
 
+    Bool isTempImage = False;
     try {
        if (imageName.empty()) {
           newImage = new TempImage<Float>(shape2, coords);
-          os << LogIO::WARN << "The output will be stored in a transient TempImage.  However," << endl;
-          os << "we cannot yet attach a mask to a TempImage, so any blanked" << endl;
-          os << "pixels in the FITS file will not be masked in the output" << LogIO::POST;
+          os << LogIO::WARN << "Created (temp)image of shape" << shape2 << LogIO::POST;
+          isTempImage = True;
        } else {
           newImage = new PagedImage<Float>(shape2, coords, imageName);
+          os << LogIO::WARN << "Created image of shape" << shape2 << LogIO::POST;
        }
     } catch (AipsError x) {
 	if (newImage) {
@@ -304,13 +306,18 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 // are blanks or not.   SO we have to make the mask, and then
 // delete it if its not needed.
 
-    LCPagedMask* pMask = 0;
+    Lattice<Bool>* pMask = 0;
     LatticeStepper* pMaskStepper = 0;
     LatticeIterator<Bool>* pMaskIter = 0;
-
     Bool madeMask = False;
-    if (!imageName.empty() && (bitpix<0 || isBlanked)) {
-       pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
+//
+    if (bitpix<0 || isBlanked) {
+       if (isTempImage) {
+          pMask = new TempLattice<Bool>(shape2);
+       } else {
+          pMask = new LCPagedMask(RegionHandler::makeMask (*newImage, "mask0"));
+       }
+//
        pMaskStepper = new LatticeStepper(shape2, cursorShape, 
                                          IPosition::makeAxisPath(ndim));
        pMaskIter = new LatticeIterator<Bool>(*pMask, *pMaskStepper);
@@ -388,22 +395,36 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 //
          if (madeMask) {
             if (hasBlanks) {
-               os << LogIO::NORMAL << "Storing mask with name 'mask0'" << endl;
+               if (isTempImage) {
+
+// Attach to TempImage
+
+                  TempImage<Float>* castImagePtr = dynamic_cast<TempImage<Float>*>(newImage);
+                  castImagePtr->attachMask(*pMask);
+                  os << LogIO::NORMAL << "Storing (temp)mask" << endl;
+               } else {
+                  os << LogIO::NORMAL << "Storing mask with name 'mask0'" << endl;
 //
 // Make mask known to the image 
 //
-               newImage->defineRegion ("mask0", ImageRegion(*pMask), 
-                                        RegionHandler::Masks);
+                  PagedImage<Float>* castImagePtr = dynamic_cast<PagedImage<Float>*>(newImage);
+                  LCPagedMask* castMaskPtr = dynamic_cast<LCPagedMask*>(pMask);
+                  castImagePtr->defineRegion ("mask0", ImageRegion(*castMaskPtr), 
+                                              RegionHandler::Masks);
 //
 // Make the mask the default mask. Hereafter the mask is writable
 // through newImage.
 //
-               newImage->setDefaultMask(String("mask0"));
+                  castImagePtr->setDefaultMask(String("mask0"));
+               }
             } else {
 //
 // There were no blanks, so we don't need the mask
 // 
-               pMask->handleDelete();
+               if (!isTempImage) {
+                  LCPagedMask* castMaskPtr = dynamic_cast<LCPagedMask*>(pMask);
+                  castMaskPtr->handleDelete();
+               }
             }
 //
 // Clean up pointers
