@@ -132,7 +132,7 @@ public:
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function.
-  void add(SkyComponent & component);
+  void add(SkyComponent component);
 
   // Remove the specified SkyComponent from the ComponentList. After removing a
   // component all the components with an index greater than this one will be
