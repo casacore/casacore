@@ -127,54 +127,115 @@ IPosition ImageSummary<T>::tileShape () const
    return pImage_p->niceCursorShape(pImage_p->maxPixels());
 }
 
+
+
 typedef Vector<String> gpp_VS;
 template <class T> 
 gpp_VS ImageSummary<T>::axisNames () const
 // 
-// Get axis names
+// Get axis names for the pixel axes
 //
 {
-   return pImage_p->coordinates().worldAxisNames();
+//   return pImage_p->coordinates().worldAxisNames();
+
+   CoordinateSystem cSys = pImage_p->coordinates();
+   Int coordinate, axisInCoordinate;
+   Vector<String> names(cSys.nPixelAxes());
+
+   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
+      names(pixelAxis) = cSys.worldAxisNames()(worldAxis);
+   }
+   return names;
 }
+
+
 
 
 template <class T> 
 Vector<Double> ImageSummary<T>::referencePixels () const
 // 
-// Get reference pixels
+// Get reference pixels for the pixel axes
 //
 {
-   return pImage_p->coordinates().referencePixel().ac() + 1.0;
+//   return pImage_p->coordinates().referencePixel().ac() + 1.0;
+
+   CoordinateSystem cSys = pImage_p->coordinates();
+   Int coordinate, axisInCoordinate;
+   Vector<Double> refPix(cSys.nPixelAxes());
+ 
+   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      refPix(pixelAxis) = cSys.referencePixel()(pixelAxis) + 1.0;
+   }
+   return refPix;
 }
 
 
 template <class T> 
 Vector<Double> ImageSummary<T>::referenceValues () const
 // 
-// Get reference values
+// Get reference values for the pixel axes
 //
 {
-   return pImage_p->coordinates().referenceValue().ac();
+//   return pImage_p->coordinates().referenceValue().ac();
+
+   CoordinateSystem cSys = pImage_p->coordinates();
+   Int coordinate, axisInCoordinate;
+   Vector<Double> refVals(cSys.nPixelAxes());
+ 
+   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
+      refVals(pixelAxis) = cSys.referenceValue()(worldAxis);
+   }
+   return refVals;
 }
 
 
 template <class T> 
 Vector<Double> ImageSummary<T>::axisIncrements () const
 // 
-// Get axis increments
+// Get axis increments for the pixel axes
 //
 {
-   return pImage_p->coordinates().increment().ac();
+//   return pImage_p->coordinates().increment().ac();
+
+
+   CoordinateSystem cSys = pImage_p->coordinates();
+   Int coordinate, axisInCoordinate;
+   Vector<Double> incs(cSys.nPixelAxes());
+ 
+   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
+      incs(pixelAxis) = cSys.increment()(worldAxis);
+   }
+   return incs;
 }
 
 template <class T> 
 Vector<String> ImageSummary<T>::axisUnits () const
 // 
-// Get axis units
+// Get axis units for the pixel axes
 //
 {
-   return pImage_p->coordinates().worldAxisUnits().ac();
+//   return pImage_p->coordinates().worldAxisUnits().ac();
+
+   CoordinateSystem cSys = pImage_p->coordinates();
+   Int coordinate, axisInCoordinate;
+ 
+   Vector<String> units(cSys.nPixelAxes());
+ 
+   for (Int pixelAxis=0; pixelAxis<cSys.nPixelAxes(); pixelAxis++) {
+      cSys.findPixelAxis(coordinate, axisInCoordinate, pixelAxis);
+      Int worldAxis = cSys.worldAxes(coordinate)(axisInCoordinate);
+      units(pixelAxis) = cSys.worldAxisNames()(worldAxis);
+   }
+   return units;
 }
+
 
 
 template <class T> 
@@ -223,6 +284,7 @@ void ImageSummary<T>::list (LogIO& os,
 {
 
    os << LogIO::NORMAL << endl;
+
 
 // List random things
 
