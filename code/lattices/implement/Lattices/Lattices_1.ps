@@ -1,10 +1,10 @@
 %!PS-Adobe-2.0
-%%Title: lattices.ps
+%%Title: Lattices_1.ps
 %%Creator: fig2dev Version 3.2 Patchlevel 0-beta2
-%%CreationDate: Thu Apr  2 11:35:21 1998
+%%CreationDate: Fri Apr 17 11:23:26 1998
 %%For: gvd@duw01 (Ger van Diepen)
 %%Orientation: Landscape
-%%BoundingBox: 143 98 469 694
+%%BoundingBox: 134 72 478 720
 %%Pages: 1
 %%BeginSetup
 %%IncludeFeature: *PageSize Letter
@@ -50,7 +50,7 @@ $F2psDict /mtrx matrix put
 
 end
 save
-126.0 63.0 translate
+117.0 37.0 translate
  90 rotate
 1 -1 scale
 
@@ -85,17 +85,36 @@ save
   bind def
 /shd {dup dup currentrgbcolor 4 -2 roll mul 4 -2 roll mul
   4 -2 roll mul srgb} bind def
+ /DrawEllipse {
+	/endangle exch def
+	/startangle exch def
+	/yrad exch def
+	/xrad exch def
+	/y exch def
+	/x exch def
+	/savematrix mtrx currentmatrix def
+	x y tr xrad yrad sc 0 0 1 startangle endangle arc
+	closepath
+	savematrix setmatrix
+	} def
+
 /$F2psBegin {$F2psDict begin /$F2psEnteredState save def} def
 /$F2psEnd {$F2psEnteredState restore end} def
 %%EndProlog
 
 $F2psBegin
 10 setmiterlimit
-n 0 5752 m 0 0 l 10552 0 l 10552 5752 l cp clip
+n 0 6052 m 0 0 l 11407 0 l 11407 6052 l cp clip
  0.06000 0.06000 sc
 %%Page: 1 1
-% Polyline
 7.500 slw
+% Ellipse
+n 6900 5025 75 75 0 360 DrawEllipse gs col0 s gr
+
+% Ellipse
+n 10500 5025 75 75 0 360 DrawEllipse gs col0 s gr
+
+% Polyline
 n 4200 300 m 5700 300 l 5700 1200 l 4200 1200 l cp gs col0 s gr 
 % Polyline
 n 600 1800 m 2100 1800 l 2100 2700 l 600 2700 l cp gs col0 s gr 
@@ -126,12 +145,6 @@ n 7950 3300 m 9450 3300 l 9450 4200 l 7950 4200 l cp gs col0 s gr
 % Polyline
 n 8550 4350 m 8700 4200 l 8850 4350 l 8700 4500 l cp gs col0 s gr 
 % Polyline
-n 7050 4800 m 8550 4800 l 8550 5700 l 7050 5700 l cp gs col0 s gr 
-% Polyline
-n 8850 4800 m 10350 4800 l 10350 5700 l 8850 5700 l cp gs col0 s gr 
-% Polyline
-n 7800 4800 m 7800 4650 l 9600 4650 l 9600 4800 l gs col0 s gr 
-% Polyline
 n 8700 4500 m 8700 4650 l gs col0 s gr 
 % Polyline
 n 7500 3000 m 7650 2850 l 7800 3000 l gs col0 s gr 
@@ -151,6 +164,26 @@ n 1200 2850 m 1350 2700 l 1500 2850 l 1350 3000 l cp gs col0 s gr
 n 1350 3000 m 1350 3300 l gs col0 s gr 
 % Polyline
 n 3450 3000 m 3450 3300 l gs col0 s gr 
+% Polyline
+n 4200 375 m 5700 375 l gs col0 s gr 
+% Polyline
+n 6900 1875 m 8400 1875 l gs col0 s gr 
+% Polyline
+n 9000 1875 m 10500 1875 l gs col0 s gr 
+% Polyline
+n 6150 5100 m 7650 5100 l 7650 6000 l 6150 6000 l cp gs col0 s gr 
+% Polyline
+n 7950 5100 m 9450 5100 l 9450 6000 l 7950 6000 l cp gs col0 s gr 
+% Polyline
+n 6150 5175 m 7650 5175 l gs col0 s gr 
+% Polyline
+n 8700 4650 m 8700 5100 l gs col0 s gr 
+% Polyline
+n 6900 4950 m 6900 4650 l 10500 4650 l 10500 4950 l gs col0 s gr 
+% Polyline
+n 9750 5100 m 11250 5100 l 11250 6000 l 9750 6000 l cp gs col0 s gr 
+% Polyline
+n 9750 5175 m 11250 5175 l gs col0 s gr 
 /Times-Roman ff 270.00 scf sf
 2775 2400 m
 gs 1 -1 sc (PagedArray) col0 sh gr
@@ -170,16 +203,7 @@ gs 1 -1 sc (Image) col0 sh gr
 9225 2475 m
 gs 1 -1 sc (Interface) col0 sh gr
 /Times-Roman ff 270.00 scf sf
-4500 900 m
-gs 1 -1 sc (Lattice) col0 sh gr
-/Times-Roman ff 270.00 scf sf
 8100 3900 m
-gs 1 -1 sc (SubLattice) col0 sh gr
-/Times-Roman ff 270.00 scf sf
-7050 5400 m
-gs 1 -1 sc (LatticeRegion) col0 sh gr
-/Times-Roman ff 270.00 scf sf
-9000 5400 m
 gs 1 -1 sc (SubLattice) col0 sh gr
 /Times-Roman ff 270.00 scf sf
 5925 3825 m
@@ -190,6 +214,18 @@ gs 1 -1 sc (Table) col0 sh gr
 /Times-Roman ff 270.00 scf sf
 975 3900 m
 gs 1 -1 sc (Array) col0 sh gr
+/Times-Roman ff 270.00 scf sf
+4575 900 m
+gs 1 -1 sc (Lattice) col0 sh gr
+/Times-Roman ff 270.00 scf sf
+7950 5700 m
+gs 1 -1 sc (LatticeRegion) col0 sh gr
+/Times-Roman ff 270.00 scf sf
+6525 5700 m
+gs 1 -1 sc (Lattice) col0 sh gr
+/Times-Roman ff 270.00 scf sf
+9675 5700 m
+gs 1 -1 sc (MaskedLattice) col0 sh gr
 $F2psEnd
 rs
 showpage
