@@ -144,18 +144,29 @@ Beneath this broad categorization is the actual data which is used by
 \label{data repository contributing}
 \index{data repository!contributing}
 
+This section describes how to setup and use CVS to contribute to the repository.
+While it introduces the basic CVS commands, it is not intended as a substitute
+for existing CVS documentation, e.g. the CVS
+\htmladdnormallinkfoot{support page}{http://www.cyclic.com/CVS/support}
+at \host{cyclic.com}. Standard CVS documentation should be consulted before
+attempting to contribute to the repository for the first time.
+
+\subsection*{Setup CVS}
+\label{data repository cvs setup}
+\index{data repository!cvs setup}
+
 It is more difficult to setup things to contribute to the \aipspp\ data
-repository. The first requirement is that the user must have an account
-on the \aipspp\ central server, \host{aips2.nrao.edu}, and the user id on
-\host{aips2.nrao.edu} must be a member of the \acct{aips2prg} group.
-In addition, CVS and SSH must be installed on your local system. These
+repository than to mirror it. The first requirement is that the user must
+have an account on the \aipspp\ central server, \host{aips2.nrao.edu}, and
+the user id on \host{aips2.nrao.edu} must be a member of the \acct{aips2prg}
+group. In addition, CVS and SSH must be installed on your local system. These
 packages are widely available.
 
 With \unixexe{ssh} you create your pair of keys using \unixexe{ssh-keygen}.
-This will create \verb+~+\file{/.ssh/identity.pub} on your local machine. You then
-add this file to \verb+~+\file{/.ssh/authorized\_keys} on \host{aips2.nrao.edu}.Make
-sure \file{authorized\_keys} is readable only by the user. After that, you
-are ready to try \unixexe{ssh}; try something like:
+This will create \verb+~+\file{/.ssh/identity.pub} on your local machine. You
+then add the contents of this file to \verb+~+\file{/.ssh/authorized\_keys}
+on \host{aips2.nrao.edu}.Make sure \file{authorized\_keys} is readable only by
+the user. After that, you are ready to try \unixexe{ssh}; try something like:
 
 \begin{verbatim}
    yourhost% ssh aips2.nrao.edu which cvs
@@ -213,33 +224,33 @@ between your changes and changes which have occurred since you checked
 out the files are addressed at check in time (actually \unixexe{cvs update}
 time).
 
-% ----------------------------------------------------------------------------
+\subsection*{Using CVS}
+\label{data repository using cvs}
+\index{data repository!using cvs}
 
-\section{Using CVS}
-\label{data repository cvs}
-\index{data repository!cvs}
-
-CVS is similar to RCS. However, the format for running CVS commands is:
+The format for running CVS commands is:
 
 \begin{verbatim}
    yourhost% cvs <COMMAND> <OPTIONS>
 \end{verbatim}
 
 \noindent
-The command for checking out code is \code{co} (abbreviation for \code{checkout}).
-The command for checking in code is \code{commit}. And the command for printing
-the differences between your copy and the version you checked out is \code{diff}.
+As shown above, the command for checking out code is \code{co} (abbreviation
+for \code{checkout}). The command for adding new files or directories is
+\code{add}. The command for checking in changes to files is \code{commit}.
+\code{diff} is used to print the differences between a local copy and the
+version resident in the repository.
 
-All commands in CVS are recursive by default. So if you wanted to list all of your
-changes, you would go to the top of the tree and run:
+All commands in CVS are recursive by default. So if you wanted to list all
+of your changes, you would go to the top of the tree and run:
 
 \begin{verbatim}
    yourhost% cvs diff .
 \end{verbatim}
 
 \noindent
-which says give me the difference in this directory including every directory beneath
-this directory.
+which says give me the difference in this directory including every
+directory beneath this directory.
 
 When you check out files, you can check out all of the repository source:
 
@@ -255,8 +266,8 @@ or only a small portion:
 \end{verbatim}
 
 After you have had code checked out for some time, you may want to bring it
-up to date with the current state of the code. You use \code{update} to do
-this, e.g.
+up to date with the current state of the code in the CVS repository. You use
+\code{update} to do this, e.g.
 
 \begin{verbatim}
    yourhost% cvs update .
@@ -274,6 +285,115 @@ changes.
 For more information about CVS, see
 the \htmladdnormallinkfoot{support page}{http://www.cyclic.com/CVS/support}
 at \host{cyclic.com}.
+
+\subsection*{CVS Example}
+\label{data repository cvs example}
+\index{data repository!cvs example}
+
+Checking out a portion of the data repository is the first step toward
+contributing to the repository. Whether you plan to modify existing
+data, check-in new data, or remove data, you must first checkout that
+portion of the repository which you plan to change. As an example, lets
+assume that we want to check in test data for a new AIPS++ package,
+\textit{foobar}. The data we are adding is a table, \textit{footest1}.
+So we first checkout the \code{demo} portion of the data repository:
+
+\begin{verbatim}
+    yourhost% cvs co data/demo
+\end{verbatim}
+
+\noindent
+This creates a workspace where we can make changes.
+
+Next since \textit{foobar} tests will need multiple data sets, we want to
+create the directory to group these data sets:
+
+\begin{verbatim}
+    yourhost% cd data/demo
+    yourhost% mkdir foobar
+    yourhost% cvs add foobar
+\end{verbatim}
+
+As discussed in section \sref{data repository conventions}, makefile rules
+for installing tables from the data repository source tree to the repository
+tree which is exported to end users depend on the actual table being below
+a directory of the same name. In our case, the tree looks like:
+
+\begin{verbatim}
+    data                             workspace root directory
+    |
+    +- demo                          all test and demo data
+       |
+       +- foobar                     all of our foobar test data
+          |
+          +- footest1                makefile to install footest1
+             |
+             +- footest1             actual footest1 data
+                     
+\end{verbatim}
+
+\noindent
+This duplication of the table (\textit{footest1}) is done because unlike
+our simple example some tables are automatically updated with scripts run
+by the makefiles found in the first level directory, i.e. there is no
+lower level directory in the data repository source tree.
+
+So we create a \textit{footest1} directory which will contain the actual
+table as well as a makefile to install our table in the export area.
+
+\begin{verbatim}
+    yourhost% cd foobar
+    yourhost% mkdir footest1
+    yourhost% cvs add footest1
+\end{verbatim}
+
+\noindent
+We also create a simple makefile which will install our table from the
+repository source tree to the export tree. It looks like:
+
+\begin{verbatim}
+    DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+    DATA_ROOT := $(shell echo $(DATA_THISDIR)/ | sed -e '{s@/data/.*$$@/data@;}')
+    include $(DATA_ROOT)/config/makedefs/basic
+    include $(DATA_ROOT)/config/makedefs/install.table
+\end{verbatim}
+
+\noindent
+This is also discussed in section \sref{data repository conventions}. In
+the \textit{footest1} directory just created, we check in this makefile
+and our table (which we copy for our work area):
+
+\begin{verbatim}
+    yourhost% cd footest1
+    yourhost% cp ../../glishtutorial/t1/makefile .
+    yourhost% cvs add makefile
+    yourhost% mkdir footest1
+    yourhost% cvs add footest1
+    yourhost% cd footest1
+    yourhost% cp ~/footest1/table.* .
+    yourhost% cvs add table.*
+\end{verbatim}
+
+\noindent
+Here, the standard table makefile was copied from a table already in the
+repository, and the table contents were copied from elsewhere, i.e.
+\verb+~+\file{/footest1}.
+
+Using \code{add} schedules the files for addition to the repository, but
+none are actually added until we do a \code{commit}:
+
+\begin{verbatim}
+    yourhost% cd ../../..
+    yourhost% cvs commit -m 'initial check-in of foobar' foobar
+\end{verbatim}
+
+\noindent
+The \code{cd} gets us to the demo directory, the \verb+-m+ on the
+\code{commit} line supplies the log message and the \code{foobar} at the end
+of the line indicates that the \code{foobar} subdirectory and all of its 
+contents should be committed to the repository. After all of this completes
+successfully, we are through with this workspace (created with the initial
+\code{cvs co}). It can be deleted if it is no longer needed.
 
 % ----------------------------------------------------------------------------
 
