@@ -1,5 +1,5 @@
 //# RefTable.h: Class for a table as a view of another table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,7 +138,7 @@ public:
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
-    ~RefTable();
+    virtual ~RefTable();
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
@@ -189,53 +189,59 @@ public:
     // Get the modify counter.
     virtual uInt getModifyCounter() const;
 
-    // Test if the parent table is opended as writable.
-    Bool isWritable() const;
+    // Test if the parent table is opened as writable.
+    virtual Bool isWritable() const;
 
     // Read a reference table from a file.
     // The referenced table will also be created (if not stored in the cache).
     void getRef (AipsIO&, int option, const TableLock& lockOptions);
 
+    // Get the actual table description.
+    virtual TableDesc actualTableDesc() const;
+
+    // Get the data manager info.
+    virtual Record dataManagerInfo() const;
+
     // Get readonly access to the table keyword set.
-    TableRecord& keywordSet();
+    virtual TableRecord& keywordSet();
 
     // Get read/write access to the table keyword set.
     // This requires that the table is locked (or it gets locked
     // when using AutoLocking mode).
-    TableRecord& rwKeywordSet();
+    virtual TableRecord& rwKeywordSet();
 
     // Get a column object using its index.
-    BaseColumn* getColumn (uInt columnIndex) const;
+    virtual BaseColumn* getColumn (uInt columnIndex) const;
 
     // Get a column object using its name.
-    BaseColumn* getColumn (const String& columnName) const;
+    virtual BaseColumn* getColumn (const String& columnName) const;
 
     // Test if it is possible to remove a row from this table.
-    Bool canRemoveRow() const;
+    virtual Bool canRemoveRow() const;
 
     // Remove the given row.
-    void removeRow (uInt rownr);
+    virtual void removeRow (uInt rownr);
 
-    // Test if a column can be removed (yes).
-    Bool canRemoveColumn (const String& columnName) const;
+    // Test if columns can be removed (yes).
+    virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
 
-    // Remove a column.
-    void removeColumn (const String& columnName);
+    // Remove columns.
+    virtual void removeColumn (const Vector<String>& columnNames);
 
     // Test if a column can be renamed (no).
-    Bool canRenameColumn (const String& columnName) const;
+    virtual Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
-    void renameColumn (const String& newName, const String& oldName);
+    virtual void renameColumn (const String& newName, const String& oldName);
 
     // Find the data manager with the given name.
-    DataManager* findDataManager (const String& dataManagerName) const;
+    virtual DataManager* findDataManager (const String& dataManagerName) const;
 
     // Get a vector of row numbers.
-    Vector<uInt> rowNumbers() const;
+    virtual Vector<uInt> rowNumbers() const;
 
     // Get parent of this table.
-    BaseTable* root();
+    virtual BaseTable* root();
 
     // Get rownr in root table.
     // This converts the given row number to the row number in the root table.
@@ -246,11 +252,11 @@ public:
     Vector<uInt> rootRownr (const Vector<uInt>& rownrs) const;
 
     // Tell if the table is in row order.
-    Bool rowOrder() const;
+    virtual Bool rowOrder() const;
 
     // Get row number vector.
     // This is used by the BaseTable logic and sort routines.
-    Vector<uInt>* rowStorage();
+    virtual Vector<uInt>* rowStorage();
 
     // Add a rownr to reference table.
     void addRownr (uInt rownr);
@@ -262,8 +268,8 @@ public:
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in row order.
-    Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
-		       Bool determineOrder) const;
+    virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
+			       Bool determineOrder) const;
 
     // And, or, subtract or xor the row numbers of 2 tables.
     void refAnd (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);

@@ -41,6 +41,7 @@ class SetupNewTable;
 class TableDesc;
 class ColumnDesc;
 class TableRecord;
+class Record;
 class TableExprNode;
 class DataManager;
 class IPosition;
@@ -424,13 +425,29 @@ public:
     // the table while it gets filled).
     void flushTableInfo() const;
 
-    // Get access to the table description.
+    // Get the table description.
     // This can be used to get nr of columns, etc..
-    // <note role=tip>
-    // The keyword set in the table description is not the
-    // same set as the keyword set in the table itself.
-    // </note>
+    // <src>tableDesc()</src> gives the table description used when
+    // constructing the table, while <src>actualTableDesc()</src> gives the
+    // actual description, thus with the actual data managers used.
+    // <group>
     const TableDesc& tableDesc() const;
+    TableDesc actualTableDesc() const;
+    // </group>
+
+    // Return all data managers used and the columns served by them.
+    // The info is returned in a record. It contains a subrecord per
+    // data manager. Each subrecord contains the following fields:
+    // <dl>
+    //  <dt> TYPE
+    //  <dd> a string giving the type of the data manager.
+    //  <dt> NAME
+    //  <dd> a string giving the name of the data manager.
+    //  <dt> COLUMNS
+    //  <dd> a vector of strings giving the columns served by the data manager.
+    // </dl>
+    // Data managers may return some additional fields (e.g. BUCKETSIZE).
+    Record dataManagerInfo() const;
 
     // Get the table name.
     const String& tableName() const;
@@ -711,13 +728,23 @@ public:
     void addColumn (const TableDesc& tableDesc,
 		    const DataManager& dataManager);
 
-    // Test if a column can be removed.
-    // It can if the column exists and if the data manager it is using
-    // supports removal of columns.
+    // Test if columns can be removed.
+    // It can if the columns exist and if the data manager it is using
+    // supports removal of columns or if all columns from a data manager
+    // would be removed..
+    // <br>You can always remove columns from a reference table.
+    // <group>
     Bool canRemoveColumn (const String& columnName) const;
+    Bool canRemoveColumn (const Vector<String>& columnNames) const;
+    // </group>
 
-    // Remove a column.
+    // Remove columns.
+    // <br>When removing columns from a reference table, the columns
+    // are NOT removed from the underlying table.
+    // <group>
     void removeColumn (const String& columnName);
+    void removeColumn (const Vector<String>& columnName);
+    // </group>
 
     // Test if a column can be renamed.
     Bool canRenameColumn (const String& columnName) const;
@@ -883,8 +910,8 @@ inline Bool Table::canAddRow() const
     { return baseTabPtr_p->canAddRow(); }
 inline Bool Table::canRemoveRow() const
     { return baseTabPtr_p->canRemoveRow(); }
-inline Bool Table::canRemoveColumn (const String& columnName) const
-    { return baseTabPtr_p->canRemoveColumn (columnName); }
+inline Bool Table::canRemoveColumn (const Vector<String>& columnNames) const
+    { return baseTabPtr_p->canRemoveColumn (columnNames); }
 inline Bool Table::canRenameColumn (const String& columnName) const
     { return baseTabPtr_p->canRenameColumn (columnName); }
 
@@ -905,8 +932,8 @@ inline void Table::addColumn (const ColumnDesc& columnDesc,
 inline void Table::addColumn (const TableDesc& tableDesc,
 			      const DataManager& dataManager)
     { baseTabPtr_p->addColumn (tableDesc, dataManager); }
-inline void Table::removeColumn (const String& columnName)
-    { baseTabPtr_p->removeColumn (columnName); }
+inline void Table::removeColumn (const Vector<String>& columnNames)
+    { baseTabPtr_p->removeColumn (columnNames); }
 inline void Table::renameColumn (const String& newName, const String& oldName)
     { baseTabPtr_p->renameColumn (newName, oldName); }
 

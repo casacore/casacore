@@ -44,8 +44,10 @@ class TableAttr;
 class ColumnDesc;
 class PlainColumn;
 class DataManager;
+class Record;
 class IPosition;
 class AipsIO;
+template<class T> class Vector;
 
 
 // <summary>
@@ -149,8 +151,8 @@ public:
     // Do all data managers and engines allow to remove rows?
     Bool canRemoveRow() const;
 
-    // Can a column be removed from the data manager?
-    Bool canRemoveColumn (const String& columnName) const;
+    // Can the given columns be removed from the data manager?
+    Bool canRemoveColumn (const Vector<String>& columnNames) const;
 
     // Can a column be renamed in the data manager?
     Bool canRenameColumn (const String& columnName) const;
@@ -162,8 +164,8 @@ public:
     // It will throw an exception if not possible.
     void removeRow (uInt rownr);
 
-    // Remove the column from the map and the data manager.
-    void removeColumn (const String& columnname);
+    // Remove the columns from the map and the data manager.
+    void removeColumn (const Vector<String>& columnNames);
 
     // Rename the column in the map.
     void renameColumn (const String& newName, const String& oldName);
@@ -182,6 +184,12 @@ public:
 
     // Get nr of rows.
     uInt nrow() const;
+
+    // Get the actual table description.
+    TableDesc actualTableDesc() const;
+
+    // Get the data manager info.
+    Record dataManagerInfo() const;
 
     // Initialize rows startRownr till endRownr (inclusive).
     void initialize (uInt startRownr, uInt endRownr);
@@ -253,6 +261,14 @@ private:
 
     // Do the actual addition of a column.
     void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr);
+
+    // Check if columns to be removed can be removed.
+    // It returns a map of DataManager* telling how many columns for
+    // a data manager have to be removed. A count of -1 means that all
+    // columns have to be removed. For such columns the flag in the
+    // returned Block is False, otherwise True.
+    SimpleOrderedMap<void*,Int> checkRemoveColumn
+					  (const Vector<String>& columnNames);
 
     // Check if the table is locked for read or write.
     // If manual or permanent locking is in effect, it checks if the

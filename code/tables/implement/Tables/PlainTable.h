@@ -1,5 +1,5 @@
 //# PlainTable.h: Class defining a plain regular table
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,7 +99,7 @@ public:
 
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
-    ~PlainTable();
+    virtual ~PlainTable();
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
@@ -162,58 +162,59 @@ public:
     static ByteIO::OpenOption toAipsIOFoption (int tableOption);
 
     // Test if the table is opened as writable.
-    Bool isWritable() const;
+    virtual Bool isWritable() const;
+
+    // Get the actual table description.
+    virtual TableDesc actualTableDesc() const;
+
+    // Get the data manager info.
+    virtual Record dataManagerInfo() const;
 
     // Get readonly access to the table keyword set.
-    TableRecord& keywordSet();
+    virtual TableRecord& keywordSet();
 
     // Get read/write access to the table keyword set.
     // This requires that the table is locked (or it gets locked
     // when using AutoLocking mode).
-    TableRecord& rwKeywordSet();
-
-    // The rename function in this derived class uses BaseTable::rename
-    // to rename the table file. Thereafter the subtables in its
-    // table and column keywords are renamed.
-    void rename (const String& newName, int tableOption);
+    virtual TableRecord& rwKeywordSet();
 
     // Get a column object using its index.
-    BaseColumn* getColumn (uInt columnIndex) const;
+    virtual BaseColumn* getColumn (uInt columnIndex) const;
 
     // Get a column object using its name.
-    BaseColumn* getColumn (const String& columnName) const;
+    virtual BaseColumn* getColumn (const String& columnName) const;
 
     // Test if it is possible to add a row to this table.
-    Bool canAddRow() const;
+    virtual Bool canAddRow() const;
 
     // Add one or more rows and possibly initialize them.
     // This will fail for tables not supporting addition of rows.
-    void addRow (uInt nrrow, Bool initialize);
+    virtual void addRow (uInt nrrow, Bool initialize);
 
     // Test if it is possible to remove a row from this table.
-    Bool canRemoveRow() const;
+    virtual Bool canRemoveRow() const;
 
     // Remove the given row.
     // This will fail for tables not supporting removal of rows.
-    void removeRow (uInt rownr);
+    virtual void removeRow (uInt rownr);
 
     // Add a column to the table.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    void addColumn (const ColumnDesc& columnDesc);
-    void addColumn (const ColumnDesc& columnDesc,
-		    const String& dataManager, Bool byName);
-    void addColumn (const ColumnDesc& columnDesc,
-		    const DataManager& dataManager);
-    void addColumn (const TableDesc& tableDesc,
-		    const DataManager& dataManager);
+    virtual void addColumn (const ColumnDesc& columnDesc);
+    virtual void addColumn (const ColumnDesc& columnDesc,
+			    const String& dataManager, Bool byName);
+    virtual void addColumn (const ColumnDesc& columnDesc,
+			    const DataManager& dataManager);
+    virtual void addColumn (const TableDesc& tableDesc,
+			    const DataManager& dataManager);
     // </group>
 
-    // Test if a column can be removed (no).
-    virtual Bool canRemoveColumn (const String& columnName) const;
+    // Test if columns can be removed.
+    virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
 
-    // Remove a column.
-    virtual void removeColumn (const String& columnName);
+    // Remove columns.
+    virtual void removeColumn (const Vector<String>& columnNames);
 
     // Test if a column can be renamed (yes).
     virtual Bool canRenameColumn (const String& columnName) const;
@@ -222,7 +223,7 @@ public:
     virtual void renameColumn (const String& newName, const String& oldName);
 
     // Find the data manager with the given name.
-    DataManager* findDataManager (const String& dataManagerName) const;
+    virtual DataManager* findDataManager (const String& dataManagerName) const;
 
 
     static TableCache tableCache;           //# cache of open (plain) tables
