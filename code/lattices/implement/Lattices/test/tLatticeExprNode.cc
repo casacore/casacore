@@ -1376,6 +1376,122 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2 = max(expr1);
       if (!checkComplex(expr2, bCVal, shape, True, ToBool(nb==0))) ok = False;
    }
+    cout << "sign" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = sign(abs(expr1)+1);
+      if (!checkFloat (expr2, float(1), shape, True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = sign(expr1-expr1);
+      if (!checkFloat (expr2, float(0), shape, True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = sign(-abs(expr1)-1);
+      if (!checkFloat (expr2, float(-1), shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Double Scalar" << endl;
+      LatticeExprNode expr1(bDVal);
+      LatticeExprNode expr2 = sign(abs(expr1)+1);
+      if (!checkFloat (expr2, float(1), shape, True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bDVal);
+      LatticeExprNode expr2 = sign(expr1-expr1);
+      if (!checkFloat (expr2, float(0), shape, True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bDVal);
+      LatticeExprNode expr2 = sign(-abs(expr1)-1);
+      if (!checkFloat (expr2, float(-1), shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = sign(abs(expr1)+1);
+      if (!checkFloat (expr2, float(1), shape, False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = sign(expr1-expr1);
+      if (!checkFloat (expr2, float(0), shape, False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = sign(-abs(expr1)-1);
+      if (!checkFloat (expr2, float(-1), shape, False, False)) ok = False;
+   }
+   {
+      cout << "  Double Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = sign(abs(expr1)+1);
+      if (!checkFloat (expr2, float(1), shape, False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = sign(expr1-expr1);
+      if (!checkFloat (expr2, float(0), shape, False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2 = sign(-abs(expr1)-1);
+      if (!checkFloat (expr2, float(-1), shape, False, False)) ok = False;
+   }
+    cout << "round" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = round(floor(abs(expr1)) + float(10.499));
+      if (!checkFloat (expr2, 10+floor(abs(bFVal)), shape,
+		       True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = round(floor(abs(expr1)) + float(10.501));
+      if (!checkFloat (expr2, 11+floor(abs(bFVal)), shape,
+		       True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = round(-floor(abs(expr1)) - float(10.499));
+      if (!checkFloat (expr2, -(10+floor(abs(bFVal))), shape, 
+		       True, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = round(-floor(abs(expr1)) - float(10.501));
+      if (!checkFloat (expr2, -(11+floor(abs(bFVal))), shape,
+		       True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = round(floor(abs(expr1)) + float(10.499));
+      if (!checkFloat (expr2, 10+floor(abs(bFVal)), shape,
+		       False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = round(floor(abs(expr1)) + float(10.501));
+      if (!checkFloat (expr2, 11+floor(abs(bFVal)), shape, 
+		       False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = round(-floor(abs(expr1)) - float(10.499));
+      if (!checkFloat (expr2, -(10+floor(abs(bFVal))), shape,
+		       False, False)) ok = False;
+   }
+   {
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = round(-floor(abs(expr1)) - float(10.501));
+      if (!checkFloat (expr2, -(11+floor(abs(bFVal))), shape,
+		       False, False)) ok = False;
+   }
     cout << "mean" << endl;
    {
       cout << "  Float Scalar" << endl;
@@ -1400,6 +1516,27 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = mean(expr1);
       if (!checkComplex(expr2, bCVal, shape, True, ToBool(nb==0))) ok = False;
+   }
+    cout << "variance" << endl;
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = variance(expr1);
+      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
+   }
+    cout << "stddev" << endl;
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = stddev(expr1);
+      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
+   }
+    cout << "avdev" << endl;
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = avdev(expr1);
+      if (!checkFloat (expr2, 0.0, shape, True, ToBool(nb==0))) ok = False;
    }
     cout << "sum" << endl;
    {
@@ -1450,6 +1587,31 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bC);
       LatticeExprNode expr2 = nelements(expr1);
       if (!checkDouble(expr2, Double(nb), shape, True, False)) ok = False;
+   }
+    cout << "ndim" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = ndim(expr1);
+      if (!checkFloat(expr2, 0.0, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Complex Scalar" << endl;
+      LatticeExprNode expr1(bCVal);
+      LatticeExprNode expr2 = ndim(expr1);
+      if (!checkFloat(expr2, 0.0, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = ndim(expr1);
+      if (!checkFloat(expr2, shape.nelements(), shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Complex Array" << endl;
+      LatticeExprNode expr1(bC);
+      LatticeExprNode expr2 = ndim(expr1);
+      if (!checkFloat(expr2, shape.nelements(), shape, True, False)) ok = False;
    }
     cout << "length" << endl;
    {
