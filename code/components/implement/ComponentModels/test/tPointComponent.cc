@@ -194,13 +194,13 @@ int main() {
       defComp.setDirection(coord00);
       defComp.project(image);
       AlwaysAssert(near(image(IPosition(2, 2, 1)), 1.0f), AipsError);
-      image(IPosition(2, 2, 1)) = 0.0f;
+      image.putAt(0.0f, IPosition(2, 2, 1));
       
       for (uInt i = 0; i < nx; i++)
 	for (uInt j = 0; j < ny; j++)
 	  AlwaysAssert(near(image(IPosition(2, i, j)), 0.0f), 
 		       AipsError);
-      image.table().rename("junk.image", Table::Scratch);
+      image.table().markForDelete();
       cout << "Passed the projection to an image test" << endl;
     }
   }
