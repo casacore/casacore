@@ -2364,3 +2364,6 @@
 09 329 src rm trial/implement/Tasking/Dispatcher.h
 09 329 src rm trial/implement/Tasking/ExtraDataType.cc
 09 329 src rm trial/implement/Tasking/ExtraDataType.h
+09 329 src rm trial/implement/Tasking/ObjectRef.cc
+09 329 src rm trial/implement/Tasking/ObjectRef.h
+09 329 src rm trial/implement/Tasking/ObjectRef2.cc
