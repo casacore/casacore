@@ -204,7 +204,8 @@
   find $AIPSMSTR -name ",*," -mtime +0 -exec rm -f {} \;
 
 # Define the list of code areas.
-  AREAS="install aips dish synthesis vlbi contrib doc"
+# Technically, trial should not be among these, but it's necessary.
+  AREAS="install aips dish synthesis vlbi contrib doc trial"
   CONSORTIA="atnf bima drao nfra nral nrao tifr"
   AREAS="$AREAS $CONSORTIA"
 
