@@ -4496,3 +4496,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSFieldColumns.cc aips/implement/MeasurementSets/MSFieldColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSFieldColumns.h aips/implement/MeasurementSets/MSFieldColumns.h
 14 296 src mv aips/implement/MeasurementSets/NewMSFieldEnums.h aips/implement/MeasurementSets/MSFieldEnums.h
+14 296 src mv aips/implement/MeasurementSets/NewMSFlagCmd.cc aips/implement/MeasurementSets/MSFlagCmd.cc
