@@ -61,9 +61,6 @@ void UnitMap::initUM() {
 
   // Define the map
 
-  // Make sure constants exist
-  ///  static C_init c_init;
-
   // Known prefixes
 
   UnitMap::mapPref->define("Y", UnitName("Y", C::yotta, "yotta"));
@@ -103,11 +100,8 @@ void UnitMap::initUM() {
     };
   };
   
-  UnitMap::mapSI->define("_",	UnitName("_",
-					 UnitVal(1.),
-					 "dimensionless"));
   UnitMap::mapSI->define("$",	UnitName("$",
-					 UnitVal(1.),
+					 UnitVal(1.,UnitDim::Dnon),
 					 "currency"));
   UnitMap::mapSI->define("%",	UnitName("%",
 					 UnitVal(0.01),
@@ -453,8 +447,11 @@ void UnitMap::initUM() {
 						 UnitVal(24.*3600.*365.25,"s"),
 						 "year"));
   UnitMap::mapCust->define("beam",	UnitName("beam",
-						 UnitVal(1.),
+						 UnitVal(1.,UnitDim::Dnon),
 						 "undefined beam area"));
+  UnitMap::mapCust->define("pixel",	UnitName("pixel",
+						 UnitVal(1.,UnitDim::Dnon),
+						 "pixel"));
 
   //# Start with clean cache
   UnitMap::mapCache->clear();
@@ -542,7 +539,7 @@ void UnitMap::removeUser(const UnitName& name) {
 
 const String &UnitMap::getStringFITS(uInt which) {
   static String FITSstring[N_FITS] = {
-    "_",
+    "beam",
     "d",
     "deg",
     "deg",
@@ -554,7 +551,7 @@ const String &UnitMap::getStringFITS(uInt which) {
     "m",
     "m",
     "Pa",
-    "_",
+    "pixel",
     "s",
     "s",
     "s",
