@@ -478,6 +478,76 @@ Bool GaussianShape::toRecord(String & errorMessage,
   return True;
 }
 
+Bool GaussianShape::convertUnit(String & errorMessage,
+				const RecordInterface & record) {
+  const Unit deg("deg");
+  {
+    const String fieldString("majoraxis");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "The 'majoraxis' field does not exist\n";
+      return False;
+    }
+    const RecordFieldId field(fieldString);
+    if (!((record.dataType(field) == TpString) && 
+	  (record.shape(field) == IPosition(1,1)))) {
+      errorMessage += "The 'majoraxis' field must be a string\n";
+      errorMessage += "(but not a vector of strings)\n";
+      return False;
+    }
+    const Unit unit = Unit(record.asString(field));
+    if (unit != deg) {
+      errorMessage += 
+	"Cannot convert the major axis width to a non angular unit";
+      return False;
+    }
+    itsMajUnit = unit;
+  }
+  {
+    const String fieldString("minoraxis");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "The 'minoraxis' field does not exist\n";
+      return False;
+    }
+    const RecordFieldId field(fieldString);
+    if (!((record.dataType(field) == TpString) && 
+	  (record.shape(field) == IPosition(1,1)))) {
+      errorMessage += "The 'minoraxis' field must be a string\n";
+      errorMessage += "(but not a vector of strings)\n";
+      return False;
+    }
+    const Unit unit = Unit(record.asString(field));
+    if (unit != deg) {
+      errorMessage += 
+	"Cannot convert the minor axis width to a non angular unit";
+      return False;
+    }
+    itsMinUnit = unit;
+  }
+  {
+    const String fieldString("positionangle");
+    if (!record.isDefined(fieldString)) {
+      errorMessage += "The 'positionangle' field does not exist\n";
+      return False;
+    }
+    const RecordFieldId field(fieldString);
+    if (!((record.dataType(field) == TpString) && 
+	  (record.shape(field) == IPosition(1,1)))) {
+      errorMessage += "The 'positionangle' field must be a string\n";
+      errorMessage += "(but not a vector of strings)\n";
+      return False;
+    }
+    const Unit unit = Unit(record.asString(field));
+    if (unit != deg) {
+      errorMessage += 
+	"Cannot convert the position angle to a non angular unit";
+      return False;
+    }
+    itsPaUnit = unit;
+  }
+  DebugAssert(ok(), AipsError);
+  return True;
+}
+
 Bool GaussianShape::ok() const {
   // The LogIO class is only constructed if an error is detected for
   // performance reasons. Both function static and file static variables
