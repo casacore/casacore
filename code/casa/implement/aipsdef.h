@@ -57,9 +57,7 @@ extern Bool aips_debug_on;
 #endif
 
 // Define the use of the old string class (for sgi at the moment)
-// Force the use of old strings for now
-///#if (defined(__sgi) && !defined(AIPS_USE_NEW_STRING))
-#if !defined(AIPS_USE_NEW_STRING)
+#if (defined(__sgi) && !defined(AIPS_USE_NEW_STRING))
 #define USE_OLD_STRING
 #endif
 
