@@ -4,14 +4,12 @@
 This note examines some of the current problems and deficiencies of
 the AIPS++ documentation and considers how an XML-based approach might
 be used to address them.  I describe an over-all framework based on
-two key features:  the use of the DocBook markup for expository
+two key features: the use of the DocBook markup for expository
 documents and the use of in-line documentation for glish-based tools
-and functions.  This framework will continue to supply users
-with both HTML and high-quality printable versions of all
-documentation.  I describe the tools needed to support this framework
-and outline a plan for migrating from our present system.  Included
-will be an overview a recommended style for developers creating
-documentation in this new framework.  An important goal of this
+and functions.  This framework will continue to supply users with both
+HTML and high-quality printable versions of all documentation.  I
+describe the tools needed to support this framework and outline a plan
+for migrating from our present system.  An important goal of this
 framework is to make it easier for developers to create and maintain
 high quality documentation that will improve the user experience.  It
 is expected that this note will serve as the basis of one or more
@@ -26,7 +24,7 @@ formal change proposals aimed at adopting this framework.
 
 \htmladdnormallink{Note 215}{../../notes/215/215.html} describes the
 current framework of documentation in \aipspp.  In general, there are
-three types documentat in \aipspp:
+three types of documentation in \aipspp:
 
 \begin{itemize}
 \item Expository documents (e.g. {\it 
@@ -62,7 +60,7 @@ following principles:
 form.
 \item It must be possible to build the documentation anywhere AIPS++
 is installed.
-\item The above features would be enabled via three ``cornerstone''
+\item The above features are be enabled via three ``cornerstone''
 formats: \LaTeX, HTML, and PostScript.  
 \end{enumerate}
 
@@ -92,7 +90,7 @@ the HTML version of the \refman\ regularly does not format
 argument lists properly.  Problems formatting equations and images are
 common but often go undetected by the make system.  
 
-\paragraph{\LaTeX is sufficiently complex as to make creating
+\paragraph{\LaTeX\ is sufficiently complex as to make creating
 documentation non-trivial.}  Many of the formatting problems that
 currently exist can be traced to mark-up errors on the part of the
 author.  Common errors like the ``missing brace'' can have drastic
@@ -110,13 +108,13 @@ This author's own difficulties are primarily due to the fact that the
 UIUC installation is not properly configured to build the
 documentation.  However, I was also unable to process my documentation
 on {\tt tarzan} at the AOC.  If this is a common experience among
-developers, then the supporting tools are not sufficient for
-encouraging us to catch these errors.  
+developers, then the supporting tools are not sufficiently helpful in
+checking our documents.  
 
 \paragraph{It is difficult to adjust the presentation of
 documentation.}  This is due to the inherent complexities of \LaTeX\
 and \LaTeX2HTML.  Significant skill and experience is needed to
-fiddle with \LaTeX\ style files and adjust the document layout.  It is
+fiddle with \LaTeX\ style files to adjust the document layout.  It is
 arguably even more difficult to adapt \LaTeX2HTML\ to variations in
 presentation.  This barrier of complexity not only discourages
 experimenting with presentation but also the resolution of formatting
@@ -134,7 +132,7 @@ new presentations.
 \subsubsection{Reference Manual}
 
 The overall organization of the \refman, with its hierarchy of
-packages, modules, and tools is good.  A significant portion (if not
+packages, modules, and tools, is good.  A significant portion (if not
 the majority) of the content is of good quality.  Nevertheless, it can
 still be difficult to find specific information on how to use specific
 tools and functions.  This is not always due to a paucity of words,
@@ -196,7 +194,7 @@ new possibilities for developing documentation features
 displays for Glish, integration with Tool Manager metadata).  
 
 More important than new capabilities, a new approach to documentation
-offers the opportunity to make the authoring and delivering
+offers the opportunity to make authoring and delivering
 documentation easier.  This note posits that if this process can be
 made less laborious, authors will create higher quality
 documentation--that is, more comprehensive and with the necessary
@@ -259,13 +257,12 @@ language available as open source and freely available.  It is
 maintained by the DocBook Technical Committee of the
 \htmladdnormallinkfoot{Organization for the Advancement of Structured
 Information Standards (OASIS)}{http://www.oasis-open.org/}.  DocBook
-began its life in 1991 as an SGML DTD.  
-Version 3.0 (in use since 1997) defines the SGML DTD; however, with
-Version 4.1, an XML version is now available and supported by the most
-common DocBook-compliant tools.  The XML version includes MathML as an
+began its life in 1991 as an SGML DTD; however, with Version 4.1, an
+XML version is now available and supported by the most common
+DocBook-compliant tools.  The XML version includes MathML as an
 extension for marking up mathematical equations.  The DocBook DTD is
 modular in design and has an explicit framework for extending it to
-add new elements or further control attribute values.   
+add new elements or further control attribute values.
 
 \subsubsection{Advantages of using DocBook}
 
@@ -354,7 +351,7 @@ files.}
 
 Very few actual experiments using DocBook for AIPS++ have been done to
 date, and many of the details concerning how we might use it have not
-yet been determined.  Here are some ways that DocBook may not live up
+been worked out, yet.  Here are some ways that DocBook may not live up
 to its promise: 
 
 \begin{itemize}
@@ -373,8 +370,8 @@ have to learn the details of the DocBook DTD which defines about 100
 different elements.
 
 \item It is too difficult to convert existing documents into DocBook
-when.  This is expected to apply only to documents like {\it Getting
-Results} that will continue to evolve and expand.  
+when necessary.  This is expected to apply only to documents like {\it
+Getting Results} that will continue to evolve and expand.
 
 \end{itemize}
 
@@ -524,7 +521,7 @@ also be written as:
 public.summary:=function() {
 \end{verbatim}
 
-However, the fact that the text describe a tool function can be
+However, the fact that the text describes a tool function can be
 assumed because it appears within a tool definition and just before a
 function definition.  
 
@@ -544,6 +541,10 @@ supported via the {\tt {\it tool}\_meta.g} files.  In the future, this
 information could be accessed directly from Glish via a Glish XML parser
 client.  
 
+\item Prior to checking in documented code, developers can run it
+through a validation tool that will alert them of syntax errors and
+warn them about missing markup that is required by the style guide.  
+
 \end{itemize}
 
 \section{Supporting Tools and Documents}
@@ -553,8 +554,8 @@ that will be needed to support the proposed framework.
 
 \begin{itemize}
 
-\item GlishDoc extraction tool.  It is expected that this will the only
-tool that will have to be developed ``from scratch.''
+\item GlishDoc extraction tool.  It is expected that this will be the
+only tool that will have to be developed ``from scratch.''
 
 \item Style sheets for validating XML documents and converting them to
 other formats.  It is expected that these would be adapted from
@@ -573,11 +574,11 @@ documentation.
 
 \item a GlishDoc format conversion tool.  This would be used by Glish
 developers to preview their Glish tool documentation in various
-formats.  It would also be used by the \aipspp make system to convert
+formats.  It would also be used by the \aipspp\ make system to convert
 the documentation into supported formats.  
 
 \item DocBook format conversion tool.  This would be used by both
-authors and the \aipspp make system to convert the documents into the
+authors and the \aipspp\ make system to convert the documents into the
 various supported formats.  Preferably, this tool would be the same
 tool used for converting GlishDoc documentation, differing only in the
 style sheets it uses.
@@ -585,7 +586,7 @@ style sheets it uses.
 \end{itemize}
 
 \item Lyx, a WYSIWYG editor for creating DocBook documents, adapted
-for \aipspp via a pluggable layout class.  
+for \aipspp\ via a pluggable layout class.  
 
 \item A Note describing how to use GlishDoc tags and tools to document
 Glish code.
@@ -605,9 +606,9 @@ the proposed change to the documentation system.  Because XML is
 easily converted into other formats, this framework is well-suited for
 gradual adoption.  This is helpful as there are many details that have
 to yet to be worked out.  As each phase is completed we will have the
-opportunity to re-evaluate framework in light of the implementation
-and tools available to date.  It is expected that the steps listed
-below would be turned into development targets.
+opportunity to re-evaluate the framework in light of the
+implementation and tools available to date.  It is expected that the
+steps listed below would be turned into development targets.
 
 \paragraph{Phase I: Initial GlishDoc implementation}
 
@@ -619,9 +620,9 @@ tags for documenting tool source code.
 
 \item Implement an initial version of the GlishDoc document extractor
 in Glish.  (It is expected that a Glish implementation will be easier
-for a typical \aipspp developer to maintain than one based on, say,
+for a typical \aipspp\ developer to maintain than one based on, say,
 Perl.  It also allows the possibility for further integration of the
-documentation extraction into the \aipspp system in the future.)  
+documentation extraction into the \aipspp\ system in the future.)  
 
 \item Develop (or adapt) style sheets to convert XML tool
 descriptions into currently supported {\tt .help} and {\tt \_meta.g}
@@ -629,13 +630,13 @@ files.  Install wrapper script that applies style sheet
 transformations to XML descriptions.  (Augment the EMACS Glish mode to
 add keyboard macros for inserting commonly used GlishDoc markup.)
 
-\item Create an \aipspp note describing how to use GlishDoc tags to
+\item Create an \aipspp\ note describing how to use GlishDoc tags to
 mark up in-lined documentation and how to use associated tools to
 extract the documentation and convert it to currently support forms. 
 
 \item Encourage developers to try in-lining documenation.  Evaluate
 current state of framework for ease-of-use, robustness, adaptability
-to the \aipspp system, and effects on the quality of documentation and
+to the \aipspp\ system, and effects on the quality of documentation and
 software process.  Adjust plan for later phases accordingly.
 
 \end{enumerate}
@@ -649,24 +650,24 @@ used by GlishDoc as described in \S\ref{gdxml}, p. \pageref{pg-gdxml} (if
 not already determined in Phase I).  
 
 \item Define any extensions to the DocBook DTD needed for supporting
-\aipspp documents.  Ease of use by authors should be an important
+\aipspp\ documents.  Ease of use by authors should be an important
 factor in defining new tags.
 
 \item Adapt the LyX DocBook layout class as necessary and helpful for
-creating \aipspp expository documents.
+creating \aipspp\ expository documents.
 
 \item Create (or adapt) style sheets converting DocBook documents into
-\LaTeX\ in the traditional \aipspp style.  
+\LaTeX\ in the traditional \aipspp\ style.  
 
-\item Create a DocBook-formatted template for creating \aipspp notes.  
+\item Create a DocBook-formatted template for creating \aipspp\ notes.  
 
-\item Create an \aipspp note using DocBook that describes how to use
+\item Create an \aipspp\ note using DocBook that describes how to use
 DocBook, LyX, and associated tools for authoring expository documents
 for \aipspp.  
 
 \item Encourage developers to try DocBook and LyX for creating
 documenation.  Evaluate current state of tools for ease-of-use,
-robustness, adaptability to the \aipspp system, and effects on the
+robustness, adaptability to the \aipspp\ system, and effects on the
 quality of documentation.  Adjust plan for last phases accordingly.
 
 \end{enumerate}
@@ -682,9 +683,9 @@ framework.
 \item Adapt existing validation tools to check the syntax and
 completeness of GlishDoc documentation.  
 
-\item Create (or adapt) style sheets for necessary for converting
+\item Create (or adapt) style sheets for used to convert
 XML-based documentation into other needed formats, including HTML,
-PostScript/PDF, and (if necessary) plain text.  (Unless a pre-existing
+Post\-Script/PDF, and (if necessary) plain text.  (Unless a pre-existing
 tool for direct conversion to PostScript or PDF is available, it is
 expected that XML will be converted first to \LaTeX\ for subsequent
 processing into the hardcopy format.)  
@@ -693,14 +694,14 @@ processing into the hardcopy format.)
 and formatting DocBook and GlishDoc documents into the \aipspp
 system.  
 
-\item Adapt the \aipspp make system as appropriate to build new
+\item Adapt the \aipspp\ make system as appropriate to build new
 XML-based documentation.
 
 \item Determine how much of the documentation should continue to be
-built locally to the \aipspp and how much should be preformatted and
-delivered to the \aipspp site on demand.
+built locally to the \aipspp\ and how much should be preformatted and
+delivered to an \aipspp\ site on demand.
 
-\item Convert limited number of existing \aipspp documents to DocBook
+\item Convert limited number of existing \aipspp\ documents to DocBook
 format.  This conversion should be limited to those documents that
 will be edited further into the future.  
 
