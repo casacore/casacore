@@ -2505,3 +2505,4 @@
 11 352 src mv doc/html/navpages/communicate/reportabug.html doc/html/navpages/communicate/gnatsreportabug.html
 11 352 src mv doc/html/navpages/communicate/trackabug.html doc/html/navpages/communicate/gnatstrackabug.html
 11 352 src mv doc/html/navpages/communicate/ddtstrackabug.html doc/html/navpages/communicate/trackabug.html
+11 352 src mv doc/html/navpages/communicate/ddtsreportabug.html doc/html/navpages/communicate/reportabug.html
