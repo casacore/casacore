@@ -1,5 +1,5 @@
 //# MCEpoch.cc: MEpoch conversion routines
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2004
+//# Copyright (C) 1995-1999,2000,2001,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -148,7 +148,8 @@ void MCEpoch::doConvert(MVEpoch &in,
 			MRBase &inref,
 			MRBase &outref,
 			const MConvertBase &mc) {
-  Double locLong, eqox, ut, tt;
+  static MVEpoch mve6713(6713.);
+  Double locLong, eqox, ut, tt, xx;
 
   MCFrame::make(inref.getFrame());
   MCFrame::make(outref.getFrame());
@@ -190,9 +191,24 @@ void MCEpoch::doConvert(MVEpoch &in,
       break;
       
       case GMST1_UT1: {
-	ut = in.get();
+	xx = ut = in.get();
 	in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
-	in -= MVEpoch(6713.);
+	in -= mve6713;
+	if (MeasTable::useIAU2000()) {
+	  uInt i(0);
+	  do {
+	    MVEpoch xe(in);
+	    ut = xe.get();
+	    xe -= MeasTable::dUT1(xe.get())/MeasData::SECinDAY;
+	    xe += MeasTable::dUTC(xe.get())/MeasData::SECinDAY;
+	    xe += MeasTable::dTAI(xe.get())/MeasData::SECinDAY;
+	    xe += MeasTable::GMST00(ut, xe.get())/C::_2pi;
+	    xe += mve6713;
+	    tt = (xx-xe.get())/2.0055;
+	    in += MVEpoch(tt);
+	    i++;
+	  } while (abs(tt) > 1e-7 && i<10);
+	};
       };
       break;
       
@@ -202,12 +218,11 @@ void MCEpoch::doConvert(MVEpoch &in,
 	  in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
 	  in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
 	  in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	  tt = in.get();
-	  in += MeasTable::GMST00(ut, tt)/C::_2pi;
+	  in += MeasTable::GMST00(ut, in.get())/C::_2pi;
 	} else {
 	  in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
 	};
-	in += MVEpoch(6713.);
+	in += mve6713;
       };
       break;
       
@@ -222,7 +237,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 // GMST1 to UT1
 	ut = in.get();
 	in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
-	in -= MVEpoch(6713.);
+	in -= mve6713;
       };
       break;
 
@@ -230,7 +245,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 // Make GMST1
 	ut = in.get();
 	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
-	in += MVEpoch(6713.);
+	in += mve6713;
 // Equation of equinoxes
 	eqox = NUTATFROM->eqox(ut);
 	in += eqox/C::circle;
