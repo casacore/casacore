@@ -1,5 +1,5 @@
 //# TSMColumn.cc: Tiled Hypercube Storage Manager for table columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
