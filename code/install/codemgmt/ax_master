@@ -5711,3 +5711,4 @@
 16 086 src rm aips/implement/Utilities/RegexError.h
 16 086 src rm aips/implement/Utilities/RegexError.cc
 16 100 src mv trial/implement/Tables/test/tReadAsciiTable.in_tkdc aips/implement/Tables/test/tReadAsciiTable.in_tkdc
+16 100 src mv trial/implement/Tables/test/tReadAsciiTable.in_tkhc aips/implement/Tables/test/tReadAsciiTable.in_tkhc
