@@ -44,14 +44,12 @@
 
 
 Coordinate::Coordinate()
-{
-}
+{}
 
 
 Coordinate::Coordinate(const Coordinate& other)
 : error_p(other.error_p)
-{
-}
+{}
 
 Coordinate& Coordinate::operator=(const Coordinate& other)
 {
@@ -63,9 +61,7 @@ Coordinate& Coordinate::operator=(const Coordinate& other)
  
 
 Coordinate::~Coordinate()
-{
-    // Nothing
-}
+{}
 
 uInt Coordinate::toWorldMany(Matrix<Double> &world, 
 			     const Matrix<Double> &pixel, 
@@ -233,14 +229,14 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // world value given. Copy output pixels to output vector 
 // and overwrite with any input pixel values that were given
 //
-   world_tmp = referenceValue().copy();
+   world_tmp = referenceValue();
    for (uInt i=0; i<nWorld; i++) {
       if (worldAxes(i)) world_tmp(i) = worldIn(i);
    }
    if (!toPixel(pixel_tmp,world_tmp)) return False;
 //
    if (pixelOut.nelements()!=nPixel) pixelOut.resize(nPixel);
-   pixelOut = pixel_tmp.copy();
+   pixelOut = pixel_tmp;
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i)) pixelOut(i) = pixelIn(i);
    }
@@ -249,13 +245,13 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // pixel value given. Copy output worlds to output vector 
 // and overwrite with any input world values that were given
 //
-   pixel_tmp = referencePixel().copy();
+   pixel_tmp = referencePixel();
    for (uInt i=0; i<nPixel; i++) {
       if (pixelAxes(i)) pixel_tmp(i) = pixelIn(i);
    }
    if (!toWorld(world_tmp,pixel_tmp)) return False;
    if (worldOut.nelements()!=nWorld) worldOut.resize(nWorld);
-   worldOut = world_tmp.copy();
+   worldOut = world_tmp;
    for (uInt i=0; i<nWorld; i++) {
       if (worldAxes(i)) worldOut(i) = worldIn(i);
    }
@@ -388,22 +384,32 @@ String Coordinate::format(String& units,
       }
    } 
 
+
+// If units are empty used preferred unit.
 // Convert to specified unit if possible
 
+   String nativeUnit = worldAxisUnits()(worldAxis);
    if (units.empty()) {
-      units = worldAxisUnits()(worldAxis);
-   } else {
-      Unit nativeUnit(worldAxisUnits()(worldAxis));
-      Unit currentUnit(units);
-//
-      if (currentUnit != nativeUnit) {
-         throw(AipsError("Requested units are invalid for this Coordinate"));
+      String prefUnit = preferredWorldAxisUnits()(worldAxis);
+      if (prefUnit.empty()) {
+         units = nativeUnit;
       } else {
-         static Quantum<Double> q;
-         q.setValue(worldValue);
-         q.setUnit(nativeUnit);
-         worldValue = q.getValue(currentUnit);
+         units = prefUnit;
       }
+   }
+
+// Now check validity of unit
+
+   Unit nativeUnitU(nativeUnit);
+   Unit currentUnitU(units);
+//
+   if (currentUnitU != nativeUnitU) {
+      throw(AipsError("Requested units are invalid for this Coordinate"));
+   } else {
+      static Quantum<Double> q;
+      q.setValue(worldValue);
+      q.setUnit(nativeUnitU);
+      worldValue = q.getValue(currentUnitU);
    }
        
 // Format and get units.  
@@ -691,9 +697,9 @@ void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
    world += referenceValue();
 }
 
-Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
-                               Vector<Double>& worldMax,
-                               const IPosition& shape) const
+Bool Coordinate::setWorldMixRanges (Vector<Double>& worldMin,
+                                    Vector<Double>& worldMax,
+                                    const IPosition& shape) const
 {
    const uInt n = shape.nelements();
    if (n!=nPixelAxes()) {
@@ -704,7 +710,7 @@ Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
 
 // Return defaults if conversion fails
 
-   setDefaultMixRanges(worldMin, worldMax);
+   setDefaultWorldMixRanges(worldMin, worldMax);
 
 // Do conversions 25% off edge of image
 
@@ -728,13 +734,41 @@ Bool Coordinate::setMixRanges (Vector<Double>& worldMin,
    return True;
 }
 
-void Coordinate::setDefaultMixRanges (Vector<Double>& worldMin,
-                                      Vector<Double>& worldMax) const
+void Coordinate::setDefaultWorldMixRanges (Vector<Double>& worldMin,
+                                           Vector<Double>& worldMax) const
 {
    const uInt n = nWorldAxes();
    worldMin.resize(n);
    worldMax.resize(n);
    worldMin = -1.0e99;
    worldMax =  1.0e99;
+}
+
+Bool Coordinate::setPreferredWorldAxisUnits (const Vector<String>& prefUnits)
+//
+// The derived class must set the private data
+//
+{
+    if (prefUnits.nelements() != nWorldAxes()) {
+	set_error("Wrong number of elements in preferred units vector");
+	return False;
+    }
+
+// Check units consistency.  New preferred units must be empty
+// or dimensionally consistent with actual units
+
+    Vector<String> currUnits = worldAxisUnits();
+    const uInt n = nWorldAxes();
+    for (uInt i=0; i<n; i++) {
+       if (!prefUnits(i).empty()) {
+          Unit u0(prefUnits(i));
+          Unit u1(currUnits(i));
+          if (u0!=u1) {
+             set_error("Preferred units are not dimensionally consistent with actual units");
+             return False;
+          }
+       }
+    }
+    return True;
 }
 
