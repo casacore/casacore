@@ -470,7 +470,8 @@ Bool FITSTable::reopen(const String &fileName)
 	return False;
     }
 
-    for (uInt i=0; i < hdu_nr_p && !io_p->err(); i++) {
+    uInt i;
+    for (i=0; i < hdu_nr_p && !io_p->err(); i++) {
 	io_p->skip_hdu();
     }
 
@@ -1495,7 +1496,8 @@ void FITSTable::clear_self()
     io_p = 0;
 
     uInt n = row_fields_p.nelements();
-    for (uInt i=0; i < n; i++) {
+    uInt i;
+    for (i=0; i < n; i++) {
 	switch( field_types_p[i]) {
 	case TpBool: 
 	    delete (RecordFieldPtr<Bool> *)row_fields_p[i];

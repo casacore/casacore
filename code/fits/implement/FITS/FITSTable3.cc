@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     const uInt nfields = description.nfields();
 
     Int arrayField = -1;
-    for (uInt i=0; i<nfields; i++) {
+    uInt i;
+    for (i=0; i<nfields; i++) {
 	if (description.type(i) == TpArrayFloat ) {
 	    arrayField = i;
 	    if (description.shape(i).product() < 0) {

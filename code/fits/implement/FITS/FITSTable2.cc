@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -65,7 +65,8 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
     uInt nfields = description.nfields();
     Int sizeInBytes = 0;
     FitsKeywordList columns;
-    for (uInt i=0; i < nfields; i++) {
+    uInt i;
+    for (i=0; i < nfields; i++) {
       const char *comment = 0;
       if (description.comment(i) != "") {
 	  comment = description.comment(i).chars();

@@ -1,5 +1,5 @@
 //# SDFITSTable.cc: defines SDFITSTable, a FITSTable following the SD convention
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -118,7 +118,8 @@ void SDFITSTable::sdfits_shuffle()
     // shift keywords to row
     Vector<String> virtCols(keywords().nfields());
     uInt virtCount = 0;
-    for (uInt i=0;i<virtCols.nelements();i++) {
+    uInt i;
+    for (i=0;i<virtCols.nelements();i++) {
       // is it already duplicated in the row ?
       String kwName=keywords().name(i);
       // only move them if there is not already a column with the same name

@@ -1,5 +1,5 @@
 //# Fitsmultitablex.h: View multiple FITS files as a single table
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -215,7 +215,8 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName,
     // Work out the end times, assume they may be as late as the start time
     // of the next file. Guard the end with a large number
     Vector<Double> endTimes(files.nelements());
-    for (uInt i=0; i + 1< endTimes.nelements(); i++) {
+    uInt i;
+    for (i=0; i + 1< endTimes.nelements(); i++) {
 	endTimes(i) = startTimes(i + 1);
     }
     if (endTimes.nelements() > 0) {

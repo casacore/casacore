@@ -1,5 +1,5 @@
 //# FITSFieldCopier.h: 
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,7 +113,8 @@ class StringFITSFieldCopier : public FITSFieldCopier
  	  Int reclength = (*(*rec_p)).length();
  	  Int minlength = fitslength < reclength ? fitslength : reclength;
  	  const char *chars = (**rec_p).chars();
- 	  for (Int i=0; i<minlength; i++) {
+	  Int i;
+ 	  for (i=0; i<minlength; i++) {
  	      (*fits_p)(i) = chars[i];
  	  }
  	  if (i < fitslength) {

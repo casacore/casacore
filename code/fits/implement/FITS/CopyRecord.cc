@@ -1,5 +1,5 @@
 //# CopyRecord.cc:  definition of CopyRecordToTable
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,8 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
     counts.set(0);
     // Count how many fields of each type exist
     uInt n = inputBuffer.nfields();
-    for (uInt i=0; i < n; i++) {
+    uInt i;
+    for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
     uInt total = 0;
@@ -560,7 +561,8 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
     counts.set(0);
     // Count how many fields of each type exist
     uInt n = inputBuffer.nfields();
-    for (uInt i=0; i < n; i++) {
+    uInt i;
+    for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
     uInt total = 0;
