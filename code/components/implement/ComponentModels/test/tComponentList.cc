@@ -1,5 +1,5 @@
 //# tComponentList.cc:  this defines tComponentList.cc
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,69 +28,25 @@
 #include <trial/ComponentModels/ComponentList.h>
 #include <trial/ComponentModels/PointComponent.h>
 #include <trial/ComponentModels/GaussianComponent.h>
+#include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Images/PagedImage.h>
+#include <trial/MeasurementEquations/StokesVector.h>
+#include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVDirection.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/Arrays/Vector.h>
-#include <trial/MeasurementEquations/StokesVector.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/Images/PagedImage.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 
-#include <trial/ImgCrdSys/ImageCoordinate.h>
-#include <trial/Measures/SkyPosition.h>
-#include <trial/Measures/MeasuredValue.h>
-
-ImageCoordinate defaultCoords2D(){
-    // Default object position is at RA=0, Dec=0
-  Vector<Double> defaultPosition(2); defaultPosition = 0;
-  // Default Earth position is for the centre of the VLA at 0:00 UT on 1/1/96
-  //EarthPosition defaultObs(0.0, 1, 1, 1996, 107.61773, 34.07875, 2124.0);
-  // Default Earth position is for the centre of the earth at 0:00 UT on 1/1/96
-  EarthPosition defaultObs(0.0, 1, 1, 1996, 0.0, 0.0, 0.0);
-  // Default Reference Pixel is the first pixel
-  Vector<Double> refPixel(2); refPixel = 1;
-  // Default step size is 1 arc-min/pixel
-  Vector<Double> defaultStep(2); defaultStep = 1./60*C::pi/180; 
-  ProjectedPosition defaultRAandDec(ProjectedPosition::SIN, 
-                                    SkyPosition::EQUATORIAL,
-                                    SkyPosition::J2000,
-                                    defaultPosition, 
-                                    defaultObs,
-                                    0.0, // Rotation
-                                    refPixel,
-                                    defaultStep); 
-  ImageCoordinate defaultAxes;
-  defaultAxes.addAxis(defaultRAandDec);
-
-  return defaultAxes;
-}
-
-ImageCoordinate defaultCoords3D(){
-  ImageCoordinate defaultAxes(defaultCoords2D());
-  LinearAxis polAxis(MeasuredValue::POLARIZATION, 1, 
-		     ReferenceValue(ReferenceValue::POLARIZATION, 1.0),
-		     1, 1.0);
-  defaultAxes.addAxis(polAxis);
-  return defaultAxes;
-}
-ImageCoordinate defaultCoords4D(){
-  ImageCoordinate defaultAxes(defaultCoords3D());
-  LinearAxis freqAxis(MeasuredValue::FREQUENCY, 1.415E9, 
-		      ReferenceValue(ReferenceValue::FREQUENCY, 0.0),
-		      10E6, 1.0);
-
-  defaultAxes.addAxis(freqAxis);
-  return defaultAxes;
-}
 
 int main() {
   try {
-    Bool anyFailures = False;
     {
-      Bool Failed = False;
       // Test all the constructors and ways of putting data into the lists.
       ComponentList model;
 
@@ -117,48 +73,41 @@ int main() {
       // So the list should now contain 4 elements with I fluxes of
       // 5, 2, 4, 1
       model.gotoStart();
-      AlwaysAssertExit(near(model.getComp()->flux()(0), 5.0f));
+      AlwaysAssert(near(model.getComp()->flux()(0), 5.0f), AipsError);
       model.nextComp();
-      AlwaysAssertExit(near(model.getComp()->flux()(0), 2.0f));
+      AlwaysAssert(near(model.getComp()->flux()(0), 2.0f), AipsError);
       model.nextComp();
-      AlwaysAssertExit(near(model.getComp()->flux()(0), 4.0f));
+      AlwaysAssert(near(model.getComp()->flux()(0), 4.0f), AipsError);
       model.nextComp();
-      AlwaysAssertExit(near(model.getComp()->flux()(0), 1.0f));
+      AlwaysAssert(near(model.getComp()->flux()(0), 1.0f), AipsError);
       model.prevComp();
-      AlwaysAssertExit(model.curPosition() == 3);
+      AlwaysAssert(model.curPosition() == 3, AipsError);
       // Try my hardest to induce a memory leak by extracting a component,
       // deleting it from the list and adding it to another list.
       model.gotoEnd();
       CountedPtr<SkyComponent> countedPtr1(model.getComp());
       model.removeComp();
       ComponentList model1(countedPtr1);
-      AlwaysAssertExit(model.nComponents() == 3);
-      AlwaysAssertExit(model.curPosition() == 3);
-      AlwaysAssertExit(model1.nComponents() == 1);
-      AlwaysAssertExit(model1.curPosition() == 1);
-      AlwaysAssertExit(near(model1.getComp()->flux()(0), 1.0f));
+      AlwaysAssert(model.nComponents() == 3, AipsError);
+      AlwaysAssert(model.curPosition() == 3, AipsError);
+      AlwaysAssert(model1.nComponents() == 1, AipsError);
+      AlwaysAssert(model1.curPosition() == 1, AipsError);
+      AlwaysAssert(near(model1.getComp()->flux()(0), 1.0f), AipsError);
       // try a few of the other constructors and functions. 
       ComponentList model2(new PointComponent());
       model2.insertComp(defaultGauss);
-      AlwaysAssertExit(model2.curPosition() == 1);
-      AlwaysAssertExit(model2.getComp()->type().matches("Gaussian"));
+      AlwaysAssert(model2.curPosition() == 1, AipsError);
+      AlwaysAssert(model2.getComp()->type().matches("Gaussian"), AipsError);
       model2.gotoPosition(2);
-      AlwaysAssertExit(model2.curPosition() == 2);
-      AlwaysAssertExit(model2.getComp()->type().matches("Point"));
-      AlwaysAssertExit(near(model2.getComp()->flux()(1), 0.0f));
+      AlwaysAssert(model2.curPosition() == 2, AipsError);
+      AlwaysAssert(model2.getComp()->type().matches("Point"), AipsError);
+      AlwaysAssert(near(model2.getComp()->flux()(1), 0.0f), AipsError);
       ComponentList model3(defaultGauss);
-      AlwaysAssertExit(model3.getComp()->type().matches("Gaussian"));
-      if (Failed) {
-	cout << "Failed"; 
-	anyFailures = True;
-      }
-      else
-	cout << "Passed";
-      cout << " the Constructors, insertion, deletion and traversal tests" 
+      AlwaysAssert(model3.getComp()->type().matches("Gaussian"), AipsError);
+      cout << "Passed the Constructors, insertion, deletion and traversal tests" 
 	   << endl;
     }
     {
-      Bool Failed = False;
       ComponentList model(new PointComponent());
       MDirection otherDir(Quantity(10, "deg"),Quantity(87, "deg"), 
  			  MDirection::J2000);
@@ -166,11 +115,11 @@ int main() {
  				       otherDir));
       MVDirection NPoleDir;
       MDirection NPole(NPoleDir, MDirection::J2000);
-      AlwaysAssertExit(near(model(NPole)(0), 1.0f));
-      AlwaysAssertExit(near(model(otherDir)(2), 0.1f));
+      AlwaysAssert(near(model(NPole)(0), 1.0f), AipsError);
+      AlwaysAssert(near(model(otherDir)(2), 0.1f), AipsError);
       MDirection thirdDir(Quantity(40, "deg"), Quantity(89, "deg"), 
 			  MDirection::J2000);
-      AlwaysAssertExit(near(model(thirdDir)(0), 0.0f));
+      AlwaysAssert(near(model(thirdDir)(0), 0.0f), AipsError);
 
       Vector<MDirection> directions(3);
       directions(0) = NPole;
@@ -178,46 +127,50 @@ int main() {
       directions(2) = thirdDir;
       Vector<StokesVector> samples(3);
       samples = model(directions);
-      AlwaysAssertExit(near(samples(0)(1), 0.0f));
-      AlwaysAssertExit(near(samples(1)(0), 2.0f));
-      AlwaysAssertExit(near(samples(2)(1), 0.0f)); 
+      AlwaysAssert(near(samples(0)(1), 0.0f), AipsError);
+      AlwaysAssert(near(samples(1)(0), 2.0f), AipsError);
+      AlwaysAssert(near(samples(2)(1), 0.0f), AipsError); 
       while (model.nComponents() > 0)
 	model.removeComp();
 
       const uInt imSize = 30;
       const uInt nPol = 4;
       const uInt nFreq = 1;
+      CoordinateSystem imCoords = defaultCoords2D();
+      imCoords.setIncrement(imCoords.increment().ac()/60.0);
+      addIQUVAxis(imCoords);
+      addFreqAxis(imCoords);
       PagedImage<Float> image(IPosition(4,imSize,imSize,nPol,nFreq), 
-			      defaultCoords4D(), 
+			      imCoords, 
 			      String("tComponentList_tmp.image"));
       image.set(0.0f);
       GaussianComponent gcomp;
       model.addComp(gcomp);
       Vector<MVAngle> width(2); 
-      width(0) = MVAngle(Quantity(10., "'" ));
-      width(1) = MVAngle(Quantity(2., "'" ));
+      width(0) = MVAngle(Quantity(10., "''" ));
+      width(1) = MVAngle(Quantity(2., "''" ));
       gcomp.setWidth(width);
       gcomp.setPA(MVAngle(Quantity(atan(6./8.), "rad")));
       StokesVector flux(1.0f, 0.5f, 0.1f, 0.0f);
       model.getComp()->setFlux(flux);
-      MVDirection ra0dec0(Quantity(4, "'"), Quantity(2, "'"));
+      MVDirection ra0dec0(Quantity(4, "''"), Quantity(2, "''"));
       MDirection coord00(ra0dec0, MDirection::J2000);
       model.getComp()->setPosition(coord00);
 
       model.addComp(new PointComponent());
-      MVDirection ra1dec1(Quantity(23, "'"), Quantity(17, "'"));
+      MVDirection ra1dec1(Quantity(23, "''"), Quantity(17, "''"));
       MDirection coord11(ra1dec1, MDirection::J2000);
       model.getComp()->setPosition(coord11);
       model.getComp()->setFlux(StokesVector(1E5, 4.E4, 2.E4, 1.E4));
 
       model(image);
       const Float peak = 4/(width(0).radian()*width(1).radian())*C::ln2/C::pi;
-      AlwaysAssertExit(near(image(IPosition(4, 4, 2, 0, 0)), peak));
-      AlwaysAssertExit(near(image(IPosition(4, 1, 6, 0, 0)), peak/2));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 17, 0, 0)), 1E5f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 17, 3, 0)), 1E4f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 18, 0, 0)), 0.0f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 18, 2, 0)), 0.0f));
+      AlwaysAssert(near(image(IPosition(4, 4, 2, 0, 0)), peak), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 1, 6, 0, 0)), peak/2), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 17, 0, 0)), 1E5f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 17, 3, 0)), 1E4f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 18, 0, 0)), 0.0f), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 18, 2, 0)), 0.0f), AipsError);
       
       PagedImage<Float> psf(IPosition(2,4), defaultCoords2D(), 
 			    String("tComponentListPsf_tmp.image"));
@@ -229,21 +182,14 @@ int main() {
       psf(IPosition(2, 2, 3)) = Float(.5);
       
       model(image, psf);
-      AlwaysAssertExit(!near(image(IPosition(4, 4, 2, 0, 0)), peak));
-      AlwaysAssertExit(!near(image(IPosition(4, 1, 6, 0, 0)), peak/2));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 17, 0, 0)), 1E5f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 17, 3, 0)), 1E4f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 18, 0, 0)), 5E4f));
-      AlwaysAssertExit(near(image(IPosition(4, 23, 18, 2, 0)), 1E4f));
+      AlwaysAssert(!near(image(IPosition(4, 4, 2, 0, 0)), peak), AipsError);
+      AlwaysAssert(!near(image(IPosition(4, 1, 6, 0, 0)), peak/2), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 17, 0, 0)), 1E5f, 1E-3), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 17, 3, 0)), 1E4f, 1E-7), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 18, 0, 0)), 5E4f, 1E-2), AipsError);
+      AlwaysAssert(near(image(IPosition(4, 23, 18, 2, 0)), 1E4f, 1E-4), AipsError);
       
-      if (Failed) {
-	cout << "Failed"; 
-	anyFailures = True;
-      }
-      else
-	cout << "Passed";
-      cout << " the sampling & projection tests" 
-	   << endl;
+      cout << "Passed the sampling & projection tests" << endl;
     }
     {
       // Create a model. This is just a copy of the first part of this code.
@@ -254,7 +200,7 @@ int main() {
       // GaussianComponent destructor, which is called before the destructor
       // for the ComponentList. So the destructor for the ComponentList
       // (which tries to save the component to disk), is left with a null
-      // pointer, and now way to save the destroyed component to disk.
+      // pointer, and no way to save the destroyed component to disk.
       // One way to solve this problem is to use copy semantics. 
       //####################################################################
       GaussianComponent defaultGauss;
@@ -285,19 +231,15 @@ int main() {
       ComponentList model("tComponentList_tmp.table", True);
       model.setListName("tComponentListCopy_tmp.table");
     }
-    
-     if (anyFailures) {
-      cout << "FAIL" << endl;
-      return 1;
-    }
-    else {
-      cout << "OK" << endl;
-      return 0;
-    }
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
     cout << "FAIL" << endl;
     return 1;
   } end_try;
+  cout << "OK" << endl;
+  return 0;
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 tComponentList"
+// End: 
