@@ -122,7 +122,7 @@
   else
      if [ -f "RCS/$1.run,v" ]
      then
-        COMMAND="./$1.run"
+        COMMAND="sh $1.run"
         CLEANUP="$CLEANUP $1.run"
         co $1.run
      fi
