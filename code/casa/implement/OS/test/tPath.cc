@@ -1,5 +1,5 @@
 //# tPath.cc: Test program for class Path
-//# Copyright (C) 1993,1994,1995,1996,1998,1999
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,9 +210,11 @@ void doIt (Bool doExcp, Bool& success)
 
     // Test the strip/addDirectory functionality.
     AlwaysAssertExit (Path::stripDirectory ("././abc", "././././abc/de")
+		      == "de/.");
+    AlwaysAssertExit (Path::stripDirectory ("././abc", "././././abd/de")
 		      == "abc");
     AlwaysAssertExit (Path::stripDirectory ("abc", "abc/de")
-		      == "abc");
+		      == "de/.");
     AlwaysAssertExit (Path::stripDirectory ("././abc/de/ef", "././././abc/de")
 		      == "././ef");
     AlwaysAssertExit (Path::stripDirectory ("abc/ef", "abc/de")
