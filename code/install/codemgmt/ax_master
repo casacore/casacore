@@ -5603,3 +5603,4 @@
 15 226 src mv trial/implement/iosstrfwd.h aips/implement/iosstrfwd.h
 15 228 src rm aips/implement/aipsiosfwd.h
 15 228 src rm aips/implement/aipsiosstrfwd.h
+15 235 src rm trial/apps/image/image.cc
