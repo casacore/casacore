@@ -167,14 +167,16 @@ public:
   // Is the TempLattice writable? It should be.
   virtual Bool isWritable() const;
 
+  // Flush the data.
+  virtual void flush();
+
   // Close the Lattice temporarily (if it is paged to disk).
   // It'll be reopened automatically when needed or when
   // <src>reopen</src> is called explicitly.
-  void tempClose();
+  virtual void tempClose();
 
   // If needed, reopen a temporarily closed TempLattice.
-  void reopen()
-    { doReopen(); }
+  virtual void reopen();
 
   // Return the shape of the Lattice including all degenerate axes.
   // (ie. axes with a length of one)
