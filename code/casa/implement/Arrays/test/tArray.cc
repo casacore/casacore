@@ -221,6 +221,10 @@ void oldArrayTest()
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(y(i) == 0.0);
 	
+	z = pow(x.ac(),1.0);
+	AlwaysAssertExit(allNear (z.ac(), x.ac(), 1.0e-10));
+	z = pow(x.ac(),2.0);
+	AlwaysAssertExit(allNear (z.ac(), x.ac()*x.ac(), 1.0e-10));
 	z = pow(x.ac(),y.ac());
 	for (Int i = 0; i < 5; i++)
 	    AlwaysAssertExit(z(i) == 1.0);
@@ -446,7 +450,7 @@ void oldArrayTest()
 	indgen(v.ac());
 	Matrix<Int> vm(v);
 	AlwaysAssertExit(vm.ndim() == 2 && vm.nelements() == v.nelements());
-	for (Int i = 0; i < v.nelements(); i++)
+	for (Int i = 0; i < Int(v.nelements()); i++)
 	    AlwaysAssertExit(vm(i,0) == v(i) && v(i) == i);
 	
 	cout << "OK\n";
@@ -504,7 +508,7 @@ void oldArrayTest()
 	Int *storage;
 	storage = m.getStorage(deleteIt);
 	AlwaysAssertExit(deleteIt == False);
-	for (Int i = 0; i < m.nelements(); i++)
+	for (uInt i = 0; i < m.nelements(); i++)
 	    storage[i] = +1;
 	AlwaysAssertExit(allEQ (m.ac(), 1));
 	m.putStorage(storage, deleteIt);
@@ -582,7 +586,7 @@ main()
 	  IPosition shape(2, 5, 20);
 	  Array<Int> ai(shape, ip, SHARE);
 	  indgen(ai);
-	  for (uInt i=0; i < 100; i++) {
+	  for (Int i=0; i < 100; i++) {
 	    AlwaysAssertExit(ip[i] == i);
 	  }
 	  Array<Int> ai2(shape, ip, COPY);
