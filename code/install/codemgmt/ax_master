@@ -6458,3 +6458,4 @@
 18 552 src mv trial/implement/Tables/MSMColumn.cc aips/implement/Tables/MSMColumn.cc
 18 552 src mv trial/implement/Tables/MSMDirColumn.cc aips/implement/Tables/MSMDirColumn.cc
 18 552 src mv trial/implement/Tables/MSMDirColumn.h aips/implement/Tables/MSMDirColumn.h
+18 552 src mv trial/implement/Tables/MSMIndColumn.h aips/implement/Tables/MSMIndColumn.h
