@@ -543,6 +543,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
                                        ImageInterface<Float>*& pa0OutErrorPtr,
                                        ImageInterface<Float>*& nTurnsOutPtr, 
                                        ImageInterface<Float>*& chiSqOutPtr,
+                                       PGPlotter& plotter,
                                        Int axis,  Float rmMax, Float maxPaErr,
                                        Float sigma, Float rmFg, Bool showProgress)
 {
@@ -811,19 +812,24 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
    ImageInterface<Float>* mainImagePtr =
                           const_cast<ImageInterface<Float>*>(itsInImagePtr);
    mainImagePtr->setCacheSizeInTiles (nrtiles);
-   
 //
+   String posString;
    Bool ok = False;
    IPosition shp;
    for (it.reset(); !it.atEnd(); it++) {
 
 // Find rotation measure for this line
 
+      if (plotter.isAttached()) {
+         ostrstream oss;
+         oss << it.position() + 1;
+         posString = String(oss);
+      }
       ok = findRotationMeasure (rm, rmErr, pa0, pa0Err, rChiSq, nTurns,
                                 sortidx, wsqsort, it.vectorCursor(),
                                 pa.getMaskSlice(it.position(),it.cursorShape()),
                                 paerr.getSlice(it.position(),it.cursorShape()),
-                                rmFg, rmMax, maxPaErr);
+                                rmFg, rmMax, maxPaErr, plotter, posString);
 
 // Plonk values into output  image.  This is slow and clunky, but should be relatively fast
 // c.f. the fitting.  Could be reimplemented with LatticeApply if need be.  Buffering 
@@ -1442,7 +1448,8 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                                             const Vector<Float>& wsq2, const Vector<Float>& pa2, 
                                             const Array<Bool>& paMask2, 
                                             const Array<Float>& paerr2, 
-                                            Float rmFg, Float rmMax, Float maxPaErr)
+                                            Float rmFg, Float rmMax, Float maxPaErr,
+                                            PGPlotter& plotter, const String& posString)
 //
 // wsq is lambda squared in m**2 in increasing wavelength order
 // pa is position angle in radians
@@ -1495,7 +1502,7 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
                               rChiSqFitted, wsq, pa, paerr);
    } else {
       ok = rmPrimaryFit(nTurns, rmFitted, rmErrFitted, pa0Fitted, pa0ErrFitted, 
-                        rChiSqFitted, wsq, pa, paerr, rmMax);
+                        rChiSqFitted, wsq, pa, paerr, rmMax, plotter, posString);
    }
 
 // Put position angle into the range 0->pi
@@ -1621,7 +1628,7 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
                                     Float& pa0Fitted, Float& pa0ErrFitted, 
                                     Float& rChiSqFitted, const Vector<Float>& wsq, 
                                     const Vector<Float>& pa, const Vector<Float>& paerr, 
-                                    Float rmMax)
+                                    Float rmMax, PGPlotter& plotter, const String& posString)
 {
    static Vector<Float> storeRm;
    static Vector<Float> storeRmErr;
@@ -1629,6 +1636,10 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
    static Vector<Float> storePa0Err;
    static Vector<Float> storeRChiSq;
    static Vector<Float> storeNTurns;
+//
+   static Vector<Float> plotPA;
+   static Vector<Float> plotPAErr;
+   static Vector<Float> plotPAFit;
 
 // Assign position angle to longest wavelength consistent with
 // RM < RMMax
@@ -1649,7 +1660,6 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
    Int minnpi = Int(diff/C::pi + t);
 // cout << "primary:: minnpi, maxnpi=" << minnpi << ", " << maxnpi << endl;
 //
-   uInt istore = 0;
    const uInt nstore = maxnpi - minnpi + 1;
 
 // Resizes are fast if no change
@@ -1660,21 +1670,19 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
    storePa0Err.resize(nstore);
    storeRChiSq.resize(nstore);
    storeNTurns.resize(nstore);
-
-// Make plotter
-
-/*
-   Int nxy;
-   Int nplots = abs(minnpi) + abs(maxnpi) + 1;
-   nxy = max(1,Int(sqrt(Double(nplots))));
-   PGPlotter pl("/xs");
-   pl.subp(nxy, nxy);
-*/
+   if (plotter.isAttached()) {
+      plotPA.resize(n);
+      plotPAErr.resize(n);
+      plotPAFit.resize(n);
+   }
 
 // Loop over range of n*pi ambiguity
 
    Vector<Float> fitpa(n);
    Vector<Float> pars;
+   uInt bestFitIdx = 0;
+   uInt istore = 0;
+   Float chiSq = 1e30;
    for (Int h=minnpi; h<=maxnpi; h++) {
      fitpa(n-1) = pa(n-1) + C::pi*h;
      Float rm0 = (fitpa(n-1) - pa(0))/ dwsq;
@@ -1692,34 +1700,6 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      }
      fitpa(0) = pa(0);
 
-// Make plot
-/*
-     Vector<Float> tt0(pa.copy());
-     tt0 *= Float(180.0) / Float(C::pi);
-     Vector<Float> tt1(fitpa.copy());
-     tt1 *= Float(180.0) / Float(C::pi);
-
-     Float minVal, maxVal;
-     minMax(minVal, maxVal, tt0);
-     Float minVal2, maxVal2;
-     minMax(minVal2, maxVal2, tt1);
-     minVal = min(minVal, minVal2);
-     maxVal = max(maxVal, maxVal2);
-//
-     pl.page();
-     pl.sci(1);
-     pl.swin(wsq(0), wsq(n-1), minVal, maxVal);
-     pl.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
-     ostrstream oss;
-     oss << "h=" << h << ends;
-     pl.lab("wsq (m**2)", "Position Angle (deg)", String(oss));
-     pl.line(wsq, tt0);
-
-     pl.sci(7);
-     pl.line(wsq, tt1);
-     pl.pt(wsq, tt1, 17);
-*/
-
 // Do least squares fit
 
      if (!rmLsqFit (pars, wsq, fitpa, paerr)) return False;
@@ -1732,23 +1712,48 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      storePa0Err(istore) = pars(3);  // Error in angle
      storeRChiSq(istore) = pars(4);  // Reduced chi squared
      storeNTurns(istore) = h;        // Number of turns
+//
+     if (pars(4) < chiSq) {
+        bestFitIdx = istore;
+        plotPA = fitpa;
+        plotPAErr = paerr;
+        chiSq = pars(4);
+        if (plotter.isAttached()) {
+           for (uInt k=0; k<n; k++) {
+              plotPAFit(k) = pars(2) + pars(0)*wsq(k);
+           }
+        }
+     }
+//
      istore++;
    }
-
-// Find the best fit
-
-   IPosition minPos(1), maxPos(1);
-   Float minVal, maxVal;
-   minMax(minVal, maxVal, minPos, maxPos, storeRChiSq);
-   uInt idx = minPos(0);
 //
-   nTurns = storeNTurns(idx);
-   rmFitted = storeRm(idx);
-   rmErrFitted = storeRmErr(idx);
-   pa0Fitted = storePa0(idx);
-   pa0ErrFitted = storePa0Err(idx);
-   rChiSqFitted = storeRChiSq(idx);
+   nTurns = storeNTurns(bestFitIdx);
+   rmFitted = storeRm(bestFitIdx);
+   rmErrFitted = storeRmErr(bestFitIdx);
+   pa0Fitted = storePa0(bestFitIdx);
+   pa0ErrFitted = storePa0Err(bestFitIdx);
+   rChiSqFitted = storeRChiSq(bestFitIdx);
    if (n > 2) rChiSqFitted /= Float(n - 2);
+
+// Make plot
+
+   if (plotter.isAttached()) {
+     plotPA *= Float(180.0) / Float(C::pi);
+     plotPAErr *= Float(180.0) / Float(C::pi);
+     plotPAFit *= Float(180.0) / Float(C::pi);
+//
+     Float minVal, maxVal;
+     minMax(minVal, maxVal, plotPA);
+//
+     plotter.page();
+     plotter.swin(wsq(0), wsq(n-1), minVal, maxVal);
+     plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
+     plotter.lab("\\gl\\u2\\d (m\\u2\\d)", "Position Angle (deg)", String("RM fit at ")+posString);
+     plotter.pt(wsq, plotPA, 17);
+     plotter.line(wsq, plotPAFit);
+   }
+//
    return True;
 }
 

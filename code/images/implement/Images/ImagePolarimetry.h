@@ -1,5 +1,5 @@
 //# ImagePolarimetry.h: Polarimetric analysis of images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ class IPosition;
 class LatticeExprNode;
 class LCBox;
 class LogIO;
-
+class PGPlotter;
 
 
 // <summary>
@@ -316,8 +316,10 @@ public:
    void rotationMeasure(ImageInterface<Float>*& rmPtr,  ImageInterface<Float>*& rmErrPtr, 
                         ImageInterface<Float>*& pa0Ptr, ImageInterface<Float>*& pa0ErrPtr,
                         ImageInterface<Float>*& nTurns, ImageInterface<Float>*& rChiSqPtr,
+                        PGPlotter& plotter,
                         Int spectralAxis,  Float rmMax, Float maxPaErr=1.0e30,
                         Float sigma=-1.0, Float rmFg=0.0, Bool showProgress=False);
+
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
@@ -364,7 +366,8 @@ private:
                              const Vector<Float>& pa, 
                              const Array<Bool>& paMask, 
                              const Array<Float>& paerr, 
-                             Float rmfg, Float rmmax, Float paErrMax);
+                             Float rmfg, Float rmmax, Float paErrMax,
+                             PGPlotter& plotter, const String& posString);
 
 // Find the Stokes in the construction image and assign pointers
    void findStokes();
@@ -400,7 +403,8 @@ private:
    Bool rmPrimaryFit (Float& nTurns, Float& rmFitted, Float& rmErrFitted,
                       Float& pa0Fitted, Float& pa0ErrFitted,
                       Float& rChiSqFitted, const Vector<Float>& wsq, 
-                      const Vector<Float>& pa, const Vector<Float>& paerr, Float rmmax);
+                      const Vector<Float>& pa, const Vector<Float>& paerr, 
+                      Float rmmax, PGPlotter& plotter, const String& posString);
 
 // Fit the spectrum of position angles to find the rotation measure via Leahy algorithm
 // for supplementary (n==2) points
