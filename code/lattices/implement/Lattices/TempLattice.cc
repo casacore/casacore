@@ -41,17 +41,17 @@ TempLattice<T>::TempLattice()
 template<class T>
 TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB) 
 {
-  uInt memoryReq = shape.shape().product()*sizeof(T);
+  uInt memoryReq = shape.shape().product()*sizeof(T)/(1024*1024);
   uInt memoryAvail;
   if (maxMemoryInMB > 0) {
     memoryAvail = maxMemoryInMB;
   } else {
     memoryAvail = AppInfo::availableMemoryInMB() / 2;
   }
-  memoryAvail *= 1024*1024;
 
   if (memoryReq > memoryAvail) {
-    itsLatticePtr = new PagedArray<T>(shape);
+    String name=AppInfo::workFileName(memoryReq, "TempLattice");
+    itsLatticePtr = new PagedArray<T>(shape, name);
   } else {
     itsLatticePtr = new ArrayLattice<T>(shape.shape());
   }
