@@ -1,5 +1,5 @@
 //# MeasJPL.cc: Interface to JPL DE tables
-//# Copyright (C) 1996,1997,1998,1999,2001
+//# Copyright (C) 1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -146,7 +146,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
     String vs;
     Bool ok = True;
     if (!MeasIERS::getTable(MeasJPL::t[which], kws, row[which],
-			    rfp[which], vs, dt, 
+			    rfp[Int(which)], vs, dt, 
 			    1, names, tp[which],
 			    tplc[which],
 			    "aips/Measures")) {
@@ -179,7 +179,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 	cn[which][MeasJPL::CAU]/cn[which][MeasJPL::CAU];
       Int n = t[which].nrow();
       row[which].get(n-1);
-      if (*(rfp[which][0]) != mjd0[which] + n*dmjd[which]) { 
+      if (*(rfp[Int(which)][0]) != mjd0[which] + n*dmjd[which]) { 
 	ok = False;
       } else {
 	mjdl[which] = mjd0[which] + n*dmjd[which];
@@ -199,7 +199,7 @@ Bool MeasJPL::initMeas(MeasJPL::Files which) {
 	    if (i == 0) idx[which][i][j] -= 3;
 	  };
 	};
-	acc[which].attach(t[which], "x");
+	acc[Int(which)].attach(t[which], "x");
       };
     };
     if (!ok) {
@@ -227,7 +227,7 @@ Bool MeasJPL::fillMeas(Double &intv, MeasJPL::Files which,
   intv = ((utf.getDay() - (ut*dmjd[which] + mjd0[which]))
 	   + utf.getDayFraction())/dmjd[which];
   if (ut == ldat[which]) return True;	// already there
-  dval[which] = acc[which](ut-1);
+  dval[which] = acc[Int(which)](ut-1);
   ldat[which] = ut;
   return True;
 }

@@ -1,5 +1,5 @@
 //# MeasIERS.cc: Interface to IERS tables
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,7 +128,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
     String vs;
     Bool ok = True;
     if (!MeasIERS::getTable(MeasIERS::t[which], kws, row[which],
-			    rfp[which], vs, dt, 
+			    rfp[Int(which)], vs, dt, 
 			    N_Types, names, tp[which],
 			    tplc[which],
 			    "aips/Measures")) {
@@ -147,7 +147,7 @@ Bool MeasIERS::initMeas(MeasIERS::Files which) {
       mjd0[which] = Int(kws.asDouble("MJD0"));
       Int n = t[which].nrow();
       row[which].get(n-1);
-      if (*(rfp[which][0]) != mjd0[which] + n) { 
+      if (*(rfp[Int(which)][0]) != mjd0[which] + n) { 
 	ok = False;
       } else {
 	mjdl[which] = mjd0[which] + n;
