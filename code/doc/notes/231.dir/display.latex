@@ -1,10 +1,3 @@
-%% remove following lines when ready for system
-\documentclass{article}
-\usepackage{eps}
-\begin{document}
-
-\newcommand{\aipspp}{{\sf AIPS++}}
-\newcommand{\glish}{{\em Glish}}
 
 \section{Overview}
 
@@ -123,7 +116,8 @@ correctly on the screen, a series of callback functions are initiated
 when ColorTables and Colormaps are resized.
 
 \begin{figure}
-  \plotonesmall{1.0}{colortable.xfig.eps}
+  \vspace{2.6in}
+  \special{psfile=colortable.xfig.eps vscale=50 hscale=50 voffset=0.0 hoffset=0.0}
   \caption{The relationship between hardware color resources,
     \aipspp\ ColorTables and \aipspp\ Colormaps.}
   \label{fig:colortable}
@@ -764,6 +758,3 @@ The last link in the chain to get {\tt colormap} agents working from
 global symbols in \glish\ for constructing the various proxy agents.
 Simply follow the existing code to add a new agent.
 
-\subsection{Extending the Viewer}
-
-\end{document}
