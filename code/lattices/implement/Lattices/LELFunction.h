@@ -211,7 +211,22 @@ public:
 // Get class name
    virtual String className() const;
 
+// Determine the median of the given lattice by making successive histograms.
+// When <src>smallsize<src> elements are left, an in-memory algorithm
+// will be used to finish.
+// The number of passes made over the data is undetermined, but
+// a typical number is 2 passes.
+   // <group>
+   static LELScalar<T> unmaskedMedian (const Lattice<T>& lattice,
+				       uInt smallSize = 512*512);
+   static LELScalar<T> maskedMedian (const MaskedLattice<T>& lattice,
+				     uInt smallSize = 512*512);
+   // </group>
+
 private:
+   // Determine the median for a small masked lattice.
+   static LELScalar<T> smallMaskedMedian (const MaskedLattice<T>& lattice);
+
    LELFunctionEnums::Function function_p;
    CountedPtr<LELInterface<T> > pExpr_p;
 };

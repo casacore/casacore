@@ -35,6 +35,8 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Utilities/GenSort.h>
+#include <aips/Utilities/COWPtr.h>
 #include <aips/Exceptions/Error.h> 
 #include <aips/Mathematics/NumericTraits.h> 
 
@@ -400,7 +402,13 @@ LELFunctionReal1D<T>::LELFunctionReal1D
 				const CountedPtr<LELInterface<T> >& exp)
 : function_p(function), pExpr_p(exp)
 {
-   setAttr(exp->getAttribute());
+   switch (function_p) {
+   case LELFunctionEnums::MEDIAN1D :
+      setAttr(LELAttribute());          // these result in a scalar
+      break;
+   default:
+      setAttr(exp->getAttribute());
+   }
 
 #if defined(AIPS_TRACE)
    cout << "LELFunctionReal1D: constructor" << endl;
@@ -524,6 +532,13 @@ LELScalar<T> LELFunctionReal1D<T>::getScalar() const
       return ceil(pExpr_p->getScalar().value());
    case LELFunctionEnums::FLOOR :
       return floor(pExpr_p->getScalar().value());
+   case LELFunctionEnums::MEDIAN1D :
+   {
+      if (pExpr_p->isScalar()) {
+         return pExpr_p->getScalar();
+      }
+      return maskedMedian (LatticeExpr<T>(pExpr_p, 0));
+   }
    default:
       throw(AipsError("LELFunctionReal1D::getScalar - unknown function"));
    }
@@ -549,7 +564,377 @@ String LELFunctionReal1D<T>::className() const
    return String("LELFunctionReal1D");
 }
 
+template <class T>
+LELScalar<T> LELFunctionReal1D<T>::unmaskedMedian (const Lattice<T>& lattice,
+						   uInt smallSize)
+{
+  // Determine the number of elements in the lattice.
+  // If small enough, we read them all and do it in memory.
+  uInt ntodo = lattice.shape().product();
+  if (ntodo == 0) {
+    return LELScalar<T>();
+  }
+  if (ntodo <= smallSize) {
+    return median (lattice.get());
+  }
+  // Bad luck. We have to do some more work.
+  // Do a first binning while determining min/max at the same time.
+  // Hopefully the start and end values make some sense.
+  T stv = -5000;
+  T endv = 5000;
+  T minv = 0;
+  T maxv = 0;
+  Bool firstTime = True;
+  const uInt nbins = 10000;
+  // Make the block 1 element larger, because possible roundoff errors
+  // could result in a binnr just beyond the end.
+  Block<uInt> hist(nbins+1, 0);
+  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  while (! iter.atEnd()) {
+    Bool delData;
+    const Array<T>& array = iter.cursor();
+    const T* dataPtr = array.getStorage (delData);
+    uInt n = array.nelements();
+    if (firstTime) {
+      firstTime = False;
+      minv = dataPtr[0];
+      maxv = dataPtr[0];
+    }
+    for (uInt i=0; i<n; i++) {
+      if (dataPtr[i] <= minv) {
+	minv = dataPtr[i];
+      } else if (dataPtr[i] >= maxv) {
+	maxv = dataPtr[i];
+      }
+      Int bin = Int(dataPtr[i] - stv);
+      if (bin < 0) {
+	hist[0]++;
+      } else if (bin >= Int(nbins)) {
+	hist[nbins-1]++;
+      } else {
+	hist[bin]++;
+      }
+    }
+    array.freeStorage (dataPtr, delData);
+    iter++;
+  }
+  // The index of the median in the lattice is the middle one.
+  // In case of an even nr of elements, it is the first one of the
+  // two middle ones.
+  T step = 1;
+  uInt medianInx = (ntodo-1)/2;
+  uInt medianBin;
 
+  // Iterate until the bin containing the median does not
+  // contain too many values anymore.
+
+  while (True) {
+    // First determine which bin contains the median.
+    // If the bin is not found, it means that there were rounding problems.
+    // In that case return the end of the interval.
+    medianBin = 0;
+    uInt ndone = 0;
+    while (ndone <= medianInx) {
+      if (medianBin == nbins) {
+	return endv;
+      }
+      ndone += hist[medianBin++];
+    }
+    medianBin--;
+    ntodo = hist[medianBin];
+    ndone -= ntodo;
+    // Now medianBin is the bin containing the median.
+    // Determine the index of the median in this bin.
+    // Use the boundaries of this bin as the new start/end values.
+    medianInx -= ndone;
+    if (medianBin == 0) {
+      stv = minv;
+    } else {
+      stv += medianBin * step;
+    }
+    if (medianBin == nbins-1) {
+      endv = maxv;
+    } else {
+      endv = stv + step;
+    }
+    minv = stv;
+    maxv = endv;
+    // If only a 'few' more points to do, stop making histograms.
+    // Otherwise histogram the median bin with a much smaller bin size.
+    if (ntodo <= smallSize) {
+      break;
+    }
+    hist = 0;
+    step = (endv - stv) / nbins;
+    uInt nfound = 0;
+    iter.reset();
+    while (! iter.atEnd()  &&  nfound<ntodo) {
+      const Array<T>& array = iter.cursor();
+      Bool delData;
+      const T* dataPtr = array.getStorage (delData);
+      uInt n = array.nelements();
+      for (uInt i=0; i<n; i++) {
+	if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+	  Int bin = Int((dataPtr[i] - stv) / step);
+	  // Due to rounding the bin number might get too high.
+	  // However, the block has 1 element extra, so it is no problem.
+	  hist[bin]++;
+	  nfound++;
+	}
+      }
+      array.freeStorage (dataPtr, delData);
+      iter++;
+    }
+    // In principle the last bin should be empty, but roundoff errors
+    // might have put a few in there. So add them to previous one.
+    hist[nbins-1] += hist[nbins];
+  }
+  // There are only a 'few' points left.
+  // So read them all in and determine the medianInx'th-largest.
+  // Again, due to rounding we might find a few elements more or less.
+  // So take care that the receiving block is not exceeded and that
+  // the number of elements found are used in kthLargest.
+  // Besides, it makes sense to stop the iteration when we found all
+  // elements. It may save a few reads from the lattice.
+  Block<T> tmp(ntodo);
+  T* tmpPtr = tmp.storage();
+  uInt nfound = 0;
+  iter.reset();
+  while (! iter.atEnd()  &&  nfound<ntodo) {
+    const Array<T>& array = iter.cursor();
+    Bool delData;
+    const T* dataPtr = array.getStorage (delData);
+    uInt n = array.nelements();
+    for (uInt i=0; nfound<ntodo && i<n; i++) {
+      if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+	tmpPtr[nfound++] = dataPtr[i];
+      }
+    }
+    array.freeStorage (dataPtr, delData);
+    iter++;
+  }
+  // By rounding it is possible that not enough elements were found.
+  // In that case return the middle of the (very small) interval.
+  if (medianInx >= nfound) {
+    return (stv+endv)/2;
+  }
+  return GenSort<T>::kthLargest (tmp.storage(), nfound, medianInx);
+}
+
+template <class T>
+LELScalar<T> LELFunctionReal1D<T>::maskedMedian
+                       (const MaskedLattice<T>& lattice, uInt smallSize)
+{
+  // If unmasked, a simpler way can be used.
+  if (! lattice.isMasked()) {
+    return unmaskedMedian (lattice);
+  }
+  // Determine the number of elements in the lattice.
+  // If small enough, we read them all and do it in memory.
+  uInt ntodo = lattice.shape().product();
+  if (ntodo <= smallSize) {
+    return smallMaskedMedian (lattice);
+  }
+  ntodo = 0;
+  // Bad luck. We have to do some more work.
+  // Do a first binning while determining min/max at the same time.
+  // Hopefully the start and end values make some sense.
+  T stv = -5000;
+  T endv = 5000;
+  T minv = 0;
+  T maxv = 0;
+  Bool firstTime = True;
+  const uInt nbins = 10000;
+  // Make the block 1 element larger, because possible roundoff errors
+  // could result in a binnr just beyond the end.
+  Block<uInt> hist(nbins+1, 0);
+  COWPtr<Array<Bool> > mask;
+  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  while (! iter.atEnd()) {
+    Bool delData, delMask;
+    const Array<T>& array = iter.cursor();
+    lattice.getMaskSlice (mask, iter.position(), array.shape());
+    const Bool* maskPtr = mask->getStorage (delMask);
+    const T* dataPtr = array.getStorage (delData);
+    uInt n = array.nelements();
+    for (uInt i=0; i<n; i++) {
+      if (maskPtr[i]) {
+	ntodo++;
+	if (firstTime) {
+	  firstTime = False;
+	  minv = dataPtr[0];
+	  maxv = dataPtr[0];
+	} else {
+	  if (dataPtr[i] <= minv) {
+	    minv = dataPtr[i];
+	  } else if (dataPtr[i] >= maxv) {
+	    maxv = dataPtr[i];
+	  }
+	}
+	Int bin = Int(dataPtr[i] - stv);
+	if (bin < 0) {
+	  hist[0]++;
+	} else if (bin >= Int(nbins)) {
+	  hist[nbins-1]++;
+	} else {
+	  hist[bin]++;
+	}
+      }
+    }
+    array.freeStorage (dataPtr, delData);
+    mask->freeStorage (maskPtr, delMask);
+    iter++;
+  }
+  if (ntodo == 0) {
+    return LELScalar<T>();
+  }
+  // The index of the median in the lattice is the middle one.
+  // In case of an even nr of elements, it is the first one of the
+  // two middle ones.
+  T step = 1;
+  uInt medianInx = (ntodo-1)/2;
+  uInt medianBin;
+
+  // Iterate until the bin containing the median does not
+  // contain too many values anymore.
+
+  while (True) {
+    // First determine which bin contains the median.
+    // If the bin is not found, it means that there were rounding problems.
+    // In that case return the end of the interval.
+    medianBin = 0;
+    uInt ndone = 0;
+    while (ndone <= medianInx) {
+      if (medianBin == nbins) {
+	return endv;
+      }
+      ndone += hist[medianBin++];
+    }
+    medianBin--;
+    ntodo = hist[medianBin];
+    ndone -= ntodo;
+    // Now medianBin is the bin containing the median.
+    // Determine the index of the median in this bin.
+    // Use the boundaries of this bin as the new start/end values.
+    medianInx -= ndone;
+    if (medianBin == 0) {
+      stv = minv;
+    } else {
+      stv += medianBin * step;
+    }
+    if (medianBin == nbins-1) {
+      endv = maxv;
+    } else {
+      endv = stv + step;
+    }
+    minv = stv;
+    maxv = endv;
+    // If only a 'few' more points to do, stop making histograms.
+    // Otherwise histogram the median bin with a much smaller bin size.
+    if (ntodo <= smallSize) {
+      break;
+    }
+    hist = 0;
+    step = (endv - stv) / nbins;
+    uInt nfound = 0;
+    iter.reset();
+    while (! iter.atEnd()  &&  nfound<ntodo) {
+      Bool delData, delMask;
+      const Array<T>& array = iter.cursor();
+      lattice.getMaskSlice (mask, iter.position(), array.shape());
+      const Bool* maskPtr = mask->getStorage (delMask);
+      const T* dataPtr = array.getStorage (delData);
+      uInt n = array.nelements();
+      for (uInt i=0; i<n; i++) {
+	if (maskPtr[i]  &&  dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+	  Int bin = Int((dataPtr[i] - stv) / step);
+	  // Due to rounding the bin number might get too high.
+	  // However, the block has 1 element extra, so it is no problem.
+	  hist[bin]++;
+	  nfound++;
+	}
+      }
+      array.freeStorage (dataPtr, delData);
+      mask->freeStorage (maskPtr, delMask);
+      iter++;
+    }
+    // In principle the last bin should be empty, but roundoff errors
+    // might have put a few in there. So add them to previous one.
+    hist[nbins-1] += hist[nbins];
+  }
+  // There are only a 'few' points left.
+  // So read them all in and determine the medianInx'th-largest.
+  // Again, due to rounding we might find a few elements more or less.
+  // So take care that the receiving block is not exceeded and that
+  // the number of elements found are used in kthLargest.
+  // Besides, it makes sense to stop the iteration when we found all
+  // elements. It may save a few reads from the lattice.
+  Block<T> tmp(ntodo);
+  T* tmpPtr = tmp.storage();
+  uInt nfound = 0;
+  iter.reset();
+  while (! iter.atEnd()  &&  nfound<ntodo) {
+    Bool delData, delMask;
+    const Array<T>& array = iter.cursor();
+    lattice.getMaskSlice (mask, iter.position(), array.shape());
+    const Bool* maskPtr = mask->getStorage (delMask);
+    const T* dataPtr = array.getStorage (delData);
+    uInt n = array.nelements();
+    for (uInt i=0; nfound<ntodo && i<n; i++) {
+      if (maskPtr[i]  &&  dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
+	tmpPtr[nfound++] = dataPtr[i];
+      }
+    }
+    array.freeStorage (dataPtr, delData);
+    mask->freeStorage (maskPtr, delMask);
+    iter++;
+  }
+  // By rounding it is possible that not enough elements were found.
+  // In that case return the middle of the (very small) interval.
+  if (medianInx >= nfound) {
+    return (stv+endv)/2;
+  }
+  return GenSort<T>::kthLargest (tmp.storage(), nfound, medianInx);
+}
+
+template <class T>
+LELScalar<T> LELFunctionReal1D<T>::smallMaskedMedian
+                                          (const MaskedLattice<T>& lattice)
+{
+  // Make a buffer to hold all masked-on elements.
+  // The number of values is not more than the number of elements in the
+  // lattice, so make the buffer that long.
+  uInt size = lattice.shape().product();
+  Block<T> buffer(size);
+  T* bufPtr = buffer.storage();
+  // Iterate through the lattice and assemble all masked-on elements.
+  COWPtr<Array<Bool> > mask;
+  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  while (! iter.atEnd()) {
+    Bool delData, delMask;
+    const Array<T>& array = iter.cursor();
+    lattice.getMaskSlice (mask, iter.position(), array.shape());
+    const Bool* maskPtr = mask->getStorage (delMask);
+    const T* dataPtr = array.getStorage (delData);
+    uInt n = array.nelements();
+    for (uInt i=0; i<n; i++) {
+      if (maskPtr[i]) {
+	*bufPtr++ = dataPtr[i];
+      }
+    }
+    array.freeStorage (dataPtr, delData);
+    mask->freeStorage (maskPtr, delMask);
+    iter++;
+  }
+  uInt npts = bufPtr - buffer.storage();
+  if (npts == 0) {
+    return LELScalar<T>();
+  }
+  // Use median of an Array instead of kthLargest directly, because
+  // for a small array with an even number of elements, median takes
+  // the average of the 2 middle elements.
+  return median (Array<T> (IPosition(1,npts), buffer.storage(), SHARE));
+}
 
 
 // LELFunctionND
