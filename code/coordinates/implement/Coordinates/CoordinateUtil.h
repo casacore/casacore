@@ -188,7 +188,8 @@ class LogIO;
 //      Static functions for creating <here>default</here> coordinate systems
 //  </linkfrom>
 
-class CoordinateUtil {
+class CoordinateUtil
+{
 public: 
 
 // Add a RA/DEC pair of direction axes (ie. a DirectionCoordinate) to the
@@ -377,6 +378,35 @@ static Bool removePixelAxes(CoordinateSystem& cSys,
    static String formatCoordinate(const IPosition& pixel, CoordinateSystem& cSys);
    static String formatCoordinate(const Vector<Double>& pixel, CoordinateSystem& cSys);
 // </group>
+
+
+  // <group name=Coordinate comparison>
+  // Check how the coordinates of this and that compare.
+  // The return value tells how they compare.
+  // <br>-1: left is subset
+  // <br>0: equal 
+  // <br>1: left is superset
+  // <br>9: invalid (mismatch)
+  static Int compareCoordinates (const CoordinateSystem& thisCsys,
+				 const CoordinateSystem& thatCsys);
+
+  // Convert the world axes map given in worldAxes to a pixel axes map.
+  static Vector<Int> toPixelAxes (const CoordinateSystem& thisCsys,
+				  const CoordinateSystem& thatCsys,
+				  const Vector<Int>& worldAxes);
+
+  // Check if the axes in the pixel axes map are in ascending order.
+  static Bool checkOrder (const Vector<Int>& pixelAxes);
+
+  // Find the new and stretch axes when comparing the old and new
+  // coordinates and shapes (helper for ExtendImage).
+  static Bool findExtendAxes (IPosition& newAxes,
+			      IPosition& stretchAxes,
+			      const IPosition& newShape,
+			      const IPosition& oldShape,
+			      const CoordinateSystem& newCsys,
+			      const CoordinateSystem& oldCsys);
+  // </group>
 
 };
 

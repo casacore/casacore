@@ -35,6 +35,7 @@
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
@@ -108,7 +109,7 @@ Int LELImageCoord::compare (const LELLattCoordBase& other) const
 
 Int LELImageCoord::doCompare (const LELImageCoord& other) const
 {
-  return ImageUtilities::compareCoordinates (other.coordinates(),
+  return CoordinateUtil::compareCoordinates (other.coordinates(),
 					     coordinates());
 }
 

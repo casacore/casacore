@@ -26,9 +26,9 @@
 //# $Id$
 
 #include <trial/Images/ExtendImage.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/ExtendLattice.h>
 #include <trial/Lattices/LatticeRegion.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -48,7 +48,7 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
 : itsImagePtr (image.cloneII())
 {
   IPosition newAxes, stretchAxes;
-  if (! ImageUtilities::findExtendAxes (newAxes, stretchAxes,
+  if (! CoordinateUtil::findExtendAxes (newAxes, stretchAxes,
 					newShape, image.shape(),
 					newCsys, image.coordinates())) {
     throw AipsError ("ExtendImage - "
