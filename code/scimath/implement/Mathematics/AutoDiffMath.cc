@@ -512,3 +512,19 @@ template<class T>
 Bool isInf(AutoDiff<T> &val) {
   return isInf(val.theRep()->val_p);
 };
+
+template<class T>
+AutoDiff<T> min(const AutoDiff<T> &left,
+		const AutoDiff<T> &right) {
+  AutoDiff<T> tmp = (left.theRep()->val_p <= right.theRep()->val_p) ?
+	  left : right;
+  return tmp.ref();
+}
+
+template<class T>
+AutoDiff<T> max(const AutoDiff<T> &left,
+		const AutoDiff<T> &right) {
+  AutoDiff<T> tmp = (left.theRep()->val_p <= right.theRep()->val_p) ?
+	  left : right;
+  return tmp.ref();
+}

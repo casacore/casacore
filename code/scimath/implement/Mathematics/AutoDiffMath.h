@@ -197,9 +197,15 @@ template<class T> Bool allnearAbs(const T &left, const AutoDiff<T> &right,
 // </group>
 // Test special values
 // <group>
-template<class T> Bool isNaN (const AutoDiff<T> &val);
+template<class T> Bool isNaN(const AutoDiff<T> &val);
 template<class T> Bool isInf(AutoDiff<T> &val);
-
+// </group>
+// Minimum/maximum
+// <group>
+template<class T> AutoDiff<T> min(const AutoDiff<T> &left,
+				  const AutoDiff<T> &right);
+template<class T> AutoDiff<T> max(const AutoDiff<T> &left,
+				  const AutoDiff<T> &right);
 // </group>
 
 // </group>
