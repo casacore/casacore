@@ -4460,3 +4460,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSWeather.cc aips/implement/MeasurementSets/OldMSWeather.cc
 14 296 src mv aips/implement/MeasurementSets/MSWeather.h aips/implement/MeasurementSets/OldMSWeather.h
 14 296 src mv aips/implement/MeasurementSets/MSWeatherColumns.cc aips/implement/MeasurementSets/OldMSWeatherColumns.cc
+14 296 src mv aips/implement/MeasurementSets/MSWeatherColumns.h aips/implement/MeasurementSets/OldMSWeatherColumns.h
