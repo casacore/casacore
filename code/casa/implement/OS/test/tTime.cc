@@ -1,5 +1,5 @@
-// tTime.cc: a test program for the Time class
-//# Copyright (C) 1993,1994,1995
+//# tTime.cc: a test program for the Time class
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #include <aips/OS/Time.h>
 #include <iostream.h>
