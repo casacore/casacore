@@ -151,8 +151,8 @@ uInt RedFlagger::ifrNumber ( Int ant1,Int ant2 ) const
 // computes vector of IFR indeces, given two antennas
 Vector<Int> RedFlagger::ifrNumbers ( Vector<Int> ant1,Vector<Int> ant2 ) const
 {
-  Vector<Int> a1( max(ant1,ant2) ),
-             a2( min(ant1,ant2) );
+  Vector<Int> a1( ::max(ant1,ant2) ),
+             a2( ::min(ant1,ant2) );
   return a1*(a1+1)/2 + a2;
 }
 

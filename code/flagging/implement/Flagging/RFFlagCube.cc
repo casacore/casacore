@@ -562,12 +562,12 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
   Vector<uInt> row_per_it( rowcount.ncolumn() );
   for( uInt i=0; i<rowcount.ncolumn(); i++ )
     row_per_it(i) = sum( rowcount.column(i) );
-  Vector<uInt> row_per_ant( num(ANT),0 );
+  Vector<uInt> row_per_ant( num(ANT),0u );
   Matrix<uInt> row_per_ant_time( num(ANT),num(TIME),0 );
   
 // SECTION 1: IFR (ANT-ANT) coverage maps  
 // draw Antenna-Antenna row flag and pixel flag density image
-  Vector<uInt> rowant(num(ANT),0),pixant(num(ANT),0);
+  Vector<uInt> rowant(num(ANT),0u),pixant(num(ANT),0u);
   Matrix<Float> img1(num(ANT),num(ANT),0),img2(num(ANT),num(ANT),0);
   for( uInt ifr=0; ifr<num(IFR); ifr++ )
     if( row_per_ifr(ifr) )
@@ -633,7 +633,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
   if( nval ) // do only if something is there
   {
     Vector<uInt> antnums(nval), // valid antenna numbers
-       revant(num(ANT),9999);   // reverse index 
+       revant(num(ANT),9999u);   // reverse index 
     uInt ival=0;
     for( uInt i=0; i<num(ANT); i++ )
       if( valid(i) )

@@ -512,7 +512,7 @@ void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
   // plot cut-off points
   pgp.sls(LINE_DOT);
   Vector<Float> xx(2,plot_thr_count+.5);
-  Vector<Float> yy(2,0); yy(1)=1;
+  Vector<Float> yy(2,0.0f); yy(1)=1;
   pgp.line(xx,yy);
   xx(0)=1; xx(1)=plot_thr_count+.5;
   yy=threshold;

@@ -38,7 +38,7 @@
 static class PGPlotter nullPGPlotter;
         
 RFChunkStats::RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,RedFlagger &rf,
-    PGPlotterInterface *pgp_scr=NULL,PGPlotterInterface *pgp_rep=NULL )
+    PGPlotterInterface *pgp_scr, PGPlotterInterface *pgp_rep )
   : visiter(vi),
     visbuf(vb),
     flagger(rf),
@@ -200,7 +200,7 @@ void RFChunkStats::printStats ()
   fprintf( stderr,"%d row flags have been raised\n",n );
   fprintf( stderr,"(%f%% of rows flagged)\n",n*100.0/num(ROW));
 // accumulate per-antenna flags 
-  Vector<uInt> flperant(num(ANT),0),rowperant(num(ANT),0);
+  Vector<uInt> flperant(num(ANT),0u),rowperant(num(ANT),0u);
   for( uInt i=0; i<num(IFR); i++ )
   {
     uInt a1,a2;

@@ -287,7 +287,7 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
     {
   // resize x/y vectors, and do the fit
       Slice S(0,np);
-      Vector<Float> sigma(np,1),x1(x(S)),y1(y(S));
+      Vector<Float> sigma(np,1.0f),x1(x(S)),y1(y(S));
       Vector<Float> c = fitter.fit(x1,y1,sigma);
       Float chisq = fitter.chiSquare();
       rowclipper.setSigma(iifr,it,chisq);
@@ -307,8 +307,8 @@ RFA::IterMode RFASpectralRej::iterRow ( uInt irow )
           data(ich) = mapValue(ich,irow);
         
         PGPlotterInterface &pgp( debug.pgp() );
-        Float vmax = max( max(y1,yfit) );
-        Float vmin = min( min(y1,yfit) ); 
+        Float vmax = ::max( ::max(y1,yfit) );
+        Float vmin = ::min( ::min(y1,yfit) ); 
         for( Bool redraw=True; redraw;  )
         {
           pgp.ask(False);

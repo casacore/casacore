@@ -115,7 +115,11 @@ void RFATimeMedian::startData ()
   flag_iter.reset();
   if( msl ) delete [] msl;
 // create nchan x nifr median sliders
-  msl = new MedianSlider[num(CHAN)*num(IFR)](halfwin);
+//  msl = new MedianSlider[num(CHAN)*num(IFR)](halfwin);
+  msl = new MedianSlider[num(CHAN)*num(IFR)];
+  for(uInt i(0); i< num(CHAN)*num(IFR); i++){
+     msl[i] = MedianSlider(halfwin);
+  }
 }
 
 // iterTime
@@ -171,7 +175,7 @@ RFA::IterMode RFATimeMedian::iterRow ( uInt irow )
         if( debug_plot ) // plot pre-flagged point here
         {
           dbg_val(dbg_i) = mapValue(ich,irow);
-          dbg_sym(dbg_i) = CROSS;
+          dbg_sym(dbg_i) = PGPlotEnums::CROSS;
         }
       }
       else
@@ -180,7 +184,7 @@ RFA::IterMode RFATimeMedian::iterRow ( uInt irow )
         if( debug_plot ) 
         {
           dbg_val(dbg_i) = val;
-          dbg_sym(dbg_i) = DOT;
+          dbg_sym(dbg_i) = PGPlotEnums::DOT;
         }
       }
       slider(ich,iifr).add( val,fl ); 
@@ -329,7 +333,7 @@ RFA::IterMode RFAFreqMedian::iterRow ( uInt irow )
         if( dbg_i>=0 ) // plot pre-flagged point here
         {
           dbg_val(dbg_i) = mapValue(i,irow);
-          dbg_sym(dbg_i) = CROSS;
+          dbg_sym(dbg_i) = PGPlotEnums::CROSS;
         }
       }
       else
@@ -338,7 +342,7 @@ RFA::IterMode RFAFreqMedian::iterRow ( uInt irow )
         if( dbg_i>=0 ) 
         {
           dbg_val(dbg_i) = val;
-          dbg_sym(dbg_i) = DOT;
+          dbg_sym(dbg_i) = PGPlotEnums::DOT;
         }
       }
       msl.add( val,fl ); 
