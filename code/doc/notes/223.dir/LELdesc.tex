@@ -510,7 +510,7 @@ lattice data which already reside in memory. All LEL operators and
 functions try to reference the data of their latter operands instead
 of making a copy.
 \\In general this optimization does not apply to LEL expression.
-However, when using the true \htmlref{C++ interface}{LEL::GLISHC}
+However, when using the true \htmlref{C++ interface}{LEL:GLISHC}
 to classes like \texttt{LatticeExprNode}, one can easily use
 memory-based lattices. In that case it can be advantageous to pay
 attention to this optimization.
@@ -606,7 +606,7 @@ and classes form the programmer interface.
   LEL cannot deal directly with regions yet. However, it is possible
   to use a region of an image in a LEL expression. It can be
   done by using the 
-  \htmlref{\texttt{expr}}{images:image.subim} function in the image module.
+  \htmlref{\texttt{subim}}{images:image.subim} function in the image module.
   It forms an image from the given region in the
   input image. As above, the constructed subimage can be used as
   a normal image in a LEL expression. E.g.
