@@ -124,7 +124,7 @@ int main() {
       image3D.setUnits(Unit("WU/pixel"));
       const MDirection ra1dec2(Quantity(1, "deg"), Quantity(-2, "deg"),
 			       MDirection::J2000);
-      const MFrequency oneGhz(Quantity(1, "GHz"), MFrequency::LSR);
+      const MFrequency oneGhz(Quantity(1, "GHz"), MFrequency::LSRK);
       SkyComponent c2(Flux<Double>(0.5), 
 		      PointShape(ra1dec2), 
 		      SpectralIndex(oneGhz, 1.0));

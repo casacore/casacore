@@ -1,5 +1,5 @@
 //# tSpectralIndex.cc: tests the SpectralIndex class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,9 +46,9 @@
 int main() {
   try {
     SpectralModel* siPtr = 0;;
-    const MFrequency f1(Quantity(1.0, "GHz"), MFrequency::LSR);
-    const MFrequency f2(Quantity(2.0, "GHz"), MFrequency::LSR);
-    const MFrequency f4(Quantity(4.0, "GHz"), MFrequency::LSR);
+    const MFrequency f1(Quantity(1.0, "GHz"), MFrequency::LSRK);
+    const MFrequency f2(Quantity(2.0, "GHz"), MFrequency::LSRK);
+    const MFrequency f4(Quantity(4.0, "GHz"), MFrequency::LSRK);
     {
       SpectralIndex siModel;
       AlwaysAssert(siModel.ok(), AipsError);
@@ -107,7 +107,7 @@ int main() {
       freqs(0) = f1.getValue(); 
       freqs(1) = f2.getValue();
       freqs(2) = f4.getValue();
-      MFrequency::Ref ref(MFrequency::LSR);
+      MFrequency::Ref ref(MFrequency::LSRK);
       Vector<Double> results(3);
       siModel.sample(results, freqs, ref);
       AlwaysAssert(near(results(0), 0.5), AipsError);
