@@ -2201,3 +2201,4 @@
 09 115 src mv trial/implement/MeasurementEquations/MSDerivedValues.cc trial/implement/MeasurementSet/MSDerivedValues.cc
 09 115 src mv trial/implement/MeasurementEquations/MSIter.cc trial/implement/MeasurementSet/MSIter.cc
 09 117 src rm aips/implement/Mathematics/test/tFFTServer.exec
+09 117 src rm aips/implement/Mathematics/test/tFFTServer.out
