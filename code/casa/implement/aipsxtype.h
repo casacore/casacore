@@ -43,9 +43,9 @@ typedef unsigned long long uInt64;
 //# for which this isn't true here by defining FitsLong to be the 4 byte int.
 //# Use FitsLong instead of long in the FITS code where it matters.
 #if (defined(AIPS_ALPHA) || defined(AIPS_SGI))
-    typedef Int FitsLong;
+    typedef int FitsLong;
 #else
-    typedef Long FitsLong;
+    typedef long FitsLong;
 #endif 
 
 #endif
