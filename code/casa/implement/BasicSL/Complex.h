@@ -141,24 +141,6 @@
 //# <todo asof="2000/11/27">
 //# </todo>
 
-using std::real;
-using std::imag;
-using std::norm;
-using std::abs;
-using std::arg;
-using std::conj;
-using std::cos;
-using std::cosh;
-using std::sin;
-using std::sinh;
-using std::tan;
-using std::tanh;
-using std::exp;
-using std::log;
-using std::sqrt;
-using std::polar;
-using std::pow;
-
 // <group name="Complex NaN">
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
