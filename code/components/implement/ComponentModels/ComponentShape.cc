@@ -72,8 +72,15 @@ Bool ComponentShape::readDir(String & errorMessage,
   }
   const RecordFieldId direction(dirString);
   if (record.dataType(direction) != TpRecord) {
-    errorMessage += "The 'direction' field must be a record\n";
-    return False;
+    if ((record.dataType(direction) == TpString) && 
+	(record.shape(direction) == IPosition(1,1)) &&
+	(record.asString(direction) == String("current"))) {
+      return True;
+    } else {
+      errorMessage += "The 'direction' field must be a record\n";
+      errorMessage += "or the string 'current' (to use the current value)\n";
+      return False;
+    }
   }
   const Record & dirRecord = record.asRecord(direction);
   MeasureHolder mh;
