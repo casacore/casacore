@@ -185,58 +185,55 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
 void Table::open (const String& name, const String& type, int tableOption,
 		  const TableLock& lockOptions)
 {
+    //# Option Delete is effectively the same as Old followed by a
+    //# markForDelete.
+    Bool deleteOpt = False;
+    if (tableOption == Table::Delete) {
+	tableOption = Table::Old;
+	deleteOpt = True;
+    }
     //# Look if the table is already in the cache.
     //# If so, link to it.
-    //# If delete, mark the table for delete.
     BaseTable* btp = lookCache (name, tableOption, lockOptions);
     if (btp != 0) {
 	baseTabPtr_p = btp;
-	baseTabPtr_p->link();
-	if (tableOption == Table::Delete) {
-	    markForDelete();
-	}
-	return;
-    }
-    //# Check if the table exists.
-    if (! Table::isReadable (name)) {
-	throw (TableNoFile (name));
-    }
-    //# Delete the table (when it is a table indeed).
-    if (tableOption == Table::Delete) {
-	if (Table::isReadable (name)) {
-	    Directory directory(name);
-	    directory.removeRecursive();
-	}
-	return;
-    }
-    //# Determine the file option for the table.
-    //# Only existing tables can be opened.
-    //# This is guaranteed by the calling functions.
-    ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (tableOption);
-    //# Open the file.
-    AipsIO ios (Table::fileName(name), fopt);
-    //# Determine the kind of table by reading the type.
-    String tp;
-    uInt version = ios.getstart ("Table");
-    uInt nrrow, format;
-    ios >> nrrow;
-    ios >> format;
-    ios >> tp;
-    if (tp == "PlainTable") {
-	baseTabPtr_p = new PlainTable (ios, version, name, type, nrrow,
-				       tableOption, lockOptions);
-    } else if (tp == "RefTable") {
-	baseTabPtr_p = new RefTable (ios, name, nrrow, tableOption,
-				     lockOptions);
     }else{
-	throw (TableInternalError
-	       ("Table::open: unknown table kind " + tp));
+	//# Check if the table exists.
+	if (! Table::isReadable (name)) {
+	    throw (TableNoFile (name));
+	}
+	//# Determine the file option for the table.
+	//# Only existing tables can be opened.
+	//# This is guaranteed by the calling functions.
+	ByteIO::OpenOption fopt = PlainTable::toAipsIOFoption (tableOption);
+	//# Open the file.
+	AipsIO ios (Table::fileName(name), fopt);
+	//# Determine the kind of table by reading the type.
+	String tp;
+	uInt version = ios.getstart ("Table");
+	uInt nrrow, format;
+	ios >> nrrow;
+	ios >> format;
+	ios >> tp;
+	if (tp == "PlainTable") {
+	    baseTabPtr_p = new PlainTable (ios, version, name, type, nrrow,
+					   tableOption, lockOptions);
+	} else if (tp == "RefTable") {
+	    baseTabPtr_p = new RefTable (ios, name, nrrow, tableOption,
+					 lockOptions);
+	}else{
+	    throw (TableInternalError
+		   ("Table::open: unknown table kind " + tp));
+	}
+	if (baseTabPtr_p == 0) {
+	    throw (AllocError("Table::open",1));
+	}
+	ios.getend();
     }
-    if (baseTabPtr_p == 0) {
-	throw (AllocError("Table::open",1));
-    }
-    ios.getend();
     baseTabPtr_p->link();
+    if (deleteOpt) {
+	markForDelete();
+    }
 }
 
 BaseTable* Table::lookCache (const String& name, int tableOption,
