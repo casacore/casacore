@@ -2378,6 +2378,7 @@ Bool ImageMoments<T>::getAutoGaussianFit (Vector<T>& gaussPars,
 
    if (doPlot) showGaussFit (peak, pos, width, level, x, y);
 
+   return True;
 }
 
 
@@ -2821,6 +2822,8 @@ Bool ImageMoments<T>::getInterGaussianFit (Vector<T>& gaussPars,
          return True;
       }
    }
+
+   return True;
 }
 
 
@@ -3754,6 +3757,8 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
          smoothRow (pSmoothedImage, i, psfRow);
       }
    }
+
+   return True;
 }
 
 
@@ -3768,7 +3773,6 @@ void ImageMoments<T>::smoothRow (PagedImage<T>*& pIn,
                      pIn->niceCursorShape(pIn->maxPixels()),
                      row);
   LatticeIterator<T> inIt(*pIn, navIn);
-
   Convolver<T> conv(psf, pIn->shape()(row));
   Vector<T> result(pIn->shape()(row));
 
