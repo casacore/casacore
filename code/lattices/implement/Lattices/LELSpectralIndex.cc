@@ -92,7 +92,7 @@ LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
 				      attr1.shape(),
 				      attr1.coordinates().coordinates());
     itsFreqAxis = freqAxis1;
-  } else if (result = 1) {
+  } else if (result == 1) {
     // right is subset of left, so extend right.
     const LELLattCoordBase* cbptr = &(attr1.coordinates().coordinates());
     const LELLattCoord* cptr = dynamic_cast<const LELLattCoord*>(cbptr);
