@@ -2510,3 +2510,11 @@
 11 364 src rm aips/implement/Tables/StArrKarma.cc
 11 364 src rm aips/implement/Tables/StManKarma.h
 11 364 src rm aips/implement/Tables/StManKarma.cc
+11 365 src rm aips/glish/glish/TkAgent.cc
+11 365 src rm aips/glish/glish/TkAgent.h
+11 365 src rm aips/glish/glish/TkCanvas.cc
+11 365 src rm aips/glish/glish/TkCanvas.h
+11 365 src rm aips/glish/glish/TkPgplot.cc
+11 365 src rm aips/glish/glish/TkPgplot.h
+11 365 src rm aips/glish/glish/TkSelect.cc
+11 365 src rm aips/glish/glish/TkSelect.h
