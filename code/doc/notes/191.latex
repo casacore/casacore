@@ -33,14 +33,14 @@
 \author{M.H. Wieringa, ATNF\\T.J. Cornwell, NRAO}
 \date{October 4, 1996}
 
-\begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available.}{../191.ps.gz}
-\end{htmlonly}
 
 
 \maketitle
 
 
+\begin{htmlonly}
+\htmladdnormallink{A postscript version of this note is available.}{../191.ps.gz}
+\end{htmlonly}
 
 \tableofcontents
 \section{Summary}
