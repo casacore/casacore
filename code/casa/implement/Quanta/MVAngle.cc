@@ -327,20 +327,24 @@ Bool MVAngle::read(Quantity &res, MUString &in) {
   case 1:
   case 2:
   case 3: {
-    Char tc = 'm';
-    if (tp == 3) tc = ':';
-    in.push();
-    Double r1 = in.getuInt();
-    if (in.tSkipChar('.')) {
-      in.pop(); in.push();
-      r += in.getDouble()/60.;
-    } else if (in.tSkipCharNC(tc)) {
-      r += r1/60.0 + in.getDouble()/3600.;
+    if (in.testCharNC('m')) {
+      tp = 0;
     } else {
-      r += r1/60.0;
+      Char tc = 'm';
+      if (tp == 3) tc = ':';
+      in.push();
+      Double r1 = in.getuInt();
+      if (in.tSkipChar('.')) {
+	in.pop(); in.push();
+	r += in.getDouble()/60.;
+      } else if (in.tSkipCharNC(tc)) {
+	r += r1/60.0 + in.getDouble()/3600.;
+      } else {
+	r += r1/60.0;
+      };
+      in.unpush();
+      r *= s;
     };
-    in.unpush();
-    r *= s;
   };
   break;
 
