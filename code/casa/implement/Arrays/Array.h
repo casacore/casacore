@@ -1,5 +1,5 @@
 //# Array.h: A templated N-D Array class with zero origin
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,7 @@ class Slice;
 template<class T> class ArrayIterator;
 template<class T> class MaskedArray;
 template<class Domain, class Range> class Functional;
-
+template <class T, class U> class vector; 
 
 // <summary>
 // A global enum used by some Array constructors.
@@ -70,6 +70,7 @@ enum StorageInitPolicy {
 
 // <summary> A templated N-D Array class with zero origin </summary>
 
+// <synopsis>
 // Array<T> is a templated, N-dimensional, Array class. The origin is zero,
 // but by default indices are zero-based. This Array class is the
 // base class for specialized Vector<T>, Matrix<T>, and Cube<T> classes.
@@ -109,6 +110,7 @@ enum StorageInitPolicy {
 //        side, returning an array from a function is efficient since no
 //        copying need be done. Later releases of the array classes might
 //        have the copy constructor actually make a copy -- comments solicited.
+// </note>
 //
 // Aside from the explicit reference() member function, a user will
 // most commonly encounter an array which references another array
@@ -170,9 +172,11 @@ enum StorageInitPolicy {
 //
 // <note role=tip>
 // Most of the data members and functions which are "protected" should
-// likely become "private".
+// likely become "private". </note>
 //
-// <todo asof="1999/12/30"
+// </synopsis>
+//
+// <todo asof="1999/12/30">
 //   <li> Integrate into the Lattice hierarchy
 //   <li> Factor out the common functions (shape etc) into a type-independent
 //        base class.
@@ -287,6 +291,7 @@ public:
     //        storage can be wasted if the array which originally contained
     //        all the data goes away. unique() also reclaims storage. This
     //        is an optimization users don't normally need to understand.
+    // </note>
     //
     //        <srcblock>
     //        IPosition shape(...), blc(...), trc(...), inc(...);
@@ -299,6 +304,15 @@ public:
     //        aSection.unique();
     //        </srcblock>
     void unique();
+
+    // Create an STL vector from an Array. The created vector is a linear
+    // representation of the Array memory. See
+    // <linkto class=Vector>Vector</linkto>  for
+    // details of the operation and its reverse (i.e. creating a 
+    // <src>Vector</src> from a <src>vector</src>), and for details of
+    // definition and instantiation.
+    template <class U>
+    void tovector(vector<T, U> &out) const;
 
     // It is occasionally useful to have an array which access the same
     // storage appear to have a different shape. For example,
