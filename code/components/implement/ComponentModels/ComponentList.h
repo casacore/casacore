@@ -35,11 +35,12 @@
 
 #include <aips/aips.h>
 #include <trial/ComponentModels/SkyComponent.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Containers/Block.h>
 #include <aips/Tables/Table.h>
 
 class String;
-class MDirection;
+class MVDirection;
 class MFrequency;
 class MVAngle;
 class Unit;
@@ -85,6 +86,9 @@ template <class T> class ImageInterface;
 // <dt> Functions to manipulate the flux of all components
 // <dd> See the <src>setFlux</src>, <src>convertFluxUnit</src> &
 //      <src>convertFluxPol</src> functions.
+// <dt> Functions to manipulate the reference direction of all components
+// <dd> See the <src>setRefDirection</src> & <src>convertRefFrame</src>
+//      functions.
 // <dt> functions to sort the components
 // <dd> See the <src>sort</src>, <src>type</src> &
 //      <src>namel</src> functions.
@@ -236,7 +240,34 @@ public:
   void convertFluxPol(const Vector<Int> & whichComponents,
 		      ComponentType::Polarisation pol);
   
- 
+  // set the reference direction on the specified components to the specified
+  // direction. The reference frame is not changed, use the
+  // <src>setRefFrame</src> function to do that.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setRefDirection(const Vector<Int> & whichComponents,
+		       const MVDirection & newDir);
+
+  // set the reference direction frame on the specified components to the
+  // specified one. Does not convert the direction values.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void setRefDirectionFrame(const Vector<Int> & whichComponents,
+			    MDirection::Types newFrame);
+
+  // Convert the reference direction frame on the specified components to the
+  // specified one. Changes the direction values.
+  // <thrown>
+  // <li> AipsError - If the index is equal to or larger than the number of
+  //                  elements in the list or less than zero
+  // </thrown>
+  void convertRefDirection(const Vector<Int> & whichComponents,
+			   MDirection::Types newFrame);
+
   // returns a reference to the specified element in the list.
   // <thrown>
   // <li> AipsError - If the list is associated with a table that was opened
