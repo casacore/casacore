@@ -89,10 +89,4 @@ extern Bool aips_debug_on;
 #define aips_debug aips_debug_on
 #endif
 
-// This is just syntactic sugar to tell the namespace management that a
-// particular class is not under control of namespace management. The only
-// place this will normally be needed is forward declarations of imported
-// classes, e.g. from InterViews.
-#define imported /* Nothing */
-
 #endif
