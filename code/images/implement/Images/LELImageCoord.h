@@ -1,5 +1,5 @@
-//# ImageCoord.h: The letter class for image coordinates
-//# Copyright (C) 1998
+//# LELImageCoord.h: The letter class for image coordinates
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,11 +25,11 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGECOORD_H)
-#define AIPS_IMAGECOORD_H
+#if !defined(AIPS_LELIMAGECOORD_H)
+#define AIPS_LELIMAGECOORD_H
 
 //# Includes
-#include <trial/Lattices/LattCoord.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Utilities/CountedPtr.h>
 
@@ -44,14 +44,14 @@
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LattCoord>LattCoord</linkto>
+//   <li> <linkto class=LELLattCoord>LELLattCoord</linkto>
 // </prerequisite>
 
 // <synopsis>
 // This base class is the basic letter for the envelope class
-// <linkto class=LatticeCoordinates>LatticeCoordinates</linkto>.
+// <linkto class=LELCoordinates>LELCoordinates</linkto>.
 // It does not do anything, but makes it possible that derived classes
-// (like ImageCoord) implement their own behaviour.
+// (like LELImageCoord) implement their own behaviour.
 // </synopsis> 
 
 // <example>
@@ -69,17 +69,22 @@
 //# </todo>
 
 
-class ImageCoord : public LattCoord
+class LELImageCoord : public LELLattCoord
 {
 public:
-    ImageCoord();
+    LELImageCoord();
 
-    ImageCoord (const CoordinateSystem& coords);
+    LELImageCoord (const CoordinateSystem& coords);
 
-    virtual ~ImageCoord();
+    virtual ~LELImageCoord();
 
     // Get the coordinates.
     const CoordinateSystem& coordinates() const;
+
+    // Create a SubLattice for an expression node.
+    virtual LatticeExprNode makeSubLattice
+                                    (const LatticeExprNode& expr,
+				     const LattRegionHolder& region) const;
 
     // The class has true coordinates (thus returns True).
     virtual Bool hasCoordinates() const;
@@ -89,10 +94,10 @@ public:
 
     // Check if the coordinates of this and that conform.
     // It calls doConform on the that object.
-    virtual Bool conform (const LattCoord& other) const;
+    virtual Bool conform (const LELLattCoord& other) const;
 
     // Check if the coordinates of this and that conform.
-    virtual Bool doConform (const ImageCoord& other) const;
+    virtual Bool doConform (const LELImageCoord& other) const;
 
 private:
     CountedPtr<CoordinateSystem> coords_p;
