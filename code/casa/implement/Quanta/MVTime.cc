@@ -209,10 +209,13 @@ void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
 	    dd = z + 1 + al - (Int)(al/4);
 	};
 	dd += 1524;
-	yyyy = ifloor((dd - 122.1)/365.25);
-        Int d = ifloor(365.25 * yyyy);
-	mm = ifloor((dd - d)/30.6001);
-	dd -= d + ifloor(30.6001 * mm); // day
+        // tmp introduced to circumvent optimization problem with gcc2.7.2.1
+        // on the DecAlpha
+        Int tmp = ifloor((dd - 122.1)/365.25);
+        yyyy = tmp;
+        Int d = ifloor(365.25 * tmp);
+	mm = tmp = ifloor((dd - d)/30.6001);
+	dd -= d + ifloor(30.6001 * tmp); // day
 	if (mm < 14) {			// month
 	    mm--;
 	} else {
@@ -221,6 +224,7 @@ void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
 	yyyy -= 4715;			// year
 	if (mm > 2) yyyy--;
 }
+
 
 MVTime::Format MVTime::setFormat(MVTime::formatTypes intyp, 
 			  uInt inprec) {
