@@ -4748,3 +4748,4 @@
 14 308 src mv trial/apps/oldms/newms.help trial/apps/ms/ms.help
 14 313 src mv nfra/implement/wsrt nfra/implement/Wsrt
 14 316 src rm trial/apps/dishplot/dishpg.g
+14 316 sys rm libexec/dishpg.g
