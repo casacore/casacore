@@ -200,6 +200,12 @@ function imgOff(imgName) {
 <a name="developersnotes"><font face=helvetica size="+3"><b>Developers' Notes</b></font></a><p>
 
 </H2>
+<B>General Problems</b>
+<P>
+<ul>
+<li> Default arguments in .cc files are not allowed.  Please only put default
+arguments in you .h files.
+</ul>
 <B>Known SGI compiler gotchas</b>
 <P>
 <ul>
@@ -218,6 +224,10 @@ b = a = 0;
 </pre>
 </li>
 <li>If an argument is declared const *&, the SGI compiler expects the variable you put in the argument to be a const ptr.</li>
+<li> Constructs of the type myclass &lt T &gt a = 1.0 cause troubles as the SGI compiler isn't very smart about temporary conversions. 
+<li> Conversion involving const numbers to Floats need to be done explicitly.
+Something line MyClass &lt Float &gt a = 1.0; fails cause it can't cast the 1.0 to a
+float.  Use MyClass &lt Float &gt a = 1.0f;
 </ul>
 
 
