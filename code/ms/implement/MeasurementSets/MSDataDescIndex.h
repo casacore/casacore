@@ -92,6 +92,10 @@ public:
   Vector<Int> matchSpwId(const Int& spwId);
   Vector<Int> matchSpwId(const Vector<Int>& spwIds);
 
+  // Look up DATA_DESC_ID's for a given polarization id
+  Vector<Int> matchPolId(const Int& polId);
+  Vector<Int> matchPolId(const Vector<Int>& polIds);
+
   // Look up DATA_DESC_ID's for a given spectral window and polarization id.
   Vector<Int> matchSpwIdAndPolznId(const Int& spwId, const Int& polznId);
 
