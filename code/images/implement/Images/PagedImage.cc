@@ -844,6 +844,13 @@ void PagedImage<T>::setCacheSizeFromPath(const IPosition& sliceShape,
   map_p.setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
 }
 
+template<class T>
+void PagedImage<T>::setCacheSizeInTiles (uInt howManyTiles)  
+{  
+  map_p.setCacheSizeInTiles (howManyTiles);
+}
+
+
 template<class T> 
 void PagedImage<T>::clearCache()
 {

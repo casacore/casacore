@@ -403,6 +403,13 @@ public:
 			             const IPosition& windowLength,
 			             const IPosition& axisPath);
     
+  // Set the actual cache size for this Array to be be big enough for the
+  // indicated number of tiles. This cache is not shared with PagedArrays
+  // in other rows and is always clipped to be less than the maximum value
+  // set using the setMaximumCacheSize member function.
+  // tiles. Tiles are cached using a first in first out algorithm. 
+  virtual void setCacheSizeInTiles (uInt howManyTiles);
+
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
   virtual void clearCache();
