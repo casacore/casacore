@@ -1,12 +1,10 @@
 {
     local apath := split(shell("echo $AIPSPATH"))
     if ( len(apath) == 4 ) {
-	if ( ! any(argv == '-plain') ) {
-	    if ( ! any(argv == '-nogtk' ) )
-		include spaste(apath[1],'/',apath[2],'/libexec/gtk.g')
+	if ( any(argv == '-gtk' ) )
+	    include spaste(apath[1],'/',apath[2],'/libexec/gtk.g')
+	if ( ! any(argv == '-plain') )
 	    include spaste(apath[1],'/',apath[2],'/libexec/aips++init.g')
-	}
-
 	if ( len(stat(spaste(apath[1],'/.glishrc_local'))) > 0 )
 	    include spaste(apath[1],'/.glishrc_local')
     }
