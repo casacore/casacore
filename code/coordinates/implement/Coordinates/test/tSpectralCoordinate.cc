@@ -80,6 +80,23 @@ int main()
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
       }
+      {
+         SpectralCoordinate lc = 
+            makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
+         Vector<Double> velocities;
+         lc.frequencyToVelocity(velocities, freqs, String("km/s"), MDoppler::OPTICAL);
+         SpectralCoordinate lc2(MFrequency::TOPO, MDoppler::OPTICAL, velocities, String("km/s"), restFreq);
+         Bool ok;
+         Double freq;
+         for (uInt i=0; i<velocities.nelements(); i++) {
+            if (!lc2.toWorld(freq, Double(i))) {
+               throw(AipsError(String("Failed velocity construction consistency test toWorld conversion because ") + lc.errorMessage()));
+            }
+            if (!near(freq, freqs(i))) {
+               throw(AipsError(String("Failed velocity construction consistency test comparison")));
+            }
+         }
+      }
 
 // Test near function
 
