@@ -622,7 +622,7 @@ void Array<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     for (i=0; i<nd; i++) {
 	if (keepAxes(i) == 1) {
 	    length_p(count) = other.length_p(i);
-	    originalLength_p(count) = other.originalLength_p(i);
+	    originalLength_p(count) = skippedVolume*other.originalLength_p(i);
 	    inc_p(count) = skippedVolume*other.inc_p(i);
 	    skippedVolume = 1;
 	    count++;
