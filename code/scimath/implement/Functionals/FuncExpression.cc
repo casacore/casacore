@@ -368,9 +368,28 @@ Bool FuncExpression::exec(Double &res) const {
       case  FuncExprData::POW:
 	exec_p.back() = pow(exec_p.back(), t);
 	break;
+      case  FuncExprData::GTE:
+	exec_p.back() = exec_p.back() >= t ? Double(1) : Double(0);
+	break;
+      case  FuncExprData::LTE:
+	exec_p.back() = exec_p.back() <= t ? Double(1) : Double(0);
+	break;
+      case  FuncExprData::EQ:
+	exec_p.back() = exec_p.back() == t ? Double(1) : Double(0);
+	break;
+      case  FuncExprData::NEQ:
+	exec_p.back() = exec_p.back() != t ? Double(1) : Double(0);
+	break;
+      case  FuncExprData::OR:
+	exec_p.back() = (exec_p.back() != Double(0)
+			 || t != Double(0)) ? Double(1) : Double(0);
+	break;
+      case  FuncExprData::AND:
+	exec_p.back() = (t*exec_p.back() != Double(0)) ? Double(1) : Double(0);
+	break;
       case  FuncExprData::ADD:
-      exec_p.back() += t;
-      break;
+	exec_p.back() += t;
+	break;
       case  FuncExprData::SUB:
 	exec_p.back() -= t;
 	break;
