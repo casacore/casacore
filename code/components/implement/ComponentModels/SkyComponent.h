@@ -146,8 +146,8 @@ public:
   // reference, manipulation of the flux values is performed through the
   // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
   // <group>
-  virtual Flux<Double> flux();
-  virtual const Flux<Double> flux() const;
+  virtual Flux<Double> & flux();
+  virtual const Flux<Double> & flux() const;
   // </group>
 
   // Return the Fourier transform of the component at the specified point in
