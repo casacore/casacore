@@ -97,7 +97,7 @@ template<class T> class ImageInterface;
 // Int axis = 2;
 // ImageFit1D<Float> fitter(image, axis);
 // IPosition pos(in.ndim(),0);
-// fitter.setData(pos, ImageFit1D<Float>::NATIVE);     // Fit in native coordinate space
+// fitter.setData(pos, ImageFit1D<Float>::IM_NATIVE);     // Fit in native coordinate space
 // fitter.setGaussianElements(3);                      // FIt 3 Gaussians
 // if (fitter.fit()) {
 //    cerr << fitter.getList() << endl;                // Print result
@@ -116,7 +116,7 @@ public:
 
     enum AbcissaType {
        PIXEL = 0,
-       NATIVE = 1,
+       IM_NATIVE = 1,
        VELOCITY = 2,
        N_TYPES};
 

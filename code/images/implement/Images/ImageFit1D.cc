@@ -285,7 +285,7 @@ Bool ImageFit1D<T>::setAbcissaState (String& errMsg, ImageFit1D<T>::AbcissaType&
       units(pixelAxis) = xUnit;
       ok = cSys.setWorldAxisUnits(units);
       if (!ok) errMsg = cSys.errorMessage();
-      type = ImageFit1D<T>::NATIVE;
+      type = ImageFit1D<T>::IM_NATIVE;
    }
 //
    return ok;
@@ -333,7 +333,7 @@ Bool ImageFit1D<T>::makeAbcissa (Vector<Double>& x,
             }
          }
       }
-   } else if (type==NATIVE) {
+   } else if (type==IM_NATIVE) {
       const Coordinate& gCoord = itsCS.coordinate(coord);      
       Vector<Double> pixel(gCoord.referencePixel().copy());
       Vector<Double> world;
