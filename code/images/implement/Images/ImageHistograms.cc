@@ -616,7 +616,7 @@ template <class T>
 Bool ImageHistograms<T>::getHistogram (Vector<T>& values,
                                        Vector<T>& counts,
                                        const IPosition& pos,
-                                       const Bool posInImage=False)
+                                       const Bool posInImage)
 //
 // Retrieve histogram values and counts from specified
 // location into vectors
