@@ -541,12 +541,16 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    {
       CoordinateSystem cSys2;
       cSys2.addCoordinate(makeDirectionCoordinate(False));
-      cSys2.addCoordinate(makeStokesCoordinate(False));
+      StokesCoordinate stokesCoord = makeStokesCoordinate(False);
+      uInt shapeStokes = stokesCoord.nPixelAxes();
+      uInt stokesAxis = 2;
+      cSys2.addCoordinate(stokesCoord);
       cSys2.addCoordinate(makeSpectralCoordinate());
 //      cSys2.addCoordinate(makeLinearCoordinate(1));
 //
       TableRecord rec;
-      IPosition shape;
+      IPosition shape(cSys2.nPixelAxes(),64);
+      shape(stokesAxis) = shapeStokes;
       if (!cSys2.toFITSHeader(rec, shape, True, 'c', False,
                         True, True)) {
          throw(AipsError(String("Failed to convert to FITS header because") 
@@ -563,7 +567,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 */
 //
       CoordinateSystem cSys3;
-      if (!CoordinateSystem::fromFITSHeader(cSys3, rec, True, 'c')) {
+      if (!CoordinateSystem::fromFITSHeader(cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header"));
       }
       if (!cSys2.near(&cSys3)) {
