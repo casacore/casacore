@@ -332,7 +332,7 @@
   endif
 
 # If we're on Darwin/OSX set DYLD path as well
-  if ( "$a_arch" = "darwin" ) then
+  if ( "$a_arch" == "darwin" ) then
      if ( "$DYLD_LIBRARY_PATH" = "" ) then
 	setenv DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
      else
