@@ -1,5 +1,5 @@
 //# SkyCompRep.cc:  this defines SkyCompRep
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -460,7 +460,7 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
-void SkyCompRep::fromPixel (const Vector<Double>& parameters,
+void SkyCompRep::fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                             const Unit& brightnessUnitIn,
                             const Vector<Quantum<Double> >& restoringBeam,
                             const CoordinateSystem& cSys,
@@ -479,7 +479,6 @@ void SkyCompRep::fromPixel (const Vector<Double>& parameters,
 // Check number of parameters
   
    LogIO os(LogOrigin("SkyCompRep", "fromPixel()"));
-
       
 // Find DirectionCoordinate
 
@@ -488,9 +487,33 @@ void SkyCompRep::fromPixel (const Vector<Double>& parameters,
       os << "CoordinateSystem does not contain a DirectionCoordinate" << LogIO::EXCEPTION;
    }
    const DirectionCoordinate& dirCoord = cSys.directionCoordinate(dirCoordinate);
-//
 
-   Unit unitIn = brightnessUnitIn;
+// We need to find the ratio that converts the input peak brightness
+// from whatevers/per whatever to Jy per whatever.  E.g. mJy/beam
+// to Jy/beam.  This ratio is passed back (for scaling errors) and
+// is needed regardless of the component type.  So we start by
+// Defining /beam and /pixel units to be dimensionless
+
+   UnitMap::putUser("pixel", UnitVal(1.0,String("")));
+   UnitMap::putUser("beam",  UnitVal(1.0,String("")));
+   Unit unitIn = Unit(unitIn.getName());                // Tell system to update this unit
+//
+   Quantum<Double> peak(parameters(0), unitIn);
+   if (peak.isConform(Unit("Jy"))) {
+      peak.convert("Jy");   
+      fluxRatio = peak.getValue() / parameters(0);
+   } else {
+         os << LogIO::SEVERE << "Cannot convert units of brightness to Jy - will assume Jy"
+            << LogIO::POST;
+      fluxRatio = 1.0;
+   }
+      
+// Undefine /beam and /pixel
+
+   SkyCompRep::undefineBrightnessUnits();
+
+// Now proceed with type dependent conversions
+
    if (componentShape==ComponentType::POINT) {
       if (parameters.nelements()!=3) {
          os << "Wrong number of parameters for Point shape" << LogIO::EXCEPTION;
@@ -502,31 +525,10 @@ void SkyCompRep::fromPixel (const Vector<Double>& parameters,
       PointShape pointShape;
       pointShape.fromPixel(pars, dirCoord);
       setShape(pointShape);
-
-// Flux. Define /beam and /pixel units to be dimensionless
-
-      UnitMap::putUser("pixel", UnitVal(1.0,String("")));
-      UnitMap::putUser("beam",  UnitVal(1.0,String("")));
-      unitIn = Unit(unitIn.getName());                // Tell system to update this unit
 //
+      Quantum<Double> value(parameters(0)*fluxRatio, Unit("Jy"));
       itsFlux.setUnit(Unit("Jy"));
-      Quantum<Double> peak2(parameters(0), unitIn);
-      Quantum<Double> value(1.0,Unit("Jy"));
-      if (peak2.isConform(Unit("Jy"))) {
-         Double valIn = peak2.getValue();
-         peak2.convert("Jy");   
-         Double fac = peak2.getValue() / valIn;
-         value.setValue(parameters(0) * fac);
-      } else {
-         os << LogIO::SEVERE << "Cannot convert units of brightness to Jy - will assume Jy"
-            << LogIO::POST;
-         value.setValue(parameters(0));
-      }
       itsFlux.setValue (value, stokes);
-      
-// Undefine /beam and /pixel
-
-      SkyCompRep::undefineBrightnessUnits();
    } else if (componentShape==ComponentType::GAUSSIAN || componentShape==ComponentType::DISK) {
       if (parameters.nelements()!=6) {
          os << "Wrong number of parameters for Gaussian or Point shape" << LogIO::EXCEPTION;
