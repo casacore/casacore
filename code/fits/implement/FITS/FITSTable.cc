@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -710,15 +710,23 @@ Bool FITSTable::reopen(const String &fileName)
 		    type = TpDouble;
 		}
 	    }
-	    if (isArray(type)) {
-		if (tdims_p[i] >= 0) {
-		    // this is really a variable shaped array
-		    newDesc.addField(description_p.name(i), type);
-		} else {
-		    newDesc.addField(description_p.name(i), type, shape);
+	    if (tdims_p[i] >= 0) {
+		// this is really a variable shaped array
+		if (!isArray(type)) {
+		    // but its stored here as a scalar - must
+		    // be just one element - promote it to an
+		    // an array type
+		    type = asArray(type);
 		}
-	    } else {
+		// so we don't specify a shape here.
 		newDesc.addField(description_p.name(i), type);
+	    } else {
+		if (isArray(type)) {
+		    // add a field of the appropriate shape
+		    newDesc.addField(description_p.name(i), type, shape);
+		} else {
+		    newDesc.addField(description_p.name(i), type);
+		}
 	    }
       	}
 	description_p = newDesc;
@@ -921,7 +929,8 @@ void FITSTable::fill_row()
 	scale = raw_table_p->tscal(i);
 	// get any necessary shapes
 	IPosition shape;
-	if (isArray(DataType(field_types_p[i])) && description_p.shape(i).nelements()==1 &&
+	if (isArray(DataType(field_types_p[i])) && 
+	    description_p.shape(i).nelements()==1 &&
 	    description_p.shape(i)(0) == -1) {
 	    // this is only worth doing for arrays which can be reshaped
 	    if (tdims_p[i] >= 0) {
