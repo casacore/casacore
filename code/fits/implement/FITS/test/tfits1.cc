@@ -1,5 +1,5 @@
 //# tfits1.cc: FITS test program to read and display values from a FITS file
-//# Copyright (C) 1993,1994,1996,1998
+//# Copyright (C) 1993,1994,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -37,83 +37,6 @@
 # include <stdlib.h>
 
 // Display basic info and the keyword list
-void show(HeaderDataUnit *h);
-
-// Read and display a binary table
-void do_binary_table(BinaryTableExtension &x);
-
-// Read the data in a Primary Group and display the first few groups
-template <class TYPE>
-void do_primary_group(PrimaryGroup<TYPE> &x);
-
-// Read the data in a Primary Array and display the first few data points
-template <class TYPE>
-void do_primary_array(PrimaryArray<TYPE> &x);
-
-# if defined(MSDOS)
-void do_primary_array(PrimaryArray<unsigned char> &x);
-void do_primary_array(PrimaryArray<short> &x);
-void do_primary_array(PrimaryArray<FitsLong> &x);
-void do_primary_array(PrimaryArray<float> &x);
-void do_primary_array(PrimaryArray<double> &x);
-void do_primary_group(PrimaryGroup<unsigned char> &x);
-void do_primary_group(PrimaryGroup<short> &x);
-void do_primary_group(PrimaryGroup<FitsLong> &x);
-void do_primary_group(PrimaryGroup<float> &x);
-void do_primary_group(PrimaryGroup<double> &x);
-# endif
-
-
-// Read the data in a Primary Group and display the first few groups
-template <class TYPE>
-void do_primary_group(PrimaryGroup<TYPE> &x) {
-	int i, j;
-	int number_to_display = 10;
-	show(&x);
-	if (x.err() != HeaderDataUnit::OK) {
-		cout << "Error occured during construction process -- exiting\n";
-		exit(0);
-	}
-	for (i = 0; i < x.gcount(); ++i) {
-	    x.read();
-	    if (i < number_to_display) {
-		cout << "Group " << i << " parms: " << "\n";
-		for (j = 0; j < x.pcount(); ++j)
-		    cout << " " << x.parm(j);
-		cout << "\n";
-		cout << "Group " << i << " data: " << "\n";
-		for (j = 0; j < 4; ++j)
-		    cout << " " << x(j);
-		cout << "\n";
-
-	    }
-	}
-	delete &x;
-}
-
-// Read the data in a Primary Array and display the first few data points
-template <class TYPE>
-void do_primary_array(PrimaryArray<TYPE> &x) {
-	int i, j, n0, n1;
-	if (x.fitsdatasize())
-	    x.read(); // read the entire array
-	show(&x);
-	if (x.err() != HeaderDataUnit::OK) {
-		cout << "Error occured during construction process -- exiting\n";
-		exit(0);
-	}
-	if (x.dims() == 2) {
-	    n0 = x.dim(0) > 6 ? 6 : x.dim(0);
-	    n1 = x.dim(1) > 6 ? 6 : x.dim(1);
-	    for (i = 0; i < n0; ++i)
-	    for (j = 0; j < n1; ++j)
-		cout << "(" << i << "," << j << ") = " 
-		     << x(i,j) << "\n";
-	}
-	delete &x;
-}
-
-// Display basic info and the keyword list
 void show(HeaderDataUnit *h) {
 	cout << "Data type   " << h->datatype() << "\n"
 	     << "Data size   " << h->fitsdatasize() << "\n"
@@ -124,6 +47,68 @@ void show(HeaderDataUnit *h) {
 	cout << "----- Keyword List -----\n" << *h << "\n";
 }
 
+
+// Read the data in a Primary Group and display the first few groups
+#define DOGROUP(Z) void do_primary_group(PrimaryGroup<Z> &x) { \
+	int i, j; \
+	int number_to_display = 10; \
+	show(&x); \
+	if (x.err() != HeaderDataUnit::OK) { \
+		cout << "Error occured during construction process -- exiting\n"; \
+		exit(0); \
+	} \
+	for (i = 0; i < x.gcount(); ++i) { \
+	    x.read(); \
+	    if (i < number_to_display) { \
+		cout << "Group " << i << " parms: " << "\n"; \
+		for (j = 0; j < x.pcount(); ++j) \
+		    cout << " " << x.parm(j); \
+		cout << "\n"; \
+		cout << "Group " << i << " data: " << "\n"; \
+		for (j = 0; j < 4; ++j) \
+		    cout << " " << x(j); \
+		cout << "\n"; \
+	    } \
+	} \
+	delete &x; \
+}
+
+// Read the data in a Primary Array and display the first few data points
+#define DOARRAY(Z) void do_primary_array(PrimaryArray<Z> &x) { \
+	int i, j, n0, n1; \
+	if (x.fitsdatasize()) \
+	    x.read(); \
+	show(&x); \
+	if (x.err() != HeaderDataUnit::OK) { \
+		cout << "Error occured during construction process -- exiting\n"; \
+		exit(0); \
+	} \
+	if (x.dims() == 2) { \
+	    n0 = x.dim(0) > 6 ? 6 : x.dim(0); \
+	    n1 = x.dim(1) > 6 ? 6 : x.dim(1); \
+	    for (i = 0; i < n0; ++i) \
+	    for (j = 0; j < n1; ++j) \
+		cout << "(" << i << "," << j << ") = " \
+		     << x(i,j) << "\n"; \
+	} \
+	delete &x; \
+}
+
+// now actually make the necessary versions of the above
+DOGROUP(unsigned char);
+DOGROUP(short);
+DOGROUP(FitsLong);
+DOGROUP(float);
+DOGROUP(double);
+
+DOARRAY(unsigned char);
+DOARRAY(short);
+DOARRAY(FitsLong);
+DOARRAY(float);
+DOARRAY(double);
+
+#undef DOGROUP
+#undef DOARRAY
 
 // Read and display a binary table
 void do_binary_table(BinaryTableExtension &x) {
@@ -359,6 +344,7 @@ void do_binary_table(BinaryTableExtension &x) {
 	delete &x;
 }
 
+
 int main(int argc, char **argv) {
 	HeaderDataUnit *h;
 	PrimaryArray<unsigned char> *paB;
@@ -516,17 +502,3 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
-
-#if defined(__GNUG__)
-// Manually instantiate the templates for g++ 2.7.x -fno-implicit-templates
-template void do_primary_array(PrimaryArray<unsigned char> &x);
-template void do_primary_array(PrimaryArray<short> &x);
-template void do_primary_array(PrimaryArray<FitsLong> &x);
-template void do_primary_array(PrimaryArray<float> &x);
-template void do_primary_array(PrimaryArray<double> &x);
-template void do_primary_group(PrimaryGroup<unsigned char> &x);
-template void do_primary_group(PrimaryGroup<short> &x);
-template void do_primary_group(PrimaryGroup<FitsLong> &x);
-template void do_primary_group(PrimaryGroup<float> &x);
-template void do_primary_group(PrimaryGroup<double> &x);
-#endif
