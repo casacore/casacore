@@ -1,5 +1,5 @@
 //# tArrayIO2.cc: This program tests the tArrayIO2 functions
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -68,7 +68,7 @@ void doBin (Bool)
     write_array (ip.ac(), "tArrayIO2_tmp.data");
     Vector<Int> ipi(1000);
     read_array (ipi.ac(), "tArrayIO2_tmp.data");
-    for (i=0; i<1000; i++) {
+    for (Int i=0; i<1000; i++) {
 	if (ipi(i) != i*2) {
 	    cout << "Get error in ip[" << i << "]" << endl;
 	}
