@@ -192,10 +192,8 @@ ImageStatistics<T> &ImageStatistics<T>::operator=(const ImageStatistics<T> &othe
       blc_p = other.blc_p;
       trc_p = other.trc_p;
       inc_p = other.inc_p;
-
-      return *this;
    }
-
+   return *this;
 }
 
 
