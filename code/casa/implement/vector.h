@@ -52,7 +52,6 @@ using std::vector;
 #endif
 
 #if defined(AIPS_GCC)
-#if defined(AIPS_GCC3)
 #define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template \
    T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
@@ -91,20 +90,6 @@ template \
 T const &, __false_type); \
 template \
    void vector<T, std::allocator<T> >:: \
-_M_assign_aux(T const *, T const *, forward_iterator_tag);
-#else
-#define AIPS_VECTOR_AUX_TEMPLATES(T) \
-template \
-T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
-template \
-T *std::__uninitialized_copy_aux<T const *, T *>(T const *, T const *, \
-					    T *, __false_type); \
-template \
-T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
-template \
-void std::fill<T *, T >(T *, T *, T const &); \
-template \
-void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
 #endif
 
