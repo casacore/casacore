@@ -101,23 +101,25 @@ public:
 // Assignment operator
    ImageSourceFinder<T> &operator=(const ImageSourceFinder<T> &other);
 
-// Find strong (point) sources.  If doPoint=True, the returned components
+// Find strong sources.  nMax specifies the maximum number of sources to find.
+// cutoff is the fractional cutoff (of peak) and soiurces below this limit
+// will not be found. If absFind is True, only positive sources are found, else
+// positive and negative are found. If doPoint=True, the returned components
 // are of type POINT.  If doPoint=False, the position and shape information is 
 // returned via a Gaussian fit (and components will be of
 // type GAUSSIAN) to the point sources initially found.    The parameter width
 // specifies the half-width of a square grid of pixels centered on the initial
 // point source location to be used in the fit.  If you set doPoint=False and width=0,
-// a default width of 3 and position 0 is returned in the GAUSSIAN component.
+// a default width of 3 and position angle 0 is returned in the GAUSSIAN component.
 // Because  the flux of the component is integrated, this rough shape influences the 
-// flux values as well.  A width of 0 will 
-   ComponentList findSources (LogIO& os, 
-                              Int nMax, 
-                              Double cutoff, Bool absFind, Bool doPoint=True,
+// flux values as well.  
+   ComponentList findSources (LogIO& os, Int nMax, Double cutoff=0.1, 
+                              Bool absFind=True, Bool doPoint=True,
                               Int width=4);
 
 // Find one source in sky plane.  Exception if no sky
    SkyComponent findSourceInSky (LogIO& os, Vector<Double>& absPixel,
-                                 Double cutoff, Bool absFind, 
+                                 Double cutoff=0.1, Bool absFind=True, 
                                  Bool doPoint=True, Int width=4);
 
 // Set a new image
