@@ -1,5 +1,5 @@
 //# tSort.cc: Test program for the Sort class
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 void sortit (int opt)
 {
     Int arr[10], ar2[10];
-    Int i;
+    uInt i;
     double ard[10];
     struct Ts {
 	double ad;
@@ -120,7 +120,8 @@ void sortdo (int options, Sort::Order order, Int* data, uInt nrdata)
     sort.sortKey (data, TpInt, 0, order);
     Vector<uInt> inxvec;
     uInt nr = sort.sort (inxvec, nrdata, options);
-    for (uInt i=1; i<nr; i++) {
+    uInt i;
+    for (i=1; i<nr; i++) {
 	if (order == Sort::Ascending) {
 	    if (data[inxvec(i)] < data[inxvec(i-1)]) {
 		cout << "Order error on index " << i << endl;
@@ -138,6 +139,13 @@ void sortdo (int options, Sort::Order order, Int* data, uInt nrdata)
 		    cout << "Equal order error on index " << i << endl;
 		}
 	    }
+	}
+    }
+    Vector<uInt> uniqvec;
+    nr = sort.unique (uniqvec, inxvec);
+    for (i=1; i<nr; i++) {
+	if (data[inxvec(uniqvec(i))] == data[inxvec(uniqvec(i-1))]) {
+	    cout << "Non-unique value on index" << i << endl;
 	}
     }
 }
