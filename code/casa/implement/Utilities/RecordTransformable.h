@@ -38,7 +38,7 @@ class RecordInterface;
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tRecordTransformable">
 // </reviewed>
 
 // <prerequisite>
@@ -59,23 +59,35 @@ class RecordInterface;
 //      <linkto class="GlishRecord">GlishRecord</linkto>)
 // <li> It needs to save itself to a Table (using a 
 //      <linkto class="TableRecord">TableRecord</linkto>)
+// </ul> 
 //
 // This interface defines two functions that convert between a RecordInterface
-// and the class that inherits these functions. 
-
-// These functions are often used to parse input that is beyond the programs
-// control (ie user input from glish or Table records that may have been
-// generated elsewhere). Hence exceptions should not thrown be thrown by these
-// functions. Instead the function should return False and append an error
-// message to the supplied String when the transformation cannot be
-// accomplished.
-
+// and the class that inherits these functions.  These functions are often used
+// to parse input that is beyond the programs control ie., user input from
+// glish or Table records that may have been generated elsewhere. Hence
+// exceptions should not thrown be thrown by these functions. Instead the
+// function should return False and append an error message to the supplied
+// String when the transformation cannot be accomplished.
 // </synopsis>
 //
 // <example>
-//#! One or two concise (~10-20 lines) examples, with a modest amount of
-//#! text to support code fragments.  Use <srcblock> and </srcblock> to
-//#! delimit example code.
+// The following example prints out a class using its record representation.
+// This example is in the file tRecordTransformable.cc
+// <srcblock>
+// void printAsRecord(const RecordTransformable & myClass) {
+//   String errorMessage;
+//   Record rec;
+//   if (!myClass.toRecord(errorMessage, rec)) {
+//     cout << "Cannot convert class to a Record. The reason is:" << endl; 
+//     cout << errorMessage << endl;
+//   }
+//   // Eventually GlishRecords will be derived from RecordInterface. Then it 
+//   // will not be necessary to use the Record class.
+//   GlishRecord gRec;
+//   gRec.fromRecord(rec);
+//   cout << gRec.format() << endl;
+// }
+// </srcblock>
 // </example>
 //
 // <motivation>
@@ -90,7 +102,7 @@ class RecordInterface;
 class RecordTransformable
 {
 public:
-  // The destructor must be virtual so that the descructor of derived classes
+  // The destructor must be virtual so that the destructor of derived classes
   // is actually used. 
   virtual ~RecordTransformable();
   
