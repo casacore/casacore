@@ -116,7 +116,7 @@ void hdprobe_c ARGS((int tno, char *keyword, char *descr, int length, char *type
 
 /* uvio.c */
 
-void uvopen_c ARGS((int *tno, char *name, char *status));
+void uvopen_c ARGS((int *tno, const char *name, char *status));
 void uvclose_c ARGS((int tno));
 void uvflush_c ARGS((int tno));
 void uvnext_c ARGS((int tno));
