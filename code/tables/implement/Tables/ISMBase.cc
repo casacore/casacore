@@ -43,11 +43,12 @@
 #include <aips/IO/FiledesIO.h>
 #include <aips/OS/DOos.h>
 #include <aips/Tables/DataManError.h>
-#include <iostream.h>
+#include <aips/ostream.h>
 
 
 ISMBase::ISMBase (uInt bucketSize, Bool checkBucketSize, uInt cacheSize)
 : DataManager       (),
+  dataManName_p     ("ISM0"),
   version_p         (3),
   iosfile_p         (0),
   uniqnr_p          (0),
