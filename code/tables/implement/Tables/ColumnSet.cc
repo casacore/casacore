@@ -396,8 +396,9 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
 {
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	if (dataManagerName == BLOCKDATAMANVAL(i)->dataManagerName()) {
-	    return BLOCKDATAMANVAL(i);
+        DataManager* dmp = BLOCKDATAMANVAL(i);
+	if (dataManagerName == dmp->dataManagerName()) {
+	    return dmp;
 	}
     }
     throw (TableInvOper ("Data manager " + dataManagerName + " is unknown"));
@@ -570,11 +571,11 @@ void ColumnSet::getFile (AipsIO& ios, Table& tab, uInt nrrow)
 //# Find the data manager with the given sequence number.
 DataManager* ColumnSet::getDataManager (uInt seqnr) const
 {
-    DataManager* smp;
+  DataManager* dmp = 0;
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	smp = BLOCKDATAMANVAL(i);
-	if (smp->sequenceNr() == seqnr) {
-	    return smp;
+	dmp = BLOCKDATAMANVAL(i);
+	if (seqnr == dmp->sequenceNr()) {
+	    return dmp;
 	}
     }
     throw (TableInternalError ("ColumnSet::getDataManager"));
