@@ -263,7 +263,8 @@ public:
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer 
     // must be deleted by the caller. Axes specifies which axes of the coordinate
     // you wish to transform.   Shape specifies the shape of the image
-    // associated with all the axes of the coordinate.
+    // associated with all the axes of the coordinate. Currently the
+    // output reference pixel is always shape/2.
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
