@@ -1,0 +1,17 @@
+
+change id: 0147
+ author:   Raymond Rusk
+ date:     2003/04/14
+ avers:    1.8
+ area:     Library
+ package:  trial
+ module:   MeasurementComponents
+ type:     Test
+ category: Other
+ summary:  Performance profile of the IRAM solvers (g, b) Jones
+Source files in MeasurementComponents and CalTables were compiled
+and linked with the "-pg" option of g++.  The "calibrater" server
+containing this code was executed on simulated ALMA data and the
+resulting profile files were analyzed with gprof to locate code
+needing optimizations.  The results were given to Kumar for further
+action.
