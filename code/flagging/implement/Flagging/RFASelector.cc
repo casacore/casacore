@@ -572,12 +572,10 @@ RFA::IterMode RFASelector::iterTime (uInt it)
     if( quack_si>0 )
     {
       if( t0-scan_start > quack_si ) // new scan interval?
-      {
-        scan_start = t0;
         scan_end = t0 + quack_dt;
-      }
       if( t0<=scan_end ) // still within start of interval?
         flagall = True;
+      scan_start = t0;
     }
   // flag if within specific timeslots
     if( sel_time.ncolumn() )
