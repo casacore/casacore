@@ -30,6 +30,7 @@
 #define TRIAL_MSRANGE_H
 
 #include <aips/aips.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
 #include <trial/MeasurementSets/MSSelectionKeywords.h>
 template <class T> class ROArrayColumn;
@@ -58,7 +59,7 @@ class MSSelector;
 // This class is used to determine the range of values present for
 // the various columns in a MeasurementSet.
 // This class is initialized from a MeasurementSet. If the MS contains more
-// than one SPECTRAL_WINDOW_ID, it should be preselected on this to allow
+// than one DATA_DESC_ID, it can be preselected on this to allow
 // a consistent set of frequencies to be returned.
 // The ms DO provides access to this class from glish and GUIs.
 //
@@ -68,22 +69,19 @@ class MSSelector;
 // // fill in some fields
 // items(0)="field_id";
 // items(1)="time";
-// items(2)="spectral_window_id";
+// items(2)="data_desc_id";
 // // get the range of values for the items specified
 // cout << myRange.range(items)<<endl;
 // // sample output: range=[field_id=[0,1,2],time=[4.5e9, 4.51e9],
-// //   spectral_window_id=[0,1]];
-// // Now preselect on spectral window
+// //   data_desc_id=[0,1,2]];
+// // Now preselect on data_desc_id
 // MSSelector mss(myMS);
-// mss.selectinit(0,1); // select spectral window 1
-// myRange.setMS(mss.selectedTable());
-// // Following line will avoid check by MSRange, but can be omitted for
-// // a single spectral window.
-// // Setting it to -1 signals multiple windows with same shape data.
-// myRange.selectedSpectralWindow(1); 
+// Vector<Int> dd(2); dd(0)=1; dd(1)=2;
+// mss.selectinit(0,dd); // select data desc ids 1 and 2
+// MSRange r2(mss);
 // items(2)="amplitude";
-// cout<< myRange.range(items)<<endl;
-// // sampe output: [field_id=[0,1,2],time=[4.5e9, 4.51e9],
+// cout<< r2.range(items)<<endl;
+// // sample output: [field_id=[0,1,2],time=[4.5e9, 4.51e9],
 // //   amplitude=[0.00132,1.543]]
 // </srcblock></example>
 // </synopsis>
@@ -115,20 +113,15 @@ public:
     ALL = -1
   };
 
+  // Default constructor, only useful to assign to.
   MSRange();
   
-  // construct from an MS. You can use the second argument to
-  // signal to MSRange that the MS provided has already been pre-selected
-  // on DATA_DESC_ID, allowing it to skip the check on
-  // this. Set dataDescId to MSRange::ALL if the MS contains multiple
-  // data descriptions, all with the same data shape.
-  // The 2nd argument is mainly for internal use by the MS DO, 
-  // providing incorrect values could cause runtime failures.
-  explicit MSRange(const MeasurementSet& ms, Int dataDescId=UNCHECKED);
-  
+  // Construct from an MS.
+  explicit MSRange(const MeasurementSet& ms);
+	  
   // construct from an MSSelector, if this constructor is used, the data
   // will be channel selected and polarization converted as specified in
-  // the MSSelector object.
+  // the MSSelector object, and the current selection is used in the range.
   explicit MSRange(const MSSelector& msSel);
 
   // Copy constructor
@@ -136,20 +129,12 @@ public:
   
   // Assignment
   MSRange& operator=(const MSRange& other);
-  
-  // Change or Set the MS this MSRange refers to.
-  // You can use the second argument to
-  // signal to MSRange that the MS provided has already been pre-selected
-  // on DATA_DESC_ID, allowing it to skip the check on
-  // this. Set dataDescId to MSRange::ALL if the MS contains multiple
-  // data descriptions, all with the same data shape.
-  // The 2nd argument is mainly for internal use by the MS DO, 
-  // providing incorrect values could cause runtime failures.
-  void setMS(const MeasurementSet& ms, Int dataDescId=UNCHECKED);
-  
+   
   // Return the range of values for each of the items specified in 
   // the record. For index-like items a list of values is returned,
   // for non-index items the minimum and maximum are returned.
+  // Items with varying array shape will not be returned by this function (i.e.
+  //  you may need to preselect the MS passed to MSRange).
   // See the enum description in MSSelector for the list of supported items.
   // Use the data flags if useFlags is True.
   // Correct for one-based indexing if oneBased is True.
@@ -174,9 +159,9 @@ public:
 
 protected:
 
-  // check the spectral window selection (one, or more with same shape, or
-  // unselected)
-  Bool checkSelection();
+  // check the data description selection (one or more with same shape, or
+  // varying shape)
+  Bool checkShapes();
 
   // get the range of a ScalarColumn<Int>, correct for 1-based 
   // indexing if oneBased is True, and add to out record.
@@ -184,7 +169,7 @@ protected:
 		   const ROScalarColumn<Int>& id, Bool oneBased);
 
   // get the range of a ScalarColumn<Int>
-  Vector<Int> MSRange::scalarRange(const ROScalarColumn<Int>& id);
+  Vector<Int> scalarRange(const ROScalarColumn<Int>& id);
 
   // get the minimum and maximum of a Complex data column, after
   // application of some function to convert to Float (e.g., real,
@@ -213,8 +198,10 @@ private:
 
   MeasurementSet ms_p; // the original ms
   Int blockSize_p;
-  Int ddId_p;
-  Bool checked_p;
+  Vector<Int> ddId_p;
+  Vector<uInt> spwId_p;
+  Vector<uInt> polId_p;
+  Bool constantShape_p;
   const MSSelector* sel_p;
 };
 
