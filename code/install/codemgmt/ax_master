@@ -4194,3 +4194,4 @@
 14 065 src mv trial/apps/viewer/vcmintro.ps trialdisplay/apps/viewer/vcmintro.ps
 14 065 src mv trial/apps/viewer/vdpintro.gif trialdisplay/apps/viewer/vdpintro.gif
 14 065 src mv trial/apps/viewer/vdpintro.ps trialdisplay/apps/viewer/vdpintro.ps
+14 065 src mv trial/apps/viewer/viewer.g trialdisplay/apps/viewer/viewer.g
