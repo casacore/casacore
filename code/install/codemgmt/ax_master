@@ -2745,3 +2745,11 @@
 10 077 src rm trial/implement/Tasking/QuantumParameterAccessor.cc
 10 077 src rm trial/implement/Tasking/MeasureParameterAccessor.h
 10 077 src rm trial/implement/Tasking/MeasureParameterAccessor.cc
+10 087 src rm trial/apps/sky/sky.cc
+10 087 src rm trial/apps/sky/sky.g
+10 087 src rm trial/apps/sky/sky.help
+10 087 src rm trial/apps/sky/skyFactory.h
+10 087 src rm trial/apps/sky/skyFactory.cc
+10 087 src rm trial/apps/sky/sky_meta.g
+10 087 src rm trial/apps/sky/sky_standard.gp
+10 087 src rm trial/apps/sky/templates
