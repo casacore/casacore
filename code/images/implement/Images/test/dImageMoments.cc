@@ -1,4 +1,4 @@
-//# imoment.cc: generate image moments
+//# dImageMoments.cc: generate image moments
 //# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -200,7 +200,12 @@
 
 #include <trial/Images/ImageMoments.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/SubImage.h>
+#include <trial/Images/ImageRegion.h>
+#include <trial/Images/ImageUtilities.h>
 #include <trial/Tasking/PGPlotter.h>
+#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/LCEllipsoid.h>
 
 #include <iostream.h>
 
@@ -279,7 +284,7 @@ try {
 // interface the first allowed moment is 0.
 
    Vector<Int> moments(momentsB);
-   for (Int i=0; i<moments.nelements(); i++) moments(i)++;
+   for (uInt i=0; i<moments.nelements(); i++) moments(i)++;
    validInputs(MOMENTS) = True;
 
    
@@ -299,21 +304,21 @@ try {
       blc.resize(0);
    } else {
       blc.resize(blcB.nelements());
-      for (Int i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
+      for (uInt i=0; i<blcB.nelements(); i++) blc(i) = blcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (trcB.nelements() == 1 && trcB[0] == -10) {
       trc.resize(0);
    } else {
       trc.resize(trcB.nelements());
-      for (Int i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
+      for (uInt i=0; i<trcB.nelements(); i++) trc(i) = trcB[i] - 1;
       validInputs(REGION) = True;
    }
    if (incB.nelements() == 1 && incB[0] == -10) {
       inc.resize(0);
    } else {
       inc.resize(incB.nelements());
-      for (Int i=0; i<incB.nelements(); i++) inc(i) = incB[i];
+      for (uInt i=0; i<incB.nelements(); i++) inc(i) = incB[i];
       validInputs(REGION) = True;
    }
 
@@ -338,7 +343,7 @@ try {
    if (smoothAxes.nelements() == 1 && smoothAxes(0) == -100) {
       smoothAxes.resize(0);
    } else {
-      for (Int i=0; i<smoothAxes.nelements(); i++) smoothAxes(i)--;
+      for (uInt i=0; i<smoothAxes.nelements(); i++) smoothAxes(i)--;
       validInputs(SMOOTH) = True;
    }
 
@@ -400,17 +405,35 @@ try {
 // Construct image
 
       PagedImage<Float> inImage(in);
+      SubImage<Float>* pSubImage;
+      if (validInputs(REGION)) {
+
+      ImageUtilities::verifyRegion(blc, trc, inc, inImage.shape());
+      cout << "Selected region : " << blc+1<< " to "
+           << trc+1 << endl;
+
+//         LCEllipsoid region(inImage.shape()/2, (inImage.shape()(0)/2)-1, inImage.shape());
+
+         const LCBox region(blc, trc, inImage.shape());
+
+         pSubImage = new SubImage<Float>(inImage, ImageRegion(region));
+//         cout << "sub image shape = " << pSubImage->shape() << endl;
+//         cout << "Region bounding box = " << region.box().start() << ", "
+//              << region.box().end() <<  endl;
+
+      } else {
+         pSubImage = new SubImage<Float>(inImage);
+      }
 
 // Construct moment class
 
       LogOrigin or("imoment", "main()", WHERE);
       LogIO os(or);
-      ImageMoments<Float> moment(inImage, os);
+      ImageMoments<Float> moment(*pSubImage, os);
 
 // Set inputs.  
 
       if (validInputs(MOMENTS)) {if (!moment.setMoments(moments)) return 1;}
-      if (validInputs(REGION)) {if (!moment.setRegion(blc, trc, inc)) return 1;}
       if (validInputs(AXIS)) {if (!moment.setMomentAxis(momentAxis)) return 1;}
       if (validInputs(METHOD)) {
          if (!moment.setWinFitMethod(winFitMethods)) return 1;
@@ -420,7 +443,7 @@ try {
       }
       if (validInputs(RANGE)) {if (!moment.setInExCludeRange(include, exclude)) return 1;}
       if (validInputs(SNR)) {if (!moment.setSnr(peakSNR, stdDeviation)) return 1;}
-      if (validInputs(OUT)) moment.setOutName(out);
+      if (validInputs(OUT)) {moment.setOutName(out);}
       if (validInputs(PSFOUT)) moment.setPsfOutName(psfOut);
       if (validInputs(SMOUT)) moment.setSmoothOutName(smOut);
       if (validInputs(PLOTTING)) {
@@ -431,7 +454,10 @@ try {
 
 // Do work
 
-      if (!moment.createMoments()) return 1;
+      if (!moment.createMoments()) {
+         delete pSubImage;
+         return 1;
+      }
 
 // Test copy constructor// Test assignment operator
 
@@ -443,6 +469,10 @@ try {
 
       os << "Testing assignment operator" << endl;
       moment = moment2;
+
+// Clean up
+
+      delete pSubImage;
 
    } else {
       cout << "images of type " << imageType << " not yet supported" << endl;
