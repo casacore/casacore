@@ -130,16 +130,22 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
+//   virtual void visibilityLinear(Vector<DComplex> & vis, 
+// 				const Vector<Double> & uvw,
+// 				const Double & frequency) const;
+//   virtual void visibilityCircular(Vector<DComplex> & vis, 
+// 				  const Vector<Double> & uvw,
+// 				  const Double & frequency) const;
   // set/get the integrated flux of the component. The Vector specifies all the
   // polarizations of the radiation. The units must be something has the same
   // dimensions as Jansky's.
   // <group>
   virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
   virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
-//   virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compflux);
-//   virtual void fluxCircular(Quantum<Vector<DComplex> > & compflux) const;
-//   virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compflux);
-//   virtual void fluxLinear(Quantum<Vector<DComplex> > & compflux) const;
+//  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compFlux);
+//   virtual void fluxCircular(Quantum<Vector<DComplex> > & compFlux) const;
+//   virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compFlux);
+//   virtual void fluxLinear(Quantum<Vector<DComplex> > & compFlux) const;
   // </group>
 
   // set/get the direction (usually the centre) of the component.
@@ -164,17 +170,17 @@ public:
   // </group>
 
   // get the shape of the component 
-  virtual ComponentType::Shape shapeType() const = 0;
+  virtual ComponentType::Shape shape() const = 0;
 
   // This functions convert between a glish record and a SkyCompRep. This way
   // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish. 
-  // The fromRecord function returns False if the glish record is malformed
-  // and appends an error message to the supplied string giving the reason.
+  // way. These functions define how a component is represented in glish.  They
+  // return False if the glish record is malformed and append an error message
+  // to the supplied string giving the reason.
   // <group>
   virtual Bool fromRecord(String & errorMessage, 
 			  const GlishRecord & record) = 0;
-  virtual void toRecord(GlishRecord & record) const = 0;
+  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const = 0;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -202,17 +208,13 @@ protected:
   //# versions of the toRecord and fromRecord member functions.
   // <group>
   Bool readFlux(String & errorMessage, const GlishRecord & record);
-  void addFlux(GlishRecord & record) const;
+  Bool addFlux(String & errorMessage, GlishRecord & record) const;
 
   Bool readDir(String & errorMessage, const GlishRecord & record);
-  void addDir(GlishRecord & record) const;
+  Bool addDir(String & errorMessage, GlishRecord & record) const;
 
   Bool readLabel(String & errorMessage, const GlishRecord & record);
-  void addLabel(GlishRecord & record) const;
-
-  void readParameters(Vector<Double> & parameters, String & errorMessage,
-		      const GlishRecord & record) const;
-  void addParameters(GlishRecord & record) const;
+  Bool addLabel(String & errorMessage, GlishRecord & record) const;
   // </group>
 };
 
