@@ -49,7 +49,7 @@ GenericL2Fit<T>::GenericL2Fit() :
   asweight_p(False), nr_p(0), 
   condEq_p(0), fullEq_p(0), arg_p(0), sol_p(0), fsol_p(0),
   err_p(0), ferr_p(0),
-  valder_p(typename FunctionTraits<T>::DiffType(0)) {
+  valder_p(typename FunctionTraits<T>::DiffType(0)), consvd_p(0) {
   if (!svd_p) set(0.0);
 }
 
@@ -68,7 +68,7 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   asweight_p(other.asweight_p) , nr_p(other.nr_p),
   condEq_p(0), fullEq_p(0), arg_p(0), sol_p(0), fsol_p(0),
   err_p(0), ferr_p(0),
-  valder_p(typename FunctionTraits<T>::DiffType(0)) {
+  valder_p(typename FunctionTraits<T>::DiffType(0)), consvd_p(0) {
   if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();
   for (uInt i=0; i<other.constrFun_p.nelements(); ++i)
     constrFun_p[i] = other.constrFun_p[i]->clone();
@@ -86,7 +86,8 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
   fsol_p = other.fsol_p;
   err_p = other.err_p;
   ferr_p = other.ferr_p;
-  valder_p =other.valder_p;
+  valder_p = other.valder_p;
+  consvd_p = other.consvd_p;
 }
 
 template<class T>
@@ -125,6 +126,7 @@ GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
     err_p    = other.err_p;
     ferr_p    = other.ferr_p;
     valder_p = other.valder_p;
+    consvd_p = other.consvd_p;
   };
   return *this;
 }
@@ -242,6 +244,21 @@ void GenericL2Fit<T>::setMaskedParameterValues
   for (uInt i=0, k=0; i<pCount_p; ++i) {
     if (ptr_derive_p->mask(i)) (*ptr_derive_p)[i].value() = parms[k++];
   };
+}
+
+template<class T>
+Vector<typename LSQTraits<typename FunctionTraits<T>::
+BaseType>::base> GenericL2Fit<T>::getSVDConstraint(uInt n) {
+  Vector<typename LSQTraits<typename FunctionTraits<T>::
+    BaseType>::base> tmp(pCount_p, 0.0);
+  if (n >= consvd_p.nelements()) {
+    throw(AipsError("GenericL2Fit::getSVDConstraint(n)"
+		    " -- Illegal constraint number"));
+  };
+  for (uInt i=0, k=0; i<pCount_p; ++i) {
+    if (ptr_derive_p->mask(i)) tmp[i] = consvd_p[n][k++];
+  };
+  return tmp;
 }
 
 template<class T>
@@ -484,6 +501,7 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
 	  ((*ptr_derive_p)[i].value(), pCount_p, i);
       };
     };
+    consvd_p.resize(0);
   };
 }
 
@@ -521,6 +539,7 @@ void GenericL2Fit<T>::resetFunction() {
   constrFun_p.resize(0);
   constrArg_p.resize(0);
   constrVal_p.resize(0);
+  consvd_p.resize(0);
 }
 
 template<class T>
@@ -598,6 +617,18 @@ void GenericL2Fit<T>::buildConstraint() {
     };
     if (i<nConstraints()) LSQFit::setConstraint(i, ceqit, b);
     else LSQFit::addConstraint(ceqit, b);
+  };
+}
+
+template<class T>
+void GenericL2Fit<T>::fillSVDConstraints() {
+  uInt n=LSQFit::getDeficiency();
+  consvd_p.resize(n);
+  for (uInt i=0; i<n; ++i) {
+    consvd_p[i].resize(aCount_ai);
+    VectorSTLIterator<typename LSQTraits<typename FunctionTraits<T>::
+      BaseType>::base> conit(consvd_p[i]);
+    LSQFit::getConstraint(i, conit);
   };
 }
 

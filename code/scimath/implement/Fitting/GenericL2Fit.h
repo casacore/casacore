@@ -35,6 +35,7 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Block.h>
 #include <scimath/Fitting/LSQaips.h>
+#include <scimath/Fitting/LSQTraits.h>
 #include <scimath/Functionals/FunctionTraits.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
@@ -307,6 +308,10 @@ template<class T> class GenericL2Fit : public LSQaips {
     return (n >= constrFun_p.nelements() ? 0 : constrFun_p[n]); };
   // </group>
 
+  // Return the nth constraint equation derived from SVD
+  // Note that the number present will be given by <src>getDeficiency()</src>
+  Vector<typename LSQTraits<typename FunctionTraits<T>::
+    BaseType>::base> getSVDConstraint(uInt n);
   // Set the parameter values. The input is a vector of parameters; all
   // or only the masked ones' values will be set, using the input values
   // <group>
@@ -496,7 +501,9 @@ template<class T> class GenericL2Fit : public LSQaips {
   // </group>
   // Local value and derivatives
   mutable typename FunctionTraits<T>::DiffType valder_p;
-
+  // Local SVD constraints
+  mutable Vector<Vector<typename LSQTraits<typename FunctionTraits<T>::
+    BaseType>::base> > consvd_p;
   //# Member functions
   // Generalised fitter
   virtual Bool fitIt
@@ -513,6 +520,8 @@ template<class T> class GenericL2Fit : public LSQaips {
 		   const Vector<Bool> *const mask=0);
   // Build the constraint equations
   void buildConstraint();
+  // Get the SVD constraints
+  void fillSVDConstraints();
   // Calculate residuals
   Bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 		     const Array<typename FunctionTraits<T>::BaseType> &x,
