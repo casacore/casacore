@@ -27,6 +27,8 @@
 //# $Id$
 
 #include <trial/Coordinates/LinearCoordinate.h>
+
+#include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Matrix.h>
@@ -526,3 +528,63 @@ String LinearCoordinate::format(String& units,
 }
 
 
+    
+Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
+                                                     const Vector<Int>& shape) const
+//        
+// axes says which axes in the coordinate are to be transformed
+// shape is the shape of the image for all axes in this coordinate 
+//
+{
+   if (axes.nelements() != nPixelAxes()) {
+      throw (AipsError("Invalid number of specified axes"));
+   }
+   uInt nT = 0;
+   for (uInt i=0; i<nPixelAxes(); i++) if (axes(i)) nT++;
+   if (nT==0) {
+      throw (AipsError("You have not specified any axes to transform"));
+   }
+//
+   if (shape.nelements() != nPixelAxes()) {
+      throw (AipsError("Invalid number of elements in shape"));
+   }
+
+// Find the canonical input units that we should convert to.
+// Find the Fourier coordinate names and units
+
+   Vector<String> units = worldAxisUnits();
+   Vector<String> unitsCanon = worldAxisUnits();
+   Vector<String> unitsOut = worldAxisUnits();
+   Vector<String> names = worldAxisNames();
+   Vector<String> namesOut = worldAxisNames();
+   Vector<Double> crval = referenceValue();
+   Vector<Double> crpix = referencePixel();
+   Vector<Double> scale(nPixelAxes(), 1.0);
+//
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      if (axes(i)) {
+         crval(i) = 0.0;
+         fourierUnits(namesOut(i), unitsOut(i), unitsCanon(i), Coordinate::LINEAR, 
+                      i, units(i), names(i));
+         scale(i) = 1.0 / Double(shape(i));
+         crpix(i) = Int(shape(i) / 2);
+      }
+   }
+
+// Make a copy of ourselves so we can change the units.  Otherwise we
+// could make this function non-const and then put it back
+
+   LinearCoordinate lc = *this;
+   if (!lc.setWorldAxisUnits(unitsCanon)) {
+      throw(AipsError("Could not set world axis units"));
+   }
+
+// Now create the new LinearCoordinate, using the LinearXform class
+// to invert the coordinate matrices
+
+   const LinearXform& linear = lc.transform_p;
+   const LinearXform linear2 = linear.fourierInvert(axes, crpix, scale);
+//
+   return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
+                               linear2.pc(), linear2.crpix());
+}

@@ -192,6 +192,13 @@ public:
                           const Int precision = -1) const;
     //</group>
 
+    // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
+    // must be deleted by the caller. Axes specifies which axes of the coordinate
+    // you wish to transform.   Shape specifies the shape of the image
+    // associated with all the axes of the coordinate.  
+    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
+                                               const Vector<Int>& shape) const;
+
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
