@@ -1110,8 +1110,8 @@ Bool DirectionCoordinate::save(RecordInterface &container,
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
 //
-        subrec.define("longpole", celprm_p->ref[2]);   // Always degrees
-        subrec.define("latpole", celprm_p->ref[3]);    // Always degrees
+        subrec.define("longpole", celprm_p->ref[2]);    // Always degrees
+        subrec.define("latpole", celprm_p->ref[3]);     // Always degrees
 //
 	container.defineRecord(fieldName, subrec);
     }
