@@ -328,7 +328,10 @@ public:
 
   // Check class invariants. 
   virtual Bool ok() const = 0;
-  
+
+  // Save and restore an ImageInterface object to or from a state Record
+  Bool toRecord (String& error, RecordInterface& outRec);
+  Bool fromRecord (String& error, const RecordInterface& inRec);
  
 protected:
   // Assignment (copy semantics) is only useful for derived classes.
@@ -367,6 +370,7 @@ private:
 
   // The region handling object.
   RegionHandler* regHandPtr_p;
+
 };
 
 
