@@ -42,7 +42,7 @@
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
- #include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSUtil.h>
 
 SpectralCoordinate::SpectralCoordinate()
 : Coordinate(),
@@ -50,8 +50,11 @@ SpectralCoordinate::SpectralCoordinate()
   worker_p(0.0,1.0,0.0,"Hz", "Frequency"),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefSpecUnit_p("")
+  prefUnit_p("")
 {
+   makeVelocityMachine (String("km/s"), prefVelType_p, 
+                        worker_p.worldAxisUnits()(0),
+                        type_p, restfreq_p);
 }
 
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
@@ -62,9 +65,13 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   worker_p(f0, inc, refPix, "Hz", "Frequency"),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefSpecUnit_p("")
+  prefUnit_p("")
 {
+   makeVelocityMachine (String("km/s"), prefVelType_p, 
+                        worker_p.worldAxisUnits()(0),   
+                        type_p, restfreq_p);
 }
+
 
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type, 
                                        const Quantum<Double>& f0,
@@ -75,7 +82,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   type_p(type),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefSpecUnit_p("")
+  prefUnit_p("")
 {
    Unit hz("Hz");
    if (!f0.isConform(hz)) {
@@ -91,6 +98,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
    restfreq_p = restFrequency.getValue(hz);
    worker_p = TabularCoordinate(f0.getValue(hz), inc.getValue(hz),
                                 refPix, "Hz", "Frequency");
+//
+   makeVelocityMachine (String("km/s"), prefVelType_p, 
+                        worker_p.worldAxisUnits()(0),   
+                        type_p, restfreq_p);
 }
 
 
@@ -102,11 +113,15 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   restfreq_p(restFrequency),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefSpecUnit_p("")
+  prefUnit_p("")
 {
     Vector<Double> channels(freqs.nelements());
     indgen(channels);
     worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
+//
+   makeVelocityMachine (String("km/s"), prefVelType_p, 
+                        worker_p.worldAxisUnits()(0),   
+                        type_p, restfreq_p);
 }
 
 
@@ -117,7 +132,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   type_p(type),
   pVelocityMachine_p(0),
   prefVelType_p(MDoppler::RADIO),
-  prefSpecUnit_p("")
+  prefUnit_p("")
 {
    Unit hz("Hz");
    if (!freqs.isConform(hz)) {
@@ -133,6 +148,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
    Vector<Double> channels(freqs2.nelements());
    indgen(channels);
    worker_p = TabularCoordinate(channels, freqs2, "Hz", "Frequency");
+//
+   makeVelocityMachine (String("km/s"), prefVelType_p,
+                        worker_p.worldAxisUnits()(0),
+                        type_p, restfreq_p);
 }
 
 
@@ -143,9 +162,10 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
   worker_p(other.worker_p),
   pVelocityMachine_p(0),
   prefVelType_p(other.prefVelType_p),
-  prefSpecUnit_p(other.prefSpecUnit_p)
+  prefUnit_p(other.prefUnit_p)
 {
    deleteVelocityMachine();
+   pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
 }
 
 SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &other)
@@ -155,9 +175,12 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
 	type_p = other.type_p;
 	restfreq_p = other.restfreq_p;
 	worker_p = other.worker_p;
+//
         deleteVelocityMachine();
+        pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
+//
         prefVelType_p = other.prefVelType_p;
-        prefSpecUnit_p = other.prefSpecUnit_p;
+        prefUnit_p = other.prefUnit_p;
     }
     return *this;
 }
@@ -254,11 +277,45 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
     if (ok) {
 	Double after = increment()(0);
 	restfreq_p *= after / before;
+//
+        pVelocityMachine_p->set(Unit(units(0)));
     }
-    deleteVelocityMachine();
+//
     return ok;
 }
 
+Bool SpectralCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
+{
+   if (units.nelements() != nWorldAxes()) {
+      set_error("Wrong number of elements in preferred units vector");
+      return False;
+   }
+//
+   static Unit unitsHZ(String("Hz"));
+   static Unit unitsKMS(String("km/s"));
+//
+   if (units(0).empty()) {
+//
+   } else {
+      Unit unit0(units(0));
+      if (unit0!=unitsHZ && unit0!=unitsKMS) {
+         set_error("Unit must be empty or consistent with Hz or km/s");
+         return False;
+      }
+   }
+//
+   prefUnit_p = units(0);
+//
+   return True;
+}
+
+
+Vector<String> SpectralCoordinate::preferredWorldAxisUnits () const
+{
+   Vector<String> t(1);
+   t(0) = prefUnit_p;
+   return t;
+}
 
 Bool SpectralCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
@@ -303,14 +360,19 @@ MFrequency::Types SpectralCoordinate::frequencySystem() const
 void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 {
     type_p = type;
+//
     deleteVelocityMachine();
+    makeVelocityMachine (String("km/s"), prefVelType_p, 
+                         worker_p.worldAxisUnits()(0),
+                         type_p, restfreq_p);
 }
 
 
 Bool SpectralCoordinate::setRestFrequency(Double newFrequency)
 {
     restfreq_p = newFrequency;
-    deleteVelocityMachine();
+    Quantum<Double> rf(restfreq_p, worldAxisUnits()(0));
+    pVelocityMachine_p->set(MVFrequency(rf));
     return True;
 }
 
@@ -383,9 +445,9 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	subrec.define("system", system);
 	subrec.define("restfreq", restFrequency());
         subrec.define("prefVelType", Int(prefVelType_p));
-        subrec.define("prefSpecUnit", prefSpecUnit_p);
+        subrec.define("preferredunits", preferredWorldAxisUnits());
 	ok = (worker_p.save(subrec, "tabular"));
-
+//
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
@@ -430,12 +492,12 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     if (!subrec.isDefined("tabular")) {
 	return 0;
     }
-    TabularCoordinate *tabular = TabularCoordinate::restore(subrec, "tabular");
+    TabularCoordinate* tabular = TabularCoordinate::restore(subrec, "tabular");
     if (tabular == 0) {
 	return 0;
     }
-
-    SpectralCoordinate *retval = new SpectralCoordinate;
+//
+    SpectralCoordinate* retval = new SpectralCoordinate;
     if (retval == 0) {
 	return 0;
     }
@@ -444,16 +506,23 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     retval->type_p = sys;
     retval->restfreq_p = restfreq;
 //
-    if (subrec.isDefined("prefVelType")) {
+    if (subrec.isDefined("prefVelType")) {                 // optional
        MDoppler::Types type = 
           static_cast<MDoppler::Types>(subrec.asInt("prefVelType"));
        retval->setPreferredVelocityType(type);
     }
-    if (subrec.isDefined("prefSpecUnit")) {
-       String unit = subrec.asString("prefSpecUnit");
-       retval->setPreferredSpectralUnit(unit);
+    if (subrec.isDefined("preferredunits")) {              // optional
+       Vector<String> prefUnits;
+       subrec.get("preferredunits", prefUnits);
+       retval->setPreferredWorldAxisUnits(prefUnits);
     }
-							  
+
+// This is subtle.  The velocity machine is made empty because the default
+// constructor was used.  Therefore we must recreate it with the
+// correct internals
+
+    retval->reinitializeVelocityMachine();
+//
     return retval;
 }
 
@@ -650,9 +719,6 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 }
 
 void SpectralCoordinate::deleteVelocityMachine ()
-// 
-// Force it to be rebuilt when next accessed
-//
 {
    delete pVelocityMachine_p;  
    pVelocityMachine_p = 0;
@@ -690,16 +756,20 @@ String SpectralCoordinate::format(String& units,
    static Quantum<Double> qFreq;
    static Vector<Double> world;
 //
-   String nativeUnit = worldAxisUnits()(worldAxis);
+   static String nativeUnit;
+   static String prefUnit;
+//
+   nativeUnit = worldAxisUnits()(worldAxis);
    if (units.empty()) {
-      if (prefSpecUnit_p.empty()) {      
+      prefUnit = preferredWorldAxisUnits()(worldAxis);
+      if (prefUnit.empty()) {      
          units = nativeUnit;
       } else {
-         units = prefSpecUnit_p;
+         units = prefUnit;
       }
    }
 //
-   String theString;
+   static String theString;
    Unit unit(units);
    if (unit != unitsHZ) {
 
@@ -724,9 +794,9 @@ String SpectralCoordinate::format(String& units,
          worldValue = world(worldAxis);
       }
 //
+      updateVelocityMachine (tunits, prefVelType_p);
       if (showAsAbsolute) {
-         if (!frequencyToVelocity (qVel, worldValue,
-                                   tunits, prefVelType_p)) {
+         if (!frequencyToVelocity (qVel, worldValue)) {
             theString = "Fail";
             return theString;
          }
@@ -738,7 +808,7 @@ String SpectralCoordinate::format(String& units,
          static Vector<Double> vel(2), freq2(2);
          freq2(0) = referenceValue()(worldAxis);
          freq2(1) = worldValue;
-         if (!frequencyToVelocity(vel, freq2, tunits, prefVelType_p)) {
+         if (!frequencyToVelocity(vel, freq2)) {
             theString = "Fail";
             return theString;
          }
@@ -778,20 +848,3 @@ void SpectralCoordinate::checkFormat(Coordinate::formatType& format,
           format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
    }
 }
-
-Bool SpectralCoordinate::setPreferredSpectralUnit (const String& units)
-{
-   Unit unitsHZ(String("Hz"));      
-   Unit unitsKMS(String("km/s"));      
-   Unit units0(units);
-   Bool ok = True;
-   if (units.empty() || units0==unitsHZ || units0==unitsKMS) {   
-      prefSpecUnit_p = units;
-   } else {
-      ok = False;
-      set_error("Unit must be empty or consistent with Hz or km/s");
-   }
-   return ok;
-}
-
-
