@@ -3780,3 +3780,4 @@
 14 044 src mv atnf/apps/pksmbfits/MBFITS.h atnf/implement/pks/MBFITS.h
 14 047 src rm npoi/implement/Cuttlefish/TBD
 14 047 src mv npoi/implement/Cuttlefish/convert.g npoi/implement/GDC/convert.g
+14 047 src mv npoi/implement/Cuttlefish/gdc1.g npoi/implement/GDC/gdc1.g
