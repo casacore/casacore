@@ -91,7 +91,8 @@
 // <ul>
 //   <li> ' is used for arcmin
 //   <li> '' or " for arcsec
-//   <li> : :: and ::: are used for h, min, s respectively.
+//   <li> : :: and ::: are used for h, min, s respectively
+//   <li> _ is used for an undimensioned value (like beam or pixel)
 // </ul>
 // </note>
 // <note role=caution> The standard naming conventions for SI units are that they are
@@ -112,7 +113,7 @@
 //
 // There are 5 name lists in the UnitMap, which are searched in reverse order:
 // <ol>
-//   <li> Defining units: 	m, kg, s, A, K, cd, mol, rad, sr
+//   <li> Defining units: 	m, kg, s, A, K, cd, mol, rad, sr, _
 //   <li> SI units:		including a.o. g, Jy, AU
 //   <li> Customary units:	e.g. lb, hp, ly
 //   <li> User defined units:	defined by user (e.g. beam, KPH, KM)
@@ -120,9 +121,13 @@
 // </ol>
 // All known names can be viewed by running the tUnit test program, or
 // using the MapUnit::list() routine.
-// They are also (at least the 941123 values) available in the
+// They are also (at least the 1999/09/15 values) available in the
 // <linkto module="Quanta">Quanta module documentation</linkto>.
-// 
+// <note role=caution>
+// There is a difference between units without a dimension (non-dimensioned
+// I will call them), and undimensioned units. Non-dimensioned examples are
+// "", "%"; undimensioned examples: "beam", "pixel".
+// </note>
 //
 //  <h3> Unit class </h3>
 // The Unit class is not directly based on the String class, but Strings and 
