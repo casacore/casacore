@@ -4290,3 +4290,4 @@
 14 179 src mv atnf/apps/livedata/pksmscalstats.g atnf/apps/livedata/pksstats.g
 14 179 sys rm bin/pksmscalstats
 14 179 sys rm libexec/pksmscalstats.g
+14 179 src mv atnf/apps/pksstats/pksmscalstats.cc atnf/apps/pksstats/pksstats.cc
