@@ -85,7 +85,6 @@ class LatticeUtilities
                          const MaskedLattice<T>& lat,
                          Bool dropDegenerateAxes,
                          Bool getPixels=True, Bool getMask=True);
-// </group>
 
 // Copy data and mask from input to output.  If the input has no mask,
 // that means all True (good), and these values will be transferred
