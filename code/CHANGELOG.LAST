@@ -14,3 +14,19 @@ Because PC's are used more and more, support of little endian canonical format h
 Table constructors now have an extra argument telling if data have to be stored in big or little endian format. The default is to use the value of the aipsrc variable table.endianformat which in its turn defaults to big endian (in the next release it will be changed to local endian).
 
 Tables stored in little endian format have a few extra fields stored, so they cannot be accessed by older versions of AIPS++..On the other hand tables in big endian format have exactly the same format as before, so they can still be read by older versions.
+
+change id: 0128
+ author:   Ger van Diepen
+ date:     2002/08/13
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   IO
+ type:     Code
+ category: Change
+ summary:  Large file support is now the default
+Until now large file support had to be enabled explicitly by adding
+-DAIPS_LARGEFILE to the CPPSTD definition in the local makedefs.
+This has been changed such that large file support is enabled by default.
+If a system does not support large files, it has to be disabled by adding
+-DAIPS_NOLARGEFILE to the CPPSTD definition in the local makedefs.
