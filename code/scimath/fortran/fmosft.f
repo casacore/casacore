@@ -57,7 +57,7 @@ C
       complex nvalue
 
       integer convsize, sampling
-      complex convfunc(convsize, convsize), cwt
+      complex convfunc(convsize, convsize), cwt, crot
 
       complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
 
@@ -97,13 +97,19 @@ C
             xlast=xypos(1,irow)
             ylast=xypos(2,irow)
             doshift=.TRUE.
-            do ix=-support,support
-               phase=-2.0D0*pi*xypos(1,irow)*ix/nx
-               shiftx(ix)=cmplx(cos(phase), sin(phase))
+            phase=-2.0D0*pi*xypos(1,irow)/nx
+            crot=cmplx(cos(phase), sin(phase))
+            shiftx(0)=cmplx(1.0, 0.0)
+            do ix=1,support
+               shiftx(ix)=shiftx(ix-1)*crot
+               shiftx(-ix)=conjg(shiftx(ix))
             end do
-            do iy=-support,support
-               phase=-2.0D0*pi*xypos(2,irow)*iy/ny
-               shifty(iy)=cmplx(cos(phase), sin(phase))
+            phase=-2.0D0*pi*xypos(2,irow)/ny
+            crot=cmplx(cos(phase), sin(phase))
+            shifty(0)=cmplx(1.0, 0.0)
+            do iy=1,support
+               shifty(iy)=shifty(iy-1)*crot
+               shifty(-iy)=conjg(shifty(iy))
             end do
          end if
          if(rflag(irow).eq.0) then 
@@ -136,10 +142,12 @@ C the final image by this term.
                            do ix=-support,support
                               iloc(1)=convsize/2+1+ix*sampling
      $                             +off(1)
-                              cwt=conjg(convfunc(iloc(1),
-     $                             iloc(2)))
                               if(doshift) then
-                                 cwt=cwt*shiftx(ix)*shifty(iy)
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2)))*shiftx(ix)*shifty(iy)
+                              else
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2)))
                               end if
                               grid(loc(1)+ix,
      $                             loc(2)+iy,apol,achan)=
@@ -153,9 +161,6 @@ C the final image by this term.
      $                       weight(ichan,irow)*norm
                      end if
                   end do
-               else
-                  write(*,*) uvw(3,irow), pos(1), pos(2),
-     $                 loc(1), loc(2)
                end if
             end if
          end do
@@ -190,7 +195,7 @@ C
       complex nvalue
 
       integer convsize, sampling
-      complex convfunc(convsize, convsize), cwt
+      complex convfunc(convsize, convsize), cwt, crot
 
       complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
 
@@ -230,13 +235,19 @@ C
             xlast=xypos(1,irow)
             ylast=xypos(2,irow)
             doshift=.TRUE.
-            do ix=-support,support
-               phase=-2.0D0*pi*xypos(1,irow)*ix/nx
-               shiftx(ix)=cmplx(cos(phase), sin(phase))
+            phase=-2.0D0*pi*xypos(1,irow)/nx
+            crot=cmplx(cos(phase), sin(phase))
+            shiftx(0)=cmplx(1.0, 0.0)
+            do ix=1,support
+               shiftx(ix)=shiftx(ix-1)*crot
+               shiftx(-ix)=conjg(shiftx(ix))
             end do
-            do iy=-support,support
-               phase=-2.0D0*pi*xypos(2,irow)*iy/ny
-               shifty(iy)=cmplx(cos(phase), sin(phase))
+            phase=-2.0D0*pi*xypos(2,irow)/ny
+            crot=cmplx(cos(phase), sin(phase))
+            shifty(0)=cmplx(1.0, 0.0)
+            do iy=1,support
+               shifty(iy)=shifty(iy-1)*crot
+               shifty(-iy)=conjg(shifty(iy))
             end do
          end if
          if(rflag(irow).eq.0) then
@@ -254,14 +265,18 @@ C
                         do iy=-support,support
                            iloc(2)=convsize/2+1+sampling*iy+off(2)
                            do ix=-support,support
-                              iloc(1)=convsize/2+1
-     $                             +sampling*ix+off(1)
-                              cwt=conjg(convfunc(iloc(1), iloc(2)))
+                              iloc(1)=convsize/2+1+ix*sampling
+     $                             +off(1)
                               if(doshift) then
-                                 cwt=cwt*shiftx(ix)*shifty(iy)
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2)))*shiftx(ix)*shifty(iy)
+                              else
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2)))
                               end if
                               nvalue=nvalue+conjg(cwt)*
-     $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
+     $                             grid(loc(1)+ix,loc(2)+iy,
+     $                             apol,achan)
                            end do
                         end do
                         values(ipol,ichan,irow)=nvalue*conjg(phasor)
