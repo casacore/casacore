@@ -4117,3 +4117,4 @@
 14 065 src mv trial/implement/DisplayDatas/test/tArrayAndDrawing.cc trialdisplay/implement/DisplayDatas/test/tArrayAndDrawing.cc
 14 065 src mv trial/implement/DisplayDatas/test/tArrayAsRaster.cc trialdisplay/implement/DisplayDatas/test/tArrayAsRaster.cc
 14 065 src mv trial/implement/DisplayDatas/test/dLatticeAsRaster.exec trialdisplay/implement/DisplayDatas/test/dLatticeAsRaster.exec
+14 065 src mv trial/implement/DisplayDatas/test/tArrayAndDrawing.exec trialdisplay/implement/DisplayDatas/test/tArrayAndDrawing.exec
