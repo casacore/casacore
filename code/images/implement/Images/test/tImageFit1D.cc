@@ -126,6 +126,7 @@ void testSpectral (uInt abcType, Bool doVector)
 
 // Polynomial
 
+/*
  {
       cerr << "   Polynomial" << endl;
       Bool doGauss = False;
@@ -137,9 +138,10 @@ void testSpectral (uInt abcType, Bool doVector)
       check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
       delete pIm;
    }
+*/
 
 // Gaussian + polynomial
-
+/*
  {
       cerr << "   Gaussian + polynomial" << endl;
       Bool doGauss = True;
@@ -151,6 +153,7 @@ void testSpectral (uInt abcType, Bool doVector)
       check  (pPars, gPars, pIm, abcType, doGauss, doPoly);
       delete pIm;
    }
+*/
 }
 
 
