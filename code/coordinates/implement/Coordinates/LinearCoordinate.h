@@ -1,5 +1,5 @@
 //# LinearCoordinate.h: Assume a general linear relation between pixel and world axes.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,8 +52,15 @@
 // The LinearCoordinate class ties pixel and world axes together through a general
 // linear transformation. 
 //
+// <srcblock>
+// world = (cdelt * PC * (pixel - crpix)) + crval
+// </srcblock>
+// Where PC is an NxN matrix, pixel, crval, crpix and world are length N vectors, and
+// cdelt is an NxN diagonal matrix, represented as a length N vector.
+//
 // The actual computations are carried out in WCSLIB, written by Mark Calabretta
 // of the ATNF.
+//
 // </synopsis>
 //
 // <example>
@@ -61,7 +68,7 @@
 // </example>
 //
 // <motivation>
-// This class is intended for use for exes which do not have specific coordinate
+// This class is intended for use for axes which do not have specific coordinate
 // types. A "time" axis would be a good example.
 // </motivation>
 //
