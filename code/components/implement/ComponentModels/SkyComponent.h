@@ -39,6 +39,7 @@
 
 class SkyCompRep;
 class MDirection;
+class MVAngle;
 template<class T> class Vector;
 template<class T> class ImageInterface;
 
@@ -137,10 +138,13 @@ public:
   SkyComponent & operator=(const SkyComponent & other);
 
   // Return the intensity (in Jy/pixel) of the component at the specified
-  // direction. The Vector contains all the polarizations (Stokes I,Q,U,V)
-  // of the radiation and must be of length 4.
+  // direction. The Vector contains all the polarizations (Stokes I,Q,U,V) of
+  // the radiation and must be of length 4. The returned Vector contains the
+  // different polarizations of the radiation and the pixel size is assumed to
+  // be square.
   virtual void sample(Vector<Double> & result, 
-		      const MDirection & samplePos) const;
+		      const MDirection & samplePos,
+		      const MVAngle & pixelSize) const;
 
   // Project the component onto an Image. The default implementation calls the
   // sample function once for the centre of each pixel. The image needs

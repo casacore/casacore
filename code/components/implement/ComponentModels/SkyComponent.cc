@@ -35,6 +35,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Measures/MVAngle.h>
 #include <aips/Utilities/Assert.h>
 
 SkyComponent::SkyComponent()
@@ -74,8 +75,9 @@ SkyComponent & SkyComponent::operator=(const SkyComponent & other) {
 };
 
 void SkyComponent::sample(Vector<Double> & result, 
-			  const MDirection & samplePos) const {
-  theCompPtr->sample(result, samplePos);
+			  const MDirection & samplePos, 
+			  const MVangle & pixelSize) const {
+  theCompPtr->sample(result, samplePos, pixelSize);
   DebugAssert(ok(), AipsError);
 };
 
