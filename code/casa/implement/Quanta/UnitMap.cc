@@ -452,6 +452,9 @@ void UnitMap::initUM() {
   UnitMap::mapCust->define("pixel",	UnitName("pixel",
 						 UnitVal(1.,UnitDim::Dnon),
 						 "pixel"));
+  UnitMap::mapCust->define("lambda",	UnitName("lambda",
+						 UnitVal(1.,UnitDim::Dnon),
+						 "lambda"));
 
   //# Start with clean cache
   UnitMap::mapCache->clear();
