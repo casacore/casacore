@@ -1,5 +1,5 @@
 //# HistAcc.h: Histogram Accumulator
-//# Copyright (C) 1996,1999,2000
+//# Copyright (C) 1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,11 +36,7 @@
 
 // forward declarations:
 template <class T> class Array;
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
+#include <aips/iosfwd.h>
 class String;
 
 // <reviewed reviewer="" date="" tests="tHistAcc" demos="">
