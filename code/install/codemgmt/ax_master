@@ -2358,3 +2358,5 @@
 09 329 sys rm libexec/polymorphic.g
 09 329 sys rm libexec/object_interface.g
 09 329 sys rm libexec/object_server.g
+09 329 src rm trial/implement/Tasking/control_hub.cc
+09 329 src rm trial/implement/Tasking/control_hub.h
