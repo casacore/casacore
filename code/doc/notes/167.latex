@@ -8,12 +8,14 @@
 
 \setlength{\textwidth}{15cm}
 \setlength{\textheight}{20.5cm}
-\setlength{\evensidemargin}{0.0cm}
-\setlength{\oddsidemargin}{0.0cm}
+\setlength{\evensidemargin}{1.0cm}
+\setlength{\oddsidemargin}{1.0cm}
 \setlength{\topmargin}{0.0cm}
 \setlength{\topskip}{0.0cm}
 \setlength{\parindent}{0.0cm}
 \setlength{\parskip}{0.1cm}
+
+\newcommand{\bmar}{\marginpar[$\parallel$]{$\parallel$}}
 %%-----------------------------------------------------------------------------
 \begin{document}
 
