@@ -1,5 +1,5 @@
 //# Array.h: A templated N-D Array class with variable origin
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA,
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -539,6 +539,7 @@ protected:
     Array(uInt, const Block<Int> &);
     void validateConformance(const Array<T> &) const;
     void validateIndex(const IPosition &) const;
+    Bool contiguousStorage() const;
     // </group>
 };
 
