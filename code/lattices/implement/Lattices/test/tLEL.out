@@ -1,5 +1,5 @@
 >>>
-/home/rzmws0/gvd/gnu/aips++/sun4sol_gnu/bindbg/tLEL: Version  
+tLEL: Version  
 <<<
 LELAttribute
 
@@ -124,9 +124,9 @@ LELBinaryCmp<DComplex>
 
 LELBinaryBool
    Operator ==
-      Caught expected exception; message is: LELBinaryBool::eval - unknown operation
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator !=
-      Caught expected exception; message is: LELBinaryBool::eval - unknown operation
+      Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator &&
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
