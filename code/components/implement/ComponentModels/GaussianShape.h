@@ -285,6 +285,15 @@ public:
 			RecordInterface & record) const;
   // </group>
 
+  // Convert the parameters of the component to the specified units. The
+  // supplied record must have three fields, namely 'majoraxis', 'minoraxis' &
+  // 'positionangle'. These fileds must contains strings that are angular
+  // units and this function will convert the corresponding parameters to the
+  // specified units. This will have no effect on the shape of this class but
+  // will affect the format of the record returned by the toRecord function. 
+  virtual Bool convertUnit(String & errorMessage,
+			   const RecordInterface & record);
+
   // Function which checks the internal data of this class for correct
   // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
