@@ -365,12 +365,8 @@ void LatticeConcat<T>::copyDataAndMask(MaskedLattice<Float>& out,
    for (iter.reset(); !iter.atEnd(); iter++) {
       posIn = iter.position().getFirst(nDimIn);
       shapeIn = iter.cursorShape().getFirst(nDimIn);
-//
-      const Array<T>& pixelsIn = in.getSlice(posIn, shapeIn, False);
-      const Array<Bool>& maskIn = in.getMaskSlice(posIn, shapeIn, False);
-//
-      out.putSlice (pixelsIn, iter.position()); 
-      maskOut.putSlice(maskIn, iter.position());
+      out.putSlice (in.getSlice(posIn, shapeIn, False), iter.position()); 
+      maskOut.putSlice(in.getMaskSlice(posIn, shapeIn, False), iter.position());
    }
 }
 
@@ -393,10 +389,7 @@ void LatticeConcat<T>::copyDataOnly(MaskedLattice<Float>& out,
    for (iter.reset(); !iter.atEnd(); iter++) {
       posIn = iter.position().getFirst(nDimIn);
       shapeIn = iter.cursorShape().getFirst(nDimIn);
-//
-      const Array<T>& pixelsIn = in.getSlice(posIn, shapeIn, False);
-//
-      out.putSlice (pixelsIn, iter.position()); 
+      out.putSlice (in.getSlice(posIn, shapeIn, False), iter.position()); 
    }
 }
 
@@ -412,4 +405,5 @@ void LatticeConcat<T>::checkAxis(uInt axis, uInt ndim) const
       throw(AipsError("Axis number and lattice dimension are inconsistent"));
    }
 }
+
 
