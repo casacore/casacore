@@ -1,32 +1,3 @@
-/*
-    bug.c: Miriad library routine for error handling.
-    Copyright (C) 1999,2000
-    Associated Universities, Inc. Washington DC, USA.
-
-    This library is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Library General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This library is distributed in the hope that it will be useful, but WITHOUT
-    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
-    License for more details.
-
-    You should have received a copy of the GNU Library General Public License
-    along with this library; if not, write to the Free Software Foundation,
-    Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
-
-    Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
-           Postal address: AIPS++ Project Office
-                           National Radio Astronomy Observatory
-                           520 Edgemont Road
-                           Charlottesville, VA 22903-2475 USA
-
-    $Id$
-*/
-
 /************************************************************************/
 /*									*/
 /* This handles errors and can abort your program.			*/
@@ -34,6 +5,8 @@
 /*  History:								*/
 /*    rjs,mjs ????    Very mixed history. Created, destroyed, rewritten.*/
 /*    rjs     26aug93 Call habort_c.					*/
+/*    rjs     14jul98 Add a caste operation in errmsg_c, to attempt	*/
+/*		      to appease some compilers.			*/
 /************************************************************************/
 
 #include <stdio.h>
@@ -111,7 +84,7 @@ char s,*m;
   Input:
     severity	Error severity. Can be one of 'i', 'w', 'e' or 'f'
 		for "informational", "warning", "error", or "fatal"
-    message	The error message text.
+    message	The error message text.					*/
 /*--									*/
 /*----------------------------------------------------------------------*/
 {
@@ -128,12 +101,11 @@ char s,*m;
   if(doabort){
     reentrant = !reentrant;
     if(reentrant)habort_c();
-#ifdef vaxc
+#ifdef vms
 # include ssdef
     lib$stop(SS$_ABORT);
 #else
-    if(Name != NULL)fprintf(stderr,"### Called by: %s\n",Name);    
-    fprintf(stderr,"### Program exiting with return code = 1 ###\n");
+/*    fprintf(stderr,"### Program exiting with return code = 1 ###\n"); */
     exit (1);
 #endif
   }
@@ -146,7 +118,7 @@ int n;
 ------------------------------------------------------------------------*/
 {
   static char string[128];
-#ifdef vaxc
+#ifdef vms
 #include <descrip.h>
   $DESCRIPTOR(string_descriptor,string);
   short int len0;
@@ -157,11 +129,13 @@ int n;
   string[len0] = 0;
   return(string);
 #else
+# if !defined(linux)
   extern int sys_nerr;
-  extern const char *const sys_errlist[];
+  extern char *sys_errlist[];
+# endif
 
 
-  if(n > 0 && n <= sys_nerr)return(sys_errlist[n]);
+  if(n > 0 && n <= sys_nerr)return((char *)sys_errlist[n]);
   else{
     sprintf(string,"Unknown error with number %d detected.",n);
     return(string);
