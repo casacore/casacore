@@ -483,17 +483,24 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 {
   LogIO os(LogOrigin("deconvolver", "setscales()", WHERE));
 
-  itsNscales=scaleSizes.nelements();
-  
+  Int scale;
+
   if(itsScales.nelements()>0) {
     destroyScales();
-    os << "Deleted previous scales" << LogIO::POST;
   }
 
-  os << "Creating new scales" << LogIO::POST;
+  itsNscales=scaleSizes.nelements();
+  
   itsScales.resize(itsNscales);
   itsDirtyConvScales.resize(itsNscales);
   itsPsfConvScales.resize((itsNscales+1)*(itsNscales+1));
+  for(scale=0; scale<itsNscales;scale++) {
+    itsScales[scale] = 0;
+    itsDirtyConvScales[scale] = 0;
+  }
+  for(scale=0; scale<((itsNscales+1)*(itsNscales+1));scale++) {
+    itsPsfConvScales[scale] = 0;
+  }
 
   AlwaysAssert(itsDirty, AipsError);
 
@@ -503,7 +510,6 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
 
-  Int scale;
   for (scale=0; scale<itsNscales;scale++) {
     os << "Calculating image for scale " << scale+1 << LogIO::POST;
     itsScales[scale] = new TempLattice<T>(itsDirty->shape(),
@@ -630,7 +636,7 @@ Bool LatticeCleaner<T>::destroyScales()
   }
   for(uInt scale=0; scale<itsPsfConvScales.nelements();scale++) {
     if(itsPsfConvScales[scale]) delete itsPsfConvScales[scale];
-    itsPsfConvScales[scale]=0;
+    itsPsfConvScales[scale] = 0;
   }
   itsScales.resize(0);
   itsDirtyConvScales.resize(0);
