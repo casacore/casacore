@@ -5974,3 +5974,4 @@
 16 361 src rm doc/gettingresults/gettingresults.dir/skycattbl.ps
 16 361 src rm doc/gettingresults/gettingresults.dir/vdm.ps
 16 367 src rm trialdisplay/apps/viewer/skycatfromascii.help
+16 367 src rm trialdisplay/apps/viewer/skycatfromascii.g
