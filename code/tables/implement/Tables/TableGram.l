@@ -92,6 +92,7 @@ GIVING    [Gg][Ii][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
 IN        [Ii][Nn]
+AS        [Aa][Ss]
 NAME      \\?[A-Za-z_]([A-Za-z_0-9]|(\\.))*
 NAMEFLD   ({NAME}".")?{NAME}?("::")?{NAME}
 TEMPTAB   [$]{INT}
@@ -147,9 +148,13 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
 	    return GIVING;
           }
 
+{AS}      {
+            tableGramPosition() += yyleng;
+            return AS;
+          }
 {IN}      {
             tableGramPosition() += yyleng;
-            return INTOKEN;
+            return IN;
           }
 "["       {
             tableGramPosition() += yyleng;
