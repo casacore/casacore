@@ -124,14 +124,16 @@ SpectralElement &SpectralElement::operator=(const SpectralElement &other) {
 
 Double SpectralElement::operator()(const Double x) const {
   if (tp_p == GAUSSIAN) {
-    return par_p(0)*exp(-(x-par_p(1))*(x-par_p(1))*4*C::ln2/
-			par_p(2)/par_p(2));
+    return par_p(0)*exp(-0.5 * (x-par_p(1))*(x-par_p(1)) / par_p(2)/par_p(2));
   };
-  Double s(0);
+//
+  Double s = 0;
   if (tp_p == POLYNOMIAL) {
-    for (uInt i=n_p; i<=n_p; i--) {
-      s += par_p(i); s *= x;
+    for (uInt i=n_p; i>0; i--) {
+      s += par_p(i); 
+      s *= x;
     };
+    s += par_p(0);            // s = p(0) + p(1)*x + p(2)*x*x   ...
   };    
   return s;
 }
@@ -438,11 +440,11 @@ ostream &operator<<(ostream &os, const SpectralElement &elem) {
 
 Double SpectralElement::sigmaToFWHM (Double sigma) const
 {
-   return sqrt(32.0*C::ln2) * sigma;
+   return sqrt(8.0*C::ln2) * sigma;
 }
 
 Double SpectralElement::sigmaFromFWHM(Double fwhm) const
 {
-   return fwhm / sqrt(32.0*C::ln2);
+   return fwhm / sqrt(8.0*C::ln2);
 }
 
