@@ -1,5 +1,5 @@
 //# RegularFileIO.cc: Class for IO on a regular file
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <stdio.h>
+#include <errno.h>                // needed for errno
+#include <string.h>               // needed for strerror
 
 
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
@@ -72,7 +74,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
     FILE* file = fopen (name.chars(), stropt.chars());
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: error in open or create of file " +
-			  name));
+			  name + ": " + strerror(errno)));
     }
     attach (file, bufferSize, True, writable);
     fillSeekable();
@@ -97,7 +99,7 @@ void RegularFileIO::reopenRW()
     FILE* file = fopen (name.chars(), "rb+");
     if (file == 0) {
 	throw (AipsError ("RegularFileIO: reopenRW not possible for file " +
-			  name));
+			  name + ": " + strerror(errno)));
     }
     uInt bufsize = bufferSize();
     detach();
