@@ -28,7 +28,7 @@ $ $Id$ $}.
 
 \exe{lwf\_a} is a \textsc{PostScript} filter.  It can process multiple input
 files into a single multi-document \textsc{PostScript} file.  If no files are
-specified input is read from stdin.
+specified input is read from \file{stdin}.
 
 \exe{lwf\_a} correctly processes form feed characters and tabs and also
 understands backspacing.  If a fixed-width font is used, such as one of those
@@ -460,8 +460,9 @@ Report the default printer.
 \subsection*{Description}
 
 \exe{prd} returns the name of a host's (or user's) default \aipspp\ printer
-on stdout.  If the \code{PRINTER} environment variable is defined \exe{prd}
-returns its value, otherwise it queries the \aipspp\ resource database.
+on \file{stdout}.  If the \code{PRINTER} environment variable is defined
+\exe{prd} returns its value, otherwise it queries the \aipspp\ resource
+database.
 
 \subsection*{Options}
 
