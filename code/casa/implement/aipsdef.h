@@ -74,7 +74,7 @@ extern Bool aips_debug_on;
 #undef AIPS_USE_OLD_STRING
 #undef AIPS_USE_OLD_STREAM
 #undef AIPS_USE_OLD_COMPLEX
-namespace std {}:
+namespace std {};
 using namespace std;
 #endif
 #endif
