@@ -28,6 +28,7 @@
 
 #include <aips/Lattices/LatticeBase.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Exceptions/Error.h>
 
 
 LatticeBase::~LatticeBase()
@@ -140,3 +141,7 @@ void LatticeBase::clearCache()
 void LatticeBase::showCacheStatistics (ostream&) const
 {}
 
+void LatticeBase::throwBoolMath() const
+{
+  throw AipsError ("Operator +=, etc. cannot be used for a Boolean lattice");
+}
