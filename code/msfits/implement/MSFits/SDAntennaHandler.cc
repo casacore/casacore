@@ -1,5 +1,5 @@
 //# SDAntennaFiller.cc: an ANTENNA filler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Arrays/ArrayUtil.h>
@@ -173,6 +174,8 @@ void SDAntennaHandler::fill(const Record &row)
 		MeasTable::Observatory(pos,*nameKey_p);
 	    }
 	}
+	// convert this to the coordinate system in the table
+	pos = MPosition::Convert(pos, msAntCols_p->positionMeas().getMeasRef())();
 	if (offsetField_p.isAttached()) {
 	    offset = *offsetField_p;
 	}
@@ -183,14 +186,9 @@ void SDAntennaHandler::fill(const Record &row)
 	    if (siteLongFldNum_p < 0) {
 		found = True;
 	    } else {
-		Vector<Double> thisSite, thatSite;
-		thisSite = pos.getAngle().getValue();
 		while (!found && whichOne<foundRows.nelements()) {
-		    thatSite = msAntCols_p->positionMeas()(foundRows(whichOne)).getAngle().getValue();
-		    if (allEQ(thisSite,thatSite) && 
-			allEQ(offset,msAntCols_p->offset()(foundRows(whichOne)))) {
-			found = True;
-		    }
+		  found = pos.getValue() == msAntCols_p->positionMeas()(foundRows(whichOne)).getValue() &&
+		    allEQ(offset,msAntCols_p->offset()(foundRows(whichOne)));
 		    if (!found) whichOne++;
 		}
 	    }
