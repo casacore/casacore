@@ -266,12 +266,11 @@ void ImageSummary<T>::list (LogIO& os,
    }
    if (!this->units().getName().empty()) 
       os << "Image units    : " << this->units().getName() << endl;
-   os << endl;
+
 
 // Obtain CoordinateSystem
 
    const CoordinateSystem cSys = pImage_p->coordinates();
-
 
 // List rest frequency if we can find a spectral axis
 
@@ -285,6 +284,7 @@ void ImageSummary<T>::list (LogIO& os,
             << cSys.spectralCoordinate(coordinate).worldAxisUnits()(axisInCoordinate) << endl;
       }
    }
+   os << endl;
       
 
 
