@@ -101,6 +101,54 @@ Bool LatticeRegion::isWritable() const
 }
 
 
+uInt LatticeRegion::advisedMaxPixels() const
+{
+  return itsRegion->advisedMaxPixels();
+}
+
+IPosition LatticeRegion::doNiceCursorShape (uInt maxPixels) const
+{
+    if (itsHasRegionMask) {
+        return itsRegion->niceCursorShape (maxPixels);
+    }
+    return LatticeBase::doNiceCursorShape (maxPixels);
+}
+
+uInt LatticeRegion::maximumCacheSize() const
+{
+  return itsRegion->maximumCacheSize();
+}
+
+void LatticeRegion::setMaximumCacheSize (uInt howManyPixels)
+{
+  itsRegion->setMaximumCacheSize (howManyPixels);
+}
+
+void LatticeRegion::setCacheSizeFromPath (const IPosition& sliceShape,
+					  const IPosition& windowStart,
+					  const IPosition& windowLength,
+					  const IPosition& axisPath)
+{
+  itsRegion->setCacheSizeFromPath (sliceShape, windowStart, windowLength,
+				   axisPath);
+}
+
+void LatticeRegion::setCacheSizeInTiles (uInt howManyTiles)
+{
+  itsRegion->setCacheSizeInTiles (howManyTiles);
+}
+
+void LatticeRegion::clearCache()
+{
+  itsRegion->clearCache();
+}
+
+void LatticeRegion::showCacheStatistics (ostream& os) const
+{
+  itsRegion->showCacheStatistics (os);
+}
+
+
 Bool LatticeRegion::lock (FileLocker::LockType type, uInt nattempts)
 {
     // Llock the PagedArray containing the mask.
@@ -178,14 +226,6 @@ void LatticeRegion::doPutSlice (const Array<Bool>& sourceBuffer,
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->putSlice (sourceBuffer, where, stride);
-}
-
-IPosition LatticeRegion::doNiceCursorShape (uInt maxPixels) const
-{
-    if (itsHasRegionMask) {
-        return itsRegion->niceCursorShape (maxPixels);
-    }
-    return Lattice<Bool>::doNiceCursorShape (maxPixels);
 }
 
 void LatticeRegion::set (const Bool& value)

@@ -132,9 +132,60 @@ LCRegion* LCMask::cloneRegion() const
 }
 
 
+uInt LCMask::advisedMaxPixels() const
+{
+  return itsMask->advisedMaxPixels();
+}
+
+IPosition LCMask::doNiceCursorShape (uInt maxPixels) const
+{
+  return itsMask->niceCursorShape (maxPixels);
+}
+
+uInt LCMask::maximumCacheSize() const
+{
+  return itsMask->maximumCacheSize();
+}
+
+void LCMask::setMaximumCacheSize (uInt howManyPixels)
+{
+  itsMask->setMaximumCacheSize (howManyPixels);
+}
+
+void LCMask::setCacheSizeFromPath (const IPosition& sliceShape,
+				   const IPosition& windowStart,
+				   const IPosition& windowLength,
+				   const IPosition& axisPath)
+{
+  itsMask->setCacheSizeFromPath (sliceShape, windowStart, windowLength,
+				 axisPath);
+}
+
+void LCMask::setCacheSizeInTiles (uInt howManyTiles)
+{
+  itsMask->setCacheSizeInTiles (howManyTiles);
+}
+
+void LCMask::clearCache()
+{
+  itsMask->clearCache();
+}
+
+void LCMask::showCacheStatistics (ostream& os) const
+{
+  itsMask->showCacheStatistics (os);
+}
+
+LatticeIterInterface<Bool>* LCMask::makeIter
+                                   (const LatticeNavigator& navigator) const
+{
+  return itsMask->makeIter (navigator);
+}
+
+
 Bool LCMask::lock (FileLocker::LockType type, uInt nattempts)
 {
-  // Llock the PagedArray containing the mask.
+  // Lock the PagedArray containing the mask.
   return itsMask->lock (type, nattempts);
 }
 void LCMask::unlock()

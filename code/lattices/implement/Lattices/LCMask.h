@@ -107,6 +107,45 @@ public:
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
 
+  // This function is used by the LatticeIterator class to generate an
+  // iterator of the correct type for this Lattice. Not recommended
+  // for general use. 
+  virtual LatticeIterInterface<Bool>*  makeIter
+                           (const LatticeNavigator& navigator) const;
+
+  // Returns the maximum recommended number of pixels for a cursor.
+  // This is the number of pixels in a tile. 
+  virtual uInt advisedMaxPixels() const;
+
+  // Help the user pick a cursor for most efficient access.
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+
+  // Maximum size - not necessarily all used. In pixels.
+  virtual uInt maximumCacheSize() const;
+
+  // Set the maximum (allowed) cache size as indicated.
+  virtual void setMaximumCacheSize (uInt howManyPixels);
+
+  // Set the cache size as to "fit" the indicated path.
+  virtual void setCacheSizeFromPath (const IPosition& sliceShape,
+				     const IPosition& windowStart,
+				     const IPosition& windowLength,
+				     const IPosition& axisPath);
+
+  // Set the actual cache size for this Array to be be big enough for the
+  // indicated number of tiles. This cache is not shared with PagedArrays
+  // in other rows and is always clipped to be less than the maximum value
+  // set using the setMaximumCacheSize member function.
+  // tiles. Tiles are cached using a first in first out algorithm. 
+  virtual void setCacheSizeInTiles (uInt howManyTiles);
+
+  // Clears and frees up the caches, but the maximum allowed cache size is 
+  // unchanged from when setCacheSize was called
+  virtual void clearCache();
+
+  // Report on cache success.
+  virtual void showCacheStatistics (ostream& os) const;
+
   // Handle the (un)locking.
   // <group>
   virtual Bool lock (FileLocker::LockType, uInt nattempts);

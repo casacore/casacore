@@ -117,6 +117,58 @@ LCRegion* LCPagedMask::cloneRegion() const
     return new LCPagedMask(*this);
 }
 
+
+uInt LCPagedMask::advisedMaxPixels() const
+{
+    return itsMask.advisedMaxPixels();
+}
+
+IPosition LCPagedMask::doNiceCursorShape (uInt maxPixels) const
+{
+    return itsMask.niceCursorShape (maxPixels);
+}
+
+uInt LCPagedMask::maximumCacheSize() const
+{
+    return itsMask.maximumCacheSize();
+}
+
+void LCPagedMask::setMaximumCacheSize (uInt howManyPixels)
+{
+    itsMask.setMaximumCacheSize (howManyPixels);
+}
+
+void LCPagedMask::setCacheSizeFromPath (const IPosition& sliceShape,
+					const IPosition& windowStart,
+					const IPosition& windowLength,
+					const IPosition& axisPath)
+{
+    itsMask.setCacheSizeFromPath (sliceShape, windowStart, windowLength,
+				  axisPath);
+}
+
+void LCPagedMask::setCacheSizeInTiles (uInt howManyTiles)
+{
+    itsMask.setCacheSizeInTiles (howManyTiles);
+}
+
+void LCPagedMask::clearCache()
+{
+    itsMask.clearCache();
+}
+
+void LCPagedMask::showCacheStatistics (ostream& os) const
+{
+    itsMask.showCacheStatistics (os);
+}
+
+LatticeIterInterface<Bool>* LCPagedMask::makeIter
+                                   (const LatticeNavigator& navigator) const
+{
+  return itsMask.makeIter (navigator);
+}
+
+
 void LCPagedMask::handleDelete()
 {
     // Test if the table can be deleted (i.e. is not used elsewhere).
