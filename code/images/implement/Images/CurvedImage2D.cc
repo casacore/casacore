@@ -29,6 +29,8 @@
 #include <trial/Lattices/CurvedLattice2D.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
@@ -51,9 +53,17 @@ CurvedImage2D<T>::CurvedImage2D (const ImageInterface<T>& image,
 {
   itsCurLatPtr = new CurvedLattice2D<T> (image, interpolator, curve,
 					 axis1, axis2, curveAxis);
-  CoordinateSystem newCsys;
-///   -----   fill in new Csys  -----  ///
-  setCoordsMember (newCsys);
+
+// Currently the output CS is an arbitrary Linear system
+// A correct CS needs to be set. Probably some new Coordinates
+// need to be derived to do this.  
+
+  CoordinateSystem cSysOut;
+  LinearCoordinate c(itsCurLatPtr->ndim());
+  cSysOut.addCoordinate(c);  
+  cSysOut.setObsInfo(itsImagePtr->coordinates().obsInfo());
+//
+  setCoordsMember (cSysOut);
   setImageInfoMember (itsImagePtr->imageInfo());
   setMiscInfoMember (itsImagePtr->miscInfo());
   setUnitMember (itsImagePtr->units());

@@ -129,6 +129,8 @@ public:
   // last axis.
   // An exception is thrown if the dimensionality of the input image is < 2
   // or if the given axes numbers are too high.
+  // Note that the output CoordinateSystem of the CurvedImage is just a dummy
+  // LinearCoordinate at this point.  The values are all arbitrary.
   CurvedImage2D (const ImageInterface<T>&, const CLInterpolator2D<T>&,
 		 const PixelCurve1D&, uInt axis1, uInt axis2,
 		 Int curveAxis=-1);
