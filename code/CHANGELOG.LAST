@@ -1,0 +1,14 @@
+
+change id: 0003
+ author:   Ger van Diepen
+ date:     2002/12/13
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  Added STL-style iterator
+In the Array class an STL-style iterator has been added. For contiguous arrays it is about 20% slower than using the pointer returned by getStorage, but for non-contiguous arrays it is considerably faster.
+Currently only a forward iterator exist (for const and non-const).
+If needed, a backward iterator could be added in the future.
