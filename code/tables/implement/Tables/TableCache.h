@@ -1,5 +1,5 @@
 //# TableCache.h: Cache of open tables
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -102,6 +102,14 @@ public:
     // Return a pointer to a table if found (thus if already open).
     // Return a zero pointer if not found.
     PlainTable* operator() (const String& tableName) const;
+
+    // Try to find a table at the given index in the cache.
+    // Return a pointer to a table if found (thus if already open).
+    // Return a zero pointer if not found.
+    PlainTable* operator() (uInt index) const;
+
+    // Return the number of open tables in the cache.
+    uInt ntable() const;
 
     // Add an open table to the cache.
     void define (const String& tableName, PlainTable*);

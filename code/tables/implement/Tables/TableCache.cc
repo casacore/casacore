@@ -1,5 +1,5 @@
 //# TableCache.cc: Cache of open tables
-//# Copyright (C) 1994,1995
+//# Copyright (C) 1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,6 +41,17 @@ PlainTable* TableCache::operator() (const String& tableName) const
 	return *ptr;
     return 0;
 }
+
+PlainTable* TableCache::operator() (uInt index) const
+{
+    return (PlainTable*) (tableMap_p.getVal (index));
+}
+
+uInt TableCache::ntable() const
+{
+    return tableMap_p.ndefined();
+}
+
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
