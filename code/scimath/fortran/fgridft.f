@@ -46,7 +46,7 @@ C
       real weight(nvischan, nrow), sumwt(npol, nchan)
       integer irow
       integer support, sampling
-      integer chanmap(nvischan), polmap(nvischan)
+      integer chanmap(nchan), polmap(npol)
       integer dopsf
 
       complex nvalue
