@@ -1,5 +1,5 @@
 //# QLogical.h: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,9 +73,11 @@
 //
 // They can be subdivided into various groupings:
 // <ul>
-//   <li> <linkto file="QLogical.h#equality">Straight comparisons: unequal if non-conformant units or different values</linkto>
+//   <li> <linkto file="QLogical.h#equality">Straight comparisons: 
+//          unequal if non-conforming units or different values</linkto>
 //   <li> <linkto file="QLogical.h#compare">Comparisons</linkto>
-//   <li> <linkto file="QLogical.h#foreign">Special make Bool routines to cater for array comparisons</linkto>
+//   <li> <linkto file="QLogical.h#foreign">Special make Bool routines
+//                to cater for array comparisons</linkto>
 // </ul
 //
 // The operations defined are:
@@ -84,7 +86,6 @@
 //   <li> Quantum<T> != Quantum<T> or !=T 
 //   <li> > < >= <= of Quantum<T> or T and Quantum<T>
 //   <li> near, nearAbs(Quantum<T> or T, Quantum<T> or T [, tolerance]) 
-
 // </ul>
 // </synopsis> 
 //
@@ -98,7 +99,7 @@
 //		and get rid of the special QMakeBool(), and the
 //		include LogiArrayFwd.h
 // </todo>
-
+//
 // <linkfrom anchor="Quantum logical operations" classes="Quantum">
 //   <here>Quantum logical operations</here> -- Logical operations
 //   for the Quantum class.
@@ -107,7 +108,9 @@
 // <group name="Quantum logical operations">
 
 //
-// Straight comparisons: unequal if non-conformant units or different values
+// Straight comparisons: unequal if non-conforming units or different values
+// if units made equal. I.e. <src> 1in != 1m </src>,
+// <src> 1in != 1s </src>, <src> 36in == 1yd </src>./
 // <group name="equality">
 template <class Qtype>
 Bool operator==(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
@@ -123,7 +126,9 @@ template <class Qtype>
 Bool operator!=(const Qtype &left, const Quantum<Qtype> &other);
 // </group>
 
-// Near-ness tests: unequal if non-conformant units
+// Near-ness tests: unequal if non-conforming units. In other cases the
+// tolerance is in the units of the first argument, with the second argument
+// converted, if necessary, to the same units as the first.
 // Note (SUN?) compiler does not accept default arguments in template functions
 // <group name="near">
 template <class Qtype>
@@ -158,9 +163,10 @@ Bool nearAbs(const Qtype &left, const Quantum<Qtype> &other,
 	  Double tol);
 // </group>
 //
-// Comparisons
+// Comparisons. The comparisons are done on values at equal units with
+// transparent conversion if necessary.
 // <thrown>
-//   <li> AipsError if non-conformant units
+//   <li> AipsError if non-conforming units
 // </thrown>
 // <group name="compare">
 template <class Qtype>
