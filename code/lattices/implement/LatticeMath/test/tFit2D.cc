@@ -1,5 +1,5 @@
 //# tFit2D.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1998,1999
+//# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
    LogOrigin or("tFit2D", "main()", WHERE);
    LogIO logger(or);
    MLCG generator; 
-   Normal noiseGen(0.0, noise, &generator);  
+   Normal noiseGen(&generator, 0.0, noise);  
 
    Gaussian2D<Double> gauss2d;
    gauss2d.setHeight(height);
