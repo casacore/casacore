@@ -36,6 +36,7 @@
 #include <trial/Coordinates/Coordinate.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayAccessor.h>
 #include <aips/Containers/Record.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
@@ -486,7 +487,6 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       if (useConversionType) { 
          convertTo(worldOut);
       }
-   
    }
    return True;
 }
@@ -512,7 +512,9 @@ Bool DirectionCoordinate::toWorldMany (Matrix<Double>& world,
     Vector<Double> phi(nCoord);
     Vector<Double> theta(nCoord);
     Vector<Int> stat(nCoord);
-//
+
+// Convert with wcs to degrees
+
     Double* pImgCrd = imgCrd.getStorage(deleteImgCrd);    
     Double* pPhi = phi.getStorage(deletePhi);    
     Double* pTheta = theta.getStorage(deleteTheta);    
@@ -531,18 +533,26 @@ Bool DirectionCoordinate::toWorldMany (Matrix<Double>& world,
     theta.putStorage(pTheta, deleteTheta);
     stat.putStorage(pStat, deleteStat);
 //
-    Vector<Double> r0(world.row(0));
-    r0 /= to_degrees_p[0];
-    Vector<Double> r1(world.row(1));
-    r1 /= to_degrees_p[1];
-//
     if (iret!=0) {
         String errorMsg= "wcs wcsp2s_error: ";
         errorMsg += wcsp2s_errmsg[iret];
         set_error(errorMsg);
         return False;
     }
+
+// Convert to correct angular units from degrees
+
+    Vector<Double> r0(world.row(0));
+    r0 /= to_degrees_p[0];
+    Vector<Double> r1(world.row(1));
+    r1 /= to_degrees_p[1];
+
+// Convert to specified conversion reference type
+  
+    convertToMany(world);  
+//
     return True;
+
 }     
 
 
@@ -555,13 +565,24 @@ Bool DirectionCoordinate::toPixelMany (Matrix<Double>& pixel,
     AlwaysAssert(world.nrow()==nWorld, AipsError);
     pixel.resize(world.shape());
     failures.resize(nCoord);
-//
-    Matrix<Double> world2(world.copy());
+
+// Copy input as we have to convert it to all sorts of things
+
+    Matrix<Double> world2(world.copy());    
+
+// Convert from specified conversion reference type
+
+    convertFromMany (world2);
+
+// Convert to degrees for wcs
+
     Vector<Double> r0(world2.row(0));
     r0 *= to_degrees_p[0];
     Vector<Double> r1(world2.row(1));
     r1 *= to_degrees_p[1];
-//   
+
+// Convert with wcs
+
     Bool deleteWorld, deletePixel;
     Double* pPixel = pixel.getStorage(deletePixel);
     const Double* pWorld = world2.getStorage(deleteWorld);
@@ -1969,6 +1990,41 @@ void DirectionCoordinate::convertTo (Vector<Double>& world) const
    }
 }
 
+void DirectionCoordinate::convertToMany (Matrix<Double>& world) const
+
+{
+// Make sure there is something to do !
+
+    if (!pConversionMachineTo_p) return;
+//
+    AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
+    Vector<Double> worldTmp(nWorldAxes());
+    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    ArrayAccessor<Double, Axis<0> > iWorld;
+//
+    uInt k;
+    for (jWorld.reset(); jWorld!=jWorld.end(); ++jWorld) {
+       iWorld = jWorld;            // Partial assignment
+       for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+          worldTmp[k] = *iWorld;
+       }
+
+// Convert this coordinate pair
+
+       convertTo(worldTmp);
+
+// Fill back into Matrix
+
+       iWorld = jWorld;            // Partial assigment
+       for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+           *iWorld = worldTmp[k];
+       }
+    }
+}
+
+
+
+
 void DirectionCoordinate::convertFrom (Vector<Double>& world) const
 {
    static MVDirection inMV;
@@ -1981,6 +2037,40 @@ void DirectionCoordinate::convertFrom (Vector<Double>& world) const
       world = (*pConversionMachineFrom_p)(inMV).getValue().get() / to_radians_p;
    }
 }
+
+
+void DirectionCoordinate::convertFromMany (Matrix<Double>& world) const
+{
+
+// Make sure there is something to do
+
+    if (!pConversionMachineFrom_p) return;
+//
+    AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
+    Vector<Double> worldTmp(nWorldAxes());
+    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    ArrayAccessor<Double, Axis<0> > iWorld;
+//
+    uInt k;
+    for (jWorld.reset(); jWorld!=jWorld.end(); ++jWorld) {
+       iWorld = jWorld;            // Partial assignment
+       for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+          worldTmp[k] = *iWorld;
+       }
+
+// Convert this coordinate pair
+
+       convertFrom(worldTmp);
+
+// Fill back into Matrix
+
+       iWorld = jWorld;            // Partial assigment
+       for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
+           *iWorld = worldTmp[k];
+       }
+    }
+}
+
 
 Double DirectionCoordinate::putLongInPiRange (Double lon, const String& unit) const
 {  

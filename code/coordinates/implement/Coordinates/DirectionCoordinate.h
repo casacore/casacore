@@ -660,10 +660,16 @@ private:
    void makeConversionMachines();
 
    // Convert from type_p -> conversionType_p
+   // <group>
    void convertTo (Vector<Double>& world) const;
+   void convertToMany (Matrix<Double>& world) const;
+   // </group>
 
    // Convert from conversionType_p -> type_p
+   // <group>
    void convertFrom (Vector<Double>& world) const;
+   void convertFromMany (Matrix<Double>& world) const;
+   // </group>
 
    // Set up the offset coordinate rotation matrix.  Units
    // of long and lat are current world units
