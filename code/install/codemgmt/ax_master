@@ -2689,3 +2689,4 @@
 11 409 src rm install/docutils/class
 11 411 src mv trial/implement/mathematics.g trial/implement/Mathematics/mathematics.g
 11 411 src mv trial/implement/mathematics.help trial/implement/Mathematics/mathematics.help
+11 411 src mv trial/implement/componentmodels.help trial/implement/Mathematics/componentmodels.help
