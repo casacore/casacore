@@ -1,5 +1,5 @@
 //# LoggerHolder.h: Class holding a hierarchy of loggers
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,7 @@
 //# Forward Declarations
 class LoggerHolderRep;
 class LoggerHolderIterator;
+class TableLogSink;
 
 // <summary>
 // Class holding a hierarchy of loggers.
