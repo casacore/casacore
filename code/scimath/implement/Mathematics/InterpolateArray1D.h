@@ -135,7 +135,7 @@ public:
     linear,
     // cubic
     cubic,
-    // cubic splice
+    // cubic spline
     spline
   };
 
@@ -156,14 +156,18 @@ public:
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // TODO: implement flags for cubic and spline (presently ignored)
+  // TODO: implement flags for cubic and spline (presently input flags
+  // are copied to output).  If goodIsTrue==True, then that means
+  // a good data point has a flag value of True (usually for 
+  // visibilities, good is False and for images good is True)
   static void interpolate(Array<Range>& yout, 
 			  Array<Bool>& youtFlags,
 			  const Block<Domain>& xout,
 			  const Block<Domain>& xin, 
 			  const Array<Range>& yin,
 			  const Array<Bool>& yinFlags,
-			  Int method);
+			  Int method,
+                          Bool goodIsTrue=F);
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
@@ -183,7 +187,7 @@ private:
 			     const Block<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
 			     const PtrBlock<const Bool*>& yinFlags, 
-			     Int method);
+			     Int method, Bool goodIsTrue);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
