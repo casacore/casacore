@@ -129,7 +129,7 @@ public:
   // Specify which pixel axes of outImage are to be
   // regridded
   void regrid(ImageInterface<T>& outImage, 
-              typename Interpolate2D<T>::Method method,
+              typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
               Bool showProgress=False);
@@ -195,6 +195,21 @@ public:
                           const DirectionCoordinate& dirOut,
                           LogIO& os) const;
 
+  // Regrid one Coordinate
+   void regridOneCoordinate (LogIO& os, IPosition& outShape2,
+                             Vector<Bool>& doneOutPixelAxes,
+                             MaskedLattice<T>* &inPtr,   
+                             MaskedLattice<T>* &outPtr,  
+                             CoordinateSystem& outCoords,
+                             const CoordinateSystem& inCoords,
+                             const Vector<Int>& pixelAxisMap1,
+                             const Vector<Int>& pixelAxisMap2,
+                             Int outPixelAxis,
+                             const ImageInterface<T>& inImage,
+                             const IPosition& outShape,
+                             Bool outIsMasked, Bool showProgress,
+                             typename Interpolate2D::Method method);
+
   // Regrid 2 coupled axes
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
@@ -203,9 +218,33 @@ public:
                  const Vector<Int> inPixelAxes, 
                  const Vector<Int> outPixelAxes,
                  const Vector<Int> pixelAxisMap,
-                 typename Interpolate2D<T>::Method method,
+                 typename Interpolate2D::Method method,
                  MDirection::Convert& machine,
                  Bool useMachine, Bool showProgress, Double scale);
+
+  // Resample 2 axes
+  void ImageRegrid<T>::resample2D (MaskedLattice<T>& outLattice,
+                                   const MaskedLattice<T>& inLattice,
+                                   const Vector<Int> inPixelAxes,
+                                   const Vector<Int> outPixelAxes,
+                                   const Vector<Int> pixelAxisMap,
+                                   typename Interpolate2D::Method method,
+                                   Bool showProgress, Double scale);
+
+  // Make coordinate grid for this cursor.
+  void make2DWorldCoordinateGrid (Bool& allFail, Bool&missedIt,
+                             Double& minInX, Double& minInY, 
+                             Double& maxInX, Double& maxInY,
+                             Cube<Double>& in2DPos,
+                             Matrix<Bool>& failed,
+                             MDirection::Convert& machine, 
+                             const DirectionCoordinate& inCoord,
+                             const DirectionCoordinate& outCoord,
+                             Int inPixelAxis0, Int inPixelAxis1,
+                             const IPosition& inShape,
+                             const IPosition& outPos,
+                             const IPosition& cursorShape,
+                             Bool useMachine);
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
@@ -217,7 +256,7 @@ public:
                  Int inAxisInCoordinate,
                  Int outAxisInCoordinate,
                  const Vector<Int> pixelAxisMap,
-                 typename Interpolate2D<T>::Method method,
+                 typename Interpolate2D::Method method,
                  MFrequency::Convert& machine,
                  Bool useMachine, Bool showProgress);
 };
