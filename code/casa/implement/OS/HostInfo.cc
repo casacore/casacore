@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <casa/OS/HostInfo.h>
+#include "HostInfo.h"
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 
@@ -177,7 +177,7 @@ HOSTINFO_IMPLEMENT_MEMBERS
 } //# NAMESPACE CASA - END
 
 #elif defined(AIPS_SOLARIS)
-#include <casa/OS/HostInfoSolaris.h>
+#include "HostInfoSolaris.h"
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 HOSTINFO_IMPLEMENT_MEMBERS

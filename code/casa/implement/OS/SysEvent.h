@@ -338,7 +338,7 @@ public:
     virtual SysEventTarget &getTarget() {return *tgt;}
     SysEventTargetProc getTargetProc() {return tgtProc;}
     TargetType type() const { return tgtProc ? ProcTgt : ClassTgt; }
-    virtual uInt id() const { return Register(this); }
+    virtual uInt id() const ; //{ return Register(this); }
 };
 
 

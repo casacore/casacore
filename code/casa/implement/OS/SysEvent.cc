@@ -99,6 +99,8 @@ SysEventTargetInfo &SysEventTargetInfo::operator=(SysEventTargetInfo &other) {
     return *this;
 }
 
+uInt SysEventTargetInfo::id() const{ return Register(this); }
+
 Regex &SysEventTargetInfo::getRegex() { return *regex; }
 
 
