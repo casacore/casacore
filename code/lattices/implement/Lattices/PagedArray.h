@@ -406,11 +406,24 @@ public:
   // remain on disk after the PagedArray goes out of scope or is deleted.
   PagedArray(const IPosition & shape, const String & filename);
 
+  // Construct a new PagedArray with the specified shape. A new Table with
+  // the specified filename is constructed to hold the array. The Table will
+  // remain on disk after the PagedArray goes out of scope or is deleted.
+  // Allows tile shape to be specified.
+  PagedArray(const IPosition & shape, const String & filename, const IPosition& tileShape);
+
   // Construct a new PagedArray with the specified shape. A scratch Table is
   // created in the current working directory to hold the array. This Table
   // will be deleted automatically when the PagedArray goes out of scope or
   // is deleted.
   PagedArray(const IPosition & shape);
+
+  // Construct a new PagedArray with the specified shape. A scratch Table is
+  // created in the current working directory to hold the array. This Table
+  // will be deleted automatically when the PagedArray goes out of scope or
+  // is deleted.
+  // Allows tile shape to be specified.
+  PagedArray(const IPosition & shape, const IPosition& tileShape);
 
   // construct a new PagedArray, with the specified shape, in the default
   // row and column of the supplied Table.

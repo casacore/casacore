@@ -71,6 +71,18 @@ PagedArray(const IPosition & shape, const String & filename)
 };
 
 template<class T> PagedArray<T>::
+PagedArray(const IPosition & shape, const String & filename, const IPosition & tileShape) 
+  :theColumnName(defaultColumn()),
+   theRowNumber(defaultRow()) 
+{
+  makeTable(filename, Table::New);
+  checkTileShape(shape, tileShape);
+  makeArray(shape, tileShape);
+  setTableType();
+  AlwaysAssert(ok() == True, AipsError);
+};
+
+template<class T> PagedArray<T>::
 PagedArray(const IPosition & shape)
   :theColumnName(defaultColumn()),
    theRowNumber(defaultRow())
@@ -78,6 +90,19 @@ PagedArray(const IPosition & shape)
   Path filename=File::newUniqueName(String("./"), String("pagedArray"));
   makeTable(filename.absoluteName(), Table::Scratch);
   makeArray(shape, defaultTileShape(shape));
+  setTableType();
+  AlwaysAssert(ok() == True, AipsError);
+};
+
+template<class T> PagedArray<T>::
+PagedArray(const IPosition & shape, const IPosition & tileShape)
+  :theColumnName(defaultColumn()),
+   theRowNumber(defaultRow())
+{
+  checkTileShape(shape, tileShape);
+  Path filename=File::newUniqueName(String("./"), String("pagedArray"));
+  makeTable(filename.absoluteName(), Table::Scratch);
+  makeArray(shape, tileShape);
   setTableType();
   AlwaysAssert(ok() == True, AipsError);
 };
