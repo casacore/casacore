@@ -1,5 +1,5 @@
 //# OrderedMap.cc: Templated associatve array (map) classes with ordered keys
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ MapRep<key,value> *OrderedMapRep<key,value>::Clone () const
   ret->nrused  = nrused;
   ret->nrincr  = nrincr;
   for (uInt i = 0; i<nrused; i++) {
-    ret->kvblk[i] = new OrderedPair<key,value>(kvblk[i]->Key, kvblk[i]->Val);
+    ret->kvblk[i] = new OrderedPair<key,value>(kvblk[i]->x(), kvblk[i]->y());
   }
   return ret;
 }
@@ -237,10 +237,10 @@ Int OrderedMapRep<key,value>::findKey (const key& k, Bool& defined) const {
     defined = False;
     while (st<=ent) {
         i = (st+ent)/2;
-        if (k < kvblk[i]->Key) {
+        if (k < kvblk[i]->x()) {
             ent = i-1;
         }else{
-	    if (k > kvblk[i]->Key) {
+	    if (k > kvblk[i]->x()) {
                 i++;
                 st = i;
             }else{
