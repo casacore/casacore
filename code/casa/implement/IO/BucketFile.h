@@ -113,6 +113,9 @@ public:
     // Close the file (if open).
     void close();
 
+    // Fsync the file (i.e. force the data to be physically written).
+    void fsync();
+
     // Set the file to read/write access.
     // It does nothing if the file is already writable.
     void setRW();
