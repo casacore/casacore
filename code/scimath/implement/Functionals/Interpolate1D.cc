@@ -1,5 +1,5 @@
 //# Interpolate1D.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -294,23 +294,28 @@ operator()(const Domain &x_req) const {
       where = nElements - 4;
     return polynomialInterpolation(x_req, (uInt) 4, where);
   case spline: // natural cubic splines
-    if (where == nElements)
+    {
+      if (where == nElements)
+	where--;
+      else if (where == 0)
+	where++;
+      Domain dx, h, a, b;
+      Range y1d, y2d;
+      
+      x2 = xValues[where]; y2 = yValues[where]; y2d = y2Values[where];
       where--;
-    else if (where == 0)
-      where++;
-    Domain dx, h, a, b;
-    Range y1d, y2d;
-    
-    x2 = xValues[where]; y2 = yValues[where]; y2d = y2Values[where];
-    where--;
-    x1 = xValues[where]; y1 = yValues[where]; y1d = y2Values[where];
-    if (nearAbs(x1, x2)) 
-      throw(AipsError("Interpolate1D::operator()"
-		      " data has repeated x values"));
-    dx = x2-x1;
-    a = (x2-x_req)/dx; 
-    b = 1-a;
-    h = dx*dx/6.;
-    return a*y1 + b*y2 + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
+      x1 = xValues[where]; y1 = yValues[where]; y1d = y2Values[where];
+      if (nearAbs(x1, x2)) 
+	throw(AipsError("Interpolate1D::operator()"
+			" data has repeated x values"));
+      dx = x2-x1;
+      a = (x2-x_req)/dx; 
+      b = 1-a;
+      h = dx*dx/6.;
+      return a*y1 + b*y2 + h*(a*a*a-a)*y1d + h*(b*b*b-b)*y2d;
+    }
+  default:
+    throw AipsError("Interpolate1D::operator() - unknown type");
   }
+  return y1;       // to make compiler happy
 }
