@@ -88,6 +88,11 @@ public:
   static void UVRange(VisSet &vs, const Double& uvmin, const Double& uvmax,
 		      Double& sumwt);
 
+
+  // Calculate sensitivity
+  static void Sensitivity(VisSet &vs, Quantity& pointsourcesens, Double& relativesens,
+			  Double& sumwt);
+
 };
 #endif
 

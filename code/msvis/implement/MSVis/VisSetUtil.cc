@@ -86,6 +86,7 @@ void VisSetUtil::WeightNatural(VisSet& vs, Double& sumwt) {
   VisBuffer vb(vi);
   
   sumwt=0.0;
+
   for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
     for (vi.origin();vi.more();vi++) {
       Int nRow=vb.nRow();
@@ -115,6 +116,7 @@ void VisSetUtil::WeightUniform(VisSet& vs,
   LogIO os(LogOrigin("VisSetUtil", "WeightUniform()", WHERE));
   
   sumwt=0.0;
+
   VisIter& vi(vs.iter());
   VisBuffer vb(vi);
   
@@ -219,6 +221,7 @@ void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
   LogIO os(LogOrigin("VisSetUtil", "WeightRadial()", WHERE));
   
   sumwt=0.0;
+
   VisIter& vi(vs.iter());
   VisBuffer vb(vi);
   
@@ -345,5 +348,49 @@ void VisSetUtil::UVRange(VisSet &vs, const Double& uvmin, const Double& uvmax,
       vi.setImagingWeight(vb.imagingWeight());
     }
   }
+}
+
+// Calculate sensitivity
+void VisSetUtil::Sensitivity(VisSet &vs, Quantity& pointsourcesens, Double& relativesens,
+			     Double& sumwt)
+{
+  LogIO os(LogOrigin("VisSetUtil", "Sensitivity()", WHERE));
+  
+  sumwt=0.0;
+  Double sumwtsq=0.0;
+  Double sumInverseVariance=0.0;
+  ROVisIter& vi(vs.iter());
+  VisBuffer vb(vi);
+
+  // Now iterate through the data
+  for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
+    for (vi.origin();vi.more();vi++) {
+      Int nRow=vb.nRow();
+      Int nChan=vb.nChannel();
+      for (Int row=0; row<nRow; row++) {
+        Double variance=square(vb.sigma()(row));
+	for (Int chn=0; chn<nChan; chn++) {
+	  if(!vb.flag()(chn,row)&&variance>0.0) {
+	    sumwt+=vb.imagingWeight()(chn,row);
+	    sumwtsq+=square(vb.imagingWeight()(chn,row))*variance;
+	    sumInverseVariance+=1.0/variance;
+	  }
+	}
+      }
+    }
+  }
+
+  if(sumwt==0.0) {
+    os << "Cannot calculate sensitivity: sum of weights is zero" << endl
+       << "Perhaps you need to weight the data" << LogIO::EXCEPTION;
+  }
+  if(sumInverseVariance==0.0) {
+    os << "Cannot calculate sensitivity: sum of inverse variances is zero" << endl
+       << "Perhaps you need to weight the data" << LogIO::EXCEPTION;
+  }
+
+  Double naturalsens=1.0/sqrt(sumInverseVariance);
+  pointsourcesens=Quantity(sqrt(sumwtsq)/sumwt, "Jy");
+  relativesens=sqrt(sumwtsq)/sumwt/naturalsens;
 }
 
