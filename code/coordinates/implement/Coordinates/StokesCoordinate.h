@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,7 +110,7 @@ public:
     // same as the vector which was given at construction time). The nearest
     // integer is taken, and values less than zero or beyond the end of the
     // vector result in an error. For world to pixel the reverse operation
-    // happens.
+    // happens.  The output vectors are appropriately resized before use.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
