@@ -1,5 +1,5 @@
 //# SpectralCoordinate.h: Interconvert between pixel and frequency.
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,12 +32,16 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <trial/Coordinates/Coordinate.h>
+#include <trial/Coordinates/ObsInfo.h>
 #include <trial/Coordinates/TabularCoordinate.h>
 #include <aips/Measures/MFrequency.h>
 #include <aips/Measures/MDoppler.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Quanta/Quantum.h>
 
 class LogIO;
+class MEpoch;
+class MPosition;
 class MVFrequency;
 class VelocityMachine;
 template<class T> class Quantum;
@@ -201,6 +205,28 @@ public:
     virtual uInt nWorldAxes() const;
     // </group>
 
+    // Set extra conversion layer.  Whenever a conversion from pixel to world is done,
+    // the world value is then further converted to this MFrequency::Types value.
+    // For example, your SpectralCoordinate may be defined in LSRK.
+    // You can use this to get the world values out in say BARY. You must
+    // specify the position on earth, the epoch and the direction for the conversions.
+    // Similarly, whenever you convert from world to pixel, the world
+    // value is assumed to be that appropriate to the setReferenceConversion type.
+    // It is first converted to the MFrequency::Types with which the
+    // SpectralCoordinate was constructed and from there to pixel.
+    // If you don't call this function, or you set the same type
+    // for which the SpectralCoordinate was constructed, no extra
+    // conversions occur.   Some conversions will fail.  These are the
+    // ones that require extra frame information (radial velocity) such
+    // as to TOPO. This will be added later.
+    // <group>
+    void setReferenceConversion (MFrequency::Types type,
+                                 const MEpoch& epoch, const MPosition& position,
+                                 const MDirection& direction);
+    void getReferenceConversion (MFrequency::Types& type) const 
+        {type = conversionType_p;};
+    // </group>
+
     // Convert a pixel to a world coordinate or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
     // <src>errorMessage()</src> contains an error message.  The input vectors
@@ -236,6 +262,10 @@ public:
     // as a Double it must be  in the current units of the SpectralCoordinate.  
     // Use the function <src>updateVelocityMachine</src>
     // to set the velocity state of the internal conversion machine.
+    // 
+    // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
+    // is active in the <src>pixelToVelocity</src> functions (because internally
+    // the use <src>toWorld</src>) but not in the <src>frequencyToVelocity</src> functions.
     // <group>  
     Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel);
     Bool pixelToVelocity (Double& velocity, Double pixel);
@@ -253,6 +283,10 @@ public:
     // change but you can specify the velocity definition and the output
     // units of the velocity.   When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
+    //
+    // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
+    // is active in the <src>pixelToVelocity</src> functions (because internally
+    // the use <src>toPixel</src>) but not in the <src>frequencyToVelocity</src> functions.
     // <group>  
     Bool velocityToPixel (Double& pixel, Double velocity);
     Bool velocityToPixel (Vector<Double>& pixel, const Vector<Double>& velocity);
@@ -261,9 +295,9 @@ public:
     Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity);
     // </group>
 
-    // Update the state of the velocity machine.  These are the
-    // the units/types all velocity conversions will use for velocities
-    // (input or output).  The machine
+    // Update the state of the velocity machine which is used for all conversions
+    // between frequency and velocity.  The specified units and Doppler type
+    // will be used for all succeeding conversions (input or output).  The machine
     // is initially constructed with km/s and MDoppler::RADIO as its state
     // and it uses the current active rest frequency.
     void updateVelocityMachine (const String& velUnit,
@@ -470,32 +504,53 @@ public:
     virtual Coordinate *clone() const;
 
 private:
-    MFrequency::Types type_p;
+    MFrequency::Types type_p, conversionType_p; 
     Vector<Double> restfreqs_p;            // Lists of possible rest frequencies
     uInt restfreqIdx_p;                    // Current active rest frequency index
     TabularCoordinate worker_p;
+
+    // Conversion machines.
+    // The first two are for pixel<->world conversions only.
+    // "To"   handles type_p -> conversionType_p 
+    // "From" handles conversionType_p -> type_p;
+    mutable MFrequency::Convert* pConversionMachineTo_p;  
+    mutable MFrequency::Convert* pConversionMachineFrom_p;
+
+    // The velocity machine does all conversions between
+    // something and velocity.
     VelocityMachine* pVelocityMachine_p;
+//
     MDoppler::Types prefVelType_p;         // Preferred velocity type
     String prefUnit_p;                     //                    units
+    Unit unit_p;                           // A Unit version of the String
 
-// Create machine from specifications
-   void makeVelocityMachine (const String& velUnit,                  
-                             MDoppler::Types velType,
-                             const String& freqUnit,
-                             MFrequency::Types freqType,
-                            Double restFreq);
+// Set up pixel<->world conversion machines
+    void makeConversionMachines (const MEpoch& epoch, const MPosition& position,
+                                 const MDirection& direction);
+
+// Create velocity<->frequency machine 
+    void makeVelocityMachine (const String& velUnit,                  
+                              MDoppler::Types velType,
+                              const String& freqUnit,
+                               MFrequency::Types freqType,
+                              Double restFreq);
 
 // Deletes and sets pointer to 0
-   void deleteVelocityMachine ();
+    void deleteVelocityMachine ();
+
+// Deletes and sets pointers to 0
+    void deleteConversionMachines ();
 
 // Resets to RADIO, km/s, and uses private data to set the rest
-   void reinitializeVelocityMachine();
+    void reinitializeVelocityMachine();
 
 // Format checker
-   void checkFormat(Coordinate::formatType& format,
-                    const Bool ) const;
+    void checkFormat(Coordinate::formatType& format,
+                     const Bool ) const;
 
-
+// Convert to and from conversion type
+    void convertTo (Vector<Double>& world) const;
+    void convertFrom (Vector<Double>& world) const;
 };
 
 #endif
