@@ -1,5 +1,5 @@
 //# StManColumn.cc: Base storage manager column class
-//# Copyright (C) 1994,1995,1996,1998,1999
+//# Copyright (C) 1994,1995,1996,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -969,6 +969,11 @@ void StManColumn::aips_name2(getArrayColumnCells,NM) \
         uInt end = rowiter.sliceEnd(); \
         uInt incr = rowiter.sliceIncr(); \
         while (rownr <= end) { \
+            if (! isFixedShape()) { \
+                if (! iter.array().shape().isEqual (shape(rownr))) { \
+                    throw DataManError("getArrayColumnCells shape mismatch"); \
+                } \
+            } \
   	    aips_name2(getArray,NM) (rownr, &(iter.array())); \
             rownr += incr; \
 	    iter.next(); \

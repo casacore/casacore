@@ -306,6 +306,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 {
   char* data = (char*)(dataPtr);
   uInt lastAxis  = arrShape.nelements() - 1;
+  IPosition cellShape = arrShape.getFirst (lastAxis);
   uInt chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
   uInt nrinc = 0;
   TSMCube* lastCube = 0;
@@ -353,6 +354,15 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	end(lastAxis)   = rowpos(lastAxis);
 	incr(lastAxis)  = 1;
 	nrinc = 0;
+	// Each new hypercube might have a different shape, while it is
+	// needed that all arrays to be read have the same shape.
+	// So check if shape matches for non fixedshape arrays.
+	if (! isFixedShape()) {
+	  IPosition hcShape = lastCube->cubeShape().getFirst (lastAxis);
+	  if (! cellShape.isEqual (hcShape)) {
+	    throw DataManError("getArrayColumnCells shape mismatch");
+	  }
+	}
       } else {
 	end(lastAxis)   = rowpos(lastAxis);
 	nrinc++;
