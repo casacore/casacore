@@ -1730,7 +1730,7 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
   LatticeIterator<T> inIt(in, navIn);
   Vector<T> result(in.shape()(axis));
 
-  IPosition sh(in.shape()(axis));  
+  IPosition sh(1, in.shape()(axis));  
   Convolver<T> conv(psf, sh);
 
   uInt i = 0;
