@@ -65,7 +65,7 @@ class MVDoppler;
 // </etymology>
 //
 // <synopsis>
-// MRadialVelocity is a derived Measure class for radio velocity.<br>
+// MRadialVelocity is a derived Measure class for radial velocity.<br>
 // An MRadialVelocity can be generated from a simple value (or an
 // <linkto class=MVRadialVelocity>MVRadialVelocity</linkto> object), which is then
 // interpreted as a RadialVelocity in m/s, and a reference, with an LSR type
