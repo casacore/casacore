@@ -162,15 +162,3 @@ ostream &FunctionParam<T>::print(ostream &os) const {
   os << "]";
   return os;
 }
-
-/// For test purposes only. Move to repositories
-template class FunctionParam<Double>;
-template class FunctionParam<Float>;
-#include <aips/Mathematics/AutoDiff.h>
-#include <aips/Mathematics/AutoDiffIO.h>
-#include <aips/Mathematics/AutoDiffMath.h>
-template class FunctionParam<AutoDiff<Double> >;
-template class FunctionParam<AutoDiff<Float> >;
-#include <aips/Mathematics/AutoDiffA.h>
-template class FunctionParam<AutoDiffA<Double> >;
-template class FunctionParam<AutoDiffA<Float> >;
