@@ -4023,3 +4023,4 @@
 14 065 src mv trial/implement/DisplayEvents/WorldCanvasEvent.cc trialdisplay/implement/DisplayEvents/WorldCanvasEvent.cc
 14 065 src mv trial/implement/DisplayEvents/makefile trialdisplay/implement/DisplayEvents/makefile
 14 065 src mv trial/implement/DisplayEvents/test/tDisplayEvent.cc trialdisplay/implement/DisplayEvents/test/tDisplayEvent.cc
+14 065 src mv trial/implement/DisplayEvents/test/tDisplayTool.cc trialdisplay/implement/DisplayEvents/test/tDisplayTool.cc
