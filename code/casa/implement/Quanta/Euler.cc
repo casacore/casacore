@@ -1,5 +1,5 @@
 //# Euler.cc: Vector of Euler rotation angles
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,6 +67,7 @@ euler(3), axes(3){
     indgen(axes.ac(),1,1);
 }
 
+
 Euler::Euler(Double in0, uInt ax0, Double in1, uInt ax1, Double in2,
 	     uInt ax2) : 
 euler(3), axes(3) {
@@ -79,6 +80,22 @@ euler(3), axes(3) {
     axes(2) = ax2;
 }
 
+Euler::Euler(const Quantity &in0) :
+euler(3), axes(3) {
+    euler(0) = Euler::makeRad(in0);
+    euler(1) = 0;
+    euler(2) = 0;
+    indgen(axes.ac(),1,1);
+}
+
+Euler::Euler(const Quantity &in0, const Quantity &in1) :
+euler(3), axes(3) {
+    euler(0) = Euler::makeRad(in0);
+    euler(1) = Euler::makeRad(in1);
+    euler(2) = 0;
+    indgen(axes.ac(),1,1);
+}
+
 Euler::Euler(const Quantity &in0, const Quantity &in1, const Quantity &in2) :
 euler(3), axes(3) {
     euler(0) = Euler::makeRad(in0);
@@ -87,6 +104,26 @@ euler(3), axes(3) {
     indgen(axes.ac(),1,1);
 }
 
+Euler::Euler(const Quantity &in0, uInt ax0) :
+euler(3), axes(3) {
+    DebugAssert(ax0 <= 3, AipsError);
+    euler(0) = Euler::makeRad(in0);
+    euler(1) = 0;
+    euler(2) = 0;
+    axes(0) = ax0;
+    axes(1) = 0;
+    axes(2) = 0;
+}
+Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1) :
+euler(3), axes(3) {
+    DebugAssert(ax0 <= 3 && ax1 <=3, AipsError);
+    euler(0) = Euler::makeRad(in0);
+    euler(1) = Euler::makeRad(in1);
+    euler(2) = 0;
+    axes(0) = ax0;
+    axes(1) = ax1;
+    axes(2) = 0;
+}
 Euler::Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1,
 	     const Quantity &in2, uInt ax2) :
 euler(3), axes(3) {

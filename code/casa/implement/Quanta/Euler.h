@@ -39,8 +39,6 @@
 
 //# Forward Declarations
 
-//# Constants (SUN compiler does not accept non-simple default arguments)
-static const Quantity RAD0(0,"rad");
 
 // <summary>
 // Vector of Euler rotation angles
@@ -140,10 +138,14 @@ class Euler
 // </thrown>
 // Constructs an Euler from specified angle quantities
 // <group>
-    Euler(const Quantity &in0, const Quantity &in1 = RAD0, 
-	  const Quantity &in2 = RAD0);
-    Euler(const Quantity &in0, uInt ax0, const Quantity &in1 = RAD0, uInt ax1=0,
-	  const Quantity &in2 = RAD0, uInt ax2=0);
+    Euler(const Quantity &in0);
+    Euler(const Quantity &in0, const Quantity &in1);
+    Euler(const Quantity &in0, const Quantity &in1, 
+	  const Quantity &in2);
+    Euler(const Quantity &in0, uInt ax0);
+    Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1=0);
+    Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1,
+	  const Quantity &in2, uInt ax2=0);
 // Constructs an Euler (zero filled) from elements of Quantity vector
 // <group>
     Euler(const Quantum<Vector<Double> > &in);
