@@ -393,15 +393,16 @@ void MCFrame::makePosition() {
 }
 
 void MCFrame::makeDirection() {
-  static MDirection::Ref REFJ2000(MDirection::J2000);
+  static const MDirection::Ref REFJ2000
+    = MDirection::Ref(MDirection::J2000);
   if (dirConvJ2000) {
     myf.lock();
     delete (MDirection::Convert *) dirConvJ2000;
     dirConvJ2000 = 0;
   };
-  REFJ2000.set(this->myf);
   dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
-					 REFJ2000);
+					 MDirection::Ref(MDirection::J2000,
+							 this->myf));
   if (dirConvJ2000) myf.unlock();
 
   static MDirection::Ref REFB1950(MDirection::B1950);
