@@ -1,5 +1,5 @@
 //# ColumnSet.cc: Class to manage a set of table columns
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -229,8 +229,16 @@ Bool ColumnSet::canRenameColumn (const String& columnName) const
 //# Add rows to all data managers.
 void ColumnSet::addRow (uInt nrrow)
 {
+    // First add row to storage managers, thereafter to virtual engines.
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
-	BLOCKDATAMANVAL(i)->addRow (nrrow);
+        if (BLOCKDATAMANVAL(i)->isStorageManager()) {
+	    BLOCKDATAMANVAL(i)->addRow (nrrow);
+	}
+    }
+    for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
+        if (! BLOCKDATAMANVAL(i)->isStorageManager()) {
+	    BLOCKDATAMANVAL(i)->addRow (nrrow);
+	}
     }
     nrrow_p += nrrow;
 }
