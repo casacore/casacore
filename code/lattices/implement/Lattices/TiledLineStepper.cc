@@ -76,13 +76,11 @@ TiledStepper::TiledStepper(const TiledStepper & other)
   DebugAssert(ok() == True, AipsError);
 };
 
-TiledStepper::~TiledStepper()
-{
+TiledStepper::~TiledStepper() {
   // does nothing
 };
 
-TiledStepper & TiledStepper::operator=(const TiledStepper & other)
-{
+TiledStepper & TiledStepper::operator=(const TiledStepper & other) {
   if (this != &other) { 
     theIndexer = other.theIndexer;
     theTiler = other.theTiler;
@@ -97,12 +95,17 @@ TiledStepper & TiledStepper::operator=(const TiledStepper & other)
   return *this;
 };
 
-Bool TiledStepper::operator++(Int)
-{
+Bool TiledStepper::operator++(Int) {
   DebugAssert(ok() == True, AipsError);
   if (theEnd) return False;
+  IPosition currentPos(theCursorPos);
   Bool successful = theIndexer.tiledCursorMove(True, theCursorPos, 
 					       theCursorShape, theAxisPath);
+  while (successful && 
+	 !(theIndexer.absolutePosition(theCursorPos)<theIndexer.fullShape())){
+    successful = theIndexer.tiledCursorMove(True, theCursorPos, 
+					    theCursorShape, theAxisPath);
+  }
   if (!successful) { // Move to the next set of tiles
     IPosition tileOrigin(theIndexer.offset()/theTiler.increment());
     successful = theTiler.tiledCursorMove(True, tileOrigin, 
@@ -115,23 +118,24 @@ Bool TiledStepper::operator++(Int)
       theCursorPos = 0;
     }
   }
-  if (successful) {
+  if (successful && 
+      theIndexer.absolutePosition(theCursorPos) < theIndexer.fullShape()) {
     theStart = False;// by definition when incrementing
     theNsteps++;     // increment the counter since we have moved
   }
-  else
+  else {
     theEnd = True;
+    theCursorPos = currentPos;
+  }
   DebugAssert(ok() == True, AipsError);
   return successful;
 };
 
-Bool TiledStepper::operator++()
-{
+Bool TiledStepper::operator++() {
   return operator++(0);
 };
 
-Bool TiledStepper::operator--(Int)
-{
+Bool TiledStepper::operator--(Int) {
   DebugAssert(ok() == True, AipsError);
   if (theStart) return False;
   Bool successful = theIndexer.tiledCursorMove(False, theCursorPos, 
@@ -162,13 +166,11 @@ Bool TiledStepper::operator--(Int)
   return successful;
 };
 
-Bool TiledStepper::operator--()
-{
+Bool TiledStepper::operator--() {
   return operator--(0);
 };
 
-void TiledStepper::reset()
-{
+void TiledStepper::reset() {
   theCursorPos = 0;
   theNsteps = 0;
   theEnd = False;
@@ -178,67 +180,58 @@ void TiledStepper::reset()
   DebugAssert(ok() == True, AipsError);
 };
 
-Bool TiledStepper::atStart() const
-{
+Bool TiledStepper::atStart() const {
   DebugAssert(ok() == True, AipsError);
   return theStart;
 };
 
-Bool TiledStepper::atEnd() const
-{
+Bool TiledStepper::atEnd() const {
   DebugAssert(ok() == True, AipsError);
   return theEnd;
 };
 
-uInt TiledStepper::nsteps() const
-{
+uInt TiledStepper::nsteps() const {
   DebugAssert(ok() == True, AipsError);
   return theNsteps;
 };
 
-IPosition TiledStepper::position() const
-{
+IPosition TiledStepper::position() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.absolutePosition(theCursorPos);
 };
 
-IPosition TiledStepper::endPosition() const
-{
+IPosition TiledStepper::endPosition() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.absolutePosition(theCursorPos + theCursorShape - 1);
 };
 
-IPosition TiledStepper::latticeShape() const
-{
+IPosition TiledStepper::latticeShape() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.fullShape();
 };
 
-IPosition TiledStepper::cursorShape() const 
-{
+IPosition TiledStepper::cursorShape() const {
   DebugAssert(ok() == True, AipsError);
   return theCursorShape;
 };
 
-IPosition TiledStepper::tileShape() const 
-{
+IPosition TiledStepper::tileShape() const {
   DebugAssert(ok() == True, AipsError);
   return theTiler.increment();
 };
 
-Bool TiledStepper::hangOver() const
-{
+Bool TiledStepper::hangOver() const {
   return False;
 };
 
-IPosition TiledStepper::blc() const{
+IPosition TiledStepper::blc() const {
   DebugAssert(ok() == True, AipsError);
   return theTiler.offset();
 };
 
-IPosition TiledStepper::trc() const{
+IPosition TiledStepper::trc() const {
   DebugAssert(ok() == True, AipsError);
-  return theTiler.absolutePosition(theTiler.shape()) - 1;
+  return theTiler.fullShape() - 1;
 };
 
 IPosition TiledStepper::increment() const {
@@ -246,15 +239,13 @@ IPosition TiledStepper::increment() const {
   return theIndexer.increment();
 };
 
-LatticeNavigator * TiledStepper::clone() const
-{
+LatticeNavigator * TiledStepper::clone() const {
   return new TiledStepper(*this);
 };
 
 static LogIO logErr(LogOrigin("TiledStepper", "ok()"));
 
-Bool TiledStepper::ok() const
-{
+Bool TiledStepper::ok() const {
 //   const uInt latticeDim = theIndexer.ndim();
 //   // Check the cursor shape is OK
 //   if (theCursorShape.nelements() != latticeDim) {
@@ -348,12 +339,14 @@ Bool TiledStepper::ok() const
   return True;
 };
 
-TiledStepper * TiledStepper::castToTiler()
-{
+TiledStepper * TiledStepper::castToTiler() {
   return this;
 };
 
-const TiledStepper * TiledStepper::castToConstTiler() const
-{
+const TiledStepper * TiledStepper::castToConstTiler() const {
   return this;
 };
+
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 TiledStepper"
+// End: 
