@@ -1,5 +1,5 @@
-//# FITSFieldCopier.h: 
-//# Copyright (C) 1996,1998
+//# FITSFieldCopier.h: Copy RORecordFields to FitsFields
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,17 +35,17 @@
 #include <aips/Arrays/Array.h>
 
 // <summary>
+// Virtual base class for copying RORecordFields to FitsFields
 // </summary>
 
-// <use visibility=local>   or   <use visibility=export>
+// <use visibility=local>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
 
 // <prerequisite>
-//   <li> SomeClass
-//   <li> SomeOtherClass
-//   <li> some concept
+//   <li> RORecordField
+//   <li> FitsFields
 // </prerequisite>
 //
 // <etymology>
@@ -60,10 +60,51 @@
 // <motivation>
 // </motivation>
 //
-// <templating arg=T>
+// <thrown>
 //    <li>
 //    <li>
-// </templating>
+// </thrown>
+//
+// <todo asof="yyyy/mm/dd">
+//   <li> actually document this
+// </todo>
+
+
+class FITSFieldCopier
+{
+public:
+  // destructor
+    virtual ~FITSFieldCopier() {};
+
+  // the things which does the work - to be implemented in each derived class
+    virtual void copyToFITS() = 0;
+};
+
+// <summary>
+// A FITSFieldCopier for copying scalar non-string RecordFields to FitsFields
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> RORecordField
+//   <li> FitsFields
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
 //
 // <thrown>
 //    <li>
@@ -71,18 +112,9 @@
 // </thrown>
 //
 // <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+//   <li> actually document this
 // </todo>
 
-
-class FITSFieldCopier
-{
-public:
-    virtual ~FITSFieldCopier() {};
-    virtual void copyToFITS() = 0;
-};
 
 template<class recordType, class fitsType> class ScalarFITSFieldCopier : 
   public FITSFieldCopier
@@ -92,6 +124,9 @@ public:
 			  FitsField<fitsType> *fitsptr) 
       : rec_p(recptr), fits_p(fitsptr) {}
     ~ScalarFITSFieldCopier() {delete rec_p; delete fits_p;}
+
+  // Copy the current contents of the input RORecordFieldPtr to the 
+  // output FitsField
     virtual void copyToFITS() {(*fits_p)() = *(*rec_p); }
 private:
     RORecordFieldPtr<recordType> *rec_p;
@@ -102,11 +137,49 @@ private:
 			     const ScalarFITSFieldCopier<recordType,fitsType> &other);
 };
 
+// <summary>
+// A FITSFieldCopier for copying String RecordFields to FitsFields
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> RORecordField
+//   <li> FitsFields
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
+//
+// <thrown>
+//    <li>
+//    <li>
+// </thrown>
+//
+// <todo asof="yyyy/mm/dd">
+//   <li> actually document this
+// </todo>
+
+
 class StringFITSFieldCopier : public FITSFieldCopier
 {
  public:
      StringFITSFieldCopier(RORecordFieldPtr<String> *rptr,
  		 FitsField<char> *fptr) : rec_p(rptr), fits_p(fptr) {}
+  // Copy the current contents of the input RORecordFieldPtr to the 
+  // output FitsField
      virtual void copyToFITS()
        {
  	  Int fitslength = fits_p->nelements();
@@ -131,6 +204,42 @@ private:
      StringFITSFieldCopier &operator=(const StringFITSFieldCopier &other);
 };
 
+// <summary>
+// A FITSFieldCopier for copying Array RecordFields to FitsFields
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> RORecordField
+//   <li> FitsFields
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
+//
+// <thrown>
+//    <li>
+//    <li>
+// </thrown>
+//
+// <todo asof="yyyy/mm/dd">
+//   <li> actually document this
+// </todo>
+
+
 template<class recordType, class fitsType> class ArrayFITSFieldCopier :
   public FITSFieldCopier
 {
@@ -138,6 +247,8 @@ public:
     ArrayFITSFieldCopier(RORecordFieldPtr<Array<recordType> > *recptr, 
 		 FitsField<fitsType> *fitsptr) : rec_p(recptr), fits_p(fitsptr) {}
     ~ArrayFITSFieldCopier() {delete rec_p; delete fits_p;}
+  // Copy the current contents of the input RORecordFieldPtr to the 
+  // output FitsField
     virtual void copyToFITS() {
         uInt nfits = fits_p->nelements();
 	uInt narray = (**rec_p).nelements();
