@@ -1,5 +1,5 @@
 //# tIncrementalStMan.cc: Test program for the IncrementalStMan storage manager
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -89,7 +89,7 @@ main (int argc, char** argv) {
 
 void init (Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 {
-    indgen (static_cast< Array<Float> >(arrf));
+    indgen (arrf);
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
