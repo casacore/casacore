@@ -32,6 +32,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/Quantum.h>
+#include <aips/Measures/QLogical.h>
 #include <trial/Measures/QuantumHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
@@ -69,6 +70,12 @@ Int main() {
       cout << "To error: " << error << endl;
     };
 
+    QuantumHolder q02(q00);
+    if (q00.asQuantity() != q02.asQuantity()) {
+      cout << "Error in copy constructor" << endl;
+    };
+
+    cout << "Is quantum:                  " << q00.isQuantum() << endl;
     cout << "Is quantity:                 " << q00.isQuantity() << endl;
     cout << "Is empty:                    " << q00.isEmpty() << endl;
     cout << "Is scalar:                   " << q00.isScalar() << endl;

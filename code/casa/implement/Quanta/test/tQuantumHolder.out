@@ -3,6 +3,7 @@ Test QuantumHolder
 Input quantity:              12.5 km/s
 Record output quantity:      12.5 km/s
 Glish output quantity:       12.5 km/s
+Is quantum:                  1
 Is quantity:                 1
 Is empty:                    0
 Is scalar:                   1

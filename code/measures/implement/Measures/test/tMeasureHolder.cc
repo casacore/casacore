@@ -38,6 +38,7 @@
 #include <aips/Measures/MRadialVelocity.h>
 #include <trial/Measures/QuantumHolder.h>
 #include <trial/Measures/MeasureHolder.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
@@ -76,6 +77,15 @@ Int main() {
       };
     } else {
       cout << "To error: " << error << endl;
+    };
+
+    MeasureHolder q01 = q00;
+    MeasureHolder q02(q00);
+    if (q00.asMDirection().getValue().getValue()(0) !=
+	q01.asMDirection().getValue().getValue()(0) ||
+	q00.asMDirection().getValue().getValue()(0) !=
+        q02.asMDirection().getValue().getValue()(0)) {
+      cout << "Error in copy constructor or assignment" << endl;
     };
 
     cout << "Is measure:        " << q00.isMeasure() << endl;
