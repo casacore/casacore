@@ -109,6 +109,13 @@ void doIt (TempImage<Int>& scratch)
   scratch.getMaskSlice (tm3a, IPosition(3,0), IPosition(3,7));
   AlwaysAssertExit (allEQ (tm3a, tm3));
 
+  // Delete the mask
+  scratch.removeMask();
+  AlwaysAssertExit (!scratch.isMasked());
+  AlwaysAssertExit (!scratch.hasPixelMask());
+  AlwaysAssertExit (!scratch.isMaskWritable());
+  AlwaysAssertExit (scratch.getRegionPtr() == 0);
+
   // Test unit handling.
   scratch.setUnits (Unit("Jy"));
   AlwaysAssertExit (scratch.units() == Unit("Jy"));
