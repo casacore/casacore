@@ -47,7 +47,7 @@
 Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
               const Array<Float>& fits, const Array<Bool>& fitsMask, Float tol=1.0e-5);
 
-main (int argc, char **argv)
+int main (int argc, char **argv)
 {
 try {
 
@@ -74,6 +74,7 @@ try {
 // Open FITSImage
 
    FITSImage fitsImage(in);
+   fitsImage.tempClose();
    AlwaysAssert(fitsImage.imageType()=="FITSImage", AipsError);
    Unit unit("Jy/beam");
    AlwaysAssert(fitsImage.setUnits(unit), AipsError);
@@ -82,18 +83,14 @@ try {
    rec.define("field1", 0.0);
    rec.define("field2", "doggies");
    AlwaysAssert(fitsImage.setMiscInfo(rec), AipsError);
+   fitsImage.reopen();
    Record rec2 = fitsImage.miscInfo();
    AlwaysAssert(rec.isDefined("field1"), AipsError);  
    AlwaysAssert(rec.isDefined("field2"), AipsError);  
    AlwaysAssert(rec.asFloat("field1")==0.0, AipsError);
    AlwaysAssert(rec.asString("field2")=="doggies", AipsError);
-   AlwaysAssert(fitsImage.isMasked(), AipsError);
-   AlwaysAssert(fitsImage.hasPixelMask(), AipsError);
-   {
-      const Lattice<Bool>& pMask = fitsImage.pixelMask();
-      AlwaysAssert(pMask.shape()==fitsImage.shape(), AipsError);
-   }
-   {
+   AlwaysAssert(fitsImage.hasPixelMask() == fitsImage.isMasked(), AipsError);
+   if (fitsImage.hasPixelMask()) {
       Lattice<Bool>& pMask = fitsImage.pixelMask();
       AlwaysAssert(pMask.shape()==fitsImage.shape(), AipsError);
    }
@@ -102,6 +99,7 @@ try {
    AlwaysAssert(fitsImage.name(False)==p.absoluteName(),AipsError);
    AlwaysAssert(fitsImage.ok(), AipsError);
 //
+   fitsImage.tempClose();
    if (print) {
       IPosition start (fitsImage.ndim(),0);
       IPosition shape(fitsImage.shape());
