@@ -119,9 +119,9 @@ Bool RegionHandler::renameRegion (Table& table, const String& oldName,
   }
   // Check that the region exists.
   Int oldGroupField = findRegionGroup (table, oldName, type, True);
-  // First check if the region is already defined in "regions" or "masks".
-  // If so, remove it if possible. Otherwise throw an exception.
+  // First check if the region is already defined.
   // Check that the region is in the same group as the original.
+  // Remove it if overwrite is true. Otherwise throw an exception.
   TableRecord& keys = table.rwKeywordSet();
   Int groupField = findRegionGroup (table, newName, RegionHandler::Any, False);
   if (groupField >= 0) {
@@ -140,6 +140,21 @@ Bool RegionHandler::renameRegion (Table& table, const String& oldName,
     regs.removeField (newName);
   }
   TableRecord& regs = keys.rwSubRecord(oldGroupField);
+  ImageRegion* regPtr = getRegion (table, oldName, type, True);
+  // First rename a possible mask table, which could in principle fail.
+  // We only need to do that when it is an LCRegion.
+  // We need to clone it to make it non-const.
+  if (regPtr->isLCRegion()) {
+    LCRegion* lcPtr = regPtr->asLCRegion().cloneRegion();
+    lcPtr->handleRename (newName, overwrite);
+    // The region values might be changed, so redefine it.
+    // Note that the ImageRegion constructor takes over the poiter,
+    // so we do not need to delete lcPtr;
+    TableRecord newValue = ImageRegion(lcPtr).toRecord (table.tableName());
+    regs.defineRecord (oldName, newValue);
+  }
+  delete regPtr;
+  // Rename the keyword itself.
   regs.renameField (newName, oldName);
   // Rename the default mask name if that is the renamed region.
   if (RegionHandler::getDefaultMask(table) == oldName) {
