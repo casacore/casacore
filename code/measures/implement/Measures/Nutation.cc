@@ -160,11 +160,11 @@ void Nutation::calcNut(Double t) {
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
       break;
     default:
-      t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       if (MeasDetail::get(Nutation::B_UseIERS)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       };
+      t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
       };
     Int i,j;
