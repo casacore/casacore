@@ -39,6 +39,11 @@
 #include <aips/Tables/TableParse.h>       // routines used by bison actions
 #include <aips/Tables/TableError.h>
 
+//# Declare a switch to be able to recognize a table name (containing
+//# e.g. slashes) after a query in the FROM part.
+//# It is used in the .l and .y file.
+static Bool theFromQueryDone = False;
+
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <aips/stdlib.h>
