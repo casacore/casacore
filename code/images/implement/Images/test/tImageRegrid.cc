@@ -39,6 +39,7 @@ try {
    inputs.create("save", "False", "Save output ?");
    inputs.create("shape", "100,100", "Shape");
    inputs.create("replicate", "False", "Replicate ?");
+   inputs.create("decimate", "0", "Decimation factor");
    inputs.create("disk", "False", "Image on disk");
    inputs.create("dbg", "0", "Debug level");
    inputs.create("double", "0", "Double size ?");
@@ -49,6 +50,7 @@ try {
    const Block<Int> axesU(inputs.getIntArray("axes"));
    const Block<Int> shapeU(inputs.getIntArray("shape"));
    const Bool replicate = inputs.getBool("replicate");
+   const Int decimate = inputs.getInt("decimate");
    const Bool onDisk = inputs.getBool("disk");
    const Bool dbl = inputs.getBool("double");
    const Int dbg = inputs.getInt("dbg");
@@ -121,7 +123,7 @@ try {
    Interpolate2D::Method emethod = Interpolate2D::stringToMethod(method);
    ImageRegrid<Float> regridder;
    regridder.showDebugInfo(dbg);
-   regridder.regrid(*pImOut, emethod, axes, *pIm, replicate);
+   regridder.regrid(*pImOut, emethod, axes, *pIm, replicate, decimate);
 //
    delete pIm;
    delete pImOut;

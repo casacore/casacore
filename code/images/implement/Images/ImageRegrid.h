@@ -132,12 +132,17 @@ public:
   // Specify which pixel axes of outImage are to be
   // regridded.  The coordinate and axis order of outImage
   // is preserved, regardless of where the relevant coordinates
-  // are in inImage
+  // are in inImage.
+  //
+  // decimate only applies when replicate=False. it is
+  // the coordinate grid computation decimation FACTOR
+  // (e.g.  nCoordGrid ~ nIn / decimate). 0 means no decimation
+  // (slowest and most accurate)
   void regrid(ImageInterface<T>& outImage, 
               typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
-              Bool replicate=False,
+              Bool replicate=False, uInt decimate=0,
               Bool showProgress=False);
 
   // Inserts inImage into outImage.  The alignment is done by
@@ -215,7 +220,7 @@ public:
                              Int outPixelAxis,
                              const ImageInterface<T>& inImage,
                              const IPosition& outShape,
-                             Bool replicate,
+                             Bool replicate, uInt decimate,
                              Bool outIsMasked, Bool showProgress,
                              typename Interpolate2D::Method method);
 
@@ -223,14 +228,17 @@ public:
   void regrid2D (MaskedLattice<T>& outLattice,
                  const MaskedLattice<T>& inLattice,   
                  const DirectionCoordinate& inCoord,
-                 const DirectionCoordinate& outCoord,   
+                 const DirectionCoordinate& outCoord,
                  const Vector<Int> inPixelAxes, 
                  const Vector<Int> outPixelAxes,
                  const Vector<Int> pixelAxisMap1,
                  const Vector<Int> pixelAxisMap2,
                  typename Interpolate2D::Method method,
-                 MDirection::Convert& machine, Bool replicate,
-                 Bool useMachine, Bool showProgress, Double scale);
+                 MDirection::Convert& machine, 
+                 Bool replicate, uInt decimate,
+                 Bool useMachine, 
+                 Bool showProgress, 
+                 Double scale);
 
   // Make regridding coordinate grid for this cursor.
   void make2DCoordinateGrid (Bool& allFail, Bool&missedIt,
@@ -248,7 +256,7 @@ public:
                              const IPosition& inShape,
                              const IPosition& outPos,
                              const IPosition& cursorShape,
-                             Bool useMachine);
+                             Bool useMachine, uInt decimate=0);
 
   // Make replication coordinate grid for this cursor
    void make2DCoordinateGrid (Cube<Double>& in2DPos,
