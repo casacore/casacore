@@ -1,5 +1,5 @@
 //# FuncExprData.h: Data and enumerations for functional expressions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-///#include <aips/map.h>
-#include <map>
+#include <aips/stdlibmap.h>
+//#include <map>
 
 //# Forward Declarations
 #include <aips/iosfwd.h>

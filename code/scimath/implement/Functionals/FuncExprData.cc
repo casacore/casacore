@@ -1,5 +1,5 @@
 //# FuncExprData.cc: Data and enumerations for functional expressions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -158,6 +158,7 @@ ostream &operator<<(ostream &os, const FuncExprData &ed) {
 //# Templates (for test purposes)
 template class map<String, FuncExprData::ExprOperator>;
 template class map<FuncExprData::opTypes, FuncExprData::ExprOperator>;
+#if !defined(AIPS_SUN_NATIVE)
 template class
 _Rb_tree<FuncExprData::opTypes,
 			 pair<FuncExprData::opTypes const,
@@ -174,3 +175,4 @@ _Rb_tree<String,
   FuncExprData::ExprOperator> >, 
   less<String>,
   allocator<FuncExprData::ExprOperator> >;
+#endif
