@@ -29,7 +29,7 @@
 #define AIPS_IMAGEREGION_H
 
 //# Includes
-#include <trial/Lattices/LatticeRegion.h>
+#include <trial/Lattices/LattRegionHolder.h>
 
 //# Forward Declarations
 class CoordinateSystem;
@@ -80,9 +80,12 @@ class TableRecord;
 //# <li>
 //# </todo>
 
-class ImageRegion
+class ImageRegion : public LattRegionHolder
 {
 public:
+    // Default constructor (has no region at all).
+    ImageRegion();
+
     // Construct from a region based on lattice coordinates.
     ImageRegion (const LCRegion&);
 
@@ -96,31 +99,32 @@ public:
     // It takes over the pointer, so the user should not delete the
     // object. It is deleted by the ImageRegion destructor.
     // <group>
-    ImageRegion (LCRegion*);
-    ImageRegion (LCSlicer*);
-    ImageRegion (WCRegion*);
+    explicit ImageRegion (LCRegion*);
+    explicit ImageRegion (LCSlicer*);
+    explicit ImageRegion (WCRegion*);
     // </group>
 
     // Copy constructor (copy semantics).
     ImageRegion (const ImageRegion& other);
 
-    ~ImageRegion();
+    virtual ~ImageRegion();
 
     // Assignment (copy semantics).
     ImageRegion& operator= (const ImageRegion& other);
 
-    // Comparison
-    // <group>
-    Bool operator==(const ImageRegion& other) const;
-    Bool operator!=(const ImageRegion& other) const;
-    // </group>
+    // Clone the object.
+    virtual LattRegionHolder* clone() const;
 
-    // Test if the underlying region is an WCRegion, etc..
-    // <group>
-    Bool isLCRegion() const;
-    Bool isLCSlicer() const;
-    Bool isWCRegion() const;
-    // </group>
+    // Comparison
+    virtual Bool operator==(const LattRegionHolder& other) const;
+
+    // Test if the underlying region is an WCRegion.
+    virtual Bool isWCRegion() const;
+
+    // Get the region as a pointer to WCRegion.
+    // An exception is thrown if the region is not the correct type.
+    // Functions <src>isWCRegion()</src> can be used to test the type.
+    virtual const WCRegion* asWCRegionPtr() const;
 
     // Get the region as an LCSlicer or WCRegion.
     // An exception is thrown if the region is not the correct type.
@@ -131,14 +135,11 @@ public:
     const WCRegion& asWCRegion() const;
     // </group>
 
-    // Get the dimensionality.
-    uInt ndim() const;
-
     // Convert to a LatticeRegion using the given coordinate system
     // (with reference pixel) and shape.
     // It will also make the region complete (absolute and non-fractional).
-    LatticeRegion toLatticeRegion (const CoordinateSystem& cSys,
-				   const IPosition& shape) const;
+    virtual LatticeRegion toLatticeRegion (const CoordinateSystem& cSys,
+					   const IPosition& shape) const;
 
     // Convert to an LCRegion using the given coordinate system
     // (with reference pixel) and shape.
@@ -157,33 +158,34 @@ public:
     static ImageRegion* fromRecord (const TableRecord&,
 				    const String& tableName);
 
+    // Form a compound from this and the other region.
+    // <group>
+    virtual LattRegionHolder* makeUnion (const LattRegionHolder& other) const;
+    virtual LattRegionHolder* makeIntersection
+                                        (const LattRegionHolder& other) const;
+    virtual LattRegionHolder* makeDifference
+                                        (const LattRegionHolder& other) const;
+    virtual LattRegionHolder* makeComplement() const;
+    // </group>
+
 private:
-    LCRegion*   itsLC;
-    LCSlicer*   itsSlicer;
     WCRegion*   itsWC;
-    uInt        itsNdim;
 };
 
 
-inline Bool ImageRegion::isLCRegion() const
+inline const LCRegion& ImageRegion::asLCRegion() const
 {
-    return ToBool (itsLC != 0);
+    return *asLCRegionPtr();
 }
-inline Bool ImageRegion::isLCSlicer() const
+
+inline const LCSlicer& ImageRegion::asLCSlicer() const
 {
-    return ToBool (itsSlicer != 0);
+    return *asLCSlicerPtr();
 }
-inline Bool ImageRegion::isWCRegion() const
+
+inline const WCRegion& ImageRegion::asWCRegion() const
 {
-    return ToBool (itsWC != 0);
-}
-inline Bool ImageRegion::operator!= (const ImageRegion& other) const
-{
-    return ToBool (! ImageRegion::operator== (other));
-}
-inline uInt ImageRegion::ndim() const
-{
-    return itsNdim;
+    return *asWCRegionPtr();
 }
 
 
