@@ -206,7 +206,7 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   typedef const ArgType* FunctionArg;
  
   //# Constructors
-  // Constructors for FunctionParam
+  // Constructors
   // <group>
   Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {};
   explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False),
@@ -215,6 +215,9 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   parset_p(False), locked_p(False) {};
   Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
   parset_p(False), locked_p(False) {};
+  template <class W>
+  Function(const Function<W,W> &other) : param_p(other.parameters()),
+  arg_p(other.argp()), parset_p(other.parsetp()), locked_p(False) {};
   Function(const Function<T,U> &other) : param_p(other.param_p),
   arg_p(other.arg_p), parset_p(other.parset_p), locked_p(False) {};
   // </group>
@@ -266,6 +269,12 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // <group>
   const FunctionParam<T> &parameters() const { return param_p; };
   FunctionParam<T> &parameters() { parset_p = True; return param_p; };
+  // </group>
+  // Get <src>arg_p</src> and <src>parset_p</src>. Necessary for reasons
+  // of protection in the copying of non-conforming Functions.
+  // <group>
+  const Vector<ArgType> &argp() const { return arg_p; };
+  const Bool parsetp() const { return parset_p; };
   // </group>
   // Compiler cannot always find the correct 'const' version of parameter
   // access. In cases where this would lead to excessive overheads in

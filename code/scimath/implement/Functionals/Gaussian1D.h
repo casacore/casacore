@@ -1,5 +1,5 @@
 //# Gaussian1D.h: A one-dimensional Gaussian class
-//# Copyright (C) 1995,1996,1997,2001,2002
+//# Copyright (C) 1995,1996,1997,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,7 +152,11 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian1D(const Gaussian1D<T> &other) : Gaussian1DParam<T>(other) {};
+  template <class W>
+    Gaussian1D(const Gaussian1D<W> &other) : Gaussian1DParam<T>(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Gaussian1D<T> &operator=(const Gaussian1D<T> &other) {
@@ -213,8 +217,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian1D_PS(const Gaussian1D_PS &other) :
     Gaussian1DParam<AutoDiff<T> >(other) {};
+  template <class W>
+  Gaussian1D_PS(const Gaussian1D_PS<W> &other) :
+    Gaussian1DParam<AutoDiff<T> >(other) {};
+  // </group>
 
   // Copy assignment (deep copy)
   Gaussian1D_PS<AutoDiff<T> > &

@@ -72,20 +72,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </templating>
 
 
-template<class T, class U=T> class Function1D : public Function<T,U>
-{
-public:
+template<class T, class U=T> class Function1D : public Function<T,U> {
+  public:
   //# Typedefs
   typedef const T* FunctionArg;
-
+  
   //# Constructors
-  // Constructors for FunctionParam
+  // Constructors
   // <group>
   Function1D() : Function<T,U>() {};
   explicit Function1D(const uInt n) : Function<T,U>(n) {};
   explicit Function1D(const Vector<T> &in) : Function<T,U>(in) {};
   Function1D(const FunctionParam<T> &other) : Function<T,U>(other) {};
   Function1D(const Function1D<T,U> &other) : Function<T,U>(other) {};
+  template <class W>
+  Function1D(const Function1D<W,W> &other) : Function<T,U>(other) {};
   // </group>
 
   // Destructor

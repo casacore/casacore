@@ -144,8 +144,13 @@ public:
   // </group>
 
   // Copy constructor (deep copy)
+  // <group>
   Gaussian1DParam(const Gaussian1DParam<T> &other);
-
+  template <class W>
+    Gaussian1DParam(const Gaussian1DParam<W> &other) :
+    Function1D<T>(other),
+    fwhm2int(T(1.0)/sqrt(log(T(16.0)))) {}
+  // </group>
   // Copy assignment (deep copy)
   Gaussian1DParam<T> &operator=(const Gaussian1DParam<T> &other);
     

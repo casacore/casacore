@@ -1,5 +1,5 @@
 //# FunctionParam.h: Container of function parameters with masking flags
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Include files
 #include <casa/aips.h>
 #include <casa/Arrays/Vector.h>
+#include <scimath/Functionals/FunctionTraits.h>
 
 //# Forward declarations
 #include <casa/iosfwd.h>
@@ -96,6 +97,21 @@ template<class T> class FunctionParam {
   explicit FunctionParam(const Vector<T> &in);
   // Copy constructor (deep copy)
   FunctionParam(const FunctionParam<T> &other);
+  // Copy from different type (deep copy)
+  template <class W>
+  FunctionParam(const FunctionParam<W> &other) 
+    : npar_p(other.getParameters().nelements()),
+    param_p(npar_p), mask_p(npar_p),
+    maskedPtr_p(0) {
+    for (uInt i=0; i<npar_p; ++i) {
+      FunctionTraits<T>::
+	setValue(param_p[i],
+		 FunctionTraits<W>::getValue(other.getParameters()[i]),
+		 npar_p, i);
+    };
+    mask_p = other.getParamMasks();
+  };
+
   // Destructor
   virtual ~FunctionParam();
 
