@@ -54,9 +54,9 @@ str1 str1 strin2 strin2
 strin2 strin2 stri3 stri3
 stri3 stri3 string45 string45
 string45 string45 s s
-FilebufIO::read - incorrect number of bytes read from file tAipsIO_tmp.data
+FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
 3000288
-FilebufIO::read - incorrect number of bytes read from file tAipsIO_tmp.data
+FilebufIO::readBlock - incorrect number of bytes read for file tAipsIO_tmp.data
 Length=3000555
 AipsIO::getNextType: no magic value found
 AipsIO::getstart: found object type abcdefghij, expected aa
@@ -69,7 +69,6 @@ TryScr
 TryErrDel
 RegularFileIO: error in open or create of file tAipsIO_tmp.aa: No such file or directory
 TryOut
-TryDel
 TryApp
 TryUpd
 TryErrNorep
