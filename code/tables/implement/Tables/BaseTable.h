@@ -28,9 +28,6 @@
 #if !defined(AIPS_BASETABLE_H)
 #define AIPS_BASETABLE_H
 
-#if defined(_AIX)
-#pragma implementation ("BaseTable.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -204,13 +201,13 @@ public:
     // Mark the table for delete.
     // This means that the underlying table gets deleted when it is
     // actually destructed.
-    void markForDelete()
-	{ delete_p = True; }
+    // The scratchCallback function is called when needed.
+    void markForDelete (Bool callback, const String& oldName);
 
     // Unmark the table for delete.
     // This means the underlying table does not get deleted when destructed.
-    void unmarkForDelete()
-	{ delete_p = False; }
+    // The scratchCallback function is called when needed.
+    void unmarkForDelete (Bool callback, const String& oldName);
 
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const
@@ -401,9 +398,13 @@ protected:
     Bool           madeDir_p;           //# True = table dir has been created
 
 
-    // Create the table directory.
+    // Do the callback for scratch tables (if callback is set).
+    void scratchCallback (Bool isScratch, const String& oldName) const;
+
+    // Create the table directory when needed (and possible).
     // When the file already exists, check if it is a directory.
-    void makeTableDir();
+    // It returns True when it actually created the directory.
+    Bool makeTableDir();
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it
