@@ -233,6 +233,7 @@ void ComponentList::setFlux(const Vector<Int> & whichComponents,
     c = whichComponents(i);
     component(c).flux() = newFlux;
   }
+  DebugAssert(ok(), AipsError);
 }
 
 void ComponentList::convertFluxUnit(const Vector<Int> & whichComponents,
@@ -243,6 +244,7 @@ void ComponentList::convertFluxUnit(const Vector<Int> & whichComponents,
     c = whichComponents(i);
     component(c).flux().convertUnit(unit);
   }
+  DebugAssert(ok(), AipsError);
 }
   
 void ComponentList::convertFluxPol(const Vector<Int> & whichComponents,
@@ -253,8 +255,56 @@ void ComponentList::convertFluxPol(const Vector<Int> & whichComponents,
     c = whichComponents(i);
     component(c).flux().convertPol(pol);
   }
+  DebugAssert(ok(), AipsError);
 }
  
+void ComponentList::setRefDirection(const Vector<Int> & whichComponents,
+				    const MVDirection & newDir) {
+  uInt c;
+  MDirection curDir;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    ComponentShape & curShape = component(c).shape();
+    curDir = curShape.refDirection();
+    curDir.set(newDir);
+    curShape.setRefDirection(curDir);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+void ComponentList::setRefDirectionFrame(const Vector<Int> & whichComponents,
+					 MDirection::Types newFrame) {
+  uInt c;
+  MDirection curDir;
+  const MDirection::Ref newRef(newFrame);
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    ComponentShape & curShape = component(c).shape();
+    curDir = curShape.refDirection();
+    curDir.set(newRef);
+    curShape.setRefDirection(curDir);
+  }
+  DebugAssert(ok(), AipsError);
+}
+
+void ComponentList::convertRefDirection(const Vector<Int> & whichComponents,
+					MDirection::Types newFrame) {
+  uInt c;
+  MDirection::Convert converter;
+  converter.setOut(newFrame);
+  MDirection curDir;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    ComponentShape & curShape = component(c).shape();
+    curDir = curShape.refDirection();
+    curShape.setRefDirection(converter(curDir));
+  }
+  DebugAssert(ok(), AipsError);
+}
+
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
