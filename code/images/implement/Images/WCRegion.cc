@@ -1,5 +1,5 @@
 //# WCRegion.cc: Class to define a region of interest in an image
-//# Copyright (C) 1998,2000,2001,2002
+//# Copyright (C) 1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -301,7 +301,7 @@ void WCRegion::makeWorldAbsolute (Vector<Double>& world,
    }
 
 // Make absolute w.r.t. the reference location in 'w'
-   cSys.makeWorldAbsolute(t2, w);
+   cSys.makeWorldAbsoluteRef (t2, w);
 
 // Overwrite result for relative values.
 
