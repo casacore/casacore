@@ -56,6 +56,7 @@ static Int          posRecordGram = 0;
 //# Static pointer to the node holding the final expression tree.
 const RecordInterface* RecordGram::theirRecPtr = 0;
 TableExprNode* RecordGram::theirNodePtr = 0;
+const Table* RecordGram::theirTabPtr = 0;
 
 
 // Define the yywrap function for flex.
@@ -101,11 +102,24 @@ void RecordGramerror (char*)
 }
 
 
-
 TableExprNode RecordGram::parse (const RecordInterface& record,
 				 const String& expression)
 {
     theirRecPtr = &record;
+    theirTabPtr = 0;
+    return doParse (expression);
+}
+
+TableExprNode RecordGram::parse (const Table& table,
+				 const String& expression)
+{
+    theirRecPtr = 0;
+    theirTabPtr = &table;
+    return doParse (expression);
+}
+
+TableExprNode RecordGram::doParse (const String& expression)
+{
     String message;
     String command = expression + '\n';
     Bool error = False;
@@ -132,13 +146,21 @@ TableExprNode RecordGram::parse (const RecordInterface& record,
 
 TableExprNode RecordGram::handleField (const String& name)
 {
+  if (theirTabPtr == 0) {
     return makeRecordExpr (*theirRecPtr, name);
+  }
+  return theirTabPtr->keyCol (name, Vector<String>());
 }
 
 TableExprNode RecordGram::handleFunc (const String& name,
 				      const TableExprNodeSet& arguments)
 {
+  // The ROWNR function can only be used with tables.
+  if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
     return TableParseSelect::makeFuncNode (name, arguments,
 					   ignoreFuncs, Table());
+  }
+  return TableParseSelect::makeFuncNode (name, arguments,
+					 Vector<Int>(), *theirTabPtr);
 }

@@ -33,7 +33,10 @@
 #include <tables/Tables/TableGram.h>
 
 //# Forward Declarations
-
+class TableExprNode;
+class TableExprNodeSet;
+class RecordInterface;
+class Table;
 
 // <summary>
 // Global functions for flex/bison scanner/parser for RecordGram
@@ -127,11 +130,19 @@ class RecordGram
 {
 public:
     // Convert an expression string to an expression tree.
-    // The record is needed to know the type of the fields used in
-  // the expression.
+    // The expression will operate on a series of Record objects.
+    // The given record is needed to know the type of the fields used in
+    // the expression.
     //# The record will be put into the static variable to be used by
     //# the other functions.
     static TableExprNode parse (const RecordInterface& record,
+				const String& expression);
+
+    // Convert an expression string to an expression tree.
+    // The expression will operate on the given table.
+    //# The record will be put into the static variable to be used by
+    //# the other functions.
+    static TableExprNode parse (const Table& table,
 				const String& expression);
 
     // Find the field name and create a TableExprNode from it.
@@ -146,7 +157,11 @@ public:
         { theirNodePtr = nodePtr; }
 
 private:
+    // Do the conversion of an expression string to an expression tree.
+    static TableExprNode doParse (const String& expression);
+
     static const RecordInterface* theirRecPtr;
+    static const Table*           theirTabPtr;
     static TableExprNode*         theirNodePtr;
 };
 
