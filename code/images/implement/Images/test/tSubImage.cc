@@ -56,8 +56,7 @@ void testVectorROIter (const Lattice<Float>& sublat,
 			   iter2.vectorCursor().ac()), AipsError);
     }
     nstep = iter.nsteps();
-    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0) - 1,
-		 AipsError);
+    AlwaysAssert(nstep == latticeShape.product()/latticeShape(0), AipsError);
     IPosition expectedPos(latticeShape-1);
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
     expectedPos(0) = 0;
