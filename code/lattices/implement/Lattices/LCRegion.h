@@ -1,5 +1,5 @@
 //# LCRegion.h: Abstract base class to define a region of interest in lattice coordinates
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,6 +110,10 @@ public:
     virtual Lattice<Bool>* clone() const;
     virtual LCRegion* cloneRegion() const = 0;
     // </group>
+
+    // Handle deletion of the region by deleting possible tables.
+    // The default implementation does nothing.
+    virtual void handleDelete();
 
     // Region type.  Returns className() of derived class.
     virtual String type() const = 0;

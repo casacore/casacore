@@ -1,5 +1,5 @@
 //# LCPagedMask.cc: Class to define a rectangular mask of interest
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -116,6 +116,12 @@ Bool LCPagedMask::operator== (const LCRegion& other) const
 LCRegion* LCPagedMask::cloneRegion() const
 {
     return new LCPagedMask(*this);
+}
+
+void LCPagedMask::handleDelete()
+{
+    // Mark the table for delete by opening it for delete.
+    Table dummy(itsMask.tableName(), Table::Delete);
 }
 
 LCRegion* LCPagedMask::doTranslate (const Vector<Float>&,

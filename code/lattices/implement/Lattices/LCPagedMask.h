@@ -1,5 +1,5 @@
 //# LCPagedMask.h: Class to define a rectangular mask as a region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,9 @@ public:
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
+
+    // Handle deletion of the region by deleting the associated table.
+    virtual void handleDelete();
 
     // Get the class name (to store in the record).
     static String className();
