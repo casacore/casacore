@@ -6253,3 +6253,4 @@
 17 191 src mv ./trial/implement/Fitting/LQLinearFit.h ./trial/implement/Fitting/LinearFit.h
 17 191 src mv ./trial/implement/Fitting/LQLinearFitSVD.cc ./trial/implement/Fitting/LinearFitSVD.cc
 17 191 src mv ./trial/implement/Fitting/LQLinearFitSVD.h ./trial/implement/Fitting/LinearFitSVD.h
+17 191 src mv ./trial/implement/Fitting/LQNonLinearFit.cc ./trial/implement/Fitting/NonLinearFit.cc
