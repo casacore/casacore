@@ -24,9 +24,13 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-
 #ifndef FITS_BLOCKIO_H
 #define FITS_BLOCKIO_H
+
+extern "C"{
+#include <cfitsio/fitsio.h>  // header file from cfitsio
+#include <cfitsio/fitsio2.h> // using core functions of cfitsio
+}
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -34,11 +38,9 @@
 #include <casa/aips.h>
 
 #include <fits/FITS/FITSError.h>
-
+//----------------------------------------------------------------------------
 //<category lib=aips module=FITS sect="Blocked I/O">   
-//<summary> fixed-length blocked sequentual I/O base class </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed> 
+//<summary> fixed-length blocked sequentual I/O base class </summary> 
 //<synopsis>
 // BlockIO is a low level base class that implements fixed-length 
 // blocked sequential I/O. Its derived classes, BlockInput and BlockOutput
@@ -55,19 +57,38 @@ class BlockIO {
 	// error return code
 	enum IOErrs { OK, NOSUCHFILE, NOMEM, OPENERR, CLOSEERR, 
 		READERR, WRITEERR };
-	int err() const { return (int)err_status; }
+	int err() const { return (int)m_err_status; }
 
 	//  number of physical blocks read/written
-	int blockno() const { return block_no; }
+	int blockno() const { return m_block_no; }
+	
+	// reset the m_iosize data member
+	void reset_iosize() { m_iosize = 0; }
+	
+	// get the total bytes of data in m_buffer
+	int iosize() const { return m_iosize; }
+	
+	// get the current read position within m_buffer
+	int current() const { return m_current; }
+	
+	// get m_buffer
+	char* buffer() const { return m_buffer; }
 
 	//  number of logical records read/written
-	int recno() const { return rec_no; }
+	int recno() const { return m_rec_no; }
 
 	// name of file associated with I/O stream, if applicable
-	const char *fname() const { return filename; }
+	const char *fname() const { return m_filename; }
 
+	// fits_close_file() does not work for reasons that the file pointer does not have the 
+	// knowledge of chdu which were written with write_hdr() not write_***_hdr(). So create
+	// our own close_file() method.
+   int BlockIO::close_file( fitsfile *fptr, int *status);
 	// file descriptor associated with I/O stream, if applicable
-	int fdes() const { return fd; }
+	int fdes() const { return m_fd; }
+	// get the fitsfile pointer
+	fitsfile *getfptr() const { return m_fptr; } 
+	void setfptr( fitsfile* ffp );
     protected:
 	// Construction can be done either from a filename with open options 
 	// or from a file descriptor.
@@ -83,28 +104,28 @@ class BlockIO {
 	virtual ~BlockIO();
 	//</group>
 
-	char *filename;		// name of file
-	int options;		// options on open statement
-	const int recsize;	// size in bytes of a logical record
-	const int nrec;		// maximum number of logical records
-	const int blocksize;	// size in bytes of physical records
-        FITSErrorHandler errfn; // FITS error handler function
-	IOErrs err_status;	// error number
-	int fd;			// file descriptor
-	char *buffer;		// the actual data buffer itself
-	int block_no;		// number of physical blocks read/written
-	int rec_no;		// number of logical records read/written
-	int current; 		// offset to current logical record
+	char *m_filename;		     // name of file
+	int m_options;		        // options on open statement
+	const int m_recsize;	     // size in bytes of a logical record
+	const int m_nrec;		     // maximum number of logical records
+	const int m_blocksize;	  // size in bytes of physical records
+   FITSErrorHandler m_errfn; // FITS error handler function
+	IOErrs m_err_status;	// error number
+	int m_fd;			   // file descriptor
+	char *m_buffer;		// the actual data buffer itself
+	int m_block_no;		// number of physical blocks read/written
+	int m_rec_no;		   // number of logical records read/written
+	int m_current; 		// offset to current logical record
 	// size of record in buffer
-	int iosize;  		
+	int m_iosize;
+	// using fitsfile structure from cfitsio of NASA
+	fitsfile *m_fptr;  		
 
 	// set the error message and error number for later recovery
 	void errmsg(IOErrs, char *);
 };
 
 //<summary> fixed-length blocked sequential input base class</summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<prerequisite>
 //<list>
 //   <item> BlockIO
@@ -137,14 +158,12 @@ class BlockInput : public BlockIO {
 	// are left.
 	//</note>
 	//<group>
-	virtual char *read(); 	  
-	virtual char *skip(int);  
+	virtual char *read();       // read a physical block.  
+	virtual char *skip(int);    
 	//</group>
 };
 
 //<summary> fixed-length blocked sequential output base class</summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<prerequisite>
 //<list>
 //   <item> BlockIO
@@ -165,6 +184,7 @@ class BlockOutput : public BlockIO {
 	BlockOutput(int,          int, int = 1,
 		    FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BlockOutput();
+	void BlockOutput::flush_buffer();
 	//</group>
 
 	// write the next logical record. The input must point
