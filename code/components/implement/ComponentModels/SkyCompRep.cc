@@ -51,7 +51,7 @@ SkyCompRep::SkyCompRep()
    itsFlux(),
    itsLabel()
 {
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
@@ -60,7 +60,7 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape & shape)
    itsFlux(),
    itsLabel()
 {
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
@@ -70,7 +70,7 @@ SkyCompRep::SkyCompRep(const ComponentType::Shape & shape,
    itsFlux(),
    itsLabel()
 {
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const Flux<Double> & flux,
@@ -81,7 +81,7 @@ SkyCompRep::SkyCompRep(const Flux<Double> & flux,
    itsFlux(flux.copy()),
    itsLabel()
 {
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::SkyCompRep(const SkyCompRep & other) 
@@ -90,7 +90,7 @@ SkyCompRep::SkyCompRep(const SkyCompRep & other)
    itsFlux(other.itsFlux.copy()),
    itsLabel(other.itsLabel)
 {
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
 }
 
 SkyCompRep::~SkyCompRep() {
@@ -104,7 +104,7 @@ SkyCompRep & SkyCompRep::operator=(const SkyCompRep & other) {
     itsFlux = other.itsFlux.copy();
     itsLabel = other.itsLabel;
   }
-  DebugAssert(ok(), AipsError);
+  AlwaysAssert(ok(), AipsError);
   return *this;
 }
 
@@ -317,7 +317,7 @@ Bool SkyCompRep::toRecord(String & errorMessage,
 }
 
 Bool SkyCompRep::ok() const {
-  if (itsShapePtr == (ComponentShape *) 0) {
+  if (itsShapePtr.null()) {
     LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
     logErr << LogIO::SEVERE << "Shape pointer is null"
            << LogIO::POST;
@@ -329,7 +329,7 @@ Bool SkyCompRep::ok() const {
            << LogIO::POST;
     return False;
   }
-  if (itsSpectrumPtr == (SpectralModel *) 0) {
+  if (itsSpectrumPtr.null()) {
     LogIO logErr(LogOrigin("SkyCompRep", "ok()"));
     logErr << LogIO::SEVERE << "Spectrum pointer is null"
            << LogIO::POST;
