@@ -1,5 +1,5 @@
 //# ISMIndex.cc: The Index of the Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,16 +40,6 @@ ISMIndex::ISMIndex (ISMBase* parent)
   rows_p     (2, (uInt)0),
   bucketNr_p (1, (uInt)0)
 {}
-
-ISMIndex::ISMIndex (ISMBase* parent, AipsIO& os)
-: stmanPtr_p (parent),
-  nused_p    (1),
-  rows_p     (2, (uInt)0),
-  bucketNr_p (1, (uInt)0)
-{
-    // Read the index.
-    get (os);
-}
 
 ISMIndex::~ISMIndex()
 {}
@@ -93,22 +83,27 @@ void ISMIndex::addRow (uInt nrrow)
     rows_p[nused_p] += nrrow;
 }
 
-void ISMIndex::removeRow (uInt rownr)
+Int ISMIndex::removeRow (uInt rownr)
 {
     // Decrement the row number for all intervals after the row
     // to be removed.
-    Bool found;
-    uInt index = binarySearchBrackets (found, rows_p, rownr, (uInt)nused_p);
+    uInt index = getIndex (rownr);
     for (uInt i=index+1; i<=nused_p; i++) {
 	rows_p[i]--;
     }
-    // Remove the entire interval when no row is left.
-    // This results in a wasted bucket, but this situation should
-    // in practice never occur.
+    // Remove the entire bucket when no row is left.
+    Int emptyBucket = -1;
     if (rows_p[index] == rows_p[index+1]) {
+	emptyBucket = bucketNr_p[index];
 	objmove (&rows_p[index], &rows_p[index+1], nused_p - index);
 	objmove (&bucketNr_p[index], &bucketNr_p[index+1], nused_p - index-1);
+	rows_p[nused_p] = 0;
+	// There should always be one interval.
+	if (nused_p > 1) {
+	    nused_p--;
+	}
     }
+    return emptyBucket;
 }
 
 uInt ISMIndex::getIndex (uInt rownr) const
