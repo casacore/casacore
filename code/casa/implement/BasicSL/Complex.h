@@ -622,11 +622,13 @@ istream& operator >> (istream& s, G_COMPLEX(type)& x)				\
 }
 
 #define G_COMPLEX_CAST_OP(type)							\
-   operator G_COMPLEX(type)() {return G_COMPLEX(type)((type)re,(type)im);}
+   operator G_COMPLEX(type)() const {return G_COMPLEX(type)((type)re,(type)im);}
 
 #define G_COMPLEX_ASSIGN_OP_DECL(type,from)					\
   G_COMPLEX(type)& operator=(from y) { re = (type) y; im = (type) 0; return *this;} \
   G_COMPLEX(type)& operator=(const G_COMPLEX(from)& y);
+#define G_COMPLEX_ASSIGN_OP_DECLS(type,from)					\
+  G_COMPLEX(type)& operator=(from y) { re = (type) y; im = (type) 0; return *this;}
 #define G_COMPLEX_ASSIGN_OP_IMP(type,from)					\
   G_COMPLEX(type)& G_COMPLEX(type)::operator=(const G_COMPLEX(from)& y) {re = (type)y.re; im = (type)y.im; return *this;}
 
@@ -687,7 +689,7 @@ imported class G_COMPLEX(double);
 imported class G_COMPLEX(float);
 imported class G_COMPLEX(int);
 
-g_declare2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_DECL(double,int) G_COMPLEX_CTOR_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,int) G_COMPLEX_OPEQ_DECL(double,float) G_COMPLEX_OPEQ_DECL(double,int))
+g_declare2(G_COMPLEX,double,G_COMPLEX_CTOR_OP_DECL(double,int) G_COMPLEX_CTOR_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECLS(double,double) G_COMPLEX_ASSIGN_OP_DECL(double,float) G_COMPLEX_ASSIGN_OP_DECL(double,int) G_COMPLEX_OPEQ_DECL(double,float) G_COMPLEX_OPEQ_DECL(double,int))
 typedef G_COMPLEX(double) DComplex;
 g_declare2(G_COMPLEX,float,G_COMPLEX_CAST_OP(double) G_COMPLEX_CTOR_OP_DECL(float,int) G_COMPLEX_CTOR_OP_DECL(float,double) G_COMPLEX_ASSIGN_OP_DECL(float,double) G_COMPLEX_ASSIGN_OP_DECL(float,int) G_COMPLEX_OPEQ_DECL(float,int) G_COMPLEX_OPEQ_DECL(float,double))
 typedef G_COMPLEX(float) Complex;
