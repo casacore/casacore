@@ -122,6 +122,27 @@ Bool SubMS::makeSubMS(String& msname, String& colname){
 
   LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
 
+  if(max(fieldid_p) >= ms_p.field().nrow()){
+    os << LogIO::SEVERE 
+       << "Field selection contains elements that do not exist in "
+       << "this MS"
+       << LogIO::POST;
+    ms_p=MeasurementSet();
+    return False;
+
+
+  }
+  if(max(spw_p) >= ms_p.spectralWindow().nrow()){
+    os << LogIO::SEVERE 
+       << "SpectralWindow selection contains elements that do not exist in "
+       << "this MS"
+       << LogIO::POST;
+    ms_p=MeasurementSet();
+    return False;
+
+
+  }
+
   if(!makeSelection()){
     os << LogIO::SEVERE 
        << "Failed on selection: combination of spw and field chosen may be"
