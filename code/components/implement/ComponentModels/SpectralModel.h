@@ -32,6 +32,8 @@
 
 template <class T> class Vector;
 class MFrequency;
+class GlishRecord;
+class String;
 
 // <summary></summary>
 
@@ -98,6 +100,17 @@ public:
   virtual uInt nSpectralParameters() const = 0;
   virtual void setSpectralParameters(const Vector<Double> & newParms) = 0;
   virtual void spectralParameters(Vector<Double> & compParms) const = 0;
+  // </group>
+
+  // This functions convert between a glish record and a SpectralModel. This
+  // way derived classes can interpret fields in the record in a class specific
+  // way. These functions define how a component is represented in glish.  They
+  // return False if the glish record is malformed and append an error message
+  // to the supplied string giving the reason.
+  // <group>
+  virtual Bool fromRecord(String & errorMessage, 
+			  const GlishRecord & record) = 0;
+  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const = 0;
   // </group>
 
   // Function which checks the internal data of this class for correct

@@ -33,6 +33,12 @@
 #include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MVFrequency.h>
 #include <aips/Measures/MCFrequency.h>
+#include <trial/Tasking/MeasureParameterAccessor.h>
+#include <trial/Measures/DOmeasures.h>
+#include <aips/Utilities/String.h>
+#include <aips/Glish/GlishRecord.h>
+#include <aips/Glish/GlishValue.h>
+#include <aips/Glish/GlishArray.h>
 
 #ifdef __GNUG__
 typedef MeasConvert<MFrequency,MVFrequency,MCFrequency> 
@@ -87,10 +93,6 @@ ComponentType::SpectralShape SpectralIndex::spectralShape() const {
   return ComponentType::SPECTRAL_INDEX;
 }
 
-Bool SpectralIndex::ok() const {
-  return True;
-}
-
 const MFrequency & SpectralIndex::refFrequency() const {
   DebugAssert(ok(), AipsError);
   return itsRefFreq;
@@ -140,6 +142,69 @@ void SpectralIndex::spectralParameters(Vector<Double> & spectralParms) const {
   DebugAssert(spectralParms.nelements() == nSpectralParameters(),AipsError);
   spectralParms(0) = itsIndex;
 }
+
+Bool SpectralIndex::fromRecord(String & errorMessage, 
+			       const GlishRecord & record) {
+  {
+    MeasureParameterAccessor<MFrequency> mpa(String("reference"),
+					     ParameterSet::In, 
+					     (GlishRecord *) &record);
+    if (!mpa.copyIn(errorMessage)) return False;
+    setRefFrequency(mpa());
+  }
+  {
+    if (!record.exists("index")) {
+      errorMessage += "\nThe 'spectrum' record must have an 'index' field";
+      return False;
+    }
+    if (record.get("index").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'index' field cannot be a record";
+      return False;
+    }
+    const GlishArray indexField = record.get("index");
+    if (indexField.elementType() == GlishArray::STRING) {
+      errorMessage += "\nThe 'index' field cannot be a string";
+      return False;
+    }
+    if (indexField.shape().product() != 1) {
+      errorMessage += String("\nThe 'index' field cannot be an array ");
+      return False;
+    }
+    Double indexVal;
+    if (!indexField.get(indexVal)) {
+      errorMessage += String("\nCould not read the 'index' field ") + 
+	String("in the shape record for an unknown reason");
+      return False;
+    }
+    setIndex(indexVal);
+  }
+  DebugAssert(ok(), AipsError);
+  return True;
+}
+
+Bool SpectralIndex::toRecord(String & errorMessage,
+			     GlishRecord & record) const {
+  // Use errorMessage for something to suppress a compiler warning
+  if (&errorMessage == 0) {
+  }
+  record.add("type", ComponentType::name(spectralShape()));
+  record.add("reference", measures::toRecord(refFrequency()));
+  record.add("index", index());
+  return True;
+}
+
+Bool SpectralIndex::ok() const {
+  return True;
+}
+
+// spectrum := [type = 'constant']
+// spectrum := [type = 'spectralindex',
+//              reference = MFrequency,
+//              index = Double]
+// spectrum := [type = 'discrete',
+//              nsamples = Integer (> 0),
+//              frequencies = Vector of MFrequencies,
+//              fluxes = Vector of fluxes]
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SpectralIndex"
 // End: 
