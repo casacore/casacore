@@ -106,16 +106,26 @@ void FiledesIO::write (uInt size, const void* buf)
     }
 }
 
-void FiledesIO::read (uInt size, void* buf)
+Int FiledesIO::read (uInt size, void* buf, Bool throwException)
 {
-    // Throw an exception if not readable.
-    if (!itsReadable) {
-	throw (AipsError ("FilebufIO object is not readable"));
+  // Throw an exception if not readable.
+  if (!itsReadable) {
+    throw (AipsError ("FiledesIO::read - descriptor is not readable"));
+  }
+  Int bytesRead = ::read (itsFile, buf, size);
+  if (bytesRead > Int(size)) { // Should never be executed
+    throw (AipsError ("FiledesIO::read - read returned a bad value"));
+  }
+  if (bytesRead != Int(size) && throwException == True) {
+    if (bytesRead < 0) {
+      throw (AipsError (String("FiledesIO::read - "
+			       " error returned by system call: ") + 
+			strerror(errno)));
+    } else if (bytesRead < Int(size)) {
+      throw (AipsError ("FiledesIO::read - incorrect number of bytes read"));
     }
-    if (::read (itsFile, buf, size) != Int(size)) {
-	throw (AipsError (String("FiledesIO: read error: ")
-			  + strerror(errno)));
-    }
+  }
+  return bytesRead;
 }
 
 Long FiledesIO::seek (Long offset, ByteIO::SeekOption dir)

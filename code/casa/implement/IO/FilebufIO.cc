@@ -1,5 +1,5 @@
 //# FilebufIO.cc: Class for IO on a file using a filebuf object.
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,11 +193,11 @@ void FilebufIO::write (uInt size, const void* buf)
     itsWriteDone = True;
 }
 
-void FilebufIO::read (uInt size, void* buf)
+Int FilebufIO::read (uInt size, void* buf, Bool throwException)
 {
     // Throw an exception if not readable.
     if (!itsReadable) {
-	throw (AipsError ("FilebufIO object is not readable"));
+	throw (AipsError ("FilebufIO::read - file is not readable"));
     }
     // After a write a seek is needed before a read can be done.
     // (requirement of stdio).
@@ -205,10 +205,15 @@ void FilebufIO::read (uInt size, void* buf)
 	traceFSEEK (itsFile, 0, SEEK_CUR);
 	itsWriteDone = False;
     }
-    if (traceFREAD (buf, 1, size, itsFile) != size) {
-	throw (AipsError ("FilebufIO: error while reading " + fileName()));
-    }
+    Int bytesRead = ::traceFREAD (buf, 1, size, itsFile);
     itsReadDone = True;
+    if (bytesRead < 0 || bytesRead > Int(size)) {
+      throw (AipsError ("FilebufIO::read - fread returned a bad value"));
+    }
+    if (bytesRead != Int(size) && throwException) {
+      throw (AipsError ("FilebufIO::read - incorrect number of bytes read"));
+    }
+    return bytesRead;
 }
 
 Long FilebufIO::seek (Long offset, ByteIO::SeekOption dir)
