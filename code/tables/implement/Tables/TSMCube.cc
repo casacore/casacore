@@ -1,4 +1,3 @@
-
 //# TSMCube.cc: Tiled Hypercube Storage Manager for tables
 //# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
@@ -44,6 +43,58 @@
 #include <aips/OS/Conversion.h>
 #include <aips/string.h>                           // for memcpy
 #include <aips/iostream.h>
+
+
+// Find out if local size is a multiple of 4, so we can move as integers.
+#define TSMCube_FindMult \
+  uInt localPixelWords = 0; \
+  if (localPixelSize % sizeof(Int) == 0) { \
+    localPixelWords = localPixelSize / sizeof(Int); \
+  }
+
+
+// Find out if we should use a simple "do-loop" move instead of memcpy
+// because memcpy is slow for small blocks.
+#define TSMCube_FindMove(nrpixel) \
+  Int moveType = 2; \
+  uInt localWords = 0; \
+  if (localPixelWords > 0) { \
+    localWords = (nrpixel) * localPixelWords; \
+    if (localWords <= 30) { \
+      moveType = 0; \
+    } \
+  } else if (localSize <= 30) { \
+    moveType = 1; \
+  }
+
+// Move the data according to the moveType.
+#define TSMCube_MoveData(to,from) \
+  switch (moveType) { \
+  case 0: \
+    TSMCube_copyInt ((Int*)(to), (const Int*)(from), localWords); \
+    break; \
+  case 1: \
+    TSMCube_copyChar ((Char*)(to), (const Char*)(from), localSize); \
+    break; \
+  case 2: \
+    memcpy (to, from, localSize); \
+    break; \
+  }
+
+inline void TSMCube_copyInt (Int* to, const Int* from, uInt nr)
+{
+  for (uInt i=0; i<nr; i++) {
+    to[i] = from[i];
+  }
+}
+
+inline void TSMCube_copyChar (Char* to, const Char* from, uInt nr)
+{
+  for (uInt i=0; i<nr; i++) {
+    to[i] = from[i];
+  }
+}
+
 
 
 TSMCube::TSMCube (TiledStMan* stman, TSMFile* file)
@@ -896,6 +947,9 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
         return;
     }
 
+    // Find out if local size is a multiple of 4, so we can move as integers.
+    TSMCube_FindMult;
+
     // When the section is a line, call a specialized function.
     // Note that a single pixel is also handled as a line.
     if (nOneLong >= nrdim_p - 1) {
@@ -957,14 +1011,17 @@ void TSMCube::accessSection (const IPosition& start, const IPosition& end,
         IPosition sectionIncr = localPixelSize *
                             expandedSectionShape.offsetIncrement (dataLength);
         uInt localSize    = dataLength(0) * localPixelSize;
+
+	// Find out if we should use a simple "do-loop" move instead of memcpy
+	// because memcpy is slow for small blocks.
+	TSMCube_FindMove (dataLength(0));
+
         while (True) {
             if (writeFlag) {
-                memcpy (dataArray+dataOffset, section+sectionOffset,
-			localSize);
+	      TSMCube_MoveData (dataArray+dataOffset, section+sectionOffset);
             }else{
-                memcpy (section+sectionOffset, dataArray+dataOffset,
-			localSize);
-            }
+	      TSMCube_MoveData (section+sectionOffset, dataArray+dataOffset);
+	    }
             dataOffset    += localSize;
             sectionOffset += localSize;
             for (j=1; j<nrdim_p; j++) {
@@ -1013,6 +1070,8 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
                           uInt endPixelInLastTile,
                           uInt lineIndex)
 {
+    // Find out if local size is a multiple of 4, so we can move as integers.
+    TSMCube_FindMult;
     // Get the stride to get to the next tile.
     uInt tileIncr = expandedTilesPerDim_p(lineIndex);
     uInt tileNr = expandedTilesPerDim_p.offset (startTile);
@@ -1026,11 +1085,18 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
                            expandedTileShape_p.offset (startPixelInFirstTile);
     uInt offsetInOtherTile = offset - startPixelInFirstTile(lineIndex) *stride;
     uInt nrPixel = tileShape_p(lineIndex) - startPixelInFirstTile(lineIndex);
+
     // Loop through all tiles.
     while (stTile <= endTile) {
         if (stTile == endTile) {
             nrPixel -= tileShape_p(lineIndex) - endPixelInLastTile - 1;
         }
+	uInt localSize = nrPixel * localPixelSize;
+
+	// Find out if we should use a simple "do-loop" move instead of memcpy
+	// because memcpy is slow for small blocks.
+	TSMCube_FindMove(nrPixel);
+
 //      cout << "tilePos=" << startTile << endl;
 //      cout << "tileNr=" << tileNr << endl;
 //      cout << "start=" << startPixel << endl;
@@ -1045,11 +1111,11 @@ void TSMCube::accessLine (char* section, uInt pixelOffset,
         // Otherwise loop through all pixels.
         if (contiguous) {
             if (writeFlag) {
-                memcpy (dataArray, section, nrPixel * localPixelSize);
+	        TSMCube_MoveData(dataArray,section);
             }else{
-		memcpy (section, dataArray, nrPixel * localPixelSize);
-            }
-            section += nrPixel * localPixelSize;
+	        TSMCube_MoveData(section,dataArray);
+	    }
+	    section += localSize;
         }else{
             // Try to make the data copy as fast as possible.
             // Do this by specializing the cases (which occur very often)
@@ -1246,6 +1312,9 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
     uInt dataOffset;
     uInt sectionOffset;
 
+    // Find out if local size is a multiple of 4, so we can move as integers.
+    TSMCube_FindMult;
+
     // Determine if the first dimension is strided.
     Bool strided = (stride(0) != 1);
     // The first time all dimensions are evaluated to set pixelStart/End
@@ -1312,27 +1381,54 @@ void TSMCube::accessStrided (const IPosition& start, const IPosition& end,
         if (strided) {
             strideSize = stride(0) * localPixelSize;
         }
+
+	// Find out if we should use a simple "do-loop" move instead of memcpy
+	// because memcpy is slow for small blocks.
+	TSMCube_FindMove(nrPixel(0));
+
         while (True) {
             if (strided) {
 		uInt nrp = nrPixel(0);
                 for (j=0; j<nrp; j++) {
                     if (writeFlag) {
-                        memcpy (dataArray+dataOffset, section+sectionOffset,
-				localPixelSize);
+		      switch (localPixelWords) {
+		      case 2:
+			((Int*)(dataArray+dataOffset))[1] =
+			  ((Int*)(section+sectionOffset))[1];
+		      case 1:
+			((Int*)(dataArray+dataOffset))[0] =
+			  ((Int*)(section+sectionOffset))[0];
+			break;
+		      default:
+			TSMCube_copyChar ((Char*)(dataArray+dataOffset),
+					  (Char*)(section+sectionOffset),
+					  localPixelSize);
+		      }
                     }else{
-                        memcpy (section+sectionOffset, dataArray+dataOffset,
-				localPixelSize);
+		      switch (localPixelWords) {
+		      case 2:
+			((Int*)(section+sectionOffset))[1] =
+			  ((Int*)(dataArray+dataOffset))[1];
+		      case 1:
+			((Int*)(section+sectionOffset))[0] =
+			  ((Int*)(dataArray+dataOffset))[0];
+			break;
+		      default:
+			TSMCube_copyChar ((Char*)(section+sectionOffset),
+					  (Char*)(dataArray+dataOffset),
+					  localPixelSize);
+		      }
                     }
                     dataOffset    += strideSize;
                     sectionOffset += localPixelSize;
                 }
             }else{
                 if (writeFlag) {
-                    memcpy (dataArray+dataOffset, section+sectionOffset,
-			    localSize);
+                    TSMCube_MoveData (dataArray+dataOffset,
+				      section+sectionOffset);
                 }else{
-                    memcpy (section+sectionOffset, dataArray+dataOffset,
-			    localSize);
+		    TSMCube_MoveData (section+sectionOffset,
+				      dataArray+dataOffset);
                 }
                 dataOffset    += localSize;
                 sectionOffset += localSize;
