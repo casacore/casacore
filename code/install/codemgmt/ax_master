@@ -4648,3 +4648,4 @@
 14 300 src mv trial/implement/MeasurementSets/test/tMSSelector.cc trial/implement/MeasurementSets/test/tOldMSSelector.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSSimulator.cc trial/implement/MeasurementSets/test/tOldMSSimulator.cc
 14 300 src mv trial/implement/MeasurementSets/test/tMSSpWindowBuffer.cc trial/implement/MeasurementSets/test/tOldMSSpWindowBuffer.cc
+14 300 src mv trial/implement/MeasurementSets/test/tNewMSDerivedValues.cc trial/implement/MeasurementSets/test/tMSDerivedValues.cc
