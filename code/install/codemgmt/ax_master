@@ -6321,3 +6321,4 @@
 18 078 src rm trial/implement/FITS/FITSUtil.h
 18 078 src rm trial/implement/FITS/FITSUtil.cc
 18 078 src rm trial/implement/FITS/FITSUtil2.cc
+18 078 src rm trial/implement/FITS/test/tFITSUtil.cc
