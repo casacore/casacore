@@ -226,7 +226,7 @@ private:
 //
 // The treatment of Quanta Units in ArrayQuantColumns varies according
 // to how the ArrayQuantColumn was defined.  See 
-// <linkto class=TableQuantDesc>TableQuantDesc> for the details.
+// <linkto class=TableQuantumDesc>TableQuantumDesc> for the details.
 // </synopsis>
 
 // <example>
