@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFCOMMON)
-#define AIPS_RFCOMMON
+#if !defined(AIPS_RFCOMMON_H)
+#define AIPS_RFCOMMON_H
     
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>

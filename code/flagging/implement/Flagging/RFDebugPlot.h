@@ -24,8 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# $Id$
-#if !defined(AIPS_RFDEBUGPLOT)
-#define AIPS_RFDEBUGPLOT
+#if !defined(AIPS_RFDEBUGPLOT_H)
+#define AIPS_RFDEBUGPLOT_H
     
 #include <trial/Flagging/RFCommon.h>
     
