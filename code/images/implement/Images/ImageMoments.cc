@@ -37,7 +37,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/TableLogSink.h>
 #include <aips/Mathematics/Constants.h>
@@ -60,7 +60,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Fitting/NonLinearFitLM.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
@@ -1649,8 +1649,8 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
 // Create fitter
 
-      NonLinearFitLM<T> fitter;
-      Gaussian1D<T> gauss;
+      LQNonLinearFitLM<T> fitter;
+      NQGaussian1D<AutoDiff<T> > gauss;
       fitter.setFunction(gauss);
 
 
@@ -1664,7 +1664,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
 
 // Fit
 
-      fitter.setFittedFuncParams(v);
+      fitter.setParameterValues(v);
       fitter.setMaxIter(50);
       T tol = 0.001;
       fitter.setCriteria(tol);
@@ -1695,7 +1695,7 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
             Int nGPts = 100;
             T dx = (values(nBins-1) - values(0))/nGPts;
 
-            Gaussian1D<T> gauss(solution(0), solution(1), abs(solution(2)));
+            NQGaussian1D<T> gauss(solution(0), solution(1), abs(solution(2)));
             Vector<T> xG(nGPts);
             Vector<T> yG(nGPts);
 
