@@ -65,6 +65,7 @@ HashMap<key,val> &HashMap<key,val>::operator=(const HashMap<key,val> &other) {
     for (uInt i=0; i < blk.nelements(); i++)
 	if (blk[i])
 	    blk[i] = new List<OrderedPair<key,val> >(blk[i]);
+    return *this;
 }
 
 template<class key, class val> void HashMap<key,val>::freeTable() {
