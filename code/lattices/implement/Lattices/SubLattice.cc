@@ -1,5 +1,5 @@
 //# SubLattice.cc: A subset of a Lattice
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -259,12 +259,6 @@ uInt SubLattice<T>::nelements() const
 }
 
 template<class T>
-Bool SubLattice<T>::conform (const Lattice<T>& other) const
-{
-  return shape().isEqual (other.shape());
-}
-
-template<class T>
 Bool SubLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
 				    const Slicer& section)
 {
@@ -353,4 +347,20 @@ LatticeIterInterface<T>* SubLattice<T>::makeIter
 ///  navPtr->subSection (section.start(), section.end(), section.stride());
 ///  delete navPtr;
 ///  return iterPtr;
+}
+
+template<class T>
+Bool SubLattice<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return itsLatticePtr->lock (type, nattempts);
+}
+template<class T>
+void SubLattice<T>::unlock()
+{
+  itsLatticePtr->unlock();
+}
+template<class T>
+Bool SubLattice<T>::hasLock (FileLocker::LockType type) const
+{
+  return itsLatticePtr->hasLock (type);
 }

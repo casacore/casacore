@@ -503,3 +503,19 @@ void PagedArray<T>::makeRWArray()
   itsTable.reopenRW();
   itsRWArray.reference (ArrayColumn<T> (itsTable, itsColumnName));
 }
+
+template<class T>
+Bool PagedArray<T>::lock (FileLocker::LockType type, uInt nattempts)
+{
+  return itsTable.lock (type, nattempts);
+}
+template<class T>
+void PagedArray<T>::unlock()
+{
+  itsTable.unlock();
+}
+template<class T>
+Bool PagedArray<T>::hasLock (FileLocker::LockType type) const
+{
+  return itsTable.hasLock (type);
+}
