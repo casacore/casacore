@@ -36,6 +36,8 @@
 
 //# Forward Declarations
 class QBase;
+class String;
+class RecordInterface;
 class GlishRecord;
 template <class Qtype> class Quantum;
 template <class T> class Vector;
