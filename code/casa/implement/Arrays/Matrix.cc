@@ -238,9 +238,9 @@ template<class T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 template<class T> Vector<T> Matrix<T>::row(uInt n)
 {
     DebugAssert(ok(), ArrayError);
-    if (n < 0 || n >= length_p(0))
+    if (Int(n) >= length_p(0)) {
 	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
-
+    }
     Matrix<T> tmp((*this)(n, Slice())); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p(0) = tmp.length_p(1);
@@ -261,9 +261,9 @@ template<class T> Vector<T> Matrix<T>::row(uInt n)
 template<class T> Vector<T> Matrix<T>::column(uInt n)
 {
     DebugAssert(ok(), ArrayError);
-    if (n < 0 || n >= length_p(1))
+    if (Int(n) >= length_p(1)) {
 	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
-
+    }
     Matrix<T> tmp((*this)(Slice(), n)); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p.resize (1);
@@ -364,6 +364,19 @@ template<class T> void Matrix<T>::makeIndexingConstants()
     yinc_p = inc_p(1)*originalLength_p(0);
 }
 
+
+template<class T>
+void Matrix<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+{
+    Array<T> tmp(*this);
+    tmp.nonDegenerate (other, ignoreAxes);
+    if (tmp.ndim() != 1) {
+	throw (ArrayError ("Matrix::nonDegenerate (other, ignoreAxes) - "
+			   "removing degenerate axes from other "
+			   "does not result in matrix"))
+    }
+    reference (tmp);
+}
 
 template<class T> IPosition Matrix<T>::end() const
 {

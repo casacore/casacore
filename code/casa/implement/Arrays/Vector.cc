@@ -88,17 +88,18 @@ template<class T> Vector<T>::Vector(const Block<T> &other)
 template<class T> void Vector<T>::initVector(const Block<T> &other, Int nr)
 {
     uInt n = nr;
-    if (nr <= 0) 
+    if (nr <= 0) {
 	n = other.nelements();
+    }
     if (n > other.nelements())
 	throw(ArrayError("Vector<T>::initVector(const Block<T> &other"
 				   ", Int nr) - nr > other.nelements()"));
     if (this->nelements() != n) {
 	this->resize(n);
     }
-    for (Int i=0; i < n; i++)
+    for (uInt i=0; i < n; i++) {
 	begin_p[i] = other[i];
-
+    }
     return;
 }
 
@@ -271,6 +272,19 @@ template<class T> Vector<T> Vector<T>::operator()(const Slice &slice)
     return vp;
 }
 
+template<class T>
+void Vector<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
+{
+    Array<T> tmp(*this);
+    tmp.nonDegenerate (other, ignoreAxes);
+    if (tmp.ndim() != 1) {
+	throw (ArrayError ("Vector::nonDegenerate (other, ignoreAxes) - "
+			   "removing degenerate axes from other "
+			   "does not result in vector"))
+    }
+    reference (tmp);
+}
+
 template<class T> IPosition Vector<T>::end() const
 {
     DebugAssert(ok(), ArrayError);
@@ -296,4 +310,3 @@ template<class T> Bool Vector<T>::ok() const
 {
     return ( (ndim() == 1) ? (Array<T>::ok()) : False );
 }
-
