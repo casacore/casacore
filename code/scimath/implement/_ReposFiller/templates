@@ -1,3 +1,4 @@
+# $Id$
 1000 casa/Arrays/Array.cc 
      = scimath/Mathematics/AutoDiff.h 
      = casa/BasicSL/Complex.h 
@@ -1062,66 +1063,122 @@
      template class LinearFit<AutoDiff<DComplex> > 
      template class LinearFit<AutoDiffA<DComplex> > 
 1020 scimath/Fitting/LinearFit.cc 
+     = casa/BasicSL/Complex.h 
+     template class LinearFit<Complex> 
+     template class LinearFit<DComplex> 
+1030 scimath/Fitting/LinearFit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFit<AutoDiff<Double> > 
      template class LinearFit<AutoDiffA<Double> > 
-1030 scimath/Fitting/LinearFit.cc 
+1040 scimath/Fitting/LinearFit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFit<AutoDiff<Float> > 
      template class LinearFit<AutoDiffA<Float> > 
-1040 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
-     template class LinearFit<Complex> 
-1050 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
-     template class LinearFit<DComplex> 
-1060 scimath/Fitting/LinearFit.cc 
+1050 scimath/Fitting/LinearFit.cc 
      template class LinearFit<Double> 
-1070 scimath/Fitting/LinearFit.cc 
      template class LinearFit<Float> 
 1000 scimath/Fitting/LinearFitSVD.cc 
+     = casa/BasicSL/Complex.h 
+     template class LinearFitSVD<Complex> 
+     template class LinearFitSVD<DComplex> 
+1010 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFitSVD<AutoDiff<Complex> > 
      template class LinearFitSVD<AutoDiffA<Complex> > 
-1010 scimath/Fitting/LinearFitSVD.cc 
+1020 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFitSVD<AutoDiff<DComplex> > 
      template class LinearFitSVD<AutoDiffA<DComplex> > 
-1020 scimath/Fitting/LinearFitSVD.cc 
+1030 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFitSVD<AutoDiff<Double> > 
      template class LinearFitSVD<AutoDiffA<Double> > 
-1030 scimath/Fitting/LinearFitSVD.cc 
+1040 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFitSVD<AutoDiff<Float> > 
      template class LinearFitSVD<AutoDiffA<Float> > 
-1040 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
-     template class LinearFitSVD<Complex> 
-1050 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
-     template class LinearFitSVD<DComplex> 
-1060 scimath/Fitting/LinearFitSVD.cc 
+1050 scimath/Fitting/LinearFitSVD.cc 
      template class LinearFitSVD<Double> 
-1070 scimath/Fitting/LinearFitSVD.cc 
      template class LinearFitSVD<Float> 
 1000 scimath/Fitting/NonLinearFit.cc 
-     template class NonLinearFit<Double> 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFit<AutoDiff<Complex> > 
+     template class NonLinearFit<AutoDiffA<Complex> > 
 1010 scimath/Fitting/NonLinearFit.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFit<AutoDiff<DComplex> > 
+     template class NonLinearFit<AutoDiffA<DComplex> > 
+1020 scimath/Fitting/NonLinearFit.cc 
+     = casa/BasicSL/Complex.h 
+     template class NonLinearFit<Complex> 
+     template class NonLinearFit<DComplex> 
+1030 scimath/Fitting/NonLinearFit.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFit<AutoDiff<Double> > 
+     template class NonLinearFit<AutoDiffA<Double> > 
+1040 scimath/Fitting/NonLinearFit.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFit<AutoDiff<Float> > 
+     template class NonLinearFit<AutoDiffA<Float> > 
+1050 scimath/Fitting/NonLinearFit.cc 
+     template class NonLinearFit<Double> 
      template class NonLinearFit<Float> 
 1000 scimath/Fitting/NonLinearFitLM.cc 
-     template class NonLinearFitLM<Double> 
+     = casa/BasicSL/Complex.h 
+     template class NonLinearFitLM<Complex> 
+     template class NonLinearFitLM<DComplex> 
 1010 scimath/Fitting/NonLinearFitLM.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFitLM<AutoDiff<Complex> > 
+     template class NonLinearFitLM<AutoDiffA<Complex> > 
+1020 scimath/Fitting/NonLinearFitLM.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFitLM<AutoDiff<DComplex> > 
+     template class NonLinearFitLM<AutoDiffA<DComplex> > 
+1030 scimath/Fitting/NonLinearFitLM.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFitLM<AutoDiff<Double> > 
+     template class NonLinearFitLM<AutoDiffA<Double> > 
+1040 scimath/Fitting/NonLinearFitLM.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class NonLinearFitLM<AutoDiff<Float> > 
+     template class NonLinearFitLM<AutoDiffA<Float> > 
+1050 scimath/Fitting/NonLinearFitLM.cc 
+     template class NonLinearFitLM<Double> 
      template class NonLinearFitLM<Float> 
 1000 scimath/Functionals/AbstractFunctionFactory.h 
      template class FunctionFactory<Double> 
