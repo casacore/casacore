@@ -26,6 +26,7 @@
 //# $Id$
 //
 #include <aips/aips.h>
+#include <aips/Tasking/Aipsrc.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
@@ -44,7 +45,9 @@ try {
    Input inputs(1);
    inputs.Version ("$Revision$");
 
-   inputs.Create("in", "test_image","Input image name?");
+   String root = Aipsrc::aipsRoot();
+   String name = root + "/code/trial/implement/Images/test/test_image";
+   inputs.Create("in", name, "Input image name?");
    inputs.Create("type", "RADIO","Velocity type ?");
    inputs.ReadArguments(argc, argv);
    const String in = inputs.GetString("in");
