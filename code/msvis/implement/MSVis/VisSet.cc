@@ -146,7 +146,7 @@ VisSet::~VisSet() {
 };
 
 
-void VisSet::initCalSet(Int val)
+void VisSet::initCalSet(Int calSet)
 {
 
   LogSink logSink;
@@ -181,6 +181,7 @@ void VisSet::initCalSet(Int val)
       iter_p->setVis(data,VisibilityIterator::Model);
     };
   };
+  flush();
   iter_p->originChunks();
 }
 
