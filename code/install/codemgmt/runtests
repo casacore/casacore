@@ -52,21 +52,27 @@
      echo ""
      cat $BINTESTD/runtests.log
      echo $PATH
-     # Create a summary for each package.
+     # Create a total summary.
+     rm -f $BINTESTD/runtests.summary
+     echo "Summary of runtests for $AIPSPATH" > $BINTESTD/runtests.summary
+     echo "---------------------------------" >> $BINTESTD/runtests.summary
+     echo "" >> $BINTESTD/runtests.summary
+     testsum.sh $AIPSARCH  2>&1 | fgrep -A15 'Test results for ' | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
+     echo "" >> $BINTESTD/runtests.summary
+     # Create a summary for each package (which must have an implement dir).
      # Do it only if the package occurs in the runtests output.
-     # Append the number of failed, etc. to the brief result.
-     rm -f $BINTESTD/runtests.summary_brief
-     touch $BINTESTD/runtests.summary_brief
-     for PKG in $AIPSROOT/code
+     # Append the number of failed, etc. to the total summary.
+     for PKG in `ls $AIPSROOT/code`
      do
        PKGNM=`basename $PKG`
-       grep "${PKG}-" $BINTESTD/runtests.report > /dev/null 2>&1
-       if [ $? = 0 ]; then
-         testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
-         fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '*****' >> $BINTESTD/runtests.summary_brief
+       if [ -d $AIPSROOT/code/$PKGNM/implement ]; then
+         grep "${PKGNM}-" $BINTESTD/runtests.report > /dev/null 2>&1
+         if [ $? = 0 ]; then
+           testsum.sh $AIPSARCH $PKGNM > $BINTESTD/runtests_$PKGNM.summary 2>&1
+           fgrep -A15 'Test results for ' $BINTESTD/runtests_$PKGNM.summary | fgrep -B15 '*****' >> $BINTESTD/runtests.summary
+         fi
        fi
      done
-     cat $BINTESTD/runtests_*.summary > $BINTESTD/runtests.summary
   } > $BINTESTD/runtests.rptNlog
 
   exit 0

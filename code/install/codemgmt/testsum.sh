@@ -49,18 +49,23 @@ if [ -x /usr/bin/nawk ] ; then
    AWK=gawk
 fi
 PACK=$2
+PKG=$2
+if [ "$PACK" = "" ]; then
+  PACK=ALL
+  PKG='.*'
+fi
 VERSION=`avers | awk '{printf("%.6s",$1)}'`
-TPASS=`grep "^${2}-.*PASS" $1/bintest/runtests.report | wc -l`
-TFAIL=`grep "^${2}-.*FAIL" $1/bintest/runtests.report | wc -l`
-TWARNING=`grep "^${2}-.*WARNING" $1/bintest/runtests.report | wc -l`
-TUNKNOWN=`grep "^${2}-.*UNKNOWN" $1/bintest/runtests.report | wc -l`
-TUNTESTED=`grep "^${2}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
+TPASS=`grep "^${PKG}-.*PASS" $1/bintest/runtests.report | wc -l`
+TFAIL=`grep "^${PKG}-.*FAIL" $1/bintest/runtests.report | wc -l`
+TWARNING=`grep "^${PKG}-.*WARNING" $1/bintest/runtests.report | wc -l`
+TUNKNOWN=`grep "^${PKG}-.*UNKNOWN" $1/bintest/runtests.report | wc -l`
+TUNTESTED=`grep "^${PKG}-.*UNTESTED" $1/bintest/runtests.report | wc -l`
 echo 
 echo "Summary of $AIPSPATH runtests $VERSION"
 echo
 echo "******************************************************************************"
 echo 
-echo $PACK | awk '{printf "Test results for %s package\n", $1}'
+echo $PACK | awk '{printf "Test results for package %s\n", $1}'
 echo $TPASS $TFAIL $TWARNING $TUNKNOWN| awk '{printf "\t%5.1f%% passed (%d of %d)\n", 100*$1/($1+$2+$3+$4), $1, $1+$2+$3+$4}'
 echo "          $TFAIL failed"
 echo "          $TWARNING with verification warnings (floating point discrepancies)"
@@ -70,24 +75,24 @@ echo "**************************************************************************
 echo 
 echo "Tests that failed to compile"
 echo 
-grep "^${2}-.*FAIL.*compile" $1/bintest/runtests.report
+grep "^${PKG}-.*FAIL.*compile" $1/bintest/runtests.report
 echo
 echo "Tests that failed to execute"
 echo 
-grep "^${2}-.*FAIL.*execute" $1/bintest/runtests.report
+grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report
 echo
 echo "Tests that failed to verify"
 echo 
-grep "^${2}-.*FAIL.*verify" $1/bintest/runtests.report
-grep "^${2}-.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
+grep "^${PKG}-.*FAIL.*verify" $1/bintest/runtests.report
+grep "^${PKG}-.*FAIL.*execute" $1/bintest/runtests.report > /tmp/aips2tests.noexecute
 echo 
 echo "Tests that were unknown"
 echo 
-grep "^${2}-.*UNKNOWN" $1/bintest/runtests.report
+grep "^${PKG}-.*UNKNOWN" $1/bintest/runtests.report
 echo 
 echo "Tests that were skipped"
 echo 
-grep "^${2}-.*UNTESTED" $1/bintest/runtests.report
+grep "^${PKG}-.*UNTESTED" $1/bintest/runtests.report
 if [ -s /tmp/aips2tests.noexecute ]
 then
    echo 
@@ -109,7 +114,7 @@ then
 fi
 rm /tmp/aips2tests.noexecute
 echo 
-grep "^${2}-.*FAIL.*verify" $1/bintest/runtests.report > /tmp/aips2tests.noverify
+grep "^${PKG}-.*FAIL.*verify" $1/bintest/runtests.report > /tmp/aips2tests.noverify
 if [ -s /tmp/aips2tests.noverify ]
 then
    echo 
@@ -132,11 +137,11 @@ fi
 rm /tmp/aips2tests.noverify
 echo "Tests that had warnings"
 echo 
-grep "^${2}-.*WARNING" $1/bintest/runtests.report
+grep "^${PKG}-.*WARNING" $1/bintest/runtests.report
 echo
 echo "Tests that passed"
 echo
-grep "^${2}-.*PASS" $1/bintest/runtests.report
+grep "^${PKG}-.*PASS" $1/bintest/runtests.report
 echo
 echo "*****************************************************************"
 echo "End tests report for package $PACK"
