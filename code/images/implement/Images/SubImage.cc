@@ -48,7 +48,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image, axesSpec);
   setCoords (image.coordinates());
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -59,7 +59,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 {
   itsSubLatPtr = new SubLattice<T> (image, writableIfPossible, axesSpec);
   setCoords (image.coordinates());
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -76,7 +76,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector(),
                                            slicer.length().asVector()));
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -95,7 +95,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector(),
                                            slicer.length().asVector()));
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -109,7 +109,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector(),
                                            refslicer.length().asVector()));
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -125,7 +125,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   setCoords (image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector(),
                                            refslicer.length().asVector()));
-  setMembers (image);
+  setMembers (*itsImagePtr);
 }
 
 template<class T>
@@ -134,6 +134,7 @@ SubImage<T>::SubImage (const SubImage<T>& other)
   itsImagePtr (other.itsImagePtr->cloneII())
 {
   itsSubLatPtr = new SubLattice<T> (*other.itsSubLatPtr);
+  logger().addParent (&(itsImagePtr->logger()));
 }
 
 template<class T>
@@ -152,6 +153,7 @@ SubImage<T>& SubImage<T>::operator= (const SubImage<T>& other)
     itsImagePtr = other.itsImagePtr->cloneII();
     delete itsSubLatPtr;
     itsSubLatPtr = new SubLattice<T> (*other.itsSubLatPtr);
+    logger().addParent (&(itsImagePtr->logger()));
   }
   return *this;
 }
