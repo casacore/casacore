@@ -207,16 +207,16 @@ looks like
 
 \begin{verbatim}
 	RECEIVER_ID  PHASE  CAL  SUBSCN    DATA
-	     0         0     0      1     600885
-	     1         0     0      1     572540
-	     0         1     1      1     649341
-	     1         1     1      1     617254
-	     0         0     0      2     601413
-	     1         0     0      2     573158
-	     0         1     1      2     649827
-	     1         1     1      2     617841
-	     0         0     0      3     602472
-	     1         0     0      3     574106
+              0         0     0      1     600885
+              1         0     0      1     572540
+              0         1     1      1     649341
+              1         1     1      1     617254
+              0         0     0      2     601413
+              1         0     0      2     573158
+              0         1     1      2     649827
+              1         1     1      2     617841
+              0         0     0      3     602472
+              1         0     0      3     574106
 \end{verbatim}
 
 There are many more rows and columns to this table, but these include the
@@ -321,9 +321,11 @@ to the 'data' vector.
 - mask := (rcvr == 1) & (cal == 1)
 - mask[1:10]
 [F F F T F F F T F F]  
+
 - data_cal_1 := data[mask]
 - data_cal_1[1:5]
 [617254 617841 618768 619804 620325]
+
 - print length(data), length(data_cal_1)
 960 240
 \end{verbatim}
