@@ -115,6 +115,16 @@ SpectralModel & SkyComponent::spectrum() {
   return itsCompPtr->spectrum();
 }
 
+String & SkyComponent::label() {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->label();
+}
+
+const String & SkyComponent::label() const {
+  DebugAssert(ok(), AipsError);
+  return itsCompPtr->label();
+}
+
 Flux<Double> SkyComponent::sample(const MDirection & direction, 
 			      const MVAngle & pixelSize, 
 			      const MFrequency & centerFrequency) const {
@@ -133,16 +143,6 @@ Flux<Double> SkyComponent::visibility(const Vector<Double> & uvw,
   return itsCompPtr->visibility(uvw, frequency);
 }
 
-void SkyComponent::setLabel(const String & newLabel) {
-  itsCompPtr->setLabel(newLabel);
-  DebugAssert(ok(), AipsError);
-}
-
-const String & SkyComponent::label() const {
-  return itsCompPtr->label();
-  DebugAssert(ok(), AipsError);
-}
-
 Bool SkyComponent::fromRecord(String & errorMessage, 
  			      const RecordInterface & record) {
   DebugAssert(ok(), AipsError);
@@ -158,7 +158,7 @@ Bool SkyComponent::toRecord(String & errorMessage,
 SkyComponent SkyComponent::copy() const {
   DebugAssert(ok(), AipsError);
   SkyComponent newComp(flux().copy(), shape(), spectrum());
-  newComp.setLabel(label());
+  newComp.label() = label();
   return newComp;
 }
 

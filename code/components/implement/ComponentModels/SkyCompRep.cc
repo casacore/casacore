@@ -25,11 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SkyCompRep.h>
-#include <trial/ComponentModels/PointShape.h>
-#include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ConstantSpectrum.h>
+#include <trial/ComponentModels/GaussianShape.h>
+#include <trial/ComponentModels/PointShape.h>
+#include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/ComponentModels/SpectralIndex.h>
+#include <trial/ComponentModels/SpectralModel.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Arrays/Vector.h>
@@ -141,6 +143,16 @@ const SpectralModel & SkyCompRep::spectrum() const {
   return *itsSpectrumPtr;
 }
 
+String & SkyCompRep::label() {
+  DebugAssert(ok(), AipsError);
+  return itsLabel;
+}
+
+const String & SkyCompRep::label() const {
+  DebugAssert(ok(), AipsError);
+  return itsLabel;
+}
+
 Flux<Double> SkyCompRep::sample(const MDirection & direction, 
 				const MVAngle & pixelSize, 
 				const MFrequency & centerFrequency) const {
@@ -159,16 +171,6 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double> & uvw,
   // I should scale by the frequency here also but I need to consult with Tim
   // first.
   return flux;
-}
-
-void SkyCompRep::setLabel(const String & newLabel) {
-  DebugAssert(ok(), AipsError);
-  itsLabel = newLabel;
-}
-
-const String & SkyCompRep::label() const {
-  DebugAssert(ok(), AipsError);
-  return itsLabel;
 }
 
 Bool SkyCompRep::fromRecord(String & errorMessage,

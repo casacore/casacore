@@ -157,6 +157,13 @@ public:
   virtual SpectralModel & spectrum();
   // </group>
   
+  // return a reference to the label associated with this component. The label
+  // is a text string for general use.
+  // <group>
+  virtual String & label();
+  virtual const String & label() const;
+  // </group>
+
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified size.
   virtual Flux<Double> sample(const MDirection & direction, 
@@ -184,13 +191,6 @@ public:
   // real.
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const;
-
-  // set/get the label associated with this component. The label is a simple
-  // string for general use.
-  // <group>
-  virtual void setLabel(const String & newLabel);
-  virtual const String & label() const;
-  // </group>
 
   // This functions convert between a record and a component.  Derived classes
   // can interpret fields in the record in a class specific way. These

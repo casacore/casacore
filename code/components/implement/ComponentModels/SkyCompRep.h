@@ -1,4 +1,4 @@
-//# SkyCompRep.h: this defines SkyCompRep.h
+//# SkyCompRep.h: A model component of the sky brightness
 //# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,34 +30,34 @@
 #define AIPS_SKYCOMPREP_H
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/SkyCompBase.h>
-#include <trial/ComponentModels/SpectralModel.h>
-#include <aips/Utilities/String.h>
 #include <aips/Utilities/CountedPtr.h>
+#include <aips/Utilities/String.h>
 
+class ComponentShape;
 class MDirection;
 class MFrequency;
 class MVAngle;
 class RecordInterface;
-template <class T> class Vector;
+class SpectralModel;
 template <class T> class ImageInterface;
+template <class T> class Vector;
 
 // <summary>A model component of the sky brightness</summary>
 
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tSkyCompRep" demos="">
 // </reviewed>
 
 // <prerequisite> 
-// <li> <linkto class=MDirection>MDirection</linkto>
+// <li> <linkto class=ComponentShape>ComponentShape</linkto>
+// <li> <linkto class=SpectralModel>SpectralModel</linkto>
 // </prerequisite>
 //
-
 // <synopsis> 
-
+// A SkyComp
 // This abstract base class defines an interface for a number of classes that
 // are used to represent models of the sky brightness. It contains the
 // functions common to all components while classes like GaussianCompRep &
@@ -204,10 +204,10 @@ public:
   virtual Flux<Double> visibility(const Vector<Double> & uvw,
 				  const Double & frequency) const;
 
-  // set/get the label associated with this component. The label is a simple
-  // string for general use.
+  // return a reference to the label associated with this component. The label
+  // is a text string for general use.
   // <group>
-  virtual void setLabel(const String & newLabel);
+  virtual String & label();
   virtual const String & label() const;
   // </group>
 
