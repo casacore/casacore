@@ -1,5 +1,5 @@
 //# Sequence.cc: provides sequences
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,11 @@
 
 #include <aips/Utilities/Sequence.h>
 
+/*
+   // Inlined this in Sequence.h so this is now
+   // just a dummy file
 template<class T> Sequence<T>::~Sequence()
 {
     // Nothing
 }
+*/
