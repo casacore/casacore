@@ -1996,3 +1996,4 @@
 08 186 src mv nfra/apps/wsrtfiller/DataSource.cc nfra/implement/wsrt/DataSource.cc
 08 186 src mv nfra/apps/wsrtfiller/DataSource.h nfra/implement/wsrt/DataSource.h
 08 186 src mv nfra/apps/wsrtfiller/MSDefiner.cc nfra/implement/wsrt/MSDefiner.cc
+08 186 src mv nfra/apps/wsrtfiller/MSDefiner.h nfra/implement/wsrt/MSDefiner.h
