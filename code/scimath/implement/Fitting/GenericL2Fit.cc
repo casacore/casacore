@@ -1,6 +1,6 @@
 //# GenericL2Fit.cc: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001,2002,2003
+//# Copyright (C) 2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 //# Includes
 #include <trial/Fitting/GenericL2Fit.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>
 
@@ -37,7 +38,7 @@
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit() :
-  FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
+  LSQFit(),
   COLLINEARITY(1e-8),
   aCount_ai(0),
   svd_p(False), ptr_derive_p(0),
@@ -48,29 +49,12 @@ GenericL2Fit<T>::GenericL2Fit() :
   condEq_p(0), fullEq_p(0), arg_p(0), sol_p(0), fsol_p(0),
   err_p(0), ferr_p(0),
   valder_p(typename FunctionTraits<T>::DiffType(0)) {
-  if (!svd_p) set(0.0);
-}
-
-template<class T>
-GenericL2Fit<T>::GenericL2Fit(LSQ::normType type) :
-  FitLSQ(static_cast<typename FunctionTraits<T>::BaseType *>(0)),
-  COLLINEARITY(1e-8),
-  aCount_ai(0),
-  svd_p(False), ptr_derive_p(0),
-  pCount_p(0), ndim_p(0),
-  needInit_p(True), solved_p(False),
-  errors_p(False), ferrors_p(False),
-  asweight_p(False), nr_p(0), 
-  condEq_p(0), fullEq_p(0), arg_p(0), sol_p(0), fsol_p(0),
-  err_p(0), ferr_p(0),
-  valder_p(typename FunctionTraits<T>::DiffType(0)) {
-  set(type);
   if (!svd_p) set(0.0);
 }
 
 template<class T>
 GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
-  FitLSQ(other),
+  LSQFit(other),
   COLLINEARITY(1e-8),
   aCount_ai(other.aCount_ai),
   svd_p(other.svd_p), ptr_derive_p(0),
@@ -95,7 +79,7 @@ GenericL2Fit<T>::GenericL2Fit(const GenericL2Fit &other) :
 template<class T>
 GenericL2Fit<T> &GenericL2Fit<T>::operator=(const GenericL2Fit &other) {
   if (this != &other) {
-    FitLSQ::operator=(other);
+    LSQFit::operator=(other);
     aCount_ai = other.aCount_ai;
     svd_p = other.svd_p;
     if (other.ptr_derive_p) ptr_derive_p = other.ptr_derive_p->clone();
@@ -300,10 +284,13 @@ Matrix<Double> GenericL2Fit<T>::compuCovariance() {
 
 template<class T>
 void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
-  if (pCount_p == aCount_ai) getCovariance(cov);
-  else {
-    Matrix<Double> tmp;
-    getCovariance(tmp);
+  Double *tmp = new Double[nUnknowns()*nUnknowns()];
+  getCovariance(tmp);
+  ///  if (pCount_p == aCount_ai) getCovariance(cov);
+  ///  else {
+  {
+    ///  Matrix<Double> tmp;
+    ///getCovariance(tmp);
     IPosition iw(2, pCount_p, pCount_p);
     if (!(cov.shape().conform(iw) && cov.shape() == iw)) {
       cov.resize();
@@ -312,13 +299,15 @@ void GenericL2Fit<T>::compuCovariance(Matrix<Double> &cov) {
     for (uInt i=0, l=0; i<pCount_p; i++) {
       if (ptr_derive_p->mask(i)) {
 	for (uInt j=0, k=0; j<pCount_p; j++) {
-	  if (ptr_derive_p->mask(j)) cov(j, i) = tmp(k++, l);
+	  ///	  if (ptr_derive_p->mask(j)) cov(j, i) = tmp(k++, l);
+	  if (ptr_derive_p->mask(j)) cov(j, i) = tmp[nUnknowns()*k++ + l];
 	  else cov(j, i) = 0;
 	};
 	l++;
       } else for (uInt j=0; j<pCount_p; j++) cov(j, i) = 0;
     };
-  };
+  }
+  delete [] tmp;;;
 }
 
 template<class T>
@@ -369,8 +358,8 @@ residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 
 template<class T>
 Bool GenericL2Fit<T>::
-residual(Vector<typename FunctionTraits<T>::BaseType> &y
-	 , const Array<typename FunctionTraits<T>::BaseType> &x) {
+residual(Vector<typename FunctionTraits<T>::BaseType> &y,
+	 const Array<typename FunctionTraits<T>::BaseType> &x) {
   return buildResidual(y, x,
 		       static_cast<const Vector
 		       <typename FunctionTraits<T>::BaseType> *const>(0));
@@ -383,7 +372,8 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
     solved_p = False;
     errors_p = False;
     ferrors_p = False;
-    set(parcnt);
+    set(parcnt, 
+	typename LSQTraits<typename FunctionTraits<T>::BaseType>::num_type());
     condEq_p.resize(aCount_ai);
     fullEq_p.resize(pCount_p);
     arg_p.resize(ndim_p);
@@ -459,6 +449,7 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
   uInt nrows = testInput_p(x, y, sigma);
   typename FunctionTraits<T>::BaseType b(0.0);
   typename FunctionTraits<T>::BaseType sig(1.0);
+  VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);;;
   for (uInt i=0; i<nrows; i++) {
     if (mask && !((*mask)[i])) continue;
     if (sigma) {
@@ -476,7 +467,7 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
 	if (ptr_derive_p->mask(j)) condEq_p[k++] = fullEq_p[j];
       };
     };
-    makeNorm(condEq_p, sig, b);
+    makeNorm(ceqit, abs(sig), b);;;
   };
 }
 

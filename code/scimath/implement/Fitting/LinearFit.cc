@@ -1,6 +1,6 @@
 //# LinearFit.cc: Class for linear least-squares fit.
 //#
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 //# Includes
 #include <trial/Fitting/LinearFit.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Mathematics/AutoDiffIO.h>
 #include <aips/Functionals/Function.h>
 
@@ -37,10 +38,6 @@
 template<class T>
 LinearFit<T>::LinearFit() :
   GenericL2Fit<T>() {}
-
-template<class T>
-LinearFit<T>::LinearFit(LSQ::normType type) :
-  GenericL2Fit<T>(type) {}
 
 template<class T>
 LinearFit<T>::LinearFit(const LinearFit &other) :
@@ -77,9 +74,15 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   solved_p = invert(nr_p, svd_p);
   // Get solution and errors
   if (solved_p) {
-    solve(condEq_p, mu, me);
+    VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);;;
+    ///solve(condEq_p);
+    solve(ceqit);
     sol_p += condEq_p;
-    FitLSQ::getErrors(err_p);
+    mu = getSD();
+    me = getWeightedSD();
+    VectorSTLIterator<typename FunctionTraits<T>::BaseType> cerrit(err_p);;;
+    ///    LSQFit::getErrors(err_p);
+    LSQFit::getErrors(cerrit);
     errors_p = True;
     for (uInt i=0, k=0; i<pCount_p; i++) {
       if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
@@ -88,3 +91,9 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   };
   return solved_p;
 }
+
+
+
+
+
+

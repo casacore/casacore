@@ -1,5 +1,5 @@
 //# NonLinearFit.h: Class for non-linear least-squares fit.
-//# Copyright (C) 1994,1995,1996,1999,2000,2001,2002
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -165,11 +165,6 @@ template<class T> class NonLinearFit : public GenericL2Fit<T> {
   // <src>setFunction()</src>.
   // Create optionally a fitter with SVD behaviour specified.
   explicit NonLinearFit(Bool svd=False);
-  // Create a fitter for complex data with non-standard interpretation
-  // of the complex values
-  // (see <linkto module=Fitting>Fitting</linkto> module). Additionally
-  // the svd switch can be set.
-  explicit NonLinearFit(LSQ::normType type, Bool svd=False);
   // Copy constructor (deep copy)
   NonLinearFit(const NonLinearFit &other);
   // Assignment (deep copy)

@@ -29,6 +29,7 @@
 
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/VectorSTLIterator.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Function.h>
 #include <aips/typeinfo.h>
@@ -36,11 +37,6 @@
 template<class T>
 NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
   NonLinearFit<T>(svd),
-  lamda_p(0.001) {}
-
-template<class T>
-NonLinearFitLM<T>::NonLinearFitLM(LSQ::normType type, Bool svd) :
-  NonLinearFit<T>(type, svd),
   lamda_p(0.001) {}
 
 template<class T>
@@ -71,15 +67,10 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   curiter_p = maxiter_p;
   converge_p = False;
   Double fitit_p = 1.0;
-  // The next is interim until Functionals have Complex types
-  uInt dblpar(aCount_ai);
-  if (typeid(typename FunctionTraits<T>::BaseType) == typeid(Complex) ||
-      typeid(typename FunctionTraits<T>::BaseType) == typeid(DComplex)) {
-    dblpar *= 2;
-  };
   // Initialise fitter
-  FitLSQ::reset();
-  FitLSQ::set(dblpar);
+  LSQFit::reset();
+  set(aCount_ai,
+      typename LSQTraits<typename FunctionTraits<T>::BaseType>::num_type());
   Double mu, me;
   sol.resize(pCount_p);
   for (uInt i=0, k=0; i<pCount_p; ++i) {
@@ -92,7 +83,9 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     // Build normal equations
     buildMatrix(x, y, sigma, mask);
     // Do an LM loop
-    if (!solveLoop(fitit_p, nr_p, sol_p, mu, me)) {
+    ///    if (!solveLoop(fitit_p, nr_p, sol_p)) {
+    VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);;;
+    if (!solveLoop(fitit_p, nr_p, csolit)) {
       throw(AipsError("NonLinearFitLM: error in loop solution"));
     };
     curiter_p--;
@@ -104,9 +97,15 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   setMaskedParameterValues(sol_p);
   buildMatrix(x, y, sigma, mask);
   invert(nr_p, True);
-  solve(condEq_p, mu, me);
+  VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);;;
+  solve(ceqit);
+  ///solve(condEq_p);
+  mu = getSD();
+  me = getWeightedSD();
   sol_p += condEq_p;
-  FitLSQ::getErrors(err_p);
+  VectorSTLIterator<typename FunctionTraits<T>::BaseType> cerrit(err_p);;;
+  ///LSQFit::getErrors(err_p);
+  LSQFit::getErrors(cerrit);
   errors_p = True;
   for (uInt i=0, k=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) {

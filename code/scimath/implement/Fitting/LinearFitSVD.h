@@ -1,6 +1,6 @@
 //# LinearFitSVD.h: Linear fit using Singular Value Decomposition method. 
 //#
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#								
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,10 +75,6 @@ public:
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>
   LinearFitSVD();
-  // Create a fitter for complex data with non-standard interpretation
-  // of the complex values
-  // (see <linkto module=Fitting>Fitting</linkto> module).
-  explicit LinearFitSVD(LSQ::normType type);
   // Copy constructor (deep copy)
   LinearFitSVD(const LinearFitSVD &other);
   // Assignment (deep copy)

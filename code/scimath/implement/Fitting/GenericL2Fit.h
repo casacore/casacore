@@ -1,6 +1,6 @@
 //# GenericL2Fit.h: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Fitting/FitLSQ.h>
+#include <aips/Fitting/LSQFit.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/AutoDiff.h>
@@ -161,7 +161,7 @@ template <class T, class U> class Function;
 // which has a behaviour completely identical to this class (apart from a
 // default collinearity of 1e-8). 
 //
-// Other information (see a.o. <linkto class=FitLSQ>FitLSQ</linkto>) can
+// Other information (see a.o. <linkto class=LSQFit>LSQFit</linkto>) can
 // be set and obtained as well.
 // </synopsis>
 //
@@ -206,7 +206,7 @@ template <class T, class U> class Function;
 // information, and other examples.
 // </example>
 
-template<class T> class GenericL2Fit : public FitLSQ {
+template<class T> class GenericL2Fit : public LSQFit {
  public: 
   //# Constants
   // Default collinearity test for SVD
@@ -217,10 +217,6 @@ template<class T> class GenericL2Fit : public FitLSQ {
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>
   GenericL2Fit();
-  // Create a fitter for complex data with non-standard interpretation
-  // of the complex values
-  // (see <linkto module=Fitting>Fitting</linkto> module).
-  explicit GenericL2Fit(LSQ::normType type);
   // Copy constructor (deep copy)
   GenericL2Fit(const GenericL2Fit &other);
   // Assignment (deep copy)
@@ -333,7 +329,7 @@ template<class T> class GenericL2Fit : public FitLSQ {
   // Obtain the chi squared. It has already been calculated during the
   // fitting process.
   // <group>
-  Double chiSquare() { return getChi(); };
+  Double chiSquare() const { return getChi(); };
   // </group>
 
   // Get the errors on the solved values
@@ -394,7 +390,8 @@ template<class T> class GenericL2Fit : public FitLSQ {
   // valid solution will have the same rank as the number of unknowns (or
   // double that number in the complex case). For SVD solutions the
   // rank could be less.
-  uInt getRank() const { return (solved_p ? nr_p : 0); };
+  uInt getRank() const {
+    return (solved_p ? nUnknowns()-getDeficiency() : 0); };
 
  protected:
   //#Data

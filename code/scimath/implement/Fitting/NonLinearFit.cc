@@ -46,17 +46,6 @@ NonLinearFit<T>::NonLinearFit(Bool svd) :
 }
 
 template<class T>
-NonLinearFit<T>:: NonLinearFit(LSQ::normType type, Bool svd) :
-  GenericL2Fit<T>(type),
-  maxiter_p(MAXITER), curiter_p(MAXITER),
-  criterium_p(CRITERIUM),
-  converge_p(False) {
-  set(type);
-  svd_p = svd;
-  if (!svd) set(0.0);
-}
-
-template<class T>
 NonLinearFit<T>::NonLinearFit(const NonLinearFit &other) :
   GenericL2Fit<T>(other),
   maxiter_p(other.maxiter_p),

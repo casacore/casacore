@@ -133,7 +133,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     AlwaysAssertExit(near(actualChiSquare, sum(yres),
 			  1.0e-5));
     AlwaysAssertExit(fitter.fittedNumber()-fitter.getRank() == 0);
-
+    
     //****** Test one A ************
     /*        // Note: first guess equals zero parameters
     LinearFitSVD<AutoDiffA<Double> > fitad;
@@ -465,7 +465,6 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
 
   // Indicate which function to fit
   fitter.setFunction(combination);
-
   Vector<Complex> solution = fitter.fit(x, y, sigma);
 
   Matrix<Double> covariance = fitter.compuCovariance();
@@ -501,5 +500,14 @@ int main() {
   cout << "OK" << endl;
   return 0;
 }
+
+
+
+
+
+
+
+
+
 
 

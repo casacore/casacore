@@ -1,5 +1,5 @@
 //# LinearFitSVD.cc: Linear fit using Singular Value Decomposition.
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,14 +31,6 @@ template<class T>
 LinearFitSVD<T>::LinearFitSVD() :
   LinearFit<T>() {
   svd_p = True;
-  set(COLLINEARITY);
-}
-
-template<class T>
-LinearFitSVD<T>::LinearFitSVD(LSQ::normType type) :
-  LinearFit<T>(type) {
-  svd_p = True;
-  set(type);
   set(COLLINEARITY);
 }
 

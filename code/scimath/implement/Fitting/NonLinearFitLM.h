@@ -92,11 +92,6 @@ public:
   // <src>setFunction()</src>.
   // Optionally, a fitter with SVD behaviour
   explicit NonLinearFitLM(Bool svd=False);
-  // Create a fitter for complex data with non-standard interpretation
-  // of the complex values
-  // (see <linkto module=Fitting>Fitting</linkto> module). Additionally
-  // the svd switch can be set.
-  explicit NonLinearFitLM(LSQ::normType type, Bool svd=False);
   // Copy constructor (deep copy)
   NonLinearFitLM(const NonLinearFitLM &other);
   // Assignment (deep copy)

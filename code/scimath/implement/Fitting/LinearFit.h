@@ -1,6 +1,6 @@
 //# LinearFit.h: Class for linear least-squares fit.
 //#
-//# Copyright (C) 1995,1999,2000,2001,2002
+//# Copyright (C) 1995,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,7 +152,7 @@
 // which has a behaviour completely identical to this class (apart from a
 // default collinearity of 1e-8). 
 //
-// Other information (see a.o. <linkto class=FitLSQ>FitLSQ</linkto>) can
+// Other information (see a.o. <linkto class=LSQFit>LSQFit</linkto>) can
 // be set and obtained as well.
 // </synopsis>
 //
@@ -209,10 +209,6 @@ template<class T> class LinearFit : public GenericL2Fit<T> {
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>
   LinearFit();
-  // Create a fitter for complex data with non-standard interpretation
-  // of the complex values
-  // (see <linkto module=Fitting>Fitting</linkto> module).
-  explicit LinearFit(LSQ::normType type);
   // Copy constructor (deep copy)
   LinearFit(const LinearFit &other);
   // Assignment (deep copy)
@@ -243,3 +239,18 @@ template<class T> class LinearFit : public GenericL2Fit<T> {
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
