@@ -91,6 +91,9 @@ class Table;
 // the number of open files in case a lot of TempLattice objects are used.
 // A temporarily closed TempLattice will be reopened automatically when needed.
 // It can also be reopened explicitly.
+// <p>
+// You can force the TempLattice to be disk based by setting the memory argument 
+// in the constructors to 0
 // </synopsis>
 
 // <example>
@@ -124,7 +127,7 @@ public:
 
   // Create a TempLattice of the specified Shape. You can specify how much
   // memory the Lattice can consume before it becomes disk based by giving a
-  // positive value to the maxMemoryinMB argument. Otherwise it will assume
+  // non-neative value to the maxMemoryinMB argument. Otherwise it will assume
   // it can use up to 25% of the memory on your machine as defined in aipsrc
   // (this algorithm may change).
   TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);

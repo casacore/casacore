@@ -62,10 +62,13 @@ void TempLattice<T>::init(const TiledShape& shape, Double maxMemoryInMB)
 {
   Double memoryReq = Double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
   Double memoryAvail;
-  if (maxMemoryInMB > 0.0) {
-    memoryAvail = maxMemoryInMB;
-  } else {
+
+// maxMemoryInMb = 0.0 forces disk
+
+  if (maxMemoryInMB < 0.0) {
     memoryAvail = Double(AppInfo::availableMemoryInMB()) / 2.0;
+  } else {
+    memoryAvail = maxMemoryInMB;
   }
   if (memoryReq > memoryAvail) {
     // Create a table with a unique name in a work directory.
