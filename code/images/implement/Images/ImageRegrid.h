@@ -130,7 +130,8 @@ public:
   void regrid(ImageInterface<T>& outImage, 
               Interpolate2D<T>::Method method,
               const IPosition& whichOutPixelAxes,
-	      const ImageInterface<T>& inImage);
+	      const ImageInterface<T>& inImage,
+              Bool showProgress=False);
 
   // Inserts inImage into outImage.  The alignment is done by
   // placing the reference pixel of inImage at the specified reference
@@ -201,7 +202,7 @@ public:
                  const Vector<Int> pixelAxisMap,
                  Interpolate2D<T>::Method method,
                  MDirection::Convert& machine,
-                 Bool useMachine);
+                 Bool useMachine, Bool showProgress);
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
@@ -215,8 +216,7 @@ public:
                  const Vector<Int> pixelAxisMap,
                  Interpolate2D<T>::Method method,
                  MFrequency::Convert& machine,
-                 Bool useMachine);
-
+                 Bool useMachine, Bool showProgress);
 };
 
  
