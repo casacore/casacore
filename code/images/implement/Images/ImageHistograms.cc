@@ -1540,7 +1540,7 @@ T HistTiledCollapser<T>::setBinWidth (const Vector<T>& clip,
 //
 { 
    T width = (clip(1) - clip(0)) / nBins;
-   if (near(width,0.0,1e-6)) {
+   if (near(width,0.0f,1e-6)) {
       width = 0.001;
    }
    return width;
