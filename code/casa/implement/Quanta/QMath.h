@@ -222,8 +222,6 @@ Complex ceil(const Complex &val);
 Complex floor(const Complex &val);
 DComplex ceil(const DComplex &val);
 DComplex floor(const DComplex &val);
-IComplex ceil(const IComplex &val);
-IComplex floor(const IComplex &val);
 Int ceil(const Int &val);
 Int floor(const Int &val);
 Float real(const Float &val);

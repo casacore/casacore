@@ -1,5 +1,5 @@
 //# QMath2.cc: class to manipulate physical, dimensioned quantities
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,14 +45,6 @@ DComplex ceil(const DComplex &val) {
 
 DComplex floor(const DComplex &val) {
     return (DComplex(floor(val.real()),floor(val.imag())));
-}
-
-IComplex ceil(const IComplex &val) {
-    return (val);
-}
-
-IComplex floor(const IComplex &val) {
-    return (val);
 }
 
 Int ceil(const Int &val) {
