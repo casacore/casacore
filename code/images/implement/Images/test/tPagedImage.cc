@@ -1,5 +1,5 @@
 //# tPagedArray.cc:  test the PagedArray class
-//# Copyright(C) 1994,1995
+//# Copyright (C) 1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -71,7 +71,8 @@ int main()
 						25.007),
 				 0.045, 55.03));
     
-    Table table1(SetupNewTable("table1", TableDesc("", TableDesc::Scratch), 
+    Table table1(SetupNewTable("tPagedImage_tmp.img1",
+			       TableDesc("", TableDesc::Scratch), 
 			       Table::New));
 
     { // use scoping to destruct
@@ -88,7 +89,7 @@ int main()
       
       // construct a new Image from an array and coordinate information. Table
       // will be stored in the named file. NO MASKING
-      PagedImage<Float> pi2(map1shape, ImgCoord1, "table2");
+      PagedImage<Float> pi2(map1shape, ImgCoord1, "tPagedImage_tmp.img2");
       LatticeIterator<Float> pi2iter(pi2, pi2.shape());
       Vector<float> &cursor2(pi2iter.vectorCursor());
       for(i=0;i<256;i++) cursor2(IPosition(1,i)) = i;
@@ -98,12 +99,12 @@ int main()
     PagedImage<Float> pi3(table1);
     
     // reconstruct from a pre-existing PagedImage in the file 
-    PagedImage<Float> pi4("table2");
+    PagedImage<Float> pi4("tPagedImage_tmp.img2");
     
     // reconstruct from a pre-existing PagedImage in the file
     // and row number (defaults to row zero)
-    PagedImage<Float> pi5("table1");
-    PagedImage<Float> pi6("table2");
+    PagedImage<Float> pi5("tPagedImage_tmp.img1");
+    PagedImage<Float> pi6("tPagedImage_tmp.img2");
 
     // the copy constructor (reference semantics):  passing by value
     // doesn't make sense, because it would require the creation of a
@@ -191,7 +192,8 @@ int main()
     // make another array
     IPosition map2shape(4,5,6,7,8);
       
-    Table table3(SetupNewTable("table3", TableDesc("", TableDesc::Scratch), 
+    Table table3(SetupNewTable("tPagedImage_tmp.img3",
+			       TableDesc("", TableDesc::Scratch), 
 			       Table::New));
 
     PagedImage<Int> pi8(map2shape, ImgCoord2, table3, True);
@@ -205,13 +207,14 @@ int main()
     }
 
     // rename the table to something else
-    pi8.rename("newTable");
+    pi8.rename("tPagedImage_tmp.imgNew");
 
     // returns the current Table name
-    AlwaysAssert(pi8.name() == String("newTable"), AipsError);
+    AlwaysAssert(pi8.name() == String("tPagedImage_tmp.imgNew"), AipsError);
 
     // return the Table this instance is stored in.
-    AlwaysAssert(pi8.table().tableName() == String("newTable"), AipsError);
+    AlwaysAssert(pi8.table().tableName() == String("tPagedImage_tmp.imgNew"),
+		 AipsError);
     
     // a default constructed PagedImage is automatically given a temporary
     // TableColumn row number.  You may change it here.
@@ -441,7 +444,7 @@ int main()
     // of all cursor movement (operator++ or operator--) since doing x iter++
     // followed by x iter-- does not necessarily put the cursor back to the
     // origin of the Lattice </note> 
-    AlwaysAssert(pi8ROIter.nsteps() == 239, AipsError);
+    AlwaysAssert(pi8ROIter.nsteps() == 240, AipsError);
   
     // Function which returns the position of the beginning of the cursor 
     // within the lattice.
@@ -587,7 +590,7 @@ int main()
     // of all cursor movement (operator++ or operator--) since doing x iter++
     // followed by x iter-- does not necessarily put the cursor back to the
     // origin of the Lattice </note> 
-    AlwaysAssert(pi8Iter.nsteps() == 55, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 56, AipsError);
   
     // Function which returns the position of the beginning of the cursor 
     // within the lattice.
@@ -623,27 +626,27 @@ int main()
     LatticeStepper xvectorstepper(pi8.shape(), xvector,	orientation);
     pi8Iter.replaceNavigator(xvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 335, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 336, AipsError);
     AlwaysAssert(allEQ(pi8Iter.vectorCursor(), 24), AipsError);
 
     IPosition yvector(2,1,6);
     LatticeStepper yvectorstepper(pi8.shape(), yvector, orientation);
     pi8Iter.replaceNavigator(yvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 279, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 280, AipsError);
     AlwaysAssert(allEQ(pi8Iter.vectorCursor(), 24), AipsError);
 
     LatticeStepper zvectorstepper(pi8.shape(), zvector, orientation);
     pi8Iter.replaceNavigator(zvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 239, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 240, AipsError);
     AlwaysAssert(allEQ(pi8Iter.vectorCursor(), 24), AipsError);
 
     IPosition tvector(4,1,1,1,8);
     LatticeStepper tvectorstepper(pi8.shape(), tvector, orientation);
     pi8Iter.replaceNavigator(tvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 209, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 210, AipsError);
     AlwaysAssert(allEQ(pi8Iter.vectorCursor(), 24), AipsError);
 
 // ----------------------non integral vectors------------------------
@@ -653,7 +656,7 @@ int main()
 					   orientation);
     pi8Iter.replaceNavigator(xnonIntgrlvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 671, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 672, AipsError);
     Vector<Int> tester(3);
     tester.set(24);
     tester(2) = 0;
@@ -664,7 +667,7 @@ int main()
 					   orientation);
     pi8Iter.replaceNavigator(ynonIntgrlvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 559, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 560, AipsError);
     tester.resize(4);
     tester.set(24);
     tester(2) = 0;
@@ -676,7 +679,7 @@ int main()
 					   orientation);
     pi8Iter.replaceNavigator(znonIntgrlvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 479, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 480, AipsError);
     tester(2) = 24;
     AlwaysAssert(allEQ(pi8Iter.vectorCursor(), tester), AipsError);
 
@@ -685,7 +688,7 @@ int main()
 					   orientation);
     pi8Iter.replaceNavigator(tnonIntgrlvectorstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 419, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 420, AipsError);
     tester.resize(5);
     tester.set(24);
     tester(3) = 0;
@@ -697,42 +700,42 @@ int main()
     LatticeStepper xymatrixstepper(pi8.shape(), xymatrix, orientation);
     pi8Iter.replaceNavigator(xymatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 55, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 56, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
     IPosition xzmatrix(3,5,1,7);
     LatticeStepper xzmatrixstepper(pi8.shape(), xzmatrix, orientation);
     pi8Iter.replaceNavigator(xzmatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 47, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 48, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
     IPosition xtmatrix(4,5,1,1,8);
     LatticeStepper xtmatrixstepper(pi8.shape(), xtmatrix, orientation);
     pi8Iter.replaceNavigator(xtmatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 41, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 42, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
     IPosition yzmatrix(3,1,6,7);
     LatticeStepper yzmatrixstepper(pi8.shape(), yzmatrix, orientation);
     pi8Iter.replaceNavigator(yzmatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 39, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 40, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
     IPosition ytmatrix(4,1,6,1,8);
     LatticeStepper ytmatrixstepper(pi8.shape(), ytmatrix, orientation);
     pi8Iter.replaceNavigator(ytmatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 34, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 35, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
     IPosition ztmatrix(4,1,1,7,8);
     LatticeStepper ztmatrixstepper(pi8.shape(), ztmatrix, orientation);
     pi8Iter.replaceNavigator(ztmatrixstepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 29, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 30, AipsError);
     AlwaysAssert(allEQ(pi8Iter.matrixCursor(), 24), AipsError);
 
 // -----------------------non integral matrices----------------------------
@@ -742,7 +745,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xyNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 111, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 112, AipsError);
     Matrix<Int> test(xyNonItgrlmatrix1);
     test.set(24);
     test.row(2) = 0;
@@ -753,7 +756,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xyNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 111, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 112, AipsError);
     test.resize(xyNonItgrlmatrix2);
     test.set(24);
     test.column(2) = 0;
@@ -765,7 +768,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xyNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 223, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 224, AipsError);
     test.resize(xyNonItgrlmatrix3);
     test.set(24);
     test.row(2) = 0;
@@ -778,7 +781,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xzNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 95, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 96, AipsError);
     test.resize(IPosition(2,3,7));
     test.set(24);
     test.row(2) = 0;
@@ -789,7 +792,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xzNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 95, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 96, AipsError);
     test.resize(IPosition(2,5,4));
     test.set(24);
     test.column(3) = 0;
@@ -800,7 +803,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xzNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 191, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 192, AipsError);
     test.resize(IPosition(2,3,4));
     test.set(24);
     test.row(2) = 0;
@@ -812,7 +815,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xtNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 83, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 84, AipsError);
     test.resize(IPosition(2,3,8));
     test.set(24);
     test.row(2) = 0;
@@ -823,7 +826,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xtNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 83, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 84, AipsError);
     test.resize(IPosition(2,5,5));
     test.set(24);
     test.column(3) = 0;
@@ -835,7 +838,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(xtNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 167, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 168, AipsError);
     test.resize(IPosition(2,3,5));
     test.set(24);
     test.row(2) = 0;
@@ -848,7 +851,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(yzNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 79, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 80, AipsError);
     test.resize(IPosition(2,4,7));
     test.set(24);
     test.row(2) = 0;
@@ -860,7 +863,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(yzNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 79, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 80, AipsError);
     test.resize(IPosition(2,6,4));
     test.set(24);
     test.column(3) = 0;
@@ -871,7 +874,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(yzNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 159, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 160, AipsError);
     test.resize(IPosition(2,4,4));
     test.set(24);
     test.row(2) = 0;
@@ -884,7 +887,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ytNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 69, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 70, AipsError);
     test.resize(IPosition(2,4,8));
     test.set(24);
     test.row(2) = 0;
@@ -896,7 +899,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ytNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 69, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 70, AipsError);
     test.resize(IPosition(2,6,5));
     test.set(24);
     test.column(3) = 0;
@@ -908,7 +911,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ytNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 139, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 140, AipsError);
     test.resize(IPosition(2,4,5));
     test.set(24);
     test.row(2) = 0;
@@ -922,7 +925,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ztNonItgrlmatrix1stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 59, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 60, AipsError);
     test.resize(IPosition(2,4,8));
     test.set(24);
     test.row(3) = 0;
@@ -933,7 +936,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ztNonItgrlmatrix2stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 59, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 60, AipsError);
     test.resize(IPosition(2,7,5));
     test.set(24);
     test.column(3) = 0;
@@ -945,7 +948,7 @@ int main()
 					    orientation);
     pi8Iter.replaceNavigator(ztNonItgrlmatrix3stepper);
     for (;!pi8Iter.atEnd();pi8Iter++);
-    AlwaysAssert(pi8Iter.nsteps() == 119, AipsError);
+    AlwaysAssert(pi8Iter.nsteps() == 120, AipsError);
     test.resize(IPosition(2,4,5));
     test.set(24);
     test.row(3) = 0;
@@ -958,8 +961,6 @@ int main()
   } catch (AipsError x) {
     cerr << "Exception caught: " << x.getMesg() << endl;
   } end_try;
-
-  system("/bin/rm -rf table* newTable empty");
 
   return 0;
 }
