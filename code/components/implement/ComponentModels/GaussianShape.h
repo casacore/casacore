@@ -1,5 +1,5 @@
 //# GaussianShape.h:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #define AIPS_GAUSSIANSHAPE_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/NQGaussian2D.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/TwoSidedShape.h>
@@ -243,8 +243,8 @@ private:
   //# Updates the parameters of the itsFT object
   void updateFT();
   //# A generic Gaussian function
-  Gaussian2D<Double> itsShape;
+  NQGaussian2D<Double> itsShape;
   //# The FT of a Gaussian is also a Gaussian. Its parameters are stored here
-  Gaussian2D<Double> itsFT;
+  NQGaussian2D<Double> itsFT;
 };
 #endif

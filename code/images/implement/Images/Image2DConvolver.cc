@@ -39,7 +39,7 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Fitting/Fit2D.h>
-#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/NQGaussian2D.h>
 #include <trial/Images/ArrayImageConvolver.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>
@@ -551,7 +551,8 @@ void Image2DConvolver<T>::fillGaussian (T& maxVal, T& volume,
    uInt n2 = pixels.shape()(1);
    AlwaysAssert(n1==n2,AipsError);
    positionAngle += C::pi_2;        // +y -> -x
-   Gaussian2D<T> g2d(height, xCentre, yCentre, majorAxis, ratio, positionAngle);
+   NQGaussian2D<T> g2d(height, xCentre, yCentre, majorAxis,
+		       ratio, positionAngle);
    maxVal = -1.0e30;
    volume = 0.0;
    Vector<T> pos(2);
