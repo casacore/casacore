@@ -33,7 +33,7 @@
 
 #include <aips/aips.h>
 template <class T> class ImageInterface;
-template <class T> class ArrayLattice;
+template <class T> class PagedArray;
 template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
 class IPosition;
@@ -237,9 +237,9 @@ public:
 
 private:
 
-   ArrayLattice<Int>* pHistImage_p;
-   ArrayLattice<T>* pMinMaxImage_p;
-   ArrayLattice<Double>* pStatsImage_p;
+   PagedArray<Int>* pHistImage_p;
+   PagedArray<T>* pMinMaxImage_p;
+   PagedArray<Double>* pStatsImage_p;
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
    const ImageInterface<T>* pInImage_p;
@@ -293,6 +293,18 @@ private:
                    const T& binWidth,
                    const Int& nBins);
 
+// Find start location in histogram storage image for given location
+// in the input image
+   IPosition locInHist (const IPosition& imageCursorPos);
+
+// Find start location in min/max storage image for given location
+// in the input image
+   IPosition locInMinMax (const IPosition& imageCursorPos);
+
+// Find start location in Statistics storage image for given location
+// in the input image
+   IPosition locInStats (const IPosition& imageCursorPos);
+
 // Make histogram cumulative
    void makeCumulative (Vector<Float>& counts,
                         Float& yMax,
@@ -339,19 +351,22 @@ private:
 
 // Increment the statistics storage image.  
    void putInStats (const IPosition& imageCursorPos,
-                    const Double& sum,
-                    const Double& sumSq,
-                    const Int& n);
+                    const Vector<Double>& stats);
 
 
 // Set the bin width for the current histogram
    T setBinWidth (const Vector<T>& clip,
                   const Int& nBins);
 
+
+// Return the shape of a min/max storage image slice.  
+   IPosition sliceMinMaxShape ();
+
+// Return the shape of a min/max storage image slice.  
+   IPosition sliceStatsShape ();
+
 // Accumulate statistical sums
-   void statsAccum (Double& sum,
-                    Double& sumSq,
-                    Int& n,
+   void statsAccum (Vector<Double>& stats,
                     const T& datum);
 
 // Write values of display axes on plots
