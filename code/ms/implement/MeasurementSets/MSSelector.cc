@@ -621,22 +621,9 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     return out;
   }
 
-  Bool wantAmp, wantPhase, wantReal, wantImag, wantData, wantFloat,
-    wantCAmp, wantCPhase, wantCReal, wantCImag, wantCData,
-    wantMAmp, wantMPhase, wantMReal, wantMImag, wantMData, wantFlag,
-    wantFlagSum, 
-    wantRAmp, wantRPhase, wantRReal, wantRImag, wantRData,
-    wantRatAmp, wantRatPhase, wantRatReal, wantRatImag, wantRatData,
-    wantORAmp, wantORPhase, wantORReal, wantORImag, wantORData,
-    wantWeight, wantSigma;
-  wantAmp=wantPhase=wantReal=wantImag=wantData=wantFloat=
-    wantCAmp=wantCPhase=wantCReal=wantCImag=wantCData=
-    wantMAmp=wantMPhase=wantMReal=wantMImag=wantMData=wantFlag=
-    wantFlagSum=
-    wantRAmp=wantRPhase=wantRReal=wantRImag=wantRData=
-    wantRatAmp=wantRatPhase=wantRatReal=wantRatImag=wantRatData=
-    wantORAmp=wantORPhase=wantORReal=wantORImag=wantORData=
-    wantWeight=wantSigma=False;
+  Matrix<Bool> want(nFuncType,nDataType,False);
+  Bool wantFlag, wantFlagSum, wantWeight, wantSigma;
+  wantFlag=wantFlagSum=wantWeight=wantSigma=False;
 
   Matrix<Double> uvw;
 
@@ -713,6 +700,38 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     }
     rowIndex_p.resize(nIfr,nSlot); rowIndex_p.set(-1);
     for (Int i=0; i<nRow; i++) rowIndex_p(ifrIndex(i),slot(i))=i;
+
+    // align the slots in time
+    // Note that this doesn't cope with all cases, e.g., if the number
+    // of slots is < number of times. Ok if at least one antenna is there
+    // for the whole block
+    Vector<Double> time=msc.time().getColumn();
+    Matrix<Double> times(nIfr,nSlot,0);
+    for (Int k=0; k<nRow; k++) {
+      times(ifrIndex(k),slot(k))=time(k);
+    }
+
+    for (Int sl=nSlot-1; sl>=0; sl--) {
+      // find latest time in this slot
+      Double ltime=max(times.column(sl));
+      for (Int i=0; i<nIfr; i++) {
+	if (ifrAxis_p(i)>=0) { // ifr exists
+	  if (times(i,sl)==0) { // found a hole
+	    Int sl2=sl;
+	    while (sl2>0 && times(i,sl2)==0) sl2--;
+	    if (sl2>=0 && times(i,sl2)==ltime) {
+	      // move from sl2 to sl to align in time
+	      Int row=rowIndex_p(i,sl2);
+	      rowIndex_p(i,sl)=row;
+	      rowIndex_p(i,sl2)=-1;
+	      slot(row)=sl;
+	      times(i,sl)=ltime;
+	      times(i,sl2)=0;
+	    }
+	  }
+	}
+      }
+    }
   } else {
     rowIndex_p.resize(0,0);
   }
@@ -723,22 +742,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     MSS::Field fld=MSS::field(item);
     switch (fld) {
     case MSS::AMPLITUDE:
-      wantAmp=True;
-      break;
     case MSS::CORRECTED_AMPLITUDE:
-      wantCAmp=True;
-      break;
     case MSS::MODEL_AMPLITUDE:
-      wantMAmp=True;
-      break;
     case MSS::RATIO_AMPLITUDE:
-      wantRatAmp=True;
-      break;
     case MSS::RESIDUAL_AMPLITUDE:
-      wantRAmp=True;
-      break;
     case MSS::OBS_RESIDUAL_AMPLITUDE:
-      wantORAmp=True;
+      want(Amp,fld-MSS::AMPLITUDE)=True;
       break;
     case MSS::ANTENNA1:
       if (doIfrAxis) {
@@ -892,22 +901,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
       break;
     case MSS::DATA:
-      wantData=True;
-      break;
     case MSS::CORRECTED_DATA:
-      wantCData=True;
-      break;
     case MSS::MODEL_DATA:
-      wantMData=True;
-      break;
     case MSS::RATIO_DATA:
-      wantRatData=True;
-      break;
     case MSS::RESIDUAL_DATA:
-      wantRData=True;
-      break;
     case MSS::OBS_RESIDUAL_DATA:
-      wantORData=True;
+      want(Data,fld-MSS::DATA)=True;
       break;
     case MSS::DATA_DESC_ID:
     case MSS::FIELD_ID:
@@ -1005,21 +1004,12 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
       break;
     case MSS::IMAGINARY:
-      wantImag=True;
-      break;
     case MSS::CORRECTED_IMAGINARY:
-      wantCImag=True;
     case MSS::MODEL_IMAGINARY:
-      wantMImag=True;
-      break;
     case MSS::RATIO_IMAGINARY:
-      wantRatImag=True;
-      break;
     case MSS::RESIDUAL_IMAGINARY:
-      wantRImag=True;
-      break;
     case MSS::OBS_RESIDUAL_IMAGINARY:
-      wantORImag=True;
+      want(Imag,fld-MSS::IMAGINARY)=True;
       break;
     case MSS::IMAGING_WEIGHT:
       {
@@ -1054,43 +1044,23 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
       }
       break;
     case MSS::FLOAT_DATA:
-      wantFloat=True;
+      want(Data,ObsFloat)=True;
       break;
     case MSS::PHASE:
-      wantPhase=True;
-      break;
     case MSS::CORRECTED_PHASE:
-      wantCPhase=True;
-      break;
     case MSS::MODEL_PHASE:
-      wantMPhase=True;
-      break;
     case MSS::RATIO_PHASE:
-      wantRatPhase=True;
-      break;
     case MSS::RESIDUAL_PHASE:
-      wantRPhase=True;
-      break;
     case MSS::OBS_RESIDUAL_PHASE:
-      wantORPhase=True;
+      want(Phase,fld-MSS::PHASE)=True;
       break;
     case MSS::REAL:
-      wantReal=True;
-      break;
     case MSS::CORRECTED_REAL:
-      wantCReal=True;
-      break;
     case MSS::MODEL_REAL:
-      wantMReal=True;
-      break;
     case MSS::RATIO_REAL:
-      wantRatReal=True;
-      break;
     case MSS::RESIDUAL_REAL:
-      wantRReal=True;
-      break;
     case MSS::OBS_RESIDUAL_REAL:
-      wantORReal=True;
+      want(Real,fld-MSS::REAL)=True;
       break;
     case MSS::SIGMA: 
       {
@@ -1326,15 +1296,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     }
   }
 
-  Bool wantOR = (wantORAmp || wantORPhase || wantORReal || wantORImag ||
-		       wantORData);
-  Bool wantR = (wantRAmp || wantRPhase || wantRReal || wantRImag ||
-		      wantRData );
-  Bool wantRat = (wantRatAmp || wantRatPhase || wantRatReal || 
-			wantRatImag || wantRatData );
-  Array<Complex> observed_data;
-
-  if (wantFloat) {
+  if (want(Data,ObsFloat)) {
     // get the data
     Array<Float> fdata;
     if (!msc.floatData().isNull()) {
@@ -1349,125 +1311,83 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
     }
   }
 
-  if (wantAmp || wantPhase || wantReal || wantImag || wantData
-      || wantOR ) {
-    // get the data
-    Array<Complex> data;
-    if (convert_p && !subSet_p) {
-      os << LogIO::WARN << "Polarization conversion of uncalibrated"
-	 << " data may give incorrect results"<< LogIO::POST;
-    }
-    if (!msc.data().isNull()) {
-      getAveragedData(data,flag,msc.data());
-      if (doIfrAxis) MSSelUtil2<Complex>::
-	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
-      if (wantOR) {
-	if (average) observed_data=data;
-	else observed_data.reference(data);
+
+  Array<Complex> observed_data,corrected_data,model_data;
+  Bool keepObs = anyEQ(want.column(ObsResidual),True);
+  Bool keepMod = anyEQ(want.column(Residual),True)||
+    anyEQ(want.column(Ratio),True)|| keepObs;;
+  Bool keepCor = anyEQ(want.column(Residual),True)||
+    anyEQ(want.column(Ratio),True);
+
+  for (Int dataType=Observed; dataType<=ObsResidual; dataType++) {
+    if (anyEQ(want.column(dataType),True)||
+	(dataType==Observed && keepObs) ||
+	(dataType==Model && keepMod) ||
+	(dataType==Corrected && keepCor)) {
+      if (convert_p && !subSet_p && dataType==Observed) {
+	os << LogIO::WARN << "Polarization conversion of uncalibrated"
+	   << " data may give incorrect results"<< LogIO::POST;
+      }
+      // get the data if this is a data column
+      ROArrayColumn<Complex> colData;
+      Array<Complex> data;
+      if (dataType<=Model) {
+	colData.reference( dataType == Observed ? msc.data() :
+			   (dataType == Corrected ? msc.correctedData() :
+			    msc.modelData()));
+	if (colData.isNull()) {
+	    os << LogIO::WARN <<"Requested column doesn't exist"<<LogIO::POST;
+	} else {
+	  getAveragedData(data,flag,colData);
+	  if (doIfrAxis) MSSelUtil2<Complex>::
+	    reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
+	}
+      }
+      String name;
+      switch (dataType) {
+      case Observed: 
+	if (keepObs) observed_data.reference(data);
+	name="";
+	break;
+      case Model:
+	if (keepMod) model_data.reference(data);
+	name="model_";
+	break;
+      case Corrected:
+	if (keepCor) corrected_data.reference(data);
+	name="corrected_";
+	break;  
+      case Ratio:
+	{
+	  LogicalArray mask(model_data!=Complex(0.));
+	  data = corrected_data;
+	  data /= model_data(mask);
+	  data(!mask)=1.0;
+	  name="ratio_";
+	}
+	break;
+      case Residual:
+	data = corrected_data;
+	data -= model_data;
+	name="residual_";
+	break;
+      case ObsResidual:
+	data = observed_data;
+	data -= model_data;
+	name="obs_residual_";
+	break;
+      default:;
       }
       if (average) 
 	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
-      if (wantAmp) out.add("amplitude",amplitude(data));
-      if (wantPhase) out.add("phase",phase(data));
-      if (wantReal) out.add("real",real(data));
-      if (wantImag) out.add("imaginary",imag(data));
-      if (wantData) out.add("data",data);
-    } else {
-      os << LogIO::WARN << "DATA column doesn't exist"<<LogIO::POST;
+      if (want(Amp,dataType)) out.add(name+"amplitude",amplitude(data));
+      if (want(Phase,dataType)) out.add(name+"phase",phase(data));
+      if (want(Real,dataType)) out.add(name+"real",real(data));
+      if (want(Imag,dataType)) out.add(name+"imaginary",imag(data));
+      if (want(Data,dataType)) out.add(name+"data",data);
     }
   }
 
-  Array<Complex> corrected_data;
-  if  (wantCAmp || wantCPhase || wantCReal || wantCImag || wantCData
-       || wantR || wantRat) {
-    if (!msc.correctedData().isNull()) {
-      // get the data
-      Array<Complex> data;
-      getAveragedData(data,flag,msc.correctedData());
-      if (doIfrAxis) MSSelUtil2<Complex>::
-	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
-      if (wantR || wantRat) {
-	if (average) corrected_data=data;
-	else corrected_data.reference(data);
-      }
-      if (average) 
-	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
-      if (wantCAmp) out.add("corrected_amplitude",amplitude(data));
-      if (wantCPhase) out.add("corrected_phase",phase(data));
-      if (wantCReal) out.add("corrected_real",real(data));
-      if (wantCImag) out.add("corrected_imaginary",imag(data));
-      if (wantCData) out.add("corrected_data",data);
-    } else {
-      os << LogIO::WARN << "CORRECTED_DATA column doesn't exist"<<LogIO::POST;
-    }
-  }
-  
-  Array<Complex> model_data;
-  if (wantMAmp || wantMPhase || wantMReal || wantMImag || wantMData ||
-      wantR || wantOR || wantRat) {
-    if (!msc.modelData().isNull()) {
-      // get the data
-      Array<Complex> data;
-      getAveragedData(data,flag,msc.modelData());
-      if (doIfrAxis) MSSelUtil2<Complex>::
-	reorderData(data,ifrIndex,nIfr,slot,nSlot,Complex());
-      if (wantR || wantOR || wantRat) {
-	if (average) {
-	  model_data=data;
-	} else {
-	  model_data.reference(data);
-	}
-      }
-      if (average) 
-	MSSelUtil2<Complex>::timeAverage(dataflags,data,flags,weights);
-      if (wantMAmp) out.add("model_amplitude",amplitude(data));
-      if (wantMPhase) out.add("model_phase",phase(data));
-      if (wantMReal) out.add("model_real",real(data));
-      if (wantMImag) out.add("model_imaginary",imag(data));
-      if (wantMData) out.add("model_data",data);
-      if (wantR) {
-	Array<Complex> res_data; 
-	res_data=corrected_data; res_data-=model_data;
-	if (average) 
-	  MSSelUtil2<Complex>::timeAverage(dataflags,res_data,flags,weights);
-	if (wantRAmp) out.add("residual_amplitude",amplitude(res_data));
-	if (wantRPhase) out.add("residual_phase",phase(res_data));
-	if (wantRReal) out.add("residual_real",real(res_data));
-	if (wantRImag) out.add("residual_imaginary",imag(res_data));
-	if (wantRData) out.add("residual_data",res_data);
-      }
-      if (wantOR) {
-	Array<Complex> res_data; 
-	res_data=observed_data; res_data-=model_data;
-	if (average) 
-	  MSSelUtil2<Complex>::timeAverage(dataflags,res_data,flags,weights);
-	if (wantORAmp) out.add("obs_residual_amplitude",
-			       amplitude(res_data));
-	if (wantORPhase) out.add("obs_residual_phase",phase(res_data));
-	if (wantORReal) out.add("obs_residual_real",real(res_data));
-	if (wantORImag) out.add("obs_residual_imaginary",imag(res_data));
-	if (wantORData) out.add("obs_residual_data",res_data);
-      }
-      if (wantRat) {
-	Array<Complex> ratio;
-	LogicalArray mask(model_data!=Complex(0.));
-	if (wantRat) {
-	  ratio=corrected_data; 
-	  ratio/=model_data(mask);
-	  ratio(!mask)=1.0;
-	  if (average) 
-	    MSSelUtil2<Complex>::timeAverage(dataflags,ratio,flags,weights);
-	  if (wantRatAmp) out.add("ratio_amplitude",amplitude(ratio));
-	  if (wantRatPhase) out.add("ratio_phase",phase(ratio));
-	  if (wantRatReal) out.add("ratio_real",real(ratio));
-	  if (wantRatImag) out.add("ratio_imaginary",imag(ratio));
-	  if (wantRatData) out.add("ratio_data",ratio);
-	}
-      }
-    } else {
-      os << LogIO::WARN << "MODEL_DATA column doesn't exist"<<LogIO::POST;
-    }
-  }
   // only have averaged flags if some data item was requested as well
   if (average && wantFlag){
     out.add("flag",dataflags);
@@ -1899,7 +1819,7 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
       Array<Bool> ref(avFlag(is,ie));
       // average over channels
       for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
-	ref = ref && flag(cs,ce);
+	ref*=flag(cs,ce);
       }
     }
   }
