@@ -169,7 +169,7 @@ public:
 // </group>
 
 // This function iterates tile by tile through an input lattice and applies
-// a user supplied function object to each chunk along the specified axes.\
+// a user supplied function object to each chunk along the specified axes.
 // A chunk can be a line, plane, etc. which is determined by the argument
 // <src>collapseAxes</src>. E.g. IPosition(2,1,2) means planes along
 // axes 1 and 2 (thus y,z planes).
