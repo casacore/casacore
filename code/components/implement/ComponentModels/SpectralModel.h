@@ -132,7 +132,7 @@ public:
   virtual ~SpectralModel();
 
   // return the actual spectral shape.
-  virtual ComponentType::SpectralShape spectralShape() const = 0;
+  virtual ComponentType::SpectralShape type() const = 0;
 
   // set/get the reference frequency
   // <group>
@@ -154,9 +154,9 @@ public:
 
   // return the number of parameters in this spectral shape and set/get them.
   // <group>
-  virtual uInt nSpectralParameters() const = 0;
-  virtual void setSpectralParameters(const Vector<Double> & newParms) = 0;
-  virtual void spectralParameters(Vector<Double> & compParms) const = 0;
+  virtual uInt nParameters() const = 0;
+  virtual void setParameters(const Vector<Double> & newParms) = 0;
+  virtual void parameters(Vector<Double> & compParms) const = 0;
   // </group>
 
   // These functions convert between a record and a SpectralModel. This way
