@@ -135,11 +135,11 @@ resize(const IPosition & fftSize, const Bool complexTransforms) {
     theWork[0]->resize(workSize); 
     T * workPtr = theWork[0]->storage();
     if (complexTransforms) {
-      cffti(&fftLen, workPtr);
+      cffti(fftLen, workPtr);
       bufferLength = max(bufferLength, (uInt) fftLen);
     }
     else
-      rffti(&fftLen, workPtr);
+      rffti(fftLen, workPtr);
     theComplexFlag = complexTransforms;
     theSize(0) = fftLen;
   }
@@ -150,7 +150,7 @@ resize(const IPosition & fftSize, const Bool complexTransforms) {
       workSize = 4 * fftLen + 15;
       theWork[n]->resize(workSize); 
       T * workPtr = theWork[n]->storage();
-      cffti(&fftLen, workPtr);
+      cffti(fftLen, workPtr);
       bufferLength = max(bufferLength, (uInt) fftLen);
       theSize(n) = fftLen;
     }
@@ -260,7 +260,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
       // Copy data to the complex array
       objcopy(resultRowPtr, inputRowPtr, fftLen);
       // Do the Real->Complex row transforms
-      rfftf( (Int *) &fftLen, resultRowPtr, workPtr);
+      rfftf(fftLen, resultRowPtr, workPtr);
       // Shuffle elements along
       if (fftLen > 1)
 	objmove(resultRowPtr+2, resultRowPtr+1, fftLen-1);
@@ -299,7 +299,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the transform
-	cfftf( (Int *) &fftLen, (T *) buffPtr, workPtr);
+	cfftf( fftLen, (T *) buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -359,7 +359,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the FFT
-	cfftb( (Int *) &fftLen, (T *) buffPtr, workPtr);
+	cfftb(fftLen, (T *) buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -387,7 +387,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
     *resultRowPtr = *realDataPtr;
     objcopy(resultRowPtr+1, realDataPtr+2, fftLen-1);
     // Do the Complex->Real row transform
-      rfftb( (Int *) &fftLen, resultRowPtr, workPtr);
+      rfftb(fftLen, resultRowPtr, workPtr);
     // Increment the pointers
     realDataPtr += cStride;
     resultRowPtr += fftLen;
@@ -448,9 +448,9 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
 	realBuffPtr = (T *) rowPtr;
       // Do the FFT
       if (toFrequency == True)
-	cfftf( (Int *) &fftLen, realBuffPtr, workPtr);
+	cfftf(fftLen, realBuffPtr, workPtr);
       else {
-	cfftb( (Int *) &fftLen, realBuffPtr, workPtr);
+	cfftb(fftLen, realBuffPtr, workPtr);
 	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
 	  for (endRowPtr = realBuffPtr+shape0t2; 
 	       realBuffPtr < endRowPtr; realBuffPtr++)
@@ -479,6 +479,67 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency=True) {
     cResult.resize(cData.shape());
   cResult = cData;
   fft0(cResult, toFrequency);
+}
+
+template<class T, class S> void FFTServer<T,S>::
+fft0(Array<T> & rValues, const Bool toFrequency) {
+  const IPosition shape = rValues.shape();
+  if (!shape.isEqual(theSize) || theComplexFlag == True)
+    resize(shape, False);
+
+  const uInt ndim = shape.nelements();
+  uInt fftLen;
+  Bool valuesIsAcopy;
+  S * dataPtr = cValues.getStorage(valuesIsAcopy);
+  T * workPtr = 0;
+
+  // Do complex to complex transforms along all the dimensions
+  S * buffPtr = theBuffer.storage();
+  T * realBuffPtr = 0;
+  T * endRowPtr = 0;
+  S * rowPtr = 0;
+  const uInt nElements = shape.product();
+  const T scale = T(1)/T(nElements);
+  const uInt shape0t2 = shape(0) * 2;
+  uInt n, r, nffts, stride = 1u;
+  for (n = 0; n < ndim; n++) {
+    workPtr = theWork[n]->storage();
+    rowPtr = dataPtr;
+    fftLen = shape(n);
+    nffts = nElements/fftLen;
+    r = 0;
+    if (n != 0) 
+      realBuffPtr = (T *) buffPtr;
+    while (r < nffts) {
+      // Copy the data into a temporary buffer. This makes it contigious and
+      // hence it is more likely to fit into cache. With current computers
+      // this speeds up access to the data by a factors of about ten!
+      if (n != 0)
+	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
+      else
+	realBuffPtr = (T *) rowPtr;
+      // Do the FFT
+      if (toFrequency == True)
+	cfftf(fftLen, realBuffPtr, workPtr);
+      else {
+	cfftb(fftLen, realBuffPtr, workPtr);
+	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
+	  for (endRowPtr = realBuffPtr+shape0t2; 
+	       realBuffPtr < endRowPtr; realBuffPtr++)
+	    *realBuffPtr *= scale;
+      }
+      
+      // copy the data back
+      if (n != 0)
+	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
+      // indexing calculations
+      r++;
+      rowPtr++;
+      if (r%stride == 0)
+	rowPtr += stride*(fftLen-1);
+    }
+    stride *= fftLen;
+  }
 }
 
 template<class T, class S> IPosition FFTServer<T,S>::
