@@ -29,6 +29,12 @@ files from files with .latex and .tex extensions.  Makefile.doc located in
 code/install contains all the rules for generating postscript and html files
 and moving them into the "docs" tree.
 
+The \aips Notes and Memos series each contain a latex file that has the titles
+and authors for each \htmladdnormallink{\aips Note}{../notes/notes.html}and 
+\htmladdnormallink{\aips Memo}{../../memos/memos.html}.  Each time a note or memo
+is checked in, the index.tex file in code/doc/memos/memos.dir and
+code/doc/notes/notes.dir needs to be edited to include the new note or memo.
+
 \subsubsection{Generating HTML}
 HTML documents are not automatically generated from LaTeX source.  The author
 needs to add a line to the directory's makefile similar to:
@@ -336,4 +342,5 @@ More details on \aips mailing lists may be found in the
 % LocalWords:  cygnus wyoung Cornwell Glendenning contrib Lovell allbugs atnf
 % LocalWords:  bima nfra config Gnatsd libgnats mailto sendmailto NCSA admin
 % LocalWords:  Uphoff juphoff mailinglist newlist aipsmail frameonline homepage
-% LocalWords:  betasearch homepages reportbug whatsnew Bridle's
+% LocalWords:  betasearch homepages reportbug whatsnew Bridle's HTML html perl
+% LocalWords:  texinfo docsys docs
