@@ -49,7 +49,7 @@ StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
   byPtr_p    (byPtr),
   nralloc_p  (0),
   nrext_p    (0),
-  data_p     (EXTBLSZ,(void*)0),
+  data_p     (EXTBLSZ,static_cast<void*>(0)),
   ncum_p     (EXTBLSZ,(uInt)0)
 {}
 

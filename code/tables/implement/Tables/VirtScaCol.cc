@@ -1,5 +1,5 @@
 //# VirtScaCol.cc: Base virtual column data manager class
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,12 +41,12 @@ Bool VirtualScalarColumn<T>::isWritable() const
 
 template<class T>
 int VirtualScalarColumn<T>::dataType() const
-    { return ValType::getType ((T*)0); }
+    { return ValType::getType (static_cast<T*>(0)); }
 
 template<class T>
 String VirtualScalarColumn<T>::dataTypeId() const
 {
-    return valDataTypeId ((T*)0);
+    return valDataTypeId (static_cast<T*>(0));
 }
 
 template<class T>
@@ -64,11 +64,11 @@ Bool VirtualScalarColumn<T>::canAccessScalarColumn (Bool& reask) const
 #define VIRTUALSCALARCOLUMN_GETPUT(TP,NM) \
 template<class T> \
 void VirtualScalarColumn<T>::aips_name2(get,NM) (uInt rownr, TP* dataPtr) \
-    { getVirtualScalarColumn (this, rownr, dataPtr, (T*)0); } \
+    { getVirtualScalarColumn (this, rownr, dataPtr, static_cast<T*>(0)); } \
 template<class T> \
 void VirtualScalarColumn<T>::aips_name2(put,NM) (uInt rownr, \
                                                  const TP* dataPtr) \
-    { putVirtualScalarColumn (this, rownr, dataPtr, (T*)0); }
+    { putVirtualScalarColumn (this, rownr, dataPtr, static_cast<T*>(0)); }
 
 VIRTUALSCALARCOLUMN_GETPUT(Bool,BoolV)
 VIRTUALSCALARCOLUMN_GETPUT(uChar,uCharV)

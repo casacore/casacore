@@ -1,5 +1,5 @@
 //# ArrayIO.cc: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1996,1997
+//# Copyright (C) 1993,1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -433,7 +433,7 @@ Bool read(istream &s, Array<T> &x,
 	  const IPosition *ip, Bool it) {
   ///  Array<T> *to; PCAST(to, Array<T>, &x);
   ///  if (to) {
-  if (AiPs_hidden_type_((Array<T> *) 0) == x.idv()) {
+  if (AiPs_hidden_type_(static_cast<Array<T> *>(0)) == x.idv()) {
     Block<T> tmp;
     Bool tr;
     IPosition p;
@@ -583,7 +583,7 @@ Bool readArrayBlock(istream &s, Bool &trans,
   } else {
     String st;	///
     String sts;	///
-    uInt chstr = Register((String *)0);	///
+    uInt chstr = Register(static_cast<String *>(0));	///
     while (how) {
       s >> ws;
       s.get(ch);

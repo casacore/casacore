@@ -1318,14 +1318,14 @@ uInt ISMColumn::copyuInt (void* out, const void* in, uInt nvalues)
 Conversion::ValueFunction* ISMColumn::getReaduInt (Bool asCanonical)
 {
     if (asCanonical) {
-	return CanonicalConversion::getToLocal ((uInt*)0);
+	return CanonicalConversion::getToLocal (static_cast<uInt*>(0));
     }
     return ISMColumn::copyuInt;
 }
 Conversion::ValueFunction* ISMColumn::getWriteuInt (Bool asCanonical)
 {
     if (asCanonical) {
-	return CanonicalConversion::getFromLocal ((uInt*)0);
+	return CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
     }
     return ISMColumn::copyuInt;
 }

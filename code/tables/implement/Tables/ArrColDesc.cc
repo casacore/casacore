@@ -39,8 +39,8 @@ template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     Int ndim, int opt)
 : BaseColumnDesc (name, "", "", "",
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, ndim, IPosition(),
 		  False, True, False)
 {
@@ -54,8 +54,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const String& comment,
 				     Int ndim, int opt)
 : BaseColumnDesc (name, comment, "", "",
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, ndim, IPosition(),
 		  False, True, False)
 {
@@ -71,8 +71,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const String& dataManGroup,
 				     Int ndim, int opt)
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, ndim, IPosition(),
 		  False, True, False)
 {
@@ -86,8 +86,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const IPosition& shp,
 				     int opt)
 : BaseColumnDesc (name, "", "", "",
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
 {}
@@ -98,8 +98,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const IPosition& shp,
 				     int opt)
 : BaseColumnDesc (name, comment, "", "",
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
 {}
@@ -112,8 +112,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const IPosition& shp,
 				     int opt)
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  opt, shp.nelements(), shp,
 		  False, True, False)
 {}
@@ -123,8 +123,8 @@ template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (
     SimpleOrderedMap<String, BaseColumnDesc* (*)(const String&)>& map)
 : BaseColumnDesc ("", "", "", "",
-		  ValType::getType((T*)0),
-		  valDataTypeId((T*)0),
+		  ValType::getType(static_cast<T*>(0)),
+		  valDataTypeId(static_cast<T*>(0)),
 		  0, 0, IPosition(),
 		  False, True, False)
 {

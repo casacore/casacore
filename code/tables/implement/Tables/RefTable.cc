@@ -44,7 +44,7 @@ RefTable::RefTable (AipsIO& ios, const String& name, uInt nrrow, int opt,
 : BaseTable    (name, opt, nrrow),
   rowStorage_p (0),              // initially empty vector of rownrs
   nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
+  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (False)
 {
     //# Read the file in.
@@ -63,7 +63,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
   nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
+  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     rows_p = getStorage (rowStorage_p);
@@ -84,7 +84,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
   rowOrd_p     (True),
   rowStorage_p (0),
   nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
+  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -114,7 +114,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
   nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
+  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
@@ -142,7 +142,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
   nameMap_p    (""),
-  colMap_p     ((RefColumn*)0),
+  colMap_p     (static_cast<RefColumn*>(0)),
   changed_p    (True)
 {
     //# Create table description by copying the selected columns.
@@ -381,7 +381,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
     //# Remember these columns, so they are removed later from the map.
     //# The nameMap maps column names in this table to the names in the
     //# root table, so a rename is needed if names are different.
-    SimpleOrderedMap<String,void*> unknownCol ((RefColumn*)0);
+    SimpleOrderedMap<String,void*> unknownCol (static_cast<RefColumn*>(0));
     for (i=0; i<names.nelements(); i++) {
         const String& name = names(i);
 	const String* mapValPtr = nameMap.isDefined (name);
@@ -394,7 +394,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
 //#//		desc.renameColumn (nameMap.getKey(i), nameMap.getVal(i));
 	    }
 	}else{
-	    unknownCol.define (name, (void*)0);
+	    unknownCol.define (name, static_cast<void*>(0));
 	}
     }
     //# Remove the unknown ones.

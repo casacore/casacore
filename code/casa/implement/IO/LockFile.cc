@@ -81,7 +81,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
   itsHostId    (0),
   itsReqId     (SIZEREQID/SIZEINT, (Int)0)
 {
-    AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize ((Int*)0),
+    AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<Int*>(0)),
 		  AipsError);
     itsName = Path(fileName).expandedName();
     //# Create the file if it does not exist yet.

@@ -516,7 +516,7 @@ Table Table::sort (const Block<String>& names,
 {
     //# Insert a block with zero compare function pointers.
     return sort (names,
-	      PtrBlock<ObjCompareFunc*>(names.nelements(), (ObjCompareFunc*)0),
+	      PtrBlock<ObjCompareFunc*>(names.nelements(), static_cast<ObjCompareFunc*>(0)),
 	      orders, option);
 }
 

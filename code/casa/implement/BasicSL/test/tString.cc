@@ -1,5 +1,5 @@
 //# tString.cc: This program tests Strings
-//# Copyright (C) 1993,1994,1995,1997,1998
+//# Copyright (C) 1993,1994,1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -360,7 +360,7 @@ void splittest()
   assert(w[2] == "has");
   assert(w[3] == "five");
   assert(w[4] == "words");
-  assert(w[5] == (char *)0);
+  assert(w[5] == static_cast<char *>(0));
 
   z = join(w, nw, "/");
   cout << "z = join(w, nw, /); z =" << z << "\n";

@@ -1471,7 +1471,7 @@ a2_re_search (struct re_pattern_buffer *pbufp,
 	   int range,
 	   struct re_registers *regs)
 {
-  return a2_re_search_2 (pbufp, (char *) 0, 0, string, size, startpos, range, 
+  return a2_re_search_2 (pbufp, static_cast<char *>(0), 0, string, size, startpos, range, 
 		      regs, size);
 }
 
@@ -1611,7 +1611,7 @@ a2_re_match (struct re_pattern_buffer *pbufp,
 	  int pos,
 	  struct re_registers *regs)
 {
-  return a2_re_match_2 (pbufp, (char *) 0, 0, string, size, pos, regs, size); 
+  return a2_re_match_2 (pbufp, static_cast<char *>(0), 0, string, size, pos, regs, size); 
 }
 
 
@@ -2515,5 +2515,5 @@ re_exec (char *s)
 {
   int len = strlen (s);
   return 0 <= a2_re_search (&re_comp_buf, s, len, 0, len,
-			 (struct re_registers *) 0);
+			 static_cast<struct re_registers *>(0));
 }

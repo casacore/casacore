@@ -114,10 +114,10 @@ class Record;
 // template<class T> class ValueAccessor {
 // public:
 //     ValueAccessor(IntFloatContainer *container) : container_p(container) {
-//         if (container_p->ptr(whatType((T *)0)) == 0)
+//         if (container_p->ptr(whatType(static_cast<T *>(0))) == 0)
 //             throw(AipsError("Illegal type..."));
 //     }
-//     T &value() { return *((T*)container_p->ptr(whatType((T *)0))); }
+//     T &value() { return *((T*)container_p->ptr(whatType(static_cast<T *>(0)))); }
 // private:
 //     IntFloatContainer *container_p;
 // };

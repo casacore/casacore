@@ -1,5 +1,5 @@
 //# List.cc: Singly linked list classes
-//# Copyright (C) 1993,1994,1995,1997,1998
+//# Copyright (C) 1993,1994,1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -196,7 +196,7 @@ ConstListIter<t> &ConstListIter<t>::operator=(const ConstListIter<t> *other) {
 
 
 template<class t> void ConstListIter<t>::notify(const Notice &note) {
-  if (Register((ListNotice<t> *) 0) == note.type()) {
+  if (Register(static_cast<ListNotice<t> *>(0)) == note.type()) {
     const ListNotice<t> &opD = (const ListNotice<t> &) note;
     if ( opD.mod != ListNotice<t>::DELETE ) {
       if (cur == opD.ocur && prev == opD.oprev) {

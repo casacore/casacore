@@ -49,7 +49,7 @@
 TiledStMan::TiledStMan ()
 : DataManager       (),
   nrrow_p           (0),
-  fileSet_p         (1, (TSMFile*)0),
+  fileSet_p         (1, static_cast<TSMFile*>(0)),
   persMaxCacheSize_p(0),
   maxCacheSize_p    (0),
   nrdim_p           (0),
@@ -61,7 +61,7 @@ TiledStMan::TiledStMan (const String& hypercolumnName, uInt maximumCacheSize)
 : DataManager       (),
   hypercolumnName_p (hypercolumnName),
   nrrow_p           (0),
-  fileSet_p         (1, (TSMFile*)0),
+  fileSet_p         (1, static_cast<TSMFile*>(0)),
   persMaxCacheSize_p(maximumCacheSize),
   maxCacheSize_p    (maximumCacheSize),
   nrdim_p           (0),
@@ -706,7 +706,7 @@ uInt TiledStMan::getBindings (const Vector<String>& columnNames,
 			      PtrBlock<TSMColumn*>& colSet,
 			      Bool mustExist) const
 {
-    colSet = (TSMColumn*)0;
+    colSet = static_cast<TSMColumn*>(0);
     uInt nrfound = 0;
     uInt j;
     Bool found = False;

@@ -98,7 +98,7 @@ class RegularFileIO;
 //     // It fills in the file offset where the shape is stored
 //     // and returns the length of the shape in the file.
 //     uInt offset;
-//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, (Bool*)0);
+//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<Bool*>(0));
 //     // Now put the actual array.
 //     // This has to be put at the returned file offset plus the length
 //     // of the shape in the file.

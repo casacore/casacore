@@ -301,8 +301,8 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 
     PtrBlock<Block<Int> *> newWorldMaps(nc);
     PtrBlock<Block<Int> *> newPixelMaps(nc);
-    newWorldMaps.set((Block<Int> *)0);
-    newPixelMaps.set((Block<Int> *)0);
+    newWorldMaps.set(static_cast<Block<Int> *>(0));
+    newPixelMaps.set(static_cast<Block<Int> *>(0));
 
     // copy the maps (because the deleted axes will be staying put)
     for (i=0; i<nc; i++) {

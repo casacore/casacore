@@ -336,7 +336,7 @@ void OrderedMapRep<key,value>::remove (const key& k)
 
 template<class key, class value>
 void OrderedMapIterRep<key,value>::notify(const Notice &note) {
-  if (Register((OrderedMapNotice<key,value> *) 0) == note.type()) {
+  if (Register(static_cast<OrderedMapNotice<key,value> *>(0)) == note.type()) {
     const OrderedMapNotice<key,value> &opD = (const OrderedMapNotice<key,value> 
 &) note;
     switch (opD.changeType) {

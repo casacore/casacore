@@ -70,16 +70,16 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 	hasPut_p = True;
     }
     if (canonical) {
-	sizeChar_p   = CanonicalConversion::canonicalSize ((Char*)0);
-	sizeuChar_p  = CanonicalConversion::canonicalSize ((uChar*)0);
-	sizeShort_p  = CanonicalConversion::canonicalSize ((Short*)0);
-	sizeuShort_p = CanonicalConversion::canonicalSize ((uShort*)0);
-	sizeInt_p    = CanonicalConversion::canonicalSize ((Int*)0);
-	sizeuInt_p   = CanonicalConversion::canonicalSize ((uInt*)0);
-	sizeLong_p   = CanonicalConversion::canonicalSize ((Long*)0);
-	sizeuLong_p  = CanonicalConversion::canonicalSize ((uLong*)0);
-	sizeFloat_p  = CanonicalConversion::canonicalSize ((Float*)0);
-	sizeDouble_p = CanonicalConversion::canonicalSize ((Double*)0);
+	sizeChar_p   = CanonicalConversion::canonicalSize (static_cast<Char*>(0));
+	sizeuChar_p  = CanonicalConversion::canonicalSize (static_cast<uChar*>(0));
+	sizeShort_p  = CanonicalConversion::canonicalSize (static_cast<Short*>(0));
+	sizeuShort_p = CanonicalConversion::canonicalSize (static_cast<uShort*>(0));
+	sizeInt_p    = CanonicalConversion::canonicalSize (static_cast<Int*>(0));
+	sizeuInt_p   = CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
+	sizeLong_p   = CanonicalConversion::canonicalSize (static_cast<Long*>(0));
+	sizeuLong_p  = CanonicalConversion::canonicalSize (static_cast<uLong*>(0));
+	sizeFloat_p  = CanonicalConversion::canonicalSize (static_cast<Float*>(0));
+	sizeDouble_p = CanonicalConversion::canonicalSize (static_cast<Double*>(0));
     }else{
 	sizeChar_p   = sizeof(Char);
 	sizeuChar_p  = sizeof(uChar);

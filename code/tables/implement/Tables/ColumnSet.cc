@@ -44,7 +44,7 @@ ColumnSet::ColumnSet (TableDesc* tdesc)
 : tdescPtr_p      (tdesc),
   plainTablePtr_p (0),
   lockPtr_p       (0),
-  colMap_p        ((void *)0, tdesc->ncolumn()),
+  colMap_p        (static_cast<void *>(0), tdesc->ncolumn()),
   seqCount_p      (0),
   blockDataMan_p  (0)
 {

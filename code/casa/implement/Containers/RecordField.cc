@@ -1,5 +1,5 @@
 //# RecordField.cc: Access to an individual field from a record
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,7 +94,7 @@ void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
     // Cast to correct type, because a void* is returned.
     // This cast is fully safe.
     fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, whichField, 
-					    whatType((T*)0), (T*)0));
+					    whatType(static_cast<T*>(0)), static_cast<T*>(0)));
     attach (record);
 }
 
@@ -117,7 +117,7 @@ T& RecordFieldPtr<T>::operator*()
 template<class T>
 void RecordFieldPtr<T>::define (const T& value)
 {
-    defineRecordFieldPtr (parent_p, fieldNumber_p, whatType((T*)0), &value);
+    defineRecordFieldPtr (parent_p, fieldNumber_p, whatType(static_cast<T*>(0)), &value);
 }
 
 template<class T>
@@ -145,7 +145,7 @@ void RecordFieldPtr<T>::notify (const Notice& notice)
     case RecordNotice::ACQUIRE:
 	// The RecordRep has been copied; re-acquire the pointer.
 	fieldPtr_p = (T*)(attachRecordFieldPtr (parent_p, fieldNumber_p,
-						whatType((T*)0), (T*)0));
+						whatType(static_cast<T*>(0)), static_cast<T*>(0)));
 	break;
     case RecordNotice::REMOVE:
 	// A field has been removed.

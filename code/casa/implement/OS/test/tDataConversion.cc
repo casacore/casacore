@@ -1,5 +1,5 @@
 //# tDataConversion.cc: test program for data conversion classes
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,26 +40,26 @@
 
 void showConv (const DataConversion* conv)
 {
-    cout << "  Char externalSize = " << conv->externalSize ((Char*)0) << endl;
-    cout << " uChar externalSize = " << conv->externalSize ((uChar*)0) << endl;
-    cout << " Short externalSize = " << conv->externalSize ((Short*)0) << endl;
-    cout << "uShort externalSize = " << conv->externalSize ((uShort*)0) <<endl;
-    cout << "   Int externalSize = " << conv->externalSize ((Int*)0) << endl;
-    cout << "  uInt externalSize = " << conv->externalSize ((uInt*)0) << endl;
-    cout << "  Long externalSize = " << conv->externalSize ((Long*)0) << endl;
-    cout << " uLong externalSize = " << conv->externalSize ((uLong*)0) << endl;
-    cout << " Float externalSize = " << conv->externalSize ((Float*)0) << endl;
-    cout << "Double externalSize = " << conv->externalSize ((Double*)0) <<endl;
-    cout << "  Char canCopy = " << conv->canCopy ((Char*)0) << endl;
-    cout << " uChar canCopy = " << conv->canCopy ((uChar*)0) << endl;
-    cout << " Short canCopy = " << conv->canCopy ((Short*)0) << endl;
-    cout << "uShort canCopy = " << conv->canCopy ((uShort*)0) << endl;
-    cout << "   Int canCopy = " << conv->canCopy ((Int*)0) << endl;
-    cout << "  uInt canCopy = " << conv->canCopy ((uInt*)0) << endl;
-    cout << "  Long canCopy = " << conv->canCopy ((Long*)0) << endl;
-    cout << " uLong canCopy = " << conv->canCopy ((uLong*)0) << endl;
-    cout << " Float canCopy = " << conv->canCopy ((Float*)0) << endl;
-    cout << "Double canCopy = " << conv->canCopy ((Double*)0) << endl;
+    cout << "  Char externalSize = " << conv->externalSize (static_cast<Char*>(0)) << endl;
+    cout << " uChar externalSize = " << conv->externalSize (static_cast<uChar*>(0)) << endl;
+    cout << " Short externalSize = " << conv->externalSize (static_cast<Short*>(0)) << endl;
+    cout << "uShort externalSize = " << conv->externalSize (static_cast<uShort*>(0)) <<endl;
+    cout << "   Int externalSize = " << conv->externalSize (static_cast<Int*>(0)) << endl;
+    cout << "  uInt externalSize = " << conv->externalSize (static_cast<uInt*>(0)) << endl;
+    cout << "  Long externalSize = " << conv->externalSize (static_cast<Long*>(0)) << endl;
+    cout << " uLong externalSize = " << conv->externalSize (static_cast<uLong*>(0)) << endl;
+    cout << " Float externalSize = " << conv->externalSize (static_cast<Float*>(0)) << endl;
+    cout << "Double externalSize = " << conv->externalSize (static_cast<Double*>(0)) <<endl;
+    cout << "  Char canCopy = " << conv->canCopy (static_cast<Char*>(0)) << endl;
+    cout << " uChar canCopy = " << conv->canCopy (static_cast<uChar*>(0)) << endl;
+    cout << " Short canCopy = " << conv->canCopy (static_cast<Short*>(0)) << endl;
+    cout << "uShort canCopy = " << conv->canCopy (static_cast<uShort*>(0)) << endl;
+    cout << "   Int canCopy = " << conv->canCopy (static_cast<Int*>(0)) << endl;
+    cout << "  uInt canCopy = " << conv->canCopy (static_cast<uInt*>(0)) << endl;
+    cout << "  Long canCopy = " << conv->canCopy (static_cast<Long*>(0)) << endl;
+    cout << " uLong canCopy = " << conv->canCopy (static_cast<uLong*>(0)) << endl;
+    cout << " Float canCopy = " << conv->canCopy (static_cast<Float*>(0)) << endl;
+    cout << "Double canCopy = " << conv->canCopy (static_cast<Double*>(0)) << endl;
 }
 
 main()

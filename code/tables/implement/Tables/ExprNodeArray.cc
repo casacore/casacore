@@ -1013,7 +1013,7 @@ void TableExprNodeIndex::fillIndex (const TableExprNodeSet& indices)
     // Check if all indices have data type Double and are scalars.
     uInt n = indices.nelements();
     operands_p.resize (3 * n);
-    operands_p.set ((TableExprNodeRep*)0);
+    operands_p.set (static_cast<TableExprNodeRep*>(0));
     uInt i;
     uInt j = 0;
     for (i=0; i<n; i++) {

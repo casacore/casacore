@@ -52,7 +52,7 @@ BucketCache::BucketCache (BucketFile* file, uInt startOffset,
   its_NewNrOfBuckets(nrOfBuckets),
   its_CacheSize     (cacheSize),
   its_CacheSizeUsed (0),
-  its_Cache         (cacheSize, (char*)0),
+  its_Cache         (cacheSize, static_cast<char*>(0)),
   its_ActualSlot    (0),
   its_SlotNr        (nrOfBuckets, Int(-1)),
   its_BucketNr      (cacheSize, uInt(0)),
@@ -251,7 +251,7 @@ uInt BucketCache::addBucket (char* data)
 	bucketNr = its_FirstFree;
 	its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
 	its_file->read (its_Buffer,
-			CanonicalConversion::canonicalSize ((Int*)0));
+			CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
 	CanonicalConversion::toLocal (its_FirstFree, its_Buffer);
 	its_NrOfFree--;
     }else{
@@ -278,7 +278,7 @@ void BucketCache::removeBucket()
     uInt bucketNr = its_BucketNr[its_ActualSlot];
     CanonicalConversion::fromLocal (its_Buffer, its_FirstFree);
     its_file->seek (its_StartOffset + bucketNr * its_BucketSize);
-    its_file->write (its_Buffer, CanonicalConversion::canonicalSize ((Int*)0));
+    its_file->write (its_Buffer, CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
     its_Dirty[its_ActualSlot] = 0;
     its_FirstFree = bucketNr;
     its_NrOfFree++;

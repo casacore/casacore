@@ -321,7 +321,7 @@ public:
     // a simple function or a class derived from
     // <linkto class=HashClass><src>HashClass</src></linkto>.
     // <group>
-    HashMap(const val &dflt = defaultHashValue((const val*)0),
+    HashMap(const val &dflt = defaultHashValue(static_cast<const val*>(0)),
 	    uInt size = uInt(defaultSize_), 
 	    Func newfunc = hashFunc,
 	    float maxlf = float(defaultMaxLoad_))
@@ -330,7 +330,7 @@ public:
 	filled_(0),
 	defs_(0),
 	maxLoad_(maxlf),
-	blk(size, (List<OrderedPair<key,val> >*)0),
+	blk(size, static_cast<List<OrderedPair<key,val> >*>(0)),
 	func(newfunc),
 	hashClass(0),
 	dfltVal(dflt)
@@ -343,7 +343,7 @@ public:
 	filled_(0),
 	defs_(0), 
 	maxLoad_(maxlf),
-	blk(size, (List<OrderedPair<key,val> >*)0),
+	blk(size, static_cast<List<OrderedPair<key,val> >*>(0)),
 	func(0),
 	hashClass(newfunc.clone()),
 	dfltVal(dflt)
@@ -369,7 +369,7 @@ public:
     HashMap(const val &dflt, Func newfunc, float maxlf = float(defaultMaxLoad_))
       : total_(uInt(defaultSize())), used_(uInt(defaultSize())),
 	filled_(0), defs_(0), maxLoad_(maxlf),
-	blk(uInt(defaultSize()), (List<OrderedPair<key,val> >*)0),
+	blk(uInt(defaultSize()), static_cast<List<OrderedPair<key,val> >*>(0)),
 	func(newfunc), hashClass(0), dfltVal(dflt)
     { }
 
@@ -377,7 +377,7 @@ public:
 	    float maxlf = float(defaultMaxLoad_)) 
       : total_(defaultSize()), used_(defaultSize()),
 	filled_(0), defs_(0), maxLoad_(maxlf), 
-	blk(uInt(defaultSize_), (List<OrderedPair<key,val> >*)0), func(0),
+	blk(uInt(defaultSize_), static_cast<List<OrderedPair<key,val> >*>(0)), func(0),
 	hashClass(newfunc.clone()), dfltVal(dflt)
     { }
     // </group>

@@ -1,5 +1,5 @@
 //# tCopy.cc: This program tests the functions in Copy.h
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -331,7 +331,7 @@ main()
 
     void** va = new void*[size];
     void** va2 = new void*[size];
-    objset(va, (void*)0, size);
+    objset(va, static_cast<void*>(0), size);
     objmove(va2, va, size);
     for (i=0; i<size; i++)
 	AlwaysAssertExit(va2[i] == 0);
@@ -339,12 +339,12 @@ main()
     // Block uses objcopy.
     // Somewhere Block<void*> and Block<const void*> are used.
     // See if they compile and link well.
-    PtrBlock<const void*> cbl(10,(const void*)0);
+    PtrBlock<const void*> cbl(10,static_cast<const void*>(0));
     PtrBlock<const void*> cbl2(cbl);
-    PtrBlock<void*> bl(10,(void*)0);
+    PtrBlock<void*> bl(10,static_cast<void*>(0));
     PtrBlock<void*> bl2(bl);
     // PtrBlock is based on Block<void*>
-    Block<void*> bvl(10,(void*)0);
+    Block<void*> bvl(10,static_cast<void*>(0));
     Block<void*> bvl2(bvl);
 
 

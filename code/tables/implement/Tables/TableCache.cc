@@ -30,7 +30,7 @@
 
 
 TableCache::TableCache()
-: tableMap_p((void*)0)
+: tableMap_p(static_cast<void*>(0))
 {}
 
 TableCache::~TableCache()

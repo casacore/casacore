@@ -96,14 +96,14 @@ void ROScalarColumn<T>::checkDataType() const
     //# Check if the data type matches.
     const ColumnDesc& cd = baseColPtr_p->columnDesc();
     DataType dtype = cd.dataType();
-    if (dtype != ValType::getType((T*)0)  ||  !cd.isScalar()) {
+    if (dtype != ValType::getType(static_cast<T*>(0))  ||  !cd.isScalar()) {
 	throw (TableInvDT (" in ROScalarColumn ctor for column " + cd.name()));
     }
     if (dtype == TpOther) {
-	if (cd.dataTypeId() != valDataTypeId((T*)0)) {
+	if (cd.dataTypeId() != valDataTypeId(static_cast<T*>(0))) {
 	    throw (TableInvDT (" in ROScalarColumn ctor for column "
 			       + cd.name() + "; using data type id "
-			       + valDataTypeId((T*)0)
+			       + valDataTypeId(static_cast<T*>(0))
 			       + ", expected " + cd.dataTypeId()));
 	}
     }

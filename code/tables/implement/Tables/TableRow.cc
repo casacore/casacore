@@ -1,5 +1,5 @@
 //# TableRow.cc: Access to a table row
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -314,11 +314,11 @@ void ROTableRow::makeObjects (const RecordDesc& description,
     itsRecord = new TableRecord (description);
     // Initialize the column and field block.
     itsTabCols.resize (itsNrused, False, False);
-    itsTabCols.set ((void*)0);
+    itsTabCols.set (static_cast<void*>(0));
     itsColumns.resize (itsNrused, False, False);
-    itsColumns.set ((void*)0);
+    itsColumns.set (static_cast<void*>(0));
     itsFields.resize (itsNrused, False, False);
-    itsFields.set ((void*)0);
+    itsFields.set (static_cast<void*>(0));
     // Create the correct column object for each field.
     // (if not writing, an RO version is sufficient).
     // Also create a RecordFieldPtr object for each column.

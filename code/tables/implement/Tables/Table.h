@@ -338,7 +338,7 @@ public:
     // With the function DataType::whatType it can be used in a templated
     // function like:
     // <srcblock>
-    //     if (Table::isNativeDataType (whatType((T*)0))) {
+    //     if (Table::isNativeDataType (whatType(static_cast<T*>(0)))) {
     // </srcblock>
     static Bool isNativeDataType (DataType dtype);
 

@@ -98,7 +98,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   delete_p    (False),
   tdescPtr_p  (0),
   colSetPtr_p (0),
-  dataManMap_p((void*)0)
+  dataManMap_p(static_cast<void*>(0))
 {
     //# Copy the table description.
     tdescPtr_p = new TableDesc(tableDescName);
@@ -118,7 +118,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   delete_p    (False),
   tdescPtr_p  (0),
   colSetPtr_p (0),
-  dataManMap_p((void*)0)
+  dataManMap_p(static_cast<void*>(0))
 {
     //# Read the table description.
     tdescPtr_p = new TableDesc(tableDesc, "", "", TableDesc::Scratch);

@@ -163,34 +163,34 @@ int ValType::getCanonicalSize (DataType dt)
     switch (dt) {
     case TpChar:
     case TpArrayChar:
-	return CanonicalConversion::canonicalSize ((Char*)0);
+	return CanonicalConversion::canonicalSize (static_cast<Char*>(0));
     case TpUChar:
     case TpArrayUChar:
-	return CanonicalConversion::canonicalSize ((uChar*)0);
+	return CanonicalConversion::canonicalSize (static_cast<uChar*>(0));
     case TpShort:
     case TpArrayShort:
-	return CanonicalConversion::canonicalSize ((Short*)0);
+	return CanonicalConversion::canonicalSize (static_cast<Short*>(0));
     case TpUShort:
     case TpArrayUShort:
-	return CanonicalConversion::canonicalSize ((uShort*)0);
+	return CanonicalConversion::canonicalSize (static_cast<uShort*>(0));
     case TpInt:
     case TpArrayInt:
-	return CanonicalConversion::canonicalSize ((Int*)0);
+	return CanonicalConversion::canonicalSize (static_cast<Int*>(0));
     case TpUInt:
     case TpArrayUInt:
-	return CanonicalConversion::canonicalSize ((uInt*)0);
+	return CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
     case TpFloat:
     case TpArrayFloat:
-	return CanonicalConversion::canonicalSize ((float*)0);
+	return CanonicalConversion::canonicalSize (static_cast<float*>(0));
     case TpDouble:
     case TpArrayDouble:
-	return CanonicalConversion::canonicalSize ((double*)0);
+	return CanonicalConversion::canonicalSize (static_cast<double*>(0));
     case TpComplex:
     case TpArrayComplex:
-	return 2 * CanonicalConversion::canonicalSize ((float*)0);
+	return 2 * CanonicalConversion::canonicalSize (static_cast<float*>(0));
     case TpDComplex:
     case TpArrayDComplex:
-	return 2 * CanonicalConversion::canonicalSize ((double*)0);
+	return 2 * CanonicalConversion::canonicalSize (static_cast<double*>(0));
     default:
 	break;
     }
@@ -212,49 +212,49 @@ void ValType::getCanonicalFunc (DataType dt,
 	break;
     case TpChar:
     case TpArrayChar:
-	readFunc  = CanonicalConversion::getToLocal ((uChar*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((uChar*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
 	break;
     case TpUChar:
     case TpArrayUChar:
-	readFunc  = CanonicalConversion::getToLocal ((uChar*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((uChar*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
 	break;
     case TpShort:
     case TpArrayShort:
-	readFunc  = CanonicalConversion::getToLocal ((Short*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((Short*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<Short*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<Short*>(0));
 	break;
     case TpUShort:
     case TpArrayUShort:
-	readFunc  = CanonicalConversion::getToLocal ((uShort*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((uShort*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<uShort*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<uShort*>(0));
 	break;
     case TpInt:
     case TpArrayInt:
-	readFunc  = CanonicalConversion::getToLocal ((Int*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((Int*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<Int*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<Int*>(0));
 	break;
     case TpUInt:
     case TpArrayUInt:
-	readFunc  = CanonicalConversion::getToLocal ((uInt*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((uInt*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<uInt*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
 	break;
     case TpComplex:
     case TpArrayComplex:
 	nrElementsPerValue = 2;
     case TpFloat:
     case TpArrayFloat:
-	readFunc  = CanonicalConversion::getToLocal ((float*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((float*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<float*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<float*>(0));
 	break;
     case TpDComplex:
     case TpArrayDComplex:
 	nrElementsPerValue = 2;
     case TpDouble:
     case TpArrayDouble:
-	readFunc  = CanonicalConversion::getToLocal ((double*)0);
-	writeFunc = CanonicalConversion::getFromLocal ((double*)0);
+	readFunc  = CanonicalConversion::getToLocal (static_cast<double*>(0));
+	writeFunc = CanonicalConversion::getFromLocal (static_cast<double*>(0));
 	break;
     default:
 	readFunc  = 0;

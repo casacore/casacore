@@ -195,9 +195,9 @@ MathFunc<T>::MathFunc(FUNCTYPE type, T cut, T arg1, T arg2, T arg3)
 // copy constructor
 //
 template<class T>
-MathFunc<T>::MathFunc(const MathFunc<T> &other):object((MathFunc<T> *)0)
+MathFunc<T>::MathFunc(const MathFunc<T> &other):object(static_cast<MathFunc<T> *>(0))
 { 		
-  if(other.object!=(MathFunc<T> *)0) 
+  if(other.object!=static_cast<MathFunc<T> *>(0)) 
     delete object;   // thus we can't allow references to letter classes.
   object = other.object->clone();
 }
@@ -206,9 +206,9 @@ MathFunc<T>::MathFunc(const MathFunc<T> &other):object((MathFunc<T> *)0)
 // backdoor new type constructor without enumerated type list addition
 //
 template<class T>
-MathFunc<T>::MathFunc(MathFunc<T> *other) : object((MathFunc<T> *)0) 
+MathFunc<T>::MathFunc(MathFunc<T> *other) : object(static_cast<MathFunc<T> *>(0)) 
 { 
-  if(other->object==(MathFunc<T> *)0){
+  if(other->object==static_cast<MathFunc<T> *>(0)){
     object = other;
   } else 
     *this = *other;
@@ -228,7 +228,7 @@ template<class T>
 MathFunc<T>& MathFunc<T>::operator=(const MathFunc<T>& other)
 {
   if(this == &other) return *this;  
-  if(other.object==(MathFunc<T> *)0)
+  if(other.object==static_cast<MathFunc<T> *>(0))
     throw (MathFuncError("MathFunc::operator=: attempt to use derived class"
 			 " in a base class only function (polymorph flaw)."));
   delete object;
@@ -271,7 +271,7 @@ MathFunc<T> * MathFunc<T>::clone() const
 // initializes its data members to zero.
 //
 template<class T> 
-MathFunc<T>::MathFunc(): object((MathFunc<T> *)0)
+MathFunc<T>::MathFunc(): object(static_cast<MathFunc<T> *>(0))
 { 
   // nothing
 }

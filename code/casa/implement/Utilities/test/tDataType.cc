@@ -185,35 +185,35 @@ void simpleTests()
 
     // Now check the whatType() functions
     class Goofy;
-    AlwaysAssertExit( whatType((Goofy *)0) == TpOther );
-    AlwaysAssertExit( whatType((Bool *)0) == TpBool );
-    AlwaysAssertExit( whatType((Char *)0) == TpChar );
-    AlwaysAssertExit( whatType((uChar *)0) == TpUChar );
-    AlwaysAssertExit( whatType((Short *)0) == TpShort );
-    AlwaysAssertExit( whatType((uShort *)0) == TpUShort );
-    AlwaysAssertExit( whatType((Int *)0) == TpInt );
-    AlwaysAssertExit( whatType((uInt *)0) == TpUInt );
-    AlwaysAssertExit( whatType((Float *)0) == TpFloat );
-    AlwaysAssertExit( whatType((Double *)0) == TpDouble );
-    AlwaysAssertExit( whatType((Complex *)0) == TpComplex );
-    AlwaysAssertExit( whatType((DComplex *)0) == TpDComplex );
-    AlwaysAssertExit( whatType((String *)0) == TpString );
-    AlwaysAssertExit( whatType((Table *)0) == TpTable );
-    AlwaysAssertExit( whatType((Array<Bool> *)0) == TpArrayBool );
-    AlwaysAssertExit( whatType((Array<Char> *)0) == TpArrayChar );
-    AlwaysAssertExit( whatType((Array<uChar> *)0) == TpArrayUChar );
-    AlwaysAssertExit( whatType((Array<Short> *)0) == TpArrayShort );
-    AlwaysAssertExit( whatType((Array<uShort> *)0) == TpArrayUShort );
-    AlwaysAssertExit( whatType((Array<Int> *)0) == TpArrayInt );
-    AlwaysAssertExit( whatType((Array<uInt> *)0) == TpArrayUInt );
-    AlwaysAssertExit( whatType((Array<Float> *)0) == TpArrayFloat );
-    AlwaysAssertExit( whatType((Array<Double> *)0) == TpArrayDouble );
-    AlwaysAssertExit( whatType((Array<Complex> *)0) == TpArrayComplex );
-    AlwaysAssertExit( whatType((Array<DComplex> *)0) == TpArrayDComplex );
-    AlwaysAssertExit( whatType((Array<String> *)0) == TpArrayString );
-    AlwaysAssertExit( whatType((Record *)0) == TpRecord );
-    AlwaysAssertExit( whatType((Quantity *)0) == TpQuantity ) ;
-    AlwaysAssertExit( whatType((Array<Quantity> *)0) == TpArrayQuantity );
+    AlwaysAssertExit( whatType(static_cast<Goofy *>(0)) == TpOther );
+    AlwaysAssertExit( whatType(static_cast<Bool *>(0)) == TpBool );
+    AlwaysAssertExit( whatType(static_cast<Char *>(0)) == TpChar );
+    AlwaysAssertExit( whatType(static_cast<uChar *>(0)) == TpUChar );
+    AlwaysAssertExit( whatType(static_cast<Short *>(0)) == TpShort );
+    AlwaysAssertExit( whatType(static_cast<uShort *>(0)) == TpUShort );
+    AlwaysAssertExit( whatType(static_cast<Int *>(0)) == TpInt );
+    AlwaysAssertExit( whatType(static_cast<uInt *>(0)) == TpUInt );
+    AlwaysAssertExit( whatType(static_cast<Float *>(0)) == TpFloat );
+    AlwaysAssertExit( whatType(static_cast<Double *>(0)) == TpDouble );
+    AlwaysAssertExit( whatType(static_cast<Complex *>(0)) == TpComplex );
+    AlwaysAssertExit( whatType(static_cast<DComplex *>(0)) == TpDComplex );
+    AlwaysAssertExit( whatType(static_cast<String *>(0)) == TpString );
+    AlwaysAssertExit( whatType(static_cast<Table *>(0)) == TpTable );
+    AlwaysAssertExit( whatType(static_cast<Array<Bool> *>(0)) == TpArrayBool );
+    AlwaysAssertExit( whatType(static_cast<Array<Char> *>(0)) == TpArrayChar );
+    AlwaysAssertExit( whatType(static_cast<Array<uChar> *>(0)) == TpArrayUChar );
+    AlwaysAssertExit( whatType(static_cast<Array<Short> *>(0)) == TpArrayShort );
+    AlwaysAssertExit( whatType(static_cast<Array<uShort> *>(0)) == TpArrayUShort );
+    AlwaysAssertExit( whatType(static_cast<Array<Int> *>(0)) == TpArrayInt );
+    AlwaysAssertExit( whatType(static_cast<Array<uInt> *>(0)) == TpArrayUInt );
+    AlwaysAssertExit( whatType(static_cast<Array<Float> *>(0)) == TpArrayFloat );
+    AlwaysAssertExit( whatType(static_cast<Array<Double> *>(0)) == TpArrayDouble );
+    AlwaysAssertExit( whatType(static_cast<Array<Complex> *>(0)) == TpArrayComplex );
+    AlwaysAssertExit( whatType(static_cast<Array<DComplex> *>(0)) == TpArrayDComplex );
+    AlwaysAssertExit( whatType(static_cast<Array<String> *>(0)) == TpArrayString );
+    AlwaysAssertExit( whatType(static_cast<Record *>(0)) == TpRecord );
+    AlwaysAssertExit( whatType(static_cast<Quantity *>(0)) == TpQuantity ) ;
+    AlwaysAssertExit( whatType(static_cast<Array<Quantity> *>(0)) == TpArrayQuantity );
 
     AlwaysAssertExit (isScalar(TpBool) && isScalar(TpChar) && isScalar(TpUChar)&&
 		      isScalar(TpShort) && isScalar(TpUShort) && isScalar(TpInt) && 

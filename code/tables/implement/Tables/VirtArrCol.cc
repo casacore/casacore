@@ -45,12 +45,12 @@ Bool VirtualArrayColumn<T>::isWritable() const
 
 template<class T>
 int VirtualArrayColumn<T>::dataType() const
-    { return ValType::getType ((T*)0); }
+    { return ValType::getType (static_cast<T*>(0)); }
 
 template<class T>
 String VirtualArrayColumn<T>::dataTypeId() const
 {
-    return valDataTypeId ((T*)0);
+    return valDataTypeId (static_cast<T*>(0));
 }
 
 

@@ -108,8 +108,8 @@ String RetypedArrayEngine<S,T>::dataManagerType() const
 template<class S, class T>
 String RetypedArrayEngine<S,T>::className()
 {
-    return "RetypedArrayEngine<" + valDataTypeId((S*)0) + "," +
-	                           valDataTypeId((T*)0) + ">";
+    return "RetypedArrayEngine<" + valDataTypeId(static_cast<S*>(0)) + "," +
+	                           valDataTypeId(static_cast<T*>(0)) + ">";
 }
 
 template<class S, class T>

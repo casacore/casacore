@@ -286,9 +286,9 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
     DebugAssert (nrelem_p==1, AipsError);
     Bool asCanonical = stmanPtr_p->asCanonical();
     if (asCanonical) {
-	readFunc_p    = CanonicalConversion::getToLocal ((uLong*)0);
-	writeFunc_p   = CanonicalConversion::getFromLocal ((uLong*)0);
-	fixedLength_p = CanonicalConversion::canonicalSize ((uLong*)0);
+	readFunc_p    = CanonicalConversion::getToLocal (static_cast<uLong*>(0));
+	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<uLong*>(0));
+	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<uLong*>(0));
 	nrcopy_p      = 1;
     }else{
 	readFunc_p = writeFunc_p = Conversion::valueCopy;

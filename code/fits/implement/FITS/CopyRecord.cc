@@ -1,5 +1,5 @@
 //# CopyRecord.cc:  definition of CopyRecordToTable
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,92 +246,92 @@ CopyRecordToTable::~CopyRecordToTable()
     for (i=0; i < table_bool.nelements(); i++) {
         delete table_bool[i];
     }
-    table_bool.set((ScalarColumn<Bool>*)0);
+    table_bool.set(static_cast<ScalarColumn<Bool>*>(0));
  
     for (i=0; i < table_char.nelements(); i++) {
         delete table_char[i];
     }
-    table_char.set((ScalarColumn<uChar>*)0);
+    table_char.set(static_cast<ScalarColumn<uChar>*>(0));
  
     for (i=0; i < table_short.nelements(); i++) {
         delete table_short[i];
     }
-    table_short.set((ScalarColumn<Short>*)0);
+    table_short.set(static_cast<ScalarColumn<Short>*>(0));
  
     for (i=0; i < table_int.nelements(); i++) {
         delete table_int[i];
     }
-    table_int.set((ScalarColumn<Int>*)0);
+    table_int.set(static_cast<ScalarColumn<Int>*>(0));
  
     for (i=0; i < table_float.nelements(); i++) {
         delete table_float[i];
     }
-    table_float.set((ScalarColumn<Float>*)0);
+    table_float.set(static_cast<ScalarColumn<Float>*>(0));
  
     for (i=0; i < table_double.nelements(); i++) {
         delete table_double[i];
     }
-    table_double.set((ScalarColumn<Double>*)0);
+    table_double.set(static_cast<ScalarColumn<Double>*>(0));
  
     for (i=0; i < table_complex.nelements(); i++) {
         delete table_complex[i];
     }
-    table_complex.set((ScalarColumn<Complex>*)0);
+    table_complex.set(static_cast<ScalarColumn<Complex>*>(0));
  
     for (i=0; i < table_dcomplex.nelements(); i++) {
         delete table_dcomplex[i];
     }
-    table_dcomplex.set((ScalarColumn<DComplex>*)0);
+    table_dcomplex.set(static_cast<ScalarColumn<DComplex>*>(0));
  
     for (i=0; i < table_string.nelements(); i++) {
         delete table_string[i];
     }
-    table_string.set((ScalarColumn<String>*)0);
+    table_string.set(static_cast<ScalarColumn<String>*>(0));
  
     for (i=0; i < table_array_bool.nelements(); i++) {
         delete table_array_bool[i];
     }
-    table_array_bool.set((ArrayColumn<Bool>*)0);
+    table_array_bool.set(static_cast<ArrayColumn<Bool>*>(0));
  
     for (i=0; i < table_array_char.nelements(); i++) {
         delete table_array_char[i];
     }
-    table_array_char.set((ArrayColumn<uChar>*)0);
+    table_array_char.set(static_cast<ArrayColumn<uChar>*>(0));
  
     for (i=0; i < table_array_short.nelements(); i++) {
         delete table_array_short[i];
     }
-    table_array_short.set((ArrayColumn<Short>*)0);
+    table_array_short.set(static_cast<ArrayColumn<Short>*>(0));
  
     for (i=0; i < table_array_int.nelements(); i++) {
         delete table_array_int[i];
     }
-    table_array_int.set((ArrayColumn<Int>*)0);
+    table_array_int.set(static_cast<ArrayColumn<Int>*>(0));
  
     for (i=0; i < table_array_float.nelements(); i++) {
         delete table_array_float[i];
     }
-    table_array_float.set((ArrayColumn<Float>*)0);
+    table_array_float.set(static_cast<ArrayColumn<Float>*>(0));
  
     for (i=0; i < table_array_double.nelements(); i++) {
         delete table_array_double[i];
     }
-    table_array_double.set((ArrayColumn<Double>*)0);
+    table_array_double.set(static_cast<ArrayColumn<Double>*>(0));
  
     for (i=0; i < table_array_complex.nelements(); i++) {
         delete table_array_complex[i];
     }
-    table_array_complex.set((ArrayColumn<Complex>*)0);
+    table_array_complex.set(static_cast<ArrayColumn<Complex>*>(0));
  
     for (i=0; i < table_array_dcomplex.nelements(); i++) {
         delete table_array_dcomplex[i];
     }
-    table_array_dcomplex.set((ArrayColumn<DComplex>*)0);
+    table_array_dcomplex.set(static_cast<ArrayColumn<DComplex>*>(0));
  
     for (i=0; i < table_array_string.nelements(); i++) {
         delete table_array_string[i];
     }
-    table_array_string.set((ArrayColumn<String>*)0);
+    table_array_string.set(static_cast<ArrayColumn<String>*>(0));
 }
  
 void CopyRecordToTable::copy(uInt rownr)

@@ -1,5 +1,5 @@
 //# ISMBucket.cc: A bucket in the Incremental Storage Manager
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,8 +45,8 @@ ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)
   uIntSize_p (parent->uIntSize()),
   dataLeng_p (0),
   indexLeng_p(0),
-  rowIndex_p (parent->ncolumn(), (Block<uInt>*)0),
-  offIndex_p (parent->ncolumn(), (Block<uInt>*)0),
+  rowIndex_p (parent->ncolumn(), static_cast<Block<uInt>*>(0)),
+  offIndex_p (parent->ncolumn(), static_cast<Block<uInt>*>(0)),
   indexUsed_p(parent->ncolumn(), (uInt)0)
 {
     uInt nrcol = stmanPtr_p->ncolumn();

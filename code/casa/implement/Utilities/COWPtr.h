@@ -270,7 +270,7 @@ protected:
 
 // Make our own default pointer - deleteIt==True by default, const_p==False
 template <class T> inline COWPtr<T>::COWPtr()
-:obj_p((T *)0, True), const_p(False)
+:obj_p(static_cast<T *>(0), True), const_p(False)
 {
   // does nothing
 } 

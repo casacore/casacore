@@ -52,7 +52,7 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
 // converted to match the template type if possible
 //
 {
-    DataType thisDT = whatType ((T*)0);
+    DataType thisDT = whatType (static_cast<T*>(0));
     if (expr.dataType() == thisDT) {
 	expr_p = expr;
     } else {

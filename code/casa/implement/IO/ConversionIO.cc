@@ -73,26 +73,26 @@ ConversionIO::~ConversionIO()
 
 void ConversionIO::init()
 {
-    itsCopyChar   = itsConversion->canCopy ((Char*)0);
-    itsCopyuChar  = itsConversion->canCopy ((uChar*)0);
-    itsCopyShort  = itsConversion->canCopy ((Short*)0);
-    itsCopyuShort = itsConversion->canCopy ((uShort*)0);
-    itsCopyInt    = itsConversion->canCopy ((Int*)0);
-    itsCopyuInt   = itsConversion->canCopy ((uInt*)0);
-    itsCopyLong   = itsConversion->canCopy ((Long*)0);
-    itsCopyuLong  = itsConversion->canCopy ((uLong*)0);
-    itsCopyFloat  = itsConversion->canCopy ((Float*)0);
-    itsCopyDouble = itsConversion->canCopy ((Double*)0);
-    itsSizeChar   = itsConversion->externalSize ((Char*)0);
-    itsSizeuChar  = itsConversion->externalSize ((uChar*)0);
-    itsSizeShort  = itsConversion->externalSize ((Short*)0);
-    itsSizeuShort = itsConversion->externalSize ((uShort*)0);
-    itsSizeInt    = itsConversion->externalSize ((Int*)0);
-    itsSizeuInt   = itsConversion->externalSize ((uInt*)0);
-    itsSizeLong   = itsConversion->externalSize ((Long*)0);
-    itsSizeuLong  = itsConversion->externalSize ((uLong*)0);
-    itsSizeFloat  = itsConversion->externalSize ((Float*)0);
-    itsSizeDouble = itsConversion->externalSize ((Double*)0);
+    itsCopyChar   = itsConversion->canCopy (static_cast<Char*>(0));
+    itsCopyuChar  = itsConversion->canCopy (static_cast<uChar*>(0));
+    itsCopyShort  = itsConversion->canCopy (static_cast<Short*>(0));
+    itsCopyuShort = itsConversion->canCopy (static_cast<uShort*>(0));
+    itsCopyInt    = itsConversion->canCopy (static_cast<Int*>(0));
+    itsCopyuInt   = itsConversion->canCopy (static_cast<uInt*>(0));
+    itsCopyLong   = itsConversion->canCopy (static_cast<Long*>(0));
+    itsCopyuLong  = itsConversion->canCopy (static_cast<uLong*>(0));
+    itsCopyFloat  = itsConversion->canCopy (static_cast<Float*>(0));
+    itsCopyDouble = itsConversion->canCopy (static_cast<Double*>(0));
+    itsSizeChar   = itsConversion->externalSize (static_cast<Char*>(0));
+    itsSizeuChar  = itsConversion->externalSize (static_cast<uChar*>(0));
+    itsSizeShort  = itsConversion->externalSize (static_cast<Short*>(0));
+    itsSizeuShort = itsConversion->externalSize (static_cast<uShort*>(0));
+    itsSizeInt    = itsConversion->externalSize (static_cast<Int*>(0));
+    itsSizeuInt   = itsConversion->externalSize (static_cast<uInt*>(0));
+    itsSizeLong   = itsConversion->externalSize (static_cast<Long*>(0));
+    itsSizeuLong  = itsConversion->externalSize (static_cast<uLong*>(0));
+    itsSizeFloat  = itsConversion->externalSize (static_cast<Float*>(0));
+    itsSizeDouble = itsConversion->externalSize (static_cast<Double*>(0));
 }
 
 

@@ -1,5 +1,5 @@
 //# ScaledArrayEngine.cc: Templated virtual column engine to scale a table array
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,8 +138,8 @@ String ScaledArrayEngine<S,T>::dataManagerType() const
 template<class S, class T>
 String ScaledArrayEngine<S,T>::className()
 {
-    return "ScaledArrayEngine<" + valDataTypeId ((S*)0) + ","
-	                        + valDataTypeId ((T*)0) + ">";
+    return "ScaledArrayEngine<" + valDataTypeId (static_cast<S*>(0)) + ","
+	                        + valDataTypeId (static_cast<T*>(0)) + ">";
 }
 
 template<class S, class T>

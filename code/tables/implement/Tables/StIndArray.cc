@@ -101,37 +101,37 @@ Bool StIndArray::setShape (StManArrayFile& ios, int dataType,
     // Store the shape in the file and allocate storage for the array.
     switch (dataType) {
     case TpBool:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (Bool*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<Bool*>(0));
 	break;
     case TpUChar:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (uChar*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<uChar*>(0));
 	break;
     case TpShort:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (Short*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<Short*>(0));
 	break;
     case TpUShort:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (uShort*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<uShort*>(0));
 	break;
     case TpInt:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (Int*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<Int*>(0));
 	break;
     case TpUInt:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (uInt*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<uInt*>(0));
 	break;
     case TpFloat:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (float*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<float*>(0));
 	break;
     case TpDouble:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (double*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<double*>(0));
 	break;
     case TpComplex:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (Complex*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<Complex*>(0));
 	break;
     case TpDComplex:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (DComplex*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<DComplex*>(0));
 	break;
     case TpString:
-	arrOffset_p = ios.putShape (shape_p, fileOffset_p, (String*)0);
+	arrOffset_p = ios.putShape (shape_p, fileOffset_p, static_cast<String*>(0));
 	break;
     }
     return True;

@@ -102,10 +102,10 @@ void a (Bool canonical, uInt version,
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::New, version,
 		      canonical);
     cout << "Length=" << io.length() << endl;
-    l1 = io.putShape (IPosition(2,100,100), off1, (Int*)0);
+    l1 = io.putShape (IPosition(2,100,100), off1, static_cast<Int*>(0));
     cout << l1 << " " << off1 << endl;
     cout << "Length=" << io.length() << endl;
-    l3 = io.putShape (IPosition(2,2000,5), off3, (String*)0);
+    l3 = io.putShape (IPosition(2,2000,5), off3, static_cast<String*>(0));
     cout << l3 << " " << off3 << endl;
     cout << "Length=" << io.length() << endl;
     if (version > 0) {
@@ -113,7 +113,7 @@ void a (Bool canonical, uInt version,
     }
     io.put (off3+l3, 0, 3000, sbuf);
     cout << "Length=" << io.length() << endl;
-    l2 = io.putShape (IPosition(1,10000), off2, (Complex*)0);
+    l2 = io.putShape (IPosition(1,10000), off2, static_cast<Complex*>(0));
     cout << l2 << " " << off2 << endl;
     cout << "Length=" << io.length() << endl;
     io.put (off3+l3, 3000, 1024, sbuf+3000);
@@ -123,7 +123,7 @@ void a (Bool canonical, uInt version,
     cout << "Length=" << io.length() << endl;
     io.put (off3+l3, 4024, 5976, sbuf+4024);
     cout << "Length=" << io.length() << endl;
-    l4 = io.putShape (IPosition(2,1000,10), off4, (Bool*)0);
+    l4 = io.putShape (IPosition(2,1000,10), off4, static_cast<Bool*>(0));
     cout << l4 << " " << off4 << endl;
     cout << "Length=" << io.length() << endl;
     io.put (off4+l4, 0, 10000, bbuf);
@@ -165,7 +165,7 @@ void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
     cout << l4 << " " << shp << " " << nref << endl;
     shp4 = shp;
     cout << "Length=" << io.length() << endl;
-    cout << io.putShape (IPosition(2,10,5), offs, (String*)0);
+    cout << io.putShape (IPosition(2,10,5), offs, static_cast<String*>(0));
     cout << " " << offs << endl;
     cout << "Length=" << io.length() << endl;
     io.get (off3+l3, 0, 4096, sbufo);
@@ -201,16 +201,16 @@ void b (Bool canonical, uLong off1, uLong off2, uLong off3, uLong off4,
     io.put (off4+l4, 1, 20, bbuf);
     io.put (off4+l4, 34, 4, bbuf);
     cout << "Length=" << io.length() << endl;
-    uInt lc1 = io.putShape (shp1, offc1, (Int*)0);
+    uInt lc1 = io.putShape (shp1, offc1, static_cast<Int*>(0));
     cout << "copy to " << lc1 << " " << offc1 << endl;
     io.copyArrayInt (offc1+lc1, off1+l1, shp1.product());
-    uInt lc2 = io.putShape (shp2, offc2, (Complex*)0);
+    uInt lc2 = io.putShape (shp2, offc2, static_cast<Complex*>(0));
     cout << "copy to " << lc2 << " " << offc2 << endl;
     io.copyArrayComplex (offc2+lc2, off2+l2, shp2.product());
-    uInt lc3 = io.putShape (shp3, offc3, (String*)0);
+    uInt lc3 = io.putShape (shp3, offc3, static_cast<String*>(0));
     cout << "copy to " << lc3 << " " << offc3 << endl;
     io.copyArrayString (offc3+lc3, off3+l3, shp3.product());
-    uInt lc4 = io.putShape (shp4, offc4, (Bool*)0);
+    uInt lc4 = io.putShape (shp4, offc4, static_cast<Bool*>(0));
     cout << "copy to " << lc4 << " " << offc4 << endl;
     io.copyArrayBool (offc4+lc4, off4+l4, shp4.product());
 }

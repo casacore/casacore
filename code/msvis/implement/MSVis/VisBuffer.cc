@@ -30,7 +30,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 
-VisBuffer::VisBuffer():visIter_p((ROVisibilityIterator*)0),
+VisBuffer::VisBuffer():visIter_p(static_cast<ROVisibilityIterator*>(0)),
 twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)
 {validate();}
 
@@ -40,7 +40,7 @@ VisBuffer::VisBuffer(ROVisibilityIterator& iter):visIter_p(&iter),This(this)
   twoWayConnection_p=True;
 }
 
-VisBuffer::VisBuffer(const VisBuffer& vb):visIter_p((ROVisibilityIterator*)0),
+VisBuffer::VisBuffer(const VisBuffer& vb):visIter_p(static_cast<ROVisibilityIterator*>(0)),
 This(this)
 {
   operator=(vb);
@@ -49,11 +49,11 @@ This(this)
 VisBuffer& VisBuffer::operator=(const VisBuffer& other)
 {
   if (this!=&other) {
-    if (visIter_p!=(ROVisibilityIterator*)0 && twoWayConnection_p) 
+    if (visIter_p!=static_cast<ROVisibilityIterator*>(0) && twoWayConnection_p) 
       visIter_p->detachVisBuffer(*this);
     visIter_p=other.visIter_p;
     twoWayConnection_p=False;
-    if (visIter_p == (ROVisibilityIterator*)0) {
+    if (visIter_p == static_cast<ROVisibilityIterator*>(0)) {
       validate();
     } else {
       nChannelOK_p=other.nChannelOK_p;
@@ -180,7 +180,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
   
 VisBuffer::~VisBuffer()
 { 
-  if (visIter_p!=(ROVisibilityIterator*)0 && twoWayConnection_p) 
+  if (visIter_p!=static_cast<ROVisibilityIterator*>(0) && twoWayConnection_p) 
     visIter_p->detachVisBuffer(*this);
 }
 
@@ -209,7 +209,7 @@ VisBuffer& VisBuffer::operator-=(const VisBuffer& vb)
 
 void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 { 
-  if (visIter_p!=(ROVisibilityIterator*)0 && twoWayConnection_p) 
+  if (visIter_p!=static_cast<ROVisibilityIterator*>(0) && twoWayConnection_p) 
     visIter_p->detachVisBuffer(*this);
   visIter_p=&iter; 
   iter.attachVisBuffer(*this);

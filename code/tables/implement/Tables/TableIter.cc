@@ -47,7 +47,7 @@ TableIterator::TableIterator (const Table& tab,
     subTable_p.makePermanent();
     Block<String> keys(1, key);
     Block<Int> ord(1, order);
-    PtrBlock<ObjCompareFunc*> cmpFunc(1, (ObjCompareFunc*)0);
+    PtrBlock<ObjCompareFunc*> cmpFunc(1, static_cast<ObjCompareFunc*>(0));
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
 						     ord, option);
     next();                            // get first subtable
@@ -61,7 +61,7 @@ TableIterator::TableIterator (const Table& tab,
 {
     subTable_p.makePermanent();
     Block<Int> ord(keys.nelements(), order);
-    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), (ObjCompareFunc*)0);
+    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
 						     ord, option);
     next();                            // get first subtable
@@ -74,7 +74,7 @@ TableIterator::TableIterator (const Table& tab,
 : tabIterPtr_p (0)
 {
     subTable_p.makePermanent();
-    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), (ObjCompareFunc*)0);
+    PtrBlock<ObjCompareFunc*> cmpFunc(keys.nelements(), static_cast<ObjCompareFunc*>(0));
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpFunc,
 						     orders, option);
     next();                            // get first subtable
