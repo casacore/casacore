@@ -44,24 +44,26 @@ set arg = ()
 #
 # Set the generally allowed switches
 #
-set upsw = "cdhnru"
+set upsw = "cdhnrtu"
 #
 # Set the allowed switches for appropriate scripts
 #
 if ("$script" == "UPchange") then
-    set upsw = "t$upsw"
+    set upsw = "$upsw"
 else if ("$script" == "UPdup") then
     set upsw = "s$upsw"
 else if ("$script" == "UPfind") then
     set upsw = "fg$upsw"
 else if ("$script" == "UPlist") then
     set upsw = "l$upsw"
+else if ("$script" == "UPload") then
+    set upsw = "$upsw"
 else if ("$script" == "UPlock") then
     set upsw = "$upsw"
 else if ("$script" == "UPmove") then
-    set upsw = "t$upsw"
+    set upsw = "$upsw"
 else if ("$script" == "UPreident") then
-    set upsw = "atz$upsw"
+    set upsw = "az$upsw"
 else if ("$script" == "UPtmpl") then
     set upsw = "$upsw"
 else
@@ -74,10 +76,16 @@ endif
 foreach i (a c d h n r f g l s t u z)
     set upsw$i = 0
 end
-set upswP = 0
+#
+# Special switches:
+# P   = pattern             Q = quiet
+# 0-9 = extensions
+#
+foreach i (P Q 0 1 2 3 4 5 6 7 8 9)
+    set upsw$i = 0
+end
 foreach i (0 1 2 3 4 5 6 7 8 9)
     set upswp0$i = 0
-    set upsw$i = 0
 end
 #
 # Get switches and arguments
@@ -91,7 +99,7 @@ while ($# > 0)
 	    if ("$upsw" =~ *"$x[1]"*) then
 		set upsw$x[1] = 1
 	    else
-		if ("$x[1]" == "P") then
+		if ("$x[1]" == "P" || "$x[1]" == "Q") then
 		    set upsw$x[1] = 1
 		else if ("$x[1]" == "0" && $upswP) then
 		    set upsw$x[1] = 1
@@ -173,6 +181,7 @@ The following UP scripts are available:
     UPlock                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPchange  [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPmove    [-t]           [-c] [-r] [-u] [-d] [-n] <typ>
+    UPload                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
@@ -244,6 +253,13 @@ unset y
 #
 set tpb = `echo $tp | sed -e 's;_[A-Z][A-Z]*$;;' `
 #
+# Get base extension
+#
+set tpbx = ""
+if (! -e ${tp}.found && ! -e ${tp}.spat) then
+    if (-e ${tp}_MV.found && -e ${tp}_MV.spat) set tpbx = "_MV"
+endif
+#
 # Save current type for today
 #
 touch $ldir/.UpTyPe.xx
@@ -254,7 +270,7 @@ endif
 #
 # Get info
 #
-echo "Getting info..."
+if (! $upswQ) echo "Getting info..."
 #
 # Clear info if asked
 #
@@ -284,7 +300,7 @@ if ($upswu) then
   else if ("$script" == "UPreident") then
     if (-e $ldir/${tp}.tsel) rm -f $ldir/${tp}.tsel
   else if ("$script" == "UPtmpl" || "$script" == "UPlock" || \
-	   "$script" == "UPdup") then
+	   "$script" == "UPdup"  || "$script" == "UPload") then
   else
     echo "Internal error: '$script' not supported"
     exit 1
@@ -310,7 +326,9 @@ set hasm = $lhasm
 if (! $?dir) then
    set dir = $apath[1]
    set x = ""
-   echo "Make sure you have a proper mktree built before proceeding..."
+   if (! $upswQ) then
+     echo "Make sure you have a proper mktree built before proceeding..."
+   endif
    while ("$x" == "" || ! -d $x/code)
 	echo -n "Specify code tree root to be used [$dir]: "
 	set x = ($<)
@@ -325,7 +343,9 @@ endif
 if (! $?mdir) then
    set x = "~/aips++"
    while (! -d $x/code) 
-      echo "Path to local aips++ tree root is not $x"
+      if (! $upswQ) then
+        echo "Path to local aips++ tree root is not $x"
+      endif
       echo -n "Specify your local aips++ tree root [$x]: "
       if ("$x" != "") then
 	set x = "$<"

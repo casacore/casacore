@@ -66,24 +66,26 @@ if (! $ok) exit 1
 #
 # Get specific data
 #
-if (! -r $ldir/${tp}.spat) then
-   touch $ldir/${tp}.spat
-   echo "Specify egrep expression(s) to search in files"
-   echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
-   echo '      or: [(][^(]*[*] *[)][ \t]*0'
-   echo 'Multi-line expressions will be ORed'
+if (! -r $ldir/${tp}${tpbx}.spat) then
+   touch $ldir/${tp}${tpbx}.spat
+   if (! $upswQ) then
+     echo "Specify egrep expression(s) to search in files"
+     echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
+     echo '      or: [(][^(]*[*] *[)][ \t]*0'
+     echo 'Multi-line expressions will be ORed'
+   endif
    while (1)
 	echo -n "Find expression: "
 	set x = "$<"
 	if ("$x" == "") break
-	echo "$x" >> $ldir/${tp}.spat
+	echo "$x" >> $ldir/${tp}${tpbx}.spat
    end
    unset x
 endif
 
-if (-z $ldir/${tp}.spat) then
+if (-z $ldir/${tp}${tpbx}.spat) then
    echo "An empty or no ${tp}.spat file created"
-   if (-e $ldir/${tp}.spat)  rm -f $ldir/${tp}.spat
+   if (-e $ldir/${tp}${tpbx}.spat)  rm -f $ldir/${tp}${tpbx}.spat
    exit 1
 endif
 
@@ -91,17 +93,19 @@ if ($upswn) exit 0
 #
 # Execute
 #
-if (! -e $ldir/${tp}.found) then
+if (! -e $ldir/${tp}${tpbx}.found) then
    echo "No ${tp}.found file present. Create one using UPfind"
    exit 1
 endif
 
 cd $dir/code
 
-set a = ( `wc $ldir/${tp}.found` )
-echo $a[1] files found in ${tp}.found
-unset a
-echo "Starting list..."
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}${tpbx}.found` )
+  echo $a[1] files found in ${tp}.found
+  unset a
+  echo "Starting list..."
+endif
 
 if (-e $ldir/${tp}.list) rm -f $ldir/${tp}.list
 set cnt = 1000
@@ -111,9 +115,9 @@ set tmp = $$
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
 touch $ldir/$tmp.tmp
 
-foreach i (`cat $ldir/${tp}.found`)
+foreach i (`cat $ldir/${tp}${tpbx}.found`)
    echo "$cnt"' ## '"$i" >> $ldir/$tmp.tmp
-   egrep $x -f $ldir/${tp}.spat $i | \
+   egrep $x -f $ldir/${tp}${tpbx}.spat $i | \
 	awk '{ print '$cnt', "::", $0 }'  >> $ldir/$tmp.tmp
    @ cnt = $cnt + 1
 end
@@ -124,9 +128,11 @@ cat $ldir/$tmp.tmp | sort +1 -2 >! $ldir/${tp}.list
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
 unset tmp
 
-set a = ( `wc $ldir/${tp}.list` )
-echo $a[1] lines in ${tp}.list
-unset a
+if (! $upswQ) then
+  set a = ( `wc $ldir/${tp}.list` )
+  echo $a[1] lines in ${tp}.list
+  unset a
+endif
 
 exit 0
 #
