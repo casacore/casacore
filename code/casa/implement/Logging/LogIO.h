@@ -220,6 +220,10 @@ public:
     // Acumulate output in this ostream.
     ostream& output();
 
+    // Occasionally it is useful to interrogate the local log sink.
+    LogSinkInterface &localSink();
+    const LogSinkInterface &localSink() const;
+
     // Makes sure that the message is posted even if an exception is
     // thrown.
     virtual void cleanup();
@@ -263,5 +267,15 @@ LogIO &operator<<(LogIO &os, Int item);
 LogIO &operator<<(LogIO &os, uInt item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>
+
+inline LogSinkInterface &LogIO::localSink()
+{
+    return sink_p.localSink();
+}
+
+inline const LogSinkInterface &LogIO::localSink() const
+{
+    return sink_p.localSink();
+}
 
 #endif

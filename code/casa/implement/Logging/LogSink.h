@@ -196,6 +196,7 @@ public:
     // Change the sink that this <src>LogSink</src> actually uses.
     // <group>
     const LogSinkInterface &localSink() const;
+    LogSinkInterface &localSink();
     LogSink &localSink(LogSinkInterface *&fromNew);
     // </group>
 
