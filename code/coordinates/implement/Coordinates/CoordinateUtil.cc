@@ -54,6 +54,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
+#include <aips/Mathematics/Math.h>
 
 #include <strstream.h>
 

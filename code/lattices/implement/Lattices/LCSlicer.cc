@@ -1,5 +1,5 @@
 //# LCSlicer.cc: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Mathematics/Math.h>
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <strstream.h>
