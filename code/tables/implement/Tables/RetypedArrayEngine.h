@@ -574,6 +574,9 @@ private:
     // shape of the cell in the source column.
     IPosition targetShape (uInt rownr, const IPosition& sourceShape);
 
+    // Convert the Slicer for a source to a Slicer for the target.
+    Slicer targetSlicer (const Slicer& sourceSlicer) const;
+
     //# Now define the data members.
     IPosition shape_p;            //# shape of a source element in the target
     IPosition sourceFixedShape_p; //# The shape in case source has FixedShape
