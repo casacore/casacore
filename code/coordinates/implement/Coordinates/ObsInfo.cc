@@ -1,5 +1,5 @@
 //# ObsInfo.cc: Miscellaneous information related to an observation
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -205,14 +205,19 @@ Bool ObsInfo::toFITS(String & error, RecordInterface & outRecord) const
     name = "date-obs";
     MVTime time = obsDate().get("s");
     if (time != MVTime(defaultObsDate().get("s"))) {  // Roundoff problems?
-	MEpoch::Types dtype;
-	Bool ok = MEpoch::getType(dtype, MEpoch::showType(obsDate().type()));
-	if (!ok) {
-	    error = "Could not convert MEpoch to a type code! Cannot happen!";
-	    return False;
-	}
+
+// Very (but only) longwinded way to get at the MEpoch::Types
+
+	const uInt dtype = obsDate().getRefPtr()->getType();
+        const String dtype2 = MEpoch::showType(dtype);
+        MEpoch::Types dtype3;
+        if (!MEpoch::getType(dtype3, dtype2)) {
+           error = "Could not convert MEpoch to a type code! Cannot happen!";
+           return False;
+        }
+//
 	String date, timesys;
-	FITSDateUtil::toFITS(date, timesys, time, dtype);
+	FITSDateUtil::toFITS(date, timesys, time, dtype3);
 	outRecord.define(name, date);
 	outRecord.define("timesys", timesys);
     } else {
