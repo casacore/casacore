@@ -1900,3 +1900,4 @@
 08 004 top rm docs/design/OverviewTemplate.text
 08 004 top rm docs/html/835138485
 08 004 src rm doc/html/newhome.html
+08 004 top rm docs/html/newhome.html
