@@ -999,7 +999,7 @@
      fi
 
 #    Determine what command to use for remote sneeze.  Default is rsh.
-     RCMD=`getrc -i sneeze.$INHOST.rcmd 2> /dev/null`
+     RCMD=`getrc -i inhale.sneeze.$INHOST.rcmd 2> /dev/null`
      [ "$RCMD" = "" ] && RCMD=rsh
 
      echo ""

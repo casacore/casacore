@@ -93,11 +93,11 @@
 # extension), <host>:<aipsext>:<aipsext>.
   inhale.sneeze.hosts:
 
-# The command to use for invoking 'sneeze' (from 'inhale') on each remote host.
+# The command 'inhale' uses to invoke 'sneeze' on remote hosts.
 # If nothing is specified then this defaults to 'rsh'.
-# A possible alternative command is 'ssh', the "secure shell."
-# sneeze.<host>.rcmd:
-  sneeze.*.rcmd:	rsh
+# (A possible alternative command is 'ssh', the "secure shell.")
+# inhale.sneeze.<host>.rcmd:
+  inhale.sneeze.*.rcmd:	rsh
 
 # Logfiles and mail addresses for the sneeze logs from each host and for
 # each architecture extension.
