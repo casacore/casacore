@@ -60,8 +60,8 @@ int main ()
 	uShort   testuShort = 10;
 	Int      testInt = -20;
 	uInt     testuInt = 80;
-	Long     testLong = -100000;
-	uLong    testuLong = 100000;
+	Int64    testInt64 = -100000;
+	uInt64   testuInt64 = 100000;
 	Float    testFloat = 18.45;
 	Double   testDouble = 23.987; 
 	Complex  testComplex(2,3);
@@ -84,8 +84,8 @@ int main ()
 	sinkSource << testuShort;
 	sinkSource << testInt;
 	sinkSource << testuInt;
-	sinkSource << testLong;
-	sinkSource << testuLong;
+	sinkSource << testInt64;
+	sinkSource << testuInt64;
 	sinkSource << testFloat;
 	sinkSource << testDouble;
 	sinkSource << testComplex;
@@ -99,8 +99,8 @@ int main ()
 	sinkSource.write (nrOfTests, &testuShort);
 	sinkSource.write (nrOfTests, &testInt);
 	sinkSource.write (nrOfTests, &testuInt);
-	sinkSource.write (nrOfTests, &testLong);
-	sinkSource.write (nrOfTests, &testuLong);
+	sinkSource.write (nrOfTests, &testInt64);
+	sinkSource.write (nrOfTests, &testuInt64);
 	sinkSource.write (nrOfTests, &testFloat);
 	sinkSource.write (nrOfTests, &testDouble);
 	sinkSource.write (nrOfTests, &testComplex);
@@ -116,8 +116,8 @@ int main ()
 	sinkSource >> testuShort;
 	sinkSource >> testInt;
 	sinkSource >> testuInt;
-	sinkSource >> testLong;
-	sinkSource >> testuLong;
+	sinkSource >> testInt64;
+	sinkSource >> testuInt64;
 	sinkSource >> testFloat;
 	sinkSource >> testDouble;
 	sinkSource >> testComplex;
@@ -131,8 +131,8 @@ int main ()
 	cout << testuShort    << endl;
 	cout << testInt       << endl;
 	cout << testuInt      << endl;
-	cout << testLong      << endl;
-	cout << testuLong     << endl;
+	cout << testInt64     << endl;
+	cout << testuInt64    << endl;
 	cout << testFloat     << endl;
 	cout << testDouble    << endl;
 	cout << testComplex   << endl;
@@ -146,8 +146,8 @@ int main ()
 	sinkSource.read (nrOfTests, &testuShort);
 	sinkSource.read (nrOfTests, &testInt);
 	sinkSource.read (nrOfTests, &testuInt);
-	sinkSource.read (nrOfTests, &testLong);
-	sinkSource.read (nrOfTests, &testuLong);
+	sinkSource.read (nrOfTests, &testInt64);
+	sinkSource.read (nrOfTests, &testuInt64);
 	sinkSource.read (nrOfTests, &testFloat);
 	sinkSource.read (nrOfTests, &testDouble);
 	sinkSource.read (nrOfTests, &testComplex);
@@ -161,8 +161,8 @@ int main ()
 	cout << testuShort    << endl;
 	cout << testInt       << endl;
 	cout << testuInt      << endl;
-	cout << testLong      << endl;
-	cout << testuLong     << endl;
+	cout << testInt64     << endl;
+	cout << testuInt64    << endl;
 	cout << testFloat     << endl;
 	cout << testDouble    << endl;
 	cout << testComplex   << endl;

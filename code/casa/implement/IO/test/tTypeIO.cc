@@ -43,7 +43,7 @@
 void doIt (TypeIO* io)
 {
     // Save current file position.
-    Long position = io->seek (0, ByteIO::Current);
+    Int64 position = io->seek (0, ByteIO::Current);
 
     AlwaysAssertExit (io->isReadable());
     AlwaysAssertExit (io->isWritable());
@@ -54,8 +54,8 @@ void doIt (TypeIO* io)
     uShort   testuShort = 10;
     Int      testInt = -20;
     uInt     testuInt = 80;
-    Long     testLong = -100000;
-    uLong    testuLong = 100000;
+    Int64    testInt64 = -100000;
+    uInt64   testuInt64 = 100000;
     Float    testFloat = 18.5;
     Double   testDouble = 23.5; 
     Complex  testComplex(2,3);
@@ -69,8 +69,8 @@ void doIt (TypeIO* io)
     io->write (1, &testuShort);
     io->write (1, &testInt);
     io->write (1, &testuInt);
-    io->write (1, &testLong);
-    io->write (1, &testuLong);
+    io->write (1, &testInt64);
+    io->write (1, &testuInt64);
     io->write (1, &testFloat);
     io->write (1, &testDouble);
     io->write (1, &testComplex);
@@ -86,8 +86,8 @@ void doIt (TypeIO* io)
     uShort   tuShort;
     Int      tInt;
     uInt     tuInt;
-    Long     tLong;
-    uLong    tuLong;
+    Int64    tInt64;
+    uInt64   tuInt64;
     Float    tFloat;
     Double   tDouble; 
     Complex  tComplex;
@@ -101,8 +101,8 @@ void doIt (TypeIO* io)
     io->read (1, &tuShort);
     io->read (1, &tInt);
     io->read (1, &tuInt);
-    io->read (1, &tLong);
-    io->read (1, &tuLong);
+    io->read (1, &tInt64);
+    io->read (1, &tuInt64);
     io->read (1, &tFloat);
     io->read (1, &tDouble);
     io->read (1, &tComplex);
@@ -118,8 +118,8 @@ void doIt (TypeIO* io)
     AlwaysAssertExit (tuShort == testuShort);
     AlwaysAssertExit (tInt == testInt);
     AlwaysAssertExit (tuInt == testuInt);
-    AlwaysAssertExit (tLong == testLong);
-    AlwaysAssertExit (tuLong == testuLong);
+    AlwaysAssertExit (tInt64 == testInt64);
+    AlwaysAssertExit (tuInt64 == testuInt64);
     AlwaysAssertExit (tFloat == testFloat);
     AlwaysAssertExit (tDouble == testDouble);
     AlwaysAssertExit (tComplex == testComplex);
@@ -128,7 +128,7 @@ void doIt (TypeIO* io)
 }
 
 
-main()
+int main()
 {
     RegularFileIO regularFileIO (Path("tTypeIO_tmp.dat"), ByteIO::New);
     CanonicalIO canonicalIO (&regularFileIO);

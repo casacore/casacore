@@ -44,8 +44,8 @@ int main ()
 	uShort   testuShort = 10;
 	Int      testInt = -20;
 	uInt     testuInt = 80;
-	Long     testLong = -100000;
-	uLong    testuLong = 100000;
+	Int64    testInt64 = -100000;
+	uInt64   testuInt64 = 100000;
 	Float    testFloat = 18.45;
 	Double   testDouble = 23.987; 
 	Complex  testComplex(2,3);
@@ -67,8 +67,8 @@ int main ()
 	sink << testuShort;
 	sink << testInt;
 	sink << testuInt;
-	sink << testLong;
-	sink << testuLong;
+	sink << testInt64;
+	sink << testuInt64;
 	sink << testFloat;
 	sink << testDouble;
 	sink << testComplex;
@@ -82,8 +82,8 @@ int main ()
 	sink.write (nrOfTests, &testuShort);
 	sink.write (nrOfTests, &testInt);
 	sink.write (nrOfTests, &testuInt);
-	sink.write (nrOfTests, &testLong);
-	sink.write (nrOfTests, &testuLong);
+	sink.write (nrOfTests, &testInt64);
+	sink.write (nrOfTests, &testuInt64);
 	sink.write (nrOfTests, &testFloat);
 	sink.write (nrOfTests, &testDouble);
 	sink.write (nrOfTests, &testComplex);
@@ -98,8 +98,8 @@ int main ()
 	uShort   testuShort;
 	Int      testInt;
 	uInt     testuInt;
-	Long     testLong;
-	uLong    testuLong;
+	Int64    testInt64;
+	uInt64   testuInt64;
 	Float    testFloat;
 	Double   testDouble; 
 	Complex  testComplex;
@@ -122,8 +122,8 @@ int main ()
 	source >> testuShort;
 	source >> testInt;
 	source >> testuInt;
-	source >> testLong;
-	source >> testuLong;
+	source >> testInt64;
+	source >> testuInt64;
 	source >> testFloat;
 	source >> testDouble;
 	source >> testComplex;
@@ -137,8 +137,8 @@ int main ()
 	cout << testuShort    << endl;
 	cout << testInt       << endl;
 	cout << testuInt      << endl;
-	cout << testLong      << endl;
-	cout << testuLong     << endl;
+	cout << testInt64     << endl;
+	cout << testuInt64    << endl;
 	cout << testFloat     << endl;
 	cout << testDouble    << endl;
 	cout << testComplex   << endl;
@@ -152,8 +152,8 @@ int main ()
 	source.read (nrOfTests, &testuShort);
 	source.read (nrOfTests, &testInt);
 	source.read (nrOfTests, &testuInt);
-	source.read (nrOfTests, &testLong);
-	source.read (nrOfTests, &testuLong);
+	source.read (nrOfTests, &testInt64);
+	source.read (nrOfTests, &testuInt64);
 	source.read (nrOfTests, &testFloat);
 	source.read (nrOfTests, &testDouble);
 	source.read (nrOfTests, &testComplex);
@@ -167,8 +167,8 @@ int main ()
 	cout << testuShort    << endl;
 	cout << testInt       << endl;
 	cout << testuInt      << endl;
-	cout << testLong      << endl;
-	cout << testuLong     << endl;
+	cout << testInt64     << endl;
+	cout << testuInt64    << endl;
 	cout << testFloat     << endl;
 	cout << testDouble    << endl;
 	cout << testComplex   << endl;
