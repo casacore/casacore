@@ -1,5 +1,5 @@
 //# MaskArrLogi.h: Element by element logical operations on masked arrays.
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -287,25 +287,25 @@ MaskedLogicalArray operator ! (const MaskedArray<T> &marray);
 // </thrown>
 //
 // <group>
-template<class T> Bool allLE (const MaskedArray<T> &array, const T val);
-template<class T> Bool allLE (const T val, const MaskedArray<T> &array);
-template<class T> Bool allLT (const MaskedArray<T> &array, const T val);
-template<class T> Bool allLT (const T val, const MaskedArray<T> &array);
-template<class T> Bool allGE (const MaskedArray<T> &array, const T val);
-template<class T> Bool allGE (const T val, const MaskedArray<T> &array);
-template<class T> Bool allGT (const MaskedArray<T> &array, const T val);
-template<class T> Bool allGT (const T val, const MaskedArray<T> &array);
-template<class T> Bool allEQ (const MaskedArray<T> &array, const T val);
-template<class T> Bool allEQ (const T val, const MaskedArray<T> &array);
-template<class T> Bool allNE (const MaskedArray<T> &array, const T val);
-template<class T> Bool allNE (const T val, const MaskedArray<T> &array);
+template<class T> Bool allLE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allLE (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allLT (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allLT (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allGE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allGE (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allGT (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allGT (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allEQ (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allEQ (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allNE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allNE (const T &val, const MaskedArray<T> &array);
 //
 // This only makes sense if the array element type is logical valued.
 // <group>
-template<class T> Bool allAND (const MaskedArray<T> &array, const T val);
-template<class T> Bool allAND (const T val, const MaskedArray<T> &array);
-template<class T> Bool allOR (const MaskedArray<T> &array, const T val);
-template<class T> Bool allOR (const T val, const MaskedArray<T> &array);
+template<class T> Bool allAND (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allAND (const T &val, const MaskedArray<T> &array);
+template<class T> Bool allOR (const MaskedArray<T> &array, const T &val);
+template<class T> Bool allOR (const T &val, const MaskedArray<T> &array);
 // </group>
 //
 // </group>
@@ -318,40 +318,40 @@ template<class T> Bool allOR (const T val, const MaskedArray<T> &array);
 // <group>
 //
 template<class T>
-  MaskedLogicalArray operator <= (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator <= (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator <= (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator <= (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator <  (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator <  (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator <  (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator <  (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator >= (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator >= (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator >= (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator >= (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator >  (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator >  (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator >  (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator >  (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator == (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator == (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator == (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator == (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator != (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator != (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator != (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator != (const T &val, const MaskedArray<T> &array);
 //
 // This only makes sense if the array element type is logical valued.
 // <group>
 template<class T>
-  MaskedLogicalArray operator && (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator && (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator && (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator && (const T &val, const MaskedArray<T> &array);
 template<class T>
-  MaskedLogicalArray operator || (const MaskedArray<T> &array, const T val);
+  MaskedLogicalArray operator || (const MaskedArray<T> &array, const T &val);
 template<class T>
-  MaskedLogicalArray operator || (const T val, const MaskedArray<T> &array);
+  MaskedLogicalArray operator || (const T &val, const MaskedArray<T> &array);
 // </group>
 //
 // </group>
@@ -440,25 +440,25 @@ template<class T>
 //
 // <group>
 //
-template<class T> Bool anyLE (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyLE (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyLT (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyLT (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyGE (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyGE (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyGT (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyGT (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyEQ (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyEQ (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyNE (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyNE (const T val, const MaskedArray<T> &array);
+template<class T> Bool anyLE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyLE (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyLT (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyLT (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyGE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyGE (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyGT (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyGT (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyEQ (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyEQ (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyNE (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyNE (const T &val, const MaskedArray<T> &array);
 //
 // This only makes sense if the array element type is logical valued.
 // <group>
-template<class T> Bool anyAND (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyAND (const T val, const MaskedArray<T> &array);
-template<class T> Bool anyOR (const MaskedArray<T> &array, const T val);
-template<class T> Bool anyOR (const T val, const MaskedArray<T> &array);
+template<class T> Bool anyAND (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyAND (const T &val, const MaskedArray<T> &array);
+template<class T> Bool anyOR (const MaskedArray<T> &array, const T &val);
+template<class T> Bool anyOR (const T &val, const MaskedArray<T> &array);
 // </group>
 //
 // </group>

@@ -1,5 +1,5 @@
 //# MaskArrLogi.cc: Element by element logical operations on arrays.
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -651,7 +651,7 @@ MaskedLogicalArray operator ! (const MaskedArray<T> &marray)
 
 #define MARRLOGI_B_ALLFUNC_MS(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const MaskedArray<T> &left, const T right) \
+Bool ALLFUNC (const MaskedArray<T> &left, const T &right) \
 { \
     Bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
@@ -692,7 +692,7 @@ Bool ALLFUNC (const MaskedArray<T> &left, const T right) \
 
 #define MARRLOGI_B_ALLFUNC_SM(ALLFUNC,OP,STRALLFUNC) \
 template<class T> \
-Bool ALLFUNC (const T left, const MaskedArray<T> &right) \
+Bool ALLFUNC (const T &left, const MaskedArray<T> &right) \
 { \
     Bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
@@ -746,7 +746,7 @@ MARRLOGI_B_ALLFUNC_SM ( allNE,  !=, "allNE" )
 
 
 template<class T>
-Bool allAND (const MaskedArray<T> &marray, const T val)
+Bool allAND (const MaskedArray<T> &marray, const T &val)
 {
     if (!val) {
         return False;
@@ -791,7 +791,7 @@ Bool allAND (const MaskedArray<T> &marray, const T val)
 
 
 template<class T>
-Bool allAND (const T val, const MaskedArray<T> &marray)
+Bool allAND (const T &val, const MaskedArray<T> &marray)
 {
     if (!val) {
         return False;
@@ -836,7 +836,7 @@ Bool allAND (const T val, const MaskedArray<T> &marray)
 
 
 template<class T>
-Bool allOR (const MaskedArray<T> &marray, const T val)
+Bool allOR (const MaskedArray<T> &marray, const T &val)
 {
     if (val) {
         return True;
@@ -881,7 +881,7 @@ Bool allOR (const MaskedArray<T> &marray, const T val)
 
 
 template<class T>
-Bool allOR (const T val, const MaskedArray<T> &marray)
+Bool allOR (const T &val, const MaskedArray<T> &marray)
 {
     if (val) {
         return True;
@@ -927,7 +927,7 @@ Bool allOR (const T val, const MaskedArray<T> &marray)
 
 #define MARRLOGI_B_ANYFUNC_MS(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const MaskedArray<T> &left, const T right) \
+Bool ANYFUNC (const MaskedArray<T> &left, const T &right) \
 { \
     Bool leftarrDelete; \
     const T *leftarrStorage = left.getArrayStorage(leftarrDelete); \
@@ -968,7 +968,7 @@ Bool ANYFUNC (const MaskedArray<T> &left, const T right) \
 
 #define MARRLOGI_B_ANYFUNC_SM(ANYFUNC,OP,STRANYFUNC) \
 template<class T> \
-Bool ANYFUNC (const T left, const MaskedArray<T> &right) \
+Bool ANYFUNC (const T &left, const MaskedArray<T> &right) \
 { \
     Bool rightarrDelete; \
     const T *rightarrStorage = right.getArrayStorage(rightarrDelete); \
@@ -1022,7 +1022,7 @@ MARRLOGI_B_ANYFUNC_SM ( anyNE,  !=, "anyNE" )
 
 
 template<class T>
-Bool anyAND (const MaskedArray<T> &marray, const T val)
+Bool anyAND (const MaskedArray<T> &marray, const T &val)
 {
     if (!val) {
         return False;
@@ -1067,7 +1067,7 @@ Bool anyAND (const MaskedArray<T> &marray, const T val)
 
 
 template<class T>
-Bool anyAND (const T val, const MaskedArray<T> &marray)
+Bool anyAND (const T &val, const MaskedArray<T> &marray)
 {
     if (!val) {
         return False;
@@ -1112,7 +1112,7 @@ Bool anyAND (const T val, const MaskedArray<T> &marray)
 
 
 template<class T>
-Bool anyOR (const MaskedArray<T> &marray, const T val)
+Bool anyOR (const MaskedArray<T> &marray, const T &val)
 {
     if (val) {
         return True;
@@ -1157,7 +1157,7 @@ Bool anyOR (const MaskedArray<T> &marray, const T val)
 
 
 template<class T>
-Bool anyOR (const T val, const MaskedArray<T> &marray)
+Bool anyOR (const T &val, const MaskedArray<T> &marray)
 {
     if (val) {
         return True;
@@ -1204,7 +1204,7 @@ Bool anyOR (const T val, const MaskedArray<T> &marray)
 #define MARRLOGI_MLA_OP_MS(OP) \
 template<class T> \
 MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
-                                const T right) \
+                                const T &right) \
 { \
     LogicalArray resultarr (left.shape()); \
     resultarr = False; \
@@ -1244,7 +1244,7 @@ MaskedLogicalArray operator OP (const MaskedArray<T> &left, \
 
 #define MARRLOGI_MLA_OP_SM(OP) \
 template<class T> \
-MaskedLogicalArray operator OP (const T left, \
+MaskedLogicalArray operator OP (const T &left, \
                                 const MaskedArray<T> &right) \
 { \
     LogicalArray resultarr (right.shape()); \
@@ -1299,7 +1299,7 @@ MARRLOGI_MLA_OP_SM ( != )
 
 template<class T>
 MaskedLogicalArray operator && (const MaskedArray<T> &marray,
-                                const T val)
+                                const T &val)
 {
     LogicalArray resultarr (marray.shape());
     resultarr = False;
@@ -1340,7 +1340,7 @@ MaskedLogicalArray operator && (const MaskedArray<T> &marray,
 
 
 template<class T>
-MaskedLogicalArray operator && (const T val,
+MaskedLogicalArray operator && (const T &val,
                                 const MaskedArray<T> &marray)
 {
     LogicalArray resultarr (marray.shape());
@@ -1383,7 +1383,7 @@ MaskedLogicalArray operator && (const T val,
 
 template<class T>
 MaskedLogicalArray operator || (const MaskedArray<T> &marray,
-                                const T val)
+                                const T &val)
 {
     LogicalArray resultarr (marray.shape());
     resultarr = False;
@@ -1427,7 +1427,7 @@ MaskedLogicalArray operator || (const MaskedArray<T> &marray,
 
 
 template<class T>
-MaskedLogicalArray operator || (const T val,
+MaskedLogicalArray operator || (const T &val,
                                 const MaskedArray<T> &marray)
 {
     LogicalArray resultarr (marray.shape());

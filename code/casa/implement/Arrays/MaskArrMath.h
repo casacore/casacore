@@ -241,7 +241,7 @@ template<class T> MaskedArray<T> fmod(const T &left, const MaskedArray<T> &right
 template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left, const Array<U> &right);
 template<class T, class U> MaskedArray<T> pow(const Array<T> &left, const MaskedArray<U> &right);
 template<class T, class U> MaskedArray<T> pow(const MaskedArray<T> &left,const MaskedArray<U> &right);
-template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const Double right);
+template<class T> MaskedArray<T> pow(const MaskedArray<T> &left, const Double &right);
 // </group>
 
 // 
@@ -327,7 +327,7 @@ template<class T> void max(const MaskedArray<T> &result,const Array<T> &left, co
 // starting with "start" and incrementing by "inc" for each element
 // where the mask is True.
 // The first axis varies most rapidly.
-template<class T> void indgen(MaskedArray<T> &a,const T start, const T inc);
+template<class T> void indgen(MaskedArray<T> &a, T start, T inc);
 
 // 
 // Fills all elements of "array" where the mask is True with a sequence
@@ -341,7 +341,7 @@ template<class T>  void indgen(MaskedArray<T> &a);
 // starting with "start" and incremented by one for each element
 // where the  mask is True.
 // The first axis varies most rapidly.
-template<class T>  void indgen(MaskedArray<T> &a, const T start);
+template<class T>  void indgen(MaskedArray<T> &a, T start);
 
 
 // <thrown>

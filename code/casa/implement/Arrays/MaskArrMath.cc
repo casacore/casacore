@@ -424,7 +424,7 @@ MARRM_OP_SM ( /, /= )
 
 
 template<class T> void indgen(MaskedArray<T> &left,
-                              const T start, const T inc)
+                              T start, T inc)
 {
     Bool leftarrDelete;
     T *leftarrStorage = left.getRWArrayStorage(leftarrDelete);
@@ -455,7 +455,7 @@ template<class T> void indgen(MaskedArray<T> &a)
     indgen(a, T(0), T(1));
 }
 
-template<class T> void indgen(MaskedArray<T> &a, const T start)
+template<class T> void indgen(MaskedArray<T> &a, T start)
 {
     indgen(a, start, T(1));
 }
@@ -595,7 +595,7 @@ MaskedArray<T> pow (const MaskedArray<T> &left, const MaskedArray<U> &right)
 
 
 template<class T>
-MaskedArray<T> pow (const MaskedArray<T> &left, const Double right)
+MaskedArray<T> pow (const MaskedArray<T> &left, const Double &right)
 {
     MaskedArray<T> result (left.copy());
 
