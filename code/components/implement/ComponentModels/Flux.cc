@@ -251,7 +251,7 @@ convertPol(ComponentType::Polarisation pol) {
       throw(AipsError("FluxRep<T>::convertPol(...) - bad polarisation type"));
     };
 
-    setPol(pol);                    ` // New pol rep label
+    setPol(pol);                     // New pol rep label
 
     if (!allNearAbs(itsErr, NumericTraits<T>::ConjugateType(0,0), 
 		    C::dbl_epsilon)) {
