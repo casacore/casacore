@@ -31,8 +31,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/Function.h>
 #include <aips/Functionals/NQCompoundParam.h>
+#include <aips/Functionals/Function.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 
@@ -168,7 +168,7 @@ public NQCompoundParam<AutoDiff<T> > {
   // Return a copy of this object from the heap. The caller is responsible for
   // deleting the pointer.
   virtual Function<AutoDiff<T> > *clone() const {
-    return new NQCompoundFunction_PS<AutoDiff<T> >(*this); };
+    return new NQCompoundFunction<AutoDiff<T> >(*this); };
 
 };
 
