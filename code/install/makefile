@@ -2,7 +2,7 @@
 # AIPS++ install directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999
+#   Copyright (C) 1992-1997,1998,1999,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ DOTFILES := cshrc exrc login profile prompt glishrc
 DOTEXECS := rshexec
 AIPSINIT := aipsinit.csh aipsinit.es aipsinit.rc aipsinit.sh
 ARCHSCRP := aipsrc makedefs
-SCRIPTS  := adate affirm amkdir assay avers depend doover mkinst updatelib
+SCRIPTS  := adate affirm amkdir assay avers depend doover mkinst updatelib floatcheck.sh
 
 AIPSEXES := $(basename $(filter %.c,$(AIPSSRCS)))
 PGMREXES := $(basename $(wildcard *.c))
