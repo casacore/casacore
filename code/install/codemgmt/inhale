@@ -298,21 +298,12 @@
 #-----------------------------------------------------------------------------
   if [ "$FTPLIMIT" -gt 0 ]
   then
-#    Produce a status report.
-     echo "inhale: Execution on $HOST by $LOGNAME (initiating)" > $SITE
-     echo ""  >> $SITE
-     avers -l >> $SITE
-
      echo ""
      echo "inhale: Connect to $MASTERHOST and get status information."
 
 #    Create a file containing commands for ftp.
      echo "open $MASTERHOST" > ftpcommands
      echo "user ftp $USERNAME" >> ftpcommands
-#      echo "cd $MSTRFTPD/site_status" >> ftpcommands
-#      echo "send $SITE $SITE.init" >> ftpcommands
-#      echo "rename $SITE.init $SITE" >> ftpcommands
-#      echo "ls * sitedir" >> ftpcommands
      echo "cd $MSTRFTPD" >> ftpcommands
      echo "ls master-*.tar.gz masterdir" >> ftpcommands
      if [ "$DINKUM" ]
@@ -442,15 +433,6 @@
      echo "inhale: Failed to get a directory listing from the master, abort!"
      exit 2
   fi
-
-# Check access restrictions.
-#   if [ "`grep $SITE.deny sitedir`" != "" ]
-#   then
-#      exec 1>&2
-#      echo ""
-#      echo "inhale: Permission denied."
-#      exit 2
-#   fi
 
 # Remove any extraneous information from masterdir.
   cp masterdir masterdir_
@@ -1047,27 +1029,6 @@
         echo "inhale: No remote $MGRACCNT."
      fi
   fi
-
-# Update the site status report.
-#   if [ "$FTPLIMIT" -gt 0 ]
-#   then
-#      cd /tmp
-
-#      echo "inhale: Execution on $HOST by $LOGNAME (terminating)" >> $SITE
-#      echo ""  >> $SITE
-#      avers -l >> $SITE
-
-#      echo "open $MASTERHOST" > ftpcommands
-#      echo "user ftp $USERNAME" >> ftpcommands
-#      echo "cd $MSTRFTPD/site_status" >> ftpcommands
-#      echo "send $SITE $SITE.term" >> ftpcommands
-#      echo "rename $SITE.term $SITE" >> ftpcommands
-#      echo "quit" >> ftpcommands
-
-#      ftp -in < ftpcommands
-
-#      rm -f $SITE ftpcommands
-#   fi
 
   echo ""
   echo "inhale: Execution terminated at"
