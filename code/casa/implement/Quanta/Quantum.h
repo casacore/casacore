@@ -281,7 +281,7 @@ template <class Qtype> class Quantum : public QBase{
 // Output as a dimensioned value (e.g. 1.23 Jy/beam)
     friend ostream& operator<< (ostream &os, const Quantum<Qtype> &ku);
 // Input quantity
-  friend istream& operator>> (istream &is, Quantity &ku);
+  friend istream& operator>> (istream &is, Quantum<Double> &ku);
 public:
 //# Constructors
 // Default constructor, generates '0'
