@@ -39,12 +39,15 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
+#include <aips/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Wnbt/SpectralFit.h>
@@ -57,26 +60,30 @@
 
 
 ImageProfileFit::ImageProfileFit()
-: itsFitDone(False),
+: itsImagePtr(0),
+  itsFitDone(False),
   itsMask(0),
   itsSpectralFitPtr(0),
   itsProfileAxis(-1),
   itsDopplerType(MDoppler::RADIO),
   itsXUnit(""),
-  itsXAbs(True)
+  itsXAbs(True),
+  itsFitRegion(False)
 {
   UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
   itsSpectralFitPtr = new SpectralFit;
 }
 
 ImageProfileFit::ImageProfileFit(const ImageProfileFit& other)
-: itsFitDone(other.itsFitDone),
+: itsImagePtr(0),
+  itsFitDone(other.itsFitDone),
   itsMask(other.itsMask.copy()),
   itsCoords(other.itsCoords),
   itsProfileAxis(other.itsProfileAxis),
   itsDopplerType(other.itsDopplerType),
   itsXUnit(other.itsXUnit),
-  itsXAbs(other.itsXAbs)
+  itsXAbs(other.itsXAbs),
+  itsFitRegion(other.itsFitRegion)
 {
    UnitMap::putUser("pix",UnitVal(1.0), "pixel units");
    itsX = other.itsX;   // Get a copy of the vector
@@ -90,12 +97,21 @@ ImageProfileFit::~ImageProfileFit()
 {
    delete itsSpectralFitPtr;
    itsSpectralFitPtr = 0;
+   if (itsImagePtr) delete itsImagePtr;
 }
 
 
 ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
 {
    if (this != &other) {
+      if (itsImagePtr) {
+         delete itsImagePtr;
+         itsImagePtr = 0;
+      }
+      if (other.itsImagePtr) {
+         itsImagePtr = other.itsImagePtr->cloneII();
+      }
+//
       itsFitDone = other.itsFitDone;
       itsMask.resize(other.itsMask.nelements());
 //
@@ -108,6 +124,7 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
       itsDopplerType = other.itsDopplerType;
       itsXUnit = other.itsXUnit;
       itsXAbs = other.itsXAbs;
+      itsFitRegion = other.itsFitRegion;
 //
       delete itsSpectralFitPtr; 
       itsSpectralFitPtr = 0;
@@ -118,23 +135,23 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
 
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
                                const ImageRegion& region,
-                               uInt profileAxis)
+                               uInt profileAxis, Bool average)
 {
    itsCoords = image.coordinates(); 
    itsProfileAxis = profileAxis;
    const SubImage<Float> subImage(image, region);
    const Slicer& sl = region.asLCRegion().boundingBox();
-   setData(subImage, sl);
+   setData(subImage, sl, average);
 }
 
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
-                               uInt profileAxis)
+                               uInt profileAxis, Bool average)
 {
    itsCoords = image.coordinates(); 
    itsProfileAxis = profileAxis;
    IPosition start(image.ndim(),0);
    Slicer sl(start, image.shape(), Slicer::endIsLength);
-   setData(image, sl);
+   setData(image, sl, average);
 }
 
 void ImageProfileFit::setData (const Quantum<Vector<Float> >& x, 
@@ -148,6 +165,7 @@ void ImageProfileFit::setData (const Quantum<Vector<Float> >& x,
    itsX = x;
    itsY = y;
    itsXAbs = isAbs;
+   itsFitRegion = False;
 }
 
 void ImageProfileFit::setData (const Quantum<Vector<Float> >& x, 
@@ -160,12 +178,14 @@ void ImageProfileFit::setData (const Quantum<Vector<Float> >& x,
 //
    itsMask.resize(mask.nelements());
    itsMask = mask;
+   itsFitRegion = False;
 }
 
 
 
 uInt ImageProfileFit::addElements (const RecordInterface& rec)
 {
+   LogIO os(LogOrigin("image", "addElements", WHERE));
    if (!rec.isDefined("xunit")) {
       throw (AipsError("Record holding model is missing 'xunit' field"));
    }
@@ -183,6 +203,8 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
       doppler = rec.asString("doppler");
    }
    Bool xAbs = rec.asBool("xabs");
+//
+   Unit yUnitOut = itsY.getFullUnit();
 
 // Loop over elements in record
 
@@ -208,23 +230,6 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
 // Deal with each SpectralElement type
 
       if (se.getType()==SpectralElement::GAUSSIAN) {
-
-// See if we have the 'fixed' record
-
-         Vector<Bool> fixed;
-         if (rec3.isDefined("fixed")) fixed = rec3.asArrayBool("fixed");
-//
-         if (fixed.nelements()!=0) {
-            if (fixed.nelements()==3) {
-               if (fixed(0)) se.fixAmpl(True);
-               if (fixed(1)) se.fixCenter(True);
-               if (fixed(0)) se.fixFWHM(True);
-            } else {
-               throw (AipsError("'fixed' vector must be of length 3 for a Gaussian"));
-            }
-         }
-//
-         Unit yUnitOut = itsY.getFullUnit();
          Quantum<Double> v(se.getAmpl(), yUnitEst);
          se.setAmpl(v.getValue(yUnitOut));
 
@@ -274,6 +279,21 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
 
            convertXEstimateToPixels(se, xAbs, xUnitEst, doppler);
          }
+
+// See if we have the 'fixed' record
+
+         Vector<Bool> fixed;
+         if (rec3.isDefined("fixed")) fixed = rec3.asArrayBool("fixed");
+//
+         if (fixed.nelements()!=0) {
+            if (fixed.nelements()==3) {
+               if (fixed(0)) se.fixAmpl(True);
+               if (fixed(1)) se.fixCenter(True);
+               if (fixed(2)) se.fixFWHM(True);
+            } else {
+               throw (AipsError("'fixed' vector must be of length 3 for a Gaussian"));
+            }
+         }
       } else if (se.getType()==SpectralElement::POLYNOMIAL) {
          if (itsProfileAxis==-1) {
 
@@ -282,7 +302,6 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
          } else {
 
 // Convert coefficients to absolute pixels
-
 
          }
       } else {
@@ -385,9 +404,8 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 
 
 
-void ImageProfileFit::listElements(LogIO& os) const
+void ImageProfileFit::listElements(LogIO& os, const SpectralList& list) const
 {
-   const SpectralList& list = itsSpectralFitPtr->list();
    const uInt n = list.nelements();
    for (uInt i=0; i<n; i++) {
      SpectralElement se = list[i];
@@ -548,15 +566,30 @@ void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
 
 
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
-                               const Slicer& sl)
+                               const Slicer& sl, Bool average)
 {
-   Vector<Float> y;
-   collapse(y, itsMask, itsProfileAxis, image);
-   itsY = Quantum<Vector<Float> >(y, image.units());
+   if (average) {
+
+// Average data over region except along profile axis
+
+      Vector<Float> y;
+      collapse(y, itsMask, itsProfileAxis, image);
+      itsY = Quantum<Vector<Float> >(y, image.units());
 //
-   Vector<Float> x(y.nelements());
-   indgen(x, Float(sl.start()(itsProfileAxis)));
-   itsX = Quantum<Vector<Float> >(x, Unit("pix"));
+      Vector<Float> x(y.nelements());
+      indgen(x, Float(sl.start()(itsProfileAxis)));
+      itsX = Quantum<Vector<Float> >(x, Unit("pix"));
+      itsFitRegion = False;
+   } else {
+
+// We are going to fit all profiles in the region. Just set the units
+
+      itsX.setUnit(Unit("pix"));
+      itsY.setUnit(image.units());
+//
+      itsFitRegion = True;
+      itsImagePtr = image.cloneII();
+   }
 }
 
 void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
@@ -573,8 +606,10 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
    Unit velUnit(String("m/s"));
    String xUnit = xUnitEstIn.getName();
 
-// Assumes world and pixel axes the same...
+// Assumes world and pixel axes the same.
+// Should really check order as well...
 
+   AlwaysAssert (itsCoords.nPixelAxes() == itsCoords.nPixelAxes(), AipsError);  
    const uInt n = itsCoords.nWorldAxes();
    Vector<Double> coordIn, coordOut;
 //
@@ -595,6 +630,13 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
       }
    }
 
+// Find fractional error
+
+   Vector<Double> errors, pars;
+   el.getError(errors);
+   el.get(pars);
+   errors /= pars;
+
 // Convert position
 
    Double offset = 0.0;
@@ -614,12 +656,23 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
       }
    }
    unitsIn(itsProfileAxis) = xUnit;
-   coordIn(itsProfileAxis) = el.getCenter() + offset;
+   Double centerValue = el.getCenter() + offset;
+   Double centerValueErr = el.getCenterErr();
+//
+   coordIn(itsProfileAxis) = centerValue;
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
                            absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {   
       throw (AipsError(itsCoords.errorMessage()));
    }
-   el.setCenter(coordOut(itsProfileAxis));
+   Double newCenterValue = coordOut(itsProfileAxis);
+   el.setCenter(newCenterValue);
+//
+   coordIn(itsProfileAxis) = centerValue + centerValueErr;        // setCenter sets error to 0
+   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
+                           absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {   
+      throw (AipsError(itsCoords.errorMessage()));
+   }
+   Double newCenterValueErr = abs(newCenterValue - coordOut(itsProfileAxis));
 
 // Convert width
 
@@ -641,6 +694,19 @@ void ImageProfileFit::convertXEstimateToPixels (SpectralElement& el,
       throw (AipsError(itsCoords.errorMessage()));
    }
    el.setFWHM(abs(coordOut(itsProfileAxis)));
+
+// Set fractional errors
+
+   el.get(pars);
+   errors *= pars;
+
+// Overwrite position error
+
+   errors(1) = newCenterValueErr;
+
+// Set errors
+
+   el.setError(abs(errors));
 }
 
 
@@ -658,6 +724,7 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
 
 // Assumes world and pixel axes the same...
 
+   AlwaysAssert (itsCoords.nPixelAxes() == itsCoords.nPixelAxes(), AipsError);  
    const uInt n = itsCoords.nWorldAxes();
    Vector<Double> coordIn, coordOut;
    coordIn = itsCoords.referencePixel();
@@ -675,23 +742,32 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
       unitsOut = itsCoords.worldAxisUnits();
       unitsOut(itsProfileAxis) = xUnit;
    }
-//
-   Double fac, value;
-   Vector<Double> errors;
+
+// Find fractional error
+
+   Vector<Double> errors, pars;
    el.getError(errors);
+   el.get(pars);
+   errors /= pars;
 
 // Convert position
 
-   value = el.getCenter();
-   coordIn(itsProfileAxis) = value;
+   Double centerValue = el.getCenter();
+   Double centerValueErr = el.getCenterErr();
+   coordIn(itsProfileAxis) = centerValue;
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, dopplerOut,
                            absOut, unitsOut, dopplerOut, 0.0, offset)) {
       throw (AipsError(itsCoords.errorMessage()));
    }
-   el.setCenter(coordOut(itsProfileAxis));
+   Double newCenterValue = coordOut(itsProfileAxis);
+   el.setCenter(newCenterValue);                      // Sets error to 0
 //
-   fac = value / coordOut(itsProfileAxis);
-   errors(1) *= abs(fac);
+   coordIn(itsProfileAxis) = centerValue + centerValueErr;
+   if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, dopplerOut,
+                           absOut, unitsOut, dopplerOut, 0.0, offset)) {   
+      throw (AipsError(itsCoords.errorMessage()));
+   }
+   Double newCenterValueErr = abs(newCenterValue - coordOut(itsProfileAxis));
 
 // Convert width
 
@@ -699,17 +775,159 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
    absOut = False;
    coordIn = itsCoords.referencePixel();
    itsCoords.makePixelRelative(coordIn);
-   value = el.getFWHM();
-   coordIn(itsProfileAxis) = value;
+   coordIn(itsProfileAxis) = el.getFWHM();
    if (!itsCoords.convert (coordOut, coordIn, absIn, unitsIn, itsDopplerType,
                            absOut, unitsOut, itsDopplerType, 0.0, 0.0)) {
       throw (AipsError(itsCoords.errorMessage()));
    }
    el.setFWHM(abs(coordOut(itsProfileAxis)));
-   fac = value / coordOut(itsProfileAxis);
-   errors(2) *= abs(fac);
 
-// Reset errors
+// Set fractional errors
 
-   el.setError(errors);
+   el.get(pars);
+   errors *= pars;
+
+// Overwrite position error
+
+   errors(1) = newCenterValueErr;
+
+// Set
+
+   el.setError(abs(errors));
+}
+
+
+void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
+                           ImageInterface<Float>*& pResid)
+{
+   LogIO os(LogOrigin("image", "setDataAndFit", WHERE));
+   if (!itsFitRegion) {
+      os << "You cannot call this function as you are averaging all profiles" << LogIO::EXCEPTION;
+   }
+//
+   IPosition inShape = itsImagePtr->shape();
+   if (pFit!=0) {
+      AlwaysAssert(inShape.isEqual(pFit->shape()), AipsError);
+   }
+   if (pResid!=0) {
+      AlwaysAssert(inShape.isEqual(pResid->shape()), AipsError);
+   }
+//
+   IPosition inTileShape = itsImagePtr->niceCursorShape();
+   TiledLineStepper stepper (itsImagePtr->shape(), inTileShape, itsProfileAxis);
+   RO_LatticeIterator<Float> inIter(*itsImagePtr, stepper);
+//
+   LatticeIterator<Float>* pFitIter = 0;
+   LatticeIterator<Bool>* pFitMaskIter = 0;
+   LatticeIterator<Float>* pResidIter = 0;
+   LatticeIterator<Bool>* pResidMaskIter = 0;
+   if (pFit) {
+      pFitIter = new LatticeIterator<Float>(*pFit, stepper);
+      if (pFit->hasPixelMask()) {
+         pFitMaskIter = new LatticeIterator<Bool>(pFit->pixelMask(), stepper);
+      }
+   }
+   if (pResid) {
+      pResidIter = new LatticeIterator<Float>(*pResid, stepper);
+      if (pResid->hasPixelMask()) {
+         pResidMaskIter = new LatticeIterator<Bool>(pResid->pixelMask(), stepper);
+      }
+
+   }
+//
+   Int nProfiles = itsImagePtr->shape().product()/inIter.vectorCursor().nelements();
+   ProgressMeter clock(0.0, Double(nProfiles), "Profile fitting", "Profiles fitted",
+                        "", "", True, max(1,Int(nProfiles/20)));
+   Double meterValue = 0.0;
+//
+   Vector<Float> x(inShape(itsProfileAxis));
+   Vector<Float> y(inShape(itsProfileAxis));
+   for (uInt i=0; i<x.nelements(); i++) x(i) = i;
+
+// See if we have an estimate set in the class state
+
+   SpectralFit fit;
+   Bool est = False;
+   const SpectralList& l = itsSpectralFitPtr->list();
+   if (l.nelements() > 0) {
+      fit.addFitElement(l);
+      est = True;
+   }
+//   
+   Bool ok = False;
+   uInt nFail = 0;
+   while (!inIter.atEnd()) {
+//os << "Iter " << inIter.nsteps() << endl;
+
+// Use user give or auto estimate for first profile. Else use last fit
+// as starting place
+
+      if (inIter.nsteps()==0) {
+         if (!est) {
+            SpectralEstimate se;
+            fit.addFitElement(se.estimate(inIter.vectorCursor()));
+         }
+      }
+/*
+os << "Before fit" << endl;
+   const SpectralList& l3 = fit.list();
+   listElements(os, l3);
+*/
+//
+      try {
+         ok = fit.fit(inIter.vectorCursor(), x);
+      } catch (AipsError x) {
+         ok = False;
+      }
+//
+/*
+os << "After fit" << LogIO::POST;
+   const SpectralList& l4 = fit.list();
+   listElements(os, l4);
+*/
+
+// If the fit fails, the state of the fit object is the failed
+// fit, not the estimate it started with...
+
+      if (ok) {
+         SpectralList list(fit.list());
+         if (pFit) {
+            list.evaluate(pFitIter->rwVectorCursor());   
+         }
+         if (pResid) {
+            list.residual(pResidIter->rwVectorCursor());   
+         }
+      } else {
+         nFail++;
+         if (pFit) {
+            pFitIter->rwVectorCursor() = 0.0;
+         }
+         if (pFitMaskIter) {
+            pFitMaskIter->rwVectorCursor() = False;
+         }
+         if (pResid) {
+            pResidIter->rwVectorCursor() = 0.0;
+         }
+         if (pResidMaskIter) {
+            pResidMaskIter->rwVectorCursor() = False;
+         }
+      }
+//  
+       inIter++;
+       if (pFitIter) (*pFitIter)++;
+       if (pResidIter) (*pResidIter)++;
+       if (pFitMaskIter) (*pFitMaskIter)++;
+       if (pResidMaskIter) (*pResidMaskIter)++;
+//
+       meterValue += 1.0;
+       clock.update(meterValue);
+    }
+//
+    os << "Number of   good fits = " << nProfiles - nFail << LogIO::POST;
+    os << "Number of failed fits = " << nFail << LogIO::POST;
+//
+    if (pFitIter) delete pFitIter;
+    if (pFitMaskIter) delete pFitMaskIter;
+    if (pResidIter) delete pResidIter;
+    if (pResidMaskIter) delete pResidMaskIter;
 }
