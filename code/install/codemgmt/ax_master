@@ -5784,3 +5784,4 @@
 16 134 src rm trial/implement/MeasurementSets/test/tOldMSAntennaBuffer.cc
 16 134 src rm trial/implement/MeasurementSets/test/tOldMSDerivedValues.cc
 16 134 src rm trial/implement/MeasurementSets/test/tOldMSFeedBuffer.cc
+16 134 src rm trial/implement/MeasurementSets/test/tOldMSSimulator.cc
