@@ -59,13 +59,34 @@ DDSumFunc::DDSumFunc( FuncSignature fsig,const String &corr1,const String &corr2
 
 Bool DDSumFunc::reset ( const Vector<Int> &corr )
 { 
-  if( !DDFunc::reset(corr) )
-    return False;
-  icorr2 = findCorrType( corrtype2,corr );
-  if( icorr2<0 )
-    return valid=False;
-  corrmask |= (1<<icorr2);
-  return valid=True;
+// case of "I" - look up XX+YY or RR+LL
+  if( corrtype == Stokes::I )
+  {
+    icorr = findCorrType( Stokes::XX,corr );
+    icorr2 = findCorrType( Stokes::YY,corr );
+    // no XX+YY? try RR+LL
+    if( icorr<0 || icorr2<0 )
+    {
+      icorr = findCorrType( Stokes::RR,corr );
+      icorr2 = findCorrType( Stokes::LL,corr );
+    }
+    // give up if not found
+    if( icorr<0 || icorr2<0 )
+      return valid=False;
+    corrmask = (1<<icorr)|(1<<icorr2);
+    return valid=True;
+  }
+// standard case - just look up correlations directly
+  else
+  {
+    if( !DDFunc::reset(corr) )
+      return False;
+    icorr2 = findCorrType( corrtype2,corr );
+    if( icorr2<0 )
+      return valid=False;
+    corrmask |= (1<<icorr2);
+    return valid=True;
+  }
 }
 
 Float DDSumFunc::map ( const Cube<Complex> &vis,uInt ich,uInt irow ) const
@@ -165,6 +186,8 @@ DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0,Bool th
   
   if( nel == 1 ) // 1 element: assume it's just CORR, and use abs(CORR)
   {
+    if( expr(0) == "I" ) // I is special (maps to XX+YY or RR+LL)
+      return new DDFuncSum(&abs,"I","I");
     return new DDFunc(&abs,expr(0));
   }
   else if( nel == 2 ) // 2 elements: assume FUNC CC
@@ -173,6 +196,8 @@ DDMapper * DDFunc::getMapper ( String &descr,const Vector<String> &expr0,Bool th
     if( !func )
       throw( funcError(expr(0)) );
     descr = expr(0)+"("+expr(1)+")";
+    if( expr(1) == "I" ) // I is special (maps to XX+YY or RR+LL)
+      return new DDFuncSum(func,"I","I");
     return new DDFunc(func,expr(1));
   }
   else if( nel == 4 ) // 4 elements: SUM FUNC CC CC or FUNC SUM CC CC
