@@ -46,7 +46,7 @@ class PixelCurve1D;
 // Extract a 1-D slice from a Lattice
 // </summary>
 // <use visibility=export>
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="test/tLatticeSlice1D" demos="">
 // </reviewed>
 // <prerequisite>
 //   <li> <linkto class=MaskedLattice>MaskedLattice</linkto>
@@ -66,10 +66,21 @@ class PixelCurve1D;
 //
 // <example>
 // <srcBlock>
+// IPosition shape(2, 20, 30);                    // Create MaskedLattice
+// ArrayLattice<Float> arrLat(shape);
+// SubLattice<Float> subLat(arrLat);
+// LatticeSlice1D<Float> slicer(subLat);
+//
+// IPosition blc(2); blc = 0;                     // Extract slice between corners
+// IPosition trc(shape-1);
+// Vector<Float> data;
+// Vector<Bool> mask;
+// slicer.getSlice (data, mask, blc, trc);
 // </srcBlock>
 // </example>
 
 // <motivation>
+// Users often want to see cross-cuts through their data.
 // </motivation>
 
 // <todo asof="2004/04/16">
@@ -83,8 +94,10 @@ template <class T> class LatticeSlice1D
 public:
 
 // Interpolation method
-
    enum Method {NEAREST=0, LINEAR=1, CUBIC=2, N_TYPES};
+
+// Default constructor - object useless
+   LatticeSlice1D ();
 
 // Constructor 
    LatticeSlice1D (const MaskedLattice<T>& lattice, Method method=LINEAR);
@@ -138,7 +151,7 @@ private:
   
 //
    MaskedLattice<T>* itsLatticePtr;
-   Interpolate2D* itsInterp;
+   Interpolate2D* itsInterpPtr;
    Method itsMethod;
    Vector<Float> itsX;
    Vector<Float> itsY;

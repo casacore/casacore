@@ -40,6 +40,13 @@
 
 
 template <class T>
+LatticeSlice1D<T>::LatticeSlice1D()
+: itsLatticePtr(0),
+  itsInterpPtr(0)
+{}
+
+
+template <class T>
 LatticeSlice1D<T>::LatticeSlice1D(const MaskedLattice<T>& lattice, Method method)
 : itsLatticePtr(lattice.cloneML())
 {
@@ -51,7 +58,7 @@ LatticeSlice1D<T>::LatticeSlice1D(const MaskedLattice<T>& lattice, Method method
 template<class T>
 LatticeSlice1D<T>::LatticeSlice1D (const LatticeSlice1D<T>& other)
 : itsLatticePtr(0),
-  itsInterp(0)
+  itsInterpPtr(0)
 {
   operator= (other);
 }
@@ -62,8 +69,8 @@ LatticeSlice1D<T>::~LatticeSlice1D()
    delete itsLatticePtr;
    itsLatticePtr = 0;
 //
-   delete itsInterp;
-   itsInterp = 0;
+   delete itsInterpPtr;
+   itsInterpPtr = 0;
 }
 
 template<class T>
@@ -73,7 +80,7 @@ LatticeSlice1D<T>& LatticeSlice1D<T>::operator=(const LatticeSlice1D<T>& other)
     delete itsLatticePtr;
     itsLatticePtr = other.itsLatticePtr->cloneML();
 //
-    delete itsInterp;
+    delete itsInterpPtr;
     makeInterpolator (other.interpolationMethod());
 //
     itsPos.resize(0);
@@ -95,6 +102,7 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
                                   const PixelCurve1D& curve, uInt axis0, uInt axis1,
                                   const IPosition& blc, const IPosition& trc)
 {
+   AlwaysAssert(itsLatticePtr, AipsError);
 
 // Check PixelCurve is in lattice domain, set blc/trc in plane
 // and set x,y vectors
@@ -116,6 +124,7 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
                                   const IPosition& blc, const IPosition& trc,
                                   uInt nPts) 
 {
+   AlwaysAssert(itsLatticePtr, AipsError);
 
 // Find plane of slice
 
@@ -272,7 +281,7 @@ void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<Bool>& mask,
    for (uInt i=0; i<nPts; i++) {
       itsPos[0] = itsX[i];
       itsPos[1] = itsY[i];
-      mask[i] = itsInterp->interp (result, itsPos, dataIn, maskIn);
+      mask[i] = itsInterpPtr->interp (result, itsPos, dataIn, maskIn);
       data[i] = result;
    }
 }
@@ -282,11 +291,11 @@ template<class T>
 void LatticeSlice1D<T>::makeInterpolator (Method method)
 {
   if (method==NEAREST) {
-     itsInterp = new Interpolate2D(Interpolate2D::NEAREST);
+     itsInterpPtr = new Interpolate2D(Interpolate2D::NEAREST);
   } else if (method==LINEAR) {
-     itsInterp = new Interpolate2D(Interpolate2D::LINEAR);
+     itsInterpPtr = new Interpolate2D(Interpolate2D::LINEAR);
   } else if (method==CUBIC) {
-     itsInterp = new Interpolate2D(Interpolate2D::CUBIC);
+     itsInterpPtr = new Interpolate2D(Interpolate2D::CUBIC);
   }
   itsMethod = method;
 }
