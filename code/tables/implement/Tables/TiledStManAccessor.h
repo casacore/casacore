@@ -38,6 +38,7 @@ class DataManager;
 class Table;
 class IPosition;
 class String;
+class Record;
 #if defined(AIPS_STDLIB)
 #include <iosfwd>
 #else
@@ -122,6 +123,11 @@ class ostream;
 // When the optimal number of tiles do not fit, it is tried if they fit
 // when using an overdrawn of maximum 10%. If so, it uses that overdrawn.
 // If not, it uses the maximum cache size.
+// <p>
+// A few functions exist to get information about a hypercube.
+// The 'get' functions get the information for the given hypercube,
+// while similar functions without the 'get' prefix do the same for the
+// given row.
 // </synopsis> 
 
 // <motivation>
@@ -195,6 +201,27 @@ public:
 
     // Get the bucket size (in bytes) of the hypercube in the given row.
     uInt bucketSize (uInt rownr) const;
+
+    // Get coordinate and id values of the hypercube in the given row.
+    const Record& valueRecord (uInt rownr) const;
+
+    // Return the number of hypercubes.
+    uInt nhypercubes() const;
+
+    // Get the current cache size (in buckets) for the given hypercube.
+    uInt getCacheSize (uInt hypercube) const;
+
+    // Get the shape of the given hypercube.
+    const IPosition& getHypercubeShape (uInt hypercube) const;
+
+    // Get the tile shape of the given hypercube.
+    const IPosition& getTileShape (uInt hypercube) const;
+
+     // Get the bucket size (in bytes) of the given hypercube.
+    uInt getBucketSize (uInt hypercube) const;
+
+    // Get coordinate and id values of the given hypercube.
+    const Record& getValueRecord (uInt hypercube) const;
 
     // Calculate the cache size (in buckets) for accessing the hypercube
     // containing the given row. It takes the maximum cache size into

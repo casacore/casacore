@@ -1,5 +1,5 @@
 //# TiledStManAccessor.cc: Gives access to some TiledStMan functions
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,7 @@
 //# Includes
 #include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Tables/TiledStMan.h>
+#include <aips/Tables/TSMCube.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/DataManError.h>
 #include <aips/Utilities/String.h>
@@ -38,21 +39,16 @@ ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
 : dataManPtr_p (0)
 {
     DataManager* dmptr = findDataManager (table, dataManagerName);
-    String type = dmptr->dataManagerType();
-    if (type != "TiledDataStMan"  &&  type != "TiledCellStMan"
-    &&  type != "TiledColumnStMan"  &&  type != "TiledShapeStMan") {
+    dataManPtr_p = dynamic_cast<TiledStMan*>(dmptr);
+    if (dataManPtr_p == 0) {
 	throw (DataManError ("Data manager " + dataManagerName + " has type "
 			     + dmptr->dataManagerType() +
 			     "; expected Tiled*StMan"));
     }
-    // The types match, so it is now safe to cast.
-    dataManPtr_p = (TiledStMan*)dmptr;
 }
 
 ROTiledStManAccessor::ROTiledStManAccessor()
-{
-  // dummy constructor
-}
+{}
 
 ROTiledStManAccessor::~ROTiledStManAccessor()
 {}
@@ -102,6 +98,41 @@ const IPosition& ROTiledStManAccessor::tileShape (uInt rownr) const
 uInt ROTiledStManAccessor::bucketSize (uInt rownr) const
 {
     return dataManPtr_p->bucketSize (rownr);
+}
+
+const Record& ROTiledStManAccessor::valueRecord (uInt rownr) const
+{
+    return dataManPtr_p->getHypercube(rownr)->valueRecord();
+}
+
+uInt ROTiledStManAccessor::nhypercubes() const
+{
+    return dataManPtr_p->nhypercubes();
+}
+
+uInt ROTiledStManAccessor::getCacheSize (uInt hypercube) const
+{
+    return dataManPtr_p->getTSMCube(hypercube)->cacheSize();
+}
+
+const IPosition& ROTiledStManAccessor::getHypercubeShape (uInt hypercube) const
+{
+    return dataManPtr_p->getTSMCube(hypercube)->cubeShape();
+}
+
+const IPosition& ROTiledStManAccessor::getTileShape (uInt hypercube) const
+{
+    return dataManPtr_p->getTSMCube(hypercube)->tileShape();
+}
+
+uInt ROTiledStManAccessor::getBucketSize (uInt hypercube) const
+{
+    return dataManPtr_p->getTSMCube(hypercube)->bucketSize();
+}
+
+const Record& ROTiledStManAccessor::getValueRecord (uInt hypercube) const
+{
+    return dataManPtr_p->getTSMCube(hypercube)->valueRecord();
 }
 
 uInt ROTiledStManAccessor::calcCacheSize (uInt rownr,
