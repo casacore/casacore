@@ -121,9 +121,10 @@ ImageInfo& ImageInfo::setRestoringBeam(const Quantum<Double>& major,
 //
    Double majord = major.getValue(arcsec);
    Double minord = minor.getValue(arcsec);
-   if (majord < minord) {
+
+   if ((majord < minord) && !near(majord,minord)) {
       throw (AipsError (String("ImageInfo::setRestoringBeam - the major ") +
-             String("axis must be greater than the minor axis")));
+             String("axis must be greater than or equal to the minor axis")));
    }
 //
    itsRestoringBeam.resize(3);
