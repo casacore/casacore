@@ -84,7 +84,7 @@ endif
 
 if (-e $ldir/${tp}.locked) rm -f $ldir/${tp}.locked
 touch $ldir/${tp}.locked
-foreach i (`alog -m -L -t | grep ".*/.*/" | grep  -v " "`)
+foreach i (`alog -m -L -h | grep ".*/.*/" | grep  -v " "`)
    grep $i $ldir/${tp}.found >> $ldir/${tp}.locked
 end
 
