@@ -1,5 +1,5 @@
 //# tIncrementalStMan.cc: Test program for the IncrementalStMan storage manager
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/IncrementalStMan.h>
 #include <aips/Tables/IncrStManAccessor.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -53,8 +54,11 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void a(uInt bucketSize);
-void b();
+void a (uInt bucketSize, uInt mode);
+void b (const Vector<Bool>& removedRows);
+void c();
+void d();
+void e (uInt nrrow);
 
 main (int argc, char** argv) {
     uInt nr = 1000;
@@ -63,8 +67,14 @@ main (int argc, char** argv) {
 	istr >> nr;
     }
     try {
-	a(nr);
-	b();
+	a (nr, 0);
+	c();
+	a (0, 1);
+	e (20);
+	d();
+	e (10);
+	a (0, 2);
+	e (20);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -95,37 +105,42 @@ void init (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 
 
 // First build a description.
-void a (uInt bucketSize)
+void a (uInt bucketSize, uInt mode)
 {
-    DataManager::registerCtor ("IncrementalStMan",
-			       IncrementalStMan::makeObject);
-    // Build the table description.
-    TableDesc td("", "1", TableDesc::Scratch);
-    td.comment() = "A test of class TableDesc";
-    td.addColumn (ScalarColumnDesc<Complex>("ac"));
-    td.addColumn (ScalarColumnDesc<Int>("ad"));
-    td.addColumn (ScalarColumnDesc<float>("ae"));
-    td.addColumn (ScalarColumnDesc<String>("af"));
-    td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<float>("arr2",0));
-    td.addColumn (ArrayColumnDesc<float>("arr3",0,ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<String>("arr4",0,ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<DComplex>("arr5",0,ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<Bool>("arr6",0,ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<Bool>("arr7",0,ColumnDesc::FixedShape));
-
-    // Now create a new table from the description.
-    SetupNewTable newtab("tIncrementalStMan_tmp.data", td, Table::New);
-    // Create a storage manager for it.
-    IncrementalStMan sm1 ("ISM", bucketSize, False);
-    newtab.bindAll (sm1);
-    newtab.setShapeColumn("arr1",IPosition(3,2,3,4));
-    newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
-    newtab.setShapeColumn("arr4",IPosition(1,8));
-    newtab.setShapeColumn("arr5",IPosition(1,2));
-    newtab.setShapeColumn("arr6",IPosition(3,5,7,11));
-    newtab.setShapeColumn("arr7",IPosition(3,5,7,11));
-    Table tab(newtab, 10);
+    Table tab;
+    if (mode == 0) {
+	DataManager::registerCtor ("IncrementalStMan",
+				   IncrementalStMan::makeObject);
+	// Build the table description.
+	TableDesc td("", "1", TableDesc::Scratch);
+	td.comment() = "A test of class TableDesc";
+	td.addColumn (ScalarColumnDesc<Complex>("ac"));
+	td.addColumn (ScalarColumnDesc<Int>("ad"));
+	td.addColumn (ScalarColumnDesc<float>("ae"));
+	td.addColumn (ScalarColumnDesc<String>("af"));
+	td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<float>("arr2",0));
+	td.addColumn (ArrayColumnDesc<float>("arr3",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<String>("arr4",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<DComplex>("arr5",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<Bool>("arr6",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<Bool>("arr7",0,ColumnDesc::FixedShape));
+	
+	// Now create a new table from the description.
+	SetupNewTable newtab("tIncrementalStMan_tmp.data", td, Table::New);
+	// Create a storage manager for it.
+	IncrementalStMan sm1 ("ISM", bucketSize, False);
+	newtab.bindAll (sm1);
+	newtab.setShapeColumn("arr1",IPosition(3,2,3,4));
+	newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
+	newtab.setShapeColumn("arr4",IPosition(1,8));
+	newtab.setShapeColumn("arr5",IPosition(1,2));
+	newtab.setShapeColumn("arr6",IPosition(3,5,7,11));
+	newtab.setShapeColumn("arr7",IPosition(3,5,7,11));
+	tab = Table (newtab, 10);
+    } else {
+	tab = Table ("tIncrementalStMan_tmp.data", Table::Update);
+    }
 
     ScalarColumn<Complex> ac(tab,"ac");
     ScalarColumn<Int> ad(tab,"ad");
@@ -144,23 +159,33 @@ void a (uInt bucketSize)
     init (arrf, arrdc, arrb);
     uInt i;
     for (i=0; i<10; i++) {
-	if (i%2 == 1) {
-	    ac.put (i, Complex(i+1));
-	}
-	ad.put (i, i);
-	ae.put (i, 10);
-	arr1.put (i, arrf);
-	if (i%4 == 0) {
-	    arr2.put (i, arrf);
-	    arr3.put (i, arrf);
-	}
-	arr5.put (i, arrdc);
-	arr6.put (i, arrb);
-	if (i == 0) {
-	    arr7.put (i, arrb);
+	if (mode < 2) {
+	    if (mode == 1) {
+		tab.addRow();
+	    }
+	    if (i%2 == 1) {
+		ac.put (i, Complex(i+1));
+	    }
+	    ad.put (i, i);
+	    ae.put (i, 10);
+	    arr1.put (i, arrf);
+	    if (i%4 == 0) {
+		arr2.put (i, arrf);
+		arr3.put (i, arrf);
+	    }
+	    arr5.put (i, arrdc);
+	    arr6.put (i, arrb);
+	    if (i == 0) {
+		arr7.put (i, arrb);
+	    }
 	}
 	arrf.ac() += (float)(arrf.nelements());
 	arrdc.ac() += DComplex(2, 3);
+    }
+    if (mode == 2) {
+	Vector<float> vecae = ae.getColumn();
+	vecae.ac() -= float(1);
+	ae.putColumn (vecae);
     }
     String str("abc");
     for (i=0; i<10; i++) {
@@ -230,8 +255,17 @@ void a (uInt bucketSize)
 		   arrb(IPosition(3,0,0,0),IPosition(3,0,0,0)));
 }
 
-void b()
+void b (const Vector<Bool>& removedRows)
 {
+    //# Define the values of the scalars (for Strings the lengths).
+    static float acvalues[] = {-1,2,2,4,4,6,6,8,8,10,
+			       10,12,12,14,14,16,16,18,18,20};
+    static int advalues[] = {0,1,2,3,4,5,6,7,8,9,
+			     10,11,12,13,14,15,16,17,18,19};
+    static float aevalues[] = {11,11,11,11,11,11,11,11,11,11,
+			       1,1,1,2,2,2,3,3,3,4};
+    static int afvalues[] = {0,0,0,0,0,0,0,0,0,0,
+			     4,4,4,5,5,5,6,6,6,7};
     //# Define what first element of the array in each row should be.
     static float arr1Start[] = {0,11,12,3,14,15,6,17,18,9,
 				9,11,12,12,14,15,15,17,18,18};
@@ -254,89 +288,184 @@ void b()
     ROArrayColumn<Bool> arr7(tab,"arr7");
     cout << "#Rows " << tab.nrow() << endl;
     uInt i;
-    for (i=0; i<19; i++) {
-	cout << ac(i) << ", ";
+    if (tab.nrow() == 20) {
+	for (i=0; i<19; i++) {
+	    cout << ac(i) << ", ";
+	}
+	cout << ac(19) << endl;
+	for (i=0; i<19; i++) {
+	    cout << ad(i) << ", ";
+	}
+	cout << ad(19) << endl;
+	for (i=0; i<19; i++) {
+	    cout << ae(i) << ", ";
+	}
+	cout << ae(19) << endl;
+	for (i=0; i<19; i++) {
+	    cout << af(i) << ", ";
+	}
+	cout << af(19) << endl;
     }
-    cout << ac(19) << endl;
-    for (i=0; i<19; i++) {
-	cout << ad(i) << ", ";
-    }
-    cout << ad(19) << endl;
-    for (i=0; i<19; i++) {
-	cout << ae(i) << ", ";
-    }
-    cout << ae(19) << endl;
-    for (i=0; i<19; i++) {
-	cout << af(i) << ", ";
-    }
-    cout << af(19) << endl;
     Cube<float> arrf(2,3,4);
     Vector<DComplex> arrdc(2);
     Cube<Bool> arrb(5,7,11);
     init (arrf, arrdc, arrb);
+    // Check if all values match.
+    uInt rownr = 0;
     for (i=0; i<19; i++) {
-	if (!allEQ (arr1(i), arrf.ac() + 24*arr1Start[i]))
-	    cout << i << " arr1-mismatch: " << arr1(i) << ", ";
-    }
-    cout << arr1(19) << endl;
-    for (i=0; i<19; i++) {
-	if (!allEQ (arr2(i), arrf.ac() + 24*arr2Start[i]))
-	    cout << i << " arr2-mismatch: " << arr2(i) << ", ";
-    }
-    cout << arr2(19) << endl;
-    for (i=0; i<19; i++) {
-	if (!allEQ(arr3(i), arrf.ac() + 24*arr3Start[i]))
-	    cout << i << " arr3-mismatch: " << arr3(i) << ", ";
-    }
-    cout << arr3(19) << endl;
-    for (i=0; i<19; i++) {
-	uInt j = min(9U,i);
-	if (!allEQ(arr5(i), arrdc.ac() + DComplex(2*j, 3*j)))
-	    cout << i << " arr5-mismatch: " << arr5(i) << ", ";
-    }
-    for (i=0; i<19; i++) {
-	if (!allEQ(arr6(i), arrb.ac()))
-	    cout << i << " arr6-mismatch: " << arr6(i) << ", ";
-    }
-    for (i=0; i<19; i++) {
-	if (i == 19) {
-	    arrb(0,0,0) = True;
+	if (!removedRows(i)) {
+	    if (i>0  &&  ac(rownr) != Complex(acvalues[i]))
+		cout << i << "," << rownr << " ac-mismatch: "
+		    << ac(rownr) << endl;
+	    if (ad(rownr) != advalues[i])
+		cout << i << "," << rownr << " ad-mismatch: "
+		    << ad(rownr) << endl;
+	    if (ae(rownr) != aevalues[i])
+		cout << i << "," << rownr << " ae-mismatch: "
+		    << ae(rownr) << endl;
+	    if (af(rownr).length() != afvalues[i])
+		cout << i << "," << rownr << " af-mismatch: "
+		    << af(rownr) << endl;
+	    if (!allEQ (arr1(rownr), arrf.ac() + 24*arr1Start[i]))
+		cout << i << "," << rownr << " arr1-mismatch: "
+		    << arr1(rownr) << endl;
+	    if (!allEQ (arr2(rownr), arrf.ac() + 24*arr2Start[i]))
+		cout << i << "," << rownr << " arr2-mismatch: "
+		    << arr2(rownr) << endl;
+	    if (!allEQ(arr3(rownr), arrf.ac() + 24*arr3Start[i]))
+		cout << i << "," << rownr << " arr3-mismatch: "
+		    << arr3(rownr) << endl;
+	    uInt j = min(9U,i);
+	    if (!allEQ(arr5(rownr), arrdc.ac() + DComplex(2*j, 3*j)))
+		cout << i << "," << rownr << " arr5-mismatch: "
+		    << arr5(rownr) << endl;
+	    if (!allEQ(arr6(rownr), arrb.ac()))
+		cout << i << "," << rownr << " arr6-mismatch: "
+		    << arr6(rownr) << endl;
+	    if (i == 19) {
+		arrb(0,0,0) = True;
+	    }
+	    if (!allEQ(arr7(rownr), arrb.ac()))
+		cout << i << "," << rownr << " arr7-mismatch: "
+		    << arr7(rownr) << endl;
+	    rownr++;
 	}
-	if (!allEQ(arr7(i), arrb.ac()))
-	    cout << i << " arr7-mismatch: " << arr7(i) << ", ";
     }
+
     arrb(0,0,0) = False;
-
-    IPosition bshape = arrb.shape();
-    Cube<Bool> arrb1 (bshape);
-    for (i=0; i<19; i++) {
-	for (uInt j=0; j<bshape(0); j++) {
-	    Array<Bool> result (arrb1(IPosition(3,j,0,0),
+    if (tab.nrow() == 20) {
+	cout << arr1(19) << endl;
+	cout << arr2(19) << endl;
+	cout << arr3(19) << endl;
+	IPosition bshape = arrb.shape();
+	Cube<Bool> arrb1 (bshape);
+	for (i=0; i<19; i++) {
+	    for (uInt j=0; j<bshape(0); j++) {
+		Array<Bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
-	    arr6.getSlice (i, Slicer(IPosition(3,j,0,0),
-				     IPosition(3,1,bshape(1),bshape(2))),
-			   result);
-
+		arr6.getSlice (i, Slicer(IPosition(3,j,0,0),
+				      IPosition(3,1,bshape(1),bshape(2))),
+			       result);
+	    }
+	    if (!allEQ(arrb1.ac(), arrb.ac()))
+		cout << i << " arr6-slice-mismatch: " << arrb1.ac() << ", ";
+	    arrb1.set (True);
 	}
-	if (!allEQ(arrb1.ac(), arrb.ac()))
-	    cout << i << " arr6-slice-mismatch: " << arrb1.ac() << ", ";
-	arrb1.set (True);
-    }
-    for (i=0; i<19; i++) {
-	if (i == 19) {
-	    arrb(0,0,0) = True;
-	}
-	for (uInt j=0; j<bshape(0); j++) {
-	    Array<Bool> result (arrb1(IPosition(3,j,0,0),
+	for (i=0; i<19; i++) {
+	    if (i == 19) {
+		arrb(0,0,0) = True;
+	    }
+	    for (uInt j=0; j<bshape(0); j++) {
+		Array<Bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
-	    arr7.getSlice (i, Slicer(IPosition(3,j,0,0),
+		arr7.getSlice (i, Slicer(IPosition(3,j,0,0),
 				     IPosition(3,1,bshape(1),bshape(2))),
-			   result);
+			       result);
+	    }
+	    if (!allEQ(arrb1.ac(), arrb.ac()))
+		cout << i << " arr7-slice-mismatch: " << arrb1.ac() << ", ";
+	    arrb1.set (True);
 	}
-	if (!allEQ(arrb1.ac(), arrb.ac()))
-	    cout << i << " arr7-slice-mismatch: " << arrb1.ac() << ", ";
-	arrb1.set (True);
     }
-    accessor.showCacheStatistics (cout);
+    if (tab.nrow() % 5 == 0) {
+	accessor.showCacheStatistics (cout);
+    }
     accessor.clearCache();
+}
+
+void c()
+{
+    uInt i;
+    Vector<Bool> removedRows(20);
+    removedRows.set (False);
+    b (removedRows);
+    // Remove several rows.
+    // Open the table as read/write for that purpose.
+    Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
+    rwtab.removeRow (17);
+    AlwaysAssertExit (rwtab.nrow() == 19);
+    removedRows(17) = True;
+    b (removedRows);
+    rwtab.removeRow (18);
+    AlwaysAssertExit (rwtab.nrow() == 18);
+    removedRows(19) = True;
+    b (removedRows);
+    rwtab.removeRow (10);
+    AlwaysAssertExit (rwtab.nrow() == 17);
+    removedRows(10) = True;
+    b (removedRows);
+    rwtab.removeRow (0);
+    AlwaysAssertExit (rwtab.nrow() == 16);
+    removedRows(0) = True;
+    b (removedRows);
+    rwtab.removeRow (10);
+    AlwaysAssertExit (rwtab.nrow() == 15);
+    removedRows(12) = True;                    // row 10 was old row 12
+    b (removedRows);
+    // Remove several rows.
+    Vector<uInt> rows(5);
+    for (i=0; i<5; i++) {
+	rows(i)=i+2;
+	removedRows(i+3) = True;
+    }
+    rwtab.removeRow (rows);
+    AlwaysAssertExit (rwtab.nrow() == 10);
+    b (removedRows);
+    // Remove all remaining rows.
+    for (i=0; i<10; i++) {
+	rwtab.removeRow (0);
+	AlwaysAssertExit (rwtab.nrow() == 9-i);
+	for (uInt j=0; j<20; j++) {
+	    if (!removedRows(j)) {
+		removedRows(j) = True;
+		break;
+	    }
+	}
+	b (removedRows);
+    }
+}
+
+void d()
+{
+    uInt i;
+    // Remove the last 10 rows.
+    // Open the table as read/write for that purpose.
+    Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
+    Vector<uInt> rows(10);
+    for (i=0; i<10; i++) {
+	rows(i)=i+10;
+    }
+    rwtab.removeRow (rows);
+    AlwaysAssertExit (rwtab.nrow() == 10);
+}
+
+void e (uInt nrrow)
+{
+    uInt i;
+    Vector<Bool> removedRows(20);
+    removedRows.set (True);
+    for (i=0; i<nrrow; i++) {
+	removedRows(i) = False;
+    }
+    b (removedRows);
 }
