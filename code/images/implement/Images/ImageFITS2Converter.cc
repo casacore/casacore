@@ -49,6 +49,7 @@
 
 #include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
+#include <trial/Tasking/ProgressMeter.h>
 
 #include <strstream.h>
 #include <iomanip.h>
@@ -391,9 +392,16 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    error = "Error writing FITS header";
 	    return False;
 	}
+
+	ProgressMeter meter(0.0, 1.0*image.shape().product(),
+			    "Image to FITS", "Pixels copied", "", "");
+	uInt count = 0;
+	Double curpixels = 1.0*cursorShape.product();
+
 	LatticeStepper stepper(shape, cursorShape, cursorOrder);
 	RO_LatticeIterator<Float> iter(image, stepper);
 	const Int bufferSize = cursorShape.product();
+
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	    const Array<Float> &cursor = iter.cursor();
 	    Bool deleteIt;
@@ -414,6 +422,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		error = String("Error writing into ") + fitsName;
 		return False;
 	    }
+	    count++;
+	    meter.update(count*curpixels);
 	}
     } catch (AipsError x) {
 	error = "Unknown error copying image to FITS file";
@@ -429,33 +439,62 @@ IPosition ImageFITSConverter::copyCursorShape(String &report,
 					      uInt fitsPixelSize,
 					      uInt memoryInMB)
 {
+
+    // We could make this more sophisticated by querying the actual tile
+    // shape. However, the image will basically always need all but the
+    // last dimension in memory for efficient traversal.
+    // This function should err on the side of making a too-small cursor.
+
     const uInt ndim = shape.nelements();
 
-    // How many pixels can we put in the cache?
-    // Really should be sizeof(Float) + sizeof(T), but we don't know what 
-    // T is. *3 to allow for the FITS buffer
-    uInt maxPixels = uInt(
-		  memoryInMB*1024*1024 / ((imagePixelSize+fitsPixelSize)*1.5));
-    if (maxPixels <= 0) {
-	maxPixels = 1; // In case we have a low amount of memory!
-    }
-    
-    Int axis, product = 1;
-    for (axis=0; axis<ndim; axis++) {
-	product *= shape(axis);
-	if (product >= maxPixels) {
-	    break;
+    // *2 because the pixels might exist in a buffer as well. We should
+    // be able to do away with that.
+    uInt maxPixels = memoryInMB * 1024 * 1024 / 
+	(imagePixelSize*2 + fitsPixelSize*2);
+
+    maxPixels /= 2; // because 1/2 the pixels are in FITS, 1/2 in Image
+
+    Int axis = ndim - 1;
+    if (shape.product() > maxPixels) {
+	while (--axis >= 0 && shape(axis) == 1) {
+	    ; // Nothing
 	}
     }
 
-    axis--; // correct for ++
     if (axis < 0) {
-	axis = 0;
+	axis = 0; // If we have a 1D image
+    }
+
+    uInt prod = 1;
+    for (uInt i=0; i<=axis; i++) {
+	prod *= shape(i);
+    }
+    // Correct for the probable tile shape
+    for (i=axis+1; i<ndim; i++) {
+	if (shape(i) > 1) {
+	    if (shape(i) < 32) {
+		prod *= shape(i);
+	    } else {
+		prod *= 32;
+	    }
+	}
+    }
+    // If the image slice is still too large drop back another axis.
+    // The image will still be taking too much space, but the FITS buffering
+    // won't contribute to the delinquency.
+    if (prod > maxPixels) {
+	while (--axis >= 0 && shape(axis) == 1) {
+	    ; // Nothing
+	}
+    }
+
+    if (axis < 0) {
+	axis = 0; // If we have a 1D image
     }
 
     IPosition cursorShape(ndim);
     cursorShape = 1;
-    for (uInt i=0; i<=axis; i++) {
+    for (i=0; i<=axis; i++) {
 	cursorShape(i) = shape(i);
     }
 
