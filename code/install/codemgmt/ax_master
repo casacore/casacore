@@ -2543,3 +2543,4 @@
 11 374 src mv trial/scripts/assay_meta.g trial/implement/Utilities/assay_meta.g
 11 374 src mv trial/scripts/types.g trial/implement/Tasking/types.g
 11 374 src mv trial/scripts/types.help trial/implement/Tasking/types.help
+11 374 src rm trial/scripts/pgtkdemo.reference
