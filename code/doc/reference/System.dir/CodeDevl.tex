@@ -525,7 +525,7 @@ may be used to automatically record timestamp information in the installed
 typically near the end of the file:
 
 \begin{verbatim}
-   <P>Copyright &#169; 1996,1997,1998,2000 Associated Universities Inc., Washington, D.C.</P>
+   <P>Copyright &#169; 1996-98,2000 Associated Universities Inc., Washington, D.C.</P>
    <ADDRESS>aips2adm@nrao.edu</ADDRESS>
 \end{verbatim}
 
@@ -552,7 +552,7 @@ time when the \file{.html} file was installed in the relevant subdirectory of
 result is as follows:
 
 \begin{verbatim}
-   Copyright (c) 1995,1997,1998,2000 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995-98,2000 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -572,7 +572,7 @@ It is permissable to insert additional text within the meta-markup as follows:
 This would appear as:
 
 \begin{verbatim}
-   Copyright (c) 1995,1997,1998,2000 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995-98,2000 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -1601,97 +1601,6 @@ Original: 1994/02/10 by Mark Calabretta, ATNF
 % ----------------------------------------------------------------------------
 
 \newpage
-\section{\exe{duplicates}}
-\label{duplicates}
-\index{duplicates@\exe{duplicates}}
-\index{template files!duplicate template instantiations|see{\exe{duplicates}}}
-
-Look for duplicate entries in \aipspp\ ``templates'' instantiation files
-
-\subsection*{Synopsis}
-
-\begin{synopsis}
-   \code{\exe{duplicates} [\exe{-p} \exe{package}|\exe{all}] [\exe{-r}
-   \exe{package}|\exe{all}]  [\exe{-u} \exe{package}|\exe{all}] \ldots 
-   [templates file] \ldots}
-\end{synopsis}
-
-\subsection*{Description}
-
-\exe{duplicates} is a \code{C++} executable program which looks for duplicate
-entries in \aipspp\ \code{templates} files. This is useful for finding
-redundant templates entries, and for moving duplicate entries into a common
-\code{templates} file.
-
-One entry in the \code{template file list} may be specified as \code{-} to
-indicate standard input.
-
-If no list of files is provided, the list used is the combination of:
-\begin{enumerate}
-        \item A file named \code{templates} in the current working directory
-              if any; and
-        \item All files named \code{templates} under the
-             \code{\$AIPSCODE} tree, unless switches restrict the search to
-              specified packages and/or repositories and/or non-repositories.
-\end{enumerate}
-
-Duplicates found in the first (or the default templates file) are indicated
-by asterisks next to the line number.
-
-\subsection*{Options}
-
-Options are provided to limit the inclusion of templates files that will be
-included in the search. Check with:
-
-\begin{verbatim}
-   duplicates -h
-\end{verbatim}
-
-to find the currently available switches.
-
-\begin{description}
-\item[\code{\exe{-h}}]
-    Give some useage information
-\item[\code{\exe{-p} \exe{package}|\exe{all}}]
-    Restrict tests to templates files in the specified package (or all
-    packages)
-\item[\code{\exe{-r} \exe{package}|\exe{all}}]
-    Restrict tests to the repository templates files in the specified package
-    (or all packages)
-\item[\code{\exe{-u} \exe{package}|\exe{all}}]
-    Restrict tests to the non-repository templates files in the specified package
-    (or all packages)
-\end{description}
-
-\subsection*{Examples}
-
-\begin{verbatim}
-   duplicates
-   duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
-   reident -t | duplicates -r trial - 
-\end{verbatim}
-
-The first line finds all duplicates in \code{./templates} and all templates
-files checked into the system. The second example finds duplicates only in
-the listed files. The third line reformats and checks \code{./templates}, and
-then checks for duplicates in this file and in
-\file{trial/implement/\_ReposFiller/templates}.
-
-\subsection*{See also}
-
-\aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
-\exeref{reident}, reformat in canonical form the template instantiation file.\\
-\exeref{unused}, check usage of templates in binary executables and object
-modules.\\
-\exeref{used}, find any undefined classes and global methods.
-
-\subsection*{Author}
-
-Original: 1997/06/09 by Brian Glendenning, NRAO
-
-% ----------------------------------------------------------------------------
-
-\newpage
 \section{\exe{ldmap}}
 \label{ldmap}
 \index{ldmap@\exe{ldmap}}
@@ -1964,36 +1873,43 @@ Original: 1996/05/06 by Mark Calabretta, ATNF.
 % ----------------------------------------------------------------------------
 
 \newpage
-\section{\exe{reident}}
+\section{Template management}
+\label{templatemgmt}
+\index{templatemgmt@\exe{templatemgmt}}
+\index{template files!template management |see{\exe{templatemgmt}}}
+
+% ----------------------------------------------------------------------------
+
+\subsection{\exe{reident}}
 \label{reident}
 \index{reident@\exe{reident}}
 \index{templates!list!reformat|see{\exe{reident}}}
 
 Remake the idents in a templates list.
 
-\subsection*{Synopsis}
+\subsubsection*{Synopsis}
 
 \begin{synopsis}
    \code{\exe{reident} [\exe{-z}] [\exe{-t}] [file [file \ldots]]}
 \end{synopsis}
 
-\subsection*{Description}
+\subsubsection*{Description}
 
 \exe{reident} reads a template file (\file{templates} by default, see
 \exeref{mkinst}), sort/uniqs it on the name of the class implementation
 \file{.cc} file (second field), and replaces the idents on some or all lines
 so that each combination of ident and \file{.cc} file is unique.
 
-\exe{reident} also converts each entry in the input to a canonical form with
-respect to the use of spacing and \code{typedef}'d variables so that trivial
-duplications are automatically eliminated, and it warns of any non-trivial
-deviation from the canonical forms.
+\noindent \exe{reident} also converts each entry in the input to a canonical
+form with respect to the use of spacing and \code{typedef}'d variables so
+that trivial duplications are automatically eliminated, and it warns of any
+non-trivial deviation from the canonical forms.
 
-\exe{reident} does not check for duplicate template definitions. The
+\noindent \exe{reident} does not check for duplicate template definitions. The
 \exeref{duplicates} program is available for that purpose.
 
-\exe{reident} also converts each entry in the input to a formatted multi-line
-output that can be read by \exeref{mkinst}.
+\noindent \exe{reident} also converts each entry in the input to a formatted
+multi-line output that can be read by \exeref{mkinst}.
 
 If multiple files are specified they will be merged together.  One file may
 be specified as ``\file{-}'' to denote input from \file{stdin}.  Output is
@@ -2014,7 +1930,7 @@ Comments in the templates file (lines beginning with ``\code{\#}'') will
 either stay at the top of the file, or stay tuned to the template definition
 line(s) they occur at.
 
-\subsection*{Options}
+\subsubsection*{Options}
 
 \begin{description}
 \item[\exe{-z}]
@@ -2025,7 +1941,7 @@ line(s) they occur at.
    \file{./templates}. 
 \end{description}
 
-\subsection*{Notes}
+\subsubsection*{Notes}
 
 \begin{itemize}
 \item
@@ -2035,13 +1951,13 @@ line(s) they occur at.
     changes will be quarantined to the templates based on it.
 \end{itemize}
 
-\subsection*{Diagnostics}
+\subsubsection*{Diagnostics}
 
 Status return values
 \\ \verb+   0+: success
 \\ \verb+   1+: file not found
 
-\subsection*{Examples}
+\subsubsection*{Examples}
 
 To merge a private templates list into the system's list for the \code{aips}
 package and at the same time completely refresh the idents
@@ -2068,7 +1984,7 @@ recompilation because of accumulated changes.  However, if used regularly the
 incremental cost should be modest. Also, all care should be taken that
 templates included are not duplicated (see \exeref{duplicates}).
 
-\subsection*{See also}
+\subsubsection*{See also}
 
 \exeref{mkinst}, Generate template instantiation files from a list.\\
 \exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
@@ -2077,14 +1993,105 @@ templates included are not duplicated (see \exeref{duplicates}).
 or object modules).\\
 \exeref{used}, find any undefined classes and global methods.
 
-\subsection*{Author}
+\subsubsection*{Author}
 
 Original: 1996/04/16 by Mark Calabretta, ATNF.
 
 % ----------------------------------------------------------------------------
 
 \newpage
-\section{\exe{unused}}
+\subsection{\exe{duplicates}}
+\label{duplicates}
+\index{duplicates@\exe{duplicates}}
+\index{template files!duplicate template instantiations|see{\exe{duplicates}}}
+
+Look for duplicate entries in \aipspp\ \code{templates} instantiation files
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{duplicates} [\exe{-p} \exe{package}|\exe{all}] [\exe{-r}
+   \exe{package}|\exe{all}]  [\exe{-u} \exe{package}|\exe{all}] \ldots\ 
+   [templates file] \ldots}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\exe{duplicates} is a \code{C++} executable program which looks for duplicate
+entries in \aipspp\ \code{templates} files. This is useful for finding
+redundant templates entries, and for moving duplicate entries into a common
+\code{templates} file.
+
+One entry in the \code{template file list} may be specified as \code{-} to
+indicate standard input.
+
+If no list of files is provided, the list used is the combination of:
+\begin{enumerate}
+        \item A file named \code{templates} in the current working directory
+              if any; and
+        \item All files named \code{templates} under the
+             \code{\$AIPSCODE} tree, unless switches restrict the search to
+              specified packages and/or repositories and/or non-repositories.
+\end{enumerate}
+
+Duplicates found in the first (or the default templates file) are indicated
+by asterisks next to the line number.
+
+\subsubsection*{Options}
+
+Options are provided to limit the number of templates files that will be
+included in the search. Check with:
+
+\begin{verbatim}
+   duplicates -h
+\end{verbatim}
+
+to find the currently available switches.
+
+\begin{description}
+\item[\code{\exe{-h}}]
+    Give some useage information
+\item[\code{\exe{-p} \exe{package}|\exe{all}}]
+    Restrict tests to templates files in the specified package (or all
+    packages)
+\item[\code{\exe{-r} \exe{package}|\exe{all}}]
+    Restrict tests to the repository templates files in the specified package
+    (or all packages)
+\item[\code{\exe{-u} \exe{package}|\exe{all}}]
+    Restrict tests to the non-repository templates files in the specified package
+    (or all packages)
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+   duplicates
+   duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
+   reident -t | duplicates -r trial - 
+\end{verbatim}
+
+The first line finds all duplicates in \code{./templates} and all templates
+files checked into the system. The second example finds duplicates only in
+the listed files. The third line reformats and checks \code{./templates}, and
+then checks for duplicates in this file and in \\
+\file{trial/implement/\_ReposFiller/templates}.
+
+\subsubsection*{See also}
+
+\aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
+\exeref{reident}, reformat in canonical form the template instantiation file.\\
+\exeref{unused}, check usage of templates in binary executables and object
+modules.\\
+\exeref{used}, find any undefined classes and global methods.
+
+\subsubsection*{Author}
+
+Original: 1997/06/09 by Brian Glendenning, NRAO
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\subsection{\exe{unused}}
 \label{unused}
 \index{unused@\exe{unused}}
 \index{templates!list!reformat|see{\exe{unused}}}
@@ -2092,23 +2099,23 @@ Original: 1996/04/16 by Mark Calabretta, ATNF.
 Check for unused (or used) template object modules in binaries and/or object
 modules and/or libraries.
 
-\subsection*{Synopsis}
+\subsubsection*{Synopsis}
 
 \begin{synopsis}
    \code{\exe{unused} [\exe{-z}|\exe{-nz}|\exe{-a}|\exe{-[0-9]\ldots}]
-        [\exe{-p}|\exe{-r}|\exe{-u} package]\ldots 
+        [\exe{-p}|\exe{-r}|\exe{-u} package] \ldots\  
         [-t templates1 [templates2 \ldots]]
         \exe{-f}|\exe{-b} file1 [file2 \ldots] 
         [\exe{-i} list1 [list2 \dots]]}
 \end{synopsis}
 
-\subsection*{Description}
+\subsubsection*{Description}
 
 \exe{unused} reads binary files (either executables, object modules or object
 libraries) specified by the \exe{-b} switch or the output of the
 \exe{g++filt} filtered output of the \exe{nm} or \exe{gnm} 
 program of such files as specified by the \exe{-f} switch. I.e. files that
-are to specified following an \exe{-f} switch should have the following
+are to be specified following an \exe{-f} switch should have the following
 pre-processing: 
 \begin{verbatim}
         [g]nm binary.file | g++filt >! file.f
@@ -2129,7 +2136,7 @@ templates defined in the binary files . Depending on the show switches (\exe{-a}
 \exe{-nz}, \exe{-number}) the output will contain templates used or unused in
 the specified binary files.
 
-\subsection*{Options}
+\subsubsection*{Options}
 
 \begin{description}
 \item[\exe{-z}]
@@ -2147,7 +2154,7 @@ the specified binary files.
    files specified. I.e. if the switch given is \exe{-2}, and two binary
    files are given as input, only templates occurring in both of these will
    be shown. If only one binary file was given nothing will be shown; if
-   three binary files were sepcified all templates used in at least two of
+   three binary files were specified all templates used in at least two of
    them will be shown.
 \item[\exe{-p package}]
    Use all templates files found in the specified package (the package name
@@ -2172,21 +2179,21 @@ the specified binary files.
    filtered already by a \exe{nm} program and the \exe{g++filt} program.
 \end{description}
 
-\subsection*{Notes}
+\subsubsection*{Notes}
 
 \begin{itemize}
 \item
-   The output of the program can be used as input of the \exeref{duplicates}
+   The output of the program can be used as input to the \exeref{duplicates}
    program. 
 \end{itemize}
 
-\subsection*{Diagnostics}
+\subsubsection*{Diagnostics}
 
 Status return values
 \\ \verb+   0+: success
 \\ \verb+   1+: no files found
 
-\subsection*{Examples}
+\subsubsection*{Examples}
 
 To show all the templates specified in the \code{Tables/test/templates} file
 that are used in a demonstration program \exe{dM30}:
@@ -2215,20 +2222,20 @@ used in the binary). The same output would have been generated with the
 \exe{-nz} switch had been used.
 
 
-\subsection*{See also}
+\subsubsection*{See also}
 
 \exeref{mkinst}, Generate template instantiation files from a list.\\
 \exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
    across the system.
 
-\subsection*{Author}
+\subsubsection*{Author}
 
 Original: 1997/07/16 by Wim Brouw, ATNF.
 
 % ----------------------------------------------------------------------------
 
 \newpage
-\section{\exe{used}}
+\subsection{\exe{used}}
 \label{used}
 \index{used@\exe{used}}
 \index{templates!list!reformat|see{\exe{used}}}
@@ -2236,20 +2243,20 @@ Original: 1997/07/16 by Wim Brouw, ATNF.
 Check for undefined classes and global functions in object libraries and
 object modules.
 
-\subsection*{Synopsis}
+\subsubsection*{Synopsis}
 
 \begin{synopsis}
    \code{\exe{used} [\exe{-ng}] [\exe{-nc}] [\exe{-tc}]
         [[\exe{-f}|\exe{-b}] file1 [file2 \ldots]] \ldots }
 \end{synopsis}
 
-\subsection*{Description}
+\subsubsection*{Description}
 
 \exe{used} reads binary files (either object modules or object
 libraries) specified by the \exe{-b} switch (default) and/or the output of the
 \exe{g++filt} filtered output of the \exe{nm} or \exe{gnm} 
 program of such files if specified by the \exe{-f} switch. I.e. files that
-are to specified following an \exe{-f} switch should have the following
+are to be specified following an \exe{-f} switch should have the following
 pre-processing: 
 \begin{verbatim}
         [g]nm binary.file | g++filt >! file.f
@@ -2265,14 +2272,14 @@ given. Finally the resulted list of undefined names is output to stdout.
 The standard checking is for all global names. The \exe{-ng} \exe{-nc} and
 \exe{-tc} switches can be used to limit the output.
 
-\subsection*{Options}
+\subsubsection*{Options}
 
 \begin{description}
 \item[\exe{-nc}]
    Show no classes (i.e. only the global functions)
 \item[\exe{-ng}]
    Show no global functions (i.e. only classes)
-\item[\exe{tc}]
+\item[\exe{-tc}]
    Show for classes only templated classes
 \item[\exe{-b|-f file [file \ldots]}]
    Specify the binary files (\exe{-b}), also the default, to be checked. The
@@ -2283,21 +2290,21 @@ The standard checking is for all global names. The \exe{-ng} \exe{-nc} and
    \exe{g++filt} program.
 \end{description}
 
-\subsection*{Notes}
+\subsubsection*{Notes}
 
 \begin{itemize}
 \item
-   The output of the program can be used as input of the \exeref{duplicates}
+   The output of the program can be used as input to the \exeref{duplicates}
    program. 
 \end{itemize}
 
-\subsection*{Diagnostics}
+\subsubsection*{Diagnostics}
 
 Status return values
 \\ \verb+   0+: success
 \\ \verb+   1+: no files found
 
-\subsection*{Examples}
+\subsubsection*{Examples}
 
 To show the missing templated classes used in the given file:
 
@@ -2319,13 +2326,13 @@ Checked 7 undefineds against 2 defineds
 To check if the modules in libtrial.a have still some undefined references:
 
 \begin{verbatim}
-   used /aips++/sun4sol_gnu/lib/{libtrial,libaips}.a
+   used /aips++/weekly/sun4sol_egcs/lib/{libtrial,libaips}.a
 \end{verbatim}
 
 The counts shown are the number of references to the class or global function
 found.
 
-\subsection*{See also}
+\subsubsection*{See also}
 
 \exeref{mkinst}, Generate template instantiation files from a list.\\
 \exeref{unused}, Checks for usage of templates in binary modules (executables
@@ -2333,6 +2340,83 @@ or object modules).\\
 \exeref{duplicates}, Checks for duplicate entries in \file{templates} lists
    across the system.
 
-\subsection*{Author}
+\subsubsection*{Author}
 
 Original: 1997/09/14 by Wim Brouw, ATNF.
+
+% ----------------------------------------------------------------------------
+
+\newpage
+\section{UP scripts to change and move code}
+\label{UPscripts}
+\index{UPscripts@\exe{UPscripts}}
+\index{source files!source file management |see{\exe{UPscripts}}}
+
+
+% ----------------------------------------------------------------------------
+
+\subsection{\exe{UPfind}}
+\label{UPfind}
+\index{UPfind@\exe{UPfind}}
+\index{source files |see{\exe{UPfind}}}
+
+Find files containing patterns. File list to be used in action \code{UP scripts}.
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPfind} [\exe{-c}] [\exe{-r}] [\exe{-g}] [\exe{-f}]
+	 [\exe{-d}] [\exe{-n}] <type name>}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\exe{UPfind} is a script.
+
+\subsubsection*{Options}
+
+\begin{description}
+\item[\code{\exe{-h}}]
+    Give some useage information
+\item[\code{\exe{-c}}]
+    Clear all information already given for \exe{<type name>}, and re-ask it.
+\item[\code{\exe{-r}}]
+    Clear and re-ask only the general definitions for \exe{<type name>}
+\item[\code{\exe{-g}}]
+    Look for files in \file{.g} rather than \file{.h}, \file{.cc} and
+    \file{templates} files.
+\item[\code{\exe{-f}}]
+    Generate the file list from a set of \exe{file} patterns, rather than a set of
+    \exe{egrep} patterns
+\item[\code{\exe{-d}}]
+    Debug mode
+\item[\code{\exe{-n}}]
+    Will only generate the specific data, without executing any code
+\item[\code{<type name>}]
+    An identification name for related \exe{UP} scripts.
+\end{description}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+   UPfind assert
+\end{verbatim}
+
+\subsubsection*{See also}
+
+\subsubsection*{Author}
+
+Original: 2000/09/020 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPchange}}
+\label{UPchange}
+\index{UPchange@\exe{UPchange}}
+\index{source files |see{\exe{UPchange}}}
+
+Change source files in \aipspp\ master, using a list of files, probably
+created by \code{UPfind}.
+
