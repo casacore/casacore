@@ -1,5 +1,5 @@
 //# Map.h: Associative array classes
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,6 +50,8 @@ extern void throw_map_constop_error();
 template<class key, class value> class MapIterRep;
 template<class key, class value> class ConstMapIter;
 template<class key, class value> class Map;
+
+// <summary>Map representation class </summary>
 
 template<class key, class value> class MapRep {
 public:

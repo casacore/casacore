@@ -1,5 +1,5 @@
 //# OrderedMap.h: Templated associatve array (map) classes with ordered keys
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,6 +87,8 @@ public:
     }
   }
 };
+
+// <summary> Representation class for an Ordered Map</summary>
 
 template<class key, class value> class OrderedMapRep : public NoticeSource, public MapRep<key,value> {
 friend class OrderedMap<key,value>;

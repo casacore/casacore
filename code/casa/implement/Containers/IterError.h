@@ -32,11 +32,15 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
+// <summary>Iteration error class </summary>
+
 class IterError : public AipsError {
 public:
   IterError(const char *msg = 0);      // normal constructor
   ~IterError ();
 };
+
+// <summary>Iteration Boundary error class</summary>
 
 class IterBoundaryError : public IterError {
 public:
@@ -44,11 +48,15 @@ public:
   ~IterBoundaryError ();
 };
 
+// <summary>Iteration initialization error</summary>
+
 class IterInitError : public IterError {
 public:
   IterInitError(const char *msg = 0);      // normal constructor
   ~IterInitError ();
 };
+
+// <summary>Invalide iteration error class</summary>
 
 class InvalidIterError : public IterError {
 public:

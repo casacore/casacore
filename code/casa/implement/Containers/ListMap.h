@@ -1,5 +1,5 @@
 //# ListMap.h: Map with list ordering/operations
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,8 @@
 
 template<class key, class value> class ListMap;
 template<class key, class value> class ListMapIterRep;
+
+// <summary>Representation of a ListMap class</summary>
 
 template<class key, class value> class ListMapRep : public MapRep<key,value> {
 friend class ListMap<key,value>;
