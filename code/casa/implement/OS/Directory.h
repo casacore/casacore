@@ -120,7 +120,10 @@ public:
     // Get the amount of free space (in bytes) on the file system this
     // directory is on. When the directory path is a symbolic link, that
     // link is resolved first.
-    uLong freeSpace() const;
+    // <group>
+    Double freeSpace() const;
+    uInt freeSpaceInMB() const;
+    // </group>
 
     // Create the directory.
     // <br>If the directory exists and overwrite=True, it will be removed
@@ -217,6 +220,10 @@ inline void Directory::copy (const String& target, Bool overwrite,
 inline void Directory::move (const String& target, Bool overwrite)
 {
     move (Path(target), overwrite);
+}
+inline uInt Directory::freeSpaceInMB() const
+{
+    return uInt (0.5 + freeSpace() / (1024*1024));
 }
 
 

@@ -150,7 +150,7 @@ Bool Directory::isEmpty() const
     return True;
 }
 
-uLong Directory::freeSpace() const
+Double Directory::freeSpace() const
 {
     struct statfs buf;
 #if defined(AIPS_IRIX)
@@ -162,13 +162,14 @@ uLong Directory::freeSpace() const
 			  itsFile.path().expandedName() +
 			  ": " + strerror(errno)));
     }
+    Double bsize = buf.f_bsize;
 #if defined(AIPS_SOLARIS) || defined(AIPS_OSF)
     //# The fragment size usually contains the true block size.
     if (buf.f_frsize > 0) {
-	return buf.f_frsize * buf.f_bavail;
+	bsize = buf.f_frsize;
     }
 #endif
-    return buf.f_bsize * buf.f_bavail;
+    return bsize * buf.f_bavail;
 }
 
 void Directory::create (Bool overwrite)
