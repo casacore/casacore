@@ -1,5 +1,5 @@
-//# Functional.cc: Objects which map a domain object into a range object via operator().
-//# Copyright (C) 1995,1996
+//# Functional.cc: Map a domain object into a range object via operator().
+//# Copyright (C) 1995,1996,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,11 +26,9 @@
 //#
 //# $Id$
 
+//# Includes
 #include <aips/Functionals/Functional.h>
 
-template<class Domain, class Range> Functional<Domain,Range>::~Functional()
-{
-    // Nothing
-}
-
-
+//# Constructors
+template<class Domain,class Range>
+Functional<Domain,Range>::~Functional() {}
