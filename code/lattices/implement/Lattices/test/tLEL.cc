@@ -2503,12 +2503,17 @@ Bool checkBool (LELInterface<Bool>& expr,
     return ok;
 }
 Bool checkAttribute (const LELAttribute& attr,
+		     const Bool isMasked,
                      const Bool isScalar,
                      const IPosition& shape,
                      const IPosition& tileShape,
                      const LatticeCoordinates& lattCoord)
 {
    Bool ok = True;
+   if (attr.isMasked() != isMasked) {
+      cout << "   isMasked function failed" << endl;
+      ok = False;
+   }
    if (attr.isScalar() != isScalar) {
       cout << "   isScalar function failed" << endl;
       ok = False;
