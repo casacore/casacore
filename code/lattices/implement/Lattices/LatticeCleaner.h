@@ -111,6 +111,9 @@ public:
   // The destructor does nothing special.
   ~LatticeCleaner();
 
+  // Update the dirty image only
+  void update(const Lattice<T> & dirty);
+
   // Set a number of scale sizes. The units of the scale are pixels.
   Bool setscales(const Int nscales, const Float scaleInc=1.0);
 
@@ -118,6 +121,11 @@ public:
   Bool setscales(const Vector<Float> & scales);
 
   // Set up control parameters
+  Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
+		  const Float gain, const Quantity& aThreshold,
+		  const Quantity& fThreshold,
+		  const Bool choose=True);
+
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
 		  const Float gain, const Quantity& threshold,
 		  const Bool choose=True);
@@ -183,6 +191,9 @@ public:
   // Method to return threshold, including any speedup factors
   Float threshold();
 
+  // Helper function to optimize adding
+  void addTo(Lattice<T>& to, const Lattice<T>& add);
+
 private:
   //# The following functions are used in various places in the code and are
   //# documented in the .cc file. Static functions are used when the functions
@@ -212,6 +223,7 @@ private:
   Int itsIteration;	// what iteration did we get to?
   Int itsStartingIter;	// what iteration did we get to?
   Quantum<Double> itsThreshold;
+  Quantum<Double> itsFracThreshold;
 
   Float itsMaximumResidual;
 

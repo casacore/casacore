@@ -133,7 +133,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
 }
 
 template <class T> LatticeCleaner<T>::
-LatticeCleaner(const LatticeCleaner<T> & other):
+    LatticeCleaner(const LatticeCleaner<T> & other):
    itsCleanType(other.itsCleanType),
    itsDirty(other.itsDirty),
    itsXfr(other.itsXfr),
@@ -188,6 +188,35 @@ template<class T> LatticeCleaner<T>::
   if(itsMask) delete itsMask; 
 }
 
+template<class T> 
+void LatticeCleaner<T>::update(const Lattice<T> &dirty)
+{
+  AlwaysAssert(dirty.shape()==itsDirty->shape(), AipsError);
+  itsDirty->copyData(dirty);
+
+  LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
+
+  TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
+  dirtyFT.copyData(LatticeExpr<Complex>(toComplex(*itsDirty)));
+  LatticeFFT::cfft2d(dirtyFT, True);
+
+  // Now we can redo the relevant convolutions
+  TempLattice<Complex> cWork(itsDirty->shape(), itsMemoryMB);
+
+  for (Int scale=0; scale<itsNscales;scale++) {
+    // Dirty * scale
+    os << "Updating dirty * scale image for scale " << scale+1 << LogIO::POST;
+
+    LatticeExpr<Complex> dpsExpr( (dirtyFT)*(*itsScaleXfrs[scale]));
+    cWork.copyData(dpsExpr);
+    LatticeFFT::cfft2d(cWork, False);
+    AlwaysAssert(itsDirtyConvScales[scale], AipsError);
+    LatticeExpr<T> realWork2(real(cWork));
+    itsDirtyConvScales[scale]->copyData(realWork2);
+  }
+
+}
+
 
 // add a mask image
 template<class T> 
@@ -208,8 +237,6 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask)
 
 };
 
-
-// Set up the control parameters
 template <class T>
 Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
 				   const Int niter,
@@ -217,10 +244,23 @@ Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
 				   const Quantity& threshold,
 				   const Bool choose)
 {
+  return setcontrol(cleanType, niter, gain, threshold, Quantity(0.0, "%"), choose);
+}
+
+// Set up the control parameters
+template <class T>
+Bool LatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
+				   const Int niter,
+				   const Float gain,
+				   const Quantity& aThreshold,
+				   const Quantity& fThreshold,
+				   const Bool choose)
+{
   itsCleanType=cleanType;
   itsMaxNiter=niter;
   itsGain=gain;
-  itsThreshold=threshold;
+  itsThreshold=aThreshold;
+  itsFracThreshold=fThreshold;
   itsChoose=choose;
   return True;
 }
@@ -261,13 +301,18 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Int scale;
   Vector<T> scaleBias(nScalesToClean);
   if (nScalesToClean > 1) {
+    os << "Scale biases =";
     for (scale=0;scale<nScalesToClean;scale++) {
       scaleBias(scale) = 1 - itsSmallScaleBias *
 	itsScaleSizes(scale)/itsScaleSizes(nScalesToClean-1);
+      if(scale) os << ",";
+      os << " " << scaleBias(scale);
     }
+    os << LogIO::POST;
   } else {
     scaleBias(0) = 1.0;
   }
+
   AlwaysAssert(itsScalesValid, AipsError);
 
   // Find the peaks of the convolved Psfs
@@ -292,68 +337,70 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     }
   }
 
-
-
-
   // Define a subregion for the inner quarter
   IPosition blcDirty(model.shape().nelements(), 0);
   IPosition trcDirty(model.shape()-1);
 
-   if (itsIgnoreCenterBox) {
-     os << "Cleaning entire image as per MF/WF" << LogIO::POST;
-   }
-   else if(itsMask){
+  if(itsMask){
     os << "Cleaning using given mask" << LogIO::POST;
-
-       Int nx=model.shape()(0);
-       Int ny=model.shape()(1);
-
-
-       AlwaysAssert(itsMask->shape()(0)==nx, AipsError);
-       AlwaysAssert(itsMask->shape()(1)==ny, AipsError);
-       
-       LatticeStepper mls(itsMask->shape(),
+    
+    Int nx=model.shape()(0);
+    Int ny=model.shape()(1);
+    
+    
+    AlwaysAssert(itsMask->shape()(0)==nx, AipsError);
+    AlwaysAssert(itsMask->shape()(1)==ny, AipsError);
+    
+    LatticeStepper mls(itsMask->shape(),
 		       IPosition(4, nx, ny, 1, 1),
 		       IPosition(4, 0, 1, 3, 2));
-       RO_LatticeIterator<Float> maskli(*itsMask, mls);
-       maskli.reset(); 
-        Int xbeg=nx-1;
-        Int ybeg=ny-1;
-        Int xend=0;
-        Int yend=0;
-	for (Int iy=0;iy<ny;iy++) {
-	  for (Int ix=0;ix<nx;ix++) {
-	    if(maskli.matrixCursor()(ix,iy)>0.000001) {
-	      xbeg=min(xbeg,ix);
-	      ybeg=min(ybeg,iy);
-	      xend=max(xend,ix);
-	      yend=max(yend,iy);
-	    }
-	  }
+    RO_LatticeIterator<Float> maskli(*itsMask, mls);
+    maskli.reset(); 
+    Int xbeg=nx-1;
+    Int ybeg=ny-1;
+    Int xend=0;
+    Int yend=0;
+    for (Int iy=0;iy<ny;iy++) {
+      for (Int ix=0;ix<nx;ix++) {
+	if(maskli.matrixCursor()(ix,iy)>0.000001) {
+	  xbeg=min(xbeg,ix);
+	  ybeg=min(ybeg,iy);
+	  xend=max(xend,ix);
+	  yend=max(yend,iy);
 	}
+      }
+    }
+    
+    if (!itsIgnoreCenterBox) {
+      if((xend - xbeg)>nx/2) {
+	xbeg=nx/4-1; //if larger than quarter take inner of mask
+	os << LogIO::WARN << "Mask span over more than half the x-axis: Considering inner half of the x-axis"  << LogIO::POST;
+      } 
+      if((yend - ybeg)>ny/2) { 
+	ybeg=ny/4-1;
+	os << LogIO::WARN << "Mask span over more than half the y-axis: Considering inner half of the y-axis" << LogIO::POST;
+      }  
+      xend=min(xend,xbeg+nx/2-1);
+      yend=min(yend,ybeg+ny/2-1);
+    }
 
-	if((xend - xbeg)>nx/2) {
-	  xbeg=nx/4-1; //if larger than quarter take inner of mask
-	  os << LogIO::WARN << "Mask span over more than half the x-axis: Considering inner half of the x-axis"  << LogIO::POST;
-	} 
-	if((yend - ybeg)>ny/2) { 
-	  ybeg=ny/4-1;
-	  os << LogIO::WARN << "Mask span over more than half the y-axis: Considering inner half of the y-axis" << LogIO::POST;
-	}  
-	xend=min(xend,xbeg+nx/2-1);
-	yend=min(yend,ybeg+ny/2-1);
-	blcDirty(0)=xbeg;
-	blcDirty(1)=ybeg;
-	trcDirty(0)=xend;
-	trcDirty(1)=yend;
-   }
-   else {
-    os << "Cleaning inner quarter of image" << LogIO::POST;
-    for (Int i=0;i<Int(model.shape().nelements());i++) {
-      blcDirty(i)=model.shape()(i)/4;
-      trcDirty(i)=blcDirty(i)+model.shape()(i)/2-1;
-      if(trcDirty(i)<0) trcDirty(i)=1;
-   }
+    blcDirty(0)=xbeg;
+    blcDirty(1)=ybeg;
+    trcDirty(0)=xend;
+    trcDirty(1)=yend;
+  }
+  else {
+    if (itsIgnoreCenterBox) {
+      os << "Cleaning entire image as per MF/WF" << LogIO::POST;
+    }
+    else {
+      os << "Cleaning inner quarter of image" << LogIO::POST;
+      for (Int i=0;i<Int(model.shape().nelements());i++) {
+	blcDirty(i)=model.shape()(i)/4;
+	trcDirty(i)=blcDirty(i)+model.shape()(i)/2-1;
+	if(trcDirty(i)<0) trcDirty(i)=1;
+      }
+    }
   }
   LCBox centerBox(blcDirty, trcDirty, model.shape());
 
@@ -430,7 +477,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       break;
     }
     //    2. negatives on largest scale?
-    if (itsStopAtLargeScaleNegative  && 
+    if ((nScalesToClean > 1) && itsStopAtLargeScaleNegative  && 
 	optimumScale == (nScalesToClean-1) && 
 	strengthOptimum < 0.0) {
       os << "Reached negative on largest scale" << LogIO::POST;
@@ -469,38 +516,36 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       os << itsIteration <<"      "<<strengthOptimum<<"      "<< totalFlux <<LogIO::POST ;
     }
 
-    // Continuing: subtract the peak that we found from all dirty images
-    // Define a subregion so that that the peak is centered
-    IPosition blc(model.shape().nelements(), 0);
-    IPosition trc(model.shape()-1);
-    IPosition blcPsf(model.shape().nelements(), 0);
-    IPosition trcPsf(model.shape()-1);
-    for (Int i=0;i<Int(model.shape().nelements());i++) {
-      blc(i)+=positionOptimum(i)-itsPositionPeakPsf(i);
-      if(blc(i)<0) blc(i)=0;
-      if(blc(i)>=model.shape()(i)) blc(i)=model.shape()(i)-1;
-      trc(i)+=positionOptimum(i)-itsPositionPeakPsf(i);
-      if(trc(i)>=model.shape()(i)) trc(i)=model.shape()(i)-1;
-      if(trc(i)<0) trc(i)=0;
-      blcPsf(i)-=positionOptimum(i)-itsPositionPeakPsf(i);
-      if(blcPsf(i)<0) blcPsf(i)=0;
-      if(blcPsf(i)>=model.shape()(i)) blcPsf(i)=model.shape()(i)-1;
-      trcPsf(i)-=positionOptimum(i)-itsPositionPeakPsf(i);
-      if(trcPsf(i)>=model.shape()(i)) trcPsf(i)=model.shape()(i)-1;
-      if(trcPsf(i)<0) trcPsf(i)=0;
-    }
-
-    LCBox subRegion(blc, trc, model.shape());
-    LCBox subRegionPsf(blcPsf, trcPsf, model.shape());
-    SubLattice<T> modelSub(model, subRegion, True);
-    SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, True);
-
-    // Now do the addition of this scale to the model image....
     T scaleFactor;
     scaleFactor=itsGain*strengthOptimum;
-    LatticeExpr<T> add(modelSub+scaleFactor*scaleSub);
-    modelSub.copyData(add);
 
+    // Continuing: subtract the peak that we found from all dirty images
+    // Define a subregion so that that the peak is centered
+    // For the dirty images, we only update within the
+    // support region (this saves a lot of time).
+    IPosition support(model.shape()/10);
+    support(0)=max(Int(itsScaleSizes(itsNscales-1)+0.5), support(0));
+    support(1)=max(Int(itsScaleSizes(itsNscales-1)+0.5), support(1));
+
+    IPosition inc(model.shape().nelements(), 1);
+    
+    IPosition blc(positionOptimum-support/2);
+    IPosition trc(positionOptimum+support/2-1);
+    LCBox::verify(blc, trc, inc, model.shape());
+    
+    IPosition blcPsf(blc+itsPositionPeakPsf-positionOptimum);
+    IPosition trcPsf(trc+itsPositionPeakPsf-positionOptimum);
+    LCBox::verify(blcPsf, trcPsf, inc, model.shape());
+    
+    LCBox subRegion(blc, trc, model.shape());
+    LCBox subRegionPsf(blcPsf, trcPsf, model.shape());
+    
+    SubLattice<T> modelSub(model, subRegion, True);
+    SubLattice<T> scaleSub(*itsScales[optimumScale], subRegionPsf, True);
+    
+    // Now do the addition of this scale to the model image....
+    LatticeExpr<T> add(scaleFactor*scaleSub);
+    addTo(modelSub, add);
 
     // and then subtract the effects of this scale from all the precomputed
     // dirty convolutions.
@@ -508,15 +553,15 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], subRegion, True);
       AlwaysAssert(itsPsfConvScales[index(scale,optimumScale)], AipsError);
       SubLattice<T> psfSub(*itsPsfConvScales[index(scale,optimumScale)],
-			       subRegionPsf, True);
-      LatticeExpr<T> sub(dirtySub-scaleFactor*psfSub);
-      dirtySub.copyData(sub);
+			   subRegionPsf, True);
+      LatticeExpr<T> sub((-scaleFactor)*psfSub);
+      addTo(dirtySub, sub);
     }
   }
   // End of iteration
 
   for (scale=0;scale<nScalesToClean;scale++) {
-    os << "Scale " << scale << ", total flux = "
+    os << "Scale " << scale+1 << ", total flux = "
        << totalFluxScale(scale) << LogIO::POST;
   }
 
@@ -1027,22 +1072,33 @@ Bool LatticeCleaner<T>::makeScaleMasks()
 template<class T> 
 Float LatticeCleaner<T>::threshold()
 {
-  if(itsThreshold.getUnit()=="%") {
-    if (! itsDoSpeedup) {
-      return itsThreshold.get("%").getValue()*itsMaximumResidual/100.0;
-    } else {
-      Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
-	/ 2.7182818;
-      return (factor * itsThreshold.get("%").getValue() * itsMaximumResidual /100.0);
-    }
-  }
-  else {
-    if (! itsDoSpeedup) {
-      return (itsThreshold.get("Jy").getValue());
-    } else {
-      Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
-	/ 2.7182818;
-      return (factor * itsThreshold.get("Jy").getValue());
-    }
+  if (! itsDoSpeedup) {
+    return max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
+	       itsThreshold.get("Jy").getValue());
+  } else {
+    Float factor = exp( (Float)( itsIteration - itsStartingIter )/ itsNDouble )
+      / 2.7182818;
+    return factor * max(itsFracThreshold.get("%").getValue() * itsMaximumResidual /100.0,
+		       itsThreshold.get("Jy").getValue());
   }
 };
+
+template<class T>
+void LatticeCleaner<T>::addTo(Lattice<T>& to, const Lattice<T>& add)
+{
+  // Check the lattice is writable.
+  // Check the shape conformance.
+  AlwaysAssert (to.isWritable(), AipsError);
+  const IPosition shapeIn  = add.shape();
+  const IPosition shapeOut = to.shape();
+  AlwaysAssert (shapeIn.isEqual (shapeOut), AipsError);
+  IPosition cursorShape = to.niceCursorShape();
+  LatticeStepper stepper (shapeOut, cursorShape, LatticeStepper::RESIZE);
+  LatticeIterator<T> toIter(to, stepper);
+  RO_LatticeIterator<T> addIter(add, stepper);
+  for (addIter.reset(), toIter.reset(); !addIter.atEnd();
+       addIter++, toIter++) {
+    toIter.rwCursor()+=addIter.cursor();
+  }
+}
+
