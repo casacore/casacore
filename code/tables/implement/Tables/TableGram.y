@@ -698,6 +698,7 @@ elem:      orexpr {
          | range {
                $$ = $1;
            }
+         ;
 
 singlerange: range {
 	       TableExprNodeSet set;
@@ -705,6 +706,7 @@ singlerange: range {
 	       delete $1;
                $$ = new TableExprNode (set.setOrArray());
            }
+         ;
 
 range:     colonrange {
                $$ = $1;
