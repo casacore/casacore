@@ -248,6 +248,7 @@ MIRLIBLIB  := -lmir
 # Default package-dependent link lists for shared library linking.
 XLIBLIST_shared_aips  := GLISH X11 LAPACK F77
 XLIBLIST_shared_trial := GLISH XmPGPLOT XPM Motif X11 WCSLIB LAPACK F77
+XLIBLIST_shared_trialdisplay := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_nrao  := $(XLIBLIST_shared_trial)
 XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_trial)
 XLIBLIST_shared_nfra  := $(XLIBLIST_shared_trial)
@@ -403,6 +404,7 @@ LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
 LIBcontrib    = defeat defeat defeat defeat defeat defeat
 LIBtrial      = defeat static defeat defeat defeat static
+LIBtrialdisplay = defeat static defeat defeat defeat defeat
 #                                                          Consortia
 LIBatnf       = defeat defeat defeat defeat defeat defeat
 LIBbima       = defeat defeat defeat defeat defeat defeat
@@ -426,7 +428,8 @@ LINKsynthesis := synthesis aips
 LINKvlbi      := vlbi synthesis aips
 
 LINKcontrib   := contrib vlbi synthesis dish aips
-LINKtrial     := trial display aips
+LINKtrial     := trial aips
+LINKtrialdisplay := trialdisplay trial display aips
 
 LINKatnf      := atnf trial aips
 LINKbima      := bima trial aips
@@ -496,8 +499,8 @@ DOCEXTR   := docscan docextr resolvedocs changelogs
 ICONSERVER :=
 ICONS2LOCAL := $(AIPSARCH)/bin/redoicons.sh
 
-# What auxiliary packages to build (contrib trial).
-AUXILIARY := trial
+# What auxiliary packages to build (contrib trial trialdisplay).
+AUXILIARY := trial trialdisplay
 
 # What consortium packages to build (atnf bima hia nfra nral nrao tifr).
 CONSORTIA :=
@@ -895,6 +898,7 @@ export LIBsynthesis := $(LIBsynthesis)
 export LIBvlbi      := $(LIBvlbi)
 export LIBcontrib   := $(LIBcontrib)
 export LIBtrial     := $(LIBtrial)
+export LIBtrialdisplay := $(LIBtrialdisplay)
 export LIBatnf      := $(LIBatnf)
 export LIBbima      := $(LIBbima)
 export LIBhia       := $(LIBhia)
