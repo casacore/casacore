@@ -1,5 +1,5 @@
 //# MeasConvert.cc:  Conversion of Measures
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,8 +51,9 @@ MeasConvert<M,F,MC>::MeasConvert(const MeasConvert<M,F,MC> &other) :
 
 template<class M, class F, class MC>
 MeasConvert<M,F,MC> &MeasConvert<M,F,MC>::operator=(const MeasConvert<M,F,MC> &other) {
-  init();
-  copy(other);
+  if (this != &other) {
+    copy(other);
+  };
   return *this;
 }
 
