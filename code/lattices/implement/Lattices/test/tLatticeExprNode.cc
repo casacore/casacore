@@ -1330,7 +1330,8 @@ main (int argc, char *argv[])
 // Check 2D functions
 //
 
-    cout << endl << "2-argument functions " << endl;    cout << "atan2" << endl;
+    cout << endl << "2-argument functions " << endl;    
+    cout << "atan2" << endl;
    {
       cout << "  Float Scalar" << endl;
       LatticeExprNode expr1(bFVal);
@@ -1451,6 +1452,39 @@ main (int argc, char *argv[])
       LatticeExprNode expr3 = amp(expr1,expr2);
       Complex result = sqrt(bCVal*bCVal+cCVal*cCVal);
       if (!checkComplex (expr3, result, shape, False)) ok = False;
+   }
+   cout << "pa" << endl;
+   {
+      cout << " Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2(cFVal);
+      LatticeExprNode expr3 = pa(expr1,expr2);
+      Float result = 90.0/C::pi*atan2(bFVal,cFVal);
+      if (!checkFloat (expr3, result, shape, True)) ok = False;
+   }
+   {
+      cout << " Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2(cF);
+      LatticeExprNode expr3 = pa(expr1,expr2);
+      Float result = 90.0/C::pi*atan2(bFVal,cFVal);
+      if (!checkFloat (expr3, result, shape, False)) ok = False;
+   }
+   {
+      cout << " Double Scalar" << endl;
+      LatticeExprNode expr1(bDVal);
+      LatticeExprNode expr2(cDVal);
+      LatticeExprNode expr3 = pa(expr1,expr2);
+      Double result = 90.0/C::pi*atan2(bDVal,cDVal);
+      if (!checkDouble (expr3, result, shape, True)) ok = False;
+   }
+   {
+      cout << " Double Array" << endl;
+      LatticeExprNode expr1(bD);
+      LatticeExprNode expr2(cD);
+      LatticeExprNode expr3 = pa(expr1,expr2);
+      Double result = 90.0/C::pi*atan2(bDVal,cDVal);
+      if (!checkDouble (expr3, result, shape, False)) ok = False;
    }
 
 
