@@ -2223,3 +2223,7 @@
 09 127 src rm atnf/implement/pks/MeanDevFitPoly.h
 09 127 src rm atnf/implement/pks/MedianDevFit1D.h
 09 127 src rm atnf/implement/pks/MedianDevFitPoly.h
+09 127 src rm atnf/implement/pks/SimData1D.cc
+09 127 src rm atnf/implement/pks/SimNoise1D.cc
+09 127 src rm atnf/implement/pks/SimData1D.h
+09 127 src rm atnf/implement/pks/SimNoise1D.h
