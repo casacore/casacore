@@ -915,7 +915,7 @@ Vector<Double> Poisson::parameters() const {
 }
 
 Bool Poisson::checkParameters(const Vector<Double>& pars) const {
-  return pars.nelements() == 1 && pars(0) > 0.0;
+  return pars.nelements() == 1 && pars(0) >= 0.0;
 }
 
 Uniform::Uniform(RNG* gen, Double low, Double high)
