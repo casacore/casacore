@@ -31,7 +31,9 @@
 #include <aips/aips.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Images/WCRegion.h>
+#include <trial/Lattices/RegionType.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
 class LCRegion;
@@ -173,6 +175,25 @@ class IPosition;
 // coordinates. 
 // </motivation>
 //
+// <note>
+//  In all the constructors, you have to specifiy which plane
+//  the polygon lies in.  You do this by specifying the *PIXEL AXES*
+//  (not the world axes) as this is the natural thing the user
+//  will want to specify.
+// </note>
+//
+// <note>
+//  For the constructors specifying the world values as simple doubles,
+//  it is *ASSUMED* that the units of those doubles are the same as
+//  the native units of the <src>CoordinateSystem</src> for each axis.
+// </note>
+//  
+// <note>
+//  World coordinates may be specified as absolute or offset.  If the
+//  latter, they are offset with respect to the reference pixel of
+//  the <src>CoordinateSystem</src>.
+//  </note>
+//
 // <todo asof="1998/05/20">
 // <li> 
 // </todo>
@@ -182,29 +203,19 @@ class WCPolygon : public WCRegion
 public:
     WCPolygon();
 
-   // Construct from two vectors of world coordinates (absolute
-   // or offset) defining the polygon vertices.  The world coordinate
-   // axes pertaining to the x and y vectors, respectively, are given
-   // in the vector <src>worldAxes</src>.   If <src>isOffset</src> is 
-   // True, then the world coordinates are offset relative to the 
-   // reference pixel of the  supplied <src>CoordinateSystem</src>.
+   // Construct from two vectors of world coordinates 
+   // defining the polygon vertices.  
    // <group>
-   WCPolygon(const Vector<Double>& x,
-             const Vector<Double>& y,
-             const Vector<Int>& worldAxes,
+   WCPolygon(const Quantum<Vector<Double> >& x,
+             const Quantum<Vector<Double> >& y,
+             const IPosition& pixelAxes,
              const CoordinateSystem& cSys,
-             const Bool isOffset=False);
-   WCPolygon(const Vector<Float>& x,
-             const Vector<Float>& y,
-             const Vector<Int>& worldAxes,
-             const CoordinateSystem& cSys,
-             const Bool isOffset=False);
+             const RegionType::AbsRelType absRel=RegionType::Abs);
    // </group>
 
-   // Construct from an <src>LCPolygon</src>. You specify which world axes
-   // the polygon belongs to (x and then y)
+   // Construct from an <src>LCPolygon</src>. 
    WCPolygon(const LCPolygon& polygon,
-             const Vector<Int>& worldAxes,
+             const IPosition& pixelAxes,
              const CoordinateSystem& cSys);
 
    // Copy constructor (reference semantics).
@@ -222,9 +233,14 @@ public:
    // Clone a WCPolygon object.
    virtual WCRegion* cloneRegion() const;
 
+   // WCPolygon cannot extend a region.
+   virtual Bool canExtend() const;   
+
    // Convert to an LCRegion using the given coordinate system.
-   virtual LCRegion* toLCRegion (const CoordinateSystem& cSys,
-                                 const IPosition& latticeShape) const;
+   virtual LCRegion* doToLCRegion (const CoordinateSystem& cSys,
+                                   const IPosition& latticeShape,
+                                   const IPosition& pixelAxesMap,
+                                   const IPosition& outOrder) const;
 
    // Convert the WCPolygon object to a record.
    // The record can be used to make the object persistent.
@@ -244,11 +260,27 @@ public:
 
 
 private:
-   Vector<Double> itsXWC;
-   Vector<Double> itsYWC;
-   Vector<Int> itsWorldAxes;   // must be Int not uInt as no uInt in Glish
+   Quantum<Vector<Double> > itsX;
+   Quantum<Vector<Double> > itsY;
+   IPosition itsPixelAxes;   
    CoordinateSystem itsCSys;
-   Bool itsIsOffset;
+   RegionType::AbsRelType itsAbsRel;
+   Bool itsNull;
+
+   void checkAxes (const IPosition& pixelAxes,
+                   const CoordinateSystem& cSys,
+                   const String& xUnit,
+                   const String& yUnit) const;
+
+
+   void convertPixel(Double& pixel,
+                     const Double& value,
+                     const String& unit,
+                     const Int absRel,
+                     const Double refPix,   
+                     const Int shape) const;
+
+   static void unitInit();
 
 };
 
