@@ -30,11 +30,10 @@
 #define AIPS_LINEAR_XFORM_H
 
 #include <aips/aips.h>
-
+#include <wcslib/lin.h>
 template<class T> class Vector;
 template<class T> class Matrix;
 class String;
-struct linprm;
 
 // <summary>
 // Perform a linear transform between input and output vectors
@@ -115,7 +114,7 @@ public:
     // are resized appropriately.
     // <group>
     Bool forward(const Vector<Double> &world,
-			 Vector<Double> &pixel, String &errorMsg) const;
+		 Vector<Double> &pixel, String &errorMsg) const;
     Bool reverse(Vector<Double> &world,
 			 const Vector<Double> &pixel, String &errorMsg) const;
     // </group>
@@ -147,6 +146,10 @@ public:
               Double tol=1e-6) const;
     // </group>
 
+    // Recover the WCS structure.  Generally this is not needed,
+    // but DirectionCoordinate needs to get at it for its
+    // interface to wcsmix()
+    linprm linprmWCS() const {return *linprm_p;}
 
 private:
     // A WCSLIB C-structure.
