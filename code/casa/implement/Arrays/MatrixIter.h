@@ -1,5 +1,5 @@
 //# MatrixIter.h: Iterate a matrix cursor through another array
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
