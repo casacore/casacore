@@ -1,5 +1,5 @@
 //# Flux.h:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,18 +31,13 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Quanta/Quantum.h>
-#include <aips/Utilities/Assert.h>
-
 class RecordInterface;
+template <class Qtype> class Quantum;
 
 // <summary>A class that represents the Flux (copy semantics)</summary>
 
@@ -112,7 +107,7 @@ class RecordInterface;
 // as complex numbers there is no loss of accuracy when converting between
 // different polarisation representations. But it discards the imaginary
 // component of the flux when externally representing the flux using with a
-// Stokes representation (eg., when calling the <src>value(Vector<T> &)</src>
+// Stokes representation (eg., when calling the <src>value(Vector<T>&)</src>
 // function).
 //
 // Because this class using Complex numbers with a precision that depends on
@@ -173,85 +168,63 @@ public:
   FluxRep(NumericTraits<T>::ConjugateType xx,
 	  NumericTraits<T>::ConjugateType xy,
 	  NumericTraits<T>::ConjugateType yx,
-	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol)
-    :itsVal(4),
-     itsPol(pol),
-     itsUnit("Jy") 
-    {
-      itsVal(0) = xx;
-      itsVal(1) = xy;
-      itsVal(2) = yx;
-      itsVal(3) = yy;
-      DebugAssert(ok(), AipsError);
-    };
+	  NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol);
   
   // This constructor makes an object where I,Q,U,V are all specified by a
   // Vector that must have four elements. It assumes a Stokes representation,
   // and units of "Jy".
-  FluxRep(const Vector<T> & flux);
+  FluxRep(const Vector<T>& flux);
 
   // This constructor makes an object where the flux values are all specified
   // by a Vector that must have four elements. The polarisation representation
   // must also be specified. It assumes the units are "Jy".
-  FluxRep(const Vector<NumericTraits<T>::ConjugateType> & flux,
-	  ComponentType::Polarisation pol)
-    :itsVal(flux.copy()),
-     itsPol(pol),
-     itsUnit("Jy")
-    {
-      DebugAssert(ok(), AipsError);
-    };
+  FluxRep(const Vector<NumericTraits<T>::ConjugateType>& flux,
+	  ComponentType::Polarisation pol);
   
   // This constructor makes an object where the flux values are all specified
   // by a Quantum<Vector> that must have four elements.  The Quantum must have
   // units that are dimensionally equivalent to the "Jy" and these are the
   // units of the FluxRep object. A Stokes polarisation representation is
   // assumed.
-  FluxRep(const Quantum<Vector<T> > & flux);
+  FluxRep(const Quantum<Vector<T> >& flux);
 
   // This constructor makes an object where the flux values are all specified
   // by a Quantum<Vector> that must have four elements. The Quantum must have
   // units that are dimensionally equivalent to the "Jy" and these are the
   // units of the FluxRep object. The polarisation representation must also be
   // specified.
-  FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
-	  ComponentType::Polarisation pol)
-    :itsVal(flux.getValue().copy()),
-     itsPol(pol),
-     itsUnit(flux.getFullUnit())
-    {
-      DebugAssert(ok(), AipsError);
-    };
+  FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& flux,
+	  ComponentType::Polarisation pol);
 
   // The copy constructor uses copy semantics.
-  FluxRep(const FluxRep<T> & other);
+  FluxRep(const FluxRep<T>& other);
 
   // The destructor is trivial
   ~FluxRep();
 
   // The assignment operator uses copy semantics.
-  FluxRep<T> & operator=(const FluxRep<T> & other);
+  FluxRep<T>& operator=(const FluxRep<T>& other);
 
   // These two functions return the current units
   // <group>
-  const Unit & unit() const;
-  void unit(Unit & unit) const;
+  const Unit& unit() const;
+  void unit(Unit& unit) const;
   // </group>
 
   // This function sets the current unit. It does NOT convert the flux values
   // to correspond to the new unit. The new unit must be dimensionally
   // equivalent to the "Jy".
-  void setUnit(const Unit & unit);
+  void setUnit(const Unit& unit);
 
   // This function sets the current units to the supplied value and
   // additionally converts the internal flux values to the correspond to the
   // new unit.
-  void convertUnit(const Unit & unit);
+  void convertUnit(const Unit& unit);
 
   // These two functions return the current polarisation representation.
   // <group>
   ComponentType::Polarisation pol() const;
-  void pol(ComponentType::Polarisation & pol) const;
+  void pol(ComponentType::Polarisation& pol) const;
   // </group>
 
   // This function sets the current polarisation representation. It does NOT
@@ -265,55 +238,32 @@ public:
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
-  const Vector<NumericTraits<T>::ConjugateType> & value() const {
-    DebugAssert(ok(), AipsError);
-    return itsVal;
-  };
+  const Vector<NumericTraits<T>::ConjugateType>& value() const;
 
   // This function returns the specified component of the flux values.
   // The polarisation representation and units are in whatever is current.
-  const NumericTraits<T>::ConjugateType & value(uInt p) const {
-    DebugAssert(p < 4, AipsError);
-    DebugAssert(ok(), AipsError);
-    return itsVal(p);
-  };
+  const NumericTraits<T>::ConjugateType& value(uInt p) const;
 
   // This function returns the flux values after converting it to the Stokes
   // representation. The units of the returned Vector are the current units.
-  void value(Vector<T> & value);
+  void value(Vector<T>& value);
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
-  void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
-    DebugAssert(ok(), AipsError);
-    uInt len = value.nelements();
-    DebugAssert (len == 4 || len == 0, AipsError);
-    value = itsVal;
-  };
+  void value(Vector<NumericTraits<T>::ConjugateType>& value) const;
 
   // This function returns the flux values after converting it to the Stokes
   // representation. The units of the returned Quantum are the current units of
   // the FluxRep object. The length of the Vector in the Quantum will be
   // resized to 4 elements if it is not already that length.
-  void value(Quantum<Vector<T> > & value);
+  void value(Quantum<Vector<T> >& value);
 
   // This function returns the flux values. The units of the returned Quantum
   // are the current units of the FluxRep object. Similarly the polarisation
   // representation of the returned Quantum is the current polarisation
   // representation. The length of the Vector in the Quantum will be resized to
   // 4 elements if it is not already that length.
-  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value) const {
-    const Unit & curUnit = value.getFullUnit();
-    if (curUnit != itsUnit) {
-      value.setUnit(itsUnit);
-    }
-    Vector<NumericTraits<T>::ConjugateType> & newValue = value.getValue();
-    if (newValue.nelements() != 4) newValue.resize(4);
-    for (uInt s = 0 ; s < 4; s++) {
-      newValue(s) = itsVal(s);
-    }
-    DebugAssert(ok(), AipsError);
-  };
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const;
 
   // This function sets the Flux values assuming the supplied value represents
   // the Stokes I flux in the current units. The other Stokes parameters are
@@ -323,58 +273,39 @@ public:
   // This function sets the Flux values assuming the supplied values represent
   // the flux in the Stokes representation and is in the current units. The
   // Vector must have four elements.
-  void setValue(const Vector<T> & value); 
+  void setValue(const Vector<T>& value); 
 
   // This function sets the Flux values assuming the supplied values represent
   // the flux in the current representation and units. The Vector must have
   // four elements.
-  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
-    DebugAssert (value.nelements() == 4, AipsError);
-    itsVal = value;
-    DebugAssert(ok(), AipsError);
-  };
+  void setValue(const Vector<NumericTraits<T>::ConjugateType>& value);
 
   // This function sets the flux values and units assuming the supplied values
   // represent the flux in the Stokes representation. The units of the Quantum
   // must be dimensionally equivalent to the "Jy" and the Vector must have four
   // elements.
-  void setValue(const Quantum<Vector<T> > & value);
+  void setValue(const Quantum<Vector<T> >& value);
 
   // This function sets the flux values, units and polarisation assuming the
   // supplied values represent the flux in the specified representation. The
   // units of the Quantum must be dimensionally equivalent to the "Jy" and the
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
-		ComponentType::Polarisation pol) {
-    DebugAssert (value.getValue().nelements() == 4, AipsError);
-    itsVal = value.getValue();
-    itsUnit = value.getFullUnit();
-    itsPol = pol;
-    DebugAssert(ok(), AipsError);
-  };
+		ComponentType::Polarisation pol);
 
   // Scale the Flux value by the specified amount. These functions multiply the
   // flux values irrespective of the current polarisation representation. If
   // only one scale factor is supplied then only the first component of the
   // flux is scaled.
   // <group>
-  void scaleValue(const T & factor);
-  void scaleValue(const T & factor0, const T & factor1,
-		  const T & factor2, const T & factor3);
-  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
-    itsVal(0) *= factor;
-    DebugAssert(ok(), AipsError);
-  };
-  void scaleValue(const NumericTraits<T>::ConjugateType & factor0,
-		  const NumericTraits<T>::ConjugateType & factor1,
-		  const NumericTraits<T>::ConjugateType & factor2,
-		  const NumericTraits<T>::ConjugateType & factor3) {
-    itsVal(0) *= factor0;
-    itsVal(1) *= factor1;
-    itsVal(2) *= factor2;
-    itsVal(3) *= factor3;
-    DebugAssert(ok(), AipsError);
-  };
+  void scaleValue(const T& factor);
+  void scaleValue(const T& factor0, const T& factor1,
+		  const T& factor2, const T& factor3);
+  void scaleValue(const NumericTraits<T>::ConjugateType& factor);
+  void scaleValue(const NumericTraits<T>::ConjugateType& factor0,
+		  const NumericTraits<T>::ConjugateType& factor1,
+		  const NumericTraits<T>::ConjugateType& factor2,
+		  const NumericTraits<T>::ConjugateType& factor3);
   // </group>
 
   // This functions convert between a RecordInterface and a FluxRep object and
@@ -382,8 +313,8 @@ public:
   // RecordInterface is malformed and append an error message to the supplied
   // string giving the reason.
   // <group>
-  Bool fromRecord(String & errorMessage, const RecordInterface & record);
-  Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  Bool fromRecord(String& errorMessage, const RecordInterface& record);
+  Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -454,7 +385,7 @@ private:
 // returned object is passed by reference and hence this is a relatively cheap
 // operation.
 // <srcblock>
-// Flux<Double> totalFlux(ComponentList & list) {
+// Flux<Double> totalFlux(ComponentList& list) {
 //   Vector<DComplex> sum(4, DComplex(0.0, 0.0));
 //   for (uInt i = 0; i < list.nelements(); i++) {
 //     list.component(i).flux().convertPol(ComponentType::STOKES);
@@ -500,50 +431,42 @@ public:
   // representation are specified. It assumes the units are "Jy".
   Flux(NumericTraits<T>::ConjugateType xx, NumericTraits<T>::ConjugateType xy,
        NumericTraits<T>::ConjugateType yx, NumericTraits<T>::ConjugateType yy, 
-       ComponentType::Polarisation pol)  
-    :itsFluxPtr(new FluxRep<T>(xx, xy, yx, yy, pol))
-    {
-      DebugAssert(ok(), AipsError);
-    };
+       ComponentType::Polarisation pol);
 
   // This constructor makes an object where I,Q,U,V are all specified by a
   // Vector that must have four elements. It assumes a Stokes representation,
   // and units of "Jy".
-  Flux(const Vector<T> & flux);
+  Flux(const Vector<T>& flux);
 
   // This constructor makes an object where the flux values are all specified
   // by a Vector that must have four elements. The polarisation representation
   // must also be specified. It assumes the units are "Jy".
-  Flux(const Vector<NumericTraits<T>::ConjugateType> & flux,
-       ComponentType::Polarisation pol)
-    :itsFluxPtr(new FluxRep<T>(flux, pol))
-    {
-      DebugAssert(ok(), AipsError);
-    };
+  Flux(const Vector<NumericTraits<T>::ConjugateType>& flux,
+       ComponentType::Polarisation pol);
   
   // This constructor makes an object where the flux values are all specified
   // by a Quantum<Vector> that must have four elements.  The Quantum must have
   // units that are dimensionally equivalent to the "Jy" and these are the
   // units of the FluxRep object. A Stokes polarisation representation is
   // assumed.
-  Flux(const Quantum<Vector<T> > & flux);
+  Flux(const Quantum<Vector<T> >& flux);
 
   // This constructor makes an object where the flux values are all specified
   // by a Quantum<Vector> that must have four elements. The Quantum must have
   // units that are dimensionally equivalent to the "Jy" and these are the
   // units of the FluxRep object. The polarisation representation must also be
   // specified.
-  Flux(const Quantum<Vector<NumericTraits<T>::ConjugateType> > & flux,
+  Flux(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& flux,
        ComponentType::Polarisation pol);
 
   // The copy constructor uses reference semantics.
-  Flux(const Flux<T> & other);
+  Flux(const Flux<T>& other);
 
   // The destructor is trivial
   ~Flux();
 
   // The assignment operator uses reference semantics.
-  Flux<T> & operator=(const Flux<T> & other);
+  Flux<T>& operator=(const Flux<T>& other);
 
   // Return a distinct copy of this flux. As both the assignment operator
   // and the copy constructor use reference semantics this is the only way to
@@ -552,24 +475,24 @@ public:
 
   // These two functions return the current units.
   // <group>
-  const Unit & unit() const;
-  void unit(Unit & unit) const;
+  const Unit& unit() const;
+  void unit(Unit& unit) const;
   // </group>
 
   // This function sets the current unit. It does NOT convert the flux values
   // to correspond to the new unit. The new unit must be dimensionally
   // equivalent to the "Jy".
-  void setUnit(const Unit & unit);
+  void setUnit(const Unit& unit);
 
   // This function sets the current units to the supplied value and
   // additionally converts the internal flux values to the correspond to the
   // new unit.
-  void convertUnit(const Unit & unit);
+  void convertUnit(const Unit& unit);
 
   // These two functions return the current polarisation representation.
   // <group>
   ComponentType::Polarisation pol() const;
-  void pol(ComponentType::Polarisation & pol) const;
+  void pol(ComponentType::Polarisation& pol) const;
   // </group>
 
   // This function sets the current polarisation representation. It does NOT
@@ -583,98 +506,74 @@ public:
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
-  const Vector<NumericTraits<T>::ConjugateType> & value() const {
-    DebugAssert(ok(), AipsError);
-    return itsFluxPtr->value();
-  };
+  const Vector<NumericTraits<T>::ConjugateType>& value() const;
 
   // This function returns the specified component of the flux values.
   // The polarisation representation and units are in whatever is current.
-  const NumericTraits<T>::ConjugateType & value(uInt p) const {
-    DebugAssert(ok(), AipsError);
-    return itsFluxPtr->value(p);
-  };
+  const NumericTraits<T>::ConjugateType& value(uInt p) const;
 
   // This function returns the flux values after converting it to the Stokes
   // representation. The units of the returned Vector are the current units.
-  void value(Vector<T> & value);
+  void value(Vector<T>& value);
 
   // This function returns the flux values. The polarisation representation and
   // units are in whatever is current.
-  void value(Vector<NumericTraits<T>::ConjugateType> & value) const {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->value(value);
-  };
+  void value(Vector<NumericTraits<T>::ConjugateType>& value) const;
 
   // This function returns the flux values after converting it to the Stokes
   // representation. The units of the returned Quantum are the current units of
   // the FluxRep object. The length of the Vector in the Quantum will be
   // resized to 4 elements if it is not already that length.
-  void value(Quantum<Vector<T> > & value);
+  void value(Quantum<Vector<T> >& value);
 
   // This function returns the flux values. The units of the returned Quantum
   // are the current units of the FluxRep object. Similarly the polarisation
   // representation of the returned Quantum is the current polarisation
   // representation. The length of the Vector in the Quantum will be resized to
   // 4 elements if it is not already that length.
-  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> > & value) const {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->value(value);
-  };
+  void value(Quantum<Vector<NumericTraits<T>::ConjugateType> >& value) const;
 
   // This function sets the Flux values assuming the supplied value represents
   // the Stokes I flux in the current units. The other Stokes parameters are
   // set to zero.
-  void setValue(T value); 
+  void setValue(T value);
 
   // This function sets the Flux values assuming the supplied values represent
   // the flux in the Stokes representation and is in the current units. The
   // Vector must have four elements.
-  void setValue(const Vector<T> & value); 
+  void setValue(const Vector<T>& value); 
 
   // This function sets the Flux values assuming the supplied values represent
   // the flux in the current representation and units. The Vector must have
   // four elements.
-  void setValue(const Vector<NumericTraits<T>::ConjugateType> & value) {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->setValue(value);
-  };
+  void setValue(const Vector<NumericTraits<T>::ConjugateType>& value);
 
   // This function sets the flux values and units assuming the supplied values
   // represent the flux in the Stokes representation. The units of the Quantum
   // must be dimensionally equivalent to the "Jy" and the Vector must have four
   // elements.
-  void setValue(const Quantum<Vector<T> > & value);
+  void setValue(const Quantum<Vector<T> >& value);
 
   // This function sets the flux values, units and polarisation assuming the
   // supplied values represent the flux in the specified representation. The
   // units of the Quantum must be dimensionally equivalent to the "Jy" and the
   // Vector must have four elements.
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
-		ComponentType::Polarisation pol) {
-    DebugAssert(ok(), AipsError);
-    itsFluxPtr->setValue(value, pol);
-  };
+		ComponentType::Polarisation pol);
 
   // Scale the Flux value by the specified amount. These functions multiply the
   // flux values irrespective of the current polarisation representation. If
   // only one scale factor is supplied then only the first component of the
   // flux is scaled.
   // <group>
-  void scaleValue(const T & factor);
-  void scaleValue(const T & factor0, const T & factor1,
-		  const T & factor2, const T & factor3);
-  void scaleValue(const NumericTraits<T>::ConjugateType & factor) {
-    itsFluxPtr->scaleValue(factor);
-    DebugAssert(ok(), AipsError);
-  };
-  void scaleValue(const NumericTraits<T>::ConjugateType & factor0,
-		  const NumericTraits<T>::ConjugateType & factor1,
-		  const NumericTraits<T>::ConjugateType & factor2,
-		  const NumericTraits<T>::ConjugateType & factor3) {
-    itsFluxPtr->scaleValue(factor0, factor1, factor2, factor3);
-    DebugAssert(ok(), AipsError);
-  };
+  void scaleValue(const T& factor);
+  void scaleValue(const T& factor0, const T& factor1,
+		  const T& factor2, const T& factor3);
+  void scaleValue(const NumericTraits<T>::ConjugateType& factor);
+  void scaleValue(const NumericTraits<T>::ConjugateType& factor0,
+		  const NumericTraits<T>::ConjugateType& factor1,
+		  const NumericTraits<T>::ConjugateType& factor2,
+		  const NumericTraits<T>::ConjugateType& factor3);
   // </group>
 
   // This functions convert between a RecordInterface and a Flux object and
@@ -682,8 +581,8 @@ public:
   // RecordInterface is malformed and append an error message to the supplied
   // string giving the reason.
   // <group>
-  Bool fromRecord(String & errorMessage, const RecordInterface & record);
-  Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  Bool fromRecord(String& errorMessage, const RecordInterface& record);
+  Bool toRecord(String& errorMessage, RecordInterface& record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -693,187 +592,67 @@ public:
 
   // This function converts between a Vector in Stokes representation and one
   // in Circular representation.
-  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
-    			       const Vector<T> & in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const T i = in(0);
-    const T q = in(1);
-    const T u = in(2);
-    const T v = in(3);
-    out(0).re = i + v; out(0).im = T(0);
-    out(1).re = q;     out(1).im = u;
-    out(2).re = q;     out(2).im = -u;
-    out(3).re = i - v; out(3).im = T(0);
-  };
+  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType>& out, 
+    			       const Vector<T>& in);
 
   // This function converts between a Vector in Stokes representation and one
   // in Circular representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
- 			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType i = in(0);
-    const NumericTraits<T>::ConjugateType q = in(1);
-    const NumericTraits<T>::ConjugateType & u = in(2);
-    const NumericTraits<T>::ConjugateType ju(-u.im, u.re);
-    const NumericTraits<T>::ConjugateType v = in(3);
-    out(0) = i + v;
-    out(1) = q + ju;
-    out(2) = q - ju;
-    out(3) = i - v;
-  };
+  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType>& out, 
+ 			       const Vector<NumericTraits<T>::ConjugateType>&
+ 			       in);
 
   // This function converts between a Vector in Circular representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are discarded.
-  static void circularToStokes(Vector<T> & out,
- 			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const T rr = in(0).re;
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const T ll = in(3).re;
-    out(0) = (rr + ll)/T(2);
-    out(1) = (rl.re + lr.re)/T(2);
-    out(2) = (rl.im - lr.im)/T(2);
-    out(3) = (rr - ll)/T(2);
-  };
+  static void circularToStokes(Vector<T>& out,
+ 			       const Vector<NumericTraits<T>::ConjugateType>&
+ 			       in);
 
   // This function converts between a Vector in Circular representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void circularToStokes(Vector<NumericTraits<T>::ConjugateType> & out,
- 			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType rr = in(0);
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const NumericTraits<T>::ConjugateType ll = in(3);
-    out(0) = (rr + ll)/T(2);
-    out(1) = (rl + lr)/T(2);
-    NumericTraits<T>::ConjugateType & u = out(2);
-    u.re = (rl.im-lr.im)/T(2);
-    u.im = (lr.re-rl.re)/T(2);
-    out(3) = (rr - ll)/T(2);
-  };
+  static void circularToStokes(Vector<NumericTraits<T>::ConjugateType>& out,
+ 			       const Vector<NumericTraits<T>::ConjugateType>&
+ 			       in);
 
   // This function converts between a Vector in Stokes representation and one
   // in Linear representation.
-  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-  			     const Vector<T> & in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const T i = in(0);
-    const T q = in(1);
-    const T u = in(2);
-    const T v = in(3);
-    out(0).re = i + q; out(0).im = T(0);
-    out(1).re = u;     out(1).im = v;
-    out(2).re = u;     out(2).im = -v;
-    out(3).re = i - q; out(3).im = T(0);
-  };
+  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
+  			     const Vector<T>& in);
 
   // This function converts between a Vector in Stokes representation and one
   // in Linear representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
-  			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType i = in(0);
-    const NumericTraits<T>::ConjugateType q = in(1);
-    const NumericTraits<T>::ConjugateType u = in(2);
-    const NumericTraits<T>::ConjugateType & v = in(3);
-    const NumericTraits<T>::ConjugateType jv(-v.im, v.re);
-    out(0) = i + q;
-    out(1) = u + jv;
-    out(2) = u - jv;
-    out(3) = i - q;
-  };
+  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
+  			     const Vector<NumericTraits<T>::ConjugateType>&
+ 			     in);
 
   // This function converts between a Vector in Linear representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are discarded.
-  static void linearToStokes(Vector<T> & out, 
- 			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const T xx = in(0).re;
-    const NumericTraits<T>::ConjugateType xy = in(1);
-    const NumericTraits<T>::ConjugateType yx = in(2);
-    const T yy = in(3).re;
-    out(0) = (xx + yy)/T(2);
-    out(1) = (xx - yy)/T(2);
-    out(2) = (xy.re + xy.re)/T(2);
-    out(3) = (xy.im - yx.im)/T(2);
-  };
+  static void linearToStokes(Vector<T>& out, 
+ 			     const Vector<NumericTraits<T>::ConjugateType>&
+ 			     in);
 
   // This function converts between a Vector in Linear representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void linearToStokes(Vector<NumericTraits<T>::ConjugateType> & out, 
- 			     const Vector<NumericTraits<T>::ConjugateType> &
- 			     in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType xx = in(0);
-    const NumericTraits<T>::ConjugateType xy = in(1);
-    const NumericTraits<T>::ConjugateType yx = in(2);
-    const NumericTraits<T>::ConjugateType yy = in(3);
-    out(0) = (xx + yy)/T(2);
-    out(1) = (xx - yy)/T(2);
-    out(2) = (xy + yx)/T(2);
-    NumericTraits<T>::ConjugateType & v = out(3);
-    v.re = (xy.im-yx.im)/T(2);
-    v.im = (yx.re-xy.re)/T(2);
-  };
+  static void linearToStokes(Vector<NumericTraits<T>::ConjugateType>& out, 
+ 			     const Vector<NumericTraits<T>::ConjugateType>&
+ 			     in);
 
   // This function converts between a Vector in Linear representation and one
   // in Circular representation.
-  static void linearToCircular(Vector<NumericTraits<T>::ConjugateType> & out, 
- 			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType xx = in(0);
-    const NumericTraits<T>::ConjugateType & xy = in(1);
-    const NumericTraits<T>::ConjugateType jxy(-xy.im, xy.re);
-    const NumericTraits<T>::ConjugateType & yx = in(2);
-    const NumericTraits<T>::ConjugateType jyx(-yx.im, yx.re);
-    const NumericTraits<T>::ConjugateType yy = in(3);
-    out(0) = (xx - jxy + jyx + yy)/T(2);
-    out(1) = (xx + jxy + jyx - yy)/T(2);
-    out(2) = (xx - jxy - jyx - yy)/T(2);
-    out(3) = (xx + jxy - jyx + yy)/T(2);
-  };
+  static void linearToCircular(Vector<NumericTraits<T>::ConjugateType>& out, 
+ 			       const Vector<NumericTraits<T>::ConjugateType>&
+ 			       in);
 
   // This function converts between a Vector in Circular representation and one
   // in Linear representation.
-  static void circularToLinear(Vector<NumericTraits<T>::ConjugateType> & out, 
- 			       const Vector<NumericTraits<T>::ConjugateType> &
- 			       in) {
-    DebugAssert(in.nelements() == 4, AipsError);
-    DebugAssert(out.nelements() == 4, AipsError);
-    const NumericTraits<T>::ConjugateType rr = in(0);
-    const NumericTraits<T>::ConjugateType rl = in(1);
-    const NumericTraits<T>::ConjugateType lr = in(2);
-    const NumericTraits<T>::ConjugateType ll = in(3);
-    out(0) = (rr + rl + lr + ll)/T(2);
-    out(1).re = (-rr.im + rl.im - lr.im + ll.im)/T(2);
-    out(1).im = ( rr.re - rl.re + lr.re - ll.re)/T(2);
-    out(2).re = (-rr.im - rl.im + lr.im + ll.im)/T(2);
-    out(2).im = (-rr.re - rl.re + lr.re + ll.re)/T(2);
-    out(3) = (rr - rl - lr + ll)/T(2);
-  };
+  static void circularToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
+ 			       const Vector<NumericTraits<T>::ConjugateType>&
+ 			       in);
 
 private:
   CountedPtr<FluxRep<T> > itsFluxPtr;
