@@ -821,11 +821,16 @@ Bool Coordinate::setPreferredWorldAxisUnits (const Vector<String>& prefUnits)
 }
 
 
-Bool Coordinate::near (const Coordinate& other,
-                       const Vector<Bool>& thisAxes,
-                       const Vector<Bool>& otherAxes,
-                       Double tol) const
+Bool Coordinate::doNearPixel (const Coordinate& other,
+                              const Vector<Bool>& thisAxes,
+                              const Vector<Bool>& otherAxes,
+                              Double tol) const
 {
+   if (type() != other.type()) {
+      set_error("Coordinate types differ");
+      return False;
+   }
+//
    if (allEQ(thisAxes, False) && allEQ(otherAxes, False)) {
       return True;
    }

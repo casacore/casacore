@@ -344,14 +344,6 @@ public:
                       Double tol=1.0e-6) const = 0;
     // </group>
 
-    // Comparison only made for specified axes in this and other Coordinate 
-    Bool near (const Coordinate& other, 
-               const Vector<Bool>&  thisAxes,
-               const Vector<Bool>& otherAxes,
-               Double tol=1.0e-6) const;
-
-
-
     // Set and recover the preferred world axis units.  These can be used to specify
     // a favoured unit for conversions for example.  The given units must be empty
     // or dimensionally consistent with the native world axis units, else
@@ -456,6 +448,14 @@ public:
     // <src>new</src> and must be deleted by the caller.
     virtual Coordinate *clone() const = 0;
 
+    // Comparison only made for specified axes in this and other Coordinate 
+    // The default implementation should be ok for all Coordinate types
+    // except Stokes...
+    virtual Bool doNearPixel (const Coordinate& other, 
+                              const Vector<Bool>&  thisAxes,
+                              const Vector<Bool>& otherAxes,
+                              Double tol=1.0e-6) const;
+
 protected:
     // Default constructor. Make an empty coordinate.  Used by derived classes.
     Coordinate();
@@ -466,10 +466,15 @@ protected:
     // Assignment (copy semantics) 
     Coordinate& operator=(const Coordinate& other);
 
+    // Set error message
     void set_error(const String &errorMsg) const;
+
+    //
     Bool find_scale_factor(String &error, Vector<Double> &factor, 
 			   const Vector<String> &units, 
 			   const Vector<String> &oldUnits);
+
+    //
     Vector<String> make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
                                               const Vector<String>& axisNames,
                                               Double refLat, Bool printError) const;
@@ -486,6 +491,8 @@ protected:
    Bool setWorldMixRanges (Vector<Double>& worldMin,
                            Vector<Double>& worldMax,
                            const IPosition& shape) const;
+
+   //
    void setDefaultWorldMixRanges (Vector<Double>& worldMin,
                                   Vector<Double>& worldMax) const;
 
