@@ -164,7 +164,7 @@ setConstraint(const uInt n,
   constrVal_p[n] = new typename FunctionTraits<T>::BaseType(y);
   for (uInt i=0; i<pCount_p; ++i) {
     (*constrFun_p[n])[i] = FunctionTraits<T>::DiffType
-      ((*constrFun_p[n])[i].value(), pCount_p, i);;
+      ((*constrFun_p[n])[i].value(), pCount_p, i);
   };
   return True;
 }
@@ -481,7 +481,7 @@ void GenericL2Fit<T>::initfit_p(uInt parcnt) {
     if (ptr_derive_p) {
       for (uInt i=0; i<pCount_p; ++i) {
 	(*ptr_derive_p)[i] = FunctionTraits<T>::DiffType
-	  ((*ptr_derive_p)[i].value(), pCount_p, i);;
+	  ((*ptr_derive_p)[i].value(), pCount_p, i);
       };
     };
   };
@@ -554,6 +554,7 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
   typename FunctionTraits<T>::BaseType b(0.0);
   typename FunctionTraits<T>::BaseType sig(1.0);
   VectorSTLIterator<typename FunctionTraits<T>::BaseType> ceqit(condEq_p);
+  ptr_derive_p->lockParam(); // Parameters will not change during loop
   for (uInt i=0; i<nrows; i++) {
     if (mask && !((*mask)[i])) continue;
     if (sigma) {
@@ -573,6 +574,7 @@ buildMatrix(const Array<typename FunctionTraits<T>::BaseType> &x,
     };
     makeNorm(ceqit, abs(sig), b);
   };
+  ptr_derive_p->unlockParam();
 }
 
 template<class T>
