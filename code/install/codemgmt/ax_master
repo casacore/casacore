@@ -5675,3 +5675,4 @@
 15 306 src mv trial/implement/Wnbt/UPreident install/codemgmt/UPreident
 15 308 src mv atnf/apps/pksgridzilla/cube_helper atnf/apps/pksgridzilla/cubecat
 15 308 src mv atnf/apps/pksgridzilla/cube_helper.g atnf/apps/pksgridzilla/cubecat.g
+15 333 sys rm libexec/newsdfits2ms_meta.g
