@@ -237,11 +237,6 @@ public:
   // pointer. This is used to implement a virtual copy constructor.
   virtual SkyCompRep * clone() const = 0;
 
-  // These functions will at a later stage be moved into the Measures
-  // module. But for now they are used by GaussianCompRep for converting
-  // Quantum<Double> objects to glish records.
-  static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
-
 protected:
   //# These functions are used by derived classes implementing concrete
   //# versions of the toRecord and fromRecord member functions.
