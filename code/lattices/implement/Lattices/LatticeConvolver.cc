@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeConvolver.h>
+#include <trial/Lattices/LatticeFFT.h>
 #include <aips/Lattices/IPosition.h>
 
 template<class T> LatticeConvolver<T>::
@@ -36,8 +37,22 @@ LatticeConvolver()
 } 
 
 template<class T> LatticeConvolver<T>::
+LatticeConvolver(const Lattice<T> & psf)
+{
+  IPosition shape = psf.shape();
+  shape(0) = (shape(0) + 2)/2;
+  itsXfr = TempLattice<NumericTraits<T>::ConjugateType>(shape);
+  LatticeFFT::rcfft(itsXfr, psf);
+} 
+
+template<class T> LatticeConvolver<T>::
 ~LatticeConvolver()
 {
+}
+
+template<class T> void LatticeConvolver<T>::
+getPsf(Lattice<T> & psf) const {
+  LatticeFFT::crfft(psf, itsXfr);
 }
 
 // Local Variables: 
