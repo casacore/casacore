@@ -1,5 +1,5 @@
 //# SortError.cc: Error classes for the sort class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,94 +29,34 @@
 
 // Implementation of Sort error classes.
 
-rtti_imp_init(SortError);
-rtti_imp_mbrf(SortError);
 SortError::SortError () : AipsError("Sort error")
 { ; }
 SortError::SortError (const String& str) :
                             AipsError(str)
 { ; }
-SortError::SortError (ExcpError* excp) : AipsError(excp)
-{
-    SortError* tmp;
-    PCAST(tmp,SortError,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 SortError::~SortError ()
 { ; }
 
 
-rtti_imp_init(SortInvDT);
-rtti_imp_mbrf(SortInvDT);
 SortInvDT::SortInvDT () : SortError ("Invalid sort data type")
 { ; }
-SortInvDT::SortInvDT (ExcpError* excp) : SortError(excp)
-{
-    SortInvDT* tmp;
-    PCAST(tmp,SortInvDT,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 SortInvDT::~SortInvDT ()
 { ; }
 
 
-rtti_imp_init(SortInvIncr);
-rtti_imp_mbrf(SortInvIncr);
 SortInvIncr::SortInvIncr () : SortError ("Sort increment < key Incr")
 { ; }
-SortInvIncr::SortInvIncr (ExcpError* excp) : SortError(excp)
-{
-    SortInvIncr* tmp;
-    PCAST(tmp,SortInvIncr,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 SortInvIncr::~SortInvIncr ()
 { ; }
 
 
-rtti_imp_init(SortNoData);
-rtti_imp_mbrf(SortNoData);
 SortNoData::SortNoData () : SortError ("No data array given to constructor")
 { ; }
-SortNoData::SortNoData (ExcpError* excp) : SortError(excp)
-{
-    SortNoData* tmp;
-    PCAST(tmp,SortNoData,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 SortNoData::~SortNoData ()
 { ; }
 
 
-rtti_imp_init(SortInvOpt);
-rtti_imp_mbrf(SortInvOpt);
 SortInvOpt::SortInvOpt () : SortError ("Invalid sort option given")
 { ; }
-SortInvOpt::SortInvOpt (ExcpError* excp) : SortError(excp)
-{
-    SortInvOpt* tmp;
-    PCAST(tmp,SortInvOpt,excp);
-    if (tmp) {
-        _equal = True;
-    }else{
-        _equal = False;
-    }
-}
 SortInvOpt::~SortInvOpt ()
 { ; }

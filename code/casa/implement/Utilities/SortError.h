@@ -1,5 +1,5 @@
 //# SortError.h: Error classes for the sort class
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,19 +32,6 @@
 #include <aips/Exceptions/Error.h>
 
 
-// <summary> Make error classes known to RTTI </summary>
-// <use visibility=export>
-// <reviewed reviewer="Friso Olnon" date="1995/03/01" tests="" demos="">
-// </reviewed>
-// <synopsis> Make error classes known to RTTI. </synopsis>
-// <group name="SortError_rtti_init">
-rtti_dcl_init(SortError);
-rtti_dcl_init(SortInvDT);
-rtti_dcl_init(SortInvIncr);
-rtti_dcl_init(SortNoData);
-rtti_dcl_init(SortInvOpt);
-// </group>
-
 // <summary> Generic Sort exception </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/01" tests="" demos="">
@@ -60,9 +47,7 @@ class SortError : public AipsError {
 public:
     SortError ();
     SortError (const String&);
-    SortError (ExcpError*);
     ~SortError ();
-    rtti_dcl_mbrf_p1(SortError,AipsError);
 };
 
 
@@ -78,9 +63,7 @@ public:
 class SortInvDT : public SortError {
 public:
     SortInvDT ();
-    SortInvDT (ExcpError*);
     ~SortInvDT ();
-    rtti_dcl_mbrf_p1(SortInvDT,SortError);
 };
 
 // <summary> Invalid increment used for this sort key </summary>
@@ -96,9 +79,7 @@ public:
 class SortInvIncr : public SortError {
 public:
     SortInvIncr ();
-    SortInvIncr (ExcpError*);
     ~SortInvIncr ();
-    rtti_dcl_mbrf_p1(SortInvIncr,SortError);
 };
 
 // <summary> No data array given to Sort constructor. </summary>
@@ -113,9 +94,7 @@ public:
 class SortNoData : public SortError {
 public:
     SortNoData ();
-    SortNoData (ExcpError*);
     ~SortNoData ();
-    rtti_dcl_mbrf_p1(SortNoData,SortError);
 };
 
 // <summary> Invalid sort option given to routine dosort. </summary>
@@ -130,9 +109,7 @@ public:
 class SortInvOpt : public SortError {
 public:
     SortInvOpt ();
-    SortInvOpt (ExcpError*);
     ~SortInvOpt ();
-    rtti_dcl_mbrf_p1(SortInvOpt,SortError);
 };
 
 #endif
