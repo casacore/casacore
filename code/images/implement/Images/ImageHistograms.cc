@@ -484,6 +484,7 @@ Bool ImageHistograms<T>::getHistograms (Array<Float>& values,
       extractOneHistogram (valuesIterator.vector(), countsIterator.vector(), range, 
                            histIterator.vectorCursor());
    }
+   return True;
 }
 
 
