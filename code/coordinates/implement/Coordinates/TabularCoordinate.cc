@@ -1,5 +1,5 @@
 //# TabularCoordinate.cc: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/MatrixMath.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
@@ -41,6 +42,9 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
+
+#include <aips/strstream.h>
+
 
 TabularCoordinate::TabularCoordinate()
 : Coordinate(),
@@ -226,7 +230,7 @@ uInt TabularCoordinate::nWorldAxes() const
     return 1;
 }
 
-Bool TabularCoordinate::toWorld(Double &world, Double pixel) const
+Bool TabularCoordinate::toWorld(Double& world, Double pixel) const
 {
     if (channel_corrector_p) {
 	pixel = (*channel_corrector_p)(pixel);
@@ -247,10 +251,8 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
   	                        const Vector<Double> &pixel) const
 {
-   if (pixel.nelements() != 1) {
-	throw(AipsError("TabularCoordinate: pixel vector must be "
-			"length 1"));
-   }
+   DebugAssert(pixel.nelements()==1,"TabularCoordinate: pixel vector must be length 1");
+//
    world.resize(1);
    return toWorld(world(0), pixel(0));
 }
@@ -258,13 +260,69 @@ Bool TabularCoordinate::toWorld(Vector<Double> &world,
 Bool TabularCoordinate::toPixel(Vector<Double> &pixel, 
                                 const Vector<Double> &world) const
 {
-    if (world.nelements() != 1) {
-	throw(AipsError("TabularCoordinate: world vector must be "
-			"length 1"));
-    }
-    pixel.resize(1);
-    return toPixel(pixel(0), world(0));
+   DebugAssert(world.nelements()==1,"TabularCoordinate: world vector must be length 1");
+//
+   pixel.resize(1);
+   return toPixel(pixel(0), world(0));
 }
+
+
+uInt TabularCoordinate::toWorldMany(Matrix<Double>& world,
+                                    const Matrix<Double>& pixel,
+                                    Vector<Int>& failures) const
+{
+    const uInt nTransforms = pixel.ncolumn();
+    Double alpha = cdelt_p * matrix_p;
+    Double beta = crval_p -alpha * crpix_p;
+//
+    world.resize(nWorldAxes(),nTransforms);
+    Vector<Double> worlds(world.row(0));     // Only 1 axis in TC
+    Vector<Double> pixels(pixel.row(0));
+//
+    uInt nFail = 0;
+    if (channel_corrector_p) {
+       for (uInt j=0; j<nTransforms; j++) { 
+          worlds[j] = beta + alpha*((*channel_corrector_p)(pixels[j]));
+       }
+    } else {
+       for (uInt j=0; j<nTransforms; j++) { 
+          worlds[j] = beta + alpha*pixels[j];
+       }
+    }
+//
+    return nFail;
+}
+
+
+uInt TabularCoordinate::toPixelMany (Matrix<Double>& pixel,
+                                    const Matrix<Double>& world,
+                                    Vector<Int>& failures) const
+{
+    const uInt nTransforms = world.ncolumn();
+    Double alpha = cdelt_p * matrix_p;
+    Double beta = crpix_p - crval_p / alpha;
+//
+    pixel.resize(nPixelAxes(),nTransforms);
+    Vector<Double> worlds(world.row(0));      // Only 1 axis in TC
+    Vector<Double> pixels(pixel.row(0));
+//
+    uInt nFail = 0;
+    if (channel_corrector_rev_p) {
+       for (uInt j=0; j<nTransforms; j++) { 
+          pixels[j] = worlds[j]/alpha + beta;
+          pixels[j] = (*channel_corrector_rev_p)(pixels[j]);
+       }
+    } else {
+       for (uInt j=0; j<nTransforms; j++) { 
+          pixels[j] = worlds[j]/alpha + beta;
+       }
+    }
+//
+    return nFail;
+}
+
+
+
 
 Vector<String> TabularCoordinate::worldAxisNames() const
 {
