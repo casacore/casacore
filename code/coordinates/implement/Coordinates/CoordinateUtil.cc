@@ -369,7 +369,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
    if (worldReplacement.nelements() != nRemove) {
       worldReplacement.resize(nRemove);
-      for (i=0; i<nRemove; i++) {
+      for (uInt i=0; i<nRemove; i++) {
          worldReplacement(i) = cSys.referenceValue()(remove(i));
       }
    }
@@ -377,18 +377,10 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
 
 // Now for each world axis in the list, get rid of the world and associated
 // pixel axis
- 
-   uInt worldAxis = remove(0);
-   for (i=0; i<nRemove; i++) {
 
-// Remove the axis
-
-      if (!cSys.removeWorldAxis(worldAxis, worldReplacement(i))) return False;
-
-// Find the next world axis to eradicate
-
-      if (i+1<remove.nelements()) worldAxis = remove(i+1) - 1;
-   }
+   for (Int k=(nRemove-1); k>=0; k--) {
+      if (!cSys.removeWorldAxis(remove(k), worldReplacement(k))) return False;
+    }
    return True;
 }      
 
@@ -440,16 +432,8 @@ Bool CoordinateUtil::removePixelAxes(CoordinateSystem& cSys,
 
 // Now for each pixel axis in the list, get rid of it
  
-   uInt pixelAxis = remove(0);
-   for (i=0; i<nRemove; i++) {
-
-// Remove the axis
-
-      if (!cSys.removePixelAxis(pixelAxis, pixelReplacement(i))) return False;
-
-// Find the next world axis to eradicate
-
-      if (i+1<remove.nelements()) pixelAxis = remove(i+1) - 1;
+   for (Int k=(nRemove-1); k>=0; k--) {
+      if (!cSys.removePixelAxis(remove(k), pixelReplacement(k))) return False;
    }
    return True;
 }      
