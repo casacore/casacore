@@ -165,8 +165,8 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
     os << LogIO::SEVERE << "Could not write main table\n" << LogIO::POST;
   } else {
     os << LogIO::NORMAL << "Writing AIPS FQ table" << LogIO::POST;
-    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq,
-		 combineSpw);
+    ok = writeFQ(fitsOutput, ms, spwidMap, nrspw, refFreq, refPixelFreq, 
+		 chanbw, combineSpw);
   }
   if (!ok) {
     os << LogIO::SEVERE << "Could not write FQ table\n" << LogIO::POST;
@@ -316,11 +316,13 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 	chanbw = abs(delta);
 	stokes = stokesTypes(p);
       }
+	
       if((nchan >0 )  && (chanstep > 0 ) && (chanstart >= 0) 
 	 && ((nchan*chanstep+chanstart) <= numchan0) ){
 
 	f0 = freqs(chanstart);
 	bw0= delta*chanstep;
+
 	
 
       }
@@ -429,7 +431,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
                            isColumn(MS::columnName(MS::WEIGHT_SPECTRUM));
 
 
-  IPosition dataShape(6, 3, numcorr0, numchan0, 1, 1, 1);
+  IPosition dataShape(6, 3, numcorr0, nchan, 1, 1, 1);
   if (combineSpw) {
     dataShape(3) = nrspw;
   }
@@ -812,6 +814,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
     writer.write();
   }
+  // changing chanbw to output one
+  chanbw=bw0;
 
   return outfile;
 }
@@ -819,7 +823,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
 Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms, 
 			   const Block<Int>& spwidMap, Int nrspw,
-			   Double refFreq, Int refPixelFreq, Bool combineSpw)
+			   Double refFreq, Int refPixelFreq, Double chanbw, 
+			   Bool combineSpw)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeFQ"));
   MSSpectralWindow specTable(ms.spectralWindow());
@@ -894,10 +899,10 @@ Bool MSFitsOutput::writeFQ(FitsOutput *output, const MeasurementSet &ms,
       (*iffreq)(inx) = freqs(refPixelFreq) - refFreq;
       if (freqs.nelements() > 1) {
 	if(doWsrt){
-	  (*ifwidth)(inx) = abs(freqs(1) - freqs(0));
+	  (*ifwidth)(inx) = abs(chanbw);
 	}
 	else{
-	  (*ifwidth)(inx) = (freqs(1) - freqs(0));
+	  (*ifwidth)(inx) = (chanbw);
 	}
       } else {
 	(*ifwidth)(inx) = intotbw(i);
@@ -1647,7 +1652,7 @@ Bool MSFitsOutput::writeGC(FitsOutput *output, const MeasurementSet &ms,
   header.define("NO_BAND", Int(nrif));             // NO_BAND
   header.define("NO_CHAN", nchan);                 // NO_CHAN
   header.define("REF_FREQ", refFreq);              // REF_FREQ
-  header.define("CHAN_BW", chanbw);                // CHAN_BW
+  header.define("CHAN_BW", abs(chanbw));                // CHAN_BW
   header.define("REF_PIXL", Double(1+refPixelFreq)); // REF_PIXL (==CRPIX4)
   header.define("NO_TABS", shape(0));              // NO_TABS
   header.define("TABREV", 2);                      // TABREV
