@@ -4229,3 +4229,4 @@
 14 070 src mv trial/implement/MeasurementSets/MSSpwBuffer.h trial/implement/MeasurementSets/MSSpWindowBuffer.h
 14 073 src mv atnf/implement/pks/MBFITS.h atnf/implement/RPFITS.h
 14 074 src rm atnf/implement/F2C
+14 074 src rm atnf/implement/rpfits.cc
