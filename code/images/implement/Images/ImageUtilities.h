@@ -100,7 +100,8 @@ public:
      UNKNOWN
    };
 
-// Return the type of an image with the given name.
+// Return the type of an image with the given name.  Will throw an
+// exception if file does not exist.
    static ImageTypes imageType (const String& fileName);
 
 // Open disk image (can be aips++, fits, Miriad).  Exception
