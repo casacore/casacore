@@ -177,7 +177,7 @@ void RecordRep::addField (const String& name, const Record& rec,
     }
     // Use default ctor and assignment to be sure that the
     // new record gets the correct record type.
-    Record* ptr = new Record (type);
+    Record* ptr = new Record (this, type);
     *ptr = rec;
     addDataPtr (ptr);
 }
