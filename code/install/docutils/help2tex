@@ -31,7 +31,7 @@ use Getopt::Long;
 $/ = "";
 $* = 1;
 $mtext = "[^}]*";
-$etext = "([^}]*|[^}]*\{[^}]*\}[^}]*)";
+$etext = "([^\}]*\{[^\}]*\}[^\}]*|[^\}]*)";
 $wlabel = "\\subsubsection";
 $theText = "";
 $args = "";
