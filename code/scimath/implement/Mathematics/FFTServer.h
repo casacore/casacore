@@ -1,5 +1,5 @@
 //# FFTServer.h: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,19 +32,15 @@
 #pragma implementation ("FFTServer.cc")
 #endif
 
-#include <aips/aips_exit.h>
 #include <aips/aips.h>
-#include <aips/Mathematics/Math.h>
-#include <aips/RTTI/Typeinfo.h>
-#include <aips/Lattices/IPosition.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/Mathematics/Complex.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Arrays/Array.h>
-#include <aips/Arrays/ArrayIter.h>
-#include <aips/Mathematics/FourierTool.h>
-#include <aips/Mathematics/extern_fft.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Mathematics/FourierTool.h>
+
+template <class T> class Array;
+class IPosition;
+class String;
+template <class T> class Vector;
 
 // <summary> Error class for <linkto class=FFTServer>FFTServer</linkto> class </summary>
 
@@ -52,12 +48,15 @@
 // Error class for <linkto class=FFTServer>FFTServer</linkto> class.
 // </synopsis>
 
-class FFTError : public AipsError
+class FFTError: public AipsError
 {
 public:
-  FFTError() : AipsError("FFTError") {}
-  FFTError(const Char *m)   : AipsError(m) {}
-  FFTError(const String &m) : AipsError(m) {}
+  FFTError()
+    :AipsError("FFTError") {}
+  FFTError(const Char * m)   
+    :AipsError(m) {}
+  FFTError(const String & m):
+    AipsError(m) {}
 };
 
 
@@ -120,8 +119,10 @@ public:
 
 // The term uv grid is used to denote any frequency domain object,
 // whether two dimensional or not. A forward transform is a transform
-// from the time to frequency domain; a reverse or backward transform is
-// from frequency to time.
+// from the time to frequency domain. It has and exponent of -1, and does not
+// do any scaling of the resultant array. A reverse or backward transform is
+// from frequency to time. The exponent is +1 and usually the resulatant array
+// is scaled by 1/N where N is the number of elements in the Array.
 
 // Methods are provided to transform both real and complex arrays; the
 // Hermitian property of a transformed real object is used to reduce the
@@ -379,47 +380,45 @@ public:
 // forward transform. If <src> dir <= 0 </src>, it is a backward transform.
 // <src> dir==0 </src> has method-specific meaning.
 
-template<class T, class S> class FFTServer: 
+template<class T, class S> class FFTServer:
   public FourierTool<T, S>
 {
 public:
   // default constructor
-  FFTServer(); 
+  FFTServer();
 
   // copy constructor
-  FFTServer(const FFTServer<T,S> &); 
+  FFTServer(const FFTServer<T,S> & other);
 
   // Other Constructors
-  FFTServer(const Array<T> &);		   
-  FFTServer(const Array<S> &, int has_ny = 0);		   
-  FFTServer(const IPosition &);		  
+  FFTServer(const Array<T> & rdata);
+  FFTServer(const Array<S> & cdata);
+  FFTServer(const IPosition & shape);
   
   // destructor
   ~FFTServer();
   
   // operator =
-  FFTServer<T,S> &operator=(const FFTServer<T,S>&);
+  FFTServer<T,S> & operator=(const FFTServer<T,S> & other);
 
   // <group>
   // Modify the parameters of an FFTServer object.
-  void Set(const Array<T> &);		   
-  void Set(const Array<S> &, int has_ny = 0);		   
-  void Set(const IPosition &);		  
+  void Set(const Array<T> & rdata);
+  void Set(const Array<S> & cdata);
+  void Set(const IPosition & fftShape);
   // </group>
-
 
   // Real to real packed ffts. If dir==0, do
   // not normalize after backward transform.
-  void fft(Array <T>&rdata, int dir); 
+  void fft(Array <T> & rdata, Int dir);
 
 // Real to real fft with nyquist expected as last two columns in
 // rdata. If dir == 0, do not normalize after backward transform.
-  void nyfft(Array<T>&rdata, int dir);         
+  void nyfft(Array<T> & rdata, Int dir);
 
 // Complex to complex fft if dir == 0, do not normalize after backward
 // transform.
-  void cxfft(Array<S>&, int dir, int center=1);         
-
+  void cxfft(Array<S> & cdata, Int dir, Int center=1);
 
 // <note role=caution> As currently implemented, the transforms rcfft,
 // crfft, rcnyfft, and crnyfft copy the entire array several
@@ -433,25 +432,21 @@ public:
 // transform; if the original array has a first dimension of odd size,
 // then shrinkodd should be nonzero.  Real to complex fft; nyquist
 // data packed in complex result.
-  Array<S>
-    rcfft(const Array<T> &);   		       
+  Array<S> rcfft(const Array<T> & rdata);
 
   // Real to complex fft; nyquist data added to end of output complex array
-  Array<S>
-    rcnyfft(const Array<T> &);   		       
+  Array<S> rcnyfft(const Array<T> & rdata);
 
 // If shrinkodd is nonzero, then the base method shrinkby1 is called with
 // the converted real object before the transformation.
 // <group>
 
   // Complex to real fft. Nyquist data packed in complex input.
-  Array<T>
-    crfft(Array<S> &, int do_scale=1, int shrinkodd=0);    
+  Array<T> crfft(Array<S> & cdata, Int do_scale=1, Int shrinkodd=0);
 
   // Complex to real fft. Nyquist data required at end of complex
   // input as 1 complex element at the end of each row
-  Array<T>
-    crnyfft(Array<S> &, int do_scale=1, int shrinkodd=0);    
+  Array<T> crnyfft(Array<S> & cdata, Int do_scale=1, Int shrinkodd=0);  
 // </group>
 
 // </group>
@@ -463,16 +458,16 @@ public:
 
   // Real to real transform; perform shifting of phase reference
   // to zero pixel before and after.
-  void rrfft(Array <T>&rdata, int dir, int do_scale=1); 
+  void rrfft(Array <T> & rdata, Int dir, Int do_scale=1);
 
   // Real to real transform; do not do image shifting.
-  void rndfft(Array<T>&, int dir, int do_scale=1);
+  void rndfft(Array<T> & rdata, Int dir, Int do_scale=1);
 
   // Real to real transform; first dimension of size n+2
   // last two columns are Nyquist data for n even;
   // otherwise, they are the real and imaginary data for
   // the last column.
-  void rndnyfft(Array<T>&, int dir, int do_scale=1);
+  void rndnyfft(Array<T> & rdata, Int dir, Int do_scale=1);
 // </group>
 
 
@@ -481,38 +476,40 @@ public:
 // <group>
 
   // Complex to complex transform
-  void cndfft(Array<S>&, int dir, int do_scale=1);
+  void cndfft(Array<S> & cdata, Int dir, Int do_scale=1);
 
   // Complex to complex transform, real and imaginary
   // components passed as separate arrays
-  void rcndfft(Array<T> &rdata, Array<T> &cdata, int dir, int
-	       do_scale=1);
+  void rcndfft(Array<T> & rdata, Array<T> & cdata, Int dir, 
+	       Int do_scale=1);
 // </group>
 
 
   //flip image quadrants
-  void flipImage(Array<T> &, int image_type = fftparms::DEF_IMAGE_TYPE, int parity=1);
-  void flipImage(Array<S> &, int image_type = fftparms::DEF_IMAGE_TYPE, int parity=1);
+  void flipImage(Array<T> & image, Int image_type = fftparms::DEF_IMAGE_TYPE,
+		 Int parity=1);
+  void flipImage(Array<S> & image, Int image_type = fftparms::DEF_IMAGE_TYPE,
+		 Int parity=1);
 
   // order uv frequencies
-  void exchangeUV(Array<T> &, int parity=1);       	
-  void exchangeUV(Array<S> &, int parity=1);      
+  void exchangeUV(Array<T> & UV, Int parity=1);
+  void exchangeUV(Array<S> & UV, Int parity=1);
 
   // move weights to a UV grid
-  void uvassign(Array<T> &, Array<T> &);   
-  void uvassign(Array<S> &, Array<T> &);  
+  void uvassign(Array<T> & UV, Array<T> & Weight);
+  void uvassign(Array<S> & UV, Array<T> & Weight);
 
   // move weights for full complex fft 
-  void cxUVassign(Array<S> &, Array<T> &);
+  void cxUVassign(Array<S> & UV, Array<T> & Weight);
 
   // sum up weights
-  T wtsum(Array<T> &);            	   
+  T wtsum(Array<T> & Weight); 
 
   // sum of weights for weight array generated by 'grid' method
-  T imWtsum(Array<T> &);            	   
+  T imWtsum(Array<T> & Weight);
 
   // sum up weights for full complex fft
-  T cxWtsum(Array<T> &);            	   
+  T cxWtsum(Array<T> & Weight);
 
 // Perform complex multiplication of the array equivalent to frequency
 // or time shifting. A shift in the frequency domain is equivalent to
@@ -529,26 +526,22 @@ public:
 // frequency domain. Otherwise, the exponent is 1, and we're multiplying
 // in the time domain.
 // shift is the desired real-valued shift.
-  void shift(Array<S>&, S factor, int timeshift, const Vector<T> &shift);
+  void shift(Array<S> & cdata, S factor, Int timeshift,
+	     const Vector<T> & shift);
 
   // Return the value by which an FFT'd image was scaled
-  T scaleFactor(void);
+  T scaleFactor();
 private:
 
   // A simplified version of the shift method. When the shift
   // is half the size of the array and the dimension are even,
   // the multipliers reduce to +/- 1.
-  void flipsignsfact(Array<S> &cdata, S factor);
-
-  // a vector used for temporary copies
-  Vector<T> temp;       
+  void flipsignsfact(Array<S> & cdata, S factor);
 
   // work array for storage of sines and cosines
-  Vector<T> work;              
+  Vector<T> work;
 
   // scaling factor for reverse fft
-  T scale;		 	
+  T scale;
 };
-
-
-#endif //AIPS_FFTSERVER_H
+#endif
