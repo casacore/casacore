@@ -99,6 +99,13 @@ Double TwoSidedShape::axialRatio() const {
   return minorAxisInRad()/majorAxisInRad();
 }
 
+void TwoSidedShape::sample(Vector<Double>& scale, 
+			   const Vector<MDirection::MVType>& directions, 
+			   const MDirection::Ref& refFrame,
+			   const MVAngle& pixelSize) const {
+  ComponentShape::sample(scale, directions, refFrame, pixelSize);
+}
+
 uInt TwoSidedShape::nParameters() const {
   DebugAssert(ok(), AipsError);
   return 3;
