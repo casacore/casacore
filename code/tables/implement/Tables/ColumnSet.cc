@@ -299,7 +299,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::doAddColumn (const ColumnDesc& columnDesc,
 			     DataManager* dataManPtr)
 {
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     //# When the column already exists, TableDesc::addColumn throws
     //# an exception.
     //# The creation and binding of a column will always succeed.
@@ -356,7 +356,7 @@ void ColumnSet::addColumn (const ColumnDesc& columnDesc,
 void ColumnSet::addColumn (const TableDesc& tableDesc,
 			   const DataManager& dataManager, Table& tab)
 {
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     // Check if the data manager name has not been used already.
     checkDataManagerName (dataManager.dataManagerName(), 0);
     // Add the new table description to the current one.
@@ -404,11 +404,12 @@ void ColumnSet::addColumn (const TableDesc& tableDesc,
 
 void ColumnSet::renameColumn (const String& newName, const String& oldName)
 {
-    checkLock (FileLocker::Write, True);
+    checkWriteLock (True);
     tdescPtr_p->renameColumn (newName, oldName);
     colMap_p.rename (newName, oldName);
     autoReleaseLock();
 }
+
 
 
 DataManager* ColumnSet::findDataManager (const String& dataManagerName) const
@@ -477,9 +478,10 @@ void ColumnSet::renameTables (const String& newName, const String& oldName)
 }
 
 
-void ColumnSet::putFile (Bool writeTable, AipsIO& ios,
+Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 			 const String& tableName, Bool fsync)
 {
+    Bool written = False;
     //# Only write the table data when the flag is set.
     uInt nrold = dataManChanged_p.nelements();
     dataManChanged_p.resize (blockDataMan_p.nelements());
@@ -515,19 +517,20 @@ void ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 	}
     }
     //# Now write out the data in all data managers.
-    //# The changed flag has to be or-ed, because only after an unlock
-    //# they should be cleared. Actually they are cleared when getting
-    //# a lock (by ColumnSet::resync).
+    //# Keep track if a data manager indeed wrote something.
     MemoryIO memio;
     AipsIO aio(&memio);
     for (i=0; i<blockDataMan_p.nelements(); i++) {
-	Bool changed = BLOCKDATAMANVAL(i)->flush (aio, fsync);
-	dataManChanged_p[i] = dataManChanged_p[i] || changed;
+        if (BLOCKDATAMANVAL(i)->flush (aio, fsync)) {
+	    dataManChanged_p[i] = True;
+	    written = True;
+	}
 	if (writeTable) {
 	    ios.put (uInt(memio.length()), memio.getBuffer());
 	}
 	memio.clear();
     }
+    return written;
 }
 
 
@@ -611,11 +614,17 @@ DataManager* ColumnSet::getDataManager (uInt seqnr) const
 
 Bool ColumnSet::userLock (FileLocker::LockType type, Bool wait)
 {
+    // Acquire automatically a lock when:
+    // - Userlocking
+    // - not locked yet
+    // - not NoReadLocking
     if (lockPtr_p->option() == TableLock::UserLocking) {
 	if (! plainTablePtr_p->hasLock (type)) {
-	    uInt nattempts = (wait  ?  0 : 1);
-	    plainTablePtr_p->lock (type, nattempts);
-	    return True;
+	    if (type != FileLocker::Read  ||  lockPtr_p->readLocking()) {
+	        uInt nattempts = (wait  ?  0 : 1);
+		plainTablePtr_p->lock (type, nattempts);
+		return True;
+	    }
 	}
     }
     return False;
@@ -624,7 +633,7 @@ Bool ColumnSet::userLock (FileLocker::LockType type, Bool wait)
 void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
 {
     if (lockPtr_p->option() != TableLock::AutoLocking) {
-	throw (TableError ("ColumnSet::checkLock: table should be locked "
+	throw (TableError ("ColumnSet::doLock: table should be locked "
 			   "when using PermanentLocking or UserLocking"));
     }
     uInt nattempts = (wait  ?  plainTablePtr_p->lockOptions().maxWait() : 1);

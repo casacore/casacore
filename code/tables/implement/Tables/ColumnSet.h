@@ -123,7 +123,10 @@ public:
     // If manual or permanent locking is in effect, it checks if the
     // table is properly locked.
     // If autolocking is in effect, it locks the table when needed.
-    void checkLock (FileLocker::LockType, Bool wait);
+    // <group>
+    void checkReadLock (Bool wait);
+    void checkWriteLock (Bool wait);
+    // </group>
 
     // Inspect the auto lock when the inspection interval has expired and
     // release it when another process needs the lock.
@@ -178,7 +181,8 @@ public:
 
     // Write all the data and let the data managers flush their data.
     // This function is called when a table gets written (i.e. flushed).
-    void putFile (Bool writeTable, AipsIO&, const String& tableName,
+    // It returns True if any data manager wrote something.
+    Bool putFile (Bool writeTable, AipsIO&, const String& tableName,
 		  Bool fsync);
 
     // Read the data, reconstruct the data managers, and link those to
@@ -268,10 +272,17 @@ inline void ColumnSet::linkToLockObject (PlainTable* plainTableObject,
     plainTablePtr_p = plainTableObject;
     lockPtr_p = lockObject;
 }
-inline void ColumnSet::checkLock (FileLocker::LockType type, Bool wait)
+inline void ColumnSet::checkReadLock (Bool wait)
 {
-    if (! lockPtr_p->hasLock (type)) {
-	doLock (type, wait);
+    if (lockPtr_p->readLocking()
+    &&  ! lockPtr_p->hasLock (FileLocker::Read)) {
+	doLock (FileLocker::Read, wait);
+    }
+}
+inline void ColumnSet::checkWriteLock (Bool wait)
+{
+    if (! lockPtr_p->hasLock (FileLocker::Write)) {
+	doLock (FileLocker::Write, wait);
     }
 }
 inline void ColumnSet::userUnlock (Bool releaseFlag)
