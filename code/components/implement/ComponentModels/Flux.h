@@ -42,6 +42,8 @@
 #include <aips/Measures/Quantum.h>
 #include <aips/Utilities/Assert.h>
 
+class GlishRecord;
+
 // <summary>A class that represents the Flux (copy semantics)</summary>
 
 // <use visibility=export>
