@@ -4667,3 +4667,17 @@
 14 300 src mv atnf/apps/rpfitsfiller2/rpfitsfiller2Factory.cc atnf/apps/atcafiller/atcafillerFactory.cc
 14 300 src mv atnf/apps/rpfitsfiller2/rpfitsfiller2Factory.h atnf/apps/atcafiller/atcafillerFactory.h
 14 301 src rm trial/implement/test/templates
+14 302 src rm trial/implement/MeasurementSets/OldMSAntBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSAntBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSArrayBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSArrayBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSFeedBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSFeedBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSFieldBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSFieldBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSMainBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSMainBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSSourceBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSSourceBuffer.cc
+14 302 src rm trial/implement/MeasurementSets/OldMSSpwBuffer.h
+14 302 src rm trial/implement/MeasurementSets/OldMSSpwBuffer.cc
