@@ -1399,3 +1399,4 @@
 11 075 src mv trial/apps/image/image.help trial/implement/Images/image.help
 11 075 src mv trial/apps/image/image_meta.g trial/implement/Images/image_meta.g
 11 075 src mv trial/apps/image/image_standard.gp trial/implement/Images/image_standard.gp
+11 075 src mv doc/html/gettingstarted doc/user/gettingstarted
