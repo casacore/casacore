@@ -1,5 +1,5 @@
 //# SpectralIndex.h: Models the spectral variation with a spectral index
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -176,6 +176,7 @@ public:
   virtual ComponentType::SpectralShape type() const;
 
   // set/get the spectral index.
+  // <group>
   const Double& index() const;
   void setIndex(const Double& newIndex);
   // </group>
