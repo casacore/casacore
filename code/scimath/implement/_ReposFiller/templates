@@ -813,22 +813,38 @@
 1000 scimath/Fitting/FitGaussian.cc 
      template class FitGaussian<Float> 
 1000 scimath/Fitting/GenericL2Fit.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GenericL2Fit<AutoDiff<Complex> > 
+     template class GenericL2Fit<AutoDiffA<Complex> > 
+1010 scimath/Fitting/GenericL2Fit.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GenericL2Fit<AutoDiff<DComplex> > 
+     template class GenericL2Fit<AutoDiffA<DComplex> > 
+1020 scimath/Fitting/GenericL2Fit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class GenericL2Fit<AutoDiff<Double> > 
      template class GenericL2Fit<AutoDiffA<Double> > 
-1010 scimath/Fitting/GenericL2Fit.cc 
+1030 scimath/Fitting/GenericL2Fit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class GenericL2Fit<AutoDiff<Float> > 
      template class GenericL2Fit<AutoDiffA<Float> > 
-1020 scimath/Fitting/GenericL2Fit.cc casa/BasicSL/Complex.h 
+1040 scimath/Fitting/GenericL2Fit.cc casa/BasicSL/Complex.h 
      template class GenericL2Fit<Complex> 
-1030 scimath/Fitting/GenericL2Fit.cc 
+1050 scimath/Fitting/GenericL2Fit.cc casa/BasicSL/Complex.h 
+     template class GenericL2Fit<DComplex> 
+1060 scimath/Fitting/GenericL2Fit.cc 
      template class GenericL2Fit<Double> 
-1040 scimath/Fitting/GenericL2Fit.cc 
+1070 scimath/Fitting/GenericL2Fit.cc 
      template class GenericL2Fit<Float> 
 1000 scimath/Fitting/LSQFit2.cc 
      = algorithm 
@@ -1032,32 +1048,72 @@
      template Bool LSQaips::getCovariance<std::complex<Float> >(Array<std::complex<Float> > &) 
      template Bool LSQaips::solveLoop<std::complex<Float> >(Double &, uInt &, Vector<std::complex<Float> > &, Bool doSVD) 
 1000 scimath/Fitting/LinearFit.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFit<AutoDiff<Complex> > 
+     template class LinearFit<AutoDiffA<Complex> > 
+1010 scimath/Fitting/LinearFit.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFit<AutoDiff<DComplex> > 
+     template class LinearFit<AutoDiffA<DComplex> > 
+1020 scimath/Fitting/LinearFit.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFit<AutoDiff<Double> > 
      template class LinearFit<AutoDiffA<Double> > 
-1010 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
-     template class LinearFit<Complex> 
-1020 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
-     template class LinearFit<DComplex> 
 1030 scimath/Fitting/LinearFit.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFit<AutoDiff<Float> > 
+     template class LinearFit<AutoDiffA<Float> > 
+1040 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
+     template class LinearFit<Complex> 
+1050 scimath/Fitting/LinearFit.cc casa/BasicSL/Complex.h 
+     template class LinearFit<DComplex> 
+1060 scimath/Fitting/LinearFit.cc 
      template class LinearFit<Double> 
-1040 scimath/Fitting/LinearFit.cc 
+1070 scimath/Fitting/LinearFit.cc 
      template class LinearFit<Float> 
 1000 scimath/Fitting/LinearFitSVD.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFitSVD<AutoDiff<Complex> > 
+     template class LinearFitSVD<AutoDiffA<Complex> > 
+1010 scimath/Fitting/LinearFitSVD.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFitSVD<AutoDiff<DComplex> > 
+     template class LinearFitSVD<AutoDiffA<DComplex> > 
+1020 scimath/Fitting/LinearFitSVD.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffA.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class LinearFitSVD<AutoDiff<Double> > 
      template class LinearFitSVD<AutoDiffA<Double> > 
-1010 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
-     template class LinearFitSVD<Complex> 
-1020 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
-     template class LinearFitSVD<DComplex> 
 1030 scimath/Fitting/LinearFitSVD.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class LinearFitSVD<AutoDiff<Float> > 
+     template class LinearFitSVD<AutoDiffA<Float> > 
+1040 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
+     template class LinearFitSVD<Complex> 
+1050 scimath/Fitting/LinearFitSVD.cc casa/BasicSL/Complex.h 
+     template class LinearFitSVD<DComplex> 
+1060 scimath/Fitting/LinearFitSVD.cc 
      template class LinearFitSVD<Double> 
-1040 scimath/Fitting/LinearFitSVD.cc 
+1070 scimath/Fitting/LinearFitSVD.cc 
      template class LinearFitSVD<Float> 
 1000 scimath/Fitting/NonLinearFit.cc 
      template class NonLinearFit<Double> 
