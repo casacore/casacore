@@ -1,0 +1,443 @@
+\chapter{Data Repository}
+\label{data repository}
+\index{data repository}
+\index{installation|see{system, installation}}
+
+This chapter \footnote{Last change:
+$ $Id$ $}
+describes how to install and contribute to the \aipspp\ data repository.
+
+The intended audience for this repository includes both \aipspp\ developers
+who use data to implement their applications and users who access standard
+catalogs and images which are components of the repository. The data is
+typically provided as \aipspp\ tables, but some data is provided as FITS
+files.
+
+In the future, the goal is that components of the repository can be
+automatically mirrored to the user's personal workspace when they are not
+available in the the local \aipspp\ installation. This will minimize the
+amount of data which all sites must keep locally while making the entire
+repository available to users.
+
+% ----------------------------------------------------------------------------
+
+\section{Mirroring the Repository}
+\label{data repository mirroring}
+\index{data repository!mirroring}
+
+The \aipspp\ data repository is generated at a central site and is then
+mirrored by all consortium and user sites. This allows the central site
+to build and maintain the data, and it allows user sites to easily stay
+in sync with the master repository. In fact, it is easy for these secondary
+sites to act as mirrors from which tertiary sites can retrieve the data.
+
+The first step to retrieving the data repository is to install
+\htmladdnormallinkfoot{CVSup}{http://www.polstra.com/projects/freeware/CVSup/}. While
+CVSup is optimized for mirroring \htmladdnormallinkfoot{CVS}{http://www.cyclic.com/}
+repositories, it can mirror arbitrary collections of files. CVSup is the mirroring
+tool used by \htmladdnormallinkfoot{FreeBSD}{http://www.freebsd.org/}.
+
+It is easiest to just install CVSup binaries because CVSup is written in
+\htmladdnormallinkfoot{Modula-3}{http://www.research.digital.com/SRC/modula-3/html/home.html}.
+CVSup binaries for many architectures can be found at the
+\htmladdnormallinkfoot{FreeBSD FTP site}{ftp://ftp.FreeBSD.org/pub/FreeBSD/development/CVSup/binaries/}.
+You can choose between versions which include or exclude the GUI. However, the GUI
+version is recommended since the GUI is nice and can be disabled with a command
+line flag.
+
+Once you have installed CVSup, you are ready to create a supfile which describes
+how to retrieve and install the data repository. First log in as \acct{aips2mgr}
+and create a directory where the repository should be mirrored, e.g. \file{/aips++/data}.
+It is fine for many \aipspp\ installations to share the same data repository. So if
+you have more than one \aipspp\ installation, you will likely want to mirror the
+repository in a central location and then just create symbolic links from the
+\aipspp\ installations to the repository. If you have only one \aipspp\ installation,
+then calling the directory \file{data} and putting it in the root of the
+\aipspp\ installation (at the same level as \file{code}) is probably the best choice.
+
+Next edit a file called \file{supfile} in the directory just created. To retrieve the whole
+repository, which currently isn't so large, you would put the following in the supfile:
+
+\begin{verbatim}
+   *default host=aips2.nrao.edu compress
+   *default base=YOUR_DIRECTORY_HERE
+   *default release=all
+   *default delete use-rel-suffix
+   data
+\end{verbatim}
+
+\noindent
+You should replace \code{YOUR\_DIRECTORY\_HERE} in the \code{base} assignment with
+the fully qualified path to the directory you just created to contain the repository.
+
+After you have created the supfile, you are ready to install the repository. Just
+run:
+
+\begin{verbatim}
+   yourhost% cvsup supfile
+\end{verbatim}
+
+\noindent
+If you don't run this from the newly created directory, you will
+have to fully qualify the path to the supfile for \unixexe{cvsup}. This should run
+and create a mirror of the data provided on the central \aipspp\ server.
+
+If you want to continue to keep your data repository in sync with the repository
+on the master \aipspp\ server, you need to create a \unixexe{cron} job entry to
+run \unixexe{cvsup} regularly. This entry might look like:
+
+\begin{verbatim}
+   00 6 * * 0 /usr/local/bin/cvsup -g /aips++/data/supfile 2>&1 | mail aips2mgr
+\end{verbatim}
+
+\noindent
+This would update the data repository once per week on Sunday at 6AM.
+
+If you have multiple \aipspp\ installations which will be sharing a single
+data repository, create a symbolic link called \file{data} in the root of
+each installation (at the same level as \file{code}) to the data repository.
+% ----------------------------------------------------------------------------
+
+\section{Repository Structure}
+\label{data repository structure}
+\index{data repository!structure}
+
+Data in the repository is divided based on content. The top layer of the
+repository divides the data into broad categories:
+
+\begin{list}{}{\setlength{\rightmargin}{\leftmargin}}
+
+\item{\textbf{catalogs/lines}} spectral line catalogs, e.g. the Poynter and Pickett \textit{Submillimeter, Millimeter, and Microwave Spectral Line Catalogue}.
+
+\item{\textbf{catalogs/sources}} pulsar, continuum, and spectral line source catalogs.
+
+\item{\textbf{geodetic}} data related to the earth, e.g. global positions, orientation,
+magnetic field, etc.
+
+\item{\textbf{ephemerides}} data related to the movement of planets, comets, and satellites.
+
+\item{\textbf{demo}} data used in tests and demos of \aipspp.
+
+\item{\textbf{nrao}} data specific to nrao facilities.
+
+\item{\textbf{\textit{other observatory}}} data specific to an \textit{other observatory}.
+
+\end{list}
+
+\noindent
+Beneath this broad categorization is the actual data which is used by
+\aipspp\ applications.
+
+% ----------------------------------------------------------------------------
+
+\section{Contributing to the Repository}
+\label{data repository contributing}
+\index{data repository!contributing}
+
+It is more difficult to setup things to contribute to the \aipspp\ data
+repository. The first requirement is that the user must have an account
+on the \aipspp\ central server, \host{aips2.nrao.edu}, and the user id on
+\host{aips2.nrao.edu} must be a member of the \acct{aips2prg} group.
+In addition, CVS and SSH must be installed on your local system. These
+packages are widely available.
+
+With \unixexe{ssh} you create your pair of keys using \unixexe{ssh-keygen}.
+This will create \verb+~+\file{/.ssh/identity.pub} on your local machine. You then
+add this file to \verb+~+\file{/.ssh/authorized\_keys} on \host{aips2.nrao.edu}.Make
+sure \file{authorized\_keys} is readable only by the user. After that, you
+are ready to try \unixexe{ssh}; try something like:
+
+\begin{verbatim}
+   yourhost% ssh aips2.nrao.edu which cvs
+   yourhost% ssh aips2.nrao.edu which co
+\end{verbatim}
+
+\noindent
+from your local machine. You must get these to return the path to the
+\unixexe{cvs} and \unixexe{co} binaries before going further. These binaries
+are located in \file{/opt/local/gnu/bin} on \host{aips2.nrao.edu}. To make
+this path available, you may need to edit \verb+~+\file{/.ssh/environment} on
+\host{aips2.nrao.edu}, and add a line like:
+
+\begin{verbatim}
+    PATH=/usr/bin:/opt/local/bin:/opt/local/gnu/bin
+\end{verbatim}
+
+\noindent
+Shell variables, e.g. \verb+$PATH+, are not expanded.
+
+Once you have resolved all of the problems involved with running remote
+commands on \host{aips2.nrao.edu}, you are ready to check out a piece
+of the data repository. First you must tell your local \unixexe{cvs}
+installation to go to \host{aips2.nrao.edu} for the repository and to
+use \unixexe{ssh} instead of \unixexe{rsh} to run remote commands. For
+the Bourne-like shells, you do this like:
+
+\begin{verbatim}
+    yourhost% CVS_RSH=ssh
+    yourhost% CVSROOT=:ext:aips2.nrao.edu:/aips++/cvs
+    yourhost% export CVS_RSH CVSROOT
+\end{verbatim}
+
+\noindent
+for C-like shells, you would do:
+
+\begin{verbatim}
+    yourhost% setenv CVS_RSH ssh
+    yourhost% setenv CVSROOT :ext:aips2.nrao.edu:/aips++/cvs
+\end{verbatim}
+
+Now to check out a piece of the source from which the data repository is
+built, you would do something like:
+
+\begin{verbatim}
+    yourhost% cvs co data/nrao
+\end{verbatim}
+
+\noindent
+This would check out the data specific to NRAO. Unlike RCS, when you check
+out files from CVS the files are not locked. Other users can check out and
+check in changes to the same files. Checking out the files just provides
+a copy of the current state of the files to work with. Any conflicts
+between your changes and changes which have occurred since you checked
+out the files are addressed at check in time.
+
+% ----------------------------------------------------------------------------
+
+\section{Using CVS}
+\label{data repository cvs}
+\index{data repository!cvs}
+
+CVS is similar to RCS. However, the format for running CVS commands is:
+
+\begin{verbatim}
+   yourhost% cvs <COMMAND> <OPTIONS>
+\end{verbatim}
+
+\noindent
+The command for checking out code is \code{co} (abbreviation for \code{checkout}).
+The command for checking in code is \code{commit}. And the command for printing
+the differences between your copy and the version you checked out is \code{diff}.
+
+All commands in CVS are recursive by default. So if you wanted to list all of your
+changes, you would go to the top of the tree and run:
+
+\begin{verbatim}
+   yourhost% cvs diff .
+\end{verbatim}
+
+\noindent
+which says give me the difference in this directory including every directory beneath
+this directory.
+
+When you check out files, you can check out all of the repository source:
+
+\begin{verbatim}
+   yourhost% cvs co data
+\end{verbatim}
+
+\noindent
+or only a small portion:
+
+\begin{verbatim}
+   yourhost% cvs co data/geodetic/IGRF
+\end{verbatim}
+
+After you have had code check out for some time, you may want to bring it
+up to date with the current state of the code. You use \code{update} to do
+this, e.g.
+
+\begin{verbatim}
+   yourhost% cvs update .
+\end{verbatim}
+
+\noindent
+\code{update} will not trample over your changes. It updates all files
+files which have not been modified, and where possible it merges in
+differences to files which you have modified without any problems. Where
+conflicts occur, it does includes your changes and other changes in
+a \textit{diff-like} format. When you get a warning about this problem,
+you must edit the file by hand and reconcile your changes and the other
+changes.
+
+For more information about CVS, see
+the \htmladdnormallinkfoot{support page}{http://www.cyclic.com/CVS/support}
+at \host{cyclic.com}.
+
+% ----------------------------------------------------------------------------
+
+\section{Repository Conventions}
+\label{data repository conventions}
+\index{data repository!conventions}
+
+There are certain conventions which must be followed when contributing to
+the repository. In general, the makefiles which are used to build the
+data repository are much simpler, by design, then those used to build
+the \aipspp\ system. This is possible because the data repository makefiles
+only build the repository on one system and the work they must do is much
+more limited than that of the \aipspp\ makefiles.
+
+\subsection*{Organization}
+All of the scripts, makefile includes, etc.~which are used to build the data
+are kept beneath \file{config} directories. The directories which may be
+found beneath \file{config} are \file{bin} for executable scripts,
+\file{libexec} for scripts which are included rather than executed directly,
+and \file{makedefs} for the small bundles of functionality which are
+included by other makefile to allow them to do their work. A \file{config}
+tree can occur anywhere in the data repository source tree. The principal
+is that the \file{config} files should be placed as far down on the
+source tree as possible. For example, a script would only be placed in
+the top level \file{data/config/libexec} directory if it is included
+by scripts in more than one of the broad top level categories, e.g.
+\file{measures\_util.g} is used in both \file{ephemerides} and
+\file{geodetic} so it must be placed in this top level config directory.
+If it were used only in \file{geodetic}, it would be moved down to
+the \file{data/geodetic/config/libexec} directory. The reason for this
+rule is so that wherever possible checking out the lowest level \file{config}
+directory along with the top \file{config} directory and the source for a
+particular data component of the repository will be sufficient to build
+that particular component.
+
+\subsection*{Using Scripts}
+In many cases, an \aipspp\ table is simply copied from the data source
+tree to the repository. There are, however, instances where an
+\aipspp\ table is created (and updated) from files retrieved from remote sites.
+During the build, all of the tools available in an \aipspp\ installation
+will be available for the makefiles and scripts to use. However,
+the plan is that no compilation, e.g. of \cplusplus\ code, should be
+necessary to build the data repository. It should all be done with
+scripts. Currently, it is done with Glish scripts. Should there be
+cases where this is impossible this rule can be revisited.
+
+When using scripts which build a piece of data, the exit status
+of the script indicates the result. In particular, an exit status
+of \code{0} indicates that the script completed successfully and
+that the data item \textit{was} updated, an exit status of \code{1}
+indicates that the script completed successfully but the data item
+\textit{was not} updated, and finally, an exit status of \code{-1}
+indicates that an error occurred during the execution of the script.
+The exit status of the scripts is used to generate logs containing
+only a list of the updates or errors which can then be used to keep
+tabs on the system without getting daily email messages.
+
+\subsection*{Makefiles}
+In general, there is a one-to-one mapping between directories in
+the data source tree and directories in the data repository tree.
+The one slight deviation from this general rule is with tables.
+For tables, there is a replication of the table directory. So for
+example if we have a table called \file{demo/3C273XC1} in the
+repository tree, this table would actually correspond to
+\file{demo/3C273XC1/3C273XC1} in the source tree. The makefile,
+scripts (which need not be beneath a \file{config/libexec} directory),
+text files, etc.~which install and perhaps create this table are
+found in the first \file{3C273XC1} directory while the \file{3C273XC1}
+subdirectory only contains the table which is installed in the
+repository.
+
+When writing makefiles, there are some basic tools which should be
+used. \code{\$(RUN)} \textit{must} be used to execute the scripts
+used to generate a data component from scratch. This collects the
+exit status of the script and then uses the status to produce the
+update and error logs.
+
+Another tool which is often useful is \code{\$(MKHIER)}. When a
+fully qualified path is passed in, this will create the entire
+path if it doesn't exist, e.g. a makefile rule like:
+
+\begin{verbatim}
+   doit:
+           $(MKHIER) /tmp/just/trying/it/out
+\end{verbatim}
+
+\noindent
+would cause all of the directories in \file{/tmp/just/trying/it/out}
+to be created.
+
+In addition to these tools, there are some variables which are useful:
+
+\begin{list}{}{\setlength{\rightmargin}{\leftmargin}}
+
+\item{\textbf{\$(DATA\_ROOT)}} fully qualified path to the root of the
+data tree, \textit{set in each makefile}.
+
+\item{\textbf{\$(DATA\_THISDIR)}} fully qualified path to the current
+directory, \textit{set in each makefile}.
+
+\item{\textbf{\$(DATA\_INSTALLTHISDIR)}} the install point in the data
+repository which corresponds to the current directory.
+
+\item{\textbf{\$(AIPSROOT)}} fully qualified path to the root of the
+\aipspp\ installation available for use in building the data repository.
+
+\item{\textbf{\$(AIPSARCH)}} fully qualified path to the architecture
+directory of the \aipspp\ installation.
+
+\end{list}
+
+When writing makefiles in the data system, there are two targets which
+are recursively built these are \code{build} and \code{install}. \code{build}
+is the target which builds data elements from scratch. \code{install} is
+the target which moves the data element from the source tree to the
+mirror point for the repository. Obviously all makefiles will specify
+an \code{install} target, but not all makefiles will specify an \code{build}
+target.
+
+Much of the standard work done by the makefiles is found in \textit{makedef}
+components which are included in the makefiles for individual data
+elements. All makefiles include a standard preample which does the minimum
+setup required to find the \textit{makedef} include files:
+
+\begin{verbatim}
+   DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+   DATA_ROOT := $(shell echo $(DATA_THISDIR)/ | sed -e '{s@/data/.*$$@/data@;}')
+   include $(DATA_ROOT)/config/makedefs/basic
+\end{verbatim}
+
+\noindent
+All makefiles should simply include this at the beginning. The \file{basic} makedef
+sets up all of the standard variables and rules for recursively building the
+\code{build} and \code{install} targets. Including the \file{install.table}
+makedef defines the rule which will copy a table from the current directory
+to the repository. It is assumed that the table is beneath the current directory
+and has the same name as the current directory. Including the \file{install.fits}
+makedef defines the rule which will copy all fits files in the current directory
+to the corresponding directory in the repository.
+
+So for example, the makefile to just copy a table which is not updated to the
+repository would look like:
+
+\begin{verbatim}
+   DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+   DATA_ROOT := $(shell echo $(DATA_THISDIR)/ | sed -e '{s@/data/.*$$@/data@;}')
+   include $(DATA_ROOT)/config/makedefs/basic
+   include $(DATA_ROOT)/config/makedefs/install.table
+\end{verbatim}
+
+\noindent
+The makefile to install FITS files would look like:
+
+\begin{verbatim}
+   DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+   DATA_ROOT := $(shell echo $(DATA_THISDIR)/ | sed -e '{s@/data/.*$$@/data@;}')
+   include $(DATA_ROOT)/config/makedefs/basic
+   include $(DATA_ROOT)/config/makedefs/install.fits
+\end{verbatim}
+
+\noindent
+and the makefile to build and install a table might look like:
+
+\begin{verbatim}
+   DATA_THISDIR  := $(shell pwd | sed -e 's=^/tmp_mnt/=/=')
+   DATA_ROOT := $(shell echo $(DATA_THISDIR)/ | sed -e '{s@/data/.*$$@/data@;}')
+   include $(DATA_ROOT)/config/makedefs/basic
+
+   build:
+           @$(RUN) glish IERSeop97.g
+
+   include $(DATA_ROOT)/config/makedefs/install.table
+\end{verbatim}
+
+\noindent
+A good example of how to create and update tables can be found in the
+scripts and makefiles beneath \file{data/geodetic/IERSeop97}. In this
+case, Glish is used to create and maintain the \file{IERSeop97} table.
