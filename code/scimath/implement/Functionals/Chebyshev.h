@@ -185,23 +185,23 @@
 // calculate derivatives.  Here, we replace the Double type with 
 // AutoDiff<Double>.
 // <srcblock>
-//   Chebyshev<AutoDiff<Double> > cheb;
-//   cheb.setDefault(AutoDiff<Double>(1));
-//   cheb.setInterval(AutoDiff<Double>(-0.8), AutoDiff<Double>(7.2));
+//   Chebyshev<AutoDiffA<Double> > cheb;
+//   cheb.setDefault(AutoDiffA<Double>(1));
+//   cheb.setInterval(AutoDiffA<Double>(-0.8), AutoDiffA<Double>(7.2));
 //
 //   // we'll track derivatives with respect to x and each of our
 //   // coefficients; for a second-order series, this makes 4
 //   // derivatives total.  x will be the first variable; the
 //   // coefficients will the 2nd-4th variables
-//   cheb.setCoefficient(0, AutoDiff<Double>(3.1, 4, 1));   // c0 = 3.1
-//   cheb.setCoefficient(1, AutoDiff<Double>(2.4, 4, 2));   // c1 = 2.4
-//   cheb.setCoefficient(2, AutoDiff<Double>(0.5, 4, 3));   // c2 = 0.5
+//   cheb.setCoefficient(0, AutoDiffA<Double>(3.1, 4, 1));   // c0 = 3.1
+//   cheb.setCoefficient(1, AutoDiffA<Double>(2.4, 4, 2));   // c1 = 2.4
+//   cheb.setCoefficient(2, AutoDiffA<Double>(0.5, 4, 3));   // c2 = 0.5
 //   
 //   // now evaluate the function
-//   AutoDiff<Double> x(1.2, 4, 0);    // x = 1.2
-//   AutoDiff<Double> y = cheb(x);     // y = ??
-//   Double dydx = y.derivative(0);    // dy/dx = ??
-//   Double dydc1 = y.derivative(2);   // dy/dc1 = ??
+//   AutoDiffA<Double> x(1.2, 4, 0);    // x = 1.2
+//   AutoDiffA<Double> y = cheb(x);     // y = 1.65
+//   Double dydx = y.derivative(0);     // dy/dx = 0.35
+//   Double dydc1 = y.derivative(2);    // dy/dc1 = -0.5
 // </srcblock>
 // </example>
 //
