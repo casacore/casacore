@@ -62,7 +62,7 @@
 // </example>
 
 // <todo asof="1997/11/11">
-// <li> Expand along (slanted) cone lines
+// <li> Extend along (slanted) cone lines
 // </todo>
 
 class LCExtension: public LCRegionMulti
@@ -70,19 +70,19 @@ class LCExtension: public LCRegionMulti
 public:
     LCExtension();
 
-    // Extend the given region along the <src>expandAxes</src>
-    // from <src>expandBlc</src> to <src>expandTrc</src> inclusive.
+    // Extend the given region along the <src>extendAxes</src>
+    // from <src>extendBlc</src> to <src>extendTrc</src> inclusive.
     // The sum of the dimensionality of the region and the length of the
-    // <src>expand</src> vectors must be equal to the lattice dimensionality.
-    // Blc/trc defaults to the entire lattices for the <src>expandAxes</src>.
+    // <src>extend</src> vectors must be equal to the lattice dimensionality.
+    // Blc/trc defaults to the entire lattices for the <src>extendAxes</src>.
     // <group>
     LCExtension (const LCRegion& region,
-		 const IPosition& expandAxes,
+		 const IPosition& extendAxes,
 		 const IPosition& latticeShape);
     LCExtension (const LCRegion& region,
-		 const IPosition& expandAxes,
-		 const IPosition& expandBlc,
-		 const IPosition& expandTrc,
+		 const IPosition& extendAxes,
+		 const IPosition& extendBlc,
+		 const IPosition& extendTrc,
 		 const IPosition& latticeShape);
     // </group>
 
@@ -143,7 +143,7 @@ private:
     void defineBox();
 
 
-    IPosition itsExpandAxes;
+    IPosition itsExtendAxes;
     IPosition itsRegionAxes;
     IPosition itsBlc;
     IPosition itsTrc;
@@ -156,7 +156,7 @@ inline const LCRegion& LCExtension::region() const
 }
 inline const IPosition& LCExtension::axes() const
 {
-    return itsExpandAxes;
+    return itsExtendAxes;
 }
 inline const IPosition& LCExtension::blc() const
 {

@@ -38,16 +38,16 @@ LCExtension::LCExtension()
 {}
 
 LCExtension::LCExtension (const LCRegion& region,
-			  const IPosition& expandAxes,
+			  const IPosition& extendAxes,
 			  const IPosition& latticeShape)
 : LCRegionMulti (region.cloneRegion(), latticeShape),
-  itsExpandAxes (expandAxes),
-  itsBlc (IPosition(expandAxes.nelements(), 0)),
-  itsTrc (IPosition(expandAxes.nelements(), 0))
+  itsExtendAxes (extendAxes),
+  itsBlc (IPosition(extendAxes.nelements(), 0)),
+  itsTrc (IPosition(extendAxes.nelements(), 0))
 {
     //# Default trc is lattice shape.
-    for (uInt i=0; i<expandAxes.nelements(); i++) {
-        uInt axis = expandAxes(i);
+    for (uInt i=0; i<extendAxes.nelements(); i++) {
+        uInt axis = extendAxes(i);
 	if (axis < latticeShape.nelements()) {
 	    itsTrc = latticeShape(axis) - 1;
 	}
@@ -56,21 +56,21 @@ LCExtension::LCExtension (const LCRegion& region,
 }
 
 LCExtension::LCExtension (const LCRegion& region,
-			  const IPosition& expandAxes,
-			  const IPosition& expandBlc,
-			  const IPosition& expandTrc,
+			  const IPosition& extendAxes,
+			  const IPosition& extendBlc,
+			  const IPosition& extendTrc,
 			  const IPosition& latticeShape)
 : LCRegionMulti (region.cloneRegion(), latticeShape),
-  itsExpandAxes (expandAxes),
-  itsBlc (expandBlc),
-  itsTrc (expandTrc)
+  itsExtendAxes (extendAxes),
+  itsBlc (extendBlc),
+  itsTrc (extendTrc)
 {
     defineBox();
 }
 
 LCExtension::LCExtension (const LCExtension& other)
 : LCRegionMulti (other),
-  itsExpandAxes (other.itsExpandAxes),
+  itsExtendAxes (other.itsExtendAxes),
   itsRegionAxes (other.itsRegionAxes),
   itsBlc (other.itsBlc),
   itsTrc (other.itsTrc)
@@ -83,11 +83,11 @@ LCExtension& LCExtension::operator= (const LCExtension& other)
 {
     if (this != &other) {
 	LCRegionMulti::operator= (other);
-	itsExpandAxes.resize (other.itsExpandAxes.nelements());
+	itsExtendAxes.resize (other.itsExtendAxes.nelements());
 	itsRegionAxes.resize (other.itsRegionAxes.nelements());
-	itsBlc.resize (other.itsExpandAxes.nelements());
-	itsTrc.resize (other.itsExpandAxes.nelements());
-	itsExpandAxes = other.itsExpandAxes;
+	itsBlc.resize (other.itsExtendAxes.nelements());
+	itsTrc.resize (other.itsExtendAxes.nelements());
+	itsExtendAxes = other.itsExtendAxes;
 	itsRegionAxes = other.itsRegionAxes;
 	itsBlc = other.itsBlc;
 	itsTrc = other.itsTrc;
@@ -104,15 +104,15 @@ LCRegion* LCExtension::doTranslate (const Vector<Float>& translateVector,
 				    const IPosition& newLatticeShape) const
 {
     uInt i;
-    // We need to separate the region axes and the expand axes.
-    uInt nre = itsExpandAxes.nelements();
+    // We need to separate the region axes and the extend axes.
+    uInt nre = itsExtendAxes.nelements();
     uInt nrr = itsRegionAxes.nelements();
     IPosition expBlc (itsBlc);
     IPosition expTrc (itsTrc);
     Vector<Float> transReg (nrr);
     IPosition newShape (nrr);
     for (i=0; i<nre; i++) {
-        uInt axis = itsExpandAxes(i);
+        uInt axis = itsExtendAxes(i);
         expBlc(i) += Int(translateVector(axis));
         expTrc(i) += Int(translateVector(axis));
     }
@@ -124,7 +124,7 @@ LCRegion* LCExtension::doTranslate (const Vector<Float>& translateVector,
     // Translate the region and create a new LCExtension with
     // the translated blc/trc.
     LCRegion* reg = region().translate (transReg, newShape);
-    LCExtension* ext = new LCExtension (*reg, itsExpandAxes, expBlc, expTrc,
+    LCExtension* ext = new LCExtension (*reg, itsExtendAxes, expBlc, expTrc,
 					newLatticeShape);
     delete reg;
     return ext;
@@ -140,7 +140,7 @@ TableRecord LCExtension::toRecord (const String& tableName) const
     TableRecord rec;
     rec.define ("name", className());
     rec.defineRecord ("region", region().toRecord(tableName));
-    rec.define ("axes", itsExpandAxes.asVector());
+    rec.define ("axes", itsExtendAxes.asVector());
     rec.define ("blc", itsBlc.asVector());
     rec.define ("trc", itsTrc.asVector());
     rec.define ("shape", latticeShape().asVector());
@@ -164,30 +164,30 @@ void LCExtension::defineBox()
 {
     uInt i;
     // Check if the basic things are right.
-    uInt nr = itsExpandAxes.nelements();
+    uInt nr = itsExtendAxes.nelements();
     uInt nrdim = latticeShape().nelements();
     if (itsBlc.nelements() != nr  ||  itsTrc.nelements() != nr) {
 	throw (AipsError ("LCExtension::LCExtension - "
-			  "lengths of expandAxes, Blc, and Trc differ"));
+			  "lengths of extendAxes, Blc, and Trc differ"));
     }
     const IPosition& regionBlc = region().box().start();
     const IPosition& regionTrc = region().box().end();
     if (regionBlc.nelements() != nrdim-nr) {
 	throw (AipsError ("LCExtension::LCExtension - "
-			  "#expandAxes should be equal to difference "
+			  "#extendAxes should be equal to difference "
 			  "in dimensionality of lattice and region"));
     }
-    // Expand the axes to all of them, which will also check if the
+    // Extend the axes to all of them, which will also check if the
     // axes have been specified correctly.
     // The specified axes are the first ones, thereafter the remaining axes.
-    IPosition allAxes = IPosition::makeAxisPath (nrdim, itsExpandAxes);
+    IPosition allAxes = IPosition::makeAxisPath (nrdim, itsExtendAxes);
     IPosition blc (nrdim);
     IPosition trc (nrdim);
     for (i=0; i<nr; i++) {
         uInt axis = allAxes(i);
         if (itsTrc(i) < itsBlc(i)) {
 	    throw (AipsError ("LCExtension::LCExtension - "
-			      "expandBlc > expandTrc"));
+			      "extendBlc > extendTrc"));
 	}
 	blc(axis) = max(0, itsBlc(i));
 	trc(axis) = min(latticeShape()(axis)-1, itsTrc(i));
@@ -214,7 +214,7 @@ void LCExtension::multiGetSlice (Array<Bool>& buffer,
 {
     buffer.resize (section.length());
     uInt i;
-    uInt nre = itsExpandAxes.nelements();
+    uInt nre = itsExtendAxes.nelements();
     uInt nrr = itsRegionAxes.nelements();
     // Read the required region section.
     // This means we have to create a Slicer for those axes only.
@@ -234,24 +234,24 @@ void LCExtension::multiGetSlice (Array<Bool>& buffer,
     reg->doGetSlice (tmpbuf, Slicer(blc, len, inc));
     // Reform tmpbuf, so it has the same dimensionality as buffer.
     Array<Bool> mask = tmpbuf.reform (shape);
-    // Now we have to expand tmpbuf along all expand axes.
+    // Now we have to extend tmpbuf along all extend axes.
     const IPosition& length = section.length();
     IPosition pos (buffer.ndim(), 0);
     IPosition end (buffer.shape() - 1);
-    //# Iterate along itsExpandAxes (the new axes) through the new mask.
+    //# Iterate along itsExtendAxes (the new axes) through the new mask.
     for (;;) {
 	for (i=0; i<nre; i++) {
-	    end(itsExpandAxes(i)) = pos(itsExpandAxes(i));
+	    end(itsExtendAxes(i)) = pos(itsExtendAxes(i));
 	}
 	//# Set each section of the mask to the mask of the region.
 	buffer(pos,end) = mask;
 	//# Go to the next section.
 	for (i=0; i<nre; i++) {
-	    if (++pos(itsExpandAxes(i)) < length(itsExpandAxes(i))) {
+	    if (++pos(itsExtendAxes(i)) < length(itsExtendAxes(i))) {
 		break;
 	    }
 	    // This dimension is done. Reset it and continue with the next.
-	    pos(itsExpandAxes(i)) = 0;
+	    pos(itsExtendAxes(i)) = 0;
         }
 	//# End the iteration when all dimensions are done.
 	if (i == nre) {
