@@ -2,9 +2,10 @@
 *     $Id$
 *-----------------------------------------------------------------------
 C
-C @(#)lawson.f	1.9 24 Feb 1995
-C
-C Code from Lawson & Hanson, _Solving Least Squares Problems_
+C  The original version of this code was developed by
+C  Charles L. Lawson and Richard J. Hanson at Jet Propulsion Laboratory
+C  1973 JUN 15, and published in the book
+C  "SOLVING LEAST SQUARES PROBLEMS", Prentice-Hall, 1974.
 C
 C-----------------------------------------------------------------------
 C
