@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPinfo: help and general parameters for UP scripts
 #-----------------------------------------------------------------------------
-# Copyright (C) 2000
+# Copyright (C) 2000,2001
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -34,64 +34,71 @@
 # If the -h switch is present, some help information is provided.
 #
 # Set the result
+#
 set ok = 0
+#
 # Set the non-switch arguments
+#
 set arg = ()
-# Set the -c switch
-set clr = 0
-# Set the -d switch
-set dbg = 0
-# Set the -g switch
-set gls = 0
-# Set the -f switch
-set fls = 0
-# Set the -t switch
-set upreal = 1
-# Set the -l switch
-set leav = 0
-# Set the -i switch
-set upinf = 0
-# Set the -h switch
-set hlp = 0
-# Set the -n switch
-set nox = 0
-# Set the -r switch
-set redef = 0
+#
+# Set the generally allowed switches
+#
+set upsw = "cdhnr"
+#
+# Set the allowed switches for appropriate scripts
+#
+if ("$script" == "UPchange") then
+    set upsw = "t$upsw"
+else if ("$script" == "UPfind") then
+    set upsw = "fg$upsw"
+else if ("$script" == "UPlist") then
+    set upsw = "l$upsw"
+else if ("$script" == "UPlock") then
+    set upsw = "$upsw"
+else if ("$script" == "UPmove") then
+    set upsw = "it$upsw"
+else if ("$script" == "UPtmpl") then
+    set upsw = "$upsw"
+else
+    echo "Unknown script ${script} present. Abort."
+    exit 1
+endif
+#
+# Set all the switches to initial state
+#
+foreach i (c d h n r f g i l t)
+    set upsw$i = 0
+end
+#
 # Get switches and arguments
+#
 while ($# > 0)
-      if ("$1" == "-c") then
-	 set clr = 1
-      else if ("$1" == "-d") then
-	 set dbg = 1
-	 set echo
-      else if ("$1" == "-g") then
-         set gls = 1
-      else if ("$1" == "-f") then
-         set fls = 1
-      else if ("$1" == "-t") then
-         set upreal = 0
-      else if ("$1" == "-l") then
-         set leav = 1
-      else if ("$1" == "-i") then
-         set upinf = 1
-      else if ("$1" == "-h") then
-         set hlp = 1
-      else if ("$1" == "-n") then
-         set nox = 1
-      else if ("$1" == "-r") then
-         set redef = 1
-      else if ("$1" =~ -*) then
-         echo "Unknown switch $1 present"
-	 set hlp = 1
-      else
-         set arg = ($arg $1)
-      endif
-      shift
+    if ("$1" =~ "-"*) then
+	set x = (`echo $1 | fold -1`)
+	shift x
+	while ($#x > 0)
+	    if ("$upsw" =~ *"$x[1]"*) then
+		set upsw$x[1] = 1
+	    else
+	        echo "Illegal or unknown switch '$x[1]' given: discarded"
+	    endif
+	    shift x
+        end
+    else
+	set arg = ($arg $1)
+    endif
+    shift
 end
 #
 # Help
 #
-if ($hlp) then
+if ($upswh) then
+  if ($?usage) then
+    echo "$usage"
+  endif
+  if ($?helptxt) then
+    echo "$helptxt"
+  endif
   cat << '_EOF_'
 The following UP scripts are available (-h gives this text):
     UPmove [-c] [-r] [-i] [-t] [-n] [-d] <typ>
@@ -182,7 +189,7 @@ endif
 # Get info
 #
 echo "Getting info..."
-if ($clr) then
+if ($upswc) then
   if ("$script" == "UPfind") then 
     if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
     if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
@@ -212,7 +219,7 @@ if ($clr) then
   endif 
 endif
 
-if ($redef) then
+if ($upswr) then
   if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
 endif
 

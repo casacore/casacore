@@ -85,7 +85,7 @@ if (-z $ldir/${tp}.up1) then
    exit (1)
 endif
 
-if ($nox) exit 0
+if ($upswn) exit 0
 #
 # Execute
 #
@@ -104,7 +104,7 @@ echo "Starting list..."
 if (-e $ldir/${tp}.list) rm -f $ldir/${tp}.list
 set cnt = 1000
 set x = ""
-if ($leav) set x = '-n'
+if ($upswl) set x = '-n'
 set tmp = $$
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
 touch $ldir/$tmp.tmp

@@ -63,7 +63,7 @@ if (! $ok) exit 1
 #
 # Get specific data
 #
-if ($nox) exit 0 
+if ($upswn) exit 0 
 #
 # Get data
 #

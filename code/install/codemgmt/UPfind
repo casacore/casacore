@@ -29,14 +29,14 @@
 # $Id$
 #
 set script = "UPfind"
-set usage = 'Usage: UPfind [-c] [-r] [-g] [-f] [-d] [-n] <typ>'
+set usage = 'Usage: UPfind [-f] [-g] [-c] [-r] [-d] [-n] <typ>'
 #
 # UPfind script (must have x allowed)
-# Get all files that have to be updated according to an egrep rule
-# All .cc, .h and template files are scanned, or the .g if -g given
+#
+# Get all files that have to be updated according to an egrep rule.
+# All .cc, .h and templates files are scanned, or the .g if -g given. 
 # The file list will be in <typ>.raw
-# <typ>.found will have the list without user selected
-# removals.
+# <typ>.found will have the list without user selected removals.
 # If the -f switch is given, the file list will be generated from file
 # patterns.
 #
@@ -69,7 +69,7 @@ if (! $ok) exit 1
 # Get specific data
 #
 if (! -r $ldir/${tp}.up1) then
- if (! $fls) then
+ if (! $upswf) then
    touch $ldir/${tp}.up1
    echo "Specify egrep  expression(s) to find files"
    echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
@@ -121,13 +121,13 @@ if (-z $ldir/${tp}.up1) then
    exit (1)
 endif
 
-if ($nox) exit 0
+if ($upswn) exit 0
 #
 # Execute
 #
 cd $dir/code
 echo "Starting find..."
-if ($fls) then
+if ($upswf) then
   if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
   touch $ldir/${tp}.raw
   set y = (`cat $ldir/${tp}.up1`)
@@ -143,7 +143,7 @@ if ($fls) then
   unset y
   unset x
 else
- if ($gls) then
+ if ($upswg) then
    find . -name '*.g' \
 	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
 	      >! $ldir/${tp}.raw 

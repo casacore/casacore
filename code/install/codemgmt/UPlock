@@ -63,7 +63,7 @@ endif
 source $uppath/UPinfo
 if (! $ok) exit 1
 
-if ($nox) exit 0
+if ($upswn) exit 0
 #
 # Get specific data 
 #

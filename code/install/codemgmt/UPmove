@@ -111,7 +111,7 @@ if (-z $ldir/${tp}.cfnm) then
    exit (1)
 endif
 
-if ($upinf) exit 0
+if ($upswi) exit 0
 #
 # Execute info gathering
 #
@@ -155,7 +155,7 @@ if (! -e $ldir/${tp}.sed) then
    unset x
 endif
 
-if ($upinf) exit 0
+if ($upswi) exit 0
 #
 # Execute
 #
@@ -164,7 +164,7 @@ if ($domv) then
   set x = (`cat $ldir/${tp}.sel`)
   foreach i ($x)
     set j = `echo $i | sed -f $ldir/${tp}.cfnm`
-    if ($upreal) then
+    if (! $upswt) then
        amv -src $i $j <<EOF
 y
 EOF
@@ -176,7 +176,7 @@ EOF
 endif
 
 cd $ldir
-if ($upreal) then
+if (! $upswt) then
    sed -f $ldir/${tp}.sed $ldir/${tp}.todo >! $ldir/${tp}.found
 else
    cat $ldir/${tp}.todo >! $ldir/${tp}.found
