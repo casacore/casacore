@@ -30,7 +30,6 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/ColDescSet.h>
-#include <aips/Utilities/String.h>
 
 RONewMSFeedColumns::RONewMSFeedColumns(const NewMSFeed& msFeed):
   antennaId_p(msFeed, NewMSFeed::columnName(NewMSFeed::ANTENNA_ID)),
@@ -170,13 +169,13 @@ NewMSFeedColumns::NewMSFeedColumns(NewMSFeed& msFeed):
 
 NewMSFeedColumns::~NewMSFeedColumns() {}
 
-void NewMSFeedColumns::setDirectionRef(Int ref) 
+void NewMSFeedColumns::setDirectionRef(MDirection::Types ref) 
 {
   beamOffset_p.rwKeywordSet().rwSubRecord("MEASINFO").
     define("Ref", MDirection::showType(ref));
 }
 
-void NewMSFeedColumns::setPositionRef(Int ref) 
+void NewMSFeedColumns::setPositionRef(MPosition::Types ref) 
 {
   position_p.rwKeywordSet().rwSubRecord("MEASINFO").
     define("Ref", MPosition::showType(ref));
@@ -255,3 +254,6 @@ void NewMSFeedColumns::attachOptionalCols(NewMSFeed& msFeed)
   if (cds.isDefined(phasedFeedId)) phasedFeedId_p.attach(msFeed, phasedFeedId);
 }
 
+// Local Variables: 
+// compile-command: "gmake NewMSFeedColumns"
+// End: 
