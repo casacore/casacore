@@ -151,6 +151,7 @@ DataType ColumnDesc::trueDataType() const
     default:
 	AlwaysAssert (False, AipsError);
     }
+    return TpOther;
 }
 
 
