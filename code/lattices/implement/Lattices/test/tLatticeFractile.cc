@@ -76,7 +76,7 @@ int main (int argc, char *argv[])
 	   << endl;
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5, 0.5) << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
       cout << "Fractiles (left 40%, right 45%) test" << endl;
       cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
 	   << endl;
@@ -102,7 +102,7 @@ int main (int argc, char *argv[])
 	   << endl;
       LatticeExprNode afExpr(aF);
       LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5, 0.5) << endl;
+      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
       cout << "Fractiles (left 40%, right 45%) test" << endl;
       cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
 	   << endl;
