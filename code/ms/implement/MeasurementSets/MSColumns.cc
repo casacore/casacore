@@ -88,59 +88,63 @@ void NewMSColumns::setEpochRef(MEpoch::Types ref)
   const String k2("Type");
   const String fld("refer");
   feed_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   field_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   flagCmd_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   if (!freqOffset_p.isNull()) {
     freqOffset_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+      define(fld, timsys);
   }
   history_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   observation_p.timeRange().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   observation_p.releaseDate().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   pointing_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   pointing_p.timeOrigin().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   source_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-    define(fld,timsys);
+    define(fld, timsys);
   if (!sysCal_p.isNull()) {
     sysCal_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+      define(fld, timsys);
   }
   if (!weather_p.isNull()) {
     weather_p.time().rwKeywordSet().rwSubRecord(k1).rwSubRecord(k2).
-      define(fld,timsys);
+      define(fld, timsys);
   }
 }
 
 void NewMSColumns::setDirectionRef(MDirection::Types ref)
 {
   field_p.delayDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
   field_p.phaseDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
   field_p.referenceDir().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
   pointing_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
   pointing_p.target().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
   if (!pointing_p.pointingOffset().isNull()) {
     pointing_p.pointingOffset().rwKeywordSet().rwSubRecord("MEASINFO").
-      rwSubRecord("Type").define("refer",MDirection::showType(ref));
+      rwSubRecord("Type").define("refer", MDirection::showType(ref));
   }
   if (!pointing_p.sourceOffset().isNull()) {
     pointing_p.sourceOffset().rwKeywordSet().rwSubRecord("MEASINFO").
-      rwSubRecord("Type").define("refer",MDirection::showType(ref));
+      rwSubRecord("Type").define("refer", MDirection::showType(ref));
+  }
+  if (!pointing_p.encoder().isNull()) {
+    pointing_p.encoder().rwKeywordSet().rwSubRecord("MEASINFO").
+      rwSubRecord("Type").define("refer", MDirection::showType(ref));
   }
   source_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
-    rwSubRecord("Type").define("refer",MDirection::showType(ref));
+    rwSubRecord("Type").define("refer", MDirection::showType(ref));
 }
 // Local Variables: 
 // compile-command: "gmake NewMSColumns"
