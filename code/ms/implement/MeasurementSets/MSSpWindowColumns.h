@@ -138,10 +138,13 @@ public:
   // mode, if the dimensions are wrong. In addition to the numerical values the
   // frequency reference frame is checked and needs to match the value in the
   // MEAS_FREQ_REF column. No conversions to other reference frames are
-  // done. Returns -1 if no match could be found.
+  // done. Will only try to match on rows where FLAG_ROW is false. If tryRow is
+  // set to a non-negative value then that row is checked first to see if it
+  // matches. An AIpsError exception is thrown if tryRow is bigger than the
+  // number of rows in the Table. Returns -1 if no match could be found.
   Int matchSpw(const MFrequency& refFreq, uInt nChan, 
 	       const Quantum<Double>& bandwidth, Int ifChain,
-	       const Quantum<Double>& tolerance) const;
+	       const Quantum<Double>& tolerance, Int tryRow=-1) const;
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
