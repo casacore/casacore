@@ -34,178 +34,473 @@
 
 // This program tests the Modcomp conversion functions.
 
-void checkConversion (Int& error)
-{
-  Char val[4];
-  Char out[4];
-  {
-    val[0] = -2;
+void compare(Int& error, Char exp, Char res) {
+  union {
     Char result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != -2) {
-      cout << "invalid char to conversion" << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]) {
-      cout << "invalid char from conversion" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = -2;
-    uChar result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 254) {
-      cout << "invalid unsigned char to conversion" << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out+1, &result, 1);
-    if (out[0] != val[0]) {
-      cout << "invalid unsigned char from conversion" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 2;
-    val[1] = 1;
-    Short result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 513) {
-      cout << "invalid short to conversion 1: " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]) {
-      cout << "invalid short from conversion 1" << endl;
-      error = 1;
-    }
-    val[0] = -2;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != -2*256 + 1) {
-      cout << "invalid short to conversion 2: " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]) {
-      cout << "invalid short from conversion 2: " << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 7;
-    val[1] = 111;
-    uShort result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 7*256 + 111) {
-      cout << "invalid unsigned short to conversion " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]) {
-      cout << "invalid unsigned short from conversion" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 1;
-    val[1] = 2;
-    val[2] = 3;
-    val[3] = 0;
-    Int result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 1*256*256*256 + 2*256*256 + 3*256 + 0) {
-      cout << "invalid int to conversion 1: " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
- 	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid int from conversion 1" << endl;
-      error = 1;
-    }
-    val[0] = -127;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != -127*256*256*256 + 2*256*256 + 3*256) {
-      cout << "invalid int to conversion 2" << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
- 	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid int from conversion 2" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 11;
-    val[1] = 23;
-    val[2] = 35;
-    val[3] = 7;
-    uInt result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 11*256*256*256 + 23*256*256 + 35*256 + 7) {
-      cout << "invalid unsigned int to conversion" << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
- 	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid unsigned int from conversion" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 2;
-    val[1] = 54;
-    val[2] = 78;
-    val[3] = 145;
-    Long result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
-      cout << "invalid long to conversion " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
- 	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid long from conversion" << endl;
-      error = 1;
-    }
-    val[0] = -2;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != -(1*256*256*256 + 201*256*256 + 177*256 + 111)) {
-      cout << "invalid long to conversion 2: " << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
-	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid long from conversion 2" << endl;
-      error = 1;
-    }
-  }
-  {
-    val[0] = 128;
-    val[1] = 54;
-    val[2] = 78;
-    val[3] = 100;
-    uLong result;
-    ModcompConversion::toLocal (&result, val, 1);
-    if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U) {
-      cout << "invalid unsigned long to conversion" << result << endl;
-      error = 1;
-    }
-    ModcompConversion::fromLocal (out, &result, 1);
-    if (out[0] != val[0]  ||  out[1] != val[1]
-	||  out[2] != val[2]  ||  out[3] != val[3]) {
-      cout << "invalid unsigned long from conversion" << endl;
-      error = 1;
-    }
+    uChar byteResult[1];
+  };
+  result = res;
+  union {
+    Char expected;
+    uChar byteExpected[1];
+  };
+  expected = exp;
+  // Compare the results. 
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cout << setbase(10) << endl;
   }
 }
 
-void compareFloat (Int& error, Float exp, Float res) {
+void compare(Int& error, uChar exp, uChar res) {
+  union {
+    uChar result;
+    uChar byteResult[1];
+  };
+  result = res;
+  union {
+    uChar expected;
+    uChar byteExpected[1];
+  };
+  expected = exp;
+  // Compare the results. 
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, Short exp, Short res) {
+  union {
+    Short result;
+    uChar byteResult[2];
+  };
+  result = res;
+  union {
+    Short expected;
+    uChar byteExpected[2];
+  };
+  expected = exp;
+  // Compare the results. 
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, uShort exp, uShort res) {
+  union {
+    uShort result;
+    uChar byteResult[2];
+  };
+  result = res;
+  union {
+    uShort expected;
+    uChar byteExpected[2];
+  };
+  expected = exp;
+  // Compare the results. 
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, Int exp, Int res) {
+  union {
+    Int result;
+    uChar byteResult[4];
+  };
+  result = res;
+  union {
+    Int expected;
+    uChar byteExpected[4];
+  };
+  expected = exp;
+  // Compare the results.
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ":"
+	 << Int(byteExpected[2]) << ":"
+	 << Int(byteExpected[3]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ":"
+	 << Int(byteResult[2]) << ":"
+	 << Int(byteResult[3]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, uInt exp, uInt res) {
+  union {
+    uInt result;
+    uChar byteResult[4];
+  };
+  result = res;
+  union {
+    uInt expected;
+    uChar byteExpected[4];
+  };
+  expected = exp;
+  // Compare the results.
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ":"
+	 << Int(byteExpected[2]) << ":"
+	 << Int(byteExpected[3]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ":"
+	 << Int(byteResult[2]) << ":"
+	 << Int(byteResult[3]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, Long exp, Long res) {
+  union {
+    Long result;
+    uChar byteResult[4];
+  };
+  result = res;
+  union {
+    Long expected;
+    uChar byteExpected[4];
+  };
+  expected = exp;
+  // Compare the results.
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ":"
+	 << Int(byteExpected[2]) << ":"
+	 << Int(byteExpected[3]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ":"
+	 << Int(byteResult[2]) << ":"
+	 << Int(byteResult[3]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void compare(Int& error, uLong exp, uLong res) {
+  union {
+    uLong result;
+    uChar byteResult[4];
+  };
+  result = res;
+  union {
+    uLong expected;
+    uChar byteExpected[4];
+  };
+  expected = exp;
+  // Compare the results.
+  if (result != expected) {
+    error = 1;
+    cout << "expected " << expected;
+    cout << setbase(16) << " (" 
+	 << Int(byteExpected[0]) << ":"
+	 << Int(byteExpected[1]) << ":"
+	 << Int(byteExpected[2]) << ":"
+	 << Int(byteExpected[3]) << ")";
+    cout << setbase(10) << " got " << result;
+    cout << setbase(16) << " (" 
+	 << Int(byteResult[0]) << ":"
+	 << Int(byteResult[1]) << ":"
+	 << Int(byteResult[2]) << ":"
+	 << Int(byteResult[3]) << ")";
+    cout << setbase(10) << endl;
+  }
+}
+
+void checkConversion (Int& error)
+{
+  {
+    Char input[2];
+    input[0] = 'A';
+    input[1] = 'B';
+    Char result[2];
+    result[0] = 'Z';
+    result[1] = 'Z';
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 'A', result[0]);
+    result[0] = 'Z';
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 'A', result[0]);
+    compare(error, 'B', result[1]);
+    result[0] = 'a';
+    result[1] = 'b';
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 'a', input[0]);
+    compare(error, 'b', input[1]);
+    result[0] = 'Z';
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 'Z', input[0]);
+  }
+  {
+    uChar input[2];
+    input[0] = 0xa5;
+    input[1] = 0xff;
+    uChar result[2];
+    result[0] = 0x00;
+    result[1] = 0x00;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 0xa5, result[0]);
+    result[0] = 0x00;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 0xa5, result[0]);
+    compare(error, 0xff, result[1]);
+    result[0] = 0xfe;
+    result[1] = 0x5a;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xfe, input[0]);
+    compare(error, 0x5a, input[1]);
+    result[0] = 0x00;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x00, input[0]);
+  }
+  {
+    uChar input[4];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0xff;
+    input[3] = 0xef;
+    Short result[2];
+    result[0] = 0;
+    result[1] = 0;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 32421, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 32421, result[0]);
+    compare(error, -17, result[1]);
+    result[0] = -2;
+    result[1] = 30000;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xff, input[0]);
+    compare(error, 0xfe, input[1]);
+    compare(error, 0x75, input[2]);
+    compare(error, 0x30, input[3]);
+    result[0] = 1;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x00, input[0]);
+    compare(error, 0x01, input[1]);
+  }
+  {
+    uChar input[4];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0xff;
+    input[3] = 0xef;
+    uShort result[2];
+    result[0] = 0;
+    result[1] = 0;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 32421, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 32421, result[0]);
+    compare(error, 65519, result[1]);
+    result[0] = 65534;
+    result[1] = 30000;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xff, input[0]);
+    compare(error, 0xfe, input[1]);
+    compare(error, 0x75, input[2]);
+    compare(error, 0x30, input[3]);
+    result[0] = 1;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x00, input[0]);
+    compare(error, 0x01, input[1]);
+  }
+  {
+    uChar input[8];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0x43;
+    input[3] = 0x21;
+    input[4] = 0xff;
+    input[5] = 0xef;
+    input[6] = 0xab;
+    input[7] = 0xcd;
+    Int result[2];
+    result[0] = 0;
+    result[1] = 0;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 2124759841, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 2124759841, result[0]);
+    compare(error, -1070131, result[1]);
+    result[0] = -19088744;
+    result[1] = 305419896;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xfe, input[0]);
+    compare(error, 0xdc, input[1]);
+    compare(error, 0xba, input[2]);
+    compare(error, 0x98, input[3]);
+    compare(error, 0x12, input[4]);
+    compare(error, 0x34, input[5]);
+    compare(error, 0x56, input[6]);
+    compare(error, 0x78, input[7]);
+    result[0] = 591751049;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x23, input[0]);
+    compare(error, 0x45, input[1]);
+    compare(error, 0x67, input[2]);
+    compare(error, 0x89, input[3]);
+  }
+  {
+    uChar input[8];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0x43;
+    input[3] = 0x21;
+    input[4] = 0xff;
+    input[5] = 0xef;
+    input[6] = 0xab;
+    input[7] = 0xcd;
+    uInt result[2];
+    result[0] = 0u;
+    result[1] = 0u;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 2124759841u, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 2124759841u, result[0]);
+    compare(error, 4293897165u, result[1]);
+    result[0] = 4275878552;
+    result[1] = 305419896;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xfe, input[0]);
+    compare(error, 0xdc, input[1]);
+    compare(error, 0xba, input[2]);
+    compare(error, 0x98, input[3]);
+    compare(error, 0x12, input[4]);
+    compare(error, 0x34, input[5]);
+    compare(error, 0x56, input[6]);
+    compare(error, 0x78, input[7]);
+    result[0] = 591751049;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x23, input[0]);
+    compare(error, 0x45, input[1]);
+    compare(error, 0x67, input[2]);
+    compare(error, 0x89, input[3]);
+  }
+  {
+    uChar input[8];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0x43;
+    input[3] = 0x21;
+    input[4] = 0xff;
+    input[5] = 0xef;
+    input[6] = 0xab;
+    input[7] = 0xcd;
+    Long result[2];
+    result[0] = 0;
+    result[1] = 0;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 2124759841L, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 2124759841L, result[0]);
+    compare(error, -1070131L, result[1]);
+    result[0] = -19088744;
+    result[1] = 305419896;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xfe, input[0]);
+    compare(error, 0xdc, input[1]);
+    compare(error, 0xba, input[2]);
+    compare(error, 0x98, input[3]);
+    compare(error, 0x12, input[4]);
+    compare(error, 0x34, input[5]);
+    compare(error, 0x56, input[6]);
+    compare(error, 0x78, input[7]);
+    result[0] = 591751049;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x23, input[0]);
+    compare(error, 0x45, input[1]);
+    compare(error, 0x67, input[2]);
+    compare(error, 0x89, input[3]);
+  }
+  {
+    uChar input[8];
+    input[0] = 0x7e;
+    input[1] = 0xa5;
+    input[2] = 0x43;
+    input[3] = 0x21;
+    input[4] = 0xff;
+    input[5] = 0xef;
+    input[6] = 0xab;
+    input[7] = 0xcd;
+    uLong result[2];
+    result[0] = 0u;
+    result[1] = 0u;
+    ModcompConversion::toLocal(result[0], input);
+    compare(error, 2124759841uL, result[0]);
+    result[0] = 0;
+    ModcompConversion::toLocal(result, input, 2);
+    compare(error, 2124759841uL, result[0]);
+    compare(error, 4293897165uL, result[1]);
+    result[0] = 4275878552;
+    result[1] = 305419896;
+    ModcompConversion::fromLocal(input, result, 2);
+    compare(error, 0xfe, input[0]);
+    compare(error, 0xdc, input[1]);
+    compare(error, 0xba, input[2]);
+    compare(error, 0x98, input[3]);
+    compare(error, 0x12, input[4]);
+    compare(error, 0x34, input[5]);
+    compare(error, 0x56, input[6]);
+    compare(error, 0x78, input[7]);
+    result[0] = 591751049;
+    ModcompConversion::fromLocal(input, result[0]);
+    compare(error, 0x23, input[0]);
+    compare(error, 0x45, input[1]);
+    compare(error, 0x67, input[2]);
+    compare(error, 0x89, input[3]);
+  }
+}
+
+void compare(Int& error, Float exp, Float res) {
   union {
     Float result;
     uChar byteResult[4];
@@ -261,14 +556,14 @@ void checkFloat (Int& error)
       data[1] = (j & 0x0003) << 6 | k; 
       expected = exponent * (Double(k)/64.0 + 1.0/(256*256*64));
       ModcompConversion::toLocal (&result, data, 1);
-      compareFloat(error, expected, result);
+      compare(error, expected, result);
       cdata[0] = ~data[0];
       cdata[1] = ~data[1];
       cdata[2] = ~data[2];
       cdata[3] = ~data[3];
       cdata[3]++; // There can be no carry as data[3] == 0x01;
       ModcompConversion::toLocal (&result, cdata, 1);
-      compareFloat(error, -1.0*expected, result);
+      compare(error, -1.0*expected, result);
     }
   }
   // Check that the conversion for zero works. Try all possible representations
@@ -285,12 +580,12 @@ void checkFloat (Int& error)
     data2[4] = data2[0] | 0x80;
     data2[5] = data2[1] = (i & 0x03) << 6;
     ModcompConversion::toLocal (result2, data2, 2);
-    compareFloat(error, plusZero, result2[0]);
-    compareFloat(error, minusZero, result2[1]);
+    compare(error, plusZero, result2[0]);
+    compare(error, minusZero, result2[1]);
   }
 }
 
-void compareDouble (Int& error, Double exp, Double res) {
+void compare(Int& error, Double exp, Double res) {
   union {
     Double result;
     uChar byteResult[8];
@@ -352,7 +647,7 @@ void checkDouble (Int& error) {
       data[1] = (j & 0x0003) << 6 | k; 
       expected = exponent * (Double(k)/64.0 + 1.0/65536/65536/65536/32);
       ModcompConversion::toLocal (&result, data, 1);
-      compareDouble(error, expected, result);
+      compare(error, expected, result);
       cdata[0] = ~data[0];
       cdata[1] = ~data[1];
       cdata[2] = ~data[2];
@@ -363,7 +658,7 @@ void checkDouble (Int& error) {
       cdata[7] = ~data[7];
       cdata[7]++; // There can be no carry as data[7] == 0x02;
       ModcompConversion::toLocal (&result, cdata, 1);
-      compareDouble(error, -1.0*expected, result);
+      compare(error, -1.0*expected, result);
     }
   }
   // Check that the conversion for zero works. Try all possible representations
@@ -382,8 +677,8 @@ void checkDouble (Int& error) {
     data2[8] = data2[0] | 0x80;
     data2[9] = data2[1] = (i & 0x03) << 6;
     ModcompConversion::toLocal (result2, data2, 2);
-    compareDouble(error, plusZero, result2[0]);
-    compareDouble(error, minusZero, result2[1]);
+    compare(error, plusZero, result2[0]);
+    compare(error, minusZero, result2[1]);
   }
 }
 
