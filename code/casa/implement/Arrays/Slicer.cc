@@ -45,7 +45,9 @@ Slicer::Slicer (const IPosition& bl, const IPosition& tr, const IPosition& in,
   stride_p(in),
   len_p   (tr),
   asEnd_p (lol)
-    { fillEndLen(); }
+{
+    fillEndLen();
+}
 
 Slicer::Slicer (const IPosition& bl, const IPosition& tr,
 		LengthOrLast lol)
@@ -54,7 +56,9 @@ Slicer::Slicer (const IPosition& bl, const IPosition& tr,
   stride_p(bl.nelements(), 1),
   len_p   (tr),
   asEnd_p (lol)
-    { fillEndLen(); }
+{
+    fillEndLen();
+}
 
 Slicer::Slicer (const IPosition& bl)
 : start_p (bl),
@@ -62,7 +66,9 @@ Slicer::Slicer (const IPosition& bl)
   stride_p(bl.nelements(), 1),
   end_p   (bl),
   asEnd_p (endIsLength)
-    { fillFixed(); }
+{
+    fillFixed();
+}
 
 Slicer::Slicer (const Slice& x, const Slice& y, const Slice& z,
 		LengthOrLast lol)
@@ -115,19 +121,21 @@ Slicer::Slicer (const Slicer& that)
 
 Slicer& Slicer::operator= (const Slicer& that)
 {
-    uInt nels = that.ndim();
-    if (ndim() != nels) {
-	start_p.resize (nels);
-	end_p.resize (nels);
-	stride_p.resize (nels);
-	len_p.resize (nels);
+    if (this != &that) {
+	uInt nels = that.ndim();
+	if (ndim() != nels) {
+	    start_p.resize (nels);
+	    end_p.resize (nels);
+	    stride_p.resize (nels);
+	    len_p.resize (nels);
+	}
+	start_p  = that.start_p;
+	end_p    = that.end_p;
+	stride_p = that.stride_p;
+	len_p    = that.len_p;
+	asEnd_p  = that.asEnd_p;
+	fixed_p  = that.fixed_p;
     }
-    start_p  = that.start_p;
-    end_p    = that.end_p;
-    stride_p = that.stride_p;
-    len_p    = that.len_p;
-    asEnd_p  = that.asEnd_p;
-    fixed_p  = that.fixed_p;
     return *this;
 }
 
@@ -178,6 +186,7 @@ void Slicer::fillFixed()
     for (uInt i=0; i<start_p.nelements(); i++) {
 	if (start_p(i) == MimicSource  ||  end_p(i) == MimicSource) {
 	    fixed_p = False;
+	    break;
 	}
     }
 }
