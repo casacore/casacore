@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
