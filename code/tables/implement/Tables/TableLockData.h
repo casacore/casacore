@@ -1,5 +1,5 @@
 //# TableLockData.h: Class to hold table lock data
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -79,7 +79,8 @@ public:
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
-    void makeLock (const String& name, Bool create, FileLocker::LockType);
+    void makeLock (const String& name, Bool create, FileLocker::LockType,
+		   uInt locknr = 0);
 
     // Acquire a read or write lock.
     // It throws an exception when acquire failed while it had to wait.
@@ -124,7 +125,8 @@ private:
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    return (type == FileLocker::Write  ?  itsWriteLocked : itsReadLocked);
+///    return (type == FileLocker::Write  ?  itsWriteLocked : itsReadLocked);
+    return (itsLock == 0  ?  False : itsLock->hasLock (type));
 }
 inline void TableLockData::autoRelease()
 {

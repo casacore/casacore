@@ -1,5 +1,5 @@
 //# Table.h: Main interface classes to tables
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -466,7 +466,11 @@ public:
     // Test if the table is marked for delete.
     Bool isMarkedForDelete() const;
     
-    // Get the number of rows. This is unsynchronized.
+    // Get the number of rows.
+    // It is unsynchronized meaning that it will not check if another
+    // process updated the table, thus possible increased the number of rows.
+    // If one wants to take that into account, he should acquire a
+    // read-lock (using the lock function) before using nrow().
     uInt nrow() const;
 
     // Test if it is possible to add a row to this table.
@@ -724,6 +728,13 @@ protected:
 
 
 private:
+    // Construct a BaseTable object from the table file.
+    static BaseTable* makeBaseTable (const String& name, const String& type,
+				     int tableOption,
+				     const TableLock& lockOptions,
+				     Bool addToCache, uInt locknr);
+
+
     // Get the pointer to the underlying BaseTable.
     // This is needed for some friend classes.
     BaseTable* baseTablePtr() const;
