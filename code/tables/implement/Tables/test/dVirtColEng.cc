@@ -28,7 +28,7 @@
 //# Define a main program to allow compalition and linking by the make system.
 //# The variable is set in tVirtColEng.cc to skip it.
 #if !defined(DVIRTCOLENG_MAIN)
-main()
+int main()
 { return 0; }
 #endif
 
@@ -101,7 +101,7 @@ void DummyVirtualEngine::prepare ()
     data2_p.prepare (table());
 }
 
-DataManager* DummyVirtualEngine::makeObject (const String&)
+DataManager* DummyVirtualEngine::makeObject (const String&, const Record&)
 {
     DataManager* dmPtr = new DummyVirtualEngine();
     if (dmPtr == 0) {

@@ -1,5 +1,5 @@
 //# dVSCEngine.cc: Example virtual column engine to handle data type A
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 //# Define a main program to allow compalition and linking by the make system.
 //# The variable is set in tVSCEngine.cc to skip it.
 #if !defined(DVSCENGINE_MAIN)
-main()
+int main()
 { return 0; }
 #endif
 
@@ -107,7 +107,7 @@ void VSCExampleVSCEngine::put (uInt rownr, const VSCExample& value)
 }
 
 
-DataManager* VSCExampleVSCEngine::makeObject (const String&)
+DataManager* VSCExampleVSCEngine::makeObject (const String&, const Record&)
 {
     DataManager* dmPtr = new VSCExampleVSCEngine();
     if (dmPtr == 0) {

@@ -1,5 +1,5 @@
 //# dVirtColEng.h: Demo of a virtual column engine
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -370,7 +370,8 @@ public:
     // If the engine is commonly used, its registration can be added
     // into the registerAllCtor function in DataManReg.cc. 
     // This function gets automatically invoked by the table system.
-    static DataManager* makeObject (const String& dataManagerName);
+    static DataManager* makeObject (const String& dataManagerName,
+				    const Record& spec);
 };
 
 

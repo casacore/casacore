@@ -1,5 +1,5 @@
 //# tVSCEngine.cc: Test program for class VSCEngine
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 
 
 //# Includes
-#include "dVSCEngine.h"
-#include "dVSCEngine.cc"
+#include <aips/Tables/test/dVSCEngine.h>
+#include <aips/Tables/test/dVSCEngine.cc>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
@@ -52,7 +52,7 @@
 void a();
 void b();
 
-main () {
+int main () {
     try {
 	a();
 	b();
