@@ -1,0 +1,19 @@
+
+change id: 0063
+ author:   Wim Brouw
+ date:     2000/12/12
+ avers:    1.5
+ area:     Tool
+ package:  trial
+ module:   measures
+ type:     Code Documentation
+ category: Change
+ summary:  Added multi-valued quantities to measures
+The measures tool can now create and operate on measures that have multi-valued scalar quantities (vector ('r_array') of quantities was already handled).
+I.e. the following code will know what to do:
+
+a:=dm.direction('j2000', dq.quantity([1,2],'deg'), dq.quantity([3,4],'deg'))
+b:=dm.measure(a, 'B1950')
+dm.getvalue(b)[1]
+
+In cases where more than one value has to be given (e.g. a position needs two angles and a distance; or three distances), each multi-valued value given has to have the same number of values in it.
