@@ -178,11 +178,6 @@ in which an outer GUI frame might be closed:
         right of the frame it is controlling as possible
         without this requirement leading to excessive wasted
         space in the frame.
-	    In general, there should be only one such short-cut
-	button which removes or unmaps the GUI.  GUIs
-	with both a "Done" and a "Dismiss" button are needlessly
-	confusing.  Choose one.  Multiple options for removing
-	a GUI should only appear in the File menu.
 
     o From a required choice.  When a GUI exists only to demand
         some choice from the user (for example the
