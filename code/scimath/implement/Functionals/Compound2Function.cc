@@ -50,32 +50,6 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
-*NQCompoundFunction<AutoDiff<T> >::cloneAD() const {
-  if (parset_p) fromParam_p();
-  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
-    new NQCompoundFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>();
-  for (uInt i=0; i<nFunctions(); ++i) {
-    dynamic_cast<NQCompoundFunction<typename FunctionTraits<AutoDiff<T> >::
-      DiffType> *>(t)->addFunction(*(function(i).cloneAD()));
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
-*NQCompoundFunction<AutoDiff<T> >::cloneBase() const {
-  if (parset_p) fromParam_p();
-  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
-    new NQCompoundFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>();
-  for (uInt i=0; i<nFunctions(); ++i) {
-    dynamic_cast<NQCompoundFunction<typename FunctionTraits<AutoDiff<T> >::
-      BaseType> *>(t)->addFunction(*(function(i).cloneBase()));
-  };
-  return t;
-}
-
 template <class T>
 void NQCompoundFunction<AutoDiff<T> >::fromParam_p() const {
   if (parset_p) {

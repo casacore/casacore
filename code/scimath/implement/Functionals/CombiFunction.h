@@ -131,15 +131,9 @@ template <class T> class NQCombiFunction : public NQCombiParam<T> {
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer. The <em>AD, Base</em> versions return an
-  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
-  // already <src>AutoDiff</src> or <src>Base</src>).
+  // deleting the pointer.
   // <group>
   virtual Function<T> *clone() const { return new NQCombiFunction<T>(*this); };
-  virtual Function<typename FunctionTraits<T>::DiffType>
-    *cloneAD() const;
-  virtual Function<typename FunctionTraits<T>::BaseType>
-    *cloneBase() const;
   // </group>
 
 };
@@ -179,16 +173,10 @@ public NQCombiParam<AutoDiff<T> > {
   
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible for
-  // deleting the pointer. The <em>AD, Base</em> versions return an
-  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
-  // already <src>AutoDiff</src> or <src>Base</src>).
+  // deleting the pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQCombiFunction_PS<AutoDiff<T> >(*this); };
-  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
-    *cloneAD() const;
-  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
-    *cloneBase() const;
   // </group>
 
 };

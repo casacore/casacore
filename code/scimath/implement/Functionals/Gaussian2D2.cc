@@ -97,26 +97,3 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
-*NQGaussian2D<AutoDiff<T> >::cloneAD() const {
-  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
-    new NQGaussian2D<typename FunctionTraits<AutoDiff<T> >::DiffType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
-      DiffType(param_p[i]);
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
-*NQGaussian2D<AutoDiff<T> >::cloneBase() const {
-  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
-    new NQGaussian2D<typename FunctionTraits<AutoDiff<T> >::BaseType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<AutoDiff<T> >::
-      DiffType(param_p[i]).value();
-  };
-  return t;
-}

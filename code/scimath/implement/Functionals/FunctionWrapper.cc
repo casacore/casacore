@@ -117,24 +117,3 @@ T NQFunctionWrapper<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<T>::DiffType>
-*NQFunctionWrapper<T>::cloneAD() const {
-  Function<typename FunctionTraits<T>::DiffType> *t =
-    new NQFunctionWrapper<typename FunctionTraits<T>::DiffType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<T>::BaseType>
-*NQFunctionWrapper<T>::cloneBase() const {
-  Function<typename FunctionTraits<T>::BaseType> *t =
-    new NQFunctionWrapper<typename FunctionTraits<T>::BaseType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
-  };
-  return t;
-}

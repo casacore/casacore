@@ -53,26 +53,3 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
-*NQCombiFunction<AutoDiff<T> >::cloneAD() const {
-  Function<typename FunctionTraits<AutoDiff<T> >::DiffType> *t =
-    new NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::DiffType>();
-  for (uInt i=0; i<nFunctions(); ++i) {
-    dynamic_cast<NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::
-      DiffType> *>(t)->addFunction(*(function(i).cloneAD()));
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
-*NQCombiFunction<AutoDiff<T> >::cloneBase() const {
-  Function<typename FunctionTraits<AutoDiff<T> >::BaseType> *t =
-    new NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>();
-  for (uInt i=0; i<nFunctions(); ++i) {
-    dynamic_cast<NQCombiFunction<typename FunctionTraits<AutoDiff<T> >::
-      BaseType> *>(t)->addFunction(*(function(i).cloneBase()));
-  };
-  return t;
-}

@@ -147,15 +147,9 @@ template<class T> class NQSinusoid1D : public NQSinusoid1DParam<T> {
     
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer. The <em>AD, Base</em> versions return an
-  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
-  // already <src>AutoDiff</src> or <src>Base</src>).
+  // for deleting this pointer. 
   // <group>
   virtual Function<T> *clone() const { return new NQSinusoid1D<T>(*this); };
-  virtual Function<typename FunctionTraits<T>::DiffType>
-    *cloneAD() const;
-  virtual Function<typename FunctionTraits<T>::BaseType>
-    *cloneBase() const;
   // </group>
 
 };
@@ -206,16 +200,10 @@ public NQSinusoid1DParam<AutoDiff<T> > {
     
   //# Member functions
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer. The <em>AD, Base</em> versions return an
-  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
-  // already <src>AutoDiff</src> or <src>Base</src>).
+  // for deleting this pointer.
   // <group>
   virtual Function<AutoDiff<T> > *clone() const {
     return new NQSinusoid1D<AutoDiff<T> >(*this); };
-  virtual Function<typename FunctionTraits<AutoDiff<T> >::DiffType>
-    *cloneAD() const;
-  virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
-    *cloneBase() const;
   // </group>
 
 };

@@ -249,15 +249,9 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // Print the function (i.e. the parameters)
   ostream &print(ostream &os) const { return param_p.print(os); };
   // Return a copy of this object from the heap. The caller is responsible 
-  // for deleting this pointer. The <em>AD, Base</em> versions return an
-  // <src>AutoDiff</src> or <src>Base</src> version (which could be same if
-  // already <src>AutoDiff</src> or <src>Base</src>).
+  // for deleting this pointer.
   // <group>
   virtual Function<T> *clone() const = 0;
-  virtual Function<typename FunctionTraits<T>::DiffType>
-    *cloneAD() const = 0;
-  virtual Function<typename FunctionTraits<T>::BaseType>
-    *cloneBase() const = 0;
   // </group>
 
   protected:

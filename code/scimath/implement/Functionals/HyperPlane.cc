@@ -40,24 +40,3 @@ T NQHyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<T>::DiffType>
-*NQHyperPlane<T>::cloneAD() const {
-  Function<typename FunctionTraits<T>::DiffType> *t =
-    new NQHyperPlane<typename FunctionTraits<T>::DiffType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<T>::BaseType>
-*NQHyperPlane<T>::cloneBase() const {
-  Function<typename FunctionTraits<T>::BaseType> *t =
-    new NQHyperPlane<typename FunctionTraits<T>::BaseType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
-  };
-  return t;
-}

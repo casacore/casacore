@@ -39,24 +39,3 @@ T NQSinusoid1D<T>::eval(typename NQFunction1D<T>::FunctionArg x) const {
 }
 
 //# Member functions
-template<class T>
-Function<typename FunctionTraits<T>::DiffType>
-*NQSinusoid1D<T>::cloneAD() const {
-  Function<typename FunctionTraits<T>::DiffType> *t =
-    new NQSinusoid1D<typename FunctionTraits<T>::DiffType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]);
-  };
-  return t;
-}
-
-template<class T>
-Function<typename FunctionTraits<T>::BaseType>
-*NQSinusoid1D<T>::cloneBase() const {
-  Function<typename FunctionTraits<T>::BaseType> *t =
-    new NQSinusoid1D<typename FunctionTraits<T>::BaseType>();
-  for (uInt i=0; i<nparameters(); ++i) {
-    (*t)[i] = typename FunctionTraits<T>::DiffType(param_p[i]).value();
-  };
-  return t;
-}
