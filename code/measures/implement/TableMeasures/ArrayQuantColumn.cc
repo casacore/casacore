@@ -1,5 +1,5 @@
 //# ArrayQuantColumn.cc: Access to an Array Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,8 +68,29 @@ ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
   itsScaUnitsCol(0)
 {
   init (tab, columnName);
+  itsUnitOut.resize(1);
+  itsUnitOut(0) = u;
+  itsConvOut = ToBool(! itsUnitOut(0).getName().empty());
+}
+
+template<class T>
+ROArrayQuantColumn<T>::ROArrayQuantColumn (const Table& tab,
+					   const String& columnName,
+					   const Vector<Unit>& u)
+: itsDataCol    (0),
+  itsArrUnitsCol(0),
+  itsScaUnitsCol(0)
+{
+  init (tab, columnName);
+  itsUnitOut.resize(u.nelements());
   itsUnitOut = u;
-  itsConvOut = ToBool(! itsUnitOut.getName().empty());
+  itsConvOut = False;
+  for (uInt i=0; i<itsUnitOut.nelements(); i++) {
+    if (! itsUnitOut(i).getName().empty()) {
+      itsConvOut = True;
+      break;
+    }
+  }
 }
 
 template<class T>
@@ -112,7 +133,11 @@ void ROArrayQuantColumn<T>::init (const Table& tab, const String& columnName)
       itsArrUnitsCol = new ROArrayColumn<String>(tab, varColName);
     }
   } else {
-    itsUnit = tqDesc->getUnits();
+    Vector<String> units = tqDesc->getUnits();
+    itsUnit.resize (units.nelements());
+    for (uInt i=0; i<units.nelements(); i++) {
+      itsUnit(i) = units(i);
+    }
   }
   itsDataCol = new ROArrayColumn<T>(tab, columnName);
   delete tqDesc;
@@ -122,6 +147,8 @@ template<class T>
 void ROArrayQuantColumn<T>::reference (const ROArrayQuantColumn<T>& that)
 {
   cleanUp();
+  itsUnit.resize (that.itsUnit.nelements());
+  itsUnitOut.resize (that.itsUnitOut.nelements());
   itsUnit    = that.itsUnit;
   itsUnitOut = that.itsUnitOut;
   itsConvOut = that.itsConvOut;
@@ -151,6 +178,16 @@ void ROArrayQuantColumn<T>::attach (const Table& tab,
 }
  
 template<class T>
+Vector<String> ROArrayQuantColumn<T>::getUnits() const
+{
+  Vector<String> names(itsUnit.nelements());
+  for (uInt i=0; i<itsUnit.nelements(); i++) {
+    names(i) = itsUnit(i).getName();
+  }
+  return names;
+}
+
+template<class T>
 void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q, 
 				     Bool resize) const
 { 
@@ -178,16 +215,16 @@ void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q,
   String* u_p;
   Bool deleteUnits;
   Array<String> tmpUnitsCol;
-  Unit localUnit;
+  Vector<Unit> localUnit(itsUnit);
   if (itsArrUnitsCol != 0) {
     Array<String> tmp = (*itsArrUnitsCol)(rownr);
     tmpUnitsCol.reference (tmp);
     u_p = tmpUnitsCol.getStorage(deleteUnits);
   } else if (itsScaUnitsCol != 0) {
-    localUnit = (*itsScaUnitsCol)(rownr);
-  } else {
-    localUnit = itsUnit;
+    localUnit.resize(1);
+    localUnit(0) = (*itsScaUnitsCol)(rownr);
   }
+  uInt nrun = localUnit.nelements();
   
   uInt n = tmpDataCol.nelements();
   for (uInt i=0; i<n; i++) {
@@ -195,7 +232,7 @@ void ROArrayQuantColumn<T>::getData (uInt rownr, Array<Quantum<T> >& q,
     if (itsArrUnitsCol != 0) {
       q_p[i].setUnit (u_p[i]);
     } else {
-      q_p[i].setUnit (localUnit);
+      q_p[i].setUnit (localUnit(i%nrun));
     }
   }
   
@@ -228,6 +265,34 @@ void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
     uInt n = q.nelements();
     for (uInt i=0; i<n; i++) {
       q_p[i].convert (u);
+    }
+    q.putStorage(q_p, deleteIt);
+  }
+}
+
+template<class T>
+void ROArrayQuantColumn<T>::get (uInt rownr, Array<Quantum<T> >& q,
+				 const Vector<Unit>& u, Bool resize) const
+{        
+  getData (rownr, q, resize);
+  Bool hasUnits = False;
+  uInt nrun = u.nelements();
+  Vector<Bool> hasUnit(nrun, False);
+  for (uInt i=0; i<nrun; i++) {
+    if (!u(i).getName().empty()) {
+      hasUnits = True;
+      hasUnit(i) = True;
+    }
+  }
+  if (hasUnits) {
+    Bool deleteIt;
+    Quantum<T>* q_p = q.getStorage(deleteIt);
+    uInt n = q.nelements();
+    for (uInt i=0; i<n; i++) {
+      uInt inx = i%nrun;
+      if (hasUnit(inx)) {
+	q_p[i].convert (u(inx));
+      }
     }
     q.putStorage(q_p, deleteIt);
   }
@@ -389,18 +454,18 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
   Bool deleteUnits;
   String* u_p;
   Array<String> unitsArr;
-  Unit localUnit;
+  Vector<Unit> localUnit(itsUnit);
   if (itsArrUnitsCol != 0) {
     unitsArr.resize(q.shape());
     u_p = unitsArr.getStorage(deleteUnits);
   } else if (itsScaUnitsCol != 0) {
     // Take the value for unit from the first entry in q.  This
     // is safe because we know here that q contains at least 1 entry.
-    localUnit = q_p[0].getFullUnit();
-    itsScaUnitsCol->put(rownr, localUnit.getName());
-  } else {
-    localUnit = itsUnit;
+    localUnit.resize(1);
+    localUnit(0) = q_p[0].getFullUnit();
+    itsScaUnitsCol->put (rownr, localUnit(0).getName());
   }
+  uInt nrun = localUnit.nelements();
   
   // Copy the value component of each quantum into the local data array.
   // If using an array to store units, copy quantum unit to local unit array
@@ -410,7 +475,7 @@ void ArrayQuantColumn<T>::put (uInt rownr, const Array<Quantum<T> >& q)
       d_p[i] = q_p[i].getValue();
     } else {
       // Convert to fixed unit.
-      d_p[i] = q_p[i].getValue (localUnit);
+      d_p[i] = q_p[i].getValue (localUnit(i%nrun));
     }
   }
   

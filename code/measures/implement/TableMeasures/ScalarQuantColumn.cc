@@ -1,5 +1,5 @@
 //# ScalarQuantColumn.cc: Access to a Scalar Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,7 +100,14 @@ void ROScalarQuantColumn<T>::init (const Table& tab, const String& columnName)
   if (tqDesc->isUnitVariable()) {
     itsUnitsCol = new ROScalarColumn<String>(tab, tqDesc->unitColumnName());
   } else {
-    itsUnit = tqDesc->getUnits();
+    Vector<String> units (tqDesc->getUnits());
+    if (units.nelements() > 0) {
+      if (units.nelements() > 1) {
+	throw (AipsError ("ScalarQuantColumn is used for column " +
+			  columnName + " but its description has >1 units"));
+      }
+      itsUnit = units(0);
+    }
   }
   itsDataCol = new ROScalarColumn<T>(tab, columnName);
   delete tqDesc;

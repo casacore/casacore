@@ -1,5 +1,5 @@
 //# TableQuantumDesc.h: Defines a Quantum column in a Table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #define AIPS_TABLEQUANTUMDESC_H
 
 //# Includes
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 
 //# Forward Declarations
@@ -243,18 +244,30 @@ class TableQuantumDesc
 {
 public:
   // Constructs a Quantum column descriptor with null units (Unit == "").
-  // The column should have already been added to the TableDesc.  An
-  // exception is thrown if the column doesn't exist.
+  // The column should have already been added to the TableDesc.
+  // An exception is thrown if the column doesn't exist.
   TableQuantumDesc (const TableDesc& td, const String& column);
 
-  // Constructs a Quantum column descriptor with the specified Quantum units.
-  // The column should have already been added to the TableDesc.  An
-  // exception is thrown if the column doesn't exist.
+  // Constructs a Quantum column descriptor with the specified Quantum unit.
+  // The column should have already been added to the TableDesc.
+  // An exception is thrown if the column doesn't exist.
   TableQuantumDesc (const TableDesc& td, const String& column, const Unit&);
+
+  // Constructs a Quantum column descriptor with the specified Quantum units.
+  // The column should have already been added to the TableDesc.
+  // An exception is thrown if the column doesn't exist.
+  // <group>
+  TableQuantumDesc (const TableDesc& td, const String& column,
+		    const Vector<String>& unitNames);
+  TableQuantumDesc (const TableDesc& td, const String& column,
+		    const Vector<Unit>&);
+  // </group>
 
   // Constructs a Quantum column descriptor with variable units stored in
   // unitCol.  Both the quantum and unit column should exist in the
   // TableDesc.
+  //# Note that the Char* constructor is needed, otherwise the compiler
+  //# cannot choose between String and Unit.
   //<group>
   TableQuantumDesc (const TableDesc& td, const String& column,
 		    const String& unitCol);
@@ -274,15 +287,15 @@ public:
   // Assignment.
   TableQuantumDesc& operator= (const TableQuantumDesc& that);
 
-  // Returns the Quantum column descriptor's units.  "" is returned if
-  // units have not been specified.  This could be because the null
+  // Returns the Quantum column descriptor's units.  A empty vector is
+  // returned if units have not been specified.  This could be because the null
   // unit constructor was used or because the units are variable.
-  const String& getUnits() const
+  const Vector<String>& getUnits() const
     { return itsUnitsName; }
 
   // Returns True if descriptor set for variable units (one per row)
   Bool isUnitVariable() const
-    { return (itsUnitsColName != ""); }
+    { return (! itsUnitsColName.empty()); }
 
   // Returns the name of the quantum column.
   const String& columnName() const
@@ -300,7 +313,7 @@ private:
   // Name of column which stores the Quantum's values.
   String itsColName;
   // The Quantum's unit as a string.
-  String itsUnitsName;
+  Vector<String> itsUnitsName;
   // Name of units column if units are variable.
   String itsUnitsColName;
 

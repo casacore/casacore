@@ -1,5 +1,5 @@
 //# ArrayQuantColumn.h: Access to an Array Quantum Column in a table.
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_ARRAYQUANTCOLUMN_H
 
 //# Includes
-#include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Quanta/Quantum.h>
 
 //# Forward Declarations
@@ -38,8 +38,6 @@ template <class T> class ROArrayColumn;
 template <class T> class ROScalarColumn;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
-template <class T> class Quantum;
-class Unit;
 class String;
 
 
@@ -125,7 +123,7 @@ public:
   // The default constructor creates a null object. It is useful for creating
   // arrays of ROArrayQuantColumn objects. Attempting to use a null object
   // will produce a segmentation fault so care needs to be taken to
-  // initialise the objects by using the attach() member before any attempt
+  // initialize the objects by using the attach() member before any attempt
   // is made to use the object.  The isNull() member can be used to test
   // if a ROArrayQuantColumn object is null.
   ROArrayQuantColumn();
@@ -137,8 +135,12 @@ public:
   // Create the ROArrayQuantColumn from the supplied table and column name.
   // The default unit for data retrieved is the given unit (the data is
   // converted as needed).
+  // <group>
   ROArrayQuantColumn (const Table& tab, const String& columnName,
 		      const Unit&);
+  ROArrayQuantColumn (const Table& tab, const String& columnName,
+		      const Vector<Unit>&);
+  // </group>
 
   // Copy constructor (copy semantics).
   ROArrayQuantColumn (const ROArrayQuantColumn<T>& that);
@@ -152,7 +154,10 @@ public:
   // which has the same meaning as the constructor unit argument.
   // <group name="attach">
   void attach (const Table& tab, const String& columnName);
-  void attach (const Table& tab, const String& columnName, const Unit&);
+  void attach (const Table& tab, const String& columnName,
+	       const Unit&);
+  void attach (const Table& tab, const String& columnName,
+	       const Vector<Unit>&);
   // </group>
 
   // Get the quantum array in the specified row.
@@ -166,6 +171,10 @@ public:
   void get (uInt rownr, Array<Quantum<T> >& q,
 	    const Unit&, Bool resize = False) const;
   // Get the quantum array in the specified row. Each quantum is
+  // converted to the given units.
+  void get (uInt rownr, Array<Quantum<T> >& q,
+	    const Vector<Unit>&, Bool resize = False) const;
+  // Get the quantum array in the specified row. Each quantum is
   // converted to the unit in other.
   void get (uInt rownr, Array<Quantum<T> >& q,
 	    const Quantum<T>& other, Bool resize = False) const;
@@ -178,6 +187,9 @@ public:
   // to the given unit.
   Array<Quantum<T> > operator() (uInt rownr, const Unit&) const;
   // Return the quantum array stored in the specified row, converted
+  // to the given units.
+  Array<Quantum<T> > operator() (uInt rownr, const Vector<Unit>&) const;
+  // Return the quantum array stored in the specified row, converted
   // to the unit in other.
   Array<Quantum<T> > operator() (uInt rownr, const Quantum<T>& other) const;
   // </group>
@@ -186,10 +198,9 @@ public:
   Bool isUnitVariable() const
     { return ToBool(itsArrUnitsCol || itsScaUnitsCol); }
 
-  // Returns the column's units as a string.
+  // Returns the column's units as a vector of strings.
   // An empty vector is returned if the column has no fixed units.
-  const String& getUnits() const
-    { return itsUnit.getName(); }
+  Vector<String> getUnits() const;
 
   // Test if the object is null.
   Bool isNull() const
@@ -200,7 +211,7 @@ public:
 
 protected:
   //# Quantum column's units (if units not variable)
-  Unit itsUnit;    	    	    	
+  Vector<Unit> itsUnit;    	    	    	
 
   // Get access to itsUnitsCol.
   // <group>
@@ -218,8 +229,8 @@ private:
   ROArrayColumn<String>*  itsArrUnitsCol;
   //# Variable units scalar column if applicable.
   ROScalarColumn<String>* itsScaUnitsCol;
-  //# Unit to retrieve the data in.
-  Unit itsUnitOut;
+  //# Units to retrieve the data in.
+  Vector<Unit> itsUnitOut;
   //# Convert unit when getting data?
   Bool itsConvOut;
 
@@ -348,8 +359,8 @@ template<class T> class ArrayQuantColumn : public ROArrayQuantColumn<T>
 public:
   // The default constructor creates a null object.  Useful for creating
   // arrays of ArrayQuantColumn objects.  Attempting to use a null object
-  // will produce a segmentation fault so care needs to be taken to
-  // initialise the objects by using the attach() member before any attempt
+  // will produce a segmentation fault, so care needs to be taken to
+  // initialize the objects by using the attach() member before any attempt
   // is made to use the object.  The isNull() member can be used to test
   // if a ArrayQuantColumn object is null.
   ArrayQuantColumn();
