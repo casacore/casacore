@@ -336,6 +336,12 @@ Vector<String> ImageSummary<T>::maskNames() const
 }
    
 template <class T> 
+Vector<String> ImageSummary<T>::regionNames() const
+{
+   return pImage_p->regionNames(RegionHandler::Regions);
+}
+   
+template <class T> 
 String ImageSummary<T>::defaultMaskName() const
 {
    return pImage_p->getDefaultMask();
@@ -381,9 +387,14 @@ void ImageSummary<T>::list (LogIO& os,
 //
    String list = makeMasksString();
    os << "Pixel mask(s)    : " << list << endl;
+//
+   list = makeRegionsString();
+   os << "Region(s)        : " << list << endl;
+//
    if (!units().getName().empty()) {
       os << "Image units      : " << this->units().getName() << endl;
    }
+
 
 // Restoring beam
 
@@ -451,5 +462,25 @@ String ImageSummary<T>::makeMasksString() const
       }
    } 
    oss << "]";
+   return String(oss);
+}
+
+
+template <class T> 
+String ImageSummary<T>::makeRegionsString() const
+{
+   const Vector<String> regions = regionNames();
+   const uInt nRegions = regions.nelements();
+   if (nRegions==0) return String("None");
+//
+   ostrstream oss;
+   uInt j=0;
+   for (uInt i=0; i<nRegions; i++) {
+      if (j > 0) {
+         oss << ", ";
+      }
+      oss << regions(i);
+      j++;
+   } 
    return String(oss);
 }
