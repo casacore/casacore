@@ -449,7 +449,7 @@ in rapid succession, one to store the data and one to retrieve it.
 When the interpreter receives an event it opens a quasi-thread to handle
 it. That means that in our above example the thread to retrieve the
 data might have attempted to retrieve nothing if the thread to insert
-the data not not yet completed its activity.
+the data had not not yet completed its activity.
 Luckily, in the above example, the insertion thread completed its
 activity, before retrieval was attempted. 
 
@@ -547,7 +547,7 @@ const demoarray := function(m=32, n=32)
 
 # launch c++ client that will do the intensive calculations
 # a client is an agent, so you can communicate with it by sending it events
-   private.arraygenerator := client("arraydemo")
+   private.arraygenerator := client("./arraydemo")
 
 # create record with information for the client
    arrayinfo :=[=]
@@ -709,7 +709,7 @@ Value createarray(GlishEvent *evt) {
    for (uInt i=0; i < a.ndim(); i++)
       shapeArray[i] = aShape(i);
     
-   Value *shapeValuePtr = new Value(shapeArray, a.ndim(), COPYARRAY);
+   Value *shapeValuePtr = new Value(shapeArray, a.ndim(), COPY_ARRAY);
    native.AssignAttribute("shape", shapeValuePtr);
    Unref(shapeValuePtr);
 // Done! the variable 'native' now contains a copy of aips++ array a,
@@ -726,7 +726,7 @@ Value findarraymax(GlishEvent *evt) {
 // 'find maximum' comment can be replaced by one line of code.
 
 // make sure the value's type is float
-   val->Polymorph(TYPEFLOAT);
+   val->Polymorph(TYPE_FLOAT);
    
 // how many elements coming in
    int numarrayelem = val->Length();
@@ -963,6 +963,7 @@ a new ``compute'' event, so the computation cycle will resume.
 \begin{verbatim}
 #include <aips/Glish.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 Int counter = 0;
 Bool First = True;
@@ -1085,6 +1086,7 @@ was called.
 \begin{verbatim}
 #include <aips/Glish.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 Int counter = 0;
 Bool available = True;
@@ -1175,7 +1177,7 @@ A sample of interaction taking place when running this variant of the
 program follows.
 
 \begin{verbatim}
-a:=client("./threads')
+a:=client("./threads")
 glish version 2.6. 
 - simulated threads client started
 a->compute()
@@ -1256,6 +1258,7 @@ Here is the resulting \glish\ client:
 \heading{parallelclient.cc}
 \begin{verbatim}
 #include <aips/Glish.h>
+#include <aips/iostream.h>
 
 // callback function to decode the computation parameters and do the calculation
 Bool computeinterval(GlishSysEvent &event, void *) {
@@ -1349,7 +1352,7 @@ const demoparallel := function() {
 # open 'hosts' file; then read in and start clients
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/bin/parallel"
+   taskname := "./parallelclient"
    for (i in 1:numhosts) {
       hostname := hosts[i]
       private.numparallelclients := private.numparallelclients + 1
@@ -1393,7 +1396,11 @@ a.computeparallel()
 \end{verbatim}
 \bottomofheading
 
-The result of running this script is
+The result of running this script 
+(the \begin{verbatim}waiting for daemon ...\end{verbatim} messages
+appear when the system is waiting for a glishd daemon to get
+started on the foreign machine)
+is
 
 \begin{verbatim}
 launching client on host  slave1
@@ -1438,7 +1445,7 @@ computed value of pi  3.14164
 
 
 Of course, in our toy example, the latency involved in starting
-up the client processing tasks, far exceeds and benefits gained by
+up the client processing tasks, far exceeds any benefits gained by
 doing parallel processing. So in actual parallel tasks, the amount
 of time spent doing computational work should exceed the amount of time
 spent doing task instantiation and message passing.
@@ -1512,7 +1519,7 @@ const demoparallel := function() {
 # open 'hosts' file; then read in and start clients
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/bin/parallel"
+   taskname := "./parallelclient"
    for (i in 1:numhosts) {
       hostname := hosts[i]
       private.numparallelclients := private.numparallelclients + 1
@@ -1689,12 +1696,17 @@ system has been initialized - ready to compute
 \end{verbatim}
 
 and that's it. What has happened is the following. When the script
-is sent the first event a->start(), the \glish\ interpreter starts
-to process the startparallel() function and launch the clients.
-The subsequence is then sent the event a->compute() and the glish
+is sent the first event \begin{verbatim}a->start()\end{verbatim}, 
+the \glish\ interpreter starts
+to process the \begin{verbatim}startparallel()\end{verbatim} function 
+and launch the clients.
+The subsequence is then sent the event \begin{verbatim}a->compute()\end{verbatim}
+and the glish
 interpreter then begins to respond to that event even though
-it has not completed doing all the work in response to the a->start()
-event. At the moment the a->compute() event is received, the interpreter
+it has not completed doing all the work in response to the 
+\begin{verbatim}a->start()\end{verbatim}
+event. At the moment the \begin{verbatim}a->compute()\end{verbatim} event 
+is received, the interpreter
 has only completed the launch of 1 client, so it thinks there is
 only one client available to do the actual computing.
 Here we really see the \glish\ interpreter behaving
@@ -1729,7 +1741,7 @@ demoparallel := subsequence() : [reflect=T]
 
    hosts := ["slave1", "slave2", "slave3", "slave4", "slave5", "slave6"]
    numhosts := len(hosts)
-   taskname := "/home/beowulf1/twillis/bin/parallel"
+   taskname := "./parallelclient"
    for (i in 1:numhosts) {
       private.numparallelclients := private.numparallelclients + 1
       hostname := hosts[i]
@@ -1934,6 +1946,7 @@ Here is the code for the three clients making up the pipeline.
 \begin{verbatim}
 #include <aips/Glish.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/iostream.h>
 
 Bool applyweight(GlishSysEvent &event, void *) {
    cout <<"in pipeline 1 applyweight"<<endl;
@@ -1989,6 +2002,7 @@ int main(int argc, char **argv) {
 #include <aips/Glish.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/FFTPack.h>
+#include <aips/iostream.h>
 
 Bool dofft(GlishSysEvent &event, void *) {
    cout<<"in pipeline 2 dofft"<<endl;
@@ -2059,6 +2073,7 @@ int main(int argc, char **argv) {
 #include <aips/Glish.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/FFTPack.h>
+#include <aips/iostream.h>
 
 Bool removebaseline(GlishSysEvent &event, void *) {
    cout <<"in pipeline 3 remove baseline "<<endl;
@@ -2263,13 +2278,13 @@ by replacing the definition of the client task to be started in the
 following line of code from goodparallel.g
 
 \begin{verbatim}
-taskname := "/home/beowulf1/twillis/bin/parallel"
+taskname := "./parallelclient"
 \end{verbatim}
 
 by
 
 \begin{verbatim}
-taskname := "glish /home/beowulf1/twillis/bin/parallelclient.g"                                                                
+taskname := "glish ./parallelclient.g"                                                                
 \end{verbatim}
 
 It is important to note that the first parameter fed to the {\tt client}
