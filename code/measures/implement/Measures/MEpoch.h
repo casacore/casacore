@@ -1,5 +1,5 @@
 //# MEpoch.h: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -179,8 +179,13 @@ public:
   // </group>
   // Translate reference code
   static const String &showType(uInt tp);
-  // Make reference code from String
+  // Translate string to reference code
+  // <group>
+  static Bool getType(MEpoch::Types &tp, const String &in);
+  Bool giveMe(MEpoch::Ref &mr, const String &in);
+  // This one for historic reasons only
   Bool giveMe(const String &in, MEpoch::Ref &mr);
+  // </group>
   // Get time in specified units
   Quantity get(const Unit &inunit) const;
   

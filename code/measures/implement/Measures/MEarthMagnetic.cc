@@ -1,5 +1,5 @@
 //# MEarthMagnetic.cc: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,31 +123,45 @@ const String &MEarthMagnetic::showType(uInt tp) {
     return tname[tp];
 }
 
-Bool MEarthMagnetic::giveMe(const String &in, MEarthMagnetic::Ref &mr) {
-    static const Int N_name = 5;
-    static const String tname[N_name] = {
-	"DIPOLE",
-	"MDIPOLE",
-	"XDIPOLE",
-	"MXDIPOLE",
-	"IGRF"};
+Bool MEarthMagnetic::getType(MEarthMagnetic::Types &tp, const String &in) {
+  static const Int N_name = 5;
+  static const String tname[N_name] = {
+    "DIPOLE",
+    "MDIPOLE",
+    "XDIPOLE",
+    "MXDIPOLE",
+    "IGRF"};
 
-    static const uInt oname[N_name] = {
-	MEarthMagnetic::DIPOLE,
-	MEarthMagnetic::MDIPOLE,
-	MEarthMagnetic::XDIPOLE,
-	MEarthMagnetic::MXDIPOLE,
-	MEarthMagnetic::IGRF};
+  static const MEarthMagnetic::Types oname[N_name] = {
+    MEarthMagnetic::DIPOLE,
+    MEarthMagnetic::MDIPOLE,
+    MEarthMagnetic::XDIPOLE,
+    MEarthMagnetic::MXDIPOLE,
+    MEarthMagnetic::IGRF};
 
     uInt i = Measure::giveMe(in, N_name, tname);
 
-    if (i>=N_name) {
-	mr = MEarthMagnetic::Ref();
-	return False;
-    } else {
-	mr = MEarthMagnetic::Ref(oname[i]);
-    };
-    return True;
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MEarthMagnetic::giveMe(MEarthMagnetic::Ref &mr, const String &in) {
+  MEarthMagnetic::Types tp;
+  if (MEarthMagnetic::getType(tp, in)) {
+    mr = MEarthMagnetic::Ref(tp);
+  } else {
+    mr = MEarthMagnetic::Ref();
+    return False;
+  };
+  return True;
+};
+
+Bool MEarthMagnetic::giveMe(const String &in, MEarthMagnetic::Ref &mr) {
+  return MEarthMagnetic::giveMe(mr, in);
 }
 
 Quantum<Vector<Double> > MEarthMagnetic::get(const Unit &inunit) const {

@@ -1,5 +1,5 @@
 //# MPosition.cc:  A Measure: position on Earth
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,25 +133,39 @@ const String &MPosition::showType(uInt tp) {
     return tname[tp];
 }
 
+Bool MPosition::getType(MPosition::Types &tp, const String &in) {
+  static const Int N_name = 2;
+  static const String tname[N_name] = {
+    "ITRF",
+    "WGS84"};
+  
+  static const MPosition::Types oname[N_name] = {
+    MPosition::ITRF,
+    MPosition::WGS84};
+  
+  uInt i = Measure::giveMe(in, N_name, tname);
+  
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MPosition::giveMe(MPosition::Ref &mr, const String &in) {
+  MPosition::Types tp;
+  if (MPosition::getType(tp, in)) {
+    mr = MPosition::Ref(tp);
+  } else {
+    mr = MPosition::Ref();
+    return False;
+  };
+  return True;
+};
+
 Bool MPosition::giveMe(const String &in, MPosition::Ref &mr) {
-    static const Int N_name = 2;
-    static const String tname[N_name] = {
-	"ITRF",
-	"WGS84"};
-
-    static const uInt oname[N_name] = {
-	MPosition::ITRF,
-	MPosition::WGS84};
-
-    uInt i = Measure::giveMe(in, N_name, tname);
-
-    if (i>=N_name) {
-	mr = MPosition::Ref();
-	return False;
-    } else {
-	mr = MPosition::Ref(oname[i]);
-    };
-    return True;
+  return MPosition::giveMe(mr, in);
 }
 
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {

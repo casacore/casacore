@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,75 +149,89 @@ const String &MDirection::showType(uInt tp) {
     return pname[tp & ~MDirection::EXTRA];
 }
 
+Bool MDirection::getType(MDirection::Types &tp, const String &in) {
+  static const Int N_name = 27;
+  static const String tname[N_name] = {
+    "J2000",
+    "JMEAN",
+    "JTRUE",
+    "APP",
+    "B1950",
+    "BMEAN",
+    "BTRUE",
+    "GALACTIC",
+    "HADEC",
+    "AZEL",
+    "AZELSW",
+    "AZELNE",
+    "JNAT",
+    "ECLIPTIC",
+    "MECLIPTIC",
+    "TECLIPTIC",
+    "SUPERGAL",
+    "MERCURY",
+    "VENUS",
+    "MARS",
+    "JUPITER",
+    "SATURN",
+    "URANUS",
+    "NEPTUNE",
+    "PLUTO",
+    "SUN",
+    "MOON" };
+  
+  static const MDirection::Types oname[N_name] = {
+    MDirection::J2000,
+    MDirection::JMEAN,
+    MDirection::JTRUE,
+    MDirection::APP,
+    MDirection::B1950,
+    MDirection::BMEAN,
+    MDirection::BTRUE,
+    MDirection::GALACTIC,
+    MDirection::HADEC,
+    MDirection::AZEL,
+    MDirection::AZELSW,
+    MDirection::AZEL,
+    MDirection::JNAT,
+    MDirection::ECLIPTIC,
+    MDirection::MECLIPTIC,
+    MDirection::TECLIPTIC,
+    MDirection::SUPERGAL,
+    MDirection::MERCURY,
+    MDirection::VENUS,
+    MDirection::MARS,
+    MDirection::JUPITER,
+    MDirection::SATURN,
+    MDirection::URANUS,
+    MDirection::NEPTUNE,
+    MDirection::PLUTO,
+    MDirection::SUN,
+    MDirection::MOON };
+  
+  uInt i = Measure::giveMe(in, N_name, tname);
+  
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
+  MDirection::Types tp;
+  if (MDirection::getType(tp, in)) {
+    mr = MDirection::Ref(tp);
+  } else {
+    mr = MDirection::Ref();
+    return False;
+  };
+  return True;
+};
+
 Bool MDirection::giveMe(const String &in, MDirection::Ref &mr) {
-    static const Int N_name = 27;
-    static const String tname[N_name] = {
-	"J2000",
-	"JMEAN",
-	"JTRUE",
-	"APP",
-	"B1950",
-	"BMEAN",
-	"BTRUE",
-	"GALACTIC",
-	"HADEC",
-	"AZEL",
-        "AZELSW",
-	"AZELNE",
-	"JNAT",
-	"ECLIPTIC",
-	"MECLIPTIC",
-	"TECLIPTIC",
-	"SUPERGAL",
-	"MERCURY",
-	"VENUS",
-	"MARS",
-	"JUPITER",
-	"SATURN",
-	"URANUS",
-	"NEPTUNE",
-	"PLUTO",
-	"SUN",
-	"MOON" };
-
-    static const uInt oname[N_name] = {
-	MDirection::J2000,
-	MDirection::JMEAN,
-	MDirection::JTRUE,
-	MDirection::APP,
-	MDirection::B1950,
-	MDirection::BMEAN,
-	MDirection::BTRUE,
-	MDirection::GALACTIC,
-	MDirection::HADEC,
-	MDirection::AZEL,
-        MDirection::AZELSW,
-	MDirection::AZEL,
-	MDirection::JNAT,
-	MDirection::ECLIPTIC,
-	MDirection::MECLIPTIC,
-	MDirection::TECLIPTIC,
-	MDirection::SUPERGAL,
-	MDirection::MERCURY,
-	MDirection::VENUS,
-	MDirection::MARS,
-	MDirection::JUPITER,
-	MDirection::SATURN,
-	MDirection::URANUS,
-	MDirection::NEPTUNE,
-	MDirection::PLUTO,
-	MDirection::SUN,
-	MDirection::MOON };
-
-    uInt i = Measure::giveMe(in, N_name, tname);
-
-    if (i>=N_name) {
-	mr = MDirection::Ref();
-	return False;
-    } else {
-	mr = MDirection::Ref(oname[i]);
-    };
-    return True;
+  return MDirection::giveMe(mr, in);
 }
 
 MDirection::GlobalTypes MDirection::globalType(uInt tp) {

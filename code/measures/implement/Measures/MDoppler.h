@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -195,7 +195,12 @@ public:
 // Translate reference code
     static const String &showType(uInt tp);
 // Translate string to reference code
-    Bool giveMe(const String &in, MDoppler::Ref &mr);
+// <group>
+  static Bool getType(MDoppler::Types &tp, const String &in);
+  Bool giveMe(MDoppler::Ref &mr, const String &in);
+// This one for historic reasons only
+  Bool giveMe(const String &in, MDoppler::Ref &mr);
+// </group>
 // Get in specified units
     Quantity get(const Unit &un) const;
 

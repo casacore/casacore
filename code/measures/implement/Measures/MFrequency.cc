@@ -1,5 +1,5 @@
 //# MFrequency.cc: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,35 +109,49 @@ const String &MFrequency::showType(uInt tp) {
     return tname[tp];
 }
 
+Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
+  static const Int N_name = 7;
+  static const String tname[N_name] = {
+    "REST",
+    "LSR",
+    "LSRK",
+    "BARY",
+    "GEO",	    
+    "TOPO",
+    "GALACTO"}; 
+  
+  static const MFrequency::Types oname[N_name] = {
+    MFrequency::REST,
+    MFrequency::LSR,
+    MFrequency::LSRK,
+    MFrequency::BARY,
+    MFrequency::GEO,
+    MFrequency::TOPO,
+    MFrequency::GALACTO};
+  
+  uInt i = Measure::giveMe(in, N_name, tname);
+
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MFrequency::giveMe(MFrequency::Ref &mr, const String &in) {
+  MFrequency::Types tp;
+  if (MFrequency::getType(tp, in)) {
+    mr = MFrequency::Ref(tp);
+  } else {
+    mr = MFrequency::Ref();
+    return False;
+  };
+  return True;
+};
+
 Bool MFrequency::giveMe(const String &in, MFrequency::Ref &mr) {
-    static const Int N_name = 7;
-    static const String tname[N_name] = {
-	"REST",
-	"LSR",
-	"LSRK",
-	"BARY",
-	"GEO",	    
-	"TOPO",
-	"GALACTO"}; 
-
-    static const uInt oname[N_name] = {
-	MFrequency::REST,
-	MFrequency::LSR,
-	MFrequency::LSRK,
-	MFrequency::BARY,
-	MFrequency::GEO,
-	MFrequency::TOPO,
-	MFrequency::GALACTO};
-
-    uInt i = Measure::giveMe(in, N_name, tname);
-
-    if (i>=N_name) {
-	mr = MFrequency::Ref();
-	return False;
-    } else {
-	mr = MFrequency::Ref(oname[i]);
-    };
-    return True;
+  return MFrequency::giveMe(mr, in);
 }
 
 Quantity MFrequency::get(const Unit &un) const {

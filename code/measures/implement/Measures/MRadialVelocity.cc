@@ -1,5 +1,5 @@
 //# MRadialVelocity.cc: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,33 +113,47 @@ const String &MRadialVelocity::showType(uInt tp) {
     return tname[tp];
 }
 
+Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
+  static const Int N_name = 6;
+  static const String tname[N_name] = {
+    "LSR",
+    "LSRK",
+    "BARY",
+    "GEO",	    
+    "TOPO",
+    "GALACTO"}; 
+
+  static const MRadialVelocity::Types oname[N_name] = {
+    MRadialVelocity::LSR,
+    MRadialVelocity::LSRK,
+    MRadialVelocity::BARY,
+    MRadialVelocity::GEO,
+    MRadialVelocity::TOPO,
+    MRadialVelocity::GALACTO};
+
+  uInt i = Measure::giveMe(in, N_name, tname);
+  
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
+  MRadialVelocity::Types tp;
+  if (MRadialVelocity::getType(tp, in)) {
+    mr = MRadialVelocity::Ref(tp);
+  } else {
+    mr = MRadialVelocity::Ref();
+    return False;
+  };
+  return True;
+};
+
 Bool MRadialVelocity::giveMe(const String &in, MRadialVelocity::Ref &mr) {
-    static const Int N_name = 6;
-    static const String tname[N_name] = {
-	"LSR",
-	"LSRK",
-	"BARY",
-	"GEO",	    
-	"TOPO",
-	"GALACTO"}; 
-
-    static const uInt oname[N_name] = {
-	MRadialVelocity::LSR,
-	MRadialVelocity::LSRK,
-	MRadialVelocity::BARY,
-	MRadialVelocity::GEO,
-	MRadialVelocity::TOPO,
-	MRadialVelocity::GALACTO};
-
-    uInt i = Measure::giveMe(in, N_name, tname);
-
-    if (i>=N_name) {
-	mr = MRadialVelocity::Ref();
-	return False;
-    } else {
-	mr = MRadialVelocity::Ref(oname[i]);
-    };
-    return True;
+  return MRadialVelocity::giveMe(mr, in);
 }
 
 Quantity MRadialVelocity::get(const Unit &un) const {

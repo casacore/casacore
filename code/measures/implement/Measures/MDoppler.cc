@@ -1,5 +1,5 @@
 //# MDoppler.cc: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,35 +101,49 @@ const String &MDoppler::showType(uInt tp) {
     return tname[tp];
 }
 
+Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
+  static const Int N_name = 7;
+  static const String tname[N_name] = {
+    "RADIO", 
+    "Z",
+    "RATIO",
+    "BETA",
+    "GAMMA",
+    "OPTICAL",
+    "RELATIVISTIC"};
+  
+  static const MDoppler::Types oname[N_name] = {
+    MDoppler::RADIO, 
+    MDoppler::Z,
+    MDoppler::RATIO,
+    MDoppler::BETA,
+    MDoppler::GAMMA,
+    MDoppler::Z,
+    MDoppler::BETA};
+  
+  uInt i = Measure::giveMe(in, N_name, tname);
+  
+  if (i>=N_name) {
+    return False;
+  } else {
+    tp = oname[i];
+  };
+  return True;
+}
+
+Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
+  MDoppler::Types tp;
+  if (MDoppler::getType(tp, in)) {
+    mr = MDoppler::Ref(tp);
+  } else {
+    mr = MDoppler::Ref();
+    return False;
+  };
+  return True;
+};
+
 Bool MDoppler::giveMe(const String &in, MDoppler::Ref &mr) {
-    static const Int N_name = 7;
-    static const String tname[N_name] = {
-	"RADIO", 
-	"Z",
-	"RATIO",
-	"BETA",
-	"GAMMA",
-	"OPTICAL",
-	"RELATIVISTIC"};
-
-    static const uInt oname[N_name] = {
-	MDoppler::RADIO, 
-	MDoppler::Z,
-	MDoppler::RATIO,
-	MDoppler::BETA,
-	MDoppler::GAMMA,
-	MDoppler::Z,
-	MDoppler::BETA};
-
-    uInt i = Measure::giveMe(in, N_name, tname);
-
-    if (i>=N_name) {
-	mr = MDoppler::Ref();
-	return False;
-    } else {
-	mr = MDoppler::Ref(oname[i]);
-    };
-    return True;
+  return MDoppler::giveMe(mr, in);
 }
 
 Quantity MDoppler::get(const Unit &un) const {

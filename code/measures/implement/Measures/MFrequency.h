@@ -1,5 +1,5 @@
 //# MFrequency.h: A Measure: wave characteristics
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -211,7 +211,12 @@ public:
 // Translate reference code
     static const String &showType(uInt tp);
 // Translate string to reference code
-    Bool giveMe(const String &in, MFrequency::Ref &mr);
+// <group>
+  static Bool getType(MFrequency::Types &tp, const String &in);
+  Bool giveMe(MFrequency::Ref &mr, const String &in);
+// This one for historic reasons only
+  Bool giveMe(const String &in, MFrequency::Ref &mr);
+// </group>
 // Get frequency in specified units
     Quantity get(const Unit &un) const;
 

@@ -1,5 +1,5 @@
 //# MEpoch.cc: A Measure: instant in time
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,7 +109,7 @@ const String &MEpoch::showType(uInt tp) {
   return tname[tp & ~MEpoch::EXTRA];
 }
 
-Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
+Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
   static const Int N_name = 17;
   static const String tname[N_name] = {
     "LAST",
@@ -130,7 +130,7 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
     "ET",
     "UT"};
   
-  static const uInt oname[N_name] = {
+  static const MEpoch::Types oname[N_name] = {
     MEpoch::LAST,
     MEpoch::LMST,
     MEpoch::GMST1,
@@ -150,14 +150,30 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
     MEpoch::UT1};
   
   uInt i = Measure::giveMe(in, N_name, tname);
+
   if (i>=N_name) {
-    mr = MEpoch::Ref();
     return False;
   } else {
-    mr = MEpoch::Ref(oname[i]);
+    tp = oname[i];
   };
   return True;
 }
+
+Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
+  MEpoch::Types tp;
+  if (MEpoch::getType(tp, in)) {
+    mr = MEpoch::Ref(tp);
+  } else {
+    mr = MEpoch::Ref();
+    return False;
+  };
+  return True;
+};
+
+Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
+  return MEpoch::giveMe(mr, in);
+}
+
 
 Quantity MEpoch::get(const Unit &inunit) const {
   return (data.getTime().get(inunit));

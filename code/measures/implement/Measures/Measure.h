@@ -1,5 +1,5 @@
 //# Measure.h: Physical quantities within reference frame
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -326,7 +326,8 @@ public:
   // for the reference type. The routine returns False if unknown String (and
   // a default mr), else an appropiate mr reference.
   // <srcblock>
-  //	Bool giveMe(const String &in, Measure::Ref &mr) {
+  //	Bool giveMe(Measure::Ref &mr, const String &in);
+  //	static Bool getType(Measure::Types &tp, const String &in);
   // </srcblock>
   // <group>
   // Dummy for cxx2html

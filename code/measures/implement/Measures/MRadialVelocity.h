@@ -1,5 +1,5 @@
 //# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -199,7 +199,13 @@ public:
 // Translate reference code
     static const String &showType(uInt tp);
 // Translate string to reference code
-    Bool giveMe(const String &in, MRadialVelocity::Ref &mr);
+// <group>
+  static Bool getType(MRadialVelocity::Types &tp, const String &in);
+  Bool giveMe(MRadialVelocity::Ref &mr, const String &in);
+// This one for historic reasons only
+  Bool giveMe(const String &in, MRadialVelocity::Ref &mr);
+// </group>
+
 // Get radial velocity in specified units
     Quantity get(const Unit &un) const;
 
