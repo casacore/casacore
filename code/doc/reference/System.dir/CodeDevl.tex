@@ -93,7 +93,7 @@ If you wish to modify a source file then
       then omit the \exe{-l} flag.
 
    \item
-      Otherwise, if your installation does not contain a copy of the \rcs\
+      Otherwise, if your installation does not contain a copy of the \rcs\ 
       source repository then simply copy the relevant system file to your
       workspace directory.
    \end{itemize}
@@ -237,7 +237,7 @@ substitutions
 \item
    The \code{EXTRA\_C++FLAGS} variable can be used to add extra options to
    \code{C++FLAGS}, for example
- 
+
    \begin{verbatim}
       gmake EXTRA_C++FLAGS="-fast" myprog
    \end{verbatim}
@@ -288,7 +288,7 @@ requirement would be
 
 \noindent
 \verb+   # $+\verb+Id$+
- 
+
 \begin{verbatim}
    # Use the generic AIPS++ application makefile.
    #---------------------------------------------
@@ -310,10 +310,10 @@ include a generic makefile but some need to supply additional information.
 For an application you often need to register any required external libraries
 and may also want to define some preprocessor directives as described in
 section \sref{Object libraries}:
- 
+
 \noindent
 \verb+   # $+\verb+Id$+
- 
+
 \begin{verbatim}
    # Use the generic AIPS++ application makefile.
    #---------------------------------------------
@@ -331,12 +331,12 @@ of \LaTeX\ documents to \textsc{html} via \unixexe{latex2html}.  Typically
 
 \noindent
 \verb+   # $+\verb+Id$+
- 
+
 \begin{verbatim}
    # Declare latex2html flags.
    System := -split 2
    Coding := -split 3
- 
+
    # Use the generic AIPS++ documentation makefile
    #----------------------------------------------
    include $(word 1, $(AIPSPATH))/code/install/makefile.doc
@@ -584,9 +584,9 @@ This would appear as:
 The \verb+<!$+\verb+Date$>+ meta-markup must appear as the first and only text
 on a line (with no leading whitespace).  It should be the last item before the
 \code{</BODY>} \textsc{html} markup.
- 
+
 % ----------------------------------------------------------------------------
- 
+
 \newpage
 \section{Code development makedefs conventions}
 \label{Code development makedefs conventions}
@@ -606,22 +606,22 @@ on a line (with no leading whitespace).  It should be the last item before the
 \index{compilation!code development|see{code, development}}
 
 \subsection*{Conventions for \file{makedefs} variable definitions}
- 
+
 Some features of the \aipspp\ programmer compilations are defined as
 conventions for variable usage which are implemented within \filref{makedefs}
 itself.
- 
+
 \textbf{Optimized programmer compilations:}
- 
+
 By default, programmer compilations are usually done in debug mode.
 Specifying \code{OPT=1} (or \code{2}, \code{3}, \code{4}, ...) on the
 \exeref{gmake} command line signals that programmer compilations are to be
 done at the corresponding optimization level.  For example
- 
+
 \begin{verbatim}
    gmake OPT=1 Foo.o
 \end{verbatim}
- 
+
 \noindent
 If the \code{OPT} variable is defined the default \filref{makedefs} will set
 all programmer compile options to be the same as used for optimized system
@@ -629,52 +629,52 @@ compilations.  However, alternate levels of optimization must be implemented
 in the site-specific \file{makedefs}; the example below shows how this might
 be done.  If \code{OPT} has been set then programmer executables will be
 linked to the optimized system libraries (if they exist).
- 
+
 The \code{OPT} variable is not intended to (and should not be made to) affect
 system compilations.
- 
+
 \textbf{Alternate programmer compilation options:}
- 
+
 Another convention in use for programmer compilations is that of setting
 compiler \code{*FLAGS} variables on the command line to \code{alt1},
 (\code{alt2}, ...).  For example,
- 
+
 \begin{verbatim}
    gmake C++FLAGS=alt1 Foo.o
 \end{verbatim}
- 
+
 \noindent
 This is a signal to the site-specific \filref{makedefs} to substitute a
 predefined, locally standard, set of compiler options.  By convention,
 \code{alt1} should be defined to do an optimized compilation of the same level
 as the system optimized compilation.
- 
+
 \textbf{Adding extra programmer compilation options:}
- 
+
 Programmers may supplement the compilation options defined within
 \filref{makedefs} by use of \code{EXTRA\_*FLAGS}, for example
- 
+
 \begin{verbatim}
    gmake EXTRA_C++FLAGS="+p -pipe" Foo.o
 \end{verbatim}
- 
+
 \noindent
 which would cause "\code{+p -pipe}" to be appended to the value of
 \code{C++FLAGS} defined within \file{makedefs}.  If any of the extra options
 are incompatible with, or contradict the options set in \file{makedefs} then
 compiler-specific behaviour will result.
- 
+
 \textbf{Redefining programmer compilation options in full:}
- 
+
 Strictly speaking this is not a \filref{makedefs} convention, but nevertheless
 it's worth pointing out that \file{makedefs} must not prevent programmer
 variables from being redefined in full on the \exeref{gmake} command line.  In
 practice this simply means that \file{makedefs} must not use the
 \code{override} directive when defining programmer compilation variables
 (except in implementing the alternate options as described below).
- 
+
 \textbf{Implementing the conventions:}
- 
+
 The conventions on programmer compilation options must be implemented within
 the site-specific \filref{makedefs}.  However, they need not be implemented if
 they are not required.  Since considerable latitude is available in their
@@ -682,41 +682,41 @@ precise interpretation a \code{show\_prg} target has been provided for
 programmers to print the values of all variables likely to be affected.  The
 following fragment shows a realistic example of how the \code{C++FLAGS}
 variable might be defined in the site-specific \file{makedefs}:
- 
+
 \begin{verbatim}
    ifdef OPT
       C++FLAGS := -ptr$(PGMRPTRD) -pta -O$(OPT) +p -pipe -ptv
    else
       C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG)
    endif
- 
+
    ifeq "$(C++FLAGS)" "alt1"
       override C++FLAGS := -ptr$(PGMRPTRD) $(C++OPT)
    endif
- 
+
    ifeq "$(C++FLAGS)" "alt2"
       override C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG) -ptv
    endif
- 
+
    C++FLAGS += $(EXTRA_C++FLAGS)
 \end{verbatim}
- 
+
 \noindent
 An important point to note here is that if \code{C++FLAGS} is defined on the
 command line then a redefinition within \filref{makedefs} has no effect unless
 the \code{override} directive is used.  The variables which define programmer
 compilation options are \code{CPPFLAGS}, \code{CFLAGS}, \code{C++FLAGS},
 \code{FFLAGS}, and \code{LDFLAGS}.
- 
+
 \textbf{Programmer binary directories:}
- 
+
 The \code{PGMRINCD}, \code{PGMRAUXD}, \code{PGMRLIBD}, and \code{PGMRBIND}
 variables specify where the output from programmer compilations is to be
 deposited.  \code{PGMRINCD} is used for the output of the \unixexe{lex} and
 \unixexe{bison} parser/generators, and \code{PGMRAUXD} contains the results of
 programmer dependency analyses.  The default \filref{makedefs} sets these, and
 also \code{PGMRPTRD}, to
- 
+
 \begin{verbatim}
    PGMRINCD := $(wildcard $(PGMRARCH))
    PGMRAUXD := $(wildcard $(PGMRARCH)/aux)
@@ -724,7 +724,7 @@ also \code{PGMRPTRD}, to
    PGMRBIND := $(wildcard $(PGMRARCH)/bin)
    PGMRPTRD  = $(PGMRARCH)/ptrepository
 \end{verbatim}
- 
+
 \noindent
 In other words, the \file{\$(PGMRARCH)}, \file{\$(PGMRARCH)/aux},
 \code{\$(PGMRARCH)/lib}, and \code{\$(PGMRARCH)/bin} directories will be used
@@ -735,7 +735,7 @@ left in the programmer's source code directories.  The site-specific
 if they're not blank, then they must specify absolute pathnames.  Note that
 this facility uses the \exe{-o} compiler option for object modules so
 \code{PGMRLIBD} must not be set for compilers which do not support it.
- 
+
 The site-specific \file{makedefs} may wish to redefine \code{PGMRLIBD} and
 \code{PGMRBIND} depending on the value of \code{OPT} in order to separate the
 binaries produced for different levels of optimization.  The default is to put
@@ -754,13 +754,13 @@ rooted at \file{\$HOME/aips++} then the programmer \file{makedefs} must be
 include \file{makedefs} definitions from elsewhere.
 
 \subsection*{See also}
- 
+
 The \textsc{gnu} \code{Make} manual.\\
 The \textsc{gnu} manual page for \unixexe{gmake}.\\
 \aipspp\ variable names (\sref{variables}).\\
 \exeref{gmake}, \textsc{gnu} make.\\
 \filref{makedefs}, \aipspp\ makefile definitions.
- 
+
 % ----------------------------------------------------------------------------
 
 \newpage
@@ -780,7 +780,7 @@ The \textsc{gnu} manual page for \unixexe{gmake}.\\
 \index{makefile!test}
 \index{makefile!top-level}
 
-Use of the \aipspp\ makefiles for code development. 
+Use of the \aipspp\ makefiles for code development.
 
 \subsection*{Synopsis}
 
@@ -1545,25 +1545,25 @@ The unix manual page for \unixexe{ranlib}(1).\\
 \exeref{updatelib}, update an \aipspp\ object library.
 
 % ----------------------------------------------------------------------------
- 
+
 \newpage
 \section{\exe{depstat}}
 \label{depstat}
 \index{depstat@\exe{depstat}}
 \index{include files!usage statistics|see{\exe{depstat}}}
- 
+
 Count the number of header files used by \aipspp\ class implementation files.
- 
+
 \subsection*{Synopsis}
- 
+
 \begin{synopsis}
    \code{\exe{depstat} [dependency list]}
 \end{synopsis}
- 
+
 \subsection*{Description}
- 
+
 \exe{depstat} is a \unixexe{sed}/\unixexe{awk} filter which reads a dependency
-list and counts the number of \aipspp\ header files on which each \aipspp\
+list and counts the number of \aipspp\ header files on which each \aipspp\ 
 implementation file depends.
 
 System dependency lists have names of the form \file{*.list} and reside in the
@@ -1571,54 +1571,54 @@ System dependency lists have names of the form \file{*.list} and reside in the
 \code{\$(PGMRAUXD)} if that exists, otherwise they are left with the
 programmer's source code.  Refer to \sref{Code development makefile rules} and
 \sref{Code development makedefs conventions}.
- 
+
 If no dependency list is specified on the command line, input is taken from
 \file{stdin}.
- 
+
 \subsection*{Options}
- 
+
 None.
- 
+
 \subsection*{Examples}
- 
+
 \begin{verbatim}
 \end{verbatim}
- 
+
 \subsection*{See also}
- 
+
 \aipspp\ variable names (\sref{variables}).\\
 Section \sref{Code development makedefs conventions}, Code development
    \file{makedefs} conventions.\\
 Section \sref{Code development makefile rules}, Code development makefile
    rules.\\
- 
+
 \subsection*{Author}
- 
+
 Original: 1994/02/10 by Mark Calabretta, ATNF
 
 % ----------------------------------------------------------------------------
- 
+
 \newpage
 \section{\exe{duplicates}}
 \label{duplicates}
 \index{duplicates@\exe{duplicates}}
 \index{template files!duplicate template instantiations|see{\exe{duplicates}}}
- 
+
 Look for duplicate entries in \aipspp\ ``templates'' instantiation files
- 
+
 \subsection*{Synopsis}
- 
+
 \begin{synopsis}
    \code{\exe{duplicates} [templates file list]}
 \end{synopsis}
- 
+
 \subsection*{Description}
- 
-\exe{duplicates} is a \code{C++} executable program which looks for duplicate 
-entries in \aipspp\ \code{templates} files. This is useful for finding redundant
-templates entries, and for moving duplicate entries into a common 
+
+\exe{duplicates} is a \code{C++} executable program which looks for duplicate
+entries in \aipspp\ \code{templates} files. This is useful for finding
+redundant templates entries, and for moving duplicate entries into a common
 \code{templates} file.
- 
+
 If no list of files is provided, the list used is the combination of:
 \begin{enumerate}
 	\item A file named \code{templates} in the current working directory
@@ -1627,32 +1627,31 @@ If no list of files is provided, the list used is the combination of:
 	     \code{\$AIPSCODE}
 \end{enumerate}
 
- 
 \subsection*{Options}
- 
+
 None.
- 
+
 \subsection*{Examples}
- 
+
 \begin{verbatim}
-duplicates
-duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
+   duplicates
+   duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
 \end{verbatim}
 
-The first line finds all duplicates in \code{./templates} and all templates 
+The first line finds all duplicates in \code{./templates} and all templates
 files checked into the system. The second example finds duplicates only in
 the listed files.
- 
+
 \subsection*{See also}
- 
+
 \aipspp\ do-it-yourself template instantiation (\exeref{mkinst}).\\
- 
+
 \subsection*{Author}
- 
+
 Original: 1997/06/09 by Brian Glendenning, NRAO
 
 % ----------------------------------------------------------------------------
- 
+
 \newpage
 \section{\exe{ldmap}}
 \label{ldmap}
@@ -1661,11 +1660,11 @@ Original: 1997/06/09 by Brian Glendenning, NRAO
 \index{namelist, analysis|see{\exe{ldmap}}}
 \index{code!development!dependency analysis|see{\exe{ldmap}}}
 \index{dependency analysis!namelist analyser|see{\exe{ldmap}}}
- 
+
 Determine dependencies between object modules from a namelist.
 
 \subsection*{Synopsis}
- 
+
 \begin{synopsis}
    \code{\exe{ldmap} \\
       \ \ \ [\exe{-1}] \\
@@ -1679,7 +1678,7 @@ Determine dependencies between object modules from a namelist.
 \end{synopsis}
 
 \subsection*{Description}
- 
+
 \exe{ldmap} reads through a file containing the output produced by
 \unixexe{nm} and determines the dependency hierarchy of \file{.o} files.  That
 is, if \code{X} is an undefined symbol in \file{a.o}, and \code{X} is defined
@@ -1739,7 +1738,7 @@ the most efficient for the stage~2 analysis, the results for each object
 module are stored in a separate file in a subdirectory.
 
 \subsection*{Options}
- 
+
 \begin{description}
 \item[\exe{-1}]
    Quit after the stage~1 analysis.
@@ -1816,9 +1815,9 @@ module are stored in a separate file in a subdirectory.
    A file containing the output of \code{ar tv} used for determining sizes.
    Multiple \exe{-v} options may be specified.
 \end{description}
- 
+
 \subsection*{Notes}
- 
+
 \begin{itemize}
 \item
    \exe{ldmap} assumes the namelist is in a form similar to that produced by
@@ -1830,15 +1829,15 @@ module are stored in a separate file in a subdirectory.
    The output of ldmap may be piped through \unixexe{c++filt} to demangle
    \cplusplus\ names.
 \end{itemize}
- 
+
 \subsection*{Diagnostics}
- 
+
 Status return values
 \\ \verb+   0+: success
 \\ \verb+   1+: initialization error
- 
+
 \subsection*{Examples}
- 
+
 The following determines all dependencies for the \code{gtable} application.
 
 \begin{verbatim}
@@ -1896,7 +1895,7 @@ With most of the hard work done, the saved stage~1 analysis may then be used
 repeatedly to quickly determine all object modules in \file{libaips.a} which
 depend on (i.e. contain symbols resolved by) a specified module.  For example
 \file{DeconvTool.o}
- 
+
 \begin{verbatim}
    ldmap -s libaips.1ru -o DeconvTool.o
 \end{verbatim}
@@ -1915,30 +1914,30 @@ resulting in the following (unusually brief) output:
 \end{verbatim}
 
 \subsection*{See also}
- 
+
 The unix manual page for \unixexe{nm}(1).\\
 \exeref{mkinst}, Generate template instantiation files from a list.
- 
+
 \subsection*{Author}
 
 Original: 1996/05/06 by Mark Calabretta, ATNF.
 
 % ----------------------------------------------------------------------------
- 
+
 \newpage
 \section{\exe{reident}}
 \label{reident}
 \index{reident@\exe{reident}}
 \index{templates!list!reformat|see{\exe{reident}}}
- 
+
 Remake the idents in a templates list.
 
 \subsection*{Synopsis}
- 
+
 \begin{synopsis}
    \code{\exe{reident} [\exe{-z}] [file [file \ldots]]}
 \end{synopsis}
- 
+
 \subsection*{Description}
 
 \exe{reident} reads a template file (\file{templates} by default, see
@@ -1968,15 +1967,15 @@ Comments in the templates file (lines beginning with ``\code{\#}'') will be
 collected at the top of the file in sort order.
 
 \subsection*{Options}
- 
+
 \begin{description}
 \item[\exe{-z}]
    Replace all idents with an ascending sequence restarting at \code{1000} for
    each \file{.cc} file.
 \end{description}
- 
+
 \subsection*{Notes}
- 
+
 \begin{itemize}
 \item
     Changing the ident for a template declaration invalidates any pre-existing
@@ -1984,15 +1983,15 @@ collected at the top of the file in sort order.
     the idents restart for each class implementation \file{.cc} file, ident
     changes will be quarantined to the templates based on it.
 \end{itemize}
- 
+
 \subsection*{Diagnostics}
- 
+
 Status return values
 \\ \verb+   0+: success
 \\ \verb+   1+: file not found
- 
+
 \subsection*{Examples}
- 
+
 To merge a private templates list into the system's list for the \code{aips}
 package and at the same time completely refresh the idents
 
@@ -2008,11 +2007,11 @@ package and at the same time completely refresh the idents
 If seldom used the \exe{-z} option has the potential to cause a great deal of
 recompilation because of accumulated changes.  However, if used regularly the
 incremental cost should be modest.
- 
+
 \subsection*{See also}
- 
+
 \exeref{mkinst}, Generate template instantiation files from a list.
- 
+
 \subsection*{Author}
- 
+
 Original: 1996/04/16 by Mark Calabretta, ATNF.
