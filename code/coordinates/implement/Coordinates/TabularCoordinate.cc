@@ -1,5 +1,5 @@
 //# TabularCoordinate.cc: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,24 +44,25 @@ typedef Interpolate1D<Double,Double> gpp_bug;
 #endif
 
 TabularCoordinate::TabularCoordinate()
-  : crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
+  : Coordinate(),
+    crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
     name_p("Tabular"), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
-    // Nothing
 }
 
 TabularCoordinate::TabularCoordinate(Double refval, Double inc, Double refpix,
 				     const String &unit, const String &axisName)
-  : crval_p(refval), cdelt_p(inc), crpix_p(refpix), matrix_p(1.0), unit_p(unit),
+  : Coordinate(),
+    crval_p(refval), cdelt_p(inc), crpix_p(refpix), matrix_p(1.0), unit_p(unit),
     name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
-    // Nothing
 }
 
 TabularCoordinate::TabularCoordinate(const Vector<Double> &pixelValues,
 				     const Vector<Double> &worldValues,
 				     const String &unit, const String &axisName)
-    : crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p(unit), 
+    : Coordinate(),
+      crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p(unit), 
       name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
 {
     const uInt n = pixelValues.nelements();
@@ -138,6 +139,7 @@ void TabularCoordinate::copy(const TabularCoordinate &other)
     }
 
     clear_self();
+    Coordinate::operator=(other);
     crval_p = other.crval_p;
     cdelt_p = other.cdelt_p;
     crpix_p = other.crpix_p;
@@ -215,22 +217,22 @@ Bool TabularCoordinate::toPixel(Double &pixel, Double world) const
 Bool TabularCoordinate::toWorld(Vector<Double> &world, 
   	                        const Vector<Double> &pixel) const
 {
-   world.resize(1);
    if (pixel.nelements() != 1) {
 	throw(AipsError("TabularCoordinate: pixel vector must be "
 			"length 1"));
-    }
-    return toWorld(world(0), pixel(0));
+   }
+   if (world.nelements()!=1) world.resize(1);
+   return toWorld(world(0), pixel(0));
 }
 
 Bool TabularCoordinate::toPixel(Vector<Double> &pixel, 
                                 const Vector<Double> &world) const
 {
-    pixel.resize(1);
-    if (pixel.nelements() != 1) {
-	throw(AipsError("TabularCoordinate: pixel vector must be "
+    if (world.nelements() != 1) {
+	throw(AipsError("TabularCoordinate: world vector must be "
 			"length 1"));
     }
+    if (pixel.nelements()!=1) pixel.resize(1);
     return toPixel(pixel(0), world(0));
 }
 
