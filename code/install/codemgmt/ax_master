@@ -3774,3 +3774,4 @@
 14 030 src rm aips/implement/Mathematics/test/tProtoMap.exec
 14 036 src rm trial/apps/simulator/simulator.help
 14 037 src rm trial/implement/MeasurementEquations/simulator.help
+14 039 src mv trial/implement/Lattices/test/dPagedArray.run aips/implement/Lattices/test/dPagedArray.run
