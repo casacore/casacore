@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <trial/MeasurementSets/MSSelUtil.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
