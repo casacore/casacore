@@ -3214,3 +3214,4 @@
 13 058 src mv doc/newsletters/sept99/viewer.gif doc/newsletters/sep99/viewer.gif
 13 058 src mv doc/newsletters/sept99/viewer1.gif doc/newsletters/sep99/viewer1.gif
 13 058 src mv doc/newsletters/sept99/viewer1.ps doc/newsletters/sep99/viewer1.ps
+13 058 src rm doc/newsletters/sept99
