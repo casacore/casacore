@@ -137,73 +137,17 @@ void LatticeUtilities::collapse(Array<T>& data, Array<Bool>& mask,
 
 
 template <class T>
-void LatticeUtilities::copyAndZero(LogIO& os,
-                                   MaskedLattice<T>& out,
-                                   MaskedLattice<T>& in)
-//
-// Copy the data and the mask from in to out.
-// The output pixels are zeroed if the pixel is masked
-//
-{
-   Bool doMask = in.isMasked() && out.hasPixelMask();
-   Lattice<Bool>* pMaskOut = 0;
-   if (doMask) {
-      pMaskOut = &out.pixelMask();
-      if (!pMaskOut->isWritable()) {
-         doMask = False;
-         os << LogIO::WARN << "The output image has a mask but it is not writable" << endl;
-         os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
-      }
-   }
-//  
-   if (doMask) {
-      LatticeIterator<T> outIter(out);
-      Bool deleteDataIn, deleteMaskIn, deleteDataOut;
-      IPosition shape = outIter.woCursor().shape();
-      Array<T> dataIn(shape);
-      Array<Bool> maskIn(shape);
-//
-      for (outIter.reset(); !outIter.atEnd(); outIter++) {
-         shape = outIter.woCursor().shape();
-         if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
-         if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
-//
-         in.getSlice(dataIn, outIter.position(), shape);
-         in.getMaskSlice(maskIn, outIter.position(), shape);
-//
-         const T* pDataIn = dataIn.getStorage(deleteDataIn);
-         const Bool* pMaskIn = maskIn.getStorage(deleteMaskIn);
-//
-         Array<T>& dataOut = outIter.woCursor();
-         T* pDataOut = dataOut.getStorage(deleteDataOut);
-//
-         for (Int i=0; i<shape.product(); i++) {
-            pDataOut[i] = pDataIn[i];
-            if (!pMaskIn[i]) pDataOut[i] = 0.0;
-         }
-         pMaskOut->putSlice(maskIn, outIter.position());
-//
-         dataIn.freeStorage(pDataIn, deleteDataIn);
-         maskIn.freeStorage(pMaskIn, deleteMaskIn);
-         dataOut.putStorage(pDataOut, deleteDataOut);
-      }
-   } else {
-      out.copyData(in);
-   }
-}
-
-template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
-                                       const MaskedLattice<T>& in)
-//
-// Copy the data and mask from an input ML to the output ML.
-// If the input is masked, the output must already be masked
-// and ready
-//
+                                       const MaskedLattice<T>& in, 
+                                       Bool zeroMasked)
 {  
-// Do we need to stuff about with masks ?
-   
-   Bool doMask = in.isMasked() && out.hasPixelMask();
+
+// Do we need to stuff about with masks ?  Even if the input
+// does not have a mask, it has a 'virtual' mask of all True.
+// Therefore we need to transfer those mask values to the
+// output if an output mask exists.
+
+   Bool doMask = out.isMasked() && out.hasPixelMask();
    Lattice<Bool>* pMaskOut = 0;
    if (doMask) {
       pMaskOut = &out.pixelMask();
@@ -213,6 +157,7 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
          os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
       }
    }                        
+   if (!doMask) zeroMasked = False;
 
 // Use the same stepper for input and output.
                       
@@ -222,11 +167,34 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
 // Create an iterator for the output to setup the cache.
 // It is not used, because using putSlice directly is faster and as easy.
 
+   Bool deletePixels, deleteMask;
    LatticeIterator<T> dummyIter(out);
    RO_LatticeIterator<T> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
-      out.putSlice(in.getSlice(iter.position(),
-                   iter.cursorShape()), iter.position());
+
+// Put the pixels
+
+      IPosition cursorShape = iter.cursorShape();
+      if (zeroMasked) {
+         Array<T> pixels = iter.cursor().copy();
+         Array<Bool> mask = in.getMaskSlice(iter.position(), cursorShape);
+//
+         T* pPixels = pixels.getStorage(deletePixels);
+         const Bool* pMask = mask.getStorage(deleteMask);
+         for (Int i=0; i<cursorShape.product(); i++) {
+            if (!pMask[i]) pPixels[i] = 0.0;
+         }
+         pixels.putStorage(pPixels, deletePixels);
+         mask.freeStorage(pMask, deleteMask);
+//
+         out.putSlice(pixels, iter.position());
+      } else {
+         out.putSlice(in.getSlice(iter.position(),
+                      iter.cursorShape()), iter.position());
+      }
+
+// Put the mask
+
       if (doMask) {
          pMaskOut->putSlice(in.getMaskSlice(iter.position(),
                             iter.cursorShape()), iter.position());
