@@ -4191,3 +4191,4 @@
 14 065 src mv trial/apps/viewer/rectregionb2.xbm trialdisplay/apps/viewer/rectregionb2.xbm
 14 065 src mv trial/apps/viewer/rectregionb3.xbm trialdisplay/apps/viewer/rectregionb3.xbm
 14 065 src mv trial/apps/viewer/vcamintr.ps trialdisplay/apps/viewer/vcamintr.ps
+14 065 src mv trial/apps/viewer/vcmintro.ps trialdisplay/apps/viewer/vcmintro.ps
