@@ -3191,3 +3191,4 @@
 13 044 src rm trial/implement/Tasking/app.cc
 13 054 src rm trial/apps/dish/dish_defaults.g
 13 054 sys rm libexec/dish_defaults.g
+13 056 src rm doc/newsletters/sept99/sept99news.ps
