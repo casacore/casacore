@@ -121,8 +121,8 @@ main()
     } end_try;
 
     try {
-	cout << "Euler(10 deg, 20 m): " << Euler(Quantity(10,"deg"),
-						   Quantity(20,"m")) << endl;
+	cout << "Euler(10 deg, 20 m): ";
+	cout << Euler(Quantity(10,"deg"), Quantity(20,"m")) << endl;
     } catch (AipsError x) {
 	cout << x.getMesg() << endl;
     } end_try;
@@ -238,7 +238,6 @@ main()
 
 	cout << "J2000 barycentre Earth: " << endl;
 	for (eq=45837.; eq<45884.; eq++) {
-	    Int i,j;
 	    MVPosition mypcd;
 	    mypcd = sp1.baryEarth(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
@@ -247,7 +246,6 @@ main()
 
 	cout << "J2000 barycentre Sun: " << endl;
 	for (eq=45837.; eq<45884.; eq++) {
-	    Int i,j;
 	    MVPosition mypcd;
 	    mypcd = sp1.barySun(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
@@ -265,7 +263,6 @@ main()
 
 	cout << "J2000 geocentric Sun: " << endl;
 	for (eq=45837.; eq<45884.; eq++) {
-	    Int i,j;
 	    MVPosition mypcd;
 	    mypcd = sp1(eq) * facAU;
 	    cout << eq+0.5 << ": " << 
