@@ -80,7 +80,7 @@ void LELLattice<T>::eval(Array<T>& result,
 template <class T>
 T LELLattice<T>::getScalar() const
 {
-   throw (AipsError ("LELLattice::getScalar cannot be used"));
+   throw (AipsError ("LELLattice::getScalar - cannot be used"));
    return pLattice_p->getAt (IPosition());       // to make compiler happy
 }
 
