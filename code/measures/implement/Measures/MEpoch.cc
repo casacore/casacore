@@ -110,7 +110,7 @@ const String &MEpoch::showType(uInt tp) {
 }
 
 Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
-  static const Int N_name = 16;
+  static const Int N_name = 17;
   static const String tname[N_name] = {
     "LAST",
     "LMST",
@@ -127,6 +127,7 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
     "IAT",
     "GMST",
     "TT",
+    "ET",
     "UT"};
   
   static const uInt oname[N_name] = {
@@ -144,6 +145,7 @@ Bool MEpoch::giveMe(const String &in, MEpoch::Ref &mr) {
     MEpoch::TCB,
     MEpoch::TAI,
     MEpoch::GMST1,
+    MEpoch::TDT,
     MEpoch::TDT,
     MEpoch::UT1};
   

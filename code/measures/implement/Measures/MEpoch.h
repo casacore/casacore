@@ -132,6 +132,7 @@ public:
     GMST=GMST1,
     TT=TDT,
     UT=UT1,
+    ET=TT,
     // Default
     DEFAULT=UTC
   };
