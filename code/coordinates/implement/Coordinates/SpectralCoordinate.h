@@ -1,5 +1,5 @@
 //# SpectralCoordinate.h: Interconvert between pixel and frequency.
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -291,13 +291,26 @@ public:
     // </group>
 
 
+    // Set the state that is used for conversions from pixel and frequency to velocity.
+    // The SpectralCoordinate is constructed  with 
+    // <src>MDoppler::RADIO</src> and <src>km/s</src> as the velocity conversion state.
+    // The functions in this class which use this state are those that convert
+    // to or from velocity.  Also, function <src>format</src> uses the Doppler
+    // state set here.  If the function returns False it means the unit was 
+    // not valid.  There will be an error message in function <src>errorMessage</src>
+    // <group>
+    Bool setVelocity (const String& velUnit=String("km/s"),
+                      MDoppler::Types velType=MDoppler::RADIO);
+    MDoppler::Types velocityDoppler () const {return velType_p;};
+    String velocityUnit () const {return velUnit_p;};
+    // </group>
+
     // Functions to convert to velocity (uses the current active
     // rest frequency).  There is no reference frame
-    // change but you can specify the velocity definition and the output
-    // units of the velocity.   When the input is a frequency stored 
+    // change but you can specify the velocity Doppler and the output
+    // units of the velocity with function <src>setVelocity</src>.
+    // When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
-    // Use the function <src>updateVelocityMachine</src>
-    // to set the velocity state of the internal conversion machine.
     // 
     // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
     // is active in the <src>pixelToVelocity</src> functions (because internally
@@ -316,8 +329,9 @@ public:
 
     // Functions to convert from velocity (uses the current active
     // rest frequency).   There is no reference frame
-    // change but you can specify the velocity definition and the output
-    // units of the velocity.   When the input is a frequency stored 
+    // change but you can specify the velocity Doppler and the output
+    // units of the velocity with function <src>setVelocity</src>. 
+    // When the input is a frequency stored 
     // as a Double it must be  in the current units of the SpectralCoordinate.  
     //
     // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
@@ -331,13 +345,6 @@ public:
     Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity);
     // </group>
 
-    // Update the state of the velocity machine which is used for all conversions
-    // between frequency and velocity.  The specified units and Doppler type
-    // will be used for all succeeding conversions (input or output).  The machine
-    // is initially constructed with km/s and MDoppler::RADIO as its state
-    // and it uses the current active rest frequency.
-    void updateVelocityMachine (const String& velUnit,
-                                MDoppler::Types velType);
 
     // The SpectralCoordinate can maintain a list of rest frequencies
     // (e.g. multiple lines within a band).  However, only
@@ -376,7 +383,6 @@ public:
     void selectRestFrequency(Double frequency);
     String formatRestFrequencies () const;
     // </group>
-
   
     // Retrieve/set the frequency system.  Note that setting the
     // frequency system just changes the internal value of the
@@ -443,18 +449,6 @@ public:
       {return worker_p.worldMixMax();};
     //</group>
 
-    // Set and recover the preferred world axis units.  These can be used to specify
-    // a favoured unit for conversions for example.  The given units must be empty
-    // or dimensionally consistent with the native world axis units, else
-    // False is returned and <src>errorMessage()</src>
-    // has an error message for you.  The preferred units are empty strings
-    // until you explicitly set them.  The only functions in the Coordinates classes
-    // which uses the preferred unit are <src>format, save, and restore</src>.
-    // <group>
-    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
-    virtual Vector<String> preferredWorldAxisUnits() const;
-    // </group>
-
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // axes in the Coordinate.  If the comparison returns False, 
@@ -476,30 +470,21 @@ public:
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
-    // Set the preferred velocity type.  It can be used to specify
-    // a favoured velocity type for conversions.  The SpectralCoordinate
-    // is constructed with <src>MDoppler::RADIO</src> as the preferred type.
-    // The only functions in this class which use the preferred type
-     // are <src>format, save, restore</src>
-    // <group>
-    void setPreferredVelocityType (MDoppler::Types velType=MDoppler::RADIO) 
-      {prefVelType_p = velType;};
-    MDoppler::Types preferredVelocityType () const {return prefVelType_p;};
-    // </group>
 
     // Format a SpectralCoordinate coordinate world value nicely through the
     // common format interface.  See <linkto class=Coordinate>Coordinate</linkto>
     // for basics.
     //
-    // If <src>units</src> is given, it must be dimensionally consistent with Hz
-    // or m/s.   If you give a unit consistent with m/s then the
-    // appropriate velocity definition is taken from that set by
-    // function <src>setPreferredVelocityType</src>.
-    // If <src>units</src> is empty, the units given by the
-    // units specified by <src>setPreferredSpectralUnits</src> is used.
-    // If those preferred units are empty, the native units of  
-    // the SpectralCoordinate are used.
-    virtual String format(String& units,
+    // The world value must always be given in native frequency units.
+    // Use argument <src>unit</src> to determine what it will be 
+    // converted to for formatting. If <src>unit</src> is given, it 
+    // must be dimensionally consistent with Hz or m/s.   
+    // If you give a unit consistent with m/s then the
+    // appropriate velocity Doppler type is taken from that set by
+    // function <src>setVelocity</src>.  There is no frame conversion.
+    // If <src>unit</src> is empty, the unit given by <src>setFormatUnit</src> 
+    // is used.  If this is turn empty, then native units are used.
+    virtual String format(String& unit,
                           Coordinate::formatType format,
                           Double worldValue,  
                           uInt worldAxis,
@@ -507,13 +492,23 @@ public:
                           Bool showAsAbsolute=True,
                           Int precision=-1);
 
+    // Set the default formatter unit (which is initialized to empty).  Must 
+    // be consistent with Hz or km/s.  
+    // If the given unit is illegal, False is returned and the internal state unchanged.
+    // This unit is used by the function <src>format</src> when the given
+    // unit is empty.  
+    // <group>
+    String formatUnit () const {return formatUnit_p;}
+    Bool setFormatUnit (const String& unit);
+    // </group>
+
 
     // Convert to and from a FITS header record.  When writing the FITS record,
     // the fields "ctype, crval, crpix", and "cdelt" must already be created. Other header
     // words are created as needed.  Use <src>oneRelative=True</src> to
     // convert zero-relative SpectralCoordinate pixel coordinates to 
     // one-relative FITS coordinates, and vice-versa.  If <src>preferVelocity=False</src>
-    // the prinmary axis type will be Frequency, else velocity.  For a velocity axis,
+    // the primary axis type will be Frequency, else velocity.  For a velocity axis,
     // if <src>opticalVelDef=False</src>, the radio velocity definition will be used,
     // else optical definition.
     //<group>
@@ -556,10 +551,11 @@ private:
     // The velocity machine does all conversions between
     // something and velocity.
     VelocityMachine* pVelocityMachine_p;
+    MDoppler::Types velType_p;            // Velocity Doppler
+    String velUnit_p;                     // Velocity unit
 //
-    MDoppler::Types prefVelType_p;         // Preferred velocity type
-    String prefUnit_p;                     //                    units
-    Unit unit_p;                           // A Unit version of the String
+    Unit unit_p;                       // A Unit version of the Unit String
+    String formatUnit_p;               // The default unit for the format function
 // 
     MDirection direction_p;                // These are a part of the frame set
     MPosition position_p;                  // for the reference conversions machines
@@ -588,9 +584,6 @@ private:
 // Deletes and sets pointers to 0
     void deleteConversionMachines ();
 
-// Resets to RADIO, km/s, and uses private data to set the rest
-    void reinitializeVelocityMachine();
-
 // Format checker
     void checkFormat(Coordinate::formatType& format,
                      const Bool ) const;
@@ -600,6 +593,10 @@ private:
     void convertFrom (Vector<Double>& world) const;
     void convertToMany (Matrix<Double>& world) const;
     void convertFromMany (Matrix<Double>& world) const;
+
+// Update Velocity Machine
+   void updateVelocityMachine (const String& velUnit, 
+                               MDoppler::Types velType);
 };
 
 #endif
