@@ -250,13 +250,13 @@ void Aipsrc::set(uInt keyword, const String &deflt) {
 void Aipsrc::set(uInt keyword,
 		 Int Nname, const String tname[], const String &deflt) {
   AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  find (codlst[keyword-1], keyword, Nname, tname, deflt);
+  find (codlst[keyword-1], String::toString(keyword), Nname, tname, deflt);
 }
 
 void Aipsrc::set(uInt keyword,
 		 const Vector<String> &tname, const String &deflt) {
   AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  find (codlst[keyword-1], keyword, tname, deflt);
+  find (codlst[keyword-1], String::toString(keyword), tname, deflt);
 }
 
 void Aipsrc::save(uInt keyword) {
