@@ -30,10 +30,8 @@
 
 #include <aips/aips.h>
 #include <math.h>
-#if defined(AIPS_STDLIB)
 //# The following is to get abs(int)
 #include <stdlib.h>
-#endif
 // <summary>AIPS++ interface to math.h and other scalar math functions</summary>
 
 // <synopsis> 
@@ -113,6 +111,12 @@
 // Double nextafter(Double x, Double y) Returns the next machine representable
 //                            number after x in the direction specified by y
 // </srcblock>
+// 
+
+// This file also includes the standard C library (stdlib.h). This is to obtain
+// a definition of the following functions.
+// <srcblock>
+// Int abs(Int x)             absolute value function
 // </synopsis>
 
 // <group name="Math.h interface for AIPS++">
@@ -158,9 +162,6 @@ inline Float min(Float a, Float b) { if (a > b) return b; else return a; }
 // <group>
 inline Float abs(Float Val) {if (Val >= 0) return Val; else return -Val;}
 inline Double abs(Double Val) {return fabs(Val);}
-#if !defined(AIPS_STDLIB)
-inline Int abs(Int Val) {if (Val >= 0) return Val; else return -Val;}
-#endif
 inline uInt abs(uInt Val) {return Val;}
 // </group>
 
