@@ -5520,3 +5520,4 @@
 15 211 src rm trial/apps/olddish/olddishenv.help
 15 211 src rm trial/apps/olddish/oldsdimager.help
 15 211 src rm trial/apps/olddish/makefile
+15 211 top rm code/trial/apps/olddish
