@@ -92,12 +92,17 @@ template<class T>
 RebinLattice<T>::~RebinLattice()
 {
    if (itsDataPtr) {
-      delete itsDataPtr; itsDataPtr = 0;
+      delete itsDataPtr; 
+      itsDataPtr = 0;
    }
    if (itsMaskPtr) {
-      delete itsMaskPtr; itsMaskPtr = 0;
+      delete itsMaskPtr; 
+      itsMaskPtr = 0;
    }
-
+   if (itsLatticePtr) {
+      delete itsLatticePtr;
+      itsLatticePtr = 0;
+   }
 }
 
 template<class T>
