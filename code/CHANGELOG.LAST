@@ -1,0 +1,20 @@
+
+change id: 0095
+ author:   Ger van Diepen
+ date:     2001/05/22
+ avers:    1.6
+ area:     Library
+ package:  aips
+ module:   Arrays
+ type:     Code
+ category: New
+ summary:  Added functions partial..., ntrue, nfalse, reorderArray
+The following (global) functions have been added:
+- ntrue, nfalse   returning the nr of true/false elements in an array
+- reorderArray    making it possible to rearrange the axes of an array
+                  (i.e. it is a generalized form of the matrix transpose)
+- partialX        where X is min,max,sum,mean,median, etc.
+                  They calculate the min, etc. for the elements in a given
+                  number of axes. E.g. in a cube it can calculate the
+                  min for each plane, resulting in a vector of min values.
+                  They are very efficient.
