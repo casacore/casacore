@@ -1,5 +1,5 @@
 //# iosfwd.h: Interim solution for standard/nonstandard system iosfwd
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,5 +36,17 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 #include <iosfwd>
+
+using std::ios;
+using std::istream;
+using std::ostream;
+using std::iostream;
+using std::streambuf;
+using std::filebuf;
+using std::ifstream;
+using std::ofstream;
+using std::fstream;
+using std::fpos;
+using std::streampos;
 
 #endif

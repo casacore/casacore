@@ -1,5 +1,5 @@
 //# istream.h: Interim solution for standard/nonstandard system istream
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,9 +36,12 @@
 #include <aips/aips.h>
 // gcc has no <istream> yet. Change later
 #if defined(__GNUG__)
-#include <iostream>
+#include <aips/iostream.h>
 #else
 #include <istream>
-#endif
 
+using std::istream;
+using std::ws;
+
+#endif
 #endif

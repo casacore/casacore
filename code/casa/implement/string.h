@@ -1,5 +1,5 @@
 //# string.h: Interim solution for standard/nonstandard system cstring
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 
-#if defined(__sgi)
+#if defined(__sgi) || defined(AIPS_SUN_NATIVE)
 #include <string.h>
 #else
 #include <cstring>

@@ -1,5 +1,5 @@
 //# iomanip.h: Interim solution for standard/nonstandard system iomanip
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,5 +35,12 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 #include <iomanip>
+
+using std::setw;
+using std::setfill;
+using std::setprecision;
+using std::setbase;
+using std::resetiosflags;
+using std::setiosflags;
 
 #endif

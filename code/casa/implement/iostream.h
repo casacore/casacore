@@ -1,5 +1,5 @@
 //# iostream.h: Interim solution for standard/nonstandard system iostream
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,5 +35,43 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 #include <iostream>
+
+using std::istream;
+using std::ostream;
+using std::iostream;
+using std::cin;
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::ends;
+using std::flush;
+using std::ws;
+
+using std::ios;
+using std::streampos;
+using std::streamoff;
+using std::streamsize;
+using std::dec;
+using std::hex;
+using std::oct;
+
+using std::internal;
+using std::left;
+using std::right;
+using std::fixed;
+using std::scientific;
+
+using std::boolalpha;
+using std::noboolalpha;
+using std::showbase;
+using std::noshowbase;
+using std::showpoint;
+using std::noshowpoint;
+using std::showpos;
+using std::noshowpos;
+using std::skipws;
+using std::noskipws;
+using std::uppercase;
+using std::nouppercase;
 
 #endif

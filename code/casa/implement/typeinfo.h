@@ -1,5 +1,5 @@
 //# typeinfo.h: Interim solution for standard/nonstandard system typeinfo
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

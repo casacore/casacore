@@ -1,5 +1,5 @@
 //# aipstype.h: Global initialization for standard aips++ types
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_AIPSTYPE_H)
-#define AIPS_AIPSTYPE_H
+#if !defined(AIPS_AIPS_TYPE_H)
+#define AIPS_AIPS_TYPE_H
 
 // Define the standard types used by aips++
 

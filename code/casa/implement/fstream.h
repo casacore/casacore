@@ -1,5 +1,5 @@
 //# fstream.h: Interim solution for standard/nonstandard system fstream
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,5 +35,10 @@
 // Make sure any special macros are set
 #include <aips/aips.h>
 #include <fstream>
+
+using std::fstream;
+using std::ifstream;
+using std::ofstream;
+using std::filebuf;
 
 #endif

@@ -1,5 +1,5 @@
 //# version.h: Version information for AIPS++
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ public:
     // This information is NOT prepended with "AIPS++ version:" or anything
     // like that. You may wish to add this yourself. The date is also not
     // included.
-    static void report(ostream &os);
+    static void report(std::ostream &os);
 };
 
 //# Inlines ------------------------------------------------------------------
