@@ -1,3 +1,10 @@
+%% remove following lines when ready for system
+\documentclass{article}
+\usepackage{eps}
+\begin{document}
+
+\newcommand{\aipspp}{{\sf AIPS++}}
+\newcommand{\glish}{{\em Glish}}
 
 \section{Overview}
 
@@ -9,15 +16,15 @@ on-demand into the {\tt glishtk} client.\footnote{The {\tt glishtk}
 client is a \glish\ proxy client which provides the Tk widgets to
 \glish.}  The highest-level component of the package -- the {\tt
 Viewer tool} -- is implemented as a set of \glish\ scripts, and is a
-genuine \aipspp\ tool providing display services within the
+genuine \aipspp\ {\tt tool} providing display services within the
 \aipspp\ environment for many kinds of data.
 
 The purpose of this document is firstly to give the reader a
 high-level outline of the Library -- an outline not possible in the
 framework of the \aipspp\ class documentation -- and secondly to give
 practical advice on extending the package in a number of ways, for
-example to work with new display devices, or to display a new type of
-data.
+example to work with new display devices, to display new types of
+data, or to display existing types of data in new ways.
 
 \subsection{Design Principles}
 
@@ -61,7 +68,7 @@ Since color plays an important role in visualisation of scientific
 data, it is important to provide flexible ways to allocate and use
 colors within the Display Library.  To this end, a layered approach to
 colors has been adopted, wherein one class -- the {\em
-PixelCanvasColorTable} (hereafter the {\em ColorTable}) -- is
+PixelCanvasColorTable} (for brevity, the {\em ColorTable}) -- is
 primarily concerned with acquiring and managing blocks of color cells
 from the underlying hardware, and a second class -- the {\em Colormap}
 -- is mostly concerned with generating sets of colors to be installed
@@ -108,15 +115,62 @@ ColorTable.  That is, it is possible to register a greyscale Colormap
 and a rainbow Colormap on the first of our ColorTables above.
 Initially, they would each soak up 40 colors (since the ColorTable
 provides 80 colors), but after the shrink operation described above,
-they would soak up only 20 colors each.  So that any images using
-these Colormaps are still drawn correctly on the screen, a series of
-callback functions are initiated when ColorTables and Colormaps are
-resized.
+they would soak up only 20 colors each.  See \mbox{Figure
+\ref{fig:colortable}} for a pictorial representation of the hardware
+color resources, the \aipspp\ ColorTable and the \aipspp\ Colormap.
+In order that any images using these Colormaps are still drawn
+correctly on the screen, a series of callback functions are initiated
+when ColorTables and Colormaps are resized.
 
+\begin{figure}
+  \plotonesmall{1.0}{colortable.xfig.eps}
+  \caption{The relationship between hardware color resources,
+    \aipspp\ ColorTables and \aipspp\ Colormaps.}
+  \label{fig:colortable}
+\end{figure}
+
+Finally, it is important to stress that in a single application or
+tool, multiple Colormaps of the same base type can exist.  That is,
+more than one ``rainbow'' Colormap can be generated, and each can be
+modified independently.  Modification might include altering the
+brightness or contrast, or ``stretching'' the colors in the map.  The
+same Colormap can be registered on more than one ColorTable, and
+furthermore may occupy a different number of color cells in each
+ColorTable!  Designing an interface which allows the end-user complete
+control over this extensive flexibility has proven to be challenging
+however, and only a subset of the capabilities are provided at
+present.
 
 \subsection{The PixelCanvas}
 
+The {\em PixelCanvas} is the fundamental drawing canvas of the Display
+Library.  It provides an agreed-upon set of routines for drawing
+graphic primitives, for controlling the ``context'' of the drawing
+operations, for handling interactive events, and for supplying an
+advanced caching mechanism (where possible).  For each hardware
+drawing device supported by the Display Library (eg. X-Windows,
+PostScript) there must be a PixelCanvas class which implements the
+required routines using low-level, device-specific routines.
+
+The graphic primitives of the PixelCanvas include points, lines,
+polygons, ellipses, and images.  Multiple interfaces are provided
+where convenient and possible\footnote{Note to developer: a particular
+  recommendation is that this interface be pruned to perhaps provide
+  just {\tt Int} and {\tt Float} interfaces.}, and these can in some
+instances be implemented with templated member functions in derived
+classes.  All drawing is done in the native units of the device, and
+in cases where these units are not pixels -- for example, pixels are
+user-defined in PostScript -- the constructor for the device-specific
+PixelCanvas is expected to offer a method for (arbitrarily and
+artificially) setting the resolution of the device such that
+PixelCanvas drawing commands retain their meaning across all devices.
+Again, the PixelCanvas makes use of encapsulation to conceal device
+differences, and inheritance and polymorphism to enable the same set
+of drawing commands to be used on any valid PixelCanvas.
+
 \subsection{The WorldCanvas and its Holders}
+
+
 
 \subsection{Events and Tools}
 
@@ -135,3 +189,6 @@ resized.
 \subsection{Adding Agents to the GlishTk Interface}
 
 \subsection{Extending the Viewer}
+
+%% remove following line when ready for system
+\end{document}
