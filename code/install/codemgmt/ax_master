@@ -6061,3 +6061,4 @@
 17 102 src rm trial/apps/gainfitter/gainpolyfitter_framework.g
 17 123 src mv trial/apps/table/GlishTableIndexHolder.cc aips/apps/gtable/GlishTableIndexHolder.cc
 17 123 src mv trial/apps/table/GlishTableIndexHolder.h aips/apps/gtable/GlishTableIndexHolder.h
+17 123 src mv trial/implement/Tables/ColumnsIndexArray.h aips/implement/Tables/ColumnsIndexArray.h
