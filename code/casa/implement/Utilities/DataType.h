@@ -228,6 +228,16 @@ Bool isScalar(DataType type);
 Bool isArray(DataType type);
 // </group>
 
+// It is sometimes useful to discover if a DataType represents a real 
+// numeric value (i.e., can it be cast to a Double?) This returns True
+// for both real scalar and array type.
+Bool isReal(DataType type);
+
+// Returns True for Complex or DComplex scalar or array types
+Bool isComplex(DataType type);
+
+// Returns True if the type is either Real or Complex/DComplex
+Bool isNumeric(DataType type);
 
 // </group>
 
