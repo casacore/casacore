@@ -1207,8 +1207,8 @@ EOT
      echo "# This is to define PGPLOT_FONT and LD_LIBRARY_PATH" >>$script
      echo "# where required." >>$script
      echo "#--------------------------------------------------------" >>$script
-     if [ ! -f $PGPLOT_FONT/grfont.dat ] ; then
-        echo "PGPLOT_FONT=$AIPSARCH/lib; export PGPLOT_FONT" >>$script
+     if [ "$PGPLOT_FONT" = "" ] ; then
+        echo "PGPLOT_FONT=$AIPSARCH/lib/grfont.dat; export PGPLOT_FONT" >>$script
      else
         echo "# configure found PGPLOT_FONT=$PGPLOT_FONT" >>$script
 	echo "# on `date` and assumed it was valid." >>$script
