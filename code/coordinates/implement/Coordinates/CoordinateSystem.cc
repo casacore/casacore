@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -164,12 +164,6 @@ void CoordinateSystem::addCoordinate(const Coordinate &coord)
     world_tmps_p[n] = new Vector<Double>(coordinates_p[n]->nWorldAxes());
     AlwaysAssert(world_tmps_p[n], AipsError);
 
-    // world_replacement_values_p
-    world_replacement_values_p.resize(n+1);
-    world_replacement_values_p[n] = 
-	new Vector<Double>(coordinates_p[n]->nWorldAxes());
-    AlwaysAssert(world_replacement_values_p[n], AipsError);
-
     // pixel_maps_p
     pixel_maps_p.resize(n+1);
     pixel_maps_p[n] = new Block<Int>(coordinates_p[n]->nPixelAxes());
@@ -188,6 +182,15 @@ void CoordinateSystem::addCoordinate(const Coordinate &coord)
     pixel_replacement_values_p[n] = 
 	new Vector<Double>(coordinates_p[n]->nPixelAxes());
     AlwaysAssert(pixel_replacement_values_p[n], AipsError);
+    *(pixel_replacement_values_p[n]) = 0.0;
+
+    // world_replacement_values_p
+    world_replacement_values_p.resize(n+1);
+    world_replacement_values_p[n] = 
+	new Vector<Double>(coordinates_p[n]->nWorldAxes());
+    AlwaysAssert(world_replacement_values_p[n], AipsError);
+    coordinates_p[n] -> toWorld(*(world_replacement_values_p[n]),
+				*(pixel_replacement_values_p[n]));
 }
 
 void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
