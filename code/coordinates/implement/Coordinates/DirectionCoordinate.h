@@ -259,6 +259,8 @@ public:
     // We have to know this because we may format, say, RA and DEC differently.  
     // For Coordinate::TIME style formatting, precision
     // refers to the places after the decimal in the SS field.
+    //
+    // The worldValue must be in radians.
     //<group>
     virtual void getPrecision (Int& precision, 
                                Coordinate::formatType& format,
