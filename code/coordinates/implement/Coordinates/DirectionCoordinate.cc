@@ -207,6 +207,7 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
     copy_celprm_and_prjprm(celprm_p, prjprm_p, wcs_p, c_ctype_p, 
                            c_crval_p, other.celprm_p, other.prjprm_p,
                            other.wcs_p, other.c_ctype_p, other.c_crval_p);
+    makeConversionMachines();
 }
 
 
