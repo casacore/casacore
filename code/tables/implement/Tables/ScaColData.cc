@@ -123,9 +123,6 @@ void ScalarColumnData<T>::getScalarColumn (void* val) const
     autoReleaseLock();
 }
 
-// Remove eventually - needed for g++
-typedef Vector<uInt> forgnugpp_scacoldata;
-
 template<class T>
 void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
 						void* val) const
