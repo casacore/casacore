@@ -1740,7 +1740,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr2 = all(expr1);
       if (!checkBool(expr2, (nb==0 || bBVal), shape, True, False)) ok = False;
    }
-   cout << "ntrue" << endl;
+    cout << "ntrue" << endl;
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
@@ -1753,7 +1753,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       }
       if (!checkDouble(expr2, result, shape, True, False)) ok = False;
    }
-   cout << "nfalse" << endl;
+    cout << "nfalse" << endl;
    {
       cout << "  Bool Array" << endl;
       LatticeExprNode expr1(bB);
@@ -1765,6 +1765,35 @@ Bool doIt (const MaskedLattice<Float>& aF,
          result = 0.0;
       }
       if (!checkDouble(expr2, result, shape, True, False)) ok = False;
+   }
+    cout << "isnan" << endl;
+   {
+      cout << "  Float Scalar" << endl;
+      LatticeExprNode expr1(bFVal);
+      LatticeExprNode expr2 = isnan(expr1);
+      if (!checkBool(expr2, False, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Complex Scalar" << endl;
+      LatticeExprNode expr1(bCVal);
+      LatticeExprNode expr2 = isnan(expr1);
+      if (!checkBool(expr2, False, shape, True, False)) ok = False;
+   }
+   {
+      cout << "  Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2 = isnan(expr1);
+      if (!checkBool(expr2, False, shape, False, False)) ok = False;
+      if (!checkMask (expr2, bF.isMasked(),
+		      bF.getMask())) ok = False;
+   }
+   {
+      cout << "  Complex Array" << endl;
+      LatticeExprNode expr1(bC);
+      LatticeExprNode expr2 = isnan(expr1);
+      if (!checkBool(expr2, False, shape, False, False)) ok = False;
+      if (!checkMask (expr2, bC.isMasked(),
+		      bC.getMask())) ok = False;
    }
 
 

@@ -271,6 +271,11 @@ ntrue
   Bool Array
 nfalse
   Bool Array
+isnan
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
 
 2-argument functions 
 atan2
@@ -651,6 +656,11 @@ ntrue
   Bool Array
 nfalse
   Bool Array
+isnan
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
 
 2-argument functions 
 atan2
@@ -1031,6 +1041,11 @@ ntrue
   Bool Array
 nfalse
   Bool Array
+isnan
+  Float Scalar
+  Complex Scalar
+  Float Array
+  Complex Array
 
 2-argument functions 
 atan2
