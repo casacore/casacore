@@ -207,6 +207,7 @@ public:
   // <group>
   virtual Vector<Quantum<Double> > getRecordValue() const;
   virtual Vector<Quantum<Double> > getXRecordValue() const;
+  virtual Vector<Quantum<Double> > getTMRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
