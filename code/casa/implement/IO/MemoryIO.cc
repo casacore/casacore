@@ -116,17 +116,30 @@ void MemoryIO::write (uInt size, const void* buf)
     }
 }
 
-void MemoryIO::read (uInt size, void* buf)
-{
-    // Throw an exception if not readable.
-    if (!itsReadable) {
-	throw (AipsError ("MemoryIO object is not readable"));
-    }
-    if (itsPosition + size > itsUsed) {
-	throw (AipsError ("MemoryIO::read beyond end-of-buffer"));
-    }
+Int MemoryIO::read (uInt size, void* buf, Bool throwException) {
+  // Throw an exception if not readable.
+  if (!itsReadable) {
+    throw (AipsError ("MemoryIO::read - buffer is not readable"));
+  }
+  const Int bytesLeft = itsUsed - itsPosition;
+  Int bytesRead = 0;
+  if (size <= bytesLeft) {
     memcpy (buf, itsBuffer + itsPosition, size);
     itsPosition += size;
+    bytesRead = size;
+  } else {
+    if (bytesLeft > 0) { 
+      memcpy (buf, itsBuffer + itsPosition, uInt(bytesLeft));
+      itsPosition += bytesLeft;
+      if (throwException) {
+	throw (AipsError ("MemoryIO::read - incorrect number of bytes read"));
+      }
+      bytesRead = bytesLeft;
+    } else {
+      throw (AipsError ("MemoryIO::read - buffer position is invalid"));
+    }
+  }
+  return bytesRead;
 }
 
 Long MemoryIO::seek (Long offset, ByteIO::SeekOption dir)
