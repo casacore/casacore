@@ -56,9 +56,11 @@ class String;
 class Table;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
+template <class T> class ROScalarColumn;
 template <class M> class TableMeasDesc;
 template <class M, class MV> class ArrayMeasColumn;
 template <class M, class MV> class ScalarMeasColumn;
+template <class M, class MV> class ROScalarMeasColumn;
 
 // <summary>
 // Descinition of a Measure in a Table.
@@ -137,27 +139,27 @@ protected:
     // Resets itsMeasRef. Useful when the MeasRef varies from row to row.
     void setMeasRef(uInt rownr=0);
 
-    // Column which contains the Measure's actual data
-    ArrayColumn<Double>* itsDataCol;
-    
     // Measure reference could be constant or vary per row.
     Bool itsVarRefFlag;
     Bool itsVarOffsetFlag;
     
-    // Its MeasRef code column when references are variable.
-    ScalarColumn<Int>* itsRefCodeCol;
-    ArrayColumn<Int>* itsArrRefCodeCol;
-    
-    // Column containing its variable offsets.  Only applicable if the 
-    // measure references have offsets and they are variable.
-    ScalarMeasColumn<M, MV>* itsOffsetCol;
-    ArrayMeasColumn<M, MV>* itsArrOffsetCol;
-        
 private:
     // Assignment makes no sense in a read only class.
     // Declaring this operator private makes it unusable.
     ROArrayMeasColumn& operator= (const ROArrayMeasColumn& that); 
 
+    // Column which contains the Measure's actual data
+    ROArrayColumn<Double>* itsDataCol;
+    
+    // Its MeasRef code column when references are variable.
+    ROScalarColumn<Int>* itsRefCodeCol;
+    ROArrayColumn<Int>* itsArrRefCodeCol;
+    
+    // Column containing its variable offsets.  Only applicable if the 
+    // measure references have offsets and they are variable.
+    ROScalarMeasColumn<M, MV>* itsOffsetCol;
+    ROArrayMeasColumn<M, MV>* itsArrOffsetCol;
+        
     // Its measure reference when the MeasRef is constant per row.
     MeasRef<M> itsMeasRef;
     
@@ -196,9 +198,33 @@ public:
 
     ~ArrayMeasColumn();
 
+    // Change the reference to another column.
+    void reference(const ArrayMeasColumn<M, MV>& that);
+
+    // Attach a column to the object. 
+    void attach(const Table& tab, const String& columnName); 
+ 
     // Add a measure to the table
     void put(uInt rownr, const Array<M>&);    
 private:
+    // Column which contains the Measure's actual data
+    ArrayColumn<Double>* itsDataCol;
+    
+    // Its MeasRef code column when references are variable.
+    ScalarColumn<Int>* itsRefCodeCol;
+    ArrayColumn<Int>* itsArrRefCodeCol;
+    
+    // Column containing its variable offsets.  Only applicable if the 
+    // measure references have offsets and they are variable.
+    ScalarMeasColumn<M, MV>* itsOffsetCol;
+    ArrayMeasColumn<M, MV>* itsArrOffsetCol;
+
+    // Its measure reference when the MeasRef is constant per row.
+    MeasRef<M> itsMeasRef;
+        
+    // Deletes allocated memory etc. Called by ~tor and any member which needs
+    // to reallocate data.
+    void cleanUp();
 };
 
 typedef ArrayMeasColumn<MEpoch, MVEpoch> MEpochArrCol;
