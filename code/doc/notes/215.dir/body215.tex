@@ -58,7 +58,14 @@ header and footer will be customized.
 Latex2html uses absolute path names to its icons, the shell script
 redoicons.sh (code/install/docutils) turns the absolute paths into relative
 ones.  Using relative icons avoids have latex2html generated HTML pages
-use NRAO as an icon server.
+use NRAO as an icon server. To get relative icons sites should specify two
+variables in thier makedefs file ICONSERVER and ICONS2LOCAL.  ICONSERVER is
+the ICONSERVER variable specified in the latex2html script.  At the AOC,
+we have the following two lines in our makedefs to generate local icons:
+\begin{verbatim}
+ICONSERVER := http://www.nrao.edu/icons/latex2html
+ICONS2LOCAL := $(AIPSARCH)/bin/redoicons.sh
+\end{verbatim}
 
 For more details about the html commands available from latex2html please 
 consult the
