@@ -2,7 +2,7 @@
 # AIPS++ top directory makefile.
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999,2000,2001
+#   Copyright (C) 1992-1997,1999,2000,2001,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -139,6 +139,17 @@ runtests :
 	     echo "-----------------------" ; \
 	     cat $(AIPSARCH)/bintest/runtests.report ; \
 	   fi
+
+##
+## developer's release targets
+##
+drupdate :
+	@ mktree -l -r -s
+	@ $(MAKE) 'NODEP=1' cleancode
+	@ $(MAKE) 'NODEP=1' chkout
+
+drbuild :
+	@ $(MAKE) allsys
 
 # Programmer-oriented static and static pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
