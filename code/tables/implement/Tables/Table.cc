@@ -35,6 +35,7 @@
 #include <aips/Tables/StManColumn.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/Containers/Block.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>
@@ -360,8 +361,8 @@ Bool Table::hasDataChanged()
     // If the table is not read locked try to get one (without waiting).
     // If not succeeding, another process is writing, thus data is changing.
     // Otherwise unlock immediately.
-    if (! hasLock (False)) {
-	if (! lock (False, 1)) {
+    if (! hasLock (FileLocker::Read)) {
+	if (! lock (FileLocker::Read, 1)) {
 	    return True;
 	}
 	unlock();
@@ -384,7 +385,7 @@ uInt Table::nAutoLocks()
 	const PlainTable& table = *(cache(i));
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
 	    //# Having a read lock is enough.
-	    if (table.hasLock (False)) {
+	    if (table.hasLock (FileLocker::Read)) {
 		n++;
 	    }
 	}
@@ -400,7 +401,7 @@ void Table::relinquishAutoLocks (Bool all)
 	PlainTable& table = *(cache(i));
 	if (table.lockOptions().option() == TableLock::AutoLocking) {
 	    //# Having a read lock is enough.
-	    if (table.hasLock (False)) {
+	    if (table.hasLock (FileLocker::Read)) {
 		if (all) {
 		    table.unlock();
 		}else{
@@ -453,20 +454,41 @@ Table Table::sort (const Block<String>& names,
 //# Create an expression node to handle a keyword.
 //# The code to handle this is in TableExprNode, because there the
 //# differentation between data types is being made.
-TableExprNode Table::key (const String& name) const
-    { return TableExprNode::newKeyConst (keywordSet(), name); }
-
-//# Create an expression node for a column.
-TableExprNode Table::col (const String& name) const
-    { return TableExprNode::newColumnNode (*this, baseTabPtr_p, name); }
+TableExprNode Table::key (const String& keywordName) const
+{
+    Vector<String> names(1);
+    names(0) = keywordName;
+    return TableExprNode::newKeyConst (keywordSet(), names);
+}
+TableExprNode Table::key (const Vector<String>& fieldNames) const
+{
+    return TableExprNode::newKeyConst (keywordSet(), fieldNames);
+}
+TableExprNode Table::col (const String& columnName) const
+{
+    Vector<String> fieldNames;
+    return TableExprNode::newColumnNode (*this, baseTabPtr_p, columnName,
+					 fieldNames);
+}
+TableExprNode Table::col (const String& columnName,
+			  const Vector<String>& fieldNames) const
+{
+    return TableExprNode::newColumnNode (*this, baseTabPtr_p, columnName,
+					 fieldNames);
+}
 
 //# Create an expression node for either a keyword or column.
-TableExprNode Table::keyCol (const String& name) const
+TableExprNode Table::keyCol (const String& name,
+			     const Vector<String>& fieldNames) const
 {
     if (tableDesc().isColumn (name)) {
-	return col (name);
+	return col (name, fieldNames);
     }else{
-	return key (name);
+	uInt nr = fieldNames.nelements();
+	Vector<String> names (nr + 1);
+	names (Slice(1,nr)) = fieldNames;
+	names(0) = name;
+	return key (names);
     }
 }
 
