@@ -28,6 +28,7 @@
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/IPosition.h>
 #include <trial/Coordinates.h>
 #include <trial/Coordinates/CoordinateUtil.h>
@@ -205,9 +206,6 @@ Vector<String> ImageSummary<T>::axisUnits (Bool pixelOrder) const
 
 template <class T> 
 Unit ImageSummary<T>::units () const
-//
-// Get image units
-//
 {
    return pImage_p->units();
 }
@@ -215,9 +213,6 @@ Unit ImageSummary<T>::units () const
 
 template <class T> 
 String ImageSummary<T>::name () const
-//
-// Get image name
-//
 {
    const Bool stripPath = True;
    String name = pImage_p->name(stripPath);
@@ -230,9 +225,6 @@ String ImageSummary<T>::name () const
 
 template <class T> 
 String ImageSummary<T>::observer() const
-//
-// Get observer name
-//
 {
    return obsInfo_p.observer();
 }
@@ -240,9 +232,6 @@ String ImageSummary<T>::observer() const
 
 template <class T> 
 String ImageSummary<T>::obsDate(MEpoch& epoch) const
-//
-// Get epoch 
-//
 {
    epoch = obsInfo_p.obsDate();
    MVTime time = MVTime(epoch.getValue());
@@ -252,9 +241,6 @@ String ImageSummary<T>::obsDate(MEpoch& epoch) const
 
 template <class T> 
 String ImageSummary<T>::telescope() const
-//
-// Get telescope
-//
 {
    return obsInfo_p.telescope();
 }
@@ -399,6 +385,7 @@ void ImageSummary<T>::list (LogIO& os,
 
    Vector<Quantum<Double> > rb = imageInfo_p.restoringBeam();
    if (rb.nelements()>0) {
+      rb(2).convert(Unit("deg"));
       os.output() << "Restoring Beam   : " << rb(0) << ", " << rb(1) << ", " << rb(2) << endl;
    } 
    os.post();
@@ -433,34 +420,26 @@ String ImageSummary<T>::makeMasksString() const
    const Vector<String> masks = maskNames();
    const uInt nMasks = masks.nelements();
    if (nMasks==0) {
-
-// Horrid fudge to catch TempImage mask.  We need
-// to redesign some of this masky stuff
-
-      if (pImage_p->hasPixelMask()) {
-         return String("Temporary_Mask");
-      } else {
-         return String("None");
-      }
+      return String("None");
    }
 //
    ostrstream oss;
-   if (!defaultMask.empty()) oss << defaultMask;
-//
-   if (!defaultMask.empty() && nMasks==1) {
-      return String(oss);
+   if (!defaultMask.empty()) {
+      oss << defaultMask;
+      if (nMasks==1) {
+         return String(oss);
+      }
    }
 //
    oss << " [";
-   Bool first = True;
+   uInt j = 0;
    for (uInt i=0; i<nMasks; i++) {
-      if (masks(i)!=defaultMask) {
-         if (first) {
-            oss << masks(i);
-            first = False;
-         } else {
-            oss << ", " << masks(i);
+      if (masks(i) != defaultMask) {
+         if (j > 0) {
+	    oss << ", ";
          }
+	 oss << masks(i);
+         j++;
       }
    } 
    oss << "]";
