@@ -1,0 +1,114 @@
+//# NNLSMatrixSolver.cc: concrete class for NNLS solvers of AX=B
+//# Copyright (C) 1994,1995
+//# Associated Universities, Inc. Washington DC, USA.
+//# 
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//# 
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//# 
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//# 
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+#include <aips/aips.h>
+#include <trial/Arrays/NNLSMatrixSolver.h>
+
+#include <aips/Logging/LogSink.h>
+#include <aips/Logging/LogMessage.h>
+
+#include <strstream.h>
+
+#define NEED_UNDERSCORES
+
+#if defined(NEED_UNDERSCORES)
+   #define nnls nnls_
+#endif
+
+extern "C" {
+  void nnls(FType*,int*,int*,int*,FType*,FType*,float*,FType*,FType*,int*,int*,int*);
+};
+
+// Default Constructor
+NNLSMatrixSolver::NNLSMatrixSolver(): MatrixSolver() {};
+  
+// Copy Constructor
+NNLSMatrixSolver::NNLSMatrixSolver(const NNLSMatrixSolver & other)
+: MatrixSolver(other) {};
+  
+// Create a NNLSMatrixSolver from a matrix A and a Vector B
+// <note role=warning> A and B are accessed by reference, so don't 
+// modify them during the lifetime of the NNLSMatrixSolver </note>
+NNLSMatrixSolver::NNLSMatrixSolver(const Matrix<FType> & A,
+				   const Vector<FType> & B)
+: MatrixSolver(A,B) {};
+  
+// Destructor
+NNLSMatrixSolver::~NNLSMatrixSolver() {};
+
+Bool NNLSMatrixSolver::solve() // Solve AX=B for X
+{
+  
+  LogMessage message(LogOrigin("NNLSMatrixSolver","solve"));
+
+  Bool delete_it;
+  FType *a_data = AMatrix.getStorage(delete_it);
+  FType *x_data = XVector.getStorage(delete_it);
+  FType *b_data = BVector.getStorage(delete_it);
+  int nflux=XVector.nelements();
+  int ndata=BVector.nelements();
+  float rnorm=0.0;
+  FType *w=new FType[nflux];
+  FType *zz=new FType[ndata];
+  int *index=new int[nflux];
+  int itmax=MaxIters();
+  if(itmax==0) itmax=3*nflux;
+  int mode=0;
+
+  // Call Fortran NNLS routine
+  nnls(a_data,&ndata,&ndata,&nflux,b_data,x_data,&rnorm,w,zz,index,&itmax,
+       &mode);
+
+  RVector=BVector.ac()-product(AMatrix,XVector).ac();	// Update residual vector
+  if (mode==2) {
+    ostrstream o;o<<"dimensions set up incorrectly";
+    message.priority(LogMessage::SEVERE);
+    message.message(o);logSink().post(message);
+    setSolved(False);
+    return Solved();
+  };
+  if (mode==3) {
+    ostrstream o;o<<"Exceeded number of iterations";
+    message.priority(LogMessage::SEVERE);
+    message.message(o);logSink().post(message);
+    setSolved(False);
+    return Solved();
+  };
+  
+  if(accurateSolution()) {
+    ostrstream o;o<<"Solution acheived";
+    message.message(o);logSink().post(message);
+    setSolved(True);
+  }
+  else {
+    ostrstream o;o<<"Solution not formally accurate enough";
+    message.message(o);logSink().post(message);
+    setSolved(False);
+  }
+  return Solved();
+}
+

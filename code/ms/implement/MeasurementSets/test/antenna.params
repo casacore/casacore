@@ -1,0 +1,16 @@
+! file format
+aips++-short
+! # antennas
+3			
+! array x y z position
+0.0 0.0 0.0 		
+! ant-id  x y z  dish-diam  mount  name (offset  station  orbit  phased-arr)
+! ant #0
+0  0.0 0.0 0.0  25.0   alt-az    ANT0  
+!	0.0 0.0 0.0   STN0   -1  -1
+! ant #1
+1  123.0 123.0 123.0  25.0   alt-az    ANT1   
+!	0.0 0.0 0.0   STN4   -1  -1
+! ant #2
+2  234.0 234.0 234.0  25.0   alt-az    ANT2   
+!	0.0 0.0 0.0   STN23   -1  -1

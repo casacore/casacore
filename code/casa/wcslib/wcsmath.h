@@ -1,0 +1,10 @@
+#ifndef WCSMATH
+#define WCSMATH
+ 
+#define PI 3.141592653589793238462643
+#define D2R PI/180.0
+#define R2D 180.0/PI
+#define SQRT2 1.4142135623730950488
+#define SQRT2INV 1.0/SQRT2
+ 
+#endif /* WCSMATH */
