@@ -38,6 +38,8 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
+
 
 #include <iostream.h>
 #include <iomanip.h>
@@ -123,7 +125,6 @@ template <class T>
 Bool ImageStatistics<T>::setNewImage(const ImageInterface<T>& image)
 { 
    if (!goodParameterStatus_p) {
-      error_p = "Internal class status is bad";
       return False;
    }
 
@@ -207,14 +208,22 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    for (j=0; j<n1; j++) nMax = max(nMax, Int(real(stats.column(NPTS)(j))+0.1));
    const Int logNMax = Int(log10(Double(nMax))) + 2;
    const uInt oIWidth = max(5, logNMax);
-   const uInt oDWidth = 15;
+//
+   T* dummy(0);
+   DataType type = whatType(dummy);
+   Int oDWidth;
+   if (type==TpFloat) {
+      oDWidth = 14; 
+   } else if (type==TpComplex) {
+      oDWidth = 32; 
+   }
+
 
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
 
-   os_p.output().fill(' '); 
-   os_p.output().setf(ios::scientific, ios::floatfield);
-   os_p.output().setf(ios::left, ios::adjustfield);
+   Int oPrec = 6;
+   setStream(os_p.output(), oPrec);
 
 // Write the pixel and world coordinate of the higher order display axes to the logger
 
@@ -241,7 +250,6 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    Int oCWidth = max(cName.length(), sWorld(0).length()) + 1;
    
 // Write headers
-
 
    const uInt nStatsAxes = cursorAxes_p.nelements();
    os_p << endl;
@@ -288,21 +296,38 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 // Write statistics to logger.  We write the pixel location
 // relative to the parent image
 
+   T small(0.01);
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+blcParent_p(displayAxes_p(0))+1;
       os_p.output() << setw(oCWidth)   << sWorld(j);
       os_p.output() << setw(oIWidth)   << Int(real(stats.column(NPTS)(j))+0.1);
 
-      if (Int(stats.column(NPTS)(j)+0.1) > 0) {
-         os_p.output() << setw(oDWidth)   << stats.column(SUM)(j);
-         if (hasBeam) os_p.output() << setw(oDWidth)   << stats.column(FLUX)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MEAN)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(RMS)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(SIGMA)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MIN)(j);
-         os_p.output() << setw(oDWidth)   << stats.column(MAX)(j);
+      if (stats.column(NPTS)(j) > small) {
+
+// I hate ostrstreams.  The bloody things are one shot.
+   
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+         setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec);
+         setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
+         setStream(os6, oPrec); setStream(os7, oPrec);
+//
+         os0 << stats.column(SUM)(j);
+         if (hasBeam) os1 << stats.column(FLUX)(j);
+         os2 << stats.column(MEAN)(j);
+         os3 << stats.column(RMS)(j);
+         os4 << stats.column(SIGMA)(j);
+         os5 << stats.column(MIN)(j);
+         os6 << stats.column(MAX)(j);
+//
+         os_p.output() << setw(oDWidth)   << String(os0);
+         if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
+         os_p.output() << setw(oDWidth)   << String(os2);
+         os_p.output() << setw(oDWidth)   << String(os3);
+         os_p.output() << setw(oDWidth)   << String(os4);
+         os_p.output() << setw(oDWidth)   << String(os5);
+         os_p.output() << setw(oDWidth)   << String(os6);
       }
-      os_p << endl;
+      os_p.output() << endl;
    }
    os_p.post();
 
