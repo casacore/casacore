@@ -47,9 +47,7 @@
 #include <aips/Utilities/String.h>
 
 GaussianShape::GaussianShape()
-  :itsDir(),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+  :ComponentShape(),
    itsShape(1.0, 0.0, 0.0, Quantity(1,"'").getValue("rad"), 1.0, 0.0),
    itsFT(itsShape),
    itsMajUnit("arcmin"),
@@ -61,13 +59,11 @@ GaussianShape::GaussianShape()
   DebugAssert(ok(), AipsError);
 }
 
-GaussianShape::GaussianShape(const MDirection & direction, 
-			     const Quantum<Double> & majorAxis,
-			     const Quantum<Double> & minorAxis,
-			     const Quantum<Double> & positionAngle)
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+GaussianShape::GaussianShape(const MDirection& direction, 
+			     const Quantum<Double>& majorAxis,
+			     const Quantum<Double>& minorAxis,
+			     const Quantum<Double>& positionAngle)
+  :ComponentShape(direction),
    itsShape(1.0, 0.0, 0.0, majorAxis.getValue("rad"),
 	    minorAxis.getValue("rad")/majorAxis.getValue("rad"),
 	    positionAngle.getValue("rad")),
@@ -82,13 +78,11 @@ GaussianShape::GaussianShape(const MDirection & direction,
   DebugAssert(ok(), AipsError);
 }
 
-GaussianShape::GaussianShape(const MDirection & direction,
-			     const Quantum<Double> & width,
+GaussianShape::GaussianShape(const MDirection& direction,
+			     const Quantum<Double>& width,
 			     const Double axialRatio,
-			     const Quantum<Double> & positionAngle) 
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+			     const Quantum<Double>& positionAngle) 
+  :ComponentShape(direction),
    itsShape(1.0, 0.0, 0.0, width.getValue("rad"), axialRatio,
 	    positionAngle.getValue("rad")),
    itsFT(itsShape),
@@ -103,10 +97,8 @@ GaussianShape::GaussianShape(const MDirection & direction,
   DebugAssert(ok(), AipsError);
 }
 
-GaussianShape::GaussianShape(const GaussianShape & other) 
-  :itsDir(other.itsDir),
-   itsDirValue(other.itsDirValue),
-   itsRefFrame(other.itsRefFrame),
+GaussianShape::GaussianShape(const GaussianShape& other) 
+  :ComponentShape(other),
    itsShape(other.itsShape),
    itsFT(other.itsFT),
    itsMajUnit(other.itsMajUnit),
@@ -120,11 +112,9 @@ GaussianShape::~GaussianShape() {
   DebugAssert(ok(), AipsError);
 }
 
-GaussianShape & GaussianShape::operator=(const GaussianShape & other) {
+GaussianShape& GaussianShape::operator=(const GaussianShape& other) {
   if (this != &other) {
-    itsDir = other.itsDir;
-    itsDirValue = other.itsDirValue;
-    itsRefFrame = other.itsRefFrame;
+    ComponentShape::operator=(other);
     itsShape = other.itsShape;
     itsFT = other.itsFT;
     itsMajUnit = other.itsMajUnit;
@@ -140,21 +130,9 @@ ComponentType::Shape GaussianShape::type() const {
   return ComponentType::GAUSSIAN;
 }
 
-void GaussianShape::setRefDirection(const MDirection & newRefDir) {
-  itsDir = newRefDir;
-  itsDirValue = newRefDir.getValue();
-  itsRefFrame = (MDirection::Types) newRefDir.getRef().getType();
-  DebugAssert(ok(), AipsError);
-}
-
-const MDirection & GaussianShape::refDirection() const {
-  DebugAssert(ok(), AipsError);
-  return itsDir;
-}
-
-void GaussianShape::setWidth(const Quantum<Double> & majorAxis,
-			     const Quantum<Double> & minorAxis, 
-			     const Quantum<Double> & positionAngle) {
+void GaussianShape::setWidth(const Quantum<Double>& majorAxis,
+			     const Quantum<Double>& minorAxis, 
+			     const Quantum<Double>& positionAngle) {
   Vector<Double> angle(2);
   angle(0) = majorAxis.getValue("rad");
   angle(1) = minorAxis.getValue("rad");
@@ -170,9 +148,9 @@ void GaussianShape::setWidth(const Quantum<Double> & majorAxis,
   DebugAssert(ok(), AipsError);
 }
 
-void GaussianShape::setWidth(const Quantum<Double> & majorAxis,
+void GaussianShape::setWidth(const Quantum<Double>& majorAxis,
 			     const Double axialRatio, 
-			     const Quantum<Double> & positionAngle) {
+			     const Quantum<Double>& positionAngle) {
   const Unit majUnit = majorAxis.getFullUnit();
   setWidth(majorAxis, 
 	   Quantum<Double>(majorAxis.getValue(majUnit)*axialRatio, majUnit),
@@ -180,9 +158,9 @@ void GaussianShape::setWidth(const Quantum<Double> & majorAxis,
   DebugAssert(ok(), AipsError);
 }
 
-void GaussianShape::width(Quantum<Double> & majorAxis,
-			  Quantum<Double> & minorAxis,
-			  Quantum<Double> & positionAngle) const {
+void GaussianShape::width(Quantum<Double>& majorAxis,
+			  Quantum<Double>& minorAxis,
+			  Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   const Unit rad("rad");
   majorAxis.setValue(itsShape.majorAxis());
@@ -196,8 +174,8 @@ void GaussianShape::width(Quantum<Double> & majorAxis,
   positionAngle.convert(itsPaUnit);
 }
 
-void GaussianShape::width(Quantum<Double> & majorAxis, Double & axialRatio,
-	   Quantum<Double> & positionAngle) const {
+void GaussianShape::width(Quantum<Double>& majorAxis, Double& axialRatio,
+	   Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   const Unit rad("rad");
   majorAxis.setValue(itsShape.majorAxis());
@@ -209,7 +187,7 @@ void GaussianShape::width(Quantum<Double> & majorAxis, Double & axialRatio,
   positionAngle.convert(itsPaUnit);
 }
 
-void GaussianShape::majorAxis(Quantum<Double> & majorAxis) const {
+void GaussianShape::majorAxis(Quantum<Double>& majorAxis) const {
   DebugAssert(ok(), AipsError);
   majorAxis.setValue(itsShape.majorAxis());
   majorAxis.setUnit("rad");
@@ -223,7 +201,7 @@ Quantum<Double> GaussianShape::majorAxis() const {
   return retVal;
 }
 
-void GaussianShape::minorAxis(Quantum<Double> & minorAxis) const {
+void GaussianShape::minorAxis(Quantum<Double>& minorAxis) const {
   DebugAssert(ok(), AipsError);
   minorAxis.setValue(itsShape.minorAxis());
   minorAxis.setUnit("rad");
@@ -237,7 +215,7 @@ Quantum<Double> GaussianShape::minorAxis() const {
   return retVal;
 }
 
-void GaussianShape::axialRatio(Double & axialRatio) const {
+void GaussianShape::axialRatio(Double& axialRatio) const {
   DebugAssert(ok(), AipsError);
   axialRatio = itsShape.axialRatio();
 }
@@ -247,7 +225,7 @@ Double GaussianShape::axialRatio() const {
   return itsShape.axialRatio();
 }
 
-void GaussianShape::positionAngle(Quantum<Double> & positionAngle) const {
+void GaussianShape::positionAngle(Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   positionAngle.setValue(itsShape.PA());
   positionAngle.setUnit("rad");
@@ -261,23 +239,55 @@ Quantum<Double> GaussianShape::positionAngle() const {
   return retVal;
 }
 
-void GaussianShape::sample(Flux<Double> & flux, const MDirection & direction, 
- 			   const MVAngle & pixelSize) const {
+void GaussianShape::sample(Flux<Double>& flux, const MDirection& direction, 
+ 			   const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
-  MVDirection dirVal = direction.getValue();
-  if ((MDirection::Types) direction.getRef().getType() != itsRefFrame) {
-    dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
+  Double separation;
+  Double pa;
+  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
+    const MVDirection convertedDirVal = 
+      MDirection::Convert(direction, refDirFrame())().getValue();
+    separation = refDirValue().separation(convertedDirVal);
+    pa = refDirValue().positionAngle(convertedDirVal);
+  } else {
+    const MVDirection& dirVal = direction.getValue();
+    separation = refDirValue().separation(dirVal);
+    pa = refDirValue().positionAngle(dirVal);
   }
-  const Double separation = itsDirValue.separation(dirVal);
-  const Double pa = itsDirValue.positionAngle(dirVal);
   const Double pixSize = pixelSize.radian();
   const Double scale = pixSize * pixSize * 
     itsShape(separation*sin(pa), separation*cos(pa));
-  flux.scaleValue(scale);
+  flux.scaleValue(scale, scale, scale, scale);
 }
 
-void GaussianShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			       const Double & frequency) const {
+void GaussianShape::multiSample(Vector<Double>& scale, 
+ 				const Vector<MVDirection>& directions, 
+ 				const MVAngle& pixelSize) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = directions.nelements();
+  if (scale.nelements() == 0) scale.resize(nSamples);
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+
+  Double separation;
+  Double pa;
+  const Double pixSize = pixelSize.radian();
+  const Double pixArea = pixSize * pixSize;
+  // The factor of 10 is somewhat arbitrary
+  const Double maxSep = 10.0 * itsShape.majorAxis();
+  for (uInt i = 0; i < nSamples; i++) {
+    const MVDirection& dirVal = directions(i);
+    separation = refDirValue().separation(dirVal);
+    if (separation > maxSep) {
+      scale(i) = 0.0;
+    } else {
+      pa = refDirValue().positionAngle(dirVal);
+      scale(i) = pixArea * itsShape(separation*sin(pa), separation*cos(pa));
+    }
+  }
+}
+
+void GaussianShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+			       const Double& frequency) const {
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
@@ -286,9 +296,9 @@ void GaussianShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   flux.scaleValue(scaleFactor, scaleFactor, scaleFactor, scaleFactor);
 }
 
-ComponentShape * GaussianShape::clone() const {
+ComponentShape* GaussianShape::clone() const {
   DebugAssert(ok(), AipsError);
-  ComponentShape * tmpPtr = new GaussianShape(*this);
+  ComponentShape* tmpPtr = new GaussianShape(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
@@ -298,7 +308,7 @@ uInt GaussianShape::nParameters() const {
   return 3;
 }
 
-void GaussianShape::setParameters(const Vector<Double> & newParms) {
+void GaussianShape::setParameters(const Vector<Double>& newParms) {
   AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(newParms(0) >= newParms(1), AipsError);
   DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
@@ -314,7 +324,7 @@ void GaussianShape::setParameters(const Vector<Double> & newParms) {
   DebugAssert(ok(), AipsError);
 }
 
-void GaussianShape::parameters(Vector<Double> & compParms) const {
+void GaussianShape::parameters(Vector<Double>& compParms) const {
   AlwaysAssert(compParms.nelements() == nParameters(), AipsError);
   compParms(0) = itsShape.majorAxis();
   compParms(1) = itsShape.minorAxis();
@@ -322,9 +332,9 @@ void GaussianShape::parameters(Vector<Double> & compParms) const {
   DebugAssert(ok(), AipsError);
 }
 
-Bool GaussianShape::fromRecord(String & errorMessage,
-			       const RecordInterface & record) {
-  if (!ComponentShape::readDir(errorMessage, record)) return False;
+Bool GaussianShape::fromRecord(String& errorMessage,
+			       const RecordInterface& record) {
+  if (!ComponentShape::fromRecord(errorMessage, record)) return False;
   Quantum<Double> majorAxis;
   {
     const String fieldString("majoraxis");
@@ -447,11 +457,10 @@ Bool GaussianShape::fromRecord(String & errorMessage,
   return True;
 }
 
-Bool GaussianShape::toRecord(String & errorMessage,
-			     RecordInterface & record) const {
+Bool GaussianShape::toRecord(String& errorMessage,
+			     RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), ComponentType::name(type()));
-  if (!ComponentShape::addDir(errorMessage, record)) return False;
+  if (!ComponentShape::toRecord(errorMessage, record)) return False;
   {
     const QuantumHolder qHolder(majorAxis());
     Record qRecord;
@@ -482,8 +491,8 @@ Bool GaussianShape::toRecord(String & errorMessage,
   return True;
 }
 
-Bool GaussianShape::convertUnit(String & errorMessage,
-				const RecordInterface & record) {
+Bool GaussianShape::convertUnit(String& errorMessage,
+				const RecordInterface& record) {
   const Unit deg("deg");
   {
     const String fieldString("majoraxis");
@@ -556,6 +565,7 @@ Bool GaussianShape::ok() const {
   // The LogIO class is only constructed if an error is detected for
   // performance reasons. Both function static and file static variables
   // where considered and rejected for this purpose.
+  if (!ComponentShape::ok()) return False;
   if (!near(itsShape.flux(), 1.0, C::dbl_epsilon)) {
     LogIO logErr(LogOrigin("GaussianCompRep", "ok()"));
     logErr << LogIO::SEVERE << "The internal Gaussian shape does not have"

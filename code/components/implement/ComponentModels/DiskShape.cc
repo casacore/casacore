@@ -34,7 +34,6 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-// #include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
@@ -47,9 +46,7 @@
 #include <aips/Utilities/String.h>
 
 DiskShape::DiskShape()
-  :itsDir(),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+  :ComponentShape(),
    itsMajValue(Quantity(1,"'").getValue("rad")),
    itsMinValue(Quantity(1,"'").getValue("rad")),
    itsPaValue(Quantity(0,"deg").getValue("rad")),
@@ -61,13 +58,11 @@ DiskShape::DiskShape()
   DebugAssert(ok(), AipsError);
 }
 
-DiskShape::DiskShape(const MDirection & direction, 
-		     const Quantum<Double> & majorAxis,
-		     const Quantum<Double> & minorAxis,
-		     const Quantum<Double> & positionAngle)
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+DiskShape::DiskShape(const MDirection& direction, 
+		     const Quantum<Double>& majorAxis,
+		     const Quantum<Double>& minorAxis,
+		     const Quantum<Double>& positionAngle)
+  :ComponentShape(),
    itsMajValue(majorAxis.getValue("rad")),
    itsMinValue(minorAxis.getValue("rad")),
    itsPaValue(positionAngle.getValue("rad")),
@@ -79,13 +74,11 @@ DiskShape::DiskShape(const MDirection & direction,
   DebugAssert(ok(), AipsError);
 }
 
-DiskShape::DiskShape(const MDirection & direction,
-			     const Quantum<Double> & width,
-			     const Double axialRatio,
-			     const Quantum<Double> & positionAngle) 
-  :itsDir(direction),
-   itsDirValue(itsDir.getValue()),
-   itsRefFrame((MDirection::Types) itsDir.getRef().getType()),
+DiskShape::DiskShape(const MDirection& direction,
+		     const Quantum<Double>& width,
+		     const Double axialRatio,
+		     const Quantum<Double>& positionAngle) 
+  :ComponentShape(),
    itsMajValue(width.getValue("rad")),
    itsMinValue(itsMajValue*axialRatio),
    itsPaValue(positionAngle.getValue("rad")),
@@ -95,14 +88,11 @@ DiskShape::DiskShape(const MDirection & direction,
    itsPaUnit(positionAngle.getFullUnit())
 
 {
-  // Adjust the flux of the Disk now that the width is correctly set
   DebugAssert(ok(), AipsError);
 }
 
-DiskShape::DiskShape(const DiskShape & other) 
-  :itsDir(other.itsDir),
-   itsDirValue(other.itsDirValue),
-   itsRefFrame(other.itsRefFrame),
+DiskShape::DiskShape(const DiskShape& other) 
+  :ComponentShape(),
    itsMajValue(other.itsMajValue),
    itsMinValue(other.itsMinValue),
    itsPaValue(other.itsPaValue),
@@ -118,11 +108,9 @@ DiskShape::~DiskShape() {
   DebugAssert(ok(), AipsError);
 }
 
-DiskShape & DiskShape::operator=(const DiskShape & other) {
+DiskShape& DiskShape::operator=(const DiskShape& other) {
   if (this != &other) {
-    itsDir = other.itsDir;
-    itsDirValue = other.itsDirValue;
-    itsRefFrame = other.itsRefFrame;
+    ComponentShape::operator=(other);
     itsMajValue = other.itsMajValue;
     itsMinValue = other.itsMinValue;
     itsPaValue = other.itsPaValue;
@@ -140,21 +128,9 @@ ComponentType::Shape DiskShape::type() const {
   return ComponentType::DISK;
 }
 
-void DiskShape::setRefDirection(const MDirection & newRefDir) {
-  itsDir = newRefDir;
-  itsDirValue = newRefDir.getValue();
-  itsRefFrame = (MDirection::Types) newRefDir.getRef().getType();
-  DebugAssert(ok(), AipsError);
-}
-
-const MDirection & DiskShape::refDirection() const {
-  DebugAssert(ok(), AipsError);
-  return itsDir;
-}
-
-void DiskShape::setWidth(const Quantum<Double> & majorAxis,
-			 const Quantum<Double> & minorAxis, 
-			 const Quantum<Double> & positionAngle) {
+void DiskShape::setWidth(const Quantum<Double>& majorAxis,
+			 const Quantum<Double>& minorAxis, 
+			 const Quantum<Double>& positionAngle) {
   itsMajValue = majorAxis.getValue("rad");
   itsMinValue = minorAxis.getValue("rad");
   itsPaValue = positionAngle.getValue("rad");
@@ -167,9 +143,9 @@ void DiskShape::setWidth(const Quantum<Double> & majorAxis,
   DebugAssert(ok(), AipsError);
 }
 
-void DiskShape::setWidth(const Quantum<Double> & majorAxis,
+void DiskShape::setWidth(const Quantum<Double>& majorAxis,
 			 const Double axialRatio, 
-			 const Quantum<Double> & positionAngle) {
+			 const Quantum<Double>& positionAngle) {
   const Unit majUnit = majorAxis.getFullUnit();
   setWidth(majorAxis, 
 	   Quantum<Double>(majorAxis.getValue(majUnit)*axialRatio, majUnit),
@@ -177,9 +153,9 @@ void DiskShape::setWidth(const Quantum<Double> & majorAxis,
   DebugAssert(ok(), AipsError);
 }
 
-void DiskShape::width(Quantum<Double> & majorAxis,
-		      Quantum<Double> & minorAxis,
-		      Quantum<Double> & positionAngle) const {
+void DiskShape::width(Quantum<Double>& majorAxis,
+		      Quantum<Double>& minorAxis,
+		      Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   const Unit rad("rad");
   majorAxis.setValue(itsMajValue);
@@ -193,8 +169,8 @@ void DiskShape::width(Quantum<Double> & majorAxis,
   positionAngle.convert(itsPaUnit);
 }
 
-void DiskShape::width(Quantum<Double> & majorAxis, Double & axialRatio,
-		      Quantum<Double> & positionAngle) const {
+void DiskShape::width(Quantum<Double>& majorAxis, Double& axialRatio,
+		      Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   const Unit rad("rad");
   majorAxis.setValue(itsMajValue);
@@ -206,7 +182,7 @@ void DiskShape::width(Quantum<Double> & majorAxis, Double & axialRatio,
   positionAngle.convert(itsPaUnit);
 }
 
-void DiskShape::majorAxis(Quantum<Double> & majorAxis) const {
+void DiskShape::majorAxis(Quantum<Double>& majorAxis) const {
   DebugAssert(ok(), AipsError);
   majorAxis.setValue(itsMajValue);
   majorAxis.setUnit("rad");
@@ -220,7 +196,7 @@ Quantum<Double> DiskShape::majorAxis() const {
   return retVal;
 }
 
-void DiskShape::minorAxis(Quantum<Double> & minorAxis) const {
+void DiskShape::minorAxis(Quantum<Double>& minorAxis) const {
   DebugAssert(ok(), AipsError);
   minorAxis.setValue(itsMinValue);
   minorAxis.setUnit("rad");
@@ -234,7 +210,7 @@ Quantum<Double> DiskShape::minorAxis() const {
   return retVal;
 }
 
-void DiskShape::axialRatio(Double & axialRatio) const {
+void DiskShape::axialRatio(Double& axialRatio) const {
   DebugAssert(ok(), AipsError);
   axialRatio = itsMinValue/itsMajValue;
 }
@@ -244,7 +220,7 @@ Double DiskShape::axialRatio() const {
   return itsMinValue/itsMajValue;
 }
 
-void DiskShape::positionAngle(Quantum<Double> & positionAngle) const {
+void DiskShape::positionAngle(Quantum<Double>& positionAngle) const {
   DebugAssert(ok(), AipsError);
   positionAngle.setValue(itsPaValue);
   positionAngle.setUnit("rad");
@@ -258,15 +234,23 @@ Quantum<Double> DiskShape::positionAngle() const {
   return retVal;
 }
 
-void DiskShape::sample(Flux<Double> & flux, const MDirection & direction, 
-		       const MVAngle & pixelSize) const {
+void DiskShape::sample(Flux<Double>& flux, const MDirection& direction, 
+		       const MVAngle& pixelSize) const {
   DebugAssert(ok(), AipsError);
+  Double separation;
+  Double pa;
   MVDirection dirVal = direction.getValue();
-  if ((MDirection::Types) direction.getRef().getType() != itsRefFrame) {
-    dirVal = MDirection::Convert(direction, itsRefFrame)().getValue();
+  if ((MDirection::Types) direction.getRef().getType() != refDirFrame()) {
+    const MVDirection dirVal = 
+      MDirection::Convert(direction, refDirFrame())().getValue();
+    separation = refDirValue().separation(dirVal);
+    pa = refDirValue().positionAngle(dirVal) - itsPaValue;
+  } else {
+    const MVDirection& dirVal = direction.getValue();
+    separation = refDirValue().separation(dirVal);
+    pa = refDirValue().positionAngle(dirVal);
   }
-  const Double separation = itsDirValue.separation(dirVal);
-  const Double pa = itsDirValue.positionAngle(dirVal) - itsPaValue;
+
   const Double x = abs(separation*cos(pa));
   const Double y = abs(separation*sin(pa));
   const Double majRad = itsMajValue/2.0; 
@@ -274,15 +258,45 @@ void DiskShape::sample(Flux<Double> & flux, const MDirection & direction,
   if ((x <= majRad) && 
       (y <= minRad) && 
       (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
-    Double scale = itsHeight*square(pixelSize.radian());
+    const Double scale = itsHeight*square(pixelSize.radian());
     flux.scaleValue(scale, scale, scale, scale);
   } else {
     flux.setValue(0.0);
   }
 }
 
-void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			   const Double & frequency) const {
+void DiskShape::multiSample(Vector<Double>& scale, 
+			    const Vector<MVDirection>& directions, 
+			    const MVAngle& pixelSize) const {
+  DebugAssert(ok(), AipsError);
+  const uInt nSamples = directions.nelements();
+  if (scale.nelements() == 0) scale.resize(nSamples);
+  DebugAssert(scale.nelements() == nSamples, AipsError);
+  
+  Double separation;
+  Double pa;
+  const Double pixArea = square(pixelSize.radian());
+  const Double majRad = itsMajValue/2.0; 
+  const Double minRad = itsMinValue/2.0; 
+  for (uInt i = 0; i < nSamples; i++) {
+    const MVDirection& dirVal = directions(i);
+    separation = refDirValue().separation(dirVal);
+    scale(i) = 0.0;
+    if (separation <= majRad) {
+      pa = refDirValue().positionAngle(dirVal);
+      const Double x = abs(separation*cos(pa));
+      const Double y = abs(separation*sin(pa));
+      if ((x <= majRad) && 
+       	  (y <= minRad) && 
+	  (y <= minRad * sqrt(0.25 - square(x/majRad)))) {
+	scale(i) = itsHeight*pixArea;
+      }
+    }
+  }
+}
+
+void DiskShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+			   const Double& frequency) const {
   DebugAssert(uvw.nelements() == 3, AipsError);
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
@@ -304,9 +318,9 @@ void DiskShape::visibility(Flux<Double> & flux, const Vector<Double> & uvw,
   flux.scaleValue(scale, scale, scale, scale);
 }
 
-ComponentShape * DiskShape::clone() const {
+ComponentShape* DiskShape::clone() const {
   DebugAssert(ok(), AipsError);
-  ComponentShape * tmpPtr = new DiskShape(*this);
+  ComponentShape* tmpPtr = new DiskShape(*this);
   AlwaysAssert(tmpPtr != 0, AipsError);
   return tmpPtr;
 }
@@ -316,7 +330,7 @@ uInt DiskShape::nParameters() const {
   return 3;
 }
 
-void DiskShape::setParameters(const Vector<Double> & newParms) {
+void DiskShape::setParameters(const Vector<Double>& newParms) {
   AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(newParms(0) >= newParms(1), AipsError);
   DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
@@ -327,7 +341,7 @@ void DiskShape::setParameters(const Vector<Double> & newParms) {
   DebugAssert(ok(), AipsError);
 }
 
-void DiskShape::parameters(Vector<Double> & compParms) const {
+void DiskShape::parameters(Vector<Double>& compParms) const {
   AlwaysAssert(compParms.nelements() == nParameters(), AipsError);
   compParms(0) = itsMajValue;
   compParms(1) = itsMinValue;
@@ -335,9 +349,9 @@ void DiskShape::parameters(Vector<Double> & compParms) const {
   DebugAssert(ok(), AipsError);
 }
 
-Bool DiskShape::fromRecord(String & errorMessage,
-			   const RecordInterface & record) {
-  if (!ComponentShape::readDir(errorMessage, record)) return False;
+Bool DiskShape::fromRecord(String& errorMessage,
+			   const RecordInterface& record) {
+  if (!ComponentShape::fromRecord(errorMessage, record)) return False;
   Quantum<Double> majorAxis;
   {
     const String fieldString("majoraxis");
@@ -453,11 +467,10 @@ Bool DiskShape::fromRecord(String & errorMessage,
   return True;
 }
 
-Bool DiskShape::toRecord(String & errorMessage,
-			     RecordInterface & record) const {
+Bool DiskShape::toRecord(String& errorMessage,
+			     RecordInterface& record) const {
   DebugAssert(ok(), AipsError);
-  record.define(RecordFieldId("type"), ComponentType::name(type()));
-  if (!ComponentShape::addDir(errorMessage, record)) return False;
+  if (!ComponentShape::toRecord(errorMessage, record)) return False;
   {
     const QuantumHolder qHolder(majorAxis());
     Record qRecord;
@@ -488,8 +501,8 @@ Bool DiskShape::toRecord(String & errorMessage,
   return True;
 }
 
-Bool DiskShape::convertUnit(String & errorMessage,
-				const RecordInterface & record) {
+Bool DiskShape::convertUnit(String& errorMessage,
+			    const RecordInterface& record) {
   const Unit deg("deg");
   {
     const String fieldString("majoraxis");
@@ -562,6 +575,7 @@ Bool DiskShape::ok() const {
   // The LogIO class is only constructed if an error is detected for
   // performance reasons. Both function static and file static variables
   // where considered and rejected for this purpose.
+  if (!ComponentShape::ok()) return False;
   if (!near(itsHeight, 1.0/C::pi*itsMajValue*itsMinValue, C::dbl_epsilon)) {
     LogIO logErr(LogOrigin("DiskCompRep", "ok()"));
     logErr << LogIO::SEVERE << "The disk shape does not have"

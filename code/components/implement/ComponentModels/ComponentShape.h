@@ -31,8 +31,9 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Quanta/MVDirection.h>
 
-class MDirection;
 class MVAngle;
 class RecordInterface;
 class String;
@@ -95,7 +96,7 @@ template <class T> class Vector;
 // In this example the printShape function prints out the shape of the
 // model it is working with and the reference direction of that model.
 // <srcblock>
-// void printShape(const ComponentShape & theShape) {
+// void printShape(const ComponentShape& theShape) {
 //   cout << "This is a " << ComponentType::name(theShape.type())
 //        << " shape " << endl 
 //        << "with a reference direction of "
@@ -126,16 +127,20 @@ public:
 
   // set/get the reference direction
   // <group>
-  virtual void setRefDirection(const MDirection & newRefDir) = 0;
-  virtual const MDirection & refDirection() const = 0;
+  virtual void setRefDirection(const MDirection& newRefDir);
+  virtual const MDirection& refDirection() const;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
   // size, given the total flux of the component. The total flux of the
   // component must be supplied in the flux variable and the proportion of the
   // flux in the specified pixel is returned in the same variable.
-  virtual void sample(Flux<Double> & flux, const MDirection & direction,
-		      const MVAngle & pixelSize) const = 0;
+  virtual void sample(Flux<Double>& flux, const MDirection& direction,
+		      const MVAngle& pixelSize) const = 0;
+
+  virtual void multiSample(Vector<Double>& scale, 
+ 			   const Vector<MVDirection>& directions, 
+ 			   const MVAngle& pixelSize) const = 0;
 
   // Return the Fourier transform of the component at the specified point in
   // the spatial frequency domain. The point is specified by a 3-element vector
@@ -151,20 +156,20 @@ public:
 
   // The total flux of the component must be supplied in the flux variable and
   // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			  const Double & frequency) const = 0;
+  virtual void visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+			  const Double& frequency) const = 0;
 
   // Return a pointer to a copy of the derived object upcast to a
   // ComponentShape object. The class that uses this function is responsible
   // for deleting the pointer. This is used to implement a virtual copy
   // constructor.
-  virtual ComponentShape * clone() const = 0;
+  virtual ComponentShape* clone() const = 0;
 
   // return the number of parameters in this shape and set/get them.
   // <group>
   virtual uInt nParameters() const = 0;
-  virtual void setParameters(const Vector<Double> & newParms) = 0;
-  virtual void parameters(Vector<Double> & compParms) const = 0;
+  virtual void setParameters(const Vector<Double>& newParms) = 0;
+  virtual void parameters(Vector<Double>& compParms) const = 0;
   // </group>
 
   // These functions convert between a record and a ComponentShape. This way
@@ -173,10 +178,10 @@ public:
   // return False if the record is malformed and append an error message to the
   // supplied string giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage, 
-			  const RecordInterface & record) = 0;
-  virtual Bool toRecord(String & errorMessage,
-			RecordInterface & record) const = 0;
+  virtual Bool fromRecord(String& errorMessage, 
+			  const RecordInterface& record) = 0;
+  virtual Bool toRecord(String& errorMessage,
+			RecordInterface& record) const = 0;
   // </group>
 
   // Convert the parameters of the shape to the specified units. The Record
@@ -187,8 +192,8 @@ public:
   // ones. If there is any problem parsing the record then an error message is
   // appended to the supplied string and the function returns False. If
   // successful it returns True
-  virtual Bool convertUnit(String & errorMessage,
-			   const RecordInterface & record) = 0;
+  virtual Bool convertUnit(String& errorMessage,
+			   const RecordInterface& record) = 0;
   
 
   // Convert the parameters of the component to the specified units. The order
@@ -197,7 +202,7 @@ public:
   // described above and the Vector must have nParameters elements. Each String
   // in the vector specifies the new units for one of the parameters. The new
   // units must have the same dimensions as the existing ones.
-  // virtual Bool convertUnit(const Vector<String> & unit) = 0;
+  // virtual Bool convertUnit(const Vector<String>& unit) = 0;
 
   // Return the shape that the supplied record represents. The
   // shape is determined by parsing a 'type' field in the supplied
@@ -205,24 +210,38 @@ public:
   // (which contains a string) could not be translated into a known
   // shape. It then appends an appropriate error message to the errorMessage
   // String.
-  static ComponentType::Shape getType(String & errorMessage,
-				      const RecordInterface & record);
+  static ComponentType::Shape getType(String& errorMessage,
+				      const RecordInterface& record);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
-  virtual Bool ok() const = 0;
+  virtual Bool ok() const;
 
 protected:
-  //# These functions are used by derived classes implementing concrete
-  //# versions of the toRecord and fromRecord member functions.
-  Bool addDir(String & errorMessage, RecordInterface & record) const;
-  Bool readDir(String & errorMessage, const RecordInterface & record);
+  // The default ComponentShape direction is at the J2000 North Pole.
+  ComponentShape();
+
+  // Construct a ComponentShape at the specified direction.
+  ComponentShape(const MDirection& direction);
+
+  // The copy constructor uses copy semantics.
+  ComponentShape(const ComponentShape& other);
+
+  // The assignment operator uses copy semantics.
+  ComponentShape& operator=(const ComponentShape& other);
+
+  const MVDirection& refDirValue() const;
+  const MDirection::Types& refDirFrame() const;
+
 private:
-  //# Disable any compiler generated assignment operator by defining one here
-  //# and making it inaccessible.
-  ComponentShape & operator=(const ComponentShape & other){
-    return (ComponentShape &) other;
-  };
+  Bool addDir(String& errorMessage, RecordInterface& record) const;
+  Bool readDir(String& errorMessage, const RecordInterface& record);
+  
+  //# The reference direction of the component
+  MDirection itsDir;
+  //# Cached values of the direction reference frame and value.
+  MVDirection itsDirValue;
+  MDirection::Types itsRefFrame;
 };
 #endif

@@ -1,5 +1,5 @@
 //# GaussianShape.h:
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,14 +32,14 @@
 #include <aips/aips.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ComponentType.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Quanta/MVDirection.h>
 #include <aips/Functionals/Gaussian2D.h>
 #include <aips/Quanta/Unit.h>
 
+class MDirection;
+class MVAngle;
+class MVDirection;
 class RecordInterface;
 class String;
-class MVAngle;
 template <class Qtype> class Quantum;
 template <class T> class Flux;
 template <class T> class Vector;
@@ -172,33 +172,27 @@ public:
   // Construct a Gaussian component with specified direction, width and
   // position angle (North through East).
   // <group>
-  GaussianShape(const MDirection & direction,
-		const Quantum<Double> & majorAxis,
-		const Quantum<Double> & minorAxis,
-		const Quantum<Double> & positionAngle);
-  GaussianShape(const MDirection & direction, const Quantum<Double> & width,
+  GaussianShape(const MDirection& direction,
+		const Quantum<Double>& majorAxis,
+		const Quantum<Double>& minorAxis,
+		const Quantum<Double>& positionAngle);
+  GaussianShape(const MDirection& direction, const Quantum<Double>& width,
 		const Double axialRatio,
-		const Quantum<Double> & positionAngle);
+		const Quantum<Double>& positionAngle);
   // </group>
 
   // The copy constructor uses copy semantics.
-  GaussianShape(const GaussianShape & other);
+  GaussianShape(const GaussianShape& other);
 
   // The destructor does nothing.
   virtual ~GaussianShape();
 
   // The assignment operator uses copy semantics.
-  GaussianShape & operator=(const GaussianShape & other);
+  GaussianShape& operator=(const GaussianShape& other);
 
   // get the type of the shape. This function always returns
   // ComponentType::GAUSSIAN.
   virtual ComponentType::Shape type() const;
-
-  // set/get the reference direction of the gaussian.
-  // <group>
-  virtual void setRefDirection(const MDirection & newRefDir);
-  virtual const MDirection & refDirection() const;
-  // </group>
 
   // set/get the width and orientation of the Gaussian. The width of the major
   // and minor axies is the full width at half maximum. The position angle is
@@ -207,22 +201,22 @@ public:
   // moves the Northern edge to the East. The axial ratio is the ratio of the
   // minor to major axes widths. Hence it is always between zero and one.
   // <group>
-  void setWidth(const Quantum<Double> & majorAxis,
-		const Quantum<Double> & minorAxis, 
-		const Quantum<Double> & positionAngle);
-  void setWidth(const Quantum<Double> & majorAxis, const Double axialRatio, 
-		const Quantum<Double> & positionAngle);
-  void width(Quantum<Double> & majorAxis, Quantum<Double> & minorAxis,
-	     Quantum<Double> & positionAngle) const;
-  void width(Quantum<Double> & majorAxis, Double & axialRatio,
-	     Quantum<Double> & positionAngle) const;
-  void majorAxis(Quantum<Double> & majorAxis) const;
+  void setWidth(const Quantum<Double>& majorAxis,
+		const Quantum<Double>& minorAxis, 
+		const Quantum<Double>& positionAngle);
+  void setWidth(const Quantum<Double>& majorAxis, const Double axialRatio, 
+		const Quantum<Double>& positionAngle);
+  void width(Quantum<Double>& majorAxis, Quantum<Double>& minorAxis,
+	     Quantum<Double>& positionAngle) const;
+  void width(Quantum<Double>& majorAxis, Double& axialRatio,
+	     Quantum<Double>& positionAngle) const;
+  void majorAxis(Quantum<Double>& majorAxis) const;
   Quantum<Double> majorAxis() const;
-  void minorAxis(Quantum<Double> & minorAxis) const;
+  void minorAxis(Quantum<Double>& minorAxis) const;
   Quantum<Double> minorAxis() const;
-  void axialRatio(Double & axialRatio) const;
+  void axialRatio(Double& axialRatio) const;
   Double axialRatio() const;
-  void positionAngle(Quantum<Double> & positionAngle) const;
+  void positionAngle(Quantum<Double>& positionAngle) const;
   Quantum<Double> positionAngle() const;
   // </group>
 
@@ -237,8 +231,12 @@ public:
   // satisfactory for Gaussians that are large compared with the size of the
   // pixel. This function will be updated to deal with small Gaussians sometime
   // in the future.
-  virtual void sample(Flux<Double> & flux, const MDirection & direction, 
-		      const MVAngle & pixelSize) const;
+  virtual void sample(Flux<Double>& flux, const MDirection& direction, 
+		      const MVAngle& pixelSize) const;
+
+  virtual void multiSample(Vector<Double>& scale, 
+ 			   const Vector<MVDirection>& directions, 
+ 			   const MVAngle& pixelSize) const;
 
   // Return the Fourier transform of the component at the specified gaussian in
   // the spatial frequency domain. The point is specified by a 3 element vector
@@ -253,13 +251,13 @@ public:
 
   // The total flux of the component must be supplied in the flux variable and
   // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw,
-			  const Double & frequency) const;
+  virtual void visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+			  const Double& frequency) const;
 
   // Return a pointer to a copy of this object upcast to a ComponentShape
   // object. The class that uses this function is responsible for deleting the
   // pointer. This is used to implement a virtual copy constructor.
-  virtual ComponentShape * clone() const;
+  virtual ComponentShape* clone() const;
 
   // set/get the shape parameters associated with the Gaussian. There are three
   // these being in order: the major axis, the minor axis and the position
@@ -269,8 +267,8 @@ public:
   // elements.
   // <group>
   virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double> & newParms);
-  virtual void parameters(Vector<Double> & compParms) const;
+  virtual void setParameters(const Vector<Double>& newParms);
+  virtual void parameters(Vector<Double>& compParms) const;
   // </group>
 
   // This functions convert between a RecordInterface and a
@@ -279,10 +277,10 @@ public:
   // the record is malformed and append an error message to the supplied string
   // giving the reason.
   // <group>
-  virtual Bool fromRecord(String & errorMessage,
-			  const RecordInterface & record);
-  virtual Bool toRecord(String & errorMessage,
-			RecordInterface & record) const;
+  virtual Bool fromRecord(String& errorMessage,
+			  const RecordInterface& record);
+  virtual Bool toRecord(String& errorMessage,
+			RecordInterface& record) const;
   // </group>
 
   // Convert the parameters of the component to the specified units. The
@@ -291,8 +289,8 @@ public:
   // units and this function will convert the corresponding parameters to the
   // specified units. This will have no effect on the shape of this class but
   // will affect the format of the record returned by the toRecord function. 
-  virtual Bool convertUnit(String & errorMessage,
-			   const RecordInterface & record);
+  virtual Bool convertUnit(String& errorMessage,
+			   const RecordInterface& record);
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistent values. Returns True if everything is fine
@@ -301,9 +299,6 @@ public:
 
 private:
   void updateFT();
-  MDirection itsDir;
-  MVDirection itsDirValue;
-  MDirection::Types itsRefFrame;
   Gaussian2D<Double> itsShape;
   Gaussian2D<Double> itsFT;
   Unit itsMajUnit;
