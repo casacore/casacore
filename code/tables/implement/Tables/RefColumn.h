@@ -35,6 +35,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/BaseColumn.h>
+#include <aips/Tables/ColumnCache.h>
 
 //# Forward Declarations
 class RefTable;
@@ -162,6 +163,9 @@ public:
     // Put a slice of an N-dimensional array in a particular cell.
     virtual void putSlice (uInt rownr, const Slicer&, const void* dataPtr);
 
+    // Get the underlying column cache.
+    virtual ColumnCache& columnCache();
+
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved
     // in the argument dataSave.
@@ -171,7 +175,7 @@ public:
 
     // Free storage on the heap allocated by makeSortkey().
     // The pointer will be set to zero.
-   virtual  void freeSortKey (const void*& dataSave);
+   virtual void freeSortKey (const void*& dataSave);
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison functiuon if undefined.
@@ -185,6 +189,7 @@ public:
 protected:
     RefTable*        refTabPtr_p;
     BaseColumn*      colPtr_p;
+    ColumnCache      colCache_p;
 };
 
 

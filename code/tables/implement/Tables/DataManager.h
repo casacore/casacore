@@ -34,6 +34,7 @@
 
 //# Includes
 #include <aips/aips.h>
+#include <aips/Tables/ColumnCache.h>
 #include <aips/Utilities/String.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Containers/SimOrdMap.h>
@@ -604,6 +605,14 @@ public:
     // By default reask is set to False.
     virtual Bool canAccessColumnSlice (Bool& reask) const;
 
+    // Get access to the ColumnCache object.
+    // <group>
+    ColumnCache& columnCache()
+        { return colCache_p; }
+    const ColumnCache* columnCachePtr() const
+        { return &colCache_p; }
+    // </group>
+
     // Get the scalar value in the given row.
     // These functions are non-virtual and are converted to their
     // virtual getV equivalent to achieve that a derived templated class
@@ -819,6 +828,8 @@ protected:
     // </group>
 
 private:
+    ColumnCache colCache_p;
+
     // The copy constructor cannot be used for this base class.
     // The private declaration of this constructor makes it unusable.
     DataManagerColumn (const DataManagerColumn&);
