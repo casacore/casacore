@@ -272,9 +272,9 @@ PagedImage<T>::PagedImage (const PagedImage<T>& other)
 template <class T> 
 PagedImage<T>::~PagedImage()
 {
-  // Close the logger here in case the image table is going to deleted.
+  // Close the logger here in case the image table is going to be deleted.
   delete regionPtr_p;
-  logger().close();
+  logger().tempClose();
 }
 
 template <class T> 
@@ -637,7 +637,7 @@ void PagedImage<T>::open_logtable()
 {
   // Open logtable as readonly if main table is not writable.
   Table& tab = table();
-  setLogMember (ImageLogger (name() + "/logtable", tab.isWritable()));
+  setLogMember (LoggerHolder (name() + "/logtable", tab.isWritable()));
   // Insert the keyword if possible and if it does not exist yet.
   if (tab.isWritable()  &&  ! tab.keywordSet().isDefined ("logtable")) {
     tab.rwKeywordSet().defineTable("logtable", Table(name() + "/logtable"));

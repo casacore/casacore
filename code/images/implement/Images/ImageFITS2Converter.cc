@@ -31,7 +31,6 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageLogger.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
@@ -598,7 +597,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 //
 // HISTORY
 //
-  ImageLogger& logger = image.logger();
+  LoggerHolder& logger = image.logger();
 //
   Vector<String> historyChunk;
   uInt nstrings;
@@ -1066,7 +1065,7 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
    return u;
 }
 
-void ImageFITSConverter::restoreHistory (ImageLogger& logger,
+void ImageFITSConverter::restoreHistory (LoggerHolder& logger,
                                          ConstFitsKeywordList& kw) 
 {
     Vector<String> lines;

@@ -59,7 +59,7 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
   setImageInfoMember (itsImagePtr->imageInfo());
   setMiscInfoMember (itsImagePtr->miscInfo());
   setUnitMember (itsImagePtr->units());
-  logger().addParent (&(itsImagePtr->logger()));
+  logger().addParent (itsImagePtr->logger());
 }
 
 template<class T>
@@ -68,7 +68,6 @@ ExtendImage<T>::ExtendImage (const ExtendImage<T>& other)
   itsImagePtr (other.itsImagePtr->cloneII())
 {
   itsExtLatPtr = new ExtendLattice<T> (*other.itsExtLatPtr);
-  logger().addParent (&(itsImagePtr->logger()));
 }
 
 template<class T>
@@ -87,7 +86,6 @@ ExtendImage<T>& ExtendImage<T>::operator= (const ExtendImage<T>& other)
     itsImagePtr = other.itsImagePtr->cloneII();
     delete itsExtLatPtr;
     itsExtLatPtr = new ExtendLattice<T> (*other.itsExtLatPtr);
-    logger().addParent (&(itsImagePtr->logger()));
   }
   return *this;
 }

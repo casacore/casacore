@@ -34,9 +34,9 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/MaskSpecifier.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageLogger.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Logging/LoggerHolder.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Quanta/Unit.h>
 
@@ -194,11 +194,11 @@ public:
   // Function to get a LELCoordinate object containing the coordinates.
   virtual LELCoordinates lelCoordinates() const;
 
-  // Get access to the ImageLogger.
+  // Get access to the LoggerHolder.
   // <group>
-  ImageLogger& logger()
+  LoggerHolder& logger()
     { return log_p; }
-  const ImageLogger& logger() const
+  const LoggerHolder& logger() const
     { return log_p; }
   // </group>
 
@@ -211,7 +211,7 @@ public:
   // </group>
   
   // Add the messages from the other image logger to this one.
-  void appendLog (const ImageLogger& other)
+  void appendLog (const LoggerHolder& other)
     { log_p.append (other); }
 
   // Often we have miscellaneous information we want to attach to an image.
@@ -338,8 +338,8 @@ protected:
   Bool restoreImageInfo (const RecordInterface& rec);
 
   // Set the image logger variable.
-  void setLogMember (const ImageLogger& imageLogger)
-    { log_p = imageLogger; }
+  void setLogMember (const LoggerHolder& logger)
+    { log_p = logger; }
 
   // Set the image info variable.
   void setImageInfoMember (const ImageInfo& imageInfo)
@@ -360,7 +360,7 @@ protected:
 private:
   // It is the job of the derived class to make these variables valid.
   CoordinateSystem coords_p;
-  ImageLogger      log_p;
+  LoggerHolder     log_p;
   ImageInfo        imageInfo_p;
   Unit             unit_p;
   TableRecord      miscInfo_p;

@@ -42,7 +42,7 @@ class CoordinateSystem;
 class RecordInterface;
 class LogIO;
 class Unit;
-class ImageLogger;
+class LoggerHolder;
 class ConstFitsKeywordList;
 
 // <summary>
@@ -218,7 +218,7 @@ public:
     static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
 
 // Recover history from FITS file keywrod list into logger
-   static void restoreHistory (ImageLogger& logger,
+   static void restoreHistory (LoggerHolder& logger,
                                ConstFitsKeywordList& kw);
 
 private:

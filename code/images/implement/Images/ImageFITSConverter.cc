@@ -34,7 +34,6 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Images/ImageLogger.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Lattices/TempLattice.h>
@@ -185,7 +184,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
 
 // Restore the logtable from HISTORY (this could be moved to non-templated code)
 
-    ImageLogger& logger = pNewImage->logger();
+    LoggerHolder& logger = pNewImage->logger();
     ConstFitsKeywordList kw = fitsImage.kwlist();
     ImageFITSConverter::restoreHistory (logger, kw);
 

@@ -33,7 +33,6 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/MaskSpecifier.h>
-#include <trial/Images/ImageLogger.h>
 #include <trial/Images/ImageUtilities.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
@@ -44,6 +43,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Containers/Record.h>
+#include <trial/Logging/LoggerHolder.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/File.h>
@@ -377,7 +377,7 @@ void FITSImage::setup()
 
    setUnitMember (brightnessUnit);
 
-// By default, ImageInterface makes a memory-based ImageLogger
+// By default, ImageInterface makes a memory-based LoggerHolder
 // which is all we need.  We will fill it in later
 
 // I don't understand why I have to subtract one, as the
@@ -582,7 +582,7 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
-    ImageLogger& log = logger();
+    LoggerHolder& log = logger();
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
@@ -685,7 +685,7 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
     String groupType;
     ConstFitsKeywordList kw = fitsImage.kwlist();
     kw.first();
-    ImageLogger& log = logger();
+    LoggerHolder& log = logger();
 //
     uInt n;
     while ((n = FITSHistoryUtil::getHistoryGroup(lines, groupType, kw)) !=  0) {
