@@ -33,7 +33,7 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/NQGaussian1D.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/OS/Timer.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
       }
       // Construct a Gaussian Profile to be 10 channels wide and centred on
       // channel 16. Its height is 1.0.
-      Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
+      NQGaussian1D<Float> g(1.0f, 16.0f, 10.0f);
       // Create a vector to cache a sampled version of this profile.
       Array<Float> profile(IPosition(4,1,1,1,shape(3)));
       indgen(profile);
