@@ -29,7 +29,7 @@
 #include <trial/Measures/MeasureHolder.h>
 #include <trial/Measures/QuantityHolder.h>
 #include <aips/Exceptions.h>
-#include <aips/Measures.h>
+#include <aips/Measures/Quantum.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
@@ -41,8 +41,8 @@
 #include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
-#include <aips/Logging.h>
-#include <aips/Glish.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 
 //# Constructors
 MeasureHolder::MeasureHolder() : hold(),
@@ -186,7 +186,8 @@ Bool MeasureHolder::fromRecord(String &error,
     } else if (tp == downcase(MRadialVelocity::showMe())) {
       hold.set(new MRadialVelocity());
     } else {
-      error = String("Unknown Measure record in MeasureHolder::fromRecord");
+      error = String("Unknown Measure record in MeasureHolder::fromRecord\n") +
+	error;
       return False;
     };
     String rf;
@@ -208,7 +209,8 @@ Bool MeasureHolder::fromRecord(String &error,
 	return False;
       };
       if (!hold.ptr()->setOffset(x.asMeasure())) {
-	error = String("Unmatched offset type in MeasureHolder::fromRecord");
+	error = String("Unmatched offset type in MeasureHolder::fromRecord\n") +
+	  error;
 	return False;
       };
     };
@@ -240,20 +242,14 @@ Bool MeasureHolder::fromRecord(String &error,
     if (n > 1) vq(1) = q1.asQuantity();
     if (n > 2) vq(2) = q2.asQuantity();
     if (!hold.ptr()->putValue(vq)) {
-      error = String("Illegal quantity in MeasureHolder::fromRecord");
+      error = String("Illegal quantity in MeasureHolder::fromRecord\n") +
+	error;
       return False;
     };
     return True;
   };
-  error = String("Illegal Measure record in MeasureHolder::fromRecord");
-  return False;
-}
-
-Bool MeasureHolder::fromRecord(String &error,
-				const GlishRecord &in) {
-  Record tmp;
-  in.toRecord(tmp);
-  if (fromRecord(error, tmp)) return True;
+  error = String("Illegal Measure record in MeasureHolder::fromRecord\n") +
+    error;
   return False;
 }
 
@@ -302,15 +298,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
     };
     return True;
   };
-  error = String("No Measure specified in MeasureHolder::toRecord");
-  return False;
-}
-
-Bool MeasureHolder::toRecord(String &error, GlishRecord &out) const {
-  Record tmp;
-  if (toRecord(error, tmp)) {
-    out.fromRecord(tmp);
-    return True;
-  };
+  error = String("No Measure specified in MeasureHolder::toRecord\n") +
+    error;
   return False;
 }
