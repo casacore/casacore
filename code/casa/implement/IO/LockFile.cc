@@ -241,7 +241,7 @@ void LockFile::getInfo (MemoryIO& info)
     if (leng > infoLeng) {
 	leng = infoLeng;
     }
-    info.seek (0);
+    info.seek (Int64(0));
     info.write (leng, buffer + SIZEREQID + SIZEINT);
     // Read the remaining info parts.
     if (infoLeng > leng) {
@@ -251,7 +251,7 @@ void LockFile::getInfo (MemoryIO& info)
 	info.write (infoLeng, buf);
 	delete [] buf;
     }
-    info.seek (0);
+    info.seek (Int64(0));
 }
 
 void LockFile::putInfo (const MemoryIO& info) const
