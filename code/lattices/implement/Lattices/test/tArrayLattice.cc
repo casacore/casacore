@@ -35,7 +35,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Slicer.h>
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/NQPolynomial.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/Assert.h>
@@ -219,7 +219,7 @@ main()
     AlwaysAssert(al6.getAt(IPosition(4,4))==24, AipsError);
     AlwaysAssert(al6.getAt(IPosition(4,2,3,4,5))==24, AipsError);
 
-    Polynomial<Float> poly(3);
+    NQPolynomial<Float> poly(3);
     poly.setCoefficient(1, 0.5);
     poly.setCoefficient(2, 0.75);
     poly.setCoefficient(3, 1.0);
