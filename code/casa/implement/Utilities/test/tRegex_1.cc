@@ -1,5 +1,5 @@
 //# tRegex_1.cc: Regex test program
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,9 @@
 #include <aips/Utilities/String.h>
 #include <aips/IO/AipsIO.h>
 
-main (void)
+int main (void)
 {
-    const ntests = 28;
+    const Int ntests = 28;
     String p[ntests];
     p[0]  = "^().+|$";
     p[1]  = "\\,";
