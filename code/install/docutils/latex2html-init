@@ -35,6 +35,8 @@ if(!$DOCSCOLOR) {
    $DOCSCOLOR = '#00009C';
 }
 
+$TEXINPUTS = $ENV{TEXINPUTS};
+
 $AVERS = `avers`;
 @VERS = split /\./, $AVERS;
 $AIPSVERS = $VERS[0]/10;
@@ -79,6 +81,7 @@ $WORDS_IN_PAGE = 100;
 $default_language = 'english';	
 $WORDS_IN_NAVIGATION_PANEL_TITLES = 8;
 $PK_GENERATION = 1;
+$METAFONT_DPI = 180;
 $MATH_SCALE_FACTOR = 1.5;
 $FIGURE_SCALE_FACTOR = 1.5;
 $DEBUG = 0;
