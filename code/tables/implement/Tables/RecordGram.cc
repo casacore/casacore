@@ -96,7 +96,8 @@ int recordGramInput (char* buf, int max_size)
 
 void RecordGramerror (char*)
 {
-    throw (TableInvExpr ("Parse error at or near '" + String(yytext) + "'"));
+    throw (TableInvExpr ("Parse error at or near '" +
+			 String(RecordGramtext) + "'"));
 }
 
 
