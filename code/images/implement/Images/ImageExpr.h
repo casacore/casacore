@@ -42,7 +42,6 @@
 class IPosition;
 class Slicer;
 template <class T> class Array;
-template <class T> class COWPtr;
 class LatticeNavigator;
 template <class T> class LatticeIterInterface;
 class String;
@@ -110,7 +109,8 @@ class String;
 // </todo>
 
 
-template <class T> class ImageExpr: public ImageInterface<T>
+template <class T> class ImageExpr: public ImageInterface<T>,
+                                    public MaskedLattice<T>
 {
 public: 
   // The default constructor
@@ -132,110 +132,60 @@ public:
   ImageExpr<T>& operator=(const ImageExpr<T>& other);
   
   // Make a copy of the object (reference semantics).
+  // <group>
   virtual Lattice<T>* clone() const;
+  virtual MaskedLattice<T>* cloneML() const;
+  virtual ImageInterface<T>* cloneII() const;
+  // </group>
+
+  // Has the object really a mask?
+  virtual Bool isMasked() const;
+
+  // Get the region used.
+  virtual const LatticeRegion& region() const;
 
   // return the shape of the ImageExpr
   virtual IPosition shape() const;
 
   // Function which changes the shape of the ImageExpr.
   // Throws an exception as ImageExpr is not writable.
-  virtual void resize(const TiledShape &newShape);
+  virtual void resize(const TiledShape& newShape);
 
-  // Function which extracts an Array of values from a Image - a read-only
-  // operation.
-  // getSlice parameters:
-  // <ul>
-  // <li> buffer: a COWPtr<Array<T> > or an Array<T>.
-  // <li> start: an IPosition which must have the same number of axes  
-  //      as the underlying Image, otherwise, throw an exception.
-  // <li> shape: an IPosition which must have equal or fewer axes than the
-  //      true shape od the Image, otherwise, throw an exception
-  // <li> stride: an IPosition which must have the same number of axes
-  //      as the underlying Image, otherwise, throw an exception.
-  // <li> removeDegenerateAxes: a Bool which dictates whether to remove    
-  //      "empty" axis created in buffer. (e.g. extracting an n-dimensional
-  //      from an (n+1)-dimensional will fill 'buffer' with an array that
-  //      has a degenerate axis (i.e. one axis will have a length = 1.))  
-  // </ul>
-  //
-  // The sub-class implementation of these functions return
-  // 'True' if the buffer points to a reference
-  // and 'False' if it points to a copy.
-  // <note role=tip>
-  // In most cases, it will be more efficient in execution, if you
-  // use a LatticeIterator class to move through the Image.
-  // LatticeIterators are optimized for that purpose.  If you are doing
-  // unsystematic traversal, or random gets and puts, then getSlice and   
-  // putSlice or operator() may be the right tools to use.
-  // </note>
-  // <group>
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const IPosition &start, 
-                        const IPosition &shape, const IPosition &stride,   
-                        Bool removeDegenerateAxes=False) const;
-  
-  virtual Bool getSlice(COWPtr<Array<T> > &buffer, const Slicer &theSlice,
-                        Bool removeDegenerateAxes=False) const;
-  virtual Bool getSlice(Array<T> &buffer, const IPosition &start,
-                        const IPosition &shape, const IPosition &stride,
-                        Bool removeDegenerateAxes=False);
-  
-  virtual Bool getSlice(Array<T> &buffer, const Slicer &theSlice,
-                        Bool removeDegenerateAxes=False);
-  // </group>
-  //
-  // Functions which place an Array of values within this instance of the
-  // Lattice at the location specified.  These throw an exception as
-  // the ImageExpr is not writable
-  // <group>
-  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where);
-  virtual void putSlice(const Array<T> & sourceBuffer, const IPosition & where,
-                        const IPosition & stride);
-  // </group>
+  // Do the actual get of the mask data.
+  // The return value is always False, thus the buffer does not reference
+  // another array.
+  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
 
-  // Function which returns the whole mask Lattice to allow iteration or
-  // Lattice functions.  The non const version throws an exception
-  // because ImageExpr is not writable.  ImageExpr objects do yet 
-  // contain a mask so throw an exception for the other too.
-  virtual const Lattice<Bool> &mask() const;
-  virtual Lattice<Bool> &mask();
-  // </group>
+  // Do the actual get of the data.
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
 
-  // Function which returns True if the image has a mask, returns False
-  // otherwise.  Currently returns false.
-  virtual Bool isMasked() const;
-  
+  // putSlice is not possible on an expression, so it throws an exception.
+  virtual void doPutSlice (const Array<T>& sourceBuffer,
+			   const IPosition& where,
+			   const IPosition& stride);
+
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> throws
   // an exception as ImageExpr is not writable. <src>getUnits</src>
   // returns an empty Unit as ImageExpr does not have access to 
   // units yet.
   // <group>   
-  virtual Bool setUnits(const Unit &newUnits);
+  virtual Bool setUnits(const Unit& newUnits);
   virtual Unit units() const;
   // </group>
 
-
   // Return the name of the current ImageInterface object. 
-  // Returns an empty String as an ImageExpr object does not
-  // have persistence.
+  // Returns the expression string given in the constructor.
   virtual String name(const Bool stripPath=False) const;
   
   // Functions to set or replace the coordinate information.
   // <src>setCoordinate</src> throws an exception as the ImageExpr 
   // is not writable.  
-  virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
+  virtual Bool setCoordinateInfo(const CoordinateSystem& coords);
   
   // Function to get a LatticeCoordinate object containing the coordinates.
   virtual LatticeCoordinates latticeCoordinates() const;
   
-  // These are the true implementations of the paren operator.
-  // <src>putAt</src> throws an exception as ImageExpr is not writable.
-  // <note> Not for public use </note>
-  // <group>
-  virtual T getAt(const IPosition &where) const;
-  virtual void putAt(const T &value, const IPosition &where);
-  // </group>
-
   // Often we have miscellaneous information we want to attach to an image.
   // <src>setMiscInfo</src> throws an exception as ImageExpr is not
   // writable
@@ -258,7 +208,7 @@ public:
 // Help the user pick a cursor for most efficient access if they only want
 // pixel values and don't care about the order or dimension of the
 // cursor. 
-   virtual IPosition niceCursorShape (uInt maxPixels) const;
+   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 
 private:  

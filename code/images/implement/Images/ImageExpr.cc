@@ -35,7 +35,6 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Lattices/Slicer.h>
-#include <aips/Utilities/COWPtr.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Measures/Unit.h>
@@ -66,7 +65,6 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
 
    const ImageCoord* pImCoord = (ImageCoord*)pLattCoord;
    coords_p = pImCoord->coordinates();
-   throughmask_p = False;    // No masks yet
 
 }
 
@@ -107,12 +105,32 @@ ImageExpr<T>::~ImageExpr()
 
 template <class T>
 Lattice<T>* ImageExpr<T>::clone() const
-//
-// Return a copy of the ImageExpr object. Uses
-// reference semantics.
 {
    return new ImageExpr (*this);
 }   
+template <class T>
+MaskedLattice<T>* ImageExpr<T>::cloneML() const
+{
+   return new ImageExpr (*this);
+}
+template <class T>
+ImageInterface<T>* ImageExpr<T>::cloneII() const
+{
+   return new ImageExpr (*this);
+}   
+
+
+template <class T>
+Bool ImageExpr<T>::isMasked() const
+{
+   return latticeExpr_p.isMasked();
+}
+
+template <class T>
+const LatticeRegion& ImageExpr<T>::region() const
+{
+   return latticeExpr_p.region();
+}
 
 template <class T>
 IPosition ImageExpr<T>::shape() const  
@@ -121,93 +139,28 @@ IPosition ImageExpr<T>::shape() const
 }
 
 template <class T>
-void ImageExpr<T>::resize(const TiledShape &newShape)
+void ImageExpr<T>::resize(const TiledShape&)
 {
    throw (AipsError ("ImageExpr::resize - an ImageExpr is not writable"));
 }
 
 template <class T>
-Bool ImageExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
-                             const IPosition& start,
-                             const IPosition& shape,
-                             const IPosition& stride,
-                             Bool removeDegenerateAxes) const
-{  
-   return latticeExpr_p.getSlice(buffer, start, shape, stride, 
-                                 removeDegenerateAxes);
-}  
-   
-template<class T>
-Bool ImageExpr<T>::getSlice (COWPtr<Array<T> >& buffer,
-                             const Slicer& section,
-                             Bool removeDegenerateAxes) const
+Bool ImageExpr<T>::doGetSlice(Array<T>& buffer,
+			      const Slicer& section)
 {
-   return latticeExpr_p.getSlice(buffer, section, removeDegenerateAxes);
-}
-
-template <class T>
-Bool ImageExpr<T>::getSlice(Array<T>& buffer,
-                              const IPosition& start,
-                              const IPosition& shape,
-                              const IPosition& stride,
-                              Bool removeDegenerateAxes)
-{
-   return latticeExpr_p.getSlice(buffer, start, shape, stride, 
-                                 removeDegenerateAxes);
-}
-
-
-template <class T>
-Bool ImageExpr<T>::getSlice(Array<T>& buffer,
-                              const Slicer& section,
-                              Bool removeDegenerateAxes)
-{
-   return latticeExpr_p.getSlice(buffer, section, removeDegenerateAxes);
+   return latticeExpr_p.doGetSlice(buffer, section);
 } 
    
 
 template <class T>
-void ImageExpr<T>::putSlice (const Array<T>&, const IPosition&)
+void ImageExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
+			       const IPosition&)
 {
    throw (AipsError ("ImageExpr::putSlice - is not possible as ImageExpr is not writable"));
-}   
-template <class T>
-void ImageExpr<T>::putSlice (const Array<T>&, const IPosition&,
-                               const IPosition&)
-{
-   throw (AipsError ("ImageExpr::putSlice - is not possible as ImageExpr is not writable"));
-}
-
-
-template <class T> 
-Lattice<Bool>& ImageExpr<T>::mask()
-{
-   throw(AipsError("ImageExpr<T>::mask - no mask in ImageExpr"));
-
-// Shut compiler up
-
-   return *pBool_p;
-}
-
-template <class T> 
-const Lattice<Bool>& ImageExpr<T>::mask() const
-{
-   throw(AipsError("ImageExpr<T>::mask - ImageExpr is not writable"));
-
-// Shut compiler up
-
-   return *pBool_p;
-
-}
-
-template <class T> 
-Bool ImageExpr<T>::isMasked() const 
-{
-  return False;
 }
 
 template<class T> 
-Bool ImageExpr<T>::setUnits(const Unit &newUnits)
+Bool ImageExpr<T>::setUnits(const Unit&)
 {  
    throw(AipsError("ImageExpr<T>::setUnits - ImageExpr is not writable"));
    return False;
@@ -227,7 +180,7 @@ String ImageExpr<T>::name(const Bool) const
 }
 
 template <class T> 
-Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem & coords)
+Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem&)
 {
    throw(AipsError("ImageExpr<T>::setCoordinateInfo - ImageExpr is not writable"));
    return False;
@@ -240,28 +193,6 @@ LatticeCoordinates ImageExpr<T>::latticeCoordinates() const
 {
    return latticeExpr_p.coordinates();
 }
- 
-template <class T> 
-T ImageExpr<T>::getAt(const IPosition & where) const
-{  
-
-  const IPosition shape(where.nelements(),1);
-  const IPosition stride(where.nelements(),1);
-  const IPosition origin(where.nelements(),0);
-  Array<T> arr(shape);
-  COWPtr<Array<T> > ptr;
-  latticeExpr_p.getSlice(ptr, where, shape, stride, False);
-  arr.reference(ptr.rwRef());
-  return arr(origin);
-
-//  }
-}
-   
-template <class T> 
-void ImageExpr<T>::putAt(const T & value, const IPosition & where) 
-{
-   throw(AipsError("ImageExpr<T>::putAt - ImageExpr is not writable"));
-}
 
 template<class T> 
 const RecordInterface & ImageExpr<T>::miscInfo() const
@@ -273,7 +204,7 @@ const RecordInterface & ImageExpr<T>::miscInfo() const
 }
  
 template<class T> 
-Bool ImageExpr<T>::setMiscInfo(const RecordInterface & newInfo)
+Bool ImageExpr<T>::setMiscInfo(const RecordInterface&)
 { 
    throw(AipsError("ImageExpr<T>::setMiscInfo - ImageExpr is not writable"));
    return False;
@@ -286,7 +217,7 @@ Bool ImageExpr<T>::isWritable() const
 }
 
 template <class T>
-IPosition ImageExpr<T>::niceCursorShape (uInt maxPixels) const
+IPosition ImageExpr<T>::doNiceCursorShape (uInt maxPixels) const
 { 
    return latticeExpr_p.niceCursorShape(maxPixels);
 } 
@@ -302,8 +233,13 @@ Bool ImageExpr<T>::ok() const
 template <class T>
 LatticeIterInterface<T>* ImageExpr<T>::makeIter(const LatticeNavigator &navigator) const
 {
-// There is no specific iterator for LatticeExpr so use
-// a generic one
-
-  return Lattice<T>::makeIter(navigator);
+  return latticeExpr_p.makeIter(navigator);
 }
+
+
+template <class T>
+Bool ImageExpr<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+{
+   return latticeExpr_p.doGetMaskSlice (buffer, section);
+}
+
