@@ -227,7 +227,7 @@ Int String::gsub(const Char *pat, const Char *repl) {
 
 // Member utilities
 void String::reverse() {
-  ::reverse(begin(), end());
+  std::reverse(begin(), end());
 }
 
 void String::upcase() {
