@@ -138,7 +138,7 @@ Bool StokesCoordinate::toWorld(Vector<Double>& world,
 			       const Vector<Double>& pixel) const
 {
     AlwaysAssert(pixel.nelements()==1, AipsError);
-    if (world.nelements()!=1) world.resize(1);
+    world.resize(1);
 //
     Double tmp;
     if (toWorld(tmp, pixel(0))) {
@@ -153,7 +153,7 @@ Bool StokesCoordinate::toPixel(Vector<Double> &pixel,
     	                       const Vector<Double> &world) const
 {
     AlwaysAssert(world.nelements()==1, AipsError);
-    if (pixel.nelements()!=1) pixel.resize(1);
+    pixel.resize(1);
 //
     Double tmp;
     if (toPixel(tmp, world(0))) {

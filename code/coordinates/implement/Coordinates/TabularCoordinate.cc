@@ -252,7 +252,7 @@ Bool TabularCoordinate::toWorld(Vector<Double> &world,
 	throw(AipsError("TabularCoordinate: pixel vector must be "
 			"length 1"));
    }
-   if (world.nelements()!=1) world.resize(1);
+   world.resize(1);
    return toWorld(world(0), pixel(0));
 }
 
@@ -263,7 +263,7 @@ Bool TabularCoordinate::toPixel(Vector<Double> &pixel,
 	throw(AipsError("TabularCoordinate: world vector must be "
 			"length 1"));
     }
-    if (pixel.nelements()!=1) pixel.resize(1);
+    pixel.resize(1);
     return toPixel(pixel(0), world(0));
 }
 
