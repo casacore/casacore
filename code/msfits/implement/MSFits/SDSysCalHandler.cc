@@ -170,7 +170,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
 	newRow = newRow || msSysCalCols_p->antennaId()(rownr_p) != antennaId || 
 	    msSysCalCols_p->feedId()(rownr_p) != feedId ||
 	    msSysCalCols_p->spectralWindowId()(rownr_p) != spectralWindowId;
-	if (!newRow && phaseDiffField_p.isAttached() && !near(*phaseDiffField_p, 0.0) && 
+	if (!newRow && phaseDiffField_p.isAttached() && !near(*phaseDiffField_p, 0.0f) && 
 	    !isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
 	    // we seem to have a valid phase diff value
 	    newRow = msSysCalCols_p->phaseDiff().isNull();
@@ -204,7 +204,7 @@ void SDSysCalHandler::fill(const Record &row, Int antennaId, Int feedId, Int spe
 	    }
 	    if (phaseDiffField_p.isAttached()) {
 		if (msSysCalCols_p->phaseDiff().isNull()) {
-		    if (!near(*phaseDiffField_p, 0.0) && 
+		    if (!near(*phaseDiffField_p, 0.0f) && 
 			!isNaN(*phaseDiffField_p) && !isInf(*phaseDiffField_p)) {
 			// need to add this column
 			delete msSysCalCols_p;
