@@ -1,5 +1,5 @@
 //# StokesCoordinate.h: Interconvert between pixel number and Stokes value.
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,7 +150,8 @@ public:
 
     // Interconvert between world stored as a Double and world stored as
     // a Stokes type.  Since these functions are static, any valid
-    // Stokes type can be used.
+    // Stokes type can be used.  The second function returns 
+    // Stokes::Undefined if world is illegal.
     // <group>
     static Double toWorld (Stokes::StokesTypes stokes);
     static Stokes::StokesTypes toWorld (Double world);
@@ -215,7 +216,7 @@ public:
                           uInt worldAxis,
                           Bool absolute,
                           Int precision = -1,
-                          Bool native=True) const;
+                          Bool native=True);
 
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
