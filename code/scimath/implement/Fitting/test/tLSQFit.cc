@@ -317,7 +317,7 @@ int main() {
     cout << "Real -- 6 unknowns --- set --------" << endl;
     {
       LSQFit lsq5;
-      lsq5.set(6,LSQFit::REAL);
+      lsq5.set(6,LSQReal());
       lsq5.set(1e-8);
       for (Int j0=0; j0<512; j0++) {
 	val1[0] = 1;
@@ -413,7 +413,7 @@ int main() {
     
     cout << "---------------------------------------------------" << endl;
     cout << "Complex-----------------------" << endl;
-    LSQFit lsqc1(N, LSQFit::COMPLEX);
+    LSQFit lsqc1(N, LSQComplex());
     for (uInt i=0; i<M; i++) {
       cout << "(" << i << "): " << 
 	", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -447,7 +447,7 @@ int main() {
     
     cout << "Complex------  other calls ----------" << endl;
     {
-      LSQFit lsqc1(N, LSQFit::COMPLEX);
+      LSQFit lsqc1(N, LSQComplex());
       for (uInt i=0; i<M; i++) {
 	cceit = cce[i];
 	dcceit = dcce[i];
@@ -524,7 +524,7 @@ int main() {
     }
     uInt i2;
     {
-      LSQFit lsqc1(N, LSQFit::COMPLEX);
+      LSQFit lsqc1(N, LSQComplex());
       for (uInt i=0; i<M; i++) {
 	cout << "(" << i << "): " <<
 	  ", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -604,7 +604,7 @@ int main() {
     
     cout << "Complex+Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQFit::COMPLEX, i2/2);
+      LSQFit lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	cout << "(" << i << "): " <<
 	  ", wt: " << wt[i] << ", ob: " << cob[i] << endl;
@@ -647,7 +647,7 @@ int main() {
     
     cout << "Complex+Complex Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQFit::COMPLEX, i2/2);
+      LSQFit lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	cceit = cce[i];
 	lsqc1.makeNorm(cceit, wt[i], cob[i], LSQFit::COMPLEX);
@@ -684,7 +684,7 @@ int main() {
 
     cout << "Complex+DComplex Constraint------------" << endl;
     {
-      LSQFit lsqc1(N, LSQFit::COMPLEX, i2/2);
+      LSQFit lsqc1(N, LSQComplex(), i2/2);
       for (uInt i=0; i<M; i++) {
 	cceit = cce[i];
 	lsqc1.makeNorm(cceit, wt[i], cob[i], LSQFit::COMPLEX);
@@ -721,7 +721,7 @@ int main() {
     
     cout << "DComplex Non-linear------------" << endl;
     {
-      LSQFit lnl(3, LSQFit::COMPLEX);
+      LSQFit lnl(3, LSQComplex());
       const uInt n=100;
       Double x[n];
       Double y[n];
@@ -771,7 +771,7 @@ int main() {
 
     cout << "Complex Non-linear------------" << endl;
     {
-      LSQFit lnl(3, LSQFit::COMPLEX);
+      LSQFit lnl(3, LSQComplex());
       const uInt n=100;
       Float x[n];
       Float y[n];
@@ -847,7 +847,7 @@ int main() {
       uInt rank;
       Bool ok;
       // LSQFit area
-      LSQFit fit(2, LSQFit::COMPLEX);
+      LSQFit fit(2, LSQComplex());
       // Make normal equation
       for (uInt i=0; i<2; i++) {
 	ceit = ce[i];
@@ -865,7 +865,7 @@ int main() {
 	cout << "sd: "<< sd << "; mu: " << mu << endl;
       };
       cout << "Complex -- COMPLEX ------------ indexed ---" << endl;
-      fit.set(2, LSQFit::COMPLEX);
+      fit.set(2, LSQComplex());
       // Make normal equation
       for (uInt i=0; i<2; i++) {
 	cerit = cer[i];
@@ -884,7 +884,7 @@ int main() {
       };
       cout << "Complex -- ASREAL -------------" << endl;
       // Retry with ASREAL type
-      fit.set(2, LSQFit::COMPLEX); 
+      fit.set(2, LSQComplex()); 
       for (uInt i=0; i<2; i++) {
 	ceit = ce[i];
 	fit.makeNorm(ceit, 1.0, m[i], LSQFit::ASREAL);
@@ -899,7 +899,7 @@ int main() {
 	cout << "sd: "<< sd << "; mu: " << mu << endl; 
       };
       cout << "Complex -- ASREAL ------------- indexed ---" << endl;
-      fit.set(2, LSQFit::COMPLEX); 
+      fit.set(2, LSQComplex()); 
       for (uInt i=0; i<2; i++) {
 	cerit = cer[i];
 	fit.makeNorm(2, cindex, cerit, 1.0, m[i], LSQFit::ASREAL);
@@ -915,7 +915,7 @@ int main() {
       };
       cout << "Complex -- SEPARABLE ----------" << endl;
       // Retry with SEPARABLE type: note # of unknowns!
-      fit.set(1, LSQFit::COMPLEX);
+      fit.set(1, LSQComplex());
       m[0] = DComplex(2,3); m[1] = DComplex(2,-3);
       for (uInt i=0; i<2; i++) {
 	ceit = ce[i];
@@ -936,7 +936,7 @@ int main() {
       };
       cout << "Complex -- SEPARABLE ---------- indexed ---" << endl;
       // Retry with SEPARABLE type: note # of unknowns!
-      fit.set(1, LSQFit::COMPLEX);
+      fit.set(1, LSQComplex());
       for (uInt i=0; i<2; i++) {
 	cerit = cer[i];
 	fit.makeNorm(2, cindex, cerit, 1.0, m[i], LSQFit::SEPARABLE);
@@ -956,7 +956,7 @@ int main() {
       };
       cout << "Complex -- CONJUGATE ----------" << endl;
       // Retry with CONJUGATE type: note # of unknowns!
-      fit.set(1, LSQFit::COMPLEX);
+      fit.set(1, LSQComplex());
       m[0] = DComplex(2,0); m[1] = DComplex(0,1);
       for (uInt i=0; i<2; i++) {
 	ceit = ce[i];
@@ -973,7 +973,7 @@ int main() {
       };
       cout << "Complex -- CONJUGATE ---------- indexed ---" << endl;
       // Retry with CONJUGATE type: note # of unknowns!
-      fit.set(1, LSQFit::COMPLEX);
+      fit.set(1, LSQComplex());
       m[0] = DComplex(2,0); m[1] = DComplex(0,1);
       for (uInt i=0; i<2; i++) {
 	cerit = cer[i];

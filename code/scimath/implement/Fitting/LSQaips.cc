@@ -34,11 +34,11 @@
 LSQaips::LSQaips(uInt nUnknowns, uInt nConstraints)
   : LSQFit(nUnknowns, nConstraints) {;}
 
-LSQaips::LSQaips(uInt nUnknowns, LSQFit::Real, uInt nConstraints)
-  : LSQFit(nUnknowns, LSQFit::REAL, nConstraints) {;}
+LSQaips::LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints)
+  : LSQFit(nUnknowns, LSQReal(), nConstraints) {;}
 
-LSQaips::LSQaips(uInt nUnknowns, LSQFit::Complex, uInt nConstraints)
-  : LSQFit(nUnknowns, LSQFit::COMPLEX, nConstraints) {;}
+LSQaips::LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints)
+  : LSQFit(nUnknowns, LSQComplex(), nConstraints) {;}
 
 LSQaips::LSQaips()
   : LSQFit() {;}

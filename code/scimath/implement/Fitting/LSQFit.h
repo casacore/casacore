@@ -289,9 +289,9 @@ class LSQFit {
   // Assume real
   explicit LSQFit(uInt nUnknowns, uInt nConstraints=0);
   // Allow explicit Real specification
-  LSQFit(uInt nUnknowns, LSQFit::Real, uInt nConstraints=0);
+  LSQFit(uInt nUnknowns, const LSQReal &, uInt nConstraints=0);
   // Allow explicit Complex specification
-  LSQFit(uInt nUnknowns, LSQFit::Complex, uInt nConstraints=0);
+  LSQFit(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0);
   // </group>
   // Default constructor (empty, only usable after a <src>set(nUnknowns)</src>)
   LSQFit();
@@ -524,15 +524,15 @@ class LSQFit {
   void set(Int nUnknowns, Int nConstraints=0) { 
     set (static_cast<uInt>(nUnknowns), static_cast<uInt>(nConstraints));
   };
-  void set(uInt nUnknowns, LSQFit::Real, uInt nConstraints=0) {
+  void set(uInt nUnknowns, const LSQReal &, uInt nConstraints=0) {
     set (nUnknowns, nConstraints);
   };
-  void set(Int nUnknowns, LSQFit::Real, Int nConstraints=0) { 
+  void set(Int nUnknowns, const LSQReal &, Int nConstraints=0) { 
     set (nUnknowns, nConstraints);
   };
-  void set(uInt nUnknowns, LSQFit::Complex, uInt nConstraints=0);
-  void set(Int nUnknowns, LSQFit::Complex, Int nConstraints=0) { 
-    set (static_cast<uInt>(nUnknowns), LSQFit::COMPLEX,
+  void set(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0); 
+  void set(Int nUnknowns, const LSQComplex &, Int nConstraints=0) { 
+    set (static_cast<uInt>(nUnknowns), LSQComplex(),
 	 static_cast<uInt>(nConstraints));
   };
   // </group>
@@ -660,13 +660,9 @@ class LSQFit {
   LSQFit *nar_p;
   // Save area for non-symmetric (i.e. with constraints) (n_p * n_p)
   Double *lar_p;
-  // Work area for non-double input and outputs
+  // Work areas for interim solutions and covariance
   // <group>
-  Double *wce_p;
-  Double *wkn_p;
   Double *wsol_p;
-  Double *wsd_p;
-  Double *wmu_p;
   Double *wcov_p;
   // </group>
 
@@ -717,9 +713,8 @@ class LSQFit {
   void extendConstraints(uInt n);
   // Create the solution equation area nceq_p and fill it.
   void createNCEQ();
-  // Get work areas for condition equations, solutions, covariance
+  // Get work areas for solutions, covariance
   // <group>
-  void getWorkCEQ();
   void getWorkSOL();
   void getWorkCOV();
   // </group>

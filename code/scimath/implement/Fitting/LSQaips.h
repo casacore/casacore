@@ -90,8 +90,8 @@ class LSQaips : public LSQFit {
   LSQaips(uInt nUnknowns, uInt nConstraints=0);
   // Allow explicit complex/real specification
   // <group>
-  LSQaips(uInt nUnknowns, LSQFit::Real, uInt nConstraints=0);
-  LSQaips(uInt nUnknowns, LSQFit::Complex, uInt nConstraints=0);
+  LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints=0);
+  LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0);
   // </group>
   // </group>
   // Default constructor (empty, real, only usable after a set(nUnknowns))
@@ -208,109 +208,6 @@ class LSQaips : public LSQFit {
 		  Bool doNorm=True, Bool doKnown=True) {
     LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs,
 		     LSQFit::CONJUGATE, doNorm, doKnown); };
-  /*  template <class U>
-    void makeNorm(const Vector<U> &cEq, U weight,
-		  const U &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs, doNorm, doKnown); };
-  
-  template <class U>
-    void makeNorm(const Vector<U> &cEq, U weight,
-		  const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs, doNorm, doKnown); };
-
-template <class U>
-    void makeNorm(const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs,
-		     LSQFit::SEPARABLE, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs,
-		     LSQFit::ASREAL, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq.data(), weight, obs,
-		     LSQFit::CONJUGATE, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<U> &cEq, U weight,
-		  const U &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs, doNorm, doKnown); };
-   template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<U> &cEq, U weight,
-		  const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs, doNorm, doKnown); };
- template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U>  &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U>  &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs,
-		     LSQFit::SEPARABLE, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U>  &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs,
-		     LSQFit::ASREAL, doNorm, doKnown); };
-  template <class U>
-    void makeNorm(uInt nIndex, const Vector<uInt> &cEqIndex,
-		  const Vector<std::complex<U> > &cEq, U weight,
-		  const std::complex<U>  &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex.data(),
-		     cEq.data(), weight, obs,
-		     LSQFit::CONJUGATE, doNorm, doKnown); };
-*/
   // </group>
   // Get the <src>nMissing</src> (the rank deficiency, or missing rank)
   // constraint equations as <src> cEq[nUnknowns][nMissing]</src>. Note

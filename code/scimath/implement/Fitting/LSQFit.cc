@@ -45,12 +45,12 @@ LSQFit::LSQFit(uInt nUnknowns, uInt nConstraints)
     known_p(0), error_p(0), constr_p(0),
     sol_p(0),
     nar_p(0), lar_p(0),
-    wce_p(0), wkn_p(0), wsol_p(0), wsd_p(0), wmu_p(0), wcov_p(0) {
+    wsol_p(0), wcov_p(0) {
   init();
   clear();
 }
 
-LSQFit::LSQFit(uInt nUnknowns,  LSQFit::Real,
+LSQFit::LSQFit(uInt nUnknowns,  const LSQReal &,
 	       uInt nConstraints)
   : state_p(0),
     nun_p(nUnknowns), ncon_p(nConstraints), n_p(0), r_p(0),
@@ -59,12 +59,12 @@ LSQFit::LSQFit(uInt nUnknowns,  LSQFit::Real,
     known_p(0), error_p(0), constr_p(0),
     sol_p(0),
     nar_p(0), lar_p(0),
-    wce_p(0), wkn_p(0), wsol_p(0), wsd_p(0), wmu_p(0), wcov_p(0) {
+    wsol_p(0), wcov_p(0) {
   init();
   clear();
 }
 
-LSQFit::LSQFit(uInt nUnknowns,  LSQFit::Complex,
+LSQFit::LSQFit(uInt nUnknowns, const LSQComplex &,
 	       uInt nConstraints)
   : state_p(0), nun_p(2*nUnknowns), ncon_p(2*nConstraints),
     n_p(0), r_p(0),
@@ -73,7 +73,7 @@ LSQFit::LSQFit(uInt nUnknowns,  LSQFit::Complex,
     known_p(0), error_p(0), constr_p(0),
     sol_p(0),
     nar_p(0), lar_p(0),
-    wce_p(0), wkn_p(0), wsol_p(0), wsd_p(0), wmu_p(0), wcov_p(0) {
+    wsol_p(0), wcov_p(0) {
   init();
   clear();
 }
@@ -86,7 +86,7 @@ LSQFit::LSQFit()
     known_p(0), error_p(0), constr_p(0),
     sol_p(0),
     nar_p(0), lar_p(0),
-    wce_p(0), wkn_p(0), wsol_p(0), wsd_p(0), wmu_p(0), wcov_p(0) {}
+    wsol_p(0), wcov_p(0) {}
 
 LSQFit::LSQFit(const LSQFit &other) 
   : state_p(other.state_p), nun_p(other.nun_p), ncon_p(other.ncon_p),
@@ -97,7 +97,7 @@ LSQFit::LSQFit(const LSQFit &other)
     known_p(0), error_p(0), constr_p(0),
     sol_p(0),
     nar_p(0), lar_p(0),
-    wce_p(0), wkn_p(0), wsol_p(0), wsd_p(0), wmu_p(0), wcov_p(0) {
+    wsol_p(0), wcov_p(0) {
   init();
   copy(other);
 }
@@ -155,11 +155,7 @@ void LSQFit::deinit() {
   delete    nceq_p;	nceq_p=0;
   delete    nar_p;	nar_p=0;
   delete [] lar_p;	lar_p=0;
-  delete [] wce_p;	wce_p=0;
-  delete [] wkn_p; 	wkn_p=0;
   delete [] wsol_p; 	wsol_p=0;
-  delete    wsd_p; 	wsd_p=0;
-  delete    wmu_p; 	wmu_p=0;
   delete [] wcov_p; 	wcov_p=0;
 }
 
@@ -193,7 +189,7 @@ void LSQFit::copy(const LSQFit &other, Bool all) {
 
 Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
   // Already done
-  if ((n_p != nun_p) && (state_p & INVERTED) != 0) return True;
+  if ((n_p != nun_p) && (state_p & INVERTED)) return True;
   // Copy the data for solution equations
   createNCEQ();
   Double d0(0);						//collinearity test
@@ -290,7 +286,7 @@ Bool LSQFit::invert(uInt &nRank, Bool doSVD) {
 
 void LSQFit::solveIt() {
   getWorkSOL();
-  if ((state_p & INVERTED) != 0) {		        //constraints inverted
+  if (state_p & INVERTED) {		                //constraints inverted
     for (uInt i1=0; i1<r_p; i1++) {		        //all unknowns
       Double *j0 = nceq_p->row(i1);
       sol_p[i1] = 0;
@@ -341,7 +337,7 @@ void LSQFit::solveIt() {
 }
 
 Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
-  if ((state_p & NONLIN) == 0) {		// first time through loop
+  if (!(state_p & NONLIN)) {       		// first time through loop
     nonlin_p = startnon_p;			// start factor
     fit = 1.0;					// loop more
     createNCEQ();;;
@@ -413,7 +409,7 @@ void LSQFit::solveMR(uInt nin) {
 
 Bool LSQFit::invertRect() {
   // Already done?
-  if ((state_p & INVERTED) != 0) return True;
+  if (state_p & INVERTED) return True;
   if (!lar_p) lar_p = new Double[nnc_p*nnc_p];	//get workspace
   if (nnc_p != nun_p) {				//lu necessary
     // lu decomposition
@@ -612,8 +608,7 @@ void  LSQFit::set(uInt nUnknowns, uInt nConstraints) {
   clear();
 }
 
-void  LSQFit::set(uInt nUnknowns, LSQFit::Complex,
-		  uInt nConstraints) {
+void  LSQFit::set(uInt nUnknowns, const LSQComplex &, uInt nConstraints) {
   deinit();
   nun_p = 2*nUnknowns;
   ncon_p = 2*nConstraints;
@@ -660,7 +655,8 @@ Double LSQFit::getWeightedSD() const {
 }
 
 void LSQFit::debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank,
-		     Double *&nEq, Double *&known, Double *&constr, Double *&er,
+		     Double *&nEq, Double *&known,
+		     Double *&constr, Double *&er,
 		     uInt *&piv, Double *&sEq, Double *&sol,
 		     Double &prec, Double &nonlin) const {
   nun    = nun_p;
@@ -679,19 +675,8 @@ void LSQFit::debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank,
   nonlin = nonlin_p;
 }
 
-void LSQFit::getWorkCEQ() {
-  if (!wce_p) {
-    wce_p = new Double[2*n_p];			// cater for complex
-    wkn_p = new Double[2];
-  };
-}
-
 void LSQFit::getWorkSOL() {
-  if (!wsol_p) {
-    wsol_p = new Double[n_p];
-    wsd_p =  new Double;
-    wmu_p =  new Double;
-  };
+  if (!wsol_p) wsol_p = new Double[n_p];
 }
 
 void LSQFit::getWorkCOV() {
