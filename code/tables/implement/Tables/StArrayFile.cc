@@ -204,7 +204,8 @@ void StManArrayFile::put (Int64 fileOff, uInt arrayOff, uInt nr,
 	setpos (fileOff + end - 1);
 	iofil_p->read (1, buf+end-start-1);
     }
-    if (stbit != 0  &&  start < end-1) {
+    //# Avoid reading same byte twice if all bits are in 1 byte.
+    if (stbit != 0  &&  (endbit == 0  ||  start < end-1)) {
 	setpos (fileOff + start);
 	iofil_p->read (1, buf);
     }
