@@ -178,13 +178,13 @@ public:
 			RecordInterface & record) const = 0;
   // </group>
 
-  // Convert the parameters of the component to the specified units. The Record
+  // Convert the parameters of the shape to the specified units. The Record
   // must contain the same fields that the to/from Record functions have (with
   // the exception of the direction & type fields). These fields will contain
   // strings (and not Quantums) that specify the new units for these
   // parameters. The new units must have the same dimensions as the existing
   // ones. If there is any problem parsing the record then an error message is
-  // appended to the suppkuied string and the function returns False. If
+  // appended to the supplied string and the function returns False. If
   // successful it returns True
   virtual Bool convertUnit(String & errorMessage,
 			   const RecordInterface & record) = 0;
