@@ -207,8 +207,8 @@ void SubLattice<T>::setPtr (Lattice<T>* latticePtr,
       itsHasPixelMask = itsMaskLatPtr->hasPixelMask();
     }
   }
-  itsWritable = writableIfPossible;
-  if (itsWritable  &&  itsLatticePtr->isWritable()) {
+  itsWritable = False;
+  if (writableIfPossible  &&  itsLatticePtr->isWritable()) {
     itsWritable = True;
   }
 }
