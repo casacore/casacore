@@ -5,12 +5,10 @@
 %\setlength{\topmargin}{-0.5in}
 %\begin{document}
 
-\input{gi-symbols}
 
-\newenvironment{slide}[1]{\LARGE\begin{center}{\bf #1}\end{center}}{\newpage}
-\newenvironment{figlab}[1]{\Large\begin{center}{\bf #1}\end{center}}{\newpage}
+\newcommand{\slide}[1]{\LARGE\begin{center}{\bf #1}\end{center}}
 
-\begin{slide}{What is AIPS++ and why are we doing it?}
+\slide{What is AIPS++ and why are we doing it?}
 \begin{itemize}
 \item {\em Consortium} of radio observatories, building package
 to handle processing for new telescopes, and improved processing
@@ -36,9 +34,9 @@ processing of data from radio-telescopes, both single dishs and
 synthesis arrays
 \end{description}
 See {\em http://www.nrao.edu/aips++} for more information
-\end{slide}
+\newpage
 
-\begin{slide}{What is AIPS++ being used for now?}
+\slide{What is AIPS++ being used for now?}
 \begin{description}
 \item[ATNF] At the Parkes telescope for Parkes Multibeam 
 observing.
@@ -47,9 +45,9 @@ Telescope engineering.
 \item[NFRA] At WSRT, integrated into the Telescope Management
 System.
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{AIPS++ Project timeline}
+\slide{AIPS++ Project timeline}
 \begin{description}
 \item[First beta release {\em Feb 97}]:
 \begin{itemize}
@@ -78,9 +76,9 @@ System.
 \item Contributed code
 \end{itemize}
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{AIPS++ Personnel}
+\slide{AIPS++ Personnel}
 \begin{description}
 \item[ATNF]: Neil Killeen, David Barnes, Wim Brouw, and Mark
 Wieringa
@@ -96,9 +94,9 @@ Glendenning, Athol Kemball, Ralph Marson, Joe McMullin, Pat Murphy,
 Darrell Schiebel, Jeff Uphoff, Kate Weatherall and Wes Young.
 
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{What's available in First Beta Release (0.8)?}
+\slide{What's available in First Beta Release (0.8)?}
 \begin{itemize}
 \item The synthesis capabilities of AIPS++ are as follows:
 \begin{itemize}
@@ -146,9 +144,9 @@ writing to external files using C-like commands, {\em etc.}
 AIPS++ User Reference Manual
 and on-line help is available from the command line.
 \end{itemize}
-\end{slide}
+\newpage
 
-\begin{slide}{Responses to First Beta release (0.8)}
+\slide{Responses to First Beta release (0.8)}
 
 \begin{itemize}
 \item Announced on February 26 1997. 
@@ -178,9 +176,9 @@ bloat in some circumstances.
 written in Glish (as opposed to C++).
 \end{enumerate}
 \end{itemize}
-\end{slide}
+\newpage
 
-\begin{slide}{What's new in Second Beta Release (0.9)?}
+\slide{What's new in Second Beta Release (0.9)?}
 
 \begin{itemize}
 \item Announced on September 11 1997. 
@@ -208,18 +206,18 @@ or made less threatening.
 \item[Spectral Cubes] The FITS/spectral axis interconversion is more
 robust now.  
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{Responses to Second Beta release (0.9)}
+\slide{Responses to Second Beta release (0.9)}
 
 \begin{itemize}
 \item Some errors in FITS processing
 \item Some worries over channel zero processing
 \item That's it!
 \end{itemize}
-\end{slide}
+\newpage
 
-\begin{slide}{What's planned for the Third Beta Release?}
+\slide{What's planned for the Third Beta Release?}
 \begin{description}
 \item[GUIs for standard Distributed Objects]: Beta testing showed that
 we needed a better interface. There will be a standard format interface,
@@ -239,9 +237,9 @@ also AIPS++ Data and Functions available via client-server interface
 \item[Cookbook]: Once the look and feel of the interfaces has stabilized,
 we plan to start on a cook-book.
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{What's in the works?}
+\slide{What's in the works?}
 \begin{description}
 \item[Synthesis]: to include wide-field (3D) imaging, mosaicing, improved
 calibration methodology. Also working on parallelization of synthesis code.
@@ -254,9 +252,9 @@ visualization tool based on this library.
 \item[Internals]: Rearrangement of internal directory structure, {\em etc.}
 \item[Developer's release]: Sometime late 98 or early 99.
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{Why would I want to use AIPS++ now?}
+\slide{Why would I want to use AIPS++ now?}
 \begin{description}
 \item[Synthesis] unique capabilities:
 \begin{description}
@@ -269,9 +267,9 @@ processing.
 \item[AIPS GUI Tool] Can run AIPS from a GUI (in next beta, or in daily
 version now).
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{Examples of Ad Hoc processing}
+\slide{Examples of Ad Hoc processing}
 \begin{description}
 \item[ASCII Table]: can convert ASCII table to AIPS++ Table then
 use AIPS++ and Glish-based math, plotting, browsing tools.
@@ -293,9 +291,9 @@ data to/from a MeasurementSet
 \item Use {\tt mathematics} DO to help math
 \end{itemize}
 \end{description}
-\end{slide}
+\newpage
 
-\begin{slide}{AIPS++ Operations}
+\slide{AIPS++ Operations}
 \begin{itemize}
 \item Starting to think about Operations of AIPS++:
 \begin{description}
@@ -338,6 +336,6 @@ testing, benchmarking, code reviews.
 \item Advice and Oversight: AIPS++ User Group and Technical Working
 Group
 \end{itemize}
-\end{slide}
+\newpage
 
 %\end{document} 
