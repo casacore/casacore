@@ -1,5 +1,5 @@
 //# TableParse.h: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999
+//# Copyright (C) 1994,1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -310,7 +310,7 @@ public:
     void show (ostream& os) const;
 
     // Keep the selection expression.
-    // It takes over the pointer (and clear the input pointer).
+    // It takes over the pointer (and clears the input pointer).
     void handleSelect (TableExprNode*& node);
 
     // Sort the resulting table.
@@ -325,15 +325,22 @@ public:
     TableExprNode handleKeyCol (const String& name);
 
     // Handle a slice operator.
-    TableExprNode handleSlice (const TableExprNode& array,
-			       const TableExprNodeSet& indices);
+    static TableExprNode handleSlice (const TableExprNode& array,
+				      const TableExprNodeSet& indices);
 
     // Handle a function.
     TableExprNode handleFunc (const String& name,
 			      const TableExprNodeSet& arguments);
 
+    // Find the function code belonging to a function name.
+    // Functions to be ignored can be given (as function type values).
+    static TableExprFuncNode::FunctionType findFunc
+                                   (const String& name,
+				    uInt narguments,
+				    const Vector<Int>& ignoreFuncs);
+
     // Create a TableExprNode from a literal.
-    TableExprNode handleLiteral (TableParseVal*);
+    static TableExprNode handleLiteral (TableParseVal*);
 
     // Add a column to the list of selected column names.
     //# String has to be non-const due to use of String::before/after.
