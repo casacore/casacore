@@ -656,10 +656,10 @@ public:
 // (perhaps an image from which the CoordinateSystem came)
 // If you give (both of) these, they are included in the listing.  If you pass
 // in zero length <src>IPositions</src> then they are not included in
-// the listing.  T
-   void list(LogIO& os, MDoppler::Types doppler,
-             const IPosition& latticeShape,
-             const IPosition& tileShape) const;
+// the listing.  
+   Vector<String> list(LogIO& os, MDoppler::Types doppler,
+                       const IPosition& latticeShape,
+                       const IPosition& tileShape, Bool postLocally=False) const;
 
 private:
     // Where we store copies of the coordinates we are created with.

@@ -54,6 +54,7 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Regex.h>
+#include <aips/Utilities/String.h>
 
 #include <aips/strstream.h>
 #include <aips/iomanip.h>
@@ -2019,7 +2020,7 @@ Bool CoordinateSystem::near(const Coordinate& other,
 
 // Find which world axes in the CoordinateSystem this
 // coordinate inhabits and compare the vectors
-    
+
       if (worldAxes(i).nelements() != cSys.worldAxes(i).nelements()) {
          oss << "The number of world axes differs for coordinate number " << i << ends;
          set_error(String(oss));
@@ -3690,11 +3691,17 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
 
 
 
-void CoordinateSystem::list (LogIO& os,
-                             MDoppler::Types doppler,
-                             const IPosition& latticeShape,
-                             const IPosition& tileShape) const
+Vector<String> CoordinateSystem::list (LogIO& os, 
+                                       MDoppler::Types doppler,
+                                       const IPosition& latticeShape,
+                                       const IPosition& tileShape,
+                                       Bool postLocally) const
 {
+   LogSinkInterface& lsi = os.localSink();
+   uInt n = lsi.nelements();
+   Int iStart  =  0;
+   if (n>0) iStart = n - 1;
+
    os << LogIO::NORMAL << endl;
 
 // List DirectionCoordinate type from the first DirectionCoordinate we find
@@ -3844,7 +3851,21 @@ void CoordinateSystem::list (LogIO& os,
 
 // Post it
 
-   os.post();
+   if (postLocally) {
+      os.postLocally();
+   } else {
+      os.post();
+   }
+//
+
+   n = lsi.nelements();
+   Vector<String> messages(n-iStart);
+   if (postLocally) {
+      for (uInt i=iStart; i<n; i++) {
+         messages(i) = lsi.getMessage(i);
+      }
+   }
+   return messages;
 }
 
 void CoordinateSystem::getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoordType, uInt& widthCoordNumber,
