@@ -97,7 +97,6 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
   // an additional row and column should be coded in FromTo, and
   // in showType().</note>
   enum Types {
-    ITRF,
     J2000,
     JMEAN,
     JTRUE,
@@ -114,6 +113,8 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
     MECLIPTIC,
     TECLIPTIC,
     SUPERGAL,
+    ITRF,
+    TOPO,
     N_Types,
     // Defaults
     DEFAULT=ITRF,

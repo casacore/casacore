@@ -99,7 +99,6 @@ MBaseline::Types MBaseline::castType(uInt tp) {
 
 const String &MBaseline::showType(MBaseline::Types tp) {
   static const String tname[MBaseline::N_Types] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -115,7 +114,9 @@ const String &MBaseline::showType(MBaseline::Types tp) {
     "ECLIPTIC",
     "MECLIPTIC",
     "TECLIPTIC",
-    "SUPERGAL" };
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
   return tname[tp];
 }
 
@@ -125,10 +126,9 @@ const String &MBaseline::showType(uInt tp) {
 
 const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 18;
+  static const Int N_name  = 19;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
-    "ITRF",
     "J2000",
     "JMEAN",
     "JTRUE",
@@ -145,10 +145,11 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     "ECLIPTIC",
     "MECLIPTIC",
     "TECLIPTIC",
-    "SUPERGAL" };
+    "SUPERGAL",
+    "ITRF",
+    "TOPO" };
   
   static const uInt oname[N_name] = {
-    MBaseline::ITRF,
     MBaseline::J2000,
     MBaseline::JMEAN,
     MBaseline::JTRUE,
@@ -165,7 +166,9 @@ const String *const MBaseline::allMyTypes(Int &nall, Int &nextra,
     MBaseline::ECLIPTIC,
     MBaseline::MECLIPTIC,
     MBaseline::TECLIPTIC,
-    MBaseline::SUPERGAL };
+    MBaseline::SUPERGAL,
+    MBaseline::ITRF,
+    MBaseline::TOPO };
 
   nall   = N_name;
   nextra = N_extra;
