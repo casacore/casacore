@@ -1,4 +1,3 @@
-// This may look like C code, but it is really -*- C++ -*-
 /*
 Copyright (C) 1988 Free Software Foundation
     written by Doug Lea (dl@rocky.oswego.edu)
@@ -15,6 +14,8 @@ You should have received a copy of the GNU Library General Public
 License along with this library; if not, write to the Free Software
 Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+//# $Id$
 
 #ifndef _Complex_h
 #ifdef __GNUG__
