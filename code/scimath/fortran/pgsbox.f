@@ -1640,7 +1640,7 @@
                SEXSUP(2) = 0
 
 *              Vertical sides.
-               IF (MOD(CACHE(1,J),2).EQ.0) THEN
+               IF (MOD(CACHE(1,J),2D0).EQ.0) THEN
                   DO 160 K = J, IC
                      IF (NINT(CACHE(1,K)).NE.EDGE) GO TO 170
                      IF (SEXSUP(NINT(CACHE(3,K))).EQ.1) GO TO 160
