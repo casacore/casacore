@@ -215,7 +215,14 @@ int main()
             throw(AipsError(String("Failed to set world axis units because ") + lc.errorMessage()));
          }
          if (!allEQ(units, lc.worldAxisUnits())) {
-            throw(AipsError("Failed world axis units set/recovery test"));
+            throw(AipsError("Failed world axis units set/recovery test 1"));
+         }
+         units(0) = "GHz";
+         if (!lc.overwriteWorldAxisUnits(units)) {
+            throw(AipsError(String("Failed to overwrite world axis units because ") + lc.errorMessage()));
+         }
+         if (!allEQ(units, lc.worldAxisUnits())) {
+            throw(AipsError("Failed world axis units set/recovery test 2"));
          }
 //       
          xform.diagonal() = -2.0;
