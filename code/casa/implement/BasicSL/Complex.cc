@@ -43,7 +43,9 @@ DComplex log10(const DComplex &val)
 /// Should be in stl
 Complex log10(const Complex &val)
 {
-  return Complex(log(val)*C::log10e);
+  // Need to make log10e a Float for it to compile
+  // with picky compilers
+  return Complex(log(val)*Float(C::log10e));
 }
 
 // Near functions
