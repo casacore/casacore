@@ -2769,7 +2769,8 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
 }
 
 
-Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys, 
+Bool CoordinateSystem::fromFITSHeader(Int& stokesFITSValue, 
+                                      CoordinateSystem &coordsys, 
 				      const RecordInterface &header,
                                       const IPosition& shape,
 				      Bool oneRelative,
@@ -2790,6 +2791,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
 // FITS angular units are degrees
 
+    Bool warnStokes = stokesFITSValue > 0;
+    stokesFITSValue = -1;
     Vector<Double> cdelt, crval, crpix;
     Vector<Int> naxes;
     Vector<String> ctype, cunit;
@@ -3180,6 +3183,42 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    }
 //
    	    switch (stokes(k)) {
+	    case -8: 
+              stokes(k) = Stokes::YX; 
+              break;
+	    case -7: 
+              stokes(k) = Stokes::XY; 
+              break;
+	    case -6: 
+              stokes(k) = Stokes::YY; 
+              break;
+	    case -5: 
+              stokes(k) = Stokes::XX; 
+              break;
+	    case -4: 
+              stokes(k) = Stokes::LR; 
+              break;	    
+	    case -3: 
+              stokes(k) = Stokes::RL; 
+              break;
+	    case -2: 
+              stokes(k) = Stokes::LL; 
+              break;
+            case -1: 
+              stokes(k) = Stokes::RR; 
+              break;
+            case 0:
+             {
+              if (warnStokes) {
+                 os << LogIO::WARN 
+                    << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
+                 os << "Convention for an image containing a beam.  Putting Stokes=Undefined" << endl;
+                 os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
+              }
+              stokes(k) = Stokes::Undefined;
+              stokesFITSValue = 0;
+              break;
+             }
             case 1:  
              {
                 stokes(k) = Stokes::I; 
@@ -3194,42 +3233,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    case 4: 
               stokes(k) = Stokes::V; 
               break;
-	    case -1: 
-              stokes(k) = Stokes::RR; 
-              break;
-	    case -2: 
-              stokes(k) = Stokes::LL; 
-              break;
-	    case -3: 
-              stokes(k) = Stokes::RL; 
-              break;
-	    case -4: 
-              stokes(k) = Stokes::LR; 
-              break;
-	    case -5: 
-              stokes(k) = Stokes::XX; 
-              break;
-	    case -6: 
-              stokes(k) = Stokes::YY; 
-              break;
-	    case -7: 
-              stokes(k) = Stokes::XY; 
-              break;
-	    case -8: 
-              stokes(k) = Stokes::YX; 
-              break;
-            case 0:
-             {
-              stokes(k) = Stokes::Undefined;
-              os << LogIO::WARN 
-                 << "Detected Stokes coordinate = 0; this is an unoffical" << endl;
-              os << "Convention for an image containing a beam.  Putting Stokes=Undefined" << endl;
-              os << "Better would be to write your FITS image with the correct Stokes" << LogIO::POST;
-              break;
-             }
             case 5:
 
-// Percentage linear polarization not supported
+// Percentage linear polarization only just supported
 
               {
                  os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial percentage polarization value." << endl;
@@ -3249,9 +3255,12 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 // Spectral index not supported
 
               {
+                 if (warnStokes) {
+                    os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectral index value." << endl;
+                    os << "This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+                 }
                  stokes(k) = Stokes::Undefined;
-                 os << LogIO::SEVERE << "The FITS image Stokes axis has the unofficial spectral index value." << endl;
-                 os << "This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+                 stokesFITSValue = 8;
                  break;
               }
             case 9:
@@ -3259,9 +3268,12 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 // Optical depth not supported
 
               {
+                 if (warnStokes) {
+                    os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
+                    os << "value.  This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+                 }
                  stokes(k) = Stokes::Undefined;
-                 os << LogIO::SEVERE << "The Stokes axis has the unofficial optical depth" << endl;
-                 os << "value.  This is not supported. Putting Stokes=Undefined" << LogIO::POST;
+                 stokesFITSValue = 9;
                  break;
               }
 	    default:
