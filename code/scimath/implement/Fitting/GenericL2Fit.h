@@ -1,6 +1,6 @@
 //# GenericL2Fit.h: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001,2002,2004
+//# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@
 #include <casa/Containers/Block.h>
 #include <scimath/Fitting/LSQaips.h>
 #include <scimath/Fitting/LSQTraits.h>
+#include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/FunctionTraits.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
@@ -240,8 +241,10 @@ template<class T> class GenericL2Fit : public LSQaips {
   // so that derivatives with respect to the adjustable parameters
   // can be calculated.  The current values of the "available" parameters
   // of the function are taken as the initial guess for the non-linear fitting.
-  void setFunction(const Function<typename FunctionTraits<T>::DiffType,
-		   typename FunctionTraits<T>::DiffType> &function);
+  template <class U>  
+    void setFunction(const Function<U,U> &function) { resetFunction();
+    ptr_derive_p = function.cloneAD(); setFunctionEx(); };
+
   // Set the possible constraint functions. The <src>addConstraint</src>
   // will add one; the <src>setConstraint</src> will [re-]set the
   // <src>n</src>th constraint. If unsucessful, False returned.<br>
@@ -249,12 +252,18 @@ template<class T> class GenericL2Fit : public LSQaips {
   // has been set. It should have the same number of parameters as the function
   // to be fitted. The <src>x</src> should have the correct dimension.
   // <group>
-  Bool setConstraint(const uInt n,
-		     const Function<typename FunctionTraits<T>::DiffType,
-		     typename FunctionTraits<T>::DiffType> &function,
-		     const Vector<typename FunctionTraits<T>::BaseType> &x,
-		     const typename FunctionTraits<T>::BaseType y=
-		     typename FunctionTraits<T>::BaseType(0));
+  template <class U>
+    Bool setConstraint(const uInt n,
+		       const Function<U,U> &function,
+		       const Vector<typename FunctionTraits<T>::BaseType> &x,
+		       const typename FunctionTraits<T>::BaseType y=
+		       typename FunctionTraits<T>::BaseType(0)) {
+    if (n >= constrFun_p.nelements() ||
+	!ptr_derive_p ||
+	ptr_derive_p->nparameters() != function.nparameters() ||
+	function.ndim() != x.nelements()) return False;
+    delete constrFun_p[n]; constrFun_p[n] = 0;
+    constrFun_p[n] = function.cloneAD(); return setConstraintEx(n, x, y); };
   Bool setConstraint(const uInt n,
 		     const Vector<typename FunctionTraits<T>::BaseType> &x,
 		     const typename FunctionTraits<T>::BaseType y=
@@ -555,7 +564,12 @@ template<class T> class GenericL2Fit : public LSQaips {
   //# Data
 
   //# Member functions
-
+  // Set function properties
+  void setFunctionEx();
+  // Set Constraint properties
+  Bool setConstraintEx(const uInt n,
+		       const Vector<typename FunctionTraits<T>::BaseType> &x,
+		       const typename FunctionTraits<T>::BaseType y);
 };
 
 } //# End namespace casa

@@ -1,6 +1,6 @@
 //# GenericL2Fit.cc: Generic base lass for least-squares fit.
 //#
-//# Copyright (C) 2001,2002,2003,2004
+//# Copyright (C) 2001,2002,2003,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,6 @@
 #include <scimath/Fitting/GenericL2Fit.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/VectorSTLIterator.h>
-#include <scimath/Functionals/Function.h>
 #include <scimath/Functionals/HyperPlane.h>
 
 namespace casa {  //# Begin namespace casa
@@ -139,9 +138,7 @@ GenericL2Fit<T>::~GenericL2Fit() {
 
 template<class T>
 void GenericL2Fit<T>::
-setFunction(const Function<typename FunctionTraits<T>::DiffType> &function) {
-  resetFunction();
-  ptr_derive_p = function.clone();
+setFunctionEx() {
   pCount_p = ptr_derive_p->nparameters();
   aCount_ai = ptr_derive_p->parameters().nMaskedParameters();
   ndim_p = ptr_derive_p->ndim();
@@ -150,16 +147,9 @@ setFunction(const Function<typename FunctionTraits<T>::DiffType> &function) {
 
 template<class T>
 Bool GenericL2Fit<T>::
-setConstraint(const uInt n,
-	      const Function<typename FunctionTraits<T>::DiffType> &function,
-	      const Vector<typename FunctionTraits<T>::BaseType> &x,
-	      const typename FunctionTraits<T>::BaseType y) {
-  if (n >= constrFun_p.nelements() ||
-      !ptr_derive_p ||
-      ptr_derive_p->nparameters() != function.nparameters() ||
-      function.ndim() != x.nelements()) return False;
-  delete constrFun_p[n]; constrFun_p[n] = 0;
-  constrFun_p[n] = function.clone();
+setConstraintEx(const uInt n,
+		const Vector<typename FunctionTraits<T>::BaseType> &x,
+		const typename FunctionTraits<T>::BaseType y) {
   delete constrArg_p[n]; constrArg_p[n] = 0;
   constrArg_p[n] = new Vector<typename FunctionTraits<T>::BaseType>
     (x.copy());
