@@ -264,17 +264,14 @@ public:
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
     // <br>When the new description contains subrecords, those subrecords
-    // will be variable if their description is empty (i.e. does not
-    // contain any field), otherwise it is fixed. The 2nd form of
-    // the <src>restructure</src> function will overwrite those implicit
-    // record types with the given record type. The new type will also
-    // be given to this top record.
+    // will be restructured if <src>recursive=True</src> is given.
+    // Otherwise the subrecord is a variable empty record.
+    // Subrecords will be variable if their description is empty (i.e. does
+    // not contain any field), otherwise they are fixed.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
-    // <group>
-    virtual void restructure (const RecordDesc& newDescription);
-    virtual void restructure (const RecordDesc& newDescription, RecordType);
-    // </group>
+    virtual void restructure (const RecordDesc& newDescription,
+			      Bool recursive=True);
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the

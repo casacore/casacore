@@ -178,20 +178,14 @@ RecordDesc TableRecord::getDescription() const
     return ref().description();
 }
 
-void TableRecord::restructure (const RecordDesc& newDescription)
+void TableRecord::restructure (const RecordDesc& newDescription,
+			       Bool recursive)
 {
     // Restructure is not possible for fixed records.
     throwIfFixed();
     // Restructuring means that all RecordFieldPtr's get invalid.
     notify (RecordNotice (RecordNotice::DETACH, 0));
-    rwRef().restructure (newDescription);
-}
-
-void TableRecord::restructure (const RecordDesc& newDescription,
-			       RecordType type)
-{
-    restructure (newDescription);
-    setRecordType (type);
+    rwRef().restructure (newDescription, recursive);
 }
 
 void TableRecord::setRecordType (RecordType rtype)

@@ -1,5 +1,5 @@
 //# RecordRep.h: The representation of a Record
-//# Copyright (C) 1996,1997,2000
+//# Copyright (C) 1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,7 +127,7 @@ public:
     // Change the structure of this Record to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>.
-    void restructure (const RecordDesc& newDescription);
+    void restructure (const RecordDesc& newDescription, Bool recursive);
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the

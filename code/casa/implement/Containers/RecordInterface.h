@@ -257,14 +257,20 @@ public:
     // Get the description of this record.
     RecordDesc description() const;
 
-    // Change the structure of this record to contain the fields in
+    // Change the structure of this Record to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>. Any existing RecordFieldPtr objects are
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
+    // <br>When the new description contains subrecords, those subrecords
+    // will be restructured if <src>recursive=True</src> is given.
+    // Otherwise the subrecord is a variable empty record.
+    // Subrecords will be variable if their description is empty (i.e. does
+    // not contain any field), otherwise they are fixed.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
-    virtual void restructure (const RecordDesc& newDescription) = 0;
+    virtual void restructure (const RecordDesc& newDescription,
+			      Bool recursive=True) = 0;
 
     // Remove a field from the record.
     // <note role=caution>

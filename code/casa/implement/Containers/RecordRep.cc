@@ -1,5 +1,5 @@
 //# RecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,21 +43,21 @@ RecordRep::RecordRep (const RecordDesc& description)
 : desc_p  (description),
   nused_p (0)
 {
-    restructure (desc_p);
+    restructure (desc_p, True);
 }
 
 RecordRep::RecordRep (const RecordRep& other)
 : desc_p  (other.desc_p),
   nused_p (0)
 {
-    restructure (desc_p);
+    restructure (desc_p, False);
     copy_other (other);
 }
 
 RecordRep& RecordRep::operator= (const RecordRep& other)
 {
     if (this != &other) {
-	restructure (other.desc_p);
+	restructure (other.desc_p, False);
 	copy_other (other);
     }
     return *this;
@@ -68,7 +68,7 @@ RecordRep::~RecordRep()
     delete_myself (desc_p.nfields());
 }
 
-void RecordRep::restructure (const RecordDesc& newDescription)
+void RecordRep::restructure (const RecordDesc& newDescription, Bool recursive)
 {
     delete_myself (desc_p.nfields());
     desc_p  = newDescription;
@@ -78,7 +78,11 @@ void RecordRep::restructure (const RecordDesc& newDescription)
     data_p.resize (nused_p);
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    data_p[i] = new Record (this, desc_p.subRecord(i));
+	    if (recursive) {
+	        data_p[i] = new Record (this, desc_p.subRecord(i));
+	    } else {
+	        data_p[i] = new Record (this, RecordDesc());
+	    }
 	}else{
 	    data_p[i] = createDataField (desc_p.type(i), desc_p.shape(i));
 	}
@@ -907,7 +911,7 @@ void RecordRep::getRecord (AipsIO& os, int& recordType)
 	RecordDesc desc;
 	os >> desc;
 	os >> recordType;
-	restructure (desc);
+	restructure (desc, True);
 	// Read the data.
 	getData (os, version);
     }
@@ -938,7 +942,7 @@ void RecordRep::getKeySet (AipsIO& os, uInt version, uInt type)
     getKeyDesc (os, desc);
     // Define the record from the description.
     // Read the keyword values and define the corresponding record value.
-    restructure (desc);
+    restructure (desc, True);
     getScalarKeys (os);
     if (type == 1) {
 	getArrayKeys (os);

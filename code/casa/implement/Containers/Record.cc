@@ -1,5 +1,5 @@
 //# Record.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -120,7 +120,6 @@ RecordInterface* Record::clone() const
 
 void Record::assign (const RecordInterface& that)
 {
-    Record tmp (that);
     *this = that;
 }
 
@@ -156,31 +155,13 @@ RecordDesc Record::getDescription() const
     return ref().description();
 }
 
-void Record::restructure (const RecordDesc& newDescription)
+void Record::restructure (const RecordDesc& newDescription, Bool recursive)
 {
     // Restructure is not possible for fixed records.
     throwIfFixed();
     // Restructuring means that all RecordFieldPtr's get invalid.
     notify (RecordNotice (RecordNotice::DETACH, 0));
-    rwRef().restructure (newDescription);
-}
-
-void Record::restructure (const RecordDesc& newDescription, RecordType type)
-{
-    restructure (newDescription);
-    setRecordType (type);
-}
-
-void Record::setRecordType (RecordType rtype)
-{
-    recordType() = rtype;
-    // Iterate through all fields to make the subrecords the required type.
-    uInt nf = nfields();
-    for (uInt i=0; i<nf; i++) {
-	if (type(i) == TpRecord) {
-	    rwSubRecord(i).setRecordType (rtype);
-	}
-    }
+    rwRef().restructure (newDescription, recursive);
 }
 
 uInt Record::nfields() const

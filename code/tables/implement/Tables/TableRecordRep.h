@@ -126,7 +126,7 @@ public:
     // Change the structure of this Record to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>.
-    void restructure (const RecordDesc& newDescription);
+    void restructure (const RecordDesc& newDescription, Bool recursive);
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the

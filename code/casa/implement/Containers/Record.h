@@ -1,5 +1,5 @@
 //# Record.h: A hierarchical collection of named fields of various types
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -258,17 +258,17 @@ public:
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
     // <br>When the new description contains subrecords, those subrecords
-    // will be variable if their description is empty (i.e. does not
-    // contain any field), otherwise it is fixed. The 2nd form of
+    // will be restructured if <src>recursive=True</src> is given.
+    // Otherwise the subrecord is a variable empty record.
+    // Subrecords will be variable if their description is empty (i.e. does
+    // not contain any field), otherwise they are fixed. The 2nd form of
     // the <src>restructure</src> function will overwrite those implicit
     // record types with the given record type. The new type will also
     // be given to this top record.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
-    // <group>
-    virtual void restructure (const RecordDesc& newDescription);
-    virtual void restructure (const RecordDesc& newDescription, RecordType);
-    // </group>
+    virtual void restructure (const RecordDesc& newDescription,
+			      Bool recursive = True);
 
     // Returns True if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
@@ -412,9 +412,6 @@ private:
     Record (RecordRep* parent, const RecordDesc& description);
     Record (RecordRep* parent, RecordType type);
     // </group>
-
-    // Set the recordtype of this record and all its subrecords (recursively).
-    void setRecordType (RecordType type);
 
     // The Record representation.
     COWPtr<RecordRep> rep_p;

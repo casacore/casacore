@@ -47,21 +47,21 @@ TableRecordRep::TableRecordRep (const RecordDesc& description)
 : RecordRep(),
   desc_p   (description)
 {
-    restructure (desc_p);
+    restructure (desc_p, True);
 }
 
 TableRecordRep::TableRecordRep (const TableRecordRep& other)
 : RecordRep(),
   desc_p   (other.desc_p)
 {
-    restructure (desc_p);
+    restructure (desc_p, False);
     copy_other (other);
 }
 
 TableRecordRep& TableRecordRep::operator= (const TableRecordRep& other)
 {
     if (this != &other) {
-	restructure (other.desc_p);
+	restructure (other.desc_p, False);
 	copy_other (other);
     }
     return *this;
@@ -72,7 +72,8 @@ TableRecordRep::~TableRecordRep()
     delete_myself (desc_p.nfields());
 }
 
-void TableRecordRep::restructure (const RecordDesc& newDescription)
+void TableRecordRep::restructure (const RecordDesc& newDescription,
+				  Bool recursive)
 {
     delete_myself (desc_p.nfields());
     desc_p  = newDescription;
@@ -82,7 +83,11 @@ void TableRecordRep::restructure (const RecordDesc& newDescription)
     data_p.resize (nused_p);
     for (uInt i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
-	    data_p[i] = new TableRecord (this, desc_p.subRecord(i));
+	    if (recursive) {
+	        data_p[i] = new TableRecord (this, desc_p.subRecord(i));
+	    } else {
+	        data_p[i] = new TableRecord (this, RecordDesc());
+	    }
 	} else if (desc_p.type(i) == TpTable) {
 	    data_p[i] = new TableKeyword (desc_p.tableDescName(i));
 	}else{
@@ -402,7 +407,7 @@ void TableRecordRep::getRecord (AipsIO& os, int& recordType,
 	RecordDesc desc;
 	os >> desc;
 	os >> recordType;
-	restructure (desc);
+	restructure (desc, True);
 	// Read the data.
 	getData (os, version, parentAttr);
     }
@@ -455,7 +460,7 @@ void TableRecordRep::getTableKeySet (AipsIO& os, uInt version,
     getKeyDesc (os, desc);
     // Define the record from the description.
     // Read the keyword values and define the corresponding record value.
-    restructure (desc);
+    restructure (desc, True);
     getScalarKeys (os);
     if (type > 0) {
 	getArrayKeys (os);
