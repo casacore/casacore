@@ -1,5 +1,5 @@
 //# WCBox.cc: Class to define a world coordinate box region of interest in an image
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -420,9 +420,8 @@ TableRecord WCBox::toRecord(const String&) const
    TableRecord recBlc, recTrc, recT;
    Quantum<Double> tmpQ;
    Double tmpD;
-   uInt j;
 //
-   for (j=0; j<nAxes; j++) {
+   for (uInt j=0; j<nAxes; j++) {
       tmpQ = itsBlc(j);
       if (tmpQ.getUnit() == "pix") {
          tmpD = tmpQ.getValue();
@@ -433,10 +432,12 @@ TableRecord WCBox::toRecord(const String&) const
       if (!h.toRecord(error, recT)) {
          throw (AipsError ("WCBox::toRecord - could not save blc because "+error));
       }
+      recBlc.defineRecord(j, recT);
    }
-   recBlc.defineRecord(j, recT);
+   rec.defineRecord("blc", recBlc);
+
 //
-   for (j=0; j<nAxes; j++) {
+   for (uInt j=0; j<nAxes; j++) {
       tmpQ = itsTrc(j);
       if (tmpQ.getUnit() == "pix") {
          tmpD = tmpQ.getValue();
@@ -447,8 +448,10 @@ TableRecord WCBox::toRecord(const String&) const
       if (!h.toRecord(error, recT)) {
          throw (AipsError ("WCBox::toRecord - could not save blc because "+error));
       }
+      recTrc.defineRecord(j, recT);
    }
-   recTrc.defineRecord(j, recT);
+   rec.defineRecord("trc", recTrc);
+
 //
    if (!itsCSys.save(rec, "coordinates")) {
       throw (AipsError ("WCBox::toRecord - could not save Coordinate System"));
