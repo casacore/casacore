@@ -36,7 +36,6 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/IPosition.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/OS/File.h>
 #include <aips/OS/Path.h>
 #include <aips/Tables/SetupNewTab.h>
@@ -66,7 +65,7 @@ PagedArray<T>::PagedArray (const TiledShape& shape, const String& filename)
   makeTable(filename, Table::New);
   makeArray (shape);
   setTableType();
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -79,7 +78,7 @@ PagedArray<T>::PagedArray (const TiledShape& shape)
   makeTable (filename.absoluteName(), Table::Scratch);
   makeArray (shape);
   setTableType();
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -92,7 +91,7 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file)
 {
   makeArray (shape);
   setTableType();
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -105,7 +104,7 @@ PagedArray<T>::PagedArray (const TiledShape& shape, Table& file,
 {
   makeArray (shape);
   setTableType();
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -117,7 +116,7 @@ PagedArray<T>::PagedArray (const String& filename)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T> PagedArray<T>::PagedArray (Table& file)
@@ -128,7 +127,7 @@ template<class T> PagedArray<T>::PagedArray (Table& file)
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -141,7 +140,7 @@ PagedArray<T>::PagedArray (Table& file, const String& columnName,
   itsROArray    (itsTable, itsColumnName),
   itsAccessor   (itsTable, itsColumnName)
 {
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -157,7 +156,7 @@ PagedArray<T>::PagedArray (const PagedArray<T>& other)
   itsROArray    (other.itsROArray),
   itsAccessor   (other.itsAccessor)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
 }
 
 template<class T>
@@ -166,7 +165,7 @@ PagedArray<T>::~PagedArray()
   // Only need to do something if really constructed.
   if (! itsTable.isNull()) {
     // Table may not be written if ref count > 1 - here we force a write.
-    DebugAssert(ok() == True, AipsError);
+    DebugAssert (ok(), AipsError);
     itsTable.flush();
   }
 }
@@ -186,7 +185,7 @@ PagedArray<T>& PagedArray<T>::operator= (const PagedArray<T>& other)
     itsRWArray.reference(other.itsRWArray);
     itsAccessor   = other.itsAccessor;
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
   return *this;
 }
 
@@ -242,7 +241,7 @@ String PagedArray<T>::name (Bool stripPath) const
 template<class T>
 IPosition PagedArray<T>::shape() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert (ok(), AipsError);
   doReopen();
   return itsROArray.shape (itsRowNumber);
 }
@@ -250,15 +249,8 @@ IPosition PagedArray<T>::shape() const
 template<class T>
 void PagedArray<T>::resize (const TiledShape& newShape)
 {
-  itsLog << LogOrigin("PagedArray<T>", 
-		      "resize(const TiledShape& shape)");
   IPosition tileShape = newShape.tileShape();
   getRWArray().setShape (itsRowNumber, newShape.shape(), tileShape);
-  itsLog << LogIO::DEBUGGING
-	 << "Resizing the PagedArray to shape " << newShape.shape()
-	 << " with a tile shape of " << tileShape << endl
-	 << " in row " << itsRowNumber << " and column '" << itsColumnName
-	 << "' of the Table '" << tableName() << "'" << LogIO::POST;
 }
 
 template<class T>
@@ -385,34 +377,30 @@ Bool PagedArray<T>::ok() const
 {
   if (itsIsClosed) {
     if (itsTable.isNull() == False) {
-      LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr << LogIO::SEVERE << "Table associated with closed PagedArray"
-	     << LogIO::POST;
+      throw AipsError ("PagedArray::ok - "
+	               "Table associated with closed PagedArray");
       return False;
     }
   } else {
     if (itsTable.isNull() == True) {
-      LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr << LogIO::SEVERE << "No Table associated with the PagedArray"
-	     << LogIO::POST;
+      throw AipsError ("PagedArray::ok - "
+             "No Table associated with the PagedArray");
       return False;
     }
     if (itsROArray.isNull() == True) {
-      LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr  << LogIO::SEVERE << "No Array associated with the PagedArray"
-	      << LogIO::POST;
+      throw AipsError ("PagedArray::ok - "
+		       "No Array associated with the PagedArray");
       return False;
     }
     if (itsRowNumber > itsTable.nrow()) {
-      LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-      logErr << LogIO::SEVERE << "Row number is too big for the current Table"
-	     << LogIO::POST;
+      throw AipsError ("PagedArray::ok - "
+		       "Row number is too big for the current Table");
       return False;
     }
   }
   if (itsColumnName.length() == 0) {
-    LogIO logErr(LogOrigin("PagedArray<T>", "ok()"));
-    logErr << LogIO::SEVERE << "Column name cannot by empty" << LogIO::POST;
+      throw AipsError ("PagedArray::ok - "
+		       "Column name cannot by empty");
     return False;
   }
   return True;
@@ -433,8 +421,6 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
   doReopen();
   // Make sure the table is writable.
   itsTable.reopenRW();
-  itsLog << LogOrigin("PagedArray<T>", 
-		      "makeArray(const TiledShape& shape)");
   // Get the lattice shape and tile shape.
   IPosition latShape  = shape.shape();
   IPosition tileShape = shape.tileShape();
@@ -478,11 +464,6 @@ void PagedArray<T>::makeArray (const TiledShape& shape)
   itsRWArray.setShape(itsRowNumber, latShape);
   // create the accessor object
   itsAccessor = ROTiledStManAccessor (itsTable, itsColumnName);
-  itsLog << LogIO::DEBUGGING
-         << "Created PagedArray of shape " << latShape
-         << " with a tile shape of " << tileShape << endl
-         << " in row " << itsRowNumber << " and column '" << itsColumnName
-         << "' of the Table '" << tableName() << "'" << LogIO::POST;
 }
 
 template<class T>

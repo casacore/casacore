@@ -33,7 +33,6 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Utilities/DefaultValue.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Logging/LogIO.h>
 #include <aips/Exceptions/Error.h>
 
 
@@ -56,7 +55,7 @@ LatticeIterInterface<T>::LatticeIterInterface (const Lattice<T>& lattice,
 {
   AlwaysAssert(allocateCursor() == True, AipsError);
   cursorUpdate();
-  AlwaysAssert(ok() == True, AipsError);
+  DebugAssert(ok() == True, AipsError);
 }
 
 template <class T>
@@ -336,10 +335,6 @@ void LatticeIterInterface<T>::relinkArray()
 template<class T>
 Bool LatticeIterInterface<T>::ok() const
 {
-  // For performance reasons the LogIO class is only constructed if an
-  // error is detected. Both function static and file static variables
-  // where considered and rejected for this purpose.
-
   String message;
   Bool flag = True;
   // Check that we have a pointer to a cursor and not a NULL pointer.
@@ -387,8 +382,7 @@ Bool LatticeIterInterface<T>::ok() const
   // We do not check if the Navigator cursor and itsCursor are the same shape,
   // because ArrLatticeIter resizes the cursor only when it is being used.
   if (!flag) {
-    LogIO ROlogErr(LogOrigin("LatticeIterInterface<T>", "ok()"));
-    ROlogErr << LogIO::SEVERE << message << LogIO::POST;
+    throw AipsError ("LatticeIterInterface::ok - " + message);
   }
   return flag;
 }

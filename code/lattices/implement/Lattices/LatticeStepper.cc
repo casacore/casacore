@@ -27,10 +27,10 @@
 
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/Tables/TiledStManAccessor.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
+#include <iostream.h>
+#include <strstream.h>
 
 
 LatticeStepper::LatticeStepper (const IPosition& latticeShape,
@@ -467,14 +467,15 @@ uInt LatticeStepper::calcCacheSize (const ROTiledStManAccessor& accessor,
 
 Bool LatticeStepper::ok() const
 {
+  ostrstream str;
+  str << "LatticeStepper::ok - ";
   const uInt latticeDim = itsIndexer.ndim();
   // Check the cursor shape is OK
   if (itsCursorShape.nelements() != latticeDim) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "cursor shape"
-	   << " (=" << itsCursorShape << ")"
-	   << " has wrong number of dimensions"
-	   << " (ie. not " << latticeDim << ")" << LogIO::POST;
+    str << "cursor shape " << itsCursorShape
+	<< " has wrong number of dimensions (ie. not "
+	<< latticeDim << ')';
+    throw AipsError (String(str));
     return False;
   }
   for (uInt i=0; i < latticeDim; i++) {
@@ -482,54 +483,48 @@ Bool LatticeStepper::ok() const
     // a cursor shape with an axis of length zero makes no sense
     if (itsCursorShape(i) > Int(itsIndexer.fullShape(i))
     ||  itsCursorShape(i) <= 0) {
-      LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-      logErr << LogIO::SEVERE << "cursor shape"
-	     << " (=" << itsCursorShape << ")"
-	     << " is too big or small for full lattice shape"
-	     << " (=" << itsIndexer.fullShape() << ")" << LogIO::POST;
+      str << "cursor shape " << itsCursorShape
+	  << " is too big or small for full lattice shape "
+	  << itsIndexer.fullShape();
+      throw AipsError (String(str));
       return False;
     }
   }
   // Check the cursor position is OK
   if (itsCursorPos.nelements() != latticeDim) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "cursor position"
-	   << " (=" << itsCursorPos << ")"
-	   << " has wrong number of dimensions"
-	   << " (ie. not" << latticeDim << ")" << LogIO::POST;
+    str << "cursor position " << itsCursorPos
+	<< " has wrong number of dimensions (ie. not "
+	<< latticeDim << ')';
+    throw AipsError (String(str));
      return False;
   }
   
   // cursor position or its "far corner" must be inside the (sub)-Lattice
   if (!(itsIndexer.isInside(itsCursorPos)  ||
 	itsIndexer.isInside(itsCursorPos+itsCursorShape-1))){
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "cursor beginning"
-	   << " (=" << itsCursorPos << ")"
-	   << " or end"
-	   << " (=" << itsCursorPos + itsCursorShape - 1 << ")"
-	   << " is entirely outside the lattice shape"
-	   << " (=" << itsIndexer.shape() << ")" << LogIO::POST;
+    str << "cursor beginning " << itsCursorPos
+	<< " or end " << itsCursorPos + itsCursorShape - 1
+	<< " is entirely outside the lattice shape "
+	<< itsIndexer.shape();
+    throw AipsError (String(str));
     return False;
   }
 
   // check the Axis Path is OK
   if(itsAxisPath.nelements() != latticeDim) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "axis path"
-	   << " (=" << itsAxisPath << ")"
-	   << " has wrong number of dimensions"
-	   << " (ie. not " << latticeDim << ")" << LogIO::POST;
+    str << "axis path " << itsAxisPath
+	<< " has wrong number of dimensions (ie. not "
+	<< latticeDim << ')';
+    throw AipsError (String(str));
     return False;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
   for (uInt n=0; n < latticeDim; n++) {
     if (itsAxisPath(n) >= Int(latticeDim)){
-      LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-      logErr << LogIO::SEVERE << "axis path"
-	     << " (=" << itsAxisPath << ")"
-	     << " has elements >= the lattice dim "
-	     << latticeDim - 1 << LogIO::POST;
+      str << "axis path " << itsAxisPath
+	  << " has elements >= the lattice dim "
+	  << latticeDim - 1;
+      throw AipsError (String(str));
       return False;
     }
   }
@@ -537,28 +532,24 @@ Bool LatticeStepper::ok() const
   for (uInt k=0; k < (latticeDim - 1); k++) {
     for (uInt j=k+1; j < latticeDim; j++) {
       if (itsAxisPath(k) == itsAxisPath(j)) {
-	LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-	logErr << LogIO::SEVERE << "axis path"
-	       << " (=" << itsAxisPath << ")"
-	       << " does not have unique elements " << LogIO::POST;
+	str << "axis path " << itsAxisPath
+	    << " does not have unique elements";
+	throw AipsError (String(str));
 	return False;
       }
     }
   }
   // Check the LatticeIndexer is OK
   if (itsIndexer.ok() == False) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "LatticeIndexer"
- 	   << " thinks things are bad" << LogIO::POST;
+    str << "LatticeIndexer thinks things are bad";
+    throw AipsError (String(str));
     return False;
   }
   // Check if itsNiceFit is correct.
   if (itsNiceFit != niceFit()) {
-    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-    logErr << LogIO::SEVERE << "itsNiceFit"
-	   << " (=" << itsNiceFit
-	   << " is inconsistent with niceFit()";
-    logErr << LogIO::POST;
+    str << "itsNiceFit " << itsNiceFit
+	<< " is inconsistent with niceFit()";
+    throw AipsError (String(str));
     return False;
   }
   // Otherwise it has passed all the tests

@@ -28,11 +28,11 @@
 
 #include <aips/Lattices/LatticeIndexer.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
+#include <iostream.h>
+#include <strstream.h>
 
-// default constructor (one dimensional, unit-length instance)
+
 LatticeIndexer::LatticeIndexer()
 : itsFullShape (IPosition(1,1)), 
   itsNdim      (1),
@@ -341,73 +341,73 @@ IPosition LatticeIndexer::absolutePosition (const IPosition& position) const
 // return True if every thing is fine otherwise return False
 Bool LatticeIndexer::ok() const
 {
-  LogIO logErr(LogOrigin("LatticeIndexer", "ok()"));
+  ostrstream str;
+  str << "LatticeIndexer::ok - ";
   if (itsNdim == 0) {
-    logErr << LogIO::SEVERE << "zero dimensions" << LogIO::POST;
+    str << "zero dimensions";
+    throw AipsError (String(str));
     return False;
   }
   if (itsFullShape.nelements() != itsNdim) {
-    logErr << LogIO::SEVERE << "LatticeIndexer::ok() - Lattice has "
-	   << itsFullShape.nelements() << " dimensions"
-	   << " instead of "
-	   << itsNdim << " dimensions"
-	   << "(ie. inconsistancy)" << LogIO::POST;
+    str << "lattice has "
+	<< itsFullShape.nelements() << " instead of "
+	<< itsNdim << " dimensions";
+    throw AipsError (String(str));
     return False;
   }
   for (uInt i=0; i < itsNdim; i++) {
     if (itsFullShape(i) < 0) {
-      logErr << LogIO::SEVERE << "an element of the Lattice shape"
-	     << " (=" << itsFullShape << ")"
-	     << " is negative" << LogIO::POST;
+      str << "lattice shape " << itsFullShape
+	  << " has a negative element";
+      throw AipsError (String(str));
       return False;
     }
   }
   if (itsAxisInc.nelements() != itsNdim) {
-    logErr << LogIO::SEVERE << "increments"
-	   << " (=" << itsAxisInc << ")"
-	   << " are the wrong dimension" 
-	   << " (ie. not" << itsNdim << ")" << LogIO::POST;
+    str << "increments " << itsAxisInc
+	<< " are the wrong dimension (ie. not " 
+	<< itsNdim << ')';
+      throw AipsError (String(str));
     return False;
   }
   for (uInt j=0; j < itsNdim; j++) {
     if (itsAxisInc(j) <= 0 || itsAxisInc(j) > itsFullShape(j)) {
-      logErr << LogIO::SEVERE << "axis increments"
-	     << "(=" << itsAxisInc << ")"
-	     << " are negative OR larger than lattice shape"
-	     << " (=" << itsFullShape << ")" << LogIO::POST;
+      str << "axis increments " << itsAxisInc
+	  << " are negative OR larger than lattice shape "
+	  << itsFullShape;
+      throw AipsError (String(str));
       return False;
     }
   }
   if (itsOffset.nelements() != itsNdim) {
-    logErr << LogIO::SEVERE << "offset"
-	   << " (=" << itsOffset << ")"
-	   << " is the wrong dimension"
-	   << " (ie. not " << itsNdim << ")" << LogIO::POST;
+    str << "offset " << itsOffset
+	<< " is the wrong dimension (ie. not "
+	<< itsNdim << ')';
+      throw AipsError (String(str));
     return False;
   }
   for (uInt k=0; k < itsNdim; k++) {
     if (itsOffset(k) < 0 || itsOffset(k) >= itsFullShape(k)) {
-      logErr << LogIO::SEVERE << "offset"
-	     << " (=" << itsOffset << ")"
-	     << " is larger than lattice shape "
-	     << " (=" << itsFullShape << ")" 
-	     << " or negative" << LogIO::POST;
+      str << "offset " << itsOffset
+	  << " is larger than lattice shape "
+	  << itsFullShape << " or negative";
+      throw AipsError (String(str));
       return False;
     }
   }
   if (itsShape.nelements() != itsNdim) {
-    logErr << LogIO::SEVERE << "sub-Lattice shape"
-	   << " (=" << itsShape << ")"
-	   << " has wrong number of dimensions"
-	   << " (ie. not" << itsNdim << ")" << LogIO::POST;
+    str << "sub-lattice shape " << itsShape
+	<< " has wrong number of dimensions (ie. not "
+	<< itsNdim << ')';
+      throw AipsError (String(str));
     return False;
   }
   for (uInt m=0; m < itsNdim; m++) {
     if (itsShape(m) <= 0 || itsShape > itsFullShape(m)) {
-      logErr << LogIO::SEVERE << "sub-Lattice shape"
-	     << " (=" << itsShape << ")"
-	     << " is less than or equal to zero or larger than lattice shape"
-	     << " (=" << itsFullShape << ")" << LogIO::POST;
+      str << "sub-lattice shape " << itsShape
+	  << " is less than or equal to zero or larger than lattice shape "
+	  << itsFullShape;
+      throw AipsError (String(str));
       return False;
     }
   }
