@@ -549,17 +549,27 @@ void FITSImage::crackHeaderFloat (CoordinateSystem& cSys,
 
 // CoordinateSystem
 
-    cSys = ImageFITSConverter::getCoordinateSystem(header, os, shape);
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, header, os, shape, dropStokes);
     ndim = shape.nelements();
 
 // Brightness Unit
 
     brightnessUnit = ImageFITSConverter::getBrightnessUnit(header, os);
 
-
 // ImageInfo
 
     imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
 
 // Get rid of anything else
         
@@ -655,7 +665,9 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 
 // CoordinateSystem
 
-    cSys = ImageFITSConverter::getCoordinateSystem(header, os, shape);
+    Bool dropStokes = True;
+    Int stokesFITSValue = 1;
+    cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, header, os, shape, dropStokes);
     ndim = shape.nelements();
 
 // Brightness Unit
@@ -665,6 +677,15 @@ void FITSImage::crackHeaderShort (CoordinateSystem& cSys,
 // ImageInfo
 
     imageInfo = ImageFITSConverter::getImageInfo(header);
+
+// If we had one of those unofficial pseudo-Stokes on the Stokes axis, store it in the imageInfo
+
+    if (stokesFITSValue != -1) {
+       ImageInfo::ImageTypes type = ImageInfo::imageTypeFromFITS(stokesFITSValue);
+       if (type!= ImageInfo::Undefined) {
+          imageInfo.setImageType(type);
+       }
+    }
 
 // Get rid of anything else
         
