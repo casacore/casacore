@@ -65,15 +65,16 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
    const LELImageCoord* pImCoord =
                          dynamic_cast<const LELImageCoord*>(pLattCoord);
    AlwaysAssert (pImCoord != 0, AipsError);
-   coords_p = pImCoord->coordinates();
+   setCoordsMember (pImCoord->coordinates());
 }
 
 template <class T>
 ImageExpr<T>::ImageExpr (const ImageExpr<T>& other)
 : ImageInterface<T>(other),
   latticeExpr_p (other.latticeExpr_p),
-  pBool_p(other.pBool_p),
-  name_p(other.name_p)
+  unit_p        (other.unit_p),
+  pBool_p       (other.pBool_p),
+  name_p        (other.name_p)
 {}
  
 template <class T>
@@ -85,8 +86,9 @@ ImageExpr<T>& ImageExpr<T>::operator=(const ImageExpr<T>& other)
    if (this != &other) {
       ImageInterface<T>::operator= (other);
       latticeExpr_p = other.latticeExpr_p;
-      pBool_p = other.pBool_p;
-      name_p = other.name_p;
+      unit_p        = other.unit_p;
+      pBool_p       = other.pBool_p;
+      name_p        = other.name_p;
    }
    return *this;
 } 
@@ -139,51 +141,33 @@ template <class T>
 void ImageExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
 			       const IPosition&)
 {
-   throw (AipsError ("ImageExpr::putSlice - is not possible as ImageExpr is not writable"));
+   throw (AipsError ("ImageExpr::putSlice - "
+		     "is not possible as ImageExpr is not writable"));
 }
 
 template<class T> 
-Bool ImageExpr<T>::setUnits(const Unit&)
+Bool ImageExpr<T>::setUnits(const Unit& unit)
 {  
-   throw(AipsError("ImageExpr<T>::setUnits - ImageExpr is not writable"));
-   return False;
+   unit_p = unit;
+   return True;
 }
    
 template<class T> Unit ImageExpr<T>::units() const
 {  
-  Unit unit;
-  return unit;
+  return unit_p;
 }
 
 
 template <class T> 
-String ImageExpr<T>::name(const Bool) const
+String ImageExpr<T>::name (Bool) const
 {
    return name_p;
 }
 
-template <class T> 
-Bool ImageExpr<T>::setCoordinateInfo(const CoordinateSystem& cSys)
-{
-// The ImageExpr is read-only, so nothing to make permanent
-
-   return ImageInterface<T>::setCoordinateInfo(cSys);
-}
-     
-
-
-template <class T>
-LELCoordinates ImageExpr<T>::lelCoordinates() const
-{
-   return latticeExpr_p.lelCoordinates();
-}
 
 template<class T> 
 const RecordInterface & ImageExpr<T>::miscInfo() const
 {
-
-// Don't have access to this yet
-
   return rec_p;
 }
  
@@ -247,4 +231,14 @@ template<class T>
 void ImageExpr<T>::resync()
 {
   latticeExpr_p.resync();
+}
+template<class T>
+void ImageExpr<T>::tempClose()
+{
+  latticeExpr_p.tempClose();
+}
+template<class T>
+void ImageExpr<T>::reopen()
+{
+  latticeExpr_p.reopen();
 }
