@@ -1981,3 +1981,4 @@
 08 095 src mv trial/implement/guiutils/aipsbroswer.g trial/implement/guiutils/aipsbrowser.g
 08 118 src mv doc/notes/206.dir/aips++_gbt.tex doc/notes/206.dir/aips2_gbt.tex
 08 124 sys rm lib/libsds.a
+08 137 src mv nrao/apps/xrtgplot1d/gplot1d.xres nrao/apps/xrtgplot1d/xrtgplot1d.xres
