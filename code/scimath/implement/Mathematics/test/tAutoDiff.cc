@@ -39,6 +39,10 @@
 
 #include <aips/iostream.h>
 
+// Made some minor changes, so we don't compare floating point values directly, i.e. use ==
+// but rather use nearAbs, as the floating point between chips won't necessarily give the
+// same answer. wky 23-aug-2004
+
 int main() {
   uInt nerr = 0;
   // test the constructors
