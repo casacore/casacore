@@ -87,6 +87,7 @@ protected:
   void makePlot ( PGPlotterInterface &pgp,uInt ich );
 
   Double  threshold;
+  uInt    min_population;
   uInt    nbin_y,nbin_uv;
   Bool    binned;
   
