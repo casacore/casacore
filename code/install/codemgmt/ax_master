@@ -4163,3 +4163,4 @@
 14 065 src mv trial/apps/viewer/arrowcrossb2.xbm trialdisplay/apps/viewer/arrowcrossb2.xbm
 14 065 src mv trial/apps/viewer/arrowcrossb3.xbm trialdisplay/apps/viewer/arrowcrossb3.xbm
 14 065 src mv trial/apps/viewer/brightcontrastb0.xbm trialdisplay/apps/viewer/brightcontrastb0.xbm
+14 065 src mv trial/apps/viewer/brightcontrastb1.xbm trialdisplay/apps/viewer/brightcontrastb1.xbm
