@@ -1,5 +1,5 @@
 //# TableKeyword.cc: A keyword value representing a table
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -95,6 +95,16 @@ void TableKeyword::setRW()
 	    table_p->reopenRW();
 	}
     }
+}
+
+Bool TableKeyword::isMultiUsed (Bool checkSubTables) const
+{
+    if (! table_p->isNull()) {
+        return table_p->isMultiUsed (checkSubTables);
+    }
+    // The Table is closed immediately (thus not left open unnecessarily).
+    Table tab(name_p, Table::Old);
+    return tab.isMultiUsed (checkSubTables);
 }
 
 void TableKeyword::renameTable (const String& newParentName,

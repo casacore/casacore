@@ -1,5 +1,5 @@
 //# TableKeyword.h: A keyword value representing a table
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -152,6 +152,11 @@ public:
     // If the table is already open, it will be reopened with read/write
     // access if the table is writable.
     void setRW();
+
+    // Is the table in use in another process?
+    // If <src>checkSubTables</src> is set, it is also checked if
+    // a subtable is used in another process.
+    Bool isMultiUsed (Bool checkSubTables) const;
 
     // Get the name of the table.
     const String& tableName() const;
