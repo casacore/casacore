@@ -36,7 +36,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
 
-#include <iostream.h>
+#include <casa/iostream.h>
 
 int main()
 {
