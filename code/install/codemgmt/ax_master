@@ -4705,3 +4705,4 @@
 14 304 src mv trial/apps/sditerator/changelog trial/apps/oldsditerator/changelog
 14 304 src mv trial/apps/sditerator/makefile trial/apps/oldsditerator/makefile
 14 304 src mv trial/apps/sditerator/templates trial/apps/oldsditerator/templates
+14 304 src mv trial/apps/sditerator/sdaverager.g trial/apps/oldsditerator/oldsdaverager.g
