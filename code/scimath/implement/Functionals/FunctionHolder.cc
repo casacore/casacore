@@ -448,20 +448,20 @@ void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
 
 //# Instantiations
 template class FunctionHolder<Double>;
-template Bool FunctionHolder<Double>::getType(String &,
+template Bool FunctionHolder<Double>::getType<Double>(String &,
 					      Function<Double> *&,
 					      const RecordInterface &);
-template Bool FunctionHolder<Double>::getType(String &,
+template Bool FunctionHolder<Double>::getType<Double>(String &,
 					      Function<Double> *&);
-template Bool FunctionHolder<Double>::getRecord(String &,
+template Bool FunctionHolder<Double>::getRecord<Double>(String &,
 						Function<Double> *&,
 						const RecordInterface &);
-template Bool FunctionHolder<Double>::getType(String &,
+template Bool FunctionHolder<Double>::getType<AutoDiff<Double> >(String &,
 					      Function<AutoDiff<Double> > *&,
 					      const RecordInterface &);
-template Bool FunctionHolder<Double>::getType(String &,
+template Bool FunctionHolder<Double>::getType<AutoDiff<Double> >(String &,
 					      Function<AutoDiff<Double> > *&);
-template Bool FunctionHolder<Double>::getRecord(String &,
+template Bool FunctionHolder<Double>::getRecord<AutoDiff<Double> >(String &,
 						Function<AutoDiff<Double> > *&,
 						const RecordInterface &);
 ///template class FunctionHolder<Complex>;
