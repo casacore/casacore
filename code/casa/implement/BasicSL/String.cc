@@ -472,9 +472,10 @@ SubString &SubString::operator=(const Char c) {
 }
 
 // Create some needed templates
-template void __reverse<Char *>(Char *, Char *, random_access_iterator_tag);
-template Char *transform<Char *, Char *, Int (*)(Int)>(Char *, Char *, Char *,
-			      					Int (*)(Int));
+#if defined(__GNUG__)
+template void __reverse(Char *, Char *, random_access_iterator_tag);
+#endif
+template Char *transform(Char *, Char *, Char *, Int (*)(Int));
 
 #else  /* Old String class */
 //# String.cc: String classes
