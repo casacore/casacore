@@ -2103,3 +2103,4 @@
 08 323 src rm trial/apps/loadMRefData/iersformat.awk
 08 325 src rm nrao/implement/VLA/test/templates
 08 325 src rm nrao/apps/sddfiller/templates
+08 332 src rm nrao/apps/gbt_utscr
