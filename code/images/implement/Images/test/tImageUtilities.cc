@@ -1,3 +1,4 @@
+
 //# tImageUtilities.cc: Test program for the static ImageUtilities functions
 //# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
@@ -25,22 +26,26 @@
 //#
 //# $Id$
 
-#include <trial/Images/ImageUtilities.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Images/ImageFITSConverter.h>
-#include <trial/Coordinates/CoordinateSystem.h>
-#include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Coordinates/SpectralCoordinate.h>
-#include <aips/Lattices/PagedArray.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/MaskedArray.h>
+#include <trial/Coordinates/CoordinateSystem.h>
+#include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Images/ImageUtilities.h>
+#include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageFITSConverter.h>
+#include <trial/Images/TempImage.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/ArrayLattice.h>
+#include <trial/Lattices/LatticeUtilities.h>
+#include <aips/Logging/LogIO.h>
+#include <aips/Logging/LogOrigin.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Directory.h>
 #include <aips/IO/RegularFileIO.h>
-#include <aips/Logging/LogIO.h>
-#include <aips/Logging/LogOrigin.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/PtrHolder.h>
@@ -50,8 +55,8 @@ void doOpens()
 {
    Directory dir("tImageUtilities_tmp");
    dir.create();
-   LogIO os(LogOrigin("tImageUtilities", "main()", WHERE));
-
+   LogIO os(LogOrigin("tImageUtilities", "doOpens()", WHERE));
+   os << "Open Image tests" << LogIO::POST;
 //
    {
       String name1("tImageUtilities_tmp/app.img");
@@ -81,6 +86,9 @@ void doOpens()
 
 void doTypes()
 {
+   LogIO os(LogOrigin("tImageUtilities", "doTypes()", WHERE));
+   os << "Image Type test" << LogIO::POST;
+//
    Directory dir("tImageUtilities_tmp");
    dir.create();
   {
@@ -173,6 +181,7 @@ void doConversions()
 {
    LogOrigin lor("tImageUtilities", "doConversions()", WHERE);
    LogIO os(lor);
+   os << "Conversion Tests" << LogIO::POST;
 //
    {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
@@ -232,31 +241,128 @@ void doConversions()
 
 void doBin()
 {
-      uInt n = 32;
-      IPosition shape(1,n);
-      SpectralCoordinate cIn, cOut;
-      Array<Float> data(shape);
-      Array<Bool> mask(shape);
-      indgen(data);
-      mask = True;
-      MaskedArray<Float> maIn(data,mask);
-      MaskedArray<Float> maOut;
-      uInt bin = 2;
-      uInt axis = 0;
-      ImageUtilities::bin(maOut, cOut, maIn, cIn, axis, bin);
-      AlwaysAssert(maOut.nelements()==n/bin, AipsError);
-      Array<Float> pOut(maOut.shape());
-      indgen(pOut);
-      pOut *= Float(bin);
-      pOut += Float(0.5);
-      AlwaysAssert(allNear(pOut,maOut.getArray(),1e-6), AipsError);
-      AlwaysAssert(allEQ(maOut.getMask(),True), AipsError);
+   LogOrigin lor("tImageUtilities", "doBins()", WHERE);
+   LogIO os(lor);
+   os << "Binning Tests" << LogIO::POST;
+//
+   uInt n = 32;
+   IPosition shape(1,n);
+   SpectralCoordinate cIn, cOut;
+   Array<Float> data(shape);
+   Array<Bool> mask(shape);
+   indgen(data);
+   mask = True;
+   MaskedArray<Float> maIn(data,mask);
+   MaskedArray<Float> maOut;
+   uInt bin = 2;
+   uInt axis = 0;
+//
+   ImageUtilities::bin(maOut, cOut, maIn, cIn, axis, bin);
+   AlwaysAssert(maOut.nelements()==n/bin, AipsError);
+   Array<Float> pOut(maOut.shape());
+   indgen(pOut);
+   pOut *= Float(bin);
+   pOut += Float(0.5);
+   AlwaysAssert(allNear(pOut,maOut.getArray(),1e-6), AipsError);
+   AlwaysAssert(allEQ(maOut.getMask(),True), AipsError);
+}
+
+void doFits()
+{
+   LogOrigin lor("tImageUtilities", "doFits()", WHERE);
+   LogIO os(lor);
+   os << "Fitting Tests" << LogIO::POST;
+//
+   uInt n = 64;
+   IPosition shape(1,n);
+
+// Fill data with simple polynomial
+
+   Array<Bool> mask(shape);
+   mask = True;
+//
+   IPosition pos(1);
+   Array<Float> data(shape);
+   for (uInt i=0; i<n; i++) {
+      pos(0) = i;
+      data(pos) = 2 + 3*i;
+   }
+
+// Make input Image
+
+   LinearCoordinate lC(2);
+   CoordinateSystem cSys;
+   cSys.addCoordinate(lC);
+//
+   IPosition imShape(2,n,20);
+   TiledShape tShape(imShape);
+   TempImage<Float> im(tShape, cSys);
+
+// Replicate data array
+
+   Slicer sl (IPosition(2,0,0), imShape, Slicer::endIsLength);
+   LatticeUtilities::replicate (im, sl, data);
+
+// Attach mask
+
+   ArrayLattice<Bool> maskLat(imShape);
+   maskLat.set(True);
+   im.attachMask(maskLat);
+//
+   ImageInterface<Float>* pWeight = 0;
+
+// Make output images
+
+   ImageInterface<Float>* pFit = 0;
+   pFit = new TempImage<Float>(tShape, cSys);
+   ImageInterface<Float>* pResid = 0;
+   pResid = new TempImage<Float>(tShape, cSys);
+//
+   uInt axis = 0;
+   uInt nGauss = 0;
+   Int poly = 1;
+   ImageUtilities::fitProfiles(pFit, pResid, im, pWeight,
+                               axis, nGauss, poly, True);
+   if (pWeight) delete pWeight;
+
+// Check results.
+
+   Double tol = 1.0e-6;
+   uInt ny = imShape(1);
+   IPosition pos2(2,0,0);
+   IPosition sliceShape(2,imShape(0), 1);
+   if (pFit) {
+      for (uInt j=0; j<ny; j++) {
+         pos2(1) = j;
+         Array<Float> data2 = pFit->getSlice(pos2, sliceShape,True);
+         AlwaysAssert(allNear(data2,data2,tol), AipsError);
+//
+         Array<Bool> mask2 = pFit->getMaskSlice(pos2, sliceShape,True);
+         AlwaysAssert(allEQ(mask2,True), AipsError);
+      }
+      delete pFit;
+   }
+//
+   if (pResid) {
+      Float zero(0.0);
+      Float one(1.0);
+      for (uInt j=0; j<ny; j++) {
+         pos2(1) = j;
+         Vector<Float> data2 = pResid->getSlice(pos2, sliceShape,True);
+         AlwaysAssert(allNear(data2+one,one,tol), AipsError);
+//
+         Array<Bool> mask2 = pResid->getMaskSlice(pos2, sliceShape,True);
+         AlwaysAssert(allEQ(mask2,True), AipsError);
+      }
+      delete pResid;
+   }
 }
 
   
 int main()
 {
   try {
+    doFits();
     doBin();
     doTypes();
     doOpens();
