@@ -269,6 +269,7 @@ public:
     MDirection(const Measure *dt);
     MDirection(const MeasValue *dt);
     MDirection(const MDirection::Ref &rf);
+    MDirection(MDirection::Types rf);
 // </group>
 
 //# Destructor

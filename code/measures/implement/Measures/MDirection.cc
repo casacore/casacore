@@ -79,6 +79,9 @@ MDirection::MDirection(const MeasValue *dt) :
 MDirection::MDirection(const MDirection::Ref &rf) : 
   MeasBase<MVDirection, MDirection::Ref>(rf) {}
 
+MDirection::MDirection(MDirection::Types rf) :
+  MeasBase<MVDirection, MDirection::Ref>(rf) {}
+
 //# Destructor
 MDirection::~MDirection() {}
 

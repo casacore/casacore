@@ -1,5 +1,5 @@
 //# MeasBase.cc: Base class for all measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -74,6 +74,10 @@ MeasBase<Mv,Mr>::MeasBase(const Measure *dt) :
 template <class Mv, class Mr>
 MeasBase<Mv,Mr>::MeasBase(const Mr &rf) : 
   data(), ref(rf), unit() {}
+
+template <class Mv, class Mr>
+MeasBase<Mv,Mr>::MeasBase(const uInt rf) :
+  data(), ref(Mr(rf)), unit() {}
 
 //# Destructor
 template <class Mv, class Mr>

@@ -1,5 +1,5 @@
 //# MeasBase.h: Base class for all measures
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -100,6 +100,7 @@ public:
   MeasBase(const Quantity &dt, uInt rf);
   MeasBase(const Measure *dt);
   MeasBase(const Mr &rf);
+  MeasBase(const uInt rf);
   // </group>
   
   //# Destructor
