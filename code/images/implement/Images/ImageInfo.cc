@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <trial/Images/ImageInfo.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Arrays/Vector.h>
