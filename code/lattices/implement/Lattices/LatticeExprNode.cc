@@ -36,6 +36,7 @@
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELCondition.h>
 #include <trial/Lattices/LELFunction.h>
+#include <trial/Lattices/LELSpectralIndex.h>
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LELRegion.h>
 #include <trial/Lattices/LCRegion.h>
@@ -1359,6 +1360,31 @@ LatticeExprNode pa (const LatticeExprNode& left,
    return LatticeExprNode();         // shut compiler up
 }
 
+LatticeExprNode spectralindex (const LatticeExprNode& left,
+			       const LatticeExprNode& right)
+{ 
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 2d function spectralindex" << endl;
+#endif
+   DataType dtype = LatticeExprNode::resultDataType (left.dataType(),
+						     right.dataType());
+   Block<LatticeExprNode> arg(2);
+   switch (dtype) {
+   case TpFloat:
+      arg[0] = left.makeFloat();
+      arg[1] = right.makeFloat();
+      return new LELSpectralIndex<Float> (arg);
+   case TpDouble:
+      arg[0] = left.makeDouble();
+      arg[1] = right.makeDouble();
+      return new LELSpectralIndex<Double> (arg);
+   default:
+      throw (AipsError ("LatticeExprNode::spectralindex - "
+			"Bool or Complex argument used in function"));
+   }
+   return LatticeExprNode();
+}
+
 
 LatticeExprNode operator+ (const LatticeExprNode& left,
                            const LatticeExprNode& right)
@@ -1609,6 +1635,15 @@ LatticeExprNode length (const LatticeExprNode& expr,
    arg[0] = expr;
    arg[1] = axis;
    return new LELFunctionFloat(LELFunctionEnums::LENGTH, arg);
+}
+
+LatticeExprNode isnan (const LatticeExprNode& expr)
+{  
+#if defined(AIPS_TRACE)
+   cout << "LatticeExprNode:: 1d function isnan" << endl;
+#endif
+   Block<LatticeExprNode> arg(1, expr);
+   return new LELFunctionBool(LELFunctionEnums::ISNAN, arg);
 }
 
 LatticeExprNode mask (const LatticeExprNode& expr)
@@ -1968,7 +2003,8 @@ DataType LatticeExprNode::resultDataType (DataType left, DataType right)
 
 LELAttribute LatticeExprNode::checkArg (const Block<LatticeExprNode>& arg,
 					const Block<Int>& argType,
-					Bool expectArray)
+					Bool expectArray,
+					Bool matchAxes)
 {
     if (arg.nelements() != argType.nelements()) {
 	throw (AipsError ("LatticeExprNode::checkArg - "
@@ -1982,7 +2018,7 @@ LELAttribute LatticeExprNode::checkArg (const Block<LatticeExprNode>& arg,
 	    throw (AipsError ("LatticeExprNode::checkArg - "
 			      "a function argument has invalid data type"));
 	}
-	attr = LELAttribute (attr, arg[i].getAttribute());
+	attr = LELAttribute (attr, arg[i].getAttribute(), matchAxes);
     }
     if (expectArray  &&  attr.isScalar()){
 	throw (AipsError ("LatticeExprNode::checkArg - "

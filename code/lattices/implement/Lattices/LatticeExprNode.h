@@ -338,6 +338,9 @@ class LatticeExprNode
    friend LatticeExprNode length (const LatticeExprNode& expr,
 				  const LatticeExprNode& axis);
 
+// Test if a value is a NaN.
+   friend LatticeExprNode isnan (const LatticeExprNode& expr);
+
 // Functions operating on a logical expression resulting in a scalar;
 // Functions "any" (are any pixels "True") and "all" (are all pixels
 // "True") result in a Bool; functions "ntrue" and "nfalse" result 
@@ -367,6 +370,11 @@ class LatticeExprNode
 // and right are images of Stokes U and Q, respectively.
    friend LatticeExprNode pa (const LatticeExprNode& left,
                               const LatticeExprNode& right);
+
+// This function finds the spectral index
+// <src>alpha = log(s1/s2) / log(f1/f2)</src>.
+   friend LatticeExprNode spectralindex (const LatticeExprNode& left,
+					 const LatticeExprNode& right);
 
 // Function resembling the ternary <src>?:</src> construct in C++.
 // The argument "condition" has to be a Bool scalar or lattice.
@@ -555,9 +563,13 @@ public:
    static DataType resultDataType (DataType left, DataType right);
 
 // Check the arguments of a function and return the resulting attribute object.
+// The matchAxes argument tells if the axes have to match exactly or
+// whether it is possible that one expression is a subset of another
+// (i.e. that axes may be missing).
    static LELAttribute checkArg (const Block<LatticeExprNode>& arg,
 				 const Block<Int>& argType,
-				 Bool expectArray);
+				 Bool expectArray,
+				 Bool matchAxes = True);
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
   // <group>
