@@ -804,13 +804,13 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
 // Are we going to see the Gaussian ?
  
    Bool doGauss2 = False;
-   if (doGauss_p && stats(ImageStatsBase::SIGMA)>0) doGauss2 = True;
+   if (doGauss_p && stats(LatticeStatsBase::SIGMA)>0) doGauss2 = True;
  
 // Get extrema. 
 
    Vector<T> range(2);
-   range(0) = stats(ImageStatsBase::MIN);
-   range(1) = stats(ImageStatsBase::MAX);
+   range(0) = stats(LatticeStatsBase::MIN);
+   range(1) = stats(LatticeStatsBase::MAX);
    T xMin = range(0);
    T xMax = range(1);
    T yMin = convertF(0.0);
@@ -827,8 +827,8 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
    uInt nGPts;
    T gMax;
    if (doGauss2) {
-      makeGauss (nGPts, gMax, gX, gY, stats(ImageStatsBase::MEAN), 
-                 stats(ImageStatsBase::SIGMA), linearSum,
+      makeGauss (nGPts, gMax, gX, gY, stats(LatticeStatsBase::MEAN), 
+                 stats(LatticeStatsBase::SIGMA), linearSum,
                  xMin, xMax, binWidth);   
       yMax = max(yMax, gMax);
    }
@@ -874,29 +874,29 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
       os_p.output().setf(ios::left, ios::adjustfield);
    
       os_p << endl << "No. binned = ";
-      os_p.output() << setw(oWidth) << Int(stats(ImageStatsBase::NPTS)+0.1) << endl;
+      os_p.output() << setw(oWidth) << Int(stats(LatticeStatsBase::NPTS)+0.1) << endl;
 
       os_p << "Sum        = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::SUM) <<   "       Mean     = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MEAN) << endl;
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::SUM) <<   "       Mean     = ";
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MEAN) << endl;
 
       os_p << "Variance   = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::VARIANCE);
-      if (stats(ImageStatsBase::VARIANCE)> 0.0) {
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::VARIANCE);
+      if (stats(LatticeStatsBase::VARIANCE)> 0.0) {
          os_p << "       Sigma    = ";
-         os_p.output() << setw(oWidth) << stats(ImageStatsBase::SIGMA) << endl;
+         os_p.output() << setw(oWidth) << stats(LatticeStatsBase::SIGMA) << endl;
       } else {
          os_p << endl;
       }
       os_p << "Rms        = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::RMS) << endl;
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::RMS) << endl;
  
       os_p << endl;  
       os_p << "Bin width  = ";
       os_p.output() << setw(oWidth) << binWidth << endl;
       os_p << "Min binned = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MIN) << "       Max binned = ";
-      os_p.output() << setw(oWidth) << stats(ImageStatsBase::MAX) << endl << endl << endl;
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MIN) << "       Max binned = ";
+      os_p.output() << setw(oWidth) << stats(LatticeStatsBase::MAX) << endl << endl << endl;
       os_p.post();
    }
       
@@ -972,8 +972,8 @@ void ImageHistograms<T>::extractOneHistogram (T& linearSum,
 // FIsh out min and max
 
    Vector<T> range(2);
-   range(0) = stats(ImageStatsBase::MIN);
-   range(1) = stats(ImageStatsBase::MAX);
+   range(0) = stats(LatticeStatsBase::MIN);
+   range(1) = stats(LatticeStatsBase::MAX);
 
 // Set bin width  
       
@@ -1439,8 +1439,8 @@ void HistTiledCollapser<T>::process (uInt index1,
    Vector<T> stats;
    pStats_p->getStats(stats, startPos, True);
    Vector<T> clip(2);
-   clip(0) = stats(ImageStatsBase::MIN);
-   clip(1) = stats(ImageStatsBase::MAX);
+   clip(0) = stats(LatticeStatsBase::MIN);
+   clip(1) = stats(LatticeStatsBase::MAX);
 
 // Set histogram bin width
    
