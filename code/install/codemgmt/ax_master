@@ -3763,3 +3763,4 @@
 14 027 src mv atnf/apps/rpfitsfiller2/newrpfitsfiller.cc atnf/apps/rpfitsfiller2/rpfitsfiller2.cc
 14 027 src mv atnf/apps/rpfitsfiller2/newrpfitsfiller.help atnf/apps/rpfitsfiller2/rpfitsfiller2.help
 14 029 src mv aips/implement/OS/test/tDirectory.exec aips/implement/OS/test/tDirectory.run
+14 029 src mv aips/implement/OS/test/tDirectoryIterator.exec aips/implement/OS/test/tDirectoryIterator.run
