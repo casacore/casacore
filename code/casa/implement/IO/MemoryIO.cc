@@ -123,7 +123,7 @@ Int MemoryIO::read (uInt size, void* buf, Bool throwException) {
   }
   const Int bytesLeft = itsUsed - itsPosition;
   Int bytesRead = 0;
-  if (size <= bytesLeft) {
+  if (Int(size) <= bytesLeft) {
     memcpy (buf, itsBuffer + itsPosition, size);
     itsPosition += size;
     bytesRead = size;
