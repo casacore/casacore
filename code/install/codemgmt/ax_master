@@ -2593,3 +2593,4 @@
 09 515 src mv trial/implement/Measures/UVWMachine.h aips/implement/Measures/UVWMachine.h
 09 515 src mv trial/implement/Measures/UVWMachine.cc aips/implement/Measures/UVWMachine.cc
 09 515 src mv trial/implement/Measures/test/tUVWMachine.cc aips/implement/Measures/test/tUVWMachine.cc
+09 515 src mv trial/implement/Measures/test/tUVWMachine.out aips/implement/Measures/test/tUVWMachine.out
