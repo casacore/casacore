@@ -60,7 +60,7 @@ get array row 8
 get scalar row 9 defined=111111
 get array row 9
  defined=111 ndim=3,3,3
- canAddRow=1 canRemoveRow=1 needToSync=0
+ canAddRow=1 canRemoveRow=1
 Checking table tForwardColRow_tmp.data0
 get scalar row 0 defined=111111
 get array row 0
