@@ -240,6 +240,14 @@ public:
   virtual Bool ok() const;
 
 private:
+  Double calcSample(const MDirection::MVType& compDirValue, 
+		    const MDirection::MVType& dirVal, 
+		    const Double majRad, const Double minRad, 
+		    const Double pixValue) const;
+  Double calcVis(Double u, Double v, const Double factor) const;
+  static void rotateVis(Double& u, Double& v, 
+			const Double cpa, const Double spa);
+
   //# The parameters of the disk
   // <group>
   Double itsMajValue;
@@ -248,4 +256,5 @@ private:
   Double itsHeight;
   // </group>
 };
+
 #endif
