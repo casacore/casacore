@@ -4304,3 +4304,4 @@
 14 206 src rm trial/apps/newdish/dish_recbrowser.g
 14 206 src rm trial/apps/newdish/dishpg.g
 14 206 src rm trial/apps/newdish/dishplot.g
+14 206 src rm trial/apps/newdish/dishresman.g
