@@ -381,13 +381,12 @@ void ImageSummary<T>::list (LogIO& os,
 
 // List DirectionCoordinate type from the first DirectionCoordinate we find
 
-   Vector<uInt> directionAxes = CoordinateUtil::findDirectionAxes(cSys_p);
-   if (directionAxes.nelements() != 0) {
-      Int coordinate = cSys_p.findCoordinate(Coordinate::DIRECTION);
-      if (coordinate >= 0) {           
-         os << "Direction system : " 
-            << MDirection::showType(cSys_p.directionCoordinate(uInt(coordinate)).directionType()) << endl;
-      }
+   Vector<Int> pixelAxes, worldAxes;
+   Int coordinate;
+   CoordinateUtil::findDirectionAxes(pixelAxes, worldAxes, coordinate, cSys_p);
+   if (coordinate >= 0) {           
+      os << "Direction system : " 
+         << MDirection::showType(cSys_p.directionCoordinate(uInt(coordinate)).directionType()) << endl;
    }
 
 // List rest frequency and reference frame from the first spectral axis we find
@@ -473,9 +472,8 @@ void ImageSummary<T>::list (LogIO& os,
 
 
    uInt pixelAxis;
-   Int coordinate, axisInCoordinate;
+   Int axisInCoordinate;
    for (pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
-
 
 // Find coordinate number for this pixel axis
  
