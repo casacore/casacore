@@ -1,5 +1,5 @@
 //# tFit2D.cc: Test nonlinear least squares classes for 2D Gaussian
-//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -81,13 +81,14 @@ int main(int argc, char **argv)
    const Int nx = inputs.getInt("nx");   
    const Int ny = inputs.getInt("ny");   
    const Bool norm = inputs.getBool("norm");
+   if (norm) ;			// Stop warning
    const Block<Int> mask = inputs.getIntArray("mask");
    const Block<Double> includeRange = inputs.getDoubleArray("include");
    const Block<Double> excludeRange = inputs.getDoubleArray("exclude");
    const String outfile = inputs.getString("outfile");
 //
-   LogOrigin or("tFit2D", "main()", WHERE);
-   LogIO logger(or);
+   LogOrigin lor("tFit2D", "main()", WHERE);
+   LogIO logger(lor);
 //
    Fit2D fitter(logger);
 //
