@@ -1,5 +1,5 @@
 //# Inputs.h: a module for simple command line user interface classes
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -148,33 +148,33 @@
 // 04 {
 // 05    Input inputs(1);
 // 06    // Define our input structure
-// 07    inputs.Version("Id: xyPlot.C,v 1.1 1993/01/29 20:45:48 bglenden Exp");
-// 08    inputs.Create("xyfile", 
+// 07    inputs.version("Id: xyPlot.C,v 1.1 1993/01/29 20:45:48 bglenden Exp");
+// 08    inputs.create("xyfile", 
 // 09                "/tmp/xy.aipsio",
 // 10                "File which contains xy vectors",
 // 11                "InFile");
-// 12    inputs.Create("overplot", "False", "Multiple plots?", "Bool");
-// 13    inputs.Create("lines", "True", "Plot lines or points?", "Bool");
+// 12    inputs.create("overplot", "False", "Multiple plots?", "Bool");
+// 13    inputs.create("lines", "True", "Plot lines or points?", "Bool");
 // 14    
 // 15    // and Fill them from the command line
-// 16    inputs.ReadArguments(argc, argv);
+// 16    inputs.readArguments(argc, argv);
 // 17
 // 18    try {
-// 19      const char *filename = inputs.GetString("xyfile");
+// 19      const Char *filename = inputs.getString("xyfile");
 // 20      AipsIO xyfile(filename, ByteIO::Old);
 // 21      Vector<float> x, y;
 // 22      Plot plot;
 // 23
 // 24      xyfile >> x >> y; // initial vectors
-// 25      plot(x,y,inputs.GetBool("lines"));
+// 25      plot(x,y,inputs.getBool("lines"));
 // 26
 // 27      for (;;) { // forever
 // 28          xyfile >> x >> y;
-// 29          if (inputs.GetBool("overplot") == True) {
-// 30              plot(x,y,inputs.GetBool("lines"));
+// 29          if (inputs.getBool("overplot") == True) {
+// 30              plot(x,y,inputs.getBool("lines"));
 // 31          } else {
 // 32              plot.newPlot();
-// 33              plot(x,y,inputs.GetBool("lines"));
+// 33              plot(x,y,inputs.getBool("lines"));
 // 34          }
 // 35      }
 // 36  } catch (AipsIOError x) {
@@ -212,7 +212,7 @@
 // optional use of RCS keyword substitution.  See the "co" man page for
 // details. This allows the code to be automatically updated.
 // 
-// 08-11 - The Create member function of Input builds, in this case, a
+// 08-11 - The create member function of Input builds, in this case, a
 // parameter called xyfile, immediately filled with the String containing
 // the directory that holds the data. The help String is useful for new
 // users or prompting.  The fourth argument of InFile is the optional
@@ -227,7 +227,7 @@
 // 13 - This line is the third and final Param placed in inputs and is
 // recognized by the code when accessed with keyword "lines".
 // 
-// 16 - The call of ReadArguments(argc, argv) should be done after the
+// 16 - The call of readArguments(argc, argv) should be done after the
 // list of Params has been completed.  This line of code fills the values
 // from the command line. A keyword that doesn't match will throw an
 // error.
@@ -236,7 +236,7 @@
 // String value held within the parameter accessed through the key
 // "xyfile".  Recall that the value of xyfile was originally set to
 // "/tmp/xy.aipsio" but would be replaced with the proper value at
-// execution.  The GetString member function returns either the default
+// execution.  The getString member function returns either the default
 // value specified during the xyfile parameter's instantiation or the
 // value placed into it from the command line use of xyfile=myfile.
 // 
@@ -244,7 +244,7 @@
 // the call to the function plot.
 // 
 // 29 - Again the Input interface has its parameter called overplot
-// return a boolean to be used as a test for an "if".  The GetBool(key)
+// return a boolean to be used as a test for an "if".  The getBool(key)
 // Input member function may be reading the default value of the
 // appropriate parameter called key or using the value passed from the
 // command line.
