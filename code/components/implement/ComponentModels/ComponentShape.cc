@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/ComponentModels/ComponentShape.h>
-#include <trial/Measures/MeasureHolder.h>
+#include <aips/Measures/MeasureHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>

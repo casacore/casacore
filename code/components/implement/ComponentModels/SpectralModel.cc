@@ -26,16 +26,16 @@
 //# $Id$
 
 #include <trial/ComponentModels/SpectralModel.h>
-#include <trial/Measures/MeasureHolder.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Measures/MFrequency.h>
+#include <aips/Measures/MeasureHolder.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/String.h>
 #include <aips/Utilities/DataType.h>
+#include <aips/Utilities/String.h>
 
 SpectralModel::~SpectralModel() {
 }
