@@ -298,12 +298,13 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
 {
    const SpectralList& list = itsSpectralFitter.list();
    SpectralList list2 = filterList(list);
-   return getElements(rec, xAbsOut, xUnitOut, dopplerOut, list2);
+   Bool ok = getElements(rec, xAbsOut, xUnitOut, dopplerOut, list2);
+   return ok;
 }
 
 SpectralList ImageProfileFit::getList () const
 {
-   const SpectralList& list = itsSpectralFitPtr->list();
+   const SpectralList& list = itsSpectralFitter.list();
    return filterList(list);
 }
 
@@ -958,6 +959,8 @@ SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const
 {
    SpectralList listOut;
    const uInt n = listIn.nelements();
+   if (n==0) return listOut;
+//
    for (uInt i=0; i<n; i++) {
       const SpectralElement& el = listIn[i];
 
