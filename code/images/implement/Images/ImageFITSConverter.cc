@@ -113,11 +113,11 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
     try {
        if (imageName.empty()) {
           pNewImage = new TempImage<Float>(shape, coords);
-          os << LogIO::WARN << "Created (temp)image of shape" << shape << LogIO::POST;
+          os << LogIO::NORMAL << "Created (temp)image of shape " << shape << LogIO::POST;
           isTempImage = True;
        } else {
           pNewImage = new PagedImage<Float>(shape, coords, imageName);
-          os << LogIO::WARN << "Created image of shape" << shape << LogIO::POST;
+          os << LogIO::NORMAL << "Created image of shape " << shape << LogIO::POST;
        }
     } catch (AipsError x) {
 	if (pNewImage) {
