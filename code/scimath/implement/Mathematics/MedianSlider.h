@@ -85,7 +85,7 @@ public:
   
 // Returns the number of values currently in the window. This is less
 // than the window width initially.
-  Int  size    ();    
+//  Int  size    ();    
 
 // Returns the number of non-flagged values in window
   Int  nval    ();
