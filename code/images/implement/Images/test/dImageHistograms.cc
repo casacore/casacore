@@ -140,7 +140,7 @@ try {
    inputs.create("cumu", "False", "Plot cumulative histogram ?");
    inputs.create("log", "False", "Take log of y axis ?");
    inputs.create("list", "False", "List statistics for each histogram");
-   inputs.create("plotter", "/null", "Plot device");
+   inputs.create("plotter", "", "Plot device");
    inputs.create("nxy", "1,1", "Number of subplots in x & y");
    inputs.create("disk", "False", "Force storage image to be disk based");
    inputs.readArguments(argc, argv);
@@ -172,10 +172,6 @@ try {
 
    if (in.empty()) {
      os << LogIO::SEVERE << "You must give an input image" << LogIO::POST;
-     return 1;
-   }
-   if (device.empty()) {
-     os << LogIO::SEVERE << "You must give a plotting device" << LogIO::POST;
      return 1;
    }
 
@@ -316,10 +312,12 @@ try {
          os << histo.errorMessage() << LogIO::POST;
          exit(1);
       }
-      PGPlotter plotter(device);
-      if (!histo.setPlotting(plotter, nxy)) {
-         os << histo.errorMessage() << LogIO::POST;
-         exit(1);
+      if (!device.empty()) {
+         PGPlotter plotter(device);
+         if (!histo.setPlotting(plotter, nxy)) {
+            os << histo.errorMessage() << LogIO::POST;
+            exit(1);
+         }
       }
 
 // Display histograms
