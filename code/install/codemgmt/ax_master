@@ -3819,3 +3819,4 @@
 14 065 src mv trial/implement/Display/ColorDistribution.h trialdisplay/implement/Display/ColorDistribution.h
 14 065 src mv trial/implement/Display/Colormap.h trialdisplay/implement/Display/Colormap.h
 14 065 src mv trial/implement/Display/ColormapDefinition.h trialdisplay/implement/Display/ColormapDefinition.h
+14 065 src mv trial/implement/Display/ColormapInfo.h trialdisplay/implement/Display/ColormapInfo.h
