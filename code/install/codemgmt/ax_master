@@ -6399,3 +6399,4 @@
 18 426 src rm vo/scripts/C1200M24.gif
 18 446 src mv doc/notes/namePage10.html doc/notes/253.dir/namePage10.html
 18 446 src mv doc/notes/namePage11.html doc/notes/253.dir/namePage11.html
+18 446 src mv doc/notes/namePage2.html doc/notes/253.dir/namePage2.html
