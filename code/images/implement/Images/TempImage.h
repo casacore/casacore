@@ -32,12 +32,9 @@
 //# Includes
 #include <trial/Images/ImageInterface.h>
 #include <trial/Lattices/TiledShape.h>
+#include <trial/Lattices/TempLattice.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Tables/TableRecord.h>
-
-//# Forward Declarations
-template<class T> class TempLattice;
-
 
 // <summary>
 // Temporary astronomical images.
