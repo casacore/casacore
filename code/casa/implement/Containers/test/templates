@@ -16,18 +16,25 @@
      template class Dlist<Int> 
 1020 casa/Containers/Dlist.cc 
      template class DlistIter<Int> 
+1000 casa/Containers/HashMap.cc 
+     template class HashClass<String> 
+1010 casa/Containers/HashMap.cc 
+     template class HashMap<String, Int> 
+1000 casa/Containers/HashMapIO.cc 
+     template ostream &operator<<(ostream &, HashMap<String, Int> const &) 
+1000 casa/Containers/HashMapIter.cc 
+     template class ConstHashMapIter<String, Int> 
+1010 casa/Containers/HashMapIter.cc 
+     template class HashMapIter<String, Int> 
 1000 casa/Containers/Link.cc casa/BasicSL/String.h 
      = casa/Containers/OrderedPair.h 
      template class Link<OrderedPair<String, Int> > 
 1010 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
      = casa/BasicSL/String.h 
-     template class Link<OrderedPair<String, Int> > 
-1020 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h 
      template class Link<OrderedPair<String, OrderedPair<String, uInt> > > 
-1030 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
+1020 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
      template class Link<OrderedPair<Int, Int> > 
-1040 casa/Containers/Link.cc 
+1030 casa/Containers/Link.cc 
      template class Link<Int> 
 1000 casa/Containers/List.cc casa/Containers/OrderedPair.h 
      = casa/BasicSL/String.h 
@@ -56,26 +63,18 @@
 1080 casa/Containers/List.cc casa/Containers/OrderedPair.h 
      template class ConstListIter<OrderedPair<Int, Int> > 
 1090 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     template class ConstListIter<OrderedPair<String, Int> > 
-1100 casa/Containers/List.cc casa/Containers/OrderedPair.h 
      template class List<OrderedPair<Int, Int> > 
-1110 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     template class List<OrderedPair<String, Int> > 
-1120 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+1100 casa/Containers/List.cc casa/Containers/OrderedPair.h 
      template class ListIter<OrderedPair<Int, Int> > 
-1130 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     template class ListIter<OrderedPair<String, Int> > 
-1140 casa/Containers/List.cc casa/Containers/OrderedPair.h 
+1110 casa/Containers/List.cc casa/Containers/OrderedPair.h 
      template class ListNotice<OrderedPair<Int, Int> > 
-1150 casa/Containers/List.cc casa/Containers/OrderedPair.h 
-     template class ListNotice<OrderedPair<String, Int> > 
-1160 casa/Containers/List.cc 
+1120 casa/Containers/List.cc 
      template class ConstListIter<Int> 
-1170 casa/Containers/List.cc 
+1130 casa/Containers/List.cc 
      template class List<Int> 
-1180 casa/Containers/List.cc 
+1140 casa/Containers/List.cc 
      template class ListIter<Int> 
-1190 casa/Containers/List.cc 
+1150 casa/Containers/List.cc 
      template class ListNotice<Int> 
 1000 casa/Containers/ListIO.cc 
      template ostream & operator<<(ostream &, ConstListIter<Int> const &) 
@@ -179,20 +178,7 @@
      = casa/Containers/OrderedPair.h 
      template uInt Register(ListNotice<OrderedPair<Int, Int> > const *) 
 1030 casa/Utilities/Register.cc casa/Containers/List.h 
-     = casa/Containers/OrderedPair.h 
-     template uInt Register(ListNotice<OrderedPair<String, Int> > const *) 
-1040 casa/Utilities/Register.cc casa/Containers/List.h 
      template uInt Register(ListNotice<Int> const *) 
-1050 casa/Utilities/Register.cc casa/Containers/OrderedMap.h 
+1040 casa/Utilities/Register.cc casa/Containers/OrderedMap.h 
      = casa/Containers/OrderedPair.h casa/BasicSL/String.h 
      template uInt Register(OrderedMapNotice<String, OrderedPair<String, uInt> > const *) 
-1000 casa/Containers/HashMap.cc 
-     template class HashClass<String> 
-1010 casa/Containers/HashMap.cc 
-     template class HashMap<String, Int> 
-1000 casa/Containers/HashMapIO.cc 
-     template ostream &operator<<(ostream &, HashMap<String, Int> const &) 
-1000 casa/Containers/HashMapIter.cc 
-     template class ConstHashMapIter<String, Int> 
-1010 casa/Containers/HashMapIter.cc 
-     template class HashMapIter<String, Int> 

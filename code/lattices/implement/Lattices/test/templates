@@ -4,53 +4,23 @@
      = casa/BasicSL/Complex.h 
      template Bool allEQ(Array<Complex> const &, Complex const &) 
      template Bool allEQ(Array<DComplex> const &, DComplex const &) 
-1010 casa/Arrays/ArrayLogical.cc 
-     = casa/BasicSL/Complex.h 
-     template Bool allEQ(Array<Complex> const &, Complex const &) 
-     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
      template Bool allNear(Array<DComplex> const &, DComplex const &, Double) 
      template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
      template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
-######################################################################
-# Needed for tLatticeCache.cc
 1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template Complex sum(Array<Complex> const & ) 
      template Array<Int> operator-(Array<Int> const &, Int const &) 
      template void indgen(Array<Complex> &) 
      template void indgen(Array<Complex> &, Complex, Complex) 
-######################################################################
-# Needed for several test programs
-1010 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
-     template Complex sum(Array<Complex> const & ) 
-     template Array<Int> operator-(Array<Int> const &, Int const &) 
-     template void indgen(Array<Complex> &) 
-     template void indgen(Array<Complex> &, Complex, Complex) 
+1000 casa/Utilities/GenSort.cc casa/BasicSL/Complex.h 
+     template class GenSort<Complex> 
 1000 lattices/Lattices/ArrayLattice.cc casa/BasicSL/Complex.h 
      template class ArrayLattice<Double> 
      template class ArrayLattice<DComplex> 
 ######################################################################
 # Needed for dLatticeStatistics
-1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<Complex> 
-     template class CountedConstPtr<Lattice<Complex> > 
-     template class CountedPtr<Lattice<Complex> > 
-     template class PtrRep<Lattice<Complex> > 
-     template class SimpleCountedConstPtr<Lattice<Complex> > 
-     template class SimpleCountedPtr<Lattice<Complex> > 
-1010 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<DComplex> 
-     template class CountedConstPtr<Lattice<DComplex> > 
-     template class CountedPtr<Lattice<DComplex> > 
-     template class PtrRep<Lattice<DComplex> > 
-     template class SimpleCountedConstPtr<Lattice<DComplex> > 
-     template class SimpleCountedPtr<Lattice<DComplex> > 
-1000 casa/Utilities/GenSort.cc casa/BasicSL/Complex.h 
-     template class GenSort<Complex> 
-1000 lattices/Lattices/CLInterpolator2D.cc lattices/Lattices/CLIPNearest2D.cc 
+1000 lattices/Lattices/CLInterpolator2D.cc 
+     = lattices/Lattices/CLIPNearest2D.cc 
      = lattices/Lattices/CurvedLattice2D.cc 
      template class CLInterpolator2D<Int> 
      template class CLIPNearest2D<Int> 
@@ -76,3 +46,21 @@
      template class TiledCollapser<Complex, DComplex> 
 ######################################################################
 # Needed for tExtendLattice
+1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
+     = casa/Utilities/CountedPtr.cc 
+     = lattices/Lattices/Lattice.h 
+     template class TempLattice<Complex> 
+     template class CountedConstPtr<Lattice<Complex> > 
+     template class CountedPtr<Lattice<Complex> > 
+     template class PtrRep<Lattice<Complex> > 
+     template class SimpleCountedConstPtr<Lattice<Complex> > 
+     template class SimpleCountedPtr<Lattice<Complex> > 
+1010 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
+     = casa/Utilities/CountedPtr.cc 
+     = lattices/Lattices/Lattice.h 
+     template class TempLattice<DComplex> 
+     template class CountedConstPtr<Lattice<DComplex> > 
+     template class CountedPtr<Lattice<DComplex> > 
+     template class PtrRep<Lattice<DComplex> > 
+     template class SimpleCountedConstPtr<Lattice<DComplex> > 
+     template class SimpleCountedPtr<Lattice<DComplex> > 

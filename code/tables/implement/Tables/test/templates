@@ -32,9 +32,6 @@
 1010 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template void indgen(Array<DComplex> &) 
      template void indgen(Array<DComplex> &, DComplex, DComplex) 
-1020 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
-     template void indgen(Array<DComplex> &) 
-     template void indgen(Array<DComplex> &, DComplex, DComplex) 
 1000 casa/Arrays/Cube.cc 
      template class Cube<uChar> 
 1000 casa/Containers/Block.h tables/Tables/ForwardColRow.h 
