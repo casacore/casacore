@@ -400,7 +400,7 @@ int compare(const String& x, const char* b)
 
 int compare(const String& x, const String& y)
 {
-  return scmp(x.chars(), y.chars());
+  return ncmp(x.chars(), x.length(), y.chars(), y.length());
 }
 
 int compare(const String& x, const SubString& y)
