@@ -614,6 +614,7 @@ private:
 
     // Generate FITS keywords
     Bool toFITSHeaderGenerateKeywords (LogIO& os, Bool& isNCP,
+                                       Double& longPole, Double& latPole,
                                        Vector<Double>& crval,
                                        Vector<Double>& crpix,
                                        Vector<Double>& cdelt,
