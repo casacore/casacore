@@ -93,6 +93,14 @@ void doIt (const IPosition& latticeShape,
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete complcop;
     }
+    {   
+    // Test equality.
+       LCComplement comp1(box);
+       LCComplement comp2(comp1);
+       AlwaysAssertExit (comp2 == comp1);
+       LCComplement comp3(cir);
+       AlwaysAssertExit (comp3 != comp1);
+    }
 }
 
 
@@ -107,8 +115,8 @@ main()
 	      IPosition (2,4,16), 5.);
     } catch (AipsError x) {
 	cout << "Caught exception: " << x.getMesg() << endl;
-	return 1;
+	exit(1);
     } end_try;
     cout << "OK" << endl;
-    return 0;
+    exit(0);
 }
