@@ -41,21 +41,20 @@
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tAutoDiff.cc" demos="">
+// <reviewed reviewer="Ger van Diepen" date="2001/07/04" tests="tObjectPool.cc" demos="">
 // </reviewed>
 //
 // <prerequisite>
-// <li> <linkto class=SimpleOrderedMap>SimpleOrderedMap</linkto>
 // <li> <linkto class=PoolStack>PoolStack</linkto>
 // </prerequisite>
 //
 // <synopsis>
 // An ObjectPool contains a set of pre-allocated Objects of the type
 // <src>T</src>. A Map based on the <src>Key</src> values contains
-// a stack of objects each.
+// a stack of objects for each key value.
 // 
-// As an example, a <src><Vector<Double>, uInt></src> ObjectPool can
-// contain a <src>SimpleOrderedMap<uInt, Stack<Vector<Double> > ></src>
+// As an example, a <src><Vector<Double>, uInt></src> ObjectPool contains
+// a <src>SimpleOrderedMap<uInt,PoolStack<Vector<Double>,uInt>* ></src>
 // map. Each Stack will contain a stack of <src>Vector<Double></src>
 // objects, with a length of the key value each.
 //
@@ -64,6 +63,21 @@
 // exists, a new stack is created. If the relevant stack is empty, new elements
 // are added to the stack.
 // </synopsis>
+//
+// <example>
+// <srcblock>
+//   // Create a pool of vectors
+//   ObjectPool<Vector<Double>, uInt> pool;
+//   // Get a pointer to a pre-defined vector of length 5
+//   Vector<Double> *el5(pool.get(5));
+//   // and one of length 10
+//   Vector<Double> *el10(pool.get(10));
+//   ... 
+//   // Release the objects for re-use
+//   pool.release(el5, 5);
+//   pool.release(el10, 10); 
+// </srcblock
+// </example>
 //
 // <motivation>
 // To improve the speed for the auto differentiating class.
@@ -78,7 +92,7 @@
 // </templating>
 //
 // <todo asof="2001/06/07">
-// <li> Describe a way to pass references around in an easy way.
+// <li> Nothing at the moment
 // </todo>
 
 template <class T, class Key> class ObjectPool {
@@ -94,20 +108,26 @@ template <class T, class Key> class ObjectPool {
   // object is detached from the stack, and has to be returned with the 
   // <src>release</src> method. The object should not be deleted by caller.
   // <group>
-  T *const get(const Key key=Key());
+  T *get(const Key key=Key());
   // </group>
+
+  // Get the object stack for the given key
+  PoolStack<T, Key> &ObjectPool<T, Key>::getStack(const Key key);
 
   // Release an object obtained from the pool through <src>get</src> for
   // re-use.
   void release(T *obj, const Key key=Key());
 
-  // Decimate the stacks
+  // Get the number of object stacks in the pool
+  uInt nelements() const { return map_p.ndefined(); };
+
+  // Decimate the stacks by deleting all unused objects.
   // <group>
   void clearStacks();
   void clearStack(const Key key=Key());
   // </group>
 
-  // Decimate the map and the stacks
+  // Decimate the stacks and remove any map entry that is completely unused
   void clear();
 
 private:
@@ -116,7 +136,6 @@ private:
   // purposes)
   // <group>
   Key defKey_p;
-  T *defVal_p;
   PoolStack<T, Key> *defStack_p;
   Key cacheKey_p;
   PoolStack<T, Key> *cacheStack_p;
