@@ -2,7 +2,7 @@
 # makefile.ftn: Generic AIPS++ FORTRAN subroutine compilation makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-2000,2003
+#   Copyright (C) 1992-2003
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -89,12 +89,31 @@ ifeq "$(PGMRLIBD)" "."
 endif
 
 
+# Augmented include paths.
+#-------------------------
+AIPSINCL := -I$(CODEDIR) $(AIPSINCL)
+
+PGMRINCL := $(addprefix -I,  \
+               $(EXTRA_PGMRINCL) \
+               . \
+               $(PGMRCODE)/include) \
+            $(AIPSINCL)
+
+
 # Source lists.
 #--------------
 AIPSFTNS := $(filter %.f,$(AIPSSRCS))
-PGMRFTNS := $(wildcard *.f)
+AIPSCSRC := $(filter %.c,$(AIPSSRCS))
 AIPSIMPL := $(filter %.cc,$(AIPSSRCS))
+
+AIPSOBJS := $(AIPSFTNS:.f=.o) $(AIPSCSRC:.c=.o) $(AIPSIMPL:.cc=.o)
+
+PGMRFTNS := $(wildcard *.f)
+PGMRCSRC := $(wildcard *.c)
 PGMRIMPL := $(wildcard *.cc)
+
+PGMROBJS := $(PGMRFTNS:.f=.o) $(PGMRCSRC:.c=.o) $(PGMRIMPL:.cc=.o)
+ALLOBJS  := $(sort $(PGMROBJS) $(AIPSOBJS))
 
 
 # Lock files.
@@ -103,47 +122,58 @@ LOCKDBG  := $(PCKGDBGD)/BUILD.$(JOBIDENT)
 LOCKOPT  := $(PCKGOPTD)/BUILD.$(JOBIDENT)
 
 
-# Paths.
-#-------
-vpath %.f $(CODEDIR)
-vpath %.cc $(CODEDIR)
-
-
 # Pattern rules.
 #---------------
 lib(%.o) : $(addsuffix (%.o),$(AIPSLIBS)) ;
-
-$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.cc
-	-@ echo ""
-        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
-	   -@ echo "$(basename $%) (dbg)"
-	    @ $(C++) $(CPPOPT) $(AIPSINCL) -I. $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
-	   -@ $(TIMER)
-        endif
-        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
-	   -@ echo "$(basename $%) (opt)"
-	    @ $(C++) $(CPPOPT) $(AIPSINCL) -I. $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
-	   -@ $(TIMER)
-        endif
-	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
-
 
 $(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.f
 	-@ echo ""
         ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
 	   -@ echo "$(basename $%) (dbg)"
-	    @ $(FC) -c $(FCDBG) -o $(PCKGDBGD)/$(<F:f=o) $<
+	    @ $(FC) $(FCDBG) -c -o $(PCKGDBGD)/$(<F:f=o) $<
 	   -@ $(TIMER)
         endif
         ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
 	   -@ echo "$(basename $%) (opt)"
-	    @ $(FC) -c $(FCOPT) -o $(PCKGOPTD)/$(<F:f=o) $<
+	    @ $(FC) $(FCOPT) -c -o $(PCKGOPTD)/$(<F:f=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.c
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(CC) $(CPPDBG) -I$(CODEDIR) $(CDBG) -c -o $(PCKGDBGD)/$(<F:c=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(CC) $(CPPOPT) -I$(CODEDIR) $(COPT) -c -o $(PCKGOPTD)/$(<F:c=o) $<
+	   -@ $(TIMER)
+        endif
+	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
+
+$(addsuffix (%.o),$(AIPSLIBS)) : $(CODEDIR)/%.cc
+	-@ echo ""
+        ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (dbg)"
+	    @ $(C++) $(CPPDBG) $(AIPSINCL) $(C++DBG) -c -o $(PCKGDBGD)/$(<F:cc=o) $<
+	   -@ $(TIMER)
+        endif
+        ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
+	   -@ echo "$(basename $%) (opt)"
+	    @ $(C++) $(CPPOPT) $(AIPSINCL) $(C++OPT) -c -o $(PCKGOPTD)/$(<F:cc=o) $<
 	   -@ $(TIMER)
         endif
 	@ [ -f $(LOCKDBG) -o -f $(LOCKOPT) ] || updatelib $(PCKGLANG)
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
+   vpath %.f  $(CODEDIR)
+   vpath %.c  $(CODEDIR)
+   vpath %.cc $(CODEDIR)
+
    mylib(%.o) : $(PGMRLIBR)(%.o)
 	@ if [ -f "$(PGMRLIBD)/$%" ] ; then \
 	     cd $(PGMRLIBD) ; \
@@ -152,25 +182,44 @@ ifeq "$(MAKEMODE)" "programmer"
 	     $(RANLIB) $(PGMRLIBR) ; \
 	  fi
 
-   $(PGMRLIBR)(%.o) : %.f
-	-@ echo ""
-	 @ $(FC) -c $(FFLAGS) -o $(PGMRLIBD)/$% $<
+   $(PGMRLIBR)(%.o) : $(PGMRLIBD)/%.o ;
 
    $(PGMRLIBD)/%.o : %.f
 	-@ echo ""
-	 @ $(FC) -c $(FFLAGS) -o $@ $<
+	   $(FC) $(FFLAGS) -c -o $@ $<
 
-   %.o : %.f
+   $(PGMRLIBD)/%.o : %.c
+	-@ echo ""
+	   $(CC) $(CPPFLAGS) -I. -I$(CODEDIR) $(CFLAGS) -c -o $@ $<
+
+   $(PGMRLIBD)/%.i : %.c
+	-@ echo ""
+	   $(CPP) $(CPPFLAGS) -I. -I$(CODEDIR) $< > $@
+
+   $(PGMRLIBD)/%.o : %.cc
+	-@ echo ""
+	   $(C++) $(CPPFLAGS) $(PGMRINCL) $(C++FLAGS) -c -o $@ $<
+
+   $(PGMRLIBD)/%.i : %.cc
+	-@ echo ""
+	   $(CPP) $(CPPFLAGS) $(PGMRINCL) $< > $@
 
    ifneq "$(PGMRLIBD)" "."
       %.o : $(PGMRLIBD)/%.o ;
+      %.i : $(PGMRLIBD)/%.i ;
    endif
 
-   % : $(PGMRLIBR)(%.o) ;
+   % : mylib(%.o) ;
 endif
 
 # Defeat builtin pattern rules.
 (%) : %
+%.o : %.f
+%.o : %.c
+%.o : %.cc
+% : %.f
+% : %.c
+% : %.cc
 
 
 # Static and static pattern rules.
@@ -190,8 +239,8 @@ allsys : $(LIB)
 	-$Q $(RM) $(LIBDBG)
 	-$Q $(RM) $(LIBOPT)
 
-lib : build_lock $(foreach OBJ,$(AIPSFTNS:.f=.o) $(AIPSIMPL:.cc=.o), \
-    $(addsuffix ($(OBJ)),$(AIPSLIBS))) updatelib
+lib : build_lock $(foreach OBJ,$(AIPSOBJS),$(addsuffix ($(OBJ)),$(AIPSLIBS))) \
+      updatelib
 	-@ $(RM) $(LOCKDBG)
 	-@ $(RM) $(LOCKOPT)
 	 @ for i in $$SUBDIRS ; do \
@@ -205,14 +254,26 @@ build_lock :
         ifneq "$(word 5,$(LIB$(PACKAGE)))" "defeat"
 	    @ adate > $(LOCKDBG)
 	   -@ echo ""
-	   -@ echo "Debug compile command is:"
+	   -@ echo "Debug compile commands are:"
 	   -@ echo "$(FC) $(FCDBG) -c ???.f"
+	   -@ if [ "$(AIPSCSRC)" != "" ] ; then \
+                 echo "$(CC) $(CPPDBG) -I$(CODEDIR) $(CDBG) -c ???.c" ; \
+	      fi
+	   -@ if [ "$(AIPSIMPL)" != "" ] ; then \
+	         echo "$(C++) $(CPPDBG) $(AIPSINCL) $(C++DBG) -c ???.cc" ; \
+	      fi
         endif
         ifneq "$(word 6,$(LIB$(PACKAGE)))" "defeat"
 	    @ adate > $(LOCKOPT)
 	   -@ echo ""
-	   -@ echo "Optimized compile command is:"
+	   -@ echo "Optimized compile commands are:"
 	   -@ echo "$(FC) $(FCOPT) -c ???.f"
+	   -@ if [ "$(AIPSCSRC)" != "" ] ; then \
+	         echo "$(CC) $(CPPOPT) -I$(CODEDIR) $(COPT) -c ???.c" ; \
+	      fi
+	   -@ if [ "$(AIPSIMPL)" != "" ] ; then \
+	         echo "$(C++) $(CPPOPT) $(AIPSINCL) $(C++OPT) -c ???.cc" ; \
+	      fi
         endif
 
 updatelib :
@@ -230,14 +291,14 @@ ranlib :
 
 # Programmer-oriented static rules.
 ifeq "$(MAKEMODE)" "programmer"
-   .PRECIOUS : $(PGMRLIBR) $(PGMRLIBD)/%.o
+   .PRECIOUS : $(PGMRLIBR) $(PGMRLIBD)/%.o $(PGMRLIBD)/%.i
 
    .PHONY : mylib mylibs update_mylib
 
-   all : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) $(PGMRIMPL:%.cc=$(PGMRLIBR)(%.o)) update_mylib
+   all : $(PGMROBJS:%=$(PGMRLIBR)(%)) update_mylib
 
    .clean ::
-	-cd $(PGMRLIBD) && $(RM) *.o a.out core
+	-cd $(PGMRLIBD) && $(RM) *.o *.i a.out core
 
    .cleaner ::
 	-$(RM) $(PGMRLIBR)
@@ -249,17 +310,14 @@ ifeq "$(MAKEMODE)" "programmer"
 
    mylib : $(PGMRLIBR) ;
 
-   $(PGMRLIBR) : $(PGMRFTNS:%.f=$(PGMRLIBR)(%.o)) $(PGMRIMPL:%.cc=$(PGMRLIBR)(%.o)) \
-                 $(AIPSFTNS:%.f=$(PGMRLIBR)(%.o)) $(AIPSIMPL:%.cc=$(PGMRLIBR)(%.o)) update_mylib ;
+   $(PGMRLIBR) : $(ALLOBJS:%=$(PGMRLIBR)(%)) update_mylib ;
 
    update_mylib :
 	@ cd $(PGMRLIBD) ; \
-	  PGMROBJS="$(sort $(PGMRFTNS:%.f=%.o)$(AIPSFTNS:%.f=%.o))" 
-          PGMROBJS+="$(sort $(AIPSIMPL:%.cc=%.o))" ; $(PGMRIMPL:%.cc=%.o))"
-	  [ "$$PGMROBJS" != "" ] && PGMROBJS=`ls $$PGMROBJS 2>/dev/null` ; \
-	  if [ "$$PGMROBJS" != "" ] ; then \
-	     $(AR) $(ARFLAGS) $(PGMRLIBR) $$PGMROBJS ; \
-	     $(RM) $$PGMROBJS ; \
+	  [ "$(ALLOBJS)" != "" ] && ALLOBJS=`ls $(ALLOBJS) 2>/dev/null` ; \
+	  if [ "$$ALLOBJS" != "" ] ; then \
+	     $(AR) $(ARFLAGS) $(PGMRLIBR) $$ALLOBJS ; \
+	     $(RM) $$ALLOBJS ; \
 	     $(RANLIB) $(PGMRLIBR) ; \
 	  fi
 endif
@@ -285,12 +343,25 @@ show_local :
 	-@ echo "LOCKDBG =$(LOCKDBG)"
 	-@ echo "LOCKOPT =$(LOCKOPT)"
 	-@ echo ""
+	-@ echo "AIPSINCL=$(AIPSINCL)"
+	-@ echo ""
 	-@ echo "AIPSFTNS=$(AIPSFTNS)"
+	-@ echo "AIPSCSRC=$(AIPSCSRC)"
+	-@ echo "AIPSIMPL=$(AIPSIMPL)"
+	-@ echo ""
+	-@ echo "AIPSOBJS=$(AIPSOBJS)"
 	-@ echo ""
 	-@ echo "Programmer"
 	-@ echo "----------"
+	-@ echo "PGMRINCL=$(PGMRINCL)"
+	-@ echo ""
 	-@ echo "PGMRLIBR=$(PGMRLIBR)"
 	-@ echo "PGMRFTNS=$(PGMRFTNS)"
+	-@ echo "PGMRCSRC=$(PGMRCSRC)"
+	-@ echo "PGMRIMPL=$(PGMRIMPL)"
+	-@ echo ""
+	-@ echo "PGMROBJS=$(PGMROBJS)"
+	-@ echo "ALLOBJS =$(ALLOBJS)"
 
 help ::
 	-@ echo ""
