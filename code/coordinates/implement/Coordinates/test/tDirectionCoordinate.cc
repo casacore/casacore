@@ -462,7 +462,7 @@ void doit3 (DirectionCoordinate& lc)
             throw(AipsError("Coordinate makeWorldRelative 1 gave wrong results"));
       }
 //
-      Vector<Double> incr = lc.increment().copy();
+      Vector<Double> incr = 100.0*lc.increment().copy();
       world4 += incr;
       Vector<Double> tmp = world4.copy();
       lc.makeWorldRelative(world4);
@@ -471,7 +471,7 @@ void doit3 (DirectionCoordinate& lc)
             throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection 1 gave wrong results"));
       }
 //
-      world4 = lc.referenceValue() - incr;
+      world4 = lc.referenceValue() - 100.0*incr;
       tmp = world4;
       lc.makeWorldRelative(world4);
       lc.makeWorldAbsolute (world4);
@@ -482,7 +482,7 @@ void doit3 (DirectionCoordinate& lc)
 //
    {
       MDirection coord;
-      Bool ok = lc.toWorld(coord, lc.referencePixel() + 10.0);
+      lc.toWorld(coord, lc.referencePixel() + 10.0);
       MVDirection mv1 = coord.getValue();
       lc.makeWorldRelative(coord);
       MVDirection mv2 = coord.getValue();
