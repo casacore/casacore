@@ -2,7 +2,7 @@
 #-----------------------------------------------------------------------------
 # UPreident script
 #-----------------------------------------------------------------------------
-# Copyright (C) 2000,2001
+# Copyright (C) 2000,2001,2004
 # Associated Universities, Inc. Washington DC, USA.
 #
 # This program is free software; you can redistribute it and/or modify it
@@ -32,8 +32,8 @@
 #
 set script = "UPreident"
 set usage = 'UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>'
-set htxt  = ("Do a reident for all the templates files in the aips" \
-	     "and trial packages (unless -a switch)." \
+set htxt  = ("Do a reident for all the templates files in the casa" \
+	     "library packages (unless -a switch)." \
 	     "<typ>.done and <typ>.error will give the templates files" \
 	     "done and not done.")
 set hsw   = ("-a do all templates files in all packages" \
@@ -144,9 +144,9 @@ foreach i (`cat $ldir/${tp}.tsel`)
   else
     if (-e $i:t) rm -f $i:t
     if (! $upswt) then
-       $xao -l $i:t
+       cvs update $i:t
     else
-       $xao  $i:t
+       cvs update $i:t
        if (-e $i:t) chmod 644 $i:t
     endif
     if (-e $i:t) then
@@ -156,7 +156,7 @@ foreach i (`cat $ldir/${tp}.tsel`)
        echo "***** File: $i" >> $ldir/${tp}.log
        reident $zmod >>& $ldir/${tp}.log
        if (! $upswt) then
-          $xai $i:t < $ldir/${tp}.rcs
+          cvs commit -F "$ldir/${tp}.rcs" $i:t 
        else
           diff -b $i:t $dir/code/$i >> $ldir/${tp}.diff
        endif
