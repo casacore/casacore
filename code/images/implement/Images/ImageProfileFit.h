@@ -206,12 +206,6 @@ public:
               Int order=-1);
     //</group>
 
-
-    // Fit all profiles with a polynomial in the region and write out images.
-    void fitPolynomial (ImageInterface<Float>* pFit,
-                        ImageInterface<Float>* pResid,
-                        Int order=0);
-
     // Find the residuals (fit or estimate) of the averaged profile
     //<group>
     void residual(Vector<Float>& resid, const Vector<Float>& x) const;
