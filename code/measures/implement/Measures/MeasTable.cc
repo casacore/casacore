@@ -1,5 +1,5 @@
 //# MeasTable.cc: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,10 +43,12 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Logging.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Tables/TableRow.h>
+#include <aips/Tables/ArrayColumn.h>
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Containers/RecordField.h>
 
@@ -56,6 +58,14 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 Bool MeasTable::obsNeedInit = True;
 Vector<String> MeasTable::obsNams(0);
 Vector<MPosition> MeasTable::obsPos(0);
+Double MeasTable::timeIGRF = -1e6;
+Double MeasTable::dtimeIGRF = 0;
+Double MeasTable::time0IGRF = -1e6;
+Double MeasTable::firstIGRF = 0;
+Double MeasTable::lastIGRF = 0;
+Vector<Double> MeasTable::coefIGRF(0);
+Vector<Double> MeasTable::dIGRF(0);
+Vector<Double> MeasTable::resIGRF(0);
 
 //# Member functions
 void MeasTable::
@@ -830,6 +840,7 @@ void MeasTable::initObservatories() {
     };
   };
 }
+
 const Vector<String> &MeasTable::Observatories() {
   MeasTable::initObservatories();
   return MeasTable::obsNams;
@@ -843,6 +854,56 @@ const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
     return True;
   };
   return False;
+}
+
+// Magnetic field (IGRF) function
+const Vector<Double> &MeasTable::IGRF(Double tm) {
+  if (time0IGRF < 0 || (tm-time0IGRF > 1830 && time0IGRF < lastIGRF) ||
+      (tm-time0IGRF < 0 && time0IGRF >= firstIGRF)) {
+    Table t;
+    TableRecord kws;
+    ROTableRow row;
+    String rfn[1] = {"MJD"};
+    RORecordFieldPtr<Double> rfp[1];
+    Double dt;
+    String vs;	
+    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
+		  "measures.igrf.directory",
+		  "aips/Measures")) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("IGRF(Double)"),
+			 WHERE));
+      os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
+    };
+    Int N = t.nrow();
+    if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
+	!kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("IGRF(Double)"),
+			 WHERE));
+      os << "Incorrect entries in table of IGRF models" << LogIO::EXCEPTION;
+    };
+    Double m0 = kws.asDouble("MJD0");
+    dtimeIGRF= kws.asDouble("dMJD");
+    Int indx = Int((tm-m0)/dtimeIGRF);
+    indx = max(1, min(indx, N)) - 1;
+    row.get(0);
+    firstIGRF = *(rfp[0]);
+    row.get(N-1);
+    lastIGRF = *(rfp[0]);
+    row.get(indx);
+    time0IGRF = *(rfp[0]);
+    ROArrayColumn<Double> acc, accd;
+    acc.attach(t, "COEF");
+    accd.attach(t, "dCOEF");
+    coefIGRF = acc(indx);
+    dIGRF = accd(indx);
+  };
+  if (abs(tm-timeIGRF) > 5) {
+    resIGRF = coefIGRF.ac() + dIGRF.ac() * (5*(tm-time0IGRF)/dtimeIGRF);
+    timeIGRF = tm;
+  };
+  return resIGRF;
 }
 
 // Aberration function

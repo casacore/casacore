@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -199,6 +199,12 @@ public:
   static const Bool Observatory(MPosition &obs, const String &nam);
   // </group>
   
+  // Earth magnetic field (IGRF) data
+  // <group>
+  // Get the harmonic terms for specified time (mjd)
+  static const Vector<Double> &IGRF(Double t);
+  // </group>
+
   // Aberration related data
   // <group>
   // Generate the polynomial for the fundamental arguments (l1-l8, w, D, l,
@@ -363,7 +369,17 @@ private:
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
   // </group>
-
+  // IGRF data
+  // <group>
+  static Double timeIGRF;
+  static Double dtimeIGRF;
+  static Double time0IGRF;
+  static Double firstIGRF;
+  static Double lastIGRF;
+  static Vector<Double> coefIGRF;
+  static Vector<Double> dIGRF;
+  static Vector<Double> resIGRF;
+  // </group>
 };
 
 #endif
