@@ -59,7 +59,7 @@ else if ("$script" == "UPlist") then
 else if ("$script" == "UPload") then
     set upsw = "$upsw"
 else if ("$script" == "UPlock") then
-    set upsw = "$upsw"
+    set upsw = "al$upsw"
 else if ("$script" == "UPmove") then
     set upsw = "$upsw"
 else if ("$script" == "UPreident") then
@@ -268,6 +268,21 @@ if (! -e $ldir/.UpTyPe.$cdat) then
     echo "set tp = $tpb" >! $ldir/.UpTyPe.$cdat
 endif
 #
+# Get remote user
+#
+set ruser = "$USER"
+set sshuser = ""
+if ($?AUID) then
+    set ruser = "$AUID"
+    set sshuser = "-l ruser"
+endif
+set rmaster = "aips2.nrao.edu"
+set rssh = "ssh $rmaster $sshuser /aips++/weekly/.rshexec sh -c "
+set rscp = "scp -qpC"
+set rpath =  "${ruser}@${rmaster}"
+set pdir = `pwd | sed -e 's#.*/aips++/#aips++/#'`
+set tmp = $$
+#
 # Get info
 #
 if (! $upswQE) echo "Getting info..."
@@ -377,11 +392,6 @@ if ("$script" == "UPmove" && ! $upswn) then
 	exit 1
     endif
     unset x
-endif
-
-if ("$script" == "UPlock" && ! $upswn && ! $hasm) then
-    echo "Locked files can only be found while running at the aoc master site"
-    exit 1
 endif
 
 if (! -e $ldir/${tpb}.def) then
