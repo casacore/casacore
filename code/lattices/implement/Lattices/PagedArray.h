@@ -35,14 +35,6 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TiledStManAccessor.h>
 #include <aips/Utilities/String.h>
-#include <aips/Logging/LogIO.h>
-
-//# Forward Declarations
-#if defined(AIPS_STDLIB)
-#include <iosfwd>
-#else
-class ostream;
-#endif
 
 
 // <summary>
@@ -528,7 +520,8 @@ public:
   virtual void putAt (const T& value, const IPosition& where);
 
   // A function which checks for internal consistency. Returns False if
-  // something nasty has happened to the PagedArray.
+  // something nasty has happened to the PagedArray. In that case
+  // it also throws an exception.
   virtual Bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
@@ -602,7 +595,6 @@ private:
   mutable ArrayColumn<T>       itsRWArray;
   mutable ROArrayColumn<T>     itsROArray;
   mutable ROTiledStManAccessor itsAccessor;
-          LogIO itsLog;
 };
 
 
