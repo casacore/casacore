@@ -157,7 +157,7 @@ public:
     // Resize without argument is equal to resize(0, False).
     // <group>
     void resize(uInt len, Bool copyValues = False)
-      { if (len != nelements()) resize (IPosition(1,len), copyValues); }
+      { if (len != this->nelements()) resize (IPosition(1,len), copyValues); }
     void resize(const IPosition &len, Bool copyValues);
     virtual void resize();
     virtual void resize(const IPosition &len);
@@ -192,9 +192,9 @@ public:
     // bounds checking is performed (not for [])..
     // <group>
     T &operator[](uInt index)
-      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
+      { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
     const T &operator[](uInt index) const
-      { return (contiguous_p  ?  begin_p[index] : begin_p[index*inc_p(0)]); }
+      { return (this->contiguous_p  ?  this->begin_p[index] : this->begin_p[index*this->inc_p(0)]); }
     T &operator()(const IPosition &i)
       { return Array<T>::operator()(i); }
     const T &operator()(const IPosition &i) const 
@@ -206,9 +206,9 @@ public:
 	//# CFront 3.0.1 doesn't like that.
 	IPosition IndexCopy(1);
 	IndexCopy(0) = index;
-	validateIndex(IndexCopy);   //# Throws an exception on failure
+	this->validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(begin_p + index*inc_p(0));
+        return *(this->begin_p + index*this->inc_p(0));
       }
 
     const T &operator()(uInt index) const
@@ -218,9 +218,9 @@ public:
 	//# CFront 3.0.1 doesn't like that.
 	IPosition IndexCopy(1);
 	IndexCopy(0) = index;
-	validateIndex(IndexCopy);   //# Throws an exception on failure
+	this->validateIndex(IndexCopy);   //# Throws an exception on failure
 #endif
-        return *(begin_p + index*inc_p(0));
+        return *(this->begin_p + index*this->inc_p(0));
       }
     // </group>
 
@@ -281,9 +281,9 @@ public:
     // The length of the Vector.
     // <group>
     void shape(Int &Shape) const
-      { Shape = length_p(0); }
+      { Shape = this->length_p(0); }
     const IPosition &shape() const
-      { return length_p; }
+      { return this->length_p; }
     // </group>
 
     // Replace the data values with those in the pointer <src>storage</src>.

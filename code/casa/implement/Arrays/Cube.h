@@ -166,10 +166,10 @@ public:
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         IPosition index(3);
         index(0) = i1; index(1) = i2; index(2) = i3;
-        validateIndex(index);   // Throws an exception on failure
+        this->validateIndex(index);   // Throws an exception on failure
 #endif
-	return contiguous_p ? begin_p[i1 + i2*yinc_p + i3*zinc_p] :
-                              begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+	return this->contiguous_p ? this->begin_p[i1 + i2*yinc_p + i3*zinc_p] :
+                              this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
 
     const T &operator()(uInt i1, uInt i2, uInt i3) const
@@ -177,10 +177,10 @@ public:
 #if defined(AIPS_ARRAY_INDEX_CHECK)
         IPosition index(3);
         index(0) = i1; index(1) = i2; index(2) = i3;
-        validateIndex(index);   // Throws an exception on failure
+        this->validateIndex(index);   // Throws an exception on failure
 #endif
-	return contiguous_p ? begin_p[i1 + i2*yinc_p + i3*zinc_p] :
-                              begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
+	return this->contiguous_p ? this->begin_p[i1 + i2*yinc_p + i3*zinc_p] :
+                              this->begin_p[i1*xinc_p + i2*yinc_p + i3*zinc_p];
       }
     // </group>
 
@@ -251,22 +251,22 @@ public:
     // The length of each axis of the cube.
     // <group>
     void shape(Int &s1, Int &s2, Int &s3) const
-      { s1 = length_p(0); s2=length_p(1); s3=length_p(2); }
+      { s1 = this->length_p(0); s2=this->length_p(1); s3=this->length_p(2); }
     const IPosition &shape() const
-      { return length_p; }
+      { return this->length_p; }
     // </group>
 
     // The number of rows in the Cube, i.e. the length of the first axis.
     uInt nrow() const
-      { return length_p(0); }
+      { return this->length_p(0); }
 
     // The number of columns in the Cube, i.e. the length of the 2nd axis.
     uInt ncolumn() const
-      { return length_p(1); }
+      { return this->length_p(1); }
 
     // The number of planes in the Cube, i.e. the length of the 3rd axis.
     uInt nplane() const
-      { return length_p(2); }
+      { return this->length_p(2); }
 
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or

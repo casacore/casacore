@@ -159,9 +159,9 @@ const value &ConstMapIter<key,value>::getVal() const {
 
 template<class key, class value>
 value &MapIter<key,value>::getVal() {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    return Rep->getVal();}
+    return this->Rep->getVal();}
 
 template<class key, class value>
 const value &MapIter<key,value>::getVal() const {
@@ -169,86 +169,86 @@ const value &MapIter<key,value>::getVal() const {
 
 template<class key, class value>
 void ConstMapIter<key,value>::toStart() {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  Rep->toStart();
+  this->Rep->toStart();
 }
 
 template<class key, class value>
 const value &ConstMapIter<key,value>::defaultVal() const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return Rep->defaultVal();
+  return this->Rep->defaultVal();
 }
 
 template<class key, class value>
 void ConstMapIter<key,value>::operator++() {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  Rep->operator++();
+  this->Rep->operator++();
 }
 
 template<class key, class value>
 void ConstMapIter<key,value>::operator++(int) {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  Rep->operator++(0);
+  this->Rep->operator++(0);
 }
 
 template<class key, class value>
 const value &ConstMapIter<key,value>::operator()(const key &ky) const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return(Rep->operator()(ky));
+  return(this->Rep->operator()(ky));
 }
 
 template<class key, class value>
 const value *ConstMapIter<key,value>::isDefined(const key &ky) const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return(Rep->isDefined(ky));
+  return(this->Rep->isDefined(ky));
 }
 
 template<class key, class value>
 uInt ConstMapIter<key,value>::ndefined() const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return(Rep->ndefined());
+  return(this->Rep->ndefined());
 }
 
 template<class key, class value>
 const Map<key,value> &ConstMapIter<key,value>::container() const {
-    return(Rep->container());
+    return(this->Rep->container());
   }
 template<class key, class value>
 const key &ConstMapIter<key,value>::getKey() const { 
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return Rep->getKey();
+  return this->Rep->getKey();
 }
 
 template<class key, class value>
 Bool ConstMapIter<key,value>::atEnd() const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return Rep->atEnd();}
+  return this->Rep->atEnd();}
 
 template<class key, class value>
 Bool ConstMapIter<key,value>::atStart() const {
-  if (!isValid())
+  if (!this->isValid())
     throw_invalid_mapiter_error();
-  return Rep->atStart();
+  return this->Rep->atStart();
 }
 
 template<class key, class value>
 Bool ConstMapIter<key,value>::isValid() const {
-  return Rep && Rep->isValid() ? True : False;
+  return this->Rep && this->Rep->isValid() ? True : False;
 }
 
 template<class key, class value>
 ConstMapIter<key,value>::ConstMapIter(const ConstMapIter<key,value> *st) {
   if (st && (*st).isValid())
-    Rep = st->Rep->Clone();
+    this->Rep = st->Rep->Clone();
   else 
     throw_mapiter_init_error();
 }
@@ -256,7 +256,7 @@ ConstMapIter<key,value>::ConstMapIter(const ConstMapIter<key,value> *st) {
 template<class key, class value>
 ConstMapIter<key,value>::ConstMapIter(const ConstMapIter<key,value> &st) {
   if (st.isValid())
-    Rep = st.Rep->Clone();
+    this->Rep = st.Rep->Clone();
   else
     throw_mapiter_init_error();
 }
@@ -300,8 +300,8 @@ ConstMapIter<key,value> &ConstMapIter<key,value>::operator=(const Map<key,value>
 
 template<class key, class value>
 ConstMapIter<key,value>::~ConstMapIter() {
-  if (Rep)
-    delete Rep;
+  if (this->Rep)
+    delete this->Rep;
 }
 
 template<class key, class value>
@@ -340,82 +340,82 @@ MapIter<key,value> &MapIter<key,value>::operator=(const MapIter<key,value> *othe
 //#  - - - - - MapIterRep<k,v> - - - - -
 template<class key, class value>
 value &MapIterRep<key,value>::define(const key &ky, const value &val) {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).define(ky,val));
+  return((*this->Container).define(ky,val));
 }
 
 template<class key, class value>
 void MapIterRep<key,value>::remove(const key &ky) {
-  if (! Container || ! isValid())
+  if (! this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  (*Container).remove(ky);
+  (*this->Container).remove(ky);
 }
 
 template<class key, class value>
 void MapIterRep<key,value>::clear() {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  (*Container).clear();
+  (*this->Container).clear();
 }
 
 template<class key, class value>
 const value &MapIterRep<key,value>::operator()(const key &ky) const {
-  if (Container == 0 || ! isValid())
+  if (this->Container == 0 || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).operator()(ky));
+  return((*this->Container).operator()(ky));
 }
 
 template<class key, class value>
 value &MapIterRep<key,value>::operator()(const key &ky) {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).operator()(ky));
+  return((*this->Container).operator()(ky));
 }
 
 template<class key, class value>
 const value *MapIterRep<key,value>::isDefined(const key &ky) const {
-  if (Container == 0 || ! isValid())
+  if (this->Container == 0 || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).isDefined(ky));
+  return((*this->Container).isDefined(ky));
 }
 
 template<class key, class value>
 value *MapIterRep<key,value>::isDefined(const key &ky) {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).isDefined(ky));
+  return((*this->Container).isDefined(ky));
 }
 
 template<class key, class value>
 uInt MapIterRep<key,value>::ndefined() const {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return((*Container).ndefined());
+  return((*this->Container).ndefined());
 }
 
 template<class key, class value>
 Map<key,value> &MapIterRep<key,value>::container() {
-  return *Container;
+  return *this->Container;
 }
 
 template<class key, class value>
 const Map<key,value> &MapIterRep<key,value>::container() const {
-  return *Container;
+  return *this->Container;
 }
 
 template<class key, class value>
 value &MapIterRep<key,value>::defaultVal() {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return (*Container).defaultVal();
+  return (*this->Container).defaultVal();
 }
 
 template<class key, class value>
 const value &MapIterRep<key,value>::defaultVal() const {
-  if (!Container || ! isValid())
+  if (!this->Container || ! this->isValid())
     throw_invalid_mapiter_error();
-  return (*Container).defaultVal();
+  return (*this->Container).defaultVal();
 }
 
 template<class key, class value>

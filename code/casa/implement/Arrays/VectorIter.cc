@@ -31,7 +31,7 @@ template<class T> VectorIterator<T>::VectorIterator(Array<T> &a)
 : ArrayIterator<T>(a, 1)
 {
     // We need to ensure that ap points at a vector
-    Vector<T> *vp = new Vector<T>(*ap); // reference
-    delete ap;
-    ap = vp;
+    Vector<T> *vp = new Vector<T>(*this->ap); // reference
+    delete this->ap;
+    this->ap = vp;
 }

@@ -52,7 +52,7 @@ OrderedMapRep<key,value>::OrderedMapRep (const value& dflt)
 template<class key, class value>
 MapRep<key,value> *OrderedMapRep<key,value>::Clone () const
 {
-  OrderedMapRep<key,value> *ret = new OrderedMapRep<key,value>(DefaultVal);
+  OrderedMapRep<key,value> *ret = new OrderedMapRep<key,value>(this->DefaultVal);
 //lastRef = 0;
   ret->nrtot   = ret->kvblk.nelements();
   if (ret->nrtot < nrtot) {

@@ -80,7 +80,7 @@ public:
     VectorIterator<T> &operator=(const VectorIterator<T> &);
 
     // Return a Vector at the current position.
-    Vector<T> &vector() {return *(Vector<T> *)ap;}
+    Vector<T> &vector() {return *(Vector<T> *)(this->ap);}
 };
 
 // 

@@ -639,13 +639,15 @@ public:
     // current cursor position.
     //
     void addRight(t e) { 
-	AlwaysAssert(isValid(),InvalidIterError);
-	Link<t> *c = cur;
-	Link<t> *p = prev;
-	cur = newLink(e,prev,cur);
-	(*container_).added(prev,cur);        // Allow container to update
-	ListNotice<t> state(ListNotice<t>::ADD,c,p,cur,prev,curPos);
-	(*container_).notify(state);
+	AlwaysAssert(this->isValid(),InvalidIterError);
+	Link<t> *c = this->cur;
+	Link<t> *p = this->prev;
+	this->cur = newLink(e,this->prev,this->cur);
+	// Allow container to update
+	(*this->container_).added(this->prev,this->cur);
+	ListNotice<t> state(ListNotice<t>::ADD,c,p,this->cur,this->prev,
+			    this->curPos);
+	(*this->container_).notify(state);
     }
 
     //
@@ -669,9 +671,9 @@ public:
     //
     // <group>
     t &getRight() {
-	AlwaysAssert(isValid(),InvalidIterError);
-	if (!cur) throw_list_end_error();
-	return((*cur).val());}
+	AlwaysAssert(this->isValid(),InvalidIterError);
+	if (!this->cur) throw_list_end_error();
+	return((*this->cur).val());}
 
     const t &getRight() const { return(ConstListIter<t>::getRight());}
     // </group>

@@ -143,7 +143,7 @@ friend class ListMapIterRep<key,value>;
 protected:
 
   ListIter<OrderedPair<key,value> > &list() {
-    return ((ListMapRep<key,value> *) Rep)->list;
+    return ((ListMapRep<key,value> *)(this->Rep))->list;
   }
 
 public:
@@ -181,13 +181,13 @@ public:
   //
   //+grp
   DefineOrder getOrder() const { 
-    int v = ((ListMapRep<key,value> *) Rep)->getOrder();
+    int v = ((ListMapRep<key,value> *)(this->Rep))->getOrder();
     return v == ListMapRep<key,value>::Append ? Append :
            v == ListMapRep<key,value>::Prepend ? Prepend :
            Undefined;
   }
   void setOrder(DefineOrder OR) { 
-    ((ListMapRep<key,value> *)Rep)->setOrder(OR == Append ? ListMapRep<key,value>::Append :
+    ((ListMapRep<key,value> *)(this->Rep))->setOrder(OR == Append ? ListMapRep<key,value>::Append :
 		  OR == Prepend ? ListMapRep<key,value>::Prepend :
 		  ListMapRep<key,value>::Undefined);
   }
@@ -267,7 +267,7 @@ public:
   //-grp
 
   MapIterRep<key,value> *Clone() {
-    ListMapIterRep<key,value> *ret = new ListMapIterRep<key,value>((ListMap<key,value> *) Container);
+    ListMapIterRep<key,value> *ret = new ListMapIterRep<key,value>((ListMap<key,value> *)(this->Container));
     return ret;
   }
 

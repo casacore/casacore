@@ -83,28 +83,7 @@ template<class T> Cube<T>::Cube(const Cube<T> &other)
 template<class T> Cube<T>::Cube(const Array<T> &other)
 : Array<T>(other)
 {
-    if (ndim() > 3 || ndim() < 1)
-	throw(ArrayNDimError(2, other.ndim(), "Cube<T>::Cube"
-			     "(const Array<T> &): ndim of other > 3"));
-    // We need to fiddle a bit if the ndim is == 1 or 2
-    if (ndim() == 1) {
-	ndimen_p = 3;
-	length_p.resize(3); inc_p.resize(3); 
-	originalLength_p.resize(3);
-        length_p(1) = 1; inc_p(1) = 1;
-	length_p(2) = 1; inc_p(2) = 1;
-	originalLength_p(1) = 1;
-	originalLength_p(2) = 1;
-	makeSteps();
-    } else if (ndim() == 2) {
-	ndimen_p = 3;
-	length_p.resize(3); inc_p.resize(3);
-	length_p(2) = 1; inc_p(2) = 1;
-	originalLength_p.resize(3);
-	originalLength_p(2) = 1;
-	makeSteps();
-    }
-    nels_p = length_p.product();
+    this->checkCubeShape();
     makeIndexingConstants();
     DebugAssert(ok(), ArrayError);
 }
@@ -203,7 +182,7 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
     Int b1, l1, s1, b2, l2, s2, b3,s3,l3;       // begin length step
     if (sliceX.all()) {
 	b1 = 0;
-	l1 = length_p(0);
+	l1 = this->length_p(0);
 	s1 = 1;
     } else {
 	b1 = sliceX.start();
@@ -212,7 +191,7 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
     }
     if (sliceY.all()) {
 	b2 = 0;
-	l2 = length_p(1);
+	l2 = this->length_p(1);
 	s2 = 1;
     } else {
 	b2 = sliceY.start();
@@ -221,7 +200,7 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
     }
     if (sliceZ.all()) {
 	b3 = 0;
-	l3 = length_p(2);
+	l3 = this->length_p(2);
 	s3 = 1;
     } else {
 	b3 = sliceZ.start();
@@ -234,9 +213,9 @@ template<class T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0 || l3 < 0) {
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice): length < 0"));
-    } else if ((b1+(l1-1)*s1 >= length_p(0)) || 
-	       (b2+(l2-1)*s2 >= length_p(1)) ||
-	       (b3+(l3-1)*s3 >= length_p(2))) {
+    } else if ((b1+(l1-1)*s1 >= this->length_p(0)) || 
+	       (b2+(l2-1)*s2 >= this->length_p(1)) ||
+	       (b3+(l3-1)*s3 >= this->length_p(2))) {
 	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : "
 			 "Desired slice extends beyond the end of the array"));
     } else if (b1 < 0 || b2 < 0 || b3 < 0) {
@@ -257,9 +236,9 @@ template<class T> void Cube<T>::makeIndexingConstants()
 {
     // No lAssert since the Cube often isn't constructed yet when
     // calling this
-    xinc_p = inc_p(0);
-    yinc_p = inc_p(1)*originalLength_p(0);
-    zinc_p = inc_p(2)*originalLength_p(0)*originalLength_p(1);
+    xinc_p = this->inc_p(0);
+    yinc_p = this->inc_p(1)*this->originalLength_p(0);
+    zinc_p = this->inc_p(2)*this->originalLength_p(0)*this->originalLength_p(1);
 }
 
 
@@ -282,7 +261,7 @@ void Cube<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
 template<class T> Matrix<T> Cube<T>::xyPlane(uInt which)
 {
     DebugAssert(ok(), ArrayError);
-    if (Int(which) >= length_p(2)) {
+    if (Int(which) >= this->length_p(2)) {
 	throw(ArrayConformanceError("Cube<T>::xyPlane - plane > end"));
     }
     Cube<T> tmp((*this)(Slice(), Slice(), which));
@@ -305,7 +284,7 @@ template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
 
 template<class T> Bool Cube<T>::ok() const
 {
-    return ( (ndim() == 3) ? (Array<T>::ok()) : False );
+    return ( (this->ndim() == 3) ? (Array<T>::ok()) : False );
 }
 
 template<class T>

@@ -79,7 +79,7 @@ public:
     MatrixIterator<T> &operator=(const MatrixIterator<T> &);
 
     // Return the matrix at the current position.
-    Matrix<T> &matrix() {return *(Matrix<T> *)ap;}
+    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap);}
 };
 
 // 
