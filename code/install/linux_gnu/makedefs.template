@@ -120,6 +120,10 @@ TCLLIB   += -ldl
 # PGPLOT (FORTRAN plotting package).
 PGPLOTROOT := /usr
 
+# FFTW Highly optimized FFT routines
+FFTWROOT := /usr
+FFTWLIB := -lfftw -lrfftw
+
 #-----------------------------------------------------------------------------
 # Compilation and linkage variables
 #-----------------------------------------------------------------------------
