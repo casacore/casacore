@@ -599,7 +599,7 @@ determineShape(const IPosition & rShape, const Array<S> & cData){
     VectorIterator<S> iter((Array<S> &) cData);
     uInt lastElem = cShape(0)-1;
     while (!iter.pastEnd()) {
-      if (!near(iter.vector()(lastElem).imag(), (S)0.0)) {
+      if (!near(iter.vector()(lastElem).imag(), (T)0.0)) {
 	IPosition oddLength(cShape);
 	oddLength(0) = cShape(0)*2-1;
 	return oddLength;
