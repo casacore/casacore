@@ -1,5 +1,5 @@
 //# AutoDiffMath.h: Implements all mathematical functions for AutoDiff.
-//# Copyright (C) 1995,1999,2001
+//# Copyright (C) 1995,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -115,6 +115,8 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, 
 				  const AutoDiff<T> &b);
 template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b);
+template<class T> AutoDiff<T> square(const AutoDiff<T> &ad);
+template<class T> AutoDiff<T> cube(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> sin(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> sinh(const AutoDiff<T> &ad);
 template<class T> AutoDiff<T> sqrt(const AutoDiff<T> &ad);

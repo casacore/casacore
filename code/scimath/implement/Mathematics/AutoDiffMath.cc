@@ -1,5 +1,5 @@
 //# AutoDiffMath.cc: Implements all mathematical functions for AutoDiff.
-//# Copyright (C) 1995,1996,1999,2001
+//# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -244,6 +244,20 @@ template<class T> AutoDiff<T> pow(const AutoDiff<T> &a, const T &b) {
   T ta = a.theRep()->val_p;
   tmp.theRep()->grad_p *= b*pow(ta, b-T(1));
   tmp.theRep()->val_p = pow(ta, b);
+  return tmp.ref();
+}
+
+template<class T> AutoDiff<T> square(const AutoDiff<T> &ad) {
+  AutoDiff<T> tmp(ad);
+  tmp.theRep()->val_p = square(tmp.theRep()->val_p);
+  tmp.theRep()->grad_p *= T(2)*tmp.theRep()->val_p;
+  return tmp.ref();
+}
+
+template<class T> AutoDiff<T> cube(const AutoDiff<T> &ad) {
+  AutoDiff<T> tmp(ad);
+  tmp.theRep()->val_p = cube(tmp.theRep()->val_p);
+  tmp.theRep()->grad_p *= T(3)*square(tmp.theRep()->val_p);
   return tmp.ref();
 }
 
