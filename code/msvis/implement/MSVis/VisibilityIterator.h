@@ -602,7 +602,7 @@ protected:
   ArrayColumn<Float> RWcolSigma;
   ArrayColumn<Float> RWcolImagingWeight;
   ArrayColumn<Bool> RWcolFlag;
-  ArrayColumn<Bool> RWcolFlagRow;
+  ScalarColumn<Bool> RWcolFlagRow;
 
 };
 
