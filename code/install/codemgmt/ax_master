@@ -2083,3 +2083,4 @@
 08 276 src rm trial/implement/MeasurementComponents/UniformWTCoh.cc
 08 289 src rm aips/glish/glish/List.cc
 08 293 src rm aips/implement/Measures/MRefData.h
+08 297 src rm aips/implement/Measures/MRefData.cc
