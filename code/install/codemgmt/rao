@@ -3,7 +3,7 @@
 # rao: Remotely check out AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-1997,1999
+#   Copyright (C) 1996-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -122,13 +122,13 @@
      REMOTE_USER="-l $AUID"
   fi
   ARSH="ssh aips2.nrao.edu $REMOTE_USER"
-  COMMAND="cd $PGMRDIR && ao -I $* && rm -f a.tmp.tar && tar cf a.tmp.tar $FILES && rm -f $FILES"
+  COMMAND="cd $PGMRDIR && rm -f a.tmp.tar && ao -I $* && tar cf a.tmp.tar $FILES && rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
+  rm -f a.tmp.tar
   scp -qpC  $AUID@aips2.nrao.edu:$PGMRDIR/a.tmp.tar  a.tmp.tar
   tar xpvf a.tmp.tar > /dev/null 
   COMMAND="cd $PGMRDIR && rm -f a.tmp.tar"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
   rm -f a.tmp.tar
-
 
   exit 0
