@@ -3104,3 +3104,4 @@
 12 011 sys rm libexec/gcatalog.g
 12 022 src mv doc/papers/rcadass95.dir doc/papers/adass95/rcadass95.dir
 12 022 src mv doc/papers/rgadass95.dir doc/papers/adass95/rgadass95.dir
+12 022 src rm doc/papers/addass93
