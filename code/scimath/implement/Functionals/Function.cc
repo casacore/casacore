@@ -1,5 +1,5 @@
 //# Function.cc: Numerical functional interface class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,8 +28,8 @@
 //# Includes
 #include <aips/Functionals/Function.h>
 
-template<class T>
-T Function<T>::operator()(const Vector<ArgType> &x) const {
+template<class T, class U>
+U Function<T,U>::operator()(const Vector<ArgType> &x) const {
   DebugAssert(ndim()<=x.nelements(), AipsError);
   if (x.contiguousStorage() || ndim()<2) return this->eval(&(x[0]));
   uInt j=ndim();
@@ -38,8 +38,8 @@ T Function<T>::operator()(const Vector<ArgType> &x) const {
   return this->eval(&(arg_p[0]));
 };
 
-template<class T>
-T Function<T>::operator()(const ArgType &x, const ArgType &y) const {
+template<class T, class U>
+U Function<T,U>::operator()(const ArgType &x, const ArgType &y) const {
   DebugAssert(ndim()==2, AipsError);
   arg_p.resize(ndim());
   arg_p[0] = x; arg_p[1] = y;

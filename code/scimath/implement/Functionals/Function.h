@@ -183,9 +183,9 @@
 //   <li> use maybe Poolstack for static Vector
 // </todo>
 
-template<class T> class Function :
-public Functional<typename FunctionTraits<T>::ArgType, T>,
-  public Functional<Vector<typename FunctionTraits<T>::ArgType>, T> {
+template<class T, class U=T> class Function :
+public Functional<typename FunctionTraits<T>::ArgType, U>,
+  public Functional<Vector<typename FunctionTraits<T>::ArgType>, U> {
 
  public:
   //# Typedefs
@@ -201,7 +201,7 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
     parset_p(False) {};
   Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
     parset_p(False) {};
-  Function(const Function<T> &other) : param_p(other.param_p),
+  Function(const Function<T,U> &other) : param_p(other.param_p),
     arg_p(other.arg_p), parset_p(other.parset_p) {};
   // </group>
 
@@ -223,13 +223,13 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // The length of <src>x</src> must be greater than or equal to
   // <src>ndim()</src>.
   // <group>
-  virtual T operator()() const {
+  virtual U operator()() const {
     DebugAssert(ndim()==0, AipsError); return this->eval(FunctionArg(0)); };
-  virtual T operator()(const ArgType &x) const {
+  virtual U operator()(const ArgType &x) const {
     DebugAssert(ndim()<=1, AipsError); return this->eval(&x); };
-  virtual T operator()(const Vector<ArgType> &x) const;
-  virtual T operator()(FunctionArg x) const { return this->eval(x); };
-  virtual T operator()(const ArgType &x, const ArgType &y) const;
+  virtual U operator()(const Vector<ArgType> &x) const;
+  virtual U operator()(FunctionArg x) const { return this->eval(x); };
+  virtual U operator()(const ArgType &x, const ArgType &y) const;
   // </group>
 
   //# Member functions
@@ -246,13 +246,13 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   FunctionParam<T> &parameters() { parset_p = True; return param_p; };
   // </group>
   // Evaluate the function object
-  virtual T eval(FunctionArg x) const = 0;
+  virtual U eval(FunctionArg x) const = 0;
   // Print the function (i.e. the parameters)
   ostream &print(ostream &os) const { return param_p.print(os); };
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>
-  virtual Function<T> *clone() const = 0;
+  virtual Function<T,U> *clone() const = 0;
   // </group>
 
   protected:
@@ -270,13 +270,13 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
 // <summary> Global functions </summary>
 // <group name=Output>
 // Output declaration
-template<class T>
-ostream &operator<<(ostream &os, const Function<T> &fun);
+template<class T, class U>
+ostream &operator<<(ostream &os, const Function<T,U> &fun);
 // </group>
 
 //# Inlines
-template<class T>
-inline ostream &operator<<(ostream &os, const Function<T> &fun) {
+template<class T, class U>
+inline ostream &operator<<(ostream &os, const Function<T,U> &fun) {
   return fun.print(os); };
 
 #endif

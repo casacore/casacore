@@ -70,7 +70,7 @@
 // </templating>
 
 
-template<class T> class NQFunction1D : public Function<T> {
+template<class T, class U=T> class NQFunction1D : public Function<T,U> {
 
  public:
   //# Typedefs
@@ -79,10 +79,10 @@ template<class T> class NQFunction1D : public Function<T> {
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  NQFunction1D() : Function<T>() {};
-  explicit NQFunction1D(const uInt n) : Function<T>(n) {};
-  explicit NQFunction1D(const Vector<T> &in) : Function<T>(in) {};
-  NQFunction1D(const FunctionParam<T> &other) : Function<T>(other) {};
+  NQFunction1D() : Function<T,U>() {};
+  explicit NQFunction1D(const uInt n) : Function<T,U>(n) {};
+  explicit NQFunction1D(const Vector<T> &in) : Function<T,U>(in) {};
+  NQFunction1D(const FunctionParam<T> &other) : Function<T,U>(other) {};
   // </group>
 
   // Destructor
