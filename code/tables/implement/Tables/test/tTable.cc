@@ -392,10 +392,9 @@ void b (Bool doExcp)
     if (seltabset.nrow() != 4) {
 	cout << "seltabset does not contain 4 rows" << endl;
     }
-    for (i=0; i<seltabset.nrow(); i++) {
-      cout << seltabset.rowNumbers() << endl;;
-      cout << seltabset.rowNumbers(sortab) << endl;
-    }
+    cout << seltabset.rowNumbers() << endl;;
+    cout << seltabset.rowNumbers(tab) << endl;;
+    cout << seltabset.rowNumbers(sortab) << endl;
     seltabset = sortab (sortab.col("arr1")(IPosition(3,0,0,0)) < 100);
     if (seltabset.nrow() != 5) {
 	cout << "seltabset does not contain 5 rows" << endl;
