@@ -4878,3 +4878,4 @@
 14 316 sys rm libexec/dishregrid.g
 14 316 src rm trial/apps/newdish/dishsave.g
 14 316 sys rm libexec/dishsave.g
+14 316 src rm trial/apps/newdish/dishsavegui.g
