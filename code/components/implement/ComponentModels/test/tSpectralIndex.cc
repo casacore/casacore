@@ -1,5 +1,5 @@
 //# tSpectralIndex.cc: tests the SpectralIndex class
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -119,6 +119,7 @@ int main() {
       AlwaysAssert(rec.isDefined("type"), AipsError);
       AlwaysAssert(rec.isDefined("frequency"), AipsError);
       AlwaysAssert(rec.isDefined("index"), AipsError);
+      AlwaysAssert(rec.isDefined("error"), AipsError);
       String type;
       rec.get(RecordFieldId("type"), type);
       AlwaysAssert(type == "Spectral Index", AipsError);
