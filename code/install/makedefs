@@ -230,8 +230,9 @@ MIRLIBLIB  := -lmir
 # This sad state of affairs may arise, for example, when running multiple
 # versions of the Sun compiler.
 #
-XLIBSEL := XLIBLIST
-XLIBLIST_shared=GLISH XmPGPLOT Motif X11 WCSLIB LAPACK F77
+XLIBSEL=XLIBLIST
+XLIBLIST_shared_aips=GLISH X11 LAPACK F77
+XLIBLIST_shared_trial=GLISH XmPGPLOT Motif X11 WCSLIB LAPACK F77
 
 ###
 ### You shouldn't need to modify any of the following four variables.
