@@ -1,5 +1,5 @@
-//# LatticeCoordinates.h: Envelope class for Lattice coordinates
-//# Copyright (C) 1998
+//# LELCoordinates.h: Envelope class for Lattice coordinates in LEL
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,18 +25,18 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_LATTICECOORDINATES_H)
-#define AIPS_LATTICECOORDINATES_H
+#if !defined(AIPS_LELCOORDINATES_H)
+#define AIPS_LELCOORDINATES_H
 
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Lattices/LattCoord.h>
+#include <trial/Lattices/LELLattCoord.h>
 #include <aips/Utilities/CountedPtr.h>
 
 
 // <summary>
-// Envelope class to handle Lattice Coordinates.
+// Envelope class to handle Lattice Coordinates in LEL.
 // </summary>
 //
 // <use visibility=export>
@@ -45,9 +45,9 @@
 // </reviewed>
 //
 // <prerequisite>
-//   <li> <linkto class="Lattice"> Lattice</linkto>
-//   <li> <linkto class="LattCoord"> LattCoord</linkto>
-//   <li> <linkto class="ImageCoord"> ImageCoord</linkto>
+//   <li> <linkto class="Lattice">Lattice</linkto>
+//   <li> <linkto class="LELLattCoord">LELLattCoord</linkto>
+//   <li> <linkto class="LELImageCoord">LELImageCoord</linkto>
 // </prerequisite>
 //
 // <synopsis> 
@@ -60,41 +60,43 @@
 //  give the LatticeExpression classes access to the Coordinates of the 
 //  ImageInterface objects.
 //
-//  This is done through the interface of the LatticeCoordinates class.
+//  This is done through the interface of the LELCoordinates class.
 //  It is actually an envelope class which holds letter classes which
 //  are the actual implementation of the objects which hold the Lattice
-//  CoordinateSystems.  Lattice objects have a member function called latticeCoordinates.
-//  This returns a LatticeCoordinates object.   This object contains a
-//  pointer (actually a CountedPtr) of type LattCoord.  This is the base
+//  CoordinateSystems.
+//  Lattice objects have a member function called lelCoordinates.
+//  This returns a LELCoordinates object.   This object contains a
+//  pointer (actually a CountedPtr) of type LELLattCoord.  This is the base
 //  class of the letter classes.   For Lattices such as ImageInterface,
-//  this pointer actually points at the derived letter class ImageCoord.  This
-//  class in turn contains a pointer (a CountedPtr) to the actual
+//  this pointer actually points at the derived letter class LELImageCoord.
+//  This class in turn contains a pointer (a CountedPtr) to the actual
 //  CoordinateSystem object.   
 // 
-//  Note that every time the latticeCoordinates function is called, the
-//  LatticeCoordinate and ImageCoord (or whatever the letter class
+//  Note that every time the lelCoordinates function is called, the
+//  LELLattCoord and LELImageCoord (or whatever the letter class
 //  actually being invoked is)  objects are constructed.  For example
-//  the internals of ImageInterface::latticeCoordinates are
-//  <src>return LatticeCoordinates (new ImageCoord (coords_p));</src>
-//  so that the LatticeCoordinates constructor invokes the ImageCoord
+//  the internals of ImageInterface::lelCoordinates are
+//  <src>return LELCoordinates (new LELImageCoord (coords_p));</src>
+//  so that the LELCoordinates constructor invokes the LELImageCoord
 //  constructor with the CoordinateSystem as its argument.  However,
 //  the internal use of CountedPtrs make subsequent constructions inexpensive.
 //
-//  Having a LatticeCoordinates object in hand, the programmer then has access
+//  Having a LELCoordinates object in hand, the programmer then has access
 //  to the CoordinateSystem that it ultimately contains.  This is via the
-//  LatticeCoordinates member function coordinates which returns a reference to the 
-//  letter base class LattCoord.   For example, if the actual letter class object
-//  was ImageCoord, one has to then cast the reference to the LattCoord returned
-//  by LatticeCoordinates::coordinates() to an ImageCoord.  This is because
+//  LELCoordinates member function coordinates which returns a reference to
+//  the letter base class LELLattCoord. For example, if the actual letter
+//  class object was LELImageCoord, one has to then cast the reference to
+//  the LELLattCoord returned
+//  by LELCoordinates::coordinates() to an LELImageCoord.  This is because
 //  the letter class functions that actually return the CoordinateSystem
-//  are not virtual (i.e. they are not defined in LattCoord).
+//  are not virtual (i.e. they are not defined in LELLattCoord).
 // </synopsis>
 //
 // <example>
 // <srcblock>
 //    PagedImage<Float> im("myimage");
-//    LatticeCoordinates* pLatCoord = &(im.latticeCoordinates());
-//    ImageCoord* pImCoord = (ImageCoord*)pLatCoord;
+//    LELCoordinates* pLatCoord = &(im.lelCoordinates());
+//    LELImageCoord* pImCoord = (LELImageCoord*)pLatCoord;
 //    CoordinateSystem coords = pImCoord->coordinates();
 // </srcblock>
 // </example>
@@ -108,40 +110,40 @@
 // </todo>
 
 
-class LatticeCoordinates
+class LELCoordinates
 {
 public:
-    // The default constructor creates a LattCoord object.
-    LatticeCoordinates();
+    // The default constructor creates a LELLattCoord object.
+    LELCoordinates();
 
     // Construct the object from the given letter class.
     // It takes over the pointer and takes care of destructing
-    // the LattCoord object.
-    LatticeCoordinates (LattCoord* coordinates);
+    // the LELLattCoord object.
+    LELCoordinates (LELLattCoord* coordinates);
 
     // Copy constructor (reference semantics).
-    LatticeCoordinates (const LatticeCoordinates& that);
+    LELCoordinates (const LELCoordinates& that);
 
-    ~LatticeCoordinates();
+    ~LELCoordinates();
 
     // Assignment (reference semantics).
-    LatticeCoordinates& operator= (const LatticeCoordinates& that);
+    LELCoordinates& operator= (const LELCoordinates& that);
 
     // Does the class have true coordinates?
     Bool hasCoordinates() const;
 
     // Check if the coordinates of this and that conform.
     // <br>The default implementation returns False.
-    Bool conform (const LatticeCoordinates& that) const;
+    Bool conform (const LELCoordinates& that) const;
 
     // Return the underlying letter object.
     // This should in general not be used, but for specific (Image) cases
     // it might be needed.
-    const LattCoord& coordinates() const;
+    const LELLattCoord& coordinates() const;
 
 private:
     // The pointer to the underlying object.
-    CountedPtr<LattCoord> coords_p;
+    CountedPtr<LELLattCoord> coords_p;
 };
 
 
