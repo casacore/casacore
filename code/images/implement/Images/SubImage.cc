@@ -28,6 +28,7 @@
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/LatticeRegion.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/UnitMap.h>
@@ -70,11 +71,9 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
 : MaskedImage<T> (),
   itsImagePtr (image.cloneII())
 {
-// Automatic promotion to LatticeRegion goes wrong (gnu)
-
-  LatticeRegion lRegion = 
-      LatticeRegion(region.toLCRegion(image.coordinates(), image.shape()));
-  itsSubLatPtr = new SubLattice<T> (image, lRegion);
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLatticeRegion (image.coordinates(),
+							    image.shape()));
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
@@ -87,11 +86,11 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
 : MaskedImage<T> (),
   itsImagePtr (image.cloneII())
 {
-// Automatic promotion to LatticeRegion goes wrong (gnu)
 
-  LatticeRegion lRegion = 
-      LatticeRegion(region.toLCRegion(image.coordinates(), image.shape()));
-  itsSubLatPtr = new SubLattice<T> (image, lRegion, writableIfPossible);
+  itsSubLatPtr = new SubLattice<T> (image, 
+				    region.toLatticeRegion (image.coordinates(),
+							    image.shape()),
+                                    writableIfPossible);
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
@@ -103,11 +102,9 @@ SubImage<T>::SubImage (const MaskedImage<T>& image,
 : MaskedImage<T> (),
   itsImagePtr (image.cloneII())
 {
-// Automatic promotion to LatticeRegion goes wrong (gnu)
-
-  LatticeRegion lRegion = 
-      LatticeRegion(region.toLCRegion(image.coordinates(), image.shape()));
-  itsSubLatPtr = new SubLattice<T> (image, lRegion);
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLatticeRegion (image.coordinates(),
+							    image.shape()));
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
@@ -120,11 +117,9 @@ SubImage<T>::SubImage (MaskedImage<T>& image,
 : MaskedImage<T> (),
   itsImagePtr (image.cloneII())
 {
-// Automatic promotion to LatticeRegion goes wrong (gnu)
-
-  LatticeRegion lRegion = 
-      LatticeRegion(region.toLCRegion(image.coordinates(), image.shape()));
-  itsSubLatPtr = new SubLattice<T> (image, lRegion, writableIfPossible);
+  itsSubLatPtr = new SubLattice<T> (image,
+				    region.toLatticeRegion (image.coordinates(),
+							    image.shape()));
   const Slicer& slicer = itsSubLatPtr->region().slicer();
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
