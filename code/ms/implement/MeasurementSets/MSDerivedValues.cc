@@ -235,7 +235,7 @@ void NewMSDerivedValues::init()
   cTOPOToLSR_p.set(MRadialVelocity(MVRadialVelocity(0.0),
 				   MRadialVelocity::Ref(MRadialVelocity::TOPO,
 							fAntFrame_p)),
-		   MRadialVelocity::Ref(MRadialVelocity::LSR));
+		   MRadialVelocity::Ref(MRadialVelocity::LSRK));
 }
 
 

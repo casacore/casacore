@@ -81,7 +81,7 @@ class String;
 // MDirection dir=NewMS::directionMeasure(msc.field().phaseDir());
 // dir.set(MVDirection(Vector<Double>(msc.field().phaseDir()(0))));
 // msd.setFieldCenter(dir);
-// msd.setVelocityFrame(MRadialVelocity::LSR);
+// msd.setVelocityFrame(MRadialVelocity::LSRK);
 // // now we are ready for the calculations:
 // Double parAngle = msd.parangle();
 // MRadialVelocity observatoryVel = msd.obsVel();
@@ -142,7 +142,7 @@ public:
   // Use -1 to set the reference frame to the observatory position.
   NewMSDerivedValues& setAntenna(Int antenna);
 
-  // Set the velocity frame type (e.g., MRadialVelocity::LSR) 
+  // Set the velocity frame type (e.g., MRadialVelocity::LSRK) 
   NewMSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
 
   // get hour angle
