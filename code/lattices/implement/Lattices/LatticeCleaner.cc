@@ -57,6 +57,7 @@
 #include <aips/Arrays/ArrayIter.h>
 #include <aips/Arrays/VectorIter.h>
 
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Fallible.h>
@@ -96,7 +97,10 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsDoSpeedup(False),
   itsIgnoreCenterBox(False),
   itsSmallScaleBias(0.6),
-  itsStopAtLargeScaleNegative(False)
+  itsStopAtLargeScaleNegative(False),
+  itsStopPointMode(-1),
+  itsDidStopPointMode(False)
+  
 {
   AlwaysAssert(validatePsf(psf), AipsError);
   // Check that everything is the same dimension and that none of the
@@ -141,7 +145,9 @@ LatticeCleaner(const LatticeCleaner<T> & other):
    itsStartingIter(other.itsStartingIter),
    itsIgnoreCenterBox(other.itsIgnoreCenterBox),
    itsSmallScaleBias(other.itsSmallScaleBias),
-   itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative)
+   itsStopAtLargeScaleNegative(other.itsStopAtLargeScaleNegative),
+   itsStopPointMode(other.itsStopPointMode),
+   itsDidStopPointMode(other.itsDidStopPointMode)
 {
 }
 
@@ -160,6 +166,8 @@ operator=(const LatticeCleaner<T> & other) {
     itsIgnoreCenterBox = other.itsIgnoreCenterBox;
     itsSmallScaleBias = other.itsSmallScaleBias;
     itsStopAtLargeScaleNegative = other.itsStopAtLargeScaleNegative;
+    itsStopPointMode = other.itsStopPointMode;
+    itsDidStopPointMode = other.itsDidStopPointMode;
 
   }
   return *this;
@@ -171,7 +179,7 @@ template<class T> LatticeCleaner<T>::
   destroyScales();
   if(itsDirty) delete itsDirty;
   if(itsXfr) delete itsXfr;
-  if(itsMask) delete itsMask;
+  if(itsMask) delete itsMask; 
 }
 
 
@@ -181,6 +189,7 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask)
 {
   IPosition maskShape = mask.shape();
   IPosition dirtyShape = itsDirty->shape();
+
   AlwaysAssert((mask.shape() == itsDirty->shape()), AipsError);
 
   itsMask = new TempLattice<T>(mask.shape(), itsMemoryMB);
@@ -191,7 +200,6 @@ void LatticeCleaner<T>::setMask(Lattice<T> & mask)
   }
 
 };
-
 
 
 
@@ -284,7 +292,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   IPosition trcDirty(model.shape()-1);
 
   if (itsIgnoreCenterBox) {
-    os << "Cleaning entire image" << LogIO::POST;
+    os << "Cleaning entire image as per MF/WF" << LogIO::POST;
   } else {
     os << "Cleaning inner quarter of image" << LogIO::POST;
     for (Int i=0;i<Int(model.shape().nelements());i++) {
@@ -309,14 +317,15 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   Vector<T> totalFluxScale(nScalesToClean); totalFluxScale=0.0;
   T totalFlux=0.0;
   Bool converged=False;
+  Int stopPointModeCounter = 0;
   Int optimumScale=0;
   T strengthOptimum=0.0;
   IPosition positionOptimum(model.shape().nelements(), 0);
   os << "Starting iteration"<< LogIO::POST;
 
-  for (itsIteration=itsStartingIter; itsIteration < itsMaxNiter;
-       itsIteration++) {
-
+  itsIteration = itsStartingIter;
+  for (Int ii=itsStartingIter; ii < itsMaxNiter; ii++) {
+    itsIteration++;
     // Find the peak residual
     strengthOptimum = 0.0;
     optimumScale = 0;
@@ -356,17 +365,33 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
     // Various ways of stopping:
     //    1. stop if below threshold
     if(abs(strengthOptimum)<threshold() ) {
-      os << "Reached stopping threshold" << LogIO::POST;
+      os << "Reached stopping threshold " << threshold() << LogIO::POST;
+      os << "Optimum flux is " << abs(strengthOptimum) << LogIO::POST;
       converged = True;
       break;
     }
     //    2. negatives on largest scale?
-    if (itsStopAtLargeScaleNegative && 
+    if (itsStopAtLargeScaleNegative  && 
 	optimumScale == (nScalesToClean-1) && 
 	strengthOptimum < 0.0) {
       os << "Reached negative on largest scale" << LogIO::POST;
       converged = False;
       break;
+    }
+    if (itsStopPointMode > 0) {
+      if (optimumScale == 0) {
+	stopPointModeCounter++;
+      } else {
+	stopPointModeCounter = 0;
+      }
+      if (stopPointModeCounter >= itsStopPointMode) {
+	os << "Cleaned " << stopPointModeCounter << 
+	  " consecutive components from the smallest scale, stopping prematurely"
+	   << LogIO::POST;
+	itsDidStopPointMode = True;
+	converged = False;
+	break;
+      }
     }
 
 
@@ -583,6 +608,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   itsNscales=scaleSizes.nelements();
   itsScaleSizes.resize(itsNscales);
   itsScaleSizes=scaleSizes;  // make a copy that we can call our own
+  GenSort<Float>::sort(itsScaleSizes);
 
   itsScales.resize(itsNscales);
   itsDirtyConvScales.resize(itsNscales);
@@ -794,125 +820,6 @@ Bool LatticeCleaner<T>::stopnow() {
   }
 }
 
-// old version
-//
-// Set up the masks for the various scales
-// This really only works for well behaved (ie, non-concave) masks.
-// with only 1.0 or 0.0 values, and assuming the Scale images have
-// a finite extent equal to +/- itsScaleSizes(scale)
-template <class T>
-Bool LatticeCleaner<T>::oldMakeScaleMasks()
-{
-  LogIO os(LogOrigin("deconvolver", "makeScaleMasks()", WHERE));
-  AlwaysAssert( (itsNscales>0), AipsError);
-  AlwaysAssert( (itsMask!=0), AipsError);
-  
-  IPosition wholeShape(itsMask->shape());
-  LatticeStepper ls(wholeShape, IPosition(4, wholeShape(0), wholeShape(1), 1, 1), IPosition(4,0,1,2,3));
-  RO_LatticeIterator<T> mli(*itsMask, ls);
-  IPosition ip(itsMask->shape());
-  ip(2) = 0;
-  ip(3) = 0;
-
-  for (Int scale=0; scale<itsNscales; scale++){
-    itsScaleMasks[scale] = new TempLattice<T>(itsMask->shape(),
-					      itsMemoryMB);
-    if (itsScaleSizes(scale) == 0.0) {
-      itsScaleMasks[scale]->copyData(*itsMask);
-    } else {
-      itsScaleMasks[scale]->set(0.0);
-      Bool isIn;
-      Float zero = 0.000001;
-      LatticeIterator<T> smli(*itsScaleMasks[scale], ls);
-      
-      // step through each tile; look to see if scale edge points
-      // are within this tile; is so, check if they are within the mask --
-      // If not within tile, use "getAt"
-      for(mli.reset(), smli.reset();  !mli.atEnd();  mli++, smli++) {
-	
-
-	IPosition tShape(smli.latticeShape());
-	IPosition loc(mli.position());
-	for (Int iy=0; iy<tShape(1); iy++) {      
-	  for (Int ix=0; ix<tShape(0); ix++) {
-	    isIn = True;
-	    
-
-	    if (mli.matrixCursor()(ix,iy) <= zero)   isIn = False;
-	    // +X
-	    if (isIn) {
-	      if ( (ix + itsScaleSizes(scale)) < tShape(0) ) {
-		if (mli.matrixCursor()(ix + (Int)(itsScaleSizes(scale)+0.9),iy) <= zero )  isIn = False;
-	      } else {
-		ip(0) = loc(0) + ix + (Int)(itsScaleSizes(scale)+0.9);
-		ip(1) = loc(1) + iy;
-		if (ip(0) >= wholeShape(0)) {
-		  isIn = False;
-		} else {
-		  if (itsMask->getAt(ip) <= zero ) isIn = False;
-		}
-	      }
-	    }
-	    // -X
-	    if (isIn) {
-	      if ( (ix - itsScaleSizes(scale)) >= 0 ) {
-		if (mli.matrixCursor()(ix - (Int)(itsScaleSizes(scale)+0.9),iy) <= zero )  isIn = False;
-	      } else {
-		ip(0) = loc(0) + ix - (Int)(itsScaleSizes(scale)+0.9);
-		ip(1) = loc(1) + iy;
-		if (ip(0) < 0) {
-		  isIn = False;
-		} else {
-		  if (itsMask->getAt(ip) <= zero ) isIn = False;
-		}
-	      }
-	    }
-	    // +Y
-	    if (isIn) {
-	      if ( (iy + itsScaleSizes(scale)) < tShape(1) ) {
-		if (mli.matrixCursor()(ix,iy+(Int)(itsScaleSizes(scale)+0.9)) <= zero )  isIn = False;
-	      } else {
-		ip(0) = loc(0) + ix;
-		ip(1) = loc(1) + iy + (Int)(itsScaleSizes(scale)+0.9);
-		if (ip(1) >= wholeShape(1)) {
-		  isIn = False;
-		} else {
-		  if (itsMask->getAt(ip) <= zero ) isIn = False;
-		}
-	      }
-	    }
-	    // -Y
-	    if (isIn) {
-	      if ( (iy - itsScaleSizes(scale)) >= 0 ) {
-		if (mli.matrixCursor()(ix, iy - (Int)(itsScaleSizes(scale)+0.9)) <= zero )  isIn = False;
-	      } else {
-	        ip(0) = loc(0) + ix;
-		ip(1) = loc(1) + iy - (Int)(itsScaleSizes(scale)+0.9);
-		if (ip(1) < 0) {
-		  isIn = False;
-		} else {
-		  if (itsMask->getAt(ip) <= zero ) isIn = False;
-		}
-	      }
-	    }
-	    if (isIn) {
-	      smli.rwMatrixCursor()(ix,iy) = 1.0;
-	    }
-	  }
-	}
-      }
-    }
-    LatticeExprNode LEN;
-    LEN = sum( *itsScaleMasks[scale] );
-    Float mysum = LEN.getFloat();
-    if (mysum <= 0.1) {
-      os << "Warning: scale " << scale << 
-	" is too large to fit within the mask" << LogIO::POST;
-    }
-  }
-  return True;
-};
-
 
 
 // Set up the masks for the various scales
@@ -922,6 +829,7 @@ Bool LatticeCleaner<T>::oldMakeScaleMasks()
 template <class T>
 Bool LatticeCleaner<T>::makeScaleMasks()
 {
+
   LogIO os(LogOrigin("deconvolver", "makeScaleMasks()", WHERE));
   AlwaysAssert( (itsNscales>0), AipsError);
   AlwaysAssert( (itsMask!=0), AipsError);
@@ -932,18 +840,22 @@ Bool LatticeCleaner<T>::makeScaleMasks()
   LatticeStepper ls(wholeShape, IPosition(4, wholeShape(0), wholeShape(1), 1, 1), IPosition(4,0,1,2,3));
   RO_LatticeIterator<T> mli(*itsMask, ls);
   IPosition ip(itsMask->shape());
+  IPosition maskShape(itsMask->shape());
   ip(2) = 0;
   ip(3) = 0;
+  maskShape(2) = 0;
+  maskShape(3) = 0;
 
   Float point99 = 0.99;
   for (Int scale=0; scale<itsNscales; scale++){
     // get a sublattice of the scale image, for computational puproses
-    IPosition blc = ip;
-    IPosition trc = ip;
-    blc(0) = ip(0)/2 - (Int)(itsScaleSizes(scale)+ point99);
-    blc(1) = ip(1)/2 - (Int)(itsScaleSizes(scale)+ point99);
-    trc(0) = ip(0)/2 + (Int)(itsScaleSizes(scale)+ point99);
-    trc(1) = ip(1)/2 + (Int)(itsScaleSizes(scale)+ point99);
+    IPosition blc = maskShape;
+    IPosition trc = maskShape;
+    blc(0) = maskShape(0)/2 - (Int)(itsScaleSizes(scale)+ point99);
+    blc(1) = maskShape(1)/2 - (Int)(itsScaleSizes(scale)+ point99);
+    trc(0) = maskShape(0)/2 + (Int)(itsScaleSizes(scale)+ point99);
+    trc(1) = maskShape(1)/2 + (Int)(itsScaleSizes(scale)+ point99);
+
     LCBox centerSubRegion(blc, trc, wholeShape);
     SubLattice<T> subScale( *itsScales[scale], centerSubRegion, False);
     
@@ -962,13 +874,11 @@ Bool LatticeCleaner<T>::makeScaleMasks()
       // If not within tile, use "getAt"
       for(mli.reset(), smli.reset();  !mli.atEnd();  mli++, smli++) {
 	
-
 	IPosition tShape(smli.latticeShape());
 	IPosition loc(mli.position());
 	for (Int iy=0; iy<tShape(1); iy++) {      
 	  for (Int ix=0; ix<tShape(0); ix++) {
 	    isIn = True;
-
 
 	    if (mli.matrixCursor()(ix,iy) <= zero)   isIn = False;
 	    // +X
@@ -1042,6 +952,18 @@ Bool LatticeCleaner<T>::makeScaleMasks()
 		LCBox shiftedSubRegion(blc2, trc2, wholeShape);
 		SubLattice<T> subMask( *itsMask, shiftedSubRegion, False);
 
+		/*  from debugging
+		IPosition ssip = subScale.shape();
+		IPosition smip = subMask.shape();
+		if (ssip(0) != smip(0) ||  ssip(1) != smip(1) ) {
+		  cerr << "subScale shape = " << ssip << endl;
+		  cerr << "subMask shape = " << smip << endl;
+		  cerr << " ix, iy = " << ix << iy << endl;
+		  cerr << " blc2, trc2 = " << blc2 << trc2 << endl;
+		  cerr << " wholeshape = " << wholeShape << endl;
+		}
+		*/
+		
 		LatticeExprNode LEN;
 		LEN = sum( subScale * subMask );
 		Float mysum = LEN.getFloat();
@@ -1054,6 +976,7 @@ Bool LatticeCleaner<T>::makeScaleMasks()
 	}
       }
     }
+
     LatticeExprNode LEN;
     LEN = sum( *itsScaleMasks[scale] );
     Float mysum = LEN.getFloat();
