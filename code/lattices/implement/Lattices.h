@@ -1,5 +1,5 @@
 //# Lattices.h: Regular N-dimensional data structures.
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -305,9 +305,11 @@
 //  <br> An expression is calculated on-the-fly, thus only when
 //  the user gets a part of the lattice, the expression is calculated
 //  for that part. Subexpressions resulting in a scalar are calculated
-//  only once on get of the first part of the lattice expression.
+//  only once on a get of the first part of the lattice expression.
 //  <br> Note that a lattice expression is not writable, thus using
 //  the put function on such a lattice results in an exception.
+//  <br> <a href="../../notes/223/223.html">Note 223</a> gives a more detailed
+//  explanation of the capabilities of LEL (Lattice Expression Language).
 //  </ul>
 
 // <li> <linkto class="LatticeIterator">LatticeIterator</linkto> - the
