@@ -183,7 +183,7 @@ const char *linrev_errmsg[] = {
    "PC matrix is singular"};
 
 
-#ifdef __convexc__
+#if defined(__convexc__) || defined(__APPLE__)
 #include <stdlib.h>
 #else
 #include <malloc.h>
