@@ -1,7 +1,7 @@
 {
     local apath := split(shell("echo $AIPSPATH"))
     if ( len(apath) == 4 ) {
-	if ( any(argv == '-gtk' ) )
+	if ( any(argv == '-tk' ) )
 	    include spaste(apath[1],'/',apath[2],'/libexec/gtk.g')
 	if ( ! any(argv == '-plain') )
 	    include spaste(apath[1],'/',apath[2],'/libexec/aips++init.g')
