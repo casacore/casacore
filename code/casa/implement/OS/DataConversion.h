@@ -1,5 +1,5 @@
 //# DataConversion.h: Abstract base class with functions to convert any format
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -108,6 +108,10 @@ public:
 				  const void* from) const = 0;
     virtual unsigned int toLocal (unsigned long&  to,
 				  const void* from) const = 0;
+    virtual unsigned int toLocal (long long&           to,
+				  const void* from) const = 0;
+    virtual unsigned int toLocal (unsigned long long&  to,
+				  const void* from) const = 0;
     virtual unsigned int toLocal (float&          to,
 				  const void* from) const = 0;
     virtual unsigned int toLocal (double&         to,
@@ -137,6 +141,10 @@ public:
 				  unsigned int nr) const = 0;
     virtual unsigned int toLocal (unsigned long*  to, const void* from,
 				  unsigned int nr) const = 0;
+    virtual unsigned int toLocal (long long*      to, const void* from,
+				  unsigned int nr) const = 0;
+    virtual unsigned int toLocal (unsigned long long*  to, const void* from,
+				  unsigned int nr) const = 0;
     virtual unsigned int toLocal (float*          to, const void* from,
 				  unsigned int nr) const = 0;
     virtual unsigned int toLocal (double*         to, const void* from,
@@ -158,6 +166,8 @@ public:
     virtual unsigned int fromLocal (void* to, unsigned int   from) const = 0;
     virtual unsigned int fromLocal (void* to, long           from) const = 0;
     virtual unsigned int fromLocal (void* to, unsigned long  from) const = 0;
+    virtual unsigned int fromLocal (void* to, long long      from) const = 0;
+    virtual unsigned int fromLocal (void* to, unsigned long long from) const = 0;
     virtual unsigned int fromLocal (void* to, float          from) const = 0;
     virtual unsigned int fromLocal (void* to, double         from) const = 0;
     // </group>
@@ -185,6 +195,10 @@ public:
 				    unsigned int nr) const = 0;
     virtual unsigned int fromLocal (void* to, const unsigned long*  from,
 				    unsigned int nr) const = 0;
+    virtual unsigned int fromLocal (void* to, const long long*      from,
+				    unsigned int nr) const = 0;
+    virtual unsigned int fromLocal (void* to, const unsigned long long* from,
+				    unsigned int nr) const = 0;
     virtual unsigned int fromLocal (void* to, const float*          from,
 				    unsigned int nr) const = 0;
     virtual unsigned int fromLocal (void* to, const double*         from,
@@ -202,6 +216,8 @@ public:
     virtual Bool canCopy (const unsigned int*) const = 0;
     virtual Bool canCopy (const long*) const = 0;
     virtual Bool canCopy (const unsigned long*) const = 0;
+    virtual Bool canCopy (const long long*) const = 0;
+    virtual Bool canCopy (const unsigned long long*) const = 0;
     virtual Bool canCopy (const float*) const = 0;
     virtual Bool canCopy (const double*) const = 0;
     // </group>
@@ -216,6 +232,8 @@ public:
     virtual unsigned int externalSize (const unsigned int*) const = 0;
     virtual unsigned int externalSize (const long*) const = 0;
     virtual unsigned int externalSize (const unsigned long*) const = 0;
+    virtual unsigned int externalSize (const long long*) const = 0;
+    virtual unsigned int externalSize (const unsigned long long*) const = 0;
     virtual unsigned int externalSize (const float*) const = 0;
     virtual unsigned int externalSize (const double*) const = 0;
     // </group>
