@@ -33,7 +33,7 @@ template<class U>
 Vector<T>::Vector(const vector<T, U> &other)
   : Array<T>(IPosition(1, other.size())) {
   uInt i=0;
-  for (vector<T, U>::const_iterator pos=other.begin();
+  for (typename vector<T, U>::const_iterator pos=other.begin();
        pos != other.end(); pos++) (*this)[i++] = *pos;
 }
 
