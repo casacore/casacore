@@ -1,5 +1,5 @@
 //# SetupNewTab.h: Create a new table - define shapes, data managers, etc.
-//# Copyright (C) 1994,1995,1996,1999,2001,2002
+//# Copyright (C) 1994,1995,1996,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -338,6 +338,7 @@ private:
 class SetupNewTable
 {
 friend class PlainTable;
+friend class MemoryTable;
 
 public:
     // Create a new table using the table description with the given name.
