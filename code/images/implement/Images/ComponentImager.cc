@@ -1,5 +1,5 @@
 //# ComponentImager.cc:  this defines ComponentImager which modifies images by ComponentLists
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,7 +175,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
 	   << endl << "Assuming the beam is one pixel" << LogIO::POST;
 	UnitMap::putUser("beam", pixel.getValue());
       } else {
-	const Quantum<Double> beamArea = beam(0) * beam(1) * C::pi/log(16);
+	const Quantum<Double> beamArea = beam(0) * beam(1) * C::pi/log(16.);
 	UnitMap::putUser("beam", UnitVal(beamArea.getValue(),
 					 beamArea.getFullUnit().getName()));
       }
