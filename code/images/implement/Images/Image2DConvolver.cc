@@ -131,7 +131,7 @@ void Image2DConvolver<T>::convolve(LogIO& os,
                                    const IPosition& pixelAxes,
                                    const Vector<Quantum<Double> >& parameters,   
                                    Bool autoScale, Double scale,
-                                   Bool copyMiscellaneous=True)
+                                   Bool copyMiscellaneous)
 {
 
 // Check convolution axes
