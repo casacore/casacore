@@ -82,9 +82,9 @@ main()
 	if (allNearAbs(mb0.getValue().getValue(),
 		       bconvb(bconv()).getValue().getValue(),
 		       1e-8)) {
-	  cout << "Back      " << bconv() << " : ok" << endl;
+	  cout << "Back      " << mb0 << " : ok" << endl;
 	} else {
-	  cout << "Back      " << bconv() << " : not ok" << endl <<
+	  cout << "Back      " << mb0 << " : not ok" << endl <<
 	  " as " << bconvb(bconv()) << endl;
 	};
 

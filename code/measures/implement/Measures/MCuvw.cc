@@ -37,44 +37,44 @@
 //# Statics
 Bool MCuvw::stateMade_p = False;
 uInt MCuvw::ToRef_p[N_Routes][3] = {
-    {Muvw::ITRF,	Muvw::JNAT,		0},
-    {Muvw::JNAT,	Muvw::ITRF,		0},
-    {Muvw::GALACTIC,	Muvw::J2000,		0},
-    {Muvw::GALACTIC,	Muvw::B1950,		3},
-    {Muvw::J2000,	Muvw::GALACTIC,		0},
-    {Muvw::B1950,	Muvw::GALACTIC,		3},
-    {Muvw::J2000,	Muvw::B1950,		3},
-    {Muvw::B1950,	Muvw::J2000,		3},
-    {Muvw::J2000,	Muvw::JMEAN,		0},
-    {Muvw::B1950,	Muvw::BMEAN,		3},
-    {Muvw::JMEAN,	Muvw::J2000,		0},
-    {Muvw::JMEAN,	Muvw::JTRUE,		0},
-    {Muvw::BMEAN,	Muvw::B1950,		3},
-    {Muvw::BMEAN,	Muvw::BTRUE,		3},
-    {Muvw::JTRUE,	Muvw::JMEAN,		0},
-    {Muvw::BTRUE,	Muvw::BMEAN,		3},
-    {Muvw::J2000,	Muvw::JNAT,		0},
-    {Muvw::JNAT,	Muvw::J2000,		0},
-    {Muvw::B1950,	Muvw::APP,		3},
-    {Muvw::APP,	 	Muvw::B1950,		3},
-    {Muvw::APP,		Muvw::HADEC,		2},
-    {Muvw::HADEC,	Muvw::AZEL,		2},
-    {Muvw::AZEL,	Muvw::HADEC,		2},
-    {Muvw::HADEC,	Muvw::APP,		2},
-    {Muvw::AZEL,	Muvw::AZELSW,		0},
-    {Muvw::AZELSW,	Muvw::AZEL,		0},
-    {Muvw::APP,		Muvw::JNAT,		1},
-    {Muvw::JNAT,	Muvw::APP,		1},
-    {Muvw::J2000,	Muvw::ECLIPTIC,		0},
-    {Muvw::ECLIPTIC,	Muvw::J2000,		0},
-    {Muvw::JMEAN,	Muvw::MECLIPTIC,	0},
-    {Muvw::MECLIPTIC,	Muvw::JMEAN,		0},
-    {Muvw::JTRUE,	Muvw::TECLIPTIC,	0},
-    {Muvw::TECLIPTIC,	Muvw::JTRUE,		0},
-    {Muvw::GALACTIC,	Muvw::SUPERGAL,		0},
-    {Muvw::SUPERGAL,	Muvw::GALACTIC,		0},
-    {Muvw::ITRF,	Muvw::HADEC,		2},
-    {Muvw::HADEC,	Muvw::ITRF,		2} };
+  {Muvw::GALACTIC,	 	Muvw::J2000,	0},
+  {Muvw::GALACTIC,		Muvw::B1950,	2},
+  {Muvw::J2000,		 	Muvw::GALACTIC,	0},
+  {Muvw::B1950,			Muvw::GALACTIC,	2},
+  {Muvw::J2000,			Muvw::B1950,	2},
+  {Muvw::B1950,			Muvw::J2000,	2},
+  {Muvw::J2000,			Muvw::JMEAN,	0},
+  {Muvw::B1950,			Muvw::BMEAN,	2},
+  {Muvw::JMEAN,			Muvw::J2000,	0},
+  {Muvw::JMEAN,			Muvw::JTRUE,	0},
+  {Muvw::BMEAN,			Muvw::B1950,	2},
+  {Muvw::BMEAN,			Muvw::BTRUE,	2},
+  {Muvw::JTRUE,			Muvw::JMEAN,	0},
+  {Muvw::BTRUE,			Muvw::BMEAN,	2},
+  {Muvw::J2000,			Muvw::JNAT,	0},
+  {Muvw::JNAT,			Muvw::J2000,	0},
+  {Muvw::B1950,			Muvw::APP,	2},
+  {Muvw::APP,			Muvw::B1950,	2},
+  {Muvw::APP,			Muvw::TOPO,	0},
+  {Muvw::HADEC,			Muvw::AZEL,	0},
+  {Muvw::AZEL,			Muvw::HADEC,	0},
+  {Muvw::HADEC,			Muvw::TOPO,	0},
+  {Muvw::AZEL,			Muvw::AZELSW,	0},
+  {Muvw::AZELSW,		Muvw::AZEL,	0},
+  {Muvw::APP,			Muvw::JNAT,	0},
+  {Muvw::JNAT,			Muvw::APP,	0},
+  {Muvw::J2000,			Muvw::ECLIPTIC,	0},
+  {Muvw::ECLIPTIC,		Muvw::J2000,	0},
+  {Muvw::JMEAN,			Muvw::MECLIPTIC,0},
+  {Muvw::MECLIPTIC,		Muvw::JMEAN,	0},
+  {Muvw::JTRUE,			Muvw::TECLIPTIC,0},
+  {Muvw::TECLIPTIC,		Muvw::JTRUE,	0},
+  {Muvw::GALACTIC,		Muvw::SUPERGAL,	0},
+  {Muvw::SUPERGAL,		Muvw::GALACTIC,	0},
+  {Muvw::ITRF,			Muvw::HADEC,	0},
+  {Muvw::HADEC,			Muvw::ITRF,	0},
+  {Muvw::TOPO,			Muvw::HADEC,	0},
+  {Muvw::TOPO,			Muvw::APP,	0} };
 uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
 
 //# Constructors
@@ -120,14 +120,6 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
   if (False) initConvert(which, mc);	// Stop warning
   
   switch (which) {
-    
-  case ITRF_JNAT:
-    measMath.createPrecNutat();
-    break;
-
-  case JNAT_ITRF:
-    measMath.createPrecNutat();
-    break;
 
   case J2000_JMEAN:
     measMath.createPrecession();
@@ -160,20 +152,32 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
   case BTRUE_BMEAN:
     measMath.createNutationB1950();
     break;
-
-  case JNAT_APP:
-    measMath.createPrecNutat();
+    
+  case J2000_JNAT:
+    measMath.createSolarPos();
     break;
 
+  case JNAT_APP:
+    measMath.createAberration();
+    measMath.createPrecNutat();
+    break;
+    
+  case JNAT_J2000:
+    measMath.createSolarPos();
+    break;
+    
   case APP_JNAT:
+    measMath.createAberration();
     measMath.createPrecNutat();
     break;
 
   case B1950_APP:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     break;
 
   case APP_B1950:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     break;
     
@@ -196,22 +200,14 @@ void MCuvw::doConvert(MVuvw &in,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
   Double g2;
+  // Planetary aberration factor
+  Double lengthP = 0;
   
   measMath.initFrame(inref, outref);
   
   for (Int i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
-      
-    case ITRF_JNAT:
-      measMath.applyPolarMotionLong(in);
-      measMath.deapplyPrecNutat(in);
-      break;
-
-    case JNAT_ITRF:
-      measMath.applyPrecNutat(in);
-      measMath.deapplyPolarMotionLong(in);
-      break;
 
     case HADEC_ITRF:
       measMath.applyHADECtoITRF(in);
@@ -281,11 +277,16 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.deapplyNutationB1950(in);
       break;
     
-    case J2000_JNAT: {
-    }
-    break;
+    case J2000_JNAT: 
+      in.adjust(g2);
+      measMath.applySolarPos(in);
+      in.readjust(g2);
+      break;
     
     case JNAT_APP:
+      in.adjust(g2);
+      measMath.applyAberration(in);
+      in.readjust(g2);
       measMath.applyPrecNutat(in);
       break;
 
@@ -293,9 +294,11 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.deapplyPrecNutat(in);
       break;
 
-    case JNAT_J2000: {
-    }
-    break;
+    case JNAT_J2000:
+      in.adjust(g2);
+      measMath.deapplySolarPos(in);
+      in.readjust(g2);
+      break;
 
     case B1950_APP:
       in.adjust(g2);
@@ -311,8 +314,10 @@ void MCuvw::doConvert(MVuvw &in,
       in.readjust(g2);
       break;
     
-    case APP_HADEC:
-      measMath.deapplyPolarMotion(in);
+    case TOPO_HADEC: 
+      in.adjust(g2);
+      measMath.applyTOPOtoHADEC(in);
+      in.readjust(g2);
       break;
 
     case HADEC_AZEL:
@@ -322,9 +327,23 @@ void MCuvw::doConvert(MVuvw &in,
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
       break;
-
-    case HADEC_APP:
-      measMath.applyPolarMotion(in);
+     
+    case HADEC_TOPO: 
+      in.adjust(g2);
+      measMath.deapplyTOPOtoHADEC(in);
+      in.readjust(g2);
+      break;
+ 
+    case APP_TOPO: 
+      in.adjust(g2);
+      measMath.applyAPPtoTOPO(in, lengthP);
+      in.readjust(g2);
+      break;
+   
+    case TOPO_APP: 
+      in.adjust(g2);
+      measMath.deapplyAPPtoTOPO(in, lengthP);
+      in.readjust(g2);
       break;
 
     case AZEL_AZELSW:
