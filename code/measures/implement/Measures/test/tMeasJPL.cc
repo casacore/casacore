@@ -34,6 +34,7 @@
 #include <aips/Measures/MeasJPL.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVDirection.h>
+#include <aips/Measures/MeasIERS.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MCFrame.h>
@@ -76,6 +77,7 @@ int main()
     cout << "Neptune:    " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::PLUTO, dat);
     cout << "Pluto:      " << val << endl;
+    MeasIERS::closeTables();
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
     cout << "Moon:       " << val << endl;
     MeasJPL::get(val, MeasJPL::DE200, MeasJPL::SUN, dat);
