@@ -82,25 +82,59 @@ void TwoSidedShape::setWidth(const Quantum<Double>& majorAxis,
 }
 
 Quantum<Double> TwoSidedShape::majorAxis() const {
-  Quantum<Double> retVal(majorAxisInRad(), "rad");
+  Quantum<Double> retVal(majorAxisInRad(), Unit("rad"));
   retVal.convert(itsMajUnit);
   return retVal;
 }
 
 Quantum<Double> TwoSidedShape::minorAxis() const {
-  Quantum<Double> retVal(minorAxisInRad(), "rad");
+  Quantum<Double> retVal(minorAxisInRad(), Unit("rad"));
   retVal.convert(itsMinUnit);
   return retVal;
 }
 
 Quantum<Double> TwoSidedShape::positionAngle() const {
-  Quantum<Double> retVal(positionAngleInRad(), "rad");
+  Quantum<Double> retVal(positionAngleInRad(), Unit("rad"));
   retVal.convert(itsPaUnit);
   return retVal;
 }
 
 Double TwoSidedShape::axialRatio() const {
   return minorAxisInRad()/majorAxisInRad();
+}
+
+void TwoSidedShape::setErrors(const Quantum<Double>& majorAxisError,
+			      const Quantum<Double>& minorAxisError, 
+			      const Quantum<Double>& positionAngleError) {
+  if (ComponentShape::badError(majorAxisError) || 
+      ComponentShape::badError(minorAxisError) || 
+      ComponentShape::badError(positionAngleError)) {
+    LogIO logErr(LogOrigin("TwoSidedShape", "setErrors(...)"));
+    logErr << "The errors must be non-negative angular quantities."
+	   << LogIO::EXCEPTION;
+  }
+  itsMajErr = majorAxisError;
+  itsMinErr = minorAxisError;
+  itsPaErr = positionAngleError;
+}
+
+const Quantum<Double>& TwoSidedShape::majorAxisError() const {
+  return itsMajErr;
+}
+
+const Quantum<Double>& TwoSidedShape::minorAxisError() const {
+  return itsMinErr;
+}
+
+const Quantum<Double>& TwoSidedShape::positionAngleError() const {
+  return itsPaErr;
+}
+
+Double TwoSidedShape::axialRatioError() const {
+  const Unit rad("rad");
+  const Double relErr = itsMajErr.getValue(rad)/majorAxisInRad() + 
+    itsMinErr.getValue(rad)/minorAxisInRad();
+  return axialRatio() * relErr;
 }
 
 void TwoSidedShape::sample(Vector<Double>& scale, 
@@ -147,7 +181,7 @@ Vector<Double> TwoSidedShape::parameters() const {
 
 void TwoSidedShape::setErrors(const Vector<Double>& newErrors) {
   DebugAssert(newErrors.nelements() == nParameters(), AipsError);
-  DebugAssert(allGT(newErrors, 0.0), AipsError);
+  DebugAssert(allGE(newErrors, 0.0), AipsError);
   const Unit rad("rad");
   itsMajErr.setValue(newErrors(0));
   itsMajErr.setUnit(rad);

@@ -165,30 +165,27 @@ public:
   // moves the Northern edge to the East. The axial ratio is the ratio of the
   // minor to major axes widths. Hence it is always between zero and one.
   // <group>
-  virtual void setWidth(const Quantum<Double>& majorAxis,
-			const Quantum<Double>& minorAxis, 
-			const Quantum<Double>& positionAngle);
-  virtual void setWidth(const Quantum<Double>& majorAxis,
-			const Double axialRatio, 
-			const Quantum<Double>& positionAngle);
-  virtual Quantum<Double> majorAxis() const;
-  virtual Quantum<Double> minorAxis() const;
-  virtual Quantum<Double> positionAngle() const;
-  virtual Double axialRatio() const;
+  void setWidth(const Quantum<Double>& majorAxis,
+		const Quantum<Double>& minorAxis, 
+		const Quantum<Double>& positionAngle);
+  void setWidth(const Quantum<Double>& majorAxis,
+		const Double axialRatio, 
+		const Quantum<Double>& positionAngle);
+  Quantum<Double> majorAxis() const;
+  Quantum<Double> minorAxis() const;
+  Quantum<Double> positionAngle() const;
+  Double axialRatio() const;
   // </group>
 
   // set/get the errors on the shape parameters. 
   // <group>
-//   virtual void setErrors(const Quantum<Double>& majorAxisError,
-// 			 const Quantum<Double>& minorAxisError, 
-// 			 const Quantum<Double>& positionAngleError);
-//   virtual void setWidth(const Quantum<Double>& majorAxis,
-// 			const Double axialRatio, 
-// 			const Quantum<Double>& positionAngle);
-//   virtual Quantum<Double> majorAxis() const;
-//   virtual Quantum<Double> minorAxis() const;
-//   virtual Quantum<Double> positionAngle() const;
-//   virtual Double axialRatio() const;
+  void setErrors(const Quantum<Double>& majorAxisError,
+		 const Quantum<Double>& minorAxisError, 
+		 const Quantum<Double>& positionAngleError);
+  const Quantum<Double>& majorAxisError() const;
+  const Quantum<Double>& minorAxisError() const;
+  const Quantum<Double>& positionAngleError() const;
+  Double axialRatioError() const;
   // </group>
 
   // set/get the width and orientation of the Shape. These are the same as the
