@@ -474,14 +474,14 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   MS::addColumnToDesc(td, MS::DATA, 2);
   // add this optional column because random group fits has a
   // weight per visibility
-  MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 1);
+  MS::addColumnToDesc(td, MS::WEIGHT_SPECTRUM, 2);
   
   if (useTSM) {
     td.defineHypercolumn("TiledData",3,
  			 stringToVector(MS::columnName(MS::DATA)));
     td.defineHypercolumn("TiledFlag",3,
  			 stringToVector(MS::columnName(MS::FLAG)));
-    td.defineHypercolumn("TiledWeight",2,
+    td.defineHypercolumn("TiledWeight",3,
  			 stringToVector(MS::columnName(MS::WEIGHT_SPECTRUM)));
     td.defineHypercolumn("TiledUVW",2,
  			 stringToVector(MS::columnName(MS::UVW)));
@@ -505,8 +505,8 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
  				 IPosition(3,nCorr,tileSize,
  					   16384/nCorr/tileSize));
     TiledShapeStMan tiledStMan2("TiledWeight",
- 				IPosition(2,tileSize,
- 					  8192/tileSize));
+ 				IPosition(3,nCorr, tileSize,
+ 					  16384/nCorr/tileSize));
     TiledColumnStMan tiledStMan3("TiledUVW",
  				 IPosition(2,3,1024));
     // Bind the DATA, FLAG & WEIGHT_SPECTRUM columns to the tiled stman
@@ -620,7 +620,8 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   Int nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
   
   Matrix<Complex> vis(nCorr,nChan);
-  Vector<Float> sigma(nCorr), weightSpec(nChan);
+  Vector<Float> sigma(nCorr);
+  Matrix<Float> weightSpec(nCorr, nChan);
   const Int nCat = 3; // three initial categories
   // define the categories
   Vector<String> cat(nCat);
@@ -706,17 +707,20 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       ms_p.addRow(); 
       row++;
       for (Int chan=0; chan<nChan; chan++) {
- 	weightSpec(chan)=0.0; 
- 	Int nWt=0;
  	for (Int pol=0; pol<nCorr; pol++) {
- 	  Float visReal = priGroup_p(count++);
- 	  Float visImag = priGroup_p(count++); 
- 	  Float wt = priGroup_p(count++); 
- 	  flag(corrIndex_p[pol],chan) = ToBool(wt<=0);
- 	  if (wt>0) {nWt++; weightSpec(chan)+=wt;}
- 	  vis(corrIndex_p[pol],chan) = Complex(visReal,visImag);
+ 	  const Float visReal = priGroup_p(count++);
+ 	  const Float visImag = priGroup_p(count++);
+ 	  const Float wt = priGroup_p(count++); 
+	  const Int p = corrIndex_p[pol];
+ 	  if (wt < 0.0) {
+	    weightSpec(p, chan) = -wt;
+	    flag(p, chan) = True;
+	  } else {
+	    weightSpec(p, chan) = wt;
+	    flag(p, chan) = False;
+	  }
+	  vis(p, chan) = Complex(visReal, visImag);
  	}
- 	if (nWt>0) weightSpec(chan)/=Float(nWt);
       }
       // fill in values for all the unused columns
       if (row==0) {
@@ -739,7 +743,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
       // single channel case: make weight and weightSpectrum identical.
       // multichannel case: weight should not be used.
       if (nChan==1) { 
- 	Vector<Float> weight(nCorr); weight=weightSpec(0);
+ 	const Vector<Float> weight(weightSpec.column(0).copy()); 
  	if (weight(0)!=lastWeight) {
  	  msc.weight().put(row,weight);
  	  lastWeight=weight(0);
@@ -759,7 +763,7 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
  	lastAnt1=ant1;
       }
       if (array!=lastArray) {
- 	msc.observationId().put(row,array);
+ 	msc.arrayId().put(row,array);
  	lastArray=array;
       }
       // Always put antenna2 since it is bound to the
@@ -1101,37 +1105,29 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
   Int outRow=-1;
 
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
-  MDirection::Types epochRef=MDirection::J2000;
+  MDirection::Types epochRefZero=MDirection::J2000;
   if (nearAbs(epoch(id(0)-1),1950.0,0.01)) {
-    epochRef=MDirection::B1950;
+    epochRefZero=MDirection::B1950;
   }
-  msc_p->setDirectionRef(epochRef);
+  msc_p->setDirectionRef(epochRefZero);
   
   for (Int inRow=0; inRow<(Int)suTab.nrow(); inRow++) {
     Int fld = id(inRow)-1;
     // add empty rows until the row number in the output matches the source id
     while (fld > outRow) {
-      ms_p.field().addRow(); outRow++;
+      // Append a flagged, empty row to the FIELD table
+      ms_p.field().addRow(); 
+      outRow++;
+      msField.flagRow().put(outRow,True);
     }
     msField.sourceId().put(fld,-1); // source table not yet filled in
-    msField.code().put(fld,code(fld));
-    msField.name().put(fld,name(fld));
+    msField.code().put(fld,code(inRow));
+    msField.name().put(fld,name(inRow));
     Int numPoly = 1;
-    if (pmra(fld)==0 && pmdec(fld)==0) {
+    if (pmra(inRow)==0 && pmdec(inRow)==0) {
       numPoly = 0;
     }
-    Vector<MDirection> radecMeas(numPoly+1);
-    radecMeas(0).set(MVDirection(ra(fld)*C::degree,dec(fld)*C::degree));
-    if (numPoly==1) {
-      radecMeas(1).set(MVDirection(pmra(fld)*C::degree/C::day,
- 				   pmdec(fld)*C::degree/C::day));
-    }
-    msField.numPoly().put(fld,numPoly);
-    msField.delayDirMeasCol().put(fld,radecMeas);
-    msField.phaseDirMeasCol().put(fld,radecMeas);
-    msField.referenceDirMeasCol().put(fld,radecMeas);
-
-    // Note: this code code attempts to interpret possible FITS usage
+    // Note: this code attempts to interpret possible FITS usage
     // of the epoch. Here it serves as both the coordinate epoch reference
     // and the 'zero-point' for the proper motion parameters.
     // Normally the Time column in the MSField table would contain
@@ -1139,15 +1135,30 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     // zero point for rates). The coordinate epoch would be specified 
     // separately.
     // Need to convert epoch in years to MJD time
-    if (nearAbs(epoch(fld),2000.0,0.01)) {
+    MDirection::Types epochRef=MDirection::J2000;
+    if (nearAbs(epoch(inRow),2000.0,0.01)) {
       msField.time().put(fld, MeasData::MJD2000*C::day);
+      epochRef=MDirection::J2000;
       // assume UTC epoch
-    } else if (nearAbs(epoch(fld),1950.0,0.01)) {
+    } else if (nearAbs(epoch(inRow),1950.0,0.01)) {
       msField.time().put(fld, MeasData::MJDB1950*C::day);
+      epochRef=MDirection::B1950;
     } else {
       itsLog << LogIO::SEVERE  << " Cannot handle epoch in SU table: " << 
  	epoch(fld) <<LogIO::POST;
     }
+    Vector<MDirection> radecMeas(numPoly+1);
+    radecMeas(0).set(MVDirection(ra(inRow)*C::degree,dec(inRow)*C::degree),
+		     MDirection::Ref(epochRef));
+    if (numPoly==1) {
+      radecMeas(1).set(MVDirection(pmra(inRow)*C::degree/C::day,
+ 				   pmdec(inRow)*C::degree/C::day),
+		       MDirection::Ref(epochRef));
+    }
+    msField.numPoly().put(fld,numPoly);
+    msField.delayDirMeasCol().put(fld,radecMeas);
+    msField.phaseDirMeasCol().put(fld,radecMeas);
+    msField.referenceDirMeasCol().put(fld,radecMeas);
     msField.flagRow().put(fld,False);
   }
 }
@@ -1222,7 +1233,7 @@ void MSFitsInput::fillFeedTable() {
     msfc.antennaId().put(row,ant);
     msfc.beamId().put(row,-1);
     msfc.feedId().put(row,0);
-    msfc.interval().put(row,0.);
+    msfc.interval().put(row,DBL_MAX);
     //    msfc.phasedFeedId().put(row,-1);
     msfc.spectralWindowId().put(row,-1); // all
     msfc.time().put(row,0.);
