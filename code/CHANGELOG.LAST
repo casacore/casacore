@@ -15,3 +15,17 @@ vector fields from Complex and Float data sources.
 In addition, an OTF mask keyword has been added to the
 LatticeAsRAster, LatticeAsContour and LatticeAsVector
 adjust GUIs via LatticePADisplayData
+
+change id: 0067
+ author:   Neil Killeen
+ date:     2001/01/10
+ avers:    1.5
+ area:     Library
+ package:  trial
+ module:   Coordinates
+ type:     Code
+ category: New
+ summary:  Added pointng center to ObsInfo
+The ObsInfo class has been enhanced so that it now also
+holds the pointing center (as distinct from the tangent point).
+OBSRA and OBSEC are read/written from/to  FITS files
