@@ -5869,3 +5869,4 @@
 16 273 src rm trial/apps/dish/sdimager_meta.g
 16 273 src rm trial/apps/dish/dish_ranges.g
 16 273 src rm trial/apps/dish/dish_sranges.g
+16 273 src rm trial/apps/dish/dish_granges.g
