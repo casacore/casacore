@@ -40,7 +40,6 @@
 #include <trial/Images/SubImage.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/MaskedLatticeIterator.h>
-#include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Lattices/LatticeUtilities.h>
