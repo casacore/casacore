@@ -31,6 +31,7 @@ use Getopt::Long;
 $/ = "";
 $* = 1;
 $mtext = "[^}]*";
+$etext = "([^}]*|[^}]*\{[^}]*\}[^}]*)";
 $wlabel = "\\subsubsection";
 $theText = "";
 $args = "";
@@ -276,7 +277,7 @@ sub make_tex_file{
       if(/\\begin{ahrecord}/){
          $recIndent = "\\hspace{0.25in}";
       }
-      if(/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/){
+      if(/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/){
          $args = "";
          $fname = $1;
          $iname = $1;
@@ -307,7 +308,7 @@ sub make_tex_file{
                $dum =~ s/[\n\']/ /g;
                print "$argroot.d := '$dum';\n";}
          }
-      }
+      } 
    
      # Build an argument list from addarg, used for synopsis
    
@@ -356,14 +357,15 @@ sub make_tex_file{
    \\subsection{$oname.$1 - $mname.$oname:Method \\label{$miname:$oiname.$iname}\\index{$1}\\index{$mname.$oname.$1}}
    $2
    \\ahsynopsis{$1}
-   /g;
+   /sg;
       } else {
-         s/\\begin{ahfunction}\s*{($mtext)}\s*{($mtext)}/
+         s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
    \\subsection{$1 - $mname:Function \\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    $2
    \\ahsynopsis{$1}
-   /g;
-      }
+   /sg;
+      } 
+
       if(/\\end{ahobject}/ || /\\end{ahmodule}/){
          $isObj = 0;
       }
