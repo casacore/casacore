@@ -1,5 +1,5 @@
 //# Functionals.h: A module that represents various function-like classes.
-//# Copyright (C) 1995,1996,1998,1999
+//# Copyright (C) 1995,1996,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -64,11 +64,98 @@
 // </etymology>
 //
 // <synopsis>
-// Functional classes map an input object of some ``Domain'' type into an
-// output object of some ``Range'' type. The Domain and Range types will
-// normally be numeric types, and will often be the same type. The mapping
-// occurs via <src>operator()</src> function.
+// <src>Functionals</src> and their derived classes map an input
+// <src>Domain</src> object into an output <src>Range</src> object using the 
+// <src>operator()</src>.
+// Often the input and output types are numeric, but it can be of any type. 
+// <srcblock>
+// class Offspring : public Functional<List<Parents>, List<Children> > {
+//  public:
+//    List<Children> operator()(List<Parents>);
+// </srcblock>
+// would be a legal Functional.
+// 
+// The <src>Functions</src> and their derived classes map, again using the
+// <src>operator()</src>, numeric value(s) into a numeric value. Since they are
+// numeric, the <src>Domain</src> and <src>Range</src> base type can be of type
+// <src>AutoDiff<T></src> (where <src>T</src> is numeric base type), in which
+// case the value and its derivatives will be calculated.
+// 
+// <note role=warning> The following description will be valid shortly.
+// Immediate need should be fulfilled with the old description. </note>
 //
+// The basic classes are:
+// <dl>
+// <dt> <linkto class=Functional><src>Functional<Domain, Range></src></linkto>
+// <dd>
+// A base class that maps a <src>Domain</src> object into a <src>Range</src>
+// object using the <src>operator()</src>. All information necessary to convert
+// the <src>Domain</src> into a <src>Range</src> will be available in the class
+// or in the input information. No variable class state (<em>parameters</em>)
+// are available.
+// <note role=warning>
+// This behaviour is identical to the original behaviour.
+// </note>
+// 
+// <dt> <linkto class=FunctionParam><src>FunctionParam<T></src></linkto>
+// <dd> A base class that acts as a container for <em>parameters</em> to be used
+// in <src>Function</src> classes. The class contains a list of parameters, and
+// a list of flags associated with the parameters. methods to set and obtain the
+// parameters and their flags are available. The flags can e.g. be used to
+// indicate to <src>Fitting</src> routines if a certain parameter has to be
+// updated or not.
+// <note role=warning>
+// The FunctionParam class is different from the original Parameterized class: it
+// does not assume anything about the uses of the class, but leaves that to the
+// final users. This means that a lot of copying between intermediate and final
+// users is not necessary (like between a Gaussian fitter with fixed parameters
+// and the Fitting routines: the Gaussian fitter just sets a flag to False, and
+// let the Fitting worry about what to do internally. Access through an
+// operator[] will be added.<br>
+// Status: system changed to use new methods; still called Parameterized
+// </note>
+// 
+// <dt> <linkto class=Function><src>Function<T></src></linkto>
+// <dd> Base class for function objects with parameters.
+// All parameters shoudl be of the same type <em>T</em> as the <src>
+// Function</src>. <src>Function</src> objects are specifically geared
+// towards use in the <linkto module=Fitting>Fitting</linkto> classes, but
+// can be used anywhere where the value (or derivatives) of functions
+// are needed.
+//
+// The <src>Function<T></src> class is derived from <src>Functional</src>
+// and contains and is derived from <src>FunctionParam<T></src>.
+// The parameters act as state for the function
+// (e.g. a width for a Gaussian). A function object is called using the
+// <src>operator()</src>, and will return the value of the function (and its
+// derivatives if the template argument is <src>AutoDiff<T></src> rather than
+// <src>T</src>). 
+// 
+// <note role=warning>
+// Function will replace FunctionND. A Function1D could be derived if necessary
+// (as could a Function2D etc).<br>
+// </note>
+// 
+// <dt> Actual functional classes (e.g. <linkto
+// class=Gaussian1D><src>Gaussian1D<T></src></linkto>) 
+// <dd> An actual function object will be derived from the
+// <src>Function<T></src>. The minimum functionality will be an
+// <src>eval()</src> method to calculate the function value, using the provided
+// arguments and parameters. In some cases it will be advantageous to have
+// special parameter handling (e.g. using <em>flux</em> rather than amplitude of
+// a Gaussian). It is strongly suggested to separate the parameter handling from
+// the actual calculation into a <src>*Param</src> class (see e.g. <linkto
+// class=Gaussian1DParam><src>Gaussian1DParam<T></src></linkto>), to minimize
+// the amount of work necessary to make specialization implementations of the
+// calculations for e.g. Complex or AutoDiff versions.<br>
+// <note role=tip>
+// A special implementation of the one dimensional Gaussian using the
+// new classes is provided in the <linkto class=G1D>G1D</linkto> class.
+// </note>
+//   
+// </dl>
+//
+// <note role=warning> The following is the old description </note>
 // The fundamental Functional classes are as follows:
 
 // <ul>
@@ -141,8 +228,9 @@
 // </synopsis>
 
 // <example>
+// In old system:<br>
 // A function to find a bracketed root by bisection could be written as follows:
-// <srcBlock>
+// <srcblock>
 //    template<class Domain, class Range> 
 //      Domain findRoot(const Functional<Domain,Range> &func, Domain left, 
 //                      Domain right, Domain tol)
@@ -161,12 +249,15 @@
 //          }
 //          return (left + right)/2;
 //      }
-// </srcBlock>
+// </srcblock>
 // Since Function1D is derived from Functional, the
 // above function will also work with classes derived from Function1D. To
 // behave sensibly, the Domain and Range types should be real, <e>i.e.</e>,
 // Float or Double.  (This example should likely be made a real function in the
 // system!)
+//
+// In new system see <linkto class=Function>Function</linkto> class for an
+// extensive example.
 // </example>
 
 // <motivation>
