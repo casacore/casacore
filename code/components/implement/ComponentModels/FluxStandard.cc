@@ -1,5 +1,5 @@
 //# FluxStandard.cc: Implementation of FluxStandard.h
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 //----------------------------------------------------------------------------
 
 #include <trial/ComponentModels/FluxStandard.h>
+#include <aips/Mathematics/Math.h>
 
 //----------------------------------------------------------------------------
 
