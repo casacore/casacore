@@ -1,0 +1,15 @@
+
+change id: 0062
+ author:   Wim Brouw
+ date:     2000/12/08
+ avers:    1.5
+ area:     Library
+ package:  aips
+ module:   Measures
+ type:     Code Documentation Test
+ category: New Change
+ summary:  Added multiple value support to MeasureHolder
+To enhance the speed of measure handling in Glish, MeasureHolder has been enhanced to transparently handle measure record conversions with contain more than one value for each coordinate. E.g a measure specified as:
+dm.frequency('lsrk', dq.quantity([1,2,3,4,5], GHz))
+will be converted to a record 'as is', and can be handled in a single
+conversion.
