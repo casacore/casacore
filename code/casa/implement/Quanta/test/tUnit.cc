@@ -33,7 +33,7 @@
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/UnitName.h>
 
-Int main () {
+int main () {
     try {
 	cout << "Test units class (Unit)..." << endl;
 	cout << "--------------------------" << endl;

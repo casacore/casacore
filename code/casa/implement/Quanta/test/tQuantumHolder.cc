@@ -37,7 +37,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Glish/GlishRecord.h>
 
-Int main() {
+int main() {
   try {
     cout << "Test QuantumHolder  " << endl;
     cout << "----------------------------------------------------" << endl;
