@@ -620,8 +620,14 @@ cursorWrite() {
     // putSlice requires a same dimensional sourceBuffer as the underlying
     // Lattice so check if the cursor shape has had degenerate axes
     // stripped.
-    if (theCurPtr->ndim() == fullDim)
-      theData.putSlice(*theCurPtr, theNavPtr->blc(), theNavPtr->increment());
+    if (theCurPtr->ndim() == fullDim){
+//       IPosition temp(theCurPtr->ndim(), 0); // temp(0) = 1;
+//       cout << temp << " "
+// 	   << theCurPtr->operator()(temp) << endl;
+      theData.putSlice(*theCurPtr, theNavPtr->position(), theNavPtr->increment());
+      //      theData.getSlice(*theCurPtr, theNavPtr->blc(), theNavPtr->increment());
+
+    }
     else {
       // make a temporary Array with degenerate axes and 
       // have it reference the data in the actual cursor.
