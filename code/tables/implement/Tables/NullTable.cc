@@ -27,7 +27,9 @@
 
 #include <aips/Tables/NullTable.h>
 #include <aips/Tables/Table.h>
+#include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableError.h>
+#include <aips/Containers/Record.h>
 #include <aips/Arrays/Vector.h>
 
 
@@ -106,6 +108,18 @@ Bool NullTable::isWritable() const
   return False;
 }
 
+TableDesc NullTable::actualTableDesc() const
+{
+  throwError ("actualTableDesc");
+  return actualTableDesc();       // to satisfy compiler
+}
+
+Record NullTable::dataManagerInfo() const
+{
+  throwError ("dataManagerInfo");
+  return dataManagerInfo();       // to satisfy compiler
+}
+
 TableRecord& NullTable::keywordSet()
 {
   throwError ("keywordSet");
@@ -181,13 +195,13 @@ void NullTable::addColumn (const TableDesc& ,
   throwError ("addColumn");
 }
 
-Bool NullTable::canRemoveColumn (const String&) const
+Bool NullTable::canRemoveColumn (const Vector<String>&) const
 {
-  throwError ("canRemoveColum");
+  throwError ("canRemoveColumn");
   return False;
 }
 
-void NullTable::removeColumn (const String&)
+void NullTable::removeColumn (const Vector<String>&)
 {
   throwError ("removeColumn");
 }
