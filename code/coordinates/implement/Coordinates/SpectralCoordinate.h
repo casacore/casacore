@@ -46,6 +46,7 @@ class MVFrequency;
 class VelocityMachine;
 template<class T> class Quantum;
 
+
 // <summary>
 // Interconvert pixel and frequency values.
 // </summary>

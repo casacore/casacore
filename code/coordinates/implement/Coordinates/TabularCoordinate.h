@@ -38,6 +38,8 @@ template<class Domain, class Range> class Interpolate1D;
 template<class T> class Quantum;
 class LogIO;
 
+
+
 // <summary>
 // Table lookup 1-D coordinate, with interpolation.
 // </summary>
