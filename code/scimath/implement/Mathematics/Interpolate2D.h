@@ -163,9 +163,9 @@ private:
   Bool interpCubic(T& result, const Vector<Double>& where, const Matrix<T>& data);
 
   // helping routine from numerical recipes
-  void bcucof (Vector<T> y, Vector<T> y1, Vector<T> y2, Vector<T> y12,
-	       Double d1, Double d2, Matrix<T> c);
-
+  void bcucof (Matrix<T>& c, const Vector<T>& y, const Vector<T>& y1, 
+               const Vector<T>& y2, const Vector<T>& y12,
+	       Double d1, Double d2) const;
 //
   Interpolate2D<T>::Method itsMethod;
 //
