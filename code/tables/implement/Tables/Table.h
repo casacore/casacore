@@ -233,6 +233,9 @@ public:
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
 
+    // Is the table used (i.e. open) in another process.
+    Bool isMultiUsed() const;
+
     // Get the locking options.
     const TableLock& lockOptions() const;
 
@@ -683,6 +686,8 @@ inline void Table::reopenRW()
 inline void Table::flush (Bool sync)
     { baseTabPtr_p->flush (sync); }
 
+inline Bool Table::isMultiUsed() const
+    { return baseTabPtr_p->isMultiUsed(); }
 inline const TableLock& Table::lockOptions() const
     { return baseTabPtr_p->lockOptions(); }
 inline Bool Table::lock (Bool write, uInt nattempts)

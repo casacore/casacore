@@ -103,10 +103,15 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
 	}
 	putReqId (fd);
     }
-    //# Create a FileLocker object for this lock file.
-    itsLocker = FileLocker (fd);
+    //# Create FileLocker objects for this lock file.
+    //# The first one is for read/write locks.
+    //# The second one is to set the file to "in use".
+    itsLocker    = FileLocker (fd, 0, 1);
+    itsUseLocker = FileLocker (fd, 1, 1);
     itsFileIO = new FilebufIO (fd);
     itsCanIO  = new CanonicalIO (itsFileIO);
+    // Set the file to in use by acquiring a read lock.
+    itsUseLocker.acquire (False, 1);
 }
 
 LockFile::~LockFile()
@@ -116,6 +121,11 @@ LockFile::~LockFile()
     close (itsLocker.fd());
 }
 
+Bool LockFile::isMultiUsed()
+{
+    //# If a write lock cannot be obtained, the file is in use.
+    return (ToBool (itsUseLocker.fd() >= 0  &&  !itsUseLocker.canLock (True)));
+}
 
 Bool LockFile::doAcquire (MemoryIO* info, Bool write, uInt nattempts)
 {

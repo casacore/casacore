@@ -93,6 +93,13 @@ class CanonicalIO;
 // After each write the <src>fsync</src> function is called to make
 // sure that the contents of the file are written to disk. This is
 // necessary for correct file synchronization in NFS.
+// <p>
+// Apart from the read/write lock handling, the <src>LockFile</src>
+// also contains a mechanism to detect if a file is opened by another
+// process. This can be used to test if a process can safely delete the file.
+// For this purpose it sets another read lock when the file gets opened.
+// The function <src>isInUse</src> tests this lock to see if the file is
+// in use.
 
 // <example>
 // <srcblock>
@@ -154,6 +161,10 @@ public:
     // is contained in the directory of the table, thus deleted when
     // the table gets deleted.
     ~LockFile();
+
+    // Is the file associated with the LockFile object in use in
+    // another process?
+    Bool isMultiUsed();
 
     // Acquire a read or write lock..
     // It reads the information (if argument is given) from the lock file.
@@ -242,6 +253,7 @@ private:
 
     //# The member variables.
     FileLocker   itsLocker;
+    FileLocker   itsUseLocker;
     FilebufIO*   itsFileIO;
     CanonicalIO* itsCanIO;
     Bool         itsWritable;         //# lock file is writable?

@@ -111,6 +111,9 @@ public:
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
 
+    // Is the table in use (i.e. open) in another process?
+    virtual Bool isMultiUsed() const = 0;
+
     // Get the locking info.
     virtual const TableLock& lockOptions() const = 0;
 

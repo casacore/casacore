@@ -192,6 +192,11 @@ void RefTable::reopenRW()
     option_p = Table::Update;
 }
 
+Bool RefTable::isMultiUsed() const
+{
+    return False;
+}
+
 const TableLock& RefTable::lockOptions() const
 {
     return baseTabPtr_p->lockOptions();
