@@ -1036,19 +1036,16 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
             worldMax_tmps_p[i]->operator()(j) = maxWorld(where);
          } else {
 //
-// Axis removed.  
+// World axis removed.   Use replacement value.  If the world axis
+// is removed, so will the pixel axis be.  
 //
-            world_tmps_p[i]->operator()(j) = 
-               world_replacement_values_p[i]->operator()(j);
+            world_tmps_p[i]->operator()(j) = world_replacement_values_p[i]->operator()(j);
 // 
-// We have to decide what conversion to do (pixel<->world) for
-// the removed axis.  For coupled axes like DirectionCoordinate,
-// I do for the removed axis whatever I did for
-// the unremoved axis, if there is one...  If both world
-// axes are removed, ultinately it doesn't really matter what
-// I do since the pixel axes will be gone as well, and there
-// is nowhere to put the output !  For uncoupled axes it
-// doesn't matter.
+// We have to decide what conversion to do (pixel<->world) for the removed axis.  
+// For coupled axes like DirectionCoordinate, I do for the removed axis whatever I did for
+// the unremoved axis, if there is one...  If both world axes are removed, ultimately 
+// it doesn't really matter what I do since the pixel axes will be gone as well, and there
+// is nowhere to put the output !  For uncoupled axes it doesn't matter.
 //
             if (type(i)==Coordinate::DIRECTION) {
                Vector<String> units(coordinate(i).worldAxisUnits());
@@ -1069,7 +1066,7 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
                   worldAxes_tmps_p[i]->operator()(j) = False;
                }
             } else {
-               worldAxes_tmps_p[i]->operator()(j) = False;
+               worldAxes_tmps_p[i]->operator()(j) = True;
 //
 // worldMin/Max irrelevant except for DirectionCoordinate
 //
@@ -1083,13 +1080,20 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
             pixel_tmps_p[i]->operator()(j) = pixelIn(where);
             pixelAxes_tmps_p[i]->operator()(j) = pixelAxes(where);
          } else {
-            pixel_tmps_p[i]->operator()(j) = 
-               pixel_replacement_values_p[i]->operator()(j);
+
+// Pixel axis removed.  It is possible to remove the pixel axis but not
+// the world axis.
+
+            pixel_tmps_p[i]->operator()(j) = pixel_replacement_values_p[i]->operator()(j);
 // 
 // Here I assume nPixelAxes=nWorldAxes for the specific coordinate 
 // and the order is the same. This is the truth as far as I know it.
 //
-               pixelAxes_tmps_p[i]->operator()(j) = !worldAxes_tmps_p[i]->operator()(j);    
+// We set pixelAxes to the opposite of worldAxes.  Thus if its
+// given as world, use it. If its not given as world, use the
+// replacement pixel value
+
+            pixelAxes_tmps_p[i]->operator()(j) = !worldAxes_tmps_p[i]->operator()(j);    
          }
       }
 //
@@ -4531,6 +4535,7 @@ Bool CoordinateSystem::setWorldMixRanges (const IPosition& shape)
 //
    for (uInt i=0; i<nCoordinates(); i++) {
       Vector<Int> pA = pixelAxes(i);
+      Vector<Int> wA = worldAxes(i);
       IPosition shape2(coordinates_p[i]->nPixelAxes());
       for (uInt j=0; j<shape2.nelements(); j++) {
          if (pA(j) != -1) {
@@ -4540,13 +4545,40 @@ Bool CoordinateSystem::setWorldMixRanges (const IPosition& shape)
          }             
       }
 
-// Set range for this coordinate
+// Set range for this coordinate. If both pixel and world
+// axis removed, use reference pixel for centre location
 
       if (!coordinates_p[i]->setWorldMixRanges (shape2)) {
          set_error(coordinates_p[i]->errorMessage());
          return False;
       }
+
+// If there is a removed pixel axis, but not world axis
+// we can be cleverer.   We need to use the removed pixel coordinate
+// value as the centre value. The DC knows nothing about the removal,
+// its the CS that knows this.
+
+      if (coordinates_p[i]->type()==Coordinate::DIRECTION) {
+         DirectionCoordinate* dC = dynamic_cast<DirectionCoordinate*>(coordinates_p[i]);
+         Vector<Double> pixel(dC->referencePixel().copy());
+         Vector<Bool> which(dC->nWorldAxes(), False);
+         Bool doit = False;
+         for (uInt j=0; j<pixel.nelements(); j++) {
+            if (pA(j)==-1 && wA(j)>=0) {
+               pixel(j) = pixel_replacement_values_p[i]->operator()(j);
+               which(j) = True;
+               doit = True;
+            }
+         }
+//
+         if (doit) {
+            Vector<Double> world;
+            dC->toWorld(world, pixel);
+            dC->setWorldMixRanges(which, world);
+         }
+      }
    }
+//cerr <<  "min, max = " << worldMixMin() << worldMixMax() << endl;
    return True;
 }
 
