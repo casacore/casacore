@@ -2802,3 +2802,4 @@
 10 105 src rm doc/html/gettingstarted/gsedition2.toc
 10 105 src mv doc/html/gettingstarted/gsedition2.tex doc/html/gettingstarted/gsedtion2.latex
 10 105 src mv doc/html/gettingstarted/gsedtion2.latex doc/html/gettingstarted/gsedition2.latex
+10 105 src rm doc/html/gettingstarted/gettingstarted.tex
