@@ -1,5 +1,5 @@
 //# Interpolate1DArray.h: Interpolation in last dimension of an Array
-//# Copyright (C) 1997,1999,2000
+//# Copyright (C) 1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,7 +167,8 @@ public:
 			  const Array<Range>& yin,
 			  const Array<Bool>& yinFlags,
 			  Int method,
-                          Bool goodIsTrue=False);
+                          Bool goodIsTrue=False,
+			  Bool extrapolate=False);
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
@@ -187,7 +188,8 @@ private:
 			     const Block<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
 			     const PtrBlock<const Bool*>& yinFlags, 
-			     Int method, Bool goodIsTrue);
+			     Int method, Bool goodIsTrue,
+			     Bool extrapolate);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
@@ -198,5 +200,6 @@ private:
 				      const PtrBlock<const Range*>& yin, 
 				      Int order);
 };
+
 
 
