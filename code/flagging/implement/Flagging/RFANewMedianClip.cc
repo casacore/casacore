@@ -143,6 +143,7 @@ void RFANewMedianClip::startData ()
 
   pflagiter = &flag.iterator();
   if( msl ) delete [] msl;
+  globalsigma = 0;
   // this is a workaround for a compiler bug that we occasionally see
   uInt tmpnum2 = num(CHAN)*num(IFR);
   uInt halfwin = num(TIME)/2;
@@ -150,6 +151,7 @@ void RFANewMedianClip::startData ()
   msl = new MedianSlider[tmpnum2];
   for(uInt i=0; i<num(CHAN)*num(IFR); i++)
     msl[i] = MedianSlider(halfwin);
+  globalmed = MedianSlider(tmpnum2);
 }
 
 // iterTime
@@ -191,7 +193,9 @@ RFA::IterMode RFANewMedianClip::iterRow ( uInt irow )
 	Bool fl = chunk.npass() ? flag.anyFlagged(ich,iifr) : flag.preFlagged(ich,iifr);
 	val = mapValue(ich,irow);
 	slider(ich,iifr).add( val,fl ); 
-	evalue(ich,iifr) = val;
+	if( !fl ) {	
+	  evalue(ich,iifr) = val;
+	}
       }
   }
   return RFA::CONT;
@@ -228,32 +232,74 @@ RFA::IterMode RFANewMedianClip::iterDry ( uInt it )
 {
   RFAFlagCubeBase::iterDry(it);
   evalue.advance(it);
+  Float m = globalmed.median();
   //  already got standard deviation
   if(stdeved) {
+    Float upperdiff = 0;
+    Float bottomdiff = 0;
+    Float thr = 0;
+    Bool asymmetry = False;
     for( uInt ifr=0; ifr<num(IFR); ifr++ ) // outer loop over IFRs
       {
 	for( uInt ich=0; ich<num(CHAN); ich++ ) // loop over channels
 	  {
-	    Float thr = threshold * stdev(ich, ifr);
-	    if( !flag.preFlagged(ich, ifr) ) // skip if whole row is flagged
+	    //thr = threshold * stdev(ich, ifr);
+	    // globalsigma is the average of standard deviations
+	    thr = threshold * globalsigma;
+	    if( !flag.anyFlagged(ich, ifr) ) // skip if whole row is flagged
 	      {
 		Float d = evalue(ich,ifr);
-		Float m = slider(ich,ifr).median();
-		
+		//	Float m = slider(ich,ifr).median();
 		if( abs(d - m) > thr )   // should be clipped?
 		  {
 		    flag.setFlag(ich,ifr, *pflagiter);
 		  }
+		else {
+		  if(d-m > 0 && d - m > upperdiff)
+		    upperdiff = d-m;
+		  else if( d - m < 0 && d - m < bottomdiff)
+		    bottomdiff = d - m;
+		  //		  cout << evalue(ich, ifr) << endl;
+		}
 	      }
 	  } // for(ich)
       } // for(ifr)
+    if(abs(bottomdiff) > 1.2 * upperdiff || upperdiff > 1.2 * abs(bottomdiff))
+      asymmetry = True; 
+    if(asymmetry) {
+      //      cout << " flag the asymmetry data" << endl;
+      for( uInt ifr=0; ifr<num(IFR); ifr++ ) // outer loop over IFRs
+	{
+	  for( uInt ich=0; ich<num(CHAN); ich++ ) // loop over channels
+	    {
+	      //	    Float thr = threshold * stdev(ich, ifr);
+	      // try global sigma
+	      if(upperdiff < abs(bottomdiff))
+		thr = upperdiff;
+	      else {
+		thr = abs(bottomdiff);
+	      }
+	      if( !flag.anyFlagged(ich, ifr) ) // skip if whole row is flagged
+		{
+		  Float d = evalue(ich,ifr);
+		  if( abs(d - m) > thr )   // should be clipped?
+		    {
+		      flag.setFlag(ich,ifr, *pflagiter);
+		    }
+		}
+	    } // for(ich)
+	} // for(ifr)
+    }
   } else { //compute the standard deviation
     for( uInt ifr=0; ifr<num(IFR); ifr++ ) // outer loop over IFRs
       {
 	for( uInt ich=0; ich<num(CHAN); ich++ ) // loop over channels
 	  {
-	    Float diff = evalue(ich,ifr) - slider(ich,ifr).median();
-	    stdev(ich, ifr) += diff * diff;
+	    Bool fl = flag.anyFlagged(ich, ifr);
+	    if(!fl) {
+	      Float diff = evalue(ich,ifr) - slider(ich,ifr).median();
+	      stdev(ich, ifr) += diff * diff;
+	    }
 	  }
       }
   } // end else
@@ -266,16 +312,23 @@ RFA::IterMode RFANewMedianClip::endDry ()
     //    cout << " early return " << endl; 
     return RFA::STOP;
   }
+  Bool dummy = False;
   stdeved = True;
   for( uInt ifr=0; ifr<num(IFR); ifr++ ) // outer loop over IFRs
     {
       for( uInt ich=0; ich<num(CHAN); ich++ ) // loop over channels
 	{
-	  stdev(ich, ifr) /= num(TIME);
-	  //	  cout << "variance " << stdev(ich, ifr) << endl;
-	  stdev(ich, ifr) = sqrt(stdev(ich, ifr));
+	  if(slider(ich, ifr).nval()){
+	    stdev(ich, ifr) /= slider(ich, ifr).nval();
+	    //	  cout << "variance " << stdev(ich, ifr) << endl;
+	    stdev(ich, ifr) = sqrt(stdev(ich, ifr));
+	    globalmed.add(slider(ich, ifr).median(), dummy);
+	  } else {
+	    stdev(ich, ifr) = 0;
+	  }
 	}
     }
+  globalsigma = sum(stdev)/(num(CHAN) * num(IFR));
   return RFA::DRY;
 }
 
