@@ -147,9 +147,9 @@ public:
   // </group>
 
   // These functions convert between a record and a ConstantSpectrum. These
-  // functions define how a spectral model is represented in glish.  A
-  // ConstantSpectrum class is defined by the record:
-  // <src>[type='constantspectrum']</src>. No reference frequency field is
+  // functions define how a ConstantSpectrum object is represented in glish.
+  // All ConstantSpectrum object's are defined by the record:
+  // <src>[type='Constant']</src>. No reference frequency field is
   // necessary.  These functions return False if the record is malformed and
   // append an error message to the supplied string giving the reason.
   // <group>
