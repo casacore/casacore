@@ -265,8 +265,8 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 
 // Temporaries
 
-    static double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
-    static String errorMsg;
+    double d_phi, d_theta, d_x, d_y, d_lng, d_lat;
+    String errorMsg;
 //
     if (world.nelements()!=2) world.resize(2);
     AlwaysAssert(pixel.nelements() == 2, AipsError);
@@ -315,8 +315,8 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 // Temporaries 
 
     static Vector<Double> world_tmp;
-    static double d_theta, d_phi, d_lng, d_lat, d_x, d_y;
-    static String errorMsg;
+    double d_theta, d_phi, d_lng, d_lat, d_x, d_y;
+    String errorMsg;
 //
     if (pixel.nelements()!=2) pixel.resize(2);
     AlwaysAssert(world.nelements() == nWorldAxes(), AipsError);
@@ -804,11 +804,9 @@ String DirectionCoordinate::format(String& units,
 
 // Check units
 
-   static String nativeUnit;
-   static String prefUnit;
-   static Unit unitRAD("rad");
-//
-   nativeUnit = worldAxisUnits()(worldAxis);
+   static const Unit unitRAD("rad");
+   String nativeUnit = worldAxisUnits()(worldAxis);
+   String prefUnit;
    if (units.empty()) {
       prefUnit = preferredWorldAxisUnits()(worldAxis);
       if (prefUnit.empty()) {
@@ -825,7 +823,7 @@ String DirectionCoordinate::format(String& units,
    
 // Convert value to radians first so we can make an MVAngle from it
 
-   static Double worldValue2;
+   Double worldValue2;
    worldValue2 = C::degree * worldValue * to_degrees_p[worldAxis];
    MVAngle mVA(worldValue2);
 
@@ -882,11 +880,8 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
 
 // Continue on with other format types
 
-   static Double value;
-   static Bool emptyUnits;
-//
-   value = mVA2.get().getValue();     // Radians
-   emptyUnits = units.empty();
+   Double value = mVA2.get().getValue();     // Radians
+   Bool emptyUnits = units.empty();
 //
    if (gtype==MDirection::GRADEC){ 
       if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
@@ -1360,16 +1355,16 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //
 // Temporaries
 //
-    static int mixpix;
-    static int mixcel;
-    static double mix_vspan[2];
-    static double mix_world[2];
-    static double mix_pixcrd[2];
-    static double mix_imgcrd[2];
-    static double mix_vstep;
-    static int mix_viter;
-    static double mix_phi, mix_theta;
-    static String errorMsg;
+    int mixpix;
+    int mixcel;
+    double mix_vspan[2];
+    double mix_world[2];
+    double mix_pixcrd[2];
+    double mix_imgcrd[2];
+    double mix_vstep;
+    int mix_viter;
+    double mix_phi, mix_theta;
+    String errorMsg;
 //
 // Set input world/pixel arrays
 //
@@ -1707,10 +1702,8 @@ void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
 {
     AlwaysAssert(world.nelements()==2, AipsError);
 //   
-    static Double cosLat1, tLong;
-//
-    cosLat1 = cos(celprm_p->ref[1] * C::degree);
-    tLong = world(0)*to_degrees_p[0] - celprm_p->ref[0];
+    Double cosLat1 = cos(celprm_p->ref[1] * C::degree);
+    Double tLong = world(0)*to_degrees_p[0] - celprm_p->ref[0];
     if (tLong > 180.0) {
       tLong -= 360.0;
     } else if (tLong < -180) {
@@ -1727,10 +1720,8 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 //
 {
     AlwaysAssert(world.nelements()==2, AipsError);
-//   
-    static Double cosLat2;
 //
-    cosLat2 = cos(celprm_p->ref[1] * C::degree);
+    Double cosLat2 = cos(celprm_p->ref[1] * C::degree);
     world(0) = (world(0)/cosLat2) + (celprm_p->ref[0]/to_degrees_p[0]);
     world(1) += celprm_p->ref[1] / to_degrees_p[1];
 }

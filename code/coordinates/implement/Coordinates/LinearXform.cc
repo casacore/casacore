@@ -136,7 +136,7 @@ Bool LinearXform::forward(Vector<Double> &pixel, const Vector<Double> &world,
 
 // Temporaries
 
-    static double d_world[10], d_pixel[10];
+    double d_world[10], d_pixel[10];
     uInt naxis = world.nelements();
     AlwaysAssert(naxis <= 10, AipsError);
 //
@@ -165,7 +165,7 @@ Bool LinearXform::reverse(Vector<Double> &world,
                           const Vector<Double> &pixel, 
                           String &errorMsg) const
 {
-    static double d_world[10], d_pixel[10];
+    double d_world[10], d_pixel[10];
     uInt naxis = pixel.nelements();
     AlwaysAssert(naxis <= 10, AipsError);
     world.resize(naxis); 
