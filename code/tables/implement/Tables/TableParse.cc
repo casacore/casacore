@@ -1,5 +1,5 @@
 //# TableParse.cc: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998
+//# Copyright (C) 1994,1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1063,7 +1063,18 @@ Table tableCommand (const String& str,
     p->show (cout);
     timer.mark();
 #endif
-    p->execute();
+    try {
+	p->execute();
+    }catch (AipsError x) {
+	message = x.getMesg();
+	error = True;
+    } end_try;
+    //# If an exception was thrown; throw it again with the message.
+    //# Delete the table object if so.
+    if (error) {
+	delete p;
+	throw (AipsError(message));
+    }
 #if defined(AIPS_TRACE)
     timer.show ("Execute ");
 #endif
