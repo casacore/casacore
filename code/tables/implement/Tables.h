@@ -69,6 +69,7 @@
 
 //#   table expressions (for selection of rows)
 #include <aips/Tables/ExprNode.h>
+#include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/TableParse.h>
 
 //#   table vectors
@@ -589,12 +590,12 @@
 // table. The result is, however, a table in itself, so all table
 // functions (including select and sort) can be used with it.
 // <p>
-// You can select rows or columns from a table. Columns can be selected
+// Rows or columns can be selected from a table. Columns can be selected
 // by the
 // <linkto class="Table">Table::project(...)</linkto>
-// function, and rows can be selected by the various
-// <linkto class="Table">Table operators</linkto>
-// Usually you select a row by giving a select expression with
+// function, while rows can be selected by the various
+// <linkto class="Table">Table operator()</linkto> functions.
+// Usually a row is selected by giving a select expression with
 // <linkto class="TableExprNode:description">TableExprNode</linkto>
 // objects. These objects represent the various nodes
 // in an expression, e.g. a constant, a column, or a subexpression.
@@ -625,7 +626,8 @@
 // <ul>
 //  <li> Relational operators ==, !=, >, >=, < and <=.
 //  <li> Logical operators &&, || and !.
-//  <li> Arithmetic operators +, -, *, / and unary + and -.
+//  <li> Arithmetic operators +, -, *, /, %, ^, and unary + and -.
+//  <li> Operator() to take a subsection of an array.
 // </ul>
 // Many functions (like sin, max, conj) can be used in an expression.
 // Class <linkto class=TableExprNode>TableExprNode</linkto> shows
@@ -634,6 +636,18 @@
 // <srcblock>
 //    Table result = table (sin (table.col("RA")) > 0.5);
 // </srcblock>
+// Function <src>in</src> can be used to select from a set of values.
+// A value set can be constructed using class
+// <linkto class=TableExprNodeSet>TableExprNodeSet</linkto>.
+// <srcblock>
+//    TableExprNodeSet set;
+//    set.add (TableExprNodeSetElem ("abc"));
+//    set.add (TableExprNodeSetElem ("defg"));
+//    set.add (TableExprNodeSetElem ("h"));
+//    Table result = table (table.col("NAME).in (set));
+// </srcblock>
+// select rows with a NAME equal to <src>abc</src,
+// <src>defg</src>, or <src>h</src>.
 //
 // <p>
 // You can sort a table on one or more columns containing scalars.
@@ -1170,7 +1184,7 @@
 //
 // Multiple concurrent readers and writers (also via NFS) of a
 // table are supported by means of a locking/synchronization mechanism.
-// This mechanism is not very sophisticated because it is
+// This mechanism is not very sophisticated in the sense that it is
 // very coarse grained. When locking, the entire table gets locked.
 // A special lock file is used to lock the table. This lock file also
 // contains some synchronization data.
@@ -1217,7 +1231,14 @@
 // containing an observation catalogue), the <src>UserLocking</src>
 // option is probably best.
 // <p>
-// Some examples:
+// Creation or deletion of a table is not possible when that table
+// is still open in another process. The function
+// <src>Table::isMultiUsed()</src> can be used to check if a table
+// is open in other processes.
+// <br>
+// The function <src>deleteTable</src> should be used to delete
+// a table. Before deleting the table it ensures that it is writable
+// and that it is not open in the current or another process
 // <p>
 // The following example wants to read the table uninterrupted, thus it uses
 // the <src>PermanentLocking</src> option. It also wants to wait
@@ -1255,6 +1276,15 @@
 //     tab.addRow();
 //     write data into the row
 //     tab.unlock();   // Release the lock.
+// }
+// </srcblock>
+//
+// The following example deletes a table when it is not used in
+// another process.
+// <srcblock>
+// Table tab ("some.name");
+// if (! tab.isMultiUsed()) {
+//     tab.markForDelete();
 // }
 // </srcblock>
 
