@@ -1,5 +1,5 @@
 //# ISMBucket.cc: A bucket in the Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -232,8 +232,10 @@ void ISMBucket::shiftLeft (uInt index, uInt nr, Block<uInt>& rowIndex,
     }
     // Now shift row numbers and offsets to the left.
     // Decrement the index length.
-    objmove (&rowIndex[index], &rowIndex[index+nr], nused - index - nr);
-    objmove (&offIndex[index], &offIndex[index+nr], nused - index - nr);
+    if (nused > index + nr) {
+      objmove (&rowIndex[index], &rowIndex[index+nr], nused - index - nr);
+      objmove (&offIndex[index], &offIndex[index+nr], nused - index - nr);
+    }
     indexLeng_p -= 2 * nr * uIntSize_p;
     nused -= nr;
 }
