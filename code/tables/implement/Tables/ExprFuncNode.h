@@ -150,6 +150,8 @@ public:
 	ntruesFUNC,
 	nfalseFUNC,
 	nfalsesFUNC,
+	    // for any type returning array of that type
+	arrayFUNC,
 	    // for Double or DComplex array returning Bool
 	isnanFUNC,
 	    // for any array returning Bool scalar
@@ -166,6 +168,7 @@ public:
 	trimFUNC,              //# returning String
 	regexFUNC,             //# returning Regex
 	patternFUNC,           //# returning Regex
+	sqlpatternFUNC,        //# returning Regex
             // for Date
 	datetimeFUNC,          //# returning Date
 	mjdtodateFUNC,         //# returning Date

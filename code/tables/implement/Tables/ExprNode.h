@@ -267,9 +267,12 @@ class TableExprNode
 
     // Functions for regular expression matching and 
     // pattern matching. Defined for scalars and arrays.
+    // <br><src>pattern</src> is for a file name like pattern.
+    // <br><src>sqlpattern</src> is for an SQL like pattern.
     // <group>
-    friend TableExprNode regex   (const TableExprNode& node);
-    friend TableExprNode pattern (const TableExprNode& node);
+    friend TableExprNode regex      (const TableExprNode& node);
+    friend TableExprNode pattern    (const TableExprNode& node);
+    friend TableExprNode sqlpattern (const TableExprNode& node);
     // </group>
 
     // Functions for date-values. Defined for scalars and arrays.
@@ -398,6 +401,11 @@ class TableExprNode
     friend TableExprNode nfalses (const TableExprNode& array,
 				  const TableExprNodeSet& collapseAxes);
     // </group>
+
+    // Create an array of the given shape and fill it with the values.
+    // The <src>values</src> array is rewound as needed.
+    friend TableExprNode array (const TableExprNode& values,
+				const TableExprNodeSet& shape);
 
     // Function operating on a field resulting in a bool scalar.
     // It can be used to test if a column has an array in the current row.
@@ -998,6 +1006,11 @@ inline TableExprNode pattern (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::patternFUNC,
 					   node);
 }
+inline TableExprNode sqlpattern (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::sqlpatternFUNC,
+					   node);
+}
 inline TableExprNode datetime (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::datetimeFUNC,
@@ -1220,6 +1233,12 @@ inline TableExprNode nfalses (const TableExprNode& array,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
 					   array, axes);
+}
+inline TableExprNode array (const TableExprNode& values,
+			    const TableExprNodeSet& shape)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrayFUNC,
+					   values, shape);
 }
 inline TableExprNode isdefined (const TableExprNode& node)
 {

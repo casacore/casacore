@@ -623,6 +623,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::nfalseFUNC;
     } else if (funcName == "nfalses") {
 	ftype = TableExprFuncNode::nfalsesFUNC;
+    } else if (funcName == "array") {
+	ftype = TableExprFuncNode::arrayFUNC;
     } else if (funcName == "isnan") {
 	ftype = TableExprFuncNode::isnanFUNC;
     } else if (funcName == "isdefined") {
@@ -683,6 +685,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::regexFUNC;
     } else if (funcName == "pattern") {
 	ftype = TableExprFuncNode::patternFUNC;
+    } else if (funcName == "sqlpattern") {
+	ftype = TableExprFuncNode::sqlpatternFUNC;
     } else if (funcName == "rownumber") {
 	ftype = TableExprFuncNode::rownrFUNC;
     } else if (funcName == "rowid") {
@@ -748,6 +752,7 @@ TableExprNode TableParseSelect::makeFuncNode
     case TableExprFuncNode::allsFUNC:
     case TableExprFuncNode::ntruesFUNC:
     case TableExprFuncNode::nfalsesFUNC:
+    case TableExprFuncNode::arrayFUNC:
       if (arguments.nelements() > axarg) {
 	TableExprNodeSet parms;
 	// Add normal arguments to the parms.
@@ -769,7 +774,17 @@ TableExprNode TableParseSelect::makeFuncNode
 	  // Combine all axes in a single set and add to parms.
 	  TableExprNodeSet axes;
 	  for (uInt i=axarg; i<arguments.nelements(); i++) {
-	    axes.add (arguments[i]);
+	    const TableExprNodeSetElem& arg = arguments[i];
+	    const TableExprNodeRep* rep = arg.start();
+	    if (rep == 0  ||  !arg.isSingle()
+            ||  rep->valueType() != TableExprNodeRep::VTScalar
+	    ||  rep->dataType() != TableExprNodeRep::NTDouble) {
+	      throw TableInvExpr ("Axes/shape arguments " +
+				  String::toString(i+1) +
+				  " are not one or more scalars"
+				  " or a single bounded range");
+	    }
+	    axes.add (arg);
 	  }
 	  parms.add (TableExprNodeSetElem(axes.setOrArray()));
 	}

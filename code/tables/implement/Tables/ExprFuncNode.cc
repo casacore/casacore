@@ -573,6 +573,8 @@ Regex TableExprFuncNode::getRegex (const TableExprId& id)
 	return Regex(operands_p[0]->getString (id));
     case patternFUNC:
 	return Regex(Regex::fromPattern(operands_p[0]->getString (id)));
+    case sqlpatternFUNC:
+	return Regex(Regex::fromSQLPattern(operands_p[0]->getString (id)));
     case iifFUNC:
         return operands_p[0]->getBool(id)  ?
 	       operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
@@ -665,7 +667,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     default:
 	break;
     }
-    // The following functions accept one array and a set of
+    // The following functions accept one array or scalar and a set of
     // one or more scalars.
     // They return an array.
     switch (fType) {
@@ -684,6 +686,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case allsFUNC:
     case ntruesFUNC:
     case nfalsesFUNC:
+    case arrayFUNC:
       {
         NodeDataType dtin = NTDouble;
         NodeDataType dtout = NTDouble;
@@ -705,6 +708,9 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	case nfalsesFUNC:
 	    dtin = NTBool;
 	    break;
+	case arrayFUNC:
+	    dtin = dtout = NTAny;
+	    break;
 	default:
 	    break;
 	}
@@ -715,12 +721,15 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	dtypeOper.resize(axarg+1);
 	dtypeOper = NTDouble;
 	PtrBlock<TableExprNodeRep*> nodeArr(1);
-	// Check if first argument is an array with correct type.
+	// Check for xxxS functions if first argument is an array.
 	nodeArr[0] = nodes[0];
-	if (nodes[0]->valueType() != VTArray) {
-	    throw TableInvExpr ("1st argument of xxxS function "
-				"has to be an array");
+	if (fType != arrayFUNC) {
+	    if (nodes[0]->valueType() != VTArray) {
+	        throw TableInvExpr ("1st argument of xxxS function "
+				    "has to be an array");
+	    }
 	}
+	// Check if first argument has correct type.
 	Block<Int> dtypeTmp;
 	dtout = checkDT (dtypeTmp, dtin, dtout, nodeArr);
 	dtypeOper[0] = dtypeTmp[0];
@@ -903,6 +912,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	return NTDouble;
     case regexFUNC:
     case patternFUNC:
+    case sqlpatternFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTString, NTRegex, nodes);
     default:
