@@ -1,5 +1,5 @@
 //# WCLELMask.cc: Class to define a mask as a LEL expression
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,13 +38,15 @@
 
 WCLELMask::WCLELMask()
 : itsImageExpr (0),
-  itsLattExpr  (0)
+  itsLattExpr  (0),
+  itsLattNode  (0)
 {}
 
 WCLELMask::WCLELMask (const String& command)
 : itsCommand   (command),
   itsImageExpr (0),
-  itsLattExpr  (0)
+  itsLattExpr  (0),
+  itsLattNode  (0)
 {
   try {
     LatticeExprNode node = ImageExprParse::command (command);
@@ -53,7 +55,7 @@ WCLELMask::WCLELMask (const String& command)
     const LELAttribute& attr = node.getAttribute();
     const LELLattCoordBase& lattCoord = attr.coordinates().coordinates();
     if (! lattCoord.hasCoordinates()) {
-      itsLattExpr = new LatticeExpr<Bool> (node);
+      init (node);
     } else {
       itsImageExpr = new ImageExpr<Bool> (node, command);
       const CoordinateSystem& cSys = itsImageExpr->coordinates();
@@ -69,7 +71,8 @@ WCLELMask::WCLELMask (const String& command)
 
 WCLELMask::WCLELMask (const ImageExpr<Bool>& expr)
 : itsImageExpr (0),
-  itsLattExpr  (0)
+  itsLattExpr  (0),
+  itsLattNode  (0)
 {
   itsImageExpr = new ImageExpr<Bool> (expr);
   const CoordinateSystem& cSys = itsImageExpr->coordinates();
@@ -81,14 +84,24 @@ WCLELMask::WCLELMask (const ImageExpr<Bool>& expr)
 
 WCLELMask::WCLELMask (const LatticeExpr<Bool>& expr)
 : itsImageExpr (0),
-  itsLattExpr  (0)
+  itsLattExpr  (0),
+  itsLattNode  (0)
 {
   itsLattExpr = new LatticeExpr<Bool> (expr);
 }
 
+WCLELMask::WCLELMask (const LatticeExprNode& expr)
+: itsImageExpr (0),
+  itsLattExpr  (0),
+  itsLattNode  (0)
+{
+  init (expr);
+}
+
 WCLELMask::WCLELMask (const WCLELMask& that)
 : itsImageExpr (0),
-  itsLattExpr  (0)
+  itsLattExpr  (0),
+  itsLattNode  (0)
 {
   operator= (that);
 }
@@ -97,6 +110,16 @@ WCLELMask::~WCLELMask()
 {
   delete itsImageExpr;
   delete itsLattExpr;
+  delete itsLattNode;
+}
+
+void WCLELMask::init (const LatticeExprNode& expr)
+{
+  if (expr.shape().nelements() == 0) {
+    itsLattNode = new LatticeExprNode(expr);
+  } else {
+    itsLattExpr = new LatticeExpr<Bool>(expr);
+  }
 }
  
 WCLELMask& WCLELMask::operator= (const WCLELMask& that)
@@ -107,12 +130,17 @@ WCLELMask& WCLELMask::operator= (const WCLELMask& that)
     itsImageExpr = 0;
     delete itsLattExpr;
     itsLattExpr = 0;
+    delete itsLattNode;
+    itsLattNode = 0;
     itsCommand = that.itsCommand;
     if (that.itsImageExpr != 0) {
       itsImageExpr = new ImageExpr<Bool> (*that.itsImageExpr);
     }
     if (that.itsLattExpr != 0) {
       itsLattExpr = new LatticeExpr<Bool> (*that.itsLattExpr);
+    }
+    if (that.itsLattNode != 0) {
+      itsLattNode = new LatticeExprNode (*that.itsLattNode);
     }
   }
   return *this;
@@ -131,6 +159,7 @@ Bool WCLELMask::operator== (const WCRegion& that) const
   if (itsCommand.empty()) {
     if (itsImageExpr != That.itsImageExpr) return False;
     if (itsLattExpr != That.itsLattExpr) return False;
+    if (itsLattNode != That.itsLattNode) return False;
   }
   return True;
 }
@@ -183,6 +212,9 @@ LCRegion* WCLELMask::toLCRegion (const CoordinateSystem& cSys,
 {
   if (itsImageExpr != 0) {
     return WCRegion::toLCRegion (cSys, latticeShape);
+  }
+  if (itsLattNode != 0) {
+    return new LCLELMask (LatticeExpr<Bool>(*itsLattNode, latticeShape));
   }
   if (! latticeShape.isEqual (itsLattExpr->shape())) {
     throw AipsError ("WCLELMask::toLCRegion - "

@@ -1,5 +1,5 @@
 //# WCLELMask.h: Class to define a mask as a LEL expression
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,6 +42,7 @@ class TableRecord;
 class IPosition;
 template<class T> class ImageExpr;
 template<class T> class LatticeExpr;
+class LatticeExprNode;
 
 
 // <summary>
@@ -100,6 +101,13 @@ public:
   // Construct from the given lattice expression.
   explicit WCLELMask (const LatticeExpr<Bool>& expr);
 
+  // Construct from the given lattice expression.
+  // This constructor makes it possible to have an expression with an
+  // unknown shape (e.g. using LEL function INDEXIN).
+  // If the shape is known, the LatticeExprNode will be converted to
+  // a LatticeExpr<Bool>.
+  explicit WCLELMask (const LatticeExprNode& expr);
+
   // Copy constructor (copy semantics).
   WCLELMask (const WCLELMask& other);
 
@@ -140,7 +148,7 @@ public:
   // The record can be used to make the object persistent.
   // The <src>tableName</src> argument can be used by derived
   // classes (e.g. LCPagedMask) to put very large objects.
-  virtual TableRecord toRecord(const String& tableName) const;
+  virtual TableRecord toRecord (const String& tableName) const;
 
   // Convert to a WCLELMask from a record.
   static WCLELMask* fromRecord (const TableRecord& rec,
@@ -154,9 +162,15 @@ public:
  
 
 private:
+  // Initialize as a LatticeExprNode if expression's shape is unknown.
+  // Otherwise as a LatticeExpr<Bool>.
+  void init (const LatticeExprNode& expr);
+
+
   String             itsCommand;
   ImageExpr<Bool>*   itsImageExpr;
   LatticeExpr<Bool>* itsLattExpr;
+  LatticeExprNode*   itsLattNode;
 };
 
 
