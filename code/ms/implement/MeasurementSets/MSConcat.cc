@@ -214,7 +214,7 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   ScalarColumn<Bool>& thisFlagRow = flagRow();
   // This needs to be fixed when I relaxe the restriction that the input MS
   // must have been created using the uvfits filler.
-  const Int curObsId =  observationId()(curRow-1) + 1;
+  const Int curObsId =  observationId()(curRow-1);
   ScalarColumn<Int>& thisObsId = observationId();
   const ROArrayColumn<Float>& otherWeightSp = otherMainCols.weightSpectrum();
   ArrayColumn<Float>& thisWeightSp = weightSpectrum();
