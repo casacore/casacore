@@ -5997,3 +5997,4 @@
 17 030 src rm trial/apps/dish/dishgauss.g
 17 030 sys rm libexec/dishgauss.g
 17 030 src rm trial/apps/dish/dishgaussgui.g
+17 030 sys rm libexec/dishgaussgui.g
