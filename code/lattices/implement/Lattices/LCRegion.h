@@ -173,8 +173,8 @@ public:
     virtual Bool isWritable() const;
 
     // Regions can usually not be put; i.e. no putSlice, etc. can be
-    // done on their masks. Exceptions are LCMask and LCPagedMask.
-    // Hence LCRegion throws by default an exceptions for the
+    // done on their masks.
+    // Hence LCRegion throws by default an exception for the
     // following functions.
     // <group>
     virtual void doPutSlice (const Array<Bool>& sourceBuffer,

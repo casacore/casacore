@@ -140,8 +140,7 @@ public:
     // The following "put" functions are described in detail in class
     // <linkto class=Lattice>Lattice</linkto>.
     // They'll throw an exception is no mask is available or if
-    // the mask is not writable. In practice this means that only
-    // regions LCMask and LCPagedMask can in principle be written.
+    // the mask is not writable.
     // <group>
     virtual void set (const Bool& value);
     virtual void apply (Bool (*function)(Bool));

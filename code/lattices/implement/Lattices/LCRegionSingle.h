@@ -1,5 +1,5 @@
 //# LCRegionSingle.h: Abstract base class to define a single region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -99,8 +99,7 @@ public:
     // The following "put" functions are described in detail in class
     // <linkto class=Lattice>Lattice</linkto>.
     // They'll throw an exception is no mask is available or if
-    // the mask is not writable. In practice this means that only
-    // regions LCMask and LCPagedMask can in principle be written.
+    // the mask is not writable.
     // <group>
     virtual void set (const Bool& value);
     virtual void apply (Bool (*function)(Bool));
