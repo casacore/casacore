@@ -95,6 +95,7 @@ template<class Type> class Vector;
 // <li> The width of the Gaussian along the z-axis.
 // <li> The longitudinal position angle, theta (in radians)
 // <li> The latitudinal position angle, phi (also in radians). 
+// </ol>
 
 
 // An enumeration for the <src>H</src>, <src>CX</src>,
@@ -249,14 +250,14 @@ protected:
 
   //const Type fwhm2int;      //not yet used
 
-  mutable Type stoT;     // used to check if cached values below are updated
-  mutable Type stoP;     //                            
-  mutable Type cosT,sinT;// cached values of the cos and sine of THETA
-  mutable Type cosP,sinP;//                                      PHI
-  mutable Type cosTcosP; // cached value of products of cos/sine of THETA/PHI
-  mutable Type cosTsinP;
-  mutable Type sinTcosP;
-  mutable Type sinTsinP;
+  mutable Type stoT_p;     // used to check if cached values below are updated
+  mutable Type stoP_p;     //                            
+  mutable Type cosT_p,sinT_p; // cached values of the cos and sine of THETA
+  mutable Type cosP_p,sinP_p; //                                      PHI
+  mutable Type cosTcosP_p; //cached values of products of cos/sine of angles
+  mutable Type cosTsinP_p;
+  mutable Type sinTcosP_p;
+  mutable Type sinTsinP_p;
 
 };
 
