@@ -1,5 +1,5 @@
 //# TiledDataStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,7 +85,7 @@ String TiledDataStMan::dataManagerType() const
 void TiledDataStMan::create (uInt nrrow)
 {
     // Set up the various things.
-    setup();
+    setup(-1);
     // Add the rows for the given number of rows.
     addRow (nrrow);
 }
@@ -120,7 +120,7 @@ void TiledDataStMan::readHeader (uInt tabNrrow, Bool firstTime)
     AipsIO* headerFile = headerFileOpen();
     headerFile->getstart ("TiledDataStMan");
     // Let the base class read and initialize its data.
-    headerFileGet (*headerFile, tabNrrow, firstTime);
+    headerFileGet (*headerFile, tabNrrow, firstTime, -1);
     // Read the data for this object.
     *headerFile >> nrrowLast_p;
     *headerFile >> nrUsedRowMap_p;
