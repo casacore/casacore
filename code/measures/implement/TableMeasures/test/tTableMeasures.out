@@ -4,7 +4,7 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
 ---------
   Comment: A test of TableMeasures class.
   #Keywords = 0
-  #Columns  = 20
+  #Columns  = 19
    Name=Time1   DataType=double
    DataManager=StManAipsIO/StManAipsIO   Default=0
    Comment = An MEpoch column
@@ -24,12 +24,6 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
 0  MEASINFO : SUBRECORD
 
    Name=MDirColumn   DataType=double   Nrdim=1   Shape=[2]
-   DataManager=StManAipsIO/StManAipsIO
-   Comment = Simple mdirection column
-   #keywords=1
-0  MEASINFO : SUBRECORD
-
-   Name=MDirColumn2   DataType=double   Nrdim=1   Shape=[3]
    DataManager=StManAipsIO/StManAipsIO
    Comment = Simple mdirection column
    #keywords=1
@@ -169,22 +163,6 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
         m0 =   (Record)
           unit = rad  (String)
           value = 0  (Double)
-      NumUnits = 2  (uInt)
-      unit0 = rad  (String)
-      unit1 = rad  (String)
-      Ref = J2000  (String)
-* MDirColumn2
-    MEASINFO =   (Record)
-      Type =   (Record)
-        type = direction  (String)
-        refer = J2000  (String)
-        m1 =   (Record)
-          value = 1.5708  (Double)
-          unit = rad  (String)
-        m0 =   (Record)
-          unit = rad  (String)
-          value = 0  (Double)
-      Internal = 1  (Bool)
       NumUnits = 2  (uInt)
       unit0 = rad  (String)
       unit1 = rad  (String)
@@ -329,20 +307,13 @@ Invalid Table operation: ROMeasTableColumn object is null
 The following line should be an illegal offset column type exception.
 Invalid Table data type when accessing column in ROScalarColumn ctor for column SpareCol1
 Reopening the table read-only and reading contents...
-itsnvals=3
 Filling the MDirection column MDirColumn
 put: Direction: [0.565521, 0.205833, 0.798636]
 put: Direction: [0.565521, 0.205833, 0.798636]
 put: Direction: [0.565521, 0.205833, 0.798636]
 put: Direction: [0.565521, 0.205833, 0.798636]
 put: Direction: [0.565521, 0.205833, 0.798636]
-itsnvals=3
 Reading from MDirection column MDirColumn
-retrieve: Direction: [0.565521, 0.205833, 0.798636]
-retrieve: Direction: [0.565521, 0.205833, 0.798636]
-retrieve: Direction: [0.565521, 0.205833, 0.798636]
-retrieve: Direction: [0.565521, 0.205833, 0.798636]
-retrieve: Direction: [0.565521, 0.205833, 0.798636]
 retrieve: Direction: [0.565521, 0.205833, 0.798636]
 retrieve: Direction: [0.565521, 0.205833, 0.798636]
 retrieve: Direction: [0.565521, 0.205833, 0.798636]
