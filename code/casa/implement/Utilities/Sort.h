@@ -1,5 +1,5 @@
 //# Sort.h: Sort objects on one or more keys
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ template<class T> class Vector;
 // </ul>
 // </synopsis> 
 
-class SortKey : public Cleanup
+class SortKey
 {
 public:
     friend class Sort;
@@ -75,9 +75,6 @@ public:
 
     // Assignment (copy semantics).
     SortKey& operator= (const SortKey&);
-
-    // Needed for Cleanup.
-    void cleanup();
 
     // Try if GenSort can be used for this single key.
     // If it succeeds, it returns the resulting number of elements.
@@ -342,7 +339,7 @@ public:
 
 private:
     Block<void*>    keys_p;                       //# keys to sort on
-    Int             nrkey_p;                      //# #sort-keys
+    uInt            nrkey_p;                      //# #sort-keys
     const void*     data_p;                       //# pointer to data records
     uInt            size_p;                       //# size of data record
 
