@@ -1,5 +1,5 @@
 //# hdu.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -75,7 +75,7 @@ class HeaderDataUnit {
 
 	Int dims() const 			{ return no_dims; }
 	Int dim(int n) const 			{ return dimn[n]; }
-	Int fitsdatasize() const 		{ return fits_data_size; }
+	uInt fitsdatasize() const 		{ return fits_data_size; }
 	FITS::ValueType datatype() const	{ return data_type; }
 	Int fitsitemsize() const 		{ return fits_item_size; }
 	Int localitemsize() const		{ return local_item_size; }
@@ -112,7 +112,7 @@ class HeaderDataUnit {
 	// assumes that hdu type has been appropriately set, but it may 
 	// be changed in the process.  Data type is also determined.
 	// Returns False if a serious error was detected, otherwise True
-	static Bool compute_size(FitsKeywordList &, Int &, Int &,
+	static Bool compute_size(FitsKeywordList &, uInt &, Int &,
 		FITS::HDUType &, FITS::ValueType &, FITSErrorHandler, HDUErrs &);
 
 	// Operations on the HDU's keyword list
@@ -184,7 +184,7 @@ class HeaderDataUnit {
 
 	Int no_dims;		// number of dimensions
 	Int *dimn;		// size of dimension N
-	Int fits_data_size;	// size in bytes of total amount of data
+	uInt fits_data_size;	// size in bytes of total amount of data
 	FITS::ValueType data_type;	// type of data - derived from BITPIX
 	Int fits_item_size;	// size in bytes of an item of FITS data
 	Int local_item_size;	// size in bytes of an item of local data
@@ -203,7 +203,7 @@ class HeaderDataUnit {
 
     public:
 	int get_hdr(FITS::HDUType, FitsKeywordList &);
-	int read_data(char *, int);
+	int read_data(char *, Int);
 	int write_data(FitsOutput &, char *, int);
 	int read_all_data(char *);
 	int write_all_data(FitsOutput &, char *);
@@ -644,7 +644,7 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 
 	// read next N bytes into addr
 	int read(char *addr, int nbytes) {
-	    return read_data(addr,nbytes); }
+	    return read_data(addr, Int(nbytes)); }
 	// write next N bytes from addr to the FITS output fout
 	int write(FitsOutput &fout, char *addr, int nbytes) {
 	    return write_data(fout,addr,nbytes); }

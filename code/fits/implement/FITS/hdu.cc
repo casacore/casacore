@@ -1,5 +1,5 @@
 //# hdu.cc:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -595,7 +595,8 @@ void PrimaryArray<TYPE>::move(TYPE *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
-	Int count, offset, i, j, *sub, *C_factor;
+	uInt count, offset, i, j;
+	Int *sub, *C_factor;
 
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
@@ -790,7 +791,7 @@ void PrimaryGroup<TYPE>::moveparm(TYPE *target) const {
 template <class TYPE>
 int PrimaryGroup<TYPE>::read() {
 	// read the data
-	Int nb = fitsitemsize() * (pcount() + nelements());
+	uInt nb = fitsitemsize() * (pcount() + nelements());
 	if (read_data((char *)group_parm,nb) != nb) {
 	    //error message
 	    return -1;
@@ -799,7 +800,7 @@ int PrimaryGroup<TYPE>::read() {
 	// do the FITS to local conversion, including worrying about
 	// the fact that array and FITS size may not be the same
 	// ...
-	int ne = nb / fitsitemsize(); // the actual number of elements read
+	uInt ne = nb / fitsitemsize(); // the actual number of elements read
 	FITS::f2l( (TYPE *)group_parm, group_parm, ne );
 
 	++current_group;

@@ -138,7 +138,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    return False;
 	}
 	FitsKeyword *p_bitpix = kw.next();
-	FitsKeyword *naxis = kw.next();
+      	FitsKeyword *naxis = kw.next();
 	FitsKeyword *naxis1 = kw.next();
 	if (!p_bitpix || (p_bitpix->kw().name() != FITS::BITPIX)) {
 	    p_bitpix = kw(FITS::BITPIX); // look for BITPIX elsewhere
@@ -237,7 +237,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 // has been appropriately set, but it may be changed in the process.  Data
 // type is also determined.
 
-Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, Int &datasize,
+Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 	Int &dims, FITS::HDUType &htype, FITS::ValueType &dtype,
 	FITSErrorHandler errhandler, HDUErrs &st) {
 
@@ -666,7 +666,7 @@ char * HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 	return s;
 }
 
-int HeaderDataUnit::read_data(char *addr, int nb) {
+int HeaderDataUnit::read_data(char *addr, Int nb) {
 	return (fin ? fin->read(hdu_type,addr,nb) : 0); }
 int HeaderDataUnit::write_data(FitsOutput &f, char *addr, int nb) {
 	return f.write(hdu_type,addr,nb,pad_char); }

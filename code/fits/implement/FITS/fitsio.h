@@ -1,5 +1,5 @@
 //# fitsio.h:
-//# Copyright (C) 1993,1994,1995,1996,1999,2001
+//# Copyright (C) 1993,1994,1995,1996,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -97,12 +97,12 @@ class FitsIO {
 	FITS::ValueType datatype() const 	{ return data_type; }
 	// return the datasize of the current HDU. This excludes
 	// the trailing end of the blocked data portion.
-	Int datasize() const 			{ return data_size; }
+	uInt datasize() const 			{ return data_size; }
 	// data characteristics
 	Int itemsize() const 			{ return item_size; }
 	// for input, size of remaining data
 	// for output, size of data written
-	Int currsize() const 			{ return curr_size; }
+	uInt currsize() const 			{ return curr_size; }
 
     protected:
 	FitsIO(FITSErrorHandler);
@@ -124,10 +124,10 @@ class FitsIO {
 	int bytepos;			// current byte position within record
 	Int item_size;			// data characteristics
 	FITS::ValueType data_type;
-	Int data_size;		
+	uInt data_size;		
 	// for input, size of remaining data
 	// for output, size of data written
-	Int curr_size;			
+	uInt curr_size;			
 
 	// set error message that belongs to one of the enumerated types
 	virtual void errmsg(FitsErrs, char *) = 0;
@@ -183,7 +183,7 @@ class FitsInput : public FitsIO {
 	int process_header(FITS::HDUType, FitsKeywordList &);
 	// read all data into a given address - all responsibility is given
 	// to the user
-	int read_all(FITS::HDUType, char *);
+	uInt read_all(FITS::HDUType, char *);
 	// read N bytes into address
 	int read(FITS::HDUType, char *, int);
 	// skip N bytes
