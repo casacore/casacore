@@ -1,5 +1,5 @@
 //# VectorKernel.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -138,14 +138,14 @@ Vector<Int> VectorKernel::toKernelTypes (const Vector<String>& kernels)
 VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
 
 {
-   String tKernel = kernel;
-   tKernel.upcase();
+   String kernel2 = upcase(kernel);
+   String kernel3(kernel2.at(0,1));
 //               
-   if (tKernel.contains("BOX")) {
+   if (kernel3==String("B")) {
       return VectorKernel::BOXCAR;
-   } else if (tKernel.contains("GAUSS")) {
+   } else if (kernel3==String("G")) {
       return VectorKernel::GAUSSIAN;
-   } else if (tKernel.contains("HANN")) {
+   } else if (kernel3==String("H")) {
       return VectorKernel::HANNING;
    }
    LogIO os(LogOrigin("VectorKernel", "toKernelType"));
