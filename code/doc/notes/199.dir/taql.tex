@@ -385,6 +385,7 @@ precedence) for scalars:
        \\To be compliant with SQL the
        words \texttt{AND} and \texttt{OR} can be used instead of the
        symbols. These words are case insensitive.
+       \\Also \textbf{\&} and \textbf{$\mid$} can be used.
        \\These operators can only be used with Bool operands.
 \end{description}
 \begin{description}
@@ -639,6 +640,14 @@ them with a backslash. E.g. \verb+\+\texttt{IN}.
 by another backslash. E.g. in Glish:
 \texttt{tab.query('DATE}\verb+\\_+\texttt{OBS$>$10MAR1996')}.
 
+When a column contains a record, one has to specify a field in it
+using the dot operator; e.g. \texttt{col.fld} means use field
+\texttt{fld} in the column. It is fully recursive, so
+\texttt{col.fld.subfld} can be used if field \texttt{fld} is a record
+in itself.
+\\Alas records in columns are not really supported yet. One can specify
+fields, but thereafter an error message will be given.
+
 \subsection{\label{TAQL:KEYWORDS}Table Keywords}
 It is possible to use table or column keywords, which can have
 a scalar or an array value. A table keyword has to be specified
@@ -655,6 +664,12 @@ with the (shorthand) name of the table. E.g.
 \\takes table keyword \texttt{key} from the table with the shorthand name
 \texttt{sh}.
 
+When a keyword is a record in itself, it is possible to use
+a field in it using the dot operator. E.g. \texttt{::key.fld}
+to use field \texttt{fld}. It is fully recursive, so when the
+field is a record in itself, a subfield can be used like
+\texttt{col::key.fld.subfld}
+
 A keyword can be used in any expression. It is evaluated immediately
 and transformed to a constant value.
 
@@ -670,7 +685,9 @@ Taking a single element can be done as:
   array[1, some_expression]
 \end{verbatim}
 Taking a subsection can be done as:
-\texttt{array[start1:end1:incr1, start2:end2:incr2, ...]}.
+\begin{verbatim}
+  array[start1:end1:incr1, start2:end2:incr2, ...]
+\end{verbatim}
 When a start value is left out it defaults to the beginning of
 that axis. An end value defaults to the end of the axis and
 an increment defaults to one. When an entire axis is left out,
@@ -750,17 +767,19 @@ The specification of an interval resembles the mathematical notation
 \texttt{1<x<5}, where x is replaced by :. An open interval side
 is indicated by \texttt{<}, while a closed interval side is indicated
 by \texttt{=}.
-The following examples show how bounded and half-bounded intervals
-can be specified.
+\\Another way to specify intervals is using curly and/or angle brackets.
+A curly bracket is a closed side, the angle bracket is an open side.
+The following examples show how bounded and half-bounded,
+(half-)open and closed intervals can be specified.
 \begin{verbatim}
-  1=:=5      means 1<=x<=5
-  1=:<5      means 1<=x<5
-  1<:=5      means 1<x<=5
-  1<:<5      means 1<x<5
-  1=:        means 1<=x
-  1<:        means 1<x
-  :=5        means x<=5
-  :<5        means x<5
+  1=:=5   {1,5}     means 1<=x<=5   bounded closed
+  1<:<5   <1,5>     means 1<x<5     bounded open
+  1=:<5   {1,5>     means 1<=x<5    bounded right-open
+  1<:=5   <1,5}     means 1<x<=5    bounded left-open
+  1=:  {1,}  {1,>   means 1<=x      left-bounded closed
+  1<:  <1,}  <1,>   means 1<x       left-bounded open
+  :=5  {,5}  <,5}   means x<=5      right-bounded closed
+  :<5  {,5>  <,5>   means x<5       right-bounded open
 \end{verbatim}
 \end{enumerate}
 Each element in a set can have its own form, i.e., one element can
