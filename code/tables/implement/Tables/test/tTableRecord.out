@@ -1,21 +1,18 @@
 Record field  cannot be added: length<1
 Record field aB cannot be added: no uppercase
 Record field A cannot be added: extra==10
->>> Instance-specific assertion error message:
-(/aips++/code/aips/implement/Tables/TableRecordRep.cc : 161) Failed AlwaysAssertExit whichField >= 0 && whichField < nused_p && desc_p.type(whichField) == type
-<<<
+TableRecordRep::defineDataField - incorrect data type used for field TpShort
 Array<T>::validateConformance
 Array<T>::validateConformance
 Array<T>::validateConformance
 Array<T>::validateConformance
-Record::define; fixed array conformance error
+Record::define - fixed array conformance error for field TpArrayString2
+Record::define - fixed array conformance error for field TpBool
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
 (/aips++/code/aips/implement/Tables/TableRecord.cc : 84) Failed AlwaysAssertExit conform (other)
 <<<
->>> Instance-specific assertion error message:
-(/aips++/code/aips/implement/Tables/TableRecordRep.cc : 232) Failed AlwaysAssertExit recordType == "TableRecord"
-<<<
+TableRecordRep::get_pointer - field SubRecord is not of type TableRecord
 Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
 (/aips++/code/aips/implement/Tables/TableRecord.cc : 84) Failed AlwaysAssertExit conform (other)
@@ -24,7 +21,5 @@ Record cannot be changed (fixed structure)
 (/aips++/code/aips/implement/Tables/TableRecord.cc : 84) Failed AlwaysAssertExit conform (other)
 <<<
 TableKeyword::operator=; non-conforming table
->>> Instance-specific assertion error message:
-(/aips++/code/aips/implement/Tables/TableRecordRep.cc : 238) Failed AlwaysAssertExit whichField >= 0 && whichField < desc_p.nfields() && type == desc_p.type(whichField)
-<<<
+TableRecordRep::get_pointer - incorrect data type used for field tab1
 OK
