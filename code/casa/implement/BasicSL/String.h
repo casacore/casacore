@@ -241,7 +241,7 @@ class String : public string {
 
   //# Constructors
   // Default constructor
-  String() : string() {}
+  String() : string("") {}
   // Construct from std string
   // Construct from (part of) other string: acts as copy constructor
   // <thrown>
