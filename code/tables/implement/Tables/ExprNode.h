@@ -441,6 +441,10 @@ public:
     // of those types.
     DataType dataType() const;
 
+    // Is the expression a scalar?
+    Bool isScalar() const
+      { return (node_p->valueType() == TableExprNodeRep::VTScalar); }
+
     // Get a value for this node in the given row.
     // These functions are implemented in the derived classes and
     // will usually invoke the get in their children and apply the
