@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/usr/local/bin/perl
 #
 #   Copyright (C) 1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
@@ -55,6 +55,7 @@ if($opt_noheaders == 0 && $opt_glish == 0){
 
 if($opt_glish == 1){
    $pack = "help::pkg.$opt_package";
+   print "pragma include once\n";
    print "$pack := [=];\n";
 }
 
@@ -124,8 +125,10 @@ sub term_module{
    $objs_count = %objs;
    $objItems = "";
    if($objs_count > 0){
+      @keys = sort (keys %objs);
       for($i=0;$i<@objsid;$i++){
-          $key = $objsid[$i];
+          #$key = $objsid[$i];
+          $key = $keys[$i];
           $objItems .= "\\htmlref{$key}{$mname:$key} & $objs{$key}\\\\\n";
           delete $objs{$key};
        }
@@ -140,9 +143,10 @@ $objItems
    $funs_count = %funcs;
    local $funItems = "";
    if($funs_count > 0){
+   @keys = sort (keys %funcs);
 #      foreach $key (keys %funcs) {
      for ($i=0; $i<@funcsid; $i++){
-        $key = $funcsid[$i];
+        $key = $keys[$i];
         # print $i, $key;
         $funItems .= "\\htmlref{$key}{$mname:$key} & $funcs{$key}\\\\\n";
       }
@@ -170,10 +174,13 @@ sub term_object{
    $wlabel = "\\subsubsection";
    local $methodItems = "";
    if($has_methods == 1){
+     
+   @keys = sort (keys %{$methods{$oname}});
 #     foreach $key (keys %{$methods{$oname}}) {
 #        $methodItems .= "\\htmlref{$key}{$mname:$oname.$key} & $methods{$oname}{$key}\\\\\n";
      for($i=0;$i<@{$methodsid{$oname}};$i++) {
-        $key = $methodsid{$oname}[$i];
+        #$key = $methodsid{$oname}[$i];
+        $key = $keys[$i];
         # print "Your are here ", $i, " ", $key, "\n";
         $methodItems .= "\\htmlref{$key}{$mname:$oname.$key} & $methods{$oname}{$key}\\\\\n";
      }
