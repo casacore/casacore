@@ -406,7 +406,7 @@ RFA::IterMode RFAUVBinner::endDry ()
       plot_px.resize(np);
       plot_py.resize(np);
       plot_np=0;
-      cerr<<name()<<": plot_np expected "<<np<<" "<<cumul(econo_density)<<endl;
+      os<<LogIO::DEBUGGING<<name()<<": plot_np expected "<<np<<" "<<cumul(econo_density)<<LogIO::POST;
     }
   }
 // request another dry pass to do the flags
@@ -501,7 +501,7 @@ void RFAUVBinner::makePlot ( PGPlotterInterface &pgp,uInt ich )
   // plot individual points
   if( plot_np != plot_px.nelements() )
   {
-    cerr<<name()<<": plot_np stats: "<<plot_np<<"/"<<plot_px.nelements()<<endl;
+    os<<LogIO::DEBUGGING<<": plot_np stats: "<<plot_np<<"/"<<plot_px.nelements()<<LogIO::POST;
     plot_px.resize(plot_np,True);
     plot_py.resize(plot_np,True);
   }
