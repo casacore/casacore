@@ -1,33 +1,37 @@
-\documentstyle{article}
+\documentclass{article}
 \setlength{\textwidth}{6.5in}
 \setlength{\evensidemargin}{0.0in}
 \setlength{\oddsidemargin}{0.0in}
 \parskip=5truept
-\begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
-
-\newcommand{\definetable}[2]
-{
-        %\clearpage
-	\vfill\eject
-	\subsection{#1}
-        \vspace{0.15in}
-        \small
-	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
-	\hline
-	\multicolumn{5}{|c|}{\bf #1}\\ 
-	\cline{1-5} \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&\multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&\multicolumn{1}{|c|}{Comments}\\ \cline{1-5}
-        #2
-        \hline
-	\end{tabular}
-}
 \newcommand{\nc}{$N_c$}
 \newcommand{\nr}{$N_r$}
 \newcommand{\nf}{$N_f$}
 \newcommand{\nfs}{$N_f^*$}
 \newcommand{\nl}{$N_l$}
 \newcommand{\ncat}{$N_{cat}$}
+\newcommand{\defline}[1]{\cline{1-5}
+\multicolumn{5}{|l|}{#1} \\
+\cline{1-5}}
+\newcommand{\definetable}[2]
+{
+	\vfill\newpage
+	\subsection{#1}
+        \vspace{0.15in}
+        \small
+	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
+	\hline
+	\multicolumn{5}{|c|}{\bf #1}\\ 
+	\cline{1-5}
+        \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&
+        \multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&
+        \multicolumn{1}{|c|}{Comments}\\
+        \cline{1-5}
+        #2
+        \hline
+	\end{tabular}
+}
+\begin{document}
 
 \title{MeasurementSet definition version 2.0}
 \author{A.J. Kemball (NRAO) and M.H. Wieringa (ATNF), eds.}
