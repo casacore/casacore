@@ -5299,3 +5299,4 @@
 15 034 src rm nrao/apps/gbtutils/gplot1d_dcra.ps
 15 034 src rm nrao/apps/gbtutils/gplot1d_dcrb.ps
 15 034 src rm nrao/apps/gbtutils/gplot1d_dcrc.ps
+15 034 src rm nrao/apps/gbtutils/gplot1d_if.ps
