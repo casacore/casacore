@@ -19,14 +19,20 @@
 \section{Introduction}
 
 This guide gives a short overview of the background and use of the
-\mes\ module in C++. Detailed information can be found in the
-\mess\ module description, and in the individual header files of the
+\mess\ module in C++. Detailed information can be found in the 
+\begin{latexonly}
+\mess\ module
+\end{latexonly}
+\begin{htmlonly}
+\htmladdnormallink{\mess\ module}{../../aips/implement/Measures.html}
+\end{htmlonly}
+ description, and in the individual header files of the
 classes in this module.
 
 Section 2 explains what a \mes\ consists of, and why; section 3
 discusses conversion; section 4 some notes on efficient use and
 section 5 gives the common interface of \mess\ and their values. Appendices 
-give some details per \mes, and also some information on \quans.
+give some details per \mes.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -655,6 +661,67 @@ executed); or if you do it explicitly with:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 \section{Appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Background literature}
+
+More information on the different astronomical conventions and data
+can be found in: \\
+
+\noindent
+{\bf Time, Coordinates}
+\begin{itemize}
+\item {\em Explanatory Supplement to the Astronomical Almanac},
+P.K. Seidelman {\em et al.}, University Science Books, $1992$
+\item {\em The Astronomical Almanac for the year yyyy}, London: The
+Stationary Office; Washington: U.S. Government Printing Office
+\item the ``International Celestial Reference System'' 
+\begin{latexonly}
+($ICRS$) \\({\em 
+http://hpiers.obspm.fr/webiers/general/syframes/icrsf/ICRS.html})
+\end{latexonly}
+\begin{htmlonly}
+\htmladdnormallink{($ICRS$)}
+{http://hpiers.obspm.fr/webiers/general/syframes/icrsf/ICRS.html}
+\end{htmlonly}
+\end{itemize}
+
+\noindent
+{\bf Positions}
+\begin{itemize}
+\item the $IERS$ 
+\begin{latexonly}
+website \\({\em http://hpiers.obspm.fr/})
+\end{latexonly}
+\begin{htmlonly}
+\htmladdnormallink{website}{http://hpiers.obspm.fr/}
+\end{htmlonly}
+\end{itemize}
+
+\noindent
+{\bf Frequency, Doppler, Velocity}
+\begin{itemize}
+\item any astronomical textbook
+\end{itemize}
+
+\noindent
+{\bf Magnetic field}
+\begin{itemize}
+\item the $IAGA$ 
+\begin{latexonly}
+website \\({\em http://www.ngdc.noaa.gov/IAGA/wg8/})
+\end{latexonly}
+\begin{htmlonly}
+\htmladdnormallink{website}{http://www.ngdc.noaa.gov/IAGA/wg8/}
+\end{htmlonly}
+\end{itemize}
+
+\noindent
+{\bf Baseline, uvw} 
+\begin{itemize}
+\item any textbook on radio astronomy
+\end{itemize}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Details for individual Measures}
 
