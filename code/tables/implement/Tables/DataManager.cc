@@ -39,6 +39,7 @@
 #include <tables/Tables/CompressFloat.h>
 #include <tables/Tables/CompressComplex.h>
 #include <tables/Tables/ForwardCol.h>
+#include <tables/Tables/VirtualTaQLColumn.h>
 #include <tables/Tables/SetupNewTab.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/PlainTable.h>
@@ -429,6 +430,7 @@ void DataManager::registerAllCtor ()
     CompressComplex::registerClass();
     CompressComplexSD::registerClass();
     ForwardColumnEngine::registerClass();
+    VirtualTaQLColumn::registerClass();
 }
 
 } //# NAMESPACE CASA - END
