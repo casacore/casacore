@@ -417,6 +417,7 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 
 // Set spectral state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent with Hz or m/s and the doppler a valid MDoppler string.
+// For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& doppler);
@@ -424,6 +425,7 @@ static Bool dropRemovedAxes (CoordinateSystem& cSysOut, const CoordinateSystem& 
 
 // Set velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent m/s and the doppler a valid MDoppler string.
+// For no change, leave either String empty.
 // Returns False if invalid inputs (and CS not changed) and an error message. 
    static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& doppler);
