@@ -128,6 +128,7 @@ public:
   // it can use up to 25% of the memory on your machine as defined in aipsrc
   // (this algorithm may change).
   TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1);
+  TempLattice (const TiledShape& shape, Double maxMemoryInMB);
   
   // The copy constructor uses reference semantics. ie modifying data in the
   // coipied TempLattice also modifies the data in the original TempLattice.
@@ -227,6 +228,8 @@ public:
   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
 
 private:
+
+  void init (const TiledShape& shape, Double maxMemoryInMB=-1);
   // Do the reopen of the table (if not open already).
   // <group>
   void doReopen() const
