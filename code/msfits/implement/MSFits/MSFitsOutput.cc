@@ -1237,7 +1237,8 @@ Bool NewMSFitsOutput::writeTY(FitsOutput *output, const NewMeasurementSet &ms,
 			   const Block<Int>& spwidMap, uInt nrif,
 			   Bool combineSpw)
 {
-  RONewMSSysCalColumns sysCalColumns = NewMSSysCal(syscal);
+  const NewMSSysCal subtable(syscal);
+  RONewMSSysCalColumns sysCalColumns(subtable);
   const uInt nrow = syscal.nrow();
   if (nrow == 0) {
     os << LogIO::SEVERE << "No SysCal TY info!" << LogIO::POST;
