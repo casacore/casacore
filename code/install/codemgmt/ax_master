@@ -4506,3 +4506,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSFreqOffEnums.h aips/implement/MeasurementSets/MSFreqOffEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSFreqOffset.cc aips/implement/MeasurementSets/MSFreqOffset.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSFreqOffset.h aips/implement/MeasurementSets/MSFreqOffset.h
+14 296 src mv aips/implement/MeasurementSets/NewMSHistory.cc aips/implement/MeasurementSets/MSHistory.cc
