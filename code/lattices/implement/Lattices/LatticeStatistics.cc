@@ -438,7 +438,7 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
 // Set mean and sigma if no statistics requested
 
    if (statsToPlot_p.nelements()==0) {
-      error_p = "No plot statistics requested, setting mean and sigma";
+      error_p = "No plot statistics requested, setting mean and std dev";
       statsToPlot_p.resize(2);
       statsToPlot_p(0) = MEAN;
       statsToPlot_p(1) = SIGMA;
@@ -1625,7 +1625,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    os_p.output() << setw(oDWidth) << "Mean";  
    if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
-   os_p.output() << setw(oDWidth) << "Sigma";
+   os_p.output() << setw(oDWidth) << "Std dev";
    if (doneLEL_p) os_p.output() << setw(oDWidth) << "LEL";
    os_p.output() << setw(oDWidth) << "Minimum";
    os_p.output() << setw(oDWidth) << "Maximum" << endl;
@@ -2187,7 +2187,7 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    Int nRLabs = 0;
    if (nR>0) {
       if (doSigma) {
-         yRLabel += "Sigma,";
+         yRLabel += "Std dev,";
          nRLabs++;
       }
       if (doVar) {
@@ -2786,7 +2786,7 @@ void LatticeStatistics<T>::summStats ()
       os_p.output() << setw(oWidth) << String(os3);
 //
       if (var > 0.0) {
-         os_p << "       Sigma    = ";
+         os_p << "       Std dev   = ";
          os_p.output() << setw(oWidth) << String(os4) << endl;
          os_p.post();
       } else {
