@@ -39,3 +39,25 @@ visplot now allows editing of data on the plot windows as well as
 on the displays. A region on a plot is selected using the mouse
 and then can be edited and the data replotted. The help file describes
 how to use this capability.
+
+change id: 0033
+ author:   Tim Cornwell
+ date:     2000/08/06
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   servers
+ type:     Code
+ category: Change
+ summary:  Added new view service to the tasking system
+
+The tasking system can now view any file that catalog.g can.
+Use the application service view with the name of any file
+to be viewed:
+
+	ApplicationEnvironment::view(myimagename);
+	ApplicationEnvironment::view(mymsname);
+
+etc.
+
+There is no returned success indicator.
