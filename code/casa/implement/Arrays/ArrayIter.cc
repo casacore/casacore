@@ -1,5 +1,5 @@
 //# ArrayIter.cc: Iterate an Array cursor through another Array
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -55,45 +55,60 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
 	throw(ArrayIteratorError("ArrayIterator<T>::init(a) - "
               " failed to make new Array<t>(a) for pOriginalArray"));
     }
+    dataPtr = pOriginalArray->begin_p;
 
-    IPosition blc(pOriginalArray->ndim(), 0);
     if (dimIter() < 1)
 	throw(ArrayIteratorError("ArrayIterator<T>::ArrayIterator<T> - "
 				 " at the moment cannot iterate by scalars"));
-    IPosition whereNextStep(blc);
-
-    // The step won't be taken if we are the same dimensionality.
-    Bool step=False;
-    if (dimIter() < a.ndim()) {
-	// See if there is a dimension with more than one element left.
-	// If so take a step in that one. Otherwise nothing to do.
-	for (uInt j=dimIter(); j<a.ndim(); j++)
-	    if (pOriginalArray->length_p(j) > 1) {
-		whereNextStep(j) += 1;
-		step=True;
-		break;
-	    }
-    }
-
+    IPosition blc(pOriginalArray->ndim(), 0);
     IPosition trc(blc);
     for (uInt i = 0; i < dimIter(); i++) {
 	trc(i) += pOriginalArray->length_p(i) - 1;
     }
 
     // Calculate what the offset for ap->begin is for each step
-    offset = ArrayIndexOffset(pOriginalArray->ndim(), 
-			      pOriginalArray->originalLength_p.storage(),
-			      pOriginalArray->inc_p.storage(), whereNextStep);
-    if (!step) {
-       offset = 9999999; // This should be obvious
+    IPosition whereFirstElem(blc);
+    IPosition whereLastElem(blc);
+    offset.resize (a.ndim());
+    offset = 0;
+    // The step won't be taken if we are the same dimensionality
+    // or if all remaining axes have length 1.
+    Bool step=False;
+    if (dimIter() < a.ndim()) {
+	// See if there is a dimension with more than one element left.
+	// If so take a step in that one. Otherwise nothing to do.
+        uInt lastOffset = 0;
+        for (uInt j=dimIter(); j<a.ndim(); j++) {
+	    if (pOriginalArray->length_p(j) > 1) {
+		step=True;
+		// Determine offset in this dimension, thus the offset
+		// from element 0 to 1 in that dimension.
+		// For further dimensions we need the offset from the
+		// last element in the previous dimension to the first
+		// in this one.
+		whereFirstElem(j) = 1;
+		offset(j) = ArrayIndexOffset(pOriginalArray->ndim(), 
+				   pOriginalArray->originalLength_p.storage(),
+				   pOriginalArray->inc_p.storage(),
+				   whereFirstElem);
+		offset(j) -= lastOffset;
+		whereLastElem(j) = a.shape()(j)-1;
+		lastOffset = ArrayIndexOffset(pOriginalArray->ndim(), 
+				   pOriginalArray->originalLength_p.storage(),
+				   pOriginalArray->inc_p.storage(),
+				   whereLastElem);
+		whereFirstElem(j) = 0;
+	    }
+	}
     }
+
     // Now diddle with the internal array to ensure that it is the
     // correct shape. We only want to remove the last axes, not all
     // possible degenerate axes).
     if (dimIter() < pOriginalArray->ndim()) {
         ap = new Array<T>((*pOriginalArray)(blc,trc).nonDegenerate(dimIter()));
     } else {
-        // Same dimentionality, no degenerate axes
+        // Same dimensionality, so no degenerate axes
         ap = new Array<T>(*pOriginalArray);
     }
 }
@@ -101,7 +116,7 @@ template<class T> void ArrayIterator<T>::init(Array<T> &a)
 // <thrown>
 //     <item> ArrayIteratorError
 // </thrown>
-template<class T> void ArrayIterator<T>::apSetPointer()
+template<class T> void ArrayIterator<T>::apSetPointer(Int stepDim)
 {
     if (ap == 0)
 	throw(ArrayIteratorError("ArrayIterator<T>::apSetPointer()"
@@ -109,20 +124,25 @@ template<class T> void ArrayIterator<T>::apSetPointer()
     if (pastEnd()) {
 	ap->begin_p = 0;  // Mark it "invalid"
     } else {
-	ap->begin_p = pOriginalArray->begin_p + nSteps()*offset;
+        if (stepDim < 0) {
+	    dataPtr = pOriginalArray->begin_p;
+	} else {
+	    dataPtr += offset(stepDim);
+	}
+	ap->begin_p = dataPtr;
     }
 }
 
 template<class T> void ArrayIterator<T>::origin()
 {
     ArrayPositionIterator::origin();
-    apSetPointer();
+    apSetPointer(-1);
 }
 
 template<class T> void ArrayIterator<T>::next()
 {
-    ArrayPositionIterator::next();
-    apSetPointer();
+    Int stepDim = ArrayPositionIterator::nextStep();
+    apSetPointer(stepDim);
 }
 
 template<class T> ArrayIterator<T>::~ArrayIterator()

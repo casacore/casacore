@@ -89,10 +89,12 @@ private:
     // helper function to centralize construction work
     void init(Array<T> &);
     // helper function to set the pointer to the new data position in ap
-    void apSetPointer();
+    // after a step in the given dimension. -1 resets it to the beginning.
+    void apSetPointer(Int stepDim);
     Array<T> *pOriginalArray;
     Bool readOnly;
-    uInt offset;
+    IPosition offset;
+    T* dataPtr;
 
     //# Presently the following are not defined.
     ArrayIterator(const ArrayIterator<T> &);
