@@ -29,13 +29,14 @@
 #define AIPS_NEWMSFIELDCOLUMNS_H
 
 #include <aips/aips.h>
-#include <aips/Tables/ScalarColumn.h>
-#include <aips/Tables/ArrayColumn.h>
-#include <aips/TableMeasures/ScalarMeasColumn.h>
-#include <aips/TableMeasures/ArrayMeasColumn.h>
-#include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/TableMeasures/ArrayMeasColumn.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/Tables/ArrayColumn.h>
+#include <aips/Tables/ScalarColumn.h>
+#include <aips/Utilities/String.h>
 
 class NewMSField;
 
@@ -123,10 +124,15 @@ protected:
   //# attach this object to the supplied table.
   void attach(const NewMSField& msField);
 
+private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSFieldColumns(const RONewMSFieldColumns&);
+  RONewMSFieldColumns& operator=(const RONewMSFieldColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSField& msField);
   
-private:
   //# required columns
   ROScalarColumn<String> name_p;
   ROScalarColumn<String> code_p;
@@ -148,7 +154,6 @@ private:
 
   //# Access to Quantum columns
   ROScalarQuantColumn<Double> timeQuant_p;
-
 };
 
 // <summary>
@@ -275,10 +280,15 @@ protected:
   //# attach this object to the supplied table.
   void attach(NewMSField& msField);
 
+private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSFieldColumns(const NewMSFieldColumns&);
+  NewMSFieldColumns& operator=(const NewMSFieldColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMSField& msField);
   
-private:
   //# required columns
   ScalarColumn<String> name_p;
   ScalarColumn<String> code_p;
