@@ -192,9 +192,13 @@ public:
   const LogIO& logSink() const {return log_p;}
   // </group>
   
+  // Add the TableLogSink from other to this one.
+  // This is where the history is kept.
+  void mergeTableLogSink (const ImageInterface<T>& other);
+
   // Often we have miscellaneous information we want to attach to an image.
   // This is where it goes.  
-  //
+  // <br>
   // Note that setMiscInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
   // <group>

@@ -42,6 +42,7 @@
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Logging/TableLogSink.h>
 #include <strstream.h>
 
 
@@ -258,6 +259,13 @@ Bool ImageInterface<T>::restoreImageInfo(const RecordInterface& rec)
 }
    
   
-
- 
-
+template<class T>
+void ImageInterface<T>::mergeTableLogSink (const ImageInterface<T>& other)
+{
+  if (logSink().localSink().isTableLogSink()) {
+    if (other.logSink().localSink().isTableLogSink()) {
+      logSink().localSink().castToTableLogSink().concatenate (
+		      other.logSink().localSink().castToTableLogSink());
+    }
+  }
+}
