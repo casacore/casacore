@@ -479,7 +479,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
    Vector<Int> worldAxes = cSys.worldAxes(iC);
    worldAxisUnits(worldAxes(0)) = "deg";
    worldAxisUnits(worldAxes(1)) = "arcmin";
-   if (!cSys.setWorldAxisUnits(worldAxisUnits, True)) {
+   if (!cSys.setWorldAxisUnits(worldAxisUnits)) {
       throw(AipsError(String("Failed to set axis units because") 
             + cSys.errorMessage()));
    }
@@ -761,7 +761,7 @@ void doit2 (CoordinateSystem& cSys)
       Vector<String> worldAxisUnits = cSys.worldAxisUnits();
       worldAxisUnits(worldAxes(0)) = "rad";
       worldAxisUnits(worldAxes(1)) = "rad";
-      cSys.setWorldAxisUnits(worldAxisUnits, True);
+      cSys.setWorldAxisUnits(worldAxisUnits);
 //
       String unit;
       Double val = 0.12343;
@@ -1517,7 +1517,7 @@ DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees,
       Vector<String> units(2);
       units(0) = "deg";
       units(1) = "deg";
-      dC.setWorldAxisUnits(units, True); 
+      dC.setWorldAxisUnits(units); 
    }
 //
    return dC;

@@ -1,5 +1,5 @@
 //# tGaussianConvert.cc: Test program for GaussianConvert
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Mathematics/Math.h>
 #include <trial/Coordinates/GaussianConvert.h>
 #include <trial/Coordinates/CoordinateUtil.h>
+#include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Utilities/Assert.h>
@@ -63,8 +64,7 @@ int main()
       Vector<String> units(2);
       units(0) = "arcsec";
       units(1) = "arcsec";
-      cSys.setWorldAxisUnits(units, False);
-//      cout << "units = " << cSys.worldAxisUnits() << endl;
+      cSys.setWorldAxisUnits(units);
 //
 // Axis conversions
 //

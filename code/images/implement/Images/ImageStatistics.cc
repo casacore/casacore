@@ -169,7 +169,7 @@ Bool ImageStatistics<T>::getBeamArea (Double& beamArea) const
       DirectionCoordinate dCoord = cSys.directionCoordinate(dC);
       Vector<String> units(2);
       units(0) = "rad"; units(1) = "rad";
-      dCoord.setWorldAxisUnits(units, True);
+      dCoord.setWorldAxisUnits(units);
       Vector<Double> deltas = dCoord.increment();
 //
       Double major = beam(0).getValue(Unit("rad"));

@@ -1,5 +1,5 @@
 //# GaussianConvert.cc: Class to convert between pixel and world coordinates for Gaussians
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,7 +128,7 @@ Bool GaussianConvert::toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& mi
    Vector<String> units(itsCSys.worldAxisUnits().copy());
    units(itsWorldAxes(0)) = unitAxes;
    units(itsWorldAxes(1)) = unitAxes;
-   if (!itsCSys.setWorldAxisUnits(units, True)) {
+   if (!itsCSys.setWorldAxisUnits(units)) {
       itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
       return False;
    }
@@ -174,7 +174,7 @@ Bool GaussianConvert::toPixel(Double& majorAxisOut, Double& minorAxisOut,
    Vector<String> units(itsCSys.worldAxisUnits().copy());
    units(itsWorldAxes(0)) = unitAxes;
    units(itsWorldAxes(1)) = unitAxes;
-   if (!itsCSys.setWorldAxisUnits(units, True)) {
+   if (!itsCSys.setWorldAxisUnits(units)) {
       itsErrorMessage = "failed to set axis units because" + itsCSys.errorMessage();
       return False;
    }

@@ -352,7 +352,7 @@ void doit3 (DirectionCoordinate& lc)
    Vector<Double> pixel(2), world(2);
    Vector<String> axisUnits = lc.worldAxisUnits();
    axisUnits.set("rad");
-   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+   if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to radians because ") + lc.errorMessage())); 
    }
 //
@@ -375,7 +375,7 @@ void doit3 (DirectionCoordinate& lc)
       throw(AipsError(String("toWorld conversion (3) failed because ") + lc.errorMessage())); 
    }
    axisUnits.set("deg");
-   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+   if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to degrees because ") + lc.errorMessage())); 
    }
    if (!allNear(dirV.get(), world, 1e-6)) {
@@ -397,7 +397,7 @@ void doit3 (DirectionCoordinate& lc)
          throw(AipsError("Coordinate conversion values (MDirection) are wrong"));
    }
    axisUnits.set("rad");
-   if (!lc.setWorldAxisUnits(axisUnits, True)) {
+   if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to radians because ") + lc.errorMessage())); 
    }
    if (!lc.toPixel(pixel3, dir)) {

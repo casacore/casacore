@@ -453,7 +453,7 @@ int main()
 
          Vector<String> units = lc.worldAxisUnits();
          units.set("KHz");
-         lc.setWorldAxisUnits(units, True);
+         lc.setWorldAxisUnits(units);
 //
          Double pixel2;
          if (!lc.toPixel(pixel2, world)) {
@@ -478,7 +478,7 @@ int main()
 
          Vector<String> units = lc.worldAxisUnits();
          units.set("KHz");
-         lc.setWorldAxisUnits(units, True);
+         lc.setWorldAxisUnits(units);
 //
          Double pixel2;
          if (!lc.toPixel(pixel2, world)) {

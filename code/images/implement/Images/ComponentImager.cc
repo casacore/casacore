@@ -334,7 +334,7 @@ Unit ComponentImager::defineBrightnessUnits(LogIO& os,
    if (dirCoordinate>=0) {
       DirectionCoordinate dirCoord = cSys.directionCoordinate(dirCoordinate);
       Vector<String> units(2); units.set("rad");
-      dirCoord.setWorldAxisUnits(units, True);
+      dirCoord.setWorldAxisUnits(units);
       inc = dirCoord.increment();
       UnitMap::putUser("pixel", UnitVal(abs(inc(0)*inc(1)), String("rad2")));
 //

@@ -536,7 +536,7 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr, ImageIn
 //
    Vector<String> axisUnits = cSys0.worldAxisUnits();
    axisUnits(fAxisWorld) = String("Hz");
-   if (!cSys0.setWorldAxisUnits(axisUnits, True)) {
+   if (!cSys0.setWorldAxisUnits(axisUnits)) {
       os << "Failed to set frequency axis units to Hz because " 
          << cSys0.errorMessage() << LogIO::EXCEPTION;
    }
@@ -1215,7 +1215,7 @@ void ImagePolarimetry::fiddleTimeCoordinate(ImageInterface<Complex>& ie, const Q
 //
    Vector<String> axisUnits = pC->worldAxisUnits();
    axisUnits = String("s");
-   if (!pC->setWorldAxisUnits(axisUnits, True)) {
+   if (!pC->setWorldAxisUnits(axisUnits)) {
       os << "Failed to set TimeCoordinate units to seconds because " << pC->errorMessage() << LogIO::EXCEPTION;
    }
 

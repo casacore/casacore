@@ -85,7 +85,7 @@ int main() {
 	refPix(1) = ny/2;
 	dirCoord.setReferencePixel(refPix);
       }
-      dirCoord.setWorldAxisUnits(Vector<String>(2, "deg"), True);
+      dirCoord.setWorldAxisUnits(Vector<String>(2, "deg"));
       dirCoord.setIncrement(Vector<Double>(2, 1.0));
       coords2D.replaceCoordinate(dirCoord, 0);
     }
@@ -110,7 +110,7 @@ int main() {
       coords3D.addCoordinate(coords2D.coordinate(0));
       {
 	SpectralCoordinate specCoord = coords3D.spectralCoordinate(0);
-	specCoord.setWorldAxisUnits(Vector<String>(1, "GHz"), False);
+	specCoord.setWorldAxisUnits(Vector<String>(1, "GHz"));
 	specCoord.setIncrement(Vector<Double>(1, 1.0));
 	specCoord.setReferencePixel(Vector<Double>(1, nFreq/2));
 	specCoord.setReferenceValue(Vector<Double>(1, 2.0));

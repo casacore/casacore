@@ -1,5 +1,5 @@
 //# tWCBox.cc: Test program for WCBox class
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,7 +144,7 @@ try {
       Vector<String> units = cSys2.worldAxisUnits();
       units(0) = "deg";
       units(1) = "deg";
-      AlwaysAssert(cSys2.setWorldAxisUnits(units, True), AipsError);
+      AlwaysAssert(cSys2.setWorldAxisUnits(units), AipsError);
 //      cout << "toLCRegion called with shape = " << shape << endl;
       LCRegion* pLCRegion = box.toLCRegion(cSys2, shape);
       AlwaysAssert(*pLCRegion==checkBox, AipsError);

@@ -1,5 +1,5 @@
 //# WCBox.cc: Class to define a world coordinate box region of interest in an image
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -620,14 +620,14 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
 // available, this will need redoing.
 
    Vector<Double> pBlc(cSysTmp.nPixelAxes()), pTrc(cSysTmp.nPixelAxes());
-   if (!cSysTmp.setWorldAxisUnits(blcUnits, True)) {
+   if (!cSysTmp.setWorldAxisUnits(blcUnits)) {
       throw (AipsError ("WCBox:doToLCregion - blc units are inconsistent with CoordinateSystem"));
    }
    if (!cSysTmp.toPixel(pBlc, wBlc)) {
       throw (AipsError ("WCBox:doToLCregion - conversion of blc to pixel coordinates failed"));
    }
 //
-   if (!cSysTmp.setWorldAxisUnits(trcUnits, True)) {
+   if (!cSysTmp.setWorldAxisUnits(trcUnits)) {
       throw (AipsError ("WCBox:doToLCregion - trc units are inconsistent with CoordinateSystem"));
    }
    if (!cSysTmp.toPixel(pTrc, wTrc)) {

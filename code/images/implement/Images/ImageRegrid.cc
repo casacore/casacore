@@ -238,10 +238,10 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             units.set("deg");
             DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
             DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
-            if (!inDir.setWorldAxisUnits(units, True)) {
+            if (!inDir.setWorldAxisUnits(units)) {
                os << "Failed to set input DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
             }
-            if (!outDir.setWorldAxisUnits(units, True)) {
+            if (!outDir.setWorldAxisUnits(units)) {
                os << "Failed to set output DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
             }
 
@@ -309,7 +309,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             Vector<String> inUnits = inCoords.worldAxisUnits();
             Vector<String> outUnits = outCoords.worldAxisUnits();
             outUnits(outWorldAxis) = inUnits(inWorldAxis);
-            if (!outCoords.setWorldAxisUnits(outUnits, True)) {
+            if (!outCoords.setWorldAxisUnits(outUnits)) {
                os << "Failed to set output CoordinateSystem units" << LogIO::EXCEPTION;
             }
 //

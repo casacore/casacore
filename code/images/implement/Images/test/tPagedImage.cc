@@ -263,7 +263,7 @@ int main()
        CoordinateSystem cSys2 = pIm.coordinates();
        Vector<String> axisUnits = cSys2.worldAxisUnits();
        axisUnits(0) = "deg"; axisUnits(1) = "deg";
-       cSys2.setWorldAxisUnits(axisUnits, True);
+       cSys2.setWorldAxisUnits(axisUnits);
        pIm.setCoordinateInfo(cSys2);
        CoordinateSystem cSys3 = pIm.coordinates();
        AlwaysAssert(cSys2.near(&cSys3,1e-6), AipsError);
