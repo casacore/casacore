@@ -29,8 +29,8 @@
 # define AIPS_FITS
 
 # include <ctype.h>
-# include <iostream.h>
 # include <aips/aips.h>
+# include <aips/iostream.h>
 # include <aips/Mathematics/Complex.h>
 # include <aips/Mathematics/IComplex.h>
 # include <aips/FITS/FITSError.h>
