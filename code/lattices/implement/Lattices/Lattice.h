@@ -233,28 +233,39 @@ public:
   // <br>Default implementation returns True.
   virtual Bool isWritable() const;
 
-  // returns the value of the single element located at the argument
-  // IPosition.  
-  T operator() (const IPosition& where) const;
-  
-  // returns the shape of the Lattice including all degenerate axes
+  // Return the shape of the Lattice including all degenerate axes
   // (ie. axes with a length of one)
   virtual IPosition shape() const = 0;
   
-  // returns the number of axes in this Lattice. This includes all
-  // degenerate axes
+  // Return the number of axes in this Lattice. This includes all
+  // degenerate axes.
+  // Default implementation returns shape().nelements().
   virtual uInt ndim() const;
   
-  // returns the total number of elements in this Lattice.
+  // Return the total number of elements in this Lattice.
+  // Default implementation returns shape().product().
   virtual uInt nelements() const;
   
-  // returns a value of "True" if this instance of Lattice and 'other' have 
+  // Return a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
   virtual Bool conform(const Lattice <T>& other) const;
 
-  // returns the coordinates of the lattice.
+  // Return the coordinates of the lattice.
   // The default implementation returns an 'empty' LattCoord object.
   virtual LatticeCoordinates latticeCoordinates() const;
+
+  // Return the value of the single element located at the argument
+  // IPosition.  
+  T operator() (const IPosition& where) const;
+  
+  // These are the true implementations of the parentheses operator.  While
+  // you can use them the access methods shown in Example three above have a
+  // nicer syntax and are equivalent.
+  // <br> The default implementation uses getSlice and putSlice.
+  // <group>
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
+  // </group>
 
   // Functions which extract an Array of values from a Lattice. All the
   // IPosition arguments must have the same number of axes as the underlying
@@ -291,16 +302,35 @@ public:
   // 'True' if "buffer" is a reference to Lattice data and 'False' if it  
   // is a copy. 
   // <group>   
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
-			 const IPosition& shape, const IPosition& stride, 
-			 Bool removeDegenerateAxes=False) const = 0;
-  virtual Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section, 
-			 Bool removeDegenerateAxes=False) const = 0;
-  virtual Bool getSlice (Array<T>& buffer, const IPosition& start,
-			 const IPosition& shape, const IPosition& stride,
-			 Bool removeDegenerateAxes=False) = 0;
-  virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
-			 Bool removeDegenerateAxes=False) = 0;
+  Bool get (COWPtr<Array<T> >& buffer,
+	    Bool removeDegenerateAxes=False) const;
+  Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
+		 Bool removeDegenerateAxes=False) const;
+  Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+		 const IPosition& shape,
+		 Bool removeDegenerateAxes=False) const;
+  Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+		 const IPosition& shape, const IPosition& stride,
+		 Bool removeDegenerateAxes=False) const;
+  Bool get (Array<T>& buffer,
+	    Bool removeDegenerateAxes=False);
+  Bool getSlice (Array<T>& buffer, const Slicer& section,
+		 Bool removeDegenerateAxes=False);
+  Bool getSlice (Array<T>& buffer, const IPosition& start,
+		 const IPosition& shape,
+		 Bool removeDegenerateAxes=False);
+  Bool getSlice (Array<T>& buffer, const IPosition& start,
+		 const IPosition& shape, const IPosition& stride,
+		 Bool removeDegenerateAxes=False);
+  Array<T> get (Bool removeDegenerateAxes=False) const;
+  Array<T> getSlice (const Slicer& section,
+		     Bool removeDegenerateAxes=False) const;
+  Array<T> getSlice (const IPosition& start,
+		     const IPosition& shape,
+		     Bool removeDegenerateAxes=False) const;
+  Array<T> getSlice (const IPosition& start,
+		     const IPosition& shape, const IPosition& stride,
+		     Bool removeDegenerateAxes=False) const;
   // </group>
   
   // A function which places an Array of values within this instance of the
@@ -310,9 +340,11 @@ public:
   // will) have less axes than the Lattice. The stride defaults to one if
   // not specified. 
   // <group>   
-  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
-			 const IPosition& stride) = 0;
-  virtual void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
+  void putSlice (const Array<T>& sourceBuffer, const IPosition& where,
+		 const IPosition& stride)
+    { doPutSlice (sourceBuffer, where, stride); }
+  void putSlice (const Array<T>& sourceBuffer, const IPosition& where);
+  void put (const Array<T>& sourceBuffer);
   
   // </group>   
 
@@ -354,18 +386,10 @@ public:
   // </srcblock>
   // The default argument is the result of <src>maxPixels()</src>.
   // <group>
-  virtual IPosition niceCursorShape (uInt maxPixels) const;
+  IPosition niceCursorShape (uInt maxPixels) const
+    { return doNiceCursorShape (maxPixels); }
   IPosition niceCursorShape() const
-    { return niceCursorShape (maxPixels()); }
-  // </group>
-
-  // These are the true implementations of the parentheses operator.  While
-  // you can use them the access methods shown in Example three above have a
-  // nicer syntax and are equivalent.
-  // <br> The default implementation uses getSlice and putSlice.
-  // <group>
-  virtual T getAt (const IPosition& where) const;
-  virtual void putAt (const T& value, const IPosition& where);
+    { return doNiceCursorShape (maxPixels()); }
   // </group>
 
   // Copy the data from the given lattice to this one.
@@ -398,6 +422,20 @@ public:
   // <group>
   Lattice<T>& lc() {return *this;}
   const Lattice<T>& lc() const {return *this;}
+  // </group>
+
+  // The functions (in the derived classes) doing the actual work.
+  // These functions are public, so they can be used internally in the
+  // various Lattice classes, which is especially useful for doGetSlice.
+  // <br>However, doGetSlice does not call Slicer::inferShapeFromSource
+  // to fill in possible unspecified section values. Therefore one
+  // should normally use one of the get(Slice) functions. doGetSlice
+  // should be used with care and only when performance is an issue.
+  // <group>
+  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section) = 0;
+  virtual void doPutSlice (const Array<T>& buffer, const IPosition& where,
+			   const IPosition& stride) = 0;
+  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
   // </group>
 
 protected:
