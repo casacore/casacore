@@ -69,6 +69,7 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1) {
 	return (*tmp)(d0 + d1 * factor[1]);
 }
 
+#ifndef AIPS_OSF
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, 
 								int d2 ...) {
 	int offset;
@@ -84,6 +85,7 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1,
 	} else
 	    return (*tmp)(d0 + d1 * factor[1] + d2 * factor[2]);
 }
+#endif
 
 //== HeaderDataUnit ===========================================================
 
