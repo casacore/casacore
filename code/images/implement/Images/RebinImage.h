@@ -187,11 +187,11 @@ private:
   ImageInterface<T>* itsImagePtr;
   RebinLattice<T>*   itsRebinPtr;
 
-  // Create Coordinates for the rebinned image.
-  CoordinateSystem makeOutputCoordinates (const IPosition& factors,
-					  const CoordinateSystem& cSysIn,
-					  const IPosition& shapeIn,
-					  const IPosition& shapeOut);
+// Make CS
+   CoordinateSystem makeOutputCoordinates (const IPosition& factors,                                 
+                                           const CoordinateSystem& cSysIn, 
+                                           const IPosition& shapeIn, 
+                                           const IPosition& shapeOut);
 };
 
 

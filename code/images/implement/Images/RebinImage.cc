@@ -257,17 +257,15 @@ void RebinImage<T>::reopen()
 
 
 template<class T>
-CoordinateSystem RebinImage<T>::makeOutputCoordinates
-                                  (const IPosition& factors,
-				   const CoordinateSystem& cSysIn,
-				   const IPosition& shapeIn,
-				   const IPosition& shapeOut)
+CoordinateSystem RebinImage<T>::makeOutputCoordinates (const IPosition& factors,
+                                                       const CoordinateSystem& cSysIn,
+                                                       const IPosition& shapeIn,
+                                                       const IPosition& shapeOut)
 {
+
 // Check Stokes.
 
-   const uInt nDim = shapeIn.nelements();
    Int coord, axisInCoord;
-//
    for (uInt i=0; i<cSysIn.nPixelAxes(); i++) {
       cSysIn.findPixelAxis(coord, axisInCoord, i);
       if (cSysIn.type(coord) == Coordinate::STOKES) {
@@ -276,27 +274,7 @@ CoordinateSystem RebinImage<T>::makeOutputCoordinates
          }
       }
    }
-
-// Set output values
-
-   Vector<Double> incrIn(cSysIn.increment().copy());
-   Vector<Double> incrOut(incrIn.copy());
-   Vector<Double> refPixIn(cSysIn.referencePixel().copy());
-   Vector<Double> refPixOut(refPixIn.copy());
-
-// Loop over pixel axes
-
-   for (uInt pA=0; pA<nDim; pA++) { 
-     uInt wA = cSysIn.pixelAxisToWorldAxis(pA);
 //
-     incrOut(wA) *= Double(factors[pA]);
-     refPixOut(pA) = (refPixIn(pA) + 0.5) / factors[pA] - 0.5;
-   } 
-//
-    CoordinateSystem cSysOut(cSysIn);
-    cSysOut.setReferencePixel(refPixOut);
-    cSysOut.setIncrement(incrOut);
-//
-    return cSysOut;
+   return CoordinateUtil::makeBinnedCoordinateSystem (factors, cSysIn);
 }
- 
+  
