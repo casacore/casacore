@@ -65,7 +65,7 @@ Charlottesville, Va. 22903-2475 USA.
 \chapter{Documentation\label{Coding.Documentation}}
 {\em This chapter was witten by D. Schiebel as AIPS++ note 156}\\
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this chapter is available.}{http://tarzan.aoc.nrao.edu/aips++/docs/notes/156.ps}
+\htmladdnormallink{A postscript version of this chapter is available.}{http://aips2.nrao.edu/docs/notes/156.ps}
 \end{htmlonly}
 \input{body156}
 
