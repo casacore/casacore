@@ -33,7 +33,6 @@
 #include <trial/Fitting/LinearFitSVD.h>
 #include <trial/Fitting/NonLinearFit.h>
 #include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/Fitting/LatticeFit.h>
 
 // <module>
 //
@@ -168,13 +167,14 @@
 // data fitters:
 // <ul>
 // <li> <src>Fit2D</src>
-// <li> <src>LatticeFit</src>
 // <li> <src>LinearFit</src>
 // <li> <src>LinearFitSVD</src>
 // <li> <src>NonLinearFit</src>
 // <li> <src>NonLinearFitLM</src>
 // <li> <src>LinearFitConstraint</src>
 // </ul>
+// Furthermore class <src>LatticeFit</src> can do fitting on lattices.
+//
 // Note that the basic functions have <em>LSQ</em> in their title; the
 // one-step fitting functions <em>Fit</em>, and the solution with more
 // freedom <em>Solve</em> (none available yet).
