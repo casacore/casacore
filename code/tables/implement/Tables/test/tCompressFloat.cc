@@ -144,7 +144,7 @@ void checkData (Bool autoScale)
   for (i=0; i<10; i++) {
     cout << "get row " << i << endl;
     source1.get (i, arrvalf);
-    if (!allNear (arrvalf, arrf1, 2e-4)) {
+    if (!allNear (arrvalf, arrf1, 1e-7)) {
       cout << "error in source1 in row " << i << endl;
       cout << "Read: " << arrvalf << endl;
       cout << "Expected: " << arrf1 << endl;
