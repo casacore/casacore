@@ -3899,3 +3899,4 @@
 14 065 src mv trial/implement/Display/PSDriver.cc trialdisplay/implement/Display/PSDriver.cc
 14 065 src mv trial/implement/Display/PSPixelCanvas.cc trialdisplay/implement/Display/PSPixelCanvas.cc
 14 065 src mv trial/implement/Display/PSPixelCanvasColorTable.cc trialdisplay/implement/Display/PSPixelCanvasColorTable.cc
+14 065 src mv trial/implement/Display/PSWorldCanvasApp.cc trialdisplay/implement/Display/PSWorldCanvasApp.cc
