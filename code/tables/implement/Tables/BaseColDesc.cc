@@ -160,8 +160,6 @@ void BaseColumnDesc::setDefaultDataManager (Bool always)
 	    dataManGroup_p = dataManType_p;
 	}
     }
-    dataManType_p = "StandardStMan";
-    dataManGroup_p = dataManType_p;
 }
 
 // Dimensionality can only be changed if not set yet.
