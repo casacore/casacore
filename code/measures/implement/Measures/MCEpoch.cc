@@ -26,19 +26,49 @@
 //# $Id$
 
 //# Includes
-#ifdef __GNUG__
-#include <aips/Quanta/Quantum.h>
-typedef Quantum<Double> gpp_mepoch_bug1;
-#endif
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MCEpoch.h>
 #include <aips/Measures/MCFrame.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/MeasTable.h>
 
+//# Statics
+Bool MCEpoch::stateMade_p = False;
+uInt MCEpoch::ToRef_p[N_Routes][3] = {
+  {MEpoch::LAST,	MEpoch::GAST,	2},
+  {MEpoch::GAST,	MEpoch::LAST,	2},
+  {MEpoch::LMST,	MEpoch::GMST1,	2},
+  {MEpoch::GMST1,	MEpoch::LMST,	2},
+  {MEpoch::GMST1,	MEpoch::UT1,	2},
+  {MEpoch::UT1,	 	MEpoch::GMST1,	2},
+  {MEpoch::GAST,	MEpoch::UT1,	2},
+  {MEpoch::UT1,		MEpoch::GAST,	2},
+  {MEpoch::UT1,		MEpoch::UTC,	0},
+  {MEpoch::UTC,		MEpoch::UT1,	0},
+  {MEpoch::UT1,		MEpoch::UT2,	0},
+  {MEpoch::UT2,		MEpoch::UT1,	0},
+  {MEpoch::UTC,		MEpoch::TAI,	0},
+  {MEpoch::TAI,		MEpoch::UTC,	0},
+  {MEpoch::TAI,		MEpoch::TDT,	0},
+  {MEpoch::TDT,		MEpoch::TAI,	0},
+  {MEpoch::TDT,		MEpoch::TDB,	0},
+  {MEpoch::TDB,		MEpoch::TDT,	0},
+  {MEpoch::TDT,		MEpoch::TCG,	0},
+  {MEpoch::TCG,		MEpoch::TDT,	0},
+  {MEpoch::TDB,		MEpoch::TCB,	0},
+  {MEpoch::TCB,		MEpoch::TDB,	0} };
+
+uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
+
 //# Constructors
 MCEpoch::MCEpoch() :
-  NUTATFROM(0), NUTATTO(0) {}
+  NUTATFROM(0), NUTATTO(0) {
+  if (!stateMade_p) {
+    MCBase::makeState(MCEpoch::stateMade_p, MCEpoch::FromTo_p[0],
+		      MEpoch::N_Types, MCEpoch::N_Routes,
+		      MCEpoch::ToRef_p);
+  };
+}
 
 //# Destructor
 MCEpoch::~MCEpoch() {
@@ -52,180 +82,16 @@ MCEpoch::~MCEpoch() {
 void MCEpoch::getConvert(MConvertBase &mc,
 			 const MRBase &inref, 
 			 const MRBase &outref) {
-// Array of conversion routines to call
-    static const MCEpoch::Routes 
-      FromTo[MEpoch::N_Types][MEpoch::N_Types] = {
-        { MCEpoch::N_Routes,   
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST,  
-	  MCEpoch::LAST_GAST},  
-        { MCEpoch::LMST_GMST1,  
-	  MCEpoch::N_Routes,
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1,  
-	  MCEpoch::LMST_GMST1},  
-        { MCEpoch::GMST1_UT1,
-	  MCEpoch::GMST1_LMST,
-	  MCEpoch::N_Routes,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1,  
-	  MCEpoch::GMST1_UT1},
-        { MCEpoch::GAST_LAST,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::N_Routes,  
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1,
-	  MCEpoch::GAST_UT1},
-        { MCEpoch::UT1_GAST,  
-	  MCEpoch::UT1_GMST1,  
-	  MCEpoch::UT1_GMST1,
-	  MCEpoch::UT1_GAST,
-	  MCEpoch::N_Routes,   
-	  MCEpoch::UT1_UT2,    
-	  MCEpoch::UT1_UTC,  
-	  MCEpoch::UT1_UTC,    
-	  MCEpoch::UT1_UTC,    
-	  MCEpoch::UT1_UTC,  
-	  MCEpoch::UT1_UTC,    
-	  MCEpoch::UT1_UTC},
-        { MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1,  
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::N_Routes,   
-	  MCEpoch::UT2_UT1,  
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1,  
-	  MCEpoch::UT2_UT1,    
-	  MCEpoch::UT2_UT1},
-        { MCEpoch::UTC_UT1,    
-	  MCEpoch::UTC_UT1,    
-	  MCEpoch::UTC_UT1,  
-	  MCEpoch::UTC_UT1,  
-	  MCEpoch::UTC_UT1,    
-	  MCEpoch::UTC_UT1,    
-	  MCEpoch::N_Routes, 
-	  MCEpoch::UTC_TAI,    
-	  MCEpoch::UTC_TAI,    
-	  MCEpoch::UTC_TAI, 
-	  MCEpoch::UTC_TAI,    
-	  MCEpoch::UTC_TAI},
-        { MCEpoch::TAI_UTC,    
-	  MCEpoch::TAI_UTC,    
-	  MCEpoch::TAI_UTC, 
-	  MCEpoch::TAI_UTC, 
-	  MCEpoch::TAI_UTC,    
-	  MCEpoch::TAI_UTC,    
-	  MCEpoch::TAI_UTC,           
-	  MCEpoch::N_Routes,   
-	  MCEpoch::TAI_TDT,    
-	  MCEpoch::TAI_TDT, 
-	  MCEpoch::TAI_TDT,    
-	  MCEpoch::TAI_TDT},
-        { MCEpoch::TDT_TAI,    
-	  MCEpoch::TDT_TAI,    
-	  MCEpoch::TDT_TAI, 
-	  MCEpoch::TDT_TAI, 
-	  MCEpoch::TDT_TAI,    
-	  MCEpoch::TDT_TAI,    
-	  MCEpoch::TDT_TAI, 
-	  MCEpoch::TDT_TAI,    
-	  MCEpoch::N_Routes,   
-	  MCEpoch::TDT_TCG, 
-	  MCEpoch::TDT_TDB,    
-	  MCEpoch::TDT_TDB},
-        { MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT, 
-	  MCEpoch::TCG_TDT, 
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT, 
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::N_Routes, 
-	  MCEpoch::TCG_TDT,    
-	  MCEpoch::TCG_TDT},
-        { MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT, 
-	  MCEpoch::TDB_TDT, 
-	  MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT, 
-	  MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT,    
-	  MCEpoch::TDB_TDT,  
-	  MCEpoch::N_Routes,   
-	  MCEpoch::TDB_TCB},
-        { MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB, 
-	  MCEpoch::TCB_TDB, 
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB, 
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::TCB_TDB, 
-	  MCEpoch::TCB_TDB,    
-	  MCEpoch::N_Routes}
-    };
-
-// List of codes converted to
-    static const MEpoch::Types ToRef[MCEpoch::N_Routes] = {
-	MEpoch::GAST, 	MEpoch::LAST,  
-	MEpoch::GMST1, 	MEpoch::LMST,
-	MEpoch::UT1,  	MEpoch::GMST1, 
-	MEpoch::UT1,  	MEpoch::GAST, 
-	MEpoch::UTC,   	MEpoch::UT1,
-	MEpoch::UT2,  	MEpoch::UT1,   
-	MEpoch::TAI,   	MEpoch::UTC,
-	MEpoch::TDT,  	MEpoch::TAI,   
-	MEpoch::TDB,   	MEpoch::TDT,
-	MEpoch::TCG,  	MEpoch::TDT,   
-	MEpoch::TCB,   	MEpoch::TDB
-	};
 
     Int iin  = inref.getType();
     Bool iraze = ToBool(iin & MEpoch::RAZE);
     iin &= ~MEpoch::EXTRA;
     Int iout = outref.getType();
-    Bool oraze = ToBool(iout & MEpoch::RAZE);
     iout &= ~MEpoch::EXTRA;
     Int tmp;
     while (iin != iout) {
-	tmp = FromTo[iin][iout];
-	iin = ToRef[tmp];
+	tmp = FromTo_p[iin][iout];
+	iin = ToRef_p[tmp][1];
 	mc.addMethod(tmp);
 	initConvert(tmp, mc);
     };
@@ -242,81 +108,23 @@ void MCEpoch::clearConvert() {
 //# Conversion routines
 void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
 
-    switch (which) {
+  if (False) initConvert(which, mc);	// Stop warning
 
-	case LAST_GAST:
-	break;
+  switch (which) {
 
-	case GAST_LAST:
-	break;
+  case GAST_UT1:
+    if (NUTATTO) delete NUTATTO;
+    NUTATTO = new Nutation(Nutation::STANDARD);
+    break;
 
-	case LMST_GMST1:
-	break;
+  case UT1_GAST:
+    if (NUTATFROM) delete NUTATFROM;
+    NUTATFROM = new Nutation(Nutation::STANDARD);
+    break;
 
-	case GMST1_LMST:
-	break;
-
-	case GMST1_UT1:
-	break;
-
-	case UT1_GMST1:
-	break;
-
-	case GAST_UT1:
-	  if (NUTATTO) delete NUTATTO;
-	  NUTATTO = new Nutation(Nutation::STANDARD);
-	break;
-
-	case UT1_GAST:
-	  if (NUTATFROM) delete NUTATFROM;
-	  NUTATFROM = new Nutation(Nutation::STANDARD);
-	break;
-
-	case UT1_UTC:
-	break;
-
-	case UTC_UT1:
-	break;
-
-	case UT1_UT2:
-	break;
-
-	case UT2_UT1:
-	break;
-
-	case UTC_TAI:
-	break;
-
-	case TAI_UTC:
-	break;
-
-	case TAI_TDT:
-	break;
-
-	case TDT_TAI:
-	break;
-
-	case TDT_TDB:
-	break;
-
-	case TDB_TDT:
-	break;
-
-	case TDT_TCG:
-	break;
-
-	case TCG_TDT:
-	break;
-
-	case TDB_TCB:
-	break;
-
-	case TCB_TDB:
-	break;
-
-	default:
-	break;
-    }
+  default:
+    break;
+  };
 }
 
 void MCEpoch::doConvert(MeasValue &in,
