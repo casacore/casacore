@@ -35,8 +35,8 @@
 #include <aips/Arrays/IPosition.h>
 
 class TableDesc;
-class RONewMSAntennaColumns;
 class NewMSAntenna;
+class NewMSFeed;
 template <class T> class Block;
 
 // <summary>A class with functions for concatenating MeasurementSets</summary>
@@ -91,7 +91,8 @@ private:
   static IPosition getShape(const RONewMSColumns& msCols, uInt whichShape);
   void checkShape(const IPosition& otherShape) const;
   void checkCategories(const RONewMSColumns& otherCols) const;
-  Block<uInt> copyAntenna(const RONewMSAntennaColumns& otherCol, const NewMSAntenna& otherTable);
+  Block<uInt> copyAntennaAndFeed(const NewMSAntenna& otherAnt,
+				 const NewMSFeed& otherFeed);
 
   NewMeasurementSet itsMS;
   IPosition itsFixedShape;

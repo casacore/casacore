@@ -32,11 +32,15 @@
 #include <aips/MeasurementSets/NewMSDataDescColumns.h>
 #include <aips/MeasurementSets/NewMSSpWindowColumns.h>
 #include <aips/MeasurementSets/NewMSPolColumns.h>
+#include <aips/MeasurementSets/NewMSFeed.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRow.h>
+#include <aips/Tables/ColumnsIndex.h>
 #include <aips/Containers/Block.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <aips/Containers/Record.h>
+#include <aips/Containers/RecordField.h>
 
 MSConcat::MSConcat(NewMeasurementSet& ms):
   NewMSColumns(ms),
@@ -102,7 +106,7 @@ void MSConcat::concatenate(const NewMeasurementSet& otherMS)
     checkCategories(otherCols);
   }
   const Block<uInt> newAntIndices = 
-    copyAntenna(otherCols.antenna(), otherMS.antenna());
+    copyAntennaAndFeed(otherMS.antenna(), otherMS.feed());
 }
 
 void MSConcat::checkShape(const IPosition& otherShape) const 
@@ -159,25 +163,55 @@ void MSConcat::checkCategories(const RONewMSColumns& otherCols) const {
   }
 }
 
-Block<uInt> MSConcat::copyAntenna(const RONewMSAntennaColumns& otherCol,
-				  const NewMSAntenna& otherTable) {
-  Block<uInt> antMap(otherCol.nrow());
-  NewMSAntennaColumns& antCols = antenna();
-  const Quantum<Double> tol(1, "m");
-  const ROTableRow otherRow(otherTable);
-  TableRow antRow(itsMS.antenna());
+Block<uInt> MSConcat::copyAntennaAndFeed(const NewMSAntenna& otherAnt,
+					 const NewMSFeed& otherFeed) {
+  const uInt nAntIds = otherAnt.nrow();
+  Block<uInt> antMap(nAntIds);
 
-  for (uInt a = 0; a < otherTable.nrow(); a++) {
-    const Int newAnt = 
-      antCols.matchAntenna(otherCol.positionMeas()(a), tol);
-    if (newAnt < 0) {
-      antMap[a] = itsMS.antenna().nrow();
-      itsMS.antenna().addRow();
-      antRow.putMatchingFields(antMap[a], otherRow.get(a));
-      //      cerr << "Antenna " << a << " is mapped to " << antMap[a] << endl;
+  const RONewMSAntennaColumns otherAntCols(otherAnt);
+  NewMSAntennaColumns& antCols = antenna();
+  NewMSAntenna& ant = itsMS.antenna();
+  const Quantum<Double> tol(1, "m");
+  const ROTableRow otherAntRow(otherAnt);
+  TableRow antRow(ant);
+
+  const String& antIndxName = NewMSFeed::columnName(NewMSFeed::ANTENNA_ID);
+  NewMSFeed& feed = itsMS.feed();
+  const ROTableRow otherFeedRow(otherFeed);
+  TableRow feedRow(feed);
+  TableRecord feedRecord;
+  ColumnsIndex feedIndex(otherFeed, Vector<String>(1, antIndxName));
+  RecordFieldPtr<Int> antInd(feedIndex.accessKey(), antIndxName);
+  RecordFieldId antField(antIndxName);
+  
+  for (uInt a = 0; a < nAntIds; a++) {
+    const Int newAntId = 
+      antCols.matchAntenna(otherAntCols.positionMeas()(a), tol);
+    if (newAntId < 0) {
+      antMap[a] = ant.nrow();
+      ant.addRow();
+      antRow.putMatchingFields(antMap[a], otherAntRow.get(a));
+      cerr << "Antenna " << a << " is mapped to " << antMap[a];
+      // Copy all the feeds associated with the antenna into the feed
+      // table. I'm assuming that they are not already there.
+      *antInd = a;
+      const Vector<uInt> feedsToCopy = feedIndex.getRowNumbers();
+      cerr << " I need to copy the feeds from rows " 
+	   << feedsToCopy << endl;
+      const uInt nFeedsToCopy = feedsToCopy.nelements();
+      uInt destRow = feed.nrow();
+      feed.addRow(nFeedsToCopy);
+      for (uInt f = 0; f < nFeedsToCopy; f++, destRow++) {
+	feedRecord = otherFeedRow.get(feedsToCopy(f));
+	feedRecord.define(antField, static_cast<Int>(antMap[a]));
+	feedRow.putMatchingFields(destRow, feedRecord);
+      }
     } else {
-      antMap[a] = newAnt;
-      //      cerr << "Antenna " << a << " matches " << antMap[a] << endl;
+      antMap[a] = newAntId;
+      cerr << "Antenna " << a << " matches " << antMap[a] << endl;
+      // Should really check that the FEED table contains all the entries for
+      // this antenna and that they are the same. I'll just assume this for
+      // now.
     }
   }
   return antMap;
