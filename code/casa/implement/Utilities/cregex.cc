@@ -80,7 +80,7 @@ char *cregex_allocator::operator()(int nbytes)
 /* Define the syntax stuff, so we can do the \<, \>, etc.  */
 
 /* This must be nonzero for the wordchar and notwordchar pattern
-   commands in re_match_2.  */
+   commands in a2_re_match_2.  */
 #ifndef Sword 
 #define Sword 1
 #endif
@@ -266,7 +266,7 @@ int obscure_syntax = 0;
 
 
 
-/* Macros for re_compile_pattern, which is found below these definitions.  */
+/* Macros for a2_re_compile_pattern, which is found below these definitions.  */
 
 #define CHAR_CLASS_MAX_LENGTH  6
 
@@ -346,7 +346,7 @@ int obscure_syntax = 0;
         } 								\
   }
 
-/* Subroutines for re_compile_pattern.  */
+/* Subroutines for a2_re_compile_pattern.  */
 static void store_jump (char *from, char opcode, char *to);
 static void insert_jump (char op, char *from, char *to, char *current_end);
 static void store_jump_n  (char *from, char opcode, char *to, unsigned n);
@@ -354,7 +354,7 @@ static void insert_jump_n (char, char *, char *, char *, unsigned);
 static void insert_op_2 (char, char *, char *_end, int, int);
 
 
-/* re_compile_pattern takes a regular-expression string
+/* a2_re_compile_pattern takes a regular-expression string
    and converts it into a buffer full of byte commands for matching.
 
    PATTERN   is the address of the pattern string
@@ -363,14 +363,14 @@ static void insert_op_2 (char, char *, char *_end, int, int);
 	     on where to store the byte commands.
 	     This structure contains a  char *  which points to the
 	     actual space, which should have been obtained with malloc.
-	     re_compile_pattern may use realloc to grow the buffer space.
+	     a2_re_compile_pattern may use realloc to grow the buffer space.
 
    The number of bytes of commands can be found out by looking in
    the `struct re_pattern_buffer' that bufp pointed to, after
-   re_compile_pattern returns. */
+   a2_re_compile_pattern returns. */
 
 char *
-re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
+a2_re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
 {
   register char *b = bufp->buffer;
   register char *p = pattern;
@@ -982,7 +982,7 @@ re_compile_pattern (char *pattern, int size, struct re_pattern_buffer *bufp)
                    GET_BUFFER_SPACE (slots_needed);
                    /* Initialize the succeed_n to n, even though it will
                       be set by its attendant set_number_at, because
-                      re_compile_fastmap will need to know it.  Jump to
+                      a2_re_compile_fastmap will need to know it.  Jump to
                       what the end of buffer will be after inserting
                       this succeed_n and possibly appending a jump_n.  */
                    insert_jump_n (succeed_n, laststart, b + slots_needed, 
@@ -1258,7 +1258,7 @@ insert_op_2 (char op, char *there, char *current_end, int num_1, int num_2)
 
 /* Given a pattern, compute a fastmap from it.  The fastmap records
    which of the (1 << BYTEWIDTH) possible characters can start a string
-   that matches the pattern.  This fastmap is used by re_search to skip
+   that matches the pattern.  This fastmap is used by a2_re_search to skip
    quickly over totally implausible text.
 
    The caller must supply the address of a (1 << BYTEWIDTH)-byte data 
@@ -1266,7 +1266,7 @@ insert_op_2 (char op, char *there, char *current_end, int num_1, int num_2)
    The other components of bufp describe the pattern to be used.  */
 
 void
-re_compile_fastmap (struct re_pattern_buffer *bufp)
+a2_re_compile_fastmap (struct re_pattern_buffer *bufp)
 {
   unsigned char *pattern = (unsigned char *) bufp->buffer;
   long size = bufp->used;
@@ -1460,18 +1460,18 @@ re_compile_fastmap (struct re_pattern_buffer *bufp)
 
 
 
-/* Like re_search_2, below, but only one string is specified, and
+/* Like a2_re_search_2, below, but only one string is specified, and
    doesn't let you say where to stop matching. */
 
 int
-re_search (struct re_pattern_buffer *pbufp,
+a2_re_search (struct re_pattern_buffer *pbufp,
 	   char *string,
 	   int size,
 	   int startpos,
 	   int range,
 	   struct re_registers *regs)
 {
-  return re_search_2 (pbufp, (char *) 0, 0, string, size, startpos, range, 
+  return a2_re_search_2 (pbufp, (char *) 0, 0, string, size, startpos, range, 
 		      regs, size);
 }
 
@@ -1492,7 +1492,7 @@ re_search (struct re_pattern_buffer *pbufp,
    failure stack overflow).  */
 
 int
-re_search_2 (struct re_pattern_buffer *pbufp,
+a2_re_search_2 (struct re_pattern_buffer *pbufp,
 	     char *string1, int size1,
 	     char *string2, int size2,
 	     int startpos,
@@ -1519,7 +1519,7 @@ re_search_2 (struct re_pattern_buffer *pbufp,
 
   /* Update the fastmap now if not correct already.  */
   if (fastmap && !pbufp->fastmap_accurate)
-    re_compile_fastmap (pbufp);
+    a2_re_compile_fastmap (pbufp);
   
   /* If the search isn't to be a backwards one, don't waste time in a
      long search for a pattern that says it is anchored.  */
@@ -1578,7 +1578,7 @@ re_search_2 (struct re_pattern_buffer *pbufp,
 	  && fastmap && pbufp->can_be_null == 0)
 	return -1;
 
-      val = re_match_2 (pbufp, string1, size1, string2, size2, startpos,
+      val = a2_re_match_2 (pbufp, string1, size1, string2, size2, startpos,
 			regs, mstop);
       if (val >= 0)
 	return startpos;
@@ -1605,28 +1605,28 @@ re_search_2 (struct re_pattern_buffer *pbufp,
 
 
 int
-re_match (struct re_pattern_buffer *pbufp,
+a2_re_match (struct re_pattern_buffer *pbufp,
 	  char *string,
 	  int size,
 	  int pos,
 	  struct re_registers *regs)
 {
-  return re_match_2 (pbufp, (char *) 0, 0, string, size, pos, regs, size); 
+  return a2_re_match_2 (pbufp, (char *) 0, 0, string, size, pos, regs, size); 
 }
 
 
-/* The following are used for re_match_2, defined below:  */
+/* The following are used for a2_re_match_2, defined below:  */
 
 /* Roughly the maximum number of failure points on the stack.  Would be
    exactly that if always pushed MAX_NUM_FAILURE_ITEMS each time we failed.  */
    
 int re_max_failures = 2000;
 
-/* Routine used by re_match_2.  */
+/* Routine used by a2_re_match_2.  */
 static int bcmp_translate (char *, char *, int, unsigned char *);
 
 
-/* Structure and accessing macros used in re_match_2:  */
+/* Structure and accessing macros used in a2_re_match_2:  */
 
 struct register_info
 {
@@ -1638,7 +1638,7 @@ struct register_info
 #define MATCHED_SOMETHING(R)  ((R).matched_something)
 
 
-/* Macros used by re_match_2:  */
+/* Macros used by a2_re_match_2:  */
 
 
 /* I.e., regstart, regend, and reg_info.  */
@@ -1793,7 +1793,7 @@ stackx = (unsigned char **) alloca (2 * len * sizeof (unsigned char *));\
    length of the substring which was matched.  */
 
 int
-real_re_match_2 (struct re_pattern_buffer *pbufp,
+real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    char *string1_arg, int size1,
 	    char *string2_arg, int size2,
 	    int pos,
@@ -2447,7 +2447,7 @@ real_re_match_2 (struct re_pattern_buffer *pbufp,
 }
 
 int
-re_match_2 (struct re_pattern_buffer *pbufp,
+a2_re_match_2 (struct re_pattern_buffer *pbufp,
 	    char *string1_arg, int size1,
 	    char *string2_arg, int size2,
 	    int pos,
@@ -2457,7 +2457,7 @@ re_match_2 (struct re_pattern_buffer *pbufp,
   // Wrap the real implementation in a function since CFront doesn't like
   // to have "goto" and objects with destructors in the same block.
   cregex_allocator alloca;
-  return real_re_match_2 (pbufp, string1_arg, size1, string2_arg, size2,
+  return real_a2_re_match_2 (pbufp, string1_arg, size1, string2_arg, size2,
 			  pos, regs, mstop, alloca);
 }
 
@@ -2500,13 +2500,13 @@ re_comp (char *s)
       if (!(re_comp_buf.fastmap = new char[1 << BYTEWIDTH]))
 	return "Memory exhausted";
     }
-  return re_compile_pattern (s, strlen (s), &re_comp_buf);
+  return a2_re_compile_pattern (s, strlen (s), &re_comp_buf);
 }
 
 int
 re_exec (char *s)
 {
   int len = strlen (s);
-  return 0 <= re_search (&re_comp_buf, s, len, 0, len,
+  return 0 <= a2_re_search (&re_comp_buf, s, len, 0, len,
 			 (struct re_registers *) 0);
 }

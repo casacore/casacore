@@ -81,12 +81,12 @@ void Regex::create (const String& exp, int fast, int bufsize,
 			    RE_NO_BK_REFS+         // backreferences possible
 			    RE_NO_EMPTY_RANGES+    // e.g. [z-a] is empty set
 			    RE_CONTEXTUAL_INVALID_OPS);
-  char* msg = re_compile_pattern((char*)(exp.chars()), tlen, buf);
+  char* msg = a2_re_compile_pattern((char*)(exp.chars()), tlen, buf);
   re_set_syntax (orig);
   if (msg != 0) {
     throw(RegexExpressnError( msg));
   } else if (fast)
-    re_compile_fastmap(buf);
+    a2_re_compile_fastmap(buf);
 }
 
 void Regex::dealloc()
@@ -169,7 +169,7 @@ int Regex::search(const char* s, int len, int& matchlen, int startpos) const
     pos = len + startpos;
     range = -pos;
   }
-  matchpos = re_search_2(buf, 0, 0, (char*)s, len, pos, range, reg, len);
+  matchpos = a2_re_search_2(buf, 0, 0, (char*)s, len, pos, range, reg, len);
   if (matchpos >= 0)
     matchlen = reg->end[0] - reg->start[0];
   else
@@ -184,12 +184,12 @@ int Regex::match(const char*s, int len, int p) const
     p += len;
     if (p > len)
       return -1;
-    return re_match_2(buf, 0, 0, (char*)s, p, 0, reg, p);
+    return a2_re_match_2(buf, 0, 0, (char*)s, p, 0, reg, p);
   }
   else if (p > len)
     return -1;
   else
-    return re_match_2(buf, 0, 0, (char*)s, len, p, reg, len);
+    return a2_re_match_2(buf, 0, 0, (char*)s, len, p, reg, len);
 }
 
 int Regex::OK() const

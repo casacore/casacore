@@ -1,6 +1,6 @@
 /*
     cregex.h: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995
+    Copyright (C) 1993,1994,1995,1997
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -189,7 +189,7 @@ struct re_pattern_buffer
     long allocated;	/* Size of space that `buffer' points to. */
     long used;		/* Length of portion of buffer actually occupied  */
     char *fastmap;	/* Pointer to fastmap, if any, or zero if none.  */
-			/* re_search uses the fastmap, if there is one,
+			/* a2_re_search uses the fastmap, if there is one,
 			   to skip over totally implausible characters.  */
     char *translate;	/* Translate table to apply to all characters before 
 		           comparing, or zero for no translation.
@@ -215,7 +215,7 @@ struct re_pattern_buffer
 
 /* Structure to store register contents data in.
 
-   Pass the address of such a structure as an argument to re_match, etc.,
+   Pass the address of such a structure as an argument to a2_re_match, etc.,
    if you want this information back.
 
    For i from 1 to RE_NREGS - 1, start[i] records the starting index in
@@ -233,18 +233,18 @@ struct re_registers
 
 #if defined(__STDC__) || defined(__cplusplus)
 
-extern char *re_compile_pattern (char *, int, struct re_pattern_buffer *);
+extern char *a2_re_compile_pattern (char *, int, struct re_pattern_buffer *);
 extern int re_set_syntax (int syntax);
 /* Is this really advertised?  */
-extern void re_compile_fastmap (struct re_pattern_buffer *);
-extern int re_search (struct re_pattern_buffer *, char*, int, int, int,
+extern void a2_re_compile_fastmap (struct re_pattern_buffer *);
+extern int a2_re_search (struct re_pattern_buffer *, char*, int, int, int,
 		      struct re_registers *);
-extern int re_search_2 (struct re_pattern_buffer *, char *, int,
+extern int a2_re_search_2 (struct re_pattern_buffer *, char *, int,
 			char *, int, int, int,
 			struct re_registers *, int);
-extern int re_match (struct re_pattern_buffer *, char *, int, int,
+extern int a2_re_match (struct re_pattern_buffer *, char *, int, int,
 		     struct re_registers *);
-extern int re_match_2 (struct re_pattern_buffer *, char *, int,
+extern int a2_re_match_2 (struct re_pattern_buffer *, char *, int,
 		       char *, int, int, struct re_registers *, int);
 
 /* 4.2 bsd compatibility.  */
@@ -253,11 +253,11 @@ extern int re_match_2 (struct re_pattern_buffer *, char *, int,
 
 #else /* !__STDC__ */
 
-extern char *re_compile_pattern ();
+extern char *a2_re_compile_pattern ();
 /* Is this really advertised? */
-extern void re_compile_fastmap ();
-extern int re_search (), re_search_2 ();
-extern int re_match (), re_match_2 ();
+extern void a2_re_compile_fastmap ();
+extern int a2_re_search (), a2_re_search_2 ();
+extern int a2_re_match (), a2_re_match_2 ();
 
 /* 4.2 bsd compatibility.  */
 extern char *re_comp ();
