@@ -6159,3 +6159,4 @@
 17 178 src mv nrao/apps/goclient nrao/apps/gbtgoclient
 17 178 sys rm bin/goclient
 17 178 src mv nrao/apps/gbtgoclient/goclient.cc nrao/apps/gbtgoclient/gbtgoclient.cc
+17 179 src rm trial/implement/Functionals/test/tLinearComb.cc
