@@ -26,7 +26,10 @@
 //# $Id$
 //
 
+#include <trial/Images/ImageUtilities.h>
+
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Measures/MVAngle.h>
 #include <aips/OS/File.h>
@@ -34,7 +37,6 @@
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
-#include <trial/Images/ImageUtilities.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 
@@ -131,23 +133,6 @@ Bool ImageUtilities::getNextSubString (String& subString,
    return True;
 }
 
-Int ImageUtilities::inVector (const Int& target, 
-                              const Vector<Int>& vector)
-//
-// Ascertain whether the values of a Vector<Int> contains a specified target
-//
-// Input:
-//  target  The target integer
-//  vector  The vector
-// Output:
-//  The index if found, else -1
-//  
-{
-   for (Int i=0; i<vector.nelements(); i++) {
-      if (target==vector(i)) return i;
-   }
-   return -1;
-}
 
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
                                  const CoordinateSystem& cSysIn,
@@ -202,7 +187,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
 
    Vector<String> units = cSys.worldAxisUnits();
    Int coordinate, axisInCoordinate;
-   for (Int j=0; j<cSys.nWorldAxes(); j++) {
+   for (uInt j=0; j<cSys.nWorldAxes(); j++) {
       cSys.findWorldAxis(coordinate, axisInCoordinate, j);
       if (cSys.type(coordinate) == Coordinate::DIRECTION) units(j) = "rad";
    }
@@ -216,8 +201,9 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    Vector<Double> pix(cSys.nPixelAxes());
    Vector<Double> world(cSys.nPixelAxes());
    pix = cSys.referencePixel(); 
-   for (Int i=0; i<pix.nelements(); i++) {
-     if (ImageUtilities::inVector(i, cursorAxes) != -1) {
+   Bool found;
+   for (uInt i=0; i<pix.nelements(); i++) {
+     if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) != -1) {
         pix(i) = Double(blc(i) + trc(i)) / 2.0;
      }
    }
@@ -233,7 +219,7 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    String formatUnits;
    Bool absolute = True;
 
-   const Int n1 = pixels.nelements();
+   const uInt n1 = pixels.nelements();
    sWorld.resize(n1);
 
 // Loop over list of pixel coordinates and convert to world
@@ -252,167 +238,6 @@ Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
    return True;
 }
 
-
-Bool ImageUtilities::setCursor (Int& nVirCursorIter,
-                                IPosition& cursorShape, 
-                                Vector<Int>& cursorAxes, 
-                                const IPosition& latticeShape,
-                                const IPosition& latticeTileShape,
-                                const Bool& optimumEntireLattice,
-                                const Int& maxDim,
-                                ostream& os)
-//
-// From the cursorAxes array, set the cursorShape array which will be 
-// used to define the Lattice iterator
-//
-// Input:
-//   latticeShape   Lattice shape.  This can be a subsection of a Lattice.
-//   latticeTileShape
-//                Tile shape.  For a Lattice, can be passed in as
-//                lat.niceCursorShape(lat.maxPixels()).   
-//   optimumEntireLattice and maxDim
-//                An aips++ lattice is stored in a tiled fashion and this means
-//                it can be read optimally fast if you don't care about the
-//                order in which data chunks are returned.
-//
-//                optimumEntireLattice = True
-//                   If the cursorAxes array requests the ENTIRE lattice then
-//                   the cursor shape is set to that for which the lattice can be 
-//                   iterated through optimally fast.   Otherwise, the cursor shape 
-//                   is just set to reflect the values in cursorAxes.  Note that
-//                   if the tile shape is bigger than the Lattice shape (if you have
-//                   passed in a subLattice region) then the cursorShape will be
-//                   set to the latticeShape, otherwise Navigator construction will fail
-//
-//                optimEntireLattice = False The cursor shape is just set to
-//                   reflect the values in cursorAxes.
-//
-//                   However, it may be additionally modified by the maxDim
-//                   argument. This sets the maximum number of dimensions the 
-//                   cursor shape can have.  This allows you to prevent huge arrays 
-//                   being potentially allocated for the cursor if you are reading 
-//                   large multi-dimensional lattices but the data order is important 
-//                   (hence optimumEntireLattice=False).  Setting, say, maxDim=2 limits 
-//                   the cursor shape to a plane and you have to iterate through the 
-//                   lattice rather trying to get it all in one chunk.  
-//   os           Output stream for reporting purposes
-// Input/output:
-//   cursorAxes   Axes (0-relative) given by user.  These are the axes for which
-//                (in general -- see optimumEntireLattice and maxDim) the cursor 
-//                shape is set to the corresponding axis size.  This signifies
-//                which axes of the lattice we want to work something out from.
-//                E.g. if we were reading a cube, and cursorAxes=0,1  we could 
-//                work out statistics of each plane and display them as a 
-//                function of plane number.
-//
-//                If cursorAxes is of zero length on input this means all axes 
-//                and on output cursorAxes is filled in.  
-//
-//                Note that if we use optimumEntireLattice or maxDim to set the
-//                cursorShape, cursorAxes, on output, still reflects what it was
-//                on input.  E.g. if on input cursorAxes is of size 0, the lattice is
-//                a cube and maxDim=2, then on output cursorShape=[nx,ny,1] and
-//                cursorAxes=[0,1,2] not just [0,1]  The reason for this is
-//                that cursorAxes is further used to set the display axes by
-//                ImageUtilities::setDisplayAxes (the complement of cursor axes)
-//
-// Outputs:
-//   nVirCursorIter
-//                The user's desired virtual cursor shape (set by cursorAxes) may not
-//                be read in one iteration -- it may be capped by maxDim
-//                or set according to optimumEntireLattice.  This tells
-//                how many actual cursor chunks fits into the virtual cursor
-//                that the user asked for.  Fractional chunks count as one.
-//   cursorShape  The shape of the cursor which will be used to iterate through
-//                the lattice
-//   Bool         True if successful
-{
-//
-// First set the cursorAxes array 
-
-   Int i;
-   Int nLatticeDim = latticeShape.nelements();
-   if (cursorAxes.nelements() == 0) {
-
-// User didn't give any axes. 
-
-      cursorAxes.resize(nLatticeDim); 
-      for (i=0; i<nLatticeDim; i++) cursorAxes(i) = i;
-   }
-   else {
-
-// Verify user's axes are ok
-
-      if (!ImageUtilities::verifyAxes(latticeShape.nelements(), cursorAxes, os)) 
-         return False;
-   }
- 
-
-// Now set the array giving the cursor shape for each axis of the lattice.
- 
-   cursorShape.resize (nLatticeDim, False);
-   cursorShape = 1;
-
-   if (optimumEntireLattice) {
-      if (cursorAxes.nelements() == nLatticeDim) {
-
-// Set optimum Lattice reading shape.  It is possible that the user is
-// looking at a subsection of a Lattice.  In this case, the tileSHape 
-// might be bigger than the subLattice shape, and the Navigator
-// construction will be inconsistent if the cursorShape is bigger
-// than the subLatticeSHape.  SO deal with that here.
-
-         for (i=0; i<nLatticeDim; i++) {
-            cursorShape(i) = min(latticeShape(i),  latticeTileShape(i));
-         }
-      } else {
-
-// Set axis size 
-
-         for (i=0; i<nLatticeDim; i++) {
-            if (ImageUtilities::inVector(i, cursorAxes) != -1) 
-               cursorShape(i) = latticeShape(i);
-         }
-      }
-   } else {
-
-// Set axis size 
-
-      for (i=0; i<nLatticeDim; i++) {
-         if (ImageUtilities::inVector(i, cursorAxes) != -1) 
-            cursorShape(i) = latticeShape(i);
-      }
-
-// Limit dimensionality
-
-      Int nDim = 0;
-      for (i=0; i<nLatticeDim; i++) {
-         if (cursorShape(i) > 1) nDim++;
-         if (nDim > maxDim) cursorShape(i) = 1;
-      }
-   }
-
-// Find the number of iterations to get through the user's virtual cursor as opposed 
-// to the possibly dimensionally capped one.  Overhanging iterations (or partial
-// cursor shape fits) count as one full iteration
-
-   IPosition virtualCursorShape(nLatticeDim);
-   for (i=0; i<nLatticeDim; i++) {
-      if (ImageUtilities::inVector(i, cursorAxes) != -1) 
-         virtualCursorShape(i) = latticeShape(i);
-      else
-         virtualCursorShape(i) = 1;
-   }
-   nVirCursorIter = 1;
-   for (i=0; i<nLatticeDim; i++) {
-      Int iRat = Int(virtualCursorShape(i)/cursorShape(i));
-      Int rem  = virtualCursorShape(i) - (iRat*cursorShape(i));
-      if (rem > 0) iRat++;
-      nVirCursorIter *= iRat;
-   }
-
-   return True;
-}
 
 
     
@@ -433,93 +258,27 @@ void ImageUtilities::setDisplayAxes (Vector<Int>& displayAxes,
 //                  are all of the image axes, there
 //                  will be no display axes
 {
-   Int i,j;
-   Int nCursorAxes = cursorAxes.nelements();
+   uInt i,j;
+   const uInt nCursorAxes = cursorAxes.nelements();
 
 // See if the statistics axes are the full image, easy if so.
 
-   if (nCursorAxes == nImageDim) 
+   if (Int(nCursorAxes) == nImageDim) 
       displayAxes.resize(0);
    else {
 
 // The statistics axes are a subset of those in the image; set display axes
 
+      Bool found;
       displayAxes.resize(nImageDim, False);
-      for (i=0,j=0; i<nImageDim; i++) {
-         if (ImageUtilities::inVector(i, cursorAxes) == -1) {
+      for (i=0,j=0; Int(i)<nImageDim; i++) {
+         if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) == -1) {
             displayAxes(j) = i;
             j++;
          }
       }
       displayAxes.resize(j, True);
    }
-}
-
-Bool ImageUtilities::setIncludeExclude (Vector<Float>& range, 
-                                        Bool& noInclude,
-                                        Bool& noExclude,
-                                        const Vector<Double>& include,
-                                        const Vector<Double>& exclude,
-                                        ostream& os)
-//
-// Take the user's data inclusion and exclusion data ranges and
-// generate the range and Booleans to say what sort it is
-//
-// Inputs:
-//   include   Include range given by user. Zero length indicates
-//             no include range
-//   exclude   Exclude range given by user. As above.
-//   os        Output stream for reporting
-// Outputs:
-//   noInclude If True user did not give an include range
-//   noExclude If True user did not give an exclude range
-//   range     A pixel value selection range.  Will be resized to
-//             zero length if both noInclude and noExclude are True
-//   Bool      True if successfull, will fail if user tries to give too
-//             many values for includeB or excludeB, or tries to give
-//             values for both
-{
-   noInclude = True;
-   range.resize(0);
-   if (include.nelements() == 0) {
-//
-   } else if (include.nelements() == 1) {
-      range.resize(2);
-      range(0) = -abs(include(0));
-      range(1) =  abs(include(0));
-      noInclude = False;
-   } else if (include.nelements() == 2) {
-      range.resize(2);
-      range(0) = min(include(0),include(1));
-      range(1) = max(include(0),include(1));
-      noInclude = False;
-   } else {
-      os << endl << "Too many elements for argument include" << endl;
-      return False;
-   }
-
-   noExclude = True;
-   if (exclude.nelements() == 0) {
-//
-   } else if (exclude.nelements() == 1) {
-      range.resize(2);
-      range(0) = -abs(exclude(0));
-      range(1) =  abs(exclude(0));
-      noExclude = False;
-   } else if (exclude.nelements() == 2) {
-      range.resize(2);
-      range(0) = min(exclude(0),exclude(1));
-      range(1) = max(exclude(0),exclude(1));
-      noExclude = False;
-   } else {
-      os << endl << "Too many elements for argument exclude" << endl;
-      return False;
-   }
-   if (!noInclude && !noExclude) {  
-      os << "You can only give one of arguments include or exclude" << endl;
-      return False;
-   }
-   return True;
 }
 
 
@@ -688,42 +447,6 @@ void ImageUtilities::stretchMinMax (Float& dMin,
 }
 
 
-
-
-Bool ImageUtilities::verifyAxes (const Int& nDim,
-                                 const Vector<Int>& axes,
-                                 ostream& os)
-//
-// Verify that an array of axes are valid for this image.
-// That is make sure they are in the range 0 -> nDim-1
-//
-// Input:
-//   nDim      Number of dimensions of image
-//   axes      The axes
-//   os        Output stream for reporting purposes
-// Output
-//   False if illegal
-//   True  if   legal
-//
-{ 
-   Int axMax = nDim - 1;
-   Int nAxes = axes.nelements();
-
-   for (Int i=0; i<nAxes; i++) {
-      if (axes(i)<0 || axes(i)>axMax) {
-         os << "Invalid axis given" << endl;
-         return False;
-      }
-
-   for (Int j=i+1; j<nAxes; j++){
-      if (axes(i) == axes(j)) {
-         os << "Degenerate axes given" << endl;
-         return False;
-      }
-    }
-  }
-  return True;
-}
 
 
 Bool ImageUtilities::verifyRegion (IPosition& blc,
