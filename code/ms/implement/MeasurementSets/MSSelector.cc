@@ -297,7 +297,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 
   // now find out the input polarizations
   ROMSColumns msc(selms_p);
-  Int polId=msc.dataDescription().polarizationId()(0);
+  Int polId=msc.dataDescription().polarizationId()(dataDescId_p);
   Int numCorr=msc.polarization().numCorr()(polId);
   Vector<Int> inputPol=msc.polarization().corrType()(polId);
 
