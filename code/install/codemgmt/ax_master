@@ -3307,3 +3307,5 @@
 13 214 src mv npoi/implement/HDS/HDSFileData.cc npoi/implement/HDS/HDSDataFile.cc
 13 214 src mv npoi/implement/HDS/HDSFileData.h npoi/implement/HDS/HDSDataFile.h
 13 216 sys rm libexec/hdsstack.g
+13 216 src rm npoi/implement/Cuttlefish/HDSStack.h
+13 216 src rm npoi/implement/Cuttlefish/HDSStack.cc
