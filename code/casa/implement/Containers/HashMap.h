@@ -321,7 +321,7 @@ public:
     // a simple function or a class derived from
     // <linkto class=HashClass><src>HashClass</src></linkto>.
     // <group>
-    HashMap(const val &dflt = defaultHashValue(static_cast<const val*>(0)),
+    HashMap(const val &dflt = defaultHashValue((const val*)(0)),
 	    uInt size = uInt(defaultSize_), 
 	    Func newfunc = hashFunc,
 	    float maxlf = float(defaultMaxLoad_))
