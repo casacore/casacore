@@ -5596,3 +5596,4 @@
 15 223 src mv trial/implement/istream.h aips/implement/istream.h
 15 223 src mv trial/implement/ostream.h aips/implement/ostream.h
 15 223 src mv trial/implement/strstream.h aips/implement/strstream.h
+15 223 src mv trial/implement/iomanip.h aips/implement/iomanip.h
