@@ -66,7 +66,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // are used in MSSpwParse.cc to hold further information.
 //
 // Global functions are used to operate on the information.
-// The main function is the global function msSPWCommand.
+// The main function is the global function msSpwCommand.
 // It executes the given STaQL command and returns the resulting ms.
 // This is, in fact, the only function to be used by a user.
 // </synopsis>

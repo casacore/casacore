@@ -61,7 +61,7 @@ static Int                   posMSSpwGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msSPWGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msSpwGramParseCommand (const MeasurementSet& ms, const String& command) 
 {
     MSSpwGramrestart (MSSpwGramin);
     yy_start = 1;
@@ -72,19 +72,19 @@ int msSPWGramParseCommand (const MeasurementSet& ms, const String& command)
 }
 
 //# Give the table expression node
-const TableExprNode& msSPWGramParseNode()
+const TableExprNode& msSpwGramParseNode()
 {
     return MSSpwParse::node();
 }
 
 //# Give the string position.
-Int& msSPWGramPosition()
+Int& msSpwGramPosition()
 {
     return posMSSpwGram;
 }
 
 //# Get the next input characters for flex.
-int msSPWGramInput (char* buf, int max_size)
+int msSpwGramInput (char* buf, int max_size)
 {
     int nr=0;
     while (*strpMSSpwGram != 0) {
@@ -102,7 +102,7 @@ void MSSpwGramerror (char*)
 		      String(MSSpwGramtext) + "'"));
 }
 
-String msSPWGramRemoveEscapes (const String& in)
+String msSpwGramRemoveEscapes (const String& in)
 {
     String out;
     int leng = in.length();
@@ -115,7 +115,7 @@ String msSPWGramRemoveEscapes (const String& in)
     return out;
 }
 
-String msSPWGramRemoveQuotes (const String& in)
+String msSpwGramRemoveQuotes (const String& in)
 {
     //# A string is formed as "..."'...''...' etc.
     //# All ... parts will be extracted and concatenated into an output string.
