@@ -2458,3 +2458,4 @@
 11 308 src rm trial/implement/Widgets/rangeentry.help
 11 308 src rm trial/implement/Widgets/regionentry.help
 11 308 src rm trial/implement/Widgets/scalarentry.help
+11 312 src mv trial/implement/HDS/hdsfile_meta.g npoi/implement/HDS/hdsfile_meta.g
