@@ -88,7 +88,18 @@ public:
     // Copy constructor (copy semantics).
     WCRegion (const WCRegion& other);
 
+    // Destructor
     virtual ~WCRegion();
+
+    // Comparison
+    // <group>
+    virtual Bool operator==(const WCRegion& other) const = 0;
+    virtual Bool operator!=(const WCRegion& other) const = 0;
+    // </group>
+
+    // Return region type.  Just returns the class name of
+    // of the derived class
+    virtual String type() const = 0;
 
     // Clone a WCRegion object.
     virtual WCRegion* cloneRegion() const = 0;
