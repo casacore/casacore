@@ -683,16 +683,20 @@ void ComponentList::createTable(const String& fileName,
 }
 
 void ComponentList::writeTable() {
-  if (itsTable.isWritable() == False)
+  if (itsTable.isWritable() == False) {
     itsTable.reopenRW();
+  }
   DebugAssert(itsTable.isWritable(), AipsError);
   {
     const uInt nRows = itsTable.nrow();
-    if (nRows < nelements())
-      itsTable.addRow(nelements()-nRows);
-    else if (nRows > nelements())
-      for (uInt r = nRows-1; r >= nelements(); r--)
-	itsTable.removeRow(r);
+    const uInt nelem = nelements();
+    if (nRows < nelem) {
+      itsTable.addRow(nelem - nRows);
+    } else if (nRows > nelem) {
+      Vector<uInt> rows(nRows - nelem);
+      indgen(rows, nelem);
+      itsTable.removeRow(rows);
+    }
   }
   ArrayColumn<DComplex> fluxValCol(itsTable, "Flux");
   ScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
@@ -704,7 +708,7 @@ void ComponentList::writeTable() {
   MFrequency::ScalarColumn freqCol(itsTable, "Reference_Frequency");
   ArrayColumn<Double> specShapeParmCol(itsTable, "Spectral_Parameters");
   ScalarColumn<String> labelCol(itsTable, "Label");
-  
+
   MDirection compDir;
   Vector<Double> shapeParms, spectralParms;
   String compLabel;
