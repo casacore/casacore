@@ -35,7 +35,9 @@
 #include <aips/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
+#include <trial/FITS/FITSKeywordUtil.h>
+#include <trial/FITS/FITSHistoryUtil.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
@@ -49,6 +51,8 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
+
+#include <aips/Quanta/MVTime.h>
 
 #include <aips/OS/File.h>
 #include <aips/OS/RegularFile.h>
