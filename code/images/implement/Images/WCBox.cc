@@ -660,7 +660,7 @@ LCRegion* WCBox::doToLCRegion (const CoordinateSystem& cSys,
 
 // Create the LCBox.  It will throw an exception if blc > trc
 
-   return LCBox(outBlc, outTrc, outShape).cloneRegion();
+   return new LCBox(outBlc, outTrc, outShape);
 
 }
 
