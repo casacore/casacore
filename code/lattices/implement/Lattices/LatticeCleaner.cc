@@ -252,7 +252,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       os << "Scale " << scale+1 << ", peak of PSF " << maxPsfConvScales(scale)
 	 << " at "   << positionPeakPsfConvScales+1 << LogIO::POST;
     }
-    itsPsfConvScales[scale]->tempClose();
   }
 
 
@@ -315,7 +314,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
         strengthOptimum=maxima(scale);
 	positionOptimum=posMaximum[scale];
       }
-      itsDirtyConvScales[scale]->tempClose();
     }
 
     AlwaysAssert(optimumScale<nScalesToClean, AipsError);
@@ -389,8 +387,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 			       subRegionPsf, True);
       LatticeExpr<T> sub(dirtySub-scaleFactor*psfSub);
       dirtySub.copyData(sub);
-      itsDirtyConvScales[scale]->tempClose();
-      itsPsfConvScales[index(scale,optimumScale)]->tempClose();
     }
   }
   // End of iteration
@@ -629,7 +625,6 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
       AlwaysAssert(itsPsfConvScales[index(scale,otherscale)], AipsError);
       LatticeExpr<T> realWork3(real(cWork));
       itsPsfConvScales[index(scale,otherscale)]->copyData(realWork3);
-      itsPsfConvScales[index(scale,otherscale)]->tempClose();
     }
   }
 
