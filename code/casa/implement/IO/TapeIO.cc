@@ -35,6 +35,7 @@
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
 #include <string.h>               // needed for strerror
+#include <sys/ioctl.h>            // needed for ioctl
 #include <sys/mtio.h>             // needed for ioctl
 
 TapeIO::TapeIO()
