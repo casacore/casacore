@@ -1,5 +1,5 @@
 //# Utilities.h: Bag of unrelated classes and groups for general use.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,6 @@
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/cregex.h>
-#include <aips/Utilities/generic.h>
 
 // <module>
 //
