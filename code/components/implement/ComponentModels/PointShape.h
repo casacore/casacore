@@ -233,6 +233,12 @@ public:
   virtual Bool toRecord(String & errorMessage, RecordInterface & record) const;
   // </group>
 
+  // Convert the parameters of the component to the specified units. As a point
+  // component has no parameters this function does nothing and always returns
+  // True.
+  virtual Bool convertUnit(String & errorMessage,
+			   const RecordInterface & record);
+
   // Function which checks the internal data of this class for correct
   // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.

@@ -178,6 +178,26 @@ public:
 			RecordInterface & record) const = 0;
   // </group>
 
+  // Convert the parameters of the component to the specified units. The Record
+  // must contain the same fields that the to/from Record functions have (with
+  // the exception of the direction & type fields). These fields will contain
+  // strings (and not Quantums) that specify the new units for these
+  // parameters. The new units must have the same dimensions as the existing
+  // ones. If there is any problem parsing the record then an error message is
+  // appended to the suppkuied string and the function returns False. If
+  // successful it returns True
+  virtual Bool convertUnit(String & errorMessage,
+			   const RecordInterface & record) = 0;
+  
+
+  // Convert the parameters of the component to the specified units. The order
+  // of the parameters in the supplied Vector is identical with that used in
+  // the parameter functions (setParameters, nParameters and parameters)
+  // described above and the Vector must have nParameters elements. Each String
+  // in the vector specifies the new units for one of the parameters. The new
+  // units must have the same dimensions as the existing ones.
+  // virtual Bool convertUnit(const Vector<String> & unit) = 0;
+
   // Return the shape that the supplied record represents. The
   // shape is determined by parsing a 'type' field in the supplied
   // record. Returns ComponentType::UNKNOWN_SHAPE if the type field
