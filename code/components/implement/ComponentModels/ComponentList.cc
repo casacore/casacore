@@ -34,6 +34,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MVAngle.h>
@@ -64,8 +65,7 @@ ComponentList::ComponentList()
    itsNelements(0),
    itsTable(),
    itsROFlag(False),
-   itsNactive(0),
-   itsActiveFlags(),
+   itsSelectedFlags(),
    itsOrder()
 {
   AlwaysAssert(ok(), AipsError);
@@ -76,8 +76,7 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
    itsNelements(0),
    itsTable(),
    itsROFlag(False),
-   itsNactive(0),
-   itsActiveFlags(),
+   itsSelectedFlags(),
    itsOrder()
 {
   {
@@ -144,8 +143,7 @@ ComponentList::ComponentList(const ComponentList & other)
    itsNelements(other.itsNelements),
    itsTable(other.itsTable),  
    itsROFlag(other.itsROFlag),
-   itsNactive(other.itsNelements),
-   itsActiveFlags(other.itsActiveFlags),
+   itsSelectedFlags(other.itsSelectedFlags),
    itsOrder(other.itsOrder)
 {
   DebugAssert(ok(), AipsError);
@@ -153,20 +151,19 @@ ComponentList::ComponentList(const ComponentList & other)
 
 ComponentList::~ComponentList() {
   if ((itsROFlag == False) && (itsTable.isNull() == False))
-    writeTable(True);
+    writeTable();
   AlwaysAssert(ok(), AipsError);
 }
 
 ComponentList & ComponentList::operator=(const ComponentList & other){
   if (this != &other) {
     if ((itsROFlag == False) && (itsTable.isNull() == False))
-      writeTable(True);
+      writeTable();
     itsList = other.itsList;
     itsNelements = other.itsNelements;
     itsTable = other.itsTable;
     itsROFlag = other.itsROFlag;
-    itsNactive = other.itsNactive;
-    itsActiveFlags = other.itsActiveFlags;
+    itsSelectedFlags = other.itsSelectedFlags;
     itsOrder = other.itsOrder;
   }
   DebugAssert(ok(), AipsError);
@@ -181,23 +178,19 @@ void ComponentList::sample(Vector<Double> & result,
   result = 0.0;
   Vector<Double> compResult(4);
   for (uInt i = 0; i < nelements(); i++) {
-    if (isActive(i)) {
-      component(i).sample(compResult, sampleDir, pixelSize);
-      result.ac() += compResult.ac();
-    }
+    component(i).sample(compResult, sampleDir, pixelSize);
+    result.ac() += compResult.ac();
   }
 }
 
 void ComponentList::project(ImageInterface<Float> & plane) const {
   DebugAssert(ok(), AipsError);
   for (uInt i = 0; i < nelements(); i++) {
-    if (isActive(i)) {
-      component(i).project(plane);
-    }
+    component(i).project(plane);
   }
 }
 
-void ComponentList::add(SkyComponent component, const Bool & isActive) {
+void ComponentList::add(SkyComponent component) {
   AlwaysAssert(itsROFlag == False, AipsError);
   DebugAssert(ok(), AipsError);
   uInt blockSize = itsList.nelements();
@@ -205,24 +198,23 @@ void ComponentList::add(SkyComponent component, const Bool & isActive) {
     const uInt newSize 
       = (blockSize < 50) ? 2 * blockSize + 1 : blockSize + 100;
     itsList.resize(newSize);
-    itsActiveFlags.resize(newSize);
+    itsSelectedFlags.resize(newSize);
     itsOrder.resize(newSize);
   }
   itsList[itsNelements] = component;
-  itsActiveFlags[itsNelements] = isActive;
+  itsSelectedFlags[itsNelements] = False;
   itsOrder[itsNelements] = itsNelements;
-  if (isActive) itsNactive++;
   itsNelements++;
 }
 
 void ComponentList::remove(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
+  AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
-  if (isActive(index)) itsNactive--;
   uInt realIndex = itsOrder[index];
-  itsActiveFlags.remove(realIndex, False);
+  itsSelectedFlags.remove(realIndex, False);
   itsList.remove(realIndex, False);
-  itsOrder.remove(realIndex, False);
+  itsOrder.remove(index, False);
   itsNelements--;
   for (uInt i = 0; i < nelements(); i++) {
     if (itsOrder[i] > realIndex) {
@@ -231,55 +223,57 @@ void ComponentList::remove(const uInt & index) {
   }
 }
 
-void ComponentList::remove() {
-  AlwaysAssert(itsROFlag == False, AipsError);
-  DebugAssert(ok(), AipsError);
-  uInt i = nelements() ;
-  while (i > 0) {
-    i--;
-    if (isActive(i) == False) remove(i);
-  }
-}
-
 uInt ComponentList::nelements() const {
   return itsNelements;
 }
 
-void ComponentList::deactivate(const uInt & index) {
-  if (isActive(index)) {
-    itsNactive--;
-    itsActiveFlags[itsOrder[index]] = False;
+void ComponentList::deselect(const Vector<Int> & indexes) {
+  for (uInt i = 0; i < indexes.nelements(); i++) {
+    AlwaysAssert(indexes(i) < Int(nelements()), AipsError);
+    AlwaysAssert(indexes(i) >= 0, AipsError);
+    itsSelectedFlags[itsOrder[indexes(i)]] = False;
   }
   DebugAssert(ok(), AipsError);
 }
 
-void ComponentList::activate(const uInt & index) {
-  if (!isActive(index)) {
-    itsNactive++;
-    itsActiveFlags[itsOrder[index]] = True;
+void ComponentList::select(const Vector<Int> & indexes) {
+  for (uInt i = 0; i < indexes.nelements(); i++) {
+    AlwaysAssert(indexes(i) < Int(nelements()), AipsError);
+    AlwaysAssert(indexes(i) >= 0, AipsError);
+    itsSelectedFlags[itsOrder[indexes(i)]] = True;
   }
   DebugAssert(ok(), AipsError);
 }
 
-uInt ComponentList::nactive() const {
+Vector<Int> ComponentList::selected() const {
   DebugAssert(ok(), AipsError);
-  return itsNactive;
-}
-
-Bool ComponentList::isActive(const uInt & index) const {
-  AlwaysAssert(index <= nelements(), AipsError);
-  DebugAssert(ok(), AipsError);
-  return itsActiveFlags[itsOrder[index]];
+  uInt nSelected = 0;
+  for (uInt i = 0; i < nelements(); i++) {
+    if (itsSelectedFlags[i] == True) {
+      nSelected++;
+    }
+  }
+  Vector<Int> retVal(nSelected);
+  uInt s = 0;
+  for (uInt j = 0; j < nelements(); j++) {
+    if (itsSelectedFlags[j] == True) {
+      retVal(s) = j;
+      s++;
+    }
+  }
+  return retVal;
 }
 
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
+  AlwaysAssert(index < nelements(), AipsError);
   DebugAssert(ok(), AipsError);
   return itsList[itsOrder[index]];
 }
 
 const SkyComponent & ComponentList::component(const uInt & index) const {
   DebugAssert(ok(), AipsError);
+  AlwaysAssert(index < nelements(), AipsError);
   return itsList[itsOrder[index]];
 }
 
@@ -355,27 +349,67 @@ ComponentList ComponentList::copy() const {
 }
 
 void ComponentList::sort(ComponentList::SortCriteria criteria) {
-  if (criteria == ComponentList::FLUX) {
-    Block<Double> absI(nelements());
+  Block<Double> val(nelements());
+  Sort::Order order;
+  Bool doSort = True;
+  switch (criteria) {
+  case ComponentList::FLUX: {
     Quantum<Vector<Double> > compFlux;
     for (uInt i = 0; i < nelements(); i++) {
       itsList[i].flux(compFlux);
-      absI[i] = abs(compFlux.getValue("Jy")(0));
+      val[i] = abs(compFlux.getValue("Jy")(0));
     }
-    // The genSort function requires a Vector<uInt> and not a Block<uInt> so
-    // I'll create a temporary Vector here which references the data in the
-    // 'itsOrder' Block.
+    order = Sort::Descending;
+    break;
+  }
+  case ComponentList::POSITION: {
+    MDirection compDir;
+    MVDirection refDir(0.0, 0.0);
+    Vector<Double> position(2);
+    for (uInt i = 0; i < nelements(); i++) {
+      itsList[i].direction(compDir);
+      val[i] = refDir.separation(compDir.getValue());
+    }
+    order = Sort::Ascending;
+    break;
+  }
+  case ComponentList::POLARISATION: {
+    Quantum<Vector<Double> > compFlux;
+    Vector<Double> f;
+    for (uInt i = 0; i < nelements(); i++) {
+      itsList[i].flux(compFlux);
+      f = compFlux.getValue("Jy");
+      if (!nearAbs(f(0), 0.0, DBL_MIN)) {
+	val[i] = sqrt(f(1)*f(1)+f(2)*f(2)+f(3)*f(3))/f(0);
+      }
+      else {
+	val[i] = 0.0;
+      }
+    }
+    order = Sort::Descending;
+    break;
+  }
+  case ComponentList::UNSORTED: 
+  case ComponentList::NUMBER_CRITERIA:
+    doSort = False;
+    break;
+  };
+  // The genSort function requires a Vector<uInt> and not a Block<uInt> so
+  // I'll create a temporary Vector here which references the data in the
+  // 'itsOrder' Block.
+  if (doSort) {
     Vector<uInt> vecOrder(IPosition(1,nelements()), itsOrder.storage(), SHARE);
-    AlwaysAssert(genSort(vecOrder, absI, Sort::Descending) == nelements(), 
+    AlwaysAssert(genSort(vecOrder, val, order) == nelements(), 
 		 AipsError);
   }
 }
 
-String ComponentList::name(ComponentList::SortCriteria enumerator){
+String ComponentList::name(ComponentList::SortCriteria enumerator) {
   switch (enumerator) {
   case ComponentList::FLUX: return "Flux";
   case ComponentList::POSITION: return "Position";
-  default: return "Unsorted";
+  case ComponentList::POLARISATION: return "Polarisation";
+  default: return "unknown";
   };
 }
 
@@ -426,22 +460,7 @@ Bool ComponentList::ok() const {
 	return False;
     }
   }
-  {
-    uInt nActiveFlags = 0;
-    for (uInt i = 0; i < itsNelements; i++) {
-      if (itsActiveFlags[i] == True) {
-	nActiveFlags++;
-      }
-    }
-    if (nActiveFlags != itsNactive) {
-      LogIO logErr(LogOrigin("ComponentList", "ok()"));
-      logErr << LogIO::SEVERE 
-	     << "Cached number of active components is wrong!"
-	     << LogIO::POST;
-      return False;
-    }
-  }
-  for (uInt i = 0; i < itsNactive; i++) {
+  for (uInt i = 0; i < itsNelements; i++) {
     if (itsOrder[i] >= itsNelements) {
       LogIO logErr(LogOrigin("ComponentList", "ok()"));
       logErr << LogIO::SEVERE 
@@ -453,24 +472,17 @@ Bool ComponentList::ok() const {
   return True;
 }
 
-void ComponentList::writeTable(const Bool & saveActiveOnly) {
+void ComponentList::writeTable() {
   if (itsTable.isWritable() == False)
     itsTable.reopenRW();
   DebugAssert(itsTable.isWritable(), AipsError);
   
-  uInt nCompsToSave = 0;
-  if (saveActiveOnly == True) {
-    nCompsToSave = nactive();
-  }
-  else {
-    nCompsToSave = nelements();
-  }
   {
     const uInt nRows = itsTable.nrow();
-    if (nRows < nCompsToSave)
-      itsTable.addRow(nCompsToSave-nRows);
-    else if (nRows > nCompsToSave)
-      for (uInt r = nRows-1; r >= nCompsToSave; r--)
+    if (nRows < nelements())
+      itsTable.addRow(nelements()-nRows);
+    else if (nRows > nelements())
+      for (uInt r = nRows-1; r >= nelements(); r--)
 	itsTable.removeRow(r);
   }
   ScalarColumn<String> typeCol(itsTable, "Type");
@@ -499,20 +511,18 @@ void ComponentList::writeTable(const Bool & saveActiveOnly) {
   Vector<Double> compParms;
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
-    if (saveActiveOnly == False || isActive(i)) {
-      typeCol.put(i, ComponentType::name(component(i).type()));
-      component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
-      component(i).direction(compDir);
-      if (compDir.getRef().getType() != refNum)
-	compDir = MDirection::Convert(compDir, refNum)();
-      dirn = compDir.getAngle().getValue(angleUnits);
-      dirCol.put(i, dirn);
-      component(i).label(compLabel);
-      labelCol.put(i, compLabel);
-      compParms.resize(component(i).nParameters());
-      component(i).parameters(compParms);
-      parmCol.put(i, compParms);
-    }
+    typeCol.put(i, ComponentType::name(component(i).type()));
+    component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
+    component(i).direction(compDir);
+    if (compDir.getRef().getType() != refNum)
+      compDir = MDirection::Convert(compDir, refNum)();
+    dirn = compDir.getAngle().getValue(angleUnits);
+    dirCol.put(i, dirn);
+    component(i).label(compLabel);
+    labelCol.put(i, compLabel);
+    compParms.resize(component(i).nParameters());
+    component(i).parameters(compParms);
+    parmCol.put(i, compParms);
   }
 }
 // Local Variables: 

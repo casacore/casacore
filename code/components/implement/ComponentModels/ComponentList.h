@@ -69,19 +69,13 @@ template <class T> class ImageInterface;
 // <ul>
 // <li> Functions to add and delete components
 // <li> Functions to traverse the list and extract individual components
-// <li> Functions to designate components as active or inactive
-// <li> Functions to sample the flux of active components in any direction and
-//      grid the active components onto an Image
-// <li> Functions to save the active components to a table and read them back 
+// <li> Functions to designate components as being selected or not
+// <li> Functions to sample the flux of the components in any direction and
+//      grid them onto an Image
+// <li> Functions to save the components to a table and read them back 
 //      again
 // <\ul>
 
-// Components can be designated as active or inactive. Only active components
-// are used by the sample and project functions and only active components are
-// save to disk when the list is deleted. So in one sense inactive components
-// can be thought of as being deleted but still recoverable. Components that
-// are added to the list are by default considered active and newly read (from
-// disk) component lists have all the components in them marked as active.
 
 //#! What does the class do?  How?  For whom?  This should include code
 //#! fragments as appropriate to support text.  Code fragments shall be
@@ -118,8 +112,10 @@ public:
   enum SortCriteria {
     // Sort the components by ABS(I flux), largest first.
     FLUX = 0,
-    // Sort the components by distance from the north pole, closest first.
+    // Sort the components by distance from the reference, closest first.
     POSITION,
+    // Sort the components by fractional polarisation, biggest first.
+    POLARISATION,
     // No sorting is necessary
     UNSORTED,
     // The number of criteria in this enumerator
@@ -153,36 +149,27 @@ public:
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
-  // component is marked as active.
-  void add(SkyComponent component, const Bool & isActive=True);
+  // component is not selected.
+  void add(SkyComponent component);
 
   // Remove the specified SkyComponent from the ComponentList. After removing a
   // component all the components with an index greater than this one will be
   // reduced by one.
   void remove(const uInt & index);
 
-  // Remove all the inactive components from the ComponentList. The index
-  // of the remaining active components will be reduced by the number of 
-  // inactive components with a lower index.
-  void remove();
-
   // returns how many components are in the list.
   uInt nelements() const;
 
-  // deactivate the specified component. Throws an exception (AipsError) if the
-  // index is out of range, ie. index >= nelements().
-  void deactivate(const uInt & index);
+  // deselect the specified component. Throws an exception (AipsError) if any
+  // element in the index is out of range, ie. index >= nelements().
+  void deselect(const Vector<Int> & index);
 
-  // activate the specified component. Throws an exception (AipsError) if the
-  // index is out of range, ie. index >= nelements().
-  void activate(const uInt & index);
+  // select the specified component. Throws an exception (AipsError) if any
+  // element in the index is out of range, ie. index >= nelements().
+  void select(const Vector<Int> & index);
 
-  // returns how many active components are in the list.
-  uInt nactive() const;
-
-  // Enquire where the specified component is active. Throws an exception
-  // (AipsError) if the index is out of range, ie. index >= nelements().
-  Bool isActive(const uInt & index) const;
+  // Returns a Vector whose indices indicate which components are selected
+  Vector<Int> selected() const;
 
   // returns a reference to the specified element in the list.
   // <group>
@@ -202,7 +189,7 @@ public:
   // distinct version of the componentList.
   ComponentList copy() const;
 
-  // Sort the active components in the list using the given criteria.
+  // Sort the components in the list using the given criteria.
   void sort(ComponentList::SortCriteria criteria); 
 
   // Convert the SortCriteria enumerator to a string
@@ -216,14 +203,13 @@ public:
   Bool ok() const;
 
 private:
-  void writeTable(const Bool & saveActiveOnly);
+  void writeTable();
   //  Int compareAbsI(const void * comp1Ptr, const void * comp2Ptr);
   Block<SkyComponent> itsList;
   uInt itsNelements;
   Table itsTable;
   Bool itsROFlag;
-  uInt itsNactive;
-  Block<Bool> itsActiveFlags;
+  Block<Bool> itsSelectedFlags;
   Block<uInt> itsOrder;
 };
 #endif
