@@ -2633,3 +2633,4 @@
 11 397 sys rm libexec/pgdemo.g
 11 397 src mv trial/scripts/stopwatch.g trial/implement/Utilities/stopwatch.g
 11 397 src mv trial/scripts/stopwatch.help trial/implement/Utilities/stopwatch.help
+11 397 src mv trial/scripts/substitute.g trial/implement/Utilities/substitute.g
