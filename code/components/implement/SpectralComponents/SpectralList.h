@@ -35,6 +35,8 @@
 
 //# Forward Declarations
 class SpectralElement;
+class RecordInterface;
+class String;
 template <class T> class Vector;
 
 // <summary>
@@ -153,6 +155,12 @@ class SpectralList {
 
   // Sort the list on the first parameter (i.e. peak value for Gaussian)
   void sort();
+
+  // Convert to and from a Record (see details in SpectralElement)
+  // <group>
+  Bool fromRecord (String& errMsg, const RecordInterface& container);
+  Bool toRecord(RecordInterface& container);
+  //</group>
 
  private:
   //#Data

@@ -29,6 +29,8 @@
 #include <trial/SpectralComponents/SpectralList.h>
 
 #include <aips/Exceptions/Error.h>
+#include <aips/Containers/RecordInterface.h>
+#include <aips/Containers/Record.h>
 #include <trial/SpectralComponents/SpectralElement.h>
 
 #include <aips/iostream.h>
@@ -152,6 +154,38 @@ void SpectralList::set(const uInt nmax) {
   nmax_p = nmax;
 }
 
+Bool SpectralList::fromRecord (String& errMsg, const RecordInterface& container)
+{
+   this->clear();
+//
+   for (uInt i=0; i<container.nfields(); i++) {
+      if (container.dataType(i)==TpRecord) {
+         const RecordInterface& rec = container.asRecord(i);
+         SpectralElement el;
+         if (!el.fromRecord(errMsg, rec)) return False;
+         this->add(el);
+      } else {
+         errMsg = String("Illegal record structure");
+         return False;
+      }
+   }
+//
+   return True;
+}
+
+Bool SpectralList::toRecord(RecordInterface& container)
+{
+   String errMsg;
+   for (uInt i=0; i<list_p.nelements(); i++) {
+      Record elRec;
+      list_p[i]->toRecord(errMsg, elRec);
+      container.defineRecord(i, elRec);
+   }
+//
+   return True;
+}
+  
+
 void SpectralList::sort() {
   uInt n = list_p.nelements();
   if (n < 2) return;
@@ -180,3 +214,5 @@ ostream &operator<<(ostream &os, const SpectralList &lst) {
 
   return os;
 }
+
+
