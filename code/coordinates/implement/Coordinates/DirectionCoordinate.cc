@@ -228,19 +228,17 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 	    errorMsg_p = "wcslib celrev error: ";
 	    errorMsg_p += celrev_errmsg[errnum];
 	}
-    }
-    if (!ok) {
-	set_error(errorMsg_p);
-    }
 
 // Convert to appropriate units from degrees.  phi and theta
 // may be returned in a different interface somewhen.
 
-//    phi = d1_phi_p / to_degrees_p[0];
-//    theta = d1_theta_p / to_degrees_p[1];
+//       phi = d1_phi_p / to_degrees_p[0];
+//       theta = d1_theta_p / to_degrees_p[1];
 
-    toOther(world);
-    
+        toOther(world);
+    } else {
+       set_error(errorMsg_p);
+    }
 //
     return ok;
 }
@@ -276,12 +274,8 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
     } else {
         errorMsg_p = "wcslib celfwd error: ";
         errorMsg_p += celfwd_errmsg[errnum];
-    }
-
-    if (! ok) {
 	set_error(errorMsg_p);
     }
-
     return ok;
 }
 
