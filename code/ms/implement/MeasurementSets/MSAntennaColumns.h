@@ -28,12 +28,14 @@
 #if !defined(AIPS_NEWMSANTENNACOLUMNS_H)
 #define AIPS_NEWMSANTENNACOLUMNS_H
 
+#include <aips/aips.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/TableMeasures/ArrayQuantColumn.h>
 #include <aips/TableMeasures/ScalarMeasColumn.h>
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Utilities/String.h>
 
 class NewMSAntenna;
 
@@ -117,6 +119,11 @@ protected:
   void attach(const NewMSAntenna& msAntenna);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSAntennaColumns(const RONewMSAntennaColumns&);
+  RONewMSAntennaColumns& operator=(const RONewMSAntennaColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSAntenna& msAntenna);
   
@@ -266,6 +273,11 @@ protected:
   void attach(NewMSAntenna& msAntenna);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSAntennaColumns(const NewMSAntennaColumns&);
+  NewMSAntennaColumns& operator=(const NewMSAntennaColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMSAntenna& msAntenna);
   
@@ -293,6 +305,4 @@ private:
   ArrayQuantColumn<Double> positionQuant_p;
 
 };
-
 #endif
-
