@@ -36,7 +36,7 @@
 #
 # The format of the entries in the templates file is
 #
-#   <ident> <.cc file> <.h file> [<extra .h files>] <template declaration>
+#   <ident> <.cc file> <.h file> [<extra .h files>]
 #
 # The system accepts any name consisting of lowercase letters also as 
 # include files (like the standard vector e.g.)
@@ -46,8 +46,9 @@
 # part has to be on one line (the first line), the first <template declaration>
 # can be on the same line. More declarations (on separate lines) are
 # possible.
-# Each declaration line can have either of 6 forms:
+# Each declaration line can have either of 7 forms:
 #	= ....                     (include file)
+#       #namespace [<name>]        (optional namespace; casa if no such line))
 #	template .......           (template class or function instantiation)
 #	template <> class ....	   (template-less forward declaration)
 #	#if .....                  (or #ifdef, #ifndef)
@@ -83,6 +84,13 @@
 # template instantiation .cc file is composed of the name of the class .cc or
 # .h file and the ident, for example, the instantiation file for the first
 # entry above would be Set_1050.cc.
+#
+# A namespace line indicates the begin of a namespace and ends the previous
+# one (if any). A namespace line is valid until the end of the ident group
+# or until the next namespace line.
+# The namespace's name must be given after the namespace keyword.
+# No name means that no namespace should be used.
+# No namespace line at all means that the default casa namespace is used.
 #
 # Comments in the templates file are signalled by a "#" in the first field.
 # Blank lines are also allowed.
@@ -158,7 +166,8 @@
 
 # indicate start
   TFILE=""
-  NAMESPACE="notset"
+  NAMESPACEDONE=0
+  NAMESPACE="casa"
   while read ENTRY 0<&3
   do
     [ "$ENTRY" = "" ] && continue
@@ -169,6 +178,19 @@
     set $ENTRY
 
     case $1 in
+    \#namespace)
+      if [ $NAMESPACEDONE = 1  -a  "$NAMESPACE" != "" ]
+      then
+        echo "} //# NAMESPACE - END" >> tmp1.$$
+      fi
+      NAMESPACEDONE=0
+      NAMESPACE=`echo $* | sed -e 's/.*namespace//' -e 's/ //g'`
+      if [ "$NAMESPACE" == "" ]
+      then
+        NAMESPACEDONE=1
+      fi
+      continue
+      ;;
     \#if*)
       if [ "$TFILE" = "" ]
       then
@@ -179,10 +201,10 @@
         continue
       fi
 
-      if [ "$NAMESPACE" = "notset" ]
+      if [ "$NAMESPACEDONE" = 0 ]
       then
-        NAMESPACE="casa"
-        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+        NAMESPACEDONE=1
+        echo "namespace $NAMESPACE { //# NAMESPACE - BEGIN" >> tmp1.$$
       fi
       echo "$*" >> tmp1.$$
       continue
@@ -208,10 +230,10 @@
         STATUS=1
         continue
       fi
-      if [ "$NAMESPACE" = "notset" ]
+      if [ "$NAMESPACEDONE" = 0 ]
       then
-        NAMESPACE="casa"
-        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+        NAMESPACEDONE=1
+        echo "namespace $NAMESPACE { //# NAMESPACE - BEGIN" >> tmp1.$$
       fi
       echo "$*" >> tmp1.$$
       continue
@@ -225,10 +247,10 @@
         STATUS=1
         continue
       fi
-      if [ "$NAMESPACE" = "notset" ]
+      if [ "$NAMESPACEDONE" = 0 ]
       then
-        NAMESPACE="casa"
-        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+        NAMESPACEDONE=1
+        echo "namespace $NAMESPACE { //# NAMESPACE - BEGIN" >> tmp1.$$
       fi
       echo "$*;" >> tmp1.$$
       continue
@@ -280,10 +302,10 @@
 	shift
 	shift
       fi
-      if [ "$NAMESPACE" = "notset" ]
+      if [ "$NAMESPACEDONE" = 0 ]
       then
-        NAMESPACE="casa"
-        echo "namespace casa { //# NAMESPACE CASA - BEGIN" >> tmp1.$$
+        NAMESPACEDONE=1
+        echo "namespace $NAMESPACE { //# NAMESPACE - BEGIN" >> tmp1.$$
       fi
 
 
@@ -295,11 +317,12 @@
       continue
       ;;
     [0-9][0-9][0-9][0-9])
-      if [ "$NAMESPACE" = "casa" ]
+      if [ $NAMESPACEDONE = 1  -a  "$NAMESPACE" != "" ]
       then
-        NAMESPACE="notset"
-        echo "} //# NAMESPACE CASA - END" >> tmp1.$$
+        echo "} //# NAMESPACE - END" >> tmp1.$$
       fi
+      NAMESPACEDONE=0
+      NAMESPACE="casa"
       if [ "$TFILE" != "" ]
       then
 	if [ -f "$TFILE" ]
@@ -335,7 +358,8 @@
         continue
       fi
       TFILE="${BASENAME}_$1.cc"
-      NAMESPACE="notset"
+      NAMESPACEDONE=0
+      NAMESPACE="casa"
 #    Check for duplicates.
       if grep "^$TFILE" after >/dev/null 2>&1
       then
@@ -384,11 +408,12 @@
     esac
 
   done
-  if [ "$NAMESPACE" = "casa" ]
+  if [ $NAMESPACEDONE = 1  -a  "$NAMESPACE" != "" ]
   then
-     NAMESPACE="notset"
-     echo "} //# NAMESPACE CASA - END" >> tmp1.$$
+    echo "} //# NAMESPACE - END" >> tmp1.$$
   fi
+  NAMESPACEDONE=0
+  NAMESPACE=casa
 
 # Write last
   if [ "$TFILE" != "" ]
