@@ -192,6 +192,10 @@ String MPosition::getRefString() const {
   return MPosition::showType(ref.getType());
 }
 
+uInt MPosition::myType() {
+  return Register((MPosition *)0);
+}
+
 Quantum<Vector<Double> > MPosition::get(const Unit &inunit) const {
     return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
 }

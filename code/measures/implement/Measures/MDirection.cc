@@ -283,6 +283,10 @@ String MDirection::getRefString() const {
   return MDirection::showType(ref.getType());
 }
 
+uInt MDirection::myType() {
+  return Register((MDirection *)0);
+}
+
 Quantum<Vector<Double> > MDirection::getAngle() const {
     return (data.getAngle());
 }

@@ -211,6 +211,9 @@ String MEpoch::getRefString() const {
   return x;
 }
 
+uInt MEpoch::myType() {
+  return Register((MEpoch *)0);
+}
 
 Quantity MEpoch::get(const Unit &inunit) const {
   return (data.getTime().get(inunit));

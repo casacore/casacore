@@ -276,6 +276,8 @@ public:
   virtual const String &getDefaultType() const;
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
+  // Get my type (as Register)
+  static uInt myType();
 
 // Get Measure data
 // <group>
