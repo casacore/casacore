@@ -3496,3 +3496,4 @@
 13 285 src mv trial/implement/Lattices/TempLattice.cc aips/implement/Lattices/TempLattice.cc
 13 285 src mv trial/implement/Lattices/test/dLattice.cc aips/implement/Lattices/test/dLattice.cc
 13 285 src mv trial/implement/Lattices/test/dPagedArray.cc aips/implement/Lattices/test/dPagedArray.cc
+13 285 src mv trial/implement/Lattices/test/tArrayLattice.cc aips/implement/Lattices/test/tArrayLattice.cc
