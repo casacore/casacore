@@ -2970,7 +2970,7 @@ const RotMatrix &MeasTable::galToSupergal() {
   static RotMatrix rot;
   if (needInit) {
     needInit = False;
-    Euler ang( -90*C::degree, 3, -85*C::degree, 2, -45*C::degree, 3);
+    Euler ang( -90*C::degree, 3, -83.68*C::degree, 2, -47.34*C::degree, 3);
     rot = RotMatrix(ang);
   };
   return rot;
