@@ -121,8 +121,9 @@ class HeaderDataUnit {
 	// Operations on the HDU's keyword list
 	//<group>
 	ConstFitsKeywordList &kwlist(){	 return constkwlist_;}
-	// return the header of the chdu as a vector of String.
-	Vector<String> kwlist_str();
+	// return the header of the chdu as a vector of String. You can
+        // force the strings to be length 80 (padded with spaces)
+	Vector<String> kwlist_str(Bool length80=False);
 	void firstkw() { kwlist_.first(); }
 	void lastkw() { kwlist_.last(); }
 	const FitsKeyword *nextkw() { return kwlist_.next(); }

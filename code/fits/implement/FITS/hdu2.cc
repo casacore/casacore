@@ -700,7 +700,7 @@ char * HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 	return s;
 }
 //=============================================================================
-Vector<String> HeaderDataUnit::kwlist_str(){ return fin->kwlist_str(); }
+Vector<String> HeaderDataUnit::kwlist_str(Bool length80){ return fin->kwlist_str(length80); }
 //=============================================================================
 int HeaderDataUnit::read_data(char *addr, Int nb) {
 	return (fin ? fin->read(hdu_type,addr,nb) : 0); }

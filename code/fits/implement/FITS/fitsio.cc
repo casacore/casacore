@@ -289,7 +289,7 @@ void FitsInput::init() {
 }
 //===============================================================================================
 // return the header of the chdu as a Vector of Strings.
-Vector<String> FitsInput::kwlist_str(){  
+Vector<String> FitsInput::kwlist_str(Bool length80){  
    Vector<String> cards;
    if( !m_header_done ){
   		cout<< "[FitsInput::kwlist_str()] This method should be called before reading data."<<endl;
@@ -324,6 +324,15 @@ Vector<String> FitsInput::kwlist_str(){
 	   }else{
 		   (m_fptr->Fptr)->bytepos = l_bytepos;
 	   }
+//
+           if (length80) {
+              String tmp("                                                                                ");
+              for (uInt i=0; i<cards.nelements(); i++) {
+                 String tmp2(tmp);
+                 tmp2.replace(0, cards(i).length(), cards(i));
+                 cards(i) = tmp2;
+              }
+           } 
 	   return cards;
 	}
 }

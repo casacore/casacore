@@ -170,8 +170,11 @@ class FitsInput : public FitsIO {
 	// read special or unrecognizable records
 	char *read_sp();
 
-   // get hdu header image cards as strings
-	Vector<String> kwlist_str();
+   // get hdu header image cards as strings. By default the strings will be of
+   // variable length. You can optionally ask for them to be length 80 (padded
+   // with spaces).
+	Vector<String> kwlist_str(Bool length80=False);
+
    //  number of physical blocks read/written
    int blockno() const {return m_fin.blockno();}
 
