@@ -669,7 +669,18 @@ overlays on other DisplayDatas.
 The former type, the {\em active}\/ DisplayDatas, must have the {\tt
   sizeControl} function implemented in a non-trivial way, and return a
 {\tt True} value to indicate to the caller that indeed they did
-perform a ``sizeControl'' action.  
+perform a ``sizeControl'' action.  The sizeControl function is
+expected to set up the LCS of a specified WorldCanvas.  It must honour
+any zoom level that is presently set, and then satisfy any settings on
+the DisplayData itself regarding the coordinate system.  While the
+sizeControl function is quite complex, it ultimately provides
+tremendous freedom in terms of the types of DisplayData that can be
+implemented.  For example, in the sizeControl function, a DisplayData
+could actually modify its data based on geometry of the WorldCanvas.
+A specific example of where this could be used is in some application
+where the user is allowed to drag a WorldCanvas around a PixelCanvas,
+and the WorldCanvas acts as a ``window'' to some larger dataset
+beneath it --- just an idea!
 
 \subsection{Adding Agents to the GlishTk Interface}
 
