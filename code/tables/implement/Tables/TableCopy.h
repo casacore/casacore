@@ -76,16 +76,19 @@
 class TableCopy
 {
 public:
-  // Make an empty table with the same layout as the input one.
-  // It has the same description and the same data managers as the
+  // Make an (empty) table with the same layout as the input one.
+  // It has the same keywords, columns, and data managers as the
   // input one.
   // By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
+  // By default, the new table has the same nr of rows as the input table.
+  // If <src>noRows=True</src> is given, it does not contain any row.
   static Table makeEmptyTable (const String& newName, const Table& tab,
 			       Table::TableOption option,
-			       Bool replaceTSM = True);
+			       Bool replaceTSM = True,
+			       Bool noRows = False);
 
   // Copy rows from the input to the output.
-  // By default all rows will be copied starting at row 0 of the output..
+  // By default all rows will be copied starting at row 0 of the output.
   // Rows will be added to the output table as needed.
   // <group>
   static void copyRows (Table& out, const Table& in)
