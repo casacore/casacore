@@ -85,7 +85,7 @@ class IPosition;
 //
 // Note that all the knowledge to do with removing and transposing axes is
 // maintained by the CoordinateSystem.  The individual Coordinates, of which it
-// is made, no nothing about this.
+// is made, know nothing about this.
 //
 // Although the CoordinateSystem exists in the absence of an image, the usual
 // time you will find one is attached to an object derived from ImageInterface 
