@@ -6,6 +6,7 @@
 
 #include <trial/MeasurementSets/MSConcat.h>
 #include <aips/MeasurementSets/MeasurementSet.h>
+#include <trial/MeasurementSets/MSFitsInput.h>
 #include <aips/Tables/Table.h>
 #include <aips/Inputs.h>
 
@@ -14,10 +15,44 @@ int main(int argc, char** argv) {
     Input inputs(1);
     inputs.create("ms", "", "Initial measurement set");
     inputs.create("append", "", "Measurement set to append");
+    inputs.create("fits", "", "Initial fits file");
+    inputs.create("fitsappend", "", "Fits file to append");
     inputs.readArguments (argc, argv);
     
-    MeasurementSet ms(inputs.getString("ms"), Table::Update);
-    MeasurementSet appendedMS(inputs.getString("append"), Table::Old);
+    const String fitsName = inputs.getString("fits");
+    const String fitsAppendName = inputs.getString("fitsappend");
+    const String msName = inputs.getString("ms");
+    const String appendName = inputs.getString("append");
+    if (!Table::isReadable(msName)) {
+      if (fitsName.length() == 0) {
+	String errorMsg = "Input ms called " + msName + " does not exist\n" +
+	  " and no FITS file is specified";
+	throw(AipsError(errorMsg));
+      }
+      cout << "Converting FITS file called " << fitsName 
+	   << " to and MS called " << msName << endl;
+      MSFitsInput msfitsin(msName, fitsName);
+      msfitsin.readFitsFile();
+    }
+    if (!Table::isReadable(appendName)) {
+      if (fitsAppendName.length() == 0) {
+	String errorMsg = "Input ms called " + msName + " does not exist\n" +
+	  " and no FITS file is specified";
+	throw(AipsError(errorMsg));
+      }
+      cout << "Converting FITS file called " << fitsAppendName 
+	   << " to and MS called " << appendName << endl;
+      MSFitsInput msfitsin(appendName, fitsAppendName);
+      msfitsin.readFitsFile();
+    }
+    if (!Table::isWritable(msName)) {
+      throw(AipsError("MS to append to is not writable"));
+    }
+    if (!Table::isReadable(appendName)) {
+      throw(AipsError("MS to append is not readable"));
+    }
+    MeasurementSet ms(msName, Table::Update);
+    MeasurementSet appendedMS(appendName, Table::Old);
     MSConcat mscat(ms);
     mscat.concatenate(appendedMS);
   }
