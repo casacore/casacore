@@ -1,4 +1,4 @@
-%% Table System Virtues and Drawbacks
+%% Table System Revisited
 %%----------------------------------------------------------------------------
 \documentclass[11pt]{article}
 \usepackage{html}
@@ -9,7 +9,7 @@
 \begin{document}
 
 \title{NOTE 255 --
-AIPS++ Table System Virtues and Drawbacks}
+AIPS++ Table System Revisited}
 \author {Ger van Diepen, ASTRON Dwingeloo}
 \date {2003 February 3}
 \maketitle
