@@ -58,7 +58,7 @@
   esac
 
 # Identify ourselves.
-  HOST=`uname -n`
+  HOST=`uname -n | sed -e 's/\..*//'`
   LOGNAME=${LOGNAME-$USER}
 
   echo ""
