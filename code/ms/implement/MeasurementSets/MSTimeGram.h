@@ -1,4 +1,4 @@
-//# MSUvDistGram.h: Grammar for ms UV dist sub-expressions
+//# MSTimeGram.h: Grammar for ms time sub-expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#ifndef MS_MSUVDISTGRAM_H
-#define MS_MSUVDISTGRAM_H
+#ifndef MS_MSTIMEGRAM_H
+#define MS_MSTIMEGRAM_H
 
 
 //# Includes
 #include <casa/BasicSL/String.h>
-//#include <ms/MeasurementSets/MSSelection.h>
+#include <ms/MeasurementSets/MSSelection.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -39,7 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class MeasurementSet;
 
 // <summary>
-// Global functions for flex/bison scanner/parser for MSUvDistGram
+// Global functions for flex/bison scanner/parser for MSTimeGram
 // </summary>
 
 // <use visibility=local>
@@ -49,7 +49,7 @@ class MeasurementSet;
 
 // <prerequisite>
 //# Classes you should understand before using this one.
-//  <li> MSUvDistGram.l and .y  (flex and bison grammar)
+//  <li> MSTimeGram.l and .y  (flex and bison grammar)
 // </prerequisite>
 
 // <synopsis> 
@@ -62,37 +62,35 @@ class MeasurementSet;
 // It is necessary to be able to give an image expression in ASCII.
 // This can be used in glish.
 // </motivation>
-
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
 // </todo>
 
 
-// <group name=MSUvDistGramFunctions>
+// <group name=MSTimeGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int msUvDistGramParseCommand (const MeasurementSet &ms, const String& command);
+int msTimeGramParseCommand (const MeasurementSet &ms, const String& command);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
-void MSUvDistGramerror (char*);
+void MSTimeGramerror (char*);
 
 // Give the measurment set.
-const MeasurementSet& msUvDistGramMS();
-
+const MeasurementSet& msTimeGramMS();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msUvDistGramPosition();
+Int& msTimeGramPosition();
 
 // Declare the input routine for flex/bison.
-int msUvDistGramInput (char* buf, int max_size);
+int msTimeGramInput (char* buf, int max_size);
 
 // A function to remove escaped characters.
-String msUvDistGramRemoveEscapes (const String& in);
+String msTimeGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
-String msUvDistGramRemoveQuotes (const String& in);
+String msTimeGramRemoveQuotes (const String& in);
 
 // </group>
 

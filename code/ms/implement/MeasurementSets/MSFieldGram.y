@@ -37,7 +37,7 @@ using namespace casa;
 %pure_parser                /* make parser re-entrant */
 
 %union {
-  TableExprNode* node;
+  TableExprNode *node;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
@@ -91,22 +91,15 @@ fieldstatement: FIELD EQASS SQUOTE fieldexpr SQUOTE {
                ;
 fieldexpr:  namelist
            |CODE {
-                 MSSelection * thissel = new MSSelection();
-                 MSSelection::msFieldTableExprNode = new TableExprNode(
-                     thissel->toTableExprNode(msFieldGramMS()));
 		 printf("field or source code\n");}
            |indexrangeexpr
            |lowindexboundexpr
            |upindexboundexpr
             ;
 namelist : NAME {
-                 MSSelection * thissel = new MSSelection();
 		 Vector<String> fieldnames(1);
                  fieldnames[0] = String($1);		
-		 thissel->setFieldNames(fieldnames);
-		 MSSelection::msFieldTableExprNode = new TableExprNode(
-                           thissel->toTableExprNode(msFieldGramMS()));
-		 printf("search field name first,if failing,search source\n");}
+		 $$ = MSFieldParse(msFieldGramMS()).selectFieldNames(fieldnames);}
          | namelist COMMA NAME { 
 	         printf("For list case, this one match first\n");}
          ;
@@ -118,16 +111,11 @@ indexrangeexpr : INDEX DASH INDEX {
                      fieldids[i] = $<ival>1 + i;
 		     cout << "field ids" << fieldids[i] << endl;
                    }
-                   MSSelection * thissel = new MSSelection();
-                   thissel->setFieldIds(fieldids);
-		   
-                   MSSelection::msFieldTableExprNode = new TableExprNode(
-                   thissel->toTableExprNode(msFieldGramMS()));
-                   printf("FIELD FROM $1 to $3 \n");}
+                   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
                ;
+
 lowindexboundexpr : GT INDEX {
                    cout << "> index " << $2 << endl;
-                   MSSelection * thissel = new MSSelection();
 		   ROMSFieldColumns msFieldCols_p(msFieldGramMS().field());
 		   Int startID = $2;
 		   Int len = msFieldCols_p.nrow();
@@ -135,21 +123,18 @@ lowindexboundexpr : GT INDEX {
 		   for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
 		     fieldids[i] = startID + i + 1;
 		   }
-		   thissel->setFieldIds(fieldids);
-                   MSSelection::msFieldTableExprNode = new TableExprNode(thissel->toTableExprNode(msFieldGramMS()));
-                 printf("lowboundexpr\n");}
+		   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
                ;
+
 upindexboundexpr : LT INDEX {
-                   MSSelection * thissel = new MSSelection();
 		   Int len = $2;
 		   Vector<Int> fieldids(len);
                    for(Int i = 0; i < len; i++) {
                      fieldids[i] = i;
 		     cout << "field ids" << fieldids[i] << endl;
                    }
-                   thissel->setFieldIds(fieldids);
-                   MSSelection::msFieldTableExprNode = new TableExprNode(thissel->toTableExprNode(msFieldGramMS()));
-                 printf("upboundexpr\n");}
+                   $$ = MSFieldParse(msFieldGramMS()).selectFieldIds(fieldids);}
               ;
+
 %%
 

@@ -8,15 +8,6 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 
 #include <ms/MeasurementSets/MSSelection.h>
-/*
-#include <ms/MeasurementSets/MSExpr.h>
-#include <ms/MeasurementSets/MSAntennaExpr.h>
-#include <ms/MeasurementSets/MSCorrExpr.h>
-#include <ms/MeasurementSets/MSFieldExpr.h>
-#include <ms/MeasurementSets/MSSPWExpr.h>
-#include <ms/MeasurementSets/MSTimeExpr.h>
-#include <ms/MeasurementSets/MSUVDistExpr.h>
-*/
 #include <casa/iostream.h>
 
 
@@ -29,32 +20,41 @@
 #include <casa/Containers/RecordField.h>
 #include <tables/Tables/TableRecord.h>
 
+#include <casa/namespace.h>
 
 // This is a very simple test, not in the repository
 int main(int argc, char **argv)
 {
-  /*
     try {
+        const String name = "5921.ms.raw";
+        MeasurementSet ms(name);
 
-      MeasurementSet ms("3C273XC1.ms");
+        MSSelection select;
+        select.setUVDistExpr("uvdist='3727km:5%'");
+        select.setFieldExpr("field='>0'");
 
-      MSSelection mysel;
-      //      mysel.setFieldExpr("'field_id = 1'");
-      mysel.setCorrExpr("'RL'");
-      mysel.toTableExprNode(ms);
+        cout << "Original table has rows " << ms.nrow() << endl;
 
+        select.toTableExprNode(ms);
+
+        cout << "TableExprNode has rows = " << MSSelection::msTableExprNode->nrow() << endl;
+
+        Table tablesel(ms.tableName(), Table::Update);
+        MeasurementSet mssel(tablesel(*MSSelection::msTableExprNode, MSSelection::msTableExprNode->nrow() ));
+
+        cout << "After mssel constructor called " << endl;
+        mssel.rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
+        mssel.flush();
+        if(mssel.nrow()==0){
+          cout << "Check your input, No data selected" << endl;
+        }
+        else {
+          cout << "selected table has rows " << mssel.nrow() << endl;
+        }
+        delete MSSelection::msTableExprNode;
     } catch (AipsError x) {
-	cout << "ERROR: " << x.getMesg() << endl;
-	return 1;
-    } 
-  */
-    return 0;
-}
+        cout << "ERROR: " << x.getMesg() << endl;
+    }
 
-      /*
-      GlishRecord gr;
-      gr.add("FIELD_ID", 1);           
-      cout << "glish record is created" << endl;
-      MSSelection mysel(gr);
-      cout << "expression is available" << endl;
-      */
+    return 1;
+}

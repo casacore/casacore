@@ -35,8 +35,9 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSFieldGram.h>
 #include <ms/MeasurementSets/MSFieldColumns.h>
+#include <ms/MeasurementSets/MSFieldGram.h>
+#include <ms/MeasurementSets/MSFieldParse.h>
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
@@ -56,7 +57,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const MeasurementSet* msMSFieldGram = 0x0;
-TableExprNode *MSSelection::msFieldTableExprNode = 0;
 static const char*           strpMSFieldGram = 0;
 static Int                   posMSFieldGram = 0;
 

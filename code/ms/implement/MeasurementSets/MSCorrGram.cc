@@ -1,4 +1,4 @@
-//# MSUvDistGram.cc: Grammar for UV distribution expressions
+//# MSCorrGram.cc: Grammar for corr expressions
 //# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-// MSUvDistGram; grammar for UV distribution command lines
+// MSCorrGram; grammar for corr command lines
 
 // This file includes the output files of bison and flex for
 // parsing command lines operating on lattices.
@@ -35,20 +35,19 @@
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSUvDistGram.h>
-#include <ms/MeasurementSets/MSUvDistParse.h> // routines used by bison actions
-
+#include <ms/MeasurementSets/MSCorrGram.h>
+#include <ms/MeasurementSets/MSCorrParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
-#include <MSUvDistGram.ycc>                  // flex output
-#include <MSUvDistGram.lcc>                  // bison output
+#include <MSCorrGram.ycc>                  // flex output
+#include <MSCorrGram.lcc>                  // bison output
 
 // Define the yywrap function for flex.
-int MSUvDistGramwrap()
+int MSCorrGramwrap()
 {
     return 1;
 }
@@ -56,55 +55,55 @@ int MSUvDistGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const MeasurementSet* msMSUvDistGram = 0x0;
-static const char*           strpMSUvDistGram = 0;
-static Int                   posMSUvDistGram = 0;
+static const MeasurementSet* msMSCorrGram = 0x0;
+static const char*           strpMSCorrGram = 0;
+static Int                   posMSCorrGram = 0;
 
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msUvDistGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msCorrGramParseCommand (const MeasurementSet& ms, const String& command) 
 {
-    MSUvDistGramrestart (MSUvDistGramin);
+    MSCorrGramrestart (MSCorrGramin);
     yy_start = 1;
-    strpMSUvDistGram = command.chars();     // get pointer to command string
-    posMSUvDistGram  = 0;                   // initialize string position
-    msMSUvDistGram = &ms;                   // get pointer to measurement set
-    return MSUvDistGramparse();             // parse command string
+    strpMSCorrGram = command.chars();     // get pointer to command string
+    posMSCorrGram  = 0;                   // initialize string position
+    msMSCorrGram = &ms;                   // get pointer to measurement set
+    return MSCorrGramparse();             // parse command string
 }
 
 //# Give the measurement set
-const MeasurementSet& msUvDistGramMS()
+const MeasurementSet& msCorrGramMS()
 {
-    return *msMSUvDistGram;
+    return *msMSCorrGram;
 }
 
 //# Give the string position.
-Int& msUvDistGramPosition()
+Int& msCorrGramPosition()
 {
-    return posMSUvDistGram;
+    return posMSCorrGram;
 }
 
 //# Get the next input characters for flex.
-int msUvDistGramInput (char* buf, int max_size)
+int msCorrGramInput (char* buf, int max_size)
 {
     int nr=0;
-    while (*strpMSUvDistGram != 0) {
+    while (*strpMSCorrGram != 0) {
 	if (nr >= max_size) {
 	    break;                         // get max. max_size char.
 	}
-	buf[nr++] = *strpMSUvDistGram++;
+	buf[nr++] = *strpMSCorrGram++;
     }
     return nr;
 }
 
-void MSUvDistGramerror (char*)
+void MSCorrGramerror (char*)
 {
     throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
-		      String(MSUvDistGramtext) + "'"));
+		      String(MSCorrGramtext) + "'"));
 }
 
-String msUvDistGramRemoveEscapes (const String& in)
+String msCorrGramRemoveEscapes (const String& in)
 {
     String out;
     int leng = in.length();
@@ -117,7 +116,7 @@ String msUvDistGramRemoveEscapes (const String& in)
     return out;
 }
 
-String msUvDistGramRemoveQuotes (const String& in)
+String msCorrGramRemoveQuotes (const String& in)
 {
     //# A string is formed as "..."'...''...' etc.
     //# All ... parts will be extracted and concatenated into an output string.
@@ -129,7 +128,7 @@ String msUvDistGramRemoveQuotes (const String& in)
 	//# Find next occurrence of leading ' or ""
 	int inx = str.index (str[pos], pos+1);
 	if (inx < 0) {
-	    throw (AipsError ("MSUvDistParse - Ill-formed quoted string: " +
+	    throw (AipsError ("MSCorrParse - Ill-formed quoted string: " +
 			      str));
 	}
 	out += str.at (pos+1, inx-pos-1);             // add substring

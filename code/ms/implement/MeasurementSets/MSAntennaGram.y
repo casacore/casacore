@@ -1,5 +1,5 @@
 /*
-    MSUvDistGram.y: Parser for UV distribution expressions
+    MSAntennaGram.y: Parser for antenna expressions
     Copyright (C) 2004
     Associated Universities, Inc. Washington DC, USA.
 
@@ -42,14 +42,11 @@ using namespace casa;
   Double dval[2];
 }
 
-%token UVDIST
 %token EQASS
 %token SQUOTE
 %token <ival> NUMBER
 %token <dval> FNUMBER
 %token DASH
-%token DISTANCEUNIT
-%token WAVELENTHUNIT
 %token LT
 %token GT
 %token COLON
@@ -63,14 +60,6 @@ using namespace casa;
 %token LBRACE
 %token RBRACE
 
-%type <node> uvdiststatement
-%type <node> uvdistexpr
-%type <node> rangeexprlist
-%type <node> upuvbound
-%type <node> lowuvbound
-%type <node> uvdistwithfract
-%type <node> rangeexpr
-
 %left OR
 %left AND
 %nonassoc EQ EQASS GT GE LT LE NE
@@ -81,51 +70,13 @@ using namespace casa;
 %right POWER
 
 %{
-int MSUvDistGramlex (YYSTYPE*);
+int MSAntennaGramlex (YYSTYPE*);
 %}
 
 %%
-uvdiststatement : UVDIST EQASS SQUOTE uvdistexpr SQUOTE {
-                    $$ = $4 ;
-                    cout << "Start statement" << endl;}
-                ;
+statement: EQASS SQUOTE SQUOTE {
+                  cout << "selection" << endl;}
+               ;
 
-uvdistexpr : rangeexprlist
-            |upuvbound
-            |lowuvbound
-            |uvdistwithfract {
-              $$ = $1;
-             }
-           ;
-
-rangeexprlist :   rangeexpr
-                | rangeexprlist COMMA rangeexpr {
-                  $$ = $1;
-                  delete $1;}
-           ;
-
-rangeexpr : NUMBER DASH NUMBER unit {
-	      cout << "uvdist between " << $1 << " and " << $3 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($1, $3);}
-           ;
-
-unit :  DISTANCEUNIT
-      | WAVELENTHUNIT
-      ;
-
-upuvbound : LT NUMBER unit {
-	      cout << "uvdist < " << $2 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange(0, $2);}
-           ;
-        
-lowuvbound : GT NUMBER unit {
-	      cout << "uvdist > " << $2 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($2, 1000000);}
-           ;
-
-uvdistwithfract : NUMBER unit COLON NUMBER PERCENT {
-	      cout << "uvdist around " << $1 << endl;
-              $$ = MSUvDistParse(msUvDistGramMS()).selectUVRange($1-$4*0.01, 1+$4*0.01);}
-             ;
 %%
 

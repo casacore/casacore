@@ -1,4 +1,4 @@
-//# ImageExprGram.h: Grammar for image expressions
+//# MSFieldGram.h: Grammar for ms field sub-expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#

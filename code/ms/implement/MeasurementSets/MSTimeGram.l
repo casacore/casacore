@@ -1,5 +1,5 @@
 /*
-    MSFieldGram.l: Lexical analyzer for ms commands
+    MSTimeGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
 
@@ -29,21 +29,21 @@
 
 %{
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=msFieldGramInput(buf,max_size)
+#define YY_INPUT(buf,result,max_size) result=msTimeGramInput(buf,max_size)
 
 #undef YY_DECL
-#define YY_DECL int MSFieldGramlex (YYSTYPE* lvalp)
+#define YY_DECL int MSTimeGramlex (YYSTYPE* lvalp)
 %}
-
 
 WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
-FLINT     {FLOAT}|{INT}
+FNUMBER   {INT}"."{DIGIT}*
 TRUE      T
 FALSE     F
+
+
 
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
@@ -52,9 +52,12 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-NAME      [A-Za-z0-9]*|[A-Za-z0-9]*"*"
-CODE      ([A-Za-z])*
-FIELD     [Ff][Ii][Ee][Ll][Dd]
+UVDIST     [Uu][Vv][Dd][Ii][Ss][Tt]
+DISTANCEUNIT [Kk][Mm]
+ML           [Mm][Ll]
+KL           [Kk][Ll]
+L            [Ll]
+WAVELENTHUNIT {ML}|{KL}|{L}
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
@@ -65,84 +68,66 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
 %%
 
-"["       { msFieldGramPosition() += yyleng;
+"["       { msTimeGramPosition() += yyleng;
             return LBRACKET;
           }
-"("       { msFieldGramPosition() += yyleng;
+"("       { msTimeGramPosition() += yyleng;
             return LPAREN;
           }
-"]"       { msFieldGramPosition() += yyleng;
+"]"       { msTimeGramPosition() += yyleng;
             return RBRACKET;
           }
-")"       { msFieldGramPosition() += yyleng;
+")"       { msTimeGramPosition() += yyleng;
             return RPAREN;
           }
-"-"       { msFieldGramPosition() += yyleng;
-            return DASH; 
-          }
-":"       { msFieldGramPosition() += yyleng;
+
+":"       { msTimeGramPosition() += yyleng;
             return COLON; }
-"=="      { msFieldGramPosition() += yyleng; 
+"=="      { msTimeGramPosition() += yyleng;
             return EQ; }
-"="       { msFieldGramPosition() += yyleng;
+"="       { msTimeGramPosition() += yyleng;
             return EQASS; }
-"!="      { msFieldGramPosition() += yyleng;
+"!="      { msTimeGramPosition() += yyleng;
             return NE; }
-"<>"      { msFieldGramPosition() += yyleng;
+"<>"      { msTimeGramPosition() += yyleng;
             return NE; }
-">="      { msFieldGramPosition() += yyleng;
+">="      { msTimeGramPosition() += yyleng;
             return GE; }
-">"       { msFieldGramPosition() += yyleng;
+">"       { msTimeGramPosition() += yyleng;
             return GT; }
-"<="      { msFieldGramPosition() += yyleng;
+"<="      { msTimeGramPosition() += yyleng;
             return LE; }
-"<"       { msFieldGramPosition() += yyleng;
+"<"       { msTimeGramPosition() += yyleng;
             return LT; }
-"&&"      { msFieldGramPosition() += yyleng;
+"&&"      { msTimeGramPosition() += yyleng;
             return AND; }
-"||"      { msFieldGramPosition() += yyleng;
+"||"      { msTimeGramPosition() += yyleng;
             return OR; }
-"!"       { msFieldGramPosition() += yyleng;
+"!"       { msTimeGramPosition() += yyleng;
             return NOT; }
-"^"       { msFieldGramPosition() += yyleng;
+"^"       { msTimeGramPosition() += yyleng;
             return POWER; }
-"*"       { msFieldGramPosition() += yyleng;
+"*"       { msTimeGramPosition() += yyleng;
             return TIMES; }
-"/"       { msFieldGramPosition() += yyleng;
+"/"       { msTimeGramPosition() += yyleng;
             return DIVIDE; }
-"%"       { msFieldGramPosition() += yyleng;
-            return MODULO; }
-"+"       { msFieldGramPosition() += yyleng;
+"%"       { msTimeGramPosition() += yyleng;
+            return PERCENT; }
+"+"       { msTimeGramPosition() += yyleng;
             return PLUS; }
-"{"       { msFieldGramPosition() += yyleng;
+"-"       { msTimeGramPosition() += yyleng;
+            return DASH; }
+"{"       { msTimeGramPosition() += yyleng;
             return LBRACE; }
-"}"       { msFieldGramPosition() += yyleng;
+"}"       { msTimeGramPosition() += yyleng;
             return RBRACE; }
-"'"       { msFieldGramPosition() += yyleng;
+"'"       { msTimeGramPosition() += yyleng;
             return SQUOTE; }
-","       { msFieldGramPosition() += yyleng;
+","       { msTimeGramPosition() += yyleng;
             return COMMA;
           }
 
  /* Literals */
-
-{FIELD} {
-            msFieldGramPosition() += yyleng;
-	    return FIELD;
-	  }
-{INT}     {
-            msFieldGramPosition() += yyleng;
-            lvalp->ival = atoi(MSFieldGramtext);
-            return INDEX;
-	  }
-{CODE}  {
-            msFieldGramPosition() += yyleng;
-	    return CODE;
-	  }
-{NAME}  {
-            msFieldGramPosition() += yyleng;
-	    return NAME;
-	  }
 
 %%
 
