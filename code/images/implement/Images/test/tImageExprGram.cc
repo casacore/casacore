@@ -26,10 +26,14 @@
 //# $Id$
 
 #include <trial/Images/ImageExprParse.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/LCMask.h>
 #include <aips/Tables/Table.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Containers/Block.h>
@@ -46,8 +50,8 @@ main (int argc, char *argv[])
  try {
     Input inp(1);
     inp.Version(" ");
-    inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
-    inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.Create("nx", "10", "Number of pixels along the x-axis", "int");
+    inp.Create("ny", "10", "Number of pixels along the y-axis", "int");
     inp.ReadArguments(argc, argv);
 
     const uInt nx=inp.GetInt("nx");
@@ -63,19 +67,20 @@ main (int argc, char *argv[])
     Double hVal = 7.0;
     Bool aBoolVal = False;
     Bool bBoolVal = False;
-    ArrayLattice<Double> a(IPosition (2,nx,ny));
-    ArrayLattice<Bool> aBool(IPosition (2,nx,ny));
+    IPosition shape(2, nx, ny);
+    ArrayLattice<Double> a(shape);
+    ArrayLattice<Bool> aBool(shape);
     a.set(aVal);
     aBool.set(aBoolVal);
     {
-	PagedArray<Double> b(IPosition (2,nx,ny), "b");
-	PagedArray<Double> c(IPosition (2,nx,ny), "c");
-	PagedArray<Double> d(IPosition (2,nx,ny), "d");
-	PagedArray<Double> e(IPosition (2,nx,ny), "e");
-	PagedArray<Double> f(IPosition (2,nx,ny), "f");
-	PagedArray<Double> g(IPosition (2,nx,ny), "g");
-	PagedArray<Double> h(IPosition (2,nx,ny), "h");
-	PagedArray<Bool> bBool(IPosition (2,nx,ny), "bBool");
+	PagedArray<Double> b(shape, "b");
+	PagedArray<Double> c(shape, "c");
+	PagedArray<Double> d(shape, "d");
+	PagedArray<Double> e(shape, "e");
+	PagedArray<Double> f(shape, "f");
+	PagedArray<Double> g(shape, "g");
+	PagedArray<Double> h(shape, "h");
+	PagedArray<Bool> bBool(shape, "bBool");
 	
 	b.set(bVal);
 	c.set(cVal);
@@ -87,8 +92,8 @@ main (int argc, char *argv[])
 	bBool.set(bBoolVal);
     }
 
-    Array<Double> aArr(a.shape());
-    Array<Bool> aBoolArr(aBool.shape());
+    Array<Double> aArr(shape);
+    Array<Bool> aBoolArr(shape);
 
   {
     cout << endl;
@@ -96,7 +101,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr (ImageExprParse::command ("1.0"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = 1.0;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -109,7 +114,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("b"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = bVal;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result  << endl;
@@ -122,7 +127,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("sin(\\c)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = sin(cVal);
     if (! allEQ (aArr, sin(cVal))) {
 	cout << "Result should be " << result << endl;
@@ -136,7 +141,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("'c'+2"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = cVal+2;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -145,7 +150,7 @@ main (int argc, char *argv[])
     }
   }
   {
-    cout << "Expr:  a = b+('c'+d)     (using $n notation)" << endl;
+    cout << "Expr:  a = b+('c'+d)[region]     (using $n notation)" << endl;
     PagedArray<Double> b("b");
     PagedArray<Double> c("c");
     PagedArray<Double> d("d");
@@ -153,11 +158,68 @@ main (int argc, char *argv[])
     temps[0] = LatticeExprNode(b);
     temps[1] = LatticeExprNode(c);
     temps[2] = LatticeExprNode(d);
-    LatticeExpr<Double> expr(ImageExprParse::command ("$1+($2+$3)", temps));
+    PtrBlock<const ImageRegion*> regions(1);
+    regions[0] = new ImageRegion(LCBox(shape));
+    LatticeExpr<Double> expr(ImageExprParse::command ("$1+($2+$3)[$REGION#1]",
+						      temps, regions));
+    delete regions[0];
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = bVal + cVal + dVal;
+    if (! allEQ (aArr, result)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr.ac() << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = nelements(b[$region]" << endl;
+    Block<LatticeExprNode> temps(0);
+    PtrBlock<const ImageRegion*> regions(1);
+    Matrix<Bool> mask(shape-1);
+    mask = False;
+    mask(0,0) = True;
+    regions[0] = new ImageRegion(LCMask(mask,LCBox(IPosition(2,0),
+						   shape-2, shape)));
+    LatticeExpr<Double> expr(ImageExprParse::command ("nelements(b[$REGION#1])",
+						      temps, regions));
+    delete regions[0];
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = 1;
+    if (! allEQ (aArr, result)) {
+	cout << "Result should be " << result << endl;
+	cout << "Result is " << aArr.ac() << endl;
+	foundError = True;
+    }
+  }
+  {
+    cout << "Expr:  a = nelements(b[$region1 || $region2) - "
+	    "length(b[$region1],1)" << endl;
+    Block<LatticeExprNode> temps(0);
+    PtrBlock<const ImageRegion*> regions(2);
+    Matrix<Bool> mask1(shape-1);
+    Matrix<Bool> mask2(shape-1);
+    mask1 = False;
+    mask2 = False;
+    mask1(0,0) = True;
+    mask2(shape-2) = True;
+    regions[0] = new ImageRegion(LCMask(mask1,LCBox(IPosition(2,0),
+						    shape-2, shape)));
+    regions[1] = new ImageRegion(LCMask(mask2,LCBox(IPosition(2,0),
+						    shape-2, shape)));
+    LatticeExpr<Double> expr(ImageExprParse::command
+			     ("nelements(b[$REGION#1 || $REGION#2]) - "
+			      "length(b[$REGION#1],1)",
+			      temps, regions));
+    delete regions[0];
+    delete regions[1];
+    a.copyData(expr);
+    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = 2 - (shape(0)-1);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr.ac() << endl;
@@ -171,7 +233,7 @@ main (int argc, char *argv[])
                ("(3.5*b) + (cos('c')) - (10/min('c',d)*(-e)*log(b)) - (pi()) "));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = 3.5*bVal + cos(cVal) -
 	            10/min(cVal,dVal)*-eVal*log(bVal) - C::pi;
     if (! allEQ (aArr, result)) {
@@ -186,7 +248,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("(b+'c'-d/2.0*-b)+pi()"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = (bVal + cVal - dVal / 2*-bVal) + C::pi;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -200,7 +262,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("pow('c',d)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = pow(cVal,dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -214,7 +276,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("fmod('c'*2,d)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = fmod(cVal*2,dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -228,7 +290,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("pow('c',2.3)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = pow(cVal,2.3);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -242,7 +304,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("cos(b)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = cos(bVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -256,7 +318,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr (ImageExprParse::command ("cos(sin(b))"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = cos(sin(bVal));
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -270,8 +332,8 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("ntrue(b>=1)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = a.shape().product();
+	       shape, IPosition(aArr.ndim(),1));
+    Double result = shape.product();
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr.ac() << endl;
@@ -284,7 +346,7 @@ main (int argc, char *argv[])
     LatticeExpr<Bool> expr(ImageExprParse::command ("T||F"));
     aBool.copyData(expr);
     aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
-		   aBoolArr.shape(), IPosition(aBoolArr.ndim(),1));
+		   shape, IPosition(aBoolArr.ndim(),1));
     Bool result = ToBool(True||False);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -298,7 +360,7 @@ main (int argc, char *argv[])
     LatticeExpr<Bool> expr(ImageExprParse::command ("!bBool"));
     aBool.copyData(expr);
     aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
-		   aBoolArr.shape(), IPosition(aBoolArr.ndim(),1));
+		   shape, IPosition(aBoolArr.ndim(),1));
     Bool result = ToBool(!bBoolVal);
     if (! allEQ (aBoolArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -313,7 +375,7 @@ main (int argc, char *argv[])
 	          ("sum(e)/nelements(b) + min('c') + max('c', mean('c'+d))"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = eVal+cVal+(cVal+dVal);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -328,7 +390,7 @@ main (int argc, char *argv[])
 	          ("sum(e[bBool])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = (bBoolVal  ?  aArr.nelements()*eVal : 0);
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
@@ -343,10 +405,10 @@ main (int argc, char *argv[])
 	          ("sum((e + sum(f[b>0]*c)/d)[!bBool])"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = (bVal>0  ?  aArr.nelements()*fVal*cVal/dVal : 0);
     result = (bBoolVal  ?  0 : aArr.nelements()*(eVal+result));
-    if (! allEQ (aArr, result)) {
+    if (! allNear (aArr, result, 1e-10)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr.ac() << endl;
 	foundError = True;
@@ -354,7 +416,7 @@ main (int argc, char *argv[])
   }
   {
     {
-	PagedArray<Double> ap (a.shape(), "a");
+	PagedArray<Double> ap (shape, "a");
 	ap.copyData (a);
     }
     cout << "Expr:  a = min(a+10,5)" << endl;
@@ -362,7 +424,7 @@ main (int argc, char *argv[])
     LatticeExpr<Double> expr(ImageExprParse::command ("min(a+10,5)"));
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
+	       shape, IPosition(aArr.ndim(),1));
     Double result = 5;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
