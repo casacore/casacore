@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/TableMeasures/TableQuantumDesc.h>
-#include <trial/TableMeasures/ScalarQuantColumn.h>
-#include <trial/TableMeasures/ArrayQuantColumn.h>
+#include <aips/TableMeasures/TableQuantumDesc.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/TableMeasures/ArrayQuantColumn.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Measures/MEpoch.h>

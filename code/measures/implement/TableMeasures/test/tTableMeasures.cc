@@ -25,13 +25,13 @@
 //#
 //# $Id$
 
-#include <trial/TableMeasures/ScalarMeasColumn.h>
-#include <trial/TableMeasures/ArrayMeasColumn.h>
-#include <trial/TableMeasures/TableMeasValueDesc.h>
-#include <trial/TableMeasures/TableMeasOffsetDesc.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
-#include <trial/TableMeasures/ArrayQuantColumn.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ArrayMeasColumn.h>
+#include <aips/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/TableMeasOffsetDesc.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/TableMeasDesc.h>
+#include <aips/TableMeasures/ArrayQuantColumn.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
