@@ -99,6 +99,10 @@ ImageHistograms<T>::ImageHistograms (const ImageInterface<T>& image,
    } else {
       goodParameterStatus_p = False;
    }
+
+// Avoid double deletion by LogIO::cleanup
+   os_p.makePermanent();
+
 }
 
 
