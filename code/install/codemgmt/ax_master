@@ -6096,3 +6096,4 @@
 17 151 src rm admin/system/aips2-inhale.list
 17 151 src rm admin/system/aips2-lib.list
 17 151 src rm admin/system/aips2-modulebosses.list
+17 151 src rm admin/system/aips2-multibeam.list
