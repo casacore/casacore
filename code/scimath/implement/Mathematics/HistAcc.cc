@@ -1,5 +1,5 @@
 //# HistAcc.cc: Statistics Accumulator
-//# Copyright (C) 1996,1998,1999,2001
+//# Copyright (C) 1996,1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,7 +202,7 @@ void HistAcc<T>::autoDefineBins ()
 	T width = itsUserDefinedBinWidth; // use if defined
 	Int k = 0;
 	if (width <= 0) {                 // if not defined
-	    width = (high - low)/11;      // default: 11 bins?     
+	    width = T((high - low)/11);   // default: 11 bins?     
 	    if (width <= 0) {             // if still not OK
 		width = 1;                // ....?
 	    } else {
@@ -216,7 +216,7 @@ void HistAcc<T>::autoDefineBins ()
 		    if (width < q1) {q1 = q/5;}
 		    if (width >= q1) {
 			k = Int((width+q1/2)/q1);      // truncate
-			width = k * q1;
+			width = T(k * q1);
 			break;                    // escape
 		    }
 		}
@@ -231,7 +231,7 @@ void HistAcc<T>::autoDefineBins ()
 	low = (k-1) * width;              // adjust highest bin
 	
 	// Go ahead:
-	defineBins(low,high,width);       // define the bins
+	defineBins(T(low),T(high),width); // define the bins
 	clearBuffer();                    // transfer values to bins
     }
 }
@@ -475,7 +475,7 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
 { 
     if (itsAutoDefineMode) {autoDefineBins();}
 
-    long flags = os.flags();         // save current setting
+    ios::fmtflags flags = os.flags();         // save current setting
     os << " " << endl;               // skip line
     os << " Histogram: " << caption << endl; 
     uInt pv = 3;                     // precision for bin values
