@@ -29,10 +29,12 @@
 #include <trial/Images/ImageUtilities.h>
 
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>
-#include <aips/Arrays/IPosition.h>
+#include <aips/Tables/Table.h>
+#include <aips/Tables/TableInfo.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/SkyComponent.h>
@@ -41,7 +43,53 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Unit.h>
+#include <aips/OS/RegularFile.h>
+#include <aips/IO/RegularFileIO.h>
 
+
+ImageUtilities::ImageTypes ImageUtilities::imageType (const String& name)
+{
+  File file(name);
+  if (file.isDirectory()) {
+    if (Table::isReadable(name)) {
+      TableInfo info = Table::tableInfo (name);
+      if (info.type() == TableInfo::type(TableInfo::PAGEDIMAGE)) {
+	return AIPSPP;
+      }
+    } else {
+      if (File(name + "/header").isRegular()  &&
+	  File(name + "/image").isRegular()) {
+	return MIRIAD;
+      }
+    }
+  } else if (file.isRegular()) {
+    // Find file type.
+    String base = file.path().baseName();
+    Int i;
+    for (i=base.length()-1; i>0; i--) {
+      if (base[i] == '.') {
+	break;
+      }
+    }
+    if (i > 0  &&  base.after(i) == "image") {
+      String descName = file.path().dirName() + '/' +
+	                base.before(i) + ".descr";
+      if (File(descName).isRegular()) {
+	return GIPSY;
+      }
+    }
+    RegularFileIO fio((RegularFile(file)));
+    char buf[2880];
+    Int nread = fio.read (2880, buf, False);
+    if (nread == 2880) {
+      String str(buf, 80);
+      if (str.matches (Regex("^SIMPLE *= *T"))) {
+	return FITS;
+      }
+    }
+  }
+  return UNKNOWN;
+}
   
 
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
