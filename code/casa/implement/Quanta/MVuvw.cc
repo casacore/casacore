@@ -34,7 +34,6 @@ typedef Quantum<Double> gpp_mvuvw_bug1;
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/Euler.h>

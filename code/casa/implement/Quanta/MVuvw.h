@@ -175,16 +175,6 @@ public:
   MVuvw operator-(const MVuvw &right) const;
   // </group>
   
-/*///  // Multiplication with rotation matrix (see also global functions)
-  // <group>
-  MVuvw &operator*=(const RotMatrix &right);
-  // </group>
-  
-  // Multiplication with constant
-  // <group>
-  MVuvw &operator*=(Double right);
-  // </group>
-  *///
   //# General Member Functions
   
   // Tell me your type

@@ -33,9 +33,7 @@ typedef Quantum<Double> gpp_mvBaseline_bug1;
 #include <trial/Measures/MVBaseline.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Math.h>
-#include <aips/Utilities/Assert.h>
 #include <aips/RTTI/Register.h>
-#include <aips/Measures/MVPosition.h>
 #include <aips/Measures/RotMatrix.h>
 #include <aips/Measures/UnitVal.h>
 #include <aips/Measures/QMath.h>

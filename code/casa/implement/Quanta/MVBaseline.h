@@ -172,16 +172,6 @@ public:
   MVBaseline operator-(const MVBaseline &right) const;
   // </group>
   
-/*///  // Multiplication with rotation matrix (see also global functions)
-  // <group>
-  MVBaseline &operator*=(const RotMatrix &right);
-  // </group>
-  
-  // Multiplication with constant
-  // <group>
-  MVBaseline &operator*=(Double right);
-  // </group>
-  *///
   //# General Member Functions
   
   // Tell me your type
