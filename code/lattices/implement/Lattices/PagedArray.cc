@@ -1,5 +1,5 @@
 //# PagedArray.cc: this defines the PagedArray class
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -303,7 +303,7 @@ IPosition PagedArray<T>::doNiceCursorShape (uInt maxPixels) const
 {
   IPosition retval = tileShape();
   if (retval.product() > Int(maxPixels)) {
-    retval = Lattice<T>::niceCursorShape(maxPixels);
+    retval = Lattice<T>::doNiceCursorShape(maxPixels);
   }
   return retval;
 }
