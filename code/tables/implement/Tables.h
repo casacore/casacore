@@ -1024,7 +1024,7 @@
 //   <linkto class="MemoryStMan:description">MemoryStMan</linkto>
 //   holds the data in memory. It means that data 'stored' with this
 //   storage manager are NOT persistent.
-//   <br>This storage manager is primarily meant for tables held in\
+//   <br>This storage manager is primarily meant for tables held in
 //   memory, but it can also be useful for temporary columns in
 //   normal tables. Note, however, that when a table is accessed
 //   concurrently from multiple processes, MemoryStMan data cannot be
