@@ -556,6 +556,7 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(FLEX) ; $(CheckExe)
     endif
+	-@ echo "MKSO    =$(MKSO)"
 	-@ echo "AR      =$(AR)"
     ifdef DO_TEST
 	-@ set SERIOUS $(AR) ; $(CheckExe)
