@@ -26,6 +26,8 @@
 //# $Id$
 //   
 
+#include <trial/Images/ImageMoments.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -57,20 +59,18 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/MomentCalculator.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LCPagedMask.h>
 #include <trial/Lattices/TiledLineStepper.h>
 #include <trial/Tasking/PGPlotter.h>
 #include <trial/Tasking/NewFile.h>
 
 #include <strstream.h>
 #include <iomanip.h>
-
-#include <trial/Images/ImageMoments.h>
-
-
 
 
 template <class T> 
@@ -79,6 +79,7 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
                                Bool overWriteOutput,
                                Bool showProgressU)
 : os_p(os),
+  pInImage_p(0),
   showProgress_p(showProgressU),
   momentAxisDefault_p(-10),
   peakSNR_p(T(3)),
@@ -97,9 +98,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
   noExclude_p(True),
   fixedYLimits_p(False),
   overWriteOutput_p(overWriteOutput)
-//
-// Constructor. 
-//
 {
    momentAxis_p = momentAxisDefault_p;
    moments_p.resize(1);
@@ -119,84 +117,24 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
 
 template <class T>
 ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
-: os_p(other.os_p),
-  showProgress_p(other.showProgress_p),
-  momentAxisDefault_p(other.momentAxisDefault_p),
-  peakSNR_p(other.peakSNR_p),
-  stdDeviation_p(other.stdDeviation_p),
-  yMin_p(other.yMin_p),
-  yMax_p(other.yMax_p),
-  out_p(other.out_p),
-  psfOut_p(other.psfOut_p),
-  smoothOut_p(other.smoothOut_p),
-  goodParameterStatus_p(other.goodParameterStatus_p),
-  doWindow_p(other.doWindow_p),
-  doFit_p(other.doFit_p),
-  doAuto_p(other.doAuto_p),
-  doSmooth_p(other.doSmooth_p),
-  noInclude_p(other.noInclude_p),
-  noExclude_p(other.noExclude_p),
-  fixedYLimits_p(other.fixedYLimits_p),
-  momentAxis_p(other.momentAxis_p),  
-  worldMomentAxis_p(other.worldMomentAxis_p),
-  kernelTypes_p(other.kernelTypes_p),
-  kernelWidths_p(other.kernelWidths_p),
-  nxy_p(other.nxy_p),
-  moments_p(other.moments_p),
-  selectRange_p(other.selectRange_p),
-  smoothAxes_p(other.smoothAxes_p),
-  pInImage_p(other.pInImage_p),
-  plotter_p(other.plotter_p),
-  overWriteOutput_p(other.overWriteOutput_p)
-//
-// Copy constructor
-//
-{}
+: pInImage_p(0)
+{
+   operator=(other);
+}
 
 template <class T>
 ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
-: os_p(other.os_p),
-  showProgress_p(other.showProgress_p),
-  momentAxisDefault_p(other.momentAxisDefault_p),
-  peakSNR_p(other.peakSNR_p),
-  stdDeviation_p(other.stdDeviation_p),
-  yMin_p(other.yMin_p),
-  yMax_p(other.yMax_p),
-  out_p(other.out_p),
-  psfOut_p(other.psfOut_p),
-  smoothOut_p(other.smoothOut_p),
-  goodParameterStatus_p(other.goodParameterStatus_p),
-  doWindow_p(other.doWindow_p),
-  doFit_p(other.doFit_p),
-  doAuto_p(other.doAuto_p),
-  doSmooth_p(other.doSmooth_p),
-  noInclude_p(other.noInclude_p),
-  noExclude_p(other.noExclude_p),
-  fixedYLimits_p(other.fixedYLimits_p),
-  momentAxis_p(other.momentAxis_p),
-  worldMomentAxis_p(other.worldMomentAxis_p),
-  kernelTypes_p(other.kernelTypes_p),
-  kernelWidths_p(other.kernelWidths_p),
-  nxy_p(other.nxy_p),
-  moments_p(other.moments_p),
-  selectRange_p(other.selectRange_p),
-  smoothAxes_p(other.smoothAxes_p),
-  pInImage_p(other.pInImage_p),
-  plotter_p(other.plotter_p),
-  overWriteOutput_p(other.overWriteOutput_p)
-//
-// Copy constructor
-//
-{}
-
+: pInImage_p(0)
+{
+   operator=(other);
+}
 
 
 template <class T> 
 ImageMoments<T>::~ImageMoments ()
-//
-// Destructor does nothing
-//
-{}
+{
+   delete pInImage_p;
+}
 
 
 template <class T>
@@ -207,11 +145,11 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 {
    if (this != &other) {
       
-// Assign to image pointer
-      
-      pInImage_p = other.pInImage_p;  
-      
-
+// Deal with image pointer
+ 
+      if (pInImage_p!=0) delete pInImage_p;
+      pInImage_p = other.pInImage_p->cloneII();
+ 
 // Do the rest
       
       os_p = other.os_p;
@@ -266,14 +204,14 @@ Bool ImageMoments<T>::setNewImage(ImageInterface<T>& image)
        os_p << LogIO::SEVERE << "Moments can only be evaluated from images of type : " <<
          TpFloat << " and " << TpDouble << LogIO::POST;
       goodParameterStatus_p = False;
-      pInImage_p = 0;
       return False;
    }
 
-// Assign pointer 
-
-   pInImage_p = &image;
-
+// Make a clone of the image   
+    
+   if (pInImage_p!=0) delete pInImage_p;
+   pInImage_p = image.cloneII();
+//
    return True;
 }
 
@@ -836,7 +774,6 @@ Bool ImageMoments<T>::createMoments()
 
 
 // Create table to map input to output axes
-
          
    uInt i, j;
    uInt  inDim = pInImage_p->ndim();
@@ -862,7 +799,6 @@ Bool ImageMoments<T>::createMoments()
          os_p << LogIO::SEVERE << "Error convolving image" << LogIO::POST;
          return False;
       }
-
 
 // Find the auto Y plot range.   The smooth & clip and the window
 // methods only plot the smoothed data.
@@ -902,8 +838,6 @@ Bool ImageMoments<T>::createMoments()
    IPosition outImageShape(outDim);
    for (j=0; j<outDim; j++) outImageShape(j) = pInImage_p->shape()(ioMap(j));
 
-//   cout << "In  shape = " <<  pInImage_p->shape() << endl;
-//   cout << "Out shape = " << outImageShape << endl;
 
 // Account for removal of the collapsed moment axis in the coordinate system.  
 
@@ -986,7 +920,6 @@ Bool ImageMoments<T>::createMoments()
         }
       }
    } 
-
 
 
 // If the user is using the automatic, non-fitting window method, they need
@@ -1250,6 +1183,53 @@ Bool ImageMoments<T>::checkMethod ()
    return True;   
 }
 
+
+template <class T> 
+void ImageMoments<T>::copyAndZero(ImageInterface<T>& out,
+                                  LCPagedMask& maskOut,
+                                  ImageInterface<T>& in)
+//
+// If in is masked, out will be too
+//
+{
+   if (in.isMasked()) {
+      LatticeIterator<T> outIter(out);
+      Bool deleteDataIn, deleteMaskIn, deleteDataOut;
+      Array<T> dataIn(outIter.woCursor().shape());
+      Array<Bool> maskIn(outIter.woCursor().shape());
+//
+      outIter.reset();
+      IPosition shape;
+      while (!outIter.atEnd()) {
+         shape = outIter.woCursor().shape();        
+         if (!dataIn.shape().isEqual(shape)) dataIn.resize(shape);
+         if (!maskIn.shape().isEqual(shape)) maskIn.resize(shape);
+//
+         in.getSlice(dataIn, outIter.position(), shape);
+         in.getMaskSlice(maskIn, outIter.position(), shape);
+//
+         const T* pDataIn = dataIn.getStorage(deleteDataIn);
+         const Bool* pMaskIn = maskIn.getStorage(deleteMaskIn);
+//
+         Array<T>& dataOut = outIter.woCursor();
+         T* pDataOut = dataOut.getStorage(deleteDataOut);
+//
+         for (uInt i=0; i<shape.nelements(); i++) {
+            pDataOut[i] = pDataIn[i];
+            if (pMaskIn[i]) pDataOut[i] = 0.0;
+         }
+         maskOut.putSlice(maskIn, outIter.position());         
+//
+         dataIn.freeStorage(pDataIn, deleteDataIn);
+         maskIn.freeStorage(pMaskIn, deleteMaskIn);
+         dataOut.putStorage(pDataOut, deleteDataOut);
+//
+         outIter++;
+      }
+   } else {
+      out.copyData(in);
+   }
+}
 
 template <class T> 
 void ImageMoments<T>::drawHistogram (const Vector<T>& x,
@@ -1586,7 +1566,9 @@ template <class T>
 
 ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 //
-// Smooth image.  
+// Smooth image.   Input masked pixels are zerod before smoothing.
+// The output smoothed image is masked as well to reflect
+// the input mask.
 //
 // Output
 //   pSmoothedImage Pointer to smoothed Lattice
@@ -1655,20 +1637,37 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
 //
       smoothName = smoothOut_p;
    }
-   PagedImage<T> smoothedImage(pInImage_p->shape(), 
+
+   PagedImage<T>* pSmoothedImage = new PagedImage<T>(pInImage_p->shape(), 
                                pInImage_p->coordinates(), smoothName);
-   smoothedImage.setMiscInfo(pInImage_p->miscInfo());
+   pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
    if (!smoothOut_p.empty()) {
       os_p << LogIO::NORMAL << "Created " << smoothName << LogIO::POST;
    }
 
-// First copy input to output 
+// Give it a mask if the input image is masked
 
-   smoothedImage.copyData(*pInImage_p);
+   LCPagedMask* pMask = 0;
+   if (pInImage_p->isMasked()) {
+      pMask = new LCPagedMask(RegionHandler::makeMask(*pSmoothedImage, "mask0"));
+   }
 
-// Create SubImage which can handle masks
+// First copy input to output. We must replace masked pixels
+// by zeros.  We also set the output mask to the input mask
 
-   SubImage<T>* smoothedSubImagePtr = new SubImage<T>(smoothedImage, True);
+   if (pInImage_p->isMasked()) {
+      copyAndZero(*pSmoothedImage, *pMask, *pInImage_p);
+   }
+
+//
+// Make the mask known to the image
+//
+   if (pMask!=0) {
+      pSmoothedImage->defineRegion ("mask0", ImageRegion(*pMask), 
+                                    RegionHandler::Masks);
+      pSmoothedImage->setDefaultMask(String("mask0"));
+      delete pMask;
+   }
 
 // Smooth in situ.  PSF is separable so convolve by rows for each axis.  
 
@@ -1677,10 +1676,10 @@ ImageInterface<T>* ImageMoments<T>::smoothImage (String& smoothName)
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
          Vector<T> psfRow = psfSep.column(i);
          psfRow.resize(psf.shape()(i),True);
-         smoothProfiles (*smoothedSubImagePtr, i, psfRow);
+         smoothProfiles (*pSmoothedImage, i, psfRow);
       }
    }
-   return smoothedSubImagePtr;
+   return pSmoothedImage;
 }
 
 
@@ -1754,7 +1753,7 @@ Bool ImageMoments<T>::setIncludeExclude (Vector<T>& range,
 
 
 template <class T> 
-void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
+void ImageMoments<T>::smoothProfiles (ImageInterface<T>& in,
                                       const Int& axis,
                                       const Vector<T>& psf)
 //
@@ -1778,14 +1777,12 @@ void ImageMoments<T>::smoothProfiles (MaskedLattice<T>& in,
                                         String(""), String(""),
                                         True, max(1,Int(nMax/20)));
   }
-
-
+//
   TiledLineStepper navIn(in.shape(),
 			 in.niceCursorShape(in.maxPixels()),
 			 axis);
   LatticeIterator<T> inIt(in, navIn);
   Vector<T> result(in.shape()(axis));
-
   IPosition sh(1, in.shape()(axis));  
   Convolver<T> conv(psf, sh);
 
