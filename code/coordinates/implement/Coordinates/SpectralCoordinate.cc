@@ -662,21 +662,21 @@ String SpectralCoordinate::format(String& units,
                                   Coordinate::formatType format,
                                   Double worldValue,
                                   uInt worldAxis,
-                                  Bool absolute,
-                                  Int precision,
-                                  Bool native) 
+                                  Bool isAbsolute,
+                                  Bool showAsAbsolute,
+                                  Int precision)
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
     
 // Check format
                                    
    Coordinate::formatType form = format;
-   checkFormat (form, absolute);
+   checkFormat (form, showAsAbsolute);
                                    
 // Set default precision
                                    
    Int prec = precision;
-   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+   if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
 
 // If units are empty used preferred unit.   
 // If given units are not consistent with native units
@@ -685,10 +685,10 @@ String SpectralCoordinate::format(String& units,
   
    static Unit unitsHZ(String("Hz"));      
    static Unit unitsKMS(String("km/s"));      
-   static Quantum<Double> velocity;
-   static Quantum<Double> freq;
+   static Quantum<Double> qVel;
+   static Quantum<Double> qFreq;
+   static Vector<Double> world;
 //
-   Double value = worldValue;
    String nativeUnit = worldAxisUnits()(worldAxis);
    if (units.empty()) {
       if (prefSpecUnit_p.empty()) {      
@@ -698,51 +698,74 @@ String SpectralCoordinate::format(String& units,
       }
    }
 //
-   if (units != nativeUnit) {
-      Unit unit(units);
-      if (unit != unitsHZ) {
-         if (unit == unitsKMS) {
+   String theString;
+   Unit unit(units);
+   if (unit != unitsHZ) {
 
-// Requested unit is consistent with km/s. Convert
+// Requested unit is not consistent with Hz.  
 
-           String t(units);
-           if (!frequencyToVelocity (velocity, value,
-                                     t, prefVelType_p)) {
-              throw(AipsError(errorMessage()));
-           }
-           value = velocity.getValue();
-         } else {
-           throw(AipsError("Requested units are invalid for a SpectralCoordinate"));
+      if (unit != unitsKMS) {
+        throw(AipsError("Requested units are invalid for a SpectralCoordinate"));
+      }
+
+// Requested unit is consistent with km/s
+
+      if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
+      String tunits(units);
+
+// We must convert to absolute first (regardless of how we want
+// to see the value) as we are formatting in km/s
+
+      if (!isAbsolute) {
+         world = 0.0;
+         world(worldAxis) = worldValue; 
+         makeWorldAbsolute(world);
+         worldValue = world(worldAxis);
+      }
+//
+      if (showAsAbsolute) {
+         if (!frequencyToVelocity (qVel, worldValue,
+                                   tunits, prefVelType_p)) {
+            theString = "Fail";
+            return theString;
          }
+         worldValue = qVel.getValue();
       } else {
 
-// Requested unit is consistent with Hz. Convert
+// Find relative coordinate in km/s consistent units
 
-        freq.setValue(value);
-        freq.setUnit(Unit(nativeUnit));
-        value = freq.getValue(unit);
+         static Vector<Double> vel(2), freq2(2);
+         freq2(0) = referenceValue()(worldAxis);
+         freq2(1) = worldValue;
+         if (!frequencyToVelocity(vel, freq2, tunits, prefVelType_p)) {
+            theString = "Fail";
+            return theString;
+         }
+         worldValue = vel(1) - vel(0);           // rel = abs - ref
       }
+//
+      ostrstream oss;
+      if (form == Coordinate::SCIENTIFIC) {
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         oss << worldValue;  
+      } else if (form == Coordinate::FIXED) {
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(prec);
+         oss << worldValue;
+      }
+      theString = String(oss);
+   } else {
+      theString = Coordinate::format(units, form, worldValue, worldAxis,
+                                     isAbsolute, showAsAbsolute, precision);
    }
 //
-   ostrstream oss;
-   if (form == Coordinate::SCIENTIFIC) {
-      oss.setf(ios::scientific, ios::floatfield);
-      oss.precision(prec);
-      oss << value;  
-   } else if (form == Coordinate::FIXED) {
-      oss.setf(ios::fixed, ios::floatfield);
-      oss.precision(prec);
-      oss << value;
-   }
-//
-   return String(oss);
+   return theString;
 }
   
 
 void SpectralCoordinate::checkFormat(Coordinate::formatType& format,
                                      const Bool ) const
-//
-//
 {  
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
