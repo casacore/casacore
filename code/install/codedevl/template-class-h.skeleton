@@ -62,11 +62,6 @@
 #if !defined(<AIPS_CLASSFILENAME_H>)
 #define <AIPS_CLASSFILENAME_H>
 
-//#! The following is only needed if the class(es) are templated. Remove otherwise.
-#if defined(_AIX)
-#pragma implementation ("<ClassFileName>.cc")
-#endif
-
 //# Forward Declarations
 
 // <summary>

@@ -244,15 +244,6 @@
 #if !defined(<AIPS_GLOBAL_FUNCTION_FILENAME_H>)
 #define <AIPS_GLOBAL_FUNCTION_FILENAME_H>
 
-//#! Some compilers have quirks, especially with regard to template
-//#! instantiation.  One of these is the IBM AIX compiler, which needs
-//#! to be told where to find the file containing the definition of the
-//#! functions declared by your header file.  Make the appropriate
-//#! substitution for <ClassFileName> here:
-#if defined(_AIX)
-#pragma implementation ("<GlobalFunctionFileName>.cc")
-#endif
-
 //#! Includes go here
 
 //# Forward Declarations

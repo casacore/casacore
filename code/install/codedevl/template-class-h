@@ -249,16 +249,6 @@
 #if !defined(<AIPS_CLASSFILENAME_H>)
 #define <AIPS_CLASSFILENAME_H>
 
-//#! The following is only needed if the class(es) are templated. Remove otherwise.
-//#! Some compilers have quirks, especially with regard to template
-//#! instantiation.  One of these is the IBM AIX compiler, which needs
-//#! to be told where to find the file containing the definition of the
-//#! class declared by your header file.  Make the appropriate substitution
-//#! for <ClassFileName> here:
-#if defined(_AIX)
-#pragma implementation ("<ClassFileName>.cc")
-#endif
-
 //#! Includes go here
 
 //# Forward Declarations
