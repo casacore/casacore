@@ -32,6 +32,8 @@
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayIO.h>
+#include <aips/Lattices/IPosition.h>
+#include <aips/Lattices/Slicer.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 
@@ -530,6 +532,46 @@ TableExprNodeSet::TableExprNodeSet()
   itsDiscrete      (True),
   itsBounded       (True)
 {}
+
+TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
+: TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
+  itsSingle        (True),
+  itsDiscrete      (True),
+  itsBounded       (True)
+{
+    uInt n = indices.nelements();
+    itsElems.resize (n);
+    for (uInt i=0; i<n; i++) {
+	itsElems[i] = new TableExprNodeSetElem (TableExprNode (indices(i)));
+    }
+}
+
+TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
+: TableExprNodeRep (NTDouble, VTSet, OtUndef, 0),
+  itsSingle        (False),
+  itsDiscrete      (True),
+  itsBounded       (True)
+{
+    TableExprNode start;
+    TableExprNode end;
+    TableExprNode* startp;
+    TableExprNode* endp;
+    uInt n = indices.ndim();
+    itsElems.resize (n);
+    for (uInt i=0; i<n; i++) {
+	startp = endp = 0;
+	if (indices.start()(i) != Slicer::MimicSource) {
+	    start = TableExprNode (indices.start()(i));
+	    startp = &start;
+	}
+	if (indices.end()(i) != Slicer::MimicSource) {
+	    end = TableExprNode (indices.end()(i));
+	    endp = &end;
+	}
+	TableExprNode incr (indices.stride()(i));
+	itsElems[i] = new TableExprNodeSetElem (startp, endp, &incr);
+    }
+}
 
 TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
 : TableExprNodeRep (elem.dataType(), VTSet, OtUndef, 0),
