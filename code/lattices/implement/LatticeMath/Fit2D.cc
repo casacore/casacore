@@ -147,7 +147,8 @@ uInt Fit2D::addModel (Fit2D::Types type,
       }
 //
 // Set parameters.  0 (flux), 1 (x), 2 (y), 3 (major), 4 (minor), 
-// 5 (pa - in radians and positive CCW from vertical.
+// 5 (pa - in radians).  
+// Convert p.a. from posititive +y -> +x to +y -> -x for Gaussian2D
 //
       for (uInt i=0; i<gauss2d.nAvailableParams(); i++) {
          if (i==4) {
@@ -157,7 +158,13 @@ uInt Fit2D::addModel (Fit2D::Types type,
             Double ratio = parameters(4) / parameters(3);
             gauss2d.setAvailableParam(i, AutoDiff<Double>(ratio));
          } else {
-            gauss2d.setAvailableParam(i, AutoDiff<Double>(parameters(i)));
+            if (i==5) {
+               Double pa = parameters(5) + C::pi_2;        // +y -> -x for Gaussian2D
+               piRange(pa);
+               gauss2d.setAvailableParam(i, AutoDiff<Double>(pa));
+            } else {
+               gauss2d.setAvailableParam(i, AutoDiff<Double>(parameters(i)));
+            }
          }
          gauss2d.setAvailableParamMask(i, parameterMask(i));
       }
@@ -432,6 +439,11 @@ void Fit2D::setExcludeRange (Double minVal, Double maxVal)
    itsInclude = False;
 }
 
+void Fit2D::resetRange()
+{
+   itsPixelRange.resize(0);
+}
+
 String Fit2D::type(Fit2D::Types type)
 {
    if (type==Fit2D::LEVEL) {
@@ -496,7 +508,7 @@ Vector<Double> Fit2D::availableSolution (uInt which)
 // 
 //  For Gaussian models, convert axial ratio to minor axis
 //  and fiddle position angle to be that of the major axis,
-//  positive CCW from the yaxis
+//  positive +x -> +y
 // 
 {
    if (!itsValidSolution) {
@@ -540,19 +552,16 @@ Vector<Double> Fit2D::availableSolution (uInt which)
       } else {
          major = abs(sol2(3)*sol2(4));
          minor = abs(sol2(3));
-//
-// The major axis pa will be off by 90deg
-//
-         pa = sol2(5) + C::pi_2;
+         pa = sol2(5) + C::pi_2;   // pa off by 90
       }
+//
+// Convert the position angle from positive 
+// +y -> -x to   positive +x -> +y
+//
       sol2(3) = major;
       sol2(4) = minor;
-//
-// Put in the range +/-pi (consistent with Gaussian2D)
-//
-      MVAngle pa2(pa);
-      pa2();
-      sol2(5) = pa2.radian();
+      sol2(5) = pa - C::pi_2;
+      piRange(sol2(5));
    }
 //
    return sol2;
@@ -665,8 +674,7 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
 // probabilistic approach from Miriad imfit.for   Only works
 // for single models.  Honours and inclusion/exclusion pixel range
 //
-// PA sign convention in pixel coordinate is +y -> -x is positive
-// (same as Gaussian2D.cc) and opposite to Miriad
+// PA sign convention in pixel coordinate is +x -> +y is positive
 //
 {
    if (type!=Fit2D::GAUSSIAN  && type==Fit2D::DISK) {
@@ -757,7 +765,8 @@ Vector<Double> Fit2D::estimate(Fit2D::Types type,
                         sqrt( square(XXP-YYP) + 4*square(XYP) )));
       parameters(4) = sqrt(fac*(XXP + YYP -
                        sqrt( square(XXP-YYP) + 4*square(XYP) )));
-      parameters(5) = -0.5*atan2(2*XYP,YYP-XXP);
+      parameters(5) = -0.5*atan2(2*XYP,YYP-XXP) + C::pi_2;           // +x -> +y
+      piRange(parameters(5));
 //
       Float sn = 1.0;
       if (SP<0) sn = -1.0;
@@ -957,13 +966,6 @@ Fit2D::ErrorTypes Fit2D::fit(const Vector<Double>& values,
 // Do the actual fit
 //
 {
-/*
-cout << "npoints=" << values << endl;
-cout << "norm=" << itsIsNormalized << endl;
-cout << "pars=" <<  getParams(0) << endl;
-cout << "values=" << values << endl;
-cout << "weights=" << weights << endl;
-*/
 
 // Set maximum number of iterations to 1000
  
@@ -1105,7 +1107,8 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
 Vector<Double> Fit2D::getAvailableSolution()  const
 //
 // Returns available parameters (adjustable plus fixed)
-// 
+// Position angle left in internal convention (+y -> -x)
+//
 {
    if (!itsValidSolution) {
       Vector<Double> tmp;
@@ -1130,5 +1133,13 @@ Vector<Double> Fit2D::getAvailableSolution()  const
    return sol2;
 } 
 
-
+void Fit2D::piRange (Double& pa) const
+//
+// Put angle in radians in range +/- pi
+//
+{
+    MVAngle pa2(pa);
+    pa2();
+    pa = pa2.radian();
+}
 
