@@ -1,5 +1,5 @@
 //# MSSourceIndex: index into a MeasurementSet SOURCE subtable
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #define AIPS_MSSOURCEINDEX_H
 
 #include <trial/MeasurementSets/MSTableIndex.h>
+#include <aips/MeasurementSets/MSSourceColumns.h>
 
 #include <aips/Containers/RecordField.h>
 
@@ -88,12 +89,22 @@ public:
   // access to the source ID key, throws an exception if isNull() is False
   Int &sourceId() {return *sourceId_p;}
 
-  // access to the spectral window ID key, throws an exception if isNull() is False
+  // access to the spectral window ID key, throws an 
+  // exception if isNull() is False
   Int &spectralWindowId() {return *spwId_p;}
+
+  // Match a source name or list of source names to a set of SOURCE_ID's
+  Vector<Int> matchSourceName(const String& name);
+  Vector<Int> matchSourceName(const Vector<String>& names);
+
 private:
+  // Pointer to local ROMSSourceColumns object
+  ROMSSourceColumns* msSourceCols_p;
+  
   RecordFieldPtr<Int> sourceId_p, spwId_p;
 
   void attachIds();
+
 };
 
 #endif
