@@ -1,5 +1,5 @@
 //# AutoDiffA.h: An automatic differentiating class for functions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,7 +153,7 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
   };
 
   // Assign one to another.
-  AutoDiff<T> &operator=(const AutoDiff<T> &other) {
+  AutoDiffA<T> &operator=(const AutoDiff<T> &other) {
     AutoDiff<T>::operator=(other);
     return *this;
   };
