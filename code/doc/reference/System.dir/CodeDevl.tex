@@ -1958,15 +1958,18 @@ respect to the use of spacing and \code{typedef}'d variables so that trivial
 duplications are automatically eliminated, and it warns of any non-trivial
 deviation from the canonical forms.
 
-\exe{reident} also converts each entry in the input to a fromatted multi-line
-output.
+\exe{reident} does not check for duplicate template definitions. The
+\exeref{duplicates} program is available for that purpose.
+
+\exe{reident} also converts each entry in the input to a formatted multi-line
+output that can be read by \exeref{mkinst}.
 
 If multiple files are specified they will be merged together.  One file may
 be specified as ``\file{-}'' to denote input from \file{stdin}.  Output is
-written to \file{templates} -- if the input came from \file{templates} it will
-be overwritten.
+written to \file{templates} or to \file{stdout} -- if the input came from
+\file{templates} it will be overwritten.
 
-Normally missing idents, idents specified as \code{0000} and the second and
+Missing idents, idents specified as less than \code{1000} and the second and
 subsequent occurrence of
 duplicate idents are replaced by a unique value for each \file{.cc} file.  If
 the \exe{-z} option is specified, all idents are replaced with an ascending
@@ -1975,8 +1978,9 @@ sequence starting at \code{1000} for each \file{.cc} file.
 The idents are incremented by \code{10} to allow manual insertion of new
 template declarations in the correct sequence.
 
-Comments in the templates file (lines beginning with ``\code{\#}'') will be
-collected at the top or bottom of the file in sort order.
+Comments in the templates file (lines beginning with ``\code{\#}'') will
+either stay at the top of the file, or stay tuned to the template definition
+line(s) they occur at.
 
 \subsection*{Options}
 
@@ -1984,6 +1988,9 @@ collected at the top or bottom of the file in sort order.
 \item[\exe{-z}]
    Replace all idents with an ascending sequence restarting at \code{1000} for
    each \file{.cc} file.
+\item[\exe{-t}]
+   Write the output to the terminal (\file{stdout}) in stead of
+   \file{./templates}. 
 \end{description}
 
 \subsection*{Notes}
