@@ -120,8 +120,12 @@ public:
   Bool getLAST(Double &tdb);
   // Get the LAST (in rad)
   Bool getLASTr(Double &tdb);
-  // Get J2000 coordinates (direction cosines)
+  // Get J2000 coordinates (direction cosines) and long/lat (rad)
+  // <group>
   Bool getJ2000(MVDirection &tdb);
+  Bool getJ2000Long(Double &tdb);
+  Bool getJ2000Lat(Double &tdb);
+  // </group>
   // Get B1950 coordinates (direction cosines)
   Bool getB1950(MVDirection &tdb);
   // Get apparent coordinates (direction cosines)
@@ -156,6 +160,8 @@ private:
   MVPosition *posITRFp;
   // Conversion to J2000
   void *dirConvJ2000;
+  // Longitude
+  Vector<Double> *j2000Longp;
   // J2000 coordinates
   MVDirection *dirJ2000p;
   // Conversion to B1950

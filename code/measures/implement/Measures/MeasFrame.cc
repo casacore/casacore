@@ -509,6 +509,18 @@ Bool MeasFrame::getJ2000(MVDirection &tdb) {
   return False; 
 }
 
+Bool MeasFrame::getJ2000Long(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetJ2000Long, tdb);
+  tdb = 0;
+  return False; 
+}
+
+Bool MeasFrame::getJ2000Lat(Double &tdb) {
+  if (rep && rep->mymcf) return rep->getdbl(rep->mymcf, GetJ2000Lat, tdb);
+  tdb = 0;
+  return False; 
+}
+
 Bool MeasFrame::getB1950(MVDirection &tdb) {
   if (rep && rep->mymcf) return rep->getmvdir(rep->mymcf, GetB1950, tdb);
   tdb = 0;

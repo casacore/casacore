@@ -50,7 +50,7 @@ MCFrame::MCFrame(MeasFrame &inf) :
   epConvTDB(0), epTDBp(0), 
   epConvLAST(0), epLASTp(0), 
   posConvLong(0), posLongp(0), posITRFp(0),
-  dirConvJ2000(0), dirJ2000p(0),
+  dirConvJ2000(0), j2000Longp(0), dirJ2000p(0),
   dirConvB1950(0), dirB1950p(0),
   dirConvApp(0), dirAppp(0),
   radConvLSR(0), radLSRp(0) {
@@ -74,6 +74,7 @@ MCFrame::~MCFrame() {
   delete posLongp;
   delete posITRFp;
   delete static_cast<MDirection::Convert *>(dirConvJ2000);
+  delete j2000Longp;
   delete dirJ2000p;
   delete static_cast<MDirection::Convert *>(dirConvB1950);
   delete dirB1950p;
@@ -123,7 +124,8 @@ void MCFrame::resetPosition() {
 }
 
 void MCFrame::resetDirection() {
-  if (dirJ2000p) {
+  if (j2000Longp) {
+    delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
   };
   if (dirB1950p) {
@@ -250,13 +252,49 @@ Bool MCFrame::getLASTr(Double &tdb) {
   return tmp;
 }
 
-Bool MCFrame::getJ2000(MVDirection &tdb) {
+Bool MCFrame::getJ2000Long(Double &tdb) {
   if (myf.direction()) {
-    if (!dirJ2000p) {
+    if (!j2000Longp) {
+      j2000Longp = new Vector<Double>(2);
       dirJ2000p = new MVDirection;
       *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
+      *j2000Longp = dirJ2000p->get();
+    };
+    tdb = j2000Longp->operator()(0);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getJ2000Lat(Double &tdb) {
+  if (myf.direction()) {
+    if (!j2000Longp) {
+      j2000Longp = new Vector<Double>(2);
+      dirJ2000p = new MVDirection;
+      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *j2000Longp = dirJ2000p->get();
+    };
+    tdb = j2000Longp->operator()(1);
+    return True;
+  };
+  tdb = 0.0;
+  return False;
+}
+
+Bool MCFrame::getJ2000(MVDirection &tdb) {
+  if (myf.direction()) {
+    if (!j2000Longp) {
+      j2000Longp = new Vector<Double>(2);
+      dirJ2000p = new MVDirection;
+      *dirJ2000p = static_cast<MDirection::Convert *>(dirConvJ2000)->operator()
+	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
+	getValue();
+      *j2000Longp = dirJ2000p->get();
     };
     tdb = *dirJ2000p;
     return True;
@@ -461,7 +499,8 @@ void MCFrame::makeDirection() {
   if (dirConvApp) {
     myf.unlock();
   };
-  if (dirJ2000p) {
+  if (j2000Longp) {
+    delete j2000Longp; j2000Longp = 0;
     delete dirJ2000p; dirJ2000p = 0;
   };
   if (dirB1950p) {
@@ -511,6 +550,14 @@ Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result) {
       
     case MeasFrame::GetRadius:
       return static_cast<MCFrame *>(dmf)->getRadius(result);
+      break;
+      
+    case MeasFrame::GetJ2000Long:
+      return static_cast<MCFrame *>(dmf)->getJ2000Long(result);
+      break;
+      
+    case MeasFrame::GetJ2000Lat:
+      return static_cast<MCFrame *>(dmf)->getJ2000Lat(result);
       break;
       
     case MeasFrame::GetLAST:

@@ -247,8 +247,12 @@ class MeasFrame {
   Bool getLAST(Double &tdb);
   // Get the LAST (in rad)
   Bool getLASTr(Double &tdb);
-  // Get J2000 coordinates (direction cosines)
+  // Get J2000 coordinates (direction cosines) and its longitude/latitude (rad)
+  // <group>
   Bool getJ2000(MVDirection &tdb);
+  Bool getJ2000Long(Double &tdb);
+  Bool getJ2000Lat(Double &tdb);
+  // </group>
   // Get B1950 coordinates (direction cosines)
   Bool getB1950(MVDirection &tdb);
   // Get apparent coordinates (direction cosines)
@@ -284,6 +288,10 @@ private:
     GetLASTr,
     // Get J2000 coordinates (direction cosines)
     GetJ2000,
+    // Get J2000 coordinates (longitude)
+    GetJ2000Long,
+    // Get J2000 coordinates (latitude)
+    GetJ2000Lat,
     // Get B1950 coordinates (direction cosines)
     GetB1950,
     // Get apparent coordinates (direction cosines)
