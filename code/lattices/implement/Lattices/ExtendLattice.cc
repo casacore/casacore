@@ -1,5 +1,5 @@
 //# ExtendLattice.cc: A subset of a Lattice
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -350,17 +350,4 @@ template <class T>
 Bool ExtendLattice<T>::ok() const
 {
   return itsLatticePtr->ok();
-}
-
-template<class T>
-LatticeIterInterface<T>* ExtendLattice<T>::makeIter
-                               (const LatticeNavigator& navigator) const
-{
-  return new LatticeIterInterface<T> (*this, navigator);
-  // Make a clone of the navigator to be able to apply our region.
-///  LatticeNavigator* navPtr = navigator.clone();
-///  const Slicer& section = itsRegionPtr->box();
-///  navPtr->subSection (section.start(), section.end(), section.stride());
-///  delete navPtr;
-///  return iterPtr;
 }
