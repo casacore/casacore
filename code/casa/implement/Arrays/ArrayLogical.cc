@@ -43,7 +43,7 @@ Bool allEQ (const Array<T> &l, const Array<T> &r)
     const T *rs = r.getStorage(deleteR);
     Bool retval = True;
     for (uInt i=0; i < ntotal; i++) {
-	if (ls[i] != rs[i]) {
+	if (! (ls[i] == rs[i])) {
 	    retval = False;
 	    break;
 	}
