@@ -213,8 +213,8 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n) { return param_p[n]; };
-  const T &operator[](const uInt n) const{ return param_p[n]; };
+  virtual T &operator[](const uInt n) { return param_p[n]; };
+  virtual const T &operator[](const uInt n) const{ return param_p[n]; };
   // </group>
   // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
   // The length of <src>x</src> must be greater than or equal to
@@ -234,13 +234,13 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n) { return param_p.mask(n); };
-  const Bool &mask(const uInt n) const { return param_p.mask(n); };
+  virtual Bool &mask(const uInt n) { return param_p.mask(n); };
+  virtual const Bool &mask(const uInt n) const { return param_p.mask(n); };
   // </group>
   // Return the parameter interface
   // <group>
-  const FunctionParam<T> &parameters() const { return param_p; };
-  FunctionParam<T> &parameters() { return param_p; };
+  virtual const FunctionParam<T> &parameters() const { return param_p; };
+  virtual FunctionParam<T> &parameters() { return param_p; };
   // </group>
   // Evaluate the function object
   virtual T eval(FunctionArg x) const = 0;
