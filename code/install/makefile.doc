@@ -85,6 +85,8 @@ override TEXINPUTS := $(CODEDIR):$(EXTRA_TEXINPUTS):$(AIPSCODE)/doc/texinputs.di
 docs/% : $(DOCSAREA)/% ;
 
 # Need the $(basename $(basename $@)) to handle the fact it .ps.gz
+# Need to force three passes through latex, for some reason the TOC doesn't
+# get acknowledged properly for some documents (i.e. the Refman)
 
 $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	-@ echo ""
@@ -107,10 +109,11 @@ $(DOCSAREA)/%.ps.gz : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	         echo "$(LATEX) $<" ; \
 	         echo "(2nd pass, quiet)..." ; \
 	         $(LATEX) $< > /dev/null ; \
-	         echo "(3rd pass, verbose)..." ; \
 	      else \
-	         echo "(2nd pass, verbose)..." ; \
+	         echo "(2nd pass, quiet)..." ; \
+	         $(LATEX) $< > /dev/null ; \
 	      fi ; \
+	      echo "(3rd pass, verbose)..." ; \
 	      $(LATEX) $< ; \
 	      $(RM) $@ ; \
 	      echo $(DVIPS) -o $(basename $@)  $(@F:ps.gz=dvi) ; \
