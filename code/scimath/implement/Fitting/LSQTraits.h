@@ -45,7 +45,8 @@
 // </synopsis>
 
 // <example>
-// See <linkto class="LSQFit">LSQFit class, especially the <src>LSQFit2.cc</src>
+// See <linkto class="LSQFit">LSQFit</linkto> class, especially the
+// <src>LSQFit2.cc</src>
 //  defintion file.
 // </example>
 
