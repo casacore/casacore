@@ -2730,3 +2730,4 @@
 10 060 src mv aips/implement/Measures/MVPosition.cc aips/implement/Quanta/MVPosition.cc
 10 060 src mv aips/implement/Measures/MVPosition.h aips/implement/Quanta/MVPosition.h
 10 060 src mv aips/implement/Measures/MVRadialVelocity.cc aips/implement/Quanta/MVRadialVelocity.cc
+10 060 src mv aips/implement/Measures/MVRadialVelocity.h aips/implement/Quanta/MVRadialVelocity.h
