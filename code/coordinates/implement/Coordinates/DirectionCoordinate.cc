@@ -1,5 +1,5 @@
 //# DirectionCoordinate.h: this defines the DirectionCoordinate class
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -833,9 +833,14 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    }
 
 // No idea what to do here for exclusion axes !
-   
-   if (prjprm_p->flag != dCoord->prjprm_p->flag) return False;
-   if (prjprm_p->r0 != dCoord->prjprm_p->r0) return False;
+// Don't test prjprm->flag as it is a transient flag 
+// whose value may change depending on what computations you
+// do when
+// 
+   if (prjprm_p->r0 != dCoord->prjprm_p->r0) {
+      set_error("The DirectionCoordinates have differing WCS projection parameters");
+      return False;
+   }
    for (i=0; i<10; i++) {
       if (!::near(prjprm_p->p[i],dCoord->prjprm_p->p[i],tol)) {
          set_error("The DirectionCoordinates have differing WCS projection structures");
