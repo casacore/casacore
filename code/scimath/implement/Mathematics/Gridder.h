@@ -33,11 +33,6 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 
-#ifdef __GNUG__
-typedef Vector<Float> gppbug1;
-typedef Vector<Int> gppbug2;
-#endif
-
 class IPosition;
 
 // <summary>

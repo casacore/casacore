@@ -31,10 +31,6 @@
 
 #include <trial/Mathematics/Gridder.h>
 
-#ifdef __GNUG__
-typedef Vector<Double> gppbug3;
-#endif
-
 // <summary>
 // Does convolutional gridding
 // </summary>
