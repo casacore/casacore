@@ -154,7 +154,7 @@ sub aips2script {
 "//-->\n" .
 #"\n" .
 "</SCRIPT>\n" .
-"\n" .
+"\n" 
 }
 sub aips2topbar {
 #"\n" .
