@@ -518,6 +518,10 @@ MV$Name$} object) from the \mes\
 \item[$getData()$] will obtain a pointer to the {\em MeasValue}
 \item[$getRef()$] will obtain the {\tt Measure::Ref} reference object
 \item[$getRefPtr()$] will obtain a pointer to the {\tt Measure::Ref} object
+\item[$get()$] defined for some to get the data in special form (with
+specifiable units
+\item[$getAngle()$] defined for some to get the data in angle (with
+specifiable units)
 \end{description}
 
 General calls are available to obtain the information contained in the
