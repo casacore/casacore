@@ -1,5 +1,5 @@
 //# MVDirection.h: Vector of three direction cosines
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@
 // shift() methods are available to shift in angular coordinates. E.g.
 // shift(Quantity(5, "arcsec"), Quantity(-7, "arcsec")) will shift 5 arcsec
 // in longitude, and -7 arcsec in latitude. They have a trueAngle switch
-// to shift in latitude and perpendicular to it.
+// to shift in latitude and perpendicular (along a great circle) to it.
 // </synopsis>
 //
 // <example>
@@ -212,8 +212,8 @@ public:
   virtual Bool putValue(const Vector<Quantum<Double> > &in);
   // Shift the direction in longitude (radians if Double) and/or latitude.
   // If the trueAngle switch is True, the longitude shift will be in
-  // angular units perpendicular to the direction to pole at the shifted
-  // latitude.
+  // angular units perpendicular to the direction to the pole at the shifted
+  // latitude, along a great circle.
   // <group>
   void shift(const Quantum<Double> &lng,
 	     const Quantum<Double> &lat, Bool trueAngle=False);
@@ -223,6 +223,13 @@ public:
   void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
   void shiftLatitude(Double lat, Bool trueAngle=False);
   void shift(const MVDirection &shft, Bool trueAngle=False);
+  // </group>
+  // Shift over an angle off in the direction pa. pa is measured from North,
+  // in the direction of increasing longitude.
+  // <group>
+  void shiftAngle(const Quantum<Double> &off,
+		  const Quantum<Double> &pa);
+  void shiftAngle(Double off, Double pa);
   // </group>
   
 protected:

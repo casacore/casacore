@@ -1,5 +1,5 @@
 //# MVDirection.cc: Vector of three direction cosines
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -345,6 +345,22 @@ void MVDirection::shift(const MVDirection &shft, Bool trueAngle) {
   Vector<Double> x(2);
   x = shft.get();
   shift(x(0), x(1), trueAngle);
+}
+
+void MVDirection::shiftAngle(const Quantum<Double> &off,
+			     const Quantum<Double> &pa) {
+  shiftAngle(off.getBaseValue(), pa.getBaseValue());
+}
+
+void MVDirection::shiftAngle(Double off, Double pa) {
+  Vector<Double> x(2);
+  x = get();
+  Double nlat = asin(cos(off)*sin(x(1)) + sin(off)*cos(x(1))*cos(pa));
+  Double nlng = sin(off)*sin(pa);
+  if (cos(nlat) != 0) {
+    nlng = asin(nlng/cos(nlat));
+  } else nlng = 0;
+  *this = MVDirection(x(0)+nlng, nlat);
 }
 
 MeasValue *MVDirection::clone() const {
