@@ -584,7 +584,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
 		   getMCFramePoint()))->
 	getLong(g3);
-      g1 -= g3;
+      g1 += g3;
       *EULER1 = MeasTable::polarMotion(tdbTime);
       EULER1->operator()(2) = g1;
       in(1) = -in(1);
@@ -608,7 +608,7 @@ void MCBaseline::doConvert(MVBaseline &in,
       ((MCFrame *)(MBaseline::Ref::framePosition(inref, outref).
 		   getMCFramePoint()))->
 	getLong(g3);
-      g1 -= g3;
+      g1 += g3;
       // Precession
       *ROTMAT1 = PRECESFROM->operator()(tdbTime);
       // Nutation
@@ -628,6 +628,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 	getLong(g3);
       *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
       in *= *ROTMAT1;
+      in(1) = -in(1);
     };
     break;
     
@@ -636,6 +637,7 @@ void MCBaseline::doConvert(MVBaseline &in,
 		   getMCFramePoint()))->
 	getLong(g3);
       *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
+      in(1) = -in(1);
       in = *ROTMAT1 * in;
     };
     break;

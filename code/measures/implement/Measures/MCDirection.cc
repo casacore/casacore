@@ -605,8 +605,9 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
 		   getMCFramePoint()))->
 	getLong(g3);
-      *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
+      *ROTMAT1 = RotMatrix(Euler(g3, (uInt) 3));
       in *= *ROTMAT1;
+      in(1) = -in(1);
     };
     break;
     
@@ -614,7 +615,8 @@ void MCDirection::doConvert(MVDirection &in,
       ((MCFrame *)(MDirection::Ref::framePosition(inref, outref).
 		   getMCFramePoint()))->
 	getLong(g3);
-      *ROTMAT1 = RotMatrix(Euler(g3, 3, 0, 0));
+      *ROTMAT1 = RotMatrix(Euler(g3, (uInt) 3));
+      in(1) = -in(1);
       in = *ROTMAT1 * in;
     };
     break;
@@ -797,9 +799,9 @@ void MCDirection::doConvert(MVDirection &in,
 		   getMCFramePoint()))->
 	getTDB(tdbTime);
       // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);///
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);///
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
       // Aberration
       *MVPOS1 = ABERTO->operator()(tdbTime);
@@ -899,9 +901,9 @@ void MCDirection::doConvert(MVDirection &in,
       in -= *MVPOS1;
       in.adjust();
       // Precession
-      *ROTMAT1 = PRECESTO->operator()(tdbTime);///
+      *ROTMAT1 = PRECESTO->operator()(tdbTime);
       // Nutation
-      *ROTMAT1 *= NUTATTO->operator()(tdbTime);///
+      *ROTMAT1 *= NUTATTO->operator()(tdbTime);
       in = *ROTMAT1 * in;
       // E-terms
       // Iterate
