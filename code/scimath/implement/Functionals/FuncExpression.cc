@@ -1,5 +1,5 @@
 //# FuncExpression.cc: An expression executable as function
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -609,6 +609,7 @@ Bool FuncExpression::exec(Double &res) const {
 	pos->name + "': programming error";
       break;
     }
+    if (!error_p.empty()) break;
   };
   if (exec_p.size() != 1 && error_p.empty()) error_p = "No value returned";
   if (error_p.empty()) {
