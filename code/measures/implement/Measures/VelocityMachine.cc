@@ -144,8 +144,10 @@ makeVelocity(const Vector<Double> &in) {
   uInt n = in.nelements();
   vresv_p.getValue().resize(n);
   for (uInt i=0; i<n; ++i) {
-    vresv_p.getValue()[i] = cvvo_p(cvfv_p(in[i]).
-				   toDoppler(rest_p).getValue()).
+    Double t = cvfv_p(in[i]).getValue();
+    t /= rest_p.getValue();
+    t *= t;
+    vresv_p.getValue()[i] = cvvo_p(MVDoppler((1-t)/(1+t))).
       getValue().getValue()* C::c / vfac_p;
   };
   return vresv_p;
