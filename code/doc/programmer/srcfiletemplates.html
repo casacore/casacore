@@ -3,195 +3,80 @@
 <title>AIPS++ Source-File Templates</title>
 
 
-
-<SCRIPT LANGUAGE = "JavaScript">
-
+<SCRIPT LANGUAGE = "JavaScript1.2"
+src="../javascripts/menu.js"></script>
+<SCRIPT LANGUAGE = "JavaScript1.2"
+src="../javascripts/aipsmenu.js"></script>
+<SCRIPT LANGUAGE = "JavaScript1.2">
 <!--
-if (document.images) {       //if image object is available     
-; 
-
-
-
-img14on = new Image();
-img14on.src = "images/gettingstartedon6.gif";
-img1on = new Image();
-img1on.src = "images/documentationon6.gif";
-img2on = new Image();
-img2on.src = "images/programmingon6.gif";
-img3on = new Image();
-img3on.src = "images/howtoon6.gif";
-img4on = new Image();
-img4on.src = "images/packageaipson6.gif";
-img5on = new Image();
-img5on.src = "images/programmeron6.gif";
-img21on = new Image();
-img21on.src = "images/qagon.gif";
-img6on = new Image();
-img6on.src = "images/sourceon6.gif";
-img7on = new Image();
-img7on.src = "images/systemon6.gif";
-img8on = new Image();
-img8on.src = "images/trialon6.gif";
-img9on = new Image();
-img9on.src = "images/useron6.gif";
-img10on = new Image();
-img10on.src = "images/aipsviewon6.gif";
-img11on = new Image();
-img11on.src = "images/glishon6.gif";
-img12on = new Image();
-img12on.src = "images/glossaryon6.gif";
-img13on = new Image();
-img13on.src = "images/referenceon6.gif";
-img20on = new Image();
-img20on.src = "images/glishon.gif";
-img16on = new Image();
-img16on.src = "images/learnmoreon6.gif";
-img17on = new Image();
-img17on.src = "images/searchon6.gif";
-img18on = new Image();
-img18on.src = "images/communicateon6.gif";
-img99on = new Image();
-img99on.src = "images/homeon6.gif";           // MouseOut Images
-imgSrcFileTmplon = new Image();
-imgSrcFileTmplon.src = "images/sourcefileon.gif";
-imgDeveloperson = new Image();
-imgDeveloperson.src = "images/developerson.gif";
- 
-
-img14off = new Image();
-img14off.src = "images/gettingstartedoff6.gif";
-img1off = new Image();
-img1off.src = "images/documentationoff6.gif";
-img2off = new Image();
-img2off.src = "images/programmingoff6.gif";
-img3off = new Image();
-img3off.src = "images/howtooff6.gif";
-img4off = new Image();
-img4off.src = "images/packageaipsoff6.gif";
-img5off = new Image();
-img5off.src = "images/programmeroff6.gif";
-img21off = new Image();
-img21off.src = "images/qagoff.gif";
-img6off = new Image();
-img6off.src = "images/sourceoff6.gif";
-img7off = new Image();
-img7off.src = "images/systemoff6.gif";
-img8off = new Image();
-img8off.src = "images/trialoff6.gif";
-img9off = new Image();
-img9off.src = "images/useroff6.gif";
-img10off = new Image();
-img10off.src = "images/aipsviewoff6.gif";
-img11off = new Image();
-img11off.src = "images/glishoff6.gif";
-img12off = new Image();
-img12off.src = "images/glossaryoff6.gif";
-img13off = new Image();
-img13off.src = "images/referenceoff6.gif";
-img20off = new Image ();
-img20off.src ="images/glishoff.gif";
-img16off = new Image();
-img16off.src = "images/learnmoreoff6.gif";
-img17off = new Image();
-img17off.src = "images/searchoff6.gif";
-img18off = new Image();
-img18off.src = "images3/communicateoff6.gif";
-img99off = new Image();
-img99off.src = "images/homeoff6.gif";
-imgSrcFileTmploff = new Image();
-imgSrcFileTmploff.src = "images/sourcefileoff.gif";
-imgDevelopersoff = new Image();
-imgDevelopersoff.src = "images/developersoff.gif";
-
-}
-
-function imgOn(imgName) {
-        if (document.images) {
-            document[imgName].src = eval(imgName + "on.src");        }}
-                        
-function imgOff(imgName) {
-        if (document.images) {
-            document[imgName].src = eval(imgName + "off.src");        }}
-
+ // Function need to place directory relative to docs tree.
+ aMenu = new aipsMenu("..", "#61B6FF");
+ function onLoad() {
+    if (document.layers) {
+        aMenu.loadMenus();
+    }
+ }
 //-->
-
 </SCRIPT>
 
+
+
 </head>
-<body background="images3/backdrop02.gif" text="#000000" link="#2223dd">
-<table cellpadding=4 cellspacing=2 border=0>
-<tr><td valign=top>
 
-<table cellpadding=0 cellspacing=0 border=0>
-<tr><td valign=top>
+<body background="../gif/watermark.gif" bgcolor="#ffffff" text="#000000"
+link="#cc0f0f" vlink="#00009c">
 
+<table bgcolor="#61B6FF" cellpadding=4 cellspacing=0 border=0 width=600
+height=25>
+<tr><td>
+<a href="../gettingstarted.html"
+onMouseOver="aMenu.showAipsMenu('gsMenu')">
+<font size=2 face=helvetica  color="#ffffff">
+<b>Getting Started</b></a></td>
+<td>
+<a href="documentation.html"
+onMouseOver="aMenu.showAipsMenu('userMenu')">
+<font size=2 face=helvetica color="#ffdd00">
+<b>Documentation</b></a></td>
+<td>
+<a href="../glish/glish.html"
+onMouseOver="aMenu.showAipsMenu('glishMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Glish</b></a></td>
+<td>
+<a href="../learnmore.html"
+onMouseOver="aMenu.showAipsMenu('learnMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Learn More</b></a></td>
+<td>
+<a href="../programmer/programmer.html"
+onMouseOver="aMenu.showAipsMenu('progMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Programming</b></a></td>
+<td>
+<a href="../contactus/contactus.html"
+onMouseOver="aMenu.showAipsMenu('commMenu')">
+<font size=2 face=helvetica color="#ffffff">
+<b>Contact Us</b></a>
+</td></tr></table>
+<table border=0 width=600>
+<tr><td><img src="../gif/aipslogo.gif">
+</td><td valign=middle>
+<font size=2 face=helvetica color="cc0f0f"><a
+href="../newsletters/index.html"><img src="../gif/tri2.gif" border=0> 
+ <b>Latest News</a></font></b><P>
+<font size=2 face=helvetica color="cc0f0f"><a
+href="../faq/faq.html"><img src="../gif/tri2.gif" border=0>  <b>FAQ</a
+></font></b><P>
+<font size=2 face=helvetica color="cc0f0f"><a
+href="../search/search.html"><img src="../gif/tri2.gif" border=0>  <b>
+Search</a></font></b><P>
+<font size=2 face=helvetica color="cc0f0f"><a href="../aips++.html"><img
+src="../gif/tri2.gif" border=0>  <b>Home</a
+></font></b><P>
 
-<tr><td align=right><a href="gettingstarted6.html" onMouseOver="imgOn('img14')" onMouseOut="imgOff('img14')"><img name="img14" src="images/gettingstartedoff6.gif" border=0></a></td></tr>
-
-
-
-
-<tr><td align=right><a href="documentation.html" onMouseOver="imgOn('img1')" onMouseOut="imgOff('img1')"><img name="img1" src="images/documentationoff6.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="#programmerdoc" onMouseOver="imgOn('img2')" onMouseOut="imgOff('img2')"><img name="img2" src="images/programmingoff6.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="CCnotes.html" onMouseOver="imgOn('imgDevelopers')" onMouseOut="imgOff('imgDevelopers')"><img name="imgDevelopers" src="images/developersoff.gif" border=0></a></td></tr>
-
-
-
-<tr><td align=right><a href="../../reference/HowTos/HowTos.html" onMouseOver="imgOn('img3')" onMouseOut="imgOff('img3')"><img name="img3" src="images/howtooff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="../../aips/aips.html" onMouseOver="imgOn('img4')" onMouseOut="imgOff('img4')"><img  name="img4" src="images/packageaipsoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="../../reference/Coding/Coding.html" onMouseOver="imgOn('img5')" onMouseOut="imgOff('img5')"><img  name="img5" src="images/programmeroff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="../qag.html" onMouseOver="imgOn('img21')" onMouseOut="imgOff('img21')"><img  name="img21" src="images/qagoff.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="programmer/source.html" onMouseOver="imgOn('img6')" onMouseOut="imgOff('img6')"><img  name="img6" src="images/sourceoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="srcfiletemplates.html" onMouseOver="imgOn('imgSrcFileTmpl')" onMouseOut="imgOff('imgSrcFileTmpl')"><img name="imgSrcFileTmpl" src="images/sourcefileoff.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="../../reference/System/System.html" onMouseOver="imgOn('img7')" onMouseOut="imgOff('img7')"><img name="img7" src="images/systemoff6.gif" border=0></a></td></tr>
-
-
-
-<tr><td align=right><a href="../../trial/implement" onMouseOver="imgOn('img8')" onMouseOut="imgOff('img8')"><img name="img8" src="images/trialoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="#userdoc" onMouseOver="imgOn('img9')" onMouseOut="imgOff('img9')"><img name="img9" src="images/useroff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="../../user/Aipsview/Aipsview.html" onMouseOver="imgOn('img10')" onMouseOut="imgOff('img10')"><img name="img10" src="images/aipsviewoff6.gif" border=0></a></td></tr>
-
-
-
-<tr><td align=right><a href="glish/glish.html" onMouseOver="imgOn('img11')" onMouseOut="imgOff('img11')"><img name="img11" src="images/glishoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="../../glossary/glossary.html" onMouseOver="imgOn('img12')" onMouseOut="imgOff('img12')"><img name="img12" src="images/glossaryoff6.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="../../user/Refman/Refman.html" onMouseOver="imgOn('img13')" onMouseOut="imgOff('img13')"><img  name="img13" src="images/referenceoff6.gif" border=0></a></td></tr>
-
-<tr><td><a href="glish/glish.html" onMouseOver="imgOn('img20')" onMouseOut="imgOff('img20')"><img name="img20" src="images/glishoff.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="learnmore6.html" onMouseOver="imgOn('img16')" onMouseOut="imgOff('img16')"><img name="img16" src="images/learnmoreoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="search/search.html" onMouseOver="imgOn('img17')" onMouseOut="imgOff('img17')"><img name="img17" src="images/searchoff6.gif" border=0></a></td></tr>
-
-<tr><td align=right><a href="communicate6.html" onMouseOver="imgOn('img18')" onMouseOut="imgOff('img18')"><img name="img18" src="images/communicateoff6.gif" border=0></a></td></tr>
-
-
-<tr><td align=right><a href="../aips++.html" onMouseOver="imgOn('img99')" onMouseOut="imgOff('img99')"><img name="img99" src="images/homeoff6.gif" border=0></a></td></tr>
-
-</table></td>
-
-
-<td valign=top>
-
-<img src="images3/aipslogo1.gif">
+</td></tr></table>
+<BR>
 <hr><p>
 
 
