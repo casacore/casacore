@@ -365,7 +365,7 @@ void SkyCompRep::initSpectrum(ComponentType::SpectralShape spectrum) {
   };
 }
 
-// void SkyCompRep::project(ImageInterface<Float> & image) const {
+void SkyCompRep::project(ImageInterface<Float> & image) const {
 //   const CoordinateSystem coords = image.coordinates();
 //   const IPosition imageShape = image.shape();
 //   const uInt naxis = imageShape.nelements();
@@ -503,7 +503,7 @@ void SkyCompRep::initSpectrum(ComponentType::SpectralShape spectrum) {
 //       }
 //     }
 //   }
-// }
+}
 
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
