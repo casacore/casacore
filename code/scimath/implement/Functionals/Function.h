@@ -224,4 +224,17 @@ template<class T> class Function : public Functional<T, T>,
   virtual Function<T> *clone() const = 0;
 };
 
+//# Global functions
+// <summary> Global functions </summary>
+// <group name=Output>
+// Output declaration
+template<class T>
+ostream &operator<<(ostream &os, const Function<T> &fun);
+// </group>
+
+//# Inlines
+template<class T>
+inline ostream &operator<<(ostream &os, const Function<T> &fun) {
+  return fun.print(os); };
+
 #endif
