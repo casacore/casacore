@@ -1957,3 +1957,4 @@
 08 066 src rm aips/apps/gtable/gtable.atoms
 08 066 src rm trial/implement/distributed/imagesolver.atoms
 08 068 src rm nrao/gbt/M_C/makefile
+08 068 src rm nrao/gbt/M_C
