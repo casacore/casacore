@@ -2629,3 +2629,4 @@
 10 010 src mv aips/implement/Measures/Quantum2.cc aips/implement/Quanta/Quantum2.cc
 10 010 src mv aips/implement/Measures/QuantumHolder.cc aips/implement/Quanta/QuantumHolder.cc
 10 010 src mv aips/implement/Measures/QuantumHolder.h aips/implement/Quanta/QuantumHolder.h
+10 010 src mv aips/implement/Measures/QuantumHolder2.cc aips/implement/Quanta/QuantumHolder2.cc
