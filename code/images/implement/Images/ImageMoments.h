@@ -215,7 +215,6 @@ class IPosition;
 // </motivation>
 //
 // <todo asof="1996/11/26">
-//   <li> output smoothed and masked image
 //   <li> more control over histogram of image noise at start (pixel
 //        range and number of bins)
 //   <li> better algorithm for seeing if spectrum is pure noise
@@ -767,7 +766,8 @@ private:
    Bool makeOdd        (Int& i);
                      
 // Generate the PSF
-   Bool makePSF        (Array<T>& psf);
+   void makePSF        (Array<T>& psf,
+                        Matrix<T>& psfSep);
 
 // Compute the world coordinate for the given moment axis pixel                     
    Double getMomentCoord     (const Double& index);
@@ -832,6 +832,9 @@ private:
                     PagedImage<T>*& pSmoothedImage,
                     const IPosition& latticeShape);
 
+  void smoothRow (PagedImage<T>*& pIn,
+                  const Int& row,
+                  const Vector<T>& psf);
 
 // Determine the noise by fitting a Gaussian to a histogram 
 // of the entire image above the 25% levels.  If a plotting
