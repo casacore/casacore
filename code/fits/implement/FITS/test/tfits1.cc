@@ -31,6 +31,8 @@
 # include <aips/FITS/fitsio.h>
 # include <aips/FITS/hdu.h>
 
+# include <aips/Utilities/String.h>
+
 # include <iostream.h>
 # include <stdlib.h>
 
@@ -145,19 +147,211 @@ void do_binary_table(BinaryTableExtension &x) {
 	}
 	cout << endl;
 
-        x.read(); // read the whole table
-	for (int n = 0; n < 50 && n < x.nrows(); ++n) { // display first 50 rows
-		cout << x.currrow() << ": | ";
-		if (x.field(0).nelements() != 0)
-	            cout << x.field(0);
-	        for (i = 1; i < x.ncols(); ++i) {
-		    cout << " | ";
-		    if (x.field(i).nelements() != 0)
-			cout << x.field(i);
-		}
-	        cout << " |" << endl;
-	    	++x; // increment the current row
+        x.read(x.nrows()); // read all the table rows
+	// any heap to read?
+	char * theheap = 0;
+	if (x.pcount()) {
+	    // offset of start of heap from current position, end of last row
+	    if (x.notnull(x.theap())) {
+		int heapOffset = x.theap() - x.rowsize()*x.nrows();
+		// skip to the start of the heap
+		// I don't see any way except to read these bogus bytes
+		char junk[heapOffset];
+		x.ExtensionHeaderDataUnit::read(junk, heapOffset);
+	    }
+	    theheap = new char [x.pcount()]; 
+	    // this code never checks for alloc errors, why start now
+	    x.ExtensionHeaderDataUnit::read(theheap, x.pcount());
 	}
+	FITS::ValueType vatypes[x.ncols()];
+	void* vaptr[x.ncols()];
+	VADescFitsField va[x.ncols()];
+	// decode the TFORMs of any VADESC columns
+	for (i=0;i<x.ncols();++i) {
+	    vaptr[i] = 0;
+	    if (x.field(i).fieldtype() == FITS::VADESC) {
+		int maxsize;
+		FITS::parse_vatform(x.tform(i), vatypes[i], maxsize);
+		x.bind(i, va[i]); // bind va[i] to col i
+		if (vatypes[i] == FITS::NOVALUE) {
+		    cout << "Error in VA desc format for column " 
+			 << i << " : " << x.tform(i) << endl;
+		} else {
+		    switch (vatypes[i]) {
+		    case FITS::LOGICAL: 
+			vaptr[i] = (void *)(new FitsLogical[maxsize]);
+			break;
+		    case FITS::BIT: 
+			{
+			    Int nbytes = maxsize / 8;
+			    if (maxsize % 8) nbytes++;
+			    maxsize = nbytes;
+			}
+			// fall through to byte for the actual allocation
+		    case FITS::BYTE: 
+			vaptr[i] = (void *)(new unsigned char[maxsize]);
+			break;
+		    case FITS::SHORT: 
+			vaptr[i] = (void *)(new short[maxsize]);
+			break;
+		    case FITS::LONG: 
+			vaptr[i] = (void *)(new FitsLong[maxsize]);
+			break;
+		    case FITS::CHAR: 
+			vaptr[i] = (void *)(new char[maxsize]);
+			break;
+		    case FITS::FLOAT: 
+			vaptr[i] = (void *)(new float[maxsize]);
+			break;
+		    case FITS::DOUBLE:
+			vaptr[i] = (void *)(new double[maxsize]);
+			break;
+		    case FITS::COMPLEX:
+			vaptr[i] = (void *)(new Complex[maxsize]);
+			break;
+		    case FITS::DCOMPLEX:
+			vaptr[i] = (void *)(new DComplex[maxsize]);
+			break;
+		    default: 
+			cout << "Impossible VADesc type in column " 
+			     << i << " : " << vatypes[i] << endl;
+			break;
+		    }
+		}
+	    } else {
+		vatypes[i] = FITS::NOVALUE;
+	    }
+	}
+
+	for (int n = 0; n < 50 && n < x.nrows(); ++n) { // display first 50 rows
+	  cout << x.currrow() << ": | ";
+	  for (i = 0; i < x.ncols(); ++i) {
+	    if (i != 0) cout << " | ";
+	    if (x.field(i).nelements() != 0) 
+	      cout << x.field(i);
+	    if (x.field(i).fieldtype() == FITS::VADESC) {
+	      FitsVADesc thisva = va[i]();
+	      cout << " VA: ";
+	      if (thisva.num()) {
+		switch (vatypes[i]) {
+		case FITS::LOGICAL: 
+		  {
+		    FitsLogical *vptr = (FitsLogical *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::BIT: 
+		  {
+		    unsigned char *vptr = (unsigned char *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    Int whichByte = 0;
+		    unsigned char mask = 0200;
+		    cout << ToBool(vptr[0] & mask);
+		    for (int k=1;k<thisva.num();++k) {
+		      if (k%8 == 0) whichByte++;
+		      cout << ", " << ToBool(vptr[whichByte] & (mask >> k%8));
+		    }
+		  }
+		  break;
+		case FITS::BYTE: 
+		  {
+		    unsigned char *vptr = (unsigned char *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << (int)vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << (int)vptr[k];
+		  }
+		  break;
+		case FITS::SHORT: 
+		  {
+		    short *vptr = (short *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::LONG: 
+		  {
+		    FitsLong *vptr = (FitsLong *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::CHAR: 
+		  {
+		    char *vptr = (char *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    for (int k=0; k < thisva.num() && vptr[k] != '\0'; ++k)
+		      cout << vptr[k];
+		  }
+		  break;
+		case FITS::FLOAT: 
+		  {
+		    float *vptr = (float *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::DOUBLE: 
+		  {
+		    double *vptr = (double *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::COMPLEX: 
+		  {
+		    Complex *vptr = (Complex *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		case FITS::DCOMPLEX: 
+		  {
+		    DComplex *vptr = (DComplex *)(vaptr[i]);
+		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
+		    cout << vptr[0];
+		    for (int k=1;k<thisva.num();++k) 
+		      cout << ", " << vptr[k];
+		  }
+		  break;
+		}
+	      }
+	    }
+	  }
+	  cout << " |" << endl;
+	  ++x; // increment the current row
+	}
+
+	for (i=0;i<x.ncols();++i) {
+	    if (vaptr[i]) {
+		switch (vatypes[i]) {
+		case FITS::LOGICAL: delete [] (FitsLogical *)vaptr[i]; break;
+		case FITS::BIT: 
+		case FITS::BYTE: delete [] (unsigned char *)vaptr[i]; break;
+		case FITS::SHORT: delete [] (short *)vaptr[i]; break;
+		case FITS::LONG: delete [] (FitsLong *)vaptr[i]; break;
+		case FITS::CHAR: delete [] (char *)vaptr[i]; break;
+		case FITS::FLOAT: delete [] (float *)vaptr[i]; break;
+		case FITS::DOUBLE: delete [] (double *)vaptr[i]; break;
+		case FITS::COMPLEX: delete [] (Complex *)vaptr[i]; break;
+		case FITS::DCOMPLEX: delete [] (DComplex *)vaptr[i]; break;
+		}
+	    }
+	}
+	delete [] theheap;
 	delete &x;
 }
 
