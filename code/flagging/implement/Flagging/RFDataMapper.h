@@ -98,10 +98,12 @@ public:
   String description () const;
   // returns description of expression
   String descExpression () const;
+
+  // a cube mapper function maps a visbuffer to a data cube. This
+  // belongs in private or protected, but the SGI compiler wouldn't hear of it
+  typedef Cube<Complex> * (*CubeMapperFunc)(VisBuffer &);
   
 protected:
-  // a cube mapper function maps a visbuffer to a data cube
-  typedef Cube<Complex> * (*CubeMapperFunc)(VisBuffer &);
 
   // static helper function to interpret constructor parameters into a cube mapper
   static CubeMapperFunc getCubeMapper( const String &col,Bool throw_excp = False );
