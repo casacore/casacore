@@ -589,6 +589,8 @@ public:
 // The matchAxes argument tells if the axes have to match exactly or
 // whether it is possible that one expression is a subset of another
 // (i.e. that axes may be missing).
+// <br>The expectArray argument tells if the result should be an array
+// which is the case if one of the arguments is an array.
    static LELAttribute checkArg (const Block<LatticeExprNode>& arg,
 				 const Block<Int>& argType,
 				 Bool expectArray,
