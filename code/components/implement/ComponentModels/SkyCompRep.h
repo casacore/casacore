@@ -153,12 +153,12 @@ public:
   // </group>
 
   // get the shape of the component.
-  virtual ComponentType::Shape shape() const;
+  ComponentType::Shape shape() const;
 
   // set/get the reference direction of the component
   // <group>
-  virtual void setRefDirection(const MDirection & newDirection);
-  virtual const MDirection & refDirection() const;
+  void setRefDirection(const MDirection & newDirection);
+  const MDirection & refDirection() const;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
@@ -166,8 +166,6 @@ public:
   // <group>
   Flux<Double> sample(const MDirection & direction,
 		      const MVAngle & pixelSize) const;
-  virtual void sample(Flux<Double> & flux, const MDirection & direction, 
-		     const MVAngle & pixelSize) const;
   // </group>
 
   // Return the Fourier transform of the component at the specified point in
@@ -184,64 +182,43 @@ public:
   // <group>
   Flux<Double> visibility(const Vector<Double> & uvw,
 			  const Double & frequency) const;
-  virtual void visibility(Flux<Double> & flux, const Vector<Double> & uvw, 
-			  const Double & frequency) const;
   // </group>
-
-  // Return a pointer to a copy of the shape of this component upcast to a
-  // ComponentShape object. The class that uses this function is responsible
-  // for deleting the pointer.
-  virtual ComponentShape * cloneShape() const;
 
   // return the number of shape parameters in the component and set/get them.
   // <group>
-  virtual uInt nShapeParameters() const;
-  virtual void setShapeParameters(const Vector<Double> & newParms);
-  virtual void shapeParameters(Vector<Double> & compParms) const;
+  uInt nShapeParameters() const;
+  void setShapeParameters(const Vector<Double> & newParms);
+  void shapeParameters(Vector<Double> & compParms) const;
   // </group>
 
   // get the spectral type of the component.
-  virtual ComponentType::SpectralShape spectralShape() const;
+  ComponentType::SpectralShape spectralShape() const;
 
   // set/get the reference frequency.
   // <group>
-  virtual void setRefFrequency(const MFrequency & newFrequency);
-  virtual const MFrequency & refFrequency() const;
+  void setRefFrequency(const MFrequency & newFrequency);
+  const MFrequency & refFrequency() const;
   // </group>
 
   // Calculate the flux at the specified frequency. The direction is assumed to
   // be the reference direction.
-  // <group>
   Flux<Double> sample(const MFrequency & centerFrequency) const;
-  virtual void sample(Flux<Double> & flux,
-		     const MFrequency & centerFrequency) const;
-  // </group>
-
-  // Return a pointer to a copy of the spectral model of this component upcast
-  // to a SpectralModel object. The class that uses this function is
-  // responsible for deleting the pointer.
-  virtual SpectralModel * cloneSpectrum() const;
 
   // return the number of parameters in the spectral shape and set/get them.
   // <group>
-  virtual uInt nSpectralParameters() const;
-  virtual void setSpectralParameters(const Vector<Double> & newParms);
-  virtual void spectralParameters(Vector<Double> & compParms) const;
+  uInt nSpectralParameters() const;
+  void setSpectralParameters(const Vector<Double> & newParms);
+  void spectralParameters(Vector<Double> & compParms) const;
   // </group>
 
   // Calculate the flux at the specified direction & frequency, in a pixel of
   // specified size.
-  // <group>
   Flux<Double> sample(const MDirection & direction, 
 		      const MVAngle & pixelSize, 
 		      const MFrequency & centerFrequency) const;
-  void sample(Flux<Double> & flux, const MDirection & direction, 
-	      const MVAngle & pixelSize, 
-	      const MFrequency & centerFrequency) const;
-  // </group>
 
-  // set/get the label associated with this component. Default versions of
-  // these functions do nothing.
+  // set/get the label associated with this component. The label is a simple
+  // string for general use.
   // <group>
   void setLabel(const String & newLabel);
   const String & label() const;
@@ -270,7 +247,7 @@ public:
   //# if there is no Stokes axes then it is assumed that the polarization is
   //# Stokes::I. The component is gridded equally onto all other axes of the
   //# image (ie. spectral axes).
-  //# virtual void project(ImageInterface<Float> & plane) const;
+  //# void project(ImageInterface<Float> & plane) const;
 
 private:
   CountedPtr<ComponentShape> itsShapePtr;
