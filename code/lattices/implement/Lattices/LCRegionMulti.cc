@@ -211,10 +211,10 @@ Bool LCRegionMulti::findAreas (IPosition& bufStart, IPosition& bufEnd,
 TableRecord LCRegionMulti::makeRecord (const String& tableName) const
 {
     TableRecord rec;
-    uInt nr = itsRegions.nelements();
+    Int nr = itsRegions.nelements();
     rec.define ("nr", nr);
     char str[8];
-    for (uInt i=0; i<nr; i++) {
+    for (Int i=0; i<nr; i++) {
         sprintf (str, "r%i", i);
 	rec.defineRecord (str, itsRegions[i]->toRecord (tableName));
     }
@@ -225,10 +225,10 @@ void LCRegionMulti::unmakeRecord (PtrBlock<const LCRegion*>& regions,
 				  const TableRecord& rec,
 				  const String& tableName)
 {
-    uInt nr = rec.asuInt ("nr");
+    Int nr = rec.asInt ("nr");
     regions.resize (nr, True);
     char str[8];
-    for (uInt i=0; i<nr; i++) {
+    for (Int i=0; i<nr; i++) {
         sprintf (str, "r%i", i);
 	regions[i] = LCRegion::fromRecord (rec.asRecord (str), tableName);
     }
