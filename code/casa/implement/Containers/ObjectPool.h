@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <trial/Mathematics/PoolStack.h>
+#include <aips/Containers/PoolStack.h>
 #include <aips/Containers/SimOrdMap.h>
 
 //# Forward declarations

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Mathematics/PoolStack.h>
+#include <aips/Containers/PoolStack.h>
 
 //# Constructors
 template <class T, class Key>
