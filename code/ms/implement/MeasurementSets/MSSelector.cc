@@ -1,5 +1,5 @@
 //# MSSelector.cc: selection and iteration of an MS
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1286,7 +1286,10 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 
   Array<Bool> flag;
-  if (wantFlag || wantFlagSum ||average) {
+  if (wantFlag || wantFlagSum ||
+      average ||                                  // time averaging
+      (chanSel_p.nelements()>0 && chanSel_p(2)>1) // channel averaging
+      ) {
     Array<Bool> avFlag;
     flag=getAveragedFlag(avFlag,msc.flag());
     uInt nPol=avFlag.shape()(0), nChan=avFlag.shape()(1), nRow=avFlag.shape()(2);
@@ -1734,17 +1737,13 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
       Int chn=i*chanSel(3);
       IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
 	cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
-      Array<Complex> ref(avData(is,ie));
+      Array<Complex> ref(avData(is,ie)); ref=Complex(0.0);
       Array<Float> wtref(avWt(is,ie));
       // average over channels
       for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
 	MaskedArray<Complex> mdata(data(cs,ce),mask(cs,ce));
 	ref+=mdata;
 	wtref+=wt(cs,ce);
-      }
-      // average over channels
-      for (Int j=1; j<chanSel(2); j++) {
-	ref+=data(IPosition(3,0,chn+j,0),IPosition(3,nPol-1,chn+j,nRow-1));
       }
       ref(wtref>Float(0.0))/=wtref(wtref>Float(0.0));
     }
