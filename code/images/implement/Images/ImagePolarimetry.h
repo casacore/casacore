@@ -91,6 +91,9 @@ class LogIO;
 //
 // However, note that the functions sigmaStokes{I,Q,U,V} DO return the standard
 // deviation of the noise for that specific Stokes type.
+//
+// The ImageExpr objects returned have the brightness units and ImageInfo
+// set.  The MiscInfo (a permanent record) and logSink are not set.
 // 
 // </synopsis>
 //
@@ -150,6 +153,9 @@ public:
 
 // Complex linear polarization
    ImageExpr<Complex> complexLinearPolarization ();
+
+// Complex fractional linear polarization
+   ImageExpr<Complex> complexFractionalLinearPolarization ();
 
 // <group>
 // Get the Stokes I image and the standard deviation of the
