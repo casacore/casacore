@@ -87,238 +87,94 @@ class LSQaips : public LSQFit {
   // default Levenberg-Marquardt adjustment factor
   // <group>
   // Assume real
-  LSQaips(uInt nUnknowns, uInt nConstraints=0);
+  LSQaips(uInt nUnknowns, uInt nConstraints=0)
+  : LSQFit(nUnknowns, nConstraints) {;}
   // Allow explicit complex/real specification
   // <group>
-  LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints=0);
-  LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0);
+  LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints=0)
+  : LSQFit(nUnknowns, LSQReal(), nConstraints) {;}
+  LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints=0)
+  : LSQFit(nUnknowns, LSQComplex(), nConstraints) {;}
   // </group>
   // </group>
   // Default constructor (empty, real, only usable after a set(nUnknowns))
-  LSQaips();
+  LSQaips() : LSQFit() {;}
   // Copy constructor (deep copy)
-  LSQaips(const LSQaips &other);
+  LSQaips(const LSQaips &other) : LSQFit(other) {;}
   // Assignment (deep copy)
-  LSQaips &operator=(const LSQaips &other);
+  LSQaips &operator=(const LSQaips &other) {
+  if (this != &other) LSQFit::operator=(other);
+  return *this; };
   
   //# Destructor
-  ~LSQaips();
+  ~LSQaips() {;}
   
   //# Operators
   
   //# General Member Functions
-  // Make normal equations using the <src>cEq</src> condition equations
-  // (with <src>nUnknowns</src> elements) and a weight <src>weight</src>,
-  // given the known observed value <src>obs</src>.
-  //
-  // <src>doNorm</src> and <src>doKnown</src> can be used
-  // to e.g. re-use existing normal equations, but make a new known side.
-  // 
-  // The versions with <src>cEqIndex[]</src> indicate which of the 
-  // <src>nUnknowns</src> are actually present in the condition equation
-  // (starting indexing at 0); the other terms are supposed to be zero. E.g.
-  // if a 12-telescope array has an equation only using telescopes 2 and 4,
-  // the lengths of <cEqIndex</src> and <src>cEq</src> will be both 2,
-  // and the index will contain 1 and 3 (when telescope numbering starts at 1)
-  // or 2 and 4 (when telescope numbering starts at 0.
-  // <group>
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight, const U &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight, const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, LSQFit::SEPARABLE, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, LSQFit::ASREAL, doNorm, doKnown); };
-  template <class U, class V>
-    void makeNorm(const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(cEq, weight, obs, LSQFit::CONJUGATE, doNorm, doKnown); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight, const U &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight, const U &obs,
-		  LSQFit::Real,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Complex,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::AsReal,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs,
-		     LSQFit::ASREAL, doNorm, doKnown); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Separable,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs,
-		     LSQFit::SEPARABLE, doNorm, doKnown); };
-  template <class U, class V, class W>
-    void makeNorm(uInt nIndex, const W &cEqIndex,
-		  const V &cEq, const U &weight,
-		  const std::complex<U> &obs,
-		  LSQFit::Conjugate,
-		  Bool doNorm=True, Bool doKnown=True) {
-    LSQFit::makeNorm(nIndex, cEqIndex, cEq, weight, obs,
-		     LSQFit::CONJUGATE, doNorm, doKnown); };
-  // </group>
-  // Get the <src>nMissing</src> (the rank deficiency, or missing rank)
-  // constraint equations as <src> cEq[nUnknowns][nMissing]</src>. Note
-  // that nMissing will be equal to the number of unknowns
-  // (<src>nUnknowns</src>, or double that for the complex case) minus the
-  // rank as returned from the <src>invert()</src> method. 
-  // <group>
-  template <class U>
-    void getConstraint(uInt n, U *cEq) const {
-    LSQFit::getConstraint(n, cEq); };
-  template <class U>
-    void getConstraint(uInt n, U &cEq) const {
-    LSQFit::getConstraint(n, cEq); };
-  // </group>
-  
-  // Add a new constraint equation (updating nConstraints); or add a
-  // numbered constraint equation (0..nConstraints-1). False if illegal
-  // number n. The constraints are equations with nUnknowns terms, 
-  // and a constant value. E.g. measuring three angles of a triangle
-  // could lead to equation <src>[1,1,1]</src> with obs as
-  // <src>3.1415</src>. Note that each complex constraint will be
-  // converted into two real constraints (see 
-  // <a href="../../../notes/224">Note 224</a>).
-  // <group>
-  template <class U, class V>
-    Bool setConstraint(uInt n, const V &cEq, const U &obs) {
-    return LSQFit::setConstraint(n, cEq, obs); };
-  template <class U, class V>
-    Bool setConstraint(uInt n, const V &cEq,
-		       const std::complex<U> &obs) {
-    return LSQFit::setConstraint(n, cEq, obs); };
-  template <class U, class V, class W>
-    Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
-		       const V &cEq, const U &obs) {
-    return LSQFit::setConstraint(n, nIndex, cEqIndex, cEq, obs); };
-  template <class U, class V, class W>
-    Bool setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
-		       const V &cEq,
-		       const std::complex<U> &obs) {
-    return LSQFit::setConstraint(n, nIndex, cEqIndex, cEq, obs); };
-  template <class U, class V>
-    Bool addConstraint(const V &cEq, const U &obs) {
-    return LSQFit::addConstraint(cEq, obs); };
-  template <class U, class V>
-    Bool addConstraint(const V &cEq,
-		       const std::complex<U> &obs) {
-    return LSQFit::addConstraint(cEq, obs); };
-  template <class U, class V, class W>
-    Bool addConstraint(uInt nIndex, const W &cEqIndex,
-		       const V &cEq, const U &obs) {
-    return LSQFit::addConstraint(nIndex, cEqIndex, cEq, obs); };
-  template <class U, class V, class W>
-    Bool addConstraint(uInt nIndex, const W &cEqIndex,
-		       const V &cEq,
-		       const std::complex<U> &obs) {
-    return LSQFit::addConstraint(nIndex, cEqIndex, cEq, obs); };
-  // </group>
-
   // Solve normal equations.
-  // The solution will be given in <src>sol</src>, with the
-  // adjustment error <src>mu</src>, and the standard
-  // deviation <swrc>sd</src>. I.e. <src>mu</src> is per unit weight,
-  // <src>sd</src> per observation. In the cases where the solution is
-  // returned in a Vector, the Array given as input will be resized and
-  // reshaped (if necessary), to the properly sized Vector.
+  // The solution will be given in <src>sol</src>.
   // <group>
   template <class U>
-    void solve(U sol[]) { LSQFit::solve(sol); };
+  void solve(U *sol) { LSQFit::solve(sol); };
   template <class U>
-    void solve(std::complex<U> sol[]) { LSQFit::solve(sol); };
+  void solve(std::complex<U> *sol) { LSQFit::solve(sol); };
   template <class U>
-    void solve(Vector<U> &sol) {
-    sol.resize(n_p); LSQFit::solve(sol.data()); };
+  void solve(U &sol) { LSQFit::solve(sol); };
   template <class U>
-    void solve(Vector<std::complex<U> > &sol) {
-    sol.resize(n_p); LSQFit::solve(sol.data()); };
+  void solve(Vector<U> &sol) {
+    sol.resize(nUnknowns()/LSQTraits<U>::size);
+    LSQFit::solve(sol.data()); };
   // </group>
   // Solve a Levenberg-Marquardt loop. Note that the solution <src>sol</src>
   // is used both and input and output. No check on the size is done.
   // <group>
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   U sol[], Bool doSVD=False) {
+  Bool solveLoop(Double &fit, uInt &nRank,
+		 U *sol, Bool doSVD=False) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   std::complex<U> sol[],
-		   Bool doSVD=False) {
+  Bool solveLoop(Double &fit, uInt &nRank,
+		 std::complex<U> *sol, Bool doSVD=False) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
   template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   Vector<U> &sol,
-		   Bool doSVD=False) {
-    return LSQFit::solveLoop(fit, nRank, sol.data(), doSVD); };
-  template <class U>
-    Bool solveLoop(Double &fit, uInt &nRank,
-		   Vector<std::complex<U> > &sol,
-		   Bool doSVD=False) {
+  Bool solveLoop(Double &fit, uInt &nRank,
+		 U &sol, Bool doSVD=False) {
     return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
+  template <class U>
+  Bool solveLoop(Double &fit, uInt &nRank,
+		 Vector<U> &sol, Bool doSVD=False);
   // </group>
   // Get the covariance matrix. False if an error occurred
   // (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
-    Bool getCovariance(U *covar) {
+  Bool getCovariance(U *covar) {
     return LSQFit::getCovariance(covar); };
   template <class U>
-    Bool getCovariance(Array<U> &covar);
+  Bool getCovariance(std::complex<U> *covar) {
+    return LSQFit::getCovariance(covar); };
+  template <class U>
+  Bool getCovariance(Array<U> &covar);
   // </group>  
-
- private:
+  // Get main diagonal of covariance function (of size <src>nUnknowns</src>)
+  // <group>
+  template <class U>
+  Bool getErrors(U *errors) {
+    return LSQFit::getErrors(errors); };
+  template <class U>
+  Bool getErrors(std::complex<U> *errors) {
+    return LSQFit::getErrors(errors); };
+  template <class U>
+  Bool getErrors(U &errors) {
+    return LSQFit::getErrors(errors); };
+  template <class U>
+  Bool getErrors(Vector<U> &errors) {
+    errors.resize(nUnknowns()/LSQTraits<U>::size);
+    return LSQFit::getErrors(errors.data()); };
+  // </group>
+  
+private:
 
   //# Data
 

@@ -31,47 +31,26 @@
 #include <aips/Arrays/IPosition.h>
 
 //# Constructors
-LSQaips::LSQaips(uInt nUnknowns, uInt nConstraints)
-  : LSQFit(nUnknowns, nConstraints) {;}
-
-LSQaips::LSQaips(uInt nUnknowns, const LSQReal &, uInt nConstraints)
-  : LSQFit(nUnknowns, LSQReal(), nConstraints) {;}
-
-LSQaips::LSQaips(uInt nUnknowns, const LSQComplex &, uInt nConstraints)
-  : LSQFit(nUnknowns, LSQComplex(), nConstraints) {;}
-
-LSQaips::LSQaips()
-  : LSQFit() {;}
-
-LSQaips::LSQaips(const LSQaips &other) 
-  : LSQFit(other) {;}
-
-LSQaips &LSQaips::operator=(const LSQaips &other) {
-  if (this != &other) LSQFit::operator=(other);
-  return *this;
-}
 
 //# Destructor
-LSQaips::~LSQaips() {;}
 
 //# Member functions
 
 template <class U>
 Bool LSQaips::getCovariance(Array<U> &covar) {
   if (!invertRect()) return False;
-  IPosition iw(2, n_p, n_p);
-  if (!(covar.shape().conform(iw) && covar.shape() == iw)) {
-    covar.resize();
-    covar.resize(iw);
-  };
+  covar.resize();
+  uInt n = nUnknowns()/LSQTraits<U>::size;
+  covar.resize(IPosition(2, n, n));
   return LSQFit::getCovariance(covar.data());
 }
 
-// Template definitions
+template <class U>
+Bool LSQaips::solveLoop(Double &fit, uInt &nRank,
+			Vector<U> &sol, Bool doSVD) {
+  VectorSTLIterator<U> solit(sol);
+  return LSQFit::solveLoop(fit, nRank, solit, doSVD);
+}
 
-template Bool LSQaips::getCovariance<Double>(Array<Double> &);
-template Bool LSQaips::getCovariance<Float>(Array<Float> &);
-template Bool LSQaips::getCovariance<DComplex>(Array<DComplex> &);
-template Bool LSQaips::getCovariance<std::complex<Float> >
-(Array<std::complex<Float> > &);
+
 
