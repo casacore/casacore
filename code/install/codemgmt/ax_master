@@ -3543,3 +3543,4 @@
 13 308 src mv trial/implement/OS/RecordGram.cc aips/implement/Tables/RecordGram.cc
 13 308 src mv trial/implement/OS/RecordGram.h aips/implement/Tables/RecordGram.h
 13 308 src mv trial/implement/OS/RecordGram.l aips/implement/Tables/RecordGram.l
+13 308 src mv trial/implement/OS/RecordGram.y aips/implement/Tables/RecordGram.y
