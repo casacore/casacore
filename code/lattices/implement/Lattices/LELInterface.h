@@ -1,5 +1,5 @@
 //# LELInterface.h:  Abstract base class for lattice expressions
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -159,6 +159,11 @@ public:
 
 // Get the result of a scalar subexpression.
    virtual LELScalar<T> getScalar() const = 0;
+
+// Get the result of an array subexpression.
+// It does eval for the entire array.
+// An exception is thrown if the shape of the subexpression is unknown.
+   LELArray<T> getArray() const;
 
 // Do further preparations (e.g. optimization) on the expression.
 // It returns True if the expression is an invalid scalar
