@@ -346,7 +346,7 @@ class TableExprNode
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
     friend TableExprNode shape (const TableExprNode& array);
-    // <group>
+    // </group>
 
 
 public:

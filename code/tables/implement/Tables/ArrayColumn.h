@@ -218,7 +218,6 @@ public:
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim
     // with the last dimension representing the number of rows in the slicer.
     // The arrays in the column must have the same shape in all those cells.
-    // <group>
     // According to the assignment rules of class Array, the destination
     // array must be empty or its shape must conform the resulting (n+1)-dim
     // array.
@@ -237,7 +236,6 @@ public:
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim
     // with the last dimension representing the number of rows in the slicer.
     // The arrays in the column must have the same shape in all those cells.
-    // <group>
     // According to the assignment rules of class Array, the destination
     // array must be empty or its shape must conform the resulting (n+1)-dim
     // array.
@@ -249,7 +247,6 @@ public:
 			 Bool resize = False) const;
     Array<T> getColumnRange (const Slicer& rowRange,
 			     const Slicer& arraySection) const;
-    // </group>
     // </group>
 
 private:
