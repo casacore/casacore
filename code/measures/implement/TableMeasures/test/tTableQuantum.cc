@@ -210,7 +210,8 @@ int main(int argc)
 	}
 	rosqCol.throwIfNull();
 	cout << "Column's quantum units are: " << rosqCol.getUnits() << endl;
-	for (uInt i=0; i<qtab.nrow(); i++) {
+	uInt i;
+	for (i=0; i<qtab.nrow(); i++) {
 	    cout << "Quantum " << i << ": " << rosqCol(i) << endl;
 	}
 	
@@ -245,7 +246,8 @@ int main(int argc)
     {
 	// Lets have a look at them
 	ROScalarQuantColumn<Complex> rosqCol(qtab, "ScaQuantComplex");
-	for (uInt i=0; i<qtab.nrow(); i++) {
+	uInt i;
+	for (i=0; i<qtab.nrow(); i++) {
 	    cout << "Complex quantum (var unit) " << i << ": " << rosqCol(i) 
 		<< endl;
 	}
