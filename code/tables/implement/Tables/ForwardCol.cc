@@ -1,5 +1,5 @@
 //# ForwardCol.cc: Virtual Column Engine forwarding to another column
-//# Copyright (C) 1995,1996,1997,2000
+//# Copyright (C) 1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -378,7 +378,7 @@ Bool ForwardColumn::isShapeDefined (uInt rownr)
 
 Bool ForwardColumn::canChangeShape() const
 {
-    return colPtr_p->canChangeShape();
+    return (colPtr_p == 0  ?  False : colPtr_p->canChangeShape());
 }
 Bool ForwardColumn::canAccessScalarColumn (Bool& reask) const
 {
