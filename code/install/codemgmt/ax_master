@@ -4553,3 +4553,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSSysCal.h aips/implement/MeasurementSets/MSSysCal.h
 14 296 src mv aips/implement/MeasurementSets/NewMSSysCalColumns.cc aips/implement/MeasurementSets/MSSysCalColumns.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSSysCalColumns.h aips/implement/MeasurementSets/MSSysCalColumns.h
+14 296 src mv aips/implement/MeasurementSets/NewMSSysCalEnums.h aips/implement/MeasurementSets/MSSysCalEnums.h
