@@ -340,6 +340,10 @@ public:
   // is thrown.
   void detachVisBuffer(VisBuffer& vb);
 
+  // Access the current ROMSColumns object in MSIter
+  const ROMSColumns& msColumns() const
+    { return msIter_p.msColumns();}
+
 protected:
   // advance the iteration
   void advance();
