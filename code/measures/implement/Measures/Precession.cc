@@ -1,5 +1,5 @@
 //# Precession.cc:  Precession class
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,9 +144,7 @@ void Precession::fillEpoch() {
 	    break;
 	};
     };
-    for (Int i=0; i<3; i++) {
-	zeta[i] = Polynomial<Double>(3);
-    }
+    for (Int i=0; i<3; i++) zeta[i] = NQPolynomial<Double>(3);
     T = (fixedEpoch - refEpoch)/cent;
     switch (method) {
 	case B1950:

@@ -1,5 +1,5 @@
 //# Precession.h: Precession class
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/NQPolynomial.h>
 
 //# Forward Declarations
 
@@ -170,7 +170,7 @@ private:
 // Check epoch
     Double checkEpoch;
 // Polynomial coefficients for zeta,z,theta
-    Polynomial<Double> zeta[3];
+    NQPolynomial<Double> zeta[3];
 // Cached calculated angles
     Double pval[3];
 // Cached derivatives
