@@ -1,5 +1,5 @@
 //# MCPosition.cc:  MPosition conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,2000
+//# Copyright (C) 1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,7 +109,7 @@ void MCPosition::doConvert(MVPosition &in,
     
   if (False) { inref.getType(); outref.getType(); }; // to stop warnings
 
-  Double g1, g2, g3;
+  Double g1, g2, g3, g4;
 
   for (Int i=0; i<mc.nMethod(); i++) {
 
@@ -149,16 +149,18 @@ void MCPosition::doConvert(MVPosition &in,
       g2 = MeasTable::WGS84(1);
       g2 = 1.0 - 1.0/g2; g2 *= g2;
       // h
-      if (in.radius() != 0.0) {
-	// C
-	g3 = in(0)*in(0) + in(1)*in(1) + g2 * in(2)*in(2);
+      g4 = in.radius();
+      if (g4 != 0.0) {
+	// aC
+	g3 = (in(0)*in(0) + in(1)*in(1) + g2 * in(2)*in(2));
 	g3 = g1 * sqrt(1.0/g3);
-	// S
+	// aS
 	g2 *= g3;
 	// Apply
-	in(0) *= (1.0 + g3);
-	in(1) *= (1.0 + g3);
-	in(2) *= (1.0 + g2);
+	g4 = in.get()[0]/g4;
+	in(0) *= (g4 + g3);
+	in(1) *= (g4 + g3);
+	in(2) *= (g4 + g2);
       } else {
 	// C
 	g3 = g2;
