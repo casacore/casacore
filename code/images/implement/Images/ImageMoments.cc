@@ -798,6 +798,17 @@ Bool ImageMoments<T>::createMoments()
    if (!checkMethod()) return False;
 
 
+// Check that input and output image names aren't the same.
+// if there is only one output image
+
+   if (moments_p.nelements() == 1) {
+      if (!out_p.empty() && (out_p == pInImage_p->name())) {
+         os_p << LogIO::SEVERE << "Input image and output image have same name" << LogIO::POST;
+         return False;
+      }
+   } 
+
+
 // Try and set some useful Booools.
 
    Bool smoothClipMethod = False;
@@ -1038,13 +1049,6 @@ Bool ImageMoments<T>::checkMethod ()
 // Make sure we can do what the user wants
 //  
 {
-
-// Check names
-
-   if (pInImage_p->name() == out_p && moments_p.nelements()==1) {
-      os_p << LogIO::SEVERE << endl << "Input and output names are the same !" << LogIO::POST;
-      return False;
-   }
 
 
 // Make a plotting check. They must give the plotting device for interactive methods.  
