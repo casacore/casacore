@@ -651,3 +651,14 @@ void MCBaseline::doConvert(MVBaseline &in,
     };	// switch
   };	// for
 }
+
+String MCBaseline::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
+		      MBaseline::N_Types, MCBaseline::N_Routes,
+		      MCBaseline::ToRef_p);
+  };
+  return MCBase::showState(MCBaseline::stateMade_p, MCBaseline::FromTo_p[0],
+			   MBaseline::N_Types, MCBaseline::N_Routes,
+			   MCBaseline::ToRef_p);
+}

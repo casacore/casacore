@@ -652,3 +652,14 @@ void MCuvw::doConvert(MVuvw &in,
     };	// switch
   };	// for
 }
+
+String MCuvw::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
+		      Muvw::N_Types, MCuvw::N_Routes,
+		      MCuvw::ToRef_p);
+  };
+  return MCBase::showState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
+			   Muvw::N_Types, MCuvw::N_Routes,
+			   MCuvw::ToRef_p);
+}

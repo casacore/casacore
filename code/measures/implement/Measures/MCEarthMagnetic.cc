@@ -688,3 +688,16 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     };	// switch
   };	// for
 }
+
+String MCEarthMagnetic::showState() {
+  if (!stateMade_p) {
+    MCBase::makeState(MCEarthMagnetic::stateMade_p,
+		      MCEarthMagnetic::FromTo_p[0],
+		      MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
+		      MCEarthMagnetic::ToRef_p);
+  };
+  return MCBase::showState(MCEarthMagnetic::stateMade_p,
+			   MCEarthMagnetic::FromTo_p[0],
+			   MEarthMagnetic::N_Types, MCEarthMagnetic::N_Routes,
+			   MCEarthMagnetic::ToRef_p);
+}

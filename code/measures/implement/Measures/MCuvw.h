@@ -44,6 +44,7 @@ class Nutation;
 class Precession;
 class Euler;
 class RotMatrix;
+class String;
 template <class T> class Vector;
 
 //# Typedefs
@@ -95,6 +96,10 @@ public:
   
   //# Destructor
   ~MCuvw();
+
+  //# Member functions
+  // Show the state of the conversion engine (mainly for debugging purposes)
+  static String showState();
 
 private:  
   //# Enumerations
