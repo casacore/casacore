@@ -1,5 +1,5 @@
 //# TiledCellStMan.cc: Storage manager for tables using tiled hypercubes
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,9 +105,14 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
     // dimensionality of the hypercolumn.
     for (uInt i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
-	if (! columnDesc.isArray()  ||  Int(nrdim_p) != columnDesc.ndim()) {
+	if (! columnDesc.isArray()) {
+	    throw (TSMError ("TiledCellStMan cannot handle scalar column " +
+			     dataNames(i)));
+	}
+	if (Int(nrdim_p) != columnDesc.ndim()) {
 	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
-			     " is incorrect"));
+			     " should be equal to hypercolumn"
+			     " definition when used in TiledCellStMan"));
 	}
     }
 }

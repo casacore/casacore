@@ -1,5 +1,5 @@
 //# TiledShapeStMan.cc: Tiled Data Storage Manager using the shape as id
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -133,9 +133,14 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
     Int ndim = nrdim_p - 1;
     for (uInt i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
-	if (! columnDesc.isArray()  ||  ndim != columnDesc.ndim()) {
+	if (! columnDesc.isArray()) {
+	    throw (TSMError ("TiledShapeStMan cannot handle scalar column " +
+			     dataNames(i)));
+	}
+	if (ndim != columnDesc.ndim()) {
 	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
-			     " is incorrect"));
+			     " should be one less than hypercolumn"
+			     " definition when used in TiledShapeStMan"));
 	}
     }
 }
