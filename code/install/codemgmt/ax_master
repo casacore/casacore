@@ -2098,3 +2098,6 @@
 08 306 src mv trial/implement/Lattices/FiledesIO.cc aips/implement/IO/FiledesIO.cc
 08 322 src rm nrao/apps/sdcalc/avg_spc.ps
 08 322 src rm nrao/apps/sdcalc/sdcalc_tkpg.ps
+08 323 src rm trial/apps/loadMRefData/loadIERS
+08 323 src rm trial/apps/loadMRefData/loadMRefData.cc
+08 323 src rm trial/apps/loadMRefData/iersformat.awk
