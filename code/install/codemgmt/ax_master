@@ -4861,3 +4861,4 @@
 14 316 src rm trial/apps/newdish/dishfunction.g
 14 316 sys rm libexec/dishfunction.g
 14 316 src rm trial/apps/newdish/dishfunctiongui.g
+14 316 sys rm libexec/dishfunctiongui.g
