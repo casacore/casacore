@@ -33,12 +33,12 @@
 #include <casa/aips.h>
 #include <casa/Exceptions/Error.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-
 //
 // Work around bugs in SUN\'s stupid compiler
 //
 #define AIPS_STUPID_SUN 1
+
+namespace casa { //#Begin casa namespace
 
 //# Forward Declarations
 class AipsIO;
@@ -603,14 +603,14 @@ public:
   //
   //+grp
   value &define(const key &ky, const value &val) {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    return(Rep->define(ky,val));
+    return(this->Rep->define(ky,val));
   }
   void remove(const key &ky) {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    Rep->remove(ky);
+    this->Rep->remove(ky);
   }
   //-grp
 
@@ -625,9 +625,9 @@ public:
   }
 
   value &defaultVal() {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    return Rep->defaultVal();
+    return this->Rep->defaultVal();
   }
   //-grp
 
@@ -635,9 +635,9 @@ public:
   // Clear all of the mappings.
   //
   void clear() {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    Rep->clear();
+    this->Rep->clear();
   }
 
   //
@@ -652,9 +652,9 @@ public:
   }
 
   value &operator()(const key &ky) {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    return(Rep->operator()(ky));
+    return(this->Rep->operator()(ky));
   }
   //-grp
 
@@ -671,9 +671,9 @@ public:
   }
 
   value *isDefined(const key &ky) {
-    if (!isValid())
+    if (!this->isValid())
       throw_invalid_mapiter_error();
-    return(Rep->isDefined(ky));
+    return(this->Rep->isDefined(ky));
   }
   //-grp
 
@@ -738,7 +738,7 @@ public:
   //
   //+grp
   Map<key,value> &container() { 
-    return(Rep->container());}
+    return(this->Rep->container());}
   const Map<key,value> &container() const {
     return(ConstMapIter<key,value>::container());}
   //-grp
@@ -771,7 +771,5 @@ protected:
 
 };
 
-
-} //# NAMESPACE CASA - END
-
+} //#End casa namespace
 #endif

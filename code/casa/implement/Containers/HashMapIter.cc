@@ -144,13 +144,13 @@ template<class key, class val> ConstHashMapIter<key,val>::~ConstHashMapIter() {}
 
 template<class key, class val> val &HashMapIter<key,val>::getVal() {
 
-    if ( iter.atEnd() && iter.isValid() )
+    if ( this->iter.atEnd() && this->iter.isValid() )
 	((HashMapIter<key,val>*)this)->step();
 
-    if ( ! isValid() || ! iter.isValid() || atEnd() )
+    if ( ! isValid() || ! this->iter.isValid() || atEnd() )
 	throw_invalid_hashmapiter_error();
 
-    return iter.getRight().y();
+    return this->iter.getRight().y();
 }
 
 template<class key, class val> const val &HashMapIter<key,val>::getVal() const {

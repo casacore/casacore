@@ -33,9 +33,9 @@ template<class T> MatrixIterator<T>::MatrixIterator(Array<T> &a)
 : ArrayIterator<T>(a, 2)
 {
     // We need to ensure that ap points at a Matrix
-    Matrix<T> *mp = new Matrix<T>(*ap); // reference
-    delete ap;
-    ap = mp;
+    Matrix<T> *mp = new Matrix<T>(*this->ap); // reference
+    delete this->ap;
+    this->ap = mp;
 }
 
 } //# NAMESPACE CASA - END

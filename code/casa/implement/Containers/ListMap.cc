@@ -124,7 +124,7 @@ MapIterRep<key,value> *ListMapRep<key,value>::getRep(Map<key,value> *container) 
 
 template<class key, class value>
 MapRep<key,value> *ListMapRep<key,value>::Clone() const {
-  ListMapRep<key,value> *ret = new ListMapRep<key,value>(DefaultVal,deforder);
+  ListMapRep<key,value> *ret = new ListMapRep<key,value>(this->DefaultVal,deforder);
   ConstListIter<OrderedPair<key,value> > listp = list;
 
   ret->list.toStart();

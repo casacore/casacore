@@ -41,8 +41,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 template<class t> class Dlink : public Link<t> {
   public:
     Dlink(t e,Dlink<t> *p=0,Dlink<t> *n=0);
-    Dlink<t> *&prev() {return (Dlink<t>*&) Prev;}
-    const Dlink<t> *prev() const {return (Dlink<t>*) Prev;}
+    Dlink<t> *&prev() {return (Dlink<t>*&) (this->Prev);}
+    const Dlink<t> *prev() const {return (Dlink<t>*) (this->Prev);}
 };
 
 

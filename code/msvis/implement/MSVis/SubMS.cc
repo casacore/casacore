@@ -35,6 +35,7 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/OS/File.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/Containers/Record.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
@@ -63,9 +64,7 @@
 
 #include <casa/sstream.h>
 
-
-
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa {
 
 SubMS::SubMS(String& theMS){
  
@@ -643,6 +642,19 @@ Bool SubMS::fillMainTable(const String& whichCol){
     }
 
     if(sameShape){
+      //Checking to make sure we have in memory capability else 
+      // use visbuffer
+      
+      Double datavol= mssel_p.nrow()*nchan_p[0]*npol_p[0]*sizeof(Complex);
+      Double memAvail= Double (HostInfo::memoryTotal())*(1024);
+      //Factoring in 30% for flags and other stuff
+      if ((datavol*1.3) >  memAvail)
+	sameShape = False;
+
+
+    }
+
+    if(sameShape){
       writeSimilarSpwShape(columnName);
     }
     else{
@@ -944,21 +956,4 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-} //# NAMESPACE CASA - END
-
+} //#End casa namespace

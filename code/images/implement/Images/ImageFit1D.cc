@@ -40,15 +40,16 @@
 #include <components/SpectralComponents/SpectralElement.h>
 #include <casa/Utilities/Assert.h>
 
-
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa {
 
 template <class T> 
 ImageFit1D<T>::ImageFit1D()
  : itsImagePtr(0),
    itsWeightPtr(0),
    itsAxis(0)
-{;}
+{
+   checkType();
+}
 
 template <class T> 
 ImageFit1D<T>::ImageFit1D(const ImageInterface<T>& image, uInt pixelAxis)
@@ -56,6 +57,7 @@ ImageFit1D<T>::ImageFit1D(const ImageInterface<T>& image, uInt pixelAxis)
    itsWeightPtr(0),
    itsAxis(0)
 {
+   checkType();
    setImage(image, pixelAxis);
 }
 
@@ -67,43 +69,31 @@ ImageFit1D<T>::ImageFit1D(const ImageInterface<T>& image,
    itsWeightPtr(0),
    itsAxis(0)
 {
+   checkType();
    setImage(image, pixelAxis);
    setWeightsImage (weights);
 }
 
 
 template <class T> 
-ImageFit1D<T>::ImageFit1D(const ImageFit1D& other)
+ImageFit1D<T>::ImageFit1D(const ImageFit1D<T>& other)
  : itsImagePtr(0),
    itsWeightPtr(0),
    itsAxis(0)
 {
-   operator=(other);
+   checkType();
+   copy(other);
 }
 
 template <class T> 
-ImageFit1D<T>& ImageFit1D<T>::operator=(const ImageFit1D& other)
+ImageFit1D<T>& ImageFit1D<T>::operator=(const ImageFit1D<T>& other)
 {
   if (this != &other) {
-
-// Lattices are refernece counted
-
-     if (itsImagePtr) delete itsImagePtr;
-     itsImagePtr = other.itsImagePtr->cloneII();
-//
-     if (itsWeightPtr) delete itsWeightPtr;
-     if (other.itsWeightPtr) itsWeightPtr = other.itsWeightPtr->cloneII();
-
-// These things are copies
-
-     itsCS = other.itsCS;
-     itsAxis = other.itsAxis;  
-//
-     itsFitter = other.itsFitter;
-     itsError = other.itsError;
+     copy(other);
   }
   return *this;
 }
+
 
 template <class T> 
 ImageFit1D<T>::~ImageFit1D()
@@ -171,12 +161,18 @@ Bool ImageFit1D<T>::setData (const IPosition& pos,
 
 // Generate Abcissa
 
-   Vector<T> x;
+   Vector<Double> x;
    if (!makeAbcissa(x, abcissaType, doAbs)) return False;
   
-// Set data in fitter
+// Set data in fitter; we need to use a Double fitter at present
 
-   if (!itsFitter.setData (x, y, mask, weights)) {
+   Vector<FitterType> y2(y.shape());
+   convertArray(y2, y);
+//
+   Vector<Double> w2(weights.shape());
+   convertArray(w2, weights);
+//
+   if (!itsFitter.setData (x, y2, mask, w2)) {
       itsError = itsFitter.errorMessage();
       return False;
    }
@@ -215,12 +211,18 @@ Bool ImageFit1D<T>::setData (const ImageRegion& region,
 
 // Generate Abcissa
 
-   Vector<T> x;
+   Vector<Double> x;
    if (!makeAbcissa(x, abcissaType, doAbs)) return False;
   
-// Set data in fitter
+// Set data in fitter; we need to use a Double fitter at present
 
-   if (!itsFitter.setData (x, y, mask, weights)) {
+   Vector<FitterType> y2(y.shape());
+   convertArray(y2, y);
+//
+   Vector<Double> w2(weights.shape());
+   convertArray(w2, weights);
+//
+   if (!itsFitter.setData (x, y2, mask, w2)) {
       itsError = itsFitter.errorMessage();
       return False;
    }
@@ -295,14 +297,14 @@ Bool ImageFit1D<T>::setAbcissaState (String& errMsg, ImageFit1D<T>::AbcissaType&
 // Private functions
 
 template <class T> 
-Bool ImageFit1D<T>::makeAbcissa (Vector<T>& x, 
+Bool ImageFit1D<T>::makeAbcissa (Vector<Double>& x, 
                                  ImageFit1D<T>::AbcissaType type, 
                                  Bool doAbs)
 {
    const uInt n = itsImagePtr->shape()(itsAxis);
    x.resize(n);
 //
-   T refPix = T(itsCS.referencePixel()(itsAxis));
+   Double refPix = itsCS.referencePixel()(itsAxis);
    if (type==PIXEL) {
       indgen(x);
       if (!doAbs) x -= refPix;      
@@ -373,6 +375,69 @@ void ImageFit1D<T>::setWeightsImage (const ImageInterface<T>& image)
 }
 
 
+template <class T> 
+void ImageFit1D<T>::copy(const ImageFit1D<T>& other)
+{
 
-} //# NAMESPACE CASA - END
+// Lattices are reference counted
 
+   if (itsImagePtr) delete itsImagePtr;
+   itsImagePtr = other.itsImagePtr->cloneII();
+//
+   if (itsWeightPtr) delete itsWeightPtr;
+   if (other.itsWeightPtr) itsWeightPtr = other.itsWeightPtr->cloneII();
+
+// These things are copies
+
+   itsCS = other.itsCS;
+   itsAxis = other.itsAxis;  
+//
+   itsFitter = other.itsFitter;
+   itsError = other.itsError;
+}
+
+
+template <class T> 
+void ImageFit1D<T>::checkType() const
+//
+// At this point, ProfileFitter and SpectralFitter
+// take the *Same* template type for X and Y
+// To avoid precision problems we do it all in Double
+// at the moment.  Later X<T> and Y<T> can be separated
+ //
+{
+   FitterType* p;
+   DataType tp = whatType(p);
+   AlwaysAssert(tp==TpDouble, AipsError);
+}
+
+
+template <class T> 
+Vector<T> ImageFit1D<T>::getEstimate (Int which) const 
+{
+   Vector<FitterType> e = itsFitter.getEstimate(which);
+   Vector<T> t(e.shape());
+   convertArray (t, e);
+   return t;
+}
+
+
+template <class T> 
+Vector<T> ImageFit1D<T>::getFit (Int which) const 
+{
+   Vector<FitterType> f = itsFitter.getFit(which);
+   Vector<T> t(f.shape());
+   convertArray (t, f);
+   return t;
+}
+
+template <class T> 
+Vector<T> ImageFit1D<T>::getResidual(Int which, Bool fit) const 
+{
+   Vector<FitterType> r = itsFitter.getResidual(which, fit);
+   Vector<T> t(r.shape());
+   convertArray (t, r);
+   return t;
+}
+
+} //#End casa namespace

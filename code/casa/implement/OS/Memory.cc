@@ -43,7 +43,7 @@
 #endif
 #endif
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa  { //#Begin namespace casa
 
 size_t Memory::allocatedMemoryInBytes()
 {
@@ -56,19 +56,22 @@ size_t Memory::allocatedMemoryInBytes()
    total = rus.ru_maxrss;
 #else
 
-   // Ger van Diepen   25-5-2004
+   // Ger van Diepen   25-May-2004
    // For IntelCC (with -cxxlib-gcc) mallinfo hangs if called before any
    // malloc is done. So do a new to prevent that from happening.
-# if defined(AIPS_INTELCC)
-    char* ptr = new char[4];
-    delete [] ptr;
-# endif
-#ifdef NAMESPACE_WORKING 
-    struct mallinfo m = mallinfo();
-    total = m.hblkhd + m.usmblks + m.uordblks;
+   // Ger van Diepen   6-Oct-2004
+   // Hang also occurs with gcc on Linux. So always do a new.
+   static char* ptr = 0;
+   if (ptr == 0) {
+     char* ptr = new char[4];
+     delete [] ptr;
+   }
+
+   struct mallinfo m = mallinfo();
+   total = m.hblkhd + m.usmblks + m.uordblks;
+
 #endif
-#endif
-    return total;
+   return total;
 }
 
 size_t Memory::assignedMemoryInBytes()
@@ -81,10 +84,8 @@ size_t Memory::assignedMemoryInBytes()
    total = rus.ru_idrss + rus.ru_isrss;
 #else
 
-#if NAMESPACE_WORKING
     struct mallinfo m = mallinfo();
     total = m.arena + m.hblkhd;
-#endif
 #endif
 
     return total;
@@ -138,13 +139,8 @@ int Memory::setMemoryOption(int cmd, int value){
 #if defined(AIPS_DARWIN)
    return 0;
 #else
-#ifdef NAMESPACE_WORKING
    return(mallopt(cmd, value));
-#else
-   return 0;
 #endif
-#endif
+
+} //#End namespace casa
 }
-
-} //# NAMESPACE CASA - END
-

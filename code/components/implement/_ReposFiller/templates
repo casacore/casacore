@@ -80,4 +80,3 @@
      template class SimpleCountedPtr<FluxRep<Double> > 
 1000 components/SpectralComponents/ProfileFit1D.cc 
      template class ProfileFit1D<Double> 
-     template class ProfileFit1D<Float> 

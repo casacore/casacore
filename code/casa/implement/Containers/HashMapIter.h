@@ -30,8 +30,6 @@
 
 #include <casa/Containers/HashMap.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
-
 // <summary>
 //     Step through a const HashMap
 // </summary>
@@ -78,6 +76,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     versions of the iterator are useful.
 // </motivation>
 //
+namespace casa { //#Begin casa namespace
+
 template<class key, class val> class ConstHashMapIter {
 public:
 
@@ -270,14 +270,14 @@ public:
     //
     // <group>
     val &define(const key &k, const val &v) {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      return(Container->define(k,v));
+      return(this->Container->define(k,v));
     }
     void remove(const key &k) {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      Container->remove(k);
+      this->Container->remove(k);
     }
     // </group>
 
@@ -292,9 +292,9 @@ public:
     }
 
     val &defaultVal() {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      return Container->defaultVal();
+      return this->Container->defaultVal();
     }
     // </group>
 
@@ -302,9 +302,9 @@ public:
     // Clear all of the mappings.
     //
     void clear() {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      Container->clear();
+      this->Container->clear();
     }
 
     //
@@ -319,9 +319,9 @@ public:
     }
 
     val &operator()(const key &ky) {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      return(Container->operator()(ky));
+      return(this->Container->operator()(ky));
     }
     // </group>
 
@@ -368,14 +368,14 @@ public:
     //
     // <group>
     HashMap<key,val> &container() {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      return(*Container);
+      return(*this->Container);
     }
     const HashMap<key,val> &container() const {
-      if (!isValid())
+      if (!this->isValid())
         throw_invalid_hashmapiter_error();
-      return(*Container);
+      return(*this->Container);
     }
     // </group>
 
@@ -400,7 +400,6 @@ protected:
 
 };
 
-
-} //# NAMESPACE CASA - END
+} //#End casa namespace
 
 #endif

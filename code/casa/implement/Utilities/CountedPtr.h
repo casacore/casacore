@@ -30,7 +30,7 @@
 
 #include <casa/aips.h>
 
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa { //#Begin casa namespace
 
 //# Forward Declarations 
 template<class t> class SimpleCountedPtr;
@@ -362,8 +362,8 @@ public:
     // </thrown>
     //
     const t *operator->() const {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return ((*ref).val);
+	if (!this->ref) throw_Null_CountedPtr_dereference_error();
+	return ((*this->ref).val);
     }
 };
 
@@ -445,12 +445,12 @@ public:
     //
     // <group>
     const t &operator*() const {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return(*(*ref).val);
+	if (!this->ref) throw_Null_CountedPtr_dereference_error();
+	return(*(*this->ref).val);
     }
     t &operator*() {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return(*(*ref).val);
+	if (!this->ref) throw_Null_CountedPtr_dereference_error();
+	return(*(*this->ref).val);
     }
     // </group>
 
@@ -535,26 +535,15 @@ public:
     //
     // <group>
     t *operator->() const {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return ((*ref).val);
+	if (!this->ref) throw_Null_CountedPtr_dereference_error();
+	return ((*this->ref).val);
     }
     t *operator->() {
-	if (!ref) throw_Null_CountedPtr_dereference_error();
-	return ((*ref).val);
+	if (!this->ref) throw_Null_CountedPtr_dereference_error();
+	return ((*this->ref).val);
     }
     // </group>
 };
 
-
-
-} //# NAMESPACE CASA - END
-
+ } //#End casa namespace
 #endif
-
-
-
-
-
-
-
-

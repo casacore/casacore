@@ -346,7 +346,7 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     order_p = Int(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
   } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.ptr())) {
     nf_p = HYPERPLANE;
-    order_p = hold_p.ptr()->nparameters()-1;
+    order_p = hold_p.ptr()->nparameters();
   } else if (dynamic_cast<const Polynomial<T> *>(hold_p.ptr())) {
     nf_p = POLYNOMIAL;
     order_p = hold_p.ptr()->nparameters()-1;

@@ -37,8 +37,7 @@
 #include <casa/Utilities/Register.h>
 #include <casa/Utilities/Notice.h>
 
-
-namespace casa { //# NAMESPACE CASA - BEGIN
+namespace casa { //#Begin casa namespace
 
 template<class t, class v> class OrderedMap;
 template<class t, class v> class OrderedMapRep;
@@ -215,27 +214,27 @@ protected:
   void throwgetValue(uInt) const;
 
   value &getVal(uInt inx) {
-    if (!Rep || inx >= nused())
+    if (!this->Rep || inx >= nused())
       throwgetValue(inx);
-    return (((OrderedMapRep<key,value> *) Rep)->kvblk[inx]->y());
+    return (((OrderedMapRep<key,value> *)(this->Rep))->kvblk[inx]->y());
   }
 
   const value &getVal(uInt inx) const {
-    if (!Rep || inx >= nused())
+    if (!this->Rep || inx >= nused())
       throwgetValue(inx);
-    return (((OrderedMapRep<key,value> *) Rep)->kvblk[inx]->y());
+    return (((OrderedMapRep<key,value> *)(this->Rep))->kvblk[inx]->y());
   }
 
   key &getKey (uInt inx) {
-    if (!Rep || inx >= nused())
+    if (!this->Rep || inx >= nused())
 	throwgetKey(inx);
-    return (((OrderedMapRep<key,value> *) Rep)->kvblk[inx]->x());
+    return (((OrderedMapRep<key,value> *)(this->Rep))->kvblk[inx]->x());
   }
 
   const key &getKey (uInt inx) const {
-    if (!Rep || inx >= nused())
+    if (!this->Rep || inx >= nused())
 	throwgetKey(inx);
-    return (((OrderedMapRep<key,value> *) Rep)->kvblk[inx]->x());
+    return (((OrderedMapRep<key,value> *)(this->Rep))->kvblk[inx]->x());
   }
 
 public:
@@ -272,15 +271,15 @@ public:
   //
   //  Get the number of mappings.
   //
-  uInt nused() const { return ((OrderedMapRep<key,value> *) Rep)->nused(); }
-  uInt ntot() const { return ((OrderedMapRep<key,value> *) Rep)->ntot(); }
+  uInt nused() const { return ((OrderedMapRep<key,value> *)(this->Rep))->nused(); }
+  uInt ntot() const { return ((OrderedMapRep<key,value> *)(this->Rep))->ntot(); }
 
   //
   //  Get or set the Block allocation increment.
   //
   //+grp
-  uInt incr() const { return ((OrderedMapRep<key,value> *) Rep)->incr(); }
-  uInt incr(uInt nri) { return ((OrderedMapRep<key,value> *) Rep)->incr(nri);}
+  uInt incr() const { return ((OrderedMapRep<key,value> *)(this->Rep))->incr(); }
+  uInt incr(uInt nri) { return ((OrderedMapRep<key,value> *)(this->Rep))->incr(nri);}
   //-grp
 
   enum {OrderedMapVersion = 1};
@@ -420,7 +419,5 @@ public:
 
 };
 
-
-} //# NAMESPACE CASA - END
-
+} //#End casa namespace
 #endif
