@@ -1,5 +1,5 @@
 //# tTiledColumnStMan.cc: Test program for the TiledColumnStMan classes
-//# Copyright (C) 1994,1995,1996,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -56,12 +56,15 @@
 // compares the results with the reference output file.
 
 void writeFixed();
-void readTable();
+void readTable(Bool readKeys);
+void writeNoHyper();
 
 int main () {
     try {
 	writeFixed();
-	readTable();
+	readTable(True);
+	writeNoHyper();
+	readTable(False);
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -156,7 +159,7 @@ void writeFixed()
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
-void readTable()
+void readTable (Bool readKeys)
 {
     Table table("tTiledColumnStMan_tmp.data");
     ROTiledStManAccessor accessor (table, "TSMExample");
@@ -198,12 +201,14 @@ void readTable()
     }
     accessor.showCacheStatistics (cout);
     accessor.clearCaches();
-    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Freq"),
-			     freqValues));
-    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Pol"),
-			     polValues));
-    AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Time"),
-			     time.getColumn()));
+    if (readKeys) {
+      AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Freq"),
+			       freqValues));
+      AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Pol"),
+			       polValues));
+      AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Time"),
+			       time.getColumn()));
+    }
     cout << "get's have been done" << endl;
 
     // Get the entire column.
@@ -346,4 +351,88 @@ void readTable()
 	accessor.clearCaches();
 	cout << "getSlice's with strides have been done" << endl;
     }
+}
+
+// First build a description.
+void writeNoHyper()
+{
+    // Build the table description.
+    TableDesc td ("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<float>  ("Pol", IPosition(1,16),
+					   ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
+    td.addColumn (ScalarColumnDesc<float> ("Time"));
+    td.addColumn (ArrayColumnDesc<float>  ("Data", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,20),
+					   ColumnDesc::FixedShape));
+    
+    // Now create a new table from the description.
+    SetupNewTable newtab("tTiledColumnStMan_tmp.data", td, Table::New);
+    // Create a storage manager for it.
+    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
+    newtab.setShapeColumn ("Freq", IPosition(1,20));
+    newtab.setShapeColumn ("Data", IPosition(2,16,20));
+    newtab.bindColumn ("Data", sm1);
+    newtab.bindColumn ("Weight", sm1);
+    Table table(newtab);
+
+    Vector<float> freqValues(20);
+    Vector<float> polValues(16);
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
+    float timeValue;
+    timeValue = 34;
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ArrayColumn<float> data (table, "Data");
+    ArrayColumn<float> weight (table, "Weight");
+    ScalarColumn<float> time (table, "Time");
+    Matrix<float> array(IPosition(2,16,20));
+    Matrix<float> result(IPosition(2,16,20));
+    uInt i;
+    indgen (array);
+    for (i=0; i<51; i++) {
+	table.addRow();
+	data.put (i, array);
+	weight.put (i, array+float(100));
+	time.put (i, timeValue);
+	array += float(200);
+	timeValue += 5;
+	freq.put (i, freqValues);
+	pol.put (i, polValues);
+    }
+    timeValue = 34;
+    indgen (array);
+    for (i=0; i<table.nrow(); i++) {
+	data.get (i, result);
+	if (! allEQ (array, result)) {
+	    cout << "mismatch in data row " << i << endl;
+	}
+	weight.get (i, result);
+	if (! allEQ (array + float(100), result)) {
+	    cout << "mismatch in weight row " << i << endl;
+	}
+	if (! allEQ (freq(i), freqValues)) {
+	    cout << "mismatch in freq row " << i << endl;
+	}
+	if (! allEQ (pol(i), polValues)) {
+	    cout << "mismatch in pol row " << i << endl;
+	}
+	if (time(i) != timeValue) {
+	    cout << "mismatch in time row " << i << endl;
+	}
+	array += float(200);
+	timeValue += 5;
+    }
+    ROTiledStManAccessor accessor (table, "TSMExample");
+    accessor.showCacheStatistics (cout);
+    AlwaysAssertExit (accessor.nhypercubes() == 1);
+    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
+							      table.nrow()));
+    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
+								table.nrow()));
+    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
+    AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }

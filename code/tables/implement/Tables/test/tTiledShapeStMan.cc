@@ -1,5 +1,5 @@
 //# tTiledShapeStMan.cc: Test program for the TiledShapeStMan classes
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -338,8 +338,82 @@ void writeVarShaped()
     }
 }
 
+void writeNoHyper()
+{
+    // Build the table description.
+    TableDesc td ("", "1", TableDesc::Scratch);
+    td.addColumn (ArrayColumnDesc<float>  ("Pol", IPosition(1,16),
+					   ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
+    td.addColumn (ScalarColumnDesc<float> ("Time"));
+    td.addColumn (ArrayColumnDesc<float>  ("Data", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,25),
+					   ColumnDesc::FixedShape));
+    
+    // Now create a new table from the description.
+    SetupNewTable newtab("tTiledShapeStMan_tmp.data", td, Table::New);
+    // Create a storage manager for it.
+    TiledShapeStMan sm1 ("TSMExample", IPosition(2,5,6));
+    newtab.setShapeColumn ("Freq", IPosition(1,25));
+    newtab.setShapeColumn ("Data", IPosition(2,16,25));
+    newtab.bindColumn ("Data", sm1);
+    newtab.bindColumn ("Weight", sm1);
+    Table table(newtab);
 
-main () {
+    Vector<float> freqValues(25);
+    Vector<float> polValues(16);
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
+    float timeValue;
+    timeValue = 34;
+    ArrayColumn<float> freq (table, "Freq");
+    ArrayColumn<float> pol (table, "Pol");
+    ArrayColumn<float> data (table, "Data");
+    ArrayColumn<float> weight (table, "Weight");
+    ScalarColumn<float> time (table, "Time");
+    Matrix<float> array(IPosition(2,16,25));
+    Matrix<float> result(IPosition(2,16,25));
+    uInt i;
+    indgen (array);
+    for (i=0; i<101; i++) {
+	table.addRow();
+	data.put (i, array);
+	weight.put (i, array+float(100));
+	time.put (i, timeValue);
+	array += float(200);
+	timeValue += 5;
+	freq.put (i, freqValues);
+	pol.put (i, polValues);
+    }
+    indgen (array);
+    indgen (freqValues, float(200));
+    indgen (polValues, float(300));
+    timeValue = 34;
+    for (i=0; i<table.nrow(); i++) {
+	data.get (i, result);
+	if (! allEQ (array, result)) {
+	    cout << "mismatch in data row " << i << endl;
+	}
+	weight.get (i, result);
+	if (! allEQ (array + float(100), result)) {
+	    cout << "mismatch in weight row " << i << endl;
+	}
+	if (! allEQ (freq(i), freqValues)) {
+	    cout << "mismatch in freq row " << i << endl;
+	}
+	if (! allEQ (pol(i), polValues)) {
+	    cout << "mismatch in pol row " << i << endl;
+	}
+	if (time(i) != timeValue) {
+	    cout << "mismatch in time row " << i << endl;
+	}
+	array += float(200);
+	timeValue += 5;
+    }
+}
+
+
+int main () {
     try {
 	writeFixed();
 	readTable (IPosition(2,16,25));
@@ -349,6 +423,8 @@ main () {
 	readTable (IPosition(2,16,25));
 	writeVarShaped();
 	readTable (IPosition());
+	writeNoHyper();
+	readTable (IPosition(2,16,25));
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
