@@ -1826,3 +1826,4 @@
 08 003 sys rm bin/imagemodeler
 08 003 sys rm bin/imager.atoms
 08 003 sys rm bin/imager.help
+08 003 sys rm bin/imaging
