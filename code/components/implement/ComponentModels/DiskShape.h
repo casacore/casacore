@@ -30,15 +30,12 @@
 #define AIPS_DISKSHAPE_H
 
 #include <aips/aips.h>
-#include <trial/ComponentModels/ComponentShape.h>
-#include <aips/Quanta/MVDirection.h>
-#include <aips/Quanta/Unit.h>
+#include <trial/ComponentModels/ComponentType.h>
+#include <trial/ComponentModels/TwoSidedShape.h>
 
 class MDirection;
 class MVAngle;
 class MVDirection;
-class RecordInterface;
-class String;
 template <class Qtype> class Quantum;
 template <class T> class Flux;
 template <class T> class Vector;
@@ -161,7 +158,7 @@ template <class T> class Vector;
 //  <here>GaussianCompRep</here> - a gaussian component with copy semantics
 // </linkfrom>
 
-class DiskShape: public ComponentShape
+class DiskShape: public TwoSidedShape
 {
 public:
   // The default DiskShape is at an RA and Dec of zero in the J2000 Frame. The
@@ -199,23 +196,12 @@ public:
   // moves the Northern edge to the East. The axial ratio is the ratio of the
   // minor to major axes widths. Hence it is always between zero and one.
   // <group>
-  void setWidth(const Quantum<Double>& majorAxis,
-		const Quantum<Double>& minorAxis, 
-		const Quantum<Double>& positionAngle);
-  void setWidth(const Quantum<Double>& majorAxis, const Double axialRatio, 
-		const Quantum<Double>& positionAngle);
-  void width(Quantum<Double>& majorAxis, Quantum<Double>& minorAxis,
-	     Quantum<Double>& positionAngle) const;
-  void width(Quantum<Double>& majorAxis, Double& axialRatio,
-	     Quantum<Double>& positionAngle) const;
-  void majorAxis(Quantum<Double>& majorAxis) const;
-  Quantum<Double> majorAxis() const;
-  void minorAxis(Quantum<Double>& minorAxis) const;
-  Quantum<Double> minorAxis() const;
-  void axialRatio(Double& axialRatio) const;
-  Double axialRatio() const;
-  void positionAngle(Quantum<Double>& positionAngle) const;
-  Quantum<Double> positionAngle() const;
+  virtual void setWidthInRad(const Double majorAxis,
+			     const Double minorAxis, 
+			     const Double positionAngle);
+  virtual Double majorAxisInRad() const;
+  virtual Double minorAxisInRad() const;
+  virtual Double positionAngleInRad() const;
   // </group>
 
   // Calculate the flux at the specified direction, in a pixel of specified
@@ -257,39 +243,6 @@ public:
   // pointer. This is used to implement a virtual copy constructor.
   virtual ComponentShape* clone() const;
 
-  // set/get the shape parameters associated with the Disk. There are three
-  // these being in order: the major axis, the minor axis and the position
-  // angle. All these angular quantities are specified in radians. The Vector
-  // supplied to the setParameters function must have three elements and the
-  // Vector supplied to and returned by the parameters function will have three
-  // elements.
-  // <group>
-  virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double>& newParms);
-  virtual void parameters(Vector<Double>& compParms) const;
-  // </group>
-
-  // This functions convert between a RecordInterface and a
-  // DiskShape. These functions define how a DiskShape is represented
-  // in glish and this is detailed in the synopsis above.  They return False if
-  // the record is malformed and append an error message to the supplied string
-  // giving the reason.
-  // <group>
-  virtual Bool fromRecord(String& errorMessage,
-			  const RecordInterface& record);
-  virtual Bool toRecord(String& errorMessage,
-			RecordInterface& record) const;
-  // </group>
-
-  // Convert the parameters of the component to the specified units. The
-  // supplied record must have three fields, namely 'majoraxis', 'minoraxis' &
-  // 'positionangle'. These fields must contains strings that are angular
-  // units and this function will convert the corresponding parameters to the
-  // specified units. This will have no effect on the shape of this class but
-  // will affect the format of the record returned by the toRecord function. 
-  virtual Bool convertUnit(String& errorMessage,
-			   const RecordInterface& record);
-
   // Function which checks the internal data of this class for correct
   // dimensionality and consistent values. Returns True if everything is fine
   // otherwise returns False.
@@ -301,8 +254,5 @@ private:
   Double itsMinValue;
   Double itsPaValue;
   Double itsHeight;
-  Unit itsMajUnit;
-  Unit itsMinUnit;
-  Unit itsPaUnit;
 };
 #endif

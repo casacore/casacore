@@ -28,31 +28,25 @@
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/Flux.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Containers/Record.h>
-#include <aips/Containers/RecordFieldId.h>
-#include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
-#include <aips/Mathematics/Complex.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Measures/MCDirection.h>
-#include <aips/Quanta/MVAngle.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasConvert.h>
+#include <aips/Measures/MeasRef.h>
+#include <aips/Quanta/MVAngle.h>
+#include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/Quantum.h>
-#include <aips/Quanta/QuantumHolder.h>
 #include <aips/Utilities/Assert.h>
-#include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
 
 GaussianShape::GaussianShape()
-  :ComponentShape(),
+  :TwoSidedShape(),
    itsShape(1.0, 0.0, 0.0, Quantity(1,"'").getValue("rad"), 1.0, 0.0),
-   itsFT(itsShape),
-   itsMajUnit("arcmin"),
-   itsMinUnit("arcmin"),
-   itsPaUnit("deg")
+   itsFT(itsShape)
 {
   itsShape.setFlux(1.0);
   updateFT();
@@ -63,14 +57,12 @@ GaussianShape::GaussianShape(const MDirection& direction,
 			     const Quantum<Double>& majorAxis,
 			     const Quantum<Double>& minorAxis,
 			     const Quantum<Double>& positionAngle)
-  :ComponentShape(direction),
+  :TwoSidedShape(direction, majorAxis.getFullUnit(),
+		 minorAxis.getFullUnit(), positionAngle.getFullUnit()),
    itsShape(1.0, 0.0, 0.0, majorAxis.getValue("rad"),
 	    minorAxis.getValue("rad")/majorAxis.getValue("rad"),
 	    positionAngle.getValue("rad")),
-   itsFT(itsShape),
-   itsMajUnit(majorAxis.getFullUnit()),
-   itsMinUnit(minorAxis.getFullUnit()),
-   itsPaUnit(positionAngle.getFullUnit())
+   itsFT(itsShape)
 {
   // Adjust the flux of the Gaussian now that the width is correctly set
   itsShape.setFlux(1.0);
@@ -82,14 +74,11 @@ GaussianShape::GaussianShape(const MDirection& direction,
 			     const Quantum<Double>& width,
 			     const Double axialRatio,
 			     const Quantum<Double>& positionAngle) 
-  :ComponentShape(direction),
+  :TwoSidedShape(direction, width.getFullUnit(),
+		 width.getFullUnit(), positionAngle.getFullUnit()),
    itsShape(1.0, 0.0, 0.0, width.getValue("rad"), axialRatio,
 	    positionAngle.getValue("rad")),
-   itsFT(itsShape),
-   itsMajUnit(width.getFullUnit()),
-   itsMinUnit(width.getFullUnit()),
-   itsPaUnit(positionAngle.getFullUnit())
-
+   itsFT(itsShape)
 {
   // Adjust the flux of the Gaussian now that the width is correctly set
   itsShape.setFlux(1.0);
@@ -98,12 +87,9 @@ GaussianShape::GaussianShape(const MDirection& direction,
 }
 
 GaussianShape::GaussianShape(const GaussianShape& other) 
-  :ComponentShape(other),
+  :TwoSidedShape(other),
    itsShape(other.itsShape),
-   itsFT(other.itsFT),
-   itsMajUnit(other.itsMajUnit),
-   itsMinUnit(other.itsMinUnit),
-   itsPaUnit(other.itsPaUnit)
+   itsFT(other.itsFT)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -114,12 +100,9 @@ GaussianShape::~GaussianShape() {
 
 GaussianShape& GaussianShape::operator=(const GaussianShape& other) {
   if (this != &other) {
-    ComponentShape::operator=(other);
+    TwoSidedShape::operator=(other);
     itsShape = other.itsShape;
     itsFT = other.itsFT;
-    itsMajUnit = other.itsMajUnit;
-    itsMinUnit = other.itsMinUnit;
-    itsPaUnit = other.itsPaUnit;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -130,17 +113,14 @@ ComponentType::Shape GaussianShape::type() const {
   return ComponentType::GAUSSIAN;
 }
 
-void GaussianShape::setWidth(const Quantum<Double>& majorAxis,
-			     const Quantum<Double>& minorAxis, 
-			     const Quantum<Double>& positionAngle) {
+void GaussianShape::setWidthInRad(const Double majorAxis,
+				  const Double minorAxis, 
+				  const Double positionAngle) {
   Vector<Double> angle(2);
-  angle(0) = majorAxis.getValue("rad");
-  angle(1) = minorAxis.getValue("rad");
+  angle(0) = majorAxis;
+  angle(1) = minorAxis;
   itsShape.setWidth(angle);
-  itsShape.setPA(positionAngle.getValue("rad"));
-  itsMajUnit = majorAxis.getFullUnit();
-  itsMinUnit = minorAxis.getFullUnit();
-  itsPaUnit = positionAngle.getFullUnit();
+  itsShape.setPA(positionAngle);
   // Adjusting the width normally keeps the height constant and modifies the
   // flux. Modify this behaviour by restoring the flux
   itsShape.setFlux(1.0);
@@ -148,76 +128,14 @@ void GaussianShape::setWidth(const Quantum<Double>& majorAxis,
   DebugAssert(ok(), AipsError);
 }
 
-void GaussianShape::setWidth(const Quantum<Double>& majorAxis,
-			     const Double axialRatio, 
-			     const Quantum<Double>& positionAngle) {
-  const Unit majUnit = majorAxis.getFullUnit();
-  setWidth(majorAxis, 
-	   Quantum<Double>(majorAxis.getValue(majUnit)*axialRatio, majUnit),
-	   positionAngle);
+Double GaussianShape::majorAxisInRad() const {
   DebugAssert(ok(), AipsError);
+  return itsShape.majorAxis();
 }
 
-void GaussianShape::width(Quantum<Double>& majorAxis,
-			  Quantum<Double>& minorAxis,
-			  Quantum<Double>& positionAngle) const {
+Double GaussianShape::minorAxisInRad() const {
   DebugAssert(ok(), AipsError);
-  const Unit rad("rad");
-  majorAxis.setValue(itsShape.majorAxis());
-  majorAxis.setUnit(rad);
-  majorAxis.convert(itsMajUnit);
-  minorAxis.setValue(itsShape.minorAxis());
-  minorAxis.setUnit(rad);
-  minorAxis.convert(itsMinUnit);
-  positionAngle.setValue(itsShape.PA());
-  positionAngle.setUnit(rad);
-  positionAngle.convert(itsPaUnit);
-}
-
-void GaussianShape::width(Quantum<Double>& majorAxis, Double& axialRatio,
-	   Quantum<Double>& positionAngle) const {
-  DebugAssert(ok(), AipsError);
-  const Unit rad("rad");
-  majorAxis.setValue(itsShape.majorAxis());
-  majorAxis.setUnit(rad);
-  majorAxis.convert(itsMajUnit);
-  axialRatio = itsShape.axialRatio();
-  positionAngle.setValue(itsShape.PA());
-  positionAngle.setUnit(rad);
-  positionAngle.convert(itsPaUnit);
-}
-
-void GaussianShape::majorAxis(Quantum<Double>& majorAxis) const {
-  DebugAssert(ok(), AipsError);
-  majorAxis.setValue(itsShape.majorAxis());
-  majorAxis.setUnit("rad");
-  majorAxis.convert(itsMajUnit);
-}
-
-Quantum<Double> GaussianShape::majorAxis() const {
-  DebugAssert(ok(), AipsError);
-  Quantum<Double> retVal(itsShape.majorAxis(), "rad");
-  retVal.convert(itsMajUnit);
-  return retVal;
-}
-
-void GaussianShape::minorAxis(Quantum<Double>& minorAxis) const {
-  DebugAssert(ok(), AipsError);
-  minorAxis.setValue(itsShape.minorAxis());
-  minorAxis.setUnit("rad");
-  minorAxis.convert(itsMinUnit);
-}
-
-Quantum<Double> GaussianShape::minorAxis() const {
-  DebugAssert(ok(), AipsError);
-  Quantum<Double> retVal(itsShape.minorAxis(), "rad");
-  retVal.convert(itsMinUnit);
-  return retVal;
-}
-
-void GaussianShape::axialRatio(Double& axialRatio) const {
-  DebugAssert(ok(), AipsError);
-  axialRatio = itsShape.axialRatio();
+  return itsShape.minorAxis();
 }
 
 Double GaussianShape::axialRatio() const {
@@ -225,18 +143,9 @@ Double GaussianShape::axialRatio() const {
   return itsShape.axialRatio();
 }
 
-void GaussianShape::positionAngle(Quantum<Double>& positionAngle) const {
+Double GaussianShape::positionAngleInRad() const {
   DebugAssert(ok(), AipsError);
-  positionAngle.setValue(itsShape.PA());
-  positionAngle.setUnit("rad");
-  positionAngle.convert(itsPaUnit);
-}
-
-Quantum<Double> GaussianShape::positionAngle() const {
-  DebugAssert(ok(), AipsError);
-  Quantum<Double> retVal(itsShape.PA(), "rad");
-  retVal.convert(itsPaUnit);
-  return retVal;
+  return itsShape.PA();
 }
 
 void GaussianShape::sample(Flux<Double>& flux, const MDirection& direction, 
@@ -254,8 +163,7 @@ void GaussianShape::sample(Flux<Double>& flux, const MDirection& direction,
     separation = refDirValue().separation(dirVal);
     pa = refDirValue().positionAngle(dirVal);
   }
-  const Double pixSize = pixelSize.radian();
-  const Double scale = pixSize * pixSize * 
+  const Double scale = square(pixelSize.radian()) *
     itsShape(separation*sin(pa), separation*cos(pa));
   flux.scaleValue(scale, scale, scale, scale);
 }
@@ -303,269 +211,11 @@ ComponentShape* GaussianShape::clone() const {
   return tmpPtr;
 }
 
-uInt GaussianShape::nParameters() const {
-  DebugAssert(ok(), AipsError);
-  return 3;
-}
-
-void GaussianShape::setParameters(const Vector<Double>& newParms) {
-  AlwaysAssert(newParms.nelements() == nParameters(), AipsError);
-  DebugAssert(newParms(0) >= newParms(1), AipsError);
-  DebugAssert(abs(newParms(2)) <= C::_2pi, AipsError);
-  Vector<Double> width(2);
-  width(0) = newParms(0);
-  width(1) = newParms(1);
-  itsShape.setWidth(width);
-  itsShape.setPA(newParms(2));
-  // Adjusting the width normally keeps the height constant and modifies the
-  // flux. Modify this behaviour by restoring the flux
-  itsShape.setFlux(1.0);
-  updateFT();
-  DebugAssert(ok(), AipsError);
-}
-
-void GaussianShape::parameters(Vector<Double>& compParms) const {
-  AlwaysAssert(compParms.nelements() == nParameters(), AipsError);
-  compParms(0) = itsShape.majorAxis();
-  compParms(1) = itsShape.minorAxis();
-  compParms(2) = itsShape.PA();
-  DebugAssert(ok(), AipsError);
-}
-
-Bool GaussianShape::fromRecord(String& errorMessage,
-			       const RecordInterface& record) {
-  if (!ComponentShape::fromRecord(errorMessage, record)) return False;
-  Quantum<Double> majorAxis;
-  {
-    const String fieldString("majoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'majoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'majoraxis' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'majoraxis' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'majoraxis' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'majoraxis' field is not a quantity\n";
-      return False;
-    }
-    majorAxis = qHolder.asQuantumDouble();
-    if (majorAxis.getFullUnit() != Unit("deg")) {
-      errorMessage += "The 'majoraxis' field must have angular units\n";
-      return False;
-    }
-  }
-  Quantum<Double> minorAxis;
-  {
-    const String fieldString("minoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'minoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'minoraxis' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }      
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'minoraxis' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'minoraxis' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'minoraxis' field is not a quantity\n";
-      return False;
-    }
-    minorAxis = qHolder.asQuantumDouble();
-    if (minorAxis.getFullUnit() != Unit("deg")) {
-      errorMessage += "The 'minoraxis' field must have angular units\n";
-      return False;
-    }
-  }
-  Quantum<Double> pa;
-  {
-    const String fieldString("positionangle");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'positionangle' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!(record.dataType(field) == TpRecord || 
-	  ((record.dataType(field) == TpString) && 
-	   (record.shape(field) == IPosition(1,1))))) {
-      errorMessage += "The 'positionangle' field must be a record\n";
-      errorMessage += "or a string (but not a vector of strings)\n";
-      return False;
-    }      
-    QuantumHolder qHolder;
-    if (record.dataType(field) == TpString) {
-      if (!qHolder.fromString(errorMessage, record.asString(field))) {
-	errorMessage += "Problem parsing the 'positionangle' string\n";
-	return False;
-      }
-    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
-      errorMessage += "Problem parsing the 'positionangle' record\n";
-      return False;
-    }
-    if (!(qHolder.isScalar() && qHolder.isReal())) {
-      errorMessage += "The 'positionangle' field is not a quantity\n";
-      return False;
-    }
-    pa = qHolder.asQuantumDouble();
-    if (pa.getFullUnit() != Unit("deg")) {
-      errorMessage += "The 'positionangle' field must have angular units\n";
-      return False;
-    }
-  }
-  const Unit rad("rad");
-  const Double minorRad = minorAxis.getValue(rad);
-  const Double majorRad = majorAxis.getValue(rad);
-  if (majorRad < minorRad) {
-    if (near(majorRad, minorRad, 1E-9)) {
-// assume they are meant to be the same and precision has got lost somewhere. 
-      majorAxis.setValue(minorAxis.getValue(majorAxis.getFullUnit()));
-    } else {
-      errorMessage += "The major axis cannot be smaller than the minor axis\n";
-      return False;
-    }
-  }
-  setWidth(majorAxis, minorAxis, pa);
-  DebugAssert(ok(), AipsError);
-  return True;
-}
-
-Bool GaussianShape::toRecord(String& errorMessage,
-			     RecordInterface& record) const {
-  DebugAssert(ok(), AipsError);
-  if (!ComponentShape::toRecord(errorMessage, record)) return False;
-  {
-    const QuantumHolder qHolder(majorAxis());
-    Record qRecord;
-    if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "Cannot convert the major axis to a record\n";
-      return False;
-    }
-    record.defineRecord(RecordFieldId("majoraxis"), qRecord);
-  }
-  {
-    const QuantumHolder qHolder(minorAxis());
-    Record qRecord;
-    if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "Cannot convert the minor axis to a record\n";
-      return False;
-    }
-    record.defineRecord(RecordFieldId("minoraxis"), qRecord);
-  }
-  {
-    const QuantumHolder qHolder(positionAngle());
-    Record qRecord;
-    if (!qHolder.toRecord(errorMessage, qRecord)) {
-      errorMessage += "Cannot convert the position angle to a record\n";
-      return False;
-    }
-    record.defineRecord(RecordFieldId("positionangle"), qRecord);
-  }
-  return True;
-}
-
-Bool GaussianShape::convertUnit(String& errorMessage,
-				const RecordInterface& record) {
-  const Unit deg("deg");
-  {
-    const String fieldString("majoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'majoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!((record.dataType(field) == TpString) && 
-	  (record.shape(field) == IPosition(1,1)))) {
-      errorMessage += "The 'majoraxis' field must be a string\n";
-      errorMessage += "(but not a vector of strings)\n";
-      return False;
-    }
-    const Unit unit = Unit(record.asString(field));
-    if (unit != deg) {
-      errorMessage += 
-	"Cannot convert the major axis width to a non angular unit";
-      return False;
-    }
-    itsMajUnit = unit;
-  }
-  {
-    const String fieldString("minoraxis");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'minoraxis' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!((record.dataType(field) == TpString) && 
-	  (record.shape(field) == IPosition(1,1)))) {
-      errorMessage += "The 'minoraxis' field must be a string\n";
-      errorMessage += "(but not a vector of strings)\n";
-      return False;
-    }
-    const Unit unit = Unit(record.asString(field));
-    if (unit != deg) {
-      errorMessage += 
-	"Cannot convert the minor axis width to a non angular unit";
-      return False;
-    }
-    itsMinUnit = unit;
-  }
-  {
-    const String fieldString("positionangle");
-    if (!record.isDefined(fieldString)) {
-      errorMessage += "The 'positionangle' field does not exist\n";
-      return False;
-    }
-    const RecordFieldId field(fieldString);
-    if (!((record.dataType(field) == TpString) && 
-	  (record.shape(field) == IPosition(1,1)))) {
-      errorMessage += "The 'positionangle' field must be a string\n";
-      errorMessage += "(but not a vector of strings)\n";
-      return False;
-    }
-    const Unit unit = Unit(record.asString(field));
-    if (unit != deg) {
-      errorMessage += 
-	"Cannot convert the position angle to a non angular unit";
-      return False;
-    }
-    itsPaUnit = unit;
-  }
-  DebugAssert(ok(), AipsError);
-  return True;
-}
-
 Bool GaussianShape::ok() const {
   // The LogIO class is only constructed if an error is detected for
   // performance reasons. Both function static and file static variables
   // where considered and rejected for this purpose.
-  if (!ComponentShape::ok()) return False;
+  if (!TwoSidedShape::ok()) return False;
   if (!near(itsShape.flux(), 1.0, C::dbl_epsilon)) {
     LogIO logErr(LogOrigin("GaussianCompRep", "ok()"));
     logErr << LogIO::SEVERE << "The internal Gaussian shape does not have"
@@ -578,25 +228,6 @@ Bool GaussianShape::ok() const {
     logErr << LogIO::SEVERE << "The cached Fourier Transform of"
 	   << " the internal Gaussian shape does not have"
 	   << " unit height"
-           << LogIO::POST;
-    return False;
-  }
-  const Unit deg("deg");
-  if (itsMajUnit != deg) {
-    LogIO logErr(LogOrigin("GaussianCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The major axis does not have angular units."
-           << LogIO::POST;
-    return False;
-  }
-  if (itsMinUnit != deg) {
-    LogIO logErr(LogOrigin("GaussianCompRep", "ok()"));
-    logErr << LogIO::SEVERE << "The minor axis does not have angular units."
-           << LogIO::POST;
-    return False;
-  }
-  if (itsPaUnit != deg) {
-    LogIO logErr(LogOrigin("GaussianCompRep", "ok()"));
-    logErr << LogIO::SEVERE <<"The position angle does not have angular units."
            << LogIO::POST;
     return False;
   }
