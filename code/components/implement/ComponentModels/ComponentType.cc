@@ -34,6 +34,8 @@ String ComponentType::name(ComponentType::Shape shapeEnum) {
     return "Point";
   case ComponentType::GAUSSIAN:
     return "Gaussian";
+  case ComponentType::DISK:
+    return "Disk";
   default:
     return "Unknown";
   };

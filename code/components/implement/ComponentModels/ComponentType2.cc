@@ -28,6 +28,7 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/ConstantSpectrum.h>
+#include <trial/ComponentModels/DiskShape.h>
 #include <trial/ComponentModels/GaussianShape.h>
 #include <trial/ComponentModels/PointShape.h>
 #include <trial/ComponentModels/SpectralIndex.h>
@@ -44,6 +45,8 @@ construct(ComponentType::Shape shapeEnum) {
     return new PointShape;
   case ComponentType::GAUSSIAN:
     return new GaussianShape;
+  case ComponentType::DISK:
+    return new DiskShape;
   default:
     return (ComponentShape *) 0;
   };

@@ -80,10 +80,12 @@ public:
 
   // The shapes of all the components
   enum Shape {
-    // A simple Point Component
+    // A simple point component
     POINT = 0,
-    // A elliptical Gaussian Component
+    // A elliptical Gaussian component
     GAUSSIAN,
+    // A elliptical disk component
+    DISK,
     // An unknown Component
     UNKNOWN_SHAPE,
     // The number of types in this enumerator
