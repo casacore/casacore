@@ -1708,7 +1708,6 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
          for (i=0,j=0; i<nPts; i++) {
             if (pProfileSelect[i] <= range_p(0) || 
                 pProfileSelect[i] >= range_p(1)) {
-
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
                } else if (doCoordProfile_p) {
@@ -1768,7 +1767,6 @@ void MomentClip<T>::multiProcess(Vector<T>& moments,
             if (pProfileInMask[i] &&
                (pProfileSelect[i] <= range_p(0) || 
                 pProfileSelect[i] >= range_p(1))) {
-
                if (preComp) {
                   coord = sepWorldCoord_p(i); 
                } else if (doCoordProfile_p) {
