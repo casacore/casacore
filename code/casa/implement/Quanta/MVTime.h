@@ -125,7 +125,8 @@ class Time;
 //	  <li> <7 : hh:mm:ss
 //	  <li> >6 : with precision-6 t's added
 //	</ul> 
-//	comparable for angle. <note> The added colons are to enable input
+//	comparable for angle. <note role=tip> The added colons are 
+//	to enable input
 //	checking of the format. Look at the 'clean' types to bypass them.
 //	</note>
 //	The <src>MVTime::YMD</src> format implies TIME, and will
@@ -133,10 +134,12 @@ class Time;
 //	The <src>MVTime::DMY</src> format implies TIME, and will
 //	precede the time with 'dd-Mon-yyyy/'.<br>
 //	The <src>MVTime::FITS</src> format implies TIME, and will
-//	precede the time with 'ccyy-mm-ddT'.<br>
+//	precede the time with 'ccyy-mm-ddT' (and follow it with <src>Z</src>.
+//	<br>
 //	The output format can be modified with modifiers (specify as
 //	MVTime::TIME | MVTime::MOD (or + MVTime::MOD)). 
-//	<note> For overloading/casting problems with some compilers, the
+//	<note role=caution> For overloading/casting 
+//	problems with some compilers, the
 //	use of modifiers necessitates either the presence of a precision
 //	(i.e. <src>(A|B, prec)</src>), or an explicit cast:
 //	<src>((MVTime::formatTypes)(A|B))</src>, or make use of
@@ -171,6 +174,10 @@ class Time;
 //	  <li> MVTime::LOCAL modifier to produce local time (as derived from
 //		aipsrc time.tzoffset). In FITS mode the time zone will
 //		be appended (as <src><sign>hh:mm</src>).
+//		<note role=caution>The adding of the timezone is not part
+//		of the FITS standard (only the 'Z' for UTC, the preferred
+//		FITS output is), but of the underlying ISO standard. It can
+//		be used to export local times in standard format.</note>
 //	</ul>
 // </ul>
 // The default formatting can be overwritten by a 
@@ -180,7 +187,8 @@ class Time;
 // The format set holds for all MVTime output on all streams.<br>
 // Temporary formats (i.e. for one MVTime output only), can be set by
 // outputting a format (i.e. <src> stream << MVTime::Format() << ... </src>).
-// <note> A setFormat() will also reset any lingering temporary format.
+// <note role=caution> A setFormat() will also 
+// reset any lingering temporary format.
 // A setFormat(getFormat()) will reset without changing. Problems could
 // arise in parallel processors. </note>
 // Input can be read if the values are in any of the above (non-clean) output
@@ -212,6 +220,9 @@ class Time;
 //				indicate time zone. This value will be
 //				subtracted to give UTC. To recognise this
 //				format, the year should be greater than 1000. 
+//				<note role=caution> The time-zone information
+//				is not part of the FITS standard, but of the
+//				underlying ISO standard.</note>
 // </ul>
 // The time can be expressed as described in 
 // <linkto class=MVAngle>MVAngle</linkto>
