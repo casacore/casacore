@@ -29,10 +29,6 @@
 #if !defined(AIPS_SKYCOMPONENT_H)
 #define AIPS_SKYCOMPONENT_H
 
-#if defined(_AIX)
-#pragma implementation ("SkyComponent.cc")
-#endif
-
 #include <aips/aips.h>
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
@@ -45,7 +41,6 @@ class SkyCompRep;
 class String;
 template<class T> class Vector;
 template<class T> class Flux;
-template<class Qtype> class Quantum;
 
 // <summary>A component of a model of the sky </summary>
 
@@ -60,7 +55,7 @@ template<class Qtype> class Quantum;
 
 // <synopsis> 
 
-// This abstract base class is used by a number of classes that provide
+// This base class is used by a number of classes that provide
 // components used to represent the sky brightness. It abstracts the
 // commonality between different components of a model like
 // GaussianComponent, PointComponent, and perhaps in the future
@@ -136,18 +131,18 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-  // set/get the direction of (usually the centre) of the component.
-  // <group>
-  virtual void setDirection(const MDirection & newPos);
-  virtual void direction(MDirection & compDir) const;
-  // </group>
-
   // return a reference to the flux of the component. Because this is a
   // reference, manipulation of the flux values is performed through the
   // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
   // <group>
   virtual Flux<Double> & flux();
   virtual const Flux<Double> & flux() const;
+  // </group>
+
+  // set/get the direction of (usually the centre) of the component.
+  // <group>
+  virtual void setDirection(const MDirection & newPos);
+  virtual void direction(MDirection & compDir) const;
   // </group>
 
   // Return the Fourier transform of the component at the specified point in

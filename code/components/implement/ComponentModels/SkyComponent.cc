@@ -99,6 +99,7 @@ Flux<Double> & SkyComponent::flux() {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
 }
+
 const Flux<Double> & SkyComponent::flux() const {
   DebugAssert(ok(), AipsError);
   return itsCompPtr->flux();
@@ -193,7 +194,7 @@ ComponentType::Shape SkyComponent::getShape(String & errorMessage,
   }
   const IPosition shape = typeField.shape();
   if (shape.nelements() != 1 || shape.product() != 1) {
-    errorMessage += "\nThe 'type' field can only have one element";
+    errorMessage +="\nThe 'type' field must be a vector with only one element";
     return ComponentType::UNKNOWN;
   }
   String typeString;
