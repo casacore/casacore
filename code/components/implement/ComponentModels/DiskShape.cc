@@ -359,21 +359,21 @@ Bool DiskShape::fromRecord(String & errorMessage,
       errorMessage += "or a string (but not a vector of strings)\n";
       return False;
     }
+    QuantumHolder qHolder;
     if (record.dataType(field) == TpString) {
-      if (!Quantum<Double>::read(majorAxis, record.asString(field))) {
-	errorMessage += "Problem parsing the majoraxis string";
+      if (!qHolder.fromString(errorMessage, record.asString(field))) {
+	errorMessage += "Problem parsing the 'majoraxis' string\n";
 	return False;
       }
-    } else {
-      const Record & quantumRecord = record.asRecord(field);
-      QuantumHolder qHolder;
-      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	  !qHolder.isQuantumDouble()) {
-	errorMessage += "The 'majoraxis' field is not a quantity\n";
-	return False;
-      }
-      majorAxis = qHolder.asQuantumDouble();
+    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
+      errorMessage += "Problem parsing the 'majoraxis' record\n";
+      return False;
     }
+    if (!(qHolder.isScalar() && qHolder.isReal())) {
+      errorMessage += "The 'majoraxis' field is not a quantity\n";
+      return False;
+    }
+    majorAxis = qHolder.asQuantumDouble();
     if (majorAxis.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'majoraxis' field must have angular units\n";
       return False;
@@ -394,21 +394,21 @@ Bool DiskShape::fromRecord(String & errorMessage,
       errorMessage += "or a string (but not a vector of strings)\n";
       return False;
     }      
+    QuantumHolder qHolder;
     if (record.dataType(field) == TpString) {
-      if (!Quantum<Double>::read(minorAxis, record.asString(field))) {
-	errorMessage += "Problem parsing the minoraxis string";
+      if (!qHolder.fromString(errorMessage, record.asString(field))) {
+	errorMessage += "Problem parsing the 'minoraxis' string\n";
 	return False;
       }
-    } else {
-      const Record & quantumRecord = record.asRecord(field);
-      QuantumHolder qHolder;
-      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	  !qHolder.isQuantumDouble()) {
-	errorMessage += "The 'minoraxis' field is not a quantity\n";
-	return False;
-      }
-      minorAxis = qHolder.asQuantumDouble();
+    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
+      errorMessage += "Problem parsing the 'minoraxis' record\n";
+      return False;
     }
+    if (!(qHolder.isScalar() && qHolder.isReal())) {
+      errorMessage += "The 'minoraxis' field is not a quantity\n";
+      return False;
+    }
+    minorAxis = qHolder.asQuantumDouble();
     if (minorAxis.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'minoraxis' field must have angular units\n";
       return False;
@@ -429,21 +429,21 @@ Bool DiskShape::fromRecord(String & errorMessage,
       errorMessage += "or a string (but not a vector of strings)\n";
       return False;
     }      
+    QuantumHolder qHolder;
     if (record.dataType(field) == TpString) {
-      if (!Quantum<Double>::read(pa, record.asString(field))) {
-	errorMessage += "Problem parsing the positionangle string";
+      if (!qHolder.fromString(errorMessage, record.asString(field))) {
+	errorMessage += "Problem parsing the 'positionangle' string\n";
 	return False;
       }
-    } else {
-      Record quantumRecord = record.asRecord(field);
-      QuantumHolder qHolder;
-      if (!qHolder.fromRecord(errorMessage, quantumRecord) || 
-	  !qHolder.isQuantity()) {
-	errorMessage += "The 'positionangle' field is not a quantity\n";
-	return False;
-      }
-      pa = qHolder.asQuantity();
+    } else if (!qHolder.fromRecord(errorMessage, record.asRecord(field))) {
+      errorMessage += "Problem parsing the 'positionangle' record\n";
+      return False;
     }
+    if (!(qHolder.isScalar() && qHolder.isReal())) {
+      errorMessage += "The 'positionangle' field is not a quantity\n";
+      return False;
+    }
+    pa = qHolder.asQuantumDouble();
     if (pa.getFullUnit() != Unit("deg")) {
       errorMessage += "The 'positionangle' field must have angular units\n";
       return False;
