@@ -426,12 +426,15 @@ sub make_tex_file{
           $glish_arg =~ s/\.\.\./dots/g;
           $glish_arg =~ s/\\ldots/dots/g;
           $glish_arg =~ s/ /_/g;
-          $desc =~ s/[\n\']/ /g;
+          $desc =~ s/[\n]/ /g;
+          $desc =~ s/[\']/\\\' /g;
           print "$argroot.a.$glish_arg := [=];\n";
           print "$argroot.a.$glish_arg.d := '$desc';\n";
-          $def =~ s/[\n\']/ /g;
+          $def =~ s/[\n]/ /g;
+          $def =~ s/[\']/\\\' /g;
           print "$argroot.a.$glish_arg.def := '$def';\n";
-          $dum =~ s/[\n\']/ /g;
+          $dum =~ s/[\n]/ /g;
+          $dum =~ s/[\']/\\\' /g;
           print "$argroot.a.$glish_arg.a := '$dum';\n";
        }
      }
