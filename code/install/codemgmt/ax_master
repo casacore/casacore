@@ -2313,3 +2313,4 @@
 11 199 src mv trial/implement/Display/ZoomEH.h trial/implement/DisplayEvents/ZoomEH.h
 11 199 src mv trial/implement/Display/ZoomMotionEH.cc trial/implement/DisplayEvents/ZoomMotionEH.cc
 11 199 src mv trial/implement/Display/ZoomMotionEH.h trial/implement/DisplayEvents/ZoomMotionEH.h
+11 199 src mv trial/implement/Display/ZoomPositionEH.cc trial/implement/DisplayEvents/ZoomPositionEH.cc
