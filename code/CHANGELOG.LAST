@@ -22,3 +22,26 @@ Antennas.
 	- The color code for polarizations is now plotted.
 
 Tim
+
+change id: 0038
+ author:   Tim Cornwell
+ date:     2000/08/27
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   inputsmanager
+ type:     Code
+ category: Change
+ summary:  inputsmanager now based on recordmanager
+
+Inputsmanager is now implemented using the new recordmanager. This means
+that old inputs tables are no longer accessible from this version
+(but are still accessible from old versions).
+
+inputsmanager also now knows to convert itemcontainers to record
+before storing. Unfortunately there is no easy automatic way to 
+convert them back so currently on restoring the record is left
+as is. guientry.genericitem now can convert from these records to
+a true itemcontainer so this does not affect toolmanager
+
+Tim
