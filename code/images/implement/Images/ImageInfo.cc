@@ -158,9 +158,14 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
 // Returns default object if none in record
 //
 {
+// Make sure we are "empty" first;
+
+    ImageInfo tmp;
+    (*this) = tmp; 
+//
     error = "";
     QuantumHolder qh;
-    Bool ok = False;
+    Bool ok = True;
 //
     if (inRecord.isDefined("restoringbeam")) {
        Vector<Quantum<Double> > restoringBeam(3);
