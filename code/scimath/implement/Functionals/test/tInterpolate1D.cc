@@ -1,5 +1,5 @@
 //# tInterpolate1D.cc: This program tests the Interpolate1D class
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -111,6 +111,22 @@ int main()
 	  " which is not near the expected value of " << xs*xs*xs << endl;
 	failed = True;
       }
+    if (!failed){
+      Vector<Int> xd = value.getX();
+      if (xd.nelements() != 5) 
+	failed = True;
+      if (!failed)
+	for (Int i = 0; i < 5; i++)
+	  if (x(i) != xd(i))
+	    failed = True;
+      Vector<Double> yd = value.getY();
+      if (yd.nelements() != 5) 
+	failed = True;
+      if (!failed)
+	for (Int j = 0; j < 5; j++)
+	  if (y(j) != yd(j))
+	    failed = True;
+    }      
     if (failed){
       cout << "Failed "; anyFailures = True;
     }
@@ -405,3 +421,6 @@ int main()
     return 0;
   }
 }
+// Local Variables: 
+// compile-command: "gmake OPTLIB=1 tInterpolate1D"
+// End:
