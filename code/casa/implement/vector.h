@@ -1,5 +1,5 @@
 //# vector.h: Interim solution for standard/nonstandard system vector
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -68,7 +68,11 @@ template \
 template \
    vector<T >::iterator std::fill_n<vector<T >::iterator, uInt, T >(vector<T >::iterator, uInt, T const &); \
 template \
+   vector<T >::iterator std::fill_n<vector<T >::iterator, uLong, T >(vector<T >::iterator, uLong, T const &); \
+template \
    T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
+template \
+   T *std::fill_n<T *, uLong, T >(T *, uLong, T const &); \
 template \
    void std::fill<vector<T >::iterator, T >(vector<T >::iterator, vector<T >::iterator, T const &); \
 template \
@@ -78,6 +82,12 @@ template \
               T const &, __false_type); \
 template \
    T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
+T const &, __false_type); \
+template \
+   vector<T >::iterator std::__uninitialized_fill_n_aux<vector<T >::iterator, uLong, T >(vector<T >::iterator, uLong, \
+              T const &, __false_type); \
+template \
+   T *std::__uninitialized_fill_n_aux<T *, uLong, T >(T *, uLong, \
 T const &, __false_type); \
 template \
    void vector<T, std::allocator<T> >:: \
@@ -93,9 +103,6 @@ template \
 T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
 template \
 void std::fill<T *, T >(T *, T *, T const &); \
-template \
-T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
-			      T const &, __false_type); \
 template \
 void vector<T, std::allocator<T> >:: \
 _M_assign_aux(T const *, T const *, forward_iterator_tag);
