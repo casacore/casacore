@@ -160,16 +160,13 @@ public:
    LatticeExpr<T>& operator=(const LatticeExpr<T>& other);
 
 // Make a copy of the derived object (reference semantics).
-// <group>
-   virtual Lattice<T>* clone() const;
    virtual MaskedLattice<T>* cloneML() const;
-// </group>
 
 // Has the object really a mask?
    virtual Bool isMasked() const;
 
-// Get the region used.
-   virtual const LatticeRegion& region() const;
+// Get the region used (always returns 0).
+   virtual const LatticeRegion* getRegionPtr() const;
 
 // Returns False, as the LatticeExpr lattice is not writable.
    virtual Bool isWritable() const;
@@ -202,12 +199,11 @@ public:
 // Copy the data from this lattice to the given lattice.
    virtual void copyDataTo (Lattice<T>& to) const;
 
-private:
 
+private:
 // This class just contains an object of class LatticeExprNode. 
 // It is untemplated and does not inherit.
    LatticeExprNode expr_p;
-   LatticeRegion   region_p;       // always an empty region
    LELArray<T>*    lastChunkPtr_p;
    Slicer          lastSlicer_p;
 };
