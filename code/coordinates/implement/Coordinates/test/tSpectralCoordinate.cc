@@ -1,5 +1,5 @@
 //# tSpectralCoordinate.cc: Test program for SpectralCoordinate
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -390,6 +390,23 @@ int main()
          if (!allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
+     }
+     {
+         SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
+         Double pixel;
+         MFrequency world;
+         pixel = 12.2;
+         if (!lc.toWorld(world, pixel)) {
+            throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+         }
+//
+         Double pixel2;
+         if (!lc.toPixel(pixel2, world)) {
+            throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+         }
+         if (!allNear(pixel2, pixel, 1e-6)) {
+               throw(AipsError("Coordinate conversion reflection failed"));
+         }
       }
       {
          SpectralCoordinate lc = 
@@ -419,6 +436,25 @@ int main()
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
          if (!allNear(pix2, pix, 1e-6)) {
+               throw(AipsError("Coordinate conversion reflection failed"));
+         }
+      }
+      {
+         SpectralCoordinate lc = 
+            makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
+//
+         Double pixel;
+         MFrequency world;
+         pixel = 12.2;
+         if (!lc.toWorld(world, pixel)) {
+            throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
+         }
+//
+         Double pixel2;
+         if (!lc.toPixel(pixel2, world)) {
+            throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
+         }
+         if (!allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
