@@ -44,12 +44,14 @@
 void LatticeFFT::cfft2d(Lattice<Complex> & cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();
   AlwaysAssert(ndim > 1, AipsError);
-  const IPosition latticeShape = cLattice.shape();
-  const uInt nx = latticeShape(0);
-  const uInt ny = latticeShape(1);
+  const IPosition & latticeShape = cLattice.shape();
+  const uInt maxPixels = cLattice.maxPixels();
+  IPosition slabShape = cLattice.niceCursorShape(maxPixels);
+  const uInt nx = slabShape(0) = latticeShape(0);
+  const uInt ny = slabShape(1) = latticeShape(1);
   const Complex cZero(0,0);
   // For small transforms, we do everything in one plane
-  if (nx*ny <= cLattice.maxPixels()) {
+  if ((uInt) slabShape.product() <= maxPixels) {
     const IPosition cursorShape(2, nx, ny);
     LatticeStepper ls(latticeShape, cursorShape);
     LatticeIterator<Complex> li(cLattice, ls);
@@ -81,12 +83,9 @@ void LatticeFFT::cfft(Lattice<Complex> & cLattice,
     if (whichAxes(dim) == True) {
       TiledLineStepper ts(latticeShape, tileShape, dim);
       LatticeIterator<Complex> li(cLattice, ts);
-      Bool first=True;
       for (li.reset(); !li.atEnd(); li++) {
 	if (!allNear(li.cursor(), cZero, 1E-6)) {
-          Vector<Complex> saved=li.rwVectorCursor().copy();
-	  ffts.fft(saved, toFrequency);
-          li.rwVectorCursor()=saved;
+	  ffts.fft(li.rwVectorCursor(), toFrequency);
 	}
       }
     }
