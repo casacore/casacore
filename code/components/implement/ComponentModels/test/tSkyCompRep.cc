@@ -25,7 +25,6 @@
 //#
 //# $Id$
 
-#include <trial/ComponentModels/SkyCompRep.h>
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
@@ -38,7 +37,9 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
+#include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/PointCompRep.h>
+#include <trial/ComponentModels/SkyCompRep.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/StokesCoordinate.h>
@@ -47,13 +48,13 @@
 int main() {
   try {
     SkyCompRep * skyPtr = new PointCompRep;
-    Vector<Double> flux(4);
-    flux(0) = 2.0;
-    flux(1) = 0.5;
-    flux(2) = 0.2;
-    flux(3) = 0.1;
-    skyPtr -> setFlux(Quantum<Vector<Double> >(flux, "Jy"));
-    
+    Vector<Double> flux;
+    {
+      Flux<Double> compFlux(2.0, 0.5, 0.1, 0.1);
+      compFlux.setUnit("Jy");
+      compFlux.value(flux);
+      skyPtr -> flux() = compFlux;
+    }
     MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
     MDirection coord00(ra0dec0, MDirection::J2000);
     skyPtr -> setDirection(coord00);
@@ -63,7 +64,7 @@ int main() {
     {
       CoordinateSystem coords = CoordinateUtil::defaultCoords2D();
       PagedImage<Float> image(IPosition(2,imSize,imSize), 
-				coords, "tSkyCompRep_tmp.image");
+			      coords, "tSkyCompRep_tmp.image");
       image.set(0.0f);
       
       skyPtr -> SkyCompRep::project(image);
@@ -72,11 +73,11 @@ int main() {
 		   AipsError);
       image.putAt(0.0f, ptPos);
       for (uInt y = 0; y < imSize; y++) {
-	ptPos(1) = y;
-	for (uInt x = 0; x < imSize; x++) {
-	  ptPos(0) = x;
-	  AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
-	}
+ 	ptPos(1) = y;
+ 	for (uInt x = 0; x < imSize; x++) {
+ 	  ptPos(0) = x;
+ 	  AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
+ 	}
       }
       image.table().markForDelete();
     }
@@ -84,31 +85,31 @@ int main() {
     {
       CoordinateSystem coords = CoordinateUtil::defaultCoords3D();
       {
-	Vector<Int> whichStokes(1);
-	whichStokes = Stokes::U;
-	coords.addCoordinate(StokesCoordinate(whichStokes));
+ 	Vector<Int> whichStokes(1);
+ 	whichStokes = Stokes::U;
+ 	coords.addCoordinate(StokesCoordinate(whichStokes));
       }
       PagedImage<Float> image(IPosition(4, imSize, imSize, nChan, 1), 
-			      coords, "tSkyCompRep_tmp.image");
+ 			      coords, "tSkyCompRep_tmp.image");
       image.set(0.0f);
       
       skyPtr -> SkyCompRep::project(image);
       IPosition ptPos(4,2,1,0,0);
       for (uInt f1 = 0; f1 < nChan; f1++) {
-	ptPos(2) = f1;
-	AlwaysAssert(near(image.getAt(ptPos), flux(2), C::flt_epsilon), 
+ 	ptPos(2) = f1;
+ 	AlwaysAssert(near(image.getAt(ptPos), flux(2), C::flt_epsilon),
 		     AipsError);
-	image.putAt(0.0f, ptPos);
+ 	image.putAt(0.0f, ptPos);
       }
       for (uInt f = 0; f < nChan; f++) {
- 	ptPos(2) = f;
-	for (uInt y = 0; y < imSize; y++) {
-	  ptPos(1) = y;
-	  for (uInt x = 0; x < imSize; x++) {
-	    ptPos(0) = x;
-	    AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
-	  }
-	}
+  	ptPos(2) = f;
+ 	for (uInt y = 0; y < imSize; y++) {
+ 	  ptPos(1) = y;
+ 	  for (uInt x = 0; x < imSize; x++) {
+ 	    ptPos(0) = x;
+ 	    AlwaysAssert(near(image.getAt(ptPos), 0.0f), AipsError);
+ 	  }
+ 	}
       }
       image.table().markForDelete();
     }
@@ -124,7 +125,7 @@ int main() {
       PagedImage<Float> image(IPosition(3, imSize, imSize, 3), 
 			      coords, "tSkyCompRep_tmp.image");
       image.set(0.0f);
-      
+   
       skyPtr -> SkyCompRep::project(image);
       IPosition ptPos(3,2,1,0);
       uInt sf;
@@ -156,7 +157,7 @@ int main() {
       PagedImage<Float> image(IPosition(4, imSize, imSize, 4, nChan), 
 			      coords, "tSkyCompRep_tmp.image");
       image.set(0.0f);
-      
+   
       skyPtr -> SkyCompRep::project(image);
       IPosition ptPos(4,2,1,0,0);
       for (uInt s1 = 0; s1 < 4; s1++) {
@@ -193,80 +194,6 @@ int main() {
     // test the ok function
     {
       AlwaysAssert(skyPtr -> SkyCompRep::ok() == True, AipsError);
-    }
-    // test the setFluxLinear & fluxLinear functions
-    {
-      Quantum<Vector<DComplex> > fluxLinear;
-      {
-	Vector<DComplex> valLinear(4);
-	valLinear(0) = DComplex(1.5,0.0);
-	valLinear(1) = DComplex(0.1,0.05);
-	valLinear(2) = DComplex(0.1,-0.05);
-	valLinear(3) = DComplex(0.5,0.0);
-	fluxLinear.setValue(valLinear);
-	fluxLinear.setUnit("WU");
-      }
-      skyPtr -> setFluxLinear(fluxLinear);
-
-      Quantum<Vector<Double> > fluxStokes;
-      skyPtr -> flux(fluxStokes);
-      // The tolerances should be increased when the conversions are done in
-      // double precision
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(0), 0.01, C::flt_epsilon), 
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(1), 0.005, C::flt_epsilon), 
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(2), 0.001, C::flt_epsilon),
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(3), 0.0005, C::flt_epsilon),
-		   AipsError); 
-
-      skyPtr -> fluxLinear(fluxLinear);
-      AlwaysAssert(near(fluxLinear.getValue("WU")(0), DComplex(1.5, 0.0), 
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxLinear.getValue("WU")(1), DComplex(0.1, 0.05),
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxLinear.getValue("WU")(2), DComplex(0.1, -0.05), 
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxLinear.getValue("WU")(3), DComplex(0.5, 0.0),
-			C::flt_epsilon), AipsError); 
-    }
-    // test the setFluxCircular & fluxCircular functions
-    {
-      Quantum<Vector<DComplex> > fluxCircular;
-      {
-	Vector<DComplex> valCircular(4);
-	valCircular(0) = DComplex(1.5,0.0);
-	valCircular(1) = DComplex(0.1,0.05);
-	valCircular(2) = DComplex(0.1,-0.05);
-	valCircular(3) = DComplex(0.5,0.0);
-	fluxCircular.setValue(valCircular);
-	fluxCircular.setUnit("WU");
-      }
-      skyPtr -> setFluxCircular(fluxCircular);
-
-      Quantum<Vector<Double> > fluxStokes;
-      skyPtr -> flux(fluxStokes);
-      // The tolerances should be increased when the conversions are done in
-      // double precision
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(0), 0.01, C::flt_epsilon), 
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(1), 0.001, C::flt_epsilon), 
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(2), 0.0005, C::flt_epsilon),
-		   AipsError); 
-      AlwaysAssert(near(fluxStokes.getValue("Jy")(3), 0.005, C::flt_epsilon),
-		   AipsError); 
-
-      skyPtr -> fluxCircular(fluxCircular);
-      AlwaysAssert(near(fluxCircular.getValue("WU")(0), DComplex(1.5, 0.0), 
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxCircular.getValue("WU")(1), DComplex(0.1, 0.05),
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxCircular.getValue("WU")(2), DComplex(0.1, -0.05), 
-			C::flt_epsilon), AipsError); 
-      AlwaysAssert(near(fluxCircular.getValue("WU")(3), DComplex(0.5, 0.0),
-			C::flt_epsilon), AipsError); 
     }
     delete skyPtr;
   }
