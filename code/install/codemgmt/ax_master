@@ -4894,3 +4894,4 @@
 14 316 sys rm libexec/dishstat.g
 14 316 src rm trial/apps/newdish/dishwrite.g
 14 316 sys rm libexec/dishwrite.g
+14 316 src rm trial/apps/newdish/makefile
