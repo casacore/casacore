@@ -3115,3 +3115,4 @@
 13 000 src mv aips/implement/Mathematics/MathFunc.cc trial/implement/Mathematics/MathFunc.cc
 13 000 src mv aips/implement/Mathematics/MathFunc2.cc trial/implement/Mathematics/MathFunc2.cc
 13 000 src mv aips/implement/Mathematics/test/tMathFunc.cc trial/implement/Mathematics/test/tMathFunc.cc
+13 000 src mv aips/implement/Mathematics/DFTServer.cc trial/implement/Mathematics/DFTServer.cc
