@@ -1,0 +1,176 @@
+#-----------------------------------------------------------------------------
+# makedefs: Installation-specific definitions used by AIPS++ makefiles
+#-----------------------------------------------------------------------------
+#
+#   Copyright (C) 1997,1998,1999,2000,2001,2002
+#   Associated Universities, Inc. Washington DC, USA.
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+#
+#   Correspondence concerning AIPS++ should be addressed as follows:
+#          Internet email: aips2-request@nrao.edu.
+#          Postal address: AIPS++ Project Office
+#                          National Radio Astronomy Observatory
+#                          520 Edgemont Road
+#                          Charlottesville, VA 22903-2475 USA
+#
+#-----------------------------------------------------------------------------
+# This GNU makefile is read in by the makedefs file in the directory above
+# this.  That "default makedefs" file defines default values of each and
+# every variable required by the AIPS++ makefiles.  Those default values are
+# overridden where necessary by redefining them in this file.
+#
+# Installation instructions:
+#
+#    A template version of this file was copied from the "install/linux_gnu"
+#    directory into the site-specific AIPS++ system directory for this
+#    architecture (this directory) by the 'configure' script as part of the
+#    AIPS++ installation.
+#
+#    While default definitions are made in the default makedefs file in the
+#    directory above this, certain platform-specific redefinitions may have
+#    been included here to help make the installation easier.
+#
+#    You must carefully check all of the definitions made in the default
+#    makedefs file (as well as the redefinitions made here) and if necessary,
+#    correct them by making an overriding definition (or correction) here.
+#    However,
+#
+#                  DO NOT MODIFY THE DEFAULT MAKEDEFS FILE -
+#
+#                         MODIFY THIS FILE INSTEAD
+#
+#    Certain of the defaults in the default makedefs file are expressed in
+#    terms of another default using "recursively expanded" variables (defined
+#    with '=') rather than "simply expanded" (defined with ':=').  For
+#    example the TeX variables are defined in terms of "TEXROOT".  This may
+#    allow this makedefs file to redefine a whole set of variables, for
+#    example all of the TeX variables, simply by redefining one, TEXROOT.
+#    However,
+#
+#           ALWAYS USE "SIMPLY EXPANDED" VARIABLES WITHIN THIS FILE
+#
+#    That is, always use ":=" to make the assignments.
+#
+# Original: 1996/08/30 by Mark Calabretta, ATNF
+# $Id$
+#=============================================================================
+
+#-----------------------------------------------------------------------------
+# This file assumes you have a RedHat-7.2 system.
+
+# AIPS++ DOES NOT COMPILE USING THE VERSION OF GCC (2.96) DISTRIBUTED
+# WITH REDHAT-7.2 (even after the patches have been applied). To
+# compile aips++ on a RedHat system you need to install
+# gcc-2.95.3. This template assumes this has been done and the
+# compiler was installed into /usr/local/gcc.  
+
+# I got my version of gcc-2.95.3 by by compiling the source code (no
+# problems in doing this, but you need to configure with the
+# --enable-shared flag). Precompiled rpm's may also exist. Change the
+# definition of C++ROOT to point to wherever you decide to install the
+# compiler. The
+
+# If you have a standard RedHat-7.2 installation ie., you installed
+# from scratch using the workstation + development options, you will
+# also need to install the following rpms (similar rpms may also
+# work).
+
+# lapack-3.0-12 (RedHat-7.2 Disk 2)
+# blas-3.0-12  (RedHat-7.2 Disk 2)
+# pgplot-5.2.0-8u (AIPS++ ftp)
+# pgplot-devel-5.2.0-8u (AIPS++ ftp)
+# pgplot-motif-5.2.0-8u (AIPS++ ftp)
+# The location of these rpms is
+# RedHat-7.2 Disk 2: The second disk of binary RPM's that come with RedHat-7.2
+# AIPS++ ftp: These rpm's can be found on the aips++ anon-ftp site at
+# ftp://aips2.nrao.edu/pub/versions/develop/import/Linux/RedHat/5.1/RPMS/i386
+# Finally when installing pgplot-motif-5.2.0-8u you need to disable the
+# dependency check using the --nodeps flag.
+#-----------------------------------------------------------------------------
+
+# General external libraries. 
+#---------------------------- 
+
+# X11.
+X11ROOT := /usr/X11R6
+
+# Motif (lesstif is fine).
+MotifROOT := $(X11ROOT)/LessTif/Motif2.1
+
+# XPM (X Pixmap) library
+XPMROOT  := $(X11ROOT)
+
+# TCL (version 7.6 or later).
+TCLROOT  := /usr
+TCLLIB   += -ldl
+
+# PGPLOT (FORTRAN plotting package).
+PGPLOTROOT := /usr
+
+#-----------------------------------------------------------------------------
+# Compilation and linkage variables
+#-----------------------------------------------------------------------------
+# The C++ compiler.
+C++ROOT := /opt/intel/compiler60/ia64
+
+# Preprocessor flags for system debug/optimized compilations.
+CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_64 -DAIPS_STDLIB
+
+# C compiler flags for system debug/optimized compilations.
+CC      := $(C++ROOT)/bin/ecc
+CSTD    += -DHAVE_LINUX_GLIBC -Wall -DAIPS_STDLIB
+COPTLVL := -O2 -fno-strength-reduce
+
+# C++ compiler flags for system debug/optimized compilations.
+C++       := $(C++ROOT)/bin/ecpc
+C++STD    += -Tnoauto
+
+# FORTRAN compiler - using gcc (g77)
+F77ROOT  := $(C++ROOT)
+F77LIB := -lF90 -lm
+FC       := $(F77ROOT)/bin/efc
+FCOPTLVL := -O2
+FCOPT    += -fPIC
+
+# Link flags for system debug/optimized compilations; these are passed to
+# the C++ compiler.
+LDSTD := -Xlinker -rpath -Xlinker $(AIPSARCH)/lib:$(C++ROOT)/lib:$(MotifLIBD):$(X11LIBD)
+
+# Control table for building AIPS++ libraries.  Four keywords are recognized:
+#    defeat:  The library will not be built (and if an old version exists it
+#             will be deleted).
+#    static:  The static library is built and is the one linked to.
+#    shatic:  The static and shared libraries are built but the static library
+#             is the one linked to.
+#    shared:  The static and shared libraries are built and the shared library
+#             is the one linked to.
+#
+#                    C++            C          FORTRAN
+#                 dbg    opt    dbg    opt    dbg    opt
+#               ------------- ------------- -------------
+LIBnrao      := defeat static defeat defeat defeat defeat
+
+# What consortium packages to build (atnf bima hia nfra nral nrao tifr).
+CONSORTIA    += nrao
+
+# Absolute pathname of perl-5 executable
+PERL5 := /usr/bin/perl
+
+# Unset this to defeat document compilation.
+DOCSYS :=
+
+# Unset this to defeat document extraction from C++ sources.
+DOCEXTR :=
