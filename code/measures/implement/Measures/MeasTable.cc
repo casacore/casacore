@@ -252,12 +252,12 @@ void MeasTable::calcPlanArg00(Bool &need,
     for (uInt i=5; i<13; i++) {
       result[i] = Polynomial<Double>(1);
       for (uInt j=0; j<2; j++) {
-	result[i].setCoefficient(j, coeff[i-6][j]*C::arcsec);
+	result[i].setCoefficient(j, coeff[i-5][j]);
       };
     };
     result[13] = Polynomial<Double>(2);
     for (uInt j=0; j<3; j++) {
-      result[13].setCoefficient(j, APA[j]*C::arcsec);
+      result[13].setCoefficient(j, APA[j]);
     };    
   };
 }    
@@ -3796,8 +3796,8 @@ void MeasTable::calcMulSC2000(Bool &need, Double &check, Double T,
     for (uInt i=0; i<resrow; i++) {
       for (uInt j=0; j<2; j++) {
 	poly[2*i+j] = Polynomial<Double>(2);
-	poly[2*i+j].setCoefficient(0, coeffSC[i][0+j]*C::arcsec*1e-7);
-	poly[2*i+j].setCoefficient(1, coeffSC[i][3+j]*C::arcsec*1e-7);
+	poly[2*i+j].setCoefficient(0, coeffSC[i][0+3*j]*C::arcsec*1e-7);
+	poly[2*i+j].setCoefficient(1, coeffSC[i][1+3*j]*C::arcsec*1e-7);
       };
       result[i].resize(6);
       for (uInt j=0; j<2; j++) result[i](j) = 0;
