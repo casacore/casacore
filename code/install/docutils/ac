@@ -32,7 +32,7 @@
 #-----------------------------------------------------------------------------
 # ac add an entry to the changelog of an application or library module.
 #
-# 'ac' first checks out the changelog and CHANGELOG.LASTID files.
+# 'ac' first checks out the changelog and CHANGELOG.LAST* files.
 # It starts a glish script to let the user fill in a change entry,
 # which also increases the lastid in CHANGELOG.LASTID and adds the
 # entry to the changelog file.
@@ -57,7 +57,7 @@
 # $Id$
 #=============================================================================
 
-# Determine the code directory (for CHANGELOG.LASTID).
+# Determine the code directory (for CHANGELOG.LAST*).
 a_code=`pwd | sed -e '{s#/code/.*#/code#;}'`
 
 # Ignore most if only a checkin needs to be done.
@@ -75,10 +75,10 @@ then
     # Start with checking out CHANGELOG.LASTID, because that file has
     # the highest chance of being locked.
     # Exit if checking out fails.
-    echo 'ac: Checking out changelog and CHANGELOG.LASTID ...'
+    echo 'ac: Checking out changelog and CHANGELOG.LAST* ...'
     a_pwd=`pwd`
     cd $a_code
-    ao -l CHANGELOG.LASTID
+    ao -l CHANGELOG.LASTID CHANGELOG.LAST
     if [ "$?" != 0 ]
     then
 	exit 2;
@@ -88,8 +88,8 @@ then
     if [ "$?" != 0 ]
     then
 	cd $a_code
-	ao -u CHANGELOG.LASTID
-	\rm -f CHANGELOG.LASTID
+	ao -u CHANGELOG.LASTID CHANGELOG.LAST
+	\rm -f CHANGELOG.LAST*
 	exit 2;
     fi
 
@@ -106,9 +106,9 @@ then
 	ao -u changelog
 	\rm -f changelog changelog.old
 	cd $a_code
-	chmod 444 CHANGELOG.LASTID
-	ao -u CHANGELOG.LASTID
-	\rm -f CHANGELOG.LASTID
+	chmod 444 CHANGELOG.LASTID CHANGELOG.LAST
+	ao -u CHANGELOG.LASTID CHANGELOG.LAST
+	\rm -f CHANGELOG.LAST*
 	exit 4;
     fi
 fi
@@ -117,13 +117,13 @@ fi
 # Set mode correctly (needed in case of -i because the previous ai
 # might have set the mode to 444.
 \rm -f changelog.old
-echo 'ac: Checking in new changelog and CHANGELOG.LASTID ...'
+echo 'ac: Checking in new changelog and CHANGELOG.LAST* ...'
 a_id=`cat $a_code/CHANGELOG.LASTID`
 chmod 644 changelog
-echo "added change-id $a_id" | ai changelog
+echo "ac: added change-id $a_id" | ai changelog
 cd $a_code
-chmod 644 CHANGELOG.LASTID
-echo "set to change-id $a_id" | ai CHANGELOG.LASTID
+chmod 644 CHANGELOG.LASTID CHANGELOG.LAST
+echo "ac: set to change-id $a_id" | ai CHANGELOG.LASTID CHANGELOG.LAST
 
 
 exit 0
