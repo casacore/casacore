@@ -89,11 +89,6 @@ template <class T> class Vector;
 // </srcblock>
 // </example>
 //
-// <thrown>
-// <li> AipsError - If an internal inconsistancy is detected, when compiled in 
-// debug mode only.
-// </thrown>
-//
 // <motivation>
 // Model fitting is an important part of astronomical data
 // reduction/interpretation. This class defines a model component. Many
@@ -128,7 +123,7 @@ public:
   // has a constant spectrum and a shape given by the default constructor of
   // the specified ComponentShape class.
   // <thrown>
-  // AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
+  // <li> AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
   // </thrown>
   SkyCompRep(const ComponentType::Shape & shape);
   
@@ -137,9 +132,9 @@ public:
   // constructor of the specified ComponentShape class and a spectrum given by
   // the default constructor of the specified SpectralModel class
   // <thrown>
-  // AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
-  // AipsError - if the spectrum is UNKNOWN_SPECTRAL_SHAPE or
-  // NUMBER_SPECTRAL_SHAPES
+  // <li> AipsError - if the shape is UNKNOWN_SHAPE or NUMBER_SHAPES
+  // <li> AipsError - if the spectrum is UNKNOWN_SPECTRAL_SHAPE or
+  //                  NUMBER_SPECTRAL_SHAPES
   // </thrown>
   SkyCompRep(const ComponentType::Shape & shape,
  	     const ComponentType::SpectralShape & spectrum);
