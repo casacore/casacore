@@ -1,5 +1,5 @@
 //# StArrayFile.h: Read/write array in external format for a storage manager
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,6 +144,10 @@ public:
     // Close the possibly opened file.
     ~StManArrayFile();
 
+    // Flush and optionally fsync the data.
+    // It returns True when any data was written since the last flush.
+    Bool flush (Bool fsync);
+
     // Reopen the file for read/write access.
     void reopenRW();
 
@@ -274,6 +278,7 @@ private:
     uLong           leng_p;                //# File length
     uInt            version_p;             //# Version of StArrayFile file
     Bool            swput_p;               //# True = put is possible
+    Bool            hasPut_p;              //# True = put since last flush
     uInt            sizeBool_p;
     uInt            sizeChar_p;
     uInt            sizeuChar_p;
@@ -320,10 +325,12 @@ inline void StManArrayFile::reopenRW()
 }
 inline uInt StManArrayFile::put (const Int& value)
 {
+    hasPut_p = True;
     return iofil_p->write (1, &value);
 }
 inline uInt StManArrayFile::put (const uInt& value)
 {
+    hasPut_p = True;
     return iofil_p->write (1, &value);
 }
 inline uInt StManArrayFile::get (Int& value)
