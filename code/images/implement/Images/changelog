@@ -267,7 +267,7 @@ The constructor now handles aips++, fits and Miriad format images
 New LEL function INDEXIN
  </summary>
  <description>
-A new LEL function, INDEXIN has been writtena dn can be used
+A new LEL function, INDEXIN has been written that can be used
 with the 'mask' argument of the Image tool.
 
 It allows you to select based on pixel indices (rather than
