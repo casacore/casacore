@@ -26,14 +26,22 @@
 //# $Id$
 
 #include <trial/Measures/SofaTest.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Measures/MeasData.h>
+#include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Measures/MeasTable.h>
 #include <aips/Measures/Nutation.h>
 #include <aips/Measures/Precession.h>
 #include <aips/OS/Time.h>
 #include <aips/Quanta/RotMatrix.h>
+#include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/String.h>
 #include <aips/iostream.h>
 
@@ -158,7 +166,7 @@ int main() {
     SEPAR();
 
     {
-      cout << "SOFA method comparisons" << endl;
+      cout << "SOFA method comparisons ..." << endl;
       SEPAR();
       cout.precision(9);
       cout.setf(ios::fixed);
@@ -196,7 +204,42 @@ int main() {
 	endl;
       SEPAR();
     }
-	
+
+    {
+      cout << "IAU2000A/B comparisons ..." << endl;
+      uInt iau2000_reg =
+	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
+				      False);
+      uInt iau2000a_reg =
+	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use2000a"),
+				      False);
+      MDirection md(Quantity(30., "deg"), Quantity(50., "deg"),
+		    MDirection::J2000);
+      MEpoch ep(Quantity(50083.,"d"));
+      MeasFrame frame(ep);
+      MDirection::Convert mcv(md, MDirection::Ref(MDirection::APP, frame));
+      AipsrcBool::set(iau2000_reg, False);
+      AipsrcBool::set(iau2000a_reg, False);
+      cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " <<
+	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
+      cout << mcv() << endl;
+      MDirection mdcv = mcv();
+      AipsrcBool::set(iau2000_reg, True);
+      cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " <<
+	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
+      cout << mcv() << endl;
+      cout << "Difference: " << (mcv().getValue().getValue()
+	- mdcv.getValue().getValue())*200000. << endl;
+
+      AipsrcBool::set(iau2000a_reg, True);
+      cout << "New J2000 " << AipsrcBool::get(iau2000_reg) << ", " <<
+	"J2000A " << AipsrcBool::get(iau2000a_reg) << endl;
+      cout << mcv() << endl;
+      cout << "Difference: " << (mcv().getValue().getValue()
+	- mdcv.getValue().getValue())*200000. << endl;
+      
+      SEPAR();
+    }	
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
