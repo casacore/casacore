@@ -1,5 +1,5 @@
 //# SinkSource.cc: Class for read/write access to data in a given format
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,9 @@
 #include <aips/aips.h>
 #include <aips/IO/ByteSinkSource.h>
 
+
+ByteSinkSource::ByteSinkSource ()
+{}
 
 ByteSinkSource::ByteSinkSource (TypeIO* typeIO)
 : BaseSinkSource (typeIO)
