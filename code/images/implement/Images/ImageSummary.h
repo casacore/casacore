@@ -1,5 +1,5 @@
 //# ImageSummary.h: List descriptive information from an image 
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -197,13 +197,11 @@ public:
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
-// formatting (e.g. RA is  shown as HH:MM:SS.S).  If <src>nativeFormat</src> 
-// is <src>True</src> then the values are formatted in their native format.
+// formatting (e.g. RA is  shown as HH:MM:SS.S).  
 // For spectral axes, both frequency and velocity information is listed. You
 // can specify what velocity definition you want with <src>velocityType</src>
    void list(LogIO& os, 
-             const MDoppler::Types velocityType=MDoppler::RADIO,
-             const Bool nativeFormat=False);
+             const MDoppler::Types velocityType=MDoppler::RADIO);
 
 // Set a new image
    Bool setNewImage (const ImageInterface<T>& image);
