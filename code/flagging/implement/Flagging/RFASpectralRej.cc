@@ -183,7 +183,7 @@ Bool RFASpectralRej::newChunk (Int &maxmem)
   corrmask = RFDataMapper::corrMask(chunk.visIter());
   if( !corrmask )
   {
-    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::POST;
     return active=False;
   }
 // figure out active channels (i.e. within specified segments)
@@ -226,7 +226,7 @@ Bool RFASpectralRej::newChunk (Int &maxmem)
   os<<num_fitchan<<" channels will be fitted in this chunk\n"<<LogIO::POST;
   if( num_fitchan<ndeg+2 )
   {
-    os<<LogIO::WARN<<"not enough channels, ignoring chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<"not enough channels, ignoring chunk\n"<<LogIO::POST;
     return active=False;
   }
 // finish with init  

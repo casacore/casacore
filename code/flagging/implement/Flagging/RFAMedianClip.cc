@@ -81,7 +81,7 @@ Bool RFATimeMedian::newChunk (Int &maxmem)
 {
   if( num(TIME) < halfwin*4 )
   {
-    os<<LogIO::WARN<<name()<<": too few time slots, ignoring this chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<name()<<": too few time slots, ignoring this chunk\n"<<LogIO::POST;
     return active=False;
   }
 // if disk-based flag cube, reserve 2MB for local iterator
@@ -289,7 +289,7 @@ Bool RFAFreqMedian::newChunk (Int &maxmem)
 {
   if( num(CHAN) < halfwin*4 )
   {
-    os<<LogIO::WARN<<name()<<": too few channels, ignoring this chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<name()<<": too few channels, ignoring this chunk\n"<<LogIO::POST;
     return active=False;
   }
   return active=RFADiffMapBase::newChunk(maxmem);

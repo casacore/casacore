@@ -100,7 +100,7 @@ Bool RFAUVBinner::newChunk (Int &maxmem)
   corrmask = RFDataMapper::corrMask(chunk.visIter());
   if( !corrmask )
   {
-    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::NORMAL;
+    os<<LogIO::WARN<<"missing selected correlations, ignoring this chunk\n"<<LogIO::POST;
     return active=False;
   }
 // memory management. 

@@ -89,7 +89,7 @@ void RFChunkStats::newChunk ()
 //  counts[TIME] = flagger.numTime();
 //  RedFlagger::logSink()<<LogIO::WARN<< 
 //    "RFChunkStats::newChunk(): "
-//    "VisIter::nSubInterval() not yet implemented. Using global NTIME instead\n"<<LogIO::NORMAL;
+//    "VisIter::nSubInterval() not yet implemented. Using global NTIME instead\n"<<LogIO::POST;
   counts[ROW]  = visiter.nRowChunk();
 // get correlation types
   visiter.corrType(corrtypes);
