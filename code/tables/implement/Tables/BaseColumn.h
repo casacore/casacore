@@ -260,6 +260,7 @@ public:
     void getScalar (uInt rownr, Complex& value) const;
     void getScalar (uInt rownr, DComplex& value) const;
     void getScalar (uInt rownr, String& value) const;
+    void getScalar (uInt rownr, TableRecord& value) const;
     // </group>
 
     // Get a scalar for the other data types.
@@ -282,6 +283,7 @@ public:
     void putScalar (uInt rownr, const String& value);
     void putScalar (uInt rownr, const Char* value)
         { putScalar (rownr, String(value)); }
+    void putScalar (uInt rownr, const TableRecord& value);
     // </group>
 
     // Get a pointer to the underlying column cache.
