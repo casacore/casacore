@@ -32,7 +32,7 @@ C
       subroutine gmosft (uvw, dphase, xypos, values, nvispol, nvischan,
      $     dopsf, flag, rflag, weight, nrow, rownum,
      $     scale, offset, grid, nx, ny, npol, nchan, freq, c,
-     $     support, convsize, sampling, wconvsize, convFunc, 
+     $     support, convsize, sampling, wconvsize, convfunc, 
      $     chanmap, polmap,
      $     sumwt)
 
@@ -56,7 +56,7 @@ C
       complex nvalue
 
       integer convsize, sampling, wconvsize
-      complex convFunc(convsize, convsize, wconvsize), cwt
+      complex convfunc(convsize, convsize, wconvsize), cwt
 
       complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
 
@@ -110,9 +110,9 @@ C
      $           (weight(ichan,irow).gt.0.0)) then
                call smosft(uvw(1,irow), dphase(irow), freq(ichan), c, 
      $              scale, offset, sampling, pos, loc, off, phasor)
-               iloc(3)=1+abs(loc(3))
+               iloc(3)=max(1, min(wconvsize, loc(3)))
                rsupport=support(iloc(3))
-               if (omosft(nx, ny, loc, rsupport)) then
+               if (omosft(nx, ny, wconvsize, loc, rsupport)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
                      if((flag(ipol,ichan,irow).ne.1).and.
@@ -132,45 +132,34 @@ C the final image by this term.
                         do iy=-rsupport,rsupport
                            iloc(2)=convsize/2+1+iy*sampling
      $                          +off(2)
-                           if(uvw(3,irow).lt.0.0) then
-                              do ix=-rsupport,rsupport
-                                 iloc(1)=convsize/2+1+ix*sampling
-     $                                +off(1)
-                                 cwt=conjg(convFunc(iloc(1),
-     $                                iloc(2),
-     $                                iloc(3)))
-                                 if(doshift) then
-                                    cwt=cwt*shiftx(ix)*shifty(iy)
-                                 end if
-                                 grid(loc(1)+ix,
-     $                                loc(2)+iy,apol,achan)=
-     $                                grid(loc(1)+ix,
-     $                                loc(2)+iy,apol,achan)+
-     $                                nvalue*cwt
-                                 norm=norm+real(cwt)
-                              end do
-                           else
-                              do ix=-rsupport,rsupport
-                                 iloc(1)=convsize/2+1+ix*sampling
-     $                                +off(1)
-                                 cwt=convFunc(iloc(1), iloc(2),
-     $                                iloc(3))
-                                 if(doshift) then
-                                    cwt=cwt*shiftx(ix)*shifty(iy)
-                                 end if
-                                 grid(loc(1)+ix,
-     $                                loc(2)+iy,apol,achan)=
-     $                                grid(loc(1)+ix,
-     $                                loc(2)+iy,apol,achan)+
-     $                                nvalue*cwt
-                                 norm=norm+real(cwt)
-                              end do
-                           end if
+                           do ix=-rsupport,rsupport
+                              iloc(1)=convsize/2+1+ix*sampling
+     $                             +off(1)
+                              if(uvw(3,irow).gt.0.0) then
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2), iloc(3)))
+                              else
+                                 cwt=convfunc(iloc(1),
+     $                                iloc(2), iloc(3))
+                              end if
+                              if(doshift) then
+                                 cwt=cwt*shiftx(ix)*shifty(iy)
+                              end if
+                              grid(loc(1)+ix,
+     $                             loc(2)+iy,apol,achan)=
+     $                             grid(loc(1)+ix,
+     $                             loc(2)+iy,apol,achan)+
+     $                             nvalue*cwt
+                              norm=norm+real(cwt)
+                           end do
                         end do
                         sumwt(apol,achan)=sumwt(apol,achan)+
      $                       weight(ichan,irow)*norm
                      end if
                   end do
+               else
+                  write(*,*) uvw(3,irow), pos(1), pos(2), pos(3),
+     $                 loc(1), loc(2), loc(3)
                end if
             end if
          end do
@@ -184,7 +173,7 @@ C
       subroutine dmosft (uvw, dphase, xypos, values, nvispol, nvischan,
      $     flag, rflag,
      $     nrow, rownum, scale, offset, grid, nx, ny, npol, nchan, freq,
-     $     c, support, convsize, sampling, wconvsize, convFunc,
+     $     c, support, convsize, sampling, wconvsize, convfunc,
      $     chanmap, polmap)
 
       implicit none
@@ -204,7 +193,7 @@ C
       complex nvalue
 
       integer convsize, wconvsize, sampling
-      complex convFunc(convsize, convsize, wconvsize), cwt
+      complex convfunc(convsize, convsize, wconvsize), cwt
 
       complex shiftx(-convsize:convsize), shifty(-convsize:convsize)
 
@@ -258,9 +247,9 @@ C
             if((achan.ge.1).and.(achan.le.nchan)) then
                call smosft(uvw(1,irow), dphase(irow), freq(ichan), c,
      $              scale, offset, sampling, pos, loc, off, phasor)
-               iloc(3)=1+abs(loc(3))
+               iloc(3)=max(1, min(wconvsize, loc(3)))
                rsupport=support(iloc(3))
-               if (omosft(nx, ny, loc, rsupport)) then
+               if (omosft(nx, ny, wconvsize, loc, rsupport)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
                      if((flag(ipol,ichan,irow).ne.1).and.
@@ -268,16 +257,17 @@ C
 
                         nvalue=0.0
                         do iy=-rsupport,rsupport
-                           iloc(2)=convsize/2+1+sampling*iy+off(2)
+                           iloc(2)=convsize/2+1+sampling*iy
+     $                          +off(2)
                            do ix=-rsupport,rsupport
-                              iloc(1)=convsize/2+1+sampling*ix
-     $                             +off(1)
-                              if(uvw(3,irow).lt.0.0) then
-                                 cwt=conjg(convFunc(iloc(1), iloc(2),
-     $                                iloc(3)))
-                              else 
-                                 cwt=convFunc(iloc(1), iloc(2),
-     $                                iloc(3))
+                              iloc(1)=convsize/2+1
+     $                             +sampling*ix+off(1)
+                              if(uvw(3,irow).gt.0.0) then
+                                 cwt=conjg(convfunc(iloc(1),
+     $                                iloc(2), iloc(3)))
+                              else
+                                 cwt=convfunc(iloc(1),
+     $                                iloc(2), iloc(3))
                               end if
                               if(doshift) then
                                  cwt=cwt*shiftx(ix)*shifty(iy)
@@ -298,7 +288,10 @@ C
       end
 C
 C Calculate gridded coordinates and the phasor needed for
-C phase rotation.
+C phase rotation. If we are gridding in w, then we can
+C correct for the finite grid size in w by rescaling
+C using an approximation for the function (sin(pi*q**2/(2w))/2w)
+C We kick this term in for high w only.
 C
       subroutine smosft (uvw, dphase, freq, c, scale, offset, 
      $     sampling, pos, loc, off, phasor)
@@ -313,11 +306,13 @@ C
       data pi/3.14159265358979323846/
 
       do idim=1,2
-         pos(idim)=scale(idim)*uvw(idim)*freq/c+(offset(idim)+1.0)
+         pos(idim)=scale(idim)*uvw(idim)*freq/c+
+     $        (offset(idim)+1.0)
          loc(idim)=nint(pos(idim))
          off(idim)=nint((loc(idim)-pos(idim))*sampling)
       end do
-      pos(3)=abs(scale(3)*uvw(3)*freq/c)
+
+      pos(3)=abs(scale(3)*uvw(3)*freq/c)+offset(3)+1.0;
       loc(3)=nint(pos(3))
       off(3)=0
 
@@ -325,10 +320,11 @@ C
       phasor=cmplx(cos(phase), sin(phase))
       return 
       end
-      logical function omosft (nx, ny, loc, support)
+      logical function omosft (nx, ny, nw, loc, support)
       implicit none
-      integer nx, ny, loc(3), support
+      integer nx, ny, nw, loc(3), support
       omosft=(loc(1)-support.ge.1).and.(loc(1)+support.le.nx).and.
-     $        (loc(2)-support.ge.1).and.(loc(2)+support.le.ny)
+     $        (loc(2)-support.ge.1).and.(loc(2)+support.le.ny).and.
+     $        (loc(3).ge.1).and.(loc(3).le.nw)
       return
       end
