@@ -241,6 +241,15 @@ frequency as would be observed from the local standard of rest;
 (display, conversion, archive, \ldots) use an {\em MFrequency} as value
 container
 \end{itemize}
+
+As a rule of thumb the above could be summarised as: 
+\begin{itemize}
+\item    designing a user interface: be flexible, use a \mes
+\item    designing a hardware interface: use a {\em Double} or {\em Int} 
+\item    in internal classes, often use {\em MeasValue}, but will depend
+	 on how close you are to user interface or another internal interface 
+\end{itemize}
+
 Similar arguments can be used for the other \mess.
 
 \subsection{Re-use the effort of frame}
