@@ -39,7 +39,8 @@
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
   out.define(RecordFieldId("type"), fromType(tp_p));
-  out.define(RecordFieldId("parameters"), par_p);
+  out.define(RecordFieldId("parameters"), par_p);  
+  out.define(RecordFieldId("errors"), err_p);
   return True;
 }
 
