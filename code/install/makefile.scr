@@ -46,6 +46,7 @@ EXCLUDE  := $(sort $(EXCLUDE) makefile %.help %.ps %.reference)
 SCRIPTS  := $(filter-out $(EXCLUDE),$(AIPSSRCS))
 
 LIBEXECS := $(filter %.g %.gp, $(SCRIPTS))
+LIBICONS := $(filter %.xbm, $(SCRIPTS))
 BINEXECS := $(filter-out %.g %.gp, $(SCRIPTS))
 
 ifdef BINEXECS
@@ -66,6 +67,11 @@ $(LIBEXECD)/% : $(CODEDIR)/%
 	  cp $< $@
 	@ chmod 664 $@
 
+$(LIBICOND)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 664 $@
+
 $(ARCHBIND)/% : $(CODEDIR)/%
 	@ $(RM) $@
 	  cp $< $@
@@ -80,6 +86,9 @@ allsys bin : $(SCRIPTS)
 
 # Scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;
+
+# Script icons.
+$(LIBICONS) : % : $(LIBICOND)/% ;
 
 $(BINEXECS) : % : $(ARCHBIND)/% ;
 
@@ -118,6 +127,7 @@ show_local :
 	-@ echo "SCRIPTS =$(SCRIPTS)"
 	-@ echo ""
 	-@ echo "LIBEXECS=$(LIBEXECS)"
+	-@ echo "LIBICONS=$(LIBICONS)"
 	-@ echo "PERL4EXE=$(PERL4EXE)"
 	-@ echo "PERL5EXE=$(PERL5EXE)"
 	-@ echo "BINEXECS=$(BINEXECS)"

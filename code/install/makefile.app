@@ -66,6 +66,8 @@ PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
 # Glish scripts.
 LIBEXECS := $(filter %.g %.gp, $(AIPSSRCS))
 
+# Glish script icons.
+LIBICONS := $(filter %.xbm, $(AIPSSRCS))
 
 # Programmer path to include files for this application.
 PRGAPINC := -I. -I$(CODEDIR)
@@ -307,6 +309,11 @@ $(LIBEXECD)/% : $(CODEDIR)/%
 	  cp $< $@
 	@ chmod 664 $@
 
+$(LIBICOND)/% : $(CODEDIR)/%
+	@ $(RM) $@
+	  cp $< $@
+	@ chmod 664 $@
+
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
    vpath %.cc $(CODEDIR)
@@ -407,7 +414,7 @@ allsys : $(BIN)
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
 
-bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBEXECS) ;
+bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBEXECS) $(LIBICONS) ;
 
 bindbg : $(TMPPCKGD) $(BINDBGD)/$(THISAPP) ;
 
@@ -427,6 +434,9 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 
 # Scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;
+
+# Script icons.
+$(LIBICONS) : % : $(LIBICOND)/% ;
 
 # Programmer-oriented static and static pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
@@ -556,6 +566,7 @@ show_local :
 	-@ echo ""
 	-@ echo "AIPSIMPS=$(AIPSIMPS)"
 	-@ echo "LIBEXECS=$(LIBEXECS)"
+	-@ echo "LIBICONS=$(LIBICONS)"
 	-@ echo ""
 	-@ echo "AIPSINST=$(AIPSINST)"
 	-@ echo ""
