@@ -35,6 +35,7 @@
 
 //# Forward Declarations
 class TableRecord;
+class RecordInterface;
 
 
 // <summary>
@@ -171,6 +172,10 @@ protected:
     // Do the actual translate in a derived class..
     virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
 				   const IPosition& newLatticeShape) const = 0;
+
+    // Define the type and class name in the record.
+    void defineRecordFields (RecordInterface& record,
+			     const String& className) const;
 
 private:
     IPosition itsShape;

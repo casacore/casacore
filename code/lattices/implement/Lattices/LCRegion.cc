@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LCRegion.h>
+#include <trial/Lattices/RegionType.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <trial/Lattices/LCBox.h>
@@ -116,9 +117,21 @@ IPosition LCRegion::expand (const IPosition& index) const
     return result;
 }
 
+void LCRegion::defineRecordFields (RecordInterface& record,
+				   const String& className) const
+{
+    record.define ("isRegion", Int(RegionType::LC));
+    record.define ("name", className);
+}
+
 LCRegion* LCRegion::fromRecord (const TableRecord& rec,
 				const String& tableName)
 {
+    if (!rec.isDefined("isRegion")
+    ||  rec.asInt("isRegion") != RegionType::LC) {
+	throw (AipsError ("LCRegion::fromRecord - "
+			  "record does not contain an LC region"));
+    }
     const String& name = rec.asString ("name");
     if (name == LCBox::className()) {
 	return LCBox::fromRecord (rec, tableName);
