@@ -6518,3 +6518,4 @@
 18 590 src mv trial/implement/MeasurementComponents/TimeVarVJTable.cc trial/implement/CalTables/TimeVarVJTable.cc
 18 590 src mv trial/implement/MeasurementComponents/SolvableVJTable.h trial/implement/CalTables/SolvableVJTable.h
 18 590 src mv trial/implement/MeasurementComponents/SolvableVJTable.cc trial/implement/CalTables/SolvableVJTable.cc
+18 590 src mv trial/implement/MeasurementComponents/GJonesTable.h trial/implement/CalTables/GJonesTable.h
