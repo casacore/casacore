@@ -807,8 +807,6 @@ inline const TableDesc& Table::tableDesc() const
     { return baseTabPtr_p->tableDesc(); }
 inline const TableRecord& Table::keywordSet() const
     { return baseTabPtr_p->keywordSet(); }
-inline TableRecord& Table::rwKeywordSet()
-    { return baseTabPtr_p->rwKeywordSet(); }
 
 inline TableInfo Table::tableInfo (const String& tableName)
     { return BaseTable::tableInfo (tableName); }
