@@ -45,7 +45,7 @@
 
 //# Forward Declarations
 template <class T> class ImageInterface;
-template <class T> class PagedArray;
+template <class T> class TempLattice;
 class IPosition;
 class LogIO;
 class CoordinateSystem;
@@ -95,11 +95,12 @@ class CoordinateSystem;
 //
 // This class generates a "storage image" into which it writes the accumulated
 // statistical sums.  It is from this storage image that the plotting and retrieval
-// arrays are drawn.  The storage image is actually put in a <src>PagedArray</src>.  This is a disk 
-// based storage medium.   The storage image is deleted when the <src>ImageInterface</src> class 
+// arrays are drawn.  The storage image is either in core or on disk 
+// depending upon its size (if > 10% of memory given by .aipsrc system.resources.memory
+// then it goes into a disk-based PagedArray).  If on disk,  the
+// storage image is deleted when the <src>ImageInterface</src> class 
 // object destructs.    However, currently, if the process is terminated ungracefully,
-// the storage image will be left over.  It has a name starting with the string
-// "ImageStatistics::" and then a unique number. You can safely delete it.
+// the storage image will be left over.  
 //
 // <note role=tip>
 // If you ignore return error statuses from the functions that set the
@@ -312,7 +313,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   PagedArray<T>* pStoreImage_p;
+   TempLattice<T>* pStoreImage_p;
    Vector<Int> cursorAxes_p, displayAxes_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;

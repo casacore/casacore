@@ -35,11 +35,11 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/SubImage.h>
-#include <trial/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/TempLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
@@ -1128,24 +1128,13 @@ Bool ImageStatistics<T>::generateStorageImage()
     }
     tileShape(tileShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
 
-// Find size of scratch file in Mb
+// Create storage image.  If image is > 10% of available memory,
+// put it on disk.
 
-    T tmp;
-    DataType dataType = whatType(&tmp);
-    Int size0 = storeImageShape.product() * ValType::getTypeSize(dataType);
-    size0 = max(0,size0/1000000);
-    uInt size = size0;
-
-// Create Table descriptor
-
-    Table myTable = ImageUtilities::setScratchTable(String("ImageStatistics::"), size);
-
-
-// Create storage image
-
-    pStoreImage_p = new PagedArray<T>(TiledShape(storeImageShape,
-                                      tileShape), myTable);
-
+    uInt memory = AppInfo::memoryInMB();
+    Double useMemory = Double(memory)/10.0;
+    pStoreImage_p = new TempLattice<T>(TiledShape(storeImageShape,
+                                       tileShape), useMemory);
 
 // Set up min/max location variables
 
