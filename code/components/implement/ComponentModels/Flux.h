@@ -268,7 +268,7 @@ public:
 
   // Return the flux value in a Quantum for the specified Stokes.  Can convert
   // to Jy if requested.  
-   Quantum<T> value (Stokes::StokesTypes stokes, Bool toJy=True);
+  Quantum<T> value (Stokes::StokesTypes stokes, Bool toJy=True);
 
   // This function sets the Flux values assuming the supplied value represents
   // the Stokes I flux in the current units. The other Stokes parameters are
@@ -298,7 +298,7 @@ public:
   void setValue(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& value,
 		ComponentType::Polarisation pol);
 
-// Set flux for given Stokes from Quantum. 
+  // Set flux for given Stokes from Quantum. 
   void setValue (const Quantum<T>& value, Stokes::StokesTypes stokes);
 
   // Scale the Flux value by the specified amount. These functions multiply the
@@ -314,6 +314,16 @@ public:
 		  const NumericTraits<T>::ConjugateType& factor1,
 		  const NumericTraits<T>::ConjugateType& factor2,
 		  const NumericTraits<T>::ConjugateType& factor3);
+  // </group>
+
+  // Set/get the errors in the flux
+  // </group>
+  void setErrors(const NumericTraits<T>::ConjugateType& error0,
+		 const NumericTraits<T>::ConjugateType& error1,
+		 const NumericTraits<T>::ConjugateType& error2,
+		 const NumericTraits<T>::ConjugateType& error3);
+
+  const Vector<NumericTraits<T>::ConjugateType>& errors();
   // </group>
 
   // This functions convert between a RecordInterface and a FluxRep object and
@@ -334,6 +344,7 @@ private:
   Vector<NumericTraits<T>::ConjugateType> itsVal;
   ComponentType::Polarisation itsPol;
   Unit itsUnit;
+  Vector<NumericTraits<T>::ConjugateType> itsErr;
 };
 
 // <summary>A class that represents the Flux (reference semantics)</summary>
@@ -591,6 +602,16 @@ public:
 		  const NumericTraits<T>::ConjugateType& factor3);
   // </group>
 
+  // Set/get the errors in the flux
+  // </group>
+  void setErrors(const NumericTraits<T>::ConjugateType& error0,
+		 const NumericTraits<T>::ConjugateType& error1,
+		 const NumericTraits<T>::ConjugateType& error2,
+		 const NumericTraits<T>::ConjugateType& error3);
+
+  const Vector<NumericTraits<T>::ConjugateType>& errors();
+  // </group>
+
   // This functions convert between a RecordInterface and a Flux object and
   // define how the Flux is represented in glish.  They return False if the
   // RecordInterface is malformed and append an error message to the supplied
@@ -613,23 +634,23 @@ public:
   // This function converts between a Vector in Stokes representation and one
   // in Circular representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void stokesToCircular(Vector<NumericTraits<T>::ConjugateType>& out, 
- 			       const Vector<NumericTraits<T>::ConjugateType>&
- 			       in);
+  static 
+  void stokesToCircular(Vector<NumericTraits<T>::ConjugateType>& out, 
+			const Vector<NumericTraits<T>::ConjugateType>& in);
 
   // This function converts between a Vector in Circular representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are discarded.
-  static void circularToStokes(Vector<T>& out,
- 			       const Vector<NumericTraits<T>::ConjugateType>&
- 			       in);
+  static 
+  void circularToStokes(Vector<T>& out,
+			const Vector<NumericTraits<T>::ConjugateType>& in);
 
   // This function converts between a Vector in Circular representation and one
   // in Stokes representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void circularToStokes(Vector<NumericTraits<T>::ConjugateType>& out,
- 			       const Vector<NumericTraits<T>::ConjugateType>&
- 			       in);
+  static 
+  void circularToStokes(Vector<NumericTraits<T>::ConjugateType>& out,
+			const Vector<NumericTraits<T>::ConjugateType>& in);
 
   // This function converts between a Vector in Stokes representation and one
   // in Linear representation.
@@ -639,9 +660,9 @@ public:
   // This function converts between a Vector in Stokes representation and one
   // in Linear representation. The imaginary components of the Stokes vector
   // are NOT ignored.
-  static void stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
-  			     const Vector<NumericTraits<T>::ConjugateType>&
- 			     in);
+  static 
+  void stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
+		      const Vector<NumericTraits<T>::ConjugateType>& in);
 
   // This function converts between a Vector in Linear representation and one
   // in Stokes representation. The imaginary components of the Stokes vector

@@ -30,10 +30,10 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Complex.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/QuantumHolder.h>
@@ -45,7 +45,8 @@ template<class T> FluxRep<T>::
 FluxRep()
   :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
-   itsUnit("Jy")
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = 1;
   DebugAssert(ok(), AipsError);
@@ -55,7 +56,8 @@ template<class T> FluxRep<T>::
 FluxRep(T i) 
   :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
-   itsUnit("Jy")
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = i;
   DebugAssert(ok(), AipsError);
@@ -65,7 +67,8 @@ template<class T> FluxRep<T>::
 FluxRep(T i, T q, T u, T v)
   :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
-   itsUnit("Jy")
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = i;
   itsVal(1) = q;
@@ -81,7 +84,8 @@ FluxRep(NumericTraits<T>::ConjugateType xx,
 	NumericTraits<T>::ConjugateType yy, ComponentType::Polarisation pol)
   :itsVal(4),
    itsPol(pol),
-   itsUnit("Jy") 
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   itsVal(0) = xx;
   itsVal(1) = xy;
@@ -94,7 +98,8 @@ template<class T> FluxRep<T>::
 FluxRep(const Vector<T>& flux)
   :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
-   itsUnit("Jy")
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(flux.nelements() == 4, AipsError);
   for (uInt i = 0 ; i < 4; i++) {
@@ -108,7 +113,8 @@ FluxRep(const Vector<NumericTraits<T>::ConjugateType>& flux,
 	ComponentType::Polarisation pol)
   :itsVal(flux.copy()),
    itsPol(pol),
-   itsUnit("Jy")
+   itsUnit("Jy"),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(ok(), AipsError);
 }
@@ -117,7 +123,8 @@ template<class T> FluxRep<T>::
 FluxRep(const Quantum<Vector<T> >& flux)
   :itsVal(4, NumericTraits<T>::ConjugateType(0,0)),
    itsPol(ComponentType::STOKES),
-   itsUnit(flux.getFullUnit())
+   itsUnit(flux.getFullUnit()),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   const Vector<T>& fluxVal(flux.getValue());
   DebugAssert(fluxVal.nelements() == 4, AipsError);
@@ -130,7 +137,8 @@ FluxRep(const Quantum<Vector<NumericTraits<T>::ConjugateType> >& flux,
 	ComponentType::Polarisation pol)
   :itsVal(flux.getValue().copy()),
    itsPol(pol),
-   itsUnit(flux.getFullUnit())
+   itsUnit(flux.getFullUnit()),
+   itsErr(4, NumericTraits<T>::ConjugateType(0,0))
 {
   DebugAssert(ok(), AipsError);
 }
@@ -139,7 +147,8 @@ template<class T> FluxRep<T>::
 FluxRep(const FluxRep<T>& other) 
   :itsVal(other.itsVal.copy()),
    itsPol(other.itsPol),
-   itsUnit(other.itsUnit)
+   itsUnit(other.itsUnit),
+   itsErr(other.itsErr)
 {
   DebugAssert(ok(), AipsError);
 }
@@ -155,6 +164,7 @@ operator=(const FluxRep<T>& other) {
     itsVal = other.itsVal;
     itsPol = other.itsPol;
     itsUnit = other.itsUnit;
+    itsErr = other.itsErr;
   }
   DebugAssert(ok(), AipsError);
   return *this;
@@ -235,8 +245,17 @@ convertPol(ComponentType::Polarisation pol) {
       break;
     default:
       throw(AipsError("FluxRep<T>::convertPol(...) - bad polarisation type"));
-    };    
-    itsPol = pol;
+    };
+    if (!allNearAbs(itsErrors, NumericTraits<T>::ConjugateType(0,0), 
+		    C::dbl_epsilon)) {
+      LogIO logErr(LogOrigin("FluxRep", "convertPol()"));
+      logErr << LogIO::WARN 
+	     << "The change in flux representation means the numerical values"
+	     << " have changed" << endl
+	     << "But the errors in the flux are not being changed "
+	     << "and are probably now incorrect"
+	     << LogIO::POST;
+    }
   }
   DebugAssert(ok(), AipsError);
 }
@@ -454,6 +473,22 @@ scaleValue(const NumericTraits<T>::ConjugateType& factor0,
   itsVal(2) *= factor2;
   itsVal(3) *= factor3;
   DebugAssert(ok(), AipsError);
+}
+
+template<class T> void FluxRep<T>::
+setErrors(const NumericTraits<T>::ConjugateType& error0,
+	  const NumericTraits<T>::ConjugateType& error1,
+	  const NumericTraits<T>::ConjugateType& error2,
+	  const NumericTraits<T>::ConjugateType& error3) {
+  itsErr(0) = error0;
+  itsErr(1) = error1;
+  itsErr(2) = error2;
+  itsErr(3) = error3;
+}
+
+template<class T> const Vector<NumericTraits<T>::ConjugateType>& FluxRep<T>::
+errors() {
+  return itsErr;
 }
 
 template<class T> Bool FluxRep<T>::
@@ -856,6 +891,20 @@ scaleValue(const NumericTraits<T>::ConjugateType& factor0,
   DebugAssert(ok(), AipsError);
 }
 
+template<class T> void Flux<T>::
+setErrors(const NumericTraits<T>::ConjugateType& error0,
+	  const NumericTraits<T>::ConjugateType& error1,
+	  const NumericTraits<T>::ConjugateType& error2,
+	  const NumericTraits<T>::ConjugateType& error3) {
+  itsFluxPtr->setErrors(error0, error1, error2, error3);
+  DebugAssert(ok(), AipsError);
+}
+
+template<class T> const Vector<NumericTraits<T>::ConjugateType>& Flux<T>::
+errors() {
+  return itsFluxPtr->errors();
+}
+
 template<class T> Bool Flux<T>::
 fromRecord(String& errorMessage, const RecordInterface& record) {
   DebugAssert(ok(), AipsError);
@@ -925,10 +974,11 @@ circularToStokes(Vector<T>& out,
   const NumericTraits<T>::ConjugateType rl = in(1);
   const NumericTraits<T>::ConjugateType lr = in(2);
   const T ll = in(3).real();
-  out(0) = (rr + ll)/2;
-  out(1) = (rl.real() + lr.real())/2;
-  out(2) = (rl.imag() - lr.imag())/2;
-  out(3) = (rr - ll)/2;
+  const T two(2);
+  out(0) = (rr + ll)/two;
+  out(1) = (rl.real() + lr.real())/two;
+  out(2) = (rl.imag() - lr.imag())/two;
+  out(3) = (rr - ll)/two;
 }
 
 template<class T> void Flux<T>::
@@ -940,11 +990,12 @@ circularToStokes(Vector<NumericTraits<T>::ConjugateType>& out,
   const NumericTraits<T>::ConjugateType rl = in(1);
   const NumericTraits<T>::ConjugateType lr = in(2);
   const NumericTraits<T>::ConjugateType ll = in(3);
-  out(0) = (rr + ll)/2;
-  out(1) = (rl + lr)/2;
-  out(2) = NumericTraits<T>::ConjugateType((rl.imag()-lr.imag())/2,
-					   (lr.real()-rl.real())/2);
-  out(3) = (rr - ll)/2;
+  const T two(2);
+  out(0) = (rr + ll)/two;
+  out(1) = (rl + lr)/two;
+  out(2) = NumericTraits<T>::ConjugateType((rl.imag()-lr.imag())/two,
+					   (lr.real()-rl.real())/two);
+  out(3) = (rr - ll)/two;
 }
 
 template<class T> void Flux<T>::
@@ -963,22 +1014,6 @@ stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out,
 }
 
 template<class T> void Flux<T>::
-stokesToLinear(Vector<NumericTraits<T>::ConjugateType>& out, 
-	       const Vector<NumericTraits<T>::ConjugateType>& in) {
-  DebugAssert(in.nelements() == 4, AipsError);
-  DebugAssert(out.nelements() == 4, AipsError);
-  const NumericTraits<T>::ConjugateType i = in(0);
-  const NumericTraits<T>::ConjugateType q = in(1);
-  const NumericTraits<T>::ConjugateType u = in(2);
-  const NumericTraits<T>::ConjugateType& v = in(3);
-  const NumericTraits<T>::ConjugateType jv(-v.imag(), v.real());
-  out(0) = i + q;
-  out(1) = u + jv;
-  out(2) = u - jv;
-  out(3) = i - q;
-}
-
-template<class T> void Flux<T>::
 linearToStokes(Vector<T>& out, 
 	       const Vector<NumericTraits<T>::ConjugateType>& in) {
   DebugAssert(in.nelements() == 4, AipsError);
@@ -987,10 +1022,11 @@ linearToStokes(Vector<T>& out,
   const NumericTraits<T>::ConjugateType xy = in(1);
   const NumericTraits<T>::ConjugateType yx = in(2);
   const T yy = in(3).real();
-  out(0) = (xx + yy)/2;
-  out(1) = (xx - yy)/2;
-  out(2) = (xy.real() + xy.real())/2;
-  out(3) = (xy.imag() - yx.imag())/2;
+  const T two(2);
+  out(0) = (xx + yy)/two;
+  out(1) = (xx - yy)/two;
+  out(2) = (xy.real() + xy.real())/two;
+  out(3) = (xy.imag() - yx.imag())/two;
 }
 
 template<class T> void Flux<T>::
@@ -1002,11 +1038,12 @@ linearToStokes(Vector<NumericTraits<T>::ConjugateType>& out,
   const NumericTraits<T>::ConjugateType xy = in(1);
   const NumericTraits<T>::ConjugateType yx = in(2);
   const NumericTraits<T>::ConjugateType yy = in(3);
-  out(0) = (xx + yy)/2;
-  out(1) = (xx - yy)/2;
-  out(2) = (xy + yx)/2;
-  out(3) = NumericTraits<T>::ConjugateType((xy.imag()-yx.imag())/2,
-					   (yx.real()-xy.real())/2);
+  const T two(2);
+  out(0) = (xx + yy)/two;
+  out(1) = (xx - yy)/two;
+  out(2) = (xy + yx)/two;
+  out(3) = NumericTraits<T>::ConjugateType((xy.imag()-yx.imag())/two,
+					   (yx.real()-xy.real())/two);
 }
 
 template<class T> void Flux<T>::
@@ -1020,10 +1057,11 @@ linearToCircular(Vector<NumericTraits<T>::ConjugateType>& out,
   const NumericTraits<T>::ConjugateType& yx = in(2);
   const NumericTraits<T>::ConjugateType jyx(-yx.imag(), yx.real());
   const NumericTraits<T>::ConjugateType yy = in(3);
-  out(0) = (xx - jxy + jyx + yy)/2;
-  out(1) = (xx + jxy + jyx - yy)/2;
-  out(2) = (xx - jxy - jyx - yy)/2;
-  out(3) = (xx + jxy - jyx + yy)/2;
+  const T two(2);
+  out(0) = (xx - jxy + jyx + yy)/two;
+  out(1) = (xx + jxy + jyx - yy)/two;
+  out(2) = (xx - jxy - jyx - yy)/two;
+  out(3) = (xx + jxy - jyx + yy)/two;
 }
 
 template<class T> void Flux<T>::
@@ -1035,14 +1073,15 @@ circularToLinear(Vector<NumericTraits<T>::ConjugateType>& out,
   const NumericTraits<T>::ConjugateType rl = in(1);
   const NumericTraits<T>::ConjugateType lr = in(2);
   const NumericTraits<T>::ConjugateType ll = in(3);
-  out(0) = (rr + rl + lr + ll)/2;
+  const T two(2);
+  out(0) = (rr + rl + lr + ll)/two;
   out(1) = NumericTraits<T>::ConjugateType(
-		     (-rr.imag() + rl.imag() - lr.imag() + ll.imag())/2,
-                     ( rr.real() - rl.real() + lr.real() - ll.real())/2);
+		     (-rr.imag() + rl.imag() - lr.imag() + ll.imag())/two,
+                     ( rr.real() - rl.real() + lr.real() - ll.real())/two);
   out(2) = NumericTraits<T>::ConjugateType(
-		     ( rr.imag() + rl.imag() - lr.imag() - ll.imag())/2,
-                     (-rr.real() - rl.real() + lr.real() + ll.real())/2);
-  out(3) = (rr - rl - lr + ll)/2;
+		     ( rr.imag() + rl.imag() - lr.imag() - ll.imag())/two,
+                     (-rr.real() - rl.real() + lr.real() + ll.real())/two);
+  out(3) = (rr - rl - lr + ll)/two;
 }
 // Local Variables: 
 // compile-command: "gmake Flux"
