@@ -4134,3 +4134,4 @@
 14 065 src mv trial/apps/gDisplay/GTkDrawingDD.cc trialdisplay/apps/gDisplay/GTkDrawingDD.cc
 14 065 src mv trial/apps/gDisplay/GTkDrawingDD.h trialdisplay/apps/gDisplay/GTkDrawingDD.h
 14 065 src mv trial/apps/gDisplay/GTkLogSink.cc trialdisplay/apps/gDisplay/GTkLogSink.cc
+14 065 src mv trial/apps/gDisplay/GTkLogSink.h trialdisplay/apps/gDisplay/GTkLogSink.h
