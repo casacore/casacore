@@ -116,8 +116,6 @@ private:
     //# Define the lock file.
     LockFile*        itsLock;
     //# Define if the file is already read or write locked.
-    Bool             itsReadLocked;
-    Bool             itsWriteLocked;
     ReleaseCallBack* itsReleaseCallBack;
     void*            itsReleaseParent;
 };
@@ -125,7 +123,6 @@ private:
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-///    return (type == FileLocker::Write  ?  itsWriteLocked : itsReadLocked);
     return (itsLock == 0  ?  False : itsLock->hasLock (type));
 }
 inline void TableLockData::autoRelease()
