@@ -71,18 +71,21 @@ int main()
     AlwaysAssertExit(oi2.telescope() == "telescope" &&
 		     oi2.observer() == "observer" &&
 		     near(oi2.obsDate().get("d").getValue(), 1234.0));
+//
+    Double dateVal = 55000.5;
     oi2.setTelescope("telescope2").setObserver("observer2").
-	setObsDate(MVEpoch(55000.0));
+	setObsDate(MVEpoch(dateVal));
     oi = oi2;
     AlwaysAssertExit(oi.telescope() == "telescope2" &&
 		     oi.observer() == "observer2" &&
-		     near(oi.obsDate().get("d").getValue(), 55000.0));
+		     near(oi.obsDate().get("d").getValue(), dateVal));
 
     // Test output.  
     ostrstream oss;
     oss << oi << endl;
     String x(oss);
-    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::00:00:00.0000");
+//    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::00:00:00.0000");
+    String x2("Telescope: telescope2 Observer: observer2 Date Observed: Epoch: 55000::12:00:00.0000");
     Int iL = x2.length();
     String x3 = String(x.at(0,iL));
     AlwaysAssertExit(x2==x3);
@@ -96,7 +99,7 @@ int main()
     AlwaysAssertExit(oi3.fromRecord(error, rec));
     AlwaysAssertExit(oi3.telescope() == "telescope2" &&
 		     oi3.observer() == "observer2" &&
-		     near(oi3.obsDate().get("d").getValue(), 55000.0));
+		     near(oi3.obsDate().get("d").getValue(), dateVal));
 
     // Bool toFITS(String & error, RecordInterface & outRecord) const;
     // Bool fromFITS(String & error, const RecordInterface & inRecord);
@@ -106,7 +109,7 @@ int main()
     AlwaysAssertExit(oi4.fromFITS(error, rec2));
     AlwaysAssertExit(oi4.telescope() == "telescope2" &&
 		     oi4.observer() == "observer2" &&
-		     near(oi4.obsDate().get("d").getValue(), 55000.0));
+		     near(oi4.obsDate().get("d").getValue(), dateVal));
 
     // static Vector<String> keywordNamesFITS();
     // This is a fragile test, but probably better to do it than not.
