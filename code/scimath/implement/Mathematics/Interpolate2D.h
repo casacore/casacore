@@ -1,5 +1,5 @@
 //# Interpolate2D.h: this defines the Interpolate2D class
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,6 +86,9 @@
 //
 //
 // <todo asof="1998/08/02">
+//   <li> Now that there are float/double/bool versions, the class should
+//        be templated and specialized versions made as needed. The
+//        code duplucation in the Float/Double versions is pretty awful presently.
 //   <li> Alternative approach: instantiate with an Array, take a block of
 //        vector locations, return a block of interpolation results
 // </todo>
@@ -118,23 +121,43 @@ class Interpolate2D
   // Assignment operator (copy semantics)
   Interpolate2D& operator=(const Interpolate2D& other);
 
-  // Do one interpolation, supply Matrix/Array and mask (True is good),
+  // Do one Float interpolation, supply Matrix/Array and mask (True is good),
   // and pixel coordinate.  Returns False if coordinate out of range or data 
   // are masked.  No shape integrity checking is done (see above).
   // <group>
-  Bool  interp (Float& result, 
-                const Vector<Double>& where,
-                const Matrix<Float>& data) const;
+  Bool interp (Float& result, 
+               const Vector<Double>& where,
+               const Matrix<Float>& data) const;
   Bool interp (Float& result, 
                const Vector<Double>& where, 
                const Array<Float>& data) const;
-  Bool  interp (Float& result, 
-                const Vector<Double>& where,
-                const Matrix<Float>& data, 
-                const Matrix<Bool>& mask) const;
+  Bool interp (Float& result, 
+               const Vector<Double>& where,
+               const Matrix<Float>& data, 
+               const Matrix<Bool>& mask) const;
   Bool interp (Float& result, 
                const Vector<Double>& where, 
                const Array<Float>& data, 
+               const Array<Bool>& mask) const;
+  //</group>
+
+  // Do one Double interpolation, supply Matrix/Array and mask (True is good),
+  // and pixel coordinate.  Returns False if coordinate out of range or data 
+  // are masked.  No shape integrity checking is done (see above).
+  // <group>
+  Bool interp (Double& result, 
+               const Vector<Double>& where,
+               const Matrix<Double>& data) const;
+  Bool interp (Double& result, 
+               const Vector<Double>& where, 
+               const Array<Double>& data) const;
+  Bool interp (Double& result, 
+               const Vector<Double>& where,
+               const Matrix<Double>& data, 
+               const Matrix<Bool>& mask) const;
+  Bool interp (Double& result, 
+               const Vector<Double>& where, 
+               const Array<Double>& data, 
                const Array<Bool>& mask) const;
   //</group>
 
@@ -161,18 +184,24 @@ private:
   Bool anyBadMaskPixels (const Matrix<Bool>*& mask, Int i1, Int i2, Int j1, Int j2) const;
 
   // nearest neighbour interpolation
-  Bool interpNearest(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
+  Bool interpNearestFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
+                          const Matrix<Bool>*& maskPtr) const;
+  Bool interpNearestDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
                      const Matrix<Bool>*& maskPtr) const;
   Bool interpNearestBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
   // bi-linear interpolation 
-  Bool interpLinear(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
-                    const Matrix<Bool>*& maskPtr) const;
+  Bool interpLinearFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
+                         const Matrix<Bool>*& maskPtr) const;
+  Bool interpLinearDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
+                          const Matrix<Bool>*& maskPtr) const;
   Bool interpLinearBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
   // bi-cubic interpolation
-  Bool interpCubic(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
-                    const Matrix<Bool>*& maskPtr) const;
+  Bool interpCubicFloat(Float& result, const Vector<Double>& where, const Matrix<Float>& data,
+                        const Matrix<Bool>*& maskPtr) const;
+  Bool interpCubicDouble(Double& result, const Vector<Double>& where, const Matrix<Double>& data,
+                         const Matrix<Bool>*& maskPtr) const;
   Bool interpCubicBool (Bool& result, const Vector<Double>& where, const Matrix<Bool>& data) const;
 
   // helping routine from numerical recipes
@@ -184,15 +213,20 @@ private:
 
 // Typedefs for function pointers
 
-  typedef Bool(Interpolate2D::*FuncPtr)(Float& result, 
-                                        const Vector<Double>& where, 
-                                        const Matrix<Float>& data,
-                                        const Matrix<Bool>*& maskPtr) const;
+  typedef Bool(Interpolate2D::*FuncPtrFloat)(Float& result, 
+                                             const Vector<Double>& where, 
+                                             const Matrix<Float>& data,
+                                             const Matrix<Bool>*& maskPtr) const;
+  typedef Bool(Interpolate2D::*FuncPtrDouble)(Double& result, 
+                                             const Vector<Double>& where, 
+                                             const Matrix<Double>& data,
+                                             const Matrix<Bool>*& maskPtr) const;
   typedef Bool(Interpolate2D::*FuncPtrBool)(Bool& result, 
                                             const Vector<Double>& where, 
                                             const Matrix<Bool>& data) const;
 //
-  FuncPtr itsFuncPtr;
+  FuncPtrFloat itsFuncPtrFloat;
+  FuncPtrDouble itsFuncPtrDouble;
   FuncPtrBool itsFuncPtrBool;
   Int itsI, itsJ;
   Int itsMinI, itsMaxI, itsMinJ, itsMaxJ;
