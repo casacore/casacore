@@ -1,5 +1,5 @@
 //# aipsenv.h: Global initialization for special aips++ macros
-//# Copyright (C) 2000,2001,2002,2003
+//# Copyright (C) 2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,13 @@
 #define AIPS_64B
 #endif
 
+#if defined(AIPS_I386)
+#undef AIPS_I386
+#endif
+#if defined(i386)
+#define AIPS_I386
+#endif
+
 #if defined(AIPS_DARWIN)
 #undef AIPS_DARWIN
 #if defined(__APPLE_CC__)
@@ -137,6 +144,11 @@
 #endif
 #endif
 
-
+//  Automatically configure for known LITTLE ENDIAN systems
+#if !(defined(AIPS_LITTLE_ENDIAN))
+#if (defined(AIPS_ALPHA) || defined(AIPS_I386))
+#define AIPS_LITTLE_ENDIAN
+#endif
+#endif
 
 #endif
