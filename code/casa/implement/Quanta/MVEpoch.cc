@@ -51,45 +51,43 @@ MVEpoch::MVEpoch(const MVEpoch &other) {
 
 MVEpoch::MVEpoch(Double inday, Double infrac) :
   wday(0), frday(0) {
-    addTime(inday);
-    addTime(infrac);
-    adjust();
-  }
+  addTime(inday);
+  addTime(infrac);
+  adjust();
+}
 
 MVEpoch::MVEpoch(const Quantity &in) : 
   wday(0), frday(0) {
-    addTime(makeDay(in));
-  }
+  addTime(makeDay(in));
+}
 
 MVEpoch::MVEpoch(const Quantity &in1, const Quantity &in2) : 
   wday(0), frday(0) {
-    addTime(makeDay(in1));
-    addTime(makeDay(in2));
-    adjust();
-  }
+  addTime(makeDay(in1));
+  addTime(makeDay(in2));
+  adjust();
+}
 
 MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) : 
   wday(0), frday(0) {
-    for (uInt i=0; i<in.getValue().nelements(); i++) {
-      addTime(makeDay(Quantity((in.getValue())(i),in.getUnit())));
-    }
-    adjust();
-  }
+  for (uInt i=0; i<in.getValue().nelements(); i++) {
+    addTime(makeDay(Quantity((in.getValue())(i),in.getUnit())));
+  };
+  adjust();
+}
 
 MVEpoch::MVEpoch(const Vector<Double> &inday) :
   wday(0), frday(0) {
-    for (uInt i=0; i<inday.nelements(); i++) {
-      addTime(inday(i));
-    }
-    adjust();
-  }
+  for (uInt i=0; i<inday.nelements(); i++) addTime(inday(i));
+  adjust();
+}
 
 MVEpoch::MVEpoch(const Vector<Quantity> &in) :
   wday(0), frday(0) {
-    if (!putValue(in)) {
-      throw(AipsError("Illegal Quantity type argument: MVEpoch"));
-    };
-  }
+  if (!putValue(in)) {
+    throw(AipsError("Illegal Quantity type argument: MVEpoch"));
+  };
+}
 
 //# Destructor
 MVEpoch::~MVEpoch() {}
@@ -99,7 +97,7 @@ MVEpoch &MVEpoch::operator=(const MVEpoch &other) {
   if (this != &other) {
     wday = other.wday;
     frday = other.frday;
-  }
+  };
   return *this;
 }
 
@@ -130,8 +128,7 @@ MVEpoch MVEpoch::operator-(const MVEpoch &other) const {
 }
 
 Bool MVEpoch::operator==(const MVEpoch &other) const {
-  return ToBool(wday == other.wday &&
-		frday == other.frday);
+  return ToBool(wday == other.wday && frday == other.frday);
 }
 
 Bool MVEpoch::operator!=(const MVEpoch &other) const {
@@ -161,10 +158,10 @@ void MVEpoch::assert(const MeasValue &in) {
 void MVEpoch::adjust() {
   while (frday < 0) {
     frday += 1; wday -= 1;
-  }
+  };
   while (frday >= 1) {
     frday -= 1; wday += 1;
-  }
+  };
 }
 
 void MVEpoch::adjust(Double &res) {
@@ -237,16 +234,11 @@ Vector<Quantum<Double> > MVEpoch::getRecordValue() const {
 }
 
 Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
-  {
-    for (uInt i=0; i<in.nelements(); i++) {
-      if (!in(i).check(UnitVal::TIME)) return False;
-    };
-  }
-  {
-    for (uInt i=0; i<in.nelements(); i++) {
-      addTime(makeDay(in(i)));
-    };
-  }
+  for (uInt i=0; i<in.nelements(); i++) {
+    if (!in(i).check(UnitVal::TIME)) return False;
+  };
+  wday = frday = 0;
+  for (uInt i=0; i<in.nelements(); i++) addTime(makeDay(in(i)));
   adjust();
   return True;
 }
