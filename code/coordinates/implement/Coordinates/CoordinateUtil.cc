@@ -137,16 +137,16 @@ Vector<uInt> findDirectionAxes(const CoordinateSystem & coords) {
 	       == -1, AipsError);
   const Vector<Int> pixelAxes = coords.pixelAxes(dirCoordAxis);
   AlwaysAssert(pixelAxes.nelements() == 2, AipsError);
-  if ((pixelAxes(0) > 0) && (pixelAxes(1) > 0)) {
+  if ((pixelAxes(0) >= 0) && (pixelAxes(1) >= 0)) {
     retVal.resize(2);
     retVal(0) = pixelAxes(0);
     retVal(1) = pixelAxes(1);
   }
-  else if ((pixelAxes(0) > 0) && (pixelAxes(1) < 0)) {
+  else if ((pixelAxes(0) >= 0) && (pixelAxes(1) < 0)) {
     retVal.resize(1);
     retVal(0) = pixelAxes(0);
   }
-  else if ((pixelAxes(0) < 0) && (pixelAxes(1) > 0)) {
+  else if ((pixelAxes(0) < 0) && (pixelAxes(1) >= 0)) {
     retVal.resize(1);
     retVal(1) = pixelAxes(1);
   }
@@ -164,14 +164,14 @@ Int findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords) {
 	       == -1, AipsError);
   const Vector<Int> pixelAxes = coords.pixelAxes(polCoordAxis);
   AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
+  const StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
+  whichPols.resize(0);
+  whichPols = polCoord.stokes();
   if (pixelAxes(0) < 0) {
-    whichPols.resize(1);
-    whichPols(0) = Stokes::I;
+    AlwaysAssert(whichPols.nelements() == 1, AipsError);
   }
   else {
-    whichPols.resize(0);
-    StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
-    whichPols = polCoord.stokes();
+    AlwaysAssert(whichPols.nelements() > 0, AipsError);
   }
   return pixelAxes(0);
 }
