@@ -279,6 +279,11 @@ public:
   // the given Table.
   PagedArray(const IPosition &arrayShape, Table &theTable);
 
+  // construct a new PagedArray, with the data assuming 'arrayShape', in
+  // the given Table. maxPixels defines the maximum number of pixels
+  // in the tile
+  PagedArray(const IPosition &arrayShape, Table &theTable, const Int maxPixels);
+
   // construct a new PagedArray, with data of 'arrayShape', stored
   // in 'theTable', with a TableColumn name, and a row number (defaults 
   // to row zero.)
@@ -448,37 +453,44 @@ template <class T>
 void buildStandardColumn(Table &table, const String &columnName,
 			 const String &columnComment, Int rowNumber,
 			 ArrayColumn<T> &indirectArray_p, 
-			 const IPosition &shape);
+			 const IPosition &shape,
+			 Int maxPixels);
 
 void buildColumn(Bool tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<Bool> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 void buildColumn(Int tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<Int> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 void buildColumn(Float tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<Float> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 void buildColumn(Double tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<Double> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 void buildColumn(Complex tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<Complex> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 void buildColumn(DComplex tmp, Table &table, const String &columnName,
 		 const String &columnComment, Int rowNumber,
 		 ArrayColumn<DComplex> &indirectArray_p, 
-		 const IPosition &shape);
+		 const IPosition &shape,
+		 Int maxPixels);
 
 //</group>
 
