@@ -1,5 +1,5 @@
 //# CoordinateSystem.cc: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -2533,6 +2533,12 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
+// If both axes for the DC are removed, set coordinate to missing.
+// For other coordinates, they are handled via axes, not
+// Coordinate number, so we don't need to do this. I think.
+
+   if (longAxis==-1 && latAxis==-1) skyCoord = -1;
+
 // change the units to degrees for the sky axes
 
     Vector<String> units(coordsys.worldAxisUnits().copy());
@@ -2741,29 +2747,31 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
                                                      Bool writeWCS, Double offset,
                                                      const String& sprefix) const
 {
-   const Int n = nWorldAxes();
+   const Int n = coordsys.nWorldAxes();
    crval = coordsys.referenceValue();
    crpix = coordsys.referencePixel() + offset;
    cdelt = coordsys.increment();
+//
+   Vector<String> cctype(2);
    if (skyCoord >= 0) {
       const DirectionCoordinate dCoord = coordsys.directionCoordinate(skyCoord);
       projp = dCoord.projection().parameters();
       longPole = dCoord.longLatPoles()(2);
       latPole =  dCoord.longLatPoles()(3);
-   }
-   Vector<String> cctype(2);
-   if (skyCoord>=0 && !writeWCS) {
-      if (latAxis>=0) {
-         const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-         cctype = make_Direction_FITS_ctype (isNCP, dc.projection(), 
-                                             DirectionCoordinate::axisNames(dc.directionType(),
-                                             True),
-                                             C::pi/180.0*crval(latAxis), True);
-      } else {
-         os << LogIO::SEVERE 
-            << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
-            << LogIO::POST;
-         return False;
+//
+      if (!writeWCS) {
+         if (latAxis>=0) {
+            const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
+            cctype = make_Direction_FITS_ctype (isNCP, dc.projection(), 
+                                                DirectionCoordinate::axisNames(dc.directionType(),
+                                                True),
+                                                C::pi/180.0*crval(latAxis), True);
+         } else {
+            os << LogIO::SEVERE 
+               << "Cannot handle conversion to WCS for DirectionCoordinate with  lat axis removed"
+               << LogIO::POST;
+            return False;
+         }
       }
    }
 //
@@ -2782,10 +2790,15 @@ Bool CoordinateSystem::toFITSHeaderGenerateKeywords (LogIO& os,
             ctype(i) = cctype(1);
          }
       } else if (i == specAxis) {
-	    // Nothing - will be handled in SpectralCoordinate
+
+// Nothing - will be handled in SpectralCoordinate
+
       } else if (i == stokesAxis) {
-         ctype(i) = "STOKES  ";
+         ctype(i) = "STOKES";
       } else {
+
+// Linear and Tabular
+
          ctype(i).upcase();
          if (ctype(i).length() > 8) {
             ctype(i) = ctype(i).at(0,8);
