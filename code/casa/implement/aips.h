@@ -107,5 +107,14 @@ extern Bool aips_debug_on;
 // classes, e.g. from InterViews.
 #define imported /* Nothing */
 
+// This gives the option to use namespaces for the 'real' system, but still allow 
+// the old gnu (cq egcs-1.0.3a) to build
+// Note:  use '#undef extern' at end of namespace scope and begin define (see
+// Constants.h)
+#if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
+#define AIPS_MACRO_NAMESPACE(x) class x { public:
+#else
+#define AIPS_MACRO_NAMESPACE(x) namespace x {
+#endif
 
 #endif
