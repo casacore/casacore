@@ -1,5 +1,5 @@
 //# tSpectralIndex.cc: tests the SpectralIndex class
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,7 +123,8 @@ int main() {
  		 AipsError);
     AlwaysAssert(nearAbs(zeroModel.index(Stokes::V), 0.0, C::dbl_min),
  		 AipsError);
-    AlwaysAssert(allNearAbs(zeroModel.indices(), 0.0, C::dbl_min), AipsError);
+    AlwaysAssert(allNearAbs(zeroModel.indices().ac(), 0.0, C::dbl_min),
+		 AipsError);
     AlwaysAssert(zeroModel.refFrequency().getValue() ==
 		 MVFrequency(Quantity(5, "GHz")), AipsError);
     AlwaysAssert(zeroModel.refFrequency().getRef().getType() ==
