@@ -150,16 +150,20 @@ public:
     LogOrigin &fileName(const String &fileName);
     // </group>
 
-    // Set the file name and line number at the same time. Normally <src>where</src>
-    // will be defined with the <src>WHERE</src> macro.
+    // Set the file name and line number at the same time. Normally
+    // <src>where</src> will be defined with the <src>WHERE</src> macro.
     LogOrigin &sourceLocation(const SourceLocation *where);
 
     // Returns <src>class::function</src> for a member function, or
     // <src>::function</src> for a global function.
     String fullName() const;
 
-    // Turn the entire origin into a string.
+    // Turn the entire origin into a String.
     String toString() const;
+
+    // Turns the entire origin except for the ObjectID into a String. The
+    // ObjectID can be turned into a string vie ObjectID::toString.
+    String location() const;
 
     // Return true if the line number and file name are not set.
     Bool isUnset() const;
