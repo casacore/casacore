@@ -98,7 +98,7 @@ Vector<String> RONewMSMainColumns::flagCategories() const {
   const TableRecord& keywords = flagCategory().keywordSet();
   const RecordFieldId key("CATEGORY");
   DebugAssert(keywords.isDefined(key.fieldName()), AipsError);
-  DebugAssert(keywords.dataType(key) == TpString, AipsError);
+  DebugAssert(keywords.dataType(key) == TpArrayString, AipsError);
   DebugAssert(keywords.shape(key).nelements() == 1, AipsError);
   DebugAssert(nrow() == 0 || 
  	      keywords.shape(key)(0) == flagCategory().shape(0)(2), AipsError);
