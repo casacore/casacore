@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -2707,7 +2707,6 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
       momentsMask = False;
       return;
    }
-
    
 
 
@@ -2716,7 +2715,7 @@ void MomentFit<T>::multiProcess(Vector<T>& moments,
    NumericTraits<T>::PrecisionType sumAbsDev = 0.0;
    if (doAbsDev_p) {
       T iMean = s0 / nPts;
-      for (Int i=0; i<nPts; i++) sumAbsDev += abs(gData(i) - iMean);
+      for (i=0; i<nPts; i++) sumAbsDev += abs(gData(i) - iMean);
    }
 
 
