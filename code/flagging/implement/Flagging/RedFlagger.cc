@@ -88,12 +88,14 @@ const RecordInterface & RedFlagger::defaultOptions ()
     rec.define(RF_DEVFILE,"flagreport.ps/ps");
     rec.defineRecord(RF_GLOBAL,Record());
     rec.define(RF_TRIAL,False);
+    rec.define(RF_RESET,False);
     
     rec.setComment(RF_PLOTSCR,"Format of screen plots: [NX,NY] or False to disable");
     rec.setComment(RF_PLOTDEV,"Format of hardcopy plots: [NX,NY], or False to disable");
     rec.setComment(RF_DEVFILE,"Filename for hardcopy (a PGPlot 'filename/device')");
     rec.setComment(RF_GLOBAL,"Record of global parameters applied to all agents");
     rec.setComment(RF_TRIAL,"T for trial run (no flags written out)");
+    rec.setComment(RF_RESET,"T to reset existing flags before running");
   }
   return rec;
 }
@@ -206,7 +208,7 @@ void RedFlagger::setReportPanels ( Int nx,Int ny )
 {
   if( pgp_report.isAttached() && (pgprep_nx!=nx || pgprep_ny!=ny) )
   {  
-    fprintf(stderr,"pgp_report.subp(%d,%d)\n",nx,ny);
+//    fprintf(stderr,"pgp_report.subp(%d,%d)\n",nx,ny);
     pgp_report.subp(pgprep_nx=nx,pgprep_ny=ny);
   }
 }
@@ -224,6 +226,9 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
   Int debug_level=0;
   if( opt.isDefined("debug") )
     debug_level = opt.asInt("debug");
+  
+// reset existing flags?
+  Bool reset_flags = isFieldSet(opt,RF_RESET);
   
 // setup plotting devices
   setupPlotters(opt);
@@ -269,6 +274,8 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     Record parms(defparms);
     parms.merge(globopt,Record::OverwriteDuplicates); 
     parms.merge(agent_rec,Record::OverwriteDuplicates);
+    // add the global reset argumnent
+    parms.define(RF_RESET,reset_flags);
     // see if this is a different instance of an already activated agent
     if( agcounts.isDefined(agent_id) )
     {
@@ -469,6 +476,29 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
             iter_mode(ival) = acc[ival]->endDry();
       } // end of dry pass
     } // end loop over passes
+// generate reports
+    if( pgp_screen.isAttached() )
+    {
+      plotAgentReports(pgp_screen);
+    }
+    if( pgp_report.isAttached() )
+    {
+      // select good panel layout
+      uInt nx=3,ny=3;
+      if( RFFlagCube::numInstances() )
+      {
+        uInt npan = RFFlagCube::numStatPlots(chunk);
+        if( npan<=3 )
+          nx=ny=2;
+//       else if( npan<=5 )
+//          { nx=3; ny=2; }
+//        else if( npan<=8 )
+//          { nx=3; ny=3; }
+      }
+      setReportPanels(nx,ny);
+      plotSummaryReport(pgp_report,chunk,opt);
+      plotAgentReports(pgp_report);
+    }
 // now, do a single flag-transfer pass to transfer flags into MS
     if( !isFieldSet(opt,RF_TRIAL) && anyNE(active_init,False) )
     {
@@ -489,30 +519,6 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
         if( active_init(i) )
           acc[i]->endFlag();
     }
-// generate reports
-    if( pgp_report.isAttached() )
-    {
-      // select good panel layout
-      uInt nx=3,ny=3;
-      if( RFFlagCube::numInstances() )
-      {
-        uInt npan = RFFlagCube::numStatPlots(chunk);
-        if( npan<=3 )
-          nx=ny=2;
-        else if( npan<=5 )
-          { nx=3; ny=2; }
-        else if( npan<=8 )
-          { nx=3; ny=3; }
-      }
-      setReportPanels(nx,ny);
-      plotSummaryReport(pgp_report,chunk);
-      plotAgentReports(pgp_report);
-    }
-    if( pgp_screen.isAttached() )
-    {
-      plotAgentReports(pgp_screen);
-    }
-    
 // call endChunk on all agents
     for( uInt i = 0; i<acc.nelements(); i++ ) 
       acc[i]->endChunk();
@@ -602,7 +608,7 @@ void RedFlagger::setupPlotters ( const RecordInterface &opt )
 // PlotSummaryReport
 // Generates a summary flagging report for current chunk
 // -----------------------------------------------------------------------
-void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk )
+void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk,const RecordInterface &opt )
 {
 // generate a short text report in the first pane
   pgp.env(0,1,0,1,0,-2);
@@ -622,6 +628,16 @@ void RedFlagger::plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk
   sprintf(s,"%d rows by %d channels by %d correlations. %d time slots, %d active IFRs",
       chunk.num(ROW),chunk.num(CHAN),chunk.num(CORR),chunk.num(TIME),n);
   pgp.text(0,y0-=dy,s);
+  if( isFieldSet(opt,RF_TRIAL) )
+  {
+    if( isFieldSet(opt,RF_RESET) )
+      pgp.text(0,y0-=dy,"trial: no flags written out; reset: existing flags ignored");
+    else 
+      pgp.text(0,y0-=dy,"trial: no flags written out");
+  }
+  else if( isFieldSet(opt,RF_RESET) )
+    pgp.text(0,y0-=dy,"reset: existing flags were reset");
+  
   n  = sum(chunk.nrfIfr());
   n0 = chunk.num(ROW);
   sprintf(s,"%d (%0.2f%%) rows have been flagged.",n,n*100.0/n0);

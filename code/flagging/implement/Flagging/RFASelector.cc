@@ -27,6 +27,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
+#include <aips/Arrays/MaskedArray.h>
+#include <aips/Arrays/MaskArrMath.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVTime.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
@@ -192,11 +194,11 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
     String sch;
     for( uInt i=0; i<sel_chan.ncolumn(); i++ )
     {
-      sprintf(s,"%d-%d",sel_chan(0,i),sel_chan(1,i));
+      sprintf(s,"%d:%d",sel_chan(0,i),sel_chan(1,i));
       addString(sch,s,",");
     }
     addString(desc_str,String(RF_CHANS)+"="+sch);
-    sel_chan -= (Int)indexingBase();
+    sel_chan(sel_chan>=0) += -(Int)indexingBase();
   }
 // parse input arguments: correlations
   if( fieldType(parm,RF_CORR,TpString,TpArrayString))
@@ -498,8 +500,12 @@ Bool RFASelector::newChunk (Int &maxmem)
       flagchan = flagchan || ( fq >= sel_freq(0,i) && fq <= sel_freq(1,i) );
     Vector<Int> ch( num(CHAN) );
     indgen(ch);
+    Matrix<Int> schan = sel_chan;
+    schan( sel_chan<0 ) += (Int)num(CHAN);
     for( uInt i=0; i<sel_chan.ncolumn(); i++ )
-      flagchan = flagchan || ( ch >= sel_chan(0,i) && ch <= sel_chan(1,i) );
+    {
+      flagchan = flagchan || ( ch >= schan(0,i) && ch <= schan(1,i) );
+    }
     if( !sum(flagchan) )
     {
       os<<"No matching frequencies/channels in this chunk\n"<<LogIO::POST;
@@ -606,6 +612,7 @@ const RecordInterface & RFASelector::getDefaults ()
   if( !rec.nfields() )
   {
     rec = RFAFlagCubeBase::getDefaults();
+    rec.removeField(RF_FIGNORE); // fignore is meaningless
     rec.define(RF_NAME,"Selector");
     rec.define(RF_SPWID,False);
     rec.define(RF_FIELD,False);

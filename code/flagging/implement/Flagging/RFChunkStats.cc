@@ -38,7 +38,7 @@
 static class PGPlotter nullPGPlotter;
         
 RFChunkStats::RFChunkStats( VisibilityIterator &vi,VisBuffer &vb,RedFlagger &rf,
-    PGPlotterInterface *pgp_scr, PGPlotterInterface *pgp_rep )
+    PGPlotterInterface *pgp_scr,PGPlotterInterface *pgp_rep )
   : visiter(vi),
     visbuf(vb),
     flagger(rf),
@@ -122,7 +122,6 @@ void RFChunkStats::newPass (uInt npass)
 {
   itime = -1;
   pass_no = npass;
-  fprintf(stderr,"newPass: %d\n",npass);
 }
 
 void RFChunkStats::newTime ()

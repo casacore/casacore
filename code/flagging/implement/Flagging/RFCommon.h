@@ -53,7 +53,8 @@ const char
     RF_PLOTCHAN[]= "plotchan",
     RF_ECONOPLOT[]= "econoplot",
 
-    RF_POLICY[]  = "policy",
+    RF_RESET[]   = "reset",
+    RF_FIGNORE[] = "fignore",
     RF_UNFLAG[]  = "unflag",
     
     RF_THR[]     = "thr",

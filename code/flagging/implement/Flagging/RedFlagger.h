@@ -101,7 +101,7 @@ protected:
 // plots flagging reports from individual agents
   void plotAgentReports  ( PGPlotterInterface &pgp);
 // plots a flagging summary
-  void plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk );
+  void plotSummaryReport ( PGPlotterInterface &pgp,RFChunkStats &chunk,const RecordInterface &opt );
  
   MeasurementSet   ms;
   Block<RFABase*> acc;

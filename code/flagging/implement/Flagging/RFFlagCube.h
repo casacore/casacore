@@ -89,8 +89,7 @@ public:
   static LogIO default_sink;
     
 // constructor
-  RFFlagCube ( RFChunkStats &ch,PreFlagPolicy policy=FL_HONOR,LogIO &os=default_sink );
-  RFFlagCube ( RFChunkStats &ch,const String &policy,LogIO &os=default_sink );
+  RFFlagCube ( RFChunkStats &ch,Bool ignore=False,Bool reset=False,LogIO &os=default_sink );
   ~RFFlagCube ();
 
 // returns estimated size of flag cube for a given chunk.

@@ -53,28 +53,28 @@ Bool RFFlagCube::reset_preflags;
 PGPlotterInterface * RFFlagCube::report_plotted=NULL;
  String RFFlagCube::agent_names("");
 
-RFFlagCube::RFFlagCube ( RFChunkStats &ch,PreFlagPolicy policy,LogIO &sink )
-  : chunk(ch),os(sink),pfpolicy(policy)
-{
-  num_inst++;
-}
-
-RFFlagCube::RFFlagCube ( RFChunkStats &ch,const String &policy,LogIO &sink )
+RFFlagCube::RFFlagCube ( RFChunkStats &ch,Bool ignore,Bool reset,LogIO &sink )
   : chunk(ch),os(sink)
 {
   num_inst++;
-  switch( toupper(policy.firstchar()) )
+  if( reset )
   {
-    case 'H': pfpolicy = FL_HONOR;
-              os<<"Existing flags will be honored\n"<<LogIO::POST;
-              break;
-    case 'I': pfpolicy = FL_IGNORE;
-              os<<"Existing flags will be ignored, but added to\n"<<LogIO::POST;
-              break;
-    case 'R': pfpolicy = FL_RESET;
-              os<<"Existing flags will be reset\n"<<LogIO::POST;
-              break;
-    default:  os<<"Unknown flag policy '"+policy+"'"<<LogIO::EXCEPTION;
+    pfpolicy = FL_RESET;
+    os<<"Existing flags will be reset\n"<<LogIO::POST;
+  }
+  else
+  {
+    if( ignore )
+    {
+      pfpolicy = FL_IGNORE;
+      os<<"Existing flags will be ignored, but added to\n";
+      os<<"But this option is not implemented yet, sorry\n"<<LogIO::EXCEPTION;
+    }
+    else
+    {
+      pfpolicy = FL_HONOR;
+      os<<"Existing flags will be honored\n"<<LogIO::POST;
+    }
   }
 }
 
@@ -567,7 +567,7 @@ void RFFlagCube::plotStats (PGPlotterInterface &pgp)
   
 // SECTION 1: IFR (ANT-ANT) coverage maps  
 // draw Antenna-Antenna row flag and pixel flag density image
-  Vector<uInt> rowant(num(ANT),0u),pixant(num(ANT),0u);
+  Vector<uInt> rowant(num(ANT),0),pixant(num(ANT),0u);
   Matrix<Float> img1(num(ANT),num(ANT),0),img2(num(ANT),num(ANT),0);
   for( uInt ifr=0; ifr<num(IFR); ifr++ )
     if( row_per_ifr(ifr) )

@@ -38,7 +38,6 @@ CubeMapper(Obs,visCube);
 CubeMapper(Model,modelVisCube);
 CubeMapper(Corrected,correctedVisCube);
 #undef CubeMapper
-
     
 RFDataMapper::RFDataMapper ( const String &colmn,DDMapper *map )
   : ddm_desc(""),

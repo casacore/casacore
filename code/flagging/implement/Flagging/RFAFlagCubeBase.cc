@@ -50,7 +50,7 @@ void RFABase::init ()
 // -----------------------------------------------------------------------
 RFAFlagCubeBase::RFAFlagCubeBase (  RFChunkStats &ch,const RecordInterface &parm ) :
   RFABase(ch,parm),
-  flag(ch,parm.asString(RF_POLICY),os)
+  flag(ch,isFieldSet(parm,RF_FIGNORE),isFieldSet(parm,RF_RESET),os)
 {
 }
 
@@ -71,8 +71,8 @@ const RecordInterface & RFAFlagCubeBase::getDefaults ()
 // create record description on first entry
   if( !rec.nfields() )
   {
-    rec.define(RF_POLICY,"HONOR");
-    rec.setComment(RF_POLICY,"Existing flag policy: [HONOR|RESET|IGNORE]");
+    rec.define(RF_FIGNORE,False);
+    rec.setComment(RF_FIGNORE,"Use T to ignore existing flags");
   }
   return rec;
 }
@@ -83,12 +83,14 @@ const RecordInterface & RFAFlagCubeBase::getDefaults ()
 // -----------------------------------------------------------------------
 String RFAFlagCubeBase::getDesc ()
 {
-  if( fieldType(params,RF_POLICY,TpString) )
-  {
-    char s[128];
-    sprintf(s,"%s=%s",RF_POLICY,params.asString(RF_POLICY).chars());
-    return s;
-  }
+//   if( fieldType(params,RF_POLICY,TpString) )
+//   {
+//     char s[128];
+//     sprintf(s,"%s=%s",RF_POLICY,params.asString(RF_POLICY).chars());
+//     return s;
+//   }
+  if( isFieldSet(params,RF_FIGNORE) )
+    return RF_FIGNORE;
   return "";
 }
 

@@ -379,9 +379,9 @@ String RFASpectralRej::getDesc ()
     desc+=s;
   }
   desc+="; ";
-  sprintf(s,"%s=%d %s=%.1f %s=%d %s=%s",RF_NDEG,ndeg,RF_ROW_THR,threshold,RF_ROW_HW,halfwin,
-      RF_POLICY,params.asString(RF_POLICY).chars());
+  sprintf(s,"%s=%d %s=%.1f %s=%d ",RF_NDEG,ndeg,RF_ROW_THR,threshold,RF_ROW_HW,halfwin);
   desc+=s;
+  desc+=RFAFlagCubeBase::getDesc();
   return desc;
 }
 
