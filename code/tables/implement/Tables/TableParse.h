@@ -1,5 +1,5 @@
 //# TableParse.h: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -366,11 +366,15 @@ private:
     // Make a set from the results of the subquery.
     TableExprNode makeSubSet() const;
 
-    // Split a name into its parts (shorthand, column and keyword name).
+    // Split a name into its parts (shorthand, column and field names).
     // True is returned when the name contained a keyword part.
+    // In that case fieldNames contains the keyword name and possible subfields.
+    // The column name is filled in when it is a column keyword.
+    // If the name represent a column, fieldNames contains the subfields
+    // of the column (for the case where the column contains records).
     // An exception is thrown if the name was invalid.
     Bool splitName (String& shorthand, String& columnName,
-		    String& keyName, const String& name) const;
+		    Vector<String>& fieldNames, const String& name) const;
 
     // Find a table for the given shorthand.
     // If no shorthand is given, the first table is returned (if there).
@@ -381,13 +385,13 @@ private:
     // in any select block (from inner to outer).
     // If not found, an exception is thrown.
     static Table tableKey (const String& shorthand, const String& columnName,
-			   const String& keyName);
+			   const Vector<String>& fieldNames);
 
     // Try to find the keyword representing a table in the given table.
     // If the columnName is empty, the keyword is a table keyword.
     // If not found, a null Table object is returned.
     static Table findTableKey (const Table& table, const String& columnName,
-			       const String& keyName);
+			       const Vector<String>& keyNames);
 
     // Block of TableParseSelect objects (acts like a stack).
     static PtrBlock<TableParseSelect*> blockSelect_p;
