@@ -183,10 +183,6 @@ Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
   return True;
 };
 
-Bool MBaseline::giveMe(const String &in, MBaseline::Ref &mr) {
-  return MBaseline::giveMe(mr, in);
-}
-
 Bool MBaseline::setOffset(const Measure &in) {
   if (in.type() != Register((MBaseline *)0)) return False;
   ref.set(in);
