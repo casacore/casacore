@@ -76,7 +76,8 @@ class ProgressMeter;
 //  It will cope with coordinate systems being in different orders
 //  (coordinate, world axes, pixel axes).  The basic approach is to
 //  make a mapping from the input to the output coordinate systems,
-//  but the output CoordinateSystem is preserved.
+//  but the output CoordinateSystem order is preserved in the output
+//  image.
 //
 //  Any DirectionCoordinate is regridded with a coupled 2D 
 //  interpolation scheme.  All other axes are regridded with
@@ -108,8 +109,6 @@ class ProgressMeter;
 // </thrown>
 //
 // <todo asof="1999/04/20">
-//   <li> Reference frame changes (e.g. J2000 -> B1950)
-//   <li> 1D interpolation does not handle input masks
 // </todo>
 
 template <class T> class ImageRegrid
@@ -163,6 +162,7 @@ public:
   // for the axes being regridded, copies the coordinates from cSysOut.
   // For the axes not being regridded, it copies the coordinates from
   // cSysIn.  This helps you build cSysOut for function regrid.
+  // The ObsInfo from cSysIn is copied to the output CoordinateSystem.
   static CoordinateSystem makeCoordinateSystem(LogIO& os,
                                                const CoordinateSystem& cSysOut,
                                                const CoordinateSystem& cSysIn,
