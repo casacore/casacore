@@ -35,6 +35,8 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/Assert.h>
+
 
 #include <iostream.h>
 
@@ -52,6 +54,8 @@ void doit3 (StokesCoordinate& lc,
            const Vector<String>& stokesStrings);
 
 void doit4(StokesCoordinate& lc);
+
+void doit5();
 
 int main()
 {
@@ -91,8 +95,15 @@ int main()
          StokesCoordinate lc  = makeCoordinate(whichStokes, stokesStrings);
          doit3(lc, whichStokes, stokesStrings);
       }
+      {
+         StokesCoordinate lc  = makeCoordinate(whichStokes, stokesStrings);
+         doit4(lc);
+      }
+      {
+         doit5();
+      }
 
-  } catch (AipsError x) {
+   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       return (1);
    }
@@ -243,11 +254,16 @@ void doit2 (StokesCoordinate& lc,
       throw(AipsError("Failed Stokes transform recovery test"));
    }
 //
+   Vector<Double> oldRefVal = lc.referenceValue();
+   Vector<Double> oldIncr = lc.increment();
+   Vector<Double> oldRefPix = lc.referencePixel();
+   Matrix<Double> oldLinTr = lc.linearTransform();
+
    crval(0) = 111.1;
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
-   if (!allEQ(crval, lc.referenceValue())) {
+   if (!allEQ(oldRefVal, lc.referenceValue())) {
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
@@ -255,7 +271,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
-   if (!allEQ(cdelt, lc.increment())) {
+   if (!allEQ(oldIncr, lc.increment())) {
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
@@ -263,7 +279,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
-   if (!allEQ(crpix, lc.referencePixel())) {
+   if (!allEQ(oldRefPix, lc.referencePixel())) {
       throw(AipsError("Failed reference pixel set/recovery test"));
   }
 //       
@@ -271,7 +287,7 @@ void doit2 (StokesCoordinate& lc,
    if (!lc.setLinearTransform(xform)) {
       throw(AipsError(String("Failed to set linear transform because") + lc.errorMessage()));
    }
-   if (!allEQ(xform, lc.linearTransform())) {
+   if (!allEQ(oldLinTr, lc.linearTransform())) {
       throw(AipsError("Failed linear transform set/recovery test"));
    }
 }
@@ -307,7 +323,8 @@ void doit3 (StokesCoordinate& lc,
 //
    Int pixel3;
    for (Int i=0; i<Int(whichStokes.nelements()); i++) {
-      Stokes::StokesTypes sType = Stokes::type(lc.stokes()(i)), sType2;
+      Stokes::StokesTypes sType = Stokes::type(lc.stokes()(i));
+      Stokes::StokesTypes sType2;
       if (!lc.toPixel(pixel3, sType)) {
          throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
       }
@@ -317,19 +334,20 @@ void doit3 (StokesCoordinate& lc,
       if (sType != sType2) {
          throw(AipsError(String("coordinate conversion and reflection failed because ") + lc.errorMessage()));
       }
+//
+      Double w = StokesCoordinate::toWorld(sType);
+      sType2 = StokesCoordinate::toWorld(w);
+      if (sType != sType2) {
+         throw(AipsError(String("coordinate conversion and reflection failed because ") + lc.errorMessage()));
+      }
    }
 //
 // Formatting
 //
    String unit;
-   
-   for (Int i=0; i<Int(whichStokes.nelements()); i++) {
-      Stokes::StokesTypes sType = Stokes::type(lc.stokes()(i));
-      if (!lc.toPixel(pixel3, sType)) {
-         throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
-      }
-      pixel2(0) = pixel3;
-      if (!lc.toWorld(world, pixel2)) {
+   for (uInt i=0; i<whichStokes.nelements(); i++) {
+      pixel(0) = i;
+      if (!lc.toWorld(world, pixel)) {
          throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
       }
 //
@@ -358,3 +376,33 @@ void doit4(StokesCoordinate& lc)
    delete pC;
 }
    
+
+void doit5()
+{
+
+// Test setStokes
+
+   {
+     Vector<Int> stokes(1);
+     stokes(0) = Stokes::I;
+     Vector<String> stokesStrings(1);
+     stokesStrings(0) = String("I");
+     StokesCoordinate lc(stokes);
+//
+     stokes.resize(2);
+     stokesStrings.resize(2);
+     stokes(0) = Stokes::Q;
+     stokes(1) = Stokes::XX;
+     stokesStrings(0) = String("Q");
+     stokesStrings(1) = String("XX");
+     lc.setStokes(stokes);
+//
+     Vector<Int> stokes2 = lc.stokes();
+     AlwaysAssert(stokes2.nelements()==2, AipsError);
+     AlwaysAssert(Stokes::type(stokes2(0))==Stokes::Q, AipsError);
+     AlwaysAssert(Stokes::type(stokes2(1))==Stokes::XX, AipsError);
+//
+     doit(lc, stokes);
+     doit3(lc, stokes, stokesStrings);
+   }
+}

@@ -144,7 +144,6 @@ int main()
               iDC, iSpC, iTC, iStC, iLC,
               dC, spC, tC, stC, lC);
       }
-
       {
          CoordinateSystem cSys = makeCoordinateSystem(nCoords, types, sTypes,
                                                       iDC, iSpC, iTC, iStC, iLC,
@@ -290,6 +289,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
                    stC.errorMessage();
       throw(AipsError(msg));
    }
+   const Int stokesPixelAxis = cSys.pixelAxes(iC)(0);
+   const Int stokesWorldAxis = cSys.worldAxes(iC)(0);
+   const Int whichStokesCoordinate = iC;
 //
    iC = cSys.findCoordinate(Coordinate::LINEAR);
    if (iC != Int(iLC)) {
@@ -473,7 +475,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError("Failed axis name set/recovery test"));
    }
 //
+   Double t = refValues(stokesWorldAxis);
    refValues(0) = refValues(0)*2;
+   refValues(stokesWorldAxis) = t;
    if (!cSys.setReferenceValue(refValues)) {
       throw(AipsError(String("Failed to set reference value because") 
             + cSys.errorMessage()));
@@ -482,7 +486,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
+   t = inc(stokesWorldAxis);
    inc(0) = inc(0)*2;
+   inc(stokesWorldAxis) = t;
    if (!cSys.setIncrement(inc)) {
       throw(AipsError(String("Failed to set increment because") 
             + cSys.errorMessage()));
@@ -518,7 +524,9 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
          throw(AipsError("Failed reference pixel recovery test"));
       }
    }
+   t = refPixels(stokesPixelAxis);
    refPixels(0) = refPixels(0)*2;
+   refPixels(stokesPixelAxis) = t;
    if (!cSys.setReferencePixel(refPixels)) {
       throw(AipsError(String("Failed to set reference pixel because") 
             + cSys.errorMessage()));
@@ -796,34 +804,57 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
        }
     }
 //
-// SubImage.  Any test I can do really just replicates the function
-// code so it's pretty useless.
+// SubImage.  
 //
    {
       cSys.restoreOriginal();
       Vector<Int> originShift(cSys.nPixelAxes());
       Vector<Int> pixinc(cSys.nPixelAxes());
-      originShift = 10.0;
-      pixinc = 1.0;
-      CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc);
-      if (cSys.nCoordinates() != cSys2.nCoordinates()) {
-         throw(AipsError("Failed originShift creation"));
+//
+      {
+        originShift = 1.0;
+        pixinc = 1.0;
+        Vector<Int> newShape;
+        CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
+        if (cSys.nCoordinates() != cSys2.nCoordinates()) {
+           throw(AipsError("Failed originShift creation test"));
+        }
+        Vector<Double> pixel = cSys.referencePixel();
+        Vector<Double> pixel2 = cSys2.referencePixel() + 1.0;
+        pixel2(stokesPixelAxis) = pixel(stokesPixelAxis);
+        if (!allNear(pixel, pixel2, 1e-6)) {
+           throw(AipsError("Failed originShift test"));
+        }   
       }
 //
-      Vector<Double> pixel, pixel2;
-      cSys.toPixel(pixel, cSys.referenceValue());
-      cSys2.toPixel(pixel2, cSys2.referenceValue());
-      pixel -= 10.0;
-//
-      if (!allNear(pixel, pixel2, 1e-6)) {
-         throw(AipsError("Failed originShift test"));
-      }   
+      {
+        originShift = 1.0;
+        pixinc = 2.0;
+        Vector<Int> newShape;
+        CoordinateSystem cSys2 = cSys.subImage(originShift, pixinc, newShape);
+//   
+         Vector<Int> oldStokes = cSys.stokesCoordinate(whichStokesCoordinate).stokes();
+         Vector<Int> newStokes = cSys2.stokesCoordinate(whichStokesCoordinate).stokes();
+         Vector<Int> newStokes2 = oldStokes(IPosition(1,1),
+                                         IPosition(1,oldStokes.nelements()-1),
+                                         IPosition(1,2));
+         if (!allEQ(newStokes, newStokes2)) {
+            throw(AipsError("Failed Stokes originShift Stokes test"));
+         }
+      }
    }
 }
 
 void doit2 (CoordinateSystem& cSys)
 
 {
+   Int stokesPixelAxis = -1;
+   Int stokesWorldAxis = -1;
+   Int iC = cSys.findCoordinate(Coordinate::STOKES);
+   if (iC>=0) {
+      stokesPixelAxis = cSys.pixelAxes(iC)(0);
+      stokesWorldAxis = cSys.worldAxes(iC)(0);
+   }
 //
 // Test conversion
 //
@@ -859,6 +890,7 @@ void doit2 (CoordinateSystem& cSys)
    }
 //
    pixel = 2.0;
+   pixel(stokesPixelAxis) = 0.0;
    IPosition iPixel(pixel.nelements());
    for (uInt i=0; i<iPixel.nelements(); i++) iPixel(i) = Int(pixel(i));
    Vector<Double> world2;
@@ -887,7 +919,7 @@ void doit2 (CoordinateSystem& cSys)
    }
    for (uInt i=0; i<nBatch; i++) {
       if (!allNear(world3.column(i), cSys.referenceValue(), 1e-6)) {
-            throw(AipsError("Coordinate toWorldMany conversion to world gave wrong results"));
+            throw(AipsError("toWorldMany conversion to world gave wrong results"));
       }
    }
 //
@@ -899,9 +931,74 @@ void doit2 (CoordinateSystem& cSys)
    }
    for (uInt i=0; i<nBatch; i++) {
       if (!allNear(pixel3.column(i), cSys.referencePixel(), 1e-6)) {
-            throw(AipsError("Coordinate toPixelMany conversion to world gave wrong results"));
+            throw(AipsError("toPixelMany conversion to world gave wrong results"));
       }
    }
+
+// relative/absolute pixels
+
+   {
+      Vector<Double> refPix = cSys.referencePixel();
+      Vector<Double> pixel4 = refPix.copy();
+      cSys.makePixelRelative(pixel4);
+      if (!allNear(pixel4, 0.0, 1e-6)) {
+            throw(AipsError("Coordinate makePixelRelative 1 gave wrong results"));
+      }
+//
+
+      pixel4 = refPix + 1.0;
+      Vector<Double> tmp = pixel4.copy();
+      cSys.makePixelRelative(pixel4);
+      if (!allNear(pixel4, 1.0, 1e-6)) {
+            throw(AipsError("Coordinate makePixelRelative 2 gave wrong results"));
+      }
+      cSys.makePixelAbsolute (pixel4);
+      if (!allNear(pixel4, tmp, 1e-6)) {
+            throw(AipsError("Coordinate makePixelAbsolute 1 gave wrong results"));
+      }
+//
+      pixel4 = refPix - 1.0;
+      tmp = pixel4;
+      cSys.makePixelRelative(pixel4);
+      if (!allNear(pixel4, -1.0, 1e-6)) {
+            throw(AipsError("Coordinate makePixelRelative 3 gave wrong results"));
+      }
+      cSys.makePixelAbsolute (pixel4);
+      if (!allNear(pixel4, tmp, 1e-6)) {
+            throw(AipsError("Coordinate makePixelAbsolute 2 gave wrong results"));
+      }
+   }     
+
+// relative/absolute world
+
+   {
+      Vector<Double> result = cSys.referenceValue().copy();
+//
+      Vector<Double> refVal = cSys.referenceValue();
+      Vector<Double> world4 = refVal.copy();
+      cSys.makeWorldRelative(world4);
+      result = 0.0; result(stokesWorldAxis) = refVal(stokesWorldAxis);
+      if (!allNearAbs(world4, result, 1e-6)) {
+            throw(AipsError("makeWorldRelative 1 gave wrong results"));
+      }
+//
+      Vector<Double> incr = cSys.increment();
+      world4 = refVal + incr;
+      Vector<Double> tmp = world4.copy();
+      cSys.makeWorldRelative(world4);
+      cSys.makeWorldAbsolute (world4);
+      if (!allNearAbs(world4, tmp, 1e-6)) {
+            throw(AipsError("makeWorldAbsolute/Relative reflection 1 failed"));
+      }
+//
+      world4 = refVal - incr;
+      tmp = world4;
+      cSys.makeWorldRelative(world4);
+      cSys.makeWorldAbsolute (world4);
+      if (!allNearAbs(world4, tmp, 1e-6)) {
+            throw(AipsError("Coordinate makeWorldAbsolute/Reflection 2 failed"));
+      }
+   }     
 //
 // Formatting
 //
@@ -1776,7 +1873,7 @@ LinearCoordinate makeLinearCoordinate (uInt nAxes)
 
 TabularCoordinate makeTabularCoordinate()
 {
-   String axisName = "Doggies";
+   String axisName = "TabularDoggies";
    String axisUnit = "km";
    Double crval = 10.12;
    Double crpix = -128.32;

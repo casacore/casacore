@@ -443,6 +443,35 @@ void doit3 (DirectionCoordinate& lc)
    if (!allNear(pixel3, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 2 failed"));
    }
+
+// relative/absolute world
+
+   {
+      Vector<Double> refVal = lc.referenceValue().copy();
+      Vector<Double> world4 = refVal;
+      lc.makeWorldRelative(world4);
+      if (!allNearAbs(world4, 0.0, 1e-6)) {
+            throw(AipsError("Coordinate makeWorldRelative 1 gave wrong results"));
+      }
+//
+      Vector<Double> incr = lc.increment().copy();
+      world4 += incr;
+      Vector<Double> tmp = world4.copy();
+      lc.makeWorldRelative(world4);
+      lc.makeWorldAbsolute (world4);
+      if (!allNearAbs(world4, tmp, 1e-6)) {
+            throw(AipsError("Coordinate makeWorldAbsolute/Relative reflection 1 gave wrong results"));
+      }
+//
+      world4 = lc.referenceValue() - incr;
+      tmp = world4;
+      lc.makeWorldRelative(world4);
+      lc.makeWorldAbsolute (world4);
+      if (!allNearAbs(world4, tmp, 1e-6)) {
+            throw(AipsError("Coordinate makeWorldAbsolute 2 gave wrong results"));
+      }
+   }
+//
 //
 // Formatting.  
 //
