@@ -417,7 +417,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("BUNIT", "Brightness (pixel) unit");
 
   
-
     IPosition shapeCopy = shape;
     Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
 				    preferVelocity,
@@ -451,6 +450,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	}
 
     }
+
+// When this if test is True, it means some pixel axes had been removed from 
+// the coordinate system and degenerate axes were added.
+
     if (naxis.nelements() != shapeCopy.nelements()) {
         naxis.resize(shapeCopy.nelements());
 	for (uInt j=0; j < shapeCopy.nelements(); j++) {
