@@ -88,6 +88,9 @@ $(DOCSAREA)/%.ps : $(CODEDIR)/%.latex $(CODEDIR)/%.dir
 	-@ echo ""
 	 @ trap "cd $(AIPSROOT) ; $(RM) -r $(TMPDOCD)" 0 1 2 3 15 ; \
 	      mkdir $(TMPDOCD) ; \
+              if [ -f ".latex2html-init" ] ; then \
+                cp .latex2html-init $(TMPDOCD) ; \
+              fi ; \
 	      cd $(TMPDOCD) && TEXINPUTS=.:$(<:latex=dir):$(TEXINPUTS) ; \
 	      export TEXINPUTS ; \
 	      echo "$(LATEX) $<" ; \
