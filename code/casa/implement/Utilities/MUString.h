@@ -36,6 +36,7 @@
 
 //# Forward Declarations
 #include <aips/iosfwd.h>
+class Regex;
 template <class T> class Vector; 
 
 // <summary>
