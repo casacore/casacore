@@ -57,7 +57,7 @@ template <class T>
 void LELUnaryConst<T>::eval(Array<T>&,
 			    const PixelRegion&) const
 {
-   throw (AipsError ("LELUnaryConst::eval cannot be used"));
+   throw (AipsError ("LELUnaryConst::eval - cannot be used"));
 }
 
 template <class T>
@@ -117,7 +117,7 @@ void LELUnary<T>::eval(Array<T>& result,
       break;
    }
    default:
-      throw(AipsError("LELUnary: unknown operation"));
+      throw(AipsError("LELUnary::eval - unknown operation"));
    }
 }
 
@@ -132,7 +132,7 @@ T LELUnary<T>::getScalar() const
    case LELUnaryEnums::MINUS :
       return -(pExpr_p->getScalar());
    default:
-      throw(AipsError("LELUnary: unknown operation"));
+      throw(AipsError("LELUnary::getScalar - unknown operation"));
    }
    return pExpr_p->getScalar();      // Make compiler happy
 }
