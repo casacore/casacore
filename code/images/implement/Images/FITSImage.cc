@@ -161,7 +161,7 @@ String FITSImage::imageType() const
 
 Bool FITSImage::isMasked() const
 {
-   return (hasBlanks_p);
+   return hasBlanks_p;
 }
 
 const LatticeRegion* FITSImage::getRegionPtr() const
@@ -272,11 +272,12 @@ Bool FITSImage::ok() const
 
 Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 {
-   if (! hasBlanks_p) {
+   if (!hasBlanks_p) {
       buffer.resize (section.length());
       buffer = True;
       return False;
    }
+//
    reopenIfNeeded();
    return pPixelMask_p->getSlice (buffer, section);
 }
@@ -284,12 +285,12 @@ Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 
 Bool FITSImage::hasPixelMask() const
 {
-   return (hasBlanks_p);
+   return hasBlanks_p;
 }  
 
 const Lattice<Bool>& FITSImage::pixelMask() const
 {
-   if (! hasBlanks_p) {
+   if (!hasBlanks_p) {
       throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
    }
    return *pPixelMask_p;
@@ -297,7 +298,7 @@ const Lattice<Bool>& FITSImage::pixelMask() const
 
 Lattice<Bool>& FITSImage::pixelMask()
 {
-   if (! hasBlanks_p) {
+   if (!hasBlanks_p) {
       throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
    }
    return *pPixelMask_p;
@@ -413,8 +414,11 @@ void FITSImage::setup()
    }
 
 // See if there is a mask.
-   if (! maskSpec_p.useDefault()) {
+
+   if (!maskSpec_p.useDefault()) {
       hasBlanks_p = False;
+   } else {
+      hasBlanks_p = True;
    }
 
 // Form the tile shape.
@@ -439,12 +443,14 @@ void FITSImage::open()
 				      writable, canonical);
 
 // Shares the pTiledFile_p pointer. Scale factors for 16bit integers
+
    if (hasBlanks_p) {
       pPixelMask_p = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
 				  magic_p, hasBlanks_p);
    }
 
 // Okay, it is open now.
+
    isClosed_p = False;
 }
 
