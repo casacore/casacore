@@ -1,5 +1,5 @@
 //# Aberration.cc:  Aberration class
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,12 +93,12 @@ const MVPosition &Aberration::operator()(Double epoch) {
     calcAber(epoch);
     Double dt = epoch - checkEpoch;
     Double fac = 1;
-    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg)) {
+    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
       fac /= MeasTable::Planetary(MeasTable::CAU);
     };
     lres++; lres %= 4;
     for (Int i=0; i<3; i++) {
-	result[lres](i) = fac * (aval[i] + dt*dval[i]);
+      result[lres](i) = fac * (aval[i] + dt*dval[i]);
     };
     return result[lres];
 }
@@ -109,11 +109,11 @@ const MVPosition &Aberration::derivative(Double epoch) {
     calcAber(epoch);
     lres++; lres %= 4;
     Double fac = 1;
-    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg)) {
+    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
       fac /=  MeasTable::Planetary(MeasTable::CAU);
     };
     for (Int i=0; i<3; i++) {
-	result[lres](i) = fac * dval[i];
+      result[lres](i) = fac * dval[i];
     };
     return result[lres];
 }
@@ -126,11 +126,11 @@ void Aberration::fill() {
 				      Unit("d"), Unit("d"),
 				      Aberration::INTV);
   };
-    if (!Aberration::usejpl_reg) {
-      usejpl_reg =
-	AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
-				      False);
-    };
+  if (!Aberration::usejpl_reg) {
+    usejpl_reg =
+      AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
+				    False);
+  };
   checkEpoch = 1e30;
 }
 
