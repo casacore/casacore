@@ -2506,3 +2506,7 @@
 11 352 src mv doc/html/navpages/communicate/trackabug.html doc/html/navpages/communicate/gnatstrackabug.html
 11 352 src mv doc/html/navpages/communicate/ddtstrackabug.html doc/html/navpages/communicate/trackabug.html
 11 352 src mv doc/html/navpages/communicate/ddtsreportabug.html doc/html/navpages/communicate/reportabug.html
+11 364 src rm aips/implement/Tables/StArrKarma.h
+11 364 src rm aips/implement/Tables/StArrKarma.cc
+11 364 src rm aips/implement/Tables/StManKarma.h
+11 364 src rm aips/implement/Tables/StManKarma.cc
