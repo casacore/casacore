@@ -31,12 +31,9 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Utilities/Assert.h>
 
-// The first argument is the shape of the Lattice to be iterated and the
-// second argument is the shape of the cursor. The cursor will increment
-// initially along first axis, then the second and then the third
-// (ie. axisPath = IPosition(ndim,0,1,2,...))
 LatticeStepper::LatticeStepper(const IPosition & latticeShape,
-			       const IPosition & cursorShape)
+			       const IPosition & cursorShape,
+			       const uInt hangOverPolicy)
   :theIndexer(latticeShape),
    theCursorPos(latticeShape.nelements(),0),
    theCursorShape(cursorShape),
@@ -45,7 +42,8 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
    theEnd(False),
    theStart(True),
    theNiceFit(False),
-   theHangover(False)
+   theHangover(False),
+   thePolicy(hangOverPolicy)
 {
   uInt ndim = theIndexer.ndim();
   for (uInt i=0; i < ndim; i++)
@@ -55,11 +53,10 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
   DebugAssert(ok() == True, AipsError);
 };
 
-// Same as the above constructor except that the axis path is explicitly
-// specified. The axis path is described in the synopsis. 
 LatticeStepper::LatticeStepper(const IPosition & latticeShape,
 			       const IPosition & cursorShape,
-			       const IPosition & axisPath)
+			       const IPosition & axisPath,
+			       const uInt hangOverPolicy)
   :theIndexer(latticeShape),
    theCursorPos(latticeShape.nelements(), 0),
    theCursorShape(cursorShape),
@@ -68,14 +65,14 @@ LatticeStepper::LatticeStepper(const IPosition & latticeShape,
    theEnd(False),
    theStart(True),
    theNiceFit(False),
-   theHangover(False)
+   theHangover(False),
+   thePolicy(hangOverPolicy)
 {
    padCursor();
    theNiceFit = niceFit();
    DebugAssert(ok() == True, AipsError);
 };
 
-// the copy constructor which uses copy semantics.
 LatticeStepper::LatticeStepper(const LatticeStepper & other)
   :theIndexer(other.theIndexer),
    theCursorPos(other.theCursorPos),
@@ -85,20 +82,17 @@ LatticeStepper::LatticeStepper(const LatticeStepper & other)
    theEnd(other.theEnd),
    theStart(other.theStart),
    theNiceFit(other.theNiceFit),
-   theHangover(other.theHangover)
+   theHangover(other.theHangover),
+   thePolicy(other.thePolicy)
 {
   DebugAssert(ok() == True, AipsError);
 };
 
-// destructor (does nothing)
-LatticeStepper::~LatticeStepper()
-{
+LatticeStepper::~LatticeStepper() {
   // does nothing
 };
 
-// The assignment operator which uses copy semantics.
-LatticeStepper & LatticeStepper::operator=(const LatticeStepper & other)
-{
+LatticeStepper & LatticeStepper::operator=(const LatticeStepper & other) {
   if (this != &other) { 
     theIndexer = other.theIndexer;
     theCursorPos = other.theCursorPos;
@@ -109,15 +103,13 @@ LatticeStepper & LatticeStepper::operator=(const LatticeStepper & other)
     theStart = other.theStart;
     theNiceFit = other.theNiceFit;
     theHangover = other.theHangover;
+    thePolicy = other.thePolicy;
   }
   DebugAssert(ok() == True, AipsError);
   return *this;
 };
 
-// Increment operator (postfix) - move the cursor forward one
-// step. Returns True if the cursor was moved.
-Bool LatticeStepper::operator++(Int)
-{
+Bool LatticeStepper::operator++(Int) {
   DebugAssert(ok() == True, AipsError);
   if (theEnd) return False;
   Bool successful = theIndexer.tiledCursorMove(True, theCursorPos, 
@@ -148,17 +140,11 @@ Bool LatticeStepper::operator++(Int)
   return successful;
 };
 
-// Increment operator (prefix) - move the cursor forward one
-// step. Identical to the postfix operator above.
-Bool LatticeStepper::operator++()
-{
+Bool LatticeStepper::operator++() {
   return operator++(0);
 };
 
-// Decrement operator (postfix) - move the cursor backwards one
-// step. Returns True if the cursor was moved.
-Bool LatticeStepper::operator--(Int)
-{
+Bool LatticeStepper::operator--(Int) {
   DebugAssert(ok() == True, AipsError);
   if (theStart) return False;
   Bool successful = theIndexer.tiledCursorMove(False, theCursorPos, 
@@ -197,17 +183,11 @@ Bool LatticeStepper::operator--(Int)
   return successful;
 };
 
-// Decrement operator (prefix) - move the cursor backwards one
-// step. Identical to the postfix operator above.
-Bool LatticeStepper::operator--()
-{
+Bool LatticeStepper::operator--() {
   return operator--(0);
 };
 
-// Function to move the cursor to the beginning of the (sub)-Lattice. Also
-// resets the number of steps (<src>nsteps</src> function) to zero. 
-void LatticeStepper::reset()
-{
+void LatticeStepper::reset() {
   theCursorPos = 0;
   theNsteps = 0;
   theEnd = False;
@@ -216,81 +196,66 @@ void LatticeStepper::reset()
   DebugAssert(ok() == True, AipsError);
 };
 
-// Function which returns "True" if the cursor is at the beginning of the
-// lattice, otherwise, returns "False"
-Bool LatticeStepper::atStart() const
-{
+Bool LatticeStepper::atStart() const {
   DebugAssert(ok() == True, AipsError);
   return theStart;
 };
 
-// Function which returns "True" if an attempt has been made to move the
-// cursor beyond the end of the Lattice.
-Bool LatticeStepper::atEnd() const
-{
+Bool LatticeStepper::atEnd() const {
   DebugAssert(ok() == True, AipsError);
   return theEnd;
 };
 
-// Function to return the number of steps (increments & decrements) taken
-// since construction (or since last reset).  This is a running count of
-// all cursor movement (operator++ or operator--)
-uInt LatticeStepper::nsteps() const
-{
+uInt LatticeStepper::nsteps() const {
   DebugAssert(ok() == True, AipsError);
   return theNsteps;
 };
 
-// Function which returns the current position of the beginning of the 
-// cursor relative to the main Lattice
-IPosition LatticeStepper::position() const
-{
+IPosition LatticeStepper::position() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.absolutePosition(theCursorPos);
 };
 
-// Function which returns the current position of the beginning of the 
-// cursor relative to the sub-Lattice
-IPosition LatticeStepper::relativePosition() const
-{
+IPosition LatticeStepper::relativePosition() const {
   DebugAssert(ok() == True, AipsError);
   return theCursorPos;
 };
 
 // Function which returns the current position of the end of the cursor
 // relative to the main Lattice.
-IPosition LatticeStepper::endPosition() const
-{
+IPosition LatticeStepper::endPosition() const {
   DebugAssert(ok() == True, AipsError);
-  return theIndexer.absolutePosition(theCursorPos + theCursorShape - 1);
+  return theIndexer.absolutePosition(relativeEndPosition());
 };
 
 // Function which returns the current position of the end of the cursor
 // relative to the sub Lattice.
-IPosition LatticeStepper::relativeEndPosition() const
-{
+IPosition LatticeStepper::relativeEndPosition() const {
   DebugAssert(ok() == True, AipsError);
-  return theCursorPos + theCursorShape - 1;
+  if (thePolicy == PAD)
+    return theCursorPos + theCursorShape - 1;
+  else {
+    IPosition trc(theCursorPos + theCursorShape - 1);
+    const IPosition latticeShape(subLatticeShape());
+    const uInt nDim = trc.nelements();
+    for (uInt n = 0; n < nDim; n++)
+      if (trc(n) >= latticeShape(n))
+	trc(n) = latticeShape(n) - 1;
+    return trc;
+  }
 };
 
-// Function which returns the shape of the main Lattice being iterated through.
-IPosition LatticeStepper::latticeShape() const
-{
+IPosition LatticeStepper::latticeShape() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.fullShape();
 };
 
-// Function which returns the shape of the sub-Lattice being iterated through.
-IPosition LatticeStepper::subLatticeShape() const
-{
+IPosition LatticeStepper::subLatticeShape() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.shape();
 };
 
-// Function to change the cursor shape to a new one. This always resets
-// the cursor to the beginning of the Lattice (and resets the number of
-// steps to zero)
-void LatticeStepper::setCursorShape(const IPosition & cursorShape){
+void LatticeStepper::setCursorShape(const IPosition & cursorShape) {
   if (cursorShape.nelements() != theIndexer.ndim()){
     theCursorShape.resize(cursorShape.nelements());
     theCursorShape = cursorShape;
@@ -299,32 +264,20 @@ void LatticeStepper::setCursorShape(const IPosition & cursorShape){
   else
     theCursorShape = cursorShape;
   DebugAssert(ok() == True, AipsError);
-}
+};
 
-// Function which returns the shape of the cursor. This always includes
-// all axes (ie. it includes degenerates axes)
-IPosition LatticeStepper::cursorShape() const 
-{
+IPosition LatticeStepper::cursorShape() const {
   DebugAssert(ok() == True, AipsError);
   return theCursorShape;
 };
 
-// Function which returns "True" if the increment/decrement operators have
-// moved the cursor position such that the cursor beginning or end is
-// hanging over the edge of the Lattice.
-Bool LatticeStepper::hangOver() const
-{
+Bool LatticeStepper::hangOver() const {
   DebugAssert(ok() == True, AipsError);
   return theHangover;
 };
 
-// Function to specify a "section" of the Lattice to Navigate over. A
-// section is defined in terms of the Bottom Left Corner (blc), Top Right
-// Corner (trc), and step size (inc), on ALL of its axes, including
-// degenerate axes.
 void LatticeStepper::subSection(const IPosition & blc, const IPosition & trc, 
-				const IPosition & inc)
-{
+				const IPosition & inc) {
   theIndexer.fullSize();
   theIndexer.subSection(blc, trc, inc);
   reset();
@@ -332,58 +285,39 @@ void LatticeStepper::subSection(const IPosition & blc, const IPosition & trc,
   DebugAssert(ok() == True, AipsError);
 };
 
-// Function to specify a "section" of the Lattice to Navigate over. The step
-// increment is assumed to be one. 
 void LatticeStepper::subSection(const IPosition & blc, const IPosition & trc) {
   subSection(blc, trc, IPosition(theIndexer.ndim(), 1));
 };
 
-// Return the bottom left hand corner of the current sub-Lattice. If no
-// sub-Lattice has been defined return blc=0
-IPosition LatticeStepper::blc() const{
+IPosition LatticeStepper::blc() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.offset();
 };
 
-// Return the top right hand corner of the current sub-Lattice. If no
-// sub-Lattice has been defined return trc=latticeShape-1
-IPosition LatticeStepper::trc() const{
+IPosition LatticeStepper::trc() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.absolutePosition(theIndexer.shape()-1);
 };
 
-// Return the step increment between the current sub-Lattice and the main
-// Lattice. If no sub-Lattice has been defined return inc=1
 IPosition LatticeStepper::increment() const {
   DebugAssert(ok() == True, AipsError);
   return theIndexer.increment();
 };
 
-// Return the axis path.
-const IPosition & LatticeStepper::axisPath() const
-{
+const IPosition & LatticeStepper::axisPath() const {
   DebugAssert(ok() == True, AipsError);
   return theAxisPath;
-}
+};
 
-// Function which returns a pointer to dynamic memory of an exact copy 
-// of this instance.
-LatticeNavigator * LatticeStepper::clone() const
-{
+LatticeNavigator * LatticeStepper::clone() const {
   return new LatticeStepper(*this);
 };
 
-static   LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
-
-
-// Function which checks the internal data of this class for correct
-// dimensionality and consistant values. 
-// Returns True if everything is fine otherwise returns False
-Bool LatticeStepper::ok() const
-{
+Bool LatticeStepper::ok() const {
   const uInt latticeDim = theIndexer.ndim();
   // Check the cursor shape is OK
   if (theCursorShape.nelements() != latticeDim) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "cursor shape"
 	   << " (=" << theCursorShape << ")"
 	   << " has wrong number of dimensions"
@@ -394,6 +328,7 @@ Bool LatticeStepper::ok() const
     // the cursor shape must be <= the corresponding lattice axes AND
     // a cursor shape with an axis of length zero makes no sense
     if (theCursorShape(i) > theIndexer.shape(i) || theCursorShape(i) <= 0) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
       logErr << LogIO::SEVERE << "cursor shape"
 	     << " (=" << theCursorShape << ")"
 	     << " is too big or small for lattice shape"
@@ -402,6 +337,7 @@ Bool LatticeStepper::ok() const
     }
   // Check the cursor position is OK
   if (theCursorPos.nelements() != latticeDim) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "cursor position"
 	   << " (=" << theCursorPos << ")"
 	   << " has wrong number of dimensions"
@@ -412,6 +348,7 @@ Bool LatticeStepper::ok() const
   // cursor position or its "far corner" must be inside the (sub)-Lattice
   if (!(theIndexer.isInside(theCursorPos) ||
 	theIndexer.isInside(theCursorPos+theCursorShape-1))){
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "cursor beginning"
 	   << " (=" << theCursorPos << ")"
 	   << " or end"
@@ -423,6 +360,7 @@ Bool LatticeStepper::ok() const
 
   // check the Axis Path is OK
   if(theAxisPath.nelements() != latticeDim){
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "axis path"
 	   << " (=" << theAxisPath << ")"
 	   << " has wrong number of dimensions"
@@ -432,6 +370,7 @@ Bool LatticeStepper::ok() const
   // each theAxisPath value must be a lattice axis number, 0..n-1
   for (uInt n=0; n < latticeDim; n++)
     if (theAxisPath(n) >= latticeDim){
+      LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
       logErr << LogIO::SEVERE << "axis path"
 	     << " (=" << theAxisPath << ")"
 	     << " has elements bigger than the lattice dim -1 "
@@ -443,6 +382,7 @@ Bool LatticeStepper::ok() const
   for (uInt k=0; k < (latticeDim - 1); k++)
     for (uInt j=k+1; j < latticeDim; j++)
       if (theAxisPath(k) == theAxisPath(j)) {
+	LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
 	logErr << LogIO::SEVERE << "axis path"
 	       << " (=" << theAxisPath << ")"
 	       << " does not have unique elements " << LogIO::POST;
@@ -450,6 +390,7 @@ Bool LatticeStepper::ok() const
       }
   // Check the LatticeIndexer is OK
   if (theIndexer.ok() == False) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "LatticeIndexer"
  	   << " thinks things are bad" << LogIO::POST;
     return False;
@@ -458,6 +399,7 @@ Bool LatticeStepper::ok() const
   // Check if theStart flag is correct
   if ((theCursorPos.isEqual(IPosition(latticeDim,0)) && (theStart == False)) ||
       (!theCursorPos.isEqual(IPosition(latticeDim,0)) && (theStart == True))){
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "cursor position"
 	   << " (=" << theCursorPos << ")"
 	   << " is inconsistant with theStart flag"
@@ -466,7 +408,7 @@ Bool LatticeStepper::ok() const
       logErr << "True";
     else
       logErr << "False";
-    cout << ")" << LogIO::POST;
+    logErr << ")" << LogIO::POST;
     return False;
   }
   
@@ -475,8 +417,7 @@ Bool LatticeStepper::ok() const
 };
 
 // pad the cursor to the right number of dimensions
-void LatticeStepper::padCursor()
-{
+void LatticeStepper::padCursor() {
   const uInt latticeDim = theIndexer.ndim();
   // the stepper theCursorShape must not have more axes than the lattice
   const uInt cursorDim = theCursorShape.nelements();
@@ -494,8 +435,7 @@ void LatticeStepper::padCursor()
 };
 
 // check if the cursor shape is an sub-multiple of the Lattice shape
-Bool LatticeStepper::niceFit()
-{
+Bool LatticeStepper::niceFit() {
   const uInt cursorDim = theCursorShape.nelements();
   // Check the case when theCursorShape == 0 as this will cause a floating
   // point error below.
@@ -517,12 +457,13 @@ Bool LatticeStepper::niceFit()
     return False;
 };
 
-LatticeStepper * LatticeStepper::castToStepper()
-{
+LatticeStepper * LatticeStepper::castToStepper() {
   return this;
-}
+};
 
-const LatticeStepper * LatticeStepper::castToConstStepper() const
-{
+const LatticeStepper * LatticeStepper::castToConstStepper() const {
   return this;
-}
+};
+// Local Variables:
+// compile-command: "gmake OPTLIB=1 LatticeStepper"
+// End:
