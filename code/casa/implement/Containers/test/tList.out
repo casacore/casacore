@@ -47,6 +47,7 @@ len=6 pos=0 28 22 20 29 24 23
 28 22 20 29 24 23 
 
 >>> Instance-specific assertion error message:
+#X# IterError: (/aips++/code/include/aips/Containers/List.h : 378) Failed AlwaysAssertExit isValid()
 <<< End of assertion error message.
 -- -- -- -- -- (cout) -- -- -- -- --
 len=0 pos=0
@@ -54,9 +55,10 @@ len=0 pos=0
 len=13 pos=0 103 3 31 7 690 685 601 671 604 611 623 654 613
 -- -- -- -- -- (dump) -- -- -- -- --
 len=0 pos=0
--- -- -- -- -- (show) -- -- -- -- --
-
 >>> Instance-specific assertion error message:
+-- -- -- -- -- (show) -- -- -- -- --
+len=
+#X# IterError: (/aips++/code/include/aips/Containers/List.h : 443) Failed AlwaysAssertExit isValid()
 <<< End of assertion error message.
 -- -- -- -- -- (show) -- -- -- -- --
 len=4 pos=0 6 5 4 3
