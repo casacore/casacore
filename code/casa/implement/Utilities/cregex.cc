@@ -1944,6 +1944,7 @@ real_a2_re_match_2 (struct re_pattern_buffer *pbufp,
                       || (! in_same_string && ! MATCHING_IN_FIRST_STRING))
                     {
                       best_regs_set = 1;
+		      best_regstart[0] = (unsigned char *) -1;
                       best_regend[0] = d;	/* Never use regstart[0].  */
                       
                       for (mcnt = 1; mcnt < RE_NREGS; mcnt++)
