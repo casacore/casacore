@@ -1,5 +1,5 @@
 //# MSTableImpl.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1995,1996,1997,1999,2000
+//# Copyright (C) 1995,1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -418,7 +418,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 #endif
 	    // check Measure type if defined
 	    if (reqKeySet.isDefined("MEASINFO")) {
-	      detail = ToBool(keySet.isDefined("MEASINFO"));
+	      detail = keySet.isDefined("MEASINFO");
 #if defined(AIPS_DEBUG)
 	      if (!detail) {
 		cerr <<"MSTableImpl::validate - column "<<colNames(colnr) <<
@@ -426,8 +426,8 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 	      }
 #endif
 	      if (detail) {
-		detail = ToBool(reqKeySet.asRecord("MEASINFO").asString("type")
-		             == keySet.asRecord("MEASINFO").asString("type"));
+		detail = reqKeySet.asRecord("MEASINFO").asString("type")
+		  == keySet.asRecord("MEASINFO").asString("type");
 	      }
 #if defined(AIPS_DEBUG)
 		if (!detail) {
@@ -440,7 +440,7 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
         }
         colnr++;
     }
-    return ToBool(temp && eqDTypes && detail);
+    return temp && eqDTypes && detail;
 }
  
 Bool MSTableImpl::validate(const TableRecord& tabRec, 
@@ -449,7 +449,7 @@ Bool MSTableImpl::validate(const TableRecord& tabRec,
     Bool eqDTypes;
     Bool temp = tabRec.description().
 	isSuperset(requiredTD.keywordSet().description(), eqDTypes);
-    return ToBool(temp && eqDTypes);
+    return temp && eqDTypes;
 }
 
 Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName, 
