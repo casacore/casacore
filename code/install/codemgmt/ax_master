@@ -4368,3 +4368,5 @@
 14 247 src rm trial/apps/measures/Observatories
 14 247 src rm trial/apps/measures/Sources
 14 247 src rm trial/apps/measures/TAI_UTC
+14 258 src rm trial/implement/Tasking/stdtoolguiserver.g
+14 258 src rm trial/implement/Tasking/stdtoolcliserver.g
