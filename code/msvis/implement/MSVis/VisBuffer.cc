@@ -27,6 +27,7 @@
 
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
+#include <aips/Arrays/ArrayMath.h>
 
 VisBuffer::VisBuffer():visIter_p((ROVisibilityIterator*)0),This(this),
   nChannel_p(0),nRow_p(0),twoWayConnection_p(False)
@@ -137,6 +138,28 @@ VisBuffer::~VisBuffer()
     visIter_p->detachVisBuffer(*this);
 }
 
+VisBuffer& VisBuffer::operator-=(const VisBuffer& vb)
+{
+  // check the shapes
+  AlwaysAssert(nRow_p==vb.nRow(),AipsError);
+  AlwaysAssert(nChannel_p==vb.nChannel(),AipsError);
+  // make sure flag and flagRow are current
+  flag(); flagRow();
+
+  // do the subtraction, or'ing the flags
+  for (Int row=0; row<nRow_p; row++) {
+    if (vb.flagRow()(row)) flagRow_p(row)=True;
+    if (!flagRow_p(row)) {
+      for (Int chn=0; chn<nChannel_p; chn++) {
+	if (vb.flag()(row,chn)) flag_p(row,chn)=True;
+	if (!flag_p(row,chn)) {
+	  visibility_p(row,chn)-=vb.visibility()(row,chn);
+	}
+      }
+    }
+  }
+}
+
 void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 { 
   if (visIter_p!=(ROVisibilityIterator*)0 && twoWayConnection_p) 
@@ -158,6 +181,35 @@ void VisBuffer::validate()
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=phaseCenterOK_p=polFrameOK_p=
     sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = True;
+}
+
+void VisBuffer::freqAverage() 
+{
+  Matrix<CStokesVector> newVisibility(1,nRow()); 
+  Matrix<Bool> newFlag(1,nRow()); newFlag=True;
+  Double newFrequency; newFrequency=0;
+  Int nfreq=0;
+  for (Int row=0; row<nRow(); row++) {
+    if (!flagRow()(row)) {
+      Int n=0;
+      for (Int chn=0; chn<nChannel(); chn++) {
+	if (!flag()(chn,row)) {
+	  newVisibility(0,row)+=visibility()(chn,row);
+	  newFlag(0,row)=False;
+	  newFrequency+=frequency()(chn);
+	  n++; nfreq++;
+	}
+      }
+      if (n==0) flagRow()(row)=True;
+      if (n>0) newVisibility(0,row)*=1.0f/n;
+    }
+  }
+  // Average frequency for this buffer (should really be row based)
+  if (nfreq>0) newFrequency/=Double(nfreq);
+  nChannel_p=1;
+  flag_p.reference(newFlag);
+  visibility_p.reference(newVisibility);
+  frequency_p.resize(1); frequency_p(0)=newFrequency;
 }
 
 Int & VisBuffer::fillnChannel() 
@@ -228,13 +280,4 @@ Vector<Float>& VisBuffer::fillWeight()
 
 const Vector<Float>& VisBuffer::feed_pa(Double time) const
 {return visIter_p->feed_pa(time);}
-
-
-
-
-
-
-
-
-
 
