@@ -128,7 +128,9 @@ public:
   ImageRegrid<T>& operator=(const ImageRegrid& other);
 
   // Regrid inImage onto the grid specified by outImage.
-  // If outImage has a writable mask, it will be updated.
+  // If outImage has a writable mask, it will be updated in that 
+  // output pixels at which the regridding failed will be masked bad (False)
+  // and the pixel value set to zero. Otherwise the output mask is not changed.
   // Specify which pixel axes of outImage are to be
   // regridded.  The coordinate and axis order of outImage
   // is preserved, regardless of where the relevant coordinates
