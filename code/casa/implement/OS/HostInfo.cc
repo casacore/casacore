@@ -166,19 +166,19 @@ int HostInfo::swapFree( )				\
 
 #define HOSTINFO_DO_IMPLEMENT
 #if defined(AIPS_LINUX)
-#include <aips/OS/HostInfo_linux.h>
+#include <aips/OS/HostInfoLinux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_SOLARIS)
-#include <aips/OS/HostInfo_solaris.h>
+#include <aips/OS/HostInfoSolaris.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_IRIX)
-#include <aips/OS/HostInfo_irix.h>
+#include <aips/OS/HostInfoIrix.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_OSF)
-#include <aips/OS/HostInfo_osf1.h>
+#include <aips/OS/HostInfoOsf1.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_HPUX)
-#include <aips/OS/HostInfo_hpux.h>
+#include <aips/OS/HostInfoHpux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
 #else
 Int HostInfo::numCPUs( ) { return 0; }
