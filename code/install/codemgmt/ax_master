@@ -1953,3 +1953,4 @@
 08 066 src rm doc/aips/implement
 08 066 src rm trial/data/glishtutorial
 08 066 top rm docs/design
+08 066 top rm docs/aips2help
