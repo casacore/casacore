@@ -35,7 +35,7 @@
 #include <aips/Arrays/MaskArrMath.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/Functionals/Gaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <aips/Functionals/SumFunction.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
 #include <aips/Lattices/Lattice.h>
