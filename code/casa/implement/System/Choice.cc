@@ -62,7 +62,7 @@ String Choice::ostreamChoice (std::ostream& os,
   }
   char answer[256];
   while (True) {
-    os << descriptiveText << "? ([" << choices(0) << ']';
+    os << descriptiveText << " ([" << choices(0) << ']';
     for (uInt i=1; i<choices.nelements(); i++) {
       os << ',' << choices[i];
     }

@@ -64,7 +64,8 @@ public:
     { return ostreamChoice (std::cerr, descriptiveText, choices); }
 
   // A choice function asking on stdout.
-  // It outputs the descriptiveText followed by a ?, the options and a colon.
+  // It outputs the descriptiveText followed by a blank, the options (enclosed
+  // in parentheses) and a colon.
   // The default option is shown in square brackets.
   static String stdoutChoice (const String& descriptiveText,
 			      const Vector<String>& choices)
