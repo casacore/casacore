@@ -456,12 +456,12 @@ String Path::stripDirectory (const String& name, const String& otherName)
 {
     // First try to remove the full otherName.
     // Add trailing slash if not there.
-    String dir (Path(otherName).expandedName());
+    String dir (Path(otherName).absoluteName());
     if (dir.lastchar() != '/') {
 	dir += '/';
     }
-    String tName(name);
     // Remove possible leading ./ from dir and name.
+    String tName(name);
     while (tName.length() >= 2  &&  tName[0] == '.'  &&  tName[1] == '/') {
 	tName = tName.after(1);
     }
@@ -469,11 +469,13 @@ String Path::stripDirectory (const String& name, const String& otherName)
 	dir = dir.after(1);
     }
     Int leng = dir.length();
+    // Convert name to an absolute path name.
+    String aName (Path(tName).absoluteName());
     // If directory is contained in this name, return name without it.
     // Prepend by ././ indicating full name is removed.
     if (leng > 0) {
-	if (tName.length() > uInt(leng)  &&  tName.before(leng) == dir) {
-	    return "././" + tName.from (leng);
+	if (aName.length() > uInt(leng)  &&  aName.before(leng) == dir) {
+	    return "././" + aName.from (leng);
 	}else{
 	    // No match; now compare using the directory part only.
 	    dir = Path(dir).dirName() + '/';
@@ -482,9 +484,9 @@ String Path::stripDirectory (const String& name, const String& otherName)
 	    }
 	    leng = dir.length();
 	    if (leng > 0) {
-		if (tName.length() > uInt(leng)  && tName.before(leng) == dir) {
+		if (aName.length() > uInt(leng)  && aName.before(leng) == dir) {
 		    // The leading ./ indicates that directory is removed.
-		    return "./" + tName.from (leng);
+		    return "./" + aName.from (leng);
 		}
 	    }
 	}
