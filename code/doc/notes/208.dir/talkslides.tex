@@ -1,0 +1,332 @@
+%\documentclass[11pt]{article}
+\input{gi-symbols.tex}
+\newenvironment{slide}[1]
+{\LARGE\begin{center}{\bf #1}\end{center}}{\newpage}
+
+\newcommand{\Ff}[1]{   {\cal F}\left(#1\right)}
+\newcommand{\Fi}[1]{   {\cal F}^{-1}\left(#1\right)}
+
+\newcommand{\BR}{{\bf{R}}}
+\newcommand{\br}{{\bf{r}}}
+\newcommand{\ncel}{\sqrt{1-\ell^2-m^2}}
+\newcommand{\x}{{\bf{x}}}
+\newcommand{\xp}{{{\bf x}_{\rm p}}}
+
+%\begin{document}
+
+\begin{slide}{What is AIPS++ and why are we doing it?}
+\begin{itemize}
+\item {\em Consortium} of radio observatories, building package
+to handle processing for new telescopes, and improved processing
+for existing telescopes.
+\item Deliberate pooling of effort inside NRAO and across
+observatories
+\item All observatories facing same problem of old packages
+leading to user dissatisfaction, and limited technical
+development:
+\begin{itemize}
+\item Need better tools for end-user, improved interfaces,
+and new packages
+\item Astronomers need to be able to program at {\em e.g.}
+IDL-type level
+\item Programmers need richer set of tools and packages to
+work with
+\end{itemize}
+\end{itemize}
+\begin{description}
+\item[Data] Uniform access to data
+\item[Tools] General operations, array math, FFTs, fitting, plotting,
+display, {\em etc.}
+\item[Tasks] Applications for doing radio-astronomy {\em e.g.}
+processing of data from radio-telescopes, both single dishs and
+synthesis arrays
+\end{description}
+\end{slide}
+
+\begin{slide}{Project timeline}
+\begin{description}
+\item[AIPS++ V0.8 {\em Feb 97}]: First beta release
+\begin{itemize}
+\item Continuum synthesis imaging and self-calibration,
+\item General Glish-based tools.
+\end{itemize}
+\item[AIPS++ V0.9 {\em May 97}]: Second beta release
+\begin{itemize}
+\item Rectify remaining problems in V0.8
+\item Spectral line additions to synthesis processing,
+\end{itemize}
+\item[AIPS++ V0.95 {\em August 97}]: Third beta release
+\begin{itemize}
+\item Rectify remaining problems in V0.9
+\item Improvements to the user interface, specifically via a number of
+gui-based applications.
+\end{itemize}
+\item[AIPS++ V1.0 {\em Q3 97}]: Limited Public Release
+\begin{itemize}
+\item Synthesis with GUI, 
+\item various GUI tools,
+\item SDCalc
+\item Name change!
+\end{itemize}
+\item[AIPS++ V1.5 {\em Q1 1998}]: Code development release
+\begin{itemize}
+\item Code development system (documentation, examples, templates). 
+\item Freeze synthesis interfaces.
+\end{itemize}
+\item[AIPS++ Developer's workshop {\em Q2 98}]:
+\item[AIPS++ V2.0 {\em Q2 98}]: Full release
+\begin{itemize}
+\item Completed connected element synthesis package
+\item Initial VLBI capabilities
+\item Mosaicing package
+\item Contributed code
+\end{itemize}
+\item[AIPS++ User Group {\em Q3 98}]:
+\item[AIPS++ Developer's workshop {\em Q2 99}]:
+\item[AIPS++ User Group {\em Q3 99}]:
+\item[AIPS++ V3.0 {\em Q4 99}]:
+\begin{itemize}
+\item Complete replacement for consortium packages.
+\end{itemize}
+\end{description}
+\end{slide}
+
+\begin{slide}{Parkes Multibeam support}
+
+\begin{itemize}
+\item AIPS++ adopted by science team as platform for reduction
+of data from Parkes 13 beam system.
+\item Parkes now observing Extra-galactic HI survey 
+system, processing data through a reduction package written in 
+AIPS++. {\em Doing astronomy not computing!}
+\item Over the last year, our support of
+the MB project has consumed between 1 and 1.5 person years of our time
+in providing parts of the necessary infrastructure.  
+\item First demonstration that the system is programmable by an external 
+group of astronomers.
+\item More details on the Parkes MB project can be found at
+
+{\em http://www.atnf.csiro.au/Research/multibeam/}
+
+and a live display of spectra from the receivers can be found at:
+
+{\em http://wwwpks.atnf.csiro.au/people/multi/public\_html/live/multibeam\_live.html}
+
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Beta release 0.8}
+
+\begin{itemize}
+\item Announced on February 26 1997. 
+\item All consortium sites, and Caltech, University of Iowa, Kapteyn
+Astronomical Institute, and the National Optical Astronomy
+Observatory. 
+\item Most feedback on the beta release is conducted either via the AIPS++
+Bug Tracking system or or via an e-mail exploder. A fair amount also
+via private e-mail.
+\item The responses to beta release can be summarized as follows:
+\begin{enumerate}
+\item Installation seems relatively straightforward apart from some
+difficulties with shared libraries.
+\item Configuration does not require much work.
+\item The initial verification of the system via an assay function
+seems to have gone straightforwardly.
+\item The documentation seems comprehensive but hard-to-understand.
+Some of the OO terminology is either not explained well or has crept
+into places where it is not wanted.  Testers have found a
+(not-unexpected) number of errors in documentation.
+\item The user interface is viewed as overly verbose and unfriendly.
+\item The synthesis code is viewed as being powerful but hard to
+master.
+\item The synthesis code is slow and subject to memory
+bloat in some circumstances.
+\item There have been a number of bugs, perhaps slightly more in code
+written in Glish (as opposed to C++).
+\end{enumerate}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{What's available in Beta Release (0.8)?}
+\begin{itemize}
+\item AIPS++ has a powerful command line interpreter called Glish.
+\item AIPS++ has a number of general purpose tools that are accessible
+from Glish.
+\begin{itemize}
+\item Access to all data in AIPS++ via the table module.
+\item Catalogs of directories, interpreting the contents to show 
+different types of files, and catalogs of potentially everything in Glish
+({\em i.e.} functions and variables).
+\item Plotting of Glish variables.
+\item Assorted mathematical capabilities such as 
+statistics, random numbers, polynomial fitting, interpolation,
+Fast Fourier Transforms and convolutions.
+\item Manipulation of measured quantities with units and reference
+frames either from the Glish command line or via a gui.
+\item Display of AIPS++ or FITS images or Glish arrays using the
+aipsview program.
+\item Conversion of images to and from FITS image format, 
+reading and writing AIPS++ images to and from Glish. Statistics, histograms and 
+moments of images may be calculated. Subimaging and padding are both allowed.
+\item Logging of messages to a gui window and a table, also printing
+to a postscript printer or to ghostview.
+\item Miscellaneous useful utilities including: obtaining AIPS++ 
+configuration information, the help utility, 
+a printer tool (including a gui), execution of shell commands, reading and 
+writing to external files using C-like commands, {\em etc.}
+\end{itemize}
+\item The synthesis capabilities of AIPS++ are as follows:
+\begin{itemize}
+\item Filling from and writing to a UVFITS file,
+\item Filling from WSRT format,
+\item Full imaging, deconvolution, and self-calibration,
+\item Joint deconvolution of Stokes IQUV,
+\item Robust, uniform and natural weighting,
+\item Flexible windowing in the deconvolution,
+\item Non-Negative Least Squares Deconvolution,
+\item Flexible construction of models for self-calibration,
+\item A sophisticated multi-component model for gain effects,
+\item Interactive editing,
+\item Flagging of gain solutions by antenna, spectral window, and
+time interval.
+\item Writing of final images to FITS files.
+\end{itemize}
+\item All user capabilities of AIPS++ are documented via the
+AIPS++ User Reference Manual
+and on-line help is available from the command line.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Goals for Synthesis Processing in AIPS++}
+\begin{itemize}
+\item Gleaned from the 1992 User Specifications:
+\begin{itemize}
+\item Allow all important and hopefully most extant calibration and imaging
+schemes to be coded in AIPS++,
+\item Allow observatories to develop custom calibration and imaging
+packages,
+\item Allow a programmer to add new calibration and deconvolution algorithms
+as easily and naturally as possible,
+\item Allow future instruments (such as the NRAO MMA and the SKAI) to be 
+supported in AIPS++,
+\item Support as standard observing: mosaiced, spectral-line, multi-feed, 
+polarization observations with synthesis arrays and single dishs,
+\item Allow calibration and imaging algorithms to be used as
+part of higher level algorithms,
+\item Acheive performance goals that will allow the calibration and
+imaging system to be used for standard production processing.
+\end{itemize}
+\item Ambitious set of goals
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Review of Synthesis Calibration and Imaging}
+\begin{itemize}
+\item Interferometric arrays measure the Fourier transform of the
+Sky Brightness:
+\begin{equation}
+V(u,v) = \int I(x,y) e^{j 2\pi \left(u.x+v.y\right)} dx dy
+\end{equation}
+\item Only sampled at limited number of discrete points
+\item Typically corrupted by antenna-based calibration errors:
+\begin{equation}
+V_{i,j}(u,v) = g_i g_j^* \int I(x,y) e^{j 2\pi \left(u.x+v.y\right)} dx dy
+\end{equation}
+\item Calibration and imaging in radio-interferometry corresponds to
+solving for the calibration parameters $g$ and the sky brightness $I$.
+\item Many special cases where equation must be modified:
+\begin{itemize}
+\item Wide fields: not a simple 2-D transform
+\item Wide fields: power receptivity patterns limits field of view, need to
+mosaic, also single dish observations
+\item Wide fields: bandwidth and time-averaging smearing
+\item Polarized radiation: more terms
+\end{itemize}
+\item {\em Goal of AIPS++ synthesis processing is to do all cases, special and
+ordinary (eventually!)}
+\end{itemize}
+\end{slide}
+
+
+\begin{slide}{The Measurement Equation}
+\begin{itemize}
+\item How to generalise? Especially for polarization measurements? 
+\begin{itemize}
+\item Each antenna measures two polarizations: either Right and Left
+Hand Circular or X and Y Linear. 
+\item Form all correlations {\em e.g.} $RR, RL, LR, LL$
+\item Image Stokes $I,Q,U,V$
+\item Correct for gains and leakages ({\em e.g.} $R$ to $L$ and vice versa)
+\end{itemize}
+\item The Hamaker-Bregman-Sault Measurement Equation is expressed in direct 
+products of 2 by 2 matrices (Jones Matrices) representing the
+antenna-based calibration effects, and 4 vectors representing the
+measured coherence and sky brightness:
+\begin{equation}
+\vvCoh\ssIJ = \xfnCorr\ssIJ \left(\mmMifr\ssIJ \visterm{\mjVisJones} 
+\sum_k \skykterm{\mjSkyJones} \mmStokes \ \vvIQUV_k + \vvAifr\ssIJ \right)
+\end{equation}
+where:
+\begin{description}
+\item[$\vvCoh$] is the 4 vector of coherences {\em e.g.} RR, RL, LR, LL
+\item[$\xfnCorr$] is the non-linear correlator response function
+\item[$\mmMifr$] represents correlator-based gain errors
+\item[$\mjVisJones$] represents antenna-based and non-direction dependent
+gain effects,
+\item[$\mjSkyJones$] represents antenna-based and direction dependent
+gain effects ({\em including the Fourier transform phase factors}).
+\item[$\mmStokes$] is a 4 by 4 matrix to convert Stokes $I,Q,U,V$ to 
+polarization {\em e.g.} $RR,RL,LR,LL$
+\item[$\vvIQUV_k$] is the 4 vector of Stokes $I,Q,U,V$ for pixel $k$
+\item[$\vvAifr$] is an additive error per coherence sample.
+\end{description}
+\item Specializes to the usual Fourier transform equation
+\item We need to be able to do the following things:
+\begin{itemize}
+\item Evaluate predicted coherences $\vvCoh\ssIJ$ if given all terms on right 
+hand side,
+\item Given observed coherences, construct an image of the Sky Brightness,
+\item Solve for other terms on right hand side given observed coherences and
+a model for the sky brightness.
+\end{itemize}
+\item By suitable choices of the components can do all the special
+cases.
+\item Better to split into separate Sky and Vis Equations:
+\begin{equation}
+\vvCoh^{Sky}\ssIJ = \sum_k \skykterm{\mjSkyJones} \mmStokes \ \vvIQUV_k 
+\end{equation}
+\begin{equation}
+\vvCoh\ssIJ = \xfnCorr\ssIJ \left(\mmMifr\ssIJ \visterm{\mjVisJones} 
+\vvCoh^{sky}\ssIJ + \vvAifr\ssIJ \right)
+\end{equation}
+\item {\em Generalized Self-calibration Equations}
+\end{itemize}
+\end{slide}
+
+
+\begin{slide}{Summary of AIPS++ Personnel}
+
+\begin{description}
+\item[ATNF]: Neil Killeen (25-75\%, also local manager), Wim
+Brouw (50\%), Mark Calabretta (50\%), Tom Oosterloo (75\%) and Mark
+Wieringa (30\%).
+
+\item[BIMA/NCSA]: Dick Crutcher (25\%), Yanti Maio (50\%), John Pixton (100\%),
+Harold Ravlin (100\%), Doug Roberts (65\%), Peter Teuben (25\%), and
+Taisheng Ye (50\%).  
+
+\item[NFRA group]: Ger van Diepen (100\%), Jan Noordam (25\%), Friso Olnon (50\%), 
+Henk Vosmeijer (50\%).
+
+\item[NRAO]: Tim Cornwell (100\%), Bob Garwood (90\%), Brian
+Glendenning (100\%), Athol Kemball (30\% now, rising to 100\% by
+October 1997), Ralph Marson (100\%), Joe McMullin(100\%), Pat Murphy
+(30\%), Darrell Schiebel (100\%), Jeff Uphoff (100\%) and Wes Young
+(90\%). Athol and Pat both have responsibility for maintaining the
+AIPS system and will be diverted back there if necessary. We have one
+open position in Socorro.
+
+\end{description}
+\end{slide}
+
+%\end{document} 
