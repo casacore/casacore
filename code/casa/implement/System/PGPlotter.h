@@ -99,11 +99,19 @@ public:
     // and X-windows display. This constructor (only) causes
     // PGPLOT and everything PGPLOT requires to be linked in to the current
     // executable.
+    //
+    // If your plot cannot back-off gracefully to black and white, you should
+    // set <src>mincolors</src> to the minimum number of colors your plot
+    // needs to succeed. Generally you should only need to do this for
+    // color-raster displays. Similarly, if you know the maximum number of
+    // colors you will use, you can prevent colormap flashing by setting
+    // <src>maxcolors</src>. If the device cannot supply at least
+    // <src>mincolors</src>, <src>isAttached</src> will return False.
     // <thrown>
     //   <li> An <linkto class="AipsError">AipsError</linkto> will be thrown
     //        if the underlying PGPLOT open fails for some reason.
     // </thrown>
-    PGPlotter(const String &device);
+    PGPlotter(const String &device, uInt mincolors=2, uInt maxcolors=100);
 
     // Copies use reference semantics, i.e. after copying the new and old
     // copy both draw onto the same surface.
@@ -116,7 +124,7 @@ public:
     virtual ~PGPlotter();
 
     // True if it is OK to plot to this object.
-    Bool isAttached() const;
+    virtual Bool isAttached() const;
 
     // This is not a standard PGPLOT command. In the Glish/PGPLOT window, it
     // puts a message in the message line. By default it sends it to the logger.
