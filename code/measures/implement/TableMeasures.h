@@ -1,5 +1,5 @@
 //# TableMeasures.h: Create Measure and Quantum columns Tables.
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,15 +28,15 @@
 #if !defined (AIPS_TABLEMEASURES_H)
 #define AIPS_TABLEMEASURES_H
 
-#include <trial/TableMeasures/ArrayMeasColumn.h>
-#include <trial/TableMeasures/ArrayQuantColumn.h>
-#include <trial/TableMeasures/ScalarMeasColumn.h>
-#include <trial/TableMeasures/ScalarQuantColumn.h>
-#include <trial/TableMeasures/TableMeasDesc.h>
-#include <trial/TableMeasures/TableMeasOffsetDesc.h>
-#include <trial/TableMeasures/TableMeasRefDesc.h>
-#include <trial/TableMeasures/TableMeasValueDesc.h>
-#include <trial/TableMeasures/TableQuantumDesc.h>
+#include <aips/TableMeasures/ArrayMeasColumn.h>
+#include <aips/TableMeasures/ArrayQuantColumn.h>
+#include <aips/TableMeasures/ScalarMeasColumn.h>
+#include <aips/TableMeasures/ScalarQuantColumn.h>
+#include <aips/TableMeasures/TableMeasDesc.h>
+#include <aips/TableMeasures/TableMeasOffsetDesc.h>
+#include <aips/TableMeasures/TableMeasRefDesc.h>
+#include <aips/TableMeasures/TableMeasValueDesc.h>
+#include <aips/TableMeasures/TableQuantumDesc.h>
 
 // <module> 
 
