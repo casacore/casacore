@@ -616,7 +616,9 @@ template<class T> uInt MaskedArray<T>::nelements() const
 
 template<class T> Bool MaskedArray<T>::ok() const
 {
-    return (pArray->ok() && pMask->ok()) ? True : False;
+  if (!pArray && !pMask) return True; // default constructed is ok
+  if (!pArray || !pMask) return False; // not both set is not ok
+  return (pArray->ok() && pMask->ok()) ? True : False;
 }
 
 
@@ -873,6 +875,13 @@ template<class T> MaskedArray<T> & MaskedArray<T>::operator=
 {
     DebugAssert(ok(), ArrayError);
 
+    if (!pArray) {
+      LogicalArray mask(inarray.shape());
+      mask = True;
+      setData(inarray,mask);
+      return *this;
+    }
+
     if (!conform(inarray)) {
             throw(ArrayConformanceError(
              "MaskedArray<T> & MaskedArray<T>::operator= "
@@ -923,6 +932,11 @@ MaskedArray<T> &MaskedArray<T>::operator= (const MaskedArray<T> &other)
 
     if (this == &other)
 	return *this;
+
+    if (!pArray) {
+      setData(other.copy());
+      return *this;
+    }
 
     if (!conform(other)) {
         throw(ArrayConformanceError(
@@ -977,6 +991,7 @@ MaskedArray<T> &MaskedArray<T>::operator= (const MaskedArray<T> &other)
 template<class T> MaskedArray<T> &MaskedArray<T>::operator=(const T &val)
 {
     DebugAssert(ok(), ArrayError);
+    if (!pArray) return *this;
 
     if (isRO) {
         throw(ArrayError(
@@ -1086,5 +1101,4 @@ template<class T, class U>
     return ( (leftShape.conform (rightShape)) && (leftShape == rightShape) )
            ? True : False;
 }
-
 
