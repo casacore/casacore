@@ -37,6 +37,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/Logging/TableLogSink.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Convolver.h>
@@ -53,6 +54,7 @@
 
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Fitting/NonLinearFitLM.h>
+#include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageHistograms.h>
@@ -834,6 +836,8 @@ Bool ImageMoments<T>::createMoments()
          }
          os_p << LogIO::NORMAL << "Created " << out_p << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
+         imgp->setImageInfo(pInImage_p->imageInfo());
+//         imgp->mergeTableLogSink(*pInImage_p);
       } else {
          if (out_p.empty()) out_p = in;
          String name = out_p + suffix;
@@ -853,6 +857,8 @@ Bool ImageMoments<T>::createMoments()
          }
          os_p << LogIO::NORMAL << "Created " << out_p+suffix << LogIO::POST;
          imgp->setMiscInfo(pInImage_p->miscInfo());
+         imgp->setImageInfo(pInImage_p->imageInfo());
+//         imgp->mergeTableLogSink(pInImage_p);
       }
 //
       LCPagedMask mask(RegionHandler::makeMask (*imgp, "mask0"));
@@ -880,7 +886,7 @@ Bool ImageMoments<T>::createMoments()
 // they don't, we work it out here.
 
    T noise;
-   if ( stdDeviation_p <= T(0) && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
+   if (stdDeviation_p <= T(0) && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
       if (pSmoothedImage) {
          os_p << LogIO::NORMAL << "Evaluating noise level from smoothed image" << LogIO::POST;
          if (!whatIsTheNoise (noise, *pSmoothedImage)) return False;
