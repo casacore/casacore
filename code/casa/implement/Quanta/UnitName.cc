@@ -1,5 +1,5 @@
 //# UnitName.cc: defines a tagged unit definition
-//# Copyright (C) 1994, 1995, 1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,6 @@
 //# Includes
 
 #include <aips/Measures/UnitDim.h>
-#include <aips/Measures/UnitMap.h>
 #include <aips/Measures/UnitName.h>
 #include <iomanip.h>
 //# constants
@@ -80,12 +79,13 @@ const String &UnitName::getName() const {
 }
 
 ostream& operator<< (ostream &os, const UnitName &name) {
+    static String FillString("                                ");
     Int i=os.precision();
     os << name.basicTag <<
-	(*UnitMap::FillString)(0,10 - name.basicTag.length()) <<
+	(FillString)(0,10 - name.basicTag.length()) <<
 	    "(" <<
 		name.basicName << ")" <<
-		    (*UnitMap::FillString)(0,27 - name.basicName.length()) <<
+		    (FillString)(0,27 - name.basicName.length()) <<
 			setprecision(12) <<
 			    name.basicKind  <<
 				setprecision(i);
