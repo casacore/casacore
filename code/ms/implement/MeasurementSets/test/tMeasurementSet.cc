@@ -260,7 +260,7 @@ uInt tNonStatic(const String& sdmsName)
     SetupNewTable scratchSetup("",std,Table::Scratch);
     scratchSetup.bindAll(aipsioman);
     MeasurementSet sms(scratchSetup, 20);
-    sms.createDefaultSubtables();
+    sms.createDefaultSubtables(Table::TableOption(sms.tableOption()));
 
     //    String parentName = ms.tableName();
     //    String subName = ms.keywordSet().asTable("ANTENNA").tableName();
