@@ -1030,7 +1030,8 @@ String join(String src[], int n, const String& separator)
 
   int j = 0;
   
-  for (i = 0; i < n - 1; ++i)
+  {
+  for (int i = 0; i < n - 1; ++i)
   {
     ncopy(src[i].chars(), &(x.rep->s[j]), src[i].length());
     j += src[i].length();
@@ -1038,6 +1039,7 @@ String join(String src[], int n, const String& separator)
     j += sep.length();
   }
   ncopy0(src[i].chars(), &(x.rep->s[j]), src[i].length());
+  }
   return x;
 }
 
@@ -1204,7 +1206,9 @@ String common_prefix(const String& x, const String& y, int startpos)
   const char* topx = &(xchars[x.length()]);
   const char* ys = &(ychars[startpos]);
   const char* topy = &(ychars[y.length()]);
-  for (int l = 0; xs < topx && ys < topy && *xs++ == *ys++; ++l);
+  int l;  // Make the declaration outside of the for loop to avoid the
+          // for loop declaration
+  for (l = 0; xs < topx && ys < topy && *xs++ == *ys++; ++l);
   r.rep = Salloc(r.rep, ss, l, l);
   return r;
 }
@@ -1218,7 +1222,9 @@ String common_suffix(const String& x, const String& y, int startpos)
   const char* botx = xchars;
   const char* ys = &(ychars[y.length() + startpos]);
   const char* boty = ychars;
-  for (int l = 0; xs >= botx && ys >= boty && *xs == *ys ; --xs, --ys, ++l);
+  int l;  // Make the declaration outside of the for loop to avoid the
+          // for loop declaration
+  for (l = 0; xs >= botx && ys >= boty && *xs == *ys ; --xs, --ys, ++l)el = l;
   r.rep = Salloc(r.rep, ++xs, l, l);
   return r;
 }
