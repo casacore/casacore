@@ -43,7 +43,10 @@ void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
            const CoordinateSystem& cSys,
            const Vector<uInt>& worldAxes,
            Double exMinorWorld, Double exMajorWorld, Double exPAWorld);
-      
+
+
+void doit2 (Vector<Double>& pixel, const CoordinateSystem& cSys,
+           const Vector<uInt>& worldAxes);
 
 int main()
 {
@@ -58,6 +61,8 @@ int main()
       units(1) = "arcsec";
       cSys.setWorldAxisUnits(units, False);
 //      cout << "units = " << cSys.worldAxisUnits().ac() << endl;
+//
+// Axis conversions
 //
       {
          Vector<Double> deltas(2);
@@ -112,8 +117,13 @@ int main()
          doit(majorPixels, minorPixels, pa1, cSys, worldAxes,
               10.0, 10.0, 45.0);
       }
-
-
+//
+// Position conversions
+//
+      {
+         Vector<Double> pixel(cSys.referencePixel().copy());
+         doit2 (pixel, cSys, worldAxes);
+      }
    } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
       exit(1);
@@ -137,7 +147,6 @@ void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
    Quantum<Double> pa2;
    AlwaysAssert(gc.toWorld(majorWorld, minorWorld, pa2,
                            majorPixels,  minorPixels, pa1), AipsError);
-
 //
 // Reflect back to pixels
 //
@@ -160,6 +169,31 @@ void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
    AlwaysAssert(near(majorPixels,majorPixels2,1e-6), AipsError);
    AlwaysAssert(near(minorPixels,minorPixels2,1e-6), AipsError);
    AlwaysAssert(near(pa1.getValue(),pa3.getValue(),1e-6), AipsError);
+}
+
+
+void doit2 (Vector<Double>& pixel, const CoordinateSystem& cSys,
+           const Vector<uInt>& worldAxes)
+{
+//
+// Convert from pixels to world
+//
+   GaussianConvert gc(cSys, worldAxes);
+   Vector<Quantum<Double> > world;
+   AlwaysAssert(gc.toWorld(world, pixel), AipsError);
+//
+// Reflect back to pixels
+//
+   Vector<Double> pixel2;
+   AlwaysAssert(gc.toPixel(pixel2, world), AipsError);
+   AlwaysAssert(allNear(pixel2.ac(),pixel.ac(),1e-6), AipsError);
+//
+// Change units and see what happens
+//
+   world(0).convert(Unit("arcsec"));
+   world(1).convert(Unit("arcmin"));
+   AlwaysAssert(gc.toPixel(pixel2, world), AipsError);
+   AlwaysAssert(allNear(pixel2.ac(),pixel.ac(),1e-6), AipsError);
 }
 
 
