@@ -74,6 +74,8 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       channelOK_p=other.channelOK_p;
       ant1OK_p=other.ant1OK_p;
       ant2OK_p=other.ant2OK_p;
+      feed1OK_p=other.feed1OK_p;
+      feed2OK_p=other.feed2OK_p;
       arrayIdOK_p=other.arrayIdOK_p;
       corrTypeOK_p=other.corrTypeOK_p;
       cjonesOK_p=other.cjonesOK_p;
@@ -110,12 +112,20 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
 	channel_p=other.channel_p;
       }
       if (ant1OK_p) {
-	antenna1_p.resize(other.antenna1_p.nelements()); 
+	antenna1_p.resize(other.antenna1_p.nelements());
 	antenna1_p=other.antenna1_p;
       }
       if (ant2OK_p) {
-	antenna2_p.resize(other.antenna2_p.nelements()); 
+	antenna2_p.resize(other.antenna2_p.nelements());
 	antenna2_p=other.antenna2_p;
+      }
+      if (feed1OK_p) {
+	feed1_p.resize(other.feed1_p.nelements());
+	feed1_p=other.feed1_p;
+      }
+      if (feed2OK_p) {
+	feed2_p.resize(other.feed2_p.nelements());
+	feed2_p=other.feed2_p;
       }
       if (corrTypeOK_p) {
 	corrType_p.resize(other.corrType_p.nelements()); 
@@ -247,20 +257,20 @@ void VisBuffer::attachToVisIter(ROVisibilityIterator& iter)
 
 void VisBuffer::invalidate()
 {
-  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=lsrFreqOK_p=
-    phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=
-    uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
+  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=feed1OK_p=feed2OK_p=
+    arrayIdOK_p=cjonesOK_p=fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=
+    lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=
+    timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
 }
 
 void VisBuffer::validate()
 {
-  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
-    fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=lsrFreqOK_p=
-    phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=
-    uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
+  nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=feed1OK_p=feed2OK_p=
+    arrayIdOK_p=cjonesOK_p=fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=
+    lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=
+    timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
 }
@@ -320,7 +330,7 @@ Vector<Int> VisBuffer::vecIntRange(const MSCalEnums::colDef& calEnum) const
   };
   // FEED1
   case MSC::FEED1: {
-    maskArray = new MaskedArray<Int>(nullIndex, mask);
+    maskArray = new MaskedArray<Int>(feed1(), mask);
     break;
   };
   // FIELD_ID
@@ -501,6 +511,10 @@ Vector<Int>& VisBuffer::fillAnt1()
 { ant1OK_p=True; return visIter_p->antenna1(antenna1_p);}
 Vector<Int>& VisBuffer::fillAnt2()
 { ant2OK_p=True; return visIter_p->antenna2(antenna2_p);}
+Vector<Int>& VisBuffer::fillFeed1()
+{ feed1OK_p=True; return visIter_p->feed1(feed1_p);}
+Vector<Int>& VisBuffer::fillFeed2()
+{ feed2OK_p=True; return visIter_p->feed2(feed2_p);}
 Vector<SquareMatrix<Complex,2> >& VisBuffer::fillCjones()
 { cjonesOK_p=True; return visIter_p->CJones(cjones_p); }
 Vector<Int>& VisBuffer::fillCorrType()

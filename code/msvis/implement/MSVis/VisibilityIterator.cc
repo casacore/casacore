@@ -139,6 +139,8 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   // column access functions
   colAntenna1.reference(other.colAntenna1);
   colAntenna2.reference(other.colAntenna2);
+  colFeed1.reference(other.colFeed1);
+  colFeed2.reference(other.colFeed2);
   colTime.reference(other.colTime);
   colTimeInterval.reference(other.colTimeInterval);
   colWeight.reference(other.colWeight);
@@ -356,6 +358,8 @@ void ROVisibilityIterator::attachColumns()
   const ColumnDescSet& cds=selTable_p.tableDesc().columnDescSet();
   colAntenna1.attach(selTable_p,MS::columnName(MS::ANTENNA1));
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
+  colFeed1.attach(selTable_p,MS::columnName(MS::FEED1));
+  colFeed2.attach(selTable_p,MS::columnName(MS::FEED2));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
   colTimeInterval.attach(selTable_p,MS::columnName(MS::INTERVAL));
   if (cds.isDefined(MS::columnName(MS::DATA))) {
@@ -409,6 +413,19 @@ Vector<Int>& ROVisibilityIterator::antenna2(Vector<Int>& ant2) const
   return ant2;
 }
 
+Vector<Int>& ROVisibilityIterator::feed1(Vector<Int>& fd1) const
+{
+  fd1.resize(curNumRow_p);
+  colFeed1.getColumn(fd1);
+  return fd1;
+}
+
+Vector<Int>& ROVisibilityIterator::feed2(Vector<Int>& fd2) const
+{
+  fd2.resize(curNumRow_p);
+  colFeed2.getColumn(fd2);
+  return fd2;
+}
 
 Vector<Int>& ROVisibilityIterator::channel(Vector<Int>& chan) const
 {

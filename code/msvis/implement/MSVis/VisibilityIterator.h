@@ -187,11 +187,17 @@ public:
   // Advance to the next Chunk of data
   ROVisibilityIterator& nextChunk();
 
-  // Return antenna1 
+  // Return antenna1
   Vector<Int>& antenna1(Vector<Int>& ant1) const;
 
-  // Return antenna2 
+  // Return antenna2
   Vector<Int>& antenna2(Vector<Int>& ant2) const;
+
+  // Return feed1
+  Vector<Int>& feed1(Vector<Int>& fd1) const;
+
+  // Return feed2
+  Vector<Int>& feed2(Vector<Int>& fd2) const;
 
   // Return channel numbers in selected VisSet spectrum
   // (i.e. disregarding possible selection on the iterator, but
@@ -444,6 +450,7 @@ protected:
 
   // column access functions
   ROScalarColumn<Int> colAntenna1, colAntenna2;
+  ROScalarColumn<Int> colFeed1, colFeed2;
   ROScalarColumn<Double> colTime;
   ROScalarColumn<Double> colTimeInterval;
   ROArrayColumn<Float> colWeight;

@@ -128,7 +128,13 @@ public:
   Vector<Int>& antenna2() {return ant2OK_p ? antenna2_p : fillAnt2();}
   const Vector<Int>& antenna2() const {return This->antenna2();}
 
-  Vector<SquareMatrix<Complex,2> >& CJones() 
+  Vector<Int>& feed1() {return feed1OK_p ? feed1_p : fillFeed1();}
+  const Vector<Int>& feed1() const {return This->feed1();}
+
+  Vector<Int>& feed2() {return feed2OK_p ? feed2_p : fillFeed2();}
+  const Vector<Int>& feed2() const {return This->feed2();}
+
+  Vector<SquareMatrix<Complex,2> >& CJones()
   { return cjonesOK_p ? cjones_p : fillCjones();}
   const Vector<SquareMatrix<Complex,2> >& CJones() const 
   {return This->CJones();} 
@@ -259,7 +265,7 @@ public:
 
   // Update coordinate info - useful for copied VisBuffers that need
   // to retain some state for later reference.
-  // Presently this fills antenna, feed, field and spectralWindow ids, time,
+  // Presently this fills antenna, array, field and spectralWindow ids, time,
   // frequency and number of rows. Add more as needed.
   void updateCoordInfo();
 
@@ -290,6 +296,8 @@ private:
   Int & fillnRow();
   Vector<Int>& fillAnt1();
   Vector<Int>& fillAnt2();
+  Vector<Int>& fillFeed1();
+  Vector<Int>& fillFeed2();
   Vector<SquareMatrix<Complex,2> >& fillCjones();
   Int& fillFieldId();
   Int& fillArrayId();
@@ -320,7 +328,8 @@ private:
 
   VisBuffer* This;
   // variables to track validity of cache
-  Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
+  Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p,
+    feed1OK_p, feed2OK_p, cjonesOK_p,
     fieldIdOK_p, arrayIdOK_p, flagOK_p, flagRowOK_p, scanOK_p, freqOK_p,
     lsrFreqOK_p, phaseCenterOK_p, polFrameOK_p, sigmaOK_p, spwOK_p,
     timeOK_p, timeIntervalOK_p, uvwOK_p, visOK_p, weightOK_p;
@@ -329,7 +338,7 @@ private:
 
   // cached variables
   Int nChannel_p, nRow_p;
-  Vector<Int> channel_p, antenna1_p, antenna2_p;
+  Vector<Int> channel_p, antenna1_p, antenna2_p, feed1_p, feed2_p;
   Vector<SquareMatrix<Complex,2> > cjones_p;
   Int fieldId_p;
   Int arrayId_p;
