@@ -42,7 +42,7 @@
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Tasking/AppInfo.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   const uInt ndim = cLattice.ndim();

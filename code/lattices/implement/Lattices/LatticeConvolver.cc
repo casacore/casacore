@@ -35,7 +35,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/HostInfo.h>
-#include <iostream.h>
+#include <aips/iostream.h>
 
 // This sets the maximum size, in MB of any memory based Lattices created by
 // this class. It was deteremined empirically to be tyhe best value on a
