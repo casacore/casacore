@@ -67,7 +67,7 @@ void doIt (const IPosition& latticeShape,
    
     {
 	// Test cloning.
-        LCRegion* complcop = compl.clone();
+        LCRegion* complcop = compl.cloneRegion();
 	AlwaysAssertExit (compl.hasMask() == complcop->hasMask());
 	AlwaysAssertExit (compl.box().start() == complcop->box().start());
 	AlwaysAssertExit (compl.box().end() == complcop->box().end());
