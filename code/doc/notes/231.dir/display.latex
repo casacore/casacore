@@ -361,6 +361,8 @@ DisplayDatas in determining what of their data to draw, and how.
 
 \section{The Glish Connection}
 
+\subsection{Low-level Interface: gDisplay.so}
+
 The {\tt glishtk} proxy client has been chosen as the (current)
 vehicle to provide the Display Library services to the \aipspp\ user.
 This facility has been provided this way so that Display Library
@@ -391,6 +393,41 @@ implemented in {\tt gDisplay.so} are at an even higher level than the
 top-level Display Library tools, and thereby provide more convenient
 but less capable interfaces to the \glish\ programmer.  In the future,
 this design decision should be revisited.
+
+The agents which are presently implemented in {\tt gDisplay.so}
+include:
+\begin{itemize}
+\item{{\bf pixelcanvas}, a basic interface to put a PixelCanvas in a
+    Tk frame,}
+\item{{\bf pspixelcanvas}, a very simple interface to create a
+    PostScript PixelCanvas which can be used for saving displays of
+    data,} 
+\item{{\bf worldcanvas}, which is a compact representation of the
+    union of a WorldCanvas object and a WorldCanvasHolder object, and
+    which can be constructed upon a pixelcanvas or a pspixelcanvas,}
+\item{{\bf displaydata}, which is a moderately sophisticated agent
+    capable of creating several distinct implementations of the
+    DisplayData base class, and performing operations on such,}
+\item{{\bf colormap}, which is a compact agent managing a single
+    colormap, which can be edited from \glish\ and attached to
+    displaydata agents,}
+\item{{\bf animator}, which is a simple agent for managing animation
+    operations on worldcanvas agents, and}
+\item{{\bf drawingdisplaydata}, which is an agent in development for
+    doing simple drawings on a worldcanvas agent from the \glish\
+    command-line or a \glish\ script.}
+\end{itemize}
+The source code for the {\tt gDisplay.so} module can be found (at the
+moment) in {\tt trialdisplay/apps/gDisplay}, and is moderately
+compact.  Typically the source code files in this directory are
+implementations of the {\tt Proxy} class which is defined in the
+\glish\ sub-system, and the simplest example to peruse initially is
+the {\tt GTkColormap} class.  The {\tt Proxy} class implementations
+simply provide construction, destruction and a selection of event
+interfaces which are accessed from \glish.
+
+\subsection{High-level Interface: the Viewer}
+
 
 \section{Programming Practicalities}
 
