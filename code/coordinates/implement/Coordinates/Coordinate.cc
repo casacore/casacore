@@ -1,5 +1,5 @@
 //# Coordinate.cc: this defines the Coordinate class
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,6 +37,25 @@
 #include <iomanip.h>  
 #include <strstream.h>
 
+
+Coordinate::Coordinate()
+{
+}
+
+
+Coordinate::Coordinate(const Coordinate& other)
+: error_p(other.error_p)
+{
+}
+
+Coordinate& Coordinate::operator=(const Coordinate& other)
+{
+   if (this != &other) {
+      error_p = other.error_p;
+   }
+   return *this;
+}
+ 
 
 Coordinate::~Coordinate()
 {
@@ -162,6 +181,79 @@ uInt Coordinate::toPixelMany(Matrix<Double> &pixel,
     
     return nerror;
 }
+
+
+Bool Coordinate::toMix(Vector<Double>& worldOut,
+                       Vector<Double>& pixelOut,
+                       const Vector<Double>& worldIn,
+                       const Vector<Double>& pixelIn,
+                       const Vector<Bool>& worldAxes,   
+                       const Vector<Bool>& pixelAxes) const
+//
+// Default implementation ok for non-coupled coordinated like
+// Linear.  Coupled coordinates like DirectionCoordinate
+// need their own implementation
+//
+{
+   const uInt nWorld = worldAxes.nelements();
+   const uInt nPixel = pixelAxes.nelements();
+//
+   AlwaysAssert(nWorld == nWorldAxes(), AipsError);
+   AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
+   AlwaysAssert(nPixel == nPixelAxes(), AipsError);   
+   AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);   
+
+//
+// Resize happens first time or maybe after an assignment
+//
+   if (world_tmp_p.nelements()!=nWorld) world_tmp_p.resize(nWorld);
+   if (pixel_tmp_p.nelements()!=nPixel) pixel_tmp_p.resize(nPixel);
+//
+   for (uInt i=0; i<nPixel; i++) {
+      if (pixelAxes(i) && worldAxes(i)) {
+         set_error("Coordinate::toMix - duplicate pixel/world axes");
+         return False;
+      }
+      if (!pixelAxes(i) && !worldAxes(i)) {
+         set_error("Coordinate::toMix - each axis must be either pixel or world");
+         return False;
+       }
+   }
+//
+// Convert world to pixel.  Use  reference value unless
+// world value given. Copy output pixels to output vector 
+// and overwrite with any input pixel values that were given
+//
+   world_tmp_p = referenceValue().copy();
+   for (uInt i=0; i<nWorld; i++) {
+      if (worldAxes(i)) world_tmp_p(i) = worldIn(i);
+   }
+   if (!toPixel(pixel_tmp_p,world_tmp_p)) return False;
+//
+   if (pixelOut.nelements()!=nPixel) pixelOut.resize(nPixel);
+   pixelOut = pixel_tmp_p.copy();
+   for (uInt i=0; i<nPixel; i++) {
+      if (pixelAxes(i)) pixelOut(i) = pixelIn(i);
+   }
+//
+// Convert pixel to world.  Use reference pixel unless
+// pixel value given. Copy output worlds to output vector 
+// and overwrite with any input world values that were given
+//
+   pixel_tmp_p = referencePixel().copy();
+   for (uInt i=0; i<nPixel; i++) {
+      if (pixelAxes(i)) pixel_tmp_p(i) = pixelIn(i);
+   }
+   if (!toWorld(world_tmp_p,pixel_tmp_p)) return False;
+   if (worldOut.nelements()!=nWorld) worldOut.resize(nWorld);
+   worldOut = world_tmp_p.copy();
+   for (uInt i=0; i<nWorld; i++) {
+      if (worldAxes(i)) worldOut(i) = worldIn(i);
+   }
+//
+   return True;
+}
+
 
 // Does everything except set the units vector, which must be done in the derived class.
 Bool Coordinate::setWorldAxisUnits(const Vector<String> &units, 
@@ -316,7 +408,7 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 
 void Coordinate::set_error(const String &errorMsg) const
 {
-    // Cast away const until we have mutable
-    Coordinate *This = (Coordinate *)this;
-    This->error_p = errorMsg;
+    error_p = errorMsg;
 }
+
+
