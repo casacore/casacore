@@ -1,5 +1,5 @@
 //# MSSummary.cc:  Helper class for applications listing a MeasurementSet
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -372,7 +372,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      os << MVTime(etime/C::day).string(MVTime::TIME,7);
 	      os.output().width(widthLead); os << "  ";
 	      os.output().setf(ios::right, ios::adjustfield);
-	      os.output().width(widthScan); os << lastscan+1;
+	      os.output().width(widthScan); os << lastscan;
 	      os.output().width(widthLead); os << "  ";
 	      os.output().setf(ios::left, ios::adjustfield);
 	      os.output().width(widthField); os << fieldnames(lastfldids(0));
@@ -423,7 +423,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os << MVTime(etime/C::day).string(MVTime::TIME,7);
 	os.output().width(widthLead); os << "  ";
 	os.output().setf(ios::right, ios::adjustfield);
-	os.output().width(widthScan); os << lastscan+1;
+	os.output().width(widthScan); os << lastscan;
 	os.output().width(widthLead);  os << "  ";
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthField); os << fieldnames(lastfldids(0));
