@@ -53,7 +53,6 @@ class IPosition;
 // </prerequisite>
 //
 // <synopsis>
-//
 // Some helpful static functions that are common to some of my image
 // analysis application  classes.
 // </synopsis>
@@ -61,7 +60,7 @@ class IPosition;
 // <motivation>
 // I needed some bits and pieces.  My goal isto move this rag-tag bunch
 // out of here into other classes as time goes on.  So far
-// I have eliminated 50% of the original !
+// I have eliminated 80% of the original !
 // </motivation>
 //
 // <todo asof="1996/11/27">
@@ -98,14 +97,6 @@ public:
 // are returned as given.
    static String shortAxisName (const String& axisName);
 
-// Verify an image region specification.  Illegal (inlcuding blc > trc) or 
-// unspecified values are  given 0 (blc) imageShape (trc) or 
-// unity (inc).  Returns <src>True</src> if any of the region objects 
-// are changed from their input values, else returns <src>False</src>
-   static Bool verifyRegion (IPosition& blc,
-                             IPosition& trc,
-                             IPosition& inc,
-                             const IPosition& imageShape);
 };
 
 #endif
