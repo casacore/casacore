@@ -3,7 +3,7 @@
 # exhale: Update the AIPS++ source distribution files
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -246,8 +246,8 @@
 
 # Define the list of code areas.
 # Technically, trial should not be among these, but it's necessary.
-  AREAS="install aips dish synthesis vlbi contrib doc trial"
-  CONSORTIA="atnf bima drao nfra nral nrao tifr"
+  AREAS="install aips dish synthesis vlbi contrib doc trial display"
+  CONSORTIA="atnf bima hia nfra nral nrao tifr jive npoi"
   AREAS="$AREAS $CONSORTIA"
 
 # Check accessibility of the master ftp area.
@@ -1161,7 +1161,7 @@
 
 # Produce a new checksum file.
   rm -f CHKSUM
-  sum master-* > CHKSUM
+  cksum master-* > CHKSUM
   chmod 444 CHKSUM
 
 # Update the version files.
