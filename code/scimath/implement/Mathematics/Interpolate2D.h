@@ -57,6 +57,14 @@
 // Given a regular Array, Matrix, or Lattices and a vector of pixel
 // coordinates, interpolate the values of that array/matrix/lattice onto those
 // pixel coordinates.
+//
+// Absolutely no checking of the consistency of the input data
+// is done in order to preserve maximum speed.  If you use the Array
+// interface, it *must* be of dimension 2.  The coordinate vector
+// *must* have at least 2 elements (others will be ignored). If 
+// you supply data and mask, those arrays *must* be the same shape.
+// Failure to follow these rules will result in your program 
+// crashing.
 // </synopsis>
 //
 // <example>
@@ -99,7 +107,7 @@ class Interpolate2D
     CUBIC};
  
   // Constructor
-  Interpolate2D();
+  Interpolate2D(Interpolate2D::Method method=Interpolate2D::LINEAR);
 
   // Copy constructor (copy semantics)
   Interpolate2D(const Interpolate2D& other);
@@ -111,42 +119,36 @@ class Interpolate2D
   Interpolate2D& operator=(const Interpolate2D& other);
 
   // Do one interpolation, supply Matrix/Array and mask (True is good),
-  // pixel coordinate and method.  Returns False if coordinate
-  // out of range or data are masked.
+  // and pixel coordinate.  Returns False if coordinate out of range or data 
+  // are masked.  No shape integrity checking is done (see above).
   // <group>
   Bool  interp (Float& result, 
                 const Vector<Double>& where,
-                const Matrix<Float>& data, 
-                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+                const Matrix<Float>& data) const;
   Bool interp (Float& result, 
                const Vector<Double>& where, 
-               const Array<Float>& data, 
-               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+               const Array<Float>& data) const;
   Bool  interp (Float& result, 
                 const Vector<Double>& where,
                 const Matrix<Float>& data, 
-                const Matrix<Bool>& mask,
-                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+                const Matrix<Bool>& mask) const;
   Bool interp (Float& result, 
                const Vector<Double>& where, 
                const Array<Float>& data, 
-               const Array<Bool>& mask,
-               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+               const Array<Bool>& mask) const;
   //</group>
 
   // Do one interpolation, supply boolean Matrix (True is good),
-  // pixel coordinate and method.  Returns False if coordinate
+  // and pixel coordinate.  Returns False if coordinate
   // out of range. The result is False if any data value in the interpolation
-  // grid are False (bad), else True.
+  // grid are False (bad), else True.  No shape integrity checking is done.
   // <group>
   Bool  interp (Bool& result, 
                 const Vector<Double>& where,
-                const Matrix<Bool>& data, 
-                Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+                const Matrix<Bool>& data) const;
   Bool interp (Bool& result, 
                const Vector<Double>& where, 
-               const Array<Bool>& data, 
-               Interpolate2D::Method method=Interpolate2D::LINEAR) const;
+               const Array<Bool>& data) const;
   // </group>
 
 // Convert string ("nearest", "linear", "cubic") to Method
@@ -179,7 +181,19 @@ private:
 	       Double d1, Double d2) const;
 //
   Interpolate2D::Method itsMethod;
+
+// Typedefs for function pointers
+
+  typedef Bool(Interpolate2D::*FuncPtr)(Float& result, 
+                                        const Vector<Double>& where, 
+                                        const Matrix<Float>& data,
+                                        const Matrix<Bool>*& maskPtr) const;
+  typedef Bool(Interpolate2D::*FuncPtrBool)(Bool& result, 
+                                            const Vector<Double>& where, 
+                                            const Matrix<Bool>& data) const;
 //
+  FuncPtr itsFuncPtr;
+  FuncPtrBool itsFuncPtrBool;
   Int itsI, itsJ;
   Int itsMinI, itsMaxI, itsMinJ, itsMaxJ;
   Int itsII, itsJJ;
