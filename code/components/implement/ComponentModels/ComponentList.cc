@@ -624,8 +624,7 @@ void ComponentList::readTable(const String & fileName, const Bool readOnly) {
       compSpectrum.setParameters(spectralParms);
     }
     {
-      labelCol.get(i, compLabel);
-      currentComp.setLabel(compLabel);
+      labelCol.get(i, currentComp.label());
     }
     add(currentComp);
   }
