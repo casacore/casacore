@@ -4681,3 +4681,7 @@
 14 302 src rm trial/implement/MeasurementSets/OldMSSourceBuffer.cc
 14 302 src rm trial/implement/MeasurementSets/OldMSSpwBuffer.h
 14 302 src rm trial/implement/MeasurementSets/OldMSSpwBuffer.cc
+14 302 src rm nrao/implement/VLA/OldVLABuffer.h
+14 302 src rm nrao/implement/VLA/OldVLABuffer.cc
+14 302 src rm nrao/implement/VLA/OldVLAFiller.h
+14 302 src rm nrao/implement/VLA/OldVLAFiller.cc
