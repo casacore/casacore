@@ -384,6 +384,12 @@ public:
   static Double dTCG(Double tai);
   // GMST1 at MJD ut1 UT1
   static Double GMST0(Double ut1);
+  // GMST (IAU2000) including the ERA (IAU2000 Earth Rotation Angle) in rad
+  static Double GMST00(Double ut1, Double tt);
+  // Earth Rotation Angle (IAU2000) in rad
+  static Double ERA00(Double ut1);
+  // s' (IAU2000) in rad (approximate value)
+  static Double sprime00(Double tt);
   // UT1 at GMSD gmst1 GMST1
   static Double GMUT0(Double gmst1);
   // Ratio UT1/MST at MJD ut1 UT1

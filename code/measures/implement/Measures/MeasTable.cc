@@ -41,6 +41,7 @@
 #include <aips/Quanta/RotMatrix.h>
 #include <aips/Quanta/Euler.h>
 #include <aips/Quanta/MUString.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
@@ -6247,6 +6248,37 @@ Double MeasTable::GMST0(Double ut1) {
     stPoly.setCoefficient(3, -6.2e-6);
   };
   return (stPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
+}
+
+Double MeasTable::GMST00(Double ut1, Double tt) {
+  static Bool needInit = True;
+  static Polynomial<Double> stPoly(4);
+  if (needInit) {
+    needInit = False;
+    stPoly.setCoefficient(0, 0.014506*C::arcsec);	
+    stPoly.setCoefficient(1, 4612.15739966*C::arcsec);
+    stPoly.setCoefficient(2, + 1.39667721*C::arcsec);	
+    stPoly.setCoefficient(3, - 0.00009344*C::arcsec);
+    stPoly.setCoefficient(4, + 0.00001882*C::arcsec);
+  };
+  return (stPoly((tt-MeasData::MJD2000)/MeasData::JDCEN) +
+	  MeasTable::ERA00(ut1));
+}
+
+Double MeasTable::ERA00(Double ut1) {
+  static Bool needInit = True;
+  static Polynomial<Double> stPoly(1);
+  if (needInit) {
+    needInit = False;
+    stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);	
+    stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
+  };
+  ut1 -= MeasData::MJD2000;
+  return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
+}
+
+Double MeasTable::sprime00(Double tt) {
+  return ((tt-MeasData::MJD2000)/MeasData::JDCEN * -47e-6 * C::arcsec);
 }
 
 Double MeasTable::GMUT0(Double gmst1) {
