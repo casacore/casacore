@@ -2123,3 +2123,4 @@
 11 108 src mv doc/papers/bgadass93.latex doc/papers/adass93/bgadass93.latex
 11 108 src rm trial/implement/DisplayDatas/LatticePADisplayData.h
 11 108 src rm trial/implement/DisplayDatas/LatticePADisplayData.cc
+11 108 src mv doc/papers/gvdadass93.latex doc/papers/adass93/gvdadass93.latex
