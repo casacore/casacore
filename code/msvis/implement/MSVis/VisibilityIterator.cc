@@ -125,6 +125,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   vDef_p=other.vDef_p;
   cFromBETA_p=other.cFromBETA_p;
   selFreq_p.resize(other.selFreq_p.nelements()); selFreq_p=other.selFreq_p;
+  lsrFreq_p.resize(other.lsrFreq_p.nelements()); lsrFreq_p=other.lsrFreq_p;
 
   // column access functions
   colAntenna1.reference(other.colAntenna1);
@@ -250,6 +251,7 @@ void ROVisibilityIterator::getTopoFreqs()
     Double obsVel=cFromBETA_p(obsRV.toDoppler()).getValue().get().getValue();
     // Now compute corresponding TOPO freqs
     selFreq_p.resize(nVelChan_p);
+    lsrFreq_p.resize(nVelChan_p);
     Double v0 = vStart_p.getValue(), dv=vInc_p.getValue();
     if (aips_debug) cout << "obsVel="<<obsVel<<endl;
     for (Int i=0; i<nVelChan_p; i++) {
@@ -257,6 +259,12 @@ void ROVisibilityIterator::getTopoFreqs()
       MDoppler dTopo(Quantity(vTopo,"m/s"), vDef_p);
       selFreq_p(i) = MFrequency::fromDoppler
 	(dTopo,msIter_p.restFrequency().getValue()).getValue().getValue();
+      // also calculate the frequencies in the requested frame for matching
+      // up with the image planes 
+      // (they are called lsr here, but don't need to be in that frame)
+      MDoppler dLSR(Quantity(v0+i*dv,"m/s"), vDef_p);
+      lsrFreq_p(i) = MFrequency::fromDoppler
+	(dLSR,msIter_p.restFrequency().getValue()).getValue().getValue();
     }
   }
 }
@@ -453,6 +461,18 @@ Vector<Double>& ROVisibilityIterator::frequency(Vector<Double>& freq) const
     }
     freq.resize(channelGroupSize_p);
     freq=frequency_p;
+  }
+  return freq;
+}
+
+Vector<Double>& ROVisibilityIterator::lsrFrequency(Vector<Double>& freq) const
+{
+  if (velSelection_p) {
+    freq.resize(nVelChan_p);
+    freq=lsrFreq_p;
+  } else {
+    // if there is no vel selection, we just return the observing freqs
+    frequency(freq);
   }
   return freq;
 }
