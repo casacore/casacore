@@ -1,5 +1,5 @@
  //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,203 +34,258 @@
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/VectorCollapser.h>
+#include <trial/Lattices/LineCollapser.h>
+#include <trial/Lattices/TiledCollapser.h>
+#include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/TiledLineStepper.h>
+#include <trial/Lattices/TileStepper.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Images/PagedImage.h>
-#include <trial/Tasking/ProgressMeter.h>
-
+#include <trial/Lattices/PixelBox.h>
+#include <trial/Lattices/PixelRegion.h>
 #include <iostream.h>
 
+
 template <class T>
-void LatticeApply<T>::vectorApply (Lattice<T>& latticeOut,
-				   const Lattice<T>& latticeIn,
-				   VectorCollapser<T>& collapser,
-				   const Int profileAxis,
-				   const IPosition& blcU,
-				   const IPosition& trcU,
-////				   const IPosition& incU,
-				   const Bool dropAxis,
-				   const Bool showProgress,
-				   const String& progressTitle)
+void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
+				 const Lattice<T>& latticeIn,
+				 LineCollapser<T>& collapser,
+				 uInt collapseAxis,
+				 LatticeProgress* tellProgress)
 {
-// Verify region
+    lineApply (latticeOut, latticeIn,
+	       PixelBox(IPosition(latticeIn.ndim(), 0),
+			latticeIn.shape() - 1,
+			latticeIn.shape()),
+	       collapser, collapseAxis, tellProgress);
+}
 
-    IPosition blc(blcU);
-    IPosition trc(trcU);
-    IPosition inc;
-////    IPosition inc(incU);
-    IPosition ioMap;
-    prepare (ioMap, blc, trc, inc, latticeIn, latticeOut, profileAxis, 
-	     dropAxis);
+template <class T>
+void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
+				      const Lattice<T>& latticeIn,
+				      LineCollapser<T>& collapser,
+				      uInt collapseAxis,
+				      LatticeProgress* tellProgress)
+{
+    lineMultiApply (latticeOut, latticeIn,
+		    PixelBox(IPosition(latticeIn.ndim(), 0),
+			     latticeIn.shape() - 1,
+			     latticeIn.shape()),
+		    collapser, collapseAxis, tellProgress);
+}
 
-// Input profiles are extracted with the TiledLineStepper.
-
-    IPosition inTileShape = latticeIn.niceCursorShape (latticeIn.maxPixels());
-    TiledLineStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
-    inNav.subSection (blc, trc);
-    RO_LatticeIterator<T> inIter(latticeIn, inNav);
-    IPosition latticeShape = inNav.subLatticeShape();
-    
-// An output buffer matching the input tile shape is manually created
-// as there is no navigator to do this.
-
-    const uInt outDim = latticeOut.ndim();
-    IPosition outPos(outDim);
-    IPosition outShape(outDim);
-
-// Set up ProgressMeter
-
-    ProgressMeter* pClock;
-    Double meterValue = 0.0;
-    if (showProgress) {
-	Double nProfiles = latticeOut.shape().product();
-	pClock = new ProgressMeter(0.0, nProfiles, progressTitle,
-				   "Vectors extracted", "", "",
-				   True, max(1,Int(nProfiles/20)));
-    }
-
-
-// Iterate
-
-    while (!inIter.atEnd()) {
-
-// Create output buffer shape. Has to be done inside the loop
-// as the tile shape may not fit integrally into the lattice
-
-	for (uInt j=0; j<outDim; j++) {
-	    uInt i = ioMap(j);
-	    outPos(j) = inIter.position()(i);
-	    Int sz = inTileShape(i) - outPos(j) % inTileShape(i);
-	    outShape(j) = min (sz, 1 + trc(i) - outPos(j));
-	    outPos(j) -= blc(i);
-	}
-	if (outDim == blc.nelements()) {
-	    outShape(profileAxis) = 1;
-	}
-//      cout << outShape << " put at " << outPos << endl;
-	
-// Put the collapsed vectors into the output buffer
-	
-	Array<T> array(outShape);
-	Bool deleteIt;
-	T* data = array.getStorage (deleteIt);
-	uInt n = array.nelements();
-	for (uInt i=0; i<n; i++) {
-	    data[i] = collapser.collapse (inIter.vectorCursor(),
-					  inIter.position());
-	    inIter++;
-
-// Update progress meter
-	
-	    if (showProgress) {
-		meterValue += 1.0;
-		pClock->update (meterValue);
-	    }
-	}
-	array.putStorage (data, deleteIt);
-	latticeOut.putSlice (array, outPos);
-    }
-    if (showProgress) delete pClock;
+template <class T>
+void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
+				  const Lattice<T>& latticeIn,
+				  TiledCollapser<T>& collapser,
+				  const IPosition& collapseAxes,
+				  LatticeProgress* tellProgress)
+{
+    tiledApply (latticeOut, latticeIn,
+		PixelBox(IPosition(latticeIn.ndim(), 0),
+			 latticeIn.shape() - 1,
+			 latticeIn.shape()),
+		collapser, collapseAxes, tellProgress);
 }
 
 
 
 template <class T>
-void LatticeApply<T>::vectorMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
-					const Lattice<T>& latticeIn,
-					VectorCollapser<T>& collapser,
-					const Int profileAxis,
-					const IPosition& blcU,
-					const IPosition& trcU,
-////					const IPosition& incU,
-					const Bool dropAxis,
-					const Bool showProgress,
-					const String& progressTitle)
+void LatticeApply<T>::lineApply (Lattice<T>& latticeOut,
+				 const Lattice<T>& latticeIn,
+				 const PixelRegion& region,
+				 LineCollapser<T>& collapser,
+				 uInt collapseAxis,
+				 LatticeProgress* tellProgress)
 {
+// Make veracity check on input and output lattice
+// and work out map to translate input and output axes.
 
-// First verify that all the output lattices have the same shape and tile shape
+    IPosition ioMap = prepare (region.box().length(), latticeOut.shape(),
+			       IPosition(1,collapseAxis));
 
-    const Int nOut = latticeOut.nelements();
-    AlwaysAssert(nOut > 0, AipsError);
-    const IPosition shape(latticeOut[0]->shape());
-    const uInt outDim = shape.nelements();
-    for (Int i=1; i<nOut; i++) {
-	AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
-    }
+// Input lines are extracted with the TiledLineStepper.
 
-// Make veracity check now on input and first output lattices
-// and work out map to translate input and output axes
-
-    IPosition blc(blcU);
-    IPosition trc(trcU);
-    IPosition inc;
-////    IPosition inc(incU);
-    IPosition ioMap;
-    prepare (ioMap, blc, trc, inc, latticeIn, *(latticeOut[0]),
-	     profileAxis, dropAxis);
-
-// Input profiles are extracted with the TiledLineStepper.
-
-    IPosition inTileShape = latticeIn.niceCursorShape (latticeIn.maxPixels());
-    TiledLineStepper inNav(latticeIn.shape(), inTileShape, profileAxis);
-    inNav.subSection (blc, trc);
+    const IPosition& inShape = latticeIn.shape();
+    IPosition inTileShape = latticeIn.niceCursorShape();
+    TiledLineStepper inNav(inShape, inTileShape, collapseAxis);
+    inNav.subSection (region.box().start(), region.box().end(),
+		      region.box().stride());
     RO_LatticeIterator<T> inIter(latticeIn, inNav);
-    IPosition latticeShape = inNav.subLatticeShape();
 
-// An output buffer matching the input tile shape is manually created
-// as there is no navigator to do this.
-
-    IPosition outPos(outDim);
-    IPosition outShape(outDim);
-
-// Set up ProgressMeter
-   
-    ProgressMeter* pClock;
-    Double meterValue = 0.0;
-    if (showProgress) {
-	Double nProfiles = shape.product();
-	pClock = new ProgressMeter(0.0, nProfiles, progressTitle,
-				   "Vectors extracted", "", "",
-				   True, max(1,Int(nProfiles/20)));
-    }
-    
-// Iterate
-
-    while (!inIter.atEnd()) {
-
-// Create output buffer shape. Has to be done inside the loop
-// as the tile shape may not fit integrally into the lattice
-
-	for (uInt j=0; j<outDim; j++) {
-	    uInt i = ioMap(j);
-	    outPos(j) = inIter.position()(i);
-	    Int sz = inTileShape(i) - outPos(j) % inTileShape(i);
-	    outShape(j) = min (sz, 1 + trc(i) - outPos(j));
-	    outPos(j) -= blc(i);
+    const IPosition& blc = region.box().start();
+    const IPosition& trc = region.box().end();
+    const IPosition& inc = region.box().stride();
+    const IPosition& len = region.box().length();
+    const uInt outDim = latticeOut.ndim();
+    IPosition outPos(outDim, 0);
+    IPosition outShape(outDim, 1);
+    for (uInt i=0; i<outDim; i++) {
+	if (ioMap(i) >= 0) {
+	    outShape(i) = len(ioMap(i));
 	}
-	if (outDim == blc.nelements()) {
-	    outShape(profileAxis) = 1;
+    }
+
+// Set the number of expected steps.
+// This is the number of lines to process.
+// Also give the number of resulting output pixels per line, so the
+// collapser can check it.
+
+    Int nLine = outShape.product();
+    Int nResult = latticeOut.shape().product() / nLine;
+    AlwaysAssert (nResult==1, AipsError);
+    collapser.init (nResult);
+    if (tellProgress != 0) tellProgress->init (nLine);
+
+// Iterate through all the lines.
+// Per tile the lines (in the collapseAxis direction) are
+// assembled into a single array, which is put thereafter.
+
+    while (! inIter.atEnd()) {
+
+// Calculate output buffer shape. Has to be done inside the loop
+// as the tile shape may not fit integrally into the lattice.
+// It takes care of blc, trc, and inc.
+
+	IPosition pos = inIter.position();
+	for (uInt j=0; j<outDim; j++) {
+	    if (ioMap(j) >= 0) {
+		uInt i = ioMap(j);
+		uInt stPos = (pos(j) - blc(j)) % inc(j); 
+		if (stPos != 0) {
+		    stPos = inc(j) - stPos;
+		}
+		Int sz = inTileShape(i) - pos(i) % inTileShape(i);
+		sz = min (sz, 1 + trc(i) - pos(i)) - stPos;
+		AlwaysAssert (sz > 0, AipsError);
+		outShape(j) = (sz + inc(i) - 1) / inc(i);
+		outPos(j) = (pos(i) - blc(i)) / inc(i);
+	    }
 	}
 //      cout << outShape << " put at " << outPos << endl;
 	
-// Put the collapsed vectors into the output buffer
+// Put the collapsed lines into an output buffer
+	
+	Array<T> array(outShape);
+	Bool deleteIt;
+	T* data = array.getStorage (deleteIt);
+	uInt n = array.nelements() / nResult;
+	for (uInt i=0; i<n; i++) {
+	    DebugAssert (! inIter.atEnd(), AipsError);
+	    data[i] = collapser.process (inIter.vectorCursor(),
+					 inIter.position());
+	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
+	    inIter++;
+	}
+	array.putStorage (data, deleteIt);
+	latticeOut.putSlice (array, outPos);
+    }
+    if (tellProgress != 0) tellProgress->done();
+}
+
+
+
+template <class T>
+void LatticeApply<T>::lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
+				      const Lattice<T>& latticeIn,
+				      const PixelRegion& region,
+				      LineCollapser<T>& collapser,
+				      uInt collapseAxis,
+				      LatticeProgress* tellProgress)
+{
+// First verify that all the output lattices have the same shape and tile shape
+
+    uInt i;
+    const uInt nOut = latticeOut.nelements();
+    AlwaysAssert(nOut > 0, AipsError);
+    const IPosition shape(latticeOut[0]->shape());
+    const uInt outDim = shape.nelements();
+    for (i=1; i<nOut; i++) {
+	AlwaysAssert(latticeOut[i]->shape() == shape, AipsError);
+    }
+
+// Make veracity check on input and first output lattice
+// and work out map to translate input and output axes.
+
+    IPosition ioMap = prepare (region.box().length(), shape,
+			       IPosition(1,collapseAxis));
+
+// Input lines are extracted with the TiledLineStepper.
+
+    const IPosition& inShape = latticeIn.shape();
+    IPosition inTileShape = latticeIn.niceCursorShape();
+    TiledLineStepper inNav(inShape, inTileShape, collapseAxis);
+    inNav.subSection (region.box().start(), region.box().end(),
+		      region.box().stride());
+    RO_LatticeIterator<T> inIter(latticeIn, inNav);
+
+    const IPosition& blc = region.box().start();
+    const IPosition& trc = region.box().end();
+    const IPosition& inc = region.box().stride();
+    const IPosition& len = region.box().length();
+    IPosition outPos(outDim, 0);
+    IPosition outShape(outDim, 1);
+    for (i=0; i<outDim; i++) {
+	if (ioMap(i) >= 0) {
+	    outShape(i) = len(ioMap(i));
+	}
+    }
+
+// Set the number of expected steps.
+// This is the number of lines to process.
+// Also give the number of resulting output pixels per line, so the
+// collapser can it.
+
+    Int nLine = outShape.product();
+    Int nResult = shape.product() / nLine;
+    AlwaysAssert (nResult==1, AipsError);
+    collapser.init (nResult);
+    if (tellProgress != 0) tellProgress->init (nLine);
+
+// Iterate through all the lines.
+// Per tile the lines (in the collapseAxis) direction are
+// assembled into a single array, which is put thereafter.
+
+    while (!inIter.atEnd()) {
+
+// Calculate output buffer shape. Has to be done inside the loop
+// as the tile shape may not fit integrally into the lattice.
+// It takes care of blc, trc, and inc.
+
+	IPosition pos = inIter.position();
+	for (uInt j=0; j<outDim; j++) {
+	    if (ioMap(j) >= 0) {
+		uInt i = ioMap(j);
+		uInt stPos = (pos(j) - blc(j)) % inc(j); 
+		if (stPos != 0) {
+		    stPos = inc(j) - stPos;
+		}
+		Int sz = inTileShape(i) - pos(i) % inTileShape(i);
+		sz = min (sz, 1 + trc(i) - pos(i)) - stPos;
+		AlwaysAssert (sz > 0, AipsError);
+		outShape(j) = (sz + inc(i) - 1) / inc(i);
+		outPos(j) = (pos(i) - blc(i)) / inc(i);
+	    }
+	}
+//      cout << outShape << " put at " << outPos << endl;
+	
+// Put the collapsed lines into the output buffer
 // The buffer contains nOut arrays (and is filled that way).
 	
-	Bool deleteIt;
 	uInt n = outShape.product();
 	Block<T> block(n*nOut);
 	T* data = block.storage();
 	for (uInt i=0; i<n; i++) {
-	    Vector<T>& result = collapser.multiCollapse (inIter.vectorCursor(),
-							 inIter.position());
+	    DebugAssert (! inIter.atEnd(), AipsError);
+	    Vector<T>& result = collapser.multiProcess (inIter.vectorCursor(),
+							inIter.position());
 	    DebugAssert (result.nelements() == nOut, AipsError);
 	    T* datap = data+i;
 	    for (uInt j=0; j<nOut; j++) {
 		*datap = result(j);
 		datap += n;
 	    }
+	    if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
 	    inIter++;
 	}
 
@@ -240,85 +295,247 @@ void LatticeApply<T>::vectorMultiApply (PtrBlock<Lattice<T>*>& latticeOut,
 	    Array<T> tmp (outShape, data + k*n, SHARE);
 	    latticeOut[k]->putSlice (tmp, outPos);
 	}
-	
-// Update progress meter
-	
-	if (showProgress) {
-	    meterValue += 1.0;
-	    pClock->update (meterValue);
+    }
+    if (tellProgress != 0) tellProgress->done();
+}
+
+
+template <class T>
+void LatticeApply<T>::tiledApply (Lattice<T>& latticeOut,
+				  const Lattice<T>& latticeIn,
+				  const PixelRegion& region,
+				  TiledCollapser<T>& collapser,
+				  const IPosition& collapseAxes,
+				  LatticeProgress* tellProgress)
+{
+// Make veracity check on input and first output lattice
+// and work out map to translate input and output axes.
+
+    uInt i,j;
+    IPosition ioMap = prepare (region.box().length(), latticeOut.shape(),
+			       collapseAxes);
+
+// The input is traversed using a TileStepper.
+
+    const IPosition& inShape = latticeIn.shape();
+    const uInt inDim = inShape.nelements();
+    IPosition inTileShape = latticeIn.niceCursorShape();
+    TileStepper inNav(inShape, inTileShape, collapseAxes);
+    inNav.subSection (region.box().start(), region.box().end(),
+		      region.box().stride());
+    RO_LatticeIterator<T> inIter(latticeIn, inNav);
+
+// Precalculate various variables.
+
+    const IPosition& blc = region.box().start();
+    const IPosition& trc = region.box().end();
+    const IPosition& inc = region.box().stride();
+    const uInt collDim = collapseAxes.nelements();
+    const uInt iterDim = inDim - collDim;
+    IPosition iterAxes(iterDim);
+    IPosition outShape(latticeOut.shape());
+    const uInt outDim = outShape.nelements();
+    j = 0;
+    for (i=0; i<outDim; i++) {
+	if (ioMap(i) >= 0) {
+	    outShape(i) = 1;
+	    iterAxes(j++) = i;
 	}
     }
-    if (showProgress) delete pClock;
+
+//    cout << "ioMap      " << ioMap << endl;
+//    cout << "iterAxes   " << iterAxes << endl;
+//    cout << "outShape   " << outShape << endl;
+
+// Set the number of expected steps.
+// This is the number of tiles to process.
+// Also give the number of resulting output pixels per line, so the
+// collapser can check it.
+
+    uInt nsteps = 1;
+    for (j=0; j<inDim; j++) {
+	nsteps *= 1 + trc(j)/inTileShape(j) - blc(j)/inTileShape(j);
+    }
+    collapser.init (outShape.product());
+    if (tellProgress != 0) tellProgress->init (nsteps);
+//    cout << "nsteps     " << nsteps << endl;
+
+// Determine the axis where the collapsed values are stored in the output.
+// This is the first unmapped axis (the first axis when all axes are mapped).
+    uInt resultAxis = 0;
+    for (j=0; j<outDim; j++) {
+	if (ioMap(j) < 0) {
+	    resultAxis = j;
+	    break;
+	}
+    }
+
+// Iterate through all the tiles.
+// TileStepper is set up in such a way that the collapse axes are iterated
+// fastest. When all collapse axes are handled, thus when the iter axes
+// position changes, we have to write that part.
+
+    Bool firstTime = True;
+    IPosition outPos(outDim, 0);
+    IPosition iterPos(outDim, 0);
+    Array<T> array;
+    while (! inIter.atEnd()) {
+
+// Calculate the size of each chunk of output data.
+// Each chunk contains the data of a tile in each IterAxis.
+// Determine the index of the first element to take from the cursor.
+
+	const Array<T>& cursor = inIter.cursor();
+	const IPosition& cursorShape = cursor.shape();
+	IPosition pos = inIter.position();
+	for (j=0; j<outDim; j++) {
+	    if (ioMap(j) >= 0) {
+		uInt axis = ioMap(j);
+		iterPos(j) = (pos(axis) - blc(axis)) / inc(axis);
+	    }
+	}
+	if (firstTime  ||  outPos != iterPos) {
+	    if (!firstTime) {
+		latticeOut.putSlice (array, outPos);
+	    }
+	    firstTime = False;
+	    outPos = iterPos;
+	    for (j=0; j<outDim; j++) {
+		if (ioMap(j) >= 0) {
+		    outShape(j) = cursorShape(ioMap(j));
+		}
+	    }
+	    array.resize (outShape);
+	    collapser.initAccumulator (array);
+	}
+
+// Put the collapsed lines into an output buffer
+// Determine the increment between elements in output array.
+// Initialize some positions needed in the loop.
+
+	uInt outIncr = 1;
+	for (j=0; j<resultAxis; j++) {
+	    outIncr *= outShape(j);
+	}
+	IPosition curPos (inDim, 0);
+	IPosition arrPos (outDim, 0);
+
+// Determine the increment for the first collapse axes.
+// This is done by taking the difference between the adresses of two pixels
+// in the cursor (if there are 2 pixels).
+
+	const uInt axis = collapseAxes(0);
+	uInt nval = cursorShape(axis);
+	uInt incr = 0;
+	if (nval > 1) {
+	    IPosition pos(inDim, 0);
+	    const T* p1 = &(cursor(pos));
+	    pos(axis) = 1;
+	    incr = &(cursor(pos)) - p1;
+	}
+	
+//	cout << " cursorShape " << cursorShape << endl;
+//	cout << " incr        " << incr << endl;
+//	cout << " nval        " << nval << endl;
+
+// Iterate in the outer loop through the iterator axes.
+// Iterate in the inner loop through the collapse axes.
+
+	for (;;) {
+	    T* arrData = &(array(arrPos));
+	    for (;;) {
+//	        cout << curPos << ' ' << collPos << endl;
+		collapser.process (arrData, outIncr,
+				   &(cursor(curPos)), incr, nval);
+		// Increment a sum axis until all axes are handled.
+		for (j=1; j<collDim; j++) {
+		    uInt axis = collapseAxes(j);
+		    if (++curPos(axis) < cursorShape(axis)) {
+			break;
+		    }
+		    curPos(axis) = 0;               // restart this axis
+		}
+		if (j == collDim) {
+		    break;                          // all axes are handled
+		}
+	    }
+	
+// Increment an iteration axis until all iteration axes are handled.
+	
+	    for (j=0; j<iterDim; j++) {
+		uInt arraxis = iterAxes(j);
+		uInt axis = ioMap(arraxis);
+		++arrPos(arraxis);
+		if (++curPos(axis) < cursorShape(axis)) {
+		    break;
+		}
+		arrPos(arraxis) = 0;
+		curPos(axis) = 0;
+	    }
+	    if (j == iterDim) {
+		break;
+	    }
+	}
+	if (tellProgress != 0) tellProgress->nstepsDone (inIter.nsteps());
+	inIter++;
+    }
+
+// Write out the last output array.
+    latticeOut.putSlice (array, outPos);
+    if (tellProgress != 0) tellProgress->done();
 }
 
 
 
-
-
 template <class T>
-void LatticeApply<T>::prepare (IPosition& ioMap, 
-			       IPosition& inBlc,
-			       IPosition& inTrc,
-			       IPosition& inInc,
-			       const Lattice<T>& latticeIn,
-			       Lattice<T>& latticeOut,
-			       const Int profileAxis,
-			       const Bool dropAxis)
-{   
-    IPosition inc(latticeIn.ndim(),1);
-    ImageUtilities::verifyRegion (inBlc, inTrc, inc, latticeIn.shape());
-
-    IPosition inTileShape = latticeIn.niceCursorShape(latticeIn.maxPixels());
-    IPosition outTileShape = latticeOut.niceCursorShape(latticeOut.maxPixels());
-//   cout << "in, out tile shapes =" << inTileShape << ", " << outTileShape << endl;
-
-    IPosition outShape = latticeOut.shape();
-    IPosition inShape = inTrc - inBlc + 1;
-
-
-// Setup
-
-    const Int inDim = latticeIn.ndim();
-    const Int outDim = latticeOut.ndim();
-    ioMap.resize(outDim);
-    Int i, j;
-    
-    if (dropAxis) {
-
-// Make a little map of the input to the output axes.  ioMap(i)
-// is the axis of the input that goes on output axis i
-
-	for (i=0,j=0; i<inDim; i++) {
-	    if (i != profileAxis) {
-		ioMap(j) = i;
-		j++;
-	    }
-	}            
-
-// Check conformancy.   The collapsed axis is discarded and
-// everything shifted down one.
-
-	AlwaysAssert(outDim == inDim-1, AipsError);
-	AlwaysAssert(profileAxis >= 0 && profileAxis <= inDim-1, AipsError);
-	for (i=0; i<outDim; i++) {
-	    AlwaysAssert(outShape(i) == inShape(ioMap(i)), AipsError);
+IPosition LatticeApply<T>::prepare (const IPosition& inShape,
+				    const IPosition& outShape,
+				    const IPosition& collapseAxes)
+{
+    uInt i;
+    // Check if the dimensionality of input and output match.
+    const uInt inDim  = inShape.nelements();
+    const uInt outDim = outShape.nelements();
+    const uInt collDim = collapseAxes.nelements();
+    uInt ndim = inDim - collDim;
+    if (outDim < ndim) {
+	throw (AipsError ("LatticeApply::prepare - dimensionalities mismatch"));
+    }
+    // Check the collapseAxes specification (using the makeAxisPath logic).
+    // Also check if they are ascending.
+    IPosition allAxes = IPosition::makeAxisPath (inDim, collapseAxes);
+    for (i=1; i<collDim; i++) {
+	AlwaysAssert (collapseAxes(i) > collapseAxes(i-1), AipsError);
+    }
+    IPosition ioMap(outDim, -1);
+    // Make a little map of the input to the output axes.
+    // ioMap(j) is the axis of the input that goes on output axis j.
+    // Also check if the length of these axes match for input and output.
+    uInt k=0;
+    for (i=collDim; i<inDim; i++) {
+	uInt axis = allAxes(i);
+	while (k < outDim  &&  inShape(axis) != outShape(k)) {
+	    k++;
 	}
-    } else {
-
-// Axis map is just one-to-one
-
-	for (i=0; i<inDim; i++) ioMap(i) = i;
-
-// Check conformancy
-
-	AlwaysAssert(outDim == inDim, AipsError);
-	AlwaysAssert(outShape(profileAxis) == 1, AipsError);
-	AlwaysAssert(profileAxis >= 0 && profileAxis <= inDim-1, AipsError);
-	
-	for (i=0; i<outDim; i++) {
-	    if (i != profileAxis) {
-		AlwaysAssert(outShape(i) == inShape(i), AipsError);
+	if (k == outDim) {
+	    throw (AipsError ("LatticeApply::prepare - "
+			      "non-collapsed input and output shape mismatch"));
+	}
+	ioMap(k) = axis;
+	k++;
+    }
+    // Make sure the non-mapped axes are consecutive.
+    uInt flag = 0;
+    for (i=0; i<outDim; i++) {
+	if (ioMap(i) < 0) {
+	    if (flag == 2) {
+		throw (AipsError ("LatticeApply::prepare - "
+				  "new output axes are not consecutive"));
 	    }
+	    flag = 1;
+	} else if (flag == 1) {
+	    flag = 2;              // Mapped axes after non-mapped axes
 	}
     }
+    return ioMap;
 }
