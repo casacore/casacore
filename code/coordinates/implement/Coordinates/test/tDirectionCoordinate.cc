@@ -583,22 +583,15 @@ void doit4 (DirectionCoordinate& dC)
 {
    Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
    Vector<Bool> pixelAxes(2), worldAxes(2);
-   Vector<Double> minWorld(2), maxWorld(2);
+   Vector<Double> minWorld, maxWorld;
    Vector<String> units = dC.worldAxisUnits();
    Vector<Double> refVal = dC.referenceValue();
 //
-   Quantum<Double> off(10,Unit("deg"));
-   off.convert(Unit(units(0)));
-   Double tmp = refVal(0) - off.getValue();
-   minWorld(0) = tmp;
-   tmp = refVal(0) + off.getValue();
-   maxWorld(0) = tmp;
-//
-   off.convert(Unit(units(1)));
-   tmp = refVal(1) - off.getValue();
-   minWorld(1) = tmp;
-   tmp = refVal(1) + off.getValue();
-   maxWorld(1) = tmp;
+   IPosition shape(2, 512);
+   if (!dC.setMixRanges(minWorld, maxWorld, shape)) {
+      throw(AipsError(String("setMixRanges failed because ") + dC.errorMessage()));
+   }
+
 //
 // Forced errors
 //

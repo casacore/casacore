@@ -1181,15 +1181,15 @@ void doit4()
    Vector<Bool> pixelAxes(cSys.nPixelAxes());
    Vector<Bool> worldAxes(cSys.nWorldAxes());
    Vector<Double> worldOut, pixelOut;
-   Vector<Double> worldMin(cSys.nWorldAxes());
-   Vector<Double> worldMax(cSys.nWorldAxes());
+   Vector<Double> worldMin;
+   Vector<Double> worldMax;
+   IPosition shape(cSys.nPixelAxes(), 512);
+   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
+      throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
+   }
 //
    Vector<Double> dRefVal = dC.referenceValue();   
    Vector<Int> tmp = cSys.worldAxes(2);
-   worldMin(tmp(0)) = dRefVal(0) - 10.0;
-   worldMax(tmp(0)) = dRefVal(1) + 10.0;
-   worldMin(tmp(1)) = dRefVal(1) - 10.0;
-   worldMax(tmp(1)) = dRefVal(1) + 10.0;
 //
 // Force a failure.   ALl axes must be pixel or world
 //
@@ -1219,7 +1219,7 @@ void doit4()
    Vector<Double> worldOut2;
    if (!cSys.toMix(worldOut2, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 1 conversion failed because ")
             + cSys.errorMessage()));
    }
    if (!allNear(worldOut, worldOut2, 1e-6)) {
@@ -1242,7 +1242,7 @@ void doit4()
    Vector<Double> pixelOut2;
    if (!cSys.toMix(worldOut, pixelOut2, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 2 conversion failed because ")
             + cSys.errorMessage()));
    }
    if (!allNear(pixelOut, pixelOut2, 1e-6)) {
@@ -1269,7 +1269,7 @@ void doit4()
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 3 conversion failed because ")
             + cSys.errorMessage()));
    }
 //
@@ -1296,7 +1296,7 @@ void doit4()
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 4 conversion failed because ")
             + cSys.errorMessage()));
    }
    if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
@@ -1309,7 +1309,7 @@ void doit4()
 // Now a non-reference value/pixel reflection test
 //
    pixelIn(1) = 20.12;                      // Spectral pixel
-   pixelIn(3) = 183.54;                     // Direction lat pixel
+   pixelIn(3) = shape(3) - 20;              // Direction lat pixel
    pixelAxes.set(False);
    pixelAxes(1) = True;
    pixelAxes(3) = True;
@@ -1325,7 +1325,7 @@ void doit4()
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 5 conversion failed because ")
             + cSys.errorMessage()));
    }
 //
@@ -1343,7 +1343,7 @@ void doit4()
 //
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 6 conversion failed because ")
             + cSys.errorMessage()));
    }
 //
@@ -1368,6 +1368,9 @@ void doit4()
    for (uInt i=0; i<wOrder.nelements(); i++) wOrder(i) = wOrder.nelements()-i-1;
    for (uInt i=0; i<pOrder.nelements(); i++) pOrder(i) = i;
    cSys.transpose(wOrder, pOrder);
+   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
+      throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
+   }
 //
    pixelIn(1) = cSys.referencePixel()(1);   // Spectral pixel
    pixelIn(3) = cSys.referencePixel()(3);   // Direction lat pixel
@@ -1381,15 +1384,9 @@ void doit4()
    worldAxes(1) = True;
    worldAxes(3) = True;
 //
-   tmp = cSys.worldAxes(2);
-   worldMin(tmp(0)) = dRefVal(0) - 10.0;
-   worldMax(tmp(0)) = dRefVal(0) + 10.0;
-   worldMin(tmp(1)) = dRefVal(1) - 10.0;
-   worldMax(tmp(1)) = dRefVal(1) + 10.0;
-//
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 7 conversion failed because ")
             + cSys.errorMessage()));
    }
    if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
@@ -1405,6 +1402,9 @@ void doit4()
    for (uInt i=0; i<wOrder.nelements(); i++) wOrder(i) = i;
    for (uInt i=0; i<pOrder.nelements(); i++) pOrder(i) = pOrder.nelements()-i-1;
    cSys.transpose(wOrder, pOrder);
+   if (!cSys.setMixRanges(worldMin, worldMax, shape)) {
+      throw(AipsError(String("setMixRanges failed with ") + cSys.errorMessage()));
+   }
 //
    pixelIn(2) = cSys.referencePixel()(2);   // Spectral pixel
    pixelIn(0) = cSys.referencePixel()(0);   // Direction lat pixel
@@ -1420,7 +1420,7 @@ void doit4()
 //
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
                    worldAxes, pixelAxes, worldMin, worldMax)) {
-      throw(AipsError(String("toMix conversion failed because ")
+      throw(AipsError(String("toMix 8 conversion failed because ")
             + cSys.errorMessage()));
    }
    if (!allNear(worldOut, cSys.referenceValue(), 1e-8)) {
