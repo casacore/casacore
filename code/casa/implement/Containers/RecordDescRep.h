@@ -321,7 +321,7 @@ inline Bool RecordDescRep::isArray (Int whichField) const
 
 inline Bool RecordDescRep::isScalar (Int whichField) const
 {
-    return isScalar (DataType(types_p[whichField]));
+    return isScalarFun (DataType(types_p[whichField]));
 }
 
 inline Bool RecordDescRep::isSubRecord (Int whichField) const
