@@ -1,5 +1,5 @@
 //# MSDataDescIndex.cc: implementation of MSDataDescIndex.h
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -80,7 +80,7 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds)
 //
   Vector<Int> matchedDataDescIds;
   // Match each spw id individually
-  for (Int spwid=0; spwid<spwIds.nelements(); spwid++) {
+  for (uInt spwid=0; spwid<spwIds.nelements(); spwid++) {
     // Add to list of datadesc id's
     Vector<Int> currentMatch = matchSpwId(spwIds(spwid));
     if (currentMatch.nelements() > 0) {
@@ -94,5 +94,26 @@ Vector<Int> MSDataDescIndex::matchSpwId(const Vector<Int>& spwIds)
 };
 
 //-------------------------------------------------------------------------
+
+Vector<Int> MSDataDescIndex::matchSpwIdAndPolznId(const Int& spwId,
+						  const Int& polznId)
+{
+// Match a spw. id. and polzn. id. to a set of data desc id.'s
+// Input:
+//    spwId                  const Int&            Spw id. to match
+//    polznId                const Int&            Polzn. id. to match
+// Output:
+//    matchSpwIdAndPolznId   Vector<Int>           Matching data desc id's
+//
+  LogicalArray maskArray = 
+    (msDataDescCols_p.spectralWindowId().getColumn()==spwId &&
+     msDataDescCols_p.polarizationId().getColumn()==polznId &&
+     !msDataDescCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskDataDescId(dataDescIds_p, maskArray);
+  return maskDataDescId.getCompressedArray();
+}; 
+
+//-------------------------------------------------------------------------
+
 
 

@@ -1,5 +1,5 @@
 //# MSDataDescIndex: index or lookup in a MeasurementSet DATA_DESC subtable
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -89,6 +89,9 @@ public:
   // Look up DATA_DESC_ID's for a given spectral window id
   Vector<Int> matchSpwId(const Int& spwId);
   Vector<Int> matchSpwId(const Vector<Int>& spwIds);
+
+  // Look up DATA_DESC_ID's for a given spectral window and polarization id.
+  Vector<Int> matchSpwIdAndPolznId(const Int& spwId, const Int& polznId);
 
 private:
   // Disallow null constructor
