@@ -1,4 +1,4 @@
-//# tMSDataDescBuffer.cc:
+//# tMSDataDescColumns.cc:
 //# Copyright (C) 2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,103 +26,69 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/MeasurementSets/MSDataDescBuffer.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/MeasurementSets/NewMSDataDescColumns.h>
 #include <aips/MeasurementSets/NewMSDataDescription.h>
 #include <aips/Tables/SetupNewTab.h>
-#include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <iostream.h>
 
+void putData(NewMSDataDescColumns& cols) {
+  // test the spectralWindowId functions.
+  cols.spectralWindowId().put(0, 0);
+  cols.spectralWindowId().put(4, 1);
+  // test the polarizationId functions.
+  cols.polarizationId().put(0, 1);
+  cols.polarizationId().put(4, 3);
+  // test the flagRow functions.
+  cols.flagRow().put(0, False);
+  cols.flagRow().put(4, True);
+}
+
+void getData(const RONewMSDataDescColumns& cols) {
+  // test the spectralWindowId functions.
+  AlwaysAssert(cols.spectralWindowId()(0) == 0, AipsError);
+  AlwaysAssert(cols.spectralWindowId()(4) == 1, AipsError);
+  // test the polarizationId functions.
+  AlwaysAssert(cols.polarizationId()(0) == 1, AipsError);
+  AlwaysAssert(cols.polarizationId()(4) == 3, AipsError);
+  // test the flagRow functions.
+  AlwaysAssert(cols.flagRow()(0) == False, AipsError);
+  AlwaysAssert(cols.flagRow()(4) == True, AipsError);
+  // Check the optional columns do not exist
+  AlwaysAssert(cols.lagId().isNull() == True, AipsError);
+}
+
 int main() {
-  const String filename1 = "tMSDataDescBuffer1_tmp.table";
-  const String filename2= "tMSDataDescBuffer2_tmp.table";
   try {
-    // Check the constructor
-    SetupNewTable setup1(filename1, NewMSDataDescription::requiredTableDesc(), 
-			Table::Scratch);
-    MSDataDescBuffer newBuffer(setup1);
-    // test the ok function.
-    AlwaysAssert(newBuffer.ok(), AipsError);
-    // test the addRow & nrow functions.
-    AlwaysAssert(newBuffer.nrow() == 0, AipsError);
-    newBuffer.addRow(20);
-    AlwaysAssert(newBuffer.ok(), AipsError);
-    AlwaysAssert(newBuffer.nrow() == 20, AipsError);
-    {
-      SetupNewTable setup2(filename2, 
-			  NewMSDataDescription::requiredTableDesc(),
+    const String filename = "tMSDataDescColumns_tmp.table";
+    { // Check the RW class
+      SetupNewTable setup(filename, NewMSDataDescription::requiredTableDesc(), 
 			  Table::New);
-      MSDataDescBuffer buffer(setup2);
-      { // test the addRow & nrow functions.
-  	AlwaysAssert(buffer.nrow() == 0, AipsError);
-  	buffer.addRow(5);
-  	AlwaysAssert(buffer.nrow() == 5, AipsError);
-      }
-      { // test the spectralWindowId functions.
-  	AlwaysAssert(buffer.spectralWindowId()(0) == -1, AipsError);
-  	AlwaysAssert(buffer.spectralWindowId()(4) == -1, AipsError);
-  	buffer.spectralWindowId().put(0, 0);
-  	buffer.spectralWindowId().put(4, 1);
-      }
-      { // test the polarizationId functions.
- 	AlwaysAssert(buffer.polarizationId()(0) == -1, AipsError);
- 	AlwaysAssert(buffer.polarizationId()(4) == -1, AipsError);
- 	buffer.polarizationId().put(0, 1);
- 	buffer.polarizationId().put(4, 3);
-      }
-      { // test the flagRow functions.
-  	AlwaysAssert(buffer.flagRow()(0) == False, AipsError);
-  	AlwaysAssert(buffer.flagRow()(4) == False, AipsError);
-  	buffer.flagRow().put(4, True);
-      }
-      { // Check the assignment operator & copy constructor
-   	MSDataDescBuffer otherBuffer(buffer);
-   	AlwaysAssert(otherBuffer.ok(), AipsError);
-   	AlwaysAssert(otherBuffer.nrow() == 5, AipsError);
-	newBuffer = otherBuffer;
-   	AlwaysAssert(newBuffer.ok(), AipsError);
-	// Check the reference semantics by adding data here and seeing if it
-	// is mirrored into the newBuffer object.
-	buffer.spectralWindowId().put(1, 100);
-	buffer.polarizationId().put(1, 101);
-	buffer.flagRow().put(1, True);
-      }
+      NewMSDataDescription table(setup, 5);
+      // Check the constructor
+      NewMSDataDescColumns cols(table);
+      // test the nrow function.
+      AlwaysAssert(cols.nrow() == 5, AipsError);
+      // Put data into the table
+      putData(cols);
+      // Check the data is still there
+      getData(cols);
+    } // Close the table
+
+    {// Check the RO class
+      const NewMSDataDescription table(filename, Table::Old);
+      // Check the constructor
+      const RONewMSDataDescColumns cols(table);
+      // Check the data is still there
+      getData(cols);
     }
-    { // check the data has not been lost.
-      AlwaysAssert(newBuffer.nrow() == 5, AipsError);
-      AlwaysAssert(newBuffer.spectralWindowId()(0) ==  0, AipsError);
-      AlwaysAssert(newBuffer.spectralWindowId()(4) ==  1, AipsError);
-      AlwaysAssert(newBuffer.polarizationId()(0) ==  1, AipsError);
-      AlwaysAssert(newBuffer.polarizationId()(4) ==  3, AipsError);
-      AlwaysAssert(newBuffer.flagRow()(0) == False, AipsError);
-      AlwaysAssert(newBuffer.flagRow()(4) == True, AipsError);
-      // check the reference semantics
-      AlwaysAssert(newBuffer.spectralWindowId()(1) ==  100, AipsError);
-      AlwaysAssert(newBuffer.polarizationId()(1) ==  101, AipsError);
-      AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
+    {// Delete the table
+      NewMSDataDescription table(filename, Table::Old);
+      table.markForDelete();
     }
-    { // Check the isValid functions
-      AlwaysAssert(newBuffer.isValid(True) == False, AipsError);
-      AlwaysAssert(newBuffer.isValid(3u) == False, AipsError);
-      AlwaysAssert(newBuffer.isValid(4u) == True, AipsError);
-      AlwaysAssert(newBuffer.isValid() == False, AipsError);
-    }
-    { // Check the match functions
-    }
-  }
-  catch (AipsError x) {
-    cerr << x.getMesg() << endl;
-    cout << "FAIL" << endl;
-    return 1;
-  }
-  try {
-    // Check that the Table ended up on disk
-    NewMSDataDescription ms(filename2);
-    ms.markForDelete();
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
@@ -133,5 +99,5 @@ int main() {
 }
 
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 XLIBLIST=0 tMSDataDescBuffer"
+// compile-command: "gmake OPTLIB=1 XLIBLIST=0 tMSDataDescColumns"
 // End: 
