@@ -2807,8 +2807,37 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
 
 Bool CoordinateSystem::getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 
 //
-// I am pretty sure I am reading these into the matrix
-// in the correct order.  I have done substantial checking.
+// We have to read the CDj_i cards and ultimately pack them into the 
+// WCS linprm structure in the right order.  
+// The expected order in WCS linprm is 
+//
+//  lin.pc = {CD1_1, CD1_2, CD2_1, CD2_2}  ...
+//
+// You can get this via
+//
+//  pc[2][2] = {{CD1_1, CD1_2},
+//              {CD2_1, CD2_2}}
+//
+// which is to say,
+//
+//  pc[0][0] = CD1_1,
+//  pc[0][1] = CD1_2,
+//  pc[1][0] = CD2_1,
+//  pc[1][1] = CD2_2,
+//
+// for which the storage order is
+//
+//  CD1_1, CD1_2, CD2_1, CD2_2
+//
+// so linprm will be happy if you set 
+//
+//  lin.pc = *pc;
+//
+// This packing and unpacking actually happens in
+// LinearXform::set_linprm and LinearXform::pc
+//
+// as we stuff the CD matrix inro the PC matrix 
+// and set cdelt = 1 deg
 //
 {
    cd.resize(n,n);
