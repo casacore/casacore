@@ -1,5 +1,5 @@
 //# SDHistoryHandler.cc: an HISTORY handler for SDFITS data  
-//# Copyright (C) 2000
+//# Copyright (C) 2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Quanta/MVTime.h>
 

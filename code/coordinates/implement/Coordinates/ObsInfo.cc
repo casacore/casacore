@@ -1,5 +1,5 @@
 //# ObsInfo.cc: Miscellaneous information related to an observation
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,8 @@
 #include <aips/Quanta/MVTime.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Containers/Record.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
+#include <aips/Mathematics/Constants.h>
 
 #include <aips/iostream.h>
 

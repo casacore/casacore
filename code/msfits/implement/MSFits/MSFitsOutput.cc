@@ -36,7 +36,7 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/FITS/fitsio.h>
 #include <trial/FITS/FITSTable.h>
-#include <trial/FITS/FITSUtil.h>
+#include <trial/FITS/FITSDateUtil.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MatrixMath.h>
