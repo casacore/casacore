@@ -1,5 +1,5 @@
 //# <ClassFileName.h>: this defines <ClassName>, which ...
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,13 +29,14 @@
 #include <trial/Coordinates/Projection.h>
 #include <aips/Exceptions/Error.h>
 
-Projection::Projection(Type which) : which_p(which), parameters_p(0)
+Projection::Projection(Projection::Type which) 
+: which_p(which), parameters_p(0)
 {
     validate();
 }
 
-Projection::Projection(Type which, const Vector<Double> &parameters)
-    : which_p(which), parameters_p(parameters.copy())
+Projection::Projection(Projection::Type which, const Vector<Double> &parameters)
+: which_p(which), parameters_p(parameters.copy())
 {
     validate();
 }
@@ -69,7 +70,7 @@ String Projection::name() const
     return name(which_p);
 }
 
-String Projection::name(Type proj)
+String Projection::name(Projection::Type proj)
 {
     switch (proj) {
     case AZP: return "AZP";

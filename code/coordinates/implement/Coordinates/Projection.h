@@ -1,5 +1,5 @@
 //# Projection.h: Geometric parameters needed for a sky projection to a plane
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,11 +132,11 @@ public:
 
     // Create a projection which needs no parameters. SIN is unique in that
     // it can be created with 0 or 2 parameters.
-    Projection(Type which=CAR);
+    Projection(Projection::Type which=CAR);
 
     // Create a projection which needs parameters. The parameter vector must be
     // the length of the required number of parameters.
-    Projection(Type which, const Vector<Double> &parameters);
+    Projection(Projection::Type which, const Vector<Double> &parameters);
 
     // Overwrite this projection with other (copy semantics).
     // <group>
@@ -147,21 +147,21 @@ public:
     ~Projection();
 
     // What is the Type of this projection?
-    Type type() const;
+    Projection::Type type() const;
 
     // What is the type of this projection as a String (e.g. "SIN").
     // <group>
     String name() const;
-    static String name(Type proj);
+    static String name(Projection::Type proj);
     // </group>
 
     // Turn a projection type name into a Type. Used during I/O primarily.
     // Returns N_PROJ if the projection is not known.
-    static Type type(const String &name);
+    static Projection::Type type(const String &name);
 
     // How many parameters does this projection have, and what are they?
     // <group>
-    static uInt nParameters(Type proj);
+    static uInt nParameters(Projection::Type proj);
     const Vector<Double> &parameters() const;
     // </group>
 
@@ -169,7 +169,7 @@ public:
     Bool near(const Projection &other, Double Tol) const;
 
 private:
-    Type which_p;
+    Projection::Type which_p;
     Vector<Double> parameters_p;
 
     void validate();
