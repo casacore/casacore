@@ -245,7 +245,13 @@ void doit2 ()
 
    {
       cerr << "Assignment" << endl;
-      LatticeSlice1D<Float> slicer2(inML, LatticeSlice1D<Float>::NEAREST);
+      LatticeSlice1D<Float> slicer2;
+      try {
+        slicer2.getSlice (data, mask, blc, trc, nPts);
+      } catch (AipsError x) {
+        cerr << "Caught expected exception " << x.getMesg() << endl;
+      }
+//
       LatticeSlice1D<Float> slicer3(inML, LatticeSlice1D<Float>::CUBIC);
       slicer2 = slicer3;
       AlwaysAssert(slicer2.interpolationMethod()==LatticeSlice1D<Float>::CUBIC, AipsError);
