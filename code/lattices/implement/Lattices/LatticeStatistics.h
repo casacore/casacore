@@ -623,9 +623,6 @@ private:
 // Accumulators for sum, sum squared, number of points
 // minimum, and maximum
 
-// the typedef here is a workaround for the sun native compiler
-// hopefully this can go away with the new sun compiler.
-
     Block<U> *pSum_p;
     Block<U> *pSumSq_p;
     Block<U>* pNPts_p;

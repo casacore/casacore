@@ -37,6 +37,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Lattices/MaskedLattice.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeApply.h>
@@ -184,7 +185,6 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
          pStoreLattice_p = 0;
       }
       needStorageLattice_p = True;
-
 
 // Do the rest
 
@@ -881,10 +881,6 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 
 template <class T>
 void LatticeStatistics<T>::generateRobust ()
-//
-// Computation presently all single precision
-// but results assigned to Double precision (AccumType)
-//
 {
    Bool showMsg = doRobust_p && displayAxes_p.nelements()==0;
    if (showMsg) os_p << "Computing robust statistics" << LogIO::POST;
@@ -905,18 +901,24 @@ void LatticeStatistics<T>::generateRobust ()
       IPosition pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
 //
       if (doRobust_p) {
+
+// Create SubLattice from chunk
+
          Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
-//
-         LatticeExprNode node(median(*pInLattice_p));
+         SubLattice<T> subLat(*pInLattice_p, slicer);
+
+// Get statistics with LEL
+
+         LatticeExprNode node(median(subLat));
          T dummy = 0;
          if (showMsg) os_p << "  Median" << LogIO::POST;
          T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
-         LatticeExprNode node2(median(abs((*pInLattice_p)-lelMed)));
+         LatticeExprNode node2(median(abs((subLat)-lelMed)));
          if (showMsg) os_p << "  Median of absolute deviations from median" << LogIO::POST;
          T lelMed2 = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
 //
          if (showMsg) os_p << "  Inter quartile range" << LogIO::POST;
-         Array<T> data = pInLattice_p->get();
+         Array<T> data = subLat.get();
          Bool deleteData;
          T* pData = data.getStorage(deleteData);
          const uInt n = data.nelements();
@@ -925,17 +927,17 @@ void LatticeStatistics<T>::generateRobust ()
          data.putStorage(pData, deleteData);
          T iqr = (iqb-iqa)/2.0;
 
-// Whack it in storage lattice somewhere or other
+// Whack results into storage lattice
 
-         AccumType tmp;
-         convertScalar (tmp, lelMed);
-         pStoreLattice_p->putAt(tmp, pos);
+         AccumType val;
+         convertScalar (val, lelMed);
+         pStoreLattice_p->putAt(val, pos);
 //
-         convertScalar (tmp, lelMed2);
-         pStoreLattice_p->putAt(tmp, pos2);
+         convertScalar (val, lelMed2);
+         pStoreLattice_p->putAt(val, pos2);
 //
-         convertScalar (tmp, iqr);
-         pStoreLattice_p->putAt(tmp, pos3);
+         convertScalar (val, iqr);
+         pStoreLattice_p->putAt(val, pos3);
       } else {
 
 // Stick zero in storage lattice (it's not initialized)
