@@ -1,5 +1,5 @@
 //# LatticeStatistics.cc: generate statistics from a MaskedLattice
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/ConvertScalar.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>
 #include <aips/Utilities/Assert.h>
@@ -2967,12 +2968,12 @@ void StatsTiledCollapser<T>::endAccumulator(Array<T>& result,
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUM) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = *sumPtr++;
+          convertScalar (*resptr++, *sumPtr++);
        }
 //
        resptr = resptr_root + (Int(LatticeStatsBase::SUMSQ) * n1_p);
        for (j=0; j<n1_p; j++,k++) {   
-          *resptr++ = *sumSqPtr++;
+          convertScalar (*resptr++, *sumSqPtr++);
        }
 //
        resptr = resptr_root + (Int(LatticeStatsBase::MIN) * n1_p);

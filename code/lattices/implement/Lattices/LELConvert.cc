@@ -1,5 +1,5 @@
 //# LELConvert.cc:  LELConvert.cc
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Mathematics/ConvertScalar.h>
 
 
 template <class T, class F>
@@ -81,10 +82,8 @@ LELScalar<T> LELConvert<T,F>::getScalar() const
    cout << "LELConvert::getScalar" << endl;
 #endif
 
-// This is the only way the compiler does not complain about
-// ambiguity between Complex conversion operator and constructor.
    T tmp;
-   tmp = pExpr_p->getScalar().value();
+   convertScalar (tmp, pExpr_p->getScalar().value());
    return tmp;
 }
 
