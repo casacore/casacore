@@ -41,15 +41,17 @@
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/TempLattice.h>
+#include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/LatticeExprNode.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
-#include <aips/Utilities/ValType.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
-
+#include <aips/Utilities/ValType.h>
 
 #include <iostream.h>
 #include <iomanip.h>
@@ -81,6 +83,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   fixedMinMax_p(False),
   forceDisk_p(forceDisk),
+  doRobust_p(False),
   error_p("")
 {
 
@@ -127,6 +130,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   showProgress_p(showProgress),
   fixedMinMax_p(False),
   forceDisk_p(forceDisk),
+  doRobust_p(False),
   error_p("")
 {
    nxy_p.resize(0);
@@ -135,7 +139,7 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
    minPos_p.resize(0);
    maxPos_p.resize(0);
    blcParent_p.resize(0);
-
+//
    if (setNewLattice(lattice)) {
 
 // Cursor axes defaults to all
@@ -205,6 +209,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       maxPos_p = other.maxPos_p;
       blcParent_p = other.blcParent_p;
       forceDisk_p = other.forceDisk_p;
+      doRobust_p = other.doRobust_p;
       error_p = other.error_p;
    }
    return *this;
@@ -254,6 +259,11 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
       cursorAxes_p.resize(pInLattice_p->ndim());
       for (uInt i=0; i<pInLattice_p->ndim(); i++) cursorAxes_p(i) = i;
    } else {
+
+// Sort axes into increasing order and check
+
+      GenSort<Int>::sort(cursorAxes_p, Sort::Ascending, Sort::QuickSort|Sort::NoDuplicates);
+//
       for (uInt i=0; i<cursorAxes_p.nelements(); i++) {
          if (cursorAxes_p(i) < 0 || cursorAxes_p(i) > Int(pInLattice_p->ndim()-1)) {
             error_p = "Invalid cursor axes";
@@ -261,7 +271,6 @@ Bool LatticeStatistics<T>::setAxes (const Vector<Int>& axes)
          }
       }
    }
-
 
 // Signal that we have changed the axes and need a new accumulation
 // lattice
@@ -345,11 +354,9 @@ Bool LatticeStatistics<T>::setList (const Bool& doList)
 // See if user wants to list statistics as well as plot them
 //
 {
-
    if (!goodParameterStatus_p) {
       return False;
    }
-      
    doList_p = doList;
 
    return True;
@@ -390,6 +397,7 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
 
 
 // Make sure requested statistics are valid
+// Set need robust statistics flag here as well
 
    statsToPlot_p.resize(0);
    statsToPlot_p = statsToPlot;
@@ -398,6 +406,18 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
          error_p = "Invalid statistic requested for display";
          goodParameterStatus_p = False;
          return False;
+      } 
+
+// If the user wants robust stats, signal this and if they
+// did not previously ask for them, signify we need to
+// regenerate the storage lattice as well - the robust
+// stats are just written directly into the storage lattice
+
+      if (statsToPlot_p(i)==Int(LatticeStatsBase::MEDIAN)) {
+         if (!doRobust_p) {
+            needStorageLattice_p = True;
+         }
+         doRobust_p = True;
       }
    }   
    
@@ -508,18 +528,15 @@ Bool LatticeStatistics<T>::display()
      return True;
    }
 
-
 // Size of plotting abcissa axis
 
    const uInt n1 = pStoreLattice_p->shape()(0);
-
 
 // Allocate ordinate arrays for plotting and listing.  Try to preserve
 // the true Type of the data as long as we can.  Eventually, for 
 // plotting we have to make it real valued
 
    Matrix<T> ord(n1,NSTATS);
-
 
 // Iterate through storage lattice by planes (first and last axis of storage lattice)
 // Specify which axes are the matrix  axes so that we can discard other
@@ -591,6 +608,26 @@ Bool LatticeStatistics<T>::display()
    return True;
 }
 
+template <class T>
+Bool LatticeStatistics<T>::getMedian(Array<T>& stats)
+// 
+// This function retrieves the MEDIAN statistics from the
+// accumulation lattice
+//
+{
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     return False; 
+   }
+
+// Retrieve storage array statistic
+
+   if (!doRobust_p) needStorageLattice_p = True;
+   doRobust_p = True;
+   return retrieveStorageStatistic(stats, Int(MEDIAN));
+}
+
 
 
 
@@ -634,6 +671,33 @@ Bool LatticeStatistics<T>::getSum(Array<T>& stats)
 
 
 template <class T>
+Bool LatticeStatistics<T>::getStatistic (Array<T>& stats, 
+                                         LatticeStatsBase::StatisticsTypes type)
+{
+   if (type==LatticeStatsBase::NPTS) {
+      return getNPts(stats);
+   } else if (type==LatticeStatsBase::SUM) {
+      return getSum(stats);
+   } else if (type==LatticeStatsBase::SUMSQ) {
+      return getSumSquared(stats);
+   } else if (type==LatticeStatsBase::MEDIAN) {
+      return getMedian(stats);
+   } else if (type==LatticeStatsBase::MIN) {
+      return getMin(stats);
+   } else if (type==LatticeStatsBase::MAX) {
+      return getMax(stats);
+   } else if (type==LatticeStatsBase::VARIANCE) {
+      return getVariance(stats);
+   } else if (type==LatticeStatsBase::SIGMA) {
+      return getSigma(stats);
+   } else if (type==LatticeStatsBase::FLUX) {
+      return getFluxDensity(stats);
+   }
+   return True;
+}
+
+
+template <class T>
 Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
                                     const IPosition& pos,
                                     const Bool posInLattice)
@@ -653,7 +717,6 @@ Bool LatticeStatistics<T>::getStats(Vector<T>& stats,
    if (!goodParameterStatus_p) {
      return False; 
    }
-
 
 // Retrieve storage array statistics
 
@@ -736,7 +799,6 @@ Bool LatticeStatistics<T>::getMax(Array<T>& stats)
    if (!goodParameterStatus_p) {
      return False; 
    }
-
 
 // Retrieve storage array statistic
 
@@ -1102,14 +1164,14 @@ Bool LatticeStatistics<T>::findNextLabel (String& subLabel,
 template <class T>
 Bool LatticeStatistics<T>::generateStorageLattice()
 //
-// Iterate through the lattice and generate the accumulation lattice
+// Iterate through the lattice and generate the storage lattice
+// The shape of the storage lattice is n1, n2, ..., NACCUM
+// where n1, n2 etc are the display axes
 {
 
 // Delete old storage lattice
 
    if (pStoreLattice_p != 0) delete pStoreLattice_p;
-   if (haveLogger_p) os_p << LogIO::NORMAL << "Creating new statistics storage lattice" << endl << LogIO::POST;
-
 
 // Set the display axes vector (possibly already set in ::setAxes)
 
@@ -1141,6 +1203,10 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     uInt memory = AppInfo::memoryInMB();
     Double useMemory = Double(memory)/10.0;
     if (forceDisk_p) useMemory = 0.0;
+    if (haveLogger_p) {
+       os_p << LogIO::NORMAL 
+            << "Creating new statistics storage lattice" << endl << LogIO::POST;
+    }
     pStoreLattice_p = new TempLattice<T>(TiledShape(storeLatticeShape,
                                          tileShape), useMemory);
 
@@ -1154,12 +1220,11 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 
     StatsTiledCollapser<T> collapser(range_p, noInclude_p, noExclude_p,
                                      fixedMinMax_p);
-
     LattStatsProgress* pProgressMeter = 0;
     if (showProgress_p) pProgressMeter = new LattStatsProgress();
 
 // This is the first output axis (there is only one in IS) getting 
-// collapsed values
+// collapsed values.
 // Output has to be a MaskedLattice, so make a writable SubLattice.
 
     Int newOutAxis = pStoreLattice_p->ndim()-1;
@@ -1172,6 +1237,10 @@ Bool LatticeStatistics<T>::generateStorageLattice()
        pProgressMeter = 0;
     }
     collapser.minMaxPos(minPos_p, maxPos_p);
+
+// Do robust statistics separately as required.
+
+    generateRobust();
 //
     needStorageLattice_p = False;     
     doneSomeGoodPoints_p = False;
@@ -1179,6 +1248,44 @@ Bool LatticeStatistics<T>::generateStorageLattice()
     return True;
 }
 
+template <class T>
+void LatticeStatistics<T>::generateRobust ()
+{
+   os_p << "Computing robust statistics" << LogIO::POST;
+//
+   const uInt nCursorAxes = cursorAxes_p.nelements();
+   const IPosition latticeShape(pInLattice_p->shape());
+   IPosition cursorShape(pInLattice_p->ndim(),1);
+   for (uInt i=0; i<nCursorAxes; i++) {
+      cursorShape(cursorAxes_p(i)) = latticeShape(cursorAxes_p(i));
+   }
+//
+   IPosition axisPath = cursorAxes_p;
+   axisPath.append(displayAxes_p);
+   LatticeStepper stepper(latticeShape, cursorShape, axisPath);
+   for (stepper.reset(); !stepper.atEnd(); stepper++) {
+      IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
+//
+      if (doRobust_p) {
+         Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
+         SubLattice<T> subLat(*pInLattice_p, slicer);
+         LatticeExprNode node(median(subLat));
+
+// Whack it in storage lattice somewhere or other
+
+
+         LattStatsSpecialize::putNodeInStorageLattice(*pStoreLattice_p, node, pos);
+      } else {
+
+// Stick zero in storage lattice (it's not initialized)
+
+         T val = 0;
+         LatticeExprNode node(val);
+         LattStatsSpecialize::putNodeInStorageLattice(*pStoreLattice_p, node, pos);
+      }
+   }
+   os_p << "Finished computing robust statitsics" << LogIO::POST;
+}
 
    
 
@@ -1226,6 +1333,33 @@ void LatticeStatistics<T>::lineSegments (uInt& nSeg,
    }
    start.resize(nSeg,True);
    nPts.resize(nSeg,True);
+}
+
+template <class T>
+void LatticeStatistics<T>::listMinMax(ostrstream& osMin,
+                                      ostrstream& osMax,
+                                      Int oWidth, DataType type)
+//
+// Min/max locations only meaningful for Float images currently.
+// We report locations relative to the start of the parent lattice
+//
+{
+   if (!fixedMinMax_p) {
+      os_p << "Minimum value ";
+      os_p.output() << setw(oWidth) << String(osMin);
+      if (type==TpFloat) {
+         os_p <<  " at " << blcParent_p + minPos_p+1;
+      }
+      os_p.post();
+//
+      os_p << "Maximum value ";
+      os_p.output() << setw(oWidth) << String(osMax);
+      if (type==TpFloat) {
+         os_p <<  " at " << blcParent_p + maxPos_p+1 << endl;
+      }
+      os_p << endl;
+      os_p.post();
+   }
 }
 
 template <class T>
@@ -1324,7 +1458,8 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
    os_p.output() << setw(oDWidth) << "Npts";
    os_p.output() << setw(oDWidth) << "Sum";
    if (hasBeam) os_p.output() << setw(oDWidth) << "FluxDensity";
-   os_p.output() << setw(oDWidth) << "Mean"; 
+   os_p.output() << setw(oDWidth) << "Mean";  
+   if (doRobust_p) os_p.output() << setw(oDWidth) << "Median"; 
    os_p.output() << setw(oDWidth) << "Rms";
    os_p.output() << setw(oDWidth) << "Sigma";
    os_p.output() << setw(oDWidth) << "Minimum";
@@ -1345,15 +1480,16 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
 
 // I hate ostrstreams.  The bloody things are one shot.
 
-         ostrstream os0, os1, os2, os3, os4, os5, os6, os7;
+         ostrstream os0, os1, os2, os3, os4, os5, os6, os7, os8;
          setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
          setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
-         setStream(os6, oPrec); setStream(os7, oPrec); 
+         setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
 //
 
          os0 << stats.column(SUM)(j);
          if (hasBeam) os1 << stats.column(FLUX)(j);
          os2 << stats.column(MEAN)(j);
+         if (doRobust_p) os8 << stats.column(MEDIAN)(j);
          os3 << stats.column(RMS)(j);
          os4 << stats.column(SIGMA)(j);
          os5 << stats.column(MIN)(j);
@@ -1362,6 +1498,7 @@ Bool LatticeStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
          os_p.output() << setw(oDWidth)   << String(os0);
          if (hasBeam) os_p.output() << setw(oDWidth)   << String(os1);
          os_p.output() << setw(oDWidth)   << String(os2);
+         if (doRobust_p) os_p.output() << setw(oDWidth)   << String(os8);
          os_p.output() << setw(oDWidth)   << String(os3);
          os_p.output() << setw(oDWidth)   << String(os4);
          os_p.output() << setw(oDWidth)   << String(os5);
@@ -1392,6 +1529,30 @@ IPosition LatticeStatistics<T>::locInLattice(const IPosition& storagePosition,
      } else {
         pos(j) = storagePosition(j);
      }
+   }
+   return pos;
+}
+
+
+template <class T>
+IPosition LatticeStatistics<T>::locInStorageLattice(const IPosition& latticePosition,
+                                                    LatticeStatsBase::StatisticsTypes type) const
+//
+// Given a location in the input lattice, figure out where it lives
+// in the storage lattice
+//
+{  
+   uInt iType = uInt(type);
+   if (iType >= uInt(LatticeStatsBase::NACCUM)) {
+      throw(AipsError("Illegal statistics accumulation type"));
+   }
+//
+   const uInt nDim = pStoreLattice_p->ndim();
+   IPosition pos(nDim,0);
+   pos(nDim-1) = iType;
+//
+   for (uInt j=0; j<displayAxes_p.nelements(); j++) {
+      pos(j) = latticePosition(displayAxes_p(j));
    }
    return pos;
 }
@@ -1610,8 +1771,9 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
    const uInt n = statsToPlot_p.nelements();
    Bool doMean, doSigma, doVar, doRms, doSum, doSumSq;
-   Bool doMin, doMax, doNPts, doFlux;
+   Bool doMin, doMax, doNPts, doFlux, doMedian;
    linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
+   linearSearch(doMedian, statsToPlot_p, Int(MEDIAN), n);
    linearSearch(doSigma, statsToPlot_p, Int(SIGMA), n);
    linearSearch(doVar, statsToPlot_p, Int(VARIANCE), n);
    linearSearch(doRms, statsToPlot_p, Int(RMS), n);
@@ -1638,7 +1800,6 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 // Find extrema.  Return if there were no valid points to plot
 
    T yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
-
    minMax(none, xMin, xMax, abc, stats.column(NPTS));
    if (none) return True;
 
@@ -1646,6 +1807,11 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
 
    if (doMean) {
       minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS));
+      first = False;
+      nL++;
+   }
+   if (doMedian) {
+      minMax(none, yLMin, yLMax, stats.column(MEDIAN), stats.column(NPTS));
       first = False;
       nL++;
    }
@@ -1767,6 +1933,10 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
          yLLabel += "Mean,";
          nLLabs++;
       }
+      if (doMedian) {
+         yLLabel += "Median,";
+         nLLabs++;
+      }
       if (doFlux) {
          yLLabel += "Flux,";
          nLLabs++;
@@ -1838,6 +2008,15 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
          plotter.sci (lCols(i));
 
          multiPlot(plotter, abc, stats.column(MEAN), stats.column(NPTS));
+      }
+      if (doMedian) {
+         if (++ls > 5) ls = 1;
+         plotter.sls (ls);
+
+         lCols(++i) = niceColour (initColours);
+         plotter.sci (lCols(i));
+
+         multiPlot(plotter, abc, stats.column(MEDIAN), stats.column(NPTS));
       }
       if (doFlux) {
          if (++ls > 5) ls = 1;
@@ -2258,6 +2437,9 @@ void LatticeStatistics<T>::summStats ()
    pos(0) = SUM;
    T sum = stats(pos);
 //
+   pos(0) = MEDIAN;
+   T median = stats(pos);
+//
    pos(0) = SUMSQ;
    T sumSq = stats(pos);
 //                         
@@ -2289,75 +2471,73 @@ void LatticeStatistics<T>::summStats ()
       oWidth = 32;
    }
    setStream(os_p.output(), oPrec);
-   ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7;
+   ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7, os8;
    setStream(os00, oPrec); 
    setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
    setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
-   setStream(os6, oPrec); setStream(os7, oPrec); 
+   setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
 //
-   os_p << endl; 
+   os_p << endl << LogIO::POST;
    if (LattStatsSpecialize::hasSomePoints(nPts)) {
-      os_p << "Number points = ";
       os00 << nPts;
-      os_p.output() << setw(oWidth) << String(os00) << endl;
+      os1 << sum; 
+      os2 << mean; 
+      os3 << var; 
+      os4 << sigma;
+      os5 << rms;
+      os6 << dMin; 
+      os7 << dMax; 
+      os8 << median;
+      if (hasBeam) {
+         os0 << sum/beamArea;
+      }
+//
+      os_p << "Number points = ";
+      os_p.output() << setw(oWidth) << String(os00) << "       Sum      = ";
+      os_p.output() << setw(oWidth) << String(os1) << endl;
+      os_p.post();
 //
       if (hasBeam) {
          os_p << "Flux density  = ";
          os0 << sum/beamArea;
          os_p.output() << setw(oWidth) << String(os0) << " Jy" << endl;
+         os_p.post();
       }
 //
-      os1 << sum; os2 << mean; os3 << var; os5 << rms;
-      os6 << dMin; os7 << dMax;
-//
-      os_p << "Sum           = ";
-      os_p.output() << setw(oWidth) << String(os1) << "       Mean     = ";
-      os_p.output() << setw(oWidth) << String(os2) << endl;
+      os_p << "Mean          = ";
+      os_p.output() << setw(oWidth) << String(os2);
+      if (doRobust_p) {
+         os_p.output()  << "       Median   = ";
+         os_p.output() << setw(oWidth) << String(os8) << endl;
+      }
+      os_p.post();
 //
       os_p << "Variance      = ";
       os_p.output() << setw(oWidth) << String(os3);
 //
       if (var > 0.0) {
-         os4 << sigma;
          os_p << "       Sigma    = ";
          os_p.output() << setw(oWidth) << String(os4) << endl;
+         os_p.post();
       } else {
-         os_p << endl;
+         os_p.post();
       }
 //
       os_p << "Rms           = ";
       os_p.output() << setw(oWidth) << String(os5) << endl;
       os_p << endl;
-
-// Min/max locations only meaningful for Float images currently.
-// We report locations relative to the start of the parent lattice
-
-      if (!fixedMinMax_p) {
-         os_p << "Minimum value ";
-         os_p.output() << setw(oWidth) << String(os6);
-         if (type==TpFloat) {
-            os_p <<  " at " << blcParent_p + minPos_p+1;
-         }
-         os_p << endl;
+      os_p.post();
 //
-         os_p << "Maximum value ";
-         os_p.output() << setw(oWidth) << String(os7);
-         if (type==TpFloat) {
-            os_p <<  " at " << blcParent_p + maxPos_p+1 << endl;
-         }
-         os_p << endl;
-      }
+      listMinMax(os6, os7, oWidth, type);
    } else {
-      os_p << "No valid points found " << endl;
+      os_p << "No valid points found " << LogIO::POST;
    }
-   os_p << endl << endl;
-   os_p.post();
+   os_p << endl << LogIO::POST;
 }
 
  
 template <class T>
-void LatticeStatistics<T>::stretchMinMax (T& dMin,
-                                        T& dMax) const
+void LatticeStatistics<T>::stretchMinMax (T& dMin, T& dMax) const
 //
 // Stretch a range by 5%  
 //  
@@ -2677,4 +2857,3 @@ void StatsTiledCollapser<T>::minMaxPos(IPosition& minPos, IPosition& maxPos)
    maxPos.resize(maxPos_p.nelements());
    maxPos = maxPos_p;
 }
-
