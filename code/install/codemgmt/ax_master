@@ -2280,3 +2280,4 @@
 09 199 src rm trial/implement/Lattices/test/tArrLatticeIter.cc
 09 199 src mv trial/implement/Lattices/test/tPagedArrIter.cc trial/implement/Lattices/test/tLatticeIterator.cc
 09 199 src mv trial/implement/Lattices/test/tArrayLatticeOld.cc trial/implement/Lattices/test/tArrayLattice.cc
+09 215 top rm code/aips/include
