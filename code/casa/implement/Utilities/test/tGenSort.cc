@@ -117,6 +117,8 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
     Vector<uInt> inx;
     Vector<uInt> index(nr);
     indgen (index.ac());              // fill with 0,1,2,...
+
+    // Do an indirect sort.
     Timer tim1;
     Int n1 = genSort (inx, arr, nr, ord, type);
     cout <<":  Indirect / direct" << endl;
@@ -164,7 +166,11 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 	}
     }
 
+    // Save the original array.
+    Int* cparr = new Int[nr];
+    memcpy (cparr, arr, nr*sizeof(Int));
 
+    // Do an in-place sort.
     Timer tim;
     Int n = genSort (arr, nr, ord, type);
     if (!showFlag) {
@@ -201,17 +207,23 @@ void sortall (Int* arr, uInt nr, int type, Sort::Order ord, Bool showFlag)
 	}
     }
 
-    // Save the original array.
-    Int* cparr = new Int[nr];
-    memcpy (cparr, arr, nr*sizeof(Int));
     // Find middle element.
+    // When duplicates were skipped, the array has to be copied again.
+    // Note that n instead of nr has to be used.
+    if ((type & Sort::NoDuplicates) != 0) {
+	memcpy (cparr, arr, n*sizeof(Int));
+    }
     tim.mark();
-    Int kth = GenSort<Int>::kthLargest (cparr, nr, nr/2);
+    Int kth = GenSort<Int>::kthLargest (cparr, n, n/2);
     cout << ">>> kthLar:  ";
     tim.show();
     cout << "<<<" << endl;
-    if (kth != arr[nr/2]) {
-	cout << "kthLargest is " << kth << "; should be " << arr[nr/2] << endl;
+    uInt mid = n/2;
+    if (ord == Sort::Descending) {
+	mid = (n-1)/2;
+    }
+    if (kth != arr[mid]) {
+	cout << "kthLargest is " << kth << "; should be " << arr[mid] << endl;
     }
     delete [] cparr;
 }
