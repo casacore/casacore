@@ -86,6 +86,8 @@ public:
   virtual void resync();
   virtual uInt getModifyCounter() const;
   virtual Bool isWritable() const;
+  virtual void deepCopy (const String& newName, int tableOption,
+			 Bool valueCopy) const;
   virtual TableDesc actualTableDesc() const;
   virtual Record dataManagerInfo() const;
   virtual TableRecord& keywordSet();
