@@ -38,6 +38,8 @@
 #include <aips/Quanta/Quantum.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Exceptions/Error.h>
+
 //# Forward Declarations
 class MeasurementSet;
 class MDirection;
