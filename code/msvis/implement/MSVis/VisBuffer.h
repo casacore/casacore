@@ -132,6 +132,9 @@ public:
   // Note that feed_pa is a function instead of a cached value
   const Vector<Float>& feed_pa(Double time) const; 
 
+  // Note that azel is a function instead of a cached value
+  const Vector<MDirection>& azel(Double time) const; 
+
   Int fieldId() const {return fieldIdOK_p ? fieldId_p : This->fillFieldId();}
 
   Matrix<Bool>& flag() { return flagOK_p ? flag_p : fillFlag();}
@@ -229,6 +232,10 @@ public:
   void setVisCube(const Cube<Complex>& vis);
   void setModelVisCube(const Cube<Complex>& vis);
   void setCorrectedVisCube(const Cube<Complex>& vis);
+
+  // Access the current ROMSColumns object via VisIter
+  const ROMSColumns& msColumns() const
+    { return visIter_p->msColumns();}
 
 private:
 
