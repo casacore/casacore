@@ -1,5 +1,5 @@
 //# ImageRegrid.h: Regrid Images
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -129,7 +129,7 @@ public:
   // Specify which pixel axes of outImage are to be
   // regridded
   void regrid(ImageInterface<T>& outImage, 
-              Interpolate2D<T>::Method method,
+              typename Interpolate2D<T>::Method method,
               const IPosition& whichOutPixelAxes,
 	      const ImageInterface<T>& inImage,
               Bool showProgress=False);
@@ -203,7 +203,7 @@ public:
                  const Vector<Int> inPixelAxes, 
                  const Vector<Int> outPixelAxes,
                  const Vector<Int> pixelAxisMap,
-                 Interpolate2D<T>::Method method,
+                 typename Interpolate2D<T>::Method method,
                  MDirection::Convert& machine,
                  Bool useMachine, Bool showProgress, Double scale);
 
@@ -217,7 +217,7 @@ public:
                  Int inAxisInCoordinate,
                  Int outAxisInCoordinate,
                  const Vector<Int> pixelAxisMap,
-                 Interpolate2D<T>::Method method,
+                 typename Interpolate2D<T>::Method method,
                  MFrequency::Convert& machine,
                  Bool useMachine, Bool showProgress);
 };

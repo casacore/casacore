@@ -97,7 +97,7 @@ ImageRegrid<T>& ImageRegrid<T>::operator=(const ImageRegrid& other)
 
 template<class T>
 void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,	
-                            Interpolate2D<T>::Method method,
+                            typename Interpolate2D<T>::Method method,
                             const IPosition& outPixelAxesU,
                             const ImageInterface<T>& inImage,
                             Bool showProgress)
@@ -576,7 +576,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const Vector<Int> inCoordPixelAxes,
                                const Vector<Int> outCoordPixelAxes,
                                const Vector<Int> pixelAxisMap,
-                               Interpolate2D<T>::Method method,
+                               typename Interpolate2D<T>::Method method,
                                MDirection::Convert& machine,
                                Bool useMachine, Bool showProgress, Double scale)
 //
@@ -959,7 +959,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                Int inAxisInCoordinate,
                                Int outAxisInCoordinate,
                                const Vector<Int> pixelAxisMap,
-                               Interpolate2D<T>::Method method,
+                               typename Interpolate2D<T>::Method method,
                                MFrequency::Convert& machine,
                                Bool useMachine, Bool showProgress)
 
