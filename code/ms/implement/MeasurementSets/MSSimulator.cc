@@ -201,10 +201,8 @@ void MSSimulator::initFields(const uInt nSources,
   nIntFld_p.resize(nSources_p);  
   nMos_p.resize(2,nSources_p);
 
-  // This gives us ! MECLIPTIC !
-  //  radecRefFrame_p = MDirection::showType(sourceDirection(0).myType());
-  //  os << "Warning: we are using all B1950, no matter what you want" << LogIO::POST;
-  radecRefFrame_p="B1950";
+  radecRefFrame_p = MDirection::showType(sourceDirection(0).
+					 getRefPtr()->getType());
 
   String refFrame_check;
   for (Int i=0; i< nSources_p; i++) {
