@@ -2078,15 +2078,15 @@ main (int argc, char *argv[])
 
 
   if (!ok) {
-     return 1;
+     exit(1);
   } else {
     cout << endl << "ok" << endl;
   }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    return 1;
+    exit(1);
  } end_try;
  
- return 0;
+   exit(0);
 }
