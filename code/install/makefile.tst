@@ -2,7 +2,7 @@
 # makefile.tst: Generic AIPS++ test program makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998
+#   Copyright (C) 1992-1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -315,8 +315,11 @@ $(BINTESTD)/%.report : $(BINTESTD)/%
 	      2) \
 	         echo "FAIL (verify)" ; \
 	         ;; \
-	      *) \
+	      3) \
 	         echo "   UNTESTED" ; \
+	         ;; \
+	      *) \
+	         echo "   UNKNOWN" ; \
 	         ;; \
 	      esac ; \
 	   else \
