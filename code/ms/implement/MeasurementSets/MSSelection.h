@@ -103,6 +103,9 @@ class MSSelection
    // Helper method for converting index vectors to expression strings
    static String indexExprStr(Vector<Int> index);
 
+   // Helper method for converting name vectors to expression strings
+   static String nameExprStr(Vector<String> name);
+
    // Expression accessors
    Bool setAntennaExpr(const String& antennaExpr);
    Bool setCorrExpr(const String& corrExpr);

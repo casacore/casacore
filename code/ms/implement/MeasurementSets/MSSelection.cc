@@ -152,6 +152,27 @@ String MSSelection::indexExprStr(Vector<Int> index)
 
 //----------------------------------------------------------------------------
 
+String MSSelection::nameExprStr(Vector<String> name)
+{
+  String expression;
+
+  expression = "'";
+
+  for(uInt i=0; i<name.nelements(); i++)
+  {
+    if(i==0)
+      expression = name[i];
+    else
+      expression = expression + ", " + name[i];
+  }
+
+  expression = expression + "'";
+
+  return expression;
+}
+
+//----------------------------------------------------------------------------
+
 TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
 {
 // Convert the MS selection to a TableExprNode object, 
