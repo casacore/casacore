@@ -55,6 +55,8 @@ set leav = 0
 set upaoi = 1
 # Set the -h switch
 set hlp = 0
+# Set the -n switch
+set nox = 0
 # Get switches and arguments
 while ($# > 0)
       if ("$1" == "-c") then
@@ -76,6 +78,8 @@ while ($# > 0)
          set upaoi = 0
       else if ("$1" == "-h") then
          set hlp = 1
+      else if ("$1" == "-n") then
+         set nox = 1
       else if ("$1" =~ -*) then
          echo "Unknown switch $1 present"
 	 set hlp = 1
@@ -114,6 +118,7 @@ The following UP scripts are available (-h gives this text):
                work area
            -mk will make the changed files to test if correct
            -d  will show some debug information
+           -n  will only generate the specific data, without executing
            <typ>.done and <typ>.error give lists of files successfully
            done or not.
 '_EOF_'
@@ -202,17 +207,6 @@ if (! $?xao || ! $?xai) then
    endif
 endif
 
-if (! $?upgrep) then
-   set x = /usr/local/gnu/bin/grep
-   while (! -x $x)
-      echo "Path to gnu grep is not $x"
-      echo -n "Specify the path to gnu grep: "
-      set x = "$<"
-   end
-   set upgrep = "$x"
-   unset x
-endif
-
 if ("$script" == "UPchange" && ! $?domv) then
    set domv = 0
    echo -n "Need to move files first to new directory (y|n) [n]? "
@@ -228,20 +222,9 @@ if ("$script" == "UPchange" && ! $?domv) then
     endif
 endif
 
-if (! $?uppath) then
-   set x = "`which UPfind`"
-   if (-x $x) then
-      set uppath = $x:h
-   else
-      echo "Cannot find path of UP files"
-      exit 1
-   endif
-endif
-
 if (! -e $ldir/${tp}.def) then
    echo "set dir = $dir" >! $ldir/${tp}.def
    echo "set mdir = $mdir" >> $ldir/${tp}.def
-   echo "set upgrep = $upgrep" >> $ldir/${tp}.def
    echo "set xao = $xao" >> $ldir/${tp}.def
    echo "set xai = $xai" >> $ldir/${tp}.def
 endif 
