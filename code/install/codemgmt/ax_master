@@ -4434,3 +4434,4 @@
 14 296 src mv aips/implement/MeasurementSets/MSObservation.h aips/implement/MeasurementSets/OldMSObservation.h
 14 296 src mv aips/implement/MeasurementSets/MSObsLog.cc aips/implement/MeasurementSets/OldMSObsLog.cc
 14 296 src mv aips/implement/MeasurementSets/MSObsLog.h aips/implement/MeasurementSets/OldMSObsLog.h
+14 296 src mv aips/implement/MeasurementSets/MSObsLogColumns.cc aips/implement/MeasurementSets/OldMSObsLogColumns.cc
