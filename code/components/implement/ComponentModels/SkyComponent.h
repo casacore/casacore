@@ -164,6 +164,27 @@ public:
   virtual void direction(MDirection & compDir) const;
   // </group>
 
+  // Return the Fourier transform of the component at the specified point in
+  // the spatial frequency domain. The point is specified by a 3 element vector
+  // (u,v,w) that has units of wavelengths. The reference position for the
+  // transform is the direction of the component. Hence the transform is always
+  // a real value for a symmentric component. The vis Vector must initially
+  // have zero or four elements and is always returned with four elements that
+  // represent the flux in the four polarisations. Depending on which function
+  // is used the representation is I,Q,U,V, for the <src>visibility</src>
+  // function, XX,XY,YX,YY for the <src>visibilityLinear</src> function, or
+  // RR,RL,LR,LL for the <src>visibilityCircular</src> function. The units are
+  // always Jansky's
+  // <group>
+  virtual void visibility(Vector<DComplex> & vis, const Vector<Double> & uvw,
+			  const Double & frequency) const;
+  virtual void visibilityLinear(Vector<DComplex> & vis, 
+   				const Vector<Double> & uvw,
+   				const Double & frequency) const;
+  virtual void visibilityCircular(Vector<DComplex> & vis, 
+   				  const Vector<Double> & uvw,
+   				  const Double & frequency) const;
+  // </group>
   // set/get the label associated with this component.
   // <group>
   virtual void setLabel(const String & newLabel);
