@@ -591,7 +591,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    AlwaysAssert(outCoordPixelAxes.nelements()==2, AipsError);
    Bool inIsMasked = inLattice.isMasked();
    Bool outIsMasked = outLattice.isMasked() && outLattice.hasPixelMask() &&
-                      outLattice.isMaskWritable();
+                      outLattice.pixelMask().isWritable();
    if (itsShowLevel>0) {
       cerr << "inIsMasked " << inIsMasked << endl;
       cerr << "outIsMasked " << outIsMasked << endl;
