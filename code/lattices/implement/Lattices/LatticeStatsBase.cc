@@ -1,5 +1,5 @@
 //# LatticeStatsBase.cc: base class for LatticeStatistics.cc
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -85,6 +85,8 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
       statToPlot = MAX;
    } else if (stat.contains("FLUX")) {
       statToPlot = FLUX;
+   } else if (stat.contains("MED")) {
+      statToPlot = MEDIAN;
    }
    return statToPlot;
 }  

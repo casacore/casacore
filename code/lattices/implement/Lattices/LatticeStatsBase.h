@@ -1,5 +1,5 @@
 //# LatticeStatsBase.h: base class for LatticeStatistics class
-//# Copyright (C) 1996,1999
+//# Copyright (C) 1996,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -93,6 +93,9 @@ enum StatisticsTypes {
 
 // The sum squared
    SUMSQ,
+
+// The median - does not fit well into storage lattice approach
+   MEDIAN,
 
 // The minimum
    MIN,
