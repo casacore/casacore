@@ -157,3 +157,17 @@ VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
    return VectorKernel::BOXCAR;
 }
 
+String VectorKernel::fromKernelType (KernelTypes kernelType)
+{
+   String type;
+   if (kernelType==BOXCAR) {
+      type = String("BOXCAR");
+   } else if (kernelType==GAUSSIAN) {
+      type = String("GAUSSIAN");
+   } else if (kernelType==HANNING) {
+      type = String("HANNING");
+   }
+   return type;
+}
+
+

@@ -120,7 +120,7 @@ enum KernelTypes {
                                      const Regex& delimiter);
    static Vector<Int> toKernelTypes (const Vector<String>& kernels);
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
-
+   static String fromKernelType (KernelTypes kernelType);
 };
 
 #endif
