@@ -1,5 +1,5 @@
 //# Random.cc: Random number classes
-//# Copyright (C) 1992,1993,1994,1995,1998,1999,2000
+//# Copyright (C) 1992,1993,1994,1995,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,9 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
+#include <aips/Utilities/PtrHolder.h>
+#include <aips/Arrays/Vector.h>
 
 RNG::~RNG() {
 }
@@ -43,12 +46,11 @@ Float RNG::asFloat() {
   result.flt = 1.0f;
   result.intgr |= (asuInt() & 0x7fffff);
   result.flt -= 1.0;
-  DebugAssert(result.flt < 1.0f && result.flt >= 0.0f, AipsError);
+  AlwaysAssert(result.flt < 1.0f && result.flt >= 0.0f, AipsError);
   return result.flt;
 }
         
-Double RNG::asDouble()
-{
+Double RNG::asDouble() {
   // used to access Doubles as two unsigned integers
   union PrivateRNGDoubleType {
     Double dbl;
@@ -67,7 +69,7 @@ Double RNG::asDouble()
   result.intgr[0] |= iMsb;
 #endif
   result.dbl -= 1.0;
-  DebugAssert(result.dbl < 1.0f && result.dbl >= 0.0f, AipsError);
+  AlwaysAssert(result.dbl < 1.0f && result.dbl >= 0.0f, AipsError);
   return result.dbl;
 }
 
@@ -403,6 +405,95 @@ uInt MLCG::asuInt()
 Random::~Random() {
 }
 
+String Random::asString(Random::Types type) {
+  switch (type) {
+  case BINOMIAL:
+    return String("BINOMIAL");
+  case DISCRETEUNIFORM:
+    return String("DISCRETEUNIFORM");
+  case ERLANG:
+    return String("ERLANG");
+  case GEOMETRIC:
+    return String("GEOMETRIC");
+  case HYPERGEOMETRIC:
+    return String("HYPERGEOMETRIC");
+  case NORMAL:
+    return String("NORMAL");
+  case LOGNORMAL:
+    return String("LOGNORMAL");
+  case NEGATIVEEXPONENTIAL:
+    return String("NEGATIVEEXPONENTIAL");
+  case POISSON:
+    return String("POISSON");
+  case UNIFORM:
+    return String("UNIFORM");
+  case WEIBULL:
+    return String("WEIBULL");
+  case UNKNOWN:
+    return String("UNKNOWN");
+  case NUMBER_TYPES: 
+    throw(AipsError("NUMBER_TYPES has no string equivalent"));
+  default:
+    throw(AipsError("Unknown Random::Types enumerator"));
+  }
+}
+
+Random::Types Random::asType(const String& str) {
+  String canonicalCase(str);
+  canonicalCase.upcase();
+  Random::Types t;
+  String s2;
+  for (uInt i = 0; i < NUMBER_TYPES; i++) {
+    t = static_cast<Random::Types>(i);
+    s2 = Random::asString(t);
+    if (s2.matches(canonicalCase)) {
+      return t;
+    }
+  }
+  return Random::UNKNOWN;
+}
+
+Random* Random::construct(Random::Types type, RNG* gen) {
+  switch (type) {
+  case BINOMIAL:
+    return new Binomial(gen);
+  case DISCRETEUNIFORM:
+    return new DiscreteUniform(gen);
+  case ERLANG:
+    return new Erlang(gen);
+  case GEOMETRIC:
+    return new Geometric(gen);
+  case HYPERGEOMETRIC:
+    return new HyperGeometric(gen);
+  case NORMAL:
+    return new Normal(gen);
+  case LOGNORMAL:
+    return new LogNormal(gen);
+  case NEGATIVEEXPONENTIAL:
+    return new NegativeExpntl(gen);
+  case POISSON:
+    return new Poisson(gen);
+  case UNIFORM:
+    return new Uniform(gen);
+  case WEIBULL:
+    return new Weibull(gen);
+  case UNKNOWN:
+  case NUMBER_TYPES:
+  default:
+    return 0;
+  }
+}
+
+Vector<Double> Random::defaultParameters (Random::Types type) {
+  MLCG gen;
+  const PtrHolder<Random> ranPtr(construct(type, &gen));
+  if (ranPtr.ptr() == 0) {
+    return Vector<Double>();
+  } else {
+    return ranPtr.ptr()->parameters();
+  }
+}
+
 Binomial::~Binomial() {
 }
 
@@ -411,17 +502,14 @@ Binomial::Binomial(RNG* gen, uInt n, Double p)
    itsN(n),
    itsP(p)
 {
-  DebugAssert( n > 0, AipsError);
-  DebugAssert( p >= 0.0 && p <= 1.0, AipsError);
+  AlwaysAssert( p >= 0.0 && p <= 1.0 && n > 0, AipsError);
 }
 
-Double Binomial::operator()()
-{
+Double Binomial::operator()() {
   return static_cast<Double>(asInt());
 }
 
-uInt Binomial::asInt()
-{
+uInt Binomial::asInt() {
   uInt result = 0;
   for (uInt i = 0; i < itsN; i++) {
     if (itsRNG->asDouble() < itsP) {
@@ -431,13 +519,47 @@ uInt Binomial::asInt()
   return result;
 }
 
+void Binomial::n(uInt newN) {
+  AlwaysAssert(newN > 0, AipsError);
+  itsN = newN;
+}
+
+void Binomial::n(Double newN) {
+  AlwaysAssert(newN >= 0.5, AipsError);
+  n(static_cast<uInt>(newN));
+}
+
+void Binomial::p(Double newP) {
+  AlwaysAssert(newP >= 0.0 && newP <= 1.0, AipsError);
+  itsP = newP;
+}
+
+void Binomial::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars), AipsError);
+  n(pars(0));
+  p(pars(1));
+}
+
+Vector<Double> Binomial::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = n();
+  retVal(1) = p();
+  return retVal;
+}
+
+Bool Binomial::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    pars(0) >= 0.5 && 
+    pars(1) >= 0.0 && pars(1) <= 1.0;
+}
+
 DiscreteUniform::DiscreteUniform(RNG* gen, Int low, Int high)
   :Random(gen),
    itsLow(low),
    itsHigh(high),
    itsDelta(calcDelta(itsLow, itsHigh))
 {
-  DebugAssert(itsLow <= itsHigh, AipsError);
+  AlwaysAssert(itsLow <= itsHigh, AipsError);
 }
 
 DiscreteUniform::~DiscreteUniform() {
@@ -447,28 +569,43 @@ Double DiscreteUniform::operator()() {
   return static_cast<Double>(asInt());
 }
 
-Int DiscreteUniform::asInt()
-{
+Int DiscreteUniform::asInt() {
   return itsLow + static_cast<Int>(floor(itsDelta * itsRNG->asDouble()));
 }
 
 void DiscreteUniform::low(Int x) {
-  DebugAssert(x <= itsHigh, AipsError);
+  AlwaysAssert(x <= itsHigh, AipsError);
   itsLow = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
 void DiscreteUniform::high(Int x) {
-  DebugAssert(itsLow <= x, AipsError);
+  AlwaysAssert(itsLow <= x, AipsError);
   itsHigh = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
 void DiscreteUniform::range(Int low, Int high) {
-  DebugAssert(low <= high, AipsError);
+  AlwaysAssert(low <= high, AipsError);
   itsLow = low;
   itsHigh = high;
   itsDelta = calcDelta(itsLow, itsHigh);
+}
+
+void DiscreteUniform::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars), AipsError);
+  range(static_cast<Int>(pars(0)), static_cast<Int>(pars(1)));
+}
+
+Vector<Double> DiscreteUniform::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = low();
+  retVal(1) = high();
+  return retVal;
+}
+
+Bool DiscreteUniform::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && pars(0) <= pars(1);
 }
 
 Double DiscreteUniform::calcDelta(Int low, Int high) {
@@ -479,8 +616,8 @@ Erlang::~Erlang() {
 }
 
 void Erlang::setState() {
-  DebugAssert(!near(itsMean, 0.0), AipsError);
-  DebugAssert(itsVariance > 0, AipsError);
+  AlwaysAssert(!nearAbs(itsMean, 0.0), AipsError);
+  AlwaysAssert(itsVariance > 0, AipsError);
   itsK = static_cast<Int>((itsMean * itsMean ) / itsVariance + 0.5 );
   itsK = (itsK > 0) ? itsK : 1;
   itsA = itsK / itsMean;
@@ -494,11 +631,30 @@ Double Erlang::operator()() {
   return -log(prod)/itsA;
 }
 
+void Erlang::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars), AipsError);
+  mean(pars(0));
+  variance(pars(1));
+}
+
+Vector<Double> Erlang::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = mean();
+  retVal(1) = variance();
+  return retVal;
+}
+
+Bool Erlang::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    !nearAbs(pars(0), 0.0) && 
+    pars(1) > 0.0;
+}
+
 Geometric::Geometric(RNG* gen, Double mean) 
   :Random(gen),
    itsMean(mean)
 {
-  DebugAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
+  AlwaysAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
 }
 
 Geometric::~Geometric() {
@@ -516,7 +672,21 @@ uInt Geometric::asInt() {
 
 void Geometric::mean(Double x) {
   itsMean = x; 
-  DebugAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
+  AlwaysAssert(itsMean >= 0.0 && itsMean < 1.0, AipsError);
+}
+
+void Geometric::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars), AipsError);
+  mean(pars(0));
+}
+
+Vector<Double> Geometric::parameters() const {
+  return Vector<Double>(1, mean());
+}
+
+Bool Geometric::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 1 && 
+    pars(0) >= 0.0 && pars(0) < 1.0;
 }
 
 HyperGeometric::~HyperGeometric() {
@@ -527,10 +697,30 @@ Double HyperGeometric::operator()() {
   return -itsMean * log(itsRNG->asDouble()) / (2.0 * d);
 }
 
+void HyperGeometric::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars), AipsError);
+  mean(pars(0));
+  variance(pars(1));
+}
+
+Vector<Double> HyperGeometric::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = mean();
+  retVal(1) = variance();
+  return retVal;
+}
+
+Bool HyperGeometric::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    !nearAbs(pars(0), 0.0) && 
+    pars(1) > 0.0 &&
+    square(pars(0)) <=  pars(1);
+}
+
 void HyperGeometric::setState() {
-  DebugAssert(itsVariance > 0.0, AipsError);
-  DebugAssert(!near(itsMean, 0.0), AipsError);
-  DebugAssert(itsMean*itsMean <= itsVariance, AipsError);
+  AlwaysAssert(itsVariance > 0.0, AipsError);
+  AlwaysAssert(!near(itsMean, 0.0), AipsError);
+  AlwaysAssert(itsMean*itsMean <= itsVariance, AipsError);
   const Double z = itsVariance / (itsMean * itsMean);
   itsP = 0.5 * (1.0 - sqrt((z - 1.0) / ( z + 1.0 )));
 }
@@ -542,7 +732,7 @@ Normal::Normal(RNG* gen, Double mean, Double variance)
    itsCached(False),
    itsCachedValue(0)
 {
-  DebugAssert(itsVariance > 0.0, AipsError);
+  AlwaysAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
 }
 
@@ -575,22 +765,32 @@ Double Normal::operator()() {
   }
 }
 
-Double Normal::mean() const {
-  return itsMean;
-}
-
 void Normal::mean(Double x) {
   itsMean = x;
 }
 
-Double Normal::variance() const {
-  return itsVariance;
-}
-
 void Normal::variance(Double x) {
   itsVariance = x;
-  DebugAssert(itsVariance > 0.0, AipsError);
+  AlwaysAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
+}
+
+void Normal::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  mean(pars(0));
+  variance(pars(1));
+}
+
+Vector<Double> Normal::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = mean();
+  retVal(1) = variance();
+  return retVal;
+}
+
+Bool Normal::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    pars(1) > 0.0;
 }
 
 LogNormal::LogNormal(RNG* gen, Double mean, Double variance)
@@ -609,17 +809,9 @@ Double LogNormal::operator()() {
   return pow(C::e, this->Normal::operator()() );
 }
 
-Double LogNormal::mean() const {
-  return itsLogMean;
-}
-
 void LogNormal::mean(Double x) {
   itsLogMean = x;
   setState();
-}
-
-Double LogNormal::variance() const {
-  return itsLogVar;
 }
 
 void LogNormal::variance(Double x) {
@@ -629,10 +821,35 @@ void LogNormal::variance(Double x) {
 
 void LogNormal::setState() {
   const Double m2 = itsLogMean * itsLogMean;
-  DebugAssert(!near(m2, 0.0), AipsError);
+  AlwaysAssert(!near(m2, 0.0), AipsError);
   this->Normal::mean(log(m2 / sqrt(itsLogVar + m2) ));
-  DebugAssert(!near(m2+itsLogVar, 0.0), AipsError);
+  AlwaysAssert(!near(m2+itsLogVar, 0.0), AipsError);
   this->Normal::variance(log((itsLogVar + m2)/m2 )); 
+}
+
+void LogNormal::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  mean(pars(0));
+  variance(pars(1));
+}
+
+Vector<Double> LogNormal::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = mean();
+  retVal(1) = variance();
+  return retVal;
+}
+
+Bool LogNormal::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    !nearAbs(pars(0), 0.0) && 
+    pars(1) > 0.0;
+}
+
+NegativeExpntl::NegativeExpntl(RNG* gen, Double mean)
+  :Random(gen)
+{
+  itsMean = mean;
 }
 
 NegativeExpntl::~NegativeExpntl() {
@@ -642,10 +859,27 @@ Double NegativeExpntl::operator()() {
   return -itsMean * log(itsRNG->asDouble());
 }
 
+void NegativeExpntl::mean(Double x) {
+  itsMean = x;
+}
+
+void NegativeExpntl::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 1, AipsError);
+  mean(pars(0));
+}
+
+Vector<Double> NegativeExpntl::parameters() const {
+  return Vector<Double>(1, mean());
+}
+
+Bool NegativeExpntl::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 1; 
+}
+
 Poisson::Poisson(RNG* gen, Double mean)
   :Random(gen) 
 {
-  DebugAssert(mean >= 0.0, AipsError);
+  AlwaysAssert(mean >= 0.0, AipsError);
   itsMean = mean;
 }
 
@@ -667,8 +901,21 @@ uInt Poisson::asInt() {
 }
 
 void Poisson::mean(Double x) {
-  DebugAssert(x >= 0.0, AipsError);
+  AlwaysAssert(x >= 0.0, AipsError);
   itsMean = x;
+}
+
+void Poisson::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 1, AipsError);
+  mean(pars(0));
+}
+
+Vector<Double> Poisson::parameters() const {
+  return Vector<Double>(1, mean());
+}
+
+Bool Poisson::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 1 && pars(0) > 0.0;
 }
 
 Uniform::Uniform(RNG* gen, Double low, Double high)
@@ -677,7 +924,7 @@ Uniform::Uniform(RNG* gen, Double low, Double high)
    itsHigh(high),
    itsDelta(calcDelta(itsLow, itsHigh))
 {
-  DebugAssert(itsLow < itsHigh, AipsError);
+  AlwaysAssert(itsLow < itsHigh, AipsError);
 }
 
 Uniform::~Uniform() {
@@ -688,15 +935,39 @@ Double Uniform::operator()() {
 }
 
 void Uniform::low(Double x) {
-  DebugAssert(x < itsHigh, AipsError);
+  AlwaysAssert(x < itsHigh, AipsError);
   itsLow = x;
   itsDelta = calcDelta(itsLow, itsHigh);
 }
 
 void Uniform::high(Double x) {
-  DebugAssert(itsLow < x, AipsError);
+  AlwaysAssert(itsLow < x, AipsError);
   itsHigh = x;
   itsDelta = calcDelta(itsLow, itsHigh);
+}
+
+void Uniform::range(Double low, Double high) {
+  AlwaysAssert(low < high, AipsError);
+  itsHigh = high;
+  itsLow = low;
+  itsDelta = calcDelta(itsLow, itsHigh);
+}
+
+void Uniform::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  range(pars(0), pars(1));
+}
+
+Vector<Double> Uniform::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = low();
+  retVal(1) = high();
+  return retVal;
+}
+
+Bool Uniform::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    pars(0) < pars(1);
 }
 
 Double Uniform::calcDelta(Double low, Double high) {
@@ -708,12 +979,49 @@ Weibull::~Weibull() {
 
 //      See Simulation, Modelling & Analysis by Law & Kelton, pp259
 //      This is the ``polar'' method.
+Weibull::Weibull(RNG* gen, Double alpha, Double beta)
+  :Random(gen),
+   itsAlpha(alpha),
+   itsBeta(beta),
+   itsInvAlpha(0)
+{
+  setState();
+}
+
 Double Weibull::operator()() {
   return pow(itsBeta * ( - log(1.0 - itsRNG->asDouble()) ), itsInvAlpha);
 }
 
+void Weibull::alpha(Double x) {
+  itsAlpha = x;
+  setState();
+}
+
+void Weibull::beta(Double x) {
+  itsBeta = x;
+}
+
+void Weibull::setParameters(const Vector<Double>& pars) {
+  AlwaysAssert(checkParameters(pars) == 2, AipsError);
+  alpha(pars(0));
+  beta(pars(1));
+}
+
+Vector<Double> Weibull::parameters() const {
+  Vector<Double> retVal(2);
+  retVal(0) = alpha();
+  retVal(1) = beta();
+  return retVal;
+}
+
+Bool Weibull::checkParameters(const Vector<Double>& pars) const {
+  return pars.nelements() == 2 && 
+    !nearAbs(pars(0), 0.0) && 
+    pars(1) > 0.0;
+}
+
 void Weibull::setState() {
-  DebugAssert(!near(itsAlpha, 0.0), AipsError);
+  AlwaysAssert(!near(itsAlpha, 0.0), AipsError);
   itsInvAlpha = 1.0 / itsAlpha;
 }
     

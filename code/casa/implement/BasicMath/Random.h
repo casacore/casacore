@@ -1,5 +1,5 @@
 //# Random.h: Random number classes
-//# Copyright (C) 1992,1993,1994,1995,1999,2000
+//# Copyright (C) 1992,1993,1994,1995,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,6 +30,8 @@
 
 #include <aips/aips.h>
 #include <aips/Mathematics/Math.h>
+class String;
+template<class T> class Vector;
 
 // <summary>Base class for random number generators</summary>
 //
@@ -420,6 +422,63 @@ inline void MLCG::reseed(Int s1, Int s2)
 
 class Random {
 public:
+  
+  // This enumerator lists all the predefined random number distributions.
+  enum Types {
+    // 2 parameters. The binomial distribution models successfully drawing
+    // items from a pool.  Specify n and p. n is the number of items in the
+    // pool, and p, is the probability of each item being successfully drawn.
+    // It is required that n > 0 and 0 <= p <= 1
+   BINOMIAL,
+
+   // 2 parameters. Model a uniform random variable over the closed
+   // interval. Specify the values low and high. The low parameter is the
+   // lowest possible return value and the high parameter is the highest.  It
+   // is required that low < high.
+   DISCRETEUNIFORM,
+
+   // 2 parameters, mean and variance.  It is required that the mean is
+   // non-zero and the variance is positive.
+   ERLANG, 
+
+   // 1 parameters, the mean.  It is required that 0 <= mean < 1
+   GEOMETRIC, 
+
+   // 2 parameters, mean and variance.  It is required that the variance is
+   // positive and that the mean is non-zero and not bigger than the
+   // square-root of the variance.
+   HYPERGEOMETRIC,
+
+   // 2 parameters, the mean and variance.  It is required that the variance is
+   // positive.
+   NORMAL, 
+
+   // 2 parameters, mean and variance.  It is required that the supplied
+   // variance is positive and that the mean is non-zero
+   LOGNORMAL,
+
+   // 1 parameter, the mean.
+   NEGATIVEEXPONENTIAL,
+
+   // 1 parameter, the mean. It is required that the mean is non-negative
+   POISSON, 
+
+   // 2 parameters, low and high.  Model a uniform random variable over the
+   // closed interval. The low parameter is the lowest possible return value
+   // and the high parameter can never be returned.  It is required that low <
+   // high.
+   UNIFORM,
+
+   // 2 parameters, alpha and beta.  It is required that the alpha parameter is
+   // not zero.
+   WEIBULL,
+
+   // An non-predefined random number distribution
+   UNKNOWN,
+   
+   // Number of distributions
+   NUMBER_TYPES};
+
   // A virtual destructor is needed to ensure that the destructor of derived
   // classes gets used. Not that this destructor does NOT delete the pointer to
   // the RNG object
@@ -435,6 +494,36 @@ public:
   void generator(RNG* p);
   // </group>
 
+  // Convert the enumerator to a lower-case string. 
+  static String asString(Random::Types type);
+  
+  // Convert the string to enumerator. The parsing of the string is case
+  // insensitive. Returns the Random::UNKNOWN value if the string does not
+  // cotrtrespond to any of the enumerators.
+  static Random::Types asType(const String& str);
+
+  // Convert the Random::Type enumerator to a specific object (derived from
+  // Random but upcast to a Random object). Returns a null pointer if the
+  // object could not be constructed. This will occur is the enumerator is
+  // UNKNOWN or NUMBER_TYPES or there is insufficient memory. The caller of
+  // this function is responsible for deleting the pointer.
+  static Random* construct(Random::Types type, RNG* gen);
+
+  // These function allow you to manipulate the parameters (mean variance etc.)
+  // of random number distribution. The parameters() function returns the
+  // current value, the setParameters function allows you to change the
+  // parameters and the checkParameters function will return False if the
+  // supplied parameters are not appropriate for the distribution.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms) = 0;
+  virtual Vector<Double> parameters() const = 0;
+  virtual Bool checkParameters(const Vector<Double>& parms) const = 0;
+  // </group>
+  
+  // returns the default parameters for the specified distribution. Returns an
+  // empty Vector if a non-predifined distribution is used.
+  static Vector<Double> defaultParameters (Random::Types type);
+  
 protected:
   //# This class contains pure virtual functions hence the constructor can only
   //# sensibly be used by derived classes.
@@ -470,9 +559,9 @@ inline void Random::generator(RNG* p)
 // number of items actually drawn from the pool. It is possible to get this
 // same value as an integer using the asInt function.
 
-// It is assumed that <src>n > 0</src> and <src>0 <= p <= 1</src> and this is
-// checked when compiled in debug mode.  The remaining members allow you to
-// read and set the parameters.
+// It is assumed that <src>n > 0</src> and <src>0 <= p <= 1</src> an AipsError
+// exception thrown if it is not true.  The remaining members allow you to read
+// and set the parameters.
 // </synopsis>
 
 // <example>
@@ -511,11 +600,20 @@ public:
   // binomial distribution.
   // <group>
   uInt n() const;
-  void n(uInt n);
+  void n(uInt newN);
+  void n(Double newN);
   Double p() const;
-  void p(Double p);
+  void p(Double newP);
   // </group>
   
+  // These function allow you to manipulate the parameters (n & p) described
+  // above through the base class. The Vectors must always be of length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   uInt itsN;
   Double itsP;
@@ -525,16 +623,8 @@ inline uInt Binomial::n() const {
   return itsN;
 }
 
-inline void Binomial::n(uInt n) {
-  itsN = n;
-}
-
 inline Double Binomial::p() const {
   return itsP;
-}
-
-inline void Binomial::p(Double p) {
-  itsP = p;
 }
 
 // <summary>Discrete uniform distribution</summary>
@@ -548,9 +638,9 @@ inline void Binomial::p(Double p) {
 // functions returns a value from this distribution. It is possible to get this
 // same value as an integer using the asInt function.
 
-// It is assumed that low limit is less than the high limit and this is checked
-// when compiled in debug mode.  The remaining members allow you to read and
-// set the parameters.
+// It is assumed that low limit is less than the high limit and an AipsError
+// exception thrown if this is not true.  The remaining members allow you to
+// read and set the parameters.
 
 // </synopsis>
 
@@ -597,6 +687,15 @@ public:
   void range(Int low, Int high);
   // </group>
   
+  // These function allow you to manipulate the parameters (low & high)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   static Double calcDelta(Int low, Int high);
   Int itsLow;
@@ -618,8 +717,8 @@ inline Int DiscreteUniform::high() const {
 // The <src>Erlang</src> class implements an Erlang distribution with mean
 // <src>mean</src> and variance <src>variance</src>.
 
-// It is assumed that the mean is non-zero and the variance is positive and
-// this is checked when compiled in debug mode.  The remaining members allow
+// It is assumed that the mean is non-zero and the variance is positive an
+// AipsError exception thrown if this is not true.  The remaining members allow
 // you to read and set the parameters.
 // </synopsis>
 
@@ -657,6 +756,15 @@ public:
   void mean(Double x);
   Double variance() const;
   void variance(Double x);
+  // </group>
+
+  // These function allow you to manipulate the parameters (mean & variance)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
 private:
@@ -704,9 +812,9 @@ inline void Erlang::variance(Double x) {
 // obtained that is larger than the mean. To get this same value as an integer
 // using the asInt function.
 
-// It is assumed that the supplied mean is between zero and one 
-// <src>(0 <= mean < 1)</src> and this is checked when compiled in debug mode.
-// The remaining members allow you to read and set the parameters.
+// It is assumed that the supplied mean is between zero and one <src>(0 <= mean
+// < 1)</src> and and AipsError exception thrown if this is not true.  The
+// remaining members allow you to read and set the parameters.
 // </synopsis>
 
 // <example>
@@ -748,6 +856,15 @@ public:
   void mean(Double x);
   // </group>
   
+  // These function allow you to manipulate the parameters (mean)
+  // described above through the base class. The Vectors must always be of
+  // length one.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   Double itsMean;
 };
@@ -765,9 +882,9 @@ inline Double Geometric::mean() const {
 // a value from this distribution
 
 // It is assumed the variance is positive and that the mean is non-zero and not
-// bigger than the square-root of the variance. This is checked when compiled
-// in debug mode.  The remaining members allow you to read and set the
-// parameters.  
+// bigger than the square-root of the variance. An AipsError exception is
+// thrown if this is not true.  The remaining members allow you to read and set
+// the parameters.
 // </synopsis>
 
 // <example>
@@ -806,6 +923,15 @@ public:
   void variance(Double x);
   // </group>
   
+  // These function allow you to manipulate the parameters (mean & variance)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   void setState();
   Double itsMean;
@@ -848,10 +974,10 @@ inline void HyperGeometric::variance(Double x) {
 // distribution.  The <src>operator()</src> functions returns a value from this
 // distribution
 
-// It is assumed that the supplied variance is positive and this is checked
-// when compiled in debug mode.  The remaining members allow you to read and
-// set the parameters. The <src>LogNormal</src> class is derived from this one.
-
+// It is assumed that the supplied variance is positive and an AipsError
+// exception is thrown if this is not true.  The remaining members allow you to
+// read and set the parameters. The <src>LogNormal</src> class is derived from
+// this one.
 // </synopsis>
 
 // <example>
@@ -890,6 +1016,15 @@ public:
   virtual void variance(Double x);
   // </group>
   
+  // These function allow you to manipulate the parameters (mean & variance)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   Double itsMean;
   Double itsVariance;
@@ -897,6 +1032,14 @@ private:
   Bool itsCached;
   Double itsCachedValue;
 };
+
+inline Double Normal::mean() const {
+  return itsMean;
+}
+
+inline Double Normal::variance() const {
+  return itsVariance;
+}
 
 // <summary> Logarithmic normal distribution </summary>
 
@@ -906,10 +1049,9 @@ private:
 // parameters of the distribution. The <src>operator()</src> functions returns
 // a value from this distribution
 
-// It is assumed that the supplied variance is positive and that the mean is
-// non-zero. This is checked when compiled in debug mode.  The remaining
-// members allow you to read and set the parameters.
-
+// It is assumed that the supplied variance is positive and an AipsError
+// exception is thrown if this is not true.  The remaining members allow you to
+// read and set the parameters.
 // </synopsis>
 
 // <example>
@@ -948,11 +1090,28 @@ public:
   virtual void variance(Double x);
   // </group>
 
+  // These function allow you to manipulate the parameters (mean & variance)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   void setState();
   Double itsLogMean;
   Double itsLogVar;
 };
+
+inline Double LogNormal::mean() const {
+  return itsLogMean;
+}
+
+inline Double LogNormal::variance() const {
+  return itsLogVar;
+}
 
 // <summary>Negative exponential distribution</summary>
 
@@ -997,22 +1156,21 @@ public:
   void mean(Double x);
   // </group>
   
-protected:
+  // These function allow you to manipulate the parameters (mean)
+  // described above through the base class. The Vectors must always be of
+  // length one.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
+private:
   Double itsMean;
 };
 
-inline NegativeExpntl::NegativeExpntl(RNG* gen, Double mean)
-  :Random(gen)
-{
-  itsMean = mean;
-}
-
 inline Double NegativeExpntl::mean() const {
   return itsMean; 
-}
-
-inline void NegativeExpntl::mean(Double x) {
-  itsMean = x;
 }
 
 // <summary> Poisson distribution </summary>
@@ -1022,10 +1180,9 @@ inline void NegativeExpntl::mean(Double x) {
 // <src>operator()</src> functions returns a value from this distribution. The
 // remaining members allow you to inspect and change the mean.
 
-// It is assumed that the supplied mean is non-negative and this is checked
-// when compiled in debug mode.  The remaining members allow you to read and
-// set the parameters.
-
+// It is assumed that the supplied mean is non-negative and an AipsError
+// exception is thrown if this is not true.  The remaining members allow you to
+// read and set the parameters.
 // </synopsis>
 
 // <example>
@@ -1066,6 +1223,15 @@ public:
   void mean(Double x);
   // </group>
   
+  // These function allow you to manipulate the parameters (mean)
+  // described above through the base class. The Vectors must always be of
+  // length one.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   Double itsMean;
 };
@@ -1083,9 +1249,9 @@ inline Double Poisson::mean() const {
 // parameter can never be returned.  The <src>operator()</src> functions
 // returns a value from this distribution.
 
-// It is assumed that low limit is less than the high limit and this is checked
-// when compiled in debug mode.  The remaining members allow you to read and
-// set the parameters.
+// It is assumed that low limit is less than the high limit and an AipsError
+// exception is thrown if this is not true.  The remaining members allow you to
+// read and set the parameters.
 
 // </synopsis>
 
@@ -1123,6 +1289,16 @@ public:
   void low(Double x);
   Double high() const;
   void high(Double x);
+  void range(Double low, Double high);
+  // </group>
+
+  // These function allow you to manipulate the parameters (low & high)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
   // </group>
 
 private:
@@ -1147,10 +1323,9 @@ inline Double Uniform::high() const {
 // The <src>Weibull</src> class implements a weibull distribution with
 // parameters <src>alpha</src> and <src>beta</src>.  The first parameter to the
 // class constructor is <src>alpha</src>, and the second parameter is
-// <src>beta</src>.  It is assumed that the alpha parameter is not zero and
-// this is checked when compiled in debug mode.  The remaining members allow
-// you to read and set the parameters.
-
+// <src>beta</src>.  It is assumed that the alpha parameter is not zero and an
+// AipsError exception is thrown if this is not true.  The remaining members
+// allow you to read and set the parameters.
 // </synopsis>
 
 // <example>
@@ -1172,7 +1347,7 @@ public:
   // over by this class and the user is responsible for deleting it. The
   // remaining arguments define the parameters for this distribution as
   // described in the synopsis.
-  Weibull(RNG* gen, Double alpha, Double beta);
+  Weibull(RNG* gen, Double alpha=1.0, Double beta=1.0);
   
   // The destructor is trivial
   virtual ~Weibull();
@@ -1189,6 +1364,15 @@ public:
   void beta(Double x);
   // </group>
 
+  // These function allow you to manipulate the parameters (alpha & beta)
+  // described above through the base class. The Vectors must always be of
+  // length two.
+  // <group>
+  virtual void setParameters(const Vector<Double>& parms);
+  virtual Vector<Double> parameters() const;
+  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  // </group>
+
 private:
   void setState();
   Double itsAlpha;
@@ -1196,30 +1380,12 @@ private:
   Double itsInvAlpha;
 };
 
-inline Weibull::Weibull(RNG* gen, Double alpha=1.0, Double beta=1.0)
-  :Random(gen),
-   itsAlpha(alpha),
-   itsBeta(beta),
-   itsInvAlpha(0)
-{
-  setState();
-}
-
 inline Double Weibull::alpha() const {
   return itsAlpha;
 }
 
-inline void Weibull::alpha(Double x) {
-  itsAlpha = x;
-  setState();
-}
-
 inline Double Weibull::beta() const {
   return itsBeta; 
-}
-
-inline void Weibull::beta(Double x) {
-  itsBeta = x;
 }
 
 #endif
