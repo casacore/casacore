@@ -2,7 +2,7 @@
 \label{Code development}
 \index{Code development}
 
-Utilities specifically for programmers who are developing code in \aipspp\ 
+Information specifically for programmers who are developing code in \aipspp\ 
 \footnote{Last change:
 $ $Id$ $}.
 
@@ -13,13 +13,342 @@ $ $Id$ $}.
 \index{overview -- code development}
 \index{code development -- overview}
 
+This section runs through the basic operational aspects of developing code in
+\aipspp.
+
+\subsection*{Setup}
+
+Basic \aipspp\ programmer setup was described in \sref{AIPS++ programmer
+setup}.  To recapitulate the main points
+\begin{itemize}
+\item
+   If you will be checking sources into and out of the \aipspp\ master (i.e.
+   an \aipspp\ consortium programmer) then make sure you are a member of the
+   \aipspp\ programmer group, the conventional name of which is
+   \acct{aips2prg}.
+\item
+   Modify your shell's login script (\file{.login}, \file{.profile}, etc.) to
+   invoke \exeref{aipsinit} to define the \aipspp\ environment.
+\item
+   Invoke \exeref{mktree} to create an \aipspp\ workspace.
+\end{itemize}
+
+The \aipspp\ makefiles normally deposit binary files in the same directory as
+programmer source files unless you create separate directories for them.  If
+you intend to compile sources for more than one architecture or compiler then
+you should create these directories.  A good strategy is to maintain sources
+within your home directory (which presumably is backed up) and relegate the
+binaries to some other filesystem with more space but not backed up.  Hence
+typically
+
+\begin{verbatim}
+   mkdir /bigdisk/myarea/sun4sol_gnu/{aux,bin,bindbg,lib,libdbg}
+   ln -s /bigdisk/myarea/sun4sol_gnu $HOME/aips++/sun4sol_gnu
+\end{verbatim}
+
+\noindent
+Do this for each \aipspp\ architecture that you are likely to use.  The
+\aipspp\ makefiles will discover and use these directories automatically.  You
+can use \exeref{aipsinit} to switch between architectures at any time.
+
+\subsection*{Modifying existing sources}
+
+Once your workspace is set up the \aipspp\ makefiles allow you to compile
+system sources without having to check them out into your workspace.
+Programmer-oriented makefile targets are described in \sref{Code development
+makefile rules}.  Typically it is enough to invoke \exeref{gmake} without
+any targets.  Use
+
+\begin{verbatim}
+   gmake help
+\end{verbatim}
+
+\noindent
+to get a context-sensitive summary of the \aipspp\ targets for each directory.
+Programmer-oriented targets are discussed in section \sref{Code development
+makefile rules}.
+
+If you wish to modify a source file then
+
+\begin{itemize}
+\item
+   If you are a consortium programmer and intend to change the master source
+   code then check out the relevant source file using \aipsexee{ao -l}{ao} or
+   \aipsexee{rao -l}{rao}.  If you do not intend to update the local system
+   then omit the \exe{-l} flag.
+\item
+   If a copy of the \rcs\ repository is maintained in your installation (as
+   indicated by the presence of the \file{\$AIPSROOT/rcs} directory) and you
+   intend to update your installation then check out the source file using
+   \unixexe{co -l}.  If you do not intend to update the local system then omit
+   the \exe{-l} flag.
+\item
+   If your installation does not contain a copy of the \rcs\ source repository
+   then simply copy the relevant system file to your workspace directory.
+\end{itemize}
+
+\noindent
+Once you've modified the file you can compile it in your workspace without
+affecting the system binaries.  When you're satisfied with your changes
+
+\begin{itemize}
+\item
+   If you want to update the \aipspp\ master check the file in with
+   \exeref{ai} or \exeref{rai}.  If you also want to update the local slave
+   \rcs\ repository then do so with \exeref{au} or \exeref{rau}.  You can
+   combine the two operations via \exe{ai -au} or \exe{rai -au}.
+\item
+   Use \unixexe{ci} if you only want to update the local \rcs\ repository.
+\item
+   If your installation does not contain a copy of the \rcs\ source repository
+   then simply copy the file to the system directory.
+\end{itemize}
+
+\noindent
+If you want to update the system binaries you will need to issue a
+
+\begin{verbatim}
+   gmake allsys
+\end{verbatim}
+
+\noindent
+This can be done from a programmer workspace (although some installations
+explicitly prevent this by removing write permission for \acct{aips2prg} from
+the \aipspp\ system directories).
+
+\subsection*{The gmake command line - flags and variable definitions}
+
+\exeref{gmake} has several command line options which are frequently useful
+for \aipspp\ programmers.
+
+\begin{itemize}
+\item
+   \exe{--help}: Print usage information and exit without processing any
+   makefiles.
+\item
+   \exe{-i}: Ignore all  errors  in  commands  executed  to  remake files.
+\item
+   \exe{-k}: Continue as much as possible after an error.   While the target
+   that failed, and those that depend on it, cannot be remade, the other
+   dependencies of these targets can be processed all the same.
+\item
+   \exe{-n}: Print the commands that would be executed, but do not execute
+   them.
+\item
+   \exe{-W}: Pretend that the target file has just been modified.  When used
+   with the \exe{-n} flag, this shows you what would happen if you were to
+   modify that file.  Without \exe{-n}, it is almost the same as running a
+   \unixexe{touch} command on the given file before running \aipsexe{gmake},
+   except that the modification time is changed only in the imagination of
+   \exe{gmake}.
+\end{itemize}
+
+\noindent
+Note that the default \filref{makedefs} sets the \exe{--no-print-directory}
+internally (via \code{MAKEFLAGS}) and also sets \exe{-i} for system invokation
+but not for programmer invokation.  Consult the unix manual page for
+\aipsexe{gmake} for further options or use
+
+\begin{verbatim}
+   gmake --help
+\end{verbatim}
+
+\noindent
+Do not confuse this with
+
+\begin{verbatim}
+   gmake help
+\end{verbatim}
+
+\noindent
+which is an \aipspp\ target which lists \aipspp\ targets.  Note also that you
+should eschew usage of the \exe{-e} option (environment variables override
+makefile variables) unless you fully understand its implications.
+
+The other important aspect of \aipsexe{gmake} invokation is that makefile
+variables may be defined on the command line and these (usually) override
+their definition within the makefile.  The makefiles use separate sets of
+variables for system and programmer compilations, so for example, system
+\cplusplus\ compilations use \code{C++DBG} and \code{C++OPT} for debug and
+optimized compilations whereas \code{C++FLAGS} is used for programmer
+compilations.  The default \filref{makedefs} sets
+
+\begin{verbatim}
+   ifdef OPT
+      C++FLAGS  = $(C++OPT) $(EXTRA_C++FLAGS)
+   else
+      C++FLAGS  = $(C++DBG) $(EXTRA_C++FLAGS)
+   endif
+\end{verbatim}
+
+\noindent
+although as described in section \sref{Code development makedefs conventions}
+the site-specific makedefs may redefine this, for example as
+
+\begin{verbatim}
+   ifdef OPT
+      C++FLAGS := -O$(OPT) -pipe
+   else
+      C++FLAGS := $(C++DBG)
+   endif
+
+   C++FLAGS += $(EXTRA_C++FLAGS)
+\end{verbatim}
+
+Either way, this example shows three two basic types of command-line variable
+substitutions
+
+\begin{itemize}
+\item
+   Variables such as \code{OPT} which are used as switches.  In the second
+   example it is used as a switch and an optimization level.  It might be used
+   as
+
+   \begin{verbatim}
+      gmake OPT=2 myprog
+   \end{verbatim}
+
+\item
+   The \code{C++FLAGS} variable itself can be completely redefined on the
+   command line, for example
+
+   \begin{verbatim}
+      gmake C++FLAGS="-O4 -fast -target=native" myprog
+   \end{verbatim}
+
+\item
+   The \code{EXTRA\_C++FLAGS} variable can be used to add extra options to
+   \code{C++FLAGS}, for example
+ 
+   \begin{verbatim}
+      gmake EXTRA_C++FLAGS="-fast" myprog
+   \end{verbatim}
+
+\end{itemize}
+
+\noindent
+As discussed in section \sref{Diagnostic makefile rules}, a list of variables
+of specific interest to programmers may be obtained via
+
+\begin{verbatim}
+   gmake show_prg
+\end{verbatim}
+
+\noindent
+This may be used to show the value of the variables which would be used in a
+particular situation, for example
+
+\begin{verbatim}
+   gmake OPT=2 EXTRA_C++FLAGS="-fast" show_prg
+\end{verbatim}
+
+\noindent
+The variables of interest to programmers are described in more detail in
+section \sref{Code development makefile rules}.
+
+As suggested above, the site-specific \filref{makedefs} may be used to alter
+the construction of programmer variable definitions.  Several conventional
+constructions are discussed in section \sref{Code development makedefs
+conventions}.  Programmers may also implement their own definitions or
+constructions in a personal \file{makedefs} file as discussed in the same
+section.
+
+\subsection*{Creating new files and directories}
+
+If you want to develop a new directory in the \aipspp\ hierarchy, usually to
+contain a class implementation module or a new application, then simply create
+that directory in your workspace.  Likewise, new files may simply be created -
+the \aipspp\ makefiles do not contain lists of files but use the file suffix
+to determine how to process a file.  Recognized file suffixes are listed in
+section \sref{makefiles}.
+
+All \aipspp\ directories (except for \file{.dir} and \file{tmplinst}
+directories must contain a makefile which must be called \file{makefile}.
+Typically this need only include one of the generic \aipspp\ makefiles (see
+\sref{makefiles}).  For example, when creating a new application the minimum
+requirement would be
+
+\begin{verbatim}
+   # $Id$
+ 
+   # Use the generic AIPS++ application makefile.
+   #---------------------------------------------
+   include $(word 1, $(AIPSPATH))/code/install/makefile.app
+\end{verbatim}
+
+\noindent
+Once you have finished development the new directory may be checked in to the
+master via \exeref{ai}.  However, you may receive a message to the effect that
+permission for the operation is denied - creation of new files and directories
+in many parts of the master is restricted to particular individuals since all
+new code must be vetted by the ``Code-Cop''.
+
+\subsection*{makefiles}
+
+The makefiles which exist in the \aipspp\ source directories mostly just
+include a generic makefile but some need to supply additional information.
+
+For an application you often need to register any required external libraries
+and may also want to define some preprocessor directives as described in
+section \sref{Object libraries}:
+ 
+\begin{verbatim}
+   # $Id$
+ 
+   # Use the generic AIPS++ application makefile.
+   #---------------------------------------------
+   XLIBLIST := GLISH WCSLIB F77
+   CPPMODU  := -DFOO -DBAR
+   include $(word 1, $(AIPSPATH))/code/install/makefile.app
+\end{verbatim}
+
+\noindent
+The \code{XLIBLIST} and \code{CPPMODU} variables are relevant to the
+\file{app}, \file{imp}, and \file{tst} makefiles.
+
+The documentation makefile requires arguments to be specified for conversion
+of \LaTeX\ documents to \textsc{html} via \unixexe{latex2html}.  Typically
+
+\begin{verbatim}
+   # $Id$
+ 
+   # Declare latex2html flags.
+   System := -split 2
+   Coding := -split 3
+ 
+   # Use the generic AIPS++ documentation makefile
+   #----------------------------------------------
+   include $(word 1, $(AIPSPATH))/code/install/makefile.doc
+\end{verbatim}
+
+\noindent
+This example declares that \unixexe{latex2html} should be run on
+\file{System.latex} and \file{Coding.latex}.  No other files in the directory
+with a \file{.latex} suffix will be converted to \textsc{html} although they
+will be converted to \textsc{PostScript}.  At the minimum the variable of
+the same basename as the \file{.latex} file should specify a \code{-split}
+argument to \unixexe{latex2html}, but it can also specify any other arguments
+recognized by it.
+
+This example also illustrates that \LaTeX\ documents must have a \file{.latex}
+suffix to distinguish them from plain \TeX\ documents.
+
+Adjunct \file{makedefs} files may contain definitions (or, in principle,
+rules) which apply to a particular source code directory.  The adjunct files
+are architecture-specific and are primarily intended to control compiler
+options on a per-sourcefile basis.  This is an advanced topic discussed in
+section \sref{makedefs adjuncts}.
+
 % ----------------------------------------------------------------------------
 
 \newpage
 \section{Coding conventions}
 \label{Coding conventions}
 \index{coding -- conventions}
-\index{conventions -- conventions}
+\index{conventions -- coding}
+\index{include files -- coding conventions}
+\index{perl scripts -- coding conventions}
+\index{HTML -- coding conventions}
 
 This section discusses some aspects of the \aipspp\ system which have a direct
 effect on the way source code is written.
@@ -113,11 +442,13 @@ any type of file, \TeX , \LaTeX\, and Texinfo may themselves impose
 constraints, for example \LaTeX\ requires a \file{.tex} file suffix for
 included files.
 
-The \file{.dir} subdirectories should not contain a makefile.
+The \file{.dir} subdirectories should not contain a makefile, nor should they
+have subdirectories.  Other than that there is really no restriction on
+what they may contain.
 
 \subsection*{HTML meta-markups}
 
-The HTML comment
+The \textsc{html} comment
 
 \noindent
 \verb+   <!$+\verb+Date$>+
@@ -128,7 +459,7 @@ may be used to automatically record timestamp information in the installed
 typically near the end of the file:
 
 \begin{verbatim}
-   <P>Copyright &#169; 1996 Associated Universities Inc., Washington, D.C.</P>
+   <P>Copyright &#169; 1996,1997 Associated Universities Inc., Washington, D.C.</P>
    <ADDRESS>aips2adm@nrao.edu</ADDRESS>
 \end{verbatim}
 
@@ -141,7 +472,7 @@ typically near the end of the file:
 \end{verbatim}
 
 \noindent
-\rcs\ substitutes the current time (GMT) for the \verb+$\code{}Date$+ string
+\rcs\ substitutes the current time (GMT) for the \verb+$+\verb+Date$+ string
 when the file is checked in (see \exeref{ai}) thereby transforming the
 meta-markup to something resembling
 
@@ -155,7 +486,7 @@ time when the \file{.html} file was installed in the relevant subdirectory of
 result is as follows:
 
 \begin{verbatim}
-   Copyright (c) 1995 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995,1997 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -175,7 +506,7 @@ It is permissable to insert additional text within the meta-markup as follows:
 This would appear as:
 
 \begin{verbatim}
-   Copyright (c) 1995 Associated Universities Inc., Washington, D.C.
+   Copyright (c) 1995,1997 Associated Universities Inc., Washington, D.C.
 
    aips2adm@nrao.edu
 
@@ -189,25 +520,14 @@ This would appear as:
 The \verb+<!$+\verb+Date$>+ meta-markup must appear as the first and only text
 on a line (with no leading whitespace).  It should be the last item before the
 \code{</BODY>} \textsc{html} markup.
-
-
+ 
 % ----------------------------------------------------------------------------
  
 \newpage
-\section{\exe{ldmap}}
-\label{ldmap}
-\index{ldmap}
- 
-Determine dependencies between object modules from a namelist.
-
-% ----------------------------------------------------------------------------
-
-\newpage
-\section{\file{Code development makefile usage}}
-\label{Code development makefile usage}
-\index{code development -- makefile usage}
-\index{makefile usage -- code development}
-\index{usage, makefile -- code development}
+\section{Code development makedefs conventions}
+\label{Code development makedefs conventions}
+\index{code development -- makedefs conventions}
+\index{makedefs -- code development}
 \index{compilation}
 \index{makefiles}
 \index{makefile - application}
@@ -233,22 +553,166 @@ Determine dependencies between object modules from a namelist.
 \index{makefile.scr}
 \index{makefile.tst}
 
-\subsection*{The gmake command line - flags and variable definitions}
-
+\subsection*{Conventions for \file{makedefs} variable definitions}
+ 
+Some features of the \aipspp\ programmer compilations are defined as
+conventions for variable usage which are implemented within \filref{makedefs}
+itself.
+ 
+\textbf{Optimized programmer compilations:}
+ 
+By default, programmer compilations are usually done in debug mode.
+Specifying \code{OPT=1} (or \code{2}, \code{3}, \code{4}, ...) on the
+\exeref{gmake} command line signals that programmer compilations are to be
+done at the corresponding optimization level.  For example
+ 
+\begin{verbatim}
+   gmake OPT=1 Foo.o
+\end{verbatim}
+ 
+\noindent
+If the \code{OPT} variable is defined the default \filref{makedefs} will set
+all programmer compile options to be the same as used for optimized system
+compilations.  However, alternate levels of optimization must be implemented
+in the site-specific \file{makedefs}; the example below shows how this might
+be done.  If \code{OPT} has been set then programmer executables will be
+linked to the optimized system libraries (if they exist).
+ 
+The \code{OPT} variable is not intended to (and should not be made to) affect
+system compilations.
+ 
+\textbf{Alternate programmer compilation options:}
+ 
+Another convention in use for programmer compilations is that of setting
+compiler \code{*FLAGS} variables on the command line to \code{alt1},
+(\code{alt2}, ...).  For example,
+ 
+\begin{verbatim}
+   gmake C++FLAGS=alt1 Foo.o
+\end{verbatim}
+ 
+\noindent
+This is a signal to the site-specific \filref{makedefs} to substitute a
+predefined, locally standard, set of compiler options.  By convention,
+\code{alt1} should be defined to do an optimized compilation of the same level
+as the system optimized compilation.
+ 
+\textbf{Adding extra programmer compilation options:}
+ 
+Programmers may supplement the compilation options defined within
+\filref{makedefs} by use of \code{EXTRA\_*FLAGS}, for example
+ 
+\begin{verbatim}
+   gmake EXTRA_C++FLAGS="+p -pipe" Foo.o
+\end{verbatim}
+ 
+\noindent
+which would cause "\code{+p -pipe}" to be appended to the value of
+\code{C++FLAGS} defined within \file{makedefs}.  If any of the extra options
+are incompatible with, or contradict the options set in \file{makedefs} then
+compiler-specific behaviour will result.
+ 
+\textbf{Redefining programmer compilation options in full:}
+ 
+Strictly speaking this is not a \filref{makedefs} convention, but nevertheless
+it's worth pointing out that \file{makedefs} must not prevent programmer
+variables from being redefined in full on the \exeref{gmake} command line.  In
+practice this simply means that \file{makedefs} must not use the
+\code{override} directive when defining programmer compilation variables
+(except in implementing the alternate options as described below).
+ 
+\textbf{Implementing the conventions:}
+ 
+The conventions on programmer compilation options must be implemented within
+the site-specific \filref{makedefs}.  However, they need not be implemented if
+they are not required.  Since considerable latitude is available in their
+precise interpretation a \code{show\_prg} target has been provided for
+programmers to print the values of all variables likely to be affected.  The
+following fragment shows a realistic example of how the \code{C++FLAGS}
+variable might be defined in the site-specific \file{makedefs}:
+ 
+\begin{verbatim}
+   ifdef OPT
+      C++FLAGS := -ptr$(PGMRPTRD) -pta -O$(OPT) +p -pipe -ptv
+   else
+      C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG)
+   endif
+ 
+   ifeq "$(C++FLAGS)" "alt1"
+      override C++FLAGS := -ptr$(PGMRPTRD) $(C++OPT)
+   endif
+ 
+   ifeq "$(C++FLAGS)" "alt2"
+      override C++FLAGS := -ptr$(PGMRPTRD) $(C++DBG) -ptv
+   endif
+ 
+   C++FLAGS += $(EXTRA_C++FLAGS)
+\end{verbatim}
+ 
+\noindent
+An important point to note here is that if \code{C++FLAGS} is defined on the
+command line then a redefinition within \filref{makedefs} has no effect unless
+the \code{override} directive is used.  The variables which define programmer
+compilation options are \code{CPPFLAGS}, \code{CFLAGS}, \code{C++FLAGS},
+\code{FFLAGS}, and \code{LDFLAGS}.
+ 
+\textbf{Programmer binary directories:}
+ 
+The \code{PGMRINCD}, \code{PGMRAUXD}, \code{PGMRLIBD}, and \code{PGMRBIND}
+variables specify where the output from programmer compilations is to be
+deposited.  \code{PGMRINCD} is used for the output of the \unixexe{lex} and
+\unixexe{bison} parser/generators, and \code{PGMRAUXD} contains the results of
+programmer dependency analyses.  The default \filref{makedefs} sets these, and
+also \code{PGMRPTRD}, to
+ 
+\begin{verbatim}
+   PGMRINCD := $(wildcard $(PGMRARCH))
+   PGMRAUXD := $(wildcard $(PGMRARCH)/aux)
+   PGMRLIBD := $(wildcard $(PGMRARCH)/lib)
+   PGMRBIND := $(wildcard $(PGMRARCH)/bin)
+   PGMRPTRD  = $(PGMRARCH)/ptrepository
+\end{verbatim}
+ 
+\noindent
+In other words, the \file{\$(PGMRARCH)}, \file{\$(PGMRARCH)/aux},
+\code{\$(PGMRARCH)/lib}, and \code{\$(PGMRARCH)/bin} directories will be used
+{\em if they exist}.  If they don't, then \code{PGMRINCD}, \code{PGMRLIBD}
+and/or \code{PGMRBIND} will be blank and the corresponding output will be
+left in the programmer's source code directories.  The site-specific
+\filref{makedefs} files can reset these variables as it sees fit, except that
+if they're not blank, then they must specify absolute pathnames.  Note that
+this facility uses the \exe{-o} compiler option for object modules so
+\code{PGMRLIBD} must not be set for compilers which do not support it.
+ 
+The site-specific \file{makedefs} may wish to redefine \code{PGMRLIBD} and
+\code{PGMRBIND} depending on the value of \code{OPT} in order to separate the
+binaries produced for different levels of optimization.  The default is to put
+debug and optimized binaries in the same place.
 
 \subsection*{Programmer makedefs}
 
+Programmers can maintain makefile variable definitions (and rules) within a
+private \aipsfil{makedefs} file.  This is included after the site-specific
+\file{makedefs} so that it's possible to override any site definitions.  The
+programmer \file{makedefs} must reside in the architecture-specific
+subdirectory of the root of the programmer's workspace.  For example, if the
+\aipspp\ architecture is \code{sun4sol\_gnu} and the programmer's workspace is
+rooted at \file{\$HOME/aips++} then the programmer \file{makedefs} must be
+\file{\$HOME/aips++/sun4sol\_gnu/makedefs}.  Of course, this file could
+include \file{makedefs} definitions from elsewhere.
 
-\subsection*{Creating a makefile}
-
-   Include a generic makefile.\\
-   XLIBLIST.\\
-   HTML documents.
-
+\subsection*{See also}
+ 
+The \textsc{gnu} \code{Make} manual.\\
+The \textsc{gnu} manual page for \unixexe{gmake}.\\
+\aipspp\ variable names (\sref{variables}).
+\exeref{gmake}, \textsc{gnu} make.\\
+\filref{makedefs}, \aipspp\ makefile definitions.
+ 
 % ----------------------------------------------------------------------------
 
 \newpage
-\section{\file{Code development makefile rules}}
+\section{Code development makefile rules}
 \label{Code development makefile rules}
 \index{code development -- makefile rules}
 \index{makefile rules -- code development}
@@ -393,14 +857,20 @@ programmer-oriented rules and may be redefined as necessary on the
    is defined in the site-specific \file{makedefs} file.
 
 \item
+   \code{OPTLIB}
+   \\ ...
+
+\item
    \code{*FLAGS}
    \\ Options to be used for programmer compilations (\code{CPPFLAGS},
-   \code{CFLAGS}, \code{C++FLAGS}, \code{FFLAGS}, and \code{LDFLAGS}).
+   \code{CFLAGS}, \code{C++FLAGS}, \code{FFLAGS}, \code{LDFLAGS} and
+   \code{CXXARFLAGS}).
 
 \item
    \code{EXTRA\_*FLAGS}
    \\ Extra compiler flags to be appended to \code{*FLAGS} (\code{CPPFLAGS},
-   \code{CFLAGS}, \code{C++FLAGS}, \code{FFLAGS}, and \code{LDFLAGS}).
+   \code{CFLAGS}, \code{C++FLAGS}, \code{FFLAGS}, \code{LDFLAGS} and
+   \code{CXXARFLAGS}).
 \end{itemize}
 
 \noindent
@@ -949,6 +1419,15 @@ The unix manual page for \unixexe{ranlib}(1).\\
 \exeref{gmake}, \textsc{gnu} make.\\
 \filref{makedefs}, \aipspp\ makefile definitions.\\
 \exeref{updatelib}, update an \aipspp\ object library.
+
+% ----------------------------------------------------------------------------
+ 
+\newpage
+\section{\exe{ldmap}}
+\label{ldmap}
+\index{ldmap}
+ 
+Determine dependencies between object modules from a namelist.
 
 % ----------------------------------------------------------------------------
  
