@@ -1,5 +1,5 @@
 //# ChebyshevParam.cc  a function class that defines a ChebyshevParam polynomial
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,12 @@
 //# Includes
 #include <aips/Functionals/ChebyshevParam.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Containers/RecordInterface.h>
+#include <aips/Quanta/MUString.h>
 
 //# Constructors
 template <class T>
@@ -44,6 +47,12 @@ ChebyshevParam<T>::ChebyshevParam(const uInt n) :
   minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) {} 
 
 template <class T>
+ChebyshevParam<T>::ChebyshevParam(const uInt n, const RecordInterface& mode) :
+  Function1D<T>(n+1), def_p(T(0)), 
+  minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) 
+{ } 
+
+template <class T>
 ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 				      const OutOfIntervalMode mode,
 				      const T &defval) :
@@ -54,12 +63,23 @@ ChebyshevParam<T>::ChebyshevParam(const T &min, const T &max,
 
 template <class T>
 ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
-				      const T &min, const T &max, 
-				      const OutOfIntervalMode mode,
-				      const T &defval) :
-  Function1D<T>(coeffs.nelements()), def_p(defval), mode_p(mode) { 
-  setInterval(min, max);
-  setCoefficients(coeffs);
+				  const T &min, const T &max, 
+				  const OutOfIntervalMode mode,
+				  const T &defval) :
+  Function1D<T>(coeffs.nelements()), def_p(defval), 
+    minx_p(min), maxx_p(max), mode_p(CONSTANT) 
+{ 
+    setCoefficients(coeffs);
+}
+
+template <class T>
+ChebyshevParam<T>::ChebyshevParam(const Vector<T> &coeffs,
+				  const RecordInterface& mode) :
+  Function1D<T>(coeffs.nelements()), def_p(T(0)), 
+    minx_p(T(-1)), maxx_p(T(1)), mode_p(CONSTANT) 
+{ 
+    setMode(mode);
+    setCoefficients(coeffs);
 }
 
 template <class T>
@@ -173,5 +193,204 @@ void ChebyshevParam<T>::chebyshevToPower(Vector<T> &coeffs) {
     coeffs(i) *= cheb(i,i);
     for (uInt k=i+2; k<n; k += 2) coeffs(i) += cheb(i,k)*coeffs(k);
   };
+}
+
+template <class T>
+Vector<String> ChebyshevParam<T>::modes_s = 
+stringToVector("constant zeroth extrapolate cyclic edge", ' ');
+
+template <class T>
+Bool ChebyshevParamModeImpl<T>::hasMode() const { return True; }
+
+template <class T>
+void ChebyshevParamModeImpl<T>::setMode(const RecordInterface& in) {
+
+    // interval of interest
+    if (in.isDefined(String("interval"))) {
+	RecordFieldId fld("interval");
+	if (in.type(in.idToNumber(fld)) == TpArrayDouble   ||
+	    in.type(in.idToNumber(fld)) == TpArrayComplex  ||
+	    in.type(in.idToNumber(fld)) == TpArrayDComplex ||
+	    in.type(in.idToNumber(fld)) == TpArrayFloat    ||
+	    in.type(in.idToNumber(fld)) == TpArrayInt)
+	{
+	    Vector<T> intv;
+	    in.get(fld, intv);
+	    if (intv(0) < intv(1)) 
+		setInterval(intv(0), intv(1));
+	    else 
+		setInterval(intv(0), intv(1));
+	}
+    }
+
+    // default value
+    if (in.isDefined(String("default"))) {
+	RecordFieldId fld("default");
+	if (in.type(in.idToNumber(fld)) == TpDouble   ||
+	    in.type(in.idToNumber(fld)) == TpComplex  ||
+	    in.type(in.idToNumber(fld)) == TpDComplex ||
+	    in.type(in.idToNumber(fld)) == TpFloat    ||
+	    in.type(in.idToNumber(fld)) == TpInt)
+	{
+	    T def;
+	    in.get(fld, def);
+	    setDefault(def);
+	}
+    }
+
+    // out-of-interval mode
+    if (in.isDefined(String("intervalMode"))) {
+	RecordFieldId fld("intervalMode");
+	if (in.type(in.idToNumber(fld)) == TpString) {
+	    String mode;
+	    in.get(fld, mode);
+	    uInt match = MUString::minimaxNC(mode, modes_s);
+	    if (mode.length() > 0 && match < modes_s.nelements()) 
+		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+	    else 
+		throw AipsError(String("Unrecognized intervalMode: ") + mode);
+	}
+    }
+}	    
+
+template <class T>
+void ChebyshevParamModeImpl<T>::getMode(RecordInterface& out) const {
+    Vector<T> intv(2);
+    intv(0) = getIntervalMin();
+    intv(1) = getIntervalMax();
+
+    out.define(RecordFieldId("interval"), intv);
+    out.define(RecordFieldId("default"), getDefault());
+    out.define(RecordFieldId("intervalMode"), modes_s(getOutOfIntervalMode()));
+}
+
+// specialization for AutoDiff
+
+template <class T>
+void ChebyshevParamModeImpl<AutoDiff<T> >::setMode(const RecordInterface& in) {
+
+    // interval of interest
+    if (in.isDefined(String("interval"))) {
+	RecordFieldId fld("interval");
+	if (in.type(in.idToNumber(fld)) == TpArrayDouble   ||
+	    in.type(in.idToNumber(fld)) == TpArrayComplex  ||
+	    in.type(in.idToNumber(fld)) == TpArrayDComplex ||
+	    in.type(in.idToNumber(fld)) == TpArrayFloat    ||
+	    in.type(in.idToNumber(fld)) == TpArrayInt)
+	{
+	    Vector<T> intv;
+	    in.get(fld, intv);
+	    if (intv(0) < intv(1)) 
+		setInterval(intv(0), intv(1));
+	    else 
+		setInterval(intv(0), intv(1));
+	}
+    }
+
+    // default value
+    if (in.isDefined(String("default"))) {
+	RecordFieldId fld("default");
+	if (in.type(in.idToNumber(fld)) == TpDouble   ||
+	    in.type(in.idToNumber(fld)) == TpComplex  ||
+	    in.type(in.idToNumber(fld)) == TpDComplex ||
+	    in.type(in.idToNumber(fld)) == TpFloat    ||
+	    in.type(in.idToNumber(fld)) == TpInt)
+	{
+	    T def;
+	    in.get(fld, def);
+	    setDefault(def);
+	}
+    }
+
+    // out-of-interval mode
+    if (in.isDefined(String("intervalMode"))) {
+	RecordFieldId fld("intervalMode");
+	if (in.type(in.idToNumber(fld)) == TpString) {
+	    String mode;
+	    in.get(fld, mode);
+	    uInt match = MUString::minimaxNC(mode, modes_s);
+	    if (mode.length() > 0 && match < modes_s.nelements()) 
+		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+	    else 
+		throw AipsError(String("Unrecognized intervalMode: ") + mode);
+	}
+    }
+}	    
+
+template <class T>
+void ChebyshevParamModeImpl<AutoDiff<T> >::getMode(RecordInterface& out) const 
+{
+    Vector<T> intv(2);
+    intv(0) = getIntervalMin().value();
+    intv(1) = getIntervalMax().value();
+
+    out.define(RecordFieldId("interval"), intv);
+    out.define(RecordFieldId("default"), getDefault().value());
+    out.define(RecordFieldId("intervalMode"), modes_s(getOutOfIntervalMode()));
+}
+
+// specialization for AutoDiffA
+
+template <class T>
+void ChebyshevParamModeImpl<AutoDiffA<T> >::setMode(const RecordInterface& in) {
+
+    // interval of interest
+    if (in.isDefined(String("interval"))) {
+	RecordFieldId fld("interval");
+	if (in.type(in.idToNumber(fld)) == TpArrayDouble   ||
+	    in.type(in.idToNumber(fld)) == TpArrayComplex  ||
+	    in.type(in.idToNumber(fld)) == TpArrayDComplex ||
+	    in.type(in.idToNumber(fld)) == TpArrayFloat    ||
+	    in.type(in.idToNumber(fld)) == TpArrayInt)
+	{
+	    Vector<T> intv;
+	    in.get(fld, intv);
+	    if (intv(0) < intv(1)) 
+		setInterval(intv(0), intv(1));
+	    else 
+		setInterval(intv(0), intv(1));
+	}
+    }
+
+    // default value
+    if (in.isDefined(String("default"))) {
+	RecordFieldId fld("default");
+	if (in.type(in.idToNumber(fld)) == TpDouble   ||
+	    in.type(in.idToNumber(fld)) == TpComplex  ||
+	    in.type(in.idToNumber(fld)) == TpDComplex ||
+	    in.type(in.idToNumber(fld)) == TpFloat    ||
+	    in.type(in.idToNumber(fld)) == TpInt)
+	{
+	    T def;
+	    in.get(fld, def);
+	    setDefault(def);
+	}
+    }
+
+    // out-of-interval mode
+    if (in.isDefined(String("intervalMode"))) {
+	RecordFieldId fld("intervalMode");
+	if (in.type(in.idToNumber(fld)) == TpString) {
+	    String mode;
+	    in.get(fld, mode);
+	    uInt match = MUString::minimaxNC(mode, modes_s);
+	    if (mode.length() > 0 && match < modes_s.nelements()) 
+		setOutOfIntervalMode(static_cast<OutOfIntervalMode>(match));
+	    else 
+		throw AipsError(String("Unrecognized intervalMode: ") + mode);
+	}
+    }
+}	    
+
+template <class T>
+void ChebyshevParamModeImpl<AutoDiffA<T> >::getMode(RecordInterface& out) const
+{
+    Vector<T> intv(2);
+    intv(0) = getIntervalMin().value();
+    intv(1) = getIntervalMax().value();
+
+    out.define(RecordFieldId("interval"), intv);
+    out.define(RecordFieldId("default"), getDefault().value());
+    out.define(RecordFieldId("intervalMode"), modes_s(getOutOfIntervalMode()));
 }
 

@@ -1,5 +1,5 @@
 //# ChebyshevParam.h: Parameter handling for Chebyshev polynomial
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 
 //# Forward Declarations
 template<class T> class Vector;
+class RecordInterface;
 
 // <summary> Parameter handling for Chebyshev polynomial parameters
 // </summary>
@@ -192,6 +193,16 @@ public:
     ChebyshevParam(const Vector<T> &coeffs, const T &min, const T &max, 
 		   const OutOfIntervalMode mode=CONSTANT, const T &defval=T(0));
   
+    // create a fully specified Chebyshev polynomial.
+    //   config  is a record that contains the non-coefficient data 
+    //             that configures this class.
+    // The fields recognized by this class are those documented for the 
+    // setMode() function below.
+    // <group>
+    ChebyshevParam(uInt order, const RecordInterface& mode);
+    ChebyshevParam(const Vector<T> &coeffs, const RecordInterface& mode);
+    // </group>
+  
     // create a deep copy of another Chebyshev polynomial
     ChebyshevParam(const  ChebyshevParam &other);
   
@@ -304,7 +315,163 @@ protected:
     T maxx_p;
     // Out-of-interval handling type
     OutOfIntervalMode mode_p;
+
+    static Vector<String> modes_s;
 };
+
+// <summary> A ChebyshevParam with the get/setMode implementation </summary>
+//
+// <synopsis>
+// The get/setMode() implementation is separated from ChebyshevParam
+// to enable simple specialization for AutoDiff.  See
+// <linkto class="ChebyshevParam">ChebyshevParam</linkto> for documentation
+// </synopsis>
+template <class T>
+class ChebyshevParamModeImpl : public ChebyshevParam<T> {
+public:
+    ChebyshevParamModeImpl() : ChebyshevParam<T>() { }
+
+    explicit ChebyshevParamModeImpl(const uInt n) : ChebyshevParam<T>(n) {}
+
+    ChebyshevParamModeImpl(const T &min, const T &max,
+			   const OutOfIntervalMode mode=CONSTANT,
+			   const T &defval=T(0))
+	: ChebyshevParam<T>(min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl(const Vector<T> &coeffs, 
+			   const T &min, const T &max, 
+			   const OutOfIntervalMode mode=CONSTANT, 
+			   const T &defval=T(0))
+	: ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl(uInt order, const RecordInterface& mode)
+	: ChebyshevParam<T>(order, mode) { setMode(mode); }
+    ChebyshevParamModeImpl(const Vector<T> &coeffs, 
+			   const RecordInterface& mode)
+	: ChebyshevParam<T>(coeffs, mode) { setMode(mode); }
+  
+    ChebyshevParamModeImpl(const ChebyshevParamModeImpl &other) 
+	: ChebyshevParam<T>(other) {}
+  
+    // get/set the function mode.  This is an alternate way to get/set the 
+    // non-coefficient data for this function.  The supported record fields 
+    // are as follows:
+    // <pre>
+    // Field Name     Type            Role
+    // -------------------------------------------------------------------
+    // min            template type   the minimum value of the Chebyshev 
+    //              			interval of interest
+    // max            template type   the maximum value of the Chebyshev 
+    //              			interval of interest
+    // intervalMode   TpString        the out-of-interval mode; recognized
+    //                                  values are "constant", "zeroth",
+    //                                  "extrapolate", "cyclic", and "edge".
+    //                                  setMode() recognizes a 
+    //                                  case-insensitive, minimum match.
+    // default        template type   the out-of-range value that is returned
+    //                                  when the out-of-interval mode is 
+    //                                  "constant".
+    // </pre>
+    // An exception is thrown if interval mode is unrecognized.
+    // <group>
+    virtual void setMode(const RecordInterface& mode);
+    virtual void getMode(RecordInterface& mode) const;
+    // </group>
+
+    // return True if the implementing function supports a mode.  This
+    // implementation always returns True.
+    virtual Bool hasMode() const;
+};
+
+#define ChebyshevParamModeImpl_PS ChebyshevParamModeImpl
+
+// <summary> Partial specialization of ChebyshevParamModeImpl for 
+// <src>AutoDiff</src>
+// </summary>
+// <synopsis>
+// <note role=warning> The name <src>ChebyshevParamModeImpl_PS</src> is only 
+// for cxx2html limitations.  
+// </synopsis>
+template <class T>
+class ChebyshevParamModeImpl_PS<AutoDiff<T> > 
+    : public ChebyshevParam<AutoDiff<T> > 
+{
+public:
+    ChebyshevParamModeImpl_PS() : ChebyshevParam<AutoDiff<T> >() { }
+
+    explicit ChebyshevParamModeImpl_PS(const uInt n) 
+	: ChebyshevParam<AutoDiff<T> >(n) {}
+
+    ChebyshevParamModeImpl_PS(const AutoDiff<T> &min, const AutoDiff<T> &max,
+			      const OutOfIntervalMode mode=CONSTANT,
+			      const AutoDiff<T> &defval=AutoDiff<T>(0))
+	: ChebyshevParam<AutoDiff<T> >(min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl_PS(const Vector<AutoDiff<T> > &coeffs, 
+			      const AutoDiff<T> &min, const AutoDiff<T> &max, 
+			      const OutOfIntervalMode mode=CONSTANT, 
+			      const AutoDiff<T> &defval=AutoDiff<T>(0))
+	: ChebyshevParam<AutoDiff<T> >(coeffs, min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl_PS(uInt order, const RecordInterface& mode)
+	: ChebyshevParam<AutoDiff<T> >(order, mode) {}
+    ChebyshevParamModeImpl_PS(const Vector<AutoDiff<T> > &coeffs, 
+			      const RecordInterface& mode)
+	: ChebyshevParam<AutoDiff<T> >(coeffs, mode) {}
+  
+    ChebyshevParamModeImpl_PS(const ChebyshevParamModeImpl_PS &other) 
+	: ChebyshevParam<AutoDiff<T> >(other) {}
+  
+    virtual void setMode(const RecordInterface& mode);
+    virtual void getMode(RecordInterface& mode) const;
+};
+
+#define ChebyshevParamModeImpl_PSA ChebyshevParamModeImpl
+
+// <summary> Partial specialization of ChebyshevParamModeImpl for 
+// <src>AutoDiff</src>
+// </summary>
+// <synopsis>
+// <note role=warning> The name <src>ChebyshevParamModeImpl_PS</src> is only 
+// for cxx2html limitations.  
+// </synopsis>
+template <class T>
+class ChebyshevParamModeImpl_PSA<AutoDiffA<T> > 
+    : public ChebyshevParam<AutoDiffA<T> > 
+{
+public:
+    ChebyshevParamModeImpl_PSA() : ChebyshevParam<AutoDiffA<T> >() { }
+
+    explicit ChebyshevParamModeImpl_PSA(const uInt n) 
+	: ChebyshevParam<AutoDiffA<T> >(n) {}
+
+    ChebyshevParamModeImpl_PSA(const AutoDiffA<T> &min, 
+			       const AutoDiffA<T> &max,
+			       const OutOfIntervalMode mode=CONSTANT,
+			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
+	: ChebyshevParam<AutoDiffA<T> >(min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl_PSA(const Vector<AutoDiffA<T> > &coeffs, 
+			       const AutoDiffA<T> &min, 
+			       const AutoDiffA<T> &max, 
+			       const OutOfIntervalMode mode=CONSTANT, 
+			       const AutoDiffA<T> &defval=AutoDiffA<T>(0))
+	: ChebyshevParam<AutoDiffA<T> >(coeffs, min, max, mode, defval) {}
+  
+    ChebyshevParamModeImpl_PSA(uInt order, const RecordInterface& mode)
+	: ChebyshevParam<AutoDiffA<T> >(order, mode) {}
+    ChebyshevParamModeImpl_PSA(const Vector<AutoDiffA<T> > &coeffs, 
+			      const RecordInterface& mode)
+	: ChebyshevParam<AutoDiffA<T> >(coeffs, mode) {}
+  
+    ChebyshevParamModeImpl_PSA(const ChebyshevParamModeImpl_PSA &other) 
+	: ChebyshevParam<AutoDiffA<T> >(other) {}
+  
+    virtual void setMode(const RecordInterface& mode);
+    virtual void getMode(RecordInterface& mode) const;
+};
+
+
 
 #endif
 

@@ -1,5 +1,5 @@
 //# Chebyshev.h  A function class that defines a Chebyshev polynomial
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -229,19 +229,19 @@
 // </todo>
 
 template<class T>
-class Chebyshev : public ChebyshevParam<T> {
+class Chebyshev : public ChebyshevParamModeImpl<T> {
 public: 
 
     //# Constructors
     // create a zero-th order Chebyshev polynomial with the first coefficient
     // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
     // OutOfDomainMode is CONSTANT, and the default value is T(0).
-    Chebyshev() : ChebyshevParam<T>() {}
+    Chebyshev() : ChebyshevParamModeImpl<T>() {}
 
     // create an n-th order Chebyshev polynomial with the coefficients
     // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
     // OutOfDomainMode is CONSTANT, and the default value is T(0).
-    explicit Chebyshev(const uInt n) : ChebyshevParam<T>(n) {}
+    explicit Chebyshev(const uInt n) : ChebyshevParamModeImpl<T>(n) {}
 
     // create a zero-th order Chebyshev polynomical with the first coefficient
     // equal to one.  
@@ -256,7 +256,7 @@ public:
 	      const typename ChebyshevParam<T>::
 	      OutOfIntervalMode mode=CONSTANT,
 	      const T &defval=T(0)) :
-	ChebyshevParam<T>(min, max, mode, defval) {}
+	ChebyshevParamModeImpl<T>(min, max, mode, defval) {}
   
     // create a fully specified Chebyshev polynomial.  
     //   coeffs holds the coefficients of the Chebyshev polynomial (see 
@@ -271,10 +271,23 @@ public:
     Chebyshev(const Vector<T> &coeffs, const T &min, const T &max, 
 	      const typename ChebyshevParam<T>::
 	      OutOfIntervalMode mode=CONSTANT, const T &defval=T(0)) :
-	ChebyshevParam<T>(coeffs, min, max, mode, defval) {}
+	ChebyshevParamModeImpl<T>(coeffs, min, max, mode, defval) {}
+
+    // create a fully specified Chebyshev polynomial.
+    //   config  is a record that contains the non-coefficient data 
+    //             that configures this class.
+    // The fields recognized by this class are those documented for the 
+    // <linkto class="ChebyshevParam">ChebyshevPara::setMode()</linkto> 
+    // function.
+    // <group>
+    Chebyshev(uInt order, const RecordInterface& mode) :
+	ChebyshevParamModeImpl<T>(order, mode) { }
+    Chebyshev(const Vector<T> &coeffs, const RecordInterface& mode) :
+	ChebyshevParamModeImpl<T>(coeffs, mode) { }
+    // </group>
   
     // create a deep copy of another Chebyshev polynomial
-    Chebyshev(const  Chebyshev &other) : ChebyshevParam<T>(other) {}
+    Chebyshev(const Chebyshev &other) : ChebyshevParamModeImpl<T>(other) {}
   
     // make this instance a (deep) copy of another Chebyshev polynomial
     Chebyshev<T> &operator=(const Chebyshev<T> &other) {
