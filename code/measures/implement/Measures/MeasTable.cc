@@ -3152,7 +3152,7 @@ Double MeasTable::UTtoST(Double ut1) {
 }
 
 Double MeasTable::dUT1(Double utc) {
-  static msgDone = False;
+  static Bool msgDone = False;
   static Double res = 0;
   static Double checkT = -1e6;
   if ( !nearAbs(utc, checkT, 0.04)) {
