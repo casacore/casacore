@@ -265,6 +265,9 @@ public:
   // Return MJD 
   Vector<Double>& time(Vector<Double>& t) const;
 
+  // Return MJD time interval
+  Vector<Double>& timeInterval(Vector<Double>& t) const;
+
   // Return the visibilities as found in the MS, Cube(npol,nchan,nrow).
   Cube<Complex>& visibility(Cube<Complex>& vis,
 			    DataColumn whichOne) const;
@@ -407,6 +410,7 @@ protected:
   Slicer weightSlicer_p;
   Bool useSlicer_p;
   Vector<Double> time_p;
+  Vector<Double> timeInterval_p;
   Vector<Double> frequency_p;
   Bool freqCacheOK_p, flagOK_p, weightSpOK_p;
   Block<Bool> visOK_p;
@@ -438,6 +442,7 @@ protected:
   // column access functions
   ROScalarColumn<Int> colAntenna1, colAntenna2;
   ROScalarColumn<Double> colTime;
+  ROScalarColumn<Double> colTimeInterval;
   ROArrayColumn<Float> colWeight;
   ROArrayColumn<Float> colImagingWeight;
   ROArrayColumn<Complex> colVis;

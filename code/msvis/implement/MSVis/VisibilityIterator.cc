@@ -107,6 +107,8 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   useSlicer_p=other.useSlicer_p;
   time_p.resize(other.time_p.nelements()); 
   time_p=other.time_p;
+  timeInterval_p.resize(other.timeInterval_p.nelements()); 
+  timeInterval_p=other.timeInterval_p;
   frequency_p.resize(other.frequency_p.nelements()); 
   frequency_p=other.frequency_p;
   freqCacheOK_p=other.freqCacheOK_p;
@@ -138,6 +140,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   colAntenna1.reference(other.colAntenna1);
   colAntenna2.reference(other.colAntenna2);
   colTime.reference(other.colTime);
+  colTimeInterval.reference(other.colTimeInterval);
   colWeight.reference(other.colWeight);
   colImagingWeight.reference(other.colImagingWeight);
   colVis.reference(other.colVis);
@@ -293,6 +296,10 @@ void ROVisibilityIterator::setState()
   ROScalarColumn<Double> lcolTime(msIter_p.table(),MS::columnName(MS::TIME));
   time_p.resize(curTableNumRow_p); 
   lcolTime.getColumn(time_p);
+  ROScalarColumn<Double> lcolTimeInterval(msIter_p.table(),
+					  MS::columnName(MS::INTERVAL));
+  timeInterval_p.resize(curTableNumRow_p); 
+  lcolTimeInterval.getColumn(timeInterval_p);
   curStartRow_p=0;
   setSelTable();
   // If this is a new MeasurementSet then set up the antenna locations
@@ -349,6 +356,7 @@ void ROVisibilityIterator::attachColumns()
   colAntenna1.attach(selTable_p,MS::columnName(MS::ANTENNA1));
   colAntenna2.attach(selTable_p,MS::columnName(MS::ANTENNA2));
   colTime.attach(selTable_p,MS::columnName(MS::TIME));
+  colTimeInterval.attach(selTable_p,MS::columnName(MS::INTERVAL));
   if (cds.isDefined(MS::columnName(MS::DATA))) {
     colVis.attach(selTable_p,MS::columnName(MS::DATA));
   };
@@ -510,6 +518,13 @@ Vector<Double>& ROVisibilityIterator::time(Vector<Double>& t) const
 {
   t.resize(curNumRow_p);
   colTime.getColumn(t); 
+  return t;
+}
+
+Vector<Double>& ROVisibilityIterator::timeInterval(Vector<Double>& t) const
+{
+  t.resize(curNumRow_p);
+  colTimeInterval.getColumn(t); 
   return t;
 }
 

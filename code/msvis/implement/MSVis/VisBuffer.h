@@ -176,6 +176,10 @@ public:
   Vector<Double>& time() {return timeOK_p ? time_p : fillTime();}
   const Vector<Double>& time() const {return This->time();}
 
+  Vector<Double>& timeInterval() {
+    return timeIntervalOK_p ? timeInterval_p : fillTimeInterval();}
+  const Vector<Double>& timeInterval() const {return This->timeInterval();}
+
   Vector<RigidVector<Double,3> >& uvw() {return uvwOK_p ? uvw_p : filluvw();}
   const Vector<RigidVector<Double,3> >& uvw() const {return This->uvw();}
 
@@ -292,6 +296,7 @@ private:
   Vector<Float>& fillSigma();
   Int& fillSpW();
   Vector<Double>& fillTime();
+  Vector<Double>& fillTimeInterval();
   Vector<RigidVector<Double,3> >& filluvw();
   Matrix<CStokesVector>& fillVis(VisibilityIterator::DataColumn whichOne);
   Cube<Complex>& fillVisCube(VisibilityIterator::DataColumn whichOne);
@@ -309,7 +314,8 @@ private:
   Bool nChannelOK_p, channelOK_p, nRowOK_p, ant1OK_p, ant2OK_p, cjonesOK_p,
     fieldIdOK_p, arrayIdOK_p, flagOK_p, flagRowOK_p, freqOK_p, lsrFreqOK_p,
     phaseCenterOK_p, polFrameOK_p,
-    sigmaOK_p, spwOK_p, timeOK_p, uvwOK_p, visOK_p, weightOK_p;
+    sigmaOK_p, spwOK_p, timeOK_p, timeIntervalOK_p, uvwOK_p, visOK_p,
+    weightOK_p;
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
 
@@ -328,6 +334,7 @@ private:
   Vector<Float> sigma_p;
   Int spectralWindow_p;
   Vector<Double> time_p;
+  Vector<Double> timeInterval_p;
   Vector<RigidVector<Double,3> > uvw_p;
   Matrix<CStokesVector> visibility_p, modelVisibility_p, correctedVisibility_p;
   Vector<Float> weight_p;

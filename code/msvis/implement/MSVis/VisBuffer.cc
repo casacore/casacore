@@ -88,6 +88,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       sigmaOK_p=other.sigmaOK_p;
       spwOK_p=other.spwOK_p;
       timeOK_p=other.timeOK_p;
+      timeIntervalOK_p=other.timeIntervalOK_p;
       uvwOK_p=other.uvwOK_p;
       visOK_p=other.visOK_p;
       modelVisOK_p=other.modelVisOK_p;
@@ -155,6 +156,10 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       if (timeOK_p) {
 	time_p.resize(other.time_p.nelements()); 
 	time_p=other.time_p;
+      }
+      if (timeIntervalOK_p) {
+	timeInterval_p.resize(other.timeInterval_p.nelements()); 
+	timeInterval_p=other.timeInterval_p;
       }
       if (uvwOK_p) {
 	uvw_p.resize(other.uvw_p.nelements()); 
@@ -239,7 +244,7 @@ void VisBuffer::invalidate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
+    sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p= False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
 }
@@ -248,7 +253,7 @@ void VisBuffer::validate()
 {
   nChannelOK_p=channelOK_p=nRowOK_p=ant1OK_p=ant2OK_p=arrayIdOK_p=cjonesOK_p=
     fieldIdOK_p=flagOK_p=flagRowOK_p=freqOK_p=lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=
-    sigmaOK_p=spwOK_p=timeOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
+    sigmaOK_p=spwOK_p=timeOK_p=timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p = corrTypeOK_p=True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
 }
@@ -539,6 +544,10 @@ Int& VisBuffer::fillSpW()
 
 Vector<Double>& VisBuffer::fillTime()
 { timeOK_p=True; return visIter_p->time(time_p);}
+
+Vector<Double>& VisBuffer::fillTimeInterval()
+{ timeIntervalOK_p=True; return visIter_p->timeInterval(timeInterval_p);}
+
 Vector<RigidVector<Double,3> >& VisBuffer::filluvw()
 { uvwOK_p=True; return visIter_p->uvw(uvw_p);}
 Matrix<CStokesVector>& 
