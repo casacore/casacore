@@ -73,7 +73,7 @@ TryDel
 TryApp
 TryUpd
 TryErrNorep
-RegularFileIO: error in open or create of file tAipsIO_tmp.aa
+RegularFileIO: new file tAipsIO_tmp.aa already exists
 TryDel
 TryErrUpd
 RegularFileIO: error in open or create of file tAipsIO_tmp.aa
