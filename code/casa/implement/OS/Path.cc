@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,9 +42,9 @@
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
 // Definition for POSIX systems
 #if defined (_POSIX_PATH_MAX)
-static const uInt pathmax_posix = _POSIX_PATH_MAX;
+const uInt pathmax_posix = _POSIX_PATH_MAX;
 #else
-staic const uInt pathmax_posix = 255;
+const uInt pathmax_posix = 255;
 #endif
 
 
