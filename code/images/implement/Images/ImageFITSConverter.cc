@@ -46,6 +46,8 @@
 
 #include <aips/Containers/Record.h>
 
+#include <trial/Tasking/ProgressMeter.h>
+
 #include <strstream.h>
 
 #if defined(__GNUG__)
@@ -207,6 +209,9 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     LatticeStepper stepper(shape, cursorShape, cursorOrder);
     LatticeIterator<Float> imiter(*newImage, stepper);
 
+    ProgressMeter meter(0.0, 1.0*newImage->shape().product(), "FITS to Image",
+			"Pixels copied", "", "", 
+			True, newImage->shape().product()/cursorShape.product()/100);
     try {
 	Int bufferSize = cursorShape.product();
 	for (imiter.reset(); !imiter.atEnd(); imiter++) {
