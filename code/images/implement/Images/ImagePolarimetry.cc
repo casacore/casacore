@@ -149,8 +149,10 @@ ImageExpr<Complex> ImagePolarimetry::complexLinearPolarization()
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
    fiddleStokesCoordinate(ie, Stokes::Plinear);    // Need a Complex Linear Polarization type
+//
    ie.setUnits(itsInImagePtr->units());
    ie.setImageInfo(itsInImagePtr->imageInfo());
+//
    return ie;
 }
 
@@ -168,8 +170,12 @@ ImageExpr<Complex> ImagePolarimetry::complexFractionalLinearPolarization()
    LatticeExpr<Complex> le(nodeQU/nodeI);
    ImageExpr<Complex> ie(le, String("ComplexFractionalLinearPolarization"));
    fiddleStokesCoordinate(ie, Stokes::PFlinear);    // Need a Complex Linear Polarization type
+//
    ie.setUnits(Unit(""));
-   ie.setImageInfo(itsInImagePtr->imageInfo());
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
+//
    return ie;
 }
 
@@ -190,7 +196,11 @@ ImageExpr<Float> ImagePolarimetry::fracLinPol(Bool debias, Float clip, Float sig
 
    LatticeExpr<Float> le(nodePol/nodeI);
    ImageExpr<Float> ie(le, String("FractionalLinearPolarization"));
+//
    ie.setUnits(Unit(""));
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -229,7 +239,11 @@ ImageExpr<Float> ImagePolarimetry::sigmaFracLinPol(Float clip, Float sigma)
    LatticeExprNode n2(pow(sigma2/nodeI,2));
    LatticeExpr<Float> le(n0 * sqrt(n1 + n2));
    ImageExpr<Float> ie(le, String("FractionalLinearPolarizationError"));
+//
    ie.setUnits(Unit(""));
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -261,7 +275,11 @@ ImageExpr<Float> ImagePolarimetry::fracTotPol(Bool debias, Float clip, Float sig
 
    LatticeExpr<Float> le(nodePol/nodeI);
    ImageExpr<Float> ie(le, String("FractionalTotalPolarization"));
+//
    ie.setUnits(Unit(""));
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -303,7 +321,11 @@ ImageExpr<Float> ImagePolarimetry::sigmaFracTotPol(Float clip, Float sigma)
    LatticeExprNode n2(pow(sigma2/nodeI,2));
    LatticeExpr<Float> le(n0 * sqrt(n1 + n2));
    ImageExpr<Float> ie(le, String("FractionalLinearPolarizationError"));
+//
    ie.setUnits(Unit(""));
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -366,8 +388,6 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
    }
    LatticeExpr<Complex> le(node);
    ImageExpr<Complex> ie(le, String("ComplexLinearPolarization"));
-   ie.setUnits(itsInImagePtr->units());
-   ie.setImageInfo(itsInImagePtr->imageInfo());
 
 // Do FFT of spectral coordinate
 
@@ -390,6 +410,11 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& cpol,
 // Set Stokes coordinate to be correct type
 
    fiddleStokesCoordinate(cpol, Stokes::Plinear);
+
+// Set units and ImageInfo
+
+   cpol.setUnits(itsInImagePtr->units());
+   cpol.setImageInfo(itsInImagePtr->imageInfo());
 }
 
 
@@ -408,8 +433,11 @@ ImageExpr<Float> ImagePolarimetry::linPolInt(Bool debias, Float clip, Float sigm
 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, String("LinearlyPolarizedIntensity"));
+//
    ie.setUnits(itsInImagePtr->units());
-   ie.setImageInfo(itsInImagePtr->imageInfo());
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate in ImageExpr
 
@@ -457,11 +485,16 @@ ImageExpr<Float> ImagePolarimetry::linPolPosAng(Bool radians) const
                                *itsStokesPtr[ImagePolarimetry::Q])); 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, String("LinearlyPolarizedPositionAngle"));
+//
    if (radians) {
       ie.setUnits(Unit("rad"));
    } else {
       ie.setUnits(Unit("deg"));
    }
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
+
 
 // Fiddle Stokes coordinate
 
@@ -495,11 +528,15 @@ ImageExpr<Float> ImagePolarimetry::sigmaLinPolPosAng(Bool radians, Float clip, F
       amp(*itsStokesPtr[ImagePolarimetry::U], *itsStokesPtr[ImagePolarimetry::Q])); 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, String("LinearlyPolarizedPositionAngleError"));
+//
    if (radians) {
       ie.setUnits(Unit("rad"));
    } else {
       ie.setUnits(Unit("deg"));
    }
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();
+   ie.setImageInfo(ii);
 
 // Fiddle Stokes coordinate
 
@@ -630,30 +667,34 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
          << LogIO::EXCEPTION;
    }
 
-// Copy miscellaneous things over and set units
+// Copy units only over.  The output images don't have a beam 
+// so unset beam.   MiscInfo and history require writable II.  
+// We leave this to the caller  who knows what sort of II these are.
 
+   ImageInfo ii = itsInImagePtr->imageInfo();
+   ii.removeRestoringBeam();   
    if (rmOutPtr) {
-      copyMiscellaneous(*rmOutPtr);
+      rmOutPtr->setImageInfo(ii);
       rmOutPtr->setUnits(Unit("rad/m/m"));
    }
    if (rmOutErrorPtr) {
-      copyMiscellaneous(*rmOutErrorPtr);
+      rmOutErrorPtr->setImageInfo(ii);
       rmOutErrorPtr->setUnits(Unit("rad/m/m"));
    }      
    if (pa0OutPtr) {
-      copyMiscellaneous(*pa0OutPtr);
+      pa0OutPtr->setImageInfo(ii);
       pa0OutPtr->setUnits(Unit("deg"));
    }
    if (pa0OutErrorPtr) {
-      copyMiscellaneous(*pa0OutErrorPtr);
+      pa0OutErrorPtr->setImageInfo(ii);
       pa0OutErrorPtr->setUnits(Unit("deg"));
    }   
    if (nTurnsOutPtr) {
-      copyMiscellaneous(*nTurnsOutPtr);
+      nTurnsOutPtr->setImageInfo(ii);
       nTurnsOutPtr->setUnits(Unit(""));
    }      
    if (chiSqOutPtr) {
-      copyMiscellaneous(*chiSqOutPtr);
+      chiSqOutPtr->setImageInfo(ii);
       chiSqOutPtr->setUnits(Unit(""));
    }      
 
@@ -1220,15 +1261,6 @@ void ImagePolarimetry::copyDataAndMask(ImageInterface<Float>& out,
       }
    }
 }
-
-
-
-void ImagePolarimetry::copyMiscellaneous (ImageInterface<Float>& out) const
-{
-   out.setMiscInfo(itsInImagePtr->miscInfo());
-   out.setImageInfo(itsInImagePtr->imageInfo());
-   out.mergeTableLogSink(itsInImagePtr->logSink());
-}   
 
 
 void ImagePolarimetry::findFrequencyAxis (Int& spectralCoord, Int& fAxis, 
