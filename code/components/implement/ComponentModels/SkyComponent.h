@@ -33,8 +33,9 @@
 #include <aips/Utilities/CountedPtr.h>
 #include <trial/ComponentModels/ComponentType.h>
 
-class GlishRecord;
-template<class T> class ImageInterface;
+// class RecordInterface;
+// template<class T> class ImageInterface;
+class RecordInterface;
 class MDirection;
 class MFrequency;
 class MVAngle;
@@ -115,21 +116,110 @@ public:
   // The copy Constructor uses reference semantics
   SkyComponent(const SkyComponent & other);
 
-  // a virtual destructor is needed so that the actual destructor in derived
-  // classes will be used.
-  virtual ~SkyComponent();
+  // the destructor does nothing obvious (its all done by the CountedPtr)
+  ~SkyComponent();
 
   // The assignment operator uses reference semantics
   SkyComponent & operator=(const SkyComponent & other);
 
-  // Return the intensity (in Jy/pixel) of the component at the specified
-  // direction. The Vector contains all the polarizations (Stokes I,Q,U,V) of
-  // the radiation and must be of length 4. The returned Vector contains the
-  // different polarizations of the radiation and the pixel size is assumed to
-  // be square.
-  virtual void sample(Vector<Double> & result, 
-		      const MDirection & sampleDir,
+  // return a reference to the flux of the component. Because this is a
+  // reference, manipulation of the flux values is performed through the
+  // functions in the Flux class. eg.,
+  // <src>comp.flux().setValue(newVal)</src>. If the component flux varies with
+  // frequency then the flux set using this function is the value at the
+  // reference frequency.
+  // <group>
+  Flux<Double> & flux();
+  const Flux<Double> & flux() const;
+  // </group>
+
+  // get the shape of the component
+  ComponentType::Shape shape() const;
+
+  // set/get the direction of (usually the centre) of the component.
+  // <group>
+  void setRefDirection(const MDirection & newDirection);
+  const MDirection & refDirection() const;
+  // </group>
+
+  // Calculate the flux at the specified direction, in a pixel of specified
+  // size.  The frequency is assumed to be the reference frequency.
+  Flux<Double> sample(const MDirection & direction,
 		      const MVAngle & pixelSize) const;
+
+  // Return the Fourier transform of the component at the specified point in
+  // the spatial frequency domain. The point is specified by a 3-element vector
+  // (u,v,w) that has units of meters and the frequency of the observation, in
+  // Hertz. These two quantities can be used to derive the required spatial
+  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
+  // these functions.
+
+  // The "origin" of the transform is the reference direction of the
+  // component. This means, for symmetric components where the reference
+  // direction is at the centre, that the Fourier transform will always be
+  // real.
+  Flux<Double> visibility(const Vector<Double> & uvw,
+			  const Double & frequency) const;
+
+  // return the number of shape parameters in the component and set/get them.
+  // <group>
+  uInt nShapeParameters() const;
+  void setShapeParameters(const Vector<Double> & newParms);
+  void shapeParameters(Vector<Double> & compParms) const;
+  // </group>
+
+  // get the spectral type of the component.
+  ComponentType::SpectralShape spectralShape() const;
+
+  // set/get the reference frequency.
+  // <group>
+  void setRefFrequency(const MFrequency & newFrequency);
+  const MFrequency & refFrequency() const;
+  // </group>
+
+  // Calculate the flux at the specified frequency. The direction is assumed to
+  // be the reference direction.
+  Flux<Double> sample(const MFrequency & centerFrequency) const;
+
+  // return the number of parameters in the spectral shape and set/get them.
+  // <group>
+  uInt nSpectralParameters() const;
+  void setSpectralParameters(const Vector<Double> & newParms);
+  void spectralParameters(Vector<Double> & compParms) const;
+  // </group>
+
+  // Calculate the flux at the specified direction & frequency, in a pixel of
+  // specified size.
+  // <group>
+//   Flux<Double> sample(const MDirection & direction, 
+// 		      const MVAngle & pixelSize, 
+// 		      const MFrequency & centerFrequency) const;
+//   void sample(Flux<Double> & flux, const MDirection & direction, 
+// 	      const MVAngle & pixelSize, 
+// 	      const MFrequency & centerFrequency) const;
+  // </group>
+
+  // set/get the label associated with this component. Default versions of
+  // these functions do nothing.
+  // <group>
+  void setLabel(const String & newLabel);
+  const String & label() const;
+  // </group>
+
+  // This functions convert between a record and a SkyCompRep. This way derived
+  // classes can interpret fields in the record in a class specific way. These
+  // functions define how a component is represented in glish.  They return
+  // False if the record is malformed and append an error message to the
+  // supplied string giving the reason.
+  // <group>
+  Bool fromRecord(String & errorMessage, const RecordInterface & record);
+  Bool toRecord(String & errorMessage, RecordInterface & record) const;
+  // </group>
+
+  // Return a distinct copy of this component. As both the assignment operator
+  // and the copy constructor use reference semantics this is the only way to
+  // get a real copy.
+  SkyComponent copy() const;
 
   // Project the component onto an Image. The default implementation calls the
   // sample function once for the centre of each pixel. The image needs
@@ -137,139 +227,12 @@ public:
   // if there is no Stokes axes then it is assumed that the polarization is
   // Stokes::I. The component is gridded equally onto all other axes of the
   // image (ie. spectral axes).
-  virtual void project(ImageInterface<Float> & plane) const;
-
-  // return a reference to the flux of the component. Because this is a
-  // reference, manipulation of the flux values is performed through the
-  // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
-  // <group>
-  virtual Flux<Double> & flux();
-  virtual const Flux<Double> & flux() const;
-  // </group>
-
-  // set/get the direction of (usually the centre) of the component.
-  // <group>
-  virtual void setDirection(const MDirection & newPos);
-  virtual void direction(MDirection & compDir) const;
-  // </group>
-
-  // Return the Fourier transform of the component at the specified point in
-  // the spatial frequency domain. The point is specified by a 3 element vector
-  // (u,v,w) that has units of meters and the frequency of the observation, in
-  // Hertz. These two quantities can be used to derive the required spatial
-  // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
-  // these functions.
-  //
-  // The reference position for the transform is the direction of the
-  // component. Hence the transform is always a real value and there is no
-  // phase variation due to the spatial structure if the component has a
-  // symmetric shape. The returned visibility values may still be Complex if a
-  // polarisation representation other than Stokes is used.
-  // <group>
-  virtual Flux<Double> visibility(const Vector<Double> & uvw,
-				  const Double & frequency) const;
-  // </group>
-
-  // </group>
-  // set/get the label associated with this component.
-  // <group>
-  virtual void setLabel(const String & newLabel);
-  virtual void label(String & compLabel) const;
-  // </group>
-
-  // return the number of parameters in the component and set/get them.
-  // <group>
-  virtual uInt nParameters() const;
-  virtual void setParameters(const Vector<Double> & newParms);
-  virtual void parameters(Vector<Double> & compParms) const;
-  // </group>
-
-  // get the spatial shape model for this component
-  virtual ComponentType::Shape shape() const;
-
-  // get the spectral model for this component 
-  virtual ComponentType::SpectralShape spectralShape() const;
-
-  // set/get the reference frequency.
-  // <group>
-  virtual void setRefFrequency(const MFrequency & newRefFreq);
-  virtual const MFrequency & refFrequency() const;
-  // </group>
-
-  // Return the scaling factor used to scale the flux of the component at the
-  // specified frequency. The scaling factor is always 1 at the reference
-  // frequency.
-  virtual Double scale(const MFrequency & sampleFreq) const;
-
-  // Return the flux (in dimensions of W/m^2/Hz) of the component at the
-  // specified frequency
-  virtual Flux<Double> sample(const MFrequency & sampleFreq) const;
-
-  // return the number of parameters in the spectral shape and set/get them.
-  // <group>
-  virtual uInt nSpectralParameters() const;
-  virtual void setSpectralParameters(const Vector<Double> & newParms);
-  virtual void spectralParameters(Vector<Double> & compParms) const;
-  // </group>
-
-  // This functions convert between a glish record and a SkyComponent. This way
-  // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how a component is represented in glish. They
-  // append a message to the errorMessage string if the conversion failed for
-  // any reason and then return False. Both functions return True if the
-  // conversion succeded.  
-  // <group>
-  virtual Bool fromRecord(String & errorMessage, const GlishRecord & record);
-  virtual Bool toRecord(String & errorMessage, GlishRecord & record) const;
-  // </group>
-  
-  // Return the shape of component that the supplied record represents. Returns
-  // ComponentType::POINT if there is no shape field in the component record &
-  // ComponentType::UNKNOWN_SHAPE if the shape record could not be parsed
-  // correctly (it then appends an appropriate error message to the
-  // errorMessage String).
-  static ComponentType::Shape getShape(String & errorMessage,
-				       const GlishRecord & record);
-
-  // Return the spectral shape of component that the supplied record
-  // represents. Returns ComponentType::CONSTANT_SPECTRUM if there is no
-  // spectrum field in the component record &
-  // ComponentType::UNKNOWN_SPECTRAL_SHAPE if the spectrum record could not be
-  // parsed correctly (it then appends an appropriate error message to the
-  // errorMessage String).
-  static ComponentType::SpectralShape getSpectralShape(String & errorMessage,
-                                                   const GlishRecord & record);
-
-  // Return a distinct copy of this component. As both the assignment operator
-  // and the copy constructor use reference semantics this is the only way to
-  // get a real copy.
-  virtual SkyComponent copy() const;
+  //    void project(ImageInterface<Float> & plane) const;
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. Returns True if everything is fine
   // otherwise returns False.
-  virtual Bool ok() const;
-
-protected:
-  //# An easy way for derived classes to initialise the base class is to use
-  //# this constructor. The pointer is taken over. 
-  SkyComponent(SkyCompRep * rawPtr);
-
-  //# Return the polymorphic pointer that is being reference counted. This is
-  //# used by derived classes to cache an downcast pointer.
-  SkyCompRep * rawPtr(); 
-  const SkyCompRep * rawPtr() const;
-
-  //# Check that the shape in the glishRecord matches the shape of this
-  //# component. Returns False if not and appends a reason in the errorMessage
-  //# String
-  Bool checkShape(String & errorMessage, const GlishRecord & record) const;
-
-  //# Check that the shape in the glishRecord matches the shape of this
-  //# component. Returns False if not and appends a reason in the errorMessage
-  //# String
-  Bool checkSpectralShape(String & errorMessage,
-			  const GlishRecord & record) const;
+  Bool ok() const;
 
 private:
   CountedPtr<SkyCompRep> itsCompPtr;
