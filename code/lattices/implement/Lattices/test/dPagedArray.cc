@@ -45,18 +45,21 @@
 int main(){
   try {
     // Create a PagedArray of Floats of shape [512,512,4,32] in a file
-    // called "myData_tmp.array" and initialise it to zero. This will create a a
-    // directory on disk called "myData_tmp.array" that that contains files that
+    // and initialise it to zero. This will create a directory on disk
+    // called "dPagedArray_tmp.data" that contains files that
     // exceed 512*512*4*32*4 (=128MBytes) in size.
+    const String filename("dPagedArray_tmp.data");
     {
       const IPosition arrayShape(4,512,512,4,32);
-      const String filename("myData_tmp.array");
       PagedArray<Float> diskArray(arrayShape, filename);
       cout << "Created a PagedArray of shape " << diskArray.shape() 
 	   << " (" << diskArray.shape().product()/1024/1024*sizeof(Float) 
 	   << " MBytes)" << endl
 	   << "in the table called " << diskArray.tableName() << endl;
+      Timer timer;
       diskArray.set(0.0f);
+      timer.show ("set    ");
+      diskArray.showCacheStatistics(cout);
       // Using the set function is an efficient way to initialise the PagedArray
       // as it uses a PagedArrIter internally. Note that the set function is
       // defined in the Lattice class that PagedArray is derived from. 
@@ -64,8 +67,16 @@ int main(){
     // Read the PagedArray produced in Example 1 and put a Gaussian profile into
     // each spectral channel.
     {
-      PagedArray<Float> diskArray("myData_tmp.array");
+      PagedArray<Float> diskArray(filename);
       IPosition shape = diskArray.shape();
+      // Time how long it takes to iterate without doing IO.
+      {
+        RO_PagedArrIter<Float> iter(diskArray, TiledStepper(shape, diskArray.tileShape(), 3));
+        Timer timer;
+        for (iter.reset(); !iter.atEnd(); iter++);
+        timer.show ("iterate");
+	diskArray.showCacheStatistics(cout);
+      }
       // Construct a Gaussian Profile to be 10 channels wide and centred on
       // channel 16. Its height is 1.0.
       Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
@@ -76,15 +87,18 @@ int main(){
       // Now put this profile into every spectral channel in the paged array. This
       // is best done using an iterator.
       PagedArrIter<Float> iter(diskArray, TiledStepper(shape, diskArray.tileShape(), 3));
+      Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++)
 	iter.vectorCursor() = profile;
+      timer.show ("profile");
+      diskArray.showCacheStatistics(cout);
     }
     // Now multiply the I-polarization data by 10.0 in this PagedArray. The
     // I-polarization data occupies 32MBytes of RAM which is too big to read
     // into the memory of most computers. So an iterator is used to get suitable
     // sized chunks.
     {
-      Table t("myData_tmp.array", Table::Update);
+      Table t(filename, Table::Update);
       PagedArray<Float> da(t);
       const IPosition latticeShape = da.shape();
       const nx = latticeShape(0);
@@ -96,8 +110,11 @@ int main(){
       LatticeStepper step(latticeShape, cursorShape);
       step.subSection(IPosition(4,0), IPosition(4,nx-1,ny-1,0,nchan-1));
       PagedArrIter<Float> iter(da, step);
+      Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++)
 	iter.cursor() *= 10.0f;
+      timer.show ("I-pol   ");
+      da.showCacheStatistics(cout);
     }
     // Use a direct call to getSlice to access a small central region of the
     // V-polarization in spectral channel 0 only. The region is small enough
@@ -105,25 +122,31 @@ int main(){
     // LatticeNavigators. In this example the call to the getSlice function
     // is unnecessary but is done for illustration purposes anyway.
     {
-      SetupNewTable maskSetup("mask_tmp.array", TableDesc(), Table::New);
+      SetupNewTable maskSetup(filename, TableDesc(), Table::New);
       Table maskTable(maskSetup);
       PagedArray<Bool> maskArray(IPosition(4, 512, 512, 4, 32), maskTable);
+      Timer timer;
       maskArray.set(False);
+      timer.show ("setmask");
       COWPtr<Array<Bool> > maskPtr;
+      timer.mark();
       maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
 			 IPosition(4,32,32,1,1), IPosition(4,1));
+      timer.show ("getmask");
       maskPtr.rwRef() = True;
+      timer.mark();
       maskArray.putSlice(*maskPtr, IPosition(4,240,240,3,1));
+      timer.show ("putmask");
+      maskArray.showCacheStatistics(cout);
     }
     // In this example the data in the PagedArray will be accessed a row at
     // a time while setting the cache size to different values. The comments
     // illustrate the results when running on an Ultra 1/140 with 64MBytes
     // of memory.
     {
-      PagedArray<Float> pa(IPosition(4,128,128,4,32));
+      PagedArray<Float> pa(IPosition(4,128,128,4,32), filename);
       const IPosition latticeShape = pa.shape();
       cout << "The tile shape is:" << pa.tileShape() << endl;
-      // The tile shape is:[32, 16, 4, 16]
       
       // Setup to access the PagedArray a row at a time
       const IPosition sliceShape(4,latticeShape(0), 1, 1, 1);
@@ -134,36 +157,36 @@ int main(){
       // Set the cache size to enough pixels for one tile only. This uses
       // 128kBytes of cache memory and takes 125 secs
       pa.setCacheSize(pa.tileShape().product()*1);
-      Timer clock;
+      Timer timer;
       for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
 	for (start(2) = 0; start(2) < latticeShape(2); start(2)++)
 	  for (start(1) = 0; start(1) < latticeShape(1); start(1)++)
 	    pa.getSlice(row,  start, sliceShape, stride);
-      clock.show();
+      timer.show();
       pa.showCacheStatistics(cout);
       pa.clearCache();
       
       // Set the cache size to enough pixels for one row of tiles (ie. 4)
       // This uses 512 kBytes of cache memory and takes 10 secs
       pa.setCacheSize(pa.tileShape().product()*4);
-      clock.mark();
+      timer.mark();
       for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
 	for (start(2) = 0; start(2) < latticeShape(2); start(2)++)
 	  for (start(1) = 0; start(1) < latticeShape(1); start(1)++)
 	    pa.getSlice(row,  start, sliceShape, stride);
-      clock.show();
+      timer.show();
       pa.showCacheStatistics(cout);
       pa.clearCache();
       
       // Set the cache size to enough pixels for one plane of tiles
       // (ie. 4*8) This uses 4MBytes of cache memory and takes 2 secs
       pa.setCacheSize(pa.tileShape().product()*4*8);
-      clock.mark();
+      timer.mark();
       for (start(3) = 0; start(3) < latticeShape(3); start(3)++)
 	for (start(2) = 0; start(2) < latticeShape(2); start(2)++)
 	  for (start(1) = 0; start(1) < latticeShape(1); start(1)++)
 	    pa.getSlice(row,  start, sliceShape, stride);
-      clock.show();
+      timer.show();
       pa.showCacheStatistics(cout);
       pa.clearCache();
     }
