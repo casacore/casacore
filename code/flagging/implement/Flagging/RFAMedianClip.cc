@@ -116,7 +116,7 @@ void RFATimeMedian::startData ()
   if( msl ) delete [] msl;
 // create nchan x nifr median sliders
   msl = new MedianSlider[num(CHAN)*num(IFR)];
-  for(uInt i(0); i< num(CHAN)*num(IFR); i++)
+  for(uInt i=0; i<num(CHAN)*num(IFR); i++)
      msl[i] = MedianSlider(halfwin);
 }
 
