@@ -17,3 +17,18 @@ Functions are viewed as an f(x;p) family, with p the parameter vector (e.g. widt
 Functions are in general templated on the type (like Double, Float), but can also be templated on AutoDiff<> or AutoDiffA. In these cases the function will calculate both the function value for the specified parameters, as the derivative wrt parameters (e.g. for least-squares fitting). Most functions in the system have specializations (for speed reasons) for AutoDiff<> templating
 
 Class FuncWithDerivs have been removed from the system: all Functions can be used to calculate derivatives.
+
+change id: 0117
+ author:   Wim Brouw
+ date:     2002/02/18
+ avers:    1.7
+ area:     Library
+ package:  aips
+ module:   Mathematics
+ type:     Code
+ category: Change
+ summary:  Auto differntiation
+The Automatic differentiation classes AutoDiff<> have been reworked, especially to improve their speed.
+Most of the time was spent in memory allocation. By the use of special Container classes ObjectPool and PoolStack memory allocation use is limited, resulting in automatic differentiation being of same order of magnitude timing as normal handcoding.
+
+A separate class AutoDiffA<> is provided for internal differntiation in details (see e.g. FunctionTraits)
