@@ -720,8 +720,8 @@ protected:
 
     // Set the end iterator.
     void setEndIter()
-      { end_p = (contiguous_p  ?  begin_p + nels_p :
-		 begin_p + length_p(ndim()-1) * steps_p(ndim()-1)); }
+      { end_p = (nels_p==0 ? 0 : (contiguous_p  ?  begin_p + nels_p :
+		  begin_p + length_p(ndim()-1) * steps_p(ndim()-1))); }
 };
 
 

@@ -39,7 +39,8 @@ template<class T> Array<T>::Array()
 : nels_p   (0),
   ndimen_p (0),
   data_p   (new Block<T>(0)),
-  contiguous_p (True)
+  contiguous_p (True),
+  end_p    (0)
 {
     begin_p = data_p->storage();
     DebugAssert(ok(), ArrayError);
@@ -153,8 +154,8 @@ template<class T> void Array<T>::assign (const Array<T>& other)
     DebugAssert(ok(), ArrayError);
     if (! shape().isEqual (other.shape())) {
         resize (other.shape());
-        operator= (other);
     }
+    operator= (other);
 }
 
 template<class T> void Array<T>::reference(Array<T> &other)
