@@ -6273,3 +6273,4 @@
 17 206 src rm bima/apps/bimatester/bima.g
 17 210 src mv bima/apps/bimatester/tablecomparer.g trial/apps/table/tablecomparer.g
 17 210 src mv trial/implement/Utilities/DisplayOptionsTemplate.cc display/implement/Utilities/DisplayOptionsTemplate.cc
+17 221 src mv trial/implement/stdmap.h aips/implement/stdmap.h
