@@ -36,13 +36,14 @@
 #include <aips/Utilities/Assert.h>
 
 //# Forward declarations
+#include <aips/iosfwd.h>
 
 // <summary> Numerical functional interface class
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="">
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="dG1D">
 // </reviewed>
 
 // <prerequisite>
@@ -51,7 +52,7 @@
 // </prerequisite>
 //
 // <synopsis>
-// A <src>Function</src> is used for classes which map an n-dimensional a
+// A <src>Function</src> is used for classes which map a
 // scalar or n-dimensional Vector of type <src>T</src> into a <src>T</src>.
 // The object also has zero or more parameters which can be masked
 // if necessary, and be used in the <src>Fitting</src> module, and, implicitly,
@@ -71,7 +72,8 @@
 // after which they call a <src>T eval(FunctionArg x) const = 0</src> to
 // be implemented in derived classes. The derived class should also implement 
 // an <src>uInt ndim() const = 0</src>. The derived class can access the
-// nth parameter with <src>parameter(n)</src>, or, probably, <src>[n]</src>.
+// nth parameter with the <src>[n]</src> operator, and the corresponding
+// mask with <src>mask(n)</src> method.
 // The variables are referenced with <src>x[i]</src>.
 //
 // </synopsis>
@@ -89,29 +91,29 @@
 //   // The sinusoid class
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
-//     // For easy reference the parameters
+//     // For easy reference of the parameters
 //     enum { AMPL=0, FREQ };
 //     // Constructors. Defaults are A=1, f=1
 //     Sinusoid() : Function<T>(2) {
-//         parameter(AMPL) = T(1.0); parameter(FREQ) = T(1.0); }
+//         param_p[AMPL] = T(1.0); param_p[FREQ] = T(1.0); }
 //     explicit Sinusoid(const T &ampl) : Function<T>(2) {
-//         parameter(AMPL) = ampl; parameter(FREQ) = T(1.0); }
+//         param_p[AMPL] = ampl; param_p[FREQ] = T(1.0); }
 //     Sinusoid(const T &ampl, const T &freq) : Function<T>(2) {
-//         parameter(AMPL) = ampl; parameter(FREQ) = freq; }
+//         param_p[AMPL] = ampl; param_p[FREQ] = freq; }
 //     Sinusoid(const Sinusoid &other) : Function<T>(2) {
-//         parameter(AMPL) = other.parameter(AMPL);
-//         parameter(FREQ) = other.parameter(FREQ); }
+//         param_p[AMPL] = other.param_p[AMPL];
+//         param_p[FREQ] = other.parameter[FREQ]; }
 //     Sinusoid<T> &operator=(const Sinusoid<T> &other) {
-//         if (this != &other) FunctionParam<T>::operator=(*this);
+//         if (this != &other) param_p = other.param_p;
 //         return *this; }
 //     virtual ~Sinusoid() {};
 //     // Dimensionality
 //     virtual uInt ndim() const { return 2; };
 //     // Evaluate
 //     virtual T eval(Function<T>::FunctionArg x) const {
-//	  return parameter(AMPL)*sin(T(C::_2pi)*parameter(FREQ)*x[0]); };
+//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); };
 //     // Copy it
-//     virtual Function<T> *clone() const { return new Sinusoid<T>(*this); };
+//     virtual Function<T> *clone() const { return new Sinusoid<T>(param_p); };
 //   };
 // </srcblock>
 // The following will calculate the value and the derivative for 
@@ -136,12 +138,12 @@
 //   template<class T> class Sinusoid : public Function<T> {
 //    public:
 //     enum { AMPL=0, FREQ };
-//     Sinusoid() : Function<T>(2){parameter(AMPL) T(1);parameter(FREQ)=T(1);}
+//     Sinusoid() : Function<T>(2){param_p[AMPL] T(1);param_p[FREQ]=T(1);}
 //     virtual ~Sinusoid() {};
 //     virtual uInt ndim() const { return 2; };
 //     virtual T eval(Function<T>::FunctionArg x) const {
-//	  return parameter(AMPL)*sin(T(C::_2pi)*parameter(FREQ)*x[0]); };
-//     virtual Function<T> *clone() const { return new Sinusoid<T>(*this); };
+//	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); };
+//     virtual Function<T> *clone() const { return new Sinusoid<T>param_p; };
 //   };
 // </srcblock>
 // The following will calculate the value and the derivative for 
@@ -152,9 +154,10 @@
 //     typedef Function<Double> FD;
 //     typedef Function<AutoDiff<Double> > FAdif
 //     Sinusoid<Double> soid1;
-//     soid1.parameter(FD::AMPL) = 2; soid1.parameter(FD::FREQ) = 3;
-//     soid2.parameter(FAdif::AMPL) = Adif(2,2,0);
-//     soid2.parameter(FAdif::FREQ) = Adif(3,2,1);
+//     Sinusoid<Adif> soid2;
+//     soid1[FD::AMPL] = 2; soid1[FD::FREQ] = 3;
+//     soid2[FAdif::AMPL] = Adif(2,2,0);
+//     soid2[FAdif::FREQ] = Adif(3,2,1);
 //     cout << "Value: " << soid1(0.1) << endl;
 //     cout << "(val, deriv): " << soid2(Adif(0.1)) << endl;
 // </srcblock>
@@ -180,8 +183,7 @@
 // </todo>
 
 template<class T> class Function : public Functional<T, T>,
-  public Functional<Vector<T>, T>,
-  public FunctionParam<T> {
+  public Functional<Vector<T>, T> {
 
  public:
   //# Typedefs
@@ -190,10 +192,10 @@ template<class T> class Function : public Functional<T, T>,
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  Function() : FunctionParam<T>() {};
-  explicit Function(const uInt n) : FunctionParam<T>(n) {};
-  explicit Function(const Vector<T> &in) : FunctionParam<T>(in) {};
-  Function(const FunctionParam<T> &other) : FunctionParam<T>(other) {};
+  Function() : param_p() {};
+  explicit Function(const uInt n) : param_p(n) {};
+  explicit Function(const Vector<T> &in) : param_p(in) {};
+  Function(const FunctionParam<T> &other) : param_p(other) {};
   // </group>
 
   // Destructor
@@ -203,6 +205,11 @@ template<class T> class Function : public Functional<T, T>,
   virtual uInt ndim() const = 0;
 
   //# Operators
+  // Manipulate the nth parameter (0-based) with no index check
+  // <group>
+  T &operator[](const uInt n) { return param_p[n]; };
+  const T &operator[](const uInt n) const{ return param_p[n]; };
+  // </group>
   // Evaluate this function object at <src>x</src>. The length of <src>
   // x</src> must be greater than or equal to as <src>ndim()</src>.
   // <group>
@@ -215,13 +222,33 @@ template<class T> class Function : public Functional<T, T>,
     return this->eval(&(x[0])); };
   virtual T operator()(FunctionArg x) const { return this->eval(x); };
   // </group>
-  // Evaluate the function object
-  virtual T eval(FunctionArg x) const = 0;
 
   //# Member functions
+  // Manipulate the mask associated with the nth parameter
+  // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
+  // Note no index check.
+  // <group>
+  Bool &mask(const uInt n);
+  const Bool &mask(const uInt n) const { return param_p.mask(n); };
+  // </group>
+  // Return the parameter interface
+  // <group>
+  const FunctionParam<T> &parameters() const { return param_p; };
+  FunctionParam<T> &parameters() { return param_p; };
+  // </group>
+  // Evaluate the function object
+  virtual T eval(FunctionArg x) const = 0;
+  // Print the function (i.e. the parameters)
+  ostream &print(ostream &os) const { return param_p.print(os); };
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting the returned pointer.
   virtual Function<T> *clone() const = 0;
+
+  protected:
+  //# Data
+  // The parameters and masks
+  FunctionParam<T> param_p;
+
 };
 
 //# Global functions

@@ -40,7 +40,7 @@
 //
 // <use visibility=export>
 //
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="">
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="dG1D">
 // </reviewed>
 //
 // <synopsis>
@@ -102,7 +102,7 @@ template<class T> class FunctionParam {
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
   T &operator[](const uInt n) { return param_p[n]; };
-  const T &operator[](const uInt n) const{ return param_p[n]; };
+  const T &operator[](const uInt n) const { return param_p[n]; };
   // </group>
 
   //# Member functions
