@@ -382,9 +382,9 @@ LELFunctionDComplex
 
 LELFunctionBool
    Function all
-      Caught expected exception; message is: LELFunctionBool::eval - cannot be used
+      Caught expected exception; message is: LELFunctionBool::eval - unknown function
    Function any
-      Caught expected exception; message is: LELFunctionBool::eval - cannot be used
+      Caught expected exception; message is: LELFunctionBool::eval - unknown function
 
 LELConvert<Float,Double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
