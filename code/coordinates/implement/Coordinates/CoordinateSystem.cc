@@ -1115,7 +1115,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 		name = name + "-" + dc.projection().name();
 		break;
 	    }
-	    name = name + "-" + dc.projection().name();
 	    ctype(i) = name.chars();
 	} else if (i == specAxis) {
 	    // Nothing - will be handled in SpectraCoordinate
@@ -1654,8 +1653,6 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    linused++;
 	}
     }
-    cerr << "nWorldAxes() " << coordsys.nWorldAxes() << " order.nelements() " 
-	 << order.nelements() << endl;
     coordsys.transpose(order, order);
     
     return True;
