@@ -260,23 +260,13 @@ void GaussianConvert::convertAxes (Double& minorAxisOut,
 //
        pa2 = 0.5*atan2(gamma,alpha-beta);
    }
-   Double pa3 = GaussianConvert::positionAngleRange(pa2);
+   Double pa3 = positionAngleRange(pa2);
 //
    positionAngleOut.setValue(pa3);
    positionAngleOut.setUnit(Unit("rad"));
    positionAngleOut.convert(Unit(unitPA));
 }
 
-
-Quantum<Double> GaussianConvert::positionAngleRange(const Quantum<Double>& pa)
-{
-   Double pa2 = pa.getValue(Unit("rad"));
-   Double pa3 = GaussianConvert::positionAngleRange(pa2);
-//
-   Quantum<Double> pa4(pa3, Unit("rad"));
-   pa4.convert(pa.getFullUnit());
-   return pa4;
-}
 
 
 Double GaussianConvert::positionAngleRange(Double pa)
