@@ -130,7 +130,8 @@ public:
     //        conversion succeeds, the caller is responsible for deleting this
     //        pointer.
     //   <li> <src>error</src> will be set if the conversion fails.
-    //   <li> <src>imageName</src> can be optionally overwritten.
+    //   <li> If <src>imageName</src> is empty, a TempImage will be created,
+    //        otherwise a PagedImage on disk.
     //   <li> <src>fitsName</src> must already exist (and have an image at the
     //        indicated HDU).
     //   <li> <src>whichHDU</src> Zero-relative hdu. The default is correct for
@@ -144,7 +145,7 @@ public:
     //   <li> <src>zeroBlanks</src> If True, allow any blanked pixels are set
     //         to zero rather than NaN
     // </ul>
-    static Bool FITSToImage(PagedImage<Float>*& newImage,
+    static Bool FITSToImage(ImageInterface<Float>*& newImage,
 			    String &error,
 			    const String &imageName,
 			    const String &fitsName, 
@@ -219,7 +220,7 @@ private:
 template<class HDUType> class ImageFITSConverterImpl
 {
 public:
-    static void FITSToImage(PagedImage<Float> *&newImage,
+    static void FITSToImage(ImageInterface<Float> *&newImage,
 			    String &error,
 			    const String &imageName,
 			    HDUType &fitsImage,
