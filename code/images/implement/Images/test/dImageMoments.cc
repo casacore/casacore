@@ -134,7 +134,7 @@
 //
 //            Default is 3 and automatic sigma determination.
 //
-//   device   The PGPLOT device to plot on when required
+//   plotter   The PGPLOT device to plot on when required
 //
 //            The default is /xs
 //
@@ -211,7 +211,7 @@ try {
    inputs.Create("out", "", "Output root image name");
    inputs.Create("psfout", "", "Output PSF image name");
    inputs.Create("smout", "", "Output smoothed image name");
-   inputs.Create("device", "none", "PGPLOT device");
+   inputs.Create("plotter", "none", "PGPLOT device");
    inputs.Create("nxy", "-1", "Number of subplots in x and y");
    inputs.Create("yind","False","Y scale independent ?");
    inputs.ReadArguments(argc, argv);
@@ -232,7 +232,7 @@ try {
    const String out = inputs.GetString("out");
    const String psfOut = inputs.GetString("psfout");
    const String smOut = inputs.GetString("smout");
-   String device = inputs.GetString("device");
+   String device = inputs.GetString("plotter");
    const Block<Int> nxyB = inputs.GetIntArray("nxy");
    const Bool yInd = inputs.GetBool("yind");
 
@@ -330,16 +330,21 @@ try {
    }
 
 
+// Pixel inclusion/exclusion ranges
 
-// Convert inclusion and exclusion ranges to vectors.
-
-   Vector<Double> include(includeB);
+   Vector<Float> include(includeB.nelements());
+   for (i=0;i<include.nelements(); i++) {
+     include(i) = includeB[i];
+   }
    if (include.nelements() == 1 && include(0)==0) {
       include.resize(0);
    } else {
       validInputs(RANGE) = True;
    }
-   Vector<Double> exclude(excludeB);
+   Vector<Float> exclude(excludeB.nelements());
+   for (i=0;i<exclude.nelements(); i++) {
+     exclude(i) = excludeB[i];
+   } 
    if (exclude.nelements() == 1 && exclude(0)==0) {
       exclude.resize(0);
    } else {
@@ -349,8 +354,8 @@ try {
 
 // Deal with SNR parameters to a vector.   
 
-   Double peakSNR = snrB[0];
-   Double stdDeviation = snrB[1];
+   Float peakSNR = snrB[0];
+   Float stdDeviation = snrB[1];
    validInputs(SNR) = True;
 
 
