@@ -1,7 +1,66 @@
+//# BasePlot.cc: Basic table access class for the TablePlot (tableplot) tool
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
 
-#include "BasePlot.h"
+//# Includes
 
-namespace casa {
+#include <cmath>
+
+#include <casa/Exceptions.h>
+
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/TableGram.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableLock.h>
+#include <tables/Tables/TableIter.h>
+
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/ArrayError.h>
+
+#include <tables/Tables/ExprMathNode.h>
+#include <tables/Tables/ExprMathNodeArray.h>
+#include <tables/Tables/ExprDerNode.h>
+#include <tables/Tables/ExprDerNodeArray.h>
+#include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprFuncNodeArray.h>
+#include <tables/Tables/ExprLogicNode.h>
+#include <tables/Tables/ExprLogicNodeArray.h>
+#include <tables/Tables/ExprNodeArray.h>
+#include <tables/Tables/ExprNodeSet.h>
+#include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/ExprNodeRecord.h>
+#include <tables/Tables/ExprRange.h>
+#include <tables/Tables/RecordGram.h>
+
+#include <casa/Utilities/DataType.h>
+
+#include <tables/TablePlot/BasePlot.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 #define TMR(a) "[User: " << a.user() << "] [System: " << a.system() << "] [Real: " << a.real() << "]"
 #define MIN(a,b) ((a)<(b) ? (a) : (b))
@@ -12,106 +71,103 @@ template<class T> BasePlot<T>::BasePlot()
 {
 	dbg=0;	ddbg=0;	adbg=0;
 	if(adbg)cout << "BasePlot constructor" << endl;
-	nip=0;
-	nflagmarks=0;
-	xtens.resize(0); ytens.resize(0);
-	Pind.resize(0,0); Tsize.resize(0,0);
-	colnames.resize(3); ipslice.resize(0);
-	IndCnt.resize(0);
-	locflagmarks.resize(0);
-	xprange.resize(0,0); yprange.resize(0,0);
-	FlagColName = "FLAG"; fcol = (Bool)0;
-	FlagRowName = "FLAG_ROW"; frcol = (Bool)0;
+	nip_p=0;
+	nflagmarks_p=0;
+	xtens_p.resize(0); ytens_p.resize(0);
+	Pind_p.resize(0,0); Tsize_p.resize(0,0);
+	colnames_p.resize(3); ipslice_p.resize(0);
+	IndCnt_p.resize(0);
+	locflagmarks_p.resize(0);
+	xprange_p.resize(0,0); yprange_p.resize(0,0);
+	FlagColName_p = "FLAG"; fcol_p = False;
+	FlagRowName_p = "FLAG_ROW"; frcol_p = False;
 	
 }
 
-/*********************************************************************************/
-#if 0
-/* Copy Constructor */
-template<class T> BasePlot<T>::BasePlot(const BasePlot<T>& other)
-{
-	cout << "BasePlot copy constructor" << endl;
-}
-#endif
 /*********************************************************************************/
 
 /* Destructor */
 template<class T> BasePlot<T>::~BasePlot()
 {
 	if(adbg)cout << "BasePlot destructor" << endl;
-	//delete SelTab;
-	CleanUp();
 }
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::Init(Table &tab)
+/* Attach a BasePlot to a table/subtable */
+template<class T> Int BasePlot<T>::init(Table &tab)
 {
-	if(adbg)cout << "BasePlot :: Initialize with a Table object" << endl;
+	if(adbg)cout << "BasePlot :: initialize with a Table object" << endl;
 	zflg=0;
 	fflg=0;
 	
-	SelTab = tab;
-	fcol = SelTab.tableDesc().isColumn(FlagColName);
-	frcol = SelTab.tableDesc().isColumn(FlagRowName);
+	/* Attach table */
+	SelTab_p = tab;
+	
+	/* Check for the existence of Flag column names */
+	fcol_p = SelTab_p.tableDesc().isColumn(FlagColName_p);
+	frcol_p = SelTab_p.tableDesc().isColumn(FlagRowName_p);
 	if(adbg)
 	{
-		if(fcol) cout << "Column : " << FlagColName << " exists " << endl;
-		else cout << "Column : " << FlagColName << " does not exist " << endl;
-		if(frcol) cout << "Column : " << FlagRowName << " exists " << endl;
-		else cout << "Column : " << FlagRowName << " does not exist " << endl;
+		if(fcol_p) cout << "Column : " << FlagColName_p << " exists " << endl;
+		else cout << "Column : " << FlagColName_p << " does not exist " << endl;
+		if(frcol_p) cout << "Column : " << FlagRowName_p << " exists " << endl;
+		else cout << "Column : " << FlagRowName_p << " does not exist " << endl;
 	}
-	// FLAG is a row_flag, and should be accessed when row_flag is accessed.
-	//if(!frcol) FlagRowName = FlagColName; 
-
 	
 	if(ddbg)
 	{
-	cout << "is null 2 : " << SelTab.isNull() << endl;
-	cout << "tablename : " << SelTab.tableName() << endl;
-	cout << "is changed : " << SelTab.hasDataChanged() << endl;
+	cout << "is null 2 : " << SelTab_p.isNull() << endl;
+	cout << "tablename : " << SelTab_p.tableName() << endl;
+	cout << "is changed : " << SelTab_p.hasDataChanged() << endl;
 	}
+
+	/* clear bookkeeping arrays between tables */
+	cleanUp();
 
 	return 0;
 }
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::CreateTENS(Vector<String> &datastr)
+/* Create TableExprNodes from TaQL strings and obtain TaQL indices/column names */
+template<class T> Int BasePlot<T>::createTENS(Vector<String> &datastr)
 {
 	if(adbg)cout << "BasePlot :: Create TableExprNodes from TaQL strings" << endl;
 		
-	nTStr = datastr.nelements(); // exception if not.
-	if(nTStr%2 != 0) 
+	/* Check the number of input strings */
+	nTStr_p = datastr.nelements();
+	if(ddbg)cout << "Number of strings : " << nTStr_p << endl;
+	
+	if(nTStr_p%2 != 0) 
 	{ cout << "Error : Need even number of TaQL strings" << endl; return -1;}
-	nTens = nTStr/2; // make sure nTStr is even....
-	if(ddbg)cout << "Number of strings : " << nTStr << endl;
-
-	xtens.resize(nTens);
-	ytens.resize(nTens);
-
-	IndCnt.resize(nTens);
 	
-	colnames.resize(0);
-	ipslice.resize(0);
-	nip=0;
+	nTens_p = nTStr_p/2; 
+
+	xtens_p.resize(nTens_p);
+	ytens_p.resize(nTens_p);
+	IndCnt_p.resize(nTens_p);
+	colnames_p.resize(0);
+	ipslice_p.resize(0);
+	nip_p=0;
 	
+	/* Create TENS and traverse parse trees */
 	try
 	{
-	for(Int i=0;i<nTens;i++) // nTens
+	for(Int i=0;i<nTens_p;i++) 
 	{
-		xtens[i] = RecordGram::parse(SelTab,datastr[i*2]);
-		ytens[i] = RecordGram::parse(SelTab,datastr[i*2+1]);
+		xtens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2]);
+		ytens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2+1]);
 		
-		if( (xtens[i].dataType() != TpDouble) || (ytens[i].dataType() != TpDouble) ) 
+		if( (xtens_p[i].dataType() != TpDouble) || (ytens_p[i].dataType() != TpDouble) ) 
 		{
 			cout << "DataType of TaQL expression is not plottable... "<< endl;
 			return -1;
 		}
 		
-		getIndices(xtens[i]);
-		IndCnt[i] = nip;// since flags pertain only to y data
-		getIndices(ytens[i]);
+		getIndices(xtens_p[i]);
+		IndCnt_p[i] = nip_p;/* since flags pertain only to y data */
+		getIndices(ytens_p[i]);
 	}
 	}
 	catch(AipsError &x)
@@ -119,25 +175,26 @@ template<class T> Int BasePlot<T>::CreateTENS(Vector<String> &datastr)
 		cout << " Error : " << x.getMesg() << endl;
 		return -1;
 	}
-	
-	Bool tst=(Bool)0;
+
+	/* Fill in shapes of accessed columns. Needed while flagging */
+	Bool tst=False;
 	IPosition dsh;
-	colshapes.resize(0);
-	colshapes.resize(colnames.nelements());
-	for(Int i=0;i<nip;i++)	
+	colshapes_p.resize(0);
+	colshapes_p.resize(colnames_p.nelements());
+	for(Int i=0;i<nip_p;i++)	
 	{
-		tst = SelTab.tableDesc().isColumn(colnames(i));
-		if(!tst) cout << "Column " << colnames(i) << " does not exist !" << endl;
-		ROTableColumn rot(SelTab,colnames(i));
+		tst = SelTab_p.tableDesc().isColumn(colnames_p(i));
+		if(!tst) cout << "Column " << colnames_p(i) << " does not exist !" << endl;
+		ROTableColumn rot(SelTab_p,colnames_p(i));
 		ColumnDesc cdesc = rot.columnDesc();
-		if(cdesc.isArray()) colshapes(i) = rot.shape(0);
-		else colshapes(i) = IPosition(1,0);
+		if(cdesc.isArray()) colshapes_p(i) = rot.shape(0);
+		else colshapes_p(i) = IPosition(1,0);
 		if(ddbg)
 		{
-			cout << "COLUMN : " << colnames(i) << " has shape : " << colshapes(i) << endl;
+			cout << "COLUMN : " << colnames_p(i) << " has shape : " << colshapes_p(i) << endl;
 			cout << "Is arraycol : " << cdesc.isArray() << endl;
-			if((ipslice[i].length())[0]==0) cout << "  Scalar Column !! " << endl;
-			else cout << "   START : " << ipslice[i].start() << "  END : " << ipslice[i].end() << "  INC : " << ipslice[i].stride() << endl;
+			if((ipslice_p[i].length())[0]==0) cout << "  Scalar Column !! " << endl;
+			else cout << "   START : " << ipslice_p[i].start() << "  END : " << ipslice_p[i].end() << "  INC : " << ipslice_p[i].stride() << endl;
 		}
 	}
 
@@ -147,12 +204,13 @@ template<class T> Int BasePlot<T>::CreateTENS(Vector<String> &datastr)
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::GetData()
+/* Extract data from the table */
+template<class T> Int BasePlot<T>::getData()
 {
 	if(adbg)
 	cout << "BasePlot :: Get Data into storage arrays" << endl;
 
-	NRows = (SelTab).nrow();
+	NRows_p = (SelTab_p).nrow();
 
 	/************************ Extract Data from Table ***************/
 	if(ddbg) cout << "Extracting data using TEN ... " << endl;
@@ -164,65 +222,65 @@ template<class T> Int BasePlot<T>::GetData()
 	Array<Double> ytemp;
 	Array<Bool> arrflag;
 
-	NPlots=0; 
+	NPlots_p=0; 
 
 	/* Get data from first row, to figure out the total number of plots
-	   Resize xplotdata, yplotdata and Pind accordingly
-	   Fill in the numbers for Pind */
+	   Resize xplotdata_p, yplotdata_p and Pind_p accordingly
+	   Fill in the numbers for Pind_p */
 
 	Int xptr=0,yptr=0;
 	tid.setRownr(0);
 	TableExprNode tten;
-	Tsize.resize(nTens,2);
+	Tsize_p.resize(nTens_p,2);
 
-	xshp.resize(0);
-	yshp.resize(0);
-	flagitshp.resize(0);
+	xshp_p.resize(0);
+	yshp_p.resize(0);
+	flagitshp_p.resize(0);
 	
 	try{
-	for(int z=0;z<nTens;z++)
+	for(int z=0;z<nTens_p;z++)
 	{
-		if(nTStr>0)
+		if(nTStr_p>0)
 		{
-		tten = xtens[z];
+		tten = xtens_p[z];
 		
 		if(tten.isScalar())
 		{
 			tten.get(0,xytemp);
-			Tsize(z,0) = 1;
+			Tsize_p(z,0) = 1;
 		}
 		else
 		{
 			tten.get(0,xtemp);
-			xshp = xtemp.shape();
-			if(ddbg)cout << "Shape of Xaxis data : " << xshp << endl;
-			Tsize(z,0) = xshp.product(); 
+			xshp_p = xtemp.shape();
+			if(ddbg)cout << "Shape of Xaxis data : " << xshp_p << endl;
+			Tsize_p(z,0) = xshp_p.product(); 
 		}
-		xptr+= Tsize(z,0); 
-		NPlots = xptr; 
+		xptr+= Tsize_p(z,0); 
+		NPlots_p = xptr; 
 		}
-		tten = ytens[z];
+		tten = ytens_p[z];
 		
 		if(tten.isScalar())
 		{
 			if(ddbg) cout << "before scalar get" << endl;
 			tten.get(0,xytemp);
-			Tsize(z,1) = 1;
-			yshp = IPosition(2,1,1);
+			Tsize_p(z,1) = 1;
+			yshp_p = IPosition(2,1,1);
 		}
 		else
 		{
 			if(ddbg) cout << "before vector get" << endl;
 			tten.get(0,ytemp);
-			yshp = ytemp.shape();
-			if(ddbg)cout << "Shape of Yaxis data : " << yshp << endl;
+			yshp_p = ytemp.shape();
+			if(ddbg)cout << "Shape of Yaxis data : " << yshp_p << endl;
 			if(ddbg) cout << "ytemp : " << ytemp << endl;
-			Tsize(z,1) = yshp.product(); 
+			Tsize_p(z,1) = yshp_p.product(); 
 		}
-		yptr+=Tsize(z,1); 
-		NPlots = yptr; 
+		yptr+=Tsize_p(z,1); 
+		NPlots_p = yptr; 
 		
-		flagitshp = yshp;
+		flagitshp_p = yshp_p;
 	}
 	}
 	catch(ArraySlicerError &x){
@@ -234,86 +292,86 @@ template<class T> Int BasePlot<T>::GetData()
 		return -1;
 	}
 
-	xplotdata.resize(xptr,NRows);	xplotdata.set((T)0);
-	yplotdata.resize(yptr,NRows);	yplotdata.set((T)0);
-	theflags.resize(yptr,NRows);	theflags.set((Bool)0);
+	xplotdata_p.resize(xptr,NRows_p);	xplotdata_p.set((T)0);
+	yplotdata_p.resize(yptr,NRows_p);	yplotdata_p.set((T)0);
+	theflags_p.resize(yptr,NRows_p);	theflags_p.set(False);
 
-	Pind.resize(NPlots,2);
+	Pind_p.resize(NPlots_p,2);
 	
-	/* Fill up Pind */
+	/* Fill up Pind_p */
 	xptr=0; yptr=0;
-	for(Int m=0;m<nTStr/2;m++)
+	for(Int m=0;m<nTStr_p/2;m++)
 	{
-		if(Tsize(m,0)==1 && Tsize(m,1) > 1) // one to many
+		if(Tsize_p(m,0)==1 && Tsize_p(m,1) > 1) /* one to many */
 		{
-			for(Int ii=0;ii<Tsize(m,1);ii++)
-			{ Pind(xptr+ii,0)= xptr;  Pind(xptr+ii,1) = yptr + ii;}
+			for(Int ii=0;ii<Tsize_p(m,1);ii++)
+			{ Pind_p(xptr+ii,0)= xptr;  Pind_p(xptr+ii,1) = yptr + ii;}
 		}
 		else 
 		{
-			// one to one  (check  that xsize == ysize)
-			if (Tsize(m,0) == Tsize(m,1))
+			/* one to one  (check  that xsize == ysize) */
+			if (Tsize_p(m,0) == Tsize_p(m,1))
 			{
-				for(Int ii=0;ii<Tsize(m,1);ii++)
-				{ Pind(xptr+ii,0)= xptr+ii; Pind(xptr+ii,1) = yptr + ii;}
+				for(Int ii=0;ii<Tsize_p(m,1);ii++)
+				{ Pind_p(xptr+ii,0)= xptr+ii; Pind_p(xptr+ii,1) = yptr + ii;}
 			}
 			else 
 			{
 				cout << " Only first set of X values is used" << endl;
-				for(Int ii=0;ii<Tsize(m,1);ii++)
-				{ Pind(xptr+ii,0)= xptr;  Pind(xptr+ii,1) = yptr + ii;}
+				for(Int ii=0;ii<Tsize_p(m,1);ii++)
+				{ Pind_p(xptr+ii,0)= xptr;  Pind_p(xptr+ii,1) = yptr + ii;}
 				
 			}
 		}
 			
-		xptr += Tsize(m,0);
-		yptr += Tsize(m,1);
+		xptr += Tsize_p(m,0);
+		yptr += Tsize_p(m,1);
 	}
 
-	NxRows = xptr;
-	NyRows = yptr;
+	if(ddbg) cout << "Num x rows : " << xptr << "   Num y rows : " << yptr << endl;
 
-	if(ddbg) cout << "Num x rows : " << NxRows << "   Num y rows : " << NyRows << endl;
 
+	/* read the rest of the data */
+	
 	Int xp=0, yp=0, fyp=0;
 	
 #if 1
 	try
 	{
-	for(int rc=0;rc<NRows;rc++)
+	for(int rc=0;rc<NRows_p;rc++)
 	{
 		tid.setRownr(rc);
 		
 		xp=0; yp=0; fyp=0;
-		for(int z=0;z<nTens;z++) // nTens : number of TEN pairs
+		for(int z=0;z<nTens_p;z++) // nTens_p : number of TEN pairs
 		{
-			tten = xtens[z];
+			tten = xtens_p[z];
 			if(tten.isScalar())
 			{
 				tten.get(tid,xytemp);
-				xplotdata(xp++,rc) = (T)xytemp;
+				xplotdata_p(xp++,rc) = (T)xytemp;
 			}
 			else
 			{
 				tten.get(tid,xtemp);
-				xshp = xtemp.shape();
+				xshp_p = xtemp.shape();
 				for (Array<Double>::iterator iter=xtemp.begin(); iter!=xtemp.end(); iter++)
-					xplotdata(xp++,rc) = (T)(*iter);
+					xplotdata_p(xp++,rc) = (T)(*iter);
 			}
 			
-			tten = ytens[z];
+			tten = ytens_p[z];
 			if(tten.isScalar())
 			{
 				tten.get(tid,xytemp);
-				yplotdata(yp++,rc) = (T)xytemp;
+				yplotdata_p(yp++,rc) = (T)xytemp;
 
 			}
 			else
 			{
 				tten.get(tid,ytemp);
-				yshp = ytemp.shape();
+				yshp_p = ytemp.shape();
 				for (Array<Double>::iterator iter=ytemp.begin(); iter!=ytemp.end(); iter++)
-					yplotdata(yp++,rc) = (T)(*iter);
+					yplotdata_p(yp++,rc) = (T)(*iter);
 						
 
 				
@@ -326,15 +384,15 @@ template<class T> Int BasePlot<T>::GetData()
 	}
 	catch(AipsError &x)
 	{
-		cout << "Error in GetData : " << x.getMesg() << endl;
+		cout << "Error in getData : " << x.getMesg() << endl;
 		return -1;
 	}
 	
 #endif	
 	if(ddbg)cout << "************** Time to extract data using TEN : " << TMR(tmr) << endl;
 	
-	if(ddbg)cout << "Shape of xplotdata : " << xplotdata.shape() << endl;
-	if(ddbg)cout << "Shape of yplotdata : " << yplotdata.shape() << endl;
+	if(ddbg)cout << "Shape of xplotdata_p : " << xplotdata_p.shape() << endl;
+	if(ddbg)cout << "Shape of yplotdata_p : " << yplotdata_p.shape() << endl;
 
 	
 	return 0;
@@ -342,53 +400,54 @@ template<class T> Int BasePlot<T>::GetData()
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::SetPlotRange(T &xmin, T &xmax, T &ymin, T &ymax)
+/* Compute the combined plot range */
+template<class T> Int BasePlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax)
 {
 	if(adbg)cout << "BasePlot :: Set Plot Range for this table " << endl;
-	xprange.resize(NPlots,2);
-	yprange.resize(NPlots,2);
+	xprange_p.resize(NPlots_p,2);
+	yprange_p.resize(NPlots_p,2);
 	
 	/* compute min and max for each Plot */
-	for(int i=0;i<NPlots;i++)
+	for(int i=0;i<NPlots_p;i++)
 	{
-		xprange(i,0) = 1e+30;
-		xprange(i,1) = -1e+30;
-		yprange(i,0) = 1e+30;
-		yprange(i,1) = -1e+30;
+		xprange_p(i,0) = 1e+30;
+		xprange_p(i,1) = -1e+30;
+		yprange_p(i,0) = 1e+30;
+		yprange_p(i,1) = -1e+30;
 		
-		for(int rc=0;rc<NRows;rc++)
+		for(int rc=0;rc<NRows_p;rc++)
 		{
-			if(!theflags(Pind(i,1),rc)) 
+			if(!theflags_p(Pind_p(i,1),rc)) 
 			{
-				if(xplotdata(Pind(i,0),rc) < xprange(i,0)) xprange(i,0) = xplotdata(Pind(i,0),rc);
-				if(xplotdata(Pind(i,0),rc) >= xprange(i,1)) xprange(i,1) = xplotdata(Pind(i,0),rc);
+				if(xplotdata_p(Pind_p(i,0),rc) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),rc);
+				if(xplotdata_p(Pind_p(i,0),rc) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),rc);
 				
-				if(yplotdata(Pind(i,1),rc) < yprange(i,0)) yprange(i,0) = yplotdata(Pind(i,1),rc);
-				if(yplotdata(Pind(i,1),rc) >= yprange(i,1)) yprange(i,1) = yplotdata(Pind(i,1),rc);
+				if(yplotdata_p(Pind_p(i,1),rc) < yprange_p(i,0)) yprange_p(i,0) = yplotdata_p(Pind_p(i,1),rc);
+				if(yplotdata_p(Pind_p(i,1),rc) >= yprange_p(i,1)) yprange_p(i,1) = yplotdata_p(Pind_p(i,1),rc);
 			}
 		}
 	}
 	
 	xmin=0;xmax=0;ymin=0;ymax=0;
-	xmin = xprange(0,0);
-	xmax = xprange(0,1);
-	ymin = yprange(0,0);
-	ymax = yprange(0,1);
+	xmin = xprange_p(0,0);
+	xmax = xprange_p(0,1);
+	ymin = yprange_p(0,0);
+	ymax = yprange_p(0,1);
 	
 	if(ddbg) 
-	cout << " Initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
+	cout << " initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
 
-	/* get a total min,max */
+	/* get a comnined min,max */
 
-	for(int qq=1;qq<NPlots;qq++)
+	for(int qq=1;qq<NPlots_p;qq++)
 	{
-		xmin = MIN(xmin,xprange(qq,0));
-		xmax = MAX(xmax,xprange(qq,1));
+		xmin = MIN(xmin,xprange_p(qq,0));
+		xmax = MAX(xmax,xprange_p(qq,1));
 	}
-	for(int qq=1;qq<NPlots;qq++)
+	for(int qq=1;qq<NPlots_p;qq++)
 	{
-		ymin = MIN(ymin,yprange(qq,0));
-		ymax = MAX(ymax,yprange(qq,1));
+		ymin = MIN(ymin,yprange_p(qq,0));
+		ymax = MAX(ymax,yprange_p(qq,1));
 	}
 
 	return 0;
@@ -396,54 +455,56 @@ template<class T> Int BasePlot<T>::SetPlotRange(T &xmin, T &xmax, T &ymin, T &ym
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::ConvertCoords(Vector<Vector<T> > &flagmarks)
+/* Read in marked flag regions */
+template<class T> Int BasePlot<T>::convertCoords(Vector<Vector<T> > &flagmarks)
 {
 	if(adbg)
 	cout << "BasePlot :: MarkFlag co-ordinates to data ranges + labelling " << endl;
 	
-	nflagmarks = flagmarks.nelements();
-	if(adbg)cout << "nflagmarks : " << nflagmarks << endl;
+	nflagmarks_p = flagmarks.nelements();
+	if(adbg)cout << "nflagmarks_p : " << nflagmarks_p << endl;
 	
 	// record to a history list somewhere here before destroying...
-	locflagmarks.resize(flagmarks.nelements());
+	locflagmarks_p.resize(flagmarks.nelements());
 	
-	locflagmarks = flagmarks;
-	if(adbg) for(Int i=0;i<nflagmarks;i++) cout << locflagmarks[i] << endl;
-	// change units of locflagmarks, if any units changes were used while plotting..
+	locflagmarks_p = flagmarks;
+	if(adbg) for(Int i=0;i<nflagmarks_p;i++) cout << locflagmarks_p[i] << endl;
+	// change units of locflagmarks_p, if any units changes were used while plotting..
 
 	return 0;
 }
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::FlagData(Int diskwrite, Int rowflag)
+/* Fill up 'theflags_p' array and optionally write flags to disk */
+template<class T> Int BasePlot<T>::flagData(Int diskwrite, Int rowflag)
 {
 	if(adbg)cout << "BasePlot :: Flag Data and optionally write to disk" << endl;
 	
-	if(nflagmarks>0)
+	if(nflagmarks_p>0)
 	{
-	for(Int nf=0;nf<nflagmarks;nf++)
+	for(Int nf=0;nf<nflagmarks_p;nf++)
 	{
 		if(ddbg)cout << "*******" << endl;
-		if(ddbg)cout << (locflagmarks[nf])[0] << "," << (locflagmarks[nf])[1] << "," << (locflagmarks[nf])[2] << "," << (locflagmarks[nf])[3] << endl;
+		if(ddbg)cout << (locflagmarks_p[nf])[0] << "," << (locflagmarks_p[nf])[1] << "," << (locflagmarks_p[nf])[2] << "," << (locflagmarks_p[nf])[3] << endl;
 	}
 	
-	for(int nr=0;nr<NRows;nr++)
+	for(int nr=0;nr<NRows_p;nr++)
 	{
-		for(int np=0;np<NPlots;np++)
+		for(int np=0;np<NPlots_p;np++)
 		{
-			for(int nf=0;nf<nflagmarks;nf++)
-				if(xplotdata(Pind(np,0),nr)>(locflagmarks[nf])[0] &&
-				   xplotdata(Pind(np,0),nr)<=(locflagmarks[nf])[1] && 
-				   yplotdata(Pind(np,1),nr)>(locflagmarks[nf])[2] && 
-				   yplotdata(Pind(np,1),nr)<=(locflagmarks[nf])[3]) 
+			for(int nf=0;nf<nflagmarks_p;nf++)
+				if(xplotdata_p(Pind_p(np,0),nr)>(locflagmarks_p[nf])[0] &&
+				   xplotdata_p(Pind_p(np,0),nr)<=(locflagmarks_p[nf])[1] && 
+				   yplotdata_p(Pind_p(np,1),nr)>(locflagmarks_p[nf])[2] && 
+				   yplotdata_p(Pind_p(np,1),nr)<=(locflagmarks_p[nf])[3]) 
 					{
-						theflags(Pind(np,1),nr) = (Bool)1;
+						theflags_p(Pind_p(np,1),nr) = True;
 					}
 		}
 	}
 	
-	setFlags(diskwrite,rowflag);
+	if(diskwrite) setFlags(rowflag);
 	}
 
 	return 0;
@@ -451,9 +512,9 @@ template<class T> Int BasePlot<T>::FlagData(Int diskwrite, Int rowflag)
 
 /*********************************************************************************/
 
-template<class T> Int BasePlot<T>::ClearFlags()
+template<class T> Int BasePlot<T>::clearFlags()
 {
-	if(adbg)cout << "BasePlot :: ClearFlags" << endl;
+	if(adbg)cout << "BasePlot :: clearFlags" << endl;
 	
 	Array<Bool> flagcol;
 	Vector<Bool> rflagcol;
@@ -461,36 +522,34 @@ template<class T> Int BasePlot<T>::ClearFlags()
 	if(zflg==0) 
 	{
 		zflg=1;
-		if(fcol)
+		if(fcol_p)
 		{
-			Flags.attach(SelTab,FlagColName);
-			FlagColShape = Flags.shape(0);
+			Flags_p.attach(SelTab_p,FlagColName_p);
+			FlagColShape_p = Flags_p.shape(0);
 		}
-		if(frcol)
+		if(frcol_p)
 		{
-			RowFlags.attach(SelTab,FlagRowName);
-			//rfshp = IPosition(1,0);
-			//FlagColShape = rfshp;
+			RowFlags_p.attach(SelTab_p,FlagRowName_p);
 		}
 	}
 		
-	if(fcol)
+	if(fcol_p)
 	{
-		flagcol = (Flags.getColumn());  
+		flagcol = (Flags_p.getColumn());  
 		if(ddbg) cout << "flagcol shape : " << flagcol.shape() << endl;
-		flagcol = (Bool)0;
-		Flags.putColumn(flagcol);
+		flagcol = False;
+		Flags_p.putColumn(flagcol);
 	}
 	
-	if(frcol)
+	if(frcol_p)
 	{
-		rflagcol = RowFlags.getColumn();
+		rflagcol = RowFlags_p.getColumn();
 		if(ddbg) cout << "rflagcol length : " << rflagcol.nelements() << endl;
-		rflagcol = (Bool)0;
-		RowFlags.putColumn(rflagcol);
+		rflagcol = False;
+		RowFlags_p.putColumn(rflagcol);
 	}
 		
-	theflags.set((Bool)0);
+	theflags_p.set(False);
 
 	if(adbg)cout << "All Flags Cleared !!" << endl;
 
@@ -499,34 +558,32 @@ template<class T> Int BasePlot<T>::ClearFlags()
 
 /*********************************************************************************/
 
-template<class T> Matrix<Int> BasePlot<T>::GetPlotMap()
+template<class T> Matrix<Int> BasePlot<T>::getPlotMap()
 {
 	if(adbg)cout << "BasePlot :: Get Plot Map" << endl;
-	return Pind;
+	return Pind_p;
 }
 
-/*********************************************************************************/
-
-template<class T> Int BasePlot<T>::CleanUp()
-{
-	if(adbg)cout << "BasePlot :: CleanUp" << endl;
-	
-	nip=0;
-	ipslice.resize(nip);
-	if(ddbg)cout << "Colnames: " << colnames.nelements() << endl;
-
-	colnames.resize(nip);
-	
-	nflagmarks=0;
-	locflagmarks.resize(nflagmarks);
-	
-	return 0;
-}
 
 /*********************************************************************************/
 /********************** Private Functions *****************************/
 /*********************************************************************************/
 
+/* Clean Up bookkeeping arrays */
+template<class T> Int BasePlot<T>::cleanUp()
+{
+	if(adbg)cout << "BasePlot :: cleanUp" << endl;
+	
+	nip_p=0;
+	ipslice_p.resize(nip_p);
+	colnames_p.resize(nip_p);
+	nflagmarks_p=0;
+	locflagmarks_p.resize(nflagmarks_p);
+	
+	return 0;
+}
+
+/*********************************************************************************/
 
 /* Given a TEN, get an index value - required by mspflagdata */
 template<class T> Int BasePlot<T>::getIndices(TableExprNode &ten)
@@ -564,7 +621,6 @@ if(dynamic_cast<const TableExprFuncNodeArray*>(tenr)!=NULL) {etype=4; if(dbg) co
 			const TableExprNodeSetElem *tense = dynamic_cast<const TableExprNodeSetElem*>(tenr);
 			/* Act on this node */
 			if(ddbg) cout << "SetElem Node : " << endl; 
-			//tense->show(cout,1);
 		  
 			/* get children */
 			if(dbg) cout << "Start ---> "; ptTraverse(tense->start());
@@ -577,7 +633,6 @@ if(dynamic_cast<const TableExprFuncNodeArray*>(tenr)!=NULL) {etype=4; if(dbg) co
 			const TableExprNodeSet *tens=dynamic_cast<const TableExprNodeSet*>(tenr);
 			/* Act on this node */
 			if(ddbg) cout << "Set Node : " << endl; 
-			//tens->show(cout,1);
 		  
 			/* get children */
 			for(Int i=0;i<(Int)tens->nelements();i++)
@@ -592,10 +647,8 @@ if(dynamic_cast<const TableExprFuncNodeArray*>(tenr)!=NULL) {etype=4; if(dbg) co
 		case 2: /* Multi */
 			{
 			const TableExprNodeMulti *tenm=dynamic_cast<const TableExprNodeMulti*>(tenr);
-			//const TableExprNodeMulti *tenm=(const TableExprNodeMulti*)(tenr);
 			/* Act on this node */
 			if(ddbg) cout << "Multi Node : " << endl; 
-			//tenm->show(cout,1);
 			
 			const TableExprNodeIndex* nodePtr = dynamic_cast<const TableExprNodeIndex*>(tenr);
 			if(nodePtr!=0)
@@ -608,11 +661,9 @@ if(dynamic_cast<const TableExprFuncNodeArray*>(tenr)!=NULL) {etype=4; if(dbg) co
 					if(ddbg) cout << "M Index end: " << indices.end() << endl;
 					if(ddbg) cout << "M Index stride: " << indices.stride() << endl;
 					
-					//ipslice.resize(nip+1,(Bool)0,(Bool)1);
-					//ipslice[nip] = new Slicer(indices);
-					ipslice.resize(nip+1,(Bool)1);
-					ipslice[nip] = indices;
-					nip++;
+					ipslice_p.resize(nip_p+1,True);
+					ipslice_p[nip_p] = indices;
+					nip_p++;
 					
 				}
 
@@ -631,29 +682,25 @@ if(dynamic_cast<const TableExprFuncNodeArray*>(tenr)!=NULL) {etype=4; if(dbg) co
 			const TableExprNodeBinary *tenb=dynamic_cast<const TableExprNodeBinary*>(tenr);
 			/* Act on this node */
 		  	if(ddbg) cout << "Binary Node : " << endl; 
-		  	//tenb->show(cout,1);
 		   
 			const TableExprNodeArrayColumn *tenac = dynamic_cast<const TableExprNodeArrayColumn*>(tenb);
 			if(tenac != 0){
 				cname = tenac->getColumn().columnDesc().name();
 				if(ddbg) cout << " Array Column Name : " << cname << endl;
-				if(ddbg) cout << "Num elems : " << colnames.nelements() << endl;
-				colnames.resize(nip+1,(Bool)1); // small array of strings
-				colnames[nip] = cname;
+				if(ddbg) cout << "Num elems : " << colnames_p.nelements() << endl;
+				colnames_p.resize(nip_p+1,True); // small array of strings
+				colnames_p[nip_p] = cname;
 			}
 
 			const TableExprNodeColumn *tenc = dynamic_cast<const TableExprNodeColumn*>(tenr);
 			if(tenc != 0) {
 				cname =  tenc->getColumn().columnDesc().name() ;
 				if(ddbg) cout << " Column Name : " << cname << endl;
-				colnames.resize(nip+1,(Bool)1); // small array of strings
-				colnames[nip] = cname;
-				/* also fill in full flag indices */
-				//ipslice.resize(nip+1,(Bool)0,(Bool)1);
-				//ipslice[nip] = NULL;
-				ipslice.resize(nip+1,(Bool)1);
-				ipslice[nip] = Slicer(IPosition(1,0),IPosition(1,0));
-				nip++;
+				colnames_p.resize(nip_p+1,True); // small array of strings
+				colnames_p[nip_p] = cname;
+				ipslice_p.resize(nip_p+1,True);
+				ipslice_p[nip_p] = Slicer(IPosition(1,0),IPosition(1,0));
+				nip_p++;
 			}
 			
 			
@@ -724,80 +771,75 @@ template<class T> Int BasePlot<T>::getFlags(Int rownum)
 	Array<Bool> flagit, flagit2; 
 	Bool sflag;
 	Bool row;
-
+	Int dindex;
 	
 	if(zflg==0) 
 	{
 		zflg=1;
-		if(fcol) 
+		if(fcol_p) 
 		{
-			Flags.attach(SelTab,FlagColName);
-			FlagColShape = Flags.shape(0);
+			Flags_p.attach(SelTab_p,FlagColName_p);
+			FlagColShape_p = Flags_p.shape(0);
 		}
-		if(frcol)
+		if(frcol_p)
 		{
-			RowFlags.attach(SelTab,FlagRowName);
-			//rfshp = IPosition(1,0);
-			//FlagColShape = rfshp;
+			RowFlags_p.attach(SelTab_p,FlagRowName_p);
 		}
 		if(adbg)
 		{
-		//cout << "Shape of Flags : " << fshp << endl;
-		cout << "FlagColName : " << FlagColName<< endl;
-		cout << "FlagRowName : " << FlagRowName<< endl;
+		cout << "FlagColName : " << FlagColName_p<< endl;
+		cout << "FlagRowName : " << FlagRowName_p<< endl;
 		}
 	}
-	   if(!fcol)
+	   if(!fcol_p)
 	   {
-	   	//cout << "FLAG column doesn't exist - not considering any flags" << endl;
-		if(frcol) for(int z=0;z<nTens;z++) RowFlags.get(rownum,theflags(z,rownum));
-		else for(int z=0;z<nTens;z++) theflags(z,rownum)=(Bool)0;
+		if(frcol_p) for(int z=0;z<nTens_p;z++) RowFlags_p.get(rownum,theflags_p(z,rownum));
+		else for(int z=0;z<nTens_p;z++) theflags_p(z,rownum)=False;
 		return 0;
 	   }
 	
-	flagit.resize(flagitshp); //same as yshp
+	flagit.resize(flagitshp_p); 
 	
 	Int rc = rownum;
 	xp=0; yp=0; fyp=0; 
-	row = (Bool)0;
+	row = False;
 	
-	for(int z=0;z<nTens;z++) // nTens : number of TEN pairs
+	for(int z=0;z<nTens_p;z++) 
 	{
-		dindex = IndCnt[z];
+		dindex = IndCnt_p[z];
 		
-		if(!(colshapes(dindex).isEqual(FlagColShape)))
+		if(!(colshapes_p(dindex).isEqual(FlagColShape_p)))
 		{
-			if(frcol)RowFlags.get(rc,theflags(fyp++,rc));
+			if(frcol_p)RowFlags_p.get(rc,theflags_p(fyp++,rc));
 		}
 		else
 		{
-			if(frcol)RowFlags.get(rc,row);
+			if(frcol_p)RowFlags_p.get(rc,row);
 			
-			fslice = ipslice[dindex];
+			fslice = ipslice_p[dindex];
 		
-			if( (Flags.getSlice(rc,fslice)).shape() == yshp )
+			if( (Flags_p.getSlice(rc,fslice)).shape() == yshp_p )
 			{
-				flagit = Flags.getSlice(rc,fslice);
+				flagit = Flags_p.getSlice(rc,fslice);
 				for (Array<Bool>::iterator iter=flagit.begin(); iter!=flagit.end(); iter++)
-					theflags(fyp++,rc) = (*iter)|row;
+					theflags_p(fyp++,rc) = (*iter)|row;
 			}
 			else
 			{
-				if(yshp.product()==1)
+				if(yshp_p.product()==1)
 				{
-					sflag = (Bool)0;
-					/*** this RESIZE must be eventually taken out of here !! ***/
-					flagit2.resize( (Flags.getSlice(rc,fslice)).shape());
-					flagit2 = Flags.getSlice(rc,fslice);
+					sflag = False;
+					flagit2.resize( (Flags_p.getSlice(rc,fslice)).shape());
+					flagit2 = Flags_p.getSlice(rc,fslice);
 					for (Array<Bool>::iterator iter=flagit2.begin(); iter!=flagit2.end(); iter++)
 						sflag |= *iter;
-					theflags(fyp++,rc) = sflag|row;
+					theflags_p(fyp++,rc) = sflag|row;
 				}
 				else
 				{
 					cout << "Support for reduction functions not provided yet" << endl;
 					cout << " Reading row flags..." << endl;
-					if(frcol)RowFlags.get(rc,theflags(fyp++,rc));
+					if(frcol_p)RowFlags_p.get(rc,theflags_p(fyp++,rc));
 					// throw an exception here...
 				}
 			}
@@ -812,7 +854,7 @@ template<class T> Int BasePlot<T>::getFlags(Int rownum)
 /*********************************************************************************/
 
 /* Get Flags */
-template<class T> Int BasePlot<T>::setFlags(Int write,Int rowflag)
+template<class T> Int BasePlot<T>::setFlags(Int rowflag)
 {
 	if(adbg)cout << "BasePlot :: setFlags - write flags to disk " << endl;
 
@@ -820,46 +862,45 @@ template<class T> Int BasePlot<T>::setFlags(Int write,Int rowflag)
 	Slicer fslice;
 	Array<Bool> flagit, flagit2; 
 	Bool sflag;
+	Int dindex;
 
-	if(!fcol)
+	if(!fcol_p)
 	{
-		//cout << "FLAG column doesn't exist - not writing any flags to disk" << endl;
-		if(frcol) for(int rc=0;rc<NRows;rc++) 
-				for(int z=0;z<nTens;z++) 
-					RowFlags.put(rc,theflags(z,rc));
+		if(frcol_p) for(int rc=0;rc<NRows_p;rc++) 
+				for(int z=0;z<nTens_p;z++) 
+					RowFlags_p.put(rc,theflags_p(z,rc));
 		return 0;
 	}
-	flagit.resize(flagitshp); 
-	for(int rc=0;rc<NRows;rc++)
+	flagit.resize(flagitshp_p); 
+	for(int rc=0;rc<NRows_p;rc++)
 	{
 		xp=0; yp=0; fyp=0;ryp=0;
-		for(int z=0;z<nTens;z++) 
+		for(int z=0;z<nTens_p;z++) 
 		{
-			dindex = IndCnt[z];
-			if(!(colshapes(dindex).isEqual(FlagColShape)))
+			dindex = IndCnt_p[z];
+			if(!(colshapes_p(dindex).isEqual(FlagColShape_p)))
 			{
-				if(frcol)RowFlags.put(rc,theflags(fyp++,rc));
+				if(frcol_p)RowFlags_p.put(rc,theflags_p(fyp++,rc));
 			}
 			else
 			{
-				fslice = ipslice[dindex];
+				fslice = ipslice_p[dindex];
 				
-				if( (Flags.getSlice(rc,fslice)).shape() == yshp )
+				if( (Flags_p.getSlice(rc,fslice)).shape() == yshp_p )
 				{
 					for (Array<Bool>::iterator iter=flagit.begin(); iter!=flagit.end(); iter++)
-						*iter = theflags(fyp++,rc) ;
-					Flags.putSlice(rc,fslice,flagit);
+						*iter = theflags_p(fyp++,rc) ;
+					Flags_p.putSlice(rc,fslice,flagit);
 				}
 				else
 				{
-					if(yshp.product()==1)
+					if(yshp_p.product()==1)
 					{
-						sflag = theflags(fyp++,rc);
-						/*** this RESIZE must be eventually taken out of here !! ***/
-						flagit2.resize( (Flags.getSlice(rc,fslice)).shape());
+						sflag = theflags_p(fyp++,rc);
+						flagit2.resize( (Flags_p.getSlice(rc,fslice)).shape());
 						for (Array<Bool>::iterator iter=flagit2.begin(); iter!=flagit2.end(); iter++)
 							*iter = sflag;
-						Flags.putSlice(rc,fslice,flagit2);
+						Flags_p.putSlice(rc,fslice,flagit2);
 					}
 					else
 					{
@@ -869,11 +910,21 @@ template<class T> Int BasePlot<T>::setFlags(Int write,Int rowflag)
 					}
 				}
 				
-				if(rowflag==1) if(frcol)RowFlags.put(rc,theflags(ryp++,rc));
+				if(rowflag==1) if(frcol_p)RowFlags_p.put(rc,theflags_p(ryp++,rc));
 				// set an 'fslice' to fill the whole range
-				// use Flags.putSlice.....
-				if(rowflag==2) cout << "Flag all Chans for current Stokes range " << endl;
-				if(rowflag==3) cout << "Flag all Stokes for current Channel range " << endl;
+				// use Flags_p.putSlice.....
+				if(rowflag==2) 
+				{
+					cout << "Flag all Chans for current Stokes range - not implemented" << endl;
+					// not implemented
+					return -1;
+				}
+				if(rowflag==3) 
+				{
+					cout << "Flag all Stokes for current Channel range - not implemented" << endl;
+					// not implemented
+					return -1;
+				}
 			}
 		}// end of for z
 	}//end of for rc
@@ -885,5 +936,6 @@ template<class T> Int BasePlot<T>::setFlags(Int write,Int rowflag)
 	
 /*********************************************************************************/
 /*********************************************************************************/
-} //#End casa namespace
+} //# NAMESPACE CASA - END 
+
 

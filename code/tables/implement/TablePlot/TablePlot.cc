@@ -1,18 +1,67 @@
+//# TablePlot.cc: Implement class for the tableplot DO.
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
 
-#include "TablePlot.h"
-#include "BasePlot.h"
+//# Includes
 
-namespace casa {
+#include <stdio.h>
+#include <string.h>
+#include <iostream.h>
+#include <fstream.h>
+#include <math.h>
+
+#include <casa/Exceptions.h>
+#include <casa/OS/Timer.h>
+
+#include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/MatrixMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Slicer.h>
+
+#include <tables/Tables/TableParse.h>
+#include <tables/Tables/TableGram.h>
+#include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/TableColumn.h>
+#include <tables/Tables/TableLock.h>
+
+#include <tables/TablePlot/TablePlot.h>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* Default Constructor */
 template<class T> TablePlot<T>::TablePlot()
 {
 	adbg=0;
 	if(adbg)cout << "TablePlot constructor" << endl;
-	TABS.resize(0);
-	TQL.resize(0);
-	nTabs=0; iTabs=0; ToFlag=0;
-	NPanels=1;
+	TABS_p.resize(0);
+	nTabs_p=0; iTabs_p=0; 
+	NPanels_p=1;
 }
 
 /*********************************************************************************/
@@ -26,15 +75,15 @@ template<class T> TablePlot<T>::~TablePlot()
 /*********************************************************************************/
 
 /* Create a Table obj from the string inTabName - Add onto list of Table objects */
-template<class T> Int TablePlot<T>::SetTableS(String &inTabName)
+template<class T> Int TablePlot<T>::setTableS(Int ntabs, String &inTabName)
 {
-	if(adbg)cout << "TablePlot :: SelectData - Table string : " << iTabs << endl;
+	if(adbg)cout << "TablePlot :: SelectData - Table string : " << iTabs_p << endl;
 	
-	if(nTabs<=0) cout << "Throw Exception here" << endl;
-	if((Int)TABS.nelements() != nTabs) TABS.resize(nTabs);
+	if(nTabs_p==0) nTabs_p = ntabs;
+	if((Int)TABS_p.nelements() != nTabs_p) TABS_p.resize(nTabs_p);
 	try
 	{
-	TABS[iTabs] = Table(inTabName,Table::Update);
+	TABS_p[iTabs_p] = Table(inTabName,Table::Update);
 	}
 	catch(TableError &x)
 	{
@@ -42,45 +91,37 @@ template<class T> Int TablePlot<T>::SetTableS(String &inTabName)
 		return -1;
 	}
 
-	iTabs++;
+	iTabs_p++;
 		
 	return 0;
 }
 
 /*********************************************************************************/
 
-/* Add inTabObj directly onto the list of Table objects : TABS */
-template<class T> Int TablePlot<T>::SetTableT(Table &inTabObj)
+/* Add inTabObj directly onto the list of Table objects : TABS_p */
+template<class T> Int TablePlot<T>::setTableT(Int ntabs, Table &inTabObj)
 {
-	if(adbg)cout << "TablePlot :: SelectData - Table object : " << iTabs << endl;
+	if(adbg)cout << "TablePlot :: SelectData - Table object : " << iTabs_p << endl;
 	
-	if(nTabs<=0) cout << "Throw Exception here" << endl;
-	if((Int)TABS.nelements() != nTabs) TABS.resize(nTabs);
-	TABS[iTabs] = inTabObj;
-	iTabs++;
+	if(nTabs_p==0) nTabs_p = ntabs;
+	if((Int)TABS_p.nelements() != nTabs_p) TABS_p.resize(nTabs_p);
+	TABS_p[iTabs_p] = inTabObj;
+	iTabs_p++;
 
 	return 0;
 }
 
 /*********************************************************************************/
-/*
-template<class T> Int TablePlot<T>::SortTaQL(BasePlot<T> &BP)
-{
-	cout << "TablePlot :: SortTaQL - get and match TaQL strings to Tables" << endl;
-	return 0;
-}
-*/
 
-/*********************************************************************************/
-
-template<class T> Int TablePlot<T>::CreateBP(PtrBlock<BasePlot<T>* > &BPS)
+/* Create the BasePlot objects */
+template<class T> Int TablePlot<T>::createBP(PtrBlock<BasePlot<T>* > &BPS)
 {
 	if(adbg)cout << "TablePlot :: Create BP" << endl;
 	
 	if((Int)BPS.nelements()==0) 
 	{
-		BPS.resize(nTabs);
-		for(Int i=0;i<nTabs;i++) BPS[i] = new BasePlot<T>();
+		BPS.resize(nTabs_p);
+		for(Int i=0;i<nTabs_p;i++) BPS[i] = new BasePlot<T>();
 	}
 	
 	return 0;
@@ -88,15 +129,15 @@ template<class T> Int TablePlot<T>::CreateBP(PtrBlock<BasePlot<T>* > &BPS)
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::UpDateBP(PtrBlock<BasePlot<T>* > &BPS)
+/* Attach one table to each BasePlot */
+template<class T> Int TablePlot<T>::upDateBP(PtrBlock<BasePlot<T>* > &BPS)
 {
 	if(adbg)cout << "TablePlot :: UpDate BP" << endl;
 	
-	// for all Tables
-	for(Int i=0;i<nTabs;i++) 
+	for(Int i=0;i<nTabs_p;i++) 
 	{
-		BPS[i]->Init(TABS[i]); // initialise each BP - TableObj
-		if(adbg)cout << "Inited BP : " << i << endl;
+		BPS[i]->init(TABS_p[i]); // initialise each BP - TableObj
+		if(adbg)cout << "inited BP : " << i << endl;
 	}
 	
 	if(adbg)cout << "TablePlot :: Finished updating BP " << endl;
@@ -105,37 +146,32 @@ template<class T> Int TablePlot<T>::UpDateBP(PtrBlock<BasePlot<T>* > &BPS)
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::CleanBP(PtrBlock<BasePlot<T>* > &BPS)
+/* Set plot options */
+template<class T> Int TablePlot<T>::setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions,Vector<String> &labels)
 {
-	if(adbg)cout << "TablePlot :: Cleanup BP" << endl;
-	// for all Tables
-	for(Int i=0;i<nTabs;i++) BPS[i]->CleanUp();
+	TPLP.setPlotOptions(plotoptions);
+	TPLP.setLabels(labels);
+
 	return 0;
 }
-
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::GetData(PtrBlock<BasePlot<T>* > &BPS,Vector<String> &datastr)
+/* Read data from all tables */
+template<class T> Int TablePlot<T>::getData(PtrBlock<BasePlot<T>* > &BPS,Vector<String> &datastr)
 {
 	if(adbg)cout << "TablePlot :: Create TENS and Extract Data" << endl;
-	
-	TQL.resize(datastr.shape());
-	TQL = datastr;
-	
-	nTql = TQL.nelements();
 
-	for(Int i=0;i<nTabs;i++)
+	/* create TableExprNodes for each table */
+	/* (if different TaQL strings are to apply to diff tables, make the change here) */
+	for(Int i=0;i<nTabs_p;i++)
 	{
-		if(BPS[i]->CreateTENS(TQL) == -1) 
+		if(BPS[i]->createTENS(datastr) == -1) 
 			return -1;
 	}
 	
-	// later figure out some mapping, and correct TaQL string vectors to each BP.
-	
-	//for all Tables
-	for(Int i=0;i<nTabs;i++) 
+	for(Int i=0;i<nTabs_p;i++) 
 	{
-		if(BPS[i]->GetData() == -1) 
+		if(BPS[i]->getData() == -1) 
 			return -1;
 	}
 	
@@ -144,21 +180,23 @@ template<class T> Int TablePlot<T>::GetData(PtrBlock<BasePlot<T>* > &BPS,Vector<
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::PlotData(PtrBlock<BasePlot<T>* > &BPS,TPLPlot<T> &TPLP,  Int panel)
+/* Plot Data - to be called after any 'getdata' */
+template<class T> Int TablePlot<T>::plotData(PtrBlock<BasePlot<T>* > &BPS,TPPlotter<T> &TPLP,  Int panel)
 {
 	if(adbg)cout << "TablePlot :: Plot Data" << endl; 
 
-	TPLP.SetPlotRange(BPS,panel); 
-	TPLP.PlotData(BPS,panel);
+	TPLP.setPlotRange(BPS,panel); 
+	TPLP.plotData(BPS,panel);
 	return 0;
 }
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::MarkFlags(Int panel, TPLPlot<T> &TPLP)
+/* Mark regions to flags */
+template<class T> Int TablePlot<T>::markFlags(Int panel, TPPlotter<T> &TPLP)
 {
 	if(adbg)cout << "TablePlot :: Mark Flag Regions" << endl;
-	Int ret = TPLP.MarkFlags(panel);
+	Int ret = TPLP.markFlags(panel);
 	if(ret==-1) 
 	{
 		cout << "Invalid Flag region - not marked " << endl;
@@ -173,11 +211,12 @@ template<class T> Int TablePlot<T>::MarkFlags(Int panel, TPLPlot<T> &TPLP)
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::MarkZoom(Int panel, TPLPlot<T> &TPLP, Int direction)
+/* Mark region to zoom */
+template<class T> Int TablePlot<T>::markZoom(Int panel, TPPlotter<T> &TPLP, Int direction)
 {
 	if(adbg)cout << "TablePlot :: Mark Zoom Regions" << endl;
 	Int pan=1;
-	pan = TPLP.MarkZoom(panel,direction);
+	pan = TPLP.markZoom(panel,direction);
 	if(pan==-1)
 	{
 		cout << "Invalid Zoom region - not zoomed " << endl;
@@ -191,49 +230,50 @@ template<class T> Int TablePlot<T>::MarkZoom(Int panel, TPLPlot<T> &TPLP, Int di
 }
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::FlagData(PtrBlock<BasePlot<T>* > &BPS,
-			TPLPlot<T> &TPLP, Int panel, Int diskwrite, Int rowflag)
+/* Flag data for each table in the list of BasePlots */
+template<class T> Int TablePlot<T>::flagData(PtrBlock<BasePlot<T>* > &BPS,
+			TPPlotter<T> &TPLP, Int panel, Int diskwrite, Int rowflag)
 {
 	if(adbg)cout << "TablePlot :: Flag Data" << endl;
 
-	TPLP.SetFlagRegions(BPS,panel); 
-	if(adbg)cout << "nTabs : " << nTabs << endl;
-	for(Int i=0;i<nTabs;i++) BPS[i]->FlagData(diskwrite,rowflag);
+	TPLP.setFlagRegions(BPS,panel); 
+	if(adbg)cout << "nTabs_p : " << nTabs_p << endl;
+	for(Int i=0;i<nTabs_p;i++) BPS[i]->flagData(diskwrite,rowflag);
 		
-	TPLP.SetPlotRange(BPS,panel);
-	TPLP.PlotData(BPS,panel); 
-	
-	//TPLP.ClearPlot();
+	TPLP.setPlotRange(BPS,panel);
+	TPLP.plotData(BPS,panel); 
 	
 	return 0;
 }
 
 /*********************************************************************************/
 
-template<class T> Int TablePlot<T>::ClearFlags(PtrBlock<BasePlot<T>* > &BPS)
+/* Clear All flags from all tables */
+template<class T> Int TablePlot<T>::clearFlags(PtrBlock<BasePlot<T>* > &BPS)
 {
 	if(adbg)cout << "TablePlot :: Clear Flags" << endl;
 	
-	for(Int i=0;i<nTabs;i++) BPS[i]->ClearFlags();
+	for(Int i=0;i<nTabs_p;i++) BPS[i]->clearFlags();
 	
 	return 0;
 }
 
 /*********************************************************************************/
-
+/* Plot by iterating over a specified iteration axis. */
 /*********************************************************************************/
-template<class T> Int TablePlot<T>::IterMultiPlotStart(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPLPlot<T> &TPLP, Int npanels,Vector<String> &datastr, Vector<String> &iteraxes)
-{
-	if(adbg)cout << "TablePlot :: IterMultiPlotStart " << endl;
-#if 1
-	NPanels = npanels;
-	
-	ATBPS.resize(NPanels);
 
-	for(Int i=0;i<NPanels;i++) 
+/* Start the iterations */
+template<class T> Int TablePlot<T>::iterMultiPlotStart(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPPlotter<T> &TPLP, Int npanels,Vector<String> &datastr, Vector<String> &iteraxes)
+{
+	if(adbg)cout << "TablePlot :: iterMultiPlotStart " << endl;
+	Block<String> itx;
+	NPanels_p = npanels;
+	ATBPS.resize(NPanels_p);
+
+	for(Int i=0;i<NPanels_p;i++) 
 	{
 		ATBPS[i] = new PtrBlock<BasePlot<T>* >();
-		CreateBP(*ATBPS[i]);
+		createBP(*ATBPS[i]);
 	}
 	
 	
@@ -242,63 +282,60 @@ template<class T> Int TablePlot<T>::IterMultiPlotStart(PtrBlock<PtrBlock<BasePlo
 	{
 		itx[i] = iteraxes[i]; 
 	}
-	Iters.resize(nTabs);
+	Iters_p.resize(nTabs_p);
 	try
 	{
-	for(Int i=0;i<nTabs;i++) Iters[i] = TableIterator(TABS[i],itx);
+	for(Int i=0;i<nTabs_p;i++) Iters_p[i] = TableIterator(TABS_p[i],itx);
 	}
 	catch(TableError &x)
 	{
 		cout << "Iteraxis Error : " << x.getMesg() << endl;
 		return -1;
 	}
-	panelcounter=0;
+	panelcounter_p=0;
 
-#endif
-	
 	return 0;
 }
 
 /*********************************************************************************/
-template<class T> Int TablePlot<T>::IterMultiPlotNext(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPLPlot<T> &TPLP,Int &apanels)
+
+/* Next iteration */
+template<class T> Int TablePlot<T>::iterMultiPlotNext(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPPlotter<T> &TPLP,Int &apanels)
 {
-	if(adbg)cout << "TablePlot :: IterMultiPlotNext " << endl;
-#if 1
-	if(Iters[0].pastEnd()) //check for end of table from first table in list.
+	if(adbg)cout << "TablePlot :: iterMultiPlotNext " << endl;
+	Table temptable;
+	if(Iters_p[0].pastEnd()) //check for end of table from first table in list.
 	{
-		IterMultiPlotStop(ATBPS,TPLP);
+		iterMultiPlotStop(ATBPS,TPLP);
 		return 0;
 	}
 	else
 	{
-		for(Int i=0;i<panelcounter;i++) CleanBP(*ATBPS[i]);
-		panelcounter=0;
-
-		while(panelcounter<NPanels && !Iters[0].pastEnd())
+		panelcounter_p=0;
+		while(panelcounter_p<NPanels_p && !Iters_p[0].pastEnd())
 		{
-			for(Int i=0;i<nTabs;i++) 
+			for(Int i=0;i<nTabs_p;i++) 
 			{
-				temptable = Iters[i].table();
-				(*ATBPS[panelcounter])[i]->Init(temptable); // init each BP with Tobj 
-				Iters[i].next();
+				temptable = Iters_p[i].table();
+				(*ATBPS[panelcounter_p])[i]->init(temptable); // init each BP with Tobj 
+				Iters_p[i].next();
 			}
-		panelcounter++;
+		panelcounter_p++;
 		}
-	apanels=panelcounter;
+	apanels=panelcounter_p;
 	}
 
-#endif
-	
 	return 1;
 }
+
 /*********************************************************************************/
-template<class T> Int TablePlot<T>::IterMultiPlotStop(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPLPlot<T> &TPLP)
+
+/* Stop iterations */
+template<class T> Int TablePlot<T>::iterMultiPlotStop(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPPlotter<T> &TPLP)
 {
-	if(adbg)cout << "TablePlot :: IterMultiPlotStop " << endl;
+	if(adbg)cout << "TablePlot :: iterMultiPlotStop " << endl;
 	
-	for(Int i=0;i<panelcounter;i++) CleanBP(*ATBPS[i]);
-	
- 	Iters.resize(0);
+ 	Iters_p.resize(0);
 	
 	for(Int i=0;i<(Int)ATBPS.nelements();i++) 
 	{
@@ -311,5 +348,6 @@ template<class T> Int TablePlot<T>::IterMultiPlotStop(PtrBlock<PtrBlock<BasePlot
 }
 
 /*********************************************************************************/
-} //#End casa namespace
+} //# NAMESPACE CASA - END 
+
 
