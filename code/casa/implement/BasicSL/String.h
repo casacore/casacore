@@ -1,5 +1,5 @@
 //# String.h: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1992-1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -311,10 +311,10 @@ protected:
 // myString.prepend("Now is ");
 // // do some concatination...
 // String evenMore;
-// cat(myString, " to come to", evenMore);
+// evenMore += myString + " to come to";
 // // do some three way concatination
 // String allKeys, finishIt(" their country.");
-// cat(evenMore, "the aid of", finishIt, allKeys);
+// allKeys = evenMore + "the aid of" + finishIt;
 // // find the spot where we put something earlier
 // int position = allKeys.index(finishIt);
 // // find if the word is in the String...
@@ -594,7 +594,7 @@ public:
   int allocation() const;
 
   // hash function from IV strings (pjt - march 1992).
-  unsigned long	hash() const;
+  ///  unsigned long	hash() const;
 
   // internal transformation to reverse order of String.
   void reverse();
@@ -620,55 +620,6 @@ public:
   // global function  which returns a transformation to capitalization of 
   // String.
   friend String capitalize(const String &x);
-
-  // Global function which concatenates the first 2 arguments,
-  // and stores the result in the last argument.
-  //<group name=concatenation_single>
-  friend void cat(const String&, const String&, String&);
-  friend void cat(const String&, const SubString&, String&);
-  friend void cat(const String&, const char*, String&);
-  friend void cat(const String&, char, String&);
-
-  friend void cat(const SubString&, const String&, String&);
-  friend void cat(const SubString&, const SubString&, String&);
-  friend void cat(const SubString&, const char*, String&);
-  friend void cat(const SubString&, char, String&);
-
-  friend void cat(const char*, const String&, String&);
-  friend void cat(const char*, const SubString&, String&);
-  friend void cat(const char*, const char*, String&);
-  friend void cat(const char*, char, String&);
-  //</group>
-
-  // Global function which concatenates the first 3 arguments, and stores 
-  // the result in the last argument.
-  //<group name=concatenation_double>
-  friend void cat(const String&, const String&, const String&, String&);
-  friend void cat(const String&, const String&, const SubString&, String&);
-  friend void cat(const String&, const String&, const char*, String&);
-  friend void cat(const String&, const String&, char, String&);
-  friend void cat(const String&, const SubString&, const String&, String&);
-  friend void cat(const String&, const SubString&, const SubString&, String&);
-  friend void cat(const String&, const SubString&, const char*, String&);
-  friend void cat(const String&, const SubString&, char, String&);
-  friend void cat(const String&, const char*, const String&, String&);
-  friend void cat(const String&, const char*, const SubString&, String&);
-  friend void cat(const String&, const char*, const char*, String&);
-  friend void cat(const String&, const char*, char, String&);
-
-  friend void cat(const char*, const String&, const String&, String&);
-  friend void cat(const char*, const String&, const SubString&, String&);
-  friend void cat(const char*, const String&, const char*, String&);
-  friend void cat(const char*, const String&, char, String&);
-  friend void cat(const char*, const SubString&, const String&, String&);
-  friend void cat(const char*, const SubString&, const SubString&, String&);
-  friend void cat(const char*, const SubString&, const char*, String&);
-  friend void cat(const char*, const SubString&, char, String&);
-  friend void cat(const char*, const char*, const String&, String&);
-  friend void cat(const char*, const char*, const SubString&, String&);
-  friend void cat(const char*, const char*, const char*, String&);
-  friend void cat(const char*, const char*, char, String&);
-  //</group>
 
   // Global function which splits the String into carray res at separators
   // and returns the number of elements.
@@ -1034,215 +985,24 @@ inline void SubString::operator = (const SubString &y)
   assign(y.S.rep, y.chars(), y.length());
 }
 
-
-//#
-//# Zillions of cats...
-//#
-
-inline void cat(const String &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const String &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const SubString &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const SubString &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const SubString &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const SubString &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const char *x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, x, -1, y.chars(), y.length());
-}
-
-inline void cat(const char *x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, x, -1, y.chars(), y.length());
-}
-
-inline void cat(const char *x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, x, -1, y, -1);
-}
-
-inline void cat(const char *x, char y, String &r)
-{
-  r.rep = Scat(r.rep, x, -1, &y, 1);
-}
-
-inline void cat(const String &a, const String &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &a, const String &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &a, const String &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const String &a, const String &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const String &a, const SubString &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &a, const SubString &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const String &a, const SubString &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const String &a, const SubString &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const String &a, const char *x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x, -1, y.chars(), y.length());
-}
-
-inline void cat(const String &a, const char *x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x, -1, y.chars(), y.length());
-}
-
-inline void cat(const String &a, const char *x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x, -1, y, -1);
-}
-
-inline void cat(const String &a, const char *x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a.chars(), a.length(), x, -1, &y, 1);
-}
-
-
-inline void cat(const char *a, const String &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const char *a, const String &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const char *a, const String &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const char *a, const String &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const char *a, const SubString &x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const char *a, const SubString &x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y.chars(), y.length());
-}
-
-inline void cat(const char *a, const SubString &x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), y, -1);
-}
-
-inline void cat(const char *a, const SubString &x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x.chars(), x.length(), &y, 1);
-}
-
-inline void cat(const char *a, const char *x, const String &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x, -1, y.chars(), y.length());
-}
-
-inline void cat(const char *a, const char *x, const SubString &y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x, -1, y.chars(), y.length());
-}
-
-inline void cat(const char *a, const char *x, const char *y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x, -1, y, -1);
-}
-
-inline void cat(const char *a, const char *x, char y, String &r)
-{
-  r.rep = Scat(r.rep, a, -1, x, -1, &y, 1);
-}
-
-
 //#
 //# operator versions of cats
 //#
 
-inline void String::operator +=(const String &y)
-{
-  cat(*this, y, *this);
+inline void String::operator +=(const String &y) {
+  rep = Scat(rep, chars(), length(), y.chars(), y.length());
 }
 
-inline void String::operator +=(const SubString &y)
-{
-  cat(*this, y, *this);
+inline void String::operator +=(const SubString &y) {
+  rep = Scat(rep, chars(), length(), y.chars(), y.length());
 }
 
-inline void String::operator += (const char *y)
-{
-  cat(*this, y, *this);
+inline void String::operator += (const char *y) {
+  rep = Scat(rep, chars(), length(), y, -1);
 }
 
-inline void String:: operator +=(char y)
-{
-  cat(*this, y, *this);
+inline void String:: operator +=(char y) {
+  rep = Scat(rep, chars(), length(), &y, 1);
 }
 
 //#

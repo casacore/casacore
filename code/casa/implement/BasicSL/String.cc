@@ -1,5 +1,5 @@
 //# String.cc: String classes
-//# Copyright (C) 1992,1993,1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1992-1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -1377,7 +1377,7 @@ int SubString::OK() const
   return 1;
 }
 
-unsigned long String::hash() const {
+/* unsigned long String::hash() const {
     const char* p;
     unsigned long v = 0;
     char *s = rep->s;
@@ -1390,6 +1390,7 @@ unsigned long String::hash() const {
 
     return v ^ t;
 }
+*/
 
 // needed to get around the dual dependance of Strings and exceptions
 
@@ -1399,54 +1400,44 @@ void stringThrowError(const char *msg){
 
 // constructive concatenation
 
-String operator + (const String& x, const String& y)
-{
-  String r;  cat(x, y, r);  return r;
+String operator + (const String& x, const String& y) {
+  String r(x);  r += y;  return r;
 }
 
-String operator + (const String& x, const SubString& y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const String& x, const SubString& y)  {
+  String r(x); r += y; return r;
 }
 
-String operator + (const String& x, const char* y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const String& x, const char* y)  {
+  String r(x); r += y; return r;
 }
 
-String operator + (const String& x, char y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const String& x, char y)  {
+  String r(x); r += y; return r;
 }
 
-String operator + (const SubString& x, const String& y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const SubString& x, const String& y)  {
+  String r(x); r += y; return r;
 }
 
-String operator + (const SubString& x, const SubString& y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const SubString& x, const SubString& y)  {
+  String r(x); r += y; return r;
 }
 
-String operator + (const SubString& x, const char* y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const SubString& x, const char* y) {
+  String r(x); r += y; return r;
 }
 
-String operator + (const SubString& x, char y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const SubString& x, char y) {
+  String r(x); r += y; return r;
 }
 
-String operator + (const char* x, const String& y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const char* x, const String& y) {
+  String r(x); r += y; return r;
 }
 
-String operator + (const char* x, const SubString& y) 
-{
-  String r; cat(x, y, r); return r;
+String operator + (const char* x, const SubString& y) {
+  String r(x); r += y; return r;
 }
 
 String reverse(const String& x) 

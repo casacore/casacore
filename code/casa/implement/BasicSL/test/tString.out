@@ -8,8 +8,6 @@ n = 20 atoi(n) = 20 atof(n) = 20
 z = x + y = Helloworld
 x += y; x = Helloworld
 y.prepend(x); y = Helloworld
-cat(x, y, x, x); x = HelloworldHello
-cat(y, x, x, x); x = worldHelloHello
 z = x + s +  + y.at(w) + y.after(w) + . = Hello, world.
 ch = x[0] = H
 z = x.at(2, 3) = llo

@@ -1,5 +1,5 @@
 //# tString.cc: This program tests Strings
-//# Copyright (C) 1993,1994,1995,1997,1998,1999
+//# Copyright (C) 1993-1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -123,18 +123,6 @@ void cattest()
   y.prepend(x);
   cout << "y.prepend(x); y = " << y << "\n";
   assert(y == "Helloworld");
-
-  y = Y;
-  x = X;
-  cat(x, y, x, x);
-  cout << "cat(x, y, x, x); x = " << x << "\n";
-  assert(x == "HelloworldHello");
-
-  y = Y;
-  x = X;
-  cat(y, x, x, x);
-  cout << "cat(y, x, x, x); x = " << x << "\n";
-  assert(x == "worldHelloHello");
 
   x = X;
   y = Y;
@@ -414,7 +402,7 @@ void identitytest(String a, String b)
     assert(x.OK());
     assert(x == reverse(x));
     assert(x.index(y) == 0);
-    assert(x.index(y, -1) == x.length() / 2);
+    assert(x.index(y, -1) == Int(x.length() / 2));
   }
 }
 
@@ -428,7 +416,7 @@ void freqtest()
   assert(x.freq(y) == 1);	// SubString
 }
 
-void hashtest()
+/* void hashtest()
 {
   String *xp, a, x[] = {
    "Hello World",
@@ -450,6 +438,7 @@ void hashtest()
   //  cout << "hash() = " << a.hash() << "\n";
   
 }
+*/
 
 main()
 {
@@ -463,7 +452,7 @@ main()
   identitytest(X, X);
   identitytest(X, Y);
   identitytest(X+Y+N+X+Y+N, "A string that will be used in identitytest but is otherwise just another useless string.");
-  hashtest();
+  ///  hashtest();
   iotest();
   cout << "\nEnd of test\n";
   return(0);
