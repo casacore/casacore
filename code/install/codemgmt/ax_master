@@ -4541,3 +4541,4 @@
 14 296 src mv aips/implement/MeasurementSets/NewMSSourceEnums.h aips/implement/MeasurementSets/MSSourceEnums.h
 14 296 src mv aips/implement/MeasurementSets/NewMSSpectralWindow.cc aips/implement/MeasurementSets/MSSpectralWindow.cc
 14 296 src mv aips/implement/MeasurementSets/NewMSSpectralWindow.h aips/implement/MeasurementSets/MSSpectralWindow.h
+14 296 src mv aips/implement/MeasurementSets/NewMSSpWindowColumns.cc aips/implement/MeasurementSets/MSSpWindowColumns.cc
