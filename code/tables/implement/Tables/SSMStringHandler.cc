@@ -448,7 +448,9 @@ void SSMStringHandler::get (Array<String>& string, Int bucket, Int offset,
       // getdata, so you don't need to do it here again...
       getData (aL, aS,offset);
       // terminate string
+#ifdef USE_OLD_STRING
       aS[aL] = '\0';  
+#endif
     }
   }
   string.putStorage(aString,deleteIt);
