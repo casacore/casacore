@@ -238,7 +238,6 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     return False;
   };
   table = tab;
-  table.makePermanent();
   kws = ks;
   row = rw;
   for (Int i=0; i < N; i++)
