@@ -2615,3 +2615,4 @@
 11 386 src rm aips/implement/_ReposFiller/_ReposFiller.cc
 11 386 src rm aips/apps/ReposFiller/
 11 389 src mv trial/implement/MeasurementSet trial/implement/MeasurementSets
+11 389 src mv trial/implement/MeasurementSets trial/implement/MeasurementSet
