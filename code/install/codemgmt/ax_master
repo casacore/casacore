@@ -2425,3 +2425,4 @@
 11 235 src mv trial/implement/Images/ImageCoord.h trial/implement/Images/LELImageCoord.h
 11 235 src mv trial/implement/Images/ImageCoord.cc trial/implement/Images/LELImageCoord.cc
 11 237 src rm trial/apps/gplot1d
+11 237 src rm trial/apps/plotter/plotter.g
