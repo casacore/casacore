@@ -36,15 +36,16 @@
 
 //# Constants
 UnitVal UnitVal::NODIM(1.);
-UnitVal UnitVal::LENGTH(1.,UnitDim::Dm);
-UnitVal UnitVal::MASS(1.,UnitDim::Dkg);
-UnitVal UnitVal::TIME(1.,UnitDim::Ds);
-UnitVal UnitVal::CURRENT(1.,UnitDim::DA);
-UnitVal UnitVal::TEMPERATURE(1.,UnitDim::DK);
-UnitVal UnitVal::INTENSITY(1.,UnitDim::Dcd);
-UnitVal UnitVal::MOLAR(1.,UnitDim::Dmol);
-UnitVal UnitVal::ANGLE(1.,UnitDim::Drad);
-UnitVal UnitVal::SOLIDANGLE(1.,UnitDim::Dsr);
+UnitVal UnitVal::UNDIM(1., UnitDim::Dnon);
+UnitVal UnitVal::LENGTH(1., UnitDim::Dm);
+UnitVal UnitVal::MASS(1., UnitDim::Dkg);
+UnitVal UnitVal::TIME(1., UnitDim::Ds);
+UnitVal UnitVal::CURRENT(1., UnitDim::DA);
+UnitVal UnitVal::TEMPERATURE(1., UnitDim::DK);
+UnitVal UnitVal::INTENSITY(1., UnitDim::Dcd);
+UnitVal UnitVal::MOLAR(1., UnitDim::Dmol);
+UnitVal UnitVal::ANGLE(1., UnitDim::Drad);
+UnitVal UnitVal::SOLIDANGLE(1., UnitDim::Dsr);
 
 uShort UnitVal_init::count;
 
