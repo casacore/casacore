@@ -33,11 +33,9 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function.h>
+#include <scimath/Functionals/FuncExpression.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Forward declarations
-class FuncExpression;
 
 // <summary>
 // Parameters for a compiled string function object.
