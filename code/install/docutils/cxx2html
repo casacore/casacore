@@ -7,7 +7,7 @@
 #   This utility is part of AIPS++, a software project centered at
 #   the National Radio Astronomy Observatory.
 #
-#   Copyright (C) 1995,1997
+#   Copyright (C) 1995,1997,1998
 #   Associated Universities, Inc. Washington DC, USA.
 # 
 #   This program is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ while ($_ = @ARGV[0], (/^-/)) {
 	print STDERR "This is $PACKAGE Version $VERSION\PL$PATCHLEVEL\n";
 	print STDERR "Correspondence to $PACKAGE\@nrao.edu\n";
 	print STDERR "Created by Darrell Schiebel <drs\@nrao.edu>\n";
-	print STDERR "Copyright (C) 1995,1997 Associated Universities, Inc. Washington DC, USA.\n";
+	print STDERR "Copyright (C) 1995,1997,1998 Associated Universities, Inc. Washington DC, USA.\n";
 	next;
     }
 
@@ -297,6 +297,7 @@ sub commonpath {
 	$file = fullPath($file) if $file =~ /^\./;
 	($name,$path,$suffix) = fileparse($file,@FILE_EXTENSIONS);
 	$path = CachedCwd() . "/$path" if $path !~ /^\//;
+	$path =~ s/(?:\.|\.\/)$// if $path =~ /^\//;
 	$path =~ s/\.$// if $path =~ /^\//;
 	if ( scalar(@pathmatch) ) {
 	    if ( ! ($file = $$xxin{"long*$name"}) ) {
