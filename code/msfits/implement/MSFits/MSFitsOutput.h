@@ -80,7 +80,8 @@ private:
   // row of the FITS table.
   static Bool writeFQ(FitsOutput *output, const MeasurementSet& ms, 
 		      const Block<Int>& spwidMap, Int nrspw,
-		      Double refFreq, Int refPixelFreq, Bool combineSpw);
+		      Double refFreq, Int refPixelFreq, 
+		      Double chanbw, Bool combineSpw);
 
   // Write the AN table.
   static Bool writeAN(FitsOutput *output, const MeasurementSet& ms,
