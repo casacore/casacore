@@ -230,9 +230,18 @@ MIRLIBLIB  := -lmir
 # This sad state of affairs may arise, for example, when running multiple
 # versions of the Sun compiler.
 #
+ifeq "$(XLIBLIST_override)" ""
 XLIBSEL:=XLIBLIST
+else
+XLIBSEL:=XLIBLIST_override
+endif
+
+ifeq "$(XLIBLIST_shared_aips)" ""
 XLIBLIST_shared_aips:=GLISH X11 LAPACK F77
+endif
+ifeq "$(XLIBLIST_shared_trial)" ""
 XLIBLIST_shared_trial:=GLISH XmPGPLOT Motif X11 WCSLIB LAPACK F77
+endif
 
 ###
 ### You shouldn't need to modify any of the following four variables.
@@ -1041,28 +1050,28 @@ test_all : test_global show_local
 
 # Print/test all makedefs variables.
 show_global :
-	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "XLIBLIST=$(XLIBLIST)" global
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "$(XLIBSEL)=$($(XLIBSEL))" global
 
 test_global :
 	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 global
 
 # Print/test makedefs variables used in system rebuilds.
 show_sys :
-	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "XLIBLIST=$(XLIBLIST)" system
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "$(XLIBSEL)=$($(XLIBSEL))" system
 
 test_sys :
 	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 system
 
 # Print/test makedefs variables of particular interest to programmers.
 show_prg :
-	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "XLIBLIST=$(XLIBLIST)" programmer
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "$(XLIBSEL)=$($(XLIBSEL))" programmer
 
 test_prg :
 	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 programmer
 
 # Print/test auxiliary makedefs variables used in system rebuilds.
 show_aux :
-	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "XLIBLIST=$(XLIBLIST)" auxiliary
+	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=  "$(XLIBSEL)=$($(XLIBSEL))" auxiliary
 
 test_aux :
 	-@ $(MAKE) -f $(CODEINSD)/testdefs DO_TEST=1 auxiliary
