@@ -1,5 +1,5 @@
 //# NQFunctionWrapper.h: Construct function objects from C++ functions 
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,7 +123,7 @@ class NQFunctionWrapper : public NQWrapperParam<T> {
 
   //# Member functions
   // Get the dimensionality
-  virtual uInt ndim() const { return (doit_p ? doit_p->ndim() : 0); };
+  virtual uInt ndim() const;
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>

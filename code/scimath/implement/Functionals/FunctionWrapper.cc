@@ -1,5 +1,5 @@
 //# NQFunctionWrapper.cc:  Construct function objects from C++ functions 
-//# Copyright (C) 1995,1996,2001
+//# Copyright (C) 1995,1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -117,3 +117,7 @@ T NQFunctionWrapper<T>::eval(typename Function<T>::FunctionArg x) const {
 }
 
 //# Member functions
+template <class T>
+uInt NQFunctionWrapper<T>::ndim() const {
+  return (doit_p ? doit_p->ndim() : 0);
+}
