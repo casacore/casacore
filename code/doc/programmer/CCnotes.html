@@ -250,6 +250,11 @@ Double maxX = max(x, 1.0f)
 
 where x and x2 are MVuvw's
 </pre>
+<li> If you have an ImageInterface<T> and pass it as an argument to a
+method/function that expects a
+Lattice<T>, SubLattice<T>,  or MaskedLattice<T>, you will need to call
+the latticeCast member function.  The SGI compiler is too dumb to figure this
+out.
 </ul>
 
 
