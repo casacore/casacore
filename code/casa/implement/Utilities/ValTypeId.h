@@ -1,5 +1,5 @@
 //# ValType.h: The id-string of a value type
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@
 // </synopsis>
 
 
-template<class T> inline String valDataTypeId (const T* obj)
+template<class T> inline String valDataTypeId (const T*)
     { return T::dataTypeId(); }
 inline String valDataTypeId (const Bool* obj)
     { return ValType::getTypeStr (obj); }
@@ -76,6 +76,8 @@ inline String valDataTypeId (const Complex* obj)
 inline String valDataTypeId (const DComplex* obj)
     { return ValType::getTypeStr (obj); }
 inline String valDataTypeId (const String* obj)
+    { return ValType::getTypeStr (obj); }
+inline String valDataTypeId (const TableRecord* obj)
     { return ValType::getTypeStr (obj); }
 
 
