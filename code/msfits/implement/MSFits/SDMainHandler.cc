@@ -41,15 +41,15 @@
 #include <aips/Containers/Record.h>
 
 SDMainHandler::SDMainHandler() 
-    : ms_p(0), msCols_p(0), 
+    : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1), timeCentroidId_p(-1)
 {;}
 
 SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
     : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1), timeCentroidId_p(-1)
 {
     initAll(ms, handledCols, row);
 }
@@ -57,7 +57,7 @@ SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, cons
 SDMainHandler::SDMainHandler(const SDMainHandler &other) 
     : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
-      intervalId_p(-1), weightId_p(-1), flagId_p(-1)
+      intervalId_p(-1), weightId_p(-1), flagId_p(-1), timeCentroidId_p(-1)
 {
     *this = other;
 }
@@ -77,6 +77,7 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
 	intervalId_p = other.intervalId_p;
 	weightId_p = other.weightId_p;
 	flagId_p = other.flagId_p;
+	timeCentroidId_p = other.timeCentroidId_p;
     }
     return *this;
 }
@@ -121,7 +122,6 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	    msCols_p->interval().put(rownr, texp);
 	}
 	msCols_p->exposure().put(rownr, texp);
-	msCols_p->timeCentroid().put(rownr, msCols_p->time()(rownr));
 	Int scanNumber = -1;
 	if (scanNumberId_p >= 0) {
 	    switch (scanNumberType_p) {
@@ -165,6 +165,11 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	} else {
 	    msCols_p->flag().put(rownr, Matrix<Bool>(floatData.shape(), False));
 	}
+	if (timeCentroidId_p >= 0) {
+	    msCols_p->timeCentroid().put(rownr, row.asDouble(timeCentroidId_p));
+	} else {
+	    msCols_p->timeCentroid().put(rownr,msCols_p->time()(rownr));
+	}
 	IPosition emptyFlagCatShape(3,0);
 	emptyFlagCatShape(0) = ncorr;
 	emptyFlagCatShape(1) = floatData.ncolumn();
@@ -191,7 +196,7 @@ void SDMainHandler::clearAll()
 void SDMainHandler::clearRow()
 {
     scanNumberId_p = arrayIdId_p = sigmaId_p = flagRowId_p = intervalId_p = 
-	weightId_p = flagId_p = -1;
+	weightId_p = flagId_p = timeCentroidId_p = -1;
 }
 
 void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
@@ -224,6 +229,8 @@ void SDMainHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     if (weightId_p >= 0) handledCols(weightId_p) = True;
     flagId_p = row.fieldNumber("MAIN_FLAG");
     if (flagId_p >= 0) handledCols(flagId_p) = True;
+    timeCentroidId_p = row.fieldNumber("MAIN_TIME_CENTROID");
+    if (timeCentroidId_p >= 0) handledCols(timeCentroidId_p) = True;
 
     // RADECSYS is fully covered elsewhere, ignore it if it exists
     if (row.fieldNumber("RADECSYS") >= 0) handledCols(row.fieldNumber("RADECSYS")) = True;

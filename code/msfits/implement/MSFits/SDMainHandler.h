@@ -119,7 +119,8 @@ private:
     DataType scanNumberType_p;
 
     // fields from sdfits2ms, independent of MS version number so far
-    Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p;
+    Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p,
+		timeCentroidId_p;
 
     // cleanup everything
     void clearAll();
