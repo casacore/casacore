@@ -2878,3 +2878,4 @@
 12 001 src mv trial/implement/ComponentModels/tcomponentlist.g trial/implement/ComponentModels/test/tcomponentlist.g
 12 009 src rm doc/html/navpages/consortium.html
 12 009 src rm doc/html/navpages/images/aipsviewoff6.gif
+12 009 src rm doc/html/navpages/images/aipsviewon6.gif
