@@ -1661,7 +1661,8 @@ DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees,
    xform.diagonal() = 1.0;
    DirectionCoordinate dC(type, proj, crval(0), crval(1),
                           cdelt(0), cdelt(1),
-                          xform, crpix(0), crpix(1));
+                          xform, crpix(0), crpix(1), 999.0, 
+                          999.0);
 //
    if (unitsAreDegrees) {
       Vector<String> units(2);
