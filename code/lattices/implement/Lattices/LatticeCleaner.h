@@ -200,6 +200,7 @@ private:
   Vector<Float> itsScaleSizes;
 
   PtrBlock<TempLattice<T>* > itsScales;
+  PtrBlock<TempLattice<Complex>* > itsScaleXfrs;
   PtrBlock<TempLattice<T>* > itsPsfConvScales;
   PtrBlock<TempLattice<T>* > itsDirtyConvScales;
   PtrBlock<TempLattice<T>* > itsScaleMasks;
