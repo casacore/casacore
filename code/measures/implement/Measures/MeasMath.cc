@@ -269,6 +269,7 @@ void MeasMath::deapplyAberration(MVPosition &in) {
   in = MVPOS2;
   in.adjust();
 }
+
 void MeasMath::createAberrationB1950() {
   if (!ABERB1950) ABERB1950 = new Aberration(Aberration::B1950);
 }
