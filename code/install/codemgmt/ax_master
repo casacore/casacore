@@ -4710,3 +4710,4 @@
 14 304 src mv trial/apps/sditerator/sdaveragerDO.h trial/apps/oldsditerator/oldsdaveragerDO.h
 14 304 src mv trial/apps/sditerator/sdaveragerDO.cc trial/apps/oldsditerator/oldsdaveragerDO.cc
 14 304 src mv trial/apps/sditerator/sditerator.cc trial/apps/oldsditerator/oldsditerator.cc
+14 304 src mv trial/apps/sditerator/sditerator.g trial/apps/oldsditerator/oldsditerator.g
