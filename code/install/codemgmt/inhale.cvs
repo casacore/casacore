@@ -316,7 +316,7 @@
 
 # Now use CVS to update the code areas.
   cd $AIPSROOT
-  CVSROOT=`getrc inhale.cvsroot`
+  export CVSROOT=`getrc inhale.cvsroot`
   if [ ! "$CVSROOT" ]
   then
      export CVSROOT=`getrc inhale.cvsroot 2>/dev/null`
@@ -329,7 +329,7 @@
 									 
 # Check the files out into the code directory
 
-  cd $AIPROOT
+  cd $AIPSROOT
   cvs checkout $RELEASE -d code aips++/code
 
 
@@ -384,9 +384,9 @@
 #
 # OK here is where we put the binary extraction possibly gunzip/tar xf -
 #
-#    Determine what command to use for remote sneeze.  Default is rsh.
+#    Determine what command to use for remote sneeze.  Default is ssh.
      RCMD=`getrc -i inhale.sneeze.$INHOST.rcmd 2> /dev/null`
-     [ "$RCMD" = "" ] && RCMD=rsh
+     [ "$RCMD" = "" ] && RCMD=ssh
 
      echo ""
      TMP="$INHOST"
@@ -397,7 +397,7 @@
      if [ "$EXTLIST" != "" ]
      then
         EXTLIST="-e $EXTLIST"
-        AIPSEXT=`echo $EXTLIST | sed -e 's/:.*//'`
+        AIPSEXT=`echo "$EXTLIST" | sed -e 's/:.*//'`
      fi
      SNEEZE="sneeze $EXTLIST -l -m $MODE -s $SLEEPINV $TARGETS"
      $RCMD $INHOST -n $AIPSROOT/.rshexec $AIPSEXT \'$SNEEZE\' &
