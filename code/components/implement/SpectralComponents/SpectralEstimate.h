@@ -74,6 +74,8 @@ template <class T> class Vector;
 //	AMPL.exp[ -(x-CENTER)<sup>2</sup>/2 SIGMA<sup>2</sup>]
 // </srcblock>
 //
+// The parameter estimates are returned in units of zero-based
+// pixel indices.
 // </synopsis>
 //
 // <example>
@@ -113,17 +115,31 @@ class SpectralEstimate {
   // Copy constructor (deep copy)
   SpectralEstimate(const SpectralEstimate &other);
 
+  //#Destructor
+  // Destructor
+  ~SpectralEstimate();
+
   //# Operators
   // Assignment (copy semantics)
   SpectralEstimate &operator=(const SpectralEstimate &other);
 
   //# Member functions
   // Generate the estimates for a profile and return the 
-  // list found.  The der pointer is
-  // meant for debugging, and can return the derivative profile.
+  // list found.  The first function returns component parameters 
+  // in units of pixel indices. The second function calls the first
+  // and then converts to the specified abcissa space (the supplied 
+  // vector must be monotonic); if the center is out of range 
+  // of the abcissa vector the conversion is done via extrapolation.
+  // The der pointer is meant for debugging, and can return 
+  // the derivative profile.
+  // <group>
   template <class MT>
-    const SpectralList &estimate(const Vector<MT> &prof,
+    const SpectralList &estimate(const Vector<MT>& ordinate,
 				 Vector<MT> *der = 0);
+  template <class MT>
+    SpectralList estimate(const Vector<MT>& abcissa,
+                          const Vector<MT>& ordinate);
+  // </group>
 
   // Return the list found.
   const SpectralList &list() const {return slist_p; };
@@ -145,10 +161,6 @@ class SpectralEstimate {
   // Set the maximum number of estimates to find (forced to >=1; 200 default)
   void setMaxN(const uInt maxpar=MAXPAR);
   // </group>
-
-  //#Destructor
-  // Destructor
-  ~SpectralEstimate();
 
  private:
   //#Data
@@ -189,6 +201,11 @@ class SpectralEstimate {
   // Find the Gaussians
   template <class MT>
     void findga(const Vector<MT> &prof);
+  // Convert the parameters of the components in the list from 
+  // pixel-based indices to the given abcissa-vector space.
+  template <class MT>
+    SpectralList convertList (const Vector<MT>& abcissa,
+                              const SpectralList& list) const;
 };
 
 #endif

@@ -30,6 +30,8 @@
 
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Utilities/Assert.h>
+
 
 //# Member templates
 template <class MT>
@@ -55,6 +57,17 @@ const SpectralList &SpectralEstimate::estimate(const Vector<MT> &prof,
   findga(prof);
   return slist_p;
 }
+
+template <class MT>
+SpectralList SpectralEstimate::estimate(const Vector<MT>& x,
+                                        const Vector<MT>& y)
+{
+  // Get pixel-based estimate
+  const SpectralList& list = estimate(y);
+  // Convert
+  return convertList (x, list);
+}
+
 
 template <class MT>
 uInt SpectralEstimate::window(const Vector<MT> &prof) {
@@ -206,9 +219,82 @@ void SpectralEstimate::findga(const Vector<MT> &prof) {
   };
 }
 
+template <class MT>
+SpectralList SpectralEstimate::convertList (const Vector<MT>& x,
+                                            const SpectralList& list) const
+//
+// It's rather awkward that the X vector is of type <MT> whereas
+// all of the parameters in a SpectralElement are Double
+//
+{
+   const Int idxMax = x.nelements()-1;
+   const uInt n = list.nelements();
+   SpectralList listOut;
+   for (uInt i=0; i<n; i++) {
+      const SpectralElement& el = list[i];
+      AlwaysAssert(el.getType()==SpectralElement::GAUSSIAN, AipsError);
+      SpectralElement elOut(el);
+
+// Get current (pars are amp, center, width)
+
+      Vector<Double> par, err;
+      el.get(par);
+      el.getError(err);
+
+// Center
+
+      Int cenIdx = Int(par[1]);
+
+// Get the x-increment, local to the center, as best we can from 
+// the abcissa vector.  The following algorithm assumes the X
+// vector is monotonic
+
+      Double incX, x0(x[0]);
+      if (cenIdx-1<0) {
+         AlwaysAssert(idxMax>0, AipsError);
+         incX = x[1] - x[0];
+         x0 = x[0];
+      } else if (cenIdx+1>idxMax) {
+         AlwaysAssert(idxMax>0, AipsError);
+         incX = x[idxMax] - x[idxMax-1];
+         x0 = x[idxMax];
+      } else {
+         incX = 0.5 * (x(cenIdx+1) - x(cenIdx-1));  
+      }
+//
+      if (cenIdx<0) {
+         par[1] = incX*par[1] + x0;              // Extrapolate from x[0]
+      } else if (cenIdx>idxMax) {
+         par[1] = incX*(par[1]-idxMax) + x0;     // Extrapolate from x[idxMax]
+      } else {
+         Double dIdx = par[1] - cenIdx;
+         par[1] = x[cenIdx] + dIdx*incX;         // Interpolate
+      }
+      err[1] = abs(err[1] * incX);
+
+// Width
+
+      par[2] = abs(par[2] * incX);
+      err[2] = abs(err[2] * incX);
+
+// Set new
+
+      elOut.set(par);
+      elOut.setError(err);
+//
+      listOut.add(elOut);
+   }
+//
+   return listOut;
+}
+
+
+
+
 //# Cater for Float only
-template SpectralList const &
-SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> *);
+template SpectralList const & SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> *);
+template SpectralList SpectralEstimate::estimate<Float>(Vector<Float> const &, Vector<Float> const &);
+template SpectralList SpectralEstimate::convertList<Float>(Vector<Float> const &, SpectralList const &) const;
 template void SpectralEstimate::findga<Float>(Vector<Float> const &); 
 template uInt SpectralEstimate::window<Float>(Vector<Float> const &);
 template void SpectralEstimate::findc2<Float>(Vector<Float> const &); 
