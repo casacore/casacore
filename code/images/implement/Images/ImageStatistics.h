@@ -52,7 +52,7 @@ class CoordinateSystem;
 // </prerequisite>
 //
 // <etymology>
-// This is a class designed to retrieve and display statistics from images
+// This is a class designed to display and retrieve statistics from images
 // </etymology>
 //
 // <synopsis>
@@ -73,19 +73,19 @@ class CoordinateSystem;
 // helper function to convert between a <src>String</src> and a <src>Vector<Int></src> describing 
 // the desired statistics to plot.  An example is shown below.
 //
-// This class can list, plots and retrieve statistics.  When it lists statistics,
+// This class can list, plot and retrieve statistics.  When it lists statistics,
 // it always lists all the available statistics.  When you plot statistics,
 // you must specify which ones you would like to see.
 //
 // Note that this class cannot handle complex images yet.
 //
 // This class generates a "storage image" into which it writes the accumulated
-// statistical sums.  It is from this storage image that the listing and
-// plotting is drawn.  The dimension of the storage image is the number of
-// display axes (i.e. the axes not given as the cursor axes) plus 1.
-// The storage image is actually put in a PagedArray.  This is a disk based
-// storage medium.   The storage image is deleted when the ImageStatistics class 
-// object destructs.  
+// statistical sums.  It is from this storage image that the plotting and retrieval
+// arrays are drawn.  The storage image is actually put in a PagedArray.  This is a disk 
+// based storage medium.   The storage image is deleted when the ImageStatistics class 
+// object destructs.    However, currently, if the process is terminated ungracefully,
+// the storage image will be left over.  It has a name starting with the string
+// "Scratch_ImageStatistics_" and then a unique number. You can safely delete it.
 //
 // </synopsis>
 //

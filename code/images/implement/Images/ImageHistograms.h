@@ -68,6 +68,16 @@ class CoordinateSystem;
 // for each [x,y] location (display axes [0,1]).
 //
 // Currently complex images are not handled by this class.
+//
+// This class generates three "storage images" into which it writes the histograms,
+// and some statistical values.  It is from the histogram se storage image that the 
+// plotting and retrieval arrays are drawn.  The storage images are actually put in 
+// a PagedArray.  This is a disk based storage medium.   The storage images are deleted 
+// when the ImageHistograms class object destructs.    However, currently, if the process 
+// is terminated ungracefully, the storage images will be left over.  They have a name 
+// starting with the string Scratch_ImageHistograms_" and then a unique number. You can 
+// safely delete them in this case.
+//
 // </synopsis>
 //
 // <example>
@@ -279,7 +289,7 @@ private:
 
 // Find minimum and maximum for each cursor chunk
 // and fill minmax storage image
-   void findMinMax (RO_LatticeIterator<T>& imageIterator);
+   void findMinMax (RO_LatticeIterator<T>* imageIterator);
 
 // Iterate through the image and generate the histogram accumulation image
    void generateStorageImage();
