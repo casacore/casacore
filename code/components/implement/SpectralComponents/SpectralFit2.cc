@@ -28,11 +28,10 @@
 //# Includes
 #include <trial/SpectralComponents/SpectralFit.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Functionals/SumFunction.h>
-#include <aips/Functionals/Gaussian1D.h>
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Fitting/NonLinearFitLM.h>
-#include <trial/Functionals/FuncWithAutoDerivs.h>
+#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/NQPolynomial.h>
+#include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/SpectralComponents/SpectralElement.h>
 
 //# Templated member functions
@@ -41,28 +40,23 @@ Bool SpectralFit::fit(const Vector<MT> &y,
 		      const Vector<MT> &x,
 		      const Vector<Bool> *const mask) {
   // The fitter
-  NonLinearFitLM<MT> fitter;
+  LQNonLinearFitLM<MT> fitter;
   iter_p = 0;
   // The functions to fit
-// gcc 2.96 fails to compile the const version???
-//   const Gaussian1D<AutoDiff<MT> > gauss;
-//   const Polynomial<AutoDiff<MT> > poly;
-  Gaussian1D<AutoDiff<MT> > gauss;
-  Polynomial<AutoDiff<MT> > poly;
-  SumFunction<AutoDiff<MT>,AutoDiff<MT> > func;
-  Int npar(0);
+  NQGaussian1D<AutoDiff<MT> > gauss;
+  NQPolynomial<AutoDiff<MT> > poly;
+  NQCompoundFunction<AutoDiff<MT> > func;
+  uInt npar(0);
   for (uInt i=0; i<slist_p.nelements(); i++) {
     if (slist_p[i].getType() == SpectralElement::GAUSSIAN) {
       func.addFunction(gauss);
       npar += 3;
     } else if (slist_p[i].getType() == SpectralElement::POLYNOMIAL) {
       npar += slist_p[i].getDegree()+1;
-      const Polynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
+      const NQPolynomial<AutoDiff<MT> > poly(slist_p[i].getDegree());
       func.addFunction(poly);
     };
   };
-  FuncWithAutoDerivs<MT,MT> autoFunc(func);
-  fitter.setFunction(autoFunc);
   // Initial guess
   Vector<MT> v(npar);
   Vector<Bool> vb(npar);
@@ -83,8 +77,11 @@ Bool SpectralFit::fit(const Vector<MT> &y,
     };
   };
   // Force (as interim solution) all values in solution
-  fitter.setFullSolution(vb);
-  fitter.setFittedFuncParams(v);
+  for (uInt i=0; i<npar; ++i) {
+    func[i] = v[i];
+    func.mask(i) = vb[i];
+  };
+  fitter.setFunction(func);
   // Max. number of iterations
   fitter.setMaxIter(50+ slist_p.nelements()*10);
   // Convergence criterium
@@ -106,8 +103,8 @@ Bool SpectralFit::fit(const Vector<MT> &y,
     for (uInt k=0; k<slist_p[i].getOrder(); k++) {
       if (k==2 && slist_p[i].getType() == SpectralElement::GAUSSIAN) {
 	tmp(k) = sol(j) / SpectralElement::SigmaToFWHM;
-	terr(k) = err(j++) / SpectralElement::SigmaToFWHM;
-      } else {
+	terr(k) = err(j++)  / SpectralElement::SigmaToFWHM;
+      } else { /// Get rid of / above after changing element contents
 	tmp(k) = sol(j);
 	terr(k) = err(j++);
       };
