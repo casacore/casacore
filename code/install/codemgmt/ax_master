@@ -2259,3 +2259,32 @@
 11 173 src mv trial/apps/dish/dish.help trial/apps/dish/dishenv.help
 11 173 src mv trial/scripts/nrao.g nrao/scripts/nrao.g
 11 175 src rm aips/glish/glish/clients/glishtk/pgplot/pgplot.g
+11 184 src rm trial/implement/Display/test/tDisplay2.cc
+11 184 src rm trial/implement/Display/test/tDisplayEnums.cc
+11 184 src rm trial/implement/Display/test/tNBody.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasBasicDraw.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasCaching.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasColormaps.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasRGBHello.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasRubberBand.cc
+11 184 src rm trial/implement/Display/test/tPixelCanvasTranslation.cc
+11 184 src rm trial/implement/Display/test/tWCDrawImage.cc
+11 184 src rm trial/implement/Display/test/tWCDrawImage2.cc
+11 184 src rm trial/implement/Display/test/tWCNNResampleHandler.cc
+11 184 src rm trial/implement/Display/test/tWorldCanvasColormaps.cc
+11 184 src rm trial/implement/Display/test/tWorldCanvasHello.cc
+11 184 src rm trial/implement/Display/test/tDisplay2.exec
+11 184 src rm trial/implement/Display/test/tDisplayEnums.exec
+11 184 src rm trial/implement/Display/test/tNBody.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasBasicDraw.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasCaching.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasColormaps.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasRGBHello.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasRubberBand.exec
+11 184 src rm trial/implement/Display/test/tPixelCanvasTranslation.exec
+11 184 src rm trial/implement/Display/test/tWCDrawImage.exec
+11 184 src rm trial/implement/Display/test/tWCDrawImage2.exec
+11 184 src rm trial/implement/Display/test/tWCNNResampleHandler.exec
+11 184 src rm trial/implement/Display/test/tWorldCanvasColormaps.exec
+11 184 src rm trial/implement/Display/test/tWorldCanvasHello.exec
+11 184 src rm trial/implement/Display/test/templates
