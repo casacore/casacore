@@ -378,6 +378,14 @@ public:
   const ROMSColumns& msColumns() const
     { return msIter_p.msColumns();}
 
+  // get back the selected spectral windows 
+
+  void allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan);
+
+  // Convert the frequency from the observe frame to lsr frame.
+  
+  void lsrFrequency(const Int& spw, Vector<Double>& freq);
+
 protected:
   // advance the iteration
   void advance();
