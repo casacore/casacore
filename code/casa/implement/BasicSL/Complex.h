@@ -273,4 +273,14 @@ DComplex atan2(const DComplex &in, const DComplex &t2);
 Complex atan2(const Complex &in, const Complex &t2);
 // </group>
 
+// <summary> Error function </summary>
+// <group name=erf>
+// Preliminary to get Functionals working. erf(z) will return erf(real(z))
+// only for now.
+DComplex erf(const DComplex &in);
+Complex erf(const Complex &in);
+DComplex erfc(const DComplex &in);
+Complex erfc(const Complex &in);
+// </group>
+
 #endif

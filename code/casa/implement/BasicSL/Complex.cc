@@ -167,6 +167,19 @@ Complex atan2(const Complex &in, const Complex &t2) {
   if (real(t2) > 0) return z;
   return (z + Complex(C::pi));
 }
+/// Temporary solutions only
+DComplex erf(const DComplex &in) {
+  return erf(in.real());
+}
+Complex erf(const Complex &in) {
+  return erf(in.real());
+}
+DComplex erfc(const DComplex &in) {
+  return erfc(in.real());
+}
+Complex erfc(const Complex &in) {
+  return erfc(in.real());
+}
 
 /// Temporary for now, likely should go into templates (or in a macro
 // preferably in define.h)
