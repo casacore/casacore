@@ -41,6 +41,12 @@ PGPlotter::PGPlotter()
     // Nothing
 }
 
+PGPlotter::PGPlotter(PGPlotterInterface* worker)
+  : worker_p(worker)
+{
+    // Nothing
+}
+
 PGPlotter::PGPlotter (const String &device,
 		      uInt mincolors, uInt maxcolors,
 		      uInt sizex, uInt sizey)
