@@ -68,7 +68,7 @@ SDDataDescHandler &SDDataDescHandler::operator=(const SDDataDescHandler &other)
 		     NewMSDataDescription::columnName(NewMSDataDescription::POLARIZATION_ID));
 	msDataDesc_p = new NewMSDataDescription(*(other.msDataDesc_p));
 	AlwaysAssert(msDataDesc_p, AipsError);
-	msDataDescCols_p = new NewMSDataDescColumns(*(other.msDataDescCols_p));
+	msDataDescCols_p = new NewMSDataDescColumns(*msDataDesc_p);
 	AlwaysAssert(msDataDescCols_p, AipsError);
 	rownr_p = other.rownr_p;
     }
