@@ -33,6 +33,10 @@
 #include <aips/Exceptions/Error.h>
 
 
+TiledShape::TiledShape()
+: itsTileDefined (True)
+{}
+
 TiledShape::TiledShape (const IPosition& shape)
 : itsShape       (shape),
   itsTileDefined (False)

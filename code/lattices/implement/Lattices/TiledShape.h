@@ -1,5 +1,5 @@
 //# TiledShape.h: Define the shape and tile shape
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -96,6 +96,9 @@ template<class T> class Vector;
 class TiledShape
 {
 public:
+    // Default constructor has empty shape and tile shape.
+    TiledShape();
+
     // Use the given shape.
     // No tile shape is given, so function <src>tileShape</src>
     // will calculate it using the size of a tile.
