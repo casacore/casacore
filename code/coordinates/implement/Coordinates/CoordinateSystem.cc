@@ -30,6 +30,7 @@
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
+#include <trial/Coordinates/TabularCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
 
 
@@ -204,14 +205,14 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     found = False;
     for (uInt i=0; i<found.nelements(); i++) {
 	Int which = newWorldOrder(i);
-	AlwaysAssert(which >=0 && which < nw && !found[which], AipsError);
+	AlwaysAssert(which >=0 && uInt(which) < nw && !found[which], AipsError);
 	found[which] = True;
     }
     found.resize(np);
     found = False;
     for (i=0; i<found.nelements(); i++) {
 	Int which = newPixelOrder(i);
-	AlwaysAssert(which >=0 && which < np && !found[which], AipsError);
+	AlwaysAssert(which >=0 && uInt(which) < np && !found[which], AipsError);
 	found[which] = True;
     }
 
@@ -264,7 +265,7 @@ void CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
 
     for (uInt i=0; i<nc; i++) {
 	for (uInt j=0; j<world_maps_p[i]->nelements(); j++) {
-	    if (world_maps_p[i]->operator[](j) > axis) {
+	    if (world_maps_p[i]->operator[](j) > Int(axis)) {
 		world_maps_p[i]->operator[](j)--;
 	    }
 	}
@@ -284,7 +285,7 @@ void CoordinateSystem::removePixelAxis(uInt axis, Double replacement)
 
     for (uInt i=0; i<nc; i++) {
 	for (uInt j=0; j<pixel_maps_p[i]->nelements(); j++) {
-	    if (pixel_maps_p[i]->operator[](j) > axis) {
+	    if (pixel_maps_p[i]->operator[](j) > Int(axis)) {
 		pixel_maps_p[i]->operator[](j)--;
 	    }
 	}
@@ -378,6 +379,14 @@ const StokesCoordinate &CoordinateSystem::stokesCoordinate(uInt which) const
     return (const StokesCoordinate &)(*(coordinates_p[which]));
 }
 
+const TabularCoordinate &CoordinateSystem::tabularCoordinate(uInt which) const
+{
+    AlwaysAssert(which <= nCoordinates() && 
+		 coordinates_p[which]->type() == Coordinate::TABULAR, 
+		 AipsError);
+    return (const TabularCoordinate &)(*(coordinates_p[which]));
+}
+
 void CoordinateSystem::replaceCoordinate(
 			 const Coordinate &newCoordinate, uInt which)
 {
@@ -425,7 +434,7 @@ void CoordinateSystem::findWorldAxis(Int &coordinate, Int &axisInCoordinate,
     for (uInt i=0; i<nc; i++) {
 	const uInt na = world_maps_p[i]->nelements();
 	for (uInt j=0; j<na; j++) {
-	    if (world_maps_p[i]->operator[](j) == orig) {
+	    if (world_maps_p[i]->operator[](j) == Int(orig)) {
 		coordinate = i;
 		axisInCoordinate = j;
 		return;
@@ -447,7 +456,7 @@ void CoordinateSystem::findPixelAxis(Int &coordinate, Int &axisInCoordinate,
     for (uInt i=0; i<nc; i++) {
 	const uInt na = pixel_maps_p[i]->nelements();
 	for (uInt j=0; j<na; j++) {
-	    if (pixel_maps_p[i]->operator[](j) == orig) {
+	    if (pixel_maps_p[i]->operator[](j) == Int(orig)) {
 		coordinate = i;
 		axisInCoordinate = j;
 		return;
@@ -476,7 +485,7 @@ Vector<Int> CoordinateSystem::worldAxes(uInt whichCoord) const
     for (uInt i=0; i<naxes; i++) {
 	Int coord, axis;
 	findWorldAxis(coord, axis, i);
-	if (coord == whichCoord) {
+	if (coord == Int(whichCoord)) {
 	    retval(axis) = i;
 	}
     }
@@ -493,7 +502,7 @@ Vector<Int> CoordinateSystem::pixelAxes(uInt whichCoord) const
     for (uInt i=0; i<naxes; i++) {
 	Int coord, axis;
 	findPixelAxis(coord, axis, i);
-	if (coord == whichCoord) {
+	if (coord == Int(whichCoord)) {
 	    retval(axis) = i;
 	}
     }
@@ -869,13 +878,15 @@ Bool CoordinateSystem::save(RecordInterface &container,
     uInt nc = coordinates_p.nelements();
     for (uInt i=0; i<nc; i++)
     {
-	// Write eaach string into a field it's type plus coordinate number, e.g. direction0
+	// Write eaach string into a field it's type plus coordinate
+	// number, e.g. direction0
 	String basename = "unknown";
 	switch (coordinates_p[i]->type()) {
 	case Coordinate::LINEAR:    basename = "linear"; break;
 	case Coordinate::DIRECTION: basename = "direction"; break;
 	case Coordinate::SPECTRAL:  basename = "spectral"; break;
 	case Coordinate::STOKES:    basename = "stokes"; break;
+	case Coordinate::TABULAR:    basename = "tabular"; break;
 	case Coordinate::COORDSYS:  basename = "coordsys"; break;
 	}
 	ostrstream onum;
@@ -907,7 +918,6 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
     }
 
     Record subrec(container.asRecord(fieldName));
-    uInt nfields = subrec.nfields();
     PtrBlock<Coordinate *> tmp;
 
     Int nc = 0; // num coordinates
@@ -916,6 +926,7 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
     String direction = "direction";
     String spectral = "spectral";
     String stokes = "stokes";
+    String tabular = "tabular";
     String coordsys = "coordsys";
     while(1) {
 	ostrstream onum;
@@ -935,6 +946,9 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
 	} else if (subrec.isDefined(stokes + num)) {
 	    coords.resize(nc);
 	    coords[nc - 1] = StokesCoordinate::restore(subrec, stokes+num);
+	} else if (subrec.isDefined(tabular + num)) {
+	    coords.resize(nc);
+	    coords[nc - 1] = TabularCoordinate::restore(subrec, tabular+num);
 	} else if (subrec.isDefined(coordsys + num)) {
 	    coords.resize(nc);
 	    coords[nc - 1] = CoordinateSystem::restore(subrec, coordsys+num);
@@ -946,7 +960,7 @@ CoordinateSystem *CoordinateSystem::restore(const RecordInterface &container,
     nc = coords.nelements();
 
     retval = new CoordinateSystem;
-    for (uInt i=0; i<nc; i++) {
+    for (Int i=0; i<nc; i++) {
 	retval->addCoordinate(*(coords[i]));
 	delete coords[i];
 	coords[i] = 0;
@@ -992,9 +1006,23 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 {
     LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
+    // If we have any tabular axes that aren't pure linear report that the
+    // table will be lost.
+    Int tabCoord = -1;
+    while ((tabCoord = findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
+	if (tabularCoordinate(tabCoord).pixelValues().nelements() > 0) {
+	    os << LogIO::SEVERE <<
+		"Note: Your coordinate system has one or more TABULAR axes.\n"
+		"The lookup table will be lost in the conversion to FITS, and\n"
+		"will be replaced by averaged (i.e. linearized) axes." <<
+		LogIO::POST;
+	    break;
+	}
+    }
+
     // ********** Validation
 
-    const uInt n = nWorldAxes();
+    const Int n = nWorldAxes();
 
 
     String sprefix = prefix;
@@ -1028,7 +1056,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
     Int stokesAxis = -1;
 
-    for (uInt i=0; i<n ; i++) {
+    for (Int i=0; i<n ; i++) {
 	Int c, a;
 	coordsys.findWorldAxis(c, a, i);
 	if (c == skyCoord) {
@@ -1119,7 +1147,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 		break;
 	    default:
 		if (i == longAxis) {
-		    // Only pring the message once for long/lat
+		    // Only print the message once for long/lat
 		    os << LogIO::SEVERE << dc.projection().name() << 
 			" is not known to standard FITS (it is known to WCS)."
 		       << LogIO::POST;
@@ -1210,13 +1238,13 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
-    // If there are more world than pixel axes, we will need to add degenerate pixel
-    // axes and modify the shape. 
-    if (nPixelAxes() < n) {
+    // If there are more world than pixel axes, we will need to add
+    // degenerate pixel axes and modify the shape.
+    if (Int(nPixelAxes()) < n) {
 	IPosition shapetmp = shape; shape.resize(n);
 	Vector<Double> crpixtmp = crpix.copy(); crpix.resize(n);
 	Int count = 0;
-	for (uInt worldAxis=0; worldAxis<n; worldAxis++) {
+	for (Int worldAxis=0; worldAxis<n; worldAxis++) {
 	    Int coordinate, axisInCoordinate;
 	    coordsys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
 	    Int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
@@ -1233,12 +1261,36 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	}
     }
 
+    // Try to work out the epoch/equinox
+    if (skyCoord >= 0) {
+	MDirection::Types radecsys = 
+	    directionCoordinate(skyCoord).directionType();
+	Double equinox = -1.0;
+	switch(radecsys) {
+	case MDirection::J2000:
+	    equinox = 2000.0;
+	    break;
+	case MDirection::B1950:
+	    equinox = 1950.0;
+	    break;
+	default:
+	    ; // Nothing
+	}
+	if (equinox > 0) {
+	    if (writeWCS) {
+		header.define("equinox", equinox);
+	    } else {
+		header.define("epoch", equinox);
+	    }
+	}
+    }
+
     // Actually write the header
-    if (writeWCS && coordsys.nPixelAxes() == n) {
+    if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
 	header.define("pc", pc);
     } else if (writeWCS) {
-	os << LogIO::SEVERE << "writeWCS && nPixelAxes() != n. Requires development!!!"
-	   << LogIO::POST;
+	os << LogIO::SEVERE << "writeWCS && nPixelAxes() != n. Requires "
+	  "development!!!"  << LogIO::POST;
     }
 
     header.define(sprefix + "type", ctype);
@@ -1372,18 +1424,19 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	return False;
     } end_try;
 
-    const uInt n = ctype.nelements();
+    const Int n = ctype.nelements();
 
-    if (crval.nelements() != n || crpix.nelements() != n || 
-	cdelt.nelements() != n || pc.nrow() != n || pc.ncolumn() != n ||
-	(cunit.nelements() > 0 && cunit.nelements() != n)) {
+    if (Int(crval.nelements()) != n || Int(crpix.nelements()) != n || 
+	Int(cdelt.nelements()) != n || Int(pc.nrow()) != n || 
+	Int(pc.ncolumn()) != n ||
+	(cunit.nelements() > 0 && Int(cunit.nelements()) != n)) {
 	os << LogIO::SEVERE << "Inconsistent number of axes in header";
 	return False;
     }
 
     // OK, find out what standard axes we have.
     Int longAxis=-1, latAxis=-1, stokesAxis=-1, specAxis=-1;
-    for (uInt i=0; i<n; i++) {
+    for (Int i=0; i<n; i++) {
 	if (ctype(i).contains("RA") || ctype(i).contains("LON")) {
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
@@ -1401,7 +1454,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	} else if (ctype(i).contains("STOKES")) {
 	    stokesAxis = i;
 	} else if (ctype(i).contains("FREQ") || 
-		   ctype(i).contains("FELO")) {
+		   ctype(i).contains("FELO") ||
+		   ctype(i).contains("VELO")) {
 	    specAxis = i;
 	}
     }
@@ -1419,7 +1473,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
     // Sanity check that PC is only non-diagonal for the longitude and
     // latitude axes.
-    for (uInt j=0; j<n; j++) {
+    for (Int j=0; j<n; j++) {
 	for (i=0; i<n; i++) {
 	    if (i == j) {
 		continue;
@@ -1628,7 +1682,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	Vector<Double> lincrpix(nlin), lincdelt(nlin), lincrval(nlin);
 	Vector<String> linctype(nlin), lincunit(nlin);
 	Int where_i = 0;
-	for (uInt i=0; i<n; i++) {
+	for (Int i=0; i<n; i++) {
 	    if (i != longAxis && i != latAxis && i != stokesAxis &&
 		i != specAxis) {
 		lincrpix(where_i) = crpix(i);
@@ -1642,7 +1696,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    }
 	}
 	Int where_j = 0;
-	for (uInt j=0; j<n; j++) {
+	for (Int j=0; j<n; j++) {
 	    where_i = 0;
 	    if (j != longAxis && j != latAxis && j != stokesAxis &&
 		j != specAxis) {
