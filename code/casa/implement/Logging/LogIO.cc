@@ -79,6 +79,8 @@ void LogIO::post()
 	text_p = 0;
 	sink_p.post(msg_p);
     }
+    // Reset priority.
+    msg_p.priority(LogMessage::NORMAL);
 }
 
 void LogIO::postThenThrow()
@@ -86,8 +88,10 @@ void LogIO::postThenThrow()
     if (text_p == 0) {
 	output() << "Unknown error!";
     }
-
     msg_p.message(*text_p);
+    // Reset priority before the post, because that'll make a copy and
+    // thereafter throw an exception.
+    msg_p.priority(LogMessage::NORMAL);
     delete text_p;
     text_p = 0;
     sink_p.postThenThrow(msg_p);
