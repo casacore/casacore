@@ -64,31 +64,28 @@ template <class T> class ImageInterface;
 // A model of the sky brightness is defined by three properties.
 // <dl>
 // <dt><em>A Flux</em>
-// <dt> This is the integrated brightness of the component.
+// <dd> This is the integrated brightness of the component.
 // <dt><em>A Shape</em>
 // <dd> This defines how the sky brightness varies as a function of position on
 //      the sky. Currently two shapes are supported, 
 //      <linkto class=PointShape>points</linkto> and
 //      <linkto class=GaussianShape>Gaussians</linkto>.
 // <dt><em>A Spectrum</em>
-// <dd> This defines how the component flux varies as a function of frequency
+// <dd> This defines how the component flux varies as a function of frequency.
 //      Currently two spectral models are supported. The simplest assumes the
 //      spectrum is <linkto class=ConstantSpectrum>constant</linkto> with 
-//      frequency. Alternatively a
+//      frequency. Alternatively a 
 //      <linkto class=SpectralIndex>spectral index</linkto> model can be used. 
 // </dl>
 
 // These three properties of a component can be obtained using the
-// <src>flux</src>, <src>shape</src> or <src>spectrum</src>functions defined in
-// this interface. Each of these properties is represented by an object that
+// <src>flux</src>, <src>shape</src> or <src>spectrum</src> functions defined
+// in this interface. Each of these properties is represented by an object that
 // contains functions for manipulating the parameters associated with that
 // property. eg. to set the direction of the component you would use:
-// <srcblock>
-// SkyComponent comp;
-// comp.shape().setRefDirection(newDirection);
-// <srcblock>
-// See the <linkto class=Flux>Flux</linkto>, 
-// <linkto class=ComponentShape>ComponentShape</linkto> or
+// <srcblock> SkyComponent comp; comp.shape().setRefDirection(newDirection);
+// </srcblock> See the <linkto class=Flux>Flux</linkto>, 
+// <linkto class=ComponentShape>ComponentShape</linkto> or 
 // <linkto class=SpectralModel>SpectralModel</linkto> classes for more
 // information on these properties and how to manipulate them.
 
@@ -100,7 +97,7 @@ template <class T> class ImageInterface;
 // from the components. These functions are:
 // <dl>
 // <dt><src>sample</src>
-// <dt> This function will return the the flux in an specified pixel, at a
+// <dd> This function will return the the flux in an specified pixel, at a
 //      specified direction at a specified frequency.
 // <dt><src>project</src>
 // <dd> This function will generate an image of the component, given a user
