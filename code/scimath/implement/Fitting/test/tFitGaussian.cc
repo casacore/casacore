@@ -140,7 +140,7 @@ int main()
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
 
-
+/*
 
   cout << endl << "TEST 5:  3 Gaussians in 3 Dimensions" << endl;
 
@@ -182,7 +182,7 @@ int main()
 
   cout << "   Given Parameters:"; printparameters(components);
   cout << "Solution Parameters:"; printparameters(solution);
-
+*/
 
   return 0;
 }
