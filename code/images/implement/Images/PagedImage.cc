@@ -481,12 +481,11 @@ void PagedImage<T>::rename(const String& newName)
 template <class T> 
 String PagedImage<T>::name(const Bool stripPath) const 
 {
-   if (!stripPath) {
-      // Full path included
-      return table_p.tableName();
-   }
-   // Strip off path
    File file(table_p.tableName());
+//
+   if (!stripPath) {
+      return file.path().absoluteName();
+   } 
    return file.path().baseName();
 }
 
