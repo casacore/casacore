@@ -46,7 +46,7 @@ template <class T> class Vector;
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTwoSidedShape" demos="dGaussianShape">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tTwoSidedShape" demos="dTwoSidedShape">
 // </reviewed>
 
 // <prerequisite>
@@ -117,19 +117,18 @@ template <class T> class Vector;
 // In this example the printShape function prints out the type of model it is
 // working with, the reference direction of that model, the major-axis width,
 // minor-axis width and the position angle. This example is also available in
-// the <src>dGaussianShape.cc</src> file.
-
+// the <src>dTwoSidedShape.cc</src> file.
 // <srcblock>
 //  void printShape(const TwoSidedShape& theShape) {
 //    cout << "This is a " << ComponentType::name(theShape.type())
 //         << " shape " << endl 
 //         << "with a reference direction of "
-//         << theShape.refDirection() << endl
+//         << theShape.refDirection().getAngle("deg") << " ("
+//         << theShape.refDirection().getRefString() << ")" << endl
 //         << "and a major axis of " << theShape.majorAxis() << endl
-//         << "minor axis of " << theShape.minorAxis() << endl
-//         << "and position angle of " << theShape.positionAngle() << endl;
+//         << "      minor axis of " << theShape.minorAxis() << endl
+//         << "and   position angle of " << theShape.positionAngle() << endl;
 //  }
-//  
 // </srcblock>
 // </example>
 //
@@ -139,8 +138,8 @@ template <class T> class Vector;
 // functions by all derived classes.
 // </motivation>
 
-// <todo asof="1997/07/16">
-//   <li> Nothing so far
+// <todo asof="1999/110/12">
+//   <li> Use Measures & Quanta in the interface to the visibility functions.
 // </todo>
 
 // <linkfrom anchor="TwoSidedShape" classes="ComponentShape">

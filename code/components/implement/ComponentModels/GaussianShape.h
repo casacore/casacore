@@ -45,7 +45,7 @@ template <class T> class Vector;
 
 // <use visibility=export> 
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tDiskShape" demos="dDiskShape">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tDiskShape" demos="dTwoSidedShape">
 // </reviewed>
 
 // <prerequisite>
@@ -111,25 +111,27 @@ template <class T> class Vector;
 // </li>
 // Shown below is the code to perform the first step in this process, ie
 // construct the SkyComponent. This example is also available in the
-// <src>dGaussianShape.cc</src> file.  Note that it is more accurate to do
+// <src>dTwoSidedShape.cc</src> file.  Note that it is more accurate to do
 // subtraction of components in the (u,v) domain.
 // <srcblock>
-//  MDirection blob_dir;
-//  { // get the right direction into blob_dir
-//    Quantity blob_ra; MVAngle::read(blob_ra, "19:39:");
-//    Quantity blob_dec; MVAngle::read(blob_dec, "-63.43.");
-//    blob_dir = MDirection(blob_ra, blob_dec, MDirection::J2000);
-//  }
-//  {
-//    const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
-//    const GaussianShape shape(blob_dir,
-//		Quantity(30, "arcmin"), 
-//		Quantity(2000, "mas"), 
-//		Quantity(C::pi_2, "rad"));
-//    const ConstantSpectrum spectrum;
-//    SkyComponent component(flux, shape, spectrum);
-//    printShape(shape);
-//  }
+// { // Construct a Gaussian shape
+//   MDirection blob_dir;
+//   { // get the right direction into blob_dir
+//     Quantity blob_ra; MVAngle::read(blob_ra, "19:39:");
+//     Quantity blob_dec; MVAngle::read(blob_dec, "-63.43.");
+//     blob_dir = MDirection(blob_ra, blob_dec, MDirection::J2000);
+//   }
+//   {
+//     const Flux<Double> flux(6.28, 0.1, 0.15, 0.01);
+//     const GaussianShape shape(blob_dir,
+//                         Quantity(30, "arcmin"), 
+//                         Quantity(2000, "mas"), 
+//                         Quantity(C::pi_2, "rad"));
+//     const ConstantSpectrum spectrum;
+//     SkyComponent component(flux, shape, spectrum);
+//     printShape(shape);
+//   }
+// }
 // </srcblock>
 // The printShape function is the example shown for the TwoSidedShape class.
 // </example>
