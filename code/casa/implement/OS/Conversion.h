@@ -138,7 +138,7 @@ public:
     // Get a pointer to the memcpy function.
     static ByteFunction* getmemcpy();
 
-    // A placeholder for the ObjectCenter or DEC-alpha memcpy
+    // A placeholder for the ObjectCenter or DEC-alpha memcpy or 64bit SGI
     // (because they do not use an unsigned int for nbytes).
     static void* mymemcpy (void* to, const void* from, unsigned int nbytes);
 };
@@ -146,7 +146,7 @@ public:
 
 inline Conversion::ByteFunction* Conversion::getmemcpy()
 {
-#if defined(__CLCC__)  ||  defined(__alpha__)
+#if defined(__CLCC__)  ||  defined(__alpha__) ||  defined(SGI64)
     return mymemcpy;
 #else
     return memcpy;
