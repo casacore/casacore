@@ -6417,3 +6417,4 @@
 18 446 src mv doc/notes/releasePage7.html doc/notes/253.dir/releasePage7.html
 18 446 src mv doc/notes/releasePage8.html doc/notes/253.dir/releasePage8.html
 18 446 src mv doc/notes/253.latex doc/notes/253.dir/rev_devplan.latex
+18 452 src mv doc/recipes/General/General.latex doc/recipes/General/RGeneral.latex
