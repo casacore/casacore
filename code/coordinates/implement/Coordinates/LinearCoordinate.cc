@@ -180,7 +180,7 @@ Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
     Bool ok = ToBool(names.nelements() == nWorldAxes());
     if (! ok) {
-	set_error("Vector has the wrong size");
+	set_error("names vector has the wrong size");
     } else {
 	names_p = names;
     }
@@ -201,93 +201,12 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units,
     return ok;
 }
 
-void LinearCoordinate::checkFormat(Coordinate::formatType& format,
-                                   const Bool ) const
-//
-//
-{
-// Scientific or fixed formats only are allowed.
-// Absolute or offset is irrelevant
- 
-   if (format == Coordinate::DEFAULT) {
-      format = Coordinate::SCIENTIFIC;
-   } else {
-      if (format != Coordinate::SCIENTIFIC &&
-          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
-   }
-}
-
-void LinearCoordinate::getPrecision(Int& precision,
-                                    Coordinate::formatType& format,
-                                    const Bool absolute,
-                                    const Int defPrecScientific,
-                                    const Int defPrecFixed,
-                                    const Int ) const
-{
-// Scientific or fixed formats only are allowed.
-// Absolute or offset is irrelevant
- 
-   checkFormat (format, absolute);
-   
-   if (format == Coordinate::SCIENTIFIC) {
-      if (defPrecScientific >= 0) {
-         precision = defPrecScientific;
-      } else {
-         precision = 6;              
-      }
-   } else if (format == Coordinate::FIXED) {
-      if (defPrecFixed >= 0) {
-         precision = defPrecFixed;
-      } else {
-         precision = 6;
-      }
-   }
-}
-
-String LinearCoordinate::format(String& units,
-                                const Coordinate::formatType format,
-                                const Double worldValue,
-                                const uInt worldAxis,
-                                const Bool absolute,
-                                const Int precision) const
-{
-   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
- 
-// Check format
- 
-   Coordinate::formatType form = format;
-   checkFormat (form, absolute);
-   
-   
-// Set default precision
- 
-   Int prec = precision;
-   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
-       
-   
-// Format and get units
-         
-   ostrstream oss;
-   if (form == Coordinate::SCIENTIFIC) {
-      oss.setf(ios::scientific, ios::floatfield);
-      oss.precision(prec);
-      oss << worldValue;
-   } else if (form == Coordinate::FIXED) {
-      oss.setf(ios::fixed, ios::floatfield);
-      oss.precision(prec);
-      oss << worldValue;        
-   }                            
-   units = worldAxisUnits()(worldAxis);
- 
-   return String(oss);
-}
-
 
 Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
     Bool ok = ToBool(refPix.nelements() == nWorldAxes());
     if (! ok) {
-	set_error("Vector has the wrong size");
+	set_error("reference pixel vector has the wrong size");
     } else {
 	transform_p.crpix(refPix);
     }
@@ -300,7 +219,7 @@ Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &xform)
     Bool ok = ToBool(xform.nrow() == nWorldAxes() && 
 		     xform.ncolumn() == nWorldAxes() );
     if (! ok) {
-	set_error("Vector has the wrong size");
+	set_error("Transform matrix has the wrong size");
     } else {
 	transform_p.pc(xform);
     }
@@ -312,7 +231,7 @@ Bool LinearCoordinate::setIncrement(const Vector<Double> &inc)
 {
     Bool ok = ToBool(inc.nelements() == nWorldAxes());
     if (! ok) {
-	set_error("Vector has the wrong size");
+	set_error("increment vector has the wrong size");
     } else {
 	transform_p.cdelt(inc);
     }
@@ -324,7 +243,7 @@ Bool LinearCoordinate::setReferenceValue(const Vector<Double> &refval)
 {
     Bool ok = ToBool(refval.nelements() == nWorldAxes());
     if (! ok) {
-	set_error("Vector has the wrong size");
+	set_error("reference value vector has the wrong size");
     } else {
 	refval.toBlock(crval_p);
     }
@@ -508,3 +427,87 @@ Coordinate *LinearCoordinate::clone() const
 {
     return new LinearCoordinate(*this);
 }
+
+
+void LinearCoordinate::checkFormat(Coordinate::formatType& format,
+                                   const Bool ) const
+//
+//
+{
+// Scientific or fixed formats only are allowed.
+// Absolute or offset is irrelevant
+ 
+   if (format == Coordinate::DEFAULT) {
+      format = Coordinate::SCIENTIFIC;
+   } else {
+      if (format != Coordinate::SCIENTIFIC &&
+          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
+   }
+}
+
+void LinearCoordinate::getPrecision(Int& precision,
+                                    Coordinate::formatType& format,
+                                    const Bool absolute,
+                                    const Int defPrecScientific,
+                                    const Int defPrecFixed,
+                                    const Int ) const
+{
+// Scientific or fixed formats only are allowed.
+// Absolute or offset is irrelevant
+ 
+   checkFormat (format, absolute);
+   
+   if (format == Coordinate::SCIENTIFIC) {
+      if (defPrecScientific >= 0) {
+         precision = defPrecScientific;
+      } else {
+         precision = 6;              
+      }
+   } else if (format == Coordinate::FIXED) {
+      if (defPrecFixed >= 0) {
+         precision = defPrecFixed;
+      } else {
+         precision = 6;
+      }
+   }
+}
+
+String LinearCoordinate::format(String& units,
+                                const Coordinate::formatType format,
+                                const Double worldValue,
+                                const uInt worldAxis,
+                                const Bool absolute,
+                                const Int precision) const
+{
+   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+ 
+// Check format
+ 
+   Coordinate::formatType form = format;
+   checkFormat (form, absolute);
+   
+   
+// Set default precision
+ 
+   Int prec = precision;
+   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+       
+   
+// Format and get units
+         
+   ostrstream oss;
+   if (form == Coordinate::SCIENTIFIC) {
+      oss.setf(ios::scientific, ios::floatfield);
+      oss.precision(prec);
+      oss << worldValue;
+   } else if (form == Coordinate::FIXED) {
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(prec);
+      oss << worldValue;        
+   }                            
+   units = worldAxisUnits()(worldAxis);
+ 
+   return String(oss);
+}
+
+
