@@ -1,6 +1,6 @@
 /*
     TableGram.y: Parser for table commands
-    Copyright (C) 1994,1995,1997,1998,1999,2001
+    Copyright (C) 1994,1995,1997,1998,1999,2001,2002
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -548,10 +548,11 @@ subscripts: subscripts COMMA subsrange {
 subsrange: arithexpr {
                $$ = new TableExprNodeSetElem (*$1);
 	       delete $1;
-            }
+           }
          | colonrange {
                $$ = $1;
-	 }
+	   }
+         ;
 
 colonrange: arithexpr COLON arithexpr {
                $$ = new TableExprNodeSetElem ($1, $3, 0);
