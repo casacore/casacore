@@ -213,7 +213,7 @@ EOT
 
 # Check that this script is being run from the right account.
   LOGNAME=${LOGNAME-$USER}
-  AIPS2MGR=`ls -ld $AIPSROOT | awk '{ print $3 }'`
+  AIPS2MGR=`ls -ld $AIPSROOT/ | awk '{ print $3 }'`
   if [ "$AIPS2MGR" != "$LOGNAME" ]
   then
      echo ""
