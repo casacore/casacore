@@ -45,7 +45,7 @@ class String;
 template<class T> class ImageInterface;
 template<class T> class Quantum;
 template<class T> class Vector;
-//class Complex;
+// class DComplex;
 
 // <summary>A component of a model of the sky</summary>
 
@@ -130,22 +130,22 @@ public:
   // image (ie. spectral axes).
   virtual void project(ImageInterface<Float> & plane) const;
 
-//   virtual void visibilityLinear(Vector<DComplex> & vis, 
-// 				const Vector<Double> & uvw,
-// 				const Double & frequency) const;
-//   virtual void visibilityCircular(Vector<DComplex> & vis, 
-// 				  const Vector<Double> & uvw,
-// 				  const Double & frequency) const;
+  virtual void visibilityLinear(Vector<DComplex> & vis, 
+  				const Vector<Double> & uvw,
+  				const Double & frequency) const;
+  virtual void visibilityCircular(Vector<DComplex> & vis, 
+  				  const Vector<Double> & uvw,
+  				  const Double & frequency) const;
   // set/get the integrated flux of the component. The Vector specifies all the
   // polarizations of the radiation. The units must be something has the same
   // dimensions as Jansky's.
   // <group>
   virtual void setFlux(const Quantum<Vector<Double> > & newFlux) = 0;
   virtual void flux(Quantum<Vector<Double> > & compflux) const = 0;
-//  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compFlux);
-//   virtual void fluxCircular(Quantum<Vector<DComplex> > & compFlux) const;
-//   virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compFlux);
-//   virtual void fluxLinear(Quantum<Vector<DComplex> > & compFlux) const;
+  virtual void setFluxCircular(const Quantum<Vector<DComplex> > & compFlux);
+  virtual void fluxCircular(Quantum<Vector<DComplex> > & compFlux) const;
+  virtual void setFluxLinear(const Quantum<Vector<DComplex> > & compFlux);
+  virtual void fluxLinear(Quantum<Vector<DComplex> > & compFlux) const;
   // </group>
 
   // set/get the direction (usually the centre) of the component.
