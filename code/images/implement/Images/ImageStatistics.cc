@@ -429,15 +429,9 @@ Bool ImageStatistics<T>::display()
    }
 
 
-// Sizes of axis coordinate arrays
-
-   Int nStatsAxes = cursorAxes_p.nelements();
-   Int nDisplayAxes = displayAxes_p.nelements();
-
-    
 // Size of plotting abcissa axis
 
-   Int n1 = pStoreImage_p->shape()(0);
+   const Int n1 = pStoreImage_p->shape()(0);
 
 
 // Allocate ordinate arrays for plotting and listing
@@ -461,10 +455,10 @@ Bool ImageStatistics<T>::display()
  
       Matrix<Double> matrix(pixelIterator.matrixCursor());
       for (Int i=0; i<n1; i++) {
-         Int nPts = Int(matrix(i,NPTS)+0.1);
+         const Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
             ord(i,MEAN) = matrix(i,SUM) / matrix(i,NPTS);
-            Double tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
+            const Double tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
                          (matrix(i,NPTS)-1);
             if (tmp > 0.0) {
                ord(i,SIGMA) = sqrt(tmp);
@@ -525,7 +519,7 @@ Bool ImageStatistics<T>::getNPts(Array<T>& stats)
 // Retrieve storage array statistic
 
    Array<Double> slice;
-   if (retrieveStorageStatistic (slice, Int(NPTS))) copyArray (stats, slice);
+   if (retrieveStorageStatistic (slice, Int(NPTS))) copyArray(stats, slice);
 
    return True;
 }
@@ -744,7 +738,7 @@ void ImageStatistics<T>::accumulate (Int& nIter,
    Double sumsq = 0;
    Double tmp;
    Int nPts = 0;
-   Int n1 = posIt.vector().nelements();
+   const Int n1 = posIt.vector().nelements();
    Int i;
 
 
@@ -807,21 +801,17 @@ void ImageStatistics<T>::accumulate (Int& nIter,
 
 // Extract statistics slice
 
-   IPosition start(pStoreImage_p->ndim());
-   Int lastAxis = pStoreImage_p->ndim() - 1;
-   for (i=0; i<lastAxis; i++) start(i) = cursorPos(displayAxes_p(i));
-   start(lastAxis) = 0;
-
-   IPosition shape(pStoreImage_p->ndim(),1);
-   shape(lastAxis) = NACCUM;
+   const IPosition start = locInStats(cursorPos);
+   const IPosition shape = statsSliceShape();
    Array<Double> slice(shape);
    pStoreImage_p->getSlice(slice, start, shape, 
                            IPosition(pStoreImage_p->ndim(),1));
 
 // Update slice
 
-   IPosition pos(start);
-   pos = 0;
+   IPosition pos(start.nelements(),0);
+   const Int lastAxis = pStoreImage_p->ndim() - 1;
+
    pos(lastAxis) = NPTS;
    slice(pos) += nPts;
 
@@ -921,7 +911,7 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
    Array<Double> nPts;
    retrieveStorageStatistic (nPts, Int(NPTS));
    ReadOnlyVectorIterator<Double> nPtsIt(nPts);
-   Int n1 = nPtsIt.vector().nelements();
+   const Int n1 = nPtsIt.vector().nelements();
 
 // Setup
 
@@ -995,7 +985,7 @@ void ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
 template <class T>
 void ImageStatistics<T>::copyArray (Array<T>&outSlice, const Array<Double>& inSlice)
 //
-// Copy the values in the cursor to the output array
+// Copy the values in the input array to the output array
 //
 {
 
@@ -1018,7 +1008,7 @@ void ImageStatistics<T>::copyArray (Array<T>&outSlice, const Array<Double>& inSl
 
       ReadOnlyVectorIterator<Double> inSliceIt(inSlice);
       VectorIterator<T> outSliceIt(outSlice);
-      Int n1 = inSliceIt.vector().nelements();
+      const Int n1 = inSliceIt.vector().nelements();
       Int i;
 
 // Iterate and copy
@@ -1051,7 +1041,7 @@ Bool ImageStatistics<T>::findNextDatum (Int& iFound,
 //
 // Inputs:
 //  n        Number of points in array
-//  pn       Pointer to array
+//  pn       Pointer to array containing counts
 //  iStart   The index of the first point to consider
 //  findGood If True look for next good point.  
 //           If False look for next bad point
@@ -1139,7 +1129,7 @@ void ImageStatistics<T>::generateStorageImage()
 
 // The storage image is accessed by vectors along the last axis (when filling),
 // the first axis (when plotting and listing) and N-1D slices (when retrieving
-// statistics for the user).  However, the  latter will be usdd less often than
+// statistics for the user).  However, the  latter will be used less often than
 // the rest so optimize the tile shape ignoring it. Since the tile
 // size is small on the last axis, this won't impose much of a penalty when
 // accessing by first axis slices
@@ -1252,7 +1242,7 @@ typedef Matrix<Float> gpp_MatrixFloat;
 template <class T>
 void ImageStatistics<T>::listStats (const IPosition& dPos,
                                     const Int& n1,
-                                    const gpp_MatrixFloat& ord)
+                                    const gpp_MatrixFloat& stats)
 //
 // List the statistics for this line to the standard output
 //
@@ -1260,7 +1250,7 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 //   dPos    The location of the start of the cursor in the
 //           storage image for this line 
 //   n1      Number of points to list for each statistic
-//   ord     Ordinate matrix
+//   stats   Statistics matrix
 // Outputs:
 //   Bool    Indicates coordinate transformations failed
 //
@@ -1270,19 +1260,19 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 
 // Get number of statistics and display axes
 
-   Int nDisplayAxes = displayAxes_p.nelements();
-   Int nStatsAxes = cursorAxes_p.nelements();
+   const Int nDisplayAxes = displayAxes_p.nelements();
+   const Int nStatsAxes = cursorAxes_p.nelements();
 
 // Set up the manipulators. We list the number of points as an integer so find
 // out how big the field width needs to be.  Min of 6 so label fits.
 
    Int nMax = 0;
-   for (Int j=0; j<n1; j++) nMax = max(nMax, Int(ord.column(NPTS)(j)+0.1));
-   Int logNMax = Int(log10(nMax)) + 2;
-   Int oIWidth = max(5, logNMax);
-   Int oDWidth = 15;
-   Int oSWidth = 7;
-   Int oPrec = 6;
+   for (Int j=0; j<n1; j++) nMax = max(nMax, Int(stats.column(NPTS)(j)+0.1));
+   const Int logNMax = Int(log10(nMax)) + 2;
+   const Int oIWidth = max(5, logNMax);
+   const Int oDWidth = 15;
+   const Int oSWidth = 7;
+   const Int oPrec = 6;
 
 
 // Have to convert LogIO object to ostream before can apply
@@ -1337,7 +1327,7 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 // column 2) non numerically (e.g. I or Q).  Thus we must find this out and
 // set the width of the field appropriately
 
-   CoordinateSystem cSys = pInImage_p->coordinates();
+   const CoordinateSystem cSys = pInImage_p->coordinates();
    Int coord, axisInCoordinate;
    cSys.findPixelAxis (coord, axisInCoordinate, displayAxes_p(0));
    Int width2;
@@ -1377,15 +1367,15 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
    for (j=0; j<n1; j++) {
       os_p.output() << setw(len0)     << j+1;
       os_p.output() << setw(width2)   << sWorld(j);
-      os_p.output() << setw(oIWidth)   << Int(ord.column(NPTS)(j)+0.1);
+      os_p.output() << setw(oIWidth)   << Int(stats.column(NPTS)(j)+0.1);
 
-      if (Int(ord.column(NPTS)(j)+0.1) > 0) {
-         os_p.output() << setw(oDWidth)   << ord.column(SUM)(j);
-         os_p.output() << setw(oDWidth)   << ord.column(MEAN)(j);
-         os_p.output() << setw(oDWidth)   << ord.column(RMS)(j);
-         os_p.output() << setw(oDWidth)   << ord.column(SIGMA)(j);
-         os_p.output() << setw(oDWidth)   << ord.column(MIN)(j);
-         os_p.output() << setw(oDWidth)   << ord.column(MAX)(j);
+      if (Int(stats.column(NPTS)(j)+0.1) > 0) {
+         os_p.output() << setw(oDWidth)   << stats.column(SUM)(j);
+         os_p.output() << setw(oDWidth)   << stats.column(MEAN)(j);
+         os_p.output() << setw(oDWidth)   << stats.column(RMS)(j);
+         os_p.output() << setw(oDWidth)   << stats.column(SIGMA)(j);
+         os_p.output() << setw(oDWidth)   << stats.column(MIN)(j);
+         os_p.output() << setw(oDWidth)   << stats.column(MAX)(j);
       }
       os_p << endl;
    }
@@ -1394,9 +1384,24 @@ void ImageStatistics<T>::listStats (const IPosition& dPos,
 
 
 template <class T>
+inline IPosition ImageStatistics<T>::locInStats(const IPosition& imageCursorPos)
+//
+// Given a location in the input image, find the start location for a
+// statistics slice in the statsitics storage image
+//
+{  
+   IPosition pos(pStoreImage_p->ndim(),0);
+   for (Int j=0; j<pStoreImage_p->ndim()-1; j++) 
+     pos(j) = imageCursorPos(displayAxes_p(j));
+
+   return pos;
+}
+
+
+template <class T>
 Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
                                     const Int& n1,
-                                    const Matrix<Float>& ord)
+                                    const Matrix<Float>& stats)
 //
 // Plot the desired statistics.  
 //
@@ -1404,21 +1409,21 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 //   dPos    The location of the start of the cursor in the 
 //           storage image for this line 
 //   n1      Number of points
-//   ord     Ordinate matrix
+//   stats   Statistics matrix
 //
 {
 
 
 // Work out what we are plotting
 
-   Bool doMean  = Bool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
-   Bool doSigma = Bool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
-   Bool doRms   = Bool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
-   Bool doSum   = Bool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
-   Bool doSumSq = Bool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
-   Bool doMin   = Bool(ImageUtilities::inVector(Int(MIN), statsToPlot_p) != -1);
-   Bool doMax   = Bool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
-   Bool doNPts  = Bool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
+   const Bool doMean  = Bool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
+   const Bool doSigma = Bool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
+   const Bool doRms   = Bool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
+   const Bool doSum   = Bool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
+   const Bool doSumSq = Bool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
+   const Bool doMin   = Bool(ImageUtilities::inVector(Int(MIN), statsToPlot_p) != -1);
+   const Bool doMax   = Bool(ImageUtilities::inVector(Int(MAX), statsToPlot_p) != -1);
+   const Bool doNPts  = Bool(ImageUtilities::inVector(Int(NPTS), statsToPlot_p) != -1);
 
    Bool none;
    Bool first = True;
@@ -1435,18 +1440,18 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
    Float yMin, yMax, xMin, xMax, yLMin, yLMax, yRMin, yRMax;
 
-   minMax(none, xMin, xMax, abc, ord.column(NPTS), n1);
+   minMax(none, xMin, xMax, abc, stats.column(NPTS), n1);
    if (none) return True;
 
 // Left hand y axis
 
    if (doMean) {
-      minMax(none, yLMin, yLMax, ord.column(MEAN), ord.column(NPTS), n1);
+      minMax(none, yLMin, yLMax, stats.column(MEAN), stats.column(NPTS), n1);
       first = False;
       nL++;
    }
    if (doSum) {
-      minMax(none, yMin, yMax, ord.column(SUM), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(SUM), stats.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1458,7 +1463,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       nL++;
    }
    if (doSumSq) {
-      minMax(none, yMin, yMax, ord.column(SUMSQ), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(SUMSQ), stats.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1470,7 +1475,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       nL++;
    }
    if (doMin) {
-      minMax(none, yMin, yMax, ord.column(MIN), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(MIN), stats.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1482,7 +1487,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       nL++;
    }
    if (doMax) {
-      minMax(none, yMin, yMax, ord.column(MAX), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(MAX), stats.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1494,7 +1499,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       nL++;
    }
    if (doNPts) {
-      minMax(none, yMin, yMax, ord.column(NPTS), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(NPTS), stats.column(NPTS), n1);
       if (first) {
          yLMin = yMin;
          yLMax = yMax;
@@ -1511,12 +1516,12 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
    first = True;
    if (doSigma) {
-      minMax(none, yRMin, yRMax, ord.column(SIGMA), ord.column(NPTS), n1);
+      minMax(none, yRMin, yRMax, stats.column(SIGMA), stats.column(NPTS), n1);
       first = False;
       nR++;
    }
    if (doRms) {
-      minMax(none, yMin, yMax, ord.column(RMS), ord.column(NPTS), n1);
+      minMax(none, yMin, yMax, stats.column(RMS), stats.column(NPTS), n1);
       if (first) {
          yRMin = yMin;
          yRMax = yMax;
@@ -1605,7 +1610,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot ( n1, abc, ord.column(MEAN), ord.column(NPTS));
+         multiPlot ( n1, abc, stats.column(MEAN), stats.column(NPTS));
       }
       if (doSum) {
          if (++ls > 5) ls = 1;
@@ -1614,7 +1619,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1, abc, ord.column(SUM), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(SUM), stats.column(NPTS));
       }
       if (doSumSq) {
          if (++ls > 5) ls = 1;
@@ -1623,7 +1628,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1, abc, ord.column(SUMSQ), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(SUMSQ), stats.column(NPTS));
       }
       if (doMin) {
          if (++ls > 5) ls = 1;
@@ -1632,7 +1637,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1, abc, ord.column(MIN), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(MIN), stats.column(NPTS));
       }
       if (doMax) {
          if (++ls > 5) ls = 1;
@@ -1641,7 +1646,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1, abc, ord.column(MAX), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(MAX), stats.column(NPTS));
       }
       if (doNPts) {
          if (++ls > 5) ls = 1;
@@ -1650,7 +1655,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          lCols(++i) = niceColour (initColours);
          cpgsci (lCols(i));
 
-         multiPlot (n1, abc, ord.column(NPTS), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(NPTS), stats.column(NPTS));
       }
 
 // Y label
@@ -1679,7 +1684,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          rCols(++i) = niceColour (initColours);
          cpgsci (rCols(i));
 
-         multiPlot (n1, abc, ord.column(SIGMA), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(SIGMA), stats.column(NPTS));
       }
       if (doRms) {
          if (++ls > 5) ls = 1;
@@ -1688,7 +1693,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          rCols(++i) = niceColour (initColours);
          cpgsci (rCols(i));
 
-         multiPlot (n1, abc, ord.column(RMS), ord.column(NPTS));
+         multiPlot (n1, abc, stats.column(RMS), stats.column(NPTS));
       }
 
 // Y label
@@ -1853,10 +1858,11 @@ void ImageStatistics<T>::multiPlot (const Int& n1,
 
    for (Int i=0; i<nSeg; i++) {
       Int ip = start(i);
-      if (nPts(i) == 1) 
+      if (nPts(i) == 1) {
          cpgpt (1, &px[ip], &py[ip], 1);
-      else
+      } else {
          cpgline (nPts(i), &px[ip], &py[ip]);
+      }
    }
 
 // Delete memory
@@ -1959,7 +1965,7 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
 //               for the pixel axis
 //    
 {
-   Int n1 = pixel.nelements();
+   const Int n1 = pixel.nelements();
    sWorld.resize(n1);
    
 // Get coordinate system.
@@ -1994,7 +2000,7 @@ void ImageStatistics<T>::pix2World (Vector<String>& sWorld,
 
 // Find the world axis for this pixel axis
          
-   Int worldAxis = pixelAxisToWorldAxis (cSys, pixelAxis);
+   const Int worldAxis = pixelAxisToWorldAxis (cSys, pixelAxis);
  
 
 // Find coordinate for this pixel axis
@@ -2098,7 +2104,7 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const In
 
 // Resize output array to nothing first
 
-      slice.resize(IPosition(0,0));
+    slice.resize(IPosition(0,0));
 
 
 // Generate storage image if required
@@ -2108,29 +2114,42 @@ Bool ImageStatistics<T>::retrieveStorageStatistic(Array<Double>& slice, const In
 
 // Were there some good points ?  
 
-   Int nDim = pStoreImage_p->ndim();
+   const Int nDim = pStoreImage_p->ndim();
    if (someGoodPoints()) {
+
 
 // Get desired statistic slice. Discard degenerate axes (requires
 // empty array on input)
 
-      Int lastAxis = nDim - 1 ;
-
-      IPosition stride(nDim,1);
       IPosition sliceShape(pStoreImage_p->shape());
-      sliceShape(lastAxis) = 1;
+      sliceShape(nDim-1) = 1;
 
-      IPosition blc(nDim,0);
-      blc(lastAxis) = ISTAT;
+      IPosition pos(nDim,0);
+      pos(nDim-1) = ISTAT;
 
-      slice.resize(IPosition(0,0));
-      pStoreImage_p->getSlice(slice, blc, sliceShape, stride, True);
+      pStoreImage_p->getSlice(slice, pos, sliceShape, 
+                              IPosition(nDim,1), True);
       return True;
    } else {
       return False;
    }
 
 }
+
+
+template <class T>
+inline IPosition ImageStatistics<T>::statsSliceShape ()
+// 
+// Return the shape of a slice from the statistics storage
+// image for a single spatial location.  The last axis
+// is the statistics axis
+{
+   IPosition shape(pStoreImage_p->ndim(),1);
+   shape(pStoreImage_p->ndim()-1) = 
+      pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
+   return shape;
+}
+
 
 
 template <class T>
@@ -2152,18 +2171,14 @@ Bool ImageStatistics<T>::someGoodPoints ()
 // If storage image only 1D take cheap way out. Can't invoke
 // retrieveStorageStatistic or we will be stuck in a time loop
 
+         const IPosition shape = statsSliceShape();
+         Array<Double> stats(shape);
+         IPosition pos(1,0);
 
-         IPosition stride(1,1);
-         IPosition sliceShape(1,1);
-         Array<Double> nPts;
-         nPts.resize(sliceShape);
-
-         IPosition blc(1,0);
-         blc(0) = NPTS;
-         pStoreImage_p->getSlice(nPts, blc, sliceShape, stride);
+         pStoreImage_p->getSlice(stats, pos, shape, IPosition(1,1));
    
-         blc = 0;
-         if (Int(nPts(blc)+0.1) > 0) {
+         pos(0) = NPTS;
+         if (Int(stats(pos)+0.1) > 0) {
             someGoodPointsValue_p = True;
          } else {
             someGoodPointsValue_p = False;
@@ -2175,10 +2190,10 @@ Bool ImageStatistics<T>::someGoodPoints ()
 // only the first (first display axis) and last (statistics) axes are of 
 // non-unit size, so it  is effectively a matrix.  
 
-         Int n1 = pStoreImage_p->shape()(0);
-         IPosition cursorShape(pStoreImage_p->ndim(),1);
+
+         IPosition cursorShape = statsSliceShape();
+         const Int n1 = pStoreImage_p->shape()(0);
          cursorShape(0) = n1;
-         cursorShape(pStoreImage_p->ndim()-1) = NACCUM;
          RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
 
          for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
@@ -2201,12 +2216,13 @@ Bool ImageStatistics<T>::someGoodPoints ()
 template <class T>
 void ImageStatistics<T>::summStats ()
 // 
-// List the summary of the statistics to the logger
+// List the summary of the statistics to the logger in the
+// case that the statistics storage image is 1D only
 //
 {
 // Fish out statistics with a slice
 
-   IPosition shape(IPosition(1,pStoreImage_p->shape()(0)));
+   const IPosition shape = statsSliceShape();
    Array<Double> stats(shape);
    pStoreImage_p->getSlice (stats, IPosition(1,0), shape, IPosition(1,1));
 
@@ -2228,8 +2244,8 @@ void ImageStatistics<T>::summStats ()
 // Have to convert LogIO object to ostream before can apply
 // the manipulators
 
-   Int oPrec = 6;
-   Int oWidth = 15;
+   const Int oPrec = 6;
+   const Int oWidth = 15;
    os_p.output().fill(' '); 
    os_p.output().precision(oPrec);
    os_p.output().setf(ios::scientific, ios::floatfield);
