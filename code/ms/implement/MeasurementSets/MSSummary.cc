@@ -723,6 +723,10 @@ void MSSummary::listObservation (LogIO& os, Bool verbose) const
   os << LogIO::POST;
 }
 
+String formatTime(const Double time) {
+  MVTime mvtime(Quantity(time, "s"));
+  return mvtime.string(MVTime::DMY,6);
+}
 
 void MSSummary::listHistory (LogIO& os, Bool verbose) const 
 {
@@ -739,14 +743,13 @@ void MSSummary::listHistory (LogIO& os, Bool verbose) const
       uInt nmessages = msHis.time().nrow();
       os << "History table entries: " << nmessages << endl;
       for (uInt i=0 ; i < nmessages; i++) {
-	os << i+1 << ": "
-	   << ((msHis.application()).getColumn())(i) << " | "
+	os << formatTime(((msHis.time()).getColumn())(i)) << "|"
+	   << ((msHis.origin()).getColumn())(i) << "|"
+	  // << ((msHis.application()).getColumn())(i) << " | "
 	  //<< (msHis.appParams())(i) << " | "
 	  //<< (msHis.cliCommand())(i) << " | "
-	   << ((msHis.message()).getColumn())(i) << " | "
-	   << ((msHis.origin()).getColumn())(i) << " | "
+	   << ((msHis.message()).getColumn())(i)
 	  //<< ((msHis.priority()).getColumn())(i) << " | "
-	  //<< ((msHis.time()).getColumn())(i) << " | "
 	  //<< (msHis.timeQuant())(i) << " | "
 	  //<< (msHis.timeMeas())(i)
 	   << endl;
