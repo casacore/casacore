@@ -28,8 +28,12 @@
 #include <trial/Images/ImagePolarimetry.h>
 
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/StokesCoordinate.h>
+#include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -44,7 +48,9 @@
 #include <trial/Images/ImageStatistics.h>
 #include <trial/Images/ImageSummary.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/NumericTraits.h>
+#include <aips/Quanta/QC.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
@@ -275,7 +281,7 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& lag,
    LogIO os(LogOrigin("ImagePolarimetry", "fourierRotationMeasure(...)", WHERE));
 
 // Make Complex (Q,U) image
-      
+
    LatticeExprNode node;
    if (zeroZeroLag) {
       LatticeExprNode node1( (*itsQImagePtr) - sum(*itsQImagePtr));
@@ -299,17 +305,20 @@ void ImagePolarimetry::fourierRotationMeasure(ImageInterface<Complex>& lag,
    Vector<Int> pixelAxes = cSys.pixelAxes(coord);
    Vector<Bool> axes(ie.ndim(),False);
    axes(pixelAxes(0)) = True;
+   Quantum<Double> f = findCentralFrequency(cSys, coord, ie.shape()(pixelAxes(0)));
 
 // Do FFT of spectral coordinate
 
    ImageFFT fftserver;
    fftserver.fft(ie, axes);
 
-// Recover result. Coordinates are updated to include Fourier coordinate
-// Miscellaneous things and mask (if output has one) are copied to lag
+// Recover result. Coordinates are updated to include Fourier coordinate,
+// miscellaneous things (MiscInfo, ImageInfo, units, history) and mask
+// (if output has one) are copied to lag
 
    fftserver.getComplex(lag);
    fiddleStokesCoordinate(lag, Stokes::Plinear);
+   fiddleTimeCoordinate(lag, f, coord);
 }
 
 
@@ -327,9 +336,6 @@ IPosition ImagePolarimetry::stokesShape() const
    shape(pixelAxes(0)) = 1;
    return shape;
 }
-
-
-
 
 
 // Private functions
@@ -469,7 +475,6 @@ LatticeExprNode ImagePolarimetry::makePolIntNode(LogIO& os, Bool debias, Float v
    return LatticeExprNode(sqrt(node));
 }
 
-
 void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Float>& ie, Stokes::StokesTypes type) const
 {   
    CoordinateSystem cSys = ie.coordinates();
@@ -497,6 +502,63 @@ void ImagePolarimetry::fiddleStokesCoordinate(ImageInterface<Complex>& ie, Stoke
    cSys.replaceCoordinate(stokes, iStokes);   
    ie.setCoordinateInfo(cSys);
 }
+
+void ImagePolarimetry::fiddleTimeCoordinate(ImageInterface<Complex>& ie, const Quantum<Double>& f, 
+                                            Int coord) const
+{   
+   LogIO os(LogOrigin("ImagePolarimetry", "fiddleTimeCoordinate(...)", WHERE));
+//
+   CoordinateSystem cSys = ie.coordinates();
+   Coordinate* pC = cSys.coordinate(coord).clone();
+   AlwaysAssert(pC->nPixelAxes()==1,AipsError);
+   AlwaysAssert(pC->type()==Coordinate::LINEAR,AipsError);
+//
+   Vector<String> axisUnits = pC->worldAxisUnits();
+   axisUnits = String("s");
+   if (!pC->setWorldAxisUnits(axisUnits, True)) {
+      os << "Failed to set TimeCoordinate units to seconds because " << pC->errorMessage() << LogIO::EXCEPTION;
+   }
+
+// Find factor to convert from time (s) to rad/m/m
+
+   Vector<Double> inc = pC->increment();
+   Double ff = f.getValue(Unit("Hz"));
+   Double lambda = QC::c.getValue(Unit("m/s")) / ff;
+   Double fac = -C::pi * ff / 2.0 / lambda / lambda;
+   inc *= fac;
+//
+   Vector<String> axisNames(1);
+   axisNames = String("RotationMeasure");
+   axisUnits = String("rad/m/m");
+   Vector<Double> refVal(1,0.0);
+//
+   LinearCoordinate lC(axisNames, axisUnits, refVal, inc, 
+                       pC->linearTransform().copy(), pC->referencePixel().copy());
+//
+   cSys.replaceCoordinate(lC, coord);   
+   ie.setCoordinateInfo(cSys);
+   delete pC;
+}
+
+
+Quantum<Double> ImagePolarimetry::findCentralFrequency(const CoordinateSystem& cSys, Int coord, Int shape) const
+{
+   const Coordinate& c = cSys.coordinate(coord);
+   AlwaysAssert(c.nPixelAxes()==1,AipsError);
+//
+   Vector<Double> pixel(1);
+   Vector<Double> world;
+   pixel(0) = (shape - 1) / 2.0;
+   if (!c.toWorld(world, pixel)) {
+      LogIO os(LogOrigin("ImagePolarimetry", "findCentralFrequency(...)", WHERE));
+      os << "Failed to convert pixel to world for SpectralCoordinate because " 
+         << c.errorMessage() << LogIO::EXCEPTION;
+  }
+  Vector<String> units = c.worldAxisUnits();
+  return Quantum<Double>(world(0), units(0));
+}
+
+
 
 
 ImageExpr<Float> ImagePolarimetry::makeStokesExpr(ImageInterface<Float>* imPtr,
