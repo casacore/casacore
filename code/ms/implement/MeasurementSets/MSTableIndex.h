@@ -98,7 +98,7 @@ public:
     MSTableIndex &operator=(const MSTableIndex &other);
 
     // attach this to a subtable using indexCols
-    virtual void attach(const Table &subTable, const Vector<String> &indexCols,
+    void attach(const Table &subTable, const Vector<String> &indexCols,
                         ColumnsIndex::Compare *compareFunction = 0);
 
     // Call this when an index in an existing row has changed.  There is no need to

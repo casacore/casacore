@@ -84,7 +84,7 @@ public:
 
   MSFeedIndex &operator=(const MSFeedIndex &other);
 
-  virtual void attach(const MSFeed &feed);
+  void attach(const MSFeed &feed);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

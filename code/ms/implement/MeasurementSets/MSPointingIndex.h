@@ -83,7 +83,7 @@ public:
 
   MSPointingIndex &operator=(const MSPointingIndex &other);
 
-  virtual void attach(const MSPointing &pointing);
+  void attach(const MSPointing &pointing);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

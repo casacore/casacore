@@ -84,7 +84,7 @@ public:
 
   MSSourceIndex &operator=(const MSSourceIndex &other);
 
-  virtual void attach(const MSSource &source);
+  void attach(const MSSource &source);
 
   // access to the source ID key, throws an exception if isNull() is False
   Int &sourceId() {return *sourceId_p;}

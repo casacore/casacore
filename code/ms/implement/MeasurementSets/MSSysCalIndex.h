@@ -83,7 +83,7 @@ public:
 
   MSSysCalIndex &operator=(const MSSysCalIndex &other);
 
-  virtual void attach(const MSSysCal &sysCal);
+  void attach(const MSSysCal &sysCal);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}

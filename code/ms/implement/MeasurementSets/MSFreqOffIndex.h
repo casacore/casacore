@@ -83,7 +83,7 @@ public:
 
   MSFreqOffIndex &operator=(const MSFreqOffIndex &other);
 
-  virtual void attach(const MSFreqOffset &freqOffset);
+  void attach(const MSFreqOffset &freqOffset);
 
   // access to the antenna1 ID key, throws an exception if isNull() is False
   Int &antenna1Id() {return *antenna1Id_p;}

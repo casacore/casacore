@@ -83,7 +83,7 @@ public:
 
   MSDopplerIndex &operator=(const MSDopplerIndex &other);
 
-  virtual void attach(const MSDoppler &doppler);
+  void attach(const MSDoppler &doppler);
 
   // access to the doppler ID key, throws an exception if isNull() is False
   Int &dopplerId() {return *dopplerId_p;}

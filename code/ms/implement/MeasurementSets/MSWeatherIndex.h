@@ -83,7 +83,7 @@ public:
 
   MSWeatherIndex &operator=(const MSWeatherIndex &other);
 
-  virtual void attach(const MSWeather &weather);
+  void attach(const MSWeather &weather);
 
   // access to the antenna ID key, throws an exception if isNull() is False
   Int &antennaId() {return *antennaId_p;}
