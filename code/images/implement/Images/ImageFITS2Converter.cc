@@ -298,8 +298,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    IPosition shape = image.shape();
 	    RO_LatticeIterator<Float> iter(image, 
 		   LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
-	    ProgressMeter meter(0.0, 1.0*shape.product(), "Searching pixels", ""
-				"", True, 
+	    ProgressMeter meter(0.0, 1.0*shape.product(),
+				"Searching pixels", "",
+				"", "", True, 
 				shape.product()/cursorShape.product()/50);
 //
 // Iterate
