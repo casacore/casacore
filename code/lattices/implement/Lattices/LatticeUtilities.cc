@@ -176,21 +176,20 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
    IPosition cursorShape = out.niceCursorShape(); 
    LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
 
-// Create an iterator for the output to setup the cache.
+// Create input lattice iterator 
 
-   LatticeIterator<T> dummyIter(out);
    RO_MaskedLatticeIterator<T> iter(in, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
 
 // Put the pixels
 
-      typename Array<Bool>::const_iterator mIt;
-      typename Array<T>::iterator dIt;
       IPosition cursorShape = iter.cursorShape();
       if (zeroMasked) {
          Array<T> pixels = iter.cursor().copy();
          const Array<Bool>& mask = iter.getMask();
 //
+         typename Array<Bool>::const_iterator mIt;
+         typename Array<T>::iterator dIt;
          for (dIt=pixels.begin(),mIt=mask.begin(); dIt!=pixels.end(); dIt++,mIt++) {
             if (!(*mIt)) *dIt = 0.0;
          }
