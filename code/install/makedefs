@@ -208,6 +208,13 @@ ARCHLIBS :=
 
 # External libraries required by particular AIPS++ packages.
 #-----------------------------------------------------------
+# CFITSIO (required by ATNF).
+CFITSIOROOT := /usr/local
+CFITSIODEFS :=
+CFITSIOINCD := $(CFITSIOROOT)/include/cfitsio
+CFITSIOLIBD := $(CFITSIOROOT)/lib
+CFITSIOLIB  := -lcfitsio
+
 # RPFITS (required by ATNF).
 RPFITSROOT := /usr/local
 RPFITSDEFS :=
