@@ -1,5 +1,5 @@
 //# MeasMath.cc:  Measure conversion aid routines
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -91,10 +91,10 @@ void MeasMath::initFrame(MRBase &outref, MRBase &inref) {
 void MeasMath::getFrame(FrameType i) {
   // Frame information group methods
   static FRFCT frameInfo[N_FrameType] = {
-    MeasFrame::epoch,
-    MeasFrame::position,
-    MeasFrame::direction,
-    MeasFrame::radialVelocity };
+    &MeasFrame::epoch,
+    &MeasFrame::position,
+    &MeasFrame::direction,
+    &MeasFrame::radialVelocity };
   
   // Get correct frame
   if (!frameOK_p[i]) {
@@ -410,11 +410,11 @@ void MeasMath::getInfo(FrameInfo i) {
     EPOCH, EPOCH, POSITION, POSITION, POSITION };
   // Frame information methods
   static FRINFO InfoFrame[N_FrameInfo] = {
-    MCFrame::getTDB,
-    MCFrame::getLASTr,
-    MCFrame::getLong,
-    MCFrame::getLat,
-    MCFrame::getRadius };
+    &MCFrame::getTDB,
+    &MCFrame::getLASTr,
+    &MCFrame::getLong,
+    &MCFrame::getLat,
+    &MCFrame::getRadius };
 
   if (!infoOK_p[i]) {
     // Make sure there has not been an epoch added
