@@ -3,7 +3,7 @@
 # avers: Report AIPS++ version information
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992,1993,1994,1995
+#   Copyright (C) 1992,1993,1994,1995,2001
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 #                          Charlottesville, VA 22903-2475 USA
 #
 #-----------------------------------------------------------------------------
-# Usage: avers [-b | -l]
+# Usage: avers [-b | -l | -r]
 #-----------------------------------------------------------------------------
 # Report AIPS++ version information.
 #
@@ -41,6 +41,8 @@
 #             3) Version & time of completion of last code update.
 #             4) Version & time of completion of last system rebuild.
 #             5) Version currently available in Socorro.
+#
+#   -r     Report the last version installed in release format (default).
 #
 # Status return values:
 #    0:  success
@@ -67,8 +69,11 @@
         -l)
            MODE="long"
            ;;
+        -r)
+           MODE="release"
+           ;;
         *)
-           echo "Usage: adate [-b | -l]"
+           echo "Usage: adate [-b | -l | -r]"
            exit 1
            ;;
      esac
@@ -103,6 +108,9 @@
      if [ "$MODE" = brief ]
      then
         cat $AIPSLAVE/VERSION
+     elif [ "$MODE" = release ]
+     then
+        cat $AIPSLAVE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
      else
         echo "Master:" `cat $AIPSLAVE/VERSION`
      fi
@@ -111,6 +119,9 @@
      if [ "$MODE" = brief ]
      then
         cat $AIPSCODE/VERSION
+     elif [ "$MODE" = release ]
+     then
+        cat $AIPSCODE/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
      else
         echo "Master:" `cat $AIPSCODE/VERSION`
      fi
@@ -119,6 +130,9 @@
      if [ "$MODE" = brief ]
      then
         cat $AIPSARCH/VERSION
+     elif [ "$MODE" = release ]
+     then
+        cat $AIPSARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
      else
         echo "Master:" `cat $AIPSARCH/VERSION`
      fi
@@ -126,13 +140,17 @@
      if [ "$MODE" = brief ]
      then
         echo "($AIPSARCH/VERSION not found)"
+     elif [ "$MODE" = release ]
+     then
+        cat $AIPSARCH/VERSION | awk -F. '{print "AIPS++ Version", $1/10, "Build", $2}'
      else
         echo "Master: ($AIPSARCH/VERSION not found)"
      fi
   fi
 
-# Quit now in brief mode.
+# Quit now in brief or release mode.
   [ "$MODE" = brief ] && exit 0
+  [ "$MODE" = release ] && exit 0
 
   if [ -f "$AIPSLAVE/LOGFILE" ]
   then
