@@ -4021,3 +4021,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCRefreshEvent.cc trialdisplay/implement/DisplayEvents/WCRefreshEvent.cc
 14 065 src mv trial/implement/DisplayEvents/WCTool.cc trialdisplay/implement/DisplayEvents/WCTool.cc
 14 065 src mv trial/implement/DisplayEvents/WorldCanvasEvent.cc trialdisplay/implement/DisplayEvents/WorldCanvasEvent.cc
+14 065 src mv trial/implement/DisplayEvents/makefile trialdisplay/implement/DisplayEvents/makefile
