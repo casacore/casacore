@@ -1,0 +1,22 @@
+
+change id: 0102
+ author:   Ger van Diepen
+ date:     2001/07/11
+ avers:    1.6
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: New
+ summary:  deep copy of a reference table
+It is now possible to make a deep copy of a table.
+For a normal table it is the same as a normal copy (thus the files
+are copied).
+For a reference table all selected data is retrieved and copied to a
+newly created table. The table is created using the characteristics
+of the original table (thus with the same storage managers; only
+TiledDataStMan is replaced by TiledShapeStMan).
+All keywords, info, and subtables are also copied.
+
+A class TableCopy is created to do the actual work.
+This class can also be used to have finer control over the copy process.
