@@ -30,7 +30,10 @@
 #include <aips/Lattices/PagedArray.h>
 #include <aips/Lattices/LatticeIterator.h>
 #include <aips/Lattices/LatticeStepper.h>
+#include <trial/Lattices/LCBox.h>
+#include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LCPagedMask.h>
+#include <trial/Arrays/AxesSpecifier.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -221,6 +224,75 @@ void testRest()
     }
 }
 
+void testAxes()
+{
+    PagedArray<Int> pa(IPosition(3,10,11,12), "tSubLattice_tmp.pa");
+    LCPagedMask mask(IPosition(3,10,11,12), "tSubLattice_tmp.pa/mask");
+    Array<Int> arr(pa.shape());
+    indgen(arr);
+    pa.put (arr);
+    Array<Bool> m(pa.shape());
+    m = True;
+    m(IPosition(3,0,0,0), IPosition(3,9,10,11), IPosition(3,2,1,1)) = False;
+    mask.put (m);
+    Array<Int> arrs1 = arr(IPosition(3,3,1,2), IPosition(3,8,1,9));
+    Array<Int> arrsub = arrs1.reform(IPosition(2,6,8));
+    Array<Bool> ms1 = m(IPosition(3,3,1,2), IPosition(3,8,1,9));
+    Array<Bool> msub = ms1.reform(IPosition(2,6,8));
+    // Make sublattice with a removed axis 1.
+    SubLattice<Int> ml(pa, mask, True);
+    Array<Bool> pixmask(IPosition(3,6,1,8));
+    pixmask = True;
+    pixmask (IPosition(3,0,0,0)) = !msub(IPosition(2,0,0));
+    LCPixelSet pixset (pixmask, LCBox(IPosition(3,3,1,2),
+				      IPosition(3,8,1,9),
+				      m.shape()));
+    SubLattice<Int> sl(ml, pixset, True, AxesSpecifier(False));
+
+    IPosition ncs (pa.niceCursorShape());
+    // Test if shape and niceCursorShape remove the axis.
+    AlwaysAssertExit (sl.shape() == IPosition(2,6,8));
+    AlwaysAssertExit (sl.niceCursorShape() == IPosition(2, min(6,ncs(0)),
+							min(8,ncs(2))));
+    // Test the getting functions.
+    Array<Int> arrsl = sl.get();
+    AlwaysAssertExit (allEQ (arrsl, arrsub));
+    AlwaysAssertExit (sl.getAt(IPosition(2,1,3)) == arrsub(IPosition(2,1,3)));
+    arrsub(IPosition(2,1,3)) += 10;
+    // Test the put function and see if the result matches.
+    sl.putAt(arrsub(IPosition(2,1,3)), IPosition(2,1,3));
+    AlwaysAssertExit (sl.getAt(IPosition(2,1,3)) == arrsub(IPosition(2,1,3)));
+    AlwaysAssertExit (allEQ (sl.get(), arrsub));
+    arrsub(IPosition(2,1,3)) += 10;
+    sl.put (arrsub);
+    AlwaysAssertExit (allEQ (sl.get(), arrsub));
+    AlwaysAssertExit (sl.getAt(IPosition(2,1,3)) == arrsub(IPosition(2,1,3)));
+    // Now get and put a slice.
+    Array<Int> arrsubsub = arrsub(IPosition(2,1,2),
+				  IPosition(2,5,7),
+				  IPosition(2,3,2));
+    AlwaysAssertExit (allEQ (sl.getSlice(Slicer(IPosition(2,1,2),
+						IPosition(2,5,7),
+						IPosition(2,3,2),
+						Slicer::endIsLast)),
+			     arrsubsub));
+    arrsubsub += 20;
+    sl.putSlice (arrsubsub, IPosition(2,1,2), IPosition(2,3,2));
+    AlwaysAssertExit (allEQ (sl.get(), arrsub));
+    // Test the get mask functions.
+    AlwaysAssertExit (allEQ (ml.getMask(), m));
+    msub(IPosition(2,0,0)) = !msub(IPosition(2,0,0));
+    AlwaysAssertExit (allEQ (sl.getMask(), msub));
+    Array<Bool> msubsub = msub(IPosition(2,1,2),
+			       IPosition(2,5,7),
+			       IPosition(2,3,2));
+    AlwaysAssertExit (allEQ (sl.getMaskSlice(Slicer(IPosition(2,1,2),
+						    IPosition(2,5,7),
+						    IPosition(2,3,2),
+						    Slicer::endIsLast)),
+			     msubsub));
+}
+
 
 main ()
 {
@@ -250,6 +322,9 @@ main ()
 
       // Test some other SubLattice functions.
       testRest();
+
+      // Test the axes removal/reordering.
+      testAxes();
     }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
