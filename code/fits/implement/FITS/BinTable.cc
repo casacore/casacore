@@ -1,5 +1,5 @@
 //# Bintable.cc:  this defines BinaryTable, which converts FITS binary tables to aips++ Tables
-//# Copyright (C) 1994-1999
+//# Copyright (C) 1994-1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -681,7 +681,8 @@ void BinaryTable::fillRow()
 		    *(FitsField<IComplex> *)&field(j);
 		Vector<DComplex> vec(nelem[j]);
 		for (Int k=0;k<nelem[j];k++) {
-		    vec(k) = thisfield(k);
+		  const IComplex& icm = thisfield(k);
+		    vec(k) = DComplex (icm.real(), icm.imag());
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
