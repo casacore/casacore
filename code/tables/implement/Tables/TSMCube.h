@@ -150,8 +150,9 @@ public:
     void putObject (AipsIO& ios);
 
     // Get the data of the object from the AipsIO stream.
-    // It returns the data manager sequence number.
-    uInt getObject (AipsIO& ios);
+    // It returns the data manager sequence number, which is -1 if
+    // no file is attached to the cube (for cells without a value).
+    Int getObject (AipsIO& ios);
 
     // Is the hypercube extensible?
     Bool isExtensible() const;
