@@ -1,0 +1,77 @@
+######################################################################
+# Needed for tImageExprGram.cc
+1000 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
+######################################################################
+# Needed for tTempImage.cc
+1000 aips/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Double> 
+     template class ArrayLattice<DComplex> 
+######################################################################
+# Needed for tImageInfo, tPagedImage.cc, tTempImage.cc
+#
+1000 aips/Lattices/TempLattice.cc aips/BasicSL/Complex.h 
+     = aips/Utilities/CountedPtr.cc 
+     = aips/Lattices/Lattice.h 
+     template class TempLattice<Complex> 
+     template class CountedConstPtr<Lattice<Complex> > 
+     template class CountedPtr<Lattice<Complex> > 
+     template class PtrRep<Lattice<Complex> > 
+     template class SimpleCountedConstPtr<Lattice<Complex> > 
+     template class SimpleCountedPtr<Lattice<Complex> > 
+1010 aips/Lattices/TempLattice.cc aips/BasicSL/Complex.h 
+     = aips/Utilities/CountedPtr.cc 
+     = aips/Lattices/Lattice.h 
+     template class TempLattice<DComplex> 
+     template class CountedConstPtr<Lattice<DComplex> > 
+     template class CountedPtr<Lattice<DComplex> > 
+     template class PtrRep<Lattice<DComplex> > 
+     template class SimpleCountedConstPtr<Lattice<DComplex> > 
+     template class SimpleCountedPtr<Lattice<DComplex> > 
+1000 aips/Utilities/GenSort.cc aips/BasicSL/Complex.h 
+     template class GenSort<Complex> 
+######################################################################
+# Needed for tImageFFT
+1000 aips/Utilities/PtrHolder.cc 
+     = aips/Lattices/Lattice.h 
+     template class PtrHolder<Lattice<Float> > 
+######################################################################
+1000 trial/Fitting/FitGaussian.cc 
+     template class FitGaussian<Double> 
+1000 trial/Images/ImageDecomposer.cc 
+     template class ImageDecomposer<Double> 
+1000 trial/Images/ImageStatistics.cc aips/BasicSL/Complex.h 
+     template class ImageStatistics<Complex> 
+######################################################################
+# Needed for tImageDecomposer
+1000 trial/Images/ImageUtilities2.cc 
+     template void ImageUtilities::bin<Float>(MaskedArray<Float> &, Coordinate &, MaskedArray<Float> const &, Coordinate const &, uInt, uInt) 
+1000 trial/Images/SubImage.cc 
+     template class SubImage<Double> 
+######################################################################
+# Needed for dImageStatistics
+1000 trial/Images/TempImage.cc trial/Images/ImageInterface.cc 
+     = aips/Lattices/TempLattice.cc 
+     = aips/Utilities/CountedPtr.cc 
+     template class TempImage<Double> 
+     template class ImageInterface<Double> 
+     template class TempLattice<Double> 
+     template class CountedPtr<Lattice<Double> > 
+     template class CountedConstPtr<Lattice<Double> > 
+     template class SimpleCountedPtr<Lattice<Double> > 
+     template class SimpleCountedConstPtr<Lattice<Double> > 
+     template class PtrRep<Lattice<Double> > 
+1010 trial/Images/TempImage.cc trial/Images/ImageInterface.cc 
+     template class TempImage<Int> 
+     template class ImageInterface<Int> 
+1000 trial/Lattices/LatticeStatistics.cc 
+     = aips/BasicSL/Complex.h 
+     = trial/Lattices/LatticeApply.cc 
+     = trial/Lattices/TiledCollapser.cc 
+     template class LatticeStatistics<Complex> 
+     template class LatticeApply<Complex, DComplex> 
+     template class StatsTiledCollapser<Complex, DComplex> 
+     template class TiledCollapser<Complex, DComplex> 
+######################################################################
+# Needed for tImageUtilities

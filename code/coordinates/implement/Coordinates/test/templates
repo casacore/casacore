@@ -1,0 +1,2 @@
+1000 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allNearAbs(Array<Double> const &, Double const &, Double) 

@@ -1,0 +1,91 @@
+1000 aips/Arrays/Array.cc aips/Mathematics/AutoDiff.h 
+     template class Array<AutoDiff<AutoDiff<Double> > > 
+1000 aips/Arrays/ArrayIO.cc 
+     = aips/Mathematics/AutoDiff.h 
+     = aips/Mathematics/AutoDiffIO.h 
+     template ostream & operator<<(ostream &, Array<AutoDiff<Double> > const &) 
+1000 aips/Arrays/ArrayLogical.cc 
+     template Bool allNearAbs(Array<Double> const &, Double const &, Double) 
+     = aips/BasicSL/Complex.h 
+     template Bool allNearAbs(Array<Complex> const &, Array<Complex> const &, Double) 
+1000 aips/Arrays/ArrayMath.cc 
+     = aips/Mathematics/AutoDiff.h 
+     = aips/Mathematics/AutoDiffMath.h 
+     template void operator+=(Array<AutoDiff<Double> > &, AutoDiff<Double> const &) 
+     template void operator-=(Array<AutoDiff<Double> > &, AutoDiff<Double> const &) 
+     template void operator*=(Array<AutoDiff<Double> > &, AutoDiff<Double> const &) 
+     template void operator/=(Array<AutoDiff<Double> > &, AutoDiff<Double> const &) 
+     template void operator+=(Array<AutoDiff<Double> > &, Array<AutoDiff<Double> > const &) 
+     template void operator-=(Array<AutoDiff<Double> > &, Array<AutoDiff<Double> > const &) 
+     template void operator*=(Array<AutoDiff<Double> > &, Array<AutoDiff<Double> > const &) 
+     template void operator/=(Array<AutoDiff<Double> > &, Array<AutoDiff<Double> > const &) 
+     template Array<AutoDiff<Double> > operator-(Array<AutoDiff<Double> > const &) 
+1000 aips/Arrays/MaskedArray.cc aips/Mathematics/AutoDiff.h 
+     template class MaskedArray<AutoDiff<AutoDiff<Double> > > 
+1000 aips/Arrays/Vector.cc aips/Mathematics/AutoDiff.h 
+     template class Vector<AutoDiff<AutoDiff<Double> > > 
+1000 aips/Containers/Block.h 
+     = aips/Mathematics/AutoDiff.h 
+     template <class T> class AutoDiffRep 
+     template class PtrBlock<AutoDiffRep<AutoDiff<Double> > *> 
+1010 aips/Containers/Block.h aips/Arrays/Vector.h 
+     template class Block<Vector<Float> *> 
+1020 aips/Containers/Block.h aips/Mathematics/AutoDiff.h 
+     template class Block<AutoDiff<AutoDiff<Double> > > 
+1030 aips/Containers/Block.h 
+     template class PtrBlock<Block<Double> *> 
+1000 aips/Containers/ObjectPool.cc aips/Mathematics/AutoDiffRep.h 
+     = aips/Mathematics/AutoDiff.h 
+     template class ObjectPool<AutoDiffRep<AutoDiff<Double> >, uInt> 
+1000 aips/Containers/OrderedPair.cc aips/Containers/PoolStack.h 
+     = aips/Mathematics/AutoDiff.h 
+     template <class T> class AutoDiffRep 
+     template class OrderedPair<uInt, PoolStack<AutoDiffRep<AutoDiff<Double> >, uInt> *> 
+1000 aips/Containers/PoolStack.cc aips/Mathematics/AutoDiffRep.h 
+     = aips/Mathematics/AutoDiff.h 
+     template class PoolStack<AutoDiffRep<AutoDiff<Double> >, uInt> 
+1000 aips/Containers/SimOrdMap.cc aips/Containers/PoolStack.h 
+     = aips/Mathematics/AutoDiff.h 
+     template <class T> class AutoDiffRep 
+     template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<AutoDiff<Double> >, uInt>*> 
+1000 aips/Mathematics/AutoDiff.cc aips/Mathematics/AutoDiffMath.h 
+     template class AutoDiff<AutoDiff<Double> > 
+1000 aips/Mathematics/AutoDiffIO.cc aips/Mathematics/AutoDiff.h 
+     template ostream & operator<<(ostream &, AutoDiff<AutoDiff<Double> > const &) 
+1000 aips/Mathematics/AutoDiffMath.cc 
+     = aips/Mathematics/AutoDiff.h 
+     template AutoDiff<AutoDiff<Double> > operator*(AutoDiff<AutoDiff<Double> > const &, AutoDiff<AutoDiff<Double> > const &) 
+     template AutoDiff<AutoDiff<Double> > operator*(AutoDiff<Double> const &, AutoDiff<AutoDiff<Double> > const &) 
+     template AutoDiff<AutoDiff<Double> > operator*(AutoDiff<AutoDiff<Double> > const &, AutoDiff<Double> const &) 
+1000 aips/Mathematics/AutoDiffRep.cc aips/Mathematics/AutoDiff.h 
+     template class AutoDiffRep<AutoDiff<Double> > 
+1000 aips/Mathematics/Convolver.cc 
+     template class Convolver<Double> 
+1000 aips/Mathematics/FFTServer.cc aips/BasicSL/Complex.h 
+     template class FFTServer<Double, DComplex> 
+1000 aips/Utilities/Fallible.h 
+     template class Fallible<Float> 
+1000 trial/Mathematics/HistAcc.cc 
+     template class HistAcc<Float> 
+     template class HistAcc<Int> 
+1000 trial/Mathematics/MathFunc.cc 
+     template class ExpSincConv<Double> 
+     template class GaussianConv<Double> 
+     template class KB_Conv<Double> 
+     template class MathFunc<Double> 
+     template class Mod_KB_Conv<Double> 
+     template class Sinc_Conv<Double> 
+     template class Sph_Conv<Double> 
+     template class Unary<Double> 
+1010 trial/Mathematics/MathFunc.cc 
+     template class ExpSincConv<Float> 
+     template class GaussianConv<Float> 
+     template class KB_Conv<Float> 
+     template class MathFunc<Float> 
+     template class Mod_KB_Conv<Float> 
+     template class Sinc_Conv<Float> 
+     template class Sph_Conv<Float> 
+     template class Unary<Float> 
+1000 trial/Mathematics/StatAcc.cc 
+     template class StatAcc<Float> 
+     template class StatAcc<Int> 

@@ -1,0 +1,438 @@
+1000 aips/Containers/Block.h 
+     = aips/Lattices/Lattice.h 
+     template class PtrBlock<Lattice<Int> *> 
+1010 aips/Containers/Block.h 
+     = trial/Lattices/MaskedLattice.h 
+     template class PtrBlock<MaskedLattice<Int> *> 
+     template class PtrBlock<MaskedLattice<Float> *> 
+     template class PtrBlock<MaskedLattice<Double> *> 
+     template class PtrBlock<MaskedLattice<Complex> *> 
+     template class PtrBlock<MaskedLattice<DComplex> *> 
+     template class PtrBlock<MaskedLattice<Bool> *> 
+1020 aips/Containers/Block.h aips/Utilities/Copy.cc 
+     = trial/Lattices/LatticeExprNode.h 
+     template class Block<LatticeExprNode> 
+     template void objcopy(LatticeExprNode *, LatticeExprNode const *, uInt) 
+     template void objmove(LatticeExprNode *, LatticeExprNode const *, uInt) 
+     template void objset(LatticeExprNode *, LatticeExprNode, uInt) 
+1000 aips/Lattices/ArrayLattice.cc aips/BasicSL/Complex.h 
+     template class ArrayLattice<Complex> 
+     template class ArrayLattice<DComplex> 
+1010 aips/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Bool> 
+1020 aips/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Float> 
+     template class ArrayLattice<Double> 
+1030 aips/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Int> 
+1040 aips/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<uInt> 
+1000 aips/Lattices/Lattice.cc aips/BasicSL/Complex.h 
+     template class Lattice<Complex> 
+     template class Lattice<DComplex> 
+1010 aips/Lattices/Lattice.cc 
+     template class Lattice<Bool> 
+1020 aips/Lattices/Lattice.cc 
+     template class Lattice<Double> 
+1030 aips/Lattices/Lattice.cc 
+     template class Lattice<Float> 
+1040 aips/Lattices/Lattice.cc 
+     template class Lattice<Int> 
+1050 aips/Lattices/Lattice.cc 
+     template class Lattice<uInt> 
+1000 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     = aips/BasicSL/Complex.h 
+     template class LatticeIterator<Complex> 
+     template class RO_LatticeIterator<Complex> 
+     template class LatticeIterInterface<Complex> 
+     template class LatticeIterator<DComplex> 
+     template class RO_LatticeIterator<DComplex> 
+     template class LatticeIterInterface<DComplex> 
+1010 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Bool> 
+     template class RO_LatticeIterator<Bool> 
+     template class LatticeIterInterface<Bool> 
+1020 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Double> 
+     template class RO_LatticeIterator<Double> 
+     template class LatticeIterInterface<Double> 
+1030 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Float> 
+     template class RO_LatticeIterator<Float> 
+     template class LatticeIterInterface<Float> 
+1040 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Int> 
+     template class RO_LatticeIterator<Int> 
+     template class LatticeIterInterface<Int> 
+1050 aips/Lattices/LatticeIterator.cc aips/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<uInt> 
+     template class RO_LatticeIterator<uInt> 
+     template class LatticeIterInterface<uInt> 
+1000 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     = aips/BasicSL/Complex.h 
+     template class PagedArray<Complex> 
+     template class PagedArrIter<Complex> 
+1010 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     = aips/BasicSL/Complex.h 
+     template class PagedArray<DComplex> 
+     template class PagedArrIter<DComplex> 
+1020 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     template class PagedArray<Bool> 
+     template class PagedArrIter<Bool> 
+1030 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     template class PagedArray<Double> 
+     template class PagedArrIter<Double> 
+1040 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     template class PagedArray<Float> 
+     template class PagedArrIter<Float> 
+1050 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     template class PagedArray<Int> 
+     template class PagedArrIter<Int> 
+1060 aips/Lattices/PagedArray.cc aips/Lattices/PagedArrIter.cc 
+     template class PagedArray<uInt> 
+     template class PagedArrIter<uInt> 
+1000 aips/Lattices/TempLattice.cc 
+     = aips/BasicSL/Complex.h 
+     template class TempLattice<Complex> 
+1010 aips/Lattices/TempLattice.cc 
+     = aips/Utilities/CountedPtr.cc 
+     = aips/Lattices/Lattice.h 
+     template class TempLattice<Bool> 
+     template class CountedConstPtr<Lattice<Bool> > 
+     template class CountedPtr<Lattice<Bool> > 
+     template class PtrRep<Lattice<Bool> > 
+     template class SimpleCountedConstPtr<Lattice<Bool> > 
+     template class SimpleCountedPtr<Lattice<Bool> > 
+1020 aips/Lattices/TempLattice.cc 
+     = aips/Utilities/CountedPtr.cc 
+     = aips/Lattices/Lattice.h 
+     template class TempLattice<Double> 
+     template class CountedConstPtr<Lattice<Double> > 
+     template class CountedPtr<Lattice<Double> > 
+     template class PtrRep<Lattice<Double> > 
+     template class SimpleCountedConstPtr<Lattice<Double> > 
+     template class SimpleCountedPtr<Lattice<Double> > 
+1030 aips/Lattices/TempLattice.cc 
+     template class TempLattice<Float> 
+1040 aips/Lattices/TempLattice.cc 
+     template class TempLattice<Int> 
+1050 aips/Lattices/TempLattice.cc 
+     template class TempLattice<uInt> 
+1000 aips/Utilities/CountedPtr.cc 
+     = aips/BasicSL/Complex.h 
+     = aips/Lattices/Lattice.h 
+     template class CountedConstPtr<Lattice<Complex> > 
+     template class CountedPtr<Lattice<Complex> > 
+     template class PtrRep<Lattice<Complex> > 
+     template class SimpleCountedConstPtr<Lattice<Complex> > 
+     template class SimpleCountedPtr<Lattice<Complex> > 
+1010 aips/Utilities/CountedPtr.cc 
+     = trial/Lattices/MaskedLattice.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedConstPtr<MaskedLattice<Float> > 
+     template class CountedPtr<MaskedLattice<Float> > 
+     template class PtrRep<MaskedLattice<Float> > 
+     template class SimpleCountedConstPtr<MaskedLattice<Float> > 
+     template class SimpleCountedPtr<MaskedLattice<Float> > 
+     template class CountedConstPtr<MaskedLattice<Double> > 
+     template class CountedPtr<MaskedLattice<Double> > 
+     template class PtrRep<MaskedLattice<Double> > 
+     template class SimpleCountedConstPtr<MaskedLattice<Double> > 
+     template class SimpleCountedPtr<MaskedLattice<Double> > 
+     template class CountedConstPtr<MaskedLattice<Complex> > 
+     template class CountedPtr<MaskedLattice<Complex> > 
+     template class PtrRep<MaskedLattice<Complex> > 
+     template class SimpleCountedConstPtr<MaskedLattice<Complex> > 
+     template class SimpleCountedPtr<MaskedLattice<Complex> > 
+     template class CountedConstPtr<MaskedLattice<DComplex> > 
+     template class CountedPtr<MaskedLattice<DComplex> > 
+     template class PtrRep<MaskedLattice<DComplex> > 
+     template class SimpleCountedConstPtr<MaskedLattice<DComplex> > 
+     template class SimpleCountedPtr<MaskedLattice<DComplex> > 
+     template class CountedConstPtr<MaskedLattice<Bool> > 
+     template class CountedPtr<MaskedLattice<Bool> > 
+     template class PtrRep<MaskedLattice<Bool> > 
+     template class SimpleCountedConstPtr<MaskedLattice<Bool> > 
+     template class SimpleCountedPtr<MaskedLattice<Bool> > 
+1020 aips/Utilities/CountedPtr.cc aips/Lattices/LELLattCoordBase.h 
+     template class CountedConstPtr<LELLattCoordBase> 
+     template class CountedPtr<LELLattCoordBase> 
+     template class PtrRep<LELLattCoordBase> 
+     template class SimpleCountedConstPtr<LELLattCoordBase> 
+     template class SimpleCountedPtr<LELLattCoordBase> 
+1030 aips/Utilities/CountedPtr.cc aips/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<Float> > 
+     template class CountedConstPtr<Lattice<Float> > 
+     template class SimpleCountedPtr<Lattice<Float> > 
+     template class SimpleCountedConstPtr<Lattice<Float> > 
+     template class PtrRep<Lattice<Float> > 
+1040 aips/Utilities/CountedPtr.cc aips/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<Int> > 
+     template class CountedConstPtr<Lattice<Int> > 
+     template class SimpleCountedPtr<Lattice<Int> > 
+     template class SimpleCountedConstPtr<Lattice<Int> > 
+     template class PtrRep<Lattice<Int> > 
+1050 aips/Utilities/CountedPtr.cc aips/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<uInt> > 
+     template class CountedConstPtr<Lattice<uInt> > 
+     template class SimpleCountedPtr<Lattice<uInt> > 
+     template class SimpleCountedConstPtr<Lattice<uInt> > 
+     template class PtrRep<Lattice<uInt> > 
+1060 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedPtr<LatticeIterInterface<Complex> > 
+     template class CountedConstPtr<LatticeIterInterface<Complex> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Complex> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Complex> > 
+     template class PtrRep<LatticeIterInterface<Complex> > 
+1070 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedPtr<LatticeIterInterface<DComplex> > 
+     template class CountedConstPtr<LatticeIterInterface<DComplex> > 
+     template class SimpleCountedPtr<LatticeIterInterface<DComplex> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<DComplex> > 
+     template class PtrRep<LatticeIterInterface<DComplex> > 
+1080 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Bool> > 
+     template class CountedConstPtr<LatticeIterInterface<Bool> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Bool> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Bool> > 
+     template class PtrRep<LatticeIterInterface<Bool> > 
+1090 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Double> > 
+     template class CountedConstPtr<LatticeIterInterface<Double> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Double> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Double> > 
+     template class PtrRep<LatticeIterInterface<Double> > 
+1100 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Float> > 
+     template class CountedConstPtr<LatticeIterInterface<Float> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Float> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Float> > 
+     template class PtrRep<LatticeIterInterface<Float> > 
+1110 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Int> > 
+     template class CountedConstPtr<LatticeIterInterface<Int> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Int> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Int> > 
+     template class PtrRep<LatticeIterInterface<Int> > 
+1120 aips/Utilities/CountedPtr.cc aips/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<uInt> > 
+     template class CountedConstPtr<LatticeIterInterface<uInt> > 
+     template class SimpleCountedPtr<LatticeIterInterface<uInt> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<uInt> > 
+     template class PtrRep<LatticeIterInterface<uInt> > 
+1130 aips/Utilities/CountedPtr.cc aips/Lattices/TempLattice.h 
+     template class CountedPtr<TempLattice<Float> > 
+     template class CountedConstPtr<TempLattice<Float> > 
+     template class SimpleCountedPtr<TempLattice<Float> > 
+     template class SimpleCountedConstPtr<TempLattice<Float> > 
+     template class PtrRep<TempLattice<Float> > 
+1140 aips/Utilities/CountedPtr.cc trial/Lattices/LELInterface.h 
+     template class CountedConstPtr<LELInterface<Float> > 
+     template class CountedPtr<LELInterface<Float> > 
+     template class PtrRep<LELInterface<Float> > 
+     template class SimpleCountedConstPtr<LELInterface<Float> > 
+     template class SimpleCountedPtr<LELInterface<Float> > 
+     template class CountedConstPtr<LELInterface<Double> > 
+     template class CountedPtr<LELInterface<Double> > 
+     template class PtrRep<LELInterface<Double> > 
+     template class SimpleCountedConstPtr<LELInterface<Double> > 
+     template class SimpleCountedPtr<LELInterface<Double> > 
+     template class CountedConstPtr<LELInterface<Complex> > 
+     template class CountedPtr<LELInterface<Complex> > 
+     template class PtrRep<LELInterface<Complex> > 
+     template class SimpleCountedConstPtr<LELInterface<Complex> > 
+     template class SimpleCountedPtr<LELInterface<Complex> > 
+     template class CountedConstPtr<LELInterface<DComplex> > 
+     template class CountedPtr<LELInterface<DComplex> > 
+     template class PtrRep<LELInterface<DComplex> > 
+     template class SimpleCountedConstPtr<LELInterface<DComplex> > 
+     template class SimpleCountedPtr<LELInterface<DComplex> > 
+     template class CountedConstPtr<LELInterface<Bool> > 
+     template class CountedPtr<LELInterface<Bool> > 
+     template class PtrRep<LELInterface<Bool> > 
+     template class SimpleCountedConstPtr<LELInterface<Bool> > 
+     template class SimpleCountedPtr<LELInterface<Bool> > 
+1000 aips/Utilities/PtrHolder.cc 
+     = aips/Lattices/LatticeIterator.h 
+     template class PtrHolder<LatticeIterator<Bool> > 
+1010 aips/Utilities/PtrHolder.cc 
+     = aips/Lattices/LatticeIterator.h 
+     template class PtrHolder<LatticeIterator<Float> > 
+1020 aips/Utilities/PtrHolder.cc 
+     = trial/Lattices/LCRegionSingle.h 
+     template class PtrHolder<LCRegionSingle> 
+1000 trial/Lattices/ExtendLattice.cc 
+     = aips/BasicSL/Complex.h 
+     template class ExtendLattice<Float> 
+     template class ExtendLattice<Complex> 
+     template class ExtendLattice<Bool> 
+1000 trial/Lattices/LELArray.cc trial/Lattices/LELScalar.cc 
+     = aips/BasicSL/Complex.h 
+     template class LELArray<Bool> 
+     template class LELArray<Float> 
+     template class LELArray<Double> 
+     template class LELArray<Complex> 
+     template class LELArray<DComplex> 
+     template class LELArrayRef<Bool> 
+     template class LELArrayRef<Float> 
+     template class LELArrayRef<Double> 
+     template class LELArrayRef<Complex> 
+     template class LELArrayRef<DComplex> 
+     template class LELScalar<Bool> 
+     template class LELScalar<Float> 
+     template class LELScalar<Double> 
+     template class LELScalar<Complex> 
+     template class LELScalar<DComplex> 
+1000 trial/Lattices/LELBinary.cc aips/BasicSL/Complex.h 
+     template class LELBinary<Float> 
+     template class LELBinary<Double> 
+     template class LELBinary<Complex> 
+     template class LELBinary<DComplex> 
+     template class LELBinaryCmp<Float> 
+     template class LELBinaryCmp<Double> 
+     template class LELBinaryCmp<Complex> 
+     template class LELBinaryCmp<DComplex> 
+1000 trial/Lattices/LELCondition.cc aips/BasicSL/Complex.h 
+     template class LELCondition<Float> 
+     template class LELCondition<Double> 
+     template class LELCondition<Complex> 
+     template class LELCondition<DComplex> 
+     template class LELCondition<Bool> 
+1000 trial/Lattices/LELConvert.cc aips/Arrays/ArrayMath.cc 
+     = aips/BasicSL/Complex.h 
+     template class LELConvert<Double, Float> 
+     template class LELConvert<Complex, Float> 
+     template class LELConvert<DComplex, Float> 
+     template class LELConvert<Float, Double> 
+     template class LELConvert<Complex, Double> 
+     template class LELConvert<DComplex, Double> 
+     template class LELConvert<DComplex, Complex> 
+     template class LELConvert<Complex, DComplex> 
+1000 trial/Lattices/LELFunction.cc aips/BasicSL/Complex.h 
+     template class LELFunction1D<Float> 
+     template class LELFunction1D<Double> 
+     template class LELFunction1D<Complex> 
+     template class LELFunction1D<DComplex> 
+     template class LELFunctionReal1D<Float> 
+     template class LELFunctionReal1D<Double> 
+     template class LELFunctionND<Float> 
+     template class LELFunctionND<Double> 
+     template class LELFunctionND<Complex> 
+     template class LELFunctionND<DComplex> 
+     template class LELFunctionND<Bool> 
+1000 trial/Lattices/LELInterface.cc aips/BasicSL/Complex.h 
+     template class LELInterface<Float> 
+     template class LELInterface<Double> 
+     template class LELInterface<Complex> 
+     template class LELInterface<DComplex> 
+     template class LELInterface<Bool> 
+1000 trial/Lattices/LELLattice.cc aips/BasicSL/Complex.h 
+     template class LELLattice<Float> 
+     template class LELLattice<Double> 
+     template class LELLattice<Complex> 
+     template class LELLattice<DComplex> 
+     template class LELLattice<Bool> 
+1000 trial/Lattices/LELSpectralIndex.cc 
+     template class LELSpectralIndex<Float> 
+     template class LELSpectralIndex<Double> 
+1000 trial/Lattices/LELUnary.cc aips/BasicSL/Complex.h 
+     template class LELUnaryConst<Float> 
+     template class LELUnaryConst<Double> 
+     template class LELUnaryConst<Complex> 
+     template class LELUnaryConst<DComplex> 
+     template class LELUnaryConst<Bool> 
+     template class LELUnary<Float> 
+     template class LELUnary<Double> 
+     template class LELUnary<Complex> 
+     template class LELUnary<DComplex> 
+1000 trial/Lattices/LatticeApply.cc 
+     = trial/Lattices/LineCollapser.cc 
+     = trial/Lattices/TiledCollapser.cc 
+     template class LatticeApply<Int> 
+     template class LineCollapser<Int> 
+     template class TiledCollapser<Int> 
+     template class LatticeApply<Float> 
+     template class LineCollapser<Float> 
+     template class TiledCollapser<Float> 
+1000 trial/Lattices/LatticeCache.cc aips/BasicSL/Complex.h 
+     template class LatticeCache<Complex> 
+1010 trial/Lattices/LatticeCache.cc 
+     template class LatticeCache<Float> 
+1000 trial/Lattices/LatticeCleaner.cc aips/BasicSL/Complex.h 
+     template class LatticeCleaner<Float> 
+1000 trial/Lattices/LatticeConcat.cc 
+     template class LatticeConcat<Float> 
+     template class LatticeConcat<Bool> 
+1000 trial/Lattices/LatticeConvolver.cc 
+     template class LatticeConvolver<Float> 
+1000 trial/Lattices/LatticeExpr.cc 
+     template class LatticeExpr<Float> 
+     template class LatticeExpr<Double> 
+     template class LatticeExpr<Complex> 
+     template class LatticeExpr<DComplex> 
+     template class LatticeExpr<Bool> 
+1000 trial/Lattices/LatticeFractile.cc 
+     template class LatticeFractile<Float> 
+     template class LatticeFractile<Double> 
+1000 trial/Lattices/LatticeHistograms.cc 
+     template class LatticeHistograms<Float> 
+     template class HistTiledCollapser<Float> 
+1000 trial/Lattices/LatticeSlice1D.cc 
+     template class LatticeSlice1D<Float> 
+1000 trial/Lattices/LatticeStatistics.cc 
+     = trial/Lattices/LatticeApply.cc 
+     = trial/Lattices/TiledCollapser.cc 
+     template class LatticeStatistics<Float> 
+     template class LatticeApply<Float, Double> 
+     template class StatsTiledCollapser<Float, Double> 
+     template class TiledCollapser<Float, Double> 
+1000 trial/Lattices/LatticeTwoPtCorr.cc 
+     template class LatticeTwoPtCorr<Float> 
+1000 trial/Lattices/LatticeUtilities.cc 
+     = aips/Arrays/IPosition.h 
+     = aips/Lattices/Lattice.h 
+     template void minMax(Float &, Float &, IPosition &, IPosition &, Lattice<Float> const &) 
+     = aips/Logging/LogIO.h 
+     = trial/Lattices/MaskedLattice.h 
+     template void LatticeUtilities::copyDataAndMask<Float>(LogIO &, MaskedLattice<Float> &, MaskedLattice<Float> const &, Bool) 
+     = aips/BasicSL/Complex.h 
+     template void LatticeUtilities::copyDataAndMask<Complex>(LogIO &, MaskedLattice<Complex> &, MaskedLattice<Complex> const &, Bool) 
+     = aips/Arrays/Array.h 
+     template void LatticeUtilities::collapse<Float>(Array<Float> &, IPosition const &, MaskedLattice<Float> const &, Bool) 
+     template void LatticeUtilities::collapse<Float>(Array<Float> &, Array<Bool> &, IPosition const &, MaskedLattice<Float> const &, Bool, Bool, Bool) 
+     = aips/Arrays/Slicer.h 
+     template void LatticeUtilities::replicate<Float>(Lattice<Float> &, Slicer const &, Array<Float> const &) 
+     template void LatticeUtilities::replicate<Bool>(Lattice<Bool> &, Slicer const &, Array<Bool> const &) 
+     template void LatticeUtilities::addDegenerateAxes<Float>(Lattice<Float>* &, Lattice<Float> const &, uInt) 
+1000 trial/Lattices/MaskedLattice.cc 
+     = aips/BasicSL/Complex.h 
+     template class MaskedLattice<Int> 
+     template class MaskedLattice<Float> 
+     template class MaskedLattice<Double> 
+     template class MaskedLattice<Complex> 
+     template class MaskedLattice<DComplex> 
+     template class MaskedLattice<Bool> 
+1000 trial/Lattices/MaskedLatticeIterator.cc 
+     = aips/BasicSL/Complex.h 
+     template class RO_MaskedLatticeIterator<Float> 
+     template class RO_MaskedLatticeIterator<Double> 
+     template class RO_MaskedLatticeIterator<Complex> 
+     template class RO_MaskedLatticeIterator<DComplex> 
+     template class RO_MaskedLatticeIterator<Bool> 
+1000 trial/Lattices/RebinLattice.cc 
+     = aips/BasicSL/Complex.h 
+     template class RebinLattice<Float> 
+     template class RebinLattice<Double> 
+     template class RebinLattice<Complex> 
+     template class RebinLattice<DComplex> 
+     template class RebinLattice<Bool> 
+1000 trial/Lattices/SubLattice.cc 
+     = aips/BasicSL/Complex.h 
+     template class SubLattice<Int> 
+     template class SubLattice<Float> 
+     template class SubLattice<Double> 
+     template class SubLattice<Complex> 
+     template class SubLattice<DComplex> 
+     template class SubLattice<Bool> 

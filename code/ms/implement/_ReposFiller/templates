@@ -1,0 +1,54 @@
+1000 aips/Arrays/Array.cc 
+     = trial/MeasurementSets/MSSelection.h 
+     template class Array<MSSelection> 
+1000 aips/Arrays/MaskedArray.cc 
+     = trial/MeasurementSets/MSSelection.h 
+     template class MaskedArray<MSSelection> 
+1000 aips/Arrays/Vector.cc 
+     = trial/MeasurementSets/MSSelection.h 
+     template class Vector<MSSelection> 
+1000 aips/Containers/Block.h aips/MeasurementSets/MeasurementSet.h 
+     template class Block<MeasurementSet> 
+1000 aips/MeasurementSets/MSTable.cc aips/MeasurementSets/MeasurementSet.h 
+     template class MSTable<MSAntennaEnums::PredefinedColumns, MSAntennaEnums::PredefinedKeywords> 
+     template class MSTable<MSDataDescriptionEnums::PredefinedColumns, MSDataDescriptionEnums::PredefinedKeywords> 
+     template class MSTable<MSDopplerEnums::PredefinedColumns, MSDopplerEnums::PredefinedKeywords> 
+     template class MSTable<MSFeedEnums::PredefinedColumns, MSFeedEnums::PredefinedKeywords> 
+     template class MSTable<MSFieldEnums::PredefinedColumns, MSFieldEnums::PredefinedKeywords> 
+     template class MSTable<MSFlagCmdEnums::PredefinedColumns, MSFlagCmdEnums::PredefinedKeywords> 
+     template class MSTable<MSFreqOffsetEnums::PredefinedColumns, MSFreqOffsetEnums::PredefinedKeywords> 
+     template class MSTable<MSHistoryEnums::PredefinedColumns, MSHistoryEnums::PredefinedKeywords> 
+     template class MSTable<MSMainEnums::PredefinedColumns, MSMainEnums::PredefinedKeywords> 
+     template class MSTable<MSObservationEnums::PredefinedColumns, MSObservationEnums::PredefinedKeywords> 
+     template class MSTable<MSPointingEnums::PredefinedColumns, MSPointingEnums::PredefinedKeywords> 
+     template class MSTable<MSPolarizationEnums::PredefinedColumns, MSPolarizationEnums::PredefinedKeywords> 
+     template class MSTable<MSProcessorEnums::PredefinedColumns, MSProcessorEnums::PredefinedKeywords> 
+     template class MSTable<MSSourceEnums::PredefinedColumns, MSSourceEnums::PredefinedKeywords> 
+     template class MSTable<MSSpectralWindowEnums::PredefinedColumns, MSSpectralWindowEnums::PredefinedKeywords> 
+     template class MSTable<MSStateEnums::PredefinedColumns, MSStateEnums::PredefinedKeywords> 
+     template class MSTable<MSSysCalEnums::PredefinedColumns, MSSysCalEnums::PredefinedKeywords> 
+     template class MSTable<MSWeatherEnums::PredefinedColumns, MSWeatherEnums::PredefinedKeywords> 
+1000 aips/Utilities/Copy.cc 
+     = trial/MeasurementSets/MSSelection.h 
+     template void objset(MSSelection *, MSSelection, uInt) 
+     template void objset(MSSelection *, MSSelection, uInt, uInt) 
+     template void objcopy(MSSelection *, MSSelection const *, uInt) 
+     template void objcopy(MSSelection *, MSSelection const *, uInt, uInt, uInt) 
+     template void objmove(MSSelection *, MSSelection const *, uInt) 
+1010 aips/Utilities/Copy.cc 
+     = trial/MeasurementSets/MSTableIndex.h 
+     template void objcopy(MSTableIndex **, MSTableIndex * const *, uInt) 
+     template void objcopy(MSTableIndex *, MSTableIndex const *, uInt) 
+     template void objset(MSTableIndex **, MSTableIndex *, uInt) 
+1020 aips/Utilities/Copy.cc aips/MeasurementSets/MeasurementSet.h 
+     template void objcopy(MeasurementSet *, MeasurementSet const *, uInt) 
+     template void objmove(MeasurementSet *, MeasurementSet const *, uInt) 
+     template void objset(MeasurementSet *, MeasurementSet, uInt) 
+1000 aips/Utilities/CountedPtr.cc 
+     = trial/MeasurementSets/MSSelection.h 
+     = aips/Containers/Block.h 
+     template class CountedPtr<Block<MSSelection> > 
+     template class CountedConstPtr<Block<MSSelection> > 
+     template class SimpleCountedPtr<Block<MSSelection> > 
+     template class SimpleCountedConstPtr<Block<MSSelection> > 
+     template class PtrRep<Block<MSSelection> > 

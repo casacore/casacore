@@ -1,0 +1,170 @@
+1000 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     = trial/Images/ImageInterface.h 
+     template class PtrBlock<ImageInterface<Complex> *> 
+     template class PtrBlock<ImageInterface<Float> *> 
+1010 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     = trial/Images/PagedImage.h 
+     template class PtrBlock<PagedImage<Complex> *> 
+     template class PtrBlock<PagedImage<Float> *> 
+1020 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     = trial/Images/SubImage.h 
+     template class Block<SubImage<Complex> *> 
+     template class Block<SubImage<Float> *> 
+     template class PtrBlock<SubImage<Complex> *> 
+     template class PtrBlock<SubImage<Float> *> 
+1030 aips/Containers/Block.h trial/Images/TempImage.h 
+     = aips/BasicSL/Complex.h 
+     template class PtrBlock<TempImage<Float> *> 
+     template class PtrBlock<TempImage<Complex> *> 
+1000 aips/Utilities/Copy.cc aips/BasicSL/Complex.h 
+     = trial/Images/ImageInterface.h 
+     template void objcopy(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt) 
+     template void objcopy(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt) 
+     template void objset(ImageInterface<Complex> **, ImageInterface<Complex> *, uInt) 
+     template void objset(ImageInterface<Complex> **, ImageInterface<Complex> *, uInt, uInt) 
+1010 aips/Utilities/Copy.cc aips/BasicSL/Complex.h 
+     = trial/Images/PagedImage.h 
+     template void objcopy(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt) 
+     template void objcopy(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt) 
+     template void objset(PagedImage<Complex> **, PagedImage<Complex> *, uInt) 
+     template void objset(PagedImage<Complex> **, PagedImage<Complex> *, uInt, uInt) 
+1020 aips/Utilities/Copy.cc aips/BasicSL/Complex.h 
+     = trial/Images/SubImage.h 
+     template void objcopy(SubImage<Complex> **, SubImage<Complex> * const *, uInt) 
+     template void objcopy(SubImage<Complex> **, SubImage<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(SubImage<Complex> **, SubImage<Complex> * const *, uInt) 
+     template void objset(SubImage<Complex> **, SubImage<Complex> *, uInt) 
+     template void objset(SubImage<Complex> **, SubImage<Complex> *, uInt, uInt) 
+1030 aips/Utilities/Copy.cc trial/Images/ImageInterface.h 
+     template void objcopy(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt) 
+     template void objcopy(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt) 
+     template void objset(ImageInterface<Float> **, ImageInterface<Float> *, uInt) 
+     template void objset(ImageInterface<Float> **, ImageInterface<Float> *, uInt, uInt) 
+1040 aips/Utilities/Copy.cc trial/Images/PagedImage.h 
+     template void objcopy(PagedImage<Float> **, PagedImage<Float> * const *, uInt) 
+     template void objcopy(PagedImage<Float> **, PagedImage<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(PagedImage<Float> **, PagedImage<Float> * const *, uInt) 
+     template void objset(PagedImage<Float> **, PagedImage<Float> *, uInt) 
+     template void objset(PagedImage<Float> **, PagedImage<Float> *, uInt, uInt) 
+1050 aips/Utilities/Copy.cc trial/Images/SubImage.h 
+     template void objcopy(SubImage<Float> **, SubImage<Float> * const *, uInt) 
+     template void objcopy(SubImage<Float> **, SubImage<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(SubImage<Float> **, SubImage<Float> * const *, uInt) 
+     template void objset(SubImage<Float> **, SubImage<Float> *, uInt) 
+     template void objset(SubImage<Float> **, SubImage<Float> *, uInt, uInt) 
+1060 aips/Utilities/Copy.cc trial/Images/TempImage.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(TempImage<Float> **, TempImage<Float> * const *, uInt) 
+     template void objcopy(TempImage<Float> **, TempImage<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(TempImage<Float> **, TempImage<Float> * const *, uInt) 
+     template void objset(TempImage<Float> **, TempImage<Float> *, uInt) 
+     template void objset(TempImage<Float> **, TempImage<Float> *, uInt, uInt) 
+     template void objcopy(TempImage<Complex> **, TempImage<Complex> * const *, uInt) 
+     template void objcopy(TempImage<Complex> **, TempImage<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(TempImage<Complex> **, TempImage<Complex> * const *, uInt) 
+     template void objset(TempImage<Complex> **, TempImage<Complex> *, uInt) 
+     template void objset(TempImage<Complex> **, TempImage<Complex> *, uInt, uInt) 
+1000 aips/Utilities/PtrHolder.cc 
+     = trial/Images/ImageConcat.h 
+     template class PtrHolder<ImageConcat<Float> > 
+1010 aips/Utilities/PtrHolder.cc 
+     = trial/Images/ImageInterface.h 
+     template class PtrHolder<ImageInterface<Float> > 
+1020 aips/Utilities/PtrHolder.cc 
+     = trial/Images/MomentCalculator.h 
+     template class PtrHolder<MomentCalcBase<Float> > 
+1030 aips/Utilities/PtrHolder.cc 
+     = trial/Images/PagedImage.h 
+     template class PtrHolder<PagedImage<Float> > 
+1000 trial/Images/ExtendImage.cc 
+     = aips/BasicSL/Complex.h 
+     template class ExtendImage<Float> 
+     template class ExtendImage<Complex> 
+1000 trial/Images/Image2DConvolver.cc 
+     template class Image2DConvolver<Float> 
+1000 trial/Images/ImageConcat.cc 
+     template class ImageConcat<Float> 
+1000 trial/Images/ImageConvolver.cc 
+     template class ImageConvolver<Float> 
+1000 trial/Images/ImageDecomposer.cc 
+     template class ImageDecomposer<Float> 
+1000 trial/Images/ImageExpr.cc aips/BasicSL/Complex.h 
+     template class ImageExpr<Float> 
+     template class ImageExpr<Complex> 
+1010 trial/Images/ImageExpr.cc 
+     template class ImageExpr<Bool> 
+1000 trial/Images/ImageFITSConverter.cc aips/FITS/hdu.h 
+     template class ImageFITSConverterImpl<PrimaryArray<Float> > 
+1010 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<ImageExtension<Double> > 
+1020 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<ImageExtension<FitsLong> > 
+1030 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<ImageExtension<Float> > 
+1040 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<ImageExtension<Short> > 
+1050 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<ImageExtension<uChar> > 
+1060 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<PrimaryArray<Double> > 
+1070 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<PrimaryArray<FitsLong> > 
+1080 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<PrimaryArray<Short> > 
+1090 trial/Images/ImageFITSConverter.cc 
+     template class ImageFITSConverterImpl<PrimaryArray<uChar> > 
+1000 trial/Images/ImageFit1D.cc 
+     template class ImageFit1D<Float> 
+1000 trial/Images/ImageHistograms.cc 
+     template class ImageHistograms<Float> 
+1000 trial/Images/ImageInterface.cc aips/BasicSL/Complex.h 
+     template class ImageInterface<Complex> 
+1010 trial/Images/ImageInterface.cc 
+     template class ImageInterface<Bool> 
+1020 trial/Images/ImageInterface.cc 
+     template class ImageInterface<Float> 
+1000 trial/Images/ImageMoments.cc 
+     = trial/Images/MomentCalculator.cc 
+     template class ImageMoments<Float> 
+     template class MomentCalcBase<Float> 
+     template class MomentClip<Float> 
+     template class MomentWindow<Float> 
+     template class MomentFit<Float> 
+1000 trial/Images/ImageRegrid.cc 
+     template class ImageRegrid<Float> 
+1000 trial/Images/ImageSourceFinder.cc 
+     template class ImageSourceFinder<Float> 
+1000 trial/Images/ImageStatistics.cc 
+     template class ImageStatistics<Float> 
+1000 trial/Images/ImageSummary.cc 
+     template class ImageSummary<Float> 
+1000 trial/Images/ImageTwoPtCorr.cc 
+     template class ImageTwoPtCorr<Float> 
+1000 trial/Images/ImageUtilities2.cc 
+     = trial/Images/ImageInterface.h 
+     = aips/BasicSL/Complex.h 
+     template void ImageUtilities::copyMiscellaneous<Float, Float>(ImageInterface<Float> &, ImageInterface<Float> const &) 
+     template void ImageUtilities::copyMiscellaneous<Complex, Float>(ImageInterface<Complex> &, ImageInterface<Float> const &) 
+     template void ImageUtilities::fitProfiles<Float>(ImageInterface<Float>* &, ImageInterface<Float>* &, ImageInterface<Float> const &, ImageInterface<Float>* &, uInt, uInt, Int, Bool) 
+1000 trial/Images/PagedImage.cc aips/BasicSL/Complex.h 
+     template class PagedImage<Complex> 
+1010 trial/Images/PagedImage.cc 
+     template class PagedImage<Float> 
+1000 trial/Images/RebinImage.cc 
+     = aips/BasicSL/Complex.h 
+     template class RebinImage<Float> 
+     template class RebinImage<Complex> 
+1000 trial/Images/SepImageConvolver.cc 
+     template class SepImageConvolver<Float> 
+1000 trial/Images/SubImage.cc 
+     = aips/BasicSL/Complex.h 
+     template class SubImage<Complex> 
+1010 trial/Images/SubImage.cc 
+     template class SubImage<Float> 
+1000 trial/Images/TempImage.cc 
+     = aips/BasicSL/Complex.h 
+     template class TempImage<Float> 
+     template class TempImage<Complex> 

@@ -1,0 +1,269 @@
+1000 aips/Arrays/Array.cc 
+     = aips/Tables/TableRecord.h 
+     template class Array<TableRecord> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<TableRecord>::ConstIteratorSTL 
+     #endif 
+1000 aips/Arrays/MaskedArray.cc 
+     = aips/Tables/TableRecord.h 
+     template class MaskedArray<TableRecord> 
+1000 aips/Arrays/Vector.cc 
+     = aips/Tables/TableRecord.h 
+     template class Vector<TableRecord> 
+1000 aips/Containers/Block.h 
+     = aips/Tables/TableRecord.h 
+     template class Block<TableRecord> 
+1010 aips/Containers/Block.h aips/Tables/BaseColumn.h 
+     template <> class BaseColumn 
+     template class PtrBlock<BaseColumn *> 
+1020 aips/Containers/Block.h aips/Tables/ExprNode.h 
+     = aips/Tables/ExprRange.h 
+     template <> class TableExprNodeRep 
+     template class Block<TableExprNode> 
+     template class Block<TableExprRange> 
+     template class PtrBlock<TableExprNodeRep *> 
+1030 aips/Containers/Block.h aips/Tables/TableParse.h 
+     template <> class TableParseSelect 
+     template <> class TableParseSort 
+     template <> class TableExprNodeSetElem 
+     template class PtrBlock<TableParseSelect *> 
+     template class PtrBlock<TableParseSort *> 
+     template class PtrBlock<TableExprNodeSetElem *> 
+1000 aips/Containers/Link.cc aips/Tables/TableParse.h 
+     template class Link<TableParse> 
+1000 aips/Containers/List.cc aips/Tables/TableParse.h 
+     template class ConstListIter<TableParse> 
+1010 aips/Containers/List.cc aips/Tables/TableParse.h 
+     template class List<TableParse> 
+1020 aips/Containers/List.cc aips/Tables/TableParse.h 
+     template class ListIter<TableParse> 
+1030 aips/Containers/List.cc aips/Tables/TableParse.h 
+     template class ListNotice<TableParse> 
+1000 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     = aips/Tables/ColumnDesc.h 
+     template class OrderedPair<String, ColumnDesc> 
+1010 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     = aips/Tables/RefColumn.h 
+     template class OrderedPair<String, RefColumn *> 
+1020 aips/Containers/OrderedPair.cc aips/Tables/BaseColDesc.h 
+     template class OrderedPair<String, BaseColumnDesc *(*)(String const &)> 
+1030 aips/Containers/OrderedPair.cc aips/Tables/DataManager.h 
+     template class OrderedPair<String, DataManager *(*)(String const &, Record const &)> 
+1000 aips/Containers/RecordField.cc aips/Tables/TableRecord.h 
+     template class RORecordFieldPtr<TableRecord> 
+     template class RecordFieldPtr<TableRecord> 
+1000 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     = aips/Tables/BaseColDesc.h 
+     = aips/Tables/ColumnDesc.h 
+     = aips/Tables/DataManager.h 
+     = aips/Tables/RefColumn.h 
+     template class SimpleOrderedMap<String, BaseColumnDesc *(*)(String const &)> 
+     template class SimpleOrderedMap<String, ColumnDesc> 
+     template class SimpleOrderedMap<String, DataManager *(*)(String const &, Record const &)> 
+     template class SimpleOrderedMap<String, RefColumn *> 
+1000 aips/Tables/ArrColData.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ArrayColumnData<Bool> 
+     template class ArrayColumnData<Char> 
+     template class ArrayColumnData<uChar> 
+     template class ArrayColumnData<Short> 
+     template class ArrayColumnData<uShort> 
+     template class ArrayColumnData<Int> 
+     template class ArrayColumnData<uInt> 
+     template class ArrayColumnData<Float> 
+     template class ArrayColumnData<Double> 
+     template class ArrayColumnData<Complex> 
+     template class ArrayColumnData<DComplex> 
+     template class ArrayColumnData<String> 
+1000 aips/Tables/ArrColDesc.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ArrayColumnDesc<Bool> 
+     template class ArrayColumnDesc<Char> 
+     template class ArrayColumnDesc<uChar> 
+     template class ArrayColumnDesc<Short> 
+     template class ArrayColumnDesc<uShort> 
+     template class ArrayColumnDesc<Int> 
+     template class ArrayColumnDesc<uInt> 
+     template class ArrayColumnDesc<Float> 
+     template class ArrayColumnDesc<Double> 
+     template class ArrayColumnDesc<Complex> 
+     template class ArrayColumnDesc<DComplex> 
+     template class ArrayColumnDesc<String> 
+1000 aips/Tables/ArrayColumn.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ArrayColumn<Bool> 
+     template class ArrayColumn<uChar> 
+     template class ArrayColumn<Short> 
+     template class ArrayColumn<uShort> 
+     template class ArrayColumn<Int> 
+     template class ArrayColumn<uInt> 
+     template class ArrayColumn<Float> 
+     template class ArrayColumn<Double> 
+     template class ArrayColumn<Complex> 
+     template class ArrayColumn<DComplex> 
+     template class ArrayColumn<String> 
+     template class ROArrayColumn<Bool> 
+     template class ROArrayColumn<uChar> 
+     template class ROArrayColumn<uShort> 
+     template class ROArrayColumn<Short> 
+     template class ROArrayColumn<Int> 
+     template class ROArrayColumn<uInt> 
+     template class ROArrayColumn<Float> 
+     template class ROArrayColumn<Double> 
+     template class ROArrayColumn<Complex> 
+     template class ROArrayColumn<DComplex> 
+     template class ROArrayColumn<String> 
+1000 aips/Tables/BaseMappedArrayEngine.cc 
+     = aips/BasicSL/Complex.h 
+     template class BaseMappedArrayEngine<Complex, Int> 
+     template class BaseMappedArrayEngine<Float, Short> 
+1000 aips/Tables/ScaColData.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ScalarColumnData<Bool> 
+     template class ScalarColumnData<Char> 
+     template class ScalarColumnData<uChar> 
+     template class ScalarColumnData<Short> 
+     template class ScalarColumnData<uShort> 
+     template class ScalarColumnData<Int> 
+     template class ScalarColumnData<uInt> 
+     template class ScalarColumnData<Float> 
+     template class ScalarColumnData<Double> 
+     template class ScalarColumnData<Complex> 
+     template class ScalarColumnData<DComplex> 
+     template class ScalarColumnData<String> 
+1000 aips/Tables/ScaColDesc.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ScalarColumnDesc<Bool> 
+     template class ScalarColumnDesc<Char> 
+     template class ScalarColumnDesc<uChar> 
+     template class ScalarColumnDesc<Short> 
+     template class ScalarColumnDesc<uShort> 
+     template class ScalarColumnDesc<Int> 
+     template class ScalarColumnDesc<uInt> 
+     template class ScalarColumnDesc<Float> 
+     template class ScalarColumnDesc<Double> 
+     template class ScalarColumnDesc<Complex> 
+     template class ScalarColumnDesc<DComplex> 
+     template class ScalarColumnDesc<String> 
+1000 aips/Tables/ScalarColumn.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h aips/Tables/TableRecord.h 
+     template class ROScalarColumn<Bool> 
+     template class ROScalarColumn<uChar> 
+     template class ROScalarColumn<Short> 
+     template class ROScalarColumn<uShort> 
+     template class ROScalarColumn<Int> 
+     template class ROScalarColumn<uInt> 
+     template class ROScalarColumn<Float> 
+     template class ROScalarColumn<Double> 
+     template class ROScalarColumn<Complex> 
+     template class ROScalarColumn<DComplex> 
+     template class ROScalarColumn<String> 
+     template class ROScalarColumn<TableRecord> 
+     template class ScalarColumn<Bool> 
+     template class ScalarColumn<uChar> 
+     template class ScalarColumn<Short> 
+     template class ScalarColumn<uShort> 
+     template class ScalarColumn<Int> 
+     template class ScalarColumn<uInt> 
+     template class ScalarColumn<Float> 
+     template class ScalarColumn<Double> 
+     template class ScalarColumn<Complex> 
+     template class ScalarColumn<DComplex> 
+     template class ScalarColumn<String> 
+     template class ScalarColumn<TableRecord> 
+1000 aips/Tables/TVec.cc 
+     template class TabVecRep<Double> 
+1010 aips/Tables/TVec.cc 
+     template class TabVecRep<Int> 
+1000 aips/Tables/TVecMath.cc aips/Tables/TVec.h 
+     template void tabVecRepminmax(Int &, Int &, TabVecRep<Int> const &) 
+1000 aips/Tables/TVecScaCol.cc 
+     template class TabVecScaCol<Double> 
+1010 aips/Tables/TVecScaCol.cc 
+     template class TabVecScaCol<Int> 
+1000 aips/Tables/TVecTemp.cc 
+     template class TabVecTemp<Double> 
+1010 aips/Tables/TVecTemp.cc 
+     template class TabVecTemp<Int> 
+1000 aips/Tables/TabVecMath.cc aips/Tables/TableVector.h 
+     template Int max(ROTableVector<Int> const &) 
+1000 aips/Tables/TableVector.cc 
+     template class ROTableVector<Int> 
+1010 aips/Tables/TableVector.cc 
+     template class TableVector<Double> 
+     template class ROTableVector<Double> 
+1020 aips/Tables/TableVector.cc 
+     template class TableVector<Int> 
+1000 aips/Tables/VirtArrCol.cc 
+     = aips/BasicSL/Complex.h 
+     template class VirtualArrayColumn<Float> 
+     template class VirtualArrayColumn<Complex> 
+1000 aips/Tables/VirtScaCol.cc 
+     template class VirtualScalarColumn<Float> 
+1000 aips/Utilities/BinarySearch.cc aips/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Double> const &, Double const &, uInt, Int) 
+1010 aips/Utilities/BinarySearch.cc aips/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
+1000 aips/Utilities/COWPtr.cc aips/Tables/TableRecordRep.h 
+     template class COWPtr<TableRecordRep> 
+1000 aips/Utilities/Copy.cc 
+     = aips/Tables/ExprNode.h 
+     template void objcopy(TableExprNode *, TableExprNode const *, uInt) 
+     template void objmove(TableExprNode *, TableExprNode const *, uInt) 
+     template void objset(TableExprNode *, TableExprNode, uInt) 
+1010 aips/Utilities/Copy.cc 
+     = aips/Tables/ExprRange.h 
+     template void objcopy(TableExprRange *, TableExprRange const *, uInt) 
+     template void objmove(TableExprRange *, TableExprRange const *, uInt) 
+     template void objset(TableExprRange *, TableExprRange, uInt) 
+1020 aips/Utilities/Copy.cc 
+     = aips/Tables/TableRecord.h 
+     template void objcopy(TableRecord *, TableRecord const *, uInt) 
+     template void objcopy(TableRecord *, TableRecord const *, uInt, uInt, uInt) 
+     template void objmove(TableRecord *, TableRecord const *, uInt) 
+     template void objset(TableRecord *, TableRecord, uInt) 
+     template void objset(TableRecord *, TableRecord, uInt, uInt) 
+1030 aips/Utilities/Copy.cc 
+     = aips/Tables/TableRow.h 
+     template void objcopy(ROTableRow **, ROTableRow * const *, uInt) 
+     template void objcopy(ROTableRow *, ROTableRow const *, uInt) 
+1000 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     = aips/Tables/TableRecord.h 
+     template class CountedConstPtr<Block<TableRecord> > 
+     template class CountedPtr<Block<TableRecord> > 
+     template class PtrRep<Block<TableRecord> > 
+     template class SimpleCountedConstPtr<Block<TableRecord> > 
+     template class SimpleCountedPtr<Block<TableRecord> > 
+1010 aips/Utilities/CountedPtr.cc 
+     = trial/Tables/TiledFileAccess.h 
+     template class CountedConstPtr<TiledFileAccess> 
+     template class CountedPtr<TiledFileAccess> 
+     template class PtrRep<TiledFileAccess> 
+     template class SimpleCountedConstPtr<TiledFileAccess> 
+     template class SimpleCountedPtr<TiledFileAccess> 
+1020 aips/Utilities/CountedPtr.cc aips/Tables/TableDesc.h 
+     template class PtrRep<TableDesc> 
+     template class SimpleCountedConstPtr<TableDesc> 
+1030 aips/Utilities/CountedPtr.cc aips/Tables/TableRecordRep.h 
+     template class CountedConstPtr<TableRecordRep> 
+     template class CountedPtr<TableRecordRep> 
+     template class PtrRep<TableRecordRep> 
+     template class SimpleCountedConstPtr<TableRecordRep> 
+     template class SimpleCountedPtr<TableRecordRep> 
+1000 aips/Utilities/Register.cc aips/Containers/List.h 
+     = aips/Tables/TableParse.h 
+     template uInt Register(ListNotice<TableParse> const *) 
+1000 trial/LogTables/LoggerHolder.h aips/Containers/Block.h 
+     = aips/Utilities/CountedPtr.cc aips/Utilities/Copy.cc 
+     template class PtrRep<LoggerHolderRep> 
+     template class CountedPtr<LoggerHolderRep> 
+     template class CountedConstPtr<LoggerHolderRep> 
+     template class SimpleCountedPtr<LoggerHolderRep> 
+     template class SimpleCountedConstPtr<LoggerHolderRep> 
+     template class Block<LoggerHolder> 
+     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt) 
+     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt, uInt, uInt) 
+     template void objset(LoggerHolder*, LoggerHolder, uInt) 
+     template void objset(LoggerHolder*, LoggerHolder, uInt, uInt) 
+     template void objmove(LoggerHolder*, LoggerHolder const *, uInt) 

@@ -1,0 +1,60 @@
+1000 aips/Arrays/Array.cc trial/MSVis/StokesVector.h 
+     template class Array<StokesVector> 
+     template class Array<CStokesVector> 
+1000 aips/Arrays/MaskedArray.cc trial/MSVis/StokesVector.h 
+     template class MaskedArray<StokesVector> 
+     template class MaskedArray<CStokesVector> 
+1000 aips/Arrays/Matrix.cc trial/MSVis/StokesVector.h 
+     template class Matrix<CStokesVector> 
+1000 aips/Arrays/Vector.cc trial/MSVis/StokesVector.h 
+     template class Vector<CStokesVector> 
+1010 aips/Arrays/Vector.cc trial/MSVis/StokesVector.h 
+     template class Vector<StokesVector> 
+1000 aips/Containers/Block.h 
+     = trial/MSVis/VisBuffer.h 
+     template class Block<VisBuffer> 
+1010 aips/Containers/Block.h 
+     = trial/MSVis/VisTimeAverager.h 
+     template class PtrBlock<VisTimeAverager *> 
+1020 aips/Containers/Block.h trial/MSVis/StokesVector.h 
+     template class Block<CStokesVector> 
+1030 aips/Containers/Block.h trial/MSVis/StokesVector.h 
+     template class Block<StokesVector> 
+1000 aips/Utilities/Copy.cc 
+     = trial/MSVis/StokesVector.h 
+     = trial/Mathematics/RigidVector.h 
+     template void objmove(StokesVector *, StokesVector const *, uInt) 
+     template void objmove(CStokesVector *, CStokesVector const *, uInt) 
+     template void objmove(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
+     template void objmove(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
+1010 aips/Utilities/Copy.cc 
+     = trial/MSVis/VisBuffer.h 
+     template void objset(VisBuffer *, VisBuffer, uInt) 
+     template void objcopy(VisBuffer *, VisBuffer const *, uInt) 
+     template void objmove(VisBuffer *, VisBuffer const *, uInt) 
+1020 aips/Utilities/Copy.cc trial/MSVis/StokesVector.h 
+     template void objcopy(StokesVector *, StokesVector const *, uInt) 
+     template void objcopy(CStokesVector *, CStokesVector const *, uInt) 
+1030 aips/Utilities/Copy.cc trial/MSVis/StokesVector.h 
+     template void objcopy(StokesVector *, StokesVector const *, uInt, uInt, uInt) 
+     template void objcopy(CStokesVector *, CStokesVector const *, uInt, uInt, uInt) 
+1040 aips/Utilities/Copy.cc trial/MSVis/StokesVector.h 
+     template void objset(StokesVector *, StokesVector, uInt) 
+     template void objset(CStokesVector *, CStokesVector, uInt) 
+1050 aips/Utilities/Copy.cc trial/MSVis/StokesVector.h 
+     template void objset(StokesVector *, StokesVector, uInt, uInt) 
+     template void objset(CStokesVector *, CStokesVector, uInt, uInt) 
+1000 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = trial/MSVis/StokesVector.h 
+     template class CountedPtr<Block<CStokesVector> > 
+     template class CountedConstPtr<Block<CStokesVector> > 
+     template class SimpleCountedPtr<Block<CStokesVector> > 
+     template class SimpleCountedConstPtr<Block<CStokesVector> > 
+     template class PtrRep<Block<CStokesVector> > 
+1010 aips/Utilities/CountedPtr.cc trial/MSVis/StokesVector.h 
+     = aips/Containers/Block.h 
+     template class CountedPtr<Block<StokesVector> > 
+     template class CountedConstPtr<Block<StokesVector> > 
+     template class SimpleCountedPtr<Block<StokesVector> > 
+     template class SimpleCountedConstPtr<Block<StokesVector> > 
+     template class PtrRep<Block<StokesVector> > 

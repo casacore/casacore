@@ -1,0 +1,9 @@
+1000 aips/Utilities/CountedPtr.cc trial/Coordinates/CoordinateSystem.h 
+     template class CountedConstPtr<CoordinateSystem> 
+     template class CountedPtr<CoordinateSystem> 
+     template class PtrRep<CoordinateSystem> 
+     template class SimpleCountedConstPtr<CoordinateSystem> 
+     template class SimpleCountedPtr<CoordinateSystem> 
+1000 aips/Utilities/PtrHolder.cc 
+     = trial/Coordinates/CoordinateSystem.h 
+     template class PtrHolder<CoordinateSystem> 

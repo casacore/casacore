@@ -1,0 +1,19 @@
+1000 aips/Arrays/ArrayIO.cc 
+     = aips/Quanta/Quantum.h 
+     = aips/Measures/MEpoch.h 
+     = aips/Measures/MFrequency.h 
+     template ostream & operator<<(ostream &, Array<MEpoch> const &) 
+     template ostream & operator<<(ostream &, Array<MFrequency> const &) 
+1000 aips/Quanta/QLogical.cc aips/Quanta/Quantum.h 
+     template Bool near(Quantum<Double> const &, Quantum<Double> const &, Double) 
+1000 aips/TableMeasures/ScalarMeasColumn.cc 
+     = aips/Measures/MDirection.h 
+     = aips/Measures/MBaseline.h 
+     template class ROScalarMeasColumn<MBaseline> 
+     template class ScalarMeasColumn<MBaseline> 
+1000 aips/TableMeasures/ScalarQuantColumn.cc 
+     = aips/Quanta/Quantum.h 
+     template class ROScalarQuantColumn<Complex> 
+     template class ROScalarQuantColumn<Int> 
+     template class ScalarQuantColumn<Complex> 
+     template class ScalarQuantColumn<Int> 

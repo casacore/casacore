@@ -1,0 +1,3082 @@
+1000 aips/Arrays/Array.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template class Array<Vector<Complex> > 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Vector<Complex> >::ConstIteratorSTL 
+     #endif 
+1010 aips/Arrays/Array.cc 
+     = aips/Arrays/Vector.h 
+     template class Array<Vector<Double> > 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Vector<Double> >::ConstIteratorSTL 
+     #endif 
+1020 aips/Arrays/Array.cc 
+     = aips/Arrays/Vector.h 
+     template class Array<Vector<Float> > 
+1030 aips/Arrays/Array.cc 
+     = aips/BasicSL/Complex.h 
+     template class Array<Complex> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Complex>::ConstIteratorSTL 
+     #endif 
+1040 aips/Arrays/Array.cc 
+     = aips/BasicSL/Complex.h 
+     template class Array<DComplex> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<DComplex>::ConstIteratorSTL 
+     #endif 
+1050 aips/Arrays/Array.cc 
+     = aips/BasicSL/String.h 
+     template class Array<String> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<String>::ConstIteratorSTL 
+     #endif 
+1060 aips/Arrays/Array.cc 
+     = aips/Quanta/MVDirection.h 
+     template class Array<MVDirection> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<MVDirection>::ConstIteratorSTL 
+     #endif 
+1070 aips/Arrays/Array.cc 
+     = aips/Quanta/MVFrequency.h 
+     template class Array<MVFrequency> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<MVFrequency>::ConstIteratorSTL 
+     #endif 
+1080 aips/Arrays/Array.cc 
+     = aips/Quanta/MVPosition.h 
+     template class Array<MVPosition> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<MVPosition>::ConstIteratorSTL 
+     #endif 
+1090 aips/Arrays/Array.cc 
+     = aips/Quanta/MVTime.h 
+     template class Array<MVTime> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<MVTime>::ConstIteratorSTL 
+     #endif 
+1100 aips/Arrays/Array.cc 
+     = aips/Quanta/Quantum.h 
+     template class Array<Quantum<Double> > 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Quantum<Double> >::ConstIteratorSTL 
+     #endif 
+1110 aips/Arrays/Array.cc 
+     = aips/Quanta/Quantum.h 
+     template class Array<Quantum<Float> > 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Quantum<Float> >::ConstIteratorSTL 
+     #endif 
+1120 aips/Arrays/Array.cc 
+     = aips/Quanta/QuantumHolder.h 
+     template class Array<QuantumHolder> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<QuantumHolder>::ConstIteratorSTL 
+     #endif 
+1130 aips/Arrays/Array.cc 
+     = aips/Quanta/Unit.h 
+     template class Array<Unit> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Unit>::ConstIteratorSTL 
+     #endif 
+1140 aips/Arrays/Array.cc aips/Arrays/Matrix.h 
+     = aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Array<Matrix<CountedPtr<Random> > > 
+1150 aips/Arrays/Array.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Array<CountedPtr<Random> > 
+1160 aips/Arrays/Array.cc 
+     template class Array<Array<Double> > 
+1170 aips/Arrays/Array.cc 
+     template class Array<Bool> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Bool>::ConstIteratorSTL 
+     #endif 
+1180 aips/Arrays/Array.cc 
+     template class Array<Char> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Char>::ConstIteratorSTL 
+     #endif 
+1190 aips/Arrays/Array.cc 
+     template class Array<Double> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Double>::ConstIteratorSTL 
+     #endif 
+1200 aips/Arrays/Array.cc 
+     template class Array<Float *> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Float *>::ConstIteratorSTL 
+     #endif 
+1210 aips/Arrays/Array.cc 
+     template class Array<Float> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Float>::ConstIteratorSTL 
+     #endif 
+1220 aips/Arrays/Array.cc 
+     template class Array<Int> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Int>::ConstIteratorSTL 
+     #endif 
+1230 aips/Arrays/Array.cc 
+     template class Array<Long> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Long>::ConstIteratorSTL 
+     #endif 
+1240 aips/Arrays/Array.cc 
+     template class Array<Short> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<Short>::ConstIteratorSTL 
+     #endif 
+1250 aips/Arrays/Array.cc 
+     template class Array<uChar> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<uChar>::ConstIteratorSTL 
+     #endif 
+1260 aips/Arrays/Array.cc 
+     template class Array<uInt> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<uInt>::ConstIteratorSTL 
+     #endif 
+1270 aips/Arrays/Array.cc 
+     template class Array<uLong> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<uLong>::ConstIteratorSTL 
+     #endif 
+1280 aips/Arrays/Array.cc 
+     template class Array<uShort> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<uShort>::ConstIteratorSTL 
+     #endif 
+1000 aips/Arrays/ArrayIO.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template AipsIO & operator<<(AipsIO &, Array<Bool> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<uChar> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<Short> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<Int> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<uInt> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<Float> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<Double> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<Complex> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<DComplex> const &) 
+     template AipsIO & operator<<(AipsIO &, Array<String> const &) 
+     template void putArray(AipsIO &, Array<Bool> const &, Char const *) 
+     template void putArray(AipsIO &, Array<uChar> const &, Char const *) 
+     template void putArray(AipsIO &, Array<Short> const &, Char const *) 
+     template void putArray(AipsIO &, Array<Int> const &, Char const *) 
+     template void putArray(AipsIO &, Array<uInt> const &, Char const *) 
+     template void putArray(AipsIO &, Array<Float> const &, Char const *) 
+     template void putArray(AipsIO &, Array<Double> const &, Char const *) 
+     template void putArray(AipsIO &, Array<Complex> const &, Char const *) 
+     template void putArray(AipsIO &, Array<DComplex> const &, Char const *) 
+     template void putArray(AipsIO &, Array<String> const &, Char const *) 
+1010 aips/Arrays/ArrayIO.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template AipsIO & operator>>(AipsIO &, Array<Bool> &) 
+     template AipsIO & operator>>(AipsIO &, Array<uChar> &) 
+     template AipsIO & operator>>(AipsIO &, Array<Short> &) 
+     template AipsIO & operator>>(AipsIO &, Array<Int> &) 
+     template AipsIO & operator>>(AipsIO &, Array<uInt> &) 
+     template AipsIO & operator>>(AipsIO &, Array<Float> &) 
+     template AipsIO & operator>>(AipsIO &, Array<Double> &) 
+     template AipsIO & operator>>(AipsIO &, Array<Complex> &) 
+     template AipsIO & operator>>(AipsIO &, Array<DComplex> &) 
+     template AipsIO & operator>>(AipsIO &, Array<String> &) 
+1020 aips/Arrays/ArrayIO.cc aips/BasicSL/Complex.h 
+     template ostream & operator<<(ostream &, Array<Complex> const &) 
+1030 aips/Arrays/ArrayIO.cc aips/BasicSL/Complex.h 
+     template ostream & operator<<(ostream &, Array<DComplex> const &) 
+1040 aips/Arrays/ArrayIO.cc aips/Logging/LogIO.h 
+     = aips/BasicSL/String.h 
+     template LogIO & operator<<(LogIO &, Array<Complex> const &) 
+     template LogIO & operator<<(LogIO &, Array<DComplex> const &) 
+     template LogIO & operator<<(LogIO &, Array<String> const &) 
+     template LogIO & operator<<(LogIO &, Array<Double> const &) 
+     template LogIO & operator<<(LogIO &, Array<Float> const &) 
+     template LogIO & operator<<(LogIO &, Array<Int> const &) 
+     template LogIO & operator<<(LogIO &, Array<uInt> const &) 
+     template LogIO & operator<<(LogIO &, Array<Short> const &) 
+     template LogIO & operator<<(LogIO &, Array<uChar> const &) 
+     template LogIO & operator<<(LogIO &, Array<Bool> const &) 
+1050 aips/Arrays/ArrayIO.cc aips/Quanta/Quantum.h 
+     template ostream & operator<<(ostream &, Array<Quantum<Double> > const &) 
+1060 aips/Arrays/ArrayIO.cc 
+     template Bool readArrayBlock(istream &, Bool &, IPosition &, Block<uInt> &, IPosition const *, Bool) 
+1070 aips/Arrays/ArrayIO.cc 
+     template istream & operator>>(istream &, Array<String> &) 
+     template Bool read(istream &, Array<String> &, IPosition const *, Bool) 
+     template Bool readArrayBlock(istream &, Bool &, IPosition &, Block<String> &, IPosition const *, Bool) 
+1080 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Bool> const &) 
+1090 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Char> const &) 
+1100 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Double> const &) 
+1110 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Float> const &) 
+1120 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Int> const &) 
+1130 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Long> const &) 
+1140 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<Short> const &) 
+1150 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<String> const &) 
+1160 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<uChar> const &) 
+1170 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<uInt> const &) 
+1180 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<uLong> const &) 
+1190 aips/Arrays/ArrayIO.cc 
+     template ostream & operator<<(ostream &, Array<uShort> const &) 
+1000 aips/Arrays/ArrayIter.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ArrayIterator<Bool> 
+     template class ArrayIterator<uChar> 
+     template class ArrayIterator<Short> 
+     template class ArrayIterator<uShort> 
+     template class ArrayIterator<Int> 
+     template class ArrayIterator<uInt> 
+     template class ArrayIterator<Float> 
+     template class ArrayIterator<Double> 
+     template class ArrayIterator<Complex> 
+     template class ArrayIterator<DComplex> 
+     template class ArrayIterator<String> 
+1010 aips/Arrays/ArrayIter.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class ReadOnlyArrayIterator<Bool> 
+     template class ReadOnlyArrayIterator<uChar> 
+     template class ReadOnlyArrayIterator<Short> 
+     template class ReadOnlyArrayIterator<uShort> 
+     template class ReadOnlyArrayIterator<Int> 
+     template class ReadOnlyArrayIterator<uInt> 
+     template class ReadOnlyArrayIterator<Float> 
+     template class ReadOnlyArrayIterator<Double> 
+     template class ReadOnlyArrayIterator<Complex> 
+     template class ReadOnlyArrayIterator<DComplex> 
+     template class ReadOnlyArrayIterator<String> 
+1020 aips/Arrays/ArrayIter.cc 
+     template class ArrayIterator<Char> 
+1030 aips/Arrays/ArrayIter.cc 
+     template class ArrayIterator<uLong> 
+1040 aips/Arrays/ArrayIter.cc 
+     template class ReadOnlyArrayIterator<Char> 
+1000 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Array<Bool> operator!=(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator!=(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator!=(Complex const &, Array<Complex> const &) 
+     template Array<Bool> operator<(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator<(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator<(Complex const &, Array<Complex> const &) 
+     template Array<Bool> operator<=(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator<=(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator<=(Complex const &, Array<Complex> const &) 
+     template Array<Bool> operator==(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator==(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator==(Complex const &, Array<Complex> const &) 
+     template Array<Bool> operator>(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator>(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator>(Complex const &, Array<Complex> const &) 
+     template Array<Bool> operator>=(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Bool> operator>=(Array<Complex> const &, Complex const &) 
+     template Array<Bool> operator>=(Complex const &, Array<Complex> const &) 
+     template Bool allEQ(Array<Complex> const &, Array<Complex> const &) 
+     template Bool allNear(Array<Complex> const &, Complex const &, Double) 
+     template Bool allNearAbs(Array<Complex> const &, Complex const &, Double) 
+1010 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Bool allEQ(Array<DComplex> const &, Array<DComplex> const &) 
+     template Bool allNearAbs(Array<DComplex> const &, DComplex const &, Double) 
+     template Bool anyEQ(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator!=(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator!=(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator!=(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator==(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator==(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator==(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator>(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator>(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator>(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray operator>=(Array<DComplex> const &, Array<DComplex> const &) 
+     template LogicalArray operator>=(Array<DComplex> const &, DComplex const &) 
+     template LogicalArray operator>=(DComplex const &, Array<DComplex> const &) 
+     template LogicalArray near(Array<DComplex> const &, Array<DComplex> const &, Double) 
+     template LogicalArray near(Array<DComplex> const &, DComplex const &, Double) 
+     template LogicalArray near(DComplex const &, Array<DComplex> const &, Double) 
+     template LogicalArray nearAbs(Array<DComplex> const &, Array<DComplex> const &, Double) 
+     template LogicalArray nearAbs(Array<DComplex> const &, DComplex const &, Double) 
+     template LogicalArray nearAbs(DComplex const &, Array<DComplex> const &, Double) 
+1020 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     = aips/BasicSL/String.h 
+     template Bool allEQ(Array<String> const &, Array<String> const &) 
+     template Bool allEQ(Array<String> const &, String const &) 
+     template Bool anyEQ(Array<String> const &, String const &) 
+     template Bool anyEQ(String const &, Array<String> const &) 
+     template Bool anyNE(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator!=(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator!=(Array<String> const &, String const &) 
+     template LogicalArray operator!=(String const &, Array<String> const &) 
+     template LogicalArray operator==(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator==(Array<String> const &, String const &) 
+     template LogicalArray operator==(String const &, Array<String> const &) 
+     template LogicalArray operator>(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator>(Array<String> const &, String const &) 
+     template LogicalArray operator>(String const &, Array<String> const &) 
+     template LogicalArray operator>=(Array<String> const &, Array<String> const &) 
+     template LogicalArray operator>=(Array<String> const &, String const &) 
+     template LogicalArray operator>=(String const &, Array<String> const &) 
+1030 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     = aips/Quanta/MVTime.h 
+     template Bool anyEQ(MVTime const &, Array<MVTime> const &) 
+     template LogicalArray operator==(MVTime const &, Array<MVTime> const &) 
+     template LogicalArray operator!=(Array<MVTime> const &, Array<MVTime> const &) 
+     template LogicalArray operator!=(Array<MVTime> const &, MVTime const &) 
+     template LogicalArray operator!=(MVTime const &, Array<MVTime> const &) 
+     template LogicalArray operator>(Array<MVTime> const &, Array<MVTime> const &) 
+     template LogicalArray operator>(Array<MVTime> const &, MVTime const &) 
+     template LogicalArray operator>(MVTime const &, Array<MVTime> const &) 
+     template LogicalArray operator>=(Array<MVTime> const &, Array<MVTime> const &) 
+     template LogicalArray operator>=(Array<MVTime> const &, MVTime const &) 
+     template LogicalArray operator>=(MVTime const &, Array<MVTime> const &) 
+1040 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<Double> const &, Array<Double> const &) 
+     template Bool allEQ(Array<Double> const &, Double const &) 
+     template Bool allGE(Array<Double> const &, Double const &) 
+     template Bool allLE(Array<Double> const &, Double const &) 
+     template Bool allNear(Array<Double> const &, Array<Double> const &, Double) 
+     template Bool allNear(Array<Double> const &, Double const &, Double) 
+     template Bool allNearAbs(Array<Double> const &, Array<Double> const &, Double) 
+     template Bool anyEQ(Double const &, Array<Double> const &) 
+     template Bool anyGT(Array<Double> const &, Double const &) 
+     template Bool anyLT(Array<Double> const &, Double const &) 
+     template Bool anyNE(Array<Double> const &, Array<Double> const &) 
+     template Bool anyNE(Array<Double> const &, Double const &) 
+     template LogicalArray operator!=(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator!=(Array<Double> const &, Double const &) 
+     template LogicalArray operator!=(Double const &, Array<Double> const &) 
+     template LogicalArray operator==(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator==(Array<Double> const &, Double const &) 
+     template LogicalArray operator==(Double const &, Array<Double> const &) 
+     template LogicalArray operator>(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator>(Array<Double> const &, Double const &) 
+     template LogicalArray operator>(Double const &, Array<Double> const &) 
+     template LogicalArray operator>=(Array<Double> const &, Array<Double> const &) 
+     template LogicalArray operator>=(Array<Double> const &, Double const &) 
+     template LogicalArray operator>=(Double const &, Array<Double> const &) 
+     template LogicalArray operator<=(Array<Double> const &, Double const &) 
+     template LogicalArray near(Array<Double> const &, Array<Double> const &, Double) 
+     template LogicalArray near(Array<Double> const &, Double const &, Double) 
+     template LogicalArray near(Double const &, Array<Double> const &, Double) 
+     template LogicalArray nearAbs(Array<Double> const &, Array<Double> const &, Double) 
+     template LogicalArray nearAbs(Array<Double> const &, Double const &, Double) 
+     template LogicalArray nearAbs(Double const &, Array<Double> const &, Double) 
+1050 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<Float> const &, Array<Float> const &) 
+     template Bool allEQ(Array<Float> const &, Float const &) 
+     template Bool allGE(Array<Float> const &, Float const &) 
+     template Bool allLT(Array<Float> const &, Float const &) 
+     template Bool anyEQ(Array<Float> const &, Float const &) 
+     template Bool anyGT(Array<Float> const &, Float const &) 
+     template Bool anyLE(Array<Float> const &, Float const &) 
+     template Bool anyLT(Array<Float> const &, Float const &) 
+     template Bool anyNE(Array<Float> const &, Float const &) 
+     template Bool anyNE(Array<Float> const &, Array<Float> const &) 
+1060 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<Int> const &, Array<Int> const &) 
+     template Bool allEQ(Array<Int> const &, Int const &) 
+     template Bool allGE(Array<Int> const &, Int const &) 
+     template Bool allLT(Array<Int> const &, Int const &) 
+     template Bool anyEQ(Array<Int> const &, Int const &) 
+     template Bool anyGT(Array<Int> const &, Int const &) 
+     template Bool anyLE(Array<Int> const &, Int const &) 
+     template Bool anyLT(Array<Int> const &, Int const &) 
+     template Bool anyNE(Array<Int> const &, Int const &) 
+     template Bool anyNE(Array<Int> const &, Array<Int> const &) 
+     template Array<Bool> operator!=(Array<Int> const &, Int const &) 
+     template Array<Bool> operator==(Array<Int> const &, Int const &) 
+     template Array<Bool> operator>(Array<Int> const &, Int const &) 
+     template Array<Bool> operator<(Array<Int> const &, Int const &) 
+     template Array<Bool> operator>=(Array<Int> const &, Int const &) 
+     template Array<Bool> operator<=(Array<Int> const &, Int const &) 
+1070 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<Short> const &, Array<Short> const &) 
+     template Array<Bool> operator==(Array<Short> const &, Short const &) 
+     template Array<Bool> operator>(Array<Short> const &, Short const &) 
+1080 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<uChar> const &, Array<uChar> const &) 
+     template Bool allEQ(Array<uChar> const &, uChar const &) 
+     template Array<Bool> operator==(Array<uChar> const &, uChar const &) 
+     template Array<Bool> operator>(Array<uChar> const &, uChar const &) 
+1090 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allEQ(Array<uInt> const &, Array<uInt> const &) 
+     template Bool allEQ(Array<uInt> const &, uInt const &) 
+     template Bool allGE(Array<uInt> const &, uInt const &) 
+     template Bool allLT(Array<uInt> const &, uInt const &) 
+     template Bool anyEQ(Array<uInt> const &, uInt const &) 
+     template Bool anyGE(Array<uInt> const &, uInt const &) 
+     template Bool anyGT(Array<uInt> const &, uInt const &) 
+     template Bool anyLE(Array<uInt> const &, uInt const &) 
+     template Bool anyLT(Array<uInt> const &, uInt const &) 
+     template Bool anyNE(Array<uInt> const &, uInt const &) 
+     template Bool anyNE(Array<uInt> const &, Array<uInt> const &) 
+     template Array<Bool> operator!=(Array<uInt> const &, uInt const &) 
+     template Array<Bool> operator==(Array<uInt> const &, uInt const &) 
+     template Array<Bool> operator>(Array<uInt> const &, uInt const &) 
+     template Array<Bool> operator<(Array<uInt> const &, uInt const &) 
+     template Array<Bool> operator||(Array<uInt> const &, Array<uInt> const &) 
+1100 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool allNear(Array<Float> const &, Array<Float> const &, Double) 
+     template Bool allNear(Array<Float> const &, Float const &, Double) 
+     template Bool allNearAbs(Array<Float> const &, Array<Float> const &, Double) 
+     template Bool allNearAbs(Array<Float> const &, Float const &, Double) 
+     template LogicalArray operator!=(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator!=(Array<Float> const &, Float const &) 
+     template LogicalArray operator!=(Float const &, Array<Float> const &) 
+     template LogicalArray operator<(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator<(Array<Float> const &, Float const &) 
+     template LogicalArray operator<(Float const &, Array<Float> const &) 
+     template LogicalArray operator<=(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator<=(Array<Float> const &, Float const &) 
+     template LogicalArray operator<=(Float const &, Array<Float> const &) 
+     template LogicalArray operator==(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator==(Array<Float> const &, Float const &) 
+     template LogicalArray operator==(Float const &, Array<Float> const &) 
+     template LogicalArray operator>(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator>(Array<Float> const &, Float const &) 
+     template LogicalArray operator>(Float const &, Array<Float> const &) 
+     template LogicalArray operator>=(Array<Float> const &, Array<Float> const &) 
+     template LogicalArray operator>=(Array<Float> const &, Float const &) 
+     template LogicalArray operator>=(Float const &, Array<Float> const &) 
+1110 aips/Arrays/ArrayLogical.cc aips/Arrays/Array.h 
+     template Bool anyNE(Array<Bool> const &, Array<Bool> const &) 
+     template Bool anyNE(Array<Bool> const &, Bool const &) 
+     template Bool allAND(Array<Bool> const &, Bool const &) 
+     template Bool allEQ(Array<Bool> const &, Array<Bool> const &) 
+     template Bool allEQ(Array<Bool> const &, Bool const &) 
+     template Bool allOR(Array<Bool> const &, Array<Bool> const &) 
+     template Bool anyEQ(Array<Bool> const &, Bool const &) 
+     template Bool anyEQ(Bool const &, Array<Bool> const &) 
+     template uInt ntrue(Array<Bool> const &) 
+     template uInt nfalse(Array<Bool> const &) 
+     template LogicalArray operator!(Array<Bool> const &) 
+     template LogicalArray operator!=(Array<Bool> const &, Array<Bool> const &) 
+     template LogicalArray operator!=(Array<Bool> const &, Bool const &) 
+     template LogicalArray operator!=(Bool const &, Array<Bool> const &) 
+     template LogicalArray operator&&(Array<Bool> const &, Array<Bool> const &) 
+     template LogicalArray operator&&(Array<Bool> const &, Bool const &) 
+     template LogicalArray operator&&(Bool const &, Array<Bool> const &) 
+     template LogicalArray operator==(Array<Bool> const &, Array<Bool> const &) 
+     template LogicalArray operator==(Array<Bool> const &, Bool const &) 
+     template LogicalArray operator==(Bool const &, Array<Bool> const &) 
+     template LogicalArray operator||(Array<Bool> const &, Array<Bool> const &) 
+     template LogicalArray operator||(Array<Bool> const &, Bool const &) 
+     template LogicalArray operator||(Bool const &, Array<Bool> const &) 
+1120 aips/Arrays/ArrayLogical.cc 
+     template Array<uInt> partialNTrue(Array<Bool> const &, IPosition const &) 
+     template Array<uInt> partialNFalse(Array<Bool> const &, IPosition const &) 
+1000 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     = aips/Quanta/MVTime.h 
+     template void convertArray(Array<Double> &, Array<MVTime> const &) 
+1010 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Array<Complex> abs(Array<Complex> const &) 
+     template Array<Complex> cos(Array<Complex> const &) 
+     template Array<Complex> cosh(Array<Complex> const &) 
+     template Array<Complex> exp(Array<Complex> const &) 
+     template Array<Complex> log(Array<Complex> const &) 
+     template Array<Complex> log10(Array<Complex> const &) 
+     template Array<Complex> operator*(Array<Complex> const &, Complex const &) 
+     template Array<Complex> operator+(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Complex> operator-(Array<Complex> const &) 
+     template Array<Complex> operator-(Complex const &, Array<Complex> const &) 
+     template Array<Complex> operator-(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Complex> operator/(Array<Complex> const &, Complex const &) 
+     template Array<Complex> operator/(Complex const &, Array<Complex> const &) 
+     template Array<Complex> pow(Array<Complex> const &, Array<Complex> const &) 
+     template Array<Complex> pow(Array<Complex> const &, Double const &) 
+     template Array<Complex> sin(Array<Complex> const &) 
+     template Array<Complex> sinh(Array<Complex> const &) 
+     template Array<Complex> sqrt(Array<Complex> const &) 
+     template Complex max(Array<Complex> const &) 
+     template Complex min(Array<Complex> const &) 
+     template void minMax(Complex &, Complex &, Array<Complex> const &) 
+     template void operator*=(Array<Complex> &, Array<Complex> const &) 
+     template void operator*=(Array<Complex> &, Complex const &) 
+     template void operator+=(Array<Complex> &, Array<Complex> const &) 
+     template void operator+=(Array<Complex> &, Complex const &) 
+     template void operator-=(Array<Complex> &, Array<Complex> const &) 
+     template void operator-=(Array<Complex> &, Complex const &) 
+     template void operator/=(Array<Complex> &, Array<Complex> const &) 
+     template void operator/=(Array<Complex> &, Complex const &) 
+1020 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Array<DComplex> abs(Array<DComplex> const &) 
+     template Array<DComplex> cos(Array<DComplex> const &) 
+     template Array<DComplex> cosh(Array<DComplex> const &) 
+     template Array<DComplex> exp(Array<DComplex> const &) 
+     template Array<DComplex> log(Array<DComplex> const &) 
+     template Array<DComplex> log10(Array<DComplex> const &) 
+     template Array<DComplex> max(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> max(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> min(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> min(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> operator*(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> operator*(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> operator*(DComplex const &, Array<DComplex> const &) 
+     template Array<DComplex> operator+(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> operator+(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> operator+(DComplex const &, Array<DComplex> const &) 
+     template Array<DComplex> operator-(Array<DComplex> const &) 
+     template Array<DComplex> operator-(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> operator-(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> operator-(DComplex const &, Array<DComplex> const &) 
+     template Array<DComplex> operator/(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> operator/(Array<DComplex> const &, DComplex const &) 
+     template Array<DComplex> operator/(DComplex const &, Array<DComplex> const &) 
+     template Array<DComplex> pow(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<DComplex> pow(Array<DComplex> const &, Double const &) 
+     template Array<DComplex> pow(DComplex const &, Array<DComplex> const &) 
+     template Array<DComplex> sin(Array<DComplex> const &) 
+     template Array<DComplex> sinh(Array<DComplex> const &) 
+     template Array<DComplex> sqrt(Array<DComplex> const &) 
+     template DComplex max(Array<DComplex> const &) 
+     template DComplex min(Array<DComplex> const &) 
+     template DComplex product(Array<DComplex> const &) 
+     template DComplex sum(Array<DComplex> const &) 
+     template Complex sum(Array<Complex> const &) 
+     template void max(Array<DComplex> &, Array<DComplex> const &, Array<DComplex> const &) 
+     template void max(Array<DComplex> &, Array<DComplex> const &, DComplex const &) 
+     template void min(Array<DComplex> &, Array<DComplex> const &, Array<DComplex> const &) 
+     template void min(Array<DComplex> &, Array<DComplex> const &, DComplex const &) 
+     template void minMax(DComplex &, DComplex &, Array<DComplex> const &) 
+     template void operator*=(Array<DComplex> &, Array<DComplex> const &) 
+     template void operator*=(Array<DComplex> &, DComplex const &) 
+     template void operator+=(Array<DComplex> &, Array<DComplex> const &) 
+     template void operator+=(Array<DComplex> &, DComplex const &) 
+     template void operator-=(Array<DComplex> &, Array<DComplex> const &) 
+     template void operator-=(Array<DComplex> &, DComplex const &) 
+     template void operator/=(Array<DComplex> &, Array<DComplex> const &) 
+     template void operator/=(Array<DComplex> &, DComplex const &) 
+1030 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template DComplex mean(Array<DComplex> const &) 
+1040 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template DComplex median(Array<DComplex> const &, Bool) 
+     template DComplex median(Array<DComplex> const &, Bool, Bool, Bool) 
+1050 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template void convertArray(Array<Complex> &, Array<DComplex> const &) 
+     template void convertArray(Array<Complex> &, Array<Double> const &) 
+     template void convertArray(Array<Complex> &, Array<Float> const &) 
+     template void convertArray(Array<Complex> &, Array<Int> const &) 
+     template void convertArray(Array<Complex> &, Array<Short> const &) 
+     template void convertArray(Array<Complex> &, Array<uChar> const &) 
+     template void convertArray(Array<Complex> &, Array<uInt> const &) 
+     template void convertArray(Array<DComplex> &, Array<Complex> const &) 
+     template void convertArray(Array<DComplex> &, Array<DComplex> const &) 
+     template void convertArray(Array<DComplex> &, Array<Double> const &) 
+     template void convertArray(Array<DComplex> &, Array<Float> const &) 
+     template void convertArray(Array<DComplex> &, Array<Int> const &) 
+     template void convertArray(Array<DComplex> &, Array<Short> const &) 
+     template void convertArray(Array<DComplex> &, Array<uChar> const &) 
+     template void convertArray(Array<DComplex> &, Array<uInt> const &) 
+     template void convertArray(Array<uInt> &, Array<Bool> const &) 
+1060 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     = aips/BasicSL/String.h 
+     template Array<String> operator+(String const &, Array<String> const &) 
+     template void operator+=(Array<String> &, Array<String> const &) 
+     template void operator+=(Array<String> &, String const &) 
+1070 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Array<Double> abs(Array<Double> const &) 
+     template Array<Double> acos(Array<Double> const &) 
+     template Array<Double> asin(Array<Double> const &) 
+     template Array<Double> atan(Array<Double> const &) 
+     template Array<Double> atan2(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> ceil(Array<Double> const &) 
+     template Array<Double> cos(Array<Double> const &) 
+     template Array<Double> cosh(Array<Double> const &) 
+     template Array<Double> exp(Array<Double> const &) 
+     template Array<Double> fabs(Array<Double> const &) 
+     template Array<Double> floor(Array<Double> const &) 
+     template Array<Double> fmod(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> fmod(Array<Double> const &, Double const &) 
+     template Array<Double> fmod(Double const &, Array<Double> const &) 
+     template Array<Double> log(Array<Double> const &) 
+     template Array<Double> log10(Array<Double> const &) 
+     template Array<Double> max(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> max(Array<Double> const &, Double const &) 
+     template Array<Double> min(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> min(Array<Double> const &, Double const &) 
+     template Array<Double> operator*(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> operator*(Array<Double> const &, Double const &) 
+     template Array<Double> operator*(Double const &, Array<Double> const &) 
+     template Array<Double> operator+(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> operator+(Array<Double> const &, Double const &) 
+     template Array<Double> operator+(Double const &, Array<Double> const &) 
+     template Array<Double> operator-(Array<Double> const &) 
+     template Array<Double> operator-(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> operator-(Array<Double> const &, Double const &) 
+     template Array<Double> operator-(Double const &, Array<Double> const &) 
+     template Array<Double> operator/(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> operator/(Array<Double> const &, Double const &) 
+     template Array<Double> operator/(Double const &, Array<Double> const &) 
+     template Array<Double> pow(Array<Double> const &, Array<Double> const &) 
+     template Array<Double> pow(Array<Double> const &, Double const &) 
+     template Array<Double> pow(Double const &, Array<Double> const &) 
+     template Array<Double> sin(Array<Double> const &) 
+     template Array<Double> sinh(Array<Double> const &) 
+     template Array<Double> sqrt(Array<Double> const &) 
+     template Array<Double> tan(Array<Double> const &) 
+     template Array<Double> tanh(Array<Double> const &) 
+     template Double avdev(Array<Double> const &) 
+     template Double avdev(Array<Double> const &, Double) 
+     template Double fractile(Array<Double> const &, Float, Bool, Bool) 
+     template Double max(Array<Double> const &) 
+     template Double mean(Array<Double> const &) 
+     template Double median(Array<Double> const &, Bool) 
+     template Double median(Array<Double> const &, Bool, Bool, Bool) 
+     template Double min(Array<Double> const &) 
+     template Double product(Array<Double> const &) 
+     template Double stddev(Array<Double> const &) 
+     template Double sum(Array<Double> const &) 
+     template Double variance(Array<Double> const &) 
+     template Double variance(Array<Double> const &, Double) 
+     template void indgen(Array<Double> &) 
+     template void indgen(Array<Double> &, Double) 
+     template void indgen(Array<Double> &, Double, Double) 
+     template void max(Array<Double> &, Array<Double> const &, Array<Double> const &) 
+     template void max(Array<Double> &, Array<Double> const &, Double const &) 
+     template void min(Array<Double> &, Array<Double> const &, Array<Double> const &) 
+     template void min(Array<Double> &, Array<Double> const &, Double const &) 
+     template void minMax(Double &, Double &, Array<Double> const &) 
+     template void minMax(Double &, Double &, IPosition &, IPosition &, Array<Double> const &) 
+     template void minMax(Double &, Double &, IPosition &, IPosition &, Array<Double> const &, Array<Bool> const &) 
+     template void operator*=(Array<Double> &, Array<Double> const &) 
+     template void operator*=(Array<Double> &, Double const &) 
+     template void operator+=(Array<Double> &, Array<Double> const &) 
+     template void operator+=(Array<Double> &, Double const &) 
+     template void operator-=(Array<Double> &, Array<Double> const &) 
+     template void operator-=(Array<Double> &, Double const &) 
+     template void operator/=(Array<Double> &, Array<Double> const &) 
+     template void operator/=(Array<Double> &, Double const &) 
+1080 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Array<Float> abs(Array<Float> const &) 
+     template Array<Float> acos(Array<Float> const &) 
+     template Array<Float> asin(Array<Float> const &) 
+     template Array<Float> atan(Array<Float> const &) 
+     template Array<Float> atan2(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> ceil(Array<Float> const &) 
+     template Array<Float> cos(Array<Float> const &) 
+     template Array<Float> cosh(Array<Float> const &) 
+     template Array<Float> exp(Array<Float> const &) 
+     template Array<Float> floor(Array<Float> const &) 
+     template Array<Float> fmod(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> log(Array<Float> const &) 
+     template Array<Float> log10(Array<Float> const &) 
+     template Array<Float> max(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> min(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> operator*(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> operator*(Array<Float> const &, Float const &) 
+     template Array<Float> operator*(Float const &, Array<Float> const &) 
+     template Array<Float> operator+(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> operator+(Array<Float> const &, Float const &) 
+     template Array<Float> operator-(Array<Float> const &) 
+     template Array<Float> operator-(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> operator-(Array<Float> const &, Float const &) 
+     template Array<Float> operator-(Float const &, Array<Float> const &) 
+     template Array<Float> operator/(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> operator/(Array<Float> const &, Float const &) 
+     template Array<Float> operator/(Float const &, Array<Float> const &) 
+     template Array<Float> pow(Array<Float> const &, Array<Float> const &) 
+     template Array<Float> pow(Array<Float> const &, Double const &) 
+     template Array<Float> sin(Array<Float> const &) 
+     template Array<Float> sinh(Array<Float> const &) 
+     template Array<Float> sqrt(Array<Float> const &) 
+     template Array<Float> tan(Array<Float> const &) 
+     template Array<Float> tanh(Array<Float> const &) 
+     template Float fractile(Array<Float> const &, Float, Bool, Bool) 
+     template Float max(Array<Float> const &) 
+     template Float mean(Array<Float> const &) 
+     template Float median(Array<Float> const &, Bool) 
+     template Float median(Array<Float> const &, Bool, Bool, Bool) 
+     template Float min(Array<Float> const &) 
+     template Float stddev(Array<Float> const &) 
+     template Float sum(Array<Float> const &) 
+     template Float variance(Array<Float> const &) 
+     template Float variance(Array<Float> const &, Float) 
+     template void indgen(Array<Float> &) 
+     template void indgen(Array<Float> &, Float) 
+     template void indgen(Array<Float> &, Float, Float) 
+     template void max(Array<Float> &, Array<Float> const &, Array<Float> const &) 
+     template void max(Array<Float> &, Array<Float> const &, Float const &) 
+     template void min(Array<Float> &, Array<Float> const &, Array<Float> const &) 
+     template void min(Array<Float> &, Array<Float> const &, Float const &) 
+     template void minMax(Float &, Float &, Array<Float> const &) 
+     template void minMax(Float &, Float &, IPosition &, IPosition &, Array<Float> const &) 
+     template void minMax(Float &, Float &, IPosition &, IPosition &, Array<Float> const &, Array<Bool> const &) 
+     template void minMaxMasked(Float &, Float &, IPosition &, IPosition &, Array<Float> const &, Array<Float> const &) 
+     template void operator*=(Array<Float> &, Array<Float> const &) 
+     template void operator*=(Array<Float> &, Float const &) 
+     template void operator+=(Array<Float> &, Array<Float> const &) 
+     template void operator+=(Array<Float> &, Float const &) 
+     template void operator-=(Array<Float> &, Array<Float> const &) 
+     template void operator-=(Array<Float> &, Float const &) 
+     template void operator/=(Array<Float> &, Array<Float> const &) 
+     template void operator/=(Array<Float> &, Float const &) 
+1090 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Array<Int> abs(Array<Int> const &) 
+     template Array<Int> max(Array<Int> const &, Array<Int> const &) 
+     template Array<Int> min(Array<Int> const &, Array<Int> const &) 
+     template Array<Int> operator*(Array<Int> const &, Array<Int> const &) 
+     template Array<Int> operator*(Array<Int> const &, Int const &) 
+     template Array<Int> operator*(Int const &, Array<Int> const &) 
+     template Array<Int> operator+(Array<Int> const &, Int const &) 
+     template Array<Int> operator+(Array<Int> const &, Array<Int> const &) 
+     template Array<Int> operator-(Array<Int> const &) 
+     template Array<Int> operator/(Array<Int> const &, Int const &) 
+     template Int max(Array<Int> const &) 
+     template Int min(Array<Int> const &) 
+     template Int product(Array<Int> const &) 
+     template Int sum(Array<Int> const &) 
+     template void indgen(Array<Int> &) 
+     template void indgen(Array<Int> &, Int) 
+     template void indgen(Array<Int> &, Int, Int) 
+     template void max(Array<Int> &, Array<Int> const &, Array<Int> const &) 
+     template void min(Array<Int> &, Array<Int> const &, Array<Int> const &) 
+     template void minMax(Int &, Int &, Array<Int> const &) 
+     template void operator*=(Array<Int> &, Array<Int> const &) 
+     template void operator*=(Array<Int> &, Int const &) 
+     template void operator+=(Array<Int> &, Array<Int> const &) 
+     template void operator+=(Array<Int> &, Int const &) 
+     template void operator-=(Array<Int> &, Array<Int> const &) 
+     template void operator-=(Array<Int> &, Int const &) 
+     template void operator/=(Array<Int> &, Array<Int> const &) 
+     template void operator/=(Array<Int> &, Int const &) 
+1100 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Array<uChar> min<uChar>(Array<uChar> const &, Array<uChar> const &) 
+     template void min<uChar>(Array<uChar> &, Array<uChar> const &, Array<uChar> const &) 
+     template uChar max(Array<uChar> const &) 
+     template uChar min(Array<uChar> const &) 
+     template void indgen(Array<uChar> &) 
+     template void indgen(Array<uChar> &, uChar, uChar) 
+     template void minMax(uChar &, uChar &, Array<uChar> const &) 
+1110 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Array<uInt> operator*(Array<uInt> const &, uInt const &) 
+     template Array<uInt> operator-(Array<uInt> const &, uInt const &) 
+     template Array<uInt> operator/(Array<uInt> const &, uInt const &) 
+     template uInt max(Array<uInt> const &) 
+     template uInt min(Array<uInt> const &) 
+     template uInt sum(Array<uInt> const &) 
+     template void indgen(Array<uInt> &) 
+     template void indgen(Array<uInt> &, uInt) 
+     template void indgen(Array<uInt> &, uInt, uInt) 
+     template void minMax(uInt &, uInt &, Array<uInt> const &) 
+     template void operator*=(Array<uInt> &, uInt const &) 
+     template void operator+=(Array<uInt> &, uInt const &) 
+     template void operator-=(Array<uInt> &, uInt const &) 
+     template void operator/=(Array<uInt> &, uInt const &) 
+1120 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Char max(Array<Char> const &) 
+     template Char min(Array<Char> const &) 
+     template void indgen(Array<Char> &) 
+     template void indgen(Array<Char> &, Char, Char) 
+     template void minMax(Char &, Char &, Array<Char> const &) 
+1130 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Long max(Array<Long> const &) 
+     template Long min(Array<Long> const &) 
+     template void indgen(Array<Long> &) 
+     template void indgen(Array<Long> &, Long, Long) 
+     template void minMax(Long &, Long &, Array<Long> const &) 
+1140 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template Short max(Array<Short> const &) 
+     template Short min(Array<Short> const &) 
+     template void indgen(Array<Short> &) 
+     template void indgen(Array<Short> &, Short, Short) 
+     template void minMax(Short &, Short &, Array<Short> const &) 
+     template void operator+=(Array<Short> &, Short const &) 
+     template void operator-=(Array<Short> &, Short const &) 
+1150 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template uLong max(Array<uLong> const &) 
+     template uLong min(Array<uLong> const &) 
+     template void indgen(Array<uLong> &) 
+     template void indgen(Array<uLong> &, uLong, uLong) 
+     template void minMax(uLong &, uLong &, Array<uLong> const &) 
+1160 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template uShort max(Array<uShort> const &) 
+     template uShort min(Array<uShort> const &) 
+     template void indgen(Array<uShort> &) 
+     template void indgen(Array<uShort> &, uShort, uShort) 
+     template void minMax(uShort &, uShort &, Array<uShort> const &) 
+1170 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template void convertArray(Array<Double> &, Array<Double> const &) 
+     template void convertArray(Array<Double> &, Array<Float> const &) 
+     template void convertArray(Array<Double> &, Array<Int> const &) 
+     template void convertArray(Array<Double> &, Array<Short> const &) 
+     template void convertArray(Array<Double> &, Array<uChar> const &) 
+     template void convertArray(Array<Double> &, Array<uInt> const &) 
+     template void convertArray(Array<Double> &, Array<uShort> const &) 
+     template void convertArray(Array<Float> &, Array<Double> const &) 
+     template void convertArray(Array<Float> &, Array<Int> const &) 
+     template void convertArray(Array<Float> &, Array<Short> const &) 
+     template void convertArray(Array<Float> &, Array<uChar> const &) 
+     template void convertArray(Array<Float> &, Array<uInt> const &) 
+     template void convertArray(Array<Int> &, Array<Short> const &) 
+     template void convertArray(Array<Int> &, Array<uChar> const &) 
+     template void convertArray(Array<Int> &, Array<uInt> const &) 
+     template void convertArray(Array<Int> &, Array<uShort> const &) 
+     template void convertArray(Array<Int> &, Array<Bool> const &) 
+     template void convertArray(Array<Int> &, Array<Double> const &) 
+     template void convertArray(Array<Short> &, Array<Char> const &) 
+     template void convertArray(Array<Short> &, Array<Double> const &) 
+     template void convertArray(Array<Short> &, Array<Float> const &) 
+     template void convertArray(Array<Short> &, Array<Int> const &) 
+     template void convertArray(Array<Short> &, Array<Long> const &) 
+     template void convertArray(Array<Short> &, Array<Short> const &) 
+     template void convertArray(Array<Short> &, Array<uChar> const &) 
+     template void convertArray(Array<Short> &, Array<uInt> const &) 
+     template void convertArray(Array<Short> &, Array<uLong> const &) 
+     template void convertArray(Array<Short> &, Array<uShort> const &) 
+     template void convertArray(Array<uChar> &, Array<Int> const &) 
+     template void convertArray(Array<uChar> &, Array<Double> const &) 
+     template void convertArray(Array<uInt> &, Array<Int> const &) 
+     template void convertArray(Array<uInt> &, Array<Short> const &) 
+     template void convertArray(Array<uInt> &, Array<uChar> const &) 
+     template void convertArray(Array<uInt> &, Array<Double> const &) 
+     template void convertArray(Array<uShort> &, Array<Int> const &) 
+     template void convertArray(Array<uShort> &, Array<Double> const &) 
+1180 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template void operator*=(Array<Bool> &, Array<Bool> const &) 
+     template Bool sum(Array<Bool> const &) 
+1190 aips/Arrays/ArrayMath.cc aips/Arrays/Array.h 
+     template void operator*=(Array<uInt> &, Array<uInt> const &) 
+     template void operator+=(Array<uInt> &, Array<uInt> const &) 
+     template void operator-=(Array<uInt> &, Array<uInt> const &) 
+     template void operator/=(Array<uInt> &, Array<uInt> const &) 
+1200 aips/Arrays/ArrayMath.cc aips/BasicSL/Complex.h 
+     template Array<Double> partialMins(Array<Double> const &, IPosition const &) 
+     template Array<Double> partialMaxs(Array<Double> const &, IPosition const &) 
+     template Array<Double> partialSums(Array<Double> const &, IPosition const &) 
+     template Array<Double> partialProducts(Array<Double> const &, IPosition const &) 
+     template Array<Double> partialMeans(Array<Double> const &, IPosition const &) 
+     template Array<Double> partialVariances(Array<Double> const &, IPosition const &, Array<Double> const &) 
+     template Array<Double> partialAvdevs(Array<Double> const &, IPosition const &, Array<Double> const &) 
+     template Array<Double> partialMedians(Array<Double> const &, IPosition const &, Bool, Bool) 
+     template Array<Double> partialFractiles(Array<Double> const &, IPosition const &, Float, Bool) 
+     template Array<DComplex> partialSums(Array<DComplex> const &, IPosition const &) 
+     template Array<DComplex> partialProducts(Array<DComplex> const &, IPosition const &) 
+1000 aips/Arrays/ArrayUtil.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template Array<Bool> concatenateArray(Array<Bool> const &, Array<Bool> const &) 
+     template Array<Int> concatenateArray(Array<Int> const &, Array<Int> const &) 
+     template Array<uInt> concatenateArray(Array<uInt> const &, Array<uInt> const &) 
+     template Array<Float> concatenateArray(Array<Float> const &, Array<Float> const &) 
+     template Array<Double> concatenateArray(Array<Double> const &, Array<Double> const &) 
+     template Array<Complex> concatenateArray(Array<Complex> const &, Array<Complex> const &) 
+     template Array<DComplex> concatenateArray(Array<DComplex> const &, Array<DComplex> const &) 
+     template Array<String> concatenateArray(Array<String> const &, Array<String> const &) 
+1010 aips/Arrays/ArrayUtil.cc 
+     template Array<Double> reorderArray(Array<Double> const &, IPosition const &, Bool) 
+1000 aips/Arrays/Cube.cc aips/Arrays/Matrix.h 
+     = aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Cube<Matrix<CountedPtr<Random> > > 
+1010 aips/Arrays/Cube.cc aips/BasicSL/Complex.h 
+     template class Cube<Complex> 
+     template class Cube<DComplex> 
+1020 aips/Arrays/Cube.cc 
+     template class Cube<Bool> 
+1030 aips/Arrays/Cube.cc 
+     template class Cube<Double> 
+1040 aips/Arrays/Cube.cc 
+     template class Cube<Float> 
+1050 aips/Arrays/Cube.cc 
+     template class Cube<Int> 
+1060 aips/Arrays/Cube.cc 
+     template class Cube<Short> 
+1070 aips/Arrays/Cube.cc 
+     template class Cube<uInt> 
+1000 aips/Arrays/MaskArrMath.cc 
+     = aips/Arrays/MaskedArray.h 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template Array<Complex> & operator/=(Array<Complex> &, MaskedArray<Complex> const &) 
+1010 aips/Arrays/MaskArrMath.cc 
+     = aips/Arrays/MaskedArray.h 
+     template Float min(MaskedArray<Float> const &) 
+     template Float max(MaskedArray<Float> const &) 
+     template Double min(MaskedArray<Double> const &) 
+     template Double max(MaskedArray<Double> const &) 
+     template MaskedArray<Float> abs(MaskedArray<Float> const &) 
+1020 aips/Arrays/MaskArrMath.cc 
+     = aips/Arrays/MaskedArray.h 
+     template Float sum(MaskedArray<Float> const &) 
+     template Float mean(MaskedArray<Float> const &) 
+1030 aips/Arrays/MaskArrMath.cc aips/BasicSL/Complex.h 
+     template Array<Complex> & operator+=(Array<Complex> &, MaskedArray<Complex> const &) 
+1040 aips/Arrays/MaskArrMath.cc aips/BasicSL/Complex.h 
+     template const MaskedArray<Complex> & operator+=(MaskedArray<Complex> const &, Complex const &) 
+1050 aips/Arrays/MaskArrMath.cc aips/BasicSL/Complex.h 
+     template const MaskedArray<Complex> & operator+=(MaskedArray<Complex> const &, MaskedArray<Complex> const &) 
+1060 aips/Arrays/MaskArrMath.cc aips/BasicSL/Complex.h 
+     template const MaskedArray<Complex> & operator/=(MaskedArray<Complex> const &, MaskedArray<Float> const &) 
+1070 aips/Arrays/MaskArrMath.cc aips/BasicSL/Complex.h 
+     template const MaskedArray<Float> & operator+=(MaskedArray<Float> const &, Array<Float> const &) 
+     template Array<Float> & operator+=(Array<Float> &, MaskedArray<Float> const &) 
+     template const MaskedArray<Complex> & operator+=(MaskedArray<Complex> const &, Array<Complex> const &) 
+1080 aips/Arrays/MaskArrMath.cc 
+     template Float variance(MaskedArray<Float> const &) 
+     template Float variance(MaskedArray<Float> const &, Float) 
+     template MaskedArray<Float> operator-(MaskedArray<Float> const &, Float const &) 
+     template MaskedArray<Float> operator-(Float const &, MaskedArray<Float> const &) 
+     template const MaskedArray<Float> & operator*=(MaskedArray<Float> const &, MaskedArray<Float> const &) 
+     template const MaskedArray<Float> & operator-=(MaskedArray<Float> const &, Float const &) 
+     template const MaskedArray<Float> & operator-=(MaskedArray<Float> const &, MaskedArray<Float> const &) 
+1090 aips/Arrays/MaskArrMath.cc 
+     template const MaskedArray<Float> & operator+=(MaskedArray<Float> const &, Float const &) 
+1100 aips/Arrays/MaskArrMath.cc 
+     template const MaskedArray<Float> & operator+=(MaskedArray<Float> const &, MaskedArray<Float> const &) 
+     template const MaskedArray<Float> & operator/=(MaskedArray<Float> const &, MaskedArray<Float> const &) 
+1110 aips/Arrays/MaskArrMath.cc 
+     template const MaskedArray<Int> & operator+=(MaskedArray<Int> const &, Int const &) 
+     template MaskedArray<Int> operator-(MaskedArray<Int> const &) 
+     template MaskedArray<uInt> operator-(MaskedArray<uInt> const &) 
+1120 aips/Arrays/MaskArrMath.cc 
+     template void minMax(Float &, Float &, IPosition &, IPosition &, MaskedArray<Float> const &) 
+     template void minMax(Float &, Float &, MaskedArray<Float> const &) 
+1000 aips/Arrays/MaskedArray.cc 
+     = aips/Arrays/Array.h 
+     template class MaskedArray<Array<Double> > 
+1010 aips/Arrays/MaskedArray.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template class MaskedArray<Vector<Complex> > 
+1020 aips/Arrays/MaskedArray.cc 
+     = aips/Arrays/Vector.h 
+     template class MaskedArray<Vector<Double> > 
+1030 aips/Arrays/MaskedArray.cc 
+     = aips/Arrays/Vector.h 
+     template class MaskedArray<Vector<Float> > 
+1040 aips/Arrays/MaskedArray.cc 
+     = aips/BasicSL/Complex.h aips/BasicSL/String.h 
+     template class MaskedArray<Bool> 
+     template class MaskedArray<uChar> 
+     template class MaskedArray<Short> 
+     template class MaskedArray<uShort> 
+     template class MaskedArray<Int> 
+     template class MaskedArray<uInt> 
+     template class MaskedArray<Float> 
+     template class MaskedArray<Double> 
+     template class MaskedArray<Complex> 
+     template class MaskedArray<DComplex> 
+     template class MaskedArray<String> 
+1050 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/MVDirection.h 
+     template class MaskedArray<MVDirection> 
+1060 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/MVFrequency.h 
+     template class MaskedArray<MVFrequency> 
+1070 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/MVPosition.h 
+     template class MaskedArray<MVPosition> 
+1080 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/MVTime.h 
+     template class MaskedArray<MVTime> 
+1090 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/Quantum.h 
+     template class MaskedArray<Quantum<Double> > 
+1100 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/Quantum.h 
+     template class MaskedArray<Quantum<Float> > 
+1110 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/QuantumHolder.h 
+     template class MaskedArray<QuantumHolder> 
+1120 aips/Arrays/MaskedArray.cc 
+     = aips/Quanta/Unit.h 
+     template class MaskedArray<Unit> 
+1130 aips/Arrays/MaskedArray.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h aips/Arrays/Matrix.h 
+     template class MaskedArray<Matrix<CountedPtr<Random> > > 
+1140 aips/Arrays/MaskedArray.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class MaskedArray<CountedPtr<Random> > 
+1150 aips/Arrays/MaskedArray.cc 
+     template class MaskedArray<Char> 
+1160 aips/Arrays/MaskedArray.cc 
+     template class MaskedArray<Float *> 
+1170 aips/Arrays/MaskedArray.cc 
+     template class MaskedArray<Long> 
+1180 aips/Arrays/MaskedArray.cc 
+     template class MaskedArray<uLong> 
+1000 aips/Arrays/Matrix.cc 
+     = aips/BasicSL/Complex.h 
+     template class Matrix<Complex> 
+1010 aips/Arrays/Matrix.cc 
+     = aips/BasicSL/Complex.h 
+     template class Matrix<DComplex> 
+1020 aips/Arrays/Matrix.cc 
+     = aips/BasicSL/String.h 
+     template class Matrix<String> 
+1030 aips/Arrays/Matrix.cc 
+     = aips/Quanta/MVPosition.h 
+     template class Matrix<MVPosition> 
+1040 aips/Arrays/Matrix.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Matrix<CountedPtr<Random> > 
+1050 aips/Arrays/Matrix.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Matrix<Matrix<CountedPtr<Random> > > 
+1060 aips/Arrays/Matrix.cc 
+     template class Matrix<Bool> 
+1070 aips/Arrays/Matrix.cc 
+     template class Matrix<Char> 
+1080 aips/Arrays/Matrix.cc 
+     template class Matrix<Double> 
+1090 aips/Arrays/Matrix.cc 
+     template class Matrix<Float> 
+1100 aips/Arrays/Matrix.cc 
+     template class Matrix<Int> 
+1110 aips/Arrays/Matrix.cc 
+     template class Matrix<Long> 
+1120 aips/Arrays/Matrix.cc 
+     template class Matrix<Short> 
+1130 aips/Arrays/Matrix.cc 
+     template class Matrix<uChar> 
+1140 aips/Arrays/Matrix.cc 
+     template class Matrix<uInt> 
+1150 aips/Arrays/Matrix.cc 
+     template class Matrix<uLong> 
+1160 aips/Arrays/Matrix.cc 
+     template class Matrix<uShort> 
+1000 aips/Arrays/MatrixMath.cc aips/BasicSL/Complex.h 
+     template Matrix<Complex> product(Matrix<Complex> const &, Matrix<Complex> const &) 
+1010 aips/Arrays/MatrixMath.cc aips/BasicSL/Complex.h 
+     template Matrix<Complex> transpose(Matrix<Complex> const &) 
+1020 aips/Arrays/MatrixMath.cc aips/BasicSL/Complex.h 
+     template Matrix<DComplex> transpose(Matrix<DComplex> const &) 
+1030 aips/Arrays/MatrixMath.cc 
+     template Double innerProduct(Vector<Double> const &, Vector<Double> const &) 
+1040 aips/Arrays/MatrixMath.cc 
+     template Float innerProduct(Vector<Float> const &, Vector<Float> const &) 
+1050 aips/Arrays/MatrixMath.cc 
+     template Int innerProduct(Vector<Int> const &, Vector<Int> const &) 
+1060 aips/Arrays/MatrixMath.cc 
+     template Matrix<Bool> transpose(Matrix<Bool> const &) 
+1070 aips/Arrays/MatrixMath.cc 
+     template Matrix<Double> transpose(Matrix<Double> const &) 
+1080 aips/Arrays/MatrixMath.cc 
+     template Matrix<Float> transpose(Matrix<Float> const &) 
+1090 aips/Arrays/MatrixMath.cc 
+     template Matrix<Int> transpose(Matrix<Int> const &) 
+1100 aips/Arrays/MatrixMath.cc 
+     template Vector<Double> product(Matrix<Double> const &, Vector<Double> const &) 
+1110 aips/Arrays/MatrixMath.cc 
+     template Vector<Float> product(Matrix<Float> const &, Vector<Float> const &) 
+1000 aips/Arrays/Vector.cc 
+     = aips/BasicSL/Complex.h 
+     template class Vector<Vector<Complex> > 
+1010 aips/Arrays/Vector.cc 
+     = aips/Quanta/MVDirection.h 
+     template class Vector<MVDirection> 
+1020 aips/Arrays/Vector.cc 
+     = aips/Quanta/MVFrequency.h 
+     template class Vector<MVFrequency> 
+1030 aips/Arrays/Vector.cc 
+     = aips/Quanta/MVPosition.h 
+     template class Vector<MVPosition> 
+1040 aips/Arrays/Vector.cc 
+     = aips/Quanta/MVTime.h 
+     template class Vector<MVTime> 
+1050 aips/Arrays/Vector.cc 
+     = aips/Quanta/QuantumHolder.h 
+     template class Vector<QuantumHolder> 
+1060 aips/Arrays/Vector.cc 
+     = aips/Quanta/Unit.h 
+     template class Vector<Unit> 
+1070 aips/Arrays/Vector.cc aips/Arrays/Array.h 
+     template class Vector<Array<Double> > 
+1080 aips/Arrays/Vector.cc aips/BasicSL/Complex.h 
+     = aips/BasicSL/String.h 
+     template class Vector<Bool> 
+     template class Vector<uChar> 
+     template class Vector<Short> 
+     template class Vector<uShort> 
+     template class Vector<Int> 
+     template class Vector<uInt> 
+     template class Vector<Float> 
+     template class Vector<Double> 
+     template class Vector<Complex> 
+     template class Vector<DComplex> 
+     template class Vector<String> 
+1090 aips/Arrays/Vector.cc aips/Quanta/Quantum.h 
+     template class Vector<Quantum<Double> > 
+1100 aips/Arrays/Vector.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     = aips/Arrays/Matrix.h 
+     template class Vector<Matrix<CountedPtr<Random> > > 
+1110 aips/Arrays/Vector.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template class Vector<CountedPtr<Random> > 
+1120 aips/Arrays/Vector.cc 
+     template class Vector<Char> 
+1130 aips/Arrays/Vector.cc 
+     template class Vector<Float *> 
+1140 aips/Arrays/Vector.cc 
+     template class Vector<Long> 
+1150 aips/Arrays/Vector.cc 
+     template class Vector<Vector<Double> > 
+1160 aips/Arrays/Vector.cc 
+     template class Vector<Vector<Float> > 
+1170 aips/Arrays/Vector.cc 
+     template class Vector<uLong> 
+1000 aips/Arrays/VectorIter.cc aips/BasicSL/Complex.h 
+     template class ReadOnlyVectorIterator<Complex> 
+     template class VectorIterator<Complex> 
+1010 aips/Arrays/VectorIter.cc aips/BasicSL/Complex.h 
+     template class ReadOnlyVectorIterator<DComplex> 
+     template class VectorIterator<DComplex> 
+1020 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<Bool> 
+     template class VectorIterator<Bool> 
+1030 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<Double> 
+     template class VectorIterator<Double> 
+1040 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<Float> 
+     template class VectorIterator<Float> 
+1050 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<uChar> 
+     template class VectorIterator<uChar> 
+1060 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<uInt> 
+     template class VectorIterator<uInt> 
+1070 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<uLong> 
+     template class VectorIterator<uLong> 
+1080 aips/Arrays/VectorIter.cc 
+     template class ReadOnlyVectorIterator<uShort> 
+     template class VectorIterator<uShort> 
+1090 aips/Arrays/VectorIter.cc 
+     template class VectorIterator<Int> 
+1000 aips/BasicMath/Functional.cc 
+     = aips/BasicSL/Complex.h 
+     template class Functional<Complex, Complex> 
+1010 aips/BasicMath/Functional.cc 
+     = aips/BasicSL/Complex.h 
+     template class Functional<DComplex, DComplex> 
+1020 aips/BasicMath/Functional.cc aips/Arrays/Array.h 
+     template class Functional<Double, Array<Double> > 
+1030 aips/BasicMath/Functional.cc aips/Arrays/Array.h 
+     template class Functional<uInt, Array<Double> > 
+1040 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template class Functional<Vector<Complex>, Complex> 
+1050 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template class Functional<Vector<DComplex>, DComplex> 
+1060 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     template class Functional<Vector<Double>, Array<Double> > 
+1070 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     template class Functional<Vector<Double>, Double> 
+1080 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     template class Functional<Vector<Double>, Float> 
+1090 aips/BasicMath/Functional.cc aips/Arrays/Vector.h 
+     template class Functional<Vector<Float>, Float> 
+1100 aips/BasicMath/Functional.cc 
+     template class Functional<Double, Double> 
+1110 aips/BasicMath/Functional.cc 
+     template class Functional<Double, Float> 
+1120 aips/BasicMath/Functional.cc 
+     template class Functional<Float, Float> 
+1130 aips/BasicMath/Functional.cc 
+     template class Functional<uInt, Double> 
+1140 aips/BasicMath/Functional.cc 
+     template class Functional<uInt, Float> 
+1000 aips/Containers/Block.h 
+     #ifdef AIPS_DEBUG 
+       template <> class Table 
+       template class PtrBlock<Table *> 
+       template class PtrBlock<Table const *> 
+     #endif 
+1010 aips/Containers/Block.h 
+     #ifdef AIPS_DEBUG 
+       template <> class TableRow 
+       template class PtrBlock<TableRow *> 
+     #endif 
+1020 aips/Containers/Block.h 
+     #ifdef AIPS_DEBUG 
+       template class PtrBlock<Bool *> 
+       template class PtrBlock<Bool const *> 
+       template class PtrBlock<Float *> 
+       template class PtrBlock<Float const *> 
+     #endif 
+1030 aips/Containers/Block.h 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/String.h 
+     template class Block<Vector<String> > 
+1040 aips/Containers/Block.h 
+     = aips/Arrays/Vector.h 
+     template class Block<Vector<Double> > 
+1050 aips/Containers/Block.h 
+     = aips/BasicSL/Complex.h aips/BasicSL/String.h 
+     template <class T> class ArrayColumn 
+     template class PtrBlock<ArrayColumn<Complex> *> 
+     template class PtrBlock<ArrayColumn<DComplex> *> 
+     template class PtrBlock<ArrayColumn<String> *> 
+     template class PtrBlock<ArrayColumn<Bool> *> 
+     template class PtrBlock<ArrayColumn<Double> *> 
+     template class PtrBlock<ArrayColumn<Float> *> 
+     template class PtrBlock<ArrayColumn<Int> *> 
+     template class PtrBlock<ArrayColumn<Short> *> 
+     template class PtrBlock<ArrayColumn<uChar> *> 
+1060 aips/Containers/Block.h 
+     = aips/BasicSL/Complex.h aips/BasicSL/String.h 
+     template <class T> class ScalarColumn 
+     template <class T> class ROScalarColumn 
+     template class PtrBlock<ROScalarColumn<Int> *> 
+     template class PtrBlock<ScalarColumn<Complex> *> 
+     template class PtrBlock<ScalarColumn<DComplex> *> 
+     template class PtrBlock<ScalarColumn<String> *> 
+     template class PtrBlock<ScalarColumn<Bool> *> 
+     template class PtrBlock<ScalarColumn<Double> *> 
+     template class PtrBlock<ScalarColumn<Float> *> 
+     template class PtrBlock<ScalarColumn<Int> *> 
+     template class PtrBlock<ScalarColumn<Short> *> 
+     template class PtrBlock<ScalarColumn<uChar> *> 
+1070 aips/Containers/Block.h 
+     = aips/Containers/OrderedPair.h 
+     = aips/Arrays/IPosition.h 
+     = aips/BasicSL/String.h 
+     template class PtrBlock<OrderedPair<String, Block<IPosition> > *> 
+     template class PtrBlock<OrderedPair<String, Int> *> 
+     template class PtrBlock<void *> 
+1080 aips/Containers/Block.h 
+     = aips/Quanta/MVPosition.h 
+     template class Block<MVPosition> 
+1090 aips/Containers/Block.h 
+     = aips/Quanta/MVTime.h 
+     template class Block<MVTime> 
+1100 aips/Containers/Block.h 
+     = aips/Quanta/QuantumHolder.h 
+     template class Block<QuantumHolder> 
+1110 aips/Containers/Block.h 
+     = aips/Quanta/Unit.h 
+     template class Block<Unit> 
+1120 aips/Containers/Block.h 
+     = aips/Utilities/Copy.cc 
+     template <> class MeasValue 
+     template void objcopy(MeasValue **, MeasValue * const *, uInt) 
+1130 aips/Containers/Block.h aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template <class T> class Array 
+     template class PtrBlock<Array<Complex> *> 
+     template class PtrBlock<Array<DComplex> *> 
+     template class PtrBlock<Array<String> *> 
+     template class Block<Array<Double> > 
+     template class PtrBlock<Array<Bool> *> 
+     template class PtrBlock<Array<Char> *> 
+     template class PtrBlock<Array<Double> *> 
+     template class PtrBlock<Array<Float> *> 
+     template class PtrBlock<Array<Int> *> 
+     template class PtrBlock<Array<Short> *> 
+     template class PtrBlock<Array<uChar> *> 
+     template class PtrBlock<Array<uInt> *> 
+     template class PtrBlock<Array<uShort> *> 
+1140 aips/Containers/Block.h aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<Array<Complex> > 
+1150 aips/Containers/Block.h aips/Arrays/IPosition.h 
+     template class Block<IPosition> 
+1160 aips/Containers/Block.h aips/Arrays/Matrix.h 
+     template <class T> class Matrix 
+     template class PtrBlock<Matrix<Float> *> 
+1170 aips/Containers/Block.h aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<Vector<Complex> > 
+1180 aips/Containers/Block.h aips/Arrays/Vector.h 
+     = aips/Utilities/Copy.cc 
+     template class Block<Vector<Bool> > 
+     template void objcopy(Vector<Bool> *, Vector<Bool> const *, uInt) 
+     template void objmove(Vector<Bool> *, Vector<Bool> const *, uInt) 
+     template void objset(Vector<Bool> *, Vector<Bool>, uInt) 
+1190 aips/Containers/Block.h aips/Arrays/Vector.h 
+     template <class T> class Vector 
+     template class PtrBlock<Vector<Double> *> 
+     template class PtrBlock<Vector<Float> *> 
+     template class PtrBlock<Vector<Bool> *> 
+1200 aips/Containers/Block.h aips/Arrays/Vector.h 
+     template class Block<Vector<Float> > 
+1210 aips/Containers/Block.h aips/Arrays/Vector.h 
+     template class Block<Vector<Int> > 
+1220 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     #ifdef AIPS_DEBUG 
+       template <class T> class ROArrayColumn 
+       template class PtrBlock<ROArrayColumn<Complex> *> 
+     #endif 
+1230 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     #ifdef AIPS_DEBUG 
+       template class PtrBlock<Complex *> 
+       template class PtrBlock<Complex const *> 
+     #endif 
+1240 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     = aips/Utilities/Copy.cc 
+     template <class T> class TempLattice 
+     template class PtrBlock<TempLattice<Float> *> 
+     template class PtrBlock<TempLattice<Complex> *> 
+     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
+     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
+     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt) 
+     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt, uInt) 
+     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
+     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
+     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt) 
+     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt, uInt) 
+1250 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     template class Block<Complex> 
+1260 aips/Containers/Block.h aips/BasicSL/Complex.h 
+     template class Block<DComplex> 
+1270 aips/Containers/Block.h aips/BasicSL/String.h 
+     template class Block<String> 
+1280 aips/Containers/Block.h aips/Containers/OrderedPair.h 
+     #ifdef AIPS_DEBUG 
+       template class Block<OrderedPair<uInt, uInt> > 
+     #endif 
+1290 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h aips/BasicSL/Complex.h 
+     template class Block<RORecordFieldPtr<Array<Complex> > > 
+     template class Block<RORecordFieldPtr<Array<DComplex> > > 
+     template class Block<RecordFieldPtr<Array<Complex> > > 
+     template class Block<RecordFieldPtr<Array<DComplex> > > 
+     template class Block<RORecordFieldPtr<Array<String> > > 
+     template class Block<RecordFieldPtr<Array<String> > > 
+     template class Block<RORecordFieldPtr<Array<Bool> > > 
+     template class Block<RORecordFieldPtr<Array<Char> > > 
+     template class Block<RORecordFieldPtr<Array<Double> > > 
+     template class Block<RORecordFieldPtr<Array<Float> > > 
+     template class Block<RORecordFieldPtr<Array<Int> > > 
+     template class Block<RORecordFieldPtr<Array<Short> > > 
+     template class Block<RORecordFieldPtr<Array<uChar> > > 
+     template class Block<RORecordFieldPtr<Array<uInt> > > 
+     template class Block<RecordFieldPtr<Array<Bool> > > 
+     template class Block<RecordFieldPtr<Array<Char> > > 
+     template class Block<RecordFieldPtr<Array<Double> > > 
+     template class Block<RecordFieldPtr<Array<Float> > > 
+     template class Block<RecordFieldPtr<Array<Int> > > 
+     template class Block<RecordFieldPtr<Array<Short> > > 
+     template class Block<RecordFieldPtr<Array<uChar> > > 
+     template class Block<RecordFieldPtr<Array<uInt> > > 
+1300 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<RORecordFieldPtr<Complex> > 
+1310 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<RORecordFieldPtr<DComplex> > 
+1320 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<RecordFieldPtr<Complex> > 
+1330 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template class Block<RecordFieldPtr<DComplex> > 
+1340 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/String.h 
+     template class Block<RORecordFieldPtr<String> > 
+1350 aips/Containers/Block.h aips/Containers/RecordField.h 
+     = aips/BasicSL/String.h 
+     template class Block<RecordFieldPtr<String> > 
+1360 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<Bool> > 
+1370 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<Double> > 
+1380 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<Float> > 
+1390 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<Int> > 
+1400 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<Short> > 
+1410 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<uChar> > 
+1420 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RORecordFieldPtr<uInt> > 
+1430 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<Bool> > 
+1440 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<Double> > 
+1450 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<Float> > 
+1460 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<Int> > 
+1470 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<Short> > 
+1480 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class Block<RecordFieldPtr<uChar> > 
+1490 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class PtrBlock<RecordFieldPtr<Double> *> 
+1500 aips/Containers/Block.h aips/Containers/RecordField.h 
+     template class PtrBlock<RecordFieldPtr<String> *> 
+1510 aips/Containers/Block.h aips/Quanta/Quantum.h 
+     template class Block<Quantum<Double> > 
+1520 aips/Containers/Block.h aips/Quanta/Quantum.h 
+     template class Block<Quantum<Float> > 
+1530 aips/Containers/Block.h aips/Utilities/Copy.cc 
+     = aips/System/ObjectID.h 
+     template class Block<ObjectID> 
+     template void objcopy(ObjectID *, ObjectID const *, uInt) 
+     template void objmove(ObjectID *, ObjectID const *, uInt) 
+     template void objset(ObjectID *, ObjectID, uInt) 
+1540 aips/Containers/Block.h aips/Utilities/Copy.cc 
+     template class Block<Int64> 
+     template void objcopy(Int64 *, Int64 const *, uInt) 
+     template void objmove(Int64 *, Int64 const *, uInt) 
+     template void objset(Int64 *, Int64, uInt) 
+1550 aips/Containers/Block.h 
+     template <> class Coordinate 
+     template class PtrBlock<Coordinate *> 
+1560 aips/Containers/Block.h 
+     template <> class CopyRecordToTable 
+     template class PtrBlock<CopyRecordToTable *> 
+     template <> class FITSFieldCopier 
+     template class PtrBlock<FITSFieldCopier *> 
+     template <> class FITSMultiTable 
+     template class PtrBlock<FITSMultiTable *> 
+     template <> class FITSTabular 
+     template class PtrBlock<FITSTabular *> 
+     template <> class FITSTimedTable 
+     template class PtrBlock<FITSTimedTable *> 
+1570 aips/Containers/Block.h 
+     template <> class ForwardColumn 
+     template <> class ISMColumn 
+     template <> class StManColumnAipsIO 
+     template <> class TSMColumn 
+     template <> class TSMCube 
+     template <> class TSMDataColumn 
+     template <> class TSMFile 
+     template <> class ROTableColumn 
+     template <> class TableColumn 
+     template <> class TableIterator 
+     template class PtrBlock<ForwardColumn *> 
+     template class PtrBlock<ISMColumn *> 
+     template class PtrBlock<StManColumnAipsIO *> 
+     template class PtrBlock<TSMColumn *> 
+     template class PtrBlock<TSMCube *> 
+     template class PtrBlock<TSMDataColumn *> 
+     template class PtrBlock<TSMFile *> 
+     template class PtrBlock<ROTableColumn *> 
+     template class PtrBlock<TableColumn *> 
+     template class PtrBlock<TableIterator *> 
+1580 aips/Containers/Block.h 
+     template <> class LCRegion 
+     template class PtrBlock<LCRegion const *> 
+1590 aips/Containers/Block.h 
+     template <> class ObjectDispatcher 
+     template class PtrBlock<ObjectDispatcher *> 
+1600 aips/Containers/Block.h 
+     template <> class ParameterSet 
+     template class PtrBlock<ParameterSet *> 
+1610 aips/Containers/Block.h 
+     template <> class Record 
+     template <> class RecordDesc 
+     template class PtrBlock<Record *> 
+     template class PtrBlock<RecordDesc *> 
+1620 aips/Containers/Block.h 
+     template <> class RecordFieldWriter 
+     template class PtrBlock<RecordFieldWriter *> 
+1630 aips/Containers/Block.h 
+     template <> class WCRegion 
+     template <> class ImageRegion 
+     template class PtrBlock<ImageRegion const *> 
+     template class PtrBlock<WCRegion const *> 
+1640 aips/Containers/Block.h 
+     template <class T, class U> class OrderedPair 
+     template <class T> class Array 
+     template <class T> class Vector 
+     template class PtrBlock<OrderedPair<Int, Array<Float> > *> 
+     template class PtrBlock<OrderedPair<Int, Vector<Float> > *> 
+     template class PtrBlock<OrderedPair<Int, Int> *> 
+1650 aips/Containers/Block.h 
+     template <class T> class AutoDiffRep 
+     template class PtrBlock<AutoDiffRep<Double> *> 
+1660 aips/Containers/Block.h 
+     template <class T> class AutoDiffRep 
+     template class PtrBlock<AutoDiffRep<Float> *> 
+1670 aips/Containers/Block.h 
+     template <class T> class Lattice 
+     template class PtrBlock<Lattice<Float> *> 
+1680 aips/Containers/Block.h 
+     template class Block<Bool> 
+1690 aips/Containers/Block.h 
+     template class Block<Char> 
+1700 aips/Containers/Block.h 
+     template class Block<Double> 
+1710 aips/Containers/Block.h 
+     template class Block<Float *> 
+1720 aips/Containers/Block.h 
+     template class Block<Float> 
+1730 aips/Containers/Block.h 
+     template class Block<Int> 
+1740 aips/Containers/Block.h 
+     template class Block<Long> 
+1750 aips/Containers/Block.h 
+     template class Block<Short> 
+1760 aips/Containers/Block.h 
+     template class Block<uChar> 
+1770 aips/Containers/Block.h 
+     template class Block<uInt> 
+1780 aips/Containers/Block.h 
+     template class Block<uLong> 
+1790 aips/Containers/Block.h 
+     template class Block<uShort> 
+1800 aips/Containers/Block.h 
+     template class Block<void *> 
+1810 aips/Containers/Block.h 
+     template class PtrBlock<Block<Float> *> 
+     template class PtrBlock<Block<Int> *> 
+     template class PtrBlock<Block<uInt> *> 
+     template class PtrBlock<Char *> 
+1820 aips/Containers/Block.h 
+     template class PtrBlock<Int(*)(void const *, void const *)> 
+1830 aips/Containers/Block.h 
+     template class PtrBlock<void const *> 
+1000 aips/Containers/BlockIO.cc aips/BasicSL/String.h 
+     template AipsIO & operator>>(AipsIO &, Block<String> &) 
+1010 aips/Containers/BlockIO.cc aips/BasicSL/String.h 
+     template ostream & operator<<(ostream &, Block<String> const &) 
+     template void showBlock(ostream &, Block<String> const &, Int) 
+1020 aips/Containers/BlockIO.cc aips/BasicSL/String.h 
+     template void getBlock(AipsIO &, Block<String> &) 
+1030 aips/Containers/BlockIO.cc 
+     template AipsIO & operator<<(AipsIO &, Block<uInt> const &) 
+1040 aips/Containers/BlockIO.cc 
+     template AipsIO & operator>>(AipsIO &, Block<Int> &) 
+1050 aips/Containers/BlockIO.cc 
+     template AipsIO & operator>>(AipsIO &, Block<uInt> &) 
+1060 aips/Containers/BlockIO.cc 
+     template void getBlock(AipsIO &, Block<Int> &) 
+1070 aips/Containers/BlockIO.cc 
+     template void getBlock(AipsIO &, Block<uInt> &) 
+1080 aips/Containers/BlockIO.cc 
+     template void putBlock(AipsIO &, Block<uInt> const &, Int) 
+1090 aips/Containers/BlockIO.cc 
+     template void showBlock(ostream &, Block<uInt> const &, Int) 
+1000 aips/Containers/Link.cc aips/Arrays/Vector.h 
+     template class Link<Vector<Double> *> 
+1010 aips/Containers/Link.cc aips/Arrays/Vector.h 
+     template class Link<Vector<Float> *> 
+1020 aips/Containers/Link.cc aips/Inputs/Param.h 
+     template class Link<Param> 
+1030 aips/Containers/Link.cc aips/Utilities/CountedPtr.h 
+     = aips/OS/SysEvent.h 
+     template class Link<CountedPtr<SysEventTargetInfo> > 
+1040 aips/Containers/Link.cc aips/Utilities/Notice.h 
+     template class Link<NoticeTarget *> 
+1050 aips/Containers/Link.cc 
+     template class Link<uInt> 
+1060 aips/Containers/Link.cc 
+     template class Link<uLong> 
+1070 aips/Containers/Link.cc 
+     template class Link<void *> 
+1000 aips/Containers/List.cc aips/Inputs/Param.h 
+     template class ConstListIter<Param> 
+1010 aips/Containers/List.cc aips/Inputs/Param.h 
+     template class List<Param> 
+1020 aips/Containers/List.cc aips/Inputs/Param.h 
+     template class ListIter<Param> 
+1030 aips/Containers/List.cc aips/Inputs/Param.h 
+     template class ListNotice<Param> 
+1040 aips/Containers/List.cc aips/Utilities/CountedPtr.h 
+     = aips/OS/SysEvent.h 
+     template class ConstListIter<CountedPtr<SysEventTargetInfo> > 
+1050 aips/Containers/List.cc aips/Utilities/CountedPtr.h 
+     = aips/OS/SysEvent.h 
+     template class List<CountedPtr<SysEventTargetInfo> > 
+1060 aips/Containers/List.cc aips/Utilities/CountedPtr.h 
+     = aips/OS/SysEvent.h 
+     template class ListIter<CountedPtr<SysEventTargetInfo> > 
+1070 aips/Containers/List.cc aips/Utilities/CountedPtr.h 
+     = aips/OS/SysEvent.h 
+     template class ListNotice<CountedPtr<SysEventTargetInfo> > 
+1080 aips/Containers/List.cc 
+     template class ConstListIter<uInt> 
+     template class List<uInt> 
+     template class ListIter<uInt> 
+     template class ListNotice<uInt> 
+1090 aips/Containers/List.cc 
+     template class ConstListIter<uLong> 
+     template class List<uLong> 
+     template class ListIter<uLong> 
+     template class ListNotice<uLong> 
+1100 aips/Containers/List.cc 
+     template class ConstListIter<void *> 
+     template class List<void *> 
+     template class ListIter<void *> 
+     template class ListNotice<void *> 
+1000 aips/Containers/Map.cc 
+     = aips/BasicSL/String.h 
+     = aips/Containers/Block.h 
+     = aips/Arrays/IPosition.h 
+     template class ConstMapIter<String, Block<IPosition> > 
+     template class MapIter<String, Block<IPosition> > 
+     template class MapIterRep<String, Block<IPosition> > 
+     template class MapRep<String, Block<IPosition> > 
+     template class Map<String, Block<IPosition> > 
+1010 aips/Containers/Map.cc 
+     = aips/BasicSL/String.h 
+     template class ConstMapIter<String, Int> 
+     template class MapIter<String, Int> 
+     template class MapIterRep<String, Int> 
+     template class MapRep<String, Int> 
+     template class Map<String, Int> 
+1020 aips/Containers/Map.cc aips/Arrays/Array.h 
+     template class ConstMapIter<Int, Array<Float> > 
+1030 aips/Containers/Map.cc aips/Arrays/Array.h 
+     template class Map<Int, Array<Float> > 
+1040 aips/Containers/Map.cc aips/Arrays/Array.h 
+     template class MapIter<Int, Array<Float> > 
+1050 aips/Containers/Map.cc aips/Arrays/Array.h 
+     template class MapIterRep<Int, Array<Float> > 
+1060 aips/Containers/Map.cc aips/Arrays/Array.h 
+     template class MapRep<Int, Array<Float> > 
+1070 aips/Containers/Map.cc aips/Arrays/Vector.h 
+     template class ConstMapIter<Int, Vector<Float> > 
+1080 aips/Containers/Map.cc aips/Arrays/Vector.h 
+     template class Map<Int, Vector<Float> > 
+1090 aips/Containers/Map.cc aips/Arrays/Vector.h 
+     template class MapIterRep<Int, Vector<Float> > 
+1100 aips/Containers/Map.cc aips/Arrays/Vector.h 
+     template class MapRep<Int, Vector<Float> > 
+1110 aips/Containers/Map.cc 
+     template class ConstMapIter<Int, Int> 
+1120 aips/Containers/Map.cc 
+     template class ConstMapIter<String, Double> 
+1130 aips/Containers/Map.cc 
+     template class Map<Int, Int> 
+1140 aips/Containers/Map.cc 
+     template class Map<String, Double> 
+1150 aips/Containers/Map.cc 
+     template class MapIterRep<Int, Int> 
+1160 aips/Containers/Map.cc 
+     template class MapIterRep<String, Double> 
+1170 aips/Containers/Map.cc 
+     template class MapRep<Int, Int> 
+1180 aips/Containers/Map.cc 
+     template class MapRep<String, Double> 
+1000 aips/Containers/OrderedMap.cc 
+     = aips/Arrays/IPosition.h 
+     = aips/BasicSL/String.h 
+     = aips/Containers/Block.h 
+     template class OrderedMapRep<String, Block<IPosition> > 
+     template class OrderedMapIterRep<String, Block<IPosition> > 
+     template class OrderedMap<String, Block<IPosition> > 
+     template class OrderedMapNotice<String, Block<IPosition> > 
+1010 aips/Containers/OrderedMap.cc 
+     = aips/BasicSL/String.h 
+     template class OrderedMapRep<String, Int> 
+     template class OrderedMapIterRep<String, Int> 
+     template class OrderedMap<String, Int> 
+     template class OrderedMapNotice<String, Int> 
+1020 aips/Containers/OrderedMap.cc aips/Arrays/Array.h 
+     template class OrderedMap<Int, Array<Float> > 
+1030 aips/Containers/OrderedMap.cc aips/Arrays/Array.h 
+     template class OrderedMapIterRep<Int, Array<Float> > 
+1040 aips/Containers/OrderedMap.cc aips/Arrays/Array.h 
+     template class OrderedMapNotice<Int, Array<Float> > 
+1050 aips/Containers/OrderedMap.cc aips/Arrays/Array.h 
+     template class OrderedMapRep<Int, Array<Float> > 
+1060 aips/Containers/OrderedMap.cc aips/Arrays/Vector.h 
+     template class OrderedMap<Int, Vector<Float> > 
+1070 aips/Containers/OrderedMap.cc aips/Arrays/Vector.h 
+     template class OrderedMapIterRep<Int, Vector<Float> > 
+1080 aips/Containers/OrderedMap.cc aips/Arrays/Vector.h 
+     template class OrderedMapNotice<Int, Vector<Float> > 
+1090 aips/Containers/OrderedMap.cc aips/Arrays/Vector.h 
+     template class OrderedMapRep<Int, Vector<Float> > 
+1100 aips/Containers/OrderedMap.cc 
+     template class OrderedMap<Int, Int> 
+1110 aips/Containers/OrderedMap.cc 
+     template class OrderedMapIterRep<Int, Int> 
+1120 aips/Containers/OrderedMap.cc 
+     template class OrderedMapNotice<Int, Int> 
+1130 aips/Containers/OrderedMap.cc 
+     template class OrderedMapRep<Int, Int> 
+1000 aips/Containers/OrderedPair.cc 
+     = aips/Arrays/IPosition.h 
+     = aips/BasicSL/String.h 
+     = aips/Containers/Block.h 
+     template class OrderedPair<String, Block<IPosition> > 
+1010 aips/Containers/OrderedPair.cc 
+     = aips/Containers/Record.h 
+     = aips/BasicSL/String.h 
+     template class OrderedPair<String, Record *> 
+1020 aips/Containers/OrderedPair.cc 
+     = aips/Utilities/DataType.h 
+     template class OrderedPair<Int, DataType> 
+1030 aips/Containers/OrderedPair.cc aips/Arrays/Array.h 
+     template class OrderedPair<Int, Array<Float> > 
+1040 aips/Containers/OrderedPair.cc aips/Arrays/Vector.h 
+     template class OrderedPair<Int, Vector<Float> > 
+1050 aips/Containers/OrderedPair.cc aips/Arrays/Vector.h 
+     template class OrderedPair<Int, Vector<Int> > 
+     template class OrderedPair<Int, Vector<uInt> > 
+     template class OrderedPair<Int, Vector<Double> > 
+1060 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     template class OrderedPair<Int, String> 
+1070 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     template class OrderedPair<String, Bool> 
+1080 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     template class OrderedPair<String, Int> 
+1090 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     template class OrderedPair<String, String> 
+1100 aips/Containers/OrderedPair.cc aips/BasicSL/String.h 
+     template class OrderedPair<String, void *> 
+1110 aips/Containers/OrderedPair.cc aips/Containers/PoolStack.h 
+     = aips/BasicSL/Complex.h 
+     template <class T> class AutoDiffRep 
+     template class OrderedPair<uInt, PoolStack<AutoDiffRep<Complex>, uInt> *> 
+1120 aips/Containers/OrderedPair.cc aips/Containers/PoolStack.h 
+     = aips/BasicSL/Complex.h 
+     template <class T> class AutoDiffRep 
+     template class OrderedPair<uInt, PoolStack<AutoDiffRep<DComplex>, uInt> *> 
+1130 aips/Containers/OrderedPair.cc aips/Containers/PoolStack.h 
+     template <class T> class AutoDiffRep 
+     template class OrderedPair<uInt, PoolStack<AutoDiffRep<Double>, uInt> *> 
+1140 aips/Containers/OrderedPair.cc aips/Containers/PoolStack.h 
+     template <class T> class AutoDiffRep 
+     template class OrderedPair<uInt, PoolStack<AutoDiffRep<Float>, uInt> *> 
+1150 aips/Containers/OrderedPair.cc aips/Quanta/Quantum.h 
+     = aips/Arrays/Array.h 
+     template class OrderedPair<Int, Quantum<Array<Double> > > 
+1160 aips/Containers/OrderedPair.cc aips/Quanta/Quantum.h 
+     = aips/Arrays/Vector.h 
+     template class OrderedPair<Int, Quantum<Vector<Double> > > 
+1170 aips/Containers/OrderedPair.cc aips/Quanta/Quantum.h 
+     template class OrderedPair<Int, Quantum<Double> > 
+1180 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<Int, Bool> 
+1190 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<Int, Double> 
+     template class OrderedPair<Int, uInt> 
+     template class OrderedPair<Double, uInt> 
+     template class OrderedPair<Double, Int> 
+1200 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<Int, Int> 
+1210 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<uInt, Int> 
+1220 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<uInt, uInt> 
+1230 aips/Containers/OrderedPair.cc 
+     template class OrderedPair<void *, void *> 
+1000 aips/Containers/Queue.cc 
+     = aips/Logging/LogMessage.h 
+     template class Queue<LogMessage> 
+1000 aips/Containers/RecordField.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template class RORecordFieldPtr<Array<Complex> > 
+     template class RORecordFieldPtr<Array<DComplex> > 
+     template class RORecordFieldPtr<Array<Bool> > 
+     template class RORecordFieldPtr<Array<Char> > 
+     template class RORecordFieldPtr<Array<Double> > 
+     template class RORecordFieldPtr<Array<Float> > 
+     template class RORecordFieldPtr<Array<Int> > 
+     template class RORecordFieldPtr<Array<Short> > 
+     template class RORecordFieldPtr<Array<String> > 
+     template class RORecordFieldPtr<Array<uChar> > 
+     template class RORecordFieldPtr<Array<uInt> > 
+1010 aips/Containers/RecordField.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template class RecordFieldPtr<Array<Bool> > 
+     template class RecordFieldPtr<Array<Char> > 
+     template class RecordFieldPtr<Array<Complex> > 
+     template class RecordFieldPtr<Array<DComplex> > 
+     template class RecordFieldPtr<Array<Double> > 
+     template class RecordFieldPtr<Array<Float> > 
+     template class RecordFieldPtr<Array<Int> > 
+     template class RecordFieldPtr<Array<Short> > 
+     template class RecordFieldPtr<Array<String> > 
+     template class RecordFieldPtr<Array<uChar> > 
+     template class RecordFieldPtr<Array<uInt> > 
+1020 aips/Containers/RecordField.cc aips/BasicSL/Complex.h 
+     template class RORecordFieldPtr<Complex> 
+     template class RORecordFieldPtr<DComplex> 
+     template class RORecordFieldPtr<Bool> 
+     template class RORecordFieldPtr<Double> 
+     template class RORecordFieldPtr<Float> 
+     template class RORecordFieldPtr<Int> 
+     template class RORecordFieldPtr<Record> 
+     template class RORecordFieldPtr<Short> 
+     template class RORecordFieldPtr<String> 
+     template class RORecordFieldPtr<uChar> 
+     template class RORecordFieldPtr<uInt> 
+1030 aips/Containers/RecordField.cc aips/BasicSL/Complex.h 
+     template class RecordFieldPtr<Bool> 
+     template class RecordFieldPtr<Complex> 
+     template class RecordFieldPtr<DComplex> 
+     template class RecordFieldPtr<Double> 
+     template class RecordFieldPtr<Float> 
+     template class RecordFieldPtr<Int> 
+     template class RecordFieldPtr<Record> 
+     template class RecordFieldPtr<Short> 
+     template class RecordFieldPtr<String> 
+     template class RecordFieldPtr<uChar> 
+     template class RecordFieldPtr<uInt> 
+1000 aips/Containers/SimOrdMap.cc 
+     = aips/BasicSL/String.h 
+     = aips/Containers/Record.h 
+     template class SimpleOrderedMap<String, Record *> 
+1010 aips/Containers/SimOrdMap.cc 
+     = aips/Utilities/DataType.h 
+     template class SimpleOrderedMap<Int, DataType> 
+1020 aips/Containers/SimOrdMap.cc aips/Arrays/Vector.h 
+     template class SimpleOrderedMap<Int, Vector<uInt> > 
+     template class SimpleOrderedMap<Int, Vector<Int> > 
+     template class SimpleOrderedMap<Int, Vector<Double> > 
+1030 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     template class SimpleOrderedMap<Int, String> 
+1040 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     template class SimpleOrderedMap<String, Bool> 
+1050 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     template class SimpleOrderedMap<String, Int> 
+1060 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     template class SimpleOrderedMap<String, String> 
+1070 aips/Containers/SimOrdMap.cc aips/BasicSL/String.h 
+     template class SimpleOrderedMap<String, void *> 
+1080 aips/Containers/SimOrdMap.cc aips/Containers/OrderedPair.cc 
+     template class SimpleOrderedMap<void*, Int> 
+     template class OrderedPair<void*, Int> 
+1090 aips/Containers/SimOrdMap.cc aips/Containers/PoolStack.h 
+     = aips/BasicSL/Complex.h 
+     template <class T> class AutoDiffRep 
+     template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<Complex>, uInt>*> 
+1100 aips/Containers/SimOrdMap.cc aips/Containers/PoolStack.h 
+     = aips/BasicSL/Complex.h 
+     template <class T> class AutoDiffRep 
+     template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<DComplex>, uInt>*> 
+1110 aips/Containers/SimOrdMap.cc aips/Containers/PoolStack.h 
+     template <class T> class AutoDiffRep 
+     template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<Double>, uInt>*> 
+1120 aips/Containers/SimOrdMap.cc aips/Containers/PoolStack.h 
+     template <class T> class AutoDiffRep 
+     template class SimpleOrderedMap<uInt, PoolStack<AutoDiffRep<Float>, uInt>*> 
+1130 aips/Containers/SimOrdMap.cc aips/Quanta/Quantum.h 
+     = aips/Arrays/Array.h 
+     template class SimpleOrderedMap<Int, Quantum<Array<Double> > > 
+1140 aips/Containers/SimOrdMap.cc aips/Quanta/Quantum.h 
+     = aips/Arrays/Vector.h 
+     template class SimpleOrderedMap<Int, Quantum<Vector<Double> > > 
+1150 aips/Containers/SimOrdMap.cc aips/Quanta/Quantum.h 
+     template class SimpleOrderedMap<Int, Quantum<Double> > 
+1160 aips/Containers/SimOrdMap.cc 
+     template class SimpleOrderedMap<Int, Bool> 
+1170 aips/Containers/SimOrdMap.cc 
+     template class SimpleOrderedMap<Int, Double> 
+1180 aips/Containers/SimOrdMap.cc 
+     template class SimpleOrderedMap<Int, Int> 
+1190 aips/Containers/SimOrdMap.cc 
+     template class SimpleOrderedMap<Int, uInt> 
+     template class SimpleOrderedMap<uInt, Int> 
+     template class SimpleOrderedMap<uInt, uInt> 
+     template class SimpleOrderedMap<Double, uInt> 
+     template class SimpleOrderedMap<Double, Int> 
+1200 aips/Containers/SimOrdMap.cc 
+     template class SimpleOrderedMap<void *, void *> 
+1000 aips/Containers/SimOrdMapIO.cc aips/BasicSL/String.h 
+     template AipsIO & operator>>(AipsIO &, SimpleOrderedMap<String, String> &) 
+     template AipsIO & operator<<(AipsIO &, SimpleOrderedMap<String, String> const &) 
+1010 aips/Containers/SimOrdMapIO.cc 
+     template AipsIO & operator>>(AipsIO &, SimpleOrderedMap<Int, Int> &) 
+     template AipsIO & operator<<(AipsIO &, SimpleOrderedMap<Int, Int> const &) 
+1000 aips/Containers/Stack.cc aips/Arrays/Vector.h 
+     template class Stack<Vector<Double> *> 
+1010 aips/Containers/Stack.cc aips/Arrays/Vector.h 
+     template class Stack<Vector<Float> *> 
+1020 aips/Containers/Stack.cc 
+     template class Stack<void *> 
+1000 aips/Exceptions/Error.cc aips/BasicSL/String.h 
+     template class indexError<String> 
+1010 aips/Exceptions/Error.cc 
+     template class indexError<Double> 
+1020 aips/Exceptions/Error.cc 
+     template class indexError<Float> 
+1030 aips/Exceptions/Error.cc 
+     template class indexError<Int> 
+1040 aips/Exceptions/Error.cc 
+     template class indexError<Short> 
+1050 aips/Exceptions/Error.cc 
+     template class indexError<uInt> 
+1060 aips/Exceptions/Error.cc 
+     template class indexError<void *> 
+1000 aips/Quanta/QLogical.cc aips/Quanta/Quantum.h 
+     template Bool near(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool nearAbs(Quantum<Double> const &, Quantum<Double> const &, Double) 
+     template Bool operator<=(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool operator>(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool operator>=(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool operator<(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool operator!=(Quantum<Double> const &, Quantum<Double> const &) 
+     template Bool operator==(Quantum<Double> const &, Quantum<Double> const &) 
+1000 aips/Quanta/QMath.cc 
+     = aips/Quanta/Quantum.h 
+     template Quantum<Double> operator*(Double const &, Quantum<Double> const &) 
+     template Quantum<Double> operator*(Quantum<Double> const &, Double const &) 
+     template Quantum<Double> abs(Quantum<Double> const &) 
+     template Quantum<Double> acos(Quantum<Double> const &) 
+     template Quantum<Double> asin(Quantum<Double> const &) 
+     template Quantum<Double> atan(Quantum<Double> const &) 
+     template Quantum<Double> atan2(Quantum<Double> const &, Quantum<Double> const &) 
+     template Quantum<Double> ceil(Quantum<Double> const &) 
+     template Quantum<Double> cos(Quantum<Double> const &) 
+     template Quantum<Double> floor(Quantum<Double> const &) 
+     template Quantum<Double> operator/(Quantum<Double> const &, Double const &) 
+     template Quantum<Double> pow(Quantum<Double> const &, Int) 
+     template Quantum<Double> sin(Quantum<Double> const &) 
+     template Quantum<Double> tan(Quantum<Double> const &) 
+     template Quantum<Double> log(Quantum<Double> const &) 
+     template Quantum<Double> log10(Quantum<Double> const &) 
+     template Quantum<Double> exp(Quantum<Double> const &) 
+     template Quantum<Double> root(Quantum<Double> const &, Int) 
+     template Quantum<Double> sqrt(Quantum<Double> const &) 
+1010 aips/Quanta/QMath.cc aips/Arrays/Array.h 
+     template Quantum<Array<Double> > abs(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > acos(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > asin(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > atan(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > atan2(Quantum<Array<Double> > const &, Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > ceil(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > cos(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > floor(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > sin(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > tan(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > log(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > log10(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > exp(Quantum<Array<Double> > const &) 
+     template Quantum<Array<Double> > root(Quantum<Array<Double> > const &, Int) 
+     template Quantum<Array<Double> > sqrt(Quantum<Array<Double> > const &) 
+1020 aips/Quanta/QMath.cc aips/Arrays/Vector.h 
+     template Quantum<Vector<Double> > abs(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > acos(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > asin(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > atan(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > atan2(Quantum<Vector<Double> > const &, Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > ceil(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > cos(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > floor(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > sin(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > tan(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > log(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > log10(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > exp(Quantum<Vector<Double> > const &) 
+     template Quantum<Vector<Double> > root(Quantum<Vector<Double> > const &, Int) 
+     template Quantum<Vector<Double> > sqrt(Quantum<Vector<Double> > const &) 
+1000 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Array<Complex> > 
+1010 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Array<DComplex> > 
+1020 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Array.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Array<Float> > 
+1030 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Array.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Array<Int> > 
+1040 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Array.h 
+     template class Quantum<Array<Double> > 
+1050 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Matrix.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Matrix<Double> > 
+1060 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Vector<Complex> > 
+1070 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Vector<DComplex> > 
+1080 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Vector.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Vector<Float> > 
+1090 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Vector.h 
+     = aips/Quanta/QMath.h 
+     template class Quantum<Vector<Int> > 
+1100 aips/Quanta/Quantum.cc 
+     = aips/Arrays/Vector.h 
+     template class Quantum<Vector<Double> > 
+1110 aips/Quanta/Quantum.cc 
+     = aips/BasicSL/Complex.h 
+     template class Quantum<Complex> 
+1120 aips/Quanta/Quantum.cc 
+     = aips/BasicSL/Complex.h 
+     template class Quantum<DComplex> 
+1130 aips/Quanta/Quantum.cc 
+     template class Quantum<Double> 
+1140 aips/Quanta/Quantum.cc 
+     template class Quantum<Float> 
+1150 aips/Quanta/Quantum.cc 
+     template class Quantum<Int> 
+1000 aips/System/AipsrcValue.cc 
+     template class AipsrcValue<Int> 
+     template class AipsrcValue<Float> 
+     template class AipsrcValue<Double> 
+     template class AipsrcValue<String> 
+1000 aips/Utilities/Assert.cc aips/Arrays/ArrayError.h 
+     template class assert_<ArrayError> 
+1010 aips/Utilities/Assert.cc aips/Containers/IterError.h 
+     template class assert_<InvalidIterError> 
+1020 aips/Utilities/Assert.cc aips/Exceptions/Error.h 
+     template class assert_<AbortError> 
+1030 aips/Utilities/Assert.cc aips/Exceptions/Error.h 
+     template class assert_<AipsError> 
+1000 aips/Utilities/BinarySearch.cc aips/Arrays/Vector.h 
+     template Int binarySearchBrackets(Bool &, Vector<Float> const &, Float const &, uInt, Int) 
+1010 aips/Utilities/BinarySearch.cc aips/Containers/Block.h 
+     = aips/BasicSL/Complex.h 
+     template Int binarySearchBrackets(Bool &, Block<Complex> const &, Complex const &, uInt, Int) 
+1020 aips/Utilities/BinarySearch.cc aips/Containers/Block.h 
+     template Int binarySearchBrackets(Bool &, Block<Double> const &, Double const &, uInt, Int) 
+1030 aips/Utilities/BinarySearch.cc aips/Containers/Block.h 
+     template Int binarySearchBrackets(Bool &, Block<Float> const &, Float const &, uInt, Int) 
+1040 aips/Utilities/BinarySearch.cc aips/Containers/Block.h 
+     template Int binarySearchBrackets(Bool &, Block<uInt> const &, uInt const &, uInt, Int) 
+1000 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template class COWPtr<Array<Complex> > 
+1010 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     template class COWPtr<Array<Bool> > 
+1020 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     template class COWPtr<Array<Double> > 
+1030 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     template class COWPtr<Array<Float> > 
+1040 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     template class COWPtr<Array<Int> > 
+1050 aips/Utilities/COWPtr.cc aips/Arrays/Array.h 
+     template class COWPtr<Array<uInt> > 
+1060 aips/Utilities/COWPtr.cc aips/Containers/RecordDescRep.h 
+     template class COWPtr<RecordDescRep> 
+1070 aips/Utilities/COWPtr.cc aips/Containers/RecordRep.h 
+     template class COWPtr<RecordRep> 
+1080 aips/Utilities/COWPtr.cc aips/Utilities/CountedPtr.cc 
+     = aips/Arrays/Array.h aips/BasicSL/Complex.h 
+     template class COWPtr<Array<DComplex> > 
+     template class CountedPtr<Array<DComplex> > 
+     template class PtrRep<Array<DComplex> > 
+     template class SimpleCountedConstPtr<Array<DComplex> > 
+     template class CountedConstPtr<Array<DComplex> > 
+     template class SimpleCountedPtr<Array<DComplex> > 
+1000 aips/Utilities/Compare.cc aips/BasicSL/Complex.h 
+     template class ObjCompare<Complex> 
+1010 aips/Utilities/Compare.cc aips/BasicSL/Complex.h 
+     template class ObjCompare<DComplex> 
+1020 aips/Utilities/Compare.cc aips/BasicSL/String.h 
+     template class ObjCompare<String> 
+1030 aips/Utilities/Compare.cc 
+     template class ObjCompare<Bool> 
+1040 aips/Utilities/Compare.cc 
+     template class ObjCompare<Char> 
+1050 aips/Utilities/Compare.cc 
+     template class ObjCompare<Double> 
+1060 aips/Utilities/Compare.cc 
+     template class ObjCompare<Float> 
+1070 aips/Utilities/Compare.cc 
+     template class ObjCompare<Int> 
+1080 aips/Utilities/Compare.cc 
+     template class ObjCompare<Short> 
+1090 aips/Utilities/Compare.cc 
+     template class ObjCompare<uChar> 
+1100 aips/Utilities/Compare.cc 
+     template class ObjCompare<uInt> 
+1110 aips/Utilities/Compare.cc 
+     template class ObjCompare<uShort> 
+1000 aips/Utilities/Copy.cc 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(Array<Complex> *, Array<Complex> const *, uInt) 
+     template void objmove(Array<Complex> *, Array<Complex> const *, uInt) 
+     template void objset(Array<Complex> *, Array<Complex>, uInt) 
+1010 aips/Utilities/Copy.cc 
+     = aips/Arrays/Array.h 
+     template void objcopy(Array<Float> *, Array<Float> const *, uInt) 
+     template void objmove(Array<Float> *, Array<Float> const *, uInt) 
+     template void objset(Array<Float> *, Array<Float>, uInt) 
+1020 aips/Utilities/Copy.cc 
+     = aips/Arrays/Array.h 
+     template void objcopy(Array<Int> *, Array<Int> const *, uInt) 
+1030 aips/Utilities/Copy.cc 
+     = aips/Arrays/IPosition.h 
+     template void objcopy(IPosition *, IPosition const *, uInt) 
+     template void objmove(IPosition *, IPosition const *, uInt) 
+     template void objset(IPosition *, IPosition, uInt) 
+1040 aips/Utilities/Copy.cc 
+     = aips/Arrays/Matrix.h 
+     template void objcopy(Matrix<Float> **, Matrix<Float> * const *, uInt) 
+     template void objcopy(Matrix<Float> **, Matrix<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(Matrix<Float> **, Matrix<Float> * const *, uInt) 
+     template void objset(Matrix<Float> **, Matrix<Float> *, uInt) 
+     template void objset(Matrix<Float> **, Matrix<Float> *, uInt, uInt) 
+1050 aips/Utilities/Copy.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(Vector<Complex> *, Vector<Complex> const *, uInt) 
+     template void objmove(Vector<Complex> *, Vector<Complex> const *, uInt) 
+     template void objset(Vector<Complex> *, Vector<Complex>, uInt) 
+     template void objcopy(Vector<Complex> *, Vector<Complex> const *, uInt, uInt, uInt) 
+     template void objset(Vector<Complex> *, Vector<Complex>, uInt, uInt) 
+1060 aips/Utilities/Copy.cc 
+     = aips/Arrays/Vector.h 
+     = aips/BasicSL/String.h 
+     template void objcopy(Vector<String> *, Vector<String> const *, uInt) 
+     template void objmove(Vector<String> *, Vector<String> const *, uInt) 
+     template void objset(Vector<String> *, Vector<String>, uInt) 
+1070 aips/Utilities/Copy.cc 
+     = aips/Arrays/Vector.h 
+     template void objcopy(Vector<Double> *, Vector<Double> const *, uInt) 
+     template void objcopy(Vector<Double> *, Vector<Double> const *, uInt, uInt, uInt) 
+     template void objmove(Vector<Double> *, Vector<Double> const *, uInt) 
+     template void objset(Vector<Double> *, Vector<Double>, uInt) 
+     template void objset(Vector<Double> *, Vector<Double>, uInt, uInt) 
+1080 aips/Utilities/Copy.cc 
+     = aips/Arrays/Vector.h 
+     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt) 
+     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt, uInt, uInt) 
+     template void objset(Vector<Float> *, Vector<Float>, uInt) 
+     template void objset(Vector<Float> *, Vector<Float>, uInt, uInt) 
+     template void objmove(Vector<Float> *, Vector<Float> const *, uInt) 
+1090 aips/Utilities/Copy.cc 
+     = aips/Arrays/Vector.h 
+     template void objcopy(Vector<Int> *, Vector<Int> const *, uInt) 
+     template void objmove(Vector<Int> *, Vector<Int> const *, uInt) 
+     template void objset(Vector<Int> *, Vector<Int>, uInt) 
+1100 aips/Utilities/Copy.cc 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(Complex *, Complex const *, uInt, uInt, uInt) 
+     template void objset(Complex *, Complex, uInt) 
+     template void objset(Complex *, Complex, uInt, uInt) 
+1110 aips/Utilities/Copy.cc 
+     = aips/BasicSL/String.h 
+     template void objcopy(String *, String const *, uInt) 
+     template void objcopy(String *, String const *, uInt, uInt, uInt) 
+     template void objmove(String *, String const *, uInt) 
+     template void objset(String *, String, uInt) 
+     template void objset(String *, String, uInt, uInt) 
+1120 aips/Utilities/Copy.cc 
+     = aips/Containers/Block.h 
+     template void objcopy(Block<Int> *, Block<Int> const *, uInt) 
+     template void objset(Block<Int> *, Block<Int>, uInt) 
+     template void objmove(Block<Int> *, Block<Int> const *, uInt) 
+1130 aips/Utilities/Copy.cc 
+     = aips/Containers/Block.h 
+     template void objcopy(Block<uInt>*, Block<uInt> const *, uInt) 
+1140 aips/Utilities/Copy.cc 
+     = aips/Containers/OrderedPair.h 
+     template void objcopy(OrderedPair<uInt, uInt> *, OrderedPair<uInt, uInt> const *, uInt) 
+     #ifdef AIPS_DEBUG 
+       template void objmove(OrderedPair<uInt, uInt> *, OrderedPair<uInt, uInt> const *, uInt) 
+       template void objset(OrderedPair<uInt, uInt> *, OrderedPair<uInt, uInt>, uInt) 
+     #endif 
+1150 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(RORecordFieldPtr<Array<Complex> > *, RORecordFieldPtr<Array<Complex> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Complex> > *, RecordFieldPtr<Array<Complex> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Complex> > *, RORecordFieldPtr<Array<Complex> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Complex> > *, RecordFieldPtr<Array<Complex> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Complex> > *, RORecordFieldPtr<Array<Complex> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Complex> > *, RecordFieldPtr<Array<Complex> > const *, uInt) 
+1160 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(RORecordFieldPtr<Array<DComplex> > *, RORecordFieldPtr<Array<DComplex> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<DComplex> > *, RecordFieldPtr<Array<DComplex> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<DComplex> > *, RORecordFieldPtr<Array<DComplex> >, uInt) 
+     template void objset(RecordFieldPtr<Array<DComplex> > *, RecordFieldPtr<Array<DComplex> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<DComplex> > *, RORecordFieldPtr<Array<DComplex> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<DComplex> > *, RecordFieldPtr<Array<DComplex> > const *, uInt) 
+1170 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     = aips/BasicSL/String.h 
+     template void objcopy(RORecordFieldPtr<Array<String> > *, RORecordFieldPtr<Array<String> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<String> > *, RecordFieldPtr<Array<String> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<String> > *, RORecordFieldPtr<Array<String> >, uInt) 
+     template void objset(RecordFieldPtr<Array<String> > *, RecordFieldPtr<Array<String> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<String> > *, RORecordFieldPtr<Array<String> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<String> > *, RecordFieldPtr<Array<String> > const *, uInt) 
+1180 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Bool> > *, RORecordFieldPtr<Array<Bool> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Bool> > *, RecordFieldPtr<Array<Bool> > const *, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Bool> > *, RORecordFieldPtr<Array<Bool> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Bool> > *, RecordFieldPtr<Array<Bool> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Bool> > *, RORecordFieldPtr<Array<Bool> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Bool> > *, RecordFieldPtr<Array<Bool> >, uInt) 
+1190 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Char> > *, RORecordFieldPtr<Array<Char> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Char> > *, RecordFieldPtr<Array<Char> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Char> > *, RORecordFieldPtr<Array<Char> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Char> > *, RecordFieldPtr<Array<Char> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Char> > *, RORecordFieldPtr<Array<Char> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Char> > *, RecordFieldPtr<Array<Char> > const *, uInt) 
+1200 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Double> > *, RORecordFieldPtr<Array<Double> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Double> > *, RecordFieldPtr<Array<Double> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Double> > *, RORecordFieldPtr<Array<Double> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Double> > *, RecordFieldPtr<Array<Double> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Double> > *, RORecordFieldPtr<Array<Double> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Double> > *, RecordFieldPtr<Array<Double> > const *, uInt) 
+1210 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Float> > *, RORecordFieldPtr<Array<Float> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Float> > *, RecordFieldPtr<Array<Float> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Float> > *, RORecordFieldPtr<Array<Float> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Float> > *, RecordFieldPtr<Array<Float> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Float> > *, RORecordFieldPtr<Array<Float> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Float> > *, RecordFieldPtr<Array<Float> > const *, uInt) 
+1220 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Int> > *, RORecordFieldPtr<Array<Int> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Int> > *, RecordFieldPtr<Array<Int> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Int> > *, RORecordFieldPtr<Array<Int> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Int> > *, RecordFieldPtr<Array<Int> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Int> > *, RORecordFieldPtr<Array<Int> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Int> > *, RecordFieldPtr<Array<Int> > const *, uInt) 
+1230 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<Short> > *, RORecordFieldPtr<Array<Short> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<Short> > *, RecordFieldPtr<Array<Short> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<Short> > *, RORecordFieldPtr<Array<Short> >, uInt) 
+     template void objset(RecordFieldPtr<Array<Short> > *, RecordFieldPtr<Array<Short> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<Short> > *, RORecordFieldPtr<Array<Short> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<Short> > *, RecordFieldPtr<Array<Short> > const *, uInt) 
+1240 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<uChar> > *, RORecordFieldPtr<Array<uChar> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<uChar> > *, RecordFieldPtr<Array<uChar> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<uChar> > *, RORecordFieldPtr<Array<uChar> >, uInt) 
+     template void objset(RecordFieldPtr<Array<uChar> > *, RecordFieldPtr<Array<uChar> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<uChar> > *, RORecordFieldPtr<Array<uChar> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<uChar> > *, RecordFieldPtr<Array<uChar> > const *, uInt) 
+1250 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Arrays/Array.h 
+     template void objcopy(RORecordFieldPtr<Array<uInt> > *, RORecordFieldPtr<Array<uInt> > const *, uInt) 
+     template void objcopy(RecordFieldPtr<Array<uInt> > *, RecordFieldPtr<Array<uInt> > const *, uInt) 
+     template void objset(RORecordFieldPtr<Array<uInt> > *, RORecordFieldPtr<Array<uInt> >, uInt) 
+     template void objset(RecordFieldPtr<Array<uInt> > *, RecordFieldPtr<Array<uInt> >, uInt) 
+     template void objmove(RORecordFieldPtr<Array<uInt> > *, RORecordFieldPtr<Array<uInt> > const *, uInt) 
+     template void objmove(RecordFieldPtr<Array<uInt> > *, RecordFieldPtr<Array<uInt> > const *, uInt) 
+1260 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(RORecordFieldPtr<Complex> *, RORecordFieldPtr<Complex> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Complex> *, RecordFieldPtr<Complex> const *, uInt) 
+     template void objset(RORecordFieldPtr<Complex> *, RORecordFieldPtr<Complex>, uInt) 
+     template void objset(RecordFieldPtr<Complex> *, RecordFieldPtr<Complex>, uInt) 
+     template void objmove(RORecordFieldPtr<Complex> *, RORecordFieldPtr<Complex> const *, uInt) 
+     template void objmove(RecordFieldPtr<Complex> *, RecordFieldPtr<Complex> const *, uInt) 
+1270 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/BasicSL/Complex.h 
+     template void objcopy(RORecordFieldPtr<DComplex> *, RORecordFieldPtr<DComplex> const *, uInt) 
+     template void objcopy(RecordFieldPtr<DComplex> *, RecordFieldPtr<DComplex> const *, uInt) 
+     template void objset(RORecordFieldPtr<DComplex> *, RORecordFieldPtr<DComplex>, uInt) 
+     template void objset(RecordFieldPtr<DComplex> *, RecordFieldPtr<DComplex>, uInt) 
+     template void objmove(RORecordFieldPtr<DComplex> *, RORecordFieldPtr<DComplex> const *, uInt) 
+     template void objmove(RecordFieldPtr<DComplex> *, RecordFieldPtr<DComplex> const *, uInt) 
+1280 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/BasicSL/String.h 
+     template void objcopy(RORecordFieldPtr<String> *, RORecordFieldPtr<String> const *, uInt) 
+     template void objcopy(RecordFieldPtr<String> *, RecordFieldPtr<String> const *, uInt) 
+     template void objset(RORecordFieldPtr<String> *, RORecordFieldPtr<String>, uInt) 
+     template void objset(RecordFieldPtr<String> *, RecordFieldPtr<String>, uInt) 
+     template void objmove(RORecordFieldPtr<String> *, RORecordFieldPtr<String> const *, uInt) 
+     template void objmove(RecordFieldPtr<String> *, RecordFieldPtr<String> const *, uInt) 
+1290 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     = aips/Containers/Record.h 
+     template void objcopy(RORecordFieldPtr<Record> *, RORecordFieldPtr<Record> const *, uInt) 
+1300 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<Bool> *, RORecordFieldPtr<Bool> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Bool> *, RecordFieldPtr<Bool> const *, uInt) 
+     template void objmove(RORecordFieldPtr<Bool> *, RORecordFieldPtr<Bool> const *, uInt) 
+     template void objmove(RecordFieldPtr<Bool> *, RecordFieldPtr<Bool> const *, uInt) 
+     template void objset(RORecordFieldPtr<Bool> *, RORecordFieldPtr<Bool>, uInt) 
+     template void objset(RecordFieldPtr<Bool> *, RecordFieldPtr<Bool>, uInt) 
+1310 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<Double> *, RORecordFieldPtr<Double> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Double> *, RecordFieldPtr<Double> const *, uInt) 
+     template void objset(RORecordFieldPtr<Double> *, RORecordFieldPtr<Double>, uInt) 
+     template void objset(RecordFieldPtr<Double> *, RecordFieldPtr<Double>, uInt) 
+     template void objmove(RORecordFieldPtr<Double> *, RORecordFieldPtr<Double> const *, uInt) 
+     template void objmove(RecordFieldPtr<Double> *, RecordFieldPtr<Double> const *, uInt) 
+1320 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<Float> *, RORecordFieldPtr<Float> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Float> *, RecordFieldPtr<Float> const *, uInt) 
+     template void objset(RORecordFieldPtr<Float> *, RORecordFieldPtr<Float>, uInt) 
+     template void objset(RecordFieldPtr<Float> *, RecordFieldPtr<Float>, uInt) 
+     template void objmove(RORecordFieldPtr<Float> *, RORecordFieldPtr<Float> const *, uInt) 
+     template void objmove(RecordFieldPtr<Float> *, RecordFieldPtr<Float> const *, uInt) 
+1330 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<Int> *, RORecordFieldPtr<Int> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Int> *, RecordFieldPtr<Int> const *, uInt) 
+     template void objset(RORecordFieldPtr<Int> *, RORecordFieldPtr<Int>, uInt) 
+     template void objset(RecordFieldPtr<Int> *, RecordFieldPtr<Int>, uInt) 
+     template void objmove(RORecordFieldPtr<Int> *, RORecordFieldPtr<Int> const *, uInt) 
+     template void objmove(RecordFieldPtr<Int> *, RecordFieldPtr<Int> const *, uInt) 
+1340 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<Short> *, RORecordFieldPtr<Short> const *, uInt) 
+     template void objcopy(RecordFieldPtr<Short> *, RecordFieldPtr<Short> const *, uInt) 
+     template void objset(RORecordFieldPtr<Short> *, RORecordFieldPtr<Short>, uInt) 
+     template void objset(RecordFieldPtr<Short> *, RecordFieldPtr<Short>, uInt) 
+     template void objmove(RORecordFieldPtr<Short> *, RORecordFieldPtr<Short> const *, uInt) 
+     template void objmove(RecordFieldPtr<Short> *, RecordFieldPtr<Short> const *, uInt) 
+1350 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<uChar> *, RORecordFieldPtr<uChar> const *, uInt) 
+     template void objcopy(RecordFieldPtr<uChar> *, RecordFieldPtr<uChar> const *, uInt) 
+     template void objset(RORecordFieldPtr<uChar> *, RORecordFieldPtr<uChar>, uInt) 
+     template void objset(RecordFieldPtr<uChar> *, RecordFieldPtr<uChar>, uInt) 
+     template void objmove(RORecordFieldPtr<uChar> *, RORecordFieldPtr<uChar> const *, uInt) 
+     template void objmove(RecordFieldPtr<uChar> *, RecordFieldPtr<uChar> const *, uInt) 
+1360 aips/Utilities/Copy.cc 
+     = aips/Containers/RecordField.h 
+     template void objcopy(RORecordFieldPtr<uInt> *, RORecordFieldPtr<uInt> const *, uInt) 
+     template void objset(RORecordFieldPtr<uInt> *, RORecordFieldPtr<uInt>, uInt) 
+     template void objmove(RORecordFieldPtr<uInt> *, RORecordFieldPtr<uInt> const *, uInt) 
+1370 aips/Utilities/Copy.cc 
+     = aips/Logging/LogMessage.h 
+     template void objcopy(LogMessage *, LogMessage const *, uInt) 
+1380 aips/Utilities/Copy.cc 
+     = aips/Quanta/MVDirection.h 
+     template void objcopy(MVDirection *, MVDirection const *, uInt) 
+     template void objcopy(MVDirection *, MVDirection const *, uInt, uInt, uInt) 
+     template void objset(MVDirection *, MVDirection, uInt) 
+     template void objset(MVDirection *, MVDirection, uInt, uInt) 
+1390 aips/Utilities/Copy.cc 
+     = aips/Quanta/MVFrequency.h 
+     template void objcopy(MVFrequency *, MVFrequency const *, uInt) 
+     template void objcopy(MVFrequency *, MVFrequency const *, uInt, uInt, uInt) 
+     template void objset(MVFrequency *, MVFrequency, uInt) 
+     template void objset(MVFrequency *, MVFrequency, uInt, uInt) 
+1400 aips/Utilities/Copy.cc 
+     = aips/Quanta/MVPosition.h 
+     template void objcopy(MVPosition *, MVPosition const *, uInt) 
+     template void objcopy(MVPosition *, MVPosition const *, uInt, uInt, uInt) 
+     template void objmove(MVPosition *, MVPosition const *, uInt) 
+     template void objset(MVPosition *, MVPosition, uInt) 
+     template void objset(MVPosition *, MVPosition, uInt, uInt) 
+1410 aips/Utilities/Copy.cc 
+     = aips/Quanta/MVTime.h 
+     template void objset(MVTime *, MVTime, uInt) 
+     template void objmove(MVTime *, MVTime const *, uInt) 
+     template void objcopy(MVTime *, MVTime const *, uInt) 
+     template void objset(MVTime *, MVTime, uInt, uInt) 
+     template void objcopy(MVTime *, MVTime const *, uInt, uInt, uInt) 
+1420 aips/Utilities/Copy.cc 
+     = aips/Quanta/Quantum.h 
+     template void objcopy(Quantum<Double> *, Quantum<Double> const *, uInt) 
+     template void objcopy(Quantum<Double> *, Quantum<Double> const *, uInt, uInt, uInt) 
+     template void objmove(Quantum<Double> *, Quantum<Double> const *, uInt) 
+     template void objset(Quantum<Double> *, Quantum<Double>, uInt) 
+     template void objset(Quantum<Double> *, Quantum<Double>, uInt, uInt) 
+1430 aips/Utilities/Copy.cc 
+     = aips/Quanta/Quantum.h 
+     template void objcopy(Quantum<Float> *, Quantum<Float> const *, uInt) 
+     template void objcopy(Quantum<Float> *, Quantum<Float> const *, uInt, uInt, uInt) 
+     template void objmove(Quantum<Float> *, Quantum<Float> const *, uInt) 
+     template void objset(Quantum<Float> *, Quantum<Float>, uInt) 
+     template void objset(Quantum<Float> *, Quantum<Float>, uInt, uInt) 
+1440 aips/Utilities/Copy.cc 
+     = aips/Quanta/QuantumHolder.h 
+     template void objcopy(QuantumHolder *, QuantumHolder const *, uInt) 
+     template void objcopy(QuantumHolder *, QuantumHolder const *, uInt, uInt, uInt) 
+     template void objmove(QuantumHolder *, QuantumHolder const *, uInt) 
+     template void objset(QuantumHolder *, QuantumHolder, uInt) 
+     template void objset(QuantumHolder *, QuantumHolder, uInt, uInt) 
+1450 aips/Utilities/Copy.cc 
+     = aips/Quanta/Unit.h 
+     template void objcopy(Unit *, Unit const *, uInt) 
+     template void objcopy(Unit *, Unit const *, uInt, uInt, uInt) 
+     template void objset(Unit *, Unit, uInt) 
+     template void objset(Unit *, Unit, uInt, uInt) 
+     template void objmove(Unit *, Unit const *, uInt) 
+1460 aips/Utilities/Copy.cc aips/Arrays/Array.h 
+     template void objcopy(Array<Double> *, Array<Double> const *, uInt) 
+     template void objcopy(Array<Double> *, Array<Double> const *, uInt, uInt, uInt) 
+     template void objmove(Array<Double> *, Array<Double> const *, uInt) 
+     template void objset(Array<Double> *, Array<Double>, uInt) 
+     template void objset(Array<Double> *, Array<Double>, uInt, uInt) 
+1470 aips/Utilities/Copy.cc aips/Arrays/Vector.h 
+     template void objcopy(Vector<Float> **, Vector<Float> * const *, uInt) 
+     template void objcopy(Vector<Float> **, Vector<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(Vector<Float> **, Vector<Float> * const *, uInt) 
+     template void objset(Vector<Float> **, Vector<Float> *, uInt) 
+     template void objset(Vector<Float> **, Vector<Float> *, uInt, uInt) 
+1480 aips/Utilities/Copy.cc aips/BasicSL/Complex.h 
+     template void objcopy(DComplex *, DComplex const *, uInt, uInt, uInt) 
+     template void objset(DComplex *, DComplex, uInt) 
+     template void objset(DComplex *, DComplex, uInt, uInt) 
+1490 aips/Utilities/Copy.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h aips/Arrays/Matrix.h 
+     template void objcopy(Matrix<CountedPtr<Random> >*, Matrix<CountedPtr<Random> > const *, uInt, uInt, uInt) 
+     template void objcopy(Matrix<CountedPtr<Random> >*, Matrix<CountedPtr<Random> > const *, uInt) 
+     template void objset(Matrix<CountedPtr<Random> > *, Matrix<CountedPtr<Random> >, uInt) 
+     template void objset(Matrix<CountedPtr<Random> > *, Matrix<CountedPtr<Random> >, uInt, uInt) 
+1500 aips/Utilities/Copy.cc aips/Utilities/CountedPtr.h 
+     = aips/BasicMath/Random.h 
+     template void objcopy(CountedPtr<Random> *, CountedPtr<Random> const *, uInt, uInt, uInt) 
+     template void objcopy(CountedPtr<Random> *, CountedPtr<Random> const *, uInt) 
+     template void objset(CountedPtr<Random> *, CountedPtr<Random>, uInt) 
+     template void objset(CountedPtr<Random> *, CountedPtr<Random>, uInt, uInt) 
+1510 aips/Utilities/Copy.cc 
+     template void objcopy(Bool *, Bool const *, uInt, uInt, uInt) 
+     template void objset(Bool *, Bool, uInt) 
+     template void objset(Bool *, Bool, uInt, uInt) 
+1520 aips/Utilities/Copy.cc 
+     template void objcopy(Char *, Char const *, uInt, uInt, uInt) 
+     template void objset(Char *, Char, uInt) 
+     template void objset(Char *, Char, uInt, uInt) 
+1530 aips/Utilities/Copy.cc 
+     template void objcopy(Double *, Double const *, uInt, uInt, uInt) 
+     template void objset(Double *, Double, uInt) 
+     template void objset(Double *, Double, uInt, uInt) 
+1540 aips/Utilities/Copy.cc 
+     template void objcopy(Float **, Float * const *, uInt) 
+     template void objcopy(Float **, Float * const *, uInt, uInt, uInt) 
+     template void objmove(Float **, Float * const *, uInt) 
+     template void objset(Float **, Float *, uInt) 
+     template void objset(Float **, Float *, uInt, uInt) 
+1550 aips/Utilities/Copy.cc 
+     template void objcopy(Float *, Float const *, uInt, uInt, uInt) 
+     template void objset(Float *, Float, uInt) 
+     template void objset(Float *, Float, uInt, uInt) 
+1560 aips/Utilities/Copy.cc 
+     template void objcopy(Int *, Int const *, uInt, uInt, uInt) 
+     template void objset(Int *, Int, uInt) 
+     template void objset(Int *, Int, uInt, uInt) 
+1570 aips/Utilities/Copy.cc 
+     template void objcopy(Long *, Long const *, uInt) 
+     template void objcopy(Long *, Long const *, uInt, uInt, uInt) 
+     template void objmove(Long *, Long const *, uInt) 
+     template void objset(Long *, Long, uInt) 
+     template void objset(Long *, Long, uInt, uInt) 
+1580 aips/Utilities/Copy.cc 
+     template void objcopy(Short *, Short const *, uInt, uInt, uInt) 
+     template void objset(Short *, Short, uInt) 
+     template void objset(Short *, Short, uInt, uInt) 
+1590 aips/Utilities/Copy.cc 
+     template void objcopy(uChar *, uChar const *, uInt, uInt, uInt) 
+     template void objset(uChar *, uChar, uInt) 
+     template void objset(uChar *, uChar, uInt, uInt) 
+1600 aips/Utilities/Copy.cc 
+     template void objcopy(uInt *, uInt const *, uInt, uInt, uInt) 
+     template void objset(uInt *, uInt, uInt) 
+     template void objset(uInt *, uInt, uInt, uInt) 
+1610 aips/Utilities/Copy.cc 
+     template void objcopy(uShort *, uShort const *, uInt, uInt, uInt) 
+     template void objset(uShort *, uShort, uInt) 
+     template void objset(uShort *, uShort, uInt, uInt) 
+1620 aips/Utilities/Copy.cc 
+     template void objmove(uLong *, uLong const *, uInt) 
+     template void objcopy(uLong *, uLong const *, uInt) 
+     template void objcopy(uLong *, uLong const *, uInt, uInt, uInt) 
+     template void objset(uLong *, uLong, uInt) 
+     template void objset(uLong *, uLong, uInt, uInt) 
+1630 aips/Utilities/Copy.cc 
+     template void objset(void **, void *, uInt) 
+     template void objcopy(void **, void * const *, uInt) 
+     template void objmove(void **, void * const *, uInt) 
+1000 aips/Utilities/CountedPtr.cc 
+     = aips/Arrays/Array.h 
+     template class CountedConstPtr<Array<uInt> > 
+     template class CountedPtr<Array<uInt> > 
+     template class PtrRep<Array<uInt> > 
+     template class SimpleCountedConstPtr<Array<uInt> > 
+     template class SimpleCountedPtr<Array<uInt> > 
+1010 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     = aips/Quanta/QuantumHolder.h 
+     template class CountedConstPtr<Block<QuantumHolder> > 
+     template class CountedPtr<Block<QuantumHolder> > 
+     template class PtrRep<Block<QuantumHolder> > 
+     template class SimpleCountedConstPtr<Block<QuantumHolder> > 
+     template class SimpleCountedPtr<Block<QuantumHolder> > 
+1020 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     = aips/Quanta/Unit.h 
+     template class CountedPtr<Block<Unit> > 
+     template class CountedConstPtr<Block<Unit> > 
+     template class PtrRep<Block<Unit> > 
+     template class SimpleCountedPtr<Block<Unit> > 
+     template class SimpleCountedConstPtr<Block<Unit> > 
+1030 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Long> > 
+     template class CountedPtr<Block<Long> > 
+     template class PtrRep<Block<Long> > 
+     template class SimpleCountedConstPtr<Block<Long> > 
+     template class SimpleCountedPtr<Block<Long> > 
+1040 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     template class CountedConstPtr<Block<uLong> > 
+     template class CountedPtr<Block<uLong> > 
+     template class PtrRep<Block<uLong> > 
+     template class SimpleCountedConstPtr<Block<uLong> > 
+     template class SimpleCountedPtr<Block<uLong> > 
+1050 aips/Utilities/CountedPtr.cc 
+     = aips/Containers/Block.h 
+     template class CountedConstPtr<Block<void *> > 
+     template class CountedPtr<Block<void *> > 
+     template class PtrRep<Block<void *> > 
+     template class SimpleCountedConstPtr<Block<void *> > 
+     template class SimpleCountedPtr<Block<void *> > 
+1060 aips/Utilities/CountedPtr.cc 
+     = trial/System/PGPlotterInterface.h 
+     template class CountedPtr<PGPlotterInterface> 
+     template class CountedConstPtr<PGPlotterInterface> 
+     template class SimpleCountedPtr<PGPlotterInterface> 
+     template class SimpleCountedConstPtr<PGPlotterInterface> 
+     template class PtrRep<PGPlotterInterface> 
+1070 aips/Utilities/CountedPtr.cc aips/Arrays/Array.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedPtr<Array<Complex> > 
+     template class PtrRep<Array<Complex> > 
+     template class SimpleCountedConstPtr<Array<Complex> > 
+     template class CountedConstPtr<Array<Complex> > 
+     template class SimpleCountedPtr<Array<Complex> > 
+1080 aips/Utilities/CountedPtr.cc aips/Arrays/Array.h 
+     template class CountedConstPtr<Array<Bool> > 
+     template class CountedPtr<Array<Bool> > 
+     template class PtrRep<Array<Bool> > 
+     template class SimpleCountedConstPtr<Array<Bool> > 
+     template class SimpleCountedPtr<Array<Bool> > 
+1090 aips/Utilities/CountedPtr.cc aips/Arrays/Array.h 
+     template class CountedConstPtr<Array<Double> > 
+     template class CountedPtr<Array<Double> > 
+     template class PtrRep<Array<Double> > 
+     template class SimpleCountedConstPtr<Array<Double> > 
+     template class SimpleCountedPtr<Array<Double> > 
+1100 aips/Utilities/CountedPtr.cc aips/Arrays/Array.h 
+     template class CountedConstPtr<Array<Float> > 
+     template class CountedPtr<Array<Float> > 
+     template class PtrRep<Array<Float> > 
+     template class SimpleCountedConstPtr<Array<Float> > 
+     template class SimpleCountedPtr<Array<Float> > 
+1110 aips/Utilities/CountedPtr.cc aips/Arrays/Array.h 
+     template class CountedConstPtr<Array<Int> > 
+     template class CountedPtr<Array<Int> > 
+     template class PtrRep<Array<Int> > 
+     template class SimpleCountedConstPtr<Array<Int> > 
+     template class SimpleCountedPtr<Array<Int> > 
+1120 aips/Utilities/CountedPtr.cc aips/Arrays/Vector.h 
+     = aips/Containers/Block.h 
+     template class SimpleCountedConstPtr<Block<Vector<Float> > > 
+     template class PtrRep<Block<Vector<Float> > > 
+     template class CountedPtr<Block<Vector<Float> > > 
+     template class CountedConstPtr<Block<Vector<Float> > > 
+     template class SimpleCountedPtr<Block<Vector<Float> > > 
+1130 aips/Utilities/CountedPtr.cc aips/BasicMath/Random.h 
+     = aips/Containers/Block.h 
+     template class SimpleCountedConstPtr<Random> 
+     template class SimpleCountedPtr<Random> 
+     template class CountedConstPtr<Random> 
+     template class CountedPtr<Random> 
+     template class PtrRep<Random> 
+1140 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Arrays/Array.h 
+     template class CountedConstPtr<Block<Array<Double> > > 
+     template class CountedPtr<Block<Array<Double> > > 
+     template class PtrRep<Block<Array<Double> > > 
+     template class SimpleCountedConstPtr<Block<Array<Double> > > 
+     template class SimpleCountedPtr<Block<Array<Double> > > 
+1150 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Arrays/Matrix.h aips/BasicMath/Random.h 
+     template class CountedConstPtr<Block<Matrix<CountedPtr<Random> > > > 
+     template class CountedPtr<Block<Matrix<CountedPtr<Random> > > > 
+     template class SimpleCountedConstPtr<Block<Matrix<CountedPtr<Random> > > > 
+     template class SimpleCountedPtr<Block<Matrix<CountedPtr<Random> > > > 
+     template class PtrRep<Block<Matrix<CountedPtr<Random> > > > 
+1160 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Arrays/Vector.h aips/BasicSL/Complex.h 
+     template class CountedConstPtr<Block<Vector<Complex> > > 
+     template class CountedPtr<Block<Vector<Complex> > > 
+     template class PtrRep<Block<Vector<Complex> > > 
+     template class SimpleCountedConstPtr<Block<Vector<Complex> > > 
+     template class SimpleCountedPtr<Block<Vector<Complex> > > 
+1170 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Arrays/Vector.h 
+     template class CountedConstPtr<Block<Vector<Double> > > 
+     template class CountedPtr<Block<Vector<Double> > > 
+     template class PtrRep<Block<Vector<Double> > > 
+     template class SimpleCountedConstPtr<Block<Vector<Double> > > 
+     template class SimpleCountedPtr<Block<Vector<Double> > > 
+1180 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/BasicMath/Random.h 
+     template class CountedConstPtr<Block<CountedPtr<Random> > > 
+     template class CountedPtr<Block<CountedPtr<Random> > > 
+     template class SimpleCountedConstPtr<Block<CountedPtr<Random> > > 
+     template class SimpleCountedPtr<Block<CountedPtr<Random> > > 
+     template class PtrRep<Block<CountedPtr<Random> > > 
+1190 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedConstPtr<Block<Complex> > 
+     template class CountedPtr<Block<Complex> > 
+     template class PtrRep<Block<Complex> > 
+     template class SimpleCountedConstPtr<Block<Complex> > 
+     template class SimpleCountedPtr<Block<Complex> > 
+1200 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/BasicSL/Complex.h 
+     template class CountedConstPtr<Block<DComplex> > 
+     template class CountedPtr<Block<DComplex> > 
+     template class PtrRep<Block<DComplex> > 
+     template class SimpleCountedConstPtr<Block<DComplex> > 
+     template class SimpleCountedPtr<Block<DComplex> > 
+1210 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/BasicSL/String.h aips/Utilities/Regex.h 
+     template class SimpleCountedConstPtr<Regex> 
+     template class CountedConstPtr<Regex> 
+     template class CountedPtr<Regex> 
+     template class PtrRep<Regex> 
+     template class SimpleCountedPtr<Regex> 
+1220 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/BasicSL/String.h 
+     template class CountedConstPtr<Block<String> > 
+     template class CountedPtr<Block<String> > 
+     template class PtrRep<Block<String> > 
+     template class SimpleCountedConstPtr<Block<String> > 
+     template class SimpleCountedPtr<Block<String> > 
+1230 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/MVDirection.h 
+     template class CountedConstPtr<Block<MVDirection> > 
+     template class CountedPtr<Block<MVDirection> > 
+     template class PtrRep<Block<MVDirection> > 
+     template class SimpleCountedConstPtr<Block<MVDirection> > 
+     template class SimpleCountedPtr<Block<MVDirection> > 
+1240 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/MVFrequency.h 
+     template class CountedConstPtr<Block<MVFrequency> > 
+     template class CountedPtr<Block<MVFrequency> > 
+     template class PtrRep<Block<MVFrequency> > 
+     template class SimpleCountedConstPtr<Block<MVFrequency> > 
+     template class SimpleCountedPtr<Block<MVFrequency> > 
+1250 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/MVPosition.h 
+     template class CountedConstPtr<Block<MVPosition> > 
+     template class CountedPtr<Block<MVPosition> > 
+     template class PtrRep<Block<MVPosition> > 
+     template class SimpleCountedConstPtr<Block<MVPosition> > 
+     template class SimpleCountedPtr<Block<MVPosition> > 
+1260 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/MVTime.h 
+     template class CountedPtr<Block<MVTime> > 
+     template class SimpleCountedPtr<Block<MVTime> > 
+     template class CountedConstPtr<Block<MVTime> > 
+     template class SimpleCountedConstPtr<Block<MVTime> > 
+     template class PtrRep<Block<MVTime> > 
+1270 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/Quantum.h 
+     template class CountedConstPtr<Block<Quantum<Double> > > 
+     template class CountedPtr<Block<Quantum<Double> > > 
+     template class PtrRep<Block<Quantum<Double> > > 
+     template class SimpleCountedConstPtr<Block<Quantum<Double> > > 
+     template class SimpleCountedPtr<Block<Quantum<Double> > > 
+1280 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     = aips/Quanta/Quantum.h 
+     template class CountedPtr<Block<Quantum<Float> > > 
+     template class CountedConstPtr<Block<Quantum<Float> > > 
+     template class SimpleCountedPtr<Block<Quantum<Float> > > 
+     template class SimpleCountedConstPtr<Block<Quantum<Float> > > 
+     template class PtrRep<Block<Quantum<Float> > > 
+1290 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Bool> > 
+     template class CountedPtr<Block<Bool> > 
+     template class PtrRep<Block<Bool> > 
+     template class SimpleCountedConstPtr<Block<Bool> > 
+     template class SimpleCountedPtr<Block<Bool> > 
+1300 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Char> > 
+     template class CountedPtr<Block<Char> > 
+     template class PtrRep<Block<Char> > 
+     template class SimpleCountedConstPtr<Block<Char> > 
+     template class SimpleCountedPtr<Block<Char> > 
+1310 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Double> > 
+     template class CountedPtr<Block<Double> > 
+     template class PtrRep<Block<Double> > 
+     template class SimpleCountedConstPtr<Block<Double> > 
+     template class SimpleCountedPtr<Block<Double> > 
+1320 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Float> > 
+     template class CountedPtr<Block<Float> > 
+     template class PtrRep<Block<Float> > 
+     template class SimpleCountedConstPtr<Block<Float> > 
+     template class SimpleCountedPtr<Block<Float> > 
+1330 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Int> > 
+     template class CountedPtr<Block<Int> > 
+     template class PtrRep<Block<Int> > 
+     template class SimpleCountedConstPtr<Block<Int> > 
+     template class SimpleCountedPtr<Block<Int> > 
+1340 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<Short> > 
+     template class CountedPtr<Block<Short> > 
+     template class PtrRep<Block<Short> > 
+     template class SimpleCountedConstPtr<Block<Short> > 
+     template class SimpleCountedPtr<Block<Short> > 
+1350 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<uChar> > 
+     template class CountedPtr<Block<uChar> > 
+     template class PtrRep<Block<uChar> > 
+     template class SimpleCountedConstPtr<Block<uChar> > 
+     template class SimpleCountedPtr<Block<uChar> > 
+1360 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<uInt> > 
+     template class CountedPtr<Block<uInt> > 
+     template class PtrRep<Block<uInt> > 
+     template class SimpleCountedConstPtr<Block<uInt> > 
+     template class SimpleCountedPtr<Block<uInt> > 
+1370 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedConstPtr<Block<uShort> > 
+     template class CountedPtr<Block<uShort> > 
+     template class PtrRep<Block<uShort> > 
+     template class SimpleCountedConstPtr<Block<uShort> > 
+     template class SimpleCountedPtr<Block<uShort> > 
+1380 aips/Utilities/CountedPtr.cc aips/Containers/Block.h 
+     template class CountedPtr<Block<Float *> > 
+     template class SimpleCountedConstPtr<Block<Float *> > 
+     template class CountedConstPtr<Block<Float *> > 
+     template class PtrRep<Block<Float *> > 
+     template class SimpleCountedPtr<Block<Float *> > 
+1390 aips/Utilities/CountedPtr.cc aips/Containers/RecordDescRep.h 
+     template class CountedConstPtr<RecordDescRep> 
+     template class CountedPtr<RecordDescRep> 
+     template class PtrRep<RecordDescRep> 
+     template class SimpleCountedConstPtr<RecordDescRep> 
+     template class SimpleCountedPtr<RecordDescRep> 
+1400 aips/Utilities/CountedPtr.cc aips/Containers/RecordRep.h 
+     template class CountedConstPtr<RecordRep> 
+     template class CountedPtr<RecordRep> 
+     template class PtrRep<RecordRep> 
+     template class SimpleCountedConstPtr<RecordRep> 
+     template class SimpleCountedPtr<RecordRep> 
+1410 aips/Utilities/CountedPtr.cc aips/IO/ByteIO.h 
+     template class CountedPtr<ByteIO> 
+     template class CountedConstPtr<ByteIO> 
+     template class SimpleCountedPtr<ByteIO> 
+     template class SimpleCountedConstPtr<ByteIO> 
+     template class PtrRep<ByteIO> 
+1420 aips/Utilities/CountedPtr.cc aips/IO/TypeIO.h 
+     template class CountedPtr<TypeIO> 
+     template class CountedConstPtr<TypeIO> 
+     template class SimpleCountedPtr<TypeIO> 
+     template class SimpleCountedConstPtr<TypeIO> 
+     template class PtrRep<TypeIO> 
+1430 aips/Utilities/CountedPtr.cc aips/Logging/LogSinkInterface.h 
+     template class CountedConstPtr<LogSinkInterface> 
+     template class CountedPtr<LogSinkInterface> 
+     template class PtrRep<LogSinkInterface> 
+     template class SimpleCountedConstPtr<LogSinkInterface> 
+     template class SimpleCountedPtr<LogSinkInterface> 
+1440 aips/Utilities/CountedPtr.cc aips/OS/DataConversion.h 
+     template class CountedPtr<DataConversion> 
+     template class CountedConstPtr<DataConversion> 
+     template class SimpleCountedPtr<DataConversion> 
+     template class SimpleCountedConstPtr<DataConversion> 
+     template class PtrRep<DataConversion> 
+1450 aips/Utilities/CountedPtr.cc aips/OS/SysEvent.h 
+     template class CountedConstPtr<SysEventTarget> 
+     template class CountedPtr<SysEventTarget> 
+     template class PtrRep<SysEventTarget> 
+     template class SimpleCountedConstPtr<SysEventTarget> 
+     template class SimpleCountedPtr<SysEventTarget> 
+1460 aips/Utilities/CountedPtr.cc aips/OS/SysEvent.h 
+     template class CountedConstPtr<SysEventTargetInfo> 
+     template class CountedPtr<SysEventTargetInfo> 
+     template class PtrRep<SysEventTargetInfo> 
+     template class SimpleCountedConstPtr<SysEventTargetInfo> 
+     template class SimpleCountedPtr<SysEventTargetInfo> 
+1470 aips/Utilities/CountedPtr.cc aips/fstream.h 
+     template class CountedConstPtr<fstream> 
+     template class CountedPtr<fstream> 
+     template class PtrRep<fstream> 
+     template class SimpleCountedConstPtr<fstream> 
+     template class SimpleCountedPtr<fstream> 
+1000 aips/Utilities/DefaultValue.h aips/BasicSL/Complex.h 
+     template void defaultValue(Complex &) 
+     template void defaultValue(DComplex &) 
+1010 aips/Utilities/DefaultValue.h 
+     template void defaultValue(Bool &) 
+     template void defaultValue(Double &) 
+     template void defaultValue(Float &) 
+     template void defaultValue(Int &) 
+1000 aips/Utilities/Fallible.h 
+     template class Fallible<Double> 
+1010 aips/Utilities/Fallible.h 
+     template class Fallible<Int> 
+1020 aips/Utilities/Fallible.h 
+     template class Fallible<uInt> 
+1000 aips/Utilities/GenSort.cc 
+     = aips/BasicSL/Complex.h 
+     template class GenSort<DComplex> 
+1010 aips/Utilities/GenSort.cc aips/BasicSL/String.h 
+     template class GenSortIndirect<String> 
+1020 aips/Utilities/GenSort.cc 
+     template class GenSort<Double> 
+1030 aips/Utilities/GenSort.cc 
+     template class GenSort<Float> 
+1040 aips/Utilities/GenSort.cc 
+     template class GenSort<Int> 
+1050 aips/Utilities/GenSort.cc 
+     template class GenSort<String> 
+1060 aips/Utilities/GenSort.cc 
+     template class GenSort<uInt> 
+1070 aips/Utilities/GenSort.cc 
+     template class GenSortIndirect<Double> 
+     template uInt genSort(Vector<uInt> &, Block<Double> const &) 
+     template uInt genSort(Vector<uInt> &, Block<Double> const &, Sort::Order) 
+1080 aips/Utilities/GenSort.cc 
+     template class GenSortIndirect<Float> 
+1090 aips/Utilities/GenSort.cc 
+     template class GenSortIndirect<Int> 
+1100 aips/Utilities/GenSort.cc 
+     template class GenSortIndirect<uInt> 
+1110 aips/Utilities/GenSort.cc 
+     template uInt genSort(Array<uInt> &) 
+1120 aips/Utilities/GenSort.cc 
+     template uInt genSort(Double *, uInt) 
+1130 aips/Utilities/GenSort.cc 
+     template uInt genSort(Float *, uInt) 
+1000 aips/Utilities/LinearSearch.cc aips/Arrays/Vector.h 
+     template Int linearSearch(Bool &, Vector<Int> const &, Int const &, uInt, uInt) 
+     template Int linearSearch(Bool &, Vector<uInt> const &, uInt const &, uInt, uInt) 
+1000 aips/Utilities/PtrHolder.cc 
+     = aips/BasicMath/Random.h 
+     template class PtrHolder<Random> 
+1010 aips/Utilities/PtrHolder.cc 
+     = aips/Quanta/QBase.h 
+     template class PtrHolder<QBase> 
+1020 aips/Utilities/PtrHolder.cc aips/BasicSL/String.h 
+     = aips/Arrays/Vector.h 
+     template class PtrHolder<Vector<String> > 
+1030 aips/Utilities/PtrHolder.cc aips/Containers/RecordInterface.h 
+     template class PtrHolder<RecordInterface> 
+1040 aips/Utilities/PtrHolder.cc aips/Logging/LogSinkInterface.h 
+     template class PtrHolder<LogSinkInterface> 
+1000 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<Complex> > const *) 
+1010 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<DComplex> > const *) 
+1020 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<Complex> > const *) 
+1030 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<DComplex> > const *) 
+1040 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<Complex> const *) 
+1050 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<DComplex> const *) 
+1060 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template uInt Register(Complex const *) 
+1070 aips/Utilities/Register.cc 
+     = aips/BasicSL/Complex.h 
+     template uInt Register(DComplex const *) 
+1080 aips/Utilities/Register.cc 
+     = aips/Containers/List.h 
+     template uInt Register(ListNotice<void *> const *) 
+1090 aips/Utilities/Register.cc 
+     = aips/Containers/OrderedMap.h 
+     = aips/BasicSL/String.h 
+     = aips/Arrays/IPosition.h 
+     = aips/Containers/Block.h 
+     template uInt Register(OrderedMapNotice<String, Block<IPosition> > const *) 
+1100 aips/Utilities/Register.cc 
+     = aips/Containers/OrderedMap.h 
+     = aips/BasicSL/String.h 
+     template uInt Register(OrderedMapNotice<String, Int> const *) 
+1110 aips/Utilities/Register.cc aips/BasicSL/String.h 
+     template uInt Register(String const *) 
+1120 aips/Utilities/Register.cc aips/Containers/List.h 
+     = aips/Inputs/Param.h 
+     template uInt Register(ListNotice<Param> const *) 
+1130 aips/Utilities/Register.cc aips/Containers/List.h 
+     = aips/Utilities/CountedPtr.h aips/OS/SysEvent.h 
+     template uInt Register(ListNotice<CountedPtr<SysEventTargetInfo> > const *) 
+1140 aips/Utilities/Register.cc aips/Containers/List.h 
+     template uInt Register(ListNotice<uInt> const *) 
+1150 aips/Utilities/Register.cc aips/Containers/List.h 
+     template uInt Register(ListNotice<uLong> const *) 
+1160 aips/Utilities/Register.cc aips/Containers/OrderedMap.h 
+     = aips/Arrays/Array.h 
+     template uInt Register(OrderedMapNotice<Int, Array<Float> > const *) 
+1170 aips/Utilities/Register.cc aips/Containers/OrderedMap.h 
+     = aips/Arrays/Vector.h 
+     template uInt Register(OrderedMapNotice<Int, Vector<Float> > const *) 
+1180 aips/Utilities/Register.cc aips/Containers/OrderedMap.h 
+     template uInt Register(OrderedMapNotice<Int, Int> const *) 
+1190 aips/Utilities/Register.cc aips/Containers/RecordInterface.h 
+     template uInt Register(RecordNotice const *) 
+1200 aips/Utilities/Register.cc aips/OS/SysEvent.h 
+     template uInt Register(SysEventTargetInfo const *) 
+1210 aips/Utilities/Register.cc aips/Quanta/MVBaseline.h 
+     template uInt Register(MVBaseline const *) 
+1220 aips/Utilities/Register.cc aips/Quanta/MVDirection.h 
+     template uInt Register(MVDirection const *) 
+1230 aips/Utilities/Register.cc aips/Quanta/MVDoppler.h 
+     template uInt Register(MVDoppler const *) 
+1240 aips/Utilities/Register.cc aips/Quanta/MVDouble.h 
+     template uInt Register(MVDouble const *) 
+1250 aips/Utilities/Register.cc aips/Quanta/MVEarthMagnetic.h 
+     template uInt Register(MVEarthMagnetic const *) 
+1260 aips/Utilities/Register.cc aips/Quanta/MVEpoch.h 
+     template uInt Register(MVEpoch const *) 
+1270 aips/Utilities/Register.cc aips/Quanta/MVFrequency.h 
+     template uInt Register(MVFrequency const *) 
+1280 aips/Utilities/Register.cc aips/Quanta/MVPosition.h 
+     template uInt Register(MVPosition const *) 
+1290 aips/Utilities/Register.cc aips/Quanta/MVRadialVelocity.h 
+     template uInt Register(MVRadialVelocity const *) 
+1300 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<Double> > const *) 
+1310 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<Float> > const *) 
+1320 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<Int> > const *) 
+1330 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Matrix 
+     template uInt Register(Quantum<Matrix<Double> > const *) 
+1340 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<Double> > const *) 
+1350 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<Float> > const *) 
+1360 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<Int> > const *) 
+1370 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<Double> const *) 
+1380 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<Float> const *) 
+1390 aips/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<Int> const *) 
+1400 aips/Utilities/Register.cc 
+     template uInt Register(Double const *) 
+1410 aips/Utilities/Register.cc 
+     template uInt Register(Float const *) 
+1420 aips/Utilities/Register.cc 
+     template uInt Register(Int const *) 
+1430 aips/Utilities/Register.cc 
+     template uInt Register(Long const *) 
+1440 aips/Utilities/Register.cc 
+     template uInt Register(lDouble const *) 
+1450 aips/Utilities/Register.cc 
+     template uInt Register(uInt const *) 
+1000 aips/Utilities/Sequence.cc 
+     template class Sequence<uInt> 
+1000 aips/stdmap.h 
+     = aips/BasicSL/String.h 
+     = aips/Quanta/UnitName.h 
+     = aips/Quanta/UnitVal.h 
+     template class map<String, UnitName> 
+     AIPS_MAP_AUX_TEMPLATES(String, UnitName) 
+     template class map<String, UnitVal> 
+     AIPS_MAP_AUX_TEMPLATES(String, UnitVal) 
+1000 aips/vector.h 
+     = aips/BasicSL/Complex.h 
+     template class vector<Complex> 
+     AIPS_VECTOR_AUX_TEMPLATES(Complex) 
+1010 aips/vector.h 
+     = aips/BasicSL/Complex.h 
+     template class vector<DComplex> 
+     AIPS_VECTOR_AUX_TEMPLATES(DComplex) 
+1020 aips/vector.h aips/Arrays/Slice.h 
+     template class vector<Slice> 
+     AIPS_VECTOR_AUX_TEMPLATES(Slice) 
+1030 aips/vector.h 
+     template class vector<Double> 
+     AIPS_VECTOR_AUX_TEMPLATES(Double) 
+#
+1000 trial/Containers/RecordFieldWriter.cc 
+     = aips/Arrays/Array.h 
+     template class RecordFieldCopier<Array<Bool>, Array<Bool> > 
+     template class RecordFieldCopier<Array<Complex>, Array<Complex> > 
+     template class RecordFieldCopier<Array<DComplex>, Array<DComplex> > 
+     template class RecordFieldCopier<Array<Double>, Array<Double> > 
+     template class RecordFieldCopier<Array<Float>, Array<Float> > 
+     template class RecordFieldCopier<Array<Int>, Array<Int> > 
+     template class RecordFieldCopier<Array<Short>, Array<Short> > 
+     template class RecordFieldCopier<Array<String>, Array<String> > 
+     template class RecordFieldCopier<Array<uChar>, Array<uChar> > 
+1010 trial/Containers/RecordFieldWriter.cc 
+     template class RecordFieldCopier<Bool, Bool> 
+     template class RecordFieldCopier<Complex, Complex> 
+     template class RecordFieldCopier<DComplex, DComplex> 
+     template class RecordFieldCopier<Double, Double> 
+     template class RecordFieldCopier<Float, Float> 
+     template class RecordFieldCopier<Float, Int> 
+     template class RecordFieldCopier<Int, Int> 
+     template class RecordFieldCopier<Short, Short> 
+     template class RecordFieldCopier<String, String> 
+     template class RecordFieldCopier<uChar, uChar> 
+     template class RecordFieldCopier<Double, Float> 
+     template class RecordFieldCopier<Int, Short> 

@@ -1,0 +1,3 @@
+1000 aips/Utilities/GenSort.cc aips/Arrays/Array.h 
+     = aips/BasicSL/String.h 
+     template uInt genSort(Array<String> &) 
