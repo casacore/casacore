@@ -34,14 +34,6 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 
-///
-// Special local definitions for now only
-#include <aips/Mathematics/Complex.h>
-DComplex fmod(const DComplex &in, const DComplex &f) {
-  return DComplex(fmod(real(in), real(f))); }
-Complex fmod(const Complex &in, const Complex &f) {
-  return Complex(fmod(real(in), real(f))); }
-
 
 //# Statics
 ///template<class T>
