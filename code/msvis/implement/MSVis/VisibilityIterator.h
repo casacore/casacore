@@ -299,6 +299,9 @@ public:
   // Return the number of rows in the current iteration
   Int nRow() const;
 
+  // Return the numbers of rows in the current chunk
+  Int nRowChunk() const;
+
   // Velocity selection - specify the output channels in velocity:
   // nChan - number of output channels, vStart - start velocity,
   // vInc - velocity increment. So channel i will have velocity 
@@ -443,6 +446,8 @@ inline Int ROVisibilityIterator::channelIndex() const
 { return chanInc_p[msIter_p.spectralWindowId()]*curChanGroup_p; }
 inline Int ROVisibilityIterator::nRow() const
 { return curNumRow_p;}
+inline Int ROVisibilityIterator::nRowChunk() const
+{ return msIter_p.table().nrow();}                                            
 inline ROVisibilityIterator& 
 ROVisibilityIterator::velInterpolation(const String& type)
 { vInterpolation_p=type; return *this;}
@@ -583,4 +588,3 @@ protected:
 };
 
 #endif
-
