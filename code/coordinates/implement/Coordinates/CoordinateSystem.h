@@ -1,5 +1,5 @@
 //# CoordinateSystem.h: Interconvert pixel and image coordinates.
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -243,9 +243,9 @@ public:
     // </group>
 
     // Both vectors should be of length nPixelAxes(). At present this will throw
-    // an exception if <src>nPixelAxes() != nWorldAxes()</src>
+    // an exception if <src>nPixelAxes() != nWorldAxes()</src>. 
     CoordinateSystem subImage(const Vector<Int> &originShift,
-			      const Vector<Int> &pixinc) const;
+			      const Vector<Int> &pixincFac) const;
 
     // Untranspose and undelete all axes. Does not undo the effects of
     // subimaging.
@@ -311,13 +311,13 @@ public:
 
     // Find the world axis for the given pixel axis in a coordinate system
     // Returns -1 if the world axis is unavailable (e.g. if it has been
-    // removed).
+    // removed).  
     Int pixelAxisToWorldAxis(uInt pixelAxis) const;
 
     // Find the pixel axis for the given world axis in a coordinate system
     // Returns -1 if the pixel axis is unavailable (e.g. if it has been
     // removed). 
-    Int worldAxisToPixelAxis(uInt pixelAxis) const;
+    Int worldAxisToPixelAxis(uInt worldAxis) const;
 
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
@@ -335,7 +335,8 @@ public:
 
     // Convert a pixel position to a worl position or vice versa. Returns True
     // if the conversion succeeds, otherwise it returns False and
-    // <src>errorMessage()</src> contains an error message.
+    // <src>errorMessage()</src> contains an error message. The output vectors
+    // are resized.
     // <group>
     virtual Bool toWorld(Vector<Double> &world, 
 			 const Vector<Double> &pixel) const;
@@ -344,7 +345,7 @@ public:
     // </group>
 
     // This is provided as a convenience since it is a very commonly desired
-    // operation through CoordinateSystem.
+    // operation through CoordinateSystem.  The output vector is resized.   
     Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
 
     // Report the value of the requested attributed.
@@ -429,6 +430,12 @@ public:
     // Calabretta "Representation of celestial coordinates in FITS"). This is
     // a DRAFT convention evolving rapidly. It is not recommended that you
     // write this convention in general.
+    // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
+    // one-relative FITS coordinates.
+    //
+    // <src>prefix</src> gives the prefix for the FITS keywords. E.g.,
+    // if <src>prefix="c"</src> then <src>crval, cdelt</src> etc. 
+    // if <src>prefix="d"</src> then <src>drval, ddelt</src> etc. 
     //# Much of the work in to/from fits should be moved to the individual
     //# classes.
     Bool toFITSHeader(RecordInterface &header, 
@@ -441,6 +448,8 @@ public:
 
     // Probably even if we return False we should set up the best linear
     // coordinate that we can.
+    // Use <src>oneRelative=True</src> to convert one-relative FITS pixel coordinates to
+    // zero-relative aips++ coordinates.
     //# cf comment in toFITS.
     static Bool fromFITSHeader(CoordinateSystem &coordsys, 
 			       const RecordInterface &header,
