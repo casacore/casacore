@@ -35,6 +35,7 @@
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Utilities/GenSort.h>
 #include <aips/Utilities/Assert.h>
 
 
@@ -537,7 +538,8 @@ TableExprNodeSet::TableExprNodeSet()
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
-  itsCheckTypes    (True)
+  itsCheckTypes    (True),
+  itsSorted        (False)
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
@@ -545,7 +547,8 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
   itsSingle        (True),
   itsDiscrete      (True),
   itsBounded       (True),
-  itsCheckTypes    (False)
+  itsCheckTypes    (False),
+  itsSorted        (False)
 {
     uInt n = indices.nelements();
     itsElems.resize (n);
@@ -559,7 +562,8 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
   itsSingle        (False),
   itsDiscrete      (True),
   itsBounded       (True),
-  itsCheckTypes    (False)
+  itsCheckTypes    (False),
+  itsSorted        (False)
 {
     TableExprNode start;
     TableExprNode end;
@@ -588,14 +592,24 @@ TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
   itsSingle        (elem.isSingle()),
   itsDiscrete      (elem.isDiscrete()),
   itsBounded       (True),
-  itsCheckTypes    (False)
+  itsCheckTypes    (False),
+  itsSorted        (False)
 {
     // Set is not bounded if the element is not discrete and if end is defined.
     if (!(itsSingle  ||  (itsDiscrete && elem.end() != 0))) {
-	itsBounded  = False;
+	itsBounded = False;
     }
     for (uInt i=0; i<n; i++) {
 	itsElems[i] = elem.evaluate (i);
+    }
+    // Try to combine multiple intervals; it can improve performance a lot.
+    if (n>1  &&  !isSingle()  &&  !isDiscrete()) {
+        if (elem.dataType() == NTDouble) {
+	    combineDoubleIntervals();
+	} else if (elem.dataType() == NTDate) {
+	    combineDateIntervals();
+	}
+
     }
 }
 
@@ -604,7 +618,8 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
   itsSingle        (that.itsSingle),
   itsDiscrete      (that.itsDiscrete),
   itsBounded       (that.itsBounded),
-  itsCheckTypes    (that.itsCheckTypes)
+  itsCheckTypes    (that.itsCheckTypes),
+  itsSorted        (that.itsSorted)
 {
     uInt n = that.itsElems.nelements();
     itsElems.resize (n);
@@ -615,10 +630,192 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
 
 TableExprNodeSet::~TableExprNodeSet()
 {
+    deleteElems();
+}
+
+void TableExprNodeSet::deleteElems()
+{
     uInt n = itsElems.nelements();
     for (uInt i=0; i<n; i++) {
 	delete itsElems[i];
     }
+}
+
+void TableExprNodeSet::combineDoubleIntervals()
+{
+  DebugAssert (itsElems.nelements() > 0, AipsError);
+  // Make an id (with an arbitrary row number) for the gets.
+  TableExprId id(0);
+  PtrBlock<TableExprNodeSetElem*> elems(1);
+  TableExprNodeSetElem& elem = *(itsElems[0]);
+  if (elem.start() == 0) {
+    // No start value, so only the highest end value is relevant.
+    // Make a single interval with the used open/closed-ness.
+    Double val = elem.end()->getDouble(id);
+    for (uInt i=1; i<itsElems.nelements(); i++) {
+      Double valn = itsElems[i]->end()->getDouble(id);
+      if (valn > val) {
+	val = valn;
+      }
+    }
+    elems[0] = new TableExprNodeSetElem(TableExprNode(val),
+					elem.isRightClosed());
+  } else if (elem.end() == 0) {
+    // No end value, so only the lowest start value is relevant.
+    Double val = elem.start()->getDouble(id);
+    for (uInt i=1; i<itsElems.nelements(); i++) {
+      Double valn = itsElems[i]->start()->getDouble(id);
+      if (valn < val) {
+	val = valn;
+      }
+    }
+    elems[0] = new TableExprNodeSetElem(elem.isLeftClosed(),
+					TableExprNode(val));
+  } else {
+    // The intervals contain both a start and an end value.
+    // Make the block large enough for all possible intervals.
+    elems.resize (itsElems.nelements());
+    uInt nelem = 0;
+    // Get all start values and sort them (indirectly) in ascending order.
+    Block<Double> vals(itsElems.nelements());
+    for (uInt i=0; i<itsElems.nelements(); i++) {
+      vals[i] = itsElems[i]->start()->getDouble(id);
+    }
+    Vector<uInt> index;
+    GenSortIndirect<Double>::sort (index, vals, vals.nelements());
+    // Get the start and end value of first interval in sorted list.
+    Double stval  = vals[index[0]];
+    Double endval = itsElems[index[0]]->end()->getDouble(id);
+    // Loop through the next intervals and combine if possible.
+    for (uInt i=1; i<index.nelements(); i++) {
+      Int inx = index[i];
+      Double st2 = vals[inx];
+      Double end2 = itsElems[inx]->end()->getDouble(id);
+      // Combine intervals if they overlap.
+      // They do if the next interval starts before end of this one
+      // or if starting at the end and one side of the interval is closed.
+      if (st2 < endval  ||
+	  (st2 == endval  &&
+	   (elem.isLeftClosed() || elem.isRightClosed()))) {
+	// Overlap; update end if higher.
+	if (end2 > endval) {
+	  endval = end2;
+	}
+      } else {
+	// No overlap, so create the interval found and start a new one.
+	elems[nelem++] = new TableExprNodeSetElem(elem.isLeftClosed(),
+						  stval,
+						  endval,
+						  elem.isRightClosed());
+	stval  = st2;
+	endval = end2;
+      }
+    }
+    // Create the last interval and resize the array to #intervals found.
+    elems[nelem++] = new TableExprNodeSetElem(elem.isLeftClosed(),
+					      stval,
+					      endval,
+					      elem.isRightClosed());
+    elems.resize (nelem, True, True);
+  }
+  // Delete all existing intervals and replace by new ones.
+  deleteElems();
+  itsElems = elems;
+  itsSorted = True;
+#ifdef AIPS_DEBUG
+  cerr << "combined to " << itsElems.nelements() << " double intervals\n";
+#endif
+}
+
+void TableExprNodeSet::combineDateIntervals()
+{
+  DebugAssert (itsElems.nelements() > 0, AipsError);
+  // Make an id (with an arbitrary row number) for the gets.
+  // Note that this function uses the automatic Double<->MVTime conversions.
+  TableExprId id(0);
+  PtrBlock<TableExprNodeSetElem*> elems(1);
+  TableExprNodeSetElem& elem = *(itsElems[0]);
+  if (elem.start() == 0) {
+    // No start value, so only the highest end value is relevant.
+    // Make a single interval with the used open/closed-ness.
+    Double val = elem.end()->getDate(id);
+    for (uInt i=1; i<itsElems.nelements(); i++) {
+      Double valn = itsElems[i]->end()->getDate(id);
+      if (valn > val) {
+	val = valn;
+      }
+    }
+    elems[0] = new TableExprNodeSetElem
+                    (TableExprNode(new TableExprNodeConstDate(val)),
+		     elem.isRightClosed());
+  } else if (elem.end() == 0) {
+    // No end value, so only the lowest start value is relevant.
+    Double val = elem.start()->getDate(id);
+    for (uInt i=1; i<itsElems.nelements(); i++) {
+      Double valn = itsElems[i]->start()->getDate(id);
+      if (valn < val) {
+	val = valn;
+      }
+    }
+    elems[0] = new TableExprNodeSetElem
+                    (elem.isLeftClosed(),
+                     TableExprNode(new TableExprNodeConstDate(val)));
+  } else {
+    // The intervals contain both a start and an end value.
+    // Make the block large enough for all possible intervals.
+    elems.resize (itsElems.nelements());
+    uInt nelem = 0;
+    // Get all start values and sort them (indirectly) in ascending order.
+    Block<Double> vals(itsElems.nelements());
+    for (uInt i=0; i<itsElems.nelements(); i++) {
+      vals[i] = itsElems[i]->start()->getDate(id);
+    }
+    Vector<uInt> index;
+    GenSortIndirect<Double>::sort (index, vals, vals.nelements());
+    // Get the start and end value of first interval in sorted list.
+    Double stval  = vals[index[0]];
+    Double endval = itsElems[index[0]]->end()->getDate(id);
+    // Loop through the next intervals and combine if possible.
+    for (uInt i=1; i<index.nelements(); i++) {
+      Int inx = index[i];
+      Double st2 = vals[inx];
+      Double end2 = itsElems[inx]->end()->getDate(id);
+      // Combine intervals if they overlap.
+      // They do if the next interval starts before end of this one
+      // or if starting at the end and one side of the interval is closed.
+      if (st2 < endval  ||
+	  (st2 == endval  &&
+	   (elem.isLeftClosed() || elem.isRightClosed()))) {
+	// Overlap; update end if higher.
+	if (end2 > endval) {
+	  endval = end2;
+	}
+      } else {
+	// No overlap, so create the interval found and start a new one.
+	elems[nelem++] = new TableExprNodeSetElem
+                                       (elem.isLeftClosed(),
+					new TableExprNodeConstDate(stval),
+					new TableExprNodeConstDate(endval),
+					elem.isRightClosed());
+	stval  = st2;
+	endval = end2;
+      }
+    }
+    // Create the last interval and resize the array to #intervals found.
+    elems[nelem++] = new TableExprNodeSetElem
+                                       (elem.isLeftClosed(),
+					new TableExprNodeConstDate(stval),
+					new TableExprNodeConstDate(endval),
+					elem.isRightClosed());
+    elems.resize (nelem, True, True);
+  }
+  // Delete all existing intervals and replace by new ones.
+  deleteElems();
+  itsElems = elems;
+  itsSorted = True;
+#ifdef AIPS_DEBUG
+  cerr << "combined to " << itsElems.nelements() << " date intervals\n";
+#endif
 }
 
 void TableExprNodeSet::add (const TableExprNodeSetElem& elem)
