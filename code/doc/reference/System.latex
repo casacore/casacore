@@ -76,7 +76,8 @@
 \title{\aipspp\ System Manual\\
        For users, programmers and administrators}
 \author{\LARGE{Mark Calabretta}}
-\date{1997/06/05}
+\date{1997/06/05\\
+2000/09/22}
 
 \maketitle
 
@@ -88,7 +89,7 @@
 
 \newpage
 \vspace*{\fill}
-Copyright \copyright\ 1992-1997 AIPS++ Consortium
+Copyright \copyright\ 1992-2000 AIPS++ Consortium
 
 \aipspp\ System manual.
 
