@@ -3979,3 +3979,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCCrosshairTool.h trialdisplay/implement/DisplayEvents/WCCrosshairTool.h
 14 065 src mv trial/implement/DisplayEvents/WCInvisTool.h trialdisplay/implement/DisplayEvents/WCInvisTool.h
 14 065 src mv trial/implement/DisplayEvents/WCMotionEH.h trialdisplay/implement/DisplayEvents/WCMotionEH.h
+14 065 src mv trial/implement/DisplayEvents/WCMotionEvent.h trialdisplay/implement/DisplayEvents/WCMotionEvent.h
