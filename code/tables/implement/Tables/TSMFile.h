@@ -1,5 +1,5 @@
 //# TSMFile.h: File object for Tiled Storage Manager
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,6 +98,9 @@ public:
     // Write the object.
     void putObject (AipsIO& ios) const;
 
+    // Get the object.
+    void getObject (AipsIO& ios);
+
     // Open the file if not open yet.
     void open();
 
@@ -113,18 +116,6 @@ public:
     // Increment the logical file length.
     void extend (uInt increment);
 
-    // Read bytes from the file.
-//    uInt read (void* buffer, uInt length) const;
-
-    // Write bytes into the file.
-//    uInt write (const void* buffer, uInt length);
-
-    // Seek in the file.
-//    void seek (uInt offset) const;
-
-    // Get the (physical) size of the file.
-    // This is doing a seek and sets the file pointer to end-of-file.
-//    uInt fileSize() const;
 
 private:
     // The parent TiledStMan object.
@@ -153,18 +144,6 @@ inline uInt TSMFile::sequenceNumber() const
 
 inline void TSMFile::extend (uInt increment)
     { length_p += increment; }
-
-//inline uInt TSMFile::read (void* buffer, uInt length) const
-//    { return file_p->read (buffer, length); }
-
-//inline uInt TSMFile::write (const void* buffer, uInt length)
-//    { return file_p->write (buffer, length); }
-
-//inline void TSMFile::seek (uInt offset) const
-//    { file_p->seek (offset); }
-
-//inline uInt TSMFile::fileSize() const
-//    { return file_p->fileSize(); }
 
 inline BucketFile* TSMFile::bucketFile()
     { return file_p; }
