@@ -206,13 +206,15 @@ WCPolygon::WCPolygon (const WCPolygon& that)
 //
 // Copy constructor (reference semantics)
 //
-: itsX(that.itsX),   
+: WCRegion(that),
+  itsX(that.itsX),   
   itsY(that.itsY),
   itsPixelAxes(that.itsPixelAxes),
   itsCSys(that.itsCSys),             // This one makes a copy
   itsAbsRel(that.itsAbsRel),
   itsNull(that.itsNull)
 {}
+
  
 WCPolygon& WCPolygon::operator= (const WCPolygon& that)
 // 
@@ -220,6 +222,7 @@ WCPolygon& WCPolygon::operator= (const WCPolygon& that)
 //
 {
    if (this != &that) {
+      WCRegion::operator= (that);
       itsPixelAxes.resize(that.itsPixelAxes.nelements());
       itsX = that.itsX;
       itsY = that.itsY;
