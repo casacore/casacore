@@ -39,12 +39,19 @@
 #include <strstream.h>
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
-    : Coordinate(),
-      values_p(whichStokes.nelements()), crval_p(0), crpix_p(0), matrix_p(1),
-      cdelt_p(1), name_p("Stokes"), unit_p("")
+: Coordinate(),
+  values_p(whichStokes.nelements()), 
+  crval_p(0), 
+  crpix_p(0), 
+  matrix_p(1),
+  cdelt_p(1), 
+  name_p("Stokes"), 
+  unit_p(""),
+  prefUnit_p("")
 {
     setStokes(whichStokes);
     nValues_p = values_p.nelements();
+    setDefaultWorldMixRanges();
 }
 
 StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
@@ -56,8 +63,10 @@ StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
   cdelt_p(other.cdelt_p),
   name_p(other.name_p),
   unit_p(other.unit_p),
+  prefUnit_p(other.prefUnit_p),
   nValues_p(other.nValues_p)
 {  
+    setDefaultWorldMixRanges();
 }
 
 StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
@@ -71,16 +80,17 @@ StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
 	cdelt_p = other.cdelt_p;
 	name_p = other.name_p;
 	unit_p = other.unit_p;
+        prefUnit_p = other.prefUnit_p;
         nValues_p = other.nValues_p;
+        worldMin_p = other.worldMin_p;
+        worldMax_p = other.worldMax_p;
     }
 
     return *this;
 }
 
 StokesCoordinate::~StokesCoordinate()
-{
-    // Nothing
-}
+{}
 
 Coordinate::Type StokesCoordinate::type() const
 {
@@ -101,7 +111,6 @@ uInt StokesCoordinate::nWorldAxes() const
 {
     return 1;
 }
-
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
@@ -221,6 +230,13 @@ Vector<String> StokesCoordinate::worldAxisUnits() const
     return units;
 }
 
+Vector<String> StokesCoordinate::preferredWorldAxisUnits() const
+{
+    Vector<String> units(1);
+    units = prefUnit_p;
+    return units;
+}
+
 Vector<Double> StokesCoordinate::referencePixel() const
 {
     Vector<Double> crpix(1);
@@ -261,6 +277,11 @@ Bool StokesCoordinate::setWorldAxisNames(const Vector<String> &names)
 }
 
 Bool StokesCoordinate::setWorldAxisUnits(const Vector<String> &units)
+{
+    return True;
+}
+
+Bool StokesCoordinate::setPreferredWorldAxisUnits(const Vector<String> &units)
 {
     return True;
 }
@@ -374,6 +395,7 @@ Bool StokesCoordinate::save(RecordInterface &container,
         subrec.define("crpix", referencePixel());
         subrec.define("cdelt", increment());
         subrec.define("pc", linearTransform());
+        subrec.define("preferredunits", preferredWorldAxisUnits());
 
 // it never makes sense to set the units
 // subrec.define("units", worldAxisUnits()); 
@@ -447,6 +469,12 @@ StokesCoordinate *StokesCoordinate::restore(const RecordInterface &container,
     retval-> setIncrement(cdelt);  
     retval->setReferenceValue(crval);
     retval->setReferencePixel(crpix);
+//
+    if (subrec.isDefined("preferredunits")) {                // optional
+       Vector<String> prefUnits;
+       subrec.get("preferredunits", prefUnits);
+       retval->setPreferredWorldAxisUnits(prefUnits);
+    }           
 */
 //
     return retval;
@@ -522,8 +550,7 @@ void StokesCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 //
 // By definition, for StokesCoordinate, world abs = rel
 //
-{
-}
+{}
 
 
 
@@ -566,4 +593,18 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     return True;
 }
 
+Bool StokesCoordinate::setWorldMixRanges (const IPosition& shape)
+{
+   setDefaultWorldMixRanges();
+   return True;
+}
 
+
+void StokesCoordinate::setDefaultWorldMixRanges ()
+{
+   Vector<Double> pixel(nPixelAxes());
+   pixel(0) = 0;
+   toWorld(worldMin_p, pixel);
+   pixel(0) = nValues_p - 1;
+   toWorld(worldMax_p, pixel);
+}

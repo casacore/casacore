@@ -33,6 +33,7 @@
 #include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/Quantum.h>
@@ -44,9 +45,11 @@ LinearCoordinate::LinearCoordinate(uInt naxis)
   transform_p(naxis), 
   names_p(naxis), 
   units_p(naxis), 
+  prefUnits_p(naxis), 
   crval_p(naxis)
 {
     crval_p.set(0.0);
+    setDefaultWorldMixRanges();
 }
 
 LinearCoordinate::LinearCoordinate(const Vector<String>& names,
@@ -59,6 +62,7 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
   transform_p(refPix, inc, pc), 
   names_p(names.nelements()),
   units_p(names.nelements()), 
+  prefUnits_p(names.nelements()), 
   crval_p(names.nelements())
 {
     uInt naxis = names.nelements();
@@ -73,6 +77,8 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
     for (uInt i=0; i<naxis; i++) {
 	crval_p[i] = refVal(i);
     }
+//
+    setDefaultWorldMixRanges();
 }
 
 
@@ -84,6 +90,7 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 : Coordinate(),
   names_p(names.nelements()),
   units_p(names.nelements()), 
+  prefUnits_p(names.nelements()), 
   crval_p(names.nelements())
 {
 // Check dimensions
@@ -116,12 +123,19 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
     }
 //
     transform_p = LinearXform(refPix, cdelt, pc);
+//
+    setDefaultWorldMixRanges();
 }
 
 LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
-    : Coordinate(other),
-      transform_p(other.transform_p), names_p(other.names_p.copy()),
-      units_p(other.units_p.copy()), crval_p(other.crval_p)
+: Coordinate(other),
+  transform_p(other.transform_p), 
+  names_p(other.names_p.copy()),
+  units_p(other.units_p.copy()), 
+  prefUnits_p(other.prefUnits_p.copy()), 
+  worldMin_p(other.worldMin_p.copy()),
+  worldMax_p(other.worldMax_p.copy()),
+  crval_p(other.crval_p)
 {
     // Nothing
 }
@@ -132,18 +146,24 @@ LinearCoordinate &LinearCoordinate::operator=(const LinearCoordinate &other)
         Coordinate::operator=(other);
 //
 	uInt naxis = other.nWorldAxes();
-	names_p.resize(naxis); names_p = other.names_p;
-	units_p.resize(naxis); units_p = other.units_p;
+	names_p.resize(naxis); 
+        names_p = other.names_p;
+	units_p.resize(naxis); 
+        units_p = other.units_p;
+	prefUnits_p.resize(naxis); 
+        prefUnits_p = other.prefUnits_p;
 	crval_p = other.crval_p;
 	transform_p = other.transform_p;
+        worldMin_p.resize(naxis);
+        worldMin_p = other.worldMin_p;
+        worldMax_p.resize(naxis);
+        worldMax_p = other.worldMax_p;
     }
     return *this;
 }
 
 LinearCoordinate::~LinearCoordinate()
-{
-    // Nothing
-}
+{}
 
 
 
@@ -208,12 +228,12 @@ Bool LinearCoordinate::toPixel(Vector<Double> &pixel,
 
 Vector<String> LinearCoordinate::worldAxisNames() const
 {
-    return names_p.copy();
+    return names_p;
 }
 
 Vector<String> LinearCoordinate::worldAxisUnits() const
 {
-    return units_p.copy();
+    return units_p;
 }
 
 Vector<Double> LinearCoordinate::referenceValue() const
@@ -250,11 +270,18 @@ Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
 
 Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
+    Vector<Double> d1 = increment();
     Bool ok = Coordinate::setWorldAxisUnits(units);
     if (ok) {
 	ok = (units.nelements() == nWorldAxes());
 	if (ok) {
 	    units_p = units;
+
+// The factor is hidden in Coordinate...
+           
+            Vector<Double> d2 = increment();
+            worldMin_p *= d2 / d1;
+            worldMax_p *= d2 / d1;
 	}
     }
     return ok;
@@ -272,6 +299,18 @@ Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
    return ok;
 }
 
+Bool LinearCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
+{
+    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
+//
+    prefUnits_p = units;
+    return True;
+}
+
+Vector<String> LinearCoordinate::preferredWorldAxisUnits () const
+{
+   return prefUnits_p;
+}
 
 Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
 {
@@ -473,6 +512,7 @@ Bool LinearCoordinate::save(RecordInterface &container,
 	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
+	subrec.define("preferredunits", preferredWorldAxisUnits());
 
 	container.defineRecord(fieldName, subrec);
     }
@@ -528,7 +568,13 @@ LinearCoordinate *LinearCoordinate::restore(const RecordInterface &container,
     LinearCoordinate *retval = 
 	new LinearCoordinate(axes, units, crval, cdelt, pc, crpix);
     AlwaysAssert(retval, AipsError);
-							  
+//
+    if (subrec.isDefined("preferredunits")) {                // optional
+       Vector<String> prefUnits;
+       subrec.get("preferredunits", prefUnits);
+       retval->setPreferredWorldAxisUnits(prefUnits);
+    }
+//							  
     return retval;
 }
 
@@ -565,13 +611,13 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 // Find the canonical input units that we should convert to.
 // Find the Fourier coordinate names and units
 
-   Vector<String> units = worldAxisUnits();
-   Vector<String> unitsCanon = worldAxisUnits();
-   Vector<String> unitsOut = worldAxisUnits();
-   Vector<String> names = worldAxisNames();
-   Vector<String> namesOut = worldAxisNames();
-   Vector<Double> crval = referenceValue();
-   Vector<Double> crpix = referencePixel();
+   Vector<String> units(worldAxisUnits());
+   Vector<String> unitsCanon(worldAxisUnits().copy());
+   Vector<String> unitsOut = worldAxisUnits().copy();
+   Vector<String> names(worldAxisNames());
+   Vector<String> namesOut(worldAxisNames().copy());
+   Vector<Double> crval(referenceValue());
+   Vector<Double> crpix(referencePixel());
    Vector<Double> scale(nPixelAxes(), 1.0);
 //
    for (uInt i=0; i<nPixelAxes(); i++) {
@@ -601,3 +647,15 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
    return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
                                linear2.pc(), linear2.crpix());
 }
+
+Bool LinearCoordinate::setWorldMixRanges (const IPosition& shape)
+{
+   return Coordinate::setWorldMixRanges (worldMin_p, worldMax_p, shape);
+}
+
+
+void LinearCoordinate::setDefaultWorldMixRanges ()
+{
+   Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
+}
+

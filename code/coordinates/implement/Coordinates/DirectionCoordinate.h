@@ -327,12 +327,10 @@ public:
     // <src>worldMin</src> and <src>worldMax</src> specify the range of the world
     // coordinate (in the world axis units of that world axis
     // in the CoordinateSystem) being solved for in a mixed calculation
-    // for each world axis. They are only actually needed for DirectionCoordinates
-    // and for all other Coordinates the relevant elements
-    // can be undefined.   If you don't know, use -180 to 180
-    // degrees for longitude, and -90 to 90 for latitude. 
-    // Some mixed solutions can be degenerate, whereupon you
-    // you must say which one you want.
+    // for each world axis.    Some mixed solutions can be degenerate, whereupon you
+    // you must say which one you want.  Use functions <src>setWorldMixRanges</src>
+    // and <src>worldMixMin, worldMixMax</src> to set these ranges,
+    // If you don't know, use the defaults (function <src>setDefaultWorldMixRanges</src>.
     // Removed axes are handled (for example, a removed pixel
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
@@ -349,17 +347,19 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
-    // Set the world min and max ranges, for use in toMix, for 
-    // a lattice of the given shape (for this coordinate).
-    // The output vectors are resized.  Returns False if fails 
+    // Set the world min and max ranges, for use in function <src>toMix</src>, 
+    // for  a lattice of the given shape (for this coordinate).   Using these
+    // ranges in <src>toMix</src> should speed it up and help avoid ambiguity.
+    // The output vectors are resized.  Returns False if fails (and
+    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
-    // The <src>setDefaultMixRanges</src> function
+    // The <src>setDefaultWorldMixRanges</src> function
     // just gives you [-90->90], [-180,180] (in appropriate units) 
-    virtual Bool setMixRanges (Vector<Double>& worldMin,
-                               Vector<Double>& worldMax,
-                               const IPosition& shape) const;
-    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
-                                      Vector<Double>& worldMax) const;
+    // <group>
+    virtual Bool setWorldMixRanges (const IPosition& shape);   
+    virtual void setDefaultWorldMixRanges ();
+    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
+    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
     // </group>
 
     // A convenient way to turn the world vector into an MDirection or MVDirection 
@@ -408,6 +408,20 @@ public:
     // The units must be compatible with
     // angle. The units are initially "rad" (radians).
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+
+
+    // Set and recover the preferred world axis units.  These can be used to specify
+    // a favoured unit for conversions for example.  The given units must be empty
+    // or dimensionally consistent with the native world axis units, else
+    // False is returned and <src>errorMessage()</src>
+    // has an error message for you.  The preferred units are empty strings
+    // until you explicitly set them.  The only functions in the Coordinates classes
+    // which uses the preferred unit are <src>format, save, and restore</src>.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const;
+    // </group>
+
 
     // Return canonical axis names for the given MDirection type,
     // giving FITS names if desired.
@@ -517,6 +531,12 @@ private:
 
     // Current units.
     Vector<String> units_p;
+
+    // Preferred units
+    Vector<String> prefUnits_p;
+
+    // toMix ranges
+    Vector<Double> worldMin_p, worldMax_p;
 
     // Some kinds of DirectionCoordinate cannot be used with
     // the toMix function (e.g. one made with MDirection::SUN)

@@ -30,6 +30,7 @@
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/LinearSearch.h>
@@ -44,17 +45,33 @@
 
 TabularCoordinate::TabularCoordinate()
 : Coordinate(),
-  crval_p(0), cdelt_p(1), crpix_p(0), matrix_p(1.0), unit_p(""),
-  name_p("Tabular"), channel_corrector_p(0), channel_corrector_rev_p(0)
+  crval_p(0), 
+  cdelt_p(1), 
+  crpix_p(0), 
+  matrix_p(1.0), 
+  unit_p(""),
+  prefUnit_p(""),
+  name_p("Tabular"), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
 {
+   setDefaultWorldMixRanges();
 }
 
 TabularCoordinate::TabularCoordinate(Double refval, Double inc, Double refpix,
 				     const String &unit, const String &axisName)
 : Coordinate(),
-  crval_p(refval), cdelt_p(inc), crpix_p(refpix), matrix_p(1.0), unit_p(unit),
-  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+  crval_p(refval), 
+  cdelt_p(inc), 
+  crpix_p(refpix), 
+  matrix_p(1.0), 
+  unit_p(unit),
+  prefUnit_p(""),
+  name_p(axisName), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
 {
+   setDefaultWorldMixRanges();
 }
 
 TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
@@ -63,6 +80,7 @@ TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
 : Coordinate(),
   crpix_p(refpix), 
   matrix_p(1.0), 
+  prefUnit_p(""),
   name_p(axisName), 
   channel_corrector_p(0), 
   channel_corrector_rev_p(0)
@@ -76,9 +94,11 @@ TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
 // Convert inc to units of reference value
 
       cdelt_p = inc.getValue(Unit(unit_p));
-    } else {
+   } else {
        throw (AipsError("Units of reference value and increment inconsistent"));
-    }
+   }
+//
+   setDefaultWorldMixRanges();
 }
 
 
@@ -86,22 +106,37 @@ TabularCoordinate::TabularCoordinate(const Vector<Double> &pixelValues,
 				     const Vector<Double> &worldValues,
 				     const String &unit, const String &axisName)
 : Coordinate(),
-  crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p(unit), 
-  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+  crval_p(0.0), 
+  cdelt_p(0.0), 
+  crpix_p(0.0), 
+  matrix_p(0.0), 
+  unit_p(unit), 
+  prefUnit_p(""),
+  name_p(axisName), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
 {
-    makeNonLinearTabularCoordinate(pixelValues, worldValues);
+   makeNonLinearTabularCoordinate(pixelValues, worldValues);
+   setDefaultWorldMixRanges();   
 }
 
 TabularCoordinate::TabularCoordinate(const Vector<Double>& pixelValues,
                                      const Quantum<Vector<Double> >& worldValues,
                                      const String &axisName)
 : Coordinate(),
-  crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), 
-  name_p(axisName), channel_corrector_p(0), channel_corrector_rev_p(0)
+  crval_p(0.0), 
+  cdelt_p(0.0), 
+  crpix_p(0.0), 
+  matrix_p(0.0), 
+  prefUnit_p(""),
+  name_p(axisName), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
 {
    unit_p = worldValues.getUnit();
    Vector<Double> world = worldValues.getValue();
    makeNonLinearTabularCoordinate(pixelValues, world);
+   setDefaultWorldMixRanges();   
 }
 
 
@@ -109,6 +144,7 @@ void TabularCoordinate::clear_self()
 {
     crval_p = cdelt_p = crpix_p = matrix_p = -999.0;
     unit_p = "UNSET";
+    prefUnit_p = "UNSET";
     name_p = "UNSET";
     if (channel_corrector_p) {
 	delete channel_corrector_p;
@@ -128,7 +164,8 @@ void TabularCoordinate::copy(const TabularCoordinate &other)
     crval_p = other.crval_p;
     cdelt_p = other.cdelt_p;
     crpix_p = other.crpix_p;
-    unit_p = other.unit_p;
+    unit_p = other.unit_p;    
+    prefUnit_p = other.prefUnit_p;
     name_p = other.name_p;
     matrix_p = other.matrix_p;
     if (other.channel_corrector_p != 0) {
@@ -139,11 +176,20 @@ void TabularCoordinate::copy(const TabularCoordinate &other)
 	AlwaysAssert(channel_corrector_p != 0 &&
 		     channel_corrector_rev_p != 0, AipsError);
     }
+    worldMin_p = other.worldMin_p;
+    worldMax_p = other.worldMax_p;
 }
 
 TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
-    : crval_p(0.0), cdelt_p(0.0), crpix_p(0.0), matrix_p(0.0), unit_p("UNSET"),
-      name_p("UNSET"), channel_corrector_p(0), channel_corrector_rev_p(0)
+: crval_p(0.0), 
+  cdelt_p(0.0), 
+  crpix_p(0.0), 
+  matrix_p(0.0), 
+  unit_p("UNSET"),
+  prefUnit_p("UNSET"),
+  name_p("UNSET"), 
+  channel_corrector_p(0), 
+  channel_corrector_rev_p(0)
 {
     copy(other);
 }
@@ -235,6 +281,13 @@ Vector<String> TabularCoordinate::worldAxisUnits() const
     return tmp;
 }
 
+Vector<String> TabularCoordinate::preferredWorldAxisUnits() const
+{
+    Vector<String> tmp(1);
+    tmp(0) = prefUnit_p;
+    return tmp;
+}
+
 Vector<Double> TabularCoordinate::referencePixel() const
 {
     Vector<Double> tmp(1);
@@ -280,12 +333,25 @@ Bool TabularCoordinate::setWorldAxisUnits(const Vector<String> &units)
     if (!ok) {
        set_error ("units vector must be of length 1");
     } else {
+       Vector<Double> d1 = increment();
        ok = Coordinate::setWorldAxisUnits(units);
        if (ok) {
           unit_p = units(0);
+//
+          Vector<Double> d2 = increment();
+          worldMin_p *= d2 / d1;
+          worldMax_p *= d2 / d1;
        }
     }
     return ok;
+}
+
+Bool TabularCoordinate::setPreferredWorldAxisUnits(const Vector<String> &units)
+{
+    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
+//
+    prefUnit_p = units(0);
+    return True;
 }
 
 
@@ -469,6 +535,7 @@ Bool TabularCoordinate::save(RecordInterface &container,
 	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
+	subrec.define("preferredunits", preferredWorldAxisUnits());
 	if (channel_corrector_p) {
 	    subrec.define("pixelvalues", pixelValues());
 	    subrec.define("worldvalues", worldValues());
@@ -543,7 +610,13 @@ TabularCoordinate *TabularCoordinate::restore(const RecordInterface &container,
 	retval = new TabularCoordinate(crval(0), cdelt(0), crpix(0), units(0),
 				       axes(0));
     }
-
+//
+    if (subrec.isDefined("preferredunits")) {                // optional
+       Vector<String> prefUnits;
+       subrec.get("preferredunits", prefUnits);
+       retval->setPreferredWorldAxisUnits(prefUnits);
+    }           
+//
     return retval;
 }
 
@@ -580,10 +653,10 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
    }
 //
    Vector<String> units = worldAxisUnits();
-   Vector<String> unitsCanon = worldAxisUnits();
-   Vector<String> unitsOut = worldAxisUnits();
    Vector<String> names = worldAxisNames();
-   Vector<String> namesOut = worldAxisNames();
+   Vector<String> unitsCanon(worldAxisUnits().copy());
+   Vector<String> unitsOut(worldAxisUnits().copy());
+   Vector<String> namesOut(worldAxisNames());
 //
    for (uInt i=0; i<nPixelAxes(); i++) {
       if (axes(i)) {
@@ -602,9 +675,9 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 
 // Set the Fourier coordinate parameters.  
 
-   Vector<Double> crval = tc.referenceValue();
-   Vector<Double> crpix = tc.referencePixel();    
-   Vector<Double> cdelt = tc.increment();
+   Vector<Double> crval(tc.referenceValue().copy());
+   Vector<Double> crpix(tc.referencePixel().copy());
+   Vector<Double> cdelt(tc.increment().copy());
    for (uInt i=0; i<nPixelAxes(); i++) {
       if (axes(i)) { 
          crval(i) = 0.0;
@@ -679,4 +752,16 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
     channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
     channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
 }
+
+Bool TabularCoordinate::setWorldMixRanges (const IPosition& shape)
+{
+   return Coordinate::setWorldMixRanges (worldMin_p, worldMax_p, shape);
+}  
+
+
+void TabularCoordinate::setDefaultWorldMixRanges ()
+{
+   Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
+}
+
 

@@ -1,5 +1,5 @@
 //# TabularCoordinate.h: Table lookup 1-D coordinate, with interpolation
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -187,7 +187,6 @@ public:
     virtual Matrix<Double> linearTransform() const;
     virtual Vector<Double> increment() const;
     virtual Vector<Double> referenceValue() const;
-    virtual Vector<String> worldAxisUnits() const;
     // </group>
 
     // Set the value of the requested attribute.  Note that these just
@@ -200,10 +199,41 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Set the axis unit. Adjust the increment and
+    // Set/get the axis unit. Adjust the increment and
     // reference value by the ratio of the old and new units.
     // The unit must be compatible with the current units.
+    // <group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual Vector<String> worldAxisUnits() const;
+    // </group>
+
+    // Set the world min and max ranges, for use in function <src>toMix</src>,
+    // for  a lattice of the given shape (for this coordinate).
+    // The implementation here gives world coordinates dangling 25% off the
+    // edges of the image.       
+    // The output vectors are resized.  Returns False if fails (and
+    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // with a reason in <src>errorMessage()</src>.
+    // The <src>setDefaultWorldMixRanges</src> function
+    // gives you [-1e99->1e99]. 
+    // <group>
+    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual void setDefaultWorldMixRanges ();
+    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
+    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
+    //</group>
+
+    // Set and recover the preferred world axis units.  These can be used to specify
+    // a favoured unit for conversions for example.  The given units must be empty
+    // or dimensionally consistent with the native world axis units, else
+    // False is returned and <src>errorMessage()</src>
+    // has an error message for you.  The preferred units are empty strings
+    // until you explicitly set them.  The only functions in the Coordinates classes
+    // which uses the preferred unit are <src>format, save, and restore</src>.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const;
+    // </group>
 
     // Get the table, i.e. the pixel and world values. The length of these
     // Vectors will be zero if this axis is pure linear.
@@ -250,7 +280,9 @@ private:
     Double crval_p, cdelt_p, crpix_p;
     Double matrix_p;
     String unit_p;
+    String prefUnit_p;
     String name_p;
+    Vector<Double> worldMin_p, worldMax_p;
 
     // Channel_True = channel_corrections_p(Channel_average).
     // <group>

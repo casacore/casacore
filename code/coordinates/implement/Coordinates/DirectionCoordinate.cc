@@ -60,6 +60,9 @@ DirectionCoordinate::DirectionCoordinate()
   linear_p(1),
   names_p(2), 
   units_p(2), 
+  prefUnits_p(2), 
+  worldMin_p(0),
+  worldMax_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
@@ -68,7 +71,7 @@ DirectionCoordinate::DirectionCoordinate()
     xform.diagonal() = 1.0;
     makeDirectionCoordinate (0.0, 0.0, 1.0, 1.0,
                              xform, 0.0, 0.0, 999.0, 999.0);
-
+    setDefaultWorldMixRanges();
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -87,13 +90,16 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   linear_p(1),
   names_p(axisNames(directionType).copy()),
   units_p(2),
+  prefUnits_p(2), 
+  worldMin_p(0),
+  worldMax_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
     makeDirectionCoordinate (refLong, refLat, incLong, incLat,
                              xform, refX, refY, longPole, latPole);
+    setDefaultWorldMixRanges();
 }
-
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Projection &projection,  
@@ -114,6 +120,9 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   linear_p(1),
   names_p(axisNames(directionType).copy()),
   units_p(2),
+  prefUnits_p(2), 
+  worldMin_p(0),
+  worldMax_p(0),
   canDoToMix_p(True),
   canDoToMixErrorMsg_p("")
 {
@@ -155,6 +164,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 //
    makeDirectionCoordinate (lon, lat, dlon, dlat, xform, refX, refY,
                             dLongPole, dLatPole);
+   setDefaultWorldMixRanges();
 }
 
 
@@ -168,6 +178,9 @@ DirectionCoordinate::DirectionCoordinate(const DirectionCoordinate &other)
   linear_p(other.linear_p),
   names_p(other.names_p.copy()), 
   units_p(other.units_p.copy()),
+  prefUnits_p(other.prefUnits_p.copy()), 
+  worldMin_p(other.worldMin_p.copy()),
+  worldMax_p(other.worldMax_p.copy()),
   canDoToMix_p(other.canDoToMix_p),
   canDoToMixErrorMsg_p(other.canDoToMixErrorMsg_p)
 {
@@ -196,8 +209,11 @@ DirectionCoordinate &DirectionCoordinate::operator=(const DirectionCoordinate &o
                                other.wcs_p, 
 			       other.c_ctype_p, other.c_crval_p);
 	linear_p = other.linear_p;
-	names_p = other.names_p.copy();
-	units_p = other.units_p.copy();
+	names_p = other.names_p;
+	units_p = other.units_p;
+	prefUnits_p = other.prefUnits_p;
+        worldMin_p = other.worldMin_p;
+        worldMax_p = other.worldMax_p;
 	to_degrees_p[0] = other.to_degrees_p[0];
 	to_degrees_p[1] = other.to_degrees_p[1];
 	to_radians_p[0] = other.to_radians_p[0];
@@ -451,13 +467,27 @@ Projection DirectionCoordinate::projection() const
 
 Vector<String> DirectionCoordinate::worldAxisNames() const
 {
-    return names_p.copy();
+    return names_p;
 }
 
 Vector<String> DirectionCoordinate::worldAxisUnits() const
 {
-    return units_p.copy();
+    return units_p;
 }
+
+Bool DirectionCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
+{
+    if (!Coordinate::setPreferredWorldAxisUnits(units)) return False;
+//
+    prefUnits_p = units;
+    return True;
+}
+
+Vector<String> DirectionCoordinate::preferredWorldAxisUnits() const
+{
+   return prefUnits_p;
+}
+
 
 Vector<Double> DirectionCoordinate::referenceValue() const
 {
@@ -517,7 +547,11 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
     } else {
       set_error(error);
     }
-    if (ok) units_p = units;
+    if (ok) {
+       units_p = units;
+       worldMin_p *= factor;
+       worldMax_p *= factor;
+    }
     return ok;
 }
 
@@ -766,8 +800,19 @@ String DirectionCoordinate::format(String& units,
 
 // Check units
 
+   static String nativeUnit;
+   static String prefUnit;
    static Unit unitRAD("rad");
-   if (!units.empty()) {
+//
+   nativeUnit = worldAxisUnits()(worldAxis);
+   if (units.empty()) {
+      prefUnit = preferredWorldAxisUnits()(worldAxis);
+      if (prefUnit.empty()) {
+//            leave empty telling formatLong/Lat to make up something nice
+      } else {
+         units = prefUnit;       // prefUnit always consistent
+      }
+   } else {
       Unit unitCurrent(units);
       if (unitCurrent != unitRAD) {
          throw (AipsError("Specified unit is invalid"));
@@ -1556,12 +1601,12 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 // Find names and units for Fourier coordinate and units to set 
 // for this DirectionCoordinate 
 
-   Vector<String> names = worldAxisNames();
-   Vector<String> units = worldAxisUnits();
-   Vector<String> unitsCanon = worldAxisUnits();
+   Vector<String> names(worldAxisNames());
+   Vector<String> units(worldAxisUnits());
+   Vector<String> unitsCanon(worldAxisUnits());
 //
-   Vector<String> namesOut = worldAxisNames();
-   Vector<String> unitsOut = worldAxisUnits();
+   Vector<String> namesOut(worldAxisNames().copy());
+   Vector<String> unitsOut(worldAxisUnits().copy());
    fourierUnits (namesOut(0), unitsOut(0), unitsCanon(0), Coordinate::DIRECTION, 0,
                  units(0), names(0));
    fourierUnits (namesOut(1), unitsOut(1), unitsCanon(1), Coordinate::DIRECTION, 1,
@@ -1686,9 +1731,7 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
 }
 
 
-Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
-                                        Vector<Double>& worldMax,
-                                        const IPosition& shape) const
+Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape) 
 {
    const uInt n = shape.nelements();
    if (n!=nPixelAxes()) {
@@ -1697,8 +1740,8 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
    }
    AlwaysAssert(nWorldAxes()==nPixelAxes(), AipsError);
 //
-   worldMin.resize(2);
-   worldMax.resize(2);
+   worldMin_p.resize(2);
+   worldMax_p.resize(2);
    Vector<Double> cdelt = increment();
 
 // Find centre of image
@@ -1708,14 +1751,12 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
    pixel(0) = shape(0) / 2.0;
    pixel(1) = shape(1) / 2.0;
 //
-   Vector<Double> dwMax, dwMin;
-   setDefaultMixRanges(dwMin, dwMax);
-   if (!toWorld(world, pixel)) {
-      worldMin = dwMin;
-      worldMax = dwMax;
-      return False;
-   }
+   setDefaultWorldMixRanges();
+   Vector<Double> dwMin = worldMin_p;
+   Vector<Double> dwMax = worldMax_p;
+   if (!toWorld(world, pixel)) return False;
 //
+   Vector<String> units = worldAxisUnits();
    Double cosdec = cos(world(1) * to_radians_p[1]);
    Double fac = 1.0;
    for (uInt i=0; i<2; i++) {
@@ -1723,26 +1764,39 @@ Bool DirectionCoordinate::setMixRanges (Vector<Double>& worldMin,
       if (i==0) fac = cosdec;
 //
       Int n2 = (shape(i) + Int(0.5*shape(i))) / 2;
+      worldMin_p(i) = world(i) - abs(cdelt(i))*n2/fac;    
+      worldMin_p(i) = max(worldMin_p(i), dwMin(i));
+      worldMax_p(i) = world(i) + abs(cdelt(i))*n2/fac;
+      worldMax_p(i) = min(worldMax_p(i),  dwMax(i));
+   }
 
-      worldMin(i) = world(i) - abs(cdelt(i))*n2/fac;    
-      worldMin(i) = max(worldMin(i), dwMin(i));
-//
-      worldMax(i) = world(i) + abs(cdelt(i))*n2/fac;
-      worldMax(i) = min(worldMax(i),  dwMax(i));
+// Put longitude in range -180 to 180
+
+   Unit u(units(0));
+   {
+     Quantum<Double> q(worldMin_p(0), u);
+     MVAngle mva(q);
+     const MVAngle& mva2 = mva();         
+     worldMin_p(0) = mva2.get(u).getValue();
+   }
+   {
+     Quantum<Double> q(worldMax_p(0), u);
+     MVAngle mva(q);
+     const MVAngle& mva2 = mva();         
+     worldMax_p(0) = mva2.get(u).getValue();
    }
 //
    return True;
 }
 
-void DirectionCoordinate::setDefaultMixRanges (Vector<Double>& worldMin,
-                                               Vector<Double>& worldMax) const
+void DirectionCoordinate::setDefaultWorldMixRanges ()
 {
-   worldMin.resize(2);
-   worldMax.resize(2);
-   worldMin(0) = -180.0/to_degrees_p[0];     //long
-   worldMax(0) =  180.0/to_degrees_p[0];
-   worldMin(1) =  -90.0/to_degrees_p[1];     //lat
-   worldMax(1) =   90.0/to_degrees_p[1];
+   worldMin_p.resize(2);
+   worldMax_p.resize(2);
+   worldMin_p(0) = -180.0/to_degrees_p[0];     //long
+   worldMax_p(0) =  180.0/to_degrees_p[0];
+   worldMin_p(1) =  -90.0/to_degrees_p[1];     //lat
+   worldMax_p(1) =   90.0/to_degrees_p[1];
 }
 
 

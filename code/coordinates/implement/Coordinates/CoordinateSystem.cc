@@ -60,14 +60,14 @@
 
 
 CoordinateSystem::CoordinateSystem()
-    : coordinates_p(0), 
-      world_maps_p(0), world_tmps_p(0), world_replacement_values_p(0),
-      pixel_maps_p(0), pixel_tmps_p(0), pixel_replacement_values_p(0),
-      worldAxes_tmps_p(0), pixelAxes_tmps_p(0),
-      worldOut_tmps_p(0), pixelOut_tmps_p(0),
-      worldMin_tmps_p(0), worldMax_tmps_p(0)
+: coordinates_p(0), 
+  world_maps_p(0), world_tmps_p(0), world_replacement_values_p(0),
+  pixel_maps_p(0), pixel_tmps_p(0), pixel_replacement_values_p(0),
+  worldAxes_tmps_p(0), pixelAxes_tmps_p(0),
+  worldOut_tmps_p(0), pixelOut_tmps_p(0),
+  worldMin_tmps_p(0), worldMax_tmps_p(0)
 {
-    // Nothing
+   setDefaultWorldMixRanges();
 }
 
 void CoordinateSystem::copy(const CoordinateSystem &other)
@@ -75,14 +75,13 @@ void CoordinateSystem::copy(const CoordinateSystem &other)
     if (this == &other) {
 	return;
     }
-
+//
     clear();
-
+//
     obsinfo_p = other.obsinfo_p;
-
     coordinates_p = other.coordinates_p;
     const uInt n = coordinates_p.nelements();
-
+//
     uInt i;
     for (i=0; i < n; i++) {
 	coordinates_p[i] = coordinates_p[i]->clone();
@@ -733,15 +732,14 @@ Int CoordinateSystem::findCoordinate(Coordinate::Type type, Int afterCoord) cons
 }
 
 void CoordinateSystem::findWorldAxis(Int &coordinate, Int &axisInCoordinate, 
-			  uInt axisInCoordinateSystem) const
+                                     uInt axisInCoordinateSystem) const
 {
     coordinate = axisInCoordinate = -1;
-
     AlwaysAssert(axisInCoordinateSystem < nWorldAxes(), AipsError);
-
+//
     const uInt orig = axisInCoordinateSystem; // alias for less typing
     const uInt nc = nCoordinates();
-
+//
     for (uInt i=0; i<nc; i++) {
 	const uInt na = world_maps_p[i]->nelements();
 	for (uInt j=0; j<na; j++) {
@@ -1319,8 +1317,7 @@ Matrix<Double> CoordinateSystem::linearTransform() const
 	    // By definition, only axes in the same coordinate may be coupled
 	    if (worldCoord == pixelCoord &&
 		worldCoord >= 0 && worldAxis >= 0 && pixelAxis >= 0) {
-		Matrix<Double> tmp = 
-		    coordinates_p[worldCoord]->linearTransform();
+		Matrix<Double> tmp(coordinates_p[worldCoord]->linearTransform());
 		retval(i,j) = tmp(worldAxis, pixelAxis);
 	    }
 	}
@@ -1362,7 +1359,7 @@ Bool CoordinateSystem::setWorldAxisNames(const Vector<String> &names)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<String> tmp = coordinates_p[i]->worldAxisNames();
+	Vector<String> tmp(coordinates_p[i]->worldAxisNames().copy());
 	const uInt na = tmp.nelements();
 	for (uInt j=0; j<na; j++) {
 	    Int which = world_maps_p[i]->operator[](j);
@@ -1387,7 +1384,7 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<String> tmp = coordinates_p[i]->worldAxisUnits();
+	Vector<String> tmp(coordinates_p[i]->worldAxisUnits().copy());
 	uInt na = tmp.nelements();
 	for (uInt j=0; j<na; j++) {
 	    Int which = world_maps_p[i]->operator[](j);
@@ -1412,7 +1409,7 @@ Bool CoordinateSystem::setReferencePixel(const Vector<Double> &refPix)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<Double> tmp = coordinates_p[i]->referencePixel();
+	Vector<Double> tmp(coordinates_p[i]->referencePixel().copy());
 	uInt na = tmp.nelements();
 	for (uInt j=0; j<na; j++) {
 	    Int which = pixel_maps_p[i]->operator[](j);
@@ -1432,7 +1429,7 @@ Bool CoordinateSystem::setLinearTransform(const Matrix<Double> &xform)
     const uInt nc = nCoordinates();
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
-	Matrix<Double> tmp = coordinates_p[i]->linearTransform();
+	Matrix<Double> tmp(coordinates_p[i]->linearTransform().copy());
 	uInt nrow = tmp.nrow();
 	uInt ncol = tmp.ncolumn();
 	for (uInt j=0; j<nrow; j++) {
@@ -1460,7 +1457,7 @@ Bool CoordinateSystem::setIncrement(const Vector<Double> &inc)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<Double> tmp = coordinates_p[i]->increment();
+	Vector<Double> tmp(coordinates_p[i]->increment().copy());
 	uInt na = tmp.nelements();
 	for (uInt j=0; j<na; j++) {
 	    Int which = world_maps_p[i]->operator[](j);
@@ -1485,7 +1482,7 @@ Bool CoordinateSystem::setReferenceValue(const Vector<Double> &refval)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<Double> tmp = coordinates_p[i]->referenceValue();
+	Vector<Double> tmp(coordinates_p[i]->referenceValue().copy());
 	uInt na = tmp.nelements();
 	for (uInt j=0; j<na; j++) {
 	    Int which = world_maps_p[i]->operator[](j);
@@ -1776,46 +1773,7 @@ Bool CoordinateSystem::save(RecordInterface &container,
 	name = String("pixelreplace") + num;
 	subrec.define(name, Vector<Double>(*pixel_replacement_values_p[i]));
     }
-
-    // Write some of the info out again in a different order in a 
-    // more convenient format for use.  This is used in regionmanager.g
-    // for making of region objects.  It is not required when restoring
-    // the CS from the record.  These things are written out
-    // in *pixel axis* order
-
-    Vector<String> axisUnits(nPixelAxes());
-    Vector<String> axisNames(nPixelAxes());
-    Vector<String> coordinateTypes(nPixelAxes());
-    Int c, axisInCoordinate, worldAxis;
-    for (uInt i=0; i<nPixelAxes(); i++) {
-       findPixelAxis(c, axisInCoordinate, i);
-       coordinateTypes(i) = coordinate(c).showType();
-#
-       worldAxis = pixelAxisToWorldAxis(i);
-       if (worldAxis != -1) {
-          axisUnits(i) = worldAxisUnits()(worldAxis);
-          axisNames(i) = worldAxisNames()(worldAxis);
-       } else {
-          axisUnits(i) = "removed";
-          axisNames(i) = "removed";
-       }
-   }
-   Vector<Int> toWorldMap(nPixelAxes());
-   for (uInt i=0; i<nPixelAxes(); i++) {
-      toWorldMap(i) = pixelAxisToWorldAxis(i);
-   }
-   Vector<Int> toPixelMap(nWorldAxes());
-   for (uInt i=0; i<nWorldAxes(); i++) {
-      toPixelMap(i) = worldAxisToPixelAxis(i);
-   }
-   subrec.define("nPixelAxes",Int(nPixelAxes()));
-   subrec.define("nWorldAxes",Int(nWorldAxes()));
-   subrec.define("axisUnits", axisUnits);
-   subrec.define("axisNames", axisNames);
-   subrec.define("coordinateTypes", coordinateTypes);
-   subrec.define("toWorldAxisMap", toWorldMap);
-   subrec.define("toPixelAxisMap", toPixelMap);
-#
+//
     if (ok) {
 	container.defineRecord(fieldName, subrec);
     }    
@@ -2006,7 +1964,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
 // change the units to degrees for the sky axes
 
-    Vector<String> units = coordsys.worldAxisUnits();
+    Vector<String> units(coordsys.worldAxisUnits().copy());
     if (longAxis >= 0) units(longAxis) = "deg";
     if (latAxis >= 0) units(latAxis) = "deg";
     if (specAxis >= 0) units(specAxis) = "Hz";
@@ -2040,8 +1998,10 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 // degenerate pixel axes and modify the shape.
 
     if (Int(nPixelAxes()) < n) {
-	IPosition shapetmp = shape; shape.resize(n);
-	Vector<Double> crpixtmp = crpix.copy(); crpix.resize(n);
+	IPosition shapetmp = shape; 
+        shape.resize(n);
+	Vector<Double> crpixtmp = crpix.copy();
+        crpix.resize(n);
 	Int count = 0;
 	for (Int worldAxis=0; worldAxis<n; worldAxis++) {
 	    Int coordinate, axisInCoordinate;
@@ -3903,14 +3863,12 @@ Bool CoordinateSystem::velocityIncrement(Double& velocityInc, SpectralCoordinate
    Double pixel;
    pixel = refPix + 0.5;
    Quantum<Double> velocity1;
-   if (!sc.pixelToVelocity(velocity1, pixel, velUnits, velocityType)) return False;
-
+   sc.updateVelocityMachine(velUnits, velocityType);
+   if (!sc.pixelToVelocity(velocity1, pixel)) return False;
 //
-
    pixel = refPix - 0.5;
    Quantum<Double> velocity2;
-   if (!sc.pixelToVelocity(velocity2, pixel, velUnits, velocityType)) return False;
-
+   if (!sc.pixelToVelocity(velocity2, pixel)) return False;
 
 // Return increment
    
@@ -4028,94 +3986,100 @@ StokesCoordinate CoordinateSystem::stokesSubImage(const StokesCoordinate& sc, In
 }
 
 
-Bool CoordinateSystem::setMixRanges (Vector<Double>& worldMin,
-                                     Vector<Double>& worldMax,
-                                     const IPosition& shape) const
+Bool CoordinateSystem::setWorldMixRanges (const IPosition& shape)
 {
-   const uInt nWorld = nWorldAxes();
-   const uInt nCoord = nCoordinates();
-   AlwaysAssert(shape.nelements()==nPixelAxes(), AipsError);
-
-// Set default ranges first
-
-   worldMin.resize(nWorld);
-   worldMax.resize(nWorld);
-   for (uInt i=0; i<nCoord; i++) {
-      const Coordinate& coord = coordinate(i);
-      Vector<Double> wMin, wMax;
-      coord.setDefaultMixRanges (wMin, wMax);
-//
-      Vector<Int> wA = worldAxes(i);
-      for (uInt j=0; j<wA.nelements(); j++) {
-         if (wA(j) != -1) {
-            worldMin(wA(j)) = wMin(j);
-            worldMax(wA(j)) = wMax(j);
-         }
-      }
-   }
-
-// OK, now set real ranges
-
-   for (uInt i=0; i<nCoord; i++) {
-
-// Set shape for this coordinate
-
+   for (uInt i=0; i<nCoordinates(); i++) {
       Vector<Int> pA = pixelAxes(i);
-      const Coordinate& coord = coordinate(i);
-      IPosition shape2(coord.nPixelAxes());
+      IPosition shape2(coordinates_p[i]->nPixelAxes());
       for (uInt j=0; j<shape2.nelements(); j++) shape2(j) = shape(pA(j));
 
-// Find range for this coordinate
+// Set range for this coordinate
 
-      Vector<Double> wMin, wMax;
-      if (!coord.setMixRanges (wMin, wMax, shape2)) {
-         set_error(coord.errorMessage());
+      if (!coordinates_p[i]->setWorldMixRanges (shape2)) {
+         set_error(coordinates_p[i]->errorMessage());
          return False;
-      }
-
-// Copy to output
-
-      Vector<Int> wA = worldAxes(i);
-      for (uInt j=0; j<wA.nelements(); j++) {
-         if (wA(j) != -1) {
-            worldMin(wA(j)) = wMin(j);
-            worldMax(wA(j)) = wMax(j);
-         }
       }
    }
    return True;
 }
 
-void CoordinateSystem::setDefaultMixRanges (Vector<Double>& worldMin,
-                                            Vector<Double>& worldMax) const
+void CoordinateSystem::setDefaultWorldMixRanges ()
 {
-   const uInt nWorld = nWorldAxes();
-   worldMin.resize(nWorld);
-   worldMax.resize(nWorld);
-//
-   const uInt nCoord = nCoordinates();
-   for (uInt i=0; i<nCoord; i++) {
-
-// Set shape for this coordinate
-
-      Vector<Int> pA = pixelAxes(i);
-      const Coordinate& coord = coordinate(i);
-
-// Find range for this coordinate
-
-      Vector<Double> wMin, wMax;
-      coord.setDefaultMixRanges (wMin, wMax);
-
-// Copy to output
-
-      Vector<Int> wA = worldAxes(i);
-      for (uInt j=0; j<wA.nelements(); j++) {
-         if (wA(j) != -1) {
-            worldMin(wA(j)) = wMin(j);
-            worldMax(wA(j)) = wMax(j);
-         }
-      }
+   for (uInt i=0; i<nCoordinates(); i++) {
+      coordinates_p[i]->setDefaultWorldMixRanges ();
    }
+}
+
+Vector<Double> CoordinateSystem::worldMixMin () const
+//
+// Could speed up by holding min/max in a private variable
+//
+{
+   Vector<Double> wm(nWorldAxes());
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      Int coord, coordAxis;
+      findWorldAxis(coord, coordAxis, i);
+      Vector<Double> tmp = coordinates_p[coord]->worldMixMin();
+      wm(i) = tmp(coordAxis);
+   }
+   return wm;
+}
+
+Vector<Double> CoordinateSystem::worldMixMax () const
+//
+// Could speed up by holding min/max in a private variable
+//
+{
+   Vector<Double> wm(nWorldAxes());
+   for (uInt i=0; i<nWorldAxes(); i++) {
+      Int coord, coordAxis;
+      findWorldAxis(coord, coordAxis, i);
+      Vector<Double> tmp = coordinates_p[coord]->worldMixMax();
+      wm(i) = tmp(coordAxis);
+   }
+   return wm;
+}
+
+Vector<String> CoordinateSystem::preferredWorldAxisUnits()  const
+{
+    Vector<String> retval(nWorldAxes());
+    for (uInt i=0; i<retval.nelements(); i++) {
+	Int coord, coordAxis;
+	findWorldAxis(coord, coordAxis, i);
+	Vector<String> tmp = coordinates_p[coord]->preferredWorldAxisUnits();
+	retval(i) = tmp(coordAxis);
+    }
+    return retval;
+}
+
+
+Bool CoordinateSystem::setPreferredWorldAxisUnits(const Vector<String>& units)
+//
+// The preferred units are stored as private data (prefUnits_p) of class
+// Coordinate.  Now, CoordinateSystem inherits from Coordinate
+// but we never access its prefUnits_p private data.  We always
+// access the private data of the various Coordinate objects
+// that collectively make up the CoordinateSystem. 
+//
+{
+    Bool ok = (units.nelements()==nWorldAxes());
+    if (!ok) {
+      set_error("units vector must be of length nWorldAxes()");
+      return False;
+    }
+//
+    const uInt nc = nCoordinates();
+    for (uInt i=0; i<nc; i++) {
+	Vector<String> tmp(coordinates_p[i]->preferredWorldAxisUnits().copy());
+	uInt na = tmp.nelements();
+	for (uInt j=0; j<na; j++) {
+	    Int which = world_maps_p[i]->operator[](j);
+	    if (which >= 0) tmp(j) = units(which);
+	}
+	ok = (coordinates_p[i]->setPreferredWorldAxisUnits(tmp) && ok);
+        if (!ok) set_error (coordinates_p[i]->errorMessage());
+    }
+    return ok;
 }
 
 

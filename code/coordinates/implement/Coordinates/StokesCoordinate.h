@@ -183,7 +183,6 @@ public:
     virtual Matrix<Double> linearTransform() const;
     virtual Vector<Double> increment() const;
     virtual Vector<Double> referenceValue() const;
-    virtual Vector<String> worldAxisUnits() const;
     // </group>
 
     // Set the value of the requested attribute.  For the StokesCoordinate,
@@ -196,9 +195,37 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval) ;
     // </group>
 
-    // This function has no effect as the units must be empty for a StokesCoordinate
+    // The set function has no effect as the units must be empty for a StokesCoordinate
     // Always returns True
+    // <group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual Vector<String> worldAxisUnits() const;
+    // </group>
+
+    // Set the world min and max ranges, for use in function <src>toMix</src>,
+    // for  a lattice of the given shape (for this coordinate).
+    // The implementation here gives world coordinates at the start 
+    // and end of the Stokes axis.
+    // The output vectors are resized.  Returns False if fails (and
+    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // with a reason in <src>errorMessage()</src>.
+    // The <src>setDefaultWorldMixRanges</src> function
+    // gives you [-1e99->1e99]. 
+    // <group>
+    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual void setDefaultWorldMixRanges ();
+    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
+    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
+    //</group>
+
+
+    // Set and recover the preferred world axis units.  Meaningless for StokesCoordinate
+    // so these functions have no effect.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const;
+    // </group>
+
 
     // Format a StokesCoordinate world value with the common format 
     // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
@@ -256,7 +283,9 @@ private:
     Double crval_p, crpix_p, matrix_p, cdelt_p;
     String name_p;
     String unit_p;
+    String prefUnit_p;
     Int nValues_p;
+    Vector<Double> worldMin_p, worldMax_p;
 
     // Undefined and inaccessible
     StokesCoordinate();

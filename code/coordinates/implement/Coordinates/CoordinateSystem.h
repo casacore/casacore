@@ -421,27 +421,22 @@ public:
                        const Vector<Double>& worldMin,
                        const Vector<Double>& worldMax) const; 
 
-    // Set the world min and max ranges, for use in toMix, for
-    // a lattice of the given shape for this coordinate. The output
-    // vectors are resized.    Returns False if fails with a reason
-    // in <src>errorMessage()</src>. If it fails, the function
-    // <src>setDefaultMixRanges</src> supplies the values.  The 
-    // idea is that for a given lattice,
-    // you can set the range so that the mixed conversions
-    // will be faster (they are done iteratively) and less likely
-    // to suffer from ambiguity of degenerate solutions.  The
-    // range is set so that you should be able to do a mixed
-    // conversion with any world or pixel coordinate contained
-    // within the image (about 25% guard band is added).
-    // The <src>setDefaultMixRanges</src> function
-    // just gives you [-90->90], [-180,180] for DirectionCoordinates
-    // (in appropriate units) and [-1e99->1e99] for other Coordinates 
+    // Set the world min and max ranges, for use in function <src>toMix</src>,
+    // for  a lattice of the given shape (for this coordinate).
+    // The output vectors are resized.  Returns False if fails (and
+    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // with a reason in <src>errorMessage()</src>.
+    // The <src>setDefaultWorldMixRanges</src> function
+    // gives you  a useful default range if you don't know the shape.
+    // The only Coordinate type for which these ranges are actually
+    // used in <src>toMix</src> is DirectionCoordinate (because its coupled). For
+    // the rest the functionality is provided but never used
+    // by toMix.
     //<group>
-    virtual Bool setMixRanges (Vector<Double>& worldMin,
-                               Vector<Double>& worldMax,
-                               const IPosition& shape) const;
-    virtual void setDefaultMixRanges (Vector<Double>& worldMin,
-                                      Vector<Double>& worldMax) const;
+    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual void setDefaultWorldMixRanges ();
+    virtual Vector<Double> worldMixMin () const;
+    virtual Vector<Double> worldMixMax () const;
     //</group>
 
     // Make absolute coordinates relative and vice-versa    
@@ -460,7 +455,6 @@ public:
     virtual Matrix<Double> linearTransform() const;
     virtual Vector<Double> increment() const;
     virtual Vector<Double> referenceValue() const;
-    virtual Vector<String> worldAxisUnits() const;
     // </group>
 
     // Set the requested attribute.  Note that these just
@@ -473,12 +467,27 @@ public:
     virtual Bool setReferenceValue(const Vector<Double> &refval);
     // </group>
 
-    // Change the units. Adjust the increment and
+    // Set/get the units. Adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
     // length.
+    // <group>
     virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual Vector<String> worldAxisUnits() const;
+    // </group>
+
+    // Set and recover the preferred world axis units.  These can be used to specify
+    // a favoured unit for conversions for example.  The given units must be empty
+    // or dimensionally consistent with the native world axis units, else
+    // False is returned and <src>errorMessage()</src>
+    // has an error message for you.  The preferred units are empty strings
+    // until you explicitly set them.  The only functions in the Coordinates classes
+    // which uses the preferred unit are <src>format, save, and restore</src>.
+    // <group>
+    virtual Bool setPreferredWorldAxisUnits (const Vector<String>& units);
+    virtual Vector<String> preferredWorldAxisUnits() const;
+    // </group>
 
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
