@@ -543,6 +543,14 @@ public:
     void get (const TableExprId& id, Array<DComplex>& value) const;
     void get (const TableExprId& id, Array<String>& value) const;
     void get (const TableExprId& id, Array<MVTime>& value) const;
+    Bool     getBool     (const TableExprId& id) const;
+    Double   getDouble   (const TableExprId& id) const;
+    DComplex getDComplex (const TableExprId& id) const;
+    String   getString   (const TableExprId& id) const;
+    Array<Bool>     getArrayBool     (const TableExprId& id) const;
+    Array<Double>   getArrayDouble   (const TableExprId& id) const;
+    Array<DComplex> getArrayDComplex (const TableExprId& id) const;
+    Array<String>   getArrayString   (const TableExprId& id) const;
     // </group>
 
     // Get the data type for doing a getColumn on the expression.
@@ -736,6 +744,22 @@ inline void TableExprNode::get (const TableExprId& id,
 inline void TableExprNode::get (const TableExprId& id,
 				Array<MVTime>& value) const
     { value = node_p->getArrayDate (id); }
+inline Bool TableExprNode::getBool (const TableExprId& id) const
+    { return node_p->getBool (id); }
+inline Double TableExprNode::getDouble (const TableExprId& id) const
+    { return node_p->getDouble (id); }
+inline DComplex TableExprNode::getDComplex (const TableExprId& id) const
+    { return node_p->getDComplex (id); }
+inline String TableExprNode::getString (const TableExprId& id) const
+    { return node_p->getString (id); }
+inline Array<Bool> TableExprNode::getArrayBool (const TableExprId& id) const
+    { return node_p->getArrayBool (id); }
+inline Array<Double> TableExprNode::getArrayDouble (const TableExprId& id) const
+    { return node_p->getArrayDouble (id); }
+inline Array<DComplex> TableExprNode::getArrayDComplex (const TableExprId& id) const
+    { return node_p->getArrayDComplex (id); }
+inline Array<String> TableExprNode::getArrayString (const TableExprId& id) const
+    { return node_p->getArrayString (id); }
 
 inline Array<Bool>      TableExprNode::getColumnBool() const
     { return node_p->getColumnBool(); }
