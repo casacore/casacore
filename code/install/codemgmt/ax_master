@@ -1992,3 +1992,4 @@
 08 171 src mv nrao/apps/sdcalc/fitting_manager.g nrao/apps/sdcalc/sdbaseline_manager.g
 08 171 src mv nrao/apps/sdcalc/sdfit_app.g nrao/apps/sdcalc/sdbaseline_app.g
 08 172 src mv trial/implement/Lattices/ExternalLockSync.h aips/implement/Tables/ExternalLockSync.h
+08 172 src mv trial/implement/Lattices/ExternalLockSync.cc aips/implement/Tables/ExternalLockSync.cc
