@@ -92,17 +92,6 @@ T Gaussian3D<T>::eval(typename Function<T>::FunctionArg x) const
 
 }
 
-template<class T>
-T Gaussian3D<T>::operator()(const T& x, const T& y, const T& z) const
-{
-  Block<T> pos(3);
-  pos[0] = x; 
-  pos[1] = y; 
-  pos[2] = z;
-  return eval(pos.storage());  //really inappropriate way to do this,
-                               //but it won't let me use operator()
-                               //for Function fns
-}
 
 template<class T> 
 Function<T>* Gaussian3D<T>::clone() const 

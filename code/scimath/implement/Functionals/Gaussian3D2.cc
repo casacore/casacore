@@ -190,18 +190,6 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
   return tmp;
 }
 
-template<class T>
-AutoDiff<T> Gaussian3D<AutoDiff<T> >::operator()(
-                             const AutoDiff<T>& x, const AutoDiff<T>& y, 
-                             const AutoDiff<T>& z) const
-{
-  Block<T> pos(3);
-  pos[0] = x.value(); pos[1] = y.value(); pos[2] = z.value();
-  //Block<AutoDiff<T> > pos(3);
-  //pos[0] = x; pos[1] = y; pos[2] = z;
-  return eval(pos.storage());
-}
-
 
 template<class T> 
 Function<AutoDiff<T> >* Gaussian3D<AutoDiff<T> >::clone() const 
