@@ -30,7 +30,6 @@
 #include <aips/aips.h>
 #include <aips/Measures/Stokes.h>
 #include <aips/Utilities/String.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Exceptions/Error.h>
 
 int main() 

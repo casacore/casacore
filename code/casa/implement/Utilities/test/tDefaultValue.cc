@@ -29,7 +29,7 @@
 
 #include <aips/Utilities/DefaultValue.h>
 
-#include <aips/Exceptions/Excp.h>
+#include <aips/Exceptions/Error.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Assert.h>
 

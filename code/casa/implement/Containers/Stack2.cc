@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <aips/Containers/Stack.h>
-#include <aips/Exceptions/Excp.h>
 #include <aips/Containers/StackError.h>
 
 // Throw an error indicating operation error occured on an empty
