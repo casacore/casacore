@@ -5919,3 +5919,4 @@
 16 317 src mv trial/implement/Functionals/NQPolynomial2.cc aips/implement/Functionals/NQPolynomial2.cc
 16 317 src mv trial/implement/Functionals/NQPolynomialParam.cc aips/implement/Functionals/NQPolynomialParam.cc
 16 317 src mv trial/implement/Functionals/NQPolynomialParam.h aips/implement/Functionals/NQPolynomialParam.h
+16 317 src mv trial/implement/Functionals/test/tNQGaussian1D.cc aips/implement/Functionals/test/tNQGaussian1D.cc
