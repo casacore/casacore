@@ -45,6 +45,9 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token SELECT
 %token UPDATE
 %token UPDSET
+%token INSERT
+%token VALUES
+%token DELETE
 %token FROM
 %token WHERE
 %token ORDERBY
@@ -98,7 +101,9 @@ PtrBlock<TableParseUpdate*>* updateb;
 %type <sort>  sortexpr
 %type <sortb> sortlist
 %type <update> updexpr
+%type <update> insexpr
 %type <updateb> updlist
+%type <updateb> inslist
 
 
 %left OR
@@ -116,12 +121,17 @@ int TableGramlex (YYSTYPE*);
 %}
 
 %%
-command:   select selrow
-         | update updrow
+command:   selcomm
+         | updcomm
+         | inscomm
+         | delcomm
+         ;
+
+selcomm:   select selrow
          ;
 
 select:    SELECT {
-               TableParseSelect::newSelect();
+               TableParseSelect::newSelect(1);
 	   }
          ;
 
@@ -143,14 +153,17 @@ selwh:     FROM tables whexpr {
            }
          ;
 
+updcomm:   update updrow
+         ;
+
 update:    UPDATE {
-               TableParseSelect::newSelect();
+               TableParseSelect::newSelect(2);
            }
          ;
 
-updrow:    tables updpart whexpr {
-	       TableParseSelect::currentSelect()->handleSelect ($3);
-	       delete $3;
+updrow:    tables updpart updfrom whexpr {
+	       TableParseSelect::currentSelect()->handleSelect ($4);
+	       delete $4;
            }
          ;
 
@@ -174,6 +187,63 @@ updexpr:   NAME EQ orexpr {
                $$ = new TableParseUpdate ($1->str, *$3);
 	       delete $1;
 	       delete $3;
+           }
+         ;
+
+updfrom:        /* no FROM */
+         | FROM tables
+         ;
+
+inscomm:   insert insrow
+         ;
+
+insert:    INSERT {
+               TableParseSelect::newSelect(3);
+           }
+         ;
+
+insrow:    INTO tables insclist inspart
+         ;
+
+insclist:           /* no column-list */   
+         | LBRACKET columns RBRACKET
+         | LPAREN columns RPAREN
+         ;
+
+inspart:   VALUES LBRACKET inslist RBRACKET {
+               TableParseSelect::currentSelect()->handleInsert ($3);
+           }
+         | VALUES LPAREN inslist RPAREN {
+               TableParseSelect::currentSelect()->handleInsert ($3);
+           }
+         | selcomm {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+               TableParseSelect::currentSelect()->handleInsert (p);
+	   }
+         ;
+
+inslist:   inslist COMMA insexpr {
+               $$ = $1;
+               $$->resize($$->nelements() + 1);
+	       (*$$)[$$->nelements() - 1] = $3;
+           }
+         | insexpr {
+	       $$ = new PtrBlock<TableParseUpdate*>(1);
+	       (*$$)[0] = $1;
+           }
+         ;
+
+insexpr:   orexpr {
+               $$ = new TableParseUpdate ("", *$1);
+	       delete $1;
+           }
+         ;
+
+delcomm:   delete selwh
+         ;
+
+delete:    DELETE {
+               TableParseSelect::newSelect(4);
            }
          ;
 
@@ -294,7 +364,13 @@ tfname:    TABNAME
                { $$ = $1; }
          | STRINGLITERAL
                { $$ = $1; }
-         | LBRACKET command RBRACKET {
+         | LBRACKET selcomm RBRACKET {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+	       $$ = p->doFromQuery();
+	       theFromQueryDone = True;
+	       delete p;
+           }
+         | LPAREN selcomm RPAREN {
 	       TableParseSelect* p = TableParseSelect::popSelect();
 	       $$ = p->doFromQuery();
 	       theFromQueryDone = True;
@@ -467,7 +543,16 @@ set:       LBRACKET elems RBRACKET {
                $$ = new TableExprNode ($2->setOrArray());
                delete $2;
            }
-         | LBRACKET command RBRACKET {
+         | LPAREN elems RPAREN {
+               $$ = new TableExprNode ($2->setOrArray());
+               delete $2;
+           }
+         | LBRACKET selcomm RBRACKET {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+               $$ = new TableExprNode (p->doSubQuery());
+	       delete p;
+           }
+         | LPAREN selcomm RPAREN {
 	       TableParseSelect* p = TableParseSelect::popSelect();
                $$ = new TableExprNode (p->doSubQuery());
 	       delete p;
