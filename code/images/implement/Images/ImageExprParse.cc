@@ -28,9 +28,7 @@
 #include <images/Images/ImageExprParse.h>
 #include <images/Images/ImageExprGram.h>
 #include <images/Images/PagedImage.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
-#include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/ImageRegion.h>
 #include <images/Images/RegionHandlerTable.h>
 #include <lattices/Lattices/LatticeExprNode.h>
@@ -607,18 +605,18 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
 {
     if (!Table::isReadable(name)) {
 
-// If its not an aips++ table, try other image types
+// If it's not an aips++ table, try other image types
 
-        ImageUtilities::ImageTypes imageType = ImageUtilities::imageType(name);
-        if (imageType==ImageUtilities::FITS) {
-           FITSImage img(name);
-           node = LatticeExprNode (img);
-        } else if (imageType==ImageUtilities::MIRIAD) {
-           MIRIADImage img(name);
-           node = LatticeExprNode (img);
-        } else {
-           return False;
-        }
+	LatticeBase* lattPtr = ImageOpener::openImage (name);
+	if (lattPtr == 0) {
+	   return False;
+	}
+	ImageInterface<Float>* img = dynamic_cast<ImageInterface<Float>*>(lattPtr);
+	if (img == 0) {
+	   return False;
+	}
+	node = LatticeExprNode (*img);
+	delete img;
 	return True;
     }
 
@@ -705,8 +703,17 @@ LatticeExprNode ImageExprParse::makeImageNode (const String& name,
     }
     LatticeExprNode node;
     if (! Table::isReadable(name)) {
-	FITSImage fimg(name, spec);
-	node = LatticeExprNode (fimg);
+	LatticeBase* lattPtr = ImageOpener::openImage (name, spec);
+	ImageInterface<Float>* img = 0;
+	if (lattPtr != 0) {
+	    img = dynamic_cast<ImageInterface<Float>*>(lattPtr);
+	}
+	if (img == 0) {
+	    throw AipsError ("ImageExprParse: " + name +
+			     " has an unknown image type");
+	}
+	node = LatticeExprNode (*img);
+	delete img;
 	return node;
     }
     Table table(name);

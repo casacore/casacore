@@ -116,6 +116,13 @@ public:
   // Assignment (reference semantics)
   MIRIADImage& operator=(const MIRIADImage& other);
 
+  // Function to open a MIRIAD image.
+  static LatticeBase* openMIRIADImage (const String& name,
+				       const MaskSpecifier&);
+
+  // Register the open function.
+  static void registerOpenFunction();
+
   //# ImageInterface virtual functions
   
   // Make a copy of the object with new (reference semantics).

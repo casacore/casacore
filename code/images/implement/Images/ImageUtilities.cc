@@ -27,11 +27,10 @@
 //
 
 #include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageOpener.h>
 
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
-#include <tables/Tables/Table.h>
-#include <tables/Tables/TableInfo.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/DirectionCoordinate.h>
@@ -46,8 +45,6 @@
 #include <images/Images/RegionHandler.h>
 #include <images/Images/ImageRegion.h>
 #include <images/Images/SubImage.h>
-#include <images/Images/FITSImage.h>
-#include <images/Images/MIRIADImage.h>
 #include <images/Images/TempImage.h>
 #include <lattices/Lattices/LCRegion.h>
 #include <lattices/Lattices/LatticeIterator.h>
@@ -58,13 +55,8 @@
 #include <casa/Quanta/Unit.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/OS/File.h>
-#include <casa/OS/RegularFile.h>
-#include <casa/IO/RegularFileIO.h>
-#include <casa/OS/File.h>
 #include <tables/LogTables/NewFile.h>
 #include <casa/BasicSL/String.h>
-#include <casa/BasicSL/String.h>
-#include <casa/Utilities/Regex.h>
 #include <casa/Utilities/LinearSearch.h>
 #include <casa/Utilities/PtrHolder.h>
 #include <casa/iostream.h>
@@ -73,51 +65,38 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-ImageUtilities::ImageTypes ImageUtilities::imageType (const String& name)
+
+void ImageUtilities::openImage (ImageInterface<Float>*& pImage,
+                                const String& fileName, LogIO& os)
 {
-  File file(name);
-  if (file.isDirectory()) {
-    if (Table::isReadable(name)) {
-      TableInfo info = Table::tableInfo (name);
-      if (info.type() == TableInfo::type(TableInfo::PAGEDIMAGE)) {
-	return AIPSPP;
-      }
-    } else {
-      if (File(name + "/header").isRegular()  &&
-	  File(name + "/image").isRegular()) {
-	return MIRIAD;
-      }
-    }
-  } else if (file.isRegular()) {
-    // Find file type.
-    String base = file.path().baseName();
-    Int i;
-    for (i=base.length()-1; i>0; i--) {
-      if (base[i] == '.') {
-	break;
-      }
-    }
-    if (i > 0  &&  base.after(i) == "image") {
-      String descName = file.path().dirName() + '/' +
-	                base.before(i) + ".descr";
-      if (File(descName).isRegular()) {
-	return GIPSY;
-      }
-    }
-    RegularFileIO fio((RegularFile(file)));
-    char buf[2880];
-    Int nread = fio.read (2880, buf, False);
-    if (nread == 2880) {
-      String str(buf, 80);
-      if (str.matches (Regex("^SIMPLE *= *T.*"))) {
-	return FITS;
-      }
-    }
-  }
-  return UNKNOWN;
+   if (fileName.empty()) {
+      os << "The image filename is empty" << LogIO::EXCEPTION;   
+   }
+   File file(fileName);
+   if (!file.exists()) {
+      os << "File '" << fileName << "' does not exist" << LogIO::EXCEPTION;
+   }
+   LatticeBase* lattPtr = ImageOpener::openImage (fileName);
+   if (lattPtr == 0) {
+     os << "Image " << fileName << " cannot be opened; its type is unknown"
+	<< LogIO::EXCEPTION;
+   } 
+   pImage = dynamic_cast<ImageInterface<Float>*>(lattPtr);
+   if (pImage == 0) {
+      os << "Unrecognized image data type, "
+	    "presently only Float images are supported" 
+         << LogIO::EXCEPTION;
+   }
 }
 
-  
+void ImageUtilities::openImage (PtrHolder<ImageInterface<Float> >& image,
+                                const String& fileName, LogIO& os)
+{
+   ImageInterface<Float>* p = 0;
+   ImageUtilities::openImage(p, fileName, os);
+   image.set(p);
+}
+
 
 Bool ImageUtilities::pixToWorld (Vector<String>& sWorld,
                                  CoordinateSystem& cSysIn,
@@ -690,44 +669,6 @@ Quantum<Double> ImageUtilities::pixelWidthToWorld (LogIO& os,
 }
 
 
-void ImageUtilities::openImage (ImageInterface<Float>*& pImage,
-                                const String& fileName, LogIO& os)
-{
-   if (fileName.empty()) {
-      os << "The image filename is empty" << LogIO::EXCEPTION;   
-   }
-   File file(fileName);
-   if (!file.exists()) {
-      os << "File '" << fileName << "' does not exist" << LogIO::EXCEPTION;
-   }
-//
-   ImageUtilities::ImageTypes type = ImageUtilities::imageType(fileName);
-   if (type==ImageUtilities::AIPSPP) {
-      if (!Table::isReadable(fileName)) {
-         os << "The aips++ image file " << fileName << " is not readable" << LogIO::EXCEPTION;
-      }
-      pImage = new PagedImage<Float>(fileName);
-   } else if (type==ImageUtilities::FITS) { 
-      pImage = new FITSImage(fileName);
-   } else if (type==ImageUtilities::MIRIAD) {
-      pImage = new MIRIADImage(fileName);
-   } else {
-      pImage = 0;
-      os << "Unrecognized image type, presently aips++, FITS and Miriad images are supported" 
-         << LogIO::EXCEPTION;
-   }
-}
-
-
-void ImageUtilities::openImage (PtrHolder<ImageInterface<Float> >& image,
-                                const String& fileName, LogIO& os)
-{
-   ImageInterface<Float>* p = 0;
-   ImageUtilities::openImage(p, fileName, os);
-   image.set(p);
-}
-
-
 void ImageUtilities::addDegenerateAxes (LogIO& os, 
                                         PtrHolder<ImageInterface<Float> >& outImage,
                                         ImageInterface<Float>& inImage,
@@ -918,4 +859,3 @@ void ImageUtilities::copyMask (ImageInterface<Float>& out,
 
 
 } //# NAMESPACE CASA - END
-

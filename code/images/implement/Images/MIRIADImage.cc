@@ -29,6 +29,7 @@
 
 #include <images/Images/ImageInfo.h>
 #include <images/Images/MaskSpecifier.h>
+#include <images/Images/ImageOpener.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <lattices/Lattices/TempLattice.h>
 #include <tables/Tables/TiledFileAccess.h>
@@ -148,6 +149,19 @@ MIRIADImage& MIRIADImage::operator=(const MIRIADImage& other)
 MIRIADImage::~MIRIADImage()
 {
   delete pPixelMask_p;
+}
+
+
+LatticeBase* MIRIADImage::openMIRIADImage (const String& name,
+					   const MaskSpecifier& spec)
+{
+  return new MIRIADImage (name, spec);
+}
+
+void MIRIADImage::registerOpenFunction()
+{
+  ImageOpener::registerOpenImageFunction (ImageOpener::MIRIAD,
+					  &openMIRIADImage);
 }
 
 

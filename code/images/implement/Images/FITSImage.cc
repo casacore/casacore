@@ -33,7 +33,7 @@
 #include <images/Images/ImageInfo.h>
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/MaskSpecifier.h>
-#include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageOpener.h>
 #include <lattices/Lattices/TiledShape.h>
 #include <lattices/Lattices/TempLattice.h>
 #include <lattices/Lattices/FITSMask.h>
@@ -151,6 +151,19 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
 FITSImage::~FITSImage()
 {
    delete pPixelMask_p;
+}
+
+
+LatticeBase* FITSImage::openFITSImage (const String& name,
+				       const MaskSpecifier& spec)
+{
+  return new FITSImage (name, spec);
+}
+
+void FITSImage::registerOpenFunction()
+{
+  ImageOpener::registerOpenImageFunction (ImageOpener::FITS,
+					  &openFITSImage);
 }
 
 
@@ -494,8 +507,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
        throw (AipsError(name + " does not exist or is not readable"));
     }
 //
-   ImageUtilities::ImageTypes type = ImageUtilities::imageType(name_p);
-   if (type != ImageUtilities::FITS) {
+   ImageOpener::ImageTypes type = ImageOpener::imageType(name_p);
+   if (type != ImageOpener::FITS) {
        throw (AipsError(name + " is not a FITS image"));
    }
 //

@@ -1,4 +1,3 @@
-
 //# tImageUtilities.cc: Test program for the static ImageUtilities functions
 //# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
@@ -35,9 +34,11 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <images/Images/ImageUtilities.h>
+#include <images/Images/ImageOpener.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/TempImage.h>
+#include <images/Images/FITSImage.h>
 #include <lattices/Lattices/PagedArray.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/LatticeUtilities.h>
@@ -97,34 +98,34 @@ void doTypes()
 			   CoordinateUtil::defaultCoords2D(),
 			   "tImageUtilities_tmp/app.img");
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/app.img")
-		    == ImageUtilities::AIPSPP);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/app.img")
+		    == ImageOpener::AIPSPP);
   {
     PagedArray<Float> arr (IPosition(2,10,10),
 			   "tImageUtilities_tmp/app.img");
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/app.img")
-		    == ImageUtilities::UNKNOWN);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/app.img")
+		    == ImageOpener::UNKNOWN);
   {
     Directory dir("tImageUtilities_tmp/mir.img");
     dir.create();
     RegularFile rfile("tImageUtilities_tmp/mir.img/image");
     rfile.create();
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/mir.img")
-		    == ImageUtilities::UNKNOWN);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/mir.img")
+		    == ImageOpener::UNKNOWN);
   {
     RegularFile rfile("tImageUtilities_tmp/mir.img/header");
     rfile.create();
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/mir.img")
-		    == ImageUtilities::MIRIAD);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/mir.img")
+		    == ImageOpener::MIRIAD);
   {
     RegularFile rfile("tImageUtilities_tmp/a.image");
     rfile.create();
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
-		    == ImageUtilities::UNKNOWN);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageOpener::UNKNOWN);
   char buf[2880];
   memset (buf, ' ', 2880);
   memcpy (buf, "SIMPLE  =   T  ", 17);
@@ -133,21 +134,21 @@ void doTypes()
 			ByteIO::Update);
     file.write (2879, buf);
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
-		    == ImageUtilities::UNKNOWN);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageOpener::UNKNOWN);
   {
     RegularFileIO file (RegularFile("tImageUtilities_tmp/a.image"),
 			ByteIO::Update);
     file.write (2880, buf);
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
-		    == ImageUtilities::FITS);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageOpener::FITS);
   {
     RegularFile rfile("tImageUtilities_tmp/a.descr");
     rfile.create();
   }
-  AlwaysAssertExit (ImageUtilities::imageType ("tImageUtilities_tmp/a.image")
-		    == ImageUtilities::GIPSY);
+  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+		    == ImageOpener::GIPSY);
 //
   dir.removeRecursive();
 }
@@ -345,7 +346,6 @@ void doFits()
    }
 //
    if (pResid) {
-      Float zero(0.0);
       Float one(1.0);
       for (uInt j=0; j<ny; j++) {
          pos2(1) = j;
@@ -363,6 +363,7 @@ void doFits()
 int main()
 {
   try {
+    FITSImage::registerOpenFunction();
     doFits();
     doBin();
     doTypes();

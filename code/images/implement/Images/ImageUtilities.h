@@ -31,16 +31,20 @@
 
 #include <casa/aips.h>
 #include <components/ComponentModels/ComponentType.h>
+#include <images/Images/MaskSpecifier.h>
 #include <images/Images/ImageFit1D.h>
 #include <measures/Measures/Stokes.h>
 #include <casa/Utilities/PtrHolder.h>
+#include <casa/Containers/SimOrdMap.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+//# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Vector;
 template <class T> class Quantum;
 template <class T> class MaskedArray;
+class LatticeBase;
 class CoordinateSystem;
 class Coordinate;
 class SkyComponent;
@@ -88,25 +92,7 @@ class AxesSpecifier;
 class ImageUtilities
 {
 public:
-// Define the possible image types.
-   enum ImageTypes {
-     // AIPS++
-     AIPSPP,
-     // FITS
-     FITS,
-     // Miriad
-     MIRIAD,
-     // Gipsy
-     GIPSY,
-     // Unknown
-     UNKNOWN
-   };
-
-// Return the type of an image with the given name.  Will throw an
-// exception if file does not exist.
-   static ImageTypes imageType (const String& fileName);
-
-// Open disk image (can be aips++, fits, Miriad).  Exception
+// Open disk image (can be any registered image).  Exception
 // if fileName empty or file does not exist or file is not
 // of legal image type.   For aips++ images, the default mask is
 // applied.
@@ -285,7 +271,7 @@ private:
                                     const Quantum<Double>& length,
                                     const CoordinateSystem& cSys,
                                     const IPosition& pixelAxes);
-//
+
    static Quantum<Double> pixelWidthToWorld (LogIO& os, Double positionAngle,
                                              Double length,
                                              const CoordinateSystem& cSys,

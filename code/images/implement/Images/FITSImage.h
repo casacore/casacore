@@ -121,6 +121,13 @@ public:
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);
 
+  // Function to open a FITS image.
+  static LatticeBase* openFITSImage (const String& name,
+				     const MaskSpecifier&);
+
+  // Register the open function.
+  static void registerOpenFunction();
+
   //# ImageInterface virtual functions
   
   // Make a copy of the object with new (reference semantics).
