@@ -1,5 +1,5 @@
 //# LCSlicer.cc: Class to define a rectangular box of interest with strides
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,6 +123,13 @@ LCSlicer::LCSlicer (const Vector<Double>& blc, const Vector<Double>& trc,
     fillFromDouble (blc, trc, inc);
 }
 
+
+LCSlicer::LCSlicer (const Slicer& slicer)
+{
+    uInt ndim = slicer.ndim();
+    fillFlags (False, False, ndim, ndim, ndim);
+    fillFromIPosition (slicer.start(), slicer.end(), slicer.stride());
+}
 
 LCSlicer::LCSlicer (const IPosition& blc, const IPosition& trc,
 		    RegionType::AbsRelType absRel)
