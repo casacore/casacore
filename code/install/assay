@@ -170,8 +170,13 @@
         exit
      fi
   else
-     echo "FAIL (execution failure): $*"
-     STATUS=1
+     STATUS=$?
+     if [ $STATUS = 3 ]
+     then
+        echo "UNTESTED: $*"
+     else
+        echo "FAIL (execution failure): $*"
+     fi
      exit
   fi
 
