@@ -500,6 +500,7 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
     }
     stride *= fftLen;
   }
+  cValues.putStorage(dataPtr, valuesIsAcopy);
 }
 
 template<class T, class S> void FFTServer<T,S>::
