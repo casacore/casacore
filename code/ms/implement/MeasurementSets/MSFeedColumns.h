@@ -29,6 +29,7 @@
 #define AIPS_NEWMSFEEDCOLUMNS_H
 
 #include <aips/aips.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MEpoch.h>
 #include <aips/Measures/MPosition.h>
@@ -38,6 +39,7 @@
 #include <aips/TableMeasures/ScalarQuantColumn.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Tables/ScalarColumn.h>
+#include <aips/Utilities/String.h>
 
 class NewMSFeed;
 
@@ -77,7 +79,6 @@ class NewMSFeed;
 class RONewMSFeedColumns
 {
 public:
-
   // Create a columns object that accesses the data in the specified Table
   RONewMSFeedColumns(const NewMSFeed& msFeed);
 
@@ -134,6 +135,11 @@ protected:
   void attach(const NewMSFeed& msFeed);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  RONewMSFeedColumns(const RONewMSFeedColumns&);
+  RONewMSFeedColumns& operator=(const RONewMSFeedColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(const NewMSFeed& msFeed);
   
@@ -205,7 +211,6 @@ private:
 class NewMSFeedColumns: public RONewMSFeedColumns
 {
 public:
-
   // Create a columns object that accesses the data in the specified Table
   NewMSFeedColumns(NewMSFeed& msFeed);
 
@@ -300,14 +305,11 @@ public:
     return RONewMSFeedColumns::phasedFeedId();}
   // </group>
 
-  // set the Direction reference for the beam offset column. The supplied ref
-  // must really be a a member of the MDirection::Types enumerator.
-  void setDirectionRef(Int ref);
+  // set the Direction reference for the beam offset column.
+  void setDirectionRef(MDirection::Types ref);
 
-  // Set the POSITION reference for the position column. The supplied ref must
-  // really be a a member of the MPosition::Types enumerator.  e.g.,
-  // MPosition::ITRF.
-  void setPositionRef(Int ref);
+  // Set the POSITION reference for the position column.
+  void setPositionRef(MPosition::Types ref);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -318,6 +320,11 @@ protected:
   void attach(NewMSFeed& msFeed);
 
 private:
+  //# Make the assignment operator and the copy constructor private to prevent
+  //# any compiler generated one from being used.
+  NewMSFeedColumns(const NewMSFeedColumns&);
+  NewMSFeedColumns& operator=(const NewMSFeedColumns&);
+
   //# Check if any optional columns exist and if so attach them.
   void attachOptionalCols(NewMSFeed& msFeed);
   
@@ -351,7 +358,5 @@ private:
   ScalarQuantColumn<Double> timeQuant_p;
   //# optional Quantum columns
   ScalarQuantColumn<Double> focusLengthQuant_p;
-
 };
-
 #endif
