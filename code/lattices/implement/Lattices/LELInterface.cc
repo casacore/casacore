@@ -42,7 +42,12 @@ void LELInterface<T>::setAttr (const LELAttribute& attr)
 template<class T>
 void LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
 {
+// Recursively prepare (optimize) the current expression
+
     expr->prepare();
+
+// Replace it if it's scalar
+
     if (expr->isScalar()) {
 	expr = new LELUnaryConst<T> (expr->getScalar());
     }
