@@ -1,0 +1,13 @@
+create test MeasurementSet
+test constructors
+test assignment and setMS
+Testing range with String input
+[field_id=[0 1]  spectral_window_id=[0 1 2]  time=[4.32e+09 4.32005e+09] ]
+Testing range with String input and OneBased indexing
+[field_id=[1 2]  spectral_window_id=[1 2 3]  time=[4.32e+09 4.32005e+09] ]
+Testing range with integer input
+[field_id=[0 1] ]
+Testing range with vector input
+[antenna1=[0 1 2 3 4]  antenna2=[1 2 3 4 5]  antennas=CA01 CA02 CA03 CA04 CA05 CA06 array_id=0 feed1=0 feed2=0 field_id=[0 1]  fields=src1 cal ifr_number=[15 element array, shaped [1]] phase_dir=[direction=[2.0944 0.785398 2.11185 0.802851]  epoch=] rows=[2970 element array, shaped [1]] scan_number=[198 element array, shaped [1]] spectral_window_id=[0 1 2]  time=[4.32e+09 4.32005e+09]  times=[198 element array, shaped [1]] u=[-788.319 5875.75]  v=[-3706.82 4209.03]  w=[-3617.22 4130.4]  uvdist=[54.4615 5876.68]  weight=[1 1] ]
+[antenna1=[0 1 2 3 4]  antenna2=[1 2 3 4 5]  antennas=CA01 CA02 CA03 CA04 CA05 CA06 array_id=0 chan_freq=[2.496e+09 2.5e+09 2.504e+09 2.508e+09 2.512e+09 2.516e+09 2.52e+09 2.524e+09]  corr_names=XX XY YX YY corr_types=[9 10 11 12]  feed1=0 feed2=0 field_id=[0 1]  fields=src1 cal ifr_number=[15 element array, shaped [1]] num_corr=4 num_chan=8 phase_dir=[direction=[2.0944 0.785398 2.11185 0.802851]  epoch=] ref_frequency=2.496e+09 rows=[1440 element array, shaped [1]] scan_number=[96 element array, shaped [1]] spectral_window_id=1 time=[4.32e+09 4.32004e+09]  times=[96 element array, shaped [1]] u=[-720.497 5874.81]  v=[-3694.93 4206.64]  w=[-3605.25 4129.39]  uvdist=[54.4745 5876.23]  weight=[1 1]  amplitude=[0.50635 1.4209]  phase=[7.34754e-05 0.00335735]  real=[0.50635 1.4209]  imaginary=[0.0001 0.0017] ]
+Done.
