@@ -437,11 +437,11 @@ sub processchange (desc, chrec)
     $name = '';
     $sumname = 'changelog_summary.html';
   }
-  if ($splitfile == 3  &&  $chrec->{'pkg'} ne '') {
+  if ($splitfile >= 3  &&  $chrec->{'pkg'} ne '') {
     $name .= '_'.$chrec->{'pkg'};
   }
   if ($splitfile == 4  &&  $chrec->{'module'} ne '') {
-    $name = '_'.$chrec->{'module'};
+    $name .= '_'.$chrec->{'module'};
   }
   my $namef = 'changelog.html';
   if ($name ne '') {
