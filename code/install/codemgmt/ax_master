@@ -3501,3 +3501,4 @@
 13 285 src mv trial/implement/Lattices/test/tLatticeIterator.cc aips/implement/Lattices/test/tLatticeIterator.cc
 13 285 src mv trial/implement/Lattices/test/tLatticeStepper.cc aips/implement/Lattices/test/tLatticeStepper.cc
 13 285 src mv trial/implement/Lattices/test/tPagedArray.cc aips/implement/Lattices/test/tPagedArray.cc
+13 285 src mv trial/implement/Lattices/test/tTempLattice.cc aips/implement/Lattices/test/tTempLattice.cc
