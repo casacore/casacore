@@ -6065,3 +6065,4 @@
 17 123 src mv trial/implement/Tables/ColumnsIndexArray.cc aips/implement/Tables/ColumnsIndexArray.cc
 17 135 src mv trial/implement/Tables/test/tColumnsIndexArray.cc aips/implement/Tables/test/tColumnsIndexArray.cc
 17 135 src mv trial/implement/Tables/test/tColumnsIndexArray.out aips/implement/Tables/test/tColumnsIndexArray.out
+17 136 src mv doc/recipes/recipe3/imager-ss433 doc/recipes/recipe3/imager-ss433.dir
