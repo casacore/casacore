@@ -1,5 +1,5 @@
 //# SkyCompRep.h: A model component of the sky brightness
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -279,7 +279,7 @@ public:
   // from the ImageInfo class.  It should be of length 3 or 0 (no beam).  
   // You must specify the type of shape to convert to.
   // The SkyComponent is given a  constant spectrum.
-  void fromPixel (const Vector<Double>& parameters,
+  void fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
                   const Vector<Quantum<Double> >& restoringBeam,
                   const CoordinateSystem& cSys,
@@ -294,7 +294,7 @@ public:
 // Make definitions to handle "/beam" and "/pixel" units.   The restoring beam
 // is provided in a vector of quanta (major, minor, position angle).  Should
 // be length 0 or 3. It can be obtained from class ImageInfo
-   static Unit defineBrightnessUnits (LogIO& os, 
+   static Unit defineBrightnessUnits (LogIO& os,
                                       const Unit& brightnessUnitIn,
                                       const CoordinateSystem& cSys,
                                       const Vector<Quantum<Double> >& restoringBeam,

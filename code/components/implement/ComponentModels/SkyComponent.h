@@ -1,5 +1,5 @@
 //# SkyComponent.h: this defines SkyComponent.h
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -257,7 +257,7 @@ public:
                            const Vector<Quantum<Double> >& restoringBeam,
                            const CoordinateSystem& cSys,
                            Stokes::StokesTypes stokes) const;
-  void fromPixel (const Vector<Double>& parameters,
+  void fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                   const Unit& brightnessUnitIn,
                   const Vector<Quantum<Double> >& restoringBeam,
                   const CoordinateSystem& cSys,

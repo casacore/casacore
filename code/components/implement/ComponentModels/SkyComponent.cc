@@ -1,5 +1,5 @@
 //# SkyComponent.cc:  this defines SkyComponent
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -202,14 +202,14 @@ SkyComponent SkyComponent::copy() const {
   return newComp;
 }
 
-void SkyComponent::fromPixel (const Vector<Double>& parameters,
+void SkyComponent::fromPixel (Double& fluxRatio, const Vector<Double>& parameters,
                               const Unit& brightnessUnitIn,
                               const Vector<Quantum<Double> >& restoringBeam,
                               const CoordinateSystem& cSys,
                               ComponentType::Shape componentShape,
                               Stokes::StokesTypes stokes)
 {
-   itsCompPtr->fromPixel(parameters, brightnessUnitIn, restoringBeam,
+   itsCompPtr->fromPixel(fluxRatio, parameters, brightnessUnitIn, restoringBeam,
                          cSys, componentShape, stokes);
 }
 
