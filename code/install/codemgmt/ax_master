@@ -2647,3 +2647,4 @@
 11 401 src mv doc/html/navpages/search doc/search
 11 401 src rm doc/learnmore
 11 402 src rm aips/implement/Tables/test/tAsciiFileIO.exec
+11 402 src mv aips/implement/Tables/AsciiFileIO.h aips/implement/Tables/ReadAsciiTable.h
