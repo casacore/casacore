@@ -6468,3 +6468,4 @@
 18 564 src mv trial/implement/MeasurementComponents/SolvableVJMRec.cc trial/implement/CalTables/SolvableVJMRec.cc
 18 564 src mv trial/implement/MeasurementComponents/TimeVarVJMRec.cc trial/implement/CalTables/TimeVarVJMRec.cc
 18 564 src mv trial/implement/MeasurementComponents/FVisJonesMRec.cc trial/implement/CalTables/FVisJonesMRec.cc
+18 564 src mv trial/implement/MeasurementComponents/SolvableMJMRec.cc trial/implement/CalTables/SolvableMJMRec.cc
