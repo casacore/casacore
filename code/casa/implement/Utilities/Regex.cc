@@ -37,6 +37,7 @@
 #else
 #include <aips/Utilities/RegexError.h>
 #include <iostream.h>
+#include <malloc.h>
 #endif
 
 Regex::Regex() {
