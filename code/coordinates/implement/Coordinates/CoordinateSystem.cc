@@ -1025,9 +1025,9 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 
 
 
-uInt CoordinateSystem::toWorldMany(Matrix<Double>& world,
+Bool CoordinateSystem::toWorldMany(Matrix<Double>& world,
                                    const Matrix<Double>& pixel,
-                                   Vector<Int>& failures) const
+                                   Vector<Bool>& failures) const
 {
     AlwaysAssert(nPixelAxes()==pixel.nrow(), AipsError);
     const uInt nTransforms = pixel.ncolumn();
@@ -1043,7 +1043,7 @@ uInt CoordinateSystem::toWorldMany(Matrix<Double>& world,
 
     uInt i, k;
     Int where;
-    uInt nFail = 0;
+    Bool ok = True;
 //
     const uInt nCoords = coordinates_p.nelements();
     for (k=0; k<nCoords; k++) {
@@ -1068,11 +1068,12 @@ uInt CoordinateSystem::toWorldMany(Matrix<Double>& world,
 
 	const uInt nWorldAxes = world_maps_p[k]->nelements();
         Matrix<Double> worldTmp(nWorldAxes,nTransforms);
-	nFail = coordinates_p[k]->toWorldMany(worldTmp, pixTmp, failures);
+        Vector<Bool> failuresTmp;
+	ok = coordinates_p[k]->toWorldMany(worldTmp, pixTmp, failuresTmp);
 
 // We get the last error message from whatever coordinate it is
 
-	if (nFail != 0) {
+        if (!ok) {
 	    set_error(coordinates_p[k]->errorMessage());
 	}
 
@@ -1084,23 +1085,23 @@ uInt CoordinateSystem::toWorldMany(Matrix<Double>& world,
 		world.row(where) = worldTmp.row(i);
             }
 	}
-
-// Should really make some attempt to merge the failures vector.
-// Each Coordinate may fail to convert in a different place.
-// The extra effort and time expense is probably not worth it...
-     
-
     }
+
+// Code should be written to merge the failures vectors
+// Code should be written to merge the OK statuses
+
+   failures.resize(nCoords);
+   failures = False;
 //
-    return nFail;
+   return ok;
 }
 
 
 
 
-uInt CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
+Bool CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
                                    const Matrix<Double>& world,
-                                   Vector<Int>& failures) const
+                                   Vector<Bool>& failures) const
 {
     AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
     const uInt nTransforms = world.ncolumn();
@@ -1116,7 +1117,7 @@ uInt CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
 
     uInt i, k;
     Int where;
-    uInt nFail = 0;
+    Bool ok = True;
 //
     const uInt nCoords = coordinates_p.nelements();
     for (k=0; k<nCoords; k++) {
@@ -1136,11 +1137,12 @@ uInt CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
 
 	const uInt nPixelAxes = pixel_maps_p[k]->nelements();
         Matrix<Double> pixTmp(nPixelAxes,nTransforms);
-	nFail = coordinates_p[k]->toPixelMany(pixTmp, worldTmp, failures);
+        Vector<Bool> failuresTmp;
+	ok = coordinates_p[k]->toPixelMany(pixTmp, worldTmp, failuresTmp);
 
 // We get the last error message from whatever coordinate it is
 
-	if (nFail != 0) {
+	if (!ok) {
 	    set_error(coordinates_p[k]->errorMessage());
 	}
 
@@ -1152,15 +1154,14 @@ uInt CoordinateSystem::toPixelMany(Matrix<Double>& pixel,
 		pixel.row(where) = pixTmp.row(i);
             }
 	}
-
-// Should really make some attempt to merge the failures vector.
-// Each Coordinate may fail to convert in a different place.
-// The extra effort and time expense is probably not worth it...
-     
-
     }
+
+// Code should be written to merge the failures vectors
+
+   failures.resize(nCoords);
+   failures = False;
 //
-    return nFail;
+   return ok;
 }
 
 

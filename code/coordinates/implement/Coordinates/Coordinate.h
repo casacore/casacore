@@ -31,9 +31,6 @@
 
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
-#include <aips/Exceptions/Error.h>
-#include <aips/Utilities/Assert.h>
-
 
 template<class T> class Quantum;
 template<class T> class Matrix;
@@ -259,21 +256,21 @@ public:
 
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
-    // of the matrices contain the coordinates. Return the number of failures.
-    // The failures array will be at least as long as the returned number of 
-    // failures, and contains the indicies of the failed transformations.
-    // <src>errorMessage()</src> will be set to the error from the FIRST failure. A default
+    // of the matrices contain the coordinates. Returns False if any conversion
+    // failed  and  <src>errorMessage()</src> will hold a message.
+    // The <src>failures</src> array (True for fail, False for success)
+    // is the length of the number of conversions and
+    // holds an error status for each conversion.  The default
     // implementation is provided that works with the "single" version of
     // <src>toWorld</src> and <src>toPixel</src>, but for maximum efficiency these should be
-    // overridden. If failures is longer than the return value, the value
-    // in the excess locations is undefined.
+    // overridden.
     // <group>
-    virtual uInt toWorldMany(Matrix<Double> &world, 
-			      const Matrix<Double> &pixel, 
-			      Vector<Int> &failures) const;
-    virtual uInt toPixelMany(Matrix<Double> &pixel, 
-			      const Matrix<Double> &world, 
-			      Vector<Int> &failures) const;
+    virtual Bool toWorldMany(Matrix<Double>& world, 
+                             const Matrix<Double>& pixel, 
+                             Vector<Bool>& failures) const;
+    virtual Bool toPixelMany(Matrix<Double>& pixel, 
+                             const Matrix<Double>& world, 
+                             Vector<Bool>& failures) const;
     // </group>
 
 
