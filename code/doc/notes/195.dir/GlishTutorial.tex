@@ -4,13 +4,13 @@
 \section{Introduction} 
 
 This document is an AIPS++ applications-specific supplement to
-\htmladdnormallink{"The Glish 2.6 User
-Manual."}{../../reference/Glish/Glish.html}.  Glish is both a
+\htmladdnormallink{``The Glish 2.6 User
+Manual.''}{../../reference/Glish/Glish.html}.  Glish is both a
 programming language and an environment for data acquisition and
 analysis.  It contains many of the mathematical features of other
 languages such as Fortran and C, and it is particularly strong on
 array arithmetic.  To the user, glish becomes AIPS++ or a telescope
-control system with the addition of functions and "clients" for those
+control system with the addition of functions and ``clients'' for those
 applications.  In fact, both applications may be run from the same
 invocation of glish, if so desired.
 
@@ -20,12 +20,12 @@ development.  The emphasis will be on the tools for writing your own
 data and control functions rather than on a review of AIPS++ library
 functions.  Also, only a few of the built-in glish functions will be
 mentioned.  See section 9.9 of the
-\htmladdnormallink{manual}{../../reference/Glish/Glish.html} for a
+\htmladdnormallink{Glish Manual}{../../reference/Glish/Glish.html} for a
 complete function summary, and the \htmladdnormallink{AIPS++ User
 Reference Manual}{../../user/Refman/Refman.html} for information on the
 AIPS++ library. A few elements of the AIPS++ library are used
 below; when discussed the relevant section of the AIPS++ User
-Reference Manul is available via the link.
+Reference Manual is available via the link.
 
 I shall assume that you have access to a working AIPS++ installation.
 Details about setting up your AIPS++ environment are given in 
@@ -38,16 +38,15 @@ and a description of the example data files is in Appendix B.
 with the following UNIX command:
 
 \begin{verbatim}
-	$ source /aips++/daily/aipsinit.csh
+	$ source /aips++/beta/aipsinit.csh
 \end{verbatim}
 
 \begin{verbatim}
-	$ . /aips++/daily/aipsinit.sh
+	$ . /aips++/beta/aipsinit.sh
 \end{verbatim}
 
-Note that the directory name may vary depending upon your
-installation: for example, at Green Bank, daily should be replaced by
-old; see \htmladdnormallink{Getting Started in
+Note that the directory name, \verb!aips++/beta!  may vary depending upon your
+installation; see \htmladdnormallink{Getting Started in
 AIPS++}{../../user/gettingstarted/gettingstarted.html} for more details.
 
 Then start AIPS++, open the example files, and load the example glish
@@ -57,6 +56,10 @@ scripts with
 	$ aips++
 	include 'glishtutorial.g'
 \end{verbatim}
+The example glish script converts the example FITS data files used
+in this tutorial to aips++ tables.  See Appendix B for a description of
+these files and the conversion process.  When the conversion process
+has completed the glish prompt will return.
 
 AIPS++ without the example files and scripts can be started with simply
 
@@ -138,8 +141,8 @@ may need to be very explicit about type.
 	+  -  *  /  %  ^
 \end{verbatim}
 
-where \% is the modulus operator that converts its operand values to integer
-and returns an integer result, and \^ is the exponentiation operator with
+where \verb!%! is the modulus operator that converts its operand values to integer
+and returns an integer result, and \verb!^! is the exponentiation operator with
 floating point arguments and result.
 
 \begin{verbatim}
@@ -301,7 +304,7 @@ In this case, there are 33 spectra of 1024 channels each.
     Back to our 'data' vector, rather than generate an index vector it is
 more efficient to create a boolean vector with the same number of elements
 as the 'data' vector and use it as an element mask.  For example, to get
-all of the 'data' values for receiver 1 with the calibration noise "on" get
+all of the 'data' values for receiver 1 with the calibration noise ``on'' get
 the RECEIVER\_ID and CAL columns.
 
 \begin{verbatim}
@@ -343,7 +346,7 @@ are
 
 which are less than, greater than, less than or equal to, greater than or
 equal to, equal to, and not equal to, respectively.  The boolean operators
-are "and", "or", and "not".
+are ``and'', ``or'', and ``not''.
 
 \begin{verbatim}
 	&  |  !
@@ -365,18 +368,18 @@ data column get one more column, 'Time', from the table and plot the two
 data vectors against it.
 
 \begin{verbatim}
-	- time := t1.getcol('Time')
-	- time -:= as_integer(time)		# remove day numbers
+	- times := t1.getcol('Time')
+	- times -:= as_integer(times)		# remove day numbers
 	- clear()				# clear the plot screen
-	- plotxy(time[1:32], data[1:32], 'All data')
-	- sometimes := (time[1:32])[mask[1:32]]
-	- plotxy(sometimes, data_cal_1[sometimes::shape], 'Selected data');
+	- plotxy(times[1:32], data[1:32], 'All data')
+	- sometimes := (times[1:32])[mask[1:32]]
+	- plotxy(sometimes, data_cal_1[length(sometimes)], 'Selected data');
 \end{verbatim}
 
 The second line above illustrates one of the combined arithmetic and
 assignment operators ( +:= -:= *:= /:= \%:= \^:= \&:= |:= ) that are also
 found in C.  The assignment of 'sometimes' is a combined use of vector
-ranges and a mask.  In a 1-D array data::shape == length(data).
+ranges and a mask.
 
     If we assume that the receiver 1 noise calibration intensity is 1.4
 Kelvins, we can plot a calibrated scan with the additional commands
@@ -391,12 +394,14 @@ Kelvins, we can plot a calibrated scan with the additional commands
 
 You should see four scans through a radio source placed end to end.  These
 are actually four separate scans in the same table that were taken with a
-cross pointing scan procedure on the 140-foot.
+cross pointing scan procedure on the 140-foot.  Note that the \verb!+!
+on the third line in the previous example is the glish prompt
+and not an indication that you should type the plus character.
 
     All of the other column names in this table may be listed with
 
 \begin{verbatim}
-	- columnnames(t1)
+	- t1.colnames(t1)
 \end{verbatim}
 
     Here are some additional indexing ideas.
@@ -416,7 +421,7 @@ Delete out-of-range values.
 Make a new time vector to match the 'purged' vector.
 
 \begin{verbatim}
-	- ptime := time[data < 700000]
+	- ptime := times[data < 700000]
 \end{verbatim}
 
 Reverse a vector.
@@ -504,7 +509,7 @@ are terminated with semicolons.  This is optional both in a script file and
 at the glish prompt.  If you put two lines of code on the same physical
 line, they must be separated by semicolons.  The function contains an if()
 statement whose argument is normally a boolean expression, but it can be a
-numeric variable.  Zero is false, and everything else is true.  'ploty()'
+numeric variable.  Zero is false, and everything else is true.  'dp.ploty()'
 is an AIPS++ function.  'paste()' is a glish built-in string concatenation
 function. 'fail' is a glish built-in that causes an error return; use
 it like this when you want to signal an error.
@@ -519,7 +524,7 @@ be given in any order, if they are named.  For example, the plot\_scan
 function call above could also have been done with
 
 \begin{verbatim}
-	- plot_scan(scan_no=48, receiver=1, table=t1)
+	- plot_scan(scan_no=48, receiver=1, tab=t1)
 \end{verbatim}
 
 The first arguments may be specified by position, but after an argument is
@@ -528,7 +533,7 @@ named all the rest must be named.
     Variables defined by assignment within functions are local to that
 function.  In other words, when the function execution completes the
 variable goes away.  A variable which doesn't disappear may be created by
-declaring it to be "global".  Likewise, an externally defined variable may
+declaring it to be ``global''.  Likewise, an externally defined variable may
 be assigned a value within a function by declaring that variable to be
 global within the function.  For example, look at the results of the
 execution of two functions defined below.
@@ -545,13 +550,19 @@ execution of two functions defined below.
 	- x
 	10
 	- bill()
+	F
 	- x
 	10
 	- fred()
+	F
 	- x
 	6
 \end{verbatim}
 
+The \verb!F! that appears after you the functions is the glish
+boolean, False.  This is the default return value for functions
+which do not explicitly return a value.
+ 
 An unusual feature of glish is that global variables can be implicitly
 referenced from within a function. However, by default, they become local
 to the function upon assignment, for example,
@@ -602,7 +613,10 @@ reassigning it.  If you make the assignment,
 \end{verbatim}
 
 the function plot\_scan() is gone until you redefine it by including its
-script file again.  As with variables, you can protect a function name and
+script file again.  However, the variable ps still contains the copy
+of plot\_scan that you assigned to it earlier.
+
+As with variables, you can protect a function name and
 its arguments with the 'const' keyword, for example,
 
 \begin{verbatim}
@@ -615,7 +629,7 @@ protect it with 'const'.
 \section{Loops and Conditionals}
 
     Three familiar program flow control statements are available in glish,
-"if/else", "while", and "for" loop statements.  The general syntax for each
+``if/else'', ``while'', and ``for'' loop statements.  The general syntax for each
 is
 
 \begin{verbatim}
@@ -634,7 +648,7 @@ is
 	}
 \end{verbatim}
 
-The "for" loop is a bit different to its equivalents in Fortran and C in
+The ``for'' loop is a bit different to its equivalents in Fortran and C in
 the sense that the running variable doesn't have to make equal steps.  It
 just takes on the values of the elements of the vector in succession,
 whatever those values may be.  A garden variety loop of i from 1 to 10 in
@@ -646,7 +660,7 @@ steps of 1 is
 \end{verbatim}
 
 Every method you can think of for generating a vector can be used to create
-the vector argument in the "for" statement.  Foe example, you can use the
+the vector argument in the ``for'' statement.  Foe example, you can use the
 'seq()' built-in function to step from 3.66 to 7.35 in steps of 0.0123.
 
 \begin{verbatim}
@@ -679,7 +693,13 @@ created all at once or added to piece by piece.
 \end{verbatim}
 
     Record members may be strings, any of the numeric data types
-including arrays, as well as other records.
+including arrays, as well as other records.  In fact, the default
+plotter, dp, and the two tables you have been interacting
+with, t1, and t7, are actually records where the individual members
+are the functions that are operate on that data or client.
+See the \htmladdnormallink{AIPS++ User
+Reference Manual}{../../user/Refman/Refman.html} for a list of
+all currently available modules and functions.
 
     Any glish variable may be assigned attributes.  For example,
 
@@ -744,7 +764,7 @@ illustrated with some examples.
 	- s2[1]
 	This 
 	- s1[2]
-	error, index (= 2) out of range, array length = 1 
+	<fail>: index (= 2) out of range, array length = 1 
 	- s2[2]
 	is 
 \end{verbatim}
@@ -763,8 +783,8 @@ operators.
 	T
 \end{verbatim}
 
-If one of the variables, twenty or three, is had not been a string, an
-error would have bee reported.  When in doubt, use the is\_string() test
+If one of the variables, twenty or three, had not been a string, an
+error would have been reported.  When in doubt, use the is\_string() test
 first.
 
     There are three string manipulation functions, paste(), spaste(), and
@@ -775,7 +795,7 @@ resulting string is returned as a single string instead of being printed.
 	- r := 53.6
 	- sx := paste('R =', r)
 	- sx
-	R = 53.60000000
+	R = 53.6
 \end{verbatim}
 
 The paste() function can take a named argument, sep, to change the
@@ -783,7 +803,7 @@ separator character(s) from the space default.
 
 \begin{verbatim}
 	- paste('R', r, sep=' = ')
-	R = 53.60000000
+	R = 53.6
 \end{verbatim}
 
 The function spaste() is the same as paste() without the separator option.
@@ -817,7 +837,7 @@ precision variables.
 \begin{verbatim}
 	- r := 3; s := 5.6; j := "spa   ces"
 	- print '     show', r, s, j
-	     show 3 5.60000000 spa ces
+	     show 3 5.6 spa ces
 \end{verbatim}
 
     The printed precision of all floating point variables is set by the
@@ -828,7 +848,7 @@ value of a member of the system record variable.
 	- system.print.precision := 3
 	- x := 234.12345
 	- print x
-	234.123
+	234
 	- system.print.precision := old_prec
 \end{verbatim}
 
@@ -838,7 +858,7 @@ variable's print attribute.
 \begin{verbatim}
 	- x::print.precision := 4
 	- print x
-	234.1234
+	234.1
 \end{verbatim}
 
     To avoid the possibility of inadvertently printing a huge array to the
@@ -851,7 +871,11 @@ or
 \end{verbatim}
 
 The effects of print.precision or print.limit may be cancelled by setting
-them to a value less than zero.
+them to a value less than zero.  You may want to set a system print limit
+in your .glishrc file so that you never need to remember to do it to
+avoid inadvertently printout a huge array to the screen.  See
+Appendix A and \htmladdnormallink{Getting Started in AIPS++}{../../user/gettingstarted/gettingstarted.html}
+for more details on the role and uses of your .glishrc file.
 
 
 \section{Clients, Events, and Agents}
@@ -859,16 +883,16 @@ them to a value less than zero.
     From a software designer's point of view, the important part of glish is
 its ability to link to any number of independent processes running anywhere
 on a computer network.  To glish these independent processes are seen as
-"clients", but the client-server distinction is ambiguous since services can
+``clients'', but the client-server distinction is ambiguous since services can
 flow either way.  Communication between glish and its clients is by way of
-"events", rather analogous to hardware interrupts but with the added feature
+``events'', rather analogous to hardware interrupts but with the added feature
 that events can carry any amount of data to or from a client.
 
     As an AIPS++ user you may seldom encounter the use of events in your
 glish programming.  Events are considerably different in concept from usual
-linear scientific programming.  Hence, they are usually wrapped in a more
+linear scientific programming.  Hence, they are usually wrapped in more
 familiar function calls to avoid the need to learn events to use the
-services of of AIPS++ clients.  In fact, in the examples above we have used
+services of AIPS++ clients.  In fact, in the examples above we have used
 a number of clients, including the table browser and the plot client,
 without necessarily being aware of events passing back and forth.  It's not
 that clients and events are all that obscure.  It is just that they are one
@@ -893,13 +917,13 @@ the Tk widgets attached to glish.
 
 The first statement puts a small window frame on the screen.  The second
 puts a button labeled 'plot' in the window.  In the whenever statement,
-"press" is the name of an event sent by the Tk widgets client when the
+``press'' is the name of an event sent by the Tk widgets client when the
 button is pressed with the mouse.  The statements within the whenever block
 are executed when the 'press' event is received.  Try pressing the button.
 
     Clients are started from glish with the client() function.  A more
 complex example than the button client might be a hypothetical FFT engine.
-Let's say that we have an executable file on disk, called "fft\_engine",
+Let's say that we have an executable file on disk, called ``fft\_engine'',
 that performs Fourier transforms and knows how to send and receive glish
 events p.  Start it up with
 
@@ -907,13 +931,13 @@ events p.  Start it up with
 	- fft := client('fft_engine', host='arcturus')
 \end{verbatim}
 
-The host argument is not needed if "fft\_engine" is on the same machine that
+The host argument is not needed if ``fft\_engine'' is on the same machine that
 is running glish.  The variable, fft, is of a special type called an agent.
 
     Suppose that the documentation for fft\_engine says that it recognizes
-an event called "do\_fft", and , when the FFT is done, fft\_engine will send
-an event called "fft\_done" with a new array of transformed data.  First,
-set up to receive the "fft\_done" event and do something with it.  Then send
+an event called ``do\_fft'', and , when the FFT is done, fft\_engine will send
+an event called ``fft\_done'' with a new array of transformed data.  First,
+set up to receive the ``fft\_done'' event and do something with it.  Then send
 the fft request with the data array.  Probably in a script called 'fft.g'
 we'd have
 
@@ -934,7 +958,7 @@ Then from the command line do the following:
 	- await fft->fft_done
 \end{verbatim}
 
-    In this case we have elected to wait for the "fft\_done" event to return
+    In this case we have elected to wait for the ``fft\_done'' event to return
 and be processed, but we could have continued to issue glish statements for
 other purposes.  The FFT result would be returned and plotted whenever the
 fft\_engine client was finished with it.
@@ -961,7 +985,7 @@ program is simply the UNIX command as a string argument to shell().
 \end{verbatim}
 
 The variable, file\_list, is then an array of strings, one string for each
-file name that ends with ".g" in the directory.
+file name that ends with ``.g'' in the directory.
 
     If the program can handle more than one exchange of data by way of UNIX
 pipes, it may be started and communicated to with events.  The startup
@@ -972,14 +996,18 @@ glish code looks something like
 	whenever a->stdout do {
 	    print $value
 	}
+	whenever a->stderr do {
+	    print 'Error !', $value
+        }
 \end{verbatim}
 
 The async=T parameter assignment causes the shell() function to return an
-agent type quantity instead of a string.  The data event that can be sent
-by the client started with the shell command is called "stdout", and \$value
-is always a string.  The two events recognized by a shell client are
-"stdin", whose argument must always be a string, and "EOF".  Hence, an
-event sent to "my\_prog" is, for example,
+agent type quantity instead of a string.  The data events that can be sent
+by the client started with the shell command are called ``stdout'', 
+and ``stderr'' and their \$value is always a string.  The two 
+events recognized by a shell client are
+``stdin'', whose argument must always be a string, and ``EOF''.  Hence, an
+event sent to ``my\_prog'' is, for example,
 
 \begin{verbatim}
 	- send a->stdin('23.876 14.999')
@@ -993,12 +1021,14 @@ file is read.
 
     An example of where an AIPS++ event communication with a client is
 hidden in a function can be seen in the definition of the ploty() that we
-used earlier.
+used earlier (there are some additional features found in the
+actual function that are beyond the scope of this tutorial, this is
+a simplified version).
 
 \begin{verbatim}
-	ploty := function (v_, name_='')
+	ploty := function (v_, name_='', style_='linespoints')
 	{
-	    rec := [data=v_, name=name_];
+	    rec := [data=v_, name=name_, style=style_];
 	    send plot_client->vector (rec)
 	    await plot_client->vector_result;
 	    return $value;
@@ -1008,8 +1038,8 @@ used earlier.
 \section{What now?}
 
 To learn more about Glish, you might wish to read the
-\htmladdnormallink{Glish 2.6 User
-Manual"}{../../reference/Glish/Glish.html}. For information on AIPS++,
+\htmladdnormallink{``Glish 2.6 User
+Manual''}{../../reference/Glish/Glish.html}. For information on AIPS++,
 see \htmladdnormallink{Getting Started in
 AIPS++}{../../user/gettingstarted/gettingstarted.html} and the
 \htmladdnormallink{AIPS++ User Reference
@@ -1024,7 +1054,7 @@ Started in AIPS++}{../../user/gettingstarted/gettingstarted.html}.
     Glish, itself, reads an environment file, called .glishrc, which may be
 used to set a number of system variables.  The most important one is
 system.path.include, which specifies the directories to be searched for
-".g" files that are loaded with the include statement.  Any ".g" file may
+``.g'' files that are loaded with the include statement.  Any ``.g'' file may
 be loaded by giving its full path name, but the system.path.include
 assignment saves a lot of typing.  The contents of a .glishrc file might
 look like
@@ -1056,26 +1086,29 @@ use the following construct to expand the string array:
 \end{verbatim}
 
 Arrays are automatically expanded in an assignment statement when the
-index of the assigned array is greater than its current size.  "len()" is
+index of the assigned array is greater than its current size.  ``len()'' is
 another name for the length() function.
 
     Finally, it's worth a look at the UNIX script that starts the
 glish/AIPS++ combination.  This script is the command given at the
-beginning of this document, for example, "aips++".  To find out where this
+beginning of this document, for example, ``aips++''.  To find out where this
 script is, use the UNIX 'which' command.  Then list the file using the full
 path name.
 
 \begin{verbatim}
 	$ which aips++
-	/aips++/daily/aips++
-	$ more /aips++/daily/aips++
-	glish -l aips++.g
+	/aips++/beta/sun4sol_gnu/bin/aips++
+	$ more /aips++/beta/sun4sol_gnu/bin/aips++
+	[ lines setting up the aips++ environment variables deleted ]
+	exec $BINDIR/glish -l $LIBDIR/aips++path.g -l $LIBDIR/aips++.g
 \end{verbatim}
 
-This simple example contains only one line, the command to start glish and
-automatically include the aips++.g file.  The aips++.g file contains glish
-code which loads the aips++ clients.  The "-l" (minus ell) flag tells glish
-to keep running in interactive mode.  Without this flag the script aips++.g
+The last line executed in this script is the command that starts 
+glish.  It automatically includes two files, \verb!aips++path.g! and
+\verb!aips++.g!.
+Both files contains glish
+code which loads the aips++ clients.  The ``-l'' (minus ell) flag tells glish
+to keep running in interactive mode.  Without this flag the script \verb!aips++.g!
 would be executed and then glish would terminate.
 
     If you want to start glish without any of the AIPS++ functions or
@@ -1102,7 +1135,7 @@ line mode.
     The original FITS files are in the directory
 
 \begin{verbatim}
-	/aips++/daily/code/trial/data/glishtutorial
+	/aips++/beta/code/trial/data/glishtutorial
 \end{verbatim}
 
 which contains the subdirectories
@@ -1130,9 +1163,8 @@ missing.
 was created with this program with the following arguments:
 
 \begin{verbatim}
-	gbtfiller project=/aips++/daily/code/trial/data/glishtutorial \
-	backend=Sp table_name=t7 start_time=03/11/1996,21:06:00 \
-	stop_time=03/11/1996,21:25:00
+	gbtfiller project=/aips++/beta/code/trial/data/glishtutorial \
+	backend=Sp table_name=t7 object=*
 \end{verbatim}
 
 This particular command can also be executed using the command maket7()
@@ -1142,10 +1174,11 @@ included. Similarly, maket1() will make the t1 table.
 The resulting table is actually a directory called t7 with the files
 
 \begin{verbatim}
-	-rw-r--r--   1 rfisher  staff      34842 Mar 20 14:22 table.dat
-	-rw-r--r--   1 rfisher  staff       7966 Mar 20 14:22 table.f0
-	-rw-r--r--   1 rfisher  staff        574 Mar 20 14:22 table.f1
-	-rw-r--r--   1 rfisher  staff     135440 Mar 20 14:22 table.f1i0
+	-rw-r--r--   1 rfisher  staff      12546 Mar 20 14:22 table.dat
+	-rw-r--r--   1 rfisher  staff     308054 Mar 20 14:22 table.f0
+	-rw-r--r--   1 rfisher  staff        562 Mar 20 14:22 table.f1
+	-rw-r--r--   1 rfisher  staff     131345 Mar 20 14:22 table.f1i0
+	-rw-r--r--   1 rfisher  staff         20 Mar 20 14:22 table.info
 \end{verbatim}
 
 There is no limit on the number of scans that can be filled into one table
