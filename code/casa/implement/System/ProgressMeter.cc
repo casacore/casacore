@@ -1,5 +1,5 @@
 //# ProgressMeter.h: Visual indication of a tasks progress.
-//# Copyright (C) 1997,2000,2001
+//# Copyright (C) 1997,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -126,19 +126,25 @@ void ProgressMeter::update(Double value, Bool force)
     if (update_count_p == 1) {
 	force = True;
     }
-
-    if (update_count_p == 1 || force || ((update_count_p%update_every_p) == 0))
+    if((value >= min_p) && (value <= max_p)){
+      if(update_count_p == 1 || force || ((update_count_p%update_every_p)== 0))
 	{
-	    // Do the update if we have a "sink" and a valid id
-	    if (id_p > 0 && update_function_p) {
-		update_function_p(id_p, value);
-	    } else {
-		// If we have more than one progress meter active at once
-		// this might look pretty confusing. We can decide what to
-		// do if that ever actually happens.
-		
-	    }
+	  // Do the update if we have a "sink" and a valid id
+	  if (id_p > 0 && update_function_p) {
+	    update_function_p(id_p, value);
+	  } else {
+	    // If we have more than one progress meter active at once
+	    // this might look pretty confusing. We can decide what to
+	    // do if that ever actually happens.
+	    
+	  }
 	}
+    }
+    else{
+
+      cerr << "WARNING: progress meter trying to update beyond range" << endl;
+      
+    }
 }
 
 Double ProgressMeter::min() const
@@ -150,3 +156,6 @@ Double ProgressMeter::max() const
 {
     return max_p;
 }
+
+
+
