@@ -3,7 +3,7 @@
 # aipsinit.sh: Define the AIPS++ environment for Bourne-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996,1997
+#   Copyright (C) 1992-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -229,6 +229,10 @@
 
 # Define AIPSPATH.
   AIPSPATH="$a_root $a_arch $a_site $a_host"
+ 
+# Update the prompt string.
+  export AIPSPATH
+  cd .
 
 
 # Reset PATH.
@@ -274,5 +278,5 @@
      [ "$a_new" != "" ] && MANPATH="$a_new"
   fi
 
-  export AIPSPATH PATH MANPATH
+  export PATH MANPATH
   unset a_arch a_host a_new a_och a_old a_root a_site a_temp

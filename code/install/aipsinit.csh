@@ -3,7 +3,7 @@
 # aipsinit.csh: Define the AIPS++ environment for C-like shells
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1996
+#   Copyright (C) 1992-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -213,6 +213,9 @@
 
 # Define AIPSPATH.
   setenv AIPSPATH "$a_root $a_arch $a_site $a_host"
+
+# Update the prompt string.
+  cd .
 
 
 # Reset PATH.

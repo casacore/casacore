@@ -3,7 +3,7 @@
 # aipsinit.es: Define the AIPS++ environment for the "es" shell
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1996
+#   Copyright (C) 1994-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -208,6 +208,9 @@
 # Define AIPSPATH.
   a_temp=$a_root $a_arch $a_site $a_host
   AIPSPATH=$^a_temp
+ 
+# Update the prompt string.
+  cd .
 
 
 # Reset PATH.
