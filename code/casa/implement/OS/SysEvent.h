@@ -333,7 +333,7 @@ public:
 
     SysEventTargetInfo &operator=(SysEventTargetInfo &other);
 
-    ~SysEventTargetInfo();
+    virtual ~SysEventTargetInfo();
     Regex &getRegex();
     void *getUserData() { return userData; }
     virtual SysEventTarget &getTarget() {return *tgt;}
