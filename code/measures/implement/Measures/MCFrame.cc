@@ -541,34 +541,22 @@ void MCFrame::create() {
 }
 
 void MCFrame::makeEpoch() {
-  static const MEpoch::Ref REFTDB 
-    = MEpoch::Ref(MEpoch::TDB);
-  static const MEpoch::Ref REFUT1
-    = MEpoch::Ref(MEpoch::UT1);
-  static const MEpoch::Ref REFTT 
-    = MEpoch::Ref(MEpoch::TT);
+  static const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
+  static const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
+  static const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
   delete static_cast<MEpoch::Convert *>(epConvTDB);
   delete static_cast<MEpoch::Convert *>(epConvUT1);
   delete static_cast<MEpoch::Convert *>(epConvTT);
-  epConvTDB = new MEpoch::Convert(*(myf.epoch()),
-				  REFTDB);
-  epConvUT1 = new MEpoch::Convert(*(myf.epoch()),
-				  REFUT1);
-  epConvTT  = new MEpoch::Convert(*(myf.epoch()),
-				  REFTT);
+  epConvTDB = new MEpoch::Convert(*(myf.epoch()), REFTDB);
+  epConvUT1 = new MEpoch::Convert(*(myf.epoch()), REFUT1);
+  epConvTT  = new MEpoch::Convert(*(myf.epoch()), REFTT);
   if (epTDBp) {
-    epConvTDB = new MEpoch::Convert(*(myf.epoch()),
-				    REFTDB);
     delete epTDBp; epTDBp = 0;
   };
   if (epUT1p) {
-    epConvUT1 = new MEpoch::Convert(*(myf.epoch()),
-				    REFUT1);
     delete epUT1p; epUT1p = 0;
   };
   if (epTTp) {
-    epConvTT = new MEpoch::Convert(*(myf.epoch()),
-				   REFTT);
     delete epTTp; epTTp = 0;
   };
  if (epConvLAST) {
