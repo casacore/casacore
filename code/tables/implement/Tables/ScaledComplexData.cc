@@ -1,5 +1,5 @@
 //# ScaledComplexData.cc: Templated virtual column engine to scale a complex table array
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,21 +36,11 @@
 #include <aips/Tables/DataManError.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIter.h>
+#include <aips/Containers/Record.h>
 #include <aips/Utilities/String.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/ValTypeId.h>
 
-
-template<class S, class T>
-ScaledComplexData<S,T>::ScaledComplexData ()
-: BaseMappedArrayEngine<S,T> (),
-  scale_p       (S(1.0, 1.0)),
-  offset_p      (S(0.0, 0.0)),
-  fixedScale_p  (True),
-  fixedOffset_p (True),
-  scaleColumn_p (0),
-  offsetColumn_p(0)
-{}
 
 template<class S, class T>
 ScaledComplexData<S,T>::ScaledComplexData (const String& sourceColumnName,
@@ -110,6 +100,33 @@ ScaledComplexData<S,T>::ScaledComplexData (const ScaledComplexData<S,T>& that)
 {}
 
 template<class S, class T>
+ScaledComplexData<S,T>::ScaledComplexData (const Record& spec)
+: BaseMappedArrayEngine<S,T> (),
+  scale_p       (S(1.0, 1.0)),
+  offset_p      (S(0.0, 0.0)),
+  fixedScale_p  (True),
+  fixedOffset_p (True),
+  scaleColumn_p (0),
+  offsetColumn_p(0)
+{
+    if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
+        setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
+	if (spec.isDefined("SCALE")) {
+	    spec.get ("SCALE", scale_p);
+	} else {
+	  spec.get ("SCALENAME", scaleName_p);
+	  fixedScale_p = False;
+	}
+	if (spec.isDefined("OFFSET")) {
+	    spec.get ("OFFSET", offset_p);
+	} else {
+	  spec.get ("OFFSETNAME", offsetName_p);
+	  fixedOffset_p = False;
+	}
+    }
+}
+
+template<class S, class T>
 ScaledComplexData<S,T>::~ScaledComplexData()
 {
     delete scaleColumn_p;
@@ -144,13 +161,29 @@ String ScaledComplexData<S,T>::className()
 }
 
 template<class S, class T>
-DataManager* ScaledComplexData<S,T>::makeObject (const String&)
+Record ScaledComplexData<S,T>::dataManagerSpec() const
 {
-    DataManager* dmPtr = new ScaledComplexData<S,T>();
-    if (dmPtr == 0) {
-	throw (AllocError ("ScaledComplexData::makeObject()", 1));
+    Record spec;
+    spec.define ("SOURCENAME", sourceName());
+    spec.define ("TARGETNAME", targetName());
+    if (fixedScale_p) {
+        spec.define ("SCALE", scale_p);
+    } else {
+        spec.define ("SCALENAME", scaleName_p);
     }
-    return dmPtr;
+    if (fixedOffset_p) {
+        spec.define ("OFFSET", offset_p);
+    } else {
+        spec.define ("OFFSETNAME", offsetName_p);
+    }
+    return spec;
+}
+
+template<class S, class T>
+DataManager* ScaledComplexData<S,T>::makeObject (const String&,
+						 const Record& spec)
+{
+    return new ScaledComplexData<S,T> (spec);
 }
 template<class S, class T>
 void ScaledComplexData<S,T>::registerClass()
