@@ -1223,7 +1223,37 @@ struct wcsprm *wcs;
    naxis = wcs->naxis;
    for (i = 0; i < naxis; i++) {
       strncpy(ctypei, wcs->ctype[i], 72);
+
+      /* Null fill. */
       ctypei[71] = '\0';
+      for (j = 0; j < 72; j++) {
+         if (ctypei[j] == '\0') {
+            for (k = j+1; k < 72; k++) {
+               ctypei[k] = '\0';
+            }
+            break;
+         }
+      }
+
+      /* Ignore trailing blanks. */
+      for (k = j-1; k >= 0; k--) {
+         if (ctypei[k] != ' ') break;
+         ctypei[k] = '\0';
+      }
+
+      /* Do alias translation for AIPS spectral types. */
+      if (ctypei[4] == '-') {
+         if (strcmp(ctypei+5, "LSR") == 0 ||
+             strcmp(ctypei+5, "HEL") == 0 ||
+             strcmp(ctypei+5, "OBS") == 0) {
+            if (strncmp(ctypei, "FREQ", 4) == 0 ||
+                strncmp(ctypei, "VELO", 4) == 0) {
+               strcpy(ctypei+4, "    ");
+            } else if (strncmp(ctypei, "FELO", 4) == 0) {
+               strcpy(ctypei, "VOPT-F2W");
+            }
+         }
+      }
 
       if (ctypei[4] != '-') {
          if (strcmp(ctypei, "CUBEFACE") == 0) {
