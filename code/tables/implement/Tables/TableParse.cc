@@ -552,9 +552,7 @@ void TableParseSelect::doSort (PtrBlock<TableParseSort*>* sortList)
     }
     uInt nrrow = table.nrow();
     Vector<uInt> rownrs (nrrow);
-    uInt* rows = rownrs.getStorage (deleteIt);
-    sort.sort (nrrow, rows);
-    rownrs.putStorage (rows, deleteIt);
+    sort.sort (rownrs, nrrow);
     for (i=0; i<nrkey; i++) {
 	const TableParseSort& key = *(*sortList)[i];
 	switch (key.node().getColumnDataType()) {

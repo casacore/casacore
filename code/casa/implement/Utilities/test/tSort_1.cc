@@ -1,5 +1,5 @@
-//# tSort_1.cc: This program tests the speed of the Sort class
-//# Copyright (C) 1993,1994,1995,1996
+//# tSort_1.cc: This program tests the performance of the Sort class
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Utilities/Sort.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/OS/Timer.h>
 #include <strstream.h>
 
@@ -221,6 +222,7 @@ Bool sortall (Int* arr, uInt nr, uInt type)
 	qsort ((char*)arr, nr, sizeof(Int), ObjCompare<Int>::compare);
 	tim.show();
     }
+    return success;
 }
 
 Bool sortarr (Int* arr, uInt nr, int opt)
@@ -228,22 +230,21 @@ Bool sortarr (Int* arr, uInt nr, int opt)
     Bool success = True;
     Sort sort;
     sort.sortKey (arr,TpInt);
-    uInt* ptr = 0;
+    Vector<uInt> ptr;
     Timer tim;
-    sort.sort (nr,ptr,opt);
+    sort.sort (ptr,nr,opt);
     tim.show();
     for (Int i=1; i<nr; i++) {
-	if (arr[ptr[i]] < arr[ptr[i-1]]) {
-	    cout << "Out of order " <<arr[ptr[i]] << "," <<arr[ptr[i-1]]<<endl;
+	if (arr[ptr(i)] < arr[ptr(i-1)]) {
+	    cout << "Out of order " <<arr[ptr(i)] << "," <<arr[ptr(i-1)]<<endl;
 	    success = False;
 	    break;
 	}
-	if (arr[ptr[i]] == arr[ptr[i-1]]  &&  ptr[i] <= ptr[i-1]) {
-	    cout << "not stable " << ptr[i] << "<=" << ptr[i-1] << endl;
+	if (arr[ptr(i)] == arr[ptr(i-1)]  &&  ptr(i) <= ptr(i-1)) {
+	    cout << "not stable " << ptr(i) << "<=" << ptr(i-1) << endl;
 	    success = False;
 	    break;
 	}
     }
-    delete [] ptr;
     return success;
 }

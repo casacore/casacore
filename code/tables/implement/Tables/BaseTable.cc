@@ -380,7 +380,7 @@ Bool BaseTable::rowOrder() const
     { return True; }
 
 //# By the default the table cannot return the storage of rownrs.
-uInt* BaseTable::rowStorage()
+Vector<uInt>* BaseTable::rowStorage()
 {
     throw (TableInvOper ("rowStorage() only possible for RefTable"));
     return 0;
@@ -432,9 +432,11 @@ BaseTable* BaseTable::doSort (PtrBlock<BaseColumn*>& sortCol,
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
     //# Then delete possible allocated data blocks.
-    uInt* rows = resultTable->rowStorage();      // rownrs in reference table
-    sortobj.sort (nrrow, rows, option);
+    Vector<uInt>& rows = *(resultTable->rowStorage());
+    //# Note that nrrow can change in case Sort::NoDuplicates was given.
+    nrrow = sortobj.sort (rows, nrrow, option);
     adjustRownrs (nrrow, rows, False);
+    resultTable->setNrrow (nrrow);
     for (i=0; i<nrkey; i++) {
 	sortCol[i]->freeSortKey (dataSave[i]);
     }
@@ -452,7 +454,7 @@ RefTable* BaseTable::makeRefTable (Bool rowOrder, uInt initialNrrow)
 
 
 //# No rownrs have to be adjusted and they are by default in ascending order.
-Bool BaseTable::adjustRownrs (uInt, uInt*, Bool) const
+Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
     { return True; }
 
 // Do the row selection.
@@ -484,7 +486,7 @@ BaseTable* BaseTable::select (const TableExprNode& node)
 	    resultTable->addRownr (i);                  // get rownr
 	}
     }
-    adjustRownrs (resultTable->nrow(), resultTable->rowStorage(), False);
+    adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);
     return resultTable;
 }
 
@@ -679,24 +681,15 @@ void BaseTable::logicCheck (BaseTable* that)
 uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 {
     allsw = False;
-    inx   = rowStorage();
+    inx = RefTable::getStorage (*rowStorage());
     uInt nr = nrow();
     if (!rowOrder()) {
 	//# rows are not in order, so sort them.
-	uInt* ptr1 = new uInt[nr];          // temp array of indices
-	uInt* ptr2 = new uInt[nr];          // array for sorted row nrs
-	if (ptr1 == 0  ||  ptr2 == 0) {
-	    delete ptr1;                    // delete 1st array if allocated
-	    throw (AllocError ("Sort rownrs", nr));
-	}
-	Sort sort;
-	sort.sortKey (inx, TpUInt);         // sort the rownrs in inx
-	sort.sort (nr, ptr1);               // and get indices in ptr1
-	for (uInt i=0; i<nr; i++) {
-	    ptr2[i] = inx[ptr1[i]];         // now store rownrs in ptr2
-	}
-	delete [] ptr1;
-	inx = ptr2;                         // set inx to sorted rownrs
+	//# They have to be copied, because the original should not be changed.
+	uInt* inxcp = new uInt[nr];
+	objcopy (inxcp, inx, nr);
+	GenSort<uInt>::sort (inxcp, nr);
+	inx = inxcp;
 	allsw = True;
     }
     return nr;
@@ -705,14 +698,14 @@ uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 
 BaseTableIterator* BaseTable::makeIterator (const Block<String>& names,
 				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
-				      const Block<Int>& order)
+				      const Block<Int>& order, int option)
 {
     if (names.nelements() != order.nelements()
     ||  names.nelements() != cmpFunc.nelements()) {
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));
     }
     BaseTableIterator* bti = new BaseTableIterator (this, names,
-						    cmpFunc, order);
+						    cmpFunc, order, option);
     if (bti == 0) {
 	throw (AllocError ("BaseTable::makeIterator", 1));
     }

@@ -28,6 +28,7 @@
 //# Includes
 
 #include <aips/Utilities/Sort.h>
+#include <aips/Arrays/Vector.h>
 
 // This program test the class Sort.
 // It sorts some data in ascending and/or descending order.
@@ -55,55 +56,44 @@ void sortit (int opt)
     arts[5].as = "xyzabc";
 
     Sort sort;
-    sort.sortKey (arr,TpInt);              // sort arr
-    uInt* ptr;
-    ptr = 0;
-    uInt nr = sort.sort (10,ptr,opt);      // get indices back in ptr
+    sort.sortKey (arr,TpInt);                 // sort arr
+    Vector<uInt> inxvec;
+    uInt nr = sort.sort (inxvec,10,opt);      // get indices back in inxvec
     for (i=0; i<nr; i++) {
-	cout << " " << arr[ptr[i]];
+	cout << " " << arr[inxvec(i)];
     }
     cout << endl;
 
     Sort sort2;
     sort2.sortKey (arr,TpInt,0,Sort::Descending);
-    nr = sort2.sort (10,ptr,opt);          // same, but now descending
+    nr = sort2.sort (inxvec,10,opt);          // same, but now descending
     for (i=0; i<nr; i++) {
-	cout << " " << arr[ptr[i]];
+	cout << " " << arr[inxvec(i)];
     }
     cout << endl;
 
     Sort sort3(ar2,sizeof(Int));
     sort3.sortKey (0,TpInt,Sort::Ascending);
-    nr = sort3.sort (10,ptr,opt);          // same, but now with original
-    for (i=0; i<nr; i++) {                 // array in descending order
-	cout << " " << ar2[ptr[i]];
+    nr = sort3.sort (inxvec,10,opt);          // same, but now with original
+    for (i=0; i<nr; i++) {                    // array in descending order
+	cout << " " << ar2[inxvec(i)];
     }
     cout << endl;
 
     Sort sort4;
     sort4.sortKey (ar2,TpInt,0,Sort::Descending);
-    nr = sort4.sort (10,ptr,opt);
+    nr = sort4.sort (inxvec,10,opt);
     for (i=0; i<nr; i++) {
-	cout << " " << ar2[ptr[i]];
-    }
-    cout << endl;
-
-    Sort sort5;
-    sort5.sortKey (ar2,TpInt,0,Sort::Ascending);
-    uInt* ptr2 = 0;
-    ptr[7] = ptr[9];
-    nr = sort5.sort (8,ptr,ptr2,opt);      // sort the result of the
-    for (i=0; i<nr; i++) {                 // previous sort
-	cout << " " << ar2[ptr2[i]];
+	cout << " " << ar2[inxvec(i)];
     }
     cout << endl;
 
     Sort sort6(arr,sizeof(Int));
     sort6.sortKey (ard,TpDouble);
     sort6.sortKey (0,TpInt,Sort::Descending);
-    nr = sort6.sort (10,ptr,opt);          // sort on 2 keys
+    nr = sort6.sort (inxvec,10,opt);          // sort on 2 keys
     for (i=0; i<nr; i++) {
-	cout << " " << ard[ptr[i]] << "," << arr[ptr[i]];
+	cout << " " << ard[inxvec(i)] << "," << arr[inxvec(i)];
     }
     cout << endl;
 
@@ -112,47 +102,44 @@ void sortit (int opt)
     uInt distas = (char*)&arts[0].as - (char*)arts;
     sort7.sortKey (distad, TpDouble);
     sort7.sortKey (distas, TpString,Sort::Descending);
-    nr = sort7.sort (10,ptr,opt);          // sort a struct, where the data
-    for (i=0; i<nr; i++) {                 // are combined in one record
-	cout << " " << arts[ptr[i]].ad << "," << arts[ptr[i]].as;
+    nr = sort7.sort (inxvec,10,opt);          // sort a struct, where the data
+    for (i=0; i<nr; i++) {                    // are combined in one record
+	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
     cout << endl;
-    nr = sort7.sort (10,ptr,opt|Sort::NoDuplicates);     // unique keys
+    nr = sort7.sort (inxvec,10,opt|Sort::NoDuplicates);     // unique keys
     for (i=0; i<nr; i++) {
-	cout << " " << arts[ptr[i]].ad << "," << arts[ptr[i]].as;
+	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
     cout << endl;
-    delete [] ptr;
-    delete [] ptr2;
 }
 
 void sortdo (int options, Sort::Order order, Int* data, uInt nrdata)
 {
     Sort sort;
     sort.sortKey (data, TpInt, 0, order);
-    uInt* inx = 0;
-    uInt nr = sort.sort (nrdata, inx, options);
+    Vector<uInt> inxvec;
+    uInt nr = sort.sort (inxvec, nrdata, options);
     for (uInt i=1; i<nr; i++) {
 	if (order == Sort::Ascending) {
-	    if (data[inx[i]] < data[inx[i-1]]) {
+	    if (data[inxvec(i)] < data[inxvec(i-1)]) {
 		cout << "Order error on index " << i << endl;
 	    }
 	}else{
-	    if (data[inx[i]] > data[inx[i-1]]) {
+	    if (data[inxvec(i)] > data[inxvec(i-1)]) {
 		cout << "Order error on index " << i << endl;
 	    }
 	}
-	if (data[inx[i]] == data[inx[i-1]]) {
+	if (data[inxvec(i)] == data[inxvec(i-1)]) {
 	    if ((options & Sort::NoDuplicates) != 0) {
 		cout << "Duplicate value on index" << i << endl;
 	    }else{
-		if (inx[i] < inx[i-1]) {
+		if (inxvec(i) < inxvec(i-1)) {
 		    cout << "Equal order error on index " << i << endl;
 		}
 	    }
 	}
     }
-    delete [] inx;
 }
 
 void sortall (int options, Sort::Order order)
