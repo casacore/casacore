@@ -477,7 +477,12 @@ void MSIter::setFeedInfo()
 	if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)
 	    &&(feedId(i)==0)) {
 	  Int iAnt=antennaId(i);
-	  CJones_p(iAnt)=Matrix<Complex>(msc_p->feed().polResponse()(i));
+	  if (maxNumReceptors==1) {
+	    CJones_p(iAnt)=SquareMatrix<Complex,2>
+	      ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
+	  } else {
+	    CJones_p(iAnt)=Matrix<Complex>(msc_p->feed().polResponse()(i));
+	  }
 	  receptorAngle_p.column(iAnt)=
 	    Vector<Double>(msc_p->feed().receptorAngle()(i));
 	}
