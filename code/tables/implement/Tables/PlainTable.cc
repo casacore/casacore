@@ -304,7 +304,13 @@ const TableLock& PlainTable::lockOptions() const
 }
 void PlainTable::mergeLock (const TableLock& lockOptions)
 {
+    Bool isPerm = lockPtr_p->isPermanent();
     lockPtr_p->merge (lockOptions);
+    // Acquire if needed a permanent lock.
+    if (lockPtr_p->isPermanent()  &&  !isPerm) {
+        lockPtr_p->makeLock (name_p, False,
+			isWritable()  ?  FileLocker::Write : FileLocker::Read);
+    }
 }
 Bool PlainTable::hasLock (FileLocker::LockType type) const
 {
