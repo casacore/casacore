@@ -1,5 +1,5 @@
 //# Vector.cc: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -200,40 +200,26 @@ template<class T> Vector<T> &Vector<T>::operator=(const Vector<T> &other)
     if (Conform == False && length[0] != 0)
 	validateConformance(other);  // We can't overwrite, so throw exception
 
-
-    Int i;
-    if (Conform == True) { // copy in place
-	Int indexOffset = other.start[0] - start[0];
-	for(i=start[0]; i < start[0] + length[0]; i++)
-	    (*this)(i) = other(i + indexOffset);
-    } else {
+    if (Conform != True) { // copy in place
         data = new Block<T>(other.length[0]);
         begin = data->storage();
         start = other.start;
         length = other.length;
 	nels = other.nels;
 	originalLength = length;
-        inc[0] = 1; // flatten
-	Int indexOffset = other.start[0] - start[0];
-	for(i=start[0]; i < start[0] + length[0]; i++)
-	    (*this)(i) = other(i + indexOffset);
     }
+    objcopy(begin, other.begin, nels, inc[0], other.inc[0]);
     return *this;
 }
 
 // Copy a vector to a block. 
 template<class T> void Vector<T>::toBlock(Block<T> & other) const
 {
-  DebugAssert(ok(), ArrayError);
-  uInt vec_length = nelements();
-// Make sure the block has enough space, but there is no need to copy elements
-  other.resize(vec_length, True, False);
-// Do not assume that the input Vector starts at zero.
-  Int j;
-  (*this).origin(j);
-// Now copy the data across
-  for (uInt i = 0; i < vec_length; )
-    other[i++] = (*this)(j++);
+    DebugAssert(ok(), ArrayError);
+    uInt vec_length = nelements();
+    // Make sure the block has enough space, but there is no need to copy elements
+    other.resize(vec_length, True, False);
+    objcopy(other.storage(), begin, nels, 1U, inc[0]);
 }
 
 template<class T> Array<T> &Vector<T>::operator=(const Array<T> &a)
