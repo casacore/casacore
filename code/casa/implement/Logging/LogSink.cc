@@ -220,6 +220,13 @@ Bool LogSink::postLocally(const LogMessage &message)
     }
 }
 
+void LogSink::writeLocally (Double time, const String& message,
+			    const String& priority, const String& location,
+			    const String& objectID)
+{
+    local_sink_p->writeLocally (time, message, priority, location, objectID);
+}
+
 void LogSink::flush()
 {
     if (!local_sink_p.null()) {

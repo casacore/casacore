@@ -201,6 +201,12 @@ public:
   virtual String getObjectID (uInt i) const;
   // </group>
 
+  // Write a message (usually from another logsink) into the local one.
+  // The default implementation does nothing.
+  virtual void writeLocally (Double time, const String& message,
+			     const String& priority, const String& location,
+			     const String& objectID);
+
   //# Bring out of LogSinkInterface only for documentation purposes
   // Get or set the filter of this particular <src>LogSink</src>.
   // <group>
