@@ -427,9 +427,11 @@ protected:
 //
 {
    pixelIn(iMom.momentAxis_p) = momentPixel;
+// 
+// Should really check the result is True, but for speed ...
+//
    iMom.pInImage_p->coordinates().toWorld(worldOut, pixelIn);
-   Int worldAxis = iMom.pInImage_p->coordinates().pixelAxisToWorldAxis(iMom.momentAxis_p);
-   return worldOut(worldAxis);
+   return worldOut(iMom.worldMomentAxis_p);
 };
 
 
