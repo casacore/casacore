@@ -1979,3 +1979,4 @@
 08 088 src mv trial/scripts/displaylistbox.g trial/implement/guiutils/displaylistbox.g
 08 088 src mv trial/scripts/displaytext.g trial/implement/guiutils/displaytext.g
 08 095 src mv trial/implement/guiutils/aipsbroswer.g trial/implement/guiutils/aipsbrowser.g
+08 118 src mv doc/notes/206.dir/aips++_gbt.tex doc/notes/206.dir/aips2_gbt.tex
