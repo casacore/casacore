@@ -347,26 +347,6 @@ private:
     Bool canDoToMix_p;
     String canDoToMixErrorMsg_p;
 
-    // Temporaries
-    mutable Vector<Double> world_tmp_p;
-    mutable Vector<Double> in_tmp_p;
-    mutable Vector<Double> out_tmp_p;
-    mutable String errorMsg_p;
-    mutable int mixpix_p;
-    mutable int mixcel_p;
-    mutable double mix_vspan_p[2];
-    mutable double mix_world_p[2];
-    mutable double mix_pixcrd_p[2];
-    mutable double mix_imgcrd_p[2];
-    mutable double mix_vstep_p;
-    mutable int mix_viter_p;
-    mutable double d1_phi_p, d2_phi_p, mix_phi_p;
-    mutable double d1_theta_p, d2_theta_p, mix_theta_p;
-    mutable double d1_lng_p, d2_lng_p;
-    mutable double d1_lat_p, d2_lat_p;
-    mutable double d1_x_p, d2_x_p;
-    mutable double d1_y_p, d2_y_p;
-
     // Interconvert between degrees and the current angular unit
     // <group>
     void toDegrees(Vector<Double> &other) const;
