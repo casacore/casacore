@@ -192,7 +192,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       Bool firstTime = True;
       T minVal = T();
       LatticeExpr<T> latExpr(pExpr_p);
-      RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<T> iter(latExpr);
       if (! latExpr.isMasked()) {
 	 while (! iter.atEnd()) {
 	    T minv = min(iter.cursor());
@@ -203,7 +203,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<T> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Bool delMask, delData;
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
@@ -238,7 +238,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       Bool firstTime = True;
       T maxVal = T();
       LatticeExpr<T> latExpr(pExpr_p);
-      RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<T> iter(latExpr);
       if (! latExpr.isMasked()) {
 	 while (! iter.atEnd()) {
 	    T maxv = max(iter.cursor());
@@ -249,7 +249,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<T> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Bool delMask, delData;
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
@@ -284,7 +284,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       NumericTraits<T>::PrecisionType sumVal = 0;
       Int nrVal = 0;
       LatticeExpr<T> latExpr(pExpr_p);
-      RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<T> iter(latExpr);
       Bool delData, delMask;
 
 // Do the sum ourselves to avoid round off
@@ -302,7 +302,8 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+	cout << "mean masked" << endl;
+////	 RO_LatticeIterator<T> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<T>& array = iter.cursor();
@@ -333,7 +334,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
       }
       NumericTraits<T>::PrecisionType sumVal = 0;
       LatticeExpr<T> latExpr(pExpr_p);
-      RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
+      RO_LatticeIterator<T> iter(latExpr);
       Bool delData, delMask;
 
 // Do the sum ourselves to avoid round off
@@ -350,7 +351,7 @@ LELScalar<T> LELFunction1D<T>::getScalar() const
 	    iter++;
 	 }
       } else {
-////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+////	 RO_LatticeIterator<T> maskiter(latExpr.pixelMask(), latExpr.niceCursorShape());
 	 Array<Bool> mask;
 	 while (! iter.atEnd()) {
 	    const Array<T>& array = iter.cursor();
