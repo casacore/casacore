@@ -48,7 +48,7 @@ typedef Quantum<Double> gpp_bug_1;
 
 template <class Qtype>
 Quantum<Qtype>::Quantum() :
-    QBase() { qVal = (Qtype)0;}
+    QBase() { qVal = Qtype();}
 
 template <class Qtype>
 Quantum<Qtype>::Quantum(const Quantum<Qtype> &other) :
