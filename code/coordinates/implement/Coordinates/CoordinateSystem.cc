@@ -779,9 +779,17 @@ Bool CoordinateSystem::toWorld(Vector<Double> &world,
 	// cout << "world pixel map: " << *(world_maps_p[i]) << " " <<
 	// *(pixel_maps_p[i]) << endl;
 	// cout << "toWorld # " << i << "pix=" << pixel_tmps_p[i]->ac() << endl;
-	ok = ToBool(ok && coordinates_p[i]->toWorld(
-			    *(This->world_tmps_p[i]), *(pixel_tmps_p[i])));
+	Bool oldok = ok;
+	ok = coordinates_p[i]->toWorld(
+		       *(This->world_tmps_p[i]), *(pixel_tmps_p[i]));
 	// cout << "toWorld # " << i << "wld=" << world_tmps_p[i]->ac() << endl;
+	if (!ok) {
+	    // Transfer the error message. Note that if there is more than
+	    // one error message this transfers the last one. I suppose this
+	    // is as good as any.
+	    set_error(coordinates_p[i]->errorMessage());
+	}
+	ok = ToBool(ok && oldok);
 	const uInt nwa = world_maps_p[i]->nelements();
 	for (j=0; j<nwa; j++) {
 	    Int where = world_maps_p[i]->operator[](j);
@@ -824,9 +832,10 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 
     Bool ok = True;
     for (uInt i=0; i<nc; i++) {
-	// For each coordinate, putt the appropriate world or replacement values in the
-	// world temporary, call the coordinates own toPixel, and then copy the output
-	// values from the pixel temporary to the pixel coordinate
+	// For each coordinate, putt the appropriate world or replacement values
+	// in the world temporary, call the coordinates own toPixel, and then
+	// copy the output values from the pixel temporary to the pixel
+	// coordinate
 	const uInt nwra = world_maps_p[i]->nelements();
 	for (uInt j=0; j<nwra; j++) {
 	    Int where = world_maps_p[i]->operator[](j);
@@ -837,8 +846,16 @@ Bool CoordinateSystem::toPixel(Vector<Double> &pixel,
 		    world_replacement_values_p[i]->operator()(j);
 	    }
 	}
-	ok = ToBool(ok && coordinates_p[i]->toPixel(
-			    *(This->pixel_tmps_p[i]), *(world_tmps_p[i])));
+	Bool oldok = ok;
+	ok = coordinates_p[i]->toPixel(
+			    *(This->pixel_tmps_p[i]), *(world_tmps_p[i]));
+	if (!ok) {
+	    // Transfer the error message. Note that if there is more than
+	    // one error message this transfers the last one. I suppose this
+	    // is as good as any.
+	    set_error(coordinates_p[i]->errorMessage());
+	}
+	ok = ToBool(ok && oldok);
 	const uInt npxa = pixel_maps_p[i]->nelements();
 	for (j=0; j<npxa; j++) {
 	    Int where = pixel_maps_p[i]->operator[](j);
