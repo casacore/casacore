@@ -167,10 +167,20 @@ public:
 
     // Functions to interconvert between an ObsInfo and FITS keywords
     // (converted to a Record).  For the pointing center, the FITS
-    // keywords OBSRA and OBSDEC are used.  
+    // keywords OBSRA and OBSDEC are used.    Failure of <src>fromFITS</src>
+    // should probably not be regarded as fatal as the default ObsInfo
+    // values are viable.  For each item contained
+    // in the ObsInfo, an attempt to decode it from FITS is made.
+    // If any of them fail, False is returned, but it attempts to decode
+    // them all.  For those that fail
+    // an error message is held in <src>error</src> 
+    // in the order telescope (error(0)), observer (error(1)), date
+    // (error(2)), pointing center (error(3)).  <src>error</src> will
+    // be returned of length 0 if the return value is True, else
+    // it will be length 4.
     // <group>
     Bool toFITS(String & error, RecordInterface & outRecord) const;
-    Bool fromFITS(String & error, const RecordInterface & inRecord);
+    Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
     // </group>
 
     // In some circumstances it might be useful to know what the defaults for
