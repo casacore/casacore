@@ -54,7 +54,9 @@ public:
   // <br>If combineSpw=True, all spectral-windows of a frequency group
   // are combined.
   static Bool writeFitsFile(const String& fitsfile, const MeasurementSet& ms,
-			    const String& column, Bool writeSysCal = False,
+			    const String& column, Int startchan=-1, 
+			    Int nchan=-1, Int stepchan=-1, 
+			    Bool writeSysCal = False,
 			    Bool asMultiSource = False, Bool combineSpw=False,
 			    Bool writeStation=False, Double sensitivity = 1.0);
 
@@ -68,6 +70,7 @@ private:
 			       const String& column,
 			       const Block<Int>& spwidMap,
 			       Int nrspw,
+			       Int startchan, Int nchan, Int stepchan,
 			       const Block<Int>& fieldidMap,
 			       Bool asMultiSource,
 			       Bool combineSpw);
