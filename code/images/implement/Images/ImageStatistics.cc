@@ -553,6 +553,7 @@ Bool ImageStatistics<T>::display()
               NumericTraits<T>::PrecisionType tmp = 0.0;
               if (nPts > 1) tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/nPts)) / 
                                   (nPts-1);
+              ord(i,VARIANCE) = tmp;
               if (tmp > 0.0) {
                  ord(i,SIGMA) = sqrt(tmp);
               } else {
@@ -692,6 +693,7 @@ Bool ImageStatistics<T>::getStats(Vector<T>& stats,
    stats(SIGMA) = T(0.0);
    if (n > 1) {
       tmp = (stats(SUMSQ) - (stats(SUM)*stats(SUM)/n)) / (n-1);
+      stats(VARIANCE) = tmp;
       if (tmp > 0.0) stats(SIGMA) = sqrt(tmp);
    }
    stats(RMS) = T(0.0);
@@ -819,6 +821,28 @@ Bool ImageStatistics<T>::getSigma(Array<T>& stats)
    return calculateStatistic(stats, Int(SIGMA));
 }
 
+template <class T>
+Bool ImageStatistics<T>::getVariance(Array<T>& stats)
+// 
+// This function calculates the VARIANCE statistics from the
+// accumulation image
+//
+{
+
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     if (haveLogger_p) os_p << LogIO::SEVERE << endl
+          << "The internal status of class is bad.  You have ignored errors" << endl
+          << "in setting the arguments." << endl << endl << LogIO::POST;
+     return False; 
+   }
+
+// Do it
+
+   return calculateStatistic(stats, Int(VARIANCE));
+}
+
 
 template <class T>
 Bool ImageStatistics<T>::getRms(Array<T>& stats)
@@ -922,6 +946,28 @@ Bool ImageStatistics<T>::calculateStatistic (Array<T>& slice, const Int& ISTAT)
                 tmp = (sumSqIt.vector()(i) -
                    (sumIt.vector()(i)*sumIt.vector()(i)/n)) / (n-1);
                 if (tmp > 0.0) sliceIt.vector()(i) = sqrt(tmp);
+             }
+          }
+          nPtsIt.next();
+          sumIt.next();
+          sumSqIt.next();
+          sliceIt.next();
+       }
+    } else if (ISTAT == VARIANCE) {
+       Array<T> sum;
+       retrieveStorageStatistic (sum, Int(SUM));
+       ReadOnlyVectorIterator<T> sumIt(sum);
+
+       Array<T> sumSq;
+       retrieveStorageStatistic (sumSq, Int(SUMSQ));
+       ReadOnlyVectorIterator<T> sumSqIt(sumSq);
+
+       while (!nPtsIt.pastEnd()) {
+          for (uInt i=0; i<n1; i++) {
+             n = Int(real(nPtsIt.vector()(i))+0.1);
+             if(n > 1) {
+                tmp = (sumSqIt.vector()(i) -
+                   (sumIt.vector()(i)*sumIt.vector()(i)/n)) / (n-1);
              }
           }
           nPtsIt.next();
@@ -1547,6 +1593,7 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 
    const Bool doMean  = ToBool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
    const Bool doSigma = ToBool(ImageUtilities::inVector(Int(SIGMA), statsToPlot_p) != -1);
+   const Bool doVar   = ToBool(ImageUtilities::inVector(Int(VARIANCE), statsToPlot_p) != -1);
    const Bool doRms   = ToBool(ImageUtilities::inVector(Int(RMS), statsToPlot_p) != -1);
    const Bool doSum   = ToBool(ImageUtilities::inVector(Int(SUM), statsToPlot_p) != -1);
    const Bool doSumSq = ToBool(ImageUtilities::inVector(Int(SUMSQ), statsToPlot_p) != -1);
@@ -1650,6 +1697,18 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
       first = False;
       nR++;
    }
+   if (doVar) {
+      minMax(none, yMin, yMax, stats.column(VARIANCE), stats.column(NPTS));
+      if (first) {
+         yRMin = yMin;
+         yRMax = yMax;
+      } else {
+         yRMin = min(yRMin,yMin);
+         yRMax = max(yRMax,yMax);
+      }
+      first = False;
+      nR++;
+   }
    if (doRms) {
       minMax(none, yMin, yMax, stats.column(RMS), stats.column(NPTS));
       if (first) {
@@ -1707,6 +1766,10 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
    if (nR>0) {
       if (doSigma) {
          yRLabel += "Sigma,";
+         nRLabs++;
+      }
+      if (doVar) {
+         yRLabel += "Variance,";
          nRLabs++;
       }
       if (doRms) {
@@ -1816,6 +1879,15 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
          plotter.sci (rCols(i));
 
          multiPlot(plotter, abc, stats.column(SIGMA), stats.column(NPTS));
+      }
+      if (doVar) {
+         if (++ls > 5) ls = 1;
+         plotter.sls(ls);
+
+         rCols(++i) = niceColour (initColours);
+         plotter.sci (rCols(i));
+
+         multiPlot(plotter, abc, stats.column(VARIANCE), stats.column(NPTS));
       }
       if (doRms) {
          if (++ls > 5) ls = 1;

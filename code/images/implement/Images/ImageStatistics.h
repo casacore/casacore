@@ -273,6 +273,7 @@ public:
    Bool getMin (Array<T>&);
    Bool getMax (Array<T>&);
    Bool getMean (Array<T>&);
+   Bool getVariance (Array<T>&);
    Bool getSigma (Array<T>&);
    Bool getRms (Array<T>&);
 // </group>   
