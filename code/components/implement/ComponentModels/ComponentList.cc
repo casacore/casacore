@@ -107,7 +107,7 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
     currentComp = SkyComponent(ComponentType::type(componentName));
     fluxCol.get(i, flux); currentComp.setFlux(flux);
     dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
-    currentComp.setPosition(compDir);
+    currentComp.setDirection(compDir);
     parameters.resize(0);
     parmCol.get(i, parameters); currentComp.setParameters(parameters);
     add(currentComp);
@@ -160,7 +160,7 @@ ComponentList::~ComponentList() {
     for (uInt i = 0; i < nComps; i++) {
       typeCol.put(i, ComponentType::name(component(i).type()));
       component(i).flux(compFlux); fluxCol.put(i, compFlux);
-      component(i).position(compDir);
+      component(i).direction(compDir);
       if (compDir.getRef().getType() != refNum)
 	compDir = MDirection::Convert(compDir, refNum)();
       dirn = compDir.getAngle().getValue(angleUnits);
@@ -185,14 +185,14 @@ ComponentList & ComponentList::operator=(const ComponentList & other){
 };
 
 void ComponentList::sample(Vector<Double> & result, 
-			   const MDirection & samplePos,
+			   const MDirection & sampleDir,
 			   const MVAngle & pixelSize) const {
   AlwaysAssert(result.nelements() == 4, AipsError);
   DebugAssert(ok(), AipsError);
   result = 0.0;
   Vector<Double> compResult(4);
   for (uInt i = 0; i < nelements(); i++) {
-    component(i).sample(compResult, samplePos, pixelSize);
+    component(i).sample(compResult, sampleDir, pixelSize);
     result.ac() += compResult.ac();
   }
 }
