@@ -77,8 +77,8 @@ class PixelRegion;
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(0.0);
-// ArrayLattice<Double> y(shape); y.set(1.0);
+// ArrayLattice<Float> x(shape); x.set(1.0);
+// ArrayLattice<Double> y(shape); 
 // y.copyData(x);                 // y = x;
 // </srcblock>
 // The LELConvert class is embedded in the tree at construction time
