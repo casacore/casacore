@@ -88,7 +88,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::J2000_JMEAN,
 	MCDirection::J2000_JMEAN,
 	MCDirection::J2000_GAL,
-	MCDirection::J2000_JNAT},
+	MCDirection::J2000_JNAT,
+	MCDirection::J2000_JNAT },
       { MCDirection::JMEAN_J2000, 
 	MCDirection::N_Routes,    
 	MCDirection::JMEAN_JTRUE,
@@ -104,6 +105,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JMEAN_J2000,
 	MCDirection::JMEAN_MECLIP,
 	MCDirection::JMEAN_JTRUE,
+	MCDirection::JMEAN_J2000,
 	MCDirection::JMEAN_J2000,
 	MCDirection::JMEAN_J2000 },
       { MCDirection::JTRUE_JMEAN, 
@@ -122,6 +124,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JTRUE_JMEAN,
 	MCDirection::JTRUE_TECLIP,
 	MCDirection::JTRUE_JMEAN,
+	MCDirection::JTRUE_JMEAN,
 	MCDirection::JTRUE_JMEAN },
       { MCDirection::APP_JNAT,  
 	MCDirection::APP_JNAT,  
@@ -131,15 +134,16 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::APP_B1950,  
 	MCDirection::APP_B1950,
 	MCDirection::APP_JNAT,
-	MCDirection::APP_HADEC, 
-	MCDirection::APP_HADEC, 
-	MCDirection::APP_HADEC,
+	MCDirection::APP_TOPO, 
+	MCDirection::APP_TOPO, 
+	MCDirection::APP_TOPO,
 	MCDirection::APP_JNAT,
 	MCDirection::APP_JNAT,
 	MCDirection::APP_JNAT,
 	MCDirection::APP_JNAT,
 	MCDirection::APP_JNAT,
-	MCDirection::APP_HADEC},
+	MCDirection::APP_TOPO,
+	MCDirection::APP_TOPO },
       { MCDirection::B1950_J2000, 
 	MCDirection::B1950_J2000, 
 	MCDirection::B1950_J2000, 
@@ -156,7 +160,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::B1950_J2000,
 	MCDirection::B1950_J2000,
 	MCDirection::B1950_GAL,
-	MCDirection::B1950_APP},
+	MCDirection::B1950_APP,
+	MCDirection::B1950_APP },
       { MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950,
@@ -168,6 +173,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
 	MCDirection::BMEAN_B1950, 
+	MCDirection::BMEAN_B1950,
 	MCDirection::BMEAN_B1950,
 	MCDirection::BMEAN_B1950,
 	MCDirection::BMEAN_B1950,
@@ -190,8 +196,9 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::BTRUE_BMEAN,
 	MCDirection::BTRUE_BMEAN,
 	MCDirection::BTRUE_BMEAN,
+ 	MCDirection::BTRUE_BMEAN,
  	MCDirection::BTRUE_BMEAN },
-     { MCDirection::GAL_J2000,   
+      { MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000,   
 	MCDirection::GAL_J2000, 
 	MCDirection::GAL_J2000,   
@@ -207,24 +214,26 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::GAL_J2000,
 	MCDirection::GAL_J2000,
 	MCDirection::GAL_SUPERGAL,
-	MCDirection::GAL_J2000},
-      { MCDirection::HADEC_APP,   
-	MCDirection::HADEC_APP,   
-	MCDirection::HADEC_APP, 
-	MCDirection::HADEC_APP,   
-	MCDirection::HADEC_APP,   
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
+	MCDirection::GAL_J2000,
+	MCDirection::GAL_J2000 },
+      { MCDirection::HADEC_TOPO,   
+	MCDirection::HADEC_TOPO,   
+	MCDirection::HADEC_TOPO, 
+	MCDirection::HADEC_TOPO,   
+	MCDirection::HADEC_TOPO,   
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
 	MCDirection::N_Routes,    
 	MCDirection::HADEC_AZEL,
 	MCDirection::HADEC_AZEL,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_APP,
-	MCDirection::HADEC_ITRF },
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_TOPO,
+	MCDirection::HADEC_ITRF,
+	MCDirection::HADEC_TOPO },
       { MCDirection::AZEL_HADEC,  
 	MCDirection::AZEL_HADEC,  
 	MCDirection::AZEL_HADEC,  
@@ -241,6 +250,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::AZEL_HADEC,
 	MCDirection::AZEL_HADEC,
 	MCDirection::AZEL_HADEC,  
+	MCDirection::AZEL_HADEC,  
 	MCDirection::AZEL_HADEC },  
       { MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
@@ -253,6 +263,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::N_Routes,
+	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
 	MCDirection::AZELSW_AZEL,
@@ -275,7 +286,8 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::JNAT_J2000,
 	MCDirection::JNAT_J2000,
 	MCDirection::JNAT_J2000,
-	MCDirection::JNAT_APP},
+	MCDirection::JNAT_APP,
+	MCDirection::JNAT_APP },
       { MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
@@ -289,6 +301,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
 	MCDirection::N_Routes,
+	MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
 	MCDirection::ECLIP_J2000,
@@ -309,6 +322,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::N_Routes,
 	MCDirection::MECLIP_JMEAN,
 	MCDirection::MECLIP_JMEAN,
+	MCDirection::MECLIP_JMEAN,
 	MCDirection::MECLIP_JMEAN },
       { MCDirection::TECLIP_JTRUE,
 	MCDirection::TECLIP_JTRUE,
@@ -325,6 +339,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::TECLIP_JTRUE,
 	MCDirection::TECLIP_JTRUE,
 	MCDirection::N_Routes,
+	MCDirection::TECLIP_JTRUE,
 	MCDirection::TECLIP_JTRUE,
 	MCDirection::TECLIP_JTRUE },
       { MCDirection::SUPERGAL_GAL,
@@ -343,6 +358,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::SUPERGAL_GAL,
 	MCDirection::SUPERGAL_GAL,
 	MCDirection::N_Routes,
+	MCDirection::SUPERGAL_GAL,
 	MCDirection::SUPERGAL_GAL },
       { MCDirection::ITRF_HADEC,
 	MCDirection::ITRF_HADEC,
@@ -360,6 +376,25 @@ void MCDirection::getConvert(MConvertBase &mc,
 	MCDirection::ITRF_HADEC,
 	MCDirection::ITRF_HADEC,
 	MCDirection::ITRF_HADEC,
+	MCDirection::N_Routes,
+	MCDirection::ITRF_HADEC },
+      { MCDirection::TOPO_APP,  
+	MCDirection::TOPO_APP,  
+	MCDirection::TOPO_APP,  
+	MCDirection::TOPO_APP,   
+	MCDirection::TOPO_APP,  
+	MCDirection::TOPO_APP,  
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_HADEC, 
+	MCDirection::TOPO_HADEC, 
+	MCDirection::TOPO_HADEC,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_APP,
+	MCDirection::TOPO_HADEC,
 	MCDirection::N_Routes }
     };
     
@@ -374,15 +409,16 @@ void MCDirection::getConvert(MConvertBase &mc,
       MDirection::JMEAN,	MDirection::BMEAN,    	
       MDirection::JNAT,      	MDirection::J2000,
       MDirection::APP,      	MDirection::B1950,
-      MDirection::HADEC,    	MDirection::AZEL,
-      MDirection::HADEC,    	MDirection::APP,
+      MDirection::TOPO,    	MDirection::AZEL,
+      MDirection::HADEC,    	MDirection::TOPO,
       MDirection::AZELSW,    	MDirection::AZEL,
       MDirection::JNAT,		MDirection::APP,
       MDirection::ECLIPTIC,	MDirection::J2000,
       MDirection::MECLIPTIC,	MDirection::JMEAN,
       MDirection::TECLIPTIC,	MDirection::JTRUE,
       MDirection::SUPERGAL,	MDirection::GALACTIC,
-      MDirection::HADEC,	MDirection::ITRF
+      MDirection::HADEC,	MDirection::ITRF,
+      MDirection::HADEC,     	MDirection::APP
     };
     
     Int iin  = inref.getType();
@@ -441,24 +477,6 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
   if (!VEC63)   VEC63 = new Vector<Double>(6);
   
   switch (which) {
-    
-  case GAL_J2000:
-    break;
-    
-  case GAL_B1950:
-    break;
-    
-  case J2000_GAL:
-    break;
-    
-  case B1950_GAL:
-    break;
-    
-  case J2000_B1950:
-    break;
-    
-  case B1950_J2000:
-    break;
     
   case J2000_JMEAN:
     if (PRECESFROM) delete PRECESFROM;
@@ -544,33 +562,6 @@ void MCDirection::initConvert(uInt which, MConvertBase &mc) {
     NUTATTO = new Nutation(Nutation::B1950);
     if (PRECESTO) delete PRECESTO;
     PRECESTO = new Precession(Precession::B1950);
-    break;
-    
-  case APP_HADEC:
-    break;
-    
-  case HADEC_AZEL:
-    break;
-    
-  case AZEL_HADEC:
-    break;
-    
-  case HADEC_APP:
-    break;
-    
-  case AZEL_AZELSW:
-    break;
-    
-  case AZELSW_AZEL:
-    break;
-    
-  case GAL_SUPERGAL:
-    break;
-
-  case SUPERGAL_GAL:
-    break;
-
-  case R_PLANET:
     break;
     
   default:
@@ -921,7 +912,7 @@ void MCDirection::doConvert(MVDirection &in,
     }
     break;
     
-    case APP_HADEC: {
+    case TOPO_HADEC: {
       ((MCFrame *)(MDirection::Ref::frameEpoch(outref, inref).
 		   getMCFramePoint()))->
 	getLASTr(g1);
@@ -965,7 +956,7 @@ void MCDirection::doConvert(MVDirection &in,
     in = *ROTMAT1 * in;
     break;
     
-    case HADEC_APP: {
+    case HADEC_TOPO: {
       ((MCFrame *)(MDirection::Ref::frameEpoch(inref, outref).
 		   getMCFramePoint()))->
 	getLASTr(g1);
@@ -991,6 +982,14 @@ void MCDirection::doConvert(MVDirection &in,
     }
     break;
     
+    case APP_TOPO: {
+    }
+    break;
+    
+    case TOPO_APP: {
+    }
+    break;
+
     case AZEL_AZELSW: 
     case AZELSW_AZEL: {
       in(0) = -in(0);
