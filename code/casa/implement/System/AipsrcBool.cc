@@ -54,6 +54,16 @@ Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword,
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
+
+// The following construction necessary since the gnu compiler does not (yet)
+// support static templated data.
+// egcs 1.1.b requires it to be in front of its use.
+AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
+  static AipsrcValue<Bool> myp;
+  return myp;
+}
+
+
 uInt AipsrcValue<Bool>::registerRC(const String &keyword,
 				const Bool &deflt) {
   AipsrcValue<Bool> &gcl = init();
@@ -85,9 +95,4 @@ void AipsrcValue<Bool>::save(uInt keyword) {
     oss << "false";
   };
   Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
-}
-
-AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
-  static AipsrcValue<Bool> myp;
-  return myp;
 }
