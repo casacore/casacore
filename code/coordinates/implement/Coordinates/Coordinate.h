@@ -495,7 +495,6 @@ protected:
    Bool setWorldMixRanges (Vector<Double>& worldMin,
                            Vector<Double>& worldMax,
                            const IPosition& shape) const;
-
    //
    void setDefaultWorldMixRanges (Vector<Double>& worldMin,
                                   Vector<Double>& worldMax) const;
@@ -517,3 +516,4 @@ inline const String &Coordinate::errorMessage() const
 }
 
 #endif
+
