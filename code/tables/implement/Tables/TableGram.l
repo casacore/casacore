@@ -96,6 +96,7 @@ NODUPL    {NODUPL1}|{DISTINCT}|{UNIQUE}
 GIVING1   [Gg][Ii][Vv][Ii][Nn][Gg]
 SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]
 GIVING    {GIVING1}|{SAVETO}
+INTO      [Ii][Nn][Tt][Oo]
 GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
@@ -168,6 +169,10 @@ NAMETAB   ([A-Za-z0-9_./+\-~$]|(\\.))+
             tableGramPosition() += yyleng;
 	    BEGIN(GIVINGstate);
 	    return GIVING;
+          }
+{INTO}    {
+            tableGramPosition() += yyleng;
+	    return INTO;
           }
 {GROUPBY} {
             tableGramPosition() += yyleng;
