@@ -920,14 +920,26 @@ void VisibilityIterator::setVisAndFlag(const Cube<Complex>& vis,
   if (velSelection_p) {
     setInterpolatedVisFlag(vis,flag);
     if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
-    else RWcolVis.putColumn(visCube_p);
+    else RWcolVisPtr[whichOne]->putColumn(visCube_p);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flagCube_p);
     else RWcolFlag.putColumn(flagCube_p);
   } else {
     if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,vis);
-    else RWcolVis.putColumn(vis);
+    else RWcolVisPtr[whichOne]->putColumn(vis);
     if (useSlicer_p) RWcolFlag.putColumn(slicer_p,flag);
     else RWcolFlag.putColumn(flag);
+  }
+}
+
+void VisibilityIterator::setVis(const Cube<Complex>& vis, DataColumn whichOne)
+{
+  if (velSelection_p) {
+    setInterpolatedVisFlag(vis,flagCube_p);
+    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,visCube_p);
+    else RWcolVisPtr[whichOne]->putColumn(visCube_p);
+  } else {
+    if (useSlicer_p) RWcolVisPtr[whichOne]->putColumn(slicer_p,vis);
+    else RWcolVisPtr[whichOne]->putColumn(vis);
   }
 }
 

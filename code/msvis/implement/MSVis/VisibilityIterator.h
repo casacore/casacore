@@ -449,7 +449,7 @@ public:
 
   // Set/modify the visibilities
   // This sets the data as found in the MS, Cube(npol,nchan,nrow).
-  //  void setVis(const Cube<Complex>& vis);
+  void setVis(const Cube<Complex>& vis, DataColumn whichOne);
 
   // Set the visibility and flags, and interpolate from velocities if needed
   void setVisAndFlag(const Cube<Complex>& vis, const Cube<Bool>& flag,
