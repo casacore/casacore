@@ -2726,3 +2726,4 @@
 10 060 src mv aips/implement/Measures/MVEpoch.cc aips/implement/Quanta/MVEpoch.cc
 10 060 src mv aips/implement/Measures/MVEpoch.h aips/implement/Quanta/MVEpoch.h
 10 060 src mv aips/implement/Measures/MVFrequency.cc aips/implement/Quanta/MVFrequency.cc
+10 060 src mv aips/implement/Measures/MVFrequency.h aips/implement/Quanta/MVFrequency.h
