@@ -149,7 +149,7 @@ inline static void scopy(const char* from, char* to)
 }
 
 // copy right-to-left
-inline static void revcopy(const char* from, char* to, short n)
+inline static void revcopy(const char* from, char* to, int n)
 {
   if (from != 0) while (--n >= 0) *to-- = *from--;
 }

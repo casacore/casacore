@@ -82,10 +82,10 @@ struct StrRep
 {
 
   // string length 
-  unsigned short len;
+  unsigned int len;
 
   // allocated space
-  unsigned short sz;
+  unsigned int sz;
 
   // the string starts here 
   // (at least 1 char for trailing null)
@@ -241,10 +241,10 @@ protected:
   String &S;
 
   // starting position in S's rep
-  unsigned short pos;
+  unsigned int pos;
 
   // length of substring
-  unsigned short len;
+  unsigned int len;
 
   void assign(StrRep *, const char *, int = -1);
 
