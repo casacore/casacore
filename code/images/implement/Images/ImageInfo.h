@@ -189,6 +189,11 @@ public:
 // names are in lower case.
     static Vector<String> keywordNamesFITS();
 
+// Convert the Miriad 'btype' strings to the ImageType.  Some 
+// Miriad 'btype's are dealt with in aips++ via the Stokes
+// axis (fractional_polarization, polarized_intensity, position_angle)
+// and so these will return Undefined.
+   static ImageInfo::ImageTypes MiriadImageType (const String& type);
 
 private:
     Vector<Quantum<Double> > itsRestoringBeam;
@@ -196,10 +201,6 @@ private:
 
 // Common copy ctor/assignment operator code.
     void copy_other(const ImageInfo &other);
-
-//
-   ImageInfo::ImageTypes MiriadImageType (const String& type) const;
-
 };
 
 // <summary> Global functions </summary>

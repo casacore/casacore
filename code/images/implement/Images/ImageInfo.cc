@@ -446,12 +446,21 @@ Vector<String> ImageInfo::keywordNamesFITS()
 }  
 
 
-ImageInfo::ImageTypes ImageInfo::MiriadImageType (const String& type) const
+ImageInfo::ImageTypes ImageInfo::MiriadImageType (const String& type) 
+//
+// We don't fully handle all the Miriad values because
+// some of them  (see below) are dealt with in aips++ by 
+// the Stokes axis.  
+//
 {
    String typeUp = upcase(type);
    ImageInfo::ImageTypes typeOut = ImageInfo::Undefined;
 //
-   if (typeUp==String("INTENSITY")) {
+   if (typeUp==String("POLARIZED_INTENSITY") ||
+       typeUp==String("FRACTIONAL_POLARIZATION") ||
+       typeUp==String("POSITION_ANGLE")) {
+      typeOut = ImageInfo::Undefined;
+   } else if (typeUp==String("INTENSITY")) {
       typeOut = ImageInfo::Intensity;
    } else if (typeUp==String("BEAM")) {
       typeOut = ImageInfo::Beam;
