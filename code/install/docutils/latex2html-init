@@ -95,18 +95,18 @@ sub aips2script {
 "img5on.src = \"$DOCSROOT/html/navpages/images3/communicatenav6on.gif\";\n" .
 "img6on = new Image();\n" .
 "img6on.src = \"$DOCSROOT/html/navpages/images3/homenav6on.gif\";\n" .
-"timg1on = new Image();                       // MouseOver Images\n" .
-"timg1on.src = \"$DOCSROOT/html/navpages/images3/gettingstartednav6on.gif\";\n" .
-"timg2on = new Image();\n" .
-"timg2on.src = \"$DOCSROOT/html/navpages/images3/documentationnav6on.gif\";\n" .
-"timg3on = new Image();\n" .
-"timg3on.src = \"$DOCSROOT/html/navpages/images3/learnmorenav6on.gif\";\n" .
-"timg4on = new Image();\n" .
-"timg4on.src = \"$DOCSROOT/html/navpages/images3/searchnav6on.gif\";\n" .
-"timg5on = new Image();\n" .
-"timg5on.src = \"$DOCSROOT/html/navpages/images3/communicatenav6on.gif\";\n" .
-"timg6on = new Image();\n".
-"timg6on.src = \"$DOCSROOT/html/navpages/images3/homenav6on.gif\";\n" .
+"img1on = new Image();                       // MouseOver Images\n" .
+"img1on.src = \"$DOCSROOT/html/navpages/images3/gettingstartednav6on.gif\";\n" .
+"img2on = new Image();\n" .
+"img2on.src = \"$DOCSROOT/html/navpages/images3/documentationnav6on.gif\";\n" .
+"img3on = new Image();\n" .
+"img3on.src = \"$DOCSROOT/html/navpages/images3/learnmorenav6on.gif\";\n" .
+"img4on = new Image();\n" .
+"img4on.src = \"$DOCSROOT/html/navpages/images3/searchnav6on.gif\";\n" .
+"img5on = new Image();\n" .
+"img5on.src = \"$DOCSROOT/html/navpages/images3/communicatenav6on.gif\";\n" .
+"img6on = new Image();\n".
+"img6on.src = \"$DOCSROOT/html/navpages/images3/homenav6on.gif\";\n" .
 #"\n" .
 #"\n" .
 "img1off = new Image();                         // MouseOut Images\n" .
@@ -121,18 +121,18 @@ sub aips2script {
 "img5off.src = \"$DOCSROOT/html/navpages/images3/communicatenav6off.gif\";\n" .
 "img6off = new Image();\n" .
 "img6off.src = \"$DOCSROOT/html/navpages/images3/homenav6off.gif\";\n" . 
-"timg1off = new Image();                                  // MouseOut Images\n" .
-"timg1off.src = \"$DOCSROOT/html/navpages/images3/gettingstartednav6off.gif\"; \n" .
-"timg2off = new Image();          \n" .
-"timg2off.src = \"$DOCSROOT/html/navpages/images3/documentationnav6off.gif\";\n" .
-"timg3off = new Image();\n" .
-"timg3off.src = \"$DOCSROOT/html/navpages/images3/learnmorenav6off.gif\";\n" .
-"timg4off = new Image();\n" .
-"timg4off.src = \"$DOCSROOT/html/navpages/images3/searchnav6off.gif\";\n" .
-"timg5off = new Image();\n" .
-"timg5off.src = \"$DOCSROOT/html/navpages/images3/communicatenav6off.gif\";\n" .
-"timg6off = new Image();\n" .
-"timg6off.src = \"$DOCSROOT/html/navpages/images3/homenav6off.gif\";\n" .
+"img1off = new Image();                                  // MouseOut Images\n" .
+"img1off.src = \"$DOCSROOT/html/navpages/images3/gettingstartednav6off.gif\"; \n" .
+"img2off = new Image();          \n" .
+"img2off.src = \"$DOCSROOT/html/navpages/images3/documentationnav6off.gif\";\n" .
+"img3off = new Image();\n" .
+"img3off.src = \"$DOCSROOT/html/navpages/images3/learnmorenav6off.gif\";\n" .
+"img4off = new Image();\n" .
+"img4off.src = \"$DOCSROOT/html/navpages/images3/searchnav6off.gif\";\n" .
+"img5off = new Image();\n" .
+"img5off.src = \"$DOCSROOT/html/navpages/images3/communicatenav6off.gif\";\n" .
+"img6off = new Image();\n" .
+"img6off.src = \"$DOCSROOT/html/navpages/images3/homenav6off.gif\";\n" .
 #"\n" .
 #"\n" .
 "}\n" .
@@ -156,34 +156,34 @@ sub aips2topbar {
 "<table cellpadding=0 cellspacing=0 border=0>\n" .
 "<tr><td>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/gettingstarted6.html\" \n" .
-"         onMouseOver=\"imgOn('timg1')\" \n" .
-"         onMouseOut=\"imgOff('timg1')\">\n" .
-"<IMG NAME=\"timg1\" SRC=\"$DOCSROOT/html/navpages/images3/gettingstartednav6off.gif\" BORDER=0></A>\n" .
+"         onMouseOver=\"imgOn('img1')\" \n" .
+"         onMouseOut=\"imgOff('img1')\">\n" .
+"<IMG NAME=\"img1\" SRC=\"$DOCSROOT/html/navpages/images3/gettingstartednav6off.gif\" BORDER=0></A>\n" .
 "</td><td>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/documentation.html\" \n" .
-"         onMouseOver=\"imgOn('timg2')\" \n" .
-"         onMouseOut=\"imgOff('timg2')\">\n" .
-"<IMG NAME=\"timg2\" SRC=\"$DOCSROOT/html/navpages/images3/documentationnav6off.gif\" BORDER=0></A>\n" .
+"         onMouseOver=\"imgOn('img2')\" \n" .
+"         onMouseOut=\"imgOff('img2')\">\n" .
+"<IMG NAME=\"img2\" SRC=\"$DOCSROOT/html/navpages/images3/documentationnav6off.gif\" BORDER=0></A>\n" .
 "</td><td>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/learnmore6.html\" \n" .
-"         onMouseOver=\"imgOn('timg3')\" \n" .
-"         onMouseOut=\"imgOff('timg3')\">\n" .
-"<IMG NAME=\"timg3\" SRC=\"$DOCSROOT/html/navpages/images3/learnmorenav6off.gif\" BORDER=0></A>\n" .
+"         onMouseOver=\"imgOn('img3')\" \n" .
+"         onMouseOut=\"imgOff('img3')\">\n" .
+"<IMG NAME=\"img3\" SRC=\"$DOCSROOT/html/navpages/images3/learnmorenav6off.gif\" BORDER=0></A>\n" .
 "</td></tr><tr><td>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/search/search.html\"         \n" .
-"          onMouseOver=\"imgOn('timg4')\" \n" .
-"          onMouseOut=\"imgOff('timg4')\">\n" .
-"<IMG NAME=\"timg4\" SRC=\"$DOCSROOT/html/navpages/images3/searchnav6off.gif\" BORDER=0></A>\n" .
+"          onMouseOver=\"imgOn('img4')\" \n" .
+"          onMouseOut=\"imgOff('img4')\">\n" .
+"<IMG NAME=\"img4\" SRC=\"$DOCSROOT/html/navpages/images3/searchnav6off.gif\" BORDER=0></A>\n" .
 "</td><td>\n" .
 "<A HREF=\"$DOCSROOT/html/navpages/communicate6.html\" \n" .
-"          onMouseOver=\"imgOn('timg5')\" \n" .
-"          onMouseOut=\"imgOff('timg5')\">\n" .
-"<IMG NAME=\"timg5\" SRC=\"$DOCSROOT/html/navpages/images3/communicatenav6off.gif\" BORDER=0></A>\n" .
+"          onMouseOver=\"imgOn('img5')\" \n" .
+"          onMouseOut=\"imgOff('img5')\">\n" .
+"<IMG NAME=\"img5\" SRC=\"$DOCSROOT/html/navpages/images3/communicatenav6off.gif\" BORDER=0></A>\n" .
 "</td><td>\n" .
 "<A HREF=\"$DOCSROOT/html/aips++.html\" \n" .
-"          onMouseOver=\"imgOn('timg6')\" \n" .
-"          onMouseOut=\"imgOff('timg6')\">\n" .
-"<IMG NAME=\"timg6\" SRC=\"$DOCSROOT/html/navpages/images3/homenav6off.gif\" BORDER=0></A>\n" .
+"          onMouseOver=\"imgOn('img6')\" \n" .
+"          onMouseOut=\"imgOff('img6')\">\n" .
+"<IMG NAME=\"img6\" SRC=\"$DOCSROOT/html/navpages/images3/homenav6off.gif\" BORDER=0></A>\n" .
 "\n" .
 "</td></tr>\n" .
 "</table>\n"
