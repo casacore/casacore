@@ -122,6 +122,36 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   //}
   log << "Appending " << otherMS.tableName() 
       << " to " << itsMS.tableName() << endl;
+
+  Bool doCorrectedData=False, doImagingWeight=False, doModelData=False;
+  if (itsMS.tableDesc().isColumn("MODEL_DATA") && 
+      otherMS.tableDesc().isColumn("MODEL_DATA"))
+    doModelData=True;
+  else if (itsMS.tableDesc().isColumn("MODEL_DATA") && 
+	   !otherMS.tableDesc().isColumn("MODEL_DATA")){
+    log << "Concatenant has MODEL_DATA column but not the concatanatee"
+  	<< LogIO::EXCEPTION;
+    log << "You may wish to create this column by loading " 
+	<< otherMS.tableName() 
+	<< " in imager or calibrater "  	<< LogIO::EXCEPTION;
+
+  }
+  if (itsMS.tableDesc().isColumn("CORRECTED_DATA") && 
+      otherMS.tableDesc().isColumn("CORRECTED_DATA"))
+    doCorrectedData=True;
+  else if (itsMS.tableDesc().isColumn("CORRECTED_DATA") && 
+	   !otherMS.tableDesc().isColumn("CORRECTED_DATA"))
+    log << "Concatenant has CORRECTED_DATA column but not the concatanatee"
+	<< LogIO::EXCEPTION;
+
+  if (itsMS.tableDesc().isColumn("IMAGING_WEIGHT") && 
+      otherMS.tableDesc().isColumn("IMAGING_WEIGHT"))
+    doImagingWeight=True;
+  else if (itsMS.tableDesc().isColumn("IMAGING_WEIGHT") && 
+	   !otherMS.tableDesc().isColumn("IMAGING_WEIGHT"))
+    log << "Concatenant has IMAGING_WEIGHT column but not the concatanatee"
+	<< LogIO::EXCEPTION;
+
   const ROMSMainColumns otherMainCols(otherMS);
   if (otherMS.nrow() > 0) {
     if (itsFixedShape.nelements() > 0) {
@@ -169,6 +199,24 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   const uInt newRows = otherMS.nrow();
   uInt curRow = itsMS.nrow();
   itsMS.addRow(newRows);
+
+  ROArrayColumn<Complex> otherModelData, otherCorrectedData;
+  ROArrayColumn<Float> otherImagingWeight;
+  ArrayColumn<Complex> thisModelData, thisCorrectedData;
+  ArrayColumn<Float> thisImagingWeight;
+  
+  if(doCorrectedData){
+    thisCorrectedData.reference(correctedData());
+    otherCorrectedData.reference(otherMainCols.correctedData());
+  }
+  if(doModelData){
+    thisModelData.reference(modelData());
+    otherModelData.reference(otherMainCols.modelData());
+  }
+  if(doImagingWeight){
+    thisImagingWeight.reference(imagingWeight());
+    otherImagingWeight.reference(otherMainCols.imagingWeight());
+  }
   const ROScalarColumn<Double>& otherTime = otherMainCols.time();
   ScalarColumn<Double>& thisTime = time();
   const ROScalarColumn<Int>& otherAnt1 = otherMainCols.antenna1();
@@ -246,17 +294,40 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     if(itsChanReversed[otherDDId(r)]){
       Vector<Int> datShape=otherData.shape(r).asVector();
       Matrix<Complex> reversedData(datShape[0], datShape[1]);
+      Matrix<Complex> reversedCorrData(datShape[0], datShape[1]);
+      Matrix<Complex> reversedModData(datShape[0], datShape[1]);
       for (Int k1=0; k1 < datShape[0]; ++k1){
 	for(Int k2=0; k2 < datShape[1]; ++k2){
 	  reversedData(k1,k2)=(Matrix<Complex>(otherData(r)))(k1,
-							    datShape[1]-1-k2); 
+							    datShape[1]-1-k2);
+	  if(doModelData){
+	    reversedModData(k1,k2)=(Matrix<Complex>(otherModelData(r)))(k1,
+							     datShape[1]-1-k2);
+	  }
+	  if(doCorrectedData){
+	   reversedCorrData(k1,k2)=(Matrix<Complex>(otherCorrectedData(r)))(k1,
+							    datShape[1]-1-k2);
+	  }
+ 
 	}
       } 
       thisData.put(curRow, reversedData);
+      if(doCorrectedData){
+	thisCorrectedData.put(curRow, reversedCorrData);
+      }
+      if(doModelData){
+	thisModelData.put(curRow, reversedModData);
+      }
     }
     else{
       thisData.put(curRow, otherData, r);
+      if(doModelData)
+	thisModelData.put(curRow, otherModelData, r);
+      if(doCorrectedData)
+	thisCorrectedData.put(curRow, otherCorrectedData, r);
     }
+    if(doImagingWeight)
+      thisImagingWeight.put(curRow, otherImagingWeight, r);
     thisSigma.put(curRow, otherSigma, r);
     thisWeight.put(curRow, otherWeight, r);
     thisFlag.put(curRow, otherFlag, r);
