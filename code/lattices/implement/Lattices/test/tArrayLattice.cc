@@ -1,5 +1,5 @@
 //# tArrayLattice.cc: test ArrayLattices and ArrayLatticeIterators.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -255,6 +255,7 @@ main()
     // <group>
     al6ROIter--;
     --al6ROIter;
+    --al6ROIter;
     // </group>
     AlwaysAssert(al6ROIter.atStart(), AipsError);
     
@@ -273,7 +274,7 @@ main()
     // of all cursor movement (operator++ or operator--) since doing x iter++
     // followed by x iter-- does not necessarily put the cursor back to the
     // origin of the Lattice </note> 
-    AlwaysAssert(al6ROIter.nsteps() == 239, AipsError);
+    AlwaysAssert(al6ROIter.nsteps() == 240, AipsError);
   
     // Function which returns the position of the beginning of the cursor 
     // within the lattice.
@@ -395,6 +396,7 @@ main()
     // <group>
     al6Iter--;
     --al6Iter;
+    --al6Iter;
     // </group>
     AlwaysAssert(al6Iter.atStart(), AipsError);
     
@@ -413,7 +415,7 @@ main()
     // of all cursor movement (operator++ or operator--) since doing x iter++
     // followed by x iter-- does not necessarily put the cursor back to the
     // origin of the Lattice </note> 
-    AlwaysAssert(al6Iter.nsteps() == 55, AipsError);
+    AlwaysAssert(al6Iter.nsteps() == 56, AipsError);
   
     // Function which returns the position of the beginning of the cursor 
     // within the lattice.
@@ -450,7 +452,7 @@ main()
 						orientation);
 		  LatticeIterator<Int> xiter(al6, xvectorstepper);
 		  for (;!xiter.atEnd();xiter++);
-		  AlwaysAssert(xiter.nsteps() == 335, AipsError);
+		  AlwaysAssert(xiter.nsteps() == 336, AipsError);
 		  AlwaysAssert(allEQ(xiter.vectorCursor().ac(), 24),AipsError);
 
 		  IPosition yvector(2,1,6);
@@ -458,14 +460,14 @@ main()
 						orientation);
 		  LatticeIterator<Int> yiter(al6, yvectorstepper);
 		  for (;!yiter.atEnd();yiter++);
-		  AlwaysAssert(yiter.nsteps() == 279, AipsError);
+		  AlwaysAssert(yiter.nsteps() == 280, AipsError);
 		  AlwaysAssert(allEQ(yiter.vectorCursor().ac(), 24),AipsError);
 
 		  LatticeStepper zvectorstepper(al6.shape(), zvector,
 						orientation);
 		  LatticeIterator<Int> ziter(al6, zvectorstepper);
 		  for (;!ziter.atEnd();ziter++);
-		  AlwaysAssert(ziter.nsteps() == 239, AipsError);
+		  AlwaysAssert(ziter.nsteps() == 240, AipsError);
 		  AlwaysAssert(allEQ(ziter.vectorCursor().ac(), 24),AipsError);
 
 		  IPosition tvector(4,1,1,1,8);
@@ -473,7 +475,7 @@ main()
 						orientation);
 		  LatticeIterator<Int> titer(al6, tvectorstepper);
 		  for (;!titer.atEnd();titer++);
-		  AlwaysAssert(titer.nsteps() == 209, AipsError);
+		  AlwaysAssert(titer.nsteps() == 210, AipsError);
 		  AlwaysAssert(allEQ(titer.vectorCursor().ac(),24), AipsError);
 
 // ----------------------non integral vectors------------------------
@@ -484,7 +486,7 @@ main()
 							 orientation);
 		  LatticeIterator<Int> nixiter(al6, xnonIntgrlvectorstepper);
 		  for (;!nixiter.atEnd();nixiter++);
-		  AlwaysAssert(nixiter.nsteps() == 671, AipsError);
+		  AlwaysAssert(nixiter.nsteps() == 672, AipsError);
 		  Vector<Int> tester(3);
 		  tester.set(24);
 		  tester(2) = 0;
@@ -497,7 +499,7 @@ main()
 							 orientation);
 		  LatticeIterator<Int> niyiter(al6, ynonIntgrlvectorstepper);
 		  for (;!niyiter.atEnd();niyiter++);
-		  AlwaysAssert(niyiter.nsteps() == 559, AipsError);
+		  AlwaysAssert(niyiter.nsteps() == 560, AipsError);
 		  tester.resize(4);
 		  tester.set(24);
 		  tester(2) = 0;
@@ -511,7 +513,7 @@ main()
 							 orientation);
 		  LatticeIterator<Int> niziter(al6, znonIntgrlvectorstepper);
 		  for (;!niziter.atEnd();niziter++);
-		  AlwaysAssert(niziter.nsteps() == 479, AipsError);
+		  AlwaysAssert(niziter.nsteps() == 480, AipsError);
 		  tester(2) = 24;
 		  AlwaysAssert(allEQ(niziter.vectorCursor().ac(),
 				     tester.ac()), AipsError);
@@ -522,7 +524,7 @@ main()
 							 orientation);
 		  LatticeIterator<Int> nititer(al6, tnonIntgrlvectorstepper);
 		  for (;!nititer.atEnd();nititer++);
-		  AlwaysAssert(nititer.nsteps() == 419, AipsError);
+		  AlwaysAssert(nititer.nsteps() == 420, AipsError);
 		  tester.resize(5);
 		  tester.set(24);
 		  tester(3) = 0;
@@ -536,7 +538,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> xyiter(al6, xymatrixstepper);
 		  for (;!xyiter.atEnd();xyiter++);
-		  AlwaysAssert(xyiter.nsteps() == 55, AipsError);
+		  AlwaysAssert(xyiter.nsteps() == 56, AipsError);
 		  AlwaysAssert(allEQ(xyiter.matrixCursor().ac(), 24), 
 			       AipsError);
 
@@ -545,7 +547,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> xziter(al6, xzmatrixstepper);
 		  for (;!xziter.atEnd();xziter++);
-		  AlwaysAssert(xziter.nsteps() == 47, AipsError);
+		  AlwaysAssert(xziter.nsteps() == 48, AipsError);
 		  AlwaysAssert(allEQ(xziter.matrixCursor().ac(), 24), 
 			       AipsError);
 
@@ -554,7 +556,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> xtiter(al6, xtmatrixstepper);
 		  for (;!xtiter.atEnd();xtiter++);
-		  AlwaysAssert(xtiter.nsteps() == 41, AipsError);
+		  AlwaysAssert(xtiter.nsteps() == 42, AipsError);
 		  AlwaysAssert(allEQ(xtiter.matrixCursor().ac(), 24), 
 			       AipsError);
 
@@ -563,7 +565,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> yziter(al6, yzmatrixstepper);
 		  for (;!yziter.atEnd();yziter++);
-		  AlwaysAssert(yziter.nsteps() == 39, AipsError);
+		  AlwaysAssert(yziter.nsteps() == 40, AipsError);
 		  AlwaysAssert(allEQ(yziter.matrixCursor().ac(), 24),
 			       AipsError);
 
@@ -572,7 +574,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> ytiter(al6, ytmatrixstepper);
 		  for (;!ytiter.atEnd();ytiter++);
-		  AlwaysAssert(ytiter.nsteps() == 34, AipsError);
+		  AlwaysAssert(ytiter.nsteps() == 35, AipsError);
 		  AlwaysAssert(allEQ(ytiter.matrixCursor().ac(), 24),
 			       AipsError);
 
@@ -581,7 +583,7 @@ main()
 						 orientation);
 		  LatticeIterator<Int> ztiter(al6, ztmatrixstepper);
 		  for (;!ztiter.atEnd();ztiter++);
-		  AlwaysAssert(ztiter.nsteps() == 29, AipsError);
+		  AlwaysAssert(ztiter.nsteps() == 30, AipsError);
 		  AlwaysAssert(allEQ(ztiter.matrixCursor().ac(), 24),
 			       AipsError);
 
@@ -592,7 +594,7 @@ main()
 							  xyNonItgrlmatrix1);
 		  LatticeIterator<Int> nixyiter(al6, xyNonItgrlmatrix1stepper);
 		  for (;!nixyiter.atEnd();nixyiter++);
-		  AlwaysAssert(nixyiter.nsteps() == 111, AipsError);
+		  AlwaysAssert(nixyiter.nsteps() == 112, AipsError);
 		  Matrix<Int> test(xyNonItgrlmatrix1);
 		  test.set(24);
 		  test.row(2) = 0;
@@ -605,7 +607,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2xyiter(al6,xyNonItgrlmatrix2stepper);
 		  for (;!ni2xyiter.atEnd();ni2xyiter++);
-		  AlwaysAssert(ni2xyiter.nsteps() == 111, AipsError);
+		  AlwaysAssert(ni2xyiter.nsteps() == 112, AipsError);
 		  test.resize(xyNonItgrlmatrix2);
 		  test.set(24);
 		  test.column(2) = 0;
@@ -619,7 +621,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3xyiter(al6,xyNonItgrlmatrix3stepper);
 		  for (;!ni3xyiter.atEnd();ni3xyiter++);
-		  AlwaysAssert(ni3xyiter.nsteps() == 223, AipsError);
+		  AlwaysAssert(ni3xyiter.nsteps() == 224, AipsError);
 
 		  test.resize(xyNonItgrlmatrix3);
 		  test.set(24);
@@ -635,7 +637,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> nixziter(al6, xzNonItgrlmatrix1stepper);
 		  for (;!nixziter.atEnd();nixziter++);
-		  AlwaysAssert(nixziter.nsteps() == 95, AipsError);
+		  AlwaysAssert(nixziter.nsteps() == 96, AipsError);
 		  test.resize(IPosition(2,3,7));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -648,7 +650,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2xziter(al6,xzNonItgrlmatrix2stepper);
 		  for (;!ni2xziter.atEnd();ni2xziter++);
-		  AlwaysAssert(ni2xziter.nsteps() == 95, AipsError);
+		  AlwaysAssert(ni2xziter.nsteps() == 96, AipsError);
 		  test.resize(IPosition(2,5,4));
 		  test.set(24);
 		  test.column(3) = 0;
@@ -661,7 +663,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3xziter(al6,xzNonItgrlmatrix3stepper);
 		  for (;!ni3xziter.atEnd();ni3xziter++);
-		  AlwaysAssert(ni3xziter.nsteps() == 191, AipsError);
+		  AlwaysAssert(ni3xziter.nsteps() == 192, AipsError);
 		  test.resize(IPosition(2,3,4));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -675,7 +677,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> nixtiter(al6, xtNonItgrlmatrix1stepper);
 		  for (;!nixtiter.atEnd();nixtiter++);
-		  AlwaysAssert(nixtiter.nsteps() == 83, AipsError);
+		  AlwaysAssert(nixtiter.nsteps() == 84, AipsError);
 		  test.resize(IPosition(2,3,8));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -688,7 +690,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2xtiter(al6,xtNonItgrlmatrix2stepper);
 		  for (;!ni2xtiter.atEnd();ni2xtiter++);
-		  AlwaysAssert(ni2xtiter.nsteps() == 83, AipsError);
+		  AlwaysAssert(ni2xtiter.nsteps() == 84, AipsError);
 		  test.resize(IPosition(2,5,5));
 		  test.set(24);
 		  test.column(3) = 0;
@@ -702,7 +704,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3xtiter(al6,xtNonItgrlmatrix3stepper);
 		  for (;!ni3xtiter.atEnd();ni3xtiter++);
-		  AlwaysAssert(ni3xtiter.nsteps() == 167, AipsError);
+		  AlwaysAssert(ni3xtiter.nsteps() == 168, AipsError);
 		  test.resize(IPosition(2,3,5));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -717,7 +719,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> niyziter(al6, yzNonItgrlmatrix1stepper);
 		  for (;!niyziter.atEnd();niyziter++);
-		  AlwaysAssert(niyziter.nsteps() == 79, AipsError);
+		  AlwaysAssert(niyziter.nsteps() == 80, AipsError);
 		  test.resize(IPosition(2,4,7));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -731,7 +733,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2yziter(al6,yzNonItgrlmatrix2stepper);
 		  for (;!ni2yziter.atEnd();ni2yziter++);
-		  AlwaysAssert(ni2yziter.nsteps() == 79, AipsError);
+		  AlwaysAssert(ni2yziter.nsteps() == 80, AipsError);
 		  test.resize(IPosition(2,6,4));
 		  test.set(24);
 		  test.column(3) = 0;
@@ -744,7 +746,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3yziter(al6,yzNonItgrlmatrix3stepper);
 		  for (;!ni3yziter.atEnd();ni3yziter++);
-		  AlwaysAssert(ni3yziter.nsteps() == 159, AipsError);
+		  AlwaysAssert(ni3yziter.nsteps() == 160, AipsError);
 		  test.resize(IPosition(2,4,4));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -759,7 +761,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> niytiter(al6, ytNonItgrlmatrix1stepper);
 		  for (;!niytiter.atEnd();niytiter++);
-		  AlwaysAssert(niytiter.nsteps() == 69, AipsError);
+		  AlwaysAssert(niytiter.nsteps() == 70, AipsError);
 		  test.resize(IPosition(2,4,8));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -773,7 +775,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2ytiter(al6,ytNonItgrlmatrix2stepper);
 		  for (;!ni2ytiter.atEnd();ni2ytiter++);
-		  AlwaysAssert(ni2ytiter.nsteps() == 69, AipsError);
+		  AlwaysAssert(ni2ytiter.nsteps() == 70, AipsError);
 		  test.resize(IPosition(2,6,5));
 		  test.set(24);
 		  test.column(3) = 0;
@@ -787,7 +789,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3ytiter(al6,ytNonItgrlmatrix3stepper);
 		  for (;!ni3ytiter.atEnd();ni3ytiter++);
-		  AlwaysAssert(ni3ytiter.nsteps() == 139, AipsError);
+		  AlwaysAssert(ni3ytiter.nsteps() == 140, AipsError);
 		  test.resize(IPosition(2,4,5));
 		  test.set(24);
 		  test.row(2) = 0;
@@ -803,7 +805,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> niztiter(al6, ztNonItgrlmatrix1stepper);
 		  for (;!niztiter.atEnd();niztiter++);
-		  AlwaysAssert(niztiter.nsteps() == 59, AipsError);
+		  AlwaysAssert(niztiter.nsteps() == 60, AipsError);
 		  test.resize(IPosition(2,4,8));
 		  test.set(24);
 		  test.row(3) = 0;
@@ -816,7 +818,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni2ztiter(al6,ztNonItgrlmatrix2stepper);
 		  for (;!ni2ztiter.atEnd();ni2ztiter++);
-		  AlwaysAssert(ni2ztiter.nsteps() == 59, AipsError);
+		  AlwaysAssert(ni2ztiter.nsteps() == 60, AipsError);
 		  test.resize(IPosition(2,7,5));
 		  test.set(24);
 		  test.column(3) = 0;
@@ -830,7 +832,7 @@ main()
 							  orientation);
 		  LatticeIterator<Int> ni3ztiter(al6,ztNonItgrlmatrix3stepper);
 		  for (;!ni3ztiter.atEnd();ni3ztiter++);
-		  AlwaysAssert(ni3ztiter.nsteps() == 119, AipsError);
+		  AlwaysAssert(ni3ztiter.nsteps() == 120, AipsError);
 		  test.resize(IPosition(2,4,5));
 		  test.set(24);
 		  test.row(3) = 0;
@@ -847,6 +849,3 @@ main()
   cout << "OK" << endl; 
   return 0;
 };
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 tArrayLatticeOld"
-// End:
