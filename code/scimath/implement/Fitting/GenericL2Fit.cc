@@ -465,17 +465,20 @@ template<class T>
 Bool GenericL2Fit<T>::
 residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 	 const Array<typename FunctionTraits<T>::BaseType> &x,
-	 const Vector<typename FunctionTraits<T>::BaseType> &sol) {
-  return buildResidual(y, x, &sol);
+	 const Vector<typename FunctionTraits<T>::BaseType> &sol,
+	 const Bool model) {
+  return buildResidual(y, x, &sol, model);
 }
 
 template<class T>
 Bool GenericL2Fit<T>::
 residual(Vector<typename FunctionTraits<T>::BaseType> &y,
-	 const Array<typename FunctionTraits<T>::BaseType> &x) {
+	 const Array<typename FunctionTraits<T>::BaseType> &x,
+	 const Bool model) {
   return buildResidual(y, x,
 		       static_cast<const Vector
-		       <typename FunctionTraits<T>::BaseType> *const>(0));
+		       <typename FunctionTraits<T>::BaseType> *const>(0),
+		       model);
 }
 
 template<class T>
@@ -636,13 +639,15 @@ template<class T>
 Bool GenericL2Fit<T>::
 buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y, 
 	      const Array<typename FunctionTraits<T>::BaseType> &x,
-	      const Vector<typename FunctionTraits<T>::BaseType> *const sol) {
+	      const Vector<typename FunctionTraits<T>::BaseType> *const sol,
+	      const Bool model) {
   uInt nrows = testInput_p(x, y,
 			   static_cast<const Vector
 			   <typename FunctionTraits<T>::BaseType> *const>(0));
   if (sol && sol->nelements() != pCount_p) return False;
   for (uInt i=0; i<nrows; i++) {
     if (ptr_derive_p) {
+      if (model) y[i] = typename FunctionTraits<T>::BaseType(0);
       y[i] -= getVal_p(x, 0, i);
       if (sol) {
 	for (uInt j=0; j<pCount_p; j++) {
@@ -650,6 +655,7 @@ buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 	};
       };
     };
+    if (model) y[i] = -y[i];
   };
   return True;
 }

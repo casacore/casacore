@@ -424,17 +424,22 @@ template<class T> class GenericL2Fit : public LSQaips {
   // Return the residual after a fit in y. x can 
   // be a vector (if 1D function) or a matrix (ND functional), as in the 
   // fit() methods. If sol is given, it is the solution derived from
-  // a fit; otherwise (in the case of a given functional only) the parameters
-  // will be used. False is returned if residuals cannot be calculated.
+  // a fit and its value will be used; otherwise  only the parameters
+  // in the fitted functional will be used.
+  // If <src>model</src> is given as <src>True</src>, the model, rather
+  // the residual <src><data>-<model></src> will be returned in <src>y</src>.
+  // False is returned if residuals cannot be calculated.
   // <thrown>
   // <li> Aipserror if illegal array sizes
   // </thrown>
   // <group>
   Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
 		const Array<typename FunctionTraits<T>::BaseType> &x,
-		const Vector<typename FunctionTraits<T>::BaseType> &sol);
+		const Vector<typename FunctionTraits<T>::BaseType> &sol,
+		const Bool model=False);
   Bool residual(Vector<typename FunctionTraits<T>::BaseType> &y,
-		const Array<typename FunctionTraits<T>::BaseType> &x);
+		const Array<typename FunctionTraits<T>::BaseType> &x,
+		const Bool model=False);
   // </group>
   // Get the rank of the solution (or zero of no fit() done yet). A 
   // valid solution will have the same rank as the number of unknowns (or
@@ -526,7 +531,7 @@ template<class T> class GenericL2Fit : public LSQaips {
   Bool buildResidual(Vector<typename FunctionTraits<T>::BaseType> &y,
 		     const Array<typename FunctionTraits<T>::BaseType> &x,
 		     const Vector<typename FunctionTraits<T>::BaseType>
-		     *const sol);
+		     *const sol, const Bool model=False);
   // Function to get evaluated functional value
   typename FunctionTraits<T>::BaseType
     getVal_p(const Array<typename FunctionTraits<T>::BaseType> &x,
