@@ -1,5 +1,5 @@
 //# ExprNode.cc: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,8 @@
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/ExprNodeSet.h>
 #include <aips/Tables/ExprDerNode.h>
+#include <aips/Tables/ExprMathNode.h>
+#include <aips/Tables/ExprLogicNode.h>
 #include <aips/Tables/ExprDerNodeArray.h>
 #include <aips/Tables/ExprRange.h>
 #include <aips/Tables/Table.h>
