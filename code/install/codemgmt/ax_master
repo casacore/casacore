@@ -3521,3 +3521,4 @@
 13 295 src rm trial/implement/Display/oldDisplayOptions.h
 13 295 sys rm lib/libtrial.a
 13 295 sys rm lib/libtrial.so
+13 297 src mv display/implement/X11PixelCanvass display/implement/X11PixelCanvas
