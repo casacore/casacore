@@ -1,5 +1,5 @@
 //# ExprNode.h: Handle class for a table column expression tree
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -500,11 +500,13 @@ public:
     // isArray indicates if the column should be an array column.
     static TableExprNode newColumnNode (const Table& tab,
 					const BaseTable* tabptr,
-					const String& name);
+					const String& name,
+					const Vector<String>& fieldNames);
 
     // Create a TableExprNodeConst for a table keyword
     // (which is handled as a constant).
-    static TableExprNode newKeyConst (const TableRecord&, const String& name);
+    static TableExprNode newKeyConst (const TableRecord&,
+				      const Vector<String>& fieldNames);
 
     // Throw invalid data type exception.
     // <group>
