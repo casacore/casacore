@@ -63,7 +63,8 @@ responsible for producing the following update files which is deposits in
    \file{master-\textit{mm}.\textit{nnn}.ALL.tar.gz}.  Cumulative update 
    files are kept for seven days.  In addition, cumulative update files
    are kept for all versions listed in the \file{BLESSED} file as having 
-   passed the \exeref{testsuite}.
+   passed the \exeref{testsuite} or having met whatever other criteria
+   is deemed suitable.
 
    The base release file for the current major version is used as the
    timestamp for cumulative updates.
@@ -281,8 +282,8 @@ Retrieve \aipspp\ source code updates.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{inhale} [\exe{-c|-m}] [\exe{-D}] [\exe{-d}] [\exe{-l}] [\exe{-n}]
-      [\exe{-r}\#] [\exe{-w}\#]}
+   \code{\exe{inhale} [\exe{-b}] [\exe{-c|-m}] [\exe{-D}] [\exe{-d}]
+	[\exe{-l}] [\exe{-n}] [\exe{-r}\#] [\exe{-w}\#]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -356,6 +357,11 @@ the last slave and code updates (see \exeref{avers}).
 \subsection*{Options}
 
 \begin{description}
+\item[\exe{-b}]
+   Use the most recently ``blessed'' release (see notes).  Useful for
+   sites that wish to track development but that also require stable
+   releases.
+
 \item[\exe{-c}]
    Force a cumulative update.  This should be done regularly (usually once a
    week) to guarantee that the slave copy does not deviate from the master.
@@ -459,6 +465,26 @@ The following resources used by \exe{inhale} should be defined in
    for advice on sidestepping this problem.
 
 \item
+   \exe{inhale} fetches the file \file{/pub/master/BLESSED} which it
+   uses, when invoked with the \exe{-b} option, in conjunction with the
+   \file{VERSION} files to determine which files need to be fetched.
+   \exe{inhale} will abort if it is invoked with the \exe{-b} option and
+   it cannot parse the \file{BLESSED} file to determine the most
+   recently-blessed version for the local system's architecture.
+   \exe{inhale} will default to normal behavior if the \file{BLESSED}
+   file is not present.  Versions are listed, individually by
+   architecture, in \file{BLESSED} when they have either passed the
+   \exeref{testsuite} or have met whatever other criteria is deemed
+   suitable.
+
+\item
+   If ``blessed'' mode is used on an \exe{inhale} host that invokes
+   \exeref{sneeze} on multiple client machines of different
+   architectures then those clients will be updated to the most
+   recently-blessed version for the \exe{inhale} host's architecture,
+   not their own.
+
+\item
    The incremental (and cumulative) update files contain the \file{VERSION}
    file for the {\em preceeding} version.  This is used in multi-increment
    updates.
@@ -518,6 +544,7 @@ alternative method is to forward all of \acct{aips2mgr}'s mail via the
 The unix manual page for \unixexe{tar}(1).\\
 The unix manual page for \unixexe{cron}(1).\\
 The unix manual page for \unixexe{rsh}(1).\\
+The unix manual page for \unixexe{ssh}(1).\\
 \aipspp\ variable names (\sref{variables}).\\
 Section \sref{Accounts and groups}, \aipspp\ accounts and groups.\\
 \exeref{affirm}, get the Boolean value of a set of arguments.\\
