@@ -65,7 +65,8 @@ public:
 // </summary>
 // <synopsis> 
 // Helper class for MSSelector/DOms with templated static functions to 
-// reorder data to include or exclude an interferometer axis.
+// reorder data to include or exclude an interferometer axis and
+// a function to time average data.
 // </synopsis> 
 //<visibility=local>
 template <class T> class MSSelUtil2
@@ -83,6 +84,12 @@ template <class T> class MSSelUtil2
   static void reorderData(Array<T>& data, 
 			  const Matrix<Int>& rowIndex,
 			  Int nRow);
+
+  // average data (with flags & weights applied) over it's last axis (time or
+  // row), return in data (overwritten), dataFlag gives new flags.
+  static void timeAverage(Array<Bool>& dataFlag, Array<T>& data, 
+			  const Array<Bool>& flag, const Array<Float>& weight);
+
 };
 #endif
 
