@@ -626,3 +626,21 @@ void TableDesc::adjustHypercolumns
     }
   }
 }
+
+void TableDesc::removeIDhypercolumns (const Vector<String>& hcNames)
+{
+  Vector<String> dataNames, coordNames, idNames;
+  for (uInt i=0; i<hcNames.nelements(); i++) {
+    // Get hypercolumn description and delete it.
+    uInt ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
+    if (idNames.nelements() > 0) {
+      for (uInt j=0; j<idNames.nelements(); j++) {
+	ColumnDesc& cd = rwColumnDesc(idNames(j));
+	cd.dataManagerType() = "IncrementalStMan";
+	cd.dataManagerGroup() = "ISM_TSM";
+      }
+      privKey_p->removeField (theHyperPrefix + hcNames(i));
+      defineHypercolumn (hcNames(i), ndim, dataNames, coordNames);
+    }      
+  }
+}

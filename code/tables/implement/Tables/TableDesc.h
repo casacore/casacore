@@ -457,6 +457,11 @@ public:
     // hypercolumn is removed.
     void adjustHypercolumns (const SimpleOrderedMap<String, String>& old2new);
 
+    // Remove ID-columns from the given hypercolumn definitions
+    // and set their default data manager type to IncrementalStMan
+    // and group to ISM_TSM.
+    void removeIDhypercolumns (const Vector<String>& hcNames);
+
     // Check recursively if the descriptions of all subtables are known.
     void checkSubTableDesc() const;
 
