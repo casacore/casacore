@@ -1,5 +1,5 @@
 //# tSkyCompRep.cc:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -220,9 +220,11 @@ int main() {
       AlwaysAssert(pars1.nelements()==6, AipsError);
 //
       SkyCompRep sky2;
-      sky2.fromPixel (pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
+      Double ratio;
+      sky2.fromPixel (ratio, pars1, unit, beam, cSys, ComponentType::GAUSSIAN, Stokes::I);
       Vector<Double> pars2 = sky2.toPixel(unit, beam, cSys, Stokes::I);
       for (uInt i=0; i<6; i++) AlwaysAssert(near(pars1(i), pars2(i)), AipsError);
+      AlwaysAssert(near(ratio,1.0), AipsError);
       cout << "Passed the {to,from}Pixel handling test" << endl;
     }
 
