@@ -39,7 +39,7 @@ PoolStack<T, Key>::PoolStack(const Key &key) :
 
 template <class T, class Key>
 PoolStack<T, Key>::~PoolStack() {
-  for (uInt i=0; i<top_p; i++) {
+  for (uInt i=0; i<stack_p.nelements(); i++) {
     delete stack_p[i]; stack_p[i] = 0;
   };
 }
