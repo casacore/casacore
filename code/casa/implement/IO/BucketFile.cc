@@ -87,6 +87,14 @@ void BucketFile::open()
 }
 
 
+void BucketFile::fsync()
+{
+    if (fd_p >= 0) {
+	::fsync (fd_p);
+    }
+}
+
+
 void BucketFile::setRW()
 {
     // Exit if already writable.
