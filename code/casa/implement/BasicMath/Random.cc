@@ -415,6 +415,11 @@ Binomial::Binomial(RNG* gen, uInt n, Double p)
   DebugAssert( p >= 0.0 && p <= 1.0, AipsError);
 }
 
+Double Binomial::operator()()
+{
+  return static_cast<Double>(asInt());
+}
+
 uInt Binomial::asInt()
 {
   uInt result = 0;
@@ -697,3 +702,6 @@ void Weibull::setState() {
   itsInvAlpha = 1.0 / itsAlpha;
 }
     
+// Local Variables: 
+// compile-command: "gmake XLIBLIST=0 Random"
+// End: 

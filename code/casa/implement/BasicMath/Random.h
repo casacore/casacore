@@ -521,11 +521,6 @@ private:
   Double itsP;
 };
 
-Double Binomial::operator()()
-{
-  return static_cast<Double>(asInt());
-}
-
 inline uInt Binomial::n() const {
   return itsN;
 }
