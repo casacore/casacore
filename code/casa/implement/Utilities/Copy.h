@@ -1,5 +1,5 @@
 //# Copy.h: Copy objects from one C-style array to another.
-//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1994,1995,1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -156,13 +156,10 @@ inline void objmove (const char** to, const char*const *from, uInt n)
     { memmove (to, from, n*sizeof(char*)); }
 
 //# To support a container of void*.
-// On the HP g++ is unhappy with these specializations (only!) for some reason
-#if !defined(__hpux__)
 inline void objmove (void** to, void*const *from, uInt n)
     { memmove (to, from, n*sizeof(void*)); }
 inline void objmove (char** to, char*const *from, uInt n)
     { memmove (to, from, n*sizeof(char*)); }
-#endif
 
 
 
