@@ -6,14 +6,14 @@
 %% See 'A Guide to Latex', Kopka & Daly, Addison-Wesley, section 3.2.4
 %% for these and other variables which override style settings.
 
-%\setlength{\textheight}{260 mm}
-%\setlength{\textwidth}{175 mm}
-%\setlength{\parindent}{0 mm}
-%\setlength{\parskip}{1.5 ex}
+\setlength{\textheight}{260 mm}
+\setlength{\textwidth}{175 mm}
+\setlength{\parindent}{0 mm}
+\setlength{\parskip}{1.5 ex}
 %\setlength{\hoffset}{-250 mm}
 %\setlength{\voffset}{-2.75 cm}
-%\hoffset -3.0truecm
-%\voffset -2.75truecm
+\hoffset -3.0truecm
+\voffset -2.5truecm
 \begin{document}
 
 \title{NOTE 216 --
