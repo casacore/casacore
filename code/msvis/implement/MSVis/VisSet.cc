@@ -177,10 +177,12 @@ void VisSet::removeColumns(Table& tab)
 // add the model and corrected data columns and the imaging weight
 void VisSet::addColumns(Table& tab) 
 {		    
-
-  // Look for the DATA column among the hypercolumns
-  // to find the corresponding id column (if any)
   TableDesc td(tab.tableDesc());
+  // Determine if a FLOAT_DATA column is present
+  Bool floatData=td.isColumn(MS::columnName(MS::FLOAT_DATA));
+
+  // Look for the FLOAT_DATA or DATA column among the 
+  // hypercolumns to find the corresponding id column (if any)
   Vector<String> hypercolumnNames=td.hypercolumnNames();
   Bool found=False;
   String dataHypercubeId="";
@@ -191,7 +193,8 @@ void VisSet::addColumns(Table& tab)
 			 dataColNames,coordColNames,
 			 idColNames);
       for (uInt j=0; j<dataColNames.nelements(); j++) {
-	if (dataColNames(j)==MS::columnName(MS::DATA)) {
+	if ((floatData && dataColNames(j)==MS::columnName(MS::FLOAT_DATA)) ||
+	    (!floatData && dataColNames(j)==MS::columnName(MS::DATA))) {
 	  found=idColNames.nelements()>0;
 	  if (found) dataHypercubeId=idColNames(0);
 	}
@@ -203,8 +206,14 @@ void VisSet::addColumns(Table& tab)
   TableDesc td1;
   IPosition shape,shapeWt;
   if (!found) {
-    ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
-    Int numCorr=data.shape(0)(0);
+    Int numCorr;
+    if (floatData) {
+      ArrayColumn<Float> data(tab,MS::columnName(MS::FLOAT_DATA));
+      numCorr=data.shape(0)(0);
+    } else {
+      ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
+      numCorr=data.shape(0)(0);
+    };
     Int numChan=selection_p(1,0);
     shape=IPosition(2,numCorr,numChan);
     shapeWt=IPosition(1,numChan);
@@ -261,7 +270,12 @@ void VisSet::addColumns(Table& tab)
     TiledDataStManAccessor modelDataAccessor(tab,"TiledData-model");
     TiledDataStManAccessor corrDataAccessor(tab,"TiledData-corrected");
     TiledDataStManAccessor imWtAccessor(tab,"TiledImagingWeight");
-    ArrayColumn<Complex> od(tab,MS::columnName(MS::DATA));
+    TableColumn* od;
+    if (floatData) {
+      od = new ArrayColumn<Float> (tab,MS::columnName(MS::FLOAT_DATA));
+    } else {
+      od = new ArrayColumn<Complex> (tab,MS::columnName(MS::DATA));
+    };
     // get the hypercube ids, sort them, remove the duplicate values
     ScalarColumn<Int> hypercubeId(tab,dataHypercubeId);
     Vector<Int> ids=hypercubeId.getColumn();
@@ -284,8 +298,8 @@ void VisSet::addColumns(Table& tab)
       }
       if (!cubeAdded(cube)) {
 	cubeAdded(cube)=True;
-	Int numCorr=od.shape(i)(0);
-	Int numChan=od.shape(i)(1);
+	Int numCorr=od->shape(i)(0);
+	Int numChan=od->shape(i)(1);
 	Int tileSize=numChan/10+1;
 	IPosition cubeShape(3,numCorr,numChan,0);
 	IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
@@ -301,8 +315,14 @@ void VisSet::addColumns(Table& tab)
     }
   } else {
   // If there's no id, assume the data is fixed shape throughout
-    ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
-    Int numCorr=data.shape(0)(0);
+    Int numCorr;
+    if (floatData) {
+      ArrayColumn<Float> data(tab,MS::columnName(MS::FLOAT_DATA));
+      numCorr=data.shape(0)(0);
+    } else {
+      ArrayColumn<Complex> data(tab,MS::columnName(MS::DATA));
+      numCorr=data.shape(0)(0);
+    };
     Int numChan=selection_p(1,0);
     Int tileSize=numChan/10+1;
     IPosition tileShape(3,numCorr,tileSize,16384/numCorr/tileSize);
