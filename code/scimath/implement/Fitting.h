@@ -1,5 +1,5 @@
 //# Fitting.h: Module for various forms of mathematical fitting
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -56,7 +56,7 @@
 // we will fit to a function with M adjustable parameters. 
 // N should normally be greater than M, and at least M non-dependent relations
 // between the parameters should be given. In cases where there are less than
-// M independent points, Single-Value-Deconvolution methods are available.
+// M independent points, Singular-Value-Deconvolution methods are available.
 // Each condition equation can be given an  
 // (estimated) standard deviation, which is comparable to the statistical
 // weight, which is often used in place of the standard deviation.
