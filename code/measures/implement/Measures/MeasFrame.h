@@ -272,7 +272,7 @@ private:
     // Get apparent coordinates (direction cosines)
     GetApp,
     // Get LSR radial velocity (m/s)
-    GetLSR,
+    GetLSR
   };
   
   //# Data
