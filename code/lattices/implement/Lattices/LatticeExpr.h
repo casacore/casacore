@@ -1,5 +1,5 @@
 //# LatticeExpr.h:  LatticeExpr.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -167,6 +167,22 @@ public:
 // (i.e. axes with a length of one)
    virtual IPosition shape() const;
   
+// Help the user pick a cursor for most efficient access if they only want
+// pixel values and don't care about the order or dimension of the
+// cursor. Usually the tile shape is the best cursor shape, and this can
+// be obtained using:<br>
+// <src>IPosition shape = pa.niceCursorShape()</src> where
+// <src>pa</src> is a PagedArray object.
+// <br>The default argument is the result of <src>maxPixels()</src>.
+// <group>
+   virtual IPosition niceCursorShape (uInt maxPixels) const;
+   IPosition niceCursorShape() const
+      { return niceCursorShape (maxPixels()); }
+// </group>
+
+// Returns the coordinates of the lattice expression.
+   virtual LatticeCoordinates coordinates() const;
+
 // Functions which extract an Array of values from a Lattice. All the
 // IPosition arguments must have the same number of axes as the underlying
 // Lattice, otherwise, an exception is thrown. <br>
