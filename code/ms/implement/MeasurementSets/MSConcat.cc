@@ -27,6 +27,7 @@
 
 #include <trial/MeasurementSets/MSConcat.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/Block.h>
 #include <aips/Containers/Record.h>
@@ -230,7 +231,20 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisObsId.put(curRow, curObsId);
     thisStateId.put(curRow, otherStateId, r);
     thisUvw.put(curRow, otherUvw, r);
-    thisData.put(curRow, otherData, r);
+    if(itsChanReversed[otherDDId(r)]){
+      Vector<Int> datShape=otherData.shape(r).asVector();
+      Matrix<Complex> reversedData(datShape[0], datShape[1]);
+      for (Int k1=0; k1 < datShape[0]; ++k1){
+	for(Int k2=0; k2 < datShape[1]; ++k2){
+	  reversedData(k1,k2)=(Matrix<Complex>(otherData(r)))(k1,
+							    datShape[1]-1-k2); 
+	}
+      } 
+      thisData.put(curRow, reversedData);
+    }
+    else{
+      thisData.put(curRow, otherData, r);
+    }
     thisSigma.put(curRow, otherSigma, r);
     thisWeight.put(curRow, otherWeight, r);
     thisFlag.put(curRow, otherFlag, r);
@@ -445,7 +459,8 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
   RecordFieldPtr<Int> newPolPtr(ddIndex.accessKey(), polIdxName);
   Vector<Int> corrInt;
   Vector<Stokes::StokesTypes> corrPol;
-
+  itsChanReversed.resize(nDDs);
+  itsChanReversed.set(False);
   for (uInt d = 0; d < nDDs; d++) {
     Bool matchedDD = True;
     DebugAssert(otherDDCols.spectralWindowId()(d) >= 0 &&
@@ -454,11 +469,13 @@ Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
     const uInt otherSpwId = 
       static_cast<uInt>(otherDDCols.spectralWindowId()(d));
     DebugAssert(otherSpwCols.numChan()(otherSpwId) > 0, AipsError);    
+    Vector<Double> otherFreqs = otherSpwCols.chanFreq()(otherSpwId);
     *newSpwPtr = 
       spwCols.matchSpw(otherSpwCols.refFrequencyMeas()(otherSpwId),
 		       static_cast<uInt>(otherSpwCols.numChan()(otherSpwId)),
 		       otherSpwCols.totalBandwidthQuant()(otherSpwId),
-		       otherSpwCols.ifConvChain()(otherSpwId), freqTol);
+		       otherSpwCols.ifConvChain()(otherSpwId), freqTol, 
+		       otherFreqs, itsChanReversed[d]);
     
     if (*newSpwPtr < 0) {
       // need to add a new entry in the SPECTRAL_WINDOW subtable
