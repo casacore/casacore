@@ -181,9 +181,7 @@ public:
                        MaskedLattice<T>& in) const;
 
   // Find maps between coordinate systems
-  void findMaps (uInt nDim, Vector<Int>& worldAxisMap,
-                 Vector<Int>& worldAxisTranspose,
-                 Vector<Bool>& worldRefChange,
+  void findMaps (uInt nDim, 
                  Vector<Int>& pixelAxisMap1,
                  Vector<Int>& pixelAxisMap2,
                  const CoordinateSystem& inCoords,
@@ -217,22 +215,14 @@ public:
                  const DirectionCoordinate& outCoord,   
                  const Vector<Int> inPixelAxes, 
                  const Vector<Int> outPixelAxes,
-                 const Vector<Int> pixelAxisMap,
+                 const Vector<Int> pixelAxisMap1,
+                 const Vector<Int> pixelAxisMap2,
                  typename Interpolate2D::Method method,
                  MDirection::Convert& machine,
                  Bool useMachine, Bool showProgress, Double scale);
 
-  // Resample by a factor, 2 axes
-  void resample2D (MaskedLattice<T>& outLattice,
-                   const MaskedLattice<T>& inLattice,
-                   const Vector<Int> inPixelAxes,
-                   const Vector<Int> outPixelAxes,
-                   const Vector<Int> pixelAxisMap,
-                   typename Interpolate2D::Method method,
-                   Bool showProgress, Double scale);
-
-  // Make coordinate grid for this cursor.
-  void make2DWorldCoordinateGrid (Bool& allFail, Bool&missedIt,
+  // Make regridding coordinate grid for this cursor.
+  void make2DCoordinateGrid (Bool& allFail, Bool&missedIt,
                              Double& minInX, Double& minInY, 
                              Double& maxInX, Double& maxInY,
                              Cube<Double>& in2DPos,
@@ -240,11 +230,25 @@ public:
                              MDirection::Convert& machine, 
                              const DirectionCoordinate& inCoord,
                              const DirectionCoordinate& outCoord,
-                             Int inPixelAxis0, Int inPixelAxis1,
+                             uInt xInAxis, uInt yInAxis,
+                             uInt xOutAxis, uInt yOutAxis,
+                             const IPosition& inPixelAxes,
+                             const IPosition& outPixelAxes,
                              const IPosition& inShape,
                              const IPosition& outPos,
                              const IPosition& cursorShape,
                              Bool useMachine);
+
+  // Make resampling coordinate grid for this cursor
+   void make2DCoordinateGrid (Cube<Double>& in2DPos,
+                              Double& minInX, Double& minInY, 
+                              Double& maxInX, Double& maxInY,
+                              const Vector<Float>& pixelScale, 
+                              uInt xInAxis, uInt yInAxis,
+                              uInt xOutAxis, uInt yOutAxis,
+                              uInt xInCorrAxis, uInt yInCorrAxis,
+                              uInt xOutCorrAxis, uInt yOutCorrAxis,
+                              const IPosition& outPos, const IPosition& cursorShape);
 
   // Regrid 1 axis
   void regrid1D (MaskedLattice<T>& outLattice,
