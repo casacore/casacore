@@ -1,5 +1,5 @@
 //# MeasIERS.h: Interface to IERS tables
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@ class String;
 
 // <prerequisite>
 //   <li> <linkto class=MeasDetail>MeasDetail</linkto>
-//   <li> <linkto class=MRefData>MRefData</linkto>
+//   <li> <linkto class=MeasureReferenceData>MRefData</linkto>
 // </prerequisite>
 //
 // <etymology>
@@ -60,7 +60,7 @@ class String;
 //
 // <synopsis>
 // MeasIERS is the interface class to the IERS data obtained by the
-// <linkto class=MRefData>MRefData</linkto> class.<br>
+// <linkto class=MeasureReferenceData>MRefData</linkto> class.<br>
 // It was written for speed reasons (enums in stead of Strings), and
 // has only a single static instantiation.<br>
 // MeasIERS looks at some <linkto class=MeasDetail>MeasDetail</linkto>

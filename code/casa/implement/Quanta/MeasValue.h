@@ -61,7 +61,7 @@ imported class ostream;
 // <ul>
 //   <li> <linkto class=MVEpoch>MVEpoch</linkto>: a moment in time
 //   <li> <linkto class=MVDirection>MVDirection</linkto>: a direction in space
-//   <li> <linkto class=MVPositition>MVPosition</linkto>: a position on Earth
+//   <li> <linkto class=MVPosition>MVPosition</linkto>: a position on Earth
 //   <li> <linkto class=MVFrequency>MVFrequency</linkto>
 //   <li> <linkto class=MVRadialVelocity>MVRadialVelocity</linkto>
 //   <li> <linkto class=MVDoppler>MVDoppler</linkto>
@@ -146,16 +146,17 @@ public:
   void dummy_operator() const {;};
   
   //# General Member Functions
-  // Get the type (== Register(M*)) of derived MeasValue
-  virtual uInt type() const = 0;
   // Assert that we are the correct MeasValue type
   // <thrown>
   //   <li> AipsError if wrong MeasValue type
   // </thrown>
   // Each Measure should have:
   // <src> static void assert(const MeasValue &in); </src>
+  // Get the type (== Register(M*)) of derived MeasValue
   // <group>
-   // Print a MeasValue
+  virtual uInt type() const = 0;
+  // </group>
+  // Print a MeasValue
   virtual void print(ostream &os) const = 0;
   
   // Clone a MeasValue

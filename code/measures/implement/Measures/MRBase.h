@@ -153,6 +153,7 @@ public:
   // <note role=caution> the following should really be (and should be called as), but
   // compiler does not accept it:</note>
   //   <src> void set(Ms::Types tp);</src>
+  // <group>
   virtual void setType(uInt tp) = 0;
   virtual void set(uInt tp) = 0;
   // </group>

@@ -86,7 +86,7 @@ imported class ostream;
 //   <li> <linkto class=MDirection>MDirection</linkto>: a direction in space
 //   <li> <linkto class=MPosition>MPosition</linkto>: a position on Earth
 //   <li> <linkto class=MFrequency>MFrequency</linkto>: wave characteristics
-//   <li> <linkto class=MRadialvelocity>MRadialVelocity</linkto>: a space
+//   <li> <linkto class=MRadialVelocity>MRadialVelocity</linkto>: a space
 //				radial velocity
 //   <li> <linkto class=MDoppler>MDoppler</linkto>: a Doppler velocity
 // </ul>
