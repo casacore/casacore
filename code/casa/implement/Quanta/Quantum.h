@@ -397,7 +397,7 @@ template <class Qtype> class Quantum : public QBase{
   // </group>
   
   // Convert a Quantum to specified units
-  // <group name="convert">
+  // <group>
   // Convert to canonical units
   void convert();
   // Convert to specified units; any remainder will be expressed in canonical
@@ -413,7 +413,7 @@ template <class Qtype> class Quantum : public QBase{
   virtual QBase *clone() const;
   // Print a Quantum
   virtual void print(ostream &os) const;
-  // Get the type (== Register() of derived Quantum (faster than Strings)
+  // Get the type (== Register()) of derived Quantum (faster than Strings)
   // <group>
   virtual uInt type() const;
   static uInt myType();
@@ -421,17 +421,17 @@ template <class Qtype> class Quantum : public QBase{
   
 private:
   //# Data members
+  // Actual quantum value
   Qtype qVal;
+
 };
 
-
 // Global functions
+// <summary> Global input function </summary>
 // Output/Input
 // <group name=output>
 // only Quantity is supported on input
 istream& operator>> (istream &is, Quantity &ku);
 // </group>
-
-//# Inline Implementations
 
 #endif

@@ -377,6 +377,7 @@ class MVAngle {
 };
 
 // Global functions
+// <summary> Global output/input functions </summary>
 // Output/Input
 // <group name=output>
 ostream &operator<<(ostream &os, const MVAngle &meas);

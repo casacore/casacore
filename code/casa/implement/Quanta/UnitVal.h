@@ -284,7 +284,7 @@ static void init();
 
 
 // <summary>
-// Class used to force construction of <linkto class=UnitVal>UnitVal</linkto>.
+// Class used to force construction of UnitVal.
 // </summary>
 
 // <synopsis>
@@ -310,7 +310,7 @@ private:
 };
 
 // <summary>
-// Object used to force construction of <linkto class=UnitVal>UnitVal</linkto>.
+// Object used to force construction of UnitVal.
 // </summary>
 
 // <synopsis>
@@ -337,7 +337,12 @@ static UnitVal_init unitval_init;
 //# Inline Implementations
 
 //# Global functions
+// <summary> Global output function </summary>
+// <group name=output>
 // Output
 ostream& operator<<(ostream &os, const UnitVal &ku);
+// </group>
 
 #endif
+
+

@@ -410,6 +410,7 @@ private:
 };
 
 // Global functions
+// <summary> Output global functions </summary>
 // Output
 // <group name=output>  
 ostream &operator<<(ostream &os, const MUString &in);
