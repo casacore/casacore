@@ -1,5 +1,5 @@
 //# Cube.cc: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996
+//# Copyright (C) 1993,1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -149,44 +149,28 @@ template<class T> Cube<T> &Cube<T>::operator=(const Cube<T> &other)
         return *this;
 
     Bool Conform = conform(other);
-    if (Conform == False && nelements() != 0)
-	validateConformance(other);  // We can't overwrite, so throw exception
-
-
-    Int i, j, k;
-    if (Conform == True) { // copy in place
-	Int io1 = other.start[0] - start[0];
-	Int io2 = other.start[1] - start[1];
-	Int io3 = other.start[2] - start[2];
-	for(k=start[2]; k < start[2] + length[2]; k++)
-	    for(j=start[1]; j < start[1] + length[1]; j++)
-		for(i=start[0]; i < start[0] + length[0]; i++)
-		    (*this)(i,j,k) = other(i+io1,j+io2,k+io3);
-    } else {
-        data = new Block<T>(other.nelements());
-        begin = data->storage();
-        start=other.start;
-        length = other.length;
-	nels = other.nels;
-	originalLength = length;
-        inc[0] = 1; inc[1] = 1; inc[2] = 1;// flatten
+    Array<T>::operator=(other);
+    if (!Conform) {
 	makeIndexingConstants();
-	Int io1 = other.start[0] - start[0];
-	Int io2 = other.start[1] - start[1];
-	Int io3 = other.start[2] - start[2];
-	for(k=start[2]; k < start[2] + length[2]; k++)
-	    for(j=start[1]; j < start[1] + length[1]; j++)
-		for(i=start[0]; i < start[0] + length[0]; i++)
-		    (*this)(i,j,k) = other(i+io1,j+io2,k+io3);
     }
+
     return *this;
 }
 
 template<class T> Array<T> &Cube<T>::operator=(const Array<T> &a)
 {
     DebugAssert(ok(), ArrayError);
-    Cube<T> tmp(a);
-    (*this) = tmp;
+    if (a.ndim() == 3) {
+	Bool Conform = conform(a);
+	Array<T>::operator=(a);
+	if (!Conform) {
+	    makeIndexingConstants();
+	}
+    } else {
+	// This might work if a.ndim == 1 or 2
+	Cube<T> tmp(a);
+	(*this) = tmp;
+    }
     return *this;
 }
 
