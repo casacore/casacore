@@ -117,7 +117,8 @@ const Quantum<Double> &VelocityMachine::operator()(const MVDoppler &in) {
 
 const Quantum<Double> &VelocityMachine::operator()(const Quantity &in) {
   static UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  if (in.getFullUnit().getValue() == Velocity) {
+  if (in.getFullUnit().getValue() == Velocity ||
+      in.getFullUnit().getValue() == UnitVal::NODIM) {
     return this->operator()(MVDoppler(in));
   };
   return this->operator()(MVFrequency(in));
@@ -178,7 +179,7 @@ void VelocityMachine::set(const MFrequency::Ref &in) {
 
 void VelocityMachine::set(const Unit &in) {
   static UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  if (in.getValue() == Velocity) {
+  if (in.getValue() == Velocity || in.getValue() == UnitVal::NODIM) {
     vun_p = in;
   } else {
     fun_p = in;
