@@ -33,8 +33,7 @@
 #include <aips/Quanta/UnitVal.h>
 #include <aips/Quanta/UnitName.h>
 
-main ()
-{
+Int main () {
     try {
 	cout << "Test units class (Unit)..." << endl;
 	cout << "--------------------------" << endl;
@@ -128,12 +127,22 @@ main ()
 	cout << "Test FITS values" << endl << endl;
 
 	cout << "User list before FITS:" << endl;
-	UnitMap::listUser();	
+	UnitMap::listUser();
+	UnitMap::removeUser("beam");	
 	UnitMap::addFITS();
 	cout << "User list after FITS:" << endl;
 	UnitMap::listUser();	
 	UnitVal myF1(4.0,"mJY/BEAM");
 	cout << "A = 4 mJY/BEAM   : " << myF1 << endl;
+
+	Unit Fstr("M(JY5/SEC2.(YEAR.HZ).KM)");
+	cout << "A FITS unit to translate: " << Fstr.getName() << endl;
+	cout << "it translates to:         " << 
+	  UnitMap::fromFITS(Fstr).getName() << endl;
+	Unit Fstr2(UnitMap::fromFITS(Fstr));
+	cout << "and back to:              " << 
+	  UnitMap::toFITS(Fstr2).getName() << endl;
+
 	UnitMap::clearFITS();
 	cout << "User list after FITS removal:" << endl;
 	UnitMap::listUser();	
