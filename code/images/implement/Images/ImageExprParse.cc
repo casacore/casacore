@@ -28,7 +28,6 @@
 #include <trial/Images/ImageExprParse.h>
 #include <trial/Images/ImageExprGram.h>
 #include <trial/Images/PagedImage.h>
-#include <trial/Images/SubImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Lattices/LatticeExprNode.h>
@@ -463,54 +462,38 @@ LatticeExprNode ImageExprParse::makeImageNode (const String& name,
 	dtype = cdesc.dataType();
     }
     // Look if we need a mask for the image.
-    // If so, see if it exists.
-    String maskName = mask;
-    maskName.upcase();
-    ImageRegion* regPtr = 0;
-    if (maskName != "NOMASK") {
-	regPtr = RegionHandler::getRegion (table, mask);
+    // By default we do need one.
+    MaskSpecifier spec(True);
+    if (! mask.empty()) {
+        String maskName = mask;
+	maskName.upcase();
+        if (maskName == "NOMASK") {
+	    spec = MaskSpecifier(False);
+	} else {
+  	    spec = MaskSpecifier(mask);
+	}
     }
     // Create the node from the lattice (and optional mask).
     LatticeExprNode node;
     switch (dtype) {
     case TpFloat:
     {
-	PagedImage<Float> image(table, False);
-	if (regPtr == 0) {
-	    node = LatticeExprNode (image);
-	} else {
-	    node = LatticeExprNode (SubImage<Float> (image, *regPtr));
-	}
+	node = LatticeExprNode (PagedImage<Float> (table, spec));
 	break;
     }
 /// case TpDouble:
 /// {
-///	PagedImage<Double> image(table, False);
-///	if (regPtr == 0) {
-///	    node = LatticeExprNode (image);
-///	} else {
-///	    node = LatticeExprNode (SubImage<Double> (image, *regPtr));
-///	}
+///	node = LatticeExprNode (PagedImage<Double> (table, spec));
 ///	break;
 /// }
     case TpComplex:
     {
-	PagedImage<Complex> image(table, False);
-	if (regPtr == 0) {
-	    node = LatticeExprNode (image);
-	} else {
-	    node = LatticeExprNode (SubImage<Complex> (image, *regPtr));
-	}
+	node = LatticeExprNode (PagedImage<Complex> (table, spec));
 	break;
     }
 /// case TpDComplex:
 /// {
-///	PagedImage<DComplex> image(table, False);
-///	if (regPtr == 0) {
-///	    node = LatticeExprNode (image);
-///	} else {
-///	    node = LatticeExprNode (SubImage<DComplex> (image, *regPtr));
-///	}
+///	node = LatticeExprNode (PagedImage<DComplex> (table, spec));
 ///	break;
 /// }
     default:
@@ -519,7 +502,6 @@ LatticeExprNode ImageExprParse::makeImageNode (const String& name,
     }
     // This is now the last table used (for finding unqualified regions).
     theLastTable = table;
-    delete regPtr;
     return node;
 }
 
