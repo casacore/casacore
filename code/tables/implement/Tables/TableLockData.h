@@ -1,5 +1,5 @@
 //# TableLockData.h: Class to hold table lock data
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,6 +105,12 @@ public:
     // Is the table in use (i.e. open) in another process?
     Bool isMultiUsed() const;
 
+    // Get or put the info in the lock file.
+    // <group>
+    void getInfo (MemoryIO& info);
+    void putInfo (const MemoryIO& info);
+    // </group>
+
 private:
     // Copy constructor is forbidden.
     TableLockData (const TableLockData& that);
@@ -134,6 +140,16 @@ inline void TableLockData::autoRelease()
 inline Bool TableLockData::isMultiUsed() const
 {
     return itsLock->isMultiUsed();
+}
+
+
+inline void TableLockData::getInfo (MemoryIO& info)
+{
+    itsLock->getInfo (info);
+}
+inline void TableLockData::putInfo (const MemoryIO& info)
+{
+    itsLock->putInfo (info);
 }
 
 
