@@ -276,7 +276,7 @@ ifneq "$(word 2,$(LIB$(PACKAGE)))" "static"
 XLIB_do_shared := YES
 endif
 
-ifneq "$(XLB_do_shared)" ""
+ifneq "$(XLIB_do_shared)" ""
 ifneq "$(XLIBLIST_override)" ""
 XLIBSEL:=XLIBLIST_override
 else
