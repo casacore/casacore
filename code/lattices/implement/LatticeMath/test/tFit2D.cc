@@ -28,7 +28,7 @@
 #include <aips/Fitting.h>
 #include <trial/Fitting/Fit2D.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <trial/Functionals/Gaussian2D2.h>
+#include <trial/Functionals/Gaussian2D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Math.h>
