@@ -1,5 +1,5 @@
 //# tPagedArray.cc:  tests the PagedArray class
-//# Copyright (C) 1997,1999
+//# Copyright (C) 1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -77,6 +77,10 @@ int main() {
       pa.putAt (99.0, IPosition(2,11));
       pa.putAt (98.0f, IPosition(2,11,10));
       AlwaysAssert(pa.tableName() == "tPagedArray_tmp.table", AipsError);
+      AlwaysAssert(pa.name(True) == "tPagedArray_tmp.table", AipsError);
+      AlwaysAssert(pa.isPersistent(), AipsError);
+      AlwaysAssert(pa.isPaged(), AipsError);
+      AlwaysAssert(pa.isWritable(), AipsError);
       AlwaysAssert(pa.columnName() == PagedArray<Float>::defaultColumn(), 
 		   AipsError);
       AlwaysAssert(pa.rowNumber() == PagedArray<Float>::defaultRow(),
