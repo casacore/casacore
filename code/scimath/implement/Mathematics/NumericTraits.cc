@@ -28,10 +28,10 @@
 #include <aips/Mathematics/NumericTraits.h>
 #include <aips/Mathematics/Constants.h>
 
-const Double & NumericTraits<Float>::epsilon = FLT_EPSILON;
-const Double & NumericTraits<Double>::epsilon = DBL_EPSILON;
-const Double & NumericTraits<Complex>::epsilon = FLT_EPSILON;
-const Double & NumericTraits<DComplex>::epsilon = DBL_EPSILON;
+const Double & NumericTraits<Float>::epsilon = C::flt_epsilon;
+const Double & NumericTraits<Double>::epsilon = C::dbl_epsilon;
+const Double & NumericTraits<Complex>::epsilon = C::flt_epsilon;
+const Double & NumericTraits<DComplex>::epsilon = C::dbl_epsilon;
 
 const Double & NumericTraits<Float>::minimum = FLT_MIN;
 const Double & NumericTraits<Double>::minimum = DBL_MIN;
