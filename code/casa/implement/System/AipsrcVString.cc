@@ -65,6 +65,16 @@ Bool AipsrcVector<String>::find(Vector<String> &value, const String &keyword,
   return (find(value, keyword) ? True : (value = deflt, False));
 }
 
+
+// The following construction necessary since the gnu compiler does not (yet)
+// support static templated data.
+// egcs 1.1.b requires it to be in front of its use.
+AipsrcVector<String> &AipsrcVector<String>::init() {
+  static AipsrcVector<String> myp;
+  return myp;
+}
+
+
 uInt AipsrcVector<String>::registerRC(const String &keyword,
 				      const Vector<String> &deflt) {
   AipsrcVector<String> &gcl = init();
@@ -94,11 +104,4 @@ void AipsrcVector<String>::save(uInt keyword) {
   Int n = ((gcl.tlst)[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << ((gcl.tlst)[keyword-1])(i);
   Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
-}
-
-// The following construction necessary since the gnu compiler does not (yet)
-// support static templated data.
-AipsrcVector<String> &AipsrcVector<String>::init() {
-  static AipsrcVector<String> myp;
-  return myp;
 }
