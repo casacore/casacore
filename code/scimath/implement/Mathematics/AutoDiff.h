@@ -1,5 +1,5 @@
 //# AutoDiff.h: an automatic differential class for parameterized functions
-//# Copyright (C) 1995
+//# Copyright (C) 1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,10 +28,6 @@
 
 #if !defined(AIPS_AUTO_DIFF_H)
 #define AIPS_AUTO_DIFF_H
-
-#if defined(_AIX)
-#pragma implementation ("AutoDiff.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -115,7 +111,7 @@ public:
   AutoDiff();
 
   // A constant of a value of v.  Zero derivative.
-  AutoDiff(const T &v);
+  explicit AutoDiff(const T &v);
 
   // A function f(x0,x1,...,xi,...,xn) = xi of a value of v.  The 
   // total number of derivatives is ndiffs, the ith derivative is one, and all 
