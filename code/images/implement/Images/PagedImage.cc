@@ -776,6 +776,9 @@ template<class T>
 void PagedImage<T>::setMaximumCacheSize(uInt howManyPixels)
 {
   map_p.setMaximumCacheSize(howManyPixels);
+  if (regionPtr_p != 0) {
+    regionPtr_p->setMaximumCacheSize(howManyPixels);
+  }
 }
 
 template<class T> 
@@ -785,12 +788,19 @@ void PagedImage<T>::setCacheSizeFromPath(const IPosition& sliceShape,
                                          const IPosition& axisPath)
 {
   map_p.setCacheSizeFromPath(sliceShape, windowStart, windowLength, axisPath);
+  if (regionPtr_p != 0) {
+    regionPtr_p->setCacheSizeFromPath(sliceShape, windowStart,
+				      windowLength, axisPath);
+  }
 }
 
 template<class T>
 void PagedImage<T>::setCacheSizeInTiles (uInt howManyTiles)  
 {  
   map_p.setCacheSizeInTiles (howManyTiles);
+  if (regionPtr_p != 0) {
+    regionPtr_p->setCacheSizeInTiles (howManyTiles);
+  }
 }
 
 
@@ -798,6 +808,9 @@ template<class T>
 void PagedImage<T>::clearCache()
 {
   map_p.clearCache();
+  if (regionPtr_p != 0) {
+    regionPtr_p->clearCache();
+  }
 }
 
 template<class T> 
@@ -805,6 +818,10 @@ void PagedImage<T>::showCacheStatistics(ostream& os) const
 {
   os << "Pixel statistics : ";
   map_p.showCacheStatistics(os);
+  if (regionPtr_p != 0) {
+    os << "Pixelmask statistics : ";
+    regionPtr_p->showCacheStatistics(os);
+  }
 }
 
 template<class T> 
