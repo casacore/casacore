@@ -40,6 +40,7 @@
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
