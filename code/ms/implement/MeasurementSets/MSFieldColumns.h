@@ -310,6 +310,16 @@ public:
 				       Int numPoly, Double interTime, 
 				       Double timeOrigin);
 
+  // set the epoch reference type for the TIME column. This can only be done
+  // when the table has no rows. Trying to do so at other times will throw an
+  // exception.
+  void setEpochRef(MEpoch::Types ref);
+
+  // set the direction reference type for the REFERENCE_DIR, DELAY_DIR &
+  // PHASE_DIR columns. This can only be done when the table has no
+  // rows. Trying to do so at other times will throw an exception.
+  void setDirectionRef(MDirection::Types ref);
+
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
