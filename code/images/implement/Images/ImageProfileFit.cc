@@ -44,6 +44,7 @@
 #include <trial/Lattices/LatticeStatistics.h>
 #include <trial/Lattices/LCRegion.h>
 #include <trial/Lattices/MaskedLattice.h>
+#include <trial/Lattices/LatticeUtilities.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
@@ -61,8 +62,10 @@
 
 ImageProfileFit::ImageProfileFit()
 : itsImagePtr(0),
+  itsSigmaImagePtr(0),
   itsFitDone(False),
   itsMask(0),
+  itsSigma(0),
   itsSpectralFitPtr(0),
   itsProfileAxis(-1),
   itsDoppler(""),
@@ -75,8 +78,10 @@ ImageProfileFit::ImageProfileFit()
 
 ImageProfileFit::ImageProfileFit(const ImageProfileFit& other)
 : itsImagePtr(0),
+  itsSigmaImagePtr(0),
   itsFitDone(other.itsFitDone),
   itsMask(other.itsMask.copy()),
+  itsSigma(other.itsSigma.copy()),
   itsCoords(other.itsCoords),
   itsProfileAxis(other.itsProfileAxis),
   itsDoppler(other.itsDoppler),
@@ -96,6 +101,7 @@ ImageProfileFit::~ImageProfileFit()
    delete itsSpectralFitPtr;
    itsSpectralFitPtr = 0;
    if (itsImagePtr) delete itsImagePtr;
+   if (itsSigmaImagePtr) delete itsSigmaImagePtr;
 }
 
 
@@ -110,8 +116,15 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
          itsImagePtr = other.itsImagePtr->cloneII();
       }
 //
+      if (itsSigmaImagePtr) {
+         delete itsSigmaImagePtr;
+         itsSigmaImagePtr = 0;
+      }
+      if (other.itsSigmaImagePtr) {
+         itsSigmaImagePtr = other.itsSigmaImagePtr->cloneII();
+      }
+//
       itsFitDone = other.itsFitDone;
-      itsMask.resize(other.itsMask.nelements());
 
 // Does this look after resizing of itsX, itsY vectors ?
 
@@ -119,7 +132,9 @@ ImageProfileFit& ImageProfileFit::operator=(const ImageProfileFit& other)
       itsY = other.itsY;
 //
       itsMask.resize(0);
-      itsMask = other.itsMask;
+      itsMask = other.itsMask.copy();
+      itsSigma.resize(0);
+      itsSigma= other.itsSigma.copy();
 //
       itsCoords = other.itsCoords;
       itsProfileAxis = other.itsProfileAxis;
@@ -143,8 +158,28 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
    itsProfileAxis = profileAxis;
    const SubImage<Float> subImage(image, region);
    const Slicer& sl = region.asLCRegion().boundingBox();
-   setData(subImage, sl, average);
+//
+   const ImageInterface<Float>* pSubSigma = 0;
+//
+   setData(pSubSigma, subImage, sl, average);
 }
+
+void ImageProfileFit::setData (const ImageInterface<Float>& image, 
+                               const ImageInterface<Float>& sigma, 
+                               const ImageRegion& region,
+                               uInt profileAxis, Bool average)
+{
+   itsCoords = image.coordinates(); 
+   itsProfileAxis = profileAxis;
+   const SubImage<Float> subImage(image, region);
+   const Slicer& sl = region.asLCRegion().boundingBox();
+//
+   const SubImage<Float> subSigma(sigma, region);
+   const ImageInterface<Float>* pSubSigma = &subSigma;
+//
+   setData(pSubSigma, subImage, sl, average);
+}
+
 
 void ImageProfileFit::setData (const ImageInterface<Float>& image,
                                uInt profileAxis, Bool average)
@@ -153,17 +188,38 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
    itsProfileAxis = profileAxis;
    IPosition start(image.ndim(),0);
    Slicer sl(start, image.shape(), Slicer::endIsLength);
-   setData(image, sl, average);
+//
+   const ImageInterface<Float>* pSubSigma = 0;
+//
+   setData(pSubSigma, image, sl, average);
+}
+
+
+
+
+void ImageProfileFit::setData (const ImageInterface<Float>& image,
+                               const ImageInterface<Float>& sigma,
+                               uInt profileAxis, Bool average)
+{
+   itsCoords = image.coordinates(); 
+   itsProfileAxis = profileAxis;
+   IPosition start(image.ndim(),0);
+   Slicer sl(start, image.shape(), Slicer::endIsLength);
+//
+   const ImageInterface<Float>* pSubSigma = &sigma;
+//
+   setData(pSubSigma, image, sl, average);
 }
 
 void ImageProfileFit::setData (const CoordinateSystem& cSys,
                                uInt profileAxis,
                                const Quantum<Vector<Float> >& x, 
                                const Quantum<Vector<Float> >& y,
+                               const Vector<Float>& sigma,
                                Bool isAbs, const String& doppler)
 {
    Vector<Bool> mask;
-   setData (cSys, profileAxis, x, y, mask, isAbs, doppler);
+   setData (cSys, profileAxis, x, y, mask, sigma, isAbs, doppler);
 }
 
 void ImageProfileFit::setData (const CoordinateSystem& cSys,
@@ -171,6 +227,7 @@ void ImageProfileFit::setData (const CoordinateSystem& cSys,
                                const Quantum<Vector<Float> >& x, 
                                const Quantum<Vector<Float> >& y,
                                const Vector<Bool>& mask,
+                               const Vector<Float>& sigma,
                                Bool isAbs, const String& doppler)
 {
    uInt n = x.getValue().nelements();
@@ -182,6 +239,13 @@ void ImageProfileFit::setData (const CoordinateSystem& cSys,
       itsMask = True;
    } else {
       itsMask = mask;
+   }      
+//
+   itsSigma.resize(n);
+   if (sigma.nelements()!=n) {
+      itsSigma = 1.0;
+   } else {
+      itsSigma = sigma.copy();
    }      
 //
    itsCoords =  cSys;
@@ -462,7 +526,8 @@ Bool ImageProfileFit::fit(Int order)
 
 // Do fit
 
-   Bool ok = itsSpectralFitter.fit(itsY.getValue(), 
+   Bool ok = itsSpectralFitter.fit(itsSigma, 
+                                   itsY.getValue(), 
                                    itsX.getValue(),  
                                    itsMask);
    itsFitDone = True;
@@ -501,7 +566,7 @@ void ImageProfileFit::model(Vector<Float>& model) const
 // Private functions
 
 void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
-                                uInt profileAxis, const MaskedLattice<Float>& lat) const
+                                uInt profileAxis, const MaskedLattice<Float>& lat)  const
 {
    if (lat.ndim()==1) {
 
@@ -512,53 +577,28 @@ void ImageProfileFit::collapse (Vector<Float>& profile, Vector<Bool>& mask,
       profile = lat.get();
       mask = lat.getMask();
    } else {
-
-// Use LatticeStatistics to do the collapsing
-
-      AlwaysAssert(profileAxis<lat.ndim(), AipsError);
-      LatticeStatistics<Float> stats(lat, False, False);
-      IPosition excludeAxes(1, profileAxis);
-      IPosition axes = IPosition::otherAxes(lat.ndim(), excludeAxes);
-      stats.setAxes(axes.asVector());
+      IPosition axes = IPosition::otherAxes(lat.ndim(), IPosition(1,profileAxis));
+      Array<Float> p;
+      Array<Bool> m;
+      LatticeUtilities::collapse(p, m, axes, lat, True);
 //
-      Array<Float> tmp;
-      Bool dropDegenerateAxes = True;
-      stats.getMean(tmp, dropDegenerateAxes);
-      if (tmp.nelements()==0) {
-         throw(AipsError("There were no good points in the region"));
-      }
-      Array<Float> nPts;
-      stats.getNPts(nPts, dropDegenerateAxes);
-//
-      uInt n = tmp.shape()(0);  
+      uInt n = p.shape()(0);  
       profile.resize(n);
       mask.resize(n);
-//
-      profile = tmp.reform(IPosition(1,n));
-
-// Handle mask in rather ugly way...
-
-      Bool deleteN, deleteM;
-      const Float* pN = nPts.getStorage(deleteN);
-      Bool* pM = mask.getStorage(deleteM);
-//
-      for (uInt i=0; i<n; i++) {
-         pM[i] = True;
-         if (pN[i] < 0.5) pM[i] = False;
-      }   
-//  
-      nPts.freeStorage(pN, deleteN);
-      mask.putStorage(pM, deleteM);
+      profile = p.reform(IPosition(1,n));
+      mask = m.reform(IPosition(1,n));
    }
  }
 
 
 
 
-void ImageProfileFit::setData (const ImageInterface<Float>& image,
+void ImageProfileFit::setData (const ImageInterface<Float>*& pSigma,
+                               const ImageInterface<Float>& image,
                                const Slicer& sl, Bool average)
 {
    itsXAbs = True;
+   const uInt n = image.shape()(itsProfileAxis);
    if (average) {
 
 // Average data over region except along profile axis
@@ -570,6 +610,21 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
       Vector<Float> x(y.nelements());
       indgen(x, Float(sl.start()(itsProfileAxis)));
       itsX = Quantum<Vector<Float> >(x, Unit("pix"));
+//
+      if (pSigma) {
+         AlwaysAssert (image.shape().conform(pSigma->shape()), AipsError);
+//
+         IPosition axes = IPosition::otherAxes(pSigma->ndim(), IPosition(1,itsProfileAxis));
+         Array<Float> p;
+         Array<Bool> m;
+         LatticeUtilities::collapse(p, m, axes, *pSigma, True);    // Ignore mask of sigma
+         itsSigma.resize(0);
+         itsSigma = p;
+      } else {
+         itsSigma.resize(n);
+         itsSigma = 1.0;
+      }
+//
       itsFitRegion = False;
    } else {
 
@@ -578,7 +633,6 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
 // estimate and it uses itsX and itsY...
 // I think i need to rewrite this class !
 
-      const uInt n = image.shape()(itsProfileAxis);
       Vector<Float> x(n);
       indgen(x, Float(sl.start()(itsProfileAxis)));
       itsX = Quantum<Vector<Float> >(x, Unit("pix"));
@@ -591,6 +645,11 @@ void ImageProfileFit::setData (const ImageInterface<Float>& image,
 //
       itsFitRegion = True;
       itsImagePtr = image.cloneII();
+//
+      if (pSigma) {
+         AlwaysAssert (image.shape().conform(pSigma->shape()), AipsError);
+         itsSigmaImagePtr = pSigma->cloneII();
+      }
    }
 }
 
@@ -882,6 +941,7 @@ void ImageProfileFit::fit (RecordInterface& rec,
    }
 //
    Vector<Bool> inMask;
+   Vector<Float> inSigma;
    Bool ok = False;
    uInt nFail = 0;
    while (!inIter.atEnd()) {
@@ -891,10 +951,21 @@ void ImageProfileFit::fit (RecordInterface& rec,
       inMask = itsImagePtr->getMaskSlice(inIter.position(), 
                                          inIter.cursorShape(), True);
 //
-      try {
-         ok = fit.fit(inIter.vectorCursor(), x, inMask);
-      } catch (AipsError x) {
-         ok = False;
+      if (itsSigmaImagePtr) {
+         inSigma = itsSigmaImagePtr->getSlice(inIter.position(), 
+                                              inIter.cursorShape(), True);
+         try {
+            ok = fit.fit(inSigma, inIter.vectorCursor(), x, inMask);
+         } catch (AipsError x) {
+            ok = False;
+         }
+
+      } else {
+         try {
+            ok = fit.fit(inIter.vectorCursor(), x, inMask);
+         } catch (AipsError x) {
+            ok = False;
+         }
       }
 
 // If the fit fails, the state of the fit object is the failed
@@ -975,3 +1046,4 @@ SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const
 //
    return listOut;
 }
+
