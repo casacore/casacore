@@ -1838,3 +1838,4 @@
 08 003 sys rm bin/simulating
 08 003 sys rm bin/ssfitsfiller
 08 003 sys rm bin/statistics.atoms
+08 003 sys rm bin/synthesis.atoms
