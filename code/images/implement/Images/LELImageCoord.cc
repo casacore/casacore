@@ -30,6 +30,7 @@
 #include <trial/Images/ImageExpr.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ExtendImage.h>
+#include <trial/Images/RebinImage.h>
 #include <trial/Lattices/LattRegionHolder.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/LatticeExpr.h>
@@ -118,21 +119,14 @@ LatticeExprNode LELImageCoord::makeSubLattice
 				     const LattRegionHolder& region) const
 {
   switch (expr.dataType()) {
-/// case TpBool:
-///     return SubImage<Bool> (ImageExpr<Bool>
-///                        (LatticeExpr<Bool>(expr), ""), region);
   case TpFloat:
-    return SubImage<Float> (ImageExpr<Float>
-                               (LatticeExpr<Float>(expr), ""), region);
-/// case TpDouble:
-///     return SubImage<Double> (ImageExpr<Double>
-///                               (LatticeExpr<Double>(expr, "")), region);
+    return SubImage<Float>
+                 (ImageExpr<Float> (LatticeExpr<Float>(expr), ""),
+		  region);
   case TpComplex:
-    return SubImage<Complex> (ImageExpr<Complex>
-                               (LatticeExpr<Complex>(expr), ""), region);
-/// case TpDComplex:
-///     return SubImage<DComplex> (ImageExpr<DComplex>
-///                               (LatticeExpr<DComplex>(expr), ""), region);
+    return SubImage<Complex>
+                 (ImageExpr<Complex> (LatticeExpr<Complex>(expr), ""),
+		  region);
   default:
     throw (AipsError ("LELImageCoord::makeSubLattice - unknown datatype"));
   }
@@ -151,15 +145,34 @@ LatticeExprNode LELImageCoord::makeExtendLattice
   const CoordinateSystem& newCsys = cptr->coordinates();
   switch (expr.dataType()) {
   case TpFloat:
-    return ExtendImage<Float> (ImageExpr<Float>(LatticeExpr<Float>(expr),
-						""),
-			       newShape, newCsys);
+    return ExtendImage<Float>
+                (ImageExpr<Float>(LatticeExpr<Float>(expr), ""),
+		 newShape, newCsys);
   case TpComplex:
-    return ExtendImage<Complex> (ImageExpr<Complex>(LatticeExpr<Complex>(expr),
-						    ""),
-				 newShape, newCsys);
+    return ExtendImage<Complex>
+                (ImageExpr<Complex>(LatticeExpr<Complex>(expr), ""),
+		 newShape, newCsys);
   default:
     throw (AipsError ("LELImageCoord::makeExtendLattice - unknown datatype"));
+  }
+  return LatticeExprNode();
+}
+
+LatticeExprNode LELImageCoord::makeRebinLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& binning) const
+{
+  switch (expr.dataType()) {
+  case TpFloat:
+    return RebinImage<Float>
+                 (ImageExpr<Float> (LatticeExpr<Float>(expr), ""),
+		  binning);
+  case TpComplex:
+    return RebinImage<Complex>
+                 (ImageExpr<Complex> (LatticeExpr<Complex>(expr), ""),
+		  binning);
+  default:
+    throw (AipsError ("LELLattCoord::makeRebinLattice - invalid datatype"));
   }
   return LatticeExprNode();
 }

@@ -104,6 +104,11 @@ public:
 				     const IPosition& newShape,
 				     const LELLattCoordBase& newCoord) const;
 
+  // Create a rebinning for an expression node.
+  virtual LatticeExprNode makeRebinLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& binning) const;
+
   // The class has true coordinates (thus returns True).
   virtual Bool hasCoordinates() const;
 
