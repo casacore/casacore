@@ -82,8 +82,6 @@ public:
     virtual unsigned int toLocal (unsigned int&   to, const void* from) const;
     virtual unsigned int toLocal (long&           to, const void* from) const;
     virtual unsigned int toLocal (unsigned long&  to, const void* from) const;
-    virtual unsigned int toLocal (long long&      to, const void* from) const;
-    virtual unsigned int toLocal (unsigned long long& to, const void* from) const;
     virtual unsigned int toLocal (float&          to, const void* from) const;
     virtual unsigned int toLocal (double&         to, const void* from) const;
     // </group>
@@ -107,10 +105,6 @@ public:
 				  unsigned int nr) const;
     virtual unsigned int toLocal (unsigned long*  to, const void* from,
 				  unsigned int nr) const;
-    virtual unsigned int toLocal (long long*      to, const void* from,
-				  unsigned int nr) const;
-    virtual unsigned int toLocal (unsigned long long* to, const void* from,
-				  unsigned int nr) const;
     virtual unsigned int toLocal (float*          to, const void* from,
 				  unsigned int nr) const;
     virtual unsigned int toLocal (double*         to, const void* from,
@@ -128,8 +122,6 @@ public:
     virtual unsigned int fromLocal (void* to, unsigned int   from) const;
     virtual unsigned int fromLocal (void* to, long           from) const;
     virtual unsigned int fromLocal (void* to, unsigned long  from) const;
-    virtual unsigned int fromLocal (void* to, long long      from) const;
-    virtual unsigned int fromLocal (void* to, unsigned long long from) const;
     virtual unsigned int fromLocal (void* to, float          from) const;
     virtual unsigned int fromLocal (void* to, double         from) const;
     // </group>
@@ -153,10 +145,6 @@ public:
 				    unsigned int nr) const;
     virtual unsigned int fromLocal (void* to, const unsigned long*  from,
 				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const long long*      from,
-				    unsigned int nr) const;
-    virtual unsigned int fromLocal (void* to, const unsigned long long* from,
-				    unsigned int nr) const;
     virtual unsigned int fromLocal (void* to, const float*          from,
 				    unsigned int nr) const;
     virtual unsigned int fromLocal (void* to, const double*         from,
@@ -174,8 +162,6 @@ public:
     virtual Bool canCopy (const unsigned int*) const;
     virtual Bool canCopy (const long*) const;
     virtual Bool canCopy (const unsigned long*) const;
-    virtual Bool canCopy (const long long*) const;
-    virtual Bool canCopy (const unsigned long long*) const;
     virtual Bool canCopy (const float*) const;
     virtual Bool canCopy (const double*) const;
     // </group>
@@ -190,8 +176,6 @@ public:
     virtual unsigned int externalSize (const unsigned int*) const;
     virtual unsigned int externalSize (const long*) const;
     virtual unsigned int externalSize (const unsigned long*) const;
-    virtual unsigned int externalSize (const long long*) const;
-    virtual unsigned int externalSize (const unsigned long long*) const;
     virtual unsigned int externalSize (const float*) const;
     virtual unsigned int externalSize (const double*) const;
     // </group>

@@ -82,18 +82,6 @@ unsigned int VAXDataConversion::toLocal (unsigned long&  to,
     VAXConversion::toLocal (to, from);
     return SIZE_VAX_ULONG;
 }
-unsigned int VAXDataConversion::toLocal (long long&      to,
-					 const void* from) const
-{
-    VAXConversion::toLocal (to, from);
-    return SIZE_VAX_LLONG;
-}
-unsigned int VAXDataConversion::toLocal (unsigned long long& to,
-					 const void* from) const
-{
-    VAXConversion::toLocal (to, from);
-    return SIZE_VAX_ULLONG;
-}
 unsigned int VAXDataConversion::toLocal (float&          to,
 					 const void* from) const
 {
@@ -156,19 +144,6 @@ unsigned int VAXDataConversion::toLocal (unsigned long*  to, const void* from,
     VAXConversion::toLocal (to, from, nr);
     return nr*SIZE_VAX_ULONG;
 }
-unsigned int VAXDataConversion::toLocal (long long*      to, const void* from,
-					 unsigned int nr) const
-{
-    VAXConversion::toLocal (to, from, nr);
-    return nr*SIZE_VAX_LLONG;
-}
-unsigned int VAXDataConversion::toLocal (unsigned long long* to,
-					 const void* from,
-					 unsigned int nr) const
-{
-    VAXConversion::toLocal (to, from, nr);
-    return nr*SIZE_VAX_ULLONG;
-}
 unsigned int VAXDataConversion::toLocal (float*          to, const void* from,
 					 unsigned int nr) const
 {
@@ -221,16 +196,6 @@ unsigned int VAXDataConversion::fromLocal (void* to, unsigned long  from) const
 {
     VAXConversion::fromLocal (to, from);
     return SIZE_VAX_ULONG;
-}
-unsigned int VAXDataConversion::fromLocal (void* to, long long      from) const
-{
-    VAXConversion::fromLocal (to, from);
-    return SIZE_VAX_LLONG;
-}
-unsigned int VAXDataConversion::fromLocal (void* to, unsigned long long from) const
-{
-    VAXConversion::fromLocal (to, from);
-    return SIZE_VAX_ULLONG;
 }
 unsigned int VAXDataConversion::fromLocal (void* to, float          from) const
 {
@@ -292,19 +257,6 @@ unsigned int VAXDataConversion::fromLocal (void* to, const unsigned long* from,
     VAXConversion::fromLocal (to, from, nr);
     return nr*SIZE_VAX_ULONG;
 }
-unsigned int VAXDataConversion::fromLocal (void* to, const long long* from,
-					   unsigned int nr) const
-{
-    VAXConversion::fromLocal (to, from, nr);
-    return nr*SIZE_VAX_LLONG;
-}
-unsigned int VAXDataConversion::fromLocal (void* to,
-					   const unsigned long long* from,
-					   unsigned int nr) const
-{
-    VAXConversion::fromLocal (to, from, nr);
-    return nr*SIZE_VAX_ULLONG;
-}
 unsigned int VAXDataConversion::fromLocal (void* to, const float* from,
 					   unsigned int nr) const
 {
@@ -358,7 +310,7 @@ Bool VAXDataConversion::canCopy (const unsigned short*) const
 Bool VAXDataConversion::canCopy (const int*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(int) == SIZE_VAX_INT) {
+    if (sizeof(int) == SIZE_VAX_UINT) {
 	return True;
     }
 #endif
@@ -378,7 +330,7 @@ Bool VAXDataConversion::canCopy (const unsigned int*) const
 Bool VAXDataConversion::canCopy (const long*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(long) == SIZE_VAX_LONG) {
+    if (sizeof(long) == SIZE_VAX_ULONG) {
 	return True;
     }
 #endif
@@ -389,26 +341,6 @@ Bool VAXDataConversion::canCopy (const unsigned long*) const
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(unsigned long) == SIZE_VAX_ULONG) {
-	return True;
-    }
-#endif
-    return False;
-}
-
-Bool VAXDataConversion::canCopy (const long long*) const
-{
-#if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(long long) == SIZE_VAX_LLONG) {
-	return True;
-    }
-#endif
-    return False;
-}
-
-Bool VAXDataConversion::canCopy (const unsigned long long*) const
-{
-#if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(unsigned long long) == SIZE_VAX_ULLONG) {
 	return True;
     }
 #endif
@@ -457,14 +389,6 @@ unsigned int VAXDataConversion::externalSize (const long*) const
 unsigned int VAXDataConversion::externalSize (const unsigned long*) const
 {
     return SIZE_VAX_ULONG;
-}
-unsigned int VAXDataConversion::externalSize (const long long*) const
-{
-    return SIZE_VAX_LLONG;
-}
-unsigned int VAXDataConversion::externalSize (const unsigned long long*) const
-{
-    return SIZE_VAX_ULLONG;
 }
 unsigned int VAXDataConversion::externalSize (const float*) const
 {

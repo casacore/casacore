@@ -111,28 +111,6 @@ void LittleEndianConversion::toLocal (unsigned long* to, const void* from,
     }
 }
 
-void LittleEndianConversion::toLocal (long long* to, const void* from,
-				      unsigned int nr)
-{
-    const char* data = (const char*)from;
-    long long* last = to + nr;
-    while (to < last) {
-	toLocal (*to++, data);
-	data += 4;
-    }
-}
-
-void LittleEndianConversion::toLocal (unsigned long long* to, const void* from,
-				      unsigned int nr)
-{
-    const char* data = (const char*)from;
-    unsigned long long* last = to + nr;
-    while (to < last) {
-	toLocal (*to++, data);
-	data += 4;
-    }
-}
-
 void LittleEndianConversion::toLocal (float* to, const void* from,
 				      unsigned int nr)
 {
@@ -230,29 +208,6 @@ void LittleEndianConversion::fromLocal (void* to, const unsigned long* from,
 {
     char* data = (char*)to;
     const unsigned long* last = from + nr;
-    while (from < last) {
-	fromLocal (data, *from++);
-	data += 4;
-    }
-}
-
-void LittleEndianConversion::fromLocal (void* to, const long long* from,
-					unsigned int nr)
-{
-    char* data = (char*)to;
-    const long long* last = from + nr;
-    while (from < last) {
-	fromLocal (data, *from++);
-	data += 4;
-    }
-}
-
-void LittleEndianConversion::fromLocal (void* to,
-					const unsigned long long* from,
-					unsigned int nr)
-{
-    char* data = (char*)to;
-    const unsigned long long* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += 4;

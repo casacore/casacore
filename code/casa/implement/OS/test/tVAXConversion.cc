@@ -1,5 +1,5 @@
 //# tVAXConversion.h: Test program for class VAXConversion
-//# Copyright (C) 1996,1997,2001
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,7 +43,7 @@ void checkConversion (int& error)
 	char result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != -2) {
-	    cout << "invalid char to conversion " << result << endl;
+	    cout << "invalid char to conversion" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -57,7 +57,7 @@ void checkConversion (int& error)
 	unsigned char result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 254) {
-	    cout << "invalid unsigned char to conversion " << result << endl;
+	    cout << "invalid unsigned char to conversion" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -72,7 +72,7 @@ void checkConversion (int& error)
 	short result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 258) {
-	    cout << "invalid short to conversion 1 " << result << endl;
+	    cout << "invalid short to conversion 1" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -83,7 +83,7 @@ void checkConversion (int& error)
 	val[2] = -2;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256 + 254)) {
-	    cout << "invalid short to conversion 2 " << result << endl;
+	    cout << "invalid short to conversion 2" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -98,7 +98,7 @@ void checkConversion (int& error)
 	unsigned short result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 7*256 + 111) {
-	    cout << "invalid unsigned short to conversion " << result << endl;
+	    cout << "invalid unsigned short to conversion" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -115,7 +115,7 @@ void checkConversion (int& error)
 	int result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 1*256*256*256 + 2*256*256 + 3*256 + 0) {
-	    cout << "invalid int to conversion 1 " << result << endl;
+	    cout << "invalid int to conversion 1" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -127,7 +127,7 @@ void checkConversion (int& error)
 	val[4] = -127;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != -(126*256*256*256 + 253*256*256 + 252*256 + 256)) {
-	    cout << "invalid int to conversion 2 " << result << endl;
+	    cout << "invalid int to conversion 2" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -145,7 +145,7 @@ void checkConversion (int& error)
 	unsigned int result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 11*256*256*256 + 23*256*256 + 35*256 + 7) {
-	    cout << "invalid unsigned int to conversion " << result << endl;
+	    cout << "invalid unsigned int to conversion" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -163,19 +163,19 @@ void checkConversion (int& error)
 	long result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
-	    cout << "invalid long to conversion 1 " << result << endl;
+	    cout << "invalid long to conversion " << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
 	if (out[1] != val[1]  ||  out[2] != val[2]
 	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid long from conversion 1" << endl;
+	    cout << "invalid long from conversion" << endl;
 	    error = 1;
 	}
 	val[4] = -2;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != -(1*256*256*256 + 201*256*256 + 177*256 + 111)) {
-	    cout << "invalid long to conversion 2 " << result << endl;
+	    cout << "invalid long to conversion 2" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
@@ -193,61 +193,13 @@ void checkConversion (int& error)
 	unsigned long result;
 	VAXConversion::toLocal (&result, val+1, 1);
 	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U) {
-	    cout << "invalid unsigned long to conversion " << result << endl;
+	    cout << "invalid unsigned long to conversion" << result << endl;
 	    error = 1;
 	}
 	VAXConversion::fromLocal (out+1, &result, 1);
 	if (out[1] != val[1]  ||  out[2] != val[2]
 	||  out[3] != val[3]  ||  out[4] != val[4]) {
 	    cout << "invalid unsigned long from conversion" << endl;
-	    error = 1;
-	}
-    }
-    {
-	val[4] = 2;
-	val[3] = 54;
-	val[2] = 78;
-	val[1] = 145;
-	long long result;
-	VAXConversion::toLocal (&result, val+1, 1);
-	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145) {
-	    cout << "invalid long long to conversion 1 " << result << endl;
-	    error = 1;
-	}
-	VAXConversion::fromLocal (out+1, &result, 1);
-	if (out[1] != val[1]  ||  out[2] != val[2]
-	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid long long from conversion 1" << endl;
-	    error = 1;
-	}
-	val[4] = -2;
-	VAXConversion::toLocal (&result, val+1, 1);
-	if (result != -(1*256*256*256 + 201*256*256 + 177*256 + 111)) {
-	    cout << "invalid long long to conversion 2 " << result << endl;
-	    error = 1;
-	}
-	VAXConversion::fromLocal (out+1, &result, 1);
-	if (out[1] != val[1]  ||  out[2] != val[2]
-	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid long long from conversion 2" << endl;
-	    error = 1;
-	}
-    }
-    {
-	val[4] = 128;
-	val[3] = 54;
-	val[2] = 78;
-	val[1] = 100;
-	unsigned long long result;
-	VAXConversion::toLocal (&result, val+1, 1);
-	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U) {
-	    cout << "invalid unsigned long long to conversion " << result << endl;
-	    error = 1;
-	}
-	VAXConversion::fromLocal (out+1, &result, 1);
-	if (out[1] != val[1]  ||  out[2] != val[2]
-	||  out[3] != val[3]  ||  out[4] != val[4]) {
-	    cout << "invalid unsigned long long from conversion" << endl;
 	    error = 1;
 	}
     }

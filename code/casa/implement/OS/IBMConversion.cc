@@ -143,40 +143,6 @@ void IBMConversion::toLocal (unsigned long* to, const void* from,
     }
 }
 
-void IBMConversion::toLocal (long long* to, const void* from,
-			     unsigned int nr)
-{
-#if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(long long) == SIZE_IBM_LLONG) {
-	memcpy (to, from, nr*sizeof(long long));
-	return;
-    }
-#endif
-    const char* data = (const char*)from;
-    long long* last = to + nr;
-    while (to < last) {
-	toLocal (*to++, data);
-	data += 4;
-    }
-}
-
-void IBMConversion::toLocal (unsigned long long* to, const void* from,
-			     unsigned int nr)
-{ 
-#if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(unsigned long long) == SIZE_IBM_ULLONG) {
-	memcpy (to, from, nr*sizeof(unsigned long long));
-	return;
-    }
-#endif
-    const char* data = (const char*)from;
-    unsigned long long* last = to + nr;
-    while (to < last) {
-	toLocal (*to++, data);
-	data += 4;
-    }
-}
-
 void IBMConversion::fromLocal (void* to, const long* from,
 			       unsigned int nr)
 {
@@ -193,28 +159,6 @@ void IBMConversion::fromLocal (void* to, const unsigned long* from,
 { 
     char* data = (char*)to;
     const unsigned long* last = from + nr;
-    while (from < last) {
-	fromLocal (data, *from++);
-	data += 4;
-    }
-}
-
-void IBMConversion::fromLocal (void* to, const long long* from,
-			       unsigned int nr)
-{
-    char* data = (char*)to;
-    const long long* last = from + nr;
-    while (from < last) {
-	fromLocal (data, *from++);
-	data += 4;
-    }
-}
-
-void IBMConversion::fromLocal (void* to, const unsigned long long* from,
-			       unsigned int nr)
-{ 
-    char* data = (char*)to;
-    const unsigned long long* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += 4;

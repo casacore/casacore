@@ -45,8 +45,6 @@
 #define SIZE_CAN_UINT     4
 #define SIZE_CAN_LONG     8
 #define SIZE_CAN_ULONG    8
-#define SIZE_CAN_LLONG    8
-#define SIZE_CAN_ULLONG   8
 #define SIZE_CAN_FLOAT    4
 #define SIZE_CAN_DOUBLE   8
 //#//define SIZE_CAN_LDOUBLE 16
@@ -73,8 +71,6 @@
 #define CONVERT_CAN_UINT     1
 #define CONVERT_CAN_LONG     1
 #define CONVERT_CAN_ULONG    1
-#define CONVERT_CAN_LLONG    1
-#define CONVERT_CAN_ULLONG   1
 #define CONVERT_CAN_FLOAT    1
 #define CONVERT_CAN_DOUBLE   1
 //#//#define CONVERT_CAN_LDOUBLE  1
@@ -94,8 +90,6 @@
 #define CONVERT_CAN_LONG     1
 #define CONVERT_CAN_ULONG    1
 #endif
-#define CONVERT_CAN_LLONG    0
-#define CONVERT_CAN_ULLONG   0
 #define CONVERT_CAN_FLOAT    0
 #define CONVERT_CAN_DOUBLE   0
 // LDOUBLE is 8 bytes on SUN, but 16 bytes canonical.
@@ -122,7 +116,6 @@
 // <br>- short: 2 bytes
 // <br>- int: 4 bytes
 // <br>- long: 8 bytes
-// <br>- long long: 8 bytes
 // <br>- float: 4 bytes
 // <br>- double: 8 bytes
 // <br> The canonical format is big-endian IEEE format, so on many machines
@@ -182,8 +175,6 @@ public:
     static unsigned int toLocal (unsigned int&   to, const void* from);
     static unsigned int toLocal (long&           to, const void* from);
     static unsigned int toLocal (unsigned long&  to, const void* from);
-    static unsigned int toLocal (long long&      to, const void* from);
-    static unsigned int toLocal (unsigned long long&  to, const void* from);
     static unsigned int toLocal (float&          to, const void* from);
     static unsigned int toLocal (double&         to, const void* from);
     // </group>
@@ -199,8 +190,6 @@ public:
     static unsigned int fromLocal (void* to, unsigned int   from);
     static unsigned int fromLocal (void* to, long           from);
     static unsigned int fromLocal (void* to, unsigned long  from);
-    static unsigned int fromLocal (void* to, long long      from);
-    static unsigned int fromLocal (void* to, unsigned long long from);
     static unsigned int fromLocal (void* to, float          from);
     static unsigned int fromLocal (void* to, double         from);
     // </group>
@@ -223,10 +212,6 @@ public:
     static unsigned int toLocal (long*           to, const void* from,
 				 unsigned int nr);
     static unsigned int toLocal (unsigned long*  to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (long long*      to, const void* from,
-				 unsigned int nr);
-    static unsigned int toLocal (unsigned long long* to, const void* from,
 				 unsigned int nr);
     static unsigned int toLocal (float*          to, const void* from,
 				 unsigned int nr);
@@ -253,10 +238,6 @@ public:
 				   unsigned int nr);
     static unsigned int fromLocal (void* to, const unsigned long*  from,
 				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const long long*      from,
-				   unsigned int nr);
-    static unsigned int fromLocal (void* to, const unsigned long long* from,
-				   unsigned int nr);
     static unsigned int fromLocal (void* to, const float*          from,
 				   unsigned int nr);
     static unsigned int fromLocal (void* to, const double*         from,
@@ -282,10 +263,6 @@ public:
 					 unsigned int nr);
     static unsigned int toLocalULong    (void* to, const void* from,
 					 unsigned int nr);
-    static unsigned int toLocalLLong    (void* to, const void* from,
-					 unsigned int nr);
-    static unsigned int toLocalULLong   (void* to, const void* from,
-					 unsigned int nr);
     static unsigned int toLocalFloat    (void* to, const void* from,
 					 unsigned int nr);
     static unsigned int toLocalDouble   (void* to, const void* from,
@@ -310,10 +287,6 @@ public:
     static unsigned int fromLocalLong     (void* to, const void* from,
 					   unsigned int nr);
     static unsigned int fromLocalULong    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalLLong    (void* to, const void* from,
-					   unsigned int nr);
-    static unsigned int fromLocalULLong   (void* to, const void* from,
 					   unsigned int nr);
     static unsigned int fromLocalFloat    (void* to, const void* from,
 					   unsigned int nr);
@@ -344,10 +317,6 @@ public:
 				      unsigned int nrbytes);
     static void* byteToLocalULong    (void* to, const void* from,
 				      unsigned int nrbytes);
-    static void* byteToLocalLLong    (void* to, const void* from,
-				      unsigned int nrbytes);
-    static void* byteToLocalULLong   (void* to, const void* from,
-				      unsigned int nrbytes);
     static void* byteToLocalFloat    (void* to, const void* from,
 				      unsigned int nrbytes);
     static void* byteToLocalDouble   (void* to, const void* from,
@@ -377,10 +346,6 @@ public:
 					unsigned int nrbytes);
     static void* byteFromLocalULong    (void* to, const void* from,
 					unsigned int nrbytes);
-    static void* byteFromLocalLLong    (void* to, const void* from,
-					unsigned int nrbytes);
-    static void* byteFromLocalULLong   (void* to, const void* from,
-					unsigned int nrbytes);
     static void* byteFromLocalFloat    (void* to, const void* from,
 					unsigned int nrbytes);
     static void* byteFromLocalDouble   (void* to, const void* from,
@@ -397,8 +362,6 @@ public:
     static Conversion::ValueFunction* getToLocal (const unsigned int*);
     static Conversion::ValueFunction* getToLocal (const long*);
     static Conversion::ValueFunction* getToLocal (const unsigned long*);
-    static Conversion::ValueFunction* getToLocal (const long long*);
-    static Conversion::ValueFunction* getToLocal (const unsigned long long*);
     static Conversion::ValueFunction* getToLocal (const float*);
     static Conversion::ValueFunction* getToLocal (const double*);
     static Conversion::ValueFunction* getFromLocal (const char*);
@@ -409,8 +372,6 @@ public:
     static Conversion::ValueFunction* getFromLocal (const unsigned int*);
     static Conversion::ValueFunction* getFromLocal (const long*);
     static Conversion::ValueFunction* getFromLocal (const unsigned long*);
-    static Conversion::ValueFunction* getFromLocal (const long long*);
-    static Conversion::ValueFunction* getFromLocal (const unsigned long long*);
     static Conversion::ValueFunction* getFromLocal (const float*);
     static Conversion::ValueFunction* getFromLocal (const double*);
     // </group>
@@ -427,8 +388,6 @@ public:
     static Conversion::ByteFunction* getByteToLocal (const unsigned int*);
     static Conversion::ByteFunction* getByteToLocal (const long*);
     static Conversion::ByteFunction* getByteToLocal (const unsigned long*);
-    static Conversion::ByteFunction* getByteToLocal (const long long*);
-    static Conversion::ByteFunction* getByteToLocal (const unsigned long long*);
     static Conversion::ByteFunction* getByteToLocal (const float*);
     static Conversion::ByteFunction* getByteToLocal (const double*);
     static Conversion::ByteFunction* getByteFromLocal (const char*);
@@ -439,8 +398,6 @@ public:
     static Conversion::ByteFunction* getByteFromLocal (const unsigned int*);
     static Conversion::ByteFunction* getByteFromLocal (const long*);
     static Conversion::ByteFunction* getByteFromLocal (const unsigned long*);
-    static Conversion::ByteFunction* getByteFromLocal (const long long*);
-    static Conversion::ByteFunction* getByteFromLocal (const unsigned long long*);
     static Conversion::ByteFunction* getByteFromLocal (const float*);
     static Conversion::ByteFunction* getByteFromLocal (const double*);
     // </group>
@@ -455,8 +412,6 @@ public:
     static unsigned int canonicalSize (const unsigned int*);
     static unsigned int canonicalSize (const long*);
     static unsigned int canonicalSize (const unsigned long*);
-    static unsigned int canonicalSize (const long long*);
-    static unsigned int canonicalSize (const unsigned long long*);
     static unsigned int canonicalSize (const float*);
     static unsigned int canonicalSize (const double*);
     //#//static unsigned int canonicalSize (const long double*);
@@ -650,37 +605,6 @@ inline unsigned int CanonicalConversion::toLocal (unsigned long& to,
     return SIZE_CAN_ULONG;
 }
 
-inline unsigned int CanonicalConversion::toLocal (long long& to,
-						  const void* from)
-{
-    if (sizeof(long long) != 8) {
-	if (((signed char*)from)[0] < 0) {
-	    to = -1;
-	}else{
-	    to = 0;
-	}
-    }
-#if defined(AIPS_LITTLE_ENDIAN)
-    reverse8 (&to, from);
-#else
-    move8 (((char*)&to)+sizeof(unsigned long)-8, from);
-#endif
-    return SIZE_CAN_LLONG;
-}
-
-inline unsigned int CanonicalConversion::toLocal (unsigned long long& to,
-						  const void* from)
-{
-    if (sizeof(unsigned long long) != 8) {
-        to = 0;
-    }
-#if defined(AIPS_LITTLE_ENDIAN)
-    reverse8 (&to, from);
-#else
-    move8 (((char*)&to)+sizeof(unsigned long long)-8, from);
-#endif
-    return SIZE_CAN_LLONG;
-}
 
 inline unsigned int CanonicalConversion::toLocal (float& to, const void* from)
 {
@@ -810,27 +734,6 @@ inline unsigned int CanonicalConversion::fromLocal (void* to,
     return SIZE_CAN_ULONG;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, long long from)
-{
-#if defined(AIPS_LITTLE_ENDIAN)
-    reverse4 (to, &from);
-#else
-    move8 (to, ((char*)&from)+sizeof(long long)-8);
-#endif
-    return SIZE_CAN_LLONG;
-}
-
-inline unsigned int CanonicalConversion::fromLocal (void* to,
-						    unsigned long long from)
-{
-#if defined(AIPS_LITTLE_ENDIAN)
-    reverse8 (to, &from);
-#else
-    move8 (to, ((char*)&from)+sizeof(unsigned long long)-8);
-#endif
-    return SIZE_CAN_ULLONG;
-}
-
 inline unsigned int CanonicalConversion::fromLocal (void* to, float from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
@@ -908,20 +811,6 @@ inline unsigned int CanonicalConversion::toLocal (unsigned long*  to,
     toLocalULong (to, from, nr);
     return nr * SIZE_CAN_ULONG;
 }
-inline unsigned int CanonicalConversion::toLocal (long long*      to,
-						  const void* from,
-						  unsigned int nr)
-{
-    toLocalLLong (to, from, nr);
-    return nr * SIZE_CAN_LLONG;
-}
-inline unsigned int CanonicalConversion::toLocal (unsigned long long* to,
-						  const void* from,
-						  unsigned int nr)
-{
-    toLocalULLong (to, from, nr);
-    return nr * SIZE_CAN_ULLONG;
-}
 inline unsigned int CanonicalConversion::toLocal (float*          to,
 						  const void* from,
 						  unsigned int nr)
@@ -994,20 +883,6 @@ inline unsigned int CanonicalConversion::fromLocal (void* to,
     return nr * SIZE_CAN_ULONG;
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
-						    const long long *     from,
-						    unsigned int nr)
-{
-    fromLocalLLong (to, from, nr);
-    return nr * SIZE_CAN_LLONG;
-}
-inline unsigned int CanonicalConversion::fromLocal (void* to,
-					       const unsigned long long*  from,
-						    unsigned int nr)
-{
-    fromLocalULLong (to, from, nr);
-    return nr * SIZE_CAN_ULLONG;
-}
-inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const float*          from,
 						    unsigned int nr)
 {
@@ -1064,16 +939,6 @@ inline Conversion::ValueFunction* CanonicalConversion::getToLocal
     return toLocalULong;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getToLocal
-                                                      (const long long*)
-{
-    return toLocalLLong;
-}
-inline Conversion::ValueFunction* CanonicalConversion::getToLocal
-                                                   (const unsigned long long*)
-{
-    return toLocalULLong;
-}
-inline Conversion::ValueFunction* CanonicalConversion::getToLocal
                                                       (const float*)
 {
     return toLocalFloat;
@@ -1125,16 +990,6 @@ inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
     return fromLocalULong;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
-                                                      (const long long*)
-{
-    return fromLocalLLong;
-}
-inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
-                                                   (const unsigned long long*)
-{
-    return fromLocalULLong;
-}
-inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
                                                       (const float*)
 {
     return fromLocalFloat;
@@ -1162,10 +1017,6 @@ inline unsigned int CanonicalConversion::canonicalSize (const long*)
     {return SIZE_CAN_LONG;}
 inline unsigned int CanonicalConversion::canonicalSize (const unsigned long*)
     {return SIZE_CAN_ULONG;}
-inline unsigned int CanonicalConversion::canonicalSize (const long long*)
-    {return SIZE_CAN_LLONG;}
-inline unsigned int CanonicalConversion::canonicalSize (const unsigned long long*)
-    {return SIZE_CAN_ULLONG;}
 inline unsigned int CanonicalConversion::canonicalSize (const float*)
     {return SIZE_CAN_FLOAT;}
 inline unsigned int CanonicalConversion::canonicalSize (const double*)

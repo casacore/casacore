@@ -44,8 +44,6 @@
 #define SIZE_VAX_UINT     4
 #define SIZE_VAX_LONG     4
 #define SIZE_VAX_ULONG    4
-#define SIZE_VAX_LLONG    4
-#define SIZE_VAX_ULLONG   4
 #define SIZE_VAX_FLOAT    4
 #define SIZE_VAX_DOUBLE   8
 
@@ -92,8 +90,6 @@ public:
     static void toLocal (unsigned int&   to, const void* from);
     static void toLocal (long&           to, const void* from);
     static void toLocal (unsigned long&  to, const void* from);
-    static void toLocal (long long&      to, const void* from);
-    static void toLocal (unsigned long long& to, const void* from);
     static void toLocal (float&          to, const void* from);
     static void toLocal (double&         to, const void* from);
     // </group>
@@ -117,10 +113,6 @@ public:
 			 unsigned int nr);
     static void toLocal (unsigned long*  to, const void* from,
 			 unsigned int nr);
-    static void toLocal (long long *     to, const void* from,
-			 unsigned int nr);
-    static void toLocal (unsigned long long* to, const void* from,
-			 unsigned int nr);
     static void toLocal (float*          to, const void* from,
 			 unsigned int nr);
     static void toLocal (double*         to, const void* from,
@@ -138,8 +130,6 @@ public:
     static void fromLocal (void* to, unsigned int   from);
     static void fromLocal (void* to, long           from);
     static void fromLocal (void* to, unsigned long  from);
-    static void fromLocal (void* to, long long      from);
-    static void fromLocal (void* to, unsigned long long from);
     static void fromLocal (void* to, float          from);
     static void fromLocal (void* to, double         from);
     // </group>
@@ -162,10 +152,6 @@ public:
     static void fromLocal (void* to, const long*           from,
 			   unsigned int nr);
     static void fromLocal (void* to, const unsigned long*  from,
-			   unsigned int nr);
-    static void fromLocal (void* to, const long long*      from,
-			   unsigned int nr);
-    static void fromLocal (void* to, const unsigned long long* from,
 			   unsigned int nr);
     static void fromLocal (void* to, const float*          from,
 			   unsigned int nr);
@@ -220,16 +206,6 @@ inline void VAXConversion::toLocal (long& to, const void* from)
 }
 
 inline void VAXConversion::toLocal (unsigned long& to, const void* from)
-{
-    LittleEndianConversion::toLocal (to, from);
-}
-
-inline void VAXConversion::toLocal (long long& to, const void* from)
-{
-    LittleEndianConversion::toLocal (to, from);
-}
-
-inline void VAXConversion::toLocal (unsigned long long& to, const void* from)
 {
     LittleEndianConversion::toLocal (to, from);
 }
@@ -292,18 +268,6 @@ inline void VAXConversion::toLocal (unsigned long* to, const void* from,
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
-inline void VAXConversion::toLocal (long long* to, const void* from,
-				    unsigned int nr)
-{
-    LittleEndianConversion::toLocal (to, from, nr);
-}
-
-inline void VAXConversion::toLocal (unsigned long long* to, const void* from,
-				    unsigned int nr)
-{
-    LittleEndianConversion::toLocal (to, from, nr);
-}
-
 
 inline void VAXConversion::fromLocal (void* to, char from)
 {
@@ -341,16 +305,6 @@ inline void VAXConversion::fromLocal (void* to, long from)
 }
 
 inline void VAXConversion::fromLocal (void* to, unsigned long from)
-{
-    LittleEndianConversion::fromLocal (to, from);
-}
-
-inline void VAXConversion::fromLocal (void* to, long long from)
-{
-    LittleEndianConversion::fromLocal (to, from);
-}
-
-inline void VAXConversion::fromLocal (void* to, unsigned long long from)
 {
     LittleEndianConversion::fromLocal (to, from);
 }
@@ -408,18 +362,6 @@ inline void VAXConversion::fromLocal (void* to, const long* from,
 }
 
 inline void VAXConversion::fromLocal (void* to, const unsigned long* from,
-				      unsigned int nr)
-{ 
-    LittleEndianConversion::fromLocal (to, from, nr);
-}
-
-inline void VAXConversion::fromLocal (void* to, const long long* from,
-				      unsigned int nr)
-{ 
-    LittleEndianConversion::fromLocal (to, from, nr);
-}
-
-inline void VAXConversion::fromLocal (void* to, const unsigned long long* from,
 				      unsigned int nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);

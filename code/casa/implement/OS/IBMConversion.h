@@ -42,8 +42,6 @@
 #define SIZE_IBM_UINT     4
 #define SIZE_IBM_LONG     4
 #define SIZE_IBM_ULONG    4
-#define SIZE_IBM_LLONG    4
-#define SIZE_IBM_ULLONG   4
 #define SIZE_IBM_FLOAT    4
 #define SIZE_IBM_DOUBLE   8
 
@@ -94,8 +92,6 @@ public:
     static void toLocal (unsigned int&   to, const void* from);
     static void toLocal (long&           to, const void* from);
     static void toLocal (unsigned long&  to, const void* from);
-    static void toLocal (long long&      to, const void* from);
-    static void toLocal (unsigned long long& to, const void* from);
     static void toLocal (float&          to, const void* from);
     static void toLocal (double&         to, const void* from);
     // </group>
@@ -123,10 +119,6 @@ public:
 			 unsigned int nr);
     static void toLocal (unsigned long*  to, const void* from,
 			 unsigned int nr);
-    static void toLocal (long long*      to, const void* from,
-			 unsigned int nr);
-    static void toLocal (unsigned long long* to, const void* from,
-			 unsigned int nr);
     static void toLocal (float*          to, const void* from,
 			 unsigned int nr);
     static void toLocal (double*         to, const void* from,
@@ -148,8 +140,6 @@ public:
     static void fromLocal (void* to, unsigned int   from);
     static void fromLocal (void* to, long           from);
     static void fromLocal (void* to, unsigned long  from);
-    static void fromLocal (void* to, long long      from);
-    static void fromLocal (void* to, unsigned long long from);
     static void fromLocal (void* to, float          from);
     static void fromLocal (void* to, double         from);
     // </group>
@@ -176,10 +166,6 @@ public:
     static void fromLocal (void* to, const long*           from,
 			   unsigned int nr);
     static void fromLocal (void* to, const unsigned long*  from,
-			   unsigned int nr);
-    static void fromLocal (void* to, const long long*      from,
-			   unsigned int nr);
-    static void fromLocal (void* to, const unsigned long long* from,
 			   unsigned int nr);
     static void fromLocal (void* to, const float*          from,
 			   unsigned int nr);
@@ -222,7 +208,7 @@ inline void IBMConversion::toLocal (unsigned int& to, const void* from)
 
 inline void IBMConversion::toLocal (long& to, const void* from)
 {
-    if (sizeof(long) != 4) {
+    if (sizeof(unsigned long) != 4) {
 	if (((signed char*)from)[0] < 0) {
 	    to = -1;
 	}else{
@@ -245,34 +231,6 @@ inline void IBMConversion::toLocal (unsigned long& to, const void* from)
     CanonicalConversion::reverse4 (&to, from);
 #else
     CanonicalConversion::move4 (((char*)&to)+sizeof(unsigned long)-4, from);
-#endif
-}
-
-inline void IBMConversion::toLocal (long long& to, const void* from)
-{
-    if (sizeof(long long) != 4) {
-	if (((signed char*)from)[0] < 0) {
-	    to = -1;
-	}else{
-	    to = 0;
-	}
-    }
-#if defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (&to, from);
-#else
-    CanonicalConversion::move4 (((char*)&to)+sizeof(long long)-4, from);
-#endif
-}
-
-inline void IBMConversion::toLocal (unsigned long long& to, const void* from)
-{
-    if (sizeof(unsigned long long) != 4) {
-	to = 0;
-    }
-#if defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (&to, from);
-#else
-    CanonicalConversion::move4 (((char*)&to)+sizeof(unsigned long long)-4, from);
 #endif
 }
 
@@ -357,24 +315,6 @@ inline void IBMConversion::fromLocal (void* to, unsigned long from)
     CanonicalConversion::reverse4 (to, &from);
 #else
     CanonicalConversion::move4 (to,((char*)&from)+sizeof(unsigned long)-4);
-#endif
-}
-
-inline void IBMConversion::fromLocal (void* to, long long from)
-{
-#if defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (to, &from);
-#else
-    CanonicalConversion::move4 (to, ((char*)&from)+sizeof(long long)-4);
-#endif
-}
-
-inline void IBMConversion::fromLocal (void* to, unsigned long long from)
-{
-#if defined(AIPS_LITTLE_ENDIAN)
-    CanonicalConversion::reverse4 (to, &from);
-#else
-    CanonicalConversion::move4 (to,((char*)&from)+sizeof(unsigned long long)-4);
 #endif
 }
 
