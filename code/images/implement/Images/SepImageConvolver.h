@@ -1,5 +1,5 @@
 //# SepImageConvolver.h: separable convolution of an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,10 +128,13 @@ public:
 // Get the convolution kernel shape for the specified axis
    uInt  getKernelShape(uInt axis);
 
-// Perform the convolution.    The error checking for the
+// Perform the convolution either outputting to a new image
+// or in-situ.    The error checking for the
 // convolution parameters is done when you call this
-// function.  If it needs a mask and doesn't have one,
-// the output image will be given one if possible.
+// function.  If outputting a new image, and it needs a mask and doesn't have one,
+// the it will be given one if possible and the input
+// mask will be transferred to the output.  Masked pixels
+// are zeroed before convolving
 // <group>
    void convolve(ImageInterface<T>& imageOut);
    void convolve();
