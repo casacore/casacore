@@ -139,12 +139,13 @@ void LatticeCache<T>::flush() {
 // contents, otherwise we write them out, possibly adding to current
 // tile.
 template <class T>
-Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, Bool readonly) {
-  IPosition cacheLoc=cacheLocation(tileLoc);
+Array<T>& LatticeCache<T>::tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool readonly) {
+  cacheLoc=cacheLocation(cacheLoc, tileLoc);
   cacheAccesses++;
   Int foundTile=-1;
   for(Int tile=0;tile<numberTiles;tile++) {
-    if((tileSequence[tile]>-1)&&(tileLocs[tile]==cacheLoc)) {
+    // Much of the time is spent in this next isEqual.
+    if((tileSequence[tile]>-1)&&(tileLocs[tile].isEqual(cacheLoc))) {
       foundTile=tile;
       break;
     }
@@ -168,15 +169,82 @@ Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, Bool readonly) {
 };
  
 
+// Return a specified tile. If we cannot locate it in the
+// cache, then fill it into the cache. This is the prime
+// interface. If readonly is true then we discard the current
+// contents, otherwise we write them out, possibly adding to current
+// tile.
+template <class T>
+Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc, Bool readonly) {
+  IPosition cacheLoc;
+  return tile(cacheLoc, tileLoc, readonly);
+}
+
 // Const version
 template <class T>
 const Array<T>& LatticeCache<T>::tile(const IPosition& tileLoc) {
   return tile(tileLoc, True);
 }
 
+// Print the Cache Statistics
+template <class T>
+void LatticeCache<T>::showCacheStatistics(ostream &os) {
+
+  os<<"Cache Statistics"<<endl;
+  os<<"   Lattice shape   "<<image_p->shape()<<endl;
+  os<<"   Cache size      "<<cacheSize<<endl;
+  os<<"   Tile shape      "<<tileShape<<endl;
+  os<<"   Tile overlap    "<<tileOverlap.ac()<<endl;
+  os<<"   Tile offset     "<<tileOffsetVec.ac()<<endl;
+  os<<"   Number of tiles "<<numberTiles<<endl;
+  os<<"   Accesses        "<<cacheAccesses<<endl;
+  os<<"   Hits            "<<cacheHits<<endl;
+  os<<"   Misses          "<<cacheMisses<<endl;
+  os<<"   Hit rate        "<<100.0*Float(cacheHits)/Float(cacheAccesses)<<"%"<<endl;
+  os<<"   Reads           "<<cacheReads<<endl;
+  os<<"   Writes          "<<cacheWrites<<endl;
+
+};
+
+// Clear the Cache Statistics
+template <class T>
+void LatticeCache<T>::clearCacheStatistics() {
+
+  cacheAccesses=0;
+  cacheHits=0;
+  cacheMisses=0;
+  cacheReads=0;
+  cacheWrites=0;
+};
+
+// Find the cache location (i.e. only on a grid).
+template <class T>
+IPosition& LatticeCache<T>::cacheLocation(IPosition& cacheLoc, const IPosition& tileLoc) {
+  for (Int i=0;i<tileLoc.nelements();i++) {
+    if(tileOffsetVec(i)>0) {
+      Int loco=tileLoc(i);
+      Int loc=loco;
+      loc-=loc%tileOffsetVec(i);
+      if((loco-loc)>=3*tileShapeVec(i)/4) loc+=tileOffsetVec(i);
+      if((loco-loc)<   tileShapeVec(i)/4) loc-=tileOffsetVec(i);
+      if((loco-loc)<0) loc-=tileOffsetVec(i);
+      cacheLoc(i)=loc;
+    }
+    else {
+      cacheLoc(i)=0;
+    }
+  }
+  return cacheLoc;
+};
+
+// ******************************************************************
+// Start of private functions
+// ******************************************************************
+
 // Write a specified tile
 template <class T>
 void LatticeCache<T>::writeTile(Int tile) {
+  tileSequence[tile]=cacheAccesses;
   if(additive) {
     Array<T> tileOnDisk(tileContents[tile].shape());
     tileOnDisk=0.0;
@@ -218,7 +286,6 @@ void LatticeCache<T>::readTile(Int tile, Bool readonly) {
 // writing them out. This is needed for a const version of tile.
 template <class T>
 Int LatticeCache<T>::getFreeTile(Bool readonly) {
-  Int oldest=cacheAccesses;
   Int foundTile=-1;
 
   // First search for unallocated tiles
@@ -233,6 +300,7 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
     // We didn't find an unallocated tile so we look for the
     // least-recently-used tile and use it, if readonly is
     // False, we have to first write it to disk
+    Int oldest=cacheAccesses;
     for(Int tile=0;tile<numberTiles;tile++) {
       if((tileSequence[tile]>0)&&(tileSequence[tile]<oldest)) {
         oldest=tileSequence[tile];
@@ -249,51 +317,4 @@ Int LatticeCache<T>::getFreeTile(Bool readonly) {
   return foundTile;
 }
 
-// Print the Cache Statistics
-template <class T>
-void LatticeCache<T>::showCacheStatistics(ostream &os) {
-
-  os<<"Cache Statistics"<<endl;
-  os<<"   Lattice shape   "<<image_p->shape()<<endl;
-  os<<"   Cache size      "<<cacheSize<<endl;
-  os<<"   Tile shape      "<<tileShape<<endl;
-  os<<"   Tile overlap    "<<tileOverlap.ac()<<endl;
-  os<<"   Tile offset     "<<tileOffsetVec.ac()<<endl;
-  os<<"   Number of tiles "<<numberTiles<<endl;
-  os<<"   Accesses        "<<cacheAccesses<<endl;
-  os<<"   Hits            "<<cacheHits<<endl;
-  os<<"   Misses          "<<cacheMisses<<endl;
-  os<<"   Hit rate        "<<100.0*Float(cacheHits)/Float(cacheAccesses)<<"%"<<endl;
-  os<<"   Reads           "<<cacheReads<<endl;
-  os<<"   Writes          "<<cacheWrites<<endl;
-
-};
-
-// Clear the Cache Statistics
-template <class T>
-void LatticeCache<T>::clearCacheStatistics() {
-
-  cacheAccesses=0;
-  cacheHits=0;
-  cacheMisses=0;
-  cacheReads=0;
-  cacheWrites=0;
-};
-
-// Find the cache location (i.e. only on a grid)
-template <class T>
-IPosition LatticeCache<T>::cacheLocation(const IPosition& tileLoc) {
-  tileLocVec=tileLoc.asVector().ac();
-  for (Int i=0;i<tileLocVec.nelements();i++) {
-    if(tileOffsetVec(i)>0) {
-      Int loc=tileLocVec(i);
-      loc-=loc%tileOffsetVec(i);
-      if((tileLocVec(i)-loc)>=3*tileShapeVec(i)/4) loc+=tileOffsetVec(i);
-      if((tileLocVec(i)-loc)<   tileShapeVec(i)/4) loc-=tileOffsetVec(i);
-      if((tileLocVec(i)-loc)<0) loc-=tileOffsetVec(i);
-      tileLocVec(i)=loc;
-    }
-  }
-  return IPosition(tileLocVec);
-};
 

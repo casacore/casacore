@@ -115,13 +115,16 @@ public:
   virtual ~LatticeCache();
 
   // Return the tile for a given location
+  // <group>
+  Array<T>& tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool discard=True);
   Array<T>& tile(const IPosition& tileLoc, Bool discard=True);
+  // </group>
 
   // const version is needed
   const Array<T>& tile(const IPosition& tileLoc);
 
   // Return the IPosition for the start of this tile
-  IPosition cacheLocation(const IPosition& tileLoc);
+  IPosition& cacheLocation(IPosition& cacheLoc, const IPosition& tileLoc);
 
   // Show the statistics of cache access
   virtual void showCacheStatistics(ostream& os);
@@ -150,7 +153,6 @@ protected:
   Int cacheWrites;
 
   Int getFreeTile(Bool readonly);
-
 
   Block<IPosition> tileLocs;
   Block<Int> tileSequence;
