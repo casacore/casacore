@@ -476,7 +476,7 @@ Bool MomentCalcBase<T>::fitGaussian (uInt& nFailed,
    resultSigma = 1;
    try {
      solution = fitter.fit(xSel, ySel, resultSigma);
-   } catch (AipsError x) {
+   } catch (AipsError x1) {
       nFailed++;
       return False;
    } end_try;
