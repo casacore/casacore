@@ -2231,3 +2231,6 @@
 09 127 src rm atnf/implement/pks/AnnealFit1D.h
 09 127 src rm atnf/implement/pks/RobustLineFit.cc
 09 127 src rm atnf/implement/pks/RobustLineFit.h
+09 127 src rm atnf/implement/pks/test/tMeanDevFitPoly.cc
+09 127 src rm atnf/implement/pks/test/tMedianDevFitPoly.cc
+09 127 src rm atnf/implement/pks/test/tRobustLineFit.cc
