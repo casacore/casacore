@@ -2089,3 +2089,4 @@
 08 297 src rm aips/implement/Measures/test/tMRefData.out
 08 298 src rm nrao/apps/gbt_utscr/gbt_if_utils.g
 08 298 src rm nrao/apps/gbt_utscr/gbt_pul_utils.g
+08 298 src rm nrao/apps/gbt_utscr/gbt_dcr_utils.g
