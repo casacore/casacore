@@ -31,7 +31,7 @@ B           = Quantity(2.,"yd")    = 2 yd
 C           = Quantity(3.)           = 3 
 D           = Quantity(6,"Jy")     = 6 Jy
 DEG         = Quantity(5,"deg")    = 5 deg
-CQ          = Complex(7,"ml")      = (7, 0) ml
+CQ          = Complex(7,"ml")      = (7,0) ml
 VQ          = Vector((3,4),"uA")   = [3, 4] uA
 V2          = Vector(2,2)            = [2, 2]
 V1          = Vector(3)              = [3, 3]
@@ -43,7 +43,7 @@ A*B         = 10 m.yd
 2.*B        = 4 yd
 B*2.        = 4 yd
 B/2.        = 1 yd
-2*CQ        = (14, 0) ml
+2*CQ        = (14,0) ml
 V2*VQ       = [6, 8] uA
 V1*VQ       = [9, 12] uA
 A*C         = 15 m
@@ -55,13 +55,13 @@ A-B         = 3.1712 m
 B+A         = 7.46807 yd
 B-A         = -3.46807 yd
 abs(A)      = 5 m
-abs(CQ)     = (7, 0) ml
+abs(CQ)     = (7,0) ml
 abs(VQ)     = [3, 4] uA
 ceil(A)     = 5 m
-ceil(CQ)    = (7, 0) ml
+ceil(CQ)    = (7,0) ml
 ceil(VQ)    = [3, 4] uA
 floor(A)    = 5 m
-floor(CQ)   = (7, 0) ml
+floor(CQ)   = (7,0) ml
 floor(VQ)   = [3, 4] uA
 sin(DEG)    = 0.0871557 
 asin()      = 0.0872665 rad

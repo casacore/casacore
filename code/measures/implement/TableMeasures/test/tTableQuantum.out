@@ -40,21 +40,21 @@ Quantum arcmin 3: 32177.3 arcmin
 Quantum arcmin 4: 42903.1 arcmin
 The units for ScaQuantComplex are variable.
 getUnits() should produce an empty string: 
-(0.0698132, 0.00366519) m/s.m-1.s.rad
-(960, 50.4) m/s.m-1.s2
-(960, 50.4) m/s.m-1.s2
-(960, 50.4) m/s.m-1.s2
-(960, 50.4) m/s.m-1.s2
-Complex quantum (var unit) 0: (4, 0.21) deg
-Complex quantum (var unit) 1: (960000, 50400) ms
-Complex quantum (var unit) 2: (960000, 50400) g.kg-1.s
-Complex quantum (var unit) 3: (9.6e+28, 5.04e+27) Jy.kg-1.s3
-Complex quantum (var unit) 4: (9.6e-07, 5.04e-08) GHz.s2
-Complex quantum (var unit) 0: (0.0698132, 0.00366519) m/s.m-1.s.rad
-Complex quantum (var unit) 1: (960, 50.4) m/s.m-1.s2
-Complex quantum (var unit) 2: (960, 50.4) m/s.m-1.s2
-Complex quantum (var unit) 3: (960, 50.4) m/s.m-1.s2
-Complex quantum (var unit) 4: (960, 50.4) m/s.m-1.s2
+(0.0698132,0.00366519) m/s.m-1.s.rad
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+(960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 0: (4,0.21) deg
+Complex quantum (var unit) 1: (960000,50400) ms
+Complex quantum (var unit) 2: (960000,50400) g.kg-1.s
+Complex quantum (var unit) 3: (9.6e+28,5.04e+27) Jy.kg-1.s3
+Complex quantum (var unit) 4: (9.6e-07,5.04e-08) GHz.s2
+Complex quantum (var unit) 0: (0.0698132,0.00366519) m/s.m-1.s.rad
+Complex quantum (var unit) 1: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 2: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 3: (960,50.4) m/s.m-1.s2
+Complex quantum (var unit) 4: (960,50.4) m/s.m-1.s2
 
 Finished test of Quantum scalar column...........
 

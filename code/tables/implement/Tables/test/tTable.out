@@ -19,7 +19,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ag   DataType=DComplex
-   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
    Comment = 
    #keywords=0
 
@@ -73,7 +73,7 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
    Name=ag   DataType=DComplex
-   DataManager=StandardStMan/StandardStMan   Default=(0, 0)
+   DataManager=StandardStMan/StandardStMan   Default=(0,0)
    Comment = 
    #keywords=0
 

@@ -2,29 +2,29 @@ select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 sh where ab>2
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
- 9 10 11 12 V9 (11, 0)
- 6 7 8 9 V6 (8, 0)
- 5 6 7 8 V5 (7, 0)
- 4 5 6 7 V4 (6, 0)
- 3 4 5 6 V3 (5, 0)
+ 9 10 11 12 V9 (11,0)
+ 6 7 8 9 V6 (8,0)
+ 5 6 7 8 V5 (7,0)
+ 4 5 6 7 V4 (6,0)
+ 3 4 5 6 V3 (5,0)
 select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
- 9 10 11 12 V9 (11, 0)
- 6 7 8 9 V6 (8, 0)
- 5 6 7 8 V5 (7, 0)
- 4 5 6 7 V4 (6, 0)
- 3 4 5 6 V3 (5, 0)
+ 9 10 11 12 V9 (11,0)
+ 6 7 8 9 V6 (8,0)
+ 5 6 7 8 V5 (7,0)
+ 4 5 6 7 V4 (6,0)
+ 3 4 5 6 V3 (5,0)
 select ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af
     has been executed
     5 rows selected
 6 selected columns:  ab ac ad ae af ag
- 3 4 5 6 V3 (5, 0)
- 4 5 6 7 V4 (6, 0)
- 5 6 7 8 V5 (7, 0)
- 6 7 8 9 V6 (8, 0)
- 9 10 11 12 V9 (11, 0)
+ 3 4 5 6 V3 (5,0)
+ 4 5 6 7 V4 (6,0)
+ 5 6 7 8 V5 (7,0)
+ 6 7 8 9 V6 (8,0)
+ 9 10 11 12 V9 (11,0)
 select ab from tTableGram_tmp.link/tTable_2.data_v0 where ab==2^1^2 || ab==-2^-1*8/-2*3
     has been executed
     2 rows selected
@@ -84,8 +84,8 @@ select ab,ac,ad,ae,af,ag from tTableGram_tmp.link/tTable_2.data_v0 where ab+ac+a
     has been executed
     2 rows selected
 6 selected columns:  ab ac ad ae af ag
- 8 9 10 11 V8 (10, 0)
- 9 10 11 12 V9 (11, 0)
+ 8 9 10 11 V8 (10,0)
+ 9 10 11 12 V9 (11,0)
 select ab,ac,af from tTableGram_tmp.link/tTable_2.data_v0 where ab>5 orderby af desc, ac
     has been executed
     4 rows selected

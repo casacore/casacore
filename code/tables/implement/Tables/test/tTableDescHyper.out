@@ -50,7 +50,7 @@ TableDesc tTableDescHyper_tmp   version 1   (Directory ./)
    #keywords=0
 
    Name=DataScalar   DataType=Complex
-   DataManager=TiledColumnStMan/TSMExample4   Default=(0, 0)
+   DataManager=TiledColumnStMan/TSMExample4   Default=(0,0)
    Comment = 
    #keywords=0
 
