@@ -36,6 +36,8 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/OS/Time.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
 
 
 
