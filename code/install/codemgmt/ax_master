@@ -4871,3 +4871,4 @@
 14 316 src rm trial/apps/newdish/dishgenericopgui.g
 14 316 sys rm libexec/dishgenericopgui.g
 14 316 src rm trial/apps/newdish/dishgui.g
+14 316 sys rm libexec/dishgui.g
