@@ -238,8 +238,8 @@ public:
     // frequency plane is taken from a cube. The plane has 2 pixel axes, but
     // the 3rd world axis can still describe the frequency coordinate.
     // <group>
-    void removeWorldAxis(uInt axis, Double replacement);
-    void removePixelAxis(uInt axis, Double replacement);
+    Bool removeWorldAxis(uInt axis, Double replacement);
+    Bool removePixelAxis(uInt axis, Double replacement);
     // </group>
 
     // Both vectors should be of length nPixelAxes(). At present this will throw
