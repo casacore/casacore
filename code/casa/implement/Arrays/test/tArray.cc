@@ -728,14 +728,16 @@ int main()
 
 	{
 	  // Test nonDegenerate on an Array subsection.
-	  IPosition shape0(3,2,3,4,5,6);
+	  IPosition shape0(5,2,3,4,5,6);
 	  Array<Float> data(shape0);
 	  indgen(data, Float(0.0));
 	  IPosition blc(5, 0);
 	  IPosition trc = shape0 - 1;
 	  for (Int i=0; i<shape0(0); i++) {
+	    blc(0) = i;
 	    trc(0) = i;
 	    for (Int j=0; j<shape0(3); j++) {
+	      blc(3) = j;
 	      trc(3) = j;
 	      Array<Float> data2 = data(blc, trc);
 	      IPosition shape1(3, shape0(1), shape0(2), shape0(4));
@@ -753,6 +755,7 @@ int main()
 
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
+	return 1;
     } 
 
     cout << "OK" << endl;
