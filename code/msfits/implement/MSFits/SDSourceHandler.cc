@@ -1,0 +1,460 @@
+//# SDSourceFiller.cc: an SOURCE filler for SDFITS data  
+//# Copyright (C) 2000
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+//# Includes
+#include <trial/MeasurementSets/SDSourceHandler.h>
+
+#include <aips/Tables/ColumnsIndex.h>
+#include <aips/MeasurementSets/NewMeasurementSet.h>
+#include <aips/MeasurementSets/NewMSSourceColumns.h>
+#include <aips/MeasurementSets/NewMSSource.h>
+#include <aips/Containers/Record.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Exceptions/Error.h>
+#include <aips/Tables/TableDesc.h>
+#include <aips/Arrays/ArrayLogical.h>
+
+SDSourceHandler::SDSourceHandler() 
+    : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+{;}
+
+SDSourceHandler::SDSourceHandler(NewMeasurementSet &ms, Vector<Bool> &handledCols,
+				   const Record &row) 
+    : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+{
+    initAll(ms, handledCols, row);
+}
+
+SDSourceHandler::SDSourceHandler(const SDSourceHandler &other) 
+    : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
+      nextSourceId_p(0), restfreq_p(-1), rvsys_p(-1), vframe_p(-1),
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+{
+    *this = other;
+}
+
+SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
+{
+    if (this != &other) {
+	clearAll();
+	index_p = new ColumnsIndex(*(other.index_p));
+	AlwaysAssert(index_p, AipsError);
+	// need to avoid the assignment operator here because we want
+	// this to point to the field in index_p, not in other.index_p
+	nameKey_p.attachToRecord(index_p->accessKey(),
+				 NewMSSource::columnName(NewMSSource::NAME));
+	codeKey_p.attachToRecord(index_p->accessKey(),
+				 NewMSSource::columnName(NewMSSource::CODE));
+	msSource_p = new NewMSSource(*(other.msSource_p));
+	AlwaysAssert(msSource_p, AipsError);
+	msSourceCols_p = new NewMSSourceColumns(*(other.msSourceCols_p));
+	AlwaysAssert(msSourceCols_p, AipsError);
+	
+	sourceId_p = other.sourceId_p;
+	nextSourceId_p = other.nextSourceId_p;
+	
+	// this should point to the same field as that in other
+	restfreq_p = other.restfreq_p;
+	rvsys_p = other.rvsys_p;
+	vframe_p = other.vframe_p;
+	transiti_p = other.transiti_p;
+	object_p = other.object_p;
+	obsmode_p = other.obsmode_p;
+
+	hasTransition_p = other.hasTransition_p;
+	hasRestFreq_p = other.hasRestFreq_p;
+	hasSysVel_p = other.hasSysVel_p;
+
+	calibrationGroupField_p = other.calibrationGroupField_p;
+	pulsarIdField_p = other.pulsarIdField_p;
+	timeField_p = other.timeField_p;
+	intervalField_p = other.intervalField_p;
+	directionField_p = other.directionField_p;
+	positionField_p = other.positionField_p;
+	properMotionField_p = other.properMotionField_p;
+    }
+    return *this;
+}
+
+void SDSourceHandler::attach(NewMeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+{
+    clearAll();
+    initAll(ms, handledCols, row);
+}
+
+void SDSourceHandler::resetRow(const Record &row) 
+{
+    clearRow();
+    Vector<Bool> dummyHandled;
+    initRow(dummyHandled, row);
+}
+
+void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
+{
+    // don't bother unless there is something there
+    if (msSource_p) {
+	if (object_p.isAttached()) {
+	    *nameKey_p = *object_p;
+	} else {
+	    *nameKey_p = "";
+	}
+	if (obsmode_p.isAttached()) {
+	    *codeKey_p = *obsmode_p;
+	} else {
+	    *codeKey_p = "";
+	}
+	uInt rownr;
+	Vector<uInt> foundRows = index_p->getRowNumbers();
+	Bool found = False;
+	if (foundRows.nelements() > 0) {
+	    // we have at least 1 candidate, look for a matching spectral window ID
+	    uInt whichOne = 0;
+	    while (!found && whichOne<foundRows.nelements()) {
+		if (spectralWindowId == msSourceCols_p->spectralWindowId()(foundRows(whichOne))) {
+		    found = True;
+		    rownr = foundRows(whichOne);
+		    found = found && calibrationGroupField_p.isAttached() && 
+			msSourceCols_p->calibrationGroup()(rownr) == *calibrationGroupField_p;
+		    found = found && timeField_p.isAttached() && 
+			msSourceCols_p->time()(rownr) == *timeField_p;
+		    found = found && intervalField_p.isAttached() && 
+			msSourceCols_p->interval()(rownr) == *intervalField_p;
+		    found = found && directionField_p.isAttached() && 
+			allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
+		    found = found && positionField_p.isAttached() && 
+			allEQ(msSourceCols_p->position()(rownr),*positionField_p);
+		    found = found && properMotionField_p.isAttached() && 
+			allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
+		    if (found && pulsarIdField_p.isAttached()) {
+			if (msSourceCols_p->pulsarId().isNull()) found = !(*pulsarIdField_p>=0);
+			else found = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
+		    }
+		}
+		whichOne++;
+	    }
+	}
+	if (!found) {
+	    // we need to add one
+	    rownr = msSource_p->nrow();
+	    msSource_p->addRow();
+	    sourceId_p = nextSourceId_p++;
+	    msSourceCols_p->sourceId().put(rownr,sourceId_p);
+	    if (timeField_p.isAttached()) {
+		msSourceCols_p->time().put(rownr,*timeField_p);
+	    } else {
+		msSourceCols_p->time().put(rownr,0.0);
+	    }
+	    if (intervalField_p.isAttached()) {
+		msSourceCols_p->interval().put(rownr,*intervalField_p);
+	    } else {
+		msSourceCols_p->interval().put(rownr,0.0);
+	    }
+	    msSourceCols_p->spectralWindowId().put(rownr, spectralWindowId);
+	    // num lines and related are filled in later
+	    msSourceCols_p->numLines().put(rownr, 0);
+	    String name = "";
+	    if (object_p.isAttached()) name = *object_p;
+	    msSourceCols_p->name().put(rownr,name);
+	    if (calibrationGroupField_p.isAttached()) {
+		msSourceCols_p->calibrationGroup().put(rownr, *calibrationGroupField_p);
+	    } else {
+		msSourceCols_p->calibrationGroup().put(rownr,-1);
+	    }
+	    String code = "";
+	    if (obsmode_p.isAttached()) code = *obsmode_p;
+	    msSourceCols_p->code().put(rownr,code);
+	    if (directionField_p.isAttached()) {
+		msSourceCols_p->direction().put(rownr,*directionField_p);
+	    } else {
+		msSourceCols_p->direction().put(rownr,Vector<Double>(2,0.0));
+	    }
+	    if (positionField_p.isAttached()) {
+		msSourceCols_p->position().put(rownr,*positionField_p);
+	    } else {
+		msSourceCols_p->position().put(rownr,Vector<Double>(3,0.0));
+	    }
+	    if (properMotionField_p.isAttached()) {
+		msSourceCols_p->properMotion().put(rownr,*properMotionField_p);
+	    } else {
+		msSourceCols_p->properMotion().put(rownr,Vector<Double>(2,0.0));
+	    }
+	    if (pulsarIdField_p.isAttached()) {
+		if (msSourceCols_p->pulsarId().isNull() && *pulsarIdField_p >= 0) {
+		    // add this column
+		    delete msSourceCols_p;
+		    msSourceCols_p = 0;
+		    TableDesc td;
+		    NewMSSource::addColumnToDesc(td, NewMSSource::PULSAR_ID);
+		    msSource_p->addColumn(td[0]);
+		    msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+		    AlwaysAssert(msSourceCols_p, AipsError);
+		    msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
+		} else {
+		    msSourceCols_p->pulsarId().put(rownr, *pulsarIdField_p);
+		}
+	    }
+	    // transition, rest_frequency, sysvel are inserted outside this loop
+	}
+	// only do this if these columns exist in the MS
+	if (hasRestFreq_p || hasTransition_p || hasSysVel_p) {
+	    String transition = "";
+	    if (transiti_p.isAttached()) transition = *transiti_p;
+	    if (molecule_p.isAttached()) {
+		if (transition.length() > 0) transition += ", ";
+		transition += *molecule_p;
+	    }
+	    Double restfreq = 0.0;
+	    if (restfreq_p >= 0) {
+		restfreq = row.asDouble(restfreq_p);
+	    }
+	    Double sysvel = 0.0;
+	    if (rvsys_p >= 0) {
+		sysvel = row.asDouble(rvsys_p);
+		if (vframe_p >= 0) {
+		    sysvel -= row.asDouble(vframe_p);
+		}
+	    }
+	    Int nlines = msSourceCols_p->numLines()(rownr);
+	    if (nlines == 0) {
+		msSourceCols_p->numLines().put(rownr,1);
+		if (hasTransition_p) {
+		    msSourceCols_p->transition().put(rownr,Vector<String>(1,transition));
+		}
+		if (hasRestFreq_p) {
+		    msSourceCols_p->restFrequency().put(rownr,Vector<Double>(1,restfreq));
+		}
+		if (hasSysVel_p) {
+		    msSourceCols_p->sysvel().put(rownr,Vector<Double>(1,sysvel));
+		}
+	    } else {
+		// see if this combination is already in use
+		Vector<String> vtrans(nlines,"");
+		Vector<Double> vrestfreq(nlines,0.0), vsysvel(nlines,0.0);
+		if (hasTransition_p) vtrans = msSourceCols_p->transition()(rownr);
+		if (hasRestFreq_p) vrestfreq = msSourceCols_p->restFrequency()(rownr);
+		if (hasSysVel_p) vsysvel = msSourceCols_p->sysvel()(rownr);
+		Int whichLine = 0;
+		Bool foundLine = False;
+		while (!foundLine && whichLine < nlines) {
+		    if (vtrans(whichLine) == transition &&
+			vrestfreq(whichLine) == restfreq &&
+			vsysvel(whichLine) == sysvel) foundLine = True;
+		}
+		if (!foundLine) {
+		    // a new line
+		    nlines++;
+		    msSourceCols_p->numLines().put(rownr,nlines);
+		    if (hasTransition_p) {
+			vtrans.resize(nlines, True);
+			vtrans(nlines-1) = transition;
+			msSourceCols_p->transition().put(rownr,vtrans);
+		    }
+		    if (hasRestFreq_p) {
+			vrestfreq.resize(nlines, True);
+			vrestfreq(nlines-1) = restfreq;
+			msSourceCols_p->restFrequency().put(rownr,vrestfreq);
+		    }
+		    if (hasSysVel_p) {
+			vsysvel.resize(nlines, True);
+			vsysvel(nlines-1) = sysvel;
+			msSourceCols_p->sysvel().put(rownr,vsysvel);
+		    }
+		}
+	    }
+	}
+    }
+}
+
+void SDSourceHandler::clearAll()
+{
+    delete index_p;
+    index_p = 0;
+
+    delete msSource_p;
+    msSource_p = 0;
+
+    delete msSourceCols_p;
+    msSourceCols_p = 0;
+
+    sourceId_p = -1;
+    nextSourceId_p = 0;
+
+    clearRow();
+}
+
+void SDSourceHandler::clearRow()
+{
+    transiti_p.detach();
+    molecule_p.detach();
+    object_p.detach();
+    obsmode_p.detach();
+    restfreq_p = rvsys_p = vframe_p = -1;
+    hasTransition_p = hasRestFreq_p = hasSysVel_p = False;
+    calibrationGroupField_p.detach();
+    pulsarIdField_p.detach();
+    timeField_p.detach();
+    intervalField_p.detach();
+    directionField_p.detach();
+    positionField_p.detach();
+    properMotionField_p.detach();
+}
+
+void SDSourceHandler::initAll(NewMeasurementSet &ms, Vector<Bool> &handledCols, 
+			      const Record &row)
+{
+    msSource_p = new NewMSSource(ms.source());
+    AlwaysAssert(msSource_p, AipsError);
+
+    // things in row might trigger the need for optional columns
+    initRow(handledCols, row);
+
+    TableDesc td;
+    if (restfreq_p >= 0) {
+	NewMSSource::addColumnToDesc(td,NewMSSource::REST_FREQUENCY);
+	hasRestFreq_p = True;
+    }
+    if (rvsys_p >= 0) {
+	NewMSSource::addColumnToDesc(td,NewMSSource::SYSVEL);
+	hasSysVel_p = True;
+    }
+    if (transiti_p.isAttached() || molecule_p.isAttached()) {
+	NewMSSource::addColumnToDesc(td, NewMSSource::TRANSITION);
+	hasTransition_p = True;
+    }
+    // and add these columns in, if there any
+    for (uInt i=0;i<td.ncolumn();i++) {
+	msSource_p->addColumn(td[i]);
+    }
+
+    msSourceCols_p = new NewMSSourceColumns(*msSource_p);
+    AlwaysAssert(msSourceCols_p, AipsError);
+
+    Vector<String> indexCols(2);
+    indexCols(0) = NewMSSource::columnName(NewMSSource::NAME);
+    indexCols(1) = NewMSSource::columnName(NewMSSource::CODE);
+    index_p = new ColumnsIndex(*msSource_p, indexCols);
+    AlwaysAssert(index_p, AipsError);
+    
+    nameKey_p.attachToRecord(index_p->accessKey(),
+			     NewMSSource::columnName(NewMSSource::NAME));
+    codeKey_p.attachToRecord(index_p->accessKey(),
+			     NewMSSource::columnName(NewMSSource::CODE));
+    sourceId_p = -1;
+    nextSourceId_p = 0;
+}
+
+void SDSourceHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+{
+    AlwaysAssert(handledCols.nelements()==row.description().nfields(), AipsError);
+
+    restfreq_p = row.fieldNumber("RESTFREQ");
+    if (restfreq_p >= 0) handledCols(restfreq_p) = True;
+
+    rvsys_p = row.fieldNumber("RVSYS");
+    if (rvsys_p >= 0) {
+	handledCols(rvsys_p) = True;
+	// VFRAME is only useful if RVSYS also exists
+	vframe_p = row.fieldNumber("VFRAME");
+	if (vframe_p >= 0) handledCols(vframe_p) = True;
+    }
+    Int tmp = row.fieldNumber("TRANSITI");
+    if (tmp >= 0) {
+	transiti_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }
+    tmp = row.fieldNumber("MOLECULE");
+    if (tmp >= 0) {
+	molecule_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }
+
+    tmp = row.fieldNumber("OBJECT");
+    if (tmp >= 0) {
+	object_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }
+ 
+    tmp = row.fieldNumber("OBSMODE");
+    if (tmp >= 0) {
+	obsmode_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }
+
+    tmp = row.fieldNumber("SOURCE_CALIBRATION_GROUP");
+    if (tmp >= 0 && row.dataType(tmp) == TpInt) {
+	calibrationGroupField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("SOURCE_DIRECTION");
+    if (tmp >= 0 && row.dataType(tmp) == TpArrayDouble) {
+	directionField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("SOURCE_INTERVAL");
+    if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
+	intervalField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("SOURCE_POSITION");
+    if (tmp >= 0 && row.dataType(tmp) == TpArrayDouble) {
+	positionField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("SOURCE_PROPER_MOTION");
+    if (tmp >= 0 && row.dataType(tmp) == TpArrayDouble) {
+	properMotionField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("SOURCE_TIME");
+    if (tmp >= 0 && row.dataType(tmp) == TpDouble) {
+	timeField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }    
+
+    tmp = row.fieldNumber("MAIN_PULSAR_ID");
+    if (tmp >= 0 && row.dataType(tmp) == TpInt) {
+	pulsarIdField_p.attachToRecord(row, tmp);
+	handledCols(tmp) = True;
+    }
+
+    // these are ignored - they were produced via ms2sdfits with MS 1 and they contain
+    // duplicate information found in other standard SDFITS columns
+    tmp = row.fieldNumber("SOURCE_SYSVEL");
+    if (tmp >= 0) handledCols(tmp) = True;
+    tmp = row.fieldNumber("SPECTRAL_WINDOW_REST_FREQUENCY");
+    if (tmp >= 0) handledCols(tmp) = True;
+}
