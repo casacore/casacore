@@ -66,9 +66,7 @@ template<class Type> class Vector;
 // angles are restricted:  The first position angle, theta, is the longitudinal
 // angle, referring to the rotation (counterclockwise) around the z-axis.  The
 // second, phi, is the latidudinal  angle, referring to the rotation around 
-// the theta-rotated y axis.  The domain of both angles is -pi/4 < A < pi/4,
-// although the user is allowed to set the parameters to angles within 
-// -pi/2 < theta < pi/2 and -pi < phi < pi.
+// the theta-rotated y axis.  The domain of both angles is -pi/4 < A < pi/4.
 // (Note that the use of theta and phi corresponds to the mathematical
 // convention for these angles, not the physics convention.)
 
@@ -143,10 +141,8 @@ template<class Type> class Vector;
 //    <li> others?
 // </thrown>
   
-// <todo asof="2002/06/19">
+// <todo asof="2002/07/19">
 //   <li> Gaussians that know about their DFT's could be required eventually.
-//   <li> Convert sigma-widths to FWHM-widths.
-//   <li> A function to set the flux should probably be implemented.
 // </todo>
 
 
@@ -172,11 +168,10 @@ public:
     AY,               // width along Y axis when T = P = 0
     AZ,               // width along Z axis when T = P = 0
     THETA,            // rotation about Z axis.
-    PHI,                // rotation around X and Y axes (which depends on T).
+    PHI,              // rotation around X and Y axes (which depends on T).
     NPAR              // number of total parameters (9)
   };
 
-  // #Constructors
   // Constructs the three dimensional Gaussians.  Defaults:
   // height = 1, center = {0,0,0}, width = {1,1,1}, theta = phi = 0
   // <group>
@@ -197,7 +192,6 @@ public:
   // Destructor
   virtual ~Gaussian3DParam();
 
-  //# Operators
 
   // Return dimensionality
   virtual uInt ndim() const {return 3;};
@@ -208,8 +202,11 @@ public:
   void setHeight(const Type & height);
   // </group>
 
-  //Type flux() const;                     //not yet implemented
-  //void setFlux(const Type & flux);
+  // Get or set the total flux of the Gaussian
+  // <group>
+  Type flux() const;                     
+  void setFlux(const Type & flux);
+  // </group>
 
   // Get or cet the center coordinates of the Gaussian
   // <group>
@@ -248,7 +245,7 @@ protected:
 
   void settrigvals() const;
 
-  //const Type fwhm2int;      //not yet used
+  Type fwhm2int;           // const to scale halfwidth at 1/e to FWHM
 
   mutable Type stoT_p;     // used to check if cached values below are updated
   mutable Type stoP_p;     //                            

@@ -10,6 +10,9 @@
 #include <trial/Functionals/Gaussian3D.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Random.h>
+#include <aips/OS/Time.h>
+#include <aips/OS/Timer.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 
@@ -39,8 +42,8 @@ FitGaussian<T>::FitGaussian()
 {
   itsDimension = 0;
   itsNGaussians = 0;
-  itsNGPars = 0;
-  itsRetries = 0;
+  itsMaxRetries = 0;
+  itsMaxTime = C::dbl_max;
   itsSuccess = 0;
 }
 
@@ -53,8 +56,8 @@ FitGaussian<T>::FitGaussian(uInt dimensions)
 
   itsDimension = dimensions;
   itsNGaussians = 0;
-  itsNGPars = itsDimension * 3;
-  itsRetries = 0;
+  itsMaxRetries = 0;
+  itsMaxTime = C::dbl_max;
   itsSuccess = 0;
 }
 
@@ -67,10 +70,10 @@ FitGaussian<T>::FitGaussian(uInt dimensions, uInt numgaussians)
  
   itsDimension = dimensions;
   itsNGaussians = numgaussians;
-  itsNGPars = itsDimension * 3;
-  itsMask.resize(itsNGaussians, itsNGPars);
+  itsMask.resize(itsNGaussians, itsDimension*3);
   itsMask = 1;
-  itsRetries = 0;
+  itsMaxRetries = 0;
+  itsMaxTime = C::dbl_max;
   itsSuccess = 0;
 }
 
@@ -81,10 +84,13 @@ void FitGaussian<T>::setDimensions(uInt dimensions)
     throw(AipsError("FitGaussian<T>::setDimenions(uInt dimensions)"
                     " - dimensions must be 1, 2, or 3")); 
   itsDimension = dimensions;
-  itsNGPars = itsDimension * 3;
-  itsRetries = 0;
+  itsMaxRetries = 0;
+  itsMaxTime = C::dbl_max;
+  itsRetryFctr.resize();
+  itsFirstEstimate.resize();
+  itsMask.resize();
   if (itsNGaussians) {
-    itsMask.resize(itsNGaussians, itsNGPars); itsMask = 1;
+    itsMask.resize(itsNGaussians, itsDimension*3); itsMask = 1;
   }
 }
 
@@ -92,16 +98,21 @@ template <class T>
 void FitGaussian<T>::setNumGaussians(uInt numgaussians)
 {
   itsNGaussians = numgaussians;
-  itsRetries = 0;
-  if (itsNGPars && itsNGaussians) {
-    itsMask.resize(itsNGaussians, itsNGPars); itsMask = 1;
+  itsMaxRetries = 0;
+  itsMaxTime = C::dbl_max;
+  itsRetryFctr.resize();
+  itsFirstEstimate.resize();
+  itsMask.resize();
+  if (itsDimension*3 && itsNGaussians) {
+    itsMask.resize(itsNGaussians, itsDimension*3); itsMask = 1;
   }
 }
 
 template <class T>
 void FitGaussian<T>::setFirstEstimate(const Matrix<T>& estimate)
 {
-  if ((estimate.nrow() != itsNGaussians) || (estimate.ncolumn() != itsNGPars))
+  if ((estimate.nrow() != itsNGaussians) || 
+      (estimate.ncolumn() != itsDimension*3))
     throw(AipsError("FitGaussian<T>::setfirstestimate(const Matrix<T>& "
                     "estimate) - estimate must be of shape "
                     "[(ngaussians) , (dimension x 3)]"));
@@ -111,23 +122,28 @@ void FitGaussian<T>::setFirstEstimate(const Matrix<T>& estimate)
 }
 
 template <class T>
+void FitGaussian<T>::setRetryFactors()
+{
+  setRetryFactors(defaultRetryMatrix());
+}
+
+template <class T>
 void FitGaussian<T>::setRetryFactors(const Matrix<T>& retryfactors)
 {
 
-  if (retryfactors.ncolumn() != itsNGPars)
+  if (retryfactors.ncolumn() != itsDimension*3)
     throw(AipsError("FitGaussian<T>::setretryfactors(const Matrix<T>&"
                     " retryfactors) - retryfactors must have numcolumns = "
-                    " dimension x 3"));
- 
+                    " dimension x 3")); 
   itsRetryFctr.resize(); 
   itsRetryFctr = retryfactors;
-  itsRetries = itsRetryFctr.nrow();
 }
+
 
 template <class T>
 Bool &FitGaussian<T>::mask(uInt gaussian, uInt parameter)
 {
-  if ((gaussian >= itsNGaussians) || (parameter >= itsNGPars))
+  if ((gaussian >= itsNGaussians) || (parameter >= itsDimension*3))
     throw(AipsError("FitGaussian<T>::mask(uInt gaussian, uInt parameter)"
                     " - index out of range"));
   return itsMask(gaussian, parameter);
@@ -136,7 +152,7 @@ Bool &FitGaussian<T>::mask(uInt gaussian, uInt parameter)
 template <class T>
 const Bool &FitGaussian<T>::mask(uInt gaussian, uInt parameter) const
 {
-  if ((gaussian >= itsNGaussians) || (parameter >= itsNGPars))
+  if ((gaussian >= itsNGaussians) || (parameter >= itsDimension*3))
     throw(AipsError("FitGaussian<T>::mask(uInt gaussian, uInt parameter"
                     " const - index out of range"));
   return itsMask(gaussian, parameter);
@@ -164,9 +180,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
   //with an RMS above maximumRMS, it retries by multiplying certain
   //estimate gaussians by the retry matrix.
 
-  if (itsNGaussians * itsNGPars > pos.nrow()) 
-    cout << "WARNING: " << itsNGaussians*itsNGPars << " parameters with only "
-         << pos.nrow() << " data points" << endl;
+  uInt const ngpars = itsDimension*3;
 
   if (pos.ncolumn() != itsDimension) 
     throw(AipsError("FitGaussian<T>::fit(const Matrix<T>& pos, const"
@@ -180,78 +194,144 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
                     " uInt maxiter, T convcriteria) - "
                     " pos, f, and sigma must all have same length."));
 
+  if (pos.nrow() <= 0)
+    throw(AipsError("FitGaussian<T>::fit(const Matrix<T>& pos, const"
+                    " Vector<T>& f, const Vector<T>& sigma, T maximumRMS,"
+                    " uInt maxiter, T convcriteria) - "
+                    " pos contains no data."));
+
+
 
   NonLinearFitLM<T> fitter(0);
   Vector<T> solution;
-  Matrix<T> itsStartParameters(itsNGaussians, itsNGPars);
-  Matrix<T> solutionparameters(itsNGaussians, itsNGPars);
+  Matrix<T> startparameters(itsNGaussians, ngpars);
+  Matrix<T> solutionparameters(itsNGaussians, ngpars);
 
  Block<Gaussian1D<AutoDiff<T> > > gausscomp1d((itsDimension==1)*itsNGaussians);
  Block<Gaussian2D<AutoDiff<T> > > gausscomp2d((itsDimension==2)*itsNGaussians);
  Block<Gaussian3D<AutoDiff<T> > > gausscomp3d((itsDimension==3)*itsNGaussians);
 
-  //AutoDiff<T>(1);
-
   fitter.setMaxIter(maxiter);
   fitter.setCriteria(convcriteria);
  
-  //A 'target' is a gaussian currently being modified by the retrymatrix.  
-
-  Int retry = itsRetries-1;                  //try number for current target list
-  Int targetattempt = 0;                  //number unique target lists tried
-  uInt ntargets = 0;                      //number of targets currently active
-  Vector<Bool> targetmask(itsNGaussians,0);//list of targets to apply retryfctr
-  Int attempt = 0;                        //overall attempt number
+  Vector<Int> targetmask(itsNGaussians,-1); //should rename this... 
+  uInt attempt = 0;                         //overall attempt number
   Int fitfailure;
   T bestRMS = C::flt_max;  //how to template this properly...
   
   itsSuccess = 0; 
 
+  if (itsMaxRetries > 0 && nRetryFactors() == 0) {
+    setRetryFactors();
+  }
+
+  //If there are not enough data points, fix some parameters to the estimate
+
+  if (itsNGaussians <= pos.nrow())
+  {
+    for (uInt p = 1; p < ngpars; p++) {
+      for (uInt g = 0; g < itsNGaussians; g++) {
+        mask(g,p) = 1;
+      }
+    }
+    if (itsNGaussians < pos.nrow()) {
+      uInt g = 0;
+      while (countFreeParameters() > pos.nrow()) {
+        mask(g,0) = 1;
+        g++;
+      }
+    }
+  }
+
+  uInt fixpar = ngpars;
+  while (countFreeParameters() > pos.nrow()) {
+    fixpar--;
+    if (fixpar == itsDimension * 2) fixpar = itsDimension; //fix widths last
+    if (fixpar == 0) fixpar = itsDimension * 2; 
+    for (uInt g = 0; g < itsNGaussians; g++) {
+      mask(g,fixpar) = 1;
+    }
+  }
+
+
+  //Begin fitting
+  
+  Timer timer;
+  timer.mark();
+
   do {   
 
-// Set the initial estimate and create the component gaussian functionals
-// used in fitting.
+    // Modify the estimate according to the retry factors, if necessary.
+
+    if ((attempt) && (attempt <= itsMaxRetries)) {
+      if (pow(Int(nRetryFactors()),Int(itsNGaussians)) <Int(itsMaxRetries)*3/2)
+      {
+        //Eventual redundancy is very likely, so make the retry matrix bigger.
+        expandRetryMatrix(1);
+      }
+
+      MLCG gen(Time(1982,8,31,10).age());
+      //DiscreteUniform retgen(&gen, -nRetryFactors(), nRetryFactors()-1);
+      // any negative number means use the unaltered estimate (50% chance)
+   
+      //The new (2002/07/11) retry system is very simple: the retry targets
+      //are chosen at random, as is the selection from the retry matrix.
+
+      uInt ntargets = (gen.asuInt() % (1 + itsNGaussians / 2)) + 1;
+
+      targetmask = -1;
+      for (uInt i = 0; i < ntargets; i++) {
+        uInt t = gen.asuInt() % itsNGaussians;
+        targetmask(t) = Int(gen.asuInt() % nRetryFactors());
+      }     
+    }
+
+    //cout << targetmask << endl;
+
+    // Set the initial estimate and create the component gaussian functionals
+    // used in fitting.
     
     for (uInt g = 0; g < itsNGaussians; g++) {
-      for (uInt p = 0; p < itsNGPars; p++) {
-        itsStartParameters(g,p) = itsFirstEstimate(g,p);
-        if (targetmask(g)) {
+      for (uInt p = 0; p < ngpars; p++) {
+        startparameters(g,p) = itsFirstEstimate(g,p);
+        if (targetmask(g) >= 0) {
           //apply retry factors
+          Int retry = targetmask(g);
           if (itsDimension == 1) {
-            if (p == 1) itsStartParameters(g,p) += itsRetryFctr(retry,p);
-            else        itsStartParameters(g,p) *= itsRetryFctr(retry,p);
+            if (p == 1) startparameters(g,p) += itsRetryFctr(retry,p);
+            else        startparameters(g,p) *= itsRetryFctr(retry,p);
 	  }
           if (itsDimension == 2) {
 	    if ((p == 1) || (p == 2) || (p == 5)) {
-              itsStartParameters(g,p) += itsRetryFctr(retry,p);
+              startparameters(g,p) += itsRetryFctr(retry,p);
             } else {
-              itsStartParameters(g,p) *= itsRetryFctr(retry,p);
+              startparameters(g,p) *= itsRetryFctr(retry,p);
             }
 	  }
           if (itsDimension == 3) {
 	    if ((p == 1) || (p == 2) || (p == 3) || (p == 7) || (p == 8)) {
-              itsStartParameters(g,p) += itsRetryFctr(retry,p);
+              startparameters(g,p) += itsRetryFctr(retry,p);
             } else {
-              itsStartParameters(g,p) *= itsRetryFctr(retry,p);
+              startparameters(g,p) *= itsRetryFctr(retry,p);
             }
 	  }
 	}
         if (itsDimension==1) { 
-          gausscomp1d[g][p]=AutoDiff<T>(itsStartParameters(g,p), itsNGPars, p);
+          gausscomp1d[g][p]=AutoDiff<T>(startparameters(g,p), ngpars, p);
           gausscomp1d[g].mask(p) = itsMask(g,p);
 	}
         if (itsDimension==2) {
-          gausscomp2d[g][p]=AutoDiff<T>(itsStartParameters(g,p), itsNGPars, p);
+          gausscomp2d[g][p]=AutoDiff<T>(startparameters(g,p), ngpars, p);
           gausscomp2d[g].mask(p) = itsMask(g,p);
 	}
         if (itsDimension==3) {
-          gausscomp3d[g][p]=AutoDiff<T>(itsStartParameters(g,p), itsNGPars, p);
+          gausscomp3d[g][p]=AutoDiff<T>(startparameters(g,p), ngpars, p);
           gausscomp3d[g].mask(p) = itsMask(g,p);
 	}
       }
     }
 
-// Create the fitting function by summing up the component gaussians.
+    // Create the fitting function by summing up the component gaussians.
    
     CompoundFunction<AutoDiff<T> > sumfunc;
     for (uInt g = 0; g < itsNGaussians; g++) {
@@ -264,48 +344,48 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
     fitter.setCriteria(convcriteria);
 
     solution.resize(0);
-
     fitfailure = 0;
-
     attempt++;
 
     cout << "Attempt " << attempt << ": ";
   
+    // Perform the fit, and check for problems with the results.
     
     try {
        solution = fitter.fit(pos, f, sigma);
     } catch (AipsError fittererror) {
       string errormessage;
       errormessage = fittererror.getMesg();
-      cout << "Failure - Error during fitting." << endl;
+      cout << "Unsuccessful - Error during fitting." << endl;
       cout << errormessage << endl;
       fitfailure = 2;
     } 
     if (!fitter.converged() && !fitfailure) {
       fitfailure = 1;
-      cout << "Failure - Failed to converge." << endl;
+      cout << "Unsuccessful - Failed to converge." << endl;
     }
     if (fitter.converged()) {
       itsChisquare = fitter.chiSquare();
       if (itsChisquare < 0) {
-        cout << "Failure - ChiSquare of " << itsChisquare << "is negative."<<endl;
+        cout << "Unsuccessful - ChiSquare of "<< itsChisquare << "is negative."
+             << endl;
         fitfailure = 3;
       }
       else if (isNaN(itsChisquare)){
-        cout << "Failure - Convergence to NaN result" << endl;
+        cout << "Unsuccessful - Convergence to NaN result" << endl;
         fitfailure = 3;
       }
       else {
 
         for (uInt g = 0; g < itsNGaussians; g++) {    
-          if ((itsDimension == 1) &&  (solution(g*itsNGPars+2) < 0)   ||
-	      (itsDimension == 2) && ((solution(g*itsNGPars+3) < 0) || 
-				      (solution(g*itsNGPars+4) < 0))  ||
-              (itsDimension == 3) && ((solution(g*itsNGPars+4) < 0) || 
-	                              (solution(g*itsNGPars+5) < 0) ||
-                                      (solution(g*itsNGPars+6) < 0))) { 
+          if ((itsDimension == 1) &&  (solution(g*ngpars+2) < 0)   ||
+	      (itsDimension == 2) && ((solution(g*ngpars+3) < 0) || 
+				      (solution(g*ngpars+4) < 0))  ||
+              (itsDimension == 3) && ((solution(g*ngpars+4) < 0) || 
+	                              (solution(g*ngpars+5) < 0) ||
+                                      (solution(g*ngpars+6) < 0))) { 
             fitfailure = 4;
-            cout << "Failure - Negative axis widths not permissible.";
+            cout << "Unsuccessful - Negative axis widths not permissible.";
             cout << endl;
 	    break;
 	  }
@@ -314,7 +394,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
         if (!fitfailure) {
           itsRMS = sqrt(itsChisquare / f.nelements());
           if (itsRMS > maximumRMS) {
-            cout << "Failure - RMS of " << itsRMS;
+            cout << "Unsuccessful - RMS of " << itsRMS;
             cout << " is outside acceptible limits." << endl;
             fitfailure = 5;
           }
@@ -327,8 +407,8 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 	  if (itsRMS < bestRMS) { 
             //best fit so far - write parameters to solution matrix
             for (uInt g = 0; g < itsNGaussians; g++) {  
-              for (uInt p = 0; p < itsNGPars; p++) {
-                solutionparameters(g,p) = solution(g*itsNGPars+p);
+              for (uInt p = 0; p < ngpars; p++) {
+                solutionparameters(g,p) = solution(g*ngpars+p);
               }
             }
             bestRMS = itsRMS;
@@ -338,52 +418,22 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 	}
 
       }
-    }
-    
-    if (!itsRetries) break; //skip retry procedure if no retries requested
- 
-    if (++retry == itsRetries)  {
+    }     
+  } while ((fitfailure) && (attempt <= itsMaxRetries) && 
+                           (timer.real() < itsMaxTime));
 
-// This controls the retry system.  If the first fit fails, the retry
-// matrix is applied to the first gaussian only, then the second only,
-// then the third only, etc.   Then it's applied to the first and second
-// only, first and third only.... second and third only... first and
-// second and third only... and so on, until every combination has
-// been exhausted.
-
-      //IMPR: since the number of retries increases exponentially with the
-      //number of gaussians, it would be a good idea to skip some when
-      //ngaussians is large.
-
-      retry = 0;
-
-      //cout << targetattempt << ": " << targetmask << endl;
-
-      Bool endloop = 0;
-      for (uInt t = itsNGaussians-1; (t > 0) && !endloop; t--) {
-        if (targetmask(t-1) && !targetmask(t)){
-          targetmask(t-1) = 0; //shift digit to right: 00100 -> 00010
-          targetmask(t) = 1;
-          endloop = 1;
-	}
-      }
-      if (!endloop) {
-        ntargets++;
-        if (ntargets <= itsNGaussians)  {  //new target: shuffle all 1s to left
-          for (uInt t2 = 0; t2 < ntargets; t2++) targetmask(t2) = 1;
-          for (uInt t2 = ntargets; t2 < itsNGaussians; t2++) targetmask(t2)=0;
-	}
-      }
-      targetattempt++;
-    }
-
-  } while ((fitfailure) && (ntargets <= itsNGaussians));
 
 // If at least one convergent solution has been found, return its parameters
 
   if (itsSuccess) {
     if (fitfailure) {
-      cout << "No fit satisfies RMS criterion; using best available fit";
+      if (attempt > itsMaxRetries) {
+        cout << "Retry limit reached, ";
+      }
+      else if (timer.real() >= itsMaxTime) { 
+        cout << "Time limit reached, ";
+      }
+      cout << "no fit satisfies RMS criterion; using best available fit";
       cout << endl;
     }
     correctParameters(solutionparameters);
@@ -396,7 +446,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
   itsSuccess = 0;
 
   for (uInt g = 0; g < itsNGaussians; g++)  {   
-    for (uInt p = 0; p < itsNGPars; p++) {
+    for (uInt p = 0; p < ngpars; p++) {
       solutionparameters(g,p) = T(0.0);
     }
   }
@@ -408,9 +458,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
 template <class T>
 void FitGaussian<T>::correctParameters(Matrix<T>& parameters)
 {
-  //bring rotation/axis values into standard domain.
-
-  //check dimensionality?
+  //bring rotation/axis values into the stated domain.
 
   for (uInt g = 0; g < itsNGaussians; g++) {     
     if (itsDimension == 2) {
@@ -462,8 +510,6 @@ void FitGaussian<T>::correctParameters(Matrix<T>& parameters)
   return;
 }
 
-
-
 template <class T>
 Bool FitGaussian<T>::converged()
 {
@@ -487,6 +533,102 @@ T FitGaussian<T>::RMS()
 
 
 
+template <class T>
+Matrix<T> FitGaussian<T>::defaultRetryMatrix()
+{
+  Matrix<T> rt(7,itsDimension * 3);
+  rt.column(0) = 1;  
+  if (itsDimension == 1) {
+    rt.column(1) = 0;
+    rt(0,2) = 0.5;
+    rt(1,2) = 0.6;
+    rt(2,2) = 0.7;
+    rt(3,2) = 0.8;
+    rt(4,2) = 0.9;
+    rt(5,2) = 1.3;
+    rt(6,2) = 2.0;
+  } 
+  if (itsDimension == 2) {
+    rt.column(1) = 0;
+    rt.column(2) = 0;
+    rt(0,3) = 1;    rt(0,4) = 0.6;  rt(0,5) = 0;
+    rt(1,3) = 0.5;  rt(1,4) = 1;    rt(1,5) = 0;
+    rt(2,3) = 1;    rt(2,4) = 1;    rt(2,5) = 0.52;
+    rt(3,3) = 1;    rt(3,4) = 1;    rt(3,5) = -0.52;
+    rt(4,3) = 1.5;  rt(4,4) = 1;    rt(4,5) = 0;
+    rt(5,3) = 1;    rt(5,4) = 0.6;  rt(5,5) = 0.52;
+    rt(6,4) = 1;    rt(6,4) = 0.6;  rt(6,5) = -0.52;
+  }
+  if (itsDimension == 3) {
+    rt.column(1) = 0;
+    rt.column(2) = 0;
+    rt.column(3) = 0;
+    rt(0,4) = 1.5; rt(0,5) = 0.9; rt(0,6) = 0.5; rt(0,7) = 0;   rt(0,8) = 0;
+    rt(1,4) = 0.4; rt(1,5) = 0.4; rt(1,6) = 0.4; rt(1,7) = 0;   rt(1,8) = 0;
+    rt(2,4) = 1.5; rt(2,5) = 1.5; rt(2,6) = 1;   rt(2,7) = 0.5; rt(2,8) = 0;
+    rt(3,4) = 1.2; rt(3,5) = 1.2; rt(3,6) = 1.5; rt(3,7) = 0;   rt(3,8) = 0.5;
+    rt(4,4) = 1.5; rt(4,5) = 1.5; rt(4,6) = 1;   rt(4,7) =-0.5; rt(4,8) = 0;
+    rt(5,4) = 1.5; rt(5,5) = 1.5; rt(5,6) = 1.5; rt(5,7) = 0.5; rt(5,8) = 0.5;
+    rt(6,4) = 1.5; rt(6,5) = 1.5; rt(6,6) = 1.5; rt(6,7) =-0.5; rt(6,8) =-0.5;
+    //increasing axis sizes on rotation only useful if estimated rotation is 0
+  }
+  return rt;
+}
+
+template <class T>
+void FitGaussian<T>::expandRetryMatrix(uInt rowstoadd)
+{
+  //use random numbers to expand the retry matrix by a given number of rows.
+
+  uInt initnrows = itsRetryFctr.shape()(0);
+  uInt npars = itsRetryFctr.shape()(1);
+
+  Matrix<T> rt(initnrows + rowstoadd, npars);
+ 
+  for (uInt r = 0; r < initnrows; r++) {
+    for (uInt p = 0; p < npars; p++) {
+      rt(r,p) = itsRetryFctr(r,p);
+    }
+  }
+
+  MLCG gen(Time(1982,8,31,10).age());
+  Uniform fgen(&gen, 0.0, 1.0);
+
+  for (uInt r = initnrows; r < initnrows + rowstoadd; r++)
+  {
+    if (itsDimension == 1)
+    {
+      rt(r,0) = 1;  rt(r,1) = 0;  rt(r,2) = fgen() + 0.5;     
+    }
+    if (itsDimension == 2)
+    {
+      rt(r,0) = 1;  rt(r,1) = 0; rt(r,2) = 0; 
+      rt(r,3) = fgen() + 0.5;  rt(r,4) = fgen() * 0.7 + 0.3;   
+      rt(r,5) = fgen() - 0.5;
+    }
+    if (itsDimension == 3)
+    {
+      rt(r,0) = 1;  rt(r,1) = 0;  rt(r,2) = 0;  rt(r,3) = 0;
+      rt(r,4) = fgen() + 0.5;  rt(r,5) = fgen() + 0.5;  rt(r,6) = fgen() + 0.5;
+      rt(r,7) = fgen() - 0.5;  rt(r,8) = fgen() - 0.5;
+    }
+  }
+
+  itsRetryFctr.resize();
+  itsRetryFctr = rt;
+}
 
 
+template <class T>
+uInt FitGaussian<T>::countFreeParameters()
+{
+  uInt nfreepars = 0;
 
+  for (uInt g = 0; g < itsNGaussians; g++) {
+    for (uInt p = 0; p < itsDimension*3; p++) {
+      if (!itsMask(g,p)) nfreepars++;
+    }
+  }
+
+  return nfreepars;
+}

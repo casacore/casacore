@@ -54,7 +54,6 @@ Gaussian3D<T>::Gaussian3D(T height, const Vector<T>& center,
 : Gaussian3DParam<T>(height, center, width, theta, phi)
 {}
 
-
 template<class T>
 Gaussian3D<T>::~Gaussian3D()
 {}
@@ -79,15 +78,18 @@ T Gaussian3D<T>::eval(typename Function<T>::FunctionArg x) const
   T Nx = x[0] - param_p[CX];
   T Ny = x[1] - param_p[CY];
   T Nz = x[2] - param_p[CZ];
+  T Ax = param_p[AX]*fwhm2int;
+  T Ay = param_p[AY]*fwhm2int;
+  T Az = param_p[AZ]*fwhm2int;
 
   T v;
 
   if (stoT_p != param_p[THETA] || stoP_p != param_p[PHI]) settrigvals();
 
   v = param_p[H] 
-        * exp( - sq((cosTcosP_p*Nx + sinT_p*Ny - cosTsinP_p*Nz)/param_p[AX])
-	       - sq((-sinTcosP_p*Nx + cosT_p*Ny +sinTsinP_p*Nz)/param_p[AY])
-               - sq((sinP_p*Nx + cosP_p*Nz)/param_p[AZ]));
+        * exp( - sq((cosTcosP_p*Nx + sinT_p*Ny - cosTsinP_p*Nz)/Ax)
+	       - sq((-sinTcosP_p*Nx + cosT_p*Ny +sinTsinP_p*Nz)/Ay)
+               - sq((sinP_p*Nx + cosP_p*Nz)/Az));
   return v;
   
 

@@ -32,12 +32,12 @@
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 
-//  :fwhm2int(Type(1)/sqrt(log(Type(16)))),
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam() 
   : Function<Type>(NPAR)
 {
+  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   param_p[H] = Type(1.0);
   param_p[CX] = Type(0.0);
   param_p[CY] = Type(0.0);
@@ -58,6 +58,7 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type height,
                              Type theta, Type phi) 
   : Function<Type>(NPAR)
 {
+  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   param_p[H] = height;
   param_p[CX] = xCenter;
   param_p[CY] = yCenter;
@@ -67,17 +68,19 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type height,
   param_p[AZ] = zWidth;
   param_p[THETA] = theta;
   param_p[PHI] = phi;
+
   settrigvals();  
 }
 
 
 template<class Type> 
 Gaussian3DParam<Type>::Gaussian3DParam(Type height, 
-                                           const Vector<Type>& center, 
-                                           const Vector<Type>& width, 
-                                           Type T, Type P)
+                                       const Vector<Type>& center, 
+                                       const Vector<Type>& width, 
+                                       Type T, Type P)
   : Function<Type>(NPAR)
 {
+  fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
   setCenter(center);
   setWidth(width);
   settheta(T); setphi(P);
@@ -85,10 +88,10 @@ Gaussian3DParam<Type>::Gaussian3DParam(Type height,
 }
 
 template<class Type> 
-Gaussian3DParam<Type>::Gaussian3DParam(
-                                          const Gaussian3DParam<Type>& other)
+Gaussian3DParam<Type>::Gaussian3DParam(const Gaussian3DParam<Type>& other)
   : Function<Type>(other)
 {  
+   fwhm2int = Type(1.0)/sqrt(log(Type(16.0)));
    settrigvals();   //IMPR: could set vals explicitly to speed things up
 }
 
@@ -104,6 +107,7 @@ Gaussian3DParam<Type>& Gaussian3DParam<Type>::operator=(const Gaussian3DParam<Ty
   {
     Function<Type>::operator=(other);
     settrigvals();  //IMPR: explicit
+    fwhm2int = other.fwhm2int;
   }
   return *this;
 }
@@ -121,6 +125,22 @@ void Gaussian3DParam<Type>::setHeight(const Type& height)
 {
   param_p[H] = height;
 }
+
+
+template <class Type>
+Type Gaussian3DParam<Type>::flux() const
+{
+  return param_p[H]*param_p[AX]*param_p[AY]*param_p[AZ]*
+         fwhm2int*fwhm2int*fwhm2int*Type(C::pi*sqrt(C::pi));
+}
+
+template <class Type>
+void Gaussian3DParam<Type>::setFlux(const Type& flux)
+{
+  param_p[H]= flux / (param_p[AX]*param_p[AY]*param_p[AZ]*
+         fwhm2int*fwhm2int*fwhm2int*Type(C::pi*sqrt(C::pi)));
+}
+
 
 template<class Type> 
 Vector<Type> Gaussian3DParam<Type>::center() const 
@@ -249,24 +269,24 @@ Type Gaussian3DParam<Type>::zWidth() const
 template<class Type> 
 Type Gaussian3DParam<Type>::theta() const 
 {
-  //IMPR: add multiple of pi to force to be in stated range
+  //IMPR: force to be in stated range by using a correctParameters fn
+  //      (see FitGaussian)
   return param_p[THETA];
 }
 
 template <class Type>
 Type Gaussian3DParam<Type>::phi() const
 {
-  //IMPR: add multiple of pi to force to be in stated range
+  //IMPR: force to be in stated range
   return param_p[PHI];
 }
 
 template<class Type> 
 void Gaussian3DParam<Type>::settheta(const Type& theta) 
 {
-  //IMPR: should be pi/4.
-  if (abs(theta) > Type(C::_2pi))   
+  if (abs(theta) > Type(C::pi_4))   
     throw(AipsError("Gaussian3DParam<Type>::settheta(const Type& theta)"
-		    " - theta must be in radians and between -2pi and 2pi"));
+		    " - theta must be in radians and between -pi/4 and pi/4"));
   
   param_p[THETA] = theta;
   settrigvals();
@@ -275,10 +295,9 @@ void Gaussian3DParam<Type>::settheta(const Type& theta)
 template<class Type> 
 void Gaussian3DParam<Type>::setphi(const Type& phi) 
 {
-  //IMPR: should be pi/4.
-  if (abs(phi) > Type(C::pi)) 
+  if (abs(phi) > Type(C::pi_4)) 
     throw(AipsError("Gaussian3D<Type>::setphi(const Type& phi)"
-		    " - phi must be in radians and between -pi and pi"));
+		    " - phi must be in radians and between -pi/4 and pi/4"));
   
   param_p[PHI] = phi;
   settrigvals();

@@ -30,6 +30,7 @@
 
 #include <aips/aips.h>
 #include <aips/Arrays/Matrix.h>
+#include <aips/Logging/LogIO.h>
 
 // <summary>Multidimensional fitter class for Gaussians.</summary>
 
@@ -52,8 +53,7 @@
 // <src>FitGaussian</src> is specially designed for fitting procedures in
 // code that must be generalized for general dimensionality and 
 // number of components, and for complicated fits where the failure rate of
-// the standard nonlinear fitter is unacceptibly high (which, for only four
-// components, can by as much as 90% in noiseless data.)
+// the standard nonlinear fitter is unacceptibly high.
 
 // <src>FitGaussian</src> essentially provides a Gaussian-adapted 
 // interface for NonLinearFitLM.  The user specifies the dimension, 
@@ -66,37 +66,27 @@
 
 // The retry factors are applied in different ways: the height and widths
 // are multiplied by the retry factors while the center and angles are
-// increased by their factors.  The algorithm for applying these factors is
-// rather inefficient.  After the initial estimate fails, the first row of 
-// factors are applied to the first gaussian.  If that fails they are applied
-// to the second (but not the first), then the third (and no other), etc.
-// If applying the factors to all gaussians singly fails in all cases, they
-// are applied to two gaussians at once for every possible combination; then
-// three gaussians, and so on.  When all combinations are tried the second row
-// of factors is brought in to service in the same manner. Obviously this leads
-// to a potentially huge number of retries (nrows x 2^ngaussians).  In addition
-// the ability to customize retryfactors is rather useless and an automatic
-// generation method would be preferable.  Therefore it would be a good idea
-// to change the current system, replacing retryfactors with a simple integer
-// "maxRetries" parameter to specify the number of total retries.  Making the
-// retry system actually sophisticated would be very difficult but simple
-// variations on the current system would probably be quite easy.
-
+// increased by their factors.  As of 2002/07/12 these are applied randomly
+// (instead of sequentially) to different components and combinations of
+// components.  The factors can be specified by the user, but a default
+// set is available.  This random method is better than the sequential method
+// for a limited number of retries, but true optimization of the retry system
+// would demand the use of a more sophisticated method.
 // </synopsis>
+
 
 // <example>
 // <srcblock>
 // FitGaussian<Double> fitgauss(1,1);
 // Matrix<Double> x(5,1); x(0,0) = 0; x(1,0) = 1; x(2,0) = 2; x(3,0) = 3; x(4,0) = 4;
 // Vector<Double> y(5); y(0) = 0; y(1) = 1; y(2) = 4; y(3) = 1; y(4) = 1;
-// Matrix<Double> estimate;
+// Matrix<Double> estimate(1,3);
 // estimate(0,0) = 1; estimate(0,1) = 1; estimate(0,2) = 1;
 // fitgauss.setFirstEstimate(estimate);
 // Matrix<Double> solution;
 // solution = fitgauss.fit(x,y);
 // cout << solution;
 // </srcblock>
-// I haven't checked that this example actually works, though...
 // </example>
 
 // <motivation>
@@ -109,20 +99,21 @@
 // </motivation>
 
 // <templating arg=T>
-//  <li> T should have standard numerical operators and exp() function. Current
-//      implementation only tested for real types (and AutoDiff of them).
+//  <li> T must be a real data type compatible with NonLinearFitLM - Float or
+//  Double.
 // </templating>
 
 // <thrown>
+//    <li> AipsError if dimension is not 1, 2, or 3
 //    <li> AipsError if incorrect parameter number specified.
-//    <li> AipsError if estimate/retry matrices are of wrong dimension
-//    <li> others?
+//    <li> AipsError if estimate/retry/data arrays are of wrong dimension
 // </thrown>
   
-// <todo asof="2002/06/19">
-//   <li> Automatically generate retry matrices
-//   <li> Send messages to logger instead of console
+// <todo asof="2002/07/22">
+//   <li> Optimize the default retry matrix
+//   <li> Send fitting messages to logger instead of console
 //   <li> Consider using a more sophisticated retry ststem (above).
+//   <li> Check the estimates for reasonability, especially on failure of fit.
 //   <li> Consider adding other models (polynomial, etc) to make this a Fit3D
 //        class.
 // </todo>
@@ -134,7 +125,6 @@ class FitGaussian
 {
   public:
 
-  //# Constructors
   // Create the fitter.  The dimension and the number of gaussians to fit
   // can be modified later if necessary.
   // <group>
@@ -143,7 +133,6 @@ class FitGaussian
   FitGaussian(uInt dimension, uInt numgaussians);
   // </group>
 
-  // #Member functions
   // Adjust the number of dimensions
   void setDimensions(uInt dimensions);
 
@@ -153,9 +142,23 @@ class FitGaussian
   // Set the initial estimate (the starting point of the first fit.)
   void setFirstEstimate(const Matrix<T>& estimate);
 
+  // Set the maximum number of retries.
+  void setMaxRetries(uInt nretries) {itsMaxRetries = nretries;};
+
+  // Set the maximum amount of time to spend (in seconds).  If time runs out
+  // during a fit the process will still complete that fit.
+  void setMaxTime(Double maxtime) {itsMaxTime = maxtime;};
+
   // Set the retry factors, the values that are added/multiplied with the
   // first estimate on subsequent attempts if the first attempt fails.
+  // Using the function with no argument sets the retry factors to the default.
+  // <group>
+  void setRetryFactors();
   void setRetryFactors(const Matrix<T>& retryfactors);
+  // <group>
+
+  // Return the number of retry options available
+  uInt nRetryFactors() {return itsRetryFctr.nrow();};
 
   // Mask out some parameters so that they are not modified during fitting
   Bool &mask(uInt gaussian, uInt parameter);
@@ -188,18 +191,29 @@ class FitGaussian
 
 
   private:
-  uInt itsDimension;           // how many dimensions(1,2,or 3)
+  uInt itsDimension;           // how many dimensions (1, 2, or 3)
   uInt itsNGaussians;          // number of gaussians to fit
-  uInt itsNGPars;              // const; parameters per gaussian (9)
-  Int itsRetries;              // retries per targetlist
+  uInt itsMaxRetries;          // maximum number of retries to attempt
+  Double itsMaxTime;           // maximum time to spend fitting in secs
   T itsChisquare;              // chisquare of fit
   T itsRMS;                    // RMS of fit (sqrt[chisquare / N])
   Bool itsSuccess;             // flags success or failure
+  LogIO os;
 
-  Matrix<T> itsFirstEstimate;
-  Matrix<T> itsStartParameters;
-  Matrix<T> itsRetryFctr;
+  Matrix<T> itsFirstEstimate;  // user's estimate.
+  Matrix<T> itsRetryFctr;      // source of retry information
   Matrix<Bool> itsMask;        // masks parameters not to change in fitting
+
+  
+  // Sets the retry matrix to a default value.  This is done automatically if
+  // the retry matrix is not set directly.
+  Matrix<T> defaultRetryMatrix();
+
+  //Add one or more rows to the retry matrix.
+  void expandRetryMatrix(uInt rowstoadd);
+
+  //Find the number of unmasked parameters to be fit
+  uInt countFreeParameters();
 };
 
 

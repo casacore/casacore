@@ -85,6 +85,7 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
   uInt k;
   AutoDiff<T> tmp;
 //  
+
   if (stoT_p != param_p[THETA] || stoP_p != param_p[PHI]) settrigvals();
 
   const T cosTV = cosT_p.value();
@@ -119,18 +120,21 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
   T value;
 
   ///
+  const T Ax = param_p[AX].value() * fwhm2int.value();
+  const T Ay = param_p[AY].value() * fwhm2int.value();
+  const T Az = param_p[AZ].value() * fwhm2int.value();
   const T Nx = x[0] - param_p[CX].value();
   const T Ny = x[1] - param_p[CY].value();
   const T Nz = x[2] - param_p[CZ].value();
-  const T Ax2 = param_p[AX].value() * param_p[AX].value();
-  const T Ay2 = param_p[AY].value() * param_p[AY].value();
-  const T Az2 = param_p[AZ].value() * param_p[AZ].value();
+  const T Ax2 = Ax * Ax;
+  const T Ay2 = Ay * Ay;
+  const T Az2 = Az * Az;
   const T xrowterm =  cosTcosPV*Nx + sinTV*Ny - cosTsinPV*Nz;
   const T yrowterm = -sinTcosPV*Nx + cosTV*Ny + sinTsinPV*Nz;
   const T zrowterm =  sinPV*Nx + cosPV*Nz;
-  const T xwidthterm = xrowterm/param_p[AX].value();
-  const T ywidthterm = yrowterm/param_p[AY].value();
-  const T zwidthterm = zrowterm/param_p[AZ].value();
+  const T xwidthterm = xrowterm/Ax;
+  const T ywidthterm = yrowterm/Ay;
+  const T zwidthterm = zrowterm/Az;
   const T xwidthterm2 = xwidthterm * xwidthterm;
   const T ywidthterm2 = ywidthterm * ywidthterm;
   const T zwidthterm2 = zwidthterm * zwidthterm;
@@ -183,7 +187,7 @@ AutoDiff<T> Gaussian3D<AutoDiff<T> >::eval(typename Function<AutoDiff<T> >::Func
     // derivative wrt theta
     if (param_p.mask(THETA))
       tmp.deriv(THETA) = tvalue * (  xrowterm * yrowterm / Ay2
-	 		       - xrowterm * yrowterm / Ax2);
+	 		           - xrowterm * yrowterm / Ax2);
 
     // derivative wrt phi
     if (param_p.mask(PHI))

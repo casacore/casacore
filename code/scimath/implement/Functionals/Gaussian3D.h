@@ -65,9 +65,8 @@ template<class T> class Vector;
 // coordinate. Its parameters (height, center and width, position angles) may
 // be changed at run time.
 
-// The width of the Gaussian is *not* specified in terms of the full width 
-// at half maximum (FWHM) like the 2D Gaussian.  The width factors correspond
-// to the sigma term in the standard Gaussian equation.
+// The width of the Gaussian is now specified in terms of the full width 
+// at half maximum (FWHM), like the 2D and 1D Gaussian functional classes.  
 
 // The three axis values refer to the x, y, and z axes, and unlike with the
 // 2D Gaussian any of the three axes may be the longest; instead, the position
@@ -75,10 +74,9 @@ template<class T> class Vector;
 // angle, referring to the rotation (counterclockwise) around the z-axis.  The
 // second, phi, is the latidudinal  angle, referring to the rotation around 
 // the theta-rotated y axis.  The domain of both angles is -pi/4 < A < pi/4,
-// although the user is allowed to set the parameters to angles within 
-// -pi/2 < theta < pi/2 and -pi < phi < pi without throwing an exception and
-// the angles are not constrained at all when fitting.
-// (Note that the use of theta and phi corresponds to the mathematical
+// although the angles are not constrained when fitting and can be set outside
+// the domain by setting the parameters directly using Functional operator[].
+// (Note that the use of theta and phi corresponds to the mathematics
 // convention for these angles, not the physics convention.)
 
 // Currently no function is available to set the Gaussian parameters based
@@ -122,7 +120,7 @@ template<class T> class Vector;
 // </example>
 
 // <motivation>
-// The GaussianND class does not contain derivatives
+// The GaussianND class does not contain explicit derivatives
 // and was insufficient for fitting 3D Gaussians to data.
 // </motivation>
 
@@ -133,12 +131,13 @@ template<class T> class Vector;
 // </templating>
 
 // <thrown>
-//    <li> Assertion in debug mode if attempt is made to set a negative width
-//    <li> AipsError if incorrect parameter number specified.
-//    <li> Assertion in debug mode if operator(Vector<>) with empty Vector
+//  <li> Assertion in debug mode if attempt is made to set a negative width
+//  <li> AipsError if incorrect parameter number specified.
+//  <li> Assertion in debug mode if operator(Vector<>) with empty Vector
 // </thrown>
 
-// <todo asof="">
+// <todo asof="2002/07/22">
+//   <li> Optimize derivative calculations for faster fitting?
 // </todo>
 
 
@@ -150,7 +149,6 @@ public:
   // the xWidth, yWidth, and zWidth parameters are not adjusted for FWHM;
   // they are identical to the parameters used in the function.
 
-  // #Constructors
   // Constructs the three-dimensional Gaussians.  Defaults:
   // height = 1, center = {0,0,0}, width = {1,1,1}, theta = phi = 0.
   // The center and width vectors must have three elements.
@@ -171,16 +169,15 @@ public:
   // Assignment operator
   Gaussian3D<T> &operator=(const Gaussian3D<T> &other);
 
-  // #Operators
   // Evaluate the Gaussian at <src>x</src>.
   virtual T eval(typename Function<T>::FunctionArg x) const;
 
-  // #Member functions
   // Return a copy of this object from the heap.  The caller is responsible
   // for deleting this pointer.
   virtual Function<T> *clone() const;
 
 private:
+  // AutoDiff does not have a square() function, so one is provided here.
   T sq(T v) const;
 };
 
