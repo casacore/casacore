@@ -1,5 +1,5 @@
 //# MaskArrMath.cc: Simple mathematics done with MaskedArray's.
-//# Copyright (C) 1993,1994,1995,1999
+//# Copyright (C) 1993,1994,1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,6 +175,54 @@ const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
     return left; \
 }
 
+#define MARRM_IOP_MM2(IOP,STRIOP) \
+template<class T,class S> \
+const MaskedArray<T> & operator IOP (const MaskedArray<T> &left, \
+                                     const MaskedArray<S> &right) \
+{ \
+    if (left.shape()!=right.shape()) { \
+	throw (ArrayConformanceError \
+   ("::operator" STRIOP "(const MaskedArray<T> &, const MaskedArray<S> &)" \
+    " - arrays do not conform")); \
+    } \
+\
+    Bool leftarrDelete; \
+    T *leftarrStorage = left.getRWArrayStorage(leftarrDelete); \
+    T *leftarrS = leftarrStorage; \
+\
+    Bool leftmaskDelete; \
+    const LogicalArrayElem *leftmaskStorage \
+        = left.getMaskStorage(leftmaskDelete); \
+    const LogicalArrayElem *leftmaskS = leftmaskStorage; \
+\
+    Bool rightarrDelete; \
+    const S *rightarrStorage = right.getArrayStorage(rightarrDelete); \
+    const S *rightarrS = rightarrStorage; \
+\
+    Bool rightmaskDelete; \
+    const LogicalArrayElem *rightmaskStorage \
+        = right.getMaskStorage(rightmaskDelete); \
+    const LogicalArrayElem *rightmaskS = rightmaskStorage; \
+\
+    uInt ntotal = left.nelements(); \
+    while (ntotal--) { \
+        if (*leftmaskS && *rightmaskS) { \
+	    *leftarrS IOP *rightarrS; \
+        } \
+        leftarrS++; \
+        leftmaskS++; \
+        rightarrS++; \
+        rightmaskS++; \
+    } \
+\
+    left.putArrayStorage(leftarrStorage, leftarrDelete); \
+    left.freeMaskStorage(leftmaskStorage, leftmaskDelete); \
+    right.freeArrayStorage(rightarrStorage, rightarrDelete); \
+    right.freeMaskStorage(rightmaskStorage, rightmaskDelete); \
+\
+    return left; \
+}
+
 
 #define MARRM_IOP_MS(IOP) \
 template<class T> \
@@ -220,6 +268,7 @@ MARRM_IOP_MM ( += , "+=" )
 MARRM_IOP_MM ( -= , "-=" )
 MARRM_IOP_MM ( *= , "*=" )
 MARRM_IOP_MM ( /= , "/=" )
+MARRM_IOP_MM2 ( /= , "/=" )
 
 MARRM_IOP_MS ( += )
 MARRM_IOP_MS ( -= )

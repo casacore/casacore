@@ -132,6 +132,7 @@ template<class T> const MaskedArray<T> & operator+= (const MaskedArray<T> &left,
 template<class T> const MaskedArray<T> & operator-= (const MaskedArray<T> &left, const MaskedArray<T> &other);
 template<class T> const MaskedArray<T> & operator*= (const MaskedArray<T> &left, const MaskedArray<T> &other);
 template<class T> const MaskedArray<T> & operator/= (const MaskedArray<T> &left,const MaskedArray<T> &other);
+template<class T,class S> const MaskedArray<T> & operator/= (const MaskedArray<T> &left,const MaskedArray<S> &other);
 // </group>
 
 // 
