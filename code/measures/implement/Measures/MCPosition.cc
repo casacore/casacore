@@ -1,5 +1,5 @@
 //# MCPosition.cc:  MPosition conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,45 +114,49 @@ void MCPosition::doConvert(MVPosition &in,
     switch (mc.getMethod(i)) {
 	
     case ITRF_WGS84: {
-      Double d1, d2;
-// Get angles
-      *DVEC1 = in.get();
-// Get flattening
-      g1 = MeasTable::WGS84(1); g1 = 1.0/g1;
-      g1 = 2*g1 - g1*g1;
-// Iterate
-      d2 = (*DVEC1)(0) * cos((*DVEC1)(2));
-      do {
-	g2 = (*DVEC1)(2);
-	d1 = sin(g2);
-	g3 = 1.0/sqrt(1 - g1 * d1 * d1);
-	(*DVEC1)(2) = atan((in(2) + 
-			    MeasTable::WGS84(0) * g3 * g1 * d1)/d2);
-      }
-      while ( !nearAbs((*DVEC1)(2), g2, 1e-10));
-      (*DVEC1)(0) = d2/cos((*DVEC1)(2)) - MeasTable::WGS84(0) * g3;
-      in = MVPosition(Quantity((*DVEC1)(0),"m"),
-		      (*DVEC1)(1), (*DVEC1)(2));
-    };
+      if (in.radius() != 0.0) {
+	Double d1, d2;
+	// Get angles
+	*DVEC1 = in.get();
+	// Get flattening
+	g1 = MeasTable::WGS84(1); g1 = 1.0/g1;
+	g1 = 2*g1 - g1*g1;
+	// Iterate
+	d2 = (*DVEC1)(0) * cos((*DVEC1)(2));
+	do {
+	  g2 = (*DVEC1)(2);
+	  d1 = sin(g2);
+	  g3 = 1.0/sqrt(1 - g1 * d1 * d1);
+	  (*DVEC1)(2) = atan((in(2) + 
+			      MeasTable::WGS84(0) * g3 * g1 * d1)/d2);
+	}
+	while ( !nearAbs((*DVEC1)(2), g2, 1e-10));
+	(*DVEC1)(0) = d2/cos((*DVEC1)(2)) - MeasTable::WGS84(0) * g3;
+	in = MVPosition(Quantity((*DVEC1)(0),"m"),
+			(*DVEC1)(1), (*DVEC1)(2));
+      };
+    }
     break;
 
     case WGS84_ITRF: {
-// Equatorial radius
-      g1 = MeasTable::WGS84(0);
-// Flattening
-      g2 = MeasTable::WGS84(1);
-      g2 = 1.0 - 1.0/g2; g2 *= g2;
-// C
-      g3 = in(0) * in(0) +
-	in(1) * in(1) +
-	g2 * in(2) * in(2);
-      g3 = g1 * sqrt(1.0/g3);
-// S
-      g2 *= g3;
-// Apply
-      in(0) *= (1.0 + g3);
-      in(1) *= (1.0 + g3);
-      in(2) *= (1.0 + g2);
+      if (in.radius() != 0.0) {
+	// Equatorial radius
+	g1 = MeasTable::WGS84(0);
+	// Flattening
+	g2 = MeasTable::WGS84(1);
+	g2 = 1.0 - 1.0/g2; g2 *= g2;
+	// C
+	g3 = in(0) * in(0) +
+	  in(1) * in(1) +
+	  g2 * in(2) * in(2);
+	g3 = g1 * sqrt(1.0/g3);
+	// S
+	g2 *= g3;
+	// Apply
+	in(0) *= (1.0 + g3);
+	in(1) *= (1.0 + g3);
+	in(2) *= (1.0 + g2);
+      };
     }	
     break;
 
