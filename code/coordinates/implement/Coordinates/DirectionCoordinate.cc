@@ -532,11 +532,6 @@ MDirection::Types DirectionCoordinate::directionType() const
     return type_p;
 }
 
-MDirection::Types DirectionCoordinate::conversionDirectionType() const
-{
-    return conversionType_p;
-}
-
 Projection DirectionCoordinate::projection() const
 {
     return projection_p;
