@@ -67,6 +67,24 @@ static DataType fitsDataType(FITS::ValueType fitsType)
     }
 }
 
+// takes a pointer to an array of chars and returns
+// its length   A null character terminates the string
+// and trailing spaces are not considered as part of the
+// string
+uInt charLength(const char *cptr, uInt maxLength)
+{
+    uInt length = 0;
+    // watch for any null termination
+    while (length < maxLength && cptr[length] != '\0') {
+	length++;
+    }
+    // don't count any trailing spaces
+    while (length > 0 && cptr[length-1] == ' ') {
+	length--;
+    }
+    return length;
+}
+
 FITSTabular::~FITSTabular()
 {
     // Nothing
@@ -112,14 +130,9 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
 	keywords.define(name,key->asBool());
 	break;
       case FITS::STRING : 
-	// need to remvoe any trailing spaces
 	{
 	    const char * cptr = key->asString();
-	    uInt length = key->valStrlen();
-	    while (length > 0 && 
-		   (cptr[length-1] == '\0' || cptr[length-1] == ' ')) {
-	      length--;
-	    }
+	    uInt length = charLength(cptr, key->valStrlen());
 	    keywords.define(name,String(cptr,length));
 	}
 	break;
@@ -867,14 +880,9 @@ void FITSTable::fill_row()
 		(FitsField<char> &)(raw_table_p->field(i));
 	    RecordFieldPtr<String> &rowRef =
 		*((RecordFieldPtr<String> *)row_fields_p[i]);
-	    // look for the true end of the string
 	    char * cptr = (char *)fitsRef.data();
-	    uInt length = fitsRef.nelements();
-	    while (length > 0 && 
-		   (cptr[length-1] == '\0' || cptr[length-1] == ' ')) {
-		length--;
-	    }
-	    (*rowRef) = String((char *)fitsRef.data(), length);
+	    uInt length = charLength(cptr, fitsRef.nelements());
+	    (*rowRef) = String(cptr, length);
 	}
 	break;
 	case FITS::BYTE:
@@ -1258,12 +1266,7 @@ void FITSTable::fill_row()
 			DebugAssert(field_types_p[i] == TpString, AipsError);
 			RecordFieldPtr<String> &rowRef = 
 			    *((RecordFieldPtr<String> *) row_fields_p[i]);
-			// look for the true end of the string
-			uInt length = thisva.num();
-			while (length > 0 && 
-			       (vptr[length-1] == '\0' || vptr[length-1] == ' ')) {
-			    length--;
-			}
+			uInt length = charLength(vptr, thisva.num());
 			(*rowRef) = String(vptr, length);
 		    }
 		    break;
@@ -1692,3 +1695,4 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
     description_p = row_p.description();
     return result;
 }
+
