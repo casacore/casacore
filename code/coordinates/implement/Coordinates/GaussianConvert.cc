@@ -22,6 +22,7 @@
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
+//# $Id$
 //#
 
 #include <trial/Coordinates/GaussianConvert.h>

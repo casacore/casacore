@@ -1,5 +1,5 @@
 //# ImageMomentsProgress.cc:  Class to display progress meter for ImageMoments
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 //
 
 
