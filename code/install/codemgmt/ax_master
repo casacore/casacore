@@ -2658,3 +2658,4 @@
 10 010 src mv aips/implement/Measures/test/tUnit.cc aips/implement/Quanta/test/tUnit.cc
 10 010 src mv aips/implement/Measures/test/tUnit.out aips/implement/Quanta/test/tUnit.out
 10 010 src mv aips/implement/Measures/QBase.cc aips/implement/Quanta/QBase.cc
+10 012 src rm atnf/implement/pks/HVCBandPass_median.cc
