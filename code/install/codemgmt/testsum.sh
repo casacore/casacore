@@ -59,7 +59,7 @@ echo
 echo "******************************************************************************"
 echo 
 echo $PACK | awk '{printf "Test results for %s package\n", $1}'
-echo $TPASS $TFAIL $TUNTESTED| awk '{printf "\t%5.1f%% Passed %d of %d (%d skipped)\n", 100*$1/($1+$2+$3), $1, $1+$2+$3, $3}'
+echo $TPASS $TFAIL $TUNTESTED| awk '{printf "\t%5.1f%% Passed %d of %d (%d skipped)\n", 100*$1/($1+$2), $1, $1+$2, $3}'
 echo "******************************************************************************"
 echo 
 echo "Tests that failed to compile"
@@ -128,3 +128,4 @@ echo
 echo "*****************************************************************"
 echo "End tests report for package $PACK"
 echo "*****************************************************************"
+
