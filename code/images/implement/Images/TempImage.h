@@ -102,7 +102,8 @@ public:
 
   // Construct a temporary Image from shape and coordinate information.
   // If the image is sufficiently small, it is kept in memory.
-  // Otherwise it is kept in a temporary table.
+  // Otherwise it is kept in a temporary disk table. It can
+  // be forced to disk by setting maxMemoryinMB=0.
   // The algorithm is the same as in class
   // <linkto class=TempLattice>TempLattice</linkto>.
   TempImage (const TiledShape& mapShape,
