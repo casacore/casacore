@@ -41,6 +41,7 @@
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
+#include <stdlib.h>
 
 // This is the function that does most of the work. It is pretty slow for
 // large maps, but no real problem.
@@ -271,7 +272,10 @@ void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
   Aipsrc::save(ncodlst[keyword-1], tname(codlst[keyword-1]));
 }
 
-void Aipsrc::save(const String &keyword, const String &val) {
+// Note that the parameters should not be references!
+void Aipsrc::save(const String keyword, const String val) {
+  static uInt nv_r = Aipsrc::registerRC("user.aipsrc.edit.keep", "5");
+  static String editTxt = "# Edited at ";
   String filn(Aipsrc::fillAips(uhome) + "/.aipsrc");
   String filno(filn + ".old");
   RegularFile fil(filn);
@@ -282,17 +286,40 @@ void Aipsrc::save(const String &keyword, const String &val) {
     filo.remove();
   };
   ofstream ostr(filn, ios::out);
-  ostr << "# Edited at " << 
+  ostr << editTxt << 
     MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
   ostr << keyword << ":	" << val << endl;
   fil = RegularFile(filno);
   if (fil.exists()) {
     String buffer;
     Char buf[8192];	// Single lines must fit in this
+    Int nv = atoi(Aipsrc::get(nv_r).chars());	// number to keep
+    Bool editSeen = False;	// if edit line seen
+    String editBuf;		// edit line buffer
+    Int editCnt = 0;		// count for edits
+    String kwt = keyword + ":";  // keyword test
     ifstream istr(filno, ios::in | ios::nocreate);
     while (istr.getline(&buf[0], sizeof(buf))) {
       buffer = buf;
-      ostr << buffer << endl;
+      if (editSeen) {
+	if (buffer.index(kwt) == 0) {
+	  editCnt++;
+	  if (editCnt < nv) { // copy
+	    ostr << editBuf << endl;
+	    ostr << buffer << endl;
+	  };
+	  editSeen = False;
+	  continue;
+	} else {
+	  ostr << editBuf << endl;
+	};
+      };
+      editSeen = ToBool(buffer.index(editTxt) == 0);
+      if (editSeen) {
+	editBuf = buffer;
+      } else {
+	ostr << buffer << endl;
+      };
     };
   };
 }

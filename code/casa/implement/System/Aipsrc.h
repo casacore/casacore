@@ -161,6 +161,11 @@ typedef class AipsrcVector<String> AipsrcVString;
 // <note role=tip> The registered value is never equal to zero, hence a zero
 // value can be used to check if registration is done. Also, registering the
 // same keyword twice is safe, and will produce the same value.</note>
+// When saving a keyword/value pair in <src>$HOME/.aipsrc</src>, the old
+// version is saved in <src>$HOME/.aipsrc.old</src>, before the keyword/value
+// pair is prepended to the file. A limited number of edits of the same keyword
+// is preserved only (default 5, changeable with the
+// <src>user.aipsrc.edit.keep</src> keyword.
 // </synopsis>
 //
 // <example>
@@ -320,7 +325,7 @@ protected:
   // The registration function
   static uInt registerRC(const String &keyword, Block<String> &nlst);
   // Actual saving
-  static void save(const String &keyword, const String &val);
+  static void save(const String keyword, const String val);
   
 private:
   //# Data
