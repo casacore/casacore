@@ -1,7 +1,7 @@
 C
 C Grid a number of visibility records
 C
-      subroutine ggridft (uvw, rotmat, values, nvispol, nvischan,
+      subroutine ggridft (uvw, dphase, values, nvispol, nvischan,
      $   dopsf, flag, weight, nrow, irow,
      $   scale, offset, grid, nx, ny, npol, nchan, freq, c,
      $   support, sampling, convFunc, chanmap, polmap, sumwt)
@@ -12,7 +12,7 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
-      double precision rotmat(3,3)
+      double precision dphase(nrow)
       complex phasor
       logical flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
@@ -47,8 +47,8 @@ C
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan).and.
      $           (weight(ichan,irow).gt.0.0)) then
-               call sgridft(uvw(1,irow), rotmat, freq(ichan), c, scale, 
-     $              offset, sampling, pos, loc, off, phasor)
+               call sgridft(uvw(1,irow), dphase(irow), freq(ichan), c, 
+     $              scale, offset, sampling, pos, loc, off, phasor)
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
@@ -87,7 +87,7 @@ C rotate but we do want to reproject uvw
 C
 C Degrid a number of visibility records
 C
-      subroutine dgridft (uvw, rotmat, values, nvispol, nvischan, flag, 
+      subroutine dgridft (uvw, dphase, values, nvispol, nvischan, flag, 
      $     nrow, irow, scale, offset, grid, nx, ny, npol, nchan, freq,
      $     c, support, sampling, convFunc, chanmap, polmap)
 
@@ -97,7 +97,7 @@ C
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
-      double precision rotmat(3,3)
+      double precision dphase(nrow)
       complex phasor
       logical flag(nvispol, nvischan, nrow)
       integer irow
@@ -130,8 +130,8 @@ C
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan)) then
-               call sgridft(uvw(1,irow), rotmat, freq(ichan), c, scale, 
-     $              offset, sampling, pos, loc, off, phasor)
+               call sgridft(uvw(1,irow), dphase(irow), freq(ichan), c,
+     $              scale, offset, sampling, pos, loc, off, phasor)
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
@@ -149,7 +149,7 @@ C
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
                            end do
                         end do
-                        values(ipol,ichan,irow)=conjg(nvalue)*phasor
+                        values(ipol,ichan,irow)=conjg(nvalue*phasor)
      $                       /norm
                      end if
                   end do
@@ -163,31 +163,24 @@ C
 C Calculate gridded coordinates and the phasor needed for
 C phase rotation.
 C
-      subroutine sgridft (uvw, rotmat, freq, c, scale, offset, sampling, 
+      subroutine sgridft (uvw, dphase, freq, c, scale, offset, sampling, 
      $     pos, loc, off, phasor)
       implicit none
       integer sampling
       integer loc(2), off(2)
       double precision uvw(3), freq, c, scale(2), offset(2), pos(2)
-      double precision rotmat(3,3), uvwrot(3), phase
+      double precision dphase, phase
       complex phasor
-      integer idim, jdim
+      integer idim
       double precision pi
       data pi/3.14159265358979323846/
 
-      do jdim=1,3
-        uvwrot(jdim)=0.0
-        do idim=1,3
-           uvwrot(jdim)=uvwrot(jdim)+rotmat(jdim,idim)*uvw(idim)
-        end do
-      end do
-
       do idim=1,2
-         pos(idim)=scale(idim)*uvwrot(idim)*freq/c+(offset(idim)+1.0)
+         pos(idim)=scale(idim)*uvw(idim)*freq/c+(offset(idim)+1.0)
          loc(idim)=nint(pos(idim))
          off(idim)=nint((loc(idim)-pos(idim))*sampling)
       end do
-      phase=2.0D0*pi*(uvwrot(3)-uvw(3))*freq/c
+      phase=2.0D0*pi*dphase*freq/c
       phasor=cmplx(cos(phase), sin(phase))
       return 
       end
