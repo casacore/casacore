@@ -58,6 +58,7 @@
 #include <stdlib.h>
 #include <strstream.h>
 
+#include <aips/OS/Timer.h>
 
 
 
@@ -86,7 +87,6 @@ LatticeStatistics<T>::LatticeStatistics (const MaskedLattice<T>& lattice,
   doRobust_p(False),
   error_p("")
 {
-
    nxy_p.resize(0);
    statsToPlot_p.resize(0);   
    range_p.resize(0);
@@ -413,7 +413,9 @@ Bool LatticeStatistics<T>::setPlotting(PGPlotter& plotter,
 // regenerate the storage lattice as well - the robust
 // stats are just written directly into the storage lattice
 
-      if (statsToPlot_p(i)==Int(LatticeStatsBase::MEDIAN)) {
+      if (statsToPlot_p(i)==Int(LatticeStatsBase::MEDIAN) ||
+          statsToPlot_p(i)==Int(LatticeStatsBase::MEDABSDEVMED) ||
+          statsToPlot_p(i)==Int(LatticeStatsBase::QUARTILE)) {
          if (!doRobust_p) {
             needStorageLattice_p = True;
          }
@@ -628,6 +630,48 @@ Bool LatticeStatistics<T>::getMedian(Array<T>& stats)
    return retrieveStorageStatistic(stats, Int(MEDIAN));
 }
 
+ 
+template <class T>
+Bool LatticeStatistics<T>::getMedAbsDevMed(Array<T>& stats)
+// 
+// This function retrieves the MEDABSDEVMED statistics from the
+// accumulation lattice
+//
+{
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     return False; 
+   }
+
+// Retrieve storage array statistic
+
+   if (!doRobust_p) needStorageLattice_p = True;
+   doRobust_p = True;
+   return retrieveStorageStatistic(stats, Int(MEDABSDEVMED));
+}
+
+
+template <class T>
+Bool LatticeStatistics<T>::getQuartile(Array<T>& stats)
+// 
+// This function retrieves the QUARTILE statistics from the
+// accumulation lattice
+//
+{
+// Check class status
+ 
+   if (!goodParameterStatus_p) {
+     return False; 
+   }
+
+// Retrieve storage array statistic
+
+   if (!doRobust_p) needStorageLattice_p = True;
+   doRobust_p = True;
+   return retrieveStorageStatistic(stats, Int(QUARTILE));
+}
+
 
 
 
@@ -682,6 +726,10 @@ Bool LatticeStatistics<T>::getStatistic (Array<T>& stats,
       return getSumSquared(stats);
    } else if (type==LatticeStatsBase::MEDIAN) {
       return getMedian(stats);
+   } else if (type==LatticeStatsBase::MEDABSDEVMED) {
+      return getMedAbsDevMed(stats);
+   } else if (type==LatticeStatsBase::QUARTILE) {
+      return getQuartile(stats);
    } else if (type==LatticeStatsBase::MIN) {
       return getMin(stats);
    } else if (type==LatticeStatsBase::MAX) {
@@ -1251,7 +1299,8 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 template <class T>
 void LatticeStatistics<T>::generateRobust ()
 {
-   os_p << "Computing robust statistics" << LogIO::POST;
+   Bool showMsg = doRobust_p && displayAxes_p.nelements()==0;
+   if (showMsg) os_p << "Computing robust statistics" << LogIO::POST;
 //
    const uInt nCursorAxes = cursorAxes_p.nelements();
    const IPosition latticeShape(pInLattice_p->shape());
@@ -1265,26 +1314,46 @@ void LatticeStatistics<T>::generateRobust ()
    LatticeStepper stepper(latticeShape, cursorShape, axisPath);
    for (stepper.reset(); !stepper.atEnd(); stepper++) {
       IPosition pos = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDIAN);
+      IPosition pos2 = locInStorageLattice(stepper.position(), LatticeStatsBase::MEDABSDEVMED);
+      IPosition pos3 = locInStorageLattice(stepper.position(), LatticeStatsBase::QUARTILE);
 //
       if (doRobust_p) {
          Slicer slicer(stepper.position(), stepper.endPosition(), Slicer::endIsLast);
          SubLattice<T> subLat(*pInLattice_p, slicer);
+//
          LatticeExprNode node(median(subLat));
+         T dummy;
+         if (showMsg) os_p << "  Median" << LogIO::POST;
+         T lelMed = LattStatsSpecialize::getNodeScalarValue(node, dummy);
+         LatticeExprNode node2(median(abs(subLat-lelMed)));
+         if (showMsg) os_p << "  Median of absolute deviations from median" << LogIO::POST;
+         T lelMed2 = LattStatsSpecialize::getNodeScalarValue(node2, dummy);
+//
+         if (showMsg) os_p << "  Inter quartile range" << LogIO::POST;
+         Array<T> data = subLat.get();
+         Bool deleteData;
+         T* pData = data.getStorage(deleteData);
+         const uInt n = data.nelements();
+         T iqa = GenSort<T>::kthLargest (pData, n, Int(0.25*n));
+         T iqb = GenSort<T>::kthLargest (pData, n, Int(0.75*n));
+         data.putStorage(pData, deleteData);
+         T iqr = (iqb-iqa)/2.0;
 
 // Whack it in storage lattice somewhere or other
 
-
-         LattStatsSpecialize::putNodeInStorageLattice(*pStoreLattice_p, node, pos);
+         pStoreLattice_p->putAt(lelMed, pos);
+         pStoreLattice_p->putAt(lelMed2, pos2);
+         pStoreLattice_p->putAt(iqr, pos3);
       } else {
 
 // Stick zero in storage lattice (it's not initialized)
 
          T val = 0;
-         LatticeExprNode node(val);
-         LattStatsSpecialize::putNodeInStorageLattice(*pStoreLattice_p, node, pos);
+         pStoreLattice_p->putAt(val, pos);
+         pStoreLattice_p->putAt(val, pos2);
+         pStoreLattice_p->putAt(val, pos3);
       }
    }
-   os_p << "Finished computing robust statitsics" << LogIO::POST;
 }
 
    
@@ -1772,8 +1841,11 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
    const uInt n = statsToPlot_p.nelements();
    Bool doMean, doSigma, doVar, doRms, doSum, doSumSq;
    Bool doMin, doMax, doNPts, doFlux, doMedian;
+   Bool doMedAbsDevMed, doQuartile;
    linearSearch(doMean, statsToPlot_p, Int(MEAN), n);
    linearSearch(doMedian, statsToPlot_p, Int(MEDIAN), n);
+   linearSearch(doMedAbsDevMed, statsToPlot_p, Int(MEDABSDEVMED), n);
+   linearSearch(doQuartile, statsToPlot_p, Int(QUARTILE), n);
    linearSearch(doSigma, statsToPlot_p, Int(SIGMA), n);
    linearSearch(doVar, statsToPlot_p, Int(VARIANCE), n);
    linearSearch(doRms, statsToPlot_p, Int(RMS), n);
@@ -1913,6 +1985,28 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       }
       nR++;
    }
+   if (doMedAbsDevMed) {
+      minMax(none, yMin, yMax, stats.column(MEDABSDEVMED), stats.column(NPTS));
+      if (first) {
+         yRMin = yMin;
+         yRMax = yMax;
+      } else {
+         yRMin = min(yRMin,yMin);
+         yRMax = max(yRMax,yMax);
+      }
+      nR++;
+   }
+   if (doQuartile) {
+      minMax(none, yMin, yMax, stats.column(QUARTILE), stats.column(NPTS));
+      if (first) {
+         yRMin = yMin;
+         yRMax = yMax;
+      } else {
+         yRMin = min(yRMin,yMin);
+         yRMax = max(yRMax,yMax);
+      }
+      nR++;
+   }
 
    stretchMinMax(xMin, xMax); 
    if (nL>0) stretchMinMax(yLMin, yLMax);
@@ -1976,6 +2070,14 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
       }
       if (doRms) {
          yRLabel += "Rms,";
+         nRLabs++;
+      }
+      if (doMedAbsDevMed) {
+         yRLabel += "MedAbsDevMed,";
+         nRLabs++;
+      }
+      if (doQuartile) {
+         yRLabel += "Quartile,";
          nRLabs++;
       }
       yRLabel.del(Int(yRLabel.length()-1),1);
@@ -2119,6 +2221,24 @@ Bool LatticeStatistics<T>::plotStats (Bool hasBeam,
          plotter.sci (rCols(i));
 
          multiPlot(plotter, abc, stats.column(RMS), stats.column(NPTS));
+      }
+      if (doMedAbsDevMed) {
+         if (++ls > 5) ls = 1;
+         plotter.sls(ls);
+
+         rCols(++i) = niceColour (initColours);
+         plotter.sci (rCols(i));
+
+         multiPlot(plotter, abc, stats.column(MEDABSDEVMED), stats.column(NPTS));
+      }
+      if (doQuartile) {
+         if (++ls > 5) ls = 1;
+         plotter.sls(ls);
+
+         rCols(++i) = niceColour (initColours);
+         plotter.sci (rCols(i));
+
+         multiPlot(plotter, abc, stats.column(QUARTILE), stats.column(NPTS));
       }
 
 // Y label
@@ -2440,6 +2560,12 @@ void LatticeStatistics<T>::summStats ()
    pos(0) = MEDIAN;
    T median = stats(pos);
 //
+   pos(0) = MEDABSDEVMED;
+   T medAbsDevMed = stats(pos);
+//
+   pos(0) = QUARTILE;
+   T quartile= stats(pos);
+//
    pos(0) = SUMSQ;
    T sumSq = stats(pos);
 //                         
@@ -2472,10 +2598,12 @@ void LatticeStatistics<T>::summStats ()
    }
    setStream(os_p.output(), oPrec);
    ostrstream os00, os0, os1, os2, os3, os4, os5, os6, os7, os8;
+   ostrstream os9, os10;
    setStream(os00, oPrec); 
    setStream(os0, oPrec); setStream(os1, oPrec); setStream(os2, oPrec); 
    setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);  
    setStream(os6, oPrec); setStream(os7, oPrec); setStream(os8, oPrec); 
+   setStream(os9, oPrec); setStream(os10, oPrec); 
 //
    os_p << endl << LogIO::POST;
    if (LattStatsSpecialize::hasSomePoints(nPts)) {
@@ -2488,6 +2616,8 @@ void LatticeStatistics<T>::summStats ()
       os6 << dMin; 
       os7 << dMax; 
       os8 << median;
+      os9 << medAbsDevMed;
+      os10 << quartile;
       if (hasBeam) {
          os0 << sum/beamArea;
       }
@@ -2528,6 +2658,15 @@ void LatticeStatistics<T>::summStats ()
       os_p << endl;
       os_p.post();
 //
+      if (doRobust_p) {
+         os_p << "MedAbsDevMed  = ";
+         os_p.output() << setw(oWidth) << String(os9);
+         os_p.output()  << "       Quartile = ";
+         os_p.output() << setw(oWidth) << String(os10) << endl;
+         os_p.post();
+      }
+//
+      os_p << endl << LogIO::POST;
       listMinMax(os6, os7, oWidth, type);
    } else {
       os_p << "No valid points found " << LogIO::POST;
