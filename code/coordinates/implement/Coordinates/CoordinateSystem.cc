@@ -137,22 +137,12 @@ void CoordinateSystem::copy(const CoordinateSystem &other)
 void CoordinateSystem::clear()
 {
     const uInt n = coordinates_p.nelements();
-
-    for (uInt i=0; i<n; i++) {
-	delete world_maps_p[i]; world_maps_p[i] = 0;
-	delete world_tmps_p[i]; world_tmps_p[i] = 0;
-	delete world_replacement_values_p[i]; world_replacement_values_p[i] = 0;
-	delete pixel_maps_p[i]; pixel_maps_p[i] = 0;
-	delete pixel_tmps_p[i]; pixel_tmps_p[i] = 0;
-	delete pixel_replacement_values_p[i]; pixel_replacement_values_p[i] = 0;
-	delete coordinates_p[i]; coordinates_p[i] = 0;
 //
-        delete worldAxes_tmps_p[i]; worldAxes_tmps_p[i] = 0;
-        delete pixelAxes_tmps_p[i]; pixelAxes_tmps_p[i] = 0;
-        delete worldOut_tmps_p[i]; worldOut_tmps_p[i] = 0;
-        delete pixelOut_tmps_p[i]; pixelOut_tmps_p[i] = 0;
-        delete worldMin_tmps_p[i]; worldMin_tmps_p[i] = 0;
-        delete worldMax_tmps_p[i]; worldMax_tmps_p[i] = 0;
+    for (uInt i=0; i<n; i++) {
+        deleteTemps (i);
+//
+	delete coordinates_p[i]; 
+        coordinates_p[i] = 0;
     }
 }
 
@@ -321,6 +311,7 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     }
 
 // Move the world axes to their new home
+
     for (i=0; i<nw; i++) {
 	Int coord, axis;
 	findWorldAxis(coord, axis, newWorldOrder(i));
@@ -328,6 +319,7 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
     }
 
 // Move the pixel axes to their new home
+
     for (i=0; i<np; i++) {
 	Int coord, axis;
 	findPixelAxis(coord, axis, newPixelOrder(i));
@@ -501,7 +493,6 @@ Bool CoordinateSystem::removeWorldAxis(uInt axis, Double replacement)
     }
 
     const uInt nc = nCoordinates();
-
     Int coord, caxis;
     findWorldAxis(coord, caxis, axis);
     world_replacement_values_p[coord]->operator()(caxis) = replacement;
@@ -728,15 +719,63 @@ const TabularCoordinate& CoordinateSystem::tabularCoordinate(uInt which) const
     return (const TabularCoordinate &)(*(coordinates_p[which]));
 }
 
-void CoordinateSystem::replaceCoordinate(const Coordinate &newCoordinate, uInt which)
+Bool CoordinateSystem::replaceCoordinate(const Coordinate &newCoordinate, uInt which)
 {
+
+// Basic checks.  The number of axes must be the same as this function does not
+// change any of the axis removal or mappings etc.
+
     AlwaysAssert(which < nCoordinates() &&
 		 newCoordinate.nPixelAxes() == coordinates_p[which]->nPixelAxes() &&
 		 newCoordinate.nWorldAxes() == coordinates_p[which]->nWorldAxes(),
 		 AipsError);
+    Bool typesEqual = newCoordinate.type()==coordinates_p[which]->type();
+    const Vector<String>& oldUnits(coordinates_p[which]->worldAxisUnits());
+    const Vector<String>& newUnits(newCoordinate.worldAxisUnits());
+
+// Replace coordinate
+
     delete coordinates_p[which];
     coordinates_p[which] = newCoordinate.clone();
     AlwaysAssert(coordinates_p[which], AipsError);
+
+// Now, the world replacement values are a bother.  They may well have the wrong
+// units now.    So try to find scale factors if the Coordinates were of
+// the same type.  
+
+    Bool ok = False;
+    Int where = 0;
+    if (typesEqual) {
+       String errMsg;
+       Vector<Double> factor;
+       ok = Coordinate::find_scale_factor(errMsg, factor, newUnits, oldUnits);
+//
+       if (ok) {
+
+// Apply scale factor
+
+          for (uInt i=0; i<factor.nelements(); i++) {
+            world_replacement_values_p[which]->operator()(i) *= factor[i];
+          }
+       }
+    }
+    if (ok) return True;
+
+// If different types, or the scale factors could not be found (non-conformant units) the 
+// best we can do is set the reference values for the replacement values
+
+   if (!ok || !typesEqual) {
+     const Vector<Double>& refVal(newCoordinate.referenceValue());
+     for (uInt i=0; i<refVal.nelements(); i++) {
+       where = world_maps_p[which]->operator[](i);
+       if (where < 0) {
+          world_replacement_values_p[which]->operator()(i) = refVal[i];
+       } else {
+          world_replacement_values_p[which]->operator()(i) = 0.0;
+       }
+     }
+   }
+   return False;
 }
 
 
@@ -1577,7 +1616,7 @@ Bool CoordinateSystem::convert (Matrix<Double>& coordsOut,
             cSysIn.findWorldAxis(coordinate, axisInCoordinate, i);
             if (cSysIn.type(coordinate) == Coordinate::SPECTRAL) {
                specCoordsIn[i] = new SpectralCoordinate(cSysIn.spectralCoordinate(coordinate));
-               specCoordsIn[i]->updateVelocityMachine(unitsIn(i), dopplerIn);
+               specCoordsIn[i]->setVelocity (unitsIn(i), dopplerIn);
 //
                velAxesIn(jIn) = i;
                jIn++;
@@ -1613,7 +1652,7 @@ Bool CoordinateSystem::convert (Matrix<Double>& coordsOut,
             cSysOut.findWorldAxis(coordinate, axisInCoordinate, i);
             if (cSysOut.type(coordinate) == Coordinate::SPECTRAL) {
                specCoordsOut[i] = new SpectralCoordinate(cSysOut.spectralCoordinate(coordinate));
-               specCoordsOut[i]->updateVelocityMachine(unitsOut(i), dopplerOut);
+               specCoordsOut[i]->setVelocity (unitsOut(i), dopplerOut);
 //
                velAxesOut(jOut) = i;
                jOut++;
@@ -2038,18 +2077,19 @@ Bool CoordinateSystem::setWorldAxisUnits(const Vector<String> &units)
 //
     const uInt nc = nCoordinates();
     for (uInt i=0; i<nc; i++) {
-	Vector<String> tmp(coordinates_p[i]->worldAxisUnits().copy());
-	uInt na = tmp.nelements();
-	for (uInt j=0; j<na; j++) {
-	    Int which = world_maps_p[i]->operator[](j);
-	    if (which >= 0) {
-		tmp(j) = units(which);
-	    }
-	}
-	ok = (coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
+        Vector<String> tmp(coordinates_p[i]->worldAxisUnits().copy());
+        uInt na = tmp.nelements(); 
+        for (uInt j=0; j<na; j++) {
+           Int which = world_maps_p[i]->operator[](j);
+           if (which >= 0) tmp[j] = units[which];
+        }
+
+// Set new units
+
+        ok = (coordinates_p[i]->setWorldAxisUnits(tmp) && ok);
         if (!ok) set_error (coordinates_p[i]->errorMessage());
     }
-
+//    
     return ok;
 }
 
@@ -3769,7 +3809,7 @@ Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
          Coordinate* pC2 = coord.makeFourierCoordinate(coordAxes, coordShape);
 
 // Replace in CS.  Note we don't change any pixel/world axis mappings
-// or removal lists
+// or removal lists in this step.
 
          pCS->replaceCoordinate(*pC2, i);
          delete pC2;
@@ -3825,7 +3865,7 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
             worldAxis = pixelAxisToWorldAxis(i);
             if (worldAxis<0) {
 //               ostringstream oss;
-//               oss << "World axis for pixel axis " << axes(i) << " has been removed" << endl;
+//               oss << "World axis for pixel axis " << axes(i) << " has been removed";
 //               os << LogIO::WARN << String(oss) << endl;
 //               os << LogIO::WARN << "This does not affect the Fourier Transform" << LogIO::POST;
             }
@@ -4657,8 +4697,9 @@ void CoordinateSystem::listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis,
    pc->getPrecision(prec, form, True, precRefValSci, 
                     precRefValFloat, precRefValRADEC);
 //
-   sc0->setPreferredVelocityType (doppler);
-   string = sc0->format(velUnits, form, 
+   String empty;
+   sc0->setVelocity (empty, doppler);
+  string = sc0->format(velUnits, form, 
                         sc0->referenceValue()(axisInCoordinate),
                         axisInCoordinate, True, True, prec);
    if (findWidths) {
@@ -4767,7 +4808,7 @@ Bool CoordinateSystem::velocityIncrement(Double& velocityInc, SpectralCoordinate
    Double pixel;
    pixel = refPix + 0.5;
    Quantum<Double> velocity1;
-   sc.updateVelocityMachine(velUnits, doppler);
+   sc.setVelocity (velUnits, doppler);
    if (!sc.pixelToVelocity(velocity1, pixel)) return False;
 //
    pixel = refPix - 0.5;
@@ -4992,48 +5033,6 @@ Vector<Double> CoordinateSystem::worldMixMax () const
       wm(i) = tmp(coordAxis);
    }
    return wm;
-}
-
-Vector<String> CoordinateSystem::preferredWorldAxisUnits()  const
-{
-    Vector<String> retval(nWorldAxes());
-    for (uInt i=0; i<retval.nelements(); i++) {
-	Int coord, coordAxis;
-	findWorldAxis(coord, coordAxis, i);
-	Vector<String> tmp = coordinates_p[coord]->preferredWorldAxisUnits();
-	retval(i) = tmp(coordAxis);
-    }
-    return retval;
-}
-
-
-Bool CoordinateSystem::setPreferredWorldAxisUnits(const Vector<String>& units)
-//
-// The preferred units are stored as private data (prefUnits_p) of class
-// Coordinate.  Now, CoordinateSystem inherits from Coordinate
-// but we never access its prefUnits_p private data.  We always
-// access the private data of the various Coordinate objects
-// that collectively make up the CoordinateSystem. 
-//
-{
-    Bool ok = (units.nelements()==nWorldAxes());
-    if (!ok) {
-      set_error("units vector must be of length nWorldAxes()");
-      return False;
-    }
-//
-    const uInt nc = nCoordinates();
-    for (uInt i=0; i<nc; i++) {
-	Vector<String> tmp(coordinates_p[i]->preferredWorldAxisUnits().copy());
-	uInt na = tmp.nelements();
-	for (uInt j=0; j<na; j++) {
-	    Int which = world_maps_p[i]->operator[](j);
-	    if (which >= 0) tmp(j) = units(which);
-	}
-	ok = (coordinates_p[i]->setPreferredWorldAxisUnits(tmp) && ok);
-        if (!ok) set_error (coordinates_p[i]->errorMessage());
-    }
-    return ok;
 }
 
 
@@ -5305,3 +5304,44 @@ Bool CoordinateSystem::mapOne(Vector<Int>& worldAxisMap,
    return True;
 }
 
+
+
+
+void CoordinateSystem::deleteTemps (const uInt which)
+{
+   delete world_maps_p[which]; 
+   world_maps_p[which] = 0;
+//
+   delete world_tmps_p[which]; 
+   world_tmps_p[which] = 0;
+//
+   delete world_replacement_values_p[which]; 
+   world_replacement_values_p[which] = 0;
+//
+   delete pixel_maps_p[which]; 
+   pixel_maps_p[which] = 0;
+//
+   delete pixel_tmps_p[which]; 
+   pixel_tmps_p[which] = 0;
+//
+   delete pixel_replacement_values_p[which]; 
+   pixel_replacement_values_p[which] = 0;
+//
+   delete worldAxes_tmps_p[which]; 
+   worldAxes_tmps_p[which] = 0;
+//
+   delete pixelAxes_tmps_p[which]; 
+   pixelAxes_tmps_p[which] = 0;
+//
+   delete worldOut_tmps_p[which]; 
+   worldOut_tmps_p[which] = 0;
+//
+   delete pixelOut_tmps_p[which]; 
+   pixelOut_tmps_p[which] = 0;
+//
+   delete worldMin_tmps_p[which]; 
+   worldMin_tmps_p[which] = 0;
+//
+   delete worldMax_tmps_p[which]; 
+   worldMax_tmps_p[which] = 0;
+}
