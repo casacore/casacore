@@ -363,12 +363,12 @@ void NewMSSimulator::initSpWindows(const uInt nSpWindows,
 
 // NOTE:  initAnt and initSpWindows must be called before this one!
 void NewMSSimulator::setFeed(uInt feedId, const String& pols, 
-			  const MPosition *position=0,
-			  const Vector<Double> *receptorAngle=0,
-			  const Matrix<Double> *beamOffset=0, 
-			  const Matrix<Complex> *polResponse=0,
-			  Int antId=-1, Double time=0, Double interval=0,
-			  Int spwId=-1)
+			  const MPosition *position,
+			  const Vector<Double> *receptorAngle,
+			  const Matrix<Double> *beamOffset, 
+			  const Matrix<Complex> *polResponse,
+			  Int antId, Double time, Double interval,
+			  Int spwId)
 {
     LogIO os(LogOrigin("MSSimulator", "setFeed()", WHERE));
 
