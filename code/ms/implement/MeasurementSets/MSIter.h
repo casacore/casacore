@@ -262,6 +262,7 @@ protected:
   void setFeedInfo();
   void setDataDescInfo();
   void setFieldInfo();
+  Bool isSubSet(const class Vector<uInt> &, const class Vector<uInt> &);
 
   NewMSIter* This;
   Block<NewMeasurementSet> bms_p;
