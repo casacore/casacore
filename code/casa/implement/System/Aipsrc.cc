@@ -30,13 +30,14 @@
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Exceptions.h>
 #include <aips/OS/EnvVar.h>
-#include <aips/OS/File.h>
+#include <aips/OS/RegularFile.h>
 #include <aips/OS/Time.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Measures/MUString.h>
+#include <aips/Measures/MVTime.h>
 #include <iostream.h>
 #include <fstream.h>
 #include <strstream.h>
@@ -253,6 +254,47 @@ void Aipsrc::set(uInt keyword,
 		 const Vector<String> &tname, const String &deflt) {
   AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
   find (codlst[keyword-1], keyword, tname, deflt);
+}
+
+void Aipsrc::save(uInt keyword) {
+  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  Aipsrc::save(nstrlst[keyword-1], strlst[keyword-1]);
+}
+
+void Aipsrc::save(uInt keyword, const String tname[]) {
+  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  Aipsrc::save(ncodlst[keyword-1], tname[codlst[keyword-1]]);
+}
+
+void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
+  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  Aipsrc::save(ncodlst[keyword-1], tname(codlst[keyword-1]));
+}
+
+void Aipsrc::save(const String &keyword, const String &val) {
+  String filn(Aipsrc::fillAips(uhome) + "/.aipsrc");
+  String filno(filn + ".old");
+  RegularFile fil(filn);
+  RegularFile filo(filno);
+  if (fil.exists()) {
+    fil.move(filno, True);
+  } else if (filo.exists()) {
+    filo.remove();
+  };
+  ofstream ostr(filn, ios::out);
+  ostr << "# Edited at " << 
+    MVTime(Time()).string(MVTime::YMD | MVTime::LOCAL, 0) << endl;
+  ostr << keyword << ":	" << val << endl;
+  fil = RegularFile(filno);
+  if (fil.exists()) {
+    String buffer;
+    Char buf[8192];	// Single lines must fit in this
+    ifstream istr(filno, ios::in | ios::nocreate);
+    while (istr.getline(&buf[0], sizeof(buf))) {
+      buffer = buf;
+      ostr << buffer << endl;
+    };
+  };
 }
   
 uInt Aipsrc::parse() {

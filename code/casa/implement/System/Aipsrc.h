@@ -156,7 +156,7 @@ typedef class AipsrcVector<String> AipsrcVString;
 //   <li> fast access with integer code, rather than string
 //   <li> ability to set values from programs if no aipsrc information given
 //		(a dynamic default)
-//   <li> (future) option to update the <src>$HOME/.aipsrc</src> keyword list 
+//   <li> update the <src>$HOME/.aipsrc</src> keyword/value list with save() 
 // </ul>
 // <note role=tip> The registered value is never equal to zero, hence a zero
 // value can be used to check if registration is done. Also, registering the
@@ -180,11 +180,13 @@ typedef class AipsrcVector<String> AipsrcVString;
 // value, you could do something like:
 // <srcblock>
 //	static uInt pp = Aipsrc::registerRC("printer.ps.page", "noSet");
-//	String printerPage = get(pp);
+//	String printerPage = Aipsrc::get(pp);
 // // Processing, and maybe somewhere else:
-//	set(pp, "nowSet");
+//	Aipsrc::set(pp, "nowSet");
 // // ...
-//	printerPage = get(pp);
+//	printerPage = Aipsrc::get(pp);
+// // and save it to the <src>$HOME/.aipsrc</src> list
+//	Aipsrc::save(pp);
 // </srcblock>
 // </example>
 //
@@ -271,7 +273,14 @@ public:
 		  Int Nname, const String tname[], const String &deflt);
   static void set(uInt keyword,
 		  const Vector<String> &tname, const String &deflt);
- // </group>
+  // </group>
+
+  // Save a registered keyword value to <src>$HOME/.aipsrc</src>
+  // <group>
+  static void save(uInt keyword);
+  static void save(uInt keyword, const String tname[]);
+  static void save(uInt keyword, const Vector<String> &tname);
+  // </group>
 
   // Returns the appropiate AIPS++ or system variable values
   // <group>
@@ -310,6 +319,8 @@ protected:
 		   uInt start);
   // The registration function
   static uInt registerRC(const String &keyword, Block<String> &nlst);
+  // Actual saving
+  static void save(const String &keyword, const String &val);
   
 private:
   //# Data

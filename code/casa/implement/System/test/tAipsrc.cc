@@ -80,7 +80,10 @@ int main(){
     Aipsrc::set(n1, "C4");
     cout << "Registrations: " << n << ", " << n1 << endl;
     cout << "Values: " << Aipsrc::get(n) << ", " << Aipsrc::get(n1) << endl;
+
+    Aipsrc::save(n1);
   }
+
 
   return 0; 
 }
