@@ -38,8 +38,7 @@ class PixelRegion;
 
 
 
-// <summary> This LEL class handles conversions between numerical types
-// </summary>
+// <summary> This LEL class handles conversions between numerical types </summary>
 //
 // <use visibility=local>
 //
@@ -93,8 +92,7 @@ class PixelRegion;
 // </todo>
 
 
-template <class T, class F>
-class LELConvert : public LELInterface<T>
+template <class T, class F> class LELConvert : public LELInterface<T>
 {
 public: 
    
