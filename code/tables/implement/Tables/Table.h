@@ -217,6 +217,8 @@ public:
     // inspection interval of 5 seconds.
     // <group>
     explicit Table (SetupNewTable&, uInt nrrow = 0, Bool initialize = False);
+    Table (SetupNewTable&, TableLock::LockOption,
+	   uInt nrrow = 0, Bool initialize = False);
     Table (SetupNewTable&, const TableLock& lockOptions,
 	   uInt nrrow = 0, Bool initialize = False);
     // </group>
