@@ -161,7 +161,11 @@
         SunOS)
            case `uname -r` in
            5.*)
-              a_arch=sun4sol
+              if test -f "$a_root/solaris/makedefs"; then
+                 a_arch=solaris
+              else
+                 a_arch=sun4sol
+              fi
               ;;
            *)
               a_arch=sun4
