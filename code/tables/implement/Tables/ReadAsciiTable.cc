@@ -33,6 +33,8 @@
 #include <aips/Tables/TableColumn.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Containers/Block.h>
+#include <aips/OS/Path.h>
 #include <aips/Utilities/String.h>
 #include <aips/Utilities/Regex.h>
 #include <aips/Exceptions/Error.h>
@@ -511,9 +513,8 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
     const Int   lineSize = 32768;
           char  string1[lineSize], string2[lineSize], stringsav[lineSize];
           char  first[lineSize], second[lineSize];
-    const Int   arraySize = 1000;
-          String  nameOfColumn[arraySize];
-          String  typeOfColumn[arraySize];
+          Block<String>  nameOfColumn(100);
+          Block<String>  typeOfColumn(100);
           String  keyName;
 
 	  LogIO logger(LogOrigin("readAsciiTable", WHERE));
@@ -535,9 +536,11 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 		  (tableproto.empty() ? TableDesc::Scratch : TableDesc::New));
 
     ifstream jFile;
-    jFile.open(headerfile, ios::in);
+    Path headerPath(headerfile);
+    String hdrName = headerPath.expandedName();
+    jFile.open(hdrName, ios::in);
     if (! jFile) {
-        throw (AipsError ("Cannot open header file " + headerfile));
+        throw (AipsError ("Cannot open header file " + hdrName));
     }
 
 // Read the first line. It will be KEYWORDS or NAMES OF COLUMNS
@@ -583,7 +586,12 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 
     if (!oneFile) {
         jFile.close();
-	jFile.open(filein, ios::in);
+	Path filePath(filein);
+	String fileName = filePath.expandedName();
+	jFile.open(fileName, ios::in);
+	if (! jFile) {
+	    throw (AipsError ("Cannot open input file " + fileName));
+	}
 	lineNumber = 0;
 	if (autoHeader) {
 	    if (!readAsciiTableGetLine (jFile, lineNumber, string1, lineSize,
@@ -615,6 +623,10 @@ String doReadAsciiTable (const String& headerfile, const String& filein,
 	done2 = readAsciiTableGetNext (string2, lineSize, second,
 				       at2, ' ');
 	if (done1>0 && done2>0) {
+	    if (nrcol >= Int(nameOfColumn.nelements())) {
+	        nameOfColumn.resize (2*nrcol, True, True);
+	        typeOfColumn.resize (2*nrcol, True, True);
+	    }
 	    nameOfColumn[nrcol] = String(first);
 	    typeOfColumn[nrcol] = String(second);
 	    typeOfColumn[nrcol].upcase();
