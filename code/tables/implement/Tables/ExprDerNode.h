@@ -31,6 +31,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/ExprNodeRep.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Random.h>
 #include <aips/Utilities/Regex.h>
 
@@ -325,6 +326,40 @@ public:
     Double getDouble (const TableExprId& id);
 private:
     uInt origin_p;
+};
+
+
+
+// <summary>
+// Rowid in table select expression tree
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="">
+// </reviewed>
+
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> TableExprNode
+// </prerequisite>
+
+// <synopsis>
+// This class represents the rowid() function in a table
+// select expression tree.
+// It is meant to get the original row number in a GIVING clause,
+// but, of course, it can also be used in the SELECT clause.
+// The row number returned is 0-based.
+// </synopsis> 
+
+class TableExprNodeRowid : public TableExprNodeBinary
+{
+public:
+    TableExprNodeRowid (const BaseTable*);
+    ~TableExprNodeRowid();
+    Double getDouble (const TableExprId& id);
+private:
+    Vector<uInt> rownrs_p;
 };
 
 

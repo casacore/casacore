@@ -1,5 +1,5 @@
 //# ExprDerNode.cc: Nodes representing scalar operators in table select expression tree
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -253,6 +253,20 @@ Double TableExprNodeRownr::getDouble (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
     return id.rownr() + origin_p;
+}
+
+
+
+TableExprNodeRowid::TableExprNodeRowid (const BaseTable* tabptr)
+: TableExprNodeBinary (NTDouble, VTScalar, OtRownr, tabptr),
+  rownrs_p            (tabptr->rowNumbers())
+{}
+TableExprNodeRowid::~TableExprNodeRowid ()
+{}
+Double TableExprNodeRowid::getDouble (const TableExprId& id)
+{
+    AlwaysAssert (id.byRow(), AipsError);
+    return rownrs_p(id.rownr());
 }
 
 
