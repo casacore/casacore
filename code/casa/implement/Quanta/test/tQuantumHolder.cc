@@ -1,5 +1,5 @@
 //# tQuantumHolder.cc: This program tests QuantumHolder
-//# Copyright (C) 1998,2000,2002
+//# Copyright (C) 1998,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -35,7 +35,6 @@
 #include <aips/Quanta/QLogical.h>
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Containers/Record.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/iostream.h>
 
 int main() {
@@ -52,21 +51,11 @@ int main() {
     String s01("-97.8 Mpc/a");
     String s02("12.5JY");
     Record y00;
-    GlishRecord z00;
     
     cout << "Input quantity:              " << (QBase &)x00 << endl;
     if (QuantumHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
 	cout <<"Record output quantity:      " << q00.asQuantum() << endl;
-      } else {
-	cout << "From error: " << error << endl;
-      };
-    } else {
-      cout << "To error: " << error << endl;
-    };
-    if (QuantumHolder(x00).toRecord(error, z00)) {
-      if (q00.fromRecord(error, z00)) {
-	cout <<"Glish output quantity:       " << q00.asQuantum() << endl;
       } else {
 	cout << "From error: " << error << endl;
       };

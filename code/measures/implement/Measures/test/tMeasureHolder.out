@@ -3,7 +3,6 @@ Test MeasureHolder
 ----------------------------------------------------
 Input value:              Direction: [0.663414, 0.383022, -0.642788] (J2000)
 Record output value:      Direction: [0.663414, 0.383022, -0.642788] (J2000)
-Glish output value:       Direction: [0.663414, 0.383022, -0.642788] (J2000)
 Is measure:        1
 Is direction:      1
 Is empty:          0

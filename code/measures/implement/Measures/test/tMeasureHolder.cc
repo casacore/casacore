@@ -1,5 +1,5 @@
 //# tMeasureHolder.cc: This program tests MeasureHolder
-//# Copyright (C) 1998,1999,2000,2002
+//# Copyright (C) 1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -40,7 +40,6 @@
 #include <aips/Measures/MeasureHolder.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
-#include <aips/Glish/GlishRecord.h>
 #include <aips/iostream.h>
 
 int main() {
@@ -55,23 +54,12 @@ int main() {
     MeasureHolder q00;
     MDirection x00(Quantity(30, "deg"), Quantity(-40, "deg"));
     Record y00;
-    GlishRecord z00;
 
     cout << "Input value:              " << x00 << " (" <<
 	  x00.getRefString() << ")" << endl;
     if (MeasureHolder(x00).toRecord(error, y00)) {
       if (q00.fromRecord(error, y00)) {
 	cout <<"Record output value:      " << q00.asMeasure() << " (" <<
-	  q00.asMeasure().getRefString() << ")" << endl;
-      } else {
-	cout << "From error: " << error << endl;
-      };
-    } else {
-      cout << "To error: " << error << endl;
-    };
-    if (MeasureHolder(x00).toRecord(error, z00)) {
-      if (q00.fromRecord(error, z00)) {
-	cout <<"Glish output value:       " << q00.asMeasure() << " (" <<
 	  q00.asMeasure().getRefString() << ")" << endl;
       } else {
 	cout << "From error: " << error << endl;
@@ -125,7 +113,6 @@ int main() {
     MeasureHolder q00;
     MDirection x00(Quantity(30, "deg"), Quantity(-40, "deg"));
     Record y00;
-    GlishRecord z00;
 
     cout << "Input value:              " << x00 << " (" <<
 	  x00.getRefString() << ")" << endl;
@@ -152,7 +139,6 @@ int main() {
       MeasureHolder q00;
       MEpoch x00(Quantity(30456, "d"));
       Record y00;
-      GlishRecord z00;
       
       cout << "Input value:              " << x00 << " (" <<
 	x00.getRefString() << ")" << endl;
@@ -173,7 +159,6 @@ int main() {
       MeasureHolder q00;
       MDoppler x00(Quantity(30456, "m/s"));
       Record y00;
-      GlishRecord z00;
       
       cout << "Input value:              " << x00 << " (" <<
 	x00.getRefString() << ")" << endl;
@@ -194,7 +179,6 @@ int main() {
       MeasureHolder q00;
       MFrequency x00(Quantity(30456, "MHz"));
       Record y00;
-      GlishRecord z00;
       
       cout << "Input value:              " << x00 << " (" <<
 	x00.getRefString() << ")" << endl;
@@ -216,7 +200,6 @@ int main() {
       MPosition x00(Quantity(6, "Mm"), Quantity(20, "deg"),
 		    Quantity(30, "deg"));
       Record y00;
-      GlishRecord z00;
       
       cout << "Input value:              " << x00 << " (" <<
 	x00.getRefString() << ")" << endl;
@@ -237,7 +220,6 @@ int main() {
       MeasureHolder q00;
       MRadialVelocity x00(Quantity(30456, "m/s"));
       Record y00;
-      GlishRecord z00;
       
       cout << "Input value:              " << x00 << " (" <<
 	x00.getRefString() << ")" << endl;
