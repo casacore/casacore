@@ -387,12 +387,6 @@ void Matrix<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     reference (tmp);
 }
 
-template<class T> IPosition Matrix<T>::end() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::end();
-}
-
 template<class T> Bool Matrix<T>::ok() const
 {
     return ( (ndim() == 2) ? (Array<T>::ok()) : False );

@@ -1,5 +1,5 @@
 //# Vector.h: A 1-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -247,13 +247,6 @@ public:
       { Shape = length_p(0); }
     const IPosition &shape() const
       { return length_p; }
-    // </group>
-
-    // The position of the last element.
-    // <group>
-    void end(Int &End) const
-      { End = length_p(0) - 1; }
-    IPosition end() const;
     // </group>
 
     // Replace the data values with those in the pointer <src>storage</src>.

@@ -288,12 +288,6 @@ template<class T> const Matrix<T> Cube<T>::xyPlane(uInt which) const
 }
 
 
-template<class T> IPosition Cube<T>::end() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::end();
-}
-
 template<class T> Bool Cube<T>::ok() const
 {
     return ( (ndim() == 3) ? (Array<T>::ok()) : False );

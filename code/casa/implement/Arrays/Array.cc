@@ -957,7 +957,7 @@ template<class T> Bool Array<T>::ok() const
     return True;
 }
 
-template<class T> IPosition Array<T>::end() const
+template<class T> IPosition Array<T>::endPosition() const
 {
     DebugAssert(ok(), ArrayError);
 

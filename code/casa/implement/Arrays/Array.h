@@ -422,10 +422,7 @@ public:
     // A convenience function: endPosition(i) = shape(i) - 1; i.e. this
     // is the IPosition of the last element of the Array.
     // <group>
-    IPosition endPosition() const
-      { return end(); }
-    // end() is deprecated and wil lsoon be removed.
-    IPosition end() const;
+    IPosition endPosition() const;
     // </group>
 
     // Are the array data contiguous?

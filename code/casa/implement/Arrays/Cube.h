@@ -1,5 +1,5 @@
 //# Cube.h: A 3-D Specialization of the Array Class
-//# Copyright (C) 1993,1994,1995,1996,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,15 +246,6 @@ public:
       { s1 = length_p(0); s2=length_p(1); s3=length_p(2); }
     const IPosition &shape() const
       { return length_p; }
-    // </group>
-
-    // The position of the last element of the cube.
-    // This is the same as shape(i) - 1; i.e. this is
-    // a convenience funtion.
-    // <group>
-    void end(Int &e1, Int &e2, Int &e3) const 
-      { e1=length_p(0)-1; e2=length_p(1)-1; e3=length_p(2)-1; }
-    IPosition end() const;
     // </group>
 
     // The number of rows in the Cube, i.e. the length of the first axis.

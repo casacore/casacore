@@ -289,12 +289,6 @@ void Vector<T>::doNonDegenerate (Array<T> &other, const IPosition &ignoreAxes)
     reference (tmp);
 }
 
-template<class T> IPosition Vector<T>::end() const
-{
-    DebugAssert(ok(), ArrayError);
-    return Array<T>::end();
-}
-
 template<class T>
 void Vector<T>::takeStorage(const IPosition &shape, T *storage,
 			    StorageInitPolicy policy)
