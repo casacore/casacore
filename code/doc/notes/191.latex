@@ -197,6 +197,7 @@ unspecified. We need to gain some experience with specific
 implementations of these before specifying a general format.
 \end{itemize}
 
+\begin{tabular}
 \definetable{MAIN table: Coordinates, Data, pointers and Flags}
 {
 \defline{\bf Columns}
@@ -235,6 +236,7 @@ FLAG\_HISTORY & Bool (NUM\_CORR, NUM\_CHAN, NUM\_HIS) & & & History of
 flags (optional)\\
 FLAG\_ROW &    Bool  &  &   &  The row flag \\ 
 }
+\end{tabular}
 \begin{description}
 \item[Notes:]
 \item[DATA, FLOAT\_DATA] At least one of these columns should be
