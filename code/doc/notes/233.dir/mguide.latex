@@ -1,6 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\mes}{{\em Measure}}
 \newcommand{\mess}{{\em Measures}}
+\newcommand{\quan}{{\em Quantity}}
 \newcommand{\quans}{{\em Quantities}}
 \newcommand{\val}{{\sc value}}
 \newcommand{\refq}{{\sc reference}}
@@ -25,6 +26,7 @@ Section 2 explains what a \mes\ consists of, and why; section 3
 discusses conversion; section 4 some notes on efficient use and
 section 5 gives the common interface of \mess\ and their values. Appendices 
 give some details per \mes, and also some information on \quans.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Background}
@@ -38,6 +40,7 @@ Currently the following measures exist:
 a position w.r.t. Earth
 \item[$Direction$] a direction in space (i.e. a position of unit length)
 \item[$Frequency$] the frequency of an electro-magnetic wave
+\item[$Doppler$] the redshift of an object
 \item[$RadialVelocity$] velocity along a direction
 \item[$EarthMagneticField$] the earth magnetic field vector 
 \item[$Baseline$] a direction with a length
@@ -129,23 +132,30 @@ reference could be:\\
 \end{verbatim}
 \end{minipage}
 
-\section{Conversion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Conversion}
+\begin{sloppypar}
 \mess\ can be converted from one \refq\ into another \refq. E.g. from
-a {\tt MDirection::J2000} direction coordinate into an {\tt
-MDirection::AZEL} coordinate; or from an {\tt MEpoch::UTC} into an
+an {\tt MDirection::J2000} direction coordinate into an {\tt
+MDirection::AZEL} coordinate; or from an {\tt MEpoch::UTC} into an 
 {\tt MEpoch::TAI}. Conversion objects are {\tt MeasConvert} objects,
 using the {\tt MEasure::Convert} alias (e.g. {\tt
 MDirection::Convert}. The conversion object needs at least a {\em from}
-\refq\ and a  {\em to} \refq. E.g: \\
+\refq\ and a  {\em to} \refq.
+\end{sloppypar}
+
+Example: \\
 \\
 \hspace{.05\linewidth}
-\begin{minipage}[t]{.9\linewidth}
+\begin{minipage}[t]{.95\linewidth}
 \begin{verbatim}
 	MDirection::Convert(MDirection::Ref(MDirection::VENUS, frame),
 			    MDirection::Ref(MDirection::J2000));
 \end{verbatim}
 \end{minipage}
+\\
+
 {\em Note} that if a {\em frame} is necessary, it suffices to give it
 with either one of the two \refqs. Unless, of course, they are
 different for the two \refqs, like converting the {\tt AZEL} at one
@@ -179,13 +189,76 @@ frame MEpoch specified in UTC). This information will be re-useed if
 possible and feasable in subsequent conversions with the same
 conversion object or using the same frame.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Efficiency}
+
+The efficiency of the use of the \mess\ and related classes can vary
+greatly. By using the appropriate interface, by fine-tuning with the
+aid of {\tt aipsrc} variables, and by making sure the caching system
+is used optimally, there can be a large reduction in resource use.
 
 \subsection{Measure or MeasValue}
 
+It is not always necessary to use a full-fledged \mes. It often
+suffices to use a {\em MeasValue} (or maybe even a \quan\ or just a
+simple {\em Double}.
+
+As an example, consider a frequency container object:
+\begin{itemize}
+\item if you have some box that produces a value that is always in
+$GHz$, and that has to be passed-on as-is without any further
+information, a {\em Double} is sufficient
+\item if the value you have has to be converted to some other
+frequency unit (like MHz or so) before being used, use a \quan. The
+only knowledge necessary is the units 
+\item if you would like the value be represented in other ways
+to represent an electro-magnetic wave (like wavelength, time, energy,
+impulse, angle/time, time), use an {\em MVFrequency}, which knows that
+the value has the properties of an electro-magnetic wave (in addition
+to the units)
+\item if you would like to know what the frequency really represent
+(a spectral rest frequency; a frequency as observed in a telescope; a
+frequency as would be observed from the local standard of rest;
+\ldots), and if you are going to use that information in one way or another
+(display, conversion, archive, \ldots) use an {\em MFrequency} as value
+container
+\end{itemize}
+Similar arguments can be used for the other \mess.
+
 \subsection{Re-use the effort of frame}
 
+From the point of view of the programmer, a {\em frame} is just a
+container of \mess\ to indicate when, where, in what
+direction and at what frequency a certain \mes\ was made or referred
+to. However, in actual fact it is also an engine and cache for a lot
+of calculations. Imagine that you want to convert from right-ascension
+and declination to hour-angle and declination, and that you have
+provided an epoch in $UTC$ in the {\em frame}. The actual conversion
+object will request (probably among other things), the sidereal time
+from the frame. The first request will set up a conversion object
+within the frame (from $UTC$ to $LAST$) and cahe it for later
+use. After that it will use this conversion object to obtain the
+sidereal time, and cache the result (for maybe a subsequent call). The
+conversion needs nutation, polar motion and a few other
+calculations. Again, all of these are cached for subsequent use in
+other calls to the frame for information.
+
+Efficient use of \mess\ is only possible if the lifetime of a {\em
+frame} is as long as possible. Which suggests that in many cases a
+frame should be created at the highest level possible (maybe even
+globally). Re-use of a {\em farme}, e.g. for a different time, is made
+possible by the {\tt set()} methods, e.g. $set(MEpoch)$, which will
+try to minimize the re-calculations necessary.
+
 \subsection{Re-use of conversion engines}
+
+Similar to the frame discussed in the previous section, a conversion
+object (e.g. {\tt MDirection::Convert}) is a repository of the
+necessary state-machine to make the conversion possible, and any
+intermediate calculation results. To make efficient use of this
+information, the same conversion object should be used if more than
+one conversion of the same type has to be done.
 
 \subsection{Specialised conversion engines}
 
