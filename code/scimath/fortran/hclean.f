@@ -18,13 +18,15 @@
       l2norm=i**2+q**2+u**2+v**2
       return 
       end
-      subroutine hclean(limage, limagestep, lpsf, lmask, nx, ny, npol,
-     $     xbeg, xend, ybeg, yend, niter, gain, thres, msgput, stopnow)
+      subroutine hclean(limage, limagestep, lpsf, domask, lmask, nx, ny, 
+     $     npol, xbeg, xend, ybeg, yend, niter, gain, thres, msgput,
+     $     stopnow)
       
       implicit none
       integer nx, ny, npol, xbeg, xend, ybeg, yend, niter, yes
       real limage(nx, ny, npol)
       real limagestep(nx, ny, npol)
+      logical domask
       real lpsf(nx, ny), lmask(nx, ny)
       real gain, thres
       external msgput
@@ -42,7 +44,8 @@ c     Now find peak in residual image
          py=ybeg
          do iy=ybeg,yend
             do ix=xbeg,xend
-               if(lmask(ix,iy).GT.0.000001) then
+c     Assume that the short cut works!
+               if(.NOT.domask.OR.(lmask(ix,iy).GT.0.000001)) then
                   if(npol.EQ.4) then
                      mev=maxeig(limageStep(ix,iy,1),
      $                    limageStep(ix,iy,2), limageStep(ix,iy,3),
