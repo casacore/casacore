@@ -1,6 +1,6 @@
 /*
     TableGram.y: Parser for table commands
-    Copyright (C) 1994,1995,1997,1998
+    Copyright (C) 1994,1995,1997,1998,1999
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -78,7 +78,6 @@ TableParseSelect* select;
 %type <node> andexpr
 %type <node> relexpr
 %type <node> arithexpr
-%type <node> unaryexpr
 %type <node> inxexpr
 %type <node> simexpr
 %type <node> set
@@ -97,8 +96,9 @@ TableParseSelect* select;
 %nonassoc EQ GT GE LT LE NE
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
+%nonassoc UNARY
+%nonassoc NOT
 %right POWER
-%right NOT
 
 
 %{
@@ -124,10 +124,36 @@ selwh:     columns FROM table whexpr {
 
 order:               /* no sort */
          | ORDERBY sortlist {
-	       TableParseSelect::currentSelect()->handleSort ($2, False);
+	       TableParseSelect::currentSelect()->handleSort ($2, False,
+							     Sort::Ascending);
+	   }
+         | ORDERBY SORTASC sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($3, False,
+							     Sort::Ascending);
+	   }
+         | ORDERBY SORTDESC sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($3, False,
+							     Sort::Descending);
 	   }
          | ORDERBY NODUPL sortlist {
-	       TableParseSelect::currentSelect()->handleSort ($3, True);
+	       TableParseSelect::currentSelect()->handleSort ($3, True,
+							     Sort::Ascending);
+	   }
+         | ORDERBY NODUPL SORTASC sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($4, True,
+							     Sort::Ascending);
+	   }
+         | ORDERBY NODUPL SORTDESC sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($4, True,
+							     Sort::Descending);
+	   }
+         | ORDERBY SORTASC NODUPL sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($4, True,
+							     Sort::Ascending);
+	   }
+         | ORDERBY SORTDESC NODUPL sortlist {
+	       TableParseSelect::currentSelect()->handleSort ($4, True,
+							     Sort::Descending);
 	   }
          ;
 
@@ -275,7 +301,7 @@ relexpr:   arithexpr
            }
          ;
 
-arithexpr: unaryexpr
+arithexpr: inxexpr
          | arithexpr PLUS  arithexpr {
 	       $$ = new TableExprNode (*$1 + *$3);
 	       delete $1;
@@ -301,24 +327,20 @@ arithexpr: unaryexpr
 	       delete $1;
 	       delete $3;
 	   }
-         | arithexpr POWER  arithexpr {
-	       $$ = new TableExprNode (pow (*$1, *$3));
-	       delete $1;
-	       delete $3;
-	   }
-         ;
-
-unaryexpr: inxexpr
-               { $$ = $1; }
-         | MINUS unaryexpr {
+         | MINUS arithexpr %prec UNARY {
 	       $$ = new TableExprNode (-*$2);
 	       delete $2;
 	   }
-         | PLUS  unaryexpr
+         | PLUS  arithexpr %prec UNARY
                { $$ = $2; }
-         | NOT   unaryexpr {
+         | NOT   arithexpr {
 	       $$ = new TableExprNode (!*$2);
 	       delete $2;
+	   }
+         | arithexpr POWER arithexpr {
+	       $$ = new TableExprNode (pow (*$1, *$3));
+	       delete $1;
+	       delete $3;
 	   }
          ;
 
@@ -573,7 +595,7 @@ sortlist : sortlist COMMA sortexpr {
          ;
 
 sortexpr : orexpr {
-               $$ = new TableParseSort (*$1, Sort::Ascending);
+               $$ = new TableParseSort (*$1);
 	       delete $1;
            }
          | orexpr SORTASC {
