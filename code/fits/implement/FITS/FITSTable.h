@@ -191,6 +191,11 @@ public:
 class FITSTable : public FITSTabular
 {
 public:
+    // this creates an invalid (isValid() return False) FITSTable
+    // Its primary purpose is so that FITSTables can be created before
+    // the file name is known.  reopen() is then used to open the file.
+    FITSTable(uInt whichHDU=1, Bool allKeywords=False);
+
     // 0-relative HDU. It can never be zero by the FITS rules.
     // allKeywords is passed to FITSTabular::keywordsFromHDU
     // See the documentation for that function for a list of
@@ -249,7 +254,6 @@ protected:
 private:
     // Undefined and inaccessible. An alternative would be to use reference
     // semantics like Table.
-    FITSTable();
     FITSTable(const FITSTable &);
     FITSTable &operator=(const FITSTable &);
 
