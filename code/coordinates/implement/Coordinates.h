@@ -37,6 +37,7 @@
 #include <trial/Coordinates/Projection.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Coordinates/StokesCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 
 // <module>
 //
