@@ -122,7 +122,7 @@ void ISMIndColumn::setShape (uInt rownr, const IPosition& shape)
 StIndArray* ISMIndColumn::getArrayPtr (uInt rownr)
 {
     if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p);
+	getValue (rownr, lastValue_p, False);
 	uLong offset = *(uLong*)lastValue_p;
 	if (offset != 0) {
 	    indArray_p = StIndArray (offset);
