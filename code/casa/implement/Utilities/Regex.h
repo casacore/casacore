@@ -1,5 +1,5 @@
 //# Regex.h: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,6 +142,15 @@ struct re_registers;
 //       <br>A literal comma or brace in a brace expression can be given by
 //       escaping it with a backslash.
 // </dl>
+// The static member function <src>fromSQLPattern</src> converts an SQL-like
+// pattern to a String which can be used to create a Regex from it.
+// A pattern has the following special characters:
+// <dl>
+//  <dt> %
+//  <dd> Zero or more arbitrary characters.
+//  <dt> _
+//  <dd> One arbitrary character
+// </dl>
 // The static member function <src>fromString</src> converts a normal
 // string to a regular expression. This function escapes characters in
 // the string which are special in a regular expression. In this way a
@@ -218,6 +227,10 @@ public:
     // This is useful for people who are more familiar with patterns
     // than with regular expressions.
     static String fromPattern(const String &pattern);
+
+    // Convert an SQL-like pattern to a regular expression.
+    // This is useful TaQL which mimics SQL.
+    static String fromSQLPattern(const String &pattern);
 
     // Convert a normal string to a regular expression.
     // This consists of escaping the special characters.

@@ -1,5 +1,5 @@
 //# Regex.cc: Regular expression class
-//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,7 +177,8 @@ const Char *Regex::transtable() const {
   return trans;
 }
 
-String Regex::fromPattern(const String &pattern) {
+String Regex::fromPattern(const String &pattern)
+{
     enum CState{stream, bracketopen, escapechar};
     uInt len = 0;
     uInt bracecount = 0;
@@ -281,7 +282,50 @@ String Regex::fromPattern(const String &pattern) {
     return String(result.chars(), len);
 }
 
-String Regex::fromString(const String &strng) {
+String Regex::fromSQLPattern(const String &pattern)
+{
+    // In SQL a % is 0 or more characters and _ is a single character.
+    // AFAIK there are no special escape characters.
+    // So simply replace them by * and %.
+    // Escape all special regex characters.
+    uInt strLeng = pattern.length();
+    String result;
+    result.alloc(2*strLeng+1);
+    uInt len = 0;
+    for (uInt i=0; i<strLeng; i++) {
+	Char c = pattern[i];
+	switch (c) {
+	case '%':
+	    result[len++] = '*';
+	    break;
+	case '_':
+	    result[len++] = '.';
+	    break;
+	// Escape special characters.
+	case '^':
+	case '$':
+	case '[':
+	case ']':
+	case '*':
+	case '+':
+	case '?':
+	case '.':
+	case '|':
+	case '{':
+	case '}':
+	case '(':
+	case ')':
+	case '\\':
+	    result[len++] = '\\';
+	default:
+	    result[len++] = c;
+	}
+    }
+    return String(result.chars(), len);
+}
+
+String Regex::fromString(const String &strng)
+{
     uInt strLeng = strng.length();
     String result;
     result.alloc(2*strLeng+1);
