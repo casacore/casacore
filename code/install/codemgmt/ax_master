@@ -3871,3 +3871,4 @@
 14 065 src mv trial/implement/Display/X11PCDLTranslate.h trialdisplay/implement/Display/X11PCDLTranslate.h
 14 065 src mv trial/implement/Display/X11PCLimits.h trialdisplay/implement/Display/X11PCLimits.h
 14 065 src mv trial/implement/Display/X11PixelCanvas.h trialdisplay/implement/Display/X11PixelCanvas.h
+14 065 src mv trial/implement/Display/X11PixelCanvasApp.h trialdisplay/implement/Display/X11PixelCanvasApp.h
