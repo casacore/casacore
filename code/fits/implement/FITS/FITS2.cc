@@ -1,5 +1,5 @@
 //# FITS2.cc: Transform an AIPS++ Array to or from a FITS disk file (helper functions)
-//# Copyright (C) 1994,1995,1998,1999
+//# Copyright (C) 1994,1995,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/FITS/hdu.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/Regex.h>
 #include <aips/Arrays/IPosition.h>
 
 template<class StorageType>
