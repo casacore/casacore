@@ -23,9 +23,8 @@
 ## or	-tgt DIRNAME		the directory where files binary release should
 ##				be placed
 ##
-##	-arch-only
-##	-aro			only produce architecture files, skip source,
-##				documentation, etc.
+##	-full			produce a full binary distribution, not just the
+##				architecture specific directories
 ##	
 ##
 require "find.pl";
@@ -112,7 +111,7 @@ $skipstrip=0;
 ##
 ## only do architecture files
 ##
-$archonly=0;
+$archonly=1;
 
 chdir $RROOT;
 
@@ -167,8 +166,7 @@ while ($_ = @ARGV[0], (/^-/)) {
     /^-exfi$/i && ($EXCLUDE = shift(@ARGV),next);
     /^-target-dir$/i && ($TARGET = shift(@ARGV),next);
     /^-tgt$/i && ($TARGET = shift(@ARGV),next);
-    /^-arch-only$/i && ($archonly = 1,next);
-    /^-aro$/i && ($archonly = 1,next);
+    /^-full$/i && ($archonly = 0,next);
     if ( /^-host$/i ) {
 	shift(@ARGV) =~ m/(\w+)\s*(.*)/;
 	die "unknown host: $1" unless defined $ahosts{$1};
