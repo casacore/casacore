@@ -143,11 +143,11 @@ class MeasComet {
   // Get number of entries
   Int nelements() const;
   // Get a comet position
-  Bool get(MVPosition &returnValue, Double date);
+  Bool get(MVPosition &returnValue, Double date) const;
   // Get the local on-disk direction
-  Bool getDisk(MVDirection &returnValue, Double date);
+  Bool getDisk(MVDirection &returnValue, Double date) const;
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
-  Bool getRadVel(MVRadialVelocity &returnValue, Double date);
+  Bool getRadVel(MVRadialVelocity &returnValue, Double date) const;
   // Create a clone
   MeasComet *clone() const;
 
@@ -157,7 +157,7 @@ class MeasComet {
   // Initialise table from the name given
   Bool initMeas(const String &which);
   // Fill Table lines
-  Bool fillMeas(Double utf);
+  Bool fillMeas(Double utf) const;
 
   //# Data members
   // Actual table
@@ -185,9 +185,9 @@ class MeasComet {
   // Type of ccordinates
   MDirection::Types mtype_p;
   // Lines in memory
-  Int lnr_p[2];
+  mutable Int lnr_p[2];
   // Last read data (measlow - meashigh)
-  Double ldat_p[2][N_Columns];
+  mutable Double ldat_p[2][N_Columns];
   // Message given
   Bool msgDone_p;
   // File names

@@ -103,7 +103,7 @@ Int MeasComet::nelements() const {
   return nrow_p;
 };
 
-Bool MeasComet::get(MVPosition &returnValue, Double date) {
+Bool MeasComet::get(MVPosition &returnValue, Double date) const {
   returnValue = MVPosition();
   if (!fillMeas(date)) return False;
   Double f = (date - ldat_p[0][0])/dmjd_p;
@@ -117,7 +117,7 @@ Bool MeasComet::get(MVPosition &returnValue, Double date) {
   return True;
 }
 
-Bool MeasComet::getDisk(MVDirection &returnValue, Double date) {
+Bool MeasComet::getDisk(MVDirection &returnValue, Double date) const {
   returnValue = MVDirection();
   if (!fillMeas(date)) return False;
   Double f = (date - ldat_p[0][0])/dmjd_p;
@@ -129,7 +129,7 @@ Bool MeasComet::getDisk(MVDirection &returnValue, Double date) {
   return True;
 }
 
-Bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) {
+Bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) const {
   returnValue = 0.0;
   if (!fillMeas(date)) return False;
   Double f = (date - ldat_p[0][0])/dmjd_p;
@@ -195,7 +195,7 @@ Bool MeasComet::initMeas(const String &which) {
   return ToBool(measured_p);
 }
 
-Bool MeasComet::fillMeas(Double utf) {
+Bool MeasComet::fillMeas(Double utf) const {
   Int ut = ifloor((utf-mjd0_p)/dmjd_p)-1;
   if (ut<0 || ut >= nrow_p-1) return False;
   if (ut != lnr_p[0]) {
