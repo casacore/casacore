@@ -3868,3 +3868,4 @@
 14 065 src mv trial/implement/Display/X11PCDLSetClearColor.h trialdisplay/implement/Display/X11PCDLSetClearColor.h
 14 065 src mv trial/implement/Display/X11PCDLSetClipWin.h trialdisplay/implement/Display/X11PCDLSetClipWin.h
 14 065 src mv trial/implement/Display/X11PCDLText.h trialdisplay/implement/Display/X11PCDLText.h
+14 065 src mv trial/implement/Display/X11PCDLTranslate.h trialdisplay/implement/Display/X11PCDLTranslate.h
