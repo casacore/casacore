@@ -1,5 +1,5 @@
 //# tLockFile.cc: Program to test classes LockFile and FileLocker
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,14 +46,16 @@ void doIt (const String& name, double interval)
     cout << "The second one is deleted when leaving the inner loop" << endl;
     cout << "and can be used to check what happens if multiple LockFile" <<endl;
     cout << "objects are used on the same file and one is deleted" << endl;
-    //# Create 2 lock objects with given inspection interval.
-    //# Let them start at a different offset in the file.
-    LockFile lock1(name, interval, False, True, True, 0);
-    LockFile* lockp;
     Path path(name);
     cout << "LockFile for " << path.absoluteName() << endl;
     cout << "Inspection interval = " << interval << " seconds" << endl;
-    int op, lnr;
+    int op, lnr, perm;
+    cout << "permanentLocking? (0 or 1):";
+    cin >> perm;
+    //# Create 2 lock objects with given inspection interval.
+    //# Let them start at a different offset in the file.
+    LockFile lock1(name, interval, False, True, True, 0, perm==1);
+    LockFile* lockp;
     while (True) {
 	cout << "locknr (1,2): ";
 	cin >> lnr;
@@ -61,6 +63,8 @@ void doIt (const String& name, double interval)
 	if (lnr == 1) {
 	    lockp = &lock1;
 	} else {
+	    cout << "permanentLocking? (0 or 1):";
+	    cin >> op;
 	    lockp = new LockFile (name, interval, False, True, True, 1);
 	}
 	while (True) {
@@ -113,8 +117,10 @@ void doIt (const String& name, double interval)
 	        RegularFileIO tmp(name);
 	    } else if (op == 9) {
 	        uInt pid;
-		uInt res = LockFile::showLock (pid, name);
-		cout << "result=" << res << ", pid=" << pid << endl;
+		Bool perm;
+		uInt res = LockFile::showLock (pid, perm, name);
+		cout << "result=" << res << ", pid=" << pid
+		     << ", permlocked=" << perm << endl;
 	    } else {
 		break;
 	    }

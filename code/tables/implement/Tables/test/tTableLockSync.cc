@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Interactive test program for concurrent access to tables
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -88,11 +88,13 @@ void a()
     Table tab(newtab, 1);
 }
 
-void b (Bool noReadLocking)
+void b (Bool noReadLocking, Bool permLocking)
 {
     // Open the table for update with UserLocking.
-    TableLock lt(TableLock::UserLocking);;
-    if (noReadLocking) {
+    TableLock lt(TableLock::UserLocking);
+    if (permLocking) {
+        lt = TableLock::PermanentLocking;
+    } else if (noReadLocking) {
         lt = TableLock::UserNoReadLocking;
     }
     Table tab("tTableLockSync_tmp.tab", lt, Table::Update);
@@ -246,19 +248,23 @@ main (int argc, char** argv)
 	     << endl;
 	cout << "            tTableLockSync 0 x  to update existing table"
 	     << endl;
-	cout << "where x=1 means NoReadLocking" << endl;
+	cout << "where x=1 means NoReadLocking and x=2 means PermanentLocking"
+	     << endl;
     }else{
 	try {
 	    Bool noReadLocking = False;
+	    Bool permLocking = False;
 	    if (argc >= 3) {
 	        if (*(argv[2]) == '1') {
 		    noReadLocking = True;
+	        } else if (*(argv[2]) == '2') {
+		    permLocking = True;
 		}
 	    }
 	    if (*(argv[1]) == '1') {
 		a();
 	    }
-	    b (noReadLocking);
+	    b (noReadLocking, permLocking);
 	} catch (AipsError x) {
 	    cout << "Caught an exception: " << x.getMesg() << endl;
 	    return 1;
