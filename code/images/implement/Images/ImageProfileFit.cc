@@ -314,9 +314,17 @@ uInt ImageProfileFit::addElements (const RecordInterface& rec)
    return itsSpectralFitPtr->list().nelements() - 1;
 }
 
-
 Bool ImageProfileFit::getElements (RecordInterface& rec,
                                    const String& xUnit)
+{
+   const SpectralList& list = itsSpectralFitPtr->list();
+   return getElements(rec, xUnit, list);
+}
+
+
+Bool ImageProfileFit::getElements (RecordInterface& rec,
+                                   const String& xUnit,
+                                   const SpectralList& list)
 {
 
 // If the data source is an image, the x-units are pixels.
@@ -352,7 +360,6 @@ Bool ImageProfileFit::getElements (RecordInterface& rec,
    }
 //
    Record recVec;
-   const SpectralList& list = itsSpectralFitPtr->list();
    const uInt n = list.nelements();
    for (uInt i=0; i<n; i++) {
       SpectralElement se = list[i];
@@ -799,8 +806,8 @@ void ImageProfileFit::convertXEstimateFromPixels (SpectralElement& el,
 }
 
 
-void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
-                           ImageInterface<Float>*& pResid)
+void ImageProfileFit::fit (RecordInterface& rec, ImageInterface<Float>*& pFit,
+                           ImageInterface<Float>*& pResid, const String& xUnitRec)
 {
    LogIO os(LogOrigin("image", "setDataAndFit", WHERE));
    if (!itsFitRegion) {
@@ -854,7 +861,7 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
       fit.addFitElement(l);
       est = True;
    }
-//   
+//
    Vector<Bool> inMask;
    Bool ok = False;
    uInt nFail = 0;
@@ -884,8 +891,8 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
 // If the fit fails, the state of the fit object is the failed
 // fit, not the estimate it started with...
 
+      SpectralList list(fit.list());
       if (ok) {
-         SpectralList list(fit.list());
          if (pFit) {
             list.evaluate(pFitIter->rwVectorCursor());   
          }
@@ -914,12 +921,22 @@ void ImageProfileFit::fit (ImageInterface<Float>*& pFit,
             pResidMaskIter->rwVectorCursor() = False;
          }
       }
+//
+      Record rec4, rec3;
+      rec4.define ("pixel", inIter.position().asVector()+1);       // Make 1-rel
+      rec3.defineRecord("position", rec4);    
+//
+      Record rec2;
+      getElements (rec2, xUnitRec, list);
+      rec3.defineRecord("fit", rec2);
+//
+      rec.defineRecord(inIter.nsteps(), rec3);
 //  
-       inIter++;
-       if (pFitIter) (*pFitIter)++;
-       if (pResidIter) (*pResidIter)++;
-       if (pFitMaskIter) (*pFitMaskIter)++;
-       if (pResidMaskIter) (*pResidMaskIter)++;
+      inIter++;
+      if (pFitIter) (*pFitIter)++;
+      if (pResidIter) (*pResidIter)++;
+      if (pFitMaskIter) (*pFitMaskIter)++;
+      if (pResidMaskIter) (*pResidMaskIter)++;
 //
        meterValue += 1.0;
        clock.update(meterValue);
