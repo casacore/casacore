@@ -2676,3 +2676,4 @@
 11 403 src rm doc/html/navpages/ref
 11 403 src rm doc/html/navpages/synthesis
 11 403 src mv doc/html/navpages/images3/nfra70.gif doc/gif/nfra70.gif
+11 403 src mv doc/html/navpages/images3/nrao.gif doc/gif/nrao.gif
