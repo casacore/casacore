@@ -392,7 +392,7 @@ void TableRecord::getRecord (AipsIO& os, const TableAttr& parentAttr)
 void TableRecord::setTableAttr (const TableRecord& other,
 				const TableAttr& defaultAttr)
 {
-  uInt n = other.nfields();
+  uInt n = nfields();
   const RecordDesc& desc = description();
   for (uInt i=0; i<n; i++) {
     DataType dtype = desc.type(i);
