@@ -69,7 +69,7 @@ TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
         defaultTileShape_p = IPosition (spec.asArrayInt ("DEFAULTTILESHAPE"));
     }
     if (spec.isDefined ("MAXIMUMCACHESIZE")) {
-        setPersMaxCacheSize (spec.asuInt ("MAXIMUMCACHESIZE"));
+        setPersMaxCacheSize (spec.asInt ("MAXIMUMCACHESIZE"));
     }
 }
 
@@ -228,20 +228,12 @@ void TiledShapeStMan::addHypercube (uInt rownr,
 				    const IPosition& cubeShape,
 				    const IPosition& tileShape)
 {
-    // Set last axis of tile shape to 1 in case it is not defined.
-    IPosition tshape = tileShape;
-    if (tshape.nelements() == nrdim_p-1) {
-	tshape.resize (nrdim_p);
-	tshape(nrdim_p-1) = 1;
-    } else if (tshape.nelements() != nrdim_p) {
-	throw (TSMError ("setShape: nelements in tileShape is incorrect"));
-    }
     // Check the given cube shape.
     // Note that a coordinate may have been defined already,
     // so also check against the values of the first (dummy) cube.
     TSMCube* zeroCube = cubeSet_p[0];
     checkCubeShape (zeroCube, cubeShape);
-    TSMCube* hypercube = makeHypercube (cubeShape, tshape,
+    TSMCube* hypercube = makeHypercube (cubeShape, tileShape,
 					zeroCube->valueRecord());
     uInt ncube = cubeSet_p.nelements();
     cubeSet_p.resize (ncube + 1);
