@@ -2368,7 +2368,7 @@ the list).
 \noindent
 In addition some general scripts to aid the system adiministration
 (\exeref{UPlist}, \exeref{UPreident}, \exeref{UPdup},  
-\exeref{UPlock}, \exeref{UPtmpl}, \exeref{UPload}) exist.
+\exeref{UPlock}, \exeref{UPtmpl}, \exeref{UPload}, \exeref{UPcasa}) exist.
 
 \noindent
 Information is exchanged between the different scripts by files. These files
@@ -2559,6 +2559,7 @@ The following UP scripts are available:
     UPtmpl                   [-c] [-r] [-u] [-d] [-n] <typ>
     UPdup     [-s]           [-c] [-r] [-u] [-d] [-n] <typ>
     UPreident [-a] [-t] [-z] [-c] [-r] [-u] [-d] [-n] <typ>
+    UPcasa
 \end{verbatim}
 
 \noindent
@@ -2796,6 +2797,7 @@ aoc aips master suitable for ssh ({\em i.e.} if you are able to do
 \subsubsection*{Examples}
 
 \begin{verbatim}
+UPlock -h
 Usage:   UPlock [-a] [-l] [-c] [-r] [-u] [-d] [-n] <typ>
   Test for each locked file if it is in the list of files
   <typ>.found (as created with UPfind), and output the 
@@ -2826,6 +2828,47 @@ Get all locked files and their lockers:
 \subsubsection*{Author}
 
 Original: 2000/09/20 by Wim Brouw, ATNF
+
+% ----------------------------------------------------------------------------
+
+\newpage
+
+\subsection{\exe{UPcasa}}
+\label{UPcasa}
+\index{UPcasa@\exe{UPcasa}}
+\index{source files |see{\exe{UPcasa}}}
+
+Return the list of basic casa library packages..
+
+\subsubsection*{Synopsis}
+
+\begin{synopsis}
+   \code{\exe{UPcasa}}
+\end{synopsis}
+
+\subsubsection*{Description}
+
+\noindent
+The \exe{UPcasa} script lists all the basic casa library packages in
+hierarchal order.
+The command is an easy way to get the hierarchal list of casa
+library packages.
+
+\subsubsection*{Options}
+
+\subsubsection*{Examples}
+
+\begin{verbatim}
+UPcasa
+casa scimath tables measures fits lattices 
+coordinates components images ms msvis 
+calibration ionosphere flagging dish 
+simulators synthesis graphics tasking
+\end{verbatim}
+
+\subsubsection*{Author}
+
+Original: 2004/10/15 by Wim Brouw, ATNF
 
 % ----------------------------------------------------------------------------
 
