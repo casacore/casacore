@@ -1,5 +1,5 @@
 //# MeasComet.h: To define position for comets and other solar system bodies
-//# Copyright (C) 1999, 2000
+//# Copyright (C) 1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -151,6 +151,9 @@ class MeasComet {
   // Create a clone
   MeasComet *clone() const;
 
+  // Close the Comet tabls only
+  void closeMeas();
+
  private:
   
   //# General member functions
@@ -192,6 +195,7 @@ class MeasComet {
   Bool msgDone_p;
   // File names
   String tp_p;
+
 };
 
 //# Inline Implementations

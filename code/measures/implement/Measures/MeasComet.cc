@@ -1,5 +1,5 @@
 //# MeasComet.cc: To define position for comets and other solar system bodies
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -193,6 +193,21 @@ Bool MeasComet::initMeas(const String &which) {
     measured_p = True;
   };
   return (measured_p);
+}
+
+void MeasComet::closeMeas() {
+  if (Table::isOpened(tp_p) || measured_p || !measFlag_p) {
+    measFlag_p = True;
+    measured_p = False;
+    mjd0_p = 0;
+    mjdl_p = 0;
+    dmjd_p = 0;
+    nrow_p = 0;
+    tp_p   = "";
+    msgDone_p = False;
+    for (uInt i=0; i<2; ++i)  lnr_p[i] = -1;
+    tab_p = Table();
+  };
 }
 
 Bool MeasComet::fillMeas(Double utf) const {
