@@ -39,6 +39,7 @@
 #include <aips/Utilities/String.h>
 
 class NewMSField;
+class MVAngle;
 
 // <summary>
 // A class to provide easy access to NewMSField columns
@@ -118,6 +119,15 @@ public:
 
   // Convenience function that returns the number of rows in any of the columns
   uInt nrow() const {return name_p.nrow();}
+
+  // returns the last row that has a reference direction, phase direction and
+  // delay direction that match, to within the specified angular separation,
+  // the supplied values. Only matches on rows where the direction is constant
+  // ie., NUM_POLY is 0 and where FLAG_ROW is False. Returns -1 if no match
+  // could be found. 
+  Int matchDirection(const MDirection& referenceDirection, 
+		     const MDirection& delayDirection,
+		     const MDirection& phaseDirection, const MVAngle& maxSeparation);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach

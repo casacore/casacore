@@ -29,10 +29,14 @@
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/IPosition.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/MeasurementSets/NewMSField.h>
 #include <aips/Measures/MeasRef.h>
+#include <aips/Measures/MeasConvert.h>
 #include <aips/Quanta/MVDirection.h>
+#include <aips/Quanta/MVAngle.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableDesc.h>
@@ -80,6 +84,44 @@ MDirection RONewMSFieldColumns::referenceDirMeas(Int row,
   return NewMSFieldColumns::interpolateDirMeas(referenceDirMeasCol()(row),
 					       numPoly()(row),
 					       interTime, time()(row)); 
+}
+
+Int RONewMSFieldColumns::matchDirection(const MDirection& referenceDirection,
+					const MDirection& delayDirection,
+					const MDirection& phaseDirection,
+					const MVAngle& maxSeparation) {
+  uInt r = nrow();
+  if (r == 0) return -1;
+  // convert the supplied directions to the same reference frame as the ones in
+  // the Table. It would be nice if this converter could be cached somewhere.
+  MDirection::Convert c(referenceDirection, delayDirMeasCol().getMeasRef());
+  const MVDirection refVal = c().getValue();
+  const MVDirection delayVal = c(delayDirection).getValue();
+  const MVDirection phaseVal = c(phaseDirection).getValue();
+  const Double sepInRad = maxSeparation.radian();
+  // Created these here to avoid creating them lots of times as a temporaries
+  Matrix<Double> mdir(IPosition(2,2,1));
+  Vector<Double> dir(mdir.nonDegenerate()); // A reference to the mdir matrix
+  while (r > 0) {
+    r--;
+    if (flagRow()(r) == False && numPoly()(r) == 0) {
+      delayDir().get(r, mdir);
+      if (delayVal.separation(MVDirection(dir)) < sepInRad) {
+	phaseDir().get(r, mdir);
+	if (phaseVal.separation(MVDirection(dir)) < sepInRad) {
+	  referenceDir().get(r, mdir);
+	  if (refVal.separation(MVDirection(dir)) < sepInRad) {
+	    DebugAssert(dir.nrefs() == 2, AipsError); 
+	    DebugAssert(mdir.nrefs() == 2, AipsError);
+	    return r;
+	  }
+	}
+      }
+    }
+  }
+  DebugAssert(dir.nrefs() == 2, AipsError);
+  DebugAssert(mdir.nrefs() == 2, AipsError);
+  return -1;
 }
 
 RONewMSFieldColumns::RONewMSFieldColumns():
