@@ -852,7 +852,7 @@ void ColumnSet::doLock (FileLocker::LockType type, Bool wait)
     if (lockPtr_p->option() != TableLock::AutoLocking) {
         String str = "PermanentLocking";
         if (lockPtr_p->option() == TableLock::UserLocking) {
-	    String str = "UserLocking";
+	    str = "UserLocking";
 	}
 	throw (TableError ("ColumnSet::doLock: table " +
 			   plainTablePtr_p->tableName() +
