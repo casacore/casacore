@@ -28,10 +28,11 @@
 
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Images/ImageUtilities.h>
+
 #include <strstream.h>
 
 LinearCoordinate::LinearCoordinate(uInt naxis)
@@ -378,10 +379,12 @@ Bool LinearCoordinate::near(const Coordinate* pOther,
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
    Vector<Bool> exclude(nPixelAxes());
    exclude = False;
+   Bool found;
    uInt j = 0;
    for (uInt i=0; i<nPixelAxes(); i++) {
-      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
-   }
+      if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0)
+        exclude(j++) = True;
+    }
 
 // Check the descriptors
 

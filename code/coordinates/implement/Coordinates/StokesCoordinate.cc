@@ -31,8 +31,8 @@
 #include <aips/Arrays/Matrix.h>
 
 #include <aips/Containers/Record.h>
-#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Mathematics/Math.h>
 
 #include <strstream.h>
@@ -324,7 +324,9 @@ Bool StokesCoordinate::near(const Coordinate* pOther,
  
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
    AlwaysAssert(nPixelAxes()==1, AipsError);
-   if (ImageUtilities::inVector(0,excludeAxes) >= 0) return True;
+   Bool found;
+   if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0)
+      return True;
 
 
 // The only other thing that really matters in the STokesCoordinate

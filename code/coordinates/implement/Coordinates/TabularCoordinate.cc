@@ -30,6 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Functionals/Interpolate1D.h>
 #include <aips/Functionals/ScalarSampledFunctional.h>
 #include <aips/Containers/Record.h>
@@ -37,7 +38,6 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Mathematics/Math.h>
 #include <trial/FITS/FITSUtil.h>
-#include <trial/Images/ImageUtilities.h>
 
 #if defined(__GNUG__)
 typedef Interpolate1D<Double,Double> gpp_bug;
@@ -367,7 +367,10 @@ Bool TabularCoordinate::near(const Coordinate* pOther,
 
    AlwaysAssert(nPixelAxes() == 1, AipsError);
    AlwaysAssert(nWorldAxes() == 1, AipsError);
-   if (ImageUtilities::inVector(0,excludeAxes) >= 0) return True;
+   Bool found;
+   if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0)
+      return True;
+
    
 // Check units and name
 

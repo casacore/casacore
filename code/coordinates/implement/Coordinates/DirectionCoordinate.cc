@@ -36,8 +36,8 @@
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MVAngle.h>
-#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <aips/Utilities/String.h>
 
 #include <iomanip.h>  
@@ -739,8 +739,10 @@ Bool DirectionCoordinate::near(const Coordinate* pOther,
    Vector<Bool> exclude(nPixelAxes());   
    exclude = False;
    Int j = 0;
+   Bool found;
    for (uInt i=0; i<nPixelAxes(); i++) {
-      if(ImageUtilities::inVector(i,excludeAxes) >=0) exclude(j++) = True;
+      if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0) 
+        exclude(j++) = True;
    }
 
 // Check linear transformation

@@ -30,8 +30,8 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Mathematics/Math.h>
-#include <trial/Images/ImageUtilities.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Utilities/LinearSearch.h>
 #include <wcslib/lin.h>
 #include <stdlib.h>
 
@@ -297,9 +297,11 @@ Bool LinearXform::near(const LinearXform& other,
 
    Vector<Bool> exclude(nWorldAxes());
    exclude = False;
+   Bool found;
    uInt j = 0;
    for (uInt i=0; i<nWorldAxes(); i++) {
-      if(ImageUtilities::inVector(Int(i),excludeAxes) >=0) exclude(j++) = True;
+      if (linearSearch(found, excludeAxes, Int(i), excludeAxes.nelements()) >= 0)
+        exclude(j++) = True;
    }
 
 
