@@ -67,6 +67,33 @@ LCMask& LCMask::operator= (const LCMask& that)
     return *this;
 }
 
+Bool LCMask::operator== (const LCRegion& other) const
+//
+// See if this region is the same as the other region
+//
+{
+
+// Check below us
+   
+   if (LCBox::operator!=(other)) return False;
+
+// Check the masks
+
+   if (!masksEqual(other)) return False;
+
+   return True;
+}
+ 
+Bool LCMask::operator!= (const LCRegion& other) const
+//
+// See if this region is different from the other region
+//
+{
+   if (LCMask::operator==(other)) return False;
+   return True;
+}
+    
+
 LCRegion* LCMask::cloneRegion() const
 {
     return new LCMask(*this);
@@ -90,6 +117,11 @@ LCRegion* LCMask::doTranslate (const Vector<Float>& translateVector,
 String LCMask::className()
 {
     return "LCMask";
+}
+
+String LCMask::type() const
+{
+    return className();
 }
 
 TableRecord LCMask::toRecord (const String&) const
