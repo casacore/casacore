@@ -75,17 +75,6 @@ class Table;
 class ImageUtilities {
 public:
 
-// Convert comma or space delimitered substrings into an
-// array of strings.  
-   static Vector<String> getStrings (const String& string);
-
-// Find the next comma or space delimiterd substring in a string.   If <src>init=True</src> 
-// start from the start of the string, else start from the end of the previous found 
-// substring.  A return value of False indicates no more substrings.
-   static Bool getNextSubString (String& subString,
-                                 const String& inString,
-                                 const Bool& init);
-
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
 // axis, the <src>pixelAxis</src>.    For the other pixel axes in the
