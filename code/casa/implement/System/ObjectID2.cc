@@ -39,7 +39,7 @@
 uInt hashFunc(const ObjectID &key)
 {
     // We should check to see if this hash is any good
-    uInt result;
+    uInt result = 0;
     char c;
     c = (char) key.sequence();
     result = result || c;
@@ -47,7 +47,7 @@ uInt hashFunc(const ObjectID &key)
     result = result || (c<<8);
     c = (char)key.creationTime();
     result = result || (c<<16);
-    c = (char)key.hostid();
+    c = (char)key.hostName()[0];
     result = result || (c<<24);
     return result;
 }
