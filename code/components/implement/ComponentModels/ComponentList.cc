@@ -30,7 +30,6 @@
 #include <trial/ComponentModels/Flux.h>
 #include <trial/ComponentModels/ComponentShape.h>
 #include <trial/ComponentModels/SpectralModel.h>
-#include <trial/Images/ImageInterface.h>
 #include <trial/TableMeasures/ScalarMeasColumn.h>
 #include <trial/TableMeasures/TableMeasDesc.h>
 #include <trial/TableMeasures/TableMeasRefDesc.h>
@@ -137,13 +136,6 @@ Flux<Double> ComponentList::sample(const MDirection & sampleDir,
     result += compFlux.value();
   }
   return Flux<Double>(result, retPol);
-}
-
-void ComponentList::project(ImageInterface<Float> & plane) const {
-  DebugAssert(ok(), AipsError);
-  for (uInt i = 0; i < nelements(); i++) {
-    component(i).project(plane);
-  }
 }
 
 void ComponentList::add(SkyComponent component) {

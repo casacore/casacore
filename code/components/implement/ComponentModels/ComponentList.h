@@ -43,7 +43,6 @@ class MVFrequency;
 class MVAngle;
 class Unit;
 template <class T> class Vector;
-template <class T> class ImageInterface;
 
 // <summary> A class for manipulating groups of components </summary>
 
@@ -167,9 +166,6 @@ public:
   Flux<Double> sample(const MDirection & sampleDir,
 		      const MVAngle & pixelSize,
 		      const MFrequency & centerFreq) const;
-
-  // Project all the members of the componentList onto the image
-  void project(ImageInterface<Float> & plane) const;
 
   // Add a SkyComponent to the end of the ComponentList. The list length is
   // increased by one when using this function. By default the newly added
