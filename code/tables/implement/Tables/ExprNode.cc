@@ -203,13 +203,14 @@ Bool TableExprNode::checkTable (const Table& table) const
     return  (table.baseTablePtr() == node_p->baseTablePtr());
 }
 
-Bool TableExprNode::checkReplaceTable (const Table& table) const
+Bool TableExprNode::checkReplaceTable (const Table& table,
+				       Bool canBeConst) const
 {
     if (table.baseTablePtr() == node_p->baseTablePtr()) {
 	return True;
     }
     if (node_p->baseTablePtr() == 0) {
-	return False;
+	return canBeConst;
     }
     Bool equalDataTypes;
     if (! table.tableDesc().columnDescSet().isEqual

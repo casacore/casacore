@@ -569,11 +569,13 @@ public:
 
     // Same as checkTable, but the given table only needs to have the
     // same description as the table in the expression. This is used by
-    // sorting which parses the expression with the original table,
-    // but has to operate on the output of the selection process.
+    // sorting/updating which parse the expression with the original table,
+    // but have to operate on the output of the selection process.
     // If the tables are different, the table pointers in the expression
     // are replaced.
-    Bool checkReplaceTable (const Table& table) const;
+    // If <src>canbeConst==True</src>, the expression can be constant,
+    // thus does not need a table column in it.
+    Bool checkReplaceTable (const Table& table, Bool canBeConst=False) const;
 
     // Get basetable. This gets a pointer to the BaseTable to which a
     // TableExprNode belongs. A TableExprNode belongs to the BaseTable to
