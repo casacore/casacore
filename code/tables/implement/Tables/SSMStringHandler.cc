@@ -114,7 +114,11 @@ void SSMStringHandler::replace(Int bucketNr, Int offset, Int length,
   }
 
   for (uInt i=0;i<string.nelements();i++) {
-    CanonicalConversion::fromLocal (itsIntBuf, aString[i].length());
+      //
+      // Made it a uInt so the SGI compiler could figure out which overloaded
+      // function to use, since it seemed confused by string::size_t -> size_t
+      //
+    CanonicalConversion::fromLocal (itsIntBuf, uInt(aString[i].length()));
     replaceData (offset,itsIntSize, itsIntBuf);
     replaceData (offset,aString[i].length(), aString[i].chars());
   }
@@ -294,7 +298,11 @@ void SSMStringHandler::put (Int& bucketNr, Int& offset, Int& length,
   }
 
   for (uInt i=0; i< string.nelements();i++) {
-    CanonicalConversion::fromLocal (itsIntBuf, aString[i].length());
+      //
+      // Made it a uInt so the SGI compiler could figure out which overloaded
+      // function to use, since it seemed confused by string::size_t -> size_t
+      //
+    CanonicalConversion::fromLocal (itsIntBuf, uInt(aString[i].length()));
     putData (itsIntSize, itsIntBuf);
     putData (aString[i].length(), aString[i].chars());
   }
