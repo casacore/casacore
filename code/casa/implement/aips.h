@@ -60,7 +60,7 @@
 #endif
 
 // This section contains the various standard types used by AIPS++.
-#if defined(AIPS_STDLIB) || defined(__GNUG__)
+#if defined(AIPS_STDLIB)
 typedef bool Bool;
 const Bool True = true;
 const Bool False = false;
@@ -154,7 +154,7 @@ extern Bool aips_debug_on;
 // classes, e.g. from InterViews.
 #define imported /* Nothing */
 
-#if !defined(AIPS_STDLIB) && !defined(__GNUG__)
+#if !defined(AIPS_STDLIB)
 // These are new keywords in the upcoming C++ standard.
 // They are defined to an empty string, so they can be used until
 // all compilers interpret them.
