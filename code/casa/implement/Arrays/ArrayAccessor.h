@@ -127,7 +127,7 @@ template <class T> class ArrayBaseAccessor {
   T &operator*() { return *ptr_p; }
   T *data() { return ptr_p; }
   const Array<T> &baseArray() { return *arrayPtr_p; }
-  const uInt step() { return step_p; }
+  uInt step() { return step_p; }
   // </group>
   
   // Index along current axis
@@ -218,12 +218,12 @@ template <class T> class ArrayBaseAccessor {
 //		<src>getStorage()</src></linkto> method.
 //	For contiguous arrays this could be slightly faster than the use of 
 //	the <src>STLIterator</src> (about 10% faster), but slower for 
-//	non-contiguous arrays. In addition is needs additional memory
+//	non-contiguous arrays. In addition it needs additional memory
 //	resources, which will lead to extra overhead. The general use of
 //	getStorage is discouraged with the introduction of the STLIterator.
 //	It should only be used when an interface to routines in
 //	other languages is needed (like Fortran), or when a large Array is
-//	known to be contiguous, and the data has to be referenced many times.
+//	known to be contiguous, and the data have to be referenced many times.
 //   <li> Access along one or more axes of a (large) multi-dimensional array
 //	is best achieved using the
 //	<linkto class=ArrayAccessor>ArrayAccessor</linkto> class. Its total
