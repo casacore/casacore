@@ -185,6 +185,9 @@ public:
     // Synchronize the data managers when data in them have changed.
     void resync (uInt nrrow);
 
+    // Invalidate the column caches for all columns.
+    void invalidateColumnCaches();
+
     // Get the correct data manager.
     // This is used by the column objects to link themselves to the
     // correct datamanagers when they are read back.
