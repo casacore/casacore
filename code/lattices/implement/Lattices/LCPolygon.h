@@ -1,5 +1,5 @@
 //# LCPolygon.h: Define a 2-dimensional region by a polygon
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -163,8 +163,12 @@ private:
     // Define the mask to indicate which elements are inside the polygon.
     void defineMask();
 
+    // Fill the mask from the given points.
+    void fillMask (Bool* mask, Int nx, Int ny, Int blcx, Int blcy,
+		   const Float* ptrX, const Float* ptrY, uInt nrline);
+
     // Fill a line in the mask between y1 and y2.
-    void fillLine (Matrix<Bool>& mask, Int x, Int y1, Int y2);
+    void fillLine (Bool* mask, Int nx, Int ny, Int x, Int y1, Int y2);
 
     
     Vector<Float> itsX;
