@@ -1103,10 +1103,17 @@
   fi
   SLEEPINV=$DELTASLEEP
 
+# No need to sneeze anywhere else if we're a binary installation
+  if [ "$BINARY" ]
+  then
+     INHOSTS=
+  fi
+
 # Spread our germs to all specified hosts.
   GOTSYNC=
   for INHOST in $INHOSTS
   do
+     echo "In the loop"
 #    Parse any architecture extension.
      EXTLIST=""
      case $INHOST in
@@ -1158,10 +1165,16 @@
      TMP=" ($INEXT)"
      INEXT="-e $INEXT"
   fi
-  echo "inhale: Initiating synchronous rebuild$TMP..."
-  (aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh ; \
-   sneeze $INEXT -l -m $MODE $TARGETS)
 
+# No need to sneeze anywhere else if we're a binary installation
+  if [ "$BINARY" ]
+  then
+     echo "inhale: Skipping sneeze due to binary flag"
+  else
+     echo "inhale: Initiating synchronous rebuild$TMP..."
+     (aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh ; \
+      sneeze $INEXT -l -m $MODE $TARGETS)
+  fi
 
 #-----------------------------------------------------------------------------
 # Wind up.
