@@ -419,7 +419,8 @@ Bool GaussianConvert::deconvolve(Quantum<Double>& majorAxisModel,
                                  const Quantum<Double>& positionAngleSource,
                                  const Quantum<Double>& majorAxisBeam,
                                  const Quantum<Double>& minorAxisBeam,
-                                 const Quantum<Double>& positionAngleBeam)
+                                 const Quantum<Double>& positionAngleBeam,
+                                 Double tol)
 {
 //
 // Check position angle units
@@ -522,6 +523,13 @@ Bool GaussianConvert::deconvolve(Quantum<Double>& majorAxisModel,
         positionAngleModel.setValue(0.5*atan2(-gamma,alpha-beta));
       }
     }
+//
+// See if point source.  P.A. not meaningful
+//
+   if ( abs(majorAxisModel.getValue(radians))<tol &&
+        abs(minorAxisModel.getValue(radians))<tol) {
+      isPointSource = True;
+   }
 //
 // Convert result to specified units of model 
 //

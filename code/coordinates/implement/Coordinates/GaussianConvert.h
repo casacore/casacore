@@ -129,7 +129,8 @@ public:
                            const Quantum<Double>& positionAngleSource,
                            const Quantum<Double>& majorAxisBeam,
                            const Quantum<Double>& minorAxisBeam,
-                           const Quantum<Double>& positionAngleBeam);
+                           const Quantum<Double>& positionAngleBeam,
+                           Double tol=1e-6);
 
     // Recover error messages from the conversion functions
     String errorMessage() const {return itsErrorMessage;}
