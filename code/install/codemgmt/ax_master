@@ -6385,3 +6385,4 @@
 18 303 src mv trial/implement/Arrays/test/dArrayAccessor.cc aips/implement/Arrays/test/dArrayAccessor.cc
 18 313 src mv trial/implement/IO/test/tLargeFilebufIO.cc aips/implement/IO/test/tLargeFilebufIO.cc
 18 355 src mv trial/implement/Arrays/test/tArrayAccessor.cc aips/implement/Arrays/test/tArrayAccessor.cc
+18 390 src mv doc/newsletters/dec02/2002_06_17_07:24:27A.1.gif doc/newsletters/dec02/cv1.gif
