@@ -282,7 +282,7 @@ private:
     void allocateBuffer();
 
     // Throw an index error exception.
-    void IPosition::throwIndexError() const;
+    void throwIndexError() const;
 
     enum { IPositionVersion = 1, BufferLength = 4 };
     uInt size_p;
