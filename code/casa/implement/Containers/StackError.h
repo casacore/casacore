@@ -1,5 +1,5 @@
 //# StackError.h: Error class for the stack class
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 
+//#
 rtti_dcl_init(EmptyStackError);
 class EmptyStackError : public AipsError {
 public:
