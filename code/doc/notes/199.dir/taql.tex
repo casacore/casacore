@@ -1118,6 +1118,12 @@ that indexing arrays should be done with care.
   \item[] \texttt{ SELECT FROM book.table WHERE nelements(author) > 1}
      \\selects books with more than 1 author.
      \\
+  \item[] \texttt{ SELECT FROM my.ms WHERE
+         any(ANTENNA1==[0,0,1] \&\& ANTENNA2==[1,3,2])}
+     \\selects the antenna pairs (baselines) 0-1, 0-3, and 1-2.
+     \\Note that the two comparisons result in a boolean vector. If
+       a bool in the and-ed vectors is true, that baseline matches.
+     \\
   \item[] \texttt{ SELECT FROM mytable WHERE}
      \\\texttt{ cos(0d1m) $<$
          sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) *
