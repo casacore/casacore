@@ -44,7 +44,7 @@ LELLattice<T>::LELLattice(const Lattice<T>& lattice)
 {
    setAttr(LELAttribute(False, 
 			lattice.shape(), lattice.niceCursorShape(),
-			lattice.latticeCoordinates()));
+			lattice.lelCoordinates()));
 
 #if defined(AIPS_TRACE)
    cout << "LELLattice:: constructor, pLattice_p.nrefs() = "
@@ -58,7 +58,7 @@ LELLattice<T>::LELLattice(const MaskedLattice<T>& lattice)
 {
    setAttr(LELAttribute(lattice.isMasked(),
 			lattice.shape(), lattice.niceCursorShape(),
-			lattice.latticeCoordinates()));
+			lattice.lelCoordinates()));
 
 #if defined(AIPS_TRACE)
    cout << "LELLattice:: constructor, pLattice_p.nrefs() = "
