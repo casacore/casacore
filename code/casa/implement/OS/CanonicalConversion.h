@@ -1,5 +1,5 @@
 //# CanonicalConversion.h: A class with static functions to convert canonical format
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -175,17 +175,19 @@ public:
     
     // Convert one value from local format to canonical format.
     // The from and to buffer should not overlap.
+    //# Note that the from value is passed by reference (and not by value),
+    //# because the & operator applied to it is slowish if passed by value.
     // <group>
-    static unsigned int fromLocal (void* to, char           from);
-    static unsigned int fromLocal (void* to, unsigned char  from);
-    static unsigned int fromLocal (void* to, short          from);
-    static unsigned int fromLocal (void* to, unsigned short from);
-    static unsigned int fromLocal (void* to, int            from);
-    static unsigned int fromLocal (void* to, unsigned int   from);
-    static unsigned int fromLocal (void* to, Int64          from);
-    static unsigned int fromLocal (void* to, uInt64         from);
-    static unsigned int fromLocal (void* to, float          from);
-    static unsigned int fromLocal (void* to, double         from);
+    static unsigned int fromLocal (void* to, const char&           from);
+    static unsigned int fromLocal (void* to, const unsigned char&  from);
+    static unsigned int fromLocal (void* to, const short&          from);
+    static unsigned int fromLocal (void* to, const unsigned short& from);
+    static unsigned int fromLocal (void* to, const int&            from);
+    static unsigned int fromLocal (void* to, const unsigned int&   from);
+    static unsigned int fromLocal (void* to, const Int64&          from);
+    static unsigned int fromLocal (void* to, const uInt64&         from);
+    static unsigned int fromLocal (void* to, const float&          from);
+    static unsigned int fromLocal (void* to, const double&         from);
     // </group>
     
     // Convert nr values from canonical format to local format.
@@ -613,19 +615,21 @@ inline unsigned int CanonicalConversion::toLocal (double& to, const void* from)
 }
 
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, char from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const char& from)
 {
     *(char*)to = from;
     return SIZE_CAN_CHAR;
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
-						    unsigned char from)
+						    const unsigned char& from)
 {
     *(unsigned char*)to = from;
     return SIZE_CAN_UCHAR;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, short from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const short& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse2 (to, &from);
@@ -636,7 +640,7 @@ inline unsigned int CanonicalConversion::fromLocal (void* to, short from)
 }
 
 inline unsigned int CanonicalConversion::fromLocal (void* to,
-						    unsigned short from)
+						    const unsigned short& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse2 (to, &from);
@@ -646,7 +650,8 @@ inline unsigned int CanonicalConversion::fromLocal (void* to,
     return SIZE_CAN_USHORT;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, int from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const int& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -657,7 +662,7 @@ inline unsigned int CanonicalConversion::fromLocal (void* to, int from)
 }
 
 inline unsigned int CanonicalConversion::fromLocal (void* to,
-						    unsigned int from)
+						    const unsigned int& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -667,7 +672,8 @@ inline unsigned int CanonicalConversion::fromLocal (void* to,
     return SIZE_CAN_UINT;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, Int64 from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const Int64& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -677,7 +683,8 @@ inline unsigned int CanonicalConversion::fromLocal (void* to, Int64 from)
     return SIZE_CAN_INT64;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, uInt64 from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const uInt64& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -687,7 +694,8 @@ inline unsigned int CanonicalConversion::fromLocal (void* to, uInt64 from)
     return SIZE_CAN_UINT64;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, float from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const float& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse4 (to, &from);
@@ -697,7 +705,8 @@ inline unsigned int CanonicalConversion::fromLocal (void* to, float from)
     return SIZE_CAN_FLOAT;
 }
 
-inline unsigned int CanonicalConversion::fromLocal (void* to, double from)
+inline unsigned int CanonicalConversion::fromLocal (void* to,
+						    const double& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
@@ -712,142 +721,122 @@ inline unsigned int CanonicalConversion::toLocal (char*           to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalChar (to, from, nr);
-    return nr * SIZE_CAN_CHAR;
+    return toLocalChar (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (unsigned char*  to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalUChar (to, from, nr);
-    return nr * SIZE_CAN_UCHAR;
+    return toLocalUChar (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (short*          to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalShort (to, from, nr);
-    return nr * SIZE_CAN_SHORT;
+    return toLocalShort (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (unsigned short* to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalUShort (to, from, nr);
-    return nr * SIZE_CAN_USHORT;
+    return toLocalUShort (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (int*            to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalInt (to, from, nr);
-    return nr * SIZE_CAN_INT;
+    return toLocalInt (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (unsigned int*   to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalUInt (to, from, nr);
-    return nr * SIZE_CAN_UINT;
+    return toLocalUInt (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (Int64*          to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalInt64 (to, from, nr);
-    return nr * SIZE_CAN_INT64;
+    return toLocalInt64 (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (uInt64*         to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalUInt64 (to, from, nr);
-    return nr * SIZE_CAN_UINT64;
+    return toLocalUInt64 (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (float*          to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalFloat (to, from, nr);
-    return nr * SIZE_CAN_FLOAT;
+    return toLocalFloat (to, from, nr);
 }
 inline unsigned int CanonicalConversion::toLocal (double*         to,
 						  const void* from,
 						  unsigned int nr)
 {
-    toLocalDouble (to, from, nr);
-    return nr * SIZE_CAN_DOUBLE;
+    return toLocalDouble (to, from, nr);
 }
 
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const char*           from,
 						    unsigned int nr)
 {
-    fromLocalChar (to, from, nr);
-    return nr * SIZE_CAN_CHAR;
+    return fromLocalChar (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const unsigned char*  from,
 						    unsigned int nr)
 {
-    fromLocalUChar (to, from, nr);
-    return nr * SIZE_CAN_UCHAR;
+    return fromLocalUChar (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const short*          from,
 						    unsigned int nr)
 {
-    fromLocalShort (to, from, nr);
-    return nr * SIZE_CAN_SHORT;
+    return fromLocalShort (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const unsigned short* from,
 						    unsigned int nr)
 {
-    fromLocalUShort (to, from, nr);
-    return nr * SIZE_CAN_USHORT;
+    return fromLocalUShort (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const int*            from,
 						    unsigned int nr)
 {
-    fromLocalInt (to, from, nr);
-    return nr * SIZE_CAN_INT;
+    return fromLocalInt (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const unsigned int*   from,
 						    unsigned int nr)
 {
-    fromLocalUInt (to, from, nr);
-    return nr * SIZE_CAN_UINT;
+    return fromLocalUInt (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const Int64*          from,
 						    unsigned int nr)
 {
-    fromLocalInt64 (to, from, nr);
-    return nr * SIZE_CAN_INT64;
+    return fromLocalInt64 (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const uInt64*         from,
 						    unsigned int nr)
 {
-    fromLocalUInt64 (to, from, nr);
-    return nr * SIZE_CAN_UINT64;
+    return fromLocalUInt64 (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const float*          from,
 						    unsigned int nr)
 {
-    fromLocalFloat (to, from, nr);
-    return nr * SIZE_CAN_FLOAT;
+    return fromLocalFloat (to, from, nr);
 }
 inline unsigned int CanonicalConversion::fromLocal (void* to,
 						    const double*         from,
 						    unsigned int nr)
 {
-    fromLocalDouble (to, from, nr);
-    return nr * SIZE_CAN_DOUBLE;
+    return fromLocalDouble (to, from, nr);
 }
 
 
