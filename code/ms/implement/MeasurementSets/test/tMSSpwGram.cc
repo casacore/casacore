@@ -46,11 +46,10 @@ int main(int argc, char **argv)
     if(msSpwGramParseCommand(ms, "[0]")==0) {
       const TableExprNode *node = &msSpwGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
-      Table tablesel(ms.tableName(), Table::New);
+      Table tablesel(ms.tableName(), Table::Update);
       mssel = new MeasurementSet(tablesel(*node, node->nrow() ));
       cout << "After mssel constructor called " << endl;
       mssel->rename(ms.tableName()+"/SELECTED_TABLE", Table::Scratch);
-      cout << " new name " <<  mssel->tableName() << endl;
       mssel->flush();
       if(mssel->nrow()==0) {
         cout << "Check your input, No data selected" << endl;
