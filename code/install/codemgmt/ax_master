@@ -4010,3 +4010,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCInvisTool.cc trialdisplay/implement/DisplayEvents/WCInvisTool.cc
 14 065 src mv trial/implement/DisplayEvents/WCMotionEH.cc trialdisplay/implement/DisplayEvents/WCMotionEH.cc
 14 065 src mv trial/implement/DisplayEvents/WCMotionEvent.cc trialdisplay/implement/DisplayEvents/WCMotionEvent.cc
+14 065 src mv trial/implement/DisplayEvents/WCPTRegion.cc trialdisplay/implement/DisplayEvents/WCPTRegion.cc
