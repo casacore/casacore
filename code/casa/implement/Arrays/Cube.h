@@ -263,6 +263,15 @@ public:
     IPosition end() const;
     // </group>
 
+    // The number of rows in the Cube, i.e. the length of the first axis.
+    uInt nrow() const {return length_p(0);}
+
+    // The number of columns in the Cube, i.e. the length of the 2nd axis.
+    uInt ncolumn() const {return length_p(1);}
+
+    // The number of planes in the Cube, i.e. the length of the 3rd axis.
+    uInt nplane() const {return length_p(2);}
+
     // Replace the data values with those in the pointer <src>storage</src>.
     // The results are undefined is storage does not point at nelements() or
     // more data elements. After takeStorage() is called, <src>unique()</src>
