@@ -2655,3 +2655,4 @@
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.in_tkd aips/implement/Tables/test/tReadAsciiTable.in_tkd
 11 402 src mv aips/implement/Tables/test/tAsciiFileIO.in_tkh aips/implement/Tables/test/tReadAsciiTable.in_tkh
 11 402 src mv trial/apps/table/tReadAsciiTable.in_tah aips/implement/Tables/test/tReadAsciiTable.in_tah
+11 403 src rm doc/project/jobs.html
