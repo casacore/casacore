@@ -87,7 +87,7 @@ class ProgressMeter;
 //  Multiple passes are made through the data, and the output of 
 //  each pass is the input of the next pass.  The intermediate 
 //  images are stored as TempImages which may be in memory or 
-//  on disk, depending on theri size.
+//  on disk, depending on their size.
 //
 //  It can also simply insert this image into that one via
 //  an integer shift.
@@ -130,7 +130,9 @@ public:
   // Regrid inImage onto the grid specified by outImage.
   // If outImage has a writable mask, it will be updated.
   // Specify which pixel axes of outImage are to be
-  // regridded
+  // regridded.  The coordinate and axis order of outImage
+  // is preserved, regardless of where the relevant coordinates
+  // are in inImage
   void regrid(ImageInterface<T>& outImage, 
               typename Interpolate2D::Method method,
               const IPosition& whichOutPixelAxes,
@@ -157,15 +159,17 @@ public:
   // Enable/disable Measures Reference conversions
   void disableReferenceConversions(Bool disable=True) {itsDisableConversions = disable;};
 
-  // Helper function.  We are regridding from cSysIn to cSysOut for the
-  // specified axes.  This function returns a CoordinateSystem which,
-  // for the axes being regridded, copies the coordinates from cSysOut.
+  // Helper function.  We are regridding from cSysFrom to cSysTo for the
+  // specified pixel axes of cSyFrom. This function returns a CoordinateSystem which,
+  // for the pixel axes being regridded, copies the coordinates from cSysTo
+  // (if coordinate type present in cSysTo) or cSysFrom (coordinate
+  // type not present in cSysTo).
   // For the axes not being regridded, it copies the coordinates from
-  // cSysIn.  This helps you build cSysOut for function regrid.
-  // The ObsInfo from cSysIn is copied to the output CoordinateSystem.
+  // cSysFrom.  This helps you build the cSys for function regrid.
+  // The ObsInfo from cSysFrom is copied to the output CoordinateSystem.
   static CoordinateSystem makeCoordinateSystem(LogIO& os,
-                                               const CoordinateSystem& cSysOut,
-                                               const CoordinateSystem& cSysIn,
+                                               const CoordinateSystem& cSysTo,
+                                               const CoordinateSystem& cSysFrom,
                                                const IPosition& axes);
 
  private:
