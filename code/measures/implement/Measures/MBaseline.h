@@ -1,5 +1,5 @@
 //# MBaseline.h: A Measure: Baseline on Earth
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -109,6 +109,8 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
     HADEC,
     AZEL,
     AZELSW,
+    AZELGEO,
+    AZELSWGEO,
     JNAT,
     ECLIPTIC,  
     MECLIPTIC,
@@ -120,7 +122,8 @@ class MBaseline : public MeasBase<MVBaseline, MeasRef<MBaseline> > {
     // Defaults
     DEFAULT=ITRF,
     // Synonyms
-    AZELNE=AZEL};
+    AZELNE=AZEL,
+    AZELNEGEO=AZELGEO };
 
   //# Typedefs
   // Measure value container for this class (i.e. MBaseline::MVType)

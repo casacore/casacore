@@ -1,5 +1,5 @@
 //# MCuvw.cc:  Muvw conversion routines 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,10 +57,14 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::APP,			Muvw::B1950,	2},
   {Muvw::APP,			Muvw::TOPO,	0},
   {Muvw::HADEC,			Muvw::AZEL,	0},
+  {Muvw::HADEC,           	Muvw::AZELGEO,  0},
   {Muvw::AZEL,			Muvw::HADEC,	0},
+  {Muvw::AZELGEO,         	Muvw::HADEC,    0},
   {Muvw::HADEC,			Muvw::TOPO,	0},
   {Muvw::AZEL,			Muvw::AZELSW,	0},
+  {Muvw::AZELGEO,         	Muvw::AZELSWGEO,0},
   {Muvw::AZELSW,		Muvw::AZEL,	0},
+  {Muvw::AZELSWGEO,       	Muvw::AZELGEO,  0},
   {Muvw::APP,			Muvw::JNAT,	0},
   {Muvw::JNAT,			Muvw::APP,	0},
   {Muvw::J2000,			Muvw::ECLIPTIC,	0},
@@ -444,7 +448,16 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applyHADECtoAZEL(in);
       measMath.applyHADECtoAZEL(MVDIR1);
       break;
-
+    
+    case HADEC_AZELGEO:    
+      getAPP();    
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);  
+      measMath.applyTOPOtoHADEC(MVDIR1);    
+      toPole(in);  
+      measMath.applyHADECtoAZELGEO(in);   
+      measMath.applyHADECtoAZELGEO(MVDIR1);    
+      break;  
+ 
     case AZEL_HADEC:
       getAPP();
       measMath.applyAPPtoTOPO(MVDIR1, lengthP);
@@ -454,7 +467,17 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.deapplyHADECtoAZEL(in);
       measMath.deapplyHADECtoAZEL(MVDIR1);
       break;
-     
+
+    case AZELGEO_HADEC:   
+      getAPP(); 
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);    
+      measMath.applyTOPOtoHADEC(MVDIR1);    
+      measMath.applyHADECtoAZELGEO(MVDIR1);    
+      toPole(in);      
+      measMath.deapplyHADECtoAZELGEO(in);      
+      measMath.deapplyHADECtoAZELGEO(MVDIR1);  
+      break;    
+      
     case HADEC_TOPO: 
       getAPP();
       measMath.applyAPPtoTOPO(MVDIR1, lengthP);
@@ -495,7 +518,18 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applyAZELtoAZELSW(in);
       measMath.applyAZELtoAZELSW(MVDIR1);
       break;
-
+  
+    case AZELGEO_AZELSWGEO:  
+    case AZELSWGEO_AZELGEO:  
+      getAPP(); 
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);    
+      measMath.applyTOPOtoHADEC(MVDIR1);    
+      measMath.applyHADECtoAZELGEO(MVDIR1);    
+      toPole(in);      
+      measMath.applyAZELtoAZELSW(in);
+      measMath.applyAZELtoAZELSW(MVDIR1);   
+      break;    
+ 
     case ECLIP_J2000:
       getJ2000();
       measMath.deapplyECLIPtoJ2000(MVDIR1);

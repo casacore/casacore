@@ -1,5 +1,5 @@
 //# Muvw.h: A Measure: uvw on Earth
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,6 +139,8 @@ public:
     HADEC,
     AZEL,
     AZELSW,
+    AZELGEO,
+    AZELSWGEO,
     JNAT,
     ECLIPTIC,
     MECLIPTIC,
@@ -150,7 +152,8 @@ public:
     // Defaults
     DEFAULT=ITRF,
     // Synonyms
-    AZELNE=AZEL};
+    AZELNE=AZEL,
+    AZELNEGEO=AZELGEO };
   
   //# Typedefs
   // Measure value container for this class (i.e. Muvw::MVType)

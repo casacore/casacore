@@ -1,5 +1,5 @@
 //# MCBaseline.cc:  MBaseline conversion routines 
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -57,10 +57,14 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::APP,		MBaseline::B1950,	2},
   {MBaseline::APP,		MBaseline::TOPO,	0},
   {MBaseline::HADEC,		MBaseline::AZEL,	0},
+  {MBaseline::HADEC,            MBaseline::AZELGEO,     0},
   {MBaseline::AZEL,		MBaseline::HADEC,	0},
+  {MBaseline::AZELGEO,          MBaseline::HADEC,       0},
   {MBaseline::HADEC,		MBaseline::TOPO,	0},
   {MBaseline::AZEL,		MBaseline::AZELSW,	0},
+  {MBaseline::AZELGEO,          MBaseline::AZELSWGEO,   0},
   {MBaseline::AZELSW,		MBaseline::AZEL,	0},
+  {MBaseline::AZELSWGEO,        MBaseline::AZELGEO,     0},
   {MBaseline::APP,		MBaseline::JNAT,	0},
   {MBaseline::JNAT,		MBaseline::APP,		0},
   {MBaseline::J2000,		MBaseline::ECLIPTIC,	0},
@@ -325,9 +329,17 @@ void MCBaseline::doConvert(MVBaseline &in,
     case HADEC_AZEL:
       measMath.applyHADECtoAZEL(in);
       break;
-    
+
+    case HADEC_AZELGEO: 
+      measMath.applyHADECtoAZELGEO(in);
+      break;
+     
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
+      break;
+    
+    case AZELGEO_HADEC:
+      measMath.deapplyHADECtoAZELGEO(in);
       break;
      
     case HADEC_TOPO: 
@@ -350,6 +362,8 @@ void MCBaseline::doConvert(MVBaseline &in,
 
     case AZEL_AZELSW: 
     case AZELSW_AZEL:
+    case AZELGEO_AZELSWGEO:
+    case AZELSWGEO_AZELGEO: 
       measMath.applyAZELtoAZELSW(in);
       break;
 
