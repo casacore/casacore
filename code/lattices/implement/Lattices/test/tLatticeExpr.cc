@@ -122,7 +122,7 @@ main (int argc, char *argv[])
      {
        cout << "Float" << endl;
        LatticeExprNode node(aF);
-       LatticeExpr<Float> expr(node, 0);
+       LatticeExpr<Float> expr(node);
        if (!checkFloat(expr, aFVal, shape, supress)) ok = False;
 
        LatticeExpr<Float> expr2(expr);
@@ -143,7 +143,7 @@ main (int argc, char *argv[])
      {
        cout << "Double" << endl;
        LatticeExprNode node(aD);
-       LatticeExpr<Double> expr(node, 0);
+       LatticeExpr<Double> expr(node);
        if (!checkDouble(expr, aDVal, shape, supress)) ok = False;
 
        LatticeExpr<Double> expr2(expr);
@@ -164,7 +164,7 @@ main (int argc, char *argv[])
      {
        cout << "Complex" << endl;
        LatticeExprNode node(aC);
-       LatticeExpr<Complex> expr(node, 0);
+       LatticeExpr<Complex> expr(node);
        if (!checkComplex(expr, aCVal, shape, supress)) ok = False;
 
        LatticeExpr<Complex> expr2(expr);
@@ -185,7 +185,7 @@ main (int argc, char *argv[])
      {
        cout << "DComplex" << endl;
        LatticeExprNode node(aDC);
-       LatticeExpr<DComplex> expr(node, 0);
+       LatticeExpr<DComplex> expr(node);
        if (!checkDComplex(expr, aDCVal, shape, supress)) ok = False;
 
        LatticeExpr<DComplex> expr2(expr);
@@ -206,7 +206,7 @@ main (int argc, char *argv[])
      {
        cout << "Bool" << endl;
        LatticeExprNode node(aB);
-       LatticeExpr<Bool> expr(node, 0);
+       LatticeExpr<Bool> expr(node);
        if (!checkBool(expr, aBVal, shape, supress)) ok = False;
 
        LatticeExpr<Bool> expr2(expr);
