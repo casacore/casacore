@@ -897,7 +897,7 @@ void ImageSummary<T>::listHeader (LogIO& os,
             const Bool absolute = False;
             Int prec;
 
-            form = Coordinate::DEFAULT;
+            form = Coordinate::SCIENTIFIC;
             pc->getPrecision(prec, form, absolute, precRefValSci, 
                              precRefValFloat, precRefValRADEC);
             string = pc->format(incUnits, form, 
