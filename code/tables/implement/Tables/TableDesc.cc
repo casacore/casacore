@@ -650,18 +650,14 @@ void TableDesc::removeIDhypercolumns (const Vector<String>& hcNames)
   }
 }
 
-void TableDesc::removeAllHypercolumnDesc()
+void TableDesc::removeHypercolumnDesc (const String& hypercolumnName)
 {
-    // Remove all hypercolumns; start at the end to avoid invalid indices.
-    Int nkey = privKey_p->nfields();
-    for (Int i=nkey-1; i>=0; --i) {
-	if (privKey_p->type(i) == TpRecord) {
-	    const String& key = privKey_p->description().name (i);
-	    if (key.index (theHyperPrefix) == 0) {
-	        privKey_p->removeField (i);
-	    }
-	}
+    if (! isHypercolumn(hypercolumnName)) {
+        throw TableError ("Hypercolumn " + hypercolumnName +
+			  " does not exist, thus cannot be removed");
     }
+    // Remove all hypercolumns; start at the end to avoid invalid indices.
+    privKey_p->removeField (theHyperPrefix + hypercolumnName);
 }
 
 } //# NAMESPACE CASA - END

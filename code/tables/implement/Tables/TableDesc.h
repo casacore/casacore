@@ -465,8 +465,9 @@ public:
     // and group to ISM_TSM.
     void removeIDhypercolumns (const Vector<String>& hcNames);
 
-    // Remove all hypercolumn definitions.
-    void removeAllHypercolumnDesc();
+    // Remove given hypercolumn definition.
+    // An exception is thrown if it is not a hypercolumn.
+    void removeHypercolumnDesc (const String& hypercolumnName);
 
     // Check recursively if the descriptions of all subtables are known.
     void checkSubTableDesc() const;
