@@ -53,7 +53,9 @@ class CoordinateSystem;
 // <synopsis>
 // This class takes the FFT of an image.  Currently, its functionality
 // is limited to taking the FFT of the sky plane of an image.  All
-// other axes are iterated through.  
+// other axes are iterated through.    
+//
+// Masked pixels are given the value 0.0 before the FFT is taken.
 // </synopsis>
 //
 // <example>
@@ -85,7 +87,6 @@ class CoordinateSystem;
 // </motivation>
 
 // <todo asof="1999/09/23">
-//   <li> Handle masks
 //   <li> FT axes other than the sky axes
 //   <li> reverse transformations
 // </todo>
