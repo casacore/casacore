@@ -1,0 +1,16 @@
+
+change id: 0022
+ author:   Tim Cornwell
+ date:     2000/07/21
+ avers:    1.4
+ area:     Tool
+ package:  trial
+ module:   guientry
+ type:     Code
+ category: Change Bugfix
+ summary:  Behavior of untyped widget now more sensible
+
+The untyped widget will now take any glish variable and try a
+variety of parsers to see what it is. Once a conversion is 
+successful that type is returned. The search list of conversions
+can be examined and set.
