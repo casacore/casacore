@@ -57,7 +57,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if defined (AIPS_SVID3)
+#if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
    #define INIT       register char *sp = instring;
    #define GETC()     (*sp++)
    #define PEEKC()    (*sp)
@@ -241,14 +241,14 @@ char *expr, *line, *match, *rcfile;
 
 
          /* Compile the regular expression. */
-#if defined (AIPS_SVID3)
+#if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
          if (compile(pattern, expbuf, &expbuf[EXPSIZ], '\0') != 0) return (4);
 #else
          if (re_comp(pattern) != 0) return (4);
 #endif
 
          /* Test for regular expression match. */
-#if defined (AIPS_SVID3)
+#if defined (AIPS_SVID3) && !defined(HAVE_LINUX_GLIBC)
          if (step(expr, expbuf)) {
 #else
          if (re_exec(expr)) {
