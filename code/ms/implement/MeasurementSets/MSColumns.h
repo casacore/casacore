@@ -264,15 +264,13 @@ public:
   const RONewMSStateColumns& state() const {return state_p;}
   // </group>
 
-  //# Read-only access to optional subtables
-  //# <group>
-  //# These are commented out untill these classes are updated so that the rw
-  //# class is derived from the ro one.
-//#   const RONewMSDopplerColumns& doppler() const {return doppler_p;}
-//#   const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
-//#   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
-//#   const RONewMSWeatherColumns& weather() const {return weather_p;}
-  //# </group>
+  // Read-only access to optional subtables
+  // <group>
+  const RONewMSDopplerColumns& doppler() const {return doppler_p;}
+  const RONewMSFreqOffsetColumns& freqOffset() const {return freqOffset_p;}
+  //#   const RONewMSSysCalColumns& sysCal() const {return sysCal_p;}
+  //#   const RONewMSWeatherColumns& weather() const {return weather_p;}
+  // </group>
 
   // set the EPOCH reference type in all EPOCH columns in the NewMS. Note that
   // only a single EPOCH reference is allowed in the NewMS.
