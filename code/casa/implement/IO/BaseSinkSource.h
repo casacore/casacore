@@ -115,7 +115,7 @@ protected:
     // Assignment (copy semantics).
     BaseSinkSource& operator= (const BaseSinkSource& BaseSinkSource);
 
-    ~BaseSinkSource();
+    virtual ~BaseSinkSource();
 
 
     // This variable keeps a pointer to a TypeIO.
