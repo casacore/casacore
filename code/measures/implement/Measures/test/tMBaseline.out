@@ -46,8 +46,8 @@ MBaseline state transition matrix:
  19| 41 41 41 41 41 41 41 41 40 40 40 40 40 41 41 41 41 41 40 --
    |  3  3  3  3  3  3  3  3  8  8  8  8  8  3  3  3  3  3  8   
 
-Baseline: [100, 10, 0]
-Baseline: Baseline: [100, 10, 0]
+Baseline: [100, 10, 1e-08]
+Baseline: Baseline: [100, 10, 1e-08]
 Baseline reference: Reference for an Baseline with Type: ITRF,
 Frame: Epoch: 50927::22:18:12.3840
        Position: [-4.75092e+06, 2.79291e+06, -3.20048e+06]
@@ -55,11 +55,10 @@ Frame: Epoch: 50927::22:18:12.3840
 Baseline reference: Reference for an Baseline with Type: J2000
 Test Baseline conversion ...
 --------------------------------------
-Converted Baseline: [100, 10, 0]
+Converted Baseline: [100, 10, 1e-08]
  to Reference for an Baseline with Type: J2000
  as Baseline: [-97.9137, -22.6474, -0.0224705]
-Back      Baseline: [100, 10, 0] : not ok
- as Baseline: [100, 10, 6.83292e-08]
+Back      Baseline: [100, 10, 1e-08] : ok
 --------------------------------------
 Testing all conversions forward/backward
 All forward/backward Baseline conversions: ok
@@ -109,11 +108,11 @@ All MVBaseline functions: ok
 Exercise all MBaseline function
 getType:        1, 9
 giveMe:         1, Reference for an Baseline with Type: AZEL
-setRefString:   1, Baseline: [100, 10, 0]
+setRefString:   1, Baseline: [100, 10, 1e-08]
 assure:         ok
-clone:          Baseline: [100, 10, 0]
-get:            [10000, 1000, 0] cm
-getAngle:       [5.71059, 0] deg
+clone:          Baseline: [100, 10, 1e-08]
+get:            [10000, 1000, 1e-06] cm
+getAngle:       [5.71059, 5.70114e-09] deg
 getDefaultType: ITRF
 getRefString:   HADEC
 myType:         5

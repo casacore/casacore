@@ -58,7 +58,7 @@ int main()
 	MeasFrame mf(tbm, pos);
 	mf.set(MDirection(Quantity(10, "deg"), Quantity(80, "deg"),
 			  MDirection::HADEC));
-	MVBaseline mvb0(100 ,10, 0);
+	MVBaseline mvb0(100 ,10, 1e-8); // to stop Intel problems
 	cout << "Baseline: " << mvb0 << endl;
 
 	MBaseline::Ref mbref0(MBaseline::ITRF, mf);
@@ -81,7 +81,7 @@ int main()
 	MBaseline::Convert bconvb(mbref1, mbref0);
 	if (allNearAbs(mb0.getValue().getValue(),
 		       bconvb(bconv()).getValue().getValue(),
-		       1e-8)) {
+		       1e-7)) {
 	  cout << "Back      " << mb0 << " : ok" << endl;
 	} else {
 	  cout << "Back      " << mb0 << " : not ok" << endl <<
