@@ -353,7 +353,7 @@ void SDSpWindowHandler::initRow(Vector<Bool> &handledCols, const Record &row)
     }
 
     // ignore this field, produced by ms2sdfits for MS version 1, it doesn't carry any additional information
-    if (row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN")) 
+    if (row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN") >= 0) 
 	handledCols(row.fieldNumber("SPECTRAL_WINDOW_NUM_CHAN")) = True;
 
     // row number isn't set until the following fill
