@@ -77,7 +77,7 @@ void SpectralFit::addFitElement(const SpectralElement &elem) {
 }
 
 const SpectralElement &SpectralFit::getElement(uInt index) const {
-  if (index >= n_p) throw(AipsError("setFitElement illegal index"));
+  if (index >= n_p) throw(AipsError("getElement illegal index"));
   return el_p[index];
 }
 
