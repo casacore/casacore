@@ -405,6 +405,7 @@ private:
     Bool findOpenClosed   (Double value);
     Bool findClosedOpen   (Double value);
     Bool findClosedClosed (Double value);
+    void setFindFunc (Bool isLeftClosed, Bool isRightClosed);
     // </group>
 
     PtrBlock<TableExprNodeSetElem*> itsElems;
