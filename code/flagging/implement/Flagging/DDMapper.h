@@ -29,6 +29,7 @@
 
 #include <aips/Arrays/Vector.h> 
 #include <aips/Arrays/Cube.h> 
+#include <aips/Exceptions/Error.h>
 #include <aips/Measures/Stokes.h> 
     
 // <summary>
