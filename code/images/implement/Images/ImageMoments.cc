@@ -1737,25 +1737,12 @@ template <class T>
 CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
                                                          const CoordinateSystem& cSysIn,
                                                          const IPosition& inShape,
-                                                         Int momentAxis, Bool remove)
+                                                         Int momentAxis, Bool removeAxis)
 //
 // This function asssumes no axes have been removed/transposed etc
 // in the input CS.  Should really check for this...
 //
 {
-
-// Default shape with moment axis removed
-
-   uInt dimIn = inShape.nelements();
-   uInt dimOut = dimIn - 1;
-   outShape.resize(dimOut);
-   uInt k = 0;
-   for (uInt i=0; i<dimIn; i++) {
-      if (Int(i) != momentAxis) {
-         outShape(k) = inShape(i);
-         k++;
-      }
-   }
 
 // Find the Coordinate corresponding to the moment axis
 
@@ -1766,32 +1753,46 @@ CoordinateSystem ImageMoments<T>::makeOutputCoordinates (IPosition& outShape,
 // Find the number of axes
 
    CoordinateSystem cSysOut;
-   if (c.nPixelAxes()==1 && c.nWorldAxes()==1) {
+   if (removeAxis) {
 
-// OK we can remove the whole thing
+// Shape with moment axis removed
 
-      for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
-         if (Int(i) != coord) {
-            cSysOut.addCoordinate(cSysIn.coordinate(i));
+      uInt dimIn = inShape.nelements();
+      uInt dimOut = dimIn - 1;
+      outShape.resize(dimOut);
+      uInt k = 0;
+      for (uInt i=0; i<dimIn; i++) {
+         if (Int(i) != momentAxis) {
+            outShape(k) = inShape(i);
+            k++;
          }
       }
-   } else {
-      if (remove) {
+//
+      if (c.nPixelAxes()==1 && c.nWorldAxes()==1) {
 
-// Remove world and pixel axis.
+// We can remove the coordinate and axis
+
+         for (uInt i=0; i<cSysIn.nCoordinates(); i++) {
+            if (Int(i) != coord) {
+              cSysOut.addCoordinate(cSysIn.coordinate(i));
+            }
+         }
+      } else {
+
+// Remove just world and pixel axis but not the coordinate
 
          cSysOut = cSysIn;
          Int worldAxis = cSysOut.pixelAxisToWorldAxis(momentAxis);
          cSysOut.removeWorldAxis(worldAxis, cSysIn.referenceValue()(worldAxis));
-      } else {
+      }
+   } else {
 
 // Retain the Coordinate and give the moment axis  shape 1. 
 
-         outShape.resize(0);
-         outShape = inShape;
-         outShape(momentAxis) = 1;
-         cSysOut = cSysIn;
-      }
+      outShape.resize(0);
+      outShape = inShape;
+      outShape(momentAxis) = 1;
+      cSysOut = cSysIn;
    }   
 //
    return cSysOut;

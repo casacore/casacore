@@ -614,7 +614,7 @@ private:
    CoordinateSystem makeOutputCoordinates (IPosition& outShape,
                                            const CoordinateSystem& cSysIn,
                                            const IPosition& inShape,
-                                           Int momentAxis, Bool remove);
+                                           Int momentAxis, Bool removeAxis);
 };
 
 #endif
