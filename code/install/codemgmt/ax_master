@@ -6108,3 +6108,4 @@
 17 151 src rm admin/system/aips2-sitemgr.list
 17 151 src rm admin/system/aips2-synthesis.list
 17 151 src rm admin/system/aips2-system.list
+17 151 src rm admin/system/aips2-ui.list
