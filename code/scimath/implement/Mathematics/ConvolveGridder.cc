@@ -284,7 +284,7 @@ template <class Domain, class Range>
 ConvolveGridder<Domain, Range>::ConvolveGridder(const IPosition& shape,
 				    const Vector<Domain>& scale,
 				    const Vector<Domain>& offset,
-				    const String convType) 
+				    String convType) 
 : Gridder<Domain, Range>(shape, scale, offset)
 {
   setConvolutionFunction(convType);
@@ -392,7 +392,7 @@ Range ConvolveGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
 }
 
 template <class Domain, class Range>
-void ConvolveGridder<Domain, Range>::setConvolutionFunction(const String type) {
+void ConvolveGridder<Domain, Range>::setConvolutionFunction(String type) {
 
   cType=type;
   if(type=="BOX") {
