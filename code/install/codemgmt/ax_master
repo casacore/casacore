@@ -2564,3 +2564,7 @@
 11 375 src rm trial/implement/DisplayEvents/ZoomPositionEH.h
 11 375 src rm aips/apps/gtable/gtable.help
 11 375 src rm nfra/apps/gplot1d/gplot1d.help
+11 376 src rm trial/scripts/tgImage.g
+11 376 src rm trial/scripts/tgImageWithSpectrum.g
+11 376 src rm trial/scripts/tgOTF.g
+11 376 src rm trial/scripts/tgXYPlot.g
