@@ -1,5 +1,5 @@
 //# MatrixMath.h: The AIPS++ linear algebra functions
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -260,9 +260,15 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
 //# These are the LAPACK routines actually used by invert. They will not
 //# normally be called by the end user.
 
-#define NEED_FORTRAN_UNDERSCORES
+#if !defined(NEED_FORTRAN_UNDERSCORES)
+#if defined(__hpux__)
+#define NEED_FORTRAN_UNDERSCORES 0
+#else
+#define NEED_FORTRAN_UNDERSCORES 1
+#endif
+#endif
 
-#if defined(NEED_FORTRAN_UNDERSCORES)
+#if NEED_FORTRAN_UNDERSCORES
 #define sgetrf sgetrf_
 #define dgetrf dgetrf_
 #define cgetrf cgetrf_
