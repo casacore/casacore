@@ -131,7 +131,7 @@ public:
   // Same as the previous function except that the antenna name must also
   // match.
   Int matchAntenna(const String& antName, const MPosition& antennaPos,
-		   const Quantum<Double>& tolerance);
+		   const Quantum<Double>& tolerance, Int tryRow=-1);
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.

@@ -150,7 +150,7 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   if (tryRow >= 0) {
     const uInt tr = tryRow;
     if (tr >= r) {
-      throw(AipsError("RONewMSAntennaColumns::matchDirection(...) - "
+      throw(AipsError("RONewMSAntennaColumns::matchAntenna(...) - "
                       "the row you suggest is too big"));
     }
     if (!flagRow()(tr) &&
@@ -171,7 +171,8 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
 
 Int RONewMSAntennaColumns::matchAntenna(const String& antName,
 					const MPosition& antennaPos,
-					const Quantum<Double>& tolerance) {
+					const Quantum<Double>& tolerance,
+					Int tryRow) {
   uInt r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -191,6 +192,19 @@ Int RONewMSAntennaColumns::matchAntenna(const String& antName,
   // Convert the position to meters
   const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
   // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("RONewMSAntennaColumns::matchAntenna(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	matchName(tr, antName) &&
+	matchPosition(tr, antPosInM, tolInM)) {
+      return tr;
+    }
+    if (tr == r-1) r--;
+  }
   while (r > 0) {
     r--;
     if (!flagRow()(r) &&
