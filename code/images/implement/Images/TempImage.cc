@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Images/TempImage.h>
+#include <trial/Images/RegionHandlerMemory.h>
 #include <aips/Lattices/TempLattice.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Array.h>
@@ -38,16 +39,18 @@
 
 template <class T>
 TempImage<T>::TempImage()
-: mapPtr_p  (new TempLattice<T>),
-  maskPtr_p (0)
+: ImageInterface<T> (RegionHandlerMemory()),
+  mapPtr_p          (new TempLattice<T>),
+  maskPtr_p         (0)
 {} 
  
 template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
 			 Double maxMemoryInMb)
-: mapPtr_p  (new TempLattice<T> (mapShape, maxMemoryInMb)),
-  maskPtr_p (0)
+: ImageInterface<T> (RegionHandlerMemory()),
+  mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
+  maskPtr_p         (0)
 {
     setCoordinateInfo (coordinateInfo);
 }
@@ -56,8 +59,9 @@ template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
 			 Int maxMemoryInMb)
-: mapPtr_p  (new TempLattice<T> (mapShape, maxMemoryInMb)),
-  maskPtr_p (0)
+: ImageInterface<T> (RegionHandlerMemory()),
+  mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
+  maskPtr_p         (0)
 {
     setCoordinateInfo (coordinateInfo);
 }
@@ -88,8 +92,8 @@ TempImage<T>& TempImage<T>::operator= (const TempImage<T>& other)
     if (other.maskPtr_p != 0) {
       maskPtr_p = other.maskPtr_p->clone();
     }
-    unit_p   = other.unit_p;
-    misc_p   = other.misc_p;
+    unit_p = other.unit_p;
+    misc_p = other.misc_p;
   }
   return *this;
 } 
@@ -121,6 +125,82 @@ Bool TempImage<T>::isWritable() const
   return mapPtr_p->isWritable();
 }
 
+
+template<class T>
+void TempImage<T>::flush()
+{
+  mapPtr_p->flush();
+}
+
+template<class T>
+void TempImage<T>::tempClose()
+{
+  mapPtr_p->tempClose();
+}
+
+template<class T>
+void TempImage<T>::reopen()
+{
+  mapPtr_p->reopen();
+}
+
+
+template<class T>
+void TempImage<T>::setDefaultMask (const String& regionName)
+{
+  // Use the new region as the image's mask.
+  applyMask (regionName);
+  // Store the new default name.
+  ImageInterface<T>::setDefaultMask (regionName);
+}
+
+template<class T>
+void TempImage<T>::useMask (MaskSpecifier spec)
+{
+  applyMaskSpecifier (spec);
+}
+
+template<class T>
+void TempImage<T>::applyMaskSpecifier (const MaskSpecifier& spec)
+{
+  // Use default mask if told to do so.
+  // If it does not exist, use no mask.
+  String name = spec.name();
+  if (spec.useDefault()) {
+    name = getDefaultMask();
+    if (! hasRegion (name, RegionHandler::Masks)) {
+      name = "";
+    }
+  }
+  applyMask (name);
+}
+
+template<class T>
+void TempImage<T>::applyMask (const String& maskName)
+{
+  // No region if no mask name is given.
+  if (maskName.empty()) {
+    delete maskPtr_p;
+    maskPtr_p = 0;
+    return;
+  }
+  // Reconstruct the ImageRegion object.
+  // Turn the region into lattice coordinates.
+  ImageRegion* regPtr = getImageRegionPtr (maskName, RegionHandler::Masks);
+  LatticeRegion* latReg = new LatticeRegion
+                          (regPtr->toLatticeRegion (coordinates(), shape()));
+  delete regPtr;
+  // The mask has to cover the entire image.
+  if (latReg->shape() != shape()) {
+    delete latReg;
+    throw (AipsError ("TempImage::setDefaultMask - region " + maskName +
+		      " does not cover the full image"));
+  }
+  // Replace current by new mask.
+  delete maskPtr_p;
+  maskPtr_p = latReg;
+}
+
 template<class T>
 void TempImage<T>::attachMask (const Lattice<Bool>& mask)
 {
@@ -135,25 +215,22 @@ void TempImage<T>::attachMask (const Lattice<Bool>& mask)
   maskPtr_p = mask.clone();
 }
 
-template<class T>
-void TempImage<T>::removeMask()
+template<class T> 
+void TempImage<T>::removeRegion (const String& name,
+				 RegionHandler::GroupType type,
+				 Bool throwIfUnknown)
 {
-  if (maskPtr_p) {
-     delete maskPtr_p;
-     maskPtr_p = 0;
+  // Remove the default mask if it is the region to be removed.
+  if (name == getDefaultMask()) {
+    setDefaultMask ("");
   }
+  ImageInterface<T>::removeRegion (name, type, throwIfUnknown);
 }
 
 template<class T>
 Bool TempImage<T>::isMasked() const
 {
   return (maskPtr_p != 0);
-}
-
-template<class T>
-Bool TempImage<T>::isMaskWritable() const
-{
-  return (maskPtr_p != 0  &&  maskPtr_p->isWritable());
 }
 
 template<class T>
@@ -191,16 +268,6 @@ Bool TempImage<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
   return maskPtr_p->doGetSlice (buffer, section);
 }
 
-template<class T>
-void TempImage<T>::doPutMaskSlice (const Array<Bool>& buffer,
-				   const IPosition& where,
-				   const IPosition& stride)
-{
-  if (maskPtr_p == 0) {
-    throw (AipsError ("TempImage::putMaskSlice - no writable mask attached"));
-  }
-  maskPtr_p->doPutSlice (buffer, where, stride);
-}
 
 template<class T>
 const LatticeRegion* TempImage<T>::getRegionPtr() const
@@ -252,9 +319,9 @@ Unit TempImage<T>::units() const
 
 
 template <class T> 
-String TempImage<T>::name (const Bool) const
+String TempImage<T>::name (Bool) const
 {
-  return String("Temporary_Image");
+  return String ("Temporary_Image");
 }
 
 
