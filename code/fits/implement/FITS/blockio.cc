@@ -111,7 +111,7 @@ char *BlockInput::read() {
 	// thing to do with tapes, but the code doesn't work properly on tapes
 	// yet in any event.
 	do {
-	    nreadlast = ::read(fd, buffer, (unsigned)ntoread);
+	    nreadlast = ::read(fd, buffer + iosize, (unsigned)ntoread);
 	    if (nreadlast > 0) {
 		ntoread -= nreadlast;
 		iosize += nreadlast;
