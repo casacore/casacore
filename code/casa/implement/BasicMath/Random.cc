@@ -367,7 +367,7 @@ double HyperGeometric::operator()()
 
 double LogNormal::operator()()
 {
-    return( pow(M_E, this->Normal::operator()() ) );
+    return( pow(double(M_E), this->Normal::operator()() ) );
 }
 
 MLCG::MLCG(long seed1, long seed2)
