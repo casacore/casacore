@@ -1,5 +1,5 @@
 //# String.cc: String class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -426,7 +426,8 @@ String common_prefix(const string &x, const string &y,
 String common_suffix(const string &x, const string &y, 
 		     Int startpos) {
   if (startpos >= 0 ||
-      startpos+x.length() < 0 || startpos+y.length() < 0) return String();
+      startpos +Int(x.length()) < 0 ||
+      startpos + Int(y.length()) < 0) return String();
   String::const_iterator xs(x.end() + startpos+1);
   String::const_iterator ys(y.end() + startpos+1);
   String::size_type l(0);
