@@ -41,28 +41,43 @@ PrimaryArray<TYPE>::PrimaryArray(FitsInput &f,
 	HeaderDataUnit(f,FITS::PrimaryArrayHDU,errhandler) {
 	pa_assign(); // assign values from keyword list
 }
-
+//============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsInput &f, FITS::HDUType t, 
 				 FITSErrorHandler errhandler) : 
 	HeaderDataUnit(f,t,errhandler) {
 	pa_assign(); // assign values from keyword list
 }
-
+//============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, 
 				 FITSErrorHandler errhandler) :
 	HeaderDataUnit(k,FITS::PrimaryArrayHDU,errhandler,0) {
 	pa_assign(); // assign values from keyword list
 }
-
+//============================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::PrimaryArray(FitsKeywordList &k, FITS::HDUType t, 
 				 FITSErrorHandler errhandler) :
 	HeaderDataUnit(k,t,errhandler,0) {
 	pa_assign(); // assign values from keyword list
 }
-
+//=============================================================================
+// constructor does not require a FitsKeywordList. call write_priArr_hdr() after construction.
+template <class TYPE>
+PrimaryArray<TYPE>::PrimaryArray(FITSErrorHandler errhandler) :
+	HeaderDataUnit(FITS::PrimaryArrayHDU,errhandler,0) {
+	// pa_assign();
+   // in the case when user is not required to provide a kerword list object,
+	// pa_assign() must be called from write_priArr_hdr().
+}
+//===============================================================================
+// protected, for ImageExention and PrimaryGroup to use
+template <class TYPE>
+PrimaryArray<TYPE>::PrimaryArray( FITS::HDUType t, FITSErrorHandler errhandler) :
+	HeaderDataUnit(t,errhandler,0) {
+}
+//=================================================================================
 template <class TYPE>
 PrimaryArray<TYPE>::~PrimaryArray() {
 	if (bunit_x != &char_null)
@@ -82,11 +97,10 @@ PrimaryArray<TYPE>::~PrimaryArray() {
 	    delete [] array;
 	}
 }
-
+//===================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	int i;
-
 	bscale_x = 1.0;		       	// first, initialize everything
 	bzero_x = 0.0;
 	bunit_x = 0;
@@ -103,12 +117,12 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	factor = 0;
 	alloc_elems = 0;
 	beg_elem = 0;
-        end_elem = 0;
-        array = 0;
+   end_elem = 0;
+   array = 0;
 	if (err_status != OK) // check for error in HDU construction
             return;
 	if (FITS::getfitstype(NoConvert<TYPE>()) != datatype()) {
-	    errmsg(BADTYPE,"Wrong type! Current HDU is not of this type.");
+	    errmsg(BADTYPE,"Wrong type! Current HDU is not of this type!");
 	    return;
 	}
 
@@ -121,6 +135,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	    blank_x = kwlist_.curr()->asInt();
 	    isablank_x = True;
 	}
+
 	datamax_x = asgdbl(FITS::DATAMAX,double_null);
 	datamin_x = asgdbl(FITS::DATAMIN,double_null);
 	bunit_x = assign(FITS::BUNIT);
@@ -150,12 +165,12 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	    factor = new int [3*no_dims];
 	    // We need a little extra space for CtoF and FtoC conversions.
 	    if (factor == 0) {
-		errmsg(NOMEM,"Cannot allocate memory");
-		return;
+		   errmsg(NOMEM,"Cannot allocate memory");
+		   return;
 	    }
 	    factor[0] = 1;
 	    for (i = 1; i < no_dims; ++i)
-		factor[i] = factor[i - 1] * dimn[i - 1];
+		 { factor[i] = factor[i - 1] * dimn[i - 1]; }
 	} else {
 	    crpix_x = 0;
 	    crota_x = 0;
@@ -170,114 +185,116 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	beg_elem = 0;
 	end_elem = -1;
 }
-
+//======================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1) const {
 		return d0 + factor[1] * d1;
 }
-
+//===================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1, int d2) const {
-	int offset;
+	OFF_T offset;
 	offset = d0 + d1 * factor[1] + d2 * factor[2];
 	return offset;
 }
-
+//===================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, int d3) const {
-	int offset;
+	OFF_T offset;
 	offset = d0 + d1 * factor[1] + d2 * factor[2] + d3*factor[3];
 	return offset;
 }
-
+//===================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::offset(int d0, int d1, int d2, int d3, int d4) const {
-	int offset;
+	OFF_T offset;
 	offset = d0 + d1 * factor[1] + d2 * factor[2] + d3*factor[3] + 
 	  d4*factor[4];
 	return offset;
 }
-
+//===================================================================================
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0) const {
 	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
 	//}
 	return bscale() * array[d0 - beg_elem] + bzero();
 }
-
+//===================================================================================
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1) const {
-	int n = offset(d0,d1);
+	OFF_T n = offset(d0,d1);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return bscale() * array[n - beg_elem] + bzero();
 }
-
+//===================================================================================
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2) const {
-	int n = offset(d0,d1,d2);
+	OFF_T n = offset(d0,d1,d2);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return bscale() * array[n - beg_elem] + bzero();
 }
-
+//====================================================================================
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, int d3) const {
-	int n = offset(d0,d1,d2,d3);
+	OFF_T n = offset(d0,d1,d2,d3);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return bscale() * array[n - beg_elem] + bzero();
 }
-
+//====================================================================================
 template <class TYPE>
 double PrimaryArray<TYPE>::operator () (int d0, int d1, int d2, 
 					int d3, int d4) const
 {
-	int n = offset(d0,d1,d2,d3,d4);
+	OFF_T n = offset(d0,d1,d2,d3,d4);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return bscale() * array[n - beg_elem] + bzero();
 }
-
+//====================================================================================
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0) {
 	//if (d0 < beg_elem || d0 > end_elem) { // out of bounds
 	//}
 	return array[d0 - beg_elem];
 }
-
+//====================================================================================
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1) {
-	int n = offset(d0,d1);
+   //cout<< "PrimaryArray::data(int, int ) called."<<endl;
+	OFF_T n = offset(d0,d1);
+	
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return array[n - beg_elem];
 }
-
+//=====================================================================================
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2) {
-	int n = offset(d0,d1,d2);
+	OFF_T n = offset(d0,d1,d2);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return array[n - beg_elem];
 }
-
+//=====================================================================================
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, int d3) {
-	int n = offset(d0,d1,d2,d3);
+	OFF_T n = offset(d0,d1,d2,d3);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return array[n - beg_elem];
 }
-
+//=====================================================================================
 template <class TYPE>
 TYPE & PrimaryArray<TYPE>::data(int d0, int d1, int d2, int d3, int d4) {
-	int n = offset(d0,d1,d2,d3,d4);
+	OFF_T n = offset(d0,d1,d2,d3,d4);
 	//if (n < beg_elem || n > end_elem) { // out of bounds
 	//}
 	return array[n - beg_elem];
 }
-
+//=================================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::read() { // read entire array
 	// check if anything has been read
@@ -285,13 +302,15 @@ int PrimaryArray<TYPE>::read() { // read entire array
 		errmsg(BADOPER,"Illegal operation -- some data already read");
 		return -1;
 	}
-
 	if (set_next(nelements()) == -1) { // allocate nelements array elements
+	    cerr << "Buffer array is too big to fit into memory. You are using PrimaryArray::read()." << endl;
+		 cerr << "Please use PrimaryArray::read( int ) to read data by chunk."<< endl;
+		 //errmsg(BADOPER,"Error allocating Array.");
 	    return -1;
 	}
 
 	// read the data (this read number of FITS bytes)
-	int nr = read_all_data((char *)array);
+	OFF_T nr = read_all_data((char *)array);
 	if (nr != fitsdatasize()) { // check return value for errors
 		errmsg(BADIO,"Error reading Array");
 		return -1;
@@ -305,13 +324,12 @@ int PrimaryArray<TYPE>::read() { // read entire array
 
 	return alloc_elems;
 }
-
+//=============================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::read(int ne) { // read the next ne data elements
 	if (set_next(ne) == -1) { // check buffer allocation
 	    return -1;
 	}
-
 	// read ne data elements
 	int nr = read_data((char *)array,(ne*fitsitemsize()));
 	if (nr < 1) { // check return value for errors
@@ -326,47 +344,49 @@ int PrimaryArray<TYPE>::read(int ne) { // read the next ne data elements
 	// the fact that array and FITS size may not be the same
 	// ...
 	FITS::f2l( (TYPE *)array, array, ne );
-
 	return nr;
 }
-
+//==============================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::write(FitsOutput &fout) {
 	// do the local to FITS conversion, including worrying about
 	// the fact that array and FITS size may not be the same
 	// ...
 	int ne = end_elem - beg_elem + 1;
-	FITS::l2f( array, (TYPE *)array, ne );
-
+	FITS::l2f( array, (TYPE *)array, ne ); 
 	// write the data from beg_elem to end_elem
-	int nb = fitsitemsize() * ne;
-	if (write_data(fout,(char *)array,nb) != 0) {
+	OFF_T nb = fitsitemsize() * ne; 
+   if (write_data(fout,(char *)array,nb) != 0) {
 		errmsg(BADIO,"Error writing Array");
 		return -1;
 	}
 	return ne;
 }
-
+//=========================================================================================
+// newly wrapped. Use exception to handle the situation that the array is too big.
 template <class TYPE>
-int PrimaryArray<TYPE>::set_next(int ne) {
+OFF_T PrimaryArray<TYPE>::set_next(OFF_T ne) {
 	// if ne > current buffersize, reallocate
 	if (ne > alloc_elems) {
-	    delete [] array;
-	    if ((array = new TYPE [ne]) == 0) {
-		// out of storage error message
-		alloc_elems = 0;
-		beg_elem = 0;
-		end_elem = -1;
-		return -1;
-	    }   
-	    alloc_elems = ne;
+	   delete [] array;
+		try{
+         array = new TYPE [ne];
+      }catch( std::bad_alloc ){ // out of storage exception.
+        cerr << "\narray is too big to fit into memory."<< endl;
+		  errmsg(BADOPER,"Error allocating Array.");
+		  alloc_elems = 0;
+		  beg_elem = 0;
+		  end_elem = -1;
+		  return -1;
+      }
+	   alloc_elems = ne;
 	}
 	// set the limits of the array currently in memory
 	beg_elem = end_elem + 1;
 	end_elem = beg_elem + ne -1;
 	return ne;
 }
-
+//=========================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
     if (npixels < 0 || npixels > Int(nelements())) {
@@ -381,10 +401,10 @@ int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
     memcpy(array, source, localitemsize()*npixels);
     return 0;
 }
-
+//=========================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, FITS::FitsArrayOption opt) {
-        uInt count;
+   uInt count;
 	Int offset, i, *sub;
 	if (set_next(nelements()) == -1) { // allocate nelements array elements
 	    return -1;
@@ -415,7 +435,7 @@ int PrimaryArray<TYPE>::store(const TYPE *source, FITS::FitsArrayOption opt) {
 
 	return 0;
 }
-
+//============================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 {
@@ -441,7 +461,7 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 	}
     }
 }
-
+//============================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
         uInt count, n;
@@ -498,7 +518,7 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	    }
 	}
 }
-
+//===================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 {
@@ -524,7 +544,7 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 	}
     }
 }
-
+//====================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
         uInt count, n;
@@ -581,7 +601,7 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	    }
 	}
 }
-
+//==============================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::move(TYPE *target, int npixels) const
 {
@@ -602,21 +622,21 @@ void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
-	    for (i = 0; i < (dims() - 1); ++i)
-		for (j = i + 1, C_factor[i] = 1; j < dims(); ++j)
+	    for (i = 0; i < uInt(dims() - 1); ++i)
+		for (j = i + 1, C_factor[i] = 1; j < uInt(dims()); ++j)
 		    C_factor[i] *= dim(j);
 	    C_factor[i] = 1;
 	    // algorithm for converting F-order to C-order
 	    count = 0;
-	    for (i = 0; i < dims(); ++i) 
+	    for (i = 0; i < uInt(dims()); ++i) 
 		sub[i] = 0;
 	    for(;;) {
-		for (i = 0, offset = 0; i < dims(); ++i)
+		for (i = 0, offset = 0; i < uInt(dims()); ++i)
 		    offset += sub[i] * C_factor[i];
 		target[offset] = array[count++];
-		if (count == Int(nelements())) 
+		if (count == uInt(nelements())) 
 		    break;
-		for (i = 0; i < dims(); ++i) {
+		for (i = 0; i < uInt(dims()); ++i) {
 		    ++sub[i];
 		    if (sub[i] == dim(i))
 			sub[i] = 0;
@@ -628,8 +648,86 @@ void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
 	    memcpy(target,array,(localitemsize() * nelements()));
 	}
 }
+//===========================================================================================
+// write required keywords for primary header.
+/* Write the primary header keywords into the CHU. The PCOUNT, GCOUNT and
+   EXTEND keywords are not required in the primary header and are only
+   written if the parameter of ffphpr(), pcount is not equal to zero, gcount
+   is not equal to zero or one, and if extend is TRUE, respectively.
+*/  
+template <class TYPE>
+int PrimaryArray<TYPE>::write_priArr_hdr( FitsOutput &fout, // I - FITS output object
+            int simple,     // I - does file conform to FITS standard? 1/0 
+            int bitpix,     // I - number of bits per data value pixel     
+            int naxis,      // I - number of axes in the data array        
+            long naxes[],   // I - length of each data axis                 
+            int extend )    // I - may FITS file have extensions?                                     
+                      
+{
+   // primary array header is the beginning of FITS file. So no need to call flush_buffer().
+	// flush m_buffer first
+	//fout.getfout().flush_buffer();
+   int  l_status = 0;     // IO - error status 
+	if ( fout.rectype() != FITS::InitialState) {
+		errmsg(BADOPER,"[PrimaryArray<TYPE>::write_priArr_hdr()] Primary Header must be the beginning of the file.");
+	   return -1;
+	}
+	// write the required keywords for PrimaryArray to fitsfile.
+	long pcount = 0;    // number of group parameters (usually 0) 
+   long gcount = 1;    // number of random groups (usually 1 or 0)
+	// taking pcount = 0, and gcount<1 will make ffpgpr() write the keywords for primary header only.
+	// if pcount!=0 or gcount >1 ffphpr will write pcount and gcount(for PrimaryGroup). If extend 
+	// has a value of true( or >0), ffphpr will also write EXTEND keyword
+	if(ffphpr(fout.getfptr(), simple, bitpix, naxis, naxes, pcount, gcount, extend, &l_status)){
+	   errmsg(BADOPER,"Write Primary header failed![PrimaryArray::write_priArr_hdr]");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(fout.getfptr(), &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// flush the buffer of CFITSIO so that the contents will be actually written to disk.
+	if(ffflsh(fout.getfptr(), TRUE, &l_status)){ errmsg(BADOPER,"[PrimaryArray::write_priArr_hdr()] Error flushing buffer!"); }
+	
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(fout.getfptr(), l_headstart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+   	
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[l_datastart - l_headstart + 1];
+	if(ffgbyt(fout.getfptr(), l_datastart - l_headstart, l_headerbytes, &l_status)){                   
+		fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	/*if(ffmbyt(fout.getfptr(), l_datastart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}*/
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(fout.getfptr()->Fptr)->bytepos = l_datastart;
+   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	// init the info for the data unit
+	init_data_unit( FITS::PrimaryArrayHDU );
+	// assign the binary table. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	pa_assign();
+   // set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+   return 0;
+}
 
-//============================================================================
+//====================================================================================
 
 template <class TYPE>
 ImageExtension<TYPE>::ImageExtension(FitsInput &f, 
@@ -637,14 +735,23 @@ ImageExtension<TYPE>::ImageExtension(FitsInput &f,
 	PrimaryArray<TYPE>(f,FITS::ImageExtensionHDU,errhandler) {
 	ie_assign();
 }
-
+//====================================================================================
 template <class TYPE>
 ImageExtension<TYPE>::ImageExtension(FitsKeywordList &k, 
 				     FITSErrorHandler errhandler) :
 	PrimaryArray<TYPE>(k,FITS::ImageExtensionHDU,errhandler) {
 	ie_assign();
 }
-
+//====================================================================================
+// constructor that does not require a FitsKeywordList object as parameter
+template <class TYPE>
+ImageExtension<TYPE>::ImageExtension(FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(FITS::ImageExtensionHDU,errhandler) {
+	// ie_assign();
+	// in the case when user is not required to provide a kerword list object,
+	// it must be called from write_imgext_hdr().
+}
+//====================================================================================
 template <class TYPE>
 ImageExtension<TYPE>::~ImageExtension() {
 	if (xtension_x != &char_null)
@@ -652,7 +759,7 @@ ImageExtension<TYPE>::~ImageExtension() {
 	if (extname_x != &char_null)
 	    delete extname_x;
 }
-
+//====================================================================================
 template <class TYPE>
 void ImageExtension<TYPE>::ie_assign() {
 	extver_x = kwlist_(FITS::EXTVER) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
@@ -662,22 +769,135 @@ void ImageExtension<TYPE>::ie_assign() {
 	xtension_x = assign(FITS::XTENSION);
 	extname_x = assign(FITS::EXTNAME);
 }
+//====================================================================================================
+// write required keywords for ImageExtension
+template <class TYPE>
+int ImageExtension<TYPE>::write_imgExt_hdr( FitsOutput &fout, // I - FITS output object
+            int bitpix,          /* I - bits per pixel              */
+            int naxis,           /* I - number of axes in the array */
+            long *naxes)         /* I - size of each axis           */
+                            
+                      
+{
+	// flush m_buffer first
+	fout.getfout().flush_buffer();
 
-//============================================================================
+   int  l_status = 0;     // IO - error status 
+	if ( fout.rectype() == FITS::InitialState) {
+		errmsg(BADOPER,"A Primary Header must be written first[ImageExtension::write_imgext_hdr].");
+	   return -1;
+	}
+	if (!fout.hdu_complete()) {
+	   errmsg(BADOPER,"Previous HDU incomplete -- cannot write header[ImageExtension::write_imgext_hdr].");
+	   return -1;
+	}
+	if( !fout.isextend() ) {
+	   errmsg(BADOPER,"Extensions are not allowed for this FITS file![ImageExtension::write_imgext_hdr].");
+	   return -1;
+	}
+	if( !fout.required_keys_only() ){
+	   cerr << "\n[ImageExtension::write_imgTbl_hdr()] write_imgTbl_hdr() works with other write_***_hdr()" << endl;
+		cerr << " methods only. It will not work with write_hdr()." << endl;
+		errmsg(BADOPER,"Used wrong header-writting function." );
+		return -1;
+	}
+	// Since the original file pointer does not have the hdu info about the hdu created by
+	// write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
+	// This may cause some loss of efficiency. But so far I have not found a better way. 
+	fitsfile* l_newfptr = 0;
+	l_status = 0;
+	//(fout.getfout()).close_file( fout.getfptr(), &l_status);
+	//file_close( (fout.getfptr()->Fptr)->filehandle);
+	
+	const char * l_filename = (fout.getfout()).fname();
+	if (ffopen( &l_newfptr, l_filename, READWRITE, &l_status )){
+	//if(ffreopen( fout.getfptr(), &l_newfptr, &l_status )){
+	   errmsg(BADOPER,"[ImageExtension<TYPE>::write_imgExt_hdr()] ffopen() CHDU failed!");
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	//ffmahd(l_newfptr, 1, 0, &l_status);
+	// write the required keywords for ImageExtension to fitsfile. 
+	l_status = 0; 
+	if(ffcrim(l_newfptr, bitpix, naxis, naxes, &l_status)){
+	   errmsg(BADOPER,"Write Image header failed![ImageExtension::write_imgext_hdr]");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// flush the buffer of CFITSIO so that the contents will be actually written to disk.
+	// oopes, if we call ffflsh() in this case, the fits file is damaged! why?
+	//if(ffflsh(l_newfptr, TRUE, &l_status)){ errmsg(BADOPER,"[PrimaryArray::write_priArr_hdr()] Error flushing buffer!"); }
 
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(l_newfptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(l_newfptr, l_headstart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[l_datastart - l_headstart + 1];
+	if(ffgbyt(l_newfptr, l_datastart - l_headstart, l_headerbytes, &l_status)){                   
+		fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(l_newfptr->Fptr)->bytepos = l_datastart;   
+	// update the file pointer in FitsOutput. Always do this before updating the file pointer in BlockOutpu.
+	fout.setfptr( l_newfptr );           
+	// update the file pointer in BlockOutput.	
+	fout.getfout().setfptr( l_newfptr ); 
+
+   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	// init the info for the data unit
+	init_data_unit( FITS::ImageExtensionHDU );
+	// Call the parent pa_assign() method to assign the binary table. This is done in the 
+	// parent constructor for the case when user is required to provide a FitsKeywordList object.
+	pa_assign();
+
+	// assign the binary table. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	ie_assign();
+
+	// set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+   
+   return 0;
+}
+//===================================================================================================
 template <class TYPE>
 PrimaryGroup<TYPE>::PrimaryGroup(FitsInput &f, FITSErrorHandler errhandler) : 
 	PrimaryArray<TYPE>(f,FITS::PrimaryGroupHDU,errhandler) {
 	pg_assign();
 }
-
+//===================================================================================================
 template <class TYPE>
 PrimaryGroup<TYPE>::PrimaryGroup(FitsKeywordList &k, 
 				 FITSErrorHandler errhandler) :
 	PrimaryArray<TYPE>(k,FITS::PrimaryGroupHDU,errhandler) {
 	pg_assign();
 }
-
+//===================================================================================================
+// constructor for the situation when only reqiured keywords for random groups 
+// are to be written.
+template <class TYPE>
+PrimaryGroup<TYPE>::PrimaryGroup(FITSErrorHandler errhandler) :
+	PrimaryArray<TYPE>(FITS::PrimaryGroupHDU,errhandler) {
+	// pg_assign();
+	// in the case when user is not required to provide a kerword list object,
+	// pg_assign() must be called from write_priGrp_hdr(). 
+}
+//===================================================================================================
 template <class TYPE>
 PrimaryGroup<TYPE>::~PrimaryGroup() {
 	if (pcount_x > 0) {
@@ -691,11 +911,92 @@ PrimaryGroup<TYPE>::~PrimaryGroup() {
 	delete [] group_parm;
 	array = 0; // reset array to 0 so PrimaryArray won't delete anything
 }
+//===================================================================================================
+// write the required keyword for promaryGroup( random groups)
+/* taking pcount = 0, and gcount<1 will make ffpgpr() write the keywords for primary header only.
+   if pcount!=0 or gcount >1 ffphpr() will write pcount and gcount(for PrimaryGroup). If extend 
+   has a value of true( or >0), ffphpr() will also write EXTEND keyword
+*/
+template <class TYPE>
+int PrimaryGroup<TYPE>::write_priGrp_hdr( FitsOutput &fout, // I - FITS output object
+            int simple,     // I - does file conform to FITS standard? 1/0
+            int bitpix,     // I - number of bits per data value pixel     
+            int naxis,      // I - number of axes in the data array        
+            long naxes[],   // I - length of each data axis(make naxes[0]=0 for Primary Group)                
+            long pcount,    // I - number of group parameters ( none 0 for Primary Group)  
+            long gcount )   // I - number of random groups ( greater than 1 for PrimaryGroup)                                  
+{
+	if( naxes[0] != 0 ){
+	   errmsg(BADOPER,"[PrimaryGroup<TYPE>::write_priGrp_hdr())] For Primary Group, keyword NAXIS1 must be 0!");
+		return -1;
+	} 
+	if( pcount < 1 && gcount <2 ){
+	   errmsg(BADOPER,"[PrimaryGroup<TYPE>::write_priGrp_hdr())] In order to create keyword GROUPS, PCOUNT and GCOUNT, either PCOUNT's value must be >0 or GCOUNT's value must be > 1 !");
+		return -1;	
+	}
+	
+	// flush m_buffer first
+	fout.getfout().flush_buffer();
 
+	int  l_status = 0;     // IO - error status 
+	if ( fout.rectype() != FITS::InitialState) {
+		errmsg(BADOPER,"Primary Header must be the begnning of the file[PrimaryGroup::write_priGrp_hdr].");
+	   return -1;
+	}
+	// write the required keywords for PrimaryGroup to fitsfile.
+	int extend = 0; // EXTEND is not required by random group. Set it to zero so that it will not be written.
+	if(ffphpr(fout.getfptr(), simple, bitpix, naxis, naxes, pcount, gcount, extend, &l_status)){
+	   errmsg(BADOPER,"Write PrimaryGroup header failed![PrimaryGroup::write_priGrp_hdr]");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(fout.getfptr(), &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(fout.getfptr(), l_headstart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[l_datastart - l_headstart + 1];
+	if(ffgbyt(fout.getfptr(), l_datastart - l_headstart, l_headerbytes, &l_status)){                   
+		fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(fout.getfptr()->Fptr)->bytepos = l_datastart;
+
+   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	// init the info for the data unit
+	init_data_unit( FITS::PrimaryGroupHDU );
+	
+	// Call the parent pa_assign() method to assign the binary table. This is done in the 
+	// parent constructor for the case when user is required to provide a FitsKeywordList object.
+	pa_assign();
+
+	// assign the binary table. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	pg_assign();
+
+	// set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+
+   return 0;
+}
+//=====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::pg_assign() {
 	int i;
-
 	ptype_x = 0;
 	pscal_x = 0;
 	pzero_x = 0;
@@ -755,43 +1056,43 @@ void PrimaryGroup<TYPE>::pg_assign() {
 	}
 	array = &group_parm[pcount()]; // set location of array
 }
-
+//====================================================================================
 template <class TYPE>
 double PrimaryGroup<TYPE>::parm(int n) {
 	return pscal(n) * group_parm[n] + pzero(n);
 }
-
+//====================================================================================
 template <class TYPE>
 TYPE & PrimaryGroup<TYPE>::rawparm(int n) {
 	return group_parm[n];
 }
-
+//====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::storeparm(const TYPE *source) {
 	memcpy(group_parm,source,(localitemsize() * pcount()));
 }
-
+//====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(double *target) const {
 	for (Int i = 0; i < pcount(); ++i)
 	    target[i] = pscal(i) * group_parm[i] + pzero(i);
 }
-
+//====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(float *target) const {
 	for (Int i = 0; i < pcount(); ++i)
 	    target[i] = (float)(pscal(i) * group_parm[i] + pzero(i));
 }
-
+//====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::moveparm(TYPE *target) const {
 	memcpy(target,group_parm,(localitemsize() * pcount()));
 }
-
+//====================================================================================
 template <class TYPE>
 int PrimaryGroup<TYPE>::read() {
 	// read the data
-	uInt nb = fitsitemsize() * (pcount() + nelements());
+	Int nb = fitsitemsize() * (pcount() + nelements());
 	if (read_data((char *)group_parm,nb) != nb) {
 	    //error message
 	    return -1;
@@ -806,7 +1107,7 @@ int PrimaryGroup<TYPE>::read() {
 	++current_group;
 	return 0;
 }
-
+//===================================================================================
 template <class TYPE>
 int PrimaryGroup<TYPE>::write(FitsOutput &fout) {
 	// do the FITS to local conversion, including worrying about
@@ -814,9 +1115,9 @@ int PrimaryGroup<TYPE>::write(FitsOutput &fout) {
 	// ...
 	int ne = pcount() + nelements();
 	FITS::l2f( group_parm, (TYPE *)group_parm, ne );
-
 	// write the current group
-	Int nb = fitsitemsize() * (pcount() + nelements());
+	OFF_T nb = fitsitemsize() * (pcount() + nelements());
+
 	if (write_data(fout,(char *)group_parm,nb) != 0) {
 	    errmsg(BADIO,"Error writing group");
 	    return -1;
@@ -824,33 +1125,31 @@ int PrimaryGroup<TYPE>::write(FitsOutput &fout) {
 	++current_group;
 	return 0;
 }
-
-//============================================================================
-
+//==================================================================================
 template <class TYPE>
 FitsField<TYPE>::~FitsField() { 
 }
-
+//==================================================================================
 template <class TYPE>
 int FitsField<TYPE>::fitsfieldsize() const { 
 	return FITS::fitssize(data_type) * no_elements; 
 }
-
+//==================================================================================
 template <class TYPE>
 int FitsField<TYPE>::localfieldsize() const { 
 	return FITS::localsize(data_type) * no_elements; 
 }
-
+//===================================================================================
 template <class TYPE>
 void * FitsField<TYPE>::data() { 
 	return *field;
 }
-
+//===================================================================================
 template <class TYPE>
 void FitsField<TYPE>::setaddr(void **addr) {
 	field = (TYPE **)addr;
 }
-
+//===================================================================================
 template <class TYPE>
 void FitsField<TYPE>::show(ostream &o) {
 	int i;
@@ -873,8 +1172,7 @@ void FitsField<TYPE>::show(ostream &o) {
 		o << ", " << (*field)[i];
 	}
 }
-
-
+//============================================================================
 template <class TYPE>
 FitsArray<TYPE>::FitsArray(int n, const int *d) : 
 	FitsField<TYPE>(1) {
@@ -899,46 +1197,46 @@ FitsArray<TYPE>::FitsArray(int n, const int *d) :
 	    no_elements = 1;
 	}	
 }
-
+//============================================================================
 template <class TYPE>
 FitsArray<TYPE>::~FitsArray() { 
 	delete [] dimn; delete [] factor; 
 }
-
+//============================================================================
 template <class TYPE>
 int FitsArray<TYPE>::dims() const { 
 	return no_dims; 
 }
-
+//============================================================================
 template <class TYPE>
 int FitsArray<TYPE>::dim(int n) const { 
 	return dimn[n]; 
 }
-
+//============================================================================
 template <class TYPE>
 int * FitsArray<TYPE>::vdim() { 
 	return dimn;
 }
-
+//============================================================================
 template <class TYPE>
 inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1) 
 {
         return (*field)[d0 + (factor[1] * d1)]; 
 }
-
+//============================================================================
 template <class TYPE>
 inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2) 
 {
         return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2)]; 
 }
-
+//============================================================================
 template <class TYPE>
 inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3) 
 {
         return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2) +
 		       (factor[3]*d3)]; 
 }
-
+//=============================================================================
 template <class TYPE>
 inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
 					    int d4) 
@@ -946,4 +1244,4 @@ inline TYPE & FitsArray<TYPE>::operator () (int d0, int d1, int d2, int d3,
         return (*field)[d0 + (factor[1] * d1) + (factor[2]*d2) + 
 		       (factor[3]*d3) + (factor[4]*d4)]; 
 }
-
+//=============================================================================

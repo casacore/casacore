@@ -31,6 +31,8 @@
 # include <fits/FITS/fits.h>
 # include <fits/FITS/blockio.h>
 # include <fits/FITS/hdu.h>
+//# include <casa/vector.h>
+# include <casa/Arrays/Vector.h>
 
 //<category lib=aips module=FITS sect="FITS I/O">   
 //<summary> sequential FITS I/O </summary>
@@ -78,58 +80,65 @@ class FitsIO {
 		NOPRIMARY, BADOPER, BADEOF, MEMERR, BADBITPIX, NOAXISN,
 		NOPCOUNT, NOGCOUNT, BADPCOUNT, BADGCOUNT, NOGROUPS,
 		BADNAXIS, BADPRIMARY, BADSIZE, HDUERR };
-	int err() const 			{ return err_status; }
+	int err() const 			{ return m_err_status; }
 	//</group>
 	//
 	// record size, in bytes, of a FITS block. 
 	// Normally set at 2880, unless some form of blocking was used.
-	int fitsrecsize() const 		{ return FitsRecSize; }
+	int fitsrecsize() const 		{ return m_recsize; }
 	// is it a valid fits file (SIMPLE==T). If not, the only
 	// safest operation is to skip the data portion of the
 	// current HeaderDataUnit
-	Bool isafits() const 			{ return valid_fits; }
+	Bool isafits() const 			{ return m_valid_fits; }
 	// see if there may be FITS extensions present (EXTENT==T)
-	Bool isextend() const 			{ return extend; }
+	Bool isextend() const 			{ return m_extend; }
 	// test if end of file has been reached
-	Bool eof() const 	 { return Bool(rec_type == FITS::EndOfFile); }
+	Bool eof() const 	 { return Bool(m_rec_type == FITS::EndOfFile); }
 	// the FITS record type
-	FITS::FitsRecType rectype() const 	{ return rec_type;  }
+	FITS::FitsRecType rectype() const 	{ return m_rec_type;  }
 	// Header Data Unit type (e.g. 
-	FITS::HDUType hdutype() const 		{ return hdu_type; }
-	FITS::ValueType datatype() const 	{ return data_type; }
+	FITS::HDUType hdutype() const 		{ return m_hdu_type; }
+	FITS::ValueType datatype() const 	{ return m_data_type; }
 	// return the datasize of the current HDU. This excludes
 	// the trailing end of the blocked data portion.
-	uInt datasize() const 			{ return data_size; }
+	OFF_T datasize() const 			{ return m_data_size; }
 	// data characteristics
-	Int itemsize() const 			{ return item_size; }
+	Int itemsize() const 			{ return m_item_size; }
 	// for input, size of remaining data
 	// for output, size of data written
-	uInt currsize() const 			{ return curr_size; }
+	OFF_T currsize() const 			{ return m_curr_size; }
+	// get FitsKeyCardTranslator
+	FitsKeyCardTranslator& getkc(){  return m_kc;  }
+	// get the fitsfile pointer
+	fitsfile *getfptr() const { return m_fptr; }
 
-    protected:
+   protected:
 	FitsIO(FITSErrorHandler);
 
-	const int FitsRecSize;
-	Bool valid_fits;		// True if SIMPLE == T
-	Bool extend;			// True if EXTEND == T
-	Bool isaprimary;		// True if there is a primary HDU
-        Bool header_done;		// True if header has been processed
-	FITS::FitsRecType rec_type; 	// always set
-	FITS::HDUType hdu_type;		// always set
+	fitsfile *m_fptr;
+	const int m_recsize;
+	Bool m_valid_fits;		// True if SIMPLE == T
+	Bool m_extend;			   // True if EXTEND == T
+	Bool m_isaprimary;		// True if there is a primary HDU
+   Bool m_header_done;		// True if header has been processed
+	FITS::FitsRecType m_rec_type; 	// always set
+	FITS::HDUType m_hdu_type;		// always set
 
-	FITSErrorHandler errfn;	        // error handler function
-	FitsErrs err_status;
-	FitsKeyCardTranslator kc;
-	FitsKeywordList kw;
+	FITSErrorHandler m_errfn;	        // error handler function
+	FitsErrs m_err_status;
+	FitsKeyCardTranslator m_kc;
+	FitsKeywordList m_kw;
 
-	char *curr;			// pointer to current record
-	int bytepos;			// current byte position within record
-	Int item_size;			// data characteristics
-	FITS::ValueType data_type;
-	uInt data_size;		
+	char *m_curr;			// pointer to current record
+	int m_bytepos;			// current byte position within record
+	Int m_item_size;			// data characteristics
+	FITS::ValueType m_data_type;
+	//uInt m_data_size;
+	OFF_T m_data_size;		
 	// for input, size of remaining data
 	// for output, size of data written
-	uInt curr_size;			
+	//uInt m_curr_size;
+	OFF_T m_curr_size;			
 
 	// set error message that belongs to one of the enumerated types
 	virtual void errmsg(FitsErrs, char *) = 0;
@@ -137,17 +146,15 @@ class FitsIO {
 };
 
 //<summary> fixed-length sequential blocked FITS input </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<linkfrom anchor=FitsInput classes="BlockInput">
 // FitsInput
 //</linkfrom>
 
 class FitsInput : public FitsIO {
 	friend int HeaderDataUnit::get_hdr(FITS::HDUType, FitsKeywordList &);
-	friend int HeaderDataUnit::read_all_data(char *);
-	friend int HeaderDataUnit::read_data(char *, int);
-	friend int HeaderDataUnit::skip(int);
+	friend OFF_T HeaderDataUnit::read_all_data(char *);
+	friend int HeaderDataUnit::read_data(char *, Int);
+	friend int HeaderDataUnit::skip(uInt);
 	friend int HeaderDataUnit::skip();
 
     public:
@@ -159,26 +166,32 @@ class FitsInput : public FitsIO {
 	//</group>
 
 	int skip_hdu();
+	//int skip_hdu2();
 	// read special or unrecognizable records
 	char *read_sp();
 
-        //  number of physical blocks read/written
-        int blockno() const {return fin.blockno();}
+   // get hdu header image cards as strings
+	Vector<String> kwlist_str();
+   //  number of physical blocks read/written
+   int blockno() const {return m_fin.blockno();}
 
-        //  number of logical records read/written
-        int recno() const {return fin.recno();}
+   //  number of logical records read/written
+   int recno() const {return m_fin.recno();}
+   BlockInput & getfin(){ return m_fin; } // for test use only
 
     private:
-	BlockInput &fin;
+	BlockInput &m_fin;
 	BlockInput &make_input(const char *, const FITS::FitsDevice &, int, 
 			       FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	// flag used for read control in errors
-	Bool got_rec;		
+	Bool m_got_rec;		
 
 	virtual void errmsg(FitsErrs, char *);
 	void init();
 	void read_header_rec();
+	bool FitsInput::current_hdu_type( FITS::HDUType &);
+	bool FitsInput::get_data_type( FITS::ValueType &);
 
 	//# check if this comes out ok in cxx2html
         // Special interface to class HeaderDataUnit
@@ -187,24 +200,22 @@ class FitsInput : public FitsIO {
 	int process_header(FITS::HDUType, FitsKeywordList &);
 	// read all data into a given address - all responsibility is given
 	// to the user
-	uInt read_all(FITS::HDUType, char *);
+	OFF_T read_all(FITS::HDUType, char *);
 	// read N bytes into address
-	int read(FITS::HDUType, char *, int);
+	int read(FITS::HDUType, char *, int );
 	// skip N bytes
-	int skip(FITS::HDUType, int);
+	int skip(FITS::HDUType, OFF_T);
 	// skip all remaining data
 	void skip_all(FITS::HDUType);
         //</group>
 };
 
 //<summary> fixed-length sequential blocked FITS output </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsOutput : public FitsIO {
 	friend int HeaderDataUnit::write_hdr(FitsOutput &);
 	friend int HeaderDataUnit::write_all_data(FitsOutput &, char *);
-	friend int HeaderDataUnit::write_data(FitsOutput &, char *, int);
+	friend int HeaderDataUnit::write_data(FitsOutput &, char *, Int);
 
     public:
 	//<group>
@@ -213,36 +224,42 @@ class FitsOutput : public FitsIO {
 	FitsOutput(FITSErrorHandler errhandler = FITSError::defaultHandler);
 	~FitsOutput();
 	//</group>
-
+   // used by PrimaryArray, BinaryTabelExtention etc to work with the constructor without keyword list.
+	void FitsOutput::set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is);
 	// write a special record. For this the record type must also
 	// be to set to FITS::SpecialRecord
 	int write_sp(char *rec);
+	// check if the current hdu is done. It was private.
+	int hdu_complete() { 
+	    return (m_rec_type == FITS::HDURecord && m_data_size == 0);
+   }
+   BlockOutput & getfout(){ return m_fout; }
+	void setfptr( fitsfile* ffp ); 
+	Bool required_keys_only(){ return m_required_keys_only; }
 
     private:
-	BlockOutput &fout;
+	BlockOutput &m_fout;
+	Bool m_required_keys_only;
 	BlockOutput &make_output(const char *, const FITS::FitsDevice &, int, 
 				 FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	virtual void errmsg(FitsErrs, char *);
 
-	int hdu_complete() { 
-	    return (rec_type == FITS::HDURecord && data_size == 0); }
-	int hdu_inprogress() { return (rec_type == FITS::HDURecord && data_size > 0 
-		                       && curr_size < data_size); }
+	int hdu_inprogress() { 
+	    return (m_rec_type == FITS::HDURecord && m_data_size > 0 && m_curr_size < m_data_size);
+	 }
 
 	// Special interface to class HeaderDataUnit
 	//<group>
-	int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, Int, Int);
+	int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, OFF_T, Int);
 	// write all data from address
 	int write_all(FITS::HDUType, char *, char);
 	// write N bytes from address
-	int write(FITS::HDUType, char *, int, char); 
+	int write(FITS::HDUType, char *, Int, char); 
 	//</group>
 };
 
 //<summary> FITS input from disk </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsDiskInput : public BlockInput {
     public:
@@ -254,8 +271,6 @@ class FitsDiskInput : public BlockInput {
 };
 
 //<summary> FITS output to disk </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsDiskOutput : public BlockOutput {
     public:
@@ -265,8 +280,6 @@ class FitsDiskOutput : public BlockOutput {
 };
 
 //<summary> FITS input from standard input </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsStdInput : public BlockInput {
     public:
@@ -276,8 +289,6 @@ class FitsStdInput : public BlockInput {
 };
 
 //<summary> FITS output to standard output </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsStdOutput : public BlockOutput {
     public:
@@ -287,8 +298,6 @@ class FitsStdOutput : public BlockOutput {
 };
 
 //<summary> FITS input from 9-track tape </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsTape9Input : public BlockInput {
     public:
@@ -298,8 +307,6 @@ class FitsTape9Input : public BlockInput {
 };
 
 //<summary> FITS output to 9-track tape </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsTape9Output : public BlockOutput {
     public:

@@ -30,16 +30,17 @@
 
 # include <fits/FITS/fits.h>
 # include <casa/aips.h>
+# include <fits/FITS/blockio.h>
+//# include <casa/Utilities/String.h>
+# include <casa/BasicSL/String.h>
+# include <casa/Arrays/Vector.h>
 
 //# # include <stdarg.h> // If we ever wan to put varargs support back
-
 
 class FitsInput;
 class FitsOutput;
 
 //<summary> base class that defines a HDU </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<synopsis>
 // The class HeaderDataUnit contains what is common to all 
 // header-data-units, including the collection of keywords.
@@ -77,7 +78,7 @@ class HeaderDataUnit {
 
 	Int dims() const 			{ return no_dims; }
 	Int dim(int n) const 			{ return dimn[n]; }
-	uInt fitsdatasize() const 		{ return fits_data_size; }
+	OFF_T fitsdatasize() const 		{ return fits_data_size; }
 	FITS::ValueType datatype() const	{ return data_type; }
 	Int fitsitemsize() const 		{ return fits_item_size; }
 	Int localitemsize() const		{ return local_item_size; }
@@ -94,7 +95,7 @@ class HeaderDataUnit {
 
 	// skipping one or more HDU's
 	//<group>
-	int skip(int n);
+	int skip(uInt n);
 	int skip();
 	//</group>
 
@@ -114,12 +115,14 @@ class HeaderDataUnit {
 	// assumes that hdu type has been appropriately set, but it may 
 	// be changed in the process.  Data type is also determined.
 	// Returns False if a serious error was detected, otherwise True
-	static Bool compute_size(FitsKeywordList &, uInt &, Int &,
+	static Bool compute_size(FitsKeywordList &, OFF_T &, Int &,
 		FITS::HDUType &, FITS::ValueType &, FITSErrorHandler, HDUErrs &);
 
 	// Operations on the HDU's keyword list
 	//<group>
-	ConstFitsKeywordList &kwlist() { return constkwlist_; }
+	ConstFitsKeywordList &kwlist(){	 return constkwlist_;}
+	// return the header of the chdu as a vector of String.
+	Vector<String> kwlist_str();
 	void firstkw() { kwlist_.first(); }
 	void lastkw() { kwlist_.last(); }
 	const FitsKeyword *nextkw() { return kwlist_.next(); }
@@ -173,7 +176,14 @@ class HeaderDataUnit {
     HeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
 		   FITSErrorHandler errhandler = FITSError::defaultHandler,
 		   FitsInput * = 0);
-
+	 // constructor for objects that write only required keyword to fits file.
+	 // the write method to call by these object should be those for the specific
+	 // hdu, such as write_bintbl_hdr().
+	 HeaderDataUnit(FITS::HDUType, 
+		   FITSErrorHandler errhandler = FITSError::defaultHandler,
+		   FitsInput * = 0);
+	 // for write required keywords only to use.
+    bool init_data_unit( FITS::HDUType t );
 
 	FitsKeywordList &kwlist_;
 	ConstFitsKeywordList constkwlist_;
@@ -186,7 +196,8 @@ class HeaderDataUnit {
 
 	Int no_dims;		// number of dimensions
 	Int *dimn;		// size of dimension N
-	uInt fits_data_size;	// size in bytes of total amount of data
+	//uInt fits_data_size;	// size in bytes of total amount of data
+	OFF_T fits_data_size;	// size in bytes of total amount of data
 	FITS::ValueType data_type;	// type of data - derived from BITPIX
 	Int fits_item_size;	// size in bytes of an item of FITS data
 	Int local_item_size;	// size in bytes of an item of local data
@@ -206,8 +217,8 @@ class HeaderDataUnit {
     public:
 	int get_hdr(FITS::HDUType, FitsKeywordList &);
 	int read_data(char *, Int);
-	int write_data(FitsOutput &, char *, int);
-	int read_all_data(char *);
+	int write_data(FitsOutput &, char *, Int);
+	OFF_T read_all_data(char *);
 	int write_all_data(FitsOutput &, char *);
 };
 
@@ -253,8 +264,6 @@ inline void HeaderDataUnit::history(const char *c) {
 	posEnd(); kwlist_.history(c); }
 
 //<summary> templated primary array base class of given type </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<synopsis>
 // A Primary Data Array is represented by the following:
 //<srcblock>
@@ -350,8 +359,11 @@ class PrimaryArray : public HeaderDataUnit {
 	// constructor from a FitsInput
 	PrimaryArray(FitsInput &, FITSErrorHandler= FITSError::defaultHandler);
 	// constructor from a FitsKeywordList
-        PrimaryArray(FitsKeywordList &, 
+   PrimaryArray(FitsKeywordList &, 
 		     FITSErrorHandler= FITSError::defaultHandler);
+	// constructor does not require a FitsKeywordList. call write_priArr_hdr() after construction.
+   PrimaryArray(FITSErrorHandler= FITSError::defaultHandler);
+
 	// destructor
 	virtual ~PrimaryArray();
 
@@ -369,7 +381,7 @@ class PrimaryArray : public HeaderDataUnit {
 	double cdelt(int n) const 	{ return cdelt_x[n]; }
 	double datamax() const 		{ return datamax_x; }
 	double datamin() const 		{ return datamin_x; }
-	uInt nelements() const		{ return totsize; }
+	OFF_T nelements() const		{ return totsize; }
 	//</group>
 
 	// The overloaded operator functions `()' all return physical data, i. e.,
@@ -424,8 +436,10 @@ class PrimaryArray : public HeaderDataUnit {
 	void move(TYPE *target, int npixels) const;
         //     </group>
 	// </group>
-
-
+	//<group>
+   int write_priArr_hdr( FitsOutput &fout, int simple, int bitpix,     
+            int naxis, long naxes[], int extend );            
+   //</group>
 	// The `read()' and `write()' functions control reading and writing data
 	// from the external FITS I/O medium into the FITS array.  Appropriate
 	// conversions are made between FITS and local data representations.  One
@@ -440,9 +454,9 @@ class PrimaryArray : public HeaderDataUnit {
 	// portions that are actually in memory.
 	//<group>
 	virtual int read(); 
-	virtual int read(int); 
+	virtual int read( int ); 
 	virtual int write(FitsOutput &); 
-	virtual int set_next(int);
+	virtual OFF_T set_next(OFF_T);
 	//</group>
 	//### if these, even as interspersed comments, cxx2html repeats the global
 	//# group info..
@@ -458,6 +472,11 @@ class PrimaryArray : public HeaderDataUnit {
 	// construct from a FitsKeywordList with given HDU type
 	PrimaryArray(FitsKeywordList &, FITS::HDUType, 
 		     FITSErrorHandler errhandler = FITSError::defaultHandler);
+			  
+	// construct witout FitsKeywordList for given HDU type( for ImageExtension and PrimaryGroup)
+	PrimaryArray(FITS::HDUType, 
+		     FITSErrorHandler errhandler = FITSError::defaultHandler);
+
 
 	double bscale_x;
 	double bzero_x;
@@ -471,7 +490,7 @@ class PrimaryArray : public HeaderDataUnit {
 	double *cdelt_x;
 	double datamax_x;
 	double datamin_x;
-	uInt totsize;
+	OFF_T totsize;
 
 	int *factor; // factors needed to compute array position offsets
 
@@ -482,13 +501,12 @@ class PrimaryArray : public HeaderDataUnit {
 	int offset(int, int, int, int) const; 
 	int offset(int, int, int, int, int) const; 
 	//</group>
-	int alloc_elems; // current number of allocated elements
-	int beg_elem; // offset of first element in the buffer
-	int end_elem; // offset of last element in the buffer
+	OFF_T alloc_elems; // current number of allocated elements
+	OFF_T beg_elem; // offset of first element in the buffer
+	OFF_T end_elem; // offset of last element in the buffer
 	// the allocated array
 	TYPE *array;
 
-    private:
 	void pa_assign();
 
 };
@@ -501,8 +519,6 @@ typedef PrimaryArray<double> DoublePrimaryArray;
 
 
 //<summary> IMAGE extension of given type </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<templating>
 //<srcblock>
 // typedef ImageExtension<unsigned char> ByteImageExtension;
@@ -522,6 +538,9 @@ class ImageExtension : public PrimaryArray<TYPE> {
 		       FITSErrorHandler errhandler = FITSError::defaultHandler);
 	ImageExtension(FitsKeywordList &, 
 		       FITSErrorHandler errhandler = FITSError::defaultHandler);
+	// constructor for header consisted required keywords only			 
+	ImageExtension(FITSErrorHandler errhandler = FITSError::defaultHandler);
+
 	~ImageExtension();
 	char *xtension() 	{ return xtension_x; }
 	char *extname() 	{ return extname_x; }
@@ -529,6 +548,9 @@ class ImageExtension : public PrimaryArray<TYPE> {
 	Int extlevel() 	{ return extlevel_x; }
 	Int pcount() 		{ return pcount_x; }
 	Int gcount() 		{ return gcount_x; }
+	// write required keywords for ImageExtension
+	int write_imgExt_hdr( FitsOutput &fout,
+            int bitpix, int naxis, long *naxes);     
     protected:
 	char *xtension_x;
 	char *extname_x;
@@ -548,8 +570,6 @@ typedef ImageExtension<float> FloatImageExtension;
 typedef ImageExtension<double> DoubleImageExtension;
 
 //<summary> Random Group datastructure </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<synopsis>
 // A Random Group Structure is represented by the following:
 //<srcblock>
@@ -581,6 +601,9 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
 		     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	PrimaryGroup(FitsKeywordList &, 
 		     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	// constructor for header consisted required keywords only
+	PrimaryGroup(FITSErrorHandler errhandler = FITSError::defaultHandler);
+			 
 	~PrimaryGroup();
 
 	// Return basic parameters of a random group
@@ -607,11 +630,16 @@ class PrimaryGroup : public PrimaryArray<TYPE> {
 	int read();
 	int write(FitsOutput &);
 	//</group>
-
+	// write the required keywords for PrimaryGroup
+	//<group>
+	int write_priGrp_hdr( FitsOutput &fout, int simple, int bitpix,   
+            int naxis, long naxes[], long pcount, long gcount ); 
+   //</group>
+	
 	// disable these functions, since they
 	// are inherited from PrimaryArray
 	//<group>
-	int set_next(int) { return 0; }
+	OFF_T set_next(OFF_T) { return 0; }
 	int read(int) { return -1; }
 	//</group>
 
@@ -635,8 +663,6 @@ typedef PrimaryGroup<float> FloatPrimaryGroup;
 typedef PrimaryGroup<double> DoublePrimaryGroup;
 
 //<summary>  base class for generalized exentensions HDU </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class ExtensionHeaderDataUnit : public HeaderDataUnit {
     public:
@@ -664,6 +690,10 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 				FITSErrorHandler errhandler = FITSError::defaultHandler);
 	ExtensionHeaderDataUnit(FitsKeywordList &, FITS::HDUType, 
 				FITSErrorHandler errhandler = FITSError::defaultHandler);
+	// This constructor is used for writing only required keywords.
+	ExtensionHeaderDataUnit(FITS::HDUType, 
+				FITSErrorHandler errhandler = FITSError::defaultHandler);
+
 	char *xtension_x;
 	char *extname_x;
 	Int extver_x;
@@ -676,8 +706,6 @@ class ExtensionHeaderDataUnit : public HeaderDataUnit {
 };
 
 //<summary> helper class ??? </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class FitsBase {
 	friend class BinaryTableExtension;
@@ -714,8 +742,6 @@ inline ostream & operator << (ostream &o, FitsBase &x) {
 }
 
 //<summary> helper class ??? </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<note>
 // Note that FitsField does not allocate space for the data.
 // Space is external to FitsField and its address is set via the
@@ -747,8 +773,6 @@ class FitsField : public FitsBase {
 };
 
 //<summary> helper class ??? </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 //<templating>
 //#until cxx2html can handle this, duplicate
 //<srcblock>
@@ -816,8 +840,6 @@ typedef FitsField<DComplex> DComplexFitsField;
 typedef FitsField<FitsVADesc> VADescFitsField;
 
 //<summary> FITS array of given type </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 template <class TYPE>
 class FitsArray : public FitsField<TYPE> {
     public:
@@ -837,8 +859,6 @@ class FitsArray : public FitsField<TYPE> {
 };
 
 //<summary> FITS array of FitsBit type </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 //<templating>
 //#until cxx2html can handle this, duplicate:
@@ -895,15 +915,17 @@ typedef FitsArray<DComplex> DComplexFitsArray;
 typedef FitsArray<FitsVADesc> VADescFitsArray;
 
 //<summary> BINTABLE extension </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class BinaryTableExtension : public ExtensionHeaderDataUnit {
     public:
 	BinaryTableExtension(FitsInput &, 
 			     FITSErrorHandler errhandler = FITSError::defaultHandler);
+				  
 	BinaryTableExtension(FitsKeywordList &, 
 			     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	// constructor to match write_bintbl_hdr()			  
+	BinaryTableExtension( FITSErrorHandler errhandler = FITSError::defaultHandler);
+
 	virtual ~BinaryTableExtension();
 
 	// return basic elements of a table
@@ -948,7 +970,10 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	// prepare to write the next N rows
 	int set_next(int); 	 
 	// write current rows
-	int write(FitsOutput &); 
+	int write(FitsOutput &);
+	// create a binary table header without using FitsKeywordList objet.
+	int write_binTbl_hdr(FitsOutput &, long, int, char**,
+                        char**, char**, char*, long );
 
 	// select a field
 	FitsBase &field(int i) const	{ return *fld[i]; }
@@ -959,6 +984,8 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 	BinaryTableExtension(FitsInput &, FITS::HDUType, 
 			     FITSErrorHandler errhandler = FITSError::defaultHandler);
 	BinaryTableExtension(FitsKeywordList &, FITS::HDUType, 
+			     FITSErrorHandler errhandler = FITSError::defaultHandler);
+	BinaryTableExtension(FITS::HDUType, 
 			     FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	Int tfields_x;
@@ -1011,8 +1038,6 @@ class BinaryTableExtension : public ExtensionHeaderDataUnit {
 
 
 //<summary> (ascii) TABLE extension </summary>
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
-// </reviewed>
 
 class AsciiTableExtension : public BinaryTableExtension {
     public:
@@ -1020,6 +1045,8 @@ class AsciiTableExtension : public BinaryTableExtension {
 			    FITSErrorHandler errhandler = FITSError::defaultHandler);
 	AsciiTableExtension(FitsKeywordList &, 
 			    FITSErrorHandler errhandler = FITSError::defaultHandler);
+	AsciiTableExtension(FITSErrorHandler errhandler = FITSError::defaultHandler);
+
 	~AsciiTableExtension();
 
 	//# special overriden functions for ascii TABLE only
@@ -1027,6 +1054,9 @@ class AsciiTableExtension : public BinaryTableExtension {
 	Int tbcol(int n) 	{ return tbcol_x[n]; }
 	// ascii string that represents the NULL value
 	char *tnull(int n) 	{ return tnulla_x[n]; }
+	// write the required keywords for ASCIITableExtension
+	int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &, long,
+           long, int, char **, long *, char **, char **, char *e);   
 
     protected:
 	Int *tbcol_x;
@@ -1038,7 +1068,7 @@ class AsciiTableExtension : public BinaryTableExtension {
 	//<group>
 	int readrow();		
 	int writerow(FitsOutput &);
-	//</group>
+	//</group>  
 
     private:
 	void at_assign();

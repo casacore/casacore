@@ -39,6 +39,12 @@
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code
 //# where it matters.
+# if (defined(__alpha) || defined(__sgi))
+    typedef Int FitsLong;
+# else
+    typedef Long FitsLong;
+# endif 
+// recovered by GYL
 
 class ReservedFitsKeywordCollection; // Forward declarations
 class FitsNameResult;

@@ -32,63 +32,63 @@
 # include <casa/stdio.h>
 # include <assert.h>
 # include <casa/sstream.h>
+//# include <casa/strsteam.h>
 
 //== FitsBit specializations ==================================================
 FitsField<FitsBit>::FitsField(int n) : FitsBase(FITS::BIT,n), field(0) { }
 FitsField<FitsBit>::~FitsField() {
 }
-
+//=============================================================================
 int FitsField<FitsBit>::fitsfieldsize() const {
 	int n = no_elements / 8;
 	if (no_elements % 8 != 0)
 		++n;
 	return n;
 }
-
+//=============================================================================
 int FitsField<FitsBit>::localfieldsize() const {
 	int n = no_elements / 8;
 	if (no_elements % 8 != 0)
 		++n;
 	return n * sizeof(FitsBit);
 }
-
+//=============================================================================
 void * FitsField<FitsBit>::data() {
 	return *field;
 }
-
+//=============================================================================
 void FitsField<FitsBit>::setaddr(void **addr) {
 	field = (FitsBit **)addr;
 }
-
+//=============================================================================
 void FitsField<FitsBit>::show(ostream &o) { 
 	for (int i = 0; i < no_elements; ++i)
 	    o << (int)((*this)(i));
 }
-
-
+//=================================================================================
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1) {
 	FitsField<FitsBit> *tmp = this;
 	return (*tmp)(d0 + d1 * factor[1]);
 }
-
+//=================================================================================
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2) {
 	FitsField<FitsBit> *tmp = this;
 	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2]);
 }
-
+//=================================================================================
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 						      int d3) {
 	FitsField<FitsBit> *tmp = this;
 	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2] + d3*factor[3]);
 }
-
+//=================================================================================
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 						      int d3, int d4) {
 	FitsField<FitsBit> *tmp = this;
 	return (*tmp)(d0 + d1 * factor[1] + d2*factor[2] + d3*factor[3] +
 		      d4*factor[4]);
 }
-
+//=================================================================================
 #if 0
 FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 						      int d3, int d4, int d5 ...) {
@@ -113,13 +113,14 @@ FitsField<FitsBit> & FitsArray<FitsBit>::operator () (int d0, int d1, int d2,
 
 void HeaderDataUnit::errmsg(HDUErrs e, char *s) {
     ostringstream msgline;
-    msgline << "HDU error:  " << s;
+    msgline << "HDU error:  " << s << endl;
     err_status = e;
     // all of the errors which use this function are SEVERE
-    const char * mptr = msgline.str().c_str();
+    //const char * mptr = msgline.str().data();
+	 const char * mptr = (msgline.str()).c_str();
     errfn(mptr, FITSError::SEVERE);
+    // delete [] mptr;
 }
-
 //== determine_type of HeaderDataUnit ========================================
 
 // This function determines the HDU type and the data type
@@ -235,8 +236,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 // of dimensions is also determined.  This routine assumes that hdu type
 // has been appropriately set, but it may be changed in the process.  Data
 // type is also determined.
-
-Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
+Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 	Int &dims, FITS::HDUType &htype, FITS::ValueType &dtype,
 	FITSErrorHandler errhandler, HDUErrs &st) {
 
@@ -260,7 +260,6 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 		htype = FITS::NotAHDU;
 		return False;
 	}
-
 	if (dims == 0) // There is no data
 	    return True;
 	int n;
@@ -270,51 +269,50 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 	if (htype == FITS::PrimaryArrayHDU) {
 	    datasize = 1;
 	    for (n = 1; n <= dims; n++) {
-		naxisn = kw.next();
+		   naxisn = kw.next();
         	if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				 naxisn->index() == n)) {
-		    naxisn = kw(FITS::NAXIS,n);
-		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
-				 naxisn->index() == n)) {
-		    	st = NOAXISN; 
-			errhandler("Missing required NAXISn keyword",
-				   FITSError::SEVERE);
+		     naxisn = kw(FITS::NAXIS,n);
+		     if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
+				  naxisn->index() == n)) {
+		    	  st = NOAXISN; 
+			     errhandler("Missing required NAXISn keyword",
+				                 FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
 		        return False;
-		    } else
-			errhandler("NAXISn keyword is out of order.",
-				   FITSError::WARN);
-		}
-		datasize *= naxisn->asInt();
-
-	    }
+		      } else{
+			     errhandler("NAXISn keyword is out of order.",
+				     FITSError::WARN);
+			   }
+		   } // end of first if(!naxisn || ...).
+		 datasize *= naxisn->asInt();
+	  }// end of for loop.
 	    datasize *= FITS::fitssize(dtype);
 	    return True;
-	}
-
+	}// end of if( htype == ...).
 	// Primary Group HDU 
 	else if ( htype == FITS::PrimaryGroupHDU) {
 	    datasize = 1;
 	    kw.next(); // skip NAXIS1;
 	    for (n = 2; n <= dims; n++) {
-		naxisn = kw.next();
+		   naxisn = kw.next();
         	if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
 				 naxisn->index() == n)) {
-		    naxisn = kw(FITS::NAXIS,n);
-		    if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
-				 naxisn->index() == n)) {
-		    	st = NOAXISN; 
-			errhandler("Missing required NAXISn keyword",
+		      naxisn = kw(FITS::NAXIS,n);
+		      if (!naxisn || !(naxisn->kw().name() == FITS::NAXIS && 
+				   naxisn->index() == n)) {
+		    	   st = NOAXISN; 
+			      errhandler("Missing required NAXISn keyword",
 				   FITSError::SEVERE);
-		    	datasize = 0;
-		    	htype = FITS::NotAHDU;
-		    	return False;
-		    } else
-			errhandler("NAXISn keyword is out of order.",
+		    	   datasize = 0;
+		    	   htype = FITS::NotAHDU;
+		    	   return False;
+		      } else
+			     errhandler("NAXISn keyword is out of order.",
 				   FITSError::WARN);
-		}
-		datasize *= naxisn->asInt();
+		  }
+	      	datasize *= naxisn->asInt();
 	    }
 	    if (!kw(FITS::PCOUNT)) {
 		st = NOPCOUNT; 
@@ -324,7 +322,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 		htype = FITS::NotAHDU;
 		return False;
 	    }
-	    datasize += kw.curr()->asInt();
+	    datasize += kw.curr()->asInt();		 
 	    if (!kw(FITS::GCOUNT)) {
 		st = NOGCOUNT; 
 		errhandler("Missing required GCOUNT keyword",
@@ -333,8 +331,9 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 		htype = FITS::NotAHDU;
 		return False;
 	    }
-	    datasize *= kw.curr()->asInt();
-	    datasize *= FITS::fitssize(dtype);
+	    datasize *= kw.curr()->asInt();		 
+	    datasize *= FITS::fitssize(dtype);		 
+
 	    if (!kw(FITS::GROUPS))
 		{ 
 		    st = NOGROUPS; 
@@ -541,15 +540,12 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, uInt &datasize,
 	}
 	return False;
 }
-
 //============================================================================
-
 HeaderDataUnit::~HeaderDataUnit() {
 	delete &kwlist_;
 	delete [] dimn;
 }
-
-
+//================================================================================
 HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t, 
 			       FITSErrorHandler errhandler) : 
 	kwlist_(*(new FitsKeywordList)), constkwlist_(kwlist_), fin(&f),
@@ -557,6 +553,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 	fits_data_size(0), data_type(FITS::NOVALUE), fits_item_size(0), 
 	local_item_size(0), hdu_type(FITS::NotAHDU), pad_char('\0'), 
 	double_null(FITS::mindouble), char_null('\0'), Int_null(FITS::minInt) {
+	
 	if (fin->hdutype() != t) {
 	    errmsg(BADTYPE,"Input does not contain an HDU of this type.");
 	    return;
@@ -568,10 +565,12 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 	    err_status = BADSIZE;
 	    return;
 	}
-	fits_data_size = fin->datasize(); // assign values
+	fits_data_size = fin->datasize(); // assign values	
 	fits_item_size = FITS::fitssize(data_type);
 	local_item_size = FITS::localsize(data_type);
+
 	no_dims = kwlist_(FITS::NAXIS)->asInt();
+	
 	if (no_dims > 0) {
 	    if ((dimn = new Int [no_dims]) == 0) {
 		errmsg(NOMEM,"Cannot allocate memory.");
@@ -584,8 +583,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
 	    }
 	}
 }
-
-
+//=================================================================================================
 HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t, 
 			       FITSErrorHandler errhandler, FitsInput *f ) 
     : kwlist_(*new FitsKeywordList(k)), constkwlist_(kwlist_), fin(f), 
@@ -594,49 +592,86 @@ HeaderDataUnit::HeaderDataUnit(FitsKeywordList &k, FITS::HDUType t,
       fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
       pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
       Int_null(FITS::minInt) {
+		
+    if( !init_data_unit( t )){
+	    return;
+	 }
+}
+//=================================================================================================
+// Use this constructor to construct objects that write only required keywords to fitsfile.
+// the write method to call by these object should be those for the specific
+// hdu, such as write_binTbl_hdr().
+HeaderDataUnit::HeaderDataUnit( FITS::HDUType t, 
+			       FITSErrorHandler errhandler, FitsInput *f ) 
+    : kwlist_(*new FitsKeywordList()), constkwlist_( kwlist_),fin(f),
+	   errfn(errhandler), err_status(OK), no_dims(0),
+      dimn(0), fits_data_size(0), data_type(FITS::NOVALUE),
+      fits_item_size(0), local_item_size(0), hdu_type(FITS::NotAHDU), 
+      pad_char('\0'), double_null(FITS::mindouble), char_null('\0'),
+      Int_null(FITS::minInt) {
+   // do not call init_data_unit() from here, since kwlist_ has no value yet.
+	// init_data_unit() in this case will be called from write_XXX_hdr();
+}
+//================================================================================================
+// Call this after write the specific header( and generate the FitsKeywordList
+// the header info which has just been written.)
+bool HeaderDataUnit::init_data_unit( FITS::HDUType t ){
+   // kwlist_ is initialized in the constuctor or methods like write_bintbl_hdr()
+	kwlist_.first();
+	FitsKeyword *fkw = kwlist_.curr();
+	if( fkw == 0 ){ 
+		errmsg(BADRULES,"Header is not constructed/written yet![HeaderDataUnit::init_data_unit]");
+		return false; 
+	}else{ 
+	   //constkwlist_= *(new ConstFitsKeywordList(kwlist_)); // This might need to be recovered!
+		//ConstFitsKeywordList constfkwl( kwlist_);
+		//constkwlist_= constfkwl;
+   }
 
 	if ((!kwlist_.basic_rules()) || (kwlist_.rules(errfn) != 0)) {
-	    errmsg(BADRULES,"Errors in keyword list");
-	    return;
+	    errmsg(BADRULES,"Errors in keyword list[HeaderDataUnit::init_data_unit]");
+	    return false;
 	}
+
 	if (!determine_type(kwlist_,hdu_type,data_type,errfn,err_status)) {
-	    errmsg(BADTYPE,"Could not determine HDU type from keyword list");
+	    errmsg(BADTYPE,"Could not determine HDU type from keyword list [HeaderDataUnit::init_data_unit]");
 	    hdu_type = FITS::NotAHDU;
-	    return;
+	    return false;
 	}
 	if (!compute_size(kwlist_,fits_data_size,no_dims,
-		hdu_type,data_type,errfn,err_status)) {
-	    errmsg(BADSIZE,"Could not compute data size from keyword list");
+		 hdu_type,data_type,errfn,err_status)) {
+	    errmsg(BADSIZE,"Could not compute data size from keyword list[HeaderDataUnit::init_data_unit]");
 	    hdu_type = FITS::NotAHDU;
-	    return;
-	}
+	    return false;
+	}	
 	fits_item_size = FITS::fitssize(data_type);
 	local_item_size = FITS::localsize(data_type);
 	if (hdu_type != t) {
-	    errmsg(BADTYPE,"Improper keyword list for this HDU type");
+	    errmsg(BADTYPE,"Improper keyword list for this HDU type[HeaderDataUnit::init_data_unit]");
 	    hdu_type = FITS::NotAHDU;
-	    return;
+	    return false;
 	}
 	if (no_dims > 0) {
-	    if ((dimn = new Int [no_dims]) == 0) {
-		errmsg(NOMEM,"Cannot allocate memory.");
-		no_dims = 0;
-		return;
-	    }
-	    else {
-		for (int i = 0; i < no_dims; i++)
-		    dimn[i] = kwlist_(FITS::NAXIS,(i + 1))->asInt();
-	    }
+	   if ((dimn = new Int [no_dims]) == 0) {
+		   errmsg(NOMEM,"Cannot allocate memory[HeaderDataUnit::init_data_unit]");
+		   no_dims = 0;
+		   return false;
+	   }else {
+	  	    for (int i = 0; i < no_dims; i++)
+		    {   dimn[i] = kwlist_(FITS::NAXIS,(i + 1))->asInt();}
+			 return true;
+	   }
 	}
+	return true;
 }
-
+//===============================================================================================================
 void HeaderDataUnit:: posEnd() {
 	// Position the kwlist_ cursor before the `END' keyword
 	// Assumption:  The `END' keyword is the last keyword.
 	kwlist_.last();
 	kwlist_.prev();
 }
-
+//==============================================================================
 char * HeaderDataUnit::assign(FITS::ReservedName nm) {
 	char *s;
 	if (kwlist_(nm) != 0) {
@@ -650,7 +685,7 @@ char * HeaderDataUnit::assign(FITS::ReservedName nm) {
 	    s = &char_null;
 	return s;
 }
-
+//==============================================================================
 char * HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 	char *s;
 	if (kwlist_(nm,ndx) != 0) {
@@ -664,25 +699,37 @@ char * HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 	    s = &char_null;
 	return s;
 }
-
+//=============================================================================
+Vector<String> HeaderDataUnit::kwlist_str(){ return fin->kwlist_str(); }
+//=============================================================================
 int HeaderDataUnit::read_data(char *addr, Int nb) {
 	return (fin ? fin->read(hdu_type,addr,nb) : 0); }
-int HeaderDataUnit::write_data(FitsOutput &f, char *addr, int nb) {
+//=============================================================================
+int HeaderDataUnit::write_data(FitsOutput &f, char *addr, Int nb) {
 	return f.write(hdu_type,addr,nb,pad_char); }
-int HeaderDataUnit::read_all_data(char *addr) {
+//=============================================================================
+OFF_T HeaderDataUnit::read_all_data(char *addr) {
 	return (fin ? fin->read_all(hdu_type,addr) : 0); }
+//=============================================================================
 int HeaderDataUnit::write_all_data(FitsOutput &f, char *addr) {
 	return f.write_all(hdu_type,addr,pad_char); }
-int HeaderDataUnit::skip(int n) {
+//=============================================================================
+int HeaderDataUnit::skip(uInt n) {
 	return (fin ? fin->skip(hdu_type,n) : 0); }
+//=============================================================================
 int HeaderDataUnit::skip() {
 	if (fin) fin->skip_all(hdu_type); return 0; }
-int HeaderDataUnit::write_hdr(FitsOutput &f) {
-	f.write_hdr(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
-	return 0; }
+//=============================================================================
+int HeaderDataUnit::write_hdr(FitsOutput &f) {	
+	if(f.write_hdr(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size)){
+	   return -1;
+	}
+	return 0;
+}
+//=============================================================================
 int HeaderDataUnit::get_hdr(FITS::HDUType t, FitsKeywordList &kw) {
 	return fin->process_header(t,kw); }
-
+//=============================================================================
 double HeaderDataUnit::asgdbl(FITS::ReservedName n, double x) {
     	if (kwlist_(n) == 0)
 	    return x;
@@ -691,6 +738,7 @@ double HeaderDataUnit::asgdbl(FITS::ReservedName n, double x) {
 	else
 	    return (double)(kwlist_.curr()->asFloat());
 }
+//=============================================================================
 double HeaderDataUnit::asgdbl(FITS::ReservedName n, int i, double x) {
     	if (kwlist_(n,i) == 0)
 	    return x;
@@ -707,34 +755,40 @@ ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsInput &f,
     : HeaderDataUnit(f,FITS::UnknownExtensionHDU,errhandler) {
     ex_assign();
 }
-
+//============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsInput &f, 
 						 FITS::HDUType t, 
 						 FITSErrorHandler errhandler) 
     : HeaderDataUnit(f,t,errhandler) {
     ex_assign();
 }
-
+//============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, 
 						 FITSErrorHandler errhandler) 
     : HeaderDataUnit(k,FITS::UnknownExtensionHDU,errhandler,0) {
     ex_assign();
 }
-
+//============================================================================
 ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FitsKeywordList &k, 
 						 FITS::HDUType t, 
 						 FITSErrorHandler errhandler) 
     : HeaderDataUnit(k,t,errhandler,0) {
     ex_assign();
 }
-
+//============================================================================
+ExtensionHeaderDataUnit::ExtensionHeaderDataUnit(FITS::HDUType t, 
+						 FITSErrorHandler errhandler) 
+    : HeaderDataUnit( t,errhandler,0) {
+    ex_assign();
+}
+//============================================================================
 ExtensionHeaderDataUnit::~ExtensionHeaderDataUnit() {
 	if (xtension_x != &char_null)
 	    delete [] xtension_x;
 	if (extname_x != &char_null)
 	    delete [] extname_x;
 }
-
+//====================================================================================
 void ExtensionHeaderDataUnit::ex_assign() {
 	extver_x = kwlist_(FITS::EXTVER) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
 	extlevel_x = kwlist_(FITS::EXTLEVEL) == 0 ? FITS::minInt : kwlist_.curr()->asInt();
@@ -743,31 +797,29 @@ void ExtensionHeaderDataUnit::ex_assign() {
 	xtension_x = assign(FITS::XTENSION);
 	extname_x = assign(FITS::EXTNAME);
 }
-
-//== FitsField and related classes ===========================================
-
+//== FitsField and related classes ===================================================
 FitsBase::~FitsBase() { 
 }
-
+//====================================================================================
 int FitsBase::dims() const { 
 	return 1; 
 }
-
+//====================================================================================
 int FitsBase::dim(int n) const { 
 	return (n == 0 ? no_elements : 0); 
 }
-
+//====================================================================================
 int *FitsBase::vdim() { 
 	return &no_elements; 
 }
-
+//====================================================================================
 FitsBase & FitsBase::operator = (FitsBase &x) {
 	if (fieldtype() == x.fieldtype() &&
 	    nelements() == x.nelements())
 	    memcpy(data(),x.data(),localfieldsize());
 	return *this;
 }
-
+//====================================================================================
 FitsBase * FitsBase::make(const FITS::ValueType &type,int n) {
 	switch (type) {
 	    case FITS::LOGICAL: return (new FitsField<FitsLogical> (n));
@@ -792,7 +844,7 @@ FitsBase * FitsBase::make(const FITS::ValueType &type,int n) {
 	}
 	return 0;
 }
-
+//========================================================================================
 FitsBase * FitsBase::make(const FITS::ValueType &type,int n, int *d) {
 	switch (type) {
 	    case FITS::LOGICAL: return (new FitsArray<FitsLogical> (n,d));
@@ -817,7 +869,7 @@ FitsBase * FitsBase::make(const FITS::ValueType &type,int n, int *d) {
 	}
 	return 0;
 }
-
+//=======================================================================================
 FitsBase * FitsBase::make(FitsBase &x) {
 	if (x.dims() == 1)
 	    return make(x.fieldtype(),x.nelements());
@@ -832,14 +884,20 @@ AsciiTableExtension::AsciiTableExtension(FitsInput &f,
 	pad_char = ' ';
 	at_assign();	
 }
-
+//============================================================================
 AsciiTableExtension::AsciiTableExtension(FitsKeywordList &k,
 					 FITSErrorHandler errhandler) : 
 	BinaryTableExtension(k,FITS::AsciiTableHDU,errhandler) {
 	pad_char = ' ';
 	at_assign();	
 }
-
+//===========================================================================
+AsciiTableExtension::AsciiTableExtension(FITSErrorHandler errhandler):
+	BinaryTableExtension(FITS::AsciiTableHDU,errhandler) {
+	pad_char = ' ';
+	//	at_assign(); // this is done within write_asctbl_hdr();	
+}
+//===========================================================================
 AsciiTableExtension::~AsciiTableExtension() {
 	int i;
 	if (tfields_x > 0) {
@@ -854,13 +912,13 @@ AsciiTableExtension::~AsciiTableExtension() {
 	    delete [] fits_width;
 	}
 }
-
+//===========================================================================
 void AsciiTableExtension::at_assign() {
 	int i, n, ne;
 	size_t row_align;
 	char *s, typecode;
 
-        tfields_x = 0;		// first initialize everything
+   tfields_x = 0;		// first initialize everything
 	tbcol_x = 0;
 	tform_x = 0;
 	tscal_x = 0;
@@ -886,7 +944,7 @@ void AsciiTableExtension::at_assign() {
 	fitsrow = 0;
 	tablerowsize = 0;
 	fitsrowsize = 0;
-        isoptimum = False;
+   isoptimum = False;
 	beg_row = 0;
 	end_row = 0;
 	curr_row = 0;
@@ -1091,47 +1149,47 @@ void AsciiTableExtension::at_assign() {
 	curr_row = -1;
 
 }
-
+//=====================================================================================
 int AsciiTableExtension::readrow() {
 	FitsValueResult res;
 	if (read_data((char *)fitsrow,fitsrowsize) !=  (int)fitsrowsize)
 	    return -1;
 
-	// must convert ASCII data to binary
-	for (int i = 0; i < tfields(); ++i) {
+	  // must convert ASCII data to binary
+	  for (int i = 0; i < tfields(); ++i) {
 	    if (fld[i]->fieldtype() == FITS::CHAR)
-		memcpy(fld[i]->data(),&fitsrow[fits_offset[i]],fits_width[i]);
+	   	memcpy(fld[i]->data(),&fitsrow[fits_offset[i]],fits_width[i]);
 	    else {
-		FITS::get_numeric((char *)(&fitsrow[fits_offset[i]]),
+		   FITS::get_numeric((char *)(&fitsrow[fits_offset[i]]),
 				  fits_width[i],res);
-		if (res.errmsg) {
-		    errmsg(BADCONV,"Error converting data in current row.");
-		    return -1;
-		}
-		if (res.type != fld[i]->fieldtype()) {
-		    errmsg(BADCONV,"Error converting data in current row.");
-		    return -1;
-		}
-		switch (res.type) {
-		    case FITS::LONG:
-			*((FitsLong *)(fld[i]->data())) = res.l;
-			break;
-		    case FITS::FLOAT:
-			*((float *)(fld[i]->data())) = res.f;
-			break;
-		    case FITS::DOUBLE:
-			*((double *)(fld[i]->data())) = res.d;
-			break;
-		    default:
+		   if (res.errmsg) {
+		      errmsg(BADCONV,"Error converting data in current row.");
+		      return -1;
+		   }
+		   if (res.type != fld[i]->fieldtype()) {
+		     errmsg(BADCONV,"Error converting data in current row.");
+		     return -1;
+		   }
+		   switch (res.type) {
+		      case FITS::LONG:
+			     *((FitsLong *)(fld[i]->data())) = res.l;
+			     break;
+		      case FITS::FLOAT:
+			     *((float *)(fld[i]->data())) = res.f;
+		   	  break;
+		      case FITS::DOUBLE:
+			     *((double *)(fld[i]->data())) = res.d;
+		   	  break;
+		      default:
 		        errmsg(BADCONV,"Error converting data in current row.");
-			return -1;
-		}
-	    }
+			     return -1;
+		  }
+	   }
 	}
 
 	return 0;
 }
-
+//======================================================================================
 int AsciiTableExtension::writerow(FitsOutput &fout) {
 	// must convert binary data row to ASCII
 	char tmp[32];
@@ -1168,7 +1226,7 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 			sprintf(tmp,format[i],*((double *)(fld[i]->data())));
 			for (t = &tmp[strlen(tmp) - 2]; *t != 'E'; --t);
 			*t = 'D'; // Change the 'E' to a 'D' in the format
-                        memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
+         memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
 			break;
 	    // The following "default" has been added to prevent compilers
 	    // such as GNU g++ from complaining about the rest of FITS
@@ -1183,31 +1241,161 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 
 	return write_data(fout,(char *)fitsrow,fitsrowsize);
 }
+//=========================================================================================================
+// Put required Header keywords into the ASCII Table:
+/*Write the ASCII table header keywords into the CHU. The optional TUNITn and
+  EXTNAME keywords are written only if the input pointers are not null. A null
+  pointer may given for the *tbcol parameter in which case a single space will
+  be inserted between each column of the table. Similarly, if rowlen is
+  given = 0, then CFITSIO will calculate the default rowlength based on the
+  tbcol and ttype values.  
+*/
+int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &fout, // I - FITS output object
+           long naxis1,     // I - width of row in the table(number of ascii chars)
+           long naxis2,     // I - number of rows in the table       
+           int tfields,     // I - number of columns in the table      
+           char **ttype,    // I - name of each column                    
+           long *tbcol,     // I - byte offset in row to each column       
+           char **tform,    // I - value of TFORMn keyword for each column 
+           char **tunit,    // I - value of TUNITn keyword for each column 
+           char *extname)   // I - value of EXTNAME keyword, if any                                  
+                  
+{
+	// flush m_buffer first
+	fout.getfout().flush_buffer();
 
-//== BinaryTableExtension =====================================================
+	if ( fout.rectype() == FITS::InitialState) {
+		errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Primary Header must be written first.");
+	   return -1;
+	}
+	if (!fout.hdu_complete()) {
+	   errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Previous HDU incomplete -- cannot write header.");
+	   return -1;
+	}
+	if (!fout.isextend()) {
+		errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Cannot write extension HDU - EXTEND not True.");
+		return -1;
+	}
+	if( !fout.required_keys_only() ){
+	   cerr << "\n[AsciiTableExtension::write_ascTbl_hdr()] write_ascTbl_hdr() works with other write_***_hdr()" << endl;
+		cerr << "methods only. It will not work with write_hdr()." << endl;
+		errmsg(BADOPER,"Used wrong header-writting function." );
+		return -1;
+	}
+	int l_status = 0; 
+	// Since the original file pointer does not have the hdu info about the hdu created by
+	// write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
+	// This may cause some loss of efficiency. But so far I have not found a better way.
+	char * l_filename = new char[ 80 ];
+	if(ffflnm( fout.getfptr(), l_filename, &l_status )){ errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] fflnm() failed!");}
+	fitsfile* l_newfptr = 0;
+	l_status = 0;
+	if (ffopen( &l_newfptr, l_filename, READWRITE, &l_status )){
+	   errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] ffreopen() CHDU failed!");
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
 
+	// Create, initialize, and move the i/o pointer to a new extension appended to the end of the FITS file.
+	l_status = 0;
+	if(ffcrhd(l_newfptr, &l_status)){
+		errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr() Create new HDU failed!");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// write the required keywords for AsciiTableExtension to fitsfile.  
+	if(ffphtb( l_newfptr, naxis1, naxis2, tfields,ttype, tbcol, tform, tunit, extname, &l_status)){
+	   errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Write HDU header failed!");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(l_newfptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(l_newfptr, l_headstart, REPORT_EOF, &l_status)){
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[ l_datastart - l_headstart + 1];
+	if(ffgbyt(l_newfptr, l_datastart - l_headstart, l_headerbytes, &l_status)){                   
+		fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(l_newfptr->Fptr)->bytepos = l_datastart;
+
+	fout.setfptr( l_newfptr );           // update the file pointer in FitsOutput.
+	fout.getfout().setfptr( l_newfptr ); // update the file pointer in BlockOutput.
+
+   // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	char* l_header = &l_headerbytes[0];
+	OFF_T l_usedbytes = 0;
+	while( l_usedbytes < (l_datastart - l_headstart )){
+  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,True);
+		l_usedbytes = l_usedbytes + fout.fitsrecsize();
+		l_header = &l_headerbytes[ l_usedbytes ];	
+	}
+	// init the info for the data unit
+	init_data_unit( FITS::AsciiTableHDU );
+   // assign the asciitable. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	at_assign();
+	// set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+
+   return 0;
+}
+//=================================================================================================
 BinaryTableExtension::BinaryTableExtension(FitsInput &f, 
 					   FITSErrorHandler errhandler) 
     : ExtensionHeaderDataUnit(f,FITS::BinaryTableHDU,errhandler) {
 	bt_assign();	
 }
-
+//=================================================================================================
 BinaryTableExtension::BinaryTableExtension(FitsKeywordList &k,
 					   FITSErrorHandler errhandler) 
     : ExtensionHeaderDataUnit(k,FITS::BinaryTableHDU,errhandler) {
 	bt_assign();
 }
-
+//=================================================================================================
+// this constructor does not require a FitskeywordList from the user, which is
+// used for the situation when to create a header that contains only required
+// keywords. The related write method for this constructor is write_binTbl_hdr().
+BinaryTableExtension::BinaryTableExtension( FITSErrorHandler errhandler)
+    : ExtensionHeaderDataUnit( FITS::BinaryTableHDU,errhandler) {
+	//bt_assign(); // this is done within write_bintbl_hdr();
+}
+//=================================================================================================
+// this constructor does not require a FitskeywordList from the user, which is used
+// by AsciiTableExtension for the situation when to create a header that contains only 
+// required keywords. The related write method for this constructor is write_asctbl_hdr().
+BinaryTableExtension::BinaryTableExtension( FITS::HDUType hdutype, FITSErrorHandler errhandler)
+    : ExtensionHeaderDataUnit( hdutype,errhandler) {
+	 // AsciiTableExtension calls this and then calls at_assign().
+}
+//=================================================================================================
 BinaryTableExtension::BinaryTableExtension(FitsInput &f, FITS::HDUType t,
 					   FITSErrorHandler errhandler) 
     : ExtensionHeaderDataUnit(f,t,errhandler) {
+	 // AsciiTableExtension calls this and then calls at_assign().
 }
-
+//=================================================================================================
 BinaryTableExtension::BinaryTableExtension(FitsKeywordList &k, FITS::HDUType t,
 					   FITSErrorHandler errhandler) 
     : ExtensionHeaderDataUnit(k,t,errhandler) {
+	 // AsciiTableExtension calls this and then calls at_assign().
 }
-
+//================================================================================================
 BinaryTableExtension::~BinaryTableExtension() {
 	int i;
 	if (author_x != &char_null)
@@ -1246,7 +1434,7 @@ BinaryTableExtension::~BinaryTableExtension() {
 	if (!isoptimum)
 	    delete [] fitsrow;
 }
-
+//==========================================================================
 void BinaryTableExtension::bt_assign() {
 	int i, j, n;
 	size_t row_align;
@@ -1611,11 +1799,12 @@ void BinaryTableExtension::bt_assign() {
 	end_row = -1;
 	curr_row = -1;
 }
-
+//=====================================================================================
 int BinaryTableExtension::readrow() {
 	int i;
 	if (read_data((char *)fitsrow,fitsrowsize) != (int)fitsrowsize)
 	    return -1;
+	//cout<<"[BinaryTableExtension::readrow()] One row of data read." << endl;
 	if (!isoptimum) {
 	    for (i = 0; i < tfields(); ++i) {
 	      int ne = fld[i]->nelements();
@@ -1651,11 +1840,11 @@ int BinaryTableExtension::readrow() {
 		  assert(0);
 		  break;
 	      }
-            }
+      }	
 	}
 	return 0;
 }
-
+//========================================================================================
 int BinaryTableExtension::writerow(FitsOutput &fout) {
 	int i;
 	if (!isoptimum) {
@@ -1697,7 +1886,7 @@ int BinaryTableExtension::writerow(FitsOutput &fout) {
 	}
 	return write_data(fout,(char *)fitsrow,fitsrowsize);
 }
-
+//================================================================================
 int BinaryTableExtension::set_next(int n) {
 	// check if n rows have been allocated
 	if (n > (int)alloc_row) {
@@ -1716,7 +1905,7 @@ int BinaryTableExtension::set_next(int n) {
 	set_fitsrow(beg_row);
         return n;
 }
-
+//================================================================================
 void BinaryTableExtension::set_fitsrow(Int n) {
 	curr_row = n;
 	unsigned char *addr = &table[(curr_row - beg_row) * tablerowsize];
@@ -1728,13 +1917,14 @@ void BinaryTableExtension::set_fitsrow(Int n) {
 }
 
 int BinaryTableExtension::write(FitsOutput &fout) {
-	int n;
+	OFF_T n;
 	if (isoptimum) {
             n = (end_row - beg_row + 1) * fitsrowsize;
-	    return ((write_data(fout,(char *)table,n) == n) ? 0 : -1);
+	    //return ((write_data(fout,(char *)table,n) == n) ? 0 : -1);
+		 return (write_data(fout,(char *)table,n)); // It was above. GYL
 	} else {
 	    // write rows from beg_row to end_row
-	    for (n = beg_row; n <= end_row; ++n) {
+	    for (n = uInt(beg_row); n <= uInt(end_row); ++n) {
 	        set_fitsrow(n);
 	        if (writerow(fout) == -1)
 		    return -1;
@@ -1742,58 +1932,181 @@ int BinaryTableExtension::write(FitsOutput &fout) {
 	}
 	return 0;	
 }
+//================================================================================
+/*Put required Header keywords into the Binary Table:
+  Write the binary table header keywords into the CHU. The optional
+  TUNITn and EXTNAME keywords are written only if the input pointers
+  are not null. The pcount parameter, which specifies the size of the
+  variable length array heap, should initially = 0; CFITSIO will
+  automatically update the PCOUNT keyword value if any variable length
+  array data is written to the heap. The TFORM keyword value for variable
+  length vector columns should have the form 'Pt(len)' or '1Pt(len)'
+  where `t' is the data type code letter (A,I,J,E,D, etc.) and `len' is
+  an integer specifying the maximum length of the vectors in that column
+  (len must be greater than or equal to the longest vector in the column).
+  If `len' is not specified when the table is created (e.g., the input
+  TFORMn value is just '1Pt') then CFITSIO will scan the column when the
+  table is first closed and will append the maximum length to the TFORM
+  keyword value. Note that if the table is subsequently modified to
+  increase the maximum length of the vectors then the modifying program
+  is responsible for also updating the TFORM keyword value. GYL 
+*/
+int BinaryTableExtension::write_binTbl_hdr( FitsOutput &fout, // I - FITS output object
+           long naxis2,     // I - number of rows in the table             
+           int tfields,     // I - number of columns in the table          
+           char **ttype,    // I - name of each column                     
+           char **tform,    // I - value of TFORMn keyword for each column 
+           char **tunit,    // I - value of TUNITn keyword for each column 
+           char *extname,   // I - value of EXTNAME keyword, if any        
+           long pcount )    // I - size of the variable length heap area                             
+{
+	// flush m_buffer first
+	fout.getfout().flush_buffer();
 
+	if ( fout.rectype() == FITS::InitialState) {
+		errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Primary Header must be written first.");
+	   return -1;
+	}
+	if (!fout.hdu_complete()) {
+	   errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Previous HDU incomplete -- cannot write header.");
+	   return -1;
+	}
+	if (!fout.isextend()) {
+		errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Cannot write extension HDU - EXTEND not True.");
+		return -1;
+	}
+	if( !fout.required_keys_only() ){
+	   cerr << "\n[BinaryTableExtension::write_binTbl_hdr()] write_binTbl_hdr() works with other write_***_hdr()" << endl;
+		cerr << "methods only. It will not work with write_hdr()." << endl;
+		errmsg(BADOPER,"Used wrong header-writting function." );
+		return -1;
+	}
+	int l_status = 0; 
+	// Since the original file pointer does not have the hdu info about the hdu created by
+	// write_hdu() method, we reopen the file to get a new file pointer with all the hdu info.
+	// This may cause some loss of efficiency. But so far I have not found a better way.
+	char * l_filename = new char[ 80 ];
+	if(ffflnm( fout.getfptr(), l_filename, &l_status )){ errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] fflnm() failed!");}
+	fitsfile* l_newfptr = 0;
+	l_status = 0;
+	if (ffopen( &l_newfptr, l_filename, READWRITE, &l_status )){
+	   errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] ffreopen() CHDU failed!");
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// Create, initialize, and move the i/o pointer to a new extension appended to the end of the FITS file.
+	l_status = 0;
+	if(ffcrhd(l_newfptr, &l_status)){
+		errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Create new HDU failed!");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// write the required keywords for BinaryTableExtension to fitsfile.  
+	if(ffphbn( l_newfptr, naxis2, tfields, ttype, tform, tunit, extname, pcount, &l_status)){
+	   errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Write HDU header failed!");
+	   fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// flush the buffer of CFITSIO so that the contents will be actually written to disk.
+	// oopes, if we call ffflsh() in this case, the fits file is damaged! why?
+   if(ffflsh(l_newfptr, TRUE, &l_status)){ errmsg(BADOPER,"[PrimaryArray::write_priArr_hdr()] Error flushing buffer!"); }
+	OFF_T l_headstart, l_datastart, l_dataend;
+	l_status = 0;
+   // get size info of the current HDU
+   if (ffghof(l_newfptr, &l_headstart, &l_datastart, &l_dataend, &l_status) > 0){
+      fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// move file pointer to the beginning of the new hdu.
+	l_status = 0;
+	if(ffmbyt(l_newfptr, l_headstart, REPORT_EOF, &l_status)){
+	   errmsg(BADOPER,"Moving to headstart failed![BinaryTableExtension::write_bintbl_hdr()]");
+	 	fits_report_error(stderr, l_status); // print error report
+		return -1;
+	}
+	// using the cfitsio function to read bytes from the file
+  	// pointed to by getfptr() from where the file position indicator currently at.
+  	l_status = 0;
+	char * l_headerbytes = new char[l_datastart - l_headstart + 1];
+	if(ffgbyt(l_newfptr, l_datastart - l_headstart, l_headerbytes, &l_status)){
+	   errmsg(BADOPER,"ffgbyt() failed![BinaryTableExtension::write_bintbl_hdr()]");                   
+		fits_report_error(stderr, l_status); // print error report
+      return -1;
+	}
+	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
+	(l_newfptr->Fptr)->bytepos = l_datastart;
+		
+	fout.setfptr( l_newfptr );           // update the file pointer in FitsOutput.
+	fout.getfout().setfptr( l_newfptr ); // update the file pointer in BlockOutput.
+	// now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
+	char* l_header = &l_headerbytes[0];
+	OFF_T l_usedbytes = 0;
+	while( l_usedbytes < (l_datastart - l_headstart )){
+  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,True);
+		l_usedbytes = l_usedbytes + fout.fitsrecsize();
+		l_header = &l_headerbytes[ l_usedbytes ];	
+	}
+	// init the info for the data unit
+	init_data_unit( FITS::BinaryTableHDU );
+	// assign the binary table. This is done in constructor for the case when user
+	// is required to provide a FitsKeywordList object.
+	bt_assign();
+	// set the info for data unit. init_data_unit() generated the hdu_type, data_type,
+	// fits_data_size and fits_item_size
+   fout.set_data_info(kwlist_,hdu_type,data_type,fits_data_size,fits_item_size);
+   return 0;
+}
+//=====================================================================================
 int BinaryTableExtension::read() {
 	// read entire table into memory
 	int nr = fitsdatasize() / fitsrowsize;
         return read(nr);
 }
-
+//=====================================================================================
 int BinaryTableExtension::read(int nr){
 	int i;
 	if (nr < 1)
             return -1;
 	if (set_next(nr) == -1) // check buffer allocation
 	    return -1;
-
 	//read next nr rows into memory
 	if (isoptimum) {
-            i = nr * fitsrowsize;
+       i = nr * fitsrowsize;
 	    return ((read_data((char *)table,i) == i) ? 0 : -1);
 	} else {
 	    // read next nr rows
 	    for (i = beg_row; i <= end_row; ++i) {
-		if (readrow() == -1)
-		    return -1;
-		++(*this);
+		   if (readrow() == -1)
+		     return -1;
+		   ++(*this);
 	    }
 	    // set curr_row to the beginning row and set field addresses
-            set_fitsrow(beg_row);
+       set_fitsrow(beg_row);
 	} 
 	return 0;
 }
-
+//===================================================================================
 BinaryTableExtension & BinaryTableExtension::operator ++ () {
 	// increment curr_row and reset field addresses
 	++curr_row;
 	set_fitsrow(curr_row);
         return *this;
 }
-
+//===================================================================================
 BinaryTableExtension & BinaryTableExtension::operator -- () {
 	// decrement curr_row and reset field addresses
 	--curr_row;
 	set_fitsrow(curr_row);
         return *this;
 }
-
+//===================================================================================
 BinaryTableExtension & BinaryTableExtension::operator () (int n) {
 	// set curr_row to n and reset field addresses
 	curr_row = n;
 	set_fitsrow(curr_row);
 	return *this;
 }
-
+//===================================================================================
 int BinaryTableExtension::bind(int no, FitsBase &f) {
 	int i;
 	// check if f's attributes matches field[no]
@@ -1817,10 +2130,8 @@ int BinaryTableExtension::bind(int no, FitsBase &f) {
 	f.setaddr(&data_addr[no]);
 	return 0;
 }
-
-
+//===================================================================================
 // We must specify FitsArray<Bit> as a specialized class.
-
 FitsArray<FitsBit>::FitsArray(int n, const int *d) : 
 	FitsField<FitsBit>(1) {
 	int i;
@@ -1844,20 +2155,20 @@ FitsArray<FitsBit>::FitsArray(int n, const int *d) :
 	    no_elements = 1;
 	}	
 }
-
+//===================================================================================
 FitsArray<FitsBit>::~FitsArray() { 
 	delete [] dimn; delete [] factor; 
 }
-
+//================================================
 int FitsArray<FitsBit>::dims() const { 
 	return no_dims; 
 }
-
+//================================================
 int FitsArray<FitsBit>::dim(int n) const { 
 	return dimn[n]; 
 }
-
+//================================================
 int * FitsArray<FitsBit>::vdim() { 
 	return dimn;
 }
-
+//================================================
