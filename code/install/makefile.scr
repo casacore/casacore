@@ -2,7 +2,7 @@
 # makefile.scr: AIPS++ scripts directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994,1996,1998,2000
+#   Copyright (C) 1994,1996,1998,2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -45,9 +45,9 @@ include $(AIPSARCH)/makedefs
 EXCLUDE  := $(sort $(EXCLUDE) makefile changelog %.help %.ps %.reference)
 SCRIPTS  := $(filter-out $(EXCLUDE),$(AIPSSRCS))
 
-LIBEXECS := $(filter %.g %.gp, $(SCRIPTS))
+LIBEXECS := $(filter %.g %.gp %.gm, $(SCRIPTS))
 LIBICONS := $(filter %.xbm, $(SCRIPTS))
-BINEXECS := $(filter-out %.g %.gp %.xbm, $(SCRIPTS))
+BINEXECS := $(filter-out %.g %.gp %.gm %.xbm, $(SCRIPTS))
 
 ifdef BINEXECS
    PERL4EXE := $(shell grep -l '^\#!/usr/local/bin/perl4' $(BINEXECS))

@@ -2,7 +2,7 @@
 # makefile.imp: Generic AIPS++ class implementation makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998
+#   Copyright (C) 1992-1997,1998,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -115,7 +115,7 @@ else
 endif
 
 AIPSIMPS := $(filter %.cc,$(AIPSSRCS))
-LIBEXECS := $(filter %.g %.gp, $(AIPSSRCS))
+LIBEXECS := $(filter %.g %.gp, %.gm, $(AIPSSRCS))
 LIBICONS := $(filter %.xbm, $(AIPSSRCS))
 AIPSGIFS := $(filter %.gif,$(AIPSSRCS))
 AIPSHTML := $(filter %.html,$(AIPSSRCS))
