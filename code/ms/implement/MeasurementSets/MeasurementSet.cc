@@ -352,9 +352,6 @@ void NewMeasurementSet::init()
 	// PROCESSOR
 	keyMapDef(PROCESSOR,"PROCESSOR",TpTable,
 		  "Backend Processor information subtable");
-	// SOURCE
-	keyMapDef(SOURCE,"SOURCE",TpTable,
-		  "Source subtable. Positions etc. for each source.");
 	// SPECTRAL_WINDOW
 	keyMapDef(SPECTRAL_WINDOW,"SPECTRAL_WINDOW",TpTable,
 		  "Spectral window subtable. Frequencies, bandwidths,"
@@ -381,6 +378,9 @@ void NewMeasurementSet::init()
 	keyMapDef(SORTED_TABLES,"SORTED_TABLES",TpTable,
 		  "Sorted reference tables of the main table, first one is"
 		  " main table");
+	// SOURCE
+	keyMapDef(SOURCE,"SOURCE",TpTable,
+		  "Source subtable. Positions etc. for each source.");
 	// SYSCAL
 	keyMapDef(SYSCAL,"SYSCAL",TpTable,
 		  "SysCal subtable. System calibration data (Tsys etc.).");
@@ -540,10 +540,6 @@ void NewMeasurementSet::createDefaultSubtables(Table::TableOption option)
 			       NewMSProcessor::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::PROCESSOR),
 			       Table(processorSetup));
-    SetupNewTable sourceSetup(sourceTableName(),
-			       NewMSSource::requiredTableDesc(),option);
-    rwKeywordSet().defineTable(NewMS::keywordName(NewMS::SOURCE),
-			       Table(sourceSetup));
     SetupNewTable spectralWindowSetup(spectralWindowTableName(),
 			       NewMSSpectralWindow::requiredTableDesc(),option);
     rwKeywordSet().defineTable(NewMS::keywordName(NewMS::SPECTRAL_WINDOW),  
