@@ -1,5 +1,5 @@
 //# fits.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -533,8 +533,8 @@ class FitsKeyword {
 	// the datatype of the keyword
 	FITS::ValueType type() const;
 
-	//<group>
 	// access the value of the keyword
+	//<group>
 	Bool asBool() const;
         const char *asString() const;
 	int valStrlen() const;
@@ -547,8 +547,8 @@ class FitsKeyword {
 	const void *value() const;
 	//</group>
 
-	//<group>
 	// change the value of the keyword
+	//<group>
 	FitsKeyword & operator = (Bool);
 	FitsKeyword & operator = (const char *);
 	FitsKeyword & operator = (Int);
@@ -726,19 +726,40 @@ class FitsKeywordList {
 	FitsKeywordList(ConstFitsKeywordList &);
 	FitsKeywordList & operator = (const FitsKeywordList &);
 
-	//<group>
-	// Operations on keyword lists
+        // delete the current keyword (the thing returned by curr()) from the list
 	void del();
+
+	// Add (make) a reserved keyword with the given value and optional comment
+        // The comment will be truncated if necessary to fit the available space.
+        // String values must be less than 69 characters.  String values longer than
+        // that will result in an ERROR keyword instead of the desired keyword.
+	// <group>
 	void mk(FITS::ReservedName k, Bool v, const char *c = 0);
 	void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
 	void mk(FITS::ReservedName k, Int v, const char *c = 0);
 	void mk(FITS::ReservedName k, long v, const char *c = 0);
 	void mk(FITS::ReservedName k, double v, const char *c = 0);
+        // </group>
+
+        // Add (make) an indexed reserved keyword with the given value and optional comment
+        // The comment will be truncated if necessary to fit the available space.
+        // String values must be less than 69 characters.  String values longer than
+        // that will result in an ERROR keyword instead of the desired keyword.
+        // <group>
 	void mk(int n, FITS::ReservedName k, Bool v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, long v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
+        // </group>
+
+        // Add (make) a user defined keyword with the given name, value and optional comment.
+        // The comment will be truncated if necessary to fit the available space.
+        // The name must be no longer than 8 characters.  Names longer than that will 
+        // result in an ERROR keyword instead of the desired keyword.
+        // String values must no longer than 69 characters.  String values longer than
+        // that will result in an ERROR keyword instead of the desired keyword.
+        // <group>
 	void mk(const char *n, Bool v, const char *c = 0);
 	void mk(const char *n, const char *v = 0, const char *c = 0);
 	void mk(const char *n, Int v, const char *c = 0);
@@ -748,14 +769,22 @@ class FitsKeywordList {
 	void mk(const char *n, Int r, Int i, const char *c = 0);
 	void mk(const char *n, float r, float i, const char *c = 0);
 	void mk(const char *n, double r, double i, const char *c = 0);
+        // </group>
+
+        // add a spaces line
 	void spaces(const char *n = 0, const char *c = 0);
+
+        // add a comment card
 	void comment(const char *n = 0, const char *c = 0);
+
+        // add a history card
 	void history(const char *c = 0);
+
+        // add the end card.  This must be at the end of the list.
 	void end();
-	//</group>
 	
-	//<group>
 	// Retrieve specific keywords -- these also set the current mark
+	//<group>
 	// return the i-th keyword -- keyword numbering starts with 0
 	FitsKeyword * operator () (int);
 	// return first and next non-indexed reserved keyword
@@ -806,6 +835,14 @@ class FitsKeywordList {
 		FITS::ValueType t, const void *v, const char *c);
 	FitsKeyword &make(int ind, FITS::ReservedName nm,
 		FITS::ValueType t, const void *v, const char *c);
+        // construct an error keyword - this happens when a name is invalid (NULL
+        // or more than 8 characters) or a string value is too long (more than
+        // 69 characters).  It is the responsibility of the caller to the 
+        // several mk functions to ensure that that doesn't happen.  By the time
+        // it gets here, it is assumed that such problems are true errors.
+        // This is used by the private make functions.
+        FitsKeyword &makeErrKeyword(const char *name, FITS::ValueType type, 
+				    const void *val, const char *errmsg);
 	FitsParse card;
 };
 
