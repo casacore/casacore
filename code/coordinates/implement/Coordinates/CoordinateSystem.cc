@@ -909,8 +909,7 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
    AlwaysAssert(worldIn.nelements()==nWorld, AipsError);
    AlwaysAssert(nPixel == nPixelAxes(), AipsError);
    AlwaysAssert(pixelIn.nelements()==nPixel, AipsError);
-   worldOut.resize(nWorld,False);
-   pixelOut.resize(nPixel,False);
+   Int worldAxis, pixelAxis;
 //   
    Bool noPixelAxes = True;
    for (uInt i=0; i<nPixel; i++) {
@@ -939,8 +938,18 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
    }
 //
    if (noPixelAxes && noWorldAxes) {
-      set_error ("CoordinateSYstem::toMix - you specified no pixel and no world axes");
+      set_error ("CoordinateSystem::toMix - you specified no pixel and no world axes");
       return False;
+   }
+//
+// Make sure each "axis" is either a pixel axis or a world axis
+//
+   for (uInt i=0; i<nPixel; i++) {
+      worldAxis = pixelAxisToWorldAxis(i);      
+      if (!pixelAxes(i) && !worldAxes(worldAxis)) {
+         set_error ("CoordinateSystem::toMix - each coordinate must be either pixel or world");
+         return False;
+      }
    }
 // 
 // Convert pixels to world, except for DirectionCoordinate
@@ -951,7 +960,8 @@ Bool CoordinateSystem::toMix(Vector<Double>& worldOut,
    Vector<Int> pixelAxesLat(nCoordinates(),-1);
    Vector<Int> worldAxesLong(nCoordinates(),-1);
    Vector<Int> worldAxesLat(nCoordinates(),-1);
-   Int worldAxis, pixelAxis;
+   worldOut.resize(nWorld,False);
+   pixelOut.resize(nPixel,False);
 //
    Int coord, axisInCoord;
    for (uInt i=0; i<nPixel; i++) {
