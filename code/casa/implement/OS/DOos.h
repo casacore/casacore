@@ -1,5 +1,5 @@
 //# DOos.h: Functions used to implement the DO functionality
-//# Copyright (C) 1999,2000
+//# Copyright (C) 1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -170,10 +170,11 @@ public:
 		      Bool mustExist = True, Bool follow = True);
 
   // Tell if a table is used or locked by another process.
-  // It returns a vector containing 2 integers.
+  // It returns a vector containing 3 integers.
   // The first one tells if the table is in use or locked.
   // See <linkto class=LockFile>LockFile</linkto>::showLock for details.
   // The second one gives the pid of the process using/locking the table.
+  // The third one tells if the table is permanently locked (0 = not).
   static Vector<Int> lockInfo (const String& tableName);
 };
 

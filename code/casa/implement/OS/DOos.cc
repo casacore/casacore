@@ -361,9 +361,11 @@ void DOos::remove (const Vector<String>& fileName, Bool recursive,
 
 Vector<Int> DOos::lockInfo (const String& tableName)
 {
-  Vector<Int> result(2);
+  Vector<Int> result(3);
   uInt pid;
-  result(0) = LockFile::showLock (pid, tableName + "/table.lock");
+  Bool permLocked;
+  result(0) = LockFile::showLock (pid, permLocked, tableName + "/table.lock");
   result(1) = pid;
+  result(2) = (permLocked  ?  1 : 0);
   return result;
 }

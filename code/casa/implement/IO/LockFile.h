@@ -1,5 +1,5 @@
 //# LockFile.h: Class to handle file locking and synchronization
-//# Copyright (C) 1997,1998,1999,2000
+//# Copyright (C) 1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@ class CanonicalIO;
 // process accessing the main file can write information in it.
 // The lock file contains the following information (in canonical format):
 // <ul>
-// <li> A request list indicating which processes wants to acquire a lock.
+// <li> A request list indicating which processes want to acquire a lock.
 //      The process holding the lock can inspect this list to decide if it
 //      should release its lock. An interval can be defined to be sure
 //      that the list is not inspected too often.
@@ -122,6 +122,8 @@ class CanonicalIO;
 // For this purpose it sets another read lock when the file gets opened.
 // The function <src>isMultiUsed</src> tests this lock to see if the file is
 // used in other processes.
+// <br> This lock is also used to tell if the file is permanently locked.
+// If that is the case, the locked block is 2 bytes instead of 1.
 // <p>
 // When in the same process multiple LockFile objects are created for the same
 // file, deleting one object releases all locks on the file, thus also the
@@ -185,9 +187,13 @@ public:
     // <br> The seqnr is used to set the offset where LockFile will use 2 bytes
     // to set the locks on. Only in special cases it should be other than 0.
     // At the moment the offset is 2*seqnr.
+    // <br> The <src>permLocking</src> argument is used to indicate if
+    // permanent locking will be used. If so, it'll indicate so. In that
+    // way showLock() can find out if if table is permanently locked.
     explicit LockFile (const String& fileName, double inspectInterval = 0,
 		       Bool create = False, Bool addToRequestList = True,
-		       Bool mustExist = True, uInt seqnr = 0);
+		       Bool mustExist = True, uInt seqnr = 0,
+		       Bool permLocking = False);
 
     // The destructor does not delete the file, because it is not known
     // when the last process using the lock file will stop.
@@ -265,9 +271,10 @@ public:
     // <br> 1 if opened elsewhere.
     // <br> 0 if locked nor opened.
     // <br>It fills in the PID of the process having the file locked or opened.
+    // <br>If locked, it also tells if it is permanently locked.
     // <br>An exception is thrown if the file does not exist or cannot
     // be opened.
-    static uInt showLock (uInt& pid, const String& fileName);
+    static uInt showLock (uInt& pid, Bool& permLocked, const String& fileName);
 
 private:
     // The copy constructor cannot be used (its semantics are too difficult).
