@@ -29,6 +29,7 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/OS/HostInfo.h>
 
 #if defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)
 #include <sys/time.h>
@@ -42,56 +43,9 @@
 #include <sys/timeb.h>
 #endif
 
-#if defined(AIPS_SOLARIS) && !defined(__CLCC__)
-extern "C" { int gettimeofday(struct timeval *tp, void*); };
-#endif
-#if defined(AIPS_OSF)
-extern "C" { int getclock(int clock_type, struct timespec* tp); };
-#endif
-
-#if defined(AIPS_SOLARIS) && defined(__CLCC__)
-static double secondsFrom1970()
-{
-    struct timeval  tp;
-    AlwaysAssert(gettimeofday(&tp) >= 0, AipsError);
-    double total = tp.tv_sec;
-    total += tp.tv_usec * 0.000001;
-    return total;
-}
-#elif defined(AIPS_SOLARIS) || defined(_AIX) || defined(AIPS_IRIX)
-static double secondsFrom1970()
-{
-    struct timeval  tp;
-    struct timezone tz;
-    tz.tz_minuteswest = 0;
-    AlwaysAssert(gettimeofday(&tp, &tz) >= 0, AipsError);
-    double total = tp.tv_sec;
-    total += tp.tv_usec * 0.000001;
-    return total;
-}
-#elif defined(AIPS_OSF)
-static double secondsFrom1970()
-{
-  struct timespec tp;
-  AlwaysAssert(getclock(TIMEOFDAY,&tp) == 0, AipsError);
-  double total = tp.tv_sec;
-  total += tp.tv_nsec * 1.e-9;
-  return total;
-}
-#else
-static double secondsFrom1970()
-{
-    struct timeb ftm;
-    AlwaysAssert(ftime(&ftm) >= 0, AipsError);
-    double total = ftm.time;
-    total += ftm.millitm*0.001;
-    return total;
-}
-#endif
-
 inline double daysFrom1970()
 {
-    return secondsFrom1970() / C::day;
+    return HostInfo::secondsFrom1970() / C::day;
 }
 
 Time::Time() {
@@ -553,7 +507,7 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
 
 double Time::age() {
    // time in seconds between some Time object and now
-  double sn = secondsFrom1970();
+  double sn = HostInfo::secondsFrom1970();
   if(mJulianDay >= 40587) {
     double jd;
     jd=(double)mJulianDay - 40587.0;
