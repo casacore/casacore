@@ -31,6 +31,7 @@
 #include <aips/Tables/MemoryTable.h>
 #include <aips/Tables/RefTable.h>
 #include <aips/Tables/NullTable.h>
+#include <aips/Tables/TableCopy.h>
 #include <aips/Tables/ExprDerNode.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableLock.h>
@@ -327,6 +328,16 @@ void Table::deepCopy (const String& newName,
 {
     baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy);
 }
+
+Table Table::copyToMemoryTable (const String& newName) const
+{
+  Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this);
+  TableCopy::copyRows (newtab, *this);
+  TableCopy::copyInfo (newtab, *this);
+  TableCopy::copySubTables (newtab, *this);
+  return newtab;
+}
+
 
 //# Open the table file and read it in if necessary.
 void Table::open (const String& name, const String& type, int tableOption,

@@ -58,6 +58,15 @@ Table TableCopy::makeEmptyTable (const String& newName,
   return Table(newtab, (noRows ? 0 : tab.nrow()));
 }
 
+Table TableCopy::makeEmptyMemoryTable (const String& newName,
+				       const Table& tab,
+				       Bool noRows)
+{
+  TableDesc tabDesc = tab.actualTableDesc();
+  SetupNewTable newtab (newName, tabDesc, Table::New);
+  return Table(newtab, Table::Memory, (noRows ? 0 : tab.nrow()));
+}
+
 void TableCopy::adjustTSM (TableDesc& tabDesc, Record& dminfo)
 {
   Vector<String> dataNames, coordNames, idNames;
@@ -155,7 +164,8 @@ void TableCopy::copyInfo (Table& out, const Table& in)
 
 void TableCopy::copySubTables (Table& out, const Table& in)
 {
-  copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(), in);
+  copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(),
+		 out.tableType(), in);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {
@@ -164,7 +174,7 @@ void TableCopy::copySubTables (Table& out, const Table& in)
       TableColumn outCol(out, name);
       ROTableColumn inCol(in, name);
       copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
-		     out.tableName(), in);
+		     out.tableName(), out.tableType(), in);
     }
   }
   out.flush(); 
@@ -173,6 +183,7 @@ void TableCopy::copySubTables (Table& out, const Table& in)
 void TableCopy::copySubTables (TableRecord& outKeys,
 			       const TableRecord& inKeys,
 			       const String& outName,
+			       Table::TableType outType,
 			       const Table& in)
 {
   for (uInt i=0; i<inKeys.nfields(); i++) {
@@ -188,8 +199,14 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 	}
       } else {
 	String newName = outName + '/' + Path(inTab.tableName()).baseName();
-	inTab.deepCopy (newName, Table::New);
-	outKeys.defineTable (inKeys.name(i), Table(newName));
+	Table outTab;
+	if (outType == Table::Memory) {
+	  outTab = inTab.copyToMemoryTable (newName);
+	} else {
+	  inTab.deepCopy (newName, Table::New);
+	  outTab = Table(newName);
+	}
+	outKeys.defineTable (inKeys.name(i), outTab);
       }
     }
   }

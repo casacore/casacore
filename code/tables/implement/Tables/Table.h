@@ -549,6 +549,13 @@ public:
 		   TableOption, Bool valueCopy=False) const;
     // </group>
 
+    // Make a copy of a table to a MemoryTable object.
+    // Use the given name for the memory table.
+    Table copyToMemoryTable (const String& name) const;
+
+    // Get the table type.
+    TableType tableType() const;
+
     // Get the table option.
     int tableOption() const;
 
@@ -984,6 +991,8 @@ inline void Table::flushTableInfo() const
 
 inline const String& Table::tableName() const
     { return baseTabPtr_p->tableName(); }
+inline Table::TableType Table::tableType() const
+    { return TableType(baseTabPtr_p->tableType()); }
 inline int Table::tableOption() const
     { return baseTabPtr_p->tableOption(); }
 

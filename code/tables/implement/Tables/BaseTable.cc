@@ -203,6 +203,11 @@ Bool BaseTable::openedForWrite() const
 }
 
 
+int BaseTable::tableType() const
+{
+  return Table::Plain;
+}
+
 TableInfo BaseTable::tableInfo (const String& tableName)
 {
     return TableInfo (tableName + "/table.info");

@@ -86,6 +86,14 @@ public:
 			       Bool replaceTSM = True,
 			       Bool noRows = False);
 
+  // Make an (empty) memory table with the same layout as the input one.
+  // It has the same keywords and columns as the input one.
+  // By default, the new table has the same nr of rows as the input table.
+  // If <src>noRows=True</src> is given, it does not contain any row.
+  static Table makeEmptyMemoryTable (const String& newName,
+				     const Table& tab,
+				     Bool noRows = False);
+
   // Copy rows from the input to the output.
   // By default all rows will be copied starting at row 0 of the output.
   // Rows will be added to the output table as needed.
@@ -108,6 +116,7 @@ public:
   static void copySubTables (TableRecord& outKeys,
 			     const TableRecord& inKeys,
 			     const String& outName,
+			     Table::TableType outType,
 			     const Table& in);
 
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.

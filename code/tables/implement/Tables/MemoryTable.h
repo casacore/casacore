@@ -140,8 +140,11 @@ public:
 			 int tableOption, Bool) const;
   // </group>
 
-  // Rename the table. The tableOtion is ignored.
+  // Rename the table. The tableOption is ignored.
   virtual void rename (const String& newName, int tableOption);
+
+  // Get the table type (Table::Memory).
+  virtual int tableType() const;
 
   // Get the actual table description.
   virtual TableDesc actualTableDesc() const;

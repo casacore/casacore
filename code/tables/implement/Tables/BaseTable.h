@@ -219,6 +219,10 @@ public:
 			   Bool valueCopy) const;
     // </group>
 
+    // Get the table type.
+    // By default it returns Table::Plain.
+    virtual int tableType() const;
+
     // Get the table option.
     int tableOption() const
 	{ return option_p; }

@@ -175,6 +175,12 @@ void MemoryTable::rename (const String& newName, int)
   name_p = newName;
 }
 
+
+int MemoryTable::tableType() const
+{
+  return Table::Plain;
+}
+
 TableDesc MemoryTable::actualTableDesc() const
 {
   return *tdescPtr_p;
