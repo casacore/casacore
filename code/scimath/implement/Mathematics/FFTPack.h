@@ -30,7 +30,6 @@
 #define AIPS_EXTERN_FFT_H
 
 #include <aips/aips.h>
-#include <aips/Mathematics/Complex.h>
 
 // <summary>Complex to complex transforms</summary>
 // <synopsis>
