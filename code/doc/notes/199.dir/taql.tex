@@ -139,10 +139,16 @@ The various clauses have the following meaning:
   \item[ORDERBY sort\_list]
        defines the order in which the result of the WHERE clause
        has to be sorted. The sort\_list is a comma separated list of
-       expressions, where each expression is
-       optionally followed by \texttt{ASC} or \texttt{DESC}
-       (indicating ascending or descending). The default for each
-       expression is ascending.
+       expressions.
+       Each expression is in the sort\_list can optionally be
+       followed by \texttt{ASC} or \texttt{DESC}
+       (indicating ascending or descending).
+       \\The sort\_list can be preceeded by the word \texttt{ASC} or
+       \texttt{DESC} indicating if the given expressions are by
+       default sorted in ascending or descending order (default is ASC).
+       Each expression in the sort\_list can optionally be
+       followed by \texttt{ASC} or \texttt{DESC} to override the
+       default order for that particular column
        \\To be compliant with SQL whitespace can be used between the
        words ORDER and BY.
        \\The word ORDERBY can optionally be followed by NODUPLICATES
@@ -161,6 +167,7 @@ The various clauses have the following meaning:
        E.g.
        \begin{verbatim}
        ORDERBY col1, col2, col3
+       ORDERBY DESC col1, col2 ASC, col3
        ORDERBY NODUPLICATES uvw[1] DESC
        ORDERBY square(uvw[1]) + square(uvw[2])
        ORDERBY datetime(col)             incorrect data type
@@ -390,8 +397,8 @@ precedence) for scalars:
 \end{description}
 \begin{description}
   \item The precedence order is:
-       \\unary \texttt{+, -, !}
        \\\verb+^+
+       \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
        \\\texttt{$==, !=, >, >=, <, <=$}
