@@ -1,5 +1,5 @@
 //# VisibilityIterator.h: Step through the MeasurementEquation by visibility
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -206,7 +206,15 @@ public:
 
   // Return the current FieldId
   Int fieldId() const
-  { return msIter_p.fieldId(); }
+    { return msIter_p.fieldId(); }
+
+  // Return the current Field Name
+  String fieldName() const
+    { return msIter_p.fieldName(); }
+
+  // Return the current Source Name
+  String sourceName() const
+    { return msIter_p.sourceName(); }
 
   // Return flag for each polarization, channel and row
   Cube<Bool>& flag(Cube<Bool>& flags) const;
