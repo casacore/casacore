@@ -76,7 +76,7 @@ int main() {
       String errorMessage;
       GlishRecord gRec;
       gRec.fromRecord(rec);
-      if (!m.fromRecord(errorMessage, gRec)) {
+      if (!m.fromGlishRecord(errorMessage, gRec)) {
  	throw(AipsError
  	      (String("Cannot update class from a GlishRecord. The reason is:\n"
  		      + errorMessage)));
@@ -98,7 +98,7 @@ int main() {
 void printAsRecord(const RecordTransformable & myClass) {
   String errorMessage;
   GlishRecord rec;
-  if (!myClass.toRecord(errorMessage, rec)) {
+  if (!myClass.toGlishRecord(errorMessage, rec)) {
     cout << "Cannot convert class to a Record. The reason is:" << endl; 
     cout << errorMessage << endl;
   } else {
