@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl5
+#!/opt/local/bin/perl
 #
 #   Copyright (C) 1996,1997
 #   Associated Universities, Inc. Washington DC, USA.
@@ -299,6 +299,10 @@ sub make_tex_file{
        $hasArgs = 1;
        if($opt_glish == 1 && length $argroot){
           $glish_arg = $1;
+          # Need to strip away any blanks
+          if(!(length $glish_arg)){
+             $glish_arg = "noname";
+          }
           $desc = $2;
           $def = $3;
           $dum = $4;
