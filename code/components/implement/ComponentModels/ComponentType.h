@@ -79,14 +79,30 @@ public:
     // The number of types in this enumerator
     NUMBER_POLARISATIONS
   };
+  // The different functional forms for the spectral variation.
+  enum SpectralShape {
+    // The flux is constant at different frequencies
+    CONSTANT = 0,
+    // The flux varies as I = I_0 * (\nu / \nu_0)^\alpha
+    SPECTRAL_INDEX,
+    // an unknown spectral types
+    UNKNOWN_SPECTRAL_SHAPE,
+    // The number of spectral types in this enumerator
+    NUMBER_SPECTRAL_SHAPES
+  };
   // Convert the Shape enumerator to a string
-  static String name(ComponentType::Shape componentEnum);
-  // Convert the Polarisation enumerator to a string
-  static String name(ComponentType::Polarisation fluxEnum);
+  static String name(ComponentType::Shape shapeEnum);
   // Convert a given String to a Shape enumerator
   static ComponentType::Shape shape(const String & shapeName);
+  // Convert the Polarisation enumerator to a string
+  static String name(ComponentType::Polarisation fluxEnum);
   // Convert a given String to a Polarisation enumerator
   static ComponentType::Polarisation polarisation(const String & 
 						  polarisationName);
+  // Convert the SpectralShape enumerator to a string
+  static String name(ComponentType::SpectralShape spectralEnum);
+  // Convert a given String to a SpectralShape enumerator
+  static ComponentType::SpectralShape spectralShape(const String &
+						    spectralName);
 };
 #endif

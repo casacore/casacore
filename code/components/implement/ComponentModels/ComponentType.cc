@@ -28,25 +28,12 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/String.h>
 
-String ComponentType::name(ComponentType::Shape componentEnum) {
-  switch (componentEnum) {
+String ComponentType::name(ComponentType::Shape shapeEnum) {
+  switch (shapeEnum) {
   case ComponentType::POINT: 
     return "Point";
   case ComponentType::GAUSSIAN:
     return "Gaussian";
-  default:
-    return "Unknown";
-  };
-}
-
-String ComponentType::name(ComponentType::Polarisation fluxEnum) {
-  switch (fluxEnum) {
-  case ComponentType::STOKES: 
-    return "Stokes";
-  case ComponentType::LINEAR:
-    return "Linear";
-  case ComponentType::CIRCULAR:
-    return "Circular";
   default:
     return "Unknown";
   };
@@ -65,6 +52,19 @@ ComponentType::Shape ComponentType::shape(const String & shapeName) {
   return ComponentType::UNKNOWN;
 }
 
+String ComponentType::name(ComponentType::Polarisation fluxEnum) {
+  switch (fluxEnum) {
+  case ComponentType::STOKES: 
+    return "Stokes";
+  case ComponentType::LINEAR:
+    return "Linear";
+  case ComponentType::CIRCULAR:
+    return "Circular";
+  default:
+    return "Unknown";
+  };
+}
+
 ComponentType::Polarisation ComponentType::polarisation(const String & 
 						 polarisationName) {
   String canonicalCase(polarisationName);
@@ -77,6 +77,31 @@ ComponentType::Polarisation ComponentType::polarisation(const String &
     }
   }
   return ComponentType::UNKNOWN_POLARISATION;
+}
+
+String ComponentType::name(ComponentType::SpectralShape spectralEnum) {
+  switch (spectralEnum) {
+  case ComponentType::CONSTANT:
+    return "Constant";
+  case ComponentType::SPECTRAL_INDEX:
+    return "Spectral Index";
+  default:
+    return "Unknown";
+  };
+}
+
+ComponentType::SpectralShape ComponentType::spectralShape(const String & 
+							  spectralName) {
+  String canonicalCase(spectralName);
+  canonicalCase.capitalize();
+  ComponentType::SpectralShape s;
+  for (uInt i = 0; i < NUMBER_SPECTRAL_SHAPES; i++) {
+    s = (ComponentType::SpectralShape) i;
+    if (canonicalCase.matches(ComponentType::name(s))) {
+      return s;
+    }
+  }
+  return ComponentType::UNKNOWN_SPECTRAL_SHAPE;
 }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 ComponentType"
