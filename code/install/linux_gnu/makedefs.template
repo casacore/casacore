@@ -89,6 +89,7 @@ PGPLOTLIB := -L$(PGPLOTLIBD) -lXmPgplot -lcpgplot -lpgplot -L$(MotifLIBD) $(Moti
 
 # TCL (version 7.6 or later
 TCLROOT  := /usr
+TCLLIB   := -ltcl -ldl
 
 # LAPACK
 LAPACKROOT := /usr
@@ -189,8 +190,8 @@ ifeq "$(MAKEMODE)" "programmer"
 endif
 
 
-### Socorro specific makedefs start here. Modify these for your local
-### situation.
+### Socorro specific makedefs start here
+###
 #
 #                    C++            C          FORTRAN
 #                 dbg    opt    dbg    opt    dbg    opt
