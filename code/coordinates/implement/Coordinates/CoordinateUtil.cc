@@ -886,23 +886,23 @@ Bool CoordinateUtil::isSky (LogIO& os, const CoordinateSystem& cSys)
 } 
 
 
-Bool CoordinateUtil::holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, Vector<Int> axes) 
+Bool CoordinateUtil::holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, Vector<Int> pixelAxes) 
 {
-   AlwaysAssert(axes.nelements()==2, AipsError);
+   AlwaysAssert(pixelAxes.nelements()==2, AipsError);
 //
    holdsOneSkyAxis = False;
    Int dirCoordinate = cSys.findCoordinate(Coordinate::DIRECTION);
    if (dirCoordinate!=-1) {
       Vector<Int> dirPixelAxes = cSys.pixelAxes(dirCoordinate);
-      if ( (dirPixelAxes(0)==axes(0) && dirPixelAxes(1)==axes(1)) ||
-           (dirPixelAxes(0)==axes(1) && dirPixelAxes(1)==axes(0))) {
+      if ( (dirPixelAxes(0)==pixelAxes(0) && dirPixelAxes(1)==pixelAxes(1)) ||
+           (dirPixelAxes(0)==pixelAxes(1) && dirPixelAxes(1)==pixelAxes(0))) {
          return True;
       }
 //
-      if ( (axes(0)==dirPixelAxes(0) && axes(1)!=dirPixelAxes(1)) ||
-           (axes(0)!=dirPixelAxes(0) && axes(1)==dirPixelAxes(1)) ||
-           (axes(0)==dirPixelAxes(1) && axes(1)!=dirPixelAxes(0)) ||
-           (axes(0)!=dirPixelAxes(1) && axes(1)==dirPixelAxes(0)) ) {
+      if ( (pixelAxes(0)==dirPixelAxes(0) && pixelAxes(1)!=dirPixelAxes(1)) ||
+           (pixelAxes(0)!=dirPixelAxes(0) && pixelAxes(1)==dirPixelAxes(1)) ||
+           (pixelAxes(0)==dirPixelAxes(1) && pixelAxes(1)!=dirPixelAxes(0)) ||
+           (pixelAxes(0)!=dirPixelAxes(1) && pixelAxes(1)==dirPixelAxes(0)) ) {
          holdsOneSkyAxis = True;
       }
    }
