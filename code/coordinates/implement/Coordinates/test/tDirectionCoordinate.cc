@@ -50,15 +50,12 @@ void doit (DirectionCoordinate& lc,
            MDirection::Types type,
            const Vector<String>& axisName,
            const String& axisUnit);
-
 void doit2 (DirectionCoordinate& lc, 
             Vector<Double>& crval,
             Vector<Double>& crpix,
             Vector<Double>& cdelt,
             Matrix<Double>& xform);
-
 void doit3 (DirectionCoordinate& lc);
-
 void doit4 (DirectionCoordinate& lc);
 
 
@@ -474,93 +471,148 @@ void doit3 (DirectionCoordinate& lc)
 
 void doit4 (DirectionCoordinate& dC)
 //
-// Mixed conversions
+// Mixed conversions 
 //
 {
-   Vector<Double> out(2);
-   Vector<Double> in(2);
-   Vector<Bool> isPixelOut(2);
-   Vector<Bool> isPixelIn(2);
+   Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
+   Vector<Bool> pixelAxes(2), worldAxes(2);
+//
+// Forced errors
+//
+   pixelAxes.set(False);
+   worldAxes.set(False);
+   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Forced fail 1 of toMix did not occur")));
+   }
+   pixelAxes(0) = True;
+   if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Forced fail 2 of toMix did not occur")));
+   }
+//
+// pixel,pixel->world,world
+//
+   pixelAxes.set(True);
+   worldAxes.set(False);
+   pixelIn = dC.referencePixel().copy();
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Failed pixel->world conversion failed because ")
+                  + dC.errorMessage()));
+   }
+   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+      throw(AipsError(String("Failed pixel->world consistency test")));
+   }
+   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+      throw(AipsError(String("Failed pixel->world consistency test")));
+   }
+//
+// world,world->pixel,pixel
+//
+   pixelAxes.set(False);
+   worldAxes.set(True);
+   worldIn = dC.referenceValue().copy();
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Failed world->pixel conversion failed because ")
+                  + dC.errorMessage()));
+   }
+   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
+   }
+   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
+   }
 //
 // world,pixel -> pixel,world
 //
-   Bool longIsWorld = True;        
-   in(0) = dC.referenceValue()(0);
-   in(1) = dC.referencePixel()(1);
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   worldIn(0) = dC.referenceValue()(0);
+   pixelIn(1) = dC.referencePixel()(1);
+   pixelAxes.set(False);
+   worldAxes.set(False);
+   worldAxes(0) = True;
+   pixelAxes(1) = True;
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(out(0), dC.referencePixel()(0), 1e-8)) {
-      throw(AipsError("Failed mixed conversion test 1"));
+   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
    }
-   if (!near(out(1), dC.referenceValue()(1), 1e-8)) {
-      throw(AipsError("Failed mixed conversion test 1"));
+   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
    }
 //
 // pixel, world -> world, pixel
 //
-   longIsWorld = False; 
-   in(0) = dC.referencePixel()(0);
-   in(1) = dC.referenceValue()(1);
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   pixelIn(0) = dC.referencePixel()(0);
+   worldIn(1) = dC.referenceValue()(1);
+   pixelAxes.set(False);
+   worldAxes.set(False);
+   worldAxes(1) = True;
+   pixelAxes(0) = True;
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(out(0), dC.referenceValue()(0), 1e-8)) {
-      throw(AipsError("Failed mixed conversion test 2"));
+   if (!allNear(pixelOut.ac(), dC.referencePixel().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
    }
-   if (!near(out(1), dC.referencePixel()(1), 1e-8)) {
-      throw(AipsError("Failed mixed conversion test 2"));
+   if (!allNear(worldOut.ac(), dC.referenceValue().ac(), 1e-8)) {
+      throw(AipsError(String("Failed world->pixel consistency test")));
    }
 //
 // world,pixel -> pixel,world -> world,pixel
 // Do it off the reference values
 //
-   longIsWorld = True;        
-   in(0) = dC.referenceValue()(0) + 5*dC.increment()(0);
-   in(1) = 2.32;
-   Vector<Double> saveIn(in.copy());
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   worldIn(0) = dC.referenceValue()(0) + 5*dC.increment()(0);
+   pixelIn(1) = 2.32;
+   pixelAxes.set(False); pixelAxes(1) = True;
+   worldAxes.set(False); worldAxes(0) = True;
+   Vector<Double> saveWorldIn(worldIn.copy());
+   Vector<Double> savePixelIn(pixelIn.copy());
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   in(0) = out(0);
-   in(1) = out(1);
-   longIsWorld = False;   
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   pixelIn(0) = pixelOut(0);
+   worldIn(1) = worldOut(1);
+   pixelAxes.set(False); pixelAxes(0) = True;
+   worldAxes.set(False); worldAxes(1) = True;
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(out(0), saveIn(0), 1e-8)) {
+   if (!near(worldOut(0), saveWorldIn(0), 1e-8)) {
       throw(AipsError("Failed mixed conversion reflection test 1"));
    }
-   if (!near(out(1), saveIn(1), 1e-8)) {
+   if (!near(pixelOut(1), savePixelIn(1), 1e-8)) {
       throw(AipsError("Failed mixed conversion reflection test 1"));
    }
 //
 // pixel,world -> world,pixel -> pixel, world
 // Do it off the reference values
 //
-   longIsWorld = False;
-   in(0) = 2.32;
-   in(1) = dC.referenceValue()(1) + 5*dC.increment()(1);
-   saveIn = in.copy();
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   worldIn(1) = dC.referenceValue()(1) + 5*dC.increment()(1);
+   pixelIn(0) = 2.32;
+   pixelAxes.set(False); pixelAxes(0) = True;
+   worldAxes.set(False); worldAxes(1) = True;
+   saveWorldIn = worldIn.copy();
+   savePixelIn = pixelIn.copy();
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   in(0) = out(0);
-   in(1) = out(1);
-   longIsWorld = True;
-   if (!dC.toMix(out, in, longIsWorld)) {
-      throw(AipsError(String("DirectionCoordinate::toMix conversion failed because ")
+   pixelIn(1) = pixelOut(1);
+   worldIn(0) = worldOut(0);
+   pixelAxes.set(False); pixelAxes(1) = True;
+   worldAxes.set(False); worldAxes(0) = True;
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes)) {
+      throw(AipsError(String("Conversion failed because ")
                   + dC.errorMessage()));
    }
-   if (!near(out(0), saveIn(0), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 2"));
+   if (!near(worldOut(1), saveWorldIn(1), 1e-8)) {
+      throw(AipsError("Failed mixed conversion reflection test 1"));
    }
-   if (!near(out(1), saveIn(1), 1e-8)) {
-      throw(AipsError("Failed mixed conversion reflection test 2"));
+   if (!near(pixelOut(0), savePixelIn(0), 1e-8)) {
+      throw(AipsError("Failed mixed conversion reflection test 1"));
    }
 }
+

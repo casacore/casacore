@@ -78,7 +78,7 @@ void doit (CoordinateSystem& lc, uInt nCoords,
            const LinearCoordinate&);
 void doit2 (CoordinateSystem& cSys);
 void doit3 (CoordinateSystem& cSys);
-//void doit4 ();
+void doit4 ();
 void doit5 ();
 
 
@@ -149,7 +149,7 @@ int main()
          doit3(cSys);
       }
       {
-//         doit4();
+         doit4();
       }
       {
          doit5();
@@ -877,203 +877,9 @@ void doit3 (CoordinateSystem& cSys)
    }
 }
 
-/*
 void doit4()
 //
-// test mixed conversion functions with interface one
-//
-{
-   
-   CoordinateSystem cSys;
-   LinearCoordinate lC = makeLinearCoordinate(1);         // 0
-   cSys.addCoordinate(lC);
-   SpectralCoordinate spC = makeSpectralCoordinate();       // 1
-   cSys.addCoordinate(spC);
-   DirectionCoordinate dC = makeDirectionCoordinate();       // 2 & 3
-   cSys.addCoordinate(dC);
-//
-//   cout << "Reference pixel = " << cSys.referencePixel().ac() << endl;
-//   cout << "Reference value = " << cSys.referenceValue().ac() << endl;
-//
-   Vector<Double> pixelIn, worldIn;
-   Vector<Double> worldOut, pixelOut;
-   Vector<uInt> pixelAxes(cSys.nPixelAxes());
-   Vector<uInt> worldAxes;
-//
-// First test pure pixel->world and world->pixel via the
-// mix function.
-//
-   pixelIn = cSys.referencePixel().copy();
-   if (!cSys.toWorld(worldOut, pixelIn)) {
-      throw(AipsError(String("toWorld conversion failed because ")
-                  + cSys.errorMessage()));
-   }
-//
-   pixelAxes.resize(pixelIn.nelements());
-   for (uInt i=0; i<pixelIn.nelements(); i++) pixelAxes(i) = i;
-   Vector<Double> worldOut2;
-   if (!cSys.toMix(worldOut2, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-   if (!allNear(worldOut.ac(), worldOut2.ac(), 1e-6)) {
-      throw(AipsError("toWorld/toMix consistency test failed"));
-   }
-//
-// Now try pure world->pixel
-//
-   worldIn = cSys.referenceValue().copy();
-   if (!cSys.toPixel(pixelOut, worldIn)) {
-      throw(AipsError(String("toPixel conversion failed because ")
-                  + cSys.errorMessage()));
-   }
-//
-   pixelAxes.resize(0);
-   pixelIn.resize(0);
-   worldAxes.resize(worldIn.nelements());
-   for (uInt i=0; i<worldIn.nelements(); i++) worldAxes(i) = i;
-   Vector<Double> pixelOut2;
-   if (!cSys.toMix(worldOut, pixelOut2, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-   if (!allNear(pixelOut.ac(), pixelOut2.ac(), 1e-6)) {
-      throw(AipsError("toPixel/toMix consistency test failed"));
-   }
-//
-// Now do a real mix.  Use reference values/pixels so we
-// can confirm correctness
-//
-   pixelIn.resize(2);
-   pixelIn(0) = cSys.referencePixel()(0);   // Linear pixel
-   pixelIn(1) = cSys.referencePixel()(2);   // Direction long pixel
-   pixelAxes.resize(2);
-   pixelAxes(0) = 0;
-   pixelAxes(1) = 2;
-//
-   worldIn.resize(2);
-   worldIn(0) = cSys.referenceValue()(1);   // Spectral world
-   worldIn(1) = cSys.referenceValue()(3);   // Direction lat world
-   worldAxes.resize(2);
-   worldAxes(0) = 1;
-   worldAxes(1) = 3;
-//         
-   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-//
-   if (!near(worldOut(0), cSys.referenceValue()(0))) {
-      throw(AipsError("toMix consistency test 1 failed"));
-   }
-   if (!near(worldOut(1), cSys.referenceValue()(2))) {
-      throw(AipsError("toMix consistency test 1 failed"));      
-   }
-   if (!near(pixelOut(0), cSys.referencePixel()(1))) {
-      throw(AipsError("toMix consistency test 1 failed"));
-   }
-   if (!near(pixelOut(1), cSys.referencePixel()(3))) {
-      throw(AipsError("toMix consistency test 1 failed"));
-   }
-//
-// Try another one
-//
-   pixelIn.resize(2);
-   pixelIn(0) = cSys.referencePixel()(1);   // Spectral pixel
-   pixelIn(1) = cSys.referencePixel()(3);   // Direction lat pixel
-   pixelAxes.resize(2);
-   pixelAxes(0) = 1;
-   pixelAxes(1) = 3;
-//
-   worldIn.resize(2);
-   worldIn(0) = cSys.referenceValue()(0);   // Linear world
-   worldIn(1) = cSys.referenceValue()(2);   // Direction long world
-   worldAxes.resize(2);
-   worldAxes(0) = 0;
-   worldAxes(1) = 2;
-//         
-   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-//
-   if (!near(worldOut(0), cSys.referenceValue()(1))) {
-      throw(AipsError("toMix consistency test 2 failed"));
-   }
-   if (!near(worldOut(1), cSys.referenceValue()(3))) {
-      throw(AipsError("toMix consistency test 2 failed"));
-   }
-   if (!near(pixelOut(0), cSys.referencePixel()(0))) {
-      throw(AipsError("toMix consistency test 2 failed"));
-   }
-   if (!near(pixelOut(1), cSys.referencePixel()(2))) {
-      throw(AipsError("toMix consistency test 2 failed"));
-   }
-//
-// Now a non-reference value/pixel reflection test
-//
-   pixelIn.resize(2);
-   pixelIn(0) = 20.12;                      // Spectral pixel
-   pixelIn(1) = 183.54;                     // Direction lat pixel
-   pixelAxes.resize(2);
-   pixelAxes(0) = 1;
-   pixelAxes(1) = 3;
-//
-   worldIn.resize(2);
-   worldIn(0) = cSys.referenceValue()(0) + 5*cSys.increment()(0);   // Linear world
-   worldIn(1) = cSys.referenceValue()(2) - 10*cSys.increment()(2);  // Direction long world
-   worldAxes.resize(2);
-   worldAxes(0) = 0;
-   worldAxes(1) = 2;
-//
-   Vector<Double> saveWorldIn(worldIn.copy());
-   Vector<Double> savePixelIn(pixelIn.copy());
-//         
-
-   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-//
-   pixelIn(0) = pixelOut(0);
-   pixelIn(1) = pixelOut(1);
-   pixelAxes(0) = 0;
-   pixelAxes(1) = 2;
-//
-   worldIn(0) = worldOut(0);
-   worldIn(1) = worldOut(1);
-   worldAxes(0) = 1;
-   worldAxes(1) = 3;
-//
-   if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
-      throw(AipsError(String("toMix conversion failed because ")
-            + cSys.errorMessage()));
-   }
-//
-   if (!near(worldOut(0), saveWorldIn(0), 1e-8)) {
-      throw(AipsError("toMix consistency test 3 failed"));
-   }
-   if (!near(worldOut(1), saveWorldIn(1), 1e-8)) {
-      throw(AipsError("toMix consistency test 3 failed"));
-   }
-   if (!near(pixelOut(0), savePixelIn(0), 1e-8)) {
-      throw(AipsError("toMix consistency test 3 failed"));
-   }
-   if (!near(pixelOut(1), savePixelIn(1), 1e-8)) {
-      throw(AipsError("toMix consistency test 3 failed"));
-   }
-}
-*/
-
-void doit5()
-//
-// test mixed conversion functions with interface two
+// test mixed conversion functions 
 //
 {
    CoordinateSystem cSys;
@@ -1324,14 +1130,235 @@ void doit5()
    if (!allNear(pixelOut.ac(), cSys.referencePixel().ac(), 1e-8)) {
       throw(AipsError("toMix consistency test 2 failed"));
    }
+}
 
-/*
-cout << "pixelaxes, worldaxes=" << pixelAxes.ac() << worldAxes.ac() << endl;
-cout << "pixelin, worldout=" << pixelIn.ac() << worldOut.ac() << endl;
-cout << "worldin, pixelout=" << worldIn.ac() << pixelOut.ac() << endl;
-*/
-
-
+void doit5()
+//
+// test mixed conversion functions with interface two
+// and axis removal
+//
+{
+   {
+      CoordinateSystem cSys;
+      LinearCoordinate lC = makeLinearCoordinate(1);
+      cSys.addCoordinate(lC);
+      cSys.removePixelAxis(0, cSys.referencePixel()(0));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False);
+      worldAxes.set(False);
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 1a")));
+      }
+      if (pixelOut.nelements()!=0) {
+         throw(AipsError(String("Failed removal test 1a")));
+      }
+   }
+   {
+      CoordinateSystem cSys;
+      LinearCoordinate lC = makeLinearCoordinate(1);
+      cSys.addCoordinate(lC);
+      cSys.removeWorldAxis(0, cSys.referenceValue()(0));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False);
+      worldAxes.set(False);
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (worldOut.nelements()!=0) {
+         throw(AipsError(String("Failed removal test 2a")));
+      }
+      if (pixelOut.nelements()!=0) {
+         throw(AipsError(String("Failed removal test 2b")));
+      }
+   }
+   {
+// pr,pr->w,w
+      CoordinateSystem cSys;
+      DirectionCoordinate dC = makeDirectionCoordinate();
+      cSys.addCoordinate(dC);
+      cSys.removePixelAxis(0, cSys.referencePixel()(0));
+      cSys.removePixelAxis(0, cSys.referencePixel()(0));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False);
+      worldAxes.set(False);
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 3a")));
+      }
+      if (pixelOut.nelements()!=0) {
+         throw(AipsError(String("Failed removal test 3b")));
+      }
+   }
+   {
+// pr,p->w,w
+      CoordinateSystem cSys;
+      DirectionCoordinate dC = makeDirectionCoordinate();
+      cSys.addCoordinate(dC);
+      cSys.removePixelAxis(0, cSys.referencePixel()(0));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False); pixelAxes(0) = True;
+      worldAxes.set(False);
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 4a")));
+      }
+      if (pixelOut.nelements()!=1) {
+         throw(AipsError(String("Failed removal test 4b")));
+      }
+      if (!near(pixelOut(0), cSys.referencePixel()(0), 1e-8)) {
+         throw(AipsError(String("Failed removal test 4c")));
+      } 
+   }
+   {
+// pr,w->w,p
+      CoordinateSystem cSys;
+      DirectionCoordinate dC = makeDirectionCoordinate();
+      cSys.addCoordinate(dC);
+      cSys.removePixelAxis(0, cSys.referencePixel()(0));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False); 
+      worldAxes.set(False); worldAxes(1) = True;
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 5a")));
+      }
+      if (pixelOut.nelements()!=1) {
+         throw(AipsError(String("Failed removal test 5b")));
+      }
+      if (!near(pixelOut(0), cSys.referencePixel()(0), 1e-8)) {
+         throw(AipsError(String("Failed removal test 5c")));
+      } 
+   }
+   {
+// w,pr->p,w
+      CoordinateSystem cSys;
+      DirectionCoordinate dC = makeDirectionCoordinate();
+      cSys.addCoordinate(dC);
+      cSys.removePixelAxis(1, cSys.referencePixel()(1));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False); 
+      worldAxes.set(False); worldAxes(0) = True;
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 6a")));
+      }
+      if (pixelOut.nelements()!=1) {
+         throw(AipsError(String("Failed removal test 6b")));
+      }
+      if (!near(pixelOut(0), cSys.referencePixel()(0), 1e-8)) {
+         throw(AipsError(String("Failed removal test 6c")));
+      } 
+   }
+   {
+// p,pr->w,w
+      CoordinateSystem cSys;
+      DirectionCoordinate dC = makeDirectionCoordinate();
+      cSys.addCoordinate(dC);
+      cSys.removePixelAxis(1, cSys.referencePixel()(1));
+//
+      Vector<Double> pixelIn(cSys.nPixelAxes());
+      Vector<Double> worldIn(cSys.nWorldAxes());
+      Vector<Bool> pixelAxes(cSys.nPixelAxes());
+      Vector<Bool> worldAxes(cSys.nWorldAxes());
+      Vector<Double> worldOut, pixelOut;
+//
+      pixelAxes.set(False); pixelAxes(0) = True;
+      worldAxes.set(False);
+      worldIn = cSys.referenceValue().copy();
+      pixelIn = cSys.referencePixel().copy();
+//
+      if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
+                      worldAxes, pixelAxes)) {
+         throw(AipsError(String("toMix conversion failed because ")
+               + cSys.errorMessage()));
+      }
+      if (!allNear(worldOut.ac(), cSys.referenceValue().ac(), 1e-8)) {
+         throw(AipsError(String("Failed removal test 7a")));
+      }
+      if (pixelOut.nelements()!=1) {
+         throw(AipsError(String("Failed removal test 7b")));
+      }
+      if (!near(pixelOut(0), cSys.referencePixel()(0), 1e-8)) {
+         throw(AipsError(String("Failed removal test 7c")));
+      } 
+   }
 }
 
 
