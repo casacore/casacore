@@ -575,6 +575,8 @@ private:
     void clear();
     Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
 
+    // Decode CD cards from FITS file header
+    static Bool getCDCardsFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
 };
 
 #endif
