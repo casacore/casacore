@@ -1,5 +1,5 @@
 //# dWorldMap.cc: demonstarte use of CoordinateSystem::worldMap
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,12 +46,13 @@ try {
 
    Vector<Int> map;
    Vector<Int> transpose;
+   Vector<Bool> refChange;
 
    {
       cout << "2D [ra, dec] & 0D" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2;
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -60,7 +61,7 @@ try {
       cout << "0D & 2D [ra, dec]" << endl;
       CoordinateSystem cSys1;
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -70,7 +71,7 @@ try {
       cout << "3D [ra, dec, spec] & 3D [ra, dec, spec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -79,7 +80,7 @@ try {
       cout << "2D [ra, dec] & 3D [ra, dec, spec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -88,7 +89,7 @@ try {
       cout << "3D [ra, dec, spec] & 2D [ra, dec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -104,7 +105,7 @@ try {
       pixelOrder = worldOrder;
       cSys2.transpose(worldOrder, pixelOrder);
   
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -119,7 +120,7 @@ try {
          cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
 //
          CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
-         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
          list (ok, map, transpose, cSys1, cSys2);
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -144,7 +145,7 @@ try {
          Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
          cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
 //
-         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
          list (ok, map, transpose, cSys1, cSys2);
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -170,7 +171,7 @@ try {
          Int wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
          cSys1.removeWorldAxis(wSpec, cSys1.referenceValue()(wSpec));
 //
-         Bool ok = cSys1.worldMap(map, transpose, cSys2);
+         Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
          list (ok, map, transpose, cSys1, cSys2);
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -186,7 +187,7 @@ try {
       CoordinateUtil::addFreqAxis(cSys2);
       CoordinateUtil::addIQUVAxis(cSys2);
 
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -200,7 +201,7 @@ try {
       CoordinateUtil::addIQUVAxis(cSys2);
       CoordinateUtil::addFreqAxis(cSys2);
  
-      Bool ok = cSys1.worldMap(map, transpose, cSys2);
+      Bool ok = cSys1.worldMap(map, transpose, refChange, cSys2);
       list (ok, map, transpose, cSys1, cSys2);
       cout << endl << endl;
    }
