@@ -52,7 +52,8 @@ A specific \mes\ class is indicated with an $M$, e.g. a direction measure is
 an $MDirection$.
 
 A \mes\ consists of a \val\ and a \refq. The \val\ of a \mes\ is a vector
-of double floating point numbers, in some internal format. The \val\ is
+of double floating point numbers, in some internal format, independent
+of the units used to create them. The \val\ is
 called a {\em MeasValue}, and specific ones are indicated with the
 letters $MV$, e.g. $MVDirection$
 \footnote{Note the
@@ -161,7 +162,11 @@ Example: \\
 {\em Note} that if a {\em frame} is necessary, it suffices to give it
 with either one of the two \refqs. Unless, of course, they are
 different for the two \refqs, like converting the {\tt AZEL} at one
-telescope to that at another.
+telescope to that at another. The latter case (i.e. two different
+reference frames for the input and output values), is handled by
+always converting first the input value to the default for the class
+(e.g. {\tt J2000} for directions), and then convert this value to the
+appropriate output type and frame.
 
 The {\em from} \refq\ can also be specified as a complete \mes. In that
 case that \val\ of the \mes\ will act as the {\em default} \val\ to be
@@ -181,7 +186,9 @@ constructor (or using a {\tt set()} method).
 \item {\em MeasValue}: convert it to a \mes\ using the {\em from}
 reference of the object
 \item {\em Measure}: re-initialize the conversion object, and do the
-conversion with the new default value (since the \refq\ has changed!).
+conversion with the new default value (since the \refq\ has changed!),
+taking the full {\em Measure} into account (including, of course, a
+possible reference frame).
 \end{itemize}
 
 If the conversion needs information, it will cache anything it
@@ -190,6 +197,14 @@ Nutation}), or in the {\em frame} (like e.g. the sidereal time of a
 frame MEpoch specified in UTC). This information will be re-used if
 possible and feasible in subsequent conversions with the same
 conversion object or using the same frame.
+
+It is also worth noting that {\em frames} are handled internally by
+{\em reference} rather than by {\em value} (e.g. when copied) (the
+same is true for {\tt Measure::Ref} objects). One consequence is that
+a conversion knows about any change you make to a frame, and will use
+it. So, if by a \verb+frame.set(MEpoch)+ the time of a frame is
+changed, a subsequent conversion which had that frame given as the
+frame to be used, will automatically use the new time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -251,7 +266,14 @@ frame} is as long as possible. Which suggests that in many cases a
 frame should be created at the highest level possible (maybe even
 globally). Re-use of a {\em frame}, e.g. for a different time, is made
 possible by the {\tt set()} methods, e.g. $set(MEpoch)$, which will
-try to minimize the re-calculations necessary.
+try to minimize the re-calculations necessary. The fact that frames
+are always used internally by {\em reference} (see earlier), which
+also means that any change made to a frame will automatically be used
+by any subsequent conversion which knows about this frame, makes in
+principle for an efficient machinery for many different
+purposes. However, it could also easily lead to misunderstandings. If
+you plan to do any special conversions, the detailed information
+provided in the various {\tt Measure} classes should be perused.
 
 \subsection{Re-use of conversion objects}
 
@@ -547,16 +569,19 @@ standard way. Some have additional ones available when appropriate
 \item[$getVector()$] will always return the internal value as a
 \verb+Vector<Double>+
 \item[$getValue$] will obtain the internal value as a $Double$ or as a
-\verb+Vector<Double>+, depending on the dimension of the internal value
+\verb+Vector<Double>+, depending on the dimension of the internal
+value. The units of the value returned will be the internally used
+ones (e.g. $m$ for a position, $s$ for a time.
 \item[$get()$] will obtain the internal value as a {\em Quantity} or
-as a \verb+Vector<Double>+
+as a \verb+Vector<Double>+. If a quantity, the default units are the
+interanls one, but the output units can be selected as well.
 \end{description}
 
 \subsection{Obtaining information from the MeasFrame}
 
 The frame can be used as an automatic converter. An example could be
 the automatic conversion to a sidereal time from a civil time (like
-$UTC$). All conversions that are used by the various conversion
+$UTC$). All conversions that are used internally by the various conversion
 engines are available. Of course, the epoch should have been put into
 the frame for it to be converted; and in this case also the position
 should have been put into it. Available information from the frame: \\
@@ -613,7 +638,8 @@ should have been put into it. Available information from the frame: \\
 
 In the above reference is made to the {\em calculating state} of the
 frame. This state is set when the frame has been actively used by a
-{\tt Measure::Convert} engine; or if you do it explicitly with:
+{\tt Measure::Convert} engine (i.e. have at least one {\em operator()}
+executed); or if you do it explicitly with:
 \verb+MCFrame::make(frame);+.
 
 
@@ -671,8 +697,9 @@ time offset for a specific $UTC$ date.
 
 A 3-dimensional vector, especially a position on (or rather {\em
 w.r.t.} Earth). Internally represented as a \verb+Vector<Double>+ with
-assumed units of $m$. Normally given as a longitude, latitude and
-height (geodetic), or as a vector with origin in center of Earth.
+assumed units of $m$, independent of the constructing units. Normally
+given as a longitude, latitude and height (geodetic), or as a vector
+with origin in center of Earth. 
 
 The internal value of the {\tt MPosition} class (i.e. {\em
 MVPosition}) is also the base class for the contents of the other
