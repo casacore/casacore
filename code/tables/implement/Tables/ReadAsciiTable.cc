@@ -1114,7 +1114,7 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
 
     Block<IPosition> shapeOfColumn(nrcol);
     Block<Int>       typeOfColumn(nrcol);
-    Int              varAxis;
+    Int              varAxis=0;
 
     for (Int i5=0; i5<nrcol; i5++) {
         varAxis = getTypeShape (tstrOfColumn[i5],
@@ -1286,15 +1286,21 @@ String ReadAsciiTable::run (const String& headerfile, const String& filein,
   if (firstLine < 1) {
     firstLine = 1;
   }
+  //# The Regex is made here (instead of creating a temporary Regex
+  //# in the doRun call).
+  //# For one reason or another the temporary gives a bus error with gcc-3.3
+  //# on Solaris in the tryerror calls in tReadAsciiTable.
+  Regex regex;
   if (commentMarkerRegex.empty()) {
     return doRun (headerfile, filein, tableproto, tablename,
 		  autoHeader, autoShape, separator,
-		  False, Regex(),
+		  False, regex,
 		  firstLine, lastLine);
   } else {
+    regex = Regex(commentMarkerRegex);
     return doRun (headerfile, filein, tableproto, tablename,
 		  autoHeader, autoShape, separator,
-		  True, Regex(commentMarkerRegex),
+		  True, regex,
 		  firstLine, lastLine);
   }
 }
