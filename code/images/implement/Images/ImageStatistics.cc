@@ -1,5 +1,5 @@
 //# ImageStatistics.cc: generate statistics from an image
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -251,7 +251,7 @@ Bool ImageStatistics<T>::listStats (Bool hasBeam, const IPosition& dPos,
                               blc, trc, pixels, -1);
    String cName = 
      ImageUtilities::shortAxisName(cSys.worldAxisNames()(displayAxes_p(0)));
-   Int oCWidth = max(cName.length(), sWorld(0).length()) + 1;
+   Int oCWidth = max(uInt(cName.length()), uInt(sWorld(0).length())) + 1;
    
 // Write headers
 
