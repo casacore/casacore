@@ -1,5 +1,5 @@
 //# MSFITSOutput: MS to UVFITS
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -154,7 +154,7 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
   Double refFreq, chanbw;
   FitsOutput* fitsOutput = writeMain(refPixelFreq, refFreq, chanbw,
 				     outfile, ms, column,
-				     spwidMap, fieldidMap,
+				     spwidMap, nrspw, fieldidMap,
 				     asMultiSource, combineSpw);
 
   Bool ok = (fitsOutput != 0);
@@ -179,7 +179,7 @@ Bool MSFitsOutput::writeFitsFile(const String& fitsfile,
   //  if (ok && !ms.source().isNull()) {
   if (ok) {
     os << LogIO::NORMAL << "Writing AIPS SU table" << LogIO::POST;
-    ok = writeSU(fitsOutput, ms, fieldidMap, nrfield);
+    ok = writeSU(fitsOutput, ms, fieldidMap, nrfield, spwidMap, nrspw);
     if (!ok) {
       os << LogIO::SEVERE << "Could not write SU table\n" << LogIO::POST;
     }
@@ -219,6 +219,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 				    const MeasurementSet &rawms,
 				    const String &column,
 				    const Block<Int>& spwidMap,
+				    Int nrspw,
 				    const Block<Int>& fieldidMap,
 				    Bool asMultiSource,
 				    Bool combineSpw)
@@ -412,7 +413,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
 
   IPosition dataShape(6, 3, numcorr0, numchan0, 1, 1, 1);
   if (combineSpw) {
-    dataShape(3) = nspec;
+    dataShape(3) = nrspw;
   }
   desc.addField("data", TpArrayFloat, dataShape);
 
@@ -582,8 +583,8 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   // Check that an integral number of SPWs fit in the MS.
   uInt nif = 1;
   if (combineSpw) {
-    nif = nspec;
-    if (nrow%nspec != 0) {
+    nif = nrspw;
+    if (nrow%nif != 0) {
       os << LogIO::SEVERE << "The number of rows per spectral-window varies;"
 	" cannot combine spectral windows"
 	 << LogIO::POST;
@@ -1151,7 +1152,8 @@ Bool MSFitsOutput::writeAN(FitsOutput *output, const MeasurementSet &ms,
 }
 
 Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
-			   const Block<Int>& fieldidMap, uInt nrfield)
+			   const Block<Int>& fieldidMap, Int nrfield,
+			   const Block<Int>& spwidMap, Int nrspw)
 {
   LogIO os(LogOrigin("MSFitsOutput", "writeSU"));
   // Basically we make the FIELD_ID the source ID.
@@ -1190,8 +1192,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
     os << LogIO::SEVERE << "No field table!" << LogIO::POST;
     return False;
   }
-  const Int nspec = spectralTable.nrow();
-  if (nspec == 0) {
+  if (spectralTable.nrow() == 0) {
     os << LogIO::SEVERE << "No spectral window table!" << LogIO::POST;
     return False;
   }
@@ -1204,7 +1205,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   Record header;
   header.define("EXTNAME", "AIPS SU");             // EXTNAME
   header.define("EXTVER", 1);                      // EXTVER
-  header.define("NO_IF", nspec);
+  header.define("NO_IF", nrspw);
   header.define ("FREQID", 1);
   String velDef;
   String velType;
@@ -1225,15 +1226,15 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   desc.addField("QUAL", TpInt);
   desc.addField("CALCODE", TpString);
   strlengths.define("CALCODE", 4);
-  desc.addField("IFLUX", TpArrayFloat, IPosition(1, nspec));
+  desc.addField("IFLUX", TpArrayFloat, IPosition(1, nrspw));
   units.define ("IFLUX", "JY");
-  desc.addField("QFLUX", TpArrayFloat, IPosition(1, nspec));
+  desc.addField("QFLUX", TpArrayFloat, IPosition(1, nrspw));
   units.define ("QFLUX", "JY");
-  desc.addField("UFLUX", TpArrayFloat, IPosition(1, nspec));
+  desc.addField("UFLUX", TpArrayFloat, IPosition(1, nrspw));
   units.define ("UFLUX", "JY");
-  desc.addField("VFLUX", TpArrayFloat, IPosition(1, nspec));
+  desc.addField("VFLUX", TpArrayFloat, IPosition(1, nrspw));
   units.define ("VFLUX", "JY");
-  desc.addField("FREQOFF", TpArrayDouble, IPosition(1, nspec));
+  desc.addField("FREQOFF", TpArrayDouble, IPosition(1, nrspw));
   units.define ("FREQOFF", "HZ");
   desc.addField("BANDWIDTH", TpDouble);
   units.define ("BANDWIDTH", "HZ");
@@ -1247,9 +1248,9 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   units.define ("RAAPP", "DEGREES");
   desc.addField("DECAPP", TpDouble);
   units.define ("DECAPP", "DEGREES");
-  desc.addField("LSRVEL", TpArrayDouble, IPosition(1, nspec));
+  desc.addField("LSRVEL", TpArrayDouble, IPosition(1, nrspw));
   units.define ("LSRVEL", "M/SEC");
-  desc.addField("RESTFREQ", TpArrayDouble, IPosition(1, nspec));
+  desc.addField("RESTFREQ", TpArrayDouble, IPosition(1, nrspw));
   units.define ("RESTFREQ", "HZ");
   desc.addField("PMRA", TpDouble);
   units.define ("PMRA", "DEG/DAY");
@@ -1317,6 +1318,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       // Use info from SOURCE table if available.
       // Try to find the SOURCE_ID in the SOURCE table.
       // If multiple rows found, use the first one.
+      // Use the first spectral line.
 
       //  Optional access to SOURCE table 
       if (sourceTable) {
@@ -1326,8 +1328,18 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	  uInt rownr = rownrs(0);
 	  // Name in SOURCE table overides name in FIELD table
       	  *source = sourceColumns->name()(rownr);
-	  if(sourceColumns->sysvel().isDefined(rownr))
-	    *lsrvel = sourceColumns->sysvel()(rownr);
+	  if(sourceColumns->sysvel().isDefined(rownr)) {
+	    Vector<Double> sv (sourceColumns->sysvel()(rownr));
+	    if (sv.nelements() > 0) {
+	      *lsrvel = sv(0);
+	    }
+	  }
+	  if(sourceColumns->restFrequency().isDefined(rownr)) {
+	    Vector<Double> rf (sourceColumns->restFrequency()(rownr));
+	    if (rf.nelements() > 0) {
+	      *restfreq = rf(0);
+	    }
+	  }
       	  if (sourceColumns->properMotion().isDefined(rownr)) {
       	    Vector<Double> pm = sourceColumns->properMotion()(rownr);
       	    *pmra = pm(0);
