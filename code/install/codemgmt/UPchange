@@ -160,13 +160,13 @@ if ($upaoi) then
          if ("$x" == "") break
          echo "$x" >> $ldir/${tp}.rcs
       end
+      if (-z $ldir/${tp}.rcs) then
+         echo "No RCS message specified in ${tp}.rcs"
+	 exit (1)
+      endif
+      echo "." >> $ldir/${tp}.rcs  
       unset x
    endif
-   if (-z $ldir/${tp}.rcs) then
-      echo "No RCS message specified in ${tp}.rcs"
-      exit (1)
-   endif
-   echo "." >> $ldir/${tp}.rcs
 endif
 
 cd $ldir
@@ -183,7 +183,7 @@ unset a
 if (-e ${tp}.changed) rm -f ${tp}.changed
 if (! $leav) then
     echo "Change the file names in ${tp}.found (to ${tp}.changed)..."
-    $uppath/UPsed -f $ldir/$tp ${tp}.found ${tp}.changed
+    $uppath/UPsed $ldir/${tp}.sed ${tp}.found ${tp}.changed
 else
     cat ${tp}.found >! ${tp}.changed
 endif
@@ -213,7 +213,7 @@ if (! $upmake) then
 	endif
     endif
     if (-e $i:t) then
-        $uppath/UPsed -f $ldir/$tp $i:t $i:t
+        $uppath/UPsed $ldir/${tp}.cfnm $i:t $i:t
 	if ($upaoi) $xai $i:t < $ldir/${tp}.rcs
         echo "$i done" >> $ldir/${tp}.done
         if ($xai == rai && $upaoi) rm -f $i:t
@@ -254,7 +254,7 @@ if ($upmake) then
       if ($upaoi) $xao $i:t
       if (-e $i:t) then
           chmod 644 $i:t
-          $uppath/UPsed -f $ldir/$tp $i:t $i:t
+          $uppath/UPsed $ldir/${tp}.sed $i:t $i:t
 	  chmod 444 $i:t
 	  set ok = 0
 	  if (${i:t:e} == cc) then
