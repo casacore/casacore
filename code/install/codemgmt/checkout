@@ -1,0 +1,49 @@
+#!/usr/local/bin/perl5
+
+require "find.pl";
+
+$CO = "ao";
+
+sub fullpath {
+    open(SYS,"(cd $dir; pwd) |");
+    local @CWD = <SYS>;
+    close(SYS);
+    chop $CWD[0];
+    $CWD[0];
+}
+	
+sub shify {
+    local($str) = @_[0];
+    $str =~ s/^['"]+//;
+    $str =~ s/['"]+$//;
+    $str =~ s/\\/\\\\/g;
+    $str =~ s/\"/\\\"/g;
+    $str =~ s/\$/\\\$/g;
+    $str;
+}
+
+sub wanted {
+    
+    if ( /^RCS$/ &&  (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) &&
+	-l _ ) {
+	opendir(RCS,$_);
+	@files = readdir(RCS);
+	closedir(RCS);
+	foreach (@files) {
+	    next unless /,v$/;
+	    s/,v$//;
+	    print "#: $dir $_\n";
+	    open(SYS, "$CO $_ 2>&1 |");
+	    while (<SYS>) { print; }
+	    close(SYS);
+	    print "\n";
+	}
+    }
+}
+
+while ( ($_ = shift(@ARGV)) ) {
+    m/^-co$/i && ($CO = "co", next);
+}
+
+$| = 1;
+find(".");
