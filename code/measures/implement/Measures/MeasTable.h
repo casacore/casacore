@@ -1,5 +1,5 @@
 //# MeasTable.h: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -141,10 +141,24 @@ public:
   //# General Member Functions
   // Precession related data
   // <group>
+  // Get the precesiion-rate part of the IAU 20000 precession-nutation models
+  // (which 0=dpsi (long) and 1=deps (obliquity))
+  static Double precRate00(const uInt which, const Double tt);
+
+  // Get the frame bias components for IAU2000 model. (which=0,1,2 for
+  // dpsi(long), desp(obl), dra(ICRS RA of J20000 mean equinox))
+  static Double frameBias00(const uInt which);
+
   // Generate the precession calculation polynomials for a fixed Epoch T
-  // in the result area specified. T is given in Julian centuries since J2000.0.
+  // in the result area specified.
+  // T is given in Julian centuries since J2000.0.
   static void
   precessionCoef(Double T, Polynomial<Double> result[3]);
+  
+  // Generate the precession polynomials for IAU2000 system.
+  static void
+  precessionCoef2000(Polynomial<Double> result[3]);
+  // </group>
   
   // Generate the precession polynomials for 1950 system for a fixed Epoch T
   // in the area specified. T is given in Tropical centuries since B1850.0
@@ -159,12 +173,15 @@ public:
   // <group>
   static const Polynomial<Double> &fundArg(uInt which);
   static const Polynomial<Double> &fundArg1950(uInt which);
+  static const Polynomial<Double> &fundArg2000(uInt which);
   // </group>
-  
+
   // Generate the which' vector of the nutation series arguments
   // <group>
   static const Vector<Char> &mulArg(uInt which);
   static const Vector<Char> &mulArg1950(uInt which);
+  static const Vector<Char> &mulArg2000A(uInt which);
+  static const Vector<Char> &mulArg2000B(uInt which);
   // </group>
   
   // Generate the which' vector of the nutation series multipliers
@@ -172,6 +189,8 @@ public:
   // <group>
   static const Vector<Double> &mulSC(uInt which, Double T);
   static const Vector<Double> &mulSC1950(uInt which, Double T);
+  static const Vector<Double> &mulSC2000B(uInt which, Double T);
+  static const Vector<Double> &mulSC2000A(uInt which, Double T);
   // </group>
 
   // Get nutation angles corrections for UTC T in rad.
@@ -337,8 +356,8 @@ public:
   static Double dUTC(Double utc);
   // UT1-UTC (in s) for MJD tai TAI
   static Double dUT1(Double utc);
-  // TDT-TAI (in s) for MJD tai TAI
-  static Double dTAI(Double tai);
+  // TDT-TAI (in s) for MJD tai TAI. Note this is equal to TT2000-TAI
+  static Double dTAI(Double tai=0.0);
   // TDB-TDT (in s) for MJD ut1 UT1
   static Double dTDT(Double ut1);
   // TCB-TDB (in s) for MJD tai TAI
@@ -369,11 +388,21 @@ private:
   //# General member functions
 
   // Calculate precessionCoef
+  // <group>
   static void calcPrecesCoef(Double T, Polynomial<Double> result[3],
 			     const Double coeff[3][6]); 
+  static void calcPrecesCoef2000(Polynomial<Double> result[3],
+				 const Double coeff[3][4]); 
+  // </group>
+
   // Calculate fundArg
-  static void calcFundArg(Bool &need, Polynomial<Double> result[3],
+  // <group>
+  static void calcFundArg(Bool &need, Polynomial<Double> result[6],
 			  const Double coeff[6][4]); 
+  static void calcFundArg00(Bool &need, Polynomial<Double> result[6],
+			    const Double coeff[6][5]); 
+  // </group>
+
   // Calculate mulArg
   static void calcMulArg(Bool &need, Vector<Char> result[],
 			 const Char coeff[][5], Int row); 
