@@ -63,6 +63,7 @@
 #include <aips/Quanta/MVEpoch.h>
 #include <aips/Quanta/MVDirection.h>
 #include <aips/Quanta/MVPosition.h>
+#include <trial/Tasking/ProgressMeter.h>
 #include <aips/Utilities/Assert.h>
 
 #include <strstream.h>
@@ -101,7 +102,8 @@ template<class T>
 void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,	
                             Interpolate2D<T>::Method method,
                             const IPosition& outPixelAxesU,
-                            const ImageInterface<T>& inImage)
+                            const ImageInterface<T>& inImage,
+                            Bool showProgress)
 //
 // The whole thing is complicated by masks.  We have code
 // that take shortcuts if masks are not involved, but at
@@ -262,7 +264,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             }
             regrid2D (*outPtr, *inPtr, inDir, outDir, inCoordPixelAxes,
                       outCoordPixelAxes, pixelAxisMap2, method,
-                      machine, madeIt);
+                      machine, madeIt, showProgress);
 
 // Note that we have done two pixel axes in this pass
 
@@ -335,7 +337,7 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
             }
             regrid1D (*outPtr, *inPtr, inCoord, outCoord, inCoordPixelAxes,
                       outCoordPixelAxes, inAxisInCoordinate, outAxisInCoordinate,
-                      pixelAxisMap2, method, machine, madeIt);
+                      pixelAxisMap2, method, machine, madeIt, showProgress);
 
 // Note that we have done two pixel axes in this pass
 
@@ -498,7 +500,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap,
                                Interpolate2D<T>::Method method,
                                MDirection::Convert& machine,
-                               Bool useMachine)
+                               Bool useMachine, Bool showProgress)
 //
 // If something other than DirectionCoordinate ever needs to use 2D 
 // I will need to generalize this slightly. 
@@ -585,7 +587,22 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    T result = 0.0;
    Double minInX, minInY, maxInX, maxInY;
    Bool interpOK;
+
+// Progress meter
+
+   ProgressMeter* pProgressMeter = 0;
+   if (showProgress) {
+     Double nMin = 0.0;
+     Double nMax = Double(outLattice.shape().product());
+     ostrstream oss;
+     oss << "Axes " << outCoordPixelAxes + 1 << " : Pixels Regridded" << ends;
+     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+                                        String("Regridding"),
+                                        String(""), String(""),
+                                        True, max(1,Int(nMax/10)));
+   }
 //
+   Double iPix = 0.0;
    for (outIter.reset(); !outIter.atEnd(); outIter++) {
       const IPosition& cursorShape = outIter.cursorShape();
       const IPosition& outPos = outIter.position();
@@ -688,6 +705,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
          outIter.rwCursor().set(0.0);
          if (outIsMasked) outMaskIterPtr->rwCursor().set(False);
+         iPix += outIter.cursorShape().product();
        } else {
 
 // Now get a chunk of input data which we will access over and over
@@ -785,12 +803,17 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
             for (Int j=0; j<cursorShape(1); j++) {
                for (Int i=0; i<cursorShape(0); i++) {
+
+// Update progress meter.  Penalty for doing this for each pixel
+// appears negligible
+
+                  if (showProgress) pProgressMeter->update(iPix); iPix++;
                   if (itsShowLevel>1) {
                      outPos4 = outPos3; 
                      outPos4(0) = outPos4(0) + i;
                      outPos4(1) = outPos4(1) + j;
                   }
-
+//
                   if (failed(i,j)) {
                      outCursorIter.rwMatrixCursor()(i,j) = 0.0;
                      if (outIsMasked) {
@@ -843,6 +866,7 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
    } 
 //
    if (outIsMasked) delete outMaskIterPtr;
+   if (showProgress) delete pProgressMeter;
 }
 
 
@@ -859,7 +883,7 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
                                const Vector<Int> pixelAxisMap,
                                Interpolate2D<T>::Method method,
                                MFrequency::Convert& machine,
-                               Bool useMachine)
+                               Bool useMachine, Bool showProgress)
 
 //
 // Any output mask is overwritten
@@ -1023,6 +1047,20 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       }
    }
 
+// Progress meter
+
+   ProgressMeter* pProgressMeter = 0;
+   if (showProgress) {
+     Double nMin = 0.0;
+     Double nMax = Double(outLattice.shape().product()) / Double(outIter.cursorShape().product());
+     ostrstream oss;
+     oss << "Axis " << outPixelAxis + 1 << " : Lines Regridded" << ends;
+     pProgressMeter = new ProgressMeter(nMin, nMax, String(oss),
+                                        String("Regridding"),
+                                        String(""), String(""),
+                                        True, max(1,Int(nMax/10)));
+   }
+
 // Iterate through output image
 
    Bool goodIsTrue = True;
@@ -1119,9 +1157,11 @@ void ImageRegrid<T>::regrid1D (MaskedLattice<T>& outLattice,
       }
 //
       if (outIsMasked) (*outMaskIterPtr)++;
+      if (showProgress) pProgressMeter->update(Double(outIter.nsteps()));
    } 
 //
    if (outIsMasked) delete outMaskIterPtr;
+   if (showProgress) delete pProgressMeter;
 }
 
 
