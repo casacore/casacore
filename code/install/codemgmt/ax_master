@@ -2191,3 +2191,4 @@
 11 144 src mv nrao/implement/FITS/GBTBackendTable.h nrao/implement/FITS/OldGBTBackendTable.h
 11 144 src mv nrao/implement/FITS/GBTBackendTable.cc nrao/implement/FITS/OldGBTBackendTable.cc
 11 144 src mv nrao/implement/FITS/GBTRaDec.h nrao/implement/FITS/OldGBTRaDec.h
+11 144 src mv nrao/implement/FITS/GBTRaDec.cc nrao/implement/FITS/OldGBTRaDec.cc
