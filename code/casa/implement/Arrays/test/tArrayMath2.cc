@@ -1,5 +1,5 @@
 //# tArrayMath2.cc: This program tests the ArrayMath class
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,33 +36,33 @@
 #include <aips/iostream.h>
 
 
-typedef Array<Float> PartFunc (const Array<Float>&, const IPosition& axes);
-typedef Float FullFunc (const Array<Float>&);
+typedef Array<Double> PartFunc (const Array<Double>&, const IPosition& axes);
+typedef Double FullFunc (const Array<Double>&);
 
-Array<Float> myMeanPartialMedians (const Array<Float>& array,
-				   const IPosition& axes)
+Array<Double> myMeanPartialMedians (const Array<Double>& array,
+				    const IPosition& axes)
 {
   return partialMedians (array, axes, True, False);
 }
-Float myMeanMedian (const Array<Float>& array)
+Double myMeanMedian (const Array<Double>& array)
 {
   return median (array, False, True, False);
 }
-Array<Float> myNomeanPartialMedians (const Array<Float>& array,
-				     const IPosition& axes)
+Array<Double> myNomeanPartialMedians (const Array<Double>& array,
+				      const IPosition& axes)
 {
   return partialMedians (array, axes, False, False);
 }
-Float myNomeanMedian (const Array<Float>& array)
+Double myNomeanMedian (const Array<Double>& array)
 {
   return median (array, False, False, False);
 }
-Array<Float> myPartialFractiles (const Array<Float>& array,
-				 const IPosition& axes)
+Array<Double> myPartialFractiles (const Array<Double>& array,
+				  const IPosition& axes)
 {
   return partialFractiles (array, axes, 0.3, False);
 }
-Float myFractile (const Array<Float>& array)
+Double myFractile (const Array<Double>& array)
 {
   return fractile (array, 0.3, False, False);
 }
@@ -73,10 +73,10 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
   Bool errFlag = False;
   {
     IPosition shape(2,3,4);
-    Array<Float> arr(shape);
+    Array<Double> arr(shape);
     indgen(arr);
     for (Int j=0; j<2; j++) {
-      Vector<Float> res(shape(j));
+      Vector<Double> res(shape(j));
       IPosition st(2,0);
       IPosition end(shape-1);
       for (Int i=0; i<shape(j); i++) {
@@ -84,7 +84,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	end(j) = i;
 	res(i) = fullFunc(arr(st,end));
       }
-      Array<Float> res2 = partFunc (arr, IPosition(1,1-j));
+      Array<Double> res2 = partFunc (arr, IPosition(1,1-j));
       if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
 	cout << "for shape " << shape << ", collapse axis " << j << endl;
@@ -94,7 +94,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     }
     if (doExtra) {
       {
-	Array<Float> res2 = partFunc (arr, IPosition());
+	Array<Double> res2 = partFunc (arr, IPosition());
 	if (! allNear (arr, res2, 1.e-5)) {
 	  errFlag = True;
 	  cout << "for shape " << shape << ", no collapse axis " << endl;
@@ -103,8 +103,8 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	}
       }
       {
-	Array<Float> res2 = partFunc (arr, IPosition(2,0,1));
-	Vector<Float> res(1, fullFunc(arr));
+	Array<Double> res2 = partFunc (arr, IPosition(2,0,1));
+	Vector<Double> res(1, fullFunc(arr));
 	if (! allEQ (res, res2)) {
 	  errFlag = True;
 	  cout << "for shape " << shape << ", collapse axis 0,1" << endl;
@@ -116,10 +116,10 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
   }
   {
     IPosition shape(3,3,4,5);
-    Array<Float> arr(shape);
+    Array<Double> arr(shape);
     indgen(arr);
     for (Int j=0; j<3; j++) {
-      Vector<Float> res(shape(j));
+      Vector<Double> res(shape(j));
       IPosition st(3,0);
       IPosition end(shape-1);
       for (Int i=0; i<shape(j); i++) {
@@ -127,7 +127,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	end(j) = i;
 	res(i) = fullFunc(arr(st,end));
       }
-      Array<Float> res2 = partFunc (arr,
+      Array<Double> res2 = partFunc (arr,
 				     IPosition::otherAxes(3, IPosition(1,j)));
       if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
@@ -139,7 +139,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     for (Int j=0; j<3; j++) {
       for (Int k=j+1; k<3; k++) {
 	IPosition resshape(2,shape(j),shape(k));
-	Array<Float> res(resshape);
+	Array<Double> res(resshape);
 	IPosition st(3,0);
 	IPosition end(shape-1);
 	for (Int i0=0; i0<shape(j); i0++) {
@@ -151,7 +151,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
 	  }
 	}
-	Array<Float> res2 = partFunc (arr,
+	Array<Double> res2 = partFunc (arr,
 				   IPosition::otherAxes(3, IPosition(2,j,k)));
 	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
@@ -165,10 +165,10 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
   }
   {
     IPosition shape(4,3,4,5,6);
-    Array<Float> arr(shape);
+    Array<Double> arr(shape);
     indgen(arr);
     for (Int j=0; j<4; j++) {
-      Vector<Float> res(shape(j));
+      Vector<Double> res(shape(j));
       IPosition st(4,0);
       IPosition end(shape-1);
       for (Int i=0; i<shape(j); i++) {
@@ -176,7 +176,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	end(j) = i;
 	res(i) = fullFunc(arr(st,end));
       }
-      Array<Float> res2 = partFunc (arr,
+      Array<Double> res2 = partFunc (arr,
 				    IPosition::otherAxes(4, IPosition(1,j)));
       if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
@@ -189,7 +189,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     for (Int j=0; j<4; j++) {
       for (Int k=j+1; k<4; k++) {
 	IPosition resshape(2,shape(j),shape(k));
-	Array<Float> res(resshape);
+	Array<Double> res(resshape);
 	IPosition st(4,0);
 	IPosition end(shape-1);
 	for (Int i0=0; i0<shape(j); i0++) {
@@ -201,7 +201,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
 	  }
 	}
-	Array<Float> res2 = partFunc (arr,
+	Array<Double> res2 = partFunc (arr,
 				   IPosition::otherAxes(4, IPosition(2,j,k)));
 	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
@@ -216,7 +216,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       for (Int j1=j0+1; j1<4; j1++) {
 	for (Int j2=j1+1; j2<4; j2++) {
 	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Float> res(resshape);
+	  Array<Double> res(resshape);
 	  IPosition st(4,0);
 	  IPosition end(shape-1);
 	  for (Int i0=0; i0<shape(j0); i0++) {
@@ -232,7 +232,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	      }
 	    }
 	  }
-	  Array<Float> res2 = partFunc (arr,
+	  Array<Double> res2 = partFunc (arr,
 			       IPosition::otherAxes(4, IPosition(3,j0,j1,j2)));
 	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
@@ -248,10 +248,10 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
   }
   {
     IPosition shape(5,3,4,5,6,7);
-    Array<Float> arr(shape);
+    Array<Double> arr(shape);
     indgen(arr);
     for (Int j=0; j<5; j++) {
-      Vector<Float> res(shape(j));
+      Vector<Double> res(shape(j));
       IPosition st(5,0);
       IPosition end(shape-1);
       for (Int i=0; i<shape(j); i++) {
@@ -259,7 +259,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	end(j) = i;
 	res(i) = fullFunc(arr(st,end));
       }
-      Array<Float> res2 = partFunc (arr,
+      Array<Double> res2 = partFunc (arr,
 				     IPosition::otherAxes(5, IPosition(1,j)));
       if (! allNear (res, res2, 1.e-5)) {
 	errFlag = True;
@@ -271,7 +271,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     for (Int j=0; j<5; j++) {
       for (Int k=j+1; k<5; k++) {
 	IPosition resshape(2,shape(j),shape(k));
-	Array<Float> res(resshape);
+	Array<Double> res(resshape);
 	IPosition st(5,0);
 	IPosition end(shape-1);
 	for (Int i0=0; i0<shape(j); i0++) {
@@ -283,7 +283,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
 	  }
 	}
-	Array<Float> res2 = partFunc (arr,
+	Array<Double> res2 = partFunc (arr,
 				   IPosition::otherAxes(5, IPosition(2,j,k)));
 	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
@@ -298,7 +298,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       for (Int j1=j0+1; j1<5; j1++) {
 	for (Int j2=j1+1; j2<5; j2++) {
 	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Float> res(resshape);
+	  Array<Double> res(resshape);
 	  IPosition st(5,0);
 	  IPosition end(shape-1);
 	  for (Int i0=0; i0<shape(j0); i0++) {
@@ -314,7 +314,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 		}
 	      }
 	  }
-	  Array<Float> res2 = partFunc (arr,
+	  Array<Double> res2 = partFunc (arr,
 			      IPosition::otherAxes(5, IPosition(3,j0,j1,j2)));
 	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
@@ -332,7 +332,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	for (Int j2=j1+1; j2<5; j2++) {
 	  for (Int j3=j2+1; j3<5; j3++) {
 	    IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
-	    Array<Float> res(resshape);
+	    Array<Double> res(resshape);
 	    IPosition st(5,0);
 	    IPosition end(shape-1);
 	    for (Int i0=0; i0<shape(j0); i0++) {
@@ -352,7 +352,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 		}
 		}
 	    }
-	    Array<Float> res2 = partFunc (arr,
+	    Array<Double> res2 = partFunc (arr,
 			    IPosition::otherAxes(5, IPosition(4,j0,j1,j2,j3)));
 	    if (! allNear (res, res2, 1.e-5)) {
 	      errFlag = True;
@@ -369,10 +369,10 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
   }
   {
     IPosition shape(6,3,4,5,6,7,8);
-    Array<Float> arr(shape);
+    Array<Double> arr(shape);
     indgen(arr);
     for (Int j=0; j<6; j++) {
-      Vector<Float> res(shape(j));
+      Vector<Double> res(shape(j));
       IPosition st(6,0);
       IPosition end(shape-1);
       for (Int i=0; i<shape(j); i++) {
@@ -380,7 +380,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	end(j) = i;
 	res(i) = fullFunc(arr(st,end));
       }
-      Array<Float> res2 = partFunc (arr,
+      Array<Double> res2 = partFunc (arr,
 				     IPosition::otherAxes(6, IPosition(1,j)));
       if (! allNear (res, res2, 5.e-5)) {
 	errFlag = True;
@@ -392,7 +392,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
     for (Int j=0; j<6; j++) {
       for (Int k=j+1; k<6; k++) {
 	IPosition resshape(2,shape(j),shape(k));
-	Array<Float> res(resshape);
+	Array<Double> res(resshape);
 	IPosition st(6,0);
 	IPosition end(shape-1);
 	for (Int i0=0; i0<shape(j); i0++) {
@@ -404,7 +404,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	      res(IPosition(2,i0,i1)) = fullFunc(arr(st,end));
 	  }
 	}
-	Array<Float> res2 = partFunc (arr,
+	Array<Double> res2 = partFunc (arr,
 				   IPosition::otherAxes(6, IPosition(2,j,k)));
 	if (! allNear (res, res2, 1.e-5)) {
 	  errFlag = True;
@@ -419,7 +419,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
       for (Int j1=j0+1; j1<6; j1++) {
 	for (Int j2=j1+1; j2<6; j2++) {
 	  IPosition resshape(3,shape(j0),shape(j1),shape(j2));
-	  Array<Float> res(resshape);
+	  Array<Double> res(resshape);
 	  IPosition st(6,0);
 	  IPosition end(shape-1);
 	  for (Int i0=0; i0<shape(j0); i0++) {
@@ -435,7 +435,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	      }
 	    }
 	  }
-	  Array<Float> res2 = partFunc (arr,
+	  Array<Double> res2 = partFunc (arr,
 			       IPosition::otherAxes(6, IPosition(3,j0,j1,j2)));
 	  if (! allNear (res, res2, 1.e-5)) {
 	    errFlag = True;
@@ -453,7 +453,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	for (Int j2=j1+1; j2<6; j2++) {
 	  for (Int j3=j2+1; j3<6; j3++) {
 	    IPosition resshape(4,shape(j0),shape(j1),shape(j2),shape(j3));
-	    Array<Float> res(resshape);
+	    Array<Double> res(resshape);
 	    IPosition st(6,0);
 	    IPosition end(shape-1);
 	    for (Int i0=0; i0<shape(j0); i0++) {
@@ -473,7 +473,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 		}
 	      }
 	    }
-	    Array<Float> res2 = partFunc (arr,
+	    Array<Double> res2 = partFunc (arr,
 			   IPosition::otherAxes(6, IPosition(4,j0,j1,j2,j3)));
 	    if (! allNear (res, res2, 1.e-5)) {
 	      errFlag = True;
@@ -494,7 +494,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 	    for (Int j4=j3+1; j4<6; j4++) {
 	      IPosition resshape(5,shape(j0),shape(j1),shape(j2),shape(j3),
 				 shape(j4));
-	      Array<Float> res(resshape);
+	      Array<Double> res(resshape);
 	      IPosition st(6,0);
 	      IPosition end(shape-1);
 	      for (Int i0=0; i0<shape(j0); i0++) {
@@ -523,7 +523,7 @@ Bool doIt (PartFunc* partFunc, FullFunc* fullFunc, Bool doExtra)
 		  }
 		}
 	      }
-	      Array<Float> res2 = partFunc (arr,
+	      Array<Double> res2 = partFunc (arr,
 		        IPosition::otherAxes(6, IPosition(5,j0,j1,j2,j3,j4)));
 	      if (! allNear (res, res2, 1.e-5)) {
 		errFlag = True;
@@ -629,7 +629,6 @@ int main()
 	    res(i) = sum(arr(st,end));
 	  }
 	  timer.show("Using sum     ");
-	  uInt nd=res.ndim();
 	  Array<Double> rs = abs(res-res2)/res2;
 	  Double mn,mx;
 	  IPosition mnpos, mxpos;
@@ -652,7 +651,6 @@ int main()
 	    res(i) = median(arr(st,end), False, False);
 	  }
 	  timer.show("Using median  ");
-	  uInt nd=res.ndim();
 	  Array<Double> rs = abs(res-res2)/res2;
 	  Double mn,mx;
 	  IPosition mnpos, mxpos;
