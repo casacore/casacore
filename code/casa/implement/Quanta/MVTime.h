@@ -131,7 +131,9 @@ class Time;
 //	checking of the format. Look at the 'clean' types to bypass them.
 //	</note>
 //	The <src>MVTime::YMD</src> format implies TIME, and will
-//	precede the time with 'yyyy/mm/dd/'.<br>
+//	precede the time with 'yyyy/mm/dd/' (or use 
+//	<src>MVTime::YMD_ONLY</src> to include <src>NO_TIME</src>
+//	modifier).<br>
 //	The <src>MVTime::DMY</src> format implies TIME, and will
 //	precede the time with 'dd-Mon-yyyy/'.<br>
 //	The <src>MVTime::FITS</src> format implies TIME, and will
@@ -282,6 +284,7 @@ class MVTime {
 	TIME_NO_HM 		= TIME + NO_HM,
 	TIME_CLEAN_NO_H		= TIME + CLEAN + NO_H,
 	TIME_CLEAN_NO_HM	= TIME + CLEAN + NO_HM,
+	YMD_ONLY		= YMD + NO_TIME,
 	MOD_MASK		= CLEAN + NO_DM + DAY + NO_TIME + DIG2 + LOCAL
     };
 
