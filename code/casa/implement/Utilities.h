@@ -66,13 +66,13 @@
 // <ul>
 //  <li> Object utilities:
 //  <ul>
-//   <li> <linkto class=Compare>Compare</linkto>
+//   <li> <linkto class=ObjCompare>ObjCompare</linkto>
 //    objects with each other. A signature for comparison functions 
 //    is defined (required for comparison functions used in the
-//    <linkto class="Sort">Sort</linkto>
+//    <linkto class=Sort>Sort</linkto>
 //    class), and one such function is provided.
-//   <li> <linkto class=Copy>Copy</linkto>
-//    objects from one place to another.
+//   <li> <linkto group="Copy.h#copy">objcopy/objmove/objset</linkto>
+//    copies objects from one place to another.
 //   <li> <linkto class=Fallible>Mark</linkto>
 //    objects as valid or invalid.
 //   <li> <linkto class=Notice>Notices</linkto>
@@ -82,12 +82,14 @@
 //    <linkto class=GenSort>Fast sorting</linkto>
 //    is provided for certain types of objects.
 //   <li> <linkto group="BinarySearch.h#binarysearch">Binary Search</linkto>
-//    templated functions for sorted containers (ascending or descending order) 
-//    are available.
+//    templated functions for sorted containers (ascending or descending
+//    order) are available.
+//   <li> <linkto group="LinearSearch.h#linearsearch">Linear Search</linkto>
+//    templated functions for unsorted containers are available.
 //  </ul> 
 //  <li> Logical utilities:
 //  <ul>
-//   <li> <linkto class=Assert>Assertion</linkto>
+//   <li> <linkto class=assert_>Assertion</linkto>
 //    lets you throw an error when a condition in not fullfilled.
 //   <li> <linkto class=BitVector>Bit vectors</linkto>
 //    are an efficient method to keep True/False information on a set of
@@ -103,11 +105,11 @@
 //  </ul> 
 //  <li> Datatype utilities
 //  <ul>
-//   <li> <linkto class=DataType>DataType</linkto>
+//   <li> <linkto group="DataType.h#DataType">DataType</linkto>
 //    enumerates the possible data types in the table system.
 //   <li> <linkto class=ValType>ValType</linkto>
 //    describes the data types and their undefined values.
-//   <li> <linkto class=Register>Register</linkto>
+//   <li> <linkto group="Register.h#register">Register</linkto>
 //    provides runtime typing information.
 //  </ul> 
 //  <li> Other utilities
@@ -124,7 +126,7 @@
 //    One example is <linkto class=uIntSequence>uIntSequence</linkto>,
 //    provided for general use. Another is
 //    <linkto class=RegSequence>RegSequence</linkto>, exclusively used
-//    by the <linkto class=Register>Register</linkto> function.
+//    by the <linkto group="Register.h#register">Register</linkto> function.
 //   <li> <linkto class=String>Strings</linkto>.
 //    for the C++ preprocessor
 //  </ul>
