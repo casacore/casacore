@@ -2226,3 +2226,4 @@
 11 154 src rm trial/implement/Widgets/test/tquantitywidget.g
 11 154 src rm trial/implement/Widgets/test/tmeasurewidget.g
 11 154 src mv trial/implement/Widgets/recbrowserwidget.g trial/implement/Widgets/recordbrowserwidget.g
+11 155 src rm trial/apps/misc/aipsrcedit_meta.g
