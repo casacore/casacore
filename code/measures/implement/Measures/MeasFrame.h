@@ -275,6 +275,17 @@ class MeasFrame {
 private:
   
   //# Enumerations
+  // Enumeration for the different farme entries possible. This can be used
+  // to find out if a certain conversion needs the frame. It will be
+  // used in a registration/notify environment to enable bypassing of
+  // some new conversion settings.
+  enum FrameTypes {
+    EPOCH 	= 1,
+    POSITION 	= 2,
+    DIRECTION 	= 4,
+    VELOCITY 	= 8,
+    COMET 	= 16 };
+
   // Types of known get data routines. The actual work is in MCFrame,
   // using pointers to functions
   enum GetTypes {
