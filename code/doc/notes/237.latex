@@ -307,6 +307,47 @@ testing are encouraged, in order:
 \item{Completeness testing.}
 \end{itemize}
 
+For a specific testing
+\\    Check list:
+\begin{itemize}
+\item{1.  Is test case(s) provided?}
+\item{2.  Does the provided test case cover all functionalities of code.}
+\item{3.  If no test case is provided, develop a test case.}
+\item{4.  Make sure the test case has correct inputs, which include data
+    files, database records, configuration files, etc., exclude
+    keyboard and mouse input, which are specified in the detailed
+    test procedures.}
+\item{5.  Execute the test and create test reports and log files.}
+\item{6.  Bug reports.}
+\item{7.  Backup the test case.}
+\item{8.  Give an assessment.}
+\item{9.  List Features not be tested, give the reason, for example, no 
+    suitable input document.}
+\item{10. Constraints.}
+\item{11. Performance observation.}
+\end{itemize}
+
+Test case development
+\\    A good test case has the following attributes.
+\begin{itemize}
+\item{1. It has a high probability of finding a bug.}
+\item{2. It is repeatable.}
+\item{3. It has clearly defined expected results and pass/fail criteria.}
+\item{4. It should not be redundant.}
+\end{itemize}
+
+Test case Template
+\begin{itemize}
+\item{Test name}
+\item{Documant location}
+\item{Test configuration}
+\item{Test interdependencies}
+\item{Test objectives}
+\item{Test procedure }
+\item{Test result}
+\item{Notes}
+\end{itemize}
+
 \subsection{Documentation}
 
 Code documentation policies are established and publicized by the QAG.
