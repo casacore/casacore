@@ -1,0 +1,13 @@
+
+change id: 0134
+ author:   Ger van Diepen
+ date:     2003/03/13
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: New
+ summary:  Added memory based storage manager
+MemoryStMan has been added as a new storage manager. It keeps the data of the columns bound to it in memory. It means that such data are not persistent.
+See the documentation of the Tables module (Tables.html) for more information.
