@@ -92,6 +92,8 @@ public:
     LT,
     GT,
     CONST,
+    PARAM,
+    ARG,
     LBRACE,
     RBRACE,
     LPAREN,
@@ -103,6 +105,7 @@ public:
     SIN,
     COS,
     ATAN,
+    ATAN2,
     ASIN,
     ACOS,
     EXP,
@@ -143,7 +146,25 @@ public:
     SAVENV,
     // Final expression codes
     FINAL };
+  // Special priority levels
+  enum specPriority {
+    // Lowest priority at which right-to-left rather than left-to-right
+    // execution
+    RTLPRI = 44,
+    // Priority for specials - start
+    SPCPRI = 60,
+    // Priority for finals
+    FINPRI = 00 };
 
+  // The compilation state descriptor
+  struct ExprCompState {
+    // Old index of low RPS boundary
+    uInt rpslow;
+    // # of values available on value stack
+    uInt nval;
+    // Argument count
+    uInt argcnt;
+  };
   // The operator description: code; priority; # of arguments; # of arguments
   // used up (or produced for functions)
   struct ExprOperator {
@@ -157,10 +178,14 @@ public:
     uInt priority;
     // # of arguments necessary (or minimum)
     uInt narg;
+    // max # of arguments (for function)
+    uInt nmaxarg;
     // # of results produced/used
     Int nresult;
     // special action
     specAction special;
+    // state
+    ExprCompState state;
   };
 
   //# Constructors
