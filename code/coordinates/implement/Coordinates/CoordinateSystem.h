@@ -374,10 +374,14 @@ public:
     // put into pixelOut in the appropriate pixelAxis
     // location.  Values in pixelIn are copied to
     // pixelOut
+    // Removed axes are handled (for example, a removed pixel
+    // axis with remaining corresponding world axis will
+    // correctly be converted to world using the replacement
+    // value).
     // Returns True if the conversion succeeds, otherwise it returns False and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
-    Bool toMix(Vector<Double>& worldOut,
+    virtual Bool toMix(Vector<Double>& worldOut,
                Vector<Double>& pixelOut,
                const Vector<Double>& worldIn,
                const Vector<Double>& pixelIn,
@@ -506,13 +510,16 @@ private:
     //    world_tmp_p[i] a temporary vector length coord[i]->nWorldAxes()
     //    replacement_values_p[i][j] value to use for this axis if removed
     PtrBlock<Block<Int> *>     world_maps_p;
-    PtrBlock<Vector<Double> *> world_tmps_p;
+    mutable PtrBlock<Vector<Double> *> world_tmps_p;
     PtrBlock<Vector<Double> *> world_replacement_values_p;
 
     // Same meanings as for the world*'s above.
     PtrBlock<Block<Int> *>     pixel_maps_p;
-    PtrBlock<Vector<Double> *> pixel_tmps_p;
+    mutable PtrBlock<Vector<Double> *> pixel_tmps_p;
     PtrBlock<Vector<Double> *> pixel_replacement_values_p;
+
+    // A little temporary for toWorld from IPosition
+    mutable Vector<Double> pixel_tmp_p;
 
     // Miscellaneous information about the observation associated with this
     // Coordinate System.
@@ -527,8 +534,6 @@ private:
 
     void copy(const CoordinateSystem &other);
     void clear();
-//    Int inVector(Bool checkSame, uInt idx, uInt target, 
-//                 const Vector<uInt>& vector) const;
 };
 
 #endif
