@@ -57,12 +57,18 @@ main()
   try{
     // make an array
     Array<Float> array1(IPosition(1,256));
-    for(int i=0;i<256;i++) array1(IPosition(1,i)) = i;
+    Int i;
+    for (i=0; i<256; i++) {
+        array1(IPosition(1,i)) = i;
+    }
       
     // make another array
     Array<Float> array2(IPosition(2,256,128));
-    for(i=0;i<256;i++) 
-      for(int j=0;j<128;j++) array2(IPosition(2,i,j)) = i+j;
+    for (i=0; i<256; i++) {
+        for (Int j=0; j<128; j++) {
+	    array2(IPosition(2,i,j)) = i+j;
+	}
+    }
       
     // default ctor, useless (though legal) until assigned to
     ArrayLattice<Float> al0;
@@ -266,7 +272,10 @@ main()
     AlwaysAssert(al6ROIter.atStart(), AipsError);
 
     // Function which returns a value of "True" if the cursor is at the end.
-    for (int I=0;I<240;I++) al6ROIter++;
+    Int I;
+    for (I=0; I<240; I++) {
+        al6ROIter++;
+    }
     AlwaysAssert(al6ROIter.atEnd(), AipsError);
   
     // Function which returns the number of steps taken since construction
@@ -407,7 +416,9 @@ main()
     AlwaysAssert(al6Iter.atStart(), AipsError);
 
     // Function which returns a value of "True" if the cursor is at the end.
-    for (I=0;I<56;I++) al6Iter++;
+    for (I=0; I<56; I++) {
+        al6Iter++;
+    }
     AlwaysAssert(al6Iter.atEnd(), AipsError);
   
     // Function which returns the number of steps taken since construction
@@ -437,13 +448,13 @@ main()
 // -------------------- test Iterator very hard ---------------------
     IPosition orientation;
     Int j, k, l;
-    for(i=0;i<4;i++)
-      for(j=0;j<4; j++)
-	for(k=0; k<4; k++)
-	  for(l=0; l<4; l++)
-	    if (l!=k && l!=j && l!=i)
-	      if(k!=j && k!=i)
-		if(j!=i) {
+    for (i=0;i<4;i++) {
+      for (j=0;j<4; j++) {
+	for (k=0; k<4; k++) {
+	  for (l=0; l<4; l++) {
+	    if (l!=k && l!=j && l!=i) {
+	      if (k!=j && k!=i) {
+		if (j!=i) {
 		  orientation = IPosition(4,i,j,k,l);
 
 		  // ------------------- integral shaped vectors ----------
@@ -841,6 +852,12 @@ main()
 		  AlwaysAssert(allEQ(ni3ztiter.matrixCursor().ac(), test.ac()),
 			       AipsError);
 		}
+	      }
+	    }
+	  }
+	}
+      }
+    }
   } catch (AipsError x) {
     cerr << x.getMesg () << endl;
     cout << "FAIL" << endl; 

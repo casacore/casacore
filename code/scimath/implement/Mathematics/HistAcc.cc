@@ -1,5 +1,5 @@
 //# HistAcc.cc: Statistics Accumulator
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,7 +110,8 @@ void HistAcc<T>::copy (const HistAcc<T>& that)
     uInt n = that.itsBinContents.nelements();
     itsBinContents.resize(n); 
     itsBinHighLimit.resize(n);
-    for (uInt i=0; i<n; i++) {
+    uInt i;
+    for (i=0; i<n; i++) {
 	itsBinContents[i] = that.itsBinContents[i];
 	itsBinHighLimit[i] = that.itsBinHighLimit[i];
     }
