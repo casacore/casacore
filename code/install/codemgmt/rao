@@ -104,12 +104,18 @@
            ;;
  
         *)
-           if [ -w "$i" ]
-           then
-              printf "rao: Warning, $i is writable, continue (y/n) [n]: "
-              read ANSWER
-              affirm -o -s "$ANSWER" || exit 1
-           fi
+	   if [ -f "$i" ]
+	   then
+	      if [ -w "$i" ]
+	      then
+		 printf "rao: Warning, $i is writable, continue (y/n) [n]: "
+		 read ANSWER
+		 affirm -o -s "$ANSWER" || exit 1
+	      else
+		 echo "rao: Removing unwritable copy of $i"
+		 rm -f "$i"
+	      fi
+	   fi
 
            FILES="$FILES $i"
            ;;
