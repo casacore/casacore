@@ -262,7 +262,9 @@ protected:
   void setFeedInfo();
   void setDataDescInfo();
   void setFieldInfo();
-  Bool isSubSet(const class Vector<uInt> &, const class Vector<uInt> &);
+
+// Determine if the numbers in r1 are a sorted subset of those in r2
+  Bool isSubSet(const class Vector<uInt>& r1, const class Vector<uInt>& r2);
 
   NewMSIter* This;
   Block<NewMeasurementSet> bms_p;

@@ -72,7 +72,6 @@ NewMSIter::NewMSIter(const Block<NewMeasurementSet>& mss,
   construct(sortColumns);
 }
 
-// Determine if the numbers in r1 are a sorted subset of those in r2
 Bool NewMSIter::isSubSet (const Vector<uInt>& r1, const Vector<uInt>& r2) {
   Int n1 = r1.nelements();
   Int n2 = r2.nelements();
