@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_RECORD_FIELD_WRITER)
-#define AIPS_RECORD_FIELD_WRITER
+#if !defined(AIPS_RECORD_FIELD_WRITER_H)
+#define AIPS_RECORD_FIELD_WRITER_H
 
 #include <aips/aips.h>
 #include <aips/Containers/RecordField.h>
