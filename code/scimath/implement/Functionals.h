@@ -1,5 +1,5 @@
 //# Functionals.h: A module that represents various function-like classes.
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,22 +34,26 @@
 #include <aips/Functionals/Parameterized.h>
 #include <aips/Functionals/Function1D.h>
 #include <aips/Functionals/FunctionND.h>
+#include <aips/Functionals/SampledFunctional.h>
+#include <aips/Functionals/FuncWithDerivs.h>
 
 //# 1-D Functions
 #include <aips/Functionals/Gaussian1D.h>
 #include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/Interpolate1D.h>
+#include <aips/Functionals/ArraySampledFunctional.h>
+#include <aips/Functionals/ScalarSampledFunctional.h>
 
-//#1D or ND Functions
+//# ND Functions
 #include <aips/Functionals/SumFunction.h>
+#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/GaussianND.h>
 
 // <module>
 //
-// <summary>
-// A module that represents various function-like classes.
-// </summary>
+// <summary>A module that represents various function-like classes.</summary>
 
-// <reviewed reviewer="tcornwel" date="1996/02/13" demos="">
-// </reviewed>
+// <reviewed reviewer="tcornwel" date="1996/02/13" demos=""></reviewed>
 
 // <etymology>
 // The term ``Functional'' was chosen to roughly follow the usage in Barton and
@@ -58,43 +62,81 @@
 // ``function''. They use <src>operator()</src>, so they look much like single
 // argument C++ ``functions''.
 // </etymology>
-
 //
 // <synopsis>
 // Functional classes map an input object of some ``Domain'' type into an
 // output object of some ``Range'' type. The Domain and Range types will
 // normally be numeric types, and will often be the same type. The mapping
-// occurs via <src>operator()</src>.
+// occurs via <src>operator()</src> function.
 //
 // The fundamental Functional classes are as follows:
 
 // <ul>
-//    <li> <linkto class="Functional">Functional<Domain,Range></linkto>: This
-//    base class represents functions that map a <src>Domain</src> object into
-//    a <src>Range</src> object via <src>operator()</src>.
-//    <li> <linkto class="FunctionND">FunctionND<Domain,Range></linkto>: This
-//    base class is used for N-dimensional functions, that is it maps a <linkto
-//    class="Vector">Vector<Domain></linkto> into a <src>Range</src> object via
-//    operator(). FunctionND objects also have adjustable parameters.
-//    <src>FunctionND<Domain,Range></src> inherits from
-//    <src>Functional<Vector<Domain>, Range></src>.
-//    <li> <linkto class="Function1D">Function1D<Domain,Range></linkto>: This
-//    class is much like <src>FunctionND</src>, however it is strictly for
-//    one dimensional functions.
-//    <li> <linkto class="Parameterized">Parameterized</linkto>: This base class
-//         provides the interface for adjustable parameters for
-//         <src>Function1D</src> and <src>FunctionND</src>.
+// <li>
+//  <linkto class="Functional">Functional</linkto>:
+//  This base class represents functions that map a <src>Domain</src> object 
+//  into a <src>Range</src> object via <src>operator()</src> function.
+// <li>
+//   <linkto class="FunctionND">FunctionND</linkto>: 
+//   This base class is used for N-dimensional functions, that is it maps a 
+//   <linkto class="Vector">Vector<Domain></linkto> into a <src>Range</src> 
+//   object via the operator() function.
+// <li> 
+//   <linkto class="Function1D">Function1D</linkto>: 
+//   This class is much like <src>FunctionND</src>, however it is strictly for
+//   one-dimensional functions.
+// <li> 
+//   <linkto class="SampledFunctional">SampledFunctional</linkto>: 
+//   This is the base class for discrete, regularly sampled one-dimensional 
+//   functions. It inherits from <src>Functional<uInt, Range>
+// <li> 
+//   <linkto class="FunctionWithDerivs">FunctionWithDerivs</linkto>:
+//   This is the base class for functions which can calculate their
+//   derivatives
+// <li> 
+//   <linkto class="Parameterized">Parameterized</linkto>:
+//   This base class provides the interface for adjustable parameters for
+//    <src>Function1D</src> and <src>FunctionND</src>.
 // </ul>
 //
-// Presently, the following Function1D classes are implemented:
+// Presently, the following one-dimensional classes are implemented:
 // <ul>
-//      <li> <linkto class="Polynomial">Polynomial<T></linkto>: A 1-Dimensional
-//      polynomial. The polynomial coefficients are its adjustable parameters.
-//      <li> <linkto class="Gaussian1D">Gaussian1D<T></linkto>: A 1-dimensional
-//      Gaussian. The height, center, and width are the parameters of the
-//      Gaussian.
-//      <li> <linkto class="SumFunction1D">SumFunction1D<T></linkto>: A 
-//      Function which is made up of the sum of other Functions.
+// <li>
+//   <linkto class="Polynomial">Polynomial<T></linkto>: 
+//   A 1-Dimensional polynomial. The polynomial coefficients are its
+//   adjustable parameters.
+// <li> 
+//   <linkto class="Gaussian1D">Gaussian1D<T></linkto>:
+//   A 1-dimensional Gaussian. The height, center, and width are the
+//   parameters of the Gaussian.
+// <li> 
+//   <linkto class="Inetrpolate1D">Interpolate1D<T></linkto>:
+//   A 1-dimensional function that will interpolate using a variety of
+//   algorithms between a supplied set of data points.
+// <li> 
+//   <linkto class="ScalarSampledFunctional">ScalarSampledFunctional</linkto>:
+//   This is for discrete, regularly sampled one dimensional functions that
+//   return a scalar value.
+// <li> 
+//   <linkto class="ArraySampledFunctional">ArraySampledFunctional</linkto>:
+//   This is for discrete, regularly sampled one dimensional functions that
+//   return an <linkto class="Array">Array</linkto> of values.
+// </ul>
+//
+// Presently, the following multi-dimensional classes are implemented:
+// <ul>
+// <li>
+//   <linkto class="SumFunction">SumFunction<T></linkto>: 
+//   A function which is made up of the sum of other Functions.
+// <li> 
+//   <linkto class="GaussianND">GaussianND<T></linkto>:
+//   A N-dimensional Gaussian. A statistical description of the parameters
+//   in terms on variance and co-variance is used.
+// <li> 
+//   <linkto class="Gaussian2D">Gaussian2D<T></linkto>:
+//   A 2-dimensional Gaussian. The parameters are the height (or alternatively
+//   the integrated flux), the major axis width, minor axis width, position
+//   angle and position (x,y) of the centre.
 // </ul>
 // </synopsis>
 
