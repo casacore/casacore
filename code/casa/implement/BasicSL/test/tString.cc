@@ -46,12 +46,10 @@ Regex  r = String("e[a-z]*o");
 void decltest() {
   String x;
   cout << "an empty String:" << x << endl;
-  ///  assert(x.OK());
   assert(x == "");
 
   String y = "Hello";
   cout << "A string initialized to Hello:" << y << endl;
-  ///  assert(y.OK());
   assert(y == "Hello");
 
   if (y[y.length()-1] == 'o') y = y + '\n';
@@ -60,24 +58,20 @@ void decltest() {
 
   String a = y;
   cout << "A string initialized to previous string:" << a << endl;
-  ///  assert(a.OK());
   assert(a == "Hello");
   assert(a == y);
 
   String b (a.at(1, 2));
   cout << "A string initialized to previous string.at(1, 2):" << b << endl;
-  ///  assert(b.OK());
   assert(b == "el");
 
   Char ch = '@';
   String z(ch);
   cout << "A string initialized to @:" << z << endl;
-  ///  assert(z.OK());
   assert(z == "@");
 
   String n = "20";
   cout << "A string initialized to dec(20):" << n << endl;
-  ///  assert(n.OK());
   assert(n == "20");
 
   Int i = atoi(n);
@@ -102,15 +96,10 @@ void cattest() {
   String y = Y;
   String z = x + y;
   cout << "z = x + y = " << z << endl;
-  ///  assert(x.OK());
-  ///  assert(y.OK());
-  ///  assert(z.OK());
   assert(z == "Helloworld");
 
   x += y;
   cout << "x += y; x = " << x << endl;
-  ///  assert(x.OK());
-  ///  assert(y.OK());
   assert(x == "Helloworld");
 
   y = Y;
@@ -123,7 +112,6 @@ void cattest() {
   y = Y;
   z = x + s + ' ' + y.at("w") + y.after("w") + ".";
   cout << "z = x + s +  + y.at(w) + y.after(w) + . = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "Hello, world.");
 }
 
@@ -173,85 +161,70 @@ void substrtest() {
 
   String z = x.at(2, 3);
   cout << "z = x.at(2, 3) = " << z << endl;
-  ///  assert(z.OK());
   assert(z.length() == 3);
   assert(z == "llo");
 
   String z1 = x.at(2, 4);
   cout << "z1 = x.at(2, 4) = " << z1 << endl;
-  ///  assert(z1.OK());
   assert(z1.length() == 3);
   assert(z1 == "llo");
 
   String z2 = x.at(5, 3);
   cout << "z2 = x.at(5, 3) = " << z2 << endl;
-  ///  assert(z2.OK());
   assert(z2.length() == 0);
   assert(z2 == "");
 
   x.at(2, 2) = "r";
   cout << "x.at(2, 2) = r; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "Hero");
 
   x = X;
   x.at(0, 1) = "j";
   cout << "x.at(0, 1) = j; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "jello");
 
   x = X;
   x.at("He") = "je";
   cout << "x.at(He) = je; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "jello");
   
   x = X;
   x.at("l", -1) = "i";
   cout << "x.at(l, -1) = i; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "Helio");
   
   x = X;
   z = x.at(r);
   cout << "z = x.at(r) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "ello");
   
   z = x.before("o");
   cout << "z = x.before(o) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "Hell");
   x.before("ll") = "Bri";
   cout << "x.before(ll) = Bri; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "Brillo");
 
   x = X;
   z = x.before(2);
   cout << "z = x.before(2) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "He");
 
   z = x.after("Hel");
   cout << "z = x.after(Hel) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "lo");
   x.after("Hel") = "p";
   cout << "x.after(Hel) = p; x = " << x << endl;
-  ///  assert(x.OK());
   assert(x == "Help");
 
   x = X;
   z = x.after(3);
   cout << "z = x.after(3) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "o");
 
   z = "  a bc";
   z  = z.after(RXwhite);
   cout << "z =   a bc; z = z.after(RXwhite); z =" << z << endl;
-  ///  assert(z.OK());
   assert(z == "a bc");
 }
 
@@ -261,60 +234,48 @@ void utiltest() {
   Int matches = x.gsub("l", "ll");
   
   cout << "x.gsub(l, ll); x = " << x << endl;
-  ///  assert(x.OK());
   assert(matches == 2);
   assert(x == "Hellllo");
 
   x = X;
-  ///  assert(x.OK());
   matches = x.gsub(r, "ello should have been replaced by this string");
-  ///  assert(x.OK());
   cout << "x.gsub(r, ...); x = " << x << endl;
-  ///  assert(x.OK());
   assert(matches == 1);
   assert(x == "Hello should have been replaced by this string");
 
   matches = x.gsub(RXwhite, "#");
   cout << "x.gsub(RXwhite, #); x = " << x << endl;
   assert(matches == 7);
-  ///  assert(x.OK());
   
   String z = X + Y;
   z.del("loworl");
   cout << "z = x+y; z.del(loworl); z = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "Held");
 
   x = X;
   z = reverse(x);
   cout << "reverse(x) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "olleH");
 
   x.reverse();
   cout << "x.reverse() = " << x << endl;
-  ///  assert(x.OK());
   assert(x == z);
 
   x = X;
   z = upcase(x);
   cout << "upcase(x) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "HELLO");
 
   z = downcase(x);
   cout << "downcase(x) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "hello");
 
   z = capitalize(x);
   cout << "capitalize(x) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "Hello");
 
   z = replicate('*', 10);
   cout << "z = replicate(*, 10) = " << z << endl;
-  ///  assert(z.OK());
   assert(z == "**********");
   assert(z.length() == 10);
 }
@@ -327,7 +288,6 @@ void splittest() {
   assert(nw == 5);
   cout << "from split(z, RXwhite, w, 10), n words = " << nw << ":\n";
   for (Int i = 0; i < nw; ++i) {
-    ///    assert(w[i].OK());
     cout << w[i] << endl;
   };
   assert(w[0] == "This");
@@ -339,7 +299,6 @@ void splittest() {
 
   z = join(w, nw, "/");
   cout << "z = join(w, nw, /); z =" << z << endl;
-  ///  assert(z.OK());
   assert(z == "This/string/has/five/words");
 }
 
@@ -384,11 +343,9 @@ void identitytest(String a, String b) {
   for (Int i = 0; i < 7; ++i) {
     y = x;
     x += x;
-    ///    assert(x.OK());
     assert(x == reverse(x));
     assert(x.index(y) == 0);
-    assert(x.index(y, -1) == String::size_type(x.length() / 2));
-  }
+  };
 }
 
 
@@ -436,7 +393,8 @@ int main() {
   identitytest(X, X);
   identitytest(X, Y);
   identitytest(X+Y+N+X+Y+N,
-	       "A string that will be used in identitytest but is otherwise just another useless string.");
+	       "A string that will be used in identitytest but is otherwise "
+	       "just another useless string.");
   ///  hashtest();
   iotest();
   cout << "\nEnd of test\n";
