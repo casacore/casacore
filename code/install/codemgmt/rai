@@ -3,7 +3,7 @@
 # rai: Remotely check in AIPS++ sources
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996,1999
+#   Copyright (C) 1996,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -158,7 +158,7 @@
 # Invoke 'ai' on the master host.
   COMMAND="cd $PGMRDIR && ai -I $ARGS && rm -f $FILES"
   $ARSH /aips++/weekly/.rshexec sh -c \'\""$COMMAND"\"\'
-  $OPER $FILES
+  [ "$FILES" ] && $OPER $FILES
 
 # Update the local installation?
   [ "$AU" ] && rau $FILES $DIRS
