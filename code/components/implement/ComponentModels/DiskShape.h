@@ -120,7 +120,7 @@ template <class T> class Vector;
 // </ul>
 // Shown below is the code to perform the first two steps in this process. See
 // the <linkto class=Convolver>Convolver</linkto> class and the
-// <linkto module=Lattice>Lattice</linkto> module for the functions necessary
+// <linkto module=Lattices>Lattice</linkto> module for the functions necessary
 // to perform the last two items. This example is also available in the
 // <src>dGaussianCompRep.cc</src> file.
 // <srcblock>
