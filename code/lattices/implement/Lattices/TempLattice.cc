@@ -44,47 +44,25 @@ TempLattice<T>::TempLattice()
 }
 
 template<class T>
-TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB) :
-  itsTablePtr (0), itsIsClosed (False)
+TempLattice<T>::TempLattice (const TiledShape& shape, Int maxMemoryInMB)
+: itsTablePtr (0),
+  itsIsClosed (False)
 {
-  init(shape, Double(maxMemoryInMB));
+  init (shape, Double(maxMemoryInMB));
 }
 
 template<class T>
-TempLattice<T>::TempLattice (const TiledShape& shape, Double maxMemoryInMB) :
-  itsTablePtr (0), itsIsClosed (False)
+TempLattice<T>::TempLattice (const TiledShape& shape, Double maxMemoryInMB)
+: itsTablePtr (0),
+  itsIsClosed (False)
 {
   init(shape, maxMemoryInMB);
 }
 
 template<class T>
-void TempLattice<T>::init(const TiledShape& shape, Double maxMemoryInMB) 
-{
-  Double memoryReq = Double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
-  Double memoryAvail;
-
-// maxMemoryInMb = 0.0 forces disk
-
-  if (maxMemoryInMB < 0.0) {
-    memoryAvail = Double(AppInfo::availableMemoryInMB()) / 2.0;
-  } else {
-    memoryAvail = maxMemoryInMB;
-  }
-  if (memoryReq > memoryAvail) {
-    // Create a table with a unique name in a work directory.
-    // We can use exclusive locking, since nobody else should use the table.
-    itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
-    SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
-    itsTablePtr = new Table (newtab, TableLock::PermanentLockingWait);
-    itsLatticePtr = new PagedArray<T> (shape, *itsTablePtr);
-  } else {
-    itsLatticePtr = new ArrayLattice<T> (shape.shape());
-  }
-}
-
-template<class T>
 TempLattice<T>::TempLattice (const TempLattice<T>& other)
-: itsTablePtr (0)
+: itsTablePtr (0),
+  itsIsClosed (False)
 {
   operator= (other);
 }
@@ -119,6 +97,29 @@ template<class T>
 Lattice<T>* TempLattice<T>::clone() const
 {
   return new TempLattice<T> (*this);
+}
+
+template<class T>
+void TempLattice<T>::init (const TiledShape& shape, Double maxMemoryInMB) 
+{
+  Double memoryReq = Double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
+  Double memoryAvail;
+  // maxMemoryInMb = 0.0 forces disk.
+  if (maxMemoryInMB < 0.0) {
+    memoryAvail = Double(AppInfo::availableMemoryInMB()) / 2.0;
+  } else {
+    memoryAvail = maxMemoryInMB;
+  }
+  if (memoryReq > memoryAvail) {
+    // Create a table with a unique name in a work directory.
+    // We can use exclusive locking, since nobody else should use the table.
+    itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
+    SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
+    itsTablePtr = new Table (newtab, TableLock::PermanentLockingWait);
+    itsLatticePtr = new PagedArray<T> (shape, *itsTablePtr);
+  } else {
+    itsLatticePtr = new ArrayLattice<T> (shape.shape());
+  }
 }
 
 template<class T>
