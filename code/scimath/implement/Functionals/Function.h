@@ -194,12 +194,14 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  Function() : param_p(), arg_p(0) {};
-  explicit Function(const uInt n) : param_p(n), arg_p(0) {};
-  explicit Function(const Vector<T> &in) : param_p(in), arg_p(0) {};
-  Function(const FunctionParam<T> &other) : param_p(other), arg_p(0) {};
+  Function() : param_p(), arg_p(0), parset_p(False) {};
+  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False) {};
+  explicit Function(const Vector<T> &in) : param_p(in), arg_p(0),
+    parset_p(False) {};
+  Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
+    parset_p(False) {};
   Function(const Function<T> &other) : param_p(other.param_p),
-    arg_p(other.arg_p) {};
+    arg_p(other.arg_p), parset_p(other.parset_p) {};
   // </group>
 
   // Destructor
@@ -213,8 +215,8 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  virtual T &operator[](const uInt n) { return param_p[n]; };
-  virtual const T &operator[](const uInt n) const { return param_p[n]; };
+  T &operator[](const uInt n) { parset_p = True; return param_p[n]; };
+  const T &operator[](const uInt n) const { return param_p[n]; };
   // </group>
   // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
   // The length of <src>x</src> must be greater than or equal to
@@ -234,13 +236,13 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  virtual Bool &mask(const uInt n) { return param_p.mask(n); };
-  virtual const Bool &mask(const uInt n) const { return param_p.mask(n); };
+  Bool &mask(const uInt n) { parset_p = True; return param_p.mask(n); };
+  const Bool &mask(const uInt n) const { return param_p.mask(n); };
   // </group>
   // Return the parameter interface
   // <group>
-  virtual const FunctionParam<T> &parameters() const { return param_p; };
-  virtual FunctionParam<T> &parameters() { return param_p; };
+  const FunctionParam<T> &parameters() const { return param_p; };
+  FunctionParam<T> &parameters() { parset_p = True; return param_p; };
   // </group>
   // Evaluate the function object
   virtual T eval(FunctionArg x) const = 0;
@@ -256,6 +258,8 @@ public Functional<typename FunctionTraits<T>::ArgType, T>,
   FunctionParam<T> param_p;
   // Aid for non-contiguous argument storage
   mutable Vector<ArgType> arg_p;
+  // Indicate parameter written
+  mutable Bool parset_p;
 
 };
 
