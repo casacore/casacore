@@ -50,10 +50,10 @@ void doIt (const IPosition& latticeShape,
     AlwaysAssertExit (inters.hasMask());
     AlwaysAssertExit (! inters.isWritable());
     cout << inters.hasMask() << ' ' << endl;
-    cout << inters.box().start() << inters.box().end()
-	 << inters.box().length() << inters.latticeShape() << endl;
+    cout << inters.boundingBox().start() << inters.boundingBox().end()
+	 << inters.boundingBox().length() << inters.latticeShape() << endl;
     Array<Bool> mask;
-    inters.getSlice (mask, IPosition(ndim,0), inters.box().length(),
+    inters.getSlice (mask, IPosition(ndim,0), inters.boundingBox().length(),
 		     IPosition(ndim,1));
     cout << mask << endl;
     {
@@ -61,10 +61,10 @@ void doIt (const IPosition& latticeShape,
       AlwaysAssertExit (inters.hasMask());
       AlwaysAssertExit (! inters.isWritable());
       cout << inters.hasMask() << ' ' << endl;
-      cout << inters.box().start() << inters.box().end()
-	   << inters.box().length() << inters.latticeShape() << endl;
+      cout << inters.boundingBox().start() << inters.boundingBox().end()
+	   << inters.boundingBox().length() << inters.latticeShape() << endl;
       Array<Bool> mask;
-      inters.getSlice (mask, IPosition(ndim,0), inters.box().length(),
+      inters.getSlice (mask, IPosition(ndim,0), inters.boundingBox().length(),
 		       IPosition(ndim,1));
       cout << mask << endl;
     }
@@ -72,12 +72,17 @@ void doIt (const IPosition& latticeShape,
 	// Test cloning.
         LCRegion* interscop = inters.cloneRegion();
 	AlwaysAssertExit (inters.hasMask() == interscop->hasMask());
-	AlwaysAssertExit (inters.box().start() == interscop->box().start());
-	AlwaysAssertExit (inters.box().end() == interscop->box().end());
-	AlwaysAssertExit (inters.box().stride() == interscop->box().stride());
-	AlwaysAssertExit (inters.box().length() == interscop->box().length());
+	AlwaysAssertExit (inters.boundingBox().start() ==
+			  interscop->boundingBox().start());
+	AlwaysAssertExit (inters.boundingBox().end() ==
+			  interscop->boundingBox().end());
+	AlwaysAssertExit (inters.boundingBox().stride() ==
+			  interscop->boundingBox().stride());
+	AlwaysAssertExit (inters.boundingBox().length() ==
+			  interscop->boundingBox().length());
 	Array<Bool> arr;
-	interscop->getSlice (arr, IPosition(ndim,0), inters.box().length(),
+	interscop->getSlice (arr, IPosition(ndim,0),
+			     inters.boundingBox().length(),
 			     IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete interscop;
@@ -86,12 +91,17 @@ void doIt (const IPosition& latticeShape,
 	// Test persistency.
 	LCRegion* interscop = (LCRegion::fromRecord (inters.toRecord(""), ""));
 	AlwaysAssertExit (inters.hasMask() == interscop->hasMask());
-	AlwaysAssertExit (inters.box().start() == interscop->box().start());
-	AlwaysAssertExit (inters.box().end() == interscop->box().end());
-	AlwaysAssertExit (inters.box().stride() == interscop->box().stride());
-	AlwaysAssertExit (inters.box().length() == interscop->box().length());
+	AlwaysAssertExit (inters.boundingBox().start() ==
+			  interscop->boundingBox().start());
+	AlwaysAssertExit (inters.boundingBox().end() ==
+			  interscop->boundingBox().end());
+	AlwaysAssertExit (inters.boundingBox().stride() ==
+			  interscop->boundingBox().stride());
+	AlwaysAssertExit (inters.boundingBox().length() ==
+			  interscop->boundingBox().length());
 	Array<Bool> arr;
-	interscop->getSlice (arr, IPosition(ndim,0), inters.box().length(),
+	interscop->getSlice (arr, IPosition(ndim,0),
+			     inters.boundingBox().length(),
 			     IPosition(ndim,1));
 	AlwaysAssertExit (allEQ (arr, mask));
 	delete interscop;

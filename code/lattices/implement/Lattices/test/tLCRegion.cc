@@ -1,5 +1,5 @@
 //# tLCRegion.cc: Test program for derived LCRegion classes.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,8 +41,8 @@ void doIt (const IPosition& latticeShape,
 {
     LCEllipsoid cir (center, radii, latticeShape);
     cout << cir.hasMask() << ' ' << cir.maskArray() << endl;
-    cout << cir.box().start() << cir.box().end()
-	 << cir.box().length() << cir.latticeShape() << endl;
+    cout << cir.boundingBox().start() << cir.boundingBox().end()
+	 << cir.boundingBox().length() << cir.latticeShape() << endl;
     cout << cir.center().ac() << cir.radii().ac() << endl;
 }
 
@@ -53,31 +53,43 @@ void doIt (const IPosition& latticeShape,
 	   Float radius)
 {
     LCBox box (start, end, latticeShape);
+    box.setComment ("com1");
     cout << box.hasMask() << ' ' << box.maskArray() << endl;
-    cout << box.box().start() << box.box().end()
-	 << box.box().length() << box.latticeShape() << endl;
+    cout << box.boundingBox().start() << box.boundingBox().end()
+	 << box.boundingBox().length() << box.latticeShape()
+	 << box.comment() << endl;
     LCEllipsoid cir (center, radius, latticeShape);
     cout << cir.hasMask() << ' ' << cir.maskArray() << endl;
-    cout << cir.box().start() << cir.box().end()
-	 << cir.box().length() << cir.latticeShape() << endl;
+    cout << cir.boundingBox().start() << cir.boundingBox().end()
+	 << cir.boundingBox().length() << cir.latticeShape() << endl;
     cout << cir.center().ac() << cir.radii().ac() << endl;
     {
 	// Test cloning.
 	LCRegionFixed* boxcop = (LCRegionFixed*)(box.cloneRegion());
 	AlwaysAssertExit (box.hasMask() == boxcop->hasMask());
 	AlwaysAssertExit (allEQ (box.maskArray(), boxcop->maskArray()));
-	AlwaysAssertExit (box.box().start() == boxcop->box().start());
-	AlwaysAssertExit (box.box().end() == boxcop->box().end());
-	AlwaysAssertExit (box.box().stride() == boxcop->box().stride());
-	AlwaysAssertExit (box.box().length() == boxcop->box().length());
+	AlwaysAssertExit (box.boundingBox().start() ==
+			  boxcop->boundingBox().start());
+	AlwaysAssertExit (box.boundingBox().end() ==
+			  boxcop->boundingBox().end());
+	AlwaysAssertExit (box.boundingBox().stride() ==
+			  boxcop->boundingBox().stride());
+	AlwaysAssertExit (box.boundingBox().length() ==
+			  boxcop->boundingBox().length());
+	AlwaysAssertExit (box.comment() == boxcop->comment());
 	delete boxcop;
 	LCRegionFixed* circop = (LCRegionFixed*)(cir.cloneRegion());
 	AlwaysAssertExit (cir.hasMask() == circop->hasMask());
 	AlwaysAssertExit (allEQ (cir.maskArray(), circop->maskArray()));
-	AlwaysAssertExit (cir.box().start() == circop->box().start());
-	AlwaysAssertExit (cir.box().end() == circop->box().end());
-	AlwaysAssertExit (cir.box().stride() == circop->box().stride());
-	AlwaysAssertExit (cir.box().length() == circop->box().length());
+	AlwaysAssertExit (cir.boundingBox().start() ==
+			  circop->boundingBox().start());
+	AlwaysAssertExit (cir.boundingBox().end() ==
+			  circop->boundingBox().end());
+	AlwaysAssertExit (cir.boundingBox().stride() ==
+			  circop->boundingBox().stride());
+	AlwaysAssertExit (cir.boundingBox().length() ==
+			  circop->boundingBox().length());
+	AlwaysAssertExit (cir.comment() == circop->comment());
 	AlwaysAssertExit (allEQ (cir.center().ac(),
 				 ((LCEllipsoid*)circop)->center().ac()));
 	AlwaysAssertExit (allEQ (cir.radii().ac(),
@@ -90,19 +102,29 @@ void doIt (const IPosition& latticeShape,
 	                    (LCRegion::fromRecord (box.toRecord(""), ""));
 	AlwaysAssertExit (box.hasMask() == boxcop->hasMask());
 	AlwaysAssertExit (allEQ (box.maskArray(), boxcop->maskArray()));
-	AlwaysAssertExit (box.box().start() == boxcop->box().start());
-	AlwaysAssertExit (box.box().end() == boxcop->box().end());
-	AlwaysAssertExit (box.box().stride() == boxcop->box().stride());
-	AlwaysAssertExit (box.box().length() == boxcop->box().length());
+	AlwaysAssertExit (box.boundingBox().start() ==
+			  boxcop->boundingBox().start());
+	AlwaysAssertExit (box.boundingBox().end() ==
+			  boxcop->boundingBox().end());
+	AlwaysAssertExit (box.boundingBox().stride() ==
+			  boxcop->boundingBox().stride());
+	AlwaysAssertExit (box.boundingBox().length() ==
+			  boxcop->boundingBox().length());
+	AlwaysAssertExit (box.comment() == boxcop->comment());
 	delete boxcop;
 	LCRegionFixed* circop = (LCRegionFixed*)
 	                    (LCRegion::fromRecord (cir.toRecord(""), ""));
 	AlwaysAssertExit (cir.hasMask() == circop->hasMask());
 	AlwaysAssertExit (allEQ (cir.maskArray(), circop->maskArray()));
-	AlwaysAssertExit (cir.box().start() == circop->box().start());
-	AlwaysAssertExit (cir.box().end() == circop->box().end());
-	AlwaysAssertExit (cir.box().stride() == circop->box().stride());
-	AlwaysAssertExit (cir.box().length() == circop->box().length());
+	AlwaysAssertExit (cir.boundingBox().start() ==
+			  circop->boundingBox().start());
+	AlwaysAssertExit (cir.boundingBox().end() ==
+			  circop->boundingBox().end());
+	AlwaysAssertExit (cir.boundingBox().stride() ==
+			  circop->boundingBox().stride());
+	AlwaysAssertExit (cir.boundingBox().length() ==
+			  circop->boundingBox().length());
+	AlwaysAssertExit (cir.comment() == circop->comment());
 	AlwaysAssertExit (allEQ (cir.center().ac(),
 				 ((LCEllipsoid*)circop)->center().ac()));
 	AlwaysAssertExit (allEQ (cir.radii().ac(),

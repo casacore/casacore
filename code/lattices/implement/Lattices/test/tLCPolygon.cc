@@ -40,8 +40,8 @@ void doIt (const IPosition& latticeShape,
 {
     LCPolygon polygon (x, y, latticeShape);
     cout << polygon.hasMask() << ' ' << polygon.maskArray() << endl;
-    cout << polygon.box().start() << polygon.box().end()
-	 << polygon.box().length() << polygon.latticeShape() << endl;
+    cout << polygon.boundingBox().start() << polygon.boundingBox().end()
+	 << polygon.boundingBox().length() << polygon.latticeShape() << endl;
     cout << polygon.x().ac() << polygon.y().ac() << endl;
 }
 
