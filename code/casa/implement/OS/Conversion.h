@@ -1,5 +1,5 @@
 //# Conversion.h: A class with general conversion definitions
-//# Copyright (C) 1996,1999,2001,2002
+//# Copyright (C) 1996,1999,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -139,6 +139,7 @@ public:
     static ByteFunction* getmemcpy();
 
     // A placeholder for the ObjectCenter or DEC-alpha memcpy or 64bit SGI
+    // Also added this for HPUX11 (2b provided in the makedefs)
     // (because they do not use an unsigned int for nbytes).
     static void* mymemcpy (void* to, const void* from, unsigned int nbytes);
 };
@@ -146,7 +147,7 @@ public:
 
 inline Conversion::ByteFunction* Conversion::getmemcpy()
 {
-#if defined(__CLCC__)  ||  defined(AIPS_64B)
+#if defined(__CLCC__)  ||  defined(AIPS_64B) || defined(HPUX11)
     return mymemcpy;
 #else
     return memcpy;
