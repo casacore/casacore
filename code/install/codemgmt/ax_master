@@ -2690,3 +2690,4 @@
 11 411 src mv trial/implement/mathematics.g trial/implement/Mathematics/mathematics.g
 11 411 src mv trial/implement/mathematics.help trial/implement/Mathematics/mathematics.help
 11 411 src mv trial/implement/componentmodels.help trial/implement/Mathematics/componentmodels.help
+11 411 src mv trial/implement/componentmodels.g trial/implement/Mathematics/componentmodels.g
