@@ -289,7 +289,7 @@
 //  <linkto class=LCExtension>extension</linkto>
 //  from one or more regions.
 //  <br>Apart from these region classes class
-//  <linkto class=LCSLicer>LCSlicer</linkto> can be used to define
+//  <linkto class=LCSlicer>LCSlicer</linkto> can be used to define
 //  a box with optional strides. It also offers the opportunity to
 //  define the box in fractions or to define it relative to the
 //  center of the lattice or relative to a reference pixel.
