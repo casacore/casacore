@@ -116,7 +116,7 @@ int main() {
       parms.resize(1);
       try {
  	B1934.setParameters(parms);
-  	throw(AipsError("PointCompRep incorrectly accepted a non-zero "
+  	throw(AipsError("PointComponent incorrectly accepted a non-zero "
   			"Parameter Vector"));
       }
       catch (AipsError x) {
@@ -129,7 +129,7 @@ int main() {
       end_try;
       try {
 	B1934.parameters(parms);
-	throw(AipsError("PointCompRep incorrectly used a non-zero "
+	throw(AipsError("PointComponent incorrectly used a non-zero "
  			"Parameter Vector"));
       }
       catch (AipsError x) {
@@ -181,26 +181,22 @@ int main() {
     }
     {
       uInt nx=6, ny=nx;
-      uInt nFreq = 2;
-      PagedImage<Float> image(IPosition(3,nx,ny,nFreq), 
- 			      defaultCoords3D(),
+      PagedImage<Float> image(IPosition(2,nx,ny), 
+ 			      defaultCoords2D(),
  			      "tPointComponent_tmp.image");
       image.set(0.0f);
-      PointCompRep defComp;
+      PointComponent defComp;
       MVDirection ra0dec0(Quantity(2, "'"), Quantity(1, "'"));
       MDirection coord00(ra0dec0, MDirection::J2000);
       defComp.setPosition(coord00);
       defComp.project(image);
-      AlwaysAssert(near(image(IPosition(3, 2, 1, 0)), 1.0f), AipsError);
-      image(IPosition(3, 2, 1, 0)) = 0.0f;
-      AlwaysAssert(near(image(IPosition(3, 2, 1, 1)), 1.0f), AipsError);
-      image(IPosition(3, 2, 1, 1)) = 0.0f;
+      AlwaysAssert(near(image(IPosition(2, 2, 1)), 1.0f), AipsError);
+      image(IPosition(2, 2, 1)) = 0.0f;
       
-      for (uInt f = 0; f < nFreq; f++)
-	for (uInt i = 0; i < nx; i++)
-	  for (uInt j = 0; j < ny; j++)
-	    AlwaysAssert(near(image(IPosition(3, i, j, f)), 0.0f), 
-			 AipsError);
+      for (uInt i = 0; i < nx; i++)
+	for (uInt j = 0; j < ny; j++)
+	  AlwaysAssert(near(image(IPosition(2, i, j)), 0.0f), 
+		       AipsError);
       image.table().rename("junk.image", Table::Scratch);
       cout << "Passed the projection to an image test" << endl;
     }
