@@ -1,5 +1,5 @@
 //# LSQFit2.cc: Basic class for least squares fitting: templated methods
-//# Copyright (C) 1999,2000,2002,2004
+//# Copyright (C) 1999,2000,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -355,7 +355,7 @@ void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
 		      Bool doNorm, Bool doKnown) {
   if (doNorm) {
     for (uInt i=0; i<nIndex; ++i) {
-      if (cEq[cEqIndex[i]] != 0) {
+      if (cEq[i] != 0) {
 	Double *i2 = norm_p->row(cEqIndex[i]);	//row pointer
 	Double eq(cEq[i]);
 	eq *= weight;
