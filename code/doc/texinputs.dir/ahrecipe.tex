@@ -9,9 +9,12 @@
 % to go into a database for searching
 \newenvironment{ahrecipe}[1]{{\Large\begin{flushleft}{\bf Recipe: #1}\end{flushleft}}}
 
-%What is the type of this recipe (General, Synthesis, Single Dish)?
+%What is the category of this recipe (General, Synthesis, Single Dish)?
 \newcommand{\artype}[1]
-   {{\begin{flushleft}{\Large Type: } #1\end{flushleft}}}
+   {{\begin{flushleft}{\Large Category: } #1\end{flushleft}}}
+
+\newcommand{\arcategory}[1]
+   {{\begin{flushleft}{\Large Category: } #1\end{flushleft}}}
 
 %What are the goals of this recipe?
 \newcommand{\argoals}[1]
