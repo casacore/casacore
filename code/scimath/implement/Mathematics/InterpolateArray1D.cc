@@ -1,5 +1,5 @@
 //# Interpolate1DArray.cc:  implements Interpolation in one dimension
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -264,11 +264,6 @@ void InterpolateArray1D<Domain,Range>::interpolatePtr(PtrBlock<Range*>& yout,
     }
   }
 }  
-
-#ifdef __GNUG__
-typedef PtrBlock<Bool*> gcc_ptrblock_bug1;
-typedef PtrBlock<const Bool*> gcc_ptrblock_bug2;
-#endif
 
 template <class Domain, class Range>
 void InterpolateArray1D<Domain,Range>::interpolatePtr

@@ -1,5 +1,5 @@
 //# HistAcc.cc: Statistics Accumulator
-//# Copyright (C) 1996,1998
+//# Copyright (C) 1996,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,13 +33,6 @@
 // #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <iomanip.h>
-
-// GNU Typedef problem
-#if defined(__GNUG__)
-   typedef Fallible<uInt> gpp_Fallible_uInt;
-   typedef Block<uInt> gpp_Block_uInt;
-#endif
-  
 
 // Constructor: Fully automatic bin definition
 
@@ -419,16 +412,9 @@ Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
 }
 
 // Result: get the Histogram itself in two Blocks (simple vectors)
-
-#if defined(__GNUG__)
-   template<class T> 
-   gpp_Fallible_uInt HistAcc<T>::getHistogram (gpp_Block_uInt& binContents, 
-  					       Block<T>& binValues) 
-#else
    template<class T> 
    Fallible<uInt> HistAcc<T>::getHistogram (Block<uInt>& binContents, 
     					    Block<T>& binValues) 
-#endif
 {    
     if (itsAutoDefineMode) {
 	autoDefineBins();
@@ -441,18 +427,9 @@ Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
 	    binContents[i-1] = itsBinContents[i];
 	    binValues[i-1] = getBinValue(i);
 	}
-#if defined(__GNUG__)
-	return gpp_Fallible_uInt(n);
-#else
         return Fallible<uInt>(n);
-#endif
-
     } else {
-#if defined(__GNUG__)
-	return gpp_Fallible_uInt();            // error
-#else
 	return Fallible<uInt>();               // error
-#endif
     }
 }
 

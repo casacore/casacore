@@ -1,5 +1,5 @@
 //# StatAcc.cc: Statistics Accumulator
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,12 +32,6 @@
 #include <aips/Exceptions/Error.h>
 #include <iostream.h>
 #include <iomanip.h>
-
-// GNU Typedef problem
-#if defined(__GNUG__)
-   typedef Fallible<Double> gpp_Fallible_Double;
-#endif
-
 
 // Constructors:
 
@@ -171,17 +165,6 @@ uInt StatAcc<T>::getCount() const               // get number of samples
 }
 
 
-
-#if defined(__GNUG__)
-template<class T>
-gpp_Fallible_Double StatAcc<T>::getMax() const      // get minimum value  
-{     
-    if (itsWtot == 0) {
-	return gpp_Fallible_Double();      
-    }
-    return gpp_Fallible_Double(itsMax);
-}
-#else
 template<class T>
 Fallible<Double> StatAcc<T>::getMax() const         // get minimum value  
 {     
@@ -190,7 +173,6 @@ Fallible<Double> StatAcc<T>::getMax() const         // get minimum value
     }
     return Fallible<Double>(itsMax);
 }
-#endif
 
 template<class T> 
 Fallible<Double> StatAcc<T>::getMin() const       // get minimum value 
