@@ -237,11 +237,12 @@ MIRLIBLIB  := -lmir
 # This sad state of affairs may arise, for example, when running multiple
 # versions of the Sun compiler.
 #
-ifeq "$(XLIBLIST_override)" ""
+
+###
+### Initially XLIBSEL is set to XLIBLIST, then
+### modified for shared library build.
+###
 XLIBSEL:=XLIBLIST
-else
-XLIBSEL:=XLIBLIST_override
-endif
 
 ###
 ### Required libraries for linking of applications when
@@ -276,7 +277,9 @@ XLIB_do_shared := YES
 endif
 
 ifneq "$(XLB_do_shared)" ""
-ifeq "$(XLIBLIST_override)" ""
+ifneq "$(XLIBLIST_override)" ""
+XLIBSEL:=XLIBLIST_override
+else
 ifneq "$(XLIBLIST_shared_$(PACKAGE))" ""
 XLIBSEL := XLIBLIST_shared_$(PACKAGE)
 endif
