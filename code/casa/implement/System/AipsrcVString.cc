@@ -31,6 +31,9 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 
+// The following global function defined for gcc 1.0.3b
+AipsrcVector<String> &AipsrcVectorStringInit();
+
 // This specialisation is necessary to make sure a list of Strings is read
 // appropiately, and no Units are handled as in the standard Vector case.
 
@@ -71,8 +74,10 @@ template <> Bool AipsrcVector<String>::find(Vector<String> &value,
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
 template <> AipsrcVector<String> &AipsrcVector<String>::init() {
-  static AipsrcVector<String> myp;
-  return myp;
+  // The following necessary for 1.0.3b gnu compiler; which cannot compile next
+  // line.
+  //  static AipsrcVector<String> myp;
+  return AipsrcVectorStringInit();
 }
 
 template <> uInt AipsrcVector<String>::registerRC(const String &keyword,
@@ -106,4 +111,9 @@ template <> void AipsrcVector<String>::save(uInt keyword) {
   Int n = ((gcl.tlst)[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << ((gcl.tlst)[keyword-1])(i);
   Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
+AipsrcVector<String> &AipsrcVectorStringInit() {
+  static AipsrcVector<String> myp;
+  return myp;
 }

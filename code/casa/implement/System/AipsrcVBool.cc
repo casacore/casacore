@@ -31,6 +31,9 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/Vector.h>
 
+// The following global function defined for gcc 1.0.3b
+AipsrcVector<Bool> &AipsrcVectorBoolInit();
+
 // This specialisation is necessary to be able to analyse all values that
 // are supposed to be True (strings starting with one of 'tTyY123456789')
 
@@ -72,8 +75,10 @@ template <> Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
 template <> AipsrcVector<Bool> &AipsrcVector<Bool>::init() {
-  static AipsrcVector<Bool> myp;
-  return myp;
+  // The following necessary for 1.0.3b gnu compiler; which cannot compile next
+  // line.
+  //  static AipsrcVector<Bool> myp;
+  return AipsrcVectorBoolInit();
 }
 
 
@@ -113,4 +118,9 @@ template <> void AipsrcVector<Bool>::save(uInt keyword) {
     };
   };
   Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
+AipsrcVector<Bool> &AipsrcVectorBoolInit() {
+  static AipsrcVector<Bool> myp;
+  return myp;
 }

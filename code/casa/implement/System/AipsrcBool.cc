@@ -30,6 +30,9 @@
 #include <aips/Tasking/AipsrcValue.h>
 #include <aips/Utilities/Assert.h>
 
+// The following global function defined for gcc 1.0.3b
+AipsrcValue<Bool> &AipsrcValueBoolInit();
+
 // This specialisation is necessary to be able to analyse all values that
 // are supposed to be True (strings starting with one of 'tTyY123456789')
 
@@ -59,8 +62,10 @@ template <> Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword,
 // support static templated data.
 // egcs 1.1.b requires it to be in front of its use.
 template <> AipsrcValue<Bool> &AipsrcValue<Bool>::init() {
-  static AipsrcValue<Bool> myp;
-  return myp;
+  // The following necessary for 1.0.3b gnu compiler; which cannot compile next
+  // line.
+  //  static AipsrcValue<Bool> myp;
+  return AipsrcValueBoolInit();
 }
 
 
@@ -95,4 +100,9 @@ template <> void AipsrcValue<Bool>::save(uInt keyword) {
     oss << "false";
   };
   Aipsrc::save((gcl.ntlst)[keyword-1], String(oss));
+}
+
+AipsrcValue<Bool> &AipsrcValueBoolInit() {
+  static AipsrcValue<Bool> myp;
+  return myp;
 }
