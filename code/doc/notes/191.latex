@@ -6,8 +6,9 @@
 \parskip=5truept
 \begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
-
+\newcommand{\defline}[1]{\cline{1-5} 
+\multicolumn{5}{|l|}{#1} \\ 
+\cline{1-5}}
 \newcommand{\definetable}[2]
 {
         \clearpage
