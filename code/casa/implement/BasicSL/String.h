@@ -311,15 +311,21 @@ class String : public string {
   // <src>pos >= size()</src> for non-const version. 
   // <note role=warning> The const_reference version needs the at() version
   // for the gcc compiler: no const [] exists. </note>
+  // <note role=warning> The difference_type cersions are for the benefit of
+  // the sgi 32bit compiler, and should be removed at some stage </note> ///
   // <group>
   const_reference operator[](size_type pos) const {
     return string::at(pos); }
   reference operator[](size_type pos) {
     return string::operator[](pos); }
+  const_reference operator[](difference_type pos) const {
+    return string::at(pos); }
+  reference operator[](difference_type pos) {
+    return string::operator[](static_cast<size_type>(pos)); }
   // *** aips++ addition
   // <group>
   const_reference elem(size_type pos) const {
-    return string::at(pos); }
+    return string::at(static_cast<size_type>(pos)); }
   Char firstchar() const { return at(static_cast<size_type>(0)); }
   Char lastchar() const { return at(length()-1); }
   // </group>
