@@ -2169,7 +2169,17 @@ copy.  The command
 would check out everything in the directory (that is, assuming that \file{RCS}
 is a symlink into the slave directory, all files currently in the slave
 directory will be checked out of the master).
- 
+
+\subsection*{Bugs}
+
+\begin{itemize}
+\item
+   If an unwritable (i.e. read-only) copy of the file being checked out
+   exists in the target directory then \exe{rao} will fail due to the
+   underlying \unixexe{tar} command's inability to overwrite the file;
+   the file must be removed locally before any checkout is attempted.
+\end{itemize}
+
 \subsection*{See also}
  
 The manual page for \unixexe{co}(1), the \rcs\ checkout command.\\
@@ -2177,6 +2187,7 @@ The GNU manual page for \unixexe{gzip}(1).\\
 The unix manual page for \unixexe{ftp}(1).\\
 The unix manual page for \unixexe{ping}(1).\\
 The unix manual page for \unixexe{rsh}(1).\\
+The unix manual page for \unixexe{tar}(1).\\
 \exeref{ai}, \aipspp\ code checkin utility.\\
 \exeref{ao}, \aipspp\ code checkout utility.\\
 \exeref{au}, \aipspp\ code update utility.\\
