@@ -398,6 +398,18 @@ int main(int argc)
 	TableMeasDesc<MEpoch> tmdOffset(scaOffset);
 	TableMeasOffsetDesc tmOsDesc(tmdOffset);
 
+	// test exception thrown on requesting the offset when it is variable
+	if (doExcep) {
+	    try {
+		// get getOffset on a variable offset column
+		tmOsDesc.getOffset();
+	    } catch (AipsError x) {
+		cout << "Attempt to reference undefined Measure offset ";
+		cout << " exception on the TableMeasOffsetDesc object.\n";
+		cout << x.getMesg() << endl;
+	    } end_try;
+	}
+
 	// measure reference column and associated offset
 	TableMeasRefDesc tmARef_tmp(td, "Time4StrRef", tmOsDesc);
 	TableMeasRefDesc tmARef(td, "Time4StrRef");
@@ -718,6 +730,13 @@ int main(int argc)
 		 << endl;
 	    cout << "out: " << outArr(i) <<  " " << outArr(i).getRef() 
 		 << endl;
+	}
+
+	// see if the reference is variable
+	if (testCopy.isRefVariable()) {
+	    cout << "Reference for ArrayMeasCol is variable\n";
+	} else {
+	    cout << "Reference for ArrayMeasCol is not variable\n";
 	}
 
 	// getRef for the column
