@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# ComponentType.cc:  this defines ComponentType.cc
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -37,8 +37,10 @@ String ComponentType::name(Type componentEnum) {
 }
 
 ComponentType::Type ComponentType::type(const String & componentName) {
+  String canonicalCase(componentName);
+  canonicalCase.capitalize();
   for (uInt i = 0; i < NUMBER_TYPES; i++)
-    if (componentName.matches(name((Type) i)))
+    if (canonicalCase.matches(name((Type) i)))
       return (Type) i;
   return UNKNOWN;
 }
