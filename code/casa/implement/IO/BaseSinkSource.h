@@ -100,6 +100,9 @@ public:
     // Is the SinkSource seekable?
     Bool isSeekable() const;
 
+    // Is the BaseSinkSource unusable? 
+    Bool isNull() const;
+
 protected:
     BaseSinkSource();
 

@@ -82,3 +82,8 @@ Bool BaseSinkSource::isSeekable() const
 {
     return itsTypeIO->isSeekable();
 }
+
+Bool BaseSinkSource::isNull() const
+{
+    return itsTypeIO.null();
+}
