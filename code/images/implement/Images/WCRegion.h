@@ -36,6 +36,7 @@ class LCRegion;
 class CoordinateSystem;
 class TableRecord;
 class IPosition;
+class String;
 
 
 // <summary>
@@ -97,27 +98,19 @@ public:
 
     // Convert the (derived) object to a record.
     // The record can be used to make the object persistent.
-    virtual TableRecord toRecord() const = 0;
+    // The <src>tableName</src> argument can be used by derived
+    // classes (e.g. LCPagedMask) to put very large objects.
+    virtual TableRecord toRecord(const String& tableName) const = 0;
 
     // Convert correct object from a record.
-    static WCRegion* fromRecord (const TableRecord&);
+    static WCRegion* fromRecord (const TableRecord& rec,
+                                 const String& tableName);
 
 protected:
     // Assignment (copy semantics) makes only sense for a derived class.
     WCRegion& operator= (const WCRegion& other);
 };
 
-
-inline WCRegion::WCRegion()
-{}
-
-inline WCRegion::WCRegion (const WCRegion&)
-{}
-
-inline WCRegion& WCRegion::operator= (const WCRegion&)
-{
-    return *this;
-}
 
 
 #endif
