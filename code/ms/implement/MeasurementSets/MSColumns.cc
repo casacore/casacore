@@ -28,8 +28,6 @@
 #include <aips/MeasurementSets/NewMSColumns.h>
 #include <aips/MeasurementSets/NewMeasurementSet.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/Measures/MDirection.h>
-#include <aips/Measures/MEpoch.h>
 #include <aips/Utilities/String.h>
 
 RONewMSColumns::RONewMSColumns(const NewMeasurementSet& ms):
@@ -80,7 +78,7 @@ NewMSColumns::NewMSColumns(NewMeasurementSet& ms):
 
 NewMSColumns::~NewMSColumns() {}
 
-void NewMSColumns::setEpochRef(Int ref)
+void NewMSColumns::setEpochRef(MEpoch::Types ref)
 {
   // Adjust the relevant columns in the main table
   NewMSMainColumns::setEpochRef(ref);
@@ -121,7 +119,7 @@ void NewMSColumns::setEpochRef(Int ref)
   }
 }
 
-void NewMSColumns::setDirectionRef(Int ref)
+void NewMSColumns::setDirectionRef(MDirection::Types ref)
 {
   field_p.delayDir().rwKeywordSet().rwSubRecord("MEASINFO").
     rwSubRecord("Type").define("refer",MDirection::showType(ref));
@@ -144,3 +142,6 @@ void NewMSColumns::setDirectionRef(Int ref)
   source_p.direction().rwKeywordSet().rwSubRecord("MEASINFO").
     rwSubRecord("Type").define("refer",MDirection::showType(ref));
 }
+// Local Variables: 
+// compile-command: "gmake NewMSColumns"
+// End: 

@@ -29,6 +29,8 @@
 #define AIPS_NEWMSCOLUMNS_H
 
 #include <aips/aips.h>
+#include <aips/Measures/MDirection.h>
+#include <aips/Measures/MEpoch.h>
 #include <aips/MeasurementSets/NewMSAntennaColumns.h>
 #include <aips/MeasurementSets/NewMSDataDescColumns.h>
 #include <aips/MeasurementSets/NewMSDopplerColumns.h>
@@ -232,12 +234,11 @@ public:
   // set the EPOCH reference type in all EPOCH columns in the NewMS as e.g.,
   // MEpoch::UTC. Note that only a single EPOCH reference is allowed in the
   // NewMS.
-  void setEpochRef(Int ref);
+  void setEpochRef(MEpoch::Types ref);
 
   // set the DIRECTION reference type for FIELD, POINTING and SOURCE tables
-  // (except for antenna frame directions). The supplied ref must really be a a
-  // member of the MDirection::Types enumerator.
-  void setDirectionRef(Int ref);
+  // (except for antenna frame directions). 
+  void setDirectionRef(MDirection::Types ref);
 
 private:
 
