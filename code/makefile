@@ -54,6 +54,12 @@ else
    INCLINKS := $(patsubst $(AIPSCODE)/%/implement,include/%, \
                     $(wildcard $(AIPSCODE)/*/implement))
 endif
+#
+# This be a kludge so we can get access to the appsglish/apps *.h files
+# for the protopipe stuff that's using DOs
+#
+INCLINKS += include/appsglish
+
 
 
 # Subdirectories in which to invoke "allsys", in order.
@@ -94,9 +100,17 @@ $(SYMDIR) :
 	 mkdir $@
 	 chmod ug=rwx,g+s,o=rx $@
 
+#
+# this bit of skuldugery is so we can get appsglish stuff into
+# the include tree, it is a kludge but appears to work
+#
 $(INCLINKS) :
 	-@ rm -f $@
-	   ln -s ../$(@F)/implement $@
+	if [ -d ../$(@F)/implement ] ; then \
+	   ln -s ../$(@F)/implement $@ ; \
+         else \
+	   ln -s ../$(@F)/apps $@ ; \
+         fi
 
 docsys : $(DOCSYS)
 
