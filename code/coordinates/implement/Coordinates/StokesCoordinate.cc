@@ -373,7 +373,7 @@ Bool StokesCoordinate::near(const Coordinate& other,
 Bool StokesCoordinate::doNearPixel (const Coordinate& other,
                                     const Vector<Bool>&  thisAxes,
                                     const Vector<Bool>& otherAxes,
-                                    Double tol=1.0e-6) const
+                                    Double tol) const
 {
    if (other.type() != Coordinate::STOKES) {
       set_error("Other Coordinate type is not Stokes");
