@@ -101,6 +101,9 @@ public:
     // Get the file name of the file attached.
     virtual String fileName() const;
 
+    void flush()
+      { fflush (getFilePtr()); }
+
 private:
     OpenOption  itsOption;
     RegularFile itsRegularFile;
