@@ -1,5 +1,5 @@
 //# ComponentList.cc:  this defines the ComponentList implementation
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,7 +124,7 @@ ComponentList::ComponentList(const String & fileName, const Bool readOnly)
   SkyComponent currentComp;
   for (uInt i = 0; i < nComp; i++) {
     typeCol.get(i, componentName);
-    currentComp = SkyComponent(ComponentType::type(componentName));
+    currentComp = SkyComponent(ComponentType::shape(componentName));
     fluxCol.get(i, flux); qFlux.setValue(flux); currentComp.setFlux(qFlux);
     dirCol.get(i, dir); qdir.setValue(dir); compDir.set(qdir);
     currentComp.setDirection(compDir);
@@ -511,7 +511,7 @@ void ComponentList::writeTable() {
   Vector<Double> compParms;
   String compLabel;
   for (uInt i = 0; i < nelements(); i++) {
-    typeCol.put(i, ComponentType::name(component(i).type()));
+    typeCol.put(i, ComponentType::name(component(i).shapeType()));
     component(i).flux(compFlux);fluxCol.put(i, compFlux.getValue(fluxUnits));
     component(i).direction(compDir);
     if (compDir.getRef().getType() != refNum)
@@ -526,5 +526,5 @@ void ComponentList::writeTable() {
   }
 }
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 ComponentList; cd test; gmake OPTLIB=1 tComponentList"
+// compile-command: "gmake OPTLIB=1 ComponentList"
 // End: 
