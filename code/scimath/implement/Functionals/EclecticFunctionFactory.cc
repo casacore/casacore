@@ -77,4 +77,3 @@ void EclecticFunctionFactory<T>::addFactory(const String& type,
 		  OrderedPair<FunctionFactory<T>*, Bool>(factory, own));
 }
 
-const String InvalidGlishSerializationError::preamble("Invalid function description in Glish record: ");
