@@ -263,7 +263,8 @@ main()
 				     MRadialVelocity::BARY)()
 					 .getValue() << endl;
 	MPosition obs(Quantity(0,"m"),
-		      Quantity(-289375.79,'"'), Quantity(50,"deg"));
+		      Quantity(-289375.79, Unit('"')),
+		      Quantity(50,"deg"));
 	frame.set(obs);
 	rvGeo.set(MVRadialVelocity(0.0));
 	cout << "and 0 (GEO) to TOPO: " <<
@@ -364,7 +365,8 @@ main()
 
     {
 	MPosition obs(Quantity(0,"m"),
-		      Quantity(-289375.79,'"'), Quantity(50,"deg"));
+		      Quantity(-289375.79, Unit('"')),
+		      Quantity(50,"deg"));
 	MeasFrame frame(obs);
 	MEpoch::Ref tasref(MEpoch::LAST, frame);
 	MEpoch tm3(MVEpoch(50272.40590277778), MEpoch::UT1);
