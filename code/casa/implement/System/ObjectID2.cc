@@ -1,5 +1,5 @@
 //# ObjectID2.cc: Hash related OjectID functions. Prevent link coupling.
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,17 +25,11 @@
 //#
 //# $Id$
 
+
 #include <aips/Tasking/ObjectID.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/OS/Time.h>
+#include <aips/Containers/Block.h>
+#include <aips/stdio.h>                  // needed for sprintf
 
-#include <unistd.h>
-#include <aips/iostream.h>
-
-#if defined(AIPS_SOLARIS)
-#include <sys/systeminfo.h>
-#include <aips/stdio.h>
-#endif
 
 uInt hashFunc(const ObjectID &key)
 {
@@ -50,5 +44,40 @@ uInt hashFunc(const ObjectID &key)
     result = result || (c<<16);
     c = (char)key.hostName()[0];
     result = result || (c<<24);
+    return result;
+}
+
+
+String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
+			     const String& command)
+{
+    objectIDs.resize (0, True, True);
+    String error;
+    String result;
+    String str = command;
+    // Extract object-id from the command, convert it to an
+    // ObjectID in the block, and put its index into the command.
+    Int index = str.index ("'ObjectID=[");
+    while (index >= 0) {
+        result += str.before(index);
+	index += 11;
+	Int pos = str.index ("]'", index);
+	ObjectID oid;
+	// Convert to ObjectID.
+	// If not succesfull, put original back.
+	if (! oid.fromString (error, str(index, pos-index))) {
+	    result += str(index-11, pos-index+13);
+	} else {
+	    uInt n = objectIDs.nelements() + 1;
+	    objectIDs.resize (n);
+	    objectIDs[n-1] = oid;
+	    char buf[16];
+	    sprintf (buf, "$OBJ#%i#O", n);
+	    result += buf;
+	    str = str.after(pos+1);
+	}
+	index = str.index ("'ObjectID=[");
+    }
+    result += str;
     return result;
 }
