@@ -56,10 +56,11 @@ template <class M, class F, class MC> class MeasConvert;
 // </prerequisite>
 //
 // <etymology>
+// From Measure and uvw
 // </etymology>
 //
 // <synopsis>
-// Muvw forms derived Measure class for an interferometer uvw.
+// Muvw is the derived Measure class for an interferometer uvw.
 // uvws can be given in any of the direction types, or as ITRF, the 
 // IERS base.<br>
 // Note that at the moment no correction for Earth tides (error <~ 0.05 mm/km
@@ -69,9 +70,38 @@ template <class M, class F, class MC> class MeasConvert;
 // </synopsis>
 //
 // <example>
+// <srcblock>
+//      // Specify an Epoch and a telescope position
+//	MEpoch tbm(Quantity(50927.92931, "d"));
+//	MPosition pos(MVPosition(-4750915.84032, 2792906.17778, 
+//				 -3200483.75028), 
+//		      MPosition::ITRF);
+//      // Use them in a frame
+//	MeasFrame mf(tbm, pos);
+//      // Specify an uvw (note that values here are in m)
+//	MVuvw mvb0(100 ,10, 0);
+//	cout << "uvw: " << mvb0 << endl;
+//      // Specify a reference (type and where and when) for the following uvw
+//	Muvw::Ref mbref0(Muvw::ITRF, mf);
+//	Muvw mb0(mvb0, mbref0);
+//      // Show the uvw
+//	cout << "uvw: " << mb0 << endl;
+//	cout << "uvw reference: " << mbref0 << endl;
+//      // Another reference
+//	Muvw::Ref mbref1(Muvw::J2000);
+//	cout << "uvw reference: " << mbref1 << endl;
+//      // Convert the uvw coordinates to the other reference and show it
+//	cout << "Test uvw conversion ..." << endl;
+//	Muvw::Convert bconv(mb0, mbref1);
+//	cout << "Converted " << mb0 << endl <<
+//	  " to " << mbref1 << endl <<
+//	  " as " << bconv() << endl;
+// </srcblock>
 // </example>
 //
 // <motivation>
+// To be able to handle conversions between uvw coordinates with different 
+// reference directions.
 // </motivation>
 //
 // <todo asof="1998/04/20">
@@ -144,7 +174,7 @@ public:
   Muvw(const MeasValue *dt);
   // </group>
   // Create from a fully defined baseline and direction. (not implemented).<br>
-  // If the references for the baseline and direction diagree, the baseline
+  // If the references for the baseline and direction disagree, the baseline
   // is converted to the direction frame, before the uvw is calculated.
   Muvw(const MBaseline &pos, const MDirection &dr);
   // Copy constructor and assign
@@ -172,8 +202,6 @@ public:
   // <group>
   static Bool getType(Muvw::Types &tp, const String &in);
   Bool giveMe(Muvw::Ref &mr, const String &in);
-  // This one for historic reasons only
-  Bool giveMe(const String &in, Muvw::Ref &mr);
   // </group>
   // Set the offset in the reference (False if non-matching Measure)
   virtual Bool setOffset(const Measure &in);

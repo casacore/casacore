@@ -55,7 +55,7 @@ Muvw::Muvw(const Measure *dt) :
 
 Muvw::Muvw(const MeasValue *dt) :
   MeasBase<MVuvw,Muvw::Ref>(*(MVuvw*)dt,
-				      Muvw::DEFAULT) {}
+			    Muvw::DEFAULT) {}
 
 Muvw::Muvw(const Muvw &other)
   : MeasBase<MVuvw, MeasRef<Muvw> > (other) {}
@@ -183,10 +183,6 @@ Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
   return True;
 };
 
-Bool Muvw::giveMe(const String &in, Muvw::Ref &mr) {
-  return Muvw::giveMe(mr, in);
-}
-
 Bool Muvw::setOffset(const Measure &in) {
   if (in.type() != Register((Muvw *)0)) return False;
   ref.set(in);
@@ -216,7 +212,9 @@ uInt Muvw::myType() {
 }
 
 Quantum<Vector<Double> > Muvw::get(const Unit &inunit) const {
-    return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
+  Vector<Double> x;
+  x = data.getValue();
+  return Quantum<Vector<Double> >(x, "m").get(inunit);
 }
 
 Quantum<Vector<Double> > Muvw::getAngle() const {

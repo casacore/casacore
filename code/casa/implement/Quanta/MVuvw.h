@@ -189,7 +189,7 @@ public:
   virtual void adjust(Double &res);
   virtual void readjust(Double res);
   // </group>
-  // Get radius of uvw
+  // Get radius(i.e. length of vector, in m) of uvw
   virtual Double radius();
   // Generate a 3-vector of coordinates (length(m), angles(rad))
   Vector<Double> get() const;
