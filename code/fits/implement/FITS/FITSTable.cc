@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -456,22 +456,55 @@ FITSTable::FITSTable(const String &fileName, uInt whichHDU,
     isValid_p = reopen(fileName);
 }
 
-FITSTable::~FITSTable()
-{
-    clear_self();
-}
-
 Bool FITSTable::reopen(const String &fileName)
 {
     clear_self();
 
     io_p = new FitsInput(fileName.chars(), FITS::Disk);
+    AlwaysAssert(io_p, AipsError);
     if (io_p->err()) {
+	return False;
+    }
+    // construct the primary HDU keywords record
+    if (io_p->hdutype() != FITS::PrimaryArrayHDU) return False;
+
+    switch (io_p->datatype()) {
+    case FITS::BYTE:
+	{
+	    BytePrimaryArray pa(*io_p);
+	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	}
+    break;
+    case FITS::SHORT:
+	{
+	    ShortPrimaryArray pa(*io_p);
+	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	}
+    break;
+    case FITS::LONG:
+	{
+	    LongPrimaryArray pa(*io_p);
+	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	}
+    break;
+    case FITS::FLOAT:
+	{
+	    FloatPrimaryArray pa(*io_p);
+	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	}
+    break;
+    case FITS::DOUBLE:
+	{
+	    DoublePrimaryArray pa(*io_p);
+	    primaryKeys_p = FITSTabular::keywordsFromHDU(pa, allKeys_p);
+	}
+    break;
+    default:
 	return False;
     }
 
     uInt i;
-    for (i=0; i < hdu_nr_p && !io_p->err(); i++) {
+    for (i=1; i < hdu_nr_p && !io_p->err(); i++) {
 	io_p->skip_hdu();
     }
 
@@ -721,37 +754,6 @@ Bool FITSTable::reopen(const String &fileName)
     return True;
 }
 
-
-Bool FITSTable::isValid() const
-{
-    return isValid_p;
-}
-
-
-const TableRecord &FITSTable::keywords() const
-{
-    return keywords_p;
-}
-
-const RecordDesc &FITSTable::description() const
-{
-    return description_p;
-}
-
-const Record &FITSTable::units() const
-{
-    return units_p;
-}
-
-const Record &FITSTable::displayFormats() const
-{
-    return disps_p;
-}
-
-const Record &FITSTable::nulls() const
-{
-    return nulls_p;
-}
 
 void FITSTable::next()
 {

@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -200,23 +200,31 @@ public:
     // excluded keywords when allKeywords is False.
     FITSTable(const String &fileName, uInt whichHDU=1,
 	      Bool allKeywords = False);
-    ~FITSTable();
+    ~FITSTable() { clear_self();}
 
     // Attach this FITSTable to a new file name, same HDU# as at open time
     virtual Bool reopen(const String &fileName);
     virtual const String& name() const { return name_p;}
 
-    virtual Bool isValid() const;
+    virtual Bool isValid() const {return isValid_p;}
 
-    virtual const TableRecord &keywords() const;
-    virtual const RecordDesc &description() const;
-    virtual const Record &units() const;
-    virtual const Record &displayFormats() const;
-    virtual const Record &nulls() const;
+    virtual const TableRecord &keywords() const {return keywords_p;}
+    virtual const RecordDesc &description() const {return description_p;}
+    virtual const Record &units() const {return units_p;}
+    virtual const Record &displayFormats() const {return disps_p;}
+    virtual const Record &nulls() const {return nulls_p;}
 
     virtual Bool pastEnd() const;
     virtual void next();
     virtual const Record &currentRow() const;
+
+    // single FITS tables know how many rows there are
+    // unlike general FITSTabulars, which may not know
+    // (e.g. if it is a FITSMultiTable)
+    virtual uInt nrow() const {return raw_table_p->nrows();}
+
+    // the keywords from the Primary HDU
+    virtual const TableRecord &primaryKeywords() const {return primaryKeys_p;}
 protected:
     // SDFITSTable needs to make some keywords appear as
     // columns, this requires access to description_p, keywords_p, and
@@ -251,6 +259,7 @@ private:
     BinaryTableExtension *raw_table_p;
     FitsInput *io_p;
     TableRecord keywords_p;
+    TableRecord primaryKeys_p;
     RecordDesc description_p;
     Record row_p;
     Record units_p;
