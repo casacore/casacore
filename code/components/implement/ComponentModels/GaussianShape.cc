@@ -437,13 +437,16 @@ Bool GaussianShape::fromRecord(String & errorMessage,
     }
   }
   const Unit rad("rad");
-  if (near(majorAxis.getValue(rad), minorAxis.getValue(rad), 1E-6)) {
+  const Double minorRad = minorAxis.getValue(rad);
+  const Double majorRad = majorAxis.getValue(rad);
+  if (majorRad < minorRad) {
+    if (near(majorRad, minorRad, 1E-9)) {
 // assume they are meant to be the same and precision has got lost somewhere. 
-    majorAxis = minorAxis;
-  }
-  if (majorAxis.getValue(rad) < minorAxis.getValue(rad)) {
-    errorMessage += "The major axis cannot be smaller than the minor axis\n";
-    return False;
+      majorAxis.setValue(minorAxis.getValue(majorAxis.getFullUnit()));
+    } else {
+      errorMessage += "The major axis cannot be smaller than the minor axis\n";
+      return False;
+    }
   }
   setWidth(majorAxis, minorAxis, pa);
   DebugAssert(ok(), AipsError);
