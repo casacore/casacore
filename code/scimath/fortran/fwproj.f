@@ -56,7 +56,8 @@ C
       complex nvalue
 
       integer convsize, sampling, wconvsize
-      complex convfunc(convsize, convsize, wconvsize), cwt
+      complex convfunc(convsize/2-1, convsize/2-1, wconvsize),
+     $     cwt
 
       real norm
       real wt
@@ -109,11 +110,9 @@ C at the phase center. We will want to normalize
 C the final image by this term.
                         norm=0.0
                         do iy=-rsupport,rsupport
-                           iloc(2)=convsize/2+1+iy*sampling
-     $                          +off(2)
+                           iloc(2)=1+abs(iy*sampling+off(2))
                            do ix=-rsupport,rsupport
-                              iloc(1)=convsize/2+1+ix*sampling
-     $                             +off(1)
+                              iloc(1)=1+abs(ix*sampling+off(1))
                               if(uvw(3,irow).gt.0.0) then
                                  cwt=conjg(convfunc(iloc(1),
      $                                iloc(2), iloc(3)))
@@ -169,7 +168,8 @@ C
       complex nvalue
 
       integer convsize, wconvsize, sampling
-      complex convfunc(convsize, convsize, wconvsize), cwt
+      complex convfunc(convsize/2-1, convsize/2-1, wconvsize),
+     $     cwt
 
       real norm, phase
 
@@ -212,11 +212,9 @@ C
 
                         nvalue=0.0
                         do iy=-rsupport,rsupport
-                           iloc(2)=convsize/2+1+sampling*iy
-     $                          +off(2)
+                           iloc(2)=1+abs(iy*sampling+off(2))
                            do ix=-rsupport,rsupport
-                              iloc(1)=convsize/2+1
-     $                             +sampling*ix+off(1)
+                              iloc(1)=1+abs(ix*sampling+off(1))
                               if(uvw(3,irow).gt.0.0) then
                                  cwt=conjg(convfunc(iloc(1),
      $                                iloc(2), iloc(3)))
