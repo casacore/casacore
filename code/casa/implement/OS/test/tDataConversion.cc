@@ -1,5 +1,5 @@
 //# tDataConversion.cc: test program for data conversion classes
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,6 +29,7 @@
 #include <aips/aips.h>
 #include <aips/OS/DataConversion.h>
 #include <aips/OS/CanonicalDataConversion.h>
+#include <aips/OS/LECanonicalDataConversion.h>
 #include <aips/OS/IBMDataConversion.h>
 #include <aips/OS/VAXDataConversion.h>
 #include <aips/OS/RawDataConversion.h>
@@ -65,7 +66,7 @@ void showConv (const DataConversion& conv)
 int main()
 {
     cout << ">>>" << endl;
-#if defined(LITTLE_ENDIAN)
+#if defined(AIPS_LITTLE_ENDIAN)
     cout << "This is a little-endian machine" << endl;
 #else
     cout << "This is a big-endian machine" << endl;
@@ -73,6 +74,9 @@ int main()
     CanonicalDataConversion d1;
     cout << endl << "Canonical:" << endl;
     showConv (d1);
+    LECanonicalDataConversion d1le;
+    cout << endl << "LECanonical:" << endl;
+    showConv (d1le);
     IBMDataConversion d2;
     cout << endl << "IBM:" << endl;
     showConv (d2);
