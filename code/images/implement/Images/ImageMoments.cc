@@ -227,9 +227,8 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       noInclude_p = other.noInclude_p;
       noExclude_p = other.noExclude_p;
       fixedYLimits_p = other.fixedYLimits_p;
-
-      return *this;
    }
+   return *this;
 }
 
 
