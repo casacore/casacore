@@ -222,7 +222,14 @@ class MSCalEnums
   ROT_MEASURE = 800,
   ROT_MEASURE_ERROR = 801,
   IONOSPH_TEC = 802,
-  IONOSPH_TEC_ERROR = 803
+  IONOSPH_TEC_ERROR = 803,
+
+  // GJonesFF additions:
+  PHASE_OFFSET = 900,
+  SB_DELAY = 901,
+  DELAY_RATE = 902
+
+
   };
 
   // Access functions for column/keyword description data

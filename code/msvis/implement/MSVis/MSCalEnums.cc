@@ -108,6 +108,10 @@ void MSCalEnums::initMap ()
     theirFieldMap.define (ROT_MEASURE_ERROR, "ROT_MEASURE_ERROR");
     theirFieldMap.define (IONOSPH_TEC, "IONOSPH_TEC");
     theirFieldMap.define (IONOSPH_TEC_ERROR, "IONOSPH_TEC_ERROR");
+
+    theirFieldMap.define (PHASE_OFFSET, "PHASE_OFFSET");
+    theirFieldMap.define (SB_DELAY, "SB_DELAY");
+    theirFieldMap.define (DELAY_RATE, "DELAY_RATE");
   };
 };
 
