@@ -980,7 +980,7 @@ IPosition ImagePolarimetry::positionAngleShape(CoordinateSystem& cSys,
 
 ImageExpr<Float> ImagePolarimetry::stokesI() const
 {
-   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::I], String("I"), String("StokesI"));
+   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::I], Stokes::I, String("StokesI"));
 }
 
 Float ImagePolarimetry::sigmaStokesI(Float clip) 
@@ -990,7 +990,7 @@ Float ImagePolarimetry::sigmaStokesI(Float clip)
 
 ImageExpr<Float> ImagePolarimetry::stokesQ() const
 {
-   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::Q], String("Q"), String("StokesQ"));
+   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::Q], Stokes::Q, String("StokesQ"));
 }
 
 Float ImagePolarimetry::sigmaStokesQ(Float clip) 
@@ -1000,7 +1000,7 @@ Float ImagePolarimetry::sigmaStokesQ(Float clip)
 
 ImageExpr<Float> ImagePolarimetry::stokesU() const
 {
-   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::U], String("U"), String("StokesU"));
+   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::U], Stokes::U, String("StokesU"));
 }
 
 Float ImagePolarimetry::sigmaStokesU(Float clip) 
@@ -1010,7 +1010,7 @@ Float ImagePolarimetry::sigmaStokesU(Float clip)
 
 ImageExpr<Float> ImagePolarimetry::stokesV() const
 {
-   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::V], String("V"), String("StokesV"));
+   return makeStokesExpr(itsStokesPtr[ImagePolarimetry::V], Stokes::V, String("StokesV"));
 }
 
 Float ImagePolarimetry::sigmaStokesV(Float clip) 
@@ -1020,7 +1020,8 @@ Float ImagePolarimetry::sigmaStokesV(Float clip)
 
 ImageExpr<Float> ImagePolarimetry::stokes(ImagePolarimetry::StokesTypes stokes) const
 {
-   return makeStokesExpr(itsStokesPtr[stokes], stokesName(stokes), stokesName(stokes));
+   Stokes::StokesTypes type = stokesType(stokes);
+   return makeStokesExpr(itsStokesPtr[stokes], type, stokesName(stokes));
 }
 
 Float ImagePolarimetry::sigmaStokes(ImagePolarimetry::StokesTypes stokes, Float clip)
@@ -1468,11 +1469,11 @@ Bool ImagePolarimetry::findRotationMeasure (Float& rmFitted, Float& rmErrFitted,
 
 
 ImageExpr<Float> ImagePolarimetry::makeStokesExpr(ImageInterface<Float>* imPtr,
-                                                 const String& s, const String& name) const
+                                                 Stokes::StokesTypes type, const String& name) const
 {
    LogIO os(LogOrigin("ImagePolarimetry", "makeStokesExpr(...)", WHERE));
    if (imPtr==0) {
-      os << "This image does not have Stokes " << s << LogIO::EXCEPTION;
+      os << "This image does not have Stokes " << Stokes::name(type) << LogIO::EXCEPTION;
    }
 
 // Make node.  
@@ -1483,6 +1484,7 @@ ImageExpr<Float> ImagePolarimetry::makeStokesExpr(ImageInterface<Float>* imPtr,
 
    LatticeExpr<Float> le(node);
    ImageExpr<Float> ie(le, name);
+   fiddleStokesCoordinate(ie, type);
 //
    return ie;
 }
@@ -1790,6 +1792,22 @@ String ImagePolarimetry::stokesName (ImagePolarimetry::StokesTypes index) const
       return String("V");
    } else {
       return String("??");  
+   }
+}
+
+
+Stokes::StokesTypes ImagePolarimetry::stokesType (ImagePolarimetry::StokesTypes index) const
+{
+   if (index==ImagePolarimetry::I) {
+      return Stokes::I;
+   } else if (index==ImagePolarimetry::Q) {
+      return Stokes::Q;
+   } else if (index==ImagePolarimetry::U) {
+      return Stokes::U;
+   } else if (index==ImagePolarimetry::V) {
+      return Stokes::V;
+   } else {
+      return Stokes::Undefined;
    }
 }
 
