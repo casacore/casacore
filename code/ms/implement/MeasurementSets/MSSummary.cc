@@ -123,10 +123,10 @@ void MSSummary::list (LogIO& os, Bool verbose) const
   listWhere (os,verbose);
   listWhat (os,verbose);
   listHow (os,verbose);
+  listHistory (os,verbose);
 
   // These aren't really useful (yet?)
   //  listSource (os,verbose);
-  //  listHistory (os,verbose);
   //  listSysCal (os,verbose);
   //  listWeather (os,verbose);
 
