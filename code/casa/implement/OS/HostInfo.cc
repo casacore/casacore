@@ -1,5 +1,5 @@
 //# HostInfo.h: Information about the host that this process is running on.
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,11 +52,21 @@ extern "C" { int getclock(int clock_type, struct timespec* tp); };
 
 String HostInfo::hostName()
 {
-    struct utsname name;
     String retval;
+#if defined(AIPS_IRIX)
+      // This is a kludge to get around a problem with
+      // losing environment variable names on some IRIX machines
+      // at NCSA in Urbana IL.
+    Char buf[65];
+    if (gethostname(buf, 64) >= 0) {
+	retval = String(buf);
+    }
+#else
+    struct utsname name;
     if (uname(&name) >= 0) {
 	retval = name.nodename;
     }
+#endif
     return retval;
 }
 
