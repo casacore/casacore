@@ -1,5 +1,5 @@
 //# Fit2D.cc: Class to fit 2D objects to a Lattice or Array
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,6 +43,7 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Quanta/MVAngle.h>
 #include <trial/Mathematics/AutoDiff.h>
 #include <aips/Utilities/Assert.h>
 
@@ -547,11 +548,11 @@ Vector<Double> Fit2D::availableSolution (uInt which)
       sol2(3) = major;
       sol2(4) = minor;
 //
-// Put in the range 0->pi (consistent with Gaussian2D)
+// Put in the range +/-pi (consistent with Gaussian2D)
 //
-      pa = fmod(pa, C::pi);
-      if (pa < 0.0) pa += C::pi;
-      sol2(5) = pa;
+      MVAngle pa2(pa);
+      pa2();
+      sol2(5) = pa2.radian();
    }
 //
    return sol2;
