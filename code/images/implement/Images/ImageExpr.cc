@@ -55,14 +55,16 @@ ImageExpr<T>::ImageExpr (const LatticeExpr<T>& latticeExpr,
     name_p = "Expression: " + name;
   }
    const LELCoordinates lelCoordinate = latticeExpr_p.lelCoordinates();
-   const LELLattCoord* pLattCoord = &(lelCoordinate.coordinates());
+   const LELLattCoordBase* pLattCoord = &(lelCoordinate.coordinates());
    if (! pLattCoord->hasCoordinates()
    ||  pLattCoord->classname() != "LELImageCoord") {
       throw (AipsError ("ImageExpr::constructor - the "
                         "LatticeExpr does not have coordinates"));
    }
 // Cast to get at LELImageCoord
-   const LELImageCoord* pImCoord = (LELImageCoord*)pLattCoord;
+   const LELImageCoord* pImCoord =
+                         dynamic_cast<const LELImageCoord*>(pLattCoord);
+   AlwaysAssert (pImCoord != 0, AipsError);
    coords_p = pImCoord->coordinates();
 }
 
