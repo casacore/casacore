@@ -460,7 +460,7 @@ Bool ImageSummary<T>::setNewImage (const ImageInterface<T>& image)
 
 template <class T> 
 void ImageSummary<T>::listDirection (LogIO& os, 
-                                     const DirectionCoordinate& coord,
+                                     DirectionCoordinate& coord,
                                      const Int& axisInCoordinate,
                                      const Int& pixelAxis,
                                      const Bool& nativeFormat) const
@@ -510,6 +510,14 @@ void ImageSummary<T>::listDirection (LogIO& os,
       os << " ";
    }
 
+
+// Remember units
+
+   Vector<String> oldUnits(2);
+   oldUnits = coord.worldAxisUnits();
+   Vector<String> units(2);
+
+
 // Reference value
 
    String tString = coord.worldAxisNames()(axisInCoordinate);
@@ -520,6 +528,12 @@ void ImageSummary<T>::listDirection (LogIO& os,
       os.output().precision(precRefValueSci_p);
       os << coord.referenceValue()(axisInCoordinate);
    } else {
+
+// Convert to radians as MVAngle wants radians
+
+      units = "rad";
+      coord.setWorldAxisUnits(units);
+
       MVAngle mVA(coord.referenceValue()(axisInCoordinate));
       if (tString.contains("RIGHT ASCENSION")) {
          os << mVA.string(MVAngle::TIME,8);
@@ -555,9 +569,11 @@ void ImageSummary<T>::listDirection (LogIO& os,
       } else { 
          if (tString.contains("RIGHT ASCENSION") ||   
              tString.contains("DECLINATION")) {
-            os << coord.increment()(axisInCoordinate) * 3600.0 * 180.0 / C::pi;
+            units = "''";
+            coord.setWorldAxisUnits(units);
+            os << coord.increment()(axisInCoordinate);
          } else {
-            os << coord.increment()(axisInCoordinate) * 180.0 / C::pi;
+            os << coord.increment()(axisInCoordinate);
          }
       }
    } else {
@@ -570,19 +586,16 @@ void ImageSummary<T>::listDirection (LogIO& os,
 
    os.output().setf(ios::left, ios::adjustfield);
    if (pixelAxis != -1) {
-      if (nativeFormat) {
-         os << " " << coord.worldAxisUnits()(axisInCoordinate);
-      } else {
-         if (tString.contains("RIGHT ASCENSION") ||
-            tString.contains("DECLINATION")) {
-            os << " arcsec";
-         } else {
-            os << " degrees";
-         }
-      }
+      os << " " << coord.worldAxisUnits()(axisInCoordinate);
    }
 
    os << endl;    
+
+
+// Put the units back to what they were
+
+   coord.setWorldAxisUnits(oldUnits);
+
 }
 
 
