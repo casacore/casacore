@@ -4206,3 +4206,4 @@
 14 065 src mv trial/apps/viewer/viewerdisplaypanel.g trialdisplay/apps/viewer/viewerdisplaypanel.g
 14 065 src mv trial/apps/viewer/viewerdisplaypanel.help trialdisplay/apps/viewer/viewerdisplaypanel.help
 14 065 src mv trial/apps/viewer/viewerstandardgui.help trialdisplay/apps/viewer/viewerstandardgui.help
+14 065 src mv trial/apps/viewer/viewertest.g trialdisplay/apps/viewer/viewertest.g
