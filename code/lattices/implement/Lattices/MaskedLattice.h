@@ -207,10 +207,9 @@ class LatticeRegion;
 // </ul>
 // </motivation>
 
-// <todo asof="1996/07/01">
-//   <li> Remove the latticeCast member when the GNU compiler is 
-//        sufficiently robust.
-// </todo>
+//# <todo asof="1996/07/01">
+//#  <li>
+//# </todo>
 
 template <class T> class MaskedLattice : public Lattice<T>
 {
@@ -303,20 +302,6 @@ public:
   void putMaskSlice (const Array<Bool>& sourceBuffer, const IPosition& where);
   void putMask (const Array<Bool>& sourceBuffer);
   // </group>   
-
-  // These functions were put in for the Gnu compiler which presently
-  // (version 2.7.2.1) is unable to automatically cast a derived class to a
-  // base class in a templated global function.
-  // <group>
-  MaskedLattice<T>& maskedLatticeCast() {return *this;}
-  const MaskedLattice<T>& maskedLatticeCast() const {return *this;}
-  // </group>
-
-  // Short-hand for <src>maskedLatticeCast()</src>
-  // <group>
-  MaskedLattice<T>& mlc() {return *this;}
-  const MaskedLattice<T>& mlc() const {return *this;}
-  // </group>
 
   // The function (in the derived classes) doing the actual work.
   // These functions are public, so they can be used internally in the
