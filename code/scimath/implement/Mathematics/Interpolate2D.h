@@ -136,6 +136,7 @@ template<class T> class Interpolate2D
   Bool interp(T& result, const Vector<Double>& where, 
               const Array<T>& data, const Array<Bool>& mask,
               Interpolate2D<T>::Method method=Interpolate2D<T>::LINEAR);
+  //</group>
 
 // Convert string ("nearest", "linear", "cubic") to Method
 // Minimum match will do.
