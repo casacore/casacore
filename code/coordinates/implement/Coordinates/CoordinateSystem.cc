@@ -4637,16 +4637,16 @@ void CoordinateSystem::listPointingCenter (LogIO& os) const
    Int afterCoord = -1;
    Int iC = findCoordinate(Coordinate::DIRECTION, afterCoord);
    if (iC >= 0) {
-      MVDirection pc = obsinfo_p.pointingCenter();
       if (!obsinfo_p.isPointingCenterInitial()) {
          Int prec;
          Coordinate::formatType form(Coordinate::DEFAULT);
          coordinates_p[iC]->getPrecision(prec, form, True, 6, 6, 6);
 //
-         String listUnits;
+         MVDirection pc = obsinfo_p.pointingCenter();
          Quantum<Double> qLon = pc.getLong(Unit(String("deg")));
          Quantum<Double> qLat = pc.getLat(Unit(String("deg")));
 //
+         String listUnits;
          String lon = coordinates_p[iC]->formatQuantity(listUnits, form, qLon,
                                                         0, True, True, prec);
          String lat  = coordinates_p[iC]->formatQuantity(listUnits, form, qLat,
