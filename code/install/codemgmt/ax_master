@@ -4690,3 +4690,4 @@
 14 304 src rm trial/apps/sdfits2ms/MSWriter.cc
 14 304 src rm trial/apps/sdfits2ms/MSWriter.h
 14 304 src rm trial/apps/sdfits2ms/SDFITS2MSSetup.cc
+14 304 src rm trial/apps/sdfits2ms/SDFITS2MSSetup.h
