@@ -82,13 +82,13 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
     CoordinateSystem coords;
     Record header;
 
-    Vector<String> ignore(2); // Resize this if you add more keywords to ignore.
-    ignore(0) = "datamax"; // Don't copy these through because the image pixels
-    ignore(1) = "datamin"; // might change.
+    Vector<String> ignore(0); // You will have to increase this if
+                               // you ignore more
+
     
     Bool ok = FITSKeywordUtil::getKeywords(header, fitsImage.kwlist(), ignore);
     if (! ok) {
-	os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"  <<
+	os << LogIO::SEVERE << "Error retrieving keywords from fits header.\n"
 	    "Coordinate system may be in error." << LogIO::POST;
     }
 
@@ -129,67 +129,29 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 	}
     }
     
-    // We should have the software remove the fields that it uses.
-    // OK, add all the fields that aren't boring to miscinfo.
-    const uInt nfields = header.nfields();
-    // Go backwards because the field numbers are decremented.
-    for (i=nfields-1; i>=0; i--) {
-	String name = downcase(header.name(i));
-	if (name.contains(Regex("^simple"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^naxis"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^bitpix"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^origin"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.type"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.unit"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.rval"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.rpix"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.rota"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^.delt"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^projp"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^pc"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^extend"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^blocked"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^bscale"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^bzero"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^equinox"))) {
-	    header.removeField(i); continue;
-	}
-	if (name.contains(Regex("^epoch"))) {
-	    header.removeField(i); continue;
-	}
-    }
+    ignore.resize(21); // resize as necessary
+    ignore(0) = "^datamax$";  // Image pixels might change
+    ignore(1) = "^datamin$";
+    ignore(2) = "^date-map$";
+    ignore(3) = "^simple$";
+    ignore(4) = "^naxis";
+    ignore(5) = "^bitpix$";
+    ignore(6) = "^origin$";
+    ignore(7) = "^projp$";
+    ignore(8) = "^pc$";
+    ignore(9) = "^extend$";
+    ignore(10) = "^blocked$";
+    ignore(11) = "^extend$";
+    ignore(12) = "^equinox$";
+    ignore(13) = "^epoch$";
+    ignore(14) = "^.type";
+    ignore(15) = "^.unit";
+    ignore(16) = "^.rpix";
+    ignore(17) = "^.rval";
+    ignore(18) = "^.rota";
+    ignore(19) = "^.delt";
+    ignore(20) = "^bunit$";
+    FITSKeywordUtil::removeKeywords(header, ignore);
 
     newImage->setMiscInfo(header);
 
@@ -214,7 +176,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float> *&newImage,
 
     ProgressMeter meter(0.0, 1.0*newImage->shape().product(), "FITS to Image",
 			"Pixels copied", "", "", 
-			True, newImage->shape().product()/cursorShape.product()/100);
+			True, newImage->shape().product()/cursorShape.product()/
+			100);
     try {
 	Int bufferSize = cursorShape.product();
 	for (imiter.reset(); !imiter.atEnd(); imiter++) {

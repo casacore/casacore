@@ -152,12 +152,23 @@ public:
     //        row-by-row copying, otherwise it will attempt to with as large
     //        a chunk-size as possible, while fitting in the desired memory.
     // </ul>
+    //
+    //
+    // BITPIX can presently be set to -32 or 16 only. When BITPIX is 16 it
+    // will write BSCALE and BZERO into the FITS file. If minPix is
+    // greater than maxPix the minimum and maximum pixel values will be
+    // determined from the array, otherwise the supplied values will be
+    // used and pixels outside that range will be truncated to the minimum
+    // and maximum pixel values (note that this truncation does not occur
+    // for BITPIX=-32).
     static Bool ImageToFITS(String &error,
 			    const PagedImage<Float> &image,
 			    const String &fitsName, 
 			    uInt memoryInMB = 64,
 			    Bool preferVelocity = True,
-			    Bool opticalVelocity = True);
+			    Bool opticalVelocity = True,
+			    Int BITPIX=-32,
+			    Float minPix = 1.0, Float maxPix = -1.0);
 
     // Helper function - used to calculate a cursor appropriate for the desired
     // memory use. It's not intended that application programmers call this, but

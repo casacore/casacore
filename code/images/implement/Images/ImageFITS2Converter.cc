@@ -30,6 +30,7 @@
 
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageStatistics.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
@@ -91,7 +92,8 @@ void ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
     
 
     File fitsfile(fitsName);
-    if (!fitsfile.exists() || !fitsfile.isReadable() || !fitsfile.isRegular()) {
+    if (!fitsfile.exists() || !fitsfile.isReadable() || 
+	!fitsfile.isRegular()) {
         error = fitsName + " does not exist or is not readable";
 	return;
     }
@@ -199,7 +201,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     const String &fitsName, 
 				     uInt memoryInMB,
 				     Bool preferVelocity,
-				     Bool opticalVelocity)
+				     Bool opticalVelocity,
+				     Int BITPIX, Float minPix, Float maxPix)
 {
     LogIO log(LogOrigin("ImageFITSConverter", "ImageToFITS", WHERE));
     error = "";
@@ -235,10 +238,44 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     Record header;
 
+    Double bscale, bzero;
+    const Short maxshort = 32767;
+    const Short minshort = -32768;
+    if (BITPIX == -32) {
+        bscale = 1.0;
+        bzero = 0.0;
+	header.define("bitpix", BITPIX);
+	header.setComment("bitpix", "Floating point (32 bit)");
+    } else if (BITPIX == 16) {
+	header.define("bitpix", BITPIX);
+	header.setComment("bitpix", "Short integer (16 bit)");
+        if (minPix > maxPix) {
+	    // Find the min and max of the image
+	    LogIO os;
+	    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
+	    os << LogIO::NORMAL << "Finding scaling factors for BITPIX=16" <<
+		LogIO::POST;
+	    ImageStatistics<Float> stats(image, os);
+	    Array<Float> minarr(IPosition(1,1)), maxarr(IPosition(1,1));
+	    if (!stats.getMin(minarr) || !  stats.getMax(maxarr)) {
+		error = "Error determining scaling factors (min/max) for "
+		    "BITPIX=16";
+		return False;
+	    }
+	    minPix = minarr(IPosition(1,0));	    
+	    maxPix = maxarr(IPosition(1,0));	    
+        }
+        bscale = Double(maxPix - minPix)/Double(Int(maxshort) - Int(minshort));
+        bzero  = Double(minPix) + bscale * (-Double(minshort));
+    } else {
+	error = 
+            "BITPIX must be -32 (floating point) or 16 (short integer)";
+        return False;
+    }
+
     const IPosition shape = image.shape();
     const uInt ndim = shape.nelements();
-    header.define("BITPIX", -32);
-    header.setComment("BITPIX", "Floating point (32 bit)");
+    header.setComment("bitpix", "Floating point (32 bit)");
 
     Vector<Int> naxis(ndim);
     for (Int i=0; i < ndim; i++) {
@@ -246,8 +283,9 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
     header.define("NAXIS", naxis);
 
-    header.define("BSCALE", 1.0);
-    header.define("BZERO", 0.0);
+    header.define("bscale", bscale);
+    header.setComment("bscale", "PHYSICAL = PIXEL*BSCALE + BZERO");
+    header.define("bzero", bzero);
 
     header.define("COMMENT1", ""); // inserts spaces
 
@@ -256,7 +294,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.setComment("BUNIT", "Brightness (pixel) unit");
 
     IPosition shapeCopy = shape;
-    Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, preferVelocity,
+    Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
+				    preferVelocity,
 				    opticalVelocity);
 
     if (!ok) {
@@ -295,11 +334,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	header.define("NAXIS", naxis);
     }
     
-    // ORIGIN
-    ostrstream buffer;
-    buffer << "AIPS++ version ";
-    VersionInfo::report(buffer);
-    header.define("ORIGIN", String(buffer));
 
     // Add in the fields from miscInfo that we can
     const uInt nmisc = image.miscInfo().nfields();
@@ -333,7 +367,28 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		header.define(miscname, image.miscInfo().asDComplex(i));
 		break;
 	    case TpString:
-		header.define(miscname, image.miscInfo().asString(i));
+		if (miscname.contains("date") && miscname != "date") {
+		    // Try to canonicalize dates
+		    MVTime time;
+		    MEpoch::Types sys;
+		    // We only need to convert the date, the timesys we'll just
+		    // copy through
+		    if (FITSDateUtil::fromFITS(time, sys, 
+					       image.miscInfo().asString(i),
+					       "")) {
+			
+			String date, timesys;
+			FITSDateUtil::toFITS(date, timesys, time);
+			// Conversion worked - change the header
+			header.define(miscname, date);
+		    } else {
+			// conversion failed - just copy the existing date
+			header.define(miscname, image.miscInfo().asString(i));
+		    }
+		} else {
+		    // Just copy non-date strings through
+		    header.define(miscname, image.miscInfo().asString(i));
+		}
 		break;
 	    // These should be the cases that we actually see. I don't think
 	    // asArray* converts types.
@@ -362,8 +417,29 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		}
 	    }
 	}
+	if (header.isDefined(miscname)) {
+	    header.setComment(miscname, image.miscInfo().comment(i));
+	}
     }
 
+
+    // DATE
+    String date, timesys;
+    Time nowtime;
+    MVTime now(nowtime);
+    FITSDateUtil::toFITS(date, timesys, now);
+    header.define("date", date);
+    header.setComment("date", "Date FITS file was written");
+    if (!header.isDefined("timesys") && !header.isDefined("TIMESYS")) {
+	header.define("timesys", timesys);
+	header.setComment("timesys", "Time system for HDU");
+    }
+
+    // ORIGIN
+    ostrstream buffer;
+    buffer << "AIPS++ version ";
+    VersionInfo::report(buffer);
+    header.define("ORIGIN", String(buffer));
 
     // Set up the FITS header
     FitsKeywordList kw = FITSKeywordUtil::makeKeywordList();
@@ -389,11 +465,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 
     // If this fails, more development is needed
     AlwaysAssert(sizeof(Float) == sizeof(float), AipsError);
-    PrimaryArray<Float> fits(kw);
-    if (fits.err()) {
-	error = "Error creating FITS file from keywords";
-	return False;
-    }
+    AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
 
     IPosition cursorOrder(ndim);
     for (i=0; i<ndim; i++) {
@@ -401,11 +473,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     }
 
     try {
-	if (fits.write_hdr(outfile)) {
-	    error = "Error writing FITS header";
-	    return False;
-	}
-
 	ProgressMeter meter(0.0, 1.0*image.shape().product(),
 			    "Image to FITS", "Pixels copied", "", "");
 	uInt count = 0;
@@ -415,28 +482,97 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	RO_LatticeIterator<Float> iter(image, stepper);
 	const Int bufferSize = cursorShape.product();
 
+	PrimaryArray<Float> *fits32 = 0;
+	PrimaryArray<Short> *fits16 = 0;
+ 	if (BITPIX == -32) {
+	    fits32 = new PrimaryArray<Float>(kw);
+ 	    if (fits32==0 || fits32->err()) {
+ 		error = "Error creating FITS file from keywords";
+ 		return False;
+ 	    }
+ 	    if (fits32->write_hdr(outfile)) {
+ 		error = "Error writing FITS header";
+ 		return False;
+ 	    }
+ 	} else if (BITPIX == 16) {
+ 	    fits16 = new PrimaryArray<Short>(kw);
+ 	    if (fits16==0 || fits16->err()) {
+ 		error = "Error creating FITS file from keywords";
+ 		return False;
+ 	    }
+ 	    if (fits16->write_hdr(outfile)) {
+ 		error = "Error writing FITS header";
+ 		return False;
+ 	    }
+ 	} else {
+ 	    AlwaysAssert(0, AipsError); // NOTREACHED
+ 	}
+
+	Short *buffer16 = 0; // Use this to write the scaled shorts into
+	if (fits16) {
+	    buffer16 = new Short[bufferSize];
+	    AlwaysAssert(buffer16, AipsError);
+	}
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	    const Array<Float> &cursor = iter.cursor();
 	    Bool deleteIt;
 	    const Float *ptr = cursor.getStorage(deleteIt);
-	    fits.store(ptr, bufferSize);
-	    if (! fits.err()) {
-		Int n = fits.write(outfile);
-		if (n != bufferSize) {
-		    error = "Write failed (full disk?)";
+
+	    error= "";
+	    Int n = 0;
+	    if (fits32) {
+		fits32->store(ptr, bufferSize);
+		if (!fits32->err()) {
+		    n = fits32->write(outfile);
+		    if (n != bufferSize) {
+			error = "Write failed (full disk or tape?";
+			return False;
+		    }
+		} else {
+		    error = "Unknown I/O error";
+		    return False;
+		}
+	    } else if (fits16) {
+		for (uInt i=0; i<bufferSize; i++) {
+		    if (ptr[i] > maxPix) {
+			buffer16[i] = maxshort;
+		    } else if (ptr[i] < minPix) {
+			buffer16[i] = minshort;
+		    } else {
+			buffer16[i] = Short((ptr[i] - bzero)/bscale);
+		    }
+		}
+		fits16->store(buffer16, bufferSize);
+		if (!fits16->err()) {
+		    n = fits16->write(outfile);
+		    if (n != bufferSize) {
+			error = "Write failed (full disk or tape?";
+			return False;
+		    }
+		} else {
+		    error = "Unknown I/O error";
 		    return False;
 		}
 	    } else {
-		error = "Unknown I/O error";
-		return False;
+		AlwaysAssert(0, AipsError); // NOTREACHED
 	    }
 	    cursor.freeStorage(ptr, deleteIt);
-	    if (fits.err() || outfile.err()) {
+	    if ((fits32 && fits32->err()) ||
+		(fits16 && fits16->err()) ||
+		outfile.err()) {
 		error = String("Error writing into ") + fitsName;
 		return False;
 	    }
 	    count++;
 	    meter.update(count*curpixels);
+	}
+	if (fits32) {
+	    delete fits32; fits32 = 0;
+	} else if (fits16) {
+	    delete fits16; fits16 = 0;
+	    delete buffer16; buffer16 = 0;
+	} else {
+	    AlwaysAssert(0, AipsError); // NOTREACHED
 	}
     } catch (AipsError x) {
 	error = "Unknown error copying image to FITS file";
