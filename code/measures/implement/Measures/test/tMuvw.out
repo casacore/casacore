@@ -88,7 +88,7 @@ operator-:      [7, 17, -23]
 operator-pre-:  [-23, -23, -23]
 operator*:      [23, 19.7536, 25.8418]
 operator*:      [46, 46, 46]
-assert:         ok
+assure:         ok
 getLength:      50 m
 operator*:      2500
 operator*       1610
@@ -110,7 +110,7 @@ Exercise all Muvw function
 getType:        1, 10
 giveMe:         1, Reference for an uvw with Type: AZEL
 setRefString:   1, uvw: [100, 10, 0]
-assert:         ok
+assure:         ok
 clone:          uvw: [100, 10, 0]
 get:            [10000, 1000, 0] cm
 getAngle:       [5.71059, 0] deg

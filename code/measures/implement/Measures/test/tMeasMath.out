@@ -73,7 +73,7 @@ Re-angle:             [5000, 0.1, 0.2]
 Re-angle:             [5.72958, 11.4592] deg
 Length:               5000 m
 Length in dam:        500 dam
-Euler(10 deg, 20 m): Quantum::assert non-conforming unit type 'm'
+Euler(10 deg, 20 m): Quantum::assure non-conforming unit type 'm'
 Rotate (10,20 deg) over 0,0,30 deg: [40, 20] deg
 B1950 precession MJD 45700(1984/01/01): [-783.709, 681.388, -783.801] ''
 B1950 precession MJD 45700 using derivative from 45701: [-783.709, 681.388, -783.801] ''
