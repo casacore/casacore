@@ -112,7 +112,17 @@ Bool RegionHandler::removeRegion (Table& table, const String& name,
     return False;
   }
   Int groupField = findRegionGroup (table, name, type, throwIfUnknown);
-  if (! groupField >= 0) {
+  if (groupField >= 0) {
+    ImageRegion* regPtr = getRegion (table, name, type, True);
+    // Delete a possible mask table.
+    // We only need to do that when it is an LCRegion.
+    // We need to clone it to make it non-const.
+    if (regPtr->isLCRegion()) {
+      LCRegion* lcPtr = regPtr->asLCRegion().cloneRegion();
+      lcPtr->handleDelete();
+      delete lcPtr;
+    }
+    delete regPtr;
     TableRecord& keys = table.rwKeywordSet();
     keys.rwSubRecord(groupField).removeField (name);
   }
