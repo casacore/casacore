@@ -151,4 +151,16 @@
 #endif
 #endif
 
+//  If needed, define the LFS variables (needed in code using cfitsio).
+#ifndef AIPS_NOLARGEFILE
+# undef _FILE_OFFSET_BITS
+# define _FILE_OFFSET_BITS 64
+# ifndef _LARGEFILE_SOURCE
+#  define _LARGEFILE_SOURCE
+# endif
+# ifndef _LARGEFILE64_SOURCE
+#  define _LARGEFILE64_SOURCE
+# endif
+#endif
+
 #endif
