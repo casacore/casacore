@@ -36,8 +36,20 @@
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tasking/Aipsrc.h>
 
 //# Constructors
+MeasComet::MeasComet() :
+  tab_p(), measFlag_p(True), measured_p(False),
+  row_p(),
+  mjd0_p(0), mjdl_p(0), dmjd_p(0), nrow_p(0), name_p(), topo_p(),
+  mtype_p(MDirection::APP),
+  msgDone_p(False), tp_p() {
+  String path;
+  if (Aipsrc::find(path, String("measures.comet.file"))) initMeas(path);
+  for (uInt i=0; i<2; i++) lnr_p[i] = -1;
+}
+
 MeasComet::MeasComet(const String &path) :
   tab_p(), measFlag_p(True), measured_p(False),
   row_p(),
@@ -46,6 +58,22 @@ MeasComet::MeasComet(const String &path) :
   msgDone_p(False), tp_p(path) {
   initMeas(path);
   for (uInt i=0; i<2; i++) lnr_p[i] = -1;
+}
+
+MeasComet::MeasComet(const MeasComet &other) :
+  tab_p(), measFlag_p(True), measured_p(False),
+  row_p(),
+  mjd0_p(0), mjdl_p(0), dmjd_p(0), nrow_p(0), name_p(), topo_p(),
+  mtype_p(MDirection::APP),
+  msgDone_p(False), tp_p(other.tp_p) {
+  initMeas(other.tp_p);
+}
+
+MeasComet &MeasComet::operator=(const MeasComet &other) {
+  if (this != &other) {
+    initMeas(other.tp_p);
+  };
+  return *this;
 }
 
 MeasComet::~MeasComet() {}
@@ -112,6 +140,10 @@ Bool MeasComet::getRadVel(MVRadialVelocity &returnValue, Double date) {
   return True;
 }
 
+MeasComet *MeasComet::clone() const {
+  return (new MeasComet(*this));
+}
+
 Bool MeasComet::initMeas(const String &which) {
   static const String names[MeasComet::N_Columns] = {
     "MJD",
@@ -121,6 +153,7 @@ Bool MeasComet::initMeas(const String &which) {
 
   if (!measured_p && measFlag_p) {
     measFlag_p = False;
+    tp_p = which;
     TableRecord kws;
     Double dt;
     String vs;

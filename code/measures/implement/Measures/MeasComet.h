@@ -115,13 +115,21 @@ class MeasComet {
     N_Types };
   
   //# Constructors
+  // Construct using the aipsrc value (measures.comet.file)
+  MeasComet();
   // Construct a table from the named path.
   explicit MeasComet(const String &path);
+  // Copy constructor
+  MeasComet(const MeasComet &other);
+  // Copy assign
+  MeasComet &operator=(const MeasComet &other);
 
   //# Destructor
   ~MeasComet();
 
   //# General Member Functions
+  // Is it a valid comet class (i.e. can it be used)
+  Bool ok() const {return measured_p;} ;
   // Get the name of the comet
   const String &getName() const;
   // Get the topo position
@@ -140,16 +148,10 @@ class MeasComet {
   Bool getDisk(MVDirection &returnValue, Double date);
   // Get the velocity from a comet table, interpolated for date(in MJD(TDB)).
   Bool getRadVel(MVRadialVelocity &returnValue, Double date);
+  // Create a clone
+  MeasComet *clone() const;
 
  private:
-  
-  //# Constructors
-
-  // Copy constructor, NOT defined
-  MeasComet(const MeasComet &other);
-  // Copy assign, NOT defined
-  MeasComet &operator=(const MeasComet &other);
-  
   
   //# General member functions
   // Initialise table from the name given
@@ -189,7 +191,7 @@ class MeasComet {
   // Message given
   Bool msgDone_p;
   // File names
-  const String tp_p;
+  String tp_p;
 };
 
 //# Inline Implementations
