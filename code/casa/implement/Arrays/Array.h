@@ -46,9 +46,15 @@ template<class T> class MaskedArray;
 template<class T> class Matrix;
 template<class Domain, class Range> class Functional;
 
+
+// <summary>
+// A global enum used by some Array constructors.
+// </summary>
+// <synopsis>
 // StorageInitPolicy is used in functions where an array is formed from
 // a shape and an ordinary pointer. This enum should be in Array but that
-// causes CFront to be unhappy.
+// causes gcc to be unhappy.
+// </synopsis>
 enum StorageInitPolicy {
   // COPY is used when an internal copy of the storage is to be made.
   // The array is NOT responsible for deleting the external storage.
