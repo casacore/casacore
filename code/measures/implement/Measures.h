@@ -72,8 +72,9 @@
 //	#include <aips/Measures/MDirection.h>
 // </srcblock>
 // An inclusion of the appropiate measure file, will also take care of the
-// connected measure value (in this case <src>MVDirection</src>. However,
-// if only the value suffices, it can be included on its own.<br>
+// connected measure value (in this case <src>MVDirection</src>). However,
+// if only the value suffices, it can be included on its own (from the
+// Quanta directory).<br>
 // When doing actual conversions (see MeasConvert later on), by using the
 // explicit Measure::Convert types, the description of the actual
 // conversions (called MCmeasure, e.g. MCEpoch.h) should be included as well;
@@ -146,7 +147,11 @@
 //		of a wave
 //   <li> <linkto class="MDoppler">MDoppler</linkto>: a Doppler shift
 //   <li> <linkto class="MRadialVelocity">MRadialVelocity</linkto>: a 
-//		Doppler shift
+//		radial velocity
+//   <li> <linkto class="MBaseline">MBaseline</linkto>: a baseline
+//   <li> <linkto class="Muvw">Muvw</linkto>: a uvw value
+//   <li> <linkto class="MEarthMagnetic">MEarthMagnetic</linkto>: an
+//		 earth' magnetic field value
 // </ul>
 // Others are being, or could be, considered.<br>
 // <note role=tip>The current set can be deduced from the class list at the end of
@@ -173,6 +178,8 @@
 // <li> <linkto class=MVDoppler>MVDoppler</linkto> (single, unit depended value)
 // <li> <linkto class=MVRadialVelocity>MVRadialVelocity</linkto> (single value)
 // </ul>
+// MeasValue and the MV classes can be found in the
+// <linkto module=Quanta>Quanta</linkto> module.
 // In addition some other value classes, not directly used in measures, are
 // available. Examples:
 // <ul>
@@ -430,65 +437,22 @@
 // <h4> MeasValue</h4>
 // The MeasValue class derivatives are all named <em>MVmeasure</em>, e.g.
 // <em>MVFrequency</em>, and represent the internal representation of the
-// specific measure class. They all have at least the following constructors:
-// <srcblock>
-//	MV()
-//	MV(MV)
-//	MV(Double)
-//	MV(Vector<Double>)
-//	MV(Quantity)
-//	MV(Vector<Quantity>)
-//	MV(Quantum<Vector<Double> >)
-// </srcblock>
-// But most have also constructors like:
-// <srcblock>
-//	MV(Double, Double)
-//	MV(Quantity, Quantity)
-// </srcblock>
-// The actual interpretation is class dependent: see the individual MV classes
-// like </linkto class=MVEpoch>MVEpoch</linkto>,
-// </linkto class=MVDirection>MVDirection</linkto>,
-// </linkto class=MVPosition>MVPosition</linkto>,
-// </linkto class=MVFrequency>MVFrequency</linkto>,
-// </linkto class=MVDouble>MVDouble</linkto>,
-// </linkto class=MVRadialVelocity>MVRadialVelocity</linkto>.
-// A few examples:
-// <srcblock>
-//   MVEpoch(12345, 0.1e-20) will create one epoch (MJD12345.0), but preserving
-//			   the precision of all information
-//   MVDirection(Quantity(20,"deg"), Quantity(-10,"'")) will create a direction
-//			   with an RA of 20 degree, and a DEC of -10 arcmin
-//   MVFrequency(Quantity(5,"keV")) will create a frequency corresponding to
-//			   the specified energy.
-// </srcblock>
-// All MVs have the <src>+=, -=, ==, !=, << </src>operators, and <src>near()</src>,
-// <src>nearAbs()</src>, <src>print()</src> and <src>adjust()</src>
-// and <src>readjust()</src> (which in general
-// normalise to a value of 1 (e.g. MVDirection), or recalculates high
-// precision values (e.g. MVEpoch) functions.<br>
-// Information can be viewed with many <em>get</em> functions. In most cases
-// getValue() will return the internal value as either Double or 
-// Vector<Double>; get() will return the same, or converted values (e.g.
-// a vector of length, angle, angle for MVPosition; while special
-// one like getAngle() or getAngle(unit), getTime() etc will return Quantums
-// (with optional conversion to specified units).<br>
-// In general the Measure classes can be used without worrying about the
-// MeasValues, since most Measure constructors have enough flexibility (and
-// their own get()'s) to be able to use them independently).<br>
-// Special cases are <linkto class=MVAngle>MVAngle</linkto> and 
-// <linkto class=MVTime>MVTime</linkto>, which can do special formatting for
-// time and angles (in earlier documentation they were called HMS etc.).
+// specific measure class.  Details
+// can be found in the <linkto module=Quanta>Quanta</linkto> module.
 // <p>
 // <h4> Measure</h4>
-// The Measure class derivatives are all called <em>MMeasure</em>. Details
-// can be found in
+// The Measure class derivatives are all called <em>MMeasure</em>.
 // <linkto class=MDirection>MDirection</linkto> (a celestial direction),
 // <linkto class=MPosition>MPosition</linkto> (a position on Earth),
 // <linkto class=MFrequency>MFrequency</linkto> (characteristics of 
 // 	electro-magnetic wave),
 // <linkto class=MEpoch>MEpoch</linkto> (an instance in time),
 // <linkto class=MDoppler>MDoppler</linkto>,
-// <linkto class=MRadialVelocity>MRadialVelocity</linkto>. <br>
+// <linkto class=MRadialVelocity>MRadialVelocity</linkto>
+// <linkto class=MBaseline>MBaseline</linkto>,
+// <linkto class=Muvw>Muvw</linkto>,
+// <linkto class=MEarthMagnetic>MEarthMagnetic</linkto>,
+//. <br>
 // A measure has a value (kept in internal units in <em>MVmeasure</em>
 // format) and a definition
 // of the reference frame (MeasRef) of the value. The reference is optional, and

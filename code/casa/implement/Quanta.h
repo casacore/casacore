@@ -62,13 +62,19 @@
 // (see <linkto class="Unit">Unit.h</linkto>). 
 // Quantities are handled in the <a href="#Quantum">Quantum</a> section
 // (see <linkto class="Quantum">Quantum.h</linkto>).
-// In addition the module contains some more general support (Euler angles,
-// RotMatrix rotation matrix, MUString pointed string) and formatting
-// (MVTime and MVAngle) classes.
+// In addition the module contains some more general support classes
+// (<linkto class=Euler>Euler</linkto> angles,
+// <linkto class=RotMatrix>rotation matrix</linkto>,
+// <linkto class=MUString>pointed string</linkto>), formatting for
+// <linkto class=MVTime>time</linkto> and <linkto class=MVAngle>angle classes
+// and classes containing information for
+// Measures (<linkto class=MeasValue>MeasValue</linkto> and the derived MV
+// classes like <linkto class=MVEpoch>MVEpoch</linkto>). See the
+// <a href="#MeasValue">MeasValue</a> section.
 //
 // <h3> Includes</h3>
 // Including the <src>aips/Quanta.h</src> will take care of all
-// includes necessary for the handling of Units and Quantities.
+// includes necessary for the handling of pure Units and Quantities.
 //
 //  <a name="Unit"><h3> Physical units </h3></a>
 // Physical units are basically used in quantities
@@ -337,6 +343,64 @@
 //   <li>  <src>Quantum<Double> k2;	// IAU Gaussian grav. const **2</src>
 // </ul>
 // 
+// <p>
+//  <a name="MeasValue"><h3> Values for Measures </h3></a>
+// The MeasValue class derivatives are all named <em>MVmeasure</em>, e.g.
+// <em>MVFrequency</em>, and represent the internal representation of the
+// specific measure class. There main use is for the Measures module,
+// but they can be used alone, e.g. for the conversion to formatted times,
+// or the conversion of frequencies from say wavelength to frequency.
+// They all have at least the following constructors:
+// <srcblock>
+//	MV()
+//	MV(MV)
+//	MV(Double)
+//	MV(Vector<Double>)
+//	MV(Quantity)
+//	MV(Vector<Quantity>)
+//	MV(Quantum<Vector<Double> >)
+// </srcblock>
+// But most have also constructors like:
+// <srcblock>
+//	MV(Double, Double)
+//	MV(Quantity, Quantity)
+// </srcblock>
+// The actual interpretation is class dependent: see the individual MV classes
+// like </linkto class=MVEpoch>MVEpoch</linkto>,
+// </linkto class=MVDirection>MVDirection</linkto>,
+// </linkto class=MVPosition>MVPosition</linkto>,
+// </linkto class=MVFrequency>MVFrequency</linkto>,
+// </linkto class=MVDouble>MVDouble</linkto>,
+// </linkto class=MVRadialVelocity>MVRadialVelocity</linkto>.
+// </linkto class=MVBaseline>MVBaseline</linkto>,
+// </linkto class=MVuvw>MVuvw</linkto>,
+// </linkto class=MVEarthMagnetic>MVEarthMagnetic</linkto>,
+// A few examples:
+// <srcblock>
+//   MVEpoch(12345, 0.1e-20) will create one epoch (MJD12345.0), but preserving
+//			   the precision of all information
+//   MVDirection(Quantity(20,"deg"), Quantity(-10,"'")) will create a direction
+//			   with an RA of 20 degree, and a DEC of -10 arcmin
+//   MVFrequency(Quantity(5,"keV")) will create a frequency corresponding to
+//			   the specified energy.
+// </srcblock>
+// All MVs have the <src>+=, -=, ==, !=, << </src>operators, and <src>near()</src>,
+// <src>nearAbs()</src>, <src>print()</src> and <src>adjust()</src>
+// and <src>readjust()</src> (which in general
+// normalise to a value of 1 (e.g. MVDirection), or recalculates high
+// precision values (e.g. MVEpoch) functions.<br>
+// Information can be viewed with many <em>get</em> functions. In most cases
+// getValue() will return the internal value as either Double or 
+// Vector<Double>; get() will return the same, or converted values (e.g.
+// a vector of length, angle, angle for MVPosition; while special
+// one like getAngle() or getAngle(unit), getTime() etc will return Quantums
+// (with optional conversion to specified units).<br>
+// In general the Measure classes can be used without worrying about the
+// MeasValues, since most Measure constructors have enough flexibility (and
+// their own get()'s) to be able to use them independently).<br>
+// Special cases are <linkto class=MVAngle>MVAngle</linkto> and 
+// <linkto class=MVTime>MVTime</linkto>, which can do special formatting for
+// time and angles (in earlier documentation they were called HMS etc.).
 // <p>
 
 // </synopsis> 
