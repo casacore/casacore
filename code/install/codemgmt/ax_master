@@ -1783,3 +1783,4 @@
 11 086 src rm nrao/implement/SDD/SDDStMan.cc
 11 086 src mv trial/implement/Tasking/Index.h aips/implement/Tasking/Index.h
 11 086 src mv trial/implement/Tasking/Index.cc aips/implement/Tasking/Index.cc
+11 086 src mv trial/implement/Tasking/test/tIndex.cc aips/implement/Tasking/test/tIndex.cc
