@@ -1,5 +1,5 @@
 //# CoordinateSystem.cc: Interconvert pixel and image coordinates. 
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -3824,7 +3824,7 @@ Bool CoordinateSystem::checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt 
 
             worldAxis = pixelAxisToWorldAxis(i);
             if (worldAxis<0) {
-//               ostrstream oss;
+//               ostringstream oss;
 //               oss << "World axis for pixel axis " << axes(i) << " has been removed" << endl;
 //               os << LogIO::WARN << String(oss) << endl;
 //               os << LogIO::WARN << "This does not affect the Fourier Transform" << LogIO::POST;
