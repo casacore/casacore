@@ -29,84 +29,52 @@
 # $Id$
 #
 set script = "UPsed"
-set usage = 'Usage: UPsed [-f] <typ> <filename in> [<filename out>]'
+set usage = 'Usage: UPsed <sed> <filename in> [<filename out>]'
 #
 # UPsed script (must have x allowed)
 # Change a file according to a sed rule
 #
-# sed pattern will be in <typ>.sed file created by
-#     sourcing <typ>.info if necessary
+# sed patterns will be in <sed> file
 # file out will default to file in
-# the <typ> can have directory information
 #
 # See UPinfo for details
 #
 #
 # Get general info
 #
-if ($# < 1) then
+if ($# < 2) then
     echo "$usage"
     exit (1)
-endif
-
-if ("$1" == "-f") then
-    shift
-    set arg = ($*)
-else
-   if (! $?AIPSPATH) then
-      echo "No AIPSPATH environment set, initialize aips++ first"
-      exit 1
-   endif
-   set x = "`which UPfind`"
-   if (-x "$x") then
-     set uppath = $x:h
-   else
-     set x = ( $AIPSPATH )
-     set uppath = $x[1]/$x[2]/bin
-   endif
-   unset x
-   if ("$uppath" == ".") then
-     set uppath = `pwd`
-   endif
-   if (! -r $uppath/UPinfo) then
-     echo "Cannot find the UPinfo source script in $uppath"
-     echo "Check your aips++ installation"
-   endif
-   source $uppath/UPinfo
-   if (! $ok) exit 1
 endif
 #
 # Get specific data
 #
-if ($#arg < 2) then
-    echo "$usage"
-    exit (1)
-endif
-
-set tp = $arg[1]
-set fin = $arg[2]
-if ($#arg < 3) then
+set tp = $1
+set fin = $2
+if ($# < 3) then
     set fout = $fin
 else
-    set fout = $arg[3]
+    set fout = $3
 endif
 
 set tmp = $$
-if (! -e $tp.sed) then
-    echo "Cannot access $tp.sed"
+if (! -e $tp) then
+    echo "Cannot access $tp"
     exit 1
 endif
 
-sed -f $tp.sed $fin >! $tmp.tmp
+sed -f $tp $fin >! $tmp.tmp
 
 mv -f $tmp.tmp $fout
 
 unset tmp
+unset tp
+unset fin
+unset fout
 
 exit 0
 
-##
-
+#
 
 
 
