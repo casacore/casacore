@@ -149,6 +149,7 @@ void CompressComplex::create (uInt initialNrrow)
 
 void CompressComplex::prepare()
 {
+  BaseMappedArrayEngine<Complex,Int>::prepare1();
   ROTableColumn thisCol (table(), sourceName());
   thisCol.keywordSet().get ("_CompressComplex_Scale",      scale_p);
   thisCol.keywordSet().get ("_CompressComplex_Offset",     offset_p);
@@ -166,7 +167,7 @@ void CompressComplex::prepare()
     }
   }
   // Do this at the end, because it might call addRow.
-  BaseMappedArrayEngine<Complex,Int>::prepare();
+  BaseMappedArrayEngine<Complex,Int>::prepare2();
 }
 
 void CompressComplex::reopenRW()
@@ -285,8 +286,21 @@ void CompressComplex::scaleOnPut (Float scale, Float offset,
     if (isNaN (in[i])) {
       out[i] = -32768 * 65536;
     } else {
-      Int r = int(short((in[i].real() - offset) / scale)) * 65536;
-      out[i] = r + short((in[i].imag() - offset) / scale);
+      Short s;
+      Float tmp = (in[i].real() - offset) / scale;
+      if (tmp < 0) {
+	s = short (ceil(tmp - 0.5));
+      } else {
+	s = short (floor(tmp + 0.5));
+      }
+      Int r = int(s) * 65536;
+      tmp = (in[i].imag() - offset) / scale;
+      if (tmp < 0) {
+	s = short (ceil(tmp - 0.5));
+      } else {
+	s = short (floor(tmp + 0.5));
+      }
+      out[i] = r + s;
     }
   }
   array.freeStorage (in, deleteIn);

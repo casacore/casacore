@@ -149,6 +149,7 @@ void CompressFloat::create (uInt initialNrrow)
 
 void CompressFloat::prepare()
 {
+  BaseMappedArrayEngine<Float,Short>::prepare1();
   ROTableColumn thisCol (table(), sourceName());
   thisCol.keywordSet().get ("_CompressFloat_Scale",      scale_p);
   thisCol.keywordSet().get ("_CompressFloat_Offset",     offset_p);
@@ -166,7 +167,7 @@ void CompressFloat::prepare()
     }
   }
   // Do this at the end, because it might call addRow.
-  BaseMappedArrayEngine<Float,Short>::prepare();
+  BaseMappedArrayEngine<Float,Short>::prepare2();
 }
 
 void CompressFloat::reopenRW()
@@ -270,7 +271,12 @@ void CompressFloat::scaleOnPut (Float scale, Float offset,
     if (isNaN (in[i])) {
       out[i] = -32768;
     } else {
-      out[i] = short((in[i] - offset) / scale);
+      Float tmp = (in[i] - offset) / scale;
+      if (tmp < 0) {
+	out[i] = short (ceil(tmp - 0.5));
+      } else {
+	out[i] = short (floor(tmp + 0.5));
+      }
     }
   }
   array.freeStorage (in, deleteIn);
