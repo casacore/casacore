@@ -1,5 +1,5 @@
 //# ExprFuncNode.cc: Class representing a function in table select expression
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -46,7 +46,8 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
 				      ValueType vtype,
 				      const TableExprNodeSet& source)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
-  funcType_p         (ftype)
+  funcType_p         (ftype),
+  argDataType_p      (dtype)
 {}
 
 TableExprFuncNode::~TableExprFuncNode()
@@ -63,9 +64,15 @@ TableExprNodeRep* TableExprFuncNode::fillNode
 {
     uInt i;
     // Copy block of children.
+    // Determine if common argument type is Double or Complex.
+    // (this is used by some functions like near and norm).
     thisNode->operands_p.resize (nodes.nelements());
+    thisNode->argDataType_p = NTDouble;
     for (i=0; i<nodes.nelements(); i++) {
 	thisNode->operands_p[i] = nodes[i]->link();
+	if (nodes[i]->dataType() == NTComplex) {
+	    thisNode->argDataType_p = NTComplex;
+	}
     }
     // Convert String to Date if needed
     for (i=0; i<nodes.nelements(); i++) {
@@ -113,6 +120,42 @@ Bool TableExprFuncNode::getBool (uInt rownr)
 	return allEQ (operands_p[0]->getArrayBool(rownr), True);
     case isdefFUNC:
 	return operands_p[0]->isDefined (rownr);
+    case near2FUNC:
+	if (argDataType_p == NTDouble) {
+	    return near (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 1.0e-13);
+	}
+	return near (operands_p[0]->getDComplex(rownr),
+		     operands_p[1]->getDComplex(rownr),
+		     1.0e-13);
+    case near3FUNC:
+	if (argDataType_p == NTDouble) {
+	    return near (operands_p[0]->getDouble(rownr),
+			 operands_p[1]->getDouble(rownr),
+			 operands_p[2]->getDouble(rownr));
+	}
+	return near (operands_p[0]->getDComplex(rownr),
+		     operands_p[1]->getDComplex(rownr),
+		     operands_p[2]->getDouble(rownr));
+    case nearabs2FUNC:
+	if (argDataType_p == NTDouble) {
+	    return nearAbs (operands_p[0]->getDouble(rownr),
+			    operands_p[1]->getDouble(rownr),
+			    1.0e-13);
+	}
+	return nearAbs (operands_p[0]->getDComplex(rownr),
+			operands_p[1]->getDComplex(rownr),
+			1.0e-13);
+    case nearabs3FUNC:
+	if (argDataType_p == NTDouble) {
+	    return nearAbs (operands_p[0]->getDouble(rownr),
+			    operands_p[1]->getDouble(rownr),
+			    operands_p[2]->getDouble(rownr));
+	}
+	return nearAbs (operands_p[0]->getDComplex(rownr),
+			operands_p[1]->getDComplex(rownr),
+			operands_p[2]->getDouble(rownr));
     default:
 	throw (TableInvExpr ("TableExprFuncNode::getBool, "
 			     "unknown function"));
@@ -127,22 +170,6 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	return C::pi;
     case eFUNC:
 	return C::e;
-    case near2FUNC:
-	return near     (operands_p[0]->getDouble(rownr),
-			 operands_p[1]->getDouble(rownr),
-			 1.0e-13);
-    case near3FUNC:
-	return near     (operands_p[0]->getDouble(rownr),
-			 operands_p[1]->getDouble(rownr),
-			 operands_p[2]->getDouble(rownr));
-    case nearabs2FUNC:
-	return nearAbs  (operands_p[0]->getDouble(rownr),
-			 operands_p[1]->getDouble(rownr),
-			 1.0e-13);
-    case nearabs3FUNC:
-	return nearAbs  (operands_p[0]->getDouble(rownr),
-			 operands_p[1]->getDouble(rownr),
-			 operands_p[2]->getDouble(rownr));
     case sinFUNC:
 	return sin      (operands_p[0]->getDouble(rownr));
     case sinhFUNC:
@@ -176,18 +203,18 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	return max (operands_p[0]->getDouble(rownr),
 		    operands_p[1]->getDouble(rownr));
     case normFUNC:
-	if (operands_p[0]->dataType() == NTDouble) {
+	if (argDataType_p == NTDouble) {
 	    Double val = operands_p[0]->getDouble(rownr);
 	    return val*val;
 	}
 	return norm (operands_p[0]->getDComplex(rownr));
     case absFUNC:
-	if (operands_p[0]->dataType() == NTDouble) {
+	if (argDataType_p == NTDouble) {
 	    return abs (operands_p[0]->getDouble(rownr));
 	}
 	return abs (operands_p[0]->getDComplex(rownr));
     case argFUNC:
-	if (operands_p[0]->dataType() == NTDouble) {
+	if (argDataType_p == NTDouble) {
 	    if (operands_p[0]->getDouble(rownr) >= 0) {
 		return 0;
 	    }
@@ -195,12 +222,12 @@ Double TableExprFuncNode::getDouble (uInt rownr)
 	}
 	return arg (operands_p[0]->getDComplex(rownr));
     case realFUNC:
-	if (operands_p[0]->dataType() == NTDouble) {
+	if (argDataType_p == NTDouble) {
 	    return operands_p[0]->getDouble(rownr);
 	}
 	return operands_p[0]->getDComplex(rownr).real();
     case imagFUNC:
-	if (operands_p[0]->dataType() == NTDouble) {
+	if (argDataType_p == NTDouble) {
 	    return 0;
 	}
 	return operands_p[0]->getDComplex(rownr).imag();
@@ -331,22 +358,6 @@ DComplex TableExprFuncNode::getDComplex (uInt rownr)
 	return TableExprFuncNode::getDouble (rownr);
     }
     switch (funcType_p) {
-    case near2FUNC:
-	return near     (operands_p[0]->getDComplex(rownr),
-			 operands_p[1]->getDComplex(rownr),
-			 1.0e-13);
-    case near3FUNC:
-	return near     (operands_p[0]->getDComplex(rownr),
-			 operands_p[1]->getDComplex(rownr),
-			 operands_p[2]->getDouble(rownr));
-    case nearabs2FUNC:
-	return nearAbs  (operands_p[0]->getDComplex(rownr),
-			 operands_p[1]->getDComplex(rownr),
-			 1.0e-13);
-    case nearabs3FUNC:
-	return nearAbs  (operands_p[0]->getDComplex(rownr),
-			 operands_p[1]->getDComplex(rownr),
-			 operands_p[2]->getDouble(rownr));
     case sinFUNC:
 	return sin      (operands_p[0]->getDComplex(rownr));
     case sinhFUNC:
@@ -850,11 +861,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case near2FUNC:
     case nearabs2FUNC:
 	checkNumOfArg (2, 2, nodes);
-	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     case near3FUNC:
     case nearabs3FUNC:
 	checkNumOfArg (3, 3, nodes);
-	return checkDT (dtypeOper, NTNumeric, NTNumeric, nodes);
+	return checkDT (dtypeOper, NTNumeric, NTBool, nodes);
     case sinFUNC:
     case sinhFUNC:
     case cosFUNC:
