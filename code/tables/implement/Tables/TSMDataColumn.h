@@ -1,5 +1,5 @@
 //# TSMDataColumn.h: A data column in Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -278,6 +278,60 @@ public:
     void putScalarColumnComplexV  (const Vector<Complex>* arr);
     void putScalarColumnDComplexV (const Vector<DComplex>* arr);
 
+    // Get the scalar values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn getColumnCells function).
+    // The default implementation loops through all rows.
+    // <group>
+    virtual void getScalarColumnCellsBoolV     (const RefRows& rownrs,
+						Vector<Bool>* dataPtr);
+    virtual void getScalarColumnCellsuCharV    (const RefRows& rownrs,
+						Vector<uChar>* dataPtr);
+    virtual void getScalarColumnCellsShortV    (const RefRows& rownrs,
+						Vector<Short>* dataPtr);
+    virtual void getScalarColumnCellsuShortV   (const RefRows& rownrs,
+						Vector<uShort>* dataPtr);
+    virtual void getScalarColumnCellsIntV      (const RefRows& rownrs,
+						Vector<Int>* dataPtr);
+    virtual void getScalarColumnCellsuIntV     (const RefRows& rownrs,
+						Vector<uInt>* dataPtr);
+    virtual void getScalarColumnCellsfloatV    (const RefRows& rownrs,
+						Vector<float>* dataPtr);
+    virtual void getScalarColumnCellsdoubleV   (const RefRows& rownrs,
+						Vector<double>* dataPtr);
+    virtual void getScalarColumnCellsComplexV  (const RefRows& rownrs,
+						Vector<Complex>* dataPtr);
+    virtual void getScalarColumnCellsDComplexV (const RefRows& rownrs,
+						Vector<DComplex>* dataPtr);
+    // </group>
+
+    // Put the scalar values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ScalarColumn putColumnCells function).
+    // The default implementation loops through all rows.
+    // <group>
+    virtual void putScalarColumnCellsBoolV     (const RefRows& rownrs,
+						const Vector<Bool>* dataPtr);
+    virtual void putScalarColumnCellsuCharV    (const RefRows& rownrs,
+						const Vector<uChar>* dataPtr);
+    virtual void putScalarColumnCellsShortV    (const RefRows& rownrs,
+						const Vector<Short>* dataPtr);
+    virtual void putScalarColumnCellsuShortV   (const RefRows& rownrs,
+						const Vector<uShort>* dataPtr);
+    virtual void putScalarColumnCellsIntV      (const RefRows& rownrs,
+						const Vector<Int>* dataPtr);
+    virtual void putScalarColumnCellsuIntV     (const RefRows& rownrs,
+						const Vector<uInt>* dataPtr);
+    virtual void putScalarColumnCellsfloatV    (const RefRows& rownrs,
+						const Vector<float>* dataPtr);
+    virtual void putScalarColumnCellsdoubleV   (const RefRows& rownrs,
+						const Vector<double>* dataPtr);
+    virtual void putScalarColumnCellsComplexV  (const RefRows& rownrs,
+						const Vector<Complex>* dataPtr);
+    virtual void putScalarColumnCellsDComplexV (const RefRows& rownrs,
+					       const Vector<DComplex>* dataPtr);
+    // </group>
+
     void getArrayColumnBoolV     (Array<Bool>* arr);
     void getArrayColumnuCharV    (Array<uChar>* arr);
     void getArrayColumnShortV    (Array<Short>* arr);
@@ -299,6 +353,60 @@ public:
     void putArrayColumndoubleV   (const Array<double>* arr);
     void putArrayColumnComplexV  (const Array<Complex>* arr);
     void putArrayColumnDComplexV (const Array<DComplex>* arr);
+
+    // Get the array values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn getColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void getArrayColumnCellsBoolV     (const RefRows& rownrs,
+					       Array<Bool>* dataPtr);
+    virtual void getArrayColumnCellsuCharV    (const RefRows& rownrs,
+					       Array<uChar>* dataPtr);
+    virtual void getArrayColumnCellsShortV    (const RefRows& rownrs,
+					       Array<Short>* dataPtr);
+    virtual void getArrayColumnCellsuShortV   (const RefRows& rownrs,
+					       Array<uShort>* dataPtr);
+    virtual void getArrayColumnCellsIntV      (const RefRows& rownrs,
+					       Array<Int>* dataPtr);
+    virtual void getArrayColumnCellsuIntV     (const RefRows& rownrs,
+					       Array<uInt>* dataPtr);
+    virtual void getArrayColumnCellsfloatV    (const RefRows& rownrs,
+					       Array<float>* dataPtr);
+    virtual void getArrayColumnCellsdoubleV   (const RefRows& rownrs,
+					       Array<double>* dataPtr);
+    virtual void getArrayColumnCellsComplexV  (const RefRows& rownrs,
+					       Array<Complex>* dataPtr);
+    virtual void getArrayColumnCellsDComplexV (const RefRows& rownrs,
+					       Array<DComplex>* dataPtr);
+    // </group>
+
+    // Put the array values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn putColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void putArrayColumnCellsBoolV     (const RefRows& rownrs,
+					       const Array<Bool>* dataPtr);
+    virtual void putArrayColumnCellsuCharV    (const RefRows& rownrs,
+					       const Array<uChar>* dataPtr);
+    virtual void putArrayColumnCellsShortV    (const RefRows& rownrs,
+					       const Array<Short>* dataPtr);
+    virtual void putArrayColumnCellsuShortV   (const RefRows& rownrs,
+					       const Array<uShort>* dataPtr);
+    virtual void putArrayColumnCellsIntV      (const RefRows& rownrs,
+					       const Array<Int>* dataPtr);
+    virtual void putArrayColumnCellsuIntV     (const RefRows& rownrs,
+					       const Array<uInt>* dataPtr);
+    virtual void putArrayColumnCellsfloatV    (const RefRows& rownrs,
+					       const Array<float>* dataPtr);
+    virtual void putArrayColumnCellsdoubleV   (const RefRows& rownrs,
+					       const Array<double>* dataPtr);
+    virtual void putArrayColumnCellsComplexV  (const RefRows& rownrs,
+					       const Array<Complex>* dataPtr);
+    virtual void putArrayColumnCellsDComplexV (const RefRows& rownrs,
+					       const Array<DComplex>* dataPtr);
+    // </group>
 
     void getColumnSliceBoolV     (const Slicer& slicer, Array<Bool>* arr);
     void getColumnSliceuCharV    (const Slicer& slicer, Array<uChar>* arr);
@@ -332,6 +440,80 @@ public:
     void putColumnSliceDComplexV (const Slicer& slicer,
 				  const Array<DComplex>* dataPtr);
  
+    // Get the array values in some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn getColumnCells function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void getColumnSliceCellsBoolV     (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<Bool>* dataPtr);
+    virtual void getColumnSliceCellsuCharV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<uChar>* dataPtr);
+    virtual void getColumnSliceCellsShortV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<Short>* dataPtr);
+    virtual void getColumnSliceCellsuShortV   (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<uShort>* dataPtr);
+    virtual void getColumnSliceCellsIntV      (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<Int>* dataPtr);
+    virtual void getColumnSliceCellsuIntV     (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<uInt>* dataPtr);
+    virtual void getColumnSliceCellsfloatV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<float>* dataPtr);
+    virtual void getColumnSliceCellsdoubleV   (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<double>* dataPtr);
+    virtual void getColumnSliceCellsComplexV  (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<Complex>* dataPtr);
+    virtual void getColumnSliceCellsDComplexV (const RefRows& rownrs,
+					       const Slicer& ns,
+					       Array<DComplex>* dataPtr);
+    // </group>
+
+    // Put the array values into some cells of the column.
+    // The buffer pointed to by dataPtr has to have the correct length.
+    // (which is guaranteed by the ArrayColumn putColumnSlice function).
+    // The default implementation throws an "invalid operation exception".
+    // <group>
+    virtual void putColumnSliceCellsBoolV     (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<Bool>* dataPtr);
+    virtual void putColumnSliceCellsuCharV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<uChar>* dataPtr);
+    virtual void putColumnSliceCellsShortV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<Short>* dataPtr);
+    virtual void putColumnSliceCellsuShortV   (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<uShort>* dataPtr);
+    virtual void putColumnSliceCellsIntV      (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<Int>* dataPtr);
+    virtual void putColumnSliceCellsuIntV     (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<uInt>* dataPtr);
+    virtual void putColumnSliceCellsfloatV    (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<float>* dataPtr);
+    virtual void putColumnSliceCellsdoubleV   (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<double>* dataPtr);
+    virtual void putColumnSliceCellsComplexV  (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<Complex>* dataPtr);
+    virtual void putColumnSliceCellsDComplexV (const RefRows& rownrs,
+					       const Slicer& ns,
+					       const Array<DComplex>* dataPtr);
+    // </group>
+
     // Read the data of the column from a tile.
     // (I.e. convert from external to local format).
     void readTile (void* to, const void* from, uInt nrPixels);
@@ -381,6 +563,31 @@ private:
     // This can only be done if one hypercube is used.
     void accessColumnSlice (const Slicer& ns,
 			    const void* dataPtr, Bool writeFlag);
+
+    // Read or write some cells in a column.
+    // It tries to optimize by looking for regular row strides.
+    void accessColumnCells (const RefRows& rownrs,  const IPosition& shape,
+			    const void* dataPtr, Bool writeFlag);
+
+    // Read or write some cells in a column.
+    // It tries to optimize by looking for regular row strides.
+    void accessColumnSliceCells (const RefRows& rownrs, const Slicer& ns,
+				 const IPosition& shape,
+				 const void* dataPtr, Bool writeFlag);
+
+    // Read or write the full cells given by start,end,incr.
+    void accessFullCells (TSMCube* hypercube,
+			  char* dataPtr, Bool writeFlag,
+			  const IPosition& start,
+			  const IPosition& end,
+			  const IPosition& incr);
+
+    // Read or write the sliced cells given by start,end,incr.
+    void accessSlicedCells (TSMCube* hypercube,
+			    char* dataPtr, Bool writeFlag,
+			    const IPosition& start,
+			    const IPosition& end,
+			    const IPosition& incr);
 };
 
 

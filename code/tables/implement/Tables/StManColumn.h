@@ -1,5 +1,5 @@
 //# StManColumn.h: Base storage manager column class
-//# Copyright (C) 1994,1995,1996,1998
+//# Copyright (C) 1994,1995,1996,1998,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -291,6 +291,8 @@ private:
     // implementation of putArray.
     void throwPutArray() const;
 
+
+protected:
     // Get the scalar values in the entire column.
     // The buffer pointed to by dataPtr has to have the correct length.
     // (which is guaranteed by the ScalarColumn getColumn function).
@@ -784,6 +786,7 @@ private:
     // </group>
 
 
+private:
     // The data type of the column.
     int dtype_p;
 };
