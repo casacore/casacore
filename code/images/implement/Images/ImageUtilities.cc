@@ -1,5 +1,5 @@
 //# ImageUtilities.cc:  Helper class for accessing images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -234,7 +234,7 @@ String ImageUtilities::shortAxisName (const String& axisName)
 }
 
 
-SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& fluxRatio,
+SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& facToJy,
                                                 const ImageInfo& ii,
                                                 const CoordinateSystem& cSys,
                                                 const Unit& brightnessUnit,
@@ -260,7 +260,7 @@ SkyComponent ImageUtilities::encodeSkyComponent(LogIO& os, Double& fluxRatio,
    }
 //
    Vector<Quantum<Double> > beam = ii.restoringBeam();
-   sky.fromPixel(fluxRatio, pars, brightnessUnit, beam, cSys, type, stokes);
+   sky.fromPixel(facToJy, pars, brightnessUnit, beam, cSys, type, stokes);
    return sky;
 } 
 
