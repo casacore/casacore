@@ -2546,3 +2546,8 @@
 09 450 src rm doc/html/navpages/images/search`.gif
 09 451 src rm trial/implement/Measures/MeasureHolder2.cc
 09 451 src rm trial/implement/Measures/QuantumHolder2.cc
+09 451 src rm trial/implement/ComponentModels/SkyCompRep2.cc
+09 451 src rm trial/implement/ComponentModels/SpectralIndex2.cc
+09 451 src rm trial/implement/ComponentModels/PointShape2.cc
+09 451 src rm trial/implement/ComponentModels/GaussianShape2.cc
+09 451 src rm trial/implement/ComponentModels/Constant2Spectrum.cc
