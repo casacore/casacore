@@ -5875,3 +5875,4 @@
 16 273 sys rm libexec/dishplot_printing.g
 16 273 sys rm libexec/dishplot_range_cursor.g
 16 273 sys rm libexec/dishplot_state.g
+16 273 sys rm libexec/dishplot_zoom.g
