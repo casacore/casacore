@@ -614,18 +614,24 @@ void MSRange::minMax(Matrix<Float>& minmax,
 	avData.reference(tData);
       }
     }
-    if (funcSel[0]) ::minMax(minf[0],maxf[0],amplitude(avData));
-    if (funcSel[1]) ::minMax(minf[1],maxf[1],phase(avData));
-    if (funcSel[2]) ::minMax(minf[2],maxf[2],real(avData));
-    if (funcSel[3]) ::minMax(minf[3],maxf[3],imag(avData));
-    if (start==0) {
-      minmax.row(0)=minf; minmax.row(1)=maxf;
-    } else {
-      minmax.row(0)=::min(static_cast<Array<Float> >(minmax.row(0)),
-			  static_cast<Array<Float> >(minf));
-      minmax.row(1)=::max(static_cast<Array<Float> >(minmax.row(1))
-			  ,static_cast<Array<Float> >(maxf));
+
+    // If any unflagged data, get min/max
+    if (avData.nelements() > 0) {
+
+      if (funcSel[0]) ::minMax(minf[0],maxf[0],amplitude(avData));
+      if (funcSel[1]) ::minMax(minf[1],maxf[1],phase(avData));
+      if (funcSel[2]) ::minMax(minf[2],maxf[2],real(avData));
+      if (funcSel[3]) ::minMax(minf[3],maxf[3],imag(avData));
+      if (start==0) {
+	minmax.row(0)=minf; minmax.row(1)=maxf;
+      } else {
+	minmax.row(0)=::min(static_cast<Array<Float> >(minmax.row(0)),
+			    static_cast<Array<Float> >(minf));
+	minmax.row(1)=::max(static_cast<Array<Float> >(minmax.row(1))
+			    ,static_cast<Array<Float> >(maxf));
+      }
     }
+
   }
 }
 
