@@ -28,7 +28,7 @@
 
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELConvert.h>

@@ -1,5 +1,5 @@
 //# tTiledShape.cc: Test program of TiledShape class
-//# Copyright (C) 1997
+//# Copyright (C) 1997,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/TiledShape.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/Utilities/Assert.h>

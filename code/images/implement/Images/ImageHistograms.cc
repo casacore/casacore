@@ -1,5 +1,5 @@
 //# ImageHistograms.cc: generate histograms from an image
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,10 +39,10 @@
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageUtilities.h>
 #include <trial/Lattices/LatticeApply.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeRegion.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Logging/LogIO.h>

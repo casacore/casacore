@@ -1,5 +1,5 @@
 //# LatticeStatistics.cc: generate statistics from a MaskedLattice
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,11 +36,11 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Quanta/QMath.h>
 #include <aips/Tasking/AppInfo.h>

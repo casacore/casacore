@@ -1,5 +1,5 @@
 //# tLEL.cc:  Tests the LEL* classes directly
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,7 +35,7 @@
 #include <trial/Lattices/LELFunction.h>
 #include <trial/Lattices/LELLattice.h>
 #include <trial/Lattices/LELUnary.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>

@@ -1,5 +1,5 @@
 //# tTiledLineStepper.cc: Test program for class TiledLineStepper
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Utilities/Assert.h>
 #include <iostream.h>

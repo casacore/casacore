@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -35,8 +35,8 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 #include <trial/Lattices/LatticeFFT.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/PagedArray.h>
 #include <iostream.h>
 
 int main() {

@@ -1,5 +1,5 @@
 //# tPagedImage.cc:  test the PagedImage class
-//# Copyright (C) 1994,1995,1998,1999
+//# Copyright (C) 1994,1995,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -29,8 +29,8 @@
 #include <trial/Images/ImageInfo.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/ArrayLattice.h>
+#include <aips/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayIO.h>

@@ -1,5 +1,5 @@
 //# LatticeConcat.cc: concatenate lattices
-//# Copyright (C) 1995,1997,1998,1999
+//# Copyright (C) 1995,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,10 +36,10 @@
 #include <aips/Utilities/Assert.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MaskedLattice.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/TiledShape.h>
 
 
 template<class T>

@@ -1,5 +1,5 @@
 //# tLatticeUtilities.cc:
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #include <aips/Exceptions/Excp.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeUtilities.h>
 
 #include <iostream.h>

@@ -1,5 +1,5 @@
 //# tLatticeStepper.cc:  mechanical test of LatticeLayout class
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>

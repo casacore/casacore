@@ -31,8 +31,8 @@
 
 //# Includes
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/TiledShape.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TiledShape.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Tables/TableRecord.h>
 

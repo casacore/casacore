@@ -1,5 +1,5 @@
 //# LatticeLocker.h: Class to hold a (user) lock on a lattice
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 
 //# Includes
-#include <trial/Lattices/LatticeBase.h>
+#include <aips/Lattices/LatticeBase.h>
 #include <aips/Tables/TableLock.h>
 #include <aips/Exceptions/Excp.h>
 

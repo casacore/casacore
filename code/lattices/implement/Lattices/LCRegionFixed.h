@@ -1,5 +1,5 @@
 //# LCRegionFixed.h: Abstract base class to define a fixed region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 //# Includes
 #include <trial/Lattices/LCRegionSingle.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/ArrayLattice.h>
 
 
 // <summary>

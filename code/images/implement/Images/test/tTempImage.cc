@@ -28,8 +28,8 @@
 #include <trial/Images/TempImage.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Coordinates/CoordinateUtil.h>
-#include <trial/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TempLattice.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

@@ -1,4 +1,4 @@
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@
 
 #include <trial/Lattices/LatticeConvolver.h>
 #include <trial/Lattices/LatticeFFT.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/TileStepper.h>
+#include <aips/Lattices/TileStepper.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Utilities/Assert.h>

@@ -1,5 +1,5 @@
 //# RegionHandler.cc: Handle regions stored as table keywords
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/LatticeBase.h>
+#include <aips/Lattices/LatticeBase.h>
 #include <trial/Lattices/LCPagedMask.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/TiledShape.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Vector.h>

@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/Quantum.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Containers/Block.h>
 

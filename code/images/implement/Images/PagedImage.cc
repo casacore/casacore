@@ -29,11 +29,11 @@
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/LatticeNavigator.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/PagedArrIter.h>
+#include <aips/Lattices/ArrayLattice.h>
+#include <aips/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/PagedArrIter.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeRegion.h>

@@ -38,7 +38,7 @@
 #include <aips/Functionals/Gaussian2D.h>
 #include <aips/Functionals/SumFunction.h>
 #include <trial/Functionals/FuncWithAutoDerivs.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Mathematics/Constants.h>

@@ -1,5 +1,5 @@
 //# tLatticeFit.cc: test the baselineFit function
-//# Copyright (C) 1995,1996,1998,1999
+//# Copyright (C) 1995,1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include<trial/Fitting/LinearFitSVD.h>
 #include <aips/Functionals/Polynomial.h>
 #include <trial/Functionals/LinearComb.h>
-#include<trial/Lattices/ArrayLattice.h>
+#include<aips/Lattices/ArrayLattice.h>
 #include<aips/Utilities/Assert.h>
 
 #include<iostream.h>

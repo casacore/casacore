@@ -1,5 +1,5 @@
 //# tLatticeExprNode2.cc:  Test program for masks in LatticeExprNode
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/LCBox.h>

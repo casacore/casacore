@@ -32,7 +32,7 @@
 //# Includes
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/MaskSpecifier.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Tables/TableRecord.h>

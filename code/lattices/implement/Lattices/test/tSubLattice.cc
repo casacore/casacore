@@ -26,10 +26,10 @@
 //# $Id$
 
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/ArrayLattice.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>

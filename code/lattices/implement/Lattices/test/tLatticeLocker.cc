@@ -1,5 +1,5 @@
 //# tLatticeLocker: Interactive test program for concurrent access to lattices
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArray.h>
 #include <trial/Lattices/LatticeLocker.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Tables/Table.h>

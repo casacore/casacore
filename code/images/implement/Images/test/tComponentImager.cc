@@ -39,7 +39,7 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Images/PagedImage.h>
-//#include <trial/Lattices/TiledShape.h>
+//#include <aips/Lattices/TiledShape.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>

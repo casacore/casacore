@@ -34,11 +34,11 @@
 
 #include <trial/Lattices/LatticeCleaner.h>
 #include <trial/Lattices/LatticeCleanerProgress.h>
-#include <trial/Lattices/TiledLineStepper.h> 
-#include <trial/Lattices/LatticeStepper.h> 
-#include <trial/Lattices/LatticeNavigator.h> 
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TiledLineStepper.h> 
+#include <aips/Lattices/LatticeStepper.h> 
+#include <aips/Lattices/LatticeNavigator.h> 
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TempLattice.h>
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/CopyLattice.h>

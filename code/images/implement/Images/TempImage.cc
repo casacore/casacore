@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Images/TempImage.h>
-#include <trial/Lattices/TempLattice.h>
+#include <aips/Lattices/TempLattice.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/IPosition.h>

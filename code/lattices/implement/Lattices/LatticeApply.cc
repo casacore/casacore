@@ -1,5 +1,5 @@
 //# LatticeApply.cc: Optimally iterate through lattices and apply supplied function
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,14 +27,14 @@
 
 
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LineCollapser.h>
 #include <trial/Lattices/TiledCollapser.h>
 #include <trial/Lattices/LatticeProgress.h>
-#include <trial/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/TileStepper.h>
+#include <aips/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/TileStepper.h>
 #include <trial/Lattices/LatticeApply.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/IPosition.h>

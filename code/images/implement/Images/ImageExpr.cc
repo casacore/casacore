@@ -1,5 +1,5 @@
 //# ImageExpr.cc: defines the ImageExpr class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 #include <trial/Images/ImageExpr.h>
 #include <trial/Images/LELImageCoord.h>
-#include <trial/Lattices/LatticeNavigator.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeIterInterface.h>
+#include <aips/Lattices/LatticeNavigator.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeIterInterface.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Exceptions/Error.h>

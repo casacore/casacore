@@ -1,5 +1,5 @@
 //# ImageFITSConverter.cc: this defines templated conversion from FITS to an aips++ Float image
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,8 +34,8 @@
 #include <trial/Images/RegionHandler.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>

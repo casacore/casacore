@@ -1,5 +1,5 @@
 //# LatticeFit.h: Fit every line of pixels parallel to any axis in a Lattice.
-//# Copyright (C) 1994,1995,1999
+//# Copyright (C) 1994,1995,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_LATTICE_FIT_H
 
 #include <aips/aips.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 #include <trial/Fitting/LinearFit.h>
 
 class GlishSysEventSource;

@@ -1,5 +1,5 @@
 //# ImageFITS2Converter.cc : non-templated FITS<->aips++ image conversion 
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,8 +31,8 @@
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInfo.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>

@@ -1,5 +1,5 @@
 //# tLatticeExprNode.cc:  Basic test program for LEL classes
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 #include <trial/Lattices/LELUnary.h>
 #include <trial/Lattices/LELArray.h>
 
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/LCPixelSet.h>
 #include <trial/Lattices/LCBox.h>

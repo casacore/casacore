@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>

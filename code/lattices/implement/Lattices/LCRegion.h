@@ -1,5 +1,5 @@
 //# LCRegion.h: Abstract base class to define a region of interest in lattice coordinates
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@
 #define AIPS_LCREGION_H
 
 //# Includes
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 

@@ -45,8 +45,8 @@
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/TempImage.h>
 

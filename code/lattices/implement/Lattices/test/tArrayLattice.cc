@@ -1,5 +1,5 @@
 //# tArrayLattice.cc: test ArrayLattices and ArrayLatticeIterators.
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,9 +27,9 @@
 
 #include <aips/aips.h>
 
-#include <trial/Lattices/ArrayLattice.h> 
-#include <trial/Lattices/LatticeIterator.h> 
-#include <trial/Lattices/LatticeStepper.h> 
+#include <aips/Lattices/ArrayLattice.h> 
+#include <aips/Lattices/LatticeIterator.h> 
+#include <aips/Lattices/LatticeStepper.h> 
 
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/ArrayLogical.h>

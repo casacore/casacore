@@ -1,5 +1,5 @@
 //# tImageExprGram.cc: Test program for image expression parser
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,8 +28,8 @@
 #include <trial/Images/ImageExprParse.h>
 #include <trial/Images/ImageExpr.h>
 #include <trial/Images/ImageRegion.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/ArrayLattice.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LCBox.h>
 #include <trial/Lattices/LCPixelSet.h>
 #include <aips/Tables/Table.h>

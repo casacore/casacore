@@ -1,5 +1,5 @@
 // tLatticeIndexer.cc:  mechanical test of LatticeIndexer class
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Lattices/LatticeIndexer.h>
+#include <aips/Lattices/LatticeIndexer.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Arrays/IPosition.h>

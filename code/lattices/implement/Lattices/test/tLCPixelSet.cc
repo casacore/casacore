@@ -1,5 +1,5 @@
 //# tLCPixelSet.cc:  mechanical test of the LCPixelSet class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -27,8 +27,8 @@
 
 #include <aips/aips.h>
 #include <trial/Lattices/LCPixelSet.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Tables/TableRecord.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>

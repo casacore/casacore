@@ -1,5 +1,5 @@
 //# ImageExprParse.cc: Classes to hold results from image expression parser
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandler.h>
 #include <trial/Lattices/LatticeExprNode.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArray.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColumnDesc.h>

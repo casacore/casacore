@@ -1,5 +1,5 @@
 //# dImageInterface.cc:  Illustrates the use of the ImageInterface base class
-//# Copyright (C) 1996,1998,1999
+//# Copyright (C) 1996,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,7 +27,7 @@
 
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>

@@ -53,8 +53,8 @@
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 
 void ComponentImager::
 project(ImageInterface<Float>& image, const ComponentList& list) {

@@ -1,5 +1,5 @@
 //# tLatticeApply.cc: Test program for class LatticeApply
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,10 +28,10 @@
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LineCollapser.h>
 #include <trial/Lattices/TiledCollapser.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArray.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
 #include <trial/Lattices/LatticeProgress.h>
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Tasking/ProgressMeter.h>

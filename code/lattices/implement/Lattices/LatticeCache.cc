@@ -1,5 +1,5 @@
 //# LatticeCache.cc: Cache for accessing a Lattice in Tiles
-//# Copyright (C) 1995,1996,1997,1999
+//# Copyright (C) 1995,1996,1997,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Lattices/Lattice.h>
-#include <trial/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
+#include <aips/Lattices/Lattice.h>
 
 #include <aips/Containers/Block.h>
 #include <aips/Arrays/Array.h>

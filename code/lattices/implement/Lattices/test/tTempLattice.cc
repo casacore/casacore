@@ -1,5 +1,5 @@
 //# tTempLattice.cc
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //# $Id$
 
 
-#include <trial/Lattices/TempLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TempLattice.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>

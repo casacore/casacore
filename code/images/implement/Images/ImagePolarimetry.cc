@@ -47,9 +47,9 @@
 #include <trial/Lattices/LCSlicer.h>
 #include <trial/Lattices/LatticeExprNode.h>
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/TiledLineStepper.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
 #include <trial/Lattices/LatticeStatistics.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/LogOrigin.h>

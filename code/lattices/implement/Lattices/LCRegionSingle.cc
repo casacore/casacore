@@ -1,5 +1,5 @@
 //# LCRegionSingle.cc: Abstract base class to define a single region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,7 +32,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/COWPtr.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeIterator.h>
 
 LCRegionSingle::LCRegionSingle()
 {}

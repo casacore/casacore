@@ -1,5 +1,5 @@
 //# dPagedArray.cc:  this contains the examples from the PagedArray.h file
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@
 //# $Id$
 
 #include <aips/aips.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
-#include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/PagedArray.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/LatticeStepper.h>
+#include <aips/Lattices/TiledLineStepper.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>

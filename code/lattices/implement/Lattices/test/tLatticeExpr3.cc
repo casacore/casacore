@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines non-templated classes in LELFunction.h
-//# Copyright (C) 1997,1998,1999
+//# Copyright (C) 1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExpr.h>
-#include <trial/Lattices/PagedArray.h>
+#include <aips/Lattices/PagedArray.h>
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/TiledShape.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TiledShape.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/TableDesc.h>

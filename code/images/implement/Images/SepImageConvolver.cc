@@ -1,5 +1,5 @@
 //# SepImageConvolver.cc:  separable convolution of an image
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -41,8 +41,8 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/SubImage.h>
-#include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/TiledLineStepper.h>
+#include <aips/Lattices/LatticeIterator.h>
+#include <aips/Lattices/TiledLineStepper.h>
 #include <trial/Lattices/LCPagedMask.h>
 #include <trial/Mathematics/VectorKernel.h>
 #include <trial/Tasking/ProgressMeter.h>

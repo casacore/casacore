@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/SubLattice.h>
-#include <trial/Lattices/LatticeIterInterface.h>
+#include <aips/Lattices/LatticeIterInterface.h>
 #include <trial/Lattices/LCRegion.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Utilities/Assert.h>
