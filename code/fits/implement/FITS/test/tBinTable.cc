@@ -1,5 +1,5 @@
 //# tBinTable.cc - this program tests the BinTable class
-//# Copyright (C) 1995, 1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <iostream.h>
 #include <stdio.h>
 
-Int main(int argc, char **argv)
+main(int argc, char **argv)
 {
     try {
 	Input inputs(1);
@@ -102,7 +102,8 @@ Int main(int argc, char **argv)
 		sprintf(tabName,"%s.table.%i",baseName.chars(),tabCount++);
 		String tabNameString(tabName);
 		cout << "BinaryTableHDU : " << tabNameString << " ... " ;
-		BinaryTable bintab(infits, cout, useMiriadSM, sdfits);
+		BinaryTable bintab(infits, FITSError::defaultHandler, 
+				   useMiriadSM, sdfits);
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while instantiating binary table " <<
 			infits.err() << endl;
@@ -120,7 +121,7 @@ Int main(int argc, char **argv)
 	    break;
 	    default:
 		cout << "Unable to do anything but skip this hdutype : " << 
-		    infits.hdutype() << endl;
+		    Int(infits.hdutype()) << endl;
 		infits.skip_hdu();
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while skipping the hdu" <<
