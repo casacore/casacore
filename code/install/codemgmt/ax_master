@@ -4728,3 +4728,4 @@
 14 306 src mv trial/apps/newsditerator/newsdaverager.g trial/apps/sditerator/sdaverager.g
 14 306 src mv trial/apps/newsditerator/newsdaverager.help trial/apps/sditerator/sdaverager.help
 14 306 src mv trial/apps/newsditerator/newsdaveragerDO.h trial/apps/sditerator/sdaveragerDO.h
+14 306 src mv trial/apps/newsditerator/newsdaveragerDO.cc trial/apps/sditerator/sdaveragerDO.cc
