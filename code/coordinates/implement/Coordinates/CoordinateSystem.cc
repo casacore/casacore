@@ -1276,9 +1276,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     }
 
     // DIRECTION
-    String proj = ctype(longAxis);
-    Bool isGalactic = False;
     if (longAxis >= 0) {
+        String proj = ctype(longAxis);
+        Bool isGalactic = False;
 	if (proj.contains("GLON")) {
 	    isGalactic = True;
 	}
