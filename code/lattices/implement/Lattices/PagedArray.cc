@@ -220,6 +220,16 @@ Bool PagedArray<T>::isWritable() const
 		 Table::isWritable (itsTable.tableName()));
 }
 
+template <class T> 
+String PagedArray<T>::name (const Bool stripPath) const 
+{
+   Path path(itsTable.tableName());
+   if (!stripPath) {
+      return path.absoluteName();
+   } 
+   return path.baseName();
+}
+
 template<class T>
 IPosition PagedArray<T>::shape() const
 {
@@ -266,42 +276,6 @@ void PagedArray<T>::doPutSlice (const Array<T>& sourceArray,
     Slicer section(where, degenerateArr.shape(), stride, Slicer::endIsLength); 
     itsRWArray.putSlice (itsRowNumber, section, degenerateArr);
   } 
-}
-
-template<class T>
-const String& PagedArray<T>::tableName() const
-{
-  return itsTable.tableName();
-}
-
-template<class T>
-const String& PagedArray<T>::columnName() const
-{
-  return itsColumnName;
-}
-
-template<class T>
-String PagedArray<T>::defaultColumn()
-{
-  return "PagedArray";
-}
-
-template<class T>
-const ROTiledStManAccessor& PagedArray<T>::accessor() const
-{
-  return itsAccessor;
-}
-
-template<class T>
-uInt PagedArray<T>::rowNumber() const
-{
-  return itsRowNumber;
-}
-
-template<class T>
-uInt PagedArray<T>::defaultRow()
-{
-  return 0;
 }
 
 template<class T>
