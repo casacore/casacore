@@ -48,6 +48,7 @@
 #include <aips/Tables/StandardStMan.h>
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Tables/TableInfo.h>
 #include <aips/Tables/TiledColumnStMan.h>
 #include <aips/Tables/TiledShapeStMan.h>
 #include <aips/Utilities/GenSort.h>
@@ -474,6 +475,14 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM) {
   // update the references to the subtable keywords
   ms.initRefs();
  
+  { // Set the TableInfo
+    TableInfo& info(ms.tableInfo());
+    info.setType(TableInfo::type(TableInfo::MEASUREMENTSET));
+    info.setSubType(String("UVFITS"));
+    info.readmeAddLine
+      ("This is a MeasurementSet Table holding astronomical observations");
+  }
+
   ms_p=ms;
   msc_p=new MSColumns(ms_p);
 }
