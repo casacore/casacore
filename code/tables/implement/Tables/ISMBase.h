@@ -1,5 +1,5 @@
 //# ISMBase.h: Base class of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -231,6 +231,11 @@ private:
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
+
+    // The data manager will be deleted (because all its columns are
+    // requested to be deleted).
+    // So clean up the things needed (e.g. delete files).
+    virtual void deleteManager();
 
     // Let the storage manager initialize itself.
     // It is used by create and open.

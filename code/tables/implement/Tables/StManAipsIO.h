@@ -1,5 +1,5 @@
 //# StManAipsIO.h: Storage manager for tables using AipsIO
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -436,6 +436,11 @@ private:
 
     // Reopen the storage manager files for read/write.
     virtual void reopenRW();
+
+    // The data manager will be deleted (because all its columns are
+    // requested to be deleted).
+    // So clean up the things needed (e.g. delete files).
+    virtual void deleteManager();
 
     // Add rows to all columns.
     void addRow (uInt nrrow);
