@@ -1,0 +1,2446 @@
+\documentstyle{article}
+\setlength{\textwidth}{6.5in}
+\setlength{\evensidemargin}{0.0in}
+\setlength{\oddsidemargin}{0.0in}
+\parskip=5truept
+\begin{document}
+\newcommand{\aipspp}{AIPS++\ }
+\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
+
+\newcommand{\definetable}[2]
+{
+        %\clearpage
+	\vfill\eject
+	\subsection{#1}
+        \vspace{0.15in}
+        \small
+	\begin{tabular}{|l|p{1.25in}|l|p{.9in}|p{1.4in}|}
+	\hline
+	\multicolumn{5}{|c|}{\bf #1}\\ 
+	\cline{1-5} \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&\multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&\multicolumn{1}{|c|}{Comments}\\ \cline{1-5}
+        #2
+        \hline
+	\end{tabular}
+}
+\newcommand{\nc}{$N_c$}
+\newcommand{\nr}{$N_r$}
+\newcommand{\nf}{$N_f$}
+\newcommand{\nfs}{$N_f^*$}
+\newcommand{\nl}{$N_l$}
+\newcommand{\ncat}{$N_{cat}$}
+
+\title{MeasurementSet definition version 2.0}
+\author{A.J. Kemball (NRAO) and M.H. Wieringa (ATNF), eds.}
+\date{January 21, 2000}
+\maketitle
+
+\tableofcontents 
+\section{Summary} 
+
+This note describes a revised MeasurementSet definition which extends
+that previously given in \aipspp Note 191 (Wieringa and Cornwell
+1996).  The new definition is designed to support changes in the
+synthesis calibration system, provide support for VLBI processing,
+enhance single-dish capabilities and also incorporate more general
+modifications that have been suggested since the first definition was
+released.  The motivation for the modifications is discussed, and a
+complete form of the revised definition is presented.
+
+\section{Introduction}
+
+The MeasurementSet (MS) defines the format in which visibility and
+single-dish data are stored in \aipspp (Wieringa and Cornwell
+1996). The format has been chosen to accommodate synthesis and
+single-dish data from a variety of instruments in as broad a framework
+as possible. In addition, it has been designed to be compatible with
+the requirements of the measurement equation formalism (Noordam 1996),
+which has been adopted to model instrumental errors in the \aipspp
+calibration system.
+
+The original definition will be referred to as version 1.0 in what
+follows. The reasons for the modifications proposed here are as
+follows:
+
+\begin{itemize}
+
+\item{{\bf VLBI data reduction:} Some changes are necessary in v1.0 to
+accommodate the requirements of VLBI data processing. An extension of
+the basic synthesis MeasurementSet format is presented to provide a
+common VLBI data format.}
+
+\item{{\bf Synthesis calibration:} General synthesis development
+currently in progress requires some modifications to the existing
+format, particularly in support of cross-calibration. Some changes
+are also proposed to meet more recent requirements in areas such as mosaicing.}
+
+\item{{\bf Single-dish processing:} Some changes have been proposed to
+enhance support for single-dish processing and to ensure greater
+compatibility between single-dish and synthesis data reduction.}
+
+\item{{\bf Accumulated changes:} Several changes of a general nature
+have been proposed since v1.0, and this is a good time to evaluate
+and incorporate these as appropriate.}
+
+\end{itemize}
+
+This is an opportune time to revise the MeasurementSet, as an
+increased level of synthesis development is underway. Later revisions
+will have a broader impact on existing code.
+
+The design philosophy underlying this MS definition is summarized in
+terms of the following objectives:
+
+\begin{itemize}
+
+\item{{\bf Incremental change:} The changes proposed here are designed
+to be as incremental as possible and no extensive re-design has been
+attempted. The scientific benefit of each modification has been weighed
+against the scope of the proposed change to the MS design.}
+
+\item{{\bf Compatibility:} Compatibility between single-dish and
+synthesis data has been retained within one basic MS definition. The
+proposed VLBI extensions are constrained to be compatible with both
+the basic synthesis format and across existing VLBI networks and
+correlators.}
+
+\item{{\bf Separation of information:} A fundamental distinction is
+made between a priori information which is known at the time of
+observation or shortly thereafter, and calibration information
+subsequently derived in post-processing. The MS definition is
+primarily designed to encompass a priori information. The format of
+calibration tables in given elsewhere.}
+
+\item{{\bf Storage:} A future document will define standard Data
+Managers for each column, which are recommended but not
+required. Attention has been paid to the physical file sizes implied
+by the MS definition, particularly for larger datasets, and storage
+managers for a standard compressed MS format will be discussed in the
+same document.}
+
+\item{{\bf Combining measurement sets:} The MS definition has been
+revised to facilitate the combining of diverse observational datasets
+within one MeasurementSet if required, in a manner that is compatible
+with the calibration system. This does not hold the implication that
+all observations to be processed jointly require that the underlying
+MeasurementSets be combined. Applications will support the ability to
+process groups of MeasurementSets. However, the facility to combine
+data needs to be provided in the MeasurementSet design.
+
+ The combining of different observations within one MeasurementSet
+is permitted subject to the conventions of Section 3.3, which
+separates data primarily by OBSERVATION\_ID, but also by
+PROCESSOR\_ID and ARRAY\_ID. Cross-calibration between observations
+is however subject to the capabilities of the calibration
+system. Specialized inter-conversion of calibration information may be
+necessary if the calibration in separate observations is sufficiently
+disjoint. For example, transferring calibration between frequencies
+sufficiently far apart will likely be performed in an intermediate
+step, using external utilities.
+
+ An application is envisaged to combine data from one or more
+separate MeasurementSets, creating a new output MS by copying the
+input data row by row, and renumbering the indices and interleaving
+data as required. No sort order is prescribed for a MeasurementSet in
+general, but it is expected that data sorted in time order will be
+most useful to the broadest range of applications.}
+
+\end{itemize}
+
+Specific principles adopted in the design are given below:
+
+\begin{itemize}
+
+\item{{\bf Signal path:} The MeasurementSet provides a format to
+represent data from a generic radio-telescope or interferometer. Along
+with the basic observed data, for which a limited set of accepted
+types are specified in the MAIN table section, there are associated
+data characterizing the state of the instrument as a whole. These
+include: i) abstracted antenna properties of components in a generic
+telescope, such as feeds and spectral windows, which serve also to
+label the output data; ii) external information, such as flagging,
+history or weather data; and iii) instrument-specific back-end data
+which may be difficult to represent in a completely generic form. The
+final category includes intermediate data and state information from
+devices such as correlators, radiometers, spectrometers or pulsar
+timers, amongst others, where they do not overlap with abstracted
+antenna properties defined elsewhere. This state information may be
+used in computing or initializing calibration corrections. Thus the MS
+represents the signal path and state of the instrument, using as
+generic an interface as possible, but allowing specialization where
+appropriate. This conforms closely with the overall calibration
+model.}
+
+\item{{\bf Use of Measures:} Some columns in the MeasurementSet
+require coordinate and unit specification. This is done in a manner
+compatible with the AIPS++ Measures system. Measure frame information
+is implicit in the underlying MS data. Row-based measures are avoided
+wherever possible due to the overhead this would often impose on the
+data reduction system through frequent coordinate conversion to a
+common reference frame. Thus, column-based measures are the default
+unless otherwise noted. The only place in which a row-based Measure
+reference is currently allowed is the frequency axis in the
+SPECTRAL\_WINDOW sub-table, where it is supplied in order to allow an
+efficient representation of Doppler tracking. Column-based Measures of
+a specific type (e.g. EPOCH), should have a common reference across
+the MS as a whole, unless there is a compelling reason otherwise. This
+requirement is necessary for efficiency, and in minimizing
+transformations when combining diverse MS datasets. No standard
+reference is enforced for any given Measure type; these should be
+chosen prudently. Units are also required to be column-based, unless a
+row-based Measure is allowed for a given column. Recommended units are
+specified for each Measure column. Access to the MS is assumed to take
+place through the MS access classes. TableMeasures will be used
+wherever practical in the MS access classes.}
+
+\item{{\bf Relative indexing:} All indices for antennas, feeds,
+spectral windows, or related quantities are assumed to start at zero.
+Thus for direct indices into sub-tables, such as SPECTRAL\_WINDOW\_ID,
+a value ID=$n$ maps to row=$n$. MS indexing is zero-based in C++, and
+one-based in Glish, as before.}
+
+\item{{\bf Sub-table completeness:} Not all data represented in
+associated sub-tables are assumed to be present in MAIN, although this
+is encouraged. For example, extra antennas may appear in the ANTENNA
+sub-table, even if they have no associated data in MAIN.}
+
+\item{{\bf Blanking and defaults:} Measured data are blanked by
+setting associated Boolean flag data, and magic value blanking is not
+used. For integer values constrained to be non-negative, or sub-table
+indices, however, a value of -1 will generally denote an unset
+value. All required columns should be filled with suitable defaults if
+not actually used.}
+
+\item{{\bf Times and intervals:} For quantities which may vary with
+time, an INTERVAL of zero implies a constant value with no
+time-dependence, while a negative INTERVAL implies that the value is
+valid until re-defined. The latter case accommodates values that are
+time-stamped but have an undefined or unknown period of validity.}
+
+\item{{\bf Non-standard columns:} The naming convention for
+non-standard columns remains the same as in MS definition v1.0,
+namely: i) general, non-supported columns start with the prefix
+NS\_\$SITE\_, as in NS\_NRAO\_WHATEVER; and ii) columns supported by a
+consortium site start with the prefix \$SITE\_, as in
+NRAO\_WHATEVER. Standard columns, such as those described in this
+definition, are not permitted to use either of the above two prefix
+forms. Non-standard columns may not be defined to store data already
+stored in standard columns. In addition, applications are not required
+to support non-standard columns.}
+
+\item{{\bf Archiving:} MeasurementSet data are assumed to be archived
+in an external format such as FITS or HDF (Hierarchical Data Format)
+for example, in as lossless a format as possible. This format will be
+specified separately. Changes to the MS format will not be made
+without a compelling scientific reason, but the format will, of
+necessity, evolve over time. The archiving application has the
+responsibility to restore the data to the latest format. It is deemed
+too complex for the underlying MS access code, and data reduction
+code, to be made capable of recognizing multiple MS revisions at the
+C++ level. A utility is envisaged, however, to convert MS v1.0 data to
+the MS v2.0 format.}
+
+\end{itemize}
+
+Suggestions regarding this revision of the MS definition have been
+contributed broadly from within the \aipspp project. No specific
+attribution is given for each change but the accompanying text
+reflects the rationale behind the modification and includes relevant
+points that were raised in public discussion.
+
+\section{Summary of changes}
+
+This section contains a description of the changes proposed for each
+table in the MS definition. A full definition of the v2.0 MS format is
+given in Section 5.
+
+\subsection{MAIN table}
+
+The fundamental assumption underlying the MAIN table is that it
+contains interferometer or single-dish data, represented in
+cross-power or autocorrelation form. The composite key is
+baseline-based and auxiliary antenna-based data, that are consequently
+not fully functionally dependent on the baseline-based key, are stored
+in some of the associated sub-tables. As the latter data are often
+time-variable, the design admits multi-key lookups in these tables, as
+is already assumed in v1.0 (eg. SYSCAL table). In keeping with
+realistic databases, the design of the MAIN table is not fully
+normalized. The term is used here in the conventional database sense
+(see for example, Date 1986). Adding indices to MAIN to avoid
+sub-table lookups involves a trade-off between the anticipated
+increase in the physical file size (which is storage manager
+dependent), and the expected size of the sub-table and frequency with
+which the auxiliary data need to be accessed in time-critical
+applications. It also depends on whether the index is commonly used in
+data selection. Note also that auxiliary data may be sampled on
+different intervals, which is an important consideration in deciding
+which antenna-based information should be placed in the same
+sub-table. These factors have been balanced subject to the following
+guidelines: i) storage manager independence has been retained
+(i.e. the worst case is assumed regarding extra MAIN indices; ii)
+single-key lookups in sub-tables are strongly favoured; and iii) it is
+assumed that small sub-tables will be held in cache during MS access.
+
+The changes proposed for the MAIN table are presented below:
+
+\subsubsection{MAIN keywords}
+
+It is proposed that the DEFAULT\_CALIBRATION keyword be removed, as it
+is no longer used. 
+
+The following additional keywords are proposed:
+
+\begin{tabbing}
+SORT\_COLUMNS\quad\quad  \= String\quad\quad  \=
+(Indices over which MS is sorted)\quad\quad \= (Reqd.) \kill
+MS\_VERSION \> Float \> (MS format revision) \> (Reqd.) \\
+SORT\_COLUMNS  \> String  \> (Indices over which MS is sorted) \> (Opt.) \\
+SORT\_ORDER \> String \> ('ASCENDING' or 'DESCENDING') \> (Opt.) \\
+\end{tabbing}
+
+ Keywords SORT\_COLUMNS and SORT\_ORDER are used to provide
+information on the sort-order of the underlying MS.
+
+\subsubsection{Non-standard MAIN data}
+
+Three non-standard data types have been suggested for accommodation
+within the standard MS definition, namely: (i) lag data; (ii)
+triple-product data, and (iii) FLOAT\_DATA with an arbitrary axis other
+than frequency.
+
+The need to store lag data is motivated by the output format of XF
+correlators and the requirements for data loading and inspection in
+this case. Storage of triple-product data is required for optical
+interferometry processing but is also useful for the implementation of
+incoherent VLBI fringe-fitting algorithms. The requirement for
+non-standard FLOAT\_DATA axes is concerned with more flexible
+single-dish data formats.
+
+Lag data can be incorporated by allowing an optional MAIN column:
+
+\begin{tabbing}
+LAG\_DATA\quad\quad \= Complex(NUM\_CORR,NUM\_LAG) \quad\quad \= 
+(Lag function) \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+A LAG\_ID index (via DATA\_DESC\_ID) points to a LAG table containing
+the details of the lag spectrum, including range. Lag data are not
+expected to be calibrated directly and would be supported primarily as
+an interim format in an anticipated data reformatting sequence. The
+routine storing of both lag and transformed spectral data in one MS
+would often lead to prohibitive disk space requirements, and is not
+anticipated here. Further information regarding the joint storing of
+lag functions and frequency spectra in the same MS can be found in the
+MAIN table description in Section 5.
+
+Triple-product data can be incorporated in the MS definition by adding
+additional antenna labels such as:
+
+\begin{tabbing}
+FEED3\quad\quad\quad\quad  \= Int\quad\quad  \=
+(Feed on ANTENNA3)\quad\quad \= (Opt.)\quad\quad \kill
+ANTENNA3 \> Int \> (Third antenna) \> (Opt.) \\
+FEED3    \> Int  \> (Feed on ANTENNA3) \> (Opt.) \\
+\end{tabbing}
+
+The UVW column is similarly affected. The triple-product data would
+be expected to be formed for matching time intervals, so other columns
+such as SOURCE\_ID would be held to be common. The triple-product data
+would be stored in the DATA column and the presence of a valid
+ANTENNA3 column would label the data to be of this type. It is
+stressed that triple-product and lag data will not have nearly equal
+standing in the calibration system, as compared to conventional
+frequency spectra.
+
+Support for an arbitrary axis in the FLOAT\_DATA column, by
+generalizing the SPECTRAL\_WINDOW\_ID index, is more difficult to
+accommodate, and is best approached in the same manner as the lag
+data, by enumerating special cases with separate indices such as
+LAG\_ID. The lag and triple-product data formats are still
+fundamentally visibility data and may also share at least some of the
+broader synthesis infrastructure. Their impact on the sub-table
+formats is also limited. This is not true for arbitrary data types in
+the MS such as may result if the axis type in the FLOAT\_DATA
+column was allowed to vary arbitrarily. 
+
+ Accommodating non-standard columns (such as LAG\_DATA) in this way is
+contingent on the requirement that they do not permit the
+representation of identical data in multiple equivalent formats. This
+would represent a significant application overhead and would affect
+the global structure of the MS as a whole. Most importantly, this
+would limit joint processing of data from separate instruments
+(eg. single-dish and interferometry data).
+
+
+\subsubsection{DATA labeling}
+
+At present, polarization labeling for each correlator is stored in the
+SPECTRAL\_WINDOW table, although such information is not properly
+associated with frequency. Consequently, it is proposed that
+polarization information be stored in a separate POLARIZATION
+sub-table, indexed by POLARIZATION\_ID. However, rather than add
+POLARIZATION\_ID to MAIN as an additional index, it is proposed that
+SPECTRAL\_WINDOW\_ID be replaced by DATA\_DESC\_ID, which points to a
+DATA\_DESCRIPTION sub-table containing SPECTRAL\_WINDOW\_ID and
+POLARIZATION\_ID pairs. This structure has the specific advantage that
+the DATA array shape is completely determined by DATA\_DESC\_ID, which
+is an important consideration in tiling and uv-data access. The
+DATA\_DESC sub-table will be small, so that secondary look-ups to
+determine SPECTRAL\_WINDOW\_ID from DATA\_DESC\_ID can take place in
+memory and will not represent a significant overhead.
+
+Thus, SPECTRAL\_WINDOW\_ID in MAIN will be replaced by DATA\_DESC\_ID,
+as follows:
+
+\begin{tabbing}
+DATA\_DESC\_ID\quad\quad \= Int\quad\quad \= (Data description index)
+ \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Processor information}
+
+As discussed in Section 2, provision needs to be made for the
+characterization of the state of the specific back-end device used to
+produce the final data. Such devices include correlators, radiometers,
+spectrometers and pulsar timers, amongst others. These device data are not
+permitted to duplicate general antenna properties represented
+elsewhere, but are invariably highly instrument-specific. It is
+proposed that the existing CORRELATOR\_ID index be replaced and
+generalized as:
+
+\begin{tabbing}
+PROCESSOR\_ID\quad\quad \= Int\quad\quad \= (Processor identifier)
+ \quad\quad \= (Reqd.) \\
+\end{tabbing} 
+
+This acts as an index into a PROCESSOR sub-table, which similarly
+replaces the CORRELATOR sub-table, as described in Section 4.0.4.
+This scheme accommodates parameter and status information associated
+with each processor, generally by look-up into secondary sub-tables
+containing this information using a subset of the MAIN key. For
+single-dish data, however, the processor switching phase is
+sufficiently fundamental to warrant inclusion as an optional MAIN
+column, both for access efficiency and data labeling:
+
+\begin{tabbing}
+PHASE\_ID\quad\quad \= Int\quad\quad \= (Switching phase identifier)
+ \quad\quad \= (Opt.) \\
+\end{tabbing} 
+
+\subsubsection{State information}
+
+An associated STATE table is proposed to store combined information
+relating to active reference signals or loads, as used in phase-switching, sub-scan information and a characterization of the current observing mode. This information is not fully represented in the MS at present, and is required for a more complete integration of single-dish processing in a common framework. An index in MAIN would be required as follows:
+
+\begin{tabbing}
+STATE\_ID\quad\quad \= Int\quad\quad \= (State identifier)
+ \quad\quad \= (Reqd.) \\
+\end{tabbing} 
+
+
+\subsubsection{Pulsar information}
+
+Synthesis correlation of pulsar data may involve the use of a pulsar gate,
+which is a Boolean matrix in frequency and pulsar phase. The use of the
+pulsar gate is either selected for a given baseline or not. The gate
+may change with frequency group or source. No baseline dependence
+seems likely but the gate could change with time. A general solution
+is to implement a new MAIN table column as follows:
+
+\begin{tabbing}
+PULSAR\_GATE\_ID\quad\quad \= Int\quad\quad \= (Pulsar gate identifier)
+ \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+This is an index into the PULSAR\_GATE table containing the gate mask.
+It is also proposed that the PULSAR\_ID column be absorbed in the
+SOURCE table (via SOURCE\_ID), and removed from MAIN.  In this
+revision of the MS definition, the PULSAR\_BIN column is made
+optional.
+
+\subsubsection{Baseline reference antenna}
+
+For VLBI data from baseline-based correlators, record needs to be kept
+of which antenna was used as the reference on each baseline during
+correlation. The antenna sequence may be switched by the data filler
+to preserve an ascending baseline numbering scheme. The reference
+antenna needs to be known when shifting spectra in frequency to a
+common velocity frame (eg. LSR). An optional column is proposed for
+this purpose:
+
+\begin{tabbing}
+BASELINE\_REF\quad\quad \= Bool\quad\quad \= (True for ANTENNA1)
+ \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Flag data}
+
+ The MS definition has been revised to recognize two distinct forms of
+flagging, both of which need to be supported, namely: i) flagging most
+easily expressed as global commands (eg. (ANTENNA1=3) AND (TIME $>$
+12h03 UT)); and ii) highly time-variable flagging of a more random
+nature, such as that resulting from mean-level clipping. In addition,
+the flagging system recognizes two further requirements, namely that
+point-by-point flags stored with the MS MAIN data are more efficient
+than global flag commands when data are accessed, and secondly that
+flags should be arbitrarily reversible in both representations.
+
+ To this end, the multi-level Boolean column FLAG\_HISTORY in MAIN is
+retained, but renamed to FLAG\_CATEGORY. It contains a record of
+point-by-point flags associated with each MS row in separate
+categories. The cumulative effect is stored in column FLAG, for all
+categories combined. Categories may be arbitrarily defined by editing
+applications, but several standard categories are reserved. This
+includes a special category, FLAG\_CMD, which contains the cumulative
+effect of flag (or un-flag) commands stored in the FLAG\_CMD
+table. These commands are stored in the FLAG\_CMD table with
+associated identifiers, including flag reason and level. The flag
+reason indicates the type of flagging and the flag level the revision
+of flagging to which the command belongs. Flag revisions are stored in
+the point-by-point flags in FLAG\_CATEGORY by creating new, related
+categories to store separate revisions of the same category if
+required.
+
+ Thus point-by-point or global flags can be reversed individually or
+jointly. Both representations are scientifically necessary, and
+supported. If the global flags are updated, it is the responsibility
+of the flagging application to carry out the required one-time update
+of the point-by-point flags in MAIN.
+
+\subsubsection{Auto-correlation and single-dish data}
+
+Single-dish data are represented by (ANTENNA1={\it n}, ANTENNA2= {\it
+n}), and autocorrelation data by the secondary condition (FEED1={\it
+m}, FEED2={\it m}). MeasurementSets are permitted containing a mixture
+of FLOAT\_DATA and DATA columns. For autocorrelation data, however, in
+any given row the FLOAT\_DATA column will be checked first, and, if
+absent, the DATA column will be used.
+
+\subsubsection{Hypercube indices}
+
+A standardized naming convention for hypercube indices is proposed as
+$<$column$>$\_HYPERCUBE\_ID (eg. DATA\_HYPERCUBE\_ID), where they are
+specifically required by Tiled Storage Managers, as implemented in the
+Table system.
+
+\subsubsection{Video point}
+
+ An optional data column is proposed in MAIN to store the video
+point. This is preserved on some systems, and is required for a
+complete transform between the frequency and lag domains. 
+
+\begin{tabbing} 
+VIDEO\_POINT\quad\quad \= Complex(NUM\_CORR)\quad\quad 
+\= (Video point) \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+ This representation is more transparent than encoding the information
+in the DATA array, which leads to display and data selection
+inconsistencies.
+
+\subsubsection{Time centroid}
+
+The TIME column in MAIN is defined as the mid-point of the nominal
+sampling interval, as specified in the column, INTERVAL. The EXPOSURE
+column, in contrast to INTERVAL, defines the effective integration
+time, including the effects of missing data. The centroid of the
+effective data interval is not represented in the current MS
+definition, but does contain distinct information. It is added here as
+a new non-key attribute:
+
+\begin{tabbing}
+TIME\_CENTROID\quad\quad \= Double\quad\quad \= (Centroid of
+exposure) \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+\subsection{ANTENNA table}
+
+The changes proposed for the ANTENNA table are presented below:
+
+\subsubsection{ARRAY identification}
+
+It is proposed that the antennas retain the same global numbering
+scheme across the MS as a whole, and not be allowed to vary
+independently for each ARRAY\_ID. Thus ARRAY\_ID is no longer a
+secondary antenna index, but does retain its primary purpose to separate
+antennas in the MAIN table for calibration purposes. There are
+advantages to enforcing a global antenna numbering scheme,
+particularly when antennas are shared between subarrays and may thus
+share certain calibration information.
+
+\subsubsection{Antenna type}
+
+A new column is proposed to distinguish between tracking stations and
+standard antennas (in which orbiting antennas are included):
+
+\begin{tabbing}
+TYPE\quad\quad \= String\quad\quad \= 
+(Enumerated antenna type (eg. TRACKING-STN))
+ \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Orbital elements}
+
+Mean Keplerian orbital elements need to be stored for orbiting
+antennas, in the following proposed format:
+
+\begin{tabbing}
+MEAN\_ORBIT\quad\quad \= Double(6)\quad\quad \= (Mean Keplerian elements)
+ \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Phased array identifier}
+
+It is proposed that the PHASED\_ARRAY\_ID column be made optional.
+
+\subsubsection{Row flag}
+
+It is proposed that a flag column be added to validate or invalidate
+the contents of the row, as follows:
+
+\begin{tabbing}
+FLAG\_ROW\quad\quad \= Bool\quad\quad \= (Row flag)\quad\quad \= (Reqd.)\\
+\end{tabbing}
+
+\subsection{ARRAY table}
+
+It is proposed that multiple datasets be combined within one MS
+through the use of the following indices in the MAIN table:
+
+\begin{itemize}
+
+\item{{\bf OBSERVATION\_ID:} This separates distinct observations
+taken with different instruments (eg. MERLIN, VLBA, VLA), or observations
+with the same instrument at different epochs.}
+
+\item{{\bf PROCESSOR\_ID:} Information obtained via this index
+separates data from separate processors, such as separate correlators,
+as may occur for combined VLBI datasets (eg. MK4, VLBA).}
+
+\item{{\bf ARRAY\_ID:} This index indentifies subarrays, such as those
+defined by separate groups of antennas observing independently in
+source or frequency, which cannot necessarily be calibrated
+together. Subarrays can be transient and highly variable, as in
+geodetic VLBI observations, or more directly associated with the clear
+sub-division of an interferometer array (eg. Fixed Q-band and C-band
+subarrays during a VLA observing run). Subarrays may also be assigned
+by users in an arbitrary manner to label separate parts of an
+array. This may bear no direct relation to the observing
+schedule. This interpretation is supported here with the proviso that
+antennas which cannot be calibrated together are not assigned to the
+same subarray. The index ARRAY\_ID is not numbered relative to
+OBSERVATION\_ID.}
+
+\end{itemize}
+
+In this context the ARRAY table can be absorbed in the OBSERVATION
+table and it is proposed here that it be removed from the MS
+definition.  A new, optional SCAN\_SUMMARY table is proposed to store
+overall array, observation and scan summary information.
+
+\subsection{FEED table}
+
+It is proposed that the ARRAY\_ID column be removed from the FEED
+table, for reasons discussed in Section 3.2.1.  The format of the BEAM
+sub-table (indexed on BEAM\_ID) is deferred for later specification.
+In addition, it is proposed that the PHASED\_FEED\_ID be made optional.
+
+A new column is proposed to store the focus length, as:
+
+\begin{tabbing}
+FOCUS\_LENGTH\quad\quad \= Double\quad\quad \= 
+(Focus length) \quad\quad \= (Opt.) \\ 
+\end{tabbing}
+
+
+\subsection{FIELD table}
+
+Changes applicable to the FIELD table are discussed in this section.
+
+\subsubsection{Direction information}
+
+With the definition of a POINTING sub-table (see Section 4.0.1), the
+POINTING\_DIR and POINTING\_DIR\_RATE columns can be removed from the
+FIELD table. 
+
+It is also proposed that the DELAY\_DIR\_RATE, PHASE\_DIR\_RATE and
+REFERENCE\_DIR\_RATE columns be replaced by extending the DELAY\_DIR,
+PHASE\_DIR and REFERENCE\_DIR columns to dimension (2, NUM\_POLY+1) to
+represent higher order terms. This allows the representation of more
+specialized correlation modes. The polynomial order is added as a new
+column:
+
+\begin{tabbing}
+NUM\_POLY\quad\quad \= Int\quad\quad \= (Polynomial order)
+ \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Ephemeris identification}
+
+A separate identifier is proposed to identify the ephemeris data
+associated with time-variable FIELD position data, as obtained for
+moving sources. These data are stored in a separate EPHEMERIS
+table. This has the added advantage of identifying multiple revisions
+of the ephemeris, which may vary between observation and final
+reduction. The proposed new column is:
+
+\begin{tabbing} 
+EPHEMERIS\_ID\quad\quad  \= Int\quad\quad\quad\quad \= 
+(Ephemeris identifier)\quad\quad\quad\quad \= (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Indexing}
+
+It is further proposed that the FIELD\_ID column be removed and that
+the table be directly indexed using the FIELD\_ID value in MAIN. A
+row flag is proposed to invalidate the entry, as follows:
+
+\begin{tabbing}
+FLAG\_ROW\quad\quad  \= Bool\quad\quad \= (Row flag)\quad\quad \= (Reqd.)\\
+\end{tabbing}
+
+\subsection{FLAG\_CMD}
+
+As discussed in Section 3.1.8, this table is intended to hold all
+global flag commands applied to the MS. Their cumulative effect is
+reflected in the MAIN column FLAG\_CATEGORY, in the category FLAG\_CMD,
+and therefore further in FLAG and FLAG\_ROW. In this proposal, the
+FLAG\_CMD records are represented as character strings, using the MS
+column names in a limited syntax to represent flagging operations,
+each with associated labeling information:
+
+\begin{tabbing} 
+FLAG\_COMMAND\quad\quad\quad\quad \= String\quad\quad \= (Flagging command)
+\quad\quad\quad\quad \= (Reqd.) \kill
+TIME \> Double \> (Midpoint of interval) \> (Reqd.) \\
+INTERVAL \> Double \> (Time interval) \> (Reqd.) \\
+TYPE \> String \> (FLAG or UNFLAG) \> (Reqd.) \\
+REASON \> String \> (Reason) \> (Reqd.) \\
+LEVEL  \> Int    \> (Flag level) \> (Reqd.) \\
+SEVERITY \> Int \> (Flag severity) \> (Reqd.) \\
+APPLIED \> Bool \> (Flag reflected in MAIN ?) \> (Reqd.) \\
+COMMAND \> String \> (Flagging command) \> (Reqd.) \\
+\end{tabbing}
+
+\subsection{OBSERVATION table}
+
+It is proposed that the CORR\_SCHEDULE field be removed (see Section
+4.0.4), which is accessed via the PROCESSOR sub-table. The telescope
+name, which was previously stored in the ARRAY sub-table, is proposed
+to be recorded as:
+
+\begin{tabbing} 
+TELESCOPE\_NAME\quad\quad \= String\quad\quad \= (Telescope name (eg WSRT))
+ \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+The observation date is required as:
+
+\begin{tabbing} 
+TIME\_RANGE\quad\quad \= Double(2)\quad\quad \= 
+(Start and stop times of observation)
+ \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+A new column is proposed to identify the type of the unmodified
+schedule summary is SCHEDULE, namely:
+
+\begin{tabbing} 
+SCHEDULE\_TYPE\quad\quad \= String\quad\quad \= 
+(Schedule type (eg. VEX)) \quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+A field is proposed to store the log file recorded during observations, as:
+
+\begin{tabbing}
+LOG\quad\quad \= String(*)\quad\quad \= (Observing log)
+ \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+A field is proposed to store the target release date for the project:
+
+\begin{tabbing}
+RELEASE\_DATE\quad\quad \= Double\quad\quad \= (Release date)
+ \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+A row flag is proposed to invalidate the entry as:
+
+\begin{tabbing}
+FLAG\_ROW\quad\quad \= Bool\quad\quad \= (Row flag)\quad\quad \= (Reqd.)\\
+\end{tabbing}
+
+\subsection{OBS\_LOG table}
+
+It is proposed that this table be renamed as HISTORY, and that its
+primary function be to act as a processing log. New columns
+are proposed as follows:
+
+\begin{tabbing}
+PRIORITY\quad\quad\quad \= String\quad\quad \= 
+(Message priority (eg. DEBUGGING, WARN, NORMAL or SEVERE)
+ \quad\quad \= (Reqd.) \\
+ORIGIN             \> String  \> 
+(Source code location from which message originates) \> (Reqd.) \\
+OBJECT\_ID         \> String  \>
+(Originating ObjectID, if available) \> (Reqd.) \\
+APPLICATION        \> String \>
+(Application name) \> (Reqd.) \\
+\end{tabbing}
+
+User notes will be identified by a specific ORIGIN string.
+
+This is also a useful table to store a record of the Glish commands
+and parameters used to invoke the application. This allows parts of
+the data reduction to be repeated with minimal effort. An automatic
+recording mechanism needs to be invoked by individual methods or
+applications for this purpose. This information can be represented in
+a string format as:
+
+\begin{tabbing}
+CLI\_COMMAND\quad\quad \= String(*)\quad\quad \= 
+(Glish parameter or command sequence)
+ \quad\quad \= (Reqd.) \\
+APP\_PARMS \> String(*) \> (Application parameters) \> (Reqd.)
+\end{tabbing}
+
+ It is recognized that a mechanism to log all ad hoc CLI commands
+affecting a MeasurementSet is impractical, but this field should be
+filled by all standard applications.
+
+\subsection{SOURCE table}
+
+The changes proposed for the SOURCE table are given below:
+
+\subsubsection{Source model}
+
+Information on the detailed source model needs to be specified at
+several points in calibration and imaging, and is properly selected at
+that time. A field is added here to record the assignment of a
+component source model for each SOURCE\_ID, as this is made during
+calibration. This assigned source model will never be used in an
+application without explicit notification or confirmation, and is not
+intended as a default source model.
+
+\begin{tabbing}
+SOURCE\_MODEL\quad\quad \= TableRecord\quad\quad \= 
+(Assigned CSM) \quad\quad \= (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Spectral line information}
+
+Information on the systemic velocity and rest frequency of spectral
+lines observed towards individual sources is required in various
+stages of line calibration, particularly for Doppler tracking of
+individual transitions in software. The indices SOURCE\_ID and
+SPECTRAL\_WINDOW\_ID are a good composite key for this information and
+it is proposed that they be added to the SOURCE table. A general
+extension for multiple spectral lines per spectral window is proposed
+as follows:
+
+\begin{tabbing}
+REST\_FREQUENCY\quad\quad \= Double(NUM\_LINES)\quad\quad \=
+(Rest frequency for this transition)\quad\quad\quad\quad\quad \= (Reqd.) \kill
+NUM\_LINES \> Int \> 
+(No. of transitions for this spectral window) \> (Reqd.) \\
+TRANSITION           \> String(NUM\_LINES)  \> 
+(Transition name) \> (Reqd.) \\
+REST\_FREQUENCY       \> Double(NUM\_LINES) \>
+(Rest frequency for this transition) \> (Reqd.) \\
+SYSVEL               \> Double(NUM\_LINES) \>
+(Systemic velocity) \> (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Pulsar information}
+
+ The PULSAR\_ID is moved from the MAIN table to the SOURCE table, as
+proposed in Section 3.1.6. This points to the PULSAR table, containing
+pulsar source information.
+
+\subsection{SPECTRAL\_WINDOW table}
+
+As discussed in Section 3.2.1, it is proposed that the ARRAY\_ID key be
+removed.  In addition, the polarization labeling data CORR\_TYPE,
+CORR\_PRODUCT and NUM\_COR are moved to the POLARIZATION sub-table, as
+discussed in Section 3.1.3.
+
+\subsubsection{Name}
+
+A spectral window name, is proposed as:
+
+\begin{tabbing}
+NAME\quad\quad \= String\quad\quad \= 
+(Spectral window name) \quad\quad\quad \= (Reqd.) \\
+\end{tabbing}
+
+
+\subsubsection{Frequency groups}
+
+It is important to identify which SPECTRAL\_WINDOW\_ID's are
+associated for calibration purposes as part of a broader frequency
+group.  This is necessary in certain calibration applications,
+including multi-band VLBI fringe-fitting. Two new columns are
+added for this purpose:
+
+\begin{tabbing}
+FREQ\_GROUP\_NAME\quad\quad \= String\quad\quad \=
+(Frequency group name)\quad\quad \= (Reqd.) \kill
+FREQ\_GROUP \> Int \> (Frequency group) \> (Reqd.) \\
+FREQ\_GROUP\_NAME \> String \> (Frequency group name) \> (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Doppler tracking}
+
+The REST\_FREQUENCY column is replaced by a DOPPLER\_ID field
+reflecting the Doppler tracking parameters used for the spectral
+window. These data are stored in a separate DOPPLER table which
+references the line parameters defined in Section 3.9.2.
+
+\begin{tabbing}
+DOPPLER\_ID\quad\quad \= Int\quad\quad \= 
+(Doppler identifier) \quad\quad\quad\quad\quad \= (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Sideband and baseband-converter information}
+
+Two new spectral window attributes are added to record baseband
+converter and sideband information:
+
+\begin{tabbing}
+NET\_SIDEBAND\quad\quad \= Int\quad\quad \= 
+(Upper or lower) \quad\quad\quad\quad\quad \= (Reqd.) \\
+BBC\_NO           \> Int  \> 
+(Baseband converter no.) \> (Opt.) \\
+BBC\_SIDEBAND     \> Int \>
+(BBC sideband) \> (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Receiver information}
+
+An additional index is proposed to reference receiver information:
+
+\begin{tabbing}
+RECEIVER\_ID\quad\quad \= Int\quad\quad \= 
+(Receiver identifier) \quad\quad\quad\quad\quad \= (Opt.) \\
+\end{tabbing}
+
+This points to an optional RECEIVER sub-table.
+
+\subsubsection{Associated spectral windows}
+
+Individual spectral windows may hold a unique relationship to others,
+such as that between channel-zero data and the associated, unaveraged
+spectrum. Other may have a subset or equivalence relationship, and it
+is very useful to record this information. Additional columns for this
+purpose are proposed as follows:
+
+\begin{tabbing}
+ASSOC\_SPW\_ID\quad\quad \= Int(*)\quad\quad \= 
+(Associated spw\_id.) \quad\quad\quad\quad\quad \= (Opt.) \\
+ASSOC\_NATURE           \> String(*)  \> 
+(Nature of association) \> (Opt.) \\
+\end{tabbing}
+
+\subsubsection{Frequency information}
+
+The nominal channel spacing, actual spectral resolution and effective
+noise bandwidth are distinct, and it is proposed that they be
+decoupled by adding new columns:
+
+\begin{tabbing}
+CHAN\_WIDTH\quad\quad \= Double(*)\quad\quad \= 
+(Nominal channel width) \quad\quad\quad\quad\quad \= (Reqd.) \\
+EFFECTIVE\_BW \> Double(*) \> (Effective bandwidth) \> (Reqd.)\\
+\end{tabbing}
+
+The RESOLUTION column then denotes the actual spectral resolution.  A
+new column is proposed to allow a row-based Frequency Meaure
+reference, as:
+
+\begin{tabbing}
+MEAS\_FREQ\_REF\quad\quad \= Int\quad\quad \= (Frequency ref.)\quad\quad 
+ \= (Reqd.) \\
+\end{tabbing}
+
+\subsubsection{Row flag}
+
+It is proposed that a flag column be added to validate or invalidate
+the contents of the row, as follows:
+
+\begin{tabbing}
+FLAG\_ROW\quad\quad \= Bool\quad\quad \= (Row flag)\quad\quad \= (Reqd.)\\
+\end{tabbing}
+
+\subsection{SYSCAL table}
+
+As discussed in Section 3.2.1 it is proposed that the ARRAY\_ID key be
+removed.  Further specific changes to the SYSCAL table are listed
+below:
+
+\subsubsection{Number of receptors}
+
+This information is redundant as it is already specified in the FEED
+sub-table, and it is proposed that NUM\_RECEPTORS be removed.
+
+\subsubsection{Measured temperatures}
+
+Optional antenna temperature fields are proposed as follows, where
+\nr=NUM\_RECEPTORS and \nf=NUM\_CHAN:
+
+\begin{tabbing}
+TANT\_TSYS\_SPECTRUM\quad\quad \= Float(\nr,\nf)\quad\quad \=
+(${{T_{ant}}\over{T_{sys}}}$ spectrum)
+\quad\quad\quad\quad\quad\quad\quad\quad\quad 
+\= (Opt.) \kill
+TANT \> Float(\nr) \> (Antenna temperature $T_{ant}$) \> (Opt.) \\
+TSKY \> Float(\nr) \> (Sky temperature) \> (Opt.) \\
+TANT\_SPECTRUM   \> Float(\nr,\nf)  \> 
+(Antenna temperature spectrum) \> (Opt.) \\
+TSKY\_SPECTRUM \> Float(\nr,\nf) \> (Sky temp. spectrum) \> (Opt.) \\
+TANT\_TSYS     \> Float(\nr) \>
+(${{T_{ant}}\over{T_{sys}}}$) \> (Opt.) \\
+TANT\_TSYS\_SPECTRUM     \> Float(\nr,\nf) \>
+(${{T_{ant}}\over{T_{sys}}}$ spectrum) \> (Opt.) \\
+TANT\_FLAG     \> Bool \>
+(Flag for TANT) \> (Opt.) \\
+TSKY\_FLAG \> Bool \> (Flag for TSKY) \> (Opt.) \\
+TANT\_TSYS\_FLAG     \> Bool \>
+(Flag for TANT\_TSYS) \> (Opt.) \\
+\end{tabbing}
+
+ Calibration measurements in bands other than those for which there
+are recorded data, are accomodated by creating additional spectral
+window identifiers in the SPECTRAL\_WINDOW table, and recording the
+data in the same format in the SYSCAL table. This allows simultaneous
+wide- and narrow-band calibration data to be recorded in a uniform manner.
+
+ Existing calibration quantities in the SYCAL table, including
+PHASE\_DIFF, TCAL, TRX and TSYS, and their associated flags, are made
+optional, on an equal footing with the other entries.
+
+
+\subsubsection{Antenna pointing}
+
+There is a key requirement to know where the antenna and feed are
+pointed at the time of the calibration measurement. In synthesis,
+these data may be taken while interferometer data are not being
+recorded for example, but are nonetheless useful in a priori amplitude
+calibration. This information is obtained by lookup in the POINTING
+sub-table (see Section 4.0.1).
+
+\subsection{WEATHER table}
+
+As in previous sections it is proposed that the ARRAY\_ID qualifier
+for ANTENNA\_ID be removed (see Section 3.2.1). Time- and
+direction-dependent ionospheric electron column density data (such as
+that derived from GPS receiver data) is proposed to be stored in a
+separate TEC sub-table. The existing data columns are made optional,
+and associated flags are added:
+
+\begin{tabbing}
+IONOS\_ELECTRON\_FLAG\quad\quad \= Bool\quad\quad \= 
+(Flag for IONOS\_ELECTRON) \quad\quad \= (Opt.) \\
+H2O\_FLAG \> Bool \> (Flag for H2O) \> (Opt.) \\
+IONOS\_ELECTRON\_FLAG \> Bool \> (Flag for IONOS\_ELECTRON) \> (Opt.) \\
+PRESSURE\_FLAG \> Bool \> (Flag for PRESSURE) \> (Opt.) \\
+REL\_HUMIDITY\_FLAG \> Bool \> (Flag for REL\_HUMIDITY) \> (Opt.) \\
+TEMPERATURE\_FLAG \> Bool \> (Flag for TEMPERATURE) \> (Opt.) \\
+WIND\_DIRECTION\_FLAG \> Bool \> (Flag for WIND\_DIRECTION) \> (Opt.) \\
+WIND\_SPEED\_FLAG \> Bool \> (Flag for WIND\_SPEED) \> (Opt.) \\
+\end{tabbing}
+
+A new column set is proposed to record the dew point:
+
+\begin{tabbing}
+DEW\_POINT\_FLAG\quad\quad   \= Bool\quad\quad  \= 
+(Flag for DEW\_POINT)\quad\quad \= (Opt.) \kill
+DEW\_POINT \> Float \>  (Dew point temperature) \> (Opt.) \\
+DEW\_POINT\_FLAG   \> Bool  \> (Flag for DEW\_POINT) \> (Opt.) \\
+\end{tabbing}
+
+
+\section{New sub-tables}
+
+New sub-tables added to MS v2.0 are included in this Section.
+
+\subsubsection{Antenna-based pointing (POINTING)}
+
+The current MS definition associates a pointing direction with the
+FIELD\_ID. In general, however, the pointing direction is
+antenna-based and may be time-variable and distinct from the
+correlated field position. This is best modeled by introducing a
+POINTING sub-table indexed from the MAIN table by the key (TIME,
+ANTENNA), and containing absolute pointing information.
+
+The format for the POINTING table is given later but includes support
+for tracking arcs on the sky, and storing a priori pointing offset
+information. The POINTING table indicates the direction the optical
+axis of the telescope is pointing; feed offsets are stored in the FEED
+table.
+
+\subsubsection{State information (STATE)}
+
+The STATE table is used to store information concerning reference
+signals or loads, sub-scan information and a description of the
+current observing mode, as these fields constitute a set of related
+information. Sub-scans are used here to denote component sequences of
+standard observing patterns. Observing modes are envisaged to be
+represented by standard reserved keywords or phrases. This provides a
+means of linking the observing strategy and the data; this is a
+central requirement in guiding automated data reduction procedures,
+and also provides greater user information.
+
+\subsubsection{Digital samplers (SAMPLER)}
+
+Data streams which have in common an antenna, feed and receiver/LO
+chain may be independently associated with digital samplers with
+time-variable quantization schemes (eg. 1- versus 2-bit sampling) and
+sampler voltage levels. For calibration purposes this does not
+constitute a separate feed but does require separate digital
+correction. This is certainly important in VLBI. A separate SAMPLER
+sub-table is proposed to address this, indexed via MAIN
+table columns (TIME, ANTENNA, FEED, SPECTRAL\_WINDOW\_ID).
+
+\subsubsection{Processor information (PROCESSOR)}
+
+The back-end processor is identified through the PROCESSOR sub-table,
+which contains information concerning the processor type (see Section
+3.1.4), and indices for time-dependent and time-independent mode
+information. A pass number is used to distinguish multiple passes for
+back-end processors for which this is possible (e.g. VLBI
+correlators). Each back-end or processor type includes a family of
+associated tables. These are formatted using common column names where
+appropriate, and accessed using classes that encapsulate the different
+information unique to each instrument-specific data behind a common
+interface. This family of tables will be specified in the future for
+individual instruments and processor types. It is noted, however, that
+the optional PHASE\_ID index in MAIN indexes directly into
+processor-specific phase information included in this family of
+tables. An illustration for generic interferomter correlators is given
+below:
+
+The correlation parameters associated with an individual uv-record are
+particularly important in VLBI calibration but have more general
+application in broader synthesis development. This correlator
+information has four separate components, which are indexed from the
+PROCESSOR sub-table (which has primary key PROCESSOR\_ID):
+
+\begin{itemize}
+\item{{\bf Time-invariant correlation parameters}
+
+This includes software revision numbers and geometrical constants
+adopted by the correlator model. We use a TYPE\_ID index to point to
+this information, which is stored in a separate $subtype\_$CORRELATOR
+table.  The correlator sub-type (e.g. MK4, JIVE) defines the prefix of
+the correlator model, geometry and mode tables discussed below.  }
+
+\item{{\bf Time-dependent correlator parameters}
+
+For synthesis data, these include correlator model values and model
+polynomials as a function of antenna or baseline, time, spectral
+window, polarization and correlator identifier. Note that there is no
+one-to-one mapping between a given uv-record and a correlator model
+record, as a model update may occur within an accumulation
+interval, and an indexed lookup is always required to locate the
+associated correlator model record. The time-dependent data also
+include geometric information common to the instrument as a whole such as
+polar motion, time information and the solar system ephemerides. These
+data are indexed on time and correlator identifier. We propose 
+correlator model and correlator geometry tables to hold these two
+types of time-dependent data respectively. Each table has a composite
+key including TYPE\_ID and no additional MAIN table columns are
+required.
+
+Synthesis correlators differ significantly in their architecture and
+reference frames. For example, the VLBI MK3 correlator is a
+baseline-based, lag correlator (XF), while the VLBA correlator is an
+antenna-based FX correlator. Both also use different celestial and
+interferometer reference frames. This poses difficulties for the
+representation of correlator mode, geometry and model information in a
+common format. Translation between different frames may not be exact
+or reversible in this case, and reference to the original correlator
+model data is sometimes required. The primary purpose of correlator
+record-keeping is to provide parameters for visibility corrections
+required by correlator digital signal processing effects, and to
+provide total model information for geodetic or astrometric
+applications.
+
+To accommodate these correlator differences, and other significant
+differences between synthesis and single-dish correlators, it is
+proposed that correlator sub-type (eg. MK4, GBT, VLBA; as given in the
+PROCESSOR sub-table) act as a global key for correlator information,
+which resides in separate tables (eg. MK3\_CORRELATOR\_MODEL,
+MK4\_CORRELATOR\_GEOMETRY), but is accessed by uniform MS methods to return
+common global data such as total model or correlator correction
+information. The format of these sub-tables needs to form part of a
+global MS definition, with uniform column names used wherever
+possible. The same subset of MAIN indices are used to access the
+correlator sub-tables, in conjunction with TYPE\_ID. The alternative
+representation of diverse correlator information in a single, common
+table will lead to a proliferation of optional columns, which will
+obscure the underlying physical correlator model in most cases.}
+
+
+\item{{\bf Correlator mode information}
+
+Within a given correlator run, separate subarrays may be correlated in
+different modes which are distinguished by different setup parameters
+(eg. FFT size, number of lags, spectral averaging) but which share the
+same global correlator model. This can be varied independently of
+TYPE\_ID and a secondary index MODE\_ID is
+proposed for this purpose. Separate correlator mode sub-tables are
+required to represent this information (eg. MK3\_CORRELATOR\_MODE), as
+discussed in the previous item.}
+
+\item{{\bf Correlator pass information}
+
+Redundant data are often produced by multiple VLBI correlator
+passes. Traditionally, no record is kept of the correlation pass for
+each uv-record and redundant data may be rejected by other criteria,
+such as comparing weights on a record-by-record basis. Retaining
+correlator pass information adds flexibility to the rejection of
+redundant data, allows more versatile data selection and simplifies
+the filling of VLBI data. A separate table is proposed to store
+correlator pass information (including correlator job number), which
+is indexed on the pass number and time. The correlator pass
+information is numbered relative to each correlator job identifier.}
+
+\end{itemize}
+
+\subsubsection{Frequency offsets (FREQ\_OFFSET)}
+
+Time-variable frequency tracking at each antenna is properly modeled
+by incorporating an antenna-based frequency offset for each antenna in
+each uv-record. This retains the same SPECTRAL\_WINDOW\_ID for
+calibration purposes, if appropriate, but accurately reflects
+frequency changes throughout the observations. These data are indexed
+by the MAIN table columns (TIME, ANTENNA$n$, FEED,
+SPECTRAL\_WINDOW\_ID).
+
+\subsubsection{Orbiting VLBI (TRACKING\_STN)}
+
+In orbiting VLBI observations, each antenna can be thought of as
+consisting of both an orbiting component and a ground-based tracking
+station component, with different calibration errors associated with
+each. Both require entries in the ANTENNA table and can in principle
+vary independently. A new TRACKING\_STN table is proposed to fully
+support calibration and data selection in this case, indexed by MAIN
+columns (TIME, ANTENNA).
+
+\subsubsection{DATA labeling (DATA\_DESCRIPTION)}
+
+A new table is added to hold the data description information, as
+discussed in Section 3.1.3. As described in the same Section,
+polarization information is stored in a POLARIZATION sub-table.
+
+\subsubsection{Doppler tracking (DOPPLER)}
+ A new doppler tracking table is added to store source-based doppler
+tracking information for each SPECTRAL\_WINDOW, as discussed in
+Section 3.10.2.
+
+\subsubsection{Scan summary information}
+
+An optional new table is proposed to store summary information for
+each observation, array and scan, as outlined in Section 3.3. This
+table may need to be re-generated if data are flagged or removed,
+however. It will provide useful user information, and may in addition
+be used by applications if current.
+
+\subsubsection{Associated tables (CAL\_TABLES and SORTED\_TABLES)}
+
+Links to associated sorted reference MeasurementSets, and calibration
+tables are provided in these two MS sub-tables.
+
+\section{MS v2.0 layout}
+
+There is a MAIN table containing a number of data columns and keys
+into various subtables. There is at most one of each subtable. The
+subtables are stored as keywords of the MS, and all defined sub-tables
+are tabulated below.  Optional sub-tables are shown in italics.
+
+\begin{tabular}{|l|p{1.5in}|p{1.6in}|} \hline
+\multicolumn{3}{|c|}{\bf Subtables}\\ \cline{1-3}
+\multicolumn{1}{|c|}{Table}&\multicolumn{1}{|c|}{Contents}&\multicolumn{1}{|c|}{Keys}\\ \cline{1-3}
+ANTENNA& Antenna characteristics & ANTENNA\_ID \\
+DATA\_DESCRIPTION & Data description & DATA\_DESC\_ID\\
+{\it DOPPLER} & Doppler tracking & DOPPLER\_ID, SOURCE\_ID \\
+FEED  &          Feed characteristics & FEED\_ID, ANTENNA\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
+FIELD  &         Field position & FIELD\_ID  \\
+FLAG\_CMD  &  Flag commands & TIME \\
+{\it FREQ\_OFFSET} & Frequency offset information & FEED\_ID, ANTENNA$n$, FEED\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
+HISTORY  & History information & OBSERVATION\_ID, TIME \\
+OBSERVATION  &Observer, Schedule, etc & OBSERVATION\_ID \\ 
+POINTING & Pointing information & ANTENNA\_ID, TIME \\
+POLARIZATION &Polarization setup & POLARIZATION\_ID \\
+PROCESSOR & Processor information & PROCESSOR\_ID  \\
+SOURCE  &        Source information & SOURCE\_ID, SPECTRAL\_WINDOW\_ID, TIME \\
+SPECTRAL\_WINDOW  &     Spectral window setups & SPECTRAL\_WINDOW\_ID \\
+STATE   & State information & STATE\_ID \\
+{\it SYSCAL} &         System calibration characteristics & FEED\_ID, ANTENNA\_ID, TIME, SPECTRAL\_WINDOW\_ID \\
+{\it WEATHER}  &       Weather info for each antenna & ANTENNA\_ID, TIME \\
+\hline
+\end{tabular}
+
+\par
+Note that there are two types of subtables. For the first, simpler
+type, the key (ID) is the row number in the subtable. 
+Examples are FIELD, SPECTRAL\_WINDOW, OBSERVATION
+and PROCESSOR. For the second, the key is a collection of parameters,
+usually including TIME. Examples are FEED, SOURCE, SYSCAL, WEATHER.
+
+Note that all optional columns are indicated in italics and in parentheses.
+
+\definetable{MAIN table: Data, coordinates and flags}
+{
+\defline{\bf Columns}
+\defline{\em Keywords}
+MS\_VERSION   & Float  & & & MS format version \\
+{\it (SORT\_COLUMNS)} & String & & & Sort columns \\  
+{\it (SORT\_ORDER)}   & String & & & Sort order \\
+\defline{\em Key}
+TIME  &         Double  &      s   &     EPOCH    & Integration midpoint \\
+{\it (TIME\_EXTRA\_PREC)} & Double & s       &     & extraTIME precision \\
+ANTENNA1  &      Int    &          &              & First antenna \\
+ANTENNA2  &      Int    &          &              & Second antenna \\
+{\it (ANTENNA3)} & Int    &          &              & Third antenna \\
+FEED1  &      Int       &          &              & Feed on ANTENNA1 \\
+FEED2  &      Int       &          &              & Feed on ANTENNA2 \\
+{\it (FEED3)} & Int       &          &              & Feed on ANTENNA3 \\
+DATA\_DESC\_ID  &  Int   &          &        & Data desc. id.\\
+PROCESSOR\_ID  & Int   &          &        & Processor id.\\
+{\it (PHASE\_ID)} & Int &               &         & Phase id.\\
+FIELD\_ID  &      Int   &          &        & Field id.\\
+\defline{\em Non-key attributes}
+INTERVAL  &      Double &       s  &      & Sampling interval \\
+EXPOSURE  &      Double &       s  &      & The effective integration time \\
+TIME\_CENTROID & Double &       s  &    EPOCH & Time centroid \\
+{\it (PULSAR\_BIN)} & Int &          &      & Pulsar bin number \\
+{\it (PULSAR\_GATE\_ID)} & Int &         &      & Pulsar gate id. \\   
+SCAN\_NUMBER  &   Int   &          &      & Scan number  \\ 
+ARRAY\_ID  &      Int   &          &      & Subarray number\\
+OBSERVATION\_ID  & Int   &          &     & Observation id.\\
+STATE\_ID & Int   &          &              & State id.\\
+{\it (BASELINE\_REF)} &  Bool  &     &      & Reference antenna \\
+UVW       &   Double(3) &      m   & UVW  & UVW coordinates \\
+{\it (UVW2)} &  Double(3) &      m   & UVW  & UVW (baseline 2) \\
+}
+
+
+\definetable{MAIN table: continued}
+{
+\defline{\em Data}
+{\it (DATA)}    &    Complex(\nc, \nf) &  & & Complex visibility
+matrix (synthesis arrays)\\
+{\it (FLOAT\_DATA)} & Float(\nc, \nf) & & & Float data matrix
+(single dish) \\
+{\it (VIDEO\_POINT)} & Complex(\nc) & & & Video point \\
+{\it (LAG\_DATA)} & Complex(\nc, \nl) & & & Correlation function \\
+SIGMA   &    Float(\nc) &  & & Estimated rms noise for single channel \\ 
+{\it (SIGMA\_SPECTRUM)}   &    Float(\nc, \nfs) &  & & Estimated rms noise \\ 
+WEIGHT   &    Float(\nc) &  & & Weight for whole data matrix \\ 
+{\it (WEIGHT\_SPECTRUM)}   &    Float(\nc, \nfs) &  & & Weight for each channel\\ 
+\defline{\em Flag information}
+FLAG    &    Bool(\nc, \nfs) &  &   &  Cumulative data flags \\ 
+FLAG\_CATEGORY & Bool(\nc, \nfs, \ncat) & & & Flag categories \\
+FLAG\_ROW &    Bool  &  &   &  The row flag \\ 
+}
+\begin{description}
+\item[Notes:]
+
+\item Note that \nl = number of lags, \nc = number of correlators, 
+\nf = number of frequency channels, and \ncat = number of flag categories.
+
+\item[MS\_VERSION] The MeasurementSet format revision number,
+expressed as $major\_revision.minor\_revision$. This version is 2.0.
+
+\item[SORT\_COLUMNS] Sort indices, in the form "$index_1,\ index_2\
+...$, for the underlying MS. A string containing "NONE" reflects no
+sort order.  An example might be SORT\_COLUMNS="TIME ANTENNA1
+ANTENNA2", to indicate sorting in in time-baseline order.
+
+\item[SORT\_ORDER] Sort order as either "ASCENDING" or "DESCENDING".
+
+\item[TIME] Mid-point (not centroid) of data interval.
+
+\item[TIME\_EXTRA\_PREC] Extra time precision.
+
+\item[ANTENNA$n$] Antenna number ($\geq 0$), and a direct index into
+the ANTENNA sub-table $rownr$. For $n > 2$, triple-product data
+are implied.
+
+\item[FEED$n$] Feed number ($\geq 0$). For $n > 2$, triple-product
+data are implied.
+
+\item[DATA\_DESC\_ID] Data description identifier ($\geq 0$), and
+a direct index into the DATA\_DESCRIPTION sub-table $rownr$.
+
+\item[PROCESSOR\_ID] Processor indentifier ($\geq 0$), and a direct
+index into the PROCESSOR sub-table $rownr$.
+
+\item[PHASE\_ID] Switching phase identifier ($\geq 0$)
+
+\item[FIELD\_ID] Field identifier ($\geq 0$).
+
+\item[INTERVAL] Data sampling interval. This is the nominal data
+interval and does not include the effects of bad data or partial
+integration.
+
+\item[EXPOSURE] Effective data interval, including bad data and
+partial averaging.
+
+\item[PULSAR\_BIN] Pulsar bin number for the data record. Pulsar data
+may be measured for a limited number of pulse phase bins. The pulse
+phase bins are described in the PULSAR sub-table and indexed by this
+bin number.
+
+\item[PULSAR\_GATE\_ID] Pulsar gate identifier ($\geq 0)$, and a direct
+index into the PULSAR\_GATE sub-table $rownr$. 
+
+\item[SCAN\_NUMBER] Arbitrary scan number to identify data taken in
+the same logical scan. Not required to be unique.
+
+\item[ARRAY\_ID] Subarray identifier $(\geq 0)$, which identifies data
+in separate subarrays, as defined in Section 3.3.
+
+\item[OBSERVATION\_ID] Observation identifier $(\geq 0)$, which identifies
+data from separate observations, as defined in Section 3.3.
+
+\item[STATE\_ID] State identifier $(\geq 0)$, as defined in Section 3.1.5.
+
+\item[BASELINE\_REF] Flag to indicate the original correlator
+reference antenna for baseline-based correlators (True for ANTENNA1;
+False for ANTENNA2).
+
+\item[UVW] $uvw$ coordinates for the baseline between ANTENNA1 and
+ANTENNA2. This is defined at the centroid time, TIME\_CENTROID.
+
+\item[UVW2] $uvw$ coordinates for the baseline between ANTENNA1 and
+ANTENNA3 (triple-product data only). This is defined at the centroid
+time, TIME\_CENTROID.
+
+\item[DATA, FLOAT\_DATA, LAG\_DATA] At least one of these columns
+should be present in a given MeasurementSet. In special cases one or
+more could be present (e.g., single dish data used in synthesis
+imaging or a mix of auto and crosscorrelations on a multi-feed single
+dish). If only correlation functions are stored in the MS, then \nfs\
+is the maximum number of lags (\nl) specified in the LAG table for
+this LAG\_ID.  If both correlation functions and frequency spectra are
+stored in the same MS, then \nfs\ is the number of frequency channels,
+and the weight information refers to the frequency spectra only. The
+units for these columns (eg. 'Jy') specify whether the data are in
+flux density units or correlation coefficients.
+
+\item[VIDEO\_POINT] The video point for the spectrum, to allow the
+full reverse transform.
+
+\item[SIGMA] The estimated rms noise for a single channel, for
+each correlator.
+
+\item[SIGMA\_SPECTRUM] The estimated rms noise for each channel.
+
+\item[WEIGHT] The weight for the whole data matrix for each
+correlator, as assigned by the correlator or processor.
+
+\item[WEIGHT\_SPECTRUM] The weight for each channel in the data
+matrix, as assigned by the correlator or processor. The weight
+spectrum should be used in preference to the WEIGHT, when available.
+
+\item[FLAG] An array of Boolean values with the same shape as DATA
+(see the DATA item above) representing the cumulative flags applying
+to this data matrix, as specified in FLAG\_CATEGORY. Data are flagged
+bad if the FLAG array element is True.
+
+\item[FLAG\_CATEGORY] An array of flag matrices with the same shape as
+DATA, but indexed by category. The category identifiers are specified
+by a keyword CATEGORY, containing an array of string identifiers,
+attached to the FLAG\_CATEGORY column and thus shared by all rows in
+the MeasurementSet. The cumulative effect of these flags is reflected
+in column FLAG. Data are flagged bad if the FLAG array element is
+True. See Section 3.1.8 for further details.
+
+\item[FLAG\_ROW] True if the entire row is flagged.
+
+\end{description}
+
+\definetable{ANTENNA: Antenna characteristics}
+{
+\defline{\bf Columns}
+\defline{\em Data}
+NAME &       String &  & &  Antenna name \\
+STATION &        String & & &  Station name \\
+TYPE  &  String &     &      & Antenna type \\
+MOUNT  & String &  & &   Mount type:alt-az, equatorial, X-Y, orbiting, bizarre \\
+POSITION &   Double(3) &  m   &     POSITION &   Antenna X,Y,Z phase reference positions \\
+OFFSET & Double(3)  &   m &     POSITION & Axes offset of mount to FEED REFERENCE point \\
+DISH\_DIAMETER &  Double &  m  &      & Diameter of dish\\
+{\it (ORBIT\_ID)}    &    Int & & &  Orbit id. \\
+{\it (MEAN\_ORBIT)}  &    Double(6) & & & Mean Keplerian elements\\
+{\it (PHASED\_ARRAY\_ID)} & Int   &  & &   Phased array id.\\
+\defline{Flag information}
+FLAG\_ROW & Bool & & & Row flag\\
+}
+\begin{description}
+
+\item[Notes:] This sub-table contains the global antenna properties
+for each antenna in the MS. It is indexed directly from MAIN via
+ANTENNA$n$.
+
+\item[NAME] Antenna name (e.g. "NRAO\_140")
+
+\item[STATION] Station name (e.g. "GREENBANK")
+
+\item[TYPE] Antenna type. Reserved keywords include:
+("GROUND-BASED" - conventional antennas; "SPACE-BASED" - orbiting
+antennas; "TRACKING-STN" - tracking stations).
+
+\item[MOUNT] Mount type of the antenna. Reserved keywords include:
+("EQUATORIAL" - equatorial mount; "ALT-AZ" - azimuth-elevation mount; "X-Y"
+- x-y mount; "SPACE-HALCA" - specific orientation model.)
+
+\item[POSITION] In a right-handed frame, X towards the intersection of
+the equator and the Greenwich meridian, Z towards the pole. The exact
+frame should be specified in the MEASURE\_REFERENCE keyword (ITRF or
+WGS84). The reference point is the point on the az or ha axis closest
+to the el or dec axis.
+
+\item[OFFSET] Axes offset of mount to feed reference point.
+
+\item[DISH\_DIAMETER] Nominal diameter of dish, as opposed to the
+effective diameter.
+
+\item[ORBIT\_ID] Orbit identifier. Index used in ORBIT sub-table if
+ANTENNA\_TYPE is "SPACE\_BASED".
+
+\item[MEAN\_ORBIT] Mean Keplerian orbital elements, using the
+standard convention (Flatters 1998): 
+\begin{itemize}
+   \item{{\bf 0:} Semi-major axis of orbit ($a$) in $m$.}
+   \item{{\bf 1:} Ellipticity of orbit ($e$).}
+   \item{{\bf 2:} Inclination of orbit to the celestial equator ($i$) 
+                  in $deg.$}
+   \item{{\bf 3:} Right ascension of the ascending node ($\Omega$) in $deg.$}
+   \item{{\bf 4:} Argument of perigee ($\omega$) in $deg.$}
+   \item{{\bf 5:} Mean anomaly ($M$) in $deg.$}
+\end{itemize}
+
+\item[PHASED\_ARRAY\_ID] Phased array identifier. Points to a
+PHASED\_ARRAY sub-table which points back to multiple entries in the
+ANTENNA sub-table and contains information on how they are combined.
+
+\item[FLAG\_ROW] Boolean flag to indicate the validity of this
+entry. Set to True for an invalid row. This does not imply any
+flagging of the data in MAIN, but is necessary as the ANTENNA index in
+MAIN points directly into the ANTENNA sub-table. Thus FLAG\_ROW can be
+used to delete an antenna entry without re-ordering the ANTENNA
+indices throughout the MS.
+
+\end{description}
+
+\definetable{DATA\_DESCRIPTION: Data description table}{
+\defline{\bf Columns}
+\defline{\em Data}
+SPECTRAL\_WINDOW\_ID & Int & & & Spectral window id.\\
+POLARIZATION\_ID & Int & & & Polarization id.\\
+{\it (LAG\_ID)} & Int & & & Lag fn. id.\\
+\defline{\em Flags}
+FLAG\_ROW & Bool & & & Row flag.\\
+}
+\begin{description}
+
+\item[Notes:] This table define the shape of the associated DATA array
+in MAIN, and in indexed directly by DATA\_DESC\_ID.
+
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier.
+
+\item[POLARIZATION\_ID] Polarization identifier ($\geq 0$); direct
+index into the POLARIZATION sub-table.
+
+\item[LAG\_ID] Lag function identifier ($\geq 0$), and a direct index
+into the LAG sub-table $rownr$.
+
+\item[FLAG\_ROW] True if the row does not contain valid data; does not
+imply flagging in MAIN.
+
+\end{description}
+
+
+\definetable{DOPPLER: Doppler tracking information}{
+\defline{\bf Columns}
+\defline{\em Key}
+DOPPLER\_ID  & Int & & & Doppler tracking id.\\
+SOURCE\_ID  & Int & & & Source id.\\
+\defline{\em Data}
+TRANSITION\_ID & Int & & & Transition id.\\
+}
+\begin{description}
+
+\item[Notes:] This sub-table contains frame information 
+for different Doppler tracking modes. It is indexed from the
+SPECTRAL\_WINDOW\_ID sub-table (with SOURCE\_ID as a secondary index)
+and thus allows the specification of a source-dependent Doppler
+tracking reference for each SPECTRAL\_WINDOW. This model allows
+multiple possible transitions per source per spectral window, but only
+one reference at any given time.
+
+\item[DOPPLER\_ID] Doppler identifier, as used in the SPECTRAL\_WINDOW
+sub-table.
+
+\item[SOURCE\_ID] Source identifier (as used in the SOURCE sub-table).
+
+\item[TRANSITION\_ID] This index selects the appropriate line from the
+list of transitions stored for each SOURCE\_ID in the SOURCE table.
+\end{description}
+
+
+
+\definetable{FEED: Feed characteristics}{
+\defline{\bf Columns}
+\defline{\em Key}
+ANTENNA\_ID &     Int &    &      & Antenna id\\
+FEED\_ID &        Int &    &      & Feed id\\
+SPECTRAL\_WINDOW\_ID &   Int &    &      & Spectral window id.\\
+TIME &   Double  &      s  & EPOCH & Interval midpoint \\
+INTERVAL &       Double  &      s     &       & Time interval\\
+\defline{\em Data description}
+NUM\_RECEPTORS &  Int &    &      & \# receptors on this feed \\
+\defline{\em Data}
+BEAM\_ID &        Int    &    &      & Beam model\\
+BEAM\_OFFSET &    Double(2, NUM\_RECEPTORS)    &     rad & DIRECTION & Beam position offset (on sky but in antenna reference frame).\\
+{\it (FOCUS\_LENGTH)} &   Double &    m       &       & Focus length \\
+{\it (PHASED\_FEED\_ID)} & Int   &    &      & Phased feed\\
+POLARIZATION\_TYPE &       String (NUM\_RECEPTORS) &    &      & Type of polarization to which a given RECEPTOR responds.\\
+POL\_RESPONSE &  Complex (NUM\_RECEPTORS, NUM\_RECEPTORS) &    &      & Feed polzn. response\\
+POSITION &    Double(3)  & m  &         POSITION & Position of feed relative to feed reference position for this antenna\\
+RECEPTOR\_ANGLE &    Double (NUM\_RECEPTORS) &    rad &    & The reference angle for polarization.\\
+}
+\begin{description}
+
+\item[Notes:] A feed is a collecting element on an antenna, such as a
+single horn, that shares joint physical properties and makes sense to
+calibrate as a single entity. It is an abstraction of a generic
+antenna feed and is considered to have one or more RECEPTORs that
+respond to different polarization states. A FEED may have a
+time-variable beam and polarization response. 
+Feeds are numbered from 0 on each separate antenna for each
+SPECTRAL\_WINDOW\_ID. Consequently, FEED\_ID should be non-zero only
+in the case of feed arrays, i.e. multiple, simultaneous beams on the
+sky at the same frequency and polarization.
+
+\item[ANTENNA\_ID] Antenna number, as indexed from ANTENNA$n$ in
+MAIN.
+
+\item[FEED\_ID] Feed identifier, as indexed from FEED$n$ in MAIN.
+
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier. A value of -1
+indicates the row is valid for all spectral windows.
+
+\item[TIME] Mid-point of time interval for which the feed parameters
+in this row are valid. The same Measure reference used for the TIME
+column in MAIN must be used.
+
+\item[INTERVAL] Time interval. 
+
+\item[NUM\_RECEPTORS] Number of receptors on this feed. See
+POLARIZATION\_TYPE for further information.
+
+\item[BEAM\_ID] Beam identifier. Points to an optional BEAM sub-table
+defining the primary beam and polarization response for this FEED. A
+value of -1 indicates that no associated beam response is defined.
+
+\item[BEAM\_OFFSET] Beam position offset, as defined on the sky but in
+the antenna reference frame.
+
+\item[FOCUS\_LENGTH] Focus length. As defined along the optical axis
+of the antenna.
+
+\item[PHASED\_FEED\_ID] Phased feed identifier. Points to a
+PHASED\_FEED sub-table which in turn points back to multiple entries
+in the FEED table, and specifies the manner in which they are
+combined. 
+
+\item[POLARIZATION\_TYPE] Polarization type to which each receptor
+responds (e.g. "R","L","X" or "Y"). This is the receptor polarization
+type as recorded in the final correlated data (e.g. "RR"); i.e. as
+measured after all polarization combiners.
+
+\item[POL\_RESPONSE] Polarization response at the center of the beam
+for this feed. Expressed in a linearly polarized basis $({\bf \vec
+e_x}, {\bf \vec e_y})$ using the IEEE convention.
+
+\item[POSITION] Offset of feed relative to the feed reference position
+for this antenna (see ANTENNA sub-table).
+
+\item[RECEPTOR\_ANGLE] Polarization reference angle. Converts into
+parallactic angle in the sky domain.
+
+\end{description}
+
+\definetable{FIELD: Field positions for each source}{
+\defline{\bf Columns}
+\defline{\em Key}
+\defline{\em Data}  
+NAME &       String &    &      & Name of field \\
+CODE &       String &    &      & Special characteristics of field \\
+TIME &   Double  &      s  & EPOCH & Time origin for the directions and rates\\
+NUM\_POLY & Int & & & Series order \\
+DELAY\_DIR    &      Double(2, NUM\_POLY+1)  &      rad   &     DIRECTION & Direction of delay center. \\
+PHASE\_DIR    &      Double(2, NUM\_POLY+1)  &      rad   &     DIRECTION & Phase center. \\
+REFERENCE\_DIR &      Double(2, NUM\_POLY+1)  &      rad   &     DIRECTION & Reference center \\
+SOURCE\_ID &      Int    &    &      & Index in Source table\\
+{\it (EPHEMERIS\_ID)} &   Int    &    &      & Ephemeris id.\\
+\defline{Flags}
+FLAG\_ROW & Bool & & & Row flag\\
+}
+\begin{description}
+
+\item[Notes:] The FIELD table defines a field position on the sky. For
+interferometers, this is the correlated field position. For single dishes,
+this is the nominal pointing direction.
+
+\item[NAME] Field name; user specified.
+
+\item[CODE] Field code indicating special characteristics of the
+field; user specified.
+
+\item[TIME] Time reference for the directions and rates. Required to 
+use the same TIME Measure reference as in MAIN.
+
+\item[NUM\_POLY] Series order for the *\_DIR columns.
+
+\item[DELAY\_DIR] Direction of delay center; can be expressed as a
+polynomial in time. Final result converted to the defined Direction
+Measure type.
+
+\item[PHASE\_DIR] Direction of phase center; can be expressed as a
+polynomial in time. Final result converted to the defined Direction
+Measure type.
+
+\item[REFERENCE\_DIR] Reference center; can be expressed as a
+polynomial in time. Final result converted to the defined Direction
+Measure type. Used in single-dish to record the associated reference
+direction if position-switching has already been applied. For
+interferometric data, this is the original correlated field center,
+and may equal DELAY\_DIR or PHASE\_DIR.
+
+\item[SOURCE\_ID] Points to an entry in the optional SOURCE subtable, a
+value of $-1$ indicates there is no corresponding source defined.
+
+\item[EPHEMERIS\_ID] Points to an entry in the EPHEMERIS sub-table,
+which defines the ephemeris used to compute the field position. Useful
+for moving, near-field objects, where the ephemeris may be revised over time.
+
+\item[FLAG\_ROW] True if data in this row are invalid, else False. Does not
+imply flagging in MAIN.
+
+\end{description}
+
+\definetable{FLAG\_CMD: Flag commands}{
+\defline{\bf Columns}
+\defline{\em Key}
+TIME      &    Double   &   s  &  EPOCH & Mid-point of interval \\
+INTERVAL  &    Double   &   s  &        & Time interval \\
+\defline{\em Data}  
+TYPE      &    String   &      &        & FLAG or UNFLAG\\
+REASON    &    String   &      &        & Flag reason\\
+LEVEL     &    Int      &      &        & Flag level\\
+SEVERITY  &    Int      &      &        & Severity code\\
+APPLIED   &    Bool     &      &        & True if applied in MAIN\\
+COMMAND   & String  &      &        & Flag command\\
+}
+\begin{description}
+
+\item[Notes:] The FLAG\_CMD sub-table defines global flagging commands
+which apply to the data in MAIN, as described in Section 3.1.8.
+
+\item[TIME] Mid-point of the time interval to which this flagging
+command applies. Required to use the same TIME Measure reference as
+used in MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[TYPE] Type of flag command, representing either a flagging
+("FLAG") or un-flagging ("UNFLAG") operation.
+
+\item[REASON] Flag reason; user specified.
+
+\item[LEVEL] Flag level $(\geq 0)$; reflects different revisions of
+flags which have the same REASON.
+
+\item[SEVERITY] Severity code for the flag, on a scale of 0-10 in
+order of increasing severity; user specified.
+
+\item[APPLIED] True if this flag has been applied to MAIN, and update
+in FLAG\_CATEGORY and FLAG. False if this flag has not been applied to
+MAIN.
+
+\item[COMMAND] Global flag command, expressed in the standard
+syntax for data selection, as adopted within the project as a whole.
+
+\end{description}
+
+\definetable{FREQ\_OFFSET: Frequency offset information}{
+\defline{\bf Columns}
+\defline{\em Key}
+ANTENNA1  &   Int  & & & Antenna 1.\\
+ANTENNA2  &   Int  & & & Antenna 2.\\
+FEED\_ID     &   Int  & & & Feed id.\\
+SPECTRAL\_WINDOW\_ID & Int & & & Spectral window id.\\
+TIME & Double & s & EPOCH & Interval midpoint\\
+INTERVAL & Double & s & & Time interval\\
+\defline{\em Data}
+OFFSET   &  Double & Hz &  & Frequency offset\\
+}
+\begin{description}
+
+\item[Notes:] The table contains frequency offset information, to be
+added directly to the defined frequency labeling in the
+SPECTRAL\_WINDOW sub-table as a Measure offset. This allows bands with
+small, time-variable, ad hoc frequency offsets to be labeled as the same
+SPECTRAL\_WINDOW\_ID, and calibrated together if required.
+
+\item[ANTENNA$n$] Antenna identifier, as indexed from ANTENNA$n$ in MAIN.
+
+\item[FEED\_ID] Antenna identifier, as indexed from FEED$n$ in MAIN.
+
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier.
+
+\item[TIME] Mid-point of the time interval for which this offset is valid.
+Required to use the same TIME Measure reference as used in MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[OFFSET] Frequency offset to be added to the frequency axis for
+this spectral window, as defined in the SPECTRAL\_WINDOW
+sub-table. Required to have the same Frequency Measure reference as
+CHAN\_FREQ in that table.
+
+\end{description}
+
+\definetable{HISTORY: History information}{
+\defline{\bf Columns}
+\defline{\em Key}
+TIME & Double & s &              EPOCH  & Time-stamp for message\\
+OBSERVATION\_ID  & Int   &          &        & Points to OBSERVATION table\\
+\defline{\em Data}  
+MESSAGE  & String &    &      & Log message\\
+PRIORITY & String & & & Message priority\\
+ORIGIN   & String & & & Code origin\\
+OBJECT\_ID & String & & & Originating ObjectID \\
+APPLICATION & String & & & Application name\\
+CLI\_COMMAND & String(*) & & & CLI command sequence \\
+APP\_PARMS   & String(*) & & & Application paramters\\
+}
+\begin{description}
+
+\item[Notes:] This sub-table contains associated history information
+for the MS.
+
+\item[TIME] Time-stamp for the history record. Required to have the
+same TIME Measure reference as used in MAIN.
+
+\item[OBSERVATION\_ID] Observation identifier (see the OBSERVATION table)
+
+\item[MESSAGE] Log message.
+
+\item[PRIORITY] Message priority, with allowed types: ("DEBUGGING",
+"WARN", "NORMAL", or "SEVERE").
+
+\item[ORIGIN] Source code origin from which message originated.
+
+\item[OBJECT\_ID] Originating ObjectID, if available, else blank.
+
+\item[APPLICATION] Application name.
+
+\item[CLI\_COMMAND] CLI command sequence invoking the application.
+
+\item[APP\_PARMS] Application parameter values, in the adopted
+project-wide format.
+\end{description}
+
+\definetable{OBSERVATION: Observation information}{
+\defline{\bf Columns}
+\defline{\em Data}  
+TELESCOPE\_NAME &      String &    &      & Telescope name\\
+TIME\_RANGE       &     Double(2) & s & EPOCH & Start, end times\\
+OBSERVER &       String &    &      & Name of observer(s)\\
+LOG &   String(*) & & & Observing log \\
+SCHEDULE\_TYPE &  String & & & Schedule type\\
+SCHEDULE &       String(*) &    &      & Project schedule\\
+PROJECT &               String &    &      & Project identification string.\\
+RELEASE\_DATE &         Double &  s  & EPOCH & Target release date\\
+\defline{\em Flags}
+FLAG\_ROW  & Bool & & & Row flag.\\
+}
+
+\begin{description}
+
+\item[Notes:] This table contains information specifying the observing
+instrument or epoch. See the discussion in Section 3.3 for details. It
+is indexed directly from MAIN via OBSERVATION\_ID.
+
+\item[TELESCOPE\_NAME] Telescope name (e.g. "WSRT" or "VLBA").
+
+\item[TIME\_RANGE] The start and end times of the overall observing
+period spanned by the actual recorded data in MAIN. Required to use
+the same TIME Measure reference as in MAIN.
+
+\item[OBSERVER] The name(s) of the observer(s).
+
+\item[LOG] The observing log, as supplied by the telescope or instrument.
+
+\item[SCHEDULE\_TYPE] The schedule type, with current reserved types
+("VLBA-CRD", "VEX", "WSRT", "ATNF").
+
+\item[SCHEDULE] Unmodified schedule file, of the type specified, and
+as used by the instrument.
+
+\item[PROJECT] Project code (e.g. "BD46")
+
+\item[RELEASE\_DATE] Project release date. This is the date on which
+the data may become public.
+
+\item[FLAG\_ROW] Row flag. True if data in this row is invalid, but
+does not imply any flagging in MAIN.
+\end{description}
+
+\definetable{POINTING: Antenna pointing information}{
+\defline{\bf Columns}
+\defline{\em Key}
+ANTENNA\_ID  &  Int & & & Antenna id.\\
+TIME         &  Double & s & EPOCH & Interval midpoint\\
+INTERVAL     &  Double & s &       & Time interval\\
+\defline{\em Data}
+NAME     &   String & & & Pointing position desc.\\
+NUM\_POLY & Int & & & Series order \\
+TIME\_ORIGIN & Double & s & EPOCH & Origin for the polynomial\\
+DIRECTION & Double(2, NUM\_POLY+1) & rad & DIRECTION & 
+  Antenna pointing direction\\
+TARGET & Double(2, NUM\_POLY+1) & rad & DIRECTION & Target direction \\
+{\it (POINTING\_OFFSET)} & Double(2, NUM\_POLY+1) & rad & DIRECTION &
+  A priori pointing correction \\
+{\it (SOURCE\_OFFSET)} & Double(2, NUM\_POLY+1) & rad & DIRECTION & Offset from source\\
+{\it (ENCODER)} & Double(2) & rad & DIRECTION & Encoder values\\
+{\it (POINTING\_MODEL\_ID)} & Int & & & Pointing model id. \\
+TRACKING & Bool & & & True if on-position \\
+{\it(ON\_SOURCE)} & Bool & & & True if on-source\\
+{\it(OVER\_THE\_TOP)} & Bool & & & True if over the top\\
+}
+\begin{description}
+
+\item[Notes:] This table contains information concerning the primary
+pointing direction of each antenna as a function of time. Note that
+the pointing offsets for inidividual feeds on a given antenna are
+specified in the FEED sub-table with respect to this pointing direction.
+
+\item[ANTENNA\_ID] Antenna identifier, as specified by ANTENNA$n$ in MAIN.
+
+\item[TIME] Mid-point of the time interval for which the information
+in this row is valid. Required to use the same TIME Measure reference
+as in MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[NAME] Pointing direction name; user specified.
+
+\item[NUM\_POLY] Series order for the polynomial expressions in
+DIRECTION and POINTING\_OFFSET.
+
+\item[TIME\_ORIGIN] Time origin for the polynomial expansions.
+
+\item[DIRECTION] Antenna pointing direction, optionally expressed as
+polynomial coefficients. The final result is interpreted as a
+Direction Measure using the specified Measure reference. 
+
+\item[TARGET] Target pointing direction, optionally expressed as
+polynomial coefficients. The final result is interpreted as a
+Direction Measure using the specified Measure reference. This is the
+true expected position of the source, including all coordinate
+corrections such as precession, nutation etc.
+
+\item[POINTING\_OFFSET] The a priori pointing corrections applied by
+the telescope in pointing to the DIRECTION position, optionally
+expressed as polynomial coefficients. The final result is interpreted
+as a Direction Measure using the specified Measure reference.
+
+\item[SOURCE\_OFFSET] The commanded offset from the source position,
+if offset pointing is being used.
+
+\item[ENCODER] The current encoder values on the primary axes of the
+mount type for the antenna, expressed as a Direction Measure.
+
+\item[TRACKING] True if tracking the nominal pointing position.
+
+\item[ON-SOURCE] True if the nominal pointing direction coincides with
+the source, i.e. offset-pointing is not being used.
+
+\item[OVER-THE-TOP] True if the antenna was driven to this position
+"over the top" (az-el mount).
+\end{description}
+
+\definetable{POLARIZATION: Polarization setup information}{
+\defline{\bf Columns}
+\defline{\em Data description columns}
+NUM\_CORR   &     Int  &           &        & \# correlations\\
+\defline{\em Data}  
+CORR\_TYPE & Int(NUM\_CORR) & & & Polarization of correlation \\
+CORR\_PRODUCT &  Int(2, NUM\_CORR) &  & & Receptor cross-products \\  
+\defline{\em Flags}
+FLAG\_ROW & Bool & & & Row flag\\
+}
+\begin{description}
+
+\item[Notes:] This table defines the polarization labeling of the DATA
+array in MAIN, and is directly indexed from the DATA\_DESCRIPTION
+table via POLARIZATION\_ID.
+
+\item[NUM\_CORR] The number of correlation polarization products. For
+example, for (RR) this value would be 1, for (RR, LL) it would be 2,
+and for (XX,YY,XY,YX) it would be 4, etc.
+
+\item[CORR\_TYPE] An integer for each correlation product indicating
+the Stokes type as defined in the Stokes class enumeration.
+
+\item[CORR\_PRODUCT] Pair of integers for each correlation product,
+specifying the receptors from which the signal originated.  The
+receptor polarization is defined in the POLARIZATION\_TYPE column in
+the FEED table. An example would be (0,0), (0,1), (1,0), (1,1) to
+specify all correlations between two receptors.
+
+\item[FLAG\_ROW] Row flag. True is the data in this row are not valid,
+but does not imply the flagging of any DATA in MAIN.
+
+\end{description}
+
+\definetable{PROCESSOR: Processor information}{
+\defline{\bf Columns}
+\defline{\em Data}
+TYPE            & String & & & Processor type \\
+SUB\_TYPE & String & & & Processor sub-type\\
+TYPE\_ID  & Int & & & Processor type id.\\
+MODE\_ID  & Int & & & Processor mode id.\\
+{\it (PASS\_ID)}  & Int & & & Processor pass number\\
+\defline{\em Flags}
+FLAG\_ROW & Bool & & & Row flag\\
+}
+\begin{description}
+
+\item[Notes:] This table holds summary information for the back-end
+processing device used to generate the basic data in the MAIN
+table. Such devices include correlators, radiometers, spectrometers,
+pulsar-timers, amongst others. See Section 4.0.4 for further details.
+
+\item[TYPE] Processor type; reserved keywords include ("CORRELATOR" -
+interferometric correlator; "SPECTROMETER" - single-dish correlator;
+"RADIOMETER" - generic detector/integrator; "PULSAR-TIMER" - pulsar
+timing device).
+
+\item[SUB\_TYPE] Processor sub-type, e.g. "GBT" or "JIVE".
+
+\item[TYPE\_ID] Index used in a specialized sub-table named as
+$subtype\_type$, which contains time-independent processor information
+applicable to the current data record (e.g. a JIVE\_CORRELATOR
+sub-table).  Time-dependent information for each device family is
+contained in other tables, dependent on the device type.
+
+\item[MODE\_ID] Index used in a specialized sub-table named as
+$subtype\_type\_mode$, containing information on the processor mode
+applicable to the current data record. (e.g. a GBT\_SPECTROMETER\_MODE
+sub-table).
+
+\item[PASS\_ID] Pass identifier; this is used to distinguish data records
+produced by multiple passes through the same device, where this is
+possible (e.g. VLBI correlators). Used as an index into the associated
+table containing pass information.
+
+\item[FLAG\_ROW] Row flag. True if data in the row is not valid, but
+does not imply flagging in MAIN.
+
+\end{description}
+
+\definetable{SOURCE: Source information}{
+\defline{\bf Columns}
+\defline{\em Key}
+SOURCE\_ID &      Int &    &      & Source id\\
+TIME &   Double & s  &   EPOCH  & Midpoint of time for which this set of parameters is accurate\\
+INTERVAL &       Double & s &               & Interval\\
+SPECTRAL\_WINDOW\_ID &   Int &    &      & Spectral Window id\\
+\defline{\em Data description}
+NUM\_LINES &  Int & & & Number of spectral lines\\
+\defline{\em Data}  
+NAME &       String &    &      & Name of source as given during observations\\
+CALIBRATION\_GROUP &      Int &    &      & \# grouping for calibration purpose\\
+CODE &       String &    &      & Special characteristics of source, e.g. Bandpass calibrator\\
+DIRECTION &       Double(2) &  rad  &    DIRECTION &        Direction (e.g. RA, DEC) \\
+POSITION  & Double(3) &   m  & POSITION & Position (e.g. for solar system objects) \\
+PROPER\_MOTION &  Double(2) &  rad/s & &  Proper motion \\
+{\it (TRANSITION)} & String(NUM\_LINES) & & & Transition name\\
+{\it (REST\_FREQUENCY)} & Double(NUM\_LINES) & Hz & FREQUENCY & Line rest frequency\\
+{\it (SYSVEL)}   & Double(NUM\_LINES)  &  m/s  & RADIAL VELOCITY & Systemic velocity at reference \\
+{\it (SOURCE\_MODEL)} & TableRecord & & & Default csm \\
+{\it (PULSAR\_ID)} & Int & & & Pulsar id. \\
+}
+\begin{description}
+
+\item[Notes:] This table contains time-variable source information,
+optionally associated with a given FIELD\_ID.
+
+\item[SOURCE\_ID] Source identifier ($\geq 0)$, as specified in the
+FIELD sub-table.
+
+\item[TIME] Mid-point of the time interval for which the data in this
+row is valid. Required to use the same TIME Measure reference as in
+MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier.
+
+\item[NUM\_LINES] Number of spectral line transitions associated with
+this source and spectral window id. combination.
+
+\item[NAME] Source name; user specified.
+
+\item[CALIBRATION\_GROUP] Calibration group number to which this source
+belongs; user specified.
+
+\item[CODE] Source code, used to describe any special characteristics
+f the source, such as the nature of a calibrator. Reserved keyword,
+including ("BANDPASS CAL").
+
+\item[DIRECTION] Source direction at this TIME.
+
+\item[POSITION] Source position $(x,y,z)$ at this TIME (for near-field
+objects).
+
+\item[PROPER\_MOTION] Source proper motion at this TIME.
+
+\item[TRANSITION] Transition names applicable for this spectral window
+(e.g. "v=1, J=1-0, SiO").
+
+\item[REST\_FREQUENCY] Rest frequencies for the transitions.
+
+\item[SYSVEL] Systemic velocity for each transition.
+
+\item[SOURCE\_MODEL] Reference to an assigned component source model
+table.
+
+\item[PULSAR\_ID] An index used in the PULSAR sub-table to define
+further pulsar-specific properties if the source is a pulsar.
+
+\end{description}
+
+\definetable{SPECTRAL\_WINDOW: Spectral window description}{
+\defline{\bf Columns}
+\defline{\em Data description columns}
+NUM\_CHAN   &     Int  &           &        & \# spectral channels \\
+\defline{\em Data}  
+NAME & String & & & Spectral window name\\
+REF\_FREQUENCY     &   Double       &               Hz  &   FREQUENCY&        The reference frequency.\\
+CHAN\_FREQ  &   Double(NUM\_CHAN)    &           Hz    &    FREQUENCY& Center frequencies for each channel in the data matrix.\\
+CHAN\_WIDTH &   Double(NUM\_CHAN)    &           Hz    &    & Channel width for each channel in the data matrix.\\
+MEAS\_FREQ\_REF & Int      & & & FREQUENCY Measure ref.\\
+EFFECTIVE\_BW   &     Double(NUM\_CHAN)         &      Hz      &  &
+The effective noise bandwidth of each spectral channel\\
+RESOLUTION   &     Double(NUM\_CHAN)         &      Hz      &  &
+The effective spectral resolution of each channel\\
+TOTAL\_BANDWIDTH & Double & Hz &  & total bandwidth for this window \\
+NET\_SIDEBAND & Int & & & Net sideband\\
+{\it (BBC\_NO)} & Int & & & Baseband converter no.\\
+{\it (BBC\_SIDEBAND)} & Int & & & BBC sideband\\
+IF\_CONV\_CHAIN & Int & & & The IF conversion chain \\
+{\it (RECEIVER\_ID)}    & Int & & & Receiver id.\\
+FREQ\_GROUP & Int & & & Frequency group\\
+FREQ\_GROUP\_NAME & String & & & Freq. group name \\
+{\it (DOPPLER\_ID)} & Int & & & Doppler id.\\
+{\it (ASSOC\_SPW\_ID)} & Int(*) & & & Associated spw\_id.\\
+{\it (ASSOC\_NATURE)} & String(*) & & & Nature of association\\
+\defline{Flags}
+FLAG\_ROW & Bool & & &\\
+
+} \begin{description}
+
+ \item[Notes:] This table describes properties for each defined
+spectral window. A spectral window is both a frequency label for the
+associated DATA array in MAIN, but also represents a generic frequency
+conversion chain that shares joint physical properties and makes sense
+to calibrate as a single entity.
+
+\item[NUM\_CHAN] Number of spectral channels.
+
+\item[NAME] Spectral window name; user specified.
+
+\item[REF\_FREQUENCY] The reference frequency.
+
+\item[CHAN\_FREQ] Center frequencies for each channel in the data
+matrix. These can be frequency-dependent, to accommodate instruments
+such as acousto-optical spectrometers. Note that the channel
+frequencies may be in ascending or descending frequency order.
+
+\item[CHAN\_WIDTH] Nomical channel width of each spectral
+channel. Although these can be derived from CHAN\_FREQ by
+differencing, it is more efficient to keep a separate reference to
+this information.
+
+\item[MEAS\_FREQ\_REF] Frequency Measure reference for
+CHAN\_FREQ. This allows a row-based reference for this column in order to
+optimize the choice of Measure reference when Doppler tracking is
+used. Modified only by the MS access code.
+
+\item[EFFECTIVE\_BW] The effective noise bandwidth of each spectral channel.
+
+\item[RESOLUTION] The effective spectral resolution of each channel.
+
+\item[TOTAL\_BANDWIDTH] The total bandwidth for this spectral window.
+
+\item[NET\_SIDEBAND] The net sideband for this spectral window.
+
+\item[BBC\_NO] The baseband converter number, if applicable.
+
+\item[BBC\_SIDEBAND] The baseband converter sideband, is applicable.
+
+\item[IF\_CONV\_CHAIN] Identification of the electronic signal
+path for the case of multiple (simultaneous) IFs. (e.g. VLA: AC=0,
+BD=1, ATCA: Freq1=0, Freq2=1)
+
+\item[RECEIVER\_ID] Index used to identify the receiver associated
+with the spectral window. Further state information is planned to be
+stored in a RECEIVER sub-table.
+
+\item[FREQ\_GROUP] The frequency group to which the spectral window belongs.
+This is used to associate spectral windows for joint calibration purposes.
+
+\item[FREQ\_GROUP\_NAME] The frequency group name; user specified.
+
+\item[DOPPLER\_ID] The Doppler identifier defining frame information
+for this spectral window.
+
+\item[ASSOC\_SPW\_ID] Associated spectral windows, which are related
+in some fashion (e.g. "channel-zero").
+
+\item[ASSOC\_NATURE] Nature of the association for ASSOC\_SPW\_ID;
+reserved keywords are ("CHANNEL-ZERO" - channel zero;
+"EQUAL-FREQUENCY" - same frequency labels; "SUBSET" - narrow-band
+subset).
+
+\item[FLAG\_ROW] True if the row does not contain valid data.
+
+\end{description}
+
+\definetable{STATE: State information}{
+\defline{\bf Columns}
+\defline{\em Data}  
+SIG   &     Bool  &           &        & Signal \\
+REF   &     Bool  &           &        & Reference \\
+CAL   &     Double &   K      &        & Noise calibration \\
+LOAD  &     Double &   K      &        & Load temperature\\
+SUB\_SCAN &  Int   &          &        & Sub-scan number\\
+OBS\_MODE &  String &         &        & Observing mode\\
+\defline{\em Flags}
+FLAG\_ROW & Bool &            &        & Row flag\\
+}
+\begin{description}
+
+\item[Notes:] This table defines the state parameters for a particular
+data record as they refer to external loads, calibration sources or
+references, and also characterizes the observing mode of the data
+record, as an aid to defining the scheduling heuristics. It is indexed
+directly via STATE\_ID in MAIN.
+
+\item[SIG] True if the source signal is being observed.
+
+\item[REF] True for a reference phase.
+
+\item[CAL] Noise calibration temperature (zero if not added).
+
+\item[LOAD] Load temperature (zero if no load).
+
+\item[SUB\_SCAN] Sub-scan number $(\geq 0)$, relative to the
+SCAN\_NUMBER in MAIN. Used to identify observing sequences.
+
+\item[OBS\_MODE] Observing mode; defined by a set of reserved keywords
+characterizing the current observing mode (e.g. "OFF-SPECTRUM"). Used
+to define the schedule strategy.
+
+\item[FLAG\_ROW] True if the row does not contain valid data. Does not
+imply flagging in MAIN.
+
+\end{description}
+
+\definetable{SYSCAL: System calibration}{
+\defline{\bf Columns}
+\defline{\em Key}
+ANTENNA\_ID &     Int &    &      & Antenna id\\
+FEED\_ID &        Int &    &      & Feed id\\
+SPECTRAL\_WINDOW\_ID &   Int &    &      & Spectral window id\\
+TIME      &   Double  &      s  & EPOCH & Midpoint of time for which this set of parameters is accurate\\
+INTERVAL &       Double  &      s     &   & Interval\\
+\defline{\em Data}  
+{\it (PHASE\_DIFF)} &  Float & rad &    & Phase difference between receptor 0 and receptor 1\\
+{\it (TCAL)} &       Float (\nr)  &      K &  & Calibration temp\\
+{\it (TRX)}  &       Float (\nr)  &      K &  & Receiver temperature\\
+{\it (TSKY)} &       Float (\nr)  &      K &  & Sky temperature\\
+{\it (TSYS)} &       Float (\nr)  &      K &  & System temp\\
+{\it (TANT)} &       Float (\nr)  &      K &  & Antenna temperature\\
+{\it (TANT\_TSYS)} & Float(\nr) &  & & ${{T_{ant}}\over{T_{sys}}}$\\
+{\it (TCAL\_SPECTRUM)} &       Float (\nr, \nf)  &      K &  & Calibration temp\\
+{\it (TRX\_SPECTRUM)}  &       Float (\nr, \nf)  &      K &  & Receiver temperature\\
+{\it (TSKY\_SPECTRUM)}  &       Float (\nr, \nf)  &      K &  & Sky temperature spectrum\\
+{\it (TSYS\_SPECTRUM)} &       Float (\nr, \nf)  &      K &  & System temp\\
+{\it (TANT\_SPECTRUM)} &       Float (\nr, \nf)  &      K &  & Antenna temperature spectrum\\
+{\it (TANT\_TSYS\_SPECTRUM)} & Float (\nr,\nf) &  & & ${{T_{ant}}\over{T_{sys}}}$ spectrum\\
+\defline{\em Flags}
+{\it (PHASE\_DIFF\_FLAG)} &   Bool  &    &      & Flag for PHASE\_DIFF\\
+{\it (TCAL\_FLAG)} &  Bool &    &      & Flag for TCAL\\
+{\it (TRX\_FLAG)} &   Bool  &    &      & Flag for TRX\\
+{\it (TSKY\_FLAG)} & Bool &      &      & Flag for TSKY\\
+{\it (TSYS\_FLAG)} &  Bool &    &      & Flag for TSYS\\
+{\it (TANT\_FLAG)} & Bool & & & Flag for TANT\\
+{\it (TANT\_TSYS\_FLAG)} & Bool & & & Flag for ${{T_{ant}}\over{T_{sys}}}$\\
+}
+\begin{description}
+
+\item[Notes:] This table contains time-variable calibration
+measurements for each antenna, as indexed on feed and spectral window.
+Note that \nr = number of receptors, and \nf = number of
+frequency channels.
+
+\item[ANTENNA\_ID] Antenna identifier, as indexed by ANTENNA$n$ in MAIN.
+
+\item[FEED\_ID] Feed identifier, as indexed by FEED$n$ in MAIN.
+
+\item[SPECTRAL\_WINDOW\_ID] Spectral window identifier.
+
+\item[TIME] Mid-point of the time interval for which the data in this
+row are valid. Required to use the same TIME Measure reference as that
+in MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[PHASE\_DIFF] Phase difference between receptor 0 and receptor 1.
+
+\item[TCAL] Calibration temperature.
+
+\item[TRX] Receiver temperature.
+
+\item[TSKY] Sky temperature.
+
+\item[TSYS] System temperature.
+
+\item[TANT] Antenna temperature.
+
+\item[TANT\_TSYS] Antenna temperature over system temperature.
+
+\item[TCAL\_SPECTRUM] Calibration temperature spectrum.
+
+\item[TRX\_SPECTRUM] Receiver temperature spectrum.
+
+\item[TSKY\_SPECTRUM] Sky temperature spectrum.
+
+\item[TSYS\_SPECTRUM] System temperature spectrum.
+
+\item[TANT\_SPECTRUM] Antenna temperature spectrum.
+
+\item[TANT\_TSYS\_SPECTRUM] Antenna temperature over system
+temperature spectrum.
+
+\item[PHASE\_DIFF\_FLAG] True if PHASE\_DIFF flagged.
+
+\item[TCAL\_FLAG] True if TCAL flagged.
+
+\item[TRX\_FLAG] True if TRX flagged.
+
+\item[TSKY\_FLAG] True if TSKY flagged.
+
+\item[TSYS\_FLAG] True if TSYS flagged.
+
+\item[TANT\_FLAG] True if TANT flagged.
+
+\item[TANT\_TSYS\_FLAG] True if TANT\_TSYS flagged.
+
+\end{description}
+
+
+\definetable{WEATHER: weather station information}{
+\defline{\bf Columns}
+\defline{\em Key}
+ANTENNA\_ID &        Int &    &      & Antenna number\\
+TIME &  Double  &   s  & EPOCH  & Mid-point of interval\\ 
+INTERVAL &       Double &        s  &      & Interval over which data is relevant\\
+\defline{\em Data}  
+{\it (H2O)} &        Float    &     $m^{-2}$  &      & Average column density of water\\
+{\it (IONOS\_ELECTRON)} & Float & $m^{-2}$    &      & Average column density of electrons\\
+{\it (PRESSURE)} &       Float & hPa  &      & Ambient atmospheric pressure\\
+{\it (REL\_HUMIDITY)} &   Float &    &      & Ambient relative humidity\\
+{\it (TEMPERATURE)} &    Float &  K  &     & Ambient air temperature for an antenna\\
+{\it (DEW\_POINT)} & Float & K & & Dew point \\
+{\it (WIND\_DIRECTION)} & Float  &       rad &      & Average wind direction\\
+{\it (WIND\_SPEED)} &  Float &  m/s  &    & Average wind speed \\
+\defline{\em Flags}
+{\it (H2O\_FLAG)} & Bool & & & Flag for H2O \\
+{\it (IONOS\_ELECTRON\_FLAG)} & Bool & & & Flag for IONOS\_ELECTRON \\
+{\it (PRESSURE\_FLAG)} & Bool & & & Flag for PRESSURE \\
+{\it (REL\_HUMIDITY\_FLAG)} & Bool & & & Flag for REL\_HUMIDITY \\
+{\it (TEMPERATURE\_FLAG)} & Bool & & & Flag for TEMPERATURE \\
+{\it (DEW\_POINT\_FLAG)} & Bool & & & Flag for DEW\_POINT \\
+{\it (WIND\_DIRECTION\_FLAG)} & Bool & & & Flag for WIND\_DIRECTION \\
+{\it (WIND\_SPEED\_FLAG)} & Bool & & & Flag for WIND\_SPEED \\
+}
+\begin{description}
+
+\item[Notes:] This table contains mean external atmosphere and weather
+information.
+
+\item[ANTENNA\_ID] Antenna identifier, as indexed by ANTENNA$n$ from MAIN.
+
+\item[TIME] Mid-point of the time interval over which the data in the
+row are valid. Required to use the same TIME Measure reference as in
+MAIN.
+
+\item[INTERVAL] Time interval.
+
+\item[H2O] Average column density of water.
+
+\item[IONOS\_ELECTRON] Average column density of electrons.
+
+\item[PRESSURE] Ambient atmospheric pressure.
+
+\item[REL\_HUMIDITY] Ambient relative humidity.
+
+\item[TEMPERATURE] Ambient air temperature.
+
+\item[DEW\_POINT] Dew point temperature.
+
+\item[WIND\_DIRECTION] Average wind direction.
+
+\item[WIND\_SPEED] Average wind speed.
+
+\item[H2O\_FLAG] Flag for H2O.
+
+\item[IONOS\_ELECTRON\_FLAG] Flag for IONOS\_ELECTRON.
+
+\item[PRESSURE\_FLAG] Flag for PRESSURE.
+
+\item[REL\_HUMIDITY\_FLAG] Flag for REL\_HUMIDITY.
+
+\item[TEMPERATURE\_FLAG] Flag for TEMPERATURE.
+
+\item[DEW\_POINT\_FLAG] Flag for DEW\_POINT.
+
+\item[WIND\_DIRECTION\_FLAG] Flag for DEW\_POINT.
+
+\item[WIND\_SPEED\_FLAG] Flag for DEW\_POINT.
+
+\end{description}
+
+\section{References}
+
+\noindent Date, C.J., 1986, Introduction to database systems, (Addison-Wesley).
+
+\noindent Flatters, C., 1998, AIPS Memo. 102.
+
+\noindent Noordam, J., 1996, \aipspp Note 185.
+
+\noindent Wieringa, M.H., and Cornwell, T., 1996, \aipspp Note 191.
+
+\end{document}
+
+
