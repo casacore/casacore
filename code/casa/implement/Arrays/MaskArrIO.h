@@ -1,5 +1,5 @@
 //# MaskArrIO.h: Write out an ascii representation of a MaskedArray.
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,7 @@ template<class T> class MaskedArray;
 // <synopsis>
 // These functions write out masked arrays in ascii representation.
 // They simply write out the Array and the LogicalArray which is the mask
-// using the ascii output functions for these objects.
+// using the ascii output functions for these tools.
 // </synopsis>
 //
 // <example>
