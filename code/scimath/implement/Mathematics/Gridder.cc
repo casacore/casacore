@@ -1,5 +1,5 @@
 //# Gridder.cc: Nearest Neighbour Gridder
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -162,7 +162,10 @@ void Gridder<Domain, Range>::fillCorrectionVectors()
   correctionVectors.resize(ndim);
   for (Int dim=0;dim<ndim;dim++) {
     correctionVectors(dim).resize(shape(dim));
-    correctionVectors(dim)=Range(1.0);
+    Range tmp; // need to split this up for egcs1.1.1 on alpha
+    tmp = 1.0;
+    correctionVectors(dim)= tmp;
+    //    correctionVectors(dim)=Range(1.0);
     if(shape(dim)>1) {
       for (Int loc=0;loc<shape(dim);loc++) {
 	correctionVectors(dim)(loc)=correctionFactor1D(loc, shape(dim));
