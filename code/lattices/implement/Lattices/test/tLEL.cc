@@ -53,40 +53,40 @@ Bool checkAttribute (const LELAttribute& attr,
                      const Bool isScalar,
                      const IPosition& shape,
                      const IPosition& tileShape,
-                     const LatticeCoordinates& lattCoord);
+                     const LELCoordinates& lattCoord);
 
 Bool checkFloat (LELInterface<Float>& expr, 
                  const Float Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress);
 
 Bool checkDouble (LELInterface<Double>& expr, 
                  const Double Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress);
 
 Bool checkComplex (LELInterface<Complex>& expr, 
-                 const Complex Result,
-                 const String name,
-                 const IPosition shape,
+                 const Complex& Result,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress);
 
 Bool checkDComplex (LELInterface<DComplex>& expr, 
-                 const DComplex Result,
-                 const String name,
-                 const IPosition shape,
+                 const DComplex& Result,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress);
 
 Bool checkBool (LELInterface<Bool>& expr, 
                  const Bool Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress);
 
@@ -203,14 +203,14 @@ main (int argc, char *argv[])
     const IPosition nullIPos = IPosition();
     LELAttribute attr1;
     if (!checkAttribute(attr1, False, True, nullIPos, nullIPos,
-			LatticeCoordinates())) ok = False;
+			LELCoordinates())) ok = False;
 
-// Now a non-scalar one; this only tests null LatticeCoordinates
+// Now a non-scalar one; this only tests null LELCoordinates
 
     Bool isScalar2 = False;
     IPosition shape2 = shape;
     IPosition tileShape2 = shape;
-    LatticeCoordinates lattCoord2;
+    LELCoordinates lattCoord2;
     LELAttribute attr2(True, shape2, tileShape2, lattCoord2);
     if (!checkAttribute(attr2, True, isScalar2, shape2, tileShape2,
 			lattCoord2)) ok = False;
@@ -2187,8 +2187,8 @@ main (int argc, char *argv[])
 
 Bool checkFloat (LELInterface<Float>& expr, 
                  const Float Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress)
 {
@@ -2252,8 +2252,8 @@ Bool checkFloat (LELInterface<Float>& expr,
 
 Bool checkDouble (LELInterface<Double>& expr, 
                  const Double Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress)
 {
@@ -2316,9 +2316,9 @@ Bool checkDouble (LELInterface<Double>& expr,
 
 
 Bool checkComplex (LELInterface<Complex>& expr, 
-                 const Complex Result,
-                 const String name,
-                 const IPosition shape,
+                 const Complex& Result,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress)
 {
@@ -2381,9 +2381,9 @@ Bool checkComplex (LELInterface<Complex>& expr,
 
 
 Bool checkDComplex (LELInterface<DComplex>& expr, 
-                 const DComplex Result,
-                 const String name,
-                 const IPosition shape,
+                 const DComplex& Result,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress)
 {
@@ -2447,8 +2447,8 @@ Bool checkDComplex (LELInterface<DComplex>& expr,
 
 Bool checkBool (LELInterface<Bool>& expr, 
                  const Bool Result,
-                 const String name,
-                 const IPosition shape,
+                 const String& name,
+                 const IPosition& shape,
                  const Bool shouldBeScalar,
                  const Bool suppress)
 {
@@ -2512,7 +2512,7 @@ Bool checkAttribute (const LELAttribute& attr,
                      const Bool isScalar,
                      const IPosition& shape,
                      const IPosition& tileShape,
-                     const LatticeCoordinates& lattCoord)
+                     const LELCoordinates& lattCoord)
 {
    Bool ok = True;
    if (attr.isMasked() != isMasked) {
