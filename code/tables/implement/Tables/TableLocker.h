@@ -52,7 +52,8 @@
 // <synopsis>
 // Class TableLocker can be used to acquire a (user) lock on a table.
 // The lock can be a read or write lock.
-// The destructor releases the lock.
+// The destructor only releases the lock if the lock was acquired by the
+// constructor.
 // <p>
 // TableLocker simply uses the <src>lock</src> and <src>unlock</src>
 // function of class Table.
@@ -95,10 +96,10 @@
 class TableLocker
 {
 public:
-    // The constructor acquires a read or write lock on a table.
+    // The constructor acquires a read or write lock on a table
+    // which is released by the destructor. 
     // If the table was already locked, the destructor will
-    // still unlock the table. This means that care has to be taken
-    // that a lock is acquired at one place only.
+    // not unlock the table.
     // <br>
     // The number of attempts (default = forever) can be specified when
     // acquiring the lock does not succeed immediately. When nattempts>1,
@@ -119,7 +120,7 @@ public:
 private:
     // The copy constructor and assignment are not possible.
     // Note that only one lock can be held on a table, so copying a
-    // TableLocker object imposes great difficulties which object should
+    // TableLocker object imposes great difficulties which objects should
     // release the lock.
     // It can be solved by turning TableLocker into a handle class
     // with a reference counted body class.
@@ -131,6 +132,7 @@ private:
 
     //# Variables.
     Table itsTable;
+    bool  itsHadLock;
 };
 
 

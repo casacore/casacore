@@ -33,19 +33,24 @@
 TableLocker::TableLocker (Table& table,
 			  FileLocker::LockType type,
 			  uInt nattempts)
-: itsTable (table)
+: itsTable   (table),
+  itsHadLock (table.hasLock(type))
 {
+  if (!itsHadLock) {
     if (! itsTable.lock (type, nattempts)) {
-	String str = "write";
-	if (type == FileLocker::Read) {
-	    str = "read";
-	}
-	throw (TableError ("No " + str + " lock could be acquired on table " +
-			   itsTable.tableName()));
+      String str = "write";
+      if (type == FileLocker::Read) {
+	str = "read";
+      }
+      throw (TableError ("No " + str + " lock could be acquired on table " +
+			 itsTable.tableName()));
     }
+  }
 }
 
 TableLocker::~TableLocker()
 {
+  if (!itsHadLock) {
     itsTable.unlock();
+  }
 }
