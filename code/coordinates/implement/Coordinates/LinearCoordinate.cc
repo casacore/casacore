@@ -75,7 +75,7 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 		 pc.ncolumn() == naxis &&
 		 refPix.nelements() == naxis, AipsError);
     for (uInt i=0; i<naxis; i++) {
-	crval_p[i] = refVal(i);
+	crval_p[i] = refVal[i];
     }
 //
     setDefaultWorldMixRanges();
@@ -102,9 +102,7 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 		 pc.ncolumn() == n &&
 		 refPix.nelements() == n, AipsError);
 //
-
     Vector<Double> cdelt(n);
-//
     for (uInt i=0; i<n; i++) {
        if (refVal(i).isConform(inc(i))) {
 
@@ -599,7 +597,7 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
       throw (AipsError("Invalid number of specified axes"));
    }
    uInt nT = 0;
-   for (uInt i=0; i<nPixelAxes(); i++) if (axes(i)) nT++;
+   for (uInt i=0; i<nPixelAxes(); i++) if (axes[i]) nT++;
    if (nT==0) {
       throw (AipsError("You have not specified any axes to transform"));
    }
@@ -611,22 +609,24 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 // Find the canonical input units that we should convert to.
 // Find the Fourier coordinate names and units
 
-   Vector<String> units(worldAxisUnits());
+   const Vector<String>& units(worldAxisUnits());
+   const Vector<String>& names(worldAxisNames());
+//
    Vector<String> unitsCanon(worldAxisUnits().copy());
    Vector<String> unitsOut = worldAxisUnits().copy();
-   Vector<String> names(worldAxisNames());
    Vector<String> namesOut(worldAxisNames().copy());
-   Vector<Double> crval(referenceValue());
-   Vector<Double> crpix(referencePixel());
+//
+   Vector<Double> crval2(referenceValue().copy());
+   Vector<Double> crpix(referencePixel().copy());
    Vector<Double> scale(nPixelAxes(), 1.0);
 //
    for (uInt i=0; i<nPixelAxes(); i++) {
-      if (axes(i)) {
-         crval(i) = 0.0;
-         fourierUnits(namesOut(i), unitsOut(i), unitsCanon(i), Coordinate::LINEAR, 
-                      i, units(i), names(i));
-         scale(i) = 1.0 / Double(shape(i));
-         crpix(i) = Int(shape(i) / 2);
+      if (axes[i]) {
+         crval2[i] = 0.0;
+         Coordinate::fourierUnits(namesOut[i], unitsOut[i], unitsCanon[i], 
+                                  Coordinate::LINEAR, i, units[i], names[i]);
+         scale[i] = 1.0 / Double(shape[i]);
+         crpix[i] = Int(shape[i] / 2);
       }
    }
 
@@ -644,8 +644,12 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
    const LinearXform& linear = lc.transform_p;
    const LinearXform linear2 = linear.fourierInvert(axes, crpix, scale);
 //
-   return new LinearCoordinate(namesOut, unitsOut, crval, linear2.cdelt(),
-                               linear2.pc(), linear2.crpix());
+   const Vector<Double>& cdelt2 = linear2.cdelt();
+   const Vector<Double>& crpix2 = linear2.crpix();
+   const Matrix<Double>& pc2 = linear2.pc();
+
+   return new LinearCoordinate(namesOut, unitsOut, crval2, cdelt2,
+                               pc2, crpix2);
 }
 
 Bool LinearCoordinate::setWorldMixRanges (const IPosition& shape)
