@@ -1,5 +1,5 @@
 //# Function.h: Numerical functional interface class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,6 +38,7 @@
 
 //# Forward declarations
 #include <aips/iosfwd.h>
+class RecordInterface;
 
 // <summary> Numerical functional interface class
 // </summary>
@@ -252,6 +253,30 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   const FunctionParam<T> &parameters() const { return param_p; };
   FunctionParam<T> &parameters() { parset_p = True; return param_p; };
   // </group>
+
+  // get/set the function mode.  These provide an interface to 
+  // function-specific configuration or state that controls how the 
+  // function calculates its values but otherwise does not qualify as 
+  // a parameter.  Some part of the state, for example, might have a 
+  // type different from that of T.  The state is passed as fields of a
+  // record, mode--the names, types and values of which are specific to the 
+  // implementing function and should be documented in the implementing 
+  // class.  It is recommended that all possible inputs passed to this 
+  // function via setMode() be considered optional such that if the 
+  // record omits a legal field, that part of the state is left unchanged. 
+  // Fields not recognized by the implementing class should be ignored.
+  // An exception should be thrown if a recognized field contains illegal 
+  // data.  The default implementations for both getMode() and setMode() 
+  // ignore the input record.  
+  // <group>
+  virtual void setMode(const RecordInterface& mode);
+  virtual void getMode(RecordInterface& mode) const;
+  // </group>
+
+  // return True if the implementing function supports a mode.  The default
+  // implementation returns False.
+  virtual Bool hasMode() const;
+
   // Evaluate the function object
   virtual U eval(FunctionArg x) const = 0;
   // Print the function (i.e. the parameters)

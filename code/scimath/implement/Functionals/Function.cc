@@ -1,5 +1,5 @@
 //# Function.cc: Numerical functional interface class
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 
 //# Includes
 #include <aips/Functionals/Function.h>
+#include <aips/Containers/RecordInterface.h>
 
 template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {
@@ -54,3 +55,13 @@ U Function<T,U>::operator()(const ArgType &x, const ArgType &y,
   arg_p[0] = x; arg_p[1] = y; arg_p[2] = z;
   return this->eval(&(arg_p[0]));
 } 
+
+template<class T, class U>
+void Function<T,U>::setMode(const RecordInterface& mode) { }
+
+template<class T, class U>
+void Function<T,U>::getMode(RecordInterface& mode) const { }
+
+template<class T, class U>
+Bool Function<T,U>::hasMode() const { return False; }
+
