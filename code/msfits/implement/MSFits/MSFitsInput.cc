@@ -1207,6 +1207,12 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
   Int outRow=-1;
 
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
+
+  //   IF UVFITS CAME FROM AIPS, AND THE FIRST ROW OF SU TABLE 
+  //   CONTAINS A PLANET THAT WAS TRACKED BY THE CORRELATOR (EPOCH=-1),
+  //   THE D.M. REFERENCE WILL BE J2000, WHICH MAY NOT BE CORRECT
+  //   FOR THE PLANETS IN THE LIST (see defect 3636).
+
   MDirection::Types epochRefZero=MDirection::J2000;
   if (nearAbs(epoch(0),1950.0,0.01)) {
     epochRefZero=MDirection::B1950;
@@ -1237,21 +1243,31 @@ void MSFitsInput::fillFieldTable(BinaryTable& bt, Int nField)
     // The code below will write the direction in B1950 or J2000 coordinates if
     // the direction is constant. However it will use apparent Coordinates (I
     // am not sure if this means APP, JTRUE, BTRUE or what), if the proper
-    // motion is non-zero. In all cases the time will be the date of the start
-    // of the observation.
+    // motion is non-zero.  If the epoch in the incoming SU 
+    // table is "-1" (via AIPS UVFITS, a planet tracked by the correlator), it 
+    // will adopt the epochRefZero and use the ra/dec (not raapp/decapp). 
+    // The handling of planets should be cleaned up (defect 3636).
+    // In all cases the time will be the date of the start of the observation.
     MDirection::Types epochRef=MDirection::APP;
     MVDirection refDir;
-    if (numPoly == 0) {
+   
+    if (numPoly==0 ) {  
       if (near(epoch(inRow),2000.0,0.01)) {
 	epochRef = MDirection::J2000;
-      } else if (numPoly == 0 && nearAbs(epoch(inRow),1950.0,0.01)) {
+      } else if (nearAbs(epoch(inRow),1950.0,0.01)) {
 	epochRef = MDirection::B1950;
+      } else if (epoch(inRow) == -1.0) {
+	epochRef = epochRefZero;
+	itsLog << " Assuming standard epoch " 
+               << " for " << name(inRow)
+               << ".  Be aware that this may not be correct." << endl;
       } else {
 	itsLog << " Cannot handle epoch in SU table: "
-	       << epoch(fld) << LogIO::EXCEPTION;
+	       << epoch(inRow) << LogIO::EXCEPTION;
       }
       refDir = MVDirection(ra(inRow)*C::degree,dec(inRow)*C::degree);
-    } else {
+
+    } else {  
       refDir = MVDirection(raapp(inRow)*C::degree,decapp(inRow)*C::degree);
     }
     Vector<MDirection> radecMeas(numPoly+1);
