@@ -34,12 +34,12 @@
 
 FilebufIO::FilebufIO()
 : itsOwner     (False),
-  itsFile      (0),
-  itsBufSize   (0),
-  itsBuffer    (0),
   itsSeekable  (False),
   itsReadable  (False),
-  itsWritable  (False)
+  itsWritable  (False),
+  itsFile      (0),
+  itsBufSize   (0),
+  itsBuffer    (0)
 {}
 
 FilebufIO::FilebufIO (FILE* file, uInt bufferSize)

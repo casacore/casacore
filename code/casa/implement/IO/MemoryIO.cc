@@ -51,8 +51,8 @@ MemoryIO::MemoryIO (const void* buffer, uLong size)
 : itsBuffer     ((uChar*)buffer),
   itsAlloc      (size),
   itsExpandSize (0),
-  itsPosition   (0),
   itsUsed       (size),
+  itsPosition   (0),
   itsReadable   (True),
   itsWritable   (False),
   itsCanDelete  (False)
@@ -63,8 +63,8 @@ MemoryIO::MemoryIO (void* buffer, uLong size, ByteIO::OpenOption option,
 : itsBuffer     ((uChar*)buffer),
   itsAlloc      (size),
   itsExpandSize (expandSize),
-  itsPosition   (0),
   itsUsed       (size),
+  itsPosition   (0),
   itsReadable   (True),
   itsWritable   (True),
   itsCanDelete  (canDelete)
@@ -81,10 +81,9 @@ MemoryIO::MemoryIO (void* buffer, uLong size, ByteIO::OpenOption option,
     case ByteIO::Append:
 	itsPosition = itsUsed;
 	break;
-    case ByteIO::New:
-    case ByteIO::NewNoReplace:
-    case ByteIO::Scratch:
+    default:
 	itsUsed = 0;
+	break;
     }
 }
 
@@ -153,17 +152,17 @@ Long MemoryIO::seek (Long offset, ByteIO::SeekOption dir)
     // This means that the buffer usage increases.
     // Expand the buffer if needed.
     // Initialize the new buffer positions with zeroes.
-    if (newPos > itsUsed) {
+    if (newPos > Long(itsUsed)) {
 	// Throw an exception if not writable.
 	if (!itsWritable) {
 	    throw (AipsError ("MemoryIO::seek past end of readonly object"));
 	}
-	if (newPos > itsAlloc) {
+	if (newPos > Long(itsAlloc)) {
 	    if (! expand (newPos)) {
 		throw (AipsError("MemoryIO::seek: buffer cannot be expanded"));
 	    }
 	}
-	for (; itsUsed<newPos; itsUsed++) {
+	for (; Long(itsUsed)<newPos; itsUsed++) {
 	    itsBuffer[itsUsed] = 0;
 	}
     }

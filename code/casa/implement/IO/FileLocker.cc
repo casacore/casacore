@@ -35,20 +35,20 @@
 
 FileLocker::FileLocker()
 : itsFD          (-1),
+  itsError       (0),
   itsStart       (0),
   itsLength      (0),
   itsReadLocked  (False),
-  itsWriteLocked (False),
-  itsError       (0)
+  itsWriteLocked (False)
 {}
 
 FileLocker::FileLocker (int fd, uInt start, uInt length)
 : itsFD          (fd),
+  itsError       (0),
   itsStart       (start),
   itsLength      (length),
   itsReadLocked  (False),
-  itsWriteLocked (False),
-  itsError       (0)
+  itsWriteLocked (False)
 {}
 
 FileLocker::~FileLocker()

@@ -51,11 +51,11 @@ static const uInt sizeReqId = (1 + 2*nrReqId) * 4;
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist)
-: itsInterval  (inspectInterval),
+: itsFileIO    (0),
+  itsCanIO     (0),
   itsWritable  (True),
   itsAddToList (setRequestFlag),
-  itsFileIO    (0),
-  itsCanIO     (0),
+  itsInterval  (inspectInterval),
   itsPid       (getpid()),
 //  itsHostId    (gethostid()),     gethostid is not declared in unistd.h
   itsHostId    (0),
@@ -269,7 +269,7 @@ void LockFile::addReqId()
     //# Add the id at the last free place in the block.
     //# If full, use last element. This is better than ignoring it,
     //# because in this way the last request is always known.
-    Int inx = itsReqId[0];
+    uInt inx = itsReqId[0];
     if (inx == itsReqId.nelements()) {
 	inx--;
     }else{
@@ -287,7 +287,8 @@ void LockFile::removeReqId()
     //# can happen when a process with an outstanding request died.
     Int nr = itsReqId[0];
     for (Int i=0; i<nr; i++) {
-	if (itsPid == itsReqId[2*i+1]  &&  itsHostId == itsReqId[2*i+2]) {
+	if (Int(itsPid) == itsReqId[2*i+1]
+        &&  Int(itsHostId) == itsReqId[2*i+2]) {
 	    break;
 	}
     }

@@ -36,10 +36,10 @@
 
 
 FiledesIO::FiledesIO()
-: itsFile     (-1),
-  itsSeekable (False),
+: itsSeekable (False),
   itsReadable (False),
-  itsWritable (False)
+  itsWritable (False),
+  itsFile     (-1)
 {}
 
 FiledesIO::FiledesIO (int fd)
@@ -100,7 +100,7 @@ void FiledesIO::write (uInt size, const void* buf)
     if (!itsWritable) {
 	throw (AipsError ("FiledesIO object is not writable"));
     }
-    if (::write (itsFile, buf, size) != size) {
+    if (::write (itsFile, buf, size) != Int(size)) {
 	throw (AipsError (String("FiledesIO: write error: ")
 			  + strerror(errno)));
     }
@@ -112,7 +112,7 @@ void FiledesIO::read (uInt size, void* buf)
     if (!itsReadable) {
 	throw (AipsError ("FilebufIO object is not readable"));
     }
-    if (::read (itsFile, buf, size) != size) {
+    if (::read (itsFile, buf, size) != Int(size)) {
 	throw (AipsError (String("FiledesIO: read error: ")
 			  + strerror(errno)));
     }
@@ -125,6 +125,8 @@ Long FiledesIO::seek (Long offset, ByteIO::SeekOption dir)
 	return ::lseek (itsFile, offset, SEEK_SET);
     case ByteIO::End:
         return ::lseek (itsFile, offset, SEEK_END);
+    default:
+	break;
     }
     return ::lseek (itsFile, offset, SEEK_CUR);
 }

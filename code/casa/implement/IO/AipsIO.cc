@@ -43,44 +43,44 @@
 const uInt AipsIO::magicval_p = 0xbebebebe;
 
 AipsIO::AipsIO()
-: maxlev_p (10),
+: opened_p (0),
+  swput_p  (-1),
+  swget_p  (-1),
+  maxlev_p (10),
   objlen_p (10),
   objtln_p (10),
   objptr_p (10),
-  opened_p (0),
-  swput_p  (-1),
-  swget_p  (-1),
   hasCachedType_p(False)
 {}
 
 AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
 		uInt filebufSize)
-: maxlev_p (10),
+: opened_p (0),
+  maxlev_p (10),
   objlen_p (10),
   objtln_p (10),
-  objptr_p (10),
-  opened_p (0)
+  objptr_p (10)
 {
     // Open the file.
     open (fileName, fop, filebufSize);
 }
 
 AipsIO::AipsIO (ByteIO* file)
-: maxlev_p   (10),
+: opened_p   (0),
+  maxlev_p   (10),
   objlen_p   (10),
   objtln_p   (10),
-  objptr_p   (10),
-  opened_p   (0)
+  objptr_p   (10)
 {
     open (file);
 }
 
 AipsIO::AipsIO (TypeIO* file)
-: maxlev_p   (10),
+: opened_p   (0),
+  maxlev_p   (10),
   objlen_p   (10),
   objtln_p   (10),
-  objptr_p   (10),
-  opened_p   (0)
+  objptr_p   (10)
 {
     open (file);
 }
