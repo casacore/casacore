@@ -4844,3 +4844,4 @@
 14 316 sys rm libexec/sdimager_meta.g
 14 316 src rm trial/apps/newdish/dish_meta.g
 14 316 sys rm libexec/dish_meta.g
+14 316 src rm trial/apps/newdish/dish_util.g
