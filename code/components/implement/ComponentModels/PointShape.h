@@ -1,5 +1,5 @@
 //# PointShape.h:
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -220,8 +220,9 @@ public:
   // is a point shape there are none. So calling <src>setParameters</src> or
   // <src>setErrors</src> with anything other than a zero length Vector will
   // throw an exception (when compiled in debug mode). The
-  // <src>nParameters<src> will always return zero and the <src>parameters<src>
-  // and <src>errors<src> functions will always return zero length Vectors.
+  // <src>nParameters</src> will always return zero and the
+  // <src>parameters</src> and <src>errors</src> functions will always return
+  // zero length Vectors.
   // <group>
   virtual uInt nParameters() const;
   virtual void setParameters(const Vector<Double>& newParms);
