@@ -236,8 +236,8 @@ uInt DirectionCoordinate::nWorldAxes() const
 Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 				  const Vector<Double> &pixel) const
 {
-    AlwaysAssert(world.nelements() == 2 &&
-		 pixel.nelements() == 2, AipsError);
+    world.resize(2);
+    AlwaysAssert(pixel.nelements() == 2, AipsError);
 
     Bool ok = linear_p.reverse(world, pixel, errorMsg);
     if (ok) {
@@ -268,9 +268,8 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
 Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 				  const Vector<Double> &world) const
 {
-
-    AlwaysAssert(world.nelements() == 2 &&
-		 pixel.nelements() == 2, AipsError);
+    pixel.resize(2);
+    AlwaysAssert(pixel.nelements() == 2, AipsError);
 
     tmpstatic(0) = world(0); tmpstatic(1) = world(1);
     toDegrees(tmpstatic);
