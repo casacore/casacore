@@ -959,14 +959,16 @@ Coordinate *CoordinateSystem::clone() const
 }
 
 Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
-				    char prefix) const
+				    char prefix, Bool writeWCS) const
 {
     LogIO os(LogOrigin("CoordinateSystem", "toFITSHeader", WHERE));
 
-    os << LogIO::NORMAL <<
-      "AIPS++ writes the DRAFT WCS coordinate convention. This will probably\n"
-      "not cause any problems, except perhaps for the NCP projection." <<
-	LogIO::POST;
+    if (writeWCS) {
+	os << LogIO::NORMAL <<
+	    "Writing the DRAFT WCS coordinate convention. This will probably\n"
+	    "not cause any problems, except perhaps for the NCP projection." <<
+	    LogIO::POST;
+    }
 
     // ********** Validation
 
@@ -1043,27 +1045,75 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
     // cdelt
     Vector<Double> cdelt = coordsys.increment().ac();
 
+    // projp
+    Vector<Double> projp;
+    if (skyCoord >= 0) {
+	projp = coordsys.directionCoordinate(skyCoord).projection().
+	    parameters();
+    }
+
     // ctype
     Vector<String> ctype = coordsys.worldAxisNames();
     for (i=0; i < n; i++) {
-	if (i == longAxis) {
-	    const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-	    String name = dc.axisNames(dc.directionType(), True)(0);
+	if ((i == longAxis || i == latAxis) && writeWCS) {
+	    const DirectionCoordinate &dc = 
+		coordsys.directionCoordinate(skyCoord);
+	    String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
 	    while (name.length() < 4) {
 		name += "-";
 	    }
 	    name = name + "-" + dc.projection().name();
 	    ctype(i) = name.chars();
-	} else if (i == latAxis) {
-	    const DirectionCoordinate &dc = coordsys.directionCoordinate(skyCoord);
-	    String name = dc.axisNames(dc.directionType(), True)(1);
+	} else if (i == longAxis || i == latAxis) { // && !writeWCS
+	    const DirectionCoordinate &dc = 
+		coordsys.directionCoordinate(skyCoord);
+	    String name = dc.axisNames(dc.directionType(), True)(i==latAxis);
 	    while (name.length() < 4) {
 		name += "-";
+	    }
+	    switch(dc.projection().type()) {
+	    case Projection::TAN:  // Fallthrough
+	    case Projection::ARC:
+		name = name + "-" + dc.projection().name();
+		break;
+	    case Projection::SIN:
+		// This is either "real" SIN or NCP
+		AlwaysAssert(projp.nelements() == 2, AipsError);
+		if (near(projp(0), 0.0) && near(projp(1), 0.0)) {
+		    // True SIN
+		    name = name + "-" + dc.projection().name();
+		} else {
+		    // NCP?
+		    // From Greisen and Calabretta
+		    if (near(projp(0), 0.0) && 
+			near(projp(1), 1.0/tan(crval(latAxis)*C::pi/180.0))) {
+			// Is NCP
+			projp = 0.0;
+			name = name + "-NCP";
+		    } else {
+			// Doesn't appear to be NCP
+			os << LogIO::SEVERE << "SIN projection with non-zero"
+			    " projp does not appear to be NCP." << endl <<
+			    "However, assuming NCP anyway." << LogIO::POST;
+			name = name + "-NCP";
+			projp = 0.0;
+		    }
+		}
+		break;
+	    default:
+		if (i == longAxis) {
+		    // Only pring the message once for long/lat
+		    os << LogIO::SEVERE << dc.projection().name() << 
+			" is not known to standard FITS (it is known to WCS)."
+		       << LogIO::POST;
+		}
+		name = name + "-" + dc.projection().name();
+		break;
 	    }
 	    name = name + "-" + dc.projection().name();
 	    ctype(i) = name.chars();
 	} else if (i == specAxis) {
-	    ctype(i) = "FREQ    ";
+	    // Nothing - will be handled in SpectraCoordinate
 	} else if (i == stokesAxis) {
 	    ctype(i) = "STOKES  ";
 	} else {
@@ -1089,11 +1139,6 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 	}
     }
 
-    // projp
-    Vector<Double> projp;
-    if (skyCoord >= 0) {
-	projp = coordsys.directionCoordinate(skyCoord).projection().parameters();
-    }
 
     // pc
     Matrix<Double> pc = linearTransform();
@@ -1108,8 +1153,14 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 			pc(latAxis, latAxis)*C::pi/180.0)*180.0/C::pi;
 	crota(latAxis) = (rholong + rholat)/2.0;
 	if (!near(rholong, rholat)) {
-	    os << LogIO::SEVERE << sprefix + "rota is not very accurate. PC matrix"
-		" is not a pure rotation." << LogIO::POST;
+	    os << LogIO::SEVERE << sprefix + "rota is not very accurate."
+		" PC matrix"
+		" is not a pure rotation.";
+	    if (! writeWCS) {
+		os << endl << "Consider writing the DRAFT WCS convention to"
+		    " avoid losing information.";
+	    }
+	    os << LogIO::POST;
 	}
     }
 
@@ -1123,25 +1174,30 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
 		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
 	    for (uInt i=2; i<stokes.nelements(); i++) {
 		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(i))) - 
-		     Stokes::FITSValue(Stokes::StokesTypes(stokes(i-1)))) != inc) {
+		     Stokes::FITSValue(Stokes::StokesTypes(stokes(i-1)))) !=
+		    inc) {
 		    inorder = False;
 		}
 	    }
 	}
 	if (inorder) {
-	    crval(stokesAxis) = Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
+	    crval(stokesAxis) = 
+		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
 	    crpix(stokesAxis) = 1;
 	    cdelt(stokesAxis) = inc;
 	} else {
 	    // !inorder
-	    crval(stokesAxis) = Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
+	    crval(stokesAxis) = 
+		Stokes::FITSValue(Stokes::StokesTypes(stokes(0))) + 200;
 	    crpix(stokesAxis) = 1;
 	    cdelt(stokesAxis) = 1;
 	}
     }
 
     // Actually write the header
-    header.define("pc", pc);
+    if (writeWCS) {
+	header.define("pc", pc);
+    }
     header.define(sprefix + "type", ctype);
     header.define(sprefix + "rval", crval);
     header.define(sprefix + "delt", cdelt);
@@ -1149,15 +1205,25 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header, Bool oneRelative,
     header.define(sprefix + "rpix", crpix);
     header.define(sprefix + "unit", cunit);
     if (projp.nelements() > 0) {
-	header.define("projp", projp);
-	for (uInt i=0; i<projp.nelements(); i++) {
-	    if (! nearAbs(projp(i), 0.0)) {
-		os << LogIO::NORMAL << "PROJPn not all zero.\nOld FITS readers"
-		    " will not interpret the coordinates correctly." <<
-		    LogIO::POST;
-		break;
+	if (!writeWCS) {
+	    for (uInt i=0; i<projp.nelements(); i++) {
+		if (! nearAbs(projp(i), 0.0)) {
+		    os << LogIO::NORMAL << 
+			"PROJPn not all zero.Information lost in FITS"
+			" conversion. Try WCS?." <<
+			LogIO::POST;
+		    break;
+		}
 	    }
 	}
+	if (writeWCS) {
+	    header.define("projp", projp);
+	}
+    }
+
+    if (specAxis > 1) {
+	const SpectralCoordinate &spec = spectralCoordinate(specCoord);
+	spec.toFITS(header, specAxis, os, oneRelative);
     }
 
     return True;
@@ -1290,7 +1356,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    latAxis = i;
 	} else if (ctype(i).contains("STOKES")) {
 	    stokesAxis = i;
-	} else if (ctype(i).contains("FREQ")) {
+	} else if (ctype(i).contains("FREQ") || 
+		   ctype(i).contains("FELO")) {
 	    specAxis = i;
 	}
     }
@@ -1349,7 +1416,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	// them.
 
 	// First, work out what the projection actually is.
-	// Special case NCP - now SIN with 
+	// Special case NCP - now SIN with  parameters
 	Vector<Double> projp;
 	Projection::Type ptype;
 	
@@ -1474,7 +1541,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    case -8: stokes(i) = Stokes::YX; break;
 	    default:
 		os << LogIO::NORMAL << "There are at most " << i << " known "
-		    "Stokes values on the Stokes axis." << LogIO::POST;
+		    "Stokes values on the Stokes axis" << LogIO::POST;
 		stokes.resize(i, True);
 	    }
 	}
@@ -1490,19 +1557,18 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 
     // SPECTRAL
     if (specAxis >= 0) {
-	Double toHz = 1.0; // assume Hz unless we're told otherwise
-	if (cunit.nelements() > 0) {
-	    Unit frequ = cunit(specAxis);
-	    Unit hz = "Hz";
-	    toHz = frequ.getValue().getFac()/hz.getValue().getFac();
+	// Will be overwritten or ignored.
+	SpectralCoordinate tmp;
+	String error;
+	if (SpectralCoordinate::fromFITS(tmp, error, header, specAxis,
+					 os)) {
+	    coordsys.addCoordinate(tmp);
+	} else {
+	    os << LogIO::SEVERE << "Cannot convert apparent spectral axis " <<
+		ctype(specAxis) << " into a true spectral coordinate (error="
+	       << error << "). Turning it into a linear axis." << LogIO::POST;
+	    specAxis = -1;
 	}
-	os << LogIO::NORMAL << "Assuming frequencies are topocentric. Gripe if"
-	    " this is a problem." << LogIO::POST;
-	SpectralCoordinate sc(MFrequency::TOPO,
-			      crval(specAxis)*toHz,
-			      cdelt(specAxis)*toHz, 
-			      crpix(specAxis));
-	coordsys.addCoordinate(sc);
     }
     
     // Remaining axes are LINEAR
@@ -1512,8 +1578,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
     if (specAxis >= 0) {nlin--;}
     if (stokesAxis >= 0) {nlin--;}
     if (nlin > 0) {
-	os << LogIO::NORMAL << "Assuming no rotation (etc) in linear axes." <<
-	    LogIO::POST;
+	os << LogIO::NORMAL << "Assuming no rotation/skew/... in linear axes." 
+	   << LogIO::POST;
 	Matrix<Double> linpc(nlin, nlin); linpc = 0; linpc.diagonal() = 1.0;
 	Vector<Double> lincrpix(nlin), lincdelt(nlin), lincrval(nlin);
 	Vector<String> linctype(nlin), lincunit(nlin);
@@ -1583,6 +1649,8 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    linused++;
 	}
     }
+    cerr << "nWorldAxes() " << coordsys.nWorldAxes() << " order.nelements() " 
+	 << order.nelements() << endl;
     coordsys.transpose(order, order);
     
     return True;
