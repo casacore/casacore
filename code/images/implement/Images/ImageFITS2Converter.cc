@@ -215,11 +215,16 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 				     Bool preferVelocity,
 				     Bool opticalVelocity,
 				     Int BITPIX, Float minPix, Float maxPix,
-				     Bool allowOverwrite, Bool degenerateLast)
+				     Bool allowOverwrite, Bool degenerateLast,
+                                     Bool verbose)
 {
-    LogIO log(LogOrigin("ImageFITSConverter", "ImageToFITS", WHERE));
+//
+// Make a logger
+//
+    LogIO os;
+    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
+//
     error = "";
-
     FitsOutput *outfile = 0;
 
     if (fitsName == "-") {
@@ -293,11 +298,6 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
       cSys.transpose(order,order);
    }
 //
-// Make a logger
-//
-    LogIO os;
-    os << LogOrigin("ImageFitsConverter", "ImageToFITS", WHERE);
-
     Bool applyMask = False;
     Array<Bool>* pMask = 0;
     if (image.isMasked()) {
@@ -326,9 +326,11 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	header.setComment("bitpix", "Short integer (16 bit)");
         if (minPix > maxPix) {
 	    // Find the min and max of the image
-	    os << LogIO::NORMAL << 
+            if (verbose) {
+   	       os << LogIO::NORMAL << 
 	      "Finding scaling factors for BITPIX=16 and look for masked or blanked values" <<
 		LogIO::POST;
+            }
 	    hasBlanks = False;
 //
 // Set up iterator
@@ -457,7 +459,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
                                 preferVelocity, opticalVelocity);
 
     if (!ok) {
-	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
+	os << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
 	    " a simple linear coordinate system." << LogIO::POST;
 //
 	uInt n = cSys.nWorldAxes();
@@ -501,7 +503,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
  	String tmp0 = image.miscInfo().name(i);
         String miscname(tmp0.at(0,8));
         if (tmp0.length() > 8) {
-           log << LogIO::WARN << "Truncating miscinfo field " << tmp0 
+           os  << LogIO::WARN << "Truncating miscinfo field " << tmp0 
                << " to " << miscname << LogIO::POST;
         }
 //         
@@ -513,8 +515,8 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 // image came from FITS and hence the conflict.
 
 /*
-             log << LogIO::WARN << "FITS keyword " << miscname 
-                 << " is already defined so dropping it" << LogIO::POST;
+             os << LogIO::WARN << "FITS keyword " << miscname 
+                << " is already defined so dropping it" << LogIO::POST;
 */
           } else {
 	    DataType misctype = image.miscInfo().dataType(i);
@@ -582,7 +584,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		{
 		    ostringstream os;
 		    os << misctype;
-		    log << LogIO::NORMAL << "Not writing miscInfo field '" <<
+		    os << LogIO::NORMAL << "Not writing miscInfo field '" <<
 			miscname << "' - cannot handle type " << String(os) <<
 			LogIO::POST;
 		}
@@ -657,9 +659,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 					    sizeof(Float),
 					    memoryInMB);
 
-    log << "Copying '" << image.name() << "' to '" << fitsName << "'   "
-        << report << LogIO::POST;
-
+    if (verbose) {
+       os << "Copying '" << image.name() << "' to '" << fitsName << "'   "
+          << report << LogIO::POST;
+    }
 //
 // If this fails, more development is needed
 //
@@ -674,9 +677,11 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     try {
         Int nIter = max(1,shape.product()/newCursorShape.product());
         Int iUpdate = max(1,nIter/20);
-	ProgressMeter meter(0.0, 1.0*shape.product(),
-			    "Image to FITS", "Pixels copied", "", 
-                            "", True, iUpdate);
+//
+	ProgressMeter* pMeter = 0;
+        if (verbose) pMeter = new ProgressMeter(0.0, 1.0*shape.product(),
+                                                "Image to FITS", "Pixels copied", "", 
+                                                "", True, iUpdate);
 	uInt count = 0;
 	Double curpixels = 1.0*newCursorShape.product();
 //
@@ -735,7 +740,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
                maskPtr = pMask->getStorage(deleteMaskPtr);
             }
 //
-//	    meter.update((count*1.0 - 0.5)*curpixels);
+//	    pMeter->update((count*1.0 - 0.5)*curpixels);
 //
             const uInt nPts = cursor.nelements();
 	    error= "";
@@ -828,7 +833,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 		return False;
 	    }
 	    count++;
-	    meter.update(count*curpixels);
+	    if (verbose) pMeter->update(count*curpixels);
 	}
 	if (fits32) {
 	    delete fits32; fits32 = 0;
@@ -839,6 +844,7 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	    AlwaysAssert(0, AipsError); // NOTREACHED
 	}
 //
+        if (pMeter) delete pMeter;
         if (pMask!=0) delete pMask;
     } catch (AipsError x) {
 	error = "Unknown error copying image to FITS file";
