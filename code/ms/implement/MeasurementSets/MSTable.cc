@@ -29,6 +29,8 @@
 #include <aips/MeasurementSets/NewMSTableImpl.h>
 #include <aips/Tables/TableRecord.h>
 
+//# These statics cannot be compiled with egcs 1.0.3a.
+#if !defined(__GNUG__) || (defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ >= 91))
 template <class ColEnum, class KeyEnum> 
 SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::columnMap_p("");
 template <class ColEnum, class KeyEnum> 
@@ -48,6 +50,8 @@ template <class ColEnum, class KeyEnum>
 SimpleOrderedMap<Int, String> NewMSTable<ColEnum,KeyEnum>::keyCommentMap_p("");
 template <class ColEnum, class KeyEnum> 
 SimpleCountedConstPtr<TableDesc> NewMSTable<ColEnum,KeyEnum>::requiredTD_p;
+#endif
+
 
 template <class ColEnum, class KeyEnum> 
 NewMSTable<ColEnum,KeyEnum>::NewMSTable() {}
