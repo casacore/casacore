@@ -397,12 +397,25 @@ private:
     void combineDateIntervals();
     // </group>
 
+    // Define the functions to find a double, which depend on open/closed-ness.
+    // In this way a test on open/closed is done only once.
+    // <group>
+    typedef Bool (TableExprNodeSet::* FindFuncPtr) (Double value);
+    Bool findOpenOpen     (Double value);
+    Bool findOpenClosed   (Double value);
+    Bool findClosedOpen   (Double value);
+    Bool findClosedClosed (Double value);
+    // </group>
+
     PtrBlock<TableExprNodeSetElem*> itsElems;
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
     Bool itsCheckTypes;    //# True = checking data types is not needed
-    Bool itsSorted;        //# True = intervals are sorted in ascending order
+    Bool itsAllIntervals;  //# True = all elements are const intervals (sorted)
+    Block<Double> itsStart; //# Start values of const intervals
+    Block<Double> itsEnd;   //# End values of const intervals
+    FindFuncPtr   itsFindFunc; //# Function to find a matching const interval
 };
 
 
