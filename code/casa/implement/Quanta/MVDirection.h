@@ -1,5 +1,5 @@
 //# MVDirection.h: Vector of three direction cosines
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -176,6 +176,25 @@ public:
   virtual MeasValue *clone() const;
   // Generate a 2-vector of angles (in rad)
   Vector<Double> get() const;
+  // Get the position angle between the directions. I.e. the angle between
+  // the direction from one to the pole, and from one to the other.
+  // <group>
+  Double positionAngle(const MVPosition &other) const;
+  Double positionAngle(const MVDirection &other) const;
+  Quantity positionAngle(const MVPosition &other, 
+			 const Unit &unit) const;
+  Quantity positionAngle(const MVDirection &other, 
+			 const Unit &unit) const;
+  // </group>
+  // Get the angular separation between two directions.
+  // <group>
+  Double separation(const MVPosition &other) const;
+  Double separation(const MVDirection &other) const;
+  Quantity separation(const MVPosition &other, 
+		      const Unit &unit) const;
+  Quantity separation(const MVDirection &other, 
+		      const Unit &unit) const;
+  // </group>
   // Produce the cross product
   MVDirection crossProduct(const MVDirection &other) const;
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
