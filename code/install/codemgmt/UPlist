@@ -28,15 +28,17 @@
 #
 # $Id$
 #
-set script = "UPlist"
-set usage = 'Usage: UPlist [-c] [-r] [-l] [-d] [-n] <typ>'
 #
 # UPlist script (must have x allowed)
-# List all lines that have been found according to an egrep rule, using the
-# <typ>.found file list. The -l will give the line numbers in the file
-# The list will be in <typ>.list.
 #
-# See UPinfo for details
+set script = "UPlist"
+set usage = 'UPlist [-l] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("List all lines that have been found using an egrep rule in" \
+	     "<typ>.spat. The files are given in <typ>.found." \
+	     "In general the pattern and files are listed using UPfind.")
+set hsw   = ("-l will give the line numbers in the files")
+set huse  =  "<typ>.def, <typ>.spat, <typ>.found"
+set hcrea =  "<typ>.list"
 #
 # Get general info
 #
@@ -64,9 +66,9 @@ if (! $ok) exit 1
 #
 # Get specific data
 #
-if (! -r $ldir/${tp}.up1) then
-   touch $ldir/${tp}.up1
-   echo "Specify egrep  expression(s) to search in files"
+if (! -r $ldir/${tp}.spat) then
+   touch $ldir/${tp}.spat
+   echo "Specify egrep expression(s) to search in files"
    echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
    echo '      or: [(][^(]*[*] *[)][ \t]*0'
    echo 'Multi-line expressions will be ORed'
@@ -74,15 +76,15 @@ if (! -r $ldir/${tp}.up1) then
 	echo -n "Find expression: "
 	set x = "$<"
 	if ("$x" == "") break
-	echo "$x" >> $ldir/${tp}.up1
+	echo "$x" >> $ldir/${tp}.spat
    end
    unset x
 endif
 
-if (-z $ldir/${tp}.up1) then
-   echo "No ${tp}.up1 file created"
-   if (-e $ldir/${tp}.up1)  rm -f $ldir/${tp}.up1
-   exit (1)
+if (-z $ldir/${tp}.spat) then
+   echo "An empty or no ${tp}.spat file created"
+   if (-e $ldir/${tp}.spat)  rm -f $ldir/${tp}.spat
+   exit 1
 endif
 
 if ($upswn) exit 0
@@ -91,7 +93,7 @@ if ($upswn) exit 0
 #
 if (! -e $ldir/${tp}.found) then
    echo "No ${tp}.found file present. Create one using UPfind"
-   exit (1)
+   exit 1
 endif
 
 cd $dir/code
@@ -109,10 +111,9 @@ set tmp = $$
 if (-e $ldir/$tmp.tmp) rm -f $ldir/$tmp.tmp
 touch $ldir/$tmp.tmp
 
-
 foreach i (`cat $ldir/${tp}.found`)
    echo "$cnt"' ## '"$i" >> $ldir/$tmp.tmp
-   egrep $x -f $ldir/${tp}.up1 $i | \
+   egrep $x -f $ldir/${tp}.spat $i | \
 	awk '{ print '$cnt', "::", $0 }'  >> $ldir/$tmp.tmp
    @ cnt = $cnt + 1
 end
@@ -128,3 +129,4 @@ echo $a[1] lines in ${tp}.list
 unset a
 
 exit 0
+#

@@ -28,16 +28,16 @@
 #
 # $Id$
 #
-set script = "UPlock"
-set usage = 'Usage: UPlock [-c] [-r] [-d] [-n] <typ>'
 #
 # UPlock script (must have x allowed)
-# Test for each locked file if it is in the list of files
-# <typ>.found (as created with UPfind), and output the
-# result on the <typ>.locked.
 #
-# See UPinfo for details
-#
+set script = "UPlock"
+set usage = 'UPlock [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Test for each locked file if it is in the list of files" \
+	     "<typ>.found (as created with UPfind), and output the " \
+	     "result in the file <typ>.locked. Script must run at aoc")
+set huse  =  "<typ>.def, <typ>.found"
+set hcrea =  "<typ>.locked"
 #
 # Get general info
 #
@@ -72,7 +72,7 @@ if ($upswn) exit 0
 if (! -r $ldir/${tp}.found) then
    echo "No ${tp}.found present. Cannot proceed."
    echo "Execute UPfind first"
-   exit (1)
+   exit 1
 endif
 
 set a = ( `wc ${tp}.found` )
@@ -91,3 +91,4 @@ echo $a[1] files in ${tp}.locked
 unset a
 
 exit 0
+#

@@ -28,14 +28,15 @@
 #
 # $Id$
 #
-set script = "UPtmpl"
-set usage = 'Usage: UPtmpl [-c] [-r] [-d] [-n] <typ>'
 #
 # UPtmpl script (must have x allowed)
-# Get all files in the tmplinst directories. 
-# The file list will be in <typ>.tmpinst
 #
-# See UPinfo for details
+set script = "UPtmpl"
+set usage = 'UPtmpl [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Get all files in all the tmplinst directories." \
+	     "The file list will be in <typ>.tmpinst")
+set huse  = "<typ>.def"
+set hcrea = "<typ>.tmpinst"
 #
 # Get general info
 #
@@ -68,7 +69,7 @@ if ($upswn) exit 0
 # Get data
 #
 cd $dir/code
-echo "Getting template file list..."
+echo "Getting templated file list..."
 find . -name '*_????.cc' -print | \
      grep tmplinst \
      >! $ldir/${tp}.tmpinst
@@ -79,3 +80,4 @@ echo $a[1] files found in ${tp}.tmpinst
 unset a
 
 exit 0
+#

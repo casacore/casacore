@@ -31,7 +31,8 @@
 # The UPinfo script is called as 'source UPinfo' from any of the UP
 # executable scripts to get general data. It is assumed that the name of the
 # calling script is in the $script variable, and $usage contains the usage.
-# If the -h switch is present, some help information is provided.
+# Help text can be placed in htxt, hsw, huse and hcrea (each line an element).
+# If the -h switch is present, this help information is shown.
 #
 # Set the result
 #
@@ -43,12 +44,14 @@ set arg = ()
 #
 # Set the generally allowed switches
 #
-set upsw = "cdhnr"
+set upsw = "cdhnru"
 #
 # Set the allowed switches for appropriate scripts
 #
 if ("$script" == "UPchange") then
     set upsw = "t$upsw"
+else if ("$script" == "UPdup") then
+    set upsw = "s$upsw"
 else if ("$script" == "UPfind") then
     set upsw = "fg$upsw"
 else if ("$script" == "UPlist") then
@@ -57,6 +60,8 @@ else if ("$script" == "UPlock") then
     set upsw = "$upsw"
 else if ("$script" == "UPmove") then
     set upsw = "it$upsw"
+else if ("$script" == "UPreident") then
+    set upsw = "z$upsw"
 else if ("$script" == "UPtmpl") then
     set upsw = "$upsw"
 else
@@ -66,7 +71,7 @@ endif
 #
 # Set all the switches to initial state
 #
-foreach i (c d h n r f g i l t)
+foreach i (c d h n r f g i l s t u z)
     set upsw$i = 0
 end
 #
@@ -74,11 +79,24 @@ end
 #
 while ($# > 0)
     if ("$1" =~ "-"*) then
-	set x = (`echo $1 | fold -1`)
+	set x = (`echo "x"$1 | fold -1`)
+	shift x
 	shift x
 	while ($#x > 0)
 	    if ("$upsw" =~ *"$x[1]"*) then
 		set upsw$x[1] = 1
+	    else
+	        echo "Illegal or unknown switch '$x[1]' given: discarded"
+	    endif
+	    shift x
+        end
+    else if ("$1" =~ "+"*) then
+	set x = (`echo "x"$1 | fold -1`)
+	shift x
+	shift x
+	while ($#x > 0)
+	    if ("$upsw" =~ *"$x[1]"*) then
+		set upsw$x[1] = 0
 	    else
 	        echo "Illegal or unknown switch '$x[1]' given: discarded"
 	    endif
@@ -94,190 +112,227 @@ end
 #
 if ($upswh) then
   if ($?usage) then
-    echo "$usage"
+    echo "Usage:   $usage"
   endif
-  if ($?helptxt) then
-    echo "$helptxt"
+  if ($?htxt) then
+    while ($#htxt > 0)
+	echo "  $htxt[1]"
+	shift htxt
+    end
+  endif
+  if ($?huse) then
+    echo "Uses:    $huse[1]"
+    shift huse
+    while ($#huse > 0)
+	echo "         $huse[1]"
+	shift huse
+    end
+  endif
+  if ($?hcrea) then
+    echo "Creates: $hcrea"
+  endif
+  if ($?hsw) then
+    while ($#hsw > 0)
+	echo "  $hsw[1]"
+	shift hsw
+    end
+  endif
+  if ($?usage) then
+    echo "  -c clear all defining information files for this script"
+    echo "  -r clear only the general defining information in .def"
+    echo "  -u clear all but the general defining information in .def"
+    echo "  -d give some debug information (mostly not implemented)"
+    echo "  -n run script only to get defining information, without executing"
   endif
   cat << '_EOF_'
-The following UP scripts are available (-h gives this text):
-    UPmove [-c] [-r] [-i] [-t] [-n] [-d] <typ>
-	   Move specified files, and change references to them in system files.
-	   The script uses UPfind and UPchange (see there for details)
-           -c  will clear all relevant information
-	   -r  only restart the general definitions for given <typ>
-	   -i  will calculate all information, but no execution
-           -t  will not execute for real, but only for test
-           -d  will show some debug information
-           -n  will only generate the specific data, without executing
-           <typ>.done and <typ>.error give lists of files successfully
-           done or not.
-    UPfind [-c] [-r] [-g] [-f] [-d] [-n] <typ>	    
-	   find files according to egrep patterns in files .cc, .h and
-	   templates, or generate it from a set of file patterns.
-	   A list of files found is produced in <typ>.raw. Files in a set of
-	   discard rules are removed. The result will be in <typ>.found.
-	   -c	 start afresh for the given <typ>
-	   -r	 only restart the general definitions for given <typ>
-	   -g	 look in .g files rather than .cc, .h and templates
-           -f    generate the list from a set of file patterns
-	   -d    debug mode
-           -n    will only generate the specific data, without executing
-	   <typ> the code belonging to this set of usage (e.g. mx)
-    UPchange [-c] [-r] [-t] [-n] [-d] <typ>
- 	   update all files (ao change ai) as given in <typ>.found created by
-           UPfind.
-           -c  will clear all relevant information
-	   -r  only restart the general definitions for given <typ>
-	   -t  will not execute for real, but only for test and display the
-	       changes in <typ>.diff 
-           -d  will show some debug information
-           -n  will only generate the specific data, without executing
-           <typ>.done and <typ>.error give lists of files successfully
-           done or not.
-    UPlist [-c] [-r] [-l] [-d] [-n] <typ>	    
-	   List all lines that have been found according to an egrep rule,
-	    using the <typ>.found file list.
-	   The list will be in <typ>.list
-	   -c	 start afresh for the given <typ>
-	   -r	 only restart the general definitions for given <typ>
-	   -l	 give line numbers on each line found
-	   -d    debug mode
-           -n    will only generate the specific data, without executing
-	   <typ> the code belonging to this set of usage (e.g. mx)
-    UPlock [-c] [-r] [-d] [-n] <typ>
-	   check if files found with UPfind are locked in the master. The
-           resulting list will be in <typ>.locked
-           -c  will clear all relevant information
-	   -r  only restart the general definitions for given <typ>
-           -d  will show some debug information
-           -n  will only generate the specific data, without executing
-    UPtmpl [-c] [-r] [-d] [-n] <typ>
- 	   get all files in the tmplinst directories. 
-	   The file list will be in <typ>.tmpinst
-           -c  will clear all relevant information
-	   -r  only restart the general definitions for given <typ>
-           -d  will show some debug information
-           -n  will only generate the specific data, without executing
+
+The following UP scripts are available:
+    UPfind    [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>
+    UPlist    [-l]      [-c] [-r] [-u] [-d] [-n] <typ>	    
+    UPlock              [-c] [-r] [-u] [-d] [-n] <typ>
+    UPchange  [-t]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPmove    [-i] [-t] [-c] [-r] [-u] [-d] [-n] <typ>
+    UPtmpl              [-c] [-r] [-u] [-d] [-n] <typ>
+    UPdup     [-s]      [-c] [-r] [-u] [-d] [-n] <typ>
+    UPreident [-z]      [-c] [-r] [-u] [-d] [-n] <typ>
 '_EOF_'
   exit 0
+endif
+#
+# Start with no general information
+#
+if ($upswc) then
+    set upswu = 1
+    set upswr = 1
+endif
+unset upswc
+unset ldir
+unset apath
+unset hasm
+set touns = (dir mdir xao xai)
+set x = ($touns)
+while ($#x > 0)
+    unset $x[1]
+    shift x
+end
+#
+# Check local environment and directory
+#
+set cdat = `date '+%y%m%d'`
+set apath = ($AIPSPATH)
+set lhasm = 0
+if (-d $apath[1]/master) then
+    set lhasm = 1
+endif
+
+set ldir = `pwd`
+if (! -w $ldir) then
+    echo "Local directory ${ldir} not writeable "
+    exit 1
 endif
 #
 # Get type
 #
 if ($#arg < 1) then
-    echo "No <typ> given for ${script}"
-    exit (1)
+    if (-r $ldir/.UpTyPe.$cdat) then
+	source $ldir/.UpTyPe.$cdat
+    else
+	echo "No <typ> given for ${script}"
+	exit 1
+    endif
+    if ("$tp" == "UPfind" || "$tp" == "UPchange" || \
+	"$tp" == "UPmove") then
+	echo -n "Assuming <typ> as '$tp'. OK? (y|n) [y]: "
+	set x = "$<"
+	if ("$x" == "" || $x == "y" || "$x" == "Y") then
+	else
+	    echo "No <typ> given for ${script}"
+	    exit 1
+	endif
+     else
+	echo "Assuming <typ> as '$tp'."
+     endif
+else
+    set tp = $arg[1]
+    shift arg
 endif
-set tp = $arg[1]
-shift arg
 #
-# Check directories
+# Save current type for today
 #
-unset ldir
-unset dir
-unset mdir
-unset xao
-unset xai
-#
-set ldir = `pwd`
-if (! -w $ldir) then
-    echo "Local directory ${ldir} not writeable "
-    exit (1)
+touch $ldir/.UpTyPe.xx
+rm -f $ldir/.UpTyPe.*
+if (! -e $ldir/.UpTyPe.$cdat) then
+    echo "set tp = $tp" >! $ldir/.UpTyPe.$cdat
 endif
 #
 # Get info
 #
 echo "Getting info..."
-if ($upswc) then
-  if ("$script" == "UPfind") then 
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
-    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
-    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
-  endif
-  if ("$script" == "UPchange") then
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
-    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
-    if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
-  endif 
-  if ("$script" == "UPmove") then
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
-    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
-    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
-    if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
-    if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
-    if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
-    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
-  endif 
-  if ("$script" == "UPlist") then 
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
-    if (-e $ldir/${tp}.up1) rm -f $ldir/${tp}.up1
-    if (-e $ldir/${tp}.rm)  rm -f $ldir/${tp}.rm
-  endif
-  if ("$script" == "UPtmpl" || "$script" == "UPlock") then
-    if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
-  endif 
-endif
-
+#
+# Clear info if asked
+#
 if ($upswr) then
   if (-e $ldir/${tp}.def) rm -f $ldir/${tp}.def
 endif
 
+if ($upswu) then
+  if ("$script" == "UPfind") then 
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+    if (-e $ldir/${tp}.rmpat)  rm -f $ldir/${tp}.rmpat
+  else if ("$script" == "UPchange") then
+    if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
+    if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
+  else if ("$script" == "UPmove") then
+    if (-e $ldir/${tp}.sel) rm -f $ldir/${tp}.sel
+    if (-e $ldir/${tp}.cfnm) rm -f $ldir/${tp}.cfnm
+    if (-e $ldir/${tp}.todo) rm -f $ldir/${tp}.todo
+    if (-e $ldir/${tp}_MVF.spat) rm -f $ldir/${tp}_MVF.spat
+    if (-e $ldir/${tp}_MVF.rmpat)  rm -f $ldir/${tp}_MVF.rmpat
+    if (-e $ldir/${tp}_MV.spat) rm -f $ldir/${tp}_MV.spat
+    if (-e $ldir/${tp}_MV.rmpat)  rm -f $ldir/${tp}_MV.rmpat
+    if (-e $ldir/${tp}_MV.sed) rm -f $ldir/${tp}_MV.sed
+    if (-e $ldir/${tp}_MV.rcs) rm -f $ldir/${tp}_MV.rcs
+  else if ("$script" == "UPlist") then 
+    if (-e $ldir/${tp}.spat) rm -f $ldir/${tp}.spat
+  else if ("$script" == "UPtmpl" || "$script" == "UPlock" || \
+	   "$script" == "UPdup" || "$script" == "UPreident") then
+  else
+    echo "Internal error: '$script' not supported"
+    exit 1
+  endif 
+endif
+#
+# Get general info
+#
 if (-r $ldir/${tp}.def) then
    source $ldir/${tp}.def
 endif
 
-if (-r $ldir/${tp}.info) then
-   source $ldir/${tp}.info
+if ($?hasm) then
+    if ($lhasm != $hasm) then
+	while ($#touns > 0)
+	    unset $touns[1]
+	    shift touns
+	end
+    endif
 endif
+set hasm = $lhasm
 
 if (! $?dir) then
-   set dir = ($AIPSPATH)
-   set dir = $dir[1]
+   set dir = $apath[1]
+   set x = ""
    echo "Make sure you have a proper mktree built before proceeding..."
-   echo -n "Assuming master search tree in $dir/code. ok? (y|n) [n]: "
-   set repl=($<)
-   if ($repl != 'y') then
-      echo "Restart with proper AIPSROOT set (use aipsinit)"
-      exit (1)
-   endif
+   while ("$x" == "" || ! -d $x/code)
+	echo -n "Specify code tree root to be used [$dir]: "
+	set x = ($<)
+	if ("$x" == "") then
+	    set x = "$dir"
+	endif
+   end
+   set dir = "$x"
+   unset x
 endif 
 
 if (! $?mdir) then
    set x = "~/aips++"
    while (! -d $x/code) 
       echo "Path to local aips++ tree root is not $x"
-      echo -n "Specify your local aips++ tree root: "
-      set x = "$<"
+      echo -n "Specify your local aips++ tree root [$x]: "
+      if ("$x" != "") then
+	set x = "$<"
+      endif
    end
    set mdir = "$x"
    unset x
 endif
 
-if (! $?xao || ! $?xai) then
-   set xao = rao
-   set xai = rai
-   echo -n "Assuming use of rao/rai, rather than ao/ai. ok? (y|n) [y]: "
-   set repl=($<)
-   if ($repl == 'n' || $repl == 'N') then
-      set xao = ao
-      set xai = ai
-   endif
+if ($?xao || ! $?xai) then
+    set xao = rao
+    set xai = rai
+    if ($hasm) then
+	set xao = ao
+	set xai = ai
+    endif
 endif
 
-if ("$script" == "UPmove") then
+if ("$script" == "UPmove" && ! $upswn) then
     set domv = 0
     echo -n "Need to move files first to new directory (y|n) [n]? "
-    set repl=($<)
-    if ($repl == 'y') then
+    set x = "$<"
+    if ("$x" == "y" || "$x" == "Y") then
+        set domv = 1
+    endif
+    if ($domv  && ! $upswt && ! $hasm) then
 	echo "Note: The moving can only be done while logged into aoc, since "
 	echo "      it uses the amv command."
-	echo -n "Do you want to continue (y|n) [n]? "
-	set repl=($<)
-	if ($repl == 'y') then
-	    set domv = 1
-	endif
+	exit 1
     endif
+    unset x
+endif
+
+if ("$script" == "UPlock" && ! $upswn && ! $hasm) then
+    echo "Locked files can only be found while running at the aoc master site"
+    exit 1
 endif
 
 if (! -e $ldir/${tp}.def) then
@@ -285,6 +340,7 @@ if (! -e $ldir/${tp}.def) then
    echo "set mdir = $mdir" >> $ldir/${tp}.def
    echo "set xao = $xao" >> $ldir/${tp}.def
    echo "set xai = $xai" >> $ldir/${tp}.def
+   echo "set hasm = $hasm" >> $ldir/${tp}.def
 endif 
 #
 # Correct result
@@ -292,6 +348,3 @@ endif
 set ok = 1
 exit 0
 #
-
-
-

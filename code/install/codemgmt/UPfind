@@ -28,19 +28,19 @@
 #
 # $Id$
 #
-set script = "UPfind"
-set usage = 'Usage: UPfind [-f] [-g] [-c] [-r] [-d] [-n] <typ>'
-#
 # UPfind script (must have x allowed)
 #
-# Get all files that have to be updated according to an egrep rule.
-# All .cc, .h and templates files are scanned, or the .g if -g given. 
-# The file list will be in <typ>.raw
-# <typ>.found will have the list without user selected removals.
-# If the -f switch is given, the file list will be generated from file
-# patterns.
-#
-# See UPinfo for details
+set script = "UPfind"
+set usage = 'UPfind [-f] [-g] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Get all files that contain data according to an egrep rule." \
+	     "The found files can be used in other UP scripts like UPlist, " \
+	     "UPchange etc. The <typ> is an id acting (by virtue of files) " \
+	     "as a communication between the different UP scripts." \
+	     "All .cc, .h and templates files in the code tree are searched.")
+set hsw   = ("-g use all .g files rather than the C++ files" \
+	     "-f use a file pattern to search files, not their contents")
+set huse  =  "<typ>.def, <typ>.spat, <typ>.rmpat"
+set hcrea =  "<typ>.raw, <typ>.found"
 #
 # Get general info
 #
@@ -68,10 +68,12 @@ if (! $ok) exit 1
 #
 # Get specific data
 #
-if (! -r $ldir/${tp}.up1) then
+# Get search pattern
+#
+if (! -r $ldir/${tp}.spat) then
+ touch $ldir/${tp}.spat
  if (! $upswf) then
-   touch $ldir/${tp}.up1
-   echo "Specify egrep  expression(s) to find files"
+   echo "Specify egrep expression(s) to find files"
    echo 'Examples: /Measures/((MUString)|(MVAngle)|(MVTime)|(RotM)|Q|(Un))'
    echo '      or: [(][^(]*[*] *[)][ \t]*0'
    echo 'Multi-line expressions will be ORed'
@@ -79,46 +81,44 @@ if (! -r $ldir/${tp}.up1) then
 	echo -n "Find expression: "
 	set x = "$<"
 	if ("$x" == "") break
-	echo "$x" >> $ldir/${tp}.up1
+	echo "$x" >> $ldir/${tp}.spat
    end
    unset x
  else
-   touch $ldir/${tp}.up1
    echo "Specify file pattern(s) rooted in AIPSROOT/code to find files"
    echo 'Example: trial/implement/Measures/M*.h'
    while (1)
 	echo -n "File pattern: "
 	set x = "$<"
 	if ("$x" == "") break
-	echo "$x" >> $ldir/${tp}.up1
+	echo "$x" >> $ldir/${tp}.spat
    end
    unset x
  endif
 endif
+if (-z $ldir/${tp}.spat) then
+    echo "An empty or no ${tp}.spat file created"
+   if (-e $ldir/${tp}.spat)  rm -f $ldir/${tp}.spat
+   exit 1
+endif
 
-if (! -r $ldir/${tp}.rm) then
-   echo "Specify egrep pattern for files to be removed from list found."
-   echo "Example: [/]glish[/]"
+if (! -r $ldir/${tp}.rmpat) then
+   echo "Specify egrep pattern for files to be removed from raw list found."
+   echo "Example: [/]aipsview[/]"
    echo "tmplinst files will always be removed"
-   echo tmplinst >! $ldir/${tp}.rm
+   echo '[/]tmplinst[/]' >! $ldir/${tp}.rmpat
    echo -n "Remove glish files? (y|n) [y]: "
    set x = "$<"
-   if ("$x" != "n") then
-      echo '[/]glish[/]' >> $ldir/${tp}.rm
+   if ("$x" != "n" && "$x" != "N") then
+      echo '[/]glish[/]' >> $ldir/${tp}.rmpat
    endif
    while (1)
 	 echo -n "Remove pattern: "
 	 set x = "$<"
 	 if ("$x" == "") break
-	 echo "$x" >> $ldir/${tp}.rm
+	 echo "$x" >> $ldir/${tp}.rmpat
    end
    unset x
-endif
-
-if (-z $ldir/${tp}.up1) then
-   echo "No ${tp}.up1 file created"
-   if (-e $ldir/${tp}.up1)  rm -f $ldir/${tp}.up1
-   exit (1)
 endif
 
 if ($upswn) exit 0
@@ -130,7 +130,7 @@ echo "Starting find..."
 if ($upswf) then
   if (-e $ldir/${tp}.raw) rm -f $ldir/${tp}.raw
   touch $ldir/${tp}.raw
-  set y = (`cat $ldir/${tp}.up1`)
+  set y = (`cat $ldir/${tp}.spat`)
   set x = (`ls $y`)
   if ("$x" == "") then
     echo "No files found using pattern"
@@ -145,11 +145,11 @@ if ($upswf) then
 else
  if ($upswg) then
    find . -name '*.g' \
-	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
+	-exec egrep -l -f $ldir/${tp}.spat {} \; \
 	      >! $ldir/${tp}.raw 
  else
    find . \( \( -name '*.h' -o -name '*.cc' \) -o -name 'templates' \) \
-	-exec egrep -l -f $ldir/${tp}.up1 {} \; \
+	-exec egrep -l -f $ldir/${tp}.spat {} \; \
 	      >! $ldir/${tp}.raw 
  endif
 endif
@@ -161,10 +161,11 @@ echo $a[1] files found in ${tp}.raw
 unset a
 
 echo "Starting selected removal..."
-egrep -v -f $ldir/${tp}.rm $ldir/${tp}.raw >! $ldir/${tp}.found
+egrep -v -f $ldir/${tp}.rmpat $ldir/${tp}.raw >! $ldir/${tp}.found
 
 set a = ( `wc ${tp}.found` )
 echo $a[1] files left in ${tp}.found
 unset a
 
 exit 0
+#

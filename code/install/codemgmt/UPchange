@@ -28,20 +28,20 @@
 #
 # $Id$
 #
-set script = "UPchange"
-set usage = 'Usage: UPchange [-c] [-r] [-t] [-d] [-n] <typ>'
 # UPchange script (must have x allowed)
-# Update all files (ao change ai) as given in <typ>.found created by UPfind.
-#   -c  will clear all relevant information
-#   -r  only restart the general definitions for given <typ>
-#   -t  will not execute for real, but only for test and display the
-#       changes in <typ>.diff 
-#   -d  will show some debug information
-#   -n  will only generate the specific data, without executing
-# <typ>.done and <typ>.error give lists of files successfully done or not.
 #
-# See UPinfo for details
-#
+set script = "UPchange"
+set usage = 'UPchange [-t] [-c] [-r] [-u] [-d] [-n] <typ>'
+set htxt  = ("Update all files given in the <typ>.found list (which is" \
+	     "normally created by UPfind). Updating means that files" \
+	     "will be checked out, changed and checked in again." \
+	     "<typ>.done and <typ>.error will contain the files successfully" \
+	     "done or not.")
+set hsw   = ("-t will run a test mode, where files are checked out," \
+	     "   changed, but not checked in again. A file <type>.diff will" \
+	     "   be created showing what would have been changed.")
+set huse  =  "<typ>.def, <typ>.found, <typ>.sed, <typ>.rcs"
+set hcrea =  "<typ>.done, <typ>.error, <typ>.diff"
 #
 # Get general info
 #
@@ -74,13 +74,9 @@ if (! -r $ldir/${tp}.sed) then
    echo "Specify the sed patterns used to change the contents of the files "
    echo "in the files in the ${tp}.found list. "
    echo 'Example: s#/Measures/MV#/Quanta/MV#g'
-   echo '         s#/Measures/MeasVal#/Quanta/MeasVal#g'
-   echo '         s#/Measures/MUString#/Quanta/MUString#g'
-   echo '         s#/Measures/MVAngle#/Quanta/MVAngle#g'
-   echo '         s#[.]arrayCast[(][)]##g'
    echo '         s#[.]ac[(][)]##g'
    echo '         s#at_cc[(]#(#g'
-   echo '         s#at_c[(]#(#g'
+   echo '         s#\([^a-zA-Z_]\)assert\([^a-zA-Z_]\)#\1assure\2#g'
    while (1)
       echo -n 'Change pattern: '
       set x = "$<"
@@ -91,29 +87,27 @@ if (! -r $ldir/${tp}.sed) then
    if (-z $ldir/${tp}.sed) then
       echo "No change patterns specified in ${tp}.sed"
       if (-e $ldir/${tp}.sed) rm -f $ldir/${tp}.sed
-      exit (1)
+      exit 1
    endif
 endif
 
-if (! $upswt) then
-   if (! -r $ldir/${tp}.rcs) then
-      touch $ldir/${tp}.rcs
-      echo "Specify the message lines for the RCS log"
-      echo 'Example: Moved includes from Quanta to Measures'
-      while (1)
-         echo -n 'Text line: '
-         set x = "$<"
-         if ("$x" == "") break
-         echo "$x" >> $ldir/${tp}.rcs
-      end
-      if (-z $ldir/${tp}.rcs) then
-         echo "No RCS message specified in ${tp}.rcs"
-         if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
-	 exit (1)
-      endif
-      echo "." >> $ldir/${tp}.rcs  
-      unset x
-   endif
+if (! -r $ldir/${tp}.rcs) then
+    touch $ldir/${tp}.rcs
+    echo "Specify the message lines for the RCS log"
+    echo 'Example: Moved includes from Quanta to Measures'
+    while (1)
+       echo -n 'Text line: '
+       set x = "$<"
+       if ("$x" == "") break
+       echo "$x" >> $ldir/${tp}.rcs
+    end
+    if (-z $ldir/${tp}.rcs) then
+       echo "No RCS message specified in ${tp}.rcs"
+       if (-e $ldir/${tp}.rcs) rm -f $ldir/${tp}.rcs
+       exit 1
+    endif
+    echo "." >> $ldir/${tp}.rcs  
+    unset x
 endif
 
 if ($upswn) exit 0
@@ -122,17 +116,19 @@ if ($upswn) exit 0
 #
 cd $ldir
 
+if (! -r $ldir/${tp}.found || -z $ldir/${tp}.found) then
+    echo "An empty or no ${tp}.found present"
+    exit 1
+endif
+
 if (-e $ldir/${tp}.done) rm -f $ldir/${tp}.done
 if (-e $ldir/${tp}.error) rm -f $ldir/${tp}.error
 touch $ldir/${tp}.done
 touch $ldir/${tp}.error
-
-set a = ( `wc ${tp}.found` )
-echo $a[1] files in ${tp}.found
-unset a
-
+#
 # Do the real change or do a dry run of it
-set a = (`wc ${tp}.found`)
+#
+set a = (`wc $ldir/${tp}.found`)
 echo "$a[1] files will be changed and checked in/out"
 unset a
 
@@ -177,16 +173,13 @@ end
 
 cd $ldir
 
-set a = ( `wc ${tp}.done` )
+set a = ( `wc $ldir/${tp}.done` )
 echo $a[1] files in ${tp}.done
 unset a
 
-set a = ( `wc ${tp}.error` )
+set a = ( `wc $ldir/${tp}.error` )
 echo $a[1] files in ${tp}.error
 unset a
 
 exit 0
-
-
-
-
+#
