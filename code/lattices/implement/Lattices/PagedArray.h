@@ -438,6 +438,10 @@ public:
   // Returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
+  // Return the current Table name. By default this includes the full path. 
+  // The path preceeding the file name can be stripped off on request.
+  virtual String name (const Bool stripPath=False) const;
+
   // Functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
   // class="PagedArray:Advanced">More Details</linkto> section above).
@@ -574,6 +578,43 @@ inline ArrayColumn<T>& PagedArray<T>::getRWArray()
   }
   return itsRWArray;
 }
+
+template<class T>
+inline const String& PagedArray<T>::tableName() const
+{
+  return itsTable.tableName();
+}
+
+template<class T>
+inline const String& PagedArray<T>::columnName() const
+{
+  return itsColumnName;
+}
+
+template<class T>
+inline String PagedArray<T>::defaultColumn()
+{
+  return "PagedArray";
+}
+
+template<class T>
+inline const ROTiledStManAccessor& PagedArray<T>::accessor() const
+{
+  return itsAccessor;
+}
+
+template<class T>
+inline uInt PagedArray<T>::rowNumber() const
+{
+  return itsRowNumber;
+}
+
+template<class T>
+inline uInt PagedArray<T>::defaultRow()
+{
+  return 0;
+}
+
 
 
 #endif
