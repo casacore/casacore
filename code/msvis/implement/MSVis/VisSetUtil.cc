@@ -1,5 +1,5 @@
 //# VisSetUtil.cc: VisSet Utilities
-//# Copyright (C) 1996,1997,1998,1999,2001
+//# Copyright (C) 1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -104,6 +104,9 @@ void VisSetUtil::WeightNatural(VisSet& vs, Double& sumwt) {
       }
       vi.setImagingWeight(vb.imagingWeight());
     }
+  }
+  if(sumwt<=0.0) {
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
   }
 }
 
@@ -220,6 +223,9 @@ void VisSetUtil::WeightUniform(VisSet& vs,
       vi.setImagingWeight(vb.imagingWeight());
     }
   }
+  if(sumwt<=0.0) {
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
+  }
 }
 
 void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
@@ -249,6 +255,9 @@ void VisSetUtil::WeightRadial(VisSet& vs, Double& sumwt) {
       }
       vi.setImagingWeight(vb.imagingWeight());
     }
+  }
+  if(sumwt<=0.0) {
+    os << LogIO::WARN << "Sum of weights is not positive: check that some data is unflagged and that the SIGMA column is positive" << LogIO::POST;
   }
 }
 
