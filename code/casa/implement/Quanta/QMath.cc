@@ -139,7 +139,7 @@ template <class Qtype>
 Quantum<Qtype> abs(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    (ret) = abs((tmp));
+    ret = abs((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
@@ -147,7 +147,7 @@ template <class Qtype>
 Quantum<Qtype> ceil(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    (ret) = ceil((tmp));
+    ret = ceil((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
@@ -155,7 +155,7 @@ template <class Qtype>
 Quantum<Qtype> floor(const Quantum<Qtype> &left) {
     Qtype tmp = left.getValue(); 
     Qtype ret;
-    (ret) = floor((tmp));
+    ret = floor((tmp));
     return (Quantum<Qtype>(ret,left));
 }
 
