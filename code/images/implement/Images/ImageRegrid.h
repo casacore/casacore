@@ -170,10 +170,6 @@ public:
   // Copy data and mask
   void copyDataAndMask(MaskedLattice<T>& out,
                        MaskedLattice<T>& in) const;
-  // Copy data and mask
-  void copyDataAndMask(MaskedLattice<T>& out,
-                       Lattice<Bool>& outMask,
-                       MaskedLattice<T>& in) const;
 
   // Find maps between coordinate systems
   void findMaps (uInt nDim, Vector<Int>& worldAxisMap,

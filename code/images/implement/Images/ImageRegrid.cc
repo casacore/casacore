@@ -382,7 +382,6 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
    const IPosition& inShape = inImage.shape();
    const IPosition& outShape = outImage.shape();
    const Vector<Double>& inReferencePixel = inCoords.referencePixel();
-
    if (itsShowLevel>0) {
      cerr << "in, out reference pixel = " << inReferencePixel << outReferencePixel << endl;
    }
@@ -478,7 +477,7 @@ Bool ImageRegrid<T>::insert (ImageInterface<T>& outImage,
       Lattice<Bool>& outMask = outImage.pixelMask();
       outMask.set(False);
       SubLattice<Bool> outSubMask(outMask, outBox, True);
-      copyDataAndMask(outSub, outSubMask, inSub);
+      copyDataAndMask(outSub, inSub);
    } else {
       outSub.copyData(inSub);
    }
@@ -1286,7 +1285,7 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
    Bool doMask = out.isMasked() && out.hasPixelMask() && out.pixelMask().isWritable();
    if (itsShowLevel>0) {
       cerr << "outIsMasked = " << out.isMasked() << endl;
-      cerr << "outMaskIsWritable" << out.isMaskWritable() << endl;
+      cerr << "out.pixelMask.isWritable" << out.pixelMask().isWritable() << endl;
       cerr << "doMask=" << doMask << endl;
    }
    
@@ -1303,40 +1302,6 @@ void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
          maskOutPtr->putSlice(in.getMaskSlice(iter.position(),
                               iter.cursorShape()), iter.position());
       }
-   }
-}
-
-
-template<class T>
-void ImageRegrid<T>::copyDataAndMask(MaskedLattice<T>& out,
-                                     Lattice<Bool>& outMask,
-                                     MaskedLattice<T>& in) const
-//  
-// The pixels and mask come from in.
-// The output pixels go into the pixels of out.
-// The output mask goes into outMask (which will then
-// be associated with out)
-//
-// This function exists because when you make a SubImage,
-// the mask associated with the SUbImage is no longer
-// writable via putMaskSLice. So you have to make a SUbLattice<Bool> of the
-// mask and access that directly.
-//
-{ 
-// Use the same stepper for input and output.
-
-   IPosition cursorShape = out.niceCursorShape();
-   LatticeStepper stepper (out.shape(), cursorShape, LatticeStepper::RESIZE);
-
-// Create an iterator for the output to setup the cache.
-// It is not used, because using putSlice directly is faster and as easy.
-
-   LatticeIterator<T> dummyIter(out);
-   RO_LatticeIterator<T> iter(in, stepper);
-   for (iter.reset(); !iter.atEnd(); iter++) {
-      out.putSlice (iter.cursor(), iter.position());
-      outMask.putSlice(in.getMaskSlice(iter.position(),
-                       iter.cursorShape()), iter.position());
    }
 }
 
