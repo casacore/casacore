@@ -123,13 +123,14 @@ CoordinateSystem CoordinateUtil::defaultCoords(uInt dims){
   }
 }
 
-Int CoordinateUtil::findSpectralAxis(const CoordinateSystem & coords) {
-  const Int freqCoordAxis = coords.findCoordinate(Coordinate::SPECTRAL);
-  if (freqCoordAxis < 0) return freqCoordAxis;
+Int CoordinateUtil::findSpectralAxis(const CoordinateSystem & coords) 
+{
+  const Int coordinate = coords.findCoordinate(Coordinate::SPECTRAL);
+  if (coordinate < 0) return coordinate;
 //
-  AlwaysAssert(coords.findCoordinate(Coordinate::SPECTRAL, freqCoordAxis)
+  AlwaysAssert(coords.findCoordinate(Coordinate::SPECTRAL, coordinate)
 	       == -1, AipsError);
-  const Vector<Int> pixelAxes = coords.pixelAxes(freqCoordAxis);
+  const Vector<Int> pixelAxes = coords.pixelAxes(coordinate);
   AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
   return pixelAxes(0);
 }
@@ -158,28 +159,15 @@ void CoordinateUtil::findSpectralAxis(Int& pixelAxis, Int& worldAxis,
 
 
 
-Vector<uInt> CoordinateUtil::findDirectionAxes(const CoordinateSystem & coords) {
-  const Int dirCoordAxis = coords.findCoordinate(Coordinate::DIRECTION);
-  Vector<uInt> retVal;
-  if (dirCoordAxis < 0) 
-    return retVal;
-  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, dirCoordAxis)
+Vector<Int> CoordinateUtil::findDirectionAxes(const CoordinateSystem & coords)
+{
+  const Int coordinate = coords.findCoordinate(Coordinate::DIRECTION);
+  Vector<Int> retVal;
+  if (coordinate < 0)  return retVal;
+//
+  AlwaysAssert(coords.findCoordinate(Coordinate::DIRECTION, coordinate)
 	       == -1, AipsError);
-  const Vector<Int> pixelAxes = coords.pixelAxes(dirCoordAxis);
-  AlwaysAssert(pixelAxes.nelements() == 2, AipsError);
-  if ((pixelAxes(0) >= 0) && (pixelAxes(1) >= 0)) {
-    retVal.resize(2);
-    retVal(0) = pixelAxes(0);
-    retVal(1) = pixelAxes(1);
-  }
-  else if ((pixelAxes(0) >= 0) && (pixelAxes(1) < 0)) {
-    retVal.resize(1);
-    retVal(0) = pixelAxes(0);
-  }
-  else if ((pixelAxes(0) < 0) && (pixelAxes(1) >= 0)) {
-    retVal.resize(1);
-    retVal(1) = pixelAxes(1);
-  }
+  retVal = coords.pixelAxes(coordinate);
   return retVal;
 }
 
@@ -207,26 +195,22 @@ void CoordinateUtil::findDirectionAxes(Vector<Int>& pixelAxes,
 }
 
 
-Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, const CoordinateSystem & coords) {
-  const Int polCoordAxis = coords.findCoordinate(Coordinate::STOKES);
-  if (polCoordAxis < 0) {
+Int CoordinateUtil::findStokesAxis(Vector<Int> & whichPols, 
+                                   const CoordinateSystem & coords)
+{
+  const Int coordinate = coords.findCoordinate(Coordinate::STOKES);
+  if (coordinate< 0) {
     whichPols.resize(1);
     whichPols(0) = Stokes::I;
-    return polCoordAxis;
+    return coordinate;
   }
-  AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, polCoordAxis)
+  AlwaysAssert(coords.findCoordinate(Coordinate::STOKES, coordinate)
 	       == -1, AipsError);
-  const Vector<Int> pixelAxes = coords.pixelAxes(polCoordAxis);
+  const Vector<Int> pixelAxes = coords.pixelAxes(coordinate);
   AlwaysAssert(pixelAxes.nelements() == 1, AipsError);
-  const StokesCoordinate polCoord = coords.stokesCoordinate(polCoordAxis);
+  const StokesCoordinate polCoord = coords.stokesCoordinate(coordinate);
   whichPols.resize(0);
   whichPols = polCoord.stokes();
-  if (pixelAxes(0) < 0) {
-    AlwaysAssert(whichPols.nelements() == 1, AipsError);
-  }
-  else {
-    AlwaysAssert(whichPols.nelements() > 0, AipsError);
-  }
   return pixelAxes(0);
 }
 
