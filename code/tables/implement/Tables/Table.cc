@@ -92,9 +92,16 @@ Table::Table (SetupNewTable& newtab, uInt nrrow, Bool initialize)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
 				   TableLock(TableLock::AutoLocking));
-    if (baseTabPtr_p == 0) {
-	throw (AllocError ("Table::Table(SetupNewTable&)", 1));
-    }
+    baseTabPtr_p->link();
+}
+Table::Table (SetupNewTable& newtab, TableLock::LockOption lockOption,
+	      uInt nrrow, Bool initialize)
+: baseTabPtr_p     (0),
+  isCounted_p      (True),
+  lastModCounter_p (0)
+{
+    baseTabPtr_p = new PlainTable (newtab, nrrow, initialize,
+				   TableLock(lockOption));
     baseTabPtr_p->link();
 }
 Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
@@ -104,9 +111,6 @@ Table::Table (SetupNewTable& newtab, const TableLock& lockOptions,
   lastModCounter_p (0)
 {
     baseTabPtr_p = new PlainTable (newtab, nrrow, initialize, lockOptions);
-    if (baseTabPtr_p == 0) {
-	throw (AllocError ("Table::Table(SetupNewTable&)", 1));
-    }
     baseTabPtr_p->link();
 }
 
