@@ -1,5 +1,5 @@
 //# TableColumn.h: Access to a table column
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/BaseColumn.h>
+#include <aips/Tables/BaseTable.h>
 #include <aips/Utilities/String.h>
 #include <aips/Arrays/IPosition.h>
 
@@ -41,11 +42,11 @@ class BaseTable;
 
 
 //# Check the number of rows in debug mode.
-#define TABLECOLUMNCHECKROW(ROWNR)
 #if defined(AIPS_DEBUG)
-#undef TABLECOLUMNCHECKROW
-#define TABLECOLUMNCHECKROW(ROWNR) \
+# define TABLECOLUMNCHECKROW(ROWNR) \
     (checkRowNumber (ROWNR))
+#else
+# define TABLECOLUMNCHECKROW(ROWNR)
 #endif
 
 
@@ -288,7 +289,8 @@ public:
 
     // Check if the row number is valid.
     // It throws an exception if out of range.
-    void checkRowNumber (uInt rownr) const;
+    void checkRowNumber (uInt rownr) const
+        { baseTabPtr_p->checkRowNumber (rownr); }
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     void setMaximumCacheSize (uInt nbytes) const
