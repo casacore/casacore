@@ -27,3 +27,24 @@ to attach a log of changes to a release of AIPS++.
 </ul>
  </description>
 </change>
+
+<change id=0008>
+ <author> Ger van Diepen </author>
+ <date> 2000/06/07 </date>
+ <avers> 1.4 </avers>
+ <area> System </area>
+ <package> System </package>
+ <module> changelog </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Added changes to exhale change report
+ </summary>
+ <description>
+The changes are also appended to the file code/CHANGELOG.LAST.
+Exhale prepends this file to the change report mailed to aips2-changes
+and clears it thereafter.
+<br>In this way users are informed about the most recent changes.
+ </description>
+</change>
