@@ -1,5 +1,5 @@
 //# HyperPlaneParam.cc: Parameters for a hyperplane function
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 template<class T>
 HyperPlaneParam<T>::HyperPlaneParam(uInt m) :
-  Function<T>(m+1) {}
+  Function<T>(m) {}
 
 template<class T>
 HyperPlaneParam<T>::HyperPlaneParam(const HyperPlaneParam<T> &other) :

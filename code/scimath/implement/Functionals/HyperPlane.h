@@ -1,5 +1,5 @@
 //# HyperPlane.h: Form a hyper plane function
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -40,7 +40,7 @@
 // </summary>
 //
 // <use visibility=export>
-// <reviewed reviewer="" date="1996/8/14" tests="" demos="">
+// <reviewed reviewer="wbrouw" date="2004/05/25" tests="tHyperPlane" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -49,26 +49,40 @@
 //
 // <synopsis>
 // This class forms a function of the form
-// <srcblock>
-// f(x0,x1,...,xm-1) = e0*x0 + e1*x1 + ... + em-1*xm-1 + c
-// </srcblock>
-// where e = {ei} and c are coefficients and x = {xi} are indepedent 
-// varaibles.  f(x0,x1,...,xm-1) = 0 represents a hyper plane.
-// The coefficients can or cannot be adjusted depending on corresponding 
-// masks' values.<p>
+// f(x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>) =
+// p<sub>0</sub>*x<sub>0</sub> + p<sub>1</sub>*x<sub>1</sub> + ...
+// + p<sub>m-1</sub>*x<sub>m-1</sub>, 
+// where p<sub>i</sub> are coefficients (parameters) and x<sub>i</sub>
+// are independent arguments.
 //
-// In this class the coefficients {ei} plus c are the "available" parameters.
-// They can be access through access functions 
-// inherited from parameterized class.
+// f(x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>) represents a hyper plane
+// of dimension <src>m</src>.
+//
+// Since the <src>HyperPlane</src> is a <src>Function</src>, the derivatives
+// can be obtained as well. 
+//
+// The parameter interface (see 
+// <linkto class="FunctionParam">FunctionParam</linkto> class), 
+// is used to provide an interface to the
+// <linkto module="Fitting">Fitting</linkto> classes. 
+//
+// This class is in general used implicitly by the <src>HyperPlane</src>
+// class only.
 // </synopsis>
 //
 // <example>
+// <srcblock>
 // // form the hyper plane function of this form: 
-// // 6*x0 + 2*x3 + 5 = 0
-// HyperPlane<Double> hyper(4);
-// hyper.setCoefficient(0,6);   
-// hyper.setCoefficient(3,2);
-// hyper.setCoefficient(4,5);
+// // 6*x0 + 2*x3 
+//  HyperPlane<Double> hyper(4); // 4-dim hyperplane
+//  hyper.parameters()[0] = 6;   
+//  hyper.parameters()[3] = 2;
+//  // Evaluate at x0=5, x3=7
+//  Vector<Double> x(4);
+//  x=0; x[0]=5; x[3]=7;
+//  cout << "Hypervalue: " << hyper(x) << endl;
+//  Hypervalue: 44
+// </srcblock>
 // </example>
 
 // <templating arg=T>
@@ -78,7 +92,7 @@
 
 // <thrown>
 //    <li> Assertion in debug mode if attempt is made to address incorrect
-//		coefficients
+//	   coefficients
 // </thrown>
 
 // <motivation>
@@ -86,17 +100,16 @@
 // for the use of linear least-squares fit.
 // </motivation>
 //
-// <todo asof="2001/10/25>
-//  <li> Look at providing special class with <src>c=0</src> (plane through
-// origin)
+// <todo asof="2004/05/25>
+//  <li> Nothing I know of
 // </todo>
 
 template<class T> class HyperPlane : public HyperPlaneParam<T> {
  public:
   //# Constructors
-  // Construct an m-dimensional hyper plane which has m+1 coefficients.  By 
-  // default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {};
+  // Construct an m-dimensional hyper plane which has m parameters.  By 
+  // default, the coefficients are initialised to zero, and <src>m=0</src>
+  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {;};
   // Copy constructor/assignment (deep copy)
   // <group>
   HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {};
@@ -108,7 +121,8 @@ template<class T> class HyperPlane : public HyperPlaneParam<T> {
   virtual ~HyperPlane() {};
 
   //# Operators    
-  // Evaluate the hyper plane function at <src>(x0,x1,...,xm-1)</src>.
+  // Evaluate the hyper plane function at
+  // (x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>).
   virtual T eval(typename Function<T>::FunctionArg x) const;
   
   // Return a copy of this object from the heap. The caller is responsible for
@@ -133,7 +147,7 @@ template <class T> class HyperPlane_PS<AutoDiff<T> > :
 public HyperPlaneParam<AutoDiff<T> > {
  public:
   //# Construct
-  // Constructors an m-dimensional hyper plane which has m+1 coefficients.  By 
+  // Constructors an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
   explicit HyperPlane_PS(const uInt m=0) :
     HyperPlaneParam<AutoDiff<T> >(m) {};
@@ -145,12 +159,13 @@ public HyperPlaneParam<AutoDiff<T> > {
     operator=(const HyperPlane_PS<AutoDiff<T> > &other) {
     HyperPlaneParam<AutoDiff<T> >::operator=(other); return *this; };
   // </group>
-
+  
   // Destructor
   virtual ~HyperPlane() {};
-
+  
   //# Operators    
-  // Evaluate the hyper plane function at <src>(x0,x1,...,xm-1)</src>.
+  // Evaluate the hyper plane function at
+  // (x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>).
   virtual AutoDiff<T> 
     eval(typename Function<AutoDiff<T> >::FunctionArg x) const;
   
@@ -160,7 +175,6 @@ public HyperPlaneParam<AutoDiff<T> > {
   virtual Function<AutoDiff<T> > *clone() const {
     return new HyperPlane_PS<AutoDiff<T> >(*this); };
   // </group>
-
 };
 
 #undef HyperPlane_PS

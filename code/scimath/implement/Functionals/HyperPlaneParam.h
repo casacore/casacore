@@ -1,5 +1,5 @@
 //# HyperPlaneParam.h: Parameters For a hyper plane function
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,11 +33,11 @@
 #include <aips/aips.h>
 #include <aips/Functionals/Function.h>
 
-// <summary> Parameters for a hyper plane function.
+// <summary> Parameter handling for a hyper plane function.
 // </summary>
 //
 // <use visibility=local>
-// <reviewed reviewer="" date="1996/8/14" tests="" demos="">
+// <reviewed reviewer="wbrouw" date="2004/05/25" tests="tHyperPlane" demos="">
 // </reviewed>
 //
 // <prerequisite>
@@ -47,27 +47,40 @@
 //
 // <synopsis>
 // This class forms a function of the form
-// <srcblock>
-// f(x0,x1,...,xm-1) = e0*x0 + e1*x1 + ... + em-1*xm-1 + c
-// </srcblock>
-// where e = {ei} and c are coefficients and x = {xi} are independent 
-// variables.  f(x0,x1,...,xm-1) = 0 represents a hyper plane.
-// The coefficients can or cannot be adjusted depending on corresponding 
-// masks' values.<p>
-// In this class the coefficients {<src>ei</src>} plus c are the
-// <em>available</em> parameters.
-// They can be accessed through access functions 
-// inherited <linkto class=Function>Function</linkto>
-// class.
+// f(x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>) =
+// p<sub>0</sub>*x<sub>0</sub> + p<sub>1</sub>*x<sub>1</sub> + ...
+// + p<sub>m-1</sub>*x<sub>m-1</sub>, 
+// where p<sub>i</sub> are coefficients (parameters) and x<sub>i</sub>
+// are independent arguments.
+//
+// f(x<sub>0</sub>,x<sub>1</sub>,..,x<sub>m-1</sub>) represents a hyper plane
+// of dimension <src>m</src>.
+//
+// Since the <src>HyperPlane</src> is a <src>Function</src>, the derivatives
+// can be obtained as well. 
+//
+// The parameter interface (see 
+// <linkto class="FunctionParam">FunctionParam</linkto> class), 
+// is used to provide an interface to the
+// <linkto module="Fitting">Fitting</linkto> classes. 
+//
+// This class is in general used implicitly by the <src>HyperPlane</src>
+// class only.
 // </synopsis>
 //
 // <example>
+// <srcblock>
 // // form the hyper plane function of this form: 
-// // 6*x0 + 2*x3 + 5 = 0
-// HyperPlaneParam<Double> hyper(4);
-// hyper.setCoefficient(0,6);   
-// hyper.setCoefficient(3,2);
-// hyper.setCoefficient(4,5);
+// // 6*x0 + 2*x3 
+//  HyperPlane<Double> hyper(4); // 4-dim hyperplane
+//  hyper.parameters()[0] = 6;   
+//  hyper.parameters()[3] = 2;
+//  // Evaluate at x0=5, x3=7
+//  Vector<Double> x(4);
+//  x=0; x[0]=5; x[3]=7;
+//  cout << "Hypervalue: " << hyper(x) << endl;
+//  Hypervalue: 44
+// </srcblock>
 // </example>
 
 // <templating arg=T>
@@ -81,18 +94,18 @@
 // </thrown>
 
 // <motivation>
-// This class was created to allow the creation of linear constraint functions
-// for the use of linear least-squares fit.
+// This class was created to facilitate linear constraint functions
+// for the use of least-squares fits.
 // </motivation>
 
-// <todo asof="2001/10/22">
+// <todo asof="2004/05/22">
 //  <li> Nothing I know of
 // </todo>
 
 template<class T> class HyperPlaneParam : public Function<T> {
  public:
   //# Constructors
-  // Construct an m dimensional hyper plane which has m+1 coefficients.  By 
+  // Construct an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero. The default plane has
   // <src>m=0</src>
   // <group>
@@ -109,13 +122,19 @@ template<class T> class HyperPlaneParam : public Function<T> {
   virtual ~HyperPlaneParam();
 
   //# Operators    
+  // Comparisons.  
+  // HyperPlanes are equal if they are of the same order and have the same
+  // parameters
+  // <group>
+  Bool operator==(const HyperPlaneParam<T> &other) const {
+    return (param_p == other.param_p); };
+  Bool operator!=(const HyperPlaneParam<T> &other) const {
+    return (param_p != other.param_p); };
+  // </group>
     
   //# Member functions
-  // What is the order (<em>m</em>of the HyperPlane, i.e. the dimension
-  uInt order() const { return param_p.nelements() - 1; };
   // What is the dimension of the parameter list
   virtual uInt ndim() const { return param_p.nelements(); };
-
 };
 
 #endif

@@ -1,5 +1,5 @@
 //# HyperPlane2.cc: Defines HyperPlane for specialized AutoDiff version
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -43,15 +43,14 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   };
   // function value
   Int j = nparameters();
-  tmp.value() = param_p[--j].value();
+  tmp.value() = T(0);
   while (--j >= 0) tmp.value() += param_p[j].value()*x[j];
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
     for (uInt j=0; j<tmp.nDerivatives(); j++) tmp.deriv(j) = 0.0;
-    for (uInt i=0; i<nparameters()-1; ++i) {
+    for (uInt i=0; i<nparameters(); ++i) {
       if (param_p.mask(i)) tmp.deriv(i) = x[i];
     };
-    if (param_p.mask(nparameters()-1)) tmp.deriv(nparameters()-1) = 1;
   };
   return tmp;
 }

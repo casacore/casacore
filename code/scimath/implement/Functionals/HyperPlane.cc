@@ -1,5 +1,5 @@
 //# HyperPlane.cc: Defines HyperPlane 
-//# Copyright (C) 2001,2002
+//# Copyright (C) 2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@
 template<class T>
 T HyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
   Int i= nparameters();
-  T accum = param_p[--i];  // the last coefficient
+  T accum = T(0);
   while (--i >= 0) accum += param_p[i]*x[i];
   return accum;
 }
