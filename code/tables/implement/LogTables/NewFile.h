@@ -1,5 +1,5 @@
-//# NewFile: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1999,2002
+//# NewFile: Do checks for a new (non-existent) file
+//# Copyright (C) 1996,1999,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,41 +26,30 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_NEW_FILE_H)
-#define AIPS_NEW_FILE_H
+#if !defined(AIPS_NEWFILE_H)
+#define AIPS_NEWFILE_H
 
 #include <aips/aips.h>
-#include <trial/Tasking/ParameterConstraint.h>
 #include <aips/Utilities/String.h>
 
 // <summary>
+// Do checks for a new (non-existent) file.
 // </summary>
 
 // <use visibility=export>
 
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
-// <prerequisite>
-//   <li> <linkto class=ParameterConstraint>ParameterConstraint</linkto>
-//   <li> <linkto class=Parameter>Parameter</linkto>
-// </prerequisite>
 //
 // <etymology>
 // Use this if you want a New File.
 // </etymology>
 //
 // <synopsis>
-// NewFile is a parameter constraint that is intended to be used for String
-// parameters which are interpreted as output file names. If the file exists,
-// then the user is asked via ApplicationEnvironment::choice whether or not
+// NewFile is a class checking if a new file already exists.
+// If the file exists, then the user is asked via Choice::choice whether or not
 // he or she wants to delete the file before using it.
 // </synopsis>
-//
-// <example>
-// Parameter<String> outfile(inputRecord, "outfile", ParameterSet::In);
-// outfile.setConstraint(NewFile());
-// </example>
 //
 // <example>
 // NewFile validFile;
@@ -80,16 +69,16 @@
 //   <li> We should probably make sure that the file is writable
 // </todo>
 
-class NewFile : public ParameterConstraint<String>
+class NewFile
 {
 public:
-//  Currently the deleteIfExists argument has no affect
+// Currently the deleteIfExists argument has no affect
     NewFile(Bool deleteIfExists = True);
 
-//  Copy constructor (copy semantics)
+// Copy constructor (copy semantics)
     NewFile(const NewFile &other);
 
-//  Assignment (copy semantics)
+// Assignment (copy semantics)
     NewFile &operator=(const NewFile &other);
 
 // Destructor
@@ -98,12 +87,11 @@ public:
 // Indicates whether the specified string is a valid new file,
 // invoking the choice GUI.  If it returns False, an error 
 // message is returned.
-    virtual Bool valueOK(const String &value, String &error) const;
+    Bool valueOK(const String &value, String &error) const;
 
-// Set the constraint
-    virtual ParameterConstraint<String> *clone() const;
-public:
+private:
     Bool delete_p;
 };
+
 
 #endif

@@ -1,5 +1,5 @@
 //# NewFile.cc: Constrain a string to be a new (non-existent) file
-//# Copyright (C) 1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -144,9 +144,4 @@ Bool NewFile::valueOK(const String &value, String &error) const
     }
 
     return retval;
-}
-
-ParameterConstraint<String> *NewFile::clone() const
-{
-    return new NewFile(*this);
 }
