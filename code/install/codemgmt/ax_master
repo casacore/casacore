@@ -2631,3 +2631,4 @@
 11 397 src rm trial/scripts/tkpgdemo.g
 11 397 sys rm libexec/tkpgdemo.g
 11 397 sys rm libexec/pgdemo.g
+11 397 src mv trial/scripts/stopwatch.g trial/implement/Utilities/stopwatch.g
