@@ -150,8 +150,8 @@ public:
   // Precession related data
   // <group>
   // Get the precession-rate part of the IAU2000 precession-nutation models
-  // (which 0=dpsi (long) and 1=deps (obliquity))
-  static Double precRate00(const uInt which, const Double tt);
+  // (which 0=dpsi (long) and 1=deps (obliquity) and 2 =0)
+  static Double precRate00(const uInt which);
 
   // Get the frame bias components for IAU2000 model. (which=0,1,2 for
   // dpsi(long), desp(obl), dra(ICRS RA of J2000 mean equinox))

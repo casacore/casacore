@@ -93,11 +93,12 @@ Bool MeasTable::useIAU2000A() {
 }
 
 Double MeasTable::
-precRate00(const uInt which, const Double tt) {
-  static Double preoblcor[2] = { -0.29965*C::arcsec,
-				 -0.02524*C::arcsec};
-  DebugAssert(which < 2, AipsError);
-  return preoblcor[which]*tt;
+precRate00(const uInt which) {
+  static Double preoblcor[3] = { -0.29965*C::arcsec,
+				 -0.02524*C::arcsec,
+				 0*C::arcsec };
+  DebugAssert(which < 3, AipsError);
+  return preoblcor[which];
 }
 
 Double MeasTable::
