@@ -239,6 +239,11 @@ NewMSWeatherColumns::NewMSWeatherColumns(NewMSWeather& msWeather):
 
 NewMSWeatherColumns::~NewMSWeatherColumns() {}
 
+
+void NewMSWeatherColumns::setEpochRef(MEpoch::Types ref) {
+  timeMeas_p.setDescRefCode(ref);
+}
+
 NewMSWeatherColumns::NewMSWeatherColumns():
   RONewMSWeatherColumns(),
   antennaId_p(),
