@@ -83,8 +83,8 @@ class ostream;
 //
 // UnitVal has the following constructors:
 // <ul>
-//   <li> UnitVal()		creates an (undimensioned) value 1.
-//   <li> UnitVal(Double f)	creates an (undimensioned) value f.
+//   <li> UnitVal()		creates an (non-dimensioned) value 1.
+//   <li> UnitVal(Double f)	creates an (non-dimensioned) value f.
 //   <li> UnitVal(Double f, String s) creates value f with unit s
 //   <li> UnitVal(Double f, Int i) (private) creates value f with unit
 //				at position i in dimension vector
@@ -106,6 +106,7 @@ class ostream;
 // are available:
 // <ul>
 //   <li> UnitVal::NODIM
+//   <li> UnitVal::UNDIM
 //   <li> UnitVal::LENGTH
 //   <li> UnitVal::MASS
 //   <li> UnitVal::ANGLE
@@ -175,12 +176,12 @@ class UnitVal {
 
 public:
 //# Constructors
-// Construct an undimensioned value of 1
+// Construct an non-dimensioned value of 1
     UnitVal();
 // Copy constructor
     UnitVal(const UnitVal &other);
 
-// Construct an undimensioned value
+// Construct an non-dimensioned value
     UnitVal(Double factor);
 
 // Construct a fully dimensioned value
@@ -240,6 +241,7 @@ public:
 // Some constants to check type of units
 // <group name="unit kinds">
 static UnitVal NODIM;
+static UnitVal UNDIM;
 static UnitVal LENGTH;
 static UnitVal MASS;
 static UnitVal TIME;
