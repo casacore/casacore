@@ -1,5 +1,5 @@
 //# LELAttribute.h:  LELAttribute.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,9 +30,12 @@
 
 //# Includes
 #include <aips/Lattices/IPosition.h>
+#include <trial/Lattices/LatticeCoordinates.h>
 
 
-// <summary> Holds ancilliary information for the LEL letter classes. </summary>
+// <summary>
+// Holds ancilliary information for the LEL letter classes.
+// </summary>
 //
 // <use visibility=local>
 //
@@ -74,12 +77,13 @@
 class LELAttribute
 {
 public:
-// Default constructor
+// Default constructor sets it as a scalar.
    LELAttribute();
 
-// Constructor
-   LELAttribute(const Bool isScalar,
-		const IPosition& shape);
+// Constructor sets it as lattice with given attributes.
+   LELAttribute(const IPosition& shape,
+		const IPosition& tileShape,
+		const LatticeCoordinates& coordinates);
 
 // Copy constructor (copy semantics)
    LELAttribute(const LELAttribute& attr);
@@ -100,9 +104,17 @@ public:
 // What is the shape of the expression
    const IPosition& shape() const { return shape_p; }
 
+// What is the tile shape of the expression
+   const IPosition& tileShape() const { return tileShape_p; }
+
+// What are the coordinates of the expression
+   const LatticeCoordinates& coordinates() const { return coords_p; }
+
 private:
    Bool      isScalar_p;
    IPosition shape_p;
+   IPosition tileShape_p;
+   LatticeCoordinates coords_p;
 };
 
 

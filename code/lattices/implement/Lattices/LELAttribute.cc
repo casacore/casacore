@@ -1,5 +1,5 @@
 //# LELAttribute.cc:  this defines LELAttribute.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,19 +31,24 @@
 
 
 LELAttribute::LELAttribute()
-: isScalar_p(True), shape_p(IPosition())
+: isScalar_p(True)
 {}
 
-LELAttribute::LELAttribute(const Bool isScalar,
-			   const IPosition& shape)
-: isScalar_p(isScalar), shape_p(shape)
+LELAttribute::LELAttribute(const IPosition& shape,
+			   const IPosition& tileShape,
+			   const LatticeCoordinates& coordinates)
+: isScalar_p  (False),
+  shape_p     (shape),
+  tileShape_p (tileShape),
+  coords_p    (coordinates)
 {}
 
-LELAttribute::LELAttribute(const LELAttribute& attr)
-{
-   isScalar_p = attr.isScalar();
-   shape_p = attr.shape();
-}
+LELAttribute::LELAttribute(const LELAttribute& other)
+: isScalar_p  (other.isScalar_p),
+  shape_p     (other.shape_p),
+  tileShape_p (other.tileShape_p),
+  coords_p    (other.coords_p)
+{}
 
 LELAttribute::LELAttribute(const LELAttribute& leftAttr,
 			   const LELAttribute& rightAttr)
@@ -53,25 +58,41 @@ LELAttribute::LELAttribute(const LELAttribute& leftAttr,
       if (rightAttr.isScalar()) {
          isScalar_p = True;
       } else {
-         shape_p = rightAttr.shape();
+         shape_p     = rightAttr.shape();
+	 tileShape_p = rightAttr.tileShape();
+	 coords_p    = rightAttr.coordinates();
       }
    } else {
-      shape_p = leftAttr.shape();
+      shape_p     = leftAttr.shape();
+      tileShape_p = leftAttr.tileShape();
+      coords_p    = leftAttr.coordinates();
       if (!rightAttr.isScalar()) {
-          AlwaysAssert (leftAttr.shape().isEqual(rightAttr.shape()), AipsError);
+         AlwaysAssert (leftAttr.shape().isEqual(rightAttr.shape()), AipsError);
+	 if (rightAttr.coordinates().hasCoordinates()) {
+	    if (coords_p.hasCoordinates()) {
+		AlwaysAssert (leftAttr.coordinates().conform
+			      (rightAttr.coordinates()), AipsError);
+	    } else {
+		coords_p = rightAttr.coordinates();
+	    }
+	 } 
       }
    }
 }
                     
 LELAttribute::~LELAttribute()
-{;}
+{}
 
 
 LELAttribute& LELAttribute::operator= (const LELAttribute& other)
 {
     if (this != &other) {
-       isScalar_p = other.isScalar_p;
-       shape_p    = other.shape_p;
+       isScalar_p  = other.isScalar_p;
+       shape_p.resize (other.shape_p.nelements());
+       tileShape_p.resize (other.tileShape_p.nelements());
+       shape_p     = other.shape_p;
+       tileShape_p = other.tileShape_p;
+       coords_p    = other.coords_p;
     }
     return *this;
 }
