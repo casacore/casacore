@@ -40,21 +40,25 @@ template <class T> class COWPtr;
 template <class T> class RO_LatticeIterInterface;
 template <class T> class LatticeIterInterface;
 
-// <summary> A memory resident Lattice</summary>
-//
+// <summary>
+// A memory resident Lattice
+// </summary>
+
+// <use visibility=export>
+
 // <reviewed reviewer="" date="" tests="tArrayLattice" demos="">
 // </reviewed>
-//
+
 // <prerequisite>
 //   <li> <linkto class=Lattice>Lattice</linkto>
 //   <li> <linkto class=Array>Array</linkto>
 // </prerequisite>
-//
+
 // <etymology>
 // The ArrayLattice name reflects its role as a Lattice interface to an Array
 // object.
 // </etymology>
-//
+
 // <synopsis> 
 // An ArrayLattice is a concrete Lattice class were the data is stored in
 // memory as opposed to the <linkto class=PagedArray>PagedArray</linkto> class
@@ -71,7 +75,7 @@ template <class T> class LatticeIterInterface;
 // ArrayIterator classes can. The examples below illustrate some uses for
 // ArrayLattices. 
 // </synopsis> 
-//
+
 // <example>
 // All the examples in this section are available in
 // <src>dArrayLattice.cc</src>
@@ -95,14 +99,13 @@ template <class T> class LatticeIterInterface;
 // </srcblock>
 //
 // <h4>Example 2:</h4>
-
 // The <linkto class=ArrayIterator>ArrayIterator</linkto> class (or its
 // derivatives the <linkto class=VectorIterator>VectorIterator</linkto> and the
 // <linkto class=MatrixIterator>MatrixIterator</linkto> classes) do not allow
 // the user to specify a cursor shape. In this example a Cube class will be
 // converted into an ArrayLattice so that an ArrLatticeIter can be used to
 // access the data spectrum by spectrum (assuming the z-axis is frequency).
-
+//
 // <srcblock>
 // Cube<Float> arr(64,64,128);
 // // assume that the data gets put into the cube somehow
@@ -116,26 +119,26 @@ template <class T> class LatticeIterInterface;
 // for (iter.reset(); !iter.atEnd(); iter++)
 //    channelSum(iter.position().getFirst(2)) = sum(iter.cursor());
 // </srcblock>
-
+//
 //  There are more examples in the <linkto class=Lattice>Lattice</linkto> class
 //  and many of the examples in the 
 // <linkto class=PagedArray>PagedArray</linkto> class will also be instructive.
-
 // </example>
-//
+
 // <motivation>
 // We needed a way of creating Lattices but with AIPS++ Array characteristics.
 // </motivation>
-//
-// <todo asof="1997/05/31">
-//   <li> Nothing I hope
-// </todo>
+
+//# <todo asof="1997/05/31">
+//# </todo>
 
 // <linkfrom anchor="ArrayLattice" classes="Lattice PagedArray">
 //  <here>ArrayLattice</here> - a memory based Lattice.
 // </linkfrom>
 
-template<class T> class ArrayLattice : public Lattice<T>
+
+template<class T>
+class ArrayLattice : public Lattice<T>
 {
 public: 
   // The default constructor creates a ArrayLattice that is useless for just
@@ -144,19 +147,19 @@ public:
   ArrayLattice();
 
   // Construct an ArrayLattice with the specified shape.
-  ArrayLattice(const IPosition & shape);
+  ArrayLattice (const IPosition& shape);
 
   // Construct an ArrayLattice that references the given Array.
-  ArrayLattice(const Array<T> & array);
+  ArrayLattice (const Array<T>& array);
 
   // the copy constructor which uses reference semantics.
-  ArrayLattice(const ArrayLattice & other);
+  ArrayLattice (const ArrayLattice& other);
 
   // the destructor does very little
   ~ArrayLattice();
 
   // the assignment operator which uses copy semantics.
-  ArrayLattice & operator=(const ArrayLattice & other);
+  ArrayLattice& operator= (const ArrayLattice& other);
 
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const; 
@@ -205,19 +208,16 @@ public:
   // (ie. the ones with <src>Array<T></src> and not <src>COWPtr<Array<T>></src>
   // arguments) return True.
   // <group>  
-  virtual Bool getSlice(COWPtr<Array<T> > & bufPtr, const IPosition & start, 
-			const IPosition & shape, const IPosition & stride,
-			Bool removeDegenerateAxes=False) const;
-  
-  virtual Bool getSlice(COWPtr<Array<T> > & bufPtr, const Slicer & section, 
-			Bool removeDegenerateAxes=False) const;
-  
-  virtual Bool getSlice(Array<T> & buffer, const IPosition & start, 
-			const IPosition & shape, const IPosition & stride,
-			Bool removeDegenerateAxes=False);
-  
-  virtual Bool getSlice(Array<T> & buffer, const Slicer & section, 
-			Bool removeDegenerateAxes=False);
+  virtual Bool getSlice (COWPtr<Array<T> >& bufPtr, const IPosition& start, 
+			 const IPosition& shape, const IPosition& stride,
+			 Bool removeDegenerateAxes=False) const;
+  virtual Bool getSlice (COWPtr<Array<T> >& bufPtr, const Slicer& section, 
+			 Bool removeDegenerateAxes=False) const;
+  virtual Bool getSlice (Array<T>& buffer, const IPosition& start, 
+			 const IPosition& shape, const IPosition& stride,
+			 Bool removeDegenerateAxes=False);
+  virtual Bool getSlice (Array<T>& buffer, const Slicer& section, 
+			 Bool removeDegenerateAxes=False);
   // </group>
 
   // A function which copies an Array of values into the ArrayLattice at the
@@ -226,45 +226,42 @@ public:
   // dimensions as the ArrayLattice. The sourceBuffer array may have fewer
   // axes than the ArrayLattice. The stride defaults to one if not specified.
   // <group>
-  virtual void putSlice(const Array <T> & sourceBuffer, 
-			const IPosition & where, const IPosition & stride);
-  virtual void putSlice(const Array <T> & sourceBuffer, 
-			const IPosition & where);
+  virtual void putSlice (const Array <T>& sourceBuffer, 
+			 const IPosition& where, const IPosition& stride);
+  virtual void putSlice (const Array <T>& sourceBuffer, 
+			 const IPosition& where);
   // </group>
   
   // functions which sets all of the elements in the Lattice to a value.
-  virtual void set(const T & value);
+  virtual void set (const T& value);
 
   // functions which returns an Array of the data within this Lattice.
   // <group>
-  Array<T> & asArray();
-  const Array<T> & asArray() const;
+  Array<T>& asArray();
+  const Array<T>& asArray() const;
   // </group>
 
   // These are the true implementations of the parenthesis operator. It will
   // probably be more convienient to use the actual parenthesis operator
   // defined in the Lattice base class.
   // <group>
-  virtual T getAt(const IPosition & where) const;
-  virtual void putAt(const T & value, const IPosition & where);
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
   // </group>
   
   // a function which checks for internal consistency. Returns False if
   // something nasty has happened to the ArrayLattice.
   virtual Bool ok() const;
   
-  // These functions are used by the LatticeIterator class to generate an
+  // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use. 
-  // <group>
-  virtual RO_LatticeIterInterface<T> * makeIter(
-				   const LatticeNavigator & navigator) const;
-  virtual LatticeIterInterface<T> * makeIter(
-                                   const LatticeNavigator & navigator);
-  // </group>
+  virtual LatticeIterInterface<T>* makeIter(
+				   const LatticeNavigator& navigator) const;
 
 private:
   Array<T> theData;
 };
+
 
 #endif
