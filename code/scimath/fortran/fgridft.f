@@ -1,4 +1,7 @@
-      subroutine ggridft (uvw, values, nvispol, nvischan,
+C
+C Grid a number of visibility records
+C
+      subroutine ggridft (uvw, rotmat, values, nvispol, nvischan,
      $     flag, weight, nrow, irow,
      $     scale, offset, grid, nx, ny, npol, nchan, freq, c,
      $     support, sampling, convFunc, chanmap, polmap, sumwt)
@@ -9,6 +12,8 @@
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
+      double precision rotmat(3,3)
+      complex phasor
       logical flag(nvispol, nvischan, nrow)
       real weight(nvischan, nrow), sumwt(npol, nchan)
       integer irow
@@ -41,15 +46,15 @@
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan).and.
      $           (weight(ichan,irow).gt.0.0)) then
-               call sgridft(uvw(1,irow), freq(ichan), c, scale, offset,
-     $              sampling, pos, loc, off)
+               call sgridft(uvw(1,irow), rotmat, freq(ichan), c, scale, 
+     $              offset, sampling, pos, loc, off, phasor)
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
                      if((.not.flag(ipol,ichan,irow)).and.
      $                    (apol.ge.1).and.(apol.le.npol)) then
                         nvalue=weight(ichan,irow)*
-     $                       conjg(values(ipol,ichan,irow))
+     $                       conjg(values(ipol,ichan,irow)*phasor)
                         norm=0.0
                         do iy=-support,support
                            iloc(2)=abs(sampling*iy+off(2))+1
@@ -72,9 +77,12 @@
       end do
       return
       end
-      subroutine dgridft (uvw, values, nvispol, nvischan, flag, nrow, 
-     $     irow, scale, offset, grid, nx, ny, npol, nchan, freq, c,
-     $     support, sampling, convFunc, chanmap, polmap)
+C
+C Degrid a number of visibility records
+C
+      subroutine dgridft (uvw, rotmat, values, nvispol, nvischan, flag, 
+     $     nrow, irow, scale, offset, grid, nx, ny, npol, nchan, freq,
+     $     c, support, sampling, convFunc, chanmap, polmap)
 
       implicit none
       integer nx, ny, npol, nchan, nvispol, nvischan, nrow
@@ -82,6 +90,8 @@
       complex grid(nx, ny, npol, nchan)
       double precision uvw(3, nrow), freq(nvischan), c, scale(2),
      $     offset(2)
+      double precision rotmat(3,3)
+      complex phasor
       logical flag(nvispol, nvischan, nrow)
       integer irow
       integer support, sampling
@@ -113,8 +123,8 @@
          do ichan=1, nvischan
             achan=chanmap(ichan)+1
             if((achan.ge.1).and.(achan.le.nchan)) then
-               call sgridft(uvw(1,irow), freq(ichan), c, scale, offset,
-     $              sampling, pos, loc, off)
+               call sgridft(uvw(1,irow), rotmat, freq(ichan), c, scale, 
+     $              offset, sampling, pos, loc, off, phasor)
                if (ogridft(nx, ny, loc, support)) then
                   do ipol=1, nvispol
                      apol=polmap(ipol)+1
@@ -132,7 +142,8 @@
      $                             grid(loc(1)+ix,loc(2)+iy,apol,achan)
                            end do
                         end do
-                        values(ipol,ichan,irow)=conjg(nvalue)/norm
+                        values(ipol,ichan,irow)=conjg(nvalue)*phasor
+     $                       /norm
                      end if
                   end do
                end if
@@ -141,20 +152,41 @@
       end do
       return
       end
-      subroutine sgridft (uvw, freq, c, scale, offset, sampling, pos,
-     $     loc, off)
+C
+C Calculate gridded coordinates and the phasor needed for
+C phase rotation.
+C
+      subroutine sgridft (uvw, rotmat, freq, c, scale, offset, sampling, 
+     $     pos, loc, off, phasor)
       implicit none
       integer sampling
       integer loc(2), off(2)
       double precision uvw(3), freq, c, scale(2), offset(2), pos(2)
-      integer idim
+      double precision rotmat(3,3), uvwrot(3), phase
+      complex phasor
+      integer idim, jdim
+      double precision pi
+      data pi/3.14159265358979323846/
+
+      do jdim=1,3
+        uvwrot(jdim)=0.0
+        do idim=1,3
+           uvwrot(jdim)=uvwrot(jdim)+rotmat(idim,jdim)*uvw(idim)
+        end do
+      end do
+
       do idim=1,2
-         pos(idim)=scale(idim)*uvw(idim)*freq/c+(offset(idim)+1.0)
+         pos(idim)=scale(idim)*uvwrot(idim)*freq/c+(offset(idim)+1.0)
          loc(idim)=nint(pos(idim))
          off(idim)=nint((loc(idim)-pos(idim))*sampling)
       end do
+      phase=2.0D0*pi*(uvwrot(3)-uvw(3))*freq/c
+      phasor=cmplx(cos(phase), sin(phase))
       return 
       end
+C
+C Is this on the grid?
+C
       logical function ogridft (nx, ny, loc, support)
       implicit none
       integer nx, ny, loc(2), support
