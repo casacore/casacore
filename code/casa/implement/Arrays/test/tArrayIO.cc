@@ -1,5 +1,5 @@
 //# tArrayIO.cc: This program tests Array IO
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,8 +38,10 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
-main()
+
+int main()
 {
     // Write -
     AipsIO io("arrtest.out", ByteIO::New);

@@ -1,5 +1,5 @@
 //# tArrayIO3.cc: This program tests the ArrayIO istream extract  functions
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -34,13 +34,14 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Utilities/String.h>
 #include <aips/Measures.h>
+#include <aips/iostream.h>
 
 
 // This test program tests the ArrayIO istream extract functions.
 // It reads from stdin (the test version from tArraIO3.in) and prints
 // the result.
 
-main (int argc)
+int main (int argc)
 {
     try {
 	Array<Double> a;
