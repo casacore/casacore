@@ -599,7 +599,81 @@ Bool ImageMoments<T>::setPlotting(const String& deviceU,
  
 
 
-template <class T> 
+template <class T>
+Vector<Int> ImageMoments<T>::toMethodTypes (const String& methods)
+// 
+// Helper function to convert a string containing a list of desired smoothed kernel types
+// to the correct <src>Vector<Int></src> required for the <src>setSmooth</src> function.
+// 
+// Inputs:
+//   methods     SHould contain some of "win", "fit", "inter"
+//
+{
+   Vector<Int> methodTypes(3);
+   if (!methods.empty()) {
+      String tMethods = methods;
+      tMethods.upcase();
+
+      Int i = 0;
+      if (tMethods.contains("WIN")) {
+         methodTypes(i) = WINDOW;
+         i++;
+      }
+      if (tMethods.contains("FIT")) {
+         methodTypes(i) = FIT;
+         i++;
+      }
+      if (tMethods.contains("INTER")) {
+         methodTypes(i) = INTERACTIVE;
+         i++;
+      }
+      methodTypes.resize(i, True);
+   } else {
+      methodTypes.resize(0);
+   }
+   return methodTypes;
+} 
+
+
+template <class T>
+Vector<Int> ImageMoments<T>::toKernelTypes (const String& kernels)
+// 
+// Helper function to convert a string containing a list of desired smoothed kernel types
+// to the correct <src>Vector<Int></src> required for the
+// <src>setSmooth</src> function.
+// 
+// Inputs:
+//   kernels   Should contain some of "box", "gauss", "hann"
+//
+{
+// Convert to an array of strings
+
+   const Vector<String> kernelStrings = ImageUtilities::getStrings(kernels);
+
+// Convert strings to appropriate enumerated value
+
+   Vector<Int> kernelTypes(kernelStrings.nelements());
+
+   for (Int i=0; i<kernelStrings.nelements(); i++) {
+      String tKernels= kernelStrings(i);
+      tKernels.upcase();
+
+      if (tKernels.contains("BOX")) {
+         kernelTypes(i) = BOXCAR;
+      } else if (tKernels.contains("GAUSS")) {
+         kernelTypes(i) = GAUSSIAN;
+      } else if (tKernels.contains("HANN")) {
+         kernelTypes(i) = HANNING;
+      }
+   }
+
+// Return result
+
+   return kernelTypes;
+} 
+
+
+template <class T>
 Bool ImageMoments<T>::createMoments()
 //
 // This function does all the work
@@ -1031,7 +1105,7 @@ void ImageMoments<T>::accumSums (Double& s0,
 //  s1             sum (I*v)
 //  s2             sum (I*v*v)
 {           
-   Double dDatum = Double(datum);
+   const Double dDatum = Double(datum);
    s0 += dDatum;   
    s0Sq += dDatum*dDatum;
    s1 += dDatum*coord;
@@ -1059,7 +1133,7 @@ Bool ImageMoments<T>::allNoise (T& dMean,
    T dMin, dMax;
    minMax (dMin, dMax, data.ac());
    dMean = mean(data.ac());
-   T rat = max(abs(dMin),abs(dMax)) / stdDeviation_p;
+   const T rat = max(abs(dMin),abs(dMax)) / stdDeviation_p;
 
    if (rat < peakSNR_p) {
       return True; 
@@ -1085,18 +1159,18 @@ Bool ImageMoments<T>::allNoise (const Vector<T>& spectrum,
 {
 // Copy spectrum  
 
-   Int nPts = spectrum.nelements();
+   const Int nPts = spectrum.nelements();
    Vector<T> tSpectrum(nPts);
    tSpectrum = spectrum;
 
 // Sort it
 
-   uInt nSort = GenSort<T>::sort(tSpectrum, Sort::Ascending, Sort::QuickSort);
+   const uInt nSort = GenSort<T>::sort(tSpectrum, Sort::Ascending, Sort::QuickSort);
 
 // Make cumulative and find maximum D statistic  
           
    Double CData = 0;
-   Double step = 1.0 / Double(nSort);
+   const Double step = 1.0 / Double(nSort);
    Double DMax = 0.0;
    Double CGauss;
    for (uInt i=1; i<nSort; i++) {
@@ -1136,7 +1210,7 @@ Bool ImageMoments<T>::checkMethod ()
 // Make sure we can do what the user wants
 //  
 {
-   Bool doInter = Bool(!doAuto_p);
+   const Bool doInter = Bool(!doAuto_p);
 
    if (!( (!doSmooth_p && !doWindow_p && !doFit_p && ( noInclude_p &&  noExclude_p) && !doInter) ||
           ( doSmooth_p && !doWindow_p && !doFit_p && (!noInclude_p || !noExclude_p) && !doInter) ||
@@ -1176,7 +1250,7 @@ Bool ImageMoments<T>::checkMethod ()
 
 // Automatic windowing via Bosma's algorithm with or without smoothing
  
-      os_p <<  "  Y/N        Y         N        N            N       " << endl;LogIO::POST;
+      os_p <<  "  Y/N        Y         N        N            N       " << endl;
 
 // Windowing by fitting Gaussians (selecting +/- 3-sigma) automatically or interactively 
 // with or without out smoothing
@@ -1219,45 +1293,45 @@ Bool ImageMoments<T>::checkMethod ()
 
 // Tell them what they are getting
           
-   os_p << LogIO::NORMAL << LogIO::POST << LogIO::POST
-        << "***********************************************************************" << LogIO::POST;
-   os_p << LogIO::NORMAL << "You have selected the following methods" << LogIO::POST;
+   os_p << endl << endl
+        << "***********************************************************************" << endl;
+   os_p << LogIO::NORMAL << "You have selected the following methods" << endl;
    if (doWindow_p) {
-      os_p << LogIO::NORMAL << "The window method" << LogIO::POST;
+      os_p << "The window method" << endl;
       if (doFit_p) {
          if (doInter)
-            os_p << LogIO::NORMAL << "   with window selection via interactive Gaussian fitting" << LogIO::POST;
+            os_p << "   with window selection via interactive Gaussian fitting" << endl;
          else
-            os_p << LogIO::NORMAL << "   with window selection via automatic Gaussian fitting" << LogIO::POST;
+            os_p << "   with window selection via automatic Gaussian fitting" << endl;
       } else {
          if (doInter)
-            os_p << LogIO::NORMAL << "   with interactive direct window selection" << LogIO::POST;
+            os_p << "   with interactive direct window selection" << endl;
          else     
-            os_p << LogIO::NORMAL << "   with automatic window selection via the Bosma algorithm" << LogIO::POST;
+            os_p << "   with automatic window selection via the Bosma algorithm" << endl;
       }           
       if (doSmooth_p) {
-         os_p << LogIO::NORMAL << "   operating on the smoothed image.  The moments are still" << LogIO::POST;
-         os_p << LogIO::NORMAL << "   evaluated from the unsmoothed image" << LogIO::POST;
+         os_p << "   operating on the smoothed image.  The moments are still" << endl;
+         os_p << "   evaluated from the unsmoothed image" << endl;
       } else
-         os_p << LogIO::NORMAL << "   operating on the unsmoothed image" << LogIO::POST;
+         os_p << "   operating on the unsmoothed image" << endl;
    } else if (doFit_p) {
       if (doInter)
-         os_p << LogIO::NORMAL << "The interactive Gaussian fitting method" << LogIO::POST;
+         os_p << "The interactive Gaussian fitting method" << endl;
       else
-         os_p << LogIO::NORMAL << "The automatic Gaussian fitting method" << LogIO::POST;
+         os_p << "The automatic Gaussian fitting method" << endl;
           
-      os_p << LogIO::NORMAL << "   operating on the unsmoothed data" << LogIO::POST;
-      os_p << LogIO::NORMAL << "   The moments are evaluated from the fits" << LogIO::POST;
+      os_p << "   operating on the unsmoothed data" << endl;
+      os_p << "   The moments are evaluated from the fits" << endl;
    } else if (doSmooth_p) {
-      os_p << LogIO::NORMAL << "The smooth and clip method.  The moments are evaluated from" << LogIO::POST;
-      os_p << LogIO::NORMAL << "   the masked unsmoothed image" << LogIO::POST;
+      os_p << "The smooth and clip method.  The moments are evaluated from" << endl;
+      os_p << "   the masked unsmoothed image" << endl;
    } else {
       if (noInclude_p && noExclude_p)
-         os_p << LogIO::NORMAL << "The basic show it as it is method !" << LogIO::POST;
+         os_p << "The basic show it as it is method !" << endl;
       else
-         os_p << LogIO::NORMAL << "The clip method" << LogIO::POST;
+         os_p << "The clip method" << endl;
    }
-   os_p << LogIO::NORMAL << LogIO::POST << LogIO::POST << LogIO::POST;
+   os_p << endl << endl << LogIO::POST;
    
       
    return True;   
@@ -1282,8 +1356,8 @@ void ImageMoments<T>::doMomCl (Vector<T>& calcMoments,
 //   doMedian   Don't bother with median unless we really have to
 //   doAbsDev   Don't bother with absolute deviations unless we really have to
 {
-   Bool doInclude = Bool(!noInclude_p);
-   Bool doExclude = Bool(!noExclude_p);
+   const Bool doInclude = Bool(!noInclude_p);
+   const Bool doExclude = Bool(!noExclude_p);
    
 // Assign array for median.  Is resized appropriately later
       
@@ -1497,9 +1571,9 @@ void ImageMoments<T>::doMomFit (Vector<T>& calcMoments,
    
 // Generate Gaussian array
 
-   Int nPts = data.nelements();
+   const Int nPts = data.nelements();
    Vector<T> gData(nPts);
-   Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
+   const Gaussian1D<T> gauss(gaussPars(0), gaussPars(1), gaussPars(2));
    T xx;
    for (Int i=0; i<nPts; i++) {
       xx = i;
@@ -1682,7 +1756,7 @@ void ImageMoments<T>::doMomWin (Vector<T>& calcMoments,
       xLabel = "x (pixels)";
    else 
       xLabel = momAxisType + " (pixels)";
-   String yLabel("Intensity");
+   const String yLabel("Intensity");
    String title;
    setPosLabel (title, pos);
 
@@ -1796,7 +1870,7 @@ void ImageMoments<T>::drawHistogram (const T& dMin,
    cpgbox ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    cpglab ("Intensity", "Number", "");
 
-   float width = float(binWidth)/2.0;
+   const float width = float(binWidth)/2.0;
    float centre = float(dMin) + width;
    for (Int i=0; i<nBins; i++) {
       float xx = centre - width;
@@ -1844,7 +1918,7 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 {
 // Copy from templated floating type to float
 
-   int n = x.nelements();
+   const int n = x.nelements();
    float* pX = new float[n];
    float* pY = new float[n];
    for (Int i=0; i<n; i++) {
@@ -1870,7 +1944,7 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 {
 // Find extrema
 
-   Int nPts = x.nelements();
+   const Int nPts = x.nelements();
    Float xMin = 0.0;
    Float xMax = Float(nPts);
    T yMin, yMax;
@@ -1951,8 +2025,8 @@ Bool ImageMoments<T>::fitGaussian (T& peak,
 
 // Create and set the functionals
 
-   Gaussian1D<AutoDiff<T> > gauss;
-   Polynomial<AutoDiff<T> > poly;
+   const Gaussian1D<AutoDiff<T> > gauss;
+   const Polynomial<AutoDiff<T> > poly;
    SumFunction<AutoDiff<T>,AutoDiff<T> > func;
    func.addFunction(gauss);
    func.addFunction(poly);
@@ -2081,11 +2155,11 @@ Bool ImageMoments<T>::getAutoGaussianFit (Vector<T>& gaussPars,
 // See if this spectrum is all noise first.  If so, forget it.
 
    T dMean;
-   Bool noisy = allNoise(dMean, y.ac());
+   const Bool noisy = allNoise(dMean, y.ac());
 
 // Draw on mean and sigma
 
-   T sigma = stdDeviation_p;
+   const T sigma = stdDeviation_p;
    if (doPlot) {
       drawMeanSigma (dMean, sigma);
       if (noisy) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
@@ -2100,7 +2174,7 @@ Bool ImageMoments<T>::getAutoGaussianFit (Vector<T>& gaussPars,
 
    T peakGuess, posGuess, widthGuess, levelGuess;
    T pos, width, peak, level;
-   getAutoGaussianGuess (peakGuess, posGuess, widthGuess, x, y);
+   getAutoGaussianGuess(peakGuess, posGuess, widthGuess, x, y);
    levelGuess = mean(y.ac());
    peakGuess = peakGuess - levelGuess;
 
@@ -2194,7 +2268,7 @@ Double ImageMoments<T>::getMomentCoord (const Double& momentPixel)
 
 
 template <class T> 
-Double ImageMoments<T>::getErfC (Double& x)
+Double ImageMoments<T>::getErfC (const Double& x)
 //
 // Find 1-erf(x) using the Chebyshev polynomial
 // fit in Numerical recipes p 164
@@ -2224,7 +2298,7 @@ Double ImageMoments<T>::getGaussianCumulativeProb (const Double& sigma,
 // Output:
 //   Double   the value
 {
-   Double z = -x / sigma * C::_1_sqrt2;
+   const Double z = -x / sigma * C::_1_sqrt2;
    return getErfC(z) / 2.0;
 }
 
@@ -2257,7 +2331,7 @@ void ImageMoments<T>::getInterDirectWindow (Bool& allSubsequent,
    cpgqwin (&xMin, &xMax, &yMin, &yMax);
    Bool more = True;
    Bool ditch, redo;
-   Int nPts = y.nelements();
+   const Int nPts = y.nelements();
    T tX, tY1, tY2;
 
    while (more) {
@@ -2333,8 +2407,8 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
 // and fitting window
 //
 {
-   os_p << LogIO::NORMAL << "Mark the location of the peak and position" << LogIO::POST;
-   os_p << LogIO::NORMAL << "Press right button to reject spectrum" << LogIO::POST;
+   os_p << LogIO::NORMAL << "Mark the location of the peak and position" << endl;
+   os_p << "Press right button to reject spectrum" << LogIO::POST;
 
    float x1, x2, y1, y2;
    cpgqwin (&x1, &x2, &y1, &y2);
@@ -2371,9 +2445,9 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
 
 // Now FWHM
    
-   os_p << LogIO::NORMAL << LogIO::POST;
-   os_p << LogIO::NORMAL << "Mark the location of the FWHM" << LogIO::POST;
-   os_p << LogIO::NORMAL << "Press right button to reject spectrum" << LogIO::POST;
+   os_p << endl;
+   os_p << LogIO::NORMAL << "Mark the location of the FWHM" << endl;
+   os_p << "Press right button to reject spectrum" << LogIO::POST;
    miss = True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
@@ -2396,10 +2470,10 @@ void ImageMoments<T>::getInterGaussianGuess  (T& peakGuess,
 
 // Now window
 
-   os_p << LogIO::NORMAL << LogIO::POST;
-   os_p << LogIO::NORMAL << "Mark the location of the fit window" << LogIO::POST;
-   os_p << LogIO::NORMAL << "Press right button to reject spectrum" << LogIO::POST;
-   os_p << LogIO::NORMAL << "Press middle button to fit the whole spectrum" << LogIO::POST;
+   os_p << endl;
+   os_p << LogIO::NORMAL << "Mark the location of the fit window" << endl;
+   os_p << "Press right button to reject spectrum" << endl;
+   os_p << "Press middle button to fit the whole spectrum" << LogIO::POST;
    miss=True;
    while (miss) {
      cpgcurs (&x, &y, &ch);
@@ -2490,7 +2564,7 @@ Bool ImageMoments<T>::getInterGaussianFit (Vector<T>& gaussPars,
    Bool more = True;
    Bool ditch, redo;
    Vector<Int> window(2);
-   os_p << LogIO::NORMAL << LogIO::POST;
+   os_p << endl;
 
    while (more) {
 
@@ -2825,7 +2899,7 @@ void ImageMoments<T>::makeAbcissa (Vector<T>& x,
 template <class T> 
 Bool ImageMoments<T>::makeOdd (Int& i)
 {
-   Int j = i / 2;
+   const Int j = i / 2;
    if (2*j == i) {
       i++;
       return True;
@@ -2850,7 +2924,7 @@ void ImageMoments<T>::makeMask (gpp_LatticeBool* pMaskImage,
 
 // Construct tile shaped iterators. 
 
-   IPosition tileShape = pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels());
+   const IPosition tileShape = pSmoothedImage->niceCursorShape(pSmoothedImage->maxPixels());
    RO_LatticeIterator<T> imageIt(*pSmoothedImage, tileShape);
    LatticeIterator<Bool>  maskIt(*pMaskImage, tileShape);
    Int n1;
@@ -2922,7 +2996,7 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf,
 
 // Find the largest axis number the user wants to smooth
 
-   Int psfDim = max(smoothAxes_p.ac()) + 1;
+   const Int psfDim = max(smoothAxes_p.ac()) + 1;
 
 // Define maximum size.  Use this constant Int to avoid brain ache
 // with pointers to pointers. I must do better one day !
@@ -2960,13 +3034,13 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf,
 
 // Gaussian. The volume error is less than 6e-5% for +/- 5 sigma limits
 
-            Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
+            const Double sigma = kernelWidths_p(k) / sqrt(Double(8.0) * C::ln2);
             psfShape(i) = (Int(5*sigma + 0.5) + 1) * 2;
-            Int refPix = psfShape(i)/2;
+            const Int refPix = psfShape(i)/2;
 
-            Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
-            Double gWidth = kernelWidths_p(i);
-            Gaussian1D<Double> gauss(norm, Double(refPix), gWidth);
+            const Double norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+            const Double gWidth = kernelWidths_p(i);
+            const Gaussian1D<Double> gauss(norm, Double(refPix), gWidth);
 //            os_p << LogIO::NORMAL << "Volume = " << 1/norm << LogIO::POST;
 
             pt[i] = new float[psfShape(i)];
@@ -2975,11 +3049,11 @@ Bool ImageMoments<T>::makePSF (Array<T>& psf,
 
 // Boxcar
 
-            Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
+            const Int intKernelWidth = Int(kernelWidths_p(k)+0.5);
             psfShape(i) = intKernelWidth + 1;
-            Int refPix = psfShape(i)/2;
+            const Int refPix = psfShape(i)/2;
 
-            Int iw = (intKernelWidth-1) / 2;
+            const Int iw = (intKernelWidth-1) / 2;
             pt[i] = new float[psfShape(i)];
             for (j=0; j<psfShape(i); j++) {
                if (abs(j-refPix) > iw) 
@@ -3140,12 +3214,12 @@ Bool ImageMoments<T>::getBosmaWindow (Vector<Int>& window,
 // See if this spectrum is all noise first.  If so, forget it.
 
    T dMean;
-   Bool noisy1 = allNoise(dMean, y.ac());
+   const Bool noisy1 = allNoise(dMean, y.ac());
 //   Bool noisy2 = allNoise(y.ac(), ks);
 //   cout << LogIO::POST << "noisy1, noisy2 =" << noisy1 << "," << noisy2 << LogIO::POST;
 // Draw on mean and sigma
 
-   T sigma = stdDeviation_p;
+   const T sigma = stdDeviation_p;
    if (doPlot) {
       drawMeanSigma (dMean, sigma);
       if (noisy1) cpgmtxt ("T", 1.0, 0.0, 0.0, "NOISE");
@@ -3158,7 +3232,7 @@ Bool ImageMoments<T>::getBosmaWindow (Vector<Int>& window,
 
 // Find peak
 
-   Int nPts = y.nelements();
+   const Int nPts = y.nelements();
    IPosition minPos(1), maxPos(1);
    T yMin, yMax;
    minMax(yMin, yMax, minPos, maxPos, y.ac());
@@ -3225,7 +3299,7 @@ Bool ImageMoments<T>::getBosmaWindow (Vector<Int>& window,
 
 template <class T> 
 void ImageMoments<T>::saveLattice (const Lattice<T>* pLattice,
-                                   const CoordinateSystem& coordinate,
+                                   const CoordinateSystem& cSys,
                                    const String& fileName)
 //
 // Save a Lattice to disk as a Paged Image
@@ -3236,14 +3310,10 @@ void ImageMoments<T>::saveLattice (const Lattice<T>* pLattice,
 //  pLattice    Pointer to Lattice
 {
 
-// Set up coordinates
-
-   CoordinateSystem outCoord(coordinate);
-
 // Create output image
 
    IPosition outShape(pLattice->shape());
-   PagedImage<T> outImage(outShape, outCoord, fileName);
+   PagedImage<T> outImage(outShape, cSys, fileName);
 
 
 // Construct iterator to iterate through in optimal tiles
@@ -3387,13 +3457,9 @@ template <class T>
 void ImageMoments<T>::setPosLabel (String& title,
                                    const IPosition& pos)
 {
-   const int BUFL=64;
-   char buf[BUFL];
-   ostrstream oss(buf,BUFL,ios::out);
+   ostrstream oss;
 
-   oss << "Position = ";  
-   oss << pos+1; 
-   oss << ends;
+   oss << "Position = " << pos+1 << ends;
    String temp(oss.str());
    title = temp;
 }
@@ -3410,7 +3476,7 @@ void ImageMoments<T>::showGaussFit   (const T& peak,
 // Plot the Gaussian fit and residual
 //
 {
-   Int nDPts = x.nelements();
+   const Int nDPts = x.nelements();
    T xMin = x(0);
    T xMax = x(nDPts-1);
    Int nGPts = 100;
@@ -3418,7 +3484,7 @@ void ImageMoments<T>::showGaussFit   (const T& peak,
 
 // Setup functional
    
-   Gaussian1D<T> gauss(peak, pos, width);
+   const Gaussian1D<T> gauss(peak, pos, width);
 
 
 // Allocate arrays
@@ -3779,81 +3845,4 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
    if (!device_p.empty()) cpgend();
    return True;
 }
-
-template <class T>
-Vector<Int> ImageMoments<T>::toMethodTypes (const String& methods)
-// 
-// Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the <src>setSmooth</src> function.
-// 
-// Inputs:
-//   methods     SHould contain some of "win", "fit", "inter"
-//
-{
-   Vector<Int> methodTypes(3);
-   if (!methods.empty()) {
-      String tMethods = methods;
-      tMethods.upcase();
-
-      Int i = 0;
-      if (tMethods.contains("WIN")) {
-         methodTypes(i) = WINDOW;
-         i++;
-      }
-      if (tMethods.contains("FIT")) {
-         methodTypes(i) = FIT;
-         i++;
-      }
-      if (tMethods.contains("INTER")) {
-         methodTypes(i) = INTERACTIVE;
-         i++;
-      }
-      methodTypes.resize(i, True);
-   } else {
-      methodTypes.resize(0);
-   }
-   return methodTypes;
-} 
-
-
-template <class T>
-Vector<Int> ImageMoments<T>::toKernelTypes (const String& kernels)
-// 
-// Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the
-// <src>setSmooth</src> function.
-// 
-// Inputs:
-//   kernels   Should contain some of "box", "gauss", "hann"
-//
-{
-// Convert to an array of strings
-
-   Vector<String> kernelStrings = ImageUtilities::getStrings(kernels);
-
-// Convert strings to appropriate enumerated value
-   Vector<Int> kernelTypes(kernelStrings.nelements());
-
-   for (Int i=0; i<kernelStrings.nelements(); i++) {
-      String tKernels= kernelStrings(i);
-      tKernels.upcase();
-
-      if (tKernels.contains("BOX")) {
-         kernelTypes(i) = BOXCAR;
-      } else if (tKernels.contains("GAUSS")) {
-         kernelTypes(i) = GAUSSIAN;
-      } else if (tKernels.contains("HANN")) {
-         kernelTypes(i) = HANNING;
-      }
-   }
-
-// Return result
-
-   return kernelTypes;
-} 
-
-
-
-
-
 
