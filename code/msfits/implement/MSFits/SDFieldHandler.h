@@ -128,6 +128,7 @@ private:
     RORecordFieldPtr<Array<Double> > delayDirField_p, delayDirRateField_p, 
 	phaseDirField_p, phaseDirRateField_p, referenceDirField_p,
 	referenceDirRateField_p;
+    RORecordFieldPtr<Bool> flagRowField_p;
 
     // cleanup everything
     void clearAll();

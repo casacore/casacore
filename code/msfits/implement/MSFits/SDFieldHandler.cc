@@ -74,6 +74,7 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
 	phaseDirRateField_p = other.phaseDirRateField_p;
 	referenceDirField_p = other.referenceDirField_p;
 	referenceDirRateField_p = other.referenceDirRateField_p;
+	flagRowField_p = other.flagRowField_p;
     }
     return *this;
 }
@@ -117,6 +118,10 @@ void SDFieldHandler::fill(const Record &row, const String &name, Int directionRe
 	    if (canReuse && timeField_p.isAttached()) {
 		canReuse = canReuse && time == *timeField_p &&
 		    *timeField_p == msFieldCols_p->time()(thisRow);
+	    }
+	    if (canReuse && flagRowField_p.isAttached()) {
+		canReuse = canReuse && 
+		    *flagRowField_p == msFieldCols_p->flagRow()(thisRow);
 	    }
 	    // these checks serve two purposes, to see if the data can be reused by also as
 	    // a first check on the contents of the *rateFields and the npoly that they imply.
@@ -277,6 +282,11 @@ void SDFieldHandler::fill(const Record &row, const String &name, Int directionRe
 	    } 
 	    msFieldCols_p->referenceDir().put(rownr_p, referencePoly); 
 	    msFieldCols_p->sourceId().put(rownr_p, sourceId);
+	    if (flagRowField_p.isAttached()) {
+		msFieldCols_p->flagRow().put(rownr_p, *flagRowField_p);
+	    } else {
+		msFieldCols_p->flagRow().put(rownr_p, False);
+	    }
 	}
     }
 }
@@ -305,6 +315,7 @@ void SDFieldHandler::clearRow()
     phaseDirRateField_p.detach();
     referenceDirField_p.detach();
     referenceDirRateField_p.detach();
+    flagRowField_p.detach();
 }
 
 void SDFieldHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
@@ -362,5 +373,10 @@ void SDFieldHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 	row.dataType("FIELD_REFERENCE_DIR_RATE") == TpArrayDouble) {
 	referenceDirRateField_p.attachToRecord(row,"FIELD_REFERENCE_DIR_RATE");
 	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR_RATE")) = True;
+    }
+    if (row.fieldNumber ("FIELD_FLAG_ROW") >= 0 &&
+	row.dataType("FIELD_FLAG_ROW") == TpBool) {
+	flagRowField_p.attachToRecord(row, "FIELD_FLAG_ROW");
+	handledCols(row.fieldNumber("FIELD_FLAG_ROW")) = True;
     }
 }
