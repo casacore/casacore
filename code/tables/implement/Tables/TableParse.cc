@@ -1,5 +1,5 @@
 //# TableParse.cc: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997
+//# Copyright (C) 1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -515,9 +515,6 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
 TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
 {
     TableExprNodeRep* tsnp = 0;
-    String s;
-    int pos = 0;
-    int inx;
     switch (val->type) {
     case 'i':
 	tsnp = new TableExprNodeConstDouble (Double (val->ival));
@@ -531,22 +528,7 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
 	break;
     case 's':
     {
-	//# A string is formed as "..."'...''...' etc.
-	//# All ... parts will be extracted and concatenated into string s.
-	int leng = val->str.length();
-	while (pos < leng) {
-	    //# Find next occurrence of leading ' or ""
-	    inx = val->str.index (val->str[pos], pos+1);
-	    if (inx < 0) {
-		throw (TableInvExpr ("Ill-formed string constant: " +
-				     val->str));
-		break;
-	    }else{
-		s += val->str.at (pos+1, inx-pos-1);     // add substring
-		pos = inx+1;
-	    }
-	}
-	tsnp = new TableExprNodeConstString (s);
+	tsnp = new TableExprNodeConstString (val->str);
 	break;
     }
     case 'd':
