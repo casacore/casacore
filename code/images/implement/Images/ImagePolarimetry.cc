@@ -813,7 +813,6 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
                           const_cast<ImageInterface<Float>*>(itsInImagePtr);
    mainImagePtr->setCacheSizeInTiles (nrtiles);
 //
-   plotter.sch (2.0);
    String posString;
    Bool ok = False;
    IPosition shp;
@@ -1631,13 +1630,6 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
                                     const Vector<Float>& pa, const Vector<Float>& paerr, 
                                     Float rmMax, PGPlotter& plotter, const String& posString)
 {
-   static Vector<Float> storeRm;
-   static Vector<Float> storeRmErr;
-   static Vector<Float> storePa0;
-   static Vector<Float> storePa0Err;
-   static Vector<Float> storeRChiSq;
-   static Vector<Float> storeNTurns;
-//
    static Vector<Float> plotPA;
    static Vector<Float> plotPAErr;
    static Vector<Float> plotPAErrY1;
@@ -1662,17 +1654,9 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
    if (diff < 0) t = -0.5;
    Int minnpi = Int(diff/C::pi + t);
 // cout << "primary:: minnpi, maxnpi=" << minnpi << ", " << maxnpi << endl;
-//
-   const uInt nstore = maxnpi - minnpi + 1;
 
-// Resizes are fast if no change
+// Resize plotting vectors
 
-   storeRm.resize(nstore);
-   storeRmErr.resize(nstore);
-   storePa0.resize(nstore);
-   storePa0Err.resize(nstore);
-   storeRChiSq.resize(nstore);
-   storeNTurns.resize(nstore);
    if (plotter.isAttached()) {
       plotPA.resize(n);
       plotPAErr.resize(n);
@@ -1685,8 +1669,6 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
 
    Vector<Float> fitpa(n);
    Vector<Float> pars;
-   uInt bestFitIdx = 0;
-   uInt istore = 0;
    Float chiSq = 1e30;
    for (Int h=minnpi; h<=maxnpi; h++) {
      fitpa(n-1) = pa(n-1) + C::pi*h;
@@ -1709,37 +1691,28 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
 
      if (!rmLsqFit (pars, wsq, fitpa, paerr)) return False;
 
-// Store fit for this guess at the NPI ambiguity
-
-     storeRm(istore) = pars(0);      // Fitted RM
-     storeRmErr(istore) = pars(1);   // Error in RM
-     storePa0(istore) = pars(2);     // Fitted intrinsic angle
-     storePa0Err(istore) = pars(3);  // Error in angle
-     storeRChiSq(istore) = pars(4);  // Reduced chi squared
-     storeNTurns(istore) = h;        // Number of turns
 //
      if (pars(4) < chiSq) {
-        bestFitIdx = istore;
-        plotPA = fitpa;
-        plotPAErr = paerr;
         chiSq = pars(4);
+//
+        nTurns = h;                   // Number of turns
+        rmFitted = pars(0);           // Fitted RM
+        rmErrFitted = pars(1);        // Error in RM
+        pa0Fitted = pars(2);          // Fitted intrinsic angle
+        pa0ErrFitted = pars(3);       // Error in angle
+        rChiSqFitted = pars(4);       // Recued chi squared
+        if (n > 2) rChiSqFitted /= Float(n - 2);
+//
         if (plotter.isAttached()) {
+           plotPA = fitpa;
+           plotPAErr = paerr;
+//
            for (uInt k=0; k<n; k++) {
               plotPAFit(k) = pars(2) + pars(0)*wsq(k);
            }
         }
      }
-//
-     istore++;
    }
-//
-   nTurns = storeNTurns(bestFitIdx);
-   rmFitted = storeRm(bestFitIdx);
-   rmErrFitted = storeRmErr(bestFitIdx);
-   pa0Fitted = storePa0(bestFitIdx);
-   pa0ErrFitted = storePa0Err(bestFitIdx);
-   rChiSqFitted = storeRChiSq(bestFitIdx);
-   if (n > 2) rChiSqFitted /= Float(n - 2);
 
 // Make plot
 
@@ -1750,20 +1723,22 @@ Bool ImagePolarimetry::rmPrimaryFit(Float& nTurns, Float& rmFitted, Float& rmErr
      plotPAErrY1 = plotPA - plotPAErr;
      plotPAErrY2 = plotPA + plotPAErr;
 //
-     Float minVal, maxVal;
-     minMax(minVal, maxVal, plotPA);
+     Float yMinVal, yMaxVal;
+     minMax(yMinVal, yMaxVal, plotPA);
+     Float dy = 0.05 * (yMaxVal - yMinVal);
 //
      ostrstream oss;
-     oss << rChiSqFitted << ends;
+     oss << "  nT = " << nTurns << ", ChiSq = " << rChiSqFitted << ends;
 //
      plotter.page();
-     plotter.swin(wsq(0), wsq(n-1), minVal, maxVal);
+     Float dx = 0.05 * (wsq(n-1) - wsq(0));
+     plotter.vstd();
+     plotter.swin(wsq(0)-dx, wsq(n-1)+dx, yMinVal-dy, yMaxVal+dy);
      plotter.box("BCNST", 0.0, 0, "BCNST", 0.0, 0);
 //
      plotter.lab("\\gl\\u2\\d (m\\u2\\d)", 
-                 "Position Angle (degrees)", String(""));
-     plotter.mtxt ("T", -1.5, 0.05, 0.0, posString);
-     plotter.mtxt ("T", -2.5, 0.05, 0.0, String(oss));
+                 "Position Angle (degrees)", 
+                 String("Pos=") + posString + String(oss));
 //     
      plotter.pt(wsq, plotPA, 17);
      plotter.erry (wsq, plotPAErrY1, plotPAErrY2, 1.0);
@@ -1784,16 +1759,9 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& nTurns, Float& rmFitted, Float&
 
 // For supplementary points find lowest residual RM
 
-   const uInt nstore = 5;
-   static Vector<Float> storeAbsRm(nstore);
-   static Vector<Float> storeRm(nstore);
-   static Vector<Float> storeRmErr(nstore);
-   static Vector<Float> storePa0(nstore);
-   static Vector<Float> storePa0Err(nstore);
-   static Vector<Float> storeRChiSq(nstore);
-   static Vector<Float> storeNTurns(nstore);
    const uInt n = wsq.nelements();
 //
+   Float absRM = 1e30;
    Vector<Float> fitpa(pa.copy());
    Vector<Float> pars;
    for (Int i=-2; i<3; i++) {
@@ -1803,32 +1771,23 @@ Bool ImagePolarimetry::rmSupplementaryFit(Float& nTurns, Float& rmFitted, Float&
 
      if (!rmLsqFit (pars, wsq, fitpa, paerr)) return False;
 
-// Store fit for this guess at the NPI ambiguity
+// Save solution  with lowest absolute RM
 
-     storeAbsRm(i+2) = abs(pars(0));      // Abs Fitted RM
-     storeRm(i+2) = pars(0);              // Fitted RM
-     storeRmErr(i+2) = pars(1);           // Error in RM
-     storePa0(i+2) = pars(2);             // Fitted intrinsic angle
-     storePa0Err(i+2) = pars(3);          // Error in angle
-     storeRChiSq(i+2) = pars(4);          // Reduced chi squared
-     storeNTurns(i+2) = i;                // nTurns
-   }
-
-// Return the fit with the smallest absolute RM
-
-   IPosition minPos(1), maxPos(1);
-   Float minVal, maxVal;
-   minMax(minVal, maxVal, minPos, maxPos, storeAbsRm);
-   uInt idx = minPos(0);
+     if (abs(pars(0)) < absRM) {
+        absRM = abs(pars(0));
 //
-   nTurns = storeNTurns(idx);
-   rmFitted = storeRm(idx);
-   rmErrFitted = storeRmErr(idx);
-   pa0Fitted = storePa0(idx);
-   pa0ErrFitted = storePa0Err(idx);
-   rChiSqFitted = storeRChiSq(idx);
-   if (n > 2) rChiSqFitted /= Float(n - 2);
-   return True;
+        nTurns = i;                        // nTurns
+        rmFitted = pars(0);                // Fitted RM
+        rmErrFitted = pars(1);             // Error in RM
+        pa0Fitted = pars(2);               // Fitted intrinsic angle
+        pa0ErrFitted = pars(3);            // Error in angle
+        rChiSqFitted = pars(4);            // Reduced chi squared
+        if (n > 2) rChiSqFitted /= Float(n - 2);
+     }
+
+   }
+//
+  return True;
 }
 
 
