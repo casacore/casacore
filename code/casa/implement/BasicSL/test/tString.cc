@@ -1,5 +1,5 @@
 //# tString.cc: This program tests Strings
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -421,7 +421,7 @@ void identitytest(String a, String b)
 void freqtest()
 {
   String x = "Hello World";
-  SubString y = x.at(0,5);
+  String y = x.at(0,5);
   assert(x.freq('l') == 3);	// char
   assert(x.freq("lo") == 1);	// char*
   assert(x.freq(x) == 1);	// String
