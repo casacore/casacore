@@ -46,7 +46,8 @@
 // </note>
 // IAU definition of Gaussian grav. constant for calculating IAU units
 const Double IAU_k=0.01720209895;
-// Number of FITS units recognised
+// Number of FITS units recognised (change the FITSstring and FITSunit lists
+// in the UnitMap.cc when changing this number.
 const uInt N_FITS = 19;
 
 // <summary>
@@ -80,7 +81,7 @@ const uInt N_FITS = 19;
 // other basic unit defined by the user of the Unit related classes.
 // The known units are divided into 5 different groups:
 // <ol>
-//   <li> Defining units: 	m, kg, s, A, K, cd, mol, rad, sr
+//   <li> Defining units: 	m, kg, s, A, K, cd, mol, rad, sr, _
 //   <li> SI units:		including a.o. Jy, AU etc)
 //   <li> Customary units:	e.g. lb, hp, ly etc
 //   <li> User defined units:	defined by user (e.g. beam, KPH, KM)
@@ -88,6 +89,11 @@ const uInt N_FITS = 19;
 // </ol>
 // The full list of known units can be viewed by running the tUnit test
 // program.
+// <note role=caution>
+// There is a difference between units without a dimension (non-dimensioned
+// I will call them), and undimensioned units. Non-dimensioned examples are
+// "", "%"; undimensioned examples: "beam", "pixel".
+// </note>
 //
 // Information about the contents of the unit maps can be obtained by
 // the Bool functions (False if not present):
@@ -95,7 +101,7 @@ const uInt N_FITS = 19;
 //   <li> UnitMap::getPref("string", UnitName &)	prefix
 //   <li> UnitMap::getUnit("string", UnitName &)	search user,
 //		customary, SI (in that order)
-//   <li> UnitMap::getCache("string", UnitVal &)	search cache
+//   <li> UnitMap::getCache("string", UnitVal &)	search cache
 // </ul>
 //
 // The standard units can be viewed by the following commands, which
@@ -130,6 +136,14 @@ const uInt N_FITS = 19;
 // making multiple calls inexpensive. The list of current FITS units can
 // be viewed by running the tUnit program, or looking at the FITSunit
 // table.
+//
+// Once the UnitMap::addFITS() has been run, the FITS units can be used as
+// any other unit. In addition, a FITS unit can be translated to standard
+// SI units by a call to <em>Unit UnitMap::fromFITS(const Unit)</em>. Any
+// unit that is defined as a standard FITS unit will be translated. Unknown
+// ones will not be translated, making the way clear for having standard
+// units in a FITS units string. A comparable <em>toFITS()</em> translates in
+// the same way in the reversed direction.
 //
 // The cache can be cleared by:
 // <srcblock>
