@@ -1,5 +1,5 @@
 //# fitsio.h:
-//# Copyright (C) 1993,1994,1995,1996,1999
+//# Copyright (C) 1993,1994,1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -157,6 +157,12 @@ class FitsInput : public FitsIO {
 	int skip_hdu();
 	// read special or unrecognizable records
 	char *read_sp();
+
+        //  number of physical blocks read/written
+        int blockno() const {return fin.blockno();}
+
+        //  number of logical records read/written
+        int recno() const {return fin.recno();}
 
     private:
 	BlockInput &fin;
