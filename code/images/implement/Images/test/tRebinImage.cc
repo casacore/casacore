@@ -54,12 +54,10 @@ try {
 
    inputs.create("in", "", "Input image name");
    inputs.create("factors", "-10", "factors");
-   inputs.create("cache", "False", "use caching ?");
    inputs.create("save", "False", "Save output ?");
    inputs.create("shape", "-10", "Shape");
    inputs.readArguments(argc, argv);
    const String in = inputs.getString("in");
-   const Bool doCache = inputs.getBool("cache");
    const Bool save = inputs.getBool("save");
    const Block<Int> factorsU(inputs.getIntArray("factors"));
    const Block<Int> shapeU(inputs.getIntArray("shape"));
@@ -103,7 +101,7 @@ try {
       }
    }
 //
-   RebinImage<Float> rebinner(*pIm, factors, doCache);
+   RebinImage<Float> rebinner(*pIm, factors);
    IPosition shapeOut = rebinner.shape();
    cerr << "factors = " << factors << endl;
    cerr << "shapeIn, shapeOut = " << shapeIn << shapeOut << endl;
