@@ -108,13 +108,13 @@ NORMAL: Existing flags will be reset
 NORMAL: Selector#2: flag ABS(I)>10 
 NORMAL: Chunk 1:  XX YY, 256 channels, 104 time slots, 105 baselines, 6656 rows
 NORMAL: 26 channels will be fitted in this chunk
-NORMAL: defaultaipsrc (aipsrc()) ready
+NORMAL: defaultaipsrc (drc) ready
 NORMAL: defaultwidgetserver (dws) ready
-NORMAL: 4824 (72.48%) rows have been flagged.
-NORMAL: 150366 of 3407872 (4.41%) pixels have been flagged.
-NORMAL: TimeMedian: 16057 pixel flags, 1438 row flags
-NORMAL: FreqMedian: 25742 pixel flags, 954 row flags
-NORMAL: SpectralRej: 0 pixel flags, 4790 row flags
+NORMAL: 4830 (72.57%) rows have been flagged.
+NORMAL: 150310 of 3407872 (4.41%) pixels have been flagged.
+NORMAL: TimeMedian: 16034 pixel flags, 1438 row flags
+NORMAL: FreqMedian: 25683 pixel flags, 954 row flags
+NORMAL: SpectralRej: 0 pixel flags, 4796 row flags
 NORMAL: UVBinner: 63722 pixel flags, 0 row flags
 NORMAL: Selector: 53040 pixel flags, 0 row flags
 NORMAL: Selector#2: 46456 pixel flags, 0 row flags
