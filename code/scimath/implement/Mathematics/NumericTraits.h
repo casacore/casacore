@@ -171,6 +171,8 @@ public:
   typedef T ConjugateType; 
   typedef T PrecisionType;      
   static const Double & epsilon;
+  static const Double & minimum;
+  static const Double & maximum;
 };
 
 //# These specialisations are in a seperate file so that cxx2html 

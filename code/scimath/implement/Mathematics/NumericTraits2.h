@@ -37,6 +37,8 @@ public:
   typedef Complex ConjugateType;
   typedef Double PrecisionType;
   static const Double & epsilon;
+  static const Double & minimum;
+  static const Double & maximum;
 };
 
 // <summary> A specialisation for T=Double of the NumericTraits class </summary>
@@ -45,6 +47,8 @@ public:
   typedef DComplex ConjugateType;
   typedef Double PrecisionType;
   static const Double & epsilon;
+  static const Double & minimum;
+  static const Double & maximum;
 };
 
 // <summary> A specialisation for T=Complex of the NumericTraits class </summary>
@@ -53,6 +57,8 @@ public:
   typedef Float ConjugateType;
   typedef DComplex PrecisionType;
   static const Double & epsilon;
+  static const Double & minimum;
+  static const Double & maximum;
 };
 
 // <summary> A specialisation for T=DComplex of the NumericTraits class </summary>
@@ -71,6 +77,8 @@ public:
   typedef Double ConjugateType;
   typedef DComplex PrecisionType;
   static const Double & epsilon;
+  static const Double & minimum;
+  static const Double & maximum;
 };
 
 #endif
