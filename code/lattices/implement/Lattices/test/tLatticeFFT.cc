@@ -1,5 +1,5 @@
 //# ClassFileName.cc:  this defines ClassName, which ...
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -150,7 +150,7 @@ Int main() {
       }
       { // test the complex->real fft function
 	cArr.set(Complex(1,0));
- 	LatticeFFT::crfft(rArr, cArr);
+ 	LatticeFFT::crfft(rArr.lc(), cArr.lc());
 	centre = rShape/2;
 	AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
 	rArr.putAt(0.0f, centre);
