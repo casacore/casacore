@@ -26,6 +26,8 @@
 //# $Id$
 //   
 
+#include <trial/Images/ImageMoments.h>
+
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -51,23 +53,16 @@
 #include <trial/Fitting/NonLinearFitLM.h>
 #include <trial/Images/ImageMomentsProgress.h>
 #include <trial/Images/ImageStatistics.h>
-#include <trial/Images/ImageInterface.h>
-#include <trial/Images/PagedImage.h>
+#include <trial/Images/ImageHistograms.h>
 #include <trial/Images/ImageUtilities.h>
+#include <trial/Images/PagedImage.h>
+#include <trial/Images/SubImage.h>
 #include <trial/Lattices/ArrayLattice.h>
-#include <trial/Lattices/CopyLattice.h>
 #include <trial/Lattices/LatticeApply.h>
 #include <trial/Lattices/LatticeIterator.h>
-#include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/MomentCalculator.h>
-#include <trial/Lattices/LCBox.h>
-#include <trial/Lattices/PagedArray.h>
-#include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TiledLineStepper.h>
-#include <trial/Tasking/ApplicationEnvironment.h>
 #include <trial/Tasking/PGPlotter.h>
-
-#include <trial/Images/ImageMoments.h>
 
 #include <strstream.h>
 #include <iomanip.h>
@@ -76,7 +71,7 @@
 
 
 template <class T> 
-ImageMoments<T>::ImageMoments (ImageInterface<T>& image, 
+ImageMoments<T>::ImageMoments (SubImage<T>& image, 
                                LogIO &os) : os_p(os)
 //
 // Constructor. 
@@ -93,9 +88,6 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
    nxy_p.resize(0);
    range_p.resize(0);
    smoothAxes_p.resize(0);
-   blc_p.resize(0);
-   trc_p.resize(0);
-   inc_p.resize(0);
    peakSNR_p = 3;
    stdDeviation_p = 0.0;
    yMin_p = 0.0;
@@ -112,12 +104,7 @@ ImageMoments<T>::ImageMoments (ImageInterface<T>& image,
    fixedYLimits_p = False;
 
    if (setNewImage(image)) {
-
-// Region defaults to entire image
-                                     
-      IPosition blc, trc, inc;
-      goodParameterStatus_p = setRegion(blc, trc, inc, False);
-
+      goodParameterStatus_p = True;
    } else {
       goodParameterStatus_p = False;
    }
@@ -135,9 +122,6 @@ ImageMoments<T>::ImageMoments(const ImageMoments<T> &other)
                         moments_p(other.moments_p),
                         range_p(other.range_p),
                         smoothAxes_p(other.smoothAxes_p),
-                        blc_p(other.blc_p),
-                        trc_p(other.trc_p),
-                        inc_p(other.inc_p),
                         peakSNR_p(other.peakSNR_p),
                         stdDeviation_p(other.stdDeviation_p),
                         yMin_p(other.yMin_p),
@@ -172,9 +156,6 @@ ImageMoments<T>::ImageMoments(ImageMoments<T> &other)
                         moments_p(other.moments_p),
                         range_p(other.range_p),
                         smoothAxes_p(other.smoothAxes_p),
-                        blc_p(other.blc_p),
-                        trc_p(other.trc_p),
-                        inc_p(other.inc_p),
                         peakSNR_p(other.peakSNR_p),
                         stdDeviation_p(other.stdDeviation_p),
                         yMin_p(other.yMin_p),
@@ -230,9 +211,6 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
       moments_p = other.moments_p;
       range_p = other.range_p;
       smoothAxes_p = other.smoothAxes_p;
-      blc_p = other.blc_p;
-      trc_p = other.trc_p;  
-      inc_p = other.inc_p;
       peakSNR_p = other.peakSNR_p;
       stdDeviation_p = other.stdDeviation_p;
       yMin_p = other.yMin_p;
@@ -255,7 +233,8 @@ ImageMoments<T> &ImageMoments<T>::operator=(const ImageMoments<T> &other)
 
 
 template <class T> 
-Bool ImageMoments<T>::setNewImage(ImageInterface<T>& image)
+Bool ImageMoments<T>::setNewImage(SubImage<T>& image)
+
 //
 // Assign pointer to image
 //
@@ -301,8 +280,8 @@ Bool ImageMoments<T>::setMoments(const Vector<Int>& momentsU)
 
 // Check number of moments
 
-   Int nMom = moments_p.nelements();
-   if (nMom <= 0) {
+   uInt nMom = moments_p.nelements();
+   if (nMom == 0) {
       os_p << LogIO::SEVERE << "No moments requested" << LogIO::POST;
       goodParameterStatus_p = False;
       return False;
@@ -312,7 +291,7 @@ Bool ImageMoments<T>::setMoments(const Vector<Int>& momentsU)
       return False;
    }
 
-   for (Int i=0; i<nMom; i++) {
+   for (uInt i=0; i<nMom; i++) {
       if (moments_p(i) < 0 || moments_p(i) > NMOMENTS-1) {
          os_p << LogIO::SEVERE << "Illegal moment requested" << LogIO::POST;
          goodParameterStatus_p = False;
@@ -359,38 +338,6 @@ Bool ImageMoments<T>::setMomentAxis(const Int& momentAxisU)
 }
 
 
-template <class T>
-Bool ImageMoments<T>::setRegion(const IPosition& blcU,
-                                const IPosition& trcU,
-                                const IPosition& incU,
-                                const Bool& listRegion)
-//
-// Select the region of interest
-//
-{   
-   if (!goodParameterStatus_p) {
-      os_p << LogIO::SEVERE << "Internal class status is bad" << LogIO::POST;
-      return False;
-   }
- 
-// Check OK
-  
-   blc_p.resize(0);
-   blc_p = blcU;
-   trc_p.resize(0);
-   trc_p = trcU;
-   inc_p.resize(0);
-   inc_p = incU;   
-   ImageUtilities::verifyRegion(blc_p, trc_p, inc_p, pInImage_p->shape());
-   if (listRegion) {
-      os_p << LogIO::NORMAL << "Selected region : " << blc_p+1<< " to "
-           << trc_p+1 << LogIO::POST;
-   }
-
-   return True;
-}
- 
-
 
 template <class T>
 Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
@@ -411,7 +358,7 @@ Bool ImageMoments<T>::setWinFitMethod(const Vector<Int>& methodU)
 
 // Check legality
 
-   for (Int i = 0; i<Int(methodU.nelements()); i++) {
+   for (uInt i = 0; i<uInt(methodU.nelements()); i++) {
       if (methodU(i) < 0 || methodU(i) > NMETHODS-1) {
          os_p << LogIO::SEVERE << "Illegal method given" << LogIO::POST;
          goodParameterStatus_p = False;
@@ -739,7 +686,7 @@ Vector<Int> ImageMoments<T>::toKernelTypes (const String& kernels)
 
    Vector<Int> kernelTypes(kernelStrings.nelements());
 
-   for (Int i=0; i<Int(kernelStrings.nelements()); i++) {
+   for (uInt i=0; i<uInt(kernelStrings.nelements()); i++) {
       String tKernels= kernelStrings(i);
       tKernels.upcase();
 
@@ -881,7 +828,6 @@ Bool ImageMoments<T>::createMoments()
       if (!doSmooth_p && (clipMethod || windowMethod || fitMethod)) {
          os_p.priority(LogMessage::SEVERE);
          ImageStatistics<T> stats(*pInImage_p, os_p);
-         stats.setRegion (blc_p, trc_p, inc_p, False);
 
          Array<T> data;
          if (!stats.getMin(data)) {
@@ -900,18 +846,16 @@ Bool ImageMoments<T>::createMoments()
 // Set output images shape
    
    IPosition outImageShape(outDim);
-   for (j=0; j<outDim; j++) outImageShape(j) = trc_p(ioMap(j)) - blc_p(ioMap(j)) + 1;
+   for (j=0; j<outDim; j++) outImageShape(j) = pInImage_p->shape()(ioMap(j));
 
+//   cout << "In  shape = " <<  pInImage_p->shape() << endl;
+//   cout << "Out shape = " << outImageShape << endl;
 
-// Account for subsectioning and removal of the collapsed moment axis
-// in the coordinate system.  
+// Account for removal of the collapsed moment axis in the coordinate system.  
 
-
-   CoordinateSystem outImageCoord = 
-     pInImage_p->coordinates().subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
+   CoordinateSystem outImageCoord = pInImage_p->coordinates();
    outImageCoord.removePixelAxis(momentAxis_p, Double(0.0));
    outImageCoord.removeWorldAxis(worldMomentAxis, Double(0.0));
-
 
 
 // Create a vector of pointers for output images 
@@ -938,7 +882,7 @@ Bool ImageMoments<T>::createMoments()
 // Create output image(s)
 
       PagedImage<T>* imgp;
-      const String in = pInImage_p->name();   
+      const String in = pInImage_p->name(False);   
       if (moments_p.nelements() == 1) {
          if (out_p.empty()) out_p = in+suffix;
          imgp = new PagedImage<T>(outImageShape, outImageCoord, out_p);
@@ -977,10 +921,11 @@ Bool ImageMoments<T>::createMoments()
    if ( stdDeviation_p <=0 && ( (doWindow_p && doAuto_p) || (doFit_p && !doWindow_p && doAuto_p) ) ) {
       if (pSmoothedImage) {
          os_p << LogIO::NORMAL << "Evaluating noise level from smoothed image" << LogIO::POST;
-         if (!whatIsTheNoise (noise, pSmoothedImage)) return False;
+         SubImage<T> image(*pSmoothedImage);
+         if (!whatIsTheNoise (noise, image)) return False;
       } else {
          os_p << LogIO::NORMAL << "Evaluating noise level from input image" << LogIO::POST;
-         if (!whatIsTheNoise (noise, pInImage_p)) return False;
+         if (!whatIsTheNoise (noise, *pInImage_p)) return False;
       }
       stdDeviation_p = noise;
    }
@@ -1011,13 +956,17 @@ Bool ImageMoments<T>::createMoments()
 
 // Iterate optimally through the image, compute the moments, fill the output lattices
 
-   const LCBox region(blc_p, trc_p, pInImage_p->shape());
    ImageMomentsProgress* pProgressMeter = new ImageMomentsProgress();
-   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, region,
-                                   *pMomentCalculator, momentAxis_p, 
-                                   pProgressMeter);
+   LatticeApply<T>::lineMultiApply(outPt, *pInImage_p, *pMomentCalculator, 
+                                   momentAxis_p, pProgressMeter);
+
 // Clean up
          
+   if (windowMethod || fitMethod) {
+      if (pMomentCalculator->nFailedFits() != 0) {
+         os_p << LogIO::NORMAL << "There were " <<  pMomentCalculator->nFailedFits() << " failed fits" << LogIO::POST;
+      }
+   }
    delete pMomentCalculator;
    delete pProgressMeter;
    for (i=0; i<Int(moments_p.nelements()); i++) delete outPt[i];
@@ -1218,37 +1167,30 @@ Bool ImageMoments<T>::checkMethod ()
 
 
 template <class T> 
-void ImageMoments<T>::drawHistogram (const T& dMin,
-                                     const Int& nBins,
-                                     const T& binWidth,
-                                     const Vector<T>& y,
+void ImageMoments<T>::drawHistogram (const Vector<Float>& x,
+                                     const Vector<Float>& y,
                                      PGPlotter& plotter)
-//
-// Draw a histogram on the current window
-//
-{ 
+{
    plotter.box ("BCNST", 0.0, 0, "BCNST", 0.0, 0);
    plotter.lab ("Intensity", "Number", "");
 
-   const Float width = float(binWidth)/2.0;
-   Float centre = Float(dMin) + width;
-   Float xx,yy;
-
-   for (Int i=0; i<nBins; i++) {
-      xx = centre - width;
-      yy = float(y(i));
+   const Float width = (x(1) - x(0)) / 2.0;
+   Float xx;
+   for (uInt i=0; i<x.nelements(); i++) {
+      xx = x(i) - width;
+   
       plotter.move (xx, 0.0);
-      plotter.draw (xx, yy);
-      plotter.move (xx, yy);
-
-      xx = centre + width;
-      plotter.draw (xx, yy);
-      plotter.move (xx, yy);
+      plotter.draw (xx, y(i));   
+         
+      plotter.move (xx, y(i));
+      xx = x(i) + width;
+      plotter.draw (xx, y(i));
+   
+      plotter.move (xx, y(i));
       plotter.draw (xx, 0.0);
-      
-      centre += binWidth;
-   }                     
+    }
 }
+ 
 
 
 template <class T> 
@@ -1282,10 +1224,10 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 {
 // Copy from templated floating type to float
 
-   const int n = x.nelements();
+   const uInt n = x.nelements();
    Vector<Float> xData(n);
    Vector<Float> yData(n);
-   for (Int i=0; i<n; i++) {
+   for (uInt i=0; i<n; i++) {
       xData(i) = x(i);
       yData(i) = y(i);
    }
@@ -1298,8 +1240,7 @@ void ImageMoments<T>::drawLine (const Vector<T>& x,
 template <class T> 
 Bool ImageMoments<T>::getLoc (T& x,
                               T& y,
-                              PGPlotter& plotter,
-                              LogIO& os)
+                              PGPlotter& plotter)
 //
 // Read the PGPLOT cursor and return its coordinates if not off the plot
 // and any button other than last pushed
@@ -1552,50 +1493,11 @@ Bool ImageMoments<T>::setOutThings(String& suffix,
    return goodUnits;
 }
 
-
-
-
-template <class T> 
-void ImageMoments<T>::saveLattice (const Lattice<T>* const pLattice,
-                                   const CoordinateSystem& cSys,
-                                   const IPosition& blc, 
-                                   const IPosition& trc,
-                                   const String& fileName)
-//
-// Save a Lattice to disk as a Paged Image
-//
-// Inputs:
-//  fileName    name of disk file
-//  coordinate  Coordinate System of an image from which we wish to
-//              construct the Coordinates for the saved PagedImage
-//  blc, trc    Region of lattice to save.
-//  pLattice    Pointer to Lattice to save
-//
-{
-   Int inDim = pLattice->ndim();
-
-   IPosition outShape(inDim,1);
-   for (Int i=0; i<inDim; i++) outShape(i) = trc(i) - blc(i) + 1;
-
-   CoordinateSystem outCSys = cSys.subImage(blc.asVector(), IPosition(inDim,1).asVector());
-   PagedImage<T> outImage(outShape, outCSys, fileName);
-
-   CopyLattice (outImage.lc(), pLattice->lc(), blc, trc);
-
-//   const LCBox region(blc, trc, pLattice->shape());
-//   SubLattice<T> subLattice(*pLattice, region);
-//   outImage.copyData(subLattice);
-}
-
-
-
-
 template <class T> 
 Bool ImageMoments<T>::smoothImage (String& smoothName, 
                                    PagedImage<T>*& pSmoothedImage)
 //
-// Smooth image.  We smooth only the sublattice that the user
-// has asked for.
+// Smooth image.  
 //
 // Output
 //   pSmoothedImage Pointer to smoothed Lattice
@@ -1625,16 +1527,10 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
       smoothName = smoothOut_p;
    }
 
-// Set coordinate system
-         
-   CoordinateSystem cSys = 
-     pInImage_p->coordinates().subImage(blc_p.asVector(), IPosition(pInImage_p->ndim(),1).asVector());
-
-
 // Create smoothed image
 
-   IPosition shape = trc_p - blc_p + 1;
-   pSmoothedImage = new PagedImage<T>(shape, cSys, smoothName);
+   pSmoothedImage = new PagedImage<T>(pInImage_p->shape(), 
+                                      pInImage_p->coordinates(), smoothName);
    pSmoothedImage->setMiscInfo(pInImage_p->miscInfo());
    pSmoothedImage->set(0.0);
    if (!smoothOut_p.empty()) {
@@ -1681,28 +1577,21 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
 // Save image to disk
     
-      IPosition blc(IPosition(pPSF->ndim(),0));
-      IPosition trc(pPSF->shape());
-      trc = trc - 1;
-      saveLattice (pPSF, psfCSys, blc, trc, psfOut_p);
+      PagedImage<T> psfOut(pPSF->shape(), psfCSys, psfOut_p);
+      psfOut.copyData(*pPSF);
       delete pPSF;
    }
-
 
 // Convolve.  PSF is separable so convolve by rows for each axis.  
 // First copy input to output then smooth in situ.  
 
-   CopyLattice(pSmoothedImage->lc(), pInImage_p->lc(), blc_p, trc_p);
-//   const LCBox region(blc_p, trc_p, pInImage_p->shape());
-//   SubLattice<T> subLattice(*pInImage_p, region);
-//   pSmoothedImage->copyData(subLattice);
-
-   for (Int i=0; i<Int(psf.ndim()); i++) {
+   pSmoothedImage->copyData(*pInImage_p);
+   for (uInt i=0; i<psf.ndim(); i++) {
       if (psf.shape()(i) > 1) {
          os_p << LogIO::NORMAL << "Convolving axis " << i+1 << LogIO::POST;
          Vector<T> psfRow = psfSep.column(i);
          psfRow.resize(psf.shape()(i),True);
-         smoothRow (pSmoothedImage, i, psfRow);
+         smoothProfiles (pSmoothedImage, i, psfRow);
       }
    }
 
@@ -1712,22 +1601,29 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
 
 template <class T> 
-void ImageMoments<T>::smoothRow (Lattice<T>* pIn,
-                                 const Int& row,
-                                 const Vector<T>& psf)
+void ImageMoments<T>::smoothProfiles (Lattice<T>* pIn,
+                                      const Int& axis,
+                                      const Vector<T>& psf)
+//
+// Smooth all the profiles extracted along
+// one axis of the input image
+//
 {
-
   TiledLineStepper navIn(pIn->shape(),
 			 pIn->niceCursorShape(pIn->maxPixels()),
-			 row);
+			 axis);
   LatticeIterator<T> inIt(*pIn, navIn);
-  Convolver<T> conv(psf, pIn->shape()(row));
-  Vector<T> result(pIn->shape()(row));
+  Vector<T> result(pIn->shape()(axis));
 
+  IPosition sh(pIn->shape()(axis));  
+  Convolver<T> conv(psf, sh);
+
+  uInt i = 0;
   while (!inIt.atEnd()) {
     conv.linearConv(result, inIt.vectorCursor());
-    inIt.woCursor() = result;
+    inIt.woVectorCursor() = result;
     inIt++;
+    i++;
   }
 }
 
@@ -1735,98 +1631,79 @@ void ImageMoments<T>::smoothRow (Lattice<T>* pIn,
 
 template <class T> 
 Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
-                                      const Lattice<T>* pI)
+                                      SubImage<T>& image)
 //
 // Determine the noise level in the image by first making a histogram of 
 // the image, then fitting a Gaussian between the 25% levels to give sigma
-// Use the whole image.  If its the input unsmoothed image, then this
-// will be all of it.  If its the smoothed image, it will be whatever
-// subsection the user has asked for.
+//
+// This function is a messy mixture of T/FLoat at present,.
+// Fix this up when I change IH to handle masks and to return
+// <T> Arrays instead of <FLoat>
 //
 {
 
-// Set up image iterator to read image optimally fast
+// Find a histogram of the image
 
-   IPosition cursorShape(pI->ndim());
-   cursorShape = pI->niceCursorShape(pI->maxPixels());
-   LatticeStepper nav(pI->shape(), cursorShape, LatticeStepper::RESIZE);
-   RO_LatticeIterator<T> iterator(*pI, nav);
-
-// First pass to get data min and max
-
-   Int i;
-   T tMin, tMax;
-   iterator++;
-   minMax(tMin, tMax, iterator.cursor().ac());
-   T dMin = tMin;
-   T dMax = tMax;
-
-   while (!iterator.atEnd()) {
-      minMax(tMin, tMax, iterator.cursor().ac());
-      dMin = min(dMin,tMin);
-      dMax = max(dMax,tMax);
-      iterator++;
-   }  
-
-
-// Second pass to make the histogram
-
+   ImageHistograms<T> histo(image, os_p);
    const Int nBins = 100;
-   Vector<T> y(nBins);
-   y = 0;
-   T binWidth = (dMax - dMin) / nBins;
+   histo.setNBins(nBins);
 
-   Bool deleteIt;
-   Int iBin;
-   iterator.reset();
-   while (!iterator.atEnd()) {
-      const T* pt = iterator.cursor().getStorage(deleteIt);
-      Int n = iterator.cursor().nelements();
-      for (i=0; i<n; i++) {
-         iBin = min(nBins-1, Int((pt[i]-dMin)/binWidth));
-         y(iBin) += 1.0;
-      }
-      iterator.cursor().freeStorage(pt, deleteIt);
-      iterator++;
-   }  
+// It is safe to use Vector rather than Array because 
+// we are binning the whole image and ImageHistograms will only resize
+// these Vectors to a 1-D shape
+
+   Vector<Float> values, counts;
+   if (!histo.getHistograms(values, counts)) {
+      os_p << LogIO::SEVERE << "Unable to make histogram of image" << LogIO::POST;
+      return False;
+   }
 
 
-// Enter into a (plot), select window, fit cycle until content
+// Enter into a plot/fit loop
 
+   Float binWidth = values(1) - values(0);
+   Float xMin, xMax, yMin, yMax;
+   xMin = values(0) - binWidth;
+   xMax = values(nBins-1) + binWidth;
+   ImageUtilities::stretchMinMax(xMin, xMax);
 
-   T xMin, xMax, yMin, yMax, x1, x2;
    IPosition yMinPos(1), yMaxPos(1);
-   minMax (yMin, yMax, yMinPos, yMaxPos, y.ac());
+   minMax (yMin, yMax, yMinPos, yMaxPos, counts.ac());
+   yMin = 0.0;
    yMax += yMax/20.0;
-   xMin = dMin - (dMax-dMin)/20.0;
-   xMax = dMax + (dMax-dMin)/20.0;
 
    if (plotter_p.isAttached()) {
       plotter_p.subp(1,1);
-      plotter_p.swin (Float(xMin), Float(xMax), Float(yMin), Float(yMax));
+      plotter_p.swin (xMin, xMax, yMin, yMax);
    }
 
-   Int iMin, iMax;
+
    Bool first = True;
    Bool more = True;
+   T x1, x2;
    while (more) {
 
 // Plot histogram
 
       if (plotter_p.isAttached()) {
          plotter_p.page();
-         drawHistogram (dMin, nBins, binWidth, y, plotter_p);
+         drawHistogram (values, counts, plotter_p);
       }
 
+      Int iMin = 0;
+      Int iMax = 0;
       if (first) {
-         for (i=yMaxPos(0); i<nBins; i++) {
-            if (y(i) < yMax/4) {
+         first = False;
+         iMax = yMaxPos(0);
+         for (uInt i=yMaxPos(0); i<nBins; i++) {
+            if (counts(i) < yMax/4) {
                iMax = i; 
                break;
              }      
           } 
+          iMin = yMinPos(0);
           for (i=yMaxPos(0); i>0; i--) { 
-             if (y(i) < yMax/4) {
+             if (counts(i) < yMax/4) {
                 iMin = i; 
                 break;
               }      
@@ -1840,15 +1717,15 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
            iMax = nBins-1;
          }
 
+
 // Draw on plot
 
          if (plotter_p.isAttached()) {
-            x1 = dMin + binWidth/2 + iMin*binWidth;
-            x2 = dMin + binWidth/2 + iMax*binWidth;
+            x1 = values(iMin);
+            x2 = values(iMax);
             drawVertical (x1, yMin, yMax, plotter_p);
             drawVertical (x2, yMin, yMax, plotter_p);
          }
-         first = False;
 
       } else if (plotter_p.isAttached()) {
 
@@ -1862,20 +1739,21 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
   
          plotter_p.message("Mark the locations for the window");
          while (i1==i2) {
-            while (!getLoc(x1, y1, plotter_p, os_p)) {};
-            i1 = Int((x1 -dMin)/binWidth - 0.5);
-            x1 = dMin + binWidth/2 + i1*binWidth;
-            drawVertical (x1, yMin, yMax, plotter_p);
+            while (!getLoc(x1, y1, plotter_p)) {};
+            i1 = Int((x1 - (values(0) - binWidth/2))/binWidth);
+            i1 = min(nBins-1,max(0,i1));
+            drawVertical (values(i1), yMin, yMax, plotter_p);
 
             T x2 = x1;
-            while (!getLoc(x2, y1, plotter_p, os_p)) {};
-            i2 = Int((x2 -dMin)/binWidth - 0.5);
-            drawVertical (x2, yMin, yMax, plotter_p);
+            while (!getLoc(x2, y1, plotter_p)) {};
+            i2 = Int((x2 - (values(0) - binWidth/2))/binWidth);
+            i2 = min(nBins-1,max(0,i2));
+            drawVertical (values(i2), yMin, yMax, plotter_p);
 
             if (i1 == i2) {
                plotter_p.message("Degenerate window, try again");
                plotter_p.eras ();
-               drawHistogram (dMin, nBins, binWidth, y, plotter_p);
+               drawHistogram (values, counts, plotter_p);
             }
          }
 
@@ -1889,13 +1767,13 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 // Now generate the distribution we want to fit.  Normalize to
 // peak 1 to help fitter.  
 
-      Int nPts2 = iMax - iMin + 1;
+      uInt nPts2 = iMax - iMin + 1; 
       Vector<T> xx(nPts2);
       Vector<T> yy(nPts2);
-   
-      for (i=0; i<nPts2; i++) {
-         xx(i) = dMin + binWidth/2 + (i+iMin)*binWidth;
-         yy(i) = y(i+iMin)/yMax;
+
+      for (Int i=iMin; i<=iMax; i++) {
+         xx(i-iMin) = values(i);
+         yy(i-iMin) = counts(i)/yMax;
       }
 
 
@@ -1909,9 +1787,9 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 // Initial guess
 
       Vector<T> v(3);
-      v(0) = 1.0;
-      v(1) = dMin + binWidth/2 + yMaxPos(0)*binWidth;
-      v(2) = nPts2*binWidth;
+      v(0) = 1.0;                          // height
+      v(1) = values(yMaxPos(0));           // position
+      v(2) = nPts2*binWidth/2;             // width
 
 
 // Fit
@@ -1923,28 +1801,36 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
 
       Vector<T> resultSigma(nPts2);
       resultSigma = 1;
-      Vector<T> solution = fitter.fit(xx, yy, resultSigma);
+      Vector<T> solution;
+      Bool fail = False;
+      try {
+        solution = fitter.fit(xx, yy, resultSigma);
+      } catch (AipsError x) {
+        fail = True;
+      } end_try;
 //      os_p << LogIO::NORMAL << "Solution=" << solution.ac() << LogIO::POST;
 
 
 // Return values of fit 
 
-      if (fitter.converged()) {
+      if (!fail && fitter.converged()) {
          sigma = abs(solution(2)) / sqrt(2.0);
-         os_p << LogIO::NORMAL << "*** The fitted standard deviation of the noise is " << sigma << LogIO::POST << LogIO::POST;
+         os_p << LogIO::NORMAL 
+              << "*** The fitted standard deviation of the noise is " << sigma
+              << endl << LogIO::POST;
 
 // Now plot the fit 
 
          if (plotter_p.isAttached()) {
             Int nGPts = 100;
-            T dx = (xMax - xMin)/nGPts;
+            T dx = (values(nBins-1) - values(0))/nGPts;
 
             Gaussian1D<T> gauss(solution(0), solution(1), abs(solution(2)));
             Vector<T> xG(nGPts);
             Vector<T> yG(nGPts);
 
             T xx;
-            for (i=0,xx=xMin; i<nGPts; xx+=dx,i++) {
+            for (i=0,xx=values(0); i<nGPts; xx+=dx,i++) {
                xG(i) = xx;
                yG(i) = gauss(xx) * yMax;
             }
@@ -1971,15 +1857,18 @@ Bool ImageMoments<T>::whatIsTheNoise (Double& sigma,
  
          if (str == "D") {
             plotter_p.message("Redoing fit");
-         } else if (str == "X")
+         } else if (str == "X") {
             return False;
-         else
+         } else {
             more = False;
-      } else
+         }
+      } else {
          more = False;
+      }
    }
      
    return True;
+
 }
 
 
