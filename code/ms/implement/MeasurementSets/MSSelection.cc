@@ -62,6 +62,7 @@ MSSelection::MSSelection() :
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
 //
+  priority_p.resize(MAX_EXPR);
 }
 
 //----------------------------------------------------------------------------
@@ -176,6 +177,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
         if(uvDistExpr_p != "")
           condition = condition && msUvDistGramParseCommand(ms, uvDistExpr_p);
         break;
+      case NO_EXPR:
       default:
         break;
     }
@@ -196,6 +198,7 @@ void MSSelection::clear(void)
   uvDistExpr_p  = "";
 
   priority_p = Vector<Int>();
+  priority_p.resize(MAX_EXPR);
 }
 
 //----------------------------------------------------------------------------

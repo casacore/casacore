@@ -78,12 +78,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class MSSelection
 {
  public:
-   enum MSExprType {ANTENNA_EXPR = 0,
+   enum MSExprType {NO_EXPR = 0,
+                    ANTENNA_EXPR,
                     CORR_EXPR,
                     FIELD_EXPR,
                     SPW_EXPR,
                     TIME_EXPR,
-                    UVDIST_EXPR};
+                    UVDIST_EXPR,
+                    MAX_EXPR = UVDIST_EXPR};
 
    // Default null constructor, and destructor
    MSSelection();
