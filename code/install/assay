@@ -3,7 +3,7 @@
 # assay: Invoke an AIPS++ test program and verify its output
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1995,1996
+#   Copyright (C) 1995,1996,1998
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -76,7 +76,7 @@
   [ "$ASSAYBIN" != "" ] && PATH=".:${ASSAYBIN}:${PATH}"
   export PATH
 
-# If there's a .exec file then use it.
+# If there is a .exec file then use it.
   CLEANUP=
   if [ ! -f "$1.exec" ]
   then
@@ -106,10 +106,29 @@
         trap 0 ; \
         exit $STATUS' 0 1 2 3 15
 
+# Check if command is a glish script.
   COMMAND="$@"
   set $@
+  case $1 in
+  *.g)
+     COMMAND="glish $COMMAND"
+     ;;
+  esac
 
-# Is there a .in file?
+# If there is a .run file then use it.
+  if [ -f "$1.run" ]
+  then
+     COMMAND="$1.run"
+  else
+     if [ -f "RCS/$1.run,v" ]
+     then
+        COMMAND="$1.run"
+        CLEANUP="$CLEANUP $1.run"
+        co $1.run
+     fi
+  fi
+
+# If there is a .in file then use it as input.
   if [ -f "$1.in" ]
   then
      COMMAND="$COMMAND < $1.in"
@@ -122,12 +141,20 @@
      fi
   fi
 
-# Check for glish scripts.
-  case $1 in
-  *.g)
-     COMMAND="glish $COMMAND"
-     ;;
-  esac
+# Are there other .in_ files?
+# If so, check them out if needed.
+  for INFILX in RCS/$1.in_*,v
+  do
+     if [ "$INFILX" != "RCS/$1.in_*,v" ]
+     then
+        INFILE=`echo $INFILX | sed -e 's#^RCS/##' -e 's#,v$##'`
+        if [ ! -f "$INFILE" ]
+        then
+           CLEANUP="$CLEANUP $INFILE"
+           co $INFILE
+        fi
+     fi
+  done
 
   if eval "$COMMAND" > ${1}_tmp.out
   then
