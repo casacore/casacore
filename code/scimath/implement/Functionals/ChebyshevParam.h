@@ -40,7 +40,7 @@ template<class T> class Vector;
 
 // <use visibility=local>
 
-// <reviewed reviewer="wbrouw" date="2001/11/12" tests="tChebyshev" demos="">
+// <reviewed reviewer="wbrouw" date="2001/11/12" tests="tNQChebyshev" demos="">
 // </reviewed>
 
 // <prerequisite>
