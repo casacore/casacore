@@ -1,5 +1,5 @@
 //# Measure.h: Physical quantities within reference frame
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -303,7 +303,7 @@ public:
   // Each Measure should have:
   // <src> static void assure(const Measure &in); </src>
   // <group>
-  virtual void assure(const String &tp) const = 0;
+  virtual void assured(const String &tp) const = 0;
   // </group>
   // Tell me your Measure type (e.g. "Epoch")
   virtual const String &tellMe() const = 0;
