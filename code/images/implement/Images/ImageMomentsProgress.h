@@ -1,5 +1,5 @@
 //# ImageMomentsProgress.h: Progress meter for ImageMoments class
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
+//# $Id: 
 //
 #if !defined(AIPS_IMAGEMOMENTSPROGRESS_H)
 #define AIPS_IMAGEMOMENTSPROGRESS_H

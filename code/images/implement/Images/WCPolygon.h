@@ -1,5 +1,5 @@
 //# WCPolygon.h: Class to define a polygonal world coordinate region
-//# Copyright (C) 1998
+//# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id:
 
 #if !defined(AIPS_WCPOLYGON_H)
 #define AIPS_WCPOLYGON_H
