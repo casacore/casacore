@@ -41,6 +41,7 @@
 class String;
 class MDirection;
 class MVAngle;
+class Unit;
 template <class T> class Vector;
 template <class T> class ImageInterface;
 
@@ -171,6 +172,20 @@ public:
   // Returns a Vector whose indices indicate which components are selected
   Vector<Int> selected() const;
 
+  // set the flux on the specified components to the specified flux
+  void setFlux(const Vector<Int> & whichComponents,
+	       const Flux<Double> & newFlux);
+
+  // convert the flux on the specified components to the specified units
+  void convertFluxUnit(const Vector<Int> & whichComponents,
+		       const Unit & unit);
+  
+  // convert the flux on the specified components to the specified 
+  // polarisation representation
+  void convertFluxPol(const Vector<Int> & whichComponents,
+		      ComponentType::Polarisation pol);
+  
+ 
   // returns a reference to the specified element in the list.
   // <group>
   const SkyComponent & component(const uInt & index) const;

@@ -222,6 +222,36 @@ Vector<Int> ComponentList::selected() const {
   return retVal;
 }
 
+void ComponentList::setFlux(const Vector<Int> & whichComponents,
+			    const Flux<Double> & newFlux) {
+  uInt c;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    component(c).flux() = newFlux;
+  }
+}
+
+void ComponentList::convertFluxUnit(const Vector<Int> & whichComponents,
+				    const Unit & unit) {
+  uInt c;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    component(c).flux().convertUnit(unit);
+  }
+}
+  
+void ComponentList::convertFluxPol(const Vector<Int> & whichComponents,
+				   ComponentType::Polarisation pol) {
+  uInt c;
+  for (uInt i = 0; i < whichComponents.nelements(); i++) {
+    AlwaysAssert(whichComponents(i) >= 0, AipsError);
+    c = whichComponents(i);
+    component(c).flux().convertPol(pol);
+  }
+}
+ 
 SkyComponent & ComponentList::component(const uInt & index) {
   AlwaysAssert(itsROFlag == False, AipsError);
   AlwaysAssert(index < nelements(), AipsError);
