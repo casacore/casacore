@@ -944,10 +944,12 @@ sub createsection {
     $header =~ s/>/&gt;/g;
     foreach (@parent) {
 	($refname = $$db{"class*$_"}) =~ s/.*?:([^:]+)$/$1/;
-	($outname,$path,$suffix) = fileparse($refname,@{$self->{'File Extensions'}});
-	if ( $outname ) {
+        if ( $refname ) {
+	  ($outname,$path,$suffix) = fileparse($refname,@{$self->{'File Extensions'}});
+	  if ( $outname ) {
 	    $outfile = $self->htmlpath("$outname.$self->{'HTML Extension'}");
 	    $header =~ s@(\s+)$_(?![a-zA-Z0-9_])@$1<a href="$outfile#$_">$_</a>@;
+          }
 	}
     }
 
