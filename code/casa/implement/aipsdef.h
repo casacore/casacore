@@ -66,12 +66,8 @@ extern Bool aips_debug_on;
 // Note that for the gcc compiler 'std::' is recognised as '::' for now.
 #if defined(__sgi)
 #if !defined(AIPS_USE_NEW_SGI)
-#define USE_OLD_STRING
-#define AIPS_USE_OLD_STRING
 #define AIPS_USE_OLD_STREAM
 #else
-#undef USE_OLD_STRING
-#undef AIPS_USE_OLD_STRING
 #undef AIPS_USE_OLD_STREAM
 #undef AIPS_USE_OLD_COMPLEX
 namespace std {};
