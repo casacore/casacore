@@ -27,11 +27,11 @@
 
 # include guard
 pragma include once
- 
-# Include whatever files are necessary. aips.g will nearly always
-# be required.
 
-include "aips.g";
+#
+# Include whatever files are necessary.
+#
+include "logger.g";
 
 # Constructor for this object includes the logger to be used.
 # Include other object e.g. defaultplotter, defaultdisplay
@@ -54,8 +54,7 @@ templateglishobj:=function(templateglishobjlogger=defaultlogger)
   public.name:='default-value';
 # End definition of public data
 
-# Inherit methods from inputs
-  public:=inputs(public, 'templateglishobj', templateglishobjlogger);
+  public:= [=]
   
 #------------------------------------------------------------------------
 # Private functions
@@ -81,15 +80,10 @@ templateglishobj:=function(templateglishobjlogger=defaultlogger)
 # Always provide a delete operation to destroy the object as a destructor would.
 # This may be required to release resources that would otherwise remain
 # allocated. This default implementation is often all that is needed.
-  const public.delete:=function() { return T;}
+  const public.delete:=function() { wider public; val public := F; return T;}
   
 # End of public functions
 #------------------------------------------------------------------------
-# If appropriate retrieve previous inputs
-  if(public.get()) {
-    self.logger.log('', 'NORMAL', "retrieved previous inputs",
-			      'templateglishobj');
-  }
   
 # Return a reference to the public interface
   return ref public;
