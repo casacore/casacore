@@ -863,8 +863,11 @@ void ImageSummary<T>::listStokes (LogIO& os,
       }
    } else {
 
-// We write here the names of each pixel on the Stokes axes
-// such as IQUV or XXYYXYYX etc  
+// We write here the names of each pixel on the Stokes axes such as
+// IQUV or XXYYXYYX etc   It is possible that this will run into trouble
+// if for some reason the Stokes axis is very funny and the names overflow
+// the width of the field "widthRefValue_p".  This is pretty remote
+// except in test cases.
 
       os.output().width(widthRefValue_p);
       if (pixelAxis != -1) {
@@ -872,7 +875,10 @@ void ImageSummary<T>::listStokes (LogIO& os,
          for (Int i=0; i<this->shape()(pixelAxis); i++) {
             Stokes::StokesTypes iStokes;
             Bool ok = coord.toWorld(iStokes, i);
-            sName += Stokes::name(Stokes::type(iStokes));
+
+// SOme protections against funny axes
+
+            if (ok) sName += Stokes::name(Stokes::type(iStokes));
          }
          os << sName;
       } else {
@@ -880,7 +886,10 @@ void ImageSummary<T>::listStokes (LogIO& os,
          Stokes::StokesTypes iStokes;
          Int i = Int(coord.referencePixel()(axisInCoordinate));
          Bool ok = coord.toWorld(iStokes, i);
-         sName = Stokes::name(Stokes::type(iStokes));
+
+// SOme protections against funny axes
+
+         if (ok) sName = Stokes::name(Stokes::type(iStokes));
          os << sName;
       }
    }
