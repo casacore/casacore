@@ -1983,3 +1983,4 @@
 08 124 sys rm lib/libsds.a
 08 137 src mv nrao/apps/xrtgplot1d/gplot1d.xres nrao/apps/xrtgplot1d/xrtgplot1d.xres
 08 145 src mv nrao/apps/sdcalc/sdTkPgplotter.g nrao/apps/sdplot/sdplot.g
+08 148 src rm trial/implement/Lattices/PagedArray2.cc
