@@ -1,5 +1,5 @@
 //# DOos.h: Functions used to implement the DO functionality
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,14 @@ public:
 
   // Return the base names of the given files.
   static Vector<String> baseName (const Vector<String>& fileName);
+
+  // Get the time of the given files.
+  // <src>whichTime</src> determines which time to return:
+  // <br>1 = time of last access
+  // <br>2 = time of last modification
+  // <br>3 = time of last status change
+  static Vector<Double> fileTime (const Vector<String>& fileName,
+				  Int whichTime = 1, Bool follow = True);
 
   // Return the total size (in bytes) for each file or directory given.
   // For a directory the size of all files (recursively) in it is given.

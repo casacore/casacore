@@ -1,5 +1,5 @@
 //# DOos.cc: Functions used to implement the DO functionality
-//# Copyright (C) 1999
+//# Copyright (C) 1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -190,6 +190,31 @@ Vector<String> DOos::baseName (const Vector<String>& fileName)
   Vector<String> result(fileName.nelements());
   for (uInt i=0; i<fileName.nelements(); i++) {
     result(i) = Path(Path(fileName(i)).absoluteName()).baseName();
+  }
+  return result;
+}
+
+Vector<Double> DOos::fileTime (const Vector<String>& fileName,
+			       Int whichTime, Bool follow)
+{
+  Vector<Double> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    File file(fileName(i));
+    if (!file.exists()) {
+      throw (AipsError ("DOos::fileTime - file " + fileName(i) +
+			" does not exist"));
+    }
+    // Note that MJD 40587 is 1-1-1970 which is the starting time of
+    // the file times.
+    Double time;
+    if (whichTime == 2) {
+      time = file.modifyTime();
+    } else if (whichTime == 3) {
+      time = file.statusChangeTime();
+    } else {
+      time = file.accessTime();
+    }
+    result(i) = 40587 + time/(24*3600);
   }
   return result;
 }
