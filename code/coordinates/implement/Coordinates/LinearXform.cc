@@ -118,7 +118,11 @@ LinearXform::LinearXform(uInt naxis)
     crpix = 0.0;
     Matrix<Double> pc(naxis,naxis);
     pc = 0.0; 
-    pc.diagonal() = 1.0;
+    if(naxis > 1){
+       pc.diagonal() = 1.0;
+    }else{
+       pc = 1.0; 
+    }
     set_linprm(linprm_p, crpix, cdelt, pc);
 }
 
