@@ -188,14 +188,14 @@ public:
   // Increment operator - increment the cursor to the next position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  virtual Bool operator++(Int) = 0;
+  virtual Bool operator++(int) = 0;
   Bool operator++();
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
-  virtual Bool operator--(Int) = 0;
+  virtual Bool operator--(int) = 0;
   Bool operator--();
   // </group>
 

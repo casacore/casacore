@@ -89,7 +89,7 @@ RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
 }
 
 template <class T>
-Bool RO_LatticeIterator<T>::operator++(Int)
+Bool RO_LatticeIterator<T>::operator++(int)
 {
   return itsIterPtr->operator++(0);
 }

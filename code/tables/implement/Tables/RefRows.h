@@ -150,7 +150,7 @@ public:
     // <group>
     void operator++()
         { next(); }
-    void operator++(Int)
+    void operator++(int)
         { next(); }
     void next();
     // </group>

@@ -130,7 +130,7 @@ LatticeStepper& LatticeStepper::operator=(const LatticeStepper& other)
   return *this;
 }
 
-Bool LatticeStepper::operator++ (Int)
+Bool LatticeStepper::operator++(int)
 {
   DebugAssert (ok() == True, AipsError);
   if (itsEnd) return False;
@@ -160,7 +160,7 @@ Bool LatticeStepper::operator++ (Int)
   return successful;
 }
 
-Bool LatticeStepper::operator-- (Int)
+Bool LatticeStepper::operator--(int)
 {
   DebugAssert (ok() == True, AipsError);
   if (itsStart) return False;

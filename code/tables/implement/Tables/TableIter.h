@@ -201,7 +201,7 @@ public:
     // <group>
     void next();
     void operator++();
-    void operator++(Int);
+    void operator++(int);
     // </group>
 
     // Get the current group.
@@ -224,7 +224,7 @@ inline Table TableIterator::table() const
 inline void TableIterator::operator++()
     { next(); }
 
-inline void TableIterator::operator++ (Int)
+inline void TableIterator::operator++(int)
     { next(); }
 
 

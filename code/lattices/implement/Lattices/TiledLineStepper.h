@@ -211,11 +211,11 @@ public:
 
   // Increment operator (postfix or prefix version) - move the cursor
   // forward one step. Returns True if the cursor was moved.
-  virtual Bool operator++(Int);
+  virtual Bool operator++(int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
   // backwards one step. Returns True if the cursor was moved.
-  virtual Bool operator--(Int);
+  virtual Bool operator--(int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
   // resets the number of steps (<src>nsteps</src> function) to zero. 

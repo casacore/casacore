@@ -145,14 +145,14 @@ protected:
   // implementation of the prefix operator calls the postfix one.
   // <group>
   Bool operator++();
-  Bool operator++ (Int);
+  Bool operator++(int);
   // </group>
 
   // Decrement operator - decrement the cursor to the previous position. The
   // implementation of the prefix operator calls the postfix one.
   // <group>
   Bool operator--();
-  Bool operator-- (Int);
+  Bool operator--(int);
   // </group>
 
   // Function which resets the cursor to the beginning of the Lattice and

@@ -107,7 +107,7 @@ LatticeIterInterface<T>* LatticeIterInterface<T>::clone() const
 }
 
 template<class T>
-Bool LatticeIterInterface<T>::operator++(Int)
+Bool LatticeIterInterface<T>::operator++(int)
 {
   if (itsRewrite) {
     rewriteData();
@@ -121,7 +121,7 @@ Bool LatticeIterInterface<T>::operator++(Int)
 }
 
 template<class T>
-Bool LatticeIterInterface<T>::operator--(Int)
+Bool LatticeIterInterface<T>::operator--(int)
 {
   if (itsRewrite) {
     rewriteData();

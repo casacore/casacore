@@ -127,7 +127,7 @@ TileStepper& TileStepper::operator=(const TileStepper& other)
   return *this;
 }
 
-Bool TileStepper::operator++ (Int)
+Bool TileStepper::operator++(int)
 {
   DebugAssert(ok() == True, AipsError);
   if (itsEnd) {
@@ -179,7 +179,7 @@ Bool TileStepper::operator++ (Int)
   return True;
 }
 
-Bool TileStepper::operator--(Int)
+Bool TileStepper::operator--(int)
 {
   DebugAssert(ok() == True, AipsError);
   if (itsStart) {
