@@ -2394,3 +2394,4 @@
 09 340 src rm aips/implement/Graphics/test/tVisualize.out
 09 344 src mv nfra/apps/csm/componenteditor.g trial/implement/ComponentModels/componenteditor.g
 09 344 src mv nfra/apps/csm/csm_gui.g trial/implement/ComponentModels/csm_gui.g
+09 344 src mv nfra/apps/csm/csm_func.g trial/implement/ComponentModels/csm_func.g
