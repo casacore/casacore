@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: ImageFITS2Converter.cc,v 8.1 1997/03/14 00:46:54 bglenden Exp nkilleen
+//# $Id$
 
 #include <aips/version.h>
 
