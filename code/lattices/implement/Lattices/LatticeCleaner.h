@@ -145,7 +145,7 @@ private:
 
   Float itsGain;
   Int itsNiter;
-  Quantity itsThreshold;
+  Quantum<Double> itsThreshold;
 
   IPosition itsPositionPeakPsf;
 

@@ -101,7 +101,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
   itsXfr=new TempLattice<Complex>(psf.shape(), itsMemoryMB);
-  convertLattice(*itsXfr,psf);
+  convertLattice(itsXfr->lc(),psf.lc());
   LatticeFFT::cfft(*itsXfr, True);
 
   itsScales.resize(0);
@@ -168,8 +168,6 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
   LogIO os(LogOrigin("LatticeCleaner", "clean()", WHERE));
   
-  Int nScalesToClean=itsNscales;
-
   if (itsCleanType==CleanEnums::HOGBOM) {
     os << "Hogbom Clean algorithm" << LogIO::POST;
   }
@@ -185,12 +183,12 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   AlwaysAssert(itsScalesValid, AipsError);
 
   // Find the peaks of the convolved Psfs
-  Vector<T> maxPsfConvScales(nScalesToClean);
-  for (Int scale=0;scale<nScalesToClean;scale++) {
+  Vector<T> maxPsfConvScales(itsNscales);
+  for (Int scale=0;scale<itsNscales;scale++) {
     IPosition positionPeakPsfConvScales(model.shape().nelements(), 0);
     findMaxAbsLattice(*itsPsfConvScales[scale], maxPsfConvScales(scale),
 		      positionPeakPsfConvScales);
-    if(nScalesToClean==1) {
+    if(itsNscales==1) {
       os << "Peak of PSF " << maxPsfConvScales(scale)
 	 << " at "   << positionPeakPsfConvScales+1 << LogIO::POST;
     }
@@ -222,10 +220,11 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   os << "Starting iteration"<< LogIO::POST;
 
   for (Int iteration=0; iteration < itsNiter; iteration++) {
-    // Find the peak
+
+    // Find the peak residual
     strengthOptimum = 0.0;
     optimumScale = 0;
-    for (scale=0; scale<nScalesToClean; scale++) {
+    for (scale=0; scale<itsNscales; scale++) {
       // Find absolute maximum for the dirty image
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], centerBox);
       maxima(scale)=0;
@@ -242,6 +241,9 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
       }
     }
 
+    AlwaysAssert(optimumScale<itsNscales, AipsError);
+
+    // Now add to the total flux
     totalFlux += strengthOptimum;
     totalFluxScale(optimumScale) += strengthOptimum;
 
@@ -260,13 +262,8 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 			totalFlux, totalFluxScale,
 			itsDirtyConvScales)) break;
     }
-    //    3. try the stopnow method after every 10% of the iterations
-    if(iteration%(itsNiter/10)==0) {
-      if(stopnow()) break;
-    }
-      
-    // Continuing: subtract the peak that we found from all dirty images
 
+    // Continuing: subtract the peak that we found from all dirty images
     // Define a subregion so that that the peak is centered
     IPosition blc(model.shape().nelements(), 0);
     IPosition trc(model.shape()-1);
@@ -299,7 +296,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
 
     // and then subtract the effects of this scale from all the precomputed
     // dirty convolutions.
-    for (scale=0;scale<nScalesToClean;scale++) {
+    for (scale=0;scale<itsNscales;scale++) {
       SubLattice<T> dirtySub(*itsDirtyConvScales[scale], subRegion, True);
       AlwaysAssert(itsPsfConvScales[index(scale,optimumScale)], AipsError);
       SubLattice<T> psfSub(*itsPsfConvScales[index(scale,optimumScale)],
@@ -310,6 +307,7 @@ Bool LatticeCleaner<T>::clean(Lattice<T>& model,
   }
   // End of iteration
 
+  // Finish off the plot, etc.
   if(progress) {
     progress->info(True, iteration, itsNiter, model, maxima, posMaximum,
 		   strengthOptimum,
@@ -382,7 +380,7 @@ Bool LatticeCleaner<T>::setscales(const Int nscales, const Float scaleInc)
   os << "scale 1 = 0.0 arcsec" << LogIO::POST;
   for (Int scale=1; scale<itsNscales;scale++) {
     scaleSizes(scale) =
-      scaleInc * pow(10.0, (Float(scale)-Float(itsNscales/2))/2.0);
+      scaleInc * pow(10.0, (Float(scale)-2.0)/2.0);
     os << "scale " << scale+1 << " = " << scaleSizes(scale)
        << " arcsec" << LogIO::POST;
   }
@@ -411,7 +409,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   AlwaysAssert(itsDirty, AipsError);
 
   TempLattice<Complex> dirtyFT(itsDirty->shape(), itsMemoryMB);
-  convertLattice(dirtyFT, *itsDirty);
+  convertLattice(dirtyFT.lc(), itsDirty->lc());
   LatticeFFT::cfft(dirtyFT, True);
 
   PtrBlock<TempLattice<Complex> *> scaleXfr(itsNscales);
@@ -428,7 +426,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     // Now store the XFR
     // Following doesn't work under egcs
     //    scaleXfr[scale]->copyData(LatticeExpr<Complex>(*itsScales[scale], 0.0));
-    convertLattice(*scaleXfr[scale], *itsScales[scale]);
+    convertLattice(scaleXfr[scale]->lc(), itsScales[scale]->lc());
 
     // Now FFT
     LatticeFFT::cfft(*scaleXfr[scale], True);
