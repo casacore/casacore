@@ -17,7 +17,8 @@ variables and expressions in a TaQL command.
 \section{Syntax}
 The TaQL syntax is based on SQL. The full command looks like:
 \begin{verbatim}
-SELECT [[DISTINCT] column_list] FROM table_list [WHERE expression]
+SELECT [[DISTINCT] column_list] [INTO table]
+  FROM table_list [WHERE expression]
   [ORDERBY [DISTINCT] sort_list] [GIVING table|set]
 \end{verbatim}
 The square brackets shown are not part of the syntax, but indicate
@@ -52,6 +53,13 @@ The various clauses have the following meaning:
        \\For full SQL compliance it is also possible to give the word
        ALL which is the opposite of DISTINCT, thus all values are
        returned. This is the default.
+  \item[ \label{TAQL:INTO}INTO table ]
+       indicates that the ultimate result of the SELECT command should be
+       written to a table (with the given name). This table is a
+       so-called reference table.
+       \\The standard TaQL way to define the output table is the
+       \htmlref{GIVING table}{TAQL::GIVING} clause. INTO is available
+       for SQL compliance.
   \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
        is a comma-separated list and indicates which tables are used in
        the SELECT command. The first table in the list is the primary
@@ -218,7 +226,7 @@ The various clauses have the following meaning:
        ORDERBY datetime(col)             incorrect data type
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
-  \item[ \label{TAQL:GIVING}GIVING table ]
+  \item[ \label{TAQL:GIVING}GIVING table$|$set ]
        indicates that the ultimate result of the SELECT command should be
        written to a table (with the given name). This table is a
        so-called reference table.
@@ -229,8 +237,10 @@ The various clauses have the following meaning:
        a selection (or sort) on another reference table references the
        original table again. Thus no (expensive) cascade of reference
        tables is created.
-       \\It is also possible to specify a set instead of a table name.
-       This can be useful when the result of a
+       \\Another (more SQL compliant) way to define the output table
+       is the \htmlref{INTO}{TAQL:INTO} clause.
+       \\It is also possible to specify a set in the GIVING clause
+       instead of a table name. This can be useful when the result of a
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
        Such a \htmlref{set}{TAQL:SETS} can contain only one element.
        The parts of this element can be any expression resulting in a scalar.
@@ -469,7 +479,7 @@ while the result and argument types are shown in lowercase.
 Note, however, that function names are case-insensitive.
 
 \htmlref{Sets}{TAQL:SETS}, and in particular
-\htmlref{subqueries}{TAQL:SUBQUERIES}, can result in an array.
+\htmlref{subqueries}{TAQL:SUBQUERIES}, can result in a 1-dim array.
 This means that the functions accepting an array argument can also
 be used on a set or the result of a subquery. E.g.
 \begin{verbatim}
@@ -554,6 +564,8 @@ values within a range.
 They can be used on scalar and array arguments (and a mix of them).
 The tolerance must be a scalar though.
 \begin{description}
+  \item[ \texttt{bool ISNAN(numeric val)}]
+    Tests if a numeric value is a NaN (not-a-number).
   \item[ \texttt{bool NEAR(numeric val1, numeric val2, double tol)}]
     Tests in a relative way if a value is near another. Relative
     means that the
@@ -618,9 +630,9 @@ They can be used on scalar and array arguments (and a mix of them).
 \end{description}
 Note that the trigonometric functions need their arguments in radians.
 
-\subsubsection{Array functions}
-These functions are meant for an array.
-However, they can also be used for a scalar.
+\subsubsection{Array to scalar reduction functions}
+The following functions reduce an array to a scalar.
+They are meant for an array. but can also be used for a scalar.
 \begin{description}
   \item[ \texttt{bool ANY(bool)}] Is any element true?
   \item[ \texttt{bool ALL(bool)}] Are all elements true?
@@ -652,12 +664,54 @@ However, they can also be used for a scalar.
        Fraction 0.5 is the same as the median.
 \end{description}
 
+\subsubsection{Array to array reduction functions}
+These functions reduce an array to a smaller array by collapsing the
+the given axes using the function. The axes are the last argument(s).
+They can be given in two ways:
+\\- As a single set argument; for example, \texttt{maxs(ARRAY,[1:2])}
+\\- As individual function arguments; for example, \texttt{maxs(ARRAY,1,2)}
+\\For example, using
+\texttt{MINS(array,1,2)} for a 3-dim array results in a 1-dim array
+where each value is the minimum of each plane in the cube.
+\\Axes numbers are 1-relative, thus 1 is the first axis.
+\\The function names are the 'plural' forms of the
+functions in the previous table.
+They can only be used for arrays, thus not for scalars.
+\begin{description}
+  \item[ \texttt{bool ANYS(bool)}] Is any element true?
+  \item[ \texttt{bool ALLS(bool)}] Are all elements true?
+  \item[ \texttt{double NTRUES(bool)}] Number of true elements.
+  \item[ \texttt{double NFALSES(bool)}] Number of false elements.
+  \item[ \texttt{numeric SUMS(numeric)}] Return sum of elements.
+  \item[ \texttt{numeric SUMSQUARES(numeric), numeric SUMSQRS(numeric)}]
+       Return sum of squared elements.
+  \item[ \texttt{numeric PRODUCTS(numeric)}] Return product of elements.
+  \item[ \texttt{double MINS(double)}] Return minimum of elements.
+  \item[ \texttt{double MAXS(double)}] Return maximum of elements.
+  \item[ \texttt{double MEANS(double), double AVG(double)}]
+    Return mean of elements.
+  \item[ \texttt{double VARIANCES(double)}] Return variance
+    (the sum of \texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
+  \item[ \texttt{double STDDEVS(double)}] Return standard
+    deviation (the square root of the variance).
+  \item[ \texttt{double AVDEVS(double)}] Return average deviation.
+    (the sum of \texttt{abs(a(i) - mean(a))/nelements(a)}.
+  \item[ \texttt{double MEDIANS(double)}] Return median (the
+    middle element).
+    When the array has an even number of elements, the mean of
+    the two middle elements is returned.
+  \item[ \texttt{double FRACTILES(double, doublescalar fraction)}]
+       Return the value of the element at the given fraction.
+       Fraction 0.5 is the same as the median.
+\end{description}
+
 \subsubsection{Miscellaneous functions}
 \begin{description}
   \item[ \texttt{bool ISDEFINED(anytype)}]
     Return false if the value in the current row is undefined. Is
     useful to test if a cell in a column with variable shaped arrays
-    contains an array.
+    contains an array. It can also be used to test if a field in a
+    record is defined.
   \item[ \texttt{double NELEMENTS(anytype), double COUNT(anytype)}]
     Return number of elements in an array (1 for a scalar).
   \item[ \texttt{double NDIM(anytype)}]
@@ -715,7 +769,7 @@ Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
    ALL AND AS ASC DESC DISTINCT FROM GIVING
-   GROUPBY HAVING IN NODUPLICATES NOT
+   GROUPBY HAVING IN INTO NODUPLICATES NOT
    OR ORDERBY SAVETO SELECT UNIQUE WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
@@ -832,7 +886,8 @@ This example shows that (in its simplest form) a set
 consists of one or more values (which
 can be arbitrary expressions) separated by commas and enclosed in
 square brackets. The elements in a set have to be scalars and their
-data types have to be the same.
+data types have to be the same. The square brackets can be left out if
+the set consists of only one set element.
 \\An element in a set can, however, be more complicated and can
 define multiple values or an interval. The possible forms of
 a set element are:
