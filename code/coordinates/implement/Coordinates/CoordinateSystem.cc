@@ -2854,40 +2854,48 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 // DIRECTION
 
     if (longAxis >= 0) {
-        String proj = ctype(longAxis);
+        String proj1 = ctype(longAxis);
+	String proj2 = ctype(latAxis);
+//
         Bool isGalactic = False;
-	if (proj.contains("GLON")) {
+	if (proj1.contains("GLON")) {
 	    isGalactic = True;
 	}
 
 // Get rid of the first 4 characters, e.g., RA--
 
-	proj.gsub(Regex("^...."), "");  
-	String proj2 = ctype(latAxis);
-	proj2.gsub(Regex("^...."), "");  
+        const uInt l1 = proj1.length();
+        const uInt l2 = proj2.length();
+        proj1 = String(proj1.at(4, l1-4));
+        proj2 = String(proj2.at(4, l2-4));
 
 // Get rid of leading -'s
 
-	proj.gsub(Regex("^-*"), "");
-	proj2.gsub(Regex("^-*"), "");
-	proj.gsub(Regex(" *"), "");    // Get rid of spaces
+ 	proj1.gsub(Regex("^-*"), String(""));
+	proj2.gsub(Regex("^-*"), String(""));
+
+// Get rid of spaces
+
+        proj1.gsub(Regex(" *"), String(""));   
 	proj2.gsub(String(" "), String(""));
-	if (proj == "" && proj2 == "") {
+//
+	if (proj1 == "" && proj2 == "") {
 
 // Default to cartesian if no projection is defined.
 
-	    proj = Projection::name(Projection::CAR); proj2 = proj;
+	    proj1 = Projection::name(Projection::CAR); 
+            proj2 = proj1;
 	    os << WHERE << LogIO::WARN << 
 	      "No projection has been defined (e.g., SIN), assuming\n"
 	      "cartesian (CAR). Some FITS readers will not recognize\n"
 	       "the CAR projection." << LogIO::POST;
 	}
-	if (proj != proj2) {
+	if (proj1 != proj2) {
 
 // Maybe instead I should switch to CAR, or use the first?
 
 	    os << LogIO::SEVERE << "Longitude and latitude axes have different"
-	        " projections (" << proj << "!=" << proj2 << ")" << LogIO::POST;
+	        " projections (" << proj1 << "!=" << proj2 << ")" << LogIO::POST;
 	    return False;
 	}
 
@@ -2902,7 +2910,7 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	Vector<Double> projp;
 	Projection::Type ptype;
 	
-	if (proj == "NCP") {
+	if (proj1 == "NCP") {
 	    os << LogIO::NORMAL << "NCP projection is now SIN projection in"
 		" WCS.\nOld FITS readers will not handle this correctly." <<
 	        LogIO::POST;
@@ -2914,9 +2922,9 @@ Bool CoordinateSystem::fromFITSHeader(CoordinateSystem &coordsys,
 	    projp(0) = 0.0;
 	    projp(1) = 1.0/tan(crval(latAxis)*C::pi/180.0);
 	} else {
-	    ptype = Projection::type(proj);
+	    ptype = Projection::type(proj1);
 	    if (ptype == Projection::N_PROJ) {
-		os << LogIO::SEVERE << "Unknown projection: (" << proj << ")";
+		os << LogIO::SEVERE << "Unknown projection: (" << proj1 << ")";
 		return False;
 	    }
 	    if (header.isDefined("projp")) {
