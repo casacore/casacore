@@ -185,7 +185,7 @@ Bool TableExprNodeArrayBool::getElemBool (uInt rownr, const IPosition& index)
 {
     Array<Bool> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    Bool* f = arr.getStorage (deleteIt);
+    const Bool* f = arr.getStorage (deleteIt);
     Bool val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -207,7 +207,7 @@ double TableExprNodeArrayuChar::getElemDouble (uInt rownr,
 {
     Array<uChar> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    uChar* f = arr.getStorage (deleteIt);
+    const uChar* f = arr.getStorage (deleteIt);
     uChar val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -230,7 +230,7 @@ double TableExprNodeArrayShort::getElemDouble (uInt rownr,
 {
     Array<Short> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    Short* f = arr.getStorage (deleteIt);
+    const Short* f = arr.getStorage (deleteIt);
     Short val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -253,7 +253,7 @@ double TableExprNodeArrayuShort::getElemDouble (uInt rownr,
 {
     Array<uShort> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    uShort* f = arr.getStorage (deleteIt);
+    const uShort* f = arr.getStorage (deleteIt);
     uShort val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -276,7 +276,7 @@ double TableExprNodeArrayInt::getElemDouble (uInt rownr,
 {
     Array<Int> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    Int* f = arr.getStorage (deleteIt);
+    const Int* f = arr.getStorage (deleteIt);
     Int val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -298,7 +298,7 @@ double TableExprNodeArrayuInt::getElemDouble (uInt rownr,
 {
     Array<uInt> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    uInt* f = arr.getStorage (deleteIt);
+    const uInt* f = arr.getStorage (deleteIt);
     uInt val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -320,7 +320,7 @@ double TableExprNodeArrayFloat::getElemDouble (uInt rownr,
 {
     Array<Float> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    Float* f = arr.getStorage (deleteIt);
+    const Float* f = arr.getStorage (deleteIt);
     Float val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -343,7 +343,7 @@ double TableExprNodeArrayDouble::getElemDouble (uInt rownr,
 {
     Array<double> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    double* f = arr.getStorage (deleteIt);
+    const double* f = arr.getStorage (deleteIt);
     double val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -366,7 +366,7 @@ DComplex TableExprNodeArrayComplex::getElemDComplex (uInt rownr,
 {
     Array<Complex> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    Complex* f = arr.getStorage (deleteIt);
+    const Complex* f = arr.getStorage (deleteIt);
     DComplex val;
     val = *f;
     arr.freeStorage (f, deleteIt);
@@ -391,7 +391,7 @@ DComplex TableExprNodeArrayDComplex::getElemDComplex (uInt rownr,
 {
     Array<DComplex> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    DComplex* f = arr.getStorage (deleteIt);
+    const DComplex* f = arr.getStorage (deleteIt);
     DComplex val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
@@ -414,7 +414,7 @@ String TableExprNodeArrayString::getElemString (uInt rownr,
 {
     Array<String> arr = col_p.getSlice (rownr, index);
     Bool deleteIt;
-    String* f = arr.getStorage (deleteIt);
+    const String* f = arr.getStorage (deleteIt);
     String val = *f;
     arr.freeStorage (f, deleteIt);
     return val;
