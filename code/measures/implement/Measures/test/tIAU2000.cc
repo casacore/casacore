@@ -165,6 +165,7 @@ int main() {
       "\tthe fundamental arguments)" << endl;
     SEPAR();
 
+    Double y,tta,ttb,uta,utb;
     {
       cout << "SOFA method comparisons ..." << endl;
       SEPAR();
@@ -173,7 +174,6 @@ int main() {
       Double dat = 32;
       Double dut1 = -0.3;
       Double dtt = 32.184 + dat -dut1;
-      Double y,tta,ttb,uta,utb;
       Double rmceo[3][3],rmequ[3][3],rmold[3][3];
       y=1935.;
       IAUR(epj2jd)(y,tta,ttb);
@@ -207,6 +207,7 @@ int main() {
 
     {
       cout << "IAU2000A/B comparisons ..." << endl;
+      SEPAR();
       uInt iau2000_reg =
 	AipsrcValue<Bool>::registerRC(String("measures.iau2000.b_use"),
 				      False);
@@ -239,7 +240,34 @@ int main() {
 	- mdcv.getValue().getValue())*200000. << endl;
       
       SEPAR();
-    }	
+    }
+
+    {
+      cout << "Test of some details ..." << endl;
+      SEPAR();
+      Double era = IAUR(era00)(uta,utb); 
+      Double gst = IAUR(gmst00)(uta,utb,tta,ttb);
+      Double sp  = IAUR(sp00)(tta,ttb);
+      cout << "UT: " << (uta-2451545.0)+utb << ", " <<
+	utb-MeasData::MJD2000 << endl; 
+      cout << "TT: " << (tta-2451545.0)+ttb << ", " <<
+	ttb-MeasData::MJD2000 << endl; 
+      cout << "s'   (Sofa, aips++, diff): " <<
+	sp << ", " << MeasTable::sprime00(ttb) << ", " <<
+	sp - MeasTable::sprime00(ttb) << endl;
+      cout << "ERA  (Sofa, aips++, diff): " <<
+	era << ", " << MeasTable::ERA00(utb) << ", " <<
+	era - MeasTable::ERA00(utb) << endl;
+      cout << "GMST (Sofa, aips++, diff): " <<
+	gst << ", " <<
+	MeasTable::GMST00(utb, ttb) << ", " <<
+	gst - MeasTable::GMST00(utb, ttb) << endl;
+      cout << "GMST82 (aips++, GMST00): " <<
+	utb+MeasTable::GMST0(utb)/MeasData::SECinDAY + 6713. << ", " <<
+	MeasTable::GMST00(utb, ttb)/C::_2pi << endl;
+      SEPAR();
+    }
+
 
   } catch (AipsError x) {
     cerr << x.getMesg() << endl;
