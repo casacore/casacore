@@ -166,8 +166,12 @@ public:
   // Remove the files (or directories recursively).
   // If fileName is a symbolic link and follow is False, only the
   // symbolic link is removed.
-  static void remove (const Vector<String>& fileName, Bool recursive,
+  // <group>
+  static void remove (const String& fileName, Bool recursive,
 		      Bool mustExist = True, Bool follow = True);
+  static void remove (const Vector<String>& fileNames, Bool recursive,
+		      Bool mustExist = True, Bool follow = True);
+  // </group>
 
   // Tell if a table is used or locked by another process.
   // It returns a vector containing 3 integers.

@@ -28,7 +28,7 @@
 
 
 //# Includes
-#include <trial/OS/DOos.h>
+#include <aips/OS/DOos.h>
 #include <aips/OS/Path.h>
 #include <aips/OS/File.h>
 #include <aips/OS/RegularFile.h>
@@ -322,21 +322,27 @@ void DOos::move (const String& to, const String& from, Bool overwrite,
   }
 }
 
-void DOos::remove (const Vector<String>& fileName, Bool recursive,
+void DOos::remove (const String& fileName, Bool recursive,
+		   Bool mustExist, Bool follow)
+{
+  remove (Vector<String> (1, fileName), recursive, mustExist, follow);
+}
+
+void DOos::remove (const Vector<String>& fileNames, Bool recursive,
 		   Bool mustExist, Bool follow)
 {
   uInt i;
   if (mustExist) {
-    for (i=0; i<fileName.nelements(); i++) {
-      File file(fileName(i));
+    for (i=0; i<fileNames.nelements(); i++) {
+      File file(fileNames(i));
       if (! file.exists()) {
-	throw (AipsError ("DOos::remove - file " + fileName(i) +
+	throw (AipsError ("DOos::remove - file " + fileNames(i) +
 			  " does not exist"));
       }
     }
   }
-  for (i=0; i<fileName.nelements(); i++) {
-    File file(fileName(i));
+  for (i=0; i<fileNames.nelements(); i++) {
+    File file(fileNames(i));
     if (file.exists()) {
       if (file.isRegular (follow)) {
 	RegularFile rfile(file);
@@ -352,7 +358,7 @@ void DOos::remove (const Vector<String>& fileName, Bool recursive,
 	SymLink symlink(file);
 	symlink.remove();
       } else {
-	throw (AipsError ("DOos::remove - file " + fileName(i) +
+	throw (AipsError ("DOos::remove - file " + fileNames(i) +
 			  " is not a regular file, directory, nor symlink"));
       }
     }
