@@ -17,6 +17,15 @@
 	system.path.include := [ '.', libexec,
 				 system.path.include[ system.path.include != '.' &
 						      system.path.include != libexec ] ]
+
+	##
+	## Change the focus model
+	##
+	if ( any(argv == '-click-focus') ) {
+	    system.tk := [=]
+	    system.tk.focus := 'click'
+	}
+
 	##
 	## Leave out Tk?
 	##
