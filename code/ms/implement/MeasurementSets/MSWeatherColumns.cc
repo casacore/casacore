@@ -25,159 +25,352 @@
 //#
 //# $Id$
 
-//# Includes
 #include <aips/MeasurementSets/NewMSWeatherColumns.h>
-#include <aips/Tables/TableDesc.h>
+#include <aips/MeasurementSets/NewMSWeather.h>
 #include <aips/Tables/ColDescSet.h>
-
-NewMSWeatherColumns::NewMSWeatherColumns(NewMSWeather& msWeather):
-isNull_p(msWeather.isNull())
-{
-  if (!isNull()) {
-    antennaId_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::ANTENNA_ID));
-    interval_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::INTERVAL));
-    time_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    timeMeas_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    intervalQuant_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::INTERVAL));
-    timeQuant_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    const ColumnDescSet& cds=msWeather.tableDesc().columnDescSet();
-    const String& dewPoint=NewMSWeather::columnName(NewMSWeather::DEW_POINT);
-    if (cds.isDefined(dewPoint)) {
-      dewPoint_p.attach(msWeather,dewPoint);
-      dewPointQuant_p.attach(msWeather,dewPoint);
-    }
-    const String& dewPointFlag=NewMSWeather::columnName(NewMSWeather::DEW_POINT_FLAG);
-    if (cds.isDefined(dewPointFlag)) 
-      dewPointFlag_p.attach(msWeather,dewPointFlag);
-    const String& H2O=NewMSWeather::columnName(NewMSWeather::H2O);
-    if (cds.isDefined(H2O)) {
-      H2O_p.attach(msWeather,H2O);
-      H2OQuant_p.attach(msWeather,H2O);
-    }
-    const String& H2OFlag=NewMSWeather::columnName(NewMSWeather::H2O_FLAG);
-    if (cds.isDefined(H2OFlag)) H2OFlag_p.attach(msWeather,H2OFlag);
-    const String& ionosElectron=NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON);
-    if (cds.isDefined(ionosElectron)) {
-      ionosElectron_p.attach(msWeather,ionosElectron);
-      ionosElectronQuant_p.attach(msWeather,ionosElectron);
-    }
-    const String& ionosElectronFlag=
-      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON_FLAG);
-    if (cds.isDefined(ionosElectronFlag)) 
-      ionosElectronFlag_p.attach(msWeather,ionosElectronFlag);
-    const String& pressure=NewMSWeather::columnName(NewMSWeather::PRESSURE);
-    if (cds.isDefined(pressure)) {
-      pressure_p.attach(msWeather,pressure);
-      pressureQuant_p.attach(msWeather,pressure);
-    }
-    const String& pressureFlag=NewMSWeather::columnName(NewMSWeather::PRESSURE_FLAG);
-    if (cds.isDefined(pressureFlag)) pressureFlag_p.attach(msWeather,pressureFlag);
-    const String& relHumidity=NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY);
-    if (cds.isDefined(relHumidity)) relHumidity_p.attach(msWeather,relHumidity);
-    const String& relHumidityFlag=NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY_FLAG);
-    if (cds.isDefined(relHumidityFlag)) relHumidityFlag_p.attach(msWeather,relHumidityFlag);
-    const String& temperature=NewMSWeather::columnName(NewMSWeather::TEMPERATURE);
-    if (cds.isDefined(temperature)) {
-      temperature_p.attach(msWeather,temperature);
-      temperatureQuant_p.attach(msWeather,temperature);
-    }
-    const String& temperatureFlag=NewMSWeather::columnName(NewMSWeather::TEMPERATURE_FLAG);
-    if (cds.isDefined(temperatureFlag)) temperatureFlag_p.attach(msWeather,temperatureFlag);
-    const String& windDirection=NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION);
-    if (cds.isDefined(windDirection)) {
-      windDirection_p.attach(msWeather,windDirection);
-      windDirectionQuant_p.attach(msWeather,windDirection);
-    }
-    const String& windDirectionFlag=
-      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION_FLAG);
-    if (cds.isDefined(windDirectionFlag))
-      windDirectionFlag_p.attach(msWeather,windDirectionFlag);
-    const String& windSpeed=NewMSWeather::columnName(NewMSWeather::WIND_SPEED);
-    if (cds.isDefined(windSpeed)) {
-      windSpeed_p.attach(msWeather,windSpeed);
-      windSpeedQuant_p.attach(msWeather,windSpeed);
-    }
-    const String& windSpeedFlag=NewMSWeather::columnName(NewMSWeather::WIND_SPEED_FLAG);
-    if (cds.isDefined(windSpeedFlag)) 
-      windSpeedFlag_p.attach(msWeather,windSpeedFlag);
-  }
-}
-
-NewMSWeatherColumns::~NewMSWeatherColumns() {}
+#include <aips/Tables/TableDesc.h>
+#include <aips/Utilities/String.h>
 
 RONewMSWeatherColumns::RONewMSWeatherColumns(const NewMSWeather& msWeather):
-isNull_p(msWeather.isNull())
+  isNull_p(True),
+  antennaId_p(),
+  interval_p(),
+  time_p(),
+  dewPoint_p(),
+  dewPointFlag_p(),
+  H2O_p(),
+  H2OFlag_p(),
+  ionosElectron_p(),
+  ionosElectronFlag_p(),
+  pressure_p(),
+  pressureFlag_p(),
+  relHumidity_p(),
+  relHumidityFlag_p(),
+  temperature_p(),
+  temperatureFlag_p(),
+  windDirection_p(),
+  windDirectionFlag_p(),
+  windSpeed_p(),
+  windSpeedFlag_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  timeQuant_p(),
+  dewPointQuant_p(),
+  H2OQuant_p(),
+  ionosElectronQuant_p(),
+  pressureQuant_p(),
+  temperatureQuant_p(),
+  windDirectionQuant_p(),
+  windSpeedQuant_p()
 {
-  if (!isNull()) {
-    antennaId_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::ANTENNA_ID));
-    interval_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::INTERVAL));
-    time_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    timeMeas_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    intervalQuant_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::INTERVAL));
-    timeQuant_p.attach(msWeather,NewMSWeather::columnName(NewMSWeather::TIME));
-    const ColumnDescSet& cds=msWeather.tableDesc().columnDescSet();
-    const String& dewPoint=NewMSWeather::columnName(NewMSWeather::DEW_POINT);
-    if (cds.isDefined(dewPoint)) {
-      dewPoint_p.attach(msWeather,dewPoint);
-      dewPointQuant_p.attach(msWeather,dewPoint);
-    }
-    const String& dewPointFlag=NewMSWeather::columnName(NewMSWeather::DEW_POINT_FLAG);
-    if (cds.isDefined(dewPointFlag)) 
-      dewPointFlag_p.attach(msWeather,dewPointFlag);
-    const String& H2O=NewMSWeather::columnName(NewMSWeather::H2O);
-    if (cds.isDefined(H2O)) {
-      H2O_p.attach(msWeather,H2O);
-      H2OQuant_p.attach(msWeather,H2O);
-    }
-    const String& H2OFlag=NewMSWeather::columnName(NewMSWeather::H2O_FLAG);
-    if (cds.isDefined(H2OFlag)) H2OFlag_p.attach(msWeather,H2OFlag);
-    const String& ionosElectron=NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON);
-    if (cds.isDefined(ionosElectron)) {
-      ionosElectron_p.attach(msWeather,ionosElectron);
-      ionosElectronQuant_p.attach(msWeather,ionosElectron);
-    }
-    const String& ionosElectronFlag=
-      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON_FLAG);
-    if (cds.isDefined(ionosElectronFlag)) 
-      ionosElectronFlag_p.attach(msWeather,ionosElectronFlag);
-    const String& pressure=NewMSWeather::columnName(NewMSWeather::PRESSURE);
-    if (cds.isDefined(pressure)) {
-      pressure_p.attach(msWeather,pressure);
-      pressureQuant_p.attach(msWeather,pressure);
-    }
-    const String& pressureFlag=NewMSWeather::columnName(NewMSWeather::PRESSURE_FLAG);
-    if (cds.isDefined(pressureFlag)) pressureFlag_p.attach(msWeather,pressureFlag);
-    const String& relHumidity=NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY);
-    if (cds.isDefined(relHumidity)) relHumidity_p.attach(msWeather,relHumidity);
-    const String& relHumidityFlag=NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY_FLAG);
-    if (cds.isDefined(relHumidityFlag)) relHumidityFlag_p.attach(msWeather,relHumidityFlag);
-    const String& temperature=NewMSWeather::columnName(NewMSWeather::TEMPERATURE);
-    if (cds.isDefined(temperature)) {
-      temperature_p.attach(msWeather,temperature);
-      temperatureQuant_p.attach(msWeather,temperature);
-    }
-    const String& temperatureFlag=NewMSWeather::columnName(NewMSWeather::TEMPERATURE_FLAG);
-    if (cds.isDefined(temperatureFlag)) temperatureFlag_p.attach(msWeather,temperatureFlag);
-    const String& windDirection=NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION);
-    if (cds.isDefined(windDirection)) {
-      windDirection_p.attach(msWeather,windDirection);
-      windDirectionQuant_p.attach(msWeather,windDirection);
-    }
-    const String& windDirectionFlag=
-      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION_FLAG);
-    if (cds.isDefined(windDirectionFlag))
-      windDirectionFlag_p.attach(msWeather,windDirectionFlag);
-    const String& windSpeed=NewMSWeather::columnName(NewMSWeather::WIND_SPEED);
-    if (cds.isDefined(windSpeed)) {
-      windSpeed_p.attach(msWeather,windSpeed);
-      windSpeedQuant_p.attach(msWeather,windSpeed);
-    }
-    const String& windSpeedFlag=NewMSWeather::columnName(NewMSWeather::WIND_SPEED_FLAG);
-    if (cds.isDefined(windSpeedFlag)) 
-      windSpeedFlag_p.attach(msWeather,windSpeedFlag);
-  }
+  attach(msWeather);
 }
 
 RONewMSWeatherColumns::~RONewMSWeatherColumns() {}
 
+RONewMSWeatherColumns::RONewMSWeatherColumns():
+  isNull_p(True),
+  antennaId_p(),
+  interval_p(),
+  time_p(),
+  dewPoint_p(),
+  dewPointFlag_p(),
+  H2O_p(),
+  H2OFlag_p(),
+  ionosElectron_p(),
+  ionosElectronFlag_p(),
+  pressure_p(),
+  pressureFlag_p(),
+  relHumidity_p(),
+  relHumidityFlag_p(),
+  temperature_p(),
+  temperatureFlag_p(),
+  windDirection_p(),
+  windDirectionFlag_p(),
+  windSpeed_p(),
+  windSpeedFlag_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  timeQuant_p(),
+  dewPointQuant_p(),
+  H2OQuant_p(),
+  ionosElectronQuant_p(),
+  pressureQuant_p(),
+  temperatureQuant_p(),
+  windDirectionQuant_p(),
+  windSpeedQuant_p()
+{
+}
 
+void RONewMSWeatherColumns::attach(const NewMSWeather& msWeather)
+{
+  isNull_p = msWeather.isNull();
+  if (!isNull()) {
+    antennaId_p.attach(msWeather, NewMSWeather::
+		       columnName(NewMSWeather::ANTENNA_ID));
+    interval_p.attach(msWeather, NewMSWeather::
+		      columnName(NewMSWeather::INTERVAL));
+    time_p.attach(msWeather, NewMSWeather::
+		  columnName(NewMSWeather::TIME));
+    timeMeas_p.attach(msWeather, NewMSWeather::
+		      columnName(NewMSWeather::TIME));
+    intervalQuant_p.attach(msWeather, NewMSWeather::
+			   columnName(NewMSWeather::INTERVAL));
+    timeQuant_p.attach(msWeather, NewMSWeather::
+		       columnName(NewMSWeather::TIME));
+    const ColumnDescSet& cds = msWeather.tableDesc().columnDescSet();
+    const String& dewPoint = NewMSWeather::columnName(NewMSWeather::DEW_POINT);
+    if (cds.isDefined(dewPoint)) {
+      dewPoint_p.attach(msWeather, dewPoint);
+      dewPointQuant_p.attach(msWeather, dewPoint);
+    }
+    const String& dewPointFlag = NewMSWeather::
+      columnName(NewMSWeather::DEW_POINT_FLAG);
+    if (cds.isDefined(dewPointFlag)) {
+      dewPointFlag_p.attach(msWeather, dewPointFlag);
+    }
+    const String& H2O = NewMSWeather::columnName(NewMSWeather::H2O);
+    if (cds.isDefined(H2O)) {
+      H2O_p.attach(msWeather, H2O);
+      H2OQuant_p.attach(msWeather, H2O);
+    }
+    const String& H2OFlag = NewMSWeather::columnName(NewMSWeather::H2O_FLAG);
+    if (cds.isDefined(H2OFlag)) H2OFlag_p.attach(msWeather, H2OFlag);
+    const String& ionosElectron =
+      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON);
+    if (cds.isDefined(ionosElectron)) {
+      ionosElectron_p.attach(msWeather, ionosElectron);
+      ionosElectronQuant_p.attach(msWeather, ionosElectron);
+    }
+    const String& ionosElectronFlag = 
+      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON_FLAG);
+    if (cds.isDefined(ionosElectronFlag)) {
+      ionosElectronFlag_p.attach(msWeather, ionosElectronFlag);
+    }
+    const String& pressure = NewMSWeather::columnName(NewMSWeather::PRESSURE);
+    if (cds.isDefined(pressure)) {
+      pressure_p.attach(msWeather, pressure);
+      pressureQuant_p.attach(msWeather, pressure);
+    }
+    const String& pressureFlag =
+      NewMSWeather::columnName(NewMSWeather::PRESSURE_FLAG);
+    if (cds.isDefined(pressureFlag)) {
+      pressureFlag_p.attach(msWeather, pressureFlag);
+    }
+    const String& relHumidity =
+      NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY);
+    if (cds.isDefined(relHumidity)) {
+      relHumidity_p.attach(msWeather, relHumidity);
+    }
+    const String& relHumidityFlag =
+      NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY_FLAG);
+    if (cds.isDefined(relHumidityFlag)) {
+      relHumidityFlag_p.attach(msWeather, relHumidityFlag);
+    }
+    const String& temperature =
+      NewMSWeather::columnName(NewMSWeather::TEMPERATURE);
+    if (cds.isDefined(temperature)) {
+      temperature_p.attach(msWeather, temperature);
+      temperatureQuant_p.attach(msWeather, temperature);
+    }
+    const String& temperatureFlag =
+      NewMSWeather::columnName(NewMSWeather::TEMPERATURE_FLAG);
+    if (cds.isDefined(temperatureFlag)) {
+      temperatureFlag_p.attach(msWeather, temperatureFlag);
+    }
+    const String& windDirection = 
+      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION);
+    if (cds.isDefined(windDirection)) {
+      windDirection_p.attach(msWeather, windDirection);
+      windDirectionQuant_p.attach(msWeather, windDirection);
+    }
+    const String& windDirectionFlag = 
+      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION_FLAG);
+    if (cds.isDefined(windDirectionFlag)) {
+      windDirectionFlag_p.attach(msWeather, windDirectionFlag);
+    }
+    const String& windSpeed =
+      NewMSWeather::columnName(NewMSWeather::WIND_SPEED);
+    if (cds.isDefined(windSpeed)) {
+      windSpeed_p.attach(msWeather, windSpeed);
+      windSpeedQuant_p.attach(msWeather, windSpeed);
+    }
+    const String& windSpeedFlag =
+      NewMSWeather::columnName(NewMSWeather::WIND_SPEED_FLAG);
+    if (cds.isDefined(windSpeedFlag)) 
+      windSpeedFlag_p.attach(msWeather, windSpeedFlag);
+  }
+}
+
+NewMSWeatherColumns::NewMSWeatherColumns(NewMSWeather& msWeather):
+  RONewMSWeatherColumns(),
+  antennaId_p(),
+  interval_p(),
+  time_p(),
+  dewPoint_p(),
+  dewPointFlag_p(),
+  H2O_p(),
+  H2OFlag_p(),
+  ionosElectron_p(),
+  ionosElectronFlag_p(),
+  pressure_p(),
+  pressureFlag_p(),
+  relHumidity_p(),
+  relHumidityFlag_p(),
+  temperature_p(),
+  temperatureFlag_p(),
+  windDirection_p(),
+  windDirectionFlag_p(),
+  windSpeed_p(),
+  windSpeedFlag_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  timeQuant_p(),
+  dewPointQuant_p(),
+  H2OQuant_p(),
+  ionosElectronQuant_p(),
+  pressureQuant_p(),
+  temperatureQuant_p(),
+  windDirectionQuant_p(),
+  windSpeedQuant_p()
+{
+  attach(msWeather);
+}
+
+NewMSWeatherColumns::~NewMSWeatherColumns() {}
+
+NewMSWeatherColumns::NewMSWeatherColumns():
+  RONewMSWeatherColumns(),
+  antennaId_p(),
+  interval_p(),
+  time_p(),
+  dewPoint_p(),
+  dewPointFlag_p(),
+  H2O_p(),
+  H2OFlag_p(),
+  ionosElectron_p(),
+  ionosElectronFlag_p(),
+  pressure_p(),
+  pressureFlag_p(),
+  relHumidity_p(),
+  relHumidityFlag_p(),
+  temperature_p(),
+  temperatureFlag_p(),
+  windDirection_p(),
+  windDirectionFlag_p(),
+  windSpeed_p(),
+  windSpeedFlag_p(),
+  timeMeas_p(),
+  intervalQuant_p(),
+  timeQuant_p(),
+  dewPointQuant_p(),
+  H2OQuant_p(),
+  ionosElectronQuant_p(),
+  pressureQuant_p(),
+  temperatureQuant_p(),
+  windDirectionQuant_p(),
+  windSpeedQuant_p()
+{
+}
+
+void NewMSWeatherColumns::attach(NewMSWeather& msWeather)
+{
+  RONewMSWeatherColumns::attach(msWeather);
+  if (!isNull()) {
+    antennaId_p.attach(msWeather, NewMSWeather::
+		       columnName(NewMSWeather::ANTENNA_ID));
+    interval_p.attach(msWeather, NewMSWeather::
+		      columnName(NewMSWeather::INTERVAL));
+    time_p.attach(msWeather, NewMSWeather::columnName(NewMSWeather::TIME));
+    timeMeas_p.attach(msWeather, NewMSWeather::columnName(NewMSWeather::TIME));
+    intervalQuant_p.attach(msWeather, NewMSWeather::
+			   columnName(NewMSWeather::INTERVAL));
+    timeQuant_p.attach(msWeather, NewMSWeather::
+		       columnName(NewMSWeather::TIME));
+    const ColumnDescSet& cds = msWeather.tableDesc().columnDescSet();
+    const String& dewPoint = NewMSWeather::columnName(NewMSWeather::DEW_POINT);
+    if (cds.isDefined(dewPoint)) {
+      dewPoint_p.attach(msWeather, dewPoint);
+      dewPointQuant_p.attach(msWeather, dewPoint);
+    }
+    const String& dewPointFlag =
+      NewMSWeather::columnName(NewMSWeather::DEW_POINT_FLAG);
+    if (cds.isDefined(dewPointFlag)) {
+      dewPointFlag_p.attach(msWeather, dewPointFlag);
+    }
+    const String& H2O = NewMSWeather::columnName(NewMSWeather::H2O);
+    if (cds.isDefined(H2O)) {
+      H2O_p.attach(msWeather, H2O);
+      H2OQuant_p.attach(msWeather, H2O);
+    }
+    const String& H2OFlag = NewMSWeather::columnName(NewMSWeather::H2O_FLAG);
+    if (cds.isDefined(H2OFlag)) H2OFlag_p.attach(msWeather, H2OFlag);
+    const String& ionosElectron =
+      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON);
+    if (cds.isDefined(ionosElectron)) {
+      ionosElectron_p.attach(msWeather, ionosElectron);
+      ionosElectronQuant_p.attach(msWeather, ionosElectron);
+    }
+    const String& ionosElectronFlag = 
+      NewMSWeather::columnName(NewMSWeather::IONOS_ELECTRON_FLAG);
+    if (cds.isDefined(ionosElectronFlag)) {
+      ionosElectronFlag_p.attach(msWeather, ionosElectronFlag);
+    }
+    const String& pressure = NewMSWeather::columnName(NewMSWeather::PRESSURE);
+    if (cds.isDefined(pressure)) {
+      pressure_p.attach(msWeather, pressure);
+      pressureQuant_p.attach(msWeather, pressure);
+    }
+    const String& pressureFlag =
+      NewMSWeather::columnName(NewMSWeather::PRESSURE_FLAG);
+    if (cds.isDefined(pressureFlag)) {
+      pressureFlag_p.attach(msWeather, pressureFlag);
+    }
+    const String& relHumidity =
+      NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY);
+    if (cds.isDefined(relHumidity)) {
+      relHumidity_p.attach(msWeather, relHumidity);
+    }
+    const String& relHumidityFlag =
+      NewMSWeather::columnName(NewMSWeather::REL_HUMIDITY_FLAG);
+    if (cds.isDefined(relHumidityFlag)) {
+      relHumidityFlag_p.attach(msWeather, relHumidityFlag);
+    }
+    const String& temperature =
+      NewMSWeather::columnName(NewMSWeather::TEMPERATURE);
+    if (cds.isDefined(temperature)) {
+      temperature_p.attach(msWeather, temperature);
+      temperatureQuant_p.attach(msWeather, temperature);
+    }
+    const String& temperatureFlag =
+      NewMSWeather::columnName(NewMSWeather::TEMPERATURE_FLAG);
+    if (cds.isDefined(temperatureFlag)) {
+      temperatureFlag_p.attach(msWeather, temperatureFlag);
+    }
+    const String& windDirection =
+      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION);
+    if (cds.isDefined(windDirection)) {
+      windDirection_p.attach(msWeather, windDirection);
+      windDirectionQuant_p.attach(msWeather, windDirection);
+    }
+    const String& windDirectionFlag = 
+      NewMSWeather::columnName(NewMSWeather::WIND_DIRECTION_FLAG);
+    if (cds.isDefined(windDirectionFlag)) {
+      windDirectionFlag_p.attach(msWeather, windDirectionFlag);
+    }
+    const String& windSpeed =
+      NewMSWeather::columnName(NewMSWeather::WIND_SPEED);
+    if (cds.isDefined(windSpeed)) {
+      windSpeed_p.attach(msWeather, windSpeed);
+      windSpeedQuant_p.attach(msWeather, windSpeed);
+    }
+    const String& windSpeedFlag =
+      NewMSWeather::columnName(NewMSWeather::WIND_SPEED_FLAG);
+    if (cds.isDefined(windSpeedFlag)) {
+      windSpeedFlag_p.attach(msWeather, windSpeedFlag);
+    }
+  }
+}
+// Local Variables: 
+// compile-command: "gmake NewMSWeatherColumns"
+// End: 
