@@ -52,7 +52,7 @@ Int main() {
       IPosition centre=cShape/2;
       { // test the fft2d function
 	cArr.set(Complex(1,0));
- 	LatticeFFT::fft2d(cArr);
+ 	LatticeFFT::cfft2d(cArr);
 	uInt i;
 	for (i = 0; i < nz; i++) {
 	  centre(2) = i;
@@ -71,7 +71,7 @@ Int main() {
 	  centre(2) = i;
 	  cArr.putAt(Complex(nx*ny,0), centre);
 	}
-	LatticeFFT::fft2d(cArr, False);
+	LatticeFFT::cfft2d(cArr, False);
 	for (iter.reset(); !iter.atEnd(); iter++) {
 	  AlwaysAssert(allNearAbs(iter.cursor(), Complex(1,0), 1E-5),
 		       AipsError);
@@ -79,7 +79,7 @@ Int main() {
       }
       { // test the complex->complex fft function
 	cArr.set(Complex(1,0));
-	LatticeFFT::fft(cArr);
+	LatticeFFT::cfft(cArr);
 	centre(2) = nz/2;
  	AlwaysAssert(near(cArr.getAt(centre), Complex(nx*ny*nz,0), 1E-5),
  		     AipsError);
@@ -95,7 +95,7 @@ Int main() {
 	Vector<Bool> whichAxes(3, True);
 	whichAxes(2) = False;
 	cArr.putAt(Complex(nx*ny,0), centre);
-	LatticeFFT::fft(cArr, whichAxes, False);
+	LatticeFFT::cfft(cArr, whichAxes, False);
 	IPosition planeShape = tileShape;
 	planeShape(2) = 1;
 	{
@@ -113,13 +113,7 @@ Int main() {
       }
       { // test the real->complex fft function
 	rArr.set(1.0);
- 	LatticeFFT::fft(cArr, rArr);
- 	{
-//  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());
-//  	  cout << iter.cursor() << endl;
-//  	  RO_LatticeIterator<Complex> iter(cArr, cArr.shape());
-//  	  cout << iter.cursor() << endl;
- 	}
+ 	LatticeFFT::rcfft(cArr, rArr);
 	centre = cShape/2;
 	centre(0) = 0;
 	
@@ -137,13 +131,7 @@ Int main() {
 	
 	Vector<Bool> whichAxes(3, True);
 	whichAxes(2) = False;
-	LatticeFFT::fft(cArr, rArr, whichAxes, False);
-//  	{
-//  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());
-//  	  cout << iter.cursor() << endl;
-//   	  RO_LatticeIterator<Complex> iter(cArr, cArr.shape());
-//   	  cout << iter.cursor() << endl;
-//  	}
+	LatticeFFT::rcfft(cArr, rArr, whichAxes, False);
 	centre = 0;
 	for (uInt i = 0; i < nz; i++) {
 	  centre(2) = i;
@@ -160,6 +148,38 @@ Int main() {
 	  }
 	}
       }
+      { // test the complex->real fft function
+	cArr.set(Complex(1,0));
+ 	LatticeFFT::crfft(rArr, cArr);
+	centre = rShape/2;
+	AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
+	rArr.putAt(0.0f, centre);
+	{
+	  RO_LatticeIterator<Float> iter(rArr, 
+				       rArr.niceCursorShape(rArr.maxPixels()));
+	  for (iter.reset(); !iter.atEnd(); iter++) {
+	    AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
+	  }
+	}
+
+	cArr.set(Complex(1,0));
+	Vector<Bool> whichAxes(3, True);
+	whichAxes(2) = False;
+	LatticeFFT::crfft(rArr, cArr, whichAxes, False);
+	centre = 0;
+	for (uInt i = 0; i < nz; i++) {
+	  centre(2) = i;
+	  AlwaysAssert(near(rArr.getAt(centre), 1.0f, 1E-5), AipsError);
+	  rArr.putAt(0.0f, centre);
+	}
+ 	{
+ 	  RO_LatticeIterator<Float> iter(rArr, 
+ 				       rArr.niceCursorShape(rArr.maxPixels()));
+ 	  for (iter.reset(); !iter.atEnd(); iter++) {
+ 	    AlwaysAssert(allNearAbs(iter.cursor(), 0.0f, 1E-5), AipsError);
+ 	  }
+ 	}
+      }
     }
     cout<< "OK"<< endl;
     return 0;
@@ -168,6 +188,10 @@ Int main() {
     cout<< "FAIL"<< endl;
   } end_try;
 }
+//  	{
+//  	  RO_LatticeIterator<Float> iter(rArr, rArr.shape());
+//  	  cout << iter.cursor() << endl;
+//  	}
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 tLatticeFFT"
 // End: 
