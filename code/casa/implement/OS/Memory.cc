@@ -31,14 +31,24 @@
 
 size_t Memory::allocatedMemoryInBytes()
 {
+    size_t total = 0;
+
+#if defined(AIPS_LINUX)
     struct mallinfo m = mallinfo();
-    return m.hblkhd + m.usmblks + m.uordblks;
+    total = m.hblkhd + m.usmblks + m.uordblks;
+#endif
+    return total;
 }
 
 size_t Memory::assignedMemoryInBytes()
 {
+    size_t total = 0;
+
+#if defined(AIPS_LINUX)
     struct mallinfo m = mallinfo();
-    return m.arena;
+    total = m.arena;
+#endif
+    return total;
 }
 
 void Memory::releaseMemory()
