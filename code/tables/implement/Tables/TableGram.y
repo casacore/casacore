@@ -46,6 +46,7 @@ TableParseSelect* select;
 %token ORDERBY
 %token NODUPL
 %token GIVING
+%token INTO
 %token SORTASC
 %token SORTDESC
 %token ALL                  /* ALL (in SELECT ALL) or name of function */
@@ -82,12 +83,14 @@ TableParseSelect* select;
 %type <node> inxexpr
 %type <node> simexpr
 %type <node> set
+%type <node> singlerange
 %type <settp> subscripts
 %type <settp> elemlist
 %type <settp> elems
 %type <elem> elem
 %type <elem> subsrange
 %type <elem> colonrange
+%type <elem> range
 %type <sort>  sortexpr
 %type <sortb> sortlist
 
@@ -114,25 +117,22 @@ select:    SELECT {
                TableParseSelect::newSelect();
 	   }
          ;
-selrow:    selwh order given
+selrow:    selcol selwh order given
+         | selcol into selwh order
          ;
 
-selwh:     columns FROM table whexpr {
-	       TableParseSelect::currentSelect()->handleSelect ($4, False);
-	       delete $4;
-	   }
-         | TIMES FROM table whexpr {      /* SELECT * FROM ... */
-	       TableParseSelect::currentSelect()->handleSelect ($4, False);
-	       delete $4;
-	   }
-         | ALL columns FROM table whexpr {
-	       TableParseSelect::currentSelect()->handleSelect ($5, False);
-	       delete $5;
-	   }
-         | NODUPL columns FROM table whexpr {
-	       TableParseSelect::currentSelect()->handleSelect ($5, True);
-	       delete $5;
-	   }
+selcol:    columns
+         | TIMES           /* SELECT * FROM ... */
+         | ALL columns
+         | NODUPL columns {
+	       TableParseSelect::currentSelect()->setDistinctCol();
+           }
+         ;
+
+selwh:     FROM table whexpr {
+	       TableParseSelect::currentSelect()->handleSelect ($3);
+	       delete $3;
+           }
          ;
 
 order:               /* no sort */
@@ -178,6 +178,12 @@ given:               /* no result */
          | GIVING LBRACKET elems RBRACKET {
                TableParseSelect::currentSelect()->handleGiving (*$3);
 	       delete $3;
+	   }
+         ;
+
+into:      INTO tabname {
+               TableParseSelect::currentSelect()->handleGiving ($2->str);
+	       delete $2;
 	   }
          ;
 
@@ -318,6 +324,11 @@ relexpr:   arithexpr
                delete $1;
                delete $3;
            }
+         | arithexpr IN singlerange {
+               $$ = new TableExprNode ($1->in (*$3));
+               delete $1;
+               delete $3;
+           }
          ;
 
 arithexpr: inxexpr
@@ -443,7 +454,18 @@ elem:      orexpr {
                $$ = new TableExprNodeSetElem(*$1);
 	       delete $1;
 	   }
-         | colonrange {
+         | range {
+               $$ = $1;
+           }
+
+singlerange: range {
+	       TableExprNodeSet set;
+	       set.add (*$1);
+	       delete $1;
+               $$ = new TableExprNode (set.setOrArray());
+           }
+
+range:     colonrange {
                $$ = $1;
            }
          | LT arithexpr COMMA arithexpr GT {
