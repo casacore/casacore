@@ -356,19 +356,29 @@ public:
   // These are the true implementations of the parentheses operator.  While
   // you can use them the access methods shown in Example three above have a
   // nicer syntax and are equivalent.
+  // <br> The default implementation uses getSlice and putSlice.
   // <group>
-  virtual T getAt (const IPosition& where) const = 0;
-  virtual void putAt (const T& value, const IPosition& where) = 0;
+  virtual T getAt (const IPosition& where) const;
+  virtual void putAt (const T& value, const IPosition& where);
   // </group>
-  
+
+  // Copy the data from the given lattice to this one.
+  // The default implementation uses function <src>copyDataTo</src>.
+  virtual void copyData (const Lattice<T>& from);
+
+  // Copy the data from this lattice to the given lattice.
+  // The default implementation only copies data (thus no mask, etc.).
+  virtual void copyDataTo (Lattice<T>& to) const;
+
   // Check class internals - used for debugging. Should always return True
   virtual Bool ok() const;
 
   // These functions are used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
-  // for general use. 
+  // for general use.
+  // <br>The default implementation creates a LatticeIterInterface object.
   virtual LatticeIterInterface<T>* makeIter
-				(const LatticeNavigator& navigator) const = 0;
+				(const LatticeNavigator& navigator) const;
 
   // These functions were put in for the Gnu compiler which presently
   // (version 2.7.2.1) is unable to automatically cast a derived class to a
