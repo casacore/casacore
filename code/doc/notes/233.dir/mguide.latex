@@ -497,12 +497,11 @@ The interface to the different \mess\ have a large set of identical
 methods. Only when values are clearly related to a specific \mes\
 (like e.g. a latitude) does the method to obtain not exist for e.g. a
 frequency.
-
-Constructor of \mess\ have often specializations (like one with a
+Constructors of \mess\ have often specializations (like one with a
 longitude and latitude for a direction), but they all have also
 standard ones. The standard ones are described in the
 \begin{latexonly}
-Measures.h class description.
+Measure.h class description.
 \end{latexonly}
 \begin{htmlonly}
 \htmladdnormallink{Measures.h}{../../aips/implement/Measures/Measure.html}
@@ -631,8 +630,8 @@ Modified Julian Day} (or a {\em Greenwich Sidereal Date}) in two
 {\tt Double} numbers. Formatting of an {\em MEpoch} (or any time
 expressed in time or angle units) can be done with the {\em MVTime}
 class. \\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MEpoch}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -681,8 +680,8 @@ MVPosition}) is also the base class for the contents of the other
 \item MVuvw
 \end{itemize}
 
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\noindent
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MPosition}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -703,9 +702,9 @@ the distance to the bodies is inherently known).
 The solar system bodies' directions are {\em virtual} directions. They
 have no value until explicitly converted to a {\em real} coordinate
 system like $J2000$, $AZEL$, \ldots
-
+\\
 \small
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MDirection}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -753,7 +752,7 @@ DEFAULT & $= J2000$ &  \\ \hline \hline
 distances as a function of $MJD$. The table can be generated from a
 standard formatted ascii text by the {\tt measuresdata} Glish
 module. See there for how to generate a table. In future an $XML$
-driven parser vould be used}
+driven parser could be used}
 
 \subsubsection{MBaseline}
 
@@ -761,8 +760,8 @@ A 3-dimensional vector, indicating a direction with a length (but no
 defined zero point). In principle they are identical to the {\em
 MDirection} directions. At the momemt the solar system bodies are not
 a valid baseline direction, but that could change.\\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MBaseline}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -795,9 +794,9 @@ DEFAULT & $= ITRF$ &  \\ \hline \hline
 
 \subsubsection{Muvw}
 
-A 3-dimensional vector, indicating a $UVW$-coordinate.
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+A 3-dimensional vector, indicating a $UVW$-coordinate.\\
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf Muvw}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -835,8 +834,8 @@ model used to calculate the field is the International Geomagnetic
 Reference Field. The $IGRF$ field is a {\em virtual} field, without
 any value. It obtains its value after an explicit conversion to a
 normal, real coordinate system.\\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MEarthMagnetic}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -879,8 +878,8 @@ number, energy, momentum).
 
 The {\em MFrequency} class has special methods to convert the frequency
 from an {\em MDoppler} object, if a rest frequency is known.\\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MFrequency}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -908,8 +907,8 @@ available (if the rest frequency of a spectral line is known), to
 convert the velocity to a frequency. Also, the radial velocity can be
 derived from an {\em MDoppler} object, which has the radial velocity
 in the often better known redshift or radio-astronomical Doppler shift.\\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MRadialVelocity}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -938,8 +937,8 @@ light.
 Conversion to a ``real'' radial velocity is possible with this class.
 In the following $F$ stands for $\nu / \nu_0$, where $\nu_{0}$ is the
 rest frequency.\\
-
-\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\\
+\begin{tabular}{||p{0.21\textwidth}|p{0.48\textwidth}|p{0.21\textwidth}||}
 \hline \hline
 \multicolumn{3}{||c||}{{\bf MDoppler}} \\ \hline \hline
 \multicolumn{1}{||c}{{\em Code}} & 
@@ -957,5 +956,4 @@ DEFAULT & $=RADIO$ & \\ \hline \hline
 \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Use of units and quantities}
 
