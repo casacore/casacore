@@ -2,7 +2,7 @@
 # AIPS++ top directory makefile.
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1999
+#   Copyright (C) 1992-1997,1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -110,6 +110,11 @@ docscan docextr :
 	     echo gmake[$(MAKELEVEL)]: $(MAKE) -C $$i $@ ; \
 	     $(MAKE) -C $$i $@ ; \
 	  done
+
+changelogs :
+	-@ rm -rf $(AIPSROOT)/docs/project/changelogs
+	   mkdir $(AIPSROOT)/docs/project/changelogs
+	   buildchangelog -split module -dir $(AIPSROOT)/docs/project/releasenotes/changelogs $(AIPSROOT)/code
 
 runtests :
 	 @ for i in $(ALLSYSD) ; do \
