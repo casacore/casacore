@@ -1,4 +1,4 @@
-//# LELFunction.cc:  this defines non-templated classes in LELFunction.h
+//# tLatticeExpr.cc:  
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,13 +27,42 @@
 
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/ArrayLattice.h>
+#include <trial/Lattices/PixelBox.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/Utilities/COWPtr.h>
+
 #include <iostream.h>
+
+
+Bool checkFloat(Lattice<Float>& expr, 
+                const Float result,
+                const IPosition shape,
+                const Bool supress);
+
+Bool checkDouble(Lattice<Double>& expr, 
+                const Double result,
+                const IPosition shape,
+                const Bool supress);
+
+Bool checkComplex(Lattice<Complex>& expr, 
+                const Complex result,
+                const IPosition shape,
+                const Bool supress);
+
+Bool checkDComplex(Lattice<DComplex>& expr, 
+                const DComplex result,
+                const IPosition shape,
+                const Bool supress);
+
+Bool checkBool(Lattice<Bool>& expr, 
+                const Bool result,
+                const IPosition shape,
+                const Bool supress);
 
 
 main (int argc, char *argv[])
@@ -43,305 +72,602 @@ main (int argc, char *argv[])
     inp.Version(" ");
     inp.Create("nx", "2", "Number of pixels along the x-axis", "int");
     inp.Create("ny", "2", "Number of pixels along the y-axis", "int");
+    inp.Create("sup", "False", "Supress expected exceptions messages", "Bool");
     inp.ReadArguments(argc, argv);
 
     const uInt nx=inp.GetInt("nx");
     const uInt ny=inp.GetInt("ny");
+    const Bool supress=inp.GetBool("sup");
 
-    ArrayLattice<Double> a(IPosition (2,nx,ny));
-    ArrayLattice<Double> b(IPosition (2,nx,ny));
-    ArrayLattice<Double> c(IPosition (2,nx,ny));
-    ArrayLattice<Double> d(IPosition (2,nx,ny));
-    ArrayLattice<Double> e(IPosition (2,nx,ny));
-    ArrayLattice<Double> f(IPosition (2,nx,ny));
-    ArrayLattice<Double> g(IPosition (2,nx,ny));
-    ArrayLattice<Double> h(IPosition (2,nx,ny));
-    ArrayLattice<Double> i(IPosition (2,nx,ny));
-    ArrayLattice<Bool> aBool(IPosition (2,nx,ny));
-    ArrayLattice<Bool> bBool(IPosition (2,nx,ny));
+    IPosition shape(2,nx,ny);
+    Bool ok = True;
+ 
+// Bool Lattices
+    
+    ArrayLattice<Bool> aB(shape);
+    Bool aBVal = True;
+    aB.set(aBVal);
+
+    
+// FLoat Lattices
+    
+    ArrayLattice<Float> aF(shape);   
+    Float aFVal = 2.0;
+    aF.set(aFVal);
+    
+    
+// Double Lattices
+ 
+    ArrayLattice<Double> aD(shape);
+    Double aDVal = 2.0;
+    aD.set(aDVal);  
+  
+// Complex Lattices
+ 
+    ArrayLattice<Complex> aC(shape);
+    Complex aCVal = Complex(2.0,2.0);
+    aC.set(aCVal);
+      
+    
+// DComplex Lattices
+     
+    ArrayLattice<DComplex> aDC(shape);
+    DComplex aDCVal = DComplex(2.0,2.0);
+    aDC.set(aDCVal);
 
 
-    Double aVal = 0.0;
-    a.set(aVal);
-    Double bVal = 1.0;
-    b.set(1.0);
-    Double cVal = 2.0;
-    c.set(cVal);
-    Double dVal = 3.0;
-    d.set(dVal);
-    Double eVal = 4.0;
-    e.set(eVal);
-    Double fVal = 5.0;
-    f.set(fVal);
-    Double gVal = 6.0;
-    g.set(gVal);
-    Double hVal = 7.0;
-    h.set(hVal);
-    Double iVal = 0.0;
-    i.set(iVal);
-    Bool aBoolVal = False;
-    aBool.set(aBoolVal);
-    Bool bBoolVal = False;
-    bBool.set(bBoolVal);
+//
+// <Float>
+// 
+     {
+       cout << "Float" << endl;
+       LatticeExprNode node(aF);
+       LatticeExpr<Float> expr(node, 0);
+       if (!checkFloat(expr, aFVal, shape, supress)) ok = False;
 
-    Array<Double> aArr(a.shape());
-    Array<Double> bArr(b.shape());
-    Array<Double> cArr(c.shape());
-    Array<Double> dArr(d.shape());
-    Array<Double> eArr(e.shape());
-    Array<Double> fArr(f.shape());
-    Array<Double> gArr(g.shape());
-    Array<Double> hArr(h.shape());
-    Array<Double> iArr(i.shape());
+       LatticeExpr<Float> expr2(expr);
+       if (!checkFloat(expr2, aFVal, shape, supress)) ok = False;
+ 
+       LatticeExpr<Float> expr3;
+       expr3 = expr;      
+       if (!checkFloat(expr2, aFVal, shape, supress)) ok = False;
 
-    Array<Bool> aBoolArr(a.shape());
-    Array<Bool> bBoolArr(b.shape());
+       Lattice<Float>* pExpr;
+       pExpr = expr.clone();
+       if (!checkFloat(*pExpr, aFVal, shape, supress)) ok = False;
+     }
 
-    Bool foundError = False;
+//
+// <Double>
+// 
+     {
+       cout << "Double" << endl;
+       LatticeExprNode node(aD);
+       LatticeExpr<Double> expr(node, 0);
+       if (!checkDouble(expr, aDVal, shape, supress)) ok = False;
 
-  {
-    cout << endl;
-    cout << "Expr:  a = 1" << endl;
-    LatticeExpr<Double> expr(LatticeExprNode(1.0));
-    a.copyData(expr);
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = 1.0;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = b" << endl;
-    a.copyData(b);
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = bVal;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result  << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = sin(c)" << endl;
-    LatticeExpr<Double> expr(sin(c));
-    a.copyData(sin(c));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = sin(cVal);
-    if (! allEQ (aArr, sin(cVal))) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
+       LatticeExpr<Double> expr2(expr);
+       if (!checkDouble(expr2, aDVal, shape, supress)) ok = False;
+ 
+       LatticeExpr<Double> expr3;
+       expr3 = expr;      
+       if (!checkDouble(expr2, aDVal, shape, supress)) ok = False;
 
-  {
-    cout << "Expr:  a = c+2" << endl;
-    a.copyData(c+2);
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = cVal+2;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = b+(c+d)" << endl;
-    LatticeExpr<Double> expr(b+(c+d));
-    a.copyData(expr);
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = bVal + cVal + dVal;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = 3.5*b + cos(c)-10/min(c,d)*-e*log(b)-C::pi" << endl;
+       Lattice<Double>* pExpr;
+       pExpr = expr.clone();
+       if (!checkDouble(*pExpr, aDVal, shape, supress)) ok = False;
+     }
 
-    a.copyData( (3.5*b) + (cos(c)) - (10/min(c,d)*(-e)*log(b)) - (C::pi) );
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    b.getSlice(bArr, IPosition(bArr.ndim(),0), 
-	       bArr.shape(), IPosition(bArr.ndim(),1));
-    c.getSlice(cArr, IPosition(cArr.ndim(),0), 
-	       cArr.shape(), IPosition(cArr.ndim(),1));
-    d.getSlice(dArr, IPosition(dArr.ndim(),0), 
-	       dArr.shape(), IPosition(dArr.ndim(),1));
-    e.getSlice(eArr, IPosition(eArr.ndim(),0), 
-	       eArr.shape(), IPosition(eArr.ndim(),1));
-    Double result = 3.5*bVal + cos(cVal) -
-	            10/min(cVal,dVal)*-eVal*log(bVal) - C::pi;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-    if (! allEQ (bArr, bVal)) {
-	cout << "b is " << bArr.ac() << " and should be " << bVal << endl;
-	foundError = True;
-    }
-    if (! allEQ (cArr, cVal)) {
-	cout << "c is " << cArr.ac() << " and should be " << cVal << endl;
-	foundError = True;
-    }
-    if (! allEQ (dArr, dVal)) {
-	cout << "d is " << dArr.ac() << " and should be " << dVal << endl;
-	foundError = True;
-    }
-    if (! allEQ (eArr, eVal)) {
-	cout << "e is " << eArr.ac() << " and should be " << eVal << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = (b+c-d/2.0*-b) + pi" << endl;
+//
+// <Complex>
+// 
+     {
+       cout << "Complex" << endl;
+       LatticeExprNode node(aC);
+       LatticeExpr<Complex> expr(node, 0);
+       if (!checkComplex(expr, aCVal, shape, supress)) ok = False;
 
-    a.copyData((b+c-d/2.0*-b)+C::pi);
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = (bVal + cVal - dVal / 2*-bVal) + C::pi;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = pow(c,d)" << endl;
+       LatticeExpr<Complex> expr2(expr);
+       if (!checkComplex(expr2, aCVal, shape, supress)) ok = False;
+ 
+       LatticeExpr<Complex> expr3;
+       expr3 = expr;      
+       if (!checkComplex(expr2, aCVal, shape, supress)) ok = False;
 
-    a.copyData(pow(c,d));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = pow(cVal,dVal);
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = fmod(c*2,d)" << endl;
+       Lattice<Complex>* pExpr;
+       pExpr = expr.clone();
+       if (!checkComplex(*pExpr, aCVal, shape, supress)) ok = False;
+     }
 
-    a.copyData(fmod(c*2,d));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = fmod(cVal*2,dVal);
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = pow(c,2.3)" << endl;
+//
+// <DComplex>
+// 
+     {
+       cout << "DComplex" << endl;
+       LatticeExprNode node(aDC);
+       LatticeExpr<DComplex> expr(node, 0);
+       if (!checkDComplex(expr, aDCVal, shape, supress)) ok = False;
 
-    a.copyData(pow(c,2.3));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = pow(cVal,2.3);
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = cos(b)" << endl;
+       LatticeExpr<DComplex> expr2(expr);
+       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = False;
+ 
+       LatticeExpr<DComplex> expr3;
+       expr3 = expr;      
+       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = False;
 
-    a.copyData(cos(b));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = cos(bVal);
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = cos(sin(b))" << endl;
+       Lattice<DComplex>* pExpr;
+       pExpr = expr.clone();
+       if (!checkDComplex(*pExpr, aDCVal, shape, supress)) ok = False;
+     }
 
-    a.copyData (cos(sin(b)));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = cos(sin(bVal));
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = ntrue(b>=1)" << endl;
+//
+// <Bool>
+// 
+     {
+       cout << "Bool" << endl;
+       LatticeExprNode node(aB);
+       LatticeExpr<Bool> expr(node, 0);
+       if (!checkBool(expr, aBVal, shape, supress)) ok = False;
 
-    a.copyData(ntrue(b>=1));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = b.shape().product();
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  aBool = !bBool" << endl;
+       LatticeExpr<Bool> expr2(expr);
+       if (!checkBool(expr2, aBVal, shape, supress)) ok = False;
+ 
+       LatticeExpr<Bool> expr3;
+       expr3 = expr;      
+       if (!checkBool(expr2, aBVal, shape, supress)) ok = False;
 
-    aBool.copyData(LatticeExpr<Bool>(!bBool));
-    aBool.getSlice(aBoolArr, IPosition(aBoolArr.ndim(),0), 
-		   aBoolArr.shape(), IPosition(aBoolArr.ndim(),1));
-    Bool result = ToBool(!bBoolVal);
-    if (! allEQ (aBoolArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aBoolArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = sum(e)/nelements(b) + min(c) + max(c, mean(c+d))" << endl;
+       Lattice<Bool>* pExpr;
+       pExpr = expr.clone();
+       if (!checkBool(*pExpr, aBVal, shape, supress)) ok = False;
 
-    a.copyData(sum(e)/nelements(b) + min(c) + max(c, mean(c+d)));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = eVal+cVal+(cVal+dVal);
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
-  {
-    cout << "Expr:  a = min(a+10,5)" << endl;
+     }
 
-    a.copyData(min(a+10,5));
-    a.getSlice(aArr, IPosition(aArr.ndim(),0), 
-	       aArr.shape(), IPosition(aArr.ndim(),1));
-    Double result = 5;
-    if (! allEQ (aArr, result)) {
-	cout << "Result should be " << result << endl;
-	cout << "Result is " << aArr.ac() << endl;
-	foundError = True;
-    }
-  }
+
 
   cout << endl;
-  if (foundError) {
-     return 1;
+  if (!ok) {
+     cout << "not ok" << endl;
+     exit(1);
+  } else {
+     cout << "ok" << endl;
   }
 
  } catch (AipsError x) {
     cerr << "aipserror: error " << x.getMesg() << endl;
-    return 1;
+    exit(1);
  } end_try;
  
- return 0;
+ exit(0);
+
 }
+
+
+Bool checkFloat(Lattice<Float>& expr, 
+                const Float result,
+                const IPosition shape,
+                const Bool supress)
+{
+   Bool ok = True;
+   Array<Float> outArr(shape);  
+   ArrayLattice<Float> outLat(shape);
+   IPosition origin(shape); origin = 0;
+   IPosition stride(outArr.ndim(),1);
+          
+   if (expr.shape() != shape) {
+      cout << "   Shape should be " << shape << endl;
+      cout << "   Shape is " << expr.shape()  << endl;
+      ok = False;
+   }
+   if (expr.isWritable()) {
+      cout << "   LatticeExpr should not be writable" << endl;
+      ok = False;
+   }
+
+   try {
+     expr.putSlice(outArr, origin, stride);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+   try {
+     expr.putSlice(outArr, origin);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+
+   outLat.copyData(expr);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   Slicer slicer(origin, shape, stride);
+   expr.getSlice(outArr, slicer);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+
+   COWPtr<Array<Float> > moo;
+   expr.getSlice(moo, origin, shape, stride);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(moo, slicer);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.copyDataTo(outLat);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   return ok;
+}
+
+
+Bool checkDouble(Lattice<Double>& expr, 
+                const Double result,
+                const IPosition shape,
+                const Bool supress)
+{
+   Bool ok = True;
+   Array<Double> outArr(shape);  
+   ArrayLattice<Double> outLat(shape);
+   IPosition origin(shape); origin = 0;
+   IPosition stride(outArr.ndim(),1);
+          
+   if (expr.shape() != shape) {
+      cout << "   Shape should be " << shape << endl;
+      cout << "   Shape is " << expr.shape()  << endl;
+      ok = False;
+   }
+   if (expr.isWritable()) {
+      cout << "   LatticeExpr should not be writable" << endl;
+      ok = False;
+   }
+
+   try {
+     expr.putSlice(outArr, origin, stride);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+   try {
+     expr.putSlice(outArr, origin);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+
+   outLat.copyData(expr);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   Slicer slicer(origin, shape, stride);
+   expr.getSlice(outArr, slicer);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+
+   COWPtr<Array<Double> > moo;
+   expr.getSlice(moo, origin, shape, stride);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(moo, slicer);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.copyDataTo(outLat);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   return ok;
+}
+
+
+Bool checkComplex(Lattice<Complex>& expr, 
+                const Complex result,
+                const IPosition shape,
+                const Bool supress)
+{
+   Bool ok = True;
+   Array<Complex> outArr(shape);  
+   ArrayLattice<Complex> outLat(shape);
+   IPosition origin(shape); origin = 0;
+   IPosition stride(outArr.ndim(),1);
+          
+   if (expr.shape() != shape) {
+      cout << "   Shape should be " << shape << endl;
+      cout << "   Shape is " << expr.shape()  << endl;
+      ok = False;
+   }
+   if (expr.isWritable()) {
+      cout << "   LatticeExpr should not be writable" << endl;
+      ok = False;
+   }
+
+   try {
+     expr.putSlice(outArr, origin, stride);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+   try {
+     expr.putSlice(outArr, origin);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+
+   outLat.copyData(expr);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   Slicer slicer(origin, shape, stride);
+   expr.getSlice(outArr, slicer);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+
+   COWPtr<Array<Complex> > moo;
+   expr.getSlice(moo, origin, shape, stride);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(moo, slicer);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.copyDataTo(outLat);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   return ok;
+}
+
+
+
+Bool checkDComplex(Lattice<DComplex>& expr, 
+                const DComplex result,
+                const IPosition shape,
+                const Bool supress)
+{
+   Bool ok = True;
+   Array<DComplex> outArr(shape);  
+   ArrayLattice<DComplex> outLat(shape);
+   IPosition origin(shape); origin = 0;
+   IPosition stride(outArr.ndim(),1);
+          
+   if (expr.shape() != shape) {
+      cout << "   Shape should be " << shape << endl;
+      cout << "   Shape is " << expr.shape()  << endl;
+      ok = False;
+   }
+   if (expr.isWritable()) {
+      cout << "   LatticeExpr should not be writable" << endl;
+      ok = False;
+   }
+
+   try {
+     expr.putSlice(outArr, origin, stride);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+   try {
+     expr.putSlice(outArr, origin);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+
+   outLat.copyData(expr);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   Slicer slicer(origin, shape, stride);
+   expr.getSlice(outArr, slicer);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+
+   COWPtr<Array<DComplex> > moo;
+   expr.getSlice(moo, origin, shape, stride);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(moo, slicer);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.copyDataTo(outLat);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   return ok;
+}
+
+
+
+
+Bool checkBool(Lattice<Bool>& expr, 
+                const Bool result,
+                const IPosition shape,
+                const Bool supress)
+{
+   Bool ok = True;
+   Array<Bool> outArr(shape);  
+   ArrayLattice<Bool> outLat(shape);
+   IPosition origin(shape); origin = 0;
+   IPosition stride(outArr.ndim(),1);
+          
+   if (expr.shape() != shape) {
+      cout << "   Shape should be " << shape << endl;
+      cout << "   Shape is " << expr.shape()  << endl;
+      ok = False;
+   }
+   if (expr.isWritable()) {
+      cout << "   LatticeExpr should not be writable" << endl;
+      ok = False;
+   }
+
+   try {
+     expr.putSlice(outArr, origin, stride);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+   try {
+     expr.putSlice(outArr, origin);
+   } catch (AipsError x) {
+     if (!supress)  cout << "   Caught expected exception; message is: " << x.getMesg() << endl;
+   } end_try;
+
+   outLat.copyData(expr);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   Slicer slicer(origin, shape, stride);
+   expr.getSlice(outArr, slicer);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+
+   COWPtr<Array<Bool> > moo;
+   expr.getSlice(moo, origin, shape, stride);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.getSlice(moo, slicer);
+   outArr.reference(moo.rwRef());
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   expr.copyDataTo(outLat);
+   outLat.getSlice(outArr, origin, shape, stride);
+   if (!allEQ (outArr, result)) {
+	cout << "   Result should be " << result << endl;
+	cout << "   Result is " << outArr(origin) << endl;
+	ok = False;
+   }
+
+   return ok;
+}
+
+
+
