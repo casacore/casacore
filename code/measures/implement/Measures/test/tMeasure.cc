@@ -34,6 +34,7 @@
 #include <aips/Measures/MeasData.h>
 #include <aips/Measures/MeasFrame.h>
 #include <aips/Measures/MEpoch.h>
+#include <aips/Measures/MCDirection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MRadialVelocity.h>
@@ -117,8 +118,11 @@ main()
 					       MVTime::NO_TIME),
 					      6) << endl;
 
-	cout << "Test measure class ..." << endl;
+	cout << "\nTest measure class ..." << endl;
 	cout << "--------------------------------------" << endl;
+
+	cout << endl << "MDirection state transition matrix:\n" << endl;
+	cout << MCDirection::showState() << endl;///
 
 	MEpoch tbm(Quantity(MeasData::MJDB1950,"d"),MEpoch::Ref());
 	cout << "Epoch B1950: " << tbm << endl;
