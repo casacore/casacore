@@ -197,6 +197,7 @@ int main()
                     AipsError);
        AlwaysAssert(pIm.name(True)==String("temp_tPagedImage.img5"),
                     AipsError);
+       cout << "Absolute name = " << pIm.name(False) << endl;
        AlwaysAssert(pIm.isPaged(), AipsError);
        AlwaysAssert(pIm.isWritable(), AipsError);
        AlwaysAssert(pIm.ok(), AipsError);
