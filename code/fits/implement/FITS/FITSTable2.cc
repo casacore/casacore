@@ -33,6 +33,7 @@
 #include <aips/FITS/fits.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
+#include <aips/OS/Path.h>
 
 #include <aips/Arrays/Array.h>
 
@@ -614,7 +615,7 @@ void FITSTableWriter::write()
 
 FitsOutput *FITSTableWriter::makeWriter(const String &fileName)
 {
-    const char *name = fileName.chars();
+    const char *name = Path(fileName).expandedName().chars();
     FitsOutput *file = new FitsOutput(name, FITS::Disk);
     FitsKeywordList st;
 

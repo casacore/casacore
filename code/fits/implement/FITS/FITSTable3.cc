@@ -1,5 +1,5 @@
 //# FITSTable.h: Simplified interface to FITS tables with AIPS++ Look and Feel.
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>
+#include <aips/OS/Path.h>
 
 #include <aips/Logging/LogIO.h>
 #include <aips/Arrays/Array.h>
@@ -88,7 +89,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     row_p.restructure(description);
     
     // See if we can open the output file
-    writer_p = new FitsOutput(fileName.chars(), FITS::Disk);
+    // use Path so that environment variables and any tilde in fileName are parse
+    writer_p = new FitsOutput(Path(fileName).expandedName().chars(), FITS::Disk);
     AlwaysAssert(writer_p, AipsError);
     check_error("creating file");
 
