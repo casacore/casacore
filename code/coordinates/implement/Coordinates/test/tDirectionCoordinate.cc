@@ -1,5 +1,5 @@
 //# tDirectionCoordinate.cc: Test program for DirectionCoordinate
-//# Copyright (C) 1998,1999,2000,2001,2002
+//# Copyright (C) 1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/OS/Timer.h>
 #include <aips/Quanta/Quantum.h>
 #include <aips/Quanta/MVDirection.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
@@ -68,6 +69,9 @@ void doit4 (DirectionCoordinate& lc);
 void doit5 (DirectionCoordinate& lc);
 void doit6();
 void doit7 ();
+void doit8 ();
+void doit9 ();
+void doit10 ();
 
 
 
@@ -79,7 +83,6 @@ int main()
       Vector<Double> crval, crpix, cdelt;
       Matrix<Double> xform;
 
-
 // Constructors
 
       {
@@ -89,6 +92,18 @@ int main()
          DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
                                                  proj, crval, crpix,
                                                  cdelt, xform);
+      }
+//    
+      {
+         for (uInt i=0; i<MDirection::N_Types; i++) {
+            MDirection::Types tp = MDirection::castType(i);
+            MDirection::GlobalTypes gt = MDirection::globalType (i);
+            if (gt != MDirection::GAZEL) {
+               DirectionCoordinate lc = makeCoordinate(tp,
+                                                       proj, crval, crpix,
+                                                       cdelt, xform);
+            }
+         }
       }
 
 // Test near function
@@ -185,6 +200,7 @@ int main()
                                                  cdelt, xform);
          doit2(lc, crval, crpix, cdelt, xform);
       }
+
       {
          DirectionCoordinate lc  = makeCoordinate(MDirection::GALACTIC,
                                                  proj, crval, crpix,
@@ -208,6 +224,15 @@ int main()
       }
       {
          doit7 ();
+      }
+      {
+         doit8();
+      }
+      {
+         doit9();
+      }
+      {
+         doit10();
       }
   } catch (AipsError x) {
       cerr << "aipserror: error " << x.getMesg() << endl;
@@ -239,12 +264,9 @@ DirectionCoordinate makeCoordinate(MDirection::Types type,
    xform = 0.0;
    xform.diagonal() = 1.0;
    proj = Projection::SIN;
-   DirectionCoordinate dc(type, proj, crval(0), crval(1),
-                          cdelt(0), cdelt(1),
-                          xform, crpix(0), crpix(1), 999.0, 999.0);
-//
-   dc.cylindricalFix (100,100);           // A close to useless test
-   return dc;
+   return DirectionCoordinate(type, proj, crval(0), crval(1),
+                              cdelt(0), cdelt(1),
+                              xform, crpix(0), crpix(1), 999.0, 999.0);
 }
  
 
@@ -346,7 +368,6 @@ void doit2 (DirectionCoordinate& lc,
             Vector<Double>& cdelt, 
             Matrix<Double>& xform)
 {
-//
    if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
    }
@@ -363,7 +384,7 @@ void doit2 (DirectionCoordinate& lc,
       throw(AipsError("Failed Direction transform recovery test"));
    }
 //
-   crval(0) = 111.1;
+   crval /= 2.0;
    if (!lc.setReferenceValue(crval)) {
       throw(AipsError(String("Failed to set reference value because") + lc.errorMessage()));
    }
@@ -371,7 +392,7 @@ void doit2 (DirectionCoordinate& lc,
       throw(AipsError("Failed reference value set/recovery test"));
    }
 //
-   cdelt(0) = -10.3;
+   cdelt *= 3.0;
    if (!lc.setIncrement(cdelt)) {
       throw(AipsError(String("Failed to set increment because") + lc.errorMessage()));
    }
@@ -379,7 +400,7 @@ void doit2 (DirectionCoordinate& lc,
       throw(AipsError("Failed increment set/recovery test"));
    }
 //
-   crpix(0) = 23.0;
+   crpix += 13.0;
    if (!lc.setReferencePixel(crpix)) {
       throw(AipsError(String("Failed to set reference pixel because") + lc.errorMessage()));
    }
@@ -401,8 +422,27 @@ void doit3 (DirectionCoordinate& lc)
 //
 // Test conversion
 //
+   const Vector<Double>& refPix = lc.referencePixel();
+   const Vector<Double>& refVal = lc.referenceValue();
    Vector<Double> pixel(2), world(2);
-   Vector<String> axisUnits = lc.worldAxisUnits();
+//
+   pixel = refPix.copy();
+   if (!lc.toWorld(world, pixel)) {
+      throw(AipsError(String("toWorld conversion (0) failed because ") + lc.errorMessage())); 
+   }
+   if (!allNear(refVal, world, 1e-6)) {
+      throw(AipsError("World values (0) are wrong"));
+   }
+//
+   world = refVal.copy();
+   if (!lc.toPixel(pixel, world)) {
+      throw(AipsError(String("toPixel conversion (0) failed because ") + lc.errorMessage())); 
+   }
+   if (!allNear(refPix, pixel, 1e-6)) {
+      throw(AipsError("Pixel values (0) are wrong"));
+   }
+//
+   Vector<String> axisUnits = lc.worldAxisUnits().copy();
    axisUnits.set("rad");
    if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to radians because ") + lc.errorMessage())); 
@@ -421,11 +461,14 @@ void doit3 (DirectionCoordinate& lc)
    if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection 1 failed"));
    }
-//
    MVDirection dirV;
    if (!lc.toWorld(dirV, pixel)) {
       throw(AipsError(String("toWorld conversion (3) failed because ") + lc.errorMessage())); 
    }
+   if (!allNear(dirV.get(), world, 1e-6)) {
+         throw(AipsError("Coordinate conversion values (MVDirection) are wrong"));
+   }
+//
    axisUnits.set("deg");
    if (!lc.setWorldAxisUnits(axisUnits)) {
       throw(AipsError(String("failed to set world axis units to degrees because ") + lc.errorMessage())); 
@@ -612,21 +655,21 @@ void doit4 (DirectionCoordinate& dC)
 {
    Vector<Double> pixelIn(2), worldIn(2), pixelOut, worldOut;
    Vector<Bool> pixelAxes(2), worldAxes(2);
-   Vector<String> units = dC.worldAxisUnits();
-   Vector<Double> refVal = dC.referenceValue();
+   Vector<String> units = dC.worldAxisUnits().copy();
+   Vector<Double> refVal = dC.referenceValue().copy();
+   Vector<Double> refPix = dC.referencePixel().copy();
 //
    IPosition shape(2, 512);
    if (!dC.setWorldMixRanges(shape)) {
       throw(AipsError(String("setMixRanges failed because ") + dC.errorMessage()));
    }
-
 //
 // Forced errors
 //
    pixelAxes.set(False);
    worldAxes.set(False);
-   Vector<Double> minWorld = dC.worldMixMin();
-   Vector<Double> maxWorld = dC.worldMixMax();
+   Vector<Double> minWorld = dC.worldMixMin().copy();
+   Vector<Double> maxWorld = dC.worldMixMax().copy();
    if (dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
       throw(AipsError(String("Forced fail 1 of toMix did not occur")));
    }
@@ -640,7 +683,8 @@ void doit4 (DirectionCoordinate& dC)
    pixelAxes.set(True);
    worldAxes.set(False);
    pixelIn = dC.referencePixel().copy();
-   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)) {
+//
+   if (!dC.toMix(worldOut, pixelOut, worldIn, pixelIn, worldAxes, pixelAxes, minWorld, maxWorld)){ 
       throw(AipsError(String("Failed pixel->world conversion failed because ")
                   + dC.errorMessage()));
    }
@@ -649,7 +693,7 @@ void doit4 (DirectionCoordinate& dC)
    }
    if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed pixel->world consistency test 1b")));
-   }
+  }
 //
 // world,world->pixel,pixel
 //
@@ -662,7 +706,7 @@ void doit4 (DirectionCoordinate& dC)
    }
    if (!allNear(pixelOut, dC.referencePixel(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test 1a")));
-   }
+  }
    if (!allNear(worldOut, dC.referenceValue(), 1e-8)) {
       throw(AipsError(String("Failed world->pixel consistency test 1b")));
    }
@@ -924,3 +968,103 @@ void doit7 ()
          throw(AipsError("Reference change conversion reflection 1 failed"));
    }    
 }
+void doit8 ()
+{
+   Projection proj;
+   Vector<Double> crval, crpix, cdelt;
+   Matrix<Double> xform;
+//
+   DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
+                                           proj, crval, crpix,
+                                           cdelt, xform);
+   {
+      Vector<Bool> failures, failures2;
+      const Int nCoord = 1000;
+      Matrix<Double> pixel(2, nCoord), pixel2;
+      Matrix<Double> world(2, nCoord);
+//
+      Double incr = 1001.0 / nCoord;             // Make sure pixel!=0 so dont have problems with 'near' function
+      Double pix = -500.0;
+      for (Int i=0; i<nCoord; i++) {   
+        pixel.column(i) = pix;
+        pix += incr;
+      }
+//
+      if (!lc.toWorldMany(world, pixel, failures)) {
+         throw(AipsError(String("toWorldMany conversion failed because ") + lc.errorMessage())); 
+      }
+      if (!lc.toPixelMany(pixel2, world, failures2)) {
+         throw(AipsError(String("toPixelMany conversion failed because ") + lc.errorMessage())); 
+      }
+//
+      if (!allNear(pixel, pixel2, 0.1)) {
+         throw(AipsError("to{World,Pixel}Many reflection failed"));
+      }
+//
+      Vector<Double> world2;
+      for (Int i=0; i<nCoord; i++) {
+         if (!lc.toWorld(world2, pixel.column(i))) {
+            throw(AipsError(String("toWorld failed because ") + lc.errorMessage())); 
+         }
+         if (!allNear(world2, world.column(i), 1e-5)) {
+            throw(AipsError("World conversions gave wrong results in toWorldMany"));
+         }
+      }    
+   }
+}
+
+void doit9 ()
+{
+   Matrix<Double> xform(2,2);
+   xform = 0.0;
+   xform.diagonal() = 1.0;
+   DirectionCoordinate dc(MDirection::SUN, Projection::SIN, 0.0, 0.0,
+                          -1.0e-6, 1.0e-6, xform,
+                           0.0, 0.0, 999.0, 999.0);
+   Vector<Double> pixel(2), world;
+   pixel = 0.0;   
+   Bool ok = dc.toWorld(world, pixel);
+   cerr << "pixel, world = " << pixel << world << endl;
+}
+
+void doit10 ()
+{
+   Matrix<Double> xform(2,2);
+   xform = 0.0;
+   xform.diagonal() = 1.0;
+   DirectionCoordinate dc(MDirection::GALACTIC, Projection::SIN, 0.0, 0.0,
+                          -1.0e-6, 1.0e-6, xform,
+                           0.0, 0.0, 999.0, 999.0);
+//
+   Vector<String> units = dc.worldAxisUnits().copy();
+   units(0) = String("deg");
+   units(1) = String("deg");
+   if (!dc.setWorldAxisUnits(units)) {
+     throw(AipsError(String("failed to set Units because ") + dc.errorMessage())); 
+   }
+//
+   Vector<Double> incr  = dc.increment().copy();
+   incr(0) = 1.0;
+   if (!dc.setIncrement(incr)) {
+     throw(AipsError(String("failed to set increment because ") + dc.errorMessage())); 
+   }
+//
+/*
+   Vector<Double> refVal = dc.referenceValue().copy();
+   refVal(0) = 200;
+   if (!dc.setReferenceValue(refVal)) {
+     throw(AipsError(String("failed to set refVal because ") + dc.errorMessage())); 
+   }
+*/
+//
+   Vector<Double> refPix = dc.referencePixel().copy();
+   refPix(0) = 200;
+   if (!dc.setReferencePixel(refPix)) {
+     throw(AipsError(String("failed to set refPix because ") + dc.errorMessage())); 
+   }
+//
+   if (!dc.cylindricalFix (180, 180)) {
+     throw(AipsError(String("failed to make cylindrical fix because") + dc.errorMessage())); 
+   }
+}
+
