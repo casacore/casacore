@@ -1,5 +1,5 @@
 //# Path.cc: Class to define a pathname
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,6 +28,8 @@
 
 #include <aips/OS/Path.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayUtil.h>
 #include <aips/Exceptions.h>
 
 #include <pwd.h>                    // needed for getpwnam
@@ -147,7 +149,7 @@ const String& Path::expandedName() const
 const String& Path::absoluteName() const
 {
     if (itsAbsolutePathName->empty()) {
-	*itsAbsolutePathName = makeAbsoluteName (expandedName());
+	*itsAbsolutePathName = removeDots (makeAbsoluteName (expandedName()));
     }
     return *itsAbsolutePathName;
 }
@@ -294,7 +296,6 @@ String Path::expandName (const String& inString) const
     uInt i = 0;
     Bool flag = True;
     uInt count = 0;
-
     // Flag is set True when an environment variable is detected. When this 
     // happens more then 25 times, there is probably a recursive variable set.
     // In that case an exception will be thrown.
@@ -369,7 +370,7 @@ String Path::makeAbsoluteName (const String& inString) const
     // Otherwise we have a relative pathname.
     // Remove a possible leading . or ./
     String workString (inString);
-    if(workString.length() > 0) {
+    if (workString.length() > 0) {
 	if (workString[0] == '.') {
 	    Int from(1);
 	    if (workString.length() > 1){
@@ -400,6 +401,43 @@ String Path::makeAbsoluteName (const String& inString) const
     }
     tempString += workString;
     return tempString;
+}
+
+String Path::removeDots (const String& inString) const
+{
+    // Split the name at the slashes.
+    Vector<String> parts (stringToVector (inString, '/'));
+    Vector<uInt> validParts (parts.nelements());
+    String dot(".");
+    String dotdot("..");
+    uInt nvalid = 0;
+    uInt i;
+    // Count the number of valid parts and keep their index.
+    // Ignore blanks and . parts.
+    // A .. part removes an entry from the valid list (if possible).
+    for (i=0; i<parts.nelements(); i++) {
+        if (! (parts(i).empty()  ||  parts(i) == dot)) {
+	    if (parts(i) == dotdot) {
+	        if (nvalid > 0) {
+		    nvalid--;
+		}
+	    } else {
+	        validParts(nvalid++) = i;
+	    }
+	}
+    }
+    // Combine the parts into the output string.
+    // Start it with a slash if the input started with a slash.
+    String outString;
+    Bool doSlash = ToBool(parts(0).empty());
+    for (i=0; i<nvalid; i++) {
+        if (doSlash) {
+	    outString += '/';
+	}
+	outString += parts(validParts(i));
+	doSlash = True;
+    }
+    return outString;
 }
 
 void Path::getNextName (const String& inString, uInt& count) const

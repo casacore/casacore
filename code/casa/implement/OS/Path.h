@@ -1,5 +1,5 @@
 //# Path.h: Path name of a file
-//# Copyright (C) 1993,1994,1995,1996,1997,1998
+//# Copyright (C) 1993,1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -236,6 +236,10 @@ private:
     // This function is used by absoluteName to make a name absolute, 
     // this means that the name is described from the root
     String makeAbsoluteName (const String& inString) const;
+
+    // Remove . and .. from the path name.
+    // Also multiple slashes are replaced by a single.
+    String removeDots (const String& inString) const;
 
     // This function is used by expandName and absoluteName. It sets the 
     // integer "count" on the next slash or on the end of a string
