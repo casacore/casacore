@@ -1,5 +1,5 @@
 //# LELInterface.h:  Abstract base class for lattice expressions
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,8 @@
 #include <aips/Utilities/DataType.h>
 
 //# Forward Declarations
-template <class T> class Array;
+template <class T> class LELScalar;
+template <class T> class LELArray;
 class Slicer;
 
 
@@ -149,14 +150,18 @@ public:
    virtual ~LELInterface();
 
 // Evaluate the expression and fill the result array
-   virtual void eval (Array<T>& result,
+   virtual void eval (LELArray<T>& result,
                       const Slicer& section) const = 0;
 
 // Get the result of a scalar subexpression.
-   virtual T getScalar() const = 0;
+   virtual LELScalar<T> getScalar() const = 0;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual void prepare() = 0;
+// It returns True if the expression is an invalid scalar
+// (i.e. with a False mask).
+// That can happen if the expression has a component with an invalid
+// scalar value (e.g. min(lattice) where lattice contains no valid elements).
+   virtual Bool prepareScalarExpr() = 0;
 
 // Is the result of evaluating this expression a scalar ?
    Bool isScalar() const {return attr_p.isScalar();}
@@ -170,8 +175,10 @@ public:
 // Get class name
    virtual String className() const = 0;
 
-// If the given expression is a scalar, replace it by its result.
-   static void replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
+// If the given expression is a valid scalar, replace it by its result.
+// It returns False if the expression is no scalar or if the expression
+// is an invalid scalar (i.e. with a False mask).
+   static Bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
 
 protected:
 // Set the expression attributes of this object.
