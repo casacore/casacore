@@ -3557,3 +3557,14 @@
 13 318 src mv trial/implement/OS/test/tTableExprData.cc aips/implement/Tables/test/tTableExprData.cc
 13 318 src mv trial/implement/OS/LogFilterExpr.h aips/implement/Logging/LogFilterExpr.h
 13 318 src mv trial/implement/OS/LogFilterExpr.cc aips/implement/Logging/LogFilterExpr.cc
+13 319 src rm aips/glish/contrib/A
+13 319 src rm aips/glish/contrib/B
+13 319 src rm aips/glish/contrib/C
+13 319 src rm aips/glish/contrib/D
+13 319 src rm aips/glish/contrib/E
+13 319 src rm aips/glish/contrib/F
+13 319 src rm aips/glish/contrib/G
+13 319 src rm aips/glish/contrib/H
+13 319 src rm aips/glish/contrib/I
+13 319 src rm aips/glish/contrib/J
+13 319 src rm aips/glish/contrib/K
