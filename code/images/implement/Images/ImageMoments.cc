@@ -733,9 +733,9 @@ Bool ImageMoments<T>::createMoments(PtrBlock<MaskedLattice<T>* >& outPt,
       if (doPlot && fixedYLimits_p && (smoothClipMethod || windowMethod)) {
          ImageStatistics<T> stats(*pSmoothedImage, False);
          Array<T> data;
-         stats.getMin(data);
+         stats.getConvertedStatistic(data, LatticeStatsBase::MIN, True);
          yMin_p = data(IPosition(data.nelements(),0));
-         stats.getMax(data);
+         stats.getConvertedStatistic(data, LatticeStatsBase::MAX, True);
          yMax_p = data(IPosition(data.nelements(),0));
       }
    }
@@ -747,14 +747,18 @@ Bool ImageMoments<T>::createMoments(PtrBlock<MaskedLattice<T>* >& outPt,
    if (fixedYLimits_p && doPlot) {
       if (!doSmooth_p && (clipMethod || windowMethod || fitMethod)) {
          ImageStatistics<T> stats(*pInImage_p, False);
-
          Array<T> data;
-         if (!stats.getMin(data)) {
+//
+         if (!stats.getConvertedStatistic(data, LatticeStatsBase::MIN, True)) {
             error_p = "Error finding minimum of input image";
             return False;
          }
          yMin_p = data(IPosition(data.nelements(),0));
-         stats.getMax(data);
+//
+         if (!stats.getConvertedStatistic(data, LatticeStatsBase::MAX, True)) {
+            error_p = "Error finding maximum of input image";
+            return False;
+         }
          yMax_p = data(IPosition(data.nelements(),0));
       }
    }
@@ -1487,7 +1491,6 @@ Bool ImageMoments<T>::whatIsTheNoise (T& sigma,
       error_p = "Unable to make histogram of image";
       return False;
    }
-
 
 // Enter into a plot/fit loop
 
