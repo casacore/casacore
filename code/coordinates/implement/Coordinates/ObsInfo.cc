@@ -251,8 +251,7 @@ Bool ObsInfo::fromFITS(String & error, const RecordInterface & inRecord)
 	setObserver(inRecord.asString(field));
     }
     field = inRecord.fieldNumber("date-obs");
-    Bool ok = ToBool(field >= 0);
-    if (ok) {
+    if (field >= 0) {
 	if (inRecord.type(field) != TpString) {
 	    error = "Type of DATE-OBS field is not a String!";
 	    return False;
@@ -264,13 +263,15 @@ Bool ObsInfo::fromFITS(String & error, const RecordInterface & inRecord)
 	}
 	MVTime time; MEpoch::Types timesys;
 	String datestring = inRecord.asString(field);
-	ok = FITSDateUtil::fromFITS(time, timesys, datestring, timesysstring);
+	Bool ok = 
+	    FITSDateUtil::fromFITS(time, timesys, datestring, timesysstring);
 	setObsDate(MEpoch(time.get(), timesys));
 	if (!ok) {
 	    error = "Could not decode FITS date format from keywords";
+	    return False;
 	}
     }
-    return ok;
+    return True;
 }
 
 Vector<String> ObsInfo::keywordNamesFITS()
