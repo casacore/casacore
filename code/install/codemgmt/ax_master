@@ -2385,3 +2385,5 @@
 09 337 src rm trial/implement/MeasurementComponents/RobustUniformWTCoh.h
 09 337 src rm trial/implement/MeasurementComponents/RobustUniformWTCoh.cc
 09 337 src rm trial/implement/MeasurementComponents/WTCoh.h
+09 339 src rm trial/scripts/inputs.help
+09 339 src rm trial/scripts/inputs.g
