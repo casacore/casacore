@@ -1,5 +1,5 @@
 //# Function.h: Numerical functional interface class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -44,7 +44,8 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="dG1D">
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian2D"
+//	 demos="">
 // </reviewed>
 
 // <prerequisite>

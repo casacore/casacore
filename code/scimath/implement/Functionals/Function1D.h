@@ -39,7 +39,8 @@
 
 // <use visibility=export>
 
-// <reviewed reviewer="tcornwel" date="1996/02/22" tests="" demos="dG1D">
+// <reviewed reviewer="tcornwel" date="1996/02/22" tests="tNQGaussian1D"
+//	 demos="">
 // </reviewed>
 
 // <prerequisite>
