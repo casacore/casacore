@@ -22,7 +22,6 @@
 
 #include <ms/MeasurementSets/MSFieldGram.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSSelection.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableRecord.h>
