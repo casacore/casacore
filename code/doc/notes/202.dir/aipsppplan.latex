@@ -156,7 +156,10 @@ the greatest amount of user-testing.
 \item Auto-GUI for DOs. This would generate a simple GUI automatically
 for any DO.
 \item Stream-lined mini-interpreter ({\em i.e.} simplified interface
-compared to Glish?
+compared to Glish?)
+\item Interface to existing AIPS tasks to enable use from
+AIPS++ from the command-line or from a GUI. This could also be
+done for other legacy systems such as Miriad.
 \end{itemize}
 
 \subsection{User-level tools}
