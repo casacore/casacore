@@ -95,7 +95,6 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
 
       Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
-
    } else {
       goodParameterStatus_p = False;
    }
@@ -133,7 +132,6 @@ ImageStatistics<T>::ImageStatistics (const MaskedImage<T>& imageU,
 
       Vector<Int> cursorAxes;
       goodParameterStatus_p = setAxes(cursorAxes);
-
    } else {
       goodParameterStatus_p = False;
    }
@@ -267,11 +265,22 @@ Bool ImageStatistics<T>::setAxes (const Vector<Int>& axesU)
       }
    }
 
+
 // Signal that we have changed the axes and need a new accumulation
 // image
 
    if (saveAxes.nelements() != cursorAxes_p.nelements() ||
        !allEQ(saveAxes.ac(), cursorAxes_p.ac())) needStorageImage_p = True;
+
+
+// Set the display axes vector.  We also do this in ::generateStorageImage
+// but it is possible the user will want to see the display axes
+// via the public function "displayAxes" before any real work is done
+// so poke this in here too.
+
+   ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
+                                   pInImage_p->ndim());
+
 
    return True;
 }
@@ -1094,7 +1103,7 @@ Bool ImageStatistics<T>::generateStorageImage()
    if (haveLogger_p) os_p << LogIO::NORMAL << "Creating new storage image" << endl << LogIO::POST;
 
 
-// Set the display axes vector.
+// Set the display axes vector (possibly already set in ::setAxes)
 
    ImageUtilities::setDisplayAxes (displayAxes_p, cursorAxes_p, 
                                    pInImage_p->ndim());
@@ -1117,7 +1126,7 @@ Bool ImageStatistics<T>::generateStorageImage()
     }
     tileShape(tileShape.nelements()-1) = storeImageShape(storeImageShape.nelements()-1);
     Table myTable = ImageUtilities::setScratchTable(pInImage_p->name(),
-                        String("ImageStatistics_Sums_"));
+                        String("ImageStatistics::"));
 
 // Create storage image
 
