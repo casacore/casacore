@@ -29,6 +29,7 @@
 #include <aips/Tables/ISMBase.h>
 #include <aips/Tables/ISMBucket.h>
 #include <aips/Arrays/Array.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/ValType.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/Copy.h>
@@ -45,7 +46,11 @@ ISMColumn::ISMColumn (ISMBase* parent, int dataType, uInt colnr)
   endRow_p      (-1),
   lastValue_p   (0),
   lastRowPut_p  (0)
-{}
+{
+    //# The increment in the column cache is always 0,
+    //# because multiple rows refer to the same value.
+    columnCache().setIncrement (0);
+}
 
 ISMColumn::~ISMColumn()
 {
@@ -84,12 +89,6 @@ ISMColumn::~ISMColumn()
 	delete [] (String*)lastValue_p;
 	break;
     }
-}
-
-Bool ISMColumn::canAccessScalarColumn (Bool& reask) const
-{
-    reask = False;
-    return False;
 }
 
 void ISMColumn::setShapeColumn (const IPosition& shape)
@@ -132,6 +131,7 @@ void ISMColumn::remove (uInt bucketRownr, ISMBucket* bucket, uInt bucketNrrow,
     Block<uInt>& offIndex = bucket->offIndex (colnr_p);
     uInt& nused = bucket->indexUsed (colnr_p);
     // Invalidate the last value read.
+    columnCache().invalidate();
     startRow_p = -1;
     endRow_p   = -1;
     // We have to change the bucket, so let the cache set the dirty flag
@@ -239,6 +239,130 @@ void ISMColumn::getStringV (uInt rownr, String* value)
     *value = *(String*)lastValue_p;
 }
 
+void ISMColumn::getScalarColumnBoolV (Vector<Bool>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getBoolV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(Bool*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnuCharV (Vector<uChar>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getuCharV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(uChar*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnShortV (Vector<Short>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getShortV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(Short*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnuShortV (Vector<uShort>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getuShortV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(uShort*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnIntV (Vector<Int>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getIntV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(Int*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnuIntV (Vector<uInt>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getuIntV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(uInt*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnfloatV (Vector<float>* dataPtr)
+{
+    //# Note: using getStorage/putStorage is about 3 times faster
+    //# when the vector is consecutive, but it is slower when not.
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getfloatV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(float*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumndoubleV (Vector<double>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getdoubleV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(double*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnComplexV (Vector<Complex>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getComplexV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(Complex*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnDComplexV (Vector<DComplex>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getDComplexV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(DComplex*)lastValue_p;
+	}
+    }
+}
+void ISMColumn::getScalarColumnStringV (Vector<String>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    uInt rownr = 0;
+    while (rownr < nrrow) {
+	getStringV (rownr, &((*dataPtr)(rownr)));
+	for (rownr++; rownr<=endRow_p; rownr++) {
+	    (*dataPtr)(rownr) = *(String*)lastValue_p;
+	}
+    }
+}
+
 void ISMColumn::getValue (uInt rownr, void* value)
 {
     // Get the bucket with its row number boundaries.
@@ -254,6 +378,7 @@ void ISMColumn::getValue (uInt rownr, void* value)
     readFunc_p (value, bucket->get (offset), nrcopy_p);
     startRow_p = bucketStartRow + stint;
     endRow_p   = bucketStartRow + endint;
+    columnCache().set (startRow_p, endRow_p, lastValue_p);
 }
 
 void ISMColumn::putBoolV (uInt rownr, const Bool* value)
@@ -299,6 +424,84 @@ void ISMColumn::putDComplexV (uInt rownr, const DComplex* value)
 void ISMColumn::putStringV (uInt rownr, const String* value)
 {
     putValue (rownr, value);
+}
+
+void ISMColumn::putScalarColumnBoolV (const Vector<Bool>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnuCharV (const Vector<uChar>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnShortV (const Vector<Short>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnuShortV (const Vector<uShort>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnIntV (const Vector<Int>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnuIntV (const Vector<uInt>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnfloatV (const Vector<float>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumndoubleV (const Vector<double>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnComplexV (const Vector<Complex>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnDComplexV (const Vector<DComplex>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
+}
+void ISMColumn::putScalarColumnStringV (const Vector<String>* dataPtr)
+{
+    uInt nrrow = dataPtr->nelements();
+    for (uInt i=0; i<nrrow; i++) {
+	putValue (i, &((*dataPtr)(i)));
+    }
 }
 
 void ISMColumn::getArrayBoolV (uInt rownr, Array<Bool>* value)
@@ -504,6 +707,7 @@ void ISMColumn::putValue (uInt rownr, const void* value)
 	lastRowPut_p    = rownr+1;
     }
     // Invalidate the last value read.
+    columnCache().invalidate();
     startRow_p = -1;
     endRow_p   = -1;
     // Exit if new value equals current value.
@@ -1019,6 +1223,7 @@ Bool ISMColumn::flush (uInt, Bool)
 void ISMColumn::resync (uInt nrrow)
 {
     // Invalidate the last value read.
+    columnCache().invalidate();
     startRow_p   = -1;
     endRow_p     = -1;
     lastRowPut_p = nrrow;
