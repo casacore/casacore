@@ -1,5 +1,5 @@
 //# tString.cc: This program tests Strings
-//# Copyright (C) 1993,1994,1995
+//# Copyright (C) 1993,1994,1995,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -78,7 +78,10 @@ void decltest()
   assert(z.OK());
   assert(z == "@");
 
-  String n = dec(20);
+  // dec(int) is an obsolete function declared in stream.h.
+  // It is replaced by "20".
+//  String n = dec(20);
+  String n = "20";
   cout << "A string initialized to dec(20):" << n << "\n";
   assert(n.OK());
   assert(n == "20");
