@@ -3651,3 +3651,4 @@
 13 375 src rm trial/implement/Tasking/test/testServer.cc
 13 377 src rm trial/implement/MeasurementEquations/test/dClarkCleanModel.cc
 13 377 src rm trial/implement/MeasurementEquations/test/tConvEqnMask.cc
+13 377 src rm trial/implement/MeasurementEquations/test/tConvEqnStokes.cc
