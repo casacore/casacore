@@ -481,7 +481,7 @@ void ColumnsIndexArray::getArray (Vector<uChar>& result, const String& name)
   ROArrayColumn<uChar> arrCol (itsTable, name);
   uInt nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, 0);
+    Block<uInt> nrel(nrrow, uInt(0));
     Array<uChar> arr = arrCol(0);
     uInt npts = arr.nelements();
     nrel[0] = npts;
@@ -513,7 +513,7 @@ void ColumnsIndexArray::getArray (Vector<Short>& result, const String& name)
   ROArrayColumn<Short> arrCol (itsTable, name);
   uInt nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, 0);
+    Block<uInt> nrel(nrrow, uInt(0));
     Array<Short> arr = arrCol(0);
     uInt npts = arr.nelements();
     nrel[0] = npts;
@@ -545,7 +545,7 @@ void ColumnsIndexArray::getArray (Vector<Int>& result, const String& name)
   ROArrayColumn<Int> arrCol (itsTable, name);
   uInt nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, 0);
+    Block<uInt> nrel(nrrow, uInt(0));
     Array<Int> arr = arrCol(0);
     uInt npts = arr.nelements();
     nrel[0] = npts;
@@ -577,7 +577,7 @@ void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
   ROArrayColumn<uInt> arrCol (itsTable, name);
   uInt nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, 0);
+    Block<uInt> nrel(nrrow, uInt(0));
     Array<uInt> arr = arrCol(0);
     uInt npts = arr.nelements();
     nrel[0] = npts;
@@ -609,7 +609,7 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
   ROArrayColumn<String> arrCol (itsTable, name);
   uInt nrrow = arrCol.nrow();
   if (nrrow > 0) {
-    Block<uInt> nrel(nrrow, 0);
+    Block<uInt> nrel(nrrow, uInt(0));
     Array<String> arr = arrCol(0);
     uInt npts = arr.nelements();
     nrel[0] = npts;
