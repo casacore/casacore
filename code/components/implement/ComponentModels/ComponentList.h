@@ -52,12 +52,13 @@ template <class T> class ImageInterface;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class="SkyComponent">SkyComponent<linkto>
+//   <li> <linkto class="SkyComponent">SkyComponent</linkto>
 // </prerequisite>
 //
 // <etymology>
-//  Because the SkyComponents are actually stored in a linked list
-//  ComponentList seemed like a good name for this class
+//  Because the SkyComponents were originally stored in a linked list
+//  ComponentList seemed like a good name for this class. Now the list is gone
+//  (in favour of a Block<SKyComponent>) but the name has stuck.
 // </etymology>
 //
 // <synopsis> 
@@ -88,7 +89,7 @@ template <class T> class ImageInterface;
 //
 // <motivation>
 // A way was needed to read/write groups of components to disk and
-// manipulate them as a whole
+// manipulate them as a whole.
 // </motivation>
 //
 // <thrown>
