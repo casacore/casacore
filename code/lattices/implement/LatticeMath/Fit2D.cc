@@ -1084,13 +1084,13 @@ Vector<Double> Fit2D::getSolution(uInt& iStart, uInt which)
 //
 // See how many adjustable parameters this model has
 //
-      uInt nP = itsFunction.function(i)->getParameters().nelements();
+      uInt nP = itsFunction.function(i)->getAdjustParameters().nelements();
       iStart += nP;
    }
 //
 // Find the number of available parameters for the model of interest
 //
-   uInt nP = itsFunction.function(which)->getParameters().nelements();
+   uInt nP = itsFunction.function(which)->getAdjustParameters().nelements();
    if (itsSolution.nelements() < iStart+nP) {
       itsLogger << LogIO::SEVERE 
                 << "Fit2D::getSolution - solution vector is not long enough; did you call function fit ?"

@@ -115,7 +115,7 @@ uInt baselineFit(Lattice<Float> &outImage,
 	 ! inIter.atEnd(); inIter++, outIter++, count++) {
         yall = inIter.vectorCursor();
 	fittedParameters=fitter.fit(x, yall, sigma);
-	fitter.fittedFunction()->setParameters(fittedParameters);
+	fitter.fittedFunction()->setAdjustParameters(fittedParameters);
 	for (uInt ii=0; ii < solution.nelements(); ii++) {
 	    solution(ii) = (*fitter.fittedFunction())(xall(ii));
 	}

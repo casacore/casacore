@@ -44,7 +44,7 @@ int main() {
 
     // x^2
     Polynomial<Float> square(2); 
-    square.setParameter(2, 1.0);
+    square.setAdjustParameter(2, 1.0);
 
     LinearComb<Float,Float> combination;
     combination.addFunction(square);
