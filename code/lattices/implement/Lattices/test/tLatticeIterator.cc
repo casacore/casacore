@@ -1,5 +1,5 @@
 //# tLatticeIterator.cc:  mechanical test of the LatticeIterator class
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -45,14 +45,14 @@
 #include <aips/iostream.h>
 
 
-void testVectorROIter (const Lattice<Int>& lattice)
+void testVectorROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Vector cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Int>  iter(lattice, step);
+    RO_LatticeIterator<Int>  iter(lattice, step, useRef);
     Vector<Int> expectedResult(latticeShape(0));
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) 
@@ -110,13 +110,13 @@ void testVectorROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testMatrixROIter (const Lattice<Int>& lattice)
+void testMatrixROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Matrix cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(2, latticeShape(0), latticeShape(1));
-    RO_LatticeIterator<Int>  iter(lattice, cursorShape);
+    RO_LatticeIterator<Int>  iter(lattice, cursorShape, useRef);
     Matrix<Int> expectedResult(latticeShape(0), latticeShape(1));
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.matrixCursor())
@@ -172,7 +172,7 @@ void testMatrixROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testCubeROIter (const Lattice<Int>& lattice)
+void testCubeROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Cube cursor" << endl;
     Int nstep;
@@ -180,7 +180,7 @@ void testCubeROIter (const Lattice<Int>& lattice)
     const IPosition cursorShape(3, latticeShape(0), latticeShape(1),
 				latticeShape(2));
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Int>  iter(lattice, step);
+    RO_LatticeIterator<Int>  iter(lattice, step, useRef);
     Cube<Int> expectedResult(latticeShape(0), latticeShape(1),
 			     latticeShape(2));
     indgen(expectedResult);
@@ -237,13 +237,13 @@ void testCubeROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testArrayROIter (const Lattice<Int>& lattice)
+void testArrayROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using an Array (4-D) cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
-    RO_LatticeIterator<Int>  iter(lattice, cursorShape);
+    RO_LatticeIterator<Int>  iter(lattice, cursorShape, useRef);
     Array<Int> expectedResult(latticeShape);
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
@@ -301,14 +301,14 @@ void testArrayROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void test8ElemROIter (const Lattice<Int>& lattice)
+void test8ElemROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using an 8 element cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,8);
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Int>  iter(lattice, step);
+    RO_LatticeIterator<Int>  iter(lattice, step, useRef);
     Array<Int> expectedResult(cursorShape);
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
@@ -360,13 +360,13 @@ void test8ElemROIter (const Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testTileROIter (const Lattice<Int>& lattice)
+void testTileROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a tile cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(lattice.niceCursorShape());
-    RO_LatticeIterator<Int>  iter(lattice);
+    RO_LatticeIterator<Int>  iter(lattice, useRef);
     Array<Int> expectedResult(cursorShape);
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
@@ -388,14 +388,14 @@ void testTileROIter (const Lattice<Int>& lattice)
 		 AipsError);
 }
 
-void testTiledLineROIter (const Lattice<Int>& lattice)
+void testTiledLineROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a tiled line cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(lattice.niceCursorShape());
     TiledLineStepper step(latticeShape, cursorShape, 0);
-    RO_LatticeIterator<Int>  iter(lattice, step);
+    RO_LatticeIterator<Int>  iter(lattice, step, useRef);
     Vector<Int> expectedResult(latticeShape(0));
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult, iter.vectorCursor()) == True,
@@ -420,7 +420,7 @@ void testTiledLineROIter (const Lattice<Int>& lattice)
 		 AipsError);
 }
 
-void testCopyAssignROIter (const Lattice<Int>& lattice)
+void testCopyAssignROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing the copy constructor and assignment operator" << endl;
     const IPosition latticeShape(lattice.shape());
@@ -432,11 +432,11 @@ void testCopyAssignROIter (const Lattice<Int>& lattice)
       AlwaysAssert(iter.isNull(), AipsError);
       RO_LatticeIterator<Int> iter1 = iter.copy();
       AlwaysAssert(iter1.isNull(), AipsError);
-      iter = RO_LatticeIterator<Int> (lattice);
+      iter = RO_LatticeIterator<Int> (lattice, useRef);
       AlwaysAssert(!iter.isNull(), AipsError);
       iter = iter1;
       AlwaysAssert(iter.isNull(), AipsError);
-      iter = RO_LatticeIterator<Int> (lattice);
+      iter = RO_LatticeIterator<Int> (lattice, useRef);
       AlwaysAssert(!iter.isNull(), AipsError);
       iter1 = iter;
       AlwaysAssert(!iter1.isNull(), AipsError);
@@ -453,7 +453,8 @@ void testCopyAssignROIter (const Lattice<Int>& lattice)
     }
 
     RO_LatticeIterator<Int> iter(lattice, 
-				 LatticeStepper(latticeShape, cursorShape));
+				 LatticeStepper(latticeShape, cursorShape),
+				 useRef);
     AlwaysAssert(!iter.isNull(), AipsError);
     iter++;
     Vector<Int> expectedResult(latticeShape(0));
@@ -496,13 +497,13 @@ void testCopyAssignROIter (const Lattice<Int>& lattice)
 		 == False, AipsError);
 }
 
-void testNonCongruentROIter (const Lattice<Int>& lattice)
+void testNonCongruentROIter (const Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a non-congruent cursor" << endl;
     const IPosition latticeShape(lattice.shape());
     IPosition cursorShape(2,9);
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Int>  iter(lattice, step);
+    RO_LatticeIterator<Int>  iter(lattice, step, useRef);
     Matrix<Int> expectedResult(cursorShape);
     Vector<Int> oneRow(cursorShape(0));
     indgen(oneRow);
@@ -545,7 +546,7 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
     step.setCursorShape(cursorShape);
     step.subSection(IPosition(4, 3,0,0,0), latticeShape-1,
 		    IPosition(4, 2,2,1,1));
-    RO_LatticeIterator<Int>  subIter(lattice, step);
+    RO_LatticeIterator<Int>  subIter(lattice, step, useRef);
     
     oneRow.resize(5);
     Matrix<Int> expectedResult1(5,5);
@@ -604,14 +605,14 @@ void testNonCongruentROIter (const Lattice<Int>& lattice)
 		       subIter.cursor().nonDegenerate()), AipsError);
 }
 
-void testVectorRWIter (Lattice<Int>& lattice)
+void testVectorRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Vector cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
-    LatticeIterator<Int>  iter(lattice, step);
+    LatticeIterator<Int>  iter(lattice, step, useRef);
     Vector<Int> expectedResult(latticeShape(0));
     indgen(expectedResult);
     AlwaysAssert(allEQ(expectedResult,iter.vectorCursor())
@@ -673,13 +674,13 @@ void testVectorRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testMatrixRWIter (Lattice<Int>& lattice)
+void testMatrixRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Matrix cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(2, latticeShape(0), latticeShape(1));
-    LatticeIterator<Int>  iter(lattice, cursorShape);
+    LatticeIterator<Int>  iter(lattice, cursorShape, useRef);
     Matrix<Int> expectedResult(latticeShape(0), latticeShape(1));
     expectedResult = 1;
     AlwaysAssert(allEQ(expectedResult, iter.matrixCursor()) 
@@ -735,7 +736,7 @@ void testMatrixRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testCubeRWIter (Lattice<Int>& lattice)
+void testCubeRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a Cube cursor" << endl;
     Int nstep;
@@ -743,7 +744,7 @@ void testCubeRWIter (Lattice<Int>& lattice)
     const IPosition cursorShape(3, latticeShape(0), latticeShape(1),
 				latticeShape(2));
     LatticeStepper step(latticeShape, cursorShape);
-    LatticeIterator<Int>  iter(lattice, step);
+    LatticeIterator<Int>  iter(lattice, step, useRef);
     Cube<Int> expectedResult(latticeShape(0), latticeShape(1),
 			     latticeShape(2));
     expectedResult = 3;
@@ -800,13 +801,13 @@ void testCubeRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testArrayRWIter (Lattice<Int>& lattice)
+void testArrayRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using an Array (4-D) cursor" << endl;
     Int nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
-    LatticeIterator<Int>  iter(lattice, cursorShape);
+    LatticeIterator<Int>  iter(lattice, cursorShape, useRef);
     Array<Int> expectedResult(latticeShape);
     expectedResult = 5;
     AlwaysAssert(allEQ(expectedResult, iter.cursor()) == True, AipsError);
@@ -864,13 +865,14 @@ void testArrayRWIter (Lattice<Int>& lattice)
     AlwaysAssert(iter.endPosition() == expectedPos, AipsError);
 }
 
-void testCopyAssignRWIter (Lattice<Int>& lattice)
+void testCopyAssignRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing the copy constructor and assignment operator" << endl;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeIterator<Int> iter(lattice, 
-			      LatticeStepper(latticeShape, cursorShape));
+			      LatticeStepper(latticeShape, cursorShape),
+			      useRef);
     iter++;
     Vector<Int> expectedResult(latticeShape(0));
     expectedResult = 7;
@@ -917,7 +919,7 @@ void testCopyAssignRWIter (Lattice<Int>& lattice)
 		 == True, AipsError);
 }
 
-void testNonCongruentRWIter (Lattice<Int>& lattice)
+void testNonCongruentRWIter (Lattice<Int>& lattice, Bool useRef)
 {
     cout << "  Testing using a non-congruent cursor" << endl;
     const IPosition latticeShape(lattice.shape());
@@ -931,7 +933,7 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     }
     IPosition cursorShape(2,9);
     LatticeStepper step(latticeShape, cursorShape);
-    LatticeIterator<Int> iter(lattice, step);
+    LatticeIterator<Int> iter(lattice, step, useRef);
     Matrix<Int> expectedResult1(cursorShape);
     Vector<Int> oneRow(cursorShape(0));
     indgen(oneRow);
@@ -1017,7 +1019,7 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     step.setCursorShape(cursorShape);
     step.subSection(IPosition(4, 3,0,0,0), latticeShape-1,
 		    IPosition(4, 2,2,1,1));
-    LatticeIterator<Int> subIter(lattice, step);
+    LatticeIterator<Int> subIter(lattice, step, useRef);
     
     oneRow.resize(5);
     Matrix<Int> expectedResulta(5,5);
@@ -1088,15 +1090,19 @@ void testNonCongruentRWIter (Lattice<Int>& lattice)
     AlwaysAssert(arr(IPosition(4,15,11,0,0)) == 191, AipsError);
 }
 
-void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2)
+void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2, Bool useRef)
 {
   {
+    PagedArray<Int>* pa1 = dynamic_cast<PagedArray<Int>*> (&lat1);
+    if (pa1) pa1->clearCache();
+    PagedArray<Int>* pa2 = dynamic_cast<PagedArray<Int>*> (&lat2);
+    if (pa2) pa2->clearCache();
     Timer timer;
-    LatticeIterator<Int> lat1Iter (lat1);
+    LatticeIterator<Int> lat1Iter (lat1, useRef);
     // Create dummy lat2Iter to setup cache correctly.
     // It may not be necessary, because the Table getSlice function
     // will setup the cache on its first access.
-    RO_LatticeIterator<Int> lat2Iter (lat2, lat1.niceCursorShape());
+    RO_LatticeIterator<Int> lat2Iter (lat2, lat1.niceCursorShape(), useRef);
     Array<Int> lat2Buffer;
     while (! lat1Iter.atEnd()) {
       // Do separate getSlice to use reference semantics if
@@ -1108,16 +1114,19 @@ void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2)
       lat1Iter++;
     }
     timer.show ("  iter-get ");
+    ///if (pa1) pa1->showCacheStatistics (cout);
+    ///if (pa2) pa2->showCacheStatistics (cout);
   }
   {
     Timer timer;
     // This iterator uses the TileStepper.
-    LatticeIterator<Int> lat1Iter (lat1);
+    LatticeIterator<Int> lat1Iter (lat1, useRef);
     // Use tile shape of lat1, because they have to be iterated
     // in the same way. The cursor has to be resized if needed.
     RO_LatticeIterator<Int> lat2Iter (lat2, LatticeStepper
-				     (lat1.shape(), lat1.niceCursorShape(),
-				      LatticeStepper::RESIZE));
+				       (lat1.shape(), lat1.niceCursorShape(),
+					LatticeStepper::RESIZE),
+				      useRef);
     while (! lat1Iter.atEnd()) {
       lat1Iter.rwCursor() += lat2Iter.cursor();
       lat1Iter++;
@@ -1127,7 +1136,7 @@ void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2)
   }
   {
     Timer timer;
-    LatticeIterator<Int> lat1Iter (lat1);
+    LatticeIterator<Int> lat1Iter (lat1, useRef);
     Array<Int> lat2Buffer;
     while (! lat1Iter.atEnd()) {
       // Do separate getSlice to use reference semantics if
@@ -1143,7 +1152,7 @@ void testAdd (Lattice<Int>& lat1, Lattice<Int>& lat2)
 }
 
 
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
  try {
     {
@@ -1160,79 +1169,106 @@ main (int argc, char *argv[])
     // Check the Iterator with a Vector cursor. 
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testVectorROIter (pagedArr);
+      testVectorROIter (pagedArr, False);
+      testVectorROIter (pagedArr, True);
     }
     // Check the Iterator with a Matrix cursor. 
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testMatrixROIter (pagedArr);
+      testMatrixROIter (pagedArr, False);
+      testMatrixROIter (pagedArr, True);
     }
     // Check the Iterator with a Cube cursor. 
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testCubeROIter (pagedArr);
+      testCubeROIter (pagedArr, False);
+      testCubeROIter (pagedArr, True);
     }
     // Check the Iterator with an Array cursor. 
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testArrayROIter (pagedArr);
+      testArrayROIter (pagedArr, False);
+      testArrayROIter (pagedArr, True);
     }
     // Check the Iterator with an 8 element element cursor.
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      test8ElemROIter (pagedArr);
+      test8ElemROIter (pagedArr, False);
+      test8ElemROIter (pagedArr, True);
     }
     // Check the Iterator with a tile cursor.
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testTileROIter (pagedArr);
+      testTileROIter (pagedArr, False);
+      testTileROIter (pagedArr, True);
     }
     // Check the Iterator with a tiled line cursor.
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testTiledLineROIter (pagedArr);
+      testTiledLineROIter (pagedArr, False);
+      testTiledLineROIter (pagedArr, True);
     }
     // Check the copy constructor and assignment operator
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testCopyAssignROIter (pagedArr);
+      testCopyAssignROIter (pagedArr, False);
+      testCopyAssignROIter (pagedArr, True);
     }
     // Test the non-congruent cursor handling
     {
       const PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testNonCongruentROIter (pagedArr);
+      testNonCongruentROIter (pagedArr, False);
+      testNonCongruentROIter (pagedArr, True);
     }
 
     cout << " Testing the RW iterator" << endl;
     // Check the Iterator with a Vector cursor. 
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testVectorRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testVectorRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testVectorRWIter (pagedArr, True);
     }
     // Check the Iterator with a Matrix cursor. 
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testMatrixRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testMatrixRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testMatrixRWIter (pagedArr, True);
     }
     // Check the Iterator with a Cube cursor. 
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testCubeRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testCubeRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testCubeRWIter (pagedArr, True);
     }
     // Check the Iterator with an Array cursor. 
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testArrayRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testArrayRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testArrayRWIter (pagedArr, True);
     }
     // Check the copy constructor and assignment operator
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testCopyAssignRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testCopyAssignRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testCopyAssignRWIter (pagedArr, True);
     }
     // Test the non-congruent cursor handling
     {
       PagedArray<Int> pagedArr("tLatticeIterator_tmp.table");
-      testNonCongruentRWIter (pagedArr);
+      Array<Int> savarr = pagedArr.get();
+      testNonCongruentRWIter (pagedArr, False);
+      pagedArr.put (savarr);
+      testNonCongruentRWIter (pagedArr, True);
     }
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
@@ -1254,79 +1290,106 @@ main (int argc, char *argv[])
     cout << " Testing the RO iterator" << endl;
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testVectorROIter (arrLattice);
+      testVectorROIter (arrLattice, False);
+      testVectorROIter (arrLattice, True);
     }
     // Check the Iterator with a Matrix cursor. 
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testMatrixROIter (arrLattice);
+      testMatrixROIter (arrLattice, False);
+      testMatrixROIter (arrLattice, True);
     }
     // Check the Iterator with a Cube cursor. 
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testCubeROIter (arrLattice);
+      testCubeROIter (arrLattice, False);
+      testCubeROIter (arrLattice, True);
     }
     // Check the Iterator with an Array cursor. 
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testArrayROIter (arrLattice);
+      testArrayROIter (arrLattice, False);
+      testArrayROIter (arrLattice, True);
     }
     // Check the Iterator with an 8 element element cursor.
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      test8ElemROIter (arrLattice);
+      test8ElemROIter (arrLattice, False);
+      test8ElemROIter (arrLattice, True);
     }
     // Check the Iterator with a tile cursor.
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testTileROIter (arrLattice);
+      testTileROIter (arrLattice, False);
+      testTileROIter (arrLattice, True);
     }
     // Check the Iterator with a tiled line cursor.
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testTiledLineROIter (arrLattice);
+      testTiledLineROIter (arrLattice, False);
+      testTiledLineROIter (arrLattice, True);
     }
     // Check the copy constructor and assignment operator
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testCopyAssignROIter (arrLattice);
+      testCopyAssignROIter (arrLattice, False);
+      testCopyAssignROIter (arrLattice, True);
     }
     // Test the non-congruent cursor handling
     {
       const ArrayLattice<Int> arrLattice(refLattice);
-      testNonCongruentROIter (arrLattice);
+      testNonCongruentROIter (arrLattice, False);
+      testNonCongruentROIter (arrLattice, True);
     }
 
     cout << " Testing the RW iterator" << endl;
     // Check the Iterator with a Vector cursor. 
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testVectorRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testVectorRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testVectorRWIter (arrLattice, True);
     }
     // Check the Iterator with a Matrix cursor. 
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testMatrixRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testMatrixRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testMatrixRWIter (arrLattice, True);
     }
     // Check the Iterator with a Cube cursor. 
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testCubeRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testCubeRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testCubeRWIter (arrLattice, True);
     }
     // Check the Iterator with an Array cursor. 
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testArrayRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testArrayRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testArrayRWIter (arrLattice, True);
     }
     // Check the copy constructor and assignment operator
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testCopyAssignRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testCopyAssignRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testCopyAssignRWIter (arrLattice, True);
     }
     // Test the non-congruent cursor handling
     {
       ArrayLattice<Int> arrLattice(refLattice);
-      testNonCongruentRWIter (arrLattice);
+      Array<Int> savarr = arrLattice.get();
+      testNonCongruentRWIter (arrLattice, False);
+      arrLattice.put (savarr);
+      testNonCongruentRWIter (arrLattice, True);
     }
     // Test some performance aspects.
     {
@@ -1338,27 +1401,44 @@ main (int argc, char *argv[])
       const uInt nx=inp.getInt("nx");
       const uInt ny=inp.getInt("ny");
       IPosition shape(2,nx,ny);
-      PagedArray<Int> pagedArr1(shape, "tLatticeIterator_tmp.tab1");
-      PagedArray<Int> pagedArr2(shape, "tLatticeIterator_tmp.tab2");
+      TiledShape tshape(shape, IPosition(2,nx,1));
+      PagedArray<Int> pagedArr1(tshape, "tLatticeIterator_tmp.tab1");
+      PagedArray<Int> pagedArr2(tshape, "tLatticeIterator_tmp.tab2");
       ArrayLattice<Int> latArr1(shape);
       ArrayLattice<Int> latArr2(shape);
-      {
-	Array<Int> arr(latArr1.shape());
-	indgen(arr);
-	pagedArr1.put (arr);
-	pagedArr2.put (arr);
-	latArr1.put (arr);
-	latArr2.put (arr);
-      }
+
+      Array<Int> arr(latArr1.shape());
+      indgen(arr);
+      pagedArr1.put (arr);
+      pagedArr2.put (arr);
+      latArr1.put (arr);
+      latArr2.put (arr);
+
       cout << "Shape " << shape << endl;
-      cout << "paged+=paged" << endl;
-      testAdd (pagedArr1, pagedArr2);
-      cout << "array+=array" << endl;
-      testAdd (latArr1, latArr2);
-      cout << "paged+=array" << endl;
-      testAdd (pagedArr1, latArr2);
-      cout << "lat+=paged" << endl;
-      testAdd (latArr1, pagedArr2);
+      cout << "paged+=paged useRef=False" << endl;
+      testAdd (pagedArr1, pagedArr2, False);
+      AlwaysAssert (allEQ(pagedArr1.get(), 4*arr), AipsError);
+      cout << "paged+=paged useRef=True" << endl;
+      testAdd (pagedArr1, pagedArr2, True);
+      AlwaysAssert (allEQ(pagedArr1.get(), 7*arr), AipsError);
+      cout << "array+=array useRef=False" << endl;
+      testAdd (latArr1, latArr2, False);
+      AlwaysAssert (allEQ(latArr1.get(), 4*arr), AipsError);
+      cout << "array+=array useRef=True" << endl;
+      testAdd (latArr1, latArr2, True);
+      AlwaysAssert (allEQ(latArr1.get(), 7*arr), AipsError);
+      cout << "paged+=array useRef=False" << endl;
+      testAdd (pagedArr1, latArr2, False);
+      AlwaysAssert (allEQ(pagedArr1.get(), 10*arr), AipsError);
+      cout << "paged+=array useRef=True" << endl;
+      testAdd (pagedArr1, latArr2, True);
+      AlwaysAssert (allEQ(pagedArr1.get(), 13*arr), AipsError);
+      cout << "lat+=paged useRef=False" << endl;
+      testAdd (latArr1, pagedArr2, False);
+      AlwaysAssert (allEQ(latArr1.get(), 10*arr), AipsError);
+      cout << "lat+=paged useRef=True" << endl;
+      testAdd (latArr1, pagedArr2, True);
+      AlwaysAssert (allEQ(latArr1.get(), 13*arr), AipsError);
     }      
   } catch (AipsError x) {
     cerr << "Caught exception: " << x.getMesg() << endl;
