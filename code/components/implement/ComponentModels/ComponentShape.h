@@ -37,6 +37,7 @@
 class MVAngle;
 class RecordInterface;
 class String;
+template <class T> class MeasRef;
 template <class T> class Matrix;
 template <class T> class Vector;
 
@@ -269,6 +270,11 @@ protected:
   //# The assignment operator uses copy semantics.
   ComponentShape& operator=(const ComponentShape& other);
   // </group>
+
+  //# Try and decide if the two reference directions are different, as the
+  //# MeasRef<T>::operator== function is too restrictive.
+  static Bool differentRefs(const MeasRef<MDirection>& ref1,
+			    const MeasRef<MDirection>& ref2);
 
 private:
   //# The reference direction of the component

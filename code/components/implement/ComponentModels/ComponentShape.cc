@@ -35,6 +35,8 @@
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Measures/MeasureHolder.h>
+#include <aips/Measures/MeasFrame.h>
+#include <aips/Measures/MeasRef.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <aips/Utilities/String.h>
@@ -194,6 +196,18 @@ ComponentType::Shape ComponentShape::getType(String& errorMessage,
   return ComponentType::shape(typeVal);
 }
 
+Bool ComponentShape::differentRefs(const MeasRef<MDirection>& ref1,
+				   const MeasRef<MDirection>& ref2) {
+  if (ref1.getType() != ref2.getType()) return True;
+  //# The MeasRef<T>::getFrame function should really be const.
+  const MeasFrame& frame1 = const_cast<MeasRef<MDirection>&>(ref1).getFrame();
+  const MeasFrame& frame2 = const_cast<MeasRef<MDirection>&>(ref2).getFrame();
+  if (frame1.empty() && frame2.empty()) return False;
+  return frame1 == frame2;
+  //# I should also check the offsets but I cannot see how to fish
+  //# them out of the MeasRef<T> class
+}
+
 // Local Variables: 
-// compile-command: "gmake OPTLIB=1 ComponentShape"
+// compile-command: "gmake ComponentShape"
 // End: 
