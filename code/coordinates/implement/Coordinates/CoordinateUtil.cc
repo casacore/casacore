@@ -1,5 +1,5 @@
 //# CoordinateUtils.cc: 
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -280,6 +280,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
       remove.resize(j,True);
    }
    const uInt nRemove = remove.nelements();
+   if (nRemove==0) return True;
 
 // Set the replacement values for the removal world axes
 // if the user didn't give any or got it wrong
@@ -299,7 +300,7 @@ Bool CoordinateUtil::removeAxes(CoordinateSystem& cSys,
    for (i=0; i<nRemove; i++) {
 
 // Remove the axis
- 
+
       if (!cSys.removeWorldAxis(worldAxis, worldReplacement(i))) return False;
 
 // Find the next world axis to eradicate
