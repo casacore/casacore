@@ -52,9 +52,10 @@ PACK=$2
 VERSION=`avers | awk '{printf("%.6s",$1)}'`
 TPASS=`grep "^$2.*PASS" $1/bintest/runtests.report | wc -l`
 TFAIL=`grep "^$2.*FAIL" $1/bintest/runtests.report | wc -l`
+echo 
+echo "Summary of $AIPSPATH runtests $VERSION"
 echo
 echo "****************************************************************************************"
-echo "Summary of $AIPSPATH runtests $VERSION"
 echo 
 echo $PACK | awk '{printf "Test results for %s package\n", $1}'
 echo $TPASS $TFAIL | awk '{printf "\t%5.1f%% Passed %d of %d\n", 100*$1/($1+$2), $1, $1+$2}'
