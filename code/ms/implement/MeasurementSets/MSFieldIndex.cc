@@ -70,6 +70,22 @@ Vector<Int> MSFieldIndex::matchFieldName(const String& name)
 
 //-------------------------------------------------------------------------
 
+Vector<Int> MSFieldIndex::matchFieldCode(const String& code)
+{
+// Match a field code to a set of field id's
+// Input:
+//    code             const String&            Field code to match
+// Output:
+//    matchFieldCode   Vector<Int>              Matching field id's
+//
+  LogicalArray maskArray = (msFieldCols_p.code().getColumn()==code &&
+			    !msFieldCols_p.flagRow().getColumn());
+  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+  return maskFieldId.getCompressedArray();
+}; 
+
+//-------------------------------------------------------------------------
+
 Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names)
 {
 // Match a set of field names to a set of field id's
