@@ -35,6 +35,8 @@
 #include <aips/Quanta/UnitMap.h>
 #include <aips/Utilities/Regex.h>
 
+int UnitVal_static_initializer::initialized = 0;
+
 //# Constants
 UnitVal UnitVal::NODIM(		1.);
 UnitVal UnitVal::UNDIM(		1., UnitDim::Dnon);
@@ -48,6 +50,15 @@ UnitVal UnitVal::MOLAR(		1., UnitDim::Dmol);
 UnitVal UnitVal::ANGLE(		1., UnitDim::Drad);
 UnitVal UnitVal::SOLIDANGLE(	1., UnitDim::Dsr);
 
+void UnitVal::init(Double factor) {
+  kindFactor = factor;
+  kindDim.init();
+}
+
+void UnitVal::init(Double factor, Int pos) {
+  kindFactor = factor;
+  kindDim.init(pos);
+}
 
 UnitVal::UnitVal() :
   kindFactor(1.0),
@@ -56,14 +67,6 @@ UnitVal::UnitVal() :
 UnitVal::UnitVal(const UnitVal &other) :
   kindFactor(other.kindFactor),
   kindDim(other.kindDim) {}
-
-UnitVal::UnitVal(Double factor) :
-  kindFactor(factor),
-  kindDim() {}
-
-UnitVal::UnitVal(Double factor, Int pos) :
-  kindFactor(factor),
-  kindDim(pos) {}
 
 UnitVal::UnitVal(Double factor, const String& s) :
   kindFactor(1.),

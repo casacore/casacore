@@ -169,7 +169,9 @@ class UnitVal {
   friend UnitVal operator/(const UnitVal &in, const UnitVal &other);
   // Output a unit as a value and a string of SI defining units
   friend ostream& operator<<(ostream &os, const UnitVal &ku);
-  
+  // ensure that statics are initialized
+  friend class UnitVal_static_initializer;
+
  public:
   //# Constructors
   // Construct an non-dimensioned value of 1
@@ -178,7 +180,7 @@ class UnitVal {
   UnitVal(const UnitVal &other);
   
   // Construct an non-dimensioned value
-  UnitVal(Double factor);
+  UnitVal(Double factor) { init(factor); }
   
   // Construct a fully dimensioned value
   // <thrown>
@@ -187,7 +189,7 @@ class UnitVal {
   UnitVal(Double factor, const String &s);
   
   // Construct a value with a single unit at position specified
-  UnitVal(Double factor, Int pos);
+  UnitVal(Double factor, Int pos) { init(factor, pos); }
   
   // Destructor
   ~UnitVal();
@@ -258,7 +260,12 @@ class UnitVal {
   static UnitVal ANGLE;
   static UnitVal SOLIDANGLE;
   // </group>
-  
+
+ protected:
+  // alternate initialization
+  void init(Double factor);
+  void init(Double factor, Int pos);
+
  private:
   //# Data members
   // The factor necessary to express the specified unit in the defining SI units
@@ -292,6 +299,28 @@ class UnitVal {
 // Output
 ostream& operator<<(ostream &os, const UnitVal &ku);
 // </group>
+
+static class UnitVal_static_initializer {
+  public:
+    UnitVal_static_initializer( ) {
+      if ( ! initialized ) {
+	UnitVal::NODIM.init(       1.);
+	UnitVal::UNDIM.init(       1., UnitDim::Dnon);
+	UnitVal::LENGTH.init(      1., UnitDim::Dm);
+	UnitVal::MASS.init(        1., UnitDim::Dkg);
+	UnitVal::TIME.init(        1., UnitDim::Ds);
+	UnitVal::CURRENT.init(     1., UnitDim::DA);
+	UnitVal::TEMPERATURE.init( 1., UnitDim::DK);
+	UnitVal::INTENSITY.init(   1., UnitDim::Dcd);
+	UnitVal::MOLAR.init(       1., UnitDim::Dmol);
+	UnitVal::ANGLE.init(       1., UnitDim::Drad);
+	UnitVal::SOLIDANGLE.init(  1., UnitDim::Dsr);
+	initialized = 1;
+      }
+    }
+ private:
+    static int initialized;
+} unitval_static_initializer;
 
 #endif
 

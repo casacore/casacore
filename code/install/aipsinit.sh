@@ -198,6 +198,9 @@
 	AIX)
            a_arch=aix
            ;;
+	Darwin)
+	   a_arch=darwin
+	   ;;
         *)
            if [ `uname -m` = alpha ]
            then
@@ -381,16 +384,30 @@
      fi
   fi
 
+# If we're on Darwin/OSX set DYLD path as well
+  if [ "$a_arch" = "darwin" ]
+  then
+      if [ -z "$DYLD_LIBRARY_PATH" ]
+      then
+          DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+      else
+          DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH"
+      fi
+      export DYLD_LIBRARY_PATH
+  fi
+
 # Increase number of available file descriptor
   a_fds=`ulimit -Sn`
-  if [ $a_fds -lt 1024 ]
-  then
-     a_fds=`ulimit -Hn`
-     if [ $a_fds -gt 1024 ]
-     then
-        a_fds=1024
+  if [ "$a_fds" '!=' 'unlimited' ]; then
+     if [ "$a_fds" -lt 1024 ]; then
+        a_fds=`ulimit -Hn`
+        if [ "$a_fds" '=' 'unlimited' ]; then
+           a_fds=1024
+        elif [ "$a_fds" -gt 1024 ]; then
+           a_fds=1024
+        fi
+        ulimit -Sn $a_fds
      fi
-     ulimit -Sn $a_fds
   fi
 
 # Source possible local AIPS++ initialization files.

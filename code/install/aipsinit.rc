@@ -178,7 +178,10 @@
                        if (~ `{uname -m} AIX) {
                           a_arch=aix
                        } else {
-                          a_arch=UNKNOWN_ARCH
+                          if (~ `{uname -s} Darwin) {
+                             a_arch=darwin
+                          } else {
+                             a_arch=UNKNOWN_ARCH
                        }
                     }
                  }
@@ -332,6 +335,15 @@
 
 #    Function which invokes aipsinit with "aips_ext" as a command line argument.
      fn aipsinit { aips_ext=$* ; . $a_root/aipsinit.rc }
+  }
+
+# If we're on Darwin/OSX set DYLD path as well
+  if (~ $a_arch darwin) {
+     if (~ $DYLD_LIBRARY_PATH ()) {
+        DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH
+     } else {
+        DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
+     }
   }
 
 # Increase number of available file descriptor

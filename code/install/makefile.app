@@ -358,7 +358,7 @@ $(LIBOPTD)/%.$(SFXSHAR) : ;
 
 $(LIBEXECD)/% : $(CODEDIR)/%
 	@ $(RM) $@
-	  cp $< $@
+	  sed -e 's#__SFXSHAR#$(SFXSHAR)#g' $< > $@
 	@ chmod 664 $@
 
 $(LIBICOND)/% : $(CODEDIR)/%

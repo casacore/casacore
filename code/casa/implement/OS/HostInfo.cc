@@ -180,6 +180,9 @@ HOSTINFO_IMPLEMENT_MEMBERS
 #elif defined(AIPS_HPUX)
 #include <aips/OS/HostInfoHpux.h>
 HOSTINFO_IMPLEMENT_MEMBERS
+#elif defined(__APPLE__)
+#include <aips/OS/HostInfoDarwin.h>
+HOSTINFO_IMPLEMENT_MEMBERS
 #else
 Int HostInfo::numCPUs( ) { return 0; }
 Int HostInfo::memoryTotal( ) { return -1; }

@@ -28,6 +28,12 @@
 #if !defined(AIPS_AIPS_MATH_H)
 #define AIPS_AIPS_MATH_H
 
+#if defined(__APPLE__)
+#include <ostream>
+#include <math.h>
+#define isnan __isnan
+#endif
+
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of
 // them (e.g. <cstring>)

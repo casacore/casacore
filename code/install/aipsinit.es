@@ -178,7 +178,11 @@
                        if {~ `{uname -m} AIX} {
                           a_arch=aix
                        } {
-                          a_arch=UNKNOWN_ARCH
+			  if {~ `{uname -s} Darwin} {
+			     a_arch=darwin
+			  } {
+                             a_arch=UNKNOWN_ARCH
+                          }
                        }
                     }
                  }
@@ -337,6 +341,15 @@
            aips_ext=$* ;
            local (a_root = $a_root) {. $a_root/aipsinit.es}
         }
+     }
+  }
+
+# If we're on Darwin/OSX set DYLD path as well
+  if {~ $a_arch darwin} {
+     if {~ $DYLD_LIBRARY_PATH ()} {
+        DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH
+     } {
+        DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH
      }
   }
 

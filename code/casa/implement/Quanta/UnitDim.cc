@@ -30,7 +30,7 @@
 #include <aips/Utilities/String.h>
 #include <aips/Quanta/UnitDim.h>
 
-UnitDim::UnitDim() {
+void UnitDim::init() {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }
@@ -44,7 +44,7 @@ UnitDim::UnitDim(const UnitDim &other) {
     unitDim = (Char *) unitLong;
 }
 
-UnitDim::UnitDim(Int pos) {
+void UnitDim::init(Int pos) {
     for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }

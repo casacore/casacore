@@ -191,6 +191,9 @@
         AIX:
            set a_arch = aix
            breaksw
+	Darwin:
+	   set a_arch = darwin
+	   breaksw
         default:
            if (`uname -m` == alpha) then
               set a_arch = alpha
@@ -326,6 +329,15 @@
 
 #    Alias which invokes aipsinit with "aips_ext" as a command line argument.
      alias aipsinit "set aips_ext = (\!*) ; set a_root = $a_root ; source $a_root/aipsinit.csh"
+  endif
+
+# If we're on Darwin/OSX set DYLD path as well
+  if ( "$a_arch" = "darwin" ) then
+     if ( "$DYLD_LIBRARY_PATH" = "" ) then
+	setenv DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH"
+     else
+        setenv DYLD_LIBRARY_PATH="$LD_LIBRARY_PATH:$DYLD_LIBRARY_PATH"
+     endif
   endif
 
 # Increase number of available file descriptors.

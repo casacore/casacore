@@ -101,18 +101,21 @@ public:
 
 // Destructor
     ~UnitDim();
+protected:
+    void init( );
+    void init(Int pos);
 
 private:
 //# Constructors
 // Construct a unit with zero dimension in all SI units
-    UnitDim();
+    UnitDim() { init( ); }
 
 // Copy constructor
     UnitDim(const UnitDim &other);
 
 // Construct a unit dimension with a one in the indicated position (as
 // Dim enumerator) and zeroes in all other units
-    UnitDim(Int pos);
+    UnitDim(Int pos) { init(pos); }
 
 //# Operators
 // Assignment (copy semantics)
