@@ -302,6 +302,7 @@
      echo "// $TFILE -- `date` -- `whoami`" > $TFILE
      cat ${TFILE}.$$ >> $TFILE
      NEW=`expr $NEW + 1`
+     rm -f ${TFILE}.$$
 ###
   done
 
