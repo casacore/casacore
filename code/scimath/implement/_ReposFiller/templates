@@ -781,42 +781,49 @@
 1000 casa/stdmap.h 
      = casa/BasicSL/String.h 
      = scimath/Functionals/FuncExprData.h 
-     template class map<String, FuncExprData::ExprOperator> 
-     AIPS_MAP_AUX_TEMPLATES(String, FuncExprData::ExprOperator) 
+     #namespace
+     template class std::map<casa::String, casa::FuncExprData::ExprOperator> 
+     AIPS_MAP_AUX_TEMPLATES(casa::String, casa::FuncExprData::ExprOperator) 
 1010 casa/stdmap.h 
      = scimath/Functionals/FuncExprData.h 
-     template class map<FuncExprData::opTypes, FuncExprData::ExprOperator> 
-     AIPS_MAP_AUX_TEMPLATES(FuncExprData::opTypes, FuncExprData::ExprOperator) 
+     #namespace
+     template class std::map<casa::FuncExprData::opTypes, casa::FuncExprData::ExprOperator> 
+     AIPS_MAP_AUX_TEMPLATES(casa::FuncExprData::opTypes, casa::FuncExprData::ExprOperator) 
 1000 casa/vector.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
-     template class vector<AutoDiff<Complex> > 
-     AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Complex>) 
+     #namespace
+     template class std::vector<casa::AutoDiff<casa::Complex> > 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::Complex>) 
 1010 casa/vector.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
-     template class vector<AutoDiff<DComplex> > 
-     AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<DComplex>) 
+     #namespace
+     template class std::vector<casa::AutoDiff<casa::DComplex> > 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::DComplex>) 
 1020 casa/vector.h 
      = scimath/Functionals/FuncExprData.h 
-     template class vector<FuncExprData::ExprOperator> 
-     AIPS_VECTOR_AUX_TEMPLATES(FuncExprData::ExprOperator) 
+     #namespace
+     template class std::vector<casa::FuncExprData::ExprOperator> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::FuncExprData::ExprOperator) 
 1030 casa/vector.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
-     template class vector<AutoDiff<Double> > 
-     AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Double>) 
+     #namespace
+     template class std::vector<casa::AutoDiff<casa::Double> > 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::Double>) 
 1040 casa/vector.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
-     template class vector<AutoDiff<Float> > 
-     AIPS_VECTOR_AUX_TEMPLATES(AutoDiff<Float>) 
+     #namespace
+     template class std::vector<casa::AutoDiff<casa::Float> > 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::Float>) 
 1000 scimath/Fitting/FitGaussian.cc 
      template class FitGaussian<Float> 
 1000 scimath/Fitting/GenericL2Fit.cc 
