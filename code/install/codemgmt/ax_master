@@ -2623,3 +2623,4 @@
 11 391 src rm trial/implement/MeasurementEquations/DOsimulater.h
 11 391 src rm trial/implement/MeasurementEquations/DOsimulater.cc
 11 391 src rm trial/apps/simulater
+11 393 src mv trial/implement/MeasurementEquations/simulater.g trial/implement/MeasurementEquations/simulator.g
