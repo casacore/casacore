@@ -97,6 +97,11 @@ public:
 				     const IPosition& newShape,
 				     const LELLattCoordBase& newCoord) const;
 
+  // Create a rebinning for an expression node.
+  virtual LatticeExprNode makeRebinLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& binning) const;
+
   // Get the coordinates of the spectral axis for the given shape.
   // This function throws an exception as a Lattice has no coordinates.
   virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,

@@ -31,6 +31,7 @@
 #include <trial/Lattices/LatticeRegion.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/RebinLattice.h>
 #include <aips/Exceptions/Error.h>
 
 
@@ -89,6 +90,25 @@ LatticeExprNode LELLattCoord::makeExtendLattice
 {
   throw AipsError ("LELCoordinates::getSpectralInfo - "
 		   "cannot extend lattice without coordinates");
+  return LatticeExprNode();
+}
+
+LatticeExprNode LELLattCoord::makeRebinLattice
+                                    (const LatticeExprNode& expr,
+				     const IPosition& binning) const
+{
+  switch (expr.dataType()) {
+  case TpFloat:
+    return RebinLattice<Float> (LatticeExpr<Float>(expr), binning);
+  case TpDouble:
+    return RebinLattice<Double> (LatticeExpr<Double>(expr), binning);
+  case TpComplex:
+    return RebinLattice<Complex> (LatticeExpr<Complex>(expr), binning);
+  case TpDComplex:
+    return RebinLattice<DComplex> (LatticeExpr<DComplex>(expr), binning);
+  default:
+    throw (AipsError ("LELLattCoord::makeRebinLattice - invalid datatype"));
+  }
   return LatticeExprNode();
 }
 
