@@ -1,5 +1,5 @@
 //# FileLocker.h: Class to handle file locking
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -122,12 +122,8 @@ public:
     // Test if the file can be locked for read or write.
     Bool canLock (LockType = Write);
 
-    // Is the file read locked by this process?
-    // Note that a write lock implies a read lock.
-    Bool isReadLocked() const;
-
-    // Is the file write locked by this process?
-    Bool isWriteLocked() const;
+    // Test if the process has a lock for read or write on the file.
+    Bool hasLock (LockType = Write) const;
 
     // Get the fd in use.
     int fd() const;
@@ -148,13 +144,9 @@ private:
 };
 
 
-inline Bool FileLocker::isReadLocked() const
+inline Bool FileLocker::hasLock (LockType type) const
 {
-    return itsReadLocked;
-}
-inline Bool FileLocker::isWriteLocked() const
-{
-    return itsWriteLocked;
+    return (type == Write  ?  itsWriteLocked : itsReadLocked);
 }
 inline int FileLocker::fd() const
 {
