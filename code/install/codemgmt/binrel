@@ -77,7 +77,15 @@ $CODE_DIRS = "admin aips atnf bima contrib dish doc hia install nfra nral nrao s
 ##
 ## which files to copy directly, rooted in code
 ##
-$COPY_FILES = "VERSION install/configure";
+$COPY_FILES = "VERSION";
+
+##
+## which files to sift through and do substitutions
+## from the FTP directory
+##
+$FTPSUBST_FILES = "install/configure";
+$FTPSITE="aips2.nrao.edu";
+$IMPORTDIR="pub/import";
 
 ##
 ## maps the possible architectures to machines we can use
@@ -301,6 +309,53 @@ if ( ! $archonly ) {
     while ( <CP> ) { print "\t$_"; }
     close(CP);
 
+
+    @todo = ();
+    print "doing substitution on $FTPSUBST_FILES\n";
+    foreach $file ( split(/\s+/, $FTPSUBST_FILES) ) {
+	die "can't open $file" unless open(IN, "< $file");
+	while ( <IN> ) {
+	    m@=\s*['"](__[A-Z]+)@ && (push(@todo,$1), next);
+	}
+	close(IN);
+    }
+
+    $ftpcmds = <<"EOF";
+user anonymous binrel\@aips2.nrao.edu
+cd $IMPORTDIR
+dir
+EOF
+
+    open( OUT, "> /tmp/ftp$$" );
+    print OUT $ftpcmds;
+    close( OUT );
+    open( IN, "ftp -n $FTPSITE < /tmp/ftp$$ |" );
+    %match = ();
+    $match = join('|',@todo);
+    while ( <IN> ) {
+	($match{$1} = $_) =~ s/.*?(\S+)\n?$/$1/ if m/($match)/;
+    }
+    unlink( "/tmp/ftp$$" );
+
+    @match=();
+    foreach $key ( keys %match ) { push( @match, $key ) if $match{$key} !~ m/$key/; }
+    die "matching of FTP files failed" unless scalar(@match) > 0;
+    $match = join('|',@match);
+    foreach $file ( split(/\s+/, $FTPSUBST_FILES) ) {
+	die "can't read $file" unless open(IN, "< $file");
+	($outfile = $file) =~ s/.*?(\w+)$/$1/;
+	die "can't write $TARGET/$NAME/$outfile" unless open(OUT, "> $TARGET/$NAME/$outfile");
+	while ( <IN> ) {
+	    if ( m@=\s*['"]($match)@ ) {
+		$i = $1;
+		s@(=\s*['"])$i@$1$match{$i}@;
+	    }
+	    print OUT;
+	}
+	close(IN);
+	close(OUT);
+    }
+
     print "creating readme file\n";
     open(OUT,"> $TARGET/$NAME/README");
     $README_TEXT =~ s/\$VERSION/$NAME/g;
@@ -390,3 +445,4 @@ sub wanted {
 	}
     }
 }
+
