@@ -36,8 +36,8 @@ set htxt  = ("Determine the template duplicates between the package and" \
 	     "application/test programs. The result will be in <typ>.dup.")
 set hsw   = ("-s show only the system template files that can cause" \
 	     "   problems in the aips++ system")
-set huse  =  "<typ>.def"
-set hcrea =  "<typ>.dup"
+set huse  =  "<typ>.def <typ>.pak"
+set hcrea =  "<typ>.dup <typ>.pak"
 #
 # Basic package names in order
 #
