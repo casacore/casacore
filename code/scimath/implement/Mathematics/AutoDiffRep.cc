@@ -95,8 +95,3 @@ AutoDiffRep<T> &AutoDiffRep<T>::operator=(const AutoDiffRep<T> &other) {
   return *this;
 }
 
-template <class T> void AutoDiffRep<T>::derivatives(Vector<T> &res) const { 
-  res.resize(nd_p);
-  res = grad_p;
-}
-
