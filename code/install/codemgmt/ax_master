@@ -2822,3 +2822,4 @@
 11 008 src mv trial/implement/Mathematics/polyfitter.cc trial/implement/Mathematics/DOpolyfitter.cc
 11 008 src mv trial/implement/Mathematics/randomnumbers.cc trial/implement/Mathematics/DOrandomnumbers.cc
 11 008 src mv trial/implement/Mathematics/randomnumbers.h trial/implement/Mathematics/DOrandomnumbers.h
+11 008 src mv trial/implement/Mathematics/sinusoidfitter.h trial/implement/Mathematics/DOsinusoidfitter.h
