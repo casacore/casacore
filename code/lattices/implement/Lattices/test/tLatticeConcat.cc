@@ -23,7 +23,8 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
-//# $Id: 
+//# $Id$
+
 
 #include <aips/aips.h>
 #include <aips/Arrays/Array.h>
@@ -48,15 +49,16 @@
 
 void check (uInt axis, MaskedLattice<Float>& ml,
             MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2);
-
-void fillImage (ImageInterface<Float>& im, Array<Float>& a, Bool maskValue);
+void check2 (MaskedLattice<Float>& ml,
+             MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2);
+void makeMask (ImageInterface<Float>& a, Bool maskValue, Bool set);
 
 int main() {
   try {
 
 // Make some ArrayLattices
 
-      IPosition shape(2,5,10);
+      IPosition shape(2,256,512);
       Array<Float> a1(shape);
       Array<Float> a2(shape);
       Int i, j;
@@ -73,6 +75,17 @@ int main() {
 
       SubLattice<Float> ml1(l1, True);
       SubLattice<Float> ml2(l2, True);
+
+
+// Make some PagedImages and give them a mask
+
+      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
+                            "tLatticeConcat_tmp1.img");
+      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
+                            "tLatticeConcat_tmp2.img");
+      im1.put(a1); im2.put(a2);
+      makeMask(im1, True, True);
+      makeMask(im2, False, True);
 
       {
          cout << "Axis 0, ArrayLattices, no masks" << endl;
@@ -91,6 +104,7 @@ int main() {
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
          AlwaysAssert(lc.axis()==0, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -124,6 +138,7 @@ int main() {
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==False, AipsError);
          AlwaysAssert(lc.axis()==1, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -140,14 +155,76 @@ int main() {
       }
 
 
-// Make some PagedImages and give them a mask
+      {
+         cout << "Increase dimensionality by 1, ArrayLattices, no masks" << endl;
 
-      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
-                            "tLatticeConcat_tmp1.img");
-      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
-                            "tLatticeConcat_tmp2.img");
-      fillImage(im1, a1, True);
-      fillImage(im2, a2, False);
+// Create axis 2
+
+         LatticeConcat<Float> lc (2, False);
+         lc.setLattice(ml1);
+         lc.setLattice(ml2);
+
+// Find output shape
+
+         IPosition outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==3, AipsError);
+         AlwaysAssert(outShape(0)==shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(outShape(2)=2, AipsError);
+         AlwaysAssert(lc.isMasked()==False, AipsError);
+         AlwaysAssert(lc.axis()==2, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
+
+// Make output
+   
+         ArrayLattice<Float> l3(outShape);
+         SubLattice<Float> ml3(l3, True);
+
+// Do it
+
+         lc.copyData(ml3);
+
+// Check values
+        
+         check2 (ml3, ml1, ml2);
+      }
+
+      {
+         cout << "Increase dimensionality by 1, PagedImages,  masks" << endl;
+
+// Create axis 2
+
+         LatticeConcat<Float> lc (2, False);
+         lc.setLattice(im1);
+         lc.setLattice(im2);
+
+// Find output shape
+
+         IPosition outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==3, AipsError);
+         AlwaysAssert(outShape(0)==shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(outShape(2)=2, AipsError);
+         AlwaysAssert(lc.isMasked()==True, AipsError);
+         AlwaysAssert(lc.axis()==2, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
+
+// Make output
+
+         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords3D(),
+                               "tLatticeConcat_tmp3.img");
+         makeMask(ml3, True, False);
+
+// Do it
+
+         lc.copyData(ml3);
+
+// Check values
+        
+         check2 (ml3, im1, im2);
+      }
+
+
       {
          cout << "Axis 0, PagedImages, masks" << endl;
 
@@ -165,12 +242,13 @@ int main() {
          AlwaysAssert(outShape(1)==shape(1), AipsError);
          AlwaysAssert(lc.isMasked()==True, AipsError);
          AlwaysAssert(lc.axis()==0, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
 
          PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
                                "tLatticeConcat_tmp3.img");
-         fillImage(ml3, a1, True);
+         makeMask(ml3, True, False);
 
 // Do it
 
@@ -201,6 +279,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
          AlwaysAssert(lc.axis()==1, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -214,6 +293,57 @@ int main() {
 // Check values
 
          check (1, ml3, ml1, ml2);
+
+// Now reset axis to increase dimensionality
+
+         lc.setAxis(2);
+         outShape.resize(0); outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==3, AipsError);
+         AlwaysAssert(outShape(0)==shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(outShape(2)==2, AipsError);
+         AlwaysAssert(lc.axis()==2, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
+//
+// Make output
+   
+         ArrayLattice<Float> l4(outShape);
+         SubLattice<Float> ml4(l4, True);
+
+// Do it
+
+         lc.copyData(ml4);
+
+// Check values
+
+         check2 (ml4, ml1, ml2);
+
+
+// Set axis back so dimensioality does not increase
+
+         lc.setAxis(0);
+
+// Find output shape
+
+         outShape.resize(0); outShape = lc.shape();
+         AlwaysAssert(outShape.nelements()==2, AipsError);
+         AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
+         AlwaysAssert(outShape(1)==shape(1), AipsError);
+         AlwaysAssert(lc.axis()==0, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
+
+// Make output
+   
+         ArrayLattice<Float> l5(outShape);
+         SubLattice<Float> ml5(l5, True);
+
+// Do it
+
+         lc.copyData(ml5);
+
+// Check values
+
+         check (0, ml5, ml1, ml2);
       }
 
 
@@ -244,6 +374,7 @@ int main() {
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
          AlwaysAssert(lc.axis()==1, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -276,6 +407,7 @@ int main() {
          AlwaysAssert(lc.shape().isEqual(lc2.shape()), AipsError);
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
          AlwaysAssert(lc2.axis()==0, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -306,6 +438,7 @@ int main() {
          AlwaysAssert(lc.shape().isEqual(lc2.shape()), AipsError);
          AlwaysAssert(lc.isMasked()==lc2.isMasked(), AipsError);
          AlwaysAssert(lc2.axis()==0, AipsError);
+         AlwaysAssert(lc.nelements()==2, AipsError);
 
 // Make output
    
@@ -337,7 +470,7 @@ int main() {
          } catch (AipsError x) {
          } end_try;
          if (!ok) {
-            throw (AipsError("set forced failure did not work - this was unexpected"));  
+            throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
          }
 //
          ok = True;
@@ -359,7 +492,7 @@ int main() {
             ok = False;
          } catch (AipsError x) {;} end_try;
          if (!ok) {
-            throw (AipsError("set forced failure did not work - this was unexpected"));  
+            throw (AipsError("setLattice forced failure did not work - this was unexpected"));  
          }
       }
 
@@ -379,7 +512,6 @@ void check (uInt axis, MaskedLattice<Float>& ml,
    IPosition shape2 = ml2.shape();
 //
    IPosition blc(2,0,0);
-   IPosition sliceShape(2,shape1(0), shape1(1));
    AlwaysAssert(allEQ(ml1.get(), ml.getSlice(blc,shape1)), AipsError);
    AlwaysAssert(allEQ(ml1.getMask(), ml.getMaskSlice(blc,shape1)), AipsError);
 //
@@ -397,11 +529,28 @@ void check (uInt axis, MaskedLattice<Float>& ml,
 }
 
 
-void fillImage (ImageInterface<Float>& im, Array<Float>& a, Bool maskValue)
+
+void check2 (MaskedLattice<Float>& ml,
+             MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2)
 {
-   im.put(a);
+   IPosition shape1 = ml1.shape();
+   IPosition shape2 = ml2.shape();
+   IPosition sliceShape(3,shape1(0), shape1(1), 1);
+//
+   IPosition blc(3,0,0,0);
+   AlwaysAssert(allEQ(ml1.get(), ml.getSlice(blc,sliceShape,True)), AipsError);
+   AlwaysAssert(allEQ(ml1.getMask(), ml.getMaskSlice(blc,sliceShape,True)), AipsError);
+//
+   blc(2) = 1;
+   AlwaysAssert(allEQ(ml2.get(), ml.getSlice(blc,sliceShape,True)), AipsError);
+   AlwaysAssert(allEQ(ml2.getMask(), ml.getMaskSlice(blc,sliceShape,True)), AipsError);
+}
+
+
+void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
+{
    LCPagedMask mask = LCPagedMask(RegionHandler::makeMask (im, "mask0"));
-   mask.set(maskValue);
+   if (set) mask.set(maskValue);
    im.defineRegion ("mask0", ImageRegion(mask), RegionHandler::Masks);
    im.setDefaultMask("mask0");
 }
