@@ -11,3 +11,32 @@ change id: 162
  summary:  Added arbitrary axes to ArrayIterator classes
 ArrayIterator (and its derived classes VectorIterator and MatrixIterator) have been extended with the ability to iterate over any combination of axes.
 For example, in VectorIterator the cursor axis can now be axis 2. Before it could only be axis 0.
+
+change id: 0163
+ author:   Wim Brouw
+ date:     2005/02/02
+ avers:    1.9
+ area:     Library
+ package:  scimath
+ module:   Functionals
+ type:     Code
+ category: New
+ summary:  Added cross-cloning
+To ease the use of Functionals in the Fitting module, I have added cloneAD() and cloneNonAD() methods to all Functionals usable for fitting.
+
+If you have e.g. a 
+Gaussian1D<Double> gd1;
+functional with some parameters set, the following can be done:
+
+Gaussian1D<AutoDiff<Double> > *gd1ad = gd1.cloneAD();
+or
+Function<AutoDiff<Double> > *funad = gd1.cloneAD();
+
+In essence the following table holds:
+
+Method		In	Out	In	Out
+clone()		T	T	AD<T>	AD<T>
+cloneAD()	T	AD<T>	AD<T>	AD<T>
+cloneNonAD()	T	T	AD<T>	<T>
+
+See tGauusian1D for an example
