@@ -218,7 +218,7 @@ public:
 				       const uInt *&typ) const;
   static const String *const allMyTypes(Int &nall, Int &nextra,
 					const uInt *&typ);
-  // <group>
+  // </group>
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Get my type (as Register)
