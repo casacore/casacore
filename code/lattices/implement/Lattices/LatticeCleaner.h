@@ -1,5 +1,5 @@
 //# Cleaner.h: this defines Cleaner a class for doing convolution
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -153,7 +153,7 @@ private:
   Float itsTotalFlux;
 
   // Memory to be allocated per TempLattice
-  uInt itsMemoryMB;
+  Double itsMemoryMB;
 
   // Let the user choose whether to stop
   Bool itsChoose;
