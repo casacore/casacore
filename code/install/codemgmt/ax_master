@@ -2606,3 +2606,4 @@
 11 382 src rm /trial/implement/ComponentModels/csm_gui.g
 11 382 sys rm libexec/csm_func.g
 11 382 sys rm libexec/csm_gui.g
+11 382 src mv trial/scripts/gaussian.g trial/implement/Mathematics/gaussian.g
