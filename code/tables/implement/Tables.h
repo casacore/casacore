@@ -138,7 +138,7 @@
 //
 // The AIPS++ tables are mainly based upon the ideas of Allen Farris,
 // as laid out in the
-// <A HREF="http://aips2.cv.nrao.edu/aips++/docs/reference/Database.ps">
+// <A HREF="http://aips2.cv.nrao.edu/aips++/docs/reference/Database.ps.gz">
 // AIPS++ Database document</A>, from where the following paragraph is taken:
 // 
 // <BLOCKQUOTE>
