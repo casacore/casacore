@@ -71,7 +71,10 @@ _M_assign_aux(T const *, T const *, forward_iterator_tag);
 #if defined(AIPS_SUN_NATIVE)
 #define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template T* std::copy_backward<T*, T* >(T*, T*, T*);\
+template T* std::copy_backward<const T*, T* >(T*, T*, T*);\
 template T* std::copy<T*, T* >(T*, T*, T*);\
+template T* std::copy<const T*, T* >(T*, T*, T*);\
+template void std::fill<const T*, T >(T*, T*, const T&);\
 template void std::fill<T*, T >(T*, T*, const T&);
 #else
 #define AIPS_VECTOR_AUX_TEMPLATES(T)
