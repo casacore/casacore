@@ -1,5 +1,5 @@
 //# LogFilter.cc: Filter LogMessages on priority
-//# Copyright (C) 1996
+//# Copyright (C) 1996,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,36 +26,49 @@
 //# $Id$
 
 #include <aips/Logging/LogFilter.h>
+#include <aips/Logging/LogFilterExpr.h>
 
-LogFilter::LogFilter(LogMessage::Priority lowest)
-  : lowest_p(lowest)
+
+LogFilter::LogFilter (LogMessage::Priority lowest)
+: lowest_p(lowest),
+  expr_p  (0)
 {}
 
-LogFilter::LogFilter(const LogFilter &other)
- : lowest_p(other.lowest_p)
-{}
-
-LogFilter &LogFilter::operator=(const LogFilter &other)
+LogFilter::LogFilter (const String& expr)
+: lowest_p(LogMessage::NORMAL),
+  expr_p  (0)
 {
-    if (this != &other) {
-        lowest_p = other.lowest_p;
+  expr_p = new LogFilterExpr(expr);
+}
+
+LogFilter::LogFilter (const LogFilter& other)
+: lowest_p(other.lowest_p),
+  expr_p  (0)
+{
+  if (other.expr_p != 0) {
+    expr_p = new LogFilterExpr (*other.expr_p);
+  }
+}
+
+LogFilter& LogFilter::operator= (const LogFilter& other)
+{
+  if (this != &other) {
+    lowest_p = other.lowest_p;
+    delete expr_p;
+    expr_p = 0;
+    if (other.expr_p != 0) {
+      expr_p = new LogFilterExpr (*other.expr_p);
     }
-    return *this;
+  }
+  return *this;
 }
 
 LogFilter::~LogFilter()
 {
-    // Nothing
+  delete expr_p;
 }
 
-LogMessage::Priority LogFilter::lowestPriority() const
+Bool LogFilter::passExpr (const LogMessage& message) const
 {
-    return lowest_p;
+  return expr_p->matches (message);
 }
-
-LogFilter &LogFilter::lowestPriority(LogMessage::Priority newPriority)
-{
-    lowest_p = newPriority;
-    return *this;
-}
-
