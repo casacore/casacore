@@ -834,10 +834,10 @@ EOT
      echo "will construct these entries."
      echo ""
      echo "The local SITE name will be used to create site-specific"
-     echo "directories.  It should be a single lower-case word of less than"
+     echo "directories.  It should be a SINGLE lower-case word of less than"
      echo "than eight characters, usually reflecting the geographical location"
      echo "(town or city) rather than institution, since the latter may have"
-     echo "several sites." 
+     echo "several sites.  Do not put any 'funny' characters (eg '/') in it." 
   fi
 
   while true
@@ -933,8 +933,13 @@ EOT
            do
               read ANSWER DUMMY
               [ "$ANSWER" != "" ] && SITE="$ANSWER"
-              [ "$SITE" != "" ] && break
-              printf "Reenter the site name: "
+              if [ "$SITE" != "" ] ; then
+		 case $SITE in
+                    */*|*/|/*) echo "You cannot put a slash in a site name.";;
+		    *)   break;;
+		 esac
+	      fi
+              printf "Please re-enter the site name: "
            done
 
 #          Get a short comment.
