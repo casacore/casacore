@@ -79,10 +79,10 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
    switch(op_p) {
    case LELBinaryEnums::EQ :
        {
-          LELArray<Bool> templ(result.shape());
-	  LELArray<Bool> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<Bool> templ(result.shape());
+	  LELArrayRef<Bool> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() == tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
@@ -90,10 +90,10 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
        break;
    case LELBinaryEnums::NE :
        {
-          LELArray<Bool> templ(result.shape());
-	  LELArray<Bool> tempr(result.shape());
-	  pLeftExpr_p->eval (templ, section);
-	  pRightExpr_p->eval(tempr, section);
+          LELArrayRef<Bool> templ(result.shape());
+	  LELArrayRef<Bool> tempr(result.shape());
+	  pLeftExpr_p->evalRef (templ, section);
+	  pRightExpr_p->evalRef(tempr, section);
 	  Array<Bool> res(templ.value() != tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
@@ -127,9 +127,9 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
 	     }
 	  }
        } else {
-          LELArray<Bool> temp(result.shape());
+          LELArrayRef<Bool> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
-	  pRightExpr_p->eval(temp, section);
+	  pRightExpr_p->evalRef(temp, section);
 	  if (temp.isMasked()) {
 	     result.combineOrAnd (True, result.value(), temp.value(),
 				  temp.mask());
@@ -166,9 +166,9 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
 	     }
 	  }
        } else {
-          LELArray<Bool> temp(result.shape());
+          LELArrayRef<Bool> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
-	  pRightExpr_p->eval(temp, section);
+	  pRightExpr_p->evalRef(temp, section);
 	  if (temp.isMasked()) {
 	     result.combineOrAnd (False, result.value(), temp.value(),
 				  temp.mask());

@@ -67,8 +67,8 @@ void LELConvert<T,F>::eval (LELArray<T>& result,
    cout << "LELConvert::eval" << endl;
 #endif
 
-   LELArray<F> temp(result.shape());
-   pExpr_p->eval (temp, section);
+   LELArrayRef<F> temp(result.shape());
+   pExpr_p->evalRef (temp, section);
    result.setMask (temp);
    convertArray (result.value(), temp.value());
 }

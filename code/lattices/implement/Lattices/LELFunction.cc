@@ -618,8 +618,8 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 // The result might get a mask. That is the case if one of the operands
 // is an invalid scalar or an array with mask,
 
-	 LELArray<Bool> tmpb(result.shape());
-	 arg_p[0].eval (tmpb, section);
+	 LELArrayRef<Bool> tmpb(result.shape());
+	 arg_p[0].evalRef (tmpb, section);
 	 Bool deleteTmpb;
 	 const Bool* tmpbData = tmpb.value().getStorage (deleteTmpb);
 	 uInt n = tmpb.value().nelements();
@@ -730,8 +730,8 @@ void LELFunctionND<T>::eval(LELArray<T>& result,
 	       }
 	    } else {
 		// Handle array,array case.
-	       LELArray<T> tmp(result.shape());
-	       arg_p[2].eval (tmp, section);
+	       LELArrayRef<T> tmp(result.shape());
+	       arg_p[2].evalRef (tmp, section);
 	       Bool deleteTmp, deleteTmpMask;
 	       const T* tmpData = tmp.value().getStorage (deleteTmp);
 	       if (makeMask) {

@@ -74,9 +74,9 @@ void LELCondition<T>::eval (LELArray<T>& result,
    cout << "LELCondition::eval" << endl;
 #endif
 
-   LELArray<Bool> condval(result.shape());
+   LELArrayRef<Bool> condval(result.shape());
    pExpr_p->eval (result, section);
-   pCond_p->eval (condval, section);
+   pCond_p->evalRef (condval, section);
    result.combineMask (condval);
    result.combineMask (condval.value());
 }

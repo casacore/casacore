@@ -132,8 +132,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
             Array<Float> tmp(abs(result.value()));
             result.value().reference(tmp);
          } else {
-            LELArray<Complex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, section);
+            LELArrayRef<Complex> tmpC(result.shape());
+            arg_p[0].evalRef(tmpC, section);
 	    result.setMask(tmpC);
    	    amplitude(result.value(), tmpC.value());
          }
@@ -141,8 +141,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
       }
       case LELFunctionEnums::ARG :
       {
-         LELArray<Complex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, section);
+         LELArrayRef<Complex> tmpC(result.shape());
+         arg_p[0].evalRef(tmpC, section);
 	 result.setMask(tmpC);
          phase(result.value(), tmpC.value());
          break;
@@ -152,8 +152,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
          if (arg_p[0].dataType() == TpFloat) {
             arg_p[0].eval(result, section);
          } else {
-            LELArray<Complex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, section);
+            LELArrayRef<Complex> tmpC(result.shape());
+            arg_p[0].evalRef(tmpC, section);
 	    result.setMask(tmpC);
    	    real(result.value(), tmpC.value());
          }
@@ -161,8 +161,8 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
       }
       case LELFunctionEnums::IMAG :
       {
-         LELArray<Complex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, section);
+         LELArrayRef<Complex> tmpC(result.shape());
+         arg_p[0].evalRef(tmpC, section);
 	 result.setMask(tmpC);
          imag(result.value(), tmpC.value());
          break;
@@ -268,9 +268,9 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
          }
 
       } else {
-         LELArray<Float> tempr(result.shape());
+         LELArrayRef<Float> tempr(result.shape());
          arg_p[0].eval(result, section);
-         arg_p[1].eval(tempr, section);
+         arg_p[1].evalRef(tempr, section);
 	 result.combineMask (tempr);
          switch(function_p) {
          case LELFunctionEnums::ATAN2 :
@@ -493,8 +493,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
             Array<Double> tmp(abs(result.value()));
             result.value().reference(tmp);
          } else {
-            LELArray<DComplex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, section);
+            LELArrayRef<DComplex> tmpC(result.shape());
+            arg_p[0].evalRef(tmpC, section);
 	    result.setMask(tmpC);
             amplitude(result.value(), tmpC.value());
          }
@@ -502,8 +502,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
       }
       case LELFunctionEnums::ARG :
       {
-         LELArray<DComplex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, section);
+         LELArrayRef<DComplex> tmpC(result.shape());
+         arg_p[0].evalRef(tmpC, section);
 	 result.setMask(tmpC);
          phase(result.value(), tmpC.value());
          break;
@@ -513,8 +513,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
          if (arg_p[0].dataType() == TpDouble) {
             arg_p[0].eval(result, section);
          } else {
-            LELArray<DComplex> tmpC(result.shape());
-            arg_p[0].eval(tmpC, section);
+            LELArrayRef<DComplex> tmpC(result.shape());
+            arg_p[0].evalRef(tmpC, section);
 	    result.setMask(tmpC);
    	    real(result.value(), tmpC.value());
          }
@@ -522,8 +522,8 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
       }
       case LELFunctionEnums::IMAG :
       {
-         LELArray<DComplex> tmpC(result.shape());
-         arg_p[0].eval(tmpC, section);
+         LELArrayRef<DComplex> tmpC(result.shape());
+         arg_p[0].evalRef(tmpC, section);
 	 result.setMask(tmpC);
          imag(result.value(), tmpC.value());
          break;
@@ -613,9 +613,9 @@ void LELFunctionDouble::eval(LELArray<Double>& result,
          }
 
       } else {
-         LELArray<Double> tempr(result.shape());
+         LELArrayRef<Double> tempr(result.shape());
          arg_p[0].eval(result, section);
-         arg_p[1].eval(tempr, section);
+         arg_p[1].evalRef(tempr, section);
 	 result.combineMask (tempr);
          switch(function_p) {
          case LELFunctionEnums::ATAN2 :
@@ -978,9 +978,9 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	 case LELFunctionEnums::COMPLEX :
 	 {
 	    Float scalarTemp;
-	    LELArray<Float> arrayTemp(result.shape());
+	    LELArrayRef<Float> arrayTemp(result.shape());
 	    arg_p[0].eval(scalarTemp);
-	    arg_p[1].eval(arrayTemp, section);
+	    arg_p[1].evalRef(arrayTemp, section);
 	    Bool delr, delc;
 	    const Float* rptr = arrayTemp.value().getStorage(delr);
 	    Complex *cptr = result.value().getStorage(delc);
@@ -1014,9 +1014,9 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	 case LELFunctionEnums::COMPLEX :
 	 {
 	    Float scalarTemp;
-	    LELArray<Float> arrayTemp(result.shape());
+	    LELArrayRef<Float> arrayTemp(result.shape());
 	    arg_p[1].eval(scalarTemp);
-	    arg_p[0].eval(arrayTemp, section);
+	    arg_p[0].evalRef(arrayTemp, section);
 	    Bool delr, delc;
 	    const Float* rptr = arrayTemp.value().getStorage(delr);
 	    Complex *cptr = result.value().getStorage(delc);
@@ -1059,10 +1059,10 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
          switch(function_p) {
 	 case LELFunctionEnums::COMPLEX :
 	 {
-	    LELArray<Float> arrayLeft(result.shape());
-	    LELArray<Float> arrayRight(result.shape());
-	    arg_p[0].eval(arrayLeft, section);
-	    arg_p[1].eval(arrayRight, section);
+	    LELArrayRef<Float> arrayLeft(result.shape());
+	    LELArrayRef<Float> arrayRight(result.shape());
+	    arg_p[0].evalRef(arrayLeft, section);
+	    arg_p[1].evalRef(arrayRight, section);
 	    Bool dell, delr, delc;
 	    const Float* lptr = arrayLeft.value().getStorage(dell);
 	    const Float* rptr = arrayRight.value().getStorage(delr);
@@ -1080,9 +1080,9 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	 }
          case LELFunctionEnums::POW :
          {
-	    LELArray<Complex> tempr(result.shape());
+	    LELArrayRef<Complex> tempr(result.shape());
 	    arg_p[0].eval(result, section);
-	    arg_p[1].eval(tempr, section);
+	    arg_p[1].evalRef(tempr, section);
 	    result.combineMask (tempr);
             Array<Complex> temp (pow (result.value(), tempr.value()));
             result.value().reference (temp);
@@ -1216,9 +1216,9 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	 case LELFunctionEnums::COMPLEX :
 	 {
 	    Double scalarTemp;
-	    LELArray<Double> arrayTemp(result.shape());
+	    LELArrayRef<Double> arrayTemp(result.shape());
 	    arg_p[0].eval(scalarTemp);
-	    arg_p[1].eval(arrayTemp, section);
+	    arg_p[1].evalRef(arrayTemp, section);
 	    Bool delr, delc;
 	    const Double* rptr = arrayTemp.value().getStorage(delr);
 	    DComplex *cptr = result.value().getStorage(delc);
@@ -1252,9 +1252,9 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	 case LELFunctionEnums::COMPLEX :
 	 {
 	    Double scalarTemp;
-	    LELArray<Double> arrayTemp(result.shape());
+	    LELArrayRef<Double> arrayTemp(result.shape());
 	    arg_p[1].eval(scalarTemp);
-	    arg_p[0].eval(arrayTemp, section);
+	    arg_p[0].evalRef(arrayTemp, section);
 	    Bool delr, delc;
 	    const Double* rptr = arrayTemp.value().getStorage(delr);
 	    DComplex *cptr = result.value().getStorage(delc);
@@ -1297,10 +1297,10 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
          switch(function_p) {
  	 case LELFunctionEnums::COMPLEX :
 	 {
-	    LELArray<Double> arrayLeft(result.shape());
-	    LELArray<Double> arrayRight(result.shape());
-	    arg_p[0].eval(arrayLeft, section);
-	    arg_p[1].eval(arrayRight, section);
+	    LELArrayRef<Double> arrayLeft(result.shape());
+	    LELArrayRef<Double> arrayRight(result.shape());
+	    arg_p[0].evalRef(arrayLeft, section);
+	    arg_p[1].evalRef(arrayRight, section);
 	    Bool dell, delr, delc;
 	    const Double* lptr = arrayLeft.value().getStorage(dell);
 	    const Double* rptr = arrayRight.value().getStorage(delr);
@@ -1318,9 +1318,9 @@ void LELFunctionDComplex::eval(LELArray<DComplex>& result,
 	 }
         case LELFunctionEnums::POW :
          {
-	    LELArray<DComplex> tempr(result.shape());
+	    LELArrayRef<DComplex> tempr(result.shape());
 	    arg_p[0].eval(result, section);
-	    arg_p[1].eval(tempr, section);
+	    arg_p[1].evalRef(tempr, section);
 	    result.combineMask (tempr);
             Array<DComplex> temp (pow (result.value(), tempr.value()));
             result.value().reference (temp);
