@@ -42,7 +42,7 @@ include $(AIPSARCH)/makedefs
 
 # Source lists.
 #--------------
-AISCRIPT := ai ae amv am ao ao.cvs au ax rau
+AISCRIPT := ai ae amv am ao ao.cvs au ax rau cvsmv
 SUIDWRAP := sau sai
 DISTSCRP := inhale inhale.cvs sneeze aupdate
 SCRIPTS  := alog av ih_log_info.pl inhold mktree mktree.cvs rai rao runtests squiz testsuite xrcs testsum.sh UPchange UPdup UPfind UPinfo UPlist UPload UPlock UPmove UPreident UPsed UPtmpl
