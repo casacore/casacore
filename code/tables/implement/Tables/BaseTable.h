@@ -32,13 +32,14 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Tables/TableInfo.h>
+#include <aips/Tables/TableDesc.h>
 #include <aips/Utilities/Compare.h>
 #include <aips/Utilities/String.h>
 #include <aips/IO/FileLocker.h>
 
 //# Forward Declarations
 class RefTable;
-class TableDesc;
+// class TableDesc;  !Forward declaration not recognized SGI compiler
 class TableLock;
 class BaseColumn;
 class ColumnDesc;
