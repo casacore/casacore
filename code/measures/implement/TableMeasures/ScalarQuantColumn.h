@@ -34,6 +34,7 @@
 class String;
 class TableQuantumDesc;
 class Unit;
+class Table;
 template <class T> class ScalarColumn;
 template <class Qtype> class Quantum;
 

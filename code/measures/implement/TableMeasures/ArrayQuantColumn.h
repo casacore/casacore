@@ -33,6 +33,7 @@
 //# Forward Declarations
 class TableQuantumDesc;
 class Unit;
+class Table;
 template <class T> class ArrayColumn;
 template <class T> class ScalarColumn;
 template <class Qtype> class Quantum;
