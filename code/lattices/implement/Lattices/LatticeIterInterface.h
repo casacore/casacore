@@ -28,10 +28,6 @@
 #if !defined(AIPS_LATTICEITERINTERFACE_H)
 #define AIPS_LATTICEITERINTERFACE_H
 
-#if defined(_AIX)
-#pragma implementation ("LatticeIterInterface.cc")
-#endif 
-
 //# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeNavigator.h>
@@ -192,19 +188,16 @@ public:
   // any number of dimensions in the cursor. A call of the function whose
   // return value is inappropriate with respect to the current cursor
   // dimension will throw an exception (AipsError).
+  // <br>The <src>doRead</src> flag indicates if the data need to be read or
+  // if only a cursor with the correct shape has to be returned.
+  // <br>The <src>autoRewrite</src> flag indicates if the data has to be
+  // rewritten when the iterator state changes (e.g. moved, destructed).
   // <group>
-  virtual Vector<T>& vectorCursor() = 0;
-  virtual Matrix<T>& matrixCursor() = 0;
-  virtual Cube<T>& cubeCursor() = 0;
-  virtual Array<T>& cursor() = 0;
+  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite) = 0;
+  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite) = 0;
+  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite) = 0;
+  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite) = 0;
   //</group>
-
-  // Write the data in the cursor.
-  virtual void writeCursor() = 0;
-
-  // Write the given data array at the current cursor position.
-  // The array shape has to match the cursor shape (as given by cursorShape()).
-  virtual void writeArray (const Array<T>& data) = 0;
 
   // Function which checks the internals of the class for consistency.
   // Returns True if everything is fine otherwise returns False. The default

@@ -28,10 +28,6 @@
 #if !defined(AIPS_PAGEDARRITER_H)
 #define AIPS_PAGEDARRITER_H
 
-#if defined(_AIX)
-#pragma implementation ("PagedArrIter.cc")
-#endif 
-
 //# Includes
 #include <aips/aips.h>
 #include <trial/Lattices/LatticeIterInterface.h>
@@ -159,20 +155,17 @@ protected:
   // any number of dimensions in the cursor. A call of the function whose
   // return value is inappropriate with respect to the current cursor
   // dimension will throw an exception (AipsError).
+  // <br>The <src>doRead</src> flag indicates if the data need to be read or
+  // if only a cursor with the correct shape has to be returned.
+  // <br>The <src>autoRewrite</src> flag indicates if the data has to be
+  // rewritten when the iterator state changes (e.g. moved, destructed).
   //<group>
-  virtual Vector<T>& vectorCursor();
-  virtual Matrix<T>& matrixCursor();
-  virtual Cube<T>& cubeCursor();
-  virtual Array<T>& cursor();
+  virtual Vector<T>& vectorCursor (Bool doRead, Bool autoRewrite);
+  virtual Matrix<T>& matrixCursor (Bool doRead, Bool autoRewrite);
+  virtual Cube<T>& cubeCursor (Bool doRead, Bool autoRewrite);
+  virtual Array<T>& cursor (Bool doRead, Bool autoRewrite);
   //</group>
   
-  // Write the data in the cursor.
-  virtual void writeCursor();
-
-  // Write the given data array at the current cursor position.
-  // The array shape has to match the cursor shape (as given by cursorShape()).
-  virtual void writeArray (const Array<T>& data);
-
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. 
   // Returns True if everything is fine otherwise returns False
@@ -189,25 +182,30 @@ private:
   // Setup the cache in the tiled storage manager.
   void setupTileCache();
 
-  // Synchronise the storage in the "degenerate axis Array" with theCurPtr.
+  // Synchronise the storage in the "degenerate axis Array" with itsCurPtr.
   void relinkArray();
 
   // Do the actual read of the data.
-  void getData();
+  void readData (Bool doRead);
+
+  // Rewrite the cursor data and clear the rewrite flag.
+  void rewriteData();
 
 
   // reference to the Lattice
-  PagedArray<T> theData;
+  PagedArray<T> itsData;
   // Polymorphic pointer to a subpart of the Lattice
-  Array<T>*     theCurPtr;
-  // An Array which references the same data as the theCurPtr, but has all
+  Array<T>*     itsCurPtr;
+  // An Array which references the same data as the itsCurPtr, but has all
   // the degenerate axes. This is an optimisation to avoid the overhead of
   // having to add the degenerate axes for each iteration.
-  Array<T>      theCursor;
+  Array<T>      itsCursor;
   // Have the data been read after a cursor update? (False=not read)
-  Bool          theReadFlag;
+  Bool          itsHaveRead;
+  // Rewrite the cursor data before moving or destructing?
+  Bool          itsRewrite;
   // The axes forming the cursor.
-  IPosition     theCursorAxes;
+  IPosition     itsCursorAxes;
 };
 
 
