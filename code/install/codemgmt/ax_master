@@ -5371,3 +5371,4 @@
 15 101 src mv nrao/apps/gbtobsparser/parse.y nrao/apps/gbtobsparser/GBTObsParse.y
 15 101 src mv nrao/apps/gbtobsparser/scan.l nrao/apps/gbtobsparser/GBTObsParse.l
 15 121 src rm trial/apps/ms1toms2
+15 136 src mv trial/implement/Tables/LargeRegularFileIO.cc aips/implement/IO/LargeRegularFileIO.cc
