@@ -216,12 +216,12 @@ looks like
 There are many more rows and columns to this table, but these include the
 interesting columns for the moment.
 
-Now load the "DATA" column from table t1 into glish.  This table has
+Now load the 'DATA' column from table t1 into glish.  This table has
 already been opened using the AIPS++ \htmlref{table}{table} system if
 you included 'glishtutorial.g'.
 
 \begin{verbatim}
-	- data := t1.getcol("DATA")
+	- data := t1.getcol('DATA')
 \end{verbatim}
 
 If you want a more complete picture of this table, browse the table
@@ -284,7 +284,7 @@ the line is ignored by glish.
 from a different table that contains a column of spectra.
 
 \begin{verbatim}
-	- spectra := t7.getcol("DATA")
+	- spectra := t7.getcol('DATA')
 \end{verbatim}
 
     Glish variables have attributes, a few of which are predefined.  The
@@ -305,8 +305,8 @@ all of the 'data' values for receiver 1 with the calibration noise "on" get
 the RECEIVER\_ID and CAL columns.
 
 \begin{verbatim}
-	- rcvr := t1.getcol("RECEIVER_ID");
-	- cal := t1.getcol("CAL")
+	- rcvr := t1.getcol('RECEIVER_ID');
+	- cal := t1.getcol('CAL')
 \end{verbatim}
 
 Then make a boolean vector of the same length and use it as an index mask
@@ -361,16 +361,16 @@ same size in each dimension.  For example,
 It is not a vector dot product.
 
     For a graphical illustration of what we have done with the extracted
-data column get one more column, "Time", from the table and plot the two
+data column get one more column, 'Time', from the table and plot the two
 data vectors against it.
 
 \begin{verbatim}
-	- time := t1.getcol("Time")
+	- time := t1.getcol('Time')
 	- time -:= as_integer(time)		# remove day numbers
 	- clear()				# clear the plot screen
-	- plotxy(time[1:32], data[1:32], "All data")
+	- plotxy(time[1:32], data[1:32], 'All data')
 	- sometimes := (time[1:32])[mask[1:32]]
-	- plotxy(sometimes, data_cal_1[sometimes::shape], "Selected data");
+	- plotxy(sometimes, data_cal_1[sometimes::shape], 'Selected data');
 \end{verbatim}
 
 The second line above illustrates one of the combined arithmetic and
@@ -386,7 +386,7 @@ Kelvins, we can plot a calibrated scan with the additional commands
 	- dataK := 1.4 * ((data_cal_1 + data_cal_off_1) / 2.0) /
 	+ (data_cal_1 - data_cal_off_1)
 	- clear()
-	- ploty(dataK, "")
+	- ploty(dataK, '')
 \end{verbatim}
 
 You should see four scans through a radio source placed end to end.  These
@@ -439,7 +439,7 @@ to the text that you type at the glish prompt.  Script files are
 conventionally given the name extension '.g'.  The glish command syntax is
 
 \begin{verbatim}
-	- include "myscript.g"
+	- include 'myscript.g'
 \end{verbatim}
 
 The most frequent use of script files is to edit and load function
@@ -471,26 +471,26 @@ scan in a table.
 \begin{verbatim}
 	plot_scan := function (tab, scan_no, receiver=1)
 	{
-	    data := tab.getcol("DATA");
-	    scan := tab.getcol("SCAN");
-	    rcvr := tab.getcol("RECEIVER_ID");
+	    data := tab.getcol('DATA');
+	    scan := tab.getcol('SCAN');
+	    rcvr := tab.getcol('RECEIVER_ID');
 
 	    mask := scan == scan_no & receiver == (rcvr + 1);
 	    scan_data := data[mask];
 	    if (length(scan_data) == 0) {
-		fail paste("No data found for scan", scan_no, 
-                           "receiver", receiver);
+		fail paste('No data found for scan', scan_no, 
+                           'receiver', receiver);
 	    }
-	    return dp.ploty(data[mask], paste("Scan", scan_no, 
-                           "Receiver", receiver));
+	    return dp.ploty(data[mask], paste('Scan', scan_no, 
+                           'Receiver', receiver));
 	}
 \end{verbatim}
 
-Type this function into a script file, say, "test.g".  Load it into glish
+Type this function into a script file, say, 'test.g'.  Load it into glish
 with
 
 \begin{verbatim}
-	- include "test.g"
+	- include 'test.g'
 \end{verbatim}
 
 and execute the function with
@@ -671,9 +671,9 @@ function and returned as a unit in a function return value.  A record may be
 created all at once or added to piece by piece.
 
 \begin{verbatim}
-	- header := [name="3C273", ra=12.12345, dec=2.3318]
+	- header := [name='3C273', ra=12.12345, dec=2.3318]
 	- header.flux := 27.6
-	- header.type := "quasar"
+	- header.type := 'quasar'
 	- print header.ra
 	12.12345
 \end{verbatim}
@@ -684,8 +684,8 @@ including arrays, as well as other records.
     Any glish variable may be assigned attributes.  For example,
 
 \begin{verbatim}
-	- velocity::definition := "relativistic"
-	- header.flux::units := "Jy"
+	- velocity::definition := 'relativistic'
+	- header.flux::units := 'Jy'
 \end{verbatim}
 
 The distinction between record members and variable attributes is a subtle
@@ -696,15 +696,15 @@ by number.  All of the following are acceptable:
 \begin{verbatim}
 	- header.ra
 	- header[2]
-	- header["type"]
+	- header['type']
 	- velocity::[1]
 	- velocity::definition
-	- velocity::["definition"]
+	- velocity::['definition']
 \end{verbatim}
 
 Numeric access lends itself to stepping through the fields or attributes
 with a loop index.  Record field names may be retrieved with the built-in
-function 'field\_names()", which returns a string.
+function 'field\_names()', which returns a string.
 
 \begin{verbatim}
 	- field_names(header)
@@ -884,18 +884,18 @@ the Tk widgets attached to glish.
 
 \begin{verbatim}
 	- fm := frame()
-	- b1 := button(fm, "plot")
+	- b1 := button(fm, 'plot')
 	- whenever b1->press do {
 	-  clear()
-	-  dp.ploty(sin(as_float(1:100) / 20.0), "Button plot")
+	-  dp.ploty(sin(as_float(1:100) / 20.0), 'Button plot')
 	- }
 \end{verbatim}
 
 The first statement puts a small window frame on the screen.  The second
-puts a button labeled "plot" in the window.  In the whenever statement,
+puts a button labeled 'plot' in the window.  In the whenever statement,
 "press" is the name of an event sent by the Tk widgets client when the
 button is pressed with the mouse.  The statements within the whenever block
-are executed when the "press" event is received.  Try pressing the button.
+are executed when the 'press' event is received.  Try pressing the button.
 
     Clients are started from glish with the client() function.  A more
 complex example than the button client might be a hypothetical FFT engine.
@@ -904,7 +904,7 @@ that performs Fourier transforms and knows how to send and receive glish
 events p.  Start it up with
 
 \begin{verbatim}
-	- fft := client("fft_engine", host="arcturus")
+	- fft := client('fft_engine', host='arcturus')
 \end{verbatim}
 
 The host argument is not needed if "fft\_engine" is on the same machine that
@@ -914,21 +914,21 @@ is running glish.  The variable, fft, is of a special type called an agent.
 an event called "do\_fft", and , when the FFT is done, fft\_engine will send
 an event called "fft\_done" with a new array of transformed data.  First,
 set up to receive the "fft\_done" event and do something with it.  Then send
-the fft request with the data array.  Probably in a script called "fft.g"
+the fft request with the data array.  Probably in a script called 'fft.g'
 we'd have
 
 \begin{verbatim}
-	fft := client("fft_engine")
+	fft := client('fft_engine')
 	whenever fft->fft_done do {
 	   clear()
-	   ploty($value, "FFT Result")
+	   ploty($value, 'FFT Result')
 	}
 \end{verbatim}
 
 Then from the command line do the following:
 
 \begin{verbatim}
-	- include "fft.g"
+	- include 'fft.g'
 	- data := sin(as_float(1:128) / 3.0)
 	- send fft->do_fft(data)
 	- await fft->fft_done
@@ -957,7 +957,7 @@ rather than the client() function.  A one-time communication with a client
 program is simply the UNIX command as a string argument to shell().
 
 \begin{verbatim}
-	- file_list := shell("ls *.g")
+	- file_list := shell('ls *.g')
 \end{verbatim}
 
 The variable, file\_list, is then an array of strings, one string for each
@@ -968,7 +968,7 @@ pipes, it may be started and communicated to with events.  The startup
 glish code looks something like
 
 \begin{verbatim}
-	a := shell("my_prog", async=T)
+	a := shell('my_prog', async=T)
 	whenever a->stdout do {
 	    print $value
 	}
@@ -982,7 +982,7 @@ is always a string.  The two events recognized by a shell client are
 event sent to "my\_prog" is, for example,
 
 \begin{verbatim}
-	- send a->stdin("23.876 14.999")
+	- send a->stdin('23.876 14.999')
 \end{verbatim}
 
     To avoid having an event arrive from a new client before its associated
@@ -996,7 +996,7 @@ hidden in a function can be seen in the definition of the ploty() that we
 used earlier.
 
 \begin{verbatim}
-	ploty := function (v_, name_="")
+	ploty := function (v_, name_='')
 	{
 	    rec := [data=v_, name=name_];
 	    send plot_client->vector (rec)
@@ -1155,13 +1155,13 @@ Really big tables are slower to access and to browse.
     Tables are opened in AIPS++ with the table() function.
 
 \begin{verbatim}
-	t7 := table("t7")
+	t7 := table('t7')
 \end{verbatim}
 
 The glish table record variable 't7' does not have to be the same as the
 aips table directory name.
 
-    As of this writing, the tables are "flat" in the sense that each
+    As of this writing, the tables are 'flat' in the sense that each
 quantity from the FITS data files is assigned a column in the table, and
 each data cell has no substructure, except possibly a simple array.  The
 next revision of AIPS++ tables will very likely contain a hierarchy, i.e.,
