@@ -93,13 +93,16 @@ is the package name the second argument is a short description of the package.
 Packages contain usually just modules.
 \item[\{ahmodule\}\{one\}\{two\}] Defines a module. The first argument
 is the module name the second argument is a short description of the module.
-Module may contain object as well as functions.
-\item[\{ahobject\}\{one\}\{two\}] Defines an object. The first argument
-is the object name the second argument is a short description of the
-object.  Objectes may contain function/methods.
+Module may contain tools as well as functions.
+\item[\{ahtool\}\{one\}\{two\}] Defines a tool. The first argument
+is the tool name the second argument is a short description of the
+tool.  Tools may contain function/methods.
 \item[\{ahfunction\}\{one\}\{two\}] Defines a function/method. The first
 argument is the function/method name, the second argument is a short
-description of the function/method.
+description of the function/method.  If used in an ahtool environment
+the function is a "member function" of that tool.  If defined outside 
+of an ahtool environment but inside an ahmodule environment it is a 
+global function.
 \item[\{ahconstructor\}\{one\}\{two\}] Defines a constructor.  The first
 argument is the constructor name, the second argument is a short description
 of the constructor.  Only makes sense if used inside an ahobject environment.
@@ -136,6 +139,10 @@ The $\backslash$ahkeyword are used to index the user documentation.
 \item[$\backslash$ahfuncs{}] This command will print a list of functions with their
 corresponding short descriptions.  Used in the ahmodule or ahobject
 environments.  
+If used within the ahobject/ahtool environment it will print a list
+of member functions and constructors for the tool.  If used with in the
+ahmodule environment it will print the global functions for that
+module.
 %
 \item[$\backslash$ahmethods{}]  This command will print a list of methods with their
 corresponding short descriptions.  Used in the ahobject environment.
