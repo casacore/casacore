@@ -32,20 +32,19 @@
 #include <trial/ComponentModels/ComponentType.h>
 #include <aips/Utilities/RecordTransformable.h>
 #include <aips/Measures/MDirection.h>
+#include <aips/Mathematics/Complex.h>
 
 class MVAngle;
-//class MVDirection;
 class RecordInterface;
 class String;
-//template <class Ms> class MeasRef;
-template <class T> class Flux;
+template <class T> class Matrix;
 template <class T> class Vector;
 
 // <summary>Base class for component shapes</summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="yyyy/mm/dd" tests="tComponentShape" demos="">
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tComponentShape" demos="dPointShape">
 // </reviewed>
 
 // <prerequisite>
@@ -54,21 +53,29 @@ template <class T> class Vector;
 //
 // <synopsis>
 
-// This abstract base class defines the interface for different classes which
-// specify the shape of a component. The most fundamental derived class is the
+// This abstract base class defines the interface for classes which
+// define the shape of a component. The most fundamental derived class is the
 // <linkto class=PointShape>point</linkto> shape class but the 
-// <linkto class=GaussianShape>Gaussian</linkto> shape is also available. These
-// classes model the spatial distribution of emission from the sky. Classes
-// derived from the <linkto class=SpectralModel>SpectralModel</linkto> class
-// are used to model the spectral characteristics.
+// <linkto class=GaussianShape>Gaussian</linkto> shape and
+// <linkto class=DiskShape>disk</linkto> shape classes are also
+// available. These classes model the spatial distribution of emission from the
+// sky. 
 
-// This class parameterises shapes with two quantities.
+// Classes derived from the <linkto class=SpectralModel>SpectralModel</linkto>
+// class are used to model the spectral characteristics and the 
+// <linkto class=Flux>Flux</linkto> class is used to model the flux. The
+// <linkto class=SkyComponent>SkyComponent</linkto> class incorporates these
+// three characteristics (flux, shape & spectrum) and the 
+// <linkto class=ComponentList>ComponentList</linkto> class handles groups of
+// SkyComponent objects.
+
+// This base class parameterises shapes with two quantities.
 // <dl>
 // <dt><em> A reference direction.</em>
 // <dd> This is specified using an <linkto class=MDirection>MDirection</linkto>
 //      object and indicates the direction on a defined reference point
 //      within the shape. Usually this reference point is the centre of the
-//      shape.
+//      shape. 
 // <dt> <em>A Vector of parameters.</em>
 // <dd> This contains other parameters that the are defined differently for
 //      different shapes. The length of the vector may vary for different
@@ -77,25 +84,32 @@ template <class T> class Vector;
 // 
 // The basic operation of classes using this interface is to model the flux as
 // a function of direction on the sky. Classes derived from this one do not
-// know what the flux of the component is, this must be supplied as an argument
-// to the <src>sample</src> function. These classes will scale the supplied
-// flux in order to calculate the proportion of the flux that is enclosed
-// within a pixel of specified size centred on a specified direction. In
-// general this scaling will be the same for all polarisations.
+// know what the flux of the component. Instead the sample and visibility
+// functions return factors that are used to scale the flux and calculate the
+// amount of flux at a specified point on the sky or on the (u,v) plane.
 
-// The interface also defines functions which calculate the analytic Fourier
-// transform of the component at any specified spatial frequency.
+// Any allowed direction reference frame can be used. However the reference
+// frame must be adequately specified in order to allow conversions to other
+// reference frames. For example if the reference frame code for a component is
+// MDirection::AZEL then the reference frame must also contain the time and
+// position, on the earth, that the specified azimuth and elevation to refer
+// to. This way the sample functions can convert the direction to a value in
+// the J2000 reference frame (if you specify the sample direction in the J2000
+// frame).
 
 // </synopsis>
 
 // <example> 
-// Because ComponentShape is an abstract base class, an actual instance of this
-// class cannot be constructed. However the interface it defines can be used
-// inside a function. This is always recommended as it allows functions which
-// have ComponentShapes as arguments to work for any derived class.
-// <h4>Example 1:</h4>
-// In this example the printShape function prints out the shape of the
-// model it is working with and the reference direction of that model.
+
+// Because this is an abstract base class, an actual instance of this class
+// cannot be constructed. However the interface it defines can be used inside a
+// function. This is always recommended as it allows functions which have
+// ComponentShapes as arguments to work for any derived class.
+
+// In this example the printShape function prints out the type of model it is
+// working with and the reference direction of that model. This example is also
+// available in the <src>dPointShape.cc</src> file.
+
 // <srcblock>
 // void printShape(const ComponentShape& theShape) {
 //   cout << "This is a " << ComponentType::name(theShape.type())
@@ -112,8 +126,8 @@ template <class T> class Vector;
 // combinatorial explosion in the number of classes required.
 // </motivation>
 //
-// <todo asof="1998/03/01">
-//   <li> Get the project function working again.
+// <todo asof="1999/11/11">
+//   <li> Use Measures & Quanta in the interface to the visibility functions.
 // </todo>
 
 class ComponentShape: public RecordTransformable
@@ -123,7 +137,7 @@ public:
   // derived class will be used.
   virtual ~ComponentShape();
 
-  // return the actual component shape.
+  // return the actual component type.
   virtual ComponentType::Shape type() const = 0;
 
   // set/get the reference direction
@@ -138,10 +152,12 @@ public:
   virtual Double sample(const MDirection& direction,
 			const MVAngle& pixelSize) const = 0;
 
-  // Calculate the amount of flux that is in the pixels of specified, constant
-  // size centered on the specified directions. The returned values will always
-  // be between zero and one (inclusive). All the supplied directions must have
-  // the same reference frame (that is specified in the refFrame argument).
+  // Same as the previous function except that many directions can be sampled
+  // at once. The reference frame and pixel size must be the same for all the
+  // specified directions. A default implementation of this function is
+  // available that uses the single pixel sample function described above.
+  // However customised versions of this function will be more efficient as
+  // intermediate values only need to be computed once.
   virtual void sample(Vector<Double>& scale, 
 		      const Vector<MDirection::MVType>& directions, 
 		      const MDirection::Ref& refFrame,
@@ -152,17 +168,31 @@ public:
   // (u,v,w) that has units of meters and the frequency of the observation, in
   // Hertz. These two quantities can be used to derive the required spatial
   // frequency <src>(s = uvw*freq/c)</src>. The w component is not used in
-  // these functions.
+  // these functions.  The scale factor returned by this function can be used
+  // to scale the flux at the origin of the Fourier plane in order to determine
+  // the visibility at the specified point.
 
   // The "origin" of the transform is the reference direction of the
-  // component. This means, for symmetric components where the reference
+  // component. This means for symmetric components, where the reference
   // direction is at the centre, that the Fourier transform will always be
   // real.
+  virtual DComplex visibility(const Vector<Double>& uvw,
+			      const Double& frequency) const = 0;
 
-  // The total flux of the component must be supplied in the flux variable and
-  // the corresponding visibility is returned in the same variable.
-  virtual void visibility(Flux<Double>& flux, const Vector<Double>& uvw,
+  // Same as the previous function except that many (u,v,w) points can be
+  // sampled at once. The observation frequency is the same for all the
+  // specified points. The uvw Matrix must have first dimension of three and
+  // the second dimension must match the length of the scale vector. A default
+  // implementation of this function is available that uses the single point
+  // visibility function described above.  However customised versions of this
+  // function may be more efficient as intermediate values only need to be
+  // computed once.
+  virtual void visibility(Vector<DComplex>& scale, const Matrix<Double>& uvw,
 			  const Double& frequency) const = 0;
+
+  // determine whether the shape is symmetric or not. If it is then all the
+  // scale factors returned by the visibility functions will be real numbers.
+  virtual Bool isSymmetric() const = 0;
 
   // Return a pointer to a copy of the derived object upcast to a
   // ComponentShape object. The class that uses this function is responsible
@@ -179,9 +209,13 @@ public:
 
   // These functions convert between a record and a ComponentShape. This way
   // derived classes can interpret fields in the record in a class specific
-  // way. These functions define how the shape is represented in glish.  They
-  // return False if the record is malformed and append an error message to the
-  // supplied string giving the reason.
+  // way. They return False if the record is malformed and append an error
+  // message to the supplied string giving the reason.  These functions define
+  // how the shape is represented in glish. All records should have 'type' &
+  // 'direction' fields which contain respectively; a string indicating which
+  // shape is actually used, and a record representation of a direction
+  // measure.  The interpretation of all other fields depends on the specific
+  // component shape used.
   // <group>
   virtual Bool fromRecord(String& errorMessage, 
 			  const RecordInterface& record) = 0;
@@ -192,23 +226,14 @@ public:
   // Convert the parameters of the shape to the specified units. The Record
   // must contain the same fields that the to/from Record functions have (with
   // the exception of the direction & type fields). These fields will contain
-  // strings (and not Quantums) that specify the new units for these
-  // parameters. The new units must have the same dimensions as the existing
-  // ones. If there is any problem parsing the record then an error message is
-  // appended to the supplied string and the function returns False. If
-  // successful it returns True
+  // strings (and not record representations of Quantums) that specify the new
+  // units for these parameters. The new units must have the same dimensions as
+  // the existing ones. If there is any problem parsing the record then an
+  // error message is appended to the supplied string and the function returns
+  // False.
   virtual Bool convertUnit(String& errorMessage,
 			   const RecordInterface& record) = 0;
   
-
-  // Convert the parameters of the component to the specified units. The order
-  // of the parameters in the supplied Vector is identical with that used in
-  // the parameter functions (setParameters, nParameters and parameters)
-  // described above and the Vector must have nParameters elements. Each String
-  // in the vector specifies the new units for one of the parameters. The new
-  // units must have the same dimensions as the existing ones.
-  // virtual Bool convertUnit(const Vector<String>& unit) = 0;
-
   // Return the shape that the supplied record represents. The
   // shape is determined by parsing a 'type' field in the supplied
   // record. Returns ComponentType::UNKNOWN_SHAPE if the type field
@@ -224,22 +249,23 @@ public:
   virtual Bool ok() const;
 
 protected:
-  // The default ComponentShape direction is at the J2000 North Pole.
+  // The constructors and assignment operator are protected as only derived
+  // classes should use them.
+  // <group>
+  //# The default ComponentShape direction is at the J2000 North Pole.
   ComponentShape();
 
-  // Construct a ComponentShape at the specified direction.
+  //# Construct a ComponentShape at the specified direction.
   ComponentShape(const MDirection& direction);
 
-  // The copy constructor uses copy semantics.
+  //# The copy constructor uses copy semantics.
   ComponentShape(const ComponentShape& other);
 
-  // The assignment operator uses copy semantics.
+  //# The assignment operator uses copy semantics.
   ComponentShape& operator=(const ComponentShape& other);
+  // </group>
 
 private:
-  Bool addDir(String& errorMessage, RecordInterface& record) const;
-  Bool readDir(String& errorMessage, const RecordInterface& record);
-  
   //# The reference direction of the component
   MDirection itsDir;
 };
