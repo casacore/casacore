@@ -1,5 +1,5 @@
 //# ImagePolarimetry.cc: polarimetric analysis
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,9 +39,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Exceptions/Error.h>
-#include <trial/Fitting/LinearFitSVD.h>
-#include <aips/Functionals/Polynomial.h>
-#include <trial/Functionals/LinearComb.h>
+#include <aips/Functionals/NQPolynomial.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageExpr.h>
@@ -726,24 +724,17 @@ void ImagePolarimetry::rotationMeasure(ImageInterface<Float>*& rmOutPtr,
 // Make fitter
 
    if (itsFitterPtr==0) {
-      itsFitterPtr = new LinearFitSVD<Float>;
-      LinearComb<Float,Float> comb;
+      itsFitterPtr = new LQLinearFitSVD<Float>;
 
 // Create and set the polynomial functional
 // p = c(0) + c(1)*x where x = lambda**2
 // PA = PA0 + RM*Lambda**2
-// Don't ask me to explain this idiotic interface
 
-      Polynomial<Float> poly0(0);
-      Polynomial<Float> poly1(1);
-      poly0.setCoefficient(0, 1.0);
-      poly1.setCoefficient(1, 1.0);
-      comb.addFunction(poly0);
-      comb.addFunction(poly1);
+      NQPolynomial<AutoDiff<Float> > poly1(1);
 
-// Makes a copy of comb
+// Makes a copy of poly1
 
-      itsFitterPtr->setFunction(comb);
+      itsFitterPtr->setFunction(poly1);
    }
 
 // Deal with masks.  The outputs are all given a mask if possible as we
@@ -1883,7 +1874,7 @@ Bool ImagePolarimetry::rmLsqFit (Vector<Float>& pars, const Vector<Float>& wsq,
    pars(1) = sqrt(cv(1));
    pars(2) = solution(0);
    pars(3) = sqrt(cv(0));
-   pars(4) = itsFitterPtr->chiSquare(wsq, pa, paerr, solution);
+   pars(4) = itsFitterPtr->chiSquare();
 // 
    return True;
 }

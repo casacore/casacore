@@ -1,5 +1,5 @@
 //# ImagePolarimetry.h: Polarimetric analysis of images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,7 +36,7 @@
 #include <aips/Measures/Stokes.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Fitting/LinearFitSVD.h>
+#include <trial/Fitting/LQLinearFitSVD.h>
 
 
 //# Forward Declarations
@@ -333,7 +333,7 @@ public:
 
 private:
    const ImageInterface<Float>* itsInImagePtr;
-   LinearFitSVD<Float>* itsFitterPtr;
+   LQLinearFitSVD<Float>* itsFitterPtr;
    Float itsOldClip;
 
 // These blocks are always size 4, with IQUV in slots 0,1,2,3

@@ -1,5 +1,5 @@
 //# tPagedImage.cc:  test the PagedImage class
-//# Copyright (C) 1994,1995,1998,1999,2000,2001
+//# Copyright (C) 1994,1995,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -38,7 +38,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/NQPolynomial.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Quanta/QLogical.h>
@@ -408,7 +408,7 @@ int main()
        pIm.set(3.0);
        AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
 //
-       Polynomial<Float> poly(3);
+       NQPolynomial<Float> poly(3);
        poly.setCoefficient(1, 1.0);
        poly.setCoefficient(2, 2.0);
        poly.setCoefficient(3, 3.0);
