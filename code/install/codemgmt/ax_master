@@ -2594,3 +2594,4 @@
 11 378 src mv trial/scripts/uvbrick_decomp.g nfra/apps/uvbrick/uvbrick_decomp.g
 11 378 src mv trial/scripts/uvbrick_plot.g nfra/apps/uvbrick/uvbrick_plot.g
 11 378 src rm nfra/apps/uvc
+11 378 src rm nfra/apps/uvf
