@@ -5681,3 +5681,4 @@
 15 335 src mv trial/apps/flagger/templates trial/apps/autoflag/templates
 15 337 src rm trial/apps/megaserver/aipsrc_mega.h
 15 337 src rm trial/apps/megaserver/appstate_mega.h
+15 337 src rm trial/apps/megaserver/compFactory_mega.h
