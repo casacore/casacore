@@ -2587,3 +2587,4 @@
 11 378 src mv trial/scripts/msbrick.g nfra/apps/uvbrick/msbrick.g
 11 378 src mv trial/scripts/msbrick_MS.g nfra/apps/uvbrick/msbrick_MS.g
 11 378 src mv trial/scripts/msbrick_select.g nfra/apps/uvbrick/msbrick_select.g
+11 378 src mv trial/scripts/msbrick_simul.g nfra/apps/uvbrick/msbrick_simul.g
