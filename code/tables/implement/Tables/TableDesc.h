@@ -345,15 +345,12 @@ public:
     // The hypercolumn has coordinate axes (e.g. time, frequency)
     // which are columns in the table.
     // When the entire hypercolumn consists of multiple hypercubes,
-    // ID-columns have to be defined, which uniquely determine the
+    // ID-columns can be defined, which uniquely determine the
     // hypercube to be used.
-    // A hypercolumn can be used for 2 purposes:
-    // <ul>
-    //  <li> It enables the use of TableLatticeIterator objects.
-    //  <li> It enables the use of the Tiled Storage Manager.
-    // </ul>
-    // Note that TableLatticeIterators can be used without a Tiled Storage
-    // Manager, but will be (far) less efficient.
+    //  Note that only <linkto class=TiledDataStMan>TiledDataStMan</linkto>
+    // requires the use of ID-columns.
+    // A hypercolumn definition is needed to be able to use a Tiled
+    // Storage Manager.
     //
     // The following has to be specified:
     // <dl>
@@ -377,6 +374,7 @@ public:
     //             adding one or more dimensions to the array dimensionality.
     //        <dt> scalar:
     //        <dd> The data from multiple rows form a hypercube.
+    //             Not all tiled storage managers support scalars.
     //       </dl>
     //  <dt> Coordinate column names (optional)
     //  <dd> which are the columns containing the coordinates of the
@@ -399,7 +397,7 @@ public:
     // an appropriate type.
     // <br>
     // The default data manager type of the columns involved will be set
-    // to TiledColumnStMan is all data columns have a fixed shape.
+    // to TiledColumnStMan if all data columns have a fixed shape.
     // Otherwise they are set to TiledShapeStMan.
     // The storage manager group of all columns involved will be set to
     // the hypercolumn name. In that way binding columns to storage managers
