@@ -1,5 +1,5 @@
 //# Projection.cc: this defines Projection which wraps up wcs projections
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,7 +177,7 @@ uInt Projection::nParameters(Projection::Type proj)
     case SIN: return 2;
     case STG: return 0;
     case ARC: return 0;
-    case ZPN: return 10;
+    case ZPN: return 100;
     case ZEA: return 0;
     case AIR: return 1;
     case CYP: return 2;
