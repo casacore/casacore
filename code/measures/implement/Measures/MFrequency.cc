@@ -161,7 +161,7 @@ Bool MFrequency::getType(MFrequency::Types &tp, const String &in) {
   Int i = Measure::giveMe(in, nall, tname);
   
   if (i>=nall) return False;
-  else tp = (MFrequency::Types) oname[i];
+  else tp = static_cast<MFrequency::Types>(oname[i]);
   return True;
 }
 
