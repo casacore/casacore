@@ -36,13 +36,12 @@ class GlishRecord;
 class MDirection;
 class MVAngle;
 class String;
-class Unit;
 template <class Qtype> class Quantum;
 template <class T> class Flux;
 template <class T> class ImageInterface;
 template <class T> class Vector;
 
-// <summary>A component of a model of the sky</summary>
+// <summary>A model component of the sky brightness</summary>
 
 // <use visibility=export>
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
@@ -55,18 +54,26 @@ template <class T> class Vector;
 
 // <synopsis> 
 
-// This abstract base class is used by a number of classes that provide
-// components used to represent the sky brightness. It abstracts the
-// commonality between different components of a model like GaussianCompRep,
-// PointCompRep, and perhaps in the future DiskCompRep & SpheroidCompRep. In
-// particular it allows the user to sample the component at any specified
-// direction in the sky as well as grid the component onto a specified image.
+// This abstract base class defines an interface for a number of classes that
+// are used to represent models of the sky brightness. It contains the
+// functions common to all components while classes like GaussianCompRep &
+// PointCompRep, which are derived from this class, contain functions specific
+// to the different component types.
 
-// The functions in this class allow the user to sample the intensity of the
-// component by specifying either a direction, or an image onto which the
-// component should be projected. While most of these functions are pure
-// virtual a default implementation is provided for the project function which
-// uses the sample function to get the intensity at the centre of each pixel.
+// The functions in this class allow the user to:
+// <ul>
+// <li> sample the flux of the component by specifying a direction and pixel
+//      size.
+// <li> project a componet onto an image.
+// <li> set and change the reference direction of a component.
+// <li> set and change the flux of a component.
+// <li> set and change a label associated with a component. The label is a text
+//      string that a user may use for any purpose.
+// <li> set and change other parameters, whose interpretation depends on the
+//      specific component type.
+// <li> enquire what specific type of component this is.
+// <li> convert the component to and from a glish record so that it can be
+//      manipulated within glish.
 
 // </synopsis>
 
@@ -74,10 +81,10 @@ template <class T> class Vector;
 // Because this is a virtual base class this example will be inside a
 // function. 
 // <srcblock>
-// void printComponent(const SkyCompRep & component){
+// void printComponent(SkyCompRep & component){
 //   Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
-//   component.flux(compFlux);
-//   cout << "Component has a total flux of " << compFlux;
+//   component.flux().value(compFlux);
+//   cout << "Component has a total flux [I,Q,U,V] of " << compFlux;
 //   MDirection compDir;
 //   component.direction(compDir);
 //   cout << ", is centred at " << compDir.getValue("deg");
@@ -135,8 +142,8 @@ public:
   // reference, manipulation of the flux values is performed through the
   // functions in the Flux class. eg., <src>comp.flux().setValue(newVal)</src>
   // <group>
-  virtual const Flux<Double> flux() const = 0;
-  virtual Flux<Double> flux() = 0;
+  virtual const Flux<Double> & flux() const = 0;
+  virtual Flux<Double> & flux() = 0;
   // </group>
 
   // Return the Fourier transform of the component at the specified point in
@@ -196,14 +203,9 @@ public:
   virtual SkyCompRep * clone() const = 0;
 
   // These functions will at a later stage be moved into the Measures
-  // module. But for now they are used by derived classes, and elsewhere, for
-  // converting to and from glish records to the appropriate type ie.,
-  // Quantum<Double> or MDirection.  
-  // <group>
-//   static void fromRecord(Quantum<Double> & quantity, String & errorMessage,
-// 			 const GlishRecord & record);
+  // module. But for now they are used by GaussianCompRep for converting
+  // Quantum<Double> objects to glish records.
   static void toRecord(GlishRecord & record, const Quantum<Double> & quantity);
-  // </group>
 
 protected:
   //# These functions are used by derived classes implementing concrete
