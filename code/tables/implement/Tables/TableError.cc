@@ -55,7 +55,8 @@ TableDuplFile::~TableDuplFile ()
 
 
 TableNoFile::TableNoFile (const String& name)
-: TableError("Table " + name + " does not exist")
+: TableError(name.empty()  ?  String("No table name given at open") :
+	                      "Table " + name + " does not exist")
 {}
 TableNoFile::~TableNoFile ()
 {}
