@@ -37,6 +37,7 @@
 #include <aips/FITS/hdu.h>
 #include <trial/FITS/FITSUtil.h>
 #include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/ObsInfo.h>
@@ -408,26 +409,17 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
         header.define("datamin", minPix);
         header.define("datamax", maxPix);
     }
-    ImageInfo ii = image.imageInfo();
-    Vector<Quantum<Double> > beam = ii.restoringBeam();
-    if (beam.nelements()>0) {
-       Float bmaj = beam(0).getValue(Unit("deg"));
-       Float bmin = beam(1).getValue(Unit("deg"));
-       Float bpa  = beam(2).getValue(Unit("deg"));
 //
-        header.define("bmaj", bmaj);
-        header.define("bmin", bmin);
-        header.define("bpa", bpa);
-    }
-
+    ImageInfo ii = image.imageInfo();
+    if (!ii.toFITS (error, header)) return False;
+//
     header.define("COMMENT1", ""); // inserts spaces
 
 // I should FITS-ize the units
 
     header.define("BUNIT", upcase(image.units().getName()).chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
-
-  
+//
     IPosition shapeCopy = shape;
     Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, 
 				    preferVelocity, opticalVelocity);
@@ -947,12 +939,15 @@ Bool ImageFITSConverter::removeFile (String& error, const File& outFile,
 
 
 
-CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& header,
+CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue, 
+                                                          RecordInterface& header,
                                                           LogIO& os,
-                                                          IPosition& shape)
+                                                          IPosition& shape,
+                                                          Bool dropStokes)
 {
     CoordinateSystem cSys;
-    if (!CoordinateSystem::fromFITSHeader(cSys, header, shape, True)) {
+    Char prefix = 'c';
+    if (!CoordinateSystem::fromFITSHeader (stokesFITSValue, cSys, header, shape, True, prefix)) {
         os << LogIO::WARN <<
           "Cannot create the coordinate system from FITS keywords.\n"
           "I will use a dummy linear coordinate along each axis instead.\n"
@@ -969,7 +964,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
         CoordinateUtil::addLinearAxes(cSys2, names, shape);
         cSys = cSys2;
     }
-//
+
 // Check shape and CS consistency.  Add dummy axis to shape if possible
 
     if (shape.nelements() != cSys.nPixelAxes()) {
@@ -989,6 +984,38 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
        }
     }
 
+// Drop Stokes axis IF it's of length 1 AND there is an unoffical 
+// pseudo-STokes value (e.g. optical dpeth) on it.  This is stored
+// in ImageInfo instead.
+
+    Int after = -1;
+    Int c = cSys.findCoordinate(Coordinate::STOKES, after);
+    if (dropStokes && c >= 0 && stokesFITSValue >= 0) {
+       uInt nS = cSys.stokesCoordinate(c).stokes().nelements();
+       if (nS==1) {
+          CoordinateSystem cSys2;
+          for (uInt i=0; i<cSys.nCoordinates(); i++) {
+             if (cSys.type(i) != Coordinate::STOKES) {
+                cSys2.addCoordinate(cSys.coordinate(i));
+             } 
+          }
+//
+          uInt dropAxis = cSys.pixelAxes(c)(0);
+          cSys = cSys2;
+          IPosition shape2(cSys.nPixelAxes());
+          uInt j = 0;
+          for (uInt i=0; i<shape.nelements(); i++) {
+             if (i!=dropAxis) {
+                shape2(j) = shape(i);
+                j++;
+             }
+          }
+//
+          shape.resize(0);
+          shape = shape2;
+       }
+    }
+
 // Remove keywords
 
     Vector<String> ignore(14); 
@@ -999,11 +1026,11 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
     ignore(4) = "^pc$";
     ignore(5) = "^equinox$";
     ignore(6) = "^epoch$";
-    ignore(7) = "^.type";
-    ignore(8) = "^.rpix";
-    ignore(9) = "^.rval";
-    ignore(10) = "^.rota";
-    ignore(11) = "^.delt"; 
+    ignore(7) = "ctype";
+    ignore(8) = "crpix";
+    ignore(9) = "crval";
+    ignore(10) = "crota";
+    ignore(11) = "cdelt"; 
     ignore(12) = "bscale";
     ignore(13) = "bzero";
     FITSKeywordUtil::removeKeywords(header, ignore);
@@ -1012,7 +1039,7 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
     
     FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
 //
-    Int after = -1;
+    after = -1;
     if (cSys.findCoordinate(Coordinate::SPECTRAL, after) >= 0) {
        ignore.resize(1);
        ignore(0) = "restfreq";
@@ -1025,21 +1052,10 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (RecordInterface& heade
 ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
 {
    ImageInfo ii;
-   if (header.isDefined("bmaj") && header.isDefined("bmin") &&
-       header.isDefined("bpa")) {
-      Double bmaj = header.asDouble("bmaj");
-      Double bmin = header.asDouble("bmin");
-      Double bpa = header.asDouble("bpa");
+   Vector<String> errors;
+   ii.fromFITS (errors, header);
+   FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
 //
-      ImageInfo imageInfo;
-      Quantum<Double> bmajq(max(bmaj,bmin), "deg");
-      Quantum<Double> bminq(min(bmaj,bmin), "deg");
-      bmajq.convert(Unit("arcsec"));
-      bminq.convert(Unit("arcsec"));
-      ii.setRestoringBeam(bmajq, bminq, Quantum<Double>(bpa, "deg"));
-//
-      FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
-   }
    return ii;
 }
 
