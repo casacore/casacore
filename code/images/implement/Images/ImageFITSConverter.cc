@@ -93,6 +93,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     }
 
     ok = CoordinateSystem::fromFITSHeader(coords, header, shape, True);
+    Int after = -1;
+    Bool hasSpectralCoordinate = (coords.findCoordinate(Coordinate::SPECTRAL, after)>=0);
     if (! ok) {
 	os << LogIO::WARN << 
 	  "Error creating coordinate system from FITS keywords.\n" 
@@ -196,7 +198,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
 	}
     }
 //
-    ignore.resize(21); // resize as necessary
+    ignore.resize(23);        // resize as necessary
     ignore(0) = "^datamax$";  // Image pixels might change
     ignore(1) = "^datamin$";
     ignore(2) = "^date-map$";
@@ -218,9 +220,16 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& newIma
     ignore(18) = "^.rota";
     ignore(19) = "^.delt";
     ignore(20) = "^bunit$";
+    ignore(21) = "bscale";
+    ignore(22) = "bzero";
     FITSKeywordUtil::removeKeywords(header, ignore);
+    if (hasSpectralCoordinate) {
+       ignore.resize(1);
+       ignore(0) = "restfreq";
+       FITSKeywordUtil::removeKeywords(header, ignore);
+    }
 
-// Remove any that might have been in ObsInfo of coordinates.
+// Remove any that might have been in ObsInfo or coordinates.
 
     FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
 
