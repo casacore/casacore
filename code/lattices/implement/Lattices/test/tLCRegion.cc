@@ -121,6 +121,7 @@ void doIt (const IPosition& latticeShape,
         AlwaysAssertExit (cir2 == cir1);
         LCEllipsoid cir3 (center, radius-0.01, latticeShape);
         AlwaysAssertExit (cir3 != cir1);
+        AlwaysAssertExit (cir1 != box1);
     }
 }
 
