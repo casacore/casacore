@@ -1,5 +1,5 @@
 //# Error.h: Base class for all AIPS++ errors
-//# Copyright (C) 1993,1994,1995,1999,2000,2001
+//# Copyright (C) 1993,1994,1995,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <aips/aips.h>
 #include <aips/Utilities/String.h>
+#include <exception>
 
 // <summary>Base class for all AIPS++ library errors</summary>
 // <use visibility=export>
@@ -45,7 +46,8 @@
 // </prerequisite>
 //
 // <synopsis>
-//  This is the base class for all of the AIPS++ error classes. Because
+//  This is the base class (derived from std::exception)
+//  for all of the AIPS++ error classes. Because
 //  all of the errors have a common base class, any error can be caught
 //  with a single catch statement.
 //
@@ -68,7 +70,7 @@
 // <todo asof="">
 // </todo>
 
-class AipsError
+class AipsError: public std::exception
 {
 protected:
   String message;
@@ -78,6 +80,9 @@ public:
   //
   const String &getMesg() const
     { return(message); }
+
+  virtual const char* what() const throw()
+    { return(message.c_str()); }
 
   //
   // Creates an AipsError and initializes the error message from
@@ -91,7 +96,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AipsError();
+  ~AipsError() throw();
 };
 
 
@@ -139,7 +144,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AllocError();
+  ~AllocError() throw();
 
 };
 
@@ -180,7 +185,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~IndexError();
+  ~IndexError() throw();
 };
 
 
@@ -222,7 +227,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~indexError();
+  ~indexError() throw();
 };
 
 
@@ -262,7 +267,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~DuplError();
+  ~DuplError() throw();
 };
 
 
@@ -305,7 +310,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~duplError();
+  ~duplError() throw();
 };
 
 
@@ -342,7 +347,7 @@ public:
   //
   // Destructor which does nothing.
   //
-  ~AbortError();
+  ~AbortError() throw();
 };
 
 

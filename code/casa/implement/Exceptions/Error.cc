@@ -1,5 +1,5 @@
 //# Error.cc: Base class for all AIPS++ errors (templated classes)
-//# Copyright (C) 1993,1994,1995,1996,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,7 +42,7 @@ indexError<t>::indexError(t oI, const String &str)
 {}
 
 template<class t>
-indexError<t>::~indexError()
+indexError<t>::~indexError() throw()
 {}
 
 
@@ -59,6 +59,6 @@ duplError<t>::duplError(t oI, const String &str)
 {}
 
 template<class t>
-duplError<t>::~duplError()
+duplError<t>::~duplError() throw()
 {}
 

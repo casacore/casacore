@@ -1,5 +1,5 @@
 //# Error2.cc: Base class for all AIPS++ errors (non-templated classes)
-//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,19 +38,19 @@ AipsError::AipsError(const String &str)
 : message(str)
 {}
 
-AipsError::~AipsError()
+AipsError::~AipsError() throw()
 {}
 
 
-AllocError::~AllocError()
+AllocError::~AllocError() throw()
 {}
 
 
-IndexError::~IndexError()
+IndexError::~IndexError() throw()
 {}
 
 
-DuplError::~DuplError()
+DuplError::~DuplError() throw()
 {}
 
 
@@ -71,5 +71,5 @@ AbortError::AbortError(const String &str)
     exit(1);
 }
 
-AbortError::~AbortError()
+AbortError::~AbortError() throw()
 {}
