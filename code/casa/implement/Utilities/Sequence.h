@@ -47,6 +47,7 @@
 
 template<class t> class Sequence {
 public:
+    virtual ~Sequence();
 
     // Force derived classes to provide this function, to return the
     // next value in the sequence.
