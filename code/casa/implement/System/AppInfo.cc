@@ -1,5 +1,5 @@
 //# AppInfo.cc: General information for applications
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,6 +39,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/OS/Directory.h>
 #include <aips/Logging/LogIO.h>
+#include <aips/iostream.h>
 
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::memory_r = 0;
