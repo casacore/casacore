@@ -79,7 +79,7 @@ ImageInfo& ImageInfo::setRestoringBeam(const Vector<Quantum<Double> >& beam)
                          String("vector must be of length 0 or 3")));
     }
 //
-    if (beam.nelements()>0) {
+    if (beam.nelements()>uInt(0)) {
        setRestoringBeam(beam(0), beam(1), beam(2));
     } else {
        itsRestoringBeam.resize(0);
