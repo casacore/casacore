@@ -25,8 +25,6 @@
 //#
 //# $Id$
 
-//# Includes
-
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Exceptions/Excp.h>
@@ -123,19 +121,19 @@ int main() {
       throw(AipsError("Should not be able to make an unknown shape"));
     }
     catch (AipsError x) {
-      AlwaysAssert(x.getMesg().contains
-		   ("(SkyCompRep.cc : 63) Failed AlwaysAssertExit ok()"),
-		   AipsError); 
-   }
+      if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
+	rethrow(x);
+      }
+    }
     try {
       SkyCompRep u(ComponentType::POINT,
 		   ComponentType::UNKNOWN_SPECTRAL_SHAPE);
       throw(AipsError("Should not be able to make an unknown spectrum"));
     }
     catch (AipsError x) {
-      AlwaysAssert(x.getMesg().contains
-		   ("(SkyCompRep.cc : 73) Failed AlwaysAssertExit ok()"), 
- 		   AipsError);
+      if (!x.getMesg().contains("Failed AlwaysAssertExit ok()")) {
+	rethrow(x);
+      }
     }
     cout << "Two SEVERE logger error messages are expected" << endl;
   }
