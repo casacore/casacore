@@ -1036,7 +1036,13 @@ and classes form the programmer interface.
   \htmlref{\texttt{substitute}}{utility:substitute}
   functions of module
   \htmlref{\texttt{utility}}{utility} of the
-  \htmladdnormallink{User Reference Manual}{../../user/Refman/Refman.html}.
+  \htmladdnormallink{User Reference
+  Manual}{../../user/Refman/Refman.html}.
+  \\Since substitute uses the eval function of glish, care has to
+  be taken when used in a function. Eval looks first in the global
+  scope and one may get surprised by that. So when using a local function
+  variable in substitution, its name should be very specific by e.g.
+  giving it a unique prefix.
   
 \item
   The C++ interface consists of 2 parts.
