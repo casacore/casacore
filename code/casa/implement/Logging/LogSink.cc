@@ -257,6 +257,8 @@ LogSinkInterface &LogSink::globalSink()
 
 void LogSink::globalSink(LogSinkInterface *&fromNew)
 {
+    if ( ! LogSink::global_sink_p )
+        LogSink::global_sink_p = new CountedPtr<LogSinkInterface>(new StreamLogSink(LogMessage::NORMAL, &cerr));
     (*global_sink_p).replace(fromNew);
     fromNew = 0;
     AlwaysAssert(!(*global_sink_p).null(), AipsError);
