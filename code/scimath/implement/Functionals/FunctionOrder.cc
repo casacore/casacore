@@ -1,5 +1,5 @@
 //# FunctionOrder.cc: Container of function description details
-//# Copyright (C) 2002
+//# Copyright (C) 2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Functionals/FunctionOrder.h>
+#include <aips/Containers/Record.h>
 #include <aips/iostream.h>
 
 template<class T>
@@ -195,4 +196,40 @@ ostream &FunctionOrder<T>::print(ostream &os) const {
   os << "]";
   os << "]";
   return os;
+}
+
+
+template<class T>
+Bool FunctionOrder<T>::fromRecord(String &, const RecordInterface &in) {
+  if (in.isDefined(String("ord"))) in.get(RecordFieldId("ord"), int_p);
+  if (in.isDefined(String("par"))) in.get(RecordFieldId("par"), double_p);
+  if (in.isDefined(String("str"))) in.get(RecordFieldId("str"), string_p);
+  if (in.isDefined(String("sca"))) in.get(RecordFieldId("sca"), scale_p);
+  if (in.isDefined(String("cen"))) in.get(RecordFieldId("cen"), center_p);
+  if (in.isDefined(String("wid"))) in.get(RecordFieldId("wid"), width_p);
+  return True;
+}
+
+template<class T>
+Bool FunctionOrder<T>::fromString(String &, const String &in) {
+  string_p = in;
+  return True;
+}
+
+template<class T>
+Bool FunctionOrder<T>::toRecord(String &, RecordInterface &out) const {
+  out.define(RecordFieldId("ord"), int_p);
+  out.define(RecordFieldId("par"), double_p);
+  out.define(RecordFieldId("str"), string_p);
+  out.define(RecordFieldId("sca"), scale_p);
+  out.define(RecordFieldId("cen"), center_p);
+  out.define(RecordFieldId("wid"), width_p);
+  /// Add the functionals!!
+  return True;
+}
+
+template<class T>
+const String &FunctionOrder<T>::ident() const {
+  static String myid = "fncord";
+  return myid;
 }
