@@ -35,15 +35,58 @@
 #include <aips/OS/Directory.h>
 #include <aips/OS/DirectoryIterator.h>
 #include <aips/OS/SymLink.h>
-#include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
 #include <aips/Exceptions/Error.h>
 
 
-Bool DOos::isValidPathName (const String& pathName)
+Vector<Bool> DOos::isValidPathName (const Vector<String>& pathName)
 {
-  File file(pathName);
-  return ToBool (file.exists() || file.canCreate());
+  Vector<Bool> result(pathName.nelements());
+  for (uInt i=0; i<pathName.nelements(); i++) {
+    File file(pathName(i));
+    result(i) = ToBool (file.exists() || file.canCreate());
+  }
+  return result;
+}
+
+Vector<Bool> DOos::fileExists (const Vector<String>& pathName,
+			       Bool follow)
+{
+  Vector<Bool> result(pathName.nelements());
+  for (uInt i=0; i<pathName.nelements(); i++) {
+    File file(pathName(i));
+    if (follow && file.isSymLink()) {
+      file = File(SymLink(file).followSymLink());
+    }
+    result(i) = ToBool (file.exists());
+  }
+  return result;
+}
+
+Vector<String> DOos::fileType (const Vector<String>& pathName,
+			       Bool follow)
+{
+  Vector<String> result(pathName.nelements());
+  for (uInt i=0; i<pathName.nelements(); i++) {
+    File file(pathName(i));
+    if (file.isRegular (follow)) {
+      result(i) = "Regular File";
+    } else if (file.isDirectory (follow)) {
+      File tab(pathName(i) + "/table.dat");
+      if (tab.isRegular (follow)) {
+	result(i) = "Table";
+      } else {
+	result(i) = "Directory";
+      }
+    } else if (file.isSymLink()) {
+      result(i) = "SymLink";
+    } else if (! file.exists()) {
+      result(i) = "Invalid";
+    } else {
+      result(i) = "Unknown";
+    }
+  }
+  return result;
 }
 
 Vector<String> DOos::fileNames (const String& directoryName,
@@ -101,67 +144,118 @@ Vector<String> DOos::fileNames (const String& directoryName,
   return result;
 }
 
-void DOos::makeDirectory (const String& directoryName)
+void DOos::makeDirectory (const Vector<String>& directoryName,
+			  Bool makeParent)
 {
-  File file(directoryName);
-  if (file.exists()) {
-    throw (AipsError ("DOos::makeDirectory - a file " + directoryName +
-		      " already exists"));
+  for (uInt i=0; i<directoryName.nelements(); i++) {
+    File file(directoryName(i));
+    if (file.exists()) {
+      throw (AipsError ("DOos::makeDirectory - a file " + directoryName(i) +
+			" already exists"));
+    }
+    // First make parent directory if allowed and if needed.
+    if (makeParent) {
+      String parent = Path(directoryName(i)).dirName();
+      if (! File(parent).exists()) {
+	Vector<String> parName(1);
+	parName(0) = parent;
+	makeDirectory (parName, makeParent);
+      }
+    }
+    Directory dir(file);
+    dir.create (False);
   }
-  Directory dir(file);
-  dir.create (False);
 }
 
-String DOos::fullName (const String& fileName)
+Vector<String> DOos::fullName (const Vector<String>& fileName)
 {
-  return Path(fileName).absoluteName();
+  Vector<String> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    result(i) = Path(fileName(i)).absoluteName();
+  }
+  return result;
 }
 
-String DOos::dirName (const String& fileName)
+Vector<String> DOos::dirName (const Vector<String>& fileName)
 {
-  return Path(fullName(fileName)).dirName();
+  Vector<String> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    result(i) = Path(Path(fileName(i)).absoluteName()).dirName();
+  }
+  return result;
 }
 
-String DOos::baseName (const String& fileName)
+Vector<String> DOos::baseName (const Vector<String>& fileName)
 {
-  return Path(fullName(fileName)).baseName();
+  Vector<String> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    result(i) = Path(Path(fileName(i)).absoluteName()).baseName();
+  }
+  return result;
+}
+
+Vector<Double> DOos::totalSize (const Vector<String>& fileName, Bool follow)
+{
+  Vector<Double> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    File file(fileName(i));
+    if (!file.exists()) {
+      throw (AipsError ("DOos::totalSize - file " + fileName(i) +
+			" does not exist"));
+    }
+    Double size = 0;
+    if (! file.isDirectory (follow)) {
+      if (file.isRegular (follow)) {
+	size = RegularFile(file).size();
+      }
+    } else {
+      DirectoryIterator iter (file);
+      // Iterate through the directory.
+      for (; !iter.pastEnd(); iter++) {
+	size += totalSize(fileName(i) + '/' + iter.name(), follow);
+      }
+    }
+    result(i) = size;
+  }
+  return result;
 }
 
 Double DOos::totalSize (const String& fileName, Bool follow)
 {
   File file(fileName);
-  if (!file.exists()) {
-    throw (AipsError ("DOos::totalSize - file " + fileName +
-		      " does not exist"));
-  }
-  if (! file.isDirectory (follow)) {
-    if (file.isRegular (follow)) {
-      return RegularFile(file).size();
-    }
-    return 0;
-  }
   Double size = 0;
-  DirectoryIterator iter (file);
-  // Iterate through the directory.
-  for (; !iter.pastEnd(); iter++) {
-    size += totalSize(fileName + '/' + iter.name(), follow);
+  if (file.exists()) {
+    if (! file.isDirectory (follow)) {
+      if (file.isRegular (follow)) {
+	size = RegularFile(file).size();
+      }
+    } else {
+      DirectoryIterator iter (file);
+      // Iterate through the directory.
+      for (; !iter.pastEnd(); iter++) {
+	size += totalSize(fileName + '/' + iter.name(), follow);
+      }
+    }
   }
   return size;
 }
 
-Double DOos::freeSpace (const String& fileName, Bool follow)
+Vector<Double> DOos::freeSpace (const Vector<String>& fileName, Bool follow)
 {
-  File file(fileName);
-  if (file.isDirectory (follow)) {
-    return Directory(file).freeSpace();
+  Vector<Double> result(fileName.nelements());
+  for (uInt i=0; i<fileName.nelements(); i++) {
+    File file(fileName(i));
+    if (file.isDirectory (follow)) {
+      result(i) = Directory(file).freeSpace();
+    } else if (file.isRegular (follow)  ||  file.isSymLink()) {
+      String name = Path(Path(fileName(i)).absoluteName()).dirName();
+      result(i) = Directory(name).freeSpace();
+    } else {
+      throw (AipsError ("DOos::freeSpace - file " + fileName(i) +
+			" does not exist"));
+    }
   }
-  if (file.isRegular (follow)  ||  file.isSymLink()) {
-    String name = Path(Path(fileName).absoluteName()).dirName();
-    return Directory(name).freeSpace();
-  }
-  throw (AipsError ("DOos::freeSpace - file " + fileName +
-		    " does not exist"));
-  return 0;
+  return result;
 }
 
 void DOos::copy (const String& to, const String& from, Bool overwrite,
@@ -202,32 +296,39 @@ void DOos::move (const String& to, const String& from, Bool overwrite,
   }
 }
 
-void DOos::remove (const String& fileName, Bool recursive, Bool mustExist,
-		   Bool follow)
+void DOos::remove (const Vector<String>& fileName, Bool recursive,
+		   Bool mustExist, Bool follow)
 {
-  File file(fileName);
-  if (! file.exists()) {
-    if (mustExist) {
-      throw (AipsError ("DOos::remove - file " + fileName +
-			" does not exist"));
-    }
-  } else {
-    if (file.isRegular (follow)) {
-      RegularFile rfile(file);
-      rfile.remove();
-    } else if (file.isDirectory (follow)) {
-      Directory dir(file);
-      if (recursive) {
-	dir.removeRecursive();
-      } else {
-	dir.remove();
+  uInt i;
+  if (mustExist) {
+    for (i=0; i<fileName.nelements(); i++) {
+      File file(fileName(i));
+      if (! file.exists()) {
+	throw (AipsError ("DOos::remove - file " + fileName(i) +
+			  " does not exist"));
       }
-    } else if (file.isSymLink()) {
-      SymLink symlink(file);
-      symlink.remove();
-    } else {
-      throw (AipsError ("DOos::remove - file " + fileName +
-			" is not a regular file, directory, nor symlink"));
+    }
+  }
+  for (i=0; i<fileName.nelements(); i++) {
+    File file(fileName(i));
+    if (file.exists()) {
+      if (file.isRegular (follow)) {
+	RegularFile rfile(file);
+	rfile.remove();
+      } else if (file.isDirectory (follow)) {
+	Directory dir(file);
+	if (recursive) {
+	  dir.removeRecursive();
+	} else {
+	  dir.remove();
+	}
+      } else if (file.isSymLink()) {
+	SymLink symlink(file);
+	symlink.remove();
+      } else {
+	throw (AipsError ("DOos::remove - file " + fileName(i) +
+			  " is not a regular file, directory, nor symlink"));
+      }
     }
   }
 }

@@ -29,9 +29,10 @@
 #if !defined(AIPS_DOOS_H)
 #define AIPS_DOOS_H
 
+
 //# Includes
 #include <aips/aips.h>
-#include <trial/Tasking/ApplicationObject.h>
+#include <aips/Arrays/Vector.h>
 
 //# Forward Declarations
 class String;
@@ -78,8 +79,18 @@ class String;
 class DOos
 {
 public:
-  // Is the given path name valid?
-  static Bool isValidPathName (const String& pathName);
+  // Are the given path names valid?
+  // I.e. does a file with the given name exist or can it be created?
+  static Vector<Bool> isValidPathName (const Vector<String>& pathName);
+
+  // Do the given files exist?
+  // If follow is False, symbolic links are not followed.
+  static Vector<Bool> fileExists (const Vector<String>& fileName,
+				  Bool follow = True);
+
+  // Give the type of the given files.
+  static Vector<String> fileType (const Vector<String>& fileName,
+				  Bool follow = True);
 
   // Give all file names in the directory matching the given pattern
   // and file types.
@@ -104,27 +115,33 @@ public:
 				   Bool all = False,
 				   Bool follow = True);
 
-  // Make a directory. It throws an exception if a file with that
+  // Make directories. It throws an exception if a file with that
   // name already exists.
-  static void makeDirectory (const String& directoryName);
+  static void makeDirectory (const Vector<String>& directoryNames,
+			     Bool makeParent = False);
 
-  // Return the full absolute name for the given name.
-  static String fullName (const String& fileName);
+  // Return the full absolute names for the given names.
+  static Vector<String> fullName (const Vector<String>& fileName);
 
-  // Return the full direcotry name of the given name.
-  static String dirName (const String& fileName);
+  // Return the full directory names of the given files.
+  static Vector<String> dirName (const Vector<String>& fileName);
 
-  // Return the base name of the given file.
-  static String baseName (const String& fileName);
+  // Return the base names of the given files.
+  static Vector<String> baseName (const Vector<String>& fileName);
 
-  // Return the total size of the file or all files (recursively)
-  // in the directory.
+  // Return the total size (in bytes) for each file or directory given.
+  // For a directory the size of all files (recursively) in it is given.
   // If follow is False, symbolic links are not followed.
+  // <group>
+  static Vector<Double> totalSize (const Vector<String>& fileName,
+				   Bool follow = True);
   static Double totalSize (const String& fileName, Bool follow = True);
+  // </group>
 
-  // Return the total size on the device the given directory is on.
+  // Return the total size on the devics the given directories are on.
   // If follow is False, symbolic links are not followed.
-  static Double freeSpace (const String& fileName, Bool follow = True);
+  static Vector<Double> freeSpace (const Vector<String>& fileName,
+				   Bool follow = True);
 
   // Copy the file (or directory recursively).
   // If from is a symbolic link and follow is False, only the
@@ -138,10 +155,10 @@ public:
   static void move (const String& to, const String& from,
 		    Bool overwrite = True, Bool follow = True);
 
-  // Remove the file (or directory recursively).
+  // Remove the files (or directories recursively).
   // If fileName is a symbolic link and follow is False, only the
   // symbolic link is removed.
-  static void remove (const String& fileName, Bool recursive,
+  static void remove (const Vector<String>& fileName, Bool recursive,
 		      Bool mustExist = True, Bool follow = True);
 };
 
