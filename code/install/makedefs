@@ -1186,17 +1186,17 @@ diagnostics : versions test_global ;
 # Report versions of installed software.
 versions :
 	-@ echo ""
-	-  uname -a
+	-@ uname -a
 	-@ echo ""
-	-  $(MAKE) --version | head -1
+	-@ $(MAKE) --version | head -1
 	-@ echo ""
-	-  gzip --version
+	-@ gzip --version 2>&1 | head -1
 	-@ echo ""
-	-  $(BISON) --version
+	-@ $(BISON) --version
 	-@ echo ""
-	-  $(FLEX) -V
+	-@ $(FLEX) -V
 	-@ echo ""
-	-  $(LATEX2HTML) -v
+	-  $(LATEX2HTMLBIN) -v
 
 # Print specified variable definitions.
 show_vars :
