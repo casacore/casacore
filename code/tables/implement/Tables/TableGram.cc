@@ -1,5 +1,5 @@
 //# TableGram.cc: Grammar for table command lines
-//# Copyright (C) 1993,1994,1995,1997,1999,2001
+//# Copyright (C) 1993,1994,1995,1997,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -94,7 +94,8 @@ int tableGramInput (char* buf, int max_size)
 
 void TableGramerror (char*)
 {
-    throw (TableInvExpr ("Parse error at or near '" + String(yytext) + "'"));
+    throw (TableInvExpr ("Parse error at or near '" +
+			 String(TableGramtext) + "'"));
 }
 
 String tableGramRemoveEscapes (const String& in)
