@@ -27,12 +27,16 @@
 #include <trial/Lattices/LatticeConvolver.h>
 #include <trial/Lattices/LatticeFFT.h>
 #include <trial/Lattices/LatticeIterator.h>
+#include <trial/Lattices/LatticeStepper.h>
 #include <trial/Lattices/SubLattice.h>
 #include <trial/Lattices/TileStepper.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
 
+// This sets the maximum size, in MB of any memory based Lattices created by
+// this class. It was deteremined empirically to be tyhe best value on a
+// 64MByte Linux machine.
 const Int maxLatSize = 6;
 
 template<class T> LatticeConvolver<T>::
@@ -57,7 +61,7 @@ LatticeConvolver(const Lattice<T> & psf)
    itsPsf(),
    itsCachedPsf(False)
 {
-  AlwaysAssert(itsPsfShape.product() != 0, AipsError);
+  DebugAssert(itsPsfShape.product() != 0, AipsError);
   makeXfr(psf);
 } 
 
@@ -72,9 +76,9 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape)
 {
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
-  AlwaysAssert(itsPsfShape.nelements() == itsModelShape.nelements(),AipsError);
-  AlwaysAssert(itsPsfShape.product() != 0, AipsError);
-  AlwaysAssert(itsModelShape.product() != 0, AipsError);
+  DebugAssert(itsPsfShape.nelements() == itsModelShape.nelements(),AipsError);
+  DebugAssert(itsPsfShape.product() != 0, AipsError);
+  DebugAssert(itsModelShape.product() != 0, AipsError);
   // looks OK so make the transfer function
   makeXfr(psf);
 }
@@ -91,9 +95,9 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
 {
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
-  AlwaysAssert(itsPsfShape.nelements() == itsModelShape.nelements(),AipsError);
-  AlwaysAssert(itsPsfShape.product() != 0, AipsError);
-  AlwaysAssert(itsModelShape.product() != 0, AipsError);
+  DebugAssert(itsPsfShape.nelements() == itsModelShape.nelements(),AipsError);
+  DebugAssert(itsPsfShape.product() != 0, AipsError);
+  DebugAssert(itsModelShape.product() != 0, AipsError);
   // looks OK so make the psf
   makeXfr(psf);
 }
@@ -131,8 +135,8 @@ template<class T> LatticeConvolver<T>::
 
 template<class T> void LatticeConvolver<T>::
 getPsf(Lattice<T> & psf) const {
-  AlwaysAssert(psf.ndim() == itsPsfShape.nelements(), AipsError);
-  AlwaysAssert(psf.shape() == itsPsfShape, AipsError);
+  DebugAssert(psf.ndim() == itsPsfShape.nelements(), AipsError);
+  DebugAssert(psf.shape() == itsPsfShape, AipsError);
   if (itsCachedPsf) { // used the cached Psf if possible
     itsPsf.copyDataTo(psf);
   } else { // reconstruct the psf from the transfer function
@@ -165,12 +169,11 @@ circular(Lattice<T> & modelAndResult){
 template<class T> void LatticeConvolver<T>::
 convolve(Lattice<T> & result, const Lattice<T> & model) const {
   const uInt ndim = itsFFTShape.nelements();
-  AlwaysAssert(result.ndim() == ndim, AipsError);
-  AlwaysAssert(model.ndim() == ndim, AipsError);
+  DebugAssert(result.ndim() == ndim, AipsError);
+  DebugAssert(model.ndim() == ndim, AipsError);
   const IPosition modelShape = model.shape();
-  const IPosition resultShape = result.shape();
-  AlwaysAssert(resultShape == modelShape, AipsError);
-  AlwaysAssert(modelShape == itsModelShape, AipsError);
+  DebugAssert(result.shape() == modelShape, AipsError);
+  DebugAssert(modelShape == itsModelShape, AipsError);
   // Create a lattice that will hold the transform. Do this before creating the
   // paddedModel TempLattice so that it is more likely to be memory based.
   IPosition XFRShape(itsFFTShape);
@@ -179,35 +182,55 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
   Bool doPadding = False;
-  const Lattice<T> * modelPtr = &model;
-  Lattice<T> * resultPtr = &result;
+  const Lattice<T>* modelPtr = 0;
+  Lattice<T>* resultPtr = 0;
   if (!(itsFFTShape <= modelShape)) {
     doPadding = True;
     modelPtr = resultPtr = new TempLattice<T>(itsFFTShape, maxLatSize);
-    pad(*resultPtr, model);
   } 
-  // Do the forward transform
-  LatticeFFT::rcfft(fftModel.lc(), *modelPtr);
-  { // Multiply the transformed model with the transfer function
-    IPosition tileShape(itsXfr.niceCursorShape());
-    const IPosition otherTileShape(fftModel.niceCursorShape());
-    for (uInt i = 0; i < ndim; i++) {
-      if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
+
+  IPosition sliceShape(ndim,1);
+  for (uInt n = 0; n < ndim; n++) {
+    if (itsFFTShape(n) > 1) {
+      sliceShape(n) = modelShape(n);
     }
-    TileStepper tiledNav(XFRShape, tileShape);
-    RO_LatticeIterator<NumericTraits<T>::ConjugateType> 
-      xfrIter(itsXfr, tiledNav);
-    LatticeIterator<NumericTraits<T>::ConjugateType> 
-      fftModelIter(fftModel, tiledNav);
-    for (xfrIter.reset(), fftModelIter.reset(); !fftModelIter.atEnd(); 
-	xfrIter++, fftModelIter++) {
-       fftModelIter.rwCursor() *= xfrIter.cursor();
+  }
+  LatticeStepper ls(modelShape, sliceShape);
+  for (ls.reset(); !ls.atEnd(); ls++) {
+    const Slicer sl(ls.position(), sliceShape);
+    const SubLattice<Float> modelSlice(model, sl);
+    SubLattice<Float> resultSlice(result, sl, True);
+    if (doPadding) {
+      pad(*resultPtr, modelSlice);
+    } else {
+      modelPtr = &modelSlice;
+      resultPtr = &resultSlice;
     }
-  } 
-  // Do the inverse transform
-  LatticeFFT::crfft(*resultPtr, fftModel.lc());
-  if (doPadding) { // Unpad the result
-    unpad(result, *resultPtr);
+    // Do the forward transform
+    LatticeFFT::rcfft(fftModel.lc(), *modelPtr);
+    { // Multiply the transformed model with the transfer function
+      IPosition tileShape(itsXfr.niceCursorShape());
+      const IPosition otherTileShape(fftModel.niceCursorShape());
+      for (uInt i = 0; i < ndim; i++) {
+	if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
+      }
+      TileStepper tiledNav(XFRShape, tileShape);
+      RO_LatticeIterator<NumericTraits<T>::ConjugateType> 
+	xfrIter(itsXfr, tiledNav);
+      LatticeIterator<NumericTraits<T>::ConjugateType> 
+	fftModelIter(fftModel, tiledNav);
+      for (xfrIter.reset(), fftModelIter.reset(); !fftModelIter.atEnd();
+	   xfrIter++, fftModelIter++) {
+	fftModelIter.rwCursor() *= xfrIter.cursor();
+      }
+    }
+    // Do the inverse transform
+    LatticeFFT::crfft(*resultPtr, fftModel.lc());
+    if (doPadding) { // Unpad the result
+      unpad(resultSlice, *resultPtr);
+    }
+  }
+  if (doPadding) { // cleanup the TempLattice used for padding.
     delete modelPtr;
     modelPtr = resultPtr = 0;
   }
@@ -220,8 +243,7 @@ convolve(Lattice<T> & modelAndResult) const {
 
 template<class T> void LatticeConvolver<T>::
 resize(const IPosition & modelShape, ConvEnums::ConvType type) {
-  const uInt ndim = itsXfr.ndim();
-  AlwaysAssert(ndim == modelShape.nelements(), AipsError);
+  DebugAssert(itsXfr.ndim() == modelShape.nelements(), AipsError);
   itsType = type;
   itsModelShape = modelShape;
   {
@@ -350,15 +372,23 @@ calcFFTShape(const IPosition & psfShape, const IPosition & modelShape,
     // it the same size as the bigger one.
     return max(psfShape, modelShape);
   }
+
   // When doing linear convolution the formulae is more complicated.  In
   // general the shape is given by modelShape + psfShape - 1. But if we are
   // only to return an Array of size modelShape you can do smaller
-  // transforms. I deduced the following formulae empirically.
+  // transforms. I deduced the following formulae empirically. If the length on
+  // any axis is one for either the model or the psf you do not need to do an
+  // FFT along this axis. All you need to do is iterate through it hence the
+  // FFTShape on this axis is set to one. The iteration is done in the convolve
+  // function.
   IPosition FFTShape = modelShape + psfShape/2;
   const uInt ndim = FFTShape.nelements();
   for (uInt i = 0; i < ndim; i++) {
-    if (FFTShape(i) < psfShape(i)) {
-      FFTShape(i) = 2 * modelShape(i) - 1;
+    if (psfShape(i) == 1 || modelShape(i) == 1) {
+      FFTShape(i) = 1; 
+    } else if (FFTShape(i) < psfShape(i)) {
+      FFTShape(i) = 2 * modelShape(i);
+      //      FFTShape(i) = 2 * modelShape(i) - 1;
     }
   }
   return FFTShape;
