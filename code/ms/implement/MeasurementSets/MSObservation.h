@@ -31,7 +31,7 @@
 
 #include <aips/aips.h>
 #include <aips/MeasurementSets/NewMSTable.h>
-#include <aips/MeasurementSets/NewMSObEnums.h>
+#include <aips/MeasurementSets/NewMSObsEnums.h>
 
 // <summary> 
 // A Table intended to hold a NewMeasurementSet OBSERVATION table.
