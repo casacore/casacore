@@ -93,6 +93,7 @@ private:
   void checkCategories(const RONewMSColumns& otherCols) const;
   Block<uInt> copyAntennaAndFeed(const NewMSAntenna& otherAnt,
 				 const NewMSFeed& otherFeed);
+  Block<uInt> copyField(const NewMSField& otherFld);
 
   NewMeasurementSet itsMS;
   IPosition itsFixedShape;
