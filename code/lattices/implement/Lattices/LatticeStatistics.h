@@ -51,6 +51,7 @@ template <class T> class TempLattice;
 class IPosition;
 #include <aips/iosstrfwd.h>
 
+
 // <summary>
 // Compute and display various statistics from a lattice
 // </summary>
@@ -159,8 +160,8 @@ class IPosition;
 //
 //// Retrieve statistics into array
 //
-//      Array<Float> sum;
-//      if (!stats.getSum()) return 1;
+//      Array<Double> sum;
+//      if (!stats.getStatistic(sum, LatticeStatsBase::SUM)) return 1;
 //
 // </srcBlock>
 // In this example, a <src>PagedImage</src> is constructed (which isA
@@ -186,6 +187,10 @@ class IPosition;
 
 template <class T> class LatticeStatistics : public LatticeStatsBase
 {
+// TypeDef
+
+typedef typename NumericTraits<T>::PrecisionType AccumType;
+
 public:
 
 // Constructor takes the lattice and a <src>LogIO</src> object for logging.
@@ -280,36 +285,26 @@ public:
 // has been called, or if one of the active "display" or "get*" methods has been called. 
    Vector<Int> displayAxes() const {return displayAxes_p;} 
 
-// These functions retrieve the designated statistics into an array.  The shape of the
+// Recover the desired Statistic into an array.  If you choose to use
+// the T version, be aware that the values in the AccumType version of the
+// Array may not be representable in the T version (e.g. large values for
+// SumSq).  The shape of the
 // array is the shape of the display axes (e.g. if the shape of the lattice is
 // [nx,ny,nz] and you ask for the mean of the y axis the shape of the returned
 // array would be [nx,nz].    A returned array of zero shape indicates that there 
-// were no good values. getMinMaxPos only works if there are no
+// were no good values.   A return   value of <src>False</src> 
+// indicates that the internal state of  the class is bad.
+// <group>
+   Bool getStatistic (Array<AccumType>& stat, LatticeStatsBase::StatisticsTypes type, Bool dropDeg=True);
+   Bool getConvertedStatistic (Array<T>& stat, LatticeStatsBase::StatisticsTypes type, Bool dropDeg=True);
+// </group>
+
+// Recover position of min and max. Only works if there are no
 // display axes (i.e. statistics found over entire image), otherwise,
 // the returned values are resized to 0 shape.  A return  
 // value of <src>False</src> indicates that the internal state of 
 // the class is bad.
-// <group>
-   Bool getStatistic (Array<T>& stat, LatticeStatsBase::StatisticsTypes type, Bool dropDeg=True);
-   Bool getNPts (Array<T>& out, Bool dropDeg=True);
-   Bool getSum (Array<T>& out, Bool dropDeg=True);
-   Bool getFluxDensity (Array<T>& out, Bool dropDeg=True);
-   Bool getSumSquared (Array<T>& out, Bool dropDeg=True);
-   Bool getMin (Array<T>& out, Bool dropDeg=True);
-   Bool getMax (Array<T>& out, Bool dropDeg=True);
-   Bool getMean (Array<T>& out, Bool dropDeg=True);
-   Bool getMedian (Array<T>& out, Bool dropDeg=True);
-   Bool getMedAbsDevMed (Array<T>& out, Bool dropDeg=True);
-   Bool getQuartile(Array<T>& out, Bool dropDeg=True);
-   Bool getVariance (Array<T>& out, Bool dropDeg=True);
-   Bool getSigma (Array<T>& out, Bool dropDeg=True);
-   Bool getRms (Array<T>& out, Bool dropDeg=True);
    Bool getMinMaxPos(IPosition& minPos, IPosition& maxPos);
-// </group>   
-
-// Get LEL statistic
-   Bool getLELNode (Array<T>& out, const LatticeExprNode& node, 
-                    Bool newExpr, Bool dropDeg=True);
 
 // This function gets a vector containing all the statistics
 // for a given location.  If <src>posInLattice=True</src> then
@@ -321,7 +316,7 @@ public:
 // A returned vector of zero shape indicates that there 
 // were no good values. A return  value of <src>False</src> 
 // indicates that the  internal state of the class is bad.
-   Bool getStats (Vector<T>&,
+   Bool getStats (Vector<AccumType>&,
                   const IPosition& pos,
                   const Bool posInLattice=False);
 
@@ -357,7 +352,6 @@ protected:
 // robust statistics are generated as well
 
    Bool doRobust_p;        
-   Bool doneLEL_p;
    IPosition minPos_p, maxPos_p, blcParent_p;
    String error_p;
 //
@@ -387,7 +381,7 @@ protected:
 // Have a look at the implementation to see what you really
 // have to do.
    virtual Bool listStats (Bool hasBeam, const IPosition& dPos,
-                           const Matrix<T>& ord);
+                           const Matrix<AccumType>& ord);
 
 // Gets labels for higher order axes and x axis.
 // dPos is the location of the start of the cursor in the
@@ -407,9 +401,8 @@ protected:
    void setStream (ostream& os, Int oPrec);
 
 private:
-
    const MaskedLattice<T>* pInLattice_p;
-   TempLattice<T>* pStoreLattice_p;
+   TempLattice<AccumType>* pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;
    PGPlotter plotter_p;
@@ -424,18 +417,17 @@ private:
    virtual void summStats(); 
 
 // Calculate statistic from storage lattice and return in an array
-   Bool calculateStatistic (Array<T>& slice, const Int& ISTAT, Bool dropDeg);
+   Bool calculateStatistic (Array<AccumType>& slice, 
+                            LatticeStatsBase::StatisticsTypes type,
+                            Bool dropDeg);
 
-// Convert a <T> to a <Float> for plotting
-   static Float convertT (const T value) {return Float(real(value));};
- 
-// Convert a <Float> (from plotting) to a <T>
-   static T convertF (const Float value) {return T(value);};
+// Convert a <AccumType> to a <Float> for plotting
+   static Float convertATtoF (AccumType value) {return Float(real(value));};
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
                            const uInt& n,
-                           const Vector<T>& mask,
+                           const Vector<AccumType>& mask,
                            const uInt& iStart,
                            const Bool& findGood) const;
 
@@ -443,9 +435,6 @@ private:
    Bool findNextLabel     (String& subLabel,
                            Int& iLab,
                            String& label) const;
-
-// Find the LEL statistics per cursorAxes chunk
-   void generateLEL(const LatticeExprNode& node); 
 
 // Find the median per cursorAxes chunk
    void generateRobust (); 
@@ -458,7 +447,7 @@ private:
    void lineSegments (uInt& nSeg,
                       Vector<uInt>& start,
                       Vector<uInt>& nPts,
-                      const Vector<T>& mask) const;
+                      const Vector<AccumType>& mask) const;
 
 // Given a location in the lattice and a statistic type, work
 // out where to put it in the storage lattice
@@ -475,36 +464,33 @@ private:
 // Plot an array which may have some blanked points.
 // Thus we plot it in segments         
    void multiPlot        (PGPlotter& plotter,
-                          const Vector<T>& x,
-                          const Vector<T>& y,
-                          const Vector<T>& n) const;
+                          const Vector<AccumType>& x,
+                          const Vector<AccumType>& y,
+                          const Vector<AccumType>& n) const;
 
 // Find min and max of good data in arrays specified by pointers
-   void minMax            (Bool& none,   
-                           T& dMin,
-                           T& dMax,
-                           const Vector<T>& d,
-                           const Vector<T>& n) const;
+   void minMax            (Bool& none, AccumType& dMin, AccumType& dMax,
+                           const Vector<AccumType>& d,
+                           const Vector<AccumType>& n) const;
 
 // Find the next nice PGPLOT colour index 
    Int niceColour         (Bool& initColours) const; 
 
 // Plot the statistics
    Bool plotStats         (Bool hasBeam, const IPosition& dPos, 
-                           const Matrix<T>& ord,
+                           const Matrix<AccumType>& ord,
                            PGPlotter& plotter);
 
 // Retrieve a statistic from the storage lattice and return in an array
-   Bool retrieveStorageStatistic
-                          (Array<T>& slice, 
-                           const Int& ISTAT, Bool dropDeg);
+   Bool retrieveStorageStatistic (Array<AccumType>& slice, 
+                                  LatticeStatsBase::StatisticsTypes type, 
+                                  Bool dropDeg);
 
 // Retrieve a statistic from the storage lattice at the specified
 // location and return in an array
-   Bool retrieveStorageStatistic
-                          (Vector<T>& slice, 
-                           const IPosition& pos,
-                           const Bool posInLattice);
+   Bool retrieveStorageStatistic (Vector<AccumType>& slice, 
+                                  const IPosition& pos,
+                                  const Bool posInLattice);
 
 // Find the shape of slice from the statistics lattice at one
 // spatial pixel
@@ -515,7 +501,7 @@ private:
 
 
 // Stretch min and max by 5%
-   void stretchMinMax (T& dMin, T& dMax) const;
+   void stretchMinMax (AccumType& dMin, AccumType& dMax) const;
 };
 
 
@@ -589,18 +575,16 @@ private:
 //   <li> 
 // </todo>
 
-template <class T>
-class StatsTiledCollapser : public TiledCollapser<T>
+template <class T, class U=T>
+class StatsTiledCollapser : public TiledCollapser<T,U>
 {
 public:
 // Constructor provides pixel selection range and whether that
 // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
 // and an inclusion range is given, the min and max is set to
 // that inclusion range.  
-    StatsTiledCollapser(const Vector<T>& pixelRange, 
-                        Bool noInclude, 
-                        Bool noExclude,
-                        Bool fixedMinMax);
+    StatsTiledCollapser(const Vector<T>& pixelRange, Bool noInclude, 
+                        Bool noExclude, Bool fixedMinMax);
 
 // Initialize process, making some checks
     virtual void init (uInt nOutPixelsPerCollapse);
@@ -619,7 +603,7 @@ public:
                           const IPosition& shape);
 
 // End the accumulation process and return the result arrays
-    virtual void endAccumulator(Array<T>& result,
+    virtual void endAccumulator(Array<U>& result,
                                 Array<Bool>& resultMask,
                                 const IPosition& shape);
 
@@ -642,14 +626,13 @@ private:
 // the typedef here is a workaround for the sun native compiler
 // hopefully this can go away with the new sun compiler.
 
-    typedef typename NumericTraits<T>::PrecisionType PrecisionType;
-    Block<PrecisionType > *pSum_p;
-    Block<PrecisionType > *pSumSq_p;
-    Block<PrecisionType>* pNPts_p;
+    Block<U> *pSum_p;
+    Block<U> *pSumSq_p;
+    Block<U>* pNPts_p;
     Block<T>* pMin_p;
     Block<T>* pMax_p;
     Block<Bool>* pInitMinMax_p;
-
+//
     uInt n1_p;
     uInt n3_p;
 };
