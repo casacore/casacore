@@ -141,9 +141,9 @@ void SkyComponent::fromRecord(String & errorMessage,
   // First check that the types match;
   checkType(componentErrors, record);
   if (componentErrors != "")
-    theCompPtr->fromRecord(errorMessage, record);
-  else
     errorMessage += componentErrors;
+  else
+    theCompPtr->fromRecord(errorMessage, record);
   DebugAssert(ok(), AipsError);
 }
 
