@@ -5,7 +5,7 @@
 \newcommand{\aipspp}{{\sc aips{\tt ++}}}
 \newcommand{\sref}[1]{Section \ref{#1}, #1, page \pageref{#1}}
 
-\externallabels{../System}{../../../docs/xreference/System/labels.pl}
+\externallabels{../System}{../../../docs/reference/System/labels.pl}
 %Used for programmer make only
 %\externallabels{http://aips2.nrao.edu/aips++/docs/reference/System}{/aips++/daily/docs/reference/System/labels.pl}
 
