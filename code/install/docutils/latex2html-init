@@ -30,7 +30,7 @@ if(!$DOCSROOT){
 
 
 $ADDRESS = "<I>Please send questions or comments about this web site to <A HREF=\"mailto:aips2-request\@nrao.edu\">aips2-request\@nrao.edu</A>.<BR>Copyright &#169; 1998 <A HREF=\"http://www.aui.edu\">Associated Universities Inc.</A>,
-Washington, D.C.</I><BR><B> Return to </B><A HREF=$DOCSROOT/html/aips++.html>AIPS++ Home Page</A>\n<BR><STRONG>\n$address_data[1]</STRONG>";
+Washington, D.C.</I><BR><B> Return to </B><A HREF=$DOCSROOT/../html/aips++.html>AIPS++ Home Page</A>\n<BR><STRONG>\n$address_data[1]</STRONG>";
    
 
 $NO_NAVIGATION = 0;	# 1 = do not put a navigation panel at the top of each page
