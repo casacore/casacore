@@ -34,12 +34,12 @@
 #include <aips/Functionals/FunctionTraits.h>
 #include <aips/Functionals/FunctionParam.h>
 #include <aips/Functionals/Function.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Function1D.h>
 
 //# Combination methods
-#include <aips/Functionals/NQFunctionWrapper.h>
-#include <aips/Functionals/NQCombiFunction.h>
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/FunctionWrapper.h>
+#include <aips/Functionals/CombiFunction.h>
+#include <aips/Functionals/CompoundFunction.h>
 
 /// remainder will be removed
 #include <aips/Functionals/SampledFunctional.h>

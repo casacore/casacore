@@ -1,5 +1,5 @@
 //# ImageMoments.cc:  generate moments from an image
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,7 +37,7 @@
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Logging/TableLogSink.h>
 #include <aips/Mathematics/Constants.h>

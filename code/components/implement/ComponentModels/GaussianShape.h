@@ -1,5 +1,5 @@
 //# GaussianShape.h:
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #define AIPS_GAUSSIANSHAPE_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <aips/Mathematics/Complex.h>
 #include <trial/ComponentModels/ComponentType.h>
 #include <trial/ComponentModels/TwoSidedShape.h>

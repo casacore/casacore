@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Function1D.h>
 
 //# Forward declarations
 

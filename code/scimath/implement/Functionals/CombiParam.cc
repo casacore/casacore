@@ -1,5 +1,5 @@
 //# NQCombiParam.cc:  Parameters for a linear combination of Functions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQCombiParam.h>
+#include <aips/Functionals/CombiParam.h>
 
 template <class T>
 NQCombiParam<T>::NQCombiParam() : 

@@ -38,7 +38,7 @@
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 #include <aips/Arrays/IPosition.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Quanta/QLogical.h>

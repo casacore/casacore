@@ -1,5 +1,5 @@
 //# tNQCompoundFunction: Test the NQCompoundFunction class
-//# Copyright (C) 1995,1996,1999,2001
+//# Copyright (C) 1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -26,10 +26,10 @@
 //# $Id$
 
 
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/CompoundFunction.h>
 
-#include <aips/Functionals/NQPolynomial.h>
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/Gaussian1D.h>
 
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Constants.h>

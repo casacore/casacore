@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQSinusoid1D.h>
+#include <aips/Functionals/Sinusoid1D.h>
 
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffA.h>

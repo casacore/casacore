@@ -39,7 +39,7 @@
 #include <trial/Coordinates/StokesCoordinate.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <aips/Exceptions/Error.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/SubImage.h>
 #include <trial/Images/ImageExpr.h>

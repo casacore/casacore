@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQWrapperParam.h>
+#include <aips/Functionals/WrapperParam.h>
 
 //# Forward declarations
 template <class T> class Vector;

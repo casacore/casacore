@@ -1,5 +1,5 @@
 //# tLQLinearFitSVD.cc: Test linear least squares classes
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,9 +33,9 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/NQPolynomial.h>
-#include <aips/Functionals/NQFunctionWrapper.h>
-#include <aips/Functionals/NQCombiFunction.h>
+#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/FunctionWrapper.h>
+#include <aips/Functionals/CombiFunction.h>
 #include <aips/Utilities/Assert.h>
 
 #include <aips/iostream.h>

@@ -43,7 +43,7 @@
 #include <trial/ComponentModels/SkyComponent.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/Fitting/Fit2D.h>
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <trial/Images/ImageInterface.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageUtilities.h>

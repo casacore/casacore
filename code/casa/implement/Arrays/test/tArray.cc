@@ -53,7 +53,7 @@
 #include <aips/Arrays/Cube.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 Int zero(Int)
 {

@@ -29,7 +29,7 @@
 #define AIPS_NQGAUSSIANND_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/NQGaussianNDParam.h>
+#include <aips/Functionals/GaussianNDParam.h>
 #include <aips/Functionals/Function.h>
 
 //# Forward declarations

@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <trial/Flagging/RFASpectralRej.h> 
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 #include <trial/MeasurementEquations/VisibilityIterator.h>
 #include <trial/MeasurementEquations/VisBuffer.h>
 #include <aips/Arrays/ArrayMath.h>

@@ -39,7 +39,7 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/DirectionCoordinate.h>
 #include <trial/Fitting/Fit2D.h>
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <trial/Images/ArrayImageConvolver.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/TempImage.h>

@@ -1,5 +1,5 @@
 //# NQChebyshevParam.cc  a function class that defines a NQChebyshevParam polynomial
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQChebyshevParam.h>
+#include <aips/Functionals/ChebyshevParam.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Exceptions/Error.h>

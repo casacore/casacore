@@ -1,5 +1,5 @@
 //# NQHyperPlaneParam.cc: Parameters for a hyperplane function
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQHyperPlaneParam.h>
+#include <aips/Functionals/HyperPlaneParam.h>
 
 template<class T>
 NQHyperPlaneParam<T>::NQHyperPlaneParam(uInt m) :

@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Gaussian1D.h>
 
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffA.h>

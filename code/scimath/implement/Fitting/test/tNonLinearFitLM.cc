@@ -31,9 +31,9 @@
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/Random.h>
 #include <aips/Functionals/Function.h>
-#include <aips/Functionals/NQGaussian1D.h>
-#include <aips/Functionals/NQGaussian2D.h>
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/Gaussian2D.h>
+#include <aips/Functionals/CompoundFunction.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>

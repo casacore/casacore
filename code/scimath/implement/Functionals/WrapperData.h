@@ -1,5 +1,5 @@
 //# NQWrapperData.h: Aid in constructing function objects from C++ functions 
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQWrapperBase.h>
+#include <aips/Functionals/WrapperBase.h>
 
 //# Forward declarations
 

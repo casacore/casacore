@@ -25,9 +25,9 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQCombiFunction.h>
+#include <aips/Functionals/CombiFunction.h>
 
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayLogical.h>

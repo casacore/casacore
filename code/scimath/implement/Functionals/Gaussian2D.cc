@@ -1,5 +1,5 @@
 //# NQGaussian2D.cc: A two-dimensional Gaussian class
-//# Copyright (C) 1994,1995,1996,1999,2001
+//# Copyright (C) 1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <aips/Mathematics/Math.h>
 
 //# Constructors

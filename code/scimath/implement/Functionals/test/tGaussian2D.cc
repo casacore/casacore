@@ -1,5 +1,5 @@
 //# tNQGaussian2D.cc:  Test the Gaussian2D class
-//# Copyright (C) 1996,1998,1999,2000,2001
+//# Copyright (C) 1996,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffA.h>

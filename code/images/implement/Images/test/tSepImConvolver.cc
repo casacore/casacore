@@ -1,5 +1,5 @@
 //# tSepImConvolver.cc: 
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #include <trial/Images/SepImageConvolver.h>
 
 #include <aips/aips.h>
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>

@@ -1,5 +1,5 @@
 //# NQSinusoid1DParam.cc: Parameter handling for one dimensional NQSinusoid class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQSinusoid1DParam.h>
+#include <aips/Functionals/Sinusoid1DParam.h>
 
 template<class T>
 NQSinusoid1DParam<T>::NQSinusoid1DParam() :

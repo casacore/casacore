@@ -28,7 +28,7 @@
 #define AIPS_INTERPOLATE1D_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Function1D.h>
 #include <aips/Containers/Block.h>
 
 template<class Range> class SampledFunctional;

@@ -1,5 +1,5 @@
 //# NQSimButterworthBandpass.cc: Defines a Butterworth function
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQSimButterworthBandpass.h>
+#include <aips/Functionals/SimButterworthBandpass.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Utilities/Assert.h>

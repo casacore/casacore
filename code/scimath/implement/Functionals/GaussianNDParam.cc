@@ -1,5 +1,5 @@
 //# NQGaussianNDParam.cc: Multidimensional Gaussian class parameters
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQGaussianNDParam.h>
+#include <aips/Functionals/GaussianNDParam.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/MatrixMath.h>
 #include <aips/Arrays/ArrayLogical.h>

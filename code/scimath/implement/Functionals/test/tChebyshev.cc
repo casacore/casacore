@@ -29,8 +29,8 @@
 #define DIAGNOSTICS
 #endif
 
-#include <aips/Functionals/NQChebyshev.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Chebyshev.h>
+#include <aips/Functionals/Polynomial.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Math.h>

@@ -1,5 +1,5 @@
 //# NQCompoundParam.cc: Parameters for sum of parameterized  Functions
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQCompoundParam.h>
+#include <aips/Functionals/CompoundParam.h>
 
 template <class T>
 NQCompoundParam<T>::NQCompoundParam() : 

@@ -1,5 +1,5 @@
 //# NQGaussian1D.cc: A one-dimensional Gaussian class
-//# Copyright (C) 1994,1995,1996,1999,2001
+//# Copyright (C) 1994,1995,1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Mathematics/Math.h>
 
 //# Constructors

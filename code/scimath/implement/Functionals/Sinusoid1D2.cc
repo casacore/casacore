@@ -1,5 +1,5 @@
 //# NQSinusoid1D2.cc: specialized NQSinusoid1D class for AutoDiff
-//# Copyright (C) 1997,1998,2001
+//# Copyright (C) 1997,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQSinusoid1D.h>
+#include <aips/Functionals/Sinusoid1D.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 

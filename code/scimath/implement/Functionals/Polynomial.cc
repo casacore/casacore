@@ -1,5 +1,5 @@
 //# NQPolynomial.cc: A one dimensional polynomial class
-//# Copyright (C) 1994,1995,1996,1998,2001
+//# Copyright (C) 1994,1995,1996,1998,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 //# Constructors
 

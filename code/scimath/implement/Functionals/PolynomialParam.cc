@@ -1,5 +1,5 @@
 //# NQPolynomialParam.cc: Parameter handling for one-dimensional polynomials
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQPolynomialParam.h>
+#include <aips/Functionals/PolynomialParam.h>
 #include <aips/Arrays/Vector.h>
 
 template<class T>

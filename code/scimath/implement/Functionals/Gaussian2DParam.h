@@ -1,5 +1,5 @@
 //# NQGaussian2DParam.h: Parameter handling for 2 dimensional Gaussian class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it

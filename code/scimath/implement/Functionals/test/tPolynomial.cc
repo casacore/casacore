@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffA.h>

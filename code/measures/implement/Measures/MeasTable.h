@@ -35,7 +35,7 @@
 #include <aips/Measures/MPosition.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MFrequency.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
 class RotMatrix;

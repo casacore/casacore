@@ -1,5 +1,5 @@
 //# NQChebyshevParam.h: Parameter handling for NQChebyshev polynomial
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 #define AIPS_NQCHEBYSHEVPARAM_H
 
 #include <aips/aips.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Function1D.h>
 
 //# Forward Declarations
 template<class T> class Vector;

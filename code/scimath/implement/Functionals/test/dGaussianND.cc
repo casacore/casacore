@@ -1,5 +1,5 @@
 //# dNQGaussianND.cc:  demo for the n-dim Gaussian class
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQGaussianND.h>
+#include <aips/Functionals/GaussianND.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
 

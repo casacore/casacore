@@ -28,10 +28,10 @@
 //# Includes
 #include <trial/SpectralComponents/SpectralFit.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Functionals/NQCompoundFunction.h>
-#include <aips/Functionals/NQCompoundParam.h>
-#include <aips/Functionals/NQGaussian1D.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/CompoundFunction.h>
+#include <aips/Functionals/CompoundParam.h>
+#include <aips/Functionals/Gaussian1D.h>
+#include <aips/Functionals/Polynomial.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
 #include <trial/SpectralComponents/SpectralElement.h>
 

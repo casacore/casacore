@@ -30,7 +30,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/CompoundFunction.h>
 #include <aips/Mathematics/Constants.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
 #include <aips/Logging.h>

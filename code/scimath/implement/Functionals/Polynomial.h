@@ -1,5 +1,5 @@
 //# NQPolynomial.h: A one dimensional polynomial class
-//# Copyright (C) 1994,1995,1996,2001
+//# Copyright (C) 1994,1995,1996,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQPolynomialParam.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/PolynomialParam.h>
+#include <aips/Functionals/Function1D.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 

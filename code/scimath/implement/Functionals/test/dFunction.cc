@@ -1,5 +1,5 @@
 //# dFunction.cc: test program for functional (AutoDiff) timing
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@
 #include <aips/Mathematics/AutoDiffIO.h>
 
 #include <aips/Arrays/Vector.h>
-#include <aips/Functionals/NQGaussian1D.h>
+#include <aips/Functionals/Gaussian1D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/OS/Timer.h>

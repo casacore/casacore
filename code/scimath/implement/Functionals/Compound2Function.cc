@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/CompoundFunction.h>
 
 //# Constructors
 

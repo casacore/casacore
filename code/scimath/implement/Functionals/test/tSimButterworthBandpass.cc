@@ -30,7 +30,7 @@
 #define DIAGNOSTICS
 #endif
 
-#include <aips/Functionals/NQSimButterworthBandpass.h>
+#include <aips/Functionals/SimButterworthBandpass.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>

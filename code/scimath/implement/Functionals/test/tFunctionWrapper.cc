@@ -1,5 +1,5 @@
 //# tNQFunctionWrapper.cc: Test function wrappers
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,12 +25,12 @@
 //#
 //# $Id$
 
-#include <aips/Functionals/NQFunctionWrapper.h>
+#include <aips/Functionals/FunctionWrapper.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayMath.h>
-#include <aips/Functionals/NQCombiFunction.h>
+#include <aips/Functionals/CombiFunction.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Utilities/Assert.h>
 

@@ -29,7 +29,7 @@
 
 #include<aips/Arrays.h>
 #include<trial/Fitting/LQLinearFitSVD.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 #include<aips/Lattices/ArrayLattice.h>
 #include<aips/Utilities/Assert.h>
 

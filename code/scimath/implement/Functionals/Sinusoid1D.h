@@ -1,5 +1,5 @@
 //# NQSinusoid1D.h: A one dimensional NQSinusoid class
-//# Copyright (C) 1997,2001
+//# Copyright (C) 1997,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,8 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQSinusoid1DParam.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Sinusoid1DParam.h>
+#include <aips/Functionals/Function1D.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 

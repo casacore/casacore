@@ -32,7 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <aips/Quanta/Euler.h>
-#include <aips/Functionals/NQPolynomial.h>
+#include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
 

@@ -30,8 +30,8 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQGaussian1DParam.h>
-#include <aips/Functionals/NQFunction1D.h>
+#include <aips/Functionals/Gaussian1DParam.h>
+#include <aips/Functionals/Function1D.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
 

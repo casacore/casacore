@@ -27,9 +27,9 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQFunctionWrapper.h>
+#include <aips/Functionals/FunctionWrapper.h>
 #include <aips/Arrays/Vector.h>
-#include <aips/Functionals/NQWrapperData.h>
+#include <aips/Functionals/WrapperData.h>
 
 //# Constructors
 template <class T>

@@ -31,7 +31,7 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Fitting/Fit2D.h>
 #include <trial/Tasking/PGPlotter.h>
-#include <aips/Functionals/NQGaussian2D.h>
+#include <aips/Functionals/Gaussian2D.h>
 #include <aips/Inputs/Input.h>
 #include <aips/Logging.h>
 #include <aips/Mathematics/Math.h>

@@ -1,5 +1,5 @@
 //# MomentCalculator.cc: 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -33,8 +33,8 @@
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <trial/Fitting/LQNonLinearFitLM.h>
-#include <aips/Functionals/NQPolynomial.h>
-#include <aips/Functionals/NQCompoundFunction.h>
+#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/CompoundFunction.h>
 #include <trial/Images/ImageMoments.h>
 #include <trial/Lattices/LatticeStatsBase.h>
 #include <aips/Mathematics/Math.h>

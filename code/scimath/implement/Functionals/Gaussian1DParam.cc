@@ -1,5 +1,5 @@
 //# NQGaussian1DParam.cc: Parameter handling for one-dimensional Gaussian class
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <aips/Functionals/NQGaussian1DParam.h>
+#include <aips/Functionals/Gaussian1DParam.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
 

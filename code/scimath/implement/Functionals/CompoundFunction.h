@@ -31,7 +31,7 @@
 
 //# Includes
 #include <aips/aips.h>
-#include <aips/Functionals/NQCompoundParam.h>
+#include <aips/Functionals/CompoundParam.h>
 #include <aips/Functionals/Function.h>
 #include <aips/Mathematics/AutoDiff.h>
 #include <aips/Mathematics/AutoDiffMath.h>
