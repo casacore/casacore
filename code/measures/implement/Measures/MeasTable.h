@@ -33,6 +33,7 @@
 #include <aips/aips.h>
 #include <aips/Measures/MeasData.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Functionals/Polynomial.h>
 
 //# Forward Declarations
@@ -197,6 +198,16 @@ public:
   static const Vector<String> &Observatories();
   // get position of observatory nam (False if not present)
   static const Bool Observatory(MPosition &obs, const String &nam);
+  // </group>
+
+  // Source list positions
+  // <group>
+  // Initialise list of all source from Sources table
+  static void initSources();
+  // Get list of all sources
+  static const Vector<String> &Sources();
+  // get position of source nam (False if not present)
+  static const Bool Source(MDirection &obs, const String &nam);
   // </group>
   
   // Earth magnetic field (IGRF) data
@@ -368,6 +379,12 @@ private:
   static Bool obsNeedInit;
   static Vector<String> obsNams;
   static Vector<MPosition> obsPos;
+  // </group>
+  // Sources table data
+  // <group>
+  static Bool srcNeedInit;
+  static Vector<String> srcNams;
+  static Vector<MDirection> srcPos;
   // </group>
   // IGRF data
   // <group>

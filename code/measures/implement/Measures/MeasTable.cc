@@ -36,6 +36,7 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/MVEpoch.h>
 #include <aips/Measures/MPosition.h>
+#include <aips/Measures/MDirection.h>
 #include <aips/Measures/MeasIERS.h>
 #include <aips/Measures/MeasJPL.h>
 #include <aips/Measures/MUString.h>
@@ -58,6 +59,9 @@ typedef Quantum<Double> gpp_MeasTable_bug1;
 Bool MeasTable::obsNeedInit = True;
 Vector<String> MeasTable::obsNams(0);
 Vector<MPosition> MeasTable::obsPos(0);
+Bool MeasTable::srcNeedInit = True;
+Vector<String> MeasTable::srcNams(0);
+Vector<MDirection> MeasTable::srcPos(0);
 Double MeasTable::timeIGRF = -1e6;
 Double MeasTable::dtimeIGRF = 0;
 Double MeasTable::time0IGRF = -1e6;
@@ -810,14 +814,14 @@ void MeasTable::initObservatories() {
 		  "measures.observatory.directory",
 		  "aips/Measures")) {
       LogIO os(LogOrigin("MeasTable",
-			 String("Observatories(MVPosition, String)"),
+			 String("initObservatories()"),
 			 WHERE));
       os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
     };
     Int N = t.nrow();
     if (N<1) {
      LogIO os(LogOrigin("MeasTable",
-			String("Observatories(MVPosition, String)"),
+			String("initObservatories()"),
 			WHERE));
       os << "No entries in table of Observatories" << LogIO::EXCEPTION;
     };
@@ -830,7 +834,7 @@ void MeasTable::initObservatories() {
       obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
       if (!tmp.giveMe(*RORecordFieldPtr<String>(row.record(), "Type"), mr)) {
 	LogIO os(LogOrigin("MeasTable",
-			   String("Observatories(MVPosition, String)"),
+			   String("initObservatories()"),
 			   WHERE));
 	os << "Illegal position type in Observatories" << LogIO::EXCEPTION;
       };
@@ -851,6 +855,66 @@ const Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   Int i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos(i);
+    return True;
+  };
+  return False;
+}
+
+// Source data
+void MeasTable::initSources() {
+  if (srcNeedInit) {
+    srcNeedInit = False;
+    Table t;
+    ROTableRow row;
+    TableRecord kws;
+    String rfn[2] = {"Long", "Lat"};
+    RORecordFieldPtr<Double> rfp[2];
+    Double dt;
+    String vs;	
+    if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 2, rfn, "Sources",
+		  "measures.sources.directory",
+		  "aips/Measures")) {
+      LogIO os(LogOrigin("MeasTable",
+			 String("initSources()"),
+			 WHERE));
+      os << "Cannot read table of Sources" << LogIO::EXCEPTION;
+    };
+    Int N = t.nrow();
+    if (N<1) {
+     LogIO os(LogOrigin("MeasTable",
+			String("initSources()"),
+			WHERE));
+      os << "No entries in table of Sources" << LogIO::EXCEPTION;
+    };
+    srcNams.resize(N); srcNams.makePermanent();
+    srcPos.resize(N); srcPos.makePermanent();
+    MDirection::Ref mr;
+    MDirection tmp;
+    for (Int i=0; i<N; i++) {
+      row.get(i);
+      srcNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
+      if (!tmp.giveMe(*RORecordFieldPtr<String>(row.record(), "Type"), mr)) {
+	LogIO os(LogOrigin("MeasTable",
+			   String("initSources()"),
+			   WHERE));
+	os << "Illegal direction type in Sources" << LogIO::EXCEPTION;
+      };
+      srcPos(i) = MDirection(MVDirection(Quantity(*(rfp[0]), "deg"),
+					 Quantity(*(rfp[1]), "deg")), mr);
+    };
+  };
+}
+
+const Vector<String> &MeasTable::Sources() {
+  MeasTable::initSources();
+  return MeasTable::srcNams;
+}
+
+const Bool MeasTable::Source(MDirection &obs, const String &nam) {
+  MeasTable::initSources();
+  Int i=MUString::minimaxNC(nam, MeasTable::srcNams);
+  if (i < MeasTable::srcNams.nelements()) {
+    obs = MeasTable::srcPos(i);
     return True;
   };
   return False;
