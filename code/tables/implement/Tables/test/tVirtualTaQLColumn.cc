@@ -146,6 +146,8 @@ void a (const TableDesc& td)
 	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
+    tab.addColumn (ScalarColumnDesc<Float>("acalc4"),
+			     VirtualTaQLColumn("acalc+acalc3+mean(arrcalc)"));
 }
 
 void check(const Table& tab)
@@ -160,6 +162,7 @@ void check(const Table& tab)
     ROScalarColumn<float> acalc(tab,"acalc");
     ROScalarColumn<Complex> acalc2(tab,"acalc2");
     ROScalarColumn<short> acalc3(tab,"acalc3");
+    ROScalarColumn<float> acalc4(tab,"acalc4");
     ROArrayColumn<float> arr1(tab,"arr1");
     ROArrayColumn<float> arr2(tab,"arr2");
     ROArrayColumn<float> arr3(tab,"arr3");
@@ -168,7 +171,7 @@ void check(const Table& tab)
     Short acalc3val;
     Int abval, acval;
     uInt adval;
-    float aeval, acalcval;
+    float aeval, acalcval, acalc4val;
     String afval;
     DComplex agval;
     Complex acalc2val;
@@ -191,6 +194,7 @@ void check(const Table& tab)
 	acalc.get (i, acalcval);
 	acalc2.get (i, acalc2val);
 	acalc3.get (i, acalc3val);
+	acalc4.get (i, acalc4val);
 	sprintf (str, "V%i", i);
 	if (abval != i  ||  acval != i+1
         ||  Int(adval) != i+2  ||  aeval != i+3
@@ -221,6 +225,10 @@ void check(const Table& tab)
 	arrcalc.get (i, arrval);
 	if (!allEQ (arrval, float(abval)*arrf)) {
 	    cout << "error in arrcalc in row " << i << endl;
+	}
+	if (acalc4val != acalcval + acalc3val + mean(arrval)) {
+	  cout << "error in acalc4val in row " << i << ": "
+	       << acalc4val << endl;
 	}
 	arr2.getSlice (i, nslice, arrval);
 	if (!allEQ (arrval, arrf)) {
