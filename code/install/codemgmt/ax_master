@@ -2117,3 +2117,4 @@
 08 356 src rm nrao/apps/sddfiller/templates
 08 356 src rm trial/apps/sdfits2ms/templates
 08 357 src rm trial/implement/Fitting/test/tmplinst
+08 357 src rm trial/implement/Functionals/test/tmplinst
