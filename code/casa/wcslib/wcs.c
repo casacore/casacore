@@ -1,7 +1,7 @@
 /*=============================================================================
 *
 *   WCSLIB - an implementation of the FITS WCS proposal.
-*   Copyright (C) 1995-2000, Mark Calabretta
+*   Copyright (C) 1995-2001, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -219,7 +219,12 @@
 *                              world[wcs->lng].
 *      vspan[2] const double
 *                        Solution interval for the celestial coordinate, in
-*                        degrees.
+*                        degrees.  The ordering of the two limits is
+*                        irrelevant.  Longitude ranges may be specified with
+*                        any convenient normalization, for example [-120,+120]
+*                        is the same as [240,480], except that the solution
+*                        will be returned with the same normalization, i.e.
+*                        lie within the interval specified.
 *      vstep    const double
 *                        Step size for solution search, in degrees.  If zero,
 *                        a sensible, although perhaps non-optimal default will
@@ -604,7 +609,7 @@ double pixcrd[];
          } else {
             offset = prj->r0*PI/2.0;
          }
- 
+
          /* Stack faces in a cube. */
          if (imgcrd[wcs->lat] < -0.5*offset) {
             imgcrd[wcs->lat] += offset;
@@ -718,7 +723,7 @@ double world[];
          if (cel->ref[1] == 0.0) {
             return 2;
          }
- 
+
          strcpy(wcs->pcode, "SIN");
          prj->p[1] = 0.0;
          prj->p[2] = cosd(cel->ref[1])/sind(cel->ref[1]);
@@ -756,14 +761,15 @@ double pixcrd[];
 {
    const int niter = 60;
    int    crossed, err, istep, iter, j, k, nstep, retry;
-   const double tol = 1.0e-10;
+   const double tol  = 1.0e-10;
+   const double tol2 = 100.0*tol;
    double lambda, span[2], step;
    double pixmix;
-   double lng, lng0, lng0m, lng1, lng1m;
-   double lat, lat0, lat0m, lat1, lat1m;
+   double dlng, lng, lng0, lng0m, lng1, lng1m;
+   double dlat, lat, lat0, lat0m, lat1, lat1m;
    double d, d0, d0m, d1, d1m, dx;
    double dabs, dmin, lmin;
-   double phi0, phi1;
+   double dphi, phi0, phi1;
    struct celprm cel0;
 
    /* Initialize if required. */
@@ -887,17 +893,26 @@ double pixcrd[];
                      lambda = 0.9;
                   }
 
-                  lat = lat0 + lambda*(lat1 - lat0);
+                  dlat = lat1 - lat0;
+                  lat = lat0 + lambda*dlat;
                   world[wcs->lat] = lat;
                   if (err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
                                    prj, imgcrd, lin, pixcrd)) {
                      return err;
                   }
-                  d = pixcrd[mixpix] - pixmix;
 
                   /* Check for a solution. */
+                  d = pixcrd[mixpix] - pixmix;
                   dabs = fabs(d);
                   if (dabs < tol) return 0;
+
+                  if (dlat < tol) {
+                     /* An artifact of numerical precision. */
+                     if (dabs < tol2) return 0;
+
+                     /* Must be a discontinuity. */
+                     break;
+                  }
 
                   /* Record the point of closest approach. */
                   if (dabs < dmin) {
@@ -1070,17 +1085,26 @@ double pixcrd[];
                      lambda = 0.9;
                   }
 
-                  lng = lng0 + lambda*(lng1 - lng0);
+                  dlng = lng1 - lng0;
+                  lng = lng0 + lambda*dlng;
                   world[wcs->lng] = lng;
                   if (err = wcsfwd(ctype, wcs, world, crval, cel, phi, theta,
                                    prj, imgcrd, lin, pixcrd)) {
                      return err;
                   }
-                  d = pixcrd[mixpix] - pixmix;
 
                   /* Check for a solution. */
+                  d = pixcrd[mixpix] - pixmix;
                   dabs = fabs(d);
                   if (dabs < tol) return 0;
+
+                  if (dlng < tol) {
+                     /* An artifact of numerical precision. */
+                     if (dabs < tol2) return 0;
+
+                     /* Must be a discontinuity. */
+                     break;
+                  }
 
                   /* Record the point of closest approach. */
                   if (dabs < dmin) {
@@ -1231,7 +1255,7 @@ double pixcrd[];
       /* Search for a crossing interval. */
       phi0 = -180.0;
       for (k = -179; k <= 180; k++) {
-         phi1 = (float) k;
+         phi1 = (double) k;
          world[wcs->lng] = phi1;
          if (err = wcsfwd(ctype, wcs, world, crval, &cel0, phi, theta, prj,
                           imgcrd, lin, pixcrd)) {
@@ -1263,23 +1287,24 @@ double pixcrd[];
          } else if (lambda > 0.9) {
             lambda = 0.9;
          }
- 
-         world[wcs->lng] = phi0 + lambda*(phi1 - phi0);
+
+         dphi = phi1 - phi0;
+         world[wcs->lng] = phi0 + lambda*dphi;
          if (err = wcsfwd(ctype, wcs, world, crval, &cel0, phi, theta, prj,
                           imgcrd, lin, pixcrd)) {
             return err;
          }
-         d = pixcrd[mixpix] - pixmix;
- 
+
          /* Check for a solution. */
+         d = pixcrd[mixpix] - pixmix;
          dabs = fabs(d);
-         if (dabs < tol) {
+         if (dabs < tol || (dphi < tol && dabs < tol2)) {
             /* Recall saved world coordinates. */
             world[wcs->lng] = lng;
             world[wcs->lat] = lat;
             return 0;
          }
- 
+
          if (signbit(d0) == signbit(d)) {
             phi0 = world[wcs->lng];
             d0 = d;
