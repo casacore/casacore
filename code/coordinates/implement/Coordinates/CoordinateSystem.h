@@ -754,36 +754,36 @@ private:
     void listDirectionSystem(LogIO& os) const; 
     void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
     void listPointingCenter (LogIO& os) const;
-    void getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoord, uInt& widthName,
+    void getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoordType, 
+                         uInt& widthCoordNumber, uInt& widthName,
                          uInt& widthProj, uInt& widthShape,
                          uInt& widthTile, uInt& widthRefValue,
                          uInt& widthRefPixel, uInt& widthInc,
                          uInt& widthUnits, Int& precRefValSci,
                          Int& precRefValFloat,  Int& precRefValRADEC,
                          Int& precRefPixFloat, Int& precIncSci, String& nameAxis,
-                         String& nameCoord, String& nameName, String& nameProj,
+                         String& nameCoordType, String& nameCoordNumber, String& nameName, String& nameProj,
                          String& nameShape, String& nameTile,
                          String& nameRefValue, String& nameRefPixel,
                          String& nameInc, String& nameUnits,
                          MDoppler::Types velocityType,
                          const IPosition& latticeShape, const IPosition& tileShape) const;
 
-    void listHeader (LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
+    void listHeader (LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoordType,  uInt& widthCoordNumber,
                      uInt& widthName, uInt& widthProj,
                      uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
                      uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,     
-                     Bool findWidths, Int axisInCoordinate, Int pixelAxis, 
+                     Bool findWidths, Int coordinate, Int axisInCoordinate, Int pixelAxis, 
                      Int precRefValSci, Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat,
                      Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
-    void listVelocity (LogIO& os,  Coordinate* pc, uInt& widthAxis, uInt& widthCoord, 
-                       uInt& widthName, uInt& widthProj,
-                       uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
-                       uInt& widthRefPixel, uInt& widthInc,  uInt& widthUnits,
-                       const Bool findWidths, const Int axisInCoordinate,
-                       const Int pixelAxis, const MDoppler::Types velocityType,
-                       const Int precRefValSci, const Int precRefValFloat,
-                       const Int precRefValRADEC, const Int precRefPixFloat,
-                       const Int precIncSci) const;
+    void listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis, 
+                       uInt widthCoordType, uInt widthCoordNumber,
+                       uInt& widthName, uInt widthProj,
+                       uInt widthShape, uInt widthTile, uInt& widthRefValue,
+                       uInt widthRefPixel, uInt& widthInc,  uInt& widthUnits,
+                       Bool findWidths, Int axisInCoordinate, Int pixelAxis, 
+                       MDoppler::Types velocityType, Int precRefValSci, Int precRefValFloat,
+                       Int precRefValRADEC, Int precRefPixFloat, Int precIncSci) const;
     void clearFlags (LogIO& os) const;
     Bool velocityIncrement(Double& velocityInc,  SpectralCoordinate& sc,
                            MDoppler::Types velocityType, const String& velUnits) const;
