@@ -1,0 +1,37 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Usage: tAutoflag.run
+#-----------------------------------------------------------------------------
+# This script executes the tAutoflag.g test script to check if all the
+# flagging modules are working
+#
+# $Id$
+#-----------------------------------------------------------------------------
+  if [ "$AIPSPATH" = "" ]
+  then
+     echo "UNTESTED: tAutoflag.run (AIPSPATH not defined)"
+     exit 3
+  fi
+
+  # establish location of test MS
+  MS='WSRT-test.MS2'
+  AIPSDEMO=`echo $AIPSPATH | awk '{printf("%s/data/demo/autoflag",$1)}'`
+  MSPATH="$AIPSDEMO/$MS"
+  if [ ! -d "$MSPATH" ]; then
+    MSPATH="$HOME/aips++/data/demo/autoflag/$MS"
+    if [ ! -d "$MSPATH" ]; then
+      echo "UNTESTED: tAutoflag.run (found neither $AIPSDEMO/$MS nor $MSPATH)"
+      exit 3
+    fi
+  fi
+  # set symlink
+  LINK='tAutoflag.MS2'
+  rm -f $LINK 2>/dev/null
+  if ! ln -s $MSPATH $LINK; then
+    echo "UNTESTED: tAutoflag.run (failed to set $LINK symlink)"
+    exit 3
+  fi
+  
+  # run the glish script
+  echo ">>>"
+  glish -l tAutoflag.g
