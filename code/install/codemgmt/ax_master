@@ -2673,3 +2673,4 @@
 11 403 src mv doc/html/navpages/install.html doc/reference/install.html
 11 403 src mv doc/html/navpages/CCnotes.html doc/programmer/CCnotes.html
 11 403 src mv doc/html/navpages/srcfiletemplates.html doc/programmer/srcfiletemplates.html
+11 403 src rm doc/html/navpages/ref
