@@ -36,6 +36,7 @@
 #include <trial/Lattices/LatticeProgress.h>
 #include <aips/Mathematics/NumericTraits.h>
 #include <trial/Tasking/ProgressMeter.h>
+#include <aips/Logging/LogIO.h>
 
 //# Forward Declarations
 template <class T> class ImageInterface;
@@ -43,7 +44,6 @@ template <class T> class TempLattice;
 template <class T> class Vector;
 template <class T> class RO_LatticeIterator;
 class IPosition;
-class LogIO;
 class CoordinateSystem;
 class PGPlotter;
 
