@@ -16,7 +16,7 @@
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available.}{../204.ps}
+\htmladdnormallink{A postscript version of this note is available.}{../204.ps.gz}
 \end{htmlonly}
 \input{observeupdate.tex}
 \end{document}

@@ -23,7 +23,7 @@ version 1.03}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (115kB).}{../200.ps}
+\htmladdnormallink{A postscript version of this note is available (115kB).}{../200.ps.gz}
 \end{htmlonly}
 
 \tableofcontents

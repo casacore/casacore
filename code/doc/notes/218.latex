@@ -15,6 +15,6 @@
 \date {1998 March 10}
 \maketitle
 %%---------------------------------------------------------------------------
-\htmladdnormallink{A postscript version of this note is available.}{../218.ps}
+\htmladdnormallink{A postscript version of this note is available.}{../218.ps.gz}
 \input{stag98-response}
 \end{document}

@@ -15,7 +15,7 @@ Table Query Language}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (121kB).}{../199.ps}
+\htmladdnormallink{A postscript version of this note is available (121kB).}{../199.ps.gz}
 \end{htmlonly}
 \input{taql}
 \end{document}

@@ -23,7 +23,7 @@ Lattice Expression Language Implementation}
 \maketitle
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (116kB).}{../216.ps}
+\htmladdnormallink{A postscript version of this note is available (116kB).}{../216.ps.gz}
 \end{htmlonly}
 
 \input{LEL}
