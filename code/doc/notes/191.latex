@@ -5,7 +5,7 @@
 \parskip=5truept
 \begin{document}
 \newcommand{\aipspp}{AIPS++\ }
-\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
+%\newcommand{\defline}[1]{\cline{1-5} \multicolumn{5}{|l|}{#1} \\ \cline{1-5}}
 
 \newcommand{\definetable}[2]
 {
@@ -23,7 +23,7 @@
         \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&
         \multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&
         \multicolumn{1}{|c|}{Comments}\\ \cline{1-5}
-        #2
+        %#2
         \hline
 	\end{tabular}
 }
