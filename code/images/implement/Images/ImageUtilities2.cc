@@ -29,6 +29,7 @@
 #include <trial/Images/ImageUtilities.h>
 
 #include <aips/Arrays/MaskedArray.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/Coordinates/SpectralCoordinate.h>
@@ -36,10 +37,10 @@
 #include <aips/Exceptions/Error.h>
 #include <trial/Images/ImageInfo.h>
 #include <trial/Images/ImageInterface.h>
-#include <trial/Images/TempImage.h>
-#include <trial/Images/RebinImage.h>
 #include <aips/Lattices/TiledShape.h>
 #include <aips/Lattices/TempLattice.h>
+#include <trial/Lattices/SubLattice.h>
+#include <trial/Lattices/RebinLattice.h>
 #include <aips/Logging/LogIO.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
@@ -81,40 +82,19 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
    CoordinateSystem cSysIn;
    LinearCoordinate linCoord;
    for (uInt i=0; i<nDim; i++) {
-
       if (i==axis) {
          cSysIn.addCoordinate(coordIn);
       } else {
          cSysIn.addCoordinate(linCoord);
       }
    }
-
-// Make Image
-
-   TiledShape tShapeIn(shapeIn);
-   TempImage<T> im(tShapeIn, cSysIn);
-
-// Set data
-
-   im.put(in.getArray());
-   TempLattice<Bool> pixelMask(shapeIn);
-   pixelMask.put(in.getMask());
-   im.attachMask(pixelMask);
-
-// Create binner
-
+//
    IPosition factors(nDim,1);
    factors(axis) = bin;
-   RebinImage<T> binIm(im, factors);
+   const CoordinateSystem cSysOut = CoordinateUtil::makeBinnedCoordinateSystem (factors, cSysIn);
 
-// Assign output MA
+// Handle coordinate
 
-   MaskedArray<T> tmp(binIm.get(), binIm.getMask());
-   out = tmp;
-
-// Handle coordinate.  
-
-   const CoordinateSystem cSysOut = binIm.coordinates();
    if (type==Coordinate::LINEAR) {
       const LinearCoordinate& cIn = cSysOut.linearCoordinate(axis);
       LinearCoordinate& cOut = dynamic_cast<LinearCoordinate&>(coordOut);
@@ -128,5 +108,25 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
       TabularCoordinate& cOut = dynamic_cast<TabularCoordinate&>(coordOut);
       cOut = cIn;
    }
+
+// Make MaskedLattice from input
+
+   TiledShape tShapeIn(shapeIn);
+   TempLattice<T> lat(tShapeIn);
+   lat.put(in.getArray());
+//
+   TempLattice<Bool> mask(shapeIn);
+   mask.put(in.getMask());
+//
+   SubLattice<T> subLat(lat,True);
+   subLat.setPixelMask(mask,False);
+
+// Rebin
+
+   RebinLattice<T> binLat(subLat, factors);
+
+// Assign output MA
+
+   MaskedArray<T> tmp(binLat.get(), binLat.getMask());
+   out = tmp;
 }
-   
