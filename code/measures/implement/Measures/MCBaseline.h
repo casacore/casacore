@@ -105,8 +105,6 @@ private:
   // In addition the type to which each is converted should be in the
   // ToRef array, again in the proper order. </note>
   enum Routes {
-    ITRF_JNAT,
-    JNAT_ITRF,
     GAL_J2000,
     GAL_B1950,
     J2000_GAL,
@@ -125,10 +123,10 @@ private:
     JNAT_J2000,
     B1950_APP,
     APP_B1950,
-    APP_HADEC,
+    APP_TOPO,
     HADEC_AZEL,
     AZEL_HADEC,
-    HADEC_APP,
+    HADEC_TOPO,
     AZEL_AZELSW,
     AZELSW_AZEL,
     APP_JNAT,
@@ -143,6 +141,8 @@ private:
     SUPERGAL_GAL,
     ITRF_HADEC,
     HADEC_ITRF,
+    TOPO_HADEC,
+    TOPO_APP,
     N_Routes
   };
   

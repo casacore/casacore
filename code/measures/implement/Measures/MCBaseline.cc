@@ -37,44 +37,44 @@
 //# Statics
 Bool MCBaseline::stateMade_p = False;
 uInt MCBaseline::ToRef_p[N_Routes][3] = {
-  {MBaseline::ITRF,	MBaseline::JNAT,	0},
-  {MBaseline::JNAT,	MBaseline::ITRF,	0},
-  {MBaseline::GALACTIC,	MBaseline::J2000,	0},
-  {MBaseline::GALACTIC,	MBaseline::B1950,	3},
-  {MBaseline::J2000,	MBaseline::GALACTIC,	0},
-  {MBaseline::B1950,	MBaseline::GALACTIC,	3},
-  {MBaseline::J2000,	MBaseline::B1950,	3},
-  {MBaseline::B1950,	MBaseline::J2000,	3},
-  {MBaseline::J2000,	MBaseline::JMEAN,	0},
-  {MBaseline::B1950,	MBaseline::BMEAN,	3},
-  {MBaseline::JMEAN,	MBaseline::J2000,	0},
-  {MBaseline::JMEAN,	MBaseline::JTRUE,	0},
-  {MBaseline::BMEAN,	MBaseline::B1950,	3},
-  {MBaseline::BMEAN,	MBaseline::BTRUE,	3},
-  {MBaseline::JTRUE,	MBaseline::JMEAN,	0},
-  {MBaseline::BTRUE,	MBaseline::BMEAN,	3},
-  {MBaseline::J2000,	MBaseline::JNAT,	0},
-  {MBaseline::JNAT,	MBaseline::J2000,	0},
-  {MBaseline::B1950,	MBaseline::APP,		3},
-  {MBaseline::APP,	MBaseline::B1950,	3},
-  {MBaseline::APP,	MBaseline::HADEC,	2},
-  {MBaseline::HADEC,	MBaseline::AZEL,	2},
-  {MBaseline::AZEL,	MBaseline::HADEC,	2},
-  {MBaseline::HADEC,	MBaseline::APP,		2},
-  {MBaseline::AZEL,	MBaseline::AZELSW,	0},
-  {MBaseline::AZELSW,	MBaseline::AZEL,	0},
-  {MBaseline::APP,	MBaseline::JNAT,	1},
-  {MBaseline::JNAT,	MBaseline::APP,		1},
-  {MBaseline::J2000,	MBaseline::ECLIPTIC,	0},
-  {MBaseline::ECLIPTIC,	MBaseline::J2000,	0},
-  {MBaseline::JMEAN,	MBaseline::MECLIPTIC,	0},
-  {MBaseline::MECLIPTIC,MBaseline::JMEAN,	0},
-  {MBaseline::JTRUE,	MBaseline::TECLIPTIC,	0},
-  {MBaseline::TECLIPTIC,MBaseline::JTRUE,	0},
-  {MBaseline::GALACTIC,	MBaseline::SUPERGAL,	0},
-  {MBaseline::SUPERGAL,	MBaseline::GALACTIC,	0},
-  {MBaseline::ITRF,	MBaseline::HADEC,	2},
-  {MBaseline::HADEC,	MBaseline::ITRF,	2} };
+  {MBaseline::GALACTIC,	 	MBaseline::J2000,	0},
+  {MBaseline::GALACTIC,		MBaseline::B1950,	2},
+  {MBaseline::J2000,		MBaseline::GALACTIC,	0},
+  {MBaseline::B1950,		MBaseline::GALACTIC,	2},
+  {MBaseline::J2000,		MBaseline::B1950,	2},
+  {MBaseline::B1950,		MBaseline::J2000,	2},
+  {MBaseline::J2000,		MBaseline::JMEAN,	0},
+  {MBaseline::B1950,		MBaseline::BMEAN,	2},
+  {MBaseline::JMEAN,		MBaseline::J2000,	0},
+  {MBaseline::JMEAN,		MBaseline::JTRUE,	0},
+  {MBaseline::BMEAN,		MBaseline::B1950,	2},
+  {MBaseline::BMEAN,		MBaseline::BTRUE,	2},
+  {MBaseline::JTRUE,		MBaseline::JMEAN,	0},
+  {MBaseline::BTRUE,		MBaseline::BMEAN,	2},
+  {MBaseline::J2000,		MBaseline::JNAT,	0},
+  {MBaseline::JNAT,		MBaseline::J2000,	0},
+  {MBaseline::B1950,		MBaseline::APP,	 	2},
+  {MBaseline::APP,		MBaseline::B1950,	2},
+  {MBaseline::APP,		MBaseline::TOPO,	0},
+  {MBaseline::HADEC,		MBaseline::AZEL,	0},
+  {MBaseline::AZEL,		MBaseline::HADEC,	0},
+  {MBaseline::HADEC,		MBaseline::TOPO,	0},
+  {MBaseline::AZEL,		MBaseline::AZELSW,	0},
+  {MBaseline::AZELSW,		MBaseline::AZEL,	0},
+  {MBaseline::APP,		MBaseline::JNAT,	0},
+  {MBaseline::JNAT,		MBaseline::APP,		0},
+  {MBaseline::J2000,		MBaseline::ECLIPTIC,	0},
+  {MBaseline::ECLIPTIC,		MBaseline::J2000,	0},
+  {MBaseline::JMEAN,		MBaseline::MECLIPTIC,	0},
+  {MBaseline::MECLIPTIC,	MBaseline::JMEAN,	0},
+  {MBaseline::JTRUE,		MBaseline::TECLIPTIC,	0},
+  {MBaseline::TECLIPTIC,	MBaseline::JTRUE,	0},
+  {MBaseline::GALACTIC,		MBaseline::SUPERGAL,	0},
+  {MBaseline::SUPERGAL,		MBaseline::GALACTIC,	0},
+  {MBaseline::ITRF,		MBaseline::HADEC,	0},
+  {MBaseline::HADEC,		MBaseline::ITRF,	0},
+  {MBaseline::TOPO,		MBaseline::HADEC,	0},
+  {MBaseline::TOPO,		MBaseline::APP,		0} };
 uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
 
 //# Constructors
@@ -119,14 +119,6 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
   
   switch (which) {
     
-  case ITRF_JNAT:
-    measMath.createPrecNutat();
-    break;
-
-  case JNAT_ITRF:
-    measMath.createPrecNutat();
-    break;
-    
   case J2000_JMEAN:
     measMath.createPrecession();
     break;
@@ -159,19 +151,31 @@ void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
     measMath.createNutationB1950();
     break;
     
+  case J2000_JNAT:
+    measMath.createSolarPos();
+    break;
+    
   case JNAT_APP:
+    measMath.createAberration();
     measMath.createPrecNutat();
     break;
     
+  case JNAT_J2000:
+    measMath.createSolarPos();
+    break;
+    
   case APP_JNAT:
+    measMath.createAberration();
     measMath.createPrecNutat();
     break;
     
   case B1950_APP:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     break;
     
   case APP_B1950:
+    measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     break;
     
@@ -194,6 +198,8 @@ void MCBaseline::doConvert(MVBaseline &in,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
   Double g2;
+  // Planetary aberration factor
+  Double lengthP = 0;
   
   measMath.initFrame(inref, outref);
   
@@ -201,16 +207,6 @@ void MCBaseline::doConvert(MVBaseline &in,
     
     switch (mc.getMethod(i)) {
       
-    case ITRF_JNAT:
-      measMath.applyPolarMotionLong(in);
-      measMath.deapplyPrecNutat(in);
-      break;
-    
-    case JNAT_ITRF:
-      measMath.applyPrecNutat(in);
-      measMath.deapplyPolarMotionLong(in);
-      break;
-
     case HADEC_ITRF: 
       measMath.applyHADECtoITRF(in);
       break;
@@ -237,13 +233,13 @@ void MCBaseline::doConvert(MVBaseline &in,
       
     case J2000_B1950:
       in.adjust(g2);
-      measMath.applyJ2000toB1950(in);
+      measMath.applyJ2000toB1950(in, False);
       in.readjust(g2);
       break;
     
     case B1950_J2000:
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950(in);
+      measMath.deapplyJ2000toB1950(in, False);
       in.readjust(g2);
       break;
     
@@ -279,38 +275,50 @@ void MCBaseline::doConvert(MVBaseline &in,
       measMath.deapplyNutationB1950(in);
       break;
     
-    case J2000_JNAT: {
-    }
-    break;
+    case J2000_JNAT:
+      in.adjust(g2);
+      measMath.applySolarPos(in, False);
+      in.readjust(g2);
+      break;
     
     case JNAT_APP:
+      in.adjust(g2);
+      measMath.applyAberration(in, False);
+      in.readjust(g2);
       measMath.applyPrecNutat(in);
       break;
     
     case APP_JNAT:
       measMath.deapplyPrecNutat(in);
+      in.adjust(g2);
+      measMath.deapplyAberration(in, False);
+      in.readjust(g2);
       break;
     
-    case JNAT_J2000: {
-    }
-    break;
+    case JNAT_J2000:
+      in.adjust(g2);
+      measMath.deapplySolarPos(in, False);
+      in.readjust(g2);
+      break;
     
     case B1950_APP: 
+      measMath.applyPrecNutatB1950(in, False);
       in.adjust(g2);
-      measMath.applyETerms(in);
+      measMath.applyAberrationB1950(in, False);
       in.readjust(g2);
-      measMath.applyPrecNutatB1950(in);
       break;
     
     case APP_B1950:
-      measMath.deapplyPrecNutatB1950(in);
       in.adjust(g2);
-      measMath.deapplyETerms(in);
+      measMath.deapplyAberrationB1950(in, False);
       in.readjust(g2);
+      measMath.deapplyPrecNutatB1950(in, False);
       break;
     
-    case APP_HADEC:
-      measMath.deapplyPolarMotion(in);
+    case TOPO_HADEC: 
+      in.adjust(g2);
+      measMath.applyTOPOtoHADEC(in, False);
+      in.readjust(g2);
       break;
     
     case HADEC_AZEL:
@@ -320,11 +328,25 @@ void MCBaseline::doConvert(MVBaseline &in,
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
       break;
-    
-    case HADEC_APP:
-      measMath.applyPolarMotion(in);
+     
+    case HADEC_TOPO: 
+      in.adjust(g2);
+      measMath.deapplyTOPOtoHADEC(in, False);
+      in.readjust(g2);
       break;
     
+    case APP_TOPO: 
+      in.adjust(g2);
+      measMath.applyAPPtoTOPO(in, lengthP, False);
+      in.readjust(g2);
+      break;
+   
+    case TOPO_APP: 
+      in.adjust(g2);
+      measMath.deapplyAPPtoTOPO(in, lengthP, False);
+      in.readjust(g2);
+      break;
+
     case AZEL_AZELSW: 
     case AZELSW_AZEL:
       measMath.applyAZELtoAZELSW(in);
