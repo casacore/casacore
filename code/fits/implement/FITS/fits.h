@@ -287,6 +287,15 @@ class FITS {
 	static int chk_comment(const char *s, int len);
 	static int get_comment(const char *s, int len, int &begpos);
 	static void get_numeric(const char *s, int len, FitsValueResult &result);
+    // utility function to parse the binary table variable array
+    // column (i.e. uses the heap) of the form nPt(dddd) where n
+    // is either 0 or 1, t is one of the standard FITS binary table
+    // column types and dddd is the maximum number of elements used
+    // by this column.  If there is a format error in the input
+    // string (*s), then valType will have the value NOVALUE and
+    // maxelem will be -1.
+        static void parse_vatform(const char *s, FITS::ValueType &valType,
+				  int &maxelem);
 	static const Int minInt;
 	static const Int maxInt;
 	static const float minfloat;
