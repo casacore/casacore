@@ -32,6 +32,8 @@
 	if ( ! any(argv == '-notk' ) ) {
 	    include 'glishtk.g'
 	    include 'pgplot.g'
+	} else {
+	    func have_gui( ) { return F }
 	}
 
 	##
