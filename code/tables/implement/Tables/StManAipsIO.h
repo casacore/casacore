@@ -231,7 +231,8 @@ protected:
     Block<uInt>  ncum_p;
 
     // Find the extension in which the row number is.
-    uInt findExt (uInt rownr) const;
+    // It also sets the columnCache object.
+    uInt findExt (uInt rownr);
 
     // Get the next extension.
     // For the first iteration extnr should be zero.
