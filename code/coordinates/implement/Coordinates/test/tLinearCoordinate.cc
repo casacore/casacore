@@ -43,7 +43,8 @@ LinearCoordinate makeCoordinate(Vector<String>& names,
                                 Vector<Double>& crpix,
                                 Vector<Double>& crval,
                                 Vector<Double>& cdelt,
-                                Matrix<Double>& xform);
+                                Matrix<Double>& xform,
+                                uInt n=2);
 
 int main()
 {
@@ -269,6 +270,112 @@ int main()
          }
       }
 //
+// Test Fourier Coordinate.  Hard to do much with it.  LinearXform has been tested
+// pretty hard too.
+//
+     {
+         LinearCoordinate lc0 = makeCoordinate(names, units, crpix, crval, cdelt, xform, 3);
+         units(0) = "GHz"; units(1) = "Hz"; units(2) = "s";
+         LinearCoordinate lc(names, units, crval, cdelt, xform, crpix);
+//
+         Vector<Bool> axes(names.nelements(), True);
+         Vector<Int> shape(names.nelements());
+         for (uInt i=0; i<shape.nelements(); i++) {
+            shape(i) = 10*(i+2);
+         }
+
+// All axes
+
+         {
+            Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+//
+            Vector<String> units2 = pC->worldAxisUnits();
+            Vector<String> names2 = pC->worldAxisNames();
+            Vector<Double> crval2 = pC->referenceValue();
+            Vector<Double> crpix2 = pC->referencePixel();
+            if (units2(0)!=String("s") || units2(1)!=String("s") ||
+                units2(2)!=String("Hz")) {
+               throw(AipsError("makeFourierCoordinate (1) failed units test"));
+            }
+            if (names2(0)!=String("Time") || names2(1)!=String("Time") ||
+                names2(2)!=String("Frequency")) {
+               throw(AipsError("makeFourierCoordinate (1) failed names test"));
+            }
+            if (!allNear(crval2,0.0,1e-13)) {
+               throw(AipsError("makeFourierCoordinate (1) failed crval test"));
+            }
+            for (uInt i=0; i<pC->nPixelAxes(); i++) {
+               if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+                  throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
+               }
+            }     
+            delete pC;
+         }
+
+// Not all axes
+
+         {
+            axes.set(True);
+            axes(1) = False;
+            Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+//
+            Vector<String> units2 = pC->worldAxisUnits();
+            Vector<String> names2 = pC->worldAxisNames();
+            Vector<Double> crval2 = pC->referenceValue();
+            Vector<Double> crpix2 = pC->referencePixel();
+            if (units2(0)!=String("s") || units2(1)!=String("Hz") ||
+                units2(2)!=String("Hz")) {
+               throw(AipsError("makeFourierCoordinate (2) failed units test"));
+            }
+            if (names2(0)!=String("Time") || names2(1)!=names(1) ||
+                names2(2)!=String("Frequency")) {
+               throw(AipsError("makeFourierCoordinate (2) failed names test"));
+            }
+            for (uInt i=0; i<pC->nPixelAxes(); i++) {
+               if (i==1) {
+                  if (!near(crpix(i), crpix2(i))) {
+                     throw(AipsError("makeFourierCoordinate (2) failed crpix test"));
+                  }
+                  if (!near(crval(i), crval2(i))) {
+                     throw(AipsError("makeFourierCoordinate (2) failed crval test"));
+                  }
+               } else {
+                  if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+                     throw(AipsError("makeFourierCoordinate (2) failed crpix test"));
+                  }
+                  if (!near(0.0, crval2(i))) {
+                     throw(AipsError("makeFourierCoordinate (2) failed crval test"));
+                  }
+               }
+            }     
+            delete pC;
+         }
+
+
+// Not all axes and non-diagonal PC
+
+         {
+            xform(0,1) = 1.0;
+            LinearCoordinate lc2(names, units, crval, cdelt, xform, crpix);
+//
+            axes.set(True);
+            axes(1) = False;
+            Bool failed = False;
+            Coordinate* pC = 0;
+            try {
+               pC = lc2.makeFourierCoordinate (axes, shape);
+            } catch (AipsError x) {
+               failed = True;
+            } end_try;
+            if (!failed) {
+               throw(AipsError("Failed to induce forced error in makeFourierCoordinate (3)"));
+            }
+            delete pC;
+         }
+
+     }
+
+//
 // Test record saving
 //
       {
@@ -310,19 +417,33 @@ LinearCoordinate makeCoordinate (Vector<String>& names,
                                  Vector<Double>& crpix,
                                  Vector<Double>& crval,
                                  Vector<Double>& cdelt,
-                                 Matrix<Double>& xform)
+                                 Matrix<Double>& xform,
+                                 uInt n)
 {
-   names.resize(2);
-   units.resize(2);
-   crpix.resize(2);
-   cdelt.resize(2);
-   crval.resize(2);
-   xform.resize(2,2);
-   names(0) = "doggies"; names(1) = "fishies";
-   units(0) = "m"; units(1) = "rad";
-   crpix(0) = 10.0; crpix(1) = 20.0; 
-   cdelt(0) = 1.0; cdelt(1) = 2.0;
-   crval(0) = 10.0; crval(1) = 20;
+   Vector<String> uu(5);
+   uu(0) = "m"; uu(1) = "rad"; uu(2) = "s";
+   uu(3) = "GHz"; uu(4) = "pc";
+//
+   names.resize(n);
+   units.resize(n);
+   crpix.resize(n);
+   cdelt.resize(n);
+   crval.resize(n);
+   xform.resize(n,n);
+//
+   for (uInt i=0; i<n; i++) {
+      ostrstream oss;
+      oss << i;
+      names(i) = "axis" + String(oss);
+      crpix(i) = 10*(i+1);
+      cdelt(i) = i+1;
+      crval(i) = 20*(i+1);
+      if (i>4) {
+         units(i) = uu(0);
+      } else {
+         units(i) = uu(i);
+      }
+   }
    xform = 0.0; xform.diagonal() = 1.0;
 //
    LinearCoordinate lc(names, units, crval, cdelt,

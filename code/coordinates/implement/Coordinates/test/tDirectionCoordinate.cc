@@ -57,6 +57,7 @@ void doit2 (DirectionCoordinate& lc,
             Matrix<Double>& xform);
 void doit3 (DirectionCoordinate& lc);
 void doit4 (DirectionCoordinate& lc);
+void doit5 (DirectionCoordinate& lc);
 
 
 int main()
@@ -148,6 +149,12 @@ int main()
                                                  proj, crval, crpix,
                                                  cdelt, xform);
          doit4(lc);
+      }
+      {
+         DirectionCoordinate lc  = makeCoordinate(MDirection::J2000,
+                                                 proj, crval, crpix,
+                                                 cdelt, xform);
+         doit5(lc);
       }
     
 
@@ -627,3 +634,59 @@ void doit4 (DirectionCoordinate& dC)
    }
 }
 
+void doit5 (DirectionCoordinate& dC)
+//
+// Fourier coordinate. LinearXform has been tested
+// pretty hard (it does the work for DirectionCoordinate) so don't fuss about with 
+// the values much
+//
+{
+   Vector<Bool> axes(2, True);
+   Vector<Int> shape(2);
+   shape(0) = 128;
+   shape(1) = 256;
+
+// All axes
+
+   {
+      Coordinate* pC = dC.makeFourierCoordinate (axes, shape);
+//
+      Vector<String> units2 = pC->worldAxisUnits();
+      Vector<String> names2 = pC->worldAxisNames();
+      Vector<Double> crval2 = pC->referenceValue();
+      Vector<Double> crpix2 = pC->referencePixel();
+      if (units2(0)!=String("lambda") || units2(1)!=String("lambda")) {
+         throw(AipsError("makeFourierCoordinate (1) failed units test"));
+      }
+      if (names2(0)!=String("UU") || names2(1)!=String("VV")) {
+         throw(AipsError("makeFourierCoordinate (1) failed names test"));
+      }
+      if (!allNear(crval2,0.0,1e-13)) {
+         throw(AipsError("makeFourierCoordinate (1) failed crval test"));
+      }
+      for (uInt i=0; i<pC->nPixelAxes(); i++) { 
+         if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+            throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
+         }
+      }
+      delete pC;
+   }
+
+// Not all axes 
+
+   {
+      axes.set(True);
+      axes(1) = False;
+      Bool failed = False;
+      Coordinate* pC = 0;
+      try {
+         pC = dC.makeFourierCoordinate (axes, shape);
+      } catch (AipsError x) {
+         failed = True;
+      } end_try;
+      if (!failed) {
+         throw(AipsError("Failed to induce forced error in makeFourierCoordinate (2)"));
+      }
+      delete pC;
+   }
+}

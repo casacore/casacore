@@ -356,6 +356,60 @@ void doitLinear (const Double refVal,
    if (!allNear(pixel2, pixel, 1e-6)) {
          throw(AipsError("Coordinate conversion reflection failed"));
    }
+//
+// Test Fourier coordinate
+//
+   {
+      AlwaysAssert(lc.nPixelAxes()==1, AipsError);
+      Vector<Bool> axes(1, True);
+      Vector<Int> shape(1);
+      shape(0) = 128;
+
+// All axes
+
+      {
+         Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+//
+         Vector<String> units2 = pC->worldAxisUnits();
+         Vector<String> names2 = pC->worldAxisNames();
+         Vector<Double> crval2 = pC->referenceValue();
+         Vector<Double> crpix2 = pC->referencePixel();
+         String tt = String("1/") + lc.worldAxisUnits()(0);
+         if (units2(0)!=tt) {
+            throw(AipsError("makeFourierCoordinate (1) failed units test"));
+         }
+         tt = String("Inverse(") + lc.worldAxisNames()(0) + String(")");
+         if (names2(0)!=tt) {
+            throw(AipsError("makeFourierCoordinate (1) failed names test"));
+         }
+         if (!allNear(crval2,0.0,1e-13)) {
+            throw(AipsError("makeFourierCoordinate (1) failed crval test"));
+         }
+         for (uInt i=0; i<pC->nPixelAxes(); i++) {
+            if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+               throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
+            }
+         }
+         delete pC;
+      }
+
+// No axes   
+          
+      {
+         axes.set(False);
+         Bool failed = False;
+         Coordinate* pC = 0;
+         try {
+            pC = lc.makeFourierCoordinate (axes, shape);
+         } catch (AipsError x) {
+            failed = True;
+         } end_try;
+         if (!failed) {
+            throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+         }
+         delete pC;
+      }
+   }
 }
 
 void doitNonLinear (const Vector<Double>& pixelValues,
@@ -419,6 +473,24 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    }
    if (!allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate conversion reflection failed"));
+   }
+
+// Fourier
+
+   {
+      Vector<Bool> axes(lc.nPixelAxes(), True);      
+      Vector<Int> shape(lc.nPixelAxes(), 10);
+      Bool failed = False;
+      Coordinate* pC = 0;
+      try {
+         pC = lc.makeFourierCoordinate (axes, shape);
+      } catch (AipsError x) {
+         failed = True;
+      } end_try;
+      if (!failed) {
+         throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+      }
+      delete pC;
    }
 }
 

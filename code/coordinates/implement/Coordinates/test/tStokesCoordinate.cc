@@ -51,7 +51,7 @@ void doit3 (StokesCoordinate& lc,
            const Vector<Int>& whichStokes,
            const Vector<String>& stokesStrings);
 
-
+void doit4(StokesCoordinate& lc);
 
 int main()
 {
@@ -341,3 +341,20 @@ void doit3 (StokesCoordinate& lc,
    }
 }   
 
+void doit4(StokesCoordinate& lc)
+{
+   Vector<Bool> axes(lc.nWorldAxes(), True);
+   Vector<Int> shape(lc.nPixelAxes(), 10);
+   Bool failed = False;
+   Coordinate* pC = 0;
+   try {
+      pC = lc.makeFourierCoordinate (axes, shape);
+   } catch (AipsError x) {
+     failed = True;
+   } end_try;
+   if (!failed) {
+      throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+   }
+   delete pC;
+}
+   

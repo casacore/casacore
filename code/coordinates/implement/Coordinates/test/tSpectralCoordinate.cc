@@ -38,6 +38,7 @@
 #include <trial/Coordinates/SpectralCoordinate.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Tables/TableRecord.h>
+#include <aips/Utilities/Assert.h>
 
 #include <iostream.h>
 
@@ -276,6 +277,81 @@ int main()
          }
 
       }
+
+//
+// Test Fourier Coordinate.  Hard to do much with it.    SpectralCoordinate
+// just passes the work on to TabularCoordinate
+//
+     {
+         SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
+         SpectralCoordinate lc2 = makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
+//
+         AlwaysAssert(lc.nPixelAxes()==1, AipsError);
+         Vector<Bool> axes(1, True);
+         Vector<Int> shape(1);
+         shape(0) = 128;
+            
+// All axes
+               
+         {   
+            Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+//
+            Vector<String> units2 = pC->worldAxisUnits();
+            Vector<String> names2 = pC->worldAxisNames();
+            Vector<Double> crval2 = pC->referenceValue();
+            Vector<Double> crpix2 = pC->referencePixel();
+            if (units2(0)!=String("s")) {
+               throw(AipsError("makeFourierCoordinate (1) failed units test"));
+            }
+            if (names2(0)!=String("Time")) {
+               throw(AipsError("makeFourierCoordinate (1) failed names test"));
+            }
+            if (!allNear(crval2,0.0,1e-13)) {
+               throw(AipsError("makeFourierCoordinate (1) failed crval test"));
+            }
+            for (uInt i=0; i<pC->nPixelAxes(); i++) {
+               if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+                  throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
+               }
+            }
+            delete pC;
+         }
+
+// No axes
+
+         {
+            axes.set(False);
+            Bool failed = False;
+            Coordinate* pC = 0;
+            try {
+               pC = lc.makeFourierCoordinate (axes, shape);
+            } catch (AipsError x) {
+               failed = True;
+            } end_try;
+            if (!failed) {
+               throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+            }
+            delete pC;
+         }
+
+// Non linear
+
+         {
+            axes.set(True);
+            Bool failed = False;
+            Coordinate* pC = 0;
+            try {
+               pC = lc2.makeFourierCoordinate (axes, shape);
+            } catch (AipsError x) {
+               failed = True;
+            } end_try;
+            if (!failed) {
+               throw(AipsError("Failed to induce forced error (2) in makeFourierCoordinate"));
+            }
+            delete pC;
+         }
+      }
+     
 
 // Test conversion
 

@@ -80,6 +80,7 @@ void doit2 (CoordinateSystem& cSys);
 void doit3 (CoordinateSystem& cSys);
 void doit4 ();
 void doit5 ();
+void doit6 ();
 
 
 
@@ -153,6 +154,9 @@ int main()
       }
       {
          doit5();
+      }
+      {
+         doit6();
       }
 
   } catch (AipsError x) {
@@ -1632,4 +1636,26 @@ CoordinateSystem makeCoordinateSystem(uInt& nCoords,
 }
 
 
+
+void doit6 ()
+{
+   CoordinateSystem cSys;
+   DirectionCoordinate dC = makeDirectionCoordinate();
+   cSys.addCoordinate(dC);
+//
+   Vector<Bool> axes(cSys.nWorldAxes(), True);
+   Vector<Int> shape(cSys.nPixelAxes(), 10);
+   Bool failed = False;
+   Coordinate* pC = 0;
+   try {
+      pC = cSys.makeFourierCoordinate (axes, shape);
+   } catch (AipsError x) {
+     failed = True;
+   } end_try;
+   if (!failed) {
+      throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
+   }
+   delete pC;
+}   
+  
 
