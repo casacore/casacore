@@ -2243,3 +2243,4 @@
 09 146 src mv trial/apps/measures/aipsrcdata.help trial/apps/misc/aipsrcdata.help
 09 152 src rm trial/hds/makefile
 09 153 src rm trial/hds
+09 154 src mv aips/implement/Tasking/test/tAipsrcValue.c aips/implement/Tasking/test/tAipsrcValue.cc
