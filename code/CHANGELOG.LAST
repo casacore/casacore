@@ -1,0 +1,13 @@
+
+change id: 0146
+ author:   Ger van Diepen
+ date:     2003/04/09
+ avers:    1.8
+ area:     Library
+ package:  aips
+ module:   Tables
+ type:     Code
+ category: New
+ defects:  3930
+ summary:  Improved compression for single dish data
+The class CompressComplexSD has been developed to improve the compression of single dish data. Because in SD the imaginary part is usually 0, the algorithm used in CompressComplex gives bad results. CompressComplexSD fixes that problem.
