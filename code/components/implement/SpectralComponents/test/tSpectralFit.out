@@ -5,123 +5,123 @@ Test SpectralEstimate
 ---------------------------------------------------
 Made spectrum with components: 
 GAUSSIAN element: 
-  Amplitude: 5
-  Center:    45
-  Sigma:     1.1
+  Amplitude: 5, 0
+  Center:    45, 0
+  Sigma:     1.1, 0
 
 GAUSSIAN element: 
-  Amplitude: 4
-  Center:    50
-  Sigma:     1.1
+  Amplitude: 4, 0
+  Center:    50, 0
+  Sigma:     1.1, 0
 
 GAUSSIAN element: 
-  Amplitude: 6
-  Center:    55
-  Sigma:     1.1
+  Amplitude: 6, 0
+  Center:    55, 0
+  Sigma:     1.1, 0
 
 Found (using rms, cutoff, minsig, q): (0.5, 1, 0.5, 2) 3 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 6.00013
-  Center:    55.0715
-  Sigma:     3.14129
+  Amplitude: 6.00013, 0
+  Center:    55.0715, 0
+  Sigma:     1.33398, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 5.00013
-  Center:    44.9152
-  Sigma:     3.11565
+  Amplitude: 5.00013, 0
+  Center:    44.9152, 0
+  Sigma:     1.32309, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 4.00036
-  Center:    50.0043
-  Sigma:     2.97497
+  Amplitude: 4.00036, 0
+  Center:    50.0043, 0
+  Sigma:     1.26335, 0
 
 Minimum, Maximum residuals: -0.961305, 0.0086807
 Window (using rms, cutoff, minsig, q): (0.5, 1, 0.5, 2) 3 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 6.00013
-  Center:    55.0715
-  Sigma:     3.14129
+  Amplitude: 6.00013, 0
+  Center:    55.0715, 0
+  Sigma:     1.33398, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 5.00013
-  Center:    44.9152
-  Sigma:     3.11565
+  Amplitude: 5.00013, 0
+  Center:    44.9152, 0
+  Sigma:     1.32309, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 4.00036
-  Center:    50.0043
-  Sigma:     2.97497
+  Amplitude: 4.00036, 0
+  Center:    50.0043, 0
+  Sigma:     1.26335, 0
 
 Found (using rms, cutoff, minsig, q): (0.5, 1, 0.5, 1) 3 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 6.00013
-  Center:    54.9829
-  Sigma:     2.75817
+  Amplitude: 6.00013, 0
+  Center:    54.9829, 0
+  Sigma:     1.17129, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 5.00013
-  Center:    45.0202
-  Sigma:     2.7635
+  Amplitude: 5.00013, 0
+  Center:    45.0202, 0
+  Sigma:     1.17355, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 4.00036
-  Center:    50.0182
-  Sigma:     3.26222
+  Amplitude: 4.00036, 0
+  Center:    50.0182, 0
+  Sigma:     1.38534, 0
 
 Found (using rms, cutoff, minsig, q): (0, 0, 0, 1) 3 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 6.00013
-  Center:    54.9829
-  Sigma:     2.75817
+  Amplitude: 6.00013, 0
+  Center:    54.9829, 0
+  Sigma:     1.17129, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 5.00013
-  Center:    45.0202
-  Sigma:     2.7635
+  Amplitude: 5.00013, 0
+  Center:    45.0202, 0
+  Sigma:     1.17355, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 4.00036
-  Center:    50.0182
-  Sigma:     3.26222
+  Amplitude: 4.00036, 0
+  Center:    50.0182, 0
+  Sigma:     1.38534, 0
 
 Found (using rms, cutoff, minsig, q): (0, 0, 0, 2) 3 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 6.00013
-  Center:    55.0715
-  Sigma:     3.14129
+  Amplitude: 6.00013, 0
+  Center:    55.0715, 0
+  Sigma:     1.33398, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 5.00013
-  Center:    44.9152
-  Sigma:     3.11565
+  Amplitude: 5.00013, 0
+  Center:    44.9152, 0
+  Sigma:     1.32309, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 4.00036
-  Center:    50.0043
-  Sigma:     2.97497
+  Amplitude: 4.00036, 0
+  Center:    50.0043, 0
+  Sigma:     1.26335, 0
 
 Test SpectralFit
 ---------------------------------------------------
 Spectral elements: 
 GAUSSIAN element: 
-  Amplitude: 1
-  Center:    1402.5
-  Sigma:     0.0195312
+  Amplitude: 1, 0
+  Center:    1402.5, 0
+  Sigma:     0.0195312, 0
 
 GAUSSIAN element: 
-  Amplitude: 2.5
-  Center:    1405
-  Sigma:     0.0390625
+  Amplitude: 2.5, 0
+  Center:    1405, 0
+  Sigma:     0.0390625, 0
 
 GAUSSIAN element: 
-  Amplitude: 0.5
-  Center:    1407.5
-  Sigma:     0.078125
+  Amplitude: 0.5, 0
+  Center:    1407.5, 0
+  Sigma:     0.078125, 0
 
 GAUSSIAN element: 
-  Amplitude: 5
-  Center:    1403
-  Sigma:     0.0292969
+  Amplitude: 5, 0
+  Center:    1403, 0
+  Sigma:     0.0292969, 0
 
 ---------------------------------------------------
 Data for frequencies 1402.93 - 1403.08
@@ -144,280 +144,280 @@ Data for frequencies 1402.93 - 1403.08
 ---------------------------------------------------
 Specify fitter on the 4 gaussians:
 GAUSSIAN element: 
-  Amplitude: 1
-  Center:    1402.5
-  Sigma:     0.0195312
+  Amplitude: 1, 0
+  Center:    1402.5, 0
+  Sigma:     0.0195312, 0
 
 GAUSSIAN element: 
-  Amplitude: 2.5
-  Center:    1405
-  Sigma:     0.0390625
+  Amplitude: 2.5, 0
+  Center:    1405, 0
+  Sigma:     0.0390625, 0
 
 GAUSSIAN element: 
-  Amplitude: 0.5
-  Center:    1407.5
-  Sigma:     0.078125
+  Amplitude: 0.5, 0
+  Center:    1407.5, 0
+  Sigma:     0.078125, 0
 
 GAUSSIAN element: 
-  Amplitude: 5
-  Center:    1403
-  Sigma:     0.0292969
+  Amplitude: 5, 0
+  Center:    1403, 0
+  Sigma:     0.0292969, 0
 
 ---------------------------------------------------
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.930178
-  Center:    1402.5
-  Sigma:     0.0200996
-Parameters: [0.930178, 1402.5, 0.0200996]
-Errors:     [0.304406, 0.00365678, 0.00856158]
+  Amplitude: 0.918402, 0.310425
+  Center:    1402.5, 0.0034832
+  Sigma:     0.00881809, 0.00343807
+Parameters: [0.918402, 1402.5, 0.00881809]
+Errors:     [0.310425, 0.0034832, 0.00343807]
 
 GAUSSIAN element: 
-  Amplitude: 2.76114
-  Center:    1405
-  Sigma:     0.0357375
-Parameters: [2.76114, 1405, 0.0357375]
-Errors:     [0.238205, 0.00151138, 0.00355904]
+  Amplitude: 2.76117, 0.238197
+  Center:    1405, 0.00151174
+  Sigma:     0.0151761, 0.00151174
+Parameters: [2.76117, 1405, 0.0151761]
+Errors:     [0.238197, 0.00151174, 0.00151174]
 
 GAUSSIAN element: 
-  Amplitude: 0.570195
-  Center:    1407.48
-  Sigma:     0.0632673
-Parameters: [0.570195, 1407.48, 0.0632673]
-Errors:     [0.189678, 0.00897295, 0.0211297]
+  Amplitude: 0.602535, 0.178909
+  Center:    1407.48, 0.0096871
+  Sigma:     0.0244648, 0.0096871
+Parameters: [0.602535, 1407.48, 0.0244648]
+Errors:     [0.178909, 0.0096871, 0.0096871]
 
 GAUSSIAN element: 
-  Amplitude: 5.24744
-  Center:    1403
-  Sigma:     0.0273588
-Parameters: [5.24744, 1403, 0.0273588]
-Errors:     [0.272246, 0.000695814, 0.00163844]
+  Amplitude: 5.24752, 0.272236
+  Center:    1403, 0.00069599
+  Sigma:     0.0116179, 0.000695958
+Parameters: [5.24752, 1403, 0.0116179]
+Errors:     [0.272236, 0.00069599, 0.000695958]
 
 ---------------------------------------------------
 GAUSSIAN element: 
-  Amplitude: 1
-  Center:    1402.5
-  Sigma:     0.0195312
+  Amplitude: 1, 0
+  Center:    1402.5, 0
+  Sigma:     0.0195312, 0
 
 GAUSSIAN element: 
-  Amplitude: 2.5
-  Center:    1405
-  Sigma:     0.0390625
+  Amplitude: 2.5, 0
+  Center:    1405, 0
+  Sigma:     0.0390625, 0
 
 GAUSSIAN element: 
-  Amplitude: 0.5
-  Center:    1407.5
-  Sigma:     0.078125
+  Amplitude: 0.5, 0
+  Center:    1407.5, 0
+  Sigma:     0.078125, 0
 
 GAUSSIAN element: 
-  Amplitude: 5 (fixed)
-  Center:    1403
-  Sigma:     0.0292969
+  Amplitude: 5, 0 (fixed)
+  Center:    1403, 0
+  Sigma:     0.0292969, 0
 
 ---------------------------------------------------
 Execute the fitter again with a fixed ampl, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.930178
-  Center:    1402.5
-  Sigma:     0.0200996
-Parameters: [0.930178, 1402.5, 0.0200996]
-Errors:     [0.304536, 0.00365834, 0.00856523]
+  Amplitude: 0.918402, 0.310557
+  Center:    1402.5, 0.00348469
+  Sigma:     0.00881809, 0.00343954
+Parameters: [0.918402, 1402.5, 0.00881809]
+Errors:     [0.310557, 0.00348469, 0.00343954]
 
 GAUSSIAN element: 
-  Amplitude: 2.76114
-  Center:    1405
-  Sigma:     0.0357375
-Parameters: [2.76114, 1405, 0.0357375]
-Errors:     [0.238306, 0.00151203, 0.00356056]
+  Amplitude: 2.76117, 0.238299
+  Center:    1405, 0.00151239
+  Sigma:     0.0151761, 0.00151239
+Parameters: [2.76117, 1405, 0.0151761]
+Errors:     [0.238299, 0.00151239, 0.00151239]
 
 GAUSSIAN element: 
-  Amplitude: 0.570195
-  Center:    1407.48
-  Sigma:     0.0632673
-Parameters: [0.570195, 1407.48, 0.0632673]
-Errors:     [0.189759, 0.00897677, 0.0211387]
+  Amplitude: 0.602535, 0.178985
+  Center:    1407.48, 0.00969123
+  Sigma:     0.0244648, 0.00969123
+Parameters: [0.602535, 1407.48, 0.0244648]
+Errors:     [0.178985, 0.00969123, 0.00969123]
 
 GAUSSIAN element: 
-  Amplitude: 5
-  Center:    1403
-  Sigma:     0.0281892
-Parameters: [5, 1403, 0.0281892]
-Errors:     [0, 0.00074169, 0.00142603]
+  Amplitude: 5, 0
+  Center:    1403, 0.00074176
+  Sigma:     0.0119707, 0.000605635
+Parameters: [5, 1403, 0.0119707]
+Errors:     [0, 0.00074176, 0.000605635]
 
 ---------------------------------------------------
 Different start values: 
 GAUSSIAN element: 
-  Amplitude: 0.9
-  Center:    1402.5
-  Sigma:     0.0185547
+  Amplitude: 0.9, 0
+  Center:    1402.5, 0
+  Sigma:     0.0185547, 0
 
 GAUSSIAN element: 
-  Amplitude: 2.25
-  Center:    1405
-  Sigma:     0.0371094
+  Amplitude: 2.25, 0
+  Center:    1405, 0
+  Sigma:     0.0371094, 0
 
 GAUSSIAN element: 
-  Amplitude: 0.45
-  Center:    1407.5
-  Sigma:     0.0742188
+  Amplitude: 0.45, 0
+  Center:    1407.5, 0
+  Sigma:     0.0742188, 0
 
 GAUSSIAN element: 
-  Amplitude: 4.5
-  Center:    1403
-  Sigma:     0.027832
+  Amplitude: 4.5, 0
+  Center:    1403, 0
+  Sigma:     0.027832, 0
 
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.89636
-  Center:    1402.5
-  Sigma:     0.0216188
+  Amplitude: 0.915329, 0.311423
+  Center:    1402.5, 0.00345717
+  Sigma:     0.00887656, 0.00340439
 
 GAUSSIAN element: 
-  Amplitude: 2.76117
-  Center:    1405
-  Sigma:     0.0357369
+  Amplitude: 2.76116, 0.238208
+  Center:    1405, 0.00151172
+  Sigma:     0.0151761, 0.00151172
 
 GAUSSIAN element: 
-  Amplitude: 0.60332
-  Center:    1407.48
-  Sigma:     0.0562638
+  Amplitude: 0.590133, 0.178593
+  Center:    1407.48, 0.00985607
+  Sigma:     0.0255433, 0.00985607
 
 GAUSSIAN element: 
-  Amplitude: 5.24752
-  Center:    1403
-  Sigma:     0.027358
+  Amplitude: 5.24751, 0.272244
+  Center:    1403, 0.000695996
+  Sigma:     0.0116179, 0.000695964
 
 ---------------------------------------------------
 Differences: 
-Min difference: -1.09994, max: 1.01271, average: 0.00981503, sigma: 0.010033
+Min difference: -1.09994, max: 1.01271, average: 0.00967598, sigma: 0.0100326
 ---------------------------------------------------
 ---------------------------------------------------
 Estimates: 
 Found 20 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 4.93017
-  Center:    307.195
-  Sigma:     7.1863
+  Amplitude: 4.93017, 0
+  Center:    307.195, 0
+  Sigma:     3.05174, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 2.79525
-  Center:    511.819
-  Sigma:     7.75084
+  Amplitude: 2.79525, 0
+  Center:    511.819, 0
+  Sigma:     3.29148, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 0.906691
-  Center:    766.653
-  Sigma:     5.44959
+  Amplitude: 0.906691, 0
+  Center:    766.653, 0
+  Sigma:     2.31423, 0
 
 Estimate 3: GAUSSIAN element: 
-  Amplitude: 0.90563
-  Center:    501.372
-  Sigma:     8.48239
+  Amplitude: 0.90563, 0
+  Center:    501.372, 0
+  Sigma:     3.60214, 0
 
 Estimate 4: GAUSSIAN element: 
-  Amplitude: 0.861827
-  Center:    839.949
-  Sigma:     8.09371
+  Amplitude: 0.861827, 0
+  Center:    839.949, 0
+  Sigma:     3.43708, 0
 
 Estimate 5: GAUSSIAN element: 
-  Amplitude: 0.846625
-  Center:    112.878
-  Sigma:     5.38156
+  Amplitude: 0.846625, 0
+  Center:    112.878, 0
+  Sigma:     2.28534, 0
 
 Estimate 6: GAUSSIAN element: 
-  Amplitude: 0.751603
-  Center:    871.157
-  Sigma:     6.56851
+  Amplitude: 0.751603, 0
+  Center:    871.157, 0
+  Sigma:     2.78939, 0
 
 Estimate 7: GAUSSIAN element: 
-  Amplitude: 0.699624
-  Center:    36.4464
-  Sigma:     8.61259
+  Amplitude: 0.699624, 0
+  Center:    36.4464, 0
+  Sigma:     3.65743, 0
 
 Estimate 8: GAUSSIAN element: 
-  Amplitude: 0.682235
-  Center:    395.917
-  Sigma:     8.45216
+  Amplitude: 0.682235, 0
+  Center:    395.917, 0
+  Sigma:     3.5893, 0
 
 Estimate 9: GAUSSIAN element: 
-  Amplitude: 0.663379
-  Center:    450.12
-  Sigma:     1.29106
+  Amplitude: 0.663379, 0
+  Center:    450.12, 0
+  Sigma:     0.548263, 0
 
 Estimate 10: GAUSSIAN element: 
-  Amplitude: 0.640783
-  Center:    827.254
-  Sigma:     7.89711
+  Amplitude: 0.640783, 0
+  Center:    827.254, 0
+  Sigma:     3.35359, 0
 
 Estimate 11: GAUSSIAN element: 
-  Amplitude: 0.616448
-  Center:    245.555
-  Sigma:     7.72432
+  Amplitude: 0.616448, 0
+  Center:    245.555, 0
+  Sigma:     3.28022, 0
 
 Estimate 12: GAUSSIAN element: 
-  Amplitude: 0.578568
-  Center:    120.043
-  Sigma:     3.42692
+  Amplitude: 0.578568, 0
+  Center:    120.043, 0
+  Sigma:     1.45528, 0
 
 Estimate 13: GAUSSIAN element: 
-  Amplitude: 0.569486
-  Center:    663.971
-  Sigma:     4.26917
+  Amplitude: 0.569486, 0
+  Center:    663.971, 0
+  Sigma:     1.81295, 0
 
 Estimate 14: GAUSSIAN element: 
-  Amplitude: 0.56377
-  Center:    611.848
-  Sigma:     7.06026
+  Amplitude: 0.56377, 0
+  Center:    611.848, 0
+  Sigma:     2.99822, 0
 
 Estimate 15: GAUSSIAN element: 
-  Amplitude: 0.561451
-  Center:    937.91
-  Sigma:     5.48283
+  Amplitude: 0.561451, 0
+  Center:    937.91, 0
+  Sigma:     2.32834, 0
 
 Estimate 16: GAUSSIAN element: 
-  Amplitude: 0.54666
-  Center:    336.559
-  Sigma:     4.41788
+  Amplitude: 0.54666, 0
+  Center:    336.559, 0
+  Sigma:     1.8761, 0
 
 Estimate 17: GAUSSIAN element: 
-  Amplitude: 0.524891
-  Center:    443.644
-  Sigma:     1.90523
+  Amplitude: 0.524891, 0
+  Center:    443.644, 0
+  Sigma:     0.809077, 0
 
 Estimate 18: GAUSSIAN element: 
-  Amplitude: 0.523377
-  Center:    645.266
-  Sigma:     7.0895
+  Amplitude: 0.523377, 0
+  Center:    645.266, 0
+  Sigma:     3.01063, 0
 
 Estimate 19: GAUSSIAN element: 
-  Amplitude: 0.515985
-  Center:    446.61
-  Sigma:     2.78615
+  Amplitude: 0.515985, 0
+  Center:    446.61, 0
+  Sigma:     1.18317, 0
 
 ---------------------------------------------------
 Limited number of estimates: 
 Found 4 estimates
 Estimate 0: GAUSSIAN element: 
-  Amplitude: 4.93017
-  Center:    307.195
-  Sigma:     7.1863
+  Amplitude: 4.93017, 0
+  Center:    307.195, 0
+  Sigma:     3.05174, 0
 
 Estimate 1: GAUSSIAN element: 
-  Amplitude: 2.79525
-  Center:    511.819
-  Sigma:     7.75084
+  Amplitude: 2.79525, 0
+  Center:    511.819, 0
+  Sigma:     3.29148, 0
 
 Estimate 2: GAUSSIAN element: 
-  Amplitude: 0.906691
-  Center:    766.653
-  Sigma:     5.44959
+  Amplitude: 0.906691, 0
+  Center:    766.653, 0
+  Sigma:     2.31423, 0
 
 Estimate 3: GAUSSIAN element: 
-  Amplitude: 0.90563
-  Center:    501.372
-  Sigma:     8.48239
+  Amplitude: 0.90563, 0
+  Center:    501.372, 0
+  Sigma:     3.60214, 0
 
 ---------------------------------------------------
