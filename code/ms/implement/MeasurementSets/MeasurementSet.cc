@@ -1,5 +1,5 @@
 //# MeasurementSet.cc:  the class that hold measurements from telescopes
-//# Copyright (C) 1996,1997,1998,2000
+//# Copyright (C) 1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -622,6 +622,27 @@ Bool MeasurementSet::validateMeasureRefs()
     }
   }
   return ok;
+}
+
+void MeasurementSet::flush(Bool sync) {
+  flush(sync);
+  antenna_p.flush(sync);
+  dataDesc_p.flush(sync);
+  if (!doppler_p.isNull()) doppler_p.flush(sync);
+  feed_p.flush(sync);
+  field_p.flush(sync);
+  flagCmd_p.flush(sync);
+  if (!freqOffset_p.isNull())  freqOffset_p.flush(sync);
+  history_p.flush(sync);
+  observation_p.flush(sync);
+  pointing_p.flush(sync);
+  polarization_p.flush(sync);
+  processor_p.flush(sync);
+  if (!source_p.isNull())  source_p.flush(sync);
+  spectralWindow_p.flush(sync);
+  state_p.flush(sync);
+  if (!sysCal_p.isNull())  sysCal_p.flush(sync);
+  if (!weather_p.isNull())  weather_p.flush(sync);
 }
 
 void MeasurementSet::checkVersion()

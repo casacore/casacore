@@ -1,5 +1,5 @@
 //# MeasurementSet.h: A Table to hold astronomical data (a set of Measurements)
-//# Copyright (C) 1996,1997,1999,2000
+//# Copyright (C) 1996,1997,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -337,6 +337,11 @@ public:
   // reference value set, report the ones that don't.
   Bool validateMeasureRefs();
 
+  // Flush all the tables and subtables associated with this
+  // MeasurementSet. This function calls the Table::flush() function on the
+  // main table and all the standard subtables including optional
+  // subtables. See the Table class for a description of the sync argument.
+  void flush(Bool sync=False);
 
 private:
 
@@ -361,7 +366,7 @@ private:
   MSPointing pointing_p;
   MSPolarization polarization_p;
   MSProcessor processor_p;
-  MSSource source_p;
+  MSSource source_p; //optional
   MSSpectralWindow spectralWindow_p;
   MSState state_p;
   MSSysCal sysCal_p; //optional
