@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#   Copyright (C) 1999
+#   Copyright (C) 1999,2000
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify it
@@ -32,9 +32,16 @@
 # argument $1 is AIPSCODE from the makedefs
 # argument $2 is the basename of the document
 #
+if [ -x /usr/bin/nawk ] ; then
+ AWK=/usr/bin/nawk
+elif [ -x /usr/bin/gawk ] ; then
+  AWK=/usr/bin/gawk
+else
+  AWK=awk
+fi
 for doWhat in ch sec subsec
 do
-  awk -f $1/install/docutils/"$doWhat"pag.awk $2.toc > $doWhat.pagnos
+  $AWK -f $1/install/docutils/"$doWhat"pag.awk $2.toc > $doWhat.pagnos
   chmod u+x $doWhat.pagnos
   cat $doWhat.pagnos
 done
