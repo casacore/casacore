@@ -5521,3 +5521,12 @@
 15 211 src rm trial/apps/olddish/oldsdimager.help
 15 211 src rm trial/apps/olddish/makefile
 15 211 top rm code/trial/apps/olddish
+15 211 src rm trial/apps/oldsditerator/oldsdaveragerDO.h
+15 211 src rm trial/apps/oldsditerator/oldsditeratorImpl.h
+15 211 src rm trial/apps/oldsditerator/oldsdaveragerDO.cc
+15 211 src rm trial/apps/oldsditerator/oldsditerator.cc
+15 211 src rm trial/apps/oldsditerator/oldsditeratorImpl.cc
+15 211 src rm trial/apps/oldsditerator/oldsdaverager.g
+15 211 src rm trial/apps/oldsditerator/oldsditerator.g
+15 211 src rm trial/apps/oldsditerator/oldsdaverager.help
+15 211 src rm trial/apps/oldsditerator/oldsditerator.help
