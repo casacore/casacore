@@ -255,7 +255,7 @@ C
 C      pos(3)=(scale(3)*uvw(3)*freq/c)*(scale(3)*uvw(3)*freq/c)
 C     $     +offset(3)+1.0;
 C      pos(3)=(scale(3)*uvw(3)*freq/c)+offset(3)+1.0;
-      pos(3)=sqrt(abs(scale(3)*uvw(3)*freq/c))+offset(3)+1.0;
+      pos(3)=sqrt(abs(scale(3)*uvw(3)*freq/c))+offset(3)+1.0
       loc(3)=nint(pos(3))
       off(3)=0
 
