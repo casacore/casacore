@@ -326,21 +326,21 @@ template<class T> void max(const MaskedArray<T> &result,const Array<T> &left, co
 // starting with "start" and incrementing by "inc" for each element
 // where the mask is True.
 // The first axis varies most rapidly.
-template<class T> void indgen(const MaskedArray<T> &a,const T start, const T inc);
+template<class T> void indgen(MaskedArray<T> &a,const T start, const T inc);
 
 // 
 // Fills all elements of "array" where the mask is True with a sequence
 // starting with 0 and incremented by one for each element
 // where the  mask is True.
 // The first axis varies most rapidly.
-template<class T>  void indgen(const MaskedArray<T> &a);
+template<class T>  void indgen(MaskedArray<T> &a);
 
 // 
 // Fills all elements of "array" where the mask is True with a sequence
 // starting with "start" and incremented by one for each element
 // where the  mask is True.
 // The first axis varies most rapidly.
-template<class T>  void indgen(const MaskedArray<T> &a, const T start);
+template<class T>  void indgen(MaskedArray<T> &a, const T start);
 
 
 // <thrown>
