@@ -790,8 +790,8 @@ Bool CoordinateUtil::makeFrequencyMachine(LogIO& os, MFrequency::Convert& machin
    }
    if (!ok) {
       os << "Unable to convert between the input and output SpectralCoordinates" << endl;
-      os << "SpectralCoordinates - this probably means one is in the REST frame" << endl;
-      os << "which requires the radial velocity (not implemented yet)" << LogIO::EXCEPTION;
+      os << "this probably means one is in the REST frame which requires" << endl;
+      os << "the radial velocity - this is not implemented yet" << LogIO::EXCEPTION;
    }
 //
    return True;
