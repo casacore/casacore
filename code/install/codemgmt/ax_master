@@ -2062,3 +2062,4 @@
 08 247 src rm install/alpha_gnu/aips-Tables.defs
 08 249 src rm trial/implement/Images/ImageTiledCache.h
 08 249 src rm trial/implement/Images/ImageTiledCache.cc
+08 254 src rm aips/glish/rivet/tkpgplot/TkPgplot.c
