@@ -100,6 +100,10 @@ $(INCLINKS) :
 
 docsys : $(DOCSYS)
 
+resolvedocs :
+	find $(addprefix $(CODEDIR)/, doc) -name "*.latex" -exec touch {} \;
+	$(MAKE) -C $(addprefix $(CODEDIR)/, doc)
+
 docscan docextr :
 	 @ for i in $(ALLSYSD) ; do \
 	     echo "" ; \
