@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -63,9 +63,6 @@ const char *wcs_errmsg[] = {
    "Invalid subimage specification",
    "Non-separable subimage coordinate system"};
 
-#define UNDEFINED 987654321.0e99
-#define undefined(value) (value == UNDEFINED)
-
 #define signbit(X) ((X) < 0.0 ? 1 : 0)
 
 /*--------------------------------------------------------------------------*/
@@ -107,6 +104,7 @@ struct wcsprm *wcs;
       return 2;
    }
 
+   /* Initialize memory management. */
    if (wcs->flag == -1 || wcs->m_flag != WCSSET) {
       wcs->m_flag  = 0;
       wcs->m_naxis = 0;
@@ -156,13 +154,13 @@ struct wcsprm *wcs;
       }
 
 
-      if (alloc || wcs->crpix == (double *)0) {
+      if (alloc || wcs->crpix == 0) {
          if (wcs->m_crpix) {
             /* In case the caller fiddled with it. */
             wcs->crpix = wcs->m_crpix;
 
          } else {
-            if (!(wcs->crpix = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->crpix = calloc(naxis, sizeof(double)))) {
                return 2;
             }
 
@@ -172,13 +170,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->pc == (double *)0) {
+      if (alloc || wcs->pc == 0) {
          if (wcs->m_pc) {
             /* In case the caller fiddled with it. */
             wcs->pc = wcs->m_pc;
 
          } else {
-            if (!(wcs->pc = (double *)calloc(naxis*naxis, sizeof(double)))) {
+            if (!(wcs->pc = calloc(naxis*naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -189,13 +187,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->cdelt == (double *)0) {
+      if (alloc || wcs->cdelt == 0) {
          if (wcs->m_cdelt) {
             /* In case the caller fiddled with it. */
             wcs->cdelt = wcs->m_cdelt;
 
          } else {
-            if (!(wcs->cdelt = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->cdelt = calloc(naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -206,7 +204,7 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->cunit == (char (*)[72])0) {
+      if (alloc || wcs->cunit == 0) {
          if (wcs->m_cunit) {
             /* In case the caller fiddled with it. */
             wcs->cunit = wcs->m_cunit;
@@ -224,7 +222,7 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->ctype == (char (*)[72])0) {
+      if (alloc || wcs->ctype == 0) {
          if (wcs->m_ctype) {
             /* In case the caller fiddled with it. */
             wcs->ctype = wcs->m_ctype;
@@ -242,13 +240,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->crval == (double *)0) {
+      if (alloc || wcs->crval == 0) {
          if (wcs->m_crval) {
             /* In case the caller fiddled with it. */
             wcs->crval = wcs->m_crval;
 
          } else {
-            if (!(wcs->crval = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->crval = calloc(naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -259,7 +257,7 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->pv == (struct pvcard *)0) {
+      if (alloc || wcs->pv == 0) {
          if (wcs->m_pv) {
             /* In case the caller fiddled with it. */
             wcs->pv = wcs->m_pv;
@@ -283,7 +281,7 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->ps == (struct pscard *)0) {
+      if (alloc || wcs->ps == 0) {
          if (wcs->m_ps) {
             /* In case the caller fiddled with it. */
             wcs->ps = wcs->m_ps;
@@ -307,13 +305,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->cd == (double *)0) {
+      if (alloc || wcs->cd == 0) {
          if (wcs->m_cd) {
             /* In case the caller fiddled with it. */
             wcs->cd = wcs->m_cd;
 
          } else {
-            if (!(wcs->cd = (double *)calloc(naxis*naxis, sizeof(double)))) {
+            if (!(wcs->cd = calloc(naxis*naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -324,13 +322,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->crota == (double *)0) {
+      if (alloc || wcs->crota == 0) {
          if (wcs->m_crota) {
             /* In case the caller fiddled with it. */
             wcs->crota = wcs->m_crota;
 
          } else {
-            if (!(wcs->crota = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->crota = calloc(naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -341,7 +339,7 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->cname == (char (*)[72])0) {
+      if (alloc || wcs->cname == 0) {
          if (wcs->m_cname) {
             /* In case the caller fiddled with it. */
             wcs->cname = wcs->m_cname;
@@ -359,13 +357,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->crder == (double *)0) {
+      if (alloc || wcs->crder == 0) {
          if (wcs->m_crder) {
             /* In case the caller fiddled with it. */
             wcs->crder = wcs->m_crder;
 
          } else {
-            if (!(wcs->crder = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->crder = calloc(naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -376,13 +374,13 @@ struct wcsprm *wcs;
          }
       }
 
-      if (alloc || wcs->csyer == (double *)0) {
+      if (alloc || wcs->csyer == 0) {
          if (wcs->m_csyer) {
             /* In case the caller fiddled with it. */
             wcs->csyer = wcs->m_csyer;
 
          } else {
-            if (!(wcs->csyer = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(wcs->csyer = calloc(naxis, sizeof(double)))) {
                wcsfree(wcs);
                return 2;
             }
@@ -516,7 +514,7 @@ struct wcsprm *wcsdst;
       return 2;
    }
 
-   if (!(map = (int *)calloc(naxis, sizeof(int)))) {
+   if (!(map = calloc(naxis, sizeof(int)))) {
       return 2;
    }
 
@@ -529,7 +527,7 @@ struct wcsprm *wcsdst;
 
    if (dealloc = (axes == 0)) {
       /* Construct an index array. */
-      if (!(axes = (int *)calloc(naxis, sizeof(int)))) {
+      if (!(axes = calloc(naxis, sizeof(int)))) {
          return 2;
       }
 
@@ -1518,6 +1516,9 @@ int stat[];
       if (status = wcsset(wcs)) return status;
    }
 
+   /* Sanity check. */
+   if (ncoord < 1 || (ncoord > 1 && nelem < wcs->naxis)) return 4;
+
 
    /* Apply pixel-to-world linear transformation. */
    if (status = linp2x(&(wcs->lin), ncoord, nelem, pixcrd, imgcrd)) {
@@ -1530,8 +1531,8 @@ int stat[];
 
 
    /* Convert intermediate world coordinates to world coordinates. */
-   img = (double *)imgcrd;
-   wrl = (double *)world;
+   img = imgcrd;
+   wrl = world;
    for (k = 0; k < ncoord; k++) {
       for (i = 0; i < wcs->naxis; i++, img++, wrl++) {
          if (i == wcslng || i == wcslat || i == wcspec) continue;
@@ -1558,8 +1559,8 @@ int stat[];
          }
 
          /* Lay out faces in a plane. */
-         img = (double *)imgcrd;
-         statp = (int *)stat;
+         img = imgcrd;
+         statp = stat;
          for (k = 0; k < ncoord; k++, statp++) {
             face = (int)(*(img+wcs->cubeface) + 0.5);
             if (fabs(*(img+wcs->cubeface) - face) > 1e-10) {
@@ -1608,8 +1609,8 @@ int stat[];
       }
 
       /* Transform projection plane coordinates to celestial coordinates. */
-      worldlng = (double *)world + wcslng;
-      worldlat = (double *)world + wcslat;
+      worldlng = world + wcslng;
+      worldlat = world + wcslat;
       if (istat = celx2s(wcscel, nx, ny, nelem, nelem, imgcrd+wcslng,
                          imgcrd+wcslat, phi, theta, worldlng, worldlat,
                          stat)) {;
@@ -1674,7 +1675,8 @@ int stat[];
    int    i, isolat, isolng, isospec, istat, k, nlat, nlng, nspec, status,
           wcslat, wcslng, wcspec;
    double offset;
-   register double *img, *wrl;
+   register const double *wrl;
+   register double *img;
    struct celprm *wcscel = &(wcs->cel);
 
 
@@ -1685,14 +1687,17 @@ int stat[];
       if (status = wcsset(wcs)) return status;
    }
 
+   /* Sanity check. */
+   if (ncoord < 1 || (ncoord > 1 && nelem < wcs->naxis)) return 4;
+
    wcslng = wcs->lng;
    wcslat = wcs->lat;
    wcspec = wcs->spec;
 
 
    /* Convert world coordinates to intermediate world coordinates. */
-   wrl = (double *)world;
-   img = (double *)imgcrd;
+   wrl = world;
+   img = imgcrd;
 
    for (k = 0; k < ncoord; k++) {
       for (i = 0; i < wcs->naxis; i++, wrl++, img++) {
@@ -1753,7 +1758,7 @@ int stat[];
          }
 
          /* Stack faces in a cube. */
-         img = (double *)imgcrd;
+         img = imgcrd;
          for (k = 0; k < ncoord; k++) {
             if (*(img+wcslat) < -0.5*offset) {
                *(img+wcslat) += offset;
@@ -2122,8 +2127,8 @@ double pixcrd[];
                lng0 -= step;
                if (lng0 < span[0]) lng0 = span[0];
                *worldlng = lng0;
-               if (status = wcss2p(wcs, 1, 0, world, phi, theta, imgcrd, pixcrd,
-                                   stat)) {
+               if (status = wcss2p(wcs, 1, 0, world, phi, theta, imgcrd,
+                                   pixcrd, stat)) {
                   return (status == 9) ? 10 : status;
                }
                d0 = pixcrd[mixpix] - pixmix;

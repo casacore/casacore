@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# GNU makefile for WCSLIB 3.x in AIPS++.
+# GNU makefile for WCSLIB 4.x in AIPS++.
 #
 # $Id$
 #-----------------------------------------------------------------------------
@@ -103,6 +103,14 @@ $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/wcstrig.h
 
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/prj.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/spc.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/wcs.h
+
 $(WCSLIB).$(SFXSTAT)(lin.o) : $(CODEDIR)/lin.h
 
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/prj.h
@@ -117,6 +125,8 @@ $(WCSLIB).$(SFXSTAT)(sph.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(sph.o) : $(CODEDIR)/wcstrig.h
 
 $(WCSLIB).$(SFXSTAT)(spx.o) : $(CODEDIR)/spx.h
+
+$(WCSLIB).$(SFXSTAT)(tab.o) : $(CODEDIR)/tab.h
 
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/lin.h
@@ -148,14 +158,6 @@ $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcshdr.h
 
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
-
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/cel.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/lin.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/prj.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/spc.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/sph.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/spx.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o)  : $(CODEDIR)/wcs.h
 
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/lin.h

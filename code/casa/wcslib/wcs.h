@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -40,7 +40,7 @@
 *      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (paper II)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
 *      (paper III, in preparation)
 *
 *
@@ -55,10 +55,9 @@
 *   like a C++ class but with no encapsulation.
 *
 *   Three service routines, wcsini(), wcssub(), and wcsfree() are provided to
-*   manage the wcsprm struct (see "Memory allocation and deallocation" below).
-*   Another, wcsprt(), prints its contents.  See "Coordinate transformation
-*   parameters" below for an explanation of the anticipated usage of these
-*   routines.
+*   manage the wcsprm struct and another, wcsprt(), to prints its contents.
+*   See "Coordinate transformation parameters" below for an explanation of the
+*   anticipated usage of these routines.
 *
 *   A setup routine, wcsset(), computes intermediate values in the wcsprm
 *   struct from parameters in it that were supplied by the caller.  The
@@ -77,12 +76,10 @@
 *
 *   Default constructor for the wcsprm struct; wcsini()
 *   ---------------------------------------------------
-*   wcsini() allocates memory for the crpix, pc, cdelt, cunit, ctype, crval,
-*   pv, ps, cd, crota, cname, crder, and csyer arrays in the wcsprm struct and
-*   sets all members of the wcsprm struct to default values.  Memory is
-*   allocated for up to NPVMAX PVi_ma cards or NPSMAX PSi_ma cards per WCS
-*   representation.  These may be changed via wcsnpv() and wcsnps() before
-*   wcsini() is called.
+*   wcsini() allocates memory for arrays in a wcsprm struct and sets all
+*   members of the struct to default values.  Memory is allocated for up to
+*   NPVMAX PVi_ma cards or NPSMAX PSi_ma cards per WCS representation.  These
+*   may be changed via wcsnpv() and wcsnps() before wcsini() is called.
 *
 *   Given:
 *      alloc    int      If true, allocate memory for the crpix, etc. arrays
@@ -156,9 +153,10 @@
 *   Given and returned:
 *      nsub     int*
 *      axes     int[]    Vector of length *nsub containing the image axis
-*                        numbers to extract.  Order is significant; axes[0] is
-*                        the axis number of the input image that corresponds
-*                        to the first axis in the subimage, etc.
+*                        numbers (1-relative) to extract.  Order is
+*                        significant; axes[0] is the axis number of the input
+*                        image that corresponds to the first axis in the
+*                        subimage, etc.
 *
 *                        nsub (the pointer) may be set to zero, and so also
 *                        may *nsub, to indicate the number of axes in the
@@ -231,7 +229,7 @@
 *
 *   Print routine for the wcsprm struct; wcsprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a wcsprm struct.
+*   wcsprt() prints the contents of a wcsprm struct.
 *
 *   Given:
 *      wcs      const struct wcsprm*
@@ -245,15 +243,15 @@
 *
 *   Setup routine; wcsset()
 *   -----------------------
-*   Sets up a wcsprm data structure according to information supplied within
+*   wcsset() sets up a wcsprm struct according to information supplied within
 *   it (see "Coordinate transformation parameters" below).
 *
 *   wcsset() recognizes the NCP projection and converts it to the equivalent
 *   SIN projection.  It also recognizes GLS as a synonym for SFL.
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   wcsp2s() and wcss2p() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   wcsp2s() and wcss2p() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -275,7 +273,7 @@
 *
 *   Pixel-to-world transformation; wcsp2s()
 *   ---------------------------------------
-*   Transform an array of pixel coordinates to world coordinates.
+*   wcsp2s() transforms pixel coordinates to world coordinates.
 *
 *   Given or returned:
 *      wcs      struct wcsprm*
@@ -284,6 +282,9 @@
 *   Given:
 *      ncoord   int      The number of coordinates, each of vector length
 *      nelem    int      nelem but containing wcs.naxis coordinate elements.
+*                        Thus nelem must equal or exceed the value of the
+*                        NAXIS keyword unless ncoord == 1, in which case nelem
+*                        is not used.
 *      pixcrd   const double[ncoord][nelem]
 *                        Array of pixel coordinates.
 *
@@ -330,7 +331,7 @@
 *
 *   World-to-pixel transformation; wcss2p()
 *   ---------------------------------------
-*   Transform an array of world coordinates to pixel coordinates.
+*   wcss2p() transforms world coordinates to pixel coordinates.
 *
 *   Given or returned:
 *      wcs      struct wcsprm*
@@ -339,6 +340,9 @@
 *   Given:
 *      ncoord   int      The number of coordinates, each of vector length
 *      nelem    int      nelem but containing wcs.naxis coordinate elements.
+*                        Thus nelem must equal or exceed the value of the
+*                        NAXIS keyword unless ncoord == 1, in which case nelem
+*                        is not used.
 *      world    const double[ncoord][nelem]
 *                        Array of world coordinates.  For celestial axes,
 *                        world[][wcs.lng] and world[][wcs.lat] are the
@@ -387,9 +391,9 @@
 *
 *   Hybrid transformation; wcsmix()
 *   -------------------------------
-*   Given either the celestial longitude or latitude plus an element of the
-*   pixel coordinate solve for the remaining elements by iterating on the
-*   unknown celestial coordinate element using wcss2p().
+*   wcsmix(), given either the celestial longitude or latitude plus an element
+*   of the pixel coordinate, solves for the remaining elements by iterating on
+*   the unknown celestial coordinate element using wcss2p().
 *
 *   Given or returned:
 *      wcs      struct wcsprm*
@@ -493,8 +497,8 @@
 *       projection routines.
 *
 *    2) In wcssub(), combinations of subimage axes of particular types may be
-*       extracted in the same order as they occur the input image by combining
-*       preprocessor codes, for example
+*       extracted in the same order as they occur in the input image by
+*       combining preprocessor codes, for example
 *
 *          *nsub = 1;
 *          axes[0] = WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_SPECTRAL;
@@ -550,8 +554,8 @@
 *         may result.
 *
 *      int naxis
-*         Number of pixel and world coordinate elements, given by NAXIS or
-*         WCSAXESa.
+*         Number of pixel and world coordinate elements, given by the NAXIS or
+*         WCSAXESa keywords.
 *
 *      double *crpix
 *         Pointer to the first element of an array of double containing the
@@ -829,14 +833,13 @@
 *   ----------------
 *   Arrays of pixel and world coordinates are two dimensional, i.e.
 *   pixcrd[ncoord][nelem], where nelem must equal or exceed the number of
-*   coordinate elements, naxis, stored in the wcsprm struct.  Exception: when
-*   ncoord == 1, nelem is not used.
+*   coordinate elements, naxis (i.e. the value of the NAXIS keyword), stored
+*   in the wcsprm struct.  Exception: when ncoord == 1, nelem is not used.
 *
 *   Note that the function prototypes must declare two-dimensional arrays as
 *   one-dimensional to avoid warnings about declaration of "incomplete types".
-*   This was considered preferable to declaring them as simple
-*   pointers-to-double which gives no indication that storage is associated
-*   with them.
+*   This was considered preferable to declaring them as simple pointers-to-
+*   double which gives no indication that storage is associated with them.
 *
 *
 *   Memory allocation and deallocation
@@ -1012,14 +1015,14 @@ struct wcsprm {
    /*-----------------------------------------------------------------------*/
    char   lngtyp[8], lattyp[8];	/* Celestial axis types, e.g. RA, DEC.      */
    int    lng, lat, spec;	/* Longitude, latitude, and spectral axis   */
-                                /* numbers.                                 */
+                                /* indices (0-relative).                    */
    int    cubeface;		/* True if there is a CUBEFACE axis.        */
 
    struct linprm lin;		/* Linear    transformation parameters.     */
    struct celprm cel;		/* Celestial transformation parameters.     */
    struct spcprm spc;		/* Spectral  transformation parameters.     */
 
-   int m_flag, m_naxis;		/* The remainder are for memory management. */
+   int    m_flag, m_naxis;	/* The remainder are for memory management. */
    char  (*m_cunit)[72], (*m_ctype)[72];
    double *m_crpix, *m_pc, *m_cdelt, *m_crval;
    struct pvcard *m_pv;
@@ -1027,6 +1030,7 @@ struct wcsprm {
    double *m_cd, *m_crota;
    char  (*m_cname)[72];
    double *m_crder, *m_csyer;
+
    int    padding1;		/* (Dummy inserted for alignment purposes.) */
 };
 

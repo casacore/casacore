@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -47,7 +47,7 @@
 *   no encapsulation.
 *
 *   Three service routines, linini(), lincpy(), and linfree() are provided to
-*   manage the linprm struct.  A third, linprt(), prints its contents.
+*   manage the linprm struct, and another, linprt(), prints its contents.
 *
 *   A setup routine, linset(), computes intermediate values in the linprm
 *   struct from parameters in it that were supplied by the caller.  The struct
@@ -60,22 +60,21 @@
 *   LU-triangular factorization with scaled partial pivoting.
 *
 *
-*   Service routines for the linprm struct; linini(), lincpy(), & linfree()
-*   -----------------------------------------------------------------------
-*   These service routines are provided to manage the linprm struct (see also
-*   "Memory allocation and deallocation" below).
-*
-*   linini() allocates memory for the crpix, pc, and cdelt arrays and sets the
-*   members of the linprm struct to default values.
+*   Default constructor for the linprm struct; linini()
+*   ---------------------------------------------------
+*   linini() allocates memory for arrays in a tabprm struct and sets all
+*   members of the struct to default values.
 *
 *   Given:
-*      alloc    int      If true, allocate memory for the crpix, pc, and cdelt
-*                        arrays.  Otherwise, it is assumed that pointers to
+*      alloc    int      If true, allocate memory for arrays in the tabprm
+*                        struct (see "Memory allocation and deallocation
+*                        below").  Otherwise, it is assumed that pointers to
 *                        these arrays have been set by the caller except if
 *                        they are null pointers in which case memory will be
 *                        allocated for them regardless.  (In other words,
 *                        setting alloc true saves having to initalize these
 *                        pointers to zero.)
+*
 *      naxis    int      The number of world coordinate axes, used to
 *                        determine array sizes.
 *
@@ -94,6 +93,8 @@
 *                           2: Memory allocation failed.
 *
 *
+*   Copy routine for the linprm struct; lincpy()
+*   --------------------------------------------
 *   lincpy() does a deep copy of one linprm struct to another, using linini()
 *   to allocate memory for its arrays if required.  Only the "information to
 *   be provided" part of the struct is copied; a call to linset() is required
@@ -121,6 +122,8 @@
 *                           2: Memory allocation failed.
 *
 *
+*   Destructor for the linprm struct; linfree()
+*   -------------------------------------------
 *   linfree() frees memory allocated for the linprm arrays by linini() and/or
 *   linset().  linini() keeps a record of the memory it allocates and
 *   linfree() will only attempt to free this.
@@ -137,7 +140,7 @@
 *
 *   Print routine for the linprm struct; linprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a linprm struct.
+*   linprt() prints the contents of a linprm struct.
 *
 *   Given:
 *      lin      const struct linprm*
@@ -149,15 +152,15 @@
 *                           1: Null linprm pointer passed.
 *
 *
-*   Initialization routine; linset()
-*   --------------------------------
-*   If necessary, allocates memory for the piximg and imgpix arrays in the
-*   linprm struct and initializes the structure according to information
+*   Setup routine; linset()
+*   -----------------------
+*   linset(), if necessary, allocates memory for the piximg and imgpix arrays
+*   in the linprm struct and sets up the struct according to information
 *   supplied within it (see "Linear transformation parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   linp2x() and linx2p() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   linp2x() and linx2p() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and/or returned:
 *      lin      struct linprm*
@@ -173,9 +176,7 @@
 *
 *   Pixel-to-world transformation; linp2x()
 *   ---------------------------------------
-*   Compute image coordinates from pixel coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
+*   linp2x() transforms pixel coordinates to intermediate world coordinates.
 *
 *   Given and/or returned:
 *      lin      struct linprm*
@@ -189,7 +190,7 @@
 *
 *   Returned:
 *      imgcrd   double[ncoord][nelem]
-*                        Array of image (world) coordinates.
+*                        Array of intermediate world coordinates.
 *
 *   Function return value:
 *               int      Status return value:
@@ -201,9 +202,7 @@
 *
 *   World-to-pixel transformation; linx2p()
 *   ---------------------------------------
-*   Compute pixel coordinates from image coordinates.  Note that where
-*   celestial coordinate systems are concerned the image coordinates
-*   correspond to (x,y) in the plane of projection, not celestial (lng,lat).
+*   linx2p() transforms intermediate world coordinates to pixel coordinates.
 *
 *   Given and returned:
 *      lin      struct linprm*
@@ -213,7 +212,7 @@
 *      ncoord   int      The number of coordinates, each of vector length
 *      nelem    int      nelem but containing lin.naxis coordinate elements.
 *      imgcrd   const double[ncoord][nelem]
-*                        Array of image (world) coordinates.
+*                        Array of intermediate world coordinates.
 *
 *   Returned:
 *      pixcrd   double[ncoord][nelem]

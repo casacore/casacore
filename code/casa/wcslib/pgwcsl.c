@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   PGSBOX 3.5 - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2004, Mark Calabretta
+*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   Copyright (C) 1997-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   PGSBOX is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   PGSBOX is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with PGSBOX; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -62,8 +62,9 @@ int *ierr;
       /* Compute pixel coordinates from world coordinates. */
       if (wcsp->lng < 0) {
          /* Simple linear coordinates. */
-         if (*ierr = wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd, pixel,
-            &stat)) *ierr = 1;
+         if (wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd, pixel, &stat)) {
+            *ierr = 1;
+	 }
          return;
       }
 
@@ -80,9 +81,8 @@ int *ierr;
       }
 
       if (*contrl == 0) {
-         if (*ierr = wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel,
-            &stat)) {
-            /* Translate error codes. */
+         if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel, &stat)) {
+            /* Translate status return values. */
             *ierr = stat ? 2 : 1;
             return;
          }
@@ -108,8 +108,7 @@ int *ierr;
             }
 
             /* Iterate once to refine the value of theta. */
-            *ierr = sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, &lng,
-               &lat);
+            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, &lng, &lat);
             if (wrld[wcsp->lng] == contxt[0]) {
                /* We are following a meridian of longitude. */
                lng = wrld[wcsp->lng];
@@ -117,8 +116,7 @@ int *ierr;
                /* We are following a parallel of latitude. */
                lat = wrld[wcsp->lat];
             }
-            *ierr = sphs2x(wcsp->cel.euler, 1, 1, 1, 1, &lng, &lat, &sdummy,
-                           &th);
+            sphs2x(wcsp->cel.euler, 1, 1, 1, 1, &lng, &lat, &sdummy, &th);
 
             contxt[0] = wrld[wcsp->lng];
             contxt[1] = wrld[wcsp->lat];
@@ -126,22 +124,22 @@ int *ierr;
             contxt[3] = theta;
 
             /* Pixel coordinates crossing into the discontinuity. */
-            *ierr = sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th,
-               wrld+wcsp->lng, wrld+wcsp->lat);
-            if (*ierr = wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel,
+            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
+               wrld+wcsp->lat);
+            if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel,
                &stat)) {
-               /* Translate error codes. */
+               /* Translate status return values. */
                *ierr = stat ? 2 : 1;
                return;
             }
 
             /* Pixel coordinates crossing out of the discontinuity. */
             ph *= -1.0;
-            *ierr = sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th,
-               wrld+wcsp->lng, wrld+wcsp->lat);
-            if (*ierr = wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd,
-               contxt+6, &stat)) {
-               /* Translate error codes. */
+            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
+               wrld+wcsp->lat);
+            if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, contxt+6,
+               &stat)) {
+               /* Translate status return values. */
                *ierr = stat ? 2 : 1;
                return;
             }
@@ -174,8 +172,9 @@ int *ierr;
       /* Compute pixel coordinates from world coordinates. */
       if (wcsp->lng < 0) {
          /* Simple linear coordinates. */
-         if (*ierr = wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd,
-            pixel, &stat)) *ierr = 1;
+         if (wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd, pixel, &stat)) {
+            *ierr = 1;
+	 }
          return;
       }
 
@@ -191,9 +190,8 @@ int *ierr;
          outside = 0;
       }
 
-      if (*ierr = wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel,
-         &stat)) {
-         /* Translate error codes. */
+      if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel, &stat)) {
+         /* Translate status return values. */
          *ierr = stat ? 2 : 1;
          return;
       }
@@ -212,7 +210,9 @@ int *ierr;
          return;
       }
 
-      *ierr = wcsset(wcsp);
+      if (*ierr = wcsset(wcsp)) {
+         *ierr = *ierr <= 2 ? 1 : 2;
+      }
 
       for (i = 2; i < 9; i++) {
          wrld[i] = 0.0;
@@ -222,9 +222,8 @@ int *ierr;
 
    } else if (*opcode == -1) {
       /* Compute world coordinates from pixel coordinates. */
-      if (*ierr = wcsp2s(wcsp, 1, 0, pixel, imgcrd, &phi, &theta, wrld,
-         &stat)) {
-         /* Translate error codes. */
+      if (wcsp2s(wcsp, 1, 0, pixel, imgcrd, &phi, &theta, wrld, &stat)) {
+         /* Translate status return values. */
          *ierr = stat ? 3 : 1;
          return;
       }

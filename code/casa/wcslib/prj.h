@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the spherical map projections
+*   WCSLIB 4.0 - C routines that implement the spherical map projections
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -49,8 +49,8 @@
 *   that are maintained by these routines, somewhat like a C++ class but with
 *   no encapsulation.
 *
-*   A service routine, prjini(), is provided to initialize the prjprm struct,
-*   and another, prjprt(), to print its contents.
+*   A service routine, prjini(), is provided to initialize the prjprm struct
+*   with default values, and another, prjprt(), to print its contents.
 *
 *   Setup routines for each projection with names of the form ???set(), where
 *   "???" is the three-letter projection code, compute intermediate values in
@@ -99,12 +99,12 @@
 *      tscset tscx2s tscs2x   TSC: tangential spherical cube
 *      cscset cscx2s cscs2x   CSC: COBE quadrilateralized spherical cube
 *      qscset qscx2s qscs2x   QSC: quadrilateralized spherical cube
+*      hpxset hpxx2s hpxs2x   HPX: HEALPix
 *
 *
-*   Initialization routine for the prjprm struct; prjini()
-*   ------------------------------------------------------
-*   This service routine may be used to set the members of a prjprm struct to
-*   default values.
+*   Default constructor for the prjprm struct; prjini()
+*   ---------------------------------------------------
+*   prjini() sets all members of a prjprm struct to default values.
 *
 *   Returned:
 *      prj      struct prjprm*
@@ -118,7 +118,7 @@
 *
 *   Print routine for the prjprm struct; prjprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a prjprm struct.
+*   prjprt() prints the contents of a prjprm struct.
 *
 *   Given:
 *      prj      const struct prjprm*
@@ -144,14 +144,14 @@
 *   pointers to the specific projection and deprojection contained therein.
 *
 *
-*   Initialization routine; *set()
-*   ------------------------------
-*   Initializes a prjprm data structure according to information supplied
-*   within it (see "Projection parameters" below).
+*   Setup routines; *set()
+*   ----------------------
+*   Set up a prjprm struct according to information supplied within it (see
+*   "Projection parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   prjx2s() and prjs2x() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   prjx2s() and prjs2x() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and/or returned:
 *      prj      struct prjprm*
@@ -166,8 +166,8 @@
 *
 *   Cartesian-to-spherical deprojection; *x2s()
 *   -------------------------------------------
-*   Compute native spherical coordinates (phi,theta) from (x,y) coordinates in
-*   the plane of projection.
+*   Transform (x,y) coordinates in the plane of projection to native spherical
+*   coordinates (phi,theta).
 *
 *   Given and returned:
 *      prj      struct prjprm*
@@ -197,8 +197,8 @@
 *
 *   Spherical-to-Cartesian projection; *s2x()
 *   -----------------------------------------
-*   Compute (x,y) coordinates in the plane of projection from native spherical
-*   coordinates (phi,theta).
+*   Transform native spherical coordinates (phi,theta) to (x,y) coordinates in
+*   the plane of projection.
 *
 *   Given and returned:
 *      prj      struct prjprm*
@@ -273,8 +273,8 @@
 *            - Long name of the projection.
 *            - category matches the value of the relevant global variable:
 *              ZENITHAL, CYLINDRICAL, PSEUDOCYLINDRICAL, CONVENTIONAL, CONIC,
-*              POLYCONIC, and QUADCUBE.  The category name may also be
-*              identified via the prj_categories character array.
+*              POLYCONIC, QUADCUBE, and HEALPIX.  The category name may also
+*              be identified via the prj_categories character array.
 *            - Range of projection parameter indices: 100 times the first
 *              allowed index plus the number of parameters, e.g. TAN is 0
 *              (no parameters), SZP is 103 (1 to 3), and ZPN is 30 (0 to 29).
@@ -436,11 +436,11 @@ extern const char *prj_errmsg[];
 #define prjs2x_errmsg prj_errmsg
 
 extern const int CONIC, CONVENTIONAL, CYLINDRICAL, POLYCONIC,
-                 PSEUDOCYLINDRICAL, QUADCUBE, ZENITHAL;
-extern const char prj_categories[8][32];
+                 PSEUDOCYLINDRICAL, QUADCUBE, ZENITHAL, HEALPIX;
+extern const char prj_categories[9][32];
 
 extern const int  prj_ncode;
-extern const char prj_codes[26][4];
+extern const char prj_codes[27][4];
 
 
 /* Use the preprocessor to define function interfaces. */
@@ -549,6 +549,7 @@ PROTO(pco)
 PROTO(tsc)
 PROTO(csc)
 PROTO(qsc)
+PROTO(hpx)
 
 
 /* Define macros for scalar invokation for compatibility with WCSLIB 2.x. */
@@ -690,6 +691,11 @@ extern int prj_stat;
         qscx2s(prj, 1, 1, 1, 1, &(x), &(y), phi, theta, &prj_stat)
 #define qscfwd(phi, theta, prj, x, y) \
         qscs2x(prj, 1, 1, 1, 1, &(phi), &(theta), x, y, &prj_stat)
+
+#define hpxrev(x, y, prj, phi, theta) \
+        hpxx2s(prj, 1, 1, 1, 1, &(x), &(y), phi, theta, &prj_stat)
+#define hpxfwd(phi, theta, prj, x, y) \
+        hpxs2x(prj, 1, 1, 1, 1, &(phi), &(theta), x, y, &prj_stat)
 
 
 #ifdef __cplusplus

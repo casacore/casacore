@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,14 +30,14 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the spectral coordinate systems
+*   WCSLIB 4.0 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
 *      (paper III, in preparation)
 *
 *
@@ -208,8 +208,8 @@
 *                              invalid, as indicated by the stat vector.
 *
 *
-*   Vector length and strides
-*   -------------------------
+*   Vector lengths and strides
+*   --------------------------
 *   Vector computation in the spectral code mainly speeds it by amortising the
 *   function call overhead.  The vector length function argument refers to the
 *   number of spectral variables in both the input and output spectral
@@ -316,8 +316,7 @@ struct spxprm {
 #define SPXLEN (sizeof(struct spxprm)/sizeof(int))
 
 
-int specx(const char *, const double, const double, const double,
-          struct spxprm *);
+int specx(const char *, double, double, double, struct spxprm *);
 
 /* Use the preprocessor to declare the remaining function prototypes. */
 #define SPX_ARGS double, int, int, int, const double[], double[], int[]

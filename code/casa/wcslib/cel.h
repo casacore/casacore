@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -52,8 +52,8 @@
 *   and others that are maintained by these routines, somewhat like a C++
 *   class but with no encapsulation.
 *
-*   A service routine, celini(), is provided to initialize the celprm struct,
-*   and another, celprt(), to print its contents.
+*   A service routine, celini(), is provided to initialize the celprm struct
+*   with default values, and another, celprt(), to print its contents.
 *
 *   A setup routine, celset(), computes intermediate values in the celprm
 *   struct from parameters in it that were supplied by the caller.  The
@@ -66,10 +66,9 @@
 *   described in sph.h and prj.h.
 *
 *
-*   Initialization routine for the celprm struct; celini()
-*   ------------------------------------------------------
-*   This service routine may be used to set the members of a celprm struct to
-*   default values.
+*   Default constructor for the celprm struct; celini()
+*   ---------------------------------------------------
+*   celini() sets all members of a celprm struct to default values.
 *
 *   Returned:
 *      cel      struct celprm*
@@ -83,7 +82,7 @@
 *
 *   Print routine for the celprm struct; celprt()
 *   ---------------------------------------------
-*   This service routine may be used to print the members of a celprm struct.
+*   celprt() prints the contents of a celprm struct.
 *
 *   Given:
 *      cel      const struct celprm*
@@ -95,14 +94,14 @@
 *                           1: Null celprm pointer passed.
 *
 *
-*   Initialization routine; celset()
-*   --------------------------------
-*   Initializes a celprm data structure according to information supplied
-*   within it (see "Celestial transformation parameters" below).
+*   Setup routine; celset()
+*   -----------------------
+*   celset() sets up a celprm struct according to information supplied within
+*   it (see "Celestial transformation parameters" below).
 *
 *   Note that this routine need not be called directly; it will be invoked by
-*   celx2s() and cels2x() if the "flag" structure member is anything other
-*   than a predefined magic value.
+*   celx2s() and cels2x() if the "flag" struct member is anything other than a
+*   predefined magic value.
 *
 *   Given and returned:
 *      cel      struct celprm*
@@ -120,8 +119,8 @@
 *
 *   Pixel-to-world transformation; celx2s()
 *   ---------------------------------------
-*   Compute the celestial coordinates (lng,lat) of the point with projected
-*   coordinates (x,y).
+*   celx2s() transforms (x,y) coordinates in the plane of projection to
+*   celestial coordinates (lng,lat).
 *
 *   Given and returned:
 *      cel      struct celprm*
@@ -156,8 +155,8 @@
 *
 *   World-to-pixel transformation; cels2x()
 *   ---------------------------------------
-*   Compute (x,y) coordinates in the plane of projection from celestial
-*   coordinates (lng,lat).
+*   celx2s() transforms celestial coordinates (lng,lat) to (x,y) coordinates
+*   in the plane of projection.
 *
 *   Given and returned:
 *      cel      struct celprm*

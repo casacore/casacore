@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -52,7 +52,8 @@ double lng[], lat[];
    double cosphi, costhe, costhe3, costhe4, dlng, dphi, sinphi, sinthe,
           sinthe3, sinthe4, x, y, z;
    register int iphi, itheta;
-   register double *latp, *lngp, *phip, *thetap;
+   register const double *phip, *thetap;
+   register double *latp, *lngp;
 
    if (ntheta > 0) {
       mphi   = nphi;
@@ -65,7 +66,7 @@ double lng[], lat[];
 
 
    /* Do phi dependency. */
-   phip = (double *)phi;
+   phip = phi;
    rowoff = 0;
    rowlen = nphi*sll;
    for (iphi = 0; iphi < nphi; iphi++, rowoff += sll, phip += spt) {
@@ -80,7 +81,7 @@ double lng[], lat[];
 
 
    /* Do theta dependency. */
-   thetap = (double *)theta;
+   thetap = theta;
    lngp = lng;
    latp = lat;
    for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
@@ -163,7 +164,8 @@ double phi[], theta[];
    double coslat, coslat3, coslat4, coslng, dlng, dphi, sinlat, sinlat3,
           sinlat4, sinlng, x, y, z;
    register int ilat, ilng;
-   register double *latp, *lngp, *phip, *thetap;
+   register const double *latp, *lngp;
+   register double *phip, *thetap;
 
    if (nlat > 0) {
       mlng = nlng;
@@ -176,7 +178,7 @@ double phi[], theta[];
 
 
    /* Do lng dependency. */
-   lngp = (double *)lng;
+   lngp = lng;
    rowoff = 0;
    rowlen = nlng*spt;
    for (ilng = 0; ilng < nlng; ilng++, rowoff += spt, lngp += sll) {
@@ -191,7 +193,7 @@ double phi[], theta[];
 
 
    /* Do lat dependency. */
-   latp = (double *)lat;
+   latp = lat;
    phip   = phi;
    thetap = theta;
    for (ilat = 0; ilat < nlat; ilat++, latp += sll) {

@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -47,18 +47,19 @@ const int CONVENTIONAL      = 4;
 const int CONIC             = 5;
 const int POLYCONIC         = 6;
 const int QUADCUBE          = 7;
+const int HEALPIX           = 8;
 
-const char prj_categories[8][32] =
+const char prj_categories[9][32] =
       {"undefined", "zenithal", "cylindrical", "pseudocylindrical",
-       "conventional", "conic", "polyconic", "quadcube"};
+       "conventional", "conic", "polyconic", "quadcube", "HEALPix"};
 
 
 /* Projection codes. */
-const int  prj_ncode = 26;
-const char prj_codes[26][4] =
+const int  prj_ncode = 27;
+const char prj_codes[27][4] =
       {"AZP", "SZP", "TAN", "STG", "SIN", "ARC", "ZPN", "ZEA", "AIR", "CYP",
        "CEA", "CAR", "MER", "COP", "COE", "COD", "COO", "SFL", "PAR", "MOL",
-       "AIT", "BON", "PCO", "TSC", "CSC", "QSC"};
+       "AIT", "BON", "PCO", "TSC", "CSC", "QSC", "HPX"};
 
 const int AZP = 101;
 const int SZP = 102;
@@ -86,6 +87,7 @@ const int PCO = 602;
 const int TSC = 701;
 const int CSC = 702;
 const int QSC = 703;
+const int HPX = 801;
 
 
 /* Map status return value to message. */
@@ -100,9 +102,6 @@ int prj_stat;
 
 
 #define copysign(X, Y) ((Y) < 0.0 ? -fabs(X) : fabs(X))
-
-#define UNDEFINED 987654321.0e99
-#define undefined(value) (value == UNDEFINED)
 
 
 /*============================================================================
@@ -307,6 +306,8 @@ struct prjprm *prj;
       cscset(prj);
    } else if (strcmp(prj->code, "QSC") == 0) {
       qscset(prj);
+   } else if (strcmp(prj->code, "HPX") == 0) {
+      hpxset(prj);
    } else {
       /* Unrecognized projection code. */
       return 2;
@@ -4483,7 +4484,7 @@ int stat[];
 
 {
    int mx, my, rowlen, rowoff, status;
-   double s, t, u, x0, xj, y0, yj, yj2;
+   double s, t, x0, xj, y0, yj, yj2, z;
    const double tol = 1.0e-13;
    register int ix, iy, istat, *statp;
    register const double *xp, *yp;
@@ -4538,28 +4539,28 @@ int stat[];
       yj2 = yj*yj*prj->w[1];
 
       for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
-         u = *phip - yj2;
+         s = *phip - yj2;
 
          istat = 0;
-         if (u < 0.5) {
-            if (u < 0.5-tol) {
+         if (s < 0.5) {
+            if (s < 0.5-tol) {
                istat  = 1;
                status = 3;
             }
 
-            u = 0.5;
+            s = 0.5;
          }
 
-         s = sqrt(u);
-         x0 = 2.0*s*s - 1.0;
-         y0 = s*(*thetap);
+         z = sqrt(s);
+         x0 = 2.0*z*z - 1.0;
+         y0 = z*(*thetap);
          if (x0 == 0.0 && y0 == 0.0) {
             *phip = 0.0;
          } else {
             *phip = 2.0*atan2d(y0, x0);
          }
 
-         t = s*yj/prj->r0;
+         t = z*yj/prj->r0;
          if (fabs(t) > 1.0) {
             if (fabs(t) > 1.0+tol) {
                istat  = 1;
@@ -7463,4 +7464,304 @@ int stat[];
    }
 
    return status;
+}
+
+/*============================================================================
+*   HPX: HEALPix projection.
+*
+*   Given:
+*      prj->pv[1]   H - the number of facets in longitude.
+*      prj->pv[2]   K - the number of facets in latitude
+*
+*   Given and/or returned:
+*      prj->r0      Reset to 180/pi if 0.
+*      prj->phi0    Reset to 0.0 if undefined.
+*      prj->theta0  Reset to 0.0 if undefined.
+*
+*   Returned:
+*      prj->flag     HPX
+*      prj->code    "HPX"
+*      prj->x0      Fiducial offset in x.
+*      prj->y0      Fiducial offset in y.
+*      prj->n       True if K is odd.
+*      prj->w[0]    r0*(pi/180)
+*      prj->w[1]    (180/pi)/r0
+*      prj->w[2]    (K-1)/K
+*      prj->w[3]    90*K/H
+*      prj->w[4]    (K+1)/2
+*      prj->w[5]    90*(K-1)/H
+*      prj->w[6]    180/H
+*      prj->w[7]    H/360
+*      prj->w[8]    (90*K/H)*r0*(pi/180)
+*      prj->w[9]     (180/H)*r0*(pi/180)
+*      prj->prjx2s  Pointer to hpxx2s().
+*      prj->prjs2x  Pointer to hpxs2x().
+*===========================================================================*/
+
+int hpxset(prj)
+
+struct prjprm *prj;
+
+{
+   if (prj == 0) return 1;
+
+   prj->flag = HPX;
+   strcpy(prj->code, "HPX");
+
+   if (undefined(prj->pv[1])) prj->pv[1] = 4.0;
+   if (undefined(prj->pv[2])) prj->pv[2] = 3.0;
+
+   strcpy(prj->name, "HEALPix");
+   prj->category  = HEALPIX;
+   prj->pvrange   = 102;
+   prj->simplezen = 0;
+   prj->equiareal = 1;
+   prj->conformal = 0;
+   prj->global    = 1;
+   prj->divergent = 0;
+
+   if (prj->pv[1] <= 0.0 || prj->pv[2] <= 0.0) {
+      return 2;
+   }
+
+   prj->n = ((int)prj->pv[2])%2;
+
+   if (prj->r0 == 0.0) {
+      prj->r0 = R2D;
+      prj->w[0] = 1.0;
+      prj->w[1] = 1.0;
+   } else {
+      prj->w[0] = prj->r0*D2R;
+      prj->w[1] = R2D/prj->r0;
+   }
+
+   prj->w[2] = (prj->pv[2] - 1.0) / prj->pv[2];
+   prj->w[3] = 90.0 * prj->pv[2] / prj->pv[1];
+   prj->w[4] = (prj->pv[2] + 1.0) / 2.0;
+   prj->w[5] = 90.0 * (prj->pv[2] - 1.0) / prj->pv[1];
+   prj->w[6] = 180.0 / prj->pv[1];
+   prj->w[7] = prj->pv[1] / 360.0;
+   prj->w[8] = prj->w[3] * prj->w[0];
+   prj->w[9] = prj->w[6] * prj->w[0];
+
+   prj->prjx2s = hpxx2s;
+   prj->prjs2x = hpxs2x;
+
+   return prjoff(prj, 0.0, 0.0);
+}
+
+/*--------------------------------------------------------------------------*/
+
+int hpxx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat)
+
+struct prjprm *prj;
+int nx, ny, sxy, spt;
+const double x[], y[];
+double phi[], theta[];
+int stat[];
+
+{
+   int h, mx, my, offset, rowlen, rowoff, status;
+   double absy, s, sigma, t, yr;
+   register int istat, ix, iy, *statp;
+   register const double *xp, *yp;
+   register double *phip, *thetap;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != HPX) {
+      if (hpxset(prj)) return 2;
+   }
+
+   if (ny > 0) {
+      mx = nx;
+      my = ny;
+   } else {
+      mx = 1;
+      my = 1;
+      ny = nx;
+   }
+
+   status = 0;
+
+
+   /* Do x dependence. */
+   xp = x;
+   rowoff = 0;
+   rowlen = nx*spt;
+   for (ix = 0; ix < nx; ix++, rowoff += spt, xp += sxy) {
+      s = prj->w[1] * (*xp + prj->x0);
+      t = -180.0 + (2.0 * floor((*xp + 180.0) * prj->w[7]) + 1.0) * prj->w[6];
+      t = prj->w[1] * (*xp - t);
+
+      phip   = phi + rowoff;
+      thetap = theta + rowoff;
+      for (iy = 0; iy < my; iy++) {
+         *phip   = s;
+         *thetap = t;
+         phip   += rowlen;
+         thetap += rowlen;
+      }
+   }
+
+
+   /* Do y dependence. */
+   yp = y;
+   phip   = phi;
+   thetap = theta;
+   statp  = stat;
+   for (iy = 0; iy < ny; iy++, yp += sxy) {
+      yr = prj->w[1]*(*yp + prj->y0);
+      absy = fabs(yr);
+
+      istat = 0;
+      if (absy <= prj->w[5]) {
+         t = asind(yr/prj->w[3]);
+         for (ix = 0; ix < mx; ix++, thetap += spt) {
+            *thetap = t;
+            *(statp++) = 0;
+         }
+
+      } else {
+         offset = (prj->n || *yp > 0.0) ? 0 : 1;
+
+         sigma = prj->w[4] - absy / prj->w[6];
+
+         if (sigma == 0.0) {
+            s = 0.0;
+            t = 90.0;
+
+         } else {
+            t = 1.0 - sigma*sigma/prj->pv[2];
+            if (t < -1.0) {
+               s = 0.0;
+               t = 0.0;
+               istat  = 1;
+               status = 3;
+            } else {
+               s = 1.0/sigma - 1.0;
+               t = asind(t);
+            }
+         }
+         if (*yp < 0.0) t = -t;
+
+         for (ix = 0; ix < mx; ix++, phip += spt, thetap += spt) {
+            if (offset) {
+               /* Offset the southern polar half-facets for even K. */
+               h = (int)floor(*phip / prj->w[6]);
+               if (h%2) {
+                  *thetap -= prj->w[6];
+               } else {
+                  *thetap += prj->w[6];
+               }
+            }
+            *phip += *thetap * s;
+            *thetap = t;
+            *(statp++) = istat;
+         }
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int hpxs2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat)
+
+struct prjprm *prj;
+int nphi, ntheta, spt, sxy;
+const double phi[], theta[];
+double x[], y[];
+int stat[];
+
+{
+   int h, mphi, mtheta, offset, rowlen, rowoff;
+   double abssin, eta, sigma, sinthe, t, xi;
+   register int iphi, itheta, *statp;
+   register const double *phip, *thetap;
+   register double *xp, *yp;
+
+
+   /* Initialize. */
+   if (prj == 0) return 1;
+   if (prj->flag != HPX) {
+      if (hpxset(prj)) return 2;
+   }
+
+   if (ntheta > 0) {
+      mphi   = nphi;
+      mtheta = ntheta;
+   } else {
+      mphi   = 1;
+      mtheta = 1;
+      ntheta = nphi;
+   }
+
+
+   /* Do phi dependence. */
+   phip = phi;
+   rowoff = 0;
+   rowlen = nphi*sxy;
+   for (iphi = 0; iphi < nphi; iphi++, rowoff += sxy, phip += spt) {
+      xi = prj->w[0] * (*phip) - prj->x0;
+      t  = -180.0 + (2.0*floor((*phip+180.0) * prj->w[7]) + 1.0) * prj->w[6];
+      t  = prj->w[0] * (*phip - t);
+
+      xp = x + rowoff;
+      yp = y + rowoff;
+      for (itheta = 0; itheta < mtheta; itheta++) {
+         *xp = xi;
+         *yp = t;
+         xp += rowlen;
+         yp += rowlen;
+      }
+   }
+
+
+   /* Do theta dependence. */
+   thetap = theta;
+   xp = x;
+   yp = y;
+   statp = stat;
+   for (itheta = 0; itheta < ntheta; itheta++, thetap += spt) {
+      sinthe = sind(*thetap);
+      abssin = fabs(sinthe);
+
+      if (abssin <= prj->w[2]) {
+         eta = prj->w[8] * sinthe - prj->y0;
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            *yp = eta;
+            *(statp++) = 0;
+         }
+
+      } else {
+         offset = (prj->n || *thetap > 0.0) ? 0 : 1;
+
+         sigma = sqrt(prj->pv[2]*(1.0 - abssin));
+         xi = sigma - 1.0;
+
+         eta = prj->w[9] * (prj->w[4] - sigma);
+         if (*thetap < 0) eta = -eta;
+         eta -= prj->y0;
+
+         for (iphi = 0; iphi < mphi; iphi++, xp += sxy, yp += sxy) {
+            if (offset) {
+               /* Offset the southern polar half-facets for even K. */
+               h = (int)floor((*xp + prj->x0) / prj->w[9]);
+               if (h%2) {
+                  *yp -= prj->w[9];
+               } else {
+                  *yp += prj->w[9];
+               }
+            }
+            *xp += *yp * xi;
+            *yp = eta;
+            *(statp++) = 0;
+         }
+      }
+   }
+
+   return 0;
 }

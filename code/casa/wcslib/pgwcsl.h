@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   PGSBOX 3.5 - a non-linear coordinate axis plotter for PGPLOT.
-*   Copyright (C) 1997-2004, Mark Calabretta
+*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   Copyright (C) 1997-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   PGSBOX is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   PGSBOX is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with PGSBOX; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -48,7 +48,7 @@
 *
 *   Given:
 *      opcode   int*     Transformation code:
-*                            2: Compute a set of pixel coordinates which
+*                            2: Compute a set of pixel coordinates that
 *                               describe a path between this and the previous
 *                               pair of world coordinates remembered from the
 *                               last call with opcode == 1 || 2.
@@ -68,7 +68,7 @@
 *                        Character array (not used).
 *
 *   Given and/or returned:
-*      wcs      int[nli] Integer array which contains the wcsprm struct (see
+*      wcs      int[nli] Integer array that contains the wcsprm struct (see
 *                        below).
 *
 *      nldprm   double[nld]
@@ -96,7 +96,7 @@
 *                        Context elements for opcode == 2.
 *
 *   Returned:
-*      ierr     int*     Error status
+*      ierr     int*     Status return value:
 *                           0: Success.
 *                           1: Invalid parameters.
 *                           2: Invalid world coordinate.

@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.7 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -40,7 +40,7 @@
 *      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (paper II)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
 *      (paper III, in preparation)
 *
 *
@@ -48,6 +48,10 @@
 *   -------------------
 *   wcspih() is a high-level FITS WCS routine that parses an image header.  It
 *   returns an array of up to 27 wcsprm structs.
+*
+*   wcsidx() is a utility routine that returns the index for a specified
+*   alternate coordinate descriptor in the array of wcsprm structs returned
+*   by wcspih().
 *
 *   wcsvfree() deallocates memory for an array of wcsprm structs, such as
 *   returned by wcspih().
@@ -65,8 +69,8 @@
 *   the AIPS convention and certain other keywords that existed in early
 *   drafts of the WCS papers (see note 3 below).
 *
-*   Given a character array containing a FITS header it identifies and reads
-*   all WCS cards for the primary coordinate description and up to 26
+*   Given a character array containing a FITS header wcspih() identifies and
+*   reads all WCS cards for the primary coordinate description and up to 26
 *   alternate descriptions.  It returns this information as an array of wcsprm
 *   structs.
 *
@@ -119,6 +123,32 @@
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *                           2: Memory allocation failed.
+*
+*
+*   Utility routine for indexing alternate coordinate descriptions; wcsidx()
+*   ------------------------------------------------------------------------
+*   wcsidx() returns an array of 27 indices for the alternate coordinate
+*   descriptions in the array of wcsprm structs returned by wcspih().
+*
+*   Given:
+*      nwcs     int      Number of coordinate representations in the array.
+*      wcs      const struct wcsprm**
+*                        Pointer to an array of wcsprm structs containing up
+*                        to 27 coordinate representations.
+*
+*   Returned:
+*      alts     int[27]  Index of each alternate coordinate description in the
+*                        array: alts[0] for the primary, alts[1] for 'A',
+*                        etc., set to -1 if not present.  For example, the
+*                        address of the wcsprm struct for the 'P' description
+*                        would be wcs + alts['P'-'A'+1].  If the 'P'
+*                        description was not present then alts['P'-'A'+1]
+*                        would be set to -1.
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*                           1: Null wcsprm pointer passed.
 *
 *
 *   Service routine for the array of wcsprm structs; wcsvfree()
@@ -193,7 +223,7 @@
 *       present, and VSOURCEa is always subordinate to ZSOURCEa.
 *
 *       Likewise, VELREF is subordinate to the formalism of WCS Paper III.  In
-*       the AIPS convention VELREF has the following values:
+*       the AIPS convention VELREF has the following integer values:
 *         1: LSR kinematic, originally described as "LSR" without distinction
 *         2: Barycentric,   originally described as "HEL" meaning heliocentric
 *         3: Topocentric,   originally described as "OBS" meaning geocentric
@@ -243,6 +273,7 @@ extern "C" {
 
 
 int wcspih(char *, int, int, int, int *, int *, struct wcsprm **);
+int wcsidx(int, struct wcsprm **, int [27]);
 int wcsvfree(int *, struct wcsprm **);
 
 

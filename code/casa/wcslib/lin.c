@@ -1,21 +1,21 @@
 /*============================================================================
 *
-*   WCSLIB 3.7 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2004, Mark Calabretta
+*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
 *
-*   This library is free software; you can redistribute it and/or modify it
-*   under the terms of the GNU Library General Public License as published
-*   by the Free Software Foundation; either version 2 of the License, or (at
-*   your option) any later version.
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
 *
-*   This library is distributed in the hope that it will be useful, but
-*   WITHOUT ANY WARRANTY; without even the implied warranty of
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library
-*   General Public License for more details.
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
 *
-*   You should have received a copy of the GNU Library General Public License
-*   along with this library; if not, write to the Free Software Foundation,
-*   Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
 *
 *   Correspondence concerning WCSLIB may be directed to:
 *      Internet email: mcalabre@atnf.csiro.au
@@ -72,9 +72,9 @@ struct linprm *lin;
 
    /* Allocate memory for arrays if required. */
    if (alloc ||
-       lin->crpix == (double *)0 ||
-       lin->pc    == (double *)0 ||
-       lin->cdelt == (double *)0) {
+       lin->crpix == 0 ||
+       lin->pc    == 0 ||
+       lin->cdelt == 0) {
 
       /* Was sufficient allocated previously? */
       if (lin->m_flag == LINSET && lin->m_naxis < naxis) {
@@ -82,13 +82,13 @@ struct linprm *lin;
          linfree(lin);
       }
 
-      if (alloc || lin->crpix == (double *)0) {
+      if (alloc || lin->crpix == 0) {
          if (lin->m_crpix) {
             /* In case the caller fiddled with it. */
             lin->crpix = lin->m_crpix;
 
          } else {
-            if (!(lin->crpix = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(lin->crpix = calloc(naxis, sizeof(double)))) {
                return 2;
             }
 
@@ -98,13 +98,13 @@ struct linprm *lin;
          }
       }
 
-      if (alloc || lin->pc == (double *)0) {
+      if (alloc || lin->pc == 0) {
          if (lin->m_pc) {
             /* In case the caller fiddled with it. */
             lin->pc = lin->m_pc;
 
          } else {
-            if (!(lin->pc = (double *)calloc(naxis*naxis, sizeof(double)))) {
+            if (!(lin->pc = calloc(naxis*naxis, sizeof(double)))) {
                linfree(lin);
                return 2;
             }
@@ -115,13 +115,13 @@ struct linprm *lin;
          }
       }
 
-      if (alloc || lin->cdelt == (double *)0) {
+      if (alloc || lin->cdelt == 0) {
          if (lin->m_cdelt) {
             /* In case the caller fiddled with it. */
             lin->cdelt = lin->m_cdelt;
 
          } else {
-            if (!(lin->cdelt = (double *)calloc(naxis, sizeof(double)))) {
+            if (!(lin->cdelt = calloc(naxis, sizeof(double)))) {
                linfree(lin);
                return 2;
             }
@@ -394,8 +394,8 @@ struct linprm *lin;
          if (lin->imgpix) free(lin->imgpix);
       }
 
-      lin->piximg = (double*)0;
-      lin->imgpix = (double*)0;
+      lin->piximg = 0;
+      lin->imgpix = 0;
       lin->i_naxis = 0;
 
    } else {
@@ -407,11 +407,11 @@ struct linprm *lin;
          }
 
          /* Allocate memory for internal arrays. */
-         if (!(lin->piximg = (double*)calloc(n*n, sizeof(double)))) {
+         if (!(lin->piximg = calloc(n*n, sizeof(double)))) {
             return 2;
          }
 
-         if (!(lin->imgpix = (double*)calloc(n*n, sizeof(double)))) {
+         if (!(lin->imgpix = calloc(n*n, sizeof(double)))) {
             free(lin->piximg);
             return 2;
          }
@@ -452,7 +452,8 @@ double imgcrd[];
 {
    int i, j, k, n, status;
    double temp;
-   register double *img, *pix, *piximg;
+   register const double *pix;
+   register double *img, *piximg;
 
 
    /* Initialize. */
@@ -465,8 +466,8 @@ double imgcrd[];
 
 
    /* Convert pixel coordinates to intermediate world coordinates. */
-   pix = (double *)pixcrd;
-   img = (double *)imgcrd;
+   pix = pixcrd;
+   img = imgcrd;
 
    if (lin->unity) {
       for (k = 0; k < ncoord; k++) {
@@ -513,7 +514,8 @@ double pixcrd[];
 
 {
    int i, j, k, n, status;
-   register double *img, *imgpix, *pix;
+   register const double *img;
+   register double *imgpix, *pix;
 
 
    /* Initialize. */
@@ -526,8 +528,8 @@ double pixcrd[];
 
 
    /* Convert intermediate world coordinates to pixel coordinates. */
-   img = (double *)imgcrd;
-   pix = (double *)pixcrd;
+   img = imgcrd;
+   pix = pixcrd;
 
    if (lin->unity) {
       for (k = 0; k < ncoord; k++) {
@@ -576,19 +578,19 @@ double inv[];
 
 
    /* Allocate memory for internal arrays. */
-   if (!(mxl = (int*)calloc(n, sizeof(int)))) return 2;
-   if (!(lxm = (int*)calloc(n, sizeof(int)))) {
+   if (!(mxl = calloc(n, sizeof(int)))) return 2;
+   if (!(lxm = calloc(n, sizeof(int)))) {
       free(mxl);
       return 2;
    }
 
-   if (!(rowmax = (double*)calloc(n, sizeof(double)))) {
+   if (!(rowmax = calloc(n, sizeof(double)))) {
       free(mxl);
       free(lxm);
       return 2;
    }
 
-   if (!(lu = (double*)calloc(n*n, sizeof(double)))) {
+   if (!(lu = calloc(n*n, sizeof(double)))) {
       free(mxl);
       free(lxm);
       free(rowmax);
