@@ -5829,3 +5829,4 @@
 16 199 src rm trial/implement/Functionals/Gaussian2D2.h
 16 199 src rm trial/implement/Functionals/Sinusoid1D2.h
 16 199 src rm trial/apps/measures/Lines/
+16 203 src mv trial/implement/Functionals/test/dAutoDiff.cc trial/implement/Functionals/test/dFunction.cc
