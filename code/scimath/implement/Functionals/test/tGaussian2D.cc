@@ -278,8 +278,8 @@ int main() {
       AutoDiffA<Double> aday(y);
       cout << "Generic:      " << g5(adax, aday) << endl;
       AlwaysAssertExit(near(g4(adx, ady).value(), g5(adax, aday).value()) &&
-		   allNearAbs(g4(adx, ady).derivatives(),
-			   g5(adax, aday).derivatives(), 1e-13));
+		       allNearAbs(g4(adx, ady).derivatives(),
+				  g5(adax, aday).derivatives(), 1e-13));
    }
     if (anyFailures) {
       cout << "FAIL" << endl;
