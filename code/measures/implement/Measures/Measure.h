@@ -314,15 +314,15 @@ public:
   
   // Each Measure should have the following static methods to give its
   // name (e.g. Epoch) or reference type (e.g. UTC):<br>
-  // <note role=caution> The second one should have has argument
-  // a_measure::Types, but
-  // qualified enums do not work with templated class names. However, the
-  // enum types should be used in calling the methods.</note>
   // <srcblock>
   // // Show the Measure type (e.g. "Direction")
   //    static const String &showMe();
+  // // Cast an integer to the appropriate reference type. Avaialable to provide
+  // // a safe cast in cases where Measure type is not explicitly known.
+  //    static Measure::Types castType(uInt tp);
   // // Show the reference type (e.g. MEpoch::showType(MEpoch::IAT) == "TAI")
   //    static const String &showType(uInt tp);
+  //    static const String &showType(Measure::Types tp);
   // </srcblock>
   // <group>
   virtual String getRefString() const = 0;
