@@ -1,4 +1,4 @@
-//# ImageLogger.cc: Class to handle all image logging
+//# LoggerHolder.cc: Class to handle a hierarchy of loggers
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,12 +27,86 @@
 //# $Id$
 
 
-#include <trial/Images/ImageLogger.h>
+#include <trial/Logging/LoggerHolder.h>
 #include <aips/Logging/MemoryLogSink.h>
 #include <aips/Logging/TableLogSink.h>
 
 
-ImageLogger::ImageLogger (Bool nullSink)
+LoggerHolder::LoggerHolder (Bool nullSink)
+: itsRep (new LoggerHolderRep (nullSink))
+{}
+
+LoggerHolder::LoggerHolder (const String& logTableName, Bool isWritable)
+: itsRep (new LoggerHolderRep (logTableName, isWritable))
+{}
+
+LoggerHolder::LoggerHolder (const LoggerHolder& that)
+: itsRep (that.itsRep)
+{}
+
+LoggerHolder::~LoggerHolder()
+{
+  // Close the possible log table to avoid waste in case the logger
+  // is not really used anymore.
+  itsRep->tempClose();
+}
+
+LoggerHolder& LoggerHolder::operator= (const LoggerHolder& that)
+{
+  if (this != &that) {
+    itsRep = that.itsRep;
+  }
+  return *this;
+}
+
+void LoggerHolder::append (const LoggerHolder& other)
+{
+  itsRep->append (other);
+}
+
+void LoggerHolder::reopenRW()
+{
+  itsRep->reopenRW();
+}
+
+void LoggerHolder::addParent (const LoggerHolder& logger)
+{
+  itsRep->addParent (logger);
+}
+
+void LoggerHolder::tempClose (Bool closeParents) const
+{
+  itsRep->tempClose (closeParents);
+}
+
+void LoggerHolder::unlock()
+{
+  itsRep->unlock();
+}
+
+void LoggerHolder::flush()
+{
+  itsRep->flush();
+}
+
+void LoggerHolder::resync()
+{
+  itsRep->resync();
+}
+
+void LoggerHolder::removeParents()
+{
+  itsRep->removeParents();
+}
+
+void LoggerHolder::clear()
+{
+  itsRep->clear();
+}
+
+
+
+LoggerHolderRep::LoggerHolderRep (Bool nullSink)
 : itsSink       (LogFilter(), nullSink),
   itsTablePtr   (0),
   itsIsWritable (True),
@@ -41,7 +115,7 @@ ImageLogger::ImageLogger (Bool nullSink)
   itsLogger = LogIO(itsSink);
 }
 
-ImageLogger::ImageLogger (const String& logTableName, Bool isWritable)
+LoggerHolderRep::LoggerHolderRep (const String& logTableName, Bool isWritable)
 : itsTableName  (logTableName),
   itsTablePtr   (0),
   itsIsWritable (isWritable),
@@ -51,8 +125,9 @@ ImageLogger::ImageLogger (const String& logTableName, Bool isWritable)
   doReopen();
 }
 
-ImageLogger::ImageLogger (const ImageLogger& that)
-: itsSink       (that.itsSink),
+LoggerHolderRep::LoggerHolderRep (const LoggerHolderRep& that)
+: itsParents    (that.itsParents),
+  itsSink       (that.itsSink),
   itsLogger     (that.itsLogger),
   itsTableName  (that.itsTableName),
   itsTablePtr   (that.itsTablePtr),
@@ -60,15 +135,15 @@ ImageLogger::ImageLogger (const ImageLogger& that)
   itsIsClosed   (that.itsIsClosed)
 {}
 
-ImageLogger::~ImageLogger()
+LoggerHolderRep::~LoggerHolderRep()
 {
   removeParents();
 }
 
-ImageLogger& ImageLogger::operator= (const ImageLogger& that)
+LoggerHolderRep& LoggerHolderRep::operator= (const LoggerHolderRep& that)
 {
   if (this != &that) {
-    removeParents();
+    itsParents    = that.itsParents;
     itsSink       = that.itsSink;
     itsLogger     = that.itsLogger;
     itsTableName  = that.itsTableName;
@@ -79,11 +154,11 @@ ImageLogger& ImageLogger::operator= (const ImageLogger& that)
   return *this;
 }
 
-void ImageLogger::append (const ImageLogger& other)
+void LoggerHolderRep::append (const LoggerHolder& other)
 {
   reopenRW();
   LogSinkInterface& logsink = sink().localSink();
-  for (ImageLogger::const_iterator iter = other.begin();
+  for (LoggerHolder::const_iterator iter = other.begin();
        iter != other.end();
        iter++) {
     logsink.writeLocally (iter->time(), iter->message(), iter->priority(),
@@ -91,7 +166,7 @@ void ImageLogger::append (const ImageLogger& other)
   }
 }
 
-void ImageLogger::reopenRW()
+void LoggerHolderRep::reopenRW()
 {
   // Only needed if a table is used and if not already open for rw.
   if (!itsTableName.empty()) {
@@ -107,7 +182,7 @@ void ImageLogger::reopenRW()
   }
 }
 
-void ImageLogger::doReopen()
+void LoggerHolderRep::doReopen()
 {
   if (itsIsClosed  &&  itsTablePtr == 0  &&  !itsTableName.empty()) {
     if (itsIsWritable) {
@@ -124,14 +199,14 @@ void ImageLogger::doReopen()
   }
 }
 
-void ImageLogger::addParent (const ImageLogger* logger)
+void LoggerHolderRep::addParent (const LoggerHolder& logger)
 {
   uInt nr = itsParents.nelements();
   itsParents.resize (nr + 1);
-  itsParents[nr] = const_cast<ImageLogger*>(logger);
+  itsParents[nr] = logger;
 }
 
-void ImageLogger::tempClose (Bool closeParents)
+void LoggerHolderRep::tempClose (Bool closeParents)
 {
   if (itsTablePtr != 0) {
     itsSink     = LogSink();
@@ -141,34 +216,26 @@ void ImageLogger::tempClose (Bool closeParents)
   }
   if (closeParents) {
     for (uInt i=0; i<itsParents.nelements(); i++) {
-      itsParents[i]->tempClose (closeParents);
+      itsParents[i].tempClose (closeParents);
     }
   }
 }
 
-void ImageLogger::close()
-{
-  itsSink   = LogSink();
-  itsLogger = LogIO();
-  itsIsClosed = False;
-  itsTablePtr = 0;
-}
-
-void ImageLogger::unlock()
+void LoggerHolderRep::unlock()
 {
   if (itsTablePtr != 0) {
     itsTablePtr->table().unlock();
   }
 }
 
-void ImageLogger::flush()
+void LoggerHolderRep::flush()
 {
   if (itsTablePtr != 0) {
     itsTablePtr->table().flush();
   }
 }
 
-void ImageLogger::resync()
+void LoggerHolderRep::resync()
 {
   if (itsTablePtr != 0
       &&  !itsTablePtr->table().hasLock (FileLocker::Read)) {
@@ -176,47 +243,63 @@ void ImageLogger::resync()
   }
 }
 
-void ImageLogger::removeParents()
+LogIO& LoggerHolderRep::logio()
+{
+  reopenRW();
+  return itsLogger;
+}
+
+LogSink& LoggerHolderRep::sink()
+{
+  if (itsIsClosed) {
+    reopen();
+  }
+  return itsSink;
+}
+
+void LoggerHolderRep::removeParents()
 {
   itsParents.resize (0, True, True);
 }
 
-void ImageLogger::clear()
+void LoggerHolderRep::clear()
 {
   reopenRW();
   removeParents();
+  itsSink.clearLocally();
 }
 
 
-ImageLogIter::ImageLogIter (const ImageLogger* logger)
+
+LogHolderIter::LogHolderIter (const LoggerHolder* logger)
 : itsLogger     (logger),
   itsTempClosed (logger->isTempClosed()),
   itsParentIter (0),
   itsCounter    (0)
 {
-  const PtrBlock<ImageLogger*> par = itsLogger->parents();
+  const Block<LoggerHolder>& par = itsLogger->parents();
   if (par.nelements() > 0) {
-    itsParentIter = new ImageLogIter (par[0]);
+    itsParentIter = new LogHolderIter (&par[0]);
     itsCounter++;
   }
 }
 
-ImageLogIter::~ImageLogIter()
+LogHolderIter::~LogHolderIter()
 {
   delete itsParentIter;
   if (itsTempClosed) {
-    const_cast<ImageLogger*>(itsLogger)->tempClose();
+    itsLogger->tempClose();
   }
 }
 
-Bool ImageLogIter::next()
+Bool LogHolderIter::next()
 {
   while (itsParentIter != 0  &&  !itsParentIter->next()) {
     delete itsParentIter;
     itsParentIter = 0;
-    const PtrBlock<ImageLogger*> par = itsLogger->parents();
+    const Block<LoggerHolder>& par = itsLogger->parents();
     if (par.nelements() > itsCounter) {
-      itsParentIter = new ImageLogIter (par[itsCounter]);
+      itsParentIter = new LogHolderIter (&par[itsCounter]);
       itsCounter++;
     } else {
       itsCounter = 0;
@@ -225,9 +308,9 @@ Bool ImageLogIter::next()
   if (itsParentIter != 0) {
     itsEntry = itsParentIter->getEntry();
   } else {
-    const LogSink& sink = const_cast<ImageLogger*>(itsLogger)->sink();
+    const LogSink& sink = itsLogger->sink();
     if (itsCounter < sink.nelements()) {
-      itsEntry = ImageLogIterEntry (&sink, itsCounter);
+      itsEntry = LogHolderIterEntry (&sink, itsCounter);
       itsCounter++;
     } else {
       return False;
@@ -236,30 +319,30 @@ Bool ImageLogIter::next()
   return True;
 }
 
-ImageLoggerIterator::ImageLoggerIterator (const ImageLogger* logger)
+LoggerHolderIterator::LoggerHolderIterator (const LoggerHolder* logger)
 : itsIter (0)
 {
-  itsIter = new ImageLogIter (logger);
+  itsIter = new LogHolderIter (logger);
   next();
 }
 
-ImageLoggerIterator::ImageLoggerIterator (const ImageLoggerIterator& that)
+LoggerHolderIterator::LoggerHolderIterator (const LoggerHolderIterator& that)
 : itsIter (0)
 {
   if (that.itsIter != 0) {
-    itsIter = new ImageLogIter (&(that.logger()));
+    itsIter = new LogHolderIter (&(that.logger()));
     next();
   }
 }
 
-ImageLoggerIterator& ImageLoggerIterator::operator=
-                                     (const ImageLoggerIterator& that)
+LoggerHolderIterator& LoggerHolderIterator::operator=
+                                     (const LoggerHolderIterator& that)
 {
   if (this != &that) {
     delete itsIter;
     itsIter = 0;
     if (that.itsIter != 0) {
-      itsIter = new ImageLogIter (&(that.logger()));
+      itsIter = new LogHolderIter (&(that.logger()));
       next();
     }
   }

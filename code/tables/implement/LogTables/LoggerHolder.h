@@ -1,4 +1,4 @@
-//# ImageLogger.h: Class to handle all image logging
+//# LoggerHolder.h: Class holding a hierarchy of loggers
 //# Copyright (C) 2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,23 +26,25 @@
 //#
 //# $Id$
 
-#if !defined(AIPS_IMAGELOGGER_H)
-#define AIPS_IMAGELOGGER_H
+#if !defined(AIPS_LOGGERHOLDER_H)
+#define AIPS_LOGGERHOLDER_H
 
 //# Includes
 #include <aips/Logging/LogIO.h>
 #include <aips/Containers/Block.h>
+#include <aips/Utilities/CountedPtr.h>
 
 //# Forward Declarations
-class ImageLoggerIterator;
+class LoggerHolderRep;
+class LoggerHolderIterator;
 
 // <summary>
-// Class to handle all image logging.
+// Class holding a hierarchy of loggers.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tImageLogger.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLoggerHolder.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
@@ -50,46 +52,54 @@ class ImageLoggerIterator;
 // </prerequisite>
 
 // <synopsis>
-// The ImageLogger class is the destination for all logging in the Image
-// classes (i.e. classes derived from
-// <linkto class=ImageInterface>ImageInterface</linkto>).
+// The LoggerHolder class implements a hierarchy of loggers.
+// It has a log sink of its own and can have multiple parent LoggerHolder
+// objects representing the log info of parent objects.
+// It is used by class
+// <linkto class=ImageInterface>ImageInterface</linkto>, but could also
+// be used elsewhere.
 //
-// The sink of a ImageLogger can be different depending on the type of image.
-// E.g. for an ImageExpr object it can be a
-// <linkto class=MemoryLogSink>MemoryLogSink</linkto>, while for a PagedImage
-// it will be a <linkto class=TableLogSink>TableLogSink</linkto>.
-// <br>An important feature is that an ImageLogger can have zero or more
-// parent ImageLogger objects. In that way the log of the parent image
-// of e.g. a SubImage can be made part of the log of the SubImage itself,
+// The sink of a LoggerHolder can be different depending on the type of image.
+// E.g. for a transient image it can be a
+// <linkto class=MemoryLogSink>MemoryLogSink</linkto>, while for a persistent
+// image it will be a <linkto class=TableLogSink>TableLogSink</linkto>.
+// <br>An important feature is that an LoggerHolder can have zero or more
+// parent LoggerHolder objects. In that way the log of the parent object
+// of an image object can be made part of the log of the image object itself,
 // without having to copy the log.
 //
-// To iterate through all messages in an ImageLogger (including all parents),
-// the <linkto class=ImageLoggerIterator>ImageLoggerIterator</linkto> can
+// To iterate through all messages in a LoggerHolder (including all parents),
+// the <linkto class=LoggerHolderIterator>LoggerHolderIterator</linkto> can
 // be used. This is an STL-style const_iterator object.
+//
+// LoggerHolder uses reference counting
+// (of class <linkto class=LoggerHolderRep</linkto>) to be able to retain
+// the object after the (ImageInterface) object containing it is gone.
+// Otherwise classes like SubImage would lose their log info.
 // </synopsis>
 
 // <example>
 // <srcblock>
-//  ImageLogger logger ("tImageLogger_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
-//  for (ImageLogger::const_iterator iter = logger.begin();
+//  for (LoggerHolder::const_iterator iter = logger.begin();
 //       iter != logger.end();
 //       iter++) {
 //    cout << iter->time() << ' ' << iter->message() << endl;
 //  }
 // </srcblock>
-// This example shows the construction of an ImageLogger with a
+// This example shows the construction of an LoggerHolder with a
 // TableLogSink sink. Thereafter some messages are written.
 // The latter part shows how to iterate through all messages.
 //
 // <srcblock>
-//  ImageLogger logger (False);
-//  logger.addParent (parentImage.logger());
+//  LoggerHolder logger (False);
+//  logger.addParent (parent.logger());
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
 // </srcblock>
-// This example shows the construction of an ImageLogger with a
+// This example shows the construction of an LoggerHolder with a
 // MemoryLogSink sink (e.g. for a SubImage). Thereafter the logger of
 // the parent image is added to it.
 // Finally some messages are written.
@@ -102,30 +112,150 @@ class ImageLoggerIterator;
 //# <todo asof="2001/06/14">
 //# </todo>
 
-class ImageLogger
+class LoggerHolder
 {
 public:
   // Create with a NullSink or MemoryLogSink (default).
-  ImageLogger (Bool nullSink = False);
+  explicit LoggerHolder (Bool nullSink = False);
 
   // Create with a TableLogSink.
-  ImageLogger (const String& logTableName, Bool isWritable);
+  LoggerHolder (const String& logTableName, Bool isWritable);
 
-  // Copy constructor.
-  // It does not copy the pointers to parents.
-  ImageLogger (const ImageLogger&);
+  // Copy constructor (reference sematics).
+  LoggerHolder (const LoggerHolder&);
 
-  ~ImageLogger();
+  ~LoggerHolder();
 
-  // Assignment.
-  // It removes the current parents and does not copy the pointers to parents.
-  ImageLogger& operator= (const ImageLogger&);
+  // Assignment (reference semantics).
+  LoggerHolder& operator= (const LoggerHolder&);
 
-  // Add a logger from a parent image.
-  void addParent (const ImageLogger*);
+  // Add a logger from a parent.
+  void addParent (const LoggerHolder&);
 
   // Append the entries of the other logger to this one.
-  void append (const ImageLogger& other);
+  void append (const LoggerHolder& other);
+
+  // Reopen a readonly logtable for read/write (if needed).
+  void reopenRW();
+
+  // Reopen the log table if needed (after a tempClose).
+  void reopen();
+
+  // Temporarily close all log tables.
+  // By default the possible parent log tables are also closed.
+  void tempClose (Bool closeParents = True) const;
+
+  // Unlock the log table.
+  void unlock();
+
+  // Flush the log table.
+  void flush();
+
+  // Resync the log table (if needed).
+  void resync();
+
+  // Is the log table temporarily closed?
+  Bool isTempClosed() const;
+
+  // Get access to the logger.
+  // It assumes that it will be used to post a message, so it reopens
+  // the log table for read/write if needed).
+  LogIO& logio();
+
+  // Get access to the log sink (reopen the log table if needed).
+  // It is not assumed you want to write. If you want to do that,
+  // you should first call reopenRW() to ensure you can write.
+  // <group>
+  LogSink& sink();
+  const LogSink& sink() const;
+  // </group>
+
+  // Clear the log.
+  // It removes the parents and removes all messages from the sink.
+  void clear();
+
+  // Remove all parents.
+  void removeParents();
+
+  // Return the block of parents.
+  const Block<LoggerHolder>& parents() const;
+
+  // Define the STL-style iterators.
+  // Only a const forward iterator is available.
+  // It makes it possible to iterate through all messages in the logger.
+  // <srcblock>
+  //  LoggerHolder logger("log.name", False)
+  //  for (LoggerHolder::const_iterator iter=arr.begin();
+  //       iter!=arr.end(); iter++) {
+  //    cout << iter.message() << endl;
+  //  }
+  // </srcblock>
+  // <group name=STL-iterator>
+  // STL-style typedefs.
+  typedef LoggerHolderIterator const_iterator;
+  // Get the begin and end iterator object.
+  const_iterator begin() const;
+  const_iterator end() const;
+  // </group>
+
+
+private:
+  CountedPtr<LoggerHolderRep> itsRep;
+};
+
+
+
+
+// <summary>
+// Representation of the class holding a hierarchy of loggers.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="tLoggerHolder.cc" demos="">
+// </reviewed>
+
+// <prerequisite>
+//  <li> <linkto class="LogIO">LogIO</linkto> <li>
+// </prerequisite>
+
+// <synopsis>
+// The LoggerHolderRep class is the reference counted implementation
+// of <linkto class=LoggerHolder>LoggerHolder</linkto>.
+// See that class for more information.
+// </synopsis>
+
+// <motivation>
+// Reference counting was needed to be able to keep a LoggerHolder
+// object after the (ImageInterface) object containing it is gone.
+// </motivation>
+
+//# <todo asof="2001/06/14">
+//# </todo>
+
+class LoggerHolderRep
+{
+public:
+  // Create with a NullSink or MemoryLogSink (default).
+  LoggerHolderRep (Bool nullSink);
+
+  // Create with a TableLogSink.
+  LoggerHolderRep (const String& logTableName, Bool isWritable);
+
+  // Copy constructor.
+  LoggerHolderRep (const LoggerHolderRep&);
+
+  ~LoggerHolderRep();
+
+  // Assignment.
+  // It removes the current parents.
+  LoggerHolderRep& operator= (const LoggerHolderRep&);
+
+  // Add a logger from a parent.
+  void addParent (const LoggerHolder&);
+
+  // Append the entries of the other logger to this one.
+  void append (const LoggerHolder& other);
 
   // Reopen a readonly logtable for read/write (if needed).
   void reopenRW();
@@ -137,9 +267,6 @@ public:
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
   void tempClose (Bool closeParents = True);
-
-  // Close this log table permanently.
-  void close();
 
   // Unlock the log table.
   void unlock();
@@ -157,20 +284,12 @@ public:
   // Get access to the logger.
   // It assumes that it will be used to post a message, so it reopens
   // the log table for read/write if needed).
-  LogIO& logio()
-    {
-      reopenRW();
-      return itsLogger;
-    }
+  LogIO& logio();
 
   // Get access to the log sink (reopen the log table if needed).
   // It is not assumed you want to write. If you want to do that,
   // you should first call reopenRW() to ensure you can write.
-  LogSink& sink()
-    {
-      if (itsIsClosed) reopen();
-      return itsSink;
-    }
+  LogSink& sink();
 
   // Clear the log.
   // It removes the parents and removes all messages from the sink.
@@ -180,22 +299,22 @@ public:
   void removeParents();
 
   // Return the block of parents.
-  const PtrBlock<ImageLogger*> parents() const
+  const Block<LoggerHolder>& parents() const
     { return itsParents; }
 
   // Define the STL-style iterators.
   // Only a const forward iterator is available.
   // It makes it possible to iterate through all messages in the logger.
   // <srcblock>
-  //  ImageLogger logger("log.name", False)
-  //  for (ImageLogger::const_iterator iter=arr.begin();
+  //  LoggerHolder logger("log.name", False)
+  //  for (LoggerHolder::const_iterator iter=arr.begin();
   //       iter!=arr.end(); iter++) {
   //    cout << iter.message() << endl;
   //  }
   // </srcblock>
   // <group name=STL-iterator>
   // STL-style typedefs.
-  typedef ImageLoggerIterator const_iterator;
+  typedef LoggerHolderIterator const_iterator;
   // Get the begin and end iterator object.
   const_iterator begin() const;
   const_iterator end() const;
@@ -207,29 +326,29 @@ private:
   void doReopen();
 
 
-  PtrBlock<ImageLogger*> itsParents;
-  LogSink                itsSink;
-  LogIO                  itsLogger;
-  String                 itsTableName;
-  TableLogSink*          itsTablePtr;
-  Bool                   itsIsWritable;
-  Bool                   itsIsClosed;
+  Block<LoggerHolder> itsParents;
+  LogSink             itsSink;
+  LogIO               itsLogger;
+  String              itsTableName;
+  TableLogSink*       itsTablePtr;
+  Bool                itsIsWritable;
+  Bool                itsIsClosed;
 };
 
 
 
 
 // <summary>
-// Class representing an entry in a logger.
+// Class representing an entry in a LoggerHolder.
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tImageLogger.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLoggerHolder.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
-//  <li> <linkto class="ImageLogger">ImageLogger</linkto> <li>
+//  <li> <linkto class="LoggerHolder">LoggerHolder</linkto> <li>
 // </prerequisite>
 
 // <synopsis>
@@ -238,22 +357,22 @@ private:
 // Function like <src>time()</src> can be used to retrieve the message parts.
 // </synopsis>
 
-class ImageLogIterEntry
+class LogHolderIterEntry
 {
 public:
-  ImageLogIterEntry()
+  LogHolderIterEntry()
     : itsSink(0), itsIndex(0) {}
 
-  ImageLogIterEntry (const LogSink* sink, uInt index)
+  LogHolderIterEntry (const LogSink* sink, uInt index)
     : itsSink(sink), itsIndex(index) {}
 
-  ImageLogIterEntry (const ImageLogIterEntry& that)
+  LogHolderIterEntry (const LogHolderIterEntry& that)
     : itsSink(that.itsSink), itsIndex(that.itsIndex) {}
 
-  ~ImageLogIterEntry()
+  ~LogHolderIterEntry()
     {}
 
-  ImageLogIterEntry& operator= (const ImageLogIterEntry& that)
+  LogHolderIterEntry& operator= (const LogHolderIterEntry& that)
     { itsSink=that.itsSink; itsIndex=that.itsIndex; return *this; }
 
   // Get the message parts.
@@ -279,88 +398,89 @@ private:
 
 
 // <summary>
-// Class doing the actual iteration through an ImageLogger.
+// Class doing the actual iteration through an LoggerHolder.
 // </summary>
 
 // <use visibility=local>
 
-// <reviewed reviewer="" date="" tests="tImageLogger.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLoggerHolder.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
-//  <li> <linkto class="ImageLogger">ImageLogger</linkto> <li>
+//  <li> <linkto class="LoggerHolder">LoggerHolder</linkto> <li>
 // </prerequisite>
 
 // <synopsis>
 // This class makes it possible to use the iterator in the STL-style.
-// It is used by <linkto class=ImageLoggerIterator>ImageLoggerIterator</linkto>
+// It is used by
+//<linkto class=LoggerHolderIterator>LoggerHolderIterator</linkto>
 // which is the class as seen by the user.
-// ImageLogIter makes it easier to make the first entry available on
-// construction of an ImageLoggerIterator.
+// LogHolderIter makes it easier to make the first entry available on
+// construction of an LoggerHolderIterator.
 // </synopsis>
 
-class ImageLogIter
+class LogHolderIter
 {
 public:
-  // Construct the iterator on the given ImageLogger.
-  ImageLogIter (const ImageLogger*);
+  // Construct the iterator on the given LoggerHolderRep.
+  LogHolderIter (const LoggerHolder*);
 
-  ~ImageLogIter();
+  ~LogHolderIter();
 
   // Increment to next message.
   // Returns False if at the end.
   Bool next();
 
   // Get the entry.
-  const ImageLogIterEntry& getEntry() const
+  const LogHolderIterEntry& getEntry() const
     { return itsEntry; }
 
-  const ImageLogger& logger() const
+  const LoggerHolder& logger() const
     { return *itsLogger; }
 
 private:
   // Copy constructor is not needed, thus forbidden.
-  ImageLogIter (const ImageLogIter&);
+  LogHolderIter (const LogHolderIter&);
 
   // Assignment is not needed, thus forbidden.
-  ImageLogIter& operator= (const ImageLogIter&);
+  LogHolderIter& operator= (const LogHolderIter&);
 
 
-  const ImageLogger* itsLogger;
-  Bool               itsTempClosed;
-  ImageLogIter*      itsParentIter;
-  uInt               itsCounter;
-  ImageLogIterEntry  itsEntry;
+  const LoggerHolder* itsLogger;
+  Bool                itsTempClosed;
+  LogHolderIter*      itsParentIter;
+  uInt                itsCounter;
+  LogHolderIterEntry  itsEntry;
 };
 
 
 
 // <summary>
-// Class to iterate through an ImageLogger.
+// Class to iterate through an LoggerHolder.
 // </summary>
 
 // <use visibility=export>
 
-// <reviewed reviewer="" date="" tests="tImageLogger.cc" demos="">
+// <reviewed reviewer="" date="" tests="tLoggerHolder.cc" demos="">
 // </reviewed>
 
 // <prerequisite>
-//  <li> <linkto class="ImageLogger">ImageLogger</linkto> <li>
+//  <li> <linkto class="LoggerHolder">LoggerHolder</linkto> <li>
 // </prerequisite>
 
 // <synopsis>
 // This class makes it possible to iterate in the STL-style through all
-// entries of an ImageLogger object. If the logger has parent ImageLogger
+// entries of an LoggerHolder object. If the logger has parent LoggerHolder
 // objects, it first iterates through all parents (recursively) and
-// finally through all entries in the ImageLogger object itself.
+// finally through all entries in the LoggerHolder object itself.
 // </synopsis>
 
 // <example>
 // <srcblock>
-//  ImageLogger logger ("tImageLogger_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
-//  for (ImageLogger::const_iterator iter = logger.begin();
+//  for (LoggerHolder::const_iterator iter = logger.begin();
 //       iter != logger.end();
 //       iter++) {
 //    cout << iter->time() << ' ' << iter->message() << endl;
@@ -368,20 +488,20 @@ private:
 // </srcblock>
 // </example>
 
-class ImageLoggerIterator
+class LoggerHolderIterator
 {
 public:
-  ImageLoggerIterator()
+  LoggerHolderIterator()
     : itsIter(0), itsNotAtEnd(False) {}
 
-  ImageLoggerIterator (const ImageLogger*);
+  LoggerHolderIterator (const LoggerHolder*);
 
-  ImageLoggerIterator (const ImageLoggerIterator&);
+  LoggerHolderIterator (const LoggerHolderIterator&);
 
-  ~ImageLoggerIterator()
+  ~LoggerHolderIterator()
     { delete itsIter; }
 
-  ImageLoggerIterator& operator= (const ImageLoggerIterator&);
+  LoggerHolderIterator& operator= (const LoggerHolderIterator&);
 
   // Increment to next message.
   // <group>
@@ -392,18 +512,18 @@ public:
   // </group>
 
   // Is the iterator not at the end yet?
-  Bool operator!= (const ImageLoggerIterator& that)
+  Bool operator!= (const LoggerHolderIterator& that)
     { return itsNotAtEnd; }
 
   // Get the entry.
   // <group>
-  const ImageLogIterEntry& operator*() const
+  const LogHolderIterEntry& operator*() const
     { return itsIter->getEntry(); }
-  const ImageLogIterEntry* operator->() const
+  const LogHolderIterEntry* operator->() const
     { return &(itsIter->getEntry()); }
   // </group>
 
-  const ImageLogger& logger() const
+  const LoggerHolder& logger() const
     { return itsIter->logger(); }
 
 private:
@@ -412,20 +532,45 @@ private:
     { itsNotAtEnd = itsIter->next(); }
 
 
-  ImageLogIter* itsIter;
-  Bool          itsNotAtEnd;
+  LogHolderIter* itsIter;
+  Bool           itsNotAtEnd;
 };
 
 
 
-inline ImageLogger::const_iterator ImageLogger::begin() const
+inline void LoggerHolder::reopen()
 {
-  return ImageLoggerIterator (this);
+  itsRep->reopen();
 }
-inline ImageLogger::const_iterator ImageLogger::end() const
+inline Bool LoggerHolder::isTempClosed() const
 {
-  return ImageLoggerIterator();
+  return itsRep->isTempClosed();
 }
+inline LogIO& LoggerHolder::logio()
+{
+  return itsRep->logio();
+}
+inline LogSink& LoggerHolder::sink()
+{
+  return itsRep->sink();
+}
+inline const LogSink& LoggerHolder::sink() const
+{
+  return itsRep->sink();
+}
+inline const Block<LoggerHolder>& LoggerHolder::parents() const
+{
+  return itsRep->parents();
+}
+inline LoggerHolder::const_iterator LoggerHolder::begin() const
+{
+  return LoggerHolderIterator (this);
+}
+inline LoggerHolder::const_iterator LoggerHolder::end() const
+{
+  return LoggerHolderIterator();
+}
+
 
 
 #endif
