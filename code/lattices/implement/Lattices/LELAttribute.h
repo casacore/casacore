@@ -1,5 +1,5 @@
 //# LELAttribute.h: Ancillary information for the LEL letter classes
-//# Copyright (C) 1997,1998,1999,2000,2001
+//# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,20 +59,20 @@
 // <synopsis>
 // The Lattice Expression Language letter classes provide
 // expression objects. There is ancilliary information or 
-// attributes associated with these objects such as the
-// shape of the region involved in the expression, or whether
-// the result of evaluating an expression is a scalar or
-// not.  These attributes are stored in the LELAttribute class.
-// 
+// attributes associated with these objects:
+// <ul>
+// <li> Scalar or lattice (i.e. array) or region.
+// <li> In case of an array, is it a reduced array. I.e. is it an array
+//      that has to be calculated beforehand (e.g. partialMax).
+//      A scalar is always reduced.
+// <li> Shape and tile shape of a lattice. This can be undefined.
+// <li> Is the lattice masked?
+// <li> Optionally coordinates of the lattice.
+// </ul>
+// Two attribute objects can be combined mirroring the combination of two
+// expressions (like the addition of two lattices).
+// Regions cannot be combined.
 // </synopsis> 
-//
-// <motivation>
-// We needed somewhere to store this things.  There will
-// be more as time goes on.
-// </motivation>
-//
-// <todo asof="1998/01/20">
-// </todo>
 
 
 class LELAttribute
@@ -82,10 +82,12 @@ public:
    LELAttribute();
 
 // Constructor sets it as lattice with given attributes.
+// An empty shape indicates that the shape is not known.
    LELAttribute(Bool isMasked,
 		const IPosition& shape,
 		const IPosition& tileShape,
-		const LELCoordinates& coordinates);
+		const LELCoordinates& coordinates,
+		Bool isReduced = False);
 
 // Constructor sets it as a region with given attributes.
    explicit LELAttribute(uInt regionNdim);
@@ -93,7 +95,11 @@ public:
 // Copy constructor (copy semantics)
    LELAttribute(const LELAttribute& attr);
 
-// Constructor
+// Constructor that combines the two attributes given.
+// An array can be combined with a scalar.
+// If matchAxes is True and if two arrays are given, the shapes and
+// coordinates have to match exactly, otherwise one can be a subset of
+// the other (and LEL will auto-extend).
    LELAttribute(const LELAttribute& attrLeft,
 		const LELAttribute& attrRight,
 		Bool matchAxes = True);
@@ -106,6 +112,9 @@ public:
 
 // Is expression a scalar?
    Bool isScalar() const { return isScalar_p; }
+
+// Is expression a reduced array? A scalar is always reduced.
+   Bool isReduced() const { return isReduced_p; }
 
 // Is expression a region?
    Bool isRegion() const { return isRegion_p; }
@@ -127,6 +136,7 @@ public:
 
 private:
    Bool      isScalar_p;
+   Bool      isReduced_p;
    Bool      isRegion_p;
    Bool      isMasked_p;
    IPosition shape_p;
