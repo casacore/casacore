@@ -293,11 +293,12 @@ Table has 0 rows
  Added and initialized 1 row
  Checked all data
 
-TableDesc    version    (Directory **SCRATCH**)
+TableDesc    version 1   (Directory **SCRATCH**)
 ---------
   Comment: 
   #Keywords = 0
   #Columns  = 2
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
    Name=c1   DataType=uInt
    DataManager=StandardStMan/StandardStMan   Default=0
    Comment = 
@@ -313,42 +314,16 @@ Data Managers:
  Type=TiledColumnStMan Name=TiledShapeStMan #Spec=2 Columns=[c7]
 Table has 1 rows
 
- Recreated table
  Checked all data
 
 TableDesc    version 1   (Directory **SCRATCH**)
 ---------
   Comment: 
   #Keywords = 0
-  #Columns  = 7
+  #Columns  = 2
 0  Hypercolumn_TiledShapeStMan : SUBRECORD
    Name=c1   DataType=uInt
    DataManager=StandardStMan/StandardStMan   Default=0
-   Comment = 
-   #keywords=0
-
-   Name=c2   DataType=uInt
-   DataManager=StandardStMan/StandardStMan   Default=0
-   Comment = 
-   #keywords=0
-
-   Name=c3   DataType=uInt
-   DataManager=StandardStMan/ssm2   Default=0
-   Comment = 
-   #keywords=0
-
-   Name=c4   DataType=uInt
-   DataManager=IncrementalStMan/IncrementalStMan   Default=0
-   Comment = 
-   #keywords=0
-
-   Name=c5   DataType=uInt
-   DataManager=StManAipsIO/StManAipsIO   Default=0
-   Comment = 
-   #keywords=0
-
-   Name=c6   DataType=uInt
-   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
    Comment = 
    #keywords=0
 
@@ -358,11 +333,33 @@ TableDesc    version 1   (Directory **SCRATCH**)
    #keywords=0
 
 Data Managers:
- Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1, c2]
- Type=StandardStMan Name=ssm2 #Spec=2 Columns=[c3]
- Type=IncrementalStMan Name=IncrementalStMan #Spec=2 Columns=[c4]
- Type=StManAipsIO Name=StManAipsIO #Spec=0 Columns=[c5]
- Type=TiledColumnStMan Name=TiledShapeStMan #Spec=2 Columns=[c6, c7]
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=2 Columns=[c7]
+Table has 1 rows
+
+ Checked all data
+ Recreated table
+ Checked all data
+
+TableDesc    version 1   (Directory **SCRATCH**)
+---------
+  Comment: 
+  #Keywords = 0
+  #Columns  = 2
+0  Hypercolumn_TiledShapeStMan : SUBRECORD
+   Name=c1   DataType=uInt
+   DataManager=StandardStMan/StandardStMan   Default=0
+   Comment = 
+   #keywords=0
+
+   Name=c7   DataType=uInt
+   DataManager=TiledColumnStMan/TiledShapeStMan   Default=0
+   Comment = 
+   #keywords=0
+
+Data Managers:
+ Type=StandardStMan Name=StandardStMan #Spec=2 Columns=[c1]
+ Type=TiledColumnStMan Name=TiledShapeStMan #Spec=2 Columns=[c7]
 Table has 0 rows
 
 tTable_4 is for interactive playing with tables
