@@ -1,5 +1,5 @@
 //# TableLockData.h: Class to hold table lock data
-//# Copyright (C) 1997,1998,1999,2000,2002
+//# Copyright (C) 1997,1998,1999,2000,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,7 +131,7 @@ private:
 
 inline Bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    return (itsLock == 0  ?  False : itsLock->hasLock (type));
+    return (itsLock == 0  ?  True : itsLock->hasLock (type));
 }
 inline void TableLockData::autoRelease (Bool always)
 {
