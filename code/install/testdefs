@@ -2,7 +2,7 @@
 # testdefs: Test makedefs variable definitions
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1996-2000
+#   Copyright (C) 1996-2000,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -1024,6 +1024,8 @@ programmer :
     ifdef DO_TEST
 	-@ set WARNING $(PGMRPTRD) ; $(CheckDir)
     endif
+	-@ echo "PGMRDIR =$(PGMRDIR)"
+	-@ echo "PGMRSUBS=$(PGMRSUBS)"
 	-@ echo ""
 	-@ echo "Programmer include path and libraries."
 	-@ echo "--------------------------------------"
