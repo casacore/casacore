@@ -208,10 +208,16 @@ Complex log10(const Complex &val);
 // ArrayMath::pow needs this pow function (on SGI).
 inline Complex pow(const Complex& val, Double p) { return pow(val,Float(p)); }
 // QMath needs these operators * and / (on SGI).
+// <group>
 inline Complex operator*(const Complex& val, Double f) { return val*Float(f); }
 inline Complex operator/(const Complex& val, Double f) { return val/Float(f); }
-// This operator* is useful, otherwise Float and Double are applicable for Int.
+// </group>
+// These operators are useful, otherwise Float and Double are applicable
+// for Ints.
+// <group>
 inline Complex operator*(const Complex& val, Int f) { return val*Float(f); }
+inline Complex operator/(const Complex& val, Int f) { return val/Float(f); }
+// </group>
 // </group>
 
 // <summary> The near functions </summary>
