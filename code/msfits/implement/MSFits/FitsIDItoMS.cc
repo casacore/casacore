@@ -130,15 +130,15 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin) :
 }
 */
 
-FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin) :
-  BinaryTableExtension(fitsin), infile_p(fitsin), 
-    itsTableInfo(),
-    itsNrMSKs(10),
-    itsMSKC(itsNrMSKs," "),
-    itsMSKN(itsNrMSKs," "),
-    itsMSKV(itsNrMSKs," "),
-    itsgotMSK(itsNrMSKs,False),
-    msc_p(0)
+FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin)
+: BinaryTableExtension(fitsin),
+  itsNrMSKs(10),
+  itsMSKC(itsNrMSKs," "),
+  itsMSKN(itsNrMSKs," "),
+  itsMSKV(itsNrMSKs," "),
+  itsgotMSK(itsNrMSKs,False),
+  infile_p(fitsin), 
+  msc_p(0)
 {
   /*
     // is there a heap
@@ -566,7 +566,8 @@ void FITSIDItoMS1::fillRow()
 	    FitsField<IComplex> thisfield = *(FitsField<IComplex> *)&field(icol);
 	    Vector<DComplex> vec(itsNelem(icol));
 	    for (Int ie=0; ie<itsNelem(icol); ie++) {
-		vec(ie) = thisfield(ie);
+	      const IComplex& val = thisfield(ie);
+		vec(ie) = DComplex (val.real(), val.imag());
 	    }
 	    if (itsIsArray(icol)) {
 		ArrayColumn<DComplex> arrcol(tabcol);
@@ -2782,7 +2783,7 @@ void FITSIDItoMS1::fillAntennaTable()
    //Table anTab=fullTable("",Table::Scratch);
    Table anTab=oldfullTable("");
 
-   MSAntennaColumns& ant(msc_p->antenna());
+   ///   MSAntennaColumns& ant(msc_p->antenna());
    ROScalarColumn<String> name(anTab,"ANNAME");
    ROScalarColumn<Int> id(anTab,"NOSTA");
    ROScalarColumn<Int> mountType(anTab,"MNTSTA");
