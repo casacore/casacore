@@ -70,7 +70,7 @@ template <class M> class ROScalarMeasColumn;
 // MFrequency is a derived Measure class for wave characteristics.<br>
 // An MFrequency can be generated from a simple value (or an
 // <linkto class=MVFrequency>MFrequency</linkto> object), which is then
-// interpreted as a frequency in Hz, and a reference, with an LSR type
+// interpreted as a frequency in Hz, and a reference, with an LSRK type
 // as default.<br>
 // It can also be generated from a Quantity, where the interpretation
 // depends on the dimensionality of the Quantity:
@@ -86,8 +86,8 @@ template <class M> class ROScalarMeasColumn;
 // The different reference types of a frequency are:
 // <ul>
 //  <li> MFrequency::REST -- Rest frequency
-//  <li> MFrequency::LSR --- Local Standard of Rest (J2000) -- as the
-//		dynamical definition (IAU, [9,12,7] km/s in galactic coordinates
+//  <li> MFrequency::LSRD -- Local Standard of Rest (J2000) -- as the
+//		dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)
 //  <li> MFrequency::LSRK -- LSR as a kinematical definition -- 19.4 km/s
 //		in direction ra,dec = [270,+30] deg (B1900)
 //  <li> MFrequency::BARY -- Barycentric (J2000)
@@ -95,7 +95,7 @@ template <class M> class ROScalarMeasColumn;
 //  <li> MFrequency::TOPO -- Topocentric
 //  <li> MFrequency::GALACTO -- Galacto centric (with rotation of 220 km/s
 //		in direction l,b = [90,0] deg.
-//  <li> MFrequency::DEFAULT = LSR
+//  <li> MFrequency::DEFAULT = LSRK
 // <ul>
 // <p>
 // Conversion between the different types is done with the standard
@@ -159,14 +159,17 @@ public:
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
     enum Types {REST,
-		LSR, 
+		LSRD, 
 		LSRK,
 		BARY,
 		GEO,
 		TOPO,
 		GALACTO,
 		N_Types,
-		DEFAULT=LSR};
+		// Defaults
+		DEFAULT=LSRK,
+		// Synonyms
+		LSR=LSRK };
 
 
 //# Typedefs
@@ -262,7 +265,7 @@ public:
   // Local use only
     static MDoppler toDoppler(const Measure &in, const MVFrequency &rest);
 // Make a frequency from the Doppler velocity and the specified rest frequency
-// (default reference type LSR)
+// (default reference type LSRK)
 // <group>
     static MFrequency fromDoppler(const MDoppler &dop,
 				  const MVFrequency &rest);

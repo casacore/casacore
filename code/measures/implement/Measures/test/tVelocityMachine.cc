@@ -1,5 +1,5 @@
 //# tVelocityMachine.cc: This program tests the VelocityMachine class
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ Int main() {
     cout << "           " << dir.getAngle("deg") << endl;
     
     
-    MFrequency::Ref frqref(MFrequency::LSR);
+    MFrequency::Ref frqref(MFrequency::LSRK);
     MDoppler::Ref velref(MDoppler::RADIO);
     MVFrequency restfrq(QC::HI);
     cout << "Rest freq: "  << restfrq.get("GHz") << endl;
@@ -78,7 +78,7 @@ Int main() {
       endl;
     vm.set(MFrequency::TOPO);
     cout << "1410 MHz to TOPO:  " << vm.makeVelocity(1.41) << endl;
-    vm.set(MFrequency::LSR);
+    vm.set(MFrequency::LSRK);
     frqref.set(MFrequency(Quantity(1.405, "GHz"))); 
     cout << "Frequency offset:  " << *(frqref.offset()) << endl;
     vm.set(frqref);

@@ -1,5 +1,5 @@
 //# MCFrequency.cc: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -37,18 +37,18 @@
 //# Statics
 Bool MCFrequency::stateMade_p = False;
 uInt MCFrequency::ToRef_p[N_Routes][3] = {
-  {MFrequency::LSR,	MFrequency::BARY,	0},
-  {MFrequency::BARY,	MFrequency::LSR,	0},
+  {MFrequency::LSRD,	MFrequency::BARY,	0},
+  {MFrequency::BARY,	MFrequency::LSRD,	0},
   {MFrequency::BARY,	MFrequency::GEO,	0},
   {MFrequency::GEO,	MFrequency::TOPO,	0},
   {MFrequency::GEO,	MFrequency::BARY,	0},
   {MFrequency::TOPO,	MFrequency::GEO,	0},
-  {MFrequency::LSR,	MFrequency::GALACTO,	0},
-  {MFrequency::GALACTO,	MFrequency::LSR,	0},
+  {MFrequency::LSRD,	MFrequency::GALACTO,	0},
+  {MFrequency::GALACTO,	MFrequency::LSRD,	0},
   {MFrequency::LSRK,	MFrequency::BARY,	0},
   {MFrequency::BARY,	MFrequency::LSRK,	0},
-  {MFrequency::REST,	MFrequency::LSR,	2},
-  {MFrequency::LSR,	MFrequency::REST,	2} };
+  {MFrequency::REST,	MFrequency::LSRK,	2},
+  {MFrequency::LSRK,	MFrequency::REST,	2} };
 uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 
 
@@ -139,7 +139,7 @@ void MCFrequency::doConvert(MVFrequency &in,
 
     switch (mc.getMethod(i)) {
 
-    case LSR_BARY: {
+    case LSRD_BARY: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
@@ -151,7 +151,7 @@ void MCFrequency::doConvert(MVFrequency &in,
     }
     break;
 
-    case BARY_LSR: {
+    case BARY_LSRD: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
@@ -245,7 +245,7 @@ void MCFrequency::doConvert(MVFrequency &in,
     }
     break;
 
-    case LSR_GALACTO:
+    case LSRD_GALACTO:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
       ((MCFrame *)(MFrequency::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
@@ -256,7 +256,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       in = g2 * g0/(1 + g1);
       break;
       
-    case GALACTO_LSR:
+    case GALACTO_LSRD:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
       ((MCFrame *)(MFrequency::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
@@ -289,7 +289,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       in = g2 * g0/(1 + g1);
       break;
 
-    case REST_LSR:
+    case REST_LSRK:
       ((MCFrame *)(MFrequency::Ref::frameRadialVelocity(inref, outref).
 		   getMCFramePoint()))->
 	  getLSR(g1);
@@ -302,7 +302,7 @@ void MCFrequency::doConvert(MVFrequency &in,
       in = g2 * g0/(1 + g1);
       break;
 
-    case LSR_REST:
+    case LSRK_REST:
       ((MCFrame *)(MFrequency::Ref::frameRadialVelocity(inref, outref).
 		   getMCFramePoint()))->
 	getLSR(g1);

@@ -1,5 +1,5 @@
 //# MCFrequency.h: MFrequency conversion routines 
-//# Copyright (C) 1995,1996,1997,1998,1999
+//# Copyright (C) 1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -113,18 +113,18 @@ private:
   // In addition the type to which each is converted should be in the
   // ToRef array, again in the proper order. </note>
   enum Routes {
-    LSR_BARY,
-    BARY_LSR,
+    LSRD_BARY,
+    BARY_LSRD,
     BARY_GEO,
     GEO_TOPO,
     GEO_BARY,
     TOPO_GEO,
-    LSR_GALACTO,
-    GALACTO_LSR,
+    LSRD_GALACTO,
+    GALACTO_LSRD,
     LSRK_BARY,
     BARY_LSRK,
-    REST_LSR,
-    LSR_REST,
+    REST_LSRK,
+    LSRK_REST,
     N_Routes };
   
   //# Typedefs

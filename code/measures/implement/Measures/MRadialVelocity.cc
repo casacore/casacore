@@ -105,7 +105,7 @@ MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
 
 const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
     static const String tname[MRadialVelocity::N_Types] = {
-	"LSR",
+	"LSRD",
 	"LSRK",
 	"BARY",
 	"GEO",	    
@@ -123,7 +123,7 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
   static const Int N_name  = 6;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
-    "LSR",
+    "LSRD",
     "LSRK",
     "BARY",
     "GEO",	    
@@ -131,7 +131,7 @@ const String *const MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
     "GALACTO"}; 
 
   static const uInt oname[N_name] = {
-    MRadialVelocity::LSR,
+    MRadialVelocity::LSRD,
     MRadialVelocity::LSRK,
     MRadialVelocity::BARY,
     MRadialVelocity::GEO,
@@ -222,7 +222,7 @@ MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop) {
     Double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
 	.getValue().getValue();
     return MRadialVelocity(MVRadialVelocity(t),
-		      MRadialVelocity::LSR);
+		      MRadialVelocity::LSRK);
 }
 
 MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop,

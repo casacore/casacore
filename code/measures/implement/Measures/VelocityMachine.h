@@ -1,5 +1,5 @@
 //# VelocityMachine.h: Converts between velocities and frequencies
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -67,7 +67,7 @@ template <class T> class Vector;
 // <ul>
 //   <li> Reference for frequencies. It should contain at least the reference
 //	code, to specify what type of frequency we are talking about
-//	(e.g. MFrequency::LSR). The reference could also contain an offset.
+//	(e.g. MFrequency::LSRK). The reference could also contain an offset.
 //      In that case all
 //	input frequencies are considered to be relative to this offset; all
 //	output frequencies will have this offset removed.<br>
@@ -75,7 +75,7 @@ template <class T> class Vector;
 //	specifies where, when and in which direction you are
 //	observing). This frame is necessary if, in addition to
 //	converting between velocity and frequency, you also want to
-//	convert between different types (e.g. given an 'LSR' velocity,
+//	convert between different types (e.g. given an 'LSRK' velocity,
 //	you want to know the 'TOPO' frequency), and if the offset is
 //	in a different reference type. However, the MeasFrame
 //	can also be given explicitly in the machine constructor as an
@@ -97,7 +97,7 @@ template <class T> class Vector;
 //	velocity. It is given as an MVFrequency.
 // </ul>
 // To be able to convert between different types (say a velocity
-// referenced with respect to the 'LSR', and a frequency referenced
+// referenced with respect to the 'LSRK', and a frequency referenced
 // with respect to 'TOPO', the following additional, optional
 // information can be included explicitly in the constructors:
 // <ul>
@@ -134,7 +134,7 @@ template <class T> class Vector;
 //	//
 //	// Note that e.g. the time in the frame can be changed later
 //	// Specify the frequency reference
-//	MFrequency::Ref fr(MFrequency::LSR);
+//	MFrequency::Ref fr(MFrequency::LSRK);
 //	//
 //	// Specify the velocity reference
 //	MDoppler::Ref vr(MDoppler::OPT);
@@ -157,7 +157,7 @@ template <class T> class Vector;
 //	//
 //	// Introducing an offset
 //	MFrequency foff(MVFrequency(Quantity(5.87432837e-06, "eV")),
-//		        MFrequency::LSR);
+//		        MFrequency::LSRK);
 //	//
 //	// and setting it in the reference, and regenerating machine:
 //	fr.set(foff);

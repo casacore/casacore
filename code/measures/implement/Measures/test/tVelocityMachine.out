@@ -12,7 +12,7 @@ Rest freq: 1.42041 GHz
 1410 MHz to RADIO: 2196.25 km/s
 Back:              1.41 GHz
 Back:              1.41 GHz
-1410 MHz to TOPO:  2192.51 km/s
+1410 MHz to TOPO:  2190.45 km/s
 Frequency offset:  Frequency: 1.405e+09
 Frequency list:    [0, 0.005, 0.01]
 List to RADIO:     [3251.56, 2196.25, 1140.94] km/s
@@ -23,7 +23,7 @@ List to RADIO:     [2251.56, 1196.25, 140.944] km/s
 List to RADIO:     [2251.56, 1196.25, 140.944] km/s
 --------Test constructors-----
 List to RADIO: [2251.56, 1196.25, 140.944] km/s
-List to TOPO:  [2247.83, 1192.51, 137.195] km/s
+List to TOPO:  [2245.77, 1190.45, 135.122] km/s
 --------Test assignment-----
 List to RADIO:     [2251.56, 1196.25, 140.944] km/s
 --------Test reCalculate-----

@@ -287,13 +287,13 @@ main()
 	cout << "and 0 (BARY) to LSR: " <<
 	    MRadialVelocity::Convert(rvBary,
 				     MRadialVelocity::Ref
-				     (MRadialVelocity::LSR,
+				     (MRadialVelocity::LSRK,
 				      frame))()
 					 .getValue() << endl;
 	MRadialVelocity rvLSR = MRadialVelocity::Convert
 	    (rvBary,
 	     MRadialVelocity::Ref
-	     (MRadialVelocity::LSR,
+	     (MRadialVelocity::LSRK,
 	      frame))();
 	// The following necessary for errors in Intel chip
 	mrvback = MRadialVelocity::Convert(rvLSR,
@@ -332,7 +332,7 @@ main()
 					    frame))().getValue() 
 					      << endl;
 	MRadialVelocity rv(Quantity(1253,"km/s"),
-			   MRadialVelocity::Ref(MRadialVelocity::LSR,
+			   MRadialVelocity::Ref(MRadialVelocity::LSRK,
 						frame));
 
 	 cout << MRadialVelocity::Convert(rv,
@@ -573,7 +573,7 @@ main()
 			     -3200483.75028), 
 		  MPosition::ITRF);
     MDirection fmb0(MVDirection(0.5, 0.5, 0.5), MDirection::J2000);
-    MRadialVelocity fmfrq0(MVRadialVelocity(100.), MRadialVelocity::LSR);
+    MRadialVelocity fmfrq0(MVRadialVelocity(100.), MRadialVelocity::LSRK);
     MeasFrame mf(tbm, pos, fmb0);
     mf.set(fmfrq0);
     Vector<Double> tvec(3);

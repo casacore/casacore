@@ -466,7 +466,7 @@ void MCFrame::makeDirection() {
 
 void MCFrame::makeRadialVelocity() {
   static const MRadialVelocity::Ref REFLSR 
-    = MRadialVelocity::Ref(MRadialVelocity::LSR);
+    = MRadialVelocity::Ref(MRadialVelocity::LSRK);
   delete (MRadialVelocity::Convert *) radConvLSR;
   radConvLSR = new MRadialVelocity::Convert(*(myf.radialVelocity()),
 					    REFLSR);

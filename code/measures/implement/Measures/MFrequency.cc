@@ -97,7 +97,7 @@ MFrequency::Types MFrequency::castType(uInt tp) {
 const String &MFrequency::showType(MFrequency::Types tp) {
     static const String tname[MFrequency::N_Types] = {
 	"REST",
-	"LSR",
+	"LSRD",
 	"LSRK",
 	"BARY",
 	"GEO",	    
@@ -116,7 +116,7 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "REST",
-    "LSR",
+    "LSRD",
     "LSRK",
     "BARY",
     "GEO",	    
@@ -125,7 +125,7 @@ const String *const MFrequency::allMyTypes(Int &nall, Int &nextra,
   
   static const uInt oname[N_name] = {
     MFrequency::REST,
-    MFrequency::LSR,
+    MFrequency::LSRD,
     MFrequency::LSRK,
     MFrequency::BARY,
     MFrequency::GEO,
@@ -223,7 +223,7 @@ MDoppler MFrequency::toDoppler(const Measure &in, const MVFrequency &rest) {
 
 MFrequency MFrequency::fromDoppler(const MDoppler &dop,
 				   const MVFrequency &rest) {
-  return MFrequency::fromDoppler(dop, rest, MFrequency::LSR);
+  return MFrequency::fromDoppler(dop, rest, MFrequency::LSRK);
 }
 
 MFrequency MFrequency::fromDoppler(const MDoppler &dop,

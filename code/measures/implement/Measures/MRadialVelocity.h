@@ -68,7 +68,7 @@ class MVDoppler;
 // MRadialVelocity is a derived Measure class for radial velocity.<br>
 // An MRadialVelocity can be generated from a simple value (or an
 // <linkto class=MVRadialVelocity>MVRadialVelocity</linkto> object), which is then
-// interpreted as a RadialVelocity in m/s, and a reference, with an LSR type
+// interpreted as a RadialVelocity in m/s, and a reference, with an LSRK type
 // as default.<br>
 // It can also be generated from a Quantity, where the interpretation
 // depends on the dimensionality of the Quantity:
@@ -77,16 +77,16 @@ class MVDoppler;
 // </ul>
 // The different reference types of a RadialVelocity are:
 // <ul>
-//  <li> MRadialVelocity::LSR --- Local Standard of Rest (J2000) -- as the
-//		dynamical definition (IAU, [9,12,7] km/s in galactic coordinates
+//  <li> MRadialVelocity::LSRD --- Local Standard of Rest (J2000) -- as the
+//	      dynamical definition (IAU, [9,12,7] km/s in galactic coordinates)
 //  <li> MRadialVelocity::LSRK -- LSR as a kinematical definition -- 19.4 km/s
-//		in direction ra,dec = [270,+30] deg (B1900)
+//	      in direction ra,dec = [270,+30] deg (B1900)
 //  <li> MRadialVelocity::BARY -- Barycentric (J2000)
 //  <li> MRadialVelocity::GEO --- Geocentric
 //  <li> MRadialVelocity::TOPO -- Topocentric
 //  <li> MRadialVelocity::GALACTO -- Galacto centric (with rotation of 220 km/s
 //		in direction l,b = [90,0] deg.
-//  <li> MRadialVelocity::DEFAULT = LSR
+//  <li> MRadialVelocity::DEFAULT = LSRK
 // <ul>
 // <p>
 // Conversion between the different types is done with the standard
@@ -145,15 +145,17 @@ public:
 // changing the array. Additions should be made before N_types, and
 // an additional row and column should be coded in FromTo, and
 // in showType().</note>
-    enum Types {LSR,
+    enum Types {LSRD,
 		LSRK,
 		BARY,
 		GEO,
 		TOPO,
 		GALACTO,
 		N_Types,
-		DEFAULT=LSR};
-
+		// Defaults
+		DEFAULT=LSRK,
+		// Synonyms
+		LSR=LSRK };
 
 //# Typedefs
   // Measure value container for this class (i.e. MRadialVelocity::MVType)
@@ -247,7 +249,7 @@ public:
   static MDoppler toDoppler(const Measure &in);
 // </group>
 
-// Make a RadialVelocity from the Doppler velocity (assuming LSR default)
+// Make a RadialVelocity from the Doppler velocity (assuming LSRK default)
 // <group>
     static MRadialVelocity fromDoppler(const MDoppler &dop);
     static MRadialVelocity fromDoppler(const MDoppler &dop,

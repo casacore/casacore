@@ -1,5 +1,5 @@
 //# MCRadialVelocity.cc: MRadialVelocity conversion routines 
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -38,14 +38,14 @@
 //# Statics
 Bool MCRadialVelocity::stateMade_p = False;
 uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
-  {MRadialVelocity::LSR,	MRadialVelocity::BARY,	 	0},
-  {MRadialVelocity::BARY,	MRadialVelocity::LSR,		0},
+  {MRadialVelocity::LSRD,	MRadialVelocity::BARY,	 	0},
+  {MRadialVelocity::BARY,	MRadialVelocity::LSRD,		0},
   {MRadialVelocity::BARY,	MRadialVelocity::GEO,		0},
   {MRadialVelocity::GEO,	MRadialVelocity::TOPO,		2},
   {MRadialVelocity::GEO,	MRadialVelocity::BARY,		0},
   {MRadialVelocity::TOPO,	MRadialVelocity::GEO,		2},
-  {MRadialVelocity::LSR,	MRadialVelocity::GALACTO,	0},
-  {MRadialVelocity::GALACTO,	MRadialVelocity::LSR,		0},
+  {MRadialVelocity::LSRD,	MRadialVelocity::GALACTO,	0},
+  {MRadialVelocity::GALACTO,	MRadialVelocity::LSRD,		0},
   {MRadialVelocity::LSRK,	MRadialVelocity::BARY,		0},
   {MRadialVelocity::BARY,	MRadialVelocity::LSRK,		0} };
 uInt MCRadialVelocity::
@@ -138,7 +138,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 
     switch (mc.getMethod(i)) {
 
-    case LSR_BARY: {
+    case LSRD_BARY: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
@@ -149,7 +149,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     }
     break;
 
-    case BARY_LSR: {
+    case BARY_LSRD: {
       *MVPOS1 = MVPosition(MeasTable::velocityLSR(0));
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
@@ -239,7 +239,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
     }
     break;
 
-    case LSR_GALACTO:
+    case LSRD_GALACTO:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(inref, outref).
 		   getMCFramePoint()))->
@@ -249,7 +249,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
       in = (g2 + g1)/(1 + g2 * g1) * C::c;
       break;
 
-    case GALACTO_LSR:
+    case GALACTO_LSRD:
       *MVPOS1 = MVPosition(MeasTable::velocityLSRGal(0));
       ((MCFrame *)(MRadialVelocity::Ref::frameDirection(outref, inref).
 		   getMCFramePoint()))->
