@@ -1698,7 +1698,7 @@ Bool DirectionCoordinate::cylindricalFix (Int shapeLong, Int shapeLat)
    LogIO os(LogOrigin("DirectionCoordinate", "cylindricalFix", WHERE));
 //
    if (ierr==-1) {
-      os << LogIO::NORMAL << "No cylindrical coordinate update was required" << LogIO::POST;
+//      os << LogIO::NORMAL << "No cylindrical coordinate update was required" << LogIO::POST;
       return True;
    }
 //
