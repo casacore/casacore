@@ -1932,7 +1932,7 @@ Float ImagePolarimetry::sigma (ImagePolarimetry::StokesTypes index, Float clip)
    }
 //
    Array<Float> sigmaA;
-   itsStokesStatsPtr[index]->getSigma(sigmaA);
+   itsStokesStatsPtr[index]->getConvertedStatistic(sigmaA, LatticeStatsBase::SIGMA);
    if (sigmaA.nelements()==0) {
       LogIO os(LogOrigin("ImagePolarimetry", "sigma(...)", WHERE));
       os << "No good points in clipped determination of the noise " 
