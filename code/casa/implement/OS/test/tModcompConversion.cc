@@ -304,8 +304,7 @@ void compareDouble (Int& error, Double exp, Double res) {
   // Compare the results. Allow the answers to differ in the LSB as the
   // conversion from Double to Float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
-  if (abs(result - expected) > 0) { // This number is the
-                                             // smallest subnormal number
+  if (abs(result - expected) > 0) {
     error = 1;
     cout << "expected " << expected;
     cout << setbase(16) << " ("
@@ -332,6 +331,60 @@ void compareDouble (Int& error, Double exp, Double res) {
 }
 
 void checkDouble (Int& error) {
+  Double result;
+  Double expected;
+
+  uChar data[8], cdata[8];
+  data[2] = data[3] = data[4] = data[5] = data[6] = 0x00;
+  data[7] = 0x02; // put a bit nearly at the end to make sure it does 
+                  // not get lost. The last bit IS lost.
+  for (uShort j = 0; j < 512; j++) { // exponent is nine bits
+    data[0] = j >> 2;
+    Double exponent;
+    if (j > 256) {
+      exponent = pow(2.0, Double(j - 256));
+    } else {
+      exponent = 1.0 / pow(2.0, Double(256 - j));
+    }
+    for (uInt k=0; k<63; k++) {// cannot cycle through all mantissa' it would
+      // take too long. So just increment through the 5-MSB's
+      // This tests both normalised and unnormalised numbers
+      data[1] = (j & 0x0003) << 6 | k; 
+      expected = exponent * (Double(k)/64.0 + 1.0/65536/65536/65536/32);
+      ModcompConversion::toLocal (&result, data, 1);
+      compareDouble(error, expected, result);
+      cdata[0] = ~data[0];
+      cdata[1] = ~data[1];
+      cdata[2] = ~data[2];
+      cdata[3] = ~data[3];
+      cdata[4] = ~data[4];
+      cdata[5] = ~data[5];
+      cdata[6] = ~data[6];
+      cdata[7] = ~data[7];
+      cdata[7]++; // There can be no carry as data[7] == 0x02;
+      ModcompConversion::toLocal (&result, cdata, 1);
+      compareDouble(error, -1.0*expected, result);
+    }
+  }
+  // Check that the conversion for zero works. Try all possible representations
+  // of zero ie., all numbers with a zero mantissa
+  uChar data2[16];
+  data2[0] = data2[1] = data2[2] = data2[3] = 0x00;
+  data2[4] = data2[5] = data2[6] = data2[7] = 0x00;
+  data2[8] = data2[9] = data2[10] = data2[11] = 0x00;
+  data2[12] = data2[13] = data2[14] = data2[15] = 0x00;
+  Double result2[2]; 
+  result2[1] = result2[0] = 1.0;
+  const Double plusZero = 0.0;
+  const Double minusZero = -0.0;
+  for (uInt i = 0; i < 512; i++) {
+    data2[0] = i >> 2;
+    data2[8] = data2[0] | 0x80;
+    data2[9] = data2[1] = (i & 0x03) << 6;
+    ModcompConversion::toLocal (result2, data2, 2);
+    compareDouble(error, plusZero, result2[0]);
+    compareDouble(error, minusZero, result2[1]);
+  }
 }
 
 main()
