@@ -74,7 +74,8 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 				     const String &fitsName, 
 				     uInt whichHDU,
 				     uInt memoryInMB,
-				     Bool allowOverwrite)
+				     Bool allowOverwrite,
+				     Bool zeroBlanks)
 {
     newImage = 0;
     error = "";
@@ -135,11 +136,11 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<unsigned char> fitsdata(infile);
 		ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<unsigned char> fitsdata(infile);
 		ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
     break;
@@ -148,11 +149,11 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<short> fitsdata(infile);
 		ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<short> fitsdata(infile);
 		ImageFITSConverterImpl<ImageExtension<short> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
         break;
@@ -161,11 +162,11 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<FitsLong> fitsdata(infile);
 		ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<FitsLong> fitsdata(infile);
 		ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
         break;
@@ -174,11 +175,11 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<Float> fitsdata(infile);
 		ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<Float> fitsdata(infile);
 		ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
         break;
@@ -187,11 +188,11 @@ Bool ImageFITSConverter::FITSToImage(PagedImage<Float> *&newImage,
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<Double> fitsdata(infile);
 		ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<Double> fitsdata(infile);
 		ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage(
-		       newImage, error, imageName, fitsdata, memoryInMB);
+		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
         break;

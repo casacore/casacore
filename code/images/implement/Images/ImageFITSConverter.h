@@ -141,6 +141,8 @@ public:
     //        a chunk-size as possible, while fitting in the desired memory.
     //   <li> <src>allowOverwrite</src> If True, allow imageName to be 
     //        overwritten if it already exists.
+    //   <li> <src>zeroBlanks</src> If True, allow any blanked pixels are set
+    //         to zero rather than NaN
     // </ul>
     static Bool FITSToImage(PagedImage<Float>*& newImage,
 			    String &error,
@@ -148,7 +150,8 @@ public:
 			    const String &fitsName, 
 			    uInt whichHDU = 0,
 			    uInt memoryInMB = 64,
-			    Bool allowOverwrite=False);
+			    Bool allowOverwrite=False,
+                            Bool zeroBlanks=False);
 
     // Convert an AIPS++ image to a FITS file.
     // <ul>
@@ -213,7 +216,8 @@ public:
 			    String &error,
 			    const String &imageName,
 			    HDUType &fitsImage,
-			    uInt memoryInMB = 64);
+			    uInt memoryInMB = 64,
+                            Bool zeroBlanks=False);
 
 };
 
