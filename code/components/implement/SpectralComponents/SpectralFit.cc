@@ -138,8 +138,11 @@ Bool SpectralFit::fit(const Vector<Double> &y,
 	terr(k) = err(j++);
       };
     };
+    // Preserve fixed state
+    Vector<Bool> fstate(slist_p[i].fixed().copy());
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);
+    slist_p[i].fix(fstate);
   };
   return fitter.converged();
 }
@@ -212,8 +215,11 @@ Bool SpectralFit::fit(const Vector<Float> &y,
 	terr(k) = err(j++);
       };
     };
+    // Preserve fixed state
+    Vector<Bool> fstate(slist_p[i].fixed().copy());
     slist_p[i].set(slist_p[i].getType(), tmp);
     slist_p[i].setError(terr);
+    slist_p[i].fix(fstate);
   };
   return fitter.converged();
 }
