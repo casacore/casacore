@@ -1,5 +1,5 @@
 //# LatticeIterInterface.cc: A base class for concrete Lattice iterators
-//# Copyright (C) 1995,1997,1998
+//# Copyright (C) 1995,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,13 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeIterInterface.h>
+#include <trial/Lattices/Lattice.h>
+#include <aips/Arrays/Vector.h>
+#include <aips/Arrays/Matrix.h>
+#include <aips/Arrays/Cube.h>
 #include <aips/Utilities/DefaultValue.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/Logging/LogIO.h>
 #include <aips/Exceptions/Error.h>
 
 
@@ -251,6 +256,15 @@ template<class T>
 void LatticeIterInterface<T>::rewriteData()
 {
   if (itsRewrite) {
+    DebugAssert (ok(), AipsError);
+    // Check that both cursors point to the same data.
+    const T* p1 = &(itsCursor(IPosition (itsCursor.ndim(), 0)));
+    const T* p2 = &((*itsCurPtr)(IPosition (itsCurPtr->ndim(), 0)));
+    if (p1 != p2) {
+      throw (AipsError ("LatticeIterInterface::rewriteData - "
+			"the data pointer inside the cursor has been changed "
+			"(probably by an Array::reference)"));
+    }
     const IPosition start = itsNavPtr->position();
     const IPosition incr = itsNavPtr->increment();
     if (itsNavPtr->hangOver() == False) {
