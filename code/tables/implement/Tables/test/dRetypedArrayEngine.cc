@@ -35,6 +35,8 @@
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ArrayColumn.h>
 #include <aips/Arrays/IPosition.h>
+#include <aips/Arrays/Slicer.h>
+#include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -262,9 +264,10 @@ void b()
     ROArrayColumn<float> colD (tab, "Data");
     ROArrayColumn<RetypedArrayEx1> colA(tab, "colA");
     Matrix<float> valD;
-    Vector<RetypedArrayEx1> valA;
+    Vector<RetypedArrayEx1> valA, valA1;
     Matrix<float> resD(2,10);
     Vector<RetypedArrayEx1> resA(10);
+    Slice slice(1,5,2);
     uInt i=0;
     i = 0;
     for (i=0; i<tab.nrow(); i++) {
@@ -276,11 +279,15 @@ void b()
 	cout << "get row " << i << endl;
 	colD.get (i, valD);
 	colA.get (i, valA);
+	colA.getSlice (i, slice, valA1);
 	if (! allEQ (valD, resD)) {
 	    cout << "Error in Data in row " << i << endl;
 	}
 	if (! allEQ (valA, resA)) {
 	    cout << "Error in colA in row " << i << endl;
+	}
+	if (! allEQ (valA1, resA(slice))) {
+	    cout << "Error in colA slice in row " << i << endl;
 	}
     }
     Matrix<RetypedArrayEx1> matA = colA.getColumn();
