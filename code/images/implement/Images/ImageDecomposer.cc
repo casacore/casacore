@@ -901,7 +901,7 @@ template <class T>
 void ImageDecomposer<T>::decomposeImage(T thresholdVal, 
                                         uInt nContour,
                                         T maximumRMS,
-                                        Bool varyContours=True)
+                                        Bool varyContours)
 {
   const Bool showProcess = False;
 
