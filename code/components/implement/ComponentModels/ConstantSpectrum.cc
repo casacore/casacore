@@ -1,4 +1,4 @@
-//# ClassFileName.cc:  this defines ClassName, which ...
+//# ConstantSpectrum.cc:
 //# Copyright (C) 1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -87,15 +87,9 @@ void ConstantSpectrum::convertFrequencyUnit(const Unit& freqUnit) {
   DebugAssert(ok(), AipsError);
 }
 
-void ConstantSpectrum::sample(Flux<Double>& flux, 
-			      const MFrequency& centerFreq) const {
+void ConstantSpectrum::sample(Flux<Double>&, 
+			      const MFrequency&) const {
   DebugAssert(ok(), AipsError);
-  // Use centerFreq for something to suppress a compiler warning
-  if (&centerFreq == 0) {
-  }
-  // Use flux for something to suppress a compiler warning
-  if (&flux == 0) {
-  }
 }
 
 SpectralModel * ConstantSpectrum::clone() const {
@@ -111,18 +105,14 @@ uInt ConstantSpectrum::nParameters() const {
 }
 
 void ConstantSpectrum::
-setParameters(const Vector<Double>& newSpectralParms) {
+setParameters(const Vector<Double>&) {
   DebugAssert(newSpectralParms.nelements() == nParameters(),AipsError);
   DebugAssert(ok(), AipsError);
-  // Suppress compiler warning about unused variable
-  if (&newSpectralParms == 0) {}; 
 }
 
-void ConstantSpectrum::parameters(Vector<Double>& spectralParms) const {
+void ConstantSpectrum::parameters(Vector<Double>&) const {
   DebugAssert(ok(), AipsError);
   DebugAssert(spectralParms.nelements() == nParameters(),AipsError);
-  // Suppress compiler warning about unused variable
-  if (&spectralParms == 0) {}; 
 }
 
 Bool ConstantSpectrum::fromRecord(String& errorMessage, 
@@ -138,11 +128,8 @@ Bool ConstantSpectrum::toRecord(String& errorMessage,
   return True;
 }
 
-Bool ConstantSpectrum::convertUnit(String& errorMessage,
-				   const RecordInterface& record) {
-  // Suppress compiler warning about unused variables
-  if (&errorMessage == 0) {}; 
-  if (&record == 0) {};
+Bool ConstantSpectrum::convertUnit(String&,
+				   const RecordInterface&) {
   DebugAssert(ok(), AipsError);
   return True;
 }

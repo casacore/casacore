@@ -113,12 +113,9 @@ void PointShape::sample(Flux<Double>& flux, const MDirection& direction,
   }
 }
 
-void PointShape::visibility(Flux<Double>& flux, const Vector<Double>& uvw,
-			    const Double& frequency) const {
+void PointShape::visibility(Flux<Double>&, const Vector<Double>&,
+			    const Double&) const {
   DebugAssert(ok(), AipsError);
-  if (&frequency == 0) {}; // Suppress compiler warning about unused variable
-  if (&uvw == 0) {}; // Suppress compiler warning about unused variable
-  if (&flux == 0) {}; // Suppress compiler warning about unused variable
 }
 
 ComponentShape* PointShape::clone() const {
@@ -133,18 +130,14 @@ uInt PointShape::nParameters() const {
   return 0;
 }
 
-void PointShape::setParameters(const Vector<Double>& newParms) {
+void PointShape::setParameters(const Vector<Double>&) {
   DebugAssert(newParms.nelements() == nParameters(), AipsError);
   DebugAssert(ok(), AipsError);
-  // Suppress compiler warning about unused variable
-  if (&newParms == 0) {}; 
 }
 
-void PointShape::parameters(Vector<Double>& compParms) const {
+void PointShape::parameters(Vector<Double>&) const {
   DebugAssert(ok(), AipsError);
   DebugAssert(compParms.nelements() == nParameters(), AipsError);
-  // Suppress compiler warning about unused variable
-  if (&compParms == 0) {}; 
 }
 
 Bool PointShape::fromRecord(String& errorMessage,
@@ -162,11 +155,8 @@ Bool PointShape::toRecord(String& errorMessage,
   return True;
 }
 
-Bool PointShape::convertUnit(String& errorMessage,
-			     const RecordInterface& record) {
-  // Suppress compiler warning about unused variables
-  if (&errorMessage == 0) {}; 
-  if (&record == 0) {};
+Bool PointShape::convertUnit(String&,
+			     const RecordInterface&) {
   DebugAssert(ok(), AipsError);
   return True;
 }

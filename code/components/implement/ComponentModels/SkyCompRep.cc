@@ -342,9 +342,7 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
-void SkyCompRep::project(ImageInterface<Float>& image) const {
-  // Suppress compiler warning about unused variables
-  if (&image == 0) {}; 
+void SkyCompRep::project(ImageInterface<Float>&) const {
 //   const CoordinateSystem coords = image.coordinates();
 //   const IPosition imageShape = image.shape();
 //   const uInt naxis = imageShape.nelements();
