@@ -45,41 +45,39 @@ class String;
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=MDirection>MDirection</linkto>
+//   <li> <linkto class=MFrequency>MFrequency</linkto>
 // </prerequisite>
 //
 // <synopsis>
 
 // This abstract base class defines the interface for different classes which
 // model the spectrum of a component. The most fundamental derived class is the
-// <linkto class=ConstantSpectrum>constant</linkto> spectrum class but the
-// <linkto class=SpectralIndex>spectral index</linkto> class is also
+// <linkto class=ConstantSpectrum>ConstantSpectrum</linkto> class but the
+// <linkto class=SpectralIndex>SpectralIndex</linkto> class is also
 // available. These classes model the spectral shape of emission from the
 // sky. Classes derived from the <linkto
 // class=ComponentShape>ComponentShape</linkto> class are used to model the
 // spatial characteristics.
 
-// This class parameterises spectral models with two quantities.
+// This class parameterizes spectral models with two quantities.
 // <dl>
-// <dt> A reference frequency. 
+// <dt><em> A reference frequency.</em>
 // <dd> This is specified using an <linkto class=MFrequency>MFrequency</linkto>
-//      object and defines the frequency where the scaling factor is
-//      one. Usually this frequency corresponds to one near the where the model
-//      is interesting.
-// <dt> A Vector of parameters.
+//      object and defines a frequency near the where the model
+//      is interesting. See the description of derived classes for the
+//      specific interpretation of the reference frequency.
+// <dt> <em>A Vector of parameters.</em>
 // <dd> This contains other parameters that the are defined differently for
 //      different spectral models. The length of the vector may vary for
 //      different spectral models.
 // </dl>
 // 
-
 // The basic operation of classes using this interface is to model the flux as
-// a function of frequency. Classes derived from this one assume that the Flux
-// (or integrated intensity) is always one at the reference frequency. The
-// scale functions in this class then calculate the relative flux at other
-// frequencies. This scale factor can be multiplied by the actual flux at the
-// reference frequency to determine the flux at the specified frequency.
-
+// a function of frequency. Classes derived from this one assume do not know
+// what the flux is at the reference frequency, this must be supplied as an
+// argument to the <src>sample</src> function. These classes will scale the
+// supplied flux to a value at the user specified frequency.  In general this
+// scaling may be different for different polarisations.
 // </synopsis>
 //
 // <example>
@@ -87,24 +85,43 @@ class String;
 // class cannot be constructed. However the interface it defines can be used
 // inside a function. This is always recommended as it allows functions which
 // have SpectralModel's as arguments to work for any derived class.
+// <h4>Example 1:</h4>
+// In this example the plotSpectrum function prints out the type of spectral
+// model it is working with and the reference frequency of that model. It then
+// uses the model to calculate the flux at other frequencies.
 // <srcblock>
-// void plotSpectrum(const SpectralModel & theSpectrum, ) {
-//   for (uInt 
+// void plotSpectrum(const Flux<Double> & refFlux,
+//                   const SpectralModel & modelSpectrum) {
 //   cout << "This is a " 
-//        << ComponentType::name(theShape.shape())
-//        << " shape with a reference direction of "
-//        << theShape.direction() << endl;
+//        << ComponentType::name(modelSpectrum.spectralShape())
+//        << " spectrum with a reference frequency of "
+//        << modelSpectrum.refFrequency().get("GHz")) << endl
+//        << modelSpectrum.refFrequency().getRef() 
+//        << endl;
+//   cout << "Frequency\t Flux\n";
+//   const Quantum<Double> step(100.0, "MHz");
+//   Quantum<Double> sampleFreq = modelSpectrum.refFrequency().get("GHz");
+//   Flux<Double> modelFlux;
+//   for (uInt i = 0; i < 11; i++) {
+//     modelFlux = refFlux.copy();
+//     modelSpectrum.sample(modelFlux, MFrequency(sampleFreq));
+//     cout << sampleFreq.get("GHz")
+// 	 << "\t\t " << modelFlux.value(0).re << " " 
+// 	 << modelFlux.unit().getName() << endl;
+//     sampleFreq += step;
+//   }
 // }
 // </srcblock>
 // </example>
 //
 // <motivation>
+// There are many different spectral variations possible and the SkyCompRep
+// class needed to be able to handle all of them. Hence a base class is
+// needed.
 // </motivation>
 //
-// <todo asof="yyyy/mm/dd">
-//   <li> add this feature
-//   <li> fix this bug
-//   <li> start discussion of this possible extension
+// <todo asof="1998/04/04">
+//   <li> Nothing I hope!
 // </todo>
 
 class SpectralModel: public RecordTransformable
@@ -121,7 +138,6 @@ public:
   // <group>
   virtual void setRefFrequency(const MFrequency & newRefFreq) = 0;
   virtual const MFrequency & refFrequency() const = 0;
-  virtual void refFrequency(MFrequency & refFreq) const;
   // </group>
 
   // Calculate the flux at the specified frequency given the flux at the
