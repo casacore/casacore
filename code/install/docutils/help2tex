@@ -265,10 +265,12 @@ sub make_tex_file{
          $dum = $2;
          $iname =~ s/\\_/_/g;
          $argroot ='';
+         $argroot = "$pack.$mname.objs.$oname.c.$iname";
          if($opt_glish == 1){
-            print "$pack.$miname.objs.$oiname.m.$iname := [=];\n";
+            $argroot = "$pack.$miname.objs.$oiname.c.$iname";
+            print "$pack.$miname.objs.$oiname.c.$iname := [=];\n";
             $dum =~ s/[\n\']/ /g;
-            print "$pack.$miname.objs.$oiname.m.$iname.d := '$dum';\n";}
+            print "$pack.$miname.objs.$oiname.c.$iname.d := '$dum';\n";}
       }
       $recIndent = "";
       if(/\\begin{ahrecord}/){
