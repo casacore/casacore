@@ -2487,3 +2487,4 @@
 11 336 src mv trial/scripts/display_meta.g trial/scripts/aipsview_meta.g
 11 336 src mv trial/scripts/display.help trial/scripts/aipsview.help
 11 339 src rm aips/glish/rivet
+11 339 sys rm libexec/display_meta.g
