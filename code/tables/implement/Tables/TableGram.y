@@ -1,6 +1,6 @@
 /*
     TableGram.y: Parser for table commands
-    Copyright (C) 1994,1995,1997,1998,1999
+    Copyright (C) 1994,1995,1997,1998,1999,2001
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -233,6 +233,12 @@ tfname:    TABNAME
                { $$ = $1; }
          | STRINGLITERAL
                { $$ = $1; }
+         | LBRACKET command RBRACKET {
+	       TableParseSelect* p = TableParseSelect::popSelect();
+	       $$ = p->doFromQuery();
+	       theFromQueryDone = True;
+	       delete p;
+           }
          ;
 
 tabname:   NAME
