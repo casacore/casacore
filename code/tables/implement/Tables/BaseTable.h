@@ -41,6 +41,7 @@
 //# Forward Declarations
 class RefTable;
 class TableDesc;
+class TableLock;
 class BaseColumn;
 class ColumnDesc;
 class TableRecord;
@@ -110,8 +111,28 @@ public:
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
 
+    // Get the locking info.
+    virtual const TableLock& lockOptions() const = 0;
+
+    // Merge the given lock info with the existing one.
+    virtual void mergeLock (const TableLock& lockOptions) = 0;
+
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    virtual Bool hasLock (Bool write) const = 0;
+
+    // Try to lock the table for read or write access.
+    virtual Bool lock (Bool write, uInt nattempts) = 0;
+
+    // Unlock the table. This will also synchronize the table data,
+    // thus force the data to be written to disk.
+    virtual void unlock() = 0;
+
     // Flush the table, i.e. write it to disk.
-    virtual void flush() = 0;
+    virtual void flush (Bool sync) = 0;
+
+    // Get the modify counter.
+    virtual uInt getModifyCounter() const = 0;
 
     // Do not write the table (used in in case of exceptions).
     void doNotWrite()
@@ -196,8 +217,13 @@ public:
     const TableDesc& tableDesc() const
 	{ return *tdescPtr_p; }
 
-    // Get access to the table keyword set.
+    // Get readonly access to the table keyword set.
     virtual TableRecord& keywordSet() = 0;
+
+    // Get read/write access to the table keyword set.
+    // This requires that the table is locked (or it gets locked
+    // when using AutoLocking mode).
+    virtual TableRecord& rwKeywordSet() = 0;
 
     // Get access to the TableInfo object.
     TableInfo& tableInfo()
@@ -210,21 +236,6 @@ public:
     // Write the TableInfo object.
     void flushTableInfo();
 
-    // Test if the table needs synchronization.
-    // Synchronization means that the size of the table is synchronized.
-    // This may be needed when the table is filled by an external proces,
-    // e.g. the data acquisition system of a telescope.
-    virtual Bool needToSync() const = 0;
-
-    // Synchronize the table and return the number of rows.
-    // Also a flag is returned telling if more rows can be expected.
-    // Synchronization means that the size of the table is synchronized.
-    // This may be needed when the table is filled by an external proces,
-    // e.g. when a data acquisition system of a telescope extends a table,
-    // another process reading that table needs to call sync now and then
-    // to update its number of rows.
-    virtual uInt sync (Bool& moreToExpect) = 0;
-    
     // Get number of rows.
     uInt nrow() const
 	{ return nrrow_p; }
@@ -376,15 +387,16 @@ public:
 
 
 protected:
-    uInt        nrlink_p;                 //# #references to this table
-    uInt        nrrow_p;                  //# #rows in this table
-    TableDesc*  tdescPtr_p;               //# Pointer to table description
-    String      name_p;                   //# table name
-    int         option_p;                 //# Table constructor option
-    Bool        noWrite_p;                //# False = do not write the table
-    Bool        delete_p;                 //# True = delete when destructed
-    TableInfo   info_p;                   //# Table information (type, etc.)
-    Bool        madeDir_p;                //# True = table dir has been created
+    uInt           nrlink_p;            //# #references to this table
+    uInt           nrrow_p;             //# #rows in this table
+    TableDesc*     tdescPtr_p;          //# Pointer to table description
+    String         name_p;              //# table name
+    int            option_p;            //# Table constructor option
+    Bool           noWrite_p;           //# False = do not write the table
+    Bool           delete_p;            //# True = delete when destructed
+    TableInfo      info_p;              //# Table information (type, etc.)
+    Bool           madeDir_p;           //# True = table dir has been created
+
 
     // Create the table directory.
     // When the file already exists, check if it is a directory.
