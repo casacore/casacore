@@ -1,5 +1,5 @@
 //# RecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -371,7 +371,6 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     default:
 	throw (AipsError ("RecordRep::createDataField: unknown data type"));
     }
-    return 0;
 }
 
 void RecordRep::makeDataVec (Int whichField, DataType type)
