@@ -33,6 +33,7 @@
 #include <trial/Tasking/PGPlotter.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Mathematics/Random.h>
 #include <aips/Inputs/Input.h>
 #include <aips/iostream.h>
@@ -100,22 +101,13 @@ int main(int argc, char **argv) {
 	cout << "Estimate " << i << ": " << est.element(i) << endl;
       };
       Vector<Float> res(NPTS);
-      Float rmn = 1e6;
-      Float rmx = -1e6;
-      for (Int i=0; i<n; i++) {
-	res(i) = y(i);
-	for (Int j = 0; j < r; j++) {
-	  Double a = est.element(j).getAmpl();
-	  Double c = (est.element(j).getCenter() - Double(i));
-	  Double s = est.element(j).getSigma();
-	  res(i) -= a * exp( -log(16.0) * c / s * c / s );
-	  rmn = min(rmn, res(i));
-	  rmx = max(rmx, res(i));
-	};
-      };
+      res = y;
+      est.residual(res);
+      cout << "Minimum, Maximum residuals: " << min(res) << ", " <<
+	max(res) << endl;
       plotter.sci(2);
       plotter.line(xy, res);
-      plotter.env(xy(0), xy(n-1), rmn, rmx, 0, 0);
+      plotter.env(xy(0), xy(n-1), -2, 12, 0, 0);
       plotter.sci(1);
       plotter.lab("", "", "Noiseless spectrum with 2nd derivative");
       plotter.line(xy, y);
@@ -127,12 +119,7 @@ int main(int argc, char **argv) {
       plotter.line(xy, y);
       plotter.sci(2);
       for (Int j=0; j<r; j++) {
-	for (Int i = 0; i<n; i++) {
-	  Double a = est.element(j).getAmpl();
-	  Double c = (est.element(j).getCenter() - Double(i));
-	  Double s = est.element(j).getSigma();
-	  res(i) = a * exp( -log(16.0) * c / s * c / s );
-	};
+	for (Int i = 0; i<n; i++) res(i) = est.element(j)(i);
 	plotter.line(xy, res);
       };
     }
@@ -284,21 +271,13 @@ int main(int argc, char **argv) {
       Double mn(1e6);
       Double avg(0);
       Double sg(0);
-      for (uInt i=0; i<1024; i++) {
-	xdat(i) = dat(i);
-	for (uInt j=0; j<fitter.getNElements(); j++) {
-	  xdat(i) -= fitter.getElement(j).getAmpl()*
-	    exp(-(freq(i)-fitter.getElement(j).getCenter())*
-		(freq(i)-fitter.getElement(j).getCenter())*log(16.0)/
-		fitter.getElement(j).getSigma()/
-		fitter.getElement(j).getSigma());
-	  fxdat(i) = xdat(i);
-	};
-	mx = (xdat(i)>mx) ? xdat(i) : mx;
-	mn = (xdat(i)<mn) ? xdat(i) : mn;
-	avg += xdat(i);
-	sg += xdat(i)*xdat(i);
-      };
+      xdat = dat;
+      fitter.residual(xdat, freq);
+      convertArray(fxdat, xdat);
+      mx = max(xdat);
+      mn = min(xdat);
+      avg = sum(xdat);
+      sg = sum(xdat*xdat);
       avg /= 1024.;
       sg = sqrt(sg/1024./1023.);
       cout << "Min difference: " << mn <<
@@ -321,17 +300,8 @@ int main(int argc, char **argv) {
       plotter.sci(1);
       plotter.lab("", "", "Synthetic spectra and residual after estimates");
       plotter.line(ffreq, fdat);
-      for (uInt i=0; i<1024; i++) {
-	xdat(i) = 0;
-	for (Int j = 0; j < mr; j++) {
-	  Double a = mest.element(j).getAmpl();
-	  Double c = (mest.element(j).getCenter() - Double(i));
-	  Double s = mest.element(j).getSigma();
-	  xdat(i) += a * exp( -log(16.0) * c / s * c / s );
-	};
-	mx = (xdat(i)>mx) ? xdat(i) : mx;
-	mn = (xdat(i)<mn) ? xdat(i) : mn;
-      };
+      fxdat= fdat;
+      mest.residual(fxdat);
       plotter.sci(2);
       plotter.line(ffreq, fxdat);
       plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);
@@ -340,12 +310,7 @@ int main(int argc, char **argv) {
       plotter.line(ffreq, fdat);
       plotter.sci(2);
       for (Int j=0; j<mr; j++) {
-	for (Int i = 0; i<1024; i++) {
-	  Double a = mest.element(j).getAmpl();
-	  Double c = (mest.element(j).getCenter() - Double(i));
-	  Double s = mest.element(j).getSigma();
-	  fxdat(i) = a * exp( -log(16.0) * c / s * c / s );
-	};
+	mest.evaluate(fxdat);
 	plotter.line(ffreq, fxdat);
       };
       plotter.env(ffreq(0), ffreq(1023), -1, 12, 0, 0);

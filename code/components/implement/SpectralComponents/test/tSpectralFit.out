@@ -33,6 +33,7 @@ Estimate 2: GAUSSIAN element:
   Center:    50.0043
   Sigma:     2.97497
 
+Minimum, Maximum residuals: -0.961305, 0.0086807
 Window (using rms, cutoff, minsig, q): (0.5, 1, 0.5, 2) 3 estimates
 Estimate 0: GAUSSIAN element: 
   Amplitude: 6.00013
