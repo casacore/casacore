@@ -150,9 +150,26 @@ corresponding short descriptions.  Used in the ahobject environment.
 \item[$\backslash$ahobjs{}]  This command will print a list of objects with their
 corresponding short descriptions.  Used in the ahmethod environment.
 %
-\item[$\backslash$ahlink\{one\}\{two\}] This command specifies an link between the
-text specified in argument one and a label specified in argument two.  Used
-inside the ahseealso environment.
+\item[$\backslash$ahlink\{one\}\{two\}] This command specifies a link between the
+text specified in argument one and a label specified in argument two.  A typical use
+of this command would be to link to another tool or function of the reference manual.
+The reference manual uses the following scheme for labeling tools and functions,
+\begin{itemize}
+\item modulename:toolname
+\item modulename:toolname.constructor (.constructor identifies it as a constructor)
+\item modulename:toolname.function (.function identifies it as a global function)
+\item modulename:functionname
+\item modulename:toolname.functionname
+\end{itemize}
+An example for the calc constructor is
+\begin{verbatim}
+\ahlink{calc the constructor}{images:image.calc.constructor}
+\end{verbatim}
+\begin{verbatim}
+for the global calc function
+\ahlink{calc the function}{images:image.calc.function}
+\end{verbatim}
+Used inside the ahseealso environment.
 %
 \item[$\backslash$ahaddarg\{one\}\{two\}\{three\}\{four\}] This command is used inside
 the ahargs environment.  The name is specfied in argument one, a description
