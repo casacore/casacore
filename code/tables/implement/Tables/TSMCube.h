@@ -1,5 +1,5 @@
 //# TSMCube.h: Tiled hypercube in a table
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TSMCUBE_H)
 #define AIPS_TSMCUBE_H
 
-#if defined(_AIX)
-#pragma implementation ("TSMCube.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -111,6 +108,15 @@ class ostream;
 class TSMCube
 {
 public:
+    // Define the possible access types for TSMDataColumn.
+    enum AccessType {
+	NoAccess,
+	CellAccess,
+	SliceAccess,
+	ColumnAccess,
+	ColumnSliceAccess
+    };
+
     // Construct an object with a still undefined hypercube.
     // It can be filled later with setShape.
     // It is used by TiledCellStMan which may know its hypercube shape
@@ -251,6 +257,16 @@ public:
     // Determine if the user set the cache size (using setCacheSize).
     Bool userSetCache() const;
 
+    // Functions for TSMDataColumn to keep track of the last type of
+    // access to a hypercube. It uses it to determine if the cache
+    // has to be reset.
+    // <group>
+    AccessType getLastColAccess() const;
+    const IPosition& getLastColSlice() const;
+    void setLastColAccess (AccessType type);
+    void setLastColSlice (const IPosition& slice);
+    // </group>
+
 private:
     // Forbid copy constructor.
     TSMCube (const TSMCube&);
@@ -341,6 +357,10 @@ private:
     BucketCache*    cache_p;
     // Did the user set the cache size?
     Bool            userSetCache_p;
+    // Was the last column access to a cell, slice, or column?
+    AccessType      lastColAccess_p;
+    // The slice shape of the last column access to a slice.
+    IPosition       lastColSlice_p;
 };
 
 
@@ -380,7 +400,23 @@ inline Bool TSMCube::userSetCache() const
 {
     return userSetCache_p;
 }
-
+inline TSMCube::AccessType TSMCube::getLastColAccess() const
+{
+    return lastColAccess_p;
+}
+inline const IPosition& TSMCube::getLastColSlice() const
+{
+    return lastColSlice_p;
+}
+inline void TSMCube::setLastColAccess (TSMCube::AccessType type)
+{
+    lastColAccess_p = type;
+}
+inline void TSMCube::setLastColSlice (const IPosition& slice)
+{
+    lastColSlice_p.resize (slice.nelements());
+    lastColSlice_p = slice;
+}
 
 
 
