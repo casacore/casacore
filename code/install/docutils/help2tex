@@ -368,7 +368,7 @@ sub make_tex_file{
    /sg;
       } else {
          s/\\begin{ahfunction}\s*{($mtext)}\s*\{($etext)\}/
-   \\subsection{$1 -- Function\\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
+   \\subsection{$1 -- Function\\label{$miname:$iname}\\index{$1}\\index{$mname.$1}}
    \\subsectionF{$1}{$pack}{$mname}
    $2\\\\
    \\ahsynopsis{$1}
