@@ -319,6 +319,7 @@ PagedImage(const PagedImage<T> & other)
    defaultvalue_p(other.defaultvalue_p)
 {
   AlwaysAssert(setCoordinateInfo(other.coords_p), AipsError);
+  units_p = other.units_p;
   log_p = other.log_p;
   if (other.mask_p != 0) 
     mask_p = new PagedArray<Bool>(*(other.mask_p));
