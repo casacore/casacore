@@ -475,7 +475,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
     }
   }
   itsScalesValid=True;
-  for(scale=0; scale<itsNscales;scale++) {
+  for(uInt scale=0; scale<itsNscales;scale++) {
     if(scaleXfr[scale]) delete scaleXfr[scale];
   }
   return True;
@@ -531,16 +531,15 @@ template<class T>
 Bool LatticeCleaner<T>::destroyScales()
 {
   if(!itsScalesValid) return True;
-  uInt scale;
-  for(scale=0; scale<itsScales.nelements();scale++) {
+  for(uInt scale=0; scale<itsScales.nelements();scale++) {
     if(itsScales[scale]) delete itsScales[scale];
     itsScales[scale]=0;
   }
-  for(scale=0; scale<itsDirtyConvScales.nelements();scale++) {
+  for(uInt scale=0; scale<itsDirtyConvScales.nelements();scale++) {
     if(itsDirtyConvScales[scale]) delete itsDirtyConvScales[scale];
     itsDirtyConvScales[scale]=0;
   }
-  for(scale=0; scale<itsPsfConvScales.nelements();scale++) {
+  for(uInt scale=0; scale<itsPsfConvScales.nelements();scale++) {
     if(itsPsfConvScales[scale]) delete itsPsfConvScales[scale];
     itsPsfConvScales[scale]=0;
   }
