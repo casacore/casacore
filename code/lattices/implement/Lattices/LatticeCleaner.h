@@ -117,7 +117,8 @@ public:
 
   // Set up control parameters
   Bool setcontrol(CleanEnums::CleanType cleanType, const Int niter,
-		  const Float gain, const Quantity& threshold);
+		  const Float gain, const Quantity& threshold,
+		  const Bool choose=True);
 
   // Clean an image. 
   Bool clean(Lattice<T> & model, LatticeCleanerProgress<T>* progress=0);
