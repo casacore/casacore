@@ -55,7 +55,7 @@ class String;
 // <prerequisite>
 // <list>
 //   <item> <linkto class=ImageInterface>ImageInterface</linkto>
-//   <item> <linkto class=SubLatticce>SubLattice</linkto>
+//   <item> <linkto class=SubLattice>SubLattice</linkto>
 // </list>
 // </prerequisite>
 //
