@@ -1,5 +1,5 @@
 //# StokesVector.h: A fast RigidVector with Stokes conversions
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 
 #if !defined(AIPS_STOKESVECTOR_H)
 #define AIPS_STOKESVECTOR_H
-#if defined(_AIX)
-#pragma implementation ("StokesVector.cc")
-#endif
 
 #include <aips/aips.h>
 #include <aips/IO/AipsIO.h>
