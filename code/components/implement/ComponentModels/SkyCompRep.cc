@@ -57,6 +57,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/DataType.h>
 #include <trial/ComponentModels/SpectralModel.h>
+#include <aips/iostream.h>
 
 SkyCompRep::SkyCompRep() 
   :itsShapePtr(new PointShape),
