@@ -260,6 +260,15 @@
 *                           2: Invalid coordinate system
 *                           3: Cache overflow (see note 3).
 *
+*                        The following status returns are recognized for
+*                        opcodes +2 and +1
+*                          -1: Accept the returned (x,y) coordinates but
+*                              do not consider this as one end of a
+*                              crossing segment for labelling world
+*                              coordinate 1.
+*                          -2: Ditto for world coordinate 2.
+*                          -3: Ditto for world coordinates 1 and 2.
+*
 *   Notes on PGSBOX
 *   ---------------
 *
@@ -317,7 +326,7 @@
 *
 *       Only single cycles are detected, so the sequence
 *
-*          -360 -> 0 -> 359 -> 0 -> 359
+*          -360 -> 0 -> ... -> 359 -> 0 -> ... -> 359
 *
 *       would not be handled properly.  In such cases NLFUNC should be
 *       changed to return a normalized angle, or else a continuous
@@ -456,19 +465,20 @@
       PARAMETER (BUFSIZ = 2048)
 
       LOGICAL   DOEDGE, DOEQ, DOLBOX, FULLSM, GETEND, INSIDE, ISANGL(2),
-     :          MAJOR, OVERFL, PREVIN
+     :          LABLOK, MAJOR, OVERFL, PREVIN
       INTEGER   CI(7), CI0, CJ(7), CONTRL, DENS(2), FSEG, GCODE(2), IC,
-     :          ID, IERR, IM, ISTEP, IW0, IWJ, IWK, IX, IY, J, K, KX, L,
-     :          LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), NC, NG(2), NG1,
-     :          NG2, NLC, NLD, NLI, NLIPRM(NLI), NP, NWJ, NX, NY,
-     :          TCODE(2,4)
+     :          ID, IERR, IM, ISTEP, IW0, IWJ, IWK, IX, IY, IYPREV, J,
+     :          K, KX, L, LABCTL, LABDEN, LDIV(2), LTABL(6,2:6), NC,
+     :          NG(2), NG1, NG2, NLC, NLD, NLI, NLIPRM(NLI), NP,
+     :          NSTEP(2), NWJ, NX, NY, TCODE(2,4)
       REAL      BLC(2), BLC_(2), S, TRC(2), TRC_(2), WXY(4), X1, X2,
-     :          XMIN, XPOINT, XR(BUFSIZ), XSCL, XSPAN, XVP1, XVP2, Y1,
-     :          Y2, YMIN, YR(BUFSIZ), YSCL, YSPAN, YVP1, YVP2
+     :          XPOINT, XR(BUFSIZ), XSCL, XSPAN, XTOL, XVP1, XVP2,
+     :          Y1, Y2, YR(BUFSIZ), YSCL, YSPAN, YTOL, YVP1, YVP2
       DOUBLE PRECISION CONTXT(20), CACHE(4,0:NC), DW(2), DX, DY, FACT,
      :          G0(2), GSTEP(2), GRID1(0:NG1), GRID2(0:NG2),
-     :          NLDPRM(NLD), STEP, TIKLEN, TMP, VMAX(2,2), VMIN(2,2),
-     :          WMAX(2), WMIN(2), WORLD(2), XY(2)
+     :          NLDPRM(NLD), STEP, SW(2), TIKLEN, TMP, VMAX(2,2),
+     :          VMIN(2,2), W1PREV, W1X0, W2PREV, W2X0, WJUMP, WMAX(2),
+     :          WMIN(2), WORLD(2), XY(2)
       CHARACTER FTYPE(2), IDENTS(3)*(*), NLCPRM(NLC)*1, OPT(2)*(*)
 
       EXTERNAL NLFUNC
@@ -477,13 +487,12 @@
       INTEGER DENS0
       PARAMETER (DENS0 = 8)
 
-*     Number of steps per grid line.
-      INTEGER NSTEP
-      PARAMETER (NSTEP = 80)
-
 *     Double precision round-off tolerance.
       DOUBLE PRECISION TOL
       PARAMETER (TOL = 1D-8)
+
+*     Number of steps per grid line.
+      DATA NSTEP /80, 80/
 
 *     Table of logarithmic grid values.
       DATA LTABL /3, 10,  0,  0,  0,  0,
@@ -507,7 +516,7 @@
       BLC(2) = BLC_(2)
       TRC(1) = TRC_(1)
       TRC(2) = TRC_(2)
-      
+
       DOEDGE = GCODE(1).NE.2 .AND. GCODE(2).NE.2
 
 *-----------------------------------------------------------------------
@@ -523,10 +532,6 @@
       TRC(1) = 1.0
       TRC(2) = 1.0
 
-      CALL PGQWIN (XMIN, XSPAN, YMIN, YSPAN)
-      XSPAN = XSPAN - XMIN
-      YSPAN = YSPAN - YMIN
-      
       DOEDGE = .TRUE.
 
       CONTRL = 0
@@ -558,6 +563,12 @@
 *     Labels only?
       IF (LABCTL.GE.10000) GO TO 130
 
+
+      XSPAN = WXY(2) - WXY(1)
+      YSPAN = WXY(4) - WXY(3)
+      XTOL  = XSPAN*TOL
+      YTOL  = YSPAN*TOL
+      doedge = .false.
 
 *  Find world coordinate ranges.
       FULLSM = .FALSE.
@@ -596,6 +607,7 @@
          DY = DBLE(TRC(2)-BLC(2))/NY
 
          K = 0
+         IYPREV = -1
          DO 30 IY = 0, NY
             XY(2) = BLC(2) + IY*DY
 
@@ -609,8 +621,8 @@
                XY(1) = BLC(1) + IX*DX
 
                IF (DOLBOX) THEN
-                  WORLD(1) = XMIN + XY(1)*XSPAN
-                  WORLD(2) = YMIN + XY(2)*YSPAN
+                  WORLD(1) = WXY(1) + XY(1)*XSPAN
+                  WORLD(2) = WXY(3) + XY(2)*YSPAN
                ELSE
                   CALL NLFUNC (-1, NLC, NLI, NLD, NLCPRM, NLIPRM,
      :               NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
@@ -618,6 +630,47 @@
 
                IF (IERR.EQ.0) THEN
                   K = K + 1
+
+                  IF (ISANGL(1)) THEN
+                     IF (K.EQ.1) W1X0 = WORLD(1)
+
+                     IF (IY.NE.IYPREV) THEN
+                        W1PREV = W1X0
+                        W1X0 = WORLD(1)
+                     END IF
+
+*                    Iron out jumps.
+                     WJUMP = WORLD(1) - W1PREV
+                     IF (ABS(WJUMP).GT.180D0) THEN
+                        WJUMP = WJUMP + SIGN(WJUMP,180D0)
+                        WJUMP = 360D0*INT(WJUMP/360D0)
+                        WORLD(1) = WORLD(1) - WJUMP
+                     END IF
+
+                     W1PREV = WORLD(1)
+                     IYPREV = IY
+                  END IF
+
+                  IF (ISANGL(2)) THEN
+                     IF (K.EQ.1) W2X0 = WORLD(2)
+
+                     IF (IY.NE.IYPREV) THEN
+                        W2PREV = W2X0
+                        W2X0 = WORLD(2)
+                     END IF
+
+*                    Iron out jumps.
+                     WJUMP = WORLD(2) - W2PREV
+                     IF (ABS(WJUMP).GT.180D0) THEN
+                        WJUMP = WJUMP + SIGN(WJUMP,180D0)
+                        WJUMP = 360D0*INT(WJUMP/360D0)
+                        WORLD(2) = WORLD(2) - WJUMP
+                     END IF
+
+                     W2PREV = WORLD(2)
+                     IYPREV = IY
+                  END IF
+
                   IF (WORLD(1).LT.WMIN(1)) WMIN(1) = WORLD(1)
                   IF (WORLD(1).GT.WMAX(1)) WMAX(1) = WORLD(1)
                   IF (WORLD(2).LT.WMIN(2)) WMIN(2) = WORLD(2)
@@ -1023,7 +1076,17 @@
             IF (TMP.LE.WMAX(J)) TMP = TMP + GSTEP(J)
             WMAX(J) = TMP
          END IF
+
          DW(J) = WMAX(J) - WMIN(J)
+         SW(J) = DW(J)/NSTEP(J)
+
+*        Adjust NSTEP so that SW divides GSTEP.
+         IF (SW(J).LT.GSTEP(J)) THEN
+            SW(J) = GSTEP(J)/ANINT(GSTEP(J)/SW(J))
+         ELSE
+            SW(J) = GSTEP(J)
+         END IF
+         NSTEP(J) = ANINT(DW(J)/SW(J))
  60   CONTINUE
 
 
@@ -1153,20 +1216,20 @@
 
             NP = 0
             GETEND = .TRUE.
-            DO 100 IWK = 0, NSTEP
-               WORLD(K) = WMIN(K) + IWK*(DW(K)/NSTEP)
+            DO 100 IWK = 0, NSTEP(K)
+               WORLD(K) = WMIN(K) + IWK*SW(K)
 
                IF (GETEND) THEN
 *                 Get end-point context.
                   IF (DOLBOX) THEN
-                     XY(1) = (WORLD(1) - XMIN)/XSPAN
-                     XY(2) = (WORLD(2) - YMIN)/YSPAN
+                     XY(1) = (WORLD(1) - WXY(1))/XSPAN
+                     XY(2) = (WORLD(2) - WXY(3))/YSPAN
                   ELSE
                      CALL NLFUNC (1, NLC, NLI, NLD, NLCPRM, NLIPRM,
      :                  NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
                   END IF
 
-                  IF (IERR.EQ.0) THEN
+                  IF (IERR.LE.0) THEN
                      X1 = REAL(XY(1))
                      Y1 = REAL(XY(2))
                      INSIDE = X1.GT.BLC(1) .AND. X1.LT.TRC(1) .AND.
@@ -1178,20 +1241,22 @@
 
                      PREVIN = INSIDE
                      GETEND = .FALSE.
+
+                     LABLOK = IERR.NE.-J .AND. IERR.NE.-3
                   END IF
                   GO TO 100
                END IF
 
                DO 90 ISTEP = 1, 1000
                   IF (DOLBOX) THEN
-                     XY(1) = (WORLD(1) - XMIN)/XSPAN
-                     XY(2) = (WORLD(2) - YMIN)/YSPAN
+                     XY(1) = (WORLD(1) - WXY(1))/XSPAN
+                     XY(2) = (WORLD(2) - WXY(3))/YSPAN
                   ELSE
                      CALL NLFUNC (2, NLC, NLI, NLD, NLCPRM, NLIPRM,
      :                  NLDPRM, WORLD, XY, CONTRL, CONTXT, IERR)
                   END IF
 
-                  IF (IERR.NE.0) THEN
+                  IF (IERR.GT.0) THEN
 *                    Flush buffer.
                      IF (NP.GT.0) CALL PGLINE(NP, XR, YR)
                      GO TO 110
@@ -1207,8 +1272,24 @@
 
                   X2 = REAL(XY(1))
                   Y2 = REAL(XY(2))
-                  INSIDE = X2.GE.BLC(1) .AND. X2.LE.TRC(1) .AND.
-     :                     Y2.GE.BLC(2) .AND. Y2.LE.TRC(2)
+                  INSIDE = X2.GT.BLC(1) .AND. X2.LT.TRC(1) .AND.
+     :                     Y2.GT.BLC(2) .AND. Y2.LT.TRC(2)
+
+                  IF (.NOT.INSIDE) THEN
+*                    For tick marks at the left or right edge.
+                     IF ((X2.EQ.BLC(1) .OR.  X2.EQ.TRC(1)) .AND.
+     :                    Y2.GT.BLC(2) .AND. Y2.LT.TRC(2)) THEN
+                        INSIDE = X2.EQ.XR(NP)
+                     END IF
+                  END IF
+
+                  IF (.NOT.INSIDE) THEN
+*                    For tick marks at the bottom or top edge.
+                     IF ((Y2.EQ.BLC(2) .OR.  Y2.EQ.TRC(2)) .AND.
+     :                    X2.GT.BLC(1) .AND. X2.LT.TRC(1)) THEN
+                        INSIDE = Y2.EQ.YR(NP)
+                     END IF
+                  END IF
 
                   IF (NP.EQ.0) THEN
                      NP = 1
@@ -1222,7 +1303,8 @@
                            X1 = XR(NP)
                            Y1 = YR(NP)
 
-                           IF (X2.NE.X1) THEN
+                           FSEG = 0
+                           IF (ABS(X2-X1).GT.XTOL) THEN
                               S = (Y2-Y1)/(X2-X1)
                               IF (XR(NP).LE.BLC(1)) THEN
                                  FSEG = 2
@@ -1237,7 +1319,7 @@
                               END IF
                            END IF
 
-                           IF (Y2.NE.Y1) THEN
+                           IF (ABS(Y2-Y1).GT.YTOL) THEN
                               S = (X2-X1)/(Y2-Y1)
                               IF (YR(NP).LE.BLC(2)) THEN
                                  FSEG = 1
@@ -1252,37 +1334,45 @@
                               END IF
                            END IF
 
-*                          Record this crossing point.
-                           IF (TCODE(J,FSEG).NE.0) THEN
-                              IF (IC.LT.NC-1) THEN
-                                 IC = IC + 1
-                                 CACHE(1,IC) = FSEG
-                                 CACHE(2,IC) = XPOINT
-                                 CACHE(3,IC) = J
-                                 CACHE(4,IC) = WORLD(J)
-                              ELSE
-*                                Cache overflow.
-                                 OVERFL = .TRUE.
+
+                           IF (FSEG.EQ.0) THEN
+*                             The crossing is too oblique.
+                              INSIDE = .FALSE.
+
+                           ELSE
+*                             Record this crossing point.
+                              IF (TCODE(J,FSEG).NE.0 .AND. LABLOK) THEN
+                                 IF (IC.LT.NC-1) THEN
+                                    IC = IC + 1
+                                    CACHE(1,IC) = FSEG
+                                    CACHE(2,IC) = XPOINT
+                                    CACHE(3,IC) = J
+                                    CACHE(4,IC) = WORLD(J)
+                                 ELSE
+*                                   Cache overflow.
+                                    OVERFL = .TRUE.
+                                 END IF
                               END IF
-                           END IF
 
-                           IF (TCODE(J,FSEG).GT.0) THEN
-*                             Just want tick marks.
-*                              X1 = XR(NP)
-*                              Y1 = YR(NP)
-                              S = SQRT((XSCL*(X2-X1))**2 +
-     :                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
-                              IF (MAJOR) S = S/1.5
-                              NP = NP + 1
-                              XR(NP) = XR(NP-1) + (X2-X1)*TIKLEN/S
-                              YR(NP) = YR(NP-1) + (Y2-Y1)*TIKLEN/S
+                              IF (TCODE(J,FSEG).GT.0) THEN
+*                                Just want tick marks.
+*                                 X1 = XR(NP)
+*                                 Y1 = YR(NP)
+                                 S = (XSCL*(X2-X1))**2 +
+     :                               (YSCL*(Y2-Y1))**2
+                                 S = SQRT(S)/TCODE(J,FSEG)
+                                 IF (MAJOR) S = S/1.5
+                                 NP = NP + 1
+                                 XR(NP) = XR(NP-1) + (X2-X1)*TIKLEN/S
+                                 YR(NP) = YR(NP-1) + (Y2-Y1)*TIKLEN/S
 
-                              CALL PGLINE(NP, XR, YR)
-                              NP = 1
+                                 CALL PGLINE(NP, XR, YR)
+                                 NP = 1
+                              END IF
                            END IF
                         END IF
 
-                        IF (GCODE(J).EQ.2) THEN
+                        IF (INSIDE .AND. GCODE(J).EQ.2) THEN
 *                          Full grid.
                            NP = NP + 1
                         END IF
@@ -1298,7 +1388,9 @@
                            NP = NP + 1
                            XR(NP) = X2
                            YR(NP) = Y2
-                           IF (X2.NE.X1) THEN
+
+                           FSEG = 0
+                           IF (ABS(X2-X1).GT.XTOL) THEN
                               S = (Y2-Y1)/(X2-X1)
                               IF (XR(NP).LE.BLC(1)) THEN
                                  FSEG = 2
@@ -1313,7 +1405,7 @@
                               END IF
                            END IF
 
-                           IF (Y2.NE.Y1) THEN
+                           IF (ABS(Y2-Y1).GT.YTOL) THEN
                               S = (X2-X1)/(Y2-Y1)
                               IF (YR(NP).LE.BLC(2)) THEN
                                  FSEG = 1
@@ -1328,38 +1420,53 @@
                               END IF
                            END IF
 
-*                          Record this crossing point.
-                           IF (TCODE(J,FSEG).NE.0) THEN
-                              IF (IC.LT.NC-1) THEN
-                                 IC = IC + 1
-                                 CACHE(1,IC) = FSEG
-                                 CACHE(2,IC) = XPOINT
-                                 CACHE(3,IC) = J
-                                 CACHE(4,IC) = WORLD(J)
-                              ELSE
-*                                Cache overflow.
-                                 OVERFL = .TRUE.
+
+                           IF (FSEG.EQ.0) THEN
+*                             The crossing is too oblique.
+                              INSIDE = .TRUE.
+
+                              IF (GCODE(J).EQ.2) THEN
+*                                Full grid.
+                                 NP = NP + 1
                               END IF
-                           END IF
+                              XR(NP) = X2
+                              YR(NP) = Y2
 
-                           IF (TCODE(J,FSEG).GT.0) THEN
-*                             Just want tick marks.
-                              X1 = XR(NP)
-                              Y1 = YR(NP)
-                              X2 = XR(NP-1)
-                              Y2 = YR(NP-1)
-                              S = SQRT((XSCL*(X2-X1))**2 +
-     :                                 (YSCL*(Y2-Y1))**2)/TCODE(J,FSEG)
-                              IF (MAJOR) S = S/1.5
-                              XR(NP-1) = X1 + (X2-X1)*TIKLEN/S
-                              YR(NP-1) = Y1 + (Y2-Y1)*TIKLEN/S
-                           END IF
+                           ELSE
+*                             Record this crossing point.
+                              IF (TCODE(J,FSEG).NE.0 .AND. LABLOK) THEN
+                                 IF (IC.LT.NC-1) THEN
+                                    IC = IC + 1
+                                    CACHE(1,IC) = FSEG
+                                    CACHE(2,IC) = XPOINT
+                                    CACHE(3,IC) = J
+                                    CACHE(4,IC) = WORLD(J)
+                                 ELSE
+*                                   Cache overflow.
+                                    OVERFL = .TRUE.
+                                 END IF
+                              END IF
 
-*                          Flush buffer.
-                           IF (TCODE(J,FSEG).NE.0) THEN
-                              CALL PGLINE(NP, XR, YR)
+                              IF (TCODE(J,FSEG).GT.0) THEN
+*                                Just want tick marks.
+                                 X1 = XR(NP)
+                                 Y1 = YR(NP)
+                                 X2 = XR(NP-1)
+                                 Y2 = YR(NP-1)
+                                 S = (XSCL*(X2-X1))**2 +
+     :                               (YSCL*(Y2-Y1))**2
+                                 S = SQRT(S)/TCODE(J,FSEG)
+                                 IF (MAJOR) S = S/1.5
+                                 XR(NP-1) = X1 + (X2-X1)*TIKLEN/S
+                                 YR(NP-1) = Y1 + (Y2-Y1)*TIKLEN/S
+                              END IF
+
+*                             Flush buffer.
+                              IF (TCODE(J,FSEG).NE.0) THEN
+                                 CALL PGLINE(NP, XR, YR)
+                              END IF
+                              NP = 0
                            END IF
-                           NP = 0
                         ELSE
 *                          The previous point was also outside.
                            XR(NP) = X2
@@ -1369,6 +1476,7 @@
                   END IF
 
                   PREVIN = INSIDE
+                  LABLOK = IERR.NE.-J .AND. IERR.NE.-3
 
                   IF (CONTRL.EQ.0) THEN
                      GO TO 100
@@ -1842,9 +1950,9 @@
                      IF (SEXSUP(KWRLD).EQ.1) GO TO 160
 
                      IF (FTYPE(KWRLD).EQ.'y') THEN
-                        TMP = ABS(MOD(CACHE(4,K),1D0)*24D0) 
+                        TMP = ABS(MOD(CACHE(4,K),1D0)*24D0)
                      ELSE
-                        TMP = ABS(CACHE(4,K)) 
+                        TMP = ABS(CACHE(4,K))
                      END IF
 
                      LV = INT(TMP*3600D0 + 5D-7)
@@ -1950,13 +2058,13 @@
 
 *           Use integer arithmetic to avoid rounding problems.
             IF (FTYPE(IWRLD).EQ.'y') THEN
-               TMP = ABS(MOD(CACHE(4,J),1D0)*24D0) 
+               TMP = ABS(MOD(CACHE(4,J),1D0)*24D0)
 
 *              Determine date range.
                IF (CACHE(4,J).LT.MJD1(IWRLD)) MJD1(IWRLD) = CACHE(4,J)
                IF (CACHE(4,J).GT.MJD2(IWRLD)) MJD2(IWRLD) = CACHE(4,J)
             ELSE
-               TMP = ABS(CACHE(4,J)) 
+               TMP = ABS(CACHE(4,J))
             END IF
             VS = TMP*3600D0 + 5D-7
             LV = INT(VS)
