@@ -39,7 +39,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
 
-#include <iostream.h>
+//#include <iostream.h>
 
 
 // Force the compiler to know about these
@@ -56,12 +56,16 @@ WCPolygon::WCPolygon()
 
 WCPolygon::WCPolygon(const Vector<Double>& xWC,
                      const Vector<Double>& yWC,
-                     const Vector<uInt>& worldAxes,
+                     const Vector<Int>& worldAxes,
                      const CoordinateSystem& cSys,
                      const Bool isOffset)
 //
 // Constructor from Double vectors
-//
+// worldAxes is Int rather than uInt because there is
+// no unsigned integer in Glish. Therefore, when the 
+// axes are stored in a Record and converted to a GlishRecord
+// and then sent to Glish, they must be Int
+// 
 : itsXWC(xWC.copy()),
   itsYWC(yWC.copy()),
   itsWorldAxes(worldAxes.copy()),
@@ -70,8 +74,10 @@ WCPolygon::WCPolygon(const Vector<Double>& xWC,
 {
    AlwaysAssert (itsXWC.nelements() == itsYWC.nelements(), AipsError);
    AlwaysAssert (itsWorldAxes.nelements() == 2, AipsError);
-   AlwaysAssert (itsWorldAxes(0) < itsCSys.nWorldAxes(), AipsError);
-   AlwaysAssert (itsWorldAxes(1) < itsCSys.nWorldAxes(), AipsError);
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
    AlwaysAssert (itsWorldAxes(0) != itsWorldAxes(1), AipsError);
    AlwaysAssert (itsCSys.nWorldAxes() > 0, AipsError);
    AlwaysAssert (itsIsOffset == False, AipsError);
@@ -81,7 +87,7 @@ WCPolygon::WCPolygon(const Vector<Double>& xWC,
 
 WCPolygon::WCPolygon(const Vector<Float>& xWC,
                      const Vector<Float>& yWC,
-                     const Vector<uInt>& worldAxes,
+                     const Vector<Int>& worldAxes,
                      const CoordinateSystem& cSys,
                      const Bool isOffset)
 //
@@ -93,8 +99,10 @@ WCPolygon::WCPolygon(const Vector<Float>& xWC,
 {
    AlwaysAssert (xWC.nelements() == yWC.nelements(), AipsError);
    AlwaysAssert (itsWorldAxes.nelements() == 2, AipsError);
-   AlwaysAssert (itsWorldAxes(0) < cSys.nWorldAxes(), AipsError);
-   AlwaysAssert (itsWorldAxes(1) < cSys.nWorldAxes(), AipsError);
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
    AlwaysAssert (itsWorldAxes(0) != itsWorldAxes(1), AipsError);
    AlwaysAssert (itsIsOffset == False, AipsError);
 
@@ -110,7 +118,7 @@ WCPolygon::WCPolygon(const Vector<Float>& xWC,
 
 
 WCPolygon::WCPolygon(const LCPolygon& polyLC,
-                     const Vector<uInt>& worldAxes,
+                     const Vector<Int>& worldAxes,
                      const CoordinateSystem& cSys)
 //
 // Constructor from an LCPolygon
@@ -121,9 +129,10 @@ WCPolygon::WCPolygon(const LCPolygon& polyLC,
 {
    AlwaysAssert (worldAxes.nelements() == 2,AipsError);
    AlwaysAssert (itsCSys.nPixelAxes() >= 2,AipsError);
-   AlwaysAssert (worldAxes(0) < itsCSys.nWorldAxes(),AipsError);
-   AlwaysAssert (worldAxes(1) < itsCSys.nWorldAxes(),AipsError);
-
+   AlwaysAssert (itsWorldAxes(0) >= 0 &&
+                 itsWorldAxes(0) < Int(itsCSys.nWorldAxes()), AipsError);
+   AlwaysAssert (itsWorldAxes(1) >= 0 &&
+                 itsWorldAxes(1) < Int(itsCSys.nWorldAxes()), AipsError);
 
 // Get polygon x and y 
 
@@ -213,10 +222,10 @@ WCPolygon* WCPolygon::cloneRegion() const
 TableRecord WCPolygon::toRecord(const String&) const
 {
    TableRecord rec;
-   rec.define ("name", className());
+   defineRecordFields(rec, className());  
    rec.define ("x", itsXWC);
    rec.define ("y", itsYWC);
-   rec.define ("axes", itsWorldAxes);
+   rec.define ("worldAxes", itsWorldAxes);
    rec.define ("offset", itsIsOffset);
    if (!itsCSys.save(rec, "CoordinateSystem")) {
       throw (AipsError ("WCPolygon::toRecord: could not save CoordinateSystem"));
@@ -228,12 +237,47 @@ TableRecord WCPolygon::toRecord(const String&) const
 
 WCPolygon* WCPolygon::fromRecord (const TableRecord& rec,
                                   const String&)
+//
+// The record is always stored by this class with
+// the field "worldAxes"   However, for the Glish function
+// wcpolygon, it is also useful to be able to specify the
+// axes as pixel axes (try and protect Glish users from the
+// distinction).  Thus, we allow a field "pixelAxes".
+// If this is present, we convert the pixel axes to world
+// axes before reconstituting the WCPolygon
+//
 {
-   return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
-                        Vector<Double>(rec.asArrayDouble ("y")),
-                        Vector<uInt>(rec.asArrayuInt ("axes")),
-                       *(CoordinateSystem::restore(rec,"CoordinateSystem")),
-                        rec.asBool("offset"));
+   CoordinateSystem cSys =  *(CoordinateSystem::restore(rec,"CoordinateSystem"));
+   if (rec.isDefined("worldAxes")) {
+      return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                           Vector<Double>(rec.asArrayDouble ("y")),
+                           Vector<Int>(rec.asArrayInt ("worldAxes")),
+                           cSys,
+                           rec.asBool("offset"));
+   } else if (rec.isDefined("pixelAxes")) {
+//
+// Convert pixel axes to world axes
+//
+      Vector<Int> worldAxes(cSys.nWorldAxes());
+      Vector<Int> pixelAxes = Vector<Int>(rec.asArrayInt ("pixelAxes"));
+      for (uInt i=0; i<pixelAxes.nelements(); i++) {
+         Int worldAxis = cSys.pixelAxisToWorldAxis(pixelAxes(i));
+         if (worldAxis == -1) {
+            throw (AipsError ("WCPolygon::fromRecord - some of the pixel axes have no world axis"));
+         } else {
+            worldAxes(i) = worldAxis;
+         }
+//
+// Return the WCPolygon
+// 
+         return new WCPolygon(Vector<Double>(rec.asArrayDouble ("x")),
+                              Vector<Double>(rec.asArrayDouble ("y")),
+                              worldAxes, cSys, rec.asBool("offset"));
+      }
+   } else {
+      throw (AipsError ("WCPolygon::fromRecord - record has neither worldAxes nor pixelAxes fields defined"));
+   }
+   return 0;
 }
 
 
@@ -265,7 +309,7 @@ LCRegion* WCPolygon::toLCRegion (const CoordinateSystem& cSys,
    if (!cSys.worldMap (worldAxisMap, worldAxisTranspose, itsCSys)) {
       throw (AipsError ("WCPolygon::toLCregion: "+cSys.errorMessage()));
    }
-   cout << "map=" << worldAxisMap.ac() << endl;
+//   cout << "map=" << worldAxisMap.ac() << endl;
 
    if (worldAxisMap(itsWorldAxes(0)) != -1 &&
        worldAxisMap(itsWorldAxes(1)) != -1) {
