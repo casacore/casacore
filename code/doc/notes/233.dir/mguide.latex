@@ -6,7 +6,7 @@
 \newcommand{\val}{{\sc value}}
 \newcommand{\refq}{{\sc reference}}
 \newcommand{\refqs}{{\sc references}}
-
+\newcommand{\filit}{\rule{0pt}{0.5\baselineskip}\hspace{\textwidth}}
 % Add home page navigation button
 %
 
@@ -55,10 +55,10 @@ A \mes\ consists of a \val\ and a \refq. The \val\ of a \mes\ is a vector
 of double floating point numbers, in some internal format. The \val\ is
 called a {\em MeasValue}, and specific ones are indicated with the
 letters $MV$, e.g. $MVDirection$
-\footnote{Note that it is an
-unfortunate circumstance that there exist the classes $MVTime$ and
+\footnote{Note the
+unfortunate circumstance that the classes $MVTime$ and
 $MVAngle$, which are not {\em MeasValues}, but only formatting classes
-for times and angles.}.
+for times and angles, were named as such.}.
 Appendix A gives the various internal values.
 
 A \val\ can be constructed in many different ways. An $MVDirection$
@@ -117,7 +117,7 @@ since directions are always vectors of unit lengths. However, special
 {\tt offset} methods exist for directions.
 \end{itemize}
 
-A \refq\ is created as a specialised {\em MeasRef} object, using the
+A \refq\ is created as a specialized {\em MeasRef} object, using the
 {\tt Measure::Ref} alias (e.g. {\tt MDirection::Ref}). A full
 reference could be:\\
 \\
@@ -141,7 +141,7 @@ reference could be:\\
 an {\tt MDirection::J2000} direction coordinate into an {\tt
 MDirection::AZEL} coordinate; or from an {\tt MEpoch::UTC} into an 
 {\tt MEpoch::TAI}. Conversion objects are {\tt MeasConvert} objects,
-using the {\tt MEasure::Convert} alias (e.g. {\tt
+using the {\tt Measure::Convert} alias (e.g. {\tt
 MDirection::Convert}. The conversion object needs at least a {\em from}
 \refq\ and a  {\em to} \refq.
 \end{sloppypar}
@@ -163,7 +163,7 @@ with either one of the two \refqs. Unless, of course, they are
 different for the two \refqs, like converting the {\tt AZEL} at one
 telescope to that at another.
 
-The {\em from} \refq\ can also be specified as a complet \mes. In that
+The {\em from} \refq\ can also be specified as a complete \mes. In that
 case that \val\ of the \mes\ will act as the {\em default} \val\ to be
 converted.
 
@@ -178,17 +178,17 @@ conversion done depends on the argument of the operator:
 \begin{itemize}
 \item {\em none}: use the default value of the Measure specified in the
 constructor (or using a {\tt set()} method).
-\item {\em MeasVale}: convert it to a \mes\ using the {\em from}
+\item {\em MeasValue}: convert it to a \mes\ using the {\em from}
 reference of the object
-\item {\em Measure}: re-initialise the conversion object, and do the
+\item {\em Measure}: re-initialize the conversion object, and do the
 conversion with the new default value (since the \refq\ has changed!).
 \end{itemize}
 
 If the conversion needs information, it will cache anything it
 calculates, either in the conversion object (like calculated {\em
 Nutation}), or in the {\em frame} (like e.g. the sidereal time of a
-frame MEpoch specified in UTC). This information will be re-useed if
-possible and feasable in subsequent conversions with the same
+frame MEpoch specified in UTC). This information will be re-used if
+possible and feasible in subsequent conversions with the same
 conversion object or using the same frame.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -239,7 +239,7 @@ and declination to hour-angle and declination, and that you have
 provided an epoch in $UTC$ in the {\em frame}. The actual conversion
 object will request (probably among other things), the sidereal time
 from the frame. The first request will set up a conversion object
-within the frame (from $UTC$ to $LAST$) and cahe it for later
+within the frame (from $UTC$ to $LAST$) and cache it for later
 use. After that it will use this conversion object to obtain the
 sidereal time, and cache the result (for maybe a subsequent call). The
 conversion needs nutation, polar motion and a few other
@@ -249,7 +249,7 @@ other calls to the frame for information.
 Efficient use of \mess\ is only possible if the lifetime of a {\em
 frame} is as long as possible. Which suggests that in many cases a
 frame should be created at the highest level possible (maybe even
-globally). Re-use of a {\em farme}, e.g. for a different time, is made
+globally). Re-use of a {\em frame}, e.g. for a different time, is made
 possible by the {\tt set()} methods, e.g. $set(MEpoch)$, which will
 try to minimize the re-calculations necessary.
 
@@ -262,10 +262,10 @@ intermediate calculation results. To make efficient use of this
 information, the same conversion object should be used if more than
 one conversion of the same type has to be done.
 
-\subsection{Specialised conversion engines}
+\subsection{Specialized conversion engines}
 
 Although the official {\tt MeasConvert} objects are very versatile,
-using them can be quite a job. For that reason a set of specialised
+using them can be quite a job. For that reason a set of specialized
 ``Conversion engines'' have been put together for easy use. The three
 engines available at the moment are described in the following
 paragraphs. They have all a basic format:
@@ -280,7 +280,7 @@ way.
 \subsubsection{EarthMagneticMachine}
 
 The {\em EarthMagneticMachine} calculates the Earth' magnetic field in
-a ceratin direction at a certain height above the Earth' surface.
+a certain direction at a certain height above the Earth' surface.
 
 The machine object's constructor needs in principle:
 \begin{itemize}
@@ -381,7 +381,7 @@ An example:
       //    5.87432837e-06 eV
       // its velocity will be (in AU/yr)
       cout << "Velocity: " <<
-              exec.makeVelocity(5.87432837e-06 << endl;
+              exec.makeVelocity(5.87432837e-06) << endl;
       //
       // Introducing an offset
       MFrequency foff(MVFrequency(Quantity(5.87432837e-06,
@@ -498,7 +498,7 @@ methods. Only when values are clearly related to a specific \mes\
 (like e.g. a latitude) does the method to obtain not exist for e.g. a
 frequency.
 
-Constructor of \mess\ have often specialisations (like one with a
+Constructor of \mess\ have often specializations (like one with a
 longitude and latitude for a direction), but they all have also
 standard ones. The standard ones are described in the
 \begin{latexonly}
@@ -515,7 +515,7 @@ The various value that are contained in the \mes\ object can be
 obtained by the following calls:
 \begin{description}
 \item[$getValue()$] will obtain the {\em MeasValue} (i.e. the {\em
-MVName} object) from the \mes\ 
+MV$Name$} object) from the \mes\ 
 \item[$getData()$] will obtain a pointer to the {\em MeasValue}
 \item[$getRef()$] will obtain the {\tt Measure::Ref} reference object
 \item[$getRefPtr()$] will obtain a pointer to the {\tt Measure::Ref} object
@@ -545,19 +545,20 @@ standard way. Some have additional ones available when appropriate
 \verb+Vector<Double>+
 \item[$getValue$] will obtain the internal value as a $Double$ or as a
 \verb+Vector<Double>+, depending on the dimension of the internal value
-\item[$get()$] will obtain the internal value as a {\em Qauntity} or
+\item[$get()$] will obtain the internal value as a {\em Quantity} or
 as a \verb+Vector<Double>+
 \end{description}
 
-\subsection{Can I obtain information from the MeasFrame?}
+\subsection{Obtaining information from the MeasFrame}
 
 The frame can be used as an automatic converter. An example could be
 the automatic conversion to a sidereal time from a civil time (like
 $UTC$). All conversions that are used by the various conversion
-engines are available. Of course, the epcoh should have been put into
+engines are available. Of course, the epoch should have been put into
 the frame for it to be converted; and in this case also the position
 should have been put into it. Available information from the frame: \\
 \\
+\small
 \hspace{.05\textwidth}
 \begin{minipage}[t]{.95\textwidth}
 \begin{verbatim}
@@ -583,7 +584,7 @@ should have been put into it. Available information from the frame: \\
   Bool getLat(Double &tdb);
   // Get the position
   Bool getITRF(MVPosition &tdb);
-  // Get the gecentric position (in m)
+  // Get the geocentric position (in m)
   Bool getRadius(Double &tdb);
   // Get the LAST (in days)
   Bool getLAST(Double &tdb);
@@ -605,6 +606,7 @@ should have been put into it. Available information from the frame: \\
 \end{verbatim}
 \end{minipage}
 \\
+\normalsize
 
 In the above reference is made to the {\em calculating state} of the
 frame. This state is set when the frame has been actively used by a
@@ -614,10 +616,346 @@ frame. This state is set when the frame has been actively used by a
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
+\section{Appendix}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Details for individual Measures}
+
+In the following some comments are made per \mes\ type. A list is
+given of the known reference codes, and the frame information
+necessary to convert from/to each code is indicated.
+
+\subsubsection{MEpoch}
+
+An epoch in time. Internally maintained as an absolute time as a {\em
+Modified Julian Day} (or a {\em Greenwich Sidereal Date}) in two
+{\tt Double} numbers. Formatting of an {\em MEpoch} (or any time
+expressed in time or angle units) can be done with the {\em MVTime}
+class. \\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MEpoch}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+    LAST & Local Apparent Sidereal Time  & MPosition \\ \hline
+    LMST & Local Mean Sidereal Time & MPosition \\ \hline
+    GMST1 & Greenwich Mean ST1 &  \\ \hline
+    GAST & Greenwich Apparent ST &  \\ \hline
+    UT1 &  &  \\ \hline
+    UT2 &  &  \\ \hline
+    UTC &  &  \\ \hline
+    TAI &  &  \\ \hline
+    TDT &  &  \\ \hline
+    TCG &  &  \\ \hline
+    TDB &  &  \\ \hline
+    TCB &  &  \\ \hline
+    IAT & $= TAI$ &  \\ \hline
+    GMST & $= GMST1$ & MPosition \\ \hline
+    TT & $= TDT$ &  \\ \hline
+    UT & $= UT1$ &  \\ \hline
+    ET & $= TT$ &  \\ \hline
+    DEFAULT & $= UTC$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+A special code modifier {\tt MEpoch::RAZE} exist. Its result is that
+{\em after} a conversion to a code with the {\tt RAZE} bit set, the
+result will be truncated to integer days. Useful to find a sidereal
+time offset for a specific $UTC$ date.
+
+\subsubsection{MPosition}
+
+A 3-dimensional vector, especially a position on (or rather {\em
+w.r.t.} Earth). Internally represented as a \verb+Vector<Double>+ with
+assumed units of $m$. Normally given as a longitude, latitude and
+height (geodetic), or as a vector with origin in center of Earth.
+
+The internal value of the {\tt MPosition} class (i.e. {\em
+MVPosition}) is also the base class for the contents of the other
+3-dimensional position and direction classes:
+\begin{itemize}
+\item MVDirection
+\item MVEarthMagnetic
+\item MVBaseline
+\item MVuvw
+\end{itemize}
+
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MPosition}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+ITRF & International Terrestrial Reference Frame & \\ \hline
+WGS84 & World Geodetic System & \\ \hline
+DEFAULT & $= ITRF$ & \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{MDirection}
+
+A 3-dimensional vector {\bf of unit length}, indicating a direction,
+especially a direction in space (note that for the Solar system bodies
+the distance to the bodies is inherently known).
+
+The solar system bodies' directions are {\em virtual} directions. They
+have no value until explicitly converted to a {\em real} coordinate
+system like $J2000$, $AZEL$, \ldots
+
+\small
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MDirection}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+J2000 & mean equator, equinox J2000.0 &  \\ \hline
+JMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+JTRUE & true equator, equinox epoch & MEpoch \\ \hline
+APP & apparent geocentric & MEpoch \\ \hline
+B1950 & mean equator, equinox B1950.0 &  \\ \hline
+BMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+BTRUE & true equator, equinox epoch & MEpoch \\ \hline
+GALACTIC & galactic coordinates &  \\ \hline
+HADEC & topocentric HA/Dec & MEpoch \filit MPosition \\ \hline
+AZEL & topocentric Az/El (N $\Rightarrow$ E) & MEpoch \newline MPosition
+		\\ \hline 
+AZELSW & topocentric Az/El (S $\Rightarrow$ W) & MEpoch  \filit
+		MPosition \\ \hline 
+AZELNE & $= AZEL$ & MEpoch \\ \hline
+JNAT & geocentric natural frame & MEpoch \\ \hline
+ECLIPTIC & ecliptic for J2000.0 equator, equinox &  \\ \hline
+MECLIPTIC & ecliptic for mean equator of date & MEpoch \\ \hline
+TECLIPTIC & ecliptic for true equator of date & MEpoch \\ \hline
+SUPERGAL & supergalactic coordinates &  \\ \hline
+ITRF & direction in ITRF Earth frame & MEpoch  \filit
+		MPosition \\ \hline
+TOPO & apparent topocentric & MEpoch \\ \hline
+MERCURY & from JPL DE table & MEpoch \\ \hline
+VENUS &  & MEpoch \\ \hline
+MARS &  & MEpoch \\ \hline
+JUPITER &  & MEpoch \\ \hline
+SATURN &  & MEpoch \\ \hline
+URANUS &  & MEpoch \\ \hline
+NEPTUNE &  & MEpoch \\ \hline
+PLUTO &  & MEpoch \\ \hline
+SUN &  & MEpoch \\ \hline
+MOON &  & MEpoch \\ \hline
+COMET & any solar-system body & MEpoch \filit 
+		Table\footnotemark \\ \hline
+DEFAULT & $= J2000$ &  \\ \hline \hline
+\end{tabular}
+\\
+\normalsize
+\footnotetext{The table needed contains a list of directions and
+distances as a function of $MJD$. The table can be generated from a
+standard formatted ascii text by the {\tt measuresdata} Glish
+module. See there for how to generate a table. In future an $XML$
+driven parser vould be used}
+
+\subsubsection{MBaseline}
+
+A 3-dimensional vector, indicating a direction with a length (but no
+defined zero point). In principle they are identical to the {\em
+MDirection} directions. At the momemt the solar system bodies are not
+a valid baseline direction, but that could change.\\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MBaseline}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+J2000 & mean equator, equinox J2000.0 &  \\ \hline
+JMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+JTRUE & true equator, equinox epoch & MEpoch \\ \hline
+APP & apparent geocentric & MEpoch \\ \hline
+B1950 & mean equator, equinox B1950.0 &  \\ \hline
+BMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+BTRUE & true equator, equinox epoch & MEpoch \\ \hline
+GALACTIC & galactic coordinates &  \\ \hline
+HADEC & topocentric HA/Dec & MEpoch \filit MPosition \\ \hline
+AZEL & topocentric Az/El (N $\Rightarrow$ E) & MEpoch \newline MPosition
+		\\ \hline 
+AZELSW & topocentric Az/El (S $\Rightarrow$ W) & MEpoch  \filit
+		MPosition \\ \hline 
+AZELNE & $= AZEL$ & MEpoch \\ \hline
+JNAT & geocentric natural frame & MEpoch \\ \hline
+ECLIPTIC & ecliptic for J2000.0 equator, equinox &  \\ \hline
+MECLIPTIC & ecliptic for mean equator of date & MEpoch \\ \hline
+TECLIPTIC & ecliptic for true equator of date & MEpoch \\ \hline
+SUPERGAL & supergalactic coordinates &  \\ \hline
+ITRF & direction in ITRF Earth frame & MEpoch  \filit
+		MPosition \\ \hline
+DEFAULT & $= ITRF$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{Muvw}
+
+A 3-dimensional vector, indicating a $UVW$-coordinate.
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf Muvw}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+J2000 & mean equator, equinox J2000.0 &  \\ \hline
+JMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+JTRUE & true equator, equinox epoch & MEpoch \\ \hline
+APP & apparent geocentric & MEpoch \\ \hline
+B1950 & mean equator, equinox B1950.0 &  \\ \hline
+BMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+BTRUE & true equator, equinox epoch & MEpoch \\ \hline
+GALACTIC & galactic coordinates &  \\ \hline
+HADEC & topocentric HA/Dec & MEpoch \filit MPosition \\ \hline
+AZEL & topocentric Az/El (N $\Rightarrow$ E) & MEpoch \newline MPosition
+		\\ \hline 
+AZELSW & topocentric Az/El (S $\Rightarrow$ W) & MEpoch  \filit
+		MPosition \\ \hline 
+AZELNE & $= AZEL$ & MEpoch \\ \hline
+JNAT & geocentric natural frame & MEpoch \\ \hline
+ECLIPTIC & ecliptic for J2000.0 equator, equinox &  \\ \hline
+MECLIPTIC & ecliptic for mean equator of date & MEpoch \\ \hline
+TECLIPTIC & ecliptic for true equator of date & MEpoch \\ \hline
+SUPERGAL & supergalactic coordinates &  \\ \hline
+ITRF & direction in ITRF Earth frame & MEpoch  \filit
+		MPosition \\ \hline
+DEFAULT & $= ITRF$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{MEarthMagnetic}
+
+A 3-dimensional vector: the value of the Earth' magnetic field. The
+model used to calculate the field is the International Geomagnetic
+Reference Field. The $IGRF$ field is a {\em virtual} field, without
+any value. It obtains its value after an explicit conversion to a
+normal, real coordinate system.\\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MEarthMagnetic}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+IGRF & the international reference field model & MEpoch \newline
+		 MPosition \\ \hline
+J2000 & mean equator, equinox J2000.0 &  \\ \hline
+JMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+JTRUE & true equator, equinox epoch & MEpoch \\ \hline
+APP & apparent geocentric & MEpoch \\ \hline
+B1950 & mean equator, equinox B1950.0 &  \\ \hline
+BMEAN & mean equator, equinox epoch & MEpoch \\ \hline
+BTRUE & true equator, equinox epoch & MEpoch \\ \hline
+GALACTIC & galactic coordinates &  \\ \hline
+HADEC & topocentric HA/Dec & MEpoch \filit MPosition \\ \hline
+AZEL & topocentric Az/El (N $\Rightarrow$ E) & MEpoch \newline MPosition
+		\\ \hline 
+AZELSW & topocentric Az/El (S $\Rightarrow$ W) & MEpoch  \filit
+		MPosition \\ \hline 
+AZELNE & $= AZEL$ & MEpoch \\ \hline
+JNAT & geocentric natural frame & MEpoch \\ \hline
+ECLIPTIC & ecliptic for J2000.0 equator, equinox &  \\ \hline
+MECLIPTIC & ecliptic for mean equator of date & MEpoch \\ \hline
+TECLIPTIC & ecliptic for true equator of date & MEpoch \\ \hline
+SUPERGAL & supergalactic coordinates &  \\ \hline
+ITRF & direction in ITRF Earth frame & MEpoch  \filit
+		MPosition \\ \hline
+DEFAULT & $= ITRF$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{MFrequency}
+
+The {\tt MFrequency} class describes the characteristics of an
+electro-magnetic wave. Internally the value is in $Hz$, but an {\em
+MFrequency} object can be constructed from any characteristic that is
+understood (period, frequency, angular frequency, wavelength, wave
+number, energy, momentum).
+
+The {\em MFrequency} class has special methods to convert the frequency
+from an {\em MDoppler} object, if a rest frequency is known.\\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MFrequency}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+REST & spectral line rest frequency & MDirection \newline 
+		MRadialVelocity \\ \hline
+LSR  & dynamic local standard of rest & MDirection \\ \hline
+LSRK & kinematic local standard of rest & MDirection \\ \hline
+BARY & barycentric frequency & MDirection \\ \hline
+GEO & geocentric frequency & MDirection \newline
+		MEpoch \\ \hline
+TOPO & topocentric frequency & MDirection \newline
+		MEpoch \newline MPosition \\ \hline
+GALACTO & galactocentric  frequency & MDirection \\ \hline
+DEFAULT & $= LSR$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{MRadialVelocity}
+
+The {\tt MRadialVelocity} class describes the radial velocity of an
+astronomical object. Internally the value is in $m/s$. Methods are
+available (if the rest frequency of a spectral line is known), to
+convert the velocity to a frequency. Also, the radial velocity can be
+derived from an {\em MDoppler} object, which has the radial velocity
+in the often better known redshift or radio-astronomical Doppler shift.\\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MRadialVelocity}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+LSR  & dynamic local standard of rest & MDirection \\ \hline
+LSRK & kinematic local standard of rest & MDirection \\ \hline
+BARY & barycentric frequency & MDirection \\ \hline
+GEO & geocentric frequency & MDirection \newline
+		MEpoch \\ \hline
+TOPO & topocentric frequency & MDirection \newline
+		MEpoch \newline MPosition \\ \hline
+GALACTO & galactocentric  frequency & MDirection \\ \hline
+DEFAULT & $= LSR$ &  \\ \hline \hline
+\end{tabular}
+\\
+
+\subsubsection{MDoppler}
+
+The {\tt MDoppler} class describes the radial velocity of an
+astronomical object in a variety of special astronomical ``Doppler''
+shifts. It can be generated from quasi velocities; or from a
+dimensionless quantity, interpreted as a fraction of the velocity of
+light.
+
+Conversion to a ``real'' radial velocity is possible with this class.
+In the following $F$ stands for $\nu / \nu_0$, where $\nu_{0}$ is the
+rest frequency.\\
+
+\begin{tabular}{||l|p{0.5\textwidth}|p{0.2\textwidth}||}
+\hline \hline
+\multicolumn{3}{||c||}{{\bf MDoppler}} \\ \hline \hline
+\multicolumn{1}{||c}{{\em Code}} & 
+\multicolumn{1}{|c}{{\em Description}} & 
+\multicolumn{1}{|c||}{{\em Frame info}} \\ \hline \hline
+RADIO & radio definition:  $1-F$ & \\ \hline
+Z & redshift: $-1 + 1/F$ & \\ \hline
+RATIO & frequency ratio: $F$ & \\ \hline
+BETA & relativistic: $(1 - F^{2})/(1 + F^{2})$ & \\ \hline
+GAMMA & $(1 + F^{2})/2F$ & \\ \hline
+OPTICAL & $= Z$ & \\ \hline
+RELATIVISTIC & $=BETA$ & \\ \hline
+DEFAULT & $=RADIO$ & \\ \hline \hline
+\end{tabular}
+\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Details for individual Measures}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Use of units and quantities}
+\subsection{Use of units and quantities}
 
