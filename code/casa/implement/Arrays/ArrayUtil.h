@@ -28,13 +28,13 @@
 #if !defined(AIPS_ARRAYUTIL_H)
 #define AIPS_ARRAYUTIL_H
 
-#if defined(_AIX)
-#pragma implementation ("ArrayUtil.cc")
-#endif
 
+//# Includes
 #include <aips/aips.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Utilities/String.h>
+
+//# Forward Declarations
 
 
 // <summary>
@@ -59,9 +59,12 @@
 // It is very useful when using a function taking a vector of strings
 // as shown in the example.
 // <p>
+// A more advanced way of splitting a string is by using a
+// <linkto class=Regex>regular expression</linkto> as delimiter.
+// It makes it, for example, possible to treat whitespace around a comma
+// as part of the delimiter (as shown in an example below).
+// <p>
 // A string with length 0 results in a zero-length vector.
-// <br>
-// Whitespace is not skipped.
 // </synopsis>
 
 // <motivation>
@@ -84,10 +87,17 @@
 // vector(3) = "gh";
 // someFunction (vector);
 // </srcblock>
+//
+// The following example shows how to use a delimiter consisting of a comma
+// surrounded by possible whitespace.
+// <srcblock>
+// Vector<String> result = stringToVector (source, Regex(" *, *"));
+// </srcblock>
 // <example>
 
 // <group name=stringToVector>
 Vector<String> stringToVector (const String& string, char delim = ',');
+Vector<String> stringToVector (const String& string, const Regex& delim);
 // </group>
 
 
