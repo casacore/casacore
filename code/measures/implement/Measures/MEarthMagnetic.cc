@@ -1,5 +1,5 @@
 //# MEarthMagnetic.cc: A Measure: Magnetic field on Earth
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -128,6 +128,8 @@ const String &MEarthMagnetic::showType(MEarthMagnetic::Types tp) {
     "HADEC",
     "AZEL",
     "AZELSW",
+    "AZELGEO",
+    "AZELSWGEO",
     "JNAT",
     "ECLIPTIC",
     "MECLIPTIC",
@@ -150,7 +152,7 @@ const String &MEarthMagnetic::showType(uInt tp) {
 
 const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
 					  const uInt *&typ) {
-  static const Int N_name  = 20;
+  static const Int N_name  = 23;
   static const Int N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
@@ -165,6 +167,9 @@ const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
     "AZEL",
     "AZELSW",
     "AZELNE",
+    "AZELGEO",
+    "AZELSWGEO",
+    "AZELNEGEO",
     "JNAT",
     "ECLIPTIC",
     "MECLIPTIC",
@@ -187,6 +192,9 @@ const String *const MEarthMagnetic::allMyTypes(Int &nall, Int &nextra,
     MEarthMagnetic::AZEL,
     MEarthMagnetic::AZELSW,
     MEarthMagnetic::AZEL,
+    MEarthMagnetic::AZELGEO,
+    MEarthMagnetic::AZELSWGEO,
+    MEarthMagnetic::AZELGEO,
     MEarthMagnetic::JNAT,
     MEarthMagnetic::ECLIPTIC,
     MEarthMagnetic::MECLIPTIC,

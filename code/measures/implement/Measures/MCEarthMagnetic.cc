@@ -1,5 +1,5 @@
 //# MCEarthMagnetic.cc:  MEarthMagnetic conversion routines 
-//# Copyright (C) 1998,1999,2000,2001
+//# Copyright (C) 1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -59,10 +59,14 @@ uInt MCEarthMagnetic::ToRef_p[N_Routes][3] = {
   {MEarthMagnetic::APP,			MEarthMagnetic::B1950,		2},
   {MEarthMagnetic::APP,			MEarthMagnetic::TOPO,		0},
   {MEarthMagnetic::HADEC,		MEarthMagnetic::AZEL,		0},
+  {MEarthMagnetic::HADEC,           	MEarthMagnetic::AZELGEO,        0},
   {MEarthMagnetic::AZEL,		MEarthMagnetic::HADEC,		0},
+  {MEarthMagnetic::AZELGEO,         	MEarthMagnetic::HADEC,          0},
   {MEarthMagnetic::HADEC,		MEarthMagnetic::TOPO,		0},
   {MEarthMagnetic::AZEL,		MEarthMagnetic::AZELSW,		0},
+  {MEarthMagnetic::AZELGEO,         	MEarthMagnetic::AZELSWGEO,      0},
   {MEarthMagnetic::AZELSW,		MEarthMagnetic::AZEL,		0},
+  {MEarthMagnetic::AZELSWGEO,      	MEarthMagnetic::AZELGEO,        0},
   {MEarthMagnetic::APP,			MEarthMagnetic::JNAT,		0},
   {MEarthMagnetic::JNAT,		MEarthMagnetic::APP,		0},
   {MEarthMagnetic::J2000,		MEarthMagnetic::ECLIPTIC,	0},
@@ -216,6 +220,8 @@ void MCEarthMagnetic::initConvert(uInt which, MConvertBase &mc) {
   case ITRF_HADEC: 
   case HADEC_AZEL:
   case AZEL_HADEC:
+  case HADEC_AZELGEO:
+  case AZELGEO_HADEC:
   case MECLIP_JMEAN:
   case JMEAN_MECLIP:
   case TECLIP_JTRUE:
@@ -378,9 +384,17 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     case HADEC_AZEL:
       measMath.applyHADECtoAZEL(in);
       break;
+
+    case HADEC_AZELGEO: 
+      measMath.applyHADECtoAZELGEO(in);
+      break;
     
     case AZEL_HADEC:
       measMath.deapplyHADECtoAZEL(in);
+      break;
+
+    case AZELGEO_HADEC:
+      measMath.deapplyHADECtoAZELGEO(in);
       break;
      
     case HADEC_TOPO: 
@@ -403,6 +417,8 @@ void MCEarthMagnetic::doConvert(MVEarthMagnetic &in,
     
     case AZEL_AZELSW: 
     case AZELSW_AZEL:
+    case AZELGEO_AZELSWGEO:
+    case AZELSWGEO_AZELGEO:
       measMath.applyAZELtoAZELSW(in);
       break;
 
