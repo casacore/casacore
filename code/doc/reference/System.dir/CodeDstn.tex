@@ -450,6 +450,12 @@ The following resources used by \exe{inhale} should be defined in
    to invoke \exeref{sneeze} on remote systems.  Defaults to
    \unixexe{rsh}.  \unixexe{ssh}, the ``secure shell,'' is one possible
    alternative.
+
+\item
+   \code{sneeze.sleep}: Use this option to adjust the delay time (in seconds)
+   for asyncronous builds.  The default is 600s which should be adequate to 
+   avoid the glish concurrency configure problem.
+
 \end{itemize}
 
 \subsection*{Notes}
@@ -652,7 +658,7 @@ The unix manual page for \unixexe{cron}(1).\\
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{sneeze} [\exe{-e} extlist] [-l] [\exe{-m} mode] targets}
+   \code{\exe{sneeze} [\exe{-e} extlist] [-l] [\exe{-m} mode] [\exe{-s} seconds] targets}
 \end{synopsis}
 
 \subsection*{Description}
@@ -713,6 +719,11 @@ last rebuild (see \exeref{avers}).
 \item[\exe{-m} mode]
    Mode of the rebuild, \code{incremental} (default), \code{cumulative}, or
    \code{base}.
+
+\item[\exe{-s} seconds]
+   Interval in seconds to sleep before commencing build.  This option is used
+   to prevent concurrent builds from configuring glish at the same time.
+
 \end{description}
 
 If no targets are specified (\filref{makefiles}) \exe{sneeze} remakes
