@@ -141,7 +141,7 @@ Int main() {
 
      { 
       cout << "-------- J2000+offset -> B1950 ---------" << endl;
-     // A new output reference
+      // A new output reference
       cout << "Input coordinates: " << mIm2 << endl;
       cout << "                 : " << mIm2.getAngle("deg") << endl;
       MDirection::Ref oref(MDirection::B1950);
@@ -162,9 +162,69 @@ Int main() {
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
 
- } catch (AipsError x) {
+  } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } end_try;
-  
+
+  try {
+
+    cout << "-------------- deproject -----------------" << endl;
+    // Output direction 
+    MDirection::Ref oref(MDirection::J2000);
+    MDirection odir(MVDirection(Quantity(30, "deg"),
+				Quantity(37, "deg")), oref);
+    // Main direction
+    MDirection indir(MVDirection(Quantity(26, "deg"),
+				 Quantity(34, "deg")),
+		     MDirection::Ref(MDirection::J2000));
+    // A UVW machine without projection
+    UVWMachine um(odir, indir, False, False);
+    // A UVW machine with projection
+    UVWMachine ump(odir, indir, False, True);
+    cout << "Input coordinates:    " << indir << endl;
+    cout << "                 :    " << indir.getAngle("deg") << endl;
+    cout << "Output coordinates:   " << odir << endl;  
+    cout << "                  :   " << odir.getAngle("deg") << endl;
+    MVPosition uvw(10, 100, 200);
+    cout << "Input uvw:            " << uvw << endl;
+    cout << "UVW rotation:         " << um.rotationUVW() << endl;
+    // Save UVW
+    MVPosition u1(uvw);
+    Double ph;
+    um.convertUVW(ph, u1);
+    cout << "Phase correction:     " << ph << endl;
+    cout << "Corrected UVW:        " << u1 << endl;
+    u1 = uvw;
+    um.convertUVW(u1);
+    cout << "Corrected UVW:        " << u1 << endl;
+    // Save UVW
+    u1 = uvw;
+    ump.convertUVW(ph, u1);
+    cout << "-------------- Projected: ------------" << endl;
+    cout << "UVW rotation:         " << ump.rotationUVW() << endl;
+    cout << "Phase correction:     " << ph << endl;
+    cout << "Corrected UVW:        " << u1 << endl;
+    u1 = uvw;
+    ump.convertUVW(u1);
+    cout << "Corrected UVW:        " << u1 << endl;
+    u1 = uvw;
+    cout << "Phase correction:     " << ump.getPhase(u1) << endl;
+    cout << "Corrected UVW:        " << u1 << endl;
+    Vector<Double> vd;
+    vd = uvw.getValue();
+    cout << "Phase correction:     " << ump.getPhase(vd) << endl;
+    cout << "Corrected UVW:        " << MVPosition(vd) << endl;
+    vd = uvw.getValue();
+    ump.convertUVW(vd);
+    cout << "Corrected UVW:        " << MVPosition(vd) << endl;
+    u1 = uvw;
+    cout << "Corrected UVW:        " << ump(u1) << endl;
+    vd = uvw.getValue();
+    cout << "Corrected UVW:        " << MVPosition(ump(vd)) << endl;
+
+  } catch (AipsError x) {
+    cout << x.getMesg() << endl;
+  } end_try;
+
   exit(0);
 }
