@@ -131,30 +131,30 @@ Bool Interpolate2D::interpNearest(Float& result,
                                   const Matrix<Float>& data,
                                   const Matrix<Bool>*& maskPtr) const
 {
+  // definition of the 'neighborhood' of outer edge data elements.
+  static const Double half= .5001;
+
   const IPosition& shape = data.shape();
 
-// Find nearest pixel; (i,j) = centre
-// Negatives will give big positive value and this fail the
-// shape test below.
+  Double imax = shape(0) - 1.;
+  Double wi = where(0);
+  if(wi < 0. - half || wi > imax + half || imax < 0) return False;
 
-  uInt i = Int(where(0)+0.5);
-  uInt j = Int(where(1)+0.5);  
-//
-  if (i < uInt(shape(0)) && j < uInt(shape(1))) {
-    if (!maskPtr) {
-       result = data(i,j);
-       return True;
-    } else {
-       if ((*maskPtr)(i,j)) {
-          result = data(i,j);
-          return True;
-       } else {
-          return False;
-       }
-    }
-  } else {
-     return False;
-  }
+  Double jmax = shape(1) - 1.;
+  Double wj = where(1);
+  if(wj < 0 - half || wj > jmax + half || jmax < 0) return False;
+
+  uInt i = (wi <= 0.)?		0
+	 : (wi >= imax)?	uInt(imax)
+	 :			uInt(wi + .5);
+      
+  uInt j = (wj <= 0.)?		0
+	 : (wj >= jmax)?	uInt(jmax)
+	 :			uInt(wj + .5);
+      
+  Bool dataValid = !maskPtr || (*maskPtr)(i,j);
+  if (dataValid) result = data(i,j);
+  return dataValid;
 }
 
 
