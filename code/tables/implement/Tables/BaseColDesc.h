@@ -164,6 +164,10 @@ public:
     String& dataManagerGroup()
 	{ return dataManGroup_p; }
 
+    // Set the data manager type and group to the default.
+    // If <src>always==True</src> they are always set, otherwise only if empty.
+    void setDefaultDataManager (Bool always);
+
     // Get comment string.
     const String& comment() const
 	{ return comment_p; }

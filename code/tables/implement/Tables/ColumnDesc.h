@@ -226,6 +226,10 @@ public:
     String& dataManagerGroup()
 	{ return colPtr_p->dataManagerGroup(); }
 
+    // If <src>always==True</src> they are always set, otherwise only if empty.
+    void setDefaultDataManager (Bool always=True)
+        { colPtr_p->setDefaultDataManager (always); }
+
     // Get comment string.
     const String& comment() const
 	{ return colPtr_p->comment(); }

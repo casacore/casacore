@@ -74,29 +74,10 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 		    "Option Undefined only allowed for standard data types"));
 	}
     }
-    // The default data manager for standard types is StandardStMan.
-    // For other types it is the virtual scalar column engine handling
-    // that type.
-    if (dataManType_p.empty()) {
-	if (dtype_p == TpOther) {
-	    dataManType_p = dtypeId_p + "VSCEngine";
-	}else{
-	    dataManType_p = "StandardStMan";
-	}
-    }
-    // The default data manager group for standard types is data manager type.
-    // For other types it is the column name to make the group unique.
-    if (dataManGroup_p.empty()) {
-	if (dtype_p == TpOther) {
-	    dataManGroup_p = colName_p;
-	}else{
-	    dataManGroup_p = dataManType_p;
-	}
-    }
+    // Set the default data manager type and group (if empty).
+    setDefaultDataManager (False);
+    // Create the keyword set.
     keySetPtr_p = new TableRecord();
-    if (keySetPtr_p == 0) {
-	throw (AllocError("BaseColumnDesc",1));
-    }
 }
 
 BaseColumnDesc::BaseColumnDesc (const BaseColumnDesc& that)
@@ -115,9 +96,6 @@ BaseColumnDesc::BaseColumnDesc (const BaseColumnDesc& that)
   isTable_p     (that.isTable_p)
 {
     keySetPtr_p = new TableRecord(*that.keySetPtr_p);
-    if (keySetPtr_p == 0) {
-	throw (AllocError("BaseColumnDesc",1));
-    }
 }
   
 BaseColumnDesc::~BaseColumnDesc ()
@@ -160,6 +138,31 @@ void BaseColumnDesc::handleRemove (ColumnDescSet&)
 void BaseColumnDesc::renameAction (const String&, const String&)
 {}
 
+
+void BaseColumnDesc::setDefaultDataManager (Bool always)
+{
+    // The default data manager for standard types is StandardStMan.
+    // For other types it is the virtual scalar column engine handling
+    // that type.
+    if (always  ||  dataManType_p.empty()) {
+	if (dtype_p == TpOther) {
+	    dataManType_p = dtypeId_p + "VSCEngine";
+	} else {
+	    dataManType_p = "StandardStMan";
+	}
+    }
+    // The default data manager group for standard types is data manager type.
+    // For other types it is the column name to make the group unique.
+    if (always  ||  dataManGroup_p.empty()) {
+	if (dtype_p == TpOther) {
+	    dataManGroup_p = colName_p;
+	} else {
+	    dataManGroup_p = dataManType_p;
+	}
+    }
+    dataManType_p = "StandardStMan";
+    dataManGroup_p = dataManType_p;
+}
 
 // Dimensionality can only be changed if not set yet.
 void BaseColumnDesc::setNdim (uInt ndim)
@@ -304,8 +307,5 @@ void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 RefColumn* BaseColumnDesc::makeRefColumn (RefTable* rtp, BaseColumn* bcp) const
 {
     RefColumn* rcp = new RefColumn (this, rtp, bcp);
-    if (rcp == 0) {
-	throw (AllocError ("BaseColumnDesc::makeRefColumn", 1));
-    }
     return rcp;
 }
