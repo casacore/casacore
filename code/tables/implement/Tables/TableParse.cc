@@ -1,5 +1,5 @@
 //# TableParse.cc: Classes to hold results from table grammar parser
-//# Copyright (C) 1994,1995,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -49,7 +49,7 @@
 #include <aips/Utilities/Assert.h>
 #include <aips/IO/AipsIO.h>
 #include <aips/OS/Timer.h>
-#include <iostream.h>
+#include <aips/ostream.h>
 
 
 static const PtrBlock<const Table*>* theTempTables;
@@ -574,6 +574,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::patternFUNC;
     } else if (funcName == "rownumber") {
 	ftype = TableExprFuncNode::rownrFUNC;
+    } else if (funcName == "rowid") {
+	ftype = TableExprFuncNode::rowidFUNC;
     } else if (funcName == "rand") {
 	ftype = TableExprFuncNode::randFUNC;
     } else {
@@ -622,6 +624,9 @@ TableExprNode TableParseSelect::handleLiteral (TableParseVal* val)
     case 'c':
 	tsnp = new TableExprNodeConstDComplex
 	                   (DComplex (val->dval[0], val->dval[1]));
+	break;
+    case 'b':
+        tsnp = new TableExprNodeConstBool (val->dval[0]);
 	break;
     case 's':
     {
