@@ -1,5 +1,5 @@
 //# IncrementalStMan.h: The Incremental Storage Manager
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -186,7 +186,7 @@ public:
     // Create an incremental storage manager with the given name.
     // If no name is used, it is set to an empty string.
     // The name can be used to construct a
-    // <linkto class=IncrementalStManAccessor>IncrementalStManAccessor
+    // <linkto class=ROIncrementalStManAccessor>ROIncrementalStManAccessor
     // </linkto> object (e.g. to set the cache size).
     // <br>
     // The bucket size has to be given in bytes and the cache size in buckets.
