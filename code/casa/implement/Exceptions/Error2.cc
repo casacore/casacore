@@ -1,5 +1,5 @@
 //# Error2.cc: Base class for all AIPS++ errors (non-templated classes)
-//# Copyright (C) 1993,1994,1995,1996,1997,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <aips/Exceptions/Error.h>
+#include <stdlib.h>
 #include <iostream.h>
 
 
