@@ -353,7 +353,11 @@
 class Dummy_Constants_class {
 };
 
-namespace C {
+// namespace C {
+AIPS_MACRO_NAMESPACE(C)
+#if defined(__GNUG__) && (__GNUG__ == 2) && (__GNUC_MINOR__ < 91)
+#define extern static
+#endif
   //#--------------------------------------------------------------------
   //  Mathematical constants
   //#--------------------------------------------------------------------
@@ -590,5 +594,7 @@ namespace C {
   //# <group>
   
 };
+
+#undef extern
 
 #endif
