@@ -1,0 +1,51 @@
+create test MeasurementSet
+test constructors
+test assignment and setMS
+test initSelection 
+#rows with selection 0,-1 :810
+#rows with reset == True  :2970
+#rows with selection 0, 1 :1440
+spectralwindowId=1
+Select 8 channels, start=0, width=1, inc=1: 1
+Select 7 channels, start=0, width=2, inc=1: 1
+Select 3 channels, start=1, width=3, inc=2: 1
+Select 8 channels, start=1, width=1, inc=1: 0
+Select 8 channels, start=0, width=2, inc=1: 0
+Select 8 channels, start=0, width=1, inc=2: 0
+Select polarization XX: 1
+Select polarization XY, YY: 1
+Select polarization I, U: 1
+Select polarization RR, RL, LR: 1
+Select on antenna1, feed1 and ifr_number: 1, nrow=288
+Select on rows: 1, nrow=100 1
+ranges: [time=[4.32e+09 4.32004e+09]  times=[96 element array, shaped [1]] u=[-720.497 5874.81]  v=[-3694.93 4206.64]  w=[-3605.25 4129.39]  uvdist=[54.4745 5876.23] ]
+Select full ranges
+Select on time  : 1, nrow=1440
+Select on times : 1, nrow=1440
+Select on u     : 1, nrow=1440
+Select on v     : 1, nrow=1440
+Select on w     : 1, nrow=1440
+Select on uvdist: 1, nrow=1440
+Select sub ranges
+Select on time  : 1, nrow=960
+Select on times : 1, nrow=480
+Select on u     : 1, nrow=352
+Select on v     : 1, nrow=352
+Select on w     : 1, nrow=160
+Select on uvdist: 1, nrow=160
+test getData ifraxis=F, average=F, inc=1
+test getData ifraxis=T, average=F, inc=1
+test getData ifraxis=F, average=T, inc=1
+test getData ifraxis=T, average=T, inc=10
+test getData ifraxis=F, average=F, inc=3
+test getData ifraxis=T, average=F, inc=5
+test putData ifraxis=F: 1
+test putData ifraxis=T: 1
+test putData with channel selection: 1
+Test iterInit with no columns: 1
+Test iterInit with 3 columns: 1
+Test iterOrigin: 1
+Test iteration: 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+Test iterOrigin: 1, nrow=5
+Test iterEnd: 111, nrow after iterEnd=810
+Done.
