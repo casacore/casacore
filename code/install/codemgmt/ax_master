@@ -6555,3 +6555,4 @@
 18 594 src mv trial/implement/MeasurementComponents/CalHistRecord.cc trial/implement/CalTables/CalHistRecord.cc
 18 594 src mv trial/implement/MeasurementComponents/CalBuffer.h trial/implement/CalTables/CalBuffer.h
 18 594 src mv trial/implement/MeasurementComponents/CalBuffer.cc trial/implement/CalTables/CalBuffer.cc
+18 602 src rm nrao/apps/e2echromepipe/makefile
