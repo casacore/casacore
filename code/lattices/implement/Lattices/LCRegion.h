@@ -93,6 +93,15 @@ public:
 
     virtual ~LCRegion();
 
+    // Comparison of private data stored in the LCRegion class
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
+
+    // Region type.  Returns className() of derived class
+    virtual String type() const = 0;
+
     // Make a copy of the derived object.
     // <group>
     virtual Lattice<Bool>* clone() const;
