@@ -948,8 +948,8 @@ Bool NewMSFitsOutput::writeAN(FitsOutput *output, const NewMeasurementSet &ms,
     //(ms.antenna().col(NewMSAntenna::columnName(NewMSAntenna::ARRAY_ID)) == 
     //				  Int(arraynum));
 
-    ROScalarColumn<String> inantname(antennaTable,
-				     NewMSAntenna::columnName(NewMSAntenna::NAME));
+    ROScalarColumn<String> 
+      inantname(antennaTable, NewMSAntenna::columnName(NewMSAntenna::STATION));
     ROScalarColumn<String> inantmount(antennaTable,
 				      NewMSAntenna::columnName(NewMSAntenna::MOUNT));
     ROArrayColumn<Double> inantposition(antennaTable,
