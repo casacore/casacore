@@ -43,9 +43,7 @@ include $(AIPSARCH)/makedefs
 
 # The name of this application.
 #------------------------------
-ifndef THISAPP
 THISAPP  := $(word 3,$(subst /,$(space),$(CODESUBD)))
-endif
 PCKGAPP  := $(PACKAGE)_$(THISAPP)
 
 # Hook to allow compilation of this application to be skipped.
