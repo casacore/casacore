@@ -421,7 +421,7 @@ which it passes to \unixexe{co}.
 
 Status return values
 \\ \verb+   0+: success
-\\ \verb+   1+: initialization error, no check out
+\\ \verb+   1+: initialization error, no checkout
 \\ \verb+   2+: checkout failure
 
 \subsection*{Examples}
@@ -433,7 +433,7 @@ The command
 \end{verbatim}
 
 \noindent
-would checkout \file{Foo.cc} with an exclusive lock.  Then
+would check out \file{Foo.cc} with an exclusive lock.  Then
 
 \begin{verbatim}
    ao -u Foo.cc
@@ -692,7 +692,7 @@ master directory from the current working directory.
 \item
    While \exeref{mktree} creates \rcs\ symbolic links in the programmer
    directory hierarchy, these are not used by \exe{am}.  Their main function
-   is to allow \exeref{gmake} to automatically checkout the \file{makefile}
+   is to allow \exeref{gmake} to automatically check out the \file{makefile}
    for a directory.  They also allow \rcs\ utilities such as \exeref{alog} and
    \unixexe{rlog} to be applied readily to the slave \rcs\ repository.
    \exe{am} does not make use of these \rcs\ symbolic links but deals directly
@@ -1947,7 +1947,7 @@ Refer to the options for \exeref{ai}.  \exe{rai} itself has no options.
  
 Status return values
 \\ \verb+   0+:  success (returned from \aipsexee{ai\_master}{ai})
-\\ \verb+   1+:  initialization error, no check in\\
+\\ \verb+   1+:  initialization error, no checkin\\
  
 \subsection*{Examples}
  
@@ -2082,7 +2082,7 @@ Refer to the options for \exeref{ao}.  \exe{rao} itself has no options.
  
 Status return values
 \\ \verb+   0+:  success (returned from \aipsexee{ao\_master}{ao})
-\\ \verb+   1+:  initialization error, no check out
+\\ \verb+   1+:  initialization error, no checkout
 
 \subsection*{Examples}
  
@@ -2093,7 +2093,7 @@ The command
 \end{verbatim}
  
 \noindent
-would checkout \file{Foo.cc} with an exclusive lock.  Then
+would check out \file{Foo.cc} with an exclusive lock.  Then
  
 \begin{verbatim}
    rao -u Foo.cc
