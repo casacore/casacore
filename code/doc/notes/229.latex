@@ -810,7 +810,7 @@ a string format as:
 CLI\_COMMAND\quad\quad \= String(*)\quad\quad \= 
 (Glish parameter or command sequence)
  \quad\quad \= (Reqd.) \\
-APP\_PARMS \> String(*) \> (Application parameters) \> (Reqd.)
+APP\_PARAMS \> String(*) \> (Application parameters) \> (Reqd.)
 \end{tabbing}
 
  It is recognized that a mechanism to log all ad hoc CLI commands
@@ -1929,7 +1929,7 @@ ORIGIN   & String & & & Code origin\\
 OBJECT\_ID & String & & & Originating ObjectID \\
 APPLICATION & String & & & Application name\\
 CLI\_COMMAND & String(*) & & & CLI command sequence \\
-APP\_PARMS   & String(*) & & & Application paramters\\
+APP\_PARAMS   & String(*) & & & Application paramters\\
 }
 \begin{description}
 
@@ -1954,7 +1954,7 @@ same TIME Measure reference as used in MAIN.
 
 \item[CLI\_COMMAND] CLI command sequence invoking the application.
 
-\item[APP\_PARMS] Application parameter values, in the adopted
+\item[APP\_PARAMS] Application parameter values, in the adopted
 project-wide format.
 \end{description}
 
