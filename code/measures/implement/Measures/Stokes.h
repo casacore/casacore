@@ -149,15 +149,18 @@ public:
 	static Fallible<Int> receptor2(StokesTypes stokesType);
 //              </group>
 
-    // Map stokes type to FITS type. If you add a StokesType you should change this
-    // function as well.
+    // These two functions map stokes type to FITS type and vice versa. If you add a 
+    // StokesType you should change these functions as well.
     // <ul>
-    //     <i> IQUV -> 1,2,3,4
-    //     <i> RR,LL,RL,LR -> -1,-2,-3,-4   Note! Note the same as enum order!
-    //     <i> XX,YY,XY,YX -> -5,-6,-7,-8   Note! Note the same as enum order!
-    //     <i> Otherwise, map to 100 + Int(stokes_enum). This is not standard FITS.
+    //     <li> I,Q,U,V <-> 1,2,3,4
+    //     <li> RR,LL,RL,LR <-> -1,-2,-3,-4   Note! Not the same as enum order!
+    //     <li> XX,YY,XY,YX <-> -5,-6,-7,-8   Note! Not the same as enum order!
+    //     <li> Otherwise, FITS type <-> 100 + Int(stokesType). This is not standard FITS.
     // </ul>
+    // <group>
         static Int    FITSValue(StokesTypes which);
+        static StokesTypes fromFITSValue(Int);
+    // </group>
 private:
 };
 
