@@ -203,13 +203,11 @@ void MSSimulator::initFields(const uInt nSources,
   srcName_p.resize(nSources_p); 
   nIntFld_p.resize(nSources_p);  
   nMos_p.resize(2,nSources_p);
-
-  radecRefFrame_p = MDirection::showType(sourceDirection(0).
-					 getRefPtr()->getType());
-
+  radecRefFrame_p = sourceDirection(0).getRefString();
+ 
   String refFrame_check;
   for (Int i=0; i< nSources_p; i++) {
-    refFrame_check =  MDirection::showType(sourceDirection(i).myType()) ;
+    refFrame_check =  sourceDirection(i).getRefString();
     if ( refFrame_check != radecRefFrame_p ) {
       os << "Inconsistent source position reference frames, assuming all are " 
 	 << radecRefFrame_p << LogIO::POST;
