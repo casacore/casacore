@@ -2,7 +2,7 @@
 # AIPS++ code development directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1994-1996
+#   Copyright (C) 1994-1997
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -43,9 +43,9 @@ include $(AIPSARCH)/makedefs
 # Source lists.
 #--------------
 SCRIPTS  := apply_module_move apply_module_move.sed1 apply_module_move.sed2 \
-            ar_cpadd do_ar_cpadd do_instchk do_instclean do_libinstchk \
-            do_libinstclean instchk instclean instdepend ldmap libinstchk \
-            libinstclean libinstdepend map mar reident unmap
+            ar_cpadd depstat do_ar_cpadd do_instchk do_instclean \
+            do_libinstchk do_libinstclean instchk instclean instdepend ldmap \
+            libinstchk libinstclean libinstdepend map mar reident unmap
 
 
 # Pattern rules.
