@@ -2764,3 +2764,4 @@
 10 093 src mv trial/implement/Measures/test/tVelocityMachine.out aips/implement/Measures/test/tVelocityMachine.out
 10 095 src rm trial/apps/sky
 10 095 src rm trial/apps/sky/makefile
+10 095 src rm aips/implement/Mathematics/DComplex.h
