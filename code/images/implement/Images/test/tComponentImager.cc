@@ -51,6 +51,7 @@
 #include <aips/Measures/MFrequency.h>
 #include <aips/OS/File.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/Unit.h>
 #include <aips/Tables/Table.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Utilities/String.h>
@@ -84,7 +85,7 @@ int main() {
 	refPix(1) = ny/2;
 	dirCoord.setReferencePixel(refPix);
       }
-      dirCoord.setWorldAxisUnits(Vector<String>(2, "deg"), False);
+      dirCoord.setWorldAxisUnits(Vector<String>(2, "deg"), True);
       dirCoord.setIncrement(Vector<Double>(2, 1.0));
       coords2D.replaceCoordinate(dirCoord, 0);
     }
@@ -93,6 +94,7 @@ int main() {
 	image2D(TiledShape(IPosition(2,nx,ny)), coords2D,
 		File::newUniqueName("./", "tComponentImager_tmp_")
 		.absoluteName());
+      image2D.setUnits(Unit("Jy/pixel"));
       image2D.set(0.0f);
       ComponentImager::project(image2D, clist);
       AlwaysAssert(near(image2D.getAt(IPosition(2,nx/2,ny/2)), 1.0f),
@@ -101,6 +103,7 @@ int main() {
       AlwaysAssert(allNear(image2D.get(), 0.0f, C::flt_min), AipsError);
       image2D.table().markForDelete();
     }
+    cerr << "Passed the 2-D Image test" << endl;
     CoordinateSystem coords3D;
     {
       CoordinateUtil::addFreqAxis(coords3D);
@@ -118,6 +121,7 @@ int main() {
 		coords3D,
 		File::newUniqueName("./", "tComponentImager_tmp_")
 		.absoluteName());
+      image3D.setUnits(Unit("WU/pixel"));
       const MDirection ra1dec2(Quantity(1, "deg"), Quantity(-2, "deg"),
 			       MDirection::J2000);
       const MFrequency oneGhz(Quantity(1, "GHz"), MFrequency::LSR);
@@ -126,20 +130,21 @@ int main() {
 		      SpectralIndex(oneGhz, 1.0));
       clist.add(c2);
       ComponentImager::project(image3D, clist);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 0, nx/2,ny/2)), 1.0f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 0, nx/2,ny/2)), 200.0f),
 		   AipsError);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 1, nx/2,ny/2)), 1.0f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 1, nx/2,ny/2)), 200.0f),
 		   AipsError);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 2, nx/2,ny/2)), 1.0f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 2, nx/2,ny/2)), 200.0f),
 		   AipsError);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 0, nx/2+1,ny/2-2)), 0.5f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 0, nx/2+1,ny/2-2)), 100.f),
 		   AipsError);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 1, nx/2+1,ny/2-2)), 1.0f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 1, nx/2+1,ny/2-2)), 200.0f),
 		   AipsError);
-      AlwaysAssert(near(image3D.getAt(IPosition(3, 2, nx/2+1,ny/2-2)), 1.5f),
+      AlwaysAssert(near(image3D.getAt(IPosition(3, 2, nx/2+1,ny/2-2)), 300.0f),
 		   AipsError);
       image3D.table().markForDelete();
     }
+    cerr << "Passed the 3-D Image test" << endl;
   }
   catch (AipsError x) {
     cerr << x.getMesg() << endl;
