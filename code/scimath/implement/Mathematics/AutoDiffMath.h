@@ -1,5 +1,5 @@
 //# AutoDiffMath.h: an automatic differential class for arameterized functions
-//# Copyright (C) 1995,1999
+//# Copyright (C) 1995,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -123,11 +123,10 @@ template<class T> AutoDiff<T> abs(const AutoDiff<T>& ad);
 template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x,const T c);
 // </group>
  
-// Comparison operators.  Except "==", "!=" and "near", only the values are 
-// compared.  The derivatives are not compared.  For the exceptions,
-// both value and derivatives are compared.  near calls near functions
-// in aips/Mathematics for corresponding data type with default tolerance.
-// n
+// Comparison operators.  Only the values are compared: in the actual
+// functions, comparisons are used to decide on algorithms. To check
+// if two functions are equal, for example, use value && derivative
+// comparisons both.
 // <group>
 // Compare two AutoDiff's
 template<class T> Bool operator>(const AutoDiff<T>& right,const AutoDiff<T>& left);

@@ -1,5 +1,5 @@
 //# AutoDiff.cc: an automatic differential class for  parameterized functions
-//# Copyright (C) 1995,1996,1999
+//# Copyright (C) 1995,1996,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -505,123 +505,94 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T>& x,const T c)
 }
 
 
-template<class T> Bool operator>(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  return (right.value_ > left.value_? True : False);
+template<class T> Bool operator>(const AutoDiff<T>& right,
+				 const AutoDiff<T>& left) {
+  return (right.value_ > left.value_);
 }
 
-template<class T> Bool operator<(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  return (right.value_ < left.value_? True : False);
+template<class T> Bool operator<(const AutoDiff<T>& right,
+				 const AutoDiff<T>& left) {
+  return (right.value_ < left.value_);
 }
 
-template<class T> Bool operator>=(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  return (right.value_ >= left.value_? True : False);
+template<class T> Bool operator>=(const AutoDiff<T>& right,
+				  const AutoDiff<T>& left) {
+  return (right.value_ >= left.value_);
 }
 
-template<class T> Bool operator<=(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  return (right.value_ <= left.value_? True : False);
+template<class T> Bool operator<=(const AutoDiff<T>& right,
+				  const AutoDiff<T>& left) {
+  return (right.value_ <= left.value_);
 }
 
-template<class T> Bool operator==(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  if(right.value_ != left.value_) return False;
-  if(right.nderivs != left.nderivs) return False;
-  for(uInt i = 0; i < right.nderivs; i++) 
-    if((*right.gradient_)(i) != (*left.gradient_)(i)) return False;
-  return True;
+template<class T> Bool operator==(const AutoDiff<T>& right,
+				  const AutoDiff<T>& left) {
+  return (right.value_ == left.value_);
 }
 
-template<class T> Bool operator!=(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  return (!(left == right) ? True : False);
+template<class T> Bool operator!=(const AutoDiff<T>& right,
+				  const AutoDiff<T>& left) {
+  return (right.value_ != left.value_);
 }
 
 // Compare an AutoDiff and a constant
-template<class T> Bool operator>(const AutoDiff<T>& right,const T& left)
-{
-  return (right.value_ > left ? True : False);
+template<class T> Bool operator>(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ > left);
 }
 
-template<class T> Bool operator<(const AutoDiff<T>& right,const T& left)
-{
-  return (right.value_ < left ? True : False);
+template<class T> Bool operator<(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ < left);
 }
 
-template<class T> Bool operator>=(const AutoDiff<T>& right,const T& left)
-{
-  return (right.value_ >= left ? True : False);
+template<class T> Bool operator>=(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ >= left);
 }
 
-template<class T> Bool operator<=(const AutoDiff<T>& right,const T& left)
-{
-  return (right.value_ <= left ? True : False);
+template<class T> Bool operator<=(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ <= left);
 }
 
-template<class T> Bool operator==(const AutoDiff<T>& right,const T& left)
-{
-  if(right.value_ != left) return False;
-  if(right.nderivs != 0) return False;
-  return True;
+template<class T> Bool operator==(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ == left);
 }
 
-template<class T> Bool operator!=(const AutoDiff<T>& right,const T& left)
-{
-  return (!(right == left) ? True : False);
+template<class T> Bool operator!=(const AutoDiff<T>& right,const T& left) {
+  return (right.value_ != left);
 }
 
 // Compare a constant and an AutoDiff
-template<class T> Bool operator>(const T& right,const AutoDiff<T>& left)
-{
-  return (right > left.value_ ? True : False);
+template<class T> Bool operator>(const T& right,const AutoDiff<T>& left) {
+  return (right > left.value_);
 }
 
-template<class T> Bool operator<(const T& right,const AutoDiff<T>& left)
-{
-  return (right < left.value_ ? True : False);
+template<class T> Bool operator<(const T& right,const AutoDiff<T>& left) {
+  return (right < left.value_);
 }
 
-template<class T> Bool operator>=(const T& right,const AutoDiff<T>& left)
-{
-  return (right >= left.value_ ? True : False);
+template<class T> Bool operator>=(const T& right,const AutoDiff<T>& left) {
+  return (right >= left.value_);
 }
 
-template<class T> Bool operator<=(const T& right,const AutoDiff<T>& left)
-{
-  return (right <= left.value_ ? True : False);
+template<class T> Bool operator<=(const T& right,const AutoDiff<T>& left) {
+  return (right <= left.value_);
 }
 
-template<class T> Bool operator==(const T& right,const AutoDiff<T>& left)
-{
-  if(right != left.value_) return False;
-  if(left.nderivs != 0) return False;
-  return True;
+template<class T> Bool operator==(const T& right,const AutoDiff<T>& left) {
+  return (right == left.value_);
 }
 
-template<class T> Bool operator!=(const T& right,const AutoDiff<T>& left)
-{
-  return (!(right == left) ? True : False);
+template<class T> Bool operator!=(const T& right,const AutoDiff<T>& left) {
+  return (right != left.value_);
 }
 
-template<class T> Bool near(const T& right,const AutoDiff<T>& left)
-{
-  if(left.nderivs != 0) return False;
+template<class T> Bool near(const T& right,const AutoDiff<T>& left) {
   return near(right,left.value_);
 }
 
-template<class T> Bool near(const AutoDiff<T>& right,const T& left)
-{
-  if(right.nderivs != 0) return False;
+template<class T> Bool near(const AutoDiff<T>& right,const T& left) {
   return near(left,right.value_);
 }
-template<class T> Bool near(const AutoDiff<T>& right,const AutoDiff<T>& left)
-{
-  if(left.nderivs != right.nderivs) return False;
-  if(!near(left.value_ , right.value_)) return False;
-  for(Int i = 0; i < left.nderivs; i++) {
-    if(!near((*right.gradient_)(i),(*left.gradient_)(i))) return False;
-  }
-  return True;
+
+template<class T> Bool near(const AutoDiff<T>& right,const AutoDiff<T>& left) {
+  return (near(left.value_ , right.value_));
 }
