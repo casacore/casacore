@@ -5389,3 +5389,4 @@
 15 138 src mv trial/implement/Tables/NullTable.h aips/implement/Tables/NullTable.h
 15 138 src mv trial/implement/Tables/NullTable.cc aips/implement/Tables/NullTable.cc
 15 138 src rm trial/implement/Tables/NullTable.cc
+15 148 src mv trial/implement/Tables/TableAttr.h aips/implement/Tables/TableAttr.h
