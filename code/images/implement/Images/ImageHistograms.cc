@@ -832,7 +832,7 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
    range(1) = stats(ImageStatsBase::MAX);
    T xMin = range(0);
    T xMax = range(1);
-   T yMin = T(0.0);
+   T yMin = convertF(0.0);
    T yMax = linearYMax; 
 
 // Set bin width  
@@ -840,15 +840,15 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
    const uInt nBins = nBins_p;
    const T binWidth = HistTiledCollapser<T>::setBinWidth(range, nBins);
       
-    
    
 // Generate the equivalent Gaussian if desired
       
    Vector<T> gX, gY;
-   Int nGPts;
+   uInt nGPts;
    T gMax;
    if (doGauss2) {
-      makeGauss (nGPts, gMax, gX, gY, stats(ImageStatsBase::MEAN), stats(ImageStatsBase::SIGMA), linearSum,
+      makeGauss (nGPts, gMax, gX, gY, stats(ImageStatsBase::MEAN), 
+                 stats(ImageStatsBase::SIGMA), linearSum,
                  xMin, xMax, binWidth);   
       yMax = max(yMax, gMax);
    }
@@ -924,10 +924,10 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
 // Now we convert our <T> to Float
 // Stretch extrema by 5%
 
-   Float xMinF = Float(real(xMin));
-   Float xMaxF = Float(real(xMax));
-   Float yMinF = Float(real(yMin));
-   Float yMaxF = Float(real(yMax));
+   Float xMinF = convertT(xMin);
+   Float xMaxF = convertT(xMax);
+   Float yMinF = convertT(yMin);
+   Float yMaxF = convertT(yMax);
          
    ImageUtilities::stretchMinMax(xMinF, xMaxF);
    ImageUtilities::stretchMinMax(yMinF, yMaxF);
@@ -943,8 +943,8 @@ Bool ImageHistograms<T>::displayOneHistogram (const T& linearSum,
       Vector<Float> gXF(gX.nelements());
       Vector<Float> gYF(gY.nelements());
       for(uInt i=0; i<gXF.nelements(); i++) {
-         gXF(i) = Float(gX(i));
-         gYF(i) = Float(gY(i));
+         gXF(i) = convertT(gX(i));
+         gYF(i) = convertT(gY(i));
       }
       plotter.line (gXF, gYF);
    }
@@ -1118,7 +1118,7 @@ void ImageHistograms<T>::makeCumulative (Vector<T>& counts,
                           
 
 template <class T>
-void ImageHistograms<T>::makeGauss (Int& nGPts,
+void ImageHistograms<T>::makeGauss (uInt& nGPts,
                                     T& gMax,
                                     Vector<T>& gX,
                                     Vector<T>& gY,
@@ -1142,9 +1142,9 @@ void ImageHistograms<T>::makeGauss (Int& nGPts,
    
 // Set up Gaussian functional
    
-   const Float gaussAmp = dSum * C::_1_sqrt2 * C::_1_sqrtpi / dSigma;
-   const Float gWidth = sqrt(8.0*C::ln2) * dSigma;
-   const Gaussian1D<Float> gauss(gaussAmp, Float(dMean), gWidth);
+   const Float gaussAmp = convertT(dSum) * C::_1_sqrt2 * C::_1_sqrtpi / convertT(dSigma);
+   const Float gWidth = sqrt(8.0*C::ln2) * convertT(dSigma);
+   const Gaussian1D<Float> gauss(gaussAmp, convertT(dMean), gWidth);
  
    
 // Generate Gaussian.  
@@ -1152,10 +1152,10 @@ void ImageHistograms<T>::makeGauss (Int& nGPts,
    T tmp;
    T dgx = (xMax - xMin) / nGPts;
    T xx;
-   Int i;
+   uInt i;
    for (i=0,xx=xMin,gMax=0.0; i<nGPts; i++) {
       gX(i) = xx;
-      gY(i) = gauss(Float(xx));
+      gY(i) = gauss(convertT(xx));
 
       tmp = gY(i);
       gMax = max(gMax, tmp);
@@ -1224,10 +1224,8 @@ Bool ImageHistograms<T>::makeStatistics()
 template <class T>
 void ImageHistograms<T>::makeHistograms()
 {
-
-
    if (haveLogger_p) {
-      os_p << LogIO::NORMAL << "Creating histogram storage image" << LogIO::POST;
+      os_p << LogIO::NORMAL << "Creating new histogram storage image" << LogIO::POST;
    }
 
 // Set storage image shape.  The first axis is the histogram axis 
@@ -1294,19 +1292,20 @@ void ImageHistograms<T>::plotHist (const Vector<T>& x,
                                    const Vector<T>& y,
                                    PGPlotter& plotter) const
 { 
-   const Float width = (Float(x(1)) - Float(x(0))) / 2.0;
-   Float xx;
+   const Float width = convertT(x(1) - x(0)) / 2.0;
+   Float xx, yy;
    for (uInt i=0; i<x.nelements(); i++) {
-      xx = Float(x(i)) - width;
- 
+      xx = convertT(x(i)) - width;
+      yy = convertT(y(i));
+     
       plotter.move (xx, 0.0);
-      plotter.draw (xx, Float(y(i)));
+      plotter.draw (xx, yy);
                           
-      plotter.move (xx, Float(y(i)));
-      xx = Float(x(i)) + width;
-      plotter.draw (xx, Float(y(i)));
+      plotter.move (xx, yy);
+      xx = convertT(x(i)) + width;
+      plotter.draw (xx, yy);
    
-      plotter.move (xx, Float(y(i)));
+      plotter.move (xx, yy);
       plotter.draw (xx, 0.0);
     }
 }
@@ -1543,7 +1542,7 @@ void HistTiledCollapser<T>::endAccumulator(Array<T>& result,
 // [nBins, n1, n3]
 
     for (uInt k=0; k<nBins_p*n1_p*n3_p; k++) {
-       *resptr++ = T(*histPtr++);
+       *resptr++ = *histPtr++;
     }
     
     result.putStorage (res, deleteRes);
