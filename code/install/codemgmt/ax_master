@@ -4067,3 +4067,4 @@
 14 065 src mv trial/implement/DisplayDatas/Histogram2dDD.h trialdisplay/implement/DisplayDatas/Histogram2dDD.h
 14 065 src mv trial/implement/DisplayDatas/Histogram2dDM.h trialdisplay/implement/DisplayDatas/Histogram2dDM.h
 14 065 src mv trial/implement/DisplayDatas/LatticeAsContour.h trialdisplay/implement/DisplayDatas/LatticeAsContour.h
+14 065 src mv trial/implement/DisplayDatas/LatticeAsRaster.h trialdisplay/implement/DisplayDatas/LatticeAsRaster.h
