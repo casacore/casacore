@@ -7,7 +7,7 @@ CHAR_MAX..............  127
 SCHAR_MIN.............  -128
 SCHAR_MAX.............  127
 UCHAR_MAX.............  255
-MB_LEN_MAX............  1
+MB_LEN_MAX............  5
 SHRT_MIN..............  -32768
 SHRT_MAX..............  32767
 USHRT_MAX.............  65535
@@ -35,10 +35,10 @@ DBL_MAX_10_EXP........  308
 LDBL_MAX_10_EXP.......  4932
 FLT_MANT_DIG..........  24
 DBL_MANT_DIG..........  53
-LDBL_MANT_DIG.........  64
+LDBL_MANT_DIG.........  113
 FLT_DIG...............  6
 DBL_DIG...............  15
-LDBL_DIG..............  18
+LDBL_DIG..............  33
 FLT_EPSILON...........  1.19209e-07
 DBL_EPSILON...........  2.22045e-16
 LDBL_EPSILON..........  (unprintable)
@@ -51,7 +51,7 @@ LDBL_MAX..............  (unprintable)
 
 Machine constants from values.h:
 HIBITS................  -32768
-HIBITL................  -2147483648
+HIBITL................  2147483648
 MAXSHORT..............  32767
 MAXLONG...............  2147483647
 MAXINT................  2147483647
@@ -92,27 +92,6 @@ C::etogamma...........  1.78107
 
 Fundamental physical constants (SI units):
 C::c..................  2.99792e+08
-C::Gravity............  6.67259e-11
-C::Planck.............  6.62608e-34
-C::GasConst...........  8.31451
-C::Avogadro...........  6.02214e+23
-C::qe.................  1.60218e-19
-C::mp.................  1.67262e-27
-C::mp_me..............  1836.15
-
-Derived physical constants (SI units):
-C::mu0................  1.25664e-06
-C::epsilon0...........  8.85419e-12
-C::Planck_2pi.........  1.05457e-34
-C::u..................  1.66054e-27
-C::Boltzmann..........  1.38066e-23
-C::Faraday............  96485.3
-C::me.................  9.10939e-31
-C::re.................  2.8179e-15
-C::a0.................  5.2918e-11
-
-Physical quantities (SI units):
-C::R0.................  6.9599e+08
 
 Metric prefixes:
 C::yotta..............  1e+24
@@ -139,15 +118,9 @@ C::yocto..............  1e-24
 Angular measure:
 C::radian.............  1
 C::circle.............  6.28319
-C::circuit............  6.28319
-C::cycle..............  6.28319
-C::rev................  6.28319
-C::revolution.........  6.28319
-C::rotation...........  6.28319
 C::degree.............  0.0174533
 C::arcmin.............  0.000290888
 C::arcsec.............  4.84814e-06
-C::grad...............  0.015708
 
 Solid angular measure:
 C::steradian..........  1
@@ -161,200 +134,3 @@ C::second.............  1
 C::minute.............  60
 C::hour...............  3600
 C::day................  86400
-C::week...............  604800
-C::fortnight..........  1.2096e+06
-
-Frequency:
-C::Hertz..............  1
-
-Length:
-C::metre..............  1
-C::meter..............  1
-C::Fermi..............  1e-15
-C::Angstrom...........  1e-10
-C::inch...............  0.0254
-C::thou...............  2.54e-05
-C::hand...............  0.1016
-C::span...............  0.2286
-C::foot...............  0.3048
-C::yard...............  0.9144
-C::fathom.............  1.8288
-C::rod................  5.0292
-C::perch..............  5.0292
-C::rope...............  6.096
-C::chain..............  20.1168
-C::furlong............  201.168
-C::mile...............  1609.34
-C::nautical_mile......  1853.18
-C::point..............  0.000352778
-C::pica...............  0.00423333
-C::astronomical_unit..  1.49598e+11
-C::light_second.......  2.99792e+08
-C::light_year.........  9.46073e+15
-C::parsec.............  3.08568e+16
-
-Area:
-C::square_metre.......  1
-C::square_meter.......  1
-C::are................  100
-C::barn...............  1e-28
-C::square_inch........  0.00064516
-C::square_foot........  0.092903
-C::square_yard........  0.836127
-C::square_mile........  2.58999e+06
-C::square_perch.......  25.2929
-C::rood...............  1011.71
-C::acre...............  4046.86
-C::square.............  9.2903
-
-Volume:
-C::cubic_metre........  1
-C::cubic_meter........  1
-C::stere..............  1
-C::litre..............  0.001
-C::liter..............  0.001
-C::cubic_inch.........  1.63871e-05
-C::cubic_foot.........  0.0283168
-C::cubic_yard.........  0.764555
-C::cubic_mile.........  4.16818e+09
-C::gallon.............  0.00454609
-C::quart..............  0.00113652
-C::pint...............  0.000568261
-C::gill...............  0.000142065
-C::fluid_ounce........  2.8413e-05
-C::drachm.............  3.55163e-06
-C::scruple............  1.18388e-06
-C::minim..............  5.91939e-08
-C::USgallon...........  0.00378541
-C::USquart............  0.000946353
-C::USpint.............  0.000473176
-C::USgill.............  0.000118294
-C::USfluid_ounce......  2.95735e-05
-C::USdram.............  3.69669e-06
-C::USminim............  6.16115e-08
-
-Speed:
-C::knot...............  0.514773
-
-Acceleration:
-C::g..................  9.80665
-
-Mass:
-C::gram...............  0.001
-C::tonne..............  1000
-C::carat..............  0.0002
-C::pound..............  0.453592
-C::ounce..............  0.0283495
-C::stone..............  6.35029
-C::quarter............  12.7006
-C::hundredweight......  50.8023
-C::ton................  1016.05
-C::cental.............  45.3592
-C::shortquarter.......  11.3398
-C::shortcwt...........  45.3592
-C::shortton...........  907.185
-
-Force:
-C::Newton.............  1
-C::dyne...............  1e-05
-
-Pressure:
-C::Pascal.............  1
-C::atmosphere.........  101325
-C::bar................  100000
-C::torr...............  133.322
-C::mmHg...............  133.322
-
-Energy:
-C::Joule..............  1
-C::kWh................  3.6e+06
-C::erg................  1e-07
-C::calorie............  4.184
-C::calorie_IT.........  4.1868
-C::Btu................  1054.35
-C::eV.................  1.60218e-19
-
-Temperature difference:
-C::Kelvin.............  1.38066e-23
-C::Celsius............  1.38066e-23
-C::Centigrade.........  1.38066e-23
-C::Fahrenheit.........  7.67032e-24
-C::Rankine............  7.67032e-24
-
-Temperature at 0 on each temperature scale:
-C::Kelvin_0...........  0
-C::Celsius_0..........  3.77127e-21
-C::Centigrade_0.......  3.77127e-21
-C::Fahrenheit_0.......  3.52582e-21
-C::Rankine_0..........  0
-
-Power:
-C::Watt...............  1
-C::horsepower.........  745.7
-
-Flux density:
-C::Jansky.............  1e-26
-C::fu.................  1e-26
-
-Electric charge:
-C::Coulomb............  1
-C::abCoulomb..........  10
-C::statCoulomb........  3.33564e-10
-
-Electric current:
-C::Ampere.............  1
-C::abAmpere...........  10
-C::statAmpere.........  3.33564e-10
-
-Electric potential:
-C::Volt...............  1
-C::abVolt.............  1e-08
-C::statVolt...........  299.792
-
-Electric resistance:
-C::Ohm................  1
-C::abOhm..............  1e-09
-C::statOhm............  8.99377e+11
-
-Electric conductance:
-C::Siemens............  1
-C::mho................  1
-
-Electric capacitance:
-C::Farad..............  1
-C::abFarad............  1e+09
-C::statFarad..........  1.11188e-12
-
-Electric inductance:
-C::Henry..............  1
-C::abHenry............  1e-09
-C::statHenry..........  8.99377e+11
-
-Magnetic induction:
-C::Tesla..............  1
-C::Gauss..............  0.0001
-
-Magnetic flux:
-C::Weber..............  1
-C::Maxwell............  1e-08
-C::line...............  1e-08
-
-Magnetomotance:
-C::Ampere_turn........  1
-C::abAmpere_turn......  10
-C::Gilbert............  0.795775
-C::praGilbert.........  12.5664
-
-Magnetic field intensity:
-C::Oersted............  79.5775
-C::praOersted.........  12.5664
-
-Radioactivity:
-C::Bequerel...........  1
-
-Luminous intensity:
-C::candela............  1
-
-Amount of substance:
-C::mole...............  1
-C::molecule...........  1.66054e-24
