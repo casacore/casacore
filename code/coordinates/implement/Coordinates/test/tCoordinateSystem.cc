@@ -43,7 +43,7 @@
 
 #include <iostream.h>
 
-DirectionCoordinate makeDirectionCoordinate();
+DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True);
 SpectralCoordinate makeSpectralCoordinate ();
 StokesCoordinate makeStokesCoordinate(Bool silly=True);
 LinearCoordinate makeLinearCoordinate(uInt nAxes=2);
@@ -540,10 +540,10 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
    {
       CoordinateSystem cSys2;
-      cSys2.addCoordinate(makeDirectionCoordinate());
+      cSys2.addCoordinate(makeDirectionCoordinate(False));
       cSys2.addCoordinate(makeStokesCoordinate(False));
       cSys2.addCoordinate(makeSpectralCoordinate());
-      cSys2.addCoordinate(makeLinearCoordinate());
+//      cSys2.addCoordinate(makeLinearCoordinate(1));
 //
       TableRecord rec;
       IPosition shape;
@@ -898,18 +898,26 @@ void doit4()
    Vector<Bool> pixelAxes(cSys.nPixelAxes());
    Vector<Bool> worldAxes(cSys.nWorldAxes());
    Vector<Double> worldOut, pixelOut;
+   Vector<Double> worldMin(cSys.nWorldAxes());
+   Vector<Double> worldMax(cSys.nWorldAxes());
+//
+   Vector<Int> tmp = cSys.worldAxes(2);
+   worldMin(tmp(0)) = -180.0;
+   worldMin(tmp(1)) = -90.0;
+   worldMax(tmp(0)) = 180.0;
+   worldMax(tmp(1)) = 90.0;
 //
 // Force a failure.   ALl axes must be pixel or world
 //
    pixelAxes.set(False);
    worldAxes.set(False);
    if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix forced failure 1 did not occur")));
    }
    pixelAxes(0) = True;
    if (cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix forced failure 2 did not occur")));
    }
 //
@@ -926,7 +934,7 @@ void doit4()
    worldAxes.set(False);
    Vector<Double> worldOut2;
    if (!cSys.toMix(worldOut2, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -949,7 +957,7 @@ void doit4()
    worldAxes.set(True);
    Vector<Double> pixelOut2;
    if (!cSys.toMix(worldOut, pixelOut2, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -976,7 +984,7 @@ void doit4()
    worldAxes(3) = True;
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1003,7 +1011,7 @@ void doit4()
    worldAxes(2) = True;
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1032,7 +1040,7 @@ void doit4()
    Vector<Double> savePixelIn(pixelIn.copy());
 //         
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1050,7 +1058,7 @@ void doit4()
    worldAxes(3) = True;
 //
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1088,8 +1096,14 @@ void doit4()
    worldAxes(1) = True;
    worldAxes(3) = True;
 //
+   tmp = cSys.worldAxes(2);
+   worldMin(tmp(0)) = -180.0;
+   worldMin(tmp(1)) = -90.0;
+   worldMax(tmp(0)) = 180.0;
+   worldMax(tmp(1)) = 90.0;
+//
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1120,7 +1134,7 @@ void doit4()
    worldAxes(0) = True;
 //
    if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                   worldAxes, pixelAxes)) {
+                   worldAxes, pixelAxes, worldMin, worldMax)) {
       throw(AipsError(String("toMix conversion failed because ")
             + cSys.errorMessage()));
    }
@@ -1134,8 +1148,7 @@ void doit4()
 
 void doit5()
 //
-// test mixed conversion functions with interface two
-// and axis removal
+// test mixed conversion functions with axis removal
 //
 {
    {
@@ -1150,13 +1163,16 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+//
       pixelAxes.set(False);
       worldAxes.set(False);
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1179,13 +1195,16 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+//
       pixelAxes.set(False);
       worldAxes.set(False);
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1210,13 +1229,25 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+      Vector<Int> tmp = cSys.worldAxes(0);
+      if (tmp(0)!=-1) {
+         worldMin(tmp(0)) = -180.0;
+         worldMax(tmp(0)) = 180.0;
+      }
+      if (tmp(1)!=-1) {
+         worldMin(tmp(1)) = -90.0;
+         worldMax(tmp(1)) = 90.0;
+      }
+//
       pixelAxes.set(False);
       worldAxes.set(False);
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1240,13 +1271,25 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+      Vector<Int> tmp = cSys.worldAxes(0);
+      if (tmp(0)!=-1) {
+         worldMin(tmp(0)) = -180.0;
+         worldMax(tmp(0)) = 180.0;
+      }
+      if (tmp(1)!=-1) {
+         worldMin(tmp(1)) = -90.0;
+         worldMax(tmp(1)) = 90.0;
+      }
+//
       pixelAxes.set(False); pixelAxes(0) = True;
       worldAxes.set(False);
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1273,13 +1316,25 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+      Vector<Int> tmp = cSys.worldAxes(0);
+      if (tmp(0)!=-1) {
+         worldMin(tmp(0)) = -180.0;
+         worldMax(tmp(0)) = 180.0;
+      }
+      if (tmp(1)!=-1) {
+         worldMin(tmp(1)) = -90.0;
+         worldMax(tmp(1)) = 90.0;
+      }
+//
       pixelAxes.set(False); 
       worldAxes.set(False); worldAxes(1) = True;
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1306,13 +1361,26 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+      Vector<Int> tmp = cSys.worldAxes(0);
+      if (tmp(0)!=-1) {
+         worldMin(tmp(0)) = -180.0;
+         worldMax(tmp(0)) = 180.0;
+      }
+      if (tmp(1)!=-1) {
+         worldMin(tmp(1)) = -90.0;
+         worldMax(tmp(1)) = 90.0;
+      }
+//
       pixelAxes.set(False); 
+
       worldAxes.set(False); worldAxes(0) = True;
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1339,13 +1407,25 @@ void doit5()
       Vector<Bool> worldAxes(cSys.nWorldAxes());
       Vector<Double> worldOut, pixelOut;
 //
+      Vector<Double> worldMin(cSys.nWorldAxes());
+      Vector<Double> worldMax(cSys.nWorldAxes());
+      Vector<Int> tmp = cSys.worldAxes(0);
+      if (tmp(0)!=-1) {
+         worldMin(tmp(0)) = -180.0;
+         worldMax(tmp(0)) = 180.0;
+      }
+      if (tmp(1)!=-1) {
+         worldMin(tmp(1)) = -90.0;
+         worldMax(tmp(1)) = 90.0;
+      }
+//
       pixelAxes.set(False); pixelAxes(0) = True;
       worldAxes.set(False);
       worldIn = cSys.referenceValue().copy();
       pixelIn = cSys.referencePixel().copy();
 //
       if (!cSys.toMix(worldOut, pixelOut, worldIn, pixelIn, 
-                      worldAxes, pixelAxes)) {
+                      worldAxes, pixelAxes, worldMin, worldMax)) {
          throw(AipsError(String("toMix conversion failed because ")
                + cSys.errorMessage()));
       }
@@ -1362,7 +1442,7 @@ void doit5()
 }
 
 
-DirectionCoordinate makeDirectionCoordinate()
+DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees)
 {
    MDirection::Types type = MDirection::J2000;
    Projection proj = Projection::SIN;
@@ -1376,9 +1456,18 @@ DirectionCoordinate makeDirectionCoordinate()
    cdelt(0) = 1e-6; cdelt(1) = 2e-6;
    xform = 0.0;
    xform.diagonal() = 1.0;
-   return DirectionCoordinate(type, proj, crval(0), crval(1),
-                              cdelt(0), cdelt(1),
-                              xform, crpix(0), crpix(1));
+   DirectionCoordinate dC(type, proj, crval(0), crval(1),
+                          cdelt(0), cdelt(1),
+                          xform, crpix(0), crpix(1));
+//
+   if (unitsAreDegrees) {
+      Vector<String> units(2);
+      units(0) = "deg";
+      units(1) = "deg";
+      dC.setWorldAxisUnits(units); 
+   }
+//
+   return dC;
 }
 
 
