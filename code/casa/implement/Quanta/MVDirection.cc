@@ -241,6 +241,13 @@ Bool MVDirection::putValue(const Vector<Quantum<Double> > &in) {
   return True;
 }
 
+void MVDirection::setAngle(Double angle0, Double angle1) { 
+  Double loc = cos(angle1);
+  xyz(0) = cos(angle0)*loc;
+  xyz(1) = sin(angle0)*loc;
+  xyz(2) = sin(angle1);
+}
+
 Double MVDirection::positionAngle(const MVPosition &other) const {
   Double longDiff(getLong() - other.getLong());
   Double slat1(xyz(2));
