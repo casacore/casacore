@@ -48,13 +48,12 @@
 // <synopsis> 
 // The LCDifference class is a specialization of class
 // <linkto class=LCRegion>LCRegion</linkto>.
-// It makes it possible to extend a LCRegion along straight lines to
-// other dimensions. E.g. a circle in the xy-plane can be extended to
-// a cylinder in the xyz-space.
-// includes the difference border.
-// It can only be used for a lattice of any dimensionality as long as the
-// dimensionality of the (hyper-)difference matches the dimensionality of
-// the lattice.
+// It makes it possible to "subtract" one region from
+// another.  For example, imagine an overlapping box 
+// and circle.  The box - circle is the box with the
+// chunk taken out of it where the circle overlaps.
+// The circle - box is the circle with the chunk
+// taken out of it where the box overlaps.
 // <p>
 // The center of the difference must be inside the lattice
 // </synopsis> 
@@ -83,6 +82,12 @@ public:
     // Assignment (copy semantics).
     LCDifference& operator= (const LCDifference& other);
 
+    // Comparison
+    // <group>
+    virtual Bool operator== (const LCRegion& other) const;
+    virtual Bool operator!= (const LCRegion& other) const;
+    // </group>
+
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
@@ -94,6 +99,9 @@ public:
 
     // Get the class name (to store in the record).
     static String className();
+
+    // Get the region type.  Returns className()
+    virtual String type() const;
 
     // Convert the (derived) object to a record.
     virtual TableRecord toRecord (const String& tableName) const;
