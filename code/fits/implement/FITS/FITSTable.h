@@ -287,33 +287,66 @@ private:
     char *theheap_p;
 };
 
+// <summary>
+// Simplified interface to create and write to a FITS Binary Table
+// </summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> General knowledge of FITS binary and ASCII tables.
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
+//
+// <todo asof="1995/06/01">
+//   <li> probably much
+// </todo>
+
 class FITSTableWriter
 {
 public:
     enum {DefaultMaxStringSize = 16};
 
-    // You MUST have already written a null first HDU.
+    // You MUST have already written a first HDU to FitsOutput.
+    // description contains the names and types of the table columns to be written.
+    // The row is not rearranged (i.e. they are used in order) for alignment purposes.
+    // Array columns must have fixed shape.  Use the maxStringLengths record to 
+    // indicate any string columns which should have a length other than the default
+    // value by providing an int field of the same name as the string field in this record.
+    // The size of the table (nrows) must be given at creation.  Use extraKeywords to
+    // indicate any keywords not automatically created.  The units record is used to
+    // indicate the units for any column.  Provide a string field with the same name as
+    // the column field in description.  If freeOutput is True, file must come from new
+    // since it will be deleted upon destruction.  You might not want this to happen if
+    // you are going to write many tables to the same fits file.
     FITSTableWriter(FitsOutput *file, 
-		    // The row won't be rearranged so that, e.g., DOUBLEs are
-		    // first for alignment purposes. You might want to do this
-		    // yourself. Arrays must be fixed shape.
 		    const RecordDesc &description,
-		    // Change default with int field with same name as string
-		    // field in description
 		    const Record &maxStringLengths,
 		    uInt nrows,
 		    const Record &extraKeywords,
-		    // the units, where available
 		    const Record &units,
-		    // You might want to write many fits files in the same
-		    // physical file.  If True, "file" must come from new,
-		    // since it will be deleted upon destruction.
 		    Bool freeOutput = True);
 
     ~FITSTableWriter();
 
+    // use this to set the value of the current row to be written
     RecordInterface &row() {return row_p;}
-    // Eventually return how many rows have been written
+
+    // Write the current row()
     void write();
 
     // Don't delete this out from under us!
@@ -336,34 +369,60 @@ private:
     PtrBlock<FITSFieldCopier *> copiers_p;
 };
 
-// Write random groups. Basically like tablewriter, except:
-//   1. must be first hdu
-//   2. all "columns" must be the same type, i.e. float.
+// <summary>
+// Simplified interface to create and write to FITS random groups
+// </summary>
+//
+// <use visibility=export>
+//
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> General knowledge of FITS binary and ASCII tables.
+// </prerequisite>
+//
+// <etymology>
+// </etymology>
+//
+// <synopsis>
+// Like FITSTableWriter except that this must be the first HDU and
+// all "columns" in the description must have the same type, i.e. float.
+// </synopsis>
+//
+// <example>
+// </example>
+//
+// <motivation>
+// </motivation>
+//
+// <todo asof="1995/06/01">
+//   <li> probably much
+// </todo>
+
 class FITSGroupWriter
 {
 public:
-    // Must always be the first HDU, so no point constructing it with a
-    // FitsOutput
+    // Since this must always be the first HDU, there is no point in constructing it
+    // with a FitsOutput.  description indicates the names of the random groups parameters.
+    // nrows is a synonym for ngroups.  Use extraKeywords to
+    // indicate any keywords not automatically created (SIMPLE, BITPIX, NAXIS*, EXTEND,
+    // BLOCKED, GROUPS, PCOUNT, GOUNT, ORIGIN, END). If freeOutput is True, file will be
+    // deleted by the destructor.  You might not want this to happen if
+    // you are going to write any extensions to the same fits file.  You can get the
+    // FitsOutput used here from write()
     FITSGroupWriter(const String &fileName,
-		    // All fields must be floating point at present, maybe
-		    // eventually generalize to other BITPIX's. One (and only
-		    // one) of the fields must be an array.
 		    const RecordDesc &description,
-		    // nrows is a synonym for ngroups
 		    uInt nrows,
-		    // Keywords other than those that will be added 
-		    // automatically. (SIMPLE, BITPIX, NAXIS*, EXTEND,
-		    // BLOCKED, GROUPS, PCOUNT, GCOUNT, ORIGIN, END).
 		    const Record &extraKeywords,
-		    // You might want to write many fits files in the same
-		    // physical file.  If True, "file" must come from new,
-		    // since it will be deleted upon destruction.
 		    Bool freeOutput = True);
 
     ~FITSGroupWriter();
 
+    // Set the values for the current group
     RecordInterface &row() {return row_p;}
-    // Eventually return how many rows have been written
+
+    // Write the current group (row()).
     void write();
 
     // Don't delete this out from under us!
