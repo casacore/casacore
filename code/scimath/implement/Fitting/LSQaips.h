@@ -45,7 +45,7 @@
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LSQ>LSQFit</linkto> class
+//   <li> <linkto class=LSQFit>LSQFit</linkto> class
 // </prerequisite>
 //
 // <etymology>
@@ -59,7 +59,7 @@
 // on it.
 //
 // Its functionality is identical to that of the
-// <linkto class=LSQ>LSQFit</linkto> class, although it will be faster to use
+// <linkto class=LSQFit>LSQFit</linkto> class, although it will be faster to use
 // the iterator interface directly, since constructing of temporary iterators
 // can be avoided
 // </synopsis>
