@@ -530,7 +530,9 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
     // The unspecified sliceShape dimensions are 1.
     IPosition slice(nrdim_p, 1);
     for (i=0; i<sliceShape.nelements(); i++) {
-        slice(i) = sliceShape(i);
+	if (sliceShape(i) > 0) {
+	    slice(i) = sliceShape(i);
+	}
     }
     // The unspecified window start dimensions are 0.
     IPosition start(nrdim_p, 0);
@@ -561,45 +563,66 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
         }
     }
     // Determine per dimension the number of tiles needed for the window.
-    // Determine per dimension how often a tile will be used.
-    IPosition nused(nrdim_p);
+    // Determine per dimension how many tiles are needed for a slice.
+    // Determine per dimension how often a tile will be reused.
     IPosition ntiles(nrdim_p);
+    IPosition reused(nrdim_p);
+    IPosition sliceTiles(nrdim_p);
     for (i=0; i<nrdim_p; i++) {
         uInt axis = path(i);
         uInt startTile = start(axis) / tileShape_p(axis);
         uInt endTile   = end(axis) / tileShape_p(axis);
         ntiles(i) = 1 + endTile - startTile;
-        nused(i) = max (1, tileShape_p(axis) / slice(axis));
-        // When start or slice not aligned, add one extra.
-        if (slice(axis) <= end(axis) - start(axis)) {
-            if (start(axis) % slice(axis) != 0
-            ||  tileShape_p(axis) % slice(axis) != 0) {
-                nused(i)++;
+	// Get start pixel in first tile.
+	Int st = start(axis) % tileShape_p(axis);
+	// Nr of tiles needed for a slice (note that start plays a role).
+	sliceTiles(i) = 1 + (st + slice(axis) - 1) / tileShape_p(axis);
+        reused(i) = 0;
+	// Determine if a tile is reused in an iteration.
+	// It can only be reused when the slice is smaller than the window.
+        if (slice(axis) < 1 + end(axis) - start(axis)) {
+	    // It is reused when the slice is smaller than the tile.
+	    // or when slice or start do not fit integrally in tile.
+	    if (slice(axis) < tileShape_p(axis)
+	    ||  st != 0
+	    ||  slice(axis) % tileShape_p(axis) != 0) {
+		reused(i) = 1;
             }
-        }
+	}
     }
     // Try to cache as much as possible. When the maximum cache size
     // is exceeded, try it for one dimension less.
     // Determine the optimum cache size taking the maximum cache
     // size into account. This is done by starting at the highest
     // dimension and working our way down until the cache size fits.
-    uInt nr = nrdim_p;
-    while (nr > 0) {
-        nr--;
+    uInt nrd = nrdim_p;
+    while (nrd > 0) {
+        nrd--;
         // Caching is needed when lower dimensions are reused because
         // a higher dimension loops through a tile.
         // So skip dimensions until a reused dimension is found.
-        while (nr > 0  &&  nused(nr) == 1) {
+	uInt nr = nrd;
+        while (nr > 0  &&  reused(nr) == 0) {
             nr--;
         }
+	// The cache needs to contain the tiles needed for the entire window
+	// of the remaining axes.
+	// When a tile is reused, we also need to take into account
+	// the number of tiles needed for the slice.
         uInt cacheSize = 1;
         for (i=0; i<nr; i++) {
             cacheSize *= ntiles(i);
         }
+	if (reused(nr) > 0) {
+	    for (i=nr+1; i<=nrd; i++) {
+		cacheSize *= sliceTiles(i);
+	    }
+	}
         if (cacheSize == validateCacheSize (cacheSize)) {
             setCacheSize (cacheSize, forceSmaller);
             break;
         }
+	nrd = nr;
     }
 }
 
