@@ -33,6 +33,8 @@ require "ctime.pl";
 require "hostname.pl";
 use Cwd qw(cwd chdir);
 
+umask(022);
+
 @APATH = split(/\s+/,$ENV{'AIPSPATH'});
 die "AIPSPATH not set" unless scalar(@APATH) > 0;
 
@@ -364,7 +366,7 @@ sub tar {
 	$extra = "--exclude-from $EXCLUDE_FILE";
     }
 
-    open(TAR,"($TAR $extra cf $TARGET/$NAME/$name.tar $dir > /dev/null) 2>&1 |");
+    open(TAR,"($TAR --create --file $TARGET/$NAME/$name.tar $extra $dir > /dev/null) 2>&1 |");
     while ( <TAR> ) { print "\t$_"; }
     close(TAR);
 
