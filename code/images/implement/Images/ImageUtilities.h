@@ -136,7 +136,7 @@ public:
                                   Bool spectral, const String& stokes, 
                                   Bool linear, Bool tabular, Bool overwrite);
 
-// Function to bin up one axis of an N-D MaskedArray. The interface
+// Function to bin up (average data) one axis of an N-D MaskedArray. The interface
 // is pretty specific to a particular application. It's here because
 // its implemented with ImageRebin.  On input, the output MA *must*
 // have zero shape.   The input and output Coordinates must have the

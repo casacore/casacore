@@ -53,7 +53,8 @@ class LogIO;
 // </prerequisite>
 //
 // <synopsis> 
-// Class RebinImage can be used to rebin an image by integer amounts per axis.
+// Class RebinImage can be used to rebin (data averaged over bin) an image 
+// by integer amounts per axis.
 // </synopsis> 
 //
 // <example>
