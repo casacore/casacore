@@ -380,7 +380,7 @@ protected:
     Bool find_scale_factor(String &error, Vector<Double> &factor, 
 			   const Vector<String> &units, 
 			   const Vector<String> &oldUnits);
-    Vector<String> make_Direction_FITS_ctype (const Projection& proj,
+    Vector<String> make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
                                               const Vector<String>& axisNames,
                                               Double refLat, Bool printError) const;
 private:
