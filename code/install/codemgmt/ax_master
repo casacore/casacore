@@ -4238,3 +4238,4 @@
 14 090 src rm trial/implement/Guiutils/pgplotwidget_meta.g
 14 091 src mv npoi/implement/Chatoms/newms.g npoi/implement/Chatoms/emptyms.g
 14 093 src mv install/sgi install/sgi_ntv
+14 103 src mv trial/apps/aips2help/CHANGELOG.LAST CHANGELOG.LAST
