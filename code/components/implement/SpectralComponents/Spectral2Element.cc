@@ -28,11 +28,13 @@
 //# Includes
 #include <trial/Wnbt/SpectralElement.h>
 
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Containers/RecordInterface.h>
 #include <aips/Containers/RecordFieldId.h>
 #include <aips/Containers/Record.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Utilities/String.h>
+#include <aips/Utilities/DataType.h>
 
 //# Member functions 
 Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
@@ -43,17 +45,36 @@ Bool SpectralElement::toRecord(String &error, RecordInterface &out) const {
 
 Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
   if (in.isDefined("type") && in.isDefined("parameters") &&
-      in.type(in.idToNumber(RecordFieldId("type"))) == TpString &&
-      in.type(in.idToNumber(RecordFieldId("parameters"))) == TpArrayDouble) {
+      in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     String stp;
     SpectralElement::Types tp;
     in.get(RecordFieldId("type"), stp);
     if (!SpectralElement::toType(tp, stp)) {
       error += String("Unknown spectral type in SpectralElement::fromRecord\n");
       return False;
-    };
+    }
+
+// Accomodate possibility of record coming from Glish in any old type
+
     Vector<Double> param;
-    in.get(RecordFieldId("parameters"), param);
+    DataType dataType = in.dataType("parameters");
+    if (dataType==TpArrayDouble) {
+       in.get("parameters", param);
+    } else if (dataType==TpArrayFloat) {
+       Vector<Float> v;
+       in.get("parameters", v);
+       param.resize(v.nelements());
+       convertArray(param,v);
+    } else if (dataType==TpArrayInt) {
+       Vector<Int> v;
+       in.get("parameters", v);
+       param.resize(v.nelements());
+       convertArray(param,v);
+    } else {
+      error += String("Parameters field must be double, float or int\n");
+      return False;
+    }
+//
     if (tp == GAUSSIAN) {
       if (param.nelements() != 3) {
 	error += String("Illegal number of parameters for Gaussian element\n");
@@ -73,7 +94,8 @@ Bool SpectralElement::fromRecord(String &error, const RecordInterface &in) {
       n_p = param.nelements()-1;
       par_p.resize(n_p+1);
     };
-    for (uInt i=0; i<param.nelements(); i++) par_p(i) = param(i);
+//
+    par_p = param;
     return True;
   };
   error += String("Illegal spectral element record in fromRecord\n");
