@@ -44,7 +44,7 @@
 
 template<class T>
 ImageConcat<T>::ImageConcat()
-: LatticeConcat(0, False),
+: LatticeConcat<T>(0, False),
   itsWarnAxisNames(True),
   itsWarnAxisUnits(True),
   itsWarnImageUnits(True),
@@ -56,7 +56,7 @@ ImageConcat<T>::ImageConcat()
 
 template<class T>
 ImageConcat<T>::ImageConcat(uInt axis, Bool showProgress)
-: LatticeConcat(axis, showProgress),
+: LatticeConcat<T>(axis, showProgress),
   itsWarnAxisNames(True),
   itsWarnAxisUnits(True),
   itsWarnImageUnits(True),
