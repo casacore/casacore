@@ -35,6 +35,7 @@
 #include <trial/Coordinates/Projection.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Arrays/Vector.h>
+#include <wcslib/wcs.h>
 
 class celprm;
 class prjprm;
@@ -174,7 +175,9 @@ public:
                        const Vector<Double>& worldIn,
                        const Vector<Double>& pixelIn,
                        const Vector<Bool>& worldAxes,
-                       const Vector<Bool>& pixelAxes) const;
+                       const Vector<Bool>& pixelAxes,
+                       const Vector<Double>& worldMin,
+                       const Vector<Double>& worldMax) const; 
 
     // A convenient way to turn the world vector into an MDirection for further
     // processing in the Measures system.
@@ -276,6 +279,10 @@ public:
     // delete.
     virtual Coordinate *clone() const;
 
+    // This is so CS has access to the static function make_FITS_type
+    // The alternative is to make it public or replicate the code.
+    friend class CoordinateSystem;
+
 private:
     // Direction type
     MDirection::Types type_p;
@@ -285,15 +292,18 @@ private:
 
     // WCS structures
     // <group>
-    celprm *celprm_p;
-    prjprm *prjprm_p;
+    celprm* celprm_p;
+    prjprm* prjprm_p;
+    wcsprm* wcs_p;
+    char c_ctype_p[2][9];
+    double c_crval_p[2];
     // </group>
 
     // Performs the linear part of the transformation.
     LinearXform linear_p;
 
     // WCS computes in degrees - use this to convert back and forth between
-    // degrees and the cuurently requested units.
+    // degrees and the currently requested units.
     Double to_degrees_p[2];
 
     // Axis names.
@@ -304,7 +314,20 @@ private:
 
     // Temporaries
     mutable Vector<Double> world_tmp_p;
+    mutable Vector<Double> in_tmp_p;
+    mutable Vector<Double> out_tmp_p;
+    mutable Quantum<Double> mix_quant_tmp;
     mutable String errorMsg_p;
+    mutable int mixpix_p;
+    mutable int mixcel_p;
+    mutable double mix_vspan_p[2];
+    mutable double mix_world_p[2];
+    mutable double mix_pixcrd_p[2];
+    mutable double mix_imgcrd_p[2];
+    mutable double mix_vstep_p;
+    mutable int mix_viter_p;
+    mutable double mix_phi_p;
+    mutable double mix_theta_p;
 
     // Interconvert between degrees and the current angular unit
     // <group>
@@ -321,7 +344,30 @@ private:
     // (in(0)) or latitude (in(1)) is the world coordinate . It is
     // assumed that the other value is the pixel coordinate.
     Bool toMix2(Vector<Double>& out, const Vector<Double>& in,
+                const Vector<Double>& minWorld, const Vector<Double>& maxWorld,
                 Bool longIsWorld) const;
+
+    // Helper functions interfacing to WCS
+    // <group>
+    static Vector<String> make_FITS_ctype (MDirection::Types type,
+                                           const Projection& proj,
+                                           Double refLat, Bool printError);
+
+
+    static void make_celprm_and_prjprm(celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,
+                                   char c_ctype[2][9], double c_crval[2],
+                                   const Projection& proj,
+                                   MDirection::Types type,
+                                   Double refLong, Double refLat,
+                                   Double longPole, Double latPole);
+
+    static void copy_celprm_and_prjprm(celprm* &pToCel, prjprm* &pToPrj,
+                                   wcsprm* &pToWcs,
+                                   char toctype[2][9], double tocrval[2],
+                                   const celprm *pFromCel, const prjprm *pFromPrj,
+                                   const wcsprm *pFromWcs,
+                                   const char fromctype[2][9], const double fromcrval[2]);
+    // </group>
 
 };
 
