@@ -144,6 +144,7 @@ const Block<String> &Aipsrc::patterns() {
   if (doInit) parse();
   return keywordPattern;
 }
+
 const String &Aipsrc::fillAips(const String &nam) {
   if (!filled) {
     uhome = EnvironmentVariables::value("HOME");
@@ -326,7 +327,7 @@ uInt Aipsrc::parse(String &fileList) {
 	  keywordValue[nkw] = value;
 	  keyword.gsub(gs00, gs01);
 	  keyword.gsub(gs10, gs11);
-	  keywordPattern[nkw] = keyword;
+	  keywordPattern[nkw] = String("^") + keyword + String("$");
 	  nkw++;
 	  if (i == 0) fileEnd = nkw;
 	};            
