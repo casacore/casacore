@@ -759,6 +759,9 @@ void WCBox::convertPixel(Double& pixel,
          pixel = value.getValue();
       } else if (value.getUnit() == "frac") {
          pixel = value.getValue() * shape;
+	 if (!isBlc) {
+	    pixel -= 1;
+	 }
       }
 
 // Convert to absolute pixel
