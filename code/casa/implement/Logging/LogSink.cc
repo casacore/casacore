@@ -150,6 +150,11 @@ const LogSinkInterface &LogSink::localSink() const
     return *(local_sink_p);
 }
 
+LogSinkInterface &LogSink::localSink()
+{
+    return *(local_sink_p);
+}
+
 LogSink &LogSink::localSink(LogSinkInterface *&fromNew)
 {
     local_sink_p = fromNew;
