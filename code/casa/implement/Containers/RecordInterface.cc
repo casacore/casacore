@@ -144,9 +144,9 @@ IPosition RecordInterface::shape (const RecordFieldId& id) const
     case TpArrayUInt:
 	return asArrayuInt(whichField).shape();
     case TpArrayFloat:
-	return asArrayfloat(whichField).shape();
+	return asArrayFloat(whichField).shape();
     case TpArrayDouble:
-	return asArraydouble(whichField).shape();
+	return asArrayDouble(whichField).shape();
     case TpArrayComplex:
 	return asArrayComplex(whichField).shape();
     case TpArrayDComplex:
@@ -308,11 +308,11 @@ void RecordInterface::get (const RecordFieldId& id, uInt& value) const
 }
 void RecordInterface::get (const RecordFieldId& id, float& value) const
 {
-    value = asfloat (id);
+    value = asFloat (id);
 }
 void RecordInterface::get (const RecordFieldId& id, double& value) const
 {
-    value = asdouble (id);
+    value = asDouble (id);
 }
 void RecordInterface::get (const RecordFieldId& id, Complex& value) const
 {
