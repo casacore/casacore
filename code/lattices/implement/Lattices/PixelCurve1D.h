@@ -68,7 +68,7 @@
 // <example>
 // <srcblock>
 //  // Use function y=cos(2*pi*x) on the interval [0,2] with 5 points.
-//  Sinusoid1D<Float> fn;
+//  Sinusoid1D<float> fn;
 //  PixelCurve1D pcurve2(fn, 0., 2., 5);
 //  AlwaysAssertExit (pcurve2.npoints() == 5);
 //  pcurve2.getPixelCoord (x, y, 0, 4);
@@ -93,25 +93,29 @@
 class PixelCurve1D
 {
 public:
-  // Define a straight line from (x1,y1) to (x2,y2) with
-  // the given number of points.
-  explicit PixelCurve1D (Float x1=0, Float y1=0, Float x2=1, Float y2=1,
-			 uInt npoints=2);
+  // Define a straight line from (x1,y1) to (x2,y2).
+  // The default number of points is the length of the line.
+  explicit PixelCurve1D (double x1=0, double y1=0, double x2=1, double y2=1,
+			 uInt npoints=0);
 
-  // Define a curve with an arbitrary function from x1 to x2 with
-  // the given number of points.
-  PixelCurve1D (const Function1D<Float,Float>&,
-		Float x1, Float x2, uInt npoints);
+  // Define a curve with an arbitrary function from x1 to x2.
+  // The default number of points is the length of the curve.
+  // The length of the curve is determined numerically by integration
+  // of sqrt(1+sqr(df/dx)).
+  PixelCurve1D (const Function1D<float,float>&,
+		float x1, float x2, uInt npoints=0);
 
   // Define a curve from a polyline with the given points.
   // Both vectors have to be equally long and at least 2 long.
-  // The X-points have to be in ascending order.
-  // When pixel coordinates are asked (using getPixelCoord), it uses
-  // linear interpolation between the points.
   // The argument <src>npoints</src> defines the number of points
   // (with regular steps) in which the curve is divided.
-  PixelCurve1D (const Vector<Float>& x, const Vector<Float>& y,
-		uInt npoints);
+  // The default is the length of the polyline.
+  PixelCurve1D (const Vector<Int>& x, const Vector<Int>& y,
+		uInt npoints=0);
+  PixelCurve1D (const Vector<float>& x, const Vector<float>& y,
+		uInt npoints=0);
+  PixelCurve1D (const Vector<double>& x, const Vector<double>& y,
+		uInt npoints=0);
 
   PixelCurve1D (const PixelCurve1D& that);
 
@@ -124,18 +128,16 @@ public:
 
   // Get the pixel coordinates in the original lattice for point start
   // till end with given step.
-  void getPixelCoord (Vector<Float>& x, Vector<Float>& y,
+  void getPixelCoord (Vector<float>& x, Vector<float>& y,
 		      uInt start, uInt end, uInt incr=1) const;
 
 private:
-  Function<Float,Float>* itsFunc;
-  Float itsX1;
-  Float itsX2;
-  Float itsStep;
-  uInt  itsNpoints;
-  Vector<Float> itsX;
-  Vector<Float> itsY;
-  Vector<Float> itsSlope;
+  // Initialize the object.
+  void init (const Vector<double>& x, const Vector<double>& y, uInt npoints);
+
+  uInt           itsNpoints;
+  Vector<double> itsX;
+  Vector<double> itsY;
 };
 
 

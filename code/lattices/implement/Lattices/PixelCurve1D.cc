@@ -28,69 +28,66 @@
 
 #include <trial/Lattices/PixelCurve1D.h>
 #include <aips/Functionals/Polynomial.h>
+#include <aips/Arrays/ArrayMath.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 
 
-PixelCurve1D::PixelCurve1D (float x1, float y1, float x2, float y2,
+PixelCurve1D::PixelCurve1D (double x1, double y1, double x2, double y2,
 			    uInt npoints)
-: itsFunc    (0),
-  itsX1      (x1),
-  itsX2      (x2),
-  itsStep    (0),
-  itsNpoints (npoints)
 {
-  AlwaysAssert (npoints>0 && (x1<x2 || (npoints==1 && x1<=x2)), AipsError);
-  float a=1;
-  if (npoints > 1) {
-    a = (y2-y1) / (x2-x1);
-    itsStep = (x2-x1) / (npoints-1);
-  }
-  float b = y1 - a*x1;
-  Polynomial<Float>* func = new Polynomial<Float>(1);
-  itsFunc = func;
-  func->setCoefficient (0, b);
-  func->setCoefficient (1, a);
+  Vector<double> x(2), y(2);
+  x(0) = x1;
+  x(1) = x2;
+  y(0) = y1;
+  y(1) = y2;
+  init (x, y, npoints);
 }
 
-PixelCurve1D::PixelCurve1D (const Function1D<Float,Float>& func,
+PixelCurve1D::PixelCurve1D (const Function1D<float,float>& func,
 			    float x1, float x2, uInt npoints)
-: itsFunc    (func.clone()),
-  itsX1      (x1),
-  itsX2      (x2),
-  itsStep    (0),
-  itsNpoints (npoints)
 {
-  AlwaysAssert (npoints>0 && (x1<x2 || (npoints==1 && x1<=x2)), AipsError);
-  if (npoints > 1) {
-    itsStep = (x2-x1) / (npoints-1);
+  // Calculate the length of the curve numerically.
+  // Analytically it is the integral of (sqrt(1 + sqr(df/dx)).
+  // Use 1000 times the number of pixels in x or y for the numeric calculation.
+  uInt np = uInt(1000 * std::max(abs(x2-x1), abs(func(x2) - func(x1))));
+  Vector<double> x(np), y(np);
+  double step = (double(x2)-x1) / (np-1);
+  for (uInt i=0; i<np; i++) {
+    x[i] = x1;
+    y[i] = func(x1);
+    x1 += step;
   }
+  init (x, y, npoints);
 }
 
-PixelCurve1D::PixelCurve1D (const Vector<Float>& x, const Vector<Float>& y,
+PixelCurve1D::PixelCurve1D (const Vector<Int>& x, const Vector<Int>& y,
 			    uInt npoints)
-: itsFunc    (0),
-  itsStep    (0),
-  itsNpoints (npoints),
-  itsX       (x),
-  itsY       (y),
-  itsSlope   (x.nelements())
 {
-  AlwaysAssert (npoints >= 2, AipsError);
-  AlwaysAssert (x.nelements() >= 2, AipsError);
-  AlwaysAssert (x.nelements() == y.nelements(), AipsError);
-  uInt nr = x.nelements();
-  for (uInt i=1; i<nr; i++) {
-    AlwaysAssert (x[i] > x[i-1], AipsError);
-    itsSlope[i] = (y[i] - y[i-1]) / (x[i] - x[i-1]);
-  }
-  itsX1 = x[0];
-  itsX2 = x[nr-1];
-  itsStep = (itsX2-itsX1) / (npoints-1);
+  Vector<double> xd(x.nelements());
+  convertArray (xd, x);
+  Vector<double> yd(y.nelements());
+  convertArray (yd, y);
+  init (xd, yd, npoints);
+}
+
+PixelCurve1D::PixelCurve1D (const Vector<float>& x, const Vector<float>& y,
+			    uInt npoints)
+{
+  Vector<double> xd(x.nelements());
+  convertArray (xd, x);
+  Vector<double> yd(y.nelements());
+  convertArray (yd, y);
+  init (xd, yd, npoints);
+}
+
+PixelCurve1D::PixelCurve1D (const Vector<double>& x, const Vector<double>& y,
+			    uInt npoints)
+{
+  init (x, y, npoints);
 }
 
 PixelCurve1D::PixelCurve1D (const PixelCurve1D& that)
-: itsFunc (0)
 {
   operator= (that);
 }
@@ -98,66 +95,93 @@ PixelCurve1D::PixelCurve1D (const PixelCurve1D& that)
 PixelCurve1D& PixelCurve1D::operator= (const PixelCurve1D& that)
 {
   if (this != &that) {
-    delete itsFunc;
-    itsFunc = 0;
-    if (that.itsFunc) {
-      itsFunc  = that.itsFunc->clone();
-    }
-    itsX1      = that.itsX1;
-    itsX2      = that.itsX2;
-    itsStep    = that.itsStep;
     itsNpoints = that.itsNpoints;
-    itsX.resize     (0);
-    itsY.resize     (0);
-    itsSlope.resize (0);
-    itsX     = that.itsX;
-    itsY     = that.itsY;
-    itsSlope = that.itsSlope;
+    itsX.resize (0);
+    itsY.resize (0);
+    itsX = that.itsX;
+    itsY = that.itsY;
   }
   return *this;
 }
   
 PixelCurve1D::~PixelCurve1D()
+{}
+
+void PixelCurve1D::init (const Vector<double>& x, const Vector<double>& y,
+			 uInt npoints)
 {
-  delete itsFunc;
+  AlwaysAssert (x.nelements() == y.nelements(), AipsError);
+  AlwaysAssert (x.nelements() >= 2, AipsError);
+  uInt nr = x.nelements() - 1;
+  // Calculate the total length of the curve.
+  // Also calculate the scaling in x and y for each line segment.
+  Vector<double> leng(nr);
+  Vector<double> scx(nr);
+  Vector<double> scy(nr);
+  double totleng = 0;
+  for (uInt i=0; i<nr; i++) {
+    double dx = x[i+1] - x[i];
+    double dy = y[i+1] - y[i];
+    double lng = sqrt(dx*dx + dy*dy);
+    leng[i] = lng;
+    scx[i] = dx/lng;
+    scy[i] = dy/lng;
+    totleng += lng;
+  }
+  // Set nr of points if not defined.
+  if (npoints == 0) {
+    npoints = 1 + uInt(totleng + 0.1);
+  }
+  itsNpoints = npoints;
+  // Get step length along the curve.
+  double step = totleng / (npoints-1);
+  // Now calculate the X and Y value for each point along the curve.
+  itsX.resize (npoints);
+  itsY.resize (npoints);
+  uInt np=0;
+  // Step through all line segments. Calculate the points on each segment.
+  // Keep track of the remaining length.
+  double rem = 0;
+  for (uInt i=0; i<nr; i++) {
+    double lng = leng[i];
+    if (rem < lng) {
+      double dx = rem*scx[i];
+      double dy = rem*scy[i];
+      itsX[np] = x[i] + dx;
+      itsY[np] = y[i] + dy;
+      np++;
+      dx = step*scx[i];
+      dy = step*scy[i];
+      double ln = rem+step;
+      while (ln <= lng) {
+	itsX[np] = itsX[np-1] + dx;
+	itsY[np] = itsY[np-1] + dy;
+	np++;
+	ln += step;
+      }
+      rem = ln - lng;
+    } else {
+      rem -= lng;
+    }
+  }
+  if (np < npoints) {
+    itsX[np] = x[nr];
+    itsY[np] = y[nr];
+    np++;
+  }
+  AlwaysAssert (np == npoints, AipsError);
 }
 
-void PixelCurve1D::getPixelCoord (Vector<Float>& x, Vector<Float>& y,
+void PixelCurve1D::getPixelCoord (Vector<float>& x, Vector<float>& y,
 				  uInt start, uInt end, uInt incr) const
 {
   AlwaysAssert (start<=end && end<itsNpoints, AipsError);
   uInt nr = 1 + (end-start) / incr;
   x.resize (nr);
   y.resize (nr);
-  Float valx = itsX1 + start*itsStep;
-  Float stepx = incr*itsStep;
-  if (itsFunc) {
-    for (uInt i=0; i<nr; i++) {
-      x(i) = valx;
-      y(i) = (*itsFunc)(valx);
-      valx += stepx;
-    }
-  } else {
-    uInt inx=0;
-    uInt i=0;
-    while (valx >= itsX[inx]) inx++;
-    while (i < nr  &&  inx < itsX.nelements()) {
-      Float valy = itsY[inx-1] + (valx - itsX[inx-1]) * itsSlope[inx];
-      Float stepy = stepx * itsSlope[inx];
-      while (i < nr  &&  valx < itsX[inx]) {
-	x(i)   = valx;
-	y(i++) = valy;
-	valx += stepx;
-	valy += stepy;
-      }
-      inx++;
-    }
-    // Due to rounding it might be possible that the last element is
-    // not found. So take care of that.
-    if (i < nr) {
-      AlwaysAssert (i == nr-1, AipsError);
-      x(i) = itsX[itsX.nelements()-1];
-      y(i) = itsY[itsY.nelements()-1];
-    }
+  for (uint i=0; i<nr; i++) {
+    x[i] = itsX[start];
+    y[i] = itsY[start];
+    start += incr;
   }
 }  
