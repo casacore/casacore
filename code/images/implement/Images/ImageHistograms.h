@@ -158,13 +158,17 @@ public:
    ImageHistograms(const ImageInterface<T>& image, 
                    LogIO& os);
 
-// Copy constructor
+// Copy constructor.  Copy semantics are followed so any storage images 
+// that have already been created for <src>other</src> are copied
+// to <src>*this</src>
    ImageHistograms(const ImageHistograms<T> &other);
 
 // Destructor
   ~ImageHistograms ();
 
-// Assignment operator
+// Assignment operator.  Deletes any storage images associated with
+// the object being assigned to and copies any storage images that have
+// already been created for "other".  
    ImageHistograms<T> &operator=(const ImageHistograms<T> &other);
 
 // Set the cursor axes (0 relative).  A return value of <src>False</src>
@@ -172,6 +176,15 @@ public:
 // status of the class is bad.  The default state of the class is to set 
 // the cursor axes to all axes in the image.
    Bool setAxes (const Vector<Int>& cursorAxes);
+
+// Set the region of interest of the image.    Currently, just a blc and trc
+// are available (the increment is always set to unity at present),  In the
+// future, a more sophisticated selection method will be available.  The default
+// state of the class is to use the entire image.
+   Bool setRegion (const IPosition &blc,
+                   const IPosition &trc,
+                   const IPosition &inc,
+                   const Bool& listRegion=True);
 
 // Set the number of bins for the histogram.  Note that the bin width is
 // worked out for each histogram separately from the data minimum and maximum.
@@ -254,8 +267,8 @@ private:
    Bool binAll_p, goodParameterStatus_p, needStorageImage_p;
    Bool doCumu_p, doGauss_p, doList_p, doLog_p;
    const ImageInterface<T>* pInImage_p;
-   Int nBins_p, nVirCursorIter_p;   
-   IPosition cursorShape_p;
+   Int nBins_p;
+   IPosition  blc_p, trc_p, inc_p;
    LogIO &os_p;
    String device_p; 
    Vector<Int> cursorAxes_p;
@@ -268,11 +281,14 @@ private:
    void accumulate (const IPosition& imageCursorPos,
                     const Array<T>& cursor);
 
+// Copy storage images from other to *this
+   void copyStorageImages(const ImageHistograms<T>& other);
+
 // Display histograms as a function of display axis
    Bool displayHistograms ();
 
 // Display one histogram
-   void displayOneHistogram (const Float &linearSum,
+   Bool displayOneHistogram (const Float &linearSum,
                              const Float &linearYMax,
                              const IPosition& histPos,
                              const Vector<T>& range,
@@ -292,10 +308,11 @@ private:
 
 // Find minimum and maximum for each cursor chunk
 // and fill minmax storage image
-   void fillMinMax (RO_LatticeIterator<T>* imageIterator);
+   void fillMinMax (RO_LatticeIterator<T>* imageIterator, 
+                    const Int& nVirCursorIter);
 
 // Iterate through the image and generate the histogram accumulation image
-   void generateStorageImage();
+   Bool generateStorageImage();
 
 // Get the min and max from the min/max storage image for the current
 // location of either the input image, or the histogram storage image
@@ -329,6 +346,10 @@ private:
 // in the input image
    IPosition locInStats (const IPosition& imageCursorPos);
 
+// Given a location in the histogram storage image, convert those locations on the
+// non-histogram axis (the first one) to account for the lattice subsectioning
+   IPosition locHistInImage (const IPosition& histPosition);
+
 // Make histogram cumulative
    void makeCumulative (Vector<Float>& counts,
                         Float& yMax,
@@ -352,20 +373,10 @@ private:
                          Float& yMax,
                          const Int& nBins);
 
-// Find the world axis of the given pixel axis
-   Int pixelAxisToWorldAxis (const CoordinateSystem& cSys,
-                             const Int& pixelAxis);
-
-// Convert pixel coordinate to world coordinate string
-   void pix2World (Vector<String>& sWorld,
-                   const Int& worldAxis,
-                   const Vector<Double>& pixel,
-                   const Int& prec);
-
 // Plot one histogram
    void plotHist  (const Int& n,
-                   const float* px,
-                   const float* py);
+                   const float* const px,
+                   const float* const py);
 
 // Update the histogram storage image with the histogram
 // accumulated from the current chunk
@@ -384,17 +395,17 @@ private:
 
 
 // Return the shape of a min/max storage image slice.  
-   IPosition sliceMinMaxShape ();
+   IPosition minMaxSliceShape ();
 
 // Return the shape of a min/max storage image slice.  
-   IPosition sliceStatsShape ();
+   IPosition statsSliceShape ();
 
 // Accumulate statistical sums
    void statsAccum (Vector<Double>& stats,
                     const T& datum);
 
 // Write values of display axes on plots
-   void writeDispAxesValues (const IPosition& startPos,
+   Bool writeDispAxesValues (const IPosition& startPos,
                              const Float& xMin,
                              const Float& yMax);
 
