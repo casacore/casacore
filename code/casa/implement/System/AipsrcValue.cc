@@ -78,6 +78,15 @@ Bool AipsrcValue<T>::find(T &value,
   return x;
 }
 
+template <> 
+Bool AipsrcValue<String>::find(String &value,
+			       const String &keyword,
+			       const Unit &defun, const Unit &resun) {
+  String res;
+  Bool x = Aipsrc::find(res, keyword, 0);
+  return x;
+}
+
 template <class T>
 Bool AipsrcValue<T>::find(T &value, const String &keyword, 
 			  const Unit &defun, const Unit &resun,
