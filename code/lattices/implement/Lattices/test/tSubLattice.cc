@@ -55,9 +55,10 @@ void testVectorROIter (const Lattice<Int>& sublat,
     LatticeStepper step2(lattice.shape(), cursorShape);
     step2.subSection (slicer.start(), slicer.end(), slicer.stride());
     RO_LatticeIterator<Int>  iter2(lattice, step2);
+      // static_cast's added for a workaround for an SGI compiler bug.
     for (iter.reset(); !iter.atEnd(); iter++, iter2++){
-        AlwaysAssert(allEQ(iter.vectorCursor(),
-			   iter2.vectorCursor()), AipsError);
+        AlwaysAssert(allEQ(static_cast<Vector<Int> >(iter.vectorCursor()),
+			   static_cast<Vector<Int> >(iter2.vectorCursor())), AipsError);
     }
     nstep = iter.nsteps();
     AlwaysAssert(nstep == latticeShape.product()/latticeShape(0),

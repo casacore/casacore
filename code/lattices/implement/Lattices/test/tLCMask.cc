@@ -49,7 +49,8 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
     RO_LatticeIterator<Bool>  iter(lattice, step);
     Bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
-        AlwaysAssert(allEQ(iter.vectorCursor(), value), AipsError);
+        // static_cast is a work around for an SGI compiler bug
+        AlwaysAssert(allEQ(static_cast<Vector<Bool> >(iter.vectorCursor()), value), AipsError);
 	if (alternates) {
 	    value = (!value);
 	}
