@@ -157,7 +157,11 @@
               a_arch=hpux
            } {
               if {~ `{uname -s} Linux} {
-                 a_arch=linux
+                  if {~ `{uname -r} 2.2.*} {
+        	      a_arch=linux22
+                   } {	
+                      a_arch=linux
+	           }
               } {
                  if {~ `{uname -s} IRIX*} {
                     a_arch=sgi

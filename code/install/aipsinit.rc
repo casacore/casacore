@@ -157,6 +157,11 @@
               a_arch=hpux
            } else {
               if (~ `{uname -s} Linux) {
+                 if (~ `{uname -r} 2.2.*) {
+                    a_arch=linux22
+                 } else {
+                    a_arch=linux
+                 } 
                  a_arch=linux
               } else {
                  if (~ `{uname -s} IRIX*) {
