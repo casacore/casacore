@@ -166,6 +166,14 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     ios >> nrrow;
     ios >> format;
     ios >> tp;
+#if defined(TABLEREPAIR)
+    cerr << "tableRepair: found " << nrrow << " rows; give new number: ";
+    cin >> nrrow_p;
+    if (nrrow != nrrow_p) {
+      cerr << "Number of rows set to " << nrrow_p << endl;
+      tableChanged_p = True;
+    }
+#endif
     
     tdescPtr_p->getFile (ios, isWritable(), tableName());  // read description
     // Check if the given table type matches the type in the file.

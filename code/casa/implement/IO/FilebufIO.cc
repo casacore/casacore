@@ -1,5 +1,5 @@
 //# FilebufIO.cc: Class for IO on a file using a filebuf object.
-//# Copyright (C) 1996,1997,1998,1999
+//# Copyright (C) 1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -210,6 +210,13 @@ Int FilebufIO::read (uInt size, void* buf, Bool throwException)
     if (bytesRead < 0 || bytesRead > Int(size)) {
       throw (AipsError ("FilebufIO::read - fread returned a bad value"));
     }
+    //# In case of a table reparation the remainder has to be filled with 0.
+#if defined(TABLEREPAIR)
+    if (bytesRead < Int(size)) {
+      memset ((char*)buf + bytesRead, 0, size-bytesRead);
+      bytesRead = size;
+    }
+#endif
     if (bytesRead != Int(size) && throwException) {
       String errmsg = "FilebufIO::read - incorrect number of bytes read";
       errmsg += " from file " + fileName();

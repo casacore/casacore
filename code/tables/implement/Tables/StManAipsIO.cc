@@ -553,6 +553,9 @@ void StManColumnAipsIO::getFile (uInt nrval, AipsIO& ios)
 	uInt nrd=0;
 	while (nrd < nrval) {
 	    ios >> nr;
+	    if (nr == 0) {
+	        nr = nrval - nrd;
+	    }
 	    if (nr+nrd > nrval) {
 		throw (DataManInternalError ("StManColumnAipsIO::getFile"));
 	    }
@@ -794,7 +797,7 @@ void StManAipsIO::removeRow (uInt rownr)
 
 Bool StManAipsIO::flush (AipsIO&, Bool)
 {
-    //# Do not write if nothing has been put..
+    //# Do not write if nothing has been put.
     if (! hasPut_p) {
 	return False;
     }
@@ -835,22 +838,34 @@ void StManAipsIO::open (uInt tabNrrow, AipsIO&)
 }
 void StManAipsIO::resync (uInt nrrow)
 {
-    nrrow_p = nrrow;
     AipsIO ios(fileName());
     uInt version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.
-    uInt i, nrw, nrc, snr;
+    uInt i, nrc, snr;
     int  dt;
     if (version > 1) {
 	ios >> stmanName_p;
     }
     ios >> snr;
     ios >> uniqnr_p;
-    ios >> nrw;
+    ios >> nrrow_p;
     ios >> nrc;
-    if (snr != sequenceNr()  ||  nrw != nrrow_p  ||  nrc != ncolumn()) {
+    if (snr != sequenceNr()  ||  nrc != ncolumn()) {
 	throw (DataManInternalError
-	                 ("StManAipsIO::open: mismatch in seqnr,#row,#col"));
+	                 ("StManAipsIO::open: mismatch in seqnr,#col"));
+    }
+    if (nrrow != nrrow_p) {
+#if defined(TABLEREPAIR)
+        cerr << "StManAipsIO::open: mismatch in #row (expected " << nrrow
+	     << ", found " << nrrow_p << ")" << endl;
+	cerr << "Remainder will be added or discarded" << endl;
+	setHasPut();
+#else
+	throw (DataManInternalError
+	                 ("StManAipsIO::open: mismatch in #row; expected " +
+			  String::toString(nrrow) + ", found " +
+			  String::toString(nrrow_p)));
+#endif
     }
     for (i=0; i<ncolumn(); i++) {
 	ios >> dt;
@@ -862,7 +877,18 @@ void StManAipsIO::resync (uInt nrrow)
     //# Now read in all the columns.
     for (i=0; i<ncolumn(); i++) {
 	colSet_p[i]->getFile (nrrow_p, ios);
+	//# The following can only be executed in case of TABLEREPAIR.
+	//# Add rows if storage manager has fewer rows than table.
+	//# Remove rows if storage manager has more rows than table.
+	if (nrrow > nrrow_p) {
+	    colSet_p[i]->addRow (nrrow, nrrow_p);
+	} else if (nrrow < nrrow_p) {
+	    for (uInt r=nrrow; r<nrrow_p; r++) {
+	        colSet_p[i]->remove (nrrow);
+	    }
+	}
     }
+    nrrow_p = nrrow;
     ios.getend();
 }
 

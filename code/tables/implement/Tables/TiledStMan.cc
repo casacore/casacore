@@ -964,9 +964,21 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
     headerFile >> seqnr;
     headerFile >> nrrow;
     headerFile >> nrcol;
-    if (seqnr != sequenceNr()  ||  nrrow != nrrow_p  ||  nrcol != ncolumn()) {
+    if (seqnr != sequenceNr()  ||  nrcol != ncolumn()) {
 	throw (DataManInternalError
-	          ("TiledStMan::headerFileGet: mismatch in seqnr,#row,#col"));
+	          ("TiledStMan::headerFileGet: mismatch in seqnr,#col"));
+    }
+    if (nrrow != nrrow_p) {
+#if defined(TABLEREPAIR)
+        cerr << "TiledStMan::headerFileGet: mismatch in #row (expected "
+	     << nrrow_p << ", found " << nrrow << ")" << endl;
+	dataChanged_p = True;
+#else
+	throw (DataManInternalError
+	          ("TiledStMan::headerFileGet: mismatch in #row; expected " +
+		   String::toString(nrrow_p) + ", found " +
+		   String::toString(nrrow)));
+#endif
     }
     for (i=0; i<ncolumn(); i++) {
 	headerFile >> dtype;
@@ -1032,6 +1044,11 @@ void TiledStMan::headerFileGet (AipsIO& headerFile, uInt tabNrrow,
 	}
     }
     headerFile.getend();
+    //# The following can only be executed in case of TABLEREPAIR.
+    if (nrrow < nrrow_p) {
+      cubeSet_p[0]->extend (nrrow_p-nrrow, Record(),
+			    coordColSet_p[nrdim_p - 1]);
+    }
 }
 
 void TiledStMan::headerFileClose (AipsIO* headerFile)
