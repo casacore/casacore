@@ -114,6 +114,10 @@ CoordinateSystem CoordinateUtil::defaultCoords(uInt dims){
   default:
     throw(AipsError("defaultCoords() - cannot create cordinates except "
 		    "for a 2, 3 or 4-dimensional image"));
+    // The following line is just to suppress a compiler warning that this
+    // function does not always return a CoordinateSystem. It is never
+    // executed.
+    return CoordinateUtil::defaultCoords2D();
   }
 }
 
