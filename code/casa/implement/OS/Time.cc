@@ -43,6 +43,11 @@
 #include <sys/timeb.h>
 #endif
 
+#if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
+extern time_t altzone;	// Not declared in all <time.h> files.
+#endif
+
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 inline double daysFrom1970()
@@ -760,7 +765,6 @@ static Int isDST () {
 // Negative values are west of GMT, positive are east.
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
 Int Time::timeZoneSeconds () {
-  extern time_t altzone;	// Not declared in all <time.h> files.
   return isDST () ? -altzone : -timezone;
 }
 #elif defined(AIPS_OSF) || defined(AIPS_DARWIN)
