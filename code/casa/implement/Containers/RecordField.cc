@@ -1,5 +1,5 @@
 //# RecordField.cc: Access to an individual field from a record
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -47,9 +47,9 @@ RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record, Int whichField)
 
 template<class T>
 RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record,
-				   const String& fieldName)
+				   const RecordFieldId& id)
 {
-    attachToRecord (record, fieldName);
+    attachToRecord (record, record.idToNumber (id));
 }
 
 template<class T>
@@ -81,9 +81,9 @@ RecordFieldPtr<T>& RecordFieldPtr<T>::operator=(const RecordFieldPtr<T>& other)
 
 template<class T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
-					const String& fieldName)
+					const RecordFieldId& id)
 {
-    attachToRecord (record, record.fieldNumber (fieldName));
+    attachToRecord (record, record.idToNumber (id));
 }
 template<class T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,

@@ -1,5 +1,5 @@
 //# RecordField.h: Access to an individual field in a record
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -124,7 +124,7 @@ public:
     // an exception is thrown.
     // <group>
     RecordFieldPtr (RecordInterface& record, Int whichField);
-    RecordFieldPtr (RecordInterface& record, const String& fieldName);
+    RecordFieldPtr (RecordInterface& record, const RecordFieldId&);
     // </group>
 
     // After calling, this and other point to the same field, i.e. it
@@ -140,7 +140,7 @@ public:
     // exception is thrown.
     // <group>
     void attachToRecord (RecordInterface& record, Int whichField);
-    void attachToRecord (RecordInterface& record, const String& fieldName);
+    void attachToRecord (RecordInterface& record, const RecordFieldId&);
     // </group>
 
     // Point to no field in any Record.
@@ -225,19 +225,21 @@ public:
     RORecordFieldPtr() {}
     RORecordFieldPtr (const RecordInterface& record, Int whichField)
 	: fieldPtr_p((RecordInterface&)record, whichField) {}
-    RORecordFieldPtr (const RecordInterface& record, const String& fieldName)
-	: fieldPtr_p((RecordInterface&)record, fieldName) {}
+    RORecordFieldPtr (const RecordInterface& record, const RecordFieldId& id)
+	: fieldPtr_p((RecordInterface&)record, id) {}
     RORecordFieldPtr (const RecordFieldPtr<T>& other)
 	: fieldPtr_p(other) {}
     RORecordFieldPtr (const RORecordFieldPtr<T>& other)
 	: fieldPtr_p(other.fieldPtr_p) {}
     RORecordFieldPtr<T>& operator= (const RORecordFieldPtr<T>& other)
-    { fieldPtr_p = other.fieldPtr_p; return *this;}
+	{ fieldPtr_p = other.fieldPtr_p; return *this;}
 
     ~RORecordFieldPtr() {}
 
     void attachToRecord (const RecordInterface& record, Int whichField)
-    { fieldPtr_p.attachToRecord ((RecordInterface&)record, whichField); }
+        { fieldPtr_p.attachToRecord ((RecordInterface&)record, whichField); }
+    void attachToRecord (const RecordInterface& record, const RecordFieldId& id)
+        { fieldPtr_p.attachToRecord ((RecordInterface&)record, id); }
     
     const T& operator*() const  {return *fieldPtr_p;}
     const T& get() const  {return fieldPtr_p.get();}
