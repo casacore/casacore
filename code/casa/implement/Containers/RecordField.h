@@ -246,6 +246,9 @@ public:
 
     const String& comment() const  {return fieldPtr_p.comment();}
 
+    Int fieldNumber() const
+	{return fieldPtr_p.fieldNumber();}
+
     void detach() {fieldPtr_p.detach(); }
     Bool isAttached() const {return fieldPtr_p.isAttached(); }
 
