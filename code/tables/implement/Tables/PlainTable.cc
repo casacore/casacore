@@ -64,13 +64,13 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
 	throw (TableInvOper ("SetupNewTable " + name_p +
 			     " is already opened (is in the table cache)"));
     }
-    //# If the table already exists, exit if we cannot get a write lock.
+    //# If the table already exists, exit if it is in use.
     if (Table::isReadable (name_p)) {
 	TableLockData tlock (TableLock (TableLock::UserLocking, 0));
 	tlock.makeLock (name_p, False, True);
-	if (! tlock.acquire (0, True, 1)) {
+	if (tlock.isMultiUsed()) {
 	    throw (TableError ("Table " + name_p + " cannot be created; "
-			       "it is locked by another user"));
+			       "it is in use in another process"));
 	}
     }
     //# Create the data managers for unbound columns.
@@ -185,6 +185,13 @@ PlainTable::~PlainTable()
 	if (openedForWrite()  &&  !shouldNotWrite()) {
 	    lockPtr_p->release (True);
 	}
+    }else{
+	//# Check if table can indeed be deleted.
+	if (isMultiUsed()) {
+	    unmarkForDelete();
+	    throw (TableError ("Table " + name_p + " cannot be deleted;"
+			       " it is still used in another process"));
+	}
     }
     //# Remove it from the table cache.
     tableCache.remove (name_p);
@@ -223,6 +230,11 @@ void PlainTable::renameSubTables (const String& newName,
 {
     rwKeywordSet().renameTables (newName, oldName);
     colSetPtr_p->renameTables (newName, oldName);
+}
+
+Bool PlainTable::isMultiUsed() const
+{
+    return lockPtr_p->isMultiUsed();
 }
 
 const TableLock& PlainTable::lockOptions() const
@@ -443,9 +455,8 @@ ByteIO::OpenOption PlainTable::toAipsIOFoption (int tabOpt)
 {
     switch (tabOpt) {
     case Table::Old:
-	return ByteIO::Old;
     case Table::Delete:
-	return ByteIO::Delete;
+	return ByteIO::Old;
     case Table::Update:
 	return ByteIO::Update;
     case Table::New:
