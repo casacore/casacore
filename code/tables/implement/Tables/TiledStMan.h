@@ -261,7 +261,7 @@ public:
 
     // Test if only one hypercube is used by this storage manager.
     // If not, throw an exception. Otherwise return the hypercube.
-    TSMCube* singleHypercube();
+    virtual TSMCube* singleHypercube();
 
     // Get the given hypercube.
     // <group>
