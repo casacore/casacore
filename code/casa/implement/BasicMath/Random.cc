@@ -480,7 +480,7 @@ Erlang::~Erlang() {
 
 void Erlang::setState() {
   DebugAssert(!near(itsMean, 0.0), AipsError);
-  DebugAssert(!near(itsVariance, 0.5), AipsError);
+  DebugAssert(itsVariance > 0, AipsError);
   itsK = static_cast<Int>((itsMean * itsMean ) / itsVariance + 0.5 );
   itsK = (itsK > 0) ? itsK : 1;
   itsA = itsK / itsMean;
@@ -528,8 +528,9 @@ Double HyperGeometric::operator()() {
 }
 
 void HyperGeometric::setState() {
-  DebugAssert(!near(itsMean, 0.0), AipsError);
   DebugAssert(itsVariance > 0.0, AipsError);
+  DebugAssert(!near(itsMean, 0.0), AipsError);
+  DebugAssert(itsMean*itsMean <= itsVariance, AipsError);
   const Double z = itsVariance / (itsMean * itsMean);
   itsP = 0.5 * (1.0 - sqrt((z - 1.0) / ( z + 1.0 )));
 }
@@ -541,7 +542,7 @@ Normal::Normal(RNG* gen, Double mean, Double variance)
    itsCached(False),
    itsCachedValue(0)
 {
-  DebugAssert(itsVariance >= 0.0, AipsError);
+  DebugAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
 }
 
@@ -588,7 +589,7 @@ Double Normal::variance() const {
 
 void Normal::variance(Double x) {
   itsVariance = x;
-  DebugAssert(itsVariance >= 0.0, AipsError);
+  DebugAssert(itsVariance > 0.0, AipsError);
   itsStdDev = sqrt(itsVariance);
 }
 
@@ -628,7 +629,9 @@ void LogNormal::variance(Double x) {
 
 void LogNormal::setState() {
   const Double m2 = itsLogMean * itsLogMean;
+  DebugAssert(!near(m2, 0.0), AipsError);
   this->Normal::mean(log(m2 / sqrt(itsLogVar + m2) ));
+  DebugAssert(!near(m2+itsLogVar, 0.0), AipsError);
   this->Normal::variance(log((itsLogVar + m2)/m2 )); 
 }
 
@@ -637,6 +640,13 @@ NegativeExpntl::~NegativeExpntl() {
 
 Double NegativeExpntl::operator()() {
   return -itsMean * log(itsRNG->asDouble());
+}
+
+Poisson::Poisson(RNG* gen, Double mean)
+  :Random(gen) 
+{
+  DebugAssert(mean >= 0.0, AipsError);
+  itsMean = mean;
 }
 
 Poisson::~Poisson() {
@@ -654,6 +664,11 @@ uInt Poisson::asInt() {
     count++;
   }
   return count - 1;
+}
+
+void Poisson::mean(Double x) {
+  DebugAssert(x >= 0.0, AipsError);
+  itsMean = x;
 }
 
 Uniform::Uniform(RNG* gen, Double low, Double high)
@@ -698,7 +713,7 @@ Double Weibull::operator()() {
 }
 
 void Weibull::setState() {
-  DebugAssert(near(itsAlpha, 0.0), AipsError);
+  DebugAssert(!near(itsAlpha, 0.0), AipsError);
   itsInvAlpha = 1.0 / itsAlpha;
 }
     

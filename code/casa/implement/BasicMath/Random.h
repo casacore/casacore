@@ -379,7 +379,7 @@ inline void MLCG::reseed(Int s1, Int s2)
 // <srcblock>
 //   ACG gen(10, 20); 
 //   NegativeExpntl rnd (1.0, &gen);
-// </src>
+// </srcblock>
 // declares an additive congruential generator with seed 10 and table size 20,
 // that is used to generate exponentially distributed values with mean of 1.0.
 // 
@@ -618,9 +618,9 @@ inline Int DiscreteUniform::high() const {
 // The <src>Erlang</src> class implements an Erlang distribution with mean
 // <src>mean</src> and variance <src>variance</src>.
 
-// It is assumed that the mean is non-zero and the variance is not 0.5 and this
-// is checked when compiled in debug mode.  The remaining members allow you to
-// read and set the parameters.
+// It is assumed that the mean is non-zero and the variance is positive and
+// this is checked when compiled in debug mode.  The remaining members allow
+// you to read and set the parameters.
 // </synopsis>
 
 // <example>
@@ -764,9 +764,10 @@ inline Double Geometric::mean() const {
 // parameters of the distribution.  The <src>operator()</src> functions returns
 // a value from this distribution
 
-// It is assumed that the supplied mean is not zero and the variance is
-// positive and this is checked when compiled in debug mode.  The remaining
-// members allow you to read and set the parameters.
+// It is assumed the variance is positive and that the mean is non-zero and not
+// bigger than the square-root of the variance. This is checked when compiled
+// in debug mode.  The remaining members allow you to read and set the
+// parameters.  
 // </synopsis>
 
 // <example>
@@ -788,7 +789,7 @@ public:
   // bits. This pointer is NOT taken over by this class and the user is
   // responsible for deleting it. The second and third arguments define the
   // parameters for this distribution as described in the synopsis.
-  HyperGeometric(RNG* gen, Double mean=1.0, Double variance=1.0);
+  HyperGeometric(RNG* gen, Double mean=0.5, Double variance=1.0);
   
   // The destructor is trivial
   virtual ~HyperGeometric();
@@ -905,9 +906,9 @@ private:
 // parameters of the distribution. The <src>operator()</src> functions returns
 // a value from this distribution
 
-// It is assumed that the supplied variance is positive and this is checked
-// when compiled in debug mode.  The remaining members allow you to read and
-// set the parameters.
+// It is assumed that the supplied variance is positive and that the mean is
+// non-zero. This is checked when compiled in debug mode.  The remaining
+// members allow you to read and set the parameters.
 
 // </synopsis>
 
@@ -930,7 +931,7 @@ public:
   // taken over by this class and the user is responsible for deleting it. The
   // second and third arguments define the parameters for this distribution as
   // described in the synopsis.
-  LogNormal(RNG* gen, Double mean=0.0, Double variance=1.0);
+  LogNormal(RNG* gen, Double mean=1.0, Double variance=1.0);
 
   // The destructor is trivial
   virtual ~LogNormal();
@@ -1020,6 +1021,11 @@ inline void NegativeExpntl::mean(Double x) {
 // <src>mean</src> parameter, is the only parameter of this distribution.  The
 // <src>operator()</src> functions returns a value from this distribution. The
 // remaining members allow you to inspect and change the mean.
+
+// It is assumed that the supplied mean is non-negative and this is checked
+// when compiled in debug mode.  The remaining members allow you to read and
+// set the parameters.
+
 // </synopsis>
 
 // <example>
@@ -1040,7 +1046,7 @@ public:
   // over by this class and the user is responsible for deleting it. The second
   // argument defines the parameters for this distribution as described in the
   // synopsis.
-  Poisson(RNG* gen, Double mean);
+  Poisson(RNG* gen, Double mean=0.0);
   
   // The destructor is trivial
   virtual ~Poisson();
@@ -1064,18 +1070,8 @@ private:
   Double itsMean;
 };
 
-inline Poisson::Poisson(RNG* gen, Double mean)
-  :Random(gen) 
-{
-  itsMean = mean;
-}
-
 inline Double Poisson::mean() const { 
   return itsMean;
-}
-
-inline void Poisson::mean(Double x) {
-  itsMean = x;
 }
 
 // <summary>Uniform distribution</summary>
@@ -1200,7 +1196,7 @@ private:
   Double itsInvAlpha;
 };
 
-inline Weibull::Weibull(RNG* gen, Double alpha, Double beta)
+inline Weibull::Weibull(RNG* gen, Double alpha=1.0, Double beta=1.0)
   :Random(gen),
    itsAlpha(alpha),
    itsBeta(beta),
