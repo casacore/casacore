@@ -235,7 +235,7 @@ protected:
   SpectralModel();
 
   //# Construct a SpectralModel at the specified reference frequency.
-  SpectralModel(const MFrequency& refFreq);
+  SpectralModel(const MFrequency& refFreq, const Unit& = Unit("GHz"));
 
   //# The copy constructor uses copy semantics.
   SpectralModel(const SpectralModel& other);
