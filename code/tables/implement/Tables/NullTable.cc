@@ -108,6 +108,11 @@ Bool NullTable::isWritable() const
   return False;
 }
 
+void NullTable::deepCopy (const String&, int, Bool) const
+{
+  throwError ("deepCopy");
+}
+
 TableDesc NullTable::actualTableDesc() const
 {
   throwError ("actualTableDesc");
