@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# Coordinate.cc: this defines the Coordinate class
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,7 +34,9 @@
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 
-#include <stdio.h> // sprintf
+#include <iomanip.h>  
+#include <strstream.h>
+
 
 Coordinate::~Coordinate()
 {
@@ -195,21 +197,88 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units,
     return ok;
 }
 
-String Coordinate::format(Double worldValue, uInt worldAxis, 
-			  Int sigDigits) const
+void Coordinate::checkFormat(Coordinate::formatType& format, 
+                             const Bool absolute) const
+//
+//
 {
-    if (sigDigits <= 0) {
-	sigDigits = 8;
-    }
-    if (sigDigits > 50) {
-	sigDigits = 20;
-    }
-    char buffer[50];
-    char formatbuf[10];
-    sprintf(&formatbuf[0], "%s%d%s", "%.", int(sigDigits), "E");
-    sprintf(&buffer[0], &formatbuf[0], double(worldValue));
-    return String(buffer);
+// Scientific or fixed formats only are allowed.
+// Absolute or offset is irrelevant
+ 
+   if (format == Coordinate::DEFAULT) {
+      format = Coordinate::SCIENTIFIC;
+   } else {
+      if (format != Coordinate::SCIENTIFIC &&
+          format != Coordinate::FIXED) format = Coordinate::SCIENTIFIC;
+   }
 }
+
+
+void Coordinate::getPrecision(Int &precision,
+                              Coordinate::formatType& format,
+                              const Bool absolute,
+                              const Int defPrecScientific,
+                              const Int defPrecFixed,
+                              const Int defPrecTime) const
+{
+// Scientific or fixed formats only are allowed.
+// Absolute or offset is irrelevant
+ 
+   checkFormat (format, absolute);
+   
+   if (format == Coordinate::SCIENTIFIC) {
+      if (defPrecScientific >= 0) {
+         precision = defPrecScientific;
+      } else {
+         precision = 6;              
+      }
+   } else if (format == Coordinate::FIXED) {
+      if (defPrecFixed >= 0) {
+         precision = defPrecFixed;
+      } else {
+         precision = 6;
+      }
+   }
+}
+
+String Coordinate::format(String& units,
+                          const Coordinate::formatType format, 
+                          const Double worldValue, 
+                          const uInt worldAxis, 
+                          const Bool absolute, 
+                          const Int precision) const
+{
+   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+ 
+// Check format
+ 
+   Coordinate::formatType form = format;
+   checkFormat (form, absolute);
+   
+   
+// Set default precision
+ 
+   Int prec = precision;
+   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+       
+   
+// Format and get units
+         
+   ostrstream oss;
+   if (form == Coordinate::SCIENTIFIC) {
+      oss.setf(ios::scientific, ios::floatfield);
+      oss.precision(prec);
+      oss << worldValue;
+   } else if (form == Coordinate::FIXED) {
+      oss.setf(ios::fixed, ios::floatfield);
+      oss.precision(prec);
+      oss << worldValue;        
+   }                            
+   units = worldAxisUnits()(worldAxis);
+ 
+   return String(oss);
+}
+
 
 // after = factor * before
 Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor, 

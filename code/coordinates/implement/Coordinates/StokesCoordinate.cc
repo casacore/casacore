@@ -348,3 +348,15 @@ Coordinate *StokesCoordinate::clone() const
 {
     return new StokesCoordinate(*this);
 }
+
+String StokesCoordinate::format(String& units,
+                                const Coordinate::formatType format,
+                                const Double worldValue,
+                                const uInt worldAxis,
+                                const Bool absolute,
+                                const Int precision) const
+{
+   units = worldAxisUnits()(worldAxis);
+   const Stokes::StokesTypes sType = Stokes::type(Int(worldValue+0.5));
+   return Stokes::name(sType);
+}

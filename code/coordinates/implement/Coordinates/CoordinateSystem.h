@@ -239,13 +239,20 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
-    // Provide a common interface to getting formatted representations of
-    // coordinate values out. The default implementation merely turns
-    // the number into a string using operator<<(Double). Derived classes
-    // might, e.g., use an hms representation. sigDigits <=1 means make
-    // your best guess.
-    virtual String format(Double worldValue, uInt worldAxis, 
-			  Int sigDigits = -1) const;
+    // Format a world value with the common format interface (refer to the base 
+    // class <linkto class=Coordinate>Coordinate</linkto> for more details on this 
+    // interface).   For the specified <src>worldAxis</src>, the coordinate
+    // number in the CoordinateSystem is found and the actual derived Coordinate
+    // class object for that number is created.  The arguments to the formatting 
+    // function are then passed on to the formatter for that Coordinate. So
+    // refer to the other derived Coordinate classes for specifics on the
+    // formatting.
+    virtual String format(String& units,
+                          const Coordinate::formatType format,
+                          const Double worldValue,
+                          const uInt worldAxis,
+                          const Bool absolute,
+                          const Int precision = -1) const;
 
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.

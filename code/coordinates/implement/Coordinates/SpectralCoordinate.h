@@ -180,6 +180,28 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
+    // Format a SpectralCoordinate world value with the common format 
+    // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
+    // for more details on this interface, particularly with regards polymorphic use).  
+    //
+    // A SpectralCoordinate can be formatted in either <src>Coordinate::SCIENTIFIC</src> 
+    // or <src>Coordinate::FIXED</src> formats only.    The argument <src>absolute</src>
+    // is ignored.
+    //<group>
+    virtual void getPrecision(Int& precision,
+                              Coordinate::formatType& format,
+                              const Bool absolute,
+                              const Int defPrecSci,
+                              const Int defPrecFloat,
+                              const Int defPrecRADEC) const;
+    virtual String format(String& units,
+                          const Coordinate::formatType format,
+                          const Double worldValue,
+                          const uInt worldAxis,
+                          const Bool absolute,
+                          const Int precision = -1) const;
+    //</group>
+
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,
@@ -207,6 +229,11 @@ private:
     Interpolate1D<Double,Double> *channel_corrector_p;
     Interpolate1D<Double,Double> *channel_corrector_rev_p;
     // </group>
+
+    // Check format type
+    void checkFormat(Coordinate::formatType& format,         
+                     const Bool absolute) const;
+
 
     // Undefined and inaccessible
 };

@@ -132,6 +132,24 @@ public:
     virtual Bool setWorldAxisUnits(const Vector<String> &units,
 				   Bool adjust = True);
 
+
+    // Format a StokesCoordinate world value with the common format 
+    // interface (refer to the base class <linkto class=Coordinate>Coordinate</linkto>
+    // for more details on this interface, particularly with regards polymorphic use).  
+    //
+    // A StokesCoordinate is formatted differently from other Coordinate
+    // types.  The world value is converted to the character representation
+    // as defined by the enum <src>StokesTypes</src> in the class
+    // <linkto class=Stokes>Stokes</linkto>.
+    //
+    // Thus, all arguments to do with formatting and precision are ignored.
+    virtual String format(String& units,
+                          const Coordinate::formatType format,
+                          const Double worldValue,
+                          const uInt worldAxis,
+                          const Bool absolute,
+                          const Int precision = -1) const;
+
     // Save ourself into the supplised record using the supplied field name.
     // The field must not exist, otherwise <src>False</src> is returned.
     virtual Bool save(RecordInterface &container,

@@ -111,6 +111,17 @@ public:
 	// A coordinate system (a collection of coordinates).
 	COORDSYS };
 
+    // This enum is used for formatting world values into strings
+    enum formatType {
+       // Default; formatter decides
+       DEFAULT,
+       // Scientific format (e.g. -1.2397E+03)
+       SCIENTIFIC,
+       // Fixed floating format (e.g. 12.134)
+       FIXED,
+       // DDD:MM:SS.SSS style formatting 
+       TIME };
+
     virtual ~Coordinate();
 
     // List the type of this Coordinate object. Generally you shouldn't have
@@ -194,12 +205,58 @@ public:
     const String &errorMessage() const;
 
     // Provide a common interface to getting formatted representations of
-    // coordinate values out. The default implementation merely turns
-    // the number into a string using operator<<(Double). Derived classes
-    // might, e.g., use an hms representation. sigDigits <=1 means make
-    // your best guess.
-    virtual String format(Double worldValue, uInt worldAxis, 
-			  Int sigDigits = -1) const;
+    // coordinate values.    Different derived coordinate types are formatted
+    // in different ways.  For example, an RA/DEC  <src>DirectionCoordinate</src>  
+    // uses an HMS.SS/DMS.SS representation. A Galactic Lat/Long <src>DirectionCoordinate</src>
+    // uses floating format in degrees.  Other derived coordinates are formatted with 
+    // scientific format or floating format. The derived class format functions
+    // provide this functionality.   
+    // 
+    // You may specify the format with the <src>format</src> argument and a value
+    // from the <src>enum</src> <src>Coordinate::formatType</src>.  If 
+    // you give it the value <src>Coordinate::DEFAULT</src> then a default
+    // is taken.
+    //
+    // A mechanism for specifying the precision number of significant digits after 
+    // decimal point) is provided.  You can specify the precision directly when 
+    // calling <src>format</src> if it is unambiguous how the derived Coordinate is 
+    // going to be formatted.  For example, a LinearCoordinate is always formatted with 
+    // scientific format.  However, if you are using these classes polymorphically, you 
+    // don't want to have to know this and some derived Coordinates may be formatted
+    // in multiple ways (such as the <src>DirectionCoordinate</src> examples above).
+    // Therefore, the function <src>getPrecision</src> enables 
+    // you to set default precisions for the different styles of formatting 
+    // used variously in the base and derived classes.   This function chooses the 
+    // precision from these default values, according to the type of derived 
+    // Coordinate that your object is and what value for <src>format</src> that
+    // you give (refer to the derived classes for details on this).
+    // 
+    // Some derived classes will format differently depending upon whether
+    // you want to format an absolute or offset world value input via 
+    // <src>absolute</src> (e.g. DirectionCoordinates).
+    //
+    // Some derived classes will format in units different from that which
+    // currently reflect the state of the CoordinateSystem.  The units of
+    // the formatted number are returned in <src>units</src>.
+    //
+    // The default implementation here in this base class is to format only
+    // with scientific or fixed formats.  <src>absolute</src> is ignored.
+    // If <src>precision</src> is negative, a the default precision is used.
+    //
+    //<group>
+    virtual void getPrecision(Int &precision,
+                              Coordinate::formatType& format,
+                              const Bool absolute,
+                              const Int defPrecScientific,
+                              const Int defPrecFixed,
+                              const Int defPrecTime) const;
+    virtual String format(String& units,
+                          const Coordinate::formatType format, 
+                          const Double worldValue, 
+                          const uInt worldAxis, 
+                          const Bool absolute,
+ 			  const Int precision = -1) const;
+    //</group>
 
     // Used for persistence. Derived classes will have similar static
     // restore methods. It will typically only return False if fieldName
@@ -217,6 +274,11 @@ protected:
 			   const Vector<String> &oldUnits);
 private:
     String error_p;
+
+    // Check format type
+    void checkFormat(Coordinate::formatType& format,         
+                     const Bool absolute) const;
+
 };
 
 //###### Inlines

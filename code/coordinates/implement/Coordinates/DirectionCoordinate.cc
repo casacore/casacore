@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# DirectionCoordinate.h: this defines the DirectionCoordinate class
 //# Copyright (C) 1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -30,11 +30,18 @@
 #include <wcslib/proj.h>
 
 #include <trial/Coordinates/DirectionCoordinate.h>
-#include <aips/Mathematics/Constants.h>
-#include <aips/Arrays/Matrix.h>
-#include <aips/Utilities/Assert.h>
+
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Containers/Record.h>
+#include <aips/Mathematics/Constants.h>
+#include <aips/Measures/MVAngle.h>
+#include <aips/Utilities/Assert.h>
+#include <aips/Utilities/String.h>
+
+#include <iomanip.h>  
+#include <strstream.h>
+
 
 // Helper functions to help us interface to WCS
 
@@ -385,11 +392,11 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	    break;
 	case MDirection::HADEC:
 	    names(0) = "HA";
-	    names(2) = "DEC";
+	    names(1) = "DEC";
 	    break;
 	case MDirection::AZEL:
 	    names(0) = "AZ";
-	    names(2) = "EL";
+	    names(1) = "EL";
 	    break;
 	default:
 	    names = "????";
@@ -410,11 +417,11 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
 	    break;
 	case MDirection::HADEC:
 	    names(0) = "Hour Angle";
-	    names(2) = "Declination";
+	    names(1) = "Declination";
 	    break;
 	case MDirection::AZEL:
 	    names(0) = "Azimuth";
-	    names(2) = "Elevation";
+	    names(1) = "Elevation";
 	    break;
 	default:
 	    names = "Unknown";
@@ -422,6 +429,215 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
     }
     return names;
 }
+
+
+void DirectionCoordinate::checkFormat(Coordinate::formatType& format,
+                                      const Bool absolute) const
+{   
+   MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
+
+   if (format == Coordinate::DEFAULT) {
+      if (gtype == MDirection::GRADEC || gtype == MDirection::GHADEC) {
+         if (absolute) {
+            format = Coordinate::TIME;
+         } else {
+            format = Coordinate::SCIENTIFIC;
+         }
+      } else if (gtype == MDirection::GLONGLAT) {
+         format = Coordinate::FIXED;
+      } else if (gtype == MDirection::GAZEL) {
+         format = Coordinate::FIXED;
+      } else {
+         format = Coordinate::SCIENTIFIC;
+      }
+   }
+}
+
+
+
+void DirectionCoordinate::getPrecision (Int& precision,
+                                        Coordinate::formatType& format,
+                                        const Bool absolute,
+                                        const Int defPrecScientific,
+                                        const Int defPrecFixed,
+                                        const Int defPrecTime) const
+{
+// Find global DirectionCoordinate type
+
+   MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
+
+// Fill in DEFAULT
+
+   checkFormat(format, absolute);
+
+// Set precisions depending upon requested format type and
+// desire to see absolute or offset coordinate
+
+   if (format == Coordinate::SCIENTIFIC) {
+      if (defPrecScientific >= 0) {
+         precision = defPrecScientific;
+      } else {
+         precision = 6;
+      }      
+   } else if (format == Coordinate::FIXED) {
+      if (defPrecFixed >= 0) {
+         precision = defPrecFixed;
+      } else {
+         precision = 6;
+      }
+   } else if (format == Coordinate::TIME) {
+      if (defPrecTime >= 0) {
+         precision = defPrecTime;
+      } else {
+         precision = 3;
+      }
+   }
+}
+
+
+String DirectionCoordinate::format(String& units,
+                                   const Coordinate::formatType format,
+                                   const Double worldValue,
+                                   const uInt worldAxis,
+                                   const Bool absolute,
+                                   const Int precision) const
+//
+// Input
+//   worldValue   must be radians
+//
+{
+   AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
+
+// Fill in DEFAULT format
+
+   Coordinate::formatType form = format;
+   checkFormat(form, absolute);
+
+
+// Set default precision if needed
+
+   Int prec = precision;
+   if (prec < 0) getPrecision(prec, form, absolute, -1, -1, -1);
+
+// Set global DirectionCoordinate type
+
+   MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
+
+// Format according to required format type and absolute/offset
+// and type of DirectionCoordinate.  Endless bloody ifs. I don't
+// like case statements !
+
+   ostrstream oss;         
+   MVAngle mVA(worldValue);
+   units = " ";
+
+   if (gtype == MDirection::GRADEC || gtype == MDirection::GHADEC) {
+      if (form == Coordinate::SCIENTIFIC) {
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         if (absolute) {
+            oss << worldValue;
+            units = "rad";
+         } else {     
+            oss << mVA.degree() * 3600;
+            units = "arcsec";
+         }
+      } else if (form == Coordinate::FIXED) {
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(prec);
+         if (absolute) {
+            oss << worldValue;
+            units = "rad";
+         } else {     
+            oss << mVA.degree() * 3600;
+            units = "arcsec";
+         }
+      } else if (form == Coordinate::TIME) {
+         prec += 6;
+         if (absolute) {
+            if (worldAxis == 0) {
+               if (gtype == MDirection::GRADEC) {
+                  oss << mVA.string(MVAngle::TIME,prec);
+               } else {
+                  oss << mVA.string(MVAngle::TIME+MVAngle::DIG2,prec);
+               }
+            } else {
+               oss << mVA.string(MVAngle::DIG2,prec); 
+            }
+         } else {
+            if (worldAxis == 0) {
+               oss << mVA.string(MVAngle::TIME+MVAngle::DIG2,prec);
+            } else {
+               oss << mVA.string(MVAngle::DIG2,prec); 
+            }
+         }
+      }
+   } else if (gtype == MDirection::GLONGLAT) {
+      if (form == Coordinate::SCIENTIFIC) {
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         oss << mVA.degree();
+         units = "deg";
+      } else if (form == Coordinate::FIXED) {
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(prec);
+         oss << mVA.degree();
+         units = "deg";
+      } else if (form == Coordinate::TIME) {
+         prec += 6;
+         oss << mVA.string(MVAngle::ANGLE,prec);
+      }
+   } else if (gtype == MDirection::GAZEL) {
+      if (form == Coordinate::SCIENTIFIC) {
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         oss << mVA.degree();
+         units = "deg";
+      } else if (form == Coordinate::FIXED) {
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(prec);
+         oss << mVA.degree();
+         units = "deg";
+      } else if (form == Coordinate::TIME) {
+         prec += 6;
+         if (worldAxis == 0) {
+            oss << mVA.string(MVAngle::ANGLE,prec);
+         } else {
+            oss << mVA.string(MVAngle::DIG2,prec);
+         }
+      }
+   } else {
+
+// Some protection against new MDirection::globalTypes
+
+      if (form == Coordinate::SCIENTIFIC) {
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         oss << worldValue;
+         units = "rad";
+      } else if (form == Coordinate::FIXED) {
+         oss.setf(ios::fixed, ios::floatfield);
+         oss.precision(prec);
+         oss << worldValue;
+         units = "rad";
+      } else {
+
+// Don't do TIME formatting because we don't know what
+// we have here.
+
+         oss.setf(ios::scientific, ios::floatfield);
+         oss.precision(prec);
+         oss << worldValue;
+         units = "rad";
+      }
+   }
+   oss << ends;
+   String string(oss);
+
+   return string;
+}
+
+
 
 Coordinate *DirectionCoordinate::clone() const
 {
@@ -579,3 +795,5 @@ void DirectionCoordinate::toOther(Vector<Double> &degrees) const
     degrees(0) /= to_degrees_p[0];
     degrees(1) /= to_degrees_p[1];
 }
+
+
