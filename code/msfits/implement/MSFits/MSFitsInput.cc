@@ -665,13 +665,16 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   // get index for Freq
   Int iFreq = getIndex(pType, "FREQSEL");
 
+  // get index for Integration time
+  Int iInttim = getIndex(pType, "INTTIM");
+
   receptorAngle_p.resize(1);
   nAnt_p=0;
   itsLog << LogIO::NORMAL << "Reading and writing " << nGroups
      << " visibility groups"<< LogIO::POST;
   Int row=-1;
-  Double startTime, interval;
-  startTime=0.0; interval=1;
+  Double interval, exposure;
+  interval=0.0; exposure=0.0;
 
   ProgressMeter meter(0.0, nGroups*1.0, "UVFITS Filler", "Groups copied", "",
  		      "", True,  nGroups/100);
@@ -696,13 +699,18 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
     uvw(2) = priGroup_p.parm(iW);
     time  *= C::day; 
 
-    // make a guess at the integration time
-    if (row<0) startTime = time;
-    if (time > startTime) {
-      interval=time-startTime;
-      msc.interval().fillColumn(interval);
-      msc.exposure().fillColumn(interval);
-      startTime = DBL_MAX; // do this only once
+    // If integration time is a RP, use it:
+    if (iInttim > -1) {
+      exposure = priGroup_p.parm(iInttim);
+      interval = exposure;
+    } else {
+      // keep track of minimum which is the only one
+      Double tempint;
+      tempint=time-lastTime;
+      // if interval larger than precision (and zero):
+      if (tempint > 0.01) {
+	interval=tempint;
+      }
     }
 
     Int array = Int(100.0*(baseline - Int(baseline)+0.001));
@@ -737,14 +745,19 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
 	  vis(p, chan) = Complex(visReal, visImag);
  	}
       }
+
+      // If available, fill in exposure and interval columns for this row
+      if (iInttim > -1) {
+ 	msc.interval().put(row,interval);
+ 	msc.exposure().put(row,exposure);
+      }
+
       // fill in values for all the unused columns
       if (row==0) {
- 	msc.exposure().put(row,interval);
  	msc.feed1().put(row,0);
  	msc.feed2().put(row,0);
  	msc.flagRow().put(row,False);
  	lastRowFlag=False;
- 	msc.interval().put(row,interval);
  	msc.scanNumber().put(row,0);
  	msc.processorId().put(row,-1);
  	msc.observationId().put(row,0);
@@ -821,6 +834,14 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
     }
     meter.update((group+1)*1.0);
   }
+
+  // If determining interval on-the-fly, fill interval/exposure columns
+  //  now:
+  if (interval==0.0) {
+    msc.interval().fillColumn(exposure);
+    msc.exposure().fillColumn(exposure);
+  }
+
   // fill the receptorAngle with defaults, just in case there is no AN table
   receptorAngle_p=0;
   // set the Measure References
@@ -1258,7 +1279,10 @@ void MSFitsInput::fillFeedTable() {
   Int row=-1;
   // Use TIME_RANGE in OBSERVATION table to set TIME here.
   const Vector<Double> obsTimes = msc_p->observation().timeRange()(0);
-  for (Int ant=0; ant<nAnt_p; ant++) {
+  // nAnt as here ensures ANTENNA and FEED have the same number
+  //   of rows (nAnt_p <= nAnt, since some ants not in data)
+  Int nAnt=msc_p->antenna().nrow();
+  for (Int ant=0; ant<nAnt; ant++) {
     ms_p.feed().addRow(); row++;
     msfc.antennaId().put(row,ant);
     msfc.beamId().put(row,-1);
