@@ -1,5 +1,5 @@
 //# ExprNodeSet.cc: Classes representing an set in table select expression
-//# Copyright (C) 1997,1999,2000,2001
+//# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -695,7 +695,7 @@ void TableExprNodeSet::replaceTablePtr (const Table& table,
     }
 }
 
-TableExprNodeRep* TableExprNodeSet::setOrArray()
+TableExprNodeRep* TableExprNodeSet::setOrArray() const
 {
     // The set should not contain array elements.
     if (hasArrays()) {
@@ -716,11 +716,14 @@ TableExprNodeRep* TableExprNodeSet::setOrArray()
 	if (isConstant()) {
 	    return toArray();
 	}
-	// Otherwise the type is set to VTArray and the getArray
-	// functions convert the set to an array for each row.
-	vtype_p = VTArray;
     }
-    return new TableExprNodeSet (*this);
+    TableExprNodeSet* set = new TableExprNodeSet (*this);
+    if (itsBounded) {
+	// Set the type to VTArray and the getArray
+	// functions convert the set to an array for each row.
+	set->setValueType (VTArray);
+    }
+    return set;
 }
 
 TableExprNodeRep* TableExprNodeSet::toArray() const

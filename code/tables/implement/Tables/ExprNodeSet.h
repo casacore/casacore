@@ -1,5 +1,5 @@
 //# ExprNodeSet.h: Classes to hold multiple table expression nodes
-//# Copyright (C) 1997,2000,2001,2002
+//# Copyright (C) 1997,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -325,7 +325,7 @@ public:
 
     // Try to convert the set to an array.
     // If not possible, a copy of the set is returned.
-    TableExprNodeRep* setOrArray();
+    TableExprNodeRep* setOrArray() const;
 
     // Convert the const set to an array.
     TableExprNodeRep* toArray() const;
