@@ -1,5 +1,5 @@
 //# SpectralCoordinate.cc: this defines SpectralCoordinate
-//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1997,1998,1999,2000,2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,13 +60,14 @@ SpectralCoordinate::SpectralCoordinate()
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
-  prefUnit_p(""),
-  unit_p("Hz")  
+  velType_p(MDoppler::RADIO),
+  velUnit_p("km/s"),
+  unit_p("Hz"),
+  formatUnit_p("")
 {
    restfreqs_p.resize(1);
    restfreqs_p(0) = 0.0;
-   makeVelocityMachine (String("km/s"), prefVelType_p, 
+   makeVelocityMachine (velUnit_p, velType_p, 
                         worker_p.worldAxisUnits()(0),
                         type_p, restfreqs_p(restfreqIdx_p));
 }
@@ -83,15 +84,16 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
-  prefUnit_p(""),
-  unit_p("Hz")  
+  velType_p(MDoppler::RADIO),
+  velUnit_p("km/s"),
+  unit_p("Hz"),
+  formatUnit_p("")
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = max(0.0, restFrequency);
 //
-   makeVelocityMachine (String("km/s"), prefVelType_p, 
+   makeVelocityMachine (velUnit_p, velType_p, 
                         worker_p.worldAxisUnits()(0),   
                         type_p, restfreqs_p(restfreqIdx_p));
 }
@@ -110,9 +112,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
-  prefUnit_p(""),
-  unit_p("Hz")  
+  velType_p(MDoppler::RADIO),
+  velUnit_p("km/s"),
+  unit_p("Hz"),
+  formatUnit_p("")
 {
    Unit hz("Hz");
    if (!f0.isConform(hz)) {
@@ -132,7 +135,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
    worker_p = TabularCoordinate(f0.getValue(hz), inc.getValue(hz),
                                 refPix, "Hz", "Frequency");
 //
-   makeVelocityMachine (String("km/s"), prefVelType_p, 
+   makeVelocityMachine (velUnit_p, velType_p, 
                         worker_p.worldAxisUnits()(0),   
                         type_p, restfreqs_p(restfreqIdx_p));
 }
@@ -149,9 +152,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
-  prefUnit_p(""),
-  unit_p("Hz")  
+  velType_p(MDoppler::RADIO),
+  velUnit_p("km/s"),
+  unit_p("Hz"),
+  formatUnit_p("")
 {
    AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
@@ -161,7 +165,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
    indgen(channels);
    worker_p = TabularCoordinate(channels, freqs, "Hz", "Frequency");
 //
-   makeVelocityMachine (String("km/s"), prefVelType_p, 
+   makeVelocityMachine (velUnit_p, velType_p, 
                         worker_p.worldAxisUnits()(0),   
                         type_p, restfreqs_p(restfreqIdx_p));
 }
@@ -178,9 +182,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(MDoppler::RADIO),
-  prefUnit_p(""),
-  unit_p("Hz")  
+  velType_p(MDoppler::RADIO),
+  velUnit_p("km/s"),
+  unit_p("Hz"),
+  formatUnit_p("")
 {
    Unit hz("Hz");
    if (!freqs.isConform(hz)) {
@@ -199,7 +204,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
    indgen(channels);
    worker_p = TabularCoordinate(channels, freqs2, "Hz", "Frequency");
 //
-   makeVelocityMachine (String("km/s"), prefVelType_p,
+   makeVelocityMachine (velUnit_p, velType_p,
                         worker_p.worldAxisUnits()(0),
                         type_p, restfreqs_p(restfreqIdx_p));
 }
@@ -215,9 +220,10 @@ SpectralCoordinate::SpectralCoordinate(const SpectralCoordinate &other)
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0),
   pVelocityMachine_p(0),
-  prefVelType_p(other.prefVelType_p),
-  prefUnit_p(other.prefUnit_p),
+  velType_p(other.velType_p),
+  velUnit_p(other.velUnit_p),
   unit_p(other.unit_p),
+  formatUnit_p(other.formatUnit_p),
   direction_p(other.direction_p),
   position_p(other.position_p),
   epoch_p(other.epoch_p)
@@ -249,9 +255,10 @@ SpectralCoordinate &SpectralCoordinate::operator=(const SpectralCoordinate &othe
            pVelocityMachine_p = new VelocityMachine(*(other.pVelocityMachine_p));
         }
 //
-        prefVelType_p = other.prefVelType_p;
-        prefUnit_p = other.prefUnit_p;
+        velType_p = other.velType_p;
+        velUnit_p = other.velUnit_p;
         unit_p = other.unit_p;
+        formatUnit_p = other.formatUnit_p;
     }
     return *this;
 }
@@ -407,37 +414,23 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String> &units)
     return ok;
 }
 
-Bool SpectralCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units)
+
+Bool SpectralCoordinate::setVelocity (const String& velUnit,
+                                      MDoppler::Types velType)
 {
-   if (units.nelements() != nWorldAxes()) {
-      set_error("Wrong number of elements in preferred units vector");
-      return False;
-   }
-//
-   static const Unit unitsHZ(String("Hz"));
-   static const Unit unitsKMS(String("km/s"));
-//
-   if (units(0).empty()) {
-//
-   } else {
-      Unit unit0(units(0));
-      if (unit0!=unitsHZ && unit0!=unitsKMS) {
-         set_error("Unit must be empty or consistent with Hz or km/s");
-         return False;
+   static const Unit unitsKMS_b(String("km/s"));
+   if (!velUnit.empty()) {
+      Unit unit(velUnit);
+      if (unit!=unitsKMS_b) {
+         set_error("Unit must be empty or consistent with m/s");
+         return False; 
       }
+      velUnit_p = velUnit;
    }
-//
-   prefUnit_p = units(0);
+   velType_p = velType;
+   updateVelocityMachine(velUnit_p, velType_p);
 //
    return True;
-}
-
-
-Vector<String> SpectralCoordinate::preferredWorldAxisUnits () const
-{
-   Vector<String> t(1);
-   t(0) = prefUnit_p;
-   return t;
 }
 
 Bool SpectralCoordinate::setReferenceConversion (MFrequency::Types conversionType,
@@ -515,7 +508,7 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
     MFrequency::Types oldType = type_p;
     type_p = type;
     deleteVelocityMachine();
-    makeVelocityMachine (String("km/s"), prefVelType_p, 
+    makeVelocityMachine (String("km/s"), velType_p, 
                          worker_p.worldAxisUnits()(0),
                          type_p, restfreqs_p(restfreqIdx_p));
 
@@ -652,10 +645,14 @@ Bool SpectralCoordinate::near(const Coordinate& other,
       }
    }
 
-// Velocity Machine
+// Velocity Stuff
 
-   if (prefVelType_p != sCoord.preferredVelocityType()) {
-      set_error("The SpectralCoordinates have differing preferred velocity types");
+   if (velType_p != sCoord.velType_p) {
+      set_error("The SpectralCoordinates have differing velocity types");
+      return False;
+   }
+   if (velUnit_p != sCoord.velUnit_p) {
+      set_error("The SpectralCoordinates have differing velocity units");
       return False;
    }
 
@@ -683,8 +680,9 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 	subrec.define("system", system);
 	subrec.define("restfreq", restFrequency());
         subrec.define("restfreqs", restFrequencies());
-        subrec.define("prefVelType", Int(prefVelType_p));
-        subrec.define("preferredunits", preferredWorldAxisUnits());
+        subrec.define("velType", Int(velType_p));
+        subrec.define("velUnit", velUnit_p);
+        subrec.define("formatUnit", formatUnit_p);
 	ok = (worker_p.save(subrec, "tabular"));
 
 // Conversion machine state
@@ -718,7 +716,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container,
+SpectralCoordinate* SpectralCoordinate::restore(const RecordInterface &container,
                                                 const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
@@ -771,17 +769,27 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
     retval->type_p = sys;
     retval->unit_p = Unit(retval->worldAxisUnits()(0));
 //
-    if (subrec.isDefined("prefVelType")) {                 // optional
-       MDoppler::Types type = 
-          static_cast<MDoppler::Types>(subrec.asInt("prefVelType"));
-       retval->setPreferredVelocityType(type);
+    MDoppler::Types velType=MDoppler::RADIO;    // Must match what's defined
+    String velUnit("km/s");                     // in  Constructors
+    if (subrec.isDefined("velType")) {                      // optional
+       velType = static_cast<MDoppler::Types>(subrec.asInt("velType"));
+    } else if (subrec.isDefined("prefVelType")) {           // name changed
+       velType = static_cast<MDoppler::Types>(subrec.asInt("prefVelType"));
     }
 //
-    if (subrec.isDefined("preferredunits")) {              // optional
-       Vector<String> prefUnits;
-       subrec.get("preferredunits", prefUnits);
-       retval->setPreferredWorldAxisUnits(prefUnits);
+    if (subrec.isDefined("velUnit")) {                 // optional
+       velUnit = subrec.asString("velUnit");
+    } else if (subrec.isDefined("prefVelUnit")) {      // name changed
+       velUnit = subrec.asString("prefVelUnit");
     }
+// check this call NEBK
+    retval->setVelocity(velUnit, velType);                 // Updates Velocity Machine
+//
+    String formatUnit("");
+    if (subrec.isDefined("formatUnit")) {                      // optional
+       formatUnit = subrec.asString("formatUnit");
+    }
+    retval->formatUnit_p = formatUnit;    
 //
     if (subrec.isDefined("restfreqs")) {                   // optional
        Vector<Double> restFreqs;
@@ -796,14 +804,8 @@ SpectralCoordinate *SpectralCoordinate::restore(const RecordInterface &container
        retval->setRestFrequencies(restFreqs, 0, False);
        retval->selectRestFrequency(restfreq);
     } else {
-       retval->setRestFrequency(restfreq, False);
+       retval->setRestFrequency(restfreq, False);           // Updates Velocity Machine
     }
-
-// The velocity machine is made empty because the default
-// SpectralCoordinate constructor was used.  Therefore we must recreate it with the
-// correct internals
-
-    retval->reinitializeVelocityMachine();
 
 // Recover conversion machine state.   Old SpectralCoordinates won't have it.
 
@@ -1069,13 +1071,25 @@ void SpectralCoordinate::deleteConversionMachines()
 }
 
 
-String SpectralCoordinate::format(String& units,
-                                  Coordinate::formatType format,
-                                  Double worldValue,
-                                  uInt worldAxis,
-                                  Bool isAbsolute,
-                                  Bool showAsAbsolute,
-                                  Int precision)
+Bool SpectralCoordinate::setFormatUnit (const String& unit)
+{
+   const Unit unitHZ(String("Hz"));      
+   const Unit unitKMS(String("km/s"));      
+   Unit t(unit);
+   if (t != unitHZ && t != unitKMS) {
+      return False;
+   }
+//
+   formatUnit_p = unit;
+   return True;
+}
+String SpectralCoordinate::format (String& units,
+                                   Coordinate::formatType format,
+                                   Double worldValue,
+                                   uInt worldAxis,
+                                   Bool isAbsolute,
+                                   Bool showAsAbsolute,
+                                   Int precision)
 {
    AlwaysAssert(worldAxis < nWorldAxes(), AipsError);
     
@@ -1089,36 +1103,38 @@ String SpectralCoordinate::format(String& units,
    Int prec = precision;
    if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
 
-// If units are empty used preferred unit.   
+// If units are empty use formatUnit_p unit.   If that's
+// empty use natuive world unit.
 // If given units are not consistent with native units
 // then see if they are velocity.  If so, convert to
 // desired units.
   
    static const Unit unitsHZ(String("Hz"));      
-   static const Unit unitsKMS(String("km/s"));      
+   static const Unit unitsKMS_c(String("km/s"));      
    static Quantum<Double> qVel;
    static Quantum<Double> qFreq;
    static Vector<Double> world;
-//
-   String nativeUnit = worldAxisUnits()(worldAxis);
-   String prefUnit;
+
+// Use default format unit (which itself may be empty) if empty
+
    if (units.empty()) {
-      prefUnit = preferredWorldAxisUnits()(worldAxis);
-      if (prefUnit.empty()) {      
-         units = nativeUnit;
-      } else {
-         units = prefUnit;
-      }
+      units = formatUnit_p;
    }
+   Unit unit(units);
 //
    String theString;
-   Unit unit(units);
-   if (unit != unitsHZ) {
+   if (units.empty() || unit == unitsHZ) {
 
-// Requested unit is not consistent with Hz.  
+// Requested unit is empty or consistent with Hz.  
 
-      if (unit != unitsKMS) {
-        throw(AipsError("Requested units are invalid for a SpectralCoordinate"));
+      theString = Coordinate::format(units, form, worldValue, worldAxis,
+                                     isAbsolute, showAsAbsolute, precision);
+   } else {
+
+// Is unit sensible ?
+
+      if (unit != unitsKMS_c) {
+        throw(AipsError("Requested units must be consistent with km/s or Hz for a SpectralCoordinate"));
       }
 
 // Requested unit is consistent with km/s
@@ -1127,7 +1143,7 @@ String SpectralCoordinate::format(String& units,
       String tunits(units);
 
 // We must convert to absolute first (regardless of how we want
-// to see the value) as we are formatting in km/s
+// to see the value) as we are formatting in velocity units
 
       if (!isAbsolute) {
          world = 0.0;
@@ -1136,13 +1152,15 @@ String SpectralCoordinate::format(String& units,
          worldValue = world(worldAxis);
       }
 //
-      updateVelocityMachine (tunits, prefVelType_p);
       if (showAsAbsolute) {
          if (!frequencyToVelocity (qVel, worldValue)) {
             theString = "Fail";
             return theString;
          }
-         worldValue = qVel.getValue();
+
+// Convert from velUnit_p (used in f2v) to desired unit
+
+         worldValue = qVel.getValue(unit);
       } else {
 
 // Find relative coordinate in km/s consistent units
@@ -1154,7 +1172,11 @@ String SpectralCoordinate::format(String& units,
             theString = "Fail";
             return theString;
          }
-         worldValue = vel(1) - vel(0);           // rel = abs - ref
+
+// Convert from velUnit_p (used in f2v) to desired unit
+
+         Quantum<Double> t(vel[1]-vel[0], Unit(velUnit_p)); // rel=abs-ref
+         worldValue = t.getValue(unit);
       }
 //
       ostringstream oss;
@@ -1168,9 +1190,6 @@ String SpectralCoordinate::format(String& units,
          oss << worldValue;
       }
       theString = String(oss);
-   } else {
-      theString = Coordinate::format(units, form, worldValue, worldAxis,
-                                     isAbsolute, showAsAbsolute, precision);
    }
 //
    return theString;
