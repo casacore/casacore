@@ -39,6 +39,8 @@
 #include <trial/SpectralComponents/SpectralElement.h>
 #include <trial/SpectralComponents/SpectralEstimate.h>
 #include <trial/SpectralComponents/SpectralFit.h>
+#include <aips/Utilities/PtrHolder.h>
+
 
 // Forward declarations
 template<class T> class ImageInterface;
@@ -174,8 +176,10 @@ public:
 
     // Fit all profiles in the region and write out images.
     //<group>
-    void fit (RecordInterface& rec, ImageInterface<Float>*& fit,
-              ImageInterface<Float>*& residual, const String& xUnitRec);
+    void fit (RecordInterface& rec, 
+              PtrHolder<ImageInterface<Float> >& fit,
+              PtrHolder<ImageInterface<Float> >& resid,
+              const String& xUnitRec);
     //</group>
 
     // Find the residuals 
