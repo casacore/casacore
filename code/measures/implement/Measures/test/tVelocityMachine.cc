@@ -29,7 +29,7 @@
 #include <aips/aips.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Measures.h>
-#include <trial/Measures/VelocityMachine.h>
+#include <aips/Measures/VelocityMachine.h>
 #include <aips/Quanta/MVTime.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MPosition.h>

@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <trial/Measures/VelocityMachine.h>
+#include <aips/Measures/VelocityMachine.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Quanta/UnitVal.h>
