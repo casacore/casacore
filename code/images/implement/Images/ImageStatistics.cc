@@ -477,26 +477,37 @@ Bool ImageStatistics<T>::display()
 
 
 // Iterate through storage image by planes (first and last axis of storage image)
-// We discard degenerate axes but make sure we start discarding at axis=1 as axis 0
-// (of size n1) is only constrained to be n1 >= 1
+// Specify which axes are the matrix  axes so that we can discard other
+// degenerate axes with the matrixCursor function.   n1 is only 
+// constrained to be n1 >= 1
 
    IPosition cursorShape(pStoreImage_p->ndim(),1);
    cursorShape(0) = pStoreImage_p->shape()(0);
    cursorShape(pStoreImage_p->ndim()-1) = pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
-   RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
+
+   IPosition matrixAxes(2);
+   matrixAxes(0) = 0; matrixAxes(1) = pStoreImage_p->ndim()-1;
+
+   IPosition axisPath(pStoreImage_p->ndim());
+   for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
+
+   LatticeStepper stepper(pStoreImage_p->shape(), cursorShape,
+                          matrixAxes, axisPath);
+   RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, stepper);
 
    for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
 
 // Convert accumulations to  mean, sigma, and rms. Make sure we do all 
 // calculations with double precision values. 
  
-      Matrix<Double>  matrix(pixelIterator.cursor().nonDegenerate(1));
-      for (Int i=0; i<n1; i++) {
+      Matrix<Double>  matrix(pixelIterator.matrixCursor());   // Reference semantics
+      for (i=0; i<n1; i++) {
          const Int nPts = Int(matrix(i,NPTS)+0.1);
          if (nPts > 0) {
             ord(i,MEAN) = matrix(i,SUM) / matrix(i,NPTS);
-            const Double tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
-                         (matrix(i,NPTS)-1);
+            Double tmp = 0.0;
+            if (nPts > 1) tmp = (matrix(i,SUMSQ) - (matrix(i,SUM)*matrix(i,SUM)/matrix(i,NPTS))) / 
+                                (matrix(i,NPTS)-1);
             if (tmp > 0.0) {
                ord(i,SIGMA) = sqrt(tmp);
             } else {
@@ -1540,8 +1551,6 @@ Bool ImageStatistics<T>::plotStats (const IPosition& dPos,
 //   stats   Statistics matrix
 //
 {
-
-
 // Work out what we are plotting
 
    const Bool doMean  = ToBool(ImageUtilities::inVector(Int(MEAN), statsToPlot_p) != -1);
@@ -2145,20 +2154,30 @@ Bool ImageStatistics<T>::someGoodPoints ()
          return someGoodPointsValue_p;
       } else {
 
+
 // Iterate through storage image by planes (first and last axis of storage image)
-// We discard degenerate axes but make sure we start discarding at axis=1 as axis 0 
-// (of size n1) is only constrained to be n1 >= 1   
+// Specify which axes are the matrix  axes so that we can discard other
+// degenerate axes with the matrixCursor function.   n1 is only 
+// constrained to be n1 >= 1
 
          IPosition cursorShape(pStoreImage_p->ndim(),1);
          const Int n1 = pStoreImage_p->shape()(0);
          cursorShape(0) = n1;
          cursorShape(pStoreImage_p->ndim()-1) = pStoreImage_p->shape()(pStoreImage_p->ndim()-1);
-         RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, cursorShape);
+
+         IPosition matrixAxes(2);
+         matrixAxes(0) = 0; matrixAxes(1) = pStoreImage_p->ndim()-1;
+
+         IPosition axisPath(pStoreImage_p->ndim());
+         for (Int i=0; i<axisPath.nelements(); i++) axisPath(i) = i;
+
+         LatticeStepper stepper(pStoreImage_p->shape(), cursorShape,
+                                matrixAxes, axisPath);
+         RO_LatticeIterator<Double> pixelIterator(*pStoreImage_p, stepper);
 
          for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
-            Matrix<Double>  matrix(pixelIterator.cursor().nonDegenerate(1));
-            for (Int i=0; i<n1; i++) {
-               if (Int(matrix(i,NPTS)+0.1) > 0) {
+            for (i=0; i<n1; i++) {
+               if (Int(pixelIterator.matrixCursor()(i,NPTS)+0.1) > 0) {
                   someGoodPointsValue_p = True;
                   return someGoodPointsValue_p;
                }
@@ -2203,12 +2222,21 @@ void ImageStatistics<T>::summStats ()
    pos(0) = NPTS;
    Int nPts = Int(stats(pos)+0.1);
    pos(0) = SUM;
+
    Double sum = stats(pos);
    pos(0) = SUMSQ;
+            
    Double sumSq = stats(pos);
-   Double mean = sum/nPts;
-   Double var = (sumSq - sum*sum/nPts)/(nPts-1);
-   Double rms = sqrt(sumSq/nPts);
+                         
+   Double mean = 0.0;
+   if (nPts > 0) mean = sum/nPts;
+            
+   Double var = 0.0;
+   if (nPts > 1) var = (sumSq - sum*sum/nPts)/(nPts-1);
+
+   Double rms = 0.0;
+   if (sumSq > 0 && nPts > 0) rms = sqrt(sumSq/nPts);
+
    pos(0) = MIN;
    Double dMin = stats(pos);
    pos(0) = MAX;
