@@ -46,8 +46,7 @@ using namespace casa;
   Double dval[2];
 }
 
-%token <str> NAME
-%token CODE
+%token <str> NAMEORCODE
 %token EQASS
 %token <ival> INDEX
 %token <dval> FNUMBER
@@ -64,8 +63,7 @@ using namespace casa;
 %token DASH
 
 %type <node> fieldstatement
-%type <node> fieldexpr
-%type <node> namelist
+%type <node> fieldorsourceexpr
 %type <node> indexexpr
 %type <node> indexlist
 %type <node> indexrangeexpr
@@ -89,25 +87,22 @@ int MSFieldGramlex (YYSTYPE*);
 fieldstatement: indexexpr {
                   $$ = $1 ;
                 }
-              | SQUOTE fieldexpr SQUOTE {
+              | SQUOTE fieldorsourceexpr SQUOTE {
                   $$ = $2 ;
                 }
               ;
 
-fieldexpr: namelist
-         ;
+fieldorsourceexpr: NAMEORCODE {
+                     String fieldname = String($1);		
+         	     cout << "input string " << fieldname<< endl;
 
-namelist: NAME {
-            Vector<String> fieldnames(1);
-            fieldnames[0] = String($1);		
-            $$ = MSFieldParse().selectFieldNames(fieldnames);
-          }
-        | namelist COMMA NAME {
-            Vector<String> fieldnames(1);
-            fieldnames[0] = String($3);		
-            $$ = MSFieldParse().selectFieldNames(fieldnames);
-          }
-        ;
+                     $$ = MSFieldParse().selectFieldOrSource(fieldname);
+                   }
+                 | fieldorsourceexpr COMMA NAMEORCODE {
+                     String fieldname = String($3);		
+                     $$ = MSFieldParse().selectFieldOrSource(fieldname);
+                   }
+                 ;
             
 indexexpr: indexlist
          | indexrangeexpr
