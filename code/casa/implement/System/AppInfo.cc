@@ -30,12 +30,24 @@
 #include <aips/Tasking/Aipsrc.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Time.h>
+#include <aips/OS/Memory.h>
 #include <aips/Measures/Unit.h>
+
 
 Bool AppInfo::need_init_p = True;
 uInt AppInfo::memory_r = 0;
 uInt AppInfo::nproc_r = 0;
 uInt AppInfo::tz_r = 0;
+
+Int AppInfo::availableMemoryInMB()
+{
+  if (need_init_p) {
+    init();
+  }
+  Int  used = Memory::allocatedMemoryInBytes()/1024/1024;
+  Int allowed = memoryInMB();
+  return allowed - used;
+}
 
 void AppInfo::init() {
   need_init_p = False;

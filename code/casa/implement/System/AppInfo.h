@@ -87,14 +87,25 @@ class String;
 //   <li> AipsError if abs(timeZone()) > 0.625 
 // </thrown>
 //
-// <todo asof="1997/10/21">
+// <todo asof="1997/11/11">
 //   <li> Figure out the memory/num processors from the OS?
 // </todo>
 
 class AppInfo {
 public:
-  // Memory in MB. Reports  <src>system.resources.memory</src> if it is set,
-  // otherwise return 64 (considered to be the base level for AIPS++).
+  // How much memory is available for this process? Note that this number
+  // can be less than zero if the process has overdrawn its account. This
+  // function returns:
+  // <srcBlock>
+  // AppInfo::memoryInMB() - Memory::allocatedMemoryInBytes()/1024/1024;
+  // </srcBlock>
+  // You should use this value when making determinations about whether to put
+  // something in memory or do I/O instead.
+  static Int availableMemoryInMB();
+
+  // Total memory in MB that the process may use.  Reports
+  // <src>system.resources.memory</src> if it is set, otherwise return 64
+  // (considered to be the base level for AIPS++).
   static uInt memoryInMB();
   
   // Number of processors on the local host. Returns 
