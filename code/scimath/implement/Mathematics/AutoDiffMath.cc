@@ -337,12 +337,14 @@ template<class T> AutoDiff<T> fmod(const AutoDiff<T> &x,
 template<class T> AutoDiff<T> floor(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   tmp.theRep()->val_p = floor(ad.theRep()->val_p);
+  tmp.theRep()->grad_p = T(0);
   return tmp.ref();
 }
 
 template<class T> AutoDiff<T> ceil(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   tmp.theRep()->val_p = ceil(ad.theRep()->val_p);
+  tmp.theRep()->grad_p = T(0);
   return tmp.ref();
 }
 
