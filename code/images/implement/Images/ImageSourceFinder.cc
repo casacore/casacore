@@ -291,11 +291,12 @@ ComponentList ImageSourceFinder<T>::findPointSources (LogIO& os, Int nMax,
       os << LogIO::NORMAL << "Found " << nFound << " sources" << LogIO::POST;
       const ImageInfo& ii = pImage_p->imageInfo();
       const Unit& bU = pImage_p->units();
+      Double rat;
       for (Int i=0; i<nFound; i++) {
          pars(0) = rs(i,0);
          pars(1) = rs(i,2);
          pars(2) = rs(i,1);
-         listOut.add(ImageUtilities::encodeSkyComponent (os, ii, cSys, bU,
+         listOut.add(ImageUtilities::encodeSkyComponent (os, rat, ii, cSys, bU,
                                                          ComponentType::POINT, 
                                                          pars, stokes, xIsLong));
       }
