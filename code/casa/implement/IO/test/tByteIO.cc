@@ -1,5 +1,5 @@
 //# tByteIO.cc: Test program for class ByteIO and derived classes
-//# Copyright (C) 1996
+//# Copyright (C) 1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -180,7 +180,7 @@ void testMemoryIO()
 	uInt incr = 20;
 	membuf.seek (incr, ByteIO::End);
 	AlwaysAssertExit (membuf.length() == length+incr);
-	checkValues;
+	checkValues (membuf, 100);
 	char val;
 	Long lincr = incr;
 	membuf.seek (-lincr, ByteIO::End);
