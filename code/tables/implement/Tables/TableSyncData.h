@@ -117,7 +117,7 @@ private:
 
     //# Member variables.
     uInt        itsNrrow;
-    uInt        itsNrcolumn;
+    Int         itsNrcolumn;
     uInt        itsModifyCounter;
     uInt        itsTableChangeCounter;
     Block<uInt> itsDataManChangeCounter;
