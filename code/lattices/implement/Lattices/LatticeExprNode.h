@@ -273,8 +273,8 @@ class LatticeExprNode
 // </group>
 
 // Form a complex number from two real numbers.
-   friend LatticeExprNode complex (const LatticeExprNode& left,
-				   const LatticeExprNode& right);
+   friend LatticeExprNode formComplex (const LatticeExprNode& left,
+				       const LatticeExprNode& right);
 
 // Numerical 1-argument functions which result in a real number
 // regardless of input expression type

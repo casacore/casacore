@@ -1109,11 +1109,11 @@ LatticeExprNode conj(const LatticeExprNode& expr)
    return LatticeExprNode::newComplexFunc1D (LELFunctionEnums::CONJ, expr);
 }
 
-LatticeExprNode complex(const LatticeExprNode& left,
-			const LatticeExprNode& right)
+LatticeExprNode formComplex(const LatticeExprNode& left,
+			    const LatticeExprNode& right)
 { 
 #if defined(AIPS_TRACE)
-   cout << "LatticeExprNode:: 2d function complex" << endl;
+   cout << "LatticeExprNode:: 2d function formComplex" << endl;
 #endif
    AlwaysAssert ((left.dataType()==TpFloat || left.dataType()==TpDouble)
               && (right.dataType()==TpFloat || right.dataType()==TpDouble),
