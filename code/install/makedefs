@@ -426,7 +426,7 @@ LINKsynthesis := synthesis aips
 LINKvlbi      := vlbi synthesis aips
 
 LINKcontrib   := contrib vlbi synthesis dish aips
-LINKtrial     := trial aips
+LINKtrial     := trial display aips
 
 LINKatnf      := atnf trial aips
 LINKbima      := bima trial aips
