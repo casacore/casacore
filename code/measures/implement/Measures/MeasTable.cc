@@ -3056,7 +3056,7 @@ Double MeasTable::dUTC(Double utc) {
       };
     };
   }; 
-  Double val;
+  Double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
   } else {
