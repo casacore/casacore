@@ -2,7 +2,7 @@
 # AIPS++ code management directory makefile
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998,1999,2000,2001
+#   Copyright (C) 1992-1997,1998,1999,2000,2001,2002
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -51,7 +51,7 @@ AIPSEXES := $(basename $(filter-out %_master.c,$(filter %.c,$(AIPSSRCS))))
 PGMREXES := $(basename $(filter-out %_master.c,$(wildcard *.c)))
 ALLEXES  := $(sort $(AIPSEXES) $(PGMREXES))
 
-PERL5EXE := checkin checkout binrel
+PERL5EXE := checkin checkout binrel atag
 
 SUIDEXES := $(filter $(SUIDWRAP),$(PGMREXES))
 WRAPPED  := $(SUIDWRAP:%=%.sh)
