@@ -53,7 +53,6 @@
 #include <trial/MeasurementSets/MSSelector.h>
 #include <trial/MeasurementSets/MSSelUtil.h>
 
-static LogIO os;
 
 MSFlagger::MSFlagger():msSel_p(0)
 {}
@@ -82,6 +81,7 @@ void MSFlagger::setMSSelector(MSSelector& msSel)
 
 Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
 {
+  LogIO os;
   if (!check()) return False;
   String itm=downcase(item);
   Int fld=MSS::field(itm);
@@ -132,6 +132,7 @@ GlishRecord MSFlagger::diffDataBuffer(const String& direction, Int window,
 				      Bool doMedian)
 {
   GlishRecord retVal;
+  LogIO os;
   String dir=downcase(direction);
   if (dir!="time" && dir!="channel") {
     os << LogIO::WARN << "Unrecognized direction "<<direction<< 
@@ -455,6 +456,7 @@ inline String multiple(Int n) { return n!=1 ? "s" : ""; }
 Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel, 
 				Float channelLevel)
 {
+  LogIO os;
   if (!buffer_p.exists("datafield")) {
     os << LogIO::WARN << "No data loaded into buffer yet"<<
       ", use fillbuffer first"<< LogIO::POST;
@@ -641,6 +643,7 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
 
 Bool MSFlagger::setDataBufferFlags(const GlishRecord& flags)
 {
+  LogIO os;
   if (!buffer_p.exists("datafield")) {
     os << LogIO::WARN <<
       "Data buffer is empty, use filldatabuffer first"<< LogIO::POST;
@@ -653,6 +656,7 @@ Bool MSFlagger::setDataBufferFlags(const GlishRecord& flags)
 
 Bool MSFlagger::writeDataBufferFlags()
 {
+  LogIO os;
   if (!check()) return False;
   if (!msSel_p->selectedTable().isWritable()) {
     os << LogIO::SEVERE << "MeasurementSet is not writable"<< LogIO::POST;
@@ -671,6 +675,7 @@ Bool MSFlagger::writeDataBufferFlags()
 
 Bool MSFlagger::createFlagHistory(Int nHis)
 {
+  LogIO os;
   if (!check()) return False;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isWritable()) {
@@ -841,6 +846,7 @@ void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
 
 Bool MSFlagger::saveFlags(Bool newLevel)
 {
+  LogIO os;
   if (!check()) return False;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
@@ -919,6 +925,7 @@ void MSFlagger::saveToFlagHist(Int level, Table& tab)
 
 Bool MSFlagger::restoreFlags(Int level)
 {
+  LogIO os;
   if (!check()) return False;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
@@ -983,6 +990,7 @@ void MSFlagger::applyFlagHist(Int level, Table& tab)
 
 Int MSFlagger::flagLevel()
 {
+  LogIO os;
   if (!check()) return False;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
@@ -997,6 +1005,7 @@ Int MSFlagger::flagLevel()
   
 Bool MSFlagger::check() 
 {
+  LogIO os;
   if (msSel_p) return True;
   os << LogIO::WARN << "Flagger is uninitialized"<<LogIO::POST;
   return False;

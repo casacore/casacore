@@ -51,7 +51,6 @@
 #include <trial/MeasurementSets/MSRange.h>
 #include <trial/MeasurementSets/MSSelUtil.h>
 
-static LogIO os;
 
 MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(-1),
 lastDataDescId_p(-2),
@@ -111,6 +110,7 @@ void MSSelector::setMS(MeasurementSet& ms)
 Bool MSSelector::initSelection(Int dataDescId, Bool reset)
 {
   // first check if we want to throw all selections away
+  LogIO os;
   if (reset) {
     selms_p=ms_p;
     initSel_p=False;
@@ -204,6 +204,7 @@ Bool MSSelector::initSelection(Int dataDescId, Bool reset)
 
 Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 {
+  LogIO os;
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
        << LogIO::POST;
@@ -278,6 +279,7 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 
 Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 {
+  LogIO os;
   // this selection/conversion assumes that parallactic angle rotation
   // is taken care of elsewhere (i.e., results may only be correct for
   // CORRECTED_DATA and MODEL_DATA conversions, not for the observed DATA)
@@ -351,6 +353,7 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 
 Bool MSSelector::select(const GlishRecord& items, Bool oneBased)
 {
+  LogIO os;
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
        << LogIO::POST;
@@ -552,6 +555,7 @@ static void averageDouble(Vector<Double>& vec)
 GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				Int inc, Bool average, Bool oneBased)
 {
+  LogIO os;
   GlishRecord out;
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
@@ -1339,6 +1343,7 @@ GlishRecord MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 Bool MSSelector::putData(const GlishRecord& items)
 {
+  LogIO os;
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
        << LogIO::POST;
@@ -1545,6 +1550,7 @@ Bool MSSelector::putData(const GlishRecord& items)
 Bool MSSelector::iterInit(const Vector<String>& columns,
 			  Double interval, Int maxRows)
 {
+  LogIO os;
   if (!initSel_p) {
     os << LogIO::WARN <<"Initializing selection with dd=0"
        << LogIO::POST;
