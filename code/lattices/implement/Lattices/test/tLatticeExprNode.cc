@@ -80,6 +80,12 @@ Bool checkFloat (const LatticeExprNode& expr,
                  const IPosition& shape,
                  const Bool shouldBeScalar,
 		 const Bool undefinedScalar);
+Bool checkFloatRepl (const LatticeExprNode& expr,
+		     const Float result,
+		     const IPosition& shape,
+		     const Array<Float>& replArray,
+		     Float replScalar,
+		     Bool isReplScalar);
 
 Bool checkDouble (const LatticeExprNode& expr,
                   const Double result,
@@ -1862,6 +1868,25 @@ Bool doIt (const MaskedLattice<Float>& aF,
       Double result = 90.0/C::pi*atan2(bDVal,cDVal);
       if (!checkDouble (expr3, result, shape, False, False)) ok = False;
    }
+   cout << "replace" << endl;
+   {
+      cout << " Float Scalar" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2(cFVal);
+      LatticeExprNode expr3 = replace(expr1,expr2);
+      if (!checkFloatRepl (expr3, bFVal, shape, cF.get(), cFVal, True))
+                                                           ok = False;
+      if (!checkMask (expr3, bF.isMasked(), bF.getMask())) ok = False;
+   }
+   {
+      cout << " Float Array" << endl;
+      LatticeExprNode expr1(bF);
+      LatticeExprNode expr2(cF);
+      LatticeExprNode expr3 = replace(expr1,expr2);
+      if (!checkFloatRepl (expr3, bFVal, shape, cF.get(), cFVal, False))
+                                                           ok = False;
+      if (!checkMask (expr3, bF.isMasked(), bF.getMask())) ok = False;
+   }
 
 
 //
@@ -2512,18 +2537,12 @@ Bool compareScalarBool (const LatticeExprNode expr,
 
 
 
-Bool checkFloat (const LatticeExprNode& expr,
-                 const Float result,
-                 const IPosition& shape,
-                 const Bool shouldBeScalar,
-		 const Bool undefinedScalar)
+Bool checkFloatInfo (const LatticeExprNode& expr,
+		     const IPosition& shape,
+		     const Bool shouldBeScalar,
+		     const Bool undefinedScalar)
 {
     Bool ok = True;  
-    Float result2;
-    LELArray<Float> Arr(shape);
-    IPosition origin(shape); origin = 0;
-    Slicer region(origin, shape);
-
     if (shouldBeScalar && !expr.isScalar()) {
        cout << "   result should be scalar" << endl;
        ok = False;
@@ -2553,6 +2572,20 @@ Bool checkFloat (const LatticeExprNode& expr,
           ok = False;
        }
     }
+    return ok;
+}
+
+Bool checkFloat (const LatticeExprNode& expr,
+                 const Float result,
+                 const IPosition& shape,
+                 const Bool shouldBeScalar,
+		 const Bool undefinedScalar)
+{
+    Bool ok = checkFloatInfo (expr, shape, shouldBeScalar, undefinedScalar);
+    Float result2;
+    LELArray<Float> Arr(shape);
+    IPosition origin(shape); origin = 0;
+    Slicer region(origin, shape);
     if (! expr.isInvalidScalar()) {
       if (expr.isScalar()) {
 	result2 = expr.getFloat();
@@ -2574,6 +2607,60 @@ Bool checkFloat (const LatticeExprNode& expr,
 	cout << "   Array result is  " << Arr.value() << endl;
 	ok = False;
       }
+    }
+    return ok;
+}
+
+Bool checkFloatRepl (const LatticeExprNode& expr,
+		     const Float result,
+		     const IPosition& shape,
+		     const Array<Float>& replArray,
+		     Float replScalar,
+		     Bool isReplScalar)
+{
+    Bool ok = checkFloatInfo (expr, shape, False, False);
+    LELArray<Float> Arr(shape);
+    IPosition origin(shape); origin = 0;
+    Slicer region(origin, shape);
+    expr.eval(Arr, region);
+    if (! Arr.isMasked()) {
+       if (! allEQ (Arr.value(), result)) {
+	  cout << "   result should be " << result << endl;
+	  cout << "   Array result is  " << Arr.value() << endl;
+	  ok = False;
+       }
+    } else {
+       Bool delres, delmask, delrepl;
+       const Bool* mask = Arr.mask().getStorage (delmask);
+       const Float* res = Arr.value().getStorage (delres);
+       const Float* repl = 0;
+       if (!isReplScalar) {
+	  repl = replArray.getStorage (delrepl);
+       }
+       uInt n = Arr.value().nelements();
+       for (uInt i=0; i<n; i++) {
+	  if (! mask[i]) {
+	     if (!isReplScalar) {
+	        replScalar = repl[i];
+	     }
+	     if (res[i] != replScalar) {
+	        cout << "   result " << i << " should be " << replScalar << endl;
+		cout << "   Replace result is " << res[i] << endl;
+		ok = False;
+	     }
+	  } else {
+	     if (res[i] != result) {
+	        cout << "   result " << i << " should be " << result << endl;
+		cout << "   Replace result is " << res[i] << endl;
+		ok = False;
+	     }
+	  }
+       }
+       Arr.mask().freeStorage (mask, delmask);
+       Arr.value().freeStorage (res, delres);
+       if (!isReplScalar) {
+	  replArray.freeStorage (repl, delrepl);
+       }
     }
     return ok;
 }
