@@ -137,6 +137,6 @@ void UnitMap::initUMCust2() {
 						 "electron volt")));
   UnitMap::mapCust->insert(map<String, UnitName>::value_type
 			   ("erg",   	UnitName("erg",
-						 UnitVal(1.,"dyn/cm"),
+						 UnitVal(1.0e-7,"J"),
 						 "erg")));
 }
