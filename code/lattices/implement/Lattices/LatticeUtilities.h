@@ -91,9 +91,16 @@ class LatticeUtilities
    static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
                                 const MaskedLattice<T>& in, Bool zeroMasked=False);
 
-// Replicate array through lattice in the specified region
+// Replicate array through lattice in the specified region.
+// The shape of <src>pixels</src> has to fit exactly into the shape of
+// the selected region for each axis of <src>pixels</src>. Otherwise
+// and exception will be thrown. For example,
+// if the shape of the region is [10,20], the shape of pixels could
+// be [10] and it will be replicated 20 times.  Another example would
+// be that the shape of pixels could be [5,10] and it would be
+// replicated 4 times fitting into the Lattice
    template <class T>
-   static void replicate (Lattice<T>& im,
+   static void replicate (Lattice<T>& lat,
                           const Slicer& region,
                           const Array<T>& pixels);
 

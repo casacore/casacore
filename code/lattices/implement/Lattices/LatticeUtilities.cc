@@ -213,8 +213,11 @@ void LatticeUtilities::replicate (Lattice<T>& lat,
                                   const Array<T>& pixels)
 {
    SubLattice<T> subLattice(lat, region, True); 
-   LatticeStepper stepper(subLattice.shape(), pixels.shape(),
-                          LatticeStepper::RESIZE);
+   const IPosition shapePixels = pixels.shape();
+   const IPosition shapeLattice = subLattice.shape();
+   AlwaysAssert(shapePixels.nelements()<=shapeLattice.nelements(),AipsError);
+//
+   LatticeStepper stepper(shapeLattice, shapePixels, LatticeStepper::RESIZE);
    LatticeIterator<T> iter(subLattice, stepper);
    for (iter.reset(); !iter.atEnd(); iter++) {
       subLattice.putSlice(pixels, iter.position()); 
