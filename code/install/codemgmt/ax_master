@@ -5613,3 +5613,4 @@
 15 249 src rm doc/notes/237.dir
 15 249 src rm doc/notes/241.dir
 15 251 src rm bima/apps/bimatester/bimatester_data.cc
+15 265 src rm aips/implement/Deconvolution/test/templates
