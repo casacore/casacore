@@ -260,7 +260,6 @@ PagedImage(Table & table, uInt rowNumber)
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
-  restore_units();
 };
 
 template <class T> PagedImage<T>::
@@ -294,7 +293,6 @@ PagedImage(const String & filename, uInt rowNumber)
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
-  restore_units();
 };
 
 template <class T> PagedImage<T>::
@@ -328,7 +326,6 @@ PagedImage(const String & filename, const TableLock& lockOptions, uInt rowNumber
   throughmask_p = False;
   ::defaultValue(defaultvalue_p); 
   setTableType();
-  restore_units();
 };
 
 template <class T> PagedImage<T>::
@@ -341,18 +338,17 @@ PagedImage(const PagedImage<T> & other)
 {
   attach_logtable();
   AlwaysAssert(setCoordinateInfo(other.coords_p), AipsError);
-  units_p = other.units_p;
   log_p = other.log_p;
   if (other.mask_p != 0) 
     mask_p = new PagedArray<Bool>(*(other.mask_p));
-};
+  setUnits(other.units());
+}
 
 template <class T> PagedImage<T>::
 ~PagedImage() {
   if (mask_p) 
     delete mask_p;
   if (table_p.isWritable()) {
-    save_units();
     if (table_p.keywordSet().isDefined("coords"))
       table_p.rwKeywordSet().removeField("coords");
     AlwaysAssert(coords_p.save(table_p.rwKeywordSet(), "coords"),
@@ -370,7 +366,6 @@ operator=(const PagedImage<T> & other) {
   if (this != &other) {
     log_p = other.log_p;
     coords_p = other.coords_p;
-    units_p = other.units_p;
     throughmask_p = other.throughmask_p;
     table_p = other.table_p;
     attach_logtable();
@@ -378,6 +373,7 @@ operator=(const PagedImage<T> & other) {
     if (other.mask_p) 
       mask_p = new PagedArray<Bool>(*(other.mask_p));
     defaultvalue_p = other.defaultvalue_p;
+    setUnits(other.units());
   } 
   return *this;
 };
@@ -843,58 +839,60 @@ template<class T> void PagedImage<T>::attach_logtable()
   log_p << LogIO::NORMAL;
 }
 
-template<class T> void PagedImage<T>::
-save_units() {
+template<class T> Bool PagedImage<T>::setUnits(const Unit &newUnits) 
+{
   Bool writable = table_p.isWritable();
   if (!writable) {
-    return;
+    return False;
   }
   if (table_p.keywordSet().isDefined("units")) {
     table_p.rwKeywordSet().removeField("units");
   }
-  table_p.rwKeywordSet().define("units", units_p.getName());
+  table_p.rwKeywordSet().define("units", newUnits.getName());
+  return True;
 }
 
-template<class T> void PagedImage<T>::
-restore_units() {
-  logSink() << LogOrigin("PagedImage<T>", "restore_units()", WHERE);
+template<class T> Unit PagedImage<T>::units() const
+{
+  Unit retval;
+
   String unitName;
   if (table_p.keywordSet().isDefined("units")) {
     if (table_p.keywordSet().dataType("units") != TpString) {
-      logSink() << 
+      LogIO os;
+      os << LogOrigin("PagedImage<T>", "units()", WHERE) <<
 	"'units' keyword in image table is not a string! Units not restored." 
 		<< LogIO::SEVERE << LogIO::POST;
+      return retval;
     } else {
       table_p.keywordSet().get("units", unitName);
     }
   }
   
-  if (unitName == "") {
-    // Empty unit, but I guess we should overwrite!
-    setUnits(Unit(unitName));
-    return;
+  if (unitName != "") {
+    // OK, non-empty unit, see if it's valid, if not try some known things to
+    // make a valid unit out of it.
+    if (! UnitVal::check(unitName)) {
+      // Beam and Pixel are the most common undefined units
+      UnitMap::putUser("Pixel",UnitVal(1.0),"Pixel unit");
+      UnitMap::putUser("Beam",UnitVal(1.0),"Beam area");
+    }
+    if (! UnitVal::check(unitName)) {
+      // OK, maybe we need FITS
+      UnitMap::addFITS();
+    }
+    if (!UnitVal::check(unitName)) {
+      // I give up!
+      LogIO os;
+      os << LogOrigin("PagedImage<T>", "units()", WHERE) <<
+	LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
+	" Not restoring units" << LogIO::POST;
+    } else {
+      retval = Unit(unitName);
+    }
   }
-  // OK, non-empty unit, see if it's valid, if not try some known things to
-  // make a valid unit out of it.
-  if (! UnitVal::check(unitName)) {
-    // Beam and Pixel are the most common undefined units
-    UnitMap::putUser("Pixel",UnitVal(1.0),"Pixel unit");
-    UnitMap::putUser("Beam",UnitVal(1.0),"Beam area");
-  }
-  if (! UnitVal::check(unitName)) {
-    // OK, maybe we need FITS
-    UnitMap::addFITS();
-  }
-  if (! UnitVal::check(unitName)) {
-    // I give up!
-    logSink() << LogIO::SEVERE << "Unit '" << unitName << "' is unknown."
-      " Not restoring units" << LogIO::POST;
-    logSink() << LogIO::NORMAL;
-    return;
-  }
-  // Cool, the unit is known.
-  setUnits(Unit(unitName));
-};
+  return retval;
+}
 
 template<class T> void PagedImage<T>::
 report_mask() {

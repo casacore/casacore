@@ -37,7 +37,6 @@
 #include <trial/Lattices/Lattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
-#include <aips/Measures/Unit.h>
 
 //# predeclarations
 template <class T> class RO_LatticeIterInterface;
@@ -47,6 +46,7 @@ template <class T> class COWPtr;
 class IPosition;
 class LogIO;
 class RecordInterface;
+class Unit;
 
 // <summary> a base class for astronomical images </summary>
 //
@@ -233,16 +233,20 @@ public:
   // Function to return the value of the stored default Value.
   virtual const T &defaultValue() const = 0;
   
-  // Function which sets the units associated with the map.
-  void setUnits(const Unit &newUnits);
+  // Function which get and set the units associated with the image
+  // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
+  // False if it cannot set the unit for some reason (e.g. the underlying
+  // file is not writable).
+  // <group>
+  virtual Bool setUnits(const Unit &newUnits) = 0;
+  virtual Unit units() const = 0;
+  // </group>
 
   // Return the name of the current ImageInterface object. This will generally 
   // be a file name for images that have a persistent form.  Any path
   // before teh actual file name can be optionally stripped off.
   virtual String name(const Bool stripPath=False) const = 0;
 
-  // Function to return the units of the map
-  const Unit &units() const;
 
   // Functions to set or replace the coordinate information in the Image
   // The default implementation of setCoordinateInfo merely updates the
@@ -315,8 +319,6 @@ protected:
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
   Bool throughmask_p;
-  Unit units_p;
-  
 };
 
 #endif

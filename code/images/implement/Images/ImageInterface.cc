@@ -43,22 +43,6 @@
 
 #include <strstream.h>
 
-// Function which sets the units associated with the map.
-template <class T> void ImageInterface<T>::setUnits(const Unit &newUnits)
-{
-    logSink() << LogOrigin("ImageInterface<T>",
-			   "setUnits(const Unit &newUnits)", WHERE) << 
-	LogIO::DEBUGGING <<"Changing units from " << units().getName() << 
-	" to " << newUnits.getName() << LogIO::POST;
-    units_p = newUnits;
-}
-
-// Function to return the units of the map
-template <class T> const Unit &ImageInterface<T>::units() const
-{
-    return units_p;
-}
-
 // reset coords
 template <class T> 
 Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
