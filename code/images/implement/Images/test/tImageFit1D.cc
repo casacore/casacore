@@ -45,6 +45,7 @@
 #include<images/Images/ImageInterface.h>
 #include<images/Images/ImageRegion.h>
 #include<casa/Utilities/Assert.h>
+#include<casa/Inputs/Input.h>
 
 #include <casa/iostream.h>
 
@@ -65,7 +66,7 @@ void check  (const Vector<Double>& pPars, const Vector<Double>& gPars,
 void forcedFailure();
 
 
-int main() {
+int main(int argc, char **argv) {
 
 try {
 

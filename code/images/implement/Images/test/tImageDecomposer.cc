@@ -45,12 +45,12 @@
 #include <casa/namespace.h>
 typedef Double imagetype;
 
-TempImage<imagetype>& createtestimage(const Matrix<imagetype>& components,
-                                   const Vector<imagetype>& originworldcoord,
-                                   imagetype inc, const IPosition& imageshape);
-void printGaussianComponents(const Matrix<imagetype>& components);
-Bool compareParameters(const Matrix<imagetype>& given, 
-                       const Matrix<imagetype>& calculated);
+TempImage<imagetype>& createtestimage(const casa::Matrix<imagetype>& components,
+                                   const casa::Vector<imagetype>& originworldcoord,
+                                   imagetype inc, const casa::IPosition& imageshape);
+void printGaussianComponents(const casa::Matrix<imagetype>& components);
+Bool compareParameters(const casa::Matrix<imagetype>& given, 
+                       const casa::Matrix<imagetype>& calculated);
 
 
 //////////////////////////////////////////
@@ -62,9 +62,9 @@ int main(int argc, char** argv)
   try
   {
     TempImage<imagetype> image;
-    Matrix<imagetype> givenpars;
+    casa::Matrix<imagetype> givenpars;
     IPosition imageshape;
-    Vector<imagetype> origincoord;
+    casa::Vector<imagetype> origincoord;
     Timer timer; 
 
 
@@ -236,9 +236,9 @@ int main(int argc, char** argv)
 
 ////////////////////////////
 
-TempImage<Double>& createtestimage(const Matrix<Double>& components,
-                                   const Vector<Double>& originworldcoord,
-                                   Double inc, const IPosition& imageshape)
+TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
+                                   const casa::Vector<Double>& originworldcoord,
+                                   Double inc, const casa::IPosition& imageshape)
 {
   //forms test image out of a composite gaussian function
   
@@ -274,13 +274,13 @@ TempImage<Double>& createtestimage(const Matrix<Double>& components,
       if (dim==3) datagauss3d[g][p] = components(g,p);
     }
   
-  Vector<Double> cdelt(1);     cdelt = inc;
-  Matrix<Double> pc(1,1);      pc = 1.0;
-  Vector<Double> crpix(1);     crpix = 0.0;
-  Vector<String> emptystrv(1); emptystrv = "";
-  Vector<Double> xminv(1);     xminv = originworldcoord(0);
-  Vector<Double> yminv(1);     yminv = originworldcoord(1);
-  Vector<Double> zminv(1);     if (dim == 3) zminv = originworldcoord(2);
+  casa::Vector<Double> cdelt(1);     cdelt = inc;
+  casa::Matrix<Double> pc(1,1);      pc = 1.0;
+  casa::Vector<Double> crpix(1);     crpix = 0.0;
+  casa::Vector<String> emptystrv(1); emptystrv = "";
+  casa::Vector<Double> xminv(1);     xminv = originworldcoord(0);
+  casa::Vector<Double> yminv(1);     yminv = originworldcoord(1);
+  casa::Vector<Double> zminv(1);     if (dim == 3) zminv = originworldcoord(2);
 
   IPosition pos(dim);
   Double x = originworldcoord(0);
