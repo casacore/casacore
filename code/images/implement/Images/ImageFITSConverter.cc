@@ -26,6 +26,8 @@
 //#
 //# $Id$
 
+#include <trial/Coordinates/LinearCoordinate.h>
+#include <trial/Coordinates/CoordinateUtil.h>
 #include <trial/Images/ImageFITSConverter.h>
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/RegionHandler.h>
@@ -36,7 +38,6 @@
 #include <trial/Lattices/LCPagedMask.h>
 #include <aips/FITS/fitsio.h>
 #include <aips/FITS/hdu.h>
-#include <trial/Coordinates/LinearCoordinate.h>
 #include <trial/FITS/FITSUtil.h>
 
 #include <aips/Quanta/UnitMap.h>
@@ -48,6 +49,8 @@
 #include <aips/Logging/LogIO.h>
 #include <aips/Containers/Record.h>
 #include <trial/Tasking/ProgressMeter.h>
+
+#include <strstream.h>
 
 
 #if defined(__GNUG__)
@@ -95,19 +98,22 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(PagedImage<Float>*& newImage,
 	    "Coordinate system may be in error." << LogIO::POST;
     }
 
-    ok = CoordinateSystem::fromFITSHeader(coords, header, True);
+    ok = CoordinateSystem::fromFITSHeader(coords, header, shape, True);
     if (! ok) {
 	os << LogIO::WARN << 
 	  "Error creating coordinate system from FITS keywords.\n" 
-	  "I will use a linear coordinate along each axis instead.\n"
+	  "I will use a dummy linear coordinate along each axis instead.\n"
 	  "If you your FITS file actually does contain a coordinate system\n"
 	  "please submit a bug report."  << LogIO::POST;
+//
 	CoordinateSystem empty;
-	LinearCoordinate linear(shape.nelements());
-	Vector<Double> crval(shape.nelements());
-	crval = 1.0;
-	linear.setReferenceValue(crval);
-	empty.addCoordinate(linear);
+        Vector<String> names(shape.nelements());
+        for (uInt i=0; i<names.nelements(); i++) {
+           ostrstream oss;
+           oss << i;
+           names(i) = String("linear") + String(oss);
+        }
+        CoordinateUtil::addLinearAxes(empty, names, shape);
 	coords = empty;
     }
 
