@@ -93,7 +93,7 @@ void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
   maxv = 0;
   Bool firstTime = True;
   // Iterate through the lattice.
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData;
     const Array<T>& array = iter.cursor();
@@ -140,7 +140,7 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
   Bool firstTime = True;
   // Iterate through the lattice.
   COWPtr<Array<Bool> > mask;
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;
     const Array<T>& array = iter.cursor();
@@ -218,7 +218,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
   uInt fractileInx = uInt(fraction * (ntodo-1));
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the fractile and update the various values.
     // On return fractileInx,stv,endv form the basis of the new histogram.
@@ -342,7 +342,7 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
   COWPtr<Array<Bool> > mask;
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the fractile and update the various values.
     // On return fractileInx,stv,endv form the basis of the new histogram.
@@ -448,7 +448,7 @@ Vector<T> LatticeFractile<T>::smallMaskedFractile
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
   COWPtr<Array<Bool> > mask;
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;
     const Array<T>& array = iter.cursor();
@@ -532,7 +532,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
   Bool finished2 = False;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
@@ -694,7 +694,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
   COWPtr<Array<Bool> > mask;
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
@@ -833,7 +833,7 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
   COWPtr<Array<Bool> > mask;
-  RO_LatticeIterator<T> iter(lattice, lattice.niceCursorShape());
+  RO_LatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;
     const Array<T>& array = iter.cursor();
