@@ -164,6 +164,12 @@ ImageRegion* ImageInterface<T>::getImageRegionPtr (const String&,
 						   Bool) const
 { return 0; }
 template <class T>
+void ImageInterface<T>::renameRegion (const String&,
+				      const String&,
+				      RegionHandler::GroupType,
+				      Bool)
+{}
+template <class T>
 void ImageInterface<T>::removeRegion (const String&,
 				      RegionHandler::GroupType,
 				      Bool)

@@ -325,6 +325,16 @@ public:
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True) const;
 
+  // Rename a region.
+  // If a region with the new name already exists, it is deleted or
+  // an exception is thrown (depending on <src>overwrite</src>).
+  // The region name is looked up in the given group(s).
+  // <br>An exception is thrown if the old region name does not exist.
+  virtual void renameRegion (const String& newName,
+			     const String& oldName,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool overwrite = False);
+    
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
   // <br>Optionally an exception is thrown if the region does not exist.

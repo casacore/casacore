@@ -137,6 +137,16 @@ public:
 				   RegionHandler::GroupType = Any,
 				   Bool throwIfUnknown = True);
     
+    // Rename a region.
+    // If a region with the new name already exists, it is deleted or
+    // an exception is thrown (depending on <src>overwrite</src>).
+    // The region name is looked up in the given group(s).
+    // <br>An exception is thrown if the old region name does not exist.
+    static Bool renameRegion (Table& table, const String& newName,
+			      const String& oldName,
+			      RegionHandler::GroupType = Any,
+			      Bool overwrite = False);
+    
     // Remove a region belonging to the table.
     // <br>Optionally an exception is thrown if the region does not exist.
     // <br>A False status is returned if the table is not writable

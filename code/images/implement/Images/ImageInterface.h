@@ -217,6 +217,10 @@ public:
                             (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True) const;
+  virtual void renameRegion (const String& newName,
+			     const String& oldName,
+			     RegionHandler::GroupType = RegionHandler::Any,
+			     Bool overwrite = False);
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
 			     Bool throwIfUnknown = True);

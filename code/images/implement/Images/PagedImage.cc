@@ -730,6 +730,15 @@ Bool PagedImage<T>::hasRegion (const String& name,
   return RegionHandler::hasRegion (table_p, name, type);
 }
 template<class T> 
+void PagedImage<T>::renameRegion (const String& oldName,
+				  const String& newName,
+				  RegionHandler::GroupType type,
+				  Bool overwrite)
+{
+  reopenRW();
+  RegionHandler::renameRegion (table_p, newName, oldName, type, overwrite);
+}
+template<class T> 
 void PagedImage<T>::removeRegion (const String& name,
 				  RegionHandler::GroupType type,
 				  Bool throwIfUnknown)
