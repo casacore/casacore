@@ -6099,3 +6099,4 @@
 17 151 src rm admin/system/aips2-multibeam.list
 17 151 src rm admin/system/aips2-naug.list
 17 151 src rm admin/system/aips2-nfra.list
+17 151 src rm admin/system/aips2-nrao.list
