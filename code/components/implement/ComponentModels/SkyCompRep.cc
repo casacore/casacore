@@ -34,6 +34,7 @@
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeIterator.h>
 #include <trial/Tasking/MeasureParameterAccessor.h>
+#include <trial/MeasurementComponents/StokesConverter.h>
 
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -89,6 +90,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
     Quantum<Double> inc1(abs(inc(1)), units(1));
     AlwaysAssert(near(inc0, inc1), AipsError);
     pixelSize = MVAngle(inc0);
+//     cout << "Pixel size: " << pixelSize.get("'") << endl;
   }
   
   // Setup an iterator to step through the image in chunks that can fit into
@@ -155,6 +157,10 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	dirVal(1).setValue(worldCoord(1));
 	pixelDir.set(MVDirection(dirVal));
 	sample(pixelVal, pixelDir, pixelSize);
+// 	cout << pixelCoord.ac() 
+// 	     << ": " << worldCoord.ac() 
+// 	     << ": " << pixelDir.getAngle("'")
+// 	     << ": " << pixelVal.ac() << endl;
 	if (nStokes == 1) {
 	  switch (stokes(0)) {
 	  case Stokes::I:
@@ -216,65 +222,6 @@ Bool SkyCompRep::ok() const {
   return True;
 }
 
-// void SkyCompRep::fromRecord(Quantum<Double> & quantity, String & errorMessage, 
-// 			    const GlishRecord & record) {
-//   // First extract the value for this quantum.
-//   if (!record.exists("value"))
-//     errorMessage += "\nThe record does not have a 'value' field";
-//   else {
-//     if (record.get("value").type() != GlishValue::ARRAY)
-//       errorMessage += "\nThe 'value' field cannot be a record";
-//     else {
-//       GlishArray valField(record.get("value"));
-//       if (valField.elementType() == GlishArray::STRING)
-//  	errorMessage += "\nThe 'value' field cannot be a string";
-//       else {
-// 	const IPosition shape = valField.shape();
-// 	if (shape.product() != 1)
-//  	  errorMessage += "\nThe 'value' field can only have one element";
-// 	else {
-// 	  Double val;
-// 	  if (valField.get(val) == False)
-// 	    errorMessage += "\nCould not read the 'value' field "
-// 	      "for an unknown reason";
-// 	  else
-// 	    quantity.setValue(val);
-// 	}
-//       }
-//     }
-//   }
-//   // Now extract the corresponding unit
-//   if (!record.exists("unit"))
-//     errorMessage += "\nThe record does not have a 'unit' field";
-//   else {
-//     if (record.get("unit").type() != GlishValue::ARRAY)
-//       errorMessage += "\nThe 'unit' field cannot be a record";
-//     else {
-//       GlishArray unitField(record.get("unit"));
-//       if (unitField.elementType() != GlishArray::STRING)
-//  	errorMessage += "\nThe 'unit' field must be a string";
-//       else {
-// 	const IPosition shape = unitField.shape();
-// 	if (shape.product() > 1)
-//  	  errorMessage += "\nThe 'unit' field"
-// 	    " can only have at most one element";
-// 	else {
-// 	  if (shape.product() == 0) 
-// 	    quantity.setUnit("");
-// 	  else { // shape.product() == 1
-// 	    String unit;
-// 	    if (unitField.get(unit) == False)
-// 	      errorMessage += "\nCould not read the 'unit' field"
-// 		" for an unknown reason";
-// 	    else
-// 	      quantity.setUnit(unit);
-// 	  }
-// 	}
-//       }
-//     }
-//   }
-// }
-
 void SkyCompRep::toRecord(GlishRecord & record, 
  			  const Quantum<Double> & quantity) {
   record.add("value", quantity.getValue());
@@ -292,7 +239,7 @@ Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
-void SkyCompRep::addDir(GlishRecord & record) const {
+Bool SkyCompRep::addDir(String & errorMessage, GlishRecord & record) const {
   GlishRecord dirRec;
   dirRec.add("type", "direction");
   MDirection compDir;
@@ -314,6 +261,8 @@ void SkyCompRep::addDir(GlishRecord & record) const {
     dirRec.add("m1", m);
   }
   record.add("direction", dirRec);
+  if (errorMessage == ""); // Suppress compiler warning about unused variable
+  return True;
 }
 
 Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
@@ -392,13 +341,15 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
-void SkyCompRep::addFlux(GlishRecord & record) const {
+Bool SkyCompRep::addFlux(String & errorMessage, GlishRecord & record) const {
   Quantum<Vector<Double> > compFlux(Vector<Double>(4), "Jy");
   flux(compFlux);
   GlishRecord fluxRec;
   fluxRec.add("value", GlishArray(compFlux.getValue("Jy").ac()));
   fluxRec.add("unit", "Jy");
   record.add("flux", fluxRec);
+  if (errorMessage == ""); // Suppress compiler warning about unused variable
+  return True;
 }
 
 Bool SkyCompRep::readLabel(String & errorMessage, const GlishRecord & record) {
@@ -427,52 +378,83 @@ Bool SkyCompRep::readLabel(String & errorMessage, const GlishRecord & record) {
   return True;
 }
 
-void SkyCompRep::addLabel(GlishRecord & record) const {
+Bool SkyCompRep::addLabel(String & errorMessage, GlishRecord & record) const {
   String thisLabel;
   label(thisLabel);
   if (thisLabel != "") {
     record.add("label", thisLabel);
   }
+  if (errorMessage == ""); // Suppress compiler warning about unused variable
+  return True;
 }
 
-void SkyCompRep::readParameters(Vector<Double> & parameters, 
-				String & errorMessage,
-				const GlishRecord & record) const {
-  AlwaysAssert(parameters.nelements() == 0 || 
-	       parameters.nelements() == nParameters(), AipsError);
-  if (!record.exists("parameters"))
-    errorMessage += "\nThe record does not have a 'parameters' field";
-  else {
-    if (record.get("parameters").type() != GlishValue::ARRAY)
-      errorMessage += "\nThe 'parameters' field cannot be a record";
-    else {
-      const GlishArray parmField = record.get("parameters");
-      if (parmField.elementType() == GlishArray::STRING)
-	errorMessage += "\nThe 'parameters' field cannot be a string";
-      else {
-	const IPosition shape = parmField.shape();
-	if (shape.nelements() != 1 || shape.product() != Int(nParameters())) {
-	  ostrstream buffer; buffer << nParameters();
-	  errorMessage += 
-	    String("\nThe 'parameters' field must be a vector with ") +
-	    buffer + String(" elements");
-	}
-	else {
-	  if (!parmField.get(parameters.ac()))
-	    errorMessage += "\nCould not read the 'parameters' field"
-	      " for an unknown reason";
-	}
-      }
-    }
-  }
-}
+// void SkyCompRep::setFluxLinear(const Quantum<Vector<DComplex> > & compFlux) {
+//   AlwaysAssert(compFlux.isConform("Jy") == True, AipsError);
+//   const Vector<DComplex> & fluxLinear = compFlux.getValue();
+//   AlwaysAssert(fluxLinear.nelements() == 4, AipsError);
+//   // NOTE: Precision is LOST here because we do not yet have double precision
+//   // version of the conversions available.
+//   StokesConverter sc;
+//   {
+//     Vector<Int> stokes(4), linear(4);
+//     stokes(0) = Stokes::I;
+//     stokes(1) = Stokes::Q;
+//     stokes(2) = Stokes::U;
+//     stokes(3) = Stokes::V;
+//     linear(0) = Stokes::XX;
+//     linear(1) = Stokes::XY;
+//     linear(2) = Stokes::YX;
+//     linear(3) = Stokes::YY;
+//     sc.setConversion(stokes, linear);
+//   }
+//   Vector<Complex> singleLinear(4), complexStokes(4);
+//   for (uInt s = 0; s < 4; s++) {
+//     singleLinear(s) = fluxLinear(s);
+//   }
+//   sc.convert(complexStokes, singleLinear);
+  
+//   Vector<Double> fluxStokes(4);
+//   for (uInt i = 0; i < 4; i++) {
+//     fluxStokes(i) = real(complexStokes(i));
+//   }
+//   SkyCompRep::setFlux(Quantum<Vector<Double> >(fluxStokes, 
+// 					       compFlux.getFullUnit()));
+// }
 
-void SkyCompRep::addParameters(GlishRecord & record) const {
-  Vector<Double> parms(nParameters());
-  parameters(parms);
-  record.add("parameters", GlishArray(parms.ac()));
-}
+// void SkyCompRep::fluxLinear(Quantum<Vector<DComplex> > & compFlux) const {
+//   // NOTE: Precision is LOST here because we do not yet have double precision
+//   // version of the conversions available.
+//   StokesConverter sc;
+//   {
+//     Vector<Int> stokes(4), linear(4);
+//     stokes(0) = Stokes::I;
+//     stokes(1) = Stokes::Q;
+//     stokes(2) = Stokes::U;
+//     stokes(3) = Stokes::V;
+//     linear(0) = Stokes::XX;
+//     linear(1) = Stokes::XY;
+//     linear(2) = Stokes::YX;
+//     linear(3) = Stokes::YY;
+//     sc.setConversion(linear, stokes);
+//   }
+//   Quantum<Vector<Double> > fluxStokes;
+//   SkyCompRep::flux(fluxStokes);
 
+//   Vector<Complex> complexStokes(4), singleLinear(4);
+//   for (uInt i = 0; i < 4; i++) {
+//     complexStokes(i) = Complex(fluxStokes.getValue()(i), 0.0f);
+//   }
+
+//   sc.convert(singleLinear, complexStokes);
+
+//   Vector<DComplex> doubleLinear(4);
+//   for (uInt s = 0; s < 4; s++) {
+//     doubleLinear(s) = singleLinear(s);
+//   }
+//   compFlux.setValue(doubleLinear);
+//   compFlux.setUnit(fluxStokes.getFullUnit());
+  
+// }
 // Local Variables: 
 // compile-command: "gmake OPTLIB=1 SkyCompRep"
 // End: 
