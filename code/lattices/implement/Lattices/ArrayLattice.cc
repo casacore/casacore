@@ -26,7 +26,7 @@
 //# $Id$
 
 #include <aips/Lattices/ArrayLattice.h>
-#include <aips/Lattices/ArrLatticeIter.h>
+//#include <aips/Lattices/ArrLatticeIter.h>
 #include <aips/Lattices/LatticeIterInterface.h>
 #include <aips/Lattices/LatticeNavigator.h>
 #include <aips/Exceptions/Error.h>
