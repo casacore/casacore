@@ -2400,3 +2400,4 @@
 11 213 sys rm libexec/sdgridder.g
 11 213 sys rm libexec/sdimaging.g
 11 213 sys rm libexec/tsdimaging.g
+11 215 src rm trial/implement/DisplayGTk
