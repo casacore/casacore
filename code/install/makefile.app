@@ -300,7 +300,7 @@ $(TMPPCKGD)/%.ycc : ;
 
 ifneq "$(findstring $(THISAPP),$(MEGASERVE))" ""
    # No need to compile, just link to the megaserver.
-   $(BINDBGD)/% : FORCE
+   $(BINDBGD)/% : $(CODEDIR)/%.cc FORCE
 	-@ echo ""
 	-@ echo "$* (dbg) symlinked to the megaserver."
 	 @ cd $(BINDBGD) && \
@@ -309,7 +309,7 @@ ifneq "$(findstring $(THISAPP),$(MEGASERVE))" ""
 	     ln -s megaserver $* ; \
 	   fi
 
-   $(BINOPTD)/% : FORCE
+   $(BINOPTD)/% : $(CODEDIR)/%.cc FORCE
 	-@ echo ""
 	-@ echo "$* (opt) symlinked to the megaserver."
 	 @ cd $(BINOPTD) && \
