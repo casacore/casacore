@@ -1,5 +1,5 @@
 //# LELImageCoord.h: The letter class for image coordinates
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -29,9 +29,13 @@
 #define AIPS_LELIMAGECOORD_H
 
 //# Includes
-#include <trial/Lattices/LELLattCoord.h>
+#include <aips/Lattices/LELLattCoordBase.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Utilities/CountedPtr.h>
+
+//# Forward Declarations
+class LatticeExprNode;
+class LattRegionHolder;
 
 
 // <summary>
@@ -44,20 +48,15 @@
 // </reviewed>
 
 // <prerequisite>
-//   <li> <linkto class=LELLattCoord>LELLattCoord</linkto>
+//   <li> <linkto class=LELLattCoordBase>LELLattCoordBase</linkto>
 // </prerequisite>
 
 // <synopsis>
-// This base class is the basic letter for the envelope class
+// This class is a letter class for the envelope class
 // <linkto class=LELCoordinates>LELCoordinates</linkto>.
-// It does not do anything, but makes it possible that derived classes
-// (like LELImageCoord) implement their own behaviour.
+// It acts as the coordinates class for Lattice objects with
+// proper coordinates (like PagedImage).
 // </synopsis> 
-
-// <example>
-// <srcblock>
-// </srcblock>
-// </example>
 
 // <motivation>
 // It must be possible to handle image coordinates in a lattice.
@@ -69,7 +68,7 @@
 //# </todo>
 
 
-class LELImageCoord : public LELLattCoord
+class LELImageCoord : public LELLattCoordBase
 {
 public:
     LELImageCoord();
@@ -94,7 +93,7 @@ public:
 
     // Check if the coordinates of this and that conform.
     // It calls doConform on the that object.
-    virtual Bool conform (const LELLattCoord& other) const;
+    virtual Bool conform (const LELLattCoordBase& other) const;
 
     // Check if the coordinates of this and that conform.
     virtual Bool doConform (const LELImageCoord& other) const;

@@ -1,5 +1,5 @@
 //# LELImageCoord.cc: The letter class for image coordinates
-//# Copyright (C) 1998,1999
+//# Copyright (C) 1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,7 +60,7 @@ String LELImageCoord::classname() const
     return "LELImageCoord";
 }
 
-Bool LELImageCoord::conform (const LELLattCoord& other) const
+Bool LELImageCoord::conform (const LELLattCoordBase& other) const
 {
 // Call the virtual doConform function to be able to compare
 // two LELImageCoord objects.
