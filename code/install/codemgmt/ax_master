@@ -3822,3 +3822,4 @@
 14 065 src mv trial/implement/Display/ColormapInfo.h trialdisplay/implement/Display/ColormapInfo.h
 14 065 src mv trial/implement/Display/ColormapManager.h trialdisplay/implement/Display/ColormapManager.h
 14 065 src mv trial/implement/Display/DParameterChoice.h trialdisplay/implement/Display/DParameterChoice.h
+14 065 src mv trial/implement/Display/DParameterColorChoice.h trialdisplay/implement/Display/DParameterColorChoice.h
