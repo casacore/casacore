@@ -52,6 +52,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image)
   itsSubLatPtr = new SubLattice<T> (image);
   coords_p = image.coordinates();
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>
@@ -62,6 +63,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   itsSubLatPtr = new SubLattice<T> (image.latticeCast(), writableIfPossible);
   coords_p = image.coordinates();
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>
@@ -76,6 +78,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>
@@ -92,6 +95,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   coords_p = image.coordinates().subImage (slicer.start().asVector(),
 					   slicer.stride().asVector());
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>
@@ -104,6 +108,7 @@ SubImage<T>::SubImage (const ImageInterface<T>& image,
   coords_p = image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector());
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>
@@ -117,6 +122,7 @@ SubImage<T>::SubImage (ImageInterface<T>& image,
   coords_p = image.coordinates().subImage (refslicer.start().asVector(),
 					   refslicer.stride().asVector());
   log_p    = image.logSink();
+  imageInfo_p = image.imageInfo();
 }
 
 template<class T>

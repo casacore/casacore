@@ -32,6 +32,7 @@
 //# Includes
 #include <aips/aips.h>
 #include <trial/Images/RegionHandler.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/MaskedLattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
 #include <aips/Logging/LogIO.h>
@@ -192,15 +193,24 @@ public:
   // </group>
   
   // Often we have miscellaneous information we want to attach to an image.
-  // This is how it is done. Eventually we will want to register that some
-  // of the information is to be destroyed if the image changes so that, e.g.
-  // data max/min values can be removed if the image changes.
+  // This is where it goes.  
   //
   // Note that setMiscInfo REPLACES the information with the new information.
-  // If can fail if, e.g., the underlying table is not writable.
+  // It can fail if, e.g., the underlying table is not writable.
   // <group>
   virtual const RecordInterface& miscInfo() const = 0;
   virtual Bool setMiscInfo (const RecordInterface& newInfo) = 0;
+  // </group>
+
+  // The ImageInfo object contains some miscellaneous information about the image
+  // which unlike that stored in MiscInfo, has a standard list of things,
+  // such as the restoring beam.
+  //
+  // Note that setImageInfo REPLACES the information with the new information.
+  // It is up to the derived class to make the ImageInfo permanent.
+  // <group>
+  virtual ImageInfo imageInfo() const;
+  virtual Bool setImageInfo(const ImageInfo& info);
   // </group>
 
   // The "region/mask" functions are only implemented in PagedImage.
@@ -252,6 +262,12 @@ protected:
   // It is the job of the derived class to make the coordinate system valid.
   CoordinateSystem coords_p;
   LogIO log_p;
+
+  // It is the job of the derived class to make the ImageInfo valid
+  ImageInfo imageInfo_p;
+
+  Bool restoreImageInfo(const RecordInterface& rec);
+
 };
 
 

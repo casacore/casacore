@@ -38,6 +38,7 @@
 #include <trial/Lattices/LatticeIterator.h>
 
 #include <aips/Arrays/ArrayMath.h>
+#include <aips/Containers/RecordInterface.h>
 #include <aips/Quanta/Unit.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Logging/LogIO.h>
@@ -57,7 +58,8 @@ template <class T>
 ImageInterface<T>::ImageInterface (const ImageInterface& other)
 : MaskedLattice<T> (other),
   coords_p (other.coords_p),
-  log_p    (other.log_p)
+  log_p    (other.log_p),
+  imageInfo_p(other.imageInfo_p)
 {
   logSink() << LogOrigin("ImageInterface<T>",
 	    "ImageInterface(const ImageInterface&)",
@@ -71,6 +73,7 @@ ImageInterface<T>& ImageInterface<T>::operator= (const ImageInterface& other)
     MaskedLattice<T>::operator= (other);
     coords_p = other.coords_p;
     log_p    = other.log_p;
+    imageInfo_p = other.imageInfo_p;
   }
   return *this;
 }
@@ -196,3 +199,41 @@ ImageRegion ImageInterface<T>::getRegion (const String& regionName,
     delete regptr;
     return reg;
 }
+
+
+template<class T>
+ImageInfo ImageInterface<T>::imageInfo() const
+{    
+   return imageInfo_p;
+}    
+        
+template<class T>
+Bool ImageInterface<T>::setImageInfo(const ImageInfo& info)
+//
+// Derived classes like PagedImage have to put this in the
+// permanent table keywordSet
+// 
+{ 
+   imageInfo_p = info;
+   return True;
+}    
+   
+template<class T>
+Bool ImageInterface<T>::restoreImageInfo(const RecordInterface& rec)
+{
+  Bool ok = True;
+  if (rec.isDefined("imageinfo")) {
+     String error;
+     ok = imageInfo_p.fromRecord(error, rec.asRecord("imageinfo"));
+     if (!ok) {
+        logSink() << LogIO::WARN << "Failed to restore the ImageInfo because " 
+          + error << LogIO::POST;
+     }
+  }
+  return ok;
+}
+   
+  
+
+ 
+

@@ -28,6 +28,7 @@
 #include <trial/Images/PagedImage.h>
 #include <trial/Images/ImageRegion.h>
 #include <trial/Images/RegionHandler.h>
+#include <trial/Images/ImageInfo.h>
 #include <trial/Lattices/ArrayLattice.h>
 #include <trial/Lattices/LatticeNavigator.h>
 #include <trial/Lattices/LatticeStepper.h>
@@ -126,12 +127,16 @@ PagedImage<T>::PagedImage(const TiledShape& shape,
   makePagedImage (shape, coordinateInfo, filename, lockOptions, rowNumber);
 }
 
+
 template <class T> 
 void PagedImage<T>::makePagedImage(const TiledShape& shape, 
 				   const CoordinateSystem& coordinateInfo, 
 				   const String& filename, 
 				   const TableLock& lockOptions,
 				   uInt rowNumber)
+//
+// make a new PagedImage from the given information
+//
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const TiledShape& shape, "
@@ -203,12 +208,15 @@ PagedImage<T>::PagedImage(Table& table, MaskSpecifier spec, uInt rowNumber)
 	    << " '" << name() << "'" << endl
 	    << "The image shape is " << map_p.shape() << endl;
 
-  CoordinateSystem* restoredCoords =
-    CoordinateSystem::restore(table_p.keywordSet(), "coords");
+  TableRecord rec = table_p.keywordSet();
+//
+  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
   applyMaskSpecifier (spec);
+//
+  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -232,12 +240,16 @@ PagedImage<T>::PagedImage(const String& filename, MaskSpecifier spec,
   attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
-  CoordinateSystem* restoredCoords =
-    CoordinateSystem::restore(table_p.keywordSet(), "coords");
+//
+  TableRecord rec = table_p.keywordSet();
+//
+  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
   applyMaskSpecifier (spec);
+//
+  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -266,6 +278,9 @@ void PagedImage<T>::makePagedImage(const String& filename,
 				   const TableLock& lockOptions,
 				   const MaskSpecifier& spec,
 				   uInt rowNumber)
+//
+// Create the PagedImage from the given existing file
+//
 {
   logSink() << LogOrigin("PagedImage<T>", 
 			 "PagedImage(const String& filename, "
@@ -282,12 +297,16 @@ void PagedImage<T>::makePagedImage(const String& filename,
   attach_logtable();
   logSink() << LogIO::DEBUGGING << "The image shape is " << map_p.shape() << endl;
   logSink() << LogIO::DEBUGGING;
-  CoordinateSystem* restoredCoords =
-    CoordinateSystem::restore(table_p.keywordSet(), "coords");
+//
+  TableRecord rec = table_p.keywordSet();
+//
+  CoordinateSystem* restoredCoords = CoordinateSystem::restore(rec, "coords");
   AlwaysAssert(restoredCoords != 0, AipsError);
   coords_p = *restoredCoords;
   delete restoredCoords;
   applyMaskSpecifier (spec);
+//
+  restoreImageInfo(rec);
 }
 
 template <class T> 
@@ -737,6 +756,10 @@ void PagedImage<T>::renameRegion (const String& oldName,
 {
   reopenRW();
   RegionHandler::renameRegion (table_p, newName, oldName, type, overwrite);
+  // Remove the default mask if it is the old region.
+  if (oldName == getDefaultMask()) {
+    setDefaultMask ("");
+  }
 }
 template<class T> 
 void PagedImage<T>::removeRegion (const String& name,
@@ -849,3 +872,38 @@ Bool PagedImage<T>::hasLock (FileLocker::LockType type) const
 {
   return table_p.hasLock (type);
 }
+
+
+template<class T>
+Bool PagedImage<T>::setImageInfo(const ImageInfo& info) 
+{
+  logSink() << LogOrigin ("PagedImage<T>", "setImageInfo(const "
+			  "ImageInfo& info)",  WHERE);
+  Bool ok = ImageInterface<T>::setImageInfo(info);
+  if (ok) {
+    reopenRW();
+    if (table_p.isWritable()) {
+
+// Update the ImageInfo
+
+      if (table_p.keywordSet().isDefined("imageinfo")) {
+	table_p.rwKeywordSet().removeField("imageinfo");
+      }
+      TableRecord rec;
+      String error;
+      if (imageInfo_p.toRecord(error, rec)) {
+         table_p.rwKeywordSet().defineRecord("imageinfo", rec);
+      } else {
+	logSink() << LogIO::SEVERE << "Error saving ImageInfo in table because " 
+          + error << LogIO::POST;
+	ok = False;
+      }
+    } else {
+      logSink() << LogIO::SEVERE
+		<< "Table is not writable: not saving ImageInfo to disk."
+		<< LogIO::POST;
+    }
+  }
+  return ok;
+}
+
