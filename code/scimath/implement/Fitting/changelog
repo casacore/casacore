@@ -4,7 +4,7 @@
  <date> 2001/02/16 </date>
  <avers> 1.5 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> Fitting </module>
  <type> Code Documentation </type>
  <category> New Change </category>
@@ -29,7 +29,7 @@ The documentations has been extended with examples and clarifications.
  <date> 2002/02/18 </date>
  <avers> 1.7 </avers>
  <area> Library </area>
- <package> trial </package>
+ <package> scimath </package>
  <module> Fitting </module>
  <type> Code </type>
  <category> Change </category>
