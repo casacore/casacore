@@ -3951,3 +3951,4 @@
 14 065 src mv trial/implement/Display/X11PixelCanvasApp.cc trialdisplay/implement/Display/X11PixelCanvasApp.cc
 14 065 src mv trial/implement/Display/X11ResourceManager.cc trialdisplay/implement/Display/X11ResourceManager.cc
 14 065 src mv trial/implement/Display/makefile trialdisplay/implement/Display/makefile
+14 065 src mv trial/implement/Display/test/dMultichannelRaster.cc trialdisplay/implement/Display/test/dMultichannelRaster.cc
