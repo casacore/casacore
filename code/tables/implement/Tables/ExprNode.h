@@ -402,7 +402,6 @@ class TableExprNode
     // Function operating on a field resulting in a bool scalar.
     // It can be used to test if a column has an array in the current row.
     // It can also be used to test if a record contains a field.
-    // <group>
     friend TableExprNode isdefined (const TableExprNode& array);
 
     // Functions operating on any scalar or array resulting in a Double scalar.
