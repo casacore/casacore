@@ -1,5 +1,5 @@
 //# FFTServer.cc: A class with methods for Fast Fourier Transforms
-//# Copyright (C) 1994,1995,1996,1997,1998
+//# Copyright (C) 1994,1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,7 +31,7 @@
 #include <aips/Arrays/VectorIter.h>
 #include <aips/Mathematics/Math.h>
 #include <aips/Mathematics/NumericTraits.h>
-#include <aips/Mathematics/extern_fft.h>
+#include <aips/Mathematics/FFTPack.h>
 #include <aips/Utilities/Assert.h>
 
 template<class T, class S> FFTServer<T,S>::
@@ -144,11 +144,11 @@ resize(const IPosition & fftSize,
     T * workPtr = itsWork[0]->storage();
     switch (transformType) {
       case FFTEnums::COMPLEX:
-	cffti(fftLen, workPtr); break;
+	FFTPack::cffti(fftLen, workPtr); break;
       case FFTEnums::REALTOCOMPLEX:
-	rffti(fftLen, workPtr); break;
+	FFTPack::rffti(fftLen, workPtr); break;
       case FFTEnums::REALSYMMETRIC:
-	costi(fftLen, workPtr); break;
+	FFTPack::costi(fftLen, workPtr); break;
     }
     if (transformType == FFTEnums::COMPLEX) {
       bufferLength = max(bufferLength, (uInt) fftLen);
@@ -163,7 +163,7 @@ resize(const IPosition & fftSize,
       workSize = 4 * fftLen + 15;
       itsWork[n]->resize(workSize); 
       T * workPtr = itsWork[n]->storage();
-      cffti(fftLen, workPtr);
+      FFTPack::cffti(fftLen, workPtr);
       bufferLength = max(bufferLength, (uInt) fftLen);
       itsSize(n) = fftLen;
     }
@@ -278,7 +278,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
       // Copy data to the complex array
       objcopy(resultRowPtr, inputRowPtr, fftLen);
       // Do the Real->Complex row transforms
-      rfftf(fftLen, resultRowPtr, workPtr);
+      FFTPack::rfftf(fftLen, resultRowPtr, workPtr);
       // Shuffle elements along
       if (fftLen > 1)
 	objmove(resultRowPtr+2, resultRowPtr+1, fftLen-1);
@@ -317,7 +317,7 @@ fft0(Array<S> & cResult, Array<T> & rData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the transform
-	cfftf(fftLen, buffPtr, workPtr);
+	FFTPack::cfftf(fftLen, buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -383,7 +383,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
 	// this speeds up access to the data by a factors of about ten!
 	objcopy(buffPtr, rowPtr, fftLen, 1u, stride);
 	// Do the FFT
-	cfftb(fftLen, buffPtr, workPtr);
+	FFTPack::cfftb(fftLen, buffPtr, workPtr);
 	// copy the data back
 	objcopy(rowPtr, buffPtr, fftLen, stride, 1u);
 	// indexing calculations
@@ -411,7 +411,7 @@ fft0(Array<T> & rResult, Array<S> & cData, const Bool constInput) {
     *resultRowPtr = *realDataPtr;
     objcopy(resultRowPtr+1, realDataPtr+2, fftLen-1);
     // Do the Complex->Real row transform
-      rfftb(fftLen, resultRowPtr, workPtr);
+      FFTPack::rfftb(fftLen, resultRowPtr, workPtr);
     // Increment the pointers
     realDataPtr += cStride;
     resultRowPtr += fftLen;
@@ -476,9 +476,9 @@ fft0(Array<S> & cValues, const Bool toFrequency) {
 	buffPtr = rowPtr;
       // Do the FFT
       if (toFrequency == True)
-	cfftf(fftLen, buffPtr, workPtr);
+	FFTPack::cfftf(fftLen, buffPtr, workPtr);
       else {
-	cfftb(fftLen, buffPtr, workPtr);
+	FFTPack::cfftb(fftLen, buffPtr, workPtr);
 	if (n == 0) {// Scale by 1/N while things are (hopefully) in cache
 	  realBuffPtr = (T *) buffPtr;
 	  // No need to do complex multiplications when real ones will do. 
@@ -553,9 +553,9 @@ fft0(Array<S> & cResult, const Array<S> & cData, const Bool toFrequency) {
 // 	realBuffPtr = (T *) rowPtr;
 //       // Do the FFT
 //       if (toFrequency == True)
-// 	cfftf(fftLen, realBuffPtr, workPtr);
+// 	FFTPack::cfftf(fftLen, realBuffPtr, workPtr);
 //       else {
-// 	cfftb(fftLen, realBuffPtr, workPtr);
+// 	FFTPack::cfftb(fftLen, realBuffPtr, workPtr);
 // 	if (n == 0) // Scale by 1/N while things are (hopefully) in cache
 // 	  for (endRowPtr = realBuffPtr+shape0t2; 
 // 	       realBuffPtr < endRowPtr; realBuffPtr++)
