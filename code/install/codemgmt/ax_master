@@ -2454,3 +2454,4 @@
 09 393 src rm trial/implement/Lattices/test/tPixelPrism.out
 09 393 src rm trial/implement/Lattices/test/tPixelRegion.cc
 09 393 src rm trial/implement/Lattices/test/tPixelRegion.out
+09 401 src rm trial/implement/guiutils/results_manager.g
