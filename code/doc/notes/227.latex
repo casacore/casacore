@@ -1,12 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage{html, epsfig}
 \begin{document}
-\title{Note 227: 64 Bit Compiler Considerations}
+\title{Note 227: 64-Bit Compiler Considerations}
 \author{Wes Young and  Athol Kemball}
-\date{December 17, 1999}
+\date{January 25, 2000}
 \maketitle
 \begin{htmlonly}
-\htmladdnormallink{A postscript version of this note is available (100kB).}{../207.ps.gz}
+\htmladdnormallink{A postscript version of this note is available (100kB).}{../227.ps.gz}
 \end{htmlonly}
 
 \tableofcontents
@@ -14,20 +14,24 @@
 \section{Introduction}
 \subsection{Motivation}
 
-To take advantage of large memory machines available at the NCSA we need to
-move beyond 32 bit pointers because they limit the amount of memory to 1Gb.
-Additionally, with a 64bit Linux and the IA64 Intel processor series on the
-horizon, it behooves us to be "64 bit"
-clean sooner rather than later. AIPS++ already has a working 64-bit build on
-the Dec Alpha using the \#ifdef macro \_\_alpha to handle some of the 64-bit
-differences.
+To take advantage of large memory machines available at the NCSA we
+need to move beyond 32-bit pointers because they limit the amount of
+memory to 1 Gb.  Additionally, with a 64bit Linux and the IA64 Intel
+processor series on the horizon, it behooves us to be fully "64-bit"
+clean sooner rather than later. AIPS++ already has working 64-bit
+builds on the Dec Alpha and SGI Origin series using
+architecture-specific \#ifdef macros (e.g. \_\_alpha or \_sgi*) to
+handle the critical 64-bit differences. All 64-bit differences have
+not been addressed throughout the library, however, and we need to
+define coding rules and conventions for this purpose. They may be
+implemented incrementally however.
 
 \subsection{Background}
 
-Here's a table lifted from the "SGI MIPSpro 64-bit Porting and Transition
-Guide". It shows the how long each of the types are in bits.  Note that
-longs and pointers have different sizes depending on compiling using
-64 or 32 bit modes.\\
+Here's a table lifted from the "SGI MIPSpro 64-bit Porting and
+Transition Guide". It shows how long each of the types are in bits.
+Note that longs and pointers have different sizes depending on
+compiling using 64- or 32-bit modes.\\
 
 \begin{tabular}{lrr}
 C type       & 32-bit & 64-bit\\
@@ -47,8 +51,10 @@ long double  &  64    & 128\\
 \section{Porting Considerations}
 \subsection{Common Problems}
 
-We have identified several 64 bit porting problems and potential problems in
-the AIPS++ code tree:
+We have identified several 64-bit porting problems in the AIPS++ code
+tree. This list below includes these problems and other potential
+problems reported by 64-bit porting guides from some of the major
+vendors.
 
 \begin{enumerate}
 \item Assuming the equivalence of Long and Int
@@ -56,19 +62,23 @@ the AIPS++ code tree:
 \item Use of "C style" formating functions
 \item Explicit constant typing
 \item Bit shifting and bit-wise operations
-\item Library return types, parameters and implementations differences
+\item Library return types, parameters and implementation differences
 \item Memory alignment assumptions (eg. structs)
 \item C++/FORTRAN interface
+\item Persistent storage of Int and Long types
+\item Long Double and Long Long types
 \end{enumerate}
 
-Compilation on the SGI using CC -64 (64 bit compilation) finds a handful of
-problems like type 2 and 3 ( $ \sim$ 10).  The most prevalent problem ($\sim$
-250) is assuming the equivalence of int and long usually found with returns
-from standard library functions.
+Compilation on the SGI using CC -64 (64 bit compilation) finds a
+handful of problems of type 2 and 3 ( $N \sim$ 10).  The most
+prevalent problem ($N \sim$ 250) is assuming the equivalence of int
+and long usually found with returns from standard library functions.
 
 
 \subsection{Examples}
 
+This section contains examples of the problem categories listed above
+and recommendations for coding conventions to address each type.
 
 \subsubsection{Library Return Types}
 
@@ -110,13 +120,6 @@ cc-1506 CC: REMARK File = /home/argus/aips++/daily/code/aips/implement/FITS/fits
    strlen returns a size_t not an int
 \end{verbatim}
 
-
-
-
-\emph{Comments} These examples point out a need to check the return types of
-various standard function calls and not assume they are Int/uInt.  A better
-choice would uLong, Long, or preferably define a new AIPS type, SizeT.
-
 The following two lists document the list of library and
 system calls that return off\_t, size\_t (unsigned), and ssize\_t (signed).\\
 
@@ -144,6 +147,13 @@ System calls that return off\_t, size\_t or ssize\_t:\\
 \item lseek
 \end{itemize}
 
+\emph{Comments} These examples point out a need to check the return
+types of various standard function calls and not assume they are
+Int/uInt. These function calls should be embedded in specialized
+classes where possible. However, a new AIPS++ data type SizeT is
+proposed, defined as the largest Int encompassing (off\_t, size\_t and
+ssize\_t), for use in interfaces which require the specification of
+file offsets, sizes in bytes or related types.
 
 \subsubsection{ Equivalence of pointers and ints}
 
@@ -163,10 +173,13 @@ cc-3187 cc: WARNING File = ../../sv.c, Line = 935
                  ^
 \end{verbatim}
 
-\emph{Comments}
-Here IV is defined as an int and perhaps should be defined as a void pointer,
-long or a new AIPS++ date type, ptrInt?  This category includes pointer
-arithmetic incorrectly using Ints.
+\emph{Comments} Inter-conversion of ints and pointer types, or pointer
+arithmetic using ints is not recommended. However, there are rare
+cases where it may be necessary, such as the transfer of addresses
+from C++ to Glish. It is proposed that the new type SizeT be used in
+this case to deal with (and flag) these very limited cases. In
+addition, (char*)NULL must be used in preference to (char*)0, where
+required. Some 64-bit compilers will not accept the latter.
 
 \subsubsection{String conversion problems}
 
@@ -179,32 +192,31 @@ cc-1178 CC: WARNING File = ../../ValKern.cc, Line = 68
 \end{verbatim}
 
 
-\emph{Comments}
-\%d is for Int, sizeof returns a Long in 64bit and needs \%ld.  We could use 
-macros to handle the \%d and \%ld, however
-we really should use iostreams to avoid these
-kinds of conversion problems.
+\emph{Comments} \%d is for Int, sizeof returns a Long in 64bit and
+needs \%ld. The recommended solution to this problem is to use
+iostreams.
 
 
 \subsubsection{Explicit Constant Typing}
 
-\emph{Comments} There are many instances of explicit constants used in the
-AIPS++, in general we get this "right" using only Int constants for Ints,
+\emph{Comments} There are many instances of explicit constants used in
+AIPS++, in general we get this correctly using only Int constants for Ints,
 i.e. we don't do
 \begin{verbatim}
 Long a = 0xffff;  //Assumes a long is 4 bytes.
 \end{verbatim}
 
-It's possible we may need to define these types of constants in a
-OS/Bitmask.h file when dealing with long ints or long long ints or long
-doubles.
+Special constants that are sensitive to word length should be defined
+in OS/Bitmask.h or Constants.h. Some of these can be obtained directly
+from math limits, and should be used where possible.
 
 
 \subsubsection{Bit shifting and bit-wise operations}
 
-\emph{Comments} We generally do the right thing. Random.cc has some 32/64-bit
-dependencies of this type.  It's important to keep the data types
-in mind when using the shift operators $<<$ and $>>$.
+\emph{Comments} We generally do the right thing. Random.cc has some
+32/64-bit dependencies of this type.  It's important to keep the word
+length in mind and take care when using the shift operators $<<$ and
+$>>$ or other bitwise operators.
 
 
 \subsubsection{FORTRAN Interface}
@@ -286,30 +298,42 @@ tableptr = malloc(asize)
 
 \subsubsection{Memory alignment assumptions}
 \emph{Comments} These include assumptions on the layout in memory of data
-in structs or unions.  No known problems.
+in structs or unions.  No known problems at present.
 
 \subsubsection{Library function parameters and implementation}
-\emph{Comment} This includes differences in function parameters or
-implementations between 32- and 64-bit version of a library.  Examples
-include, the signature of memcpy() and the absence of the macro definition
-SCM\_RIGHTS (which is not defined using the SGI 64-bit compiler).
+\emph{Comments} This includes differences in function parameters, names
+or implementations between 32- and 64-bit version of a library.
+Examples include the signature of memcpy(), dirent() and dirent64() on
+the SGI and the absence of the macro definition SCM\_RIGHTS (which is
+not defined using the SGI 64-bit compiler).
 
-\section{Recommendations}
+\subsubsection{Persistent storage of Long and Int types}
+\emph{Comments} The system currently assumes that Longs are stored as
+8 bytes.  The IO classes should check on read whether there is an
+overflow problem when reading into a local int type.
+
+\subsubsection{Long Double and Long Long types} 
+\emph{Comments} It is recommended that the use of these types be
+forbidden at this time.
+
+\subsubsection{Architecture independence} 
+\emph{Comments} An ifdef macro AIPS\_64BIT is proposed to isolate
+64-bit dependencies in an architecture-independent manner. Dealing
+with these differences purely in run-time may be considered later.
+
+\section{Immediate impact}
 
 \begin{enumerate}
-\item We have two options, either use Long for all library/system calls that
-return off\_t, size\_t, or ssize\_t  or define a new AIPS type SizeT (used
-for off\_t, ssize\_t) which can be defined in the aips.h file.
+\item Addition of type SizeT to aips.h.
 
-\item Any bitmask constant for a Long should go into trial/OS/Bitmask.h
+\item Retrofit use of AIPS\_64BIT for current SGI and Dec Alpha 64-bit
+ifdef macros.
 
-\item We need to define a macro, AIPS\_64BIT, to let us recognize 64 bit
-compilers and handle them in a generic fashion (would be used in
-CanonicalConversion.h, Bitmask.h, and possibly in some FORTRAN codes). 
+\item Change coding guidelines to include recommendations in Section 2.2.
 
-\item Define a new AIPS++ type, intPtr to hold an address in the few cases
-when the pointer needs to be coerced into an Int, i.e FORTRAN
-interface or passing a pointer to Glish.
+\item Array indices $> (2^{32} - 1)$ and related memory access issues
+are deferred for later consideration.
+
 \end{enumerate}
 
 
