@@ -34,6 +34,7 @@
 #include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/Mathematics/Constants.h>
+#include <aips/Tables/TableRecord.h>
 
 #include <iostream.h>
 
@@ -62,17 +63,16 @@ int main()
     Bool ok = radec.toWorld(world, pixel);                        // 13
     if (!ok) {                                                    // 14
 	cout << "Error: " << radec.errorMessage() << endl;        // 15
-	return 1;                                                 // 16
+	exit(1);                                                 // 16
     }                                                             // 17
     cout << world.ac() << " <--- " << pixel.ac() << endl;           // 18
-
     ok = radec.toPixel(pixel, world);                             // 19
     if (!ok) {
 	cout << "Error: " << radec.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " ---> " << pixel.ac() << endl;
-			      
+
     // StokesCoordinate
     Vector<Int> iquv(4);                                         // 20
     iquv(0) = Stokes::I; iquv(1) = Stokes::Q;                    // 21
@@ -83,7 +83,7 @@ int main()
     ok = stokes.toPixel(plane, Stokes::Q);                       // 25
     if (!ok) {
 	cout << "Error: " << stokes.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << "Stokes Q is plane " << plane << endl;
     
@@ -108,14 +108,14 @@ int main()
     ok = spectral.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << spectral.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " <--- " << pixel.ac() << endl;
 
     ok = spectral.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << spectral.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
@@ -131,14 +131,14 @@ int main()
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " <--- " << pixel.ac() << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
@@ -151,14 +151,14 @@ int main()
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " <--- " << pixel.ac() << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
@@ -168,16 +168,30 @@ int main()
     ok = coordsys.toWorld(world, pixel);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " <--- " << pixel.ac() << endl;
 
     ok = coordsys.toPixel(pixel, world);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
-	return 1;
+	exit(1);
     }
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
-    return 0;
+    TableRecord rec;
+    ok = coordsys.save(rec, "CS");
+    if (!ok) {
+        cout << "Error: " << coordsys.errorMessage() << endl;
+	exit(1);
+    }
+    CoordinateSystem* pCoordSys = CoordinateSystem::restore(rec,"CS");
+    if (pCoordSys == 0) {
+       cout << "Failed to restore from record" << endl;
+       exit(1);
+    } else {
+       delete pCoordSys;
+    }
+
+    exit(0);
 }
