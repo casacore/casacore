@@ -39,6 +39,7 @@
 
 #include <aips/iostream.h>
 
+
 CountedPtr<LogSinkInterface> *LogSink::global_sink_p = 0;
 
 String LogSink::localId( ) {
