@@ -117,5 +117,9 @@
 #define AIPS_INTELCC
 #endif
 
+#if defined(__ia64)
+#define AIPS_64B
+#endif
+
 
 #endif
