@@ -76,7 +76,6 @@ TableRecord FITSTabular::keywordsFromHDU(HeaderDataUnit &hdu,
     hdu.firstkw();
     const FitsKeyword *key = hdu.currkw();
     Bool noValue = False;
-    uInt count = 0;
 
     String name;
     while (key) {
@@ -206,10 +205,10 @@ Record FITSTabular::unitsFromHDU(BinaryTableExtension &hdu)
 
 FITSTable::FITSTable(const String &fileName, uInt whichHDU, 
 		     Bool allKeywords)
-    : row_nr_p(-1), raw_table_p(0), io_p(0), row_fields_p(0), 
-      hdu_nr_p(whichHDU), row_p(RecordInterface::Variable),
-      field_types_p(0), allKeys_p(allKeywords), vaptr_p(0),
-      va_p(0), theheap_p(0), vatypes_p(0)
+    : hdu_nr_p(whichHDU), row_nr_p(-1), raw_table_p(0), io_p(0), 
+      row_p(RecordInterface::Variable), allKeys_p(allKeywords), 
+      row_fields_p(0), field_types_p(0), vatypes_p(0), vaptr_p(0),
+      va_p(0), theheap_p(0)
 {
     isValid_p = reopen(fileName);
 }
@@ -346,7 +345,7 @@ Bool FITSTable::reopen(const String &fileName)
 	vaptr_p.resize(raw_table_p->ncols());
 	va_p = new VADescFitsField [raw_table_p->ncols()];
 	AlwaysAssert(va_p, AipsError);
-	for (i=0;i<raw_table_p->ncols();i++) {
+	for (i=0;i<uInt(raw_table_p->ncols());i++) {
 	    vaptr_p[i] = 0;
 	    vatypes_p[i] = FITS::NOVALUE;
 	    if (raw_table_p->field(i).fieldtype() == FITS::VADESC) {
@@ -1130,7 +1129,6 @@ Bool FITSTable::virtualColumns(const Vector<String>& keyNames)
 	} else {
 	    // not found in keywords_p
 	    result = False;
-	    cout << "not found : " << keyNames(i) << endl;
 	}
     }
     // reset description
