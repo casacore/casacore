@@ -145,7 +145,7 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
 	axis = dirAxes(k);
 	pixelCoord(k) = elementPosition(axis) + chunkOrigin(axis);
       }
-      if (dirCoord.toWorld(worldCoord, pixelCoord) == False) {
+      if (!dirCoord.toWorld(worldCoord, pixelCoord)) {
 // I am not sure what to do here.
 //  	cerr << " SkyCompRep::Pixel at " << pixelCoord 
 //  	     << " cannot be projected" << endl;
@@ -202,15 +202,15 @@ void SkyCompRep::project(ImageInterface<Float> & image) const {
   }
 }
 
-void SkyCompRep::setLabel(const String & newLabel) {
-  // Use newLabel for something to suppress a compiler warning
-  if (newLabel == "") {
-  }
-}
+// void SkyCompRep::setLabel(const String & newLabel) {
+//   // Use newLabel for something to suppress a compiler warning
+//   if (newLabel == "") {
+//   }
+// }
 
-void SkyCompRep::label(String & compLabel) const {
-  compLabel = "";
-}
+// void SkyCompRep::label(String & compLabel) const {
+//   compLabel = "";
+// }
 
 Bool SkyCompRep::ok() const {
   return True;
@@ -287,7 +287,7 @@ Bool SkyCompRep::readDir(String & errorMessage, const GlishRecord & record) {
   MeasureParameterAccessor<MDirection> mpa(String("direction"),
 					   ParameterSet::In, 
 					   (GlishRecord *) &record);
-  if (mpa.copyIn(errorMessage) == False) return False;
+  if (!mpa.copyIn(errorMessage)) return False;
   setDirection(mpa());
   return True;
 }
@@ -317,7 +317,7 @@ void SkyCompRep::addDir(GlishRecord & record) const {
 }
 
 Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
-  if (record.exists("flux") == False) {
+  if (!record.exists("flux")) {
     errorMessage += "\nThe component record does not have a 'flux' field";
     return False;
   }
@@ -328,7 +328,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
   Quantum<Vector<Double> > flux;
   const GlishRecord fluxRec = record.get("flux");
   {
-    if (fluxRec.exists("value") == False) {
+    if (!fluxRec.exists("value")) {
       errorMessage += "\nThe 'flux' record must have a 'value' field";
       return False;
     }
@@ -348,7 +348,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
       return False;
     }
     Vector<Double> fluxVal(4);
-    if (valueField.get(fluxVal.ac()) == False) {
+    if (!valueField.get(fluxVal.ac())) {
       errorMessage += String("\nCould not read the 'value' field ") + 
 	String("in the flux record for an unknown reason");
       return False;
@@ -356,7 +356,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
     flux.setValue(fluxVal);
   }
   {
-    if (fluxRec.exists("unit") == False) {
+    if (!fluxRec.exists("unit")) {
       errorMessage += "\nThe 'flux' record must have a 'unit' field";
       return False;
     }
@@ -374,7 +374,7 @@ Bool SkyCompRep::readFlux(String & errorMessage, const GlishRecord & record) {
       return False;
     }
     String unitVal;
-    if (unitField.get(unitVal) == False) {
+    if (!unitField.get(unitVal)) {
       errorMessage += String("\nCould not read the 'unit' field ") + 
 	String("in the flux record for an unknown reason");
       return False;
@@ -401,6 +401,40 @@ void SkyCompRep::addFlux(GlishRecord & record) const {
   record.add("flux", fluxRec);
 }
 
+Bool SkyCompRep::readLabel(String & errorMessage, const GlishRecord & record) {
+  String labelVal("");
+  if (record.exists("label")) {
+    if (record.get("label").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'label' field cannot be a record";
+      return False;
+    }
+    const GlishArray labelField = record.get("label");
+    if (labelField.elementType() != GlishArray::STRING) {
+      errorMessage += "\nThe 'label' field must be a string";
+      return False;
+    }
+    if (labelField.nelements() != 1) {
+      errorMessage += String("\nThe 'label' field cannot be an array");
+      return False;
+    }
+    if (!labelField.get(labelVal)) {
+      errorMessage += String("\nCould not read the 'field' field ") + 
+	String("for an unknown reason");
+      return False;
+    }
+  }
+  setLabel(labelVal);
+  return True;
+}
+
+void SkyCompRep::addLabel(GlishRecord & record) const {
+  String thisLabel;
+  label(thisLabel);
+  if (thisLabel != "") {
+    record.add("label", thisLabel);
+  }
+}
+
 void SkyCompRep::readParameters(Vector<Double> & parameters, 
 				String & errorMessage,
 				const GlishRecord & record) const {
@@ -424,7 +458,7 @@ void SkyCompRep::readParameters(Vector<Double> & parameters,
 	    buffer + String(" elements");
 	}
 	else {
-	  if (parmField.get(parameters.ac()) == False)
+	  if (!parmField.get(parameters.ac()))
 	    errorMessage += "\nCould not read the 'parameters' field"
 	      " for an unknown reason";
 	}
