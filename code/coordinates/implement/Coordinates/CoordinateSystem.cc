@@ -2468,7 +2468,8 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
     Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
     Int specAxis = -1;
     
-// Find the stokes axis, if any
+// Find the axes.  If any axes have been removed from a coordinate, you
+// find it out here.  
 
     Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
     Int stokesAxis = -1;
@@ -2515,7 +2516,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 
 // Special stokes handling
 
-    if (stokesCoord >= 0) {
+    if (stokesAxis >= 0) {
         if (!toFITSHeaderStokes (crval, crpix, cdelt, os, coordsys,
                                  stokesAxis, stokesCoord)) return False;
     }
@@ -2610,7 +2611,7 @@ Bool CoordinateSystem::toFITSHeader(RecordInterface &header,
 	    header.define("projp", projp);
 	}
     }
-    if (specAxis > 1) {
+    if (specAxis >= 0) {
 	const SpectralCoordinate &spec = spectralCoordinate(specCoord);
 	spec.toFITS(header, specAxis, os, oneRelative, preferVelocity, 
 		    opticalVelocity);
