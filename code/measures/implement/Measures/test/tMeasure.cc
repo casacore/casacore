@@ -389,7 +389,8 @@ main()
 	    " to " << MEpoch::Ref(MEpoch::UT1) << endl <<
 		" as " << tconv6() << endl;
 
-	MEpoch tm31(MVEpoch(50272.40590277778), MEpoch::UT1+MEpoch::RAZE);
+	MEpoch tm31(MVEpoch(50272.40590277778),
+		    MEpoch::Types(MEpoch::UT1+MEpoch::RAZE));
 	MEpoch::Ref tofref(MEpoch::LAST, frame, tm31);
 	MEpoch::Convert tconv53(tm3,tofref);
 	cout << "Converted " << tm3 << endl <<
