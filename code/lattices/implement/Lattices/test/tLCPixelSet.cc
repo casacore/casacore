@@ -80,16 +80,14 @@ main ()
 {
   try {
     {
-      {
         IPosition latticeShape(2, 4, 8);
         Array<Bool> arr(latticeShape);
         arr.set(True);
         arr(IPosition(2,0,0)) = False;
         LCMask mask(IPosition(2,0), arr, latticeShape);
-        cout << mask.hasMask() << mask.maskArray() << endl;
-      }
-
-
+        cout << mask.hasMask() << mask.maskArray().ac() << endl;
+    }
+    {
       IPosition latticeShape(4, 16, 12, 4, 32);
       Array<Bool> arr(latticeShape);
       arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
