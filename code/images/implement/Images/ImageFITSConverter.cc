@@ -200,6 +200,14 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(ImageInterface<Float>*& pNewIm
     ConstFitsKeywordList kw = fitsImage.kwlist();
     ImageFITSConverter::restoreHistory (logger, kw);
 
+// Try and find the restoring beam in the history cards if
+// its not in the header
+   
+    if (imageInfo.restoringBeam().nelements() != 3) {
+       imageInfo.getRestoringBeam(logger);
+       pNewImage->setImageInfo(imageInfo);
+    }
+
 // Cool, now we just need to write it.
 
     IPosition cursorShape(ndim), cursorOrder(ndim);
