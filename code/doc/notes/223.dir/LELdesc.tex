@@ -282,6 +282,23 @@ The result of these functions is a scalar.
 
 \subsubsection{Miscellaneous functions}
 \begin{description}
+  \item[ \texttt{real amp(real,real)}]
+    It returns the square root of the quadrature sum of two
+    arguments.  Thus
+    \begin{verbatim}
+       amp(lat1,lat2)
+    \end{verbatim}
+    gives $\sqrt{(lat1^2+lat2^2)}$.  This can be used to form, for
+    example, (biased) polarized intensity images when lat1 and lat2
+    are Stokes Q and U images.
+  \item[ \texttt{real pa(real,real)}]
+    It returns a ``position angle'' (in degrees) from the two lattices.  That is,
+    \begin{verbatim}
+       pa(lat1,lat2)
+    \end{verbatim}
+    gives $180/\pi*atan2(lat1,lat2)/2$.  This can be used to form, for
+    example, linear polarization position angle images when
+    lat1 and lat2  are Stokes Q and U images, {\it respectively}.
   \item[ \texttt{anytype VALUE(anytype)}]
     It returns the argument without its possible mask, thus it removes
     the mask from the argument.
