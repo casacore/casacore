@@ -134,8 +134,10 @@ const Table& TableKeyword::table() const
 	if (attr_p.openWritable()  &&  Table::isWritable (attr_p.name())) {
 	    option = Table::Update;
 	}
-       	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
-	//// *table_p = Table(attr_p.name(), option);
+
+	//// Backed out of it again as there seems to be a bug
+       	////*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
+	*table_p = Table(attr_p.name(), option);
     }
     return *table_p;
 }
