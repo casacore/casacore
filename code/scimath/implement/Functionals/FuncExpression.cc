@@ -38,14 +38,14 @@
 //# Constructors
 FuncExpression::FuncExpression() :
   exd(), error_p(), code_p(), rps_p(),
-  const_p(),
+  const_p(), npar_p(0), ndim_p(0),
   exec_p () {
   initState();
 }
 
 FuncExpression::FuncExpression(const String &prog) :
   exd(), error_p(), code_p(), rps_p(),
-  const_p(),
+  const_p(), npar_p(0), ndim_p(0),
   exec_p () {
   initState();
   if (!create(prog)) {
@@ -54,6 +54,30 @@ FuncExpression::FuncExpression(const String &prog) :
 		    error_p));
   };
 }
+
+FuncExpression::FuncExpression(const FuncExpression &other) :
+  exd(other.exd), error_p(other.error_p),
+  code_p(other.code_p), rps_p(other.rps_p),
+  const_p(other.const_p), npar_p(other.npar_p), ndim_p(other.ndim_p),
+  exec_p () {
+  initState();
+}
+
+FuncExpression &FuncExpression::operator=(const FuncExpression &other) {
+  if (this != &other) {
+    exd = 	other.exd;
+    error_p = 	other.error_p;
+    code_p = 	other.code_p;
+    rps_p = 	other.rps_p;
+    const_p = 	other.const_p;
+    npar_p = 	other.npar_p;
+    ndim_p = 	other.ndim_p;
+    exec_p.resize(0);
+    initState();
+  };
+  return *this;
+}
+
 
 //# Member functions
 Bool FuncExpression::create(const String &prog) {
@@ -173,8 +197,13 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	};
       };
       FuncExprData::ExprOperator oper;
-      if (t.matches(parrx)) oper = exd.special()["PARAM"];
-      else oper = exd.special()["ARG"];
+      if (t.matches(parrx)) {
+	oper = exd.special()["PARAM"];
+	if (n >= npar_p) npar_p = n+1;
+      } else {
+	oper = exd.special()["ARG"];
+	if (n >= ndim_p) ndim_p = n+1;
+      };
       oper.narg = n;
       if (!setOp(oper)) return False;
     } else {
@@ -292,6 +321,8 @@ void FuncExpression::initState() {
   state_p.rpslow = 0;
   state_p.nval = 0;
   state_p.argcnt = 0;
+  npar_p = 0;
+  ndim_p = 0;
 }
 
 const vector<FuncExprData::ExprOperator> &FuncExpression::getCode() const{
