@@ -46,9 +46,9 @@
 //
 // <synopsis> 
 //
-// The Fitting module is intended to hold various classes and functions related
-// to fitting models to data.  Currently classes in the module only handle
-// least-squares fits. 
+// The Fitting module holds various classes and functions related
+// to fitting models to data.  Currently only least-squares fits
+// are handled.
 //
 // <H3>Least-Squares Fits</H3>
 //
@@ -131,14 +131,18 @@
 //
 // <H3>What Is Available?</H3>
 //
-// Currently, the Fitting module has three different groups of classes:
+// The basic classes are <linkto class=LSQ>LSQ</linkto>, 
+//  <linkto class=LSQBasic>LSQBasic</linkto>, and <linkto class=LSQBase>LSQBase</linkto>.
+// They provide the basic  framework for normal equations, solving and iterating.
+// The classes LSQ and LSQBasic use a native C++ interface.  They handle
+// real data (LSQ), and real and complex (LSQBasic).  There is an additional
+// class, LSQBase which offers the functionality of LSQBasic, but with
+// an additional aips++ Array interface.
+//
+// The inheritance tree is LSQBase : LSQBasic : LSQ
+//
+// Functionality is
 // <ol>
-// <li> Basic classes (<linkto class=LSQ>LSQ</linkto>, 
-//  	<linkto class=LSQBasic>LSQBasic</linkto>,
-// 	<linkto class=LSQBase>LSQBase</linkto>), which provide the basic 
-// 	framework (create normal equations, solve, iterate) for real (LSQ),
-// 	added with Complex (LSQBasic) added with aips++ array interface, and the
-// 	normal class to be used (LSQBase). 
 // <li> Fit a linear combination of functions to data points, and, optionally,
 //      use supplied constraint conditions on the adjustable parameters.
 // <li> Fit a nonlinear function to data points.  The adjustable parameters
