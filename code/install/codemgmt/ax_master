@@ -2300,3 +2300,4 @@
 11 195 src rm nfra/apps/wbork/mans_cold.g
 11 195 src rm nfra/apps/wbork/mans_topold.g
 11 195 src rm nfra/apps/wbork/rbtest1.g
+11 195 src rm nfra/scripts/uvf
