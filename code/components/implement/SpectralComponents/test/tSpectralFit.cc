@@ -259,6 +259,9 @@ int main(int argc, char **argv) {
 	fitter.list()[i].getError(tmp);
 	cout << "Errors:     " << tmp << endl << endl;
       };
+      cout << ">>>" << endl;
+      cout << "Number of iterations: " << fitter.nIterations() << endl;
+      cout << "<<<" << endl;
       cout << "---------------------------------------------------" << endl;
       
       {
@@ -281,6 +284,9 @@ int main(int argc, char **argv) {
 	  fitter.list()[i].getError(tmp);
 	  cout << "Errors:     " << tmp << endl << endl;
 	};
+	cout << ">>>" << endl;
+	cout << "Number of iterations: " << fitter.nIterations() << endl;
+	cout << "<<<" << endl;
 	el[3].fixAmpl(False);
       }
       cout << "---------------------------------------------------" << endl;
@@ -300,6 +306,9 @@ int main(int argc, char **argv) {
       for (uInt i=0; i<fitter.list().nelements(); i++) {
 	cout << fitter.list()[i] << endl;
       };
+      cout << ">>>" << endl;
+      cout << "Number of iterations: " << fitter.nIterations() << endl;
+      cout << "<<<" << endl;
       
       cout << "---------------------------------------------------" << endl;
       cout << "Differences: " << endl;
