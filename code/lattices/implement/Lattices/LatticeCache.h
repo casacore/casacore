@@ -28,12 +28,9 @@
 #if !defined(AIPS_LATTICECACHE_H)
 #define AIPS_LATTICECACHE_H
 
-#if defined(_AIX)
-#pragma implementation ("LatticeCache.cc")
-#endif 
 
+//# Includes
 #include <aips/aips.h>
-
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/Vector.h>
 
@@ -41,7 +38,7 @@
 typedef Vector<Float> gppbug1;
 #endif
 
-//# predeclarations
+//# Forward Declarations
 #if defined(AIPS_STDLIB)
 #include <iosfwd.h>
 #else
@@ -49,6 +46,7 @@ class ostream;
 #endif
 template <class T> class Block;
 template <class T> class Lattice;
+
 
 // <summary> a class for caching image access via tiles</summary>
 //
