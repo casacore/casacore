@@ -1,5 +1,5 @@
 //# ArrayColumn.cc: Access to an array table column with arbitrary data type
-//# Copyright (C) 1994,1995,1996,1997,1998,1999
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -246,10 +246,12 @@ void ROArrayColumn<T>::getColumn (Array<T>& arr, Bool resize) const
     if (*canAccessColumn_p) {
 	baseColPtr_p->getArrayColumn (&arr);
     }else{
-	ArrayIterator<T> iter(arr, arr.ndim()-1);
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    baseColPtr_p->get (rownr, &(iter.array()));
-	    iter.next();
+        if (arr.nelements() > 0) {
+	    ArrayIterator<T> iter(arr, arr.ndim()-1);
+	    for (uInt rownr=0; rownr<nrrow; rownr++) {
+	        baseColPtr_p->get (rownr, &(iter.array()));
+		iter.next();
+	    }
 	}
     }
 }
@@ -295,10 +297,12 @@ void ROArrayColumn<T>::getColumn (const Slicer& arraySection,
 					     Slicer::endIsLast),
 				      &arr);
     }else{
-	ArrayIterator<T> iter(arr, arr.ndim()-1);
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    getSlice (rownr, arraySection, iter.array());
-	    iter.next();
+        if (arr.nelements() > 0) {
+	    ArrayIterator<T> iter(arr, arr.ndim()-1);
+	    for (uInt rownr=0; rownr<nrrow; rownr++) {
+	        getSlice (rownr, arraySection, iter.array());
+		iter.next();
+	    }
 	}
     }
 }
@@ -587,10 +591,12 @@ void ArrayColumn<T>::putColumn (const Array<T>& arr)
     if (*canAccessColumn_p) {
 	baseColPtr_p->putArrayColumn (&arr);
     }else{
-	ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    baseColPtr_p->put (rownr, &(iter.array()));
-	    iter.next();
+        if (arr.nelements() > 0) {
+	    ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
+	    for (uInt rownr=0; rownr<nrrow; rownr++) {
+	        baseColPtr_p->put (rownr, &(iter.array()));
+		iter.next();
+	    }
 	}
     }
 }
@@ -628,10 +634,12 @@ void ArrayColumn<T>::putColumn (const Slicer& arraySection, const Array<T>& arr)
     if (*canAccessColumnSlice_p) {
 	baseColPtr_p->putColumnSlice (arraySection, &arr);
     }else{
-	ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
-	for (uInt rownr=0; rownr<nrrow; rownr++) {
-	    putSlice (rownr, arraySection, iter.array());
-	    iter.next();
+        if (arr.nelements() > 0) {
+	    ReadOnlyArrayIterator<T> iter(arr, arr.ndim()-1);
+	    for (uInt rownr=0; rownr<nrrow; rownr++) {
+	        putSlice (rownr, arraySection, iter.array());
+		iter.next();
+	    }
 	}
     }
 }
