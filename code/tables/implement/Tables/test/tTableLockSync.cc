@@ -1,5 +1,5 @@
 //# tTableLockSync.cc: Interactive test program for concurrent access to tables
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/SetupNewTab.h>
 #include <aips/Tables/Table.h>
-#include <aips/Tables/TableLock.h>
+#include <aips/Tables/TableLocker.h>
 #include <aips/Tables/ScaColDesc.h>
 #include <aips/Tables/ArrColDesc.h>
 #include <aips/Tables/ScalarColumn.h>
@@ -85,6 +85,12 @@ void b()
     // Open the table for update with UserLocking.
     Table tab ("tTableLockSync_tmp.tab", TableLock(TableLock::UserLocking),
 	       Table::Update);
+    try {
+	TableLocker lock1 (tab, TableLock::Write, 1);
+	tab.addRow();
+    } catch (AipsError x) {
+	cout << "table is write-locked" << endl;
+    } end_try;
     ScalarColumn<Int> col1 (tab, "col1");
     ScalarColumn<Int> col2 (tab, "col2");
     ArrayColumn<float> freq (tab, "Freq");
@@ -132,7 +138,7 @@ void b()
 		if (opt == 7) {
 		    cout << "value: ";
 		    cin >> val;
-		    if (rownr >= tab.nrow()) {
+		    if (rownr >= Int(tab.nrow())) {
 			Int n = 1 + rownr - tab.nrow();
 			tab.addRow (n);
 			cout << "added " << n << " rows" << endl;
@@ -146,7 +152,7 @@ void b()
 		    freq.put (rownr, freqValues);
 		    pol.put (rownr, polValues);
 		}else{
-		    if (rownr >= tab.nrow()) {
+		    if (rownr >= Int(tab.nrow())) {
 			cout << "Only " << tab.nrow()
 			     << " rows in table" << endl;
 		    }else{
