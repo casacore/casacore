@@ -192,9 +192,9 @@ VisBuffer& VisBuffer::operator-=(const VisBuffer& vb)
     if (vb.flagRow()(row)) flagRow_p(row)=True;
     if (!flagRow_p(row)) {
       for (Int chn=0; chn<nChannel_p; chn++) {
-	if (vb.flag()(row,chn)) flag_p(row,chn)=True;
-	if (!flag_p(row,chn)) {
-	  visibility_p(row,chn)-=vb.visibility()(row,chn);
+	if (vb.flag()(chn,row)) flag_p(chn,row)=True;
+	if (!flag_p(chn,row)) {
+	  visibility_p(chn,row)-=vb.visibility()(chn,row);
 	}
       }
     }
