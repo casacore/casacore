@@ -651,7 +651,7 @@ void ComponentList::createTable(const String& fileName,
       td.addColumn(dirRefCol);
       const TableMeasRefDesc dirRefTMCol(td, dirRefColName);
       const TableMeasValueDesc dirValTMCol(td, dirValColName);
-      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol);
+      TableMeasDesc<MDirection> dirTMCol(dirValTMCol, dirRefTMCol, True);
       dirTMCol.write(td);
       const ArrayColumnDesc<Double> 
 	shapeParmCol("Shape_Parameters",
@@ -664,9 +664,9 @@ void ComponentList::createTable(const String& fileName,
 		     ColumnDesc::Direct);
       td.addColumn (freqShapeCol);
       const String freqValColName = "Reference_Frequency";
-      const ArrayColumnDesc<Double>
+      const ScalarColumnDesc<Double>
 	freqValCol(freqValColName, "The reference frequency values", 
-		     IPosition(1,1), ColumnDesc::Direct);
+		   ColumnDesc::Direct);
       td.addColumn(freqValCol);
       const String freqRefColName = "Frequency_Frame";
       const ScalarColumnDesc<String>
@@ -716,7 +716,7 @@ void ComponentList::writeTable() {
   ScalarColumn<String> fluxUnitCol(itsTable, "Flux_Unit");
   ScalarColumn<String> fluxPolCol(itsTable, "Flux_Polarisation");
   ScalarColumn<String> shapeCol(itsTable, "Shape");
-  MDirection::ScalarColumn dirCol(itsTable, "Reference Direction");
+  MDirection::ScalarColumn dirCol(itsTable, "Reference_Direction");
   ArrayColumn<Double> shapeParmCol(itsTable, "Shape_Parameters");
   ScalarColumn<String> specShapeCol(itsTable, "Spectrum_Shape");
   MFrequency::ScalarColumn freqCol(itsTable, "Reference_Frequency");
