@@ -224,6 +224,11 @@ int main()
          if (!allEQ(units, lc.worldAxisUnits())) {
             throw(AipsError("Failed world axis units set/recovery test 2"));
          }
+         Vector<String> prefUnits(lc.nWorldAxes());
+         prefUnits(0) = String("Hz");
+         if (!lc.setPreferredWorldAxisUnits(prefUnits)) {
+            throw(AipsError(String("Failed to set preferred world axis units because ") + lc.errorMessage()));
+         }
 //       
          xform.diagonal() = -2.0;
          if (!lc.setLinearTransform(xform)) {
