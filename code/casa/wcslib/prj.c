@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -4527,13 +4527,13 @@ int stat[];
          u = *phip - yj2;
 
          istat = 0;
-         if (u < 0.0) {
-            if (u < -tol) {
+         if (u < 0.5) {
+            if (u < 0.5-tol) {
                istat  = 1;
                status = 3;
             }
 
-            u = 0.0;
+            u = 0.5;
          }
 
          s = sqrt(u);

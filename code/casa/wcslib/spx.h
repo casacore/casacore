@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -27,14 +27,14 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.3 - C routines that implement the spectral coordinate systems
+*   WCSLIB 3.4 - C routines that implement the spectral coordinate systems
 *   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
 *      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2003, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
 *      (paper III, in preparation)
 *
 *

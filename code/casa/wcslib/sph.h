@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -27,7 +27,7 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.3 - C routines that implement the spherical coordinate
+*   WCSLIB 3.4 - C routines that implement the spherical coordinate
 *   transformations used by the FITS World Coordinate System (WCS) convention.
 *   Refer to
 *

@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -27,7 +27,7 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.3 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.4 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -37,7 +37,7 @@
 *      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (paper II)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2003, A&A,
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2004, A&A,
 *      (paper III, in preparation)
 *
 *
@@ -553,8 +553,8 @@
 *                pair.  It specifies a rotation in the image plane that is
 *                applied AFTER the CDELTi; any other CROTAi cards are ignored.
 *
-*                CROTAi may not formally co-exist with PCi_j.  It CROTAi (and
-*                CDELTi) may formally co-exist with CDi_j but if so is to be
+*                CROTAi may not formally co-exist with PCi_j.  CROTAi and
+*                CDELTi may formally co-exist with CDi_j but if so are to be
 *                ignored.
 *
 *         CDi_j and CROTAi cards, if found, are to be stored in the cd and

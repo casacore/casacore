@@ -1,7 +1,7 @@
 /*============================================================================
 *
-*   WCSLIB 3.3 - an implementation of the FITS WCS convention.
-*   Copyright (C) 1995-2003, Mark Calabretta
+*   WCSLIB 3.4 - an implementation of the FITS WCS convention.
+*   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
 *   under the terms of the GNU Library General Public License as published
@@ -27,7 +27,7 @@
 *
 *=============================================================================
 *
-*   WCSLIB 3.3 - C routines that implement the spherical map projections
+*   WCSLIB 3.4 - C routines that implement the spherical map projections
 *   recognized by the FITS World Coordinate System (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -225,7 +225,7 @@
 *
 *      double pv[30]
 *         Projection parameters.  These correspond to the PVi_m keywords in
-*         FITS, so pv[0] is PVi_0, pv[1] is PVi_1, etc., where j denotes the
+*         FITS, so pv[0] is PVi_0, pv[1] is PVi_1, etc., where i denotes the
 *         latitude-like axis.  Many projections use pv[1] (PVi_1), some also
 *         use pv[2] (PVi_2) and SZP uses pv[3] (PVi_3).  ZPN is the only
 *         projection that uses any of the others.

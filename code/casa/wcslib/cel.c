@@ -129,8 +129,8 @@ struct celprm *cel;
 {
    int status;
    const double tol = 1.0e-10;
-   double clat0, cphip, cthe0, slat0, sphip, sthe0;
-   double latp, latp1, latp2;
+   double clat0, cphip, cthe0, lat0, lng0, phip, slat0, sphip, sthe0;
+   double latp, latp1, latp2, lngp;
    double u, v, x, y, z;
    struct prjprm *celprj;
 
@@ -158,35 +158,52 @@ struct celprm *cel;
 
    if (undefined(cel->theta0)) {
       cel->theta0 = celprj->theta0;
+
+   } else if (fabs(cel->theta0) > 90.0) {
+     if (fabs(cel->theta0) > 90.0 + tol) {
+        return 3;
+     }
+
+     if (cel->theta0 > 90.0) {
+        cel->theta0 =  90.0;
+     } else {
+        cel->theta0 = -90.0;
+     }
    }
 
+
+   lng0 = cel->ref[0];
+   lat0 = cel->ref[1];
+   phip = cel->ref[2];
+   latp = cel->ref[3];
 
    /* Set default for native longitude of the celestial pole? */
-   if (cel->ref[2] == 999.0) {
-      cel->ref[2] = (cel->ref[1] < cel->theta0) ? 180.0 : 0.0;
-      cel->ref[2] += cel->phi0;
+   if (phip == 999.0) {
+      phip = (lat0 < cel->theta0) ? 180.0 : 0.0;
+      phip += cel->phi0;
 
-      if (cel->ref[2] < -180.0) {
-         cel->ref[2] += 360.0;
-      } else if (cel->ref[2] > 180.0) {
-         cel->ref[2] -= 360.0;
+      if (phip < -180.0) {
+         phip += 360.0;
+      } else if (phip > 180.0) {
+         phip -= 360.0;
       }
+
+      cel->ref[2] = phip;
    }
+
 
    /* Compute celestial coordinates of the native pole. */
    if (cel->theta0 == 90.0) {
       /* Fiducial point at the native pole. */
-      latp = cel->ref[1];
-      cel->ref[3] = latp;
+      lngp = lng0;
+      latp = lat0;
 
-      cel->euler[0] = cel->ref[0];
-      cel->euler[1] = 90.0 - latp;
    } else {
       /* Fiducial point away from the native pole. */
-      clat0 = cosd(cel->ref[1]);
-      slat0 = sind(cel->ref[1]);
-      cphip = cosd(cel->ref[2] - cel->phi0);
-      sphip = sind(cel->ref[2] - cel->phi0);
+      clat0 = cosd(lat0);
+      slat0 = sind(lat0);
+      cphip = cosd(phip - cel->phi0);
+      sphip = sind(phip - cel->phi0);
       cthe0 = cosd(cel->theta0);
       sthe0 = sind(cel->theta0);
 
@@ -199,13 +216,11 @@ struct celprm *cel;
          }
 
          /* latp determined by LATPOLE in this case. */
-         if (cel->ref[3] > 90.0) {
-            cel->ref[3] = 90.0;
-         } else if (cel->ref[3] < -90.0) {
-            cel->ref[3] = -90.0;
+         if (latp > 90.0) {
+            latp = 90.0;
+         } else if (latp < -90.0) {
+            latp = -90.0;
          }
-
-         latp = cel->ref[3];
 
       } else {
          if (fabs(slat0/z) > 1.0) {
@@ -229,7 +244,7 @@ struct celprm *cel;
             latp2 += 360.0;
          }
 
-         if (fabs(cel->ref[3]-latp1) < fabs(cel->ref[3]-latp2)) {
+         if (fabs(latp-latp1) < fabs(latp-latp2)) {
             if (fabs(latp1) < 90.0+tol) {
                latp = latp1;
             } else {
@@ -251,58 +266,56 @@ struct celprm *cel;
                latp = -90.0;
             }
          }
-
-         cel->ref[3] = latp;
       }
-
-      cel->euler[1] = 90.0 - latp;
 
       z = cosd(latp)*clat0;
       if (fabs(z) < tol) {
          if (fabs(clat0) < tol) {
             /* Celestial pole at the fiducial point. */
-            cel->euler[0] = cel->ref[0];
-            if (cel->ref[1] > 0.0) {
-               /* Celestial pole at the fiducial point. */
-               cel->euler[1] = 90.0 - cel->theta0;
-            } else {
-               cel->euler[1] = 90.0 + cel->theta0;
-            }
+            lngp = lng0;
+
          } else if (latp > 0.0) {
             /* Celestial north pole at the native pole.*/
-            cel->euler[0] = cel->ref[0] + cel->ref[2] - cel->phi0 - 180.0;
-            cel->euler[1] = 0.0;
-         } else if (latp < 0.0) {
+            lngp = lng0 + phip - cel->phi0 - 180.0;
+
+         } else {
             /* Celestial south pole at the native pole. */
-            cel->euler[0] = cel->ref[0] - cel->ref[2] + cel->phi0;
-            cel->euler[1] = 180.0;
+            lngp = lng0 - phip + cel->phi0;
          }
+
       } else {
          x = (sthe0 - sind(latp)*slat0)/z;
          y =  sphip*cthe0/clat0;
          if (x == 0.0 && y == 0.0) {
             return 3;
          }
-         cel->euler[0] = cel->ref[0] - atan2d(y,x);
+         lngp = lng0 - atan2d(y,x);
       }
 
-      /* Make euler[0] the same sign as ref[0]. */
-      if (cel->ref[0] >= 0.0) {
-         if (cel->euler[0] <   0.0) {
-            cel->euler[0] += 360.0;
-         } else if (cel->euler[0] > 360.0) {
-            cel->euler[0] -= 360.0;
+      /* Make celestial longitude at the pole the same sign as at the
+         fiducial point. */
+      if (lng0 >= 0.0) {
+         if (lngp < 0.0) {
+            lngp += 360.0;
+         } else if (lngp > 360.0) {
+            lngp -= 360.0;
          }
       } else {
-         if (cel->euler[0] > 0.0) {
-            cel->euler[0] -= 360.0;
-         } else if (cel->euler[0] < -360.0) {
-            cel->euler[0] += 360.0;
+         if (lngp > 0.0) {
+            lngp -= 360.0;
+         } else if (lngp < -360.0) {
+            lngp += 360.0;
          }
       }
    }
 
-   cel->euler[2] = cel->ref[2];
+   /* Reset LATPOLE. */
+   cel->ref[3] = latp;
+
+   /* Set the Euler angles. */
+   cel->euler[0] = lngp;
+   cel->euler[1] = 90.0 - latp;
+   cel->euler[2] = phip;
    cel->euler[3] = cosd(cel->euler[1]);
    cel->euler[4] = sind(cel->euler[1]);
    cel->isolat = (cel->euler[4] == 0.0);
