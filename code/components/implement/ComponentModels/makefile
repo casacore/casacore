@@ -2,5 +2,5 @@
 
 # Use the generic AIPS++ class implementation makefile.
 # ------------------------------------------------------
-XLIBLIST := WCSLIB
+XLIBLIST := WCSLIB 
 include $(word 1, $(AIPSPATH))/code/install/makefile.imp
