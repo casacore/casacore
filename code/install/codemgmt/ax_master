@@ -5917,3 +5917,4 @@
 16 317 src mv trial/implement/Functionals/NQPolynomial.cc aips/implement/Functionals/NQPolynomial.cc
 16 317 src mv trial/implement/Functionals/NQPolynomial.h aips/implement/Functionals/NQPolynomial.h
 16 317 src mv trial/implement/Functionals/NQPolynomial2.cc aips/implement/Functionals/NQPolynomial2.cc
+16 317 src mv trial/implement/Functionals/NQPolynomialParam.cc aips/implement/Functionals/NQPolynomialParam.cc
