@@ -5931,3 +5931,4 @@
 16 338 src rm trial/apps/calibrater/templates
 16 339 src mv bima/mirlib aips/mirlib
 16 341 src mv trial/implement/Functionals/NQCombi2Function.cc aips//implement/Functionals/NQCombi2Function.cc
+16 341 src mv trial/implement/Functionals/NQCombiFunction.cc aips//implement/Functionals/NQCombiFunction.cc
