@@ -136,7 +136,7 @@ AutoDiff<T> operator/(const T &left, const AutoDiff<T> &right) {
 template<class T> AutoDiff<T> acos(const AutoDiff<T> &ad) {
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p /= -sqrt(T(1) - tv*tv);
+  tmp.theRep()->grad_p /= T(-sqrt(T(1) - tv*tv));
   tmp.theRep()->val_p = acos(tv);
   return tmp.ref();
 }
@@ -144,7 +144,7 @@ template<class T> AutoDiff<T> acos(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> asin(const AutoDiff<T> &ad) {
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p /= sqrt(T(1) - tv*tv);
+  tmp.theRep()->grad_p /= T(sqrt(T(1) - tv*tv));
   tmp.theRep()->val_p = asin(tv);
   return tmp.ref();
 }
@@ -170,7 +170,7 @@ AutoDiff<T> atan2(const AutoDiff<T> &y, const AutoDiff<T> &x) {
 template<class T> AutoDiff<T> cos(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= -sin(tv);
+  tmp.theRep()->grad_p *= T(-sin(tv));
   tmp.theRep()->val_p = cos(tv);
   return tmp.ref();
 }
@@ -178,7 +178,7 @@ template<class T> AutoDiff<T> cos(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> cosh(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= sinh(tv);
+  tmp.theRep()->grad_p *= T(sinh(tv));
   tmp.theRep()->val_p = cosh(tv);
   return tmp.ref();
 }
@@ -186,7 +186,7 @@ template<class T> AutoDiff<T> cosh(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> sin(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= cos(tv);
+  tmp.theRep()->grad_p *= T(cos(tv));
   tmp.theRep()->val_p = sin(tv);
   return tmp.ref();
 }
@@ -194,7 +194,7 @@ template<class T> AutoDiff<T> sin(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> sinh(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.theRep()->val_p;
-  tmp.theRep()->grad_p *= cosh(tv);
+  tmp.theRep()->grad_p *= T(cosh(tv));
   tmp.theRep()->val_p = sinh(tv);
   return tmp.ref();
 }
@@ -231,7 +231,7 @@ AutoDiff<T> pow(const AutoDiff<T> &a, const AutoDiff<T> &b) {
   T value = pow(ta, tb);
   T temp2 = tb * pow(ta, tb - T(1));
   AutoDiff<T> tmp(b);
-  tmp.theRep()->grad_p *= value * log(ta);
+  tmp.theRep()->grad_p *= value * T(log(ta));
   for (uInt i=0; i<a.theRep()->nd_p; i++) {
     tmp.theRep()->grad_p[i] += a.theRep()->grad_p[i]*temp2;
   };
