@@ -3328,3 +3328,4 @@
 13 222 src mv npoi/implement/Cuttlefish/HDSLocator.cc npoi/implement/HDS/HDSLocator.cc
 13 222 src mv npoi/implement/Cuttlefish/HDSLocator.h npoi/implement/HDS/HDSLocator.h
 13 222 src mv npoi/implement/Cuttlefish/HDSName.cc npoi/implement/HDS/HDSName.cc
+13 222 src mv npoi/implement/Cuttlefish/HDSName.h npoi/implement/HDS/HDSName.h
