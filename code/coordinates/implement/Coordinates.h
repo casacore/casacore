@@ -1,5 +1,5 @@
 //# Coordinates.h : Classes to interconvert computation positions with physical
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -110,6 +110,11 @@
 // underlying library -- WCSLIB -- written by Mark Calabretta of the ATNF.
 //
 // </synopsis>
+//
+//
+// <note role=caution>
+// All pixels coordinates are zero relative.
+// </note>
 //
 // <example>
 // First, let's make a DirectionCoordinate --- used to represent a direction,
