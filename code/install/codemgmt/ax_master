@@ -5330,3 +5330,4 @@
 15 036 src rm nrao/apps/gbtutils/commissioning.g
 15 036 src rm nrao/apps/gbtutils/commissioning_meta.g
 15 036 src rm nrao/apps/gbtutils/commissioning.help
+15 036 sys rm libexec/commissioning.g
