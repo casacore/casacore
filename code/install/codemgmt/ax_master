@@ -2232,3 +2232,4 @@
 11 158 src rm trial/implement/Fitting/test/tLinearFitSVD.exec
 11 158 src rm trial/implement/Fitting/test/tNonLinearFitLM.exec
 11 158 src rm trial/implement/Fitting/test/tFit2D.exec
+11 167 src rm trial/apps/catalog/catalog_meta.g
