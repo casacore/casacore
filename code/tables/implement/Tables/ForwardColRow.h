@@ -1,5 +1,5 @@
 //# ForwardColRow.h: Virtual Column Engine to forward to other rows/columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -107,6 +107,9 @@ private:
 
     // Assignment is not needed and therefore forbidden (so make it private).
     ForwardColumnIndexedRow& operator= (const ForwardColumnIndexedRow&);
+
+    // This data manager cannot handle changing array shapes.
+    Bool canChangeShape() const;
 
     // This data manager cannot do get/putColumn.
     Bool canAccessScalarColumn (Bool& reask) const;
@@ -316,13 +319,6 @@ public:
     // Return the type name of the engine
     // (i.e. its class name ForwardColumnIndexedRowEngine).
     String dataManagerType() const;
-
-    // Synchronization is not needed.
-    Bool needToSync() const;
-
-    // No synchronization is done.
-    // Number of rows is not important, thus 0 is returned.
-    uInt sync (Bool& moreToExpect);
 
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.

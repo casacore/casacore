@@ -1,5 +1,5 @@
 //# ForwardCol.h: Virtual Column Engine to forward to other columns
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -142,16 +142,19 @@ private:
 					const String& tableName,
 					Table::TableOption option);
 
-    // This data manager can do get/putScalarColumn.
+    // This data manager may be able to handle changing array shapes.
+    Bool canChangeShape() const;
+
+    // This data manager may be able to do get/putScalarColumn.
     Bool canAccessScalarColumn (Bool& reask) const;
 
-    // This data manager can do get/putArrayColumn.
+    // This data manager may be able to do get/putArrayColumn.
     Bool canAccessArrayColumn (Bool& reask) const;
 
-    // This data manager can do get/putSlice.
+    // This data manager may be able to do get/putSlice.
     Bool canAccessSlice (Bool& reask) const;
 
-    // This data manager can do get/putColumnSlice.
+    // This data manager may be able to do get/putColumnSlice.
     Bool canAccessColumnSlice (Bool& reask) const;
 
     // Get the data type of the column as defined in DataType.h.
@@ -387,12 +390,6 @@ public:
 
     // Return the type of the engine (i.e. its class name ForwardColumnEngine).
     String dataManagerType() const;
-
-    // Synchronization is needed if the underlying table needs it.
-    Bool needToSync() const;
-
-    // Synchronization is done by doing it for the underlying table.
-    uInt sync (Bool& moreToExpect);
 
     // Get the suffix to be used for names.
     const String& suffix() const;

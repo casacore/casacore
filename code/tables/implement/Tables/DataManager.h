@@ -273,23 +273,6 @@ public:
     // not have to do anything.
     virtual void reopenRW();
 
-    // Test if the data manager needs synchronization in one way or another.
-    // Synchronization may for instance be needed when an external process
-    // is writing data which is read by the data manager.
-    // By default it returns False (synchronization not needed).
-    virtual Bool needToSync() const;
-    
-    // Synchronize the data manager.
-    // Synchronization is for instance needed when an external process
-    // is writing data which is read by the data manager.
-    // The new number of rows is returned.
-    // Returning zero as the number of rows indicates that the data
-    // manager does not know the number of rows (because it may be
-    // a virtual column engine depending on other data).
-    // Also a flag is set telling if more rows can be expected.
-    // By default sync does nothing, sets the flag to False, and returns 0.
-    virtual uInt sync (Bool& moreToExpect);
-    
     // Does the data manager allow to add rows? (default no)
     virtual Bool canAddRow() const;
 
@@ -572,6 +555,10 @@ public:
     // Get the shape of the item in the given row.
     // By default it returns a zero-length IPosition (for a scalar value).
     virtual IPosition shape (uInt rownr);
+
+    // Can the data manager handle chaging the shape of an existing array?
+    // Default is no.
+    virtual Bool canChangeShape() const;
 
     // Can the column storage manager handle access to a scalar column?
     // If not, the caller should access the column by looping through
