@@ -834,7 +834,7 @@ void ImageDecomposer<T>::estimateComponentWidths(Matrix<T>& width,
 }
 
 template <class T>
-uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis=2)
+uInt ImageDecomposer<T>::identifyRegions(T thrval, Int naxis)
 {
 // Performs a single threshold scan on the image.  In other words,
 // identifies all contigous blocks of pixels in the target image above the
