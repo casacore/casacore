@@ -46,6 +46,4 @@ typedef float Float;
 typedef double Double;
 typedef long double lDouble;
 
-#define ToBool /* empty */
-
 #endif
