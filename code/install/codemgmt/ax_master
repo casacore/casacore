@@ -5625,3 +5625,7 @@
 15 274 src rm trialdisplay/apps/gDisplay/GTkSlicePD.cc~
 15 274 src rm trialdisplay/apps/gDisplay/GTkWCPanner.cc
 15 274 src rm trialdisplay/apps/gDisplay/GTkWCPanner.h
+15 274 src rm trialdisplay/apps/gDisplay/GWCCTPositioner.cc
+15 274 src rm trialdisplay/apps/gDisplay/GWCCTPositioner.h
+15 274 src rm trialdisplay/apps/gDisplay/GWCPTRegion.cc
+15 274 src rm trialdisplay/apps/gDisplay/GWCPTRegion.h
