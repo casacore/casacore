@@ -179,9 +179,14 @@ public:
   //	  Measure of the same type as the main Measure (e.g. an MEpoch for an
   //	   MEpoch)
   // </ul>
+  // A Measure can be created from a string. In that case the string
+  // will only indicate the type of measure (like direction), and will
+  // create a default measure of that given type. In essence identical
+  // to the fromType() method. 
   // Error messages are postfixed to error.
   // <group>
   virtual Bool fromRecord(String &error, const RecordInterface &in);
+  virtual Bool fromString(String &error, const String &in);
   Bool fromRecord(String &error, const GlishRecord &in);
   // </group>
   // Create a record from a Measure. The return will be False and an error
@@ -205,10 +210,11 @@ private:
   // Pointer to a Measure
   PtrHolder<Measure> hold_p;
   //# member functions
-  //Aid for to/from Record and Type
+  //Aid for to/from Record, String and Type
   // <group>
   Bool putType(String &error, RecordInterface &out) const;
   Bool getType(String &error, const RecordInterface &in);  
+  Bool getType(String &error, const String &in);  
   // </group>
 };
 

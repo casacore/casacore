@@ -262,6 +262,15 @@ Bool MeasureHolder::fromRecord(String &error,
   return False;
 }
 
+Bool MeasureHolder::fromString(String &error,
+			       const String &in) {
+  if (!getType(error, in)) {
+    error += String("Unknown Measure type in MeasureHolder::fromString\n");
+    return False;
+  };
+  return True;
+}
+
 Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   if (hold_p.ptr() && putType(error, out)) {
     out.define(RecordFieldId("refer"), hold_p.ptr()->getRefString());
@@ -325,6 +334,11 @@ Bool MeasureHolder::putType(String &error, RecordInterface &out) const {
 Bool MeasureHolder::getType(String &error, const RecordInterface &in) {
   String tp;
   in.get(RecordFieldId("type"), tp);
+  return getType(error, tp);
+}
+
+Bool MeasureHolder::getType(String &error, const String &in) {
+  String tp(in);
   tp.downcase();
   hold_p.clear();
   if (tp == downcase(MDirection::showMe())) {
@@ -348,3 +362,7 @@ Bool MeasureHolder::getType(String &error, const RecordInterface &in) {
   } else return False;
   return True;
 }
+
+
+
+
