@@ -3063,25 +3063,31 @@
      = casa/BasicSL/String.h 
      = casa/Quanta/UnitName.h 
      = casa/Quanta/UnitVal.h 
-     template class map<String, UnitName> 
-     AIPS_MAP_AUX_TEMPLATES(String, UnitName) 
-     template class map<String, UnitVal> 
-     AIPS_MAP_AUX_TEMPLATES(String, UnitVal) 
+     #namespace
+     template class std::map<casa::String, casa::UnitName> 
+     AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitName) 
+     template class std::map<casa::String, casa::UnitVal> 
+     AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitVal) 
 1000 casa/vector.h 
      = casa/BasicSL/Complex.h 
-     template class vector<Complex> 
-     AIPS_VECTOR_AUX_TEMPLATES(Complex) 
+     #namespace
+     template class std::vector<casa::Complex> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Complex) 
 1010 casa/vector.h 
      = casa/BasicSL/Complex.h 
-     template class vector<DComplex> 
-     AIPS_VECTOR_AUX_TEMPLATES(DComplex) 
+     #namespace
+     template class std::vector<casa::DComplex> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::DComplex) 
 1020 casa/vector.h casa/Arrays/Slice.h 
-     template class vector<Slice> 
-     AIPS_VECTOR_AUX_TEMPLATES(Slice) 
+     #namespace
+     template class std::vector<casa::Slice> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Slice) 
 1030 casa/vector.h 
-     template class vector<Double> 
-     AIPS_VECTOR_AUX_TEMPLATES(Double) 
+     #namespace
+     template class std::vector<casa::Double> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Double) 
 1040 casa/vector.h 
-     template class vector<Float> 
-     AIPS_VECTOR_AUX_TEMPLATES(Float) 
+     #namespace
+     template class std::vector<casa::Float> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Float) 
 #
