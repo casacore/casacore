@@ -1,5 +1,5 @@
 //# Complexfwd.h: Forward declaration complex classes
-//# Copyright (C) 2000,2001
+//# Copyright (C) 2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -42,9 +42,9 @@
 
 namespace std {
   template<class T> class complex;
-  typedef complex<Float>  Complex;
-  typedef complex<Double> DComplex;
 }
+typedef std::complex<Float>  Complex;
+typedef std::complex<Double> DComplex;
 
 class IComplex;
 // </group>
