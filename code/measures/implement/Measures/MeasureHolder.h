@@ -32,6 +32,7 @@
 #include <aips/aips.h>
 #include <aips/Utilities/PtrHolder.h>
 #include <aips/Utilities/RecordTransformable.h>
+#include <aips/Containers/Block.h>
 
 //# Forward Declarations
 class Measure;
@@ -45,6 +46,7 @@ class Muvw;
 class MBaseline;
 class MEarthMagnetic;
 class GlishRecord;
+class MeasValue;
 
 // <summary> A holder for Measures to enable record conversions </summary>
 
@@ -74,6 +76,19 @@ class GlishRecord;
 // functions like <src>asMDirection</src>. It is an error to try and
 // retrieve a measure of the wrong type and doing so will generate an
 // exception (AipsError).
+//
+// The MeasureHolder can, in addition to the Measure it is holding, also hold
+// a block of MeasValues. This is especially useful for intertask
+// communication (e.g. with Glish), for reasons of speed. In general the
+// additional values will be created when the record used to create
+// a Holder contains a <src>Quantity<Vector></src> rather than a quantity in
+// the m0, m1 and/or m2 fields. The <src>getMV()</src> method can be used to
+// access the <src>nelements()</src> additional information. They can be
+// (re-)set with the <src>setMV()</src> method (after a possible creation
+// of the extra block if not already there, or of the wrong length, 
+// with <src>makeMV()</src>. If any value is set they will be used in
+// creating records, with the first value always overwriting the actual
+// Measure value.
 //
 // </synopsis>
 //
@@ -174,7 +189,8 @@ public:
   //	  the default type for the Measure.
   // <li> m0, m1, ... = TpRecord(Quantity): one or more Quantities giving
   //	  the value(s) for this Measure (e.g. longitude and latitude for a
-  //	  direction).
+  //	  direction). Each quantity can either be a scalar quantity or a
+  //	  Quantum<Vector<Double> >.
   // <li> offset = TpRecord(Measure)--optional: an optional offset as a
   //	  Measure of the same type as the main Measure (e.g. an MEpoch for an
   //	   MEpoch)
@@ -203,19 +219,35 @@ public:
   // </group>
   // Get identification of record
   virtual const String &ident() const;
-  
+  // Do we write MeasValues to record?
+  Bool writeMV() const { return convertmv_p; };
+  // Make a block of n MeasValues
+  void makeMV(uInt n) { createMV(n); };
+  // Get number of MeasValue pointers in block
+  uInt nelements() const { return mvhold_p.nelements(); };
+  // Set a measvalue at position pos (False if illegal pos)
+  Bool setMV(uInt pos, const MeasValue &in);
+  // Get a pointer to a MeasValue (or 0)
+  MeasValue *getMV(uInt pos) const;
+
 private:
   
   //# Data Members
   // Pointer to a Measure
   PtrHolder<Measure> hold_p;
-  //# member functions
-  //Aid for to/from Record, String and Type
+  // Block of pointers to measure values to make a faster interface
+  Block<MeasValue *> mvhold_p;
+  // Should the mvhold_p be converted into record?
+  Bool convertmv_p;
+  //# Member functions
+  // Aid for to/from Record, String and Type
   // <group>
   Bool putType(String &error, RecordInterface &out) const;
   Bool getType(String &error, const RecordInterface &in);  
   Bool getType(String &error, const String &in);  
   // </group>
+  // Make a MeasValue block of pointers of length n
+  void createMV(uInt n);
 };
 
 #endif

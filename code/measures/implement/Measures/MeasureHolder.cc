@@ -30,6 +30,7 @@
 #include <aips/Quanta/QuantumHolder.h>
 #include <aips/Exceptions.h>
 #include <aips/Quanta/Quantum.h>
+#include <aips/Quanta/MeasValue.h>
 #include <aips/Measures/MDirection.h>
 #include <aips/Measures/MDoppler.h>
 #include <aips/Measures/MEpoch.h>
@@ -49,18 +50,26 @@
 
 //# Constructors
 MeasureHolder::MeasureHolder() 
-  : hold_p() {};
+  : hold_p(), mvhold_p(0), convertmv_p(False) {
+  createMV(0);
+};
 
 MeasureHolder::MeasureHolder(const Measure &in) 
-  : hold_p(in.clone()) {}
+  : hold_p(in.clone()), mvhold_p(0), convertmv_p(False) {}
 
 MeasureHolder::MeasureHolder(const MeasureHolder &other) 
-  : hold_p() {
+  : hold_p(), mvhold_p(0), convertmv_p(False) {
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
+  createMV(other.mvhold_p.nelements());
+  for (uInt i=0; i<mvhold_p.nelements(); i++) {
+    mvhold_p[i] = other.mvhold_p[i]->clone();
+  };
 }
 
 //# Destructor
-MeasureHolder::~MeasureHolder() {}
+MeasureHolder::~MeasureHolder() {
+  createMV(0);
+}
 
 //# Operators
 MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
@@ -69,6 +78,10 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
       hold_p.set(other.hold_p.ptr()->clone());
     } else {
       hold_p.clear();
+    };
+    createMV(other.mvhold_p.nelements());
+    for (uInt i=0; i<mvhold_p.nelements(); i++) {
+      mvhold_p[i] = other.mvhold_p[i]->clone();
     };
   };
   return *this;
@@ -325,6 +338,19 @@ const String &MeasureHolder::ident() const {
   return myid;
 }
 
+Bool MeasureHolder::setMV(uInt pos, const MeasValue &in) {
+  if (pos >= 0 && mvhold_p.nelements() > pos) {
+    mvhold_p[pos] = in.clone();
+    return True;
+  } else return False;
+}
+
+MeasValue *MeasureHolder::getMV(uInt pos) const {
+  if (pos >= 0 && mvhold_p.nelements() > pos) {
+    return mvhold_p[pos];
+  } else return static_cast<MeasValue *>(0);
+}
+
 Bool MeasureHolder::putType(String &error, RecordInterface &out) const {
   out.define(RecordFieldId("type"),
 	     downcase(String(hold_p.ptr()->tellMe())));
@@ -363,6 +389,12 @@ Bool MeasureHolder::getType(String &error, const String &in) {
   return True;
 }
 
-
+void MeasureHolder::createMV(uInt n) {
+  for (uInt i=0; i<mvhold_p.nelements(); i++) {
+    delete mvhold_p[i]; mvhold_p[i] = 0;
+  };
+  mvhold_p.resize(n);
+  for (uInt i=0; i<mvhold_p.nelements(); i++) mvhold_p[i] = 0;
+}
 
 
