@@ -633,7 +633,7 @@ template<class T> Array<T> Array<T>::nonDegenerate(uInt startingAxis)
 	    newLength[count] = length[i];
 	    newStart[count] = start[i];
 	    newOriginal[count] = originalLength[i];
-	    newInc[count] = skippedVolume;
+	    newInc[count] = skippedVolume*inc[i];
 	    skippedVolume = 1;
 	    count++;
 	} else {
