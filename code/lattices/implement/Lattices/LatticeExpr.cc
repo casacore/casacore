@@ -1,5 +1,5 @@
 //# LatticeExpr.cc:  this defines LatticeExpr.cc
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,16 +26,17 @@
 //# $Id$
 
 #include <trial/Lattices/LatticeExpr.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h> 
 
-typedef Array<Bool> gppbug_latticeexpr_bool;
-typedef Array<Float> gppbug_latticeexpr_float;
-typedef Array<Double> gppbug_latticeexpr_double;
-typedef Array<Complex> gppbug_latticeexpr_complex;
-typedef Array<DComplex> gppbug_latticeexpr_dcomplex;
+typedef LELArray<Bool> gppbug_latticeexpr_bool;
+typedef LELArray<Float> gppbug_latticeexpr_float;
+typedef LELArray<Double> gppbug_latticeexpr_double;
+typedef LELArray<Complex> gppbug_latticeexpr_complex;
+typedef LELArray<DComplex> gppbug_latticeexpr_dcomplex;
 
 
 template <class T>
@@ -44,6 +45,7 @@ LatticeExpr<T>::LatticeExpr()
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
+: lastChunkPtr_p (0)
 //
 // Construct from a LatticeExprNode object.  The LEN type is
 // converted to match the template type if possible
@@ -79,14 +81,14 @@ LatticeExpr<T>::LatticeExpr (const LatticeExprNode& expr, uInt)
 
 template <class T>
 LatticeExpr<T>::~LatticeExpr()
-//
-// Destructor does nothing
-//
-{}
+{
+   delete lastChunkPtr_p;
+}
 
 template <class T>
 LatticeExpr<T>::LatticeExpr (const LatticeExpr<T>& other)
-: expr_p (other.expr_p)
+: expr_p (other.expr_p),
+  lastChunkPtr_p (0)
 //
 // Copy constructor.  Uses reference semantics
 //
@@ -100,6 +102,9 @@ LatticeExpr<T>& LatticeExpr<T>::operator=(const LatticeExpr<T>& other)
 {
    if (this != &other) {
       expr_p = other.expr_p;
+      delete lastChunkPtr_p;
+      lastChunkPtr_p = 0;
+      lastSlicer_p = Slicer();
    }
    return *this;
 }
@@ -166,18 +171,41 @@ template <class T>
 Bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
 				 const Slicer& section)
 {
-// Evaluate the expression after having resized the buffer.
-   buffer.resize (section.length());
-   expr_p.eval (buffer, section);
-   return False;
+// Evaluate the expression if not accessing the same section again.
+   if (!(section.start().isEqual (lastSlicer_p.start())
+     &&  section.end().isEqual (lastSlicer_p.end())
+     &&  section.stride().isEqual (lastSlicer_p.stride()))) {
+      delete lastChunkPtr_p;
+      lastChunkPtr_p = new LELArray<T> (section.length());
+      lastSlicer_p = section;
+      expr_p.eval (*lastChunkPtr_p, section);
+   }
+   buffer.reference (lastChunkPtr_p->value());
+   return True;
 }
 
 template <class T>
 Bool LatticeExpr<T>::doGetMaskSlice (Array<Bool>& buffer,
 				     const Slicer& section)
 {
+// Evaluate if masked and if different section.
+   if (expr_p.isMasked()) {
+      if (!(section.start().isEqual (lastSlicer_p.start())
+        &&  section.end().isEqual (lastSlicer_p.end())
+        &&  section.stride().isEqual (lastSlicer_p.stride()))) {
+	 delete lastChunkPtr_p;
+	 lastChunkPtr_p = new LELArray<T> (section.length());
+	 lastSlicer_p = section;
+	 expr_p.eval (*lastChunkPtr_p, section);
+      }
+      if (lastChunkPtr_p->isMasked()) {
+	 buffer.reference (lastChunkPtr_p->mask());
+	 return True;
+      }
+   }
+// Not masked, so we can simply fill the buffer with True values.
    buffer.resize (section.length());
-   expr_p.evalMask (buffer, section);
+   buffer = True;
    return False;
 }
 

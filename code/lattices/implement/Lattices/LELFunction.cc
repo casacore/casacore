@@ -1,5 +1,5 @@
 //# LELFunction.cc:  this defines templated classes in LELFunction.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,8 @@
 
 #include <trial/Lattices/LELFunction.h>
 #include <trial/Lattices/LELFunctionEnums.h>
+#include <trial/Lattices/LELScalar.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Lattices/Slicer.h>
 #include <trial/Lattices/LatticeExpr.h>
 #include <trial/Lattices/LatticeIterator.h>
@@ -69,7 +71,7 @@ LELFunction1D<T>::~LELFunction1D()
 
 
 template <class T>
-void LELFunction1D<T>::eval(Array<T>& result,
+void LELFunction1D<T>::eval(LELArray<T>& result,
 			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -83,56 +85,50 @@ void LELFunction1D<T>::eval(Array<T>& result,
    switch(function_p) {
    case LELFunctionEnums::SIN :
    {
-      Array<T> tmp(sin(result));
-      result.reference(tmp);
+      Array<T> tmp(sin(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::SINH :
    {
-      Array<T> tmp(sinh(result));
-      result.reference(tmp);
+      Array<T> tmp(sinh(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::COS :
    {
-      Array<T> tmp(cos(result));
-      result.reference(tmp);
+      Array<T> tmp(cos(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::COSH :
    {
-      Array<T> tmp(cosh(result));
-      result.reference(tmp);
+      Array<T> tmp(cosh(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::EXP :
    {
-      Array<T> tmp(exp(result));
-      result.reference(tmp);
+      Array<T> tmp(exp(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::LOG :
    {
-      Array<T> tmp(log(result));
-      result.reference(tmp);
+      Array<T> tmp(log(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::LOG10 :
    {
-      Array<T> tmp(log10(result));
-      result.reference(tmp);
+      Array<T> tmp(log10(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::SQRT :
    {
-      Array<T> tmp(sqrt(result));
-      result.reference(tmp);
-      break;
-   }
-   case LELFunctionEnums::ABS :
-   {
-      Array<T> tmp(abs(result));
-      result.reference(tmp);
+      Array<T> tmp(sqrt(result.value()));
+      result.value().reference(tmp);
       break;
    }
    default:
@@ -142,7 +138,7 @@ void LELFunction1D<T>::eval(Array<T>& result,
 }
 
 template <class T>
-T LELFunction1D<T>::getScalar() const
+LELScalar<T> LELFunction1D<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunction1D:: getScalar" << endl;
@@ -152,23 +148,21 @@ T LELFunction1D<T>::getScalar() const
 
    switch(function_p) {
    case LELFunctionEnums::SIN :
-      return sin(pExpr_p->getScalar());
+      return sin(pExpr_p->getScalar().value());
    case LELFunctionEnums::SINH :
-      return sinh(pExpr_p->getScalar());
+      return sinh(pExpr_p->getScalar().value());
    case LELFunctionEnums::COS :
-      return cos(pExpr_p->getScalar());
+      return cos(pExpr_p->getScalar().value());
    case LELFunctionEnums::COSH :
-      return cosh(pExpr_p->getScalar());
+      return cosh(pExpr_p->getScalar().value());
    case LELFunctionEnums::EXP :
-      return exp(pExpr_p->getScalar());
+      return exp(pExpr_p->getScalar().value());
    case LELFunctionEnums::LOG :
-      return log(pExpr_p->getScalar());
+      return log(pExpr_p->getScalar().value());
    case LELFunctionEnums::LOG10 :
-      return log10(pExpr_p->getScalar());
+      return log10(pExpr_p->getScalar().value());
    case LELFunctionEnums::SQRT :
-      return sqrt(pExpr_p->getScalar());
-   case LELFunctionEnums::ABS :
-      return abs(pExpr_p->getScalar());
+      return sqrt(pExpr_p->getScalar().value());
    case LELFunctionEnums::MIN1D :
    {
       if (pExpr_p->isScalar()) {
@@ -178,13 +172,40 @@ T LELFunction1D<T>::getScalar() const
       T minVal = T();
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
-      while (! iter.atEnd()) {
-	 T minv = min(iter.cursor());
-	 if (firstTime  ||  minv < minVal) {
-	    firstTime = False;
-	    minVal = minv;
+      if (! latExpr.isMasked()) {
+	 while (! iter.atEnd()) {
+	    T minv = min(iter.cursor());
+	    if (firstTime  ||  minv < minVal) {
+	       firstTime = False;
+	       minVal = minv;
+	    }
+	    iter++;
 	 }
-	 iter++;
+      } else {
+////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+	 Bool delMask, delData;
+	 Array<Bool> mask;
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    const Bool* maskPtr = mask.getStorage (delMask);
+	    const T* dataPtr = array.getStorage (delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+	       if (maskPtr[i]) {
+		  if (firstTime  ||  dataPtr[i] < minVal) {
+		     firstTime = False;
+		     minVal = dataPtr[i];
+		  }
+	       }
+	    }
+	    mask.freeStorage (maskPtr, delMask);
+	    array.freeStorage (dataPtr, delData);
+	    iter++;
+	 }
+      }
+      if (firstTime) {
+	  return LELScalar<T>();           // no element found
       }
       return minVal;
    }
@@ -197,13 +218,40 @@ T LELFunction1D<T>::getScalar() const
       T maxVal = T();
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
-      while (! iter.atEnd()) {
-	 T maxv = max(iter.cursor());
-	 if (firstTime  ||  maxv > maxVal) {
-	    firstTime = False;
-	    maxVal = maxv;
+      if (! latExpr.isMasked()) {
+	 while (! iter.atEnd()) {
+	    T maxv = max(iter.cursor());
+	    if (firstTime  ||  maxv < maxVal) {
+	       firstTime = False;
+	       maxVal = maxv;
+	    }
+	    iter++;
 	 }
-	 iter++;
+      } else {
+////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+	 Bool delMask, delData;
+	 Array<Bool> mask;
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    const Bool* maskPtr = mask.getStorage (delMask);
+	    const T* dataPtr = array.getStorage (delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+	       if (maskPtr[i]) {
+		  if (firstTime  ||  dataPtr[i] > maxVal) {
+		     firstTime = False;
+		     maxVal = dataPtr[i];
+		  }
+	       }
+	    }
+	    mask.freeStorage (maskPtr, delMask);
+	    array.freeStorage (dataPtr, delData);
+	    iter++;
+	 }
+      }
+      if (firstTime) {
+	  return LELScalar<T>();           // no element found
       }
       return maxVal;
    }
@@ -213,23 +261,49 @@ T LELFunction1D<T>::getScalar() const
          return pExpr_p->getScalar();
       }
       NumericTraits<T>::PrecisionType sumVal = 0;
+      uInt nrVal = 0;
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
-      Bool deleteIt;
+      Bool delData, delMask;
 
 // Do the sum ourselves to avoid round off
 
-      while (! iter.atEnd()) {
-	 const Array<T>& array = iter.cursor();
-         const T* data = array.getStorage(deleteIt);
-	 uInt nrval = array.nelements();
-         for (uInt i=0; i<nrval; i++) {
-            sumVal += data[i];
-         }
-         array.freeStorage(data, deleteIt);
-	 iter++;
+      if (! latExpr.isMasked()) {
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    const T* dataPtr = array.getStorage(delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+		sumVal += dataPtr[i];
+	    }
+	    array.freeStorage(dataPtr, delData);
+	    nrVal += n;
+	    iter++;
+	 }
+      } else {
+////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+	 Array<Bool> mask;
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    const Bool* maskPtr = mask.getStorage (delMask);
+	    const T* dataPtr = array.getStorage (delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+	       if (maskPtr[i]) {
+		  sumVal += dataPtr[i];
+		  nrVal++;
+	       }
+	    }
+	    mask.freeStorage (maskPtr, delMask);
+	    array.freeStorage (dataPtr, delData);
+	    iter++;
+	 }
       }
-      return sumVal / pExpr_p->shape().product();
+      if (nrVal == 0) {
+	  return LELScalar<T>();           // no element found
+      }
+      return T(sumVal / nrVal);
    }
    case LELFunctionEnums::SUM :
    {
@@ -239,22 +313,41 @@ T LELFunction1D<T>::getScalar() const
       NumericTraits<T>::PrecisionType sumVal = 0;
       LatticeExpr<T> latExpr(pExpr_p, 0);
       RO_LatticeIterator<T> iter(latExpr, latExpr.niceCursorShape());
-      Bool deleteIt;
+      Bool delData, delMask;
 
 // Do the sum ourselves to avoid round off
 
-      while (! iter.atEnd()) {
-	 const Array<T>& array = iter.cursor();
-         const T* data = array.getStorage(deleteIt);
-	 uInt nrval = array.nelements();
-         for (uInt i=0; i<nrval; i++) {
-            sumVal += data[i];
-         }
-         array.freeStorage(data, deleteIt);
-	 iter++;
+      if (! latExpr.isMasked()) {
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    const T* dataPtr = array.getStorage(delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+		sumVal += dataPtr[i];
+	    }
+	    array.freeStorage(dataPtr, delData);
+	    iter++;
+	 }
+      } else {
+////	 RO_LatticeIterator<T> maskiter(latExpr, latExpr.niceCursorShape());
+	 Array<Bool> mask;
+	 while (! iter.atEnd()) {
+	    const Array<T>& array = iter.cursor();
+	    latExpr.getMaskSlice (mask, iter.position(), array.shape());
+	    const Bool* maskPtr = mask.getStorage (delMask);
+	    const T* dataPtr = array.getStorage (delData);
+	    uInt n = array.nelements();
+	    for (uInt i=0; i<n; i++) {
+	       if (maskPtr[i]) {
+		  sumVal += dataPtr[i];
+	       }
+	    }
+	    mask.freeStorage (maskPtr, delMask);
+	    array.freeStorage (dataPtr, delData);
+	    iter++;
+	 }
       }
-      return sumVal;
-
+      return T(sumVal);
    }
    default:
       throw(AipsError("LELFunction1D::getScalar - unknown function"));
@@ -263,13 +356,13 @@ T LELFunction1D<T>::getScalar() const
 }
 
 template <class T>
-void LELFunction1D<T>::prepare()
+Bool LELFunction1D<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunction1D::prepare" << endl;
 #endif
 
-   LELInterface<T>::replaceScalarExpr (pExpr_p);
+   return LELInterface<T>::replaceScalarExpr (pExpr_p);
 }
 
 template <class T>
@@ -305,7 +398,7 @@ LELFunctionReal1D<T>::~LELFunctionReal1D()
 
 
 template <class T>
-void LELFunctionReal1D<T>::eval(Array<T>& result,
+void LELFunctionReal1D<T>::eval(LELArray<T>& result,
 			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -319,44 +412,44 @@ void LELFunctionReal1D<T>::eval(Array<T>& result,
    switch(function_p) {
    case LELFunctionEnums::ASIN :
    {
-      Array<T> tmp(asin(result));
-      result.reference(tmp);
+      Array<T> tmp(asin(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::ACOS :
    {
-      Array<T> tmp(acos(result));
-      result.reference(tmp);
+      Array<T> tmp(acos(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::TAN :
    {
-      Array<T> tmp(tan(result));
-      result.reference(tmp);
+      Array<T> tmp(tan(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::TANH :
    {
-      Array<T> tmp(tanh(result));
-      result.reference(tmp);
+      Array<T> tmp(tanh(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::ATAN :
    {
-      Array<T> tmp(atan(result));
-      result.reference(tmp);
+      Array<T> tmp(atan(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::CEIL :
    {
-      Array<T> tmp(ceil(result));
-      result.reference(tmp);
+      Array<T> tmp(ceil(result.value()));
+      result.value().reference(tmp);
       break;
    }
    case LELFunctionEnums::FLOOR :
    {
-      Array<T> tmp(floor(result));
-      result.reference(tmp);
+      Array<T> tmp(floor(result.value()));
+      result.value().reference(tmp);
       break;
    }
    default:
@@ -366,7 +459,7 @@ void LELFunctionReal1D<T>::eval(Array<T>& result,
 }
 
 template <class T>
-T LELFunctionReal1D<T>::getScalar() const
+LELScalar<T> LELFunctionReal1D<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionReal1D:: getScalar" << endl;
@@ -376,19 +469,19 @@ T LELFunctionReal1D<T>::getScalar() const
 
    switch(function_p) {
    case LELFunctionEnums::ASIN :
-      return asin(pExpr_p->getScalar());
+      return asin(pExpr_p->getScalar().value());
    case LELFunctionEnums::ACOS :
-      return acos(pExpr_p->getScalar());
+      return acos(pExpr_p->getScalar().value());
    case LELFunctionEnums::TAN :
-      return tan(pExpr_p->getScalar());
+      return tan(pExpr_p->getScalar().value());
    case LELFunctionEnums::TANH :
-      return tanh(pExpr_p->getScalar());
+      return tanh(pExpr_p->getScalar().value());
    case LELFunctionEnums::ATAN :
-      return atan(pExpr_p->getScalar());
+      return atan(pExpr_p->getScalar().value());
    case LELFunctionEnums::CEIL :
-      return ceil(pExpr_p->getScalar());
+      return ceil(pExpr_p->getScalar().value());
    case LELFunctionEnums::FLOOR :
-      return floor(pExpr_p->getScalar());
+      return floor(pExpr_p->getScalar().value());
    default:
       throw(AipsError("LELFunctionReal1D::getScalar - unknown function"));
    }
@@ -396,15 +489,16 @@ T LELFunctionReal1D<T>::getScalar() const
 }
 
 template <class T>
-void LELFunctionReal1D<T>::prepare()
+Bool LELFunctionReal1D<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionReal1D::prepare" << endl;
 #endif
 
-    if (! pExpr_p.null()) {
-       LELInterface<T>::replaceScalarExpr (pExpr_p);
-    }
+   if (! pExpr_p.null()) {
+      return LELInterface<T>::replaceScalarExpr (pExpr_p);
+   }
+   return False;
 }
 
 template <class T>
@@ -458,7 +552,7 @@ LELFunctionND<T>::~LELFunctionND()
 
 
 template <class T>
-void LELFunctionND<T>::eval(Array<T>& result,
+void LELFunctionND<T>::eval(LELArray<T>& result,
 			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -470,6 +564,11 @@ void LELFunctionND<T>::eval(Array<T>& result,
    {
 //# Evaluation is not difficult, but there are many scalar/lattice
 //# combinations.
+//# The optional masks make life even much more difficult.
+
+// If the condition is a scalar, the result is simply the 1st or 2nd operand.
+// If the operand taken is a scalar, its mask is certainly true.
+// (otherwise prepareScalarExpr would have tackled it).
 
       if (arg_p[0].isScalar()) {
 	 T tmp;
@@ -478,78 +577,181 @@ void LELFunctionND<T>::eval(Array<T>& result,
 	 if (tmpb) {
 	    if (arg_p[1].isScalar()) {
 	       arg_p[1].eval (tmp);
-	       result = tmp;
+	       result.value() = tmp;
 	    } else {
 	       arg_p[1].eval (result, section);
 	    }
 	 } else {
 	    if (arg_p[2].isScalar()) {
 	       arg_p[2].eval (tmp);
-	       result = tmp;
+	       result.value() = tmp;
 	    } else {
 	       arg_p[2].eval (result, section);
 	    }
 	 }
       } else {
-	 Array<Bool> tmpb(result.shape());
+
+// So the condition is an array.
+// The result might get a mask. That is the case if one of the operands
+// is an invalid scalar or an array with mask,
+
+	 LELArray<Bool> tmpb(result.shape());
 	 arg_p[0].eval (tmpb, section);
 	 Bool deleteTmpb;
-	 const Bool* tmpbData = tmpb.getStorage (deleteTmpb);
-	 const Bool* tmpbPtr = tmpbData;
-	 const Bool* tmpbEnd = tmpbPtr + result.nelements();
-	 Bool deleteRes;
-	 T* resData = result.getStorage (deleteRes);
-	 T* resPtr = resData;
+	 const Bool* tmpbData = tmpb.value().getStorage (deleteTmpb);
+	 uInt n = tmpb.value().nelements();
+	 Bool deleteRes, deleteMask;
+	 T* resData = 0;
+	 Bool* maskData = 0;
 	 T tmp1, tmp2;
+	 // The combination of left and right gets a mask if either
+	 // of them has a mask.
+	 Array<Bool> newMask;
+	 Bool makeMask = ToBool (arg_p[1].isInvalidScalar()
+                              || arg_p[1].isMasked()
+			      || arg_p[2].isInvalidScalar()
+			      || arg_p[2].isMasked());
+
+// There are 4 different scalar/array combinations for 1st and 2nd operand.
+// Each of them must handle the optional new mask.
+// Because efficiency is needed, the test for a new mask is done
+// outside the loop.
+
 	 if (arg_p[1].isScalar()) {
 	    arg_p[1].eval (tmp1);
+	    Bool mask1 = ToBool (!arg_p[1].isInvalidScalar());
 	    if (arg_p[2].isScalar()) {
+		// Handle scalar,scalar case.
+	       resData = result.value().getStorage (deleteRes);
 	       arg_p[2].eval (tmp2);
-	       while (tmpbPtr < tmpbEnd) {
-		  if (*tmpbPtr++) {
-		     *resPtr = tmp1;
-		  } else {
-		     *resPtr = tmp2;
+	       Bool mask2 = ToBool (!arg_p[2].isInvalidScalar());
+	       if (makeMask) {
+		  newMask.resize (result.shape());
+		  maskData = newMask.getStorage (deleteMask);
+		  for (uInt i=0; i<n; i++) {
+		     if (tmpbData[i]) {
+		        resData[i] = tmp1;
+			maskData[i] = mask1;
+		     } else {
+		        resData[i] = tmp2;
+			maskData[i] = mask2;
+		     }
 		  }
-		  resPtr++;
+	       } else {
+		  for (uInt i=0; i<n; i++) {
+		     if (tmpbData[i]) {
+			resData[i] = tmp1;
+		     } else {
+			resData[i] = tmp2;
+		     }
+		  }
 	       }
 	    } else {
+		// Handle scalar,array case.
 	       arg_p[2].eval (result, section);
-	       while (tmpbPtr < tmpbEnd) {
-		  if (*tmpbPtr++) {
-		     *resPtr = tmp1;
+	       resData = result.value().getStorage (deleteRes);
+	       if (makeMask) {
+		  if (result.isMasked()) {
+		     newMask.reference (result.mask());
+		  } else {
+		     newMask.resize (result.shape());
+		     newMask = True;
 		  }
-		  resPtr++;
+		  maskData = newMask.getStorage (deleteMask);
+		  for (uInt i=0; i<n; i++) {
+		     if (tmpbData[i]) {
+			resData[i] = tmp1;
+			maskData[i] = mask1;
+		     }
+		  }
+	       } else {
+		  for (uInt i=0; i<n; i++) {
+		     if (tmpbData[i]) {
+			resData[i] = tmp1;
+		     }
+		  }
 	       }
 	    }
+
+// The first operand is an array.
+
 	 } else {
 	    arg_p[1].eval (result, section);
+	    resData = result.value().getStorage (deleteRes);
+	    if (makeMask) {
+	       if (result.isMasked()) {
+		  newMask.reference (result.mask());
+	       } else {
+		  newMask.resize (result.shape());
+		  newMask = True;
+	       }
+	    }
 	    if (arg_p[2].isScalar()) {
+		// Handle array,scalar case.
 	       arg_p[2].eval (tmp2);
-	       while (tmpbPtr < tmpbEnd) {
-		  if (! *tmpbPtr++) {
-		     *resPtr = tmp2;
+	       if (makeMask) {
+		  Bool mask2 = ToBool (!arg_p[2].isInvalidScalar());
+		  maskData = newMask.getStorage (deleteMask);
+		  for (uInt i=0; i<n; i++) {
+		     if (! tmpbData[i]) {
+		        resData[i] = tmp2;
+			maskData[i] = mask2;
+		     }
 		  }
-		  resPtr++;
+	       } else {
+		  for (uInt i=0; i<n; i++) {
+		     if (! tmpbData[i]) {
+		        resData[i] = tmp2;
+		     }
+		  }
 	       }
 	    } else {
-	       Array<T> tmp(result.shape());
+		// Handle array,array case.
+	       LELArray<T> tmp(result.shape());
 	       arg_p[2].eval (tmp, section);
-	       Bool deleteTmp;
-	       const T* tmpData = tmp.getStorage (deleteTmp);
-	       const T* tmpPtr = tmpData;
-	       while (tmpbPtr < tmpbEnd) {
-		  if (! *tmpbPtr++) {
-		     *resPtr = *tmpPtr;
+	       Bool deleteTmp, deleteTmpMask;
+	       const T* tmpData = tmp.value().getStorage (deleteTmp);
+	       if (makeMask) {
+		  maskData = newMask.getStorage (deleteMask);
+		  if (tmp.isMasked()) {
+		     const Bool* tmpMaskData = tmp.mask().getStorage
+                                                               (deleteTmpMask);
+		     for (uInt i=0; i<n; i++) {
+			if (! tmpbData[i]) {
+			   resData[i] = tmpData[i];
+			   maskData[i] = tmpMaskData[i];
+			}
+		     }
+		     tmp.mask().freeStorage (tmpMaskData, deleteTmpMask);
+		  } else {
+		     for (uInt i=0; i<n; i++) {
+			if (! tmpbData[i]) {
+			   resData[i] = tmpData[i];
+			   maskData[i] = True;
+			}
+		     }
 		  }
-		  resPtr++;
-		  tmpPtr++;
+		  tmp.value().freeStorage (tmpData, deleteTmp);
+	       } else {
+		  for (uInt i=0; i<n; i++) {
+		     if (! tmpbData[i]) {
+			resData[i] = tmpData[i];
+		     }
+		  }
 	       }
-	       tmp.freeStorage (tmpData, deleteTmp);
 	    }
 	 }
-	 tmpb.freeStorage (tmpbData, deleteTmpb);
-	 result.putStorage (resData, deleteRes);
+	 tmpb.value().freeStorage (tmpbData, deleteTmpb);
+	 if (resData != 0) {
+	    result.value().putStorage (resData, deleteRes);
+	 }
+	 if (maskData != 0) {
+	    newMask.putStorage (maskData, deleteMask);
+	 }
+	 result.setMask (tmpb);
+	 if (makeMask) {
+	    result.combineMask (newMask);
+	 }
       }
       break;
    }
@@ -559,7 +761,7 @@ void LELFunctionND<T>::eval(Array<T>& result,
 }
 
 template <class T>
-T LELFunctionND<T>::getScalar() const
+LELScalar<T> LELFunctionND<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionND:: getScalar" << endl;
@@ -587,15 +789,36 @@ T LELFunctionND<T>::getScalar() const
 }
 
 template <class T>
-void LELFunctionND<T>::prepare()
+Bool LELFunctionND<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELFunctionND::prepare" << endl;
 #endif
 
-   for (uInt i=0; i<arg_p.nelements(); i++) {
-       arg_p[i].replaceScalarExpr();
+   uInt i;
+   for (i=0; i<arg_p.nelements(); i++) {
+       Bool invalid = arg_p[i].replaceScalarExpr();
+       if (invalid  &&  function_p != LELFunctionEnums::IIF) {
+	  return True;
+       }
    }
+   // IIF is invalid if:
+   // - the condition is an invalid scalar.
+   // - both operands are invalid scalars.
+   // - condition is scalar and corresponding operand is invalid scalar.
+   if (arg_p[0].isInvalidScalar()) {
+      return True;
+   }
+   if (arg_p[1].isInvalidScalar() && arg_p[2].isInvalidScalar()) {
+      return True;
+   }
+   if (arg_p[0].isScalar()) {
+      i = (arg_p[0].getBool()  ?  1 : 2);
+      if (arg_p[i].isInvalidScalar()) {
+	 return True;
+      }
+   }  
+   return False;
 }
 
 template <class T>

@@ -1,5 +1,5 @@
 //# LELConvert.cc:  LELConvert.cc
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,8 @@
 
 
 #include <trial/Lattices/LELConvert.h>
+#include <trial/Lattices/LELArray.h>
+#include <trial/Lattices/LELScalar.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -58,21 +60,22 @@ LELConvert<T,F>::~LELConvert()
 
 
 template <class T, class F>
-void LELConvert<T,F>::eval (Array<T>& result,
-                      const Slicer& section) const
+void LELConvert<T,F>::eval (LELArray<T>& result,
+			    const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELConvert::eval" << endl;
 #endif
 
-   Array<F> temp(result.shape());
+   LELArray<F> temp(result.shape());
    pExpr_p->eval (temp, section);
-   convertArray (result, temp);
+   result.setMask (temp);
+   convertArray (result.value(), temp.value());
 }
 
 
 template <class T, class F>
-T LELConvert<T,F>::getScalar() const
+LELScalar<T> LELConvert<T,F>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELConvert::getScalar" << endl;
@@ -81,19 +84,19 @@ T LELConvert<T,F>::getScalar() const
 // This is the only way the compiler does not complain about
 // ambiguity between Complex conversion operator and constructor.
    T tmp;
-   tmp = pExpr_p->getScalar();
+   tmp = pExpr_p->getScalar().value();
    return tmp;
 }
 
 
 template <class T, class F>
-void LELConvert<T,F>::prepare()
+Bool LELConvert<T,F>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELConvert::prepare" << endl;
 #endif
 
-   LELInterface<F>::replaceScalarExpr (pExpr_p);
+   return LELInterface<F>::replaceScalarExpr (pExpr_p);
 }
 
 

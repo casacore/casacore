@@ -1,5 +1,5 @@
 //# LELUnary2.cc:  this defines non-templated classes in LELUnary.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <trial/Lattices/LELUnary.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayLogical.h>
@@ -51,7 +52,7 @@ LELUnaryBool::~LELUnaryBool()
 }
 
 
-void LELUnaryBool::eval(Array<Bool>& result,
+void LELUnaryBool::eval(LELArray<Bool>& result,
 			const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -63,8 +64,8 @@ void LELUnaryBool::eval(Array<Bool>& result,
    switch(op_p) {
    case LELUnaryEnums::NOT :
    {
-      Array<Bool> tmp(!result);
-      result.reference(tmp);
+      Array<Bool> tmp(!result.value());
+      result.value().reference(tmp);
       break;
    }
    default:
@@ -72,28 +73,30 @@ void LELUnaryBool::eval(Array<Bool>& result,
    }
 }
 
-Bool LELUnaryBool::getScalar() const
+LELScalar<Bool> LELUnaryBool::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnaryBool::getScalar" << endl;
 #endif
 
+   LELScalar<Bool> temp (pExpr_p->getScalar());
    switch(op_p) {
    case LELUnaryEnums::NOT :
-      return ToBool (!(pExpr_p->getScalar()));
+      temp.value() = ToBool (!(temp.value()));
+      break;
    default:
       throw(AipsError("LELUnaryBool::getScalar - unknown operation"));
    }
-   return False;                     // Make compiler happy
+   return temp;
 }
 
-void LELUnaryBool::prepare()
+Bool LELUnaryBool::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnaryBool::prepare" << endl;
 #endif
 
-   LELInterface<Bool>::replaceScalarExpr (pExpr_p);
+   return LELInterface<Bool>::replaceScalarExpr (pExpr_p);
 }
 
 String LELUnaryBool::className() const

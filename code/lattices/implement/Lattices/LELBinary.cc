@@ -1,5 +1,5 @@
 //# LELBinary.cc:  this defines templated classes in LELBinary.h
-//# Copyright (C) 1997
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,12 +26,17 @@
 //# $Id$
 
 #include <trial/Lattices/LELBinary.h>
+#include <trial/Lattices/LELScalar.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/ArrayLogical.h>
 #include <aips/Exceptions/Error.h> 
 
+
+typedef LELArray<Bool> gppbug1_lelbinary;
+typedef LELScalar<Bool> gppbug2_lelbinary;
 
 
 template <class T>
@@ -60,68 +65,78 @@ LELBinary<T>::~LELBinary()
 }
 
 template <class T>
-void LELBinary<T>::eval(Array<T>& result,
+void LELBinary<T>::eval(LELArray<T>& result,
 			const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinary: eval " << endl;
 #endif
 
+// Evaluate the expression.      
+// We are sure that the operands do not have an all false mask,
+// so in the scalar case the possible mask is not changed.
+// If both operands are arrays, the masks are combined.
+
    switch(op_p) {
    case LELBinaryEnums::ADD :
        if (pLeftExpr_p->isScalar()) {
-          pRightExpr_p->eval(result, section);
-	  result += pLeftExpr_p->getScalar();
+	  pRightExpr_p->eval(result, section);
+	  result.value() += pLeftExpr_p->getScalar().value();
        } else if (pRightExpr_p->isScalar()) {
-          pLeftExpr_p->eval(result, section);
-	  result += pRightExpr_p->getScalar();
-       } else {
-          Array<T> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
+	  result.value() += pRightExpr_p->getScalar().value();
+       } else {
+	  pLeftExpr_p->eval(result, section);
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval(temp, section);
-	  result += temp;
+	  result.value() += temp.value();
+	  result.combineMask (temp);
        }
        break;
+
    case LELBinaryEnums::SUBTRACT:
        if (pLeftExpr_p->isScalar()) {
           pRightExpr_p->eval(result, section);
-	  result = pLeftExpr_p->getScalar() - result;
+	  result.value() = pLeftExpr_p->getScalar().value() - result.value();
        } else if (pRightExpr_p->isScalar()) {
           pLeftExpr_p->eval(result, section);
-	  result -= pRightExpr_p->getScalar();
+	  result.value() -= pRightExpr_p->getScalar().value();
        } else {
-          Array<T> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
+          LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval(temp, section);
-	  result -= temp;
+	  result.value() -= temp.value();
+	  result.combineMask (temp);
        }
        break;
    case LELBinaryEnums::MULTIPLY:
        if (pLeftExpr_p->isScalar()) {
-          pRightExpr_p->eval(result, section);
-	  result *= pLeftExpr_p->getScalar();
+	  pRightExpr_p->eval(result, section);
+	  result.value() *= pLeftExpr_p->getScalar().value();
        } else if (pRightExpr_p->isScalar()) {
-          pLeftExpr_p->eval(result, section);
-	  result *= pRightExpr_p->getScalar();
-       } else {
-          Array<T> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
+	  result.value() *= pRightExpr_p->getScalar().value();
+       } else {
+	  pLeftExpr_p->eval(result, section);
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval(temp, section);
-	  result *= temp;
+	  result.value() *= temp.value();
+	  result.combineMask (temp);
        }
        break;
    case LELBinaryEnums::DIVIDE:
        if (pLeftExpr_p->isScalar()) {
           pRightExpr_p->eval(result, section);
-	  result = pLeftExpr_p->getScalar() / result;
+	  result.value() = pLeftExpr_p->getScalar().value() / result.value();
        } else if (pRightExpr_p->isScalar()) {
           pLeftExpr_p->eval(result, section);
-	  result /= pRightExpr_p->getScalar();
+	  result.value() /= pRightExpr_p->getScalar().value();
        } else {
-          Array<T> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
+          LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval(temp, section);
-	  result /= temp;
+	  result.value() /= temp.value();
+	  result.combineMask (temp);
        }
        break;
    default:
@@ -132,37 +147,47 @@ void LELBinary<T>::eval(Array<T>& result,
 
 
 template <class T>
-T LELBinary<T>::getScalar() const
+LELScalar<T> LELBinary<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinary: getScalar " << endl;
 #endif
 
+   LELScalar<T> temp = pLeftExpr_p->getScalar();
    switch(op_p) {
    case LELBinaryEnums::ADD :
-      return pLeftExpr_p->getScalar() + pRightExpr_p->getScalar();
+      temp.value() += pRightExpr_p->getScalar().value();
+      break;
    case LELBinaryEnums::SUBTRACT :
-      return pLeftExpr_p->getScalar() - pRightExpr_p->getScalar();
+      temp.value() -= pRightExpr_p->getScalar().value();
+      break;
    case LELBinaryEnums::MULTIPLY :
-      return pLeftExpr_p->getScalar() * pRightExpr_p->getScalar();
+      temp.value() *= pRightExpr_p->getScalar().value();
+      break;
    case LELBinaryEnums::DIVIDE :
-      return pLeftExpr_p->getScalar() / pRightExpr_p->getScalar();
+      temp.value() /= pRightExpr_p->getScalar().value();
+      break;
    default:
        throw(AipsError("LELBinary::getScalar - unknown operation"));
    }
-   return 0;
+   return temp;
 }
 
 
 template <class T>
-void LELBinary<T>::prepare()
+Bool LELBinary<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinary::prepare" << endl;
 #endif
 
-    LELInterface<T>::replaceScalarExpr (pLeftExpr_p);
-    LELInterface<T>::replaceScalarExpr (pRightExpr_p);
+   if (LELInterface<T>::replaceScalarExpr (pLeftExpr_p)) {
+      return True;
+   }
+   if (LELInterface<T>::replaceScalarExpr (pRightExpr_p)) {
+      return True;
+   }
+   return False;
 }
 
 
@@ -203,7 +228,7 @@ LELBinaryCmp<T>::~LELBinaryCmp()
 
 
 template <class T>
-void LELBinaryCmp<T>::eval(Array<Bool>& result,
+void LELBinaryCmp<T>::eval(LELArray<Bool>& result,
 			   const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -213,82 +238,94 @@ void LELBinaryCmp<T>::eval(Array<Bool>& result,
    switch(op_p) {
    case LELBinaryEnums::EQ :
        if (pLeftExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval (temp, section);
-	  Array<Bool> res(pLeftExpr_p->getScalar() == temp);
-	  result.reference (res);
+	  Array<Bool> res(pLeftExpr_p->getScalar().value() == temp.value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pLeftExpr_p->eval (temp, section);
-	  Array<Bool> res(temp == pRightExpr_p->getScalar());
-	  result.reference (res);
+	  Array<Bool> res(temp.value() == pRightExpr_p->getScalar().value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else {
-          Array<T> templ(result.shape());
-	  Array<T> tempr(result.shape());
+          LELArray<T> templ(result.shape());
+	  LELArray<T> tempr(result.shape());
 	  pLeftExpr_p->eval (templ, section);
 	  pRightExpr_p->eval(tempr, section);
-	  Array<Bool> res(templ == tempr);
-	  result.reference (res);
+	  Array<Bool> res(templ.value() == tempr.value());
+	  result.value().reference (res);
+	  result.setMask (templ, tempr);
        }
        break;
    case LELBinaryEnums::GT :
        if (pLeftExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval (temp, section);
-	  Array<Bool> res(pLeftExpr_p->getScalar() > temp);
-	  result.reference (res);
+	  Array<Bool> res(pLeftExpr_p->getScalar().value() > temp.value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pLeftExpr_p->eval (temp, section);
-	  Array<Bool> res(temp > pRightExpr_p->getScalar());
-	  result.reference (res);
+	  Array<Bool> res(temp.value() > pRightExpr_p->getScalar().value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else {
-          Array<T> templ(result.shape());
-	  Array<T> tempr(result.shape());
+          LELArray<T> templ(result.shape());
+	  LELArray<T> tempr(result.shape());
 	  pLeftExpr_p->eval (templ, section);
 	  pRightExpr_p->eval(tempr, section);
-	  Array<Bool> res(templ > tempr);
-	  result.reference (res);
+	  Array<Bool> res(templ.value() > tempr.value());
+	  result.value().reference (res);
+	  result.setMask (templ, tempr);
        }
        break;
    case LELBinaryEnums::GE :
        if (pLeftExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval (temp, section);
-	  Array<Bool> res(pLeftExpr_p->getScalar() >= temp);
-	  result.reference (res);
+	  Array<Bool> res(pLeftExpr_p->getScalar().value() >= temp.value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pLeftExpr_p->eval (temp, section);
-	  Array<Bool> res(temp >= pRightExpr_p->getScalar());
-	  result.reference (res);
+	  Array<Bool> res(temp.value() >= pRightExpr_p->getScalar().value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else {
-          Array<T> templ(result.shape());
-	  Array<T> tempr(result.shape());
+          LELArray<T> templ(result.shape());
+	  LELArray<T> tempr(result.shape());
 	  pLeftExpr_p->eval (templ, section);
 	  pRightExpr_p->eval(tempr, section);
-	  Array<Bool> res(templ >= tempr);
-	  result.reference (res);
+	  Array<Bool> res(templ.value() >= tempr.value());
+	  result.value().reference (res);
+	  result.setMask (templ, tempr);
        }
        break;
    case LELBinaryEnums::NE :
        if (pLeftExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pRightExpr_p->eval (temp, section);
-	  Array<Bool> res(pLeftExpr_p->getScalar() != temp);
-	  result.reference (res);
+	  Array<Bool> res(pLeftExpr_p->getScalar().value() != temp.value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else if (pRightExpr_p->isScalar()) {
-	  Array<T> temp(result.shape());
+	  LELArray<T> temp(result.shape());
 	  pLeftExpr_p->eval (temp, section);
-	  Array<Bool> res(temp != pRightExpr_p->getScalar());
-	  result.reference (res);
+	  Array<Bool> res(temp.value() != pRightExpr_p->getScalar().value());
+	  result.value().reference (res);
+	  result.setMask (temp);
        } else {
-          Array<T> templ(result.shape());
-	  Array<T> tempr(result.shape());
+          LELArray<T> templ(result.shape());
+	  LELArray<T> tempr(result.shape());
 	  pLeftExpr_p->eval (templ, section);
 	  pRightExpr_p->eval(tempr, section);
-	  Array<Bool> res(templ != tempr);
-	  result.reference (res);
+	  Array<Bool> res(templ.value() != tempr.value());
+	  result.value().reference (res);
+	  result.setMask (templ, tempr);
        }
        break;
    default:
@@ -299,7 +336,7 @@ void LELBinaryCmp<T>::eval(Array<Bool>& result,
 
 
 template <class T>
-Bool LELBinaryCmp<T>::getScalar() const
+LELScalar<Bool> LELBinaryCmp<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinaryCmp: getScalar " << endl;
@@ -307,13 +344,17 @@ Bool LELBinaryCmp<T>::getScalar() const
 
    switch(op_p) {
    case LELBinaryEnums::EQ :
-      return ToBool (pLeftExpr_p->getScalar() == pRightExpr_p->getScalar());
+      return ToBool (pLeftExpr_p->getScalar().value() ==
+		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::GT :
-      return ToBool (pLeftExpr_p->getScalar() > pRightExpr_p->getScalar());
+      return ToBool (pLeftExpr_p->getScalar().value() >
+		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::GE :
-      return ToBool (pLeftExpr_p->getScalar() >= pRightExpr_p->getScalar());
+      return ToBool (pLeftExpr_p->getScalar().value() >=
+		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::NE :
-      return ToBool (pLeftExpr_p->getScalar() != pRightExpr_p->getScalar());
+      return ToBool (pLeftExpr_p->getScalar().value() !=
+		     pRightExpr_p->getScalar().value());
    default:
        throw(AipsError("LELBinaryCmp::eval - unknown operation"));
    }
@@ -322,14 +363,19 @@ Bool LELBinaryCmp<T>::getScalar() const
 
 
 template <class T>
-void LELBinaryCmp<T>::prepare()
+Bool LELBinaryCmp<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinaryCmp::prepare" << endl;
 #endif
 
-    LELInterface<T>::replaceScalarExpr (pLeftExpr_p);
-    LELInterface<T>::replaceScalarExpr (pRightExpr_p);
+   if (LELInterface<T>::replaceScalarExpr (pLeftExpr_p)) {
+      return True;
+   }
+   if (LELInterface<T>::replaceScalarExpr (pRightExpr_p)) {
+      return True;
+   }
+   return False;
 }
 
 

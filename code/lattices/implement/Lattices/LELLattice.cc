@@ -1,5 +1,5 @@
 //# LELLattice.cc:  this defines LELLattice.cc
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <trial/Lattices/LELLattice.h>
+#include <trial/Lattices/LELScalar.h>
+#include <trial/Lattices/LELArray.h>
 #include <trial/Lattices/Lattice.h>
 #include <trial/Lattices/SubLattice.h>
 #include <aips/Lattices/Slicer.h>
@@ -76,7 +78,7 @@ LELLattice<T>::~LELLattice()
 }
 
 template <class T>
-void LELLattice<T>::eval(Array<T>& result, 
+void LELLattice<T>::eval(LELArray<T>& result, 
 			 const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -85,19 +87,27 @@ void LELLattice<T>::eval(Array<T>& result,
 #endif
 
    Array<T> tmp = pLattice_p->getSlice (section);
-   result.reference(tmp);
+   result.value().reference(tmp);
+   if (getAttribute().isMasked()) {
+      Array<Bool> mask = pLattice_p->getMaskSlice (section);
+      result.setMask (mask);
+   } else {
+      result.removeMask();
+   }
 }
 
 template <class T>
-T LELLattice<T>::getScalar() const
+LELScalar<T> LELLattice<T>::getScalar() const
 {
    throw (AipsError ("LELLattice::getScalar - cannot be used"));
    return pLattice_p->getAt (IPosition());       // to make compiler happy
 }
 
 template <class T>
-void LELLattice<T>::prepare()
-{}
+Bool LELLattice<T>::prepareScalarExpr()
+{
+    return False;
+}
 
 template <class T>
 String LELLattice<T>::className() const

@@ -1,5 +1,5 @@
 //# LELUnary.cc:  this defines templated classes in LELUnary.h
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,8 @@
 //# $Id$
 
 #include <trial/Lattices/LELUnary.h>
+#include <trial/Lattices/LELScalar.h>
+#include <trial/Lattices/LELArray.h>
 #include <aips/Lattices/Slicer.h>
 #include <aips/Arrays/Array.h>
 #include <aips/Arrays/ArrayMath.h>
@@ -34,13 +36,23 @@
 
 
 template <class T>
+LELUnaryConst<T>::LELUnaryConst()
+{
+   setAttr (LELAttribute());
+
+#if defined(AIPS_TRACE)
+   cout << "LELUnaryConst:: constructor" << endl;
+#endif
+}
+
+template <class T>
 LELUnaryConst<T>::LELUnaryConst(const T val)
 : val_p(val)
 {
    setAttr (LELAttribute());
 
 #if defined(AIPS_TRACE)
-   cout << "LELUnaryConst:: constructor" << endl;
+   cout << "LELUnaryConst:: T constructor" << endl;
 #endif
 }
 
@@ -53,21 +65,23 @@ LELUnaryConst<T>::~LELUnaryConst()
 }
 
 template <class T>
-void LELUnaryConst<T>::eval(Array<T>&,
+void LELUnaryConst<T>::eval(LELArray<T>&,
 			    const Slicer&) const
 {
    throw (AipsError ("LELUnaryConst::eval - cannot be used"));
 }
 
 template <class T>
-T LELUnaryConst<T>::getScalar() const
+LELScalar<T> LELUnaryConst<T>::getScalar() const
 {
    return val_p;
 }
 
 template <class T>
-void LELUnaryConst<T>::prepare()
-{}
+Bool LELUnaryConst<T>::prepareScalarExpr()
+{
+   return ToBool (!val_p.mask());
+}
 
 template <class T>
 String LELUnaryConst<T>::className() const
@@ -99,7 +113,7 @@ LELUnary<T>::~LELUnary()
 
 
 template <class T>
-void LELUnary<T>::eval(Array<T>& result,
+void LELUnary<T>::eval(LELArray<T>& result,
 		       const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -111,8 +125,8 @@ void LELUnary<T>::eval(Array<T>& result,
    switch(op_p) {
    case LELUnaryEnums::MINUS :
    {
-      Array<T> tmp(-result);
-      result.reference(tmp);
+      Array<T> tmp(-result.value());
+      result.value().reference(tmp);
       break;
    }
    default:
@@ -121,29 +135,31 @@ void LELUnary<T>::eval(Array<T>& result,
 }
 
 template <class T>
-T LELUnary<T>::getScalar() const
+LELScalar<T> LELUnary<T>::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnary::getScalar" << endl;
 #endif
 
+   LELScalar<T> temp (pExpr_p->getScalar());
    switch(op_p) {
    case LELUnaryEnums::MINUS :
-      return -(pExpr_p->getScalar());
+      temp.value() = -temp.value();
+      break;
    default:
       throw(AipsError("LELUnary::getScalar - unknown operation"));
    }
-   return pExpr_p->getScalar();      // Make compiler happy
+   return temp;
 }
 
 template <class T>
-void LELUnary<T>::prepare()
+Bool LELUnary<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnary::prepare" << endl;
 #endif
 
-   LELInterface<T>::replaceScalarExpr (pExpr_p);
+   return LELInterface<T>::replaceScalarExpr (pExpr_p);
 }
 
 template <class T>
