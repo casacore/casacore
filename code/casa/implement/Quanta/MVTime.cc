@@ -152,7 +152,7 @@ const String &MVTime::monthName() const {
 }
 
 uInt MVTime::weekday() const {
-  return (ifloor(val+3.)%7);
+  return ((ifloor(val+3.)%7 + 7)%7);
 }
 
 uInt MVTime::month() const {
