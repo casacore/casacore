@@ -47,6 +47,7 @@
 #include <trial/FITS/FITSSpectralUtil.h>
 
 #include <aips/sstream.h>
+#include <aips/iostream.h>
 
 
 SpectralCoordinate::SpectralCoordinate()
@@ -336,14 +337,18 @@ uInt SpectralCoordinate::toWorldMany(Matrix<Double>& world,
                              const Matrix<Double>& pixel,
                              Vector<Int>& failures) const
 {
-   return worker_p.toWorldMany(world, pixel, failures);
+   uInt n = worker_p.toWorldMany(world, pixel, failures);
+   convertToMany(world);    
+   return n;
 }
    
 uInt SpectralCoordinate::toPixelMany(Matrix<Double>& pixel,
                              const Matrix<Double>& world,
                              Vector<Int>& failures) const
 {
-   return worker_p.toPixelMany(pixel, world, failures);
+   Matrix<Double> world_tmp(world.copy());
+   convertFromMany(world_tmp);
+   return worker_p.toPixelMany(pixel, world_tmp, failures);
 }
 
 
