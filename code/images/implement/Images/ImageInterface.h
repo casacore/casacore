@@ -36,7 +36,7 @@
 
 #include <trial/Lattices/Lattice.h>
 #include <trial/Coordinates/CoordinateSystem.h>
-
+#include <aips/Logging/LogIO.h>
 #include <aips/Measures/Unit.h>
 
 //# predeclarations
@@ -241,12 +241,15 @@ public:
   // normally flush them to disk as well. Returns False on failure, e.g.
   // if the number of axes do not match.
   // <group>
-  virtual Bool setCoordinateInfo(const CoordinateSystem &coords);
+  //# In this class it just sets the internal coords object, derived classes
+  //# might have to store it to disk or some such. If just needed in-memory
+  //# Call the provided implementation.
+  virtual Bool setCoordinateInfo(const CoordinateSystem &coords) = 0;
   const CoordinateSystem &coordinates() const;
   // </group>
   
   // Allow messages to be logged to this ImageInterface.
-  virtual LogIO &logSink() = 0;
+  LogIO &logSink() {return log_p;}
   
   // These are the true implementations of the paren operator.
   // <note> Not for public use </note>
@@ -293,6 +296,7 @@ public:
  
  
 protected:
+  LogIO log_p;
 
   ImageInterface();
   ImageInterface(const CoordinateSystem &coords, Bool masking);
