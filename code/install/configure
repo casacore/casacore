@@ -3,7 +3,7 @@
 # configure: AIPS++ installation script
 #-----------------------------------------------------------------------------
 #
-#   Copyright (C) 1992-1997,1998
+#   Copyright (C) 1992-1997,1998,1999
 #   Associated Universities, Inc. Washington DC, USA.
 #
 #   This program is free software; you can redistribute it and/or modify
@@ -691,10 +691,9 @@ EOT
         case `uname -r` in
            5*) ARCH="sun4sol_gnu";;
 	esac;;
-     AIX)        ARCH="ibmrs";;
      HP-UX)      ARCH="hpux_gnu";;
      OSF1|ALPHA) ARCH="alpha_gnu";;
-     Linux)      ARCH="linux_gnu";;
+     Linux)      ARCH="linux_egcs";;
      IRIX*)      ARCH="sgi";;
   esac
 
@@ -718,8 +717,7 @@ EOT
 	case $ARCH in
 	   ALPHA)   ARCH="alpha_gnu";;
 	   HP*)     ARCH="hpux_gnu";;
-	   IBM)     ARCH="ibmrs";;
-	   LINUX)   ARCH="linux_gnu";;
+	   LINUX)   ARCH="linux_egcs";;
 	   SGI)     ARCH="sgi";;
 	   SOL|SUL) ARCH="sun4sol_gnu";;
 	   *)       ARCH="";;
@@ -782,8 +780,7 @@ EOT
 		    if ($3 == "alpha") { narch = "alpha_gnu" } 
 		    if ($3 == "hp")    { narch = "hpux_gnu" }
 		    if ($3 == "hp2")   { narch = "hpux_gnu" }
-		    if ($3 == "ibm")   { narch = "ibmrs" }
-		    if ($3 == "linux") { narch = "linux_gnu" }
+		    if ($3 == "linux") { narch = "linux_egcs" }
 		    if ($3 == "sgi")   { narch = "sgi" }
 	            if ($3 == "sol")   { narch = "sun4sol_gnu" }
 	            if ($3 == "sul")   { narch = "sun4sol_gnu" }
@@ -884,8 +881,7 @@ EOT
 	   case $ARCH in
 	      ALPHA)  ARCH="alpha_gnu";;
 	      HP*)    ARCH="hpux_gnu";;
-	      IBM)    ARCH="ibmrs";;
-	      LINUX)  ARCH="linux_gnu";;
+	      LINUX)  ARCH="linux_egcs";;
 	      SGI)    ARCH="sgi";;
 	      S[OU]L) ARCH="sun4sol_gnu";;
 	      *)      ARCH="";;
@@ -896,8 +892,8 @@ EOT
         echo ""
         echo "   alpha_gnu     DEC/Alpha OSF/1, GNU C++ compiler (g++)"
         echo "   hpux_gnu      Hewlett-Packard/HP9000 HPUX, GNU C++ compiler"
-        echo "   ibmrs         IBM/RS6000 AIX, IBM native C++ compiler"
-	echo "   linux_gnu     Linux systems (Intel; Alpha/Sparc untested)"
+	echo "   linux_egcs    Linux/RedHat-5.x, x>0 (Intel only) egcs compiler"
+	echo "   linux_gnu     same as linux_egcs
         echo "   sgi           Silicon Graphics IRIX 7.x, SGI C++ compiler"
 	# Do we still support the native compiler?
         echo "   sun4sol_ntv   Sun/Sparc Solaris 2.x, SUN native C++ compiler"
@@ -917,7 +913,7 @@ EOT
         while true
         do
 #          Get this machine's architecture.
-           ARCHS="alpha_gnu hpux_gnu ibmrs linux_gnu sgi sun4sol_gnu sun4sol_ntv"
+           ARCHS="alpha_gnu hpux_gnu linux_gnu linux_egcs sgi sun4sol_gnu sun4sol_ntv"
            echo ""
            echo "What is $HOST's architecture?"
            printf "($ARCHS) [$ARCH]: "
