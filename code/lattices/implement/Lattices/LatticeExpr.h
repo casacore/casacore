@@ -219,6 +219,10 @@ public:
   // Copy the data from this lattice to the given lattice.
    virtual void copyDataTo (Lattice<T>& to) const;
 
+  // Handle the Math operators (+=, -=, *=, /=).
+  // They work similarly to copyData(To).
+  // However, they are not defined for Bool types, thus specialized below.
+   virtual void handleMathTo (Lattice<T>& to, int oper) const;
 
 private:
    // Initialize the object from the expression.
@@ -230,6 +234,11 @@ private:
    LELArray<T>*    lastChunkPtr_p;
    Slicer          lastSlicer_p;
 };
+
+
+template<> inline
+void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
+  { throwBoolMath(); }
 
 
 #endif
