@@ -115,7 +115,11 @@ sub fetch_raw_help{
    open($readme, $filename);
    while(<$readme>){
       s/\\%/escapedpercent/g;
-      s/%.*//g;
+        # remove any comments that have ah commands or
+        # enviornments in them.
+      s/%.*begin.*ah.*//g;
+      s/%.*\\ah.*//g;
+      s/%%.*//g;
       s/escapedpercent/\\%/g;
       s/(\\begin{ahmodule})/beginaips2module $1/g;
       s/(\\begin{ahtool})/beginaips2object $1/g;
