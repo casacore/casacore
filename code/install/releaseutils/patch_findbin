@@ -1,0 +1,83 @@
+#!/usr/local/bin/perl5
+##
+##       This utility is part of AIPS++, a software project centered at
+##       the National Radio Astronomy Observatory.
+##
+##       Copyright (C) 1995,1997,1998,1999,2000
+##       Associated Universities, Inc. Washington DC, USA.
+## 
+##       This utility is free software; you can redistribute it and/or modify
+##       it under the same terms as Perl itself, i.e., under the terms of the
+##       "Artistic License" or the "GNU General Public License". 
+##
+## This script prints out the binaries which have changed using the DBM file
+## created by "patch_diff". This dbm file indicates all of the symbols which
+## have changed between two checkpoints (created by "patch_chkpoint"). The
+## only required parameter is the directory containing the diff output DBM
+## file:
+##
+##	patch_findbin [ -V ] /the/diff/dir
+##
+## if the -V flag is given the symbols which force the binary to be included
+## are also printed.
+##
+BEGIN {@AnyDBM_File::ISA = qw(GDBM_File NDBM_File DB_File SDBM_File ODBM_File);}
+use AnyDBM_File;
+use POSIX;
+
+($aroot, $aarch, $asite, $ahost) = split( /\s+/, $ENV{AIPSPATH} );
+
+$verbose=0;
+while ($_ = @ARGV[0], (/^-/)) {
+    shift(@ARGV);
+    /^-V$/ && ($verbose=1, next);
+    die;
+}
+
+$dir = shift(@ARGV);
+
+die "no input directory specified" unless $dir;
+
+die "can't open \"$aroot/$aarch/bin\""
+  unless opendir( BIN, "$aroot/$aarch/bin" );
+die "can't attach to \"$dir/delta\", $!"
+  unless tie( %delta, AnyDBM_File, "$dir/delta", O_RDONLY, 0644);
+
+foreach $file ( readdir(BIN) ) {
+    if ( -f "$aroot/$aarch/bin/$file" && -r _ && -B _ ) {
+        $type = `file $aroot/$aarch/bin/$file`;
+        if ( $type =~ m/ELF.*not stripped/ ) {
+            %because = ();
+            open( SYMBOLS, "nm --extern-only --print-file-name $aroot/$aarch/bin/$file |" );
+            foreach ( <SYMBOLS> ) {
+                ##                vvvv----------> must change in patch_chkpoint too!
+                if ( m/^[^\s]+\s+[TBDR]\s+([^\s]+)[\s\n]*$/ ) {
+                    if ( defined $delta{$1} ) {
+                        $delta = $delta{$1};
+                        @delta = split( /:/, $delta );
+                        if ( ! defined $because{$delta[0]} ) {
+                            $because{$delta[0]} = {};
+                        }
+                        $hash = $because{$delta[0]};
+                        $$hash{$delta[1]} = 1;
+                    }
+                }
+            }
+            if ( scalar( keys %because ) ) {
+                print "$file\n";
+                if ( $verbose ) {
+                    foreach $lib ( keys %because ) {
+                        print "\t$lib.a:\n";
+                        $hash = $because{$lib};
+                        foreach ( keys %$hash ) {
+                            print "\t\t$_\n";
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+closedir( BIN );
+untie( %delta );
