@@ -737,6 +737,10 @@ void PagedImage<T>::renameRegion (const String& oldName,
 {
   reopenRW();
   RegionHandler::renameRegion (table_p, newName, oldName, type, overwrite);
+  // Remove the default mask if it is the old region.
+  if (oldName == getDefaultMask()) {
+    setDefaultMask ("");
+  }
 }
 template<class T> 
 void PagedImage<T>::removeRegion (const String& name,
@@ -745,6 +749,10 @@ void PagedImage<T>::removeRegion (const String& name,
 {
   reopenRW();
   RegionHandler::removeRegion (table_p, name, type, throwIfUnknown);
+  // Remove the default mask if it is the removed region.
+  if (name == getDefaultMask()) {
+    setDefaultMask ("");
+  }
 }
 template<class T> 
 Vector<String> PagedImage<T>::regionNames (RegionHandler::GroupType type) const
