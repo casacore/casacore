@@ -61,7 +61,7 @@ static Int                   posMSTimeGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msTimeGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msTimeGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
     MSTimeGramrestart (MSTimeGramin);
     yy_start = 1;

@@ -90,7 +90,7 @@ public:
     MSSpwParse ();
 
     // Associate the ms and the shorthand.
-    MSSpwParse (const MeasurementSet& ms);
+    MSSpwParse (const MeasurementSet* ms);
 
     const TableExprNode *selectSpwIds(const Vector<Int>& spwids);
     const TableExprNode *selectSpwName(const String& name);

@@ -38,7 +38,7 @@ MSCorrParse::MSCorrParse ()
 }
 
 //# Constructor with given ms name.
-MSCorrParse::MSCorrParse (const MeasurementSet& ms)
+MSCorrParse::MSCorrParse (const MeasurementSet* ms)
 : MSParse(ms, "Corr")
 {
     if(node_p) delete node_p;

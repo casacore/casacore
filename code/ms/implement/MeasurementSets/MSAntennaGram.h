@@ -70,7 +70,7 @@ class TableExprNode;
 // <group name=MSAntennaGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
-int msAntennaGramParseCommand (const MeasurementSet &ms, const String& command);
+int msAntennaGramParseCommand (const MeasurementSet *ms, const String& command);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.

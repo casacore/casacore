@@ -61,7 +61,7 @@ static Int                   posMSCorrGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msCorrGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msCorrGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
     MSCorrGramrestart (MSCorrGramin);
     yy_start = 1;

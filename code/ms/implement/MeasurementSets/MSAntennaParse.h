@@ -90,7 +90,7 @@ public:
     MSAntennaParse ();
 
     // Associate the ms and the shorthand.
-    MSAntennaParse (const MeasurementSet& ms);
+    MSAntennaParse (const MeasurementSet* ms);
 
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds);
     const TableExprNode* selectAntennaName(const Vector<String>& antennaNames);

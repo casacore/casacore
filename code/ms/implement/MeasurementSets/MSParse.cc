@@ -63,10 +63,10 @@ MSParse::MSParse ()
 {}
 
 //# Constructor with given ms name.
-MSParse::MSParse (const MeasurementSet& ms, const String& shorthand)
+MSParse::MSParse (const MeasurementSet* ms, const String& shorthand)
 : shorthand_p (shorthand)
 {
-  ms_p = &ms;
+  ms_p = ms;
 }
 
 MSParse::MSParse (const MSParse& that)

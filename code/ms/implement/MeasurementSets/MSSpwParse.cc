@@ -40,7 +40,7 @@ MSSpwParse::MSSpwParse ()
 }
 
 //# Constructor with given ms name.
-MSSpwParse::MSSpwParse (const MeasurementSet& ms)
+MSSpwParse::MSSpwParse (const MeasurementSet* ms)
 : MSParse(ms, "SPW")
 {
     if(node_p) delete node_p;

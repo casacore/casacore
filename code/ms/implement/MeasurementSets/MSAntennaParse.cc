@@ -41,7 +41,7 @@ MSAntennaParse::MSAntennaParse ()
 }
 
 //# Constructor with given ms name.
-MSAntennaParse::MSAntennaParse (const MeasurementSet& ms)
+MSAntennaParse::MSAntennaParse (const MeasurementSet* ms)
 : MSParse(ms, "Antenna"),
   colName1(MS::columnName(MS::ANTENNA1)),
   colName2(MS::columnName(MS::ANTENNA2))

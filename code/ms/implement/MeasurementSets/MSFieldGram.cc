@@ -63,7 +63,7 @@ static Int                   posMSFieldGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msFieldGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msFieldGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
     MSFieldGramrestart (MSFieldGramin);
     yy_start = 1;

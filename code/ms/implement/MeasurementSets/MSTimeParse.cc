@@ -40,7 +40,7 @@ MSTimeParse::MSTimeParse ()
 }
 
 //# Constructor with given ms name.
-MSTimeParse::MSTimeParse (const MeasurementSet& ms)
+MSTimeParse::MSTimeParse (const MeasurementSet* ms)
 : MSParse(ms, "Time"), colName(MS::columnName(MS::TIME))
 {
     if(node_p) delete node_p;

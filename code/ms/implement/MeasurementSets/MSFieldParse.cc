@@ -39,7 +39,7 @@ MSFieldParse::MSFieldParse ()
 }
 
 //# Constructor with given ms name.
-MSFieldParse::MSFieldParse (const MeasurementSet& ms)
+MSFieldParse::MSFieldParse (const MeasurementSet* ms)
 : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
 {
     if(node_p) delete node_p;

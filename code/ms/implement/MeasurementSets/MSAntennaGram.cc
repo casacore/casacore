@@ -61,7 +61,7 @@ static Int                   posMSAntennaGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msAntennaGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
     MSAntennaGramrestart (MSAntennaGramin);
     yy_start = 1;

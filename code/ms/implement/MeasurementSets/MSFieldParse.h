@@ -91,7 +91,7 @@ public:
     MSFieldParse ();
 
     // Associate the ms and the shorthand.
-    MSFieldParse (const MeasurementSet& ms);
+    MSFieldParse (const MeasurementSet* ms);
 
     const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
     const TableExprNode *selectFieldNames(const Vector<String>& fieldNames);

@@ -113,7 +113,7 @@ public:
     MSParse& operator= (const MSParse&);
 
     // Associate the ms and the shorthand.
-    MSParse (const MeasurementSet& ms, const String& shorthand);
+    MSParse (const MeasurementSet* ms, const String& shorthand);
 
     // Test if shorthand matches.
     Bool test (const String& shortHand) const;

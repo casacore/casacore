@@ -90,7 +90,7 @@ public:
     MSUvDistParse ();
 
     // Associate the ms and the shorthand.
-    MSUvDistParse (const MeasurementSet& ms);
+    MSUvDistParse (const MeasurementSet* ms);
 
     const TableExprNode *selectUVRange(const Double& startUV,
                                        const Double& endUV);

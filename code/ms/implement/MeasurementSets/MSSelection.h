@@ -118,7 +118,7 @@ class MSSelection
    void clear(void);
 
    // Convert to TableExprNode format (C++ interface to TaQL)
-   TableExprNode toTableExprNode(const MeasurementSet& ms);
+   TableExprNode toTableExprNode(const MeasurementSet* ms);
 
  private:
    // Set into the order of the selection expression

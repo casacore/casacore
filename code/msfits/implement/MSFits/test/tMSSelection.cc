@@ -52,15 +52,37 @@ int main(int argc, char **argv)
 
     // Do selection over newly created ms
     try {
+    for(int i=0; i<4; i++) {
         MeasurementSet ms(msName);
 
         MSSelection select;
-        select.setFieldExpr("0,1");
-        select.setSpwExpr("0,1");
+        switch(i) {
+            case 0:
+                select.setFieldExpr("0");
+                select.setSpwExpr("0");
+                break;
+            case 1:
+                select.setFieldExpr("1");
+                select.setSpwExpr("1");
+                break;
+            case 2:
+                select.setFieldExpr("0,1");
+                select.setSpwExpr("0,1");
+                break;
+            case 3:
+                select.setFieldExpr(">0");
+                select.setSpwExpr("0");
+                break;
+            default:
+                break;
+        }
 
         cout << "Original table has rows " << ms.nrow() << endl;
 
-        TableExprNode node = select.toTableExprNode(ms);
+        TableExprNode node = select.toTableExprNode(&ms);
+
+        MS *mssel_ = new MS((ms)(node));
+        delete mssel_;
 
         cout << "TableExprNode has rows = " << node.nrow() << endl;
 
@@ -76,6 +98,7 @@ int main(int argc, char **argv)
         else {
           cout << "selected table has rows " << mssel.nrow() << endl;
         }
+    }
     } catch (AipsError x) {
         cout << "ERROR: " << x.getMesg() << endl;
     }

@@ -173,7 +173,7 @@ String MSSelection::nameExprStr(Vector<String> name)
 
 //----------------------------------------------------------------------------
 
-TableExprNode MSSelection::toTableExprNode(const MeasurementSet& ms)
+TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
 {
 // Convert the MS selection to a TableExprNode object, 
 // representing a TaQL selection in C++.

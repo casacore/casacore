@@ -39,7 +39,7 @@ MSUvDistParse::MSUvDistParse ()
 }
 
 //# Constructor with given ms name.
-MSUvDistParse::MSUvDistParse (const MeasurementSet& ms)
+MSUvDistParse::MSUvDistParse (const MeasurementSet* ms)
 : MSParse(ms, "UvDist")
 {
     if(node_p) delete node_p;

@@ -90,7 +90,7 @@ public:
     MSCorrParse ();
 
     // Associate the ms and the shorthand.
-    MSCorrParse (const MeasurementSet& ms);
+    MSCorrParse (const MeasurementSet* ms);
 
     // Get table expression node object.
     static const TableExprNode* node();

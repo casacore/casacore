@@ -61,7 +61,7 @@ static Int                   posMSSpwGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msSpwGramParseCommand (const MeasurementSet& ms, const String& command) 
+int msSpwGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
     MSSpwGramrestart (MSSpwGramin);
     yy_start = 1;

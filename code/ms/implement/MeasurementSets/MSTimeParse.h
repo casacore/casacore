@@ -91,7 +91,7 @@ public:
     MSTimeParse ();
 
     // Associate the ms and the shorthand.
-    MSTimeParse (const MeasurementSet& ms);
+    MSTimeParse (const MeasurementSet* ms);
 
     const TableExprNode *selectStartTime(const MEpoch& startTime);
     const TableExprNode *selectEndTime(const MEpoch& endTime);
