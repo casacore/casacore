@@ -2451,3 +2451,4 @@
 11 285 src rm doc/faq/latestnews.html
 11 292 src rm trial/implement/Display/MotifAppTools.h
 11 292 src rm trial/implement/Display/MotifAppTools.cc
+11 304 src mv doc/newsletters/feb99/dishrecipe.tex doc/newsletters/feb99/dishrecipe.latex
