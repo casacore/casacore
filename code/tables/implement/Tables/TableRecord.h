@@ -341,6 +341,9 @@ public:
     Table asTable (const RecordFieldId&, const TableLock& lockOptions) const;
     // </group>
 
+    // Get the attributes of a table field.
+    const TableAttr& tableAttributes (const RecordFieldId&) const;
+
     // Merge a field from another record into this record.
     // The DuplicatesFlag (as described in
     // <linkto class=RecordInterface>RecordInterface</linkto>) determines

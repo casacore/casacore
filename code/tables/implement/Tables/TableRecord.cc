@@ -328,6 +328,13 @@ Table TableRecord::asTable (const RecordFieldId& id,
     return Table (name, lockOptions);
 }
 
+const TableAttr& TableRecord::tableAttributes (const RecordFieldId& id) const
+{
+    Int whichField = idToNumber (id);
+    return ((const TableKeyword*)get_pointer (whichField, TpTable))->
+             tableAttributes();
+}
+
 void TableRecord::closeTable (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);

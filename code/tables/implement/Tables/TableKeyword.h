@@ -1,5 +1,5 @@
 //# TableKeyword.h: A keyword value representing a table
-//# Copyright (C) 1996,1997,1999,2000,2001
+//# Copyright (C) 1996,1997,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -171,6 +171,10 @@ public:
     // Get the table.
     // It will be opened when necessary.
     const Table& table() const;
+
+    // Get the table attributes.
+    const TableAttr& tableAttributes() const
+      { return attr_p; }
 
     // Close the table.
     void close() const;
