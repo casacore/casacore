@@ -1,5 +1,5 @@
 //# VisBuffer.cc: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -262,6 +262,43 @@ void VisBuffer::freqAverage()
   flag_p.reference(newFlag);
   visibility_p.reference(newVisibility);
   frequency_p.resize(1); frequency_p(0)=newFrequency;
+}
+
+void VisBuffer::setVisCube(Complex c)
+{
+  visCube_p.resize(visIter_p->visibilityShape());
+  visCube_p.set(c);
+  visCubeOK_p=True; 
+}
+void VisBuffer::setModelVisCube(Complex c)
+{
+  modelVisCube_p.resize(visIter_p->visibilityShape());
+  modelVisCube_p.set(c);
+  modelVisCubeOK_p=True;
+}
+void VisBuffer::setCorrectedVisCube(Complex c)
+{
+  correctedVisCube_p.resize(visIter_p->visibilityShape());
+  correctedVisCube_p.set(c);
+  correctedVisCubeOK_p=True;
+}
+void VisBuffer::setVisCube(const Cube<Complex>& vis)
+{
+  visCube_p.resize(vis.shape());
+  visCube_p=vis;
+  visCubeOK_p=True;
+}
+void VisBuffer::setModelVisCube(const Cube<Complex>& vis)
+{
+  modelVisCube_p.resize(vis.shape());
+  modelVisCube_p=vis;
+  modelVisCubeOK_p=True;
+}
+void VisBuffer::setCorrectedVisCube(const Cube<Complex>& vis)
+{
+  correctedVisCube_p.resize(vis.shape());
+  correctedVisCube_p=vis;
+  correctedVisCubeOK_p=True;
 }
 
 Int & VisBuffer::fillnChannel() 

@@ -255,6 +255,9 @@ public:
   Matrix<CStokesVector>& visibility(Matrix<CStokesVector>& vis, 
 				    DataColumn whichOne) const;
 
+  // Return the shape of the visibility Cube
+  IPosition visibilityShape() const;
+
   // Return u,v and w (in meters)
   Vector<RigidVector<Double,3> >& 
   uvw(Vector<RigidVector<Double,3> >& uvwvec) const;
@@ -420,6 +423,8 @@ inline Int ROVisibilityIterator::nRow() const
 inline ROVisibilityIterator& 
 ROVisibilityIterator::velInterpolation(const String& type)
 { vInterpolation_p=type; return *this;}
+inline IPosition ROVisibilityIterator::visibilityShape() const
+{return IPosition(3,nPol_p,channelGroupSize(),curNumRow_p);}
 
 // <summary>
 // VisibilityIterator iterates through one or more writable MeasurementSets

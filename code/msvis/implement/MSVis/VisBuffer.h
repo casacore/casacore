@@ -1,5 +1,5 @@
 //# VisBuffer.h: buffer for iterating through MS in large blocks
-//# Copyright (C) 1996,1997
+//# Copyright (C) 1996,1997,1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -217,6 +217,18 @@ public:
 
   // Frequency average the buffer
   void freqAverage();
+
+  // Set the visibility to a constant, note that this only changes the buffer,
+  // no values are written back to tables from here.
+  void setVisCube(Complex c);
+  void setModelVisCube(Complex c);
+  void setCorrectedVisCube(Complex c);
+
+  // Set the visibility, note that this only changes the buffer,
+  // no values are written back to tables from here.
+  void setVisCube(const Cube<Complex>& vis);
+  void setModelVisCube(const Cube<Complex>& vis);
+  void setCorrectedVisCube(const Cube<Complex>& vis);
 
 private:
 
