@@ -266,8 +266,8 @@ void ROVisibilityIterator::setState()
   curTableNumRow_p = msIter_p.table().nrow();
   // get the times for this iteration
   // Don't understand why this next line was here: TJC 1997/8/7
-  //  ScalarColumn<Double> colTime(msIter_p.table(),MS::columnName(MS::TIME));
-  time_p.resize(curTableNumRow_p); colTime.getColumn(time_p);
+  ScalarColumn<Double> lcolTime(msIter_p.table(),MS::columnName(MS::TIME));
+  time_p.resize(curTableNumRow_p); lcolTime.getColumn(time_p);
   curStartRow_p=0;
   setSelTable();
   // If this is a new array then set up the antenna locations
