@@ -1,5 +1,5 @@
 //# dVirtColEng.cc: Demo of a virtual column engine
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@ main()
 
 
 //# Includes
-#include "dVirtColEng.h"
+#include <aips/Tables/test/dVirtColEng.h>
 #include <aips/Tables/Table.h>
 #include <aips/Tables/ScalarColumn.h>
 #include <aips/Tables/ArrayColumn.h>
@@ -82,17 +82,18 @@ DataManagerColumn* DummyVirtualEngine::makeIndArrColumn (const String&, int,
     return &data2_p;
 }
 
-void DummyVirtualEngine::close (AipsIO& mainTableFile)
+Bool DummyVirtualEngine::flush (AipsIO& ios, Bool)
 {
-    data1_p.close (mainTableFile);
-    data2_p.close (mainTableFile);
+    data1_p.flush (ios);
+    data2_p.flush (ios);
+    return True;
 }
 void DummyVirtualEngine::create (uInt)
 {}
-void DummyVirtualEngine::open (uInt, AipsIO& mainTableFile)
+void DummyVirtualEngine::open (uInt, AipsIO& ios)
 {
-    data1_p.open (mainTableFile);
-    data2_p.open (mainTableFile);
+    data1_p.open (ios);
+    data2_p.open (ios);
 }
 void DummyVirtualEngine::prepare ()
 {
@@ -174,7 +175,7 @@ void DummyVirtualScalar::open (AipsIO& ios)
     ios >> scale_p;
     ios.getend();
 }
-void DummyVirtualScalar::close (AipsIO& ios)
+void DummyVirtualScalar::flush (AipsIO& ios)
 {
     ios.putstart ("DummyVirtualScalar", 1);      // class version 1
     ios << scale_p;
@@ -273,7 +274,7 @@ void DummyVirtualArray::open (AipsIO& ios)
     ios >> scale_p;
     ios.getend();
 }
-void DummyVirtualArray::close (AipsIO& ios)
+void DummyVirtualArray::flush (AipsIO& ios)
 {
     ios.putstart ("DummyVirtualArray", 1);      // class version 1
     ios << scale_p;
@@ -331,7 +332,7 @@ void DummyVirtualArray::putArray (uInt rownr, const Array<double>& array)
     Int* op  = out;
     const Int* last = op + array.nelements();
     while (op < last) {
-	*op++ = *ip++ / scale_p;
+	*op++ = Int (*ip++ / scale_p + 0.5);
     }
     array.freeStorage (in, deleteIn);
     intern.putStorage (out, deleteOut);

@@ -1,5 +1,5 @@
 //# dVirtColEng.h: Demo of a virtual column engine
-//# Copyright (C) 1994,1995,1996
+//# Copyright (C) 1994,1995,1996,1997
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -98,9 +98,9 @@ public:
     // It reads the scale factor and constructs the ScalarColumn object.
     void open (AipsIO& ios);
 
-    // Let the engine close the object.
+    // Let the engine flush the object.
     // It writes the scale factor.
-    void close (AipsIO& ios);
+    void flush (AipsIO& ios);
 
 private:
     // Assignment is not needed and therefore forbidden (so it is made private).
@@ -189,24 +189,21 @@ public:
     double scale() const
 	{ return scale_p; }
 
-    // Let the engine initialize the object for a new table.
-    void prepare (const Table& theTable);
-
     // Let the engine initialize the object for an existing table.
     // It reads the scale factor.
     void open (AipsIO& ios);
 
-    // Let the engine initialize further.
+    // Let the engine initialize the object for a new table.
     // It constructs the (RO)ArrayColumn objects and sets the writable switch.
     // <note> The ROArrayColumn object is always constructed and is
     // used by all get functions.
     // The ArrayColumn object is only constructed when the column (in fact
     // the underlying column) is writable (otherwise an exception is thrown).
-    void prepare();
+    void prepare (const Table& theTable);
 
-    // Let the engine close the object.
+    // Let the engine flush the object.
     // It writes the scale factor.
-    void close (AipsIO& ios);
+    void flush (AipsIO& ios);
 
 private:
     // Assignment is not needed and therefore forbidden (so it is made private).
@@ -342,9 +339,9 @@ private:
 					 int dataType,
 					 const String& dataTypeId);
 
-    // Close the engine.
-    // It will write a few things into the main table file.
-    void close (AipsIO& mainTableFile);
+    // Flush the engine.
+    // It will write a few things into the AipsIO object.
+    Bool flush (AipsIO& ios, Bool fsync);
 
     // Initialize the object for a new table.
     // Intially the table has the given number of rows.
@@ -355,7 +352,7 @@ private:
     // Initialize the object for an existing table with the given number
     // of rows.
     // It will read back the data written by close.
-    void open (uInt nrrow, AipsIO& mainTableFile);
+    void open (uInt nrrow, AipsIO& ios);
 
     // Initialize the engine.
     void prepare();
