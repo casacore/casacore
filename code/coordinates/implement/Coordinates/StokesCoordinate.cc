@@ -114,7 +114,7 @@ uInt StokesCoordinate::nWorldAxes() const
 
 Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 {
-    static Double world;
+    Double world;
     if (toWorld (world, static_cast<Double>(pixel))) {
        stokes = Stokes::type(values_p[pixel]);
        return True;
@@ -125,7 +125,7 @@ Bool StokesCoordinate::toWorld(Stokes::StokesTypes &stokes, Int pixel) const
 
 Bool StokesCoordinate::toPixel(Int& pixel, Stokes::StokesTypes stokes) const
 {
-    static Double tmp;
+    Double tmp;
     if (toPixel(tmp, static_cast<Double>(stokes))) {
        pixel = Int(tmp + 0.5);    
        return True;
@@ -140,7 +140,7 @@ Bool StokesCoordinate::toWorld(Vector<Double>& world,
     AlwaysAssert(pixel.nelements()==1, AipsError);
     if (world.nelements()!=1) world.resize(1);
 //
-    static Double tmp;
+    Double tmp;
     if (toWorld(tmp, pixel(0))) {
        world(0) = tmp;
        return True;
@@ -155,7 +155,7 @@ Bool StokesCoordinate::toPixel(Vector<Double> &pixel,
     AlwaysAssert(world.nelements()==1, AipsError);
     if (pixel.nelements()!=1) pixel.resize(1);
 //
-    static Double tmp;
+    Double tmp;
     if (toPixel(tmp, world(0))) {
        pixel(0) = tmp;
        return True;
