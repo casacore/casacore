@@ -698,7 +698,7 @@ void MSSimulator::fillCoords(MeasurementSet & ms)
 		nIntFld_p(i)*qIntegrationTime_p.getValue("s")
 	      +qGapTime_p.getValue("s");
 	    // os << pName << LogIO::POST;
-	    delete pName;
+	    // delete pName; Don't delete this as it gets deleted when name goes out of scope
 	    if(nAnt_p > 1) row++;
 	  }
 	}
