@@ -318,8 +318,23 @@ The result of these functions is a scalar.
 
 \subsubsection{\label{LEL:MISCFUNCTIONS}Miscellaneous functions}
 \begin{description}
+  \item[ \texttt{numeric REBIN(numeric,[f1,f2,...])}]
+    rebins the image using the given (integer) factors.
+    It averages the pixels in each bin with shape [f1,f2,...].
+    Masked-off pixels are not taken into account. If all pixels in a
+    bin are masked off, the resulting pixel will be masked off.
+    The length of the factor list [f1,f2,...] has to match the
+    dimensionality of the image. The factors do not need to divide
+    the axes lengths evenly.
+    Each factor can be a literal value, but it can also be any
+    expression resulting in a real scalar value.
+    \\For instance, for a 3-dimensional image:
+    \begin{verbatim}
+       rebin(lat,[2,2,1])
+    \end{verbatim}
+    will halve the size of axis 1 and 2.
   \item[ \texttt{real AMP(real,real)}]
-    It returns the square root of the quadrature sum of two
+    It returns the square root of the quadrature sum of the two
     arguments.  Thus
     \begin{verbatim}
        amp(lat1,lat2)
@@ -328,7 +343,8 @@ The result of these functions is a scalar.
     example, (biased) polarized intensity images when lat1 and lat2
     are Stokes Q and U images.
   \item[ \texttt{real PA(real,real)}]
-    It returns a ``position angle'' (in degrees) from the two lattices.  That is,
+    It returns a ``position angle'' (in degrees) from the two lattices.
+    That is,
     \begin{verbatim}
        pa(lat1,lat2)
     \end{verbatim}
