@@ -93,6 +93,11 @@ void TiledColumnStMan::create (uInt nrrow)
     createFile (0);
     // Create the hypercube object.
     // Its shape is the cell shape plus an extensible last dimension.
+    // Check if the hypercube dimensionality is one extra.
+    if (nrdim_p != fixedCellShape_p.nelements() + 1) {
+	throw (TSMError ("TiledColumnStMan: hypercube dimensionality "
+			 "has to be 1 + cell dimensionality"));
+    }
     IPosition cubeShape (fixedCellShape_p);
     cubeShape.resize (nrdim_p);
     cubeShape(nrdim_p - 1) = 0;
