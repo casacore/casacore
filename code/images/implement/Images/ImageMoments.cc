@@ -360,7 +360,7 @@ Bool ImageMoments<T>::setRegion(const IPosition& blcU,
 // For now there is no region selection in TiledStepper
 
    blc_p = 0;
-   trc_p = pInImage_p->shape();
+   trc_p = pInImage_p->shape() - 1;
    inc_p = 1;
     
    return True;
@@ -1025,7 +1025,7 @@ Bool ImageMoments<T>::createMoments()
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
-     if (iProfile%inc == 0) {
+     if (iProfile%inc == 0 && percent <=100) {
          os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
          percent += percentInc;
      }
@@ -3589,7 +3589,8 @@ void ImageMoments<T>::showGaussFit   (const T& peak,
 template <class T> 
 Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
 //
-// Smooth image
+// Smooth image.  We smooth only the sublattice that the user
+// has asked for.
 //
 // Input
 //   pSmoothedImage Pointer to smoothed Lattice
@@ -3632,7 +3633,7 @@ Bool ImageMoments<T>::smoothImage (Lattice<T>* const pSmoothedImage)
     
       IPosition blc(IPosition(pPSF->ndim(),0));
       IPosition trc(pPSF->shape());
-      trc = trc - IPosition(pPSF->ndim(),1);
+      trc = trc - 1;
       saveLattice (pPSF, cSys, blc, trc, psfOut_p);
       delete pPSF;
    }
