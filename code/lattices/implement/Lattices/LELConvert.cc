@@ -34,6 +34,10 @@
 template <class T, class F>
 LELConvert<T,F>::LELConvert(const CountedPtr<LELInterface<F> >& expr)
 : pExpr_p (expr)
+//
+// F is the type we are converting from
+// T is the type we are converting to.
+//
 {
    setAttr (expr->getAttribute());
 
@@ -73,8 +77,8 @@ T LELConvert<T,F>::getScalar() const
    cout << "LELConvert::getScalar" << endl;
 #endif
 
-//# This is the only way the compiler does not complain about
-//# ambiguity between Complex conversion operator and constructor.
+// This is the only way the compiler does not complain about
+// ambiguity between Complex conversion operator and constructor.
    T tmp;
    tmp = pExpr_p->getScalar();
    return tmp;

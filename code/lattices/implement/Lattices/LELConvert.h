@@ -37,31 +37,59 @@ template <class T> class Array;
 class PixelRegion;
 
 
-// <summary>
+
+// <summary> This LEL class handles conversions between numerical types
 // </summary>
-
+//
 // <use visibility=local>
-
+//
 // <reviewed reviewer="" date="yyyy/mm/dd" tests="" demos="">
 // </reviewed>
-
+//
 // <prerequisite>
 //   <li> <linkto class="Lattice"> Lattice</linkto>
+//   <li> <linkto class="LatticeExpr"> LatticeExpr</linkto>
+//   <li> <linkto class="LatticeExprNode"> LatticeExprNode</linkto>
+//   <li> <linkto class="LELInterface"> LELInterface</linkto>
 // </prerequisite>
-
+//
 // <etymology>
+//  This derived LEL letter class handles numerical type conversions
 // </etymology>
-
+//
 // <synopsis>
+// This LEL letter class is derived from LELInterface.  It
+// is used to construct LEL objects that know how to convert
+// between numerical types, such as Double to Float.  They 
+// operate on numerical Lattices and return a numerical Lattice. 
+// The LELConvert object is embedded in the tree, and the conversion
+// actually happens at tree evaluation time.
+//
+// A description of the implementation details of the LEL classes can
+// be found in <a href="../../../notes/216/216.html">Note 216</a>
+//
 // </synopsis> 
-
+//
 // <example>
+// Examples are not very useful as the user would never use 
+// these classes directly.  Look in LatticeExprNode.cc to see 
+// how it invokes these classes.  An example of how the user
+// would indirectly use this class (through the envelope) is:
+// <srcblock>
+// IPosition shape(2,5,10);
+// ArrayLattice<Float> x(shape); x.set(0.0);
+// ArrayLattice<Double> y(shape); y.set(1.0);
+// y.copyData(x);                 // y = x;
+// </srcblock>
+// The LELConvert class is embedded in the tree at construction time
+// so as to handle the conversion from Float to Double at evaluation time
 // </example>
-
+//
 // <motivation>
+//  We needed to be able to handle mixed types in the LEL classes
 // </motivation>
-
-// <todo asof="1996/07/01">
+//
+// <todo asof="1998/01/21">
 // </todo>
 
 
@@ -70,17 +98,18 @@ class LELConvert : public LELInterface<T>
 {
 public: 
    
-// Constructor takes an expression scalar.  
+// Constructor.  <src><F></src> is the type we are coinverting from.
+// <src><T></src> is the type we are converting to.
    LELConvert(const CountedPtr<LELInterface<F> >& expr);
 
 // Destructor does nothing
   ~LELConvert();
 
-// Evaluate the expression.
+// Recursively evaluate the expression.
    virtual void eval (Array<T>& result,
                       const PixelRegion& region) const;
 
-// Get the constant.
+// Recursively evaluate the scalar
    virtual T getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
