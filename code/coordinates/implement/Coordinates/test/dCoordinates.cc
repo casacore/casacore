@@ -1,5 +1,5 @@
 //# Program.cc: This program ...
-//# Copyright (C) 1996,1997,1998
+//# Copyright (C) 1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -44,6 +44,7 @@
 int main()
 {
 
+  try {
     // Direction Coordinate
     Matrix<Double> xform(2,2);                                    // 1
     xform = 0.0; xform.diagonal() = 1.0;                          // 2
@@ -89,7 +90,7 @@ int main()
     
     ok = stokes.toPixel(plane, Stokes::XX);                      // 26
     if (!ok) {
-	cout << "Error: " << stokes.errorMessage() << endl;
+	cout << "Expected error: " << stokes.errorMessage() << endl;
 	cout << "Continuing..." << endl;
     }
     cout << "Stokes XX is plane " << plane << endl;
@@ -163,7 +164,7 @@ int main()
     cout << world.ac() << " ---> " << pixel.ac() << endl;
 
     // CoordinateSystem::remove*Axis
-    ok = coordsys.removePixelAxis(10, 138.0);
+    ok = coordsys.removePixelAxis(0, 138.0);
     if (!ok) {
 	cout << "Error: " << coordsys.errorMessage() << endl;
 	exit(1);
@@ -197,5 +198,11 @@ int main()
        delete pCoordSys;
     }
 
-    exit(0);
+  } catch (AipsError x) {
+     cerr << "aipserror: error " << x.getMesg() << endl;
+     exit(1);
+  }end_try;
+
+  cout << "ok" << endl;
+  exit(0);
 }
