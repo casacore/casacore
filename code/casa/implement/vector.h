@@ -52,16 +52,16 @@ using std::vector;
 #if defined(AIPS_GCC)
 #define AIPS_VECTOR_AUX_TEMPLATES(T) \
 template \
-T *__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
+T *std::__uninitialized_copy_aux<T *, T *>(T *, T *, T *, __false_type); \
 template \
-T *__uninitialized_copy_aux<T const *, T *>(T const *, T const *, \
+T *std::__uninitialized_copy_aux<T const *, T *>(T const *, T const *, \
 					    T *, __false_type); \
 template \
-T *fill_n<T *, uInt, T >(T *, uInt, T const &); \
+T *std::fill_n<T *, uInt, T >(T *, uInt, T const &); \
 template \
-void fill<T *, T >(T *, T *, T const &); \
+void std::fill<T *, T >(T *, T *, T const &); \
 template \
-T *__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
+T *std::__uninitialized_fill_n_aux<T *, uInt, T >(T *, uInt, \
 			      T const &, __false_type); \
 template \
 void vector<T, allocator<T> >:: \
