@@ -1,5 +1,5 @@
 //# tLargeFileIO.cc: Test program for performance of file IO
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -61,7 +61,7 @@ int main (int argc, char** argv)
 	LargeFiledesIO file2 (LargeFiledesIO::create("tLargeFileIO_tmp.dat2"));
 	timer.mark();
 	for (i=0; i<nr; i++) {
-	    buf[i] = i;
+	    buf[0] = i;
 	    file2.write (tleng, buf);
 	}
 	timer.show ("LargeFiledesIO     write");
@@ -72,7 +72,7 @@ int main (int argc, char** argv)
 	timer.mark();
 	for (i=0; i<nr; i++) {
 	    file2.read (tleng, buf);
-	    if (buf[i] != i) {
+	    if (buf[0] != i) {
 	        cout << "Mismatch for record nr " << i << endl;
 	    }
 	}
