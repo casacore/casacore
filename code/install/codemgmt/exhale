@@ -398,6 +398,14 @@
 
   rm -f $MSTRTMPD/alog.log $MSTRTMPD/alog.time
 
+# master repository bookkeeping
+  cd $AIPSMSTR
+  rm -f VERSION
+  [ -f VERSION,v ] && co -q -l -p VERSION > /dev/null
+  cp -p $MSTRTMPD/NEWVERSN VERSION
+  [ -f VERSION,v ] && ci -q -mupdated VERSION
+  cp -p $MSTRTMPD/NEWVERSN VERSION
+
 # Exclude the master code management utilities from the tar file.
   cd $AIPSROOT
   echo "master/etc"     >  $MSTRTMPD/master.excl
