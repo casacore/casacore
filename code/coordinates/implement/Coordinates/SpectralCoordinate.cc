@@ -386,13 +386,13 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 
     // Verify that the required headers exist and are the right type
     AlwaysAssert(header.isDefined("ctype") && 
-		 header.dataType("ctype") == TpArrayString &&
+                 header.dataType("ctype") == TpArrayString &&
 		 header.shape("ctype").nelements() == 1 &&
-		 header.shape("ctype")(0) > Int(whichAxis), AipsError);
+                 header.shape("ctype")(0) > Int(whichAxis), AipsError);
     AlwaysAssert(header.isDefined("crval") && 
-		 header.dataType("crval") == TpArrayDouble &&
-		 header.shape("crval").nelements() == 1 &&
-		 header.shape("crval")(0) > Int(whichAxis), AipsError);
+                 header.dataType("crval") == TpArrayDouble &&
+		 header.shape("crval").nelements() == 1 && 
+                 header.shape("crval")(0) > Int(whichAxis), AipsError);
     AlwaysAssert(header.isDefined("crpix") && 
 		 header.dataType("crpix") == TpArrayDouble &&
 		 header.shape("crpix").nelements() == 1 &&
@@ -416,9 +416,10 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	header.get("cunit", cunit);
     }
 
-    // If we are from a table, report how non-linear we are. At some point
-    // we should worry about nonlinear frequency axes more (e.g. they might
-    // be regularly gridded in lambda or velocities).
+// If we are from a table, report how non-linear we are. At some point
+// we should worry about nonlinear frequency axes more (e.g. they might
+// be regularly gridded in lambda or velocities).
+
     if (pixelValues().nelements() != 0) {
 	Vector<Double> pixel = pixelValues();
 	Vector<Double> world = worldValues();
@@ -447,8 +448,8 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 	}
     }
 
+// Wacky capitalization to avoid running into other variables
 
-    // Wacky capitalizatoin to avoid running into other variables
     String Ctype;
     Double Crval, Cdelt, Crpix, Altrval, Altrpix;
     Int Velref;
@@ -461,21 +462,10 @@ void SpectralCoordinate::toFITS(RecordInterface &header, uInt whichAxis,
 			      worldAxisUnits()(0)).getBaseValue();
     MDoppler::Types VelPreference = opticalVelDef ? MDoppler::OPTICAL :
 	MDoppler::RADIO;
-    AlwaysAssert(FITSSpectralUtil::toFITSHeader(Ctype,
-						Crval,
-						Cdelt,
-						Crpix,
-						HaveAlt,
-						Altrval,
-						Altrpix,
-						Velref,
-						Restfreq,
-						logger,
-						RefFreq,
-						referencePixel()(0) + offset,
-						FreqInc,
-						type_p,
-						preferVelocity,
+    AlwaysAssert(FITSSpectralUtil::toFITSHeader(Ctype, Crval, Cdelt, Crpix, HaveAlt, Altrval,
+						Altrpix, Velref, Restfreq, logger,
+						RefFreq, referencePixel()(0) + offset,
+  					        FreqInc, type_p, preferVelocity,
 						VelPreference), AipsError);
 
     ctype(whichAxis) = Ctype;
