@@ -260,7 +260,7 @@ Bool LatticeIndexer::tiledCursorMove(Bool incr, IPosition &cursorPos,
   DebugAssert(cursorShape.nelements() == theNdim, AipsError);
   DebugAssert(cursorHeading.nelements() == theNdim,AipsError);
   for (uInt i=0; i<theNdim; i++)
-    DebugAssert(cursorShape(i) > 0 && cursorShape(i) <= theShape(i), AipsError);
+    DebugAssert(cursorShape(i) > 0, AipsError);
 
   uInt activeAxis, indexToActiveAxis = 0;
   IPosition candidateCursorPos(cursorPos);
@@ -329,7 +329,7 @@ void LatticeIndexer::subSection (const IPosition &blc, const IPosition &trc,
     DebugAssert(blc(i) >= 0, AipsError);
     DebugAssert(trc(i) < theShape(i), AipsError);
     DebugAssert(blc(i) <= trc(i), AipsError);
-    DebugAssert(inc(i) >= 1 && inc(i) <= theShape(i), AipsError);
+    DebugAssert(inc(i) > 0 && inc(i) <= theShape(i), AipsError);
   }
   theShape = (trc-blc+inc)/inc;
   theOffset = theOffset+blc*theAxisInc;

@@ -264,6 +264,7 @@ void LatticeStepper::setCursorShape(const IPosition & cursorShape) {
   }
   else
     theCursorShape = cursorShape;
+  theNiceFit = niceFit();
   DebugAssert(ok() == True, AipsError);
 };
 
@@ -406,13 +407,23 @@ Bool LatticeStepper::ok() const {
     LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
     logErr << LogIO::SEVERE << "cursor position"
 	   << " (=" << theCursorPos << ")"
-	   << " is inconsistant with theStart flag"
+	   << " is inconsistent with theStart flag"
 	   << " (theStart = ";
     if (theStart == True)
       logErr << "True";
     else
       logErr << "False";
     logErr << ")" << LogIO::POST;
+    return False;
+  }
+
+  // Check if theNiceFit is correct.
+  if (theNiceFit != niceFit()) {
+    LogIO logErr(LogOrigin("LatticeStepper", "ok()"));
+    logErr << LogIO::SEVERE << "theNiceFit"
+	   << " (=" << theNiceFit
+	   << " is inconsistent with niceFit()";
+    logErr << LogIO::POST;
     return False;
   }
   
@@ -439,7 +450,8 @@ void LatticeStepper::padCursor() {
 };
 
 // check if the cursor shape is an sub-multiple of the Lattice shape
-Bool LatticeStepper::niceFit() {
+Bool LatticeStepper::niceFit() const
+{
   const uInt cursorDim = theCursorShape.nelements();
   // Check the case when theCursorShape == 0 as this will cause a floating
   // point error below.
