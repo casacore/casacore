@@ -255,8 +255,10 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
     header.define("BUNIT", upcase(image.units().getName()).chars());
     header.setComment("BUNIT", "Brightness (pixel) unit");
 
-    Bool ok = coordsys.toFITSHeader(header, True, 'c', False, preferVelocity,
+    IPosition shapeCopy = shape;
+    Bool ok = coordsys.toFITSHeader(header, shapeCopy, True, 'c', False, preferVelocity,
 				    opticalVelocity);
+
     if (!ok) {
 	log << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
 	    " a simple linear coordinate system." << LogIO::POST;
@@ -277,12 +279,20 @@ Bool ImageFITSConverter::ImageToFITS(String &error,
 	Record empty2;
 	header = empty2;
 
-	Bool ok = coordsys.toFITSHeader(header, True);
+	IPosition shapeCopy = shape;
+	Bool ok = coordsys.toFITSHeader(header, shapeCopy, True);
 	if (!ok) {
 	    error = "Fallback linear coordinate system fails also.";
 	    return False;
 	}
 
+    }
+    if (naxis.nelements() != shapeCopy.nelements()) {
+        naxis.resize(shapeCopy.nelements());
+	for (Int i=0; i < shapeCopy.nelements(); i++) {
+	    naxis(i) = shapeCopy(i);
+	}
+	header.define("NAXIS", naxis);
     }
     
     // ORIGIN
