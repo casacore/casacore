@@ -1,5 +1,5 @@
 //# tIAU2000.cc: Test the IAU2000 conversions against SOFA library
-//# Copyright (C) 2003
+//# Copyright (C) 2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+#include <casa/aips.h>
 #include <measures/Measures/SofaTest.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/Vector.h>
