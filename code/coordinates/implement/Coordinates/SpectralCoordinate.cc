@@ -315,8 +315,8 @@ Bool SpectralCoordinate::setPreferredWorldAxisUnits (const Vector<String>& units
       return False;
    }
 //
-   static Unit unitsHZ(String("Hz"));
-   static Unit unitsKMS(String("km/s"));
+   static const Unit unitsHZ(String("Hz"));
+   static const Unit unitsKMS(String("km/s"));
 //
    if (units(0).empty()) {
 //
@@ -860,16 +860,14 @@ String SpectralCoordinate::format(String& units,
 // then see if they are velocity.  If so, convert to
 // desired units.
   
-   static Unit unitsHZ(String("Hz"));      
-   static Unit unitsKMS(String("km/s"));      
+   static const Unit unitsHZ(String("Hz"));      
+   static const Unit unitsKMS(String("km/s"));      
    static Quantum<Double> qVel;
    static Quantum<Double> qFreq;
    static Vector<Double> world;
 //
-   static String nativeUnit;
-   static String prefUnit;
-//
-   nativeUnit = worldAxisUnits()(worldAxis);
+   String nativeUnit = worldAxisUnits()(worldAxis);
+   String prefUnit;
    if (units.empty()) {
       prefUnit = preferredWorldAxisUnits()(worldAxis);
       if (prefUnit.empty()) {      
@@ -879,7 +877,7 @@ String SpectralCoordinate::format(String& units,
       }
    }
 //
-   static String theString;
+   String theString;
    Unit unit(units);
    if (unit != unitsHZ) {
 
