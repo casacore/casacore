@@ -148,7 +148,7 @@ public:
   // into account for automatic conversions (since the keyword explicit is 
   // not implemented by all compilers yet). The conversion operators 
   // in class LatticeExprNode take care of automatic conversions.
-   LatticeExpr (const LatticeExprNode& expr, uInt dummy=0);
+   LatticeExpr (const LatticeExprNode& expr);
 
   // Copy constructor (reference semantics)
    LatticeExpr(const LatticeExpr<T>& other);
