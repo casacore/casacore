@@ -2172,7 +2172,7 @@ Bool CoordinateSystem::nearPixel  (const CoordinateSystem& other,
          if (pixelAxes2(j)==-1) whichAxes2(j) = False;
       }
 //
-      if (!c1.near(c2, whichAxes1, whichAxes2, tol)) {
+      if (!c1.doNearPixel(c2, whichAxes1, whichAxes2, tol)) {
         set_error(c1.errorMessage());
         return False;
       }
