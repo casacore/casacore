@@ -109,6 +109,10 @@ void RefColumn::putSlice (uInt rownr, const Slicer& ns, const void* dataPtr)
     { colPtr_p->putSlice (refTabPtr_p->rootRownr(rownr), ns, dataPtr); }
 
 
+ColumnCache& RefColumn::columnCache()
+    { return colCache_p; }
+
+
 void RefColumn::makeSortKey (Sort& sortobj, ObjCompareFunc* cmpFunc,
 			     Int order, const void*& dataSave)
     { colPtr_p->makeRefSortKey (sortobj, cmpFunc, order,
