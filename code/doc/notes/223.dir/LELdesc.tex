@@ -17,8 +17,8 @@ In short the following functionality is supported:
       and automatic data type promotion.
 \item \htmlref{Masking}{LEL:CONDITIONS} using boolean expressions.
 \item Propagation of \htmlref{masks}{LEL:MASKS} through an expression.
+\item Support of image \htmlref{regions and masks}{LEL:REGIONS}.
 \end{itemize}
-In the near future regions will be supported.
 
 The first section explains the syntax.
 The last sections show the interface to LEL using Glish or C++.
@@ -50,11 +50,13 @@ Parentheses can be used to group subexpressions.
 \htmlref{constants}{LEL:CONSTANTS},
 \htmlref{functions}{LEL:FUNCTIONS}, and
 \htmlref{condition masks}{LEL:CONDITIONS}.
+\htmlref{image regions and masks}{LEL:REGIONS}.
 E.g.
 \begin{verbatim}
   lat1 + 10
   lat1 + 2 * max(lat2,1)
   amp(lat1, lat2)
+  lat1 + mean(img[region1])
   lat1 + mean(lat2[lat2>5 && lat2<10])
 \end{verbatim}
 The last example shows how a boolean expression can be used to form
@@ -74,11 +76,11 @@ It is fully explained in a \htmlref{later section}{LEL:MASKS}.
 \label{LEL:DATATYPES}
 LEL supports the following data types:
 \begin{description}
-  \item[ Bool]
-  \item[ Float] single precision real (which includes integers)
-  \item[ Double] double precision real
-  \item[ Complex ] single precision complex
-  \item[ DComplex ] double precision complex
+  \item[ \textbf{Bool}]
+  \item[ \textbf{Float}] single precision real (which includes integers)
+  \item[ \textbf{Double}] double precision real
+  \item[ \textbf{Complex} ] single precision complex
+  \item[ \textbf{DComplex} ] double precision complex
 \end{description}
 All these data types can be used for scalars and lattices.
 \\LEL will do automatic data type promotion when needed. E.g. when
@@ -88,6 +90,11 @@ conversion functions (FLOAT, DOUBLE, COMPLEX and DCOMPLEX).
 These functions can also be used to demote a data type
 (e.g. convert from Double to Float), which can sometimes
 be useful for better performance.
+
+\textbf{Region} is a specific data type. It indicates a region of any type
+(in pixel or world coordinates, relative, fractional).
+A region can only be applied to a lattice subexpression using
+operator \texttt{[]}.
 
 
 \subsection{\label{LEL:CONSTANTS}Constants}
@@ -143,6 +150,7 @@ precedence):
   \item[] Unary \textbf{!}
        \\Logical NOT operator.
        Can only be used with Bool operands.
+       \\For a region it forms the complement.
   \item[] Binary \textbf{$\wedge$, *, /, \%, +}, and \textbf{-}
        \\\% is the modulo operator.
        E.g. \texttt{3\%1.4} results in \texttt{0.2} and
@@ -155,6 +163,8 @@ precedence):
        \texttt{2}\verb+^+\texttt{1}\verb+^+\texttt{2} results in \texttt{2}.
        \\Operator \% can only be used for real operands, while the others
        can be used for real and complex operands.
+	\\Operator \textbf{-} can also be used for regions. It forms
+        the difference of the left and right operand.
   \item[] \textbf{==, $!=$, $>$, $>=$, $<$}, and \textbf{$<=$}
        \\For Bool operands only $==$ and $!=$ can be used.
        \\A Bool operand cannot be compared with a numeric operand.
@@ -162,6 +172,8 @@ precedence):
   \item[] \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
        \\These operators can only be used with Bool operands.
+       \\When used on a region \textbf{\&\&} forms the intersection,
+       while \textbf{$\mid\mid$} forms the union.
 \end{description}
 \begin{description}
   \item The precedence order is:
@@ -293,28 +305,58 @@ The result of these functions is a scalar.
 
 \subsection{\label{LEL:LATTICES}Lattice names}
 When a lattice (e.g. an image) is used in an expression, its name
-has to be given. If the name consists of alphanumeric characters only
-and starts with a letter, it can be given as such. An underscore is
-also treated as a letter.
+has to be given. The name can be given as such if it consists of
+the characters \texttt{-}\texttt{.}\texttt{\$}\texttt{\~\ }
+and alphanumeric characters.
 \\If the name contains other characters or if it is a reserved word
 (currently only T and F are reserved), it has to be escaped.
 Escaping can be done by preceeding the special characters with a
 backslash or by enclosing the string in single or double quotes.
 E.g.
 \begin{verbatim}
-  myimage  
-  myimage\.data
-  'myimage.data'
+  ~/myimage.data
+  ~/myimage.data\-old
+  '~/myimage.data-old'
 \end{verbatim}
 Note that when LEL is used in glish, it is also possible to use
 a glish image variable as a lattice operand (e.g. \texttt{\$im}).
 This is explained in the section describing the
-\htmlref{glish binding}{LEL:GLISHC}.
+\htmlref{glish binding}{LEL:GLISHC}. It means that in glish a
+name starting with a \texttt{\$} should be escaped too.
+
+An image can have zero or more masks indicating if a pixel is good or
+bad. One mask can be designated as the default mask, which will
+by default be applied to the image. It is possible to give a suffix
+to the image name telling if no mask or another mask should be used.
+The suffix is a colon followed by the word /texttt{nomask}
+or the name of the alternative mask. Note that the suffix should
+not be enclosed in the possible quotes of the image name, otherwise
+it is part of the image name.
+\begin{verbatim}
+  myimage.data
+  myimage.data:nomask
+  'myimage.data:othermask'
+\end{verbatim}
+The first example uses the default mask (if the image has one).
+\\The second example uses no mask.
+\\The third example uses mask \texttt{othermask}.
+\\Note that if the image name is enclosed in quotes, the mask name
+should be enclosed too. It means that a colon cannot be part of
+an image name.
+
+Note that below it is explained that a region (or mask) can
+be applied using operator \texttt{[]}. It means that the third
+example is equivalent to
+\begin{verbatim}
+  myimage.data:nomask[othermask]
+\end{verbatim}
+but is far easier to write.
 
 \subsection{\label{LEL:CONDITIONS}Lattice Condition Mask}
 Lattices can have a mask. Examples are a mask of good pixels in an
-image or the mask indicating the pixels in a region within a bounding box
-(e.g. for a circle).
+image (as explained in the \htmlref{previous section}{LEL:LATTICES})
+or the mask indicating the pixels of a region within its bounding box
+(e.g. for a circle) as explained in the \htmlref{next section}{LEL:REGIONS}.
 
 Apart from such input masks, it is also possible to create a mask
 using operator \texttt{[]} and a boolean expression. E.g.
@@ -341,15 +383,95 @@ first example in this section.
 
 When a lattice has a mask of itself, the mask formed by the condition
 is and-ed with the lattice mask. It is explained in more detail in the
-\htmlref{next section}{LEL:MASKS}.
+section discussing \htmlref{mask propagation}{LEL:MASKS}.
 
+\section{\label{LEL:REGIONS}Regions}
+A region of any type can be applied to a lattice using operator[].
+It results in a lattice with the shape of the region's bounding box.
+If the region or the lattice has a mask, they are and-ed to form
+the result's mask.
+
+All types of regions supported in AIPS++ can be used, thus:
+\begin{itemize}
+\item regions in pixel or world coordinates
+\item in absolute, relative and/or fractional units
+\item basic regions box, ellipsoid, and polygon
+\item masks
+\item compound regions union, intersection, difference, and complement.
+\item extension of a region or group of regions to higher dimensions
+\end{itemize}
+The documentation in the classes
+ \htmlref{LCRegion}{../../trial/implement/Lattices/LCRegion.html},
+ \htmlref{LCSlicer}{../../trial/implement/Lattices/LCSlicer.html}, and
+ \htmlref{WCRegion}{../../trial/implement/Images/WCRegion.html})
+gives you more information about the various regions.
+
+At this moment a region can not be defined in LEL itself. It is
+only possible to use regions predefined in an image or another table.
+When using glish (as will normally be done), it is also possible
+to use a region defined in glish using the \$-notation. This is
+explained in more detail in the section discussing the
+\htmlref{interface to LEL}{LEL_GLISHC}.
+
+A predefined region can be used by specifying its name.
+There are three ways to specify a region name:
+\begin{enumerate}
+\item \texttt{tablename::regionname}
+  \\The region is looked up in the given table (which will
+  usually be an image).
+\item \texttt{::regionname}
+  \\The region is looked up in the last table used in the expression.
+\item \texttt{regionname}
+  \\Is equivalent to above. However, there is no syntactical
+  difference between the name of a region and a lattice/image.
+  Therefore LEL will first try if the name represents a lattice or
+  image. If not, the name is supposed to be a region name.
+  The prefix \texttt{::} in the previous way tells that the name
+  should only be looked up as a region.
+\end{enumerate}
+E.g.
+\begin{verbatim}
+  myimage.data[reg1]
+  (myimage.data - otherimage)[::reg1]
+  (myimage.data - otherimage)[myimage.data::reg1]
+\end{verbatim}
+In the first example region \texttt{reg1} is looked up in image
+\texttt{myimage.data} It is assumed that \texttt{reg1} is not the
+name of an image or lattice.
+\\In the second example it is stated explicitly that \texttt{reg1}
+is a region. It is looked up in \texttt{otherimage}.
+\\In the third example the region is looked up in \texttt{myimage.data}.
+\\Note that the last examples also show that a region can be applied
+to a subexpression.
+
+A union, intersection, difference and complement of regions
+could be stored as a region. It is also possible to form a union,
+etc. in LEL itself. However, that can only be done if the regions
+have the same type (i.e. both in world or in pixel coordinates).
+The following operators can be used:
+\\ \texttt{reg1 || reg2} to form the union.
+\\ \texttt{reg1 \&\& reg2} to form the intersection.
+\\ \texttt{reg1 - reg2} to form the difference.
+\\ \texttt{!reg1} to form the complement.
+
+The normal AIPS++ rules are used when a region is applied.
+\begin{itemize}
+\item A region in world or relative coordinates can only be applied
+to an image (or a subexpression resulting in an image). Otherwise
+there is no way to convert it to absolute pixel coordinates.
+\item The axes of a region in world coordinates have to be axes in
+the image (subexpression). However, the region can have fewer axes.
+\item If a region has fewer axes than the image or lattice
+the region is automatically extended to the full image
+by taking the full length of the missing axes.
+\end{itemize}
 
 \section{\label{LEL:MASKS}Mask Propagation}
-Lattices can have a mask. Examples are a mask of good pixels in an
-image or the mask indicating the pixels in a region within a bounding box
-(e.g. for a circle).
-Furthermore a mask can be created using operator \texttt{[]}
-as explained in the \htmlref{previous section}{LEL:CONDITIONS}.
+As explained in the previous sections lattices can have a mask.
+Examples are a mask of good pixels in an image or the mask indicating
+the pixels of a region within its bounding box (e.g. for a circle).
+Furthermore a mask can be created using a condition and
+operator \texttt{[]}.
 
 Masks are combined and propagated throughout an expression.
 E.g. when two lattices are added, the mask of the result is formed
@@ -361,8 +483,8 @@ etc..
 There are a few special cases:
 \begin{itemize}
 \item
-The mask created by operator[] is formed by and-ing the condition
-result, the mask of the result, and the mask of the subexpression
+The mask created by \texttt{operator[condition]} is formed by and-ing the
+condition result, the mask of the result, and the mask of the subexpression
 where the condition is applied to. E.g. suppose \texttt{lat1} and
 \texttt{lat2} have a mask. Then in
 \begin{verbatim}
@@ -519,32 +641,8 @@ attention to this optimization.
 \end{itemize}
 
 
-\section{Examples}
-\begin{description}
-  \item[] \texttt{lat1+lat2}
-    \\adds 2 lattices
-  \item[] \texttt{mean(lat1)}
-    \\results in a scalar value giving the mean of the lattice.
-    That value can be used as a lattice. E.g. it can be used as
-    the source in an assignment to set all elements of another
-    lattice to the mean.
-  \item[] \texttt{complex(lat1,lat2)}
-    \\results in a complex lattice formed by \texttt{lat1} as the
-    real part and \texttt{lat2} as the imaginary part.
-  \item[] \texttt{min(lat1, 2*mean(lat1))}
-    \\results in a lattice where \texttt{lat1} is clipped at twice
-    its mean value.
-  \item[] \texttt{lat1[lat1$>$2*min(lat1)]}
-    \\results in a lattice with a mask. Only the pixels
-    greater than twice the minimum are valid.
-  \item[] \texttt{iif(lat1$<$mean(lat1),lat1*2,lat1/2)}
-    \\results in a lattice where the elements less than the mean
-    are doubled and the elements greater or equal to the mean are
-    divided by 2.
-\end{description}
-
 \section{\label{LEL:GLISHC}Interface to LEL}
-There exists a user and a programmer interface to LEL.
+There is a user and a programmer interface to LEL.
 Glish functions form the user interface, while C++ functions
 and classes form the programmer interface.
 \begin{itemize}
@@ -559,7 +657,7 @@ and classes form the programmer interface.
   the result in an image with the given name.
   \\The \texttt{expr} constructor will only form the expression and
   treat it as a normal image thereafter.
-  It is evaluated when actions are done on it.
+  It is evaluated when actions (like \texttt{getchunk}) are done on it.
   \begin{verbatim}
     im := calc('outimage','inimage1+inimage2')
     im.statistics(...);
@@ -577,19 +675,18 @@ and classes form the programmer interface.
   expression and each time it is used the expression is evaluated.
 
   Images created/opened in glish can be used with their glish name
-  in a LEL expression.
-  It is also possible to embed other glish variables and expressions in a LEL
-  command using the syntax \texttt{\$variable} and
+  in a LEL expression. Similarly a region created in glish with the
+  regionmanager can be used with its glish name.
+  \\It is also possible to embed other glish variables and expressions in
+  a LEL command using the syntax \texttt{\$variable} and
   \texttt{\$(expression)}. A variable can be a standard numeric scalar.
   An expression has to result in a numeric scalar.
   E.g. one can make a glish function like
   \begin{verbatim}
-    myclipfunc := function (image, clipvalue)
-    {
-      return expr('min($image, $clipvalue)');
-    }
+    img := image('inimage');
+    return expr('min($img[$someregion], $clipvalue)');
   \end{verbatim}
-  to return a transient image formed by the image clipped at the
+  to return a transient image formed by a region in an image clipped at the
   given clipvalue.
   \\The substitution mechanism is described in more detail in the
   \htmlref{\texttt{substitute}}{utility:substitute}
@@ -604,20 +701,18 @@ and classes form the programmer interface.
   The global variable should be deleted at the end of the function.
   The name can be made unique by using the function name as a suffix.
 
-  LEL cannot deal directly with regions yet. However, it is possible
-  to use a region of an image in a LEL expression. It can be
-  done by using the 
+  In glish applying a region to an image can also be done using the
   \htmlref{\texttt{subim}}{images:image.subim} function in the image module.
-  It forms an image from the given region in the
-  input image. As above, the constructed subimage can be used as
-  a normal image in a LEL expression. E.g.
+  It forms an image from the given region in the input image.
+  The constructed subimage can be used as a normal image in a LEL expression.
+  E.g.
   \begin{verbatim}
-    img := image('imimage');
+    img := image('inimage');
     subimg := img.subim(someregion, 'outname');
-    imgexpr := expr('$img + mean($subimg)');
+    return expr('min($subimg, $clipvalue)');
   \end{verbatim}
-  In the above example the mean of the subimage is added
-  to the full image.
+  has the same result. The only difference is that \texttt{subim}
+  creates another image on disk, which may not be desirable.
 
 \item
   The C++ interface consists of 2 parts.
@@ -666,32 +761,68 @@ and classes form the programmer interface.
   imout.copyData (expr);
 \end{verbatim}
 
-
   \end{enumerate}
 \end{itemize}
+
+\section{Examples}
+The following examples show some LEL commands.
+\begin{description}
+  \item[] \texttt{lat1+lat2}
+    \\adds 2 lattices
+  \item[] \texttt{mean(myimage:nomask)}
+    \\results in a scalar value giving the mean of the image.
+    No mask is used for the image, thus all pixels are used.
+    The scalar value can be used as a lattice. E.g. it can be used as
+    the source in an assignment to set all elements of another
+    lattice to the mean.
+  \item[] \texttt{complex(lat1,lat2)}
+    \\results in a complex lattice formed by \texttt{lat1} as the
+    real part and \texttt{lat2} as the imaginary part.
+  \item[] \texttt{min(lat1, 2*mean(lat1))}
+    \\results in a lattice where \texttt{lat1} is clipped at twice
+    its mean value.
+  \item[] \texttt{min(myimage, 2*mean(mymage[myregion]))}
+    \\results in an image where \texttt{myimage} is clipped at twice
+    the mean value of region \texttt{myregion} in the image..
+  \item[] \texttt{lat1[lat1$>$2*min(lat1)]}
+    \\results in a lattice with a mask. Only the pixels
+    greater than twice the minimum are valid.
+  \item[] \texttt{iif(lat1$<$mean(lat1),lat1*2,lat1/2)}
+    \\results in a lattice where the elements less than the mean
+    are doubled and the elements greater or equal to the mean are
+    divided by 2.
+\end{description}
+Here follows a sample glish session showing some of the LEL
+capabilities and how glish variables can be used in LEL.
+\begin{verbatim}
+duw01> glish
+- include 'image.g'
+- img:=image('tImageExpr2Gram_tmp.img')
+- img.shape()
+[10 10]
+- img.getchunk()
+[[1:10,]
+    0 10 20 30 40 50 60 70 80 90
+    1 11 21 31 41 51 61 71 81 91
+    2 12 22 32 42 52 62 72 82 92
+    3 13 23 33 43 53 63 73 83 93
+    4 14 24 34 44 54 64 74 84 94
+    5 15 25 35 45 55 65 75 85 95
+    6 16 26 36 46 56 66 76 86 96
+    7 17 27 37 47 57 67 77 87 97
+    8 18 28 38 48 58 68 78 88 98
+    9 19 29 39 49 59 69 79 89 99] 
+- reg:=drm.quarter();
+- exprimg := expr('$img[$region]')
+\end{verbatim}
 
 \section{Future developments}
 In the near or distant future LEL will be enhanced by adding new
 features and by doing optimizations.
 \begin{itemize}
-  \item Handle regions and slices. Possible examples are:
-    \begin{description}
-      \item[] \texttt{image[regionname]}
-        \\only use given region in image
-      \item[] \texttt{image[maskname]}
-        \\use given mask for image
-      \item[] \texttt{image[maskname][regionname]}
-        \\use given mask and region for image
-      \item[] \texttt{image[otherimage::maskname]}
-        \\use a mask from another image 
-      \item[] \texttt{image[1:10:2, 5:]}
-        \\define the section directly in pixel coordinates (with
+  \item Handle slices like \texttt{image[1:10:2, 5:]}
+        \\which defines the section directly in pixel coordinates (with
         stride 2 for the first axis).
-      \item[] \texttt{image[\$region]}
-        \\use the region defined as a glish variable.
-    \end{description}
-    Maybe it is possible to use operators like \texttt{\&} to
-    form region compounds like intersection.
   \item Do optimization by reordering the expression.
   \item Do optimization by recognizing common subexpressions.
 \end{itemize}
