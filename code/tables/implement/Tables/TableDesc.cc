@@ -1,5 +1,5 @@
 //# TableDesc.cc: Description of a table
-//# Copyright (C) 1994,1995,1996,1997
+//# Copyright (C) 1994,1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -359,43 +359,51 @@ void TableDesc::defineHypercolumn (const String& name,
     }
     uInt i, j;
     // Check if the coordinate columns exist and are numeric
-    // scalars or vectors.
+    // scalars or vectors. An empty coordinate name is allowed meaning
+    // that the axis has no coordinate.
     // Get the number of vectors.
-    uInt ncoordVec = 0;
+    uInt firstCoordSca = 0;
     uInt lastCoordVec = 0;
     for (i=0; i<ncoord; i++) {
-	if (!isColumn (coordColumnNames(i))) {
-	    throwHypercolumn (name, "coordColumnName " + coordColumnNames(i) +
-			            " does not exist");
-	}
-	const ColumnDesc& desc = columnDesc (coordColumnNames(i));
-	int dataType = desc.dataType();
-	if (dataType == TpString
-	||  dataType == TpArrayString
-	||  dataType == TpBool
-	||  dataType == TpArrayBool
-	||  dataType == TpTable
-	||  dataType == TpOther) {
-	    throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
-			            " is not numeric");
-	}
-	if (dataType == TpChar   ||  dataType == TpArrayChar
-	||  dataType == TpUChar  ||  dataType == TpArrayUChar
-	||  dataType == TpShort  ||  dataType == TpArrayShort
-	||  dataType == TpUShort ||  dataType == TpArrayUShort) {
-	    throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
-			            ": (u)Char and (u)Short not supported");
-	}
-	if (desc.isArray()) {
-	    if (desc.ndim() != 1) {
-		throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
-			                " is not a scalar or vector");
+	if (! coordColumnNames(i).empty()) {
+	    if (!isColumn (coordColumnNames(i))) {
+		throwHypercolumn (name, "coordColumnName " +
+				  coordColumnNames(i) + " does not exist");
 	    }
-	    ncoordVec++;
-	    lastCoordVec = i+1;
+	    const ColumnDesc& desc = columnDesc (coordColumnNames(i));
+	    int dataType = desc.dataType();
+	    if (dataType == TpString
+	    ||  dataType == TpArrayString
+	    ||  dataType == TpBool
+	    ||  dataType == TpArrayBool
+	    ||  dataType == TpTable
+	    ||  dataType == TpRecord
+	    ||  dataType == TpOther) {
+		throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
+				  " is not numeric");
+	    }
+	    if (dataType == TpChar   ||  dataType == TpArrayChar
+	    ||  dataType == TpUChar  ||  dataType == TpArrayUChar
+	    ||  dataType == TpShort  ||  dataType == TpArrayShort
+	    ||  dataType == TpUShort ||  dataType == TpArrayUShort) {
+		throwHypercolumn (name, "coordColumn " + coordColumnNames(i) +
+				  ": (u)Char and (u)Short not supported");
+	    }
+	    if (desc.isArray()) {
+		if (desc.ndim() != 1) {
+		    throwHypercolumn (name, "coordColumn " +
+				      coordColumnNames(i) +
+				      " is not a scalar or vector");
+		}
+		lastCoordVec = i+1;
+	    } else {
+		if (firstCoordSca == 0) {
+		    firstCoordSca = i+1;
+		}
+	    }
 	}
     }
-    if (lastCoordVec != ncoordVec) {
+    if (firstCoordSca > 0  &&  lastCoordVec > firstCoordSca) {
 	throwHypercolumn (name,
 			 "coordinate vectors have to describe the first axes");
     }
@@ -430,7 +438,8 @@ void TableDesc::defineHypercolumn (const String& name,
 		   " mismatches that of previous data columns");
 	}
     }
-    if (coordColumnNames.nelements() > 0  &&  ncoordVec != cellNdim) {
+    if ((firstCoordSca > 0  &&  firstCoordSca <= cellNdim)
+    ||  lastCoordVec > cellNdim) {
 	throwHypercolumn (name, "the dimensionality of the data columns"
 			  " mismatches nr of coordinate columns with a"
 			  " vector value");
@@ -470,10 +479,12 @@ void TableDesc::defineHypercolumn (const String& name,
     names(Slice(nr,idColumnNames.nelements())) = idColumnNames;
     nr += idColumnNames.nelements();
     for (i=0; i<nr; i++) {
-	for (j=i+1; j<nr; j++) {
-	    if (names(i) == names(j)) {
-		throwHypercolumn (name, "column name " + names(i) +
-				        " is multiply used");
+	if (! names(i).empty()) {
+	    for (j=i+1; j<nr; j++) {
+		if (names(i) == names(j)) {
+		    throwHypercolumn (name, "column name " + names(i) +
+				      " is multiply used");
+		}
 	    }
 	}
     }
