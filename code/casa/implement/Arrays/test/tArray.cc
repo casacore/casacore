@@ -54,7 +54,16 @@
 #include <aips/Arrays/Slice.h>
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/ArrayError.h>
-#include <aips/Functionals/Polynomial.h>
+#include <aips/Functionals/Functional.h>
+
+
+//# Define a simple functional class doing the square.
+class FuncSqr: public Functional<Float,Float>
+{
+public:
+  Float operator()(const Float& x) const { return x*x; }
+};
+
 
 Int zero(Int)
 {
@@ -113,8 +122,7 @@ void oldArrayTest()
 	{
 	    Vector<Float> vi(10);
 	    indgen(vi);
-	    Polynomial<Float> pi(2);
-	    pi.setCoefficient(2, 1.0f);
+	    FuncSqr pi;
 	    vi.apply(pi);
 	    for (uInt i=0; i < 10; i++) {
 	        AlwaysAssertExit(vi(i) == i*i);
