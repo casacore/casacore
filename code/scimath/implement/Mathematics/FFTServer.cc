@@ -241,7 +241,6 @@ fft(Array<T> & rResult, const Array<S> & cData) {
 
 template<class T, class S> void FFTServer<T,S>::
 fft(Array<S> & cValues, const Bool toFrequency) {
-  cout << "fft 5 " << endl;
   Int doFlip;
   doFlip = !phaseRotate((Matrix<S> &)cValues);
   if (doFlip) flip(cValues, True, False);
