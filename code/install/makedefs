@@ -290,7 +290,7 @@ COFLAGS  := -f
 # the use of module-, and application-directory makefiles only.  Do not
 # redefine it in the site makedefs.
 CPP       = $(C++) -E
-CPPSTD   := -D__cplusplus -DNATIVE_EXCP
+CPPSTD   := -D__cplusplus
 CPPDBG    = $(CPPSTD) -DAIPS_DEBUG -DAIPS_ARRAY_INDEX_CHECK
 CPPOPT    = $(CPPSTD)
 
