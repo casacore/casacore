@@ -1,5 +1,5 @@
 //# BaseTable.cc: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,18 +34,18 @@
 #include <aips/Tables/BaseColumn.h>
 #include <aips/Tables/ExprNode.h>
 #include <aips/Tables/BaseTabIter.h>
-#include <aips/Arrays/Vector.h>
-#include <aips/Containers/Block.h>
-#include <aips/Utilities/Sort.h>
-#include <aips/Arrays/ArrayMath.h>
-#include <aips/IO/AipsIO.h>
-#include <aips/Utilities/String.h>
 #include <aips/Tables/TableError.h>
 #include <aips/Arrays/Vector.h>
+#include <aips/Arrays/ArrayMath.h>
+#include <aips/Containers/Block.h>
+#include <aips/Utilities/Sort.h>
+#include <aips/Utilities/String.h>
 #include <aips/Utilities/GenSort.h>
+#include <aips/IO/AipsIO.h>
 #include <aips/OS/File.h>
 #include <aips/OS/RegularFile.h>
 #include <aips/OS/Directory.h>
+#include <aips/Utilities/Assert.h>
 
 
 // The constructor of the derived class should call unmarkForDelete
@@ -119,6 +119,11 @@ void BaseTable::unlink (BaseTable* btp)
     }
 }
 
+Bool BaseTable::isNull() const
+{
+  return False;
+}
+
 
 void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 {
@@ -189,6 +194,7 @@ Bool BaseTable::makeTableDir()
 
 Bool BaseTable::openedForWrite() const
 {
+    AlwaysAssert (!isNull(), AipsError);
     return (option_p==Table::Old || option_p==Table::Delete  ?  False : True);
 }
 
@@ -199,10 +205,12 @@ TableInfo BaseTable::tableInfo (const String& tableName)
 }
 void BaseTable::getTableInfo()
 {
+    AlwaysAssert (!isNull(), AipsError);
     info_p = TableInfo (name_p + "/table.info");
 }
 void BaseTable::flushTableInfo()
 {
+    AlwaysAssert (!isNull(), AipsError);
     // Create table directory if needed.
     Bool made = makeTableDir();
     info_p.flush (name_p + "/table.info");
@@ -243,6 +251,7 @@ void BaseTable::writeEnd (AipsIO& ios)
 
 void BaseTable::markForDelete (Bool callback, const String& oldName)
 {
+    AlwaysAssert (!isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = True;
     //# Do callback if changed from non-scratch to scratch or if name changed.
@@ -256,6 +265,7 @@ void BaseTable::markForDelete (Bool callback, const String& oldName)
 }
 void BaseTable::unmarkForDelete (Bool callback, const String& oldName)
 {
+    AlwaysAssert (!isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = False;
     //# Do callback if changed from scratch to non-scratch.
@@ -303,6 +313,7 @@ void BaseTable::prepareCopyRename (const String& newName,
 //# Rename a table.
 void BaseTable::rename (const String& newName, int tableOption)
 {
+    AlwaysAssert (!isNull(), AipsError);
     // The table can be renamed if:
     // - it is not created yet
     // - it exists and its file is writable
@@ -344,6 +355,7 @@ void BaseTable::renameSubTables (const String&, const String&)
 
 void BaseTable::copy (const String& newName, int tableOption) const
 {
+    AlwaysAssert (!isNull(), AipsError);
     // Do not copy when the new name is the same as the old name.
     if (newName != name_p) {
 	//# Throw an exception when directories do not exist yet.
@@ -370,6 +382,7 @@ void BaseTable::copy (const String& newName, int tableOption) const
 //# A column is writable if the table and column are writable.
 Bool BaseTable::isColumnWritable (const String& columnName) const
 {
+    AlwaysAssert (!isNull(), AipsError);
     if (! isWritable()) {
 	return False;                 // table is not writable
     }
@@ -377,6 +390,7 @@ Bool BaseTable::isColumnWritable (const String& columnName) const
 }
 Bool BaseTable::isColumnWritable (uInt columnIndex) const
 {
+    AlwaysAssert (!isNull(), AipsError);
     if (! isWritable()) {
 	return False;                 // table is not writable
     }
@@ -385,10 +399,12 @@ Bool BaseTable::isColumnWritable (uInt columnIndex) const
 
 Bool BaseTable::isColumnStored (const String& columnName) const
 {
+    AlwaysAssert (!isNull(), AipsError);
     return getColumn(columnName)->isStored();
 }
 Bool BaseTable::isColumnStored (uInt columnIndex) const
 {
+    AlwaysAssert (!isNull(), AipsError);
     return getColumn(columnIndex)->isStored();
 }
 
@@ -440,6 +456,7 @@ void BaseTable::renameColumn (const String&, const String&)
 //# Get a vector of row numbers.
 Vector<uInt> BaseTable::rowNumbers() const
 {
+    AlwaysAssert (!isNull(), AipsError);
     Vector<uInt> vec(nrow());
     indgen (vec, (uInt)0);                  // store 0,1,... in it
     return vec;
@@ -466,6 +483,7 @@ BaseTable* BaseTable::sort (const Block<String>& names,
 			    const PtrBlock<ObjCompareFunc*>& cmpFunc,
                             const Block<Int>& order, int option)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Check if the vectors have equal length.
     uInt nrkey = names.nelements();
     if (nrkey != order.nelements()) {
@@ -535,6 +553,7 @@ Bool BaseTable::adjustRownrs (uInt, Vector<uInt>&, Bool) const
 // Do the row selection.
 BaseTable* BaseTable::select (const TableExprNode& node)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# First check if the node is a Bool.
     if (node.dataType() != TpBool) {
 	throw (TableInvExpr ("", "expression result is not Bool"));
@@ -567,6 +586,7 @@ BaseTable* BaseTable::select (const TableExprNode& node)
 
 BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
 {
+    AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, rownrs);
     if (rtp == 0) {
 	throw (AllocError ("Table::operator() (rownrs)", 1));
@@ -576,6 +596,7 @@ BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
 
 BaseTable* BaseTable::select (const Block<Bool>& mask)
 {
+    AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<Bool>(mask));
     if (rtp == 0) {
 	throw (AllocError ("Table::operator() (mask)", 1));
@@ -585,6 +606,7 @@ BaseTable* BaseTable::select (const Block<Bool>& mask)
 
 BaseTable* BaseTable::project (const Block<String>& names)
 {
+    AlwaysAssert (!isNull(), AipsError);
     RefTable* rtp = new RefTable(this, Vector<String>(names));
     if (rtp == 0) {
 	throw (AllocError ("BaseTable::project", 1));
@@ -596,6 +618,7 @@ BaseTable* BaseTable::project (const Block<String>& names)
 //# And (intersect) 2 tables and return a new table.
 BaseTable* BaseTable::tabAnd (BaseTable* that)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
     logicCheck (that);
     //# Anding a table with the (possibly sorted) root table gives the table.
@@ -628,6 +651,7 @@ BaseTable* BaseTable::tabAnd (BaseTable* that)
 //# Or (union) 2 tables and return a new table.
 BaseTable* BaseTable::tabOr (BaseTable* that)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
     logicCheck (that);
     //# Oring a table with the (possibly sorted) root table gives the root.
@@ -658,6 +682,7 @@ BaseTable* BaseTable::tabOr (BaseTable* that)
 //# Subtract (difference) 2 tables and return a new table.
 BaseTable* BaseTable::tabSub (BaseTable* that)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
     logicCheck (that);
     //# Subtracting the root table from a table results in an empty table.
@@ -691,6 +716,7 @@ BaseTable* BaseTable::tabSub (BaseTable* that)
 //# Xor 2 tables and return a new table.
 BaseTable* BaseTable::tabXor (BaseTable* that)
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Check if both table have the same root.
     logicCheck (that);
     //# Xoring a table with the (possibly sorted) root table is negating.
@@ -723,6 +749,7 @@ BaseTable* BaseTable::tabXor (BaseTable* that)
 //# Negate a table (i.e. take all rows from the root not in table).
 BaseTable* BaseTable::tabNot()
 {
+    AlwaysAssert (!isNull(), AipsError);
     //# Negating the (possibly sorted) root results in an empty table,
     if (nrow() == root()->nrow()) {
 	return makeRefTable (True, 0);
@@ -755,6 +782,7 @@ void BaseTable::logicCheck (BaseTable* that)
 //# Sort them if not in row order.
 uInt BaseTable::logicRows (uInt*& inx, Bool& allsw)
 {
+    AlwaysAssert (!isNull(), AipsError);
     allsw = False;
     inx = RefTable::getStorage (*rowStorage());
     uInt nr = nrow();
@@ -775,6 +803,7 @@ BaseTableIterator* BaseTable::makeIterator (const Block<String>& names,
 				      const PtrBlock<ObjCompareFunc*>& cmpFunc,
 				      const Block<Int>& order, int option)
 {
+    AlwaysAssert (!isNull(), AipsError);
     if (names.nelements() != order.nelements()
     ||  names.nelements() != cmpFunc.nelements()) {
 	throw (TableInvOper ("TableIterator: Unequal block lengths"));

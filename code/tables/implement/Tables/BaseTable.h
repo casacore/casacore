@@ -1,5 +1,5 @@
 //# BaseTable.h: Abstract base class for tables
-//# Copyright (C) 1994,1995,1996,1997,1998,2000
+//# Copyright (C) 1994,1995,1996,1997,1998,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -105,6 +105,10 @@ public:
     // Unlink from a BaseTable.
     // Delete it if no more references.
     static void unlink (BaseTable*);
+
+    // Is the table a null table?
+    // By default it is not.
+    virtual Bool isNull() const;
 
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
