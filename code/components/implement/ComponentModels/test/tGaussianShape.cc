@@ -42,6 +42,7 @@
 #include <aips/Lattices/IPosition.h>
 #include <aips/Mathematics/Constants.h>
 #include <aips/Mathematics/Math.h>
+#include <aips/Mathematics/Complex.h>
 #include <aips/Measures/Euler.h>
 #include <aips/Measures/Quantum.h>
 #include <aips/Measures/MeasConvert.h>
@@ -70,7 +71,7 @@ int main() {
 			       Quantity(90, "deg") - Quantity(.5, "'"));
       MDirection sampleDir(sampleDirVal, MDirection::J2000);
       const RotMatrix rotDec(Euler(Quantity(0.5, "'").getValue("rad"), 2u));
-      
+   
       // This is not exact. To be exact I should do a integration over the
       // pixel area. Instead I set the pixel size to be something small enough!
       const Double peak = 4. * 3600 * pow(180.,2.) * C::ln2 * pow(C::pi,-3.0) *
@@ -320,7 +321,7 @@ int main() {
 	String type;
 	typeVal.get(type);
 	AlwaysAssert(type == "direction", AipsError);
-	
+     
 	AlwaysAssert(dirRec.exists("m0"), AipsError);
 	AlwaysAssert(dirRec.get("m0").type() == GlishValue::RECORD, 
 		     AipsError);
@@ -567,6 +568,66 @@ int main() {
       cout << "Passed the projection to an image test" << endl;
     }
     {
+      // Create a Gaussian component at the default direction
+      GaussianCompRep comp;
+      Vector<Double> flux(4);
+      flux(0) = 1;
+      flux(1) = 0.1;
+      flux(2) = 0.01;
+      flux(3) = 0.001;
+      comp.setFlux(Quantum<Vector<Double> >(flux,"Jy"));
+      Vector<Double> uvw(3, 0.0);
+      Double freq = C::c;
+      Vector<Double> realVis;
+      Vector<DComplex> vis;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac(), C::dbl_epsilon),AipsError);
+      comp.visibility(vis, uvw, freq);
+      Vector<DComplex> expectedVis(4);
+      for (uInt s = 0; s < 4; s++) {
+	expectedVis(s).re = flux(s);
+	expectedVis(s).im = 0.0;
+      }
+      AlwaysAssert(allNear(vis.ac(), expectedVis.ac(), C::dbl_epsilon),
+ 		   AipsError);
+      uvw(0) = (4.0*C::ln2/C::pi)/((1.0/60.0) * C::pi/180.0)/2.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      uvw(1) = uvw(0); uvw(0) = 0.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      uvw(2) = uvw(1); uvw(1) = 0.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac(), C::dbl_epsilon),
+		   AipsError);
+      const MVAngle compMajorAxis(Quantity(1, "'" ));
+      const MVAngle compMinorAxis(Quantity(30, "''" ));
+      MVAngle compPA(Quantity(0, "deg" ));
+      comp.setWidth(compMajorAxis, compMinorAxis, compPA);
+      uvw(1) = uvw(2); uvw(2) = 0.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      uvw(0) = uvw(1)*2; uvw(1) = 0.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      compPA = Quantity(30, "deg");
+      comp.setWidth(compMajorAxis, compMinorAxis, compPA);
+      uvw(1)  = .5 * uvw(0);
+      uvw(0)  *= C::sqrt3/2.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      freq *= 2.0;
+      uvw(0) /= -2.0;
+      uvw(1) /= -2.0;
+      comp.visibility(realVis, uvw, freq);
+      AlwaysAssert(allNear(realVis.ac(), flux.ac()/2.0, 2*C::dbl_epsilon),
+		   AipsError);
+      cout << "Passed the Fourier transform test" << endl;
       
     }
   }
