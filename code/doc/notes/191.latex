@@ -12,7 +12,7 @@
 {
         \clearpage
 	\vfill
-        %\eject
+        \eject
 	\subsection{#1}
         \vspace{0.15in}
         \small
@@ -23,8 +23,9 @@
 	\cline{1-5} 
         \multicolumn{1}{|c|}{Name}&\multicolumn{1}{|c|}{Format}&
         \multicolumn{1}{|c|}{Units}&\multicolumn{1}{|c|}{Measure}&
-        \multicolumn{1}{|c|}{Comments}\\ \cline{1-5}
-        %#2
+        \multicolumn{1}{|c|}{Comments}\\ 
+        \cline{1-5}
+        #2
         \hline
 	\end{tabular}
 }
@@ -197,7 +198,7 @@ unspecified. We need to gain some experience with specific
 implementations of these before specifying a general format.
 \end{itemize}
 
-\begin{tabular}
+
 \definetable{MAIN table: Coordinates, Data, pointers and Flags}
 {
 \defline{\bf Columns}
@@ -236,7 +237,7 @@ FLAG\_HISTORY & Bool (NUM\_CORR, NUM\_CHAN, NUM\_HIS) & & & History of
 flags (optional)\\
 FLAG\_ROW &    Bool  &  &   &  The row flag \\ 
 }
-\end{tabular}
+
 \begin{description}
 \item[Notes:]
 \item[DATA, FLOAT\_DATA] At least one of these columns should be
