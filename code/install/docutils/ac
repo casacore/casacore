@@ -111,7 +111,7 @@ then
     # If no changes found, unlock the files.
     echo 'ac: Starting glish ...'
     glish addchange.g
-    if [ ! -e changelog.entry-full ]
+    if [ ! -f changelog.entry-full ]
     then
 	echo "ac: No entry added to changelog";
 	\rm -f changelog changelog.*
