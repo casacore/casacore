@@ -1,5 +1,5 @@
 //# RetypedArrayEngine.cc: Virtual column engine to retype and reshape arrays
-//# Copyright (C) 1995,1996
+//# Copyright (C) 1995,1996,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -217,6 +217,19 @@ IPosition RetypedArrayEngine<S,T>::targetShape (uInt rownr,
     return elemShape.concatenate (sourceShape);
 }
 
+template<class S, class T>
+Slicer RetypedArrayEngine<S,T>::targetSlicer (const Slicer& sourceSlicer) const
+{
+    //# Determine the element dimensionality.
+    //# Make the Slicer such that all values of the element are used.
+    uInt ndim = shape_p.nelements();
+    return Slicer (IPosition(ndim,0).concatenate (sourceSlicer.start()),
+		   IPosition(ndim,Slicer::MimicSource).
+                                     concatenate (sourceSlicer.end()),
+		   IPosition(ndim,1).concatenate (sourceSlicer.stride()),
+		   Slicer::endIsLast);
+}
+
 
 template<class S, class T>
 IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
@@ -292,7 +305,7 @@ void RetypedArrayEngine<S,T>::getSlice (uInt rownr, const Slicer& slicer,
 					Array<S>& array)
 {
     Array<T> target;
-    roColumn().getSlice (rownr, slicer, target);
+    roColumn().getSlice (rownr, targetSlicer(slicer), target);
     copyOnGet (array, target);
 }
 template<class S, class T>
@@ -301,7 +314,7 @@ void RetypedArrayEngine<S,T>::putSlice (uInt rownr, const Slicer& slicer,
 {
     Array<T> target(targetShape (rownr, array.shape()));
     copyOnPut (array, target);
-    rwColumn().putSlice (rownr, slicer, target);
+    rwColumn().putSlice (rownr, targetSlicer(slicer), target);
 }
 
 template<class S, class T>
@@ -324,7 +337,7 @@ void RetypedArrayEngine<S,T>::getColumnSlice (const Slicer& slicer,
 					      Array<S>& array)
 {
     Array<T> target;
-    roColumn().getColumn (slicer, target);
+    roColumn().getColumn (targetSlicer(slicer), target);
     copyOnGet (array, target);
 }
 template<class S, class T>
@@ -333,5 +346,5 @@ void RetypedArrayEngine<S,T>::putColumnSlice (const Slicer& slicer,
 {
     Array<T> target(targetShape (0, array.shape()));
     copyOnPut (array, target);
-    rwColumn().putColumn (slicer, target);
+    rwColumn().putColumn (targetSlicer(slicer), target);
 }
