@@ -1,5 +1,5 @@
 //# MDirection.h: A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -101,7 +101,6 @@ template <class M> class ROScalarMeasColumn;
 //  <li>MDirection::MOON
 //  <li>MDirection::COMET  -- solar system body: no coordinates  attached,
 //			 only table
-
 //  <li>MDirection::DEFAULT = J2000
 // </ul>
 // <p>

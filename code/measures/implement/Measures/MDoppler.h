@@ -1,5 +1,5 @@
 //# MDoppler.h: A Measure: Doppler shift
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -86,7 +86,7 @@ template <class M> class ROScalarMeasColumn;
 // <li> MDoppler::GAMMA  	((1 + F<sup>2</sup>)/2F)	*
 // <li> MDoppler::RELATIVISTIC == BETA (== v/c)
 // <li> MDoppler::DEFAULT == RADIO
-// <ul>
+// </ul>
 // Note that the ones with an '*' have no real interpretation (although the
 // calculation will proceed) if given as
 // a velocity.<br>

@@ -1,5 +1,5 @@
 //# MRadialVelocity.h: A Measure: radial velocity
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -87,7 +87,7 @@ class MVDoppler;
 //  <li> MRadialVelocity::GALACTO -- Galacto centric (with rotation of 220 km/s
 //		in direction l,b = [90,0] deg.
 //  <li> MRadialVelocity::DEFAULT = LSRK
-// <ul>
+// </ul>
 // <p>
 // Conversion between the different types is done with the standard
 // <linkto class=MeasConvert>MeasConvert</linkto> class 
