@@ -90,11 +90,14 @@ Bool QuantumHolder::isArray() const {
 Bool QuantumHolder::isReal() const {
   return ToBool(hold_p.ptr() &&
 		(isQuantumDouble() ||
-		isQuantumFloat() ||
-		isQuantumInt() ||
-		isQuantumArrayDouble() ||
-		isQuantumArrayFloat() ||
-		isQuantumArrayInt()));
+		 isQuantumFloat() ||
+		 isQuantumInt() ||
+		 isQuantumArrayDouble() ||
+		 isQuantumArrayFloat() ||
+		 isQuantumArrayInt() ||
+		 isQuantumVectorDouble() ||
+		 isQuantumVectorFloat() ||
+		 isQuantumVectorInt()));
 }
 
 Bool QuantumHolder::isComplex() const {
@@ -102,7 +105,9 @@ Bool QuantumHolder::isComplex() const {
 		(isQuantumComplex() ||
 		 isQuantumDComplex() ||
 		 isQuantumArrayComplex() ||
-		 isQuantumArrayDComplex()));
+		 isQuantumArrayDComplex() ||
+		 isQuantumVectorComplex() ||
+		 isQuantumVectorDComplex()));
 }
 
 Bool QuantumHolder::isQuantity() const {
@@ -580,13 +585,21 @@ Bool QuantumHolder::toRecord(String &error, RecordInterface &out) const {
 
 void QuantumHolder::toReal(const uInt &tp) {
   Double d1;
-  if (isArray()) {
+  if (isVector()) {
     if (isQuantumVectorDouble()) {
       d1 = Double(((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorFloat()) {
       d1 = Double(((Quantum<Vector<Float> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorInt()) {
       d1 = Double(((Quantum<Vector<Int> > *)(hold_p.ptr()))->getValue()(0));
+    };
+  } else if (isArray()) {
+    if (isQuantumArrayDouble()) {
+      d1 = Double(((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayFloat()) {
+      d1 = Double(((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayInt()) {
+      d1 = Double(((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue()(0));
     };
   } else {
     if (isQuantumDouble()) {
@@ -609,7 +622,7 @@ void QuantumHolder::toReal(const uInt &tp) {
 
 void QuantumHolder::toComplex(const uInt &tp) {
   DComplex d1;
-  if (isArray()) {
+  if (isVector()) {
     if (isQuantumVectorDouble()) {
       d1 = DComplex(((Quantum<Vector<Double> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorFloat()) {
@@ -620,6 +633,18 @@ void QuantumHolder::toComplex(const uInt &tp) {
       d1 = (((Quantum<Vector<Complex> > *)(hold_p.ptr()))->getValue()(0));
     } else if (isQuantumVectorDComplex()) {
       d1 = (((Quantum<Vector<DComplex> > *)(hold_p.ptr()))->getValue()(0));
+    };
+  } else if (isArray()) {
+    if (isQuantumArrayDouble()) {
+      d1 = DComplex(((Quantum<Array<Double> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayFloat()) {
+      d1 = DComplex(((Quantum<Array<Float> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayInt()) {
+      d1 = DComplex(((Quantum<Array<Int> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayComplex()) {
+      d1 = (((Quantum<Array<Complex> > *)(hold_p.ptr()))->getValue()(0));
+    } else if (isQuantumArrayDComplex()) {
+      d1 = (((Quantum<Array<DComplex> > *)(hold_p.ptr()))->getValue()(0));
     };
   } else {
     if (isQuantumDouble()) {
