@@ -1,5 +1,5 @@
 //# ImageHistograms.cc: generate histograms from an image
-//# Copyright (C) 1996,1997,1998,1999,2000
+//# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -127,16 +127,16 @@ String ImageHistograms<T>::writeCoordinates(const IPosition& histPos) const
       IPosition blc(pInImage_p->ndim(),0);
       IPosition trc(pInImage_p->shape()-1);
 //
+      CoordinateSystem cSys = pInImage_p->coordinates();
       for (Int j=0; j<nDisplayAxes; j++) {
-         const Int worldAxis =
-           pInImage_p->coordinates().pixelAxisToWorldAxis(displayAxes_p(j));
-         const String name = pInImage_p->coordinates().worldAxisNames()(worldAxis);
+         const Int worldAxis =cSys.pixelAxisToWorldAxis(displayAxes_p(j));
+         const String name = cSys.worldAxisNames()(worldAxis);
 
 // Get pixel coordinate relative to current lattice
 
          pixels(0) = Double(locHistInLattice(histPos,False)(j+1));
 //
-         if (ImageUtilities::pixToWorld (sWorld, pInImage_p->coordinates(),
+         if (ImageUtilities::pixToWorld (sWorld, cSys,
                                          displayAxes_p(j), cursorAxes_p,
                                          blc, trc, pixels, -1)) {
             oss <<  ImageUtilities::shortAxisName(name)
