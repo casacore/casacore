@@ -2846,7 +2846,7 @@ const RotMatrix &MeasTable::posToRect() {
     static RotMatrix rot;
     if (needInit) {
         needInit = False;
-	Euler ang(+84381.4091 * C::arcsec, 1, -0.0930 * C::arcsec, 0);
+	Euler ang(+84381.4091 * C::arcsec, 1, -0.0930 * C::arcsec, 3);
 	rot = RotMatrix(ang);
     }
     return rot;
@@ -2859,7 +2859,7 @@ const RotMatrix &MeasTable::rectToPos() {
         needInit = False;
 	rot = MeasTable::posToRect();
 	rot.transpose();
-    }
+    };
     return rot;
 }
 
@@ -2868,9 +2868,9 @@ const RotMatrix &MeasTable::galToSupergal() {
     static RotMatrix rot;
     if (needInit) {
         needInit = False;
-	Euler ang(0.0, 1, 0.0, 0);
+	Euler ang( -90*C::degree, 3, -85*C::degree, 2, -45*C::degree, 3);
 	rot = RotMatrix(ang);
-    }
+    };
     return rot;
 }
 
