@@ -6487,3 +6487,4 @@
 18 564 src mv trial/implement/MeasurementComponents/VisJonesMBuf.cc trial/implement/CalTables/VisJonesMBuf.cc
 18 578 src mv trial/implement/MeasurementComponents/BJonesMCol.h trial/implement/CalTables/BJonesMCol.h
 18 578 src mv trial/implement/MeasurementComponents/BJonesMCol.cc trial/implement/CalTables/BJonesMCol.cc
+18 578 src mv trial/implement/MeasurementComponents/GJonesMCol.h trial/implement/CalTables/GJonesMCol.h
