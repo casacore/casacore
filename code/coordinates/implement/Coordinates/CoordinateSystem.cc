@@ -1293,7 +1293,8 @@ Bool CoordinateSystem::save(RecordInterface &container,
     }
 
     uInt nc = coordinates_p.nelements();
-    for (uInt i=0; i<nc; i++)
+    uInt i;
+    for (i=0; i<nc; i++)
     {
 	// Write eaach string into a field it's type plus coordinate
 	// number, e.g. direction0
@@ -1323,6 +1324,37 @@ Bool CoordinateSystem::save(RecordInterface &container,
     // Write the obsinfo
     String error;
     Bool ok = obsinfo_p.toRecord(error, subrec);
+
+    // Write some of the info out again in a different order in a 
+    // more convenient format for use.  This is used in regionmanager.g
+    // for making of region objects.  It is not required when restoring
+    // the CS from the record.  These things are written out
+    // in *pixel axis* order
+
+    Vector<String> axisUnits(nPixelAxes());
+    Vector<String> axisNames(nPixelAxes());
+    Vector<String> coordinateTypes(nPixelAxes());
+    Int c, axisInCoordinate, worldAxis;
+    for (i=0; i<nPixelAxes(); i++) {
+       findPixelAxis(c, axisInCoordinate, i);
+       coordinateTypes(i) = coordinate(c).showType();
+#
+       worldAxis = pixelAxisToWorldAxis(i);
+       if (worldAxis != -1) {
+          axisUnits(i) = worldAxisUnits()(worldAxis);
+          axisNames(i) = worldAxisNames()(worldAxis);
+       } else {
+          axisUnits(i) = "removed";
+          axisNames(i) = "removed";
+       }
+   }
+   subrec.define("nPixelAxes",Int(nPixelAxes()));
+   subrec.define("nWorldAxes",Int(nWorldAxes()));
+   subrec.define("axisUnits", axisUnits);
+   subrec.define("axisNames", axisNames);
+   subrec.define("coordinateTypes", coordinateTypes);
+
+#
 
     if (ok) {
 	container.defineRecord(fieldName, subrec);
