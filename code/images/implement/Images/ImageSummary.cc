@@ -120,102 +120,89 @@ IPosition ImageSummary<T>::tileShape () const
 
 
 
-typedef Vector<String> gpp_VS;
+//typedef Vector<String> gpp_VS;
 template <class T> 
-gpp_VS ImageSummary<T>::axisNames () const
-// 
-// Get axis names for the pixel axes
-//
+//gpp_VS ImageSummary<T>::axisNames () const
+Vector<String> ImageSummary<T>::axisNames (Bool pixelOrder) const
 {
-   Vector<String> names(cSys_p.nPixelAxes());
-   Vector<String> worldNames(cSys_p.worldAxisNames());
-
+   Vector<String> tmp(cSys_p.worldAxisNames());
+   if (!pixelOrder) return tmp.copy();
+//
+// Every pixel axs must have a world axis, so don't check for removal
+//
+   Vector<String> tmp2(cSys_p.nPixelAxes());
    for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
       Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
-      if (worldAxis != -1) {
-         names(pixelAxis) = worldNames(worldAxis);
-      } else {
-         names(pixelAxis) = "removed";
-      }
+      tmp2(pixelAxis) = tmp(worldAxis); 
    }
-   return names;
+   return tmp2;
 }
 
 
 
 
 template <class T> 
-Vector<Double> ImageSummary<T>::referencePixels () const
+Vector<Double> ImageSummary<T>::referencePixels (Bool oneRel) const
 // 
 // Get reference pixels for the pixel axes
 //
 {
-   return cSys_p.referencePixel()+Vector<Double>(cSys_p.nPixelAxes(),1.0);
+   Vector<Double> off(cSys_p.nPixelAxes(),0.0);
+   if (oneRel) off.set(1.0);
+   return cSys_p.referencePixel().copy()+off;
 }
 
 
 template <class T> 
-Vector<Double> ImageSummary<T>::referenceValues () const
-// 
-// Get reference values for the pixel axes
-//
+Vector<Double> ImageSummary<T>::referenceValues (Bool pixelOrder) const
 {
-   Vector<Double> refVals(cSys_p.nPixelAxes());
-   Vector<Double> refValues(cSys_p.referenceValue());
-// 
+   Vector<Double> tmp(cSys_p.referenceValue());
+   if (!pixelOrder) return tmp.copy();
+//
+// Every pixel axs must have a world axis, so don't check for removal
+//
+   Vector<Double> tmp2(cSys_p.nPixelAxes());
    for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
       Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
-      if (worldAxis != -1) {
-         refVals(pixelAxis) = refValues(worldAxis);
-      } else {
-         refVals(pixelAxis) = ValType::undefDouble();
-      }
+      tmp2(pixelAxis) = tmp(worldAxis); 
    }
-   return refVals;
+   return tmp2;
 }
 
 
 template <class T> 
-Vector<Double> ImageSummary<T>::axisIncrements () const
-// 
-// Get axis increments for the pixel axes
+Vector<Double> ImageSummary<T>::axisIncrements (Bool pixelOrder) const
+{ 
+   Vector<Double> tmp(cSys_p.increment());
+   if (!pixelOrder) return tmp.copy();
 //
-{
-   Vector<Double> incs(cSys_p.nPixelAxes());
-   Vector<Double> worldIncs(cSys_p.increment());
-
+// Every pixel axs must have a world axis, so don't check for removal
+//
+   Vector<Double> tmp2(cSys_p.nPixelAxes());
    for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
       Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
-      if (worldAxis != -1) {
-         incs(pixelAxis) = worldIncs(worldAxis);
-      } else {
-         incs(pixelAxis) = ValType::undefDouble();
-      }
+      tmp2(pixelAxis) = tmp(worldAxis);
    }
-   return incs;
+   return tmp2;
 }
+
+
 
 template <class T> 
-Vector<String> ImageSummary<T>::axisUnits () const
-// 
-// Get axis units for the pixel axes
+Vector<String> ImageSummary<T>::axisUnits (Bool pixelOrder) const
+{ 
+   Vector<String> tmp(cSys_p.worldAxisUnits());
+   if (!pixelOrder) return tmp.copy();
 //
-{
-   Vector<String> units(cSys_p.nPixelAxes());
-   Vector<String> worldUnits(cSys_p.worldAxisUnits());
-
+// Every pixel axs must have a world axis, so don't check for removal
+//
+   Vector<String> tmp2(cSys_p.nPixelAxes());
    for (uInt pixelAxis=0; pixelAxis<cSys_p.nPixelAxes(); pixelAxis++) {
       Int worldAxis = cSys_p.pixelAxisToWorldAxis(pixelAxis);
-      if (worldAxis != -1) {
-         units(pixelAxis) = worldUnits(worldAxis);
-      } else {
-         units(pixelAxis) = "removed";
-      }
+      tmp2(pixelAxis) = tmp(worldAxis);
    }
-   return units;
+   return tmp2;
 }
-
-
 
 template <class T> 
 Unit ImageSummary<T>::units () const

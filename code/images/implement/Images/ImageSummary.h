@@ -137,20 +137,20 @@ public:
 // Retrieve tile shape with which image is stored on disk
    IPosition tileShape () const;
 
-// Retrieve axis names in pixel axis order.
-   Vector<String> axisNames () const;
+// Retrieve axis names in pixel or world axis order.
+   Vector<String> axisNames (Bool pixelOrder=True) const;
 
-// Retrieve reference pixels (note 1 relative)
-   Vector<Double> referencePixels () const;
+// Retrieve reference pixels (0 or 1 rel)
+   Vector<Double> referencePixels (Bool oneRel=True) const;
 
-// Retrieve reference values in pixel axis order. 
-   Vector<Double> referenceValues () const;
+// Retrieve reference values in pixel or world axis order. 
+   Vector<Double> referenceValues (Bool pixelOrder=True) const;
 
-// Retrieve axis increments in pixel axis order.  
-   Vector<Double> axisIncrements () const;
+// Retrieve axis increments in pixel or world axis order.  
+   Vector<Double> axisIncrements (Bool pixelOrder=True) const;
 
-// Retrieve axis units in pixel axis order.
-   Vector<String> axisUnits() const;
+// Retrieve axis units in pixel or world axis order.
+   Vector<String> axisUnits(Bool pixelOrder=True) const;
 
 // Retrieve image units
    Unit units () const;
