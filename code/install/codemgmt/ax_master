@@ -3256,3 +3256,9 @@
 13 166 src rm trial/implement/ComponentModels/test/tPointCompRep.cc
 13 166 src rm trial/implement/ComponentModels/test/tPointCompRep.exec
 13 166 src rm trial/implement/ComponentModels/test/tComponentShape.cc
+13 168 src rm trial/implement/ComponentModels/test/dComponentList.exec
+13 168 src rm trial/implement/ComponentModels/test/dComponentList1.exec
+13 168 src rm trial/implement/ComponentModels/test/tComponentList.exec
+13 168 src rm trial/implement/ComponentModels/test/tGaussianCompRep.exec
+13 168 src rm trial/implement/ComponentModels/test/tGaussianComponent.exec
+13 168 src rm trial/implement/ComponentModels/test/tPointComponent.exec
