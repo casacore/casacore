@@ -21,28 +21,4 @@ strided slicer: Axis Lengths: [3, 2]  (NB: Matrix in Row/Column order)
  1, 1
  1, 1]
 
-lower-left of circle: Axis Lengths: [6, 6]  (NB: Matrix in Row/Column order)
-[0, 0, 0, 1, 1, 1
- 0, 1, 1, 1, 1, 1
- 0, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1]
-
-strided (2,1) lower-left: Axis Lengths: [3, 5]  (NB: Matrix in Row/Column order)
-[0, 0, 0, 1, 1
- 0, 1, 1, 1, 1
- 1, 1, 1, 1, 1]
-
-circle of circle: Axis Lengths: [9, 9]  (NB: Matrix in Row/Column order)
-[0, 0, 0, 1, 1, 1, 1, 0, 0
- 0, 1, 1, 1, 1, 1, 1, 1, 0
- 0, 1, 1, 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1, 1, 1, 1
- 1, 1, 1, 1, 1, 1, 1, 1, 1
- 0, 1, 1, 1, 1, 1, 1, 1, 0
- 0, 0, 1, 1, 1, 1, 1, 0, 0]
-
 OK
