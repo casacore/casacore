@@ -242,8 +242,7 @@ ok() const {
   }
   // Check the Navigator cursor and cached Array are the same shape
   // There is a special case if the cursor has only one element
-  if ((theCurPtr->ndim() == 1) && 
-      (theCurPtr->shape()(0) == 1)) {
+  if ((theCurPtr->shape().product() == 1)) {
     if (theNavPtr->cursorShape().product() != 1) {
       LogIO ROlogErr(LogOrigin("RO_PagedArrIter<T>", "ok()"));
       ROlogErr << LogIO::SEVERE 
@@ -325,8 +324,7 @@ allocateCursor() {
   IPosition realShape(theNavPtr->cursorShape().nonDegenerate());
   switch (realShape.nelements()) {
   case 0:
-    // This seems to work but I bet there is a problem lurking here.
-    theCurPtr = new Array<T>(theNavPtr->cursorShape());
+    theCurPtr = new Vector<T>(1);
     break;
   case 1:
     theCurPtr = new Vector<T>(realShape);
@@ -592,8 +590,7 @@ ok() const {
   }
   // Check the Navigator cursor and cached Array are the same shape
   // There is a special case if the cursor has only one element
-  if ((theCurPtr->ndim() == 1) && 
-      (theCurPtr->shape()(0) == 1)) {
+  if ((theCurPtr->shape().product() == 1)) {
     if (theNavPtr->cursorShape().product() != 1) {
       LogIO logErr(LogOrigin("PagedArrIter<T>", "ok()"));
       logErr << LogIO::SEVERE 
@@ -666,8 +663,7 @@ allocateCursor() {
   IPosition realShape(theNavPtr->cursorShape().nonDegenerate());
   switch (realShape.nelements()) {
   case 0:
-    // This seems to work but I bet there is a problem lurking here.
-    theCurPtr = new Array<T>(theNavPtr->cursorShape());
+    theCurPtr = new Vector<T>(1);
     break;
   case 1:
     theCurPtr = new Vector<T>(realShape);
