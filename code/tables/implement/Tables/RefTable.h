@@ -36,13 +36,12 @@
 #include <aips/aips.h>
 #include <aips/Tables/BaseTable.h>
 #include <aips/Utilities/String.h>
-#include <aips/Containers/Block.h>
+#include <aips/Arrays/Vector.h>
 #include <aips/Containers/SimOrdMap.h>
 
 //# Forward Declarations
 class RefColumn;
 class AipsIO;
-template<class T> class Vector;
 
 
 // <summary>
@@ -75,7 +74,7 @@ template<class T> class Vector;
 // handled by RefColumn which directs them to the referenced column
 // while (if needed) converting the given row number to the row number
 // in the referenced table. For that purpose RefTable maintains a
-// Block of the row numbers in the referenced table.
+// Vector of the row numbers in the referenced table.
 //
 // The RefTable constructor acts in a way that it will always reference
 // the original table. This means that if a select is done on a RefTable,
@@ -89,9 +88,9 @@ template<class T> class Vector;
 
 // <todo asof="$DATE:$">
 //# A List of bugs, limitations, extensions or planned refinements.
-//   <li> Maybe not allocating the row number block for a projection.
+//   <li> Maybe not allocating the row number vector for a projection.
 //          This saves space and time, but each rownr conversion will
-//          take a bit more time because it has to test if there is a block.
+//          take a bit more time because it has to test if there is a vector.
 //   <li> Maybe maintain a Vector<String> telling on which columns
 //          the table is ordered. This may speed up selection, but
 //          it is hard to check if the order is changed by a put.
@@ -114,10 +113,10 @@ public:
     // into account. Thus if a select is done on a projected table,
     // the resulting RefTable will have the same projection.
     // <group>
-    // Construct a RefTable with an empty row number block.
+    // Construct a RefTable with an empty row number vector.
     // rowOrder=True indicates that the order of the rows will not
     // be disturbed (as will be the case for a sort).
-    // A row number block of the given size is initially allocated.
+    // A row number vector of the given size is initially allocated.
     // Later this RefTable will be filled in by the select, etc..
     RefTable (BaseTable*, Bool rowOrder, uInt initialNrrow);
 
@@ -125,13 +124,13 @@ public:
     RefTable (BaseTable*, const Vector<uInt>& rowNumbers);
 
     // Create a reference table object out of a mask.
-    // The row number block will consist of the rows for which the
+    // The row number vector will consist of the rows for which the
     // mask has a True value.
     // The length of the mask must be the number of rows in the BaseTable.
     RefTable (BaseTable*, const Vector<Bool>& rowMask);
 
     // Create a reference table object via projection (i.e. column selection).
-    // The row number block is a copy of the given table.
+    // The row number vector is a copy of the given table.
     RefTable (BaseTable*, const Vector<String>& columnNames);
     // </group>
 
@@ -248,17 +247,22 @@ public:
     // Tell if the table is in row order.
     Bool rowOrder() const;
 
-    // Get address of row numbers.
+    // Get row number vector.
     // This is used by the BaseTable logic and sort routines.
-    uInt* rowStorage();
+    Vector<uInt>* rowStorage();
 
     // Add a rownr to reference table.
     void addRownr (uInt rownr);
 
+    // Set the exact number of rows in the table.
+    // An exception is thrown if more than current nrrow.
+    void setNrrow (uInt nrrow);
+
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in row order.
-    Bool adjustRownrs (uInt nrrow, uInt* rownrs, Bool determineOrder) const;
+    Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
+		       Bool determineOrder) const;
 
     // And, or, subtract or xor the row numbers of 2 tables.
     void refAnd (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
@@ -267,10 +271,15 @@ public:
     void refXor (uInt nr1, const uInt* rows1, uInt nr2, const uInt* rows2);
     void refNot (uInt nr1, const uInt* rows1, uInt nrmain);
 
+    // Get the internal pointer in a rowStorage vector.
+    // It checks whether no copy is made of the data.
+    static uInt* getStorage (Vector<uInt>& rownrs);
+
 private:
     BaseTable*   baseTabPtr_p;                 //# pointer to parent table
     Bool         rowOrd_p;                     //# True = table is in row order
-    Block<uInt>  rows_p;                       //# row numbers in parent table
+    Vector<uInt> rowStorage_p;                 //# row numbers in parent table
+    uInt*        rows_p;                       //# Pointer to rowStorage_p
     SimpleOrderedMap<String,String> nameMap_p; //# map to column name in parent
     SimpleOrderedMap<String,RefColumn*> colMap_p; //# map name to column
     Bool         changed_p;                 //# True = changed since last write

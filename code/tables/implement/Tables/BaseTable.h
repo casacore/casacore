@@ -324,7 +324,7 @@ public:
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
 				     const PtrBlock<ObjCompareFunc*>&,
-				     const Block<Int>& orders);
+				     const Block<Int>& orders, int option);
 
     // Add a column to the table.
     // The default implementation throws an "invalid operation" exception.
@@ -355,7 +355,7 @@ public:
     // It needs to be implemented for RefTable only.
     virtual Vector<uInt> rowNumbers() const;
 
-    // Get pointer to root table (ie. parent of a RefTable).
+    // Get pointer to root table (i.e. parent of a RefTable).
     // Default it is this table.
     // It is meant for the reference tables after a select or sort which
     // can then still name their parent as the root.
@@ -369,12 +369,12 @@ public:
 
     // By the default the table cannot return the storage of rownrs.
     // That can only be done by a RefTable, where it is implemented.
-    virtual uInt* rowStorage();
+    virtual Vector<uInt>* rowStorage();
 
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
-    // Optionally it also determines if the resulting rows or in order.
-    virtual Bool adjustRownrs (uInt nrrow, uInt* rownrs,
+    // Optionally it also determines if the resulting rows are in order.
+    virtual Bool adjustRownrs (uInt nrrow, Vector<uInt>& rownrs,
 			       Bool determineOrder) const;
 
     // Do the actual sort.
