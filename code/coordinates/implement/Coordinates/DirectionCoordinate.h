@@ -228,12 +228,19 @@ public:
     // 
     // Note that the units are radians initially. You can change it to degrees
     // or something else with the <src>setWorldAxisUnits</src> method later if you want.
+    // 
+    // longPole and latPole are defined by Calabretta and Greisen (these
+    // are reference points not at the native pole).  In general
+    // you can leave these out and the default values will cause them
+    // to be computed appropriately.  However, when reading from FITS
+    // the LONPOLE and LATPOLE keywords are passed along here.
     DirectionCoordinate(MDirection::Types directionType,
  			const Projection &projection,
 			Double refLong, Double refLat,
 			Double incLong, Double incLat,
 			const Matrix<Double> &xform,
- 			Double refX, Double refY);
+ 			Double refX, Double refY,
+                        Double longPole=999.0, Double latPole=999.0);
 
     // Create DirectionCoordinate with Quantum-based interface. 
     // Parameters are the same as above.
@@ -241,6 +248,14 @@ public:
     // of the DirectionCoordinate will be converted radians.
     // You can change it to degrees or something else with the 
     // setWorldAxisUnits method later if you want.
+    //
+    // longPole and latPole are defined by Calabretta and Greisen (these
+    // are reference points not at the native pole).  In general
+    // you can leave these out and the default values will cause them
+    // to be computed appropriately.  However, when reading from FITS
+    // the LONPOLE and LATPOLE keywords are passed along here.
+    // To get the default the 999.0 value should be used (units
+    // are irrelevant in that case)
     DirectionCoordinate(MDirection::Types directionType,
                         const Projection &projection,
                         const Quantum<Double>& refLong, 
@@ -248,7 +263,9 @@ public:
                         const Quantum<Double>& incLong, 
                         const Quantum<Double>& incLat,
                         const Matrix<Double> &xform,
-                        Double refX, Double refY);
+                        Double refX, Double refY,
+                        const Quantum<Double>& longPole=Quantum<Double>(999.0,Unit("rad")),
+                        const Quantum<Double>& latPole=Quantum<Double>(999.0,Unit("rad")));
 
     // Copy constructor (copy semantics)
     DirectionCoordinate(const DirectionCoordinate &other);
@@ -448,6 +465,10 @@ public:
     // is responsible for calling delete.
     virtual Coordinate *clone() const;
 
+    // Fish out the ref and non-native poles (refLong, refLat, longPole, latPole)
+    // Not for general use.  Units are degrees.
+    Vector<Double> longLatPoles() const;
+
 private:
     // Direction type
     MDirection::Types type_p;
@@ -521,7 +542,8 @@ private:
     void makeDirectionCoordinate(Double refLong, Double refLat,
                                  Double incLong, Double incLat,
                                  const Matrix<Double> &xform,
-                                 Double refX, Double refY);
+                                 Double refX, Double refY, 
+                                 Double longPole, Double latPole);
 
     void make_celprm_and_prjprm(Bool& canDoToMix, String& canDoToMixErrorMsg,
                                 celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,

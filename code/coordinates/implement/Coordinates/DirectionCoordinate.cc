@@ -67,7 +67,7 @@ DirectionCoordinate::DirectionCoordinate()
     xform = 0.0;
     xform.diagonal() = 1.0;
     makeDirectionCoordinate (0.0, 0.0, 1.0, 1.0,
-                             xform, 0.0, 0.0);
+                             xform, 0.0, 0.0, 999.0, 999.0);
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
@@ -75,7 +75,8 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          Double refLong, Double refLat,
                                          Double incLong, Double incLat,
                                          const Matrix<Double> &xform,
-                                         Double refX, Double refY)
+                                         Double refX, Double refY,
+                                         Double longPole, Double latPole)
 : Coordinate(),
   type_p(directionType), 
   projection_p(projection),
@@ -89,7 +90,7 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
   canDoToMixErrorMsg_p("")
 {
     makeDirectionCoordinate (refLong, refLat, incLong, incLat,
-                             xform, refX, refY);
+                             xform, refX, refY, longPole, latPole);
 }
 
 
@@ -100,7 +101,9 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Quantum<Double>& incLong,
                                          const Quantum<Double>& incLat,
                                          const Matrix<Double> &xform,
-                                         Double refX, Double refY)
+                                         Double refX, Double refY,
+                                         const Quantum<Double>& longPole,
+                                         const Quantum<Double>& latPole)
 : Coordinate(),
   type_p(directionType), 
   projection_p(projection),
@@ -133,7 +136,24 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
    Double dlon = incLong.getValue(rad);
    Double dlat = incLat.getValue(rad);
 //
-   makeDirectionCoordinate (lon, lat, dlon, dlat, xform, refX, refY);
+   Double dLongPole = longPole.getValue();
+   Double dLatPole = latPole.getValue();
+//
+// Any value >=999 is taken as the default, regardless of units
+//
+   if (dLongPole < 999.0) {                 
+      dLongPole = longPole.getValue(rad);
+   } else {
+      dLongPole = 999.0;
+   }
+   if (dLatPole < 999.0) {
+      dLatPole = latPole.getValue(rad);
+   } else {
+      dLatPole = 999.0;
+   }
+//
+   makeDirectionCoordinate (lon, lat, dlon, dlat, xform, refX, refY,
+                            dLongPole, dLatPole);
 }
 
 
@@ -975,22 +995,25 @@ Bool DirectionCoordinate::near(const Coordinate& other,
      
 // WCS structures.  
 
-   if (celprm_p->flag != dCoord.celprm_p->flag) {
-      set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
-      return False;
-   }
+// The flag does not really indicate permanent state
+//
+//   if (celprm_p->flag != dCoord.celprm_p->flag) {
+//      set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+//      return False;
+//   }
 
 // Items 0 and 2 are longitudes, items 1 and 3 are latitiudes
 // So treat them as axes 0 and 1 ???
 
    for (uInt i=0; i<2; i++) {
+
      if (!exclude(i)) {
         if (!::near(celprm_p->ref[i],dCoord.celprm_p->ref[i],tol)) {
-           set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+           set_error("The DirectionCoordinates have differing WCS spherical coordinate longitudes");
            return False;
         }
         if (!::near(celprm_p->ref[i+2],dCoord.celprm_p->ref[i+2],tol)) {
-           set_error("The DirectionCoordinates have differing WCS spherical coordinate structures");
+           set_error("The DirectionCoordinates have differing WCS spherical coordinate latitudes");
            return False;
         }
      }
@@ -1069,7 +1092,7 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
 
 Bool DirectionCoordinate::save(RecordInterface &container,
-			    const String &fieldName) const
+                               const String &fieldName) const
 {
     Bool ok = ToBool(!container.isDefined(fieldName));
     if (ok) {
@@ -1086,7 +1109,10 @@ Bool DirectionCoordinate::save(RecordInterface &container,
 	subrec.define("pc", linearTransform());
 	subrec.define("axes", worldAxisNames());
 	subrec.define("units", worldAxisUnits());
-
+//
+        subrec.define("longpole", celprm_p->ref[2]);   // Always degrees
+        subrec.define("latpole", celprm_p->ref[3]);    // Always degrees
+//
 	container.defineRecord(fieldName, subrec);
     }
     return ok;
@@ -1124,39 +1150,48 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     Vector<Double> projparms;
     subrec.get("projection_parameters", projparms);
     Projection proj(Projection::type(projname), projparms);
-
+//
     if (!subrec.isDefined("crval")) {
 	return 0;
     }
     Vector<Double> crval;
     subrec.get("crval", crval);
-
+//
     if (!subrec.isDefined("crpix")) {
 	return 0;
     }
     Vector<Double> crpix;
     subrec.get("crpix", crpix);
-
+//
     if (!subrec.isDefined("cdelt")) {
 	return 0;
     }
     Vector<Double> cdelt;
     subrec.get("cdelt", cdelt);
-
+//
     if (!subrec.isDefined("pc")) {
 	return 0;
     }
     Matrix<Double> pc;
     subrec.get("pc", pc);
-
-    
+//
+    Double longPole, latPole;
+    longPole = latPole = 999.0;            // Optional
+    if (subrec.isDefined("longpole")) {    
+       subrec.get("longpole", longPole);   // Always degrees
+       longPole *= C::pi / 180.0;
+    }
+    if (subrec.isDefined("latpole")) {
+       subrec.get("latpole", latPole);     // Always degrees
+       latPole *= C::pi / 180.0;
+    }
+//    
     if (!subrec.isDefined("axes")) {
 	return 0;
     }
     Vector<String> axes;
     subrec.get("axes", axes);
-
-    
+//
     if (!subrec.isDefined("units")) {
 	return 0;
     }
@@ -1172,14 +1207,14 @@ DirectionCoordinate *DirectionCoordinate::restore(const RecordInterface &contain
     Quantum<Double> refLat(crval(1), units(1));
     Quantum<Double> incLong(cdelt(0), units(0));
     Quantum<Double> incLat(cdelt(1), units(1));
-
     DirectionCoordinate *retval = 
 	new DirectionCoordinate(sys, proj, 
                                 refLong.getValue(Unit("rad")), 
                                 refLat.getValue(Unit("rad")), 
                                 incLong.getValue(Unit("rad")), 
                                 incLat.getValue(Unit("rad")), 
-                                pc, crpix(0), crpix(1));
+                                pc, crpix(0), crpix(1), 
+                                longPole, latPole);
     AlwaysAssert(retval, AipsError);
 
     // Set the actual units and names
@@ -1302,11 +1337,11 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 // Helper functions to help us interface to WCS
 
 void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDoToMixErrorMsg,
-           celprm* &pCelPrm, prjprm* &pPrjPrm, wcsprm* &pWcs,  
-           char c_ctype[2][9], double c_crval[2],
-           const Projection& proj, MDirection::Types directionType,
-           Double refLong, Double refLat,  
-           Double longPole, Double latPole) const
+                                                 celprm*& pCelPrm, prjprm*& pPrjPrm, wcsprm*& pWcs,  
+                                                 char c_ctype[2][9], double c_crval[2],
+                                                 const Projection& proj, MDirection::Types directionType,
+                                                 Double refLong, Double refLat,  
+                                                 Double longPole, Double latPole) const
 {
     pCelPrm = new celprm;
     if (! pCelPrm) {
@@ -1315,7 +1350,7 @@ void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDo
     pCelPrm->flag = 0;
     pCelPrm->ref[0] = refLong;
     pCelPrm->ref[1] = refLat;
-    pCelPrm->ref[2] = longPole;
+    pCelPrm->ref[2] = longPole;    // 999.0 means work these out internally
     pCelPrm->ref[3] = latPole;
 
     pPrjPrm = new prjprm;
@@ -1343,6 +1378,7 @@ void DirectionCoordinate::make_celprm_and_prjprm(Bool& canDoToMix, String& canDo
         errmsg += celset_errmsg[errnum];
         throw(AipsError(errmsg));
     }
+
 // 
 // All the things we make next are needed by the toMix2 function
 // We don't want to make them every time this is called
@@ -1493,7 +1529,8 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate (const Vector<Bool>& axes
 void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
                                                   Double incLong, Double incLat,
                                                   const Matrix<Double> &xform,
-                                                  Double refX, Double refY)
+                                                  Double refX, Double refY,
+                                                  Double longPole, Double latPole)
 {
 // Initially we are in radians
 
@@ -1514,9 +1551,28 @@ void DirectionCoordinate::makeDirectionCoordinate(Double refLong, Double refLat,
     toDegrees(crval);
     toDegrees(cdelt);
     linear_p = LinearXform(crpix, cdelt, xform);
+//
+    Double longPole2 = longPole;
+    Double latPole2 = latPole;
+    if (longPole < 999.0) {
+       longPole2 = longPole * to_degrees_p[0];
+    }
+    if (latPole < 999.0) {
+       latPole2 = latPole * to_degrees_p[1];
+    }
     make_celprm_and_prjprm(canDoToMix_p, canDoToMixErrorMsg_p, celprm_p, 
                            prjprm_p, wcs_p, c_ctype_p, c_crval_p, 
                            projection_p, type_p, crval(0), crval(1),  
-                           999.0, 999.0);
+                           longPole2, latPole2);
 }
 
+
+Vector<Double> DirectionCoordinate::longLatPoles () const
+{
+    Vector<Double> x(4);
+    x(0) = celprm_p->ref[0];          // refLong;
+    x(1) = celprm_p->ref[1];          // refLat;
+    x(2) = celprm_p->ref[2];          // longPole
+    x(3) = celprm_p->ref[3];          // latPole
+    return x;
+}
