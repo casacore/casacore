@@ -32,8 +32,42 @@
 #include <aips/aips.h>
 
 template <class T> class Lattice;
+template <class T> class MaskedLattice;
 class IPosition;
+class LogIO;
 
+// <summary>Static functions for Lattices</summary>
+// <use visibility=export>
+
+// <reviewed reviewer="" date="yyyy/mm/dd" tests="tLatticeUtilities.cc" demos="">
+// </reviewed>
+//
+// <prerequisite>
+//   <li> <linkto class="Lattice">Lattice</linkto>
+// </prerequisite>
+//
+// <synopsis>
+// Some static helper functions for Lattices
+// </synopsis>
+//
+// <motivation>
+// Common functionality not appropriate for Lattice member functions
+// </motivation>
+//
+// <todo asof="2001/08/27">
+//   <li> nothing I know of
+// </todo>
+//
+
+
+class LatticeUtilities 
+{
+   public:
+//    Copy pixels and mask from input to output.  Zero output pixels
+//    where mask is False (bad)
+      template <class T>
+      static void copyAndZero(LogIO& os, MaskedLattice<T>& out, MaskedLattice<T>& in);
+};
 
 // <summary>Global functions on Lattices</summary>
 // <use visibility=export>
@@ -75,18 +109,18 @@ class IPosition;
 //   <li> nothing I know of
 // </todo>
 //
-
 // <group name=LatticeUtilities>
 
 // This global function finds the max of a Lattice, and also
 // the IPositions of the max.  (LEL does not get you the IPositions of the
 // min and max)
-template <class T>
-void minMax(T & min, T & max, 
-		   IPosition & posMin, IPosition & posMax, 
-		   const Lattice<T>& lat);
 
-// </group>
+   template <class T>
+   void minMax(T & min, T & max, 
+               IPosition & posMin, IPosition & posMax, 
+               const Lattice<T>& lat);
+
+
 
 #endif
 
