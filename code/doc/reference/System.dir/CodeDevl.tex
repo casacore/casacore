@@ -1609,7 +1609,9 @@ Look for duplicate entries in \aipspp\ ``templates'' instantiation files
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{duplicates} [templates file list]}
+   \code{\exe{duplicates} [\exe{-p} \exe{package}|\exe{all}] [\exe{-r}
+   \exe{package}|\exe{all}]  [\exe{-u} \exe{package}|\exe{all}] \ldots 
+   [templates file] \ldots}
 \end{synopsis}
 
 \subsection*{Description}
@@ -1619,12 +1621,16 @@ entries in \aipspp\ \code{templates} files. This is useful for finding
 redundant templates entries, and for moving duplicate entries into a common
 \code{templates} file.
 
+One entry in the \code{template file list} may be specified as \code{-} to
+indicate standard input.
+
 If no list of files is provided, the list used is the combination of:
 \begin{enumerate}
 	\item A file named \code{templates} in the current working directory
               if any; and
 	\item All files named \code{templates} under the
-	     \code{\$AIPSCODE} tree
+	     \code{\$AIPSCODE} tree, unless switches restrict the search to
+	      specified packages and/or repositories and/or non-repositories.
 \end{enumerate}
 
 \subsection*{Options}
@@ -1638,16 +1644,33 @@ included in the search. Check with:
 
 to find the currently available switches.
 
+\begin{description}
+\item[\code{\exe{-h}}]
+    Give some useage information
+\item[\code{\exe{-p} \exe{package}|\exe{all}}]
+    Restrict tests to templates files in the specified package (or all
+    packages)
+\item[\code{\exe{-r} \exe{package}|\exe{all}}]
+    Restrict tests to the repository templates files in the specified package
+    (or all packages)
+\item[\code{\exe{-u} \exe{package}|\exe{all}}]
+    Restrict tests to the non-repository templates files in the specified package
+    (or all packages)
+\end{description}
+
 \subsection*{Examples}
 
 \begin{verbatim}
    duplicates
    duplicates templates /aips++/code/aips/implement/_ReposFiller/templates
+   reident -t | duplicates -r trial - 
 \end{verbatim}
 
 The first line finds all duplicates in \code{./templates} and all templates
 files checked into the system. The second example finds duplicates only in
-the listed files.
+the listed files. The third line reformats and checks \code{./templates}, and
+then checks for duplicates in this file and in
+\file{trial/implement/\_ReposFiller/templates}.
 
 \subsection*{See also}
 
@@ -1943,7 +1966,7 @@ Remake the idents in a templates list.
 \subsection*{Synopsis}
 
 \begin{synopsis}
-   \code{\exe{reident} [\exe{-z}] [file [file \ldots]]}
+   \code{\exe{reident} [\exe{-z}] [\exe{-t}] [file [file \ldots]]}
 \end{synopsis}
 
 \subsection*{Description}
@@ -2016,11 +2039,19 @@ package and at the same time completely refresh the idents
 
 \begin{verbatim}
    cd $HOME/aips++/code/aips/implement/_ReposFiller
-   mv templates myTemplates
    ao -l templates
    reident -z templates myTemplates
    ai templates
 \end{verbatim}
+
+To check a newly created templates list and check it for duplicates
+internally and against the trial repository:
+
+\begin{verbatim}
+    reident -t | duplicates -r trial -
+\end{verbatim}
+
+
 
 \noindent
 If seldom used the \exe{-z} option has the potential to cause a great deal of
