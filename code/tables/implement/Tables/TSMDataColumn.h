@@ -1,5 +1,5 @@
 //# TSMDataColumn.h: A data column in Tiled Storage Manager
-//# Copyright (C) 1995,1996,1997
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,9 +28,6 @@
 #if !defined(AIPS_TSMDATACOLUMN_H)
 #define AIPS_TSMDATACOLUMN_H
 
-#if defined(_AIX)
-#pragma implementation ("TSMDataColumn.cc")
-#endif 
 
 //# Includes
 #include <aips/aips.h>
@@ -345,15 +342,6 @@ public:
 
 
 private:
-    // Define the possible access types.
-    enum AccessType {
-	NoAccess,
-	CellAccess,
-	SliceAccess,
-	ColumnAccess,
-	ColumnSliceAccess
-    };
-
     // The (canonical) size of a pixel in a tile.
     uInt tilePixelSize_p;
     // The local size of a pixel.
@@ -367,10 +355,6 @@ private:
     Conversion::ValueFunction* readFunc_p;
     // The conversion function needed when writing.
     Conversion::ValueFunction* writeFunc_p;
-    // Was the last access to a cell, slice, or column?
-    AccessType lastAccess_p;
-    // The shape of the last slice accessed.
-    IPosition  lastSlice_p;
 
 
     // Forbid copy constructor.
