@@ -34,6 +34,7 @@
 #include <trial/ComponentModels/SkyCompRep.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Arrays/Cube.h>
+#include <aips/Arrays/Matrix.h>
 #include <aips/Arrays/Vector.h>
 #include <aips/Containers/Record.h>
 #include <aips/Containers/RecordFieldId.h>
