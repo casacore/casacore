@@ -43,7 +43,8 @@
 # part has to be on one line (the first line), the first <template declaration>
 # can be on the same line. More declarations (on separate lines) are
 # possible.
-# Each declaration line can have either of 5 forms:
+# Each declaration line can have either of 6 forms:
+#	= ....
 #	template .......
 #	template <> class ....		(template-less forward declaration)
 #	#if .....     (or #ifdef, #ifndef)
@@ -51,6 +52,7 @@
 #	#endif
 # An example of a definition could be (shown in format as output by reident):
 # 1020 aips/Arrays/Array.cc aips/Arrays/Vector.h trial/Arrays/SquareMatrix.h
+#      = trial/Arrays/SquareMatrix.h
 #      template <> class ostream 
 #      template class Array<Vector<SquareMatrix<Float, 2> > > 
 #      #if !defined(AIPS_STDLIB) 
@@ -177,6 +179,39 @@
         continue
       fi
       echo "$*" >> tmp1.$$
+      continue
+      ;;
+    =)
+      if [ "$TFILE" = "" ]
+      then
+        echo "   Bad entry skipped:" 1>&2
+        echo "        $ENTRY" 1>&2
+        BAD=`expr $BAD + 1`
+        STATUS=1
+        continue
+      fi
+      shift
+      for TOKEN
+      do
+	case $TOKEN in
+        *.cc | *.h)
+	  echo "#include <$TOKEN>" >> tmp1.$$
+	  ;;
+        *)
+          echo "   Bad entry for ${TFILE}:" 1>&2
+          echo "        $ENTRY" 1>&2
+
+          rm -f tmp1.$$
+	  TFILE=""
+
+          NEW=`expr $NEW - 1`
+          BAD=`expr $BAD + 1`
+          STATUS=1
+          break
+          ;;
+        esac
+	shift
+      done
       continue
       ;;
     template)
