@@ -33,12 +33,31 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/NumericTraits.h>
 
+//# The following includes need to get moved back into the .cc file when the
+//# compiler gets good enough.
 #include <aips/Utilities/Assert.h>
 #include <aips/Exceptions/Error.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Measures/Quantum.h>
 
+//# Uncomment this line when moving the above includes back to the .cc file.
 // template <class Qtype> class Quantum;
+
+// <summary>Lists the different prepresentations of the polarisation</summary>
+// <synopsis>This enumerator is brought out as a separate class because g++
+// currently cannot handle enumerators in a templated class. When it can this
+// class will go away and this enumerator moved into the ComponentFlux class.
+// class</synopsis>
+
+class FluxEnums {
+public:
+  enum PolType {
+    STOKES,
+    LINEAR,
+    CIRCULAR
+  };
+};
+
 
 // <summary>Contains a flux, its units and its polarisations</summary>
 
@@ -83,16 +102,6 @@
 //   <li> fix this bug
 //   <li> start discussion of this possible extension
 // </todo>
-
-class FluxEnums {
-public:
-  enum PolType {
-    STOKES,
-    LINEAR,
-    CIRCULAR
-  };
-};
-
 
 template<class T> class ComponentFlux
 {
@@ -166,12 +175,17 @@ public:
   void unit(Unit & unit) const;
   // set the default units
   void setUnit(const Unit & unit);
+  // set the default units and convert the internal flux
+  void convertUnit(const Unit & unit);
 
   // get the default polarisation representation
   FluxEnums::PolType rep() const;
   void rep(FluxEnums::PolType & rep) const;
   // set the default polarisation representation
   void setRep(const FluxEnums::PolType & rep);
+  // set the default polarisation representation and convert the internal flux
+  void convertRep(const FluxEnums::PolType & rep);
+
 
   // get the flux assuming ...
   // <group>
@@ -223,6 +237,7 @@ public:
     itsUnit = value.getFullUnit();
     itsRep = rep;
   };
+  // </group>
 
   // Functions for converting a 4 element complex vector between
   // different representations.
@@ -364,13 +379,7 @@ public:
     out(3) = (rr - rl - lr + ll)/T(2);
   };
 
-  // set the default units and convert the internal flux
-  void convertUnit(const Unit & unit);
-
 private:
-  // set the default polarisation representation and convert the internal flux
-  void convertRep(const FluxEnums::PolType & rep);
-
   Vector<NumericTraits<T>::ConjugateType> itsFlux;
   FluxEnums::PolType itsRep;
   Unit itsUnit;
