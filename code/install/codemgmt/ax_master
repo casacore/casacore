@@ -2642,3 +2642,4 @@
 11 400 src mv trial/scripts/atomsdisplayp.g trial/scripts/atomsdisplay.g
 11 401 src mv doc/html/navpages/programmer doc/programmer
 11 401 src mv doc/html/navpages/communicate doc/contactus
+11 401 src mv doc/html/navpages/learnmore doc/learnmore
