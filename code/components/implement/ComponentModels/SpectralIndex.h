@@ -1,5 +1,5 @@
 //# SpectralIndex.h: Models the spectral variation with a spectral index
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -235,5 +235,6 @@ public:
 
 private:
   Double itsIndex;
+  Double itsError;
 };
 #endif
