@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 3.5 - an implementation of the FITS WCS convention.
+*   WCSLIB 3.6 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2004, Mark Calabretta
 *
 *   This library is free software; you can redistribute it and/or modify it
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 3.5 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 3.6 - C routines that implement the FITS World Coordinate System
 *   (WCS) convention.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -63,7 +63,7 @@
 *   either that of a primary HDU or of an image extension.  All WCS keywords
 *   defined in Papers I, II, and III are recognized, and also those used by
 *   the AIPS convention and certain other keywords that existed in early
-*   drafts of the WCS papers (see note 1 below).
+*   drafts of the WCS papers (see note 3 below).
 *
 *   Given a character array containing a FITS header it identifies and reads
 *   all WCS cards for the primary coordinate description and up to 26
@@ -82,7 +82,7 @@
 *                           1: Admit all recognized informal extensions of the
 *                              WCS standard.
 *                        Fine-grained control of the degree of permissiveness
-*                        is also possible, see note 1 below.
+*                        is also possible, see note 3 below.
 *      errlvl   int      Error reporting control:
 *                           0: Do not report any rejected header cards.
 *                           1: Produce a one-line message stating the number
@@ -97,7 +97,7 @@
 *   Returned:
 *      nreject  int*     Number of WCS cards rejected for syntax errors,
 *                        illegal values, etc.  Cards not recognized as WCS
-*                        cards are simply ignored (but see also note 1 below).
+*                        cards are simply ignored (but see also note 3 below).
 *      nwcs     int*     Number of coordinate representations found.
 *      wcs      struct wcsprm**
 *                        Pointer to an array of wcsprm structs containing up
@@ -115,10 +115,10 @@
 *                        wcsvfree(), is provided to do this (see below).
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation error.
+*                           2: Memory allocation failed.
 *
 *
 *   Service routine for the array of wcsprm structs; wcsvfree()
@@ -134,14 +134,24 @@
 *                        return.
 *
 *   Function return value:
-*               int      Error status
+*               int      Status return value:
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *
 *
 *   Notes
 *   -----
-*    1) The parser interprets its "relax" argument as a vector of flag bits to
+*    1) The parser enforces correct FITS "keyword = value" syntax with regard
+*       to "= " occurring in columns 9 and 10.
+*
+*       However, it does recognize free-format character (NOST 100-2.0,
+*       Sect. 5.2.1), integer (Sect. 5.2.3), and floating-point values
+*       (Sect. 5.2.4) for all keywords.
+*
+*    2) Where CROTAn, CDi_ja, and PCi_ja occur together in one header the
+*       parser treats them as described in the prologue to wcs.h.
+*
+*    3) The parser interprets its "relax" argument as a vector of flag bits to
 *       provide fine-grained control over what non-standard WCS cards to
 *       accept.  The flag bits are subject to change in future and should be
 *       set by using the preprocessor macros defined below for the purpose.
@@ -170,15 +180,17 @@
 *               m = n <= 9, and is associated exclusively with the latitude
 *               axis.
 *
-*       For example
+*         WCSHDR_VSOURCEa: Accept VSOURCEa.
+*               This appeared in early drafts of the WCS Paper III and was
+*               subsequently dropped in favour of ZSOURCEa.
+*
+*       For example, to accept CD00i00j and PC00i00j and reject all other
+*       extensions, use
 *
 *         relax = WCSHDR_reject | WCSHDR_CD00i00j | WCSHDR_PC00i00j;
 *
-*       Note that where CROTAn, CDi_ja, and PCi_ja occur together in one
-*       header the parser treats them as described in the prologue to wcs.h.
-*
 *       The parser always treats EPOCH as subordinate to EQUINOXa if both are
-*       present.
+*       present, and VSOURCEa is always subordinate to ZSOURCEa.
 *
 *       Likewise, VELREF is subordinate to the formalism of WCS Paper III.  In
 *       the AIPS convention VELREF has the following values:
@@ -198,10 +210,13 @@
 *       ALTRPIX or ALTRVAL which effectively define an alternative
 *       representation for a spectral axis.
 *
+*    4) The parser does not check for duplicated cards, it accepts the last
+*       encountered.
 *
-*   Error codes
-*   -----------
-*   Error messages to match the error codes returned from each function are
+*
+*   Status return values
+*   --------------------
+*   Error messages to match the status value returned from each function are
 *   encoded in the wcs_errmsg character array.
 *
 *===========================================================================*/
@@ -211,14 +226,15 @@
 
 #include "wcs.h"
 
-#define WCSHDR_all      1
-#define WCSHDR_reject   2
-#define WCSHDR_CROTAia  4
-#define WCSHDR_EPOCHa   8
-#define WCSHDR_VELREFa  16
-#define WCSHDR_CD00i00j 32
-#define WCSHDR_PC00i00j 64
-#define WCSHDR_PROJPn   128
+#define WCSHDR_all      0x001
+#define WCSHDR_reject   0x002
+#define WCSHDR_CROTAia  0x004
+#define WCSHDR_EPOCHa   0x008
+#define WCSHDR_VELREFa  0x010
+#define WCSHDR_CD00i00j 0x020
+#define WCSHDR_PC00i00j 0x040
+#define WCSHDR_PROJPn   0x080
+#define WCSHDR_VSOURCEa 0x100
 
 #ifdef __cplusplus
 extern "C" {
