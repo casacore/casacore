@@ -67,7 +67,7 @@
 #endif
 #if defined(__sgi)
 #define AIPS_SGI
-#if defined(_MIPS_SZPTR) && MIPS_SZPTR == 64
+#if defined(_MIPS_SZPTR) && (_MIPS_SZPTR == 64)
 #define AIPS_64B
 #define SGI64
 #endif
