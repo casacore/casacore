@@ -6234,3 +6234,4 @@
 17 191 src mv ./aips/implement/Functionals/NQWrapperBase.h ./aips/implement/Functionals/WrapperBase.h
 17 191 src mv ./aips/implement/Functionals/NQWrapperData.h ./aips/implement/Functionals/WrapperData.h
 17 191 src mv ./aips/implement/Functionals/NQWrapperParam.cc ./aips/implement/Functionals/WrapperParam.cc
+17 191 src mv ./aips/implement/Functionals/NQWrapperParam.h ./aips/implement/Functionals/WrapperParam.h
