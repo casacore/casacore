@@ -3474,3 +3474,4 @@
 13 285 src mv trial/implement/Lattices/ArrLatticeIter.cc aips/implement/Lattices/ArrLatticeIter.cc
 13 285 src mv trial/implement/Lattices/PagedArray.h aips/implement/Lattices/PagedArray.h
 13 285 src mv trial/implement/Lattices/PagedArray.cc aips/implement/Lattices/PagedArray.cc
+13 285 src mv trial/implement/Lattices/PagedArrIter.h aips/implement/Lattices/PagedArrIter.h
