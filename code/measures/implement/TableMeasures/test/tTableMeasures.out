@@ -1,36 +1,47 @@
 Test of TableMeasures classes.
-Create MEpochScaCol from column Time1...
+Create MEpochScaCol from column TimeOffset...
+A column of MEpochs where the reference and offset are non-variable.
 Null MEpochScaCol successfully attached
 The MeasRef for the column is: Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
-Epoch: 50220::10:47:60.0000
-Epoch: 50220::10:47:60.0000
-Epoch: 50220::10:47:60.0000
-Epoch: 50220::10:47:60.0000
-Epoch: 50220::10:47:60.0000
-Creating an MEpoch Array Column
-Adding a vector to the column at row 0.
-elements: 10
-ndim(): 1
-new ms shape: [10, 2]
-array.nelements(): 20
-ev: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::13:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::14:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::15:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::16:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::17:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::18:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::19:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::20:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::21:27:00.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
-ev: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: TAI
-ew: Epoch: 0::22:26:60.0000 Reference for an Epoch with Type: LAST, Offset: Epoch: 51234::00:00:00.0000
+Adding a few MEpochs to column TimeOffset...
+adding: Epoch: 1234::00:00:00.0000
+adding: Epoch: 1234::02:23:60.0000
+adding: Epoch: 1234::04:48:00.0000
+adding: Epoch: 1234::07:11:60.0000
+adding: Epoch: 1234::09:36:00.0000
+Reading the MEpochs back from TimeOffset...
+retrieve: Epoch: 1234::00:00:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::02:23:60.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::04:48:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::07:11:60.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+retrieve: Epoch: 1234::09:36:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 50220::08:17:60.0000
+Filling the MPosition column MPosColumn
+put: Position: [14.138, 5.14582, 19.9659]
+put: Position: [14.7035, 5.35165, 20.7645]
+put: Position: [15.2691, 5.55749, 21.5632]
+put: Position: [15.8346, 5.76332, 22.3618]
+put: Position: [16.4001, 5.96915, 23.1604]
+Reading from MPosition column MPosColumn
+retrieve: Position: [14.138, 5.14582, 19.9659]
+retrieve: Position: [14.7035, 5.35165, 20.7645]
+retrieve: Position: [15.2691, 5.55749, 21.5632]
+retrieve: Position: [15.8346, 5.76332, 22.3618]
+retrieve: Position: [16.4001, 5.96915, 23.1604]
+Test of column TimeVarOffset...
+A column of MEpoch where the reference and offset components are variable.
+retrieve: Epoch: 51234::02:23:60.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 1234::00:00:00.0000
+retrieve: Epoch: 51234::04:47:60.0000
+  Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::02:23:60.0000
+retrieve: Epoch: 51234::07:12:00.0000
+  Reference for an Epoch with Type: TAI, Offset: Epoch: 1234::04:48:00.0000
+retrieve: Epoch: 51234::09:36:00.0000
+  Reference for an Epoch with Type: UTC, Offset: Epoch: 1234::07:11:60.0000
+retrieve: Epoch: 51234::12:00:00.0000
+  Reference for an Epoch with Type: LAST, Offset: Epoch: 1234::09:36:00.0000
 Bye.
