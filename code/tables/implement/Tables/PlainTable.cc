@@ -98,7 +98,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, uInt nrrow, Bool initialize,
     Table tab(this, False);
     colSetPtr_p->initDataManagers (nrrow, tab);
     //# Initialize the columns if needed.
-    if (initialize) {
+    if (initialize  &&  nrrow > 0) {
 	colSetPtr_p->initialize (0, nrrow-1);
     }
     //# Nrrow_p has to be set here, otherwise data managers may use the
@@ -458,18 +458,20 @@ Bool PlainTable::canRemoveColumn (const String& columnName) const
 //# Add rows.
 void PlainTable::addRow (uInt nrrw, Bool initialize)
 {
-    if (! isWritable()) {
-	throw (TableInvOper ("Table::addRow; table is not writable"));
+    if (nrrw > 0) {
+        if (! isWritable()) {
+	    throw (TableInvOper ("Table::addRow; table is not writable"));
+	}
+	//# Locking has to be done here, otherwise nrrow_p is not up-to-date
+	//# when autoReleaseLock releases the lock and writes the data.
+	colSetPtr_p->checkLock (FileLocker::Write, True);
+	colSetPtr_p->addRow (nrrw);
+	if (initialize) {
+	    colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
+	}
+	nrrow_p += nrrw;
+	colSetPtr_p->autoReleaseLock();
     }
-    //# Locking has to be done here, otherwise nrrow_p is not up-to-date
-    //# when autoReleaseLock releases the lock and writes the data.
-    colSetPtr_p->checkLock (FileLocker::Write, True);
-    colSetPtr_p->addRow (nrrw);
-    if (initialize) {
-	colSetPtr_p->initialize (nrrow_p, nrrow_p+nrrw-1);
-    }
-    nrrow_p += nrrw;
-    colSetPtr_p->autoReleaseLock();
 }
 
 void PlainTable::removeRow (uInt rownr)
