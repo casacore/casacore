@@ -58,9 +58,11 @@ SpectralCoordinate::SpectralCoordinate()
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
 {
+   restfreqs_p.resize(1);
+   restfreqs_p(0) = 0.0;
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),
-                        type_p, 0.0);
+                        type_p, restfreqs_p(restfreqIdx_p));
 }
 
 SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
@@ -75,8 +77,10 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
 {
+   AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = restFrequency;
+//
    makeVelocityMachine (String("km/s"), prefVelType_p, 
                         worker_p.worldAxisUnits()(0),   
                         type_p, restfreqs_p(restfreqIdx_p));
@@ -107,6 +111,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
       throw(AipsError("Unit of rest frequency is not consistent with Hz"));
    }
 //
+   AlwaysAssert(restFrequency.getValue(hz)>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = restFrequency.getValue(hz);
 //
@@ -130,6 +135,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
   prefVelType_p(MDoppler::RADIO),
   prefUnit_p("")
 {
+   AlwaysAssert(restFrequency>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = restFrequency;
 //
@@ -162,6 +168,7 @@ SpectralCoordinate::SpectralCoordinate(MFrequency::Types type,
       throw(AipsError("Unit of rest frequency is not consistent with Hz"));
    }
 //
+   AlwaysAssert(restFrequency.getValue(hz)>=0.0, AipsError);
    restfreqs_p.resize(1);
    restfreqs_p(0) = restFrequency.getValue(hz);
 //
@@ -394,6 +401,7 @@ void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
 
 Bool SpectralCoordinate::setRestFrequency(Double newFrequency, Bool append)
 {
+    AlwaysAssert(newFrequency>=0.0, AipsError);
     if (append) {
        uInt n = restfreqs_p.nelements();
        restfreqs_p.resize(n+1, True);
@@ -421,6 +429,10 @@ Bool SpectralCoordinate::setRestFrequency(Double newFrequency, Bool append)
 void SpectralCoordinate::setRestFrequencies(const Vector<Double>& restFrequencies,
                                             uInt which, Bool append)
 {
+   for (uInt i=0; i<restFrequencies.nelements(); i++) {
+      AlwaysAssert(restFrequencies(i)>=0.0, AipsError);
+   }
+//
    if (append) {
       Vector<Double> tmp = concatenateArray (restfreqs_p, restFrequencies);
       restfreqs_p.resize(0);      
@@ -437,7 +449,6 @@ void SpectralCoordinate::setRestFrequencies(const Vector<Double>& restFrequencie
 void SpectralCoordinate::selectRestFrequency(Double restFrequency)
 {
    AlwaysAssert(restFrequency >= 0.0, AipsError);
-   AlwaysAssert(restfreqs_p.nelements()>0, AipsError); 
    uInt which = 0;
    Double d, diff = 1.0e99;
    for (uInt i=0; i<restfreqs_p.nelements(); i++) {
@@ -453,7 +464,6 @@ void SpectralCoordinate::selectRestFrequency(Double restFrequency)
 
 void SpectralCoordinate::selectRestFrequency(uInt which)
 {
-   AlwaysAssert(restfreqs_p.nelements()>0, AipsError); 
    AlwaysAssert(which>=0 && which<restfreqs_p.nelements(), AipsError)
 //
    restfreqIdx_p = which;
@@ -790,7 +800,7 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
     MFrequency::Types refFrame;
     MDoppler::Types velocityPreference;
     Double restFrequency;
-    
+//    
     Bool ok = FITSSpectralUtil::fromFITSHeader(spectralAxis,
 					       referenceChannel,
 					       referenceFrequency,
@@ -803,6 +813,8 @@ Bool SpectralCoordinate::fromFITS(SpectralCoordinate &out, String &,
 					       header,
 					       'c',
 					       oneRelative);
+//
+    restFrequency = max(0.0, restFrequency);
     if (ok && spectralAxis == Int(whichAxis)) {
 	SpectralCoordinate tmp(refFrame, referenceFrequency, deltaFrequency, 
 			       referenceChannel, restFrequency);
