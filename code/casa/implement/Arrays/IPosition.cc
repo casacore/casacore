@@ -1114,6 +1114,28 @@ Bool isInsideArray (const IPosition &iposition,
     return result;
 
 }
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 IPosition"
-// End: 
+
+
+IPosition IPosition::makeAxisPath (uInt nrdim, const IPosition& partialPath)
+{
+    // Check if the specified traversal axes are correct and unique.
+    AlwaysAssert (partialPath.nelements() <= nrdim, AipsError);
+    IPosition path(nrdim);
+    IPosition done(nrdim, 0);
+    uInt i,j;
+    for (i=0; i<partialPath.nelements(); i++) {
+        path(i) = partialPath(i);
+        if (path(i) >= nrdim  ||  done(path(i)) != 0) {
+            throw (AipsError ("IPosition::makeAxisPath: invalid defined axes"));
+        }
+        done(path(i)) = 1;
+    }
+    // Fill unspecified axes with the natural order.
+    for (j=0; j<nrdim; j++) {
+        if (done(j) == 0) {
+            path(i++) = j;
+        }
+    }
+    return path;
+}
+

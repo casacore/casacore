@@ -154,9 +154,19 @@ public:
     // Copy "value" into every position of this IPosition.
     IPosition &operator=(Int value);
 
+    // Construct a default axis path consisting of the values 0 .. nrdim-1.
+    static IPosition makeAxisPath (uInt nrdim);
+
+    // Construct a full axis path from a (partially) given axis path.
+    // It fills the path with the non-given axis.
+    // It is checked if the given axis path is valid (i.e. if the axis are
+    // < nrdim and if they are not doubly defined).
+    // E.g.: in the 4D case an axis path [0,2] is returned as [0,2,1,3].
+    static IPosition makeAxisPath (uInt nrdim, const IPosition& partialPath);
+
     // Convert an IPosition to and from an Array<Int>. In either case, the
     // array must be one dimensional.
-   // <group>
+    // <group>
     IPosition(const Array<Int> &other);
     Vector<Int> asVector() const;
     // </group>
@@ -272,6 +282,7 @@ public:
 
     // Is this IPosition consistent?
     Bool ok() const;
+
 private:
     enum { IPositionVersion = 1, BufferLength = 4 };
     uInt size;
@@ -418,6 +429,11 @@ inline Bool isInsideArray (const IPosition &iposition, const T &array)
 // For throwing IndexErrors in operator()
 #include <aips/Exceptions/Error.h> 
 #endif
+
+inline IPosition IPosition::makeAxisPath (uInt nrdim)
+{
+    return makeAxisPath (nrdim, IPosition());
+}
 
 inline uInt IPosition::nelements() const
 {
