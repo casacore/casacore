@@ -3263,3 +3263,4 @@
 13 168 src rm trial/implement/ComponentModels/test/tGaussianComponent.exec
 13 168 src rm trial/implement/ComponentModels/test/tPointComponent.exec
 13 176 src mv trial/implement/Display/NBody.h trial/implement/DisplayDatas/NBody.h
+13 176 src mv trial/implement/Display/NBody.cc trial/implement/DisplayDatas/NBody.cc
