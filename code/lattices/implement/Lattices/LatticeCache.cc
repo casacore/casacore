@@ -1,5 +1,5 @@
-//# LatticeCache: 
-//# Copyright (C) 1995,1996,1997
+//# LatticeCache.cc: Cache for accessing a Lattice in Tiles
+//# Copyright (C) 1995,1996,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -23,6 +23,7 @@
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
+//# $Id$
 
 #include <aips/aips.h>
 #include <trial/Lattices/Lattice.h>
@@ -46,6 +47,7 @@
 #include <strstream.h>
 
 #include <trial/Lattices/LatticeCache.h>
+
 
 template <class T>
 LatticeCache<T>::LatticeCache(const LatticeCache<T> & other)
