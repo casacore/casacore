@@ -35,8 +35,10 @@
  *                        Rainer Orth       <ro@techfak.uni-bielefeld.de>
  */
 
-#if defined(HOSTINFO_DO_IMPLEMENT) && ! defined(AIPS_HOSTINFO_OSF1_H)
+#if ! defined(AIPS_HOSTINFO_OSF1_H)
 #define AIPS_HOSTINFO_OSF1_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
 
 //
 //--> /usr/include/mach/mach_interface.h:297:                                                        <-
@@ -56,6 +58,26 @@
 #include <mach/vm_statistics.h>
 #include <mach/host_info.h>
 #include <sys/table.h>
+
+// <summary>
+// HostInfo for OSF1 machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the OSF1 specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
 
 extern "C" kern_return_t host_info(int, int, host_info_t, unsigned int *);
 extern "C" int host_self( );
@@ -153,4 +175,5 @@ void HostMachineInfo::update_info( ) {
 //  memory_used = pagetok(vmstats.active_count + vmstats.inactive_count + vmstats.wire_count);
 }
 
+# endif
 #endif

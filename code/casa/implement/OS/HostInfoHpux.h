@@ -22,8 +22,10 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if defined(HOSTINFO_DO_IMPLEMENT) && ! defined(AIPS_HOSTINFO_HPUX_H)
+#if ! defined(AIPS_HOSTINFO_HPUX_H)
 #define AIPS_HOSTINFO_HPUX_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *          AUTHOR:       Darrell Schiebel  <drs@nrao.edu>
@@ -39,6 +41,26 @@
 #include <unistd.h>
 #include <sys/param.h>
 #include <sys/pstat.h>
+
+// <summary>
+// HostInfo for HP-UX machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the HP-UX specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
 
 /* these are for getting the memory statistics */
 
@@ -107,4 +129,5 @@ void HostMachineInfo::update_info( ) {
     swap_free = swap_total - swap_used;
 }
 
+# endif
 #endif

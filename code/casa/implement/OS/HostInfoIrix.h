@@ -22,8 +22,10 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if defined(HOSTINFO_DO_IMPLEMENT) && ! defined(AIPS_HOSTINFO_IRIX_H)
+#if ! defined(AIPS_HOSTINFO_IRIX_H)
 #define AIPS_HOSTINFO_IRIX_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *          AUTHOR:       Darrell Schiebel  <drs@nrao.edu>
@@ -42,6 +44,26 @@
 #include <sys/swap.h>
 #include <sys/sysmp.h>
 #include <sys/sysinfo.h>
+
+// <summary>
+// HostInfo for IRIX machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the IRIX specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
 
 #define pagetok(pages) ((((uint64_t) pages) * pagesize) >> 10)
 
@@ -109,4 +131,5 @@ void HostMachineInfo::update_info( ) {
 	swap_used = swap_total - swap_free;
 }
 
+# endif
 #endif

@@ -22,8 +22,10 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if defined(HOSTINFO_DO_IMPLEMENT) && ! defined(AIPS_HOSTINFO_LINUX_H)
+#if ! defined(AIPS_HOSTINFO_LINUX_H)
 #define AIPS_HOSTINFO_LINUX_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *          AUTHOR:       Darrell Schiebel  <drs@nrao.edu>
@@ -43,6 +45,26 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+// <summary>
+// HostInfo for Linux machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the Linux specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
 
 #if 0
 #include <linux/proc_fs.h>	/* for PROC_SUPER_MAGIC */
@@ -177,4 +199,5 @@ void HostMachineInfo::update_info( )
     }
 }
 
+# endif
 #endif

@@ -22,8 +22,10 @@
  **  Copyright (c) 2002, Associated Universities Inc.
  */
 
-#if defined(HOSTINFO_DO_IMPLEMENT) && ! defined(AIPS_HOSTINFO_SOLARIS_H)
+#if ! defined(AIPS_HOSTINFO_SOLARIS_H)
 #define AIPS_HOSTINFO_SOLARIS_H
+
+# if defined(HOSTINFO_DO_IMPLEMENT)
 
 /*
  *
@@ -51,6 +53,27 @@
 #include <sys/swap.h>
 
 #include <kstat.h>
+
+// <summary>
+// HostInfo for Solaris machines.
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="" date="" tests="" demos="">
+// </reviewed>
+
+// <prerequisite>
+//   <li> <linkto class=HostInfo>HostInfo</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// This file provides the Solaris specific functions for HostInfo.
+// It is selectively included by HostInfo.cc.
+// </synopsis>
+//
+// <group name="HostInfo">
+
 /*
  * Some kstats are fixed at 32 bits, these will be specified as ui32; some
  * are "natural" size (32 bit on 32 bit Solaris, 64 on 64 bit Solaris
@@ -290,4 +313,5 @@ void get_swapinfo(int *total, int *fr)
 }
 #endif /* USE_ANONINFO */
 
+# endif
 #endif
