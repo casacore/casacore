@@ -40,7 +40,7 @@
 \section{Introduction}
 \label{s-Intro}
 
-Tryimg to find a more stable non-linear least squares method (\LSQ) than the
+Trying to find a more stable non-linear least squares method (\LSQ) than the
 one currently used in Newstar, I found another few areas that could be added
 or improved in the existing routines. In the end I produced a set of routines
 to handle linear and non-linear cases, both with or without SVD, and
