@@ -3746,3 +3746,4 @@
 13 384 src rm doc/html/tour/img044.gif
 13 384 src rm doc/html/tour/img045.GIF
 13 384 src rm doc/html/tour/img045.gif
+14 003 src mv trial/implement/Functionals/Applicator.cc trial/implement/Parallel/Applicator.cc
