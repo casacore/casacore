@@ -262,6 +262,118 @@ scaleValue(const T & factor) {
   }
   DebugAssert(ok(), AipsError);
 }
+template<class T> Bool FluxRep<T>::
+toRecord(String & errorMessage, const GlishRecord & record) {
+  {
+    if (!record.exists("polarisation")) {
+      thisFlux.setPol(ComponentType::STOKES);
+    } else {
+      if (record.get("polarisation").type() != GlishValue::ARRAY) {
+	errorMessage += "\nThe 'polarisation' field cannot be a record";
+	return False;
+      }
+      const GlishArray polField = record.get("polarisation");
+      if (polField.elementType() != GlishArray::STRING) {
+	errorMessage += "\nThe 'polarisation' field must be a string";
+	return False;
+      }
+      // Maybe the polarisation field should contain ["I", "Q", "U", "V"]. This
+      // is harder to parse but more flexible for the future.
+      if (polField.shape().product() != 1) {
+	errorMessage += 
+	  String("\nThe 'polarisation' field cannot be an array ");
+	return False;
+      }
+      String polVal;
+      if (!polField.get(polVal)) {
+	errorMessage += String("\nCould not read the 'polarisation' field ") + 
+	  String("in the flux record for an unknown reason");
+	return False;
+      }
+      const ComponentType::Polarisation 
+	pol(ComponentType::polarisation(polVal));
+      if (pol == ComponentType::UNKNOWN_POLARISATION) {
+	errorMessage += String("\nThe polarisation type is not known. ") +
+	  String("\nCommon values are 'Stokes', 'Linear' & 'Circular'");
+	return False;
+      }
+      thisFlux.setPol(pol);
+    }
+  }
+  {
+    if (!record.exists("value")) {
+      errorMessage += "\nThe 'flux' record must have a 'value' field";
+      return False;
+    }
+    if (record.get("value").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'value' field cannot be a record";
+      return False;
+    }
+    const GlishArray valueField = record.get("value");
+    if (valueField.elementType() == GlishArray::STRING) {
+      errorMessage += "\nThe 'value' field cannot be a string";
+      return False;
+    }
+    const IPosition shape = valueField.shape();
+    if (shape.nelements() != 1 || shape.product() != 4) {
+      errorMessage += String("\nThe 'value' field in the flux record ") + 
+	String("must contain a vector with 4 elements");
+      return False;
+    }
+    Vector<DComplex> fluxVal(4);
+    if (!valueField.get(fluxVal.ac())) {
+      errorMessage += String("\nCould not read the 'value' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    thisFlux.setValue(fluxVal);
+  }
+  {
+    if (!record.exists("unit")) {
+      errorMessage += "\nThe 'flux' record must have a 'unit' field";
+      return False;
+    }
+    if (record.get("unit").type() != GlishValue::ARRAY) {
+      errorMessage += "\nThe 'unit' field cannot be a record";
+      return False;
+    }
+    const GlishArray unitField = record.get("unit");
+    if (unitField.elementType() != GlishArray::STRING) {
+      errorMessage += "\nThe 'unit' field must be a string";
+      return False;
+    }
+    if (unitField.shape().product() != 1) {
+      errorMessage += String("\nThe 'unit' field cannot be an array ");
+      return False;
+    }
+    String unitVal;
+    if (!unitField.get(unitVal)) {
+      errorMessage += String("\nCould not read the 'unit' field ") + 
+	String("in the flux record for an unknown reason");
+      return False;
+    }
+    thisFlux.setUnit(Unit(unitVal));
+  }
+  return True;
+}
+
+template<class T> Bool FluxRep<T>::
+toRecord(String & errorMessage, GlishRecord & record) const {
+  if (thisFlux.pol() == ComponentType::STOKES) {
+    Flux<Double> fluxCopy = thisFlux;
+    Vector<Double> fluxVal(4);
+    fluxCopy.value(fluxVal);
+    record.add("value", GlishArray(fluxVal.ac()));
+    record.add("polarisation", ComponentType::name(ComponentType::STOKES));
+  } else {
+    record.add("value", GlishArray(thisFlux.value().ac()));
+    record.add("polarisation", ComponentType::name(thisFlux.pol()));
+  }
+  record.add("unit", thisFlux.unit().getName());
+  if (errorMessage == ""); // Suppress compiler warning about unused variable
+  return True;
+}
+
 
 template<class T> Bool FluxRep<T>::
 ok() const {
@@ -433,6 +545,18 @@ template<class T> void Flux<T>::
 scaleValue(const T & factor) {
   DebugAssert(ok(), AipsError);
   itsFluxPtr->scaleValue(factor);
+}
+
+template<class T> Bool Flux<T>::
+fromRecord(String & errorMessage, const GlishRecord & record) {
+  DebugAssert(ok(), AipsError);
+  return itsFluxPtr->fromRecord(errorMessage, record);
+}
+
+template<class T> Bool Flux<T>::
+toRecord(String & errorMessage, GlishRecord & record) const {
+  DebugAssert(ok(), AipsError);
+  return itsFluxPtr->toRecord(errorMessage, record);
 }
 
 template<class T> Bool Flux<T>::

@@ -173,21 +173,14 @@ public:
     DebugAssert(ok(), AipsError);
     return itsVal;
   };
-//   Vector<NumericTraits<T>::ConjugateType> & value() {
-//     DebugAssert(ok(), AipsError);
-//     return itsVal;
-//   };
+
   // the current units and polarisation only return the specified polarisation.
   const NumericTraits<T>::ConjugateType & value(uInt p) const {
     DebugAssert(p < 4, AipsError);
     DebugAssert(ok(), AipsError);
     return itsVal(p);
   };
-//   NumericTraits<T>::ConjugateType & value(uInt p) {
-//     DebugAssert(p < 4, AipsError);
-//     DebugAssert(ok(), AipsError);
-//     return itsVal(p);
-//   };
+
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
@@ -248,6 +241,15 @@ public:
     itsVal.ac() *= factor.ac();
     DebugAssert(ok(), AipsError);
   };
+  // </group>
+
+  // This functions convert between a glish record and a FluxRep object. These
+  // functions define how the FluxRep is represented in glish.  They return
+  // False if the glish record is malformed and append an error message to the
+  // supplied string giving the reason.  
+  // <group>
+  Bool fromRecord(String & errorMessage, const GlishRecord & record);
+  Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
@@ -382,19 +384,13 @@ public:
     DebugAssert(ok(), AipsError);
     return itsFluxPtr->value();
   };
-//   Vector<NumericTraits<T>::ConjugateType> & value() {
-//     DebugAssert(ok(), AipsError);
-//     return itsFluxPtr->value();
-//   };
+
   // the current units and polarisation only return the specified polarisation.
   const NumericTraits<T>::ConjugateType & value(uInt p) const {
     DebugAssert(ok(), AipsError);
     return itsFluxPtr->value(p);
   };
-//   NumericTraits<T>::ConjugateType & value(uInt p) {
-//     DebugAssert(ok(), AipsError);
-//     return itsFluxPtr->value(p);
-//   };
+
   // Stokes representation & current unit
   void value(Vector<T> & value);
   // current unit and pol
@@ -606,6 +602,15 @@ public:
     DebugAssert(ok(), AipsError);
     itsFluxPtr->scaleValue(factor);
   };
+  // </group>
+
+  // This functions convert between a glish record and a Flux object and define
+  // how the Flux is represented in glish.  They return False if the glish
+  // record is malformed and append an error message to the supplied string
+  // giving the reason.
+  // <group>
+  Bool fromRecord(String & errorMessage, const GlishRecord & record);
+  Bool toRecord(String & errorMessage, GlishRecord & record) const;
   // </group>
 
   // Function which checks the internal data of this class for correct
