@@ -35,6 +35,8 @@
 
 template <class T> class ImageInterface;
 template <class T> class PagedImage;
+template <class T> class Array;
+template <class T> class Matrix;
 template <class T> class Vector;
 template <class T> class Lattice;
 template <class T> class MomentCalcBase;
