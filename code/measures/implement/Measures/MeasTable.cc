@@ -1,5 +1,5 @@
 //# MeasTable.cc: MeasTable provides Measure computing database data
-//# Copyright (C) 1995,1996,1997,1998
+//# Copyright (C) 1995,1996,1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -392,7 +392,6 @@ void MeasTable::calcMulArg(Bool &need, Vector<Char> result[],
     Int i,j;
     for (i=0; i<row; i++) {
       result[i].resize(5);
-      result[i].makePermanent();
       for (j=0; j<5; j++) {
 	result[i](j) = coeff[i][j];
       };
@@ -686,7 +685,6 @@ void MeasTable::calcMulSC(Bool &need, Double &check, Double T,
     };
     for (i=0; i<resrow; i++) {
       result[i].resize(4);
-      result[i].makePermanent();
       for (j=0; j<2; j++) {
 	result[i](j) = coeffSC[i][j] * C::arcsec*1e-4;
       };
@@ -756,7 +754,6 @@ const Vector<Double> &MeasTable::Planetary(MeasTable::Types which,
   static String tnam[2] = { "DE200", "DE405"};
   if (needInit) {
     needInit = False;
-    res.makePermanent();
     uInt t;
     Aipsrc::find (t, String("measures.jpl.ephemeris"), 2, tnam,
 		  String("DE200"));
@@ -825,8 +822,8 @@ void MeasTable::initObservatories() {
 			 WHERE));
       os << "No entries in table of Observatories" << LogIO::EXCEPTION;
     };
-    obsNams.resize(N); obsNams.makePermanent();
-    obsPos.resize(N); obsPos.makePermanent();
+    obsNams.resize(N);
+    obsPos.resize(N);
     MPosition::Ref mr;
     MPosition tmp;
     for (Int i=0; i<N; i++) {
@@ -886,8 +883,8 @@ void MeasTable::initSources() {
 			 WHERE));
       os << "No entries in table of Sources" << LogIO::EXCEPTION;
     };
-    srcNams.resize(N); srcNams.makePermanent();
-    srcPos.resize(N); srcPos.makePermanent();
+    srcNams.resize(N);
+    srcPos.resize(N);
     MDirection::Ref mr;
     MDirection tmp;
     for (Int i=0; i<N; i++) {
@@ -1126,7 +1123,6 @@ const Vector<Char> &MeasTable::mulAberArg(uInt which) {
     Int i,j;
     for (i=0; i<80; i++) {
       argArray[i].resize(6);
-      argArray[i].makePermanent();
       for (j=0; j<6; j++) {
 	argArray[i](j) = ABERARG[i][j];
       };
@@ -1292,7 +1288,6 @@ const Vector<Char> &MeasTable::mulAber1950Arg(uInt which) {
     Int i,j;
     for (i=0; i<132; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<12; j++) {
 	argArray[i](j) = ABERARG[i][j];
       };
@@ -1329,7 +1324,6 @@ const Vector<Char> &MeasTable::mulAberSunArg(uInt which) {
     Int i,j;
     for (i=0; i<17; i++) {
       argArray[i].resize(7);
-      argArray[i].makePermanent();
       for (j=0; j<7; j++) {
 	argArray[i](j) = ABERSUNARG[i][j];
       };
@@ -1366,7 +1360,6 @@ const Vector<Char> &MeasTable::mulAberEarthArg(uInt which) {
     Int i,j;
     for (i=0; i<17; i++) {
       argArray[i].resize(5);
-      argArray[i].makePermanent();
       for (j=0; j<5; j++) {
 	argArray[i](j) = ABEREARTHARG[i][j];
       };
@@ -1494,7 +1487,6 @@ const Vector<Double> &MeasTable::mulAber(uInt which, Double T) {
     };
     for (i=0; i<80; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<6; j++) {
 	argArray[i](j) = MABER[i][j] * factor;
       };
@@ -1690,7 +1682,6 @@ const Vector<Double> &MeasTable::mulAber1950(uInt which, Double T) {
     Int i, j;
     for (i=0; i<130; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<6; j++) {
 	argArray[i](j) = MABER[i][j] * factor;
       };
@@ -1767,7 +1758,6 @@ const Vector<Double> &MeasTable::mulSunAber(uInt which) {
     Int i,j;
     for (i=0; i<17; i++) {
       argArray[i].resize(6);
-      argArray[i].makePermanent();
       for (j=0; j<6; j++) {
 	argArray[i](j) = MSUNABER[i][j] * factor;
       };
@@ -1807,7 +1797,6 @@ const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
     Int i,j;
     for (i=0; i<17; i++) {
       argArray[i].resize(3);
-      argArray[i].makePermanent();
       for (j=0; j<3; j++) {
 	argArray[i](j) = MEARTHABER[i][j] * factor;
       };
@@ -1829,7 +1818,6 @@ const Vector<Double> &MeasTable::AberETerm(uInt which) {
     Int i;
     for (i=0; i<2; i++) {
       termArray[i].resize(3);
-      termArray[i].makePermanent();
     }; 
     for (i=0; i<3; i++) {
       termArray[0](i) = TERM[0][i] * 1e-6;
@@ -1863,7 +1851,6 @@ const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
     Double v = 19.5*1000.;
     for (Int i=0; i<2; i++) {
       argArray[i].resize(3);
-      argArray[i].makePermanent();
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
       };
@@ -1885,7 +1872,6 @@ const Vector<Double> &MeasTable::velocityLSR(uInt which) {
     Double v = sqrt(81.+144.+49.)*1000.;
     for (Int i=0; i<2; i++) {
       argArray[i].resize(3);
-      argArray[i].makePermanent();
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
       };
@@ -1908,7 +1894,6 @@ const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
     Double v = 220.*1000.;
     for (Int i=0; i<2; i++) {
       argArray[i].resize(3);
-      argArray[i].makePermanent();
       for (Int j=0; j<3; j++) {
 	argArray[i](j) = v * LSR[i][j];
       };
@@ -2171,7 +2156,6 @@ const Vector<Char> &MeasTable::mulPosEarthXYArg(uInt which) {
     Int i,j;
     for (i=0; i<189; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSXYARG[i][j];
       };
@@ -2228,7 +2212,6 @@ const Vector<Char> &MeasTable::mulPosEarthZArg(uInt which) {
     Int i,j;
     for (i=0; i<32; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSZARG[i][j];
       };
@@ -2357,7 +2340,6 @@ const Vector<Char> &MeasTable::mulPosSunXYArg(uInt which) {
     Int i,j;
     for (i=0; i<98; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSXYARG[i][j];
       };
@@ -2410,7 +2392,6 @@ const Vector<Char> &MeasTable::mulPosSunZArg(uInt which) {
     Int i,j;
     for (i=0; i<29; i++) {
       argArray[i].resize(12);
-      argArray[i].makePermanent();
       for (j=0; j<12; j++) {
 	argArray[i](j) = POSZARG[i][j];
       };
@@ -2645,7 +2626,6 @@ const Vector<Double> &MeasTable::mulPosEarthXY(uInt which, Double T) {
     fac1 = C::degree;
     for (Int i=0; i<189; i++) {
       argArray[i].resize(8);
-      argArray[i].makePermanent();
       argArray[i](0) = MPOSXY[i][0] * fac1;
       argArray[i](2) = MPOSXY[i][2] * fac1;
       argArray[i](1) = MPOSXY[i][1] * factor;
@@ -2729,7 +2709,6 @@ const Vector<Double> &MeasTable::mulPosEarthZ(uInt which, Double T) {
     Int i;
     for (i=0; i<32; i++) {
       argArray[i].resize(4);
-      argArray[i].makePermanent();
       argArray[i](0) = MPOSZ[i][0] * fac1;
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
@@ -2876,7 +2855,6 @@ const Vector<Double> &MeasTable::mulPosSunXY(uInt which, Double T) {
     fac1 = C::degree;
     for (Int i=0; i<98; i++) {
       argArray[i].resize(8);
-      argArray[i].makePermanent();
       argArray[i](0) = MPOSXY[i][0] * fac1;
       argArray[i](2) = MPOSXY[i][2] * fac1;
       argArray[i](1) = MPOSXY[i][1] * factor;
@@ -2947,7 +2925,6 @@ const Vector<Double> &MeasTable::mulPosSunZ(uInt which, Double T) {
     fac1 = C::degree;
     for (Int i=0; i<29; i++) {
       argArray[i].resize(4);
-      argArray[i].makePermanent();
       argArray[i](0) = MPOSZ[i][0] * fac1;
       argArray[i](1) = MPOSZ[i][1] * factor;
       argArray[i](2) = 0;
