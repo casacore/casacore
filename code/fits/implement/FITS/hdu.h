@@ -1,5 +1,5 @@
 //# hdu.h:
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -172,10 +172,6 @@ class HeaderDataUnit {
 		   FITSErrorHandler errhandler = FITSError::defaultHandler,
 		   FitsInput * = 0);
 
-	int read_data(char *, int);
-	int write_data(FitsOutput &, char *, int);
-	int read_all_data(char *);
-	int write_all_data(FitsOutput &, char *);
 
 	FitsKeywordList &kwlist_;
 	ConstFitsKeywordList constkwlist_;
@@ -205,8 +201,12 @@ class HeaderDataUnit {
 	char char_null;
 	Int Int_null;
 
-    private:
+    public:
 	int get_hdr(FITS::HDUType, FitsKeywordList &);
+	int read_data(char *, int);
+	int write_data(FitsOutput &, char *, int);
+	int read_all_data(char *);
+	int write_all_data(FitsOutput &, char *);
 };
 
 inline ostream & operator << (ostream &o, HeaderDataUnit &h) {
