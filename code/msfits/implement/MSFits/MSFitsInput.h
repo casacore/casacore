@@ -261,6 +261,7 @@ private:
   String array_p,object_p,timsys_p;
   Double epoch_p;
   Int nAnt_p;
+  Int nArray_p;
   Vector<Double> receptorAngle_p;
   MFrequency::Types freqsys_p;
   Double restfreq_p;
