@@ -1,5 +1,5 @@
 //# Function.h: Numerical functional interface class
-//# Copyright (C) 2001,2002,2003
+//# Copyright (C) 2001,2002,2003,2004
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -192,25 +192,26 @@ class RecordInterface;
 template<class T, class U=T> class Function :
 public Functional<typename FunctionTraits<T>::ArgType, U>,
   public Functional<Vector<typename FunctionTraits<T>::ArgType>, U> {
-
- public:
+    
+  public:
   //# Typedefs
   typedef typename FunctionTraits<T>::ArgType ArgType;
   typedef const ArgType* FunctionArg;
-
+ 
   //# Constructors
   // Constructors for FunctionParam
   // <group>
-  Function() : param_p(), arg_p(0), parset_p(False) {};
-  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False) {};
+  Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {};
+  explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False),
+  locked_p(False) {};
   explicit Function(const Vector<T> &in) : param_p(in), arg_p(0),
-    parset_p(False) {};
+  parset_p(False), locked_p(False) {};
   Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
-    parset_p(False) {};
+  parset_p(False), locked_p(False) {};
   Function(const Function<T,U> &other) : param_p(other.param_p),
-    arg_p(other.arg_p), parset_p(other.parset_p) {};
+  arg_p(other.arg_p), parset_p(other.parset_p), locked_p(False) {};
   // </group>
-
+  
   // Destructor
   virtual ~Function() {};
   
@@ -218,11 +219,11 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual uInt ndim() const = 0;
   // Returns the number of parameters
   uInt nparameters() const { return param_p.nelements(); };
-
+  
   //# Operators
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n) { parset_p = True; return param_p[n]; };
+  T &operator[](const uInt n) { parset_p |= !locked_p; return param_p[n]; };
   const T &operator[](const uInt n) const { return param_p[n]; };
   // </group>
   // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
@@ -239,13 +240,13 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual U operator()(const ArgType &x, const ArgType &y,
 		       const ArgType &z) const;
   // </group>
-
+  
   //# Member functions
   // Manipulate the mask associated with the nth parameter
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n) { parset_p = True; return param_p.mask(n); };
+  Bool &mask(const uInt n) { parset_p |= !locked_p; return param_p.mask(n); };
   const Bool &mask(const uInt n) const { return param_p.mask(n); };
   // </group>
   // Return the parameter interface
@@ -253,7 +254,16 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   const FunctionParam<T> &parameters() const { return param_p; };
   FunctionParam<T> &parameters() { parset_p = True; return param_p; };
   // </group>
-
+  // Compiler cannot always find the correct 'const' version of parameter
+  // access. In cases where this would lead to excessive overheads in
+  // moving parameters around (like in <src>CompoundFunction</src>) the
+  // parameter changing can be set to be locked, and no changes are
+  // assumed.
+  // <group>
+  void lockParam()   { locked_p = True; };
+  void unlockParam() { locked_p = False; };
+  // </group?
+  
   // get/set the function mode.  These provide an interface to 
   // function-specific configuration or state that controls how the 
   // function calculates its values but otherwise does not qualify as 
@@ -272,11 +282,11 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   virtual void setMode(const RecordInterface& mode);
   virtual void getMode(RecordInterface& mode) const;
   // </group>
-
+  
   // return True if the implementing function supports a mode.  The default
   // implementation returns False.
   virtual Bool hasMode() const;
-
+  
   // Evaluate the function object
   virtual U eval(FunctionArg x) const = 0;
   // Print the function (i.e. the parameters)
@@ -286,7 +296,7 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   // <group>
   virtual Function<T,U> *clone() const = 0;
   // </group>
-
+  
   protected:
   //# Data
   // The parameters and masks
@@ -295,7 +305,8 @@ public Functional<typename FunctionTraits<T>::ArgType, U>,
   mutable Vector<ArgType> arg_p;
   // Indicate parameter written
   mutable Bool parset_p;
-
+  // Indicate that parameters are expected to be locked from changing
+  mutable Bool locked_p;
 };
 
 //# Global functions
