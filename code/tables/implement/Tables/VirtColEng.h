@@ -1,5 +1,5 @@
 //# VirtColEng.h: Abstract base class for virtual column handling
-//# Copyright (C) 1994,1995,1996,1997,1999
+//# Copyright (C) 1994,1995,1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -177,6 +177,12 @@ private:
     // are read back and partly initialized.
     // The default implementation does nothing.
     virtual void prepare();
+
+    // The data manager will be deleted (because all its columns are
+    // requested to be deleted).
+    // So clean up the things needed (e.g. delete files).
+    // By default it assumes that nothing has to be done.
+    virtual void deleteManager();
 
     // Make a column object in the engine on behalf of a table column.
     // This column object class is derived from VirtualScalarColumn

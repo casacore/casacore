@@ -1,5 +1,5 @@
 //# TiledStMan.h: Base class for Tiled Storage Managers
-//# Copyright (C) 1995,1996,1997,1998,1999,2000
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -290,6 +290,11 @@ public:
 
     // Reopen all files used in this storage manager for read/write access.
     virtual void reopenRW();
+
+    // The data manager will be deleted (because all its columns are
+    // requested to be deleted).
+    // So clean up the things needed (e.g. delete files).
+    virtual void deleteManager();
 
     // Create a column in the storage manager on behalf of a table column.
     // <group>
