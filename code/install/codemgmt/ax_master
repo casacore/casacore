@@ -6200,3 +6200,4 @@
 17 191 src mv ./aips/implement/Functionals/NQFunction1D.h ./aips/implement/Functionals/Function1D.h
 17 191 src mv ./aips/implement/Functionals/NQFunctionWrapper.cc ./aips/implement/Functionals/FunctionWrapper.cc
 17 191 src mv ./aips/implement/Functionals/NQFunctionWrapper.h ./aips/implement/Functionals/FunctionWrapper.h
+17 191 src mv ./aips/implement/Functionals/NQGaussian1D.cc ./aips/implement/Functionals/Gaussian1D.cc
