@@ -236,7 +236,7 @@ public:
     void transpose(const Vector<Int> &newWorldOrder,
                    const Vector<Int> &newPixelOrder);
 
-    // Find the world axis mapping to the supplied CoordinateSystem
+    // Find the world and pixel axis mappings to the supplied CoordinateSystem
     // from the current coordinate system. <src>False</src> is 
     // returned if either the supplied or current coordinate system, 
     // has no world axes (and a message recoverable with function
@@ -255,10 +255,15 @@ public:
     // if refChange(i) is True, it means world axis i in the
     // current CoordinateSystem was matched, but has a different
     // reference type to that of the supplied CoordinateSystem.
+    // <group>
     Bool worldMap (Vector<Int>& worldAxisMap,
 		   Vector<Int>& worldAxisTranspose,
 		   Vector<Bool>& refChange,
 		   const CoordinateSystem& cSys) const;
+    Bool pixelMap (Vector<Int>& pixelAxisMap,
+		   Vector<Int>& pixelAxisTranspose,
+		   const CoordinateSystem& cSys) const;
+    // </group>
 
     // Remove a world or pixel axis. When its value is required for forward or
     // backwards transformations, use <src>replacement</src>

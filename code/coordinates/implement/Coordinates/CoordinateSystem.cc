@@ -344,6 +344,53 @@ void CoordinateSystem::transpose(const Vector<Int> &newWorldOrder,
 }
 
 
+Bool CoordinateSystem::pixelMap(Vector<Int>& pixelAxisMap,
+                                Vector<Int>& pixelAxisTranspose,
+                                const CoordinateSystem& other) const
+//
+// . pixelAxisMap(i) is the location of pixel axis
+//   i (from other) in *this.   A value of -1 indicates that 
+//   a pixel axis could not be matched.  
+// . pixelAxisTranspose(i) is the location of pixel axis i (from *this)
+//   in other.   It tells you how to transpose
+//   "other" to be in the order of "*this".  A value of -1 indicates
+//   that a world axis could not be matched. 
+//
+{
+   if (other.nPixelAxes() ==0) {
+      set_error(String("The supplied CoordinateSystem has no valid pixel axes"));
+      return False;
+   }
+   if (nPixelAxes() ==0) {
+      set_error(String("The current CoordinateSystem has no valid pixel axes"));
+      return False;
+   }
+//
+   pixelAxisMap.resize(other.nPixelAxes());
+   pixelAxisMap = -1;
+   pixelAxisTranspose.resize(nPixelAxes());
+   pixelAxisTranspose = -1;
+//
+   Vector<Int> worldAxisMap, worldAxisTranpose;
+   Vector<Bool> refChange;
+   Bool ok = worldMap(worldAxisMap, worldAxisTranpose, refChange, other);
+   if (!ok) return False;
+//
+   Int w, tw;
+   for (uInt i=0; i<other.nPixelAxes(); i++) {
+      w = other.pixelAxisToWorldAxis(i);      // Every pixel axis has a world axis
+      tw = worldAxisMap(w); 
+      if (tw >= 0) pixelAxisMap(i) = worldAxisToPixelAxis(tw);
+   }
+//
+   for (uInt i=0; i<nPixelAxes(); i++) {
+      w = pixelAxisToWorldAxis(i);        
+      tw = worldAxisTranpose(w);  
+      if (tw >= 0) pixelAxisTranspose(i) = other.worldAxisToPixelAxis(tw); 
+   }
+//
+   return True;
+}
 
 Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
                                 Vector<Int>& worldAxisTranspose,
@@ -357,11 +404,11 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 // . The coordinate systems can have arbitrary numbers of coordinates
 //   in any relative order.
 // . Removed world and pixel axes are handled.
-// . The value of worldAxisMap(i) is the world axis of "*this" matching 
-//   world axis i in "other".  A value of -1 indicates that 
+// . worldAxisMap(i) is the location of world axis
+//   i (from other) in *this.   A value of -1 indicates that 
 //   a world axis could not be matched.  
-// . The value of worldAxisTranspose(i) is the world axis of "other"
-//   matching world axis i of "*this"  It tells you how to transpose
+// . worldAxisTranspose(i) is the location of world axis i (from *this)
+//   in other.   It tells you how to transpose
 //   "other" to be in the order of "*this".  A value of -1 indicates
 //   that a world axis could not be matched. 
 // . If refChange(i) is True, it means that if the coordinate matched,
@@ -386,7 +433,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
       set_error(String("The current CoordinateSystem has no valid world axes"));
       return False;
    }
-
 
 // Loop over "other" coordinates
 
@@ -426,7 +472,6 @@ Bool CoordinateSystem::worldMap(Vector<Int>& worldAxisMap,
 
    return True;
 }
-
 
 
 
