@@ -1,5 +1,5 @@
 //# tRefRows.cc: This program tests class RefRows
-//# Copyright (C) 1998,1999,2000
+//# Copyright (C) 1998,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/ArrayIO.h>
 #include <aips/OS/Timer.h>
 #include <aips/Utilities/Assert.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Test program for class RefRows.
@@ -131,7 +132,8 @@ void doIt()
     }
 }
 
-main() {
+int main()
+{
     try {
 	doIt();
     } catch (AipsError x) {

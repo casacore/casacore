@@ -1,5 +1,5 @@
 //# dRetypedArrayEngine.cc: Test program for class RetypedArrayEngine
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@
 #include <aips/Containers/RecordField.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/Tables/DataManError.h>
+#include <aips/iostream.h>
 
 
 void* RetypedArrayEx1::newCopyInfo (const TableRecord&, const IPosition&)
@@ -197,7 +198,8 @@ void b();
 void c();
 
 
-main (int argc) {
+int main (int argc)
+{
     try {
 	a( (argc<2));
 	b();

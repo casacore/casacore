@@ -1,5 +1,5 @@
 //# ascii2Table.cc: This program loads an ASCII file into a table
-//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000
+//# Copyright (C) 1993,1994,1995,1996,1997,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -35,6 +35,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Arrays/ArrayMath.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 // <summary>
 // program to load an ASCII file into a table
@@ -46,7 +47,8 @@
 
 void calc(Table&, const String&);
 
-main (int argc, char** argv) {
+int main (int argc, char** argv)
+{
     try {
 	if (argc < 3) {
 	    cout << ">>>" << endl;

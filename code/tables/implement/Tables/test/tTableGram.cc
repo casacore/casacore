@@ -1,5 +1,5 @@
 //# tTableGram.cc: This program tests table commands using TableGram/Parse
-//# Copyright (C) 1994,1995,1996,1998,2000
+//# Copyright (C) 1994,1995,1996,1998,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,6 +33,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/Mathematics/Complex.h>
 #include <aips/Exceptions/Error.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Test program for table commands from user interface
@@ -47,7 +48,9 @@
 
 void seltab (const String&);
 void docomm ();
-main (int argc, char** argv) {
+
+int main (int argc, char** argv)
+{
     try {
 	if (argc > 1) {
 	    seltab(argv[1]);

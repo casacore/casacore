@@ -1,5 +1,5 @@
 //# tForwardColRow.cc: Test program for class ForwardColumn
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -45,6 +45,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Tables/TableError.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for class ForwardColumnIndexedRow </summary>
 
@@ -57,7 +58,8 @@ void a (const TableDesc&);
 void c (const TableDesc&);
 void check(const String& tableName, Int abOffset, Int acOffset);
 
-main () {
+int main ()
+{
     try {
 	TableDesc td = makeDesc();
 	a (td);

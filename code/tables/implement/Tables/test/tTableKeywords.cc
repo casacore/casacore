@@ -1,5 +1,5 @@
 //# tTableKeywords.cc Test program for the table keywords
-//# Copyright (C) 1994,1995,1996,1997,2000
+//# Copyright (C) 1994,1995,1996,1997,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 #include <aips/Tables/TableRecord.h>
 #include <aips/Utilities/Assert.h>
 #include <aips/OS/Directory.h>
+#include <aips/iostream.h>
 #include <unistd.h>
 
 

@@ -1,5 +1,5 @@
 //# tRowCopier.cc : tests the RowCopier class
-//# Copyright (C) 1995,1996,1999,2000,2001
+//# Copyright (C) 1995,1996,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -33,11 +33,11 @@
 #include <aips/Arrays/ArrayLogical.h>
 
 #include <aips/Tables/TableError.h>
-
+#include <aips/iostream.h>
 #include <aips/stdio.h>
 
-int main() {
-
+int main()
+{
 // first, create a short table with a few columns to use during testing
 // Do the descriptor first
 

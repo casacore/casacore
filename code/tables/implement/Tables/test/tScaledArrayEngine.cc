@@ -1,5 +1,5 @@
 //# tScaledArrayEngine.cc: Test program for class ScaledArrayEngine
-//# Copyright (C) 1994,1995,1996,1999,2000
+//# Copyright (C) 1994,1995,1996,1999,2000,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -40,6 +40,7 @@
 #include <aips/Arrays/Slicer.h>
 #include <aips/Arrays/Slice.h>
 #include <aips/Tables/TableError.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for class ScaledArrayEngine </summary>
 
@@ -50,7 +51,8 @@
 void a();
 void b();
 
-main () {
+int main ()
+{
     try {
 	a();
 	b();

@@ -1,5 +1,5 @@
 //# nISMBucket.cc :Simulation program for bucket behaviour of IncrementalStman
-//# Copyright (C) 1996,1999,2001
+//# Copyright (C) 1996,1999,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -30,6 +30,7 @@
 #include <aips/Arrays/Vector.h>
 #include <aips/iostream.h>
 #include <aips/strstream.h>
+#include <aips/iostream.h>
 
 // <summary>
 // Simulation program for bucket behaviour of IncrementalStman.
@@ -45,7 +46,7 @@
 // often a value varies.
 // </synopsis>
 
-main (int argc, char** argv)
+int main (int argc, char** argv)
 {
     if (argc < 2) {
 	cout << "This program calculates the number of buckets needed" << endl;

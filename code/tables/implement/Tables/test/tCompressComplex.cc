@@ -1,5 +1,5 @@
 //# tCompressComplex.cc: Test program for class CompressComplex
-//# Copyright (C) 2001
+//# Copyright (C) 2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -43,6 +43,7 @@
 #include <aips/Arrays/ArrayUtil.h>
 #include <aips/OS/Timer.h>
 #include <aips/Tables/TableError.h>
+#include <aips/iostream.h>
 
 // <summary> Test program for class CompressComplex </summary>
 
