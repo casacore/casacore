@@ -1,6 +1,6 @@
 /*
     cregex.c: Extended regular expression matching and search library
-    Copyright (C) 1993,1994,1995,1996,1997,1999,2001
+    Copyright (C) 1993,1994,1995,1996,1997,1999,2001,2003
     Associated Universities, Inc. Washington DC, USA.
 
     This library is free software; you can redistribute it and/or modify it
@@ -35,6 +35,11 @@
 /* We write fatal error messages on standard error.  */
 #include <aips/stdio.h>
 /* isalpha(3) etc. are used for the character classes.  */
+/* The CB_CTYPE_MACROS causes incompatible ctype definitions on */
+/* HPUX 10.2 systems, so we undefine it  AxC 23-1-2003 */
+#if defined (HPUX10_2)
+#  undef _SB_CTYPE_MACROS
+#endif
 #include <ctype.h>
 /* Sequents are missing isgraph.  */
 /* Get the RE_DUP_MAX value */
