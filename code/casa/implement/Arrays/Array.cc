@@ -944,12 +944,12 @@ template<class T> Bool Array<T>::ok() const
 	return False;
     if (nelements() > 0 && (begin_p == 0 || data_p.null()))
 	return False;
-    // This test likely isn't portable
+    // This test may not be portable.
     if (data_p->storage() > begin_p) {
 	return False;
     }
-    // This test likely isn't portable
-    if (begin_p > data_p->storage() + data_p->nelements()*sizeof(T)) {
+    // This test may not be portable.
+    if (begin_p > data_p->storage() + data_p->nelements()) {
 	return False;
     }
     if (contiguous_p != isStorageContiguous()) {
