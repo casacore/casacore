@@ -1,5 +1,5 @@
 //# ArrayIO.h: text output and binary IO for an array of any dimensionality.
-//# Copyright (C) 1993,1994,1995,1997
+//# Copyright (C) 1993,1994,1995,1997,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //# 
 //# This library is free software; you can redistribute it and/or modify it
@@ -114,7 +114,7 @@ template<class T> class Block;
 
 template<class T> ostream &operator << (ostream &, const Array<T> &);
 
-// Write a formatted copy of the array to the LogIO output object. Merely calls
+// Write a formatted copy of the array to the LogIO output tool. Merely calls
 // the ostream operator<< in turn.
 template<class T> LogIO &operator<<(LogIO &os, const Array<T> &a);
 
