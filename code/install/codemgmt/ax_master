@@ -3992,3 +3992,4 @@
 14 065 src mv trial/implement/DisplayEvents/WCTool.h trialdisplay/implement/DisplayEvents/WCTool.h
 14 065 src mv trial/implement/DisplayEvents/WorldCanvasEvent.h trialdisplay/implement/DisplayEvents/WorldCanvasEvent.h
 14 065 src mv trial/implement/DisplayEvents/AniPosEH.cc trialdisplay/implement/DisplayEvents/AniPosEH.cc
+14 065 src mv trial/implement/DisplayEvents/Animator.cc trialdisplay/implement/DisplayEvents/Animator.cc
