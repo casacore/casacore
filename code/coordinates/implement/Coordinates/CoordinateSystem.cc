@@ -2993,10 +2993,10 @@ void CoordinateSystem::getPCFromHeader(LogIO& os, Int& rotationAxis,
             pc(rotationAxis+1,rotationAxis+1) =
                pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*C::pi/180.0);
 
-// Might be backwards?
+// Assume sign of rotation is correct although its not on the expected axis (AIPS convention)
 
-            pc(rotationAxis+1,rotationAxis)=-sin(crota(rotationAxis)*C::pi/180.0);
-            pc(rotationAxis,rotationAxis+1)= sin(crota(rotationAxis)*C::pi/180.0);
+            pc(rotationAxis,rotationAxis+1)=-sin(crota(rotationAxis)*C::pi/180.0);
+            pc(rotationAxis+1,rotationAxis)= sin(crota(rotationAxis)*C::pi/180.0);
          }
       }
    } else {
