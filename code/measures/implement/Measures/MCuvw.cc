@@ -134,6 +134,7 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     break;
 
   case JMEAN_JTRUE:
+    measMath.createPrecession();
     measMath.createNutation();
     break;
 
@@ -142,14 +143,17 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     break;
 
   case BMEAN_BTRUE:
+    measMath.createPrecessionB1950();
     measMath.createNutationB1950();
     break;
 
   case JTRUE_JMEAN:
+    measMath.createPrecession();
     measMath.createNutation();
     break;
     
   case BTRUE_BMEAN:
+    measMath.createPrecessionB1950();
     measMath.createNutationB1950();
     break;
     
@@ -160,6 +164,7 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
   case JNAT_APP:
     measMath.createAberration();
     measMath.createPrecNutat();
+    measMath.createSolarPos();
     break;
     
   case JNAT_J2000:
@@ -180,7 +185,23 @@ void MCuvw::initConvert(uInt which, MConvertBase &mc) {
     measMath.createAberrationB1950();
     measMath.createPrecNutatB1950();
     break;
-    
+
+  case MECLIP_JMEAN:
+    measMath.createPrecession();
+    break;
+
+  case JMEAN_MECLIP:
+    measMath.createPrecession();
+    break;
+
+  case TECLIP_JTRUE:
+    measMath.createPrecession();
+    break;
+
+  case JTRUE_TECLIP:
+    measMath.createPrecession();
+    break;
+
   default:
     break;
     
@@ -210,183 +231,342 @@ void MCuvw::doConvert(MVuvw &in,
     switch (mc.getMethod(i)) {
 
     case HADEC_ITRF:
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      toPole(in);
       measMath.applyHADECtoITRF(in);
+      measMath.applyHADECtoITRF(MVDIR1);
       break;
 
     case ITRF_HADEC:
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      measMath.applyHADECtoITRF(MVDIR1);
+      toPole(in);
       measMath.deapplyHADECtoITRF(in);
+      measMath.deapplyHADECtoITRF(MVDIR1);
       break;
 
     case GAL_J2000:
+      getJ2000();
+      measMath.deapplyGALtoJ2000(MVDIR1);
+      toPole(in);
       measMath.applyGALtoJ2000(in);
+      measMath.applyGALtoJ2000(MVDIR1);
       break;
 
     case GAL_B1950:
+      getB1950();
+      measMath.deapplyGALtoB1950(MVDIR1);
+      toPole(in);
       measMath.applyGALtoB1950(in);
+      measMath.applyGALtoB1950(MVDIR1);
       break;
       
    case J2000_GAL:
+      getJ2000();
+      toPole(in);
       measMath.deapplyGALtoJ2000(in);
-      break;
+      measMath.deapplyGALtoJ2000(MVDIR1);
+     break;
 
     case B1950_GAL:
+      getB1950();
+      toPole(in);
       measMath.deapplyGALtoB1950(in);
+      measMath.deapplyGALtoB1950(MVDIR1);
       break;
 
     case J2000_B1950:
+      getJ2000();
+      toPole(in);
       in.adjust(g2);
-      measMath.applyJ2000toB1950(in);
+      measMath.applyJ2000toB1950(in, False);
       in.readjust(g2);
+      measMath.applyJ2000toB1950(MVDIR1);
       break;
 
     case B1950_J2000:
+      getB1950();
+      toPole(in);
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950(in);
+      measMath.deapplyJ2000toB1950(in, False);
       in.readjust(g2);
+      measMath.deapplyJ2000toB1950(MVDIR1);
       break;
 
     case J2000_JMEAN:
+      getJ2000();
+      toPole(in);
       measMath.applyPrecession(in);
+      measMath.applyPrecession(MVDIR1);
       break;
 
     case B1950_BMEAN:
+      getB1950();
+      toPole(in);
       measMath.applyPrecessionB1950(in);
+      measMath.applyPrecessionB1950(MVDIR1);
       break;
     
     case JMEAN_J2000:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      toPole(in);
       measMath.deapplyPrecession(in);
+      measMath.deapplyPrecession(MVDIR1);
       break;
 
     case JMEAN_JTRUE:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      toPole(in);
       measMath.applyNutation(in);
+      measMath.applyNutation(MVDIR1);
       break;
     
     case BMEAN_B1950:
+      getB1950();
+      measMath.applyPrecessionB1950(MVDIR1);
+      toPole(in);
       measMath.deapplyPrecessionB1950(in);
+      measMath.deapplyPrecessionB1950(MVDIR1);
       break;
 
     case BMEAN_BTRUE:
+      getB1950();
+      measMath.applyPrecessionB1950(MVDIR1);
+      toPole(in);
       measMath.applyNutationB1950(in);
+      measMath.applyNutationB1950(MVDIR1);
       break;
 
     case JTRUE_JMEAN:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      measMath.applyNutation(MVDIR1);
+      toPole(in);
       measMath.deapplyNutation(in);
+      measMath.deapplyNutation(MVDIR1);
       break;
 
     case BTRUE_BMEAN:
+      getB1950();
+      measMath.applyPrecessionB1950(MVDIR1);
+      measMath.applyNutationB1950(MVDIR1);
+      toPole(in);
       measMath.deapplyNutationB1950(in);
+      measMath.deapplyNutationB1950(MVDIR1);
       break;
     
     case J2000_JNAT: 
+      getJ2000();
+      toPole(in);
       in.adjust(g2);
-      measMath.applySolarPos(in);
+      measMath.applySolarPos(in, False);
       in.readjust(g2);
+      measMath.applySolarPos(MVDIR1);
       break;
     
     case JNAT_APP:
+      getJ2000();
+      measMath.applySolarPos(MVDIR1);
+      toPole(in);
       in.adjust(g2);
-      measMath.applyAberration(in);
+      measMath.applyAberration(in, False);
       in.readjust(g2);
       measMath.applyPrecNutat(in);
+      measMath.applyAberration(MVDIR1);
+      measMath.applyPrecNutat(MVDIR1);
       break;
 
     case APP_JNAT:
+      getAPP();
+      toPole(in);
       measMath.deapplyPrecNutat(in);
+      in.adjust(g2);
+      measMath.deapplyAberration(in, False);
+      in.readjust(g2);
+      measMath.deapplyPrecNutat(MVDIR1);
+      measMath.deapplyAberration(MVDIR1);
       break;
 
     case JNAT_J2000:
+      getJ2000();
+      measMath.applySolarPos(MVDIR1);
+      toPole(in);
       in.adjust(g2);
-      measMath.deapplySolarPos(in);
+      measMath.deapplySolarPos(in, False);
       in.readjust(g2);
+      measMath.deapplySolarPos(MVDIR1);
       break;
 
     case B1950_APP:
+      getB1950();
+      toPole(in);
       in.adjust(g2);
-      measMath.applyETerms(in);
+      measMath.applyPrecNutatB1950(in, False);
+      measMath.applyAberrationB1950(in, False);
       in.readjust(g2);
-      measMath.applyPrecNutatB1950(in);
+      measMath.applyPrecNutatB1950(MVDIR1);
+      measMath.applyAberrationB1950(MVDIR1);
       break;
 
     case APP_B1950:
-      measMath.deapplyPrecNutatB1950(in);
+      getAPP();
+      toPole(in);
       in.adjust(g2);
-      measMath.deapplyETerms(in);
+      measMath.deapplyAberrationB1950(in, False);
+      measMath.deapplyPrecNutatB1950(in, False);
       in.readjust(g2);
+      measMath.deapplyAberrationB1950(MVDIR1);
+      measMath.deapplyPrecNutatB1950(MVDIR1);
       break;
     
     case TOPO_HADEC: 
+      getAPP();
+      measMath.applyAPPtoTOPO(in, lengthP);
+      toPole(in);
       in.adjust(g2);
-      measMath.applyTOPOtoHADEC(in);
+      measMath.applyTOPOtoHADEC(in, False);
       in.readjust(g2);
+      measMath.applyTOPOtoHADEC(MVDIR1);
       break;
 
     case HADEC_AZEL:
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      toPole(in);
       measMath.applyHADECtoAZEL(in);
+      measMath.applyHADECtoAZEL(MVDIR1);
       break;
 
     case AZEL_HADEC:
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      measMath.applyHADECtoAZEL(MVDIR1);
+      toPole(in);
       measMath.deapplyHADECtoAZEL(in);
+      measMath.deapplyHADECtoAZEL(MVDIR1);
       break;
      
     case HADEC_TOPO: 
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      toPole(in);
       in.adjust(g2);
-      measMath.deapplyTOPOtoHADEC(in);
+      measMath.deapplyTOPOtoHADEC(in, False);
       in.readjust(g2);
+      measMath.deapplyTOPOtoHADEC(MVDIR1);
       break;
  
     case APP_TOPO: 
+      getAPP();
+      toPole(in);
       in.adjust(g2);
-      measMath.applyAPPtoTOPO(in, lengthP);
+      measMath.applyAPPtoTOPO(in, lengthP, False);
       in.readjust(g2);
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
       break;
    
     case TOPO_APP: 
+      getAPP();
+      measMath.applyAPPtoTOPO(in, lengthP);
+      toPole(in);
       in.adjust(g2);
-      measMath.deapplyAPPtoTOPO(in, lengthP);
+      measMath.deapplyAPPtoTOPO(in, lengthP, False);
       in.readjust(g2);
+      measMath.deapplyAPPtoTOPO(MVDIR1, lengthP);
       break;
 
     case AZEL_AZELSW:
     case AZELSW_AZEL:
+      getAPP();
+      measMath.applyAPPtoTOPO(MVDIR1, lengthP);
+      measMath.applyTOPOtoHADEC(MVDIR1);
+      measMath.applyHADECtoAZEL(MVDIR1);
+      toPole(in);
       measMath.applyAZELtoAZELSW(in);
+      measMath.applyAZELtoAZELSW(MVDIR1);
       break;
 
     case ECLIP_J2000:
+      getJ2000();
+      measMath.deapplyECLIPtoJ2000(MVDIR1);
+      toPole(in);
       measMath.applyECLIPtoJ2000(in);
+      measMath.applyECLIPtoJ2000(MVDIR1);
       break;
 
     case J2000_ECLIP:
+      getJ2000();
+      toPole(in);
       measMath.deapplyECLIPtoJ2000(in);
+      measMath.deapplyECLIPtoJ2000(MVDIR1);
       break;
 
     case MECLIP_JMEAN:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      measMath.deapplyMECLIPtoJMEAN(MVDIR1);
+      toPole(in);
       measMath.applyMECLIPtoJMEAN(in);
+      measMath.applyMECLIPtoJMEAN(MVDIR1);
       break;
 
     case JMEAN_MECLIP:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      toPole(in);
       measMath.deapplyMECLIPtoJMEAN(in);
+      measMath.deapplyMECLIPtoJMEAN(MVDIR1);
       break;
 
     case TECLIP_JTRUE:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      measMath.deapplyTECLIPtoJTRUE(MVDIR1);
+      toPole(in);
       measMath.applyTECLIPtoJTRUE(in);
+      measMath.applyTECLIPtoJTRUE(MVDIR1);
       break;
 
     case JTRUE_TECLIP:
+      getJ2000();
+      measMath.applyPrecession(MVDIR1);
+      toPole(in);
       measMath.deapplyTECLIPtoJTRUE(in);
+      measMath.deapplyTECLIPtoJTRUE(MVDIR1);
       break;
 
     case GAL_SUPERGAL:
+      getJ2000();
+      measMath.deapplyGALtoJ2000(MVDIR1);
+      toPole(in);
       measMath.applyGALtoSUPERGAL(in);
+      measMath.applyGALtoSUPERGAL(MVDIR1);
       break;
 
     case SUPERGAL_GAL:
+      getJ2000();
+      measMath.deapplyGALtoJ2000(MVDIR1);
+      measMath.applyGALtoSUPERGAL(MVDIR1);
+      toPole(in);
       measMath.deapplyGALtoSUPERGAL(in);
-      break;
+      measMath.deapplyGALtoSUPERGAL(MVDIR1);
+     break;
     
     default:
       break;
       
     };	// switch
+    // Get in correct direction
+    fromPole(in);
   };	// for
 }
 
@@ -399,4 +579,26 @@ String MCuvw::showState() {
   return MCBase::showState(MCuvw::stateMade_p, MCuvw::FromTo_p[0],
 			   Muvw::N_Types, MCuvw::N_Routes,
 			   MCuvw::ToRef_p);
+}
+
+void MCuvw::getAPP() {
+  measMath.getAPP(MVDIR1);
+}
+
+void MCuvw::getJ2000() {
+  measMath.getJ2000(MVDIR1);
+}
+
+void MCuvw::getB1950() {
+  measMath.getB1950(MVDIR1);
+}
+
+void MCuvw::toPole(MVPosition &in) {
+  in *= RotMatrix(Euler(-C::pi_2 + MVDIR1.getLat(), 2u,
+			-MVDIR1.getLong(), 3u));
+}
+
+void MCuvw::fromPole(MVPosition &in) {
+  in = RotMatrix(Euler(-C::pi_2 + MVDIR1.getLat(), 2u,
+		       -MVDIR1.getLong(), 3u)) * in;
 }

@@ -37,6 +37,7 @@
 #include <aips/Measures/MCBase.h>
 #include <aips/Measures/MConvertBase.h>
 #include <aips/Measures/MeasMath.h>
+#include <aips/Quanta/MVDirection.h>
 
 //# Forward Declarations
 class MCuvw;
@@ -155,7 +156,10 @@ private:
   //# Enumerations
   
   //# Cached Data
+  // Calculation class
   MeasMath measMath;
+  // Belonging direction
+  MVDirection MVDIR1;
 
   //# State machine data
   // Has state matrix been made
@@ -194,7 +198,17 @@ private:
 		 MRBase &inref,
 		 MRBase &outref,
 		 const MConvertBase &mc);
-  
+  // Get the correct belonging direction from the frame
+  // <group>
+  void getAPP();
+  void getJ2000();
+  void getB1950();
+  // </group>  
+  // Rotate from direction to pole
+  void toPole(MVPosition &in);
+  // Rotate from pole to direction
+  void fromPole(MVPosition &in);
+
 };
 
 #endif
