@@ -39,9 +39,7 @@
 
 //#forward
 
-//<summary>
-// VisBuffers encapulsate one chunk of visibility data for processing.
-//</summary>
+//<summary>VisBuffers encapulsate one chunk of visibility data for processing.</summary>
 //
 // <use visibility=export>
 //
@@ -64,7 +62,7 @@
 // This allows processing of the data in larger blocks, avoiding some
 // overheads for processing per visibility point or spectrum.
 //
-// See <linkto class="MeasurementEquations">MeasurementEquations</linkto>
+// See <linkto module="MeasurementEquations">MeasurementEquations</linkto>
 // for more details on how the VisBuffer is to be used.
 //</synopsis>
 
