@@ -69,7 +69,7 @@ void Regex::create(const String& exp, Int fast, Int bufsize,
   Char* msg = a2_re_compile_pattern((Char*)(exp.chars()), tlen, buf);
   a2_re_set_syntax(orig);
   if (msg != 0) {
-    throw(invalid_argument("Regex"));
+    throw(invalid_argument("Regex: invalid regular expression given"));
   } else if (fast) a2_re_compile_fastmap(buf);
 }
 
