@@ -763,7 +763,7 @@ Bool ImageMoments<T>::createMoments()
         return False;
      }
    }
-   Int worldMomentAxis = ImageUtilities::pixelAxisToWorldAxis(pInImage_p->coordinates(), momentAxis_p);
+   Int worldMomentAxis = pInImage_p->coordinates().pixelAxisToWorldAxis(momentAxis_p);
    String momentAxisUnits = pInImage_p->coordinates().worldAxisUnits()(worldMomentAxis);
    cout << "momentAxisUnits = " << momentAxisUnits << endl;
 
@@ -890,7 +890,7 @@ Bool ImageMoments<T>::createMoments()
 
    CoordinateSystem outImageCoord = pInImage_p->coordinates();
    outImageCoord.subImage(blc_p.asVector(), IPosition(inDim,1).asVector());
-   Int momentWorldAxis = ImageUtilities::pixelAxisToWorldAxis(outImageCoord, momentAxis_p);
+   Int momentWorldAxis = outImageCoord.pixelAxisToWorldAxis(momentAxis_p);
    os_p << LogIO::NORMAL << endl << "Moment axis type is "
         << pInImage_p->coordinates().worldAxisNames()(momentWorldAxis) << LogIO::POST;
 
@@ -984,15 +984,11 @@ Bool ImageMoments<T>::createMoments()
    const Double ks = 0.03;
 
 
-// Set up progress indicators
+// Set up progress indicator
 
    Int nProfiles = imageIterator.latticeShape().product()/imageIterator.vectorCursor().nelements();
-   Int percentInc = 20;
-   Int percent = percentInc;
-   Int inc = max(1, Int(Float(percentInc)/100.0*nProfiles));
-   Int iProfile = 1;
    ProgressMeter clock(0.0, Double(nProfiles), String("Compute Moments"), String(""),
-                       String(""), String(""), True, inc);
+                       String(""), String(""), True, max(1,Int(nProfiles/10)));
    Double meterValue = 0.0;
 
 
@@ -1010,10 +1006,6 @@ Bool ImageMoments<T>::createMoments()
 
    os_p << LogIO::NORMAL << "Begin computation of moments" << LogIO::POST;
    while (!imageIterator.atEnd()) {
-//     if (iProfile%inc == 0) {
-//         os_p << "Completed " << percent << "%" << LogIO::POST;
-//         percent += percentInc;
-//     }
 
 // Set pixel values of all axes (used for coordinate transformation)
 // to be start of cursor array.  The desired value for the moment axis 
@@ -1086,7 +1078,6 @@ Bool ImageMoments<T>::createMoments()
 // Increment iterators and progress meter
 
       imageIterator++;
-      iProfile++;      
 
       clock.update(meterValue);
       meterValue += 1.0; 
@@ -3788,22 +3779,20 @@ Bool ImageMoments<T>::smoothImage (String& smoothName,
 
    os_p << LogIO::NORMAL << "Begin convolution" << LogIO::POST;
    Convolver<T> conv(psf, cursorShape);
+
    Int nIter = smLatticeShape.product() / cursorShape.product();
-   Int percentInc = 20;
-   Int inc = max(1, Int(Float(percentInc)/100.0*nIter));
-   Int iIter = 1;
-   Int percent = percentInc;
+   ProgressMeter clock(0.0, Double(nIter), String("Convolve image"), String(""),
+                       String(""), String(""), True, max(1,Int(nIter/10)));
+   Double meterValue = 0.0;
 
    while (!imageIterator.atEnd()) {
-     if (iIter%inc == 0 && percent <=100) {
-         os_p << LogIO::NORMAL << "Completed " << percent << "%" << LogIO::POST;
-         percent += percentInc;
-     }
-
       conv.linearConv(smoothedImageIterator.cursor(), imageIterator.cursor());
+
+      clock.update(meterValue);
+      meterValue += 1.0; 
+
       imageIterator++;
       smoothedImageIterator++;
-      iIter++;
    }
   
    return True;
