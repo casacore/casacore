@@ -1,5 +1,5 @@
 //# MDirection.cc:  A Measure: astronomical direction
-//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001
+//# Copyright (C) 1995,1996,1997,1998,1999,2000,2001,2002
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -130,6 +130,8 @@ const String &MDirection::showType(MDirection::Types tp) {
     "HADEC",
     "AZEL",
     "AZELSW",
+    "AZELGEO",
+    "AZELSWGEO",
     "JNAT",
     "ECLIPTIC",
     "MECLIPTIC",
@@ -161,7 +163,7 @@ const String &MDirection::showType(uInt tp) {
 
 const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
 					   const uInt *&typ) {
-  static const Int N_name  = 30;
+  static const Int N_name  = 33;
   static const Int N_extra = 11;
   static const String tname[N_name] = {
     "J2000",
@@ -176,6 +178,9 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     "AZEL",
     "AZELSW",
     "AZELNE",
+    "AZELGEO",
+    "AZELSWGEO",
+    "AZELNEGEO",
     "JNAT",
     "ECLIPTIC",
     "MECLIPTIC",
@@ -208,6 +213,9 @@ const String *const MDirection::allMyTypes(Int &nall, Int &nextra,
     MDirection::AZEL,
     MDirection::AZELSW,
     MDirection::AZEL,
+    MDirection::AZELGEO,
+    MDirection::AZELSWGEO,
+    MDirection::AZELGEO,
     MDirection::JNAT,
     MDirection::ECLIPTIC,
     MDirection::MECLIPTIC,
@@ -303,6 +311,8 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
 	MDirection::GLONGLAT,
 	MDirection::GHADEC,
 	MDirection::GAZEL,
+        MDirection::GAZEL,
+        MDirection::GAZEL,
         MDirection::GAZEL,
 	MDirection::GRADEC,
 	MDirection::GLONGLAT,

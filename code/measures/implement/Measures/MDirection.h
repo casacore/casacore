@@ -83,7 +83,10 @@ template <class M> class ROScalarMeasColumn;
 //  <li>MDirection::AZEL --- topocentric Azimuth and Elevation (N through E)
 //  <li>MDirection::AZELSW - topocentric Azimuth and Elevation (S through W)
 //  <li>MDirection::AZELNE - topocentric Azimuth and Elevation (N through E)
-//  <li>MDirection::ECLIPTC   -- ecliptic for J2000 equator and equinox
+//  <li>MDirection::AZELGEO --- geodetic Azimuth and Elevation (N through E)   
+//  <li>MDirection::AZELSWGEO - geodetic Azimuth and Elevation (S through W)   
+//  <li>MDirection::AZELNEGEO - geodetic Azimuth and Elevation (N through E)   
+///  <li>MDirection::ECLIPTC   -- ecliptic for J2000 equator and equinox
 //  <li>MDirection::MECLIPTIC -- ecliptic for mean equator of date
 //  <li>MDirection::TECLIPTIC -- ecliptic for true equator of date
 //  <li>MDirection::SUPERGAL -- supergalactic coordinates
@@ -112,7 +115,7 @@ template <class M> class ROScalarMeasColumn;
 // is needed if the conversion goes to or from the different types:
 // <ul>
 //   <li><em>Epoch</em>: all but J2000, B1950, GALACTIC, SUPGAL, ECLIPTIC
-//   <li><em>Positiom</em>: HADEC, AZEL
+//   <li><em>Positiom</em>: HADEC, AZEL, AZELGEO
 // </ul>
 // Conversions are based on the IAU system of 
 // <linkto class=Precession>precession</linkto> and 
@@ -186,6 +189,8 @@ public:
       HADEC,
       AZEL,
       AZELSW,
+      AZELGEO,
+      AZELSWGEO,
       JNAT,
       ECLIPTIC,
       MECLIPTIC,
@@ -213,7 +218,8 @@ public:
       // Defaults
       DEFAULT=J2000,
       // Synonyms
-      AZELNE=AZEL};
+      AZELNE=AZEL,
+      AZELNEGEO=AZELGEO };
   // Global types
   enum GlobalTypes {
     GRADEC,
