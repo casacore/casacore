@@ -41,7 +41,7 @@ extern "C" {
 #include <time.h>
 }
 
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
 #include <sys/times.h>
 #include <unistd.h>
 
@@ -180,7 +180,7 @@ private:
 #if defined(DOS) || defined(MSDOS)
     clock_t usage0;
     timeb   real0;          //# elapsed real time at last mark
-#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX)
+#elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX) || defined(AIPS_OSF) || defined(__hpux__) || defined(AIPS_LINUX) || defined(AIPS_DARWIN)
     tms     usage0;         //# tms structure at last mark
     clock_t real0;          //# elapsed real time at last mark
 #else

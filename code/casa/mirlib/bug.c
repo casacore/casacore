@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static char *errmsg_c();
 void bug_c();
@@ -129,7 +130,7 @@ int n;
   string[len0] = 0;
   return(string);
 #else
-# if !defined(linux)
+# if !(defined(linux) || defined(__APPLE_CC__))
   extern int sys_nerr;
   extern char *sys_errlist[];
 # endif
