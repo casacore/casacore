@@ -1,5 +1,5 @@
 //# ImageMoments.h: generate moments from images
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -132,6 +132,9 @@ class Unit;
 //  image and you collapsed axis 2 (the DEC axis) the output images would be 
 //  RA-VELOCITY with the coordinate information retained for the DEC axis so that 
 //  the coupled nature of RA/DEC coordinates is preserved.    
+//
+//  Output images are created with an all True (good) mask.  If, for a given
+//  pixel, the moment calculation fails, then the mask is set to F.
 //
 //  When making plots, the order in which the spectra are  displayed is determined
 //  by the tiling sequence of the image (for optimum speed of access).  
