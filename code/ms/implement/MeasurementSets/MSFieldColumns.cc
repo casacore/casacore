@@ -91,7 +91,7 @@ matchReferenceDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
 		  Matrix<Double>& mdir, MVDirection& mvdir) const 
 {
   referenceDir().get(row, mdir);
-  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  mvdir.setAngle(mdir(0, 0), mdir(1, 0));
   if (dirVal.separation(mvdir) < sepInRad) {
     return True;
   } else {
@@ -104,7 +104,7 @@ matchDelayDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
 	      Matrix<Double>& mdir, MVDirection& mvdir) const 
 {
   delayDir().get(row, mdir);
-  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  mvdir.setAngle(mdir(0, 0), mdir(1, 0));
   if (dirVal.separation(mvdir) < sepInRad) {
     return True;
   } else {
@@ -117,7 +117,7 @@ matchPhaseDir(uInt row, const MVDirection& dirVal, const Double& sepInRad,
 	      Matrix<Double>& mdir, MVDirection& mvdir) const 
 {
   phaseDir().get(row, mdir);
-  mvdir.setAngle(mdir(0, 0), mdir(0, 1));
+  mvdir.setAngle(mdir(0, 0), mdir(1, 0));
   if (dirVal.separation(mvdir) < sepInRad) {
     return True;
   } else {
