@@ -329,70 +329,81 @@ Bool ObsInfo::toFITS(String & error, RecordInterface & outRecord) const
     return True;
 }
 
-Bool ObsInfo::fromFITS(String & error, const RecordInterface & inRecord)
+Bool ObsInfo::fromFITS(Vector<String>& error, const RecordInterface & inRecord)
 {
-    error = "";
+    error.resize(4);
 //
+    Bool ok = True;
     ObsInfo tmp;
     (*this) = tmp; // Make sure we are "empty" first;
-//
+
+// Item 0
+
     Int field = inRecord.fieldNumber("telescop");
     if (field >= 0) {
 	if (inRecord.type(field) != TpString) {
-	    error = "Type of TELESCOP field is not String!";
-	    return False;
-	}
-	setTelescope(inRecord.asString(field));
+	    error(0) = "Type of TELESCOP field is not String!";
+	    ok = False;
+	} else {
+   	   setTelescope(inRecord.asString(field));
+        }
     }
-//
+
+// Item 1
+
     field = inRecord.fieldNumber("observer");
     if (field >= 0) {
 	if (inRecord.type(field) != TpString) {
-	    error = "Type of OBSERVER field is not String!";
-	    return False;
-	}
-	setObserver(inRecord.asString(field));
+	    error(1) = "Type of OBSERVER field is not String!";
+	    ok = False;
+	} else {
+           setObserver(inRecord.asString(field));
+        }
     }
-//
+
+// Item 2
+
     field = inRecord.fieldNumber("date-obs");
     if (field >= 0) {
 	if (inRecord.type(field) != TpString) {
-	    error = "Type of DATE-OBS field is not a String!";
-	    return False;
-	}
-	Int field2 = inRecord.fieldNumber("timesys");
-	String timesysstring;
-	if (field2 >= 0 && inRecord.type(field2) == TpString) {
-	    timesysstring = inRecord.asString(field2);
-	}
-	MVTime time; MEpoch::Types timesys;
-	String datestring = inRecord.asString(field);
-	Bool ok = 
-	    FITSDateUtil::fromFITS(time, timesys, datestring, timesysstring);
-	setObsDate(MEpoch(time.get(), timesys));
-	if (!ok) {
-	    error = "Could not decode FITS date format from keywords";
-	    return False;
-	}
+	    error(2) = "Type of DATE-OBS field is not a String!";
+	    ok = False;
+	} else {
+           Int field2 = inRecord.fieldNumber("timesys");
+	   String timesysstring;
+	   if (field2 >= 0 && inRecord.type(field2) == TpString) {
+	      timesysstring = inRecord.asString(field2);
+           }
+           MVTime time; MEpoch::Types timesys;
+	   String datestring = inRecord.asString(field);
+	   Bool ok2 = FITSDateUtil::fromFITS(time, timesys, datestring, timesysstring);
+           if (ok2) {
+       	      setObsDate(MEpoch(time.get(), timesys));
+           } else {
+              error(2) = "Could not decode FITS date format from keywords";
+              ok = False;
+           }
+       }
     }
-//
+
+// Item 3
+
     Int fieldLong = inRecord.fieldNumber("obsra");
     Int fieldLat  = inRecord.fieldNumber("obsdec");
     if (fieldLong>=0 && fieldLat>=0) {
-	if (inRecord.type(fieldLong) != TpDouble) {
-	    error = "Type of OBSRA field is not Double!";
-	    return False;
-	}
-	if (inRecord.type(fieldLat) != TpDouble) {
-	    error = "Type of OBSDEC field is not Double!";
-	    return False;
-	}
-        MVDirection mvd((inRecord.asDouble(fieldLong))*C::pi/180.0,
-                        (inRecord.asDouble(fieldLat))*C::pi/180.0);
-	setPointingCenter(mvd);
+	if (inRecord.type(fieldLong) != TpDouble ||
+	    inRecord.type(fieldLat) != TpDouble) {
+	    error(3) = "Type of OBSRA or OBSDEC field is not Double!";
+	    ok = False;
+	} else {
+           MVDirection mvd((inRecord.asDouble(fieldLong))*C::pi/180.0,
+                           (inRecord.asDouble(fieldLat))*C::pi/180.0);
+   	   setPointingCenter(mvd);
+        }
     }
 //
-    return True;
+    if (ok) error.resize(0);
+    return ok;
 }
 
 Vector<String> ObsInfo::keywordNamesFITS()
