@@ -2346,3 +2346,5 @@
 09 329 src rm trial/implement/distributed
 09 329 sys rm libexec/hub.g
 09 329 sys rm libexec/hubutil.g
+09 329 src rm trial/implement/Tasking/hub.g
+09 329 src rm trial/implement/Tasking/hubutil.g
