@@ -39,7 +39,6 @@
 #include <aips/Tables/TableDesc.h>
 #include <aips/Tables/ColDescSet.h>
 #include <aips/Tables/TableRecord.h>
-#include <aips/OS/Memory.h>
 
 ROVisibilityIterator::ROVisibilityIterator() {}
 
@@ -456,10 +455,8 @@ Cube<Bool>& ROVisibilityIterator::flag(Cube<Bool>& flags) const
     }
     flags.resize(flagCube_p.shape());  flags=flagCube_p; 
   } else {
-    cout << "rovisiter flag memBef" << Memory::assignedMemoryInBytes() << endl;
     if (useSlicer_p) colFlag.getColumn(slicer_p,flags,True);
     else colFlag.getColumn(flags,True);
-    cout << "rovisiter flag memAft" << Memory::assignedMemoryInBytes() << endl;
   }
   return flags;
 }
@@ -680,7 +677,6 @@ void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
 					 Cube<Complex>& data) const
 {
 
-  cout << "whicol " << whichOne << " FLOAT DATA " << floatDataFound_p << endl;
  
   // Return the visibility (observed, model or corrected);
   // deal with DATA and FLOAT_DATA seamlessly for observed data.
@@ -688,10 +684,7 @@ void ROVisibilityIterator::getDataColumn(DataColumn whichOne,
   case Observed:
     if (floatDataFound_p) {
       Cube<Float> dataFloat;
-      cout << "rovisiter getdatcolumn memBef " << Memory::assignedMemoryInBytes() << endl;
       colFloatVis.getColumn(slicer,dataFloat,True);
-      cout << "rovisiter getdatcolumn memAft " << Memory::assignedMemoryInBytes() << endl;
-
       data.resize(dataFloat.shape());
       convertArray(data,dataFloat);
     } else {
@@ -898,10 +891,8 @@ Matrix<Float>& ROVisibilityIterator::imagingWeight(Matrix<Float>& wt) const
       }
       wt.resize(imagingWeight_p.shape()); wt=imagingWeight_p; 
     } else {
-      cout <<"visiter weight memBef " << Memory::assignedMemoryInBytes() << endl;
       if (useSlicer_p) colImagingWeight.getColumn(weightSlicer_p,wt,True);
       else colImagingWeight.getColumn(wt,True);
-      cout <<"visiter weight memAft " << Memory::assignedMemoryInBytes() << endl;
     }
   }
   return wt;
