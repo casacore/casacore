@@ -31,6 +31,7 @@
 #include <aips/Logging/LogOrigin.h>
 #include <aips/Logging/LogSink.h>
 #include <aips/Logging/NullLogSink.h>
+#include <aips/Logging/MemoryLogSink.h>
 #include <aips/Logging/StreamLogSink.h>
 #include <aips/Logging/TableLogSink.h>
 #include <aips/Logging/LogIO.h>
@@ -389,6 +390,15 @@ void testLogSink()
     AlwaysAssertExit(copy == &sink5.localSink());
     AlwaysAssertExit(&sink5.localSink() != &sink4.localSink());
 
+    // LogSink &localSink(LogSinkInterface *&fromNew);
+    LogSinkInterface *newLocalm = new MemoryLogSink(LogMessage::SEVERE);
+    AlwaysAssertExit(newLocalm);
+    copy = newLocalm;
+    sink5.localSink(newLocalm);
+    AlwaysAssertExit(!newLocalm);
+    AlwaysAssertExit(copy == &sink5.localSink());
+    AlwaysAssertExit(&sink5.localSink() != &sink4.localSink());
+
     // ~LogSink(); - implicit at end of block
 }
 
@@ -456,6 +466,29 @@ void testLogIO()
     }
 }
 
+void testLogMemory()
+{
+  LogFilter tmp;
+  LogSink sink(tmp, False);
+  LogIO lio(sink);
+  lio << "test " << LogIO::WARN << "message" << LogIO::SEVERE
+      << LogIO::POST;
+  AlwaysAssertExit (sink.nelements() == 1);
+  lio << "test2 message" << LogIO::POST;
+  AlwaysAssertExit (sink.nelements() == 2);
+  AlwaysAssertExit (lio.localSink().nelements() == 2);
+  AlwaysAssertExit (sink.getMessage(0) == "test message");
+  AlwaysAssertExit (sink.getPriority(0) == "SEVERE");
+  AlwaysAssertExit (sink.getMessage(1) == "test2 message");
+  AlwaysAssertExit (sink.getPriority(1) == "NORMAL");
+  sink.localSink().writeLocally (sink.getTime(0), sink.getMessage(1),
+				 sink.getPriority(0), sink.getLocation(0),
+				 sink.getObjectID(0));
+  AlwaysAssertExit (sink.nelements() == 3);
+  AlwaysAssertExit (sink.getMessage(2) == "test2 message");
+  AlwaysAssertExit (sink.getPriority(2) == "SEVERE");
+}
+
 int main()
 {
     try {
@@ -465,6 +498,7 @@ int main()
 	// Also tests other classes derived from LogSinkInterface
 	testLogSink();
 	testLogIO();
+	testLogMemory();
 	cleanup();
     } catch (AipsError x) {
         cout << "Caught an exception : " << x.getMesg() << endl;
