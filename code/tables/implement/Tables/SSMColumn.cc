@@ -657,7 +657,7 @@ void SSMColumn::putScalarColumnStringV (const Vector<String>* aDataPtr)
 
 void SSMColumn::putColumnValue(const void* anArray,uInt aNrRows)
 {
-  char* aDataPtr = static_cast<char*>(anArray);
+  const char* aDataPtr = static_cast<const char*>(anArray);
   uInt aRowNr=0;
   Int rowsToDo=aNrRows;
 
