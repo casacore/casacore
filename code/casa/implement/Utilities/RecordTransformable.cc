@@ -38,7 +38,7 @@ Bool RecordTransformable::fromString(String & error, const String & inString) {
   return False;
 }
 
-const String &RecordTransformable::ident() {
+const String &RecordTransformable::ident() const {
   static String myid = String();
   return myid;
 }

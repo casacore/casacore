@@ -524,7 +524,7 @@ void QuantumHolder::toVector() {
   };
 }
 
-const String &QuantumHolder::ident() {
+const String &QuantumHolder::ident() const {
   static String myid = "quant";
   return myid;
 }

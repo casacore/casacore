@@ -207,7 +207,7 @@ public:
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
   // Return identification
-  virtual const String &ident();
+  virtual const String &ident() const;
 
 private:
 

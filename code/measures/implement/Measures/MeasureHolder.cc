@@ -320,7 +320,7 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   return False;
 }
 
-const String &MeasureHolder::ident() {
+const String &MeasureHolder::ident() const {
   static String myid = "meas";
   return myid;
 }

@@ -192,7 +192,7 @@ public:
   Bool toRecord(String &error, GlishRecord &out) const;
   // </group>
   // Get identification of record
-  virtual const String &ident();
+  virtual const String &ident() const;
 
 private:
 
