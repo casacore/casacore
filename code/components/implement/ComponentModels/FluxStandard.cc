@@ -74,6 +74,8 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
   Quantity mvfreq = mfreq.get ("MHz");
   // Flux density polynomials expressed in terms of log_10 (f/MHz)
   Double dt = log10 (mvfreq.getValue());
+  // Perley_Taylor 1999.2 coefficients are for GHz
+  Double dt3 = dt - 3.0;
 
   // Select on source name
 
@@ -89,8 +91,16 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       coeffErr = square (0.018) + square (0.006*dt) + square (0.001*dt*dt);
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = 1.35899 + dt * (0.3599 + dt * (-0.13338));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
       fluxCoeff = 0.50344 + dt * (1.05026 + dt * (-0.31666 + dt * 0.01602));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
+      fluxCoeff =1.23734 + dt3 * (-0.43276 + dt3 * (-0.14223 + dt3 * 0.00345));
       break;
     };
     };
@@ -107,8 +117,16 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       coeffErr = square (0.03) + square (0.001*dt) + square (0.001*dt*dt);
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = 2.0868 + dt * (0.20889 + dt * (-0.15498));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
       fluxCoeff = 1.16801 + dt * (1.07526 + dt * (-0.42254 + dt * 0.02699));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
+      fluxCoeff =1.31752 + dt3 * (-0.74090 + dt3 * (-0.16708 + dt3 * 0.01525));
       break;
     };
     };
@@ -125,8 +143,16 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       coeffErr = square (0.017) + square (0.006*dt) + square (0.001*dt*dt);
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = 1.92641 + dt * (0.36072 + dt * (-0.17389));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
       fluxCoeff = 0.05702 + dt * (2.09340 + dt * (-0.7076 + dt * 0.05477));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
+      fluxCoeff =1.44856 + dt3 * (-0.67252 + dt3 * (-0.21124 + dt3 * 0.04077));
       break;
     };
     };
@@ -143,8 +169,16 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       // No flux density error specified
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = 2.009 + dt * (-0.07176 + dt * (-0.0862));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
       fluxCoeff = 1.97498 + dt * (-0.23918 + dt * (0.01333 + dt * -0.01389));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
+      fluxCoeff =1.00761 + dt3 * (-0.55629 + dt3 * (-0.11134 + dt3 * -0.0146));
       break;
     };
     };
@@ -160,7 +194,15 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       // No flux density error specified
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
+      fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
       fluxCoeff = -30.7667 + dt * (26.4908 + dt * (-7.0977 + dt * 0.605334));
       break;
     };
@@ -178,8 +220,16 @@ Bool FluxStandard::compute (const String& sourceName, const MFrequency& mfreq,
       coeffErr = square (0.013) + square (0.009*dt) + square (0.001*dt*dt);
       break;
     };
+    case PERLEY_90: {
+      fluxCoeff = 1.485 + dt * (0.759 + dt * (-0.255));
+      break;
+    };
     case PERLEY_TAYLOR_95: {
       fluxCoeff = 1.28872 + dt * (0.94172 + dt * (-0.31113 + dt * 0.00569));
+      break;
+    };
+    case PERLEY_TAYLOR_99: {
+      fluxCoeff = 1.46744 + dt3 * (-0.7735 + dt3 * (-0.25912 + dt3 * 0.00752));
       break;
     };
     };

@@ -1,5 +1,5 @@
 //# FluxStandard.h: Compute flux densities for standard reference sources
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -77,14 +77,21 @@ class FluxStandard
   // Flux scale types
   enum FluxScale {
 
-    // Perley and Taylor (1995.2); plus Reynolds (1934-638)
+    // Perley (1990); plus Reynolds (1934-638; 7/94); Baars (3C138)
+    PERLEY_90,
+
+    // Perley and Taylor (1995.2); plus Reynolds (1934-638; 7/94)
     PERLEY_TAYLOR_95,
+
+    // Perley and Taylor (1999.2); plus Reynolds (1934-638; 7/94)
+    PERLEY_TAYLOR_99,
+
     // Baars scale
     BAARS};
 
   // Default constructor, and destructor
   FluxStandard (FluxStandard::FluxScale scale = 
-		FluxStandard::PERLEY_TAYLOR_95);
+		FluxStandard::PERLEY_TAYLOR_99);
   ~FluxStandard();
 
   // Compute the flux density for a specified source at a specified frequency
