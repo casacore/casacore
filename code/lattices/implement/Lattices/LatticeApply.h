@@ -1,5 +1,5 @@
 //# LatticeApply.h: Optimally iterate through a Lattice and apply provided function object
-//# Copyright (C) 1997,1998
+//# Copyright (C) 1997,1998,1999
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -156,12 +156,12 @@ public:
 // of the supplied region).
 // The default region is the entire input lattice.
 // <group>
-    static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+    static void lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				LineCollapser<T>& collapser,
 				uInt collapseAxis,
 				LatticeProgress* tellProgress = 0);
-    static void lineMultiApply (PtrBlock<Lattice<T>*>& latticeOut, 
+    static void lineMultiApply (PtrBlock<MaskedLattice<T>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
 				LineCollapser<T>& collapser,
