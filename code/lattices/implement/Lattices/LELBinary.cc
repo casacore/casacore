@@ -125,7 +125,7 @@ void LELBinary<T>::eval(Array<T>& result,
        }
        break;
    default:
-       throw(AipsError("LELBinary: unknown operation"));
+       throw(AipsError("LELBinary::eval - unknown operation"));
    }
 
 }
@@ -148,7 +148,7 @@ T LELBinary<T>::getScalar() const
    case LELBinaryEnums::DIVIDE :
       return pLeftExpr_p->getScalar() / pRightExpr_p->getScalar();
    default:
-       throw(AipsError("LELBinary: unknown operation"));
+       throw(AipsError("LELBinary::getScalar - unknown operation"));
    }
    return 0;
 }
@@ -292,7 +292,7 @@ void LELBinaryCmp<T>::eval(Array<Bool>& result,
        }
        break;
    default:
-       throw(AipsError("LELBinaryCmp: unknown operation"));
+       throw(AipsError("LELBinaryCmp::eval - unknown operation"));
    }
 
 }
@@ -315,7 +315,7 @@ Bool LELBinaryCmp<T>::getScalar() const
    case LELBinaryEnums::NE :
       return ToBool (pLeftExpr_p->getScalar() != pRightExpr_p->getScalar());
    default:
-       throw(AipsError("LELBinaryCmp: unknown operation"));
+       throw(AipsError("LELBinaryCmp::eval - unknown operation"));
    }
    return False;
 }
