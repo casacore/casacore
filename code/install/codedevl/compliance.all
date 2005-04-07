@@ -50,6 +50,7 @@ Dependancies for coordinates
     libcoordinates => libcasa
     libcoordinates => libscimath
     libcoordinates => libmeasures
+    libcoordinates => libfits
     libcoordinates => libcoordinates
   Application:
 
