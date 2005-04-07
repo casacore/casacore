@@ -608,9 +608,13 @@ Bool DirectionCoordinate::toPixelMany (Matrix<Double>& pixel,
  
 
 
-MDirection::Types DirectionCoordinate::directionType() const
+MDirection::Types DirectionCoordinate::directionType(Bool showConversion) const
 {
-    return type_p;
+    if (showConversion) {
+       return conversionType_p;
+    } else {
+       return type_p;
+    }        
 }
 
 Projection DirectionCoordinate::projection() const
