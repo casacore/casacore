@@ -202,7 +202,7 @@ LCRegion* WCRegion::toLCRegion (const CoordinateSystem& cSys,
         Int axis = axisNr (getAxisDesc(i), desc);
 	if (axis < 0) {
 	    throw (AipsError ("WCRegion::toLCRegion - "
-			      "a region axis is unknown in target "
+			      "a region axis is unknown or inconsistent in target "
 			      "coordinate system"));
 	}
 	pixelAxesMap(n++) = axis;
