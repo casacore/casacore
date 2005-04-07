@@ -393,7 +393,7 @@ public:
     // conversion frequency system to the new type and delete any
     // conversion machines.  
     // <group>
-    MFrequency::Types frequencySystem() const;
+    MFrequency::Types frequencySystem(Bool showConversion=False) const;
     void  setFrequencySystem(MFrequency::Types type);
     // </group>
 

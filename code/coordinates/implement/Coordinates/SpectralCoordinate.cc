@@ -541,9 +541,13 @@ Vector<Double> SpectralCoordinate::worldValues() const
     return worker_p.worldValues();
 }
 
-MFrequency::Types SpectralCoordinate::frequencySystem() const
+MFrequency::Types SpectralCoordinate::frequencySystem(Bool showConversion) const
 {
-    return type_p;
+    if (showConversion) {
+       return conversionType_p;
+    } else {
+       return type_p;
+    }
 }
 
 void  SpectralCoordinate::setFrequencySystem(MFrequency::Types type)
