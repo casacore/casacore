@@ -150,13 +150,13 @@ Record WCRegion::makeAxisDesc (const CoordinateSystem& cSys, uInt axis) const
     switch (type) {
     case Coordinate::DIRECTION:
     {
-	Int type = cSys.directionCoordinate(coord).directionType();
+	Int type = cSys.directionCoordinate(coord).directionType(True);
 	axisrec.define ("dirtype", type);
 	break;
     }
     case Coordinate::SPECTRAL:
     {
-	Int type = cSys.spectralCoordinate(coord).frequencySystem();
+	Int type = cSys.spectralCoordinate(coord).frequencySystem(True);
 	axisrec.define ("freqtype", type);
 	break;
     }
