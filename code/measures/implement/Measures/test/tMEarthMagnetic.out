@@ -51,14 +51,14 @@ MEarthMagnetic state transition matrix:
 Date:      1998/05/18
 Position:  [6.36457e+06, 0.115264, 0.92034]
            [6.60417, 52.7316] deg
-Result:    [41637.4, 1822.27, 24904.1]
+Result:    [41647.4, 1813.7, 24906]
 ------------------------------------------
-In ITRF:   EarthMagnetic: [41637.4, 1822.27, 24904.1]
-           [2.50596, 30.8603] deg
-In AZEL:   EarthMagnetic: [-18001.6, -2978.51, 44992]
-           [-170.605, 67.9251] deg
-In HADEC:  EarthMagnetic: [41570.7, 2978.51, 24904.1]
-           [4.0982, 30.8603] deg
+In ITRF:   EarthMagnetic: [41647.4, 1813.7, 24906]
+           [2.49359, 30.8564] deg
+In AZEL:   EarthMagnetic: [-18007.6, -2988.18, 44998.9]
+           [-170.578, 67.9201] deg
+In HADEC:  EarthMagnetic: [41579.6, 2988.18, 24906]
+           [4.11057, 30.8564] deg
 ------------------------------------------
 In AZEL:   EarthMagnetic: [18312.1, -382.004, 45184.5]
            [-1.19506, 67.9342] deg
@@ -67,12 +67,12 @@ In HADEC:  EarthMagnetic: [12788.5, 382.004, 47047.1]
 In ITRF:   EarthMagnetic: [12747.6, 1091.33, 47047.1]
            [4.8932, 74.7866] deg
 ------------------------------------------
-Model ITRF:   EarthMagnetic: [41637.4, 1822.27, 24904.1]
-              [2.50596, 30.8603] deg, 0.485511 G
-Model AZEL:   EarthMagnetic: [-18001.6, -2978.51, 44992]
-              [-170.605, 67.9251] deg, 0.485511 G
-Model HADEC:  EarthMagnetic: [41570.7, 2978.51, 24904.1]
-              [4.0982, 30.8603] deg, 0.485511 G
+Model ITRF:   EarthMagnetic: [41647.4, 1813.7, 24906]
+              [2.49359, 30.8564] deg, 0.485603 G
+Model AZEL:   EarthMagnetic: [-18007.6, -2988.18, 44998.9]
+              [-170.578, 67.9201] deg, 0.485603 G
+Model HADEC:  EarthMagnetic: [41579.6, 2988.18, 24906]
+              [4.11057, 30.8564] deg, 0.485603 G
 --------------------------------------
 Testing all conversions forward/backward
 All forward/backward Magnetic conversions: ok
@@ -80,12 +80,12 @@ All forward/backward Magnetic conversions: ok
 Exercise all MVEarthMagnetic function
 putValue:       [23 G, 23 G, 23 G], [0.0023, 0.0023, 0.0023]
 earthMagneticAngle:  -1.479
-earthMagneticAngle:  -84.7402 deg
+earthMagneticAngle:  -84.7407 deg
 get:            [0.00398372, 0.785398, 0.61548]
 getRecordValue: [0.0023 nT, 0.0023 nT, 0.0023 nT]
 separation:     3.14159
 separation:     180 deg
-crossProduct:   [53.0882, 38.4865, -91.5747]
+crossProduct:   [53.1124, 38.5051, -91.6175]
 getAngle:       [0.785398, 0.61548] rad
 getAngle:       [45, 35.2644] deg
 getlength:      3.98372e-08 G
@@ -120,11 +120,11 @@ All MVEarthMagnetic functions: ok
 Exercise all MEarthMagnetic function
 getType:        1, 9
 giveMe:         1, Reference for an EarthMagnetic with Type: AZEL
-setRefString:   1, EarthMagnetic: [41637.4, 1822.27, 24904.1]
+setRefString:   1, EarthMagnetic: [41647.4, 1813.7, 24906]
 assure:         ok
-clone:          EarthMagnetic: [41637.4, 1822.27, 24904.1]
-get:            [4.16374e+06, 182227, 2.49041e+06] cm.m-1.kg.s-2.A-1
-getAngle:       [2.50596, 30.8603] deg
+clone:          EarthMagnetic: [41647.4, 1813.7, 24906]
+get:            [4.16474e+06, 181370, 2.4906e+06] cm.m-1.kg.s-2.A-1
+getAngle:       [2.49359, 30.8564] deg
 getDefaultType: IGRF
 getRefString:   HADEC
 myType:         4
