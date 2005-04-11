@@ -39,11 +39,12 @@
 #include <casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
+class wcsprm;
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class celprm;
 class prjprm;
-class ::wcsprm;
 class MVDirection;
 class MVAngle;
 class LogIO;
