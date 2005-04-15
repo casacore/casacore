@@ -336,8 +336,8 @@ Also the GIVING clause with a value set is seen as an operation.
 
 \section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
-key in the ORDERBY clause, in the set in the GIVING clause, or in
-values in the INSERT or UPDATE command.
+key in the ORDERBY clause, in the set in the GIVING clause, or as
+a value in the INSERT and UPDATE command.
 Note that the expression result must be
 a boolean scalar if used in the WHERE clause. If used in ORDERBY
 the result can also be a numeric or string scalar. If used in 
@@ -393,11 +393,11 @@ Scalar constants of the various data types can be formed as follows
   \item A Double constant can be any integer or floating-point number.
        \\Another way to define a Double constant is by means of
        a Time or Position. Such a constant is always converted to radians.
-       It can be given in several ways:
+      It can be given in several ways:
        \begin{itemize}
          \item An integer or floating-point number immediately
               followed by a unit
-              (thus without whitespace). E.g. \texttt{12deg}
+              (thus without whitespace). E.g. \texttt{12.43deg}
               \\Some valid units are deg, arcmin, arcsec (or as), rad.
               The units can be scaled by preceeding them with a letter
               (e.g. mrad is millirad).
@@ -428,7 +428,7 @@ Scalar constants of the various data types can be formed as follows
          "this is a string constant"
          'this is a string constant containing a "'
          "ab'cd"'ef"gh'
-             which results in constant  ab'cdef"gh
+             which results in constant   ab'cdef"gh
        \end{verbatim}
   \item A Regex constant can be given in three flavours:
 	\begin{itemize}
@@ -859,7 +859,7 @@ where each value is the minimum of each plane in the cube.
 \\Axes numbers are 1-relative, thus 1 is the first axis.
 \\Axes numbers exceeding the dimensionality of the array are ignored.
 Thus, for example, \texttt{maxs(ARRAY,[2:10])} works for arrays
-of any dimensionality and results in a 1-dim array.
+of virtually any dimensionality and results in a 1-dim array.
 \\The function names are the 'plural' forms of the
 functions in the previous table.
 They can only be used for arrays, thus not for scalars.
@@ -1034,8 +1034,8 @@ an increment defaults to one. If an entire axis is left out,
 it defaults to the entire axis.
 \\E.g. an array with shape [10,15,20] can be subsectioned as:
 \begin{verbatim}
-  [,,3]              resulting in an array of shape [10,15,1]
-  [2:4, ::3, 2:15:2  resulting in an array of shape[3,5,7]
+  [,,3]               resulting in an array of shape [10,15,1]
+  [2:4, ::3, 2:15:2]  resulting in an array of shape[3,5,7]
 \end{verbatim}
 The examples show that an index can be a simple constant (as it will
 usually be). It can also be an expression which can be as complex
@@ -1525,7 +1525,7 @@ command can be used as a desk calculator.
 gives a vector of scalars containing the mean per row.
 
 \begin{verbatim}
-  CALC sum([SELECT FROM mytable CALC GIVING [mean(column1+column2)]])
+  CALC sum([SELECT FROM mytable GIVING [mean(column1+column2)]])
 \end{verbatim}
 gives a single scalar giving the sum of the means in each row.
 Note that in this command the CALC command does not need the FROM
@@ -1840,8 +1840,8 @@ features and by doing optimizations.
     as undefined values
     which can be tested with the function ISDEFINED.
   \item Interpret column units defined in a column keyword UNIT.
-  \item Add a function (say POSITIONINCIRCLE or PINC) to search in a circle
-       around a position.
+  \item Add a function INCONE(RA\_column,DEC\_column,RA,DEC,radius)
+	to do a cone search in a circle around a position.
   \item Maybe functions to convert positions from one equinox or system
        to another (using the Measures system).
   \item Optimize using a B+ tree index.
