@@ -496,9 +496,9 @@ TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
  
 //# Parse the name of a function.
 TableExprFuncNode::FunctionType TableParseSelect::findFunc
-                                        (const String& name,
-					 uInt narguments,
-					 const Vector<Int>& ignoreFuncs)
+                               (const String& name,
+				uInt narguments,
+				const Vector<Int>& ignoreFuncs)
 {
     //# Determine the function type.
     //# Use the function name in lower case.
@@ -520,6 +520,21 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 	ftype = TableExprFuncNode::nearabs2FUNC;
 	if (narguments == 3) {
 	    ftype = TableExprFuncNode::nearabs3FUNC;
+	}
+    } else if (funcName == "cones") {
+	ftype = TableExprConeNode::conesFUNC;
+	if (narguments == 3) {
+	    ftype = TableExprConeNode::cones3FUNC;
+	}
+    } else if (funcName == "anycone") {
+	ftype = TableExprConeNode::anyconeFUNC;
+	if (narguments == 3) {
+	    ftype = TableExprConeNode::anycone3FUNC;
+	}
+    } else if (funcName == "findcone") {
+	ftype = TableExprConeNode::findconeFUNC;
+	if (narguments == 3) {
+	    ftype = TableExprConeNode::findcone3FUNC;
 	}
     } else if (funcName == "cos") {
 	ftype = TableExprFuncNode::cosFUNC;
@@ -807,6 +822,13 @@ TableExprNode TableParseSelect::makeFuncNode
 	return TableExprNode::newFunctionNode (ftype, parms, table, 1);
       }
       break;
+    case TableExprFuncNode::conesFUNC:
+    case TableExprFuncNode::anyconeFUNC:
+    case TableExprFuncNode::findconeFUNC:
+    case TableExprFuncNode::cones3FUNC:
+    case TableExprFuncNode::anycone3FUNC:
+    case TableExprFuncNode::findcone3FUNC:
+      return TableExprNode::newConeNode (ftype, arguments, 1);
     default:
       break;
     }
@@ -1026,13 +1048,11 @@ TableExprNode TableParseSelect::doSubQuery()
 TableExprNode TableParseSelect::makeSubSet() const
 {
     // Perform some checks on the given set.
-    if (resultSet_p->nelements() != 1) {
-	throw (TableInvExpr ("Set in GIVING clause can have 1 element only"));
-    }
     if (resultSet_p->hasArrays()) {
 	throw (TableInvExpr ("Set in GIVING clause should contain scalar"
 			     " elements"));
     }
+    resultSet_p->checkEqualDataTypes();
     // Link to set to make sure that TableExprNode hereafter does not delete
     // the object.
     resultSet_p->link();
@@ -1040,7 +1060,7 @@ TableExprNode TableParseSelect::makeSubSet() const
 	throw (TableInvExpr ("Incorrect table used in GIVING set expression"));
     }
     uInt nrow = table_p.nrow();
-    TableExprNodeSet set(nrow, (*resultSet_p)[0]);
+    TableExprNodeSet set(nrow, *resultSet_p);
     return set.setOrArray();
 }
 

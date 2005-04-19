@@ -33,6 +33,7 @@
 #include <tables/Tables/ExprNodeRep.h>
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/ExprFuncNode.h>
+#include <tables/Tables/ExprConeNode.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Regex.h>
@@ -219,6 +220,45 @@ class TableExprNode
     friend TableExprNode nearAbs (const TableExprNode& left,
 				  const TableExprNode& right,
 				  const TableExprNode& tolerance);
+    // </group>
+
+    // Cone search; test if the position of a source is inside a cone.
+    // <br>Argument <src>sourcePos</src> must be a double array
+    // containing two values (ra and dec of source) in radians.
+    // <br>Argument <src>cones</src> must be a double array
+    // specifying the position of the cone centers and radii in radians.
+    // So the array must contain three values (ra,dec,radius)
+    // or a multiple of it.
+    // <group>
+    // The result is a bool array telling for each cone if it contains the
+    // source. If there is only one cone, the result is a scalar.
+    friend TableExprNode cones (const TableExprNode& sourcePos,
+				const TableExprNode& cones);
+    // The result is always a Bool scalar telling if any cone contains
+    // the source.
+    friend TableExprNode anyCone (const TableExprNode& sourcePos,
+				  const TableExprNode& cones);
+    // The sourcePos can contain multiple sources.
+    // The result is a double array giving the index of the first
+    // cone containing the corresponding source.
+    // If there is one source, the result is a double scalar.
+    friend TableExprNode findCone (const TableExprNode& sourcePos,
+				   const TableExprNode& cones);
+    // </group>
+
+    // Cone search as above.
+    // However, the cone positions and radii are specified separately
+    // and (virtually) a larger array containing every combination of
+    // position/radius is formed.
+    friend TableExprNode cones (const TableExprNode& sourcePos,
+				const TableExprNode& conePos,
+				const TableExprNode& radii);
+    friend TableExprNode anyCone (const TableExprNode& sourcePos,
+				  const TableExprNode& conePos,
+				  const TableExprNode& radii);
+    friend TableExprNode findCone (const TableExprNode& sourcePos,
+				   const TableExprNode& conePos,
+				   const TableExprNode& radii);
     // </group>
 
     // Transcendental functions that can be applied to essentially all numeric
@@ -653,6 +693,20 @@ public:
 					  const TableExprNodeSet& axes);
     // </group>
 
+    // Create cone function node of the given type with the given arguments.
+    // <group>
+    static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
+				      const TableExprNodeSet& set,
+				      uInt origin = 0);
+    static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
+				      const TableExprNode& node1,
+				      const TableExprNode& node2);
+    static TableExprNode newConeNode (TableExprFuncNode::FunctionType,
+				      const TableExprNode& node1,
+				      const TableExprNode& node2,
+				      const TableExprNode& node3);
+    // </group>
+
     // Create rownumber() function node.
     // Origin indicates whether the first row should be zero (for C++ binding)
     // or an other value (one for TaQL binding).
@@ -885,6 +939,45 @@ inline TableExprNode nearAbs (const TableExprNode& left,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nearabs3FUNC,
 					   left, right, tolerance);
+}
+inline TableExprNode cones (const TableExprNode& sourcePos,
+			    const TableExprNode& cones)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::conesFUNC,
+				       sourcePos, cones);
+}
+inline TableExprNode anyCone (const TableExprNode& sourcePos,
+			      const TableExprNode& cones)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::anyconeFUNC,
+				       sourcePos, cones);
+}
+inline TableExprNode findCone (const TableExprNode& sourcePos,
+			       const TableExprNode& cones)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::findconeFUNC,
+				       sourcePos, cones);
+}
+inline TableExprNode cones (const TableExprNode& sourcePos,
+			    const TableExprNode& conePos,
+			    const TableExprNode& radii)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::cones3FUNC,
+				       sourcePos, conePos, radii);
+}
+inline TableExprNode anyCone (const TableExprNode& sourcePos,
+			      const TableExprNode& conePos,
+			      const TableExprNode& radii)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::anycone3FUNC,
+				       sourcePos, conePos, radii);
+}
+inline TableExprNode findCone (const TableExprNode& sourcePos,
+			       const TableExprNode& conePos,
+			       const TableExprNode& radii)
+{
+    return TableExprNode::newConeNode (TableExprFuncNode::findcone3FUNC,
+				       sourcePos, conePos, radii);
 }
 inline TableExprNode cos (const TableExprNode& node)
 {

@@ -1033,6 +1033,58 @@ TableExprNode TableExprNode::newFunctionNode
     }
 }
 
+TableExprNode TableExprNode::newConeNode
+                                 (TableExprFuncNode::FunctionType ftype,
+			          const TableExprNode& node1,
+			          const TableExprNode& node2)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(node1));
+    set.add (TableExprNodeSetElem(node2));
+    return newConeNode (ftype, set);
+}
+TableExprNode TableExprNode::newConeNode
+                                 (TableExprFuncNode::FunctionType ftype,
+			          const TableExprNode& node1,
+			          const TableExprNode& node2,
+			          const TableExprNode& node3)
+{
+    TableExprNodeSet set;
+    set.add (TableExprNodeSetElem(node1));
+    set.add (TableExprNodeSetElem(node2));
+    set.add (TableExprNodeSetElem(node3));
+    return newConeNode (ftype, set);
+}
+TableExprNode TableExprNode::newConeNode
+                                 (TableExprFuncNode::FunctionType ftype,
+				  const TableExprNodeSet& set,
+				  uInt origin)
+{
+    // Convert the set to a PtrBlock of the values in the set elements.
+    // This requires that the set has single values.
+    if (! set.isSingle()) {
+	throw (TableInvExpr ("A function parameter cannot be an interval"));
+    }
+    uInt npar = set.nelements();
+    PtrBlock<TableExprNodeRep*> par(npar);
+    for (uInt i=0; i<npar; i++) {
+	par[i] = const_cast<TableExprNodeRep*>(set[i].start());
+    }
+    // Check all the operands and get the resulting data type and value type
+    // of the function.
+    // It also fills the expected data and value type of the operands.
+    Block<Int> dtypeOper;
+    Block<Int> vtypeOper;
+    TableExprNodeRep::ValueType resVT;
+    TableExprNodeRep::NodeDataType resDT;
+    resDT = TableExprConeNode::checkOperands (dtypeOper, resVT, vtypeOper,
+					      ftype, par);
+    // Create new function node and fill it.
+    TableExprConeNode* fnode = new TableExprConeNode (ftype, resDT,
+						      resVT, set, origin);
+    return TableExprConeNode::fillNode (fnode, par, dtypeOper);
+}
+
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
 					       const TableExprNodeSet& indices,
 					       uInt origin)

@@ -73,6 +73,7 @@ PtrBlock<TableParseUpdate*>* updateb;
 %token <val> PATTERN
 %token AS
 %token IN
+%token INCONE
 %token BETWEEN
 %token EXISTS
 %token LIKE
@@ -552,8 +553,7 @@ relexpr:   arithexpr
                delete $3;
            }
          | arithexpr NOT IN arithexpr {
-               TableExprNode node ($1->in (*$4));
-               $$ = new TableExprNode (!node);
+               $$ = new TableExprNode (! $1->in (*$4));
                delete $1;
                delete $4;
            }
@@ -563,8 +563,7 @@ relexpr:   arithexpr
                delete $3;
            }
          | arithexpr NOT IN singlerange {
-               TableExprNode node ($1->in (*$4));
-               $$ = new TableExprNode (!node);
+               $$ = new TableExprNode (! $1->in (*$4));
                delete $1;
                delete $4;
            }
@@ -579,11 +578,20 @@ relexpr:   arithexpr
          | arithexpr NOT BETWEEN arithexpr AND arithexpr {
  	       TableExprNodeSet set;
 	       set.add (TableExprNodeSetElem(True, *$4, *$6, True));
-               TableExprNode node ($1->in (set));
-               $$ = new TableExprNode (!node);
+               $$ = new TableExprNode (! $1->in (set));
                delete $1;
                delete $4;
 	       delete $6;
+           }
+         | arithexpr INCONE arithexpr {
+               $$ = new TableExprNode (anyCone (*$1, *$3));
+               delete $1;
+               delete $3;
+           }
+         | arithexpr NOT INCONE arithexpr {
+               $$ = new TableExprNode (! anyCone (*$1, *$4));
+               delete $1;
+               delete $4;
            }
          ;
 

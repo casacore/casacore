@@ -192,6 +192,13 @@ public:
 	rowidFUNC,
             // special function resembling if statement
 	iifFUNC,
+	    // other functions, implemented in derived class
+	conesFUNC,
+	cones3FUNC,
+	anyconeFUNC,
+	anycone3FUNC,
+	findconeFUNC,
+	findcone3FUNC,
 	NRFUNC      //# should be last
 	};
 

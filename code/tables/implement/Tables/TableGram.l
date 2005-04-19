@@ -50,7 +50,8 @@
    In a NAME the backslash can be used to escape special characters like -.
    In that way a name like DATE-OBS can be given as DATE\-OBS.
 */
-WHITE     [ \t\n]*
+WHITE1    [ \t\n]
+WHITE     {WHITE1}*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
@@ -98,16 +99,16 @@ SET       [Ss][Ee][Tt]
 VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]
 FROM      [Ff][Rr][Oo][Mm]
 WHERE     [Ww][Hh][Ee][Rr][Ee]
-ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]
+ORDERBY   [Oo][Rr][Dd][Ee][Rr]{WHITE}[Bb][Yy]{WHITE1}
 NODUPL1   [Nn][Oo][Dd][Uu][Pp][Ll][Ii][Cc][Aa][Tt][Ee][Ss] 
 DISTINCT  [Dd][Ii][Ss][Tt][Ii][Nn][Cc][Tt]
 UNIQUE    [Uu][Nn][Ii][Qq][Uu][Ee]
 NODUPL    {NODUPL1}|{DISTINCT}|{UNIQUE}
 GIVING1   [Gg][Ii][Vv][Ii][Nn][Gg]
-SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]
+SAVETO    [Ss][Aa][Vv][Ee]{WHITE}[Tt][Oo]{WHITE1}
 GIVING    {GIVING1}|{SAVETO}
 INTO      [Ii][Nn][Tt][Oo]
-GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]
+GROUPBY   [Gg][Rr][Oo][Uu][Pp]{WHITE}[Bb][Yy]{WHITE1}
 HAVING    [Hh][Aa][Vv][Ii][Nn][Gg]
 ASC       [Aa][Ss][Cc]
 DESC      [Dd][Ee][Ss][Cc]
@@ -117,6 +118,7 @@ BETWEEN   [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
 EXISTS    [Ee][Xx][Ii][Ss][Tt][Ss]
 LIKE      [Ll][Ii][Kk][Ee]
 IN        [Ii][Nn]
+INCONE    [Ii][Nn]{WHITE}[Cc][Oo][Nn][Ee]{WHITE1}
 AS        [Aa][Ss]
 AND       [Aa][Nn][Dd]
 OR        [Oo][Rr]
@@ -264,6 +266,10 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 {IN}      {
             tableGramPosition() += yyleng;
             return IN;
+          }
+{INCONE}  {
+            tableGramPosition() += yyleng;
+            return INCONE;
           }
 "["       {
             tableGramPosition() += yyleng;
