@@ -300,12 +300,12 @@ public:
     // (i.e. Slicer::MimicSource used) in the <src>Slicer</src> object.
     TableExprNodeSet (const Slicer&);
 
-    // Construct a set with n elements.
+    // Construct a set with n*set.nelements() elements.
     // Element i is constructed by evaluating the input element
     // for row i.
-    TableExprNodeSet (uInt n, const TableExprNodeSetElem&);
+    TableExprNodeSet (uInt n, const TableExprNodeSet&);
 
-    TableExprNodeSet(const TableExprNodeSet &);
+    TableExprNodeSet(const TableExprNodeSet&);
 
     ~TableExprNodeSet();
     
@@ -318,7 +318,7 @@ public:
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.
     //# Note that if itsCheckTypes is set, the data types are already
-    // known to be equal.
+    //# known to be equal.
     void checkEqualDataTypes() const;
 
     // Contains the set only single elements?
@@ -329,6 +329,9 @@ public:
     // Discrete means that no continuous ranges are given, but discrete
     // ranges (using :) are possible.
     Bool isDiscrete() const;
+
+    // Is the set fully bounded (discrete and no undefined end values)?
+    Bool isBounded() const;
 
     // Get the number of elements.
     uInt nelements() const;
@@ -429,6 +432,10 @@ inline Bool TableExprNodeSet::isSingle() const
 inline Bool TableExprNodeSet::isDiscrete() const
 {
     return itsDiscrete;
+}
+inline Bool TableExprNodeSet::isBounded() const
+{
+    return itsBounded;
 }
 inline uInt TableExprNodeSet::nelements() const
 {

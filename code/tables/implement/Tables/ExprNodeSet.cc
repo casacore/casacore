@@ -590,31 +590,30 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
     }
 }
 
-TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSetElem& elem)
-: TableExprNodeRep (elem.dataType(), VTSet, OtUndef, Table()),
-  itsElems         (n),
-  itsSingle        (elem.isSingle()),
-  itsDiscrete      (elem.isDiscrete()),
-  itsBounded       (True),
+TableExprNodeSet::TableExprNodeSet (uInt n, const TableExprNodeSet& set)
+: TableExprNodeRep (set.dataType(), VTSet, OtUndef, Table()),
+  itsElems         (n*set.nelements()),
+  itsSingle        (set.isSingle()),
+  itsDiscrete      (set.isDiscrete()),
+  itsBounded       (set.isBounded()),
   itsCheckTypes    (False),
   itsAllIntervals  (False),
   itsFindFunc      (0)
 {
-    // Set is not bounded if the element is not discrete and if end is defined.
-    if (!(itsSingle  ||  (itsDiscrete && elem.end() != 0))) {
-	itsBounded = False;
-    }
+    // Fill in all values.
+    uInt nrel = set.nelements();
     for (uInt i=0; i<n; i++) {
-	itsElems[i] = elem.evaluate (i);
+        for (uInt j=0; j<nrel; j++) {
+	    itsElems[j+i*nrel] = set[j].evaluate (i);
+	}
     }
     // Try to combine multiple intervals; it can improve performance a lot.
     if (n>1  &&  !isSingle()  &&  !isDiscrete()) {
-        if (elem.dataType() == NTDouble) {
+        if (set.dataType() == NTDouble) {
 	    combineDoubleIntervals();
-	} else if (elem.dataType() == NTDate) {
+	} else if (set.dataType() == NTDate) {
 	    combineDateIntervals();
 	}
-
     }
 }
 
@@ -953,6 +952,10 @@ TableExprNodeRep* TableExprNodeSet::setOrArray() const
 	// Set the type to VTArray and the getArray
 	// functions convert the set to an array for each row.
 	set->setValueType (VTArray);
+	if (itsSingle) {
+	    set->ndim_p = 1;
+	    set->shape_p = IPosition (1, nelements());
+	}
     }
     return set;
 }
