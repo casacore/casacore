@@ -92,7 +92,7 @@ explains the CALC command in more detail.
 various parts of the SELECT command are explained.
 
 \begin{description}
-  \item[ column\_list]
+  \item[column\_list ]
        is a comma-separated list with names of columns that have to be selected
        from the primary table in the table\_list (see below).
        If * or no column\_list is given, all columns will be selected.
@@ -116,14 +116,14 @@ various parts of the SELECT command are explained.
        \\For full SQL compliance it is also possible to give the word
        ALL which is the opposite of DISTINCT, thus all values are
        returned. This is the default.
-  \item[ \label{TAQL:INTO}INTO table ]
+  \item[\label{TAQL:INTO}INTO table ]
        indicates that the ultimate result of the SELECT command should be
        written to a table (with the given name). This table is a
        so-called reference table.
        \\The standard TaQL way to define the output table is the
        \htmlref{GIVING}{TAQL::GIVING} clause. INTO is available
        for SQL compliance.
-  \item[ \label{TAQL:TABLE_LIST}FROM table\_list ]
+  \item[\label{TAQL:TABLE_LIST}FROM table\_list ]
        is a comma-separated list of table names which can contain
        path specification and environment variables or the UNIX
        \verb+~+ notation.
@@ -248,13 +248,13 @@ various parts of the SELECT command are explained.
        indicates the second one.
      \end{enumerate}
 
-  \item[WHERE expression]
+  \item[WHERE expression ]
        defines the selection expression which must have a boolean
        scalar result. A row in the primary table
        is selected if the expression is true for the values in that row.
        The syntax of the expression is explained
        in a \htmlref{later section}{TAQL:EXPRESSIONS}.
-  \item[ \label{TAQL:ORDERBY}ORDERBY sort\_list]
+  \item[\label{TAQL:ORDERBY}ORDERBY sort\_list ]
        defines the order in which the result of the WHERE clause
        has to be sorted. The sort\_list is a comma separated list of
        expressions.
@@ -290,17 +290,17 @@ various parts of the SELECT command are explained.
        ORDERBY datetime(col)             incorrect data type
        ORDERBY mjd(datetime(col))        is correct
        \end{verbatim}
-  \item[ LIMIT expression]
+  \item[LIMIT expression ]
        indicates that up to N rows have to be selected, where N is
        the result of the expression. 
        \\\texttt{LIMIT} is applied after \texttt{ORDERBY}, so it is
        particularly useful in combination with
        \texttt{ORDERBY} to select, for example, the highest 10 values.
-  \item[ OFFSET expression]
+  \item[OFFSET expression ]
        indicates that the first N rows of the selection have to be 
        skipped. As \texttt{LIMIT} it is particularly useful in
        combination with \texttt{ORDERBY}.
-  \item[ \label{TAQL:GIVING}GIVING table$|$set ]
+  \item[\label{TAQL:GIVING}GIVING table$|$set ]
        indicates that the ultimate result of the SELECT command should be
        written to a table (with the given name). This table is a
        so-called reference table.
@@ -317,9 +317,10 @@ various parts of the SELECT command are explained.
        It is also possible to specify a set in the GIVING clause
        instead of a table name. This can be useful if the result of a
        \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
-       Such a \htmlref{set}{TAQL:SETS} can contain only one element
-       (which can be a range or interval).
-       The parts of the element have to be expressions resulting in a scalar.
+       Such a \htmlref{set}{TAQL:SETS} can contain multiple elements
+       Each element can be a single value, range and/or interval as
+       long as all elements have the same data type.
+       The parts of each element have to be expressions resulting in a scalar.
 
        In the main query and in a query in the FROM command the
        GIVING clause can only result in a table and not in a set.
@@ -336,8 +337,8 @@ Also the GIVING clause with a value set is seen as an operation.
 
 \section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
-key in the ORDERBY clause, in the set in the GIVING clause, or as
-a value in the INSERT and UPDATE command.
+key in the ORDERBY clause, in an element in the set in the GIVING
+clause, or as a value in the INSERT and UPDATE command.
 Note that the expression result must be
 a boolean scalar if used in the WHERE clause. If used in ORDERBY
 the result can also be a numeric or string scalar. If used in 
@@ -367,14 +368,14 @@ The last example shows a \htmlref{set}{TAQL:SETS} with a continuous interval.
 \label{TAQL:DATATYPES}
 TaQL knows the following data types:
 \begin{description}
-  \item[ Bool]
-  \item[ Double] which includes integers and times/positions
-  \item[ Complex ] which includes single and double precision complex
-  \item[ String ] Operator + can be used (concatenation).
-  \item[ Regex ] which is formed by the functions \texttt{regex},
+  \item[Bool ]
+  \item[Double ] which includes integers and times/positions
+  \item[Complex ] which includes single and double precision complex
+  \item[String ] Operator + can be used (concatenation).
+  \item[Regex ] which is formed by the functions \texttt{regex},
     \texttt{pattern}, and \texttt{sqlpattern} or by a special constant
     (see discussion \htmlref{below}{TAQL:CONSTANTS}).
-  \item[ DateTime ] which represents a date/time. There are several functions
+  \item[DateTime ] which represents a date/time. There are several functions
        acting on a date/time. Also operator + and - can be used.
 \end{description}
 Scalars and arbitrarily shaped arrays of these data types can be used.
@@ -621,6 +622,10 @@ precedence) for scalars:
        E.g.
        \\\texttt{   col BETWEEN 1 AND 3}  and  \texttt{col in [1=:=3]}
        are the same.
+  \item \textbf{INCONE} and \textbf{NOT INCONE}
+       \\Can be used to do a cone search.
+       (See the discussion of
+       \htmlref{cone search functions}{TAQL:CONESEARCH}).
   \item \textbf{\&\&} and \textbf{$\mid\mid$}
        \\Logical AND and OR operator. 
        \\To be compliant with SQL the
@@ -635,7 +640,7 @@ precedence) for scalars:
        \\unary \texttt{+, -, !}
        \\\texttt{*, /, \%}
        \\\texttt{+, -}
-       \\\texttt{==, !=, >, >=, <, <=, IN, BETWEEN, EXISTS},
+       \\\texttt{==, !=, >, >=, <, <=, IN, INCONE, BETWEEN, EXISTS, LIKE},
               \verb+~+, \verb+!~+
        \\\texttt{\&\&}
        \\\verb+||+
@@ -660,14 +665,14 @@ be used on a set or the result of a subquery. E.g.
 \subsubsection{String functions}
 These functions can be used on a scalar or an array argument.
 \begin{description}
-  \item[ \texttt{double STRLENGTH(string),  double LEN(string)}]
+  \item[] \texttt{double STRLENGTH(string),  double LEN(string)}\\
        Returns the number of characters in a string
        (trailing whitespace is significant).
-  \item[ \texttt{string UPCASE(string), string UPPER(string) }]
+  \item[] \texttt{string UPCASE(string), string UPPER(string) }\\
         Convert to uppercase.
-  \item[ \texttt{string DOWNCASE(string),  string LOWER(string)}]
+  \item[] \texttt{string DOWNCASE(string),  string LOWER(string)}\\
         Convert to lowercase.
-  \item[ \texttt{string TRIM(string)}]
+  \item[] \texttt{string TRIM(string)}\\
        Removes trailing whitespace.
 \end{description}
 
@@ -677,12 +682,12 @@ The syntax for forming a regex and pattern are explained in class
 These functions can only be used on a scalar argument.
 
 \begin{description}
-  \item[ \texttt{regex REGEX(string)}]
+  \item[] \texttt{regex REGEX(string)}\\
        Handle the given string as a regular expression.
-  \item[ \texttt{regex PATTERN(string)}]
+  \item[] \texttt{regex PATTERN(string)}\\
        Handle the given string as a UNIX filename-like pattern and
        convert it to a regular expression.
-  \item[ \texttt{regex SQLPATTERN(string)}]
+  \item[] \texttt{regex SQLPATTERN(string)}\\
        Handle the given string as an SQL-style pattern and
        convert it to a regular expression.
        An SQL-style pattern has two special character:
@@ -698,35 +703,35 @@ other ways of forming and testing regular expressions.
 \subsubsection{Date/time functions}
 These functions can be used on a scalar or an array argument.
 \begin{description}
-  \item[ \texttt{DateTime DATETIME(string),  DateTime CTOD(string)} ]
+  \item[] \texttt{DateTime DATETIME(string),  DateTime CTOD(string)}\\
        Parse the string and convert it to a date/time. The syntax of
        date/time is explained in class
        \htmladdnormallink{MVTime}{../../casa/implement/Quanta/MVTime.html}.
-  \item[ \texttt{DateTime MJDTODATE(double)} ]
+  \item[] \texttt{DateTime MJDTODATE(double)}\\
        The double value, which has to be a MJD (ModifiedJulianDate), is
        converted to a DateTime.
-  \item[ \texttt{DateTime DATE(DateTime)}]
+  \item[] \texttt{DateTime DATE(DateTime)}\\
         Get the date (i.e., remove the time part). This function is needed in
-       \\\texttt{date(column) == 12Feb1997}
+       \\\texttt{DATE(column) == 12Feb1997}
        \\if the column contains date/times with times$>$0.
-  \item[ \texttt{double MJD(DateTime)}]
+  \item[] \texttt{double MJD(DateTime)}\\
         Get the DateTime as a MJD (ModifiedJulianDate).
-  \item[ \texttt{double YEAR(DateTime)}]
+  \item[] \texttt{double YEAR(DateTime)}\\
         Get the year (which includes the century).
-  \item[ \texttt{double MONTH(DateTime)}]
+  \item[] \texttt{double MONTH(DateTime)}\\
         Get the month number (1-12).
-  \item[ \texttt{double DAY(DateTime)}]
+  \item[] \texttt{double DAY(DateTime)}\\
         Get the day number (1-31).
-  \item[ \texttt{double WEEKDAY(DateTime),  double DOW(DateTime)}]
+  \item[] \texttt{double WEEKDAY(DateTime),  double DOW(DateTime)}\\
         Get the weekday number (1=Monday, ..., 7=Sunday).
-  \item[ \texttt{string CMONTH(DateTime)}]
+  \item[] \texttt{string CMONTH(DateTime)}\\
         Get the name of the month (Jan ... Dec).
-  \item[ \texttt{string CWEEKDAY(DateTime),  string CDOW(DateTime)}]
+  \item[] \texttt{string CWEEKDAY(DateTime),  string CDOW(DateTime)}\\
         Get the name of the weekday (Mon .. Sun).
-  \item[ \texttt{double WEEK(DateTime)}]
+  \item[] \texttt{double WEEK(DateTime)}\\
         Get the week number in the year (1 ... 53).
         \\Note that week 1 is the week containing Jan 4th.
-  \item[ \texttt{double TIME(DateTime)}]
+  \item[] \texttt{double TIME(DateTime)}\\
        Get the time part of the day. It is converted to radians to
        be compatible with the internal representation of times/positions.
        In that way the function can easily be used as in:
@@ -744,7 +749,7 @@ values within a tolerance.
 They can be used on scalar and array arguments (and a mix of them).
 The tolerance must be a scalar though.
 \begin{description}
-  \item[ \texttt{bool NEAR(numeric val1, numeric val2, double tol)}]
+  \item[] \texttt{bool NEAR(numeric val1, numeric val2, double tol)}\\
     Tests in a relative way if a value is near another. Relative
     means that the
     magnitude of the numbers is taken into account.
@@ -754,13 +759,13 @@ The tolerance must be a scalar though.
     If either val is 0.0, it takes
     care of area around the minimum number that can be represented.
     The default tolerance is 1.0e-13.
-  \item[ \texttt{bool NEARABS(numeric val1, numeric val2, double tol)}]
+  \item[] \texttt{bool NEARABS(numeric val1, numeric val2, double tol)}\\
     Tests in an absolute way if a value is near another. Absolute
     means that the
     magnitude of the numbers is not taken into account.
     \\It returns \texttt{abs(val2 - val1) < tol}.
     The default tolerance is 1.0e-13.
-  \item[ \texttt{bool ISNAN(numeric val)}]
+  \item[] \texttt{bool ISNAN(numeric val)}\\
     Tests if a numeric value is a NaN (not-a-number).
 \end{description}
 
@@ -769,45 +774,53 @@ Several functions can operate on double or complex arguments.
 The data types of such functions is given as 'numeric'.
 They can be used on scalar and array arguments (and a mix of them).
 \begin{description}
-  \item[ \texttt{double PI()}] Returns the value of \textbf{pi}.
-  \item[ \texttt{double E()}] Returns the value of \textbf{e} (is equal to \texttt{EXP(1)}).
-  \item[ \texttt{numeric SIN(numeric)}]
-  \item[ \texttt{numeric SINH(numeric)}]
-  \item[ \texttt{double ASIN(double)}]
-  \item[ \texttt{numeric COS(numeric)}]
-  \item[ \texttt{numeric COSH(numeric)}]
-  \item[ \texttt{double ACOS(double)}]
-  \item[ \texttt{double TAN(double)}]
-  \item[ \texttt{double TANH(double)}]
-  \item[ \texttt{double ATAN(double)}]
-  \item[ \texttt{double ATAN2(double y, double x)}]
-       Returns \texttt{ATAN(y/x)} in correct quadrant.
-  \item[ \texttt{numeric EXP(numeric)}]
-  \item[ \texttt{numeric LOG(numeric)}] Natural logarithm.
-  \item[ \texttt{numeric LOG10(numeric)}]
-  \item[ \texttt{numeric POW(numeric, numeric)}] The same as operator \verb+^+.
-  \item[ \texttt{numeric SQUARE(numeric),  numeric SQR(numeric)}]
-       The same as \verb+^+2, but much faster.
-  \item[ \texttt{numeric SQRT(numeric)}]
-  \item[ \texttt{complex COMPLEX(double, double)}]
-  \item[ \texttt{numeric CONJ(numeric)}]
-  \item[ \texttt{double REAL(numeric)}] Real part of a complex number.
-  \item[ \texttt{double IMAG(numeric)}] Imaginary part of a complex number.
-  \item[ \texttt{double NORM(numeric)}]
-  \item[ \texttt{double ABS(numeric),  double AMPLITUDE(numeric)}]
-  \item[ \texttt{double ARG(numeric),  double PHASE(numeric)}]
-  \item[ \texttt{numeric MIN(numeric, numeric)}]
-  \item[ \texttt{numeric MAX(numeric, numeric)}]
-  \item[ \texttt{double SIGN(double)}]
-       Returns -1 for a negative value, 0 for zero, 1 for a positive value.
-  \item[ \texttt{double ROUND(double)}]
-       Rounds the absolute value of the number.
-       E.g. \texttt{ROUND(-1.6) = -2}.
-  \item[ \texttt{double FLOOR(double)}]
-       Works towards negative infinity.
-       E.g. \texttt{FLOOR(-1.2) = -2}
-  \item[ \texttt{double CEIL(double)}] Works towards positive infinity.
-  \item[ \texttt{double FMOD(double, double)}] The same as operator \%.
+  \item[] \texttt{double PI()}\\
+    Returns the value of \textbf{pi}.
+  \item[] \texttt{double E()}\\
+    Returns the value of \textbf{e} (is equal to \texttt{EXP(1)}).
+  \item[] \texttt{numeric SIN(numeric)}
+  \item[] \texttt{numeric SINH(numeric)}
+  \item[] \texttt{double ASIN(double)}
+  \item[] \texttt{numeric COS(numeric)}
+  \item[] \texttt{numeric COSH(numeric)}
+  \item[] \texttt{double ACOS(double)}
+  \item[] \texttt{double TAN(double)}
+  \item[] \texttt{double TANH(double)}
+  \item[] \texttt{double ATAN(double)}
+  \item[] \texttt{double ATAN2(double y, double x)}\\
+    Returns \texttt{ATAN(y/x)} in correct quadrant.
+  \item[] \texttt{numeric EXP(numeric)}
+  \item[] \texttt{numeric LOG(numeric)}\\
+    Natural logarithm.
+  \item[] \texttt{numeric LOG10(numeric)}
+  \item[] \texttt{numeric POW(numeric, numeric)}\\
+    The same as operator \verb+^+.
+  \item[] \texttt{numeric SQUARE(numeric),  numeric SQR(numeric)}\\
+    The same as \verb+^+2, but much faster.
+  \item[] \texttt{numeric SQRT(numeric)}
+  \item[] \texttt{complex COMPLEX(double, double)}
+  \item[] \texttt{numeric CONJ(numeric)}
+  \item[] \texttt{double REAL(numeric)}\\
+    Real part of a complex number.
+  \item[] \texttt{double IMAG(numeric)}\\
+    Imaginary part of a complex number.
+  \item[] \texttt{double NORM(numeric)}
+  \item[] \texttt{double ABS(numeric),  double AMPLITUDE(numeric)}
+  \item[] \texttt{double ARG(numeric),  double PHASE(numeric)}
+  \item[] \texttt{numeric MIN(numeric, numeric)}
+  \item[] \texttt{numeric MAX(numeric, numeric)}
+  \item[] \texttt{double SIGN(double)}\\
+    Returns -1 for a negative value, 0 for zero, 1 for a positive value.
+  \item[] \texttt{double ROUND(double)}\\
+    Rounds the absolute value of the number.
+    E.g. \texttt{ROUND(-1.6) = -2}.
+  \item[] \texttt{double FLOOR(double)}\\
+    Works towards negative infinity.
+    E.g. \texttt{FLOOR(-1.2) = -2}
+  \item[] \texttt{double CEIL(double)}\\
+    Works towards positive infinity.
+  \item[] \texttt{double FMOD(double, double)}\\
+    The same as operator \%.
 \end{description}
 Note that the trigonometric functions need their arguments in radians.
 
@@ -815,36 +828,41 @@ Note that the trigonometric functions need their arguments in radians.
 The following functions reduce an array to a scalar.
 They are meant for an array, but can also be used for a scalar.
 \begin{description}
-  \item[ \texttt{bool ANY(bool)}] Is any element true?
-  \item[ \texttt{bool ALL(bool)}] Are all elements true?
-  \item[ \texttt{double NTRUE(bool)}] Number of true elements.
-  \item[ \texttt{double NFALSE(bool)}] Number of false elements.
-  \item[ \texttt{numeric SUM(numeric)}] Return sum of all elements.
-  \item[ \texttt{numeric SUMSQUARE(numeric), numeric SUMSQR(numeric)}]
-       Return sum of all squared elements.
-  \item[ \texttt{numeric PRODUCT(numeric)}] Return product
-    of all array elements.
-  \item[ \texttt{double MIN(double)}] Return minimum
-    of all array elements.
-  \item[ \texttt{double MAX(double)}] Return maximum
-    of all array elements.
-  \item[ \texttt{double MEAN(double), double AVG(double)}]
+  \item[] \texttt{bool ANY(bool)}\\
+    Is any element true?
+  \item[] \texttt{bool ALL(bool)}\\
+    Are all elements true?
+  \item[] \texttt{double NTRUE(bool)}\\
+    Number of true elements.
+  \item[] \texttt{double NFALSE(bool)}\\
+    Number of false elements.
+  \item[] \texttt{numeric SUM(numeric)}\\
+    Return sum of all elements.
+  \item[] \texttt{numeric SUMSQUARE(numeric), numeric SUMSQR(numeric)}\\
+    Return sum of all squared elements.
+  \item[] \texttt{numeric PRODUCT(numeric)}\\
+    Return product of all array elements.
+  \item[] \texttt{double MIN(double)}\\
+    Return minimum of all array elements.
+  \item[] \texttt{double MAX(double)}\\
+    Return maximum of all array elements.
+  \item[] \texttt{double MEAN(double), double AVG(double)}\\
     Return mean of all array elements.
-  \item[ \texttt{double VARIANCE(double)}] Return variance
-    (the sum of
+  \item[] \texttt{double VARIANCE(double)}\\
+    Return variance (the sum of
     \\\texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
-  \item[ \texttt{double STDDEV(double)}] Return standard
-    deviation (the square root of the variance).
-  \item[ \texttt{double AVDEV(double)}] Return average deviation.
-    (the sum of
+  \item[] \texttt{double STDDEV(double)}\\
+    Return standard deviation (the square root of the variance).
+  \item[] \texttt{double AVDEV(double)}\\
+    Return average deviation. (the sum of
     \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
-  \item[ \texttt{double MEDIAN(double)}] Return median (the
-    middle element).
+  \item[] \texttt{double MEDIAN(double)}\\
+    Return median (the middle element).
     If the array has an even number of elements, the mean of
     the two middle elements is returned.
-  \item[ \texttt{double FRACTILE(double, doublescalar fraction)}]
-       Return the value of the element at the given fraction.
-       Fraction 0.5 is the same as the median.
+  \item[] \texttt{double FRACTILE(double, doublescalar fraction)}\\
+    Return the value of the element at the given fraction.
+    Fraction 0.5 is the same as the median.
 \end{description}
 
 \subsubsection{Array to array reduction functions}
@@ -864,86 +882,202 @@ of virtually any dimensionality and results in a 1-dim array.
 functions in the previous table.
 They can only be used for arrays, thus not for scalars.
 \begin{description}
-  \item[ \texttt{bool ANYS(bool)}] Is any element true?
-  \item[ \texttt{bool ALLS(bool)}] Are all elements true?
-  \item[ \texttt{double NTRUES(bool)}] Number of true elements.
-  \item[ \texttt{double NFALSES(bool)}] Number of false elements.
-  \item[ \texttt{numeric SUMS(numeric)}] Return sum of elements.
-  \item[ \texttt{numeric SUMSQUARES(numeric), numeric SUMSQRS(numeric)}]
-       Return sum of squared elements.
-  \item[ \texttt{numeric PRODUCTS(numeric)}] Return product of elements.
-  \item[ \texttt{double MINS(double)}] Return minimum of elements.
-  \item[ \texttt{double MAXS(double)}] Return maximum of elements.
-  \item[ \texttt{double MEANS(double), double AVG(double)}]
+  \item[] \texttt{bool ANYS(bool)}\\
+    Is any element true?
+  \item[] \texttt{bool ALLS(bool)}\\
+    Are all elements true?
+  \item[] \texttt{double NTRUES(bool)}\\
+    Number of true elements.
+  \item[] \texttt{double NFALSES(bool)}\\
+    Number of false elements.
+  \item[] \texttt{numeric SUMS(numeric)}\\
+    Return sum of elements.
+  \item[] \texttt{numeric SUMSQUARES(numeric), numeric SUMSQRS(numeric)}\\
+    Return sum of squared elements.
+  \item[] \texttt{numeric PRODUCTS(numeric)}\\
+    Return product of elements.
+  \item[] \texttt{double MINS(double)}\\
+    Return minimum of elements.
+  \item[] \texttt{double MAXS(double)}\\
+    Return maximum of elements.
+  \item[] \texttt{double MEANS(double), double AVG(double)}\\
     Return mean of elements.
-  \item[ \texttt{double VARIANCES(double)}] Return variance
-    (the sum of
+  \item[] \texttt{double VARIANCES(double)}\\
+    Return variance (the sum of
     \\\texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
-  \item[ \texttt{double STDDEVS(double)}] Return standard
-    deviation (the square root of the variance).
-  \item[ \texttt{double AVDEVS(double)}] Return average deviation.
-    (the sum of 
+  \item[] \texttt{double STDDEVS(double)}\\
+    Return standard deviation (the square root of the variance).
+  \item[] \texttt{double AVDEVS(double)}\\
+    Return average deviation. (the sum of 
     \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
-  \item[ \texttt{double MEDIANS(double)}] Return median (the
-    middle element).
+  \item[] \texttt{double MEDIANS(double)}\\
+    Return median (the middle element).
     If the array has an even number of elements, the mean of
     the two middle elements is returned.
-  \item[ \texttt{double FRACTILES(double, doublescalar fraction)}]
-       Return the value of the element at the given fraction.
-       Fraction 0.5 is the same as the median.
+  \item[] \texttt{double FRACTILES(double, doublescalar fraction)}\\
+    Return the value of the element at the given fraction.
+    Fraction 0.5 is the same as the median.
 \end{description}
 
 \subsubsection{Miscellaneous functions}
 \begin{description}
-  \item[ \texttt{bool ISDEFINED(anytype)}]
+  \item[] \texttt{bool ISDEFINED(anytype)}\\
     Return false if the value in the current row is undefined. Is
     useful to test if a cell in a column with variable shaped arrays
     contains an array. It can also be used to test if a field in a
     record is defined.
-  \item[ \texttt{double NELEMENTS(anytype), double COUNT(anytype)}]
+  \item[] \texttt{double NELEMENTS(anytype), double COUNT(anytype)}\\
     Return number of elements in an array (1 for a scalar).
-  \item[ \texttt{double NDIM(anytype)}]
+  \item[] \texttt{double NDIM(anytype)}\\
     Return dimensionality of an array (0 for a scalar).
-  \item[ \texttt{doublearray SHAPE(anytype)}]
+  \item[] \texttt{doublearray SHAPE(anytype)}\\
     Return shape of an array (returns an empty array for a scalar).
-  \item[ \texttt{double ROWNUMBER()}]
-       Return the row number being tested (first row is row number 1).
-       \\In combination with function RAND it can, for instance,
-       be used to select arbitrary rows from a table.
-  \item[ \texttt{double ROWID()}]
-       Return the row number in the original table. This is especially
-       useful for returning the result of a selection of a subtable
-       of an AIPS++ measurement set
-       (see also sections \htmlref{Subqueries}{TAQL:SUBQUERIES}
-       and \htmlref{Examples}{TAQL:EXAMPLES}).
-  \item[ \texttt{double RAND()}]
-       Return (per table row) a uniformly distributed random number
-       between 0 and 1 using a Multiplicative Linear Congruential Generator.
-       The seeds for the generator are deduced from the current date and
-       time, so the results are different from run to run.
-       \\The function can, for instance, be used to select a random
-       subset from a table.
-  \item[ \texttt{anytype IIF(cond,arg1,arg2)}]
-       This is a special funtion which operates like the ternary \texttt{?:}
-       operator in C++. 
-       If all arguments are scalars, the result is a scalar, otherwise
-       an array. In the latter case possible scalar arguments are
-       virtually expanded to arrays.
-       IIF evaluates the condition for each element. If True, it takes
-       the corresponding element of \texttt{arg1}, otherwise of \texttt{arg2}.
-  \item[ \texttt{anytypearray ARRAY(anytype,shape)}]
-       This function creates an array of the given type and shape.
-       The shape is given in the last argument(s).
-       It can be given in two ways:
-       \\- As a single set argument; for example, \texttt{array(0,[3,4])}
-       \\- As individual scalar arguments; for example, \texttt{array(0,3,4)}
-       \\The first argument gives the values the array is filled with.
-       It can be a scalar or an array of any shape. To initialize the
-       created array, the value array is flattened to a 1D array.
-       Its successive values are stored in the created array. If the
-       new array has more values than the value array, the value array is
-       reset to its beginning and the process continues.
+  \item[] \texttt{double ROWNUMBER()}\\
+    Return the row number being tested (first row is row number 1).
+    \\In combination with function RAND it can, for instance,
+    be used to select arbitrary rows from a table.
+  \item[] \texttt{double ROWID()}\\
+    Return the row number in the original table. This is especially
+    useful for returning the result of a selection of a subtable
+    of an AIPS++ measurement set
+    (see also sections \htmlref{Subqueries}{TAQL:SUBQUERIES}
+    and \htmlref{Examples}{TAQL:EXAMPLES}).
+  \item[] \texttt{double RAND()}\\
+    Return (per table row) a uniformly distributed random number
+    between 0 and 1 using a Multiplicative Linear Congruential Generator.
+    The seeds for the generator are deduced from the current date and
+    time, so the results are different from run to run.
+    \\The function can, for instance, be used to select a random
+    subset from a table.
+  \item[] \texttt{anytype IIF(cond,arg1,arg2)}\\
+    This is a special funtion which operates like the ternary \texttt{?:}
+    operator in C++. 
+    If all arguments are scalars, the result is a scalar, otherwise
+    an array. In the latter case possible scalar arguments are
+    virtually expanded to arrays.
+    IIF evaluates the condition for each element. If True, it takes
+    the corresponding element of \texttt{arg1}, otherwise of \texttt{arg2}.
+  \item[] \texttt{anytypearray ARRAY(anytype,shape)}\\
+    This function creates an array of the given type and shape.
+    The shape is given in the last argument(s).
+    It can be given in two ways:
+    \\- As a single set argument; for example, \texttt{array(0,[3,4])}
+    \\- As individual scalar arguments; for example, \texttt{array(0,3,4)}
+    \\The first argument gives the values the array is filled with.
+    It can be a scalar or an array of any shape. To initialize the
+    created array, the value array is flattened to a 1D array.
+    Its successive values are stored in the created array. If the
+    new array has more values than the value array, the value array is
+    reset to its beginning and the process continues.
 \end{description}
+
+\subsubsection{\label{TAQL:CONESEARCH}Cone search functions}
+Cone search functions make it possible to test if a source is
+within a given distance of a given sky position. The expression
+\begin{verbatim}
+     cos(0d1m) < sin(52deg) * sin(DEC) +
+                 cos(52deg) * cos(DEC) * cos(3h30m - RA)
+\end{verbatim}
+could be used to test if sources with their sky positions defined
+in columns \texttt{RA} and \texttt{DEC} are within 1 arcmin of the
+given sky position.
+\\The cone search functions implement this expression making life much
+easier for the user. Because they
+can also operate on arrays of positions, searching in
+multiple cones can be done simultaneously. That makes it
+possible to find matching source positions in two catalogues as shown
+in an example at the end of this section.
+
+The arguments in all functions are described below. All of them have
+to be given in radians. However, usually one does not need to bother
+because TaQL makes it possible
+to specify positions in many formats which are automatically converted
+to radians.
+\begin{description}
+  \item[] \texttt{SOURCES}\\
+       is a set or array giving the positions of one or more
+       sources (e.g. in equatorial coordinates)
+       to be tested. Normally these are columns in a table.
+       If argument name \texttt{SOURCE} is mentioned, only a single source
+       can be used.
+       \\For example:
+       \\\texttt{[RA,DEC]} for scalar columns RA and DEC.
+       \\\texttt{SKYPOS} for a column SKYPOS containing 2-element
+       vectors with RA and DEC.
+  \item[] \texttt{CONES}\\
+       is a set or array giving the center positions and radii of
+       one or more cones (e.g. as RA,DEC,radius).
+       Usually this will be given by the user as constants.
+       \\For example:
+       \\\texttt{[12:13:54, -5.3.34, 0d1m]} for a single cone.
+       \\\texttt{[12:13:54, -5.3.34, 0d1m, 1:2:3, 4.5.6, 0d1m]} for two cones.
+  \item[] \texttt{CONEPOS}\\
+       is a set or array giving the positions of one or more
+       cone centers (e.g. as RA,DEC).
+  \item[] \texttt{RADII}\\
+       is a scalar, set or array giving one or more radii.
+       Each radius is applied to all positions in \texttt{CONEPOS}.
+       Specifying a cone as \texttt{CONEPOS,RADIUS} is easier than specifying
+       it as \texttt{CONES} if the same radius has to be used for
+       multiple cones.
+       \\For example:
+       \\\texttt{[12:13:54, -5.3.34, 1:2:3, 4.5.6], 0d1m} is the same
+       as the second \texttt{CONES} example above.
+\end{description}
+The following cone search functions are available.
+\begin{description}
+  \item[] \texttt{bool ANYCONE(SOURCE,CONES)}\\
+       Return \texttt{T} if the source is contained in one of the cones.
+       Operator \texttt{INCONE} is a synonym. So
+       \texttt{ANYCONE(SOURCE,CONES)} is the same as
+       \texttt{ SOURCE INCONE CONES}.
+  \item[] \texttt{bool ANYCONE(SOURCE,CONEPOS,RADII)}\\
+       It does the same as above.
+  \item[] \texttt{double FINDCONE(SOURCES,CONES)}\\
+       Return the 1-based index of the first cone containing the source.
+       If a single source is given, the result is a scalar.
+       If multiple sources are given, the result is an array with the
+       same shape as the source array.
+  \item[] \texttt{double FINDCONE(SOURCES,CONEPOS,RADII)}\\
+       It does the same as above. Note that in this case each radius is
+       applied to each cone, so the index is a combination of the two
+       (with the radius as the most rapidly varying axis).
+  \item[] \texttt{bool CONES(SOURCES,CONES)}\\
+       Return a 2-dim bool array. The length of the first axis is the
+       number of cones. The length of the second axis is number of
+       sources. An element \texttt{(i,j)} in the array is \texttt{T}
+       if source \texttt{j} is contained in cone \texttt{i}.
+  \item[] \texttt{bool CONES(SOURCES,CONEPOS,RADII)}\\
+       It does the same as above. However, the result is a 3-dim array
+       with the radii as the first axis, cones as second and sources
+       as third.
+\end{description}
+Please note that \texttt{ANYCONE(SOURCE,CONES)} does the same as
+\texttt{any(CONES(SOURCE,CONES))}, but faster.
+\\Function \texttt{CONES} makes it possible to do catalogue matching.
+For example, to find sources matching other sources in the same
+catalogue (within a radius of 10 arcseconds):
+\begin{verbatim}
+  CALC FROM table.cat CALC CONES([RA,DEC],
+       [SELECT FROM table.cat GIVING [RA,DEC]], 0d0m10)
+\end{verbatim}
+Note that in this example the SELECT clause returns an array with positions
+which are used as the cone centers. So each source in the catalogue is
+tested against every source. It makes it an N-square operation, thus
+potentially very expensive.
+The result is a 4-dim boolean array with shape
+\texttt{[1,nrow,1,nrow]} which can be processed in Glish. Please note
+that the \texttt{CONES} function results for 
+each row in a array with shape \texttt{[1,nrow,1]}.
+\\The query could be done with multiple radii, for example also
+with 1 arcsecond and 1 arcminute.
+\begin{verbatim}
+  CALC FROM table.cat CALC CONES([RA,DEC],
+       [SELECT FROM table.cat GIVING [RA,DEC]], [0d0m1, 0d0m10, 0d1m])
+\end{verbatim}
+resulting in an array with shape \texttt{[3,nrow,1,nrow]}.
+It would give a better indication how close sources are.
+
 
 \subsection{\label{TAQL:COLUMNS}Table Columns}
 A column can contain a scalar or an array value.
@@ -969,7 +1103,7 @@ Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
  ALL AND AS ASC BETWEEN DELETE DESC DISTINCT EXISTS EXCEPT
- FROM GIVING GROUPBY HAVING IN INSERT INTERSECT INTO
+ FROM GIVING GROUPBY HAVING IN INCONE INSERT INTERSECT INTO
  LIKE LIMIT MINUS NODUPLICATES NOT OFFSET OR ORDERBY
  SAVETO SELECT SET UNION UNIQUE UPDATE VALUES WHERE
 \end{verbatim}
@@ -1599,17 +1733,17 @@ used in the nested query which has a FROM clause itself.
          sin(52deg) * sin(DEC) + cos(52deg) * cos(DEC) *
          cos(3h30m - RA) }
      \\selects observations with an equatorial position (in say J2000)
-     inside a circle with a radius of 1 arcmin around (3h30m, 52deg).
+     inside a cone with a radius of 1 arcmin around (3h30m, 52deg).
      To find them the condition DISTANCE$<=$RADIUS must be fulfilled,
      which is equivalent to COS(RADIUS)$<=$COS(DISTANCE).
-     \\Note that in the future this useful astronomical test could
-     be implemented as a function of its own (with better optimization
-     possibilities).
+
+  \item[] \texttt{ SELECT FROM mytable WHERE}
+     \\\texttt{ [RA,DEC] INCONE [3h30m, 52deg, 0d1m] }
+     \\does the same as above in an easier (and faster) way.
 
   \item[] \texttt{ SELECT FROM mytable WHERE object == pattern("3C*") \&\&}
-     \\\texttt{cos(0d1m) $<$ sin(52deg) * sin(DEC) + cos(52deg) *
-        cos(DEC) * cos(3h30m - RA) }
-     \\finds all 3C objects inside that circle.
+     \\\texttt{ [RA,DEC] INCONE [3h30m, 52deg, 0d1m] }
+     \\finds all 3C objects inside that cone.
 
   \item[] \texttt{ select from MY.MS where DATA\_DESC\_ID in}
       \\\texttt{[select from ::DATA\_DESCRIPTION where}
@@ -1840,8 +1974,6 @@ features and by doing optimizations.
     as undefined values
     which can be tested with the function ISDEFINED.
   \item Interpret column units defined in a column keyword UNIT.
-  \item Add a function INCONE(RA\_column,DEC\_column,RA,DEC,radius)
-	to do a cone search in a circle around a position.
   \item Maybe functions to convert positions from one equinox or system
        to another (using the Measures system).
   \item Optimize using a B+ tree index.
