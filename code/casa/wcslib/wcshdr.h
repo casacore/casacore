@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.1 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -69,17 +69,28 @@
 *   the AIPS convention and certain other keywords that existed in early
 *   drafts of the WCS papers (see note 3 below).
 *
-*   Given a character array containing a FITS header wcspih() identifies and
+*   Given a character array containing a FITS header, wcspih() identifies and
 *   reads all WCS cards for the primary coordinate description and up to 26
 *   alternate descriptions.  It returns this information as an array of wcsprm
 *   structs.
 *
-*   Given:
+*   Given and returned:
 *      header   char[]   Character array containing the (entire) FITS header
 *                        from which to idenfify and construct the coordinate
 *                        representations, for example, as might be obtained
 *                        conveniently via the CFITSIO routine fits_hdr2str().
-*      nkeys    int      Number of keywords in the header.
+*
+*                        Each header "card" consists of exactly 80 7-bit ASCII
+*                        printing characters in the range 0x20 to 0x7e (which
+*                        excludes NUL, BS, TAB, LF, FF and CR) especially
+*                        noting that the cards are NOT null-terminated.
+*
+*                        For negative values of ctrl (see below), header[]
+*                        is modified so that WCS cards consumed by wcspih()
+*                        are removed from it.
+*
+*   Given:
+*      ncards   int      Number of cards in header[].
 *      relax    int      Degree of permissiveness:
 *                           0: Recognize only FITS keywords defined by the
 *                              published WCS standard.
@@ -87,7 +98,8 @@
 *                              WCS standard.
 *                        Fine-grained control of the degree of permissiveness
 *                        is also possible, see note 3 below.
-*      errlvl   int      Error reporting control:
+*      ctrl  int         Error reporting and other control options for invalid
+*                        WCS and other header cards:
 *                           0: Do not report any rejected header cards.
 *                           1: Produce a one-line message stating the number
 *                              of WCS cards rejected (nreject).
@@ -97,6 +109,21 @@
 *                              that were discarded, and the number of
 *                              coordinate representations (nwcs) found.
 *                        The report is written to stderr.
+*
+*                        For ctrl < 0, WCS cards processed by wcspih() are
+*                        removed from header[]:
+*                          -1: Remove only valid WCS cards whose values were
+*                              successfully extracted, nothing is reported.
+*                          -2: Also remove WCS cards that were rejected,
+*                              reporting each one and the reason that it was
+*                              rejected.
+*                          -3: As above, and also report the number of
+*                              coordinate representations (nwcs) found.
+*                        If any cards are removed from header[] it will be
+*                        null-terminated (NUL not being a legal FITS header
+*                        character), otherwise it will contain its original
+*                        complement of ncards cards and possibly not be null-
+*                        terminated.  
 *
 *   Returned:
 *      nreject  int*     Number of WCS cards rejected for syntax errors,

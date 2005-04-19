@@ -1,0 +1,438 @@
+/*============================================================================
+*
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   Copyright (C) 1995-2005, Mark Calabretta
+*
+*   WCSLIB is free software; you can redistribute it and/or modify it under
+*   the terms of the GNU General Public License as published by the Free
+*   Software Foundation; either version 2 of the License, or (at your option)
+*   any later version.
+*
+*   WCSLIB is distributed in the hope that it will be useful, but WITHOUT ANY
+*   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+*   FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+*   details.
+*
+*   You should have received a copy of the GNU General Public License along
+*   with WCSLIB; if not, write to the Free Software Foundation, Inc.,
+*   59 Temple Place, Suite 330, Boston, MA  02111-1307, USA
+*
+*   Correspondence concerning WCSLIB may be directed to:
+*      Internet email: mcalabre@atnf.csiro.au
+*      Postal address: Dr. Mark Calabretta
+*                      Australia Telescope National Facility, CSIRO
+*                      PO Box 76
+*                      Epping NSW 1710
+*                      AUSTRALIA
+*
+*   Author: Mark Calabretta, Australia Telescope National Facility
+*   $Id$
+*=============================================================================
+*
+*   fitshdr.l is a Flex description file containing a lexical scanner
+*   definition for extracting keywords and keyvalues from a FITS header.
+*
+*   It requires Flex v2.5.4 or later.
+*
+*   Refer to fitshdr.h for a description of the user interface and operating
+*   notes.
+*
+*===========================================================================*/
+
+/* Options. */
+%option full
+%option never-interactive
+%option noyywrap
+
+/* Keywords. */
+KEYCHR	[-_A-Z0-9]
+KW1	{KEYCHR}{1}" "{7}
+KW2	{KEYCHR}{2}" "{6}
+KW3	{KEYCHR}{3}" "{5}
+KW4	{KEYCHR}{4}" "{4}
+KW5	{KEYCHR}{5}" "{3}
+KW6	{KEYCHR}{6}" "{2}
+KW7	{KEYCHR}{7}" "{1}
+KW8	{KEYCHR}{8}
+KEYWORD	({KW1}|{KW2}|{KW3}|{KW4}|{KW5}|{KW6}|{KW7}|{KW8})
+
+/* Keyvalue data types. */
+LOGICAL [TF]
+INTEGER	[+-]?[0-9]+
+FLOAT	[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?
+ICOMPLX \(" "*{INTEGER}" "*," "*{INTEGER}" "*\)
+FCOMPLX \(" "*{FLOAT}" "*," "*{FLOAT}" "*\)
+STRING	'([^']|'')*'
+
+/* Characters forming standard unit strings (jwBIQX are not used). */
+UNITSTR \[[-+*/^(). 0-9a-zA-Z]+\]
+
+/* Exclusive start states. */
+%x VALUE
+%x INLINE UNITS COMMENT
+%x ERROR FLUSH
+
+%{
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "fitshdr.h"
+
+#define YY_DECL int fitshdr(const char header[], int ncards, int nkeyids, \
+                            struct fitskeyid keyids[], int *nreject, \
+                            struct fitskey **keys)
+
+#define YY_INPUT(inbuff, count, bufsize) \
+	{ \
+	  if (fitshdr_ncards) { \
+	    strncpy(inbuff, fitshdr_hdr, 80); \
+	    inbuff[80] = '\n'; \
+	    fitshdr_hdr += 80; \
+	    fitshdr_ncards--; \
+	    count = 81; \
+	  } else { \
+	    count = YY_NULL; \
+	  } \
+	}
+
+/* Uncomment the next line to print text as it is matched. */
+/* #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext); */
+
+extern char *yytext;
+
+/* These global variables are required by YY_INPUT. */
+const char *fitshdr_hdr;
+int  fitshdr_ncards;
+
+/* Map status return value to message. */
+const char *fitshdr_errmsg[] = {
+   0,
+   "Null fitskey pointer-pointer passed",
+   "Memory allocation failed"};
+
+void fitshdr_nullfill(char cptr[], int len);
+
+%}
+
+%%
+
+	char *cptr;
+	int  blank, end, j, k, keyno;
+	struct fitskey *kptr;
+	struct fitskeyid *iptr;
+
+	fitshdr_hdr = header;
+	fitshdr_ncards = ncards;
+
+	*nreject = 0;
+	keyno = 0;
+
+	if (keys == 0) {
+	  return 1;
+	}
+
+	/* Allocate memory for the required number of fitskey structs. */
+	/* Note that calloc() initializes allocated memory to zero.    */
+	if (!(kptr = *keys = calloc(ncards, sizeof(struct fitskey)))) {
+	  return 2;
+	}
+
+	/* Initialize keyids[]. */
+	iptr = keyids;
+	for (j = 0; j < nkeyids; j++, iptr++) {
+	  iptr->count  = 0;
+	  iptr->idx[0] = -1;
+	  iptr->idx[1] = -1;
+	}
+
+	blank = 0;
+	end = 0;
+
+^" "{80} {
+	  /* Rule 001: A completely blank card. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  yyless(0);
+	  blank = 1;
+	  BEGIN(COMMENT);
+	}
+
+^(COMMENT|HISTORY|" "{8}) {
+	  /* Rule 002. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  BEGIN(COMMENT);
+	}
+
+^END" "{77} {
+	  /* Rule 003. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  end = 1;
+	  BEGIN(FLUSH);
+	}
+
+^END" "{5}=" "+ {
+	  /* Rule 004: Illegal END card. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  kptr->status |= FITSHDR_CARD;
+	  BEGIN(VALUE);
+	}
+
+^END" "{5} {
+	  /* Rule 005: Illegal END card. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  kptr->status |= FITSHDR_CARD;
+	  BEGIN(COMMENT);
+	}
+
+^{KEYWORD}=" "+ {
+	  /* Rule 006. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  BEGIN(VALUE);
+	}
+
+^{KEYWORD} {
+	  /* Rule 007. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  BEGIN(COMMENT);
+	}
+
+^.{8}=" "+ {
+	  /* Rule 008: Illegal keyword, carry on regardless. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  kptr->status |= FITSHDR_KEYWORD;
+	  BEGIN(VALUE);
+	}
+
+^.{8}	{
+	  /* Rule 009: Illegal keyword, carry on regardless. */
+	  strncpy(kptr->keyword, yytext, 8);
+	  kptr->status |= FITSHDR_KEYWORD;
+	  BEGIN(COMMENT);
+	}
+
+<VALUE>" "*/\/ {
+	  /* Rule 010: Null keyvalue. */
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{LOGICAL} {
+	  /* Rule 011: Logical keyvalue. */
+	  kptr->type = 1;
+	  kptr->keyvalue.i = (*yytext == 'T');
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{INTEGER} {
+	  /* Rule 012: Integer keyvalue. */
+	  kptr->type = 2;
+	  if (sscanf(yytext, "%d", &(kptr->keyvalue.i)) < 1) {
+	    kptr->status |= FITSHDR_KEYVALUE;
+	    BEGIN(ERROR);
+	  }
+
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{FLOAT} {
+	  /* Rule 013: Float keyvalue. */
+	  kptr->type = 3;
+	  if (sscanf(yytext, "%lf", &(kptr->keyvalue.f)) < 1) {
+	    kptr->status |= FITSHDR_KEYVALUE;
+	    BEGIN(ERROR);
+	  }
+
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{ICOMPLX} {
+	  /* Rule 014: Integer complex keyvalue. */
+	  kptr->type = 4;
+	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
+	      kptr->keyvalue.c+1) < 2) {
+	    kptr->status |= FITSHDR_KEYVALUE;
+	    BEGIN(ERROR);
+	  }
+
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{FCOMPLX} {
+	  /* Rule 015: Floating point complex keyvalue. */
+	  kptr->type = 5;
+	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
+	      kptr->keyvalue.c+1) < 2) {
+	    kptr->status |= FITSHDR_KEYVALUE;
+	    BEGIN(ERROR);
+	  }
+
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{STRING} {
+	  /* Rule 016: String keyvalue. */
+	  kptr->type = 6;
+	  cptr = kptr->keyvalue.s;
+	  strcpy(cptr, yytext+1);
+
+	  /* Squeeze out repeated quotes. */
+	  k = 0;
+	  for (j = 0; j < 68; j++) {
+	    if (k < j) {
+	      cptr[k] = cptr[j];
+	    }
+
+	    if (cptr[j] == '\0') {
+	      if (k) cptr[k-1] = '\0';
+	      break;
+	    } else if (cptr[j] == '\'' && cptr[j+1] == '\'') {
+	      j++;
+	    }
+
+	    k++;
+	  }
+
+	  if (*cptr) {
+	    /* Retain the initial blank in all-blank strings. */
+	    fitshdr_nullfill(cptr+1, 67);
+	  } else {
+	    fitshdr_nullfill(cptr, 68);
+	  }
+
+	  BEGIN(INLINE);
+	}
+
+<VALUE>. {
+	  /* Rule 017. */
+	  kptr->status |= FITSHDR_KEYVALUE;
+	  BEGIN(ERROR);
+	}
+
+<INLINE>" "*$ {
+	  /* Rule 018. */
+	  BEGIN(FLUSH);
+	}
+
+<INLINE>" "*\/" "*$ {
+	  /* Rule 019. */
+	  BEGIN(FLUSH);
+	}
+
+<INLINE>" "*\/" "* {
+	  /* Rule 020. */
+	  BEGIN(UNITS);
+	}
+
+<INLINE>" " {
+	  /* Rule 021. */
+	  kptr->status |= FITSHDR_COMMENT;
+	  BEGIN(ERROR);
+	}
+
+<INLINE>. {
+	  /* Rule 022: Keyvalue parsing must now also be suspect. */
+	  kptr->status |= FITSHDR_COMMENT;
+	  kptr->type = 0;
+	  BEGIN(ERROR);
+	}
+
+<UNITS>{UNITSTR} {
+	  /* Rule 023. */
+	  kptr->ulen = strlen(yytext);
+	  yymore();
+	  BEGIN(COMMENT);
+	}
+
+<UNITS>. {
+	  /* Rule 024. */
+	  yymore();
+	  BEGIN(COMMENT);
+	}
+
+<COMMENT>.* {
+	  /* Rule 025. */
+	  strcpy(kptr->comment, yytext);
+	  fitshdr_nullfill(kptr->comment, 80);
+	  BEGIN(FLUSH);
+	}
+
+<ERROR>.* {
+	  /* Rule 026. */
+	  kptr->type = -abs(kptr->type);
+
+	  sprintf(kptr->comment, "%.80s", fitshdr_hdr-80);
+
+	  BEGIN(FLUSH);
+	}
+
+<FLUSH>.*\n {
+	  /* Rule 027: Discard the rest of the input line. */
+	  kptr->keyno = ++keyno;
+
+	  /* Do indexing. */
+	  iptr = keyids;
+	  for (j = 0; j < nkeyids; j++, iptr++) {
+	    cptr = iptr->name;
+	    for (k = 0; k < 8; k++, cptr++) {
+	      if (*cptr != '.' && *cptr != kptr->keyword[k]) break;
+	    }
+
+	    if (k == 8) {
+	      /* Found a match. */
+	      iptr->count++;
+	      if (iptr->idx[0] == -1) {
+	        iptr->idx[0] = keyno-1;
+	      } else {
+	        iptr->idx[1] = keyno-1;
+	      }
+
+	      kptr->keyno = -abs(kptr->keyno);
+	    }
+	  }
+
+	  /* Null-fill the keyword. */
+	  fitshdr_nullfill(kptr->keyword, 8);
+
+	  if (end && (end++ > 1) && !blank) {
+	     kptr->status |= FITSHDR_TRAILER;
+	  }
+	  if (kptr->status) (*nreject)++;
+
+	  kptr++;
+	  blank = 0;
+
+	  BEGIN(INITIAL);
+	}
+
+<<EOF>> {
+	  /* Rule 028: Reset for the next call to fitshdr(). */
+	  BEGIN(INITIAL);
+	  return 0;
+	}
+
+%%
+
+
+/*--------------------------------------------------------------------------*/
+
+void fitshdr_nullfill(char cptr[], int len)
+
+{
+  int j, k;
+
+  /* Null-fill the string. */
+  for (j = 0; j < len; j++) {
+    if (cptr[j] == '\0') {
+      for (k = j+1; k < len; k++) {
+        cptr[k] = '\0';
+      }
+      break;
+    }
+  }
+
+  for (k = j-1; k >= 0; k--) {
+    if (cptr[k] != ' ') break;
+    cptr[k] = '\0';
+  }
+
+  return;
+}

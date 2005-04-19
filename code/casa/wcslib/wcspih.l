@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -92,21 +92,16 @@ STRING	'([^']|'')*'
 #define FLOAT   1
 #define STRING  2
 
-#ifdef YY_USE_PROTOS
-#define YY_DECL int wcspih(char *header, int nkeys, int relax, int errlvl, \
+#define YY_DECL int wcspih(char *header, int ncards, int relax, int ctrl, \
                            int *nreject, int *nwcs, struct wcsprm **wcs)
-#else
-#define YY_DECL int wcspih(header, nkeys, relax, errlvl, nreject, nwcs, wcs) \
-char *header; int nkeys, relax, errlvl, *nreject, *nwcs; struct wcsprm **wcs;
-#endif
 
 #define YY_INPUT(inbuff, count, bufsize) \
 	{ \
-	  if (wcspih_nkeys) { \
+	  if (wcspih_ncards) { \
 	    strncpy(inbuff, wcspih_hdr, 80); \
 	    inbuff[80] = '\n'; \
 	    wcspih_hdr += 80; \
-	    wcspih_nkeys--; \
+	    wcspih_ncards--; \
 	    count = 81; \
 	  } else { \
 	    count = YY_NULL; \
@@ -114,32 +109,25 @@ char *header; int nkeys, relax, errlvl, *nreject, *nwcs; struct wcsprm **wcs;
 	}
 
 /* Uncomment the next line to print text as it is matched. */
-/* #define YY_USER_ACTION printf("%s\n", yytext); */
+/* #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext); */
 
 extern char *yytext;
 
-#ifdef YY_USE_PROTOS
+/* These global variables are required by YY_INPUT. */
+char *wcspih_hdr;
+int  wcspih_ncards;
+
 void wcspih_naxes(int naxis, int i, int j, char alt, int alts[], int *npptr);
 int  wcspih_inits(int alts[], int npv[], int nps[], int *nwcs,
                   struct wcsprm **wcs);
 int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
                   int *nwcs, struct wcsprm **wcs);
-#else
-void wcspih_naxes();
-int  wcspih_inits();
-int  wcspih_final();
-#endif
-
-/* These global variables are required by YY_INPUT. */
-char *wcspih_hdr;
-int  wcspih_nkeys;
 
 %}
 
 %%
 
-%{
-	char alt, *cptr, errmsg[80];
+	char alt, *cptr, errmsg[80], *hptr;
 	int  a, altlin, alts[27], i, j, k, m, naxis, ndx, *npptr, nps[27],
 	     npv[27], pass, status, type, velref[27], voff;
 	double epoch[27], vsource[27];
@@ -157,8 +145,9 @@ int  wcspih_nkeys;
 	}
 
 	wcspih_hdr = header;
-	wcspih_nkeys = nkeys;
+	wcspih_ncards = ncards;
 
+	hptr = header;
 	*nreject = 0;
 	*nwcs = 0;
 	*wcs  = 0;
@@ -171,9 +160,9 @@ int  wcspih_nkeys;
 	altlin = 0;
 	npptr = 0;
 	vptr  = 0;
-%}
 
 ^NAXIS"   "="  "*{INTEGER} {
+	  /* Rule 001. */
 	  if (pass == 1) {
 	    sscanf(yytext, "NAXIS   = %d", &naxis);
 	  }
@@ -183,11 +172,13 @@ int  wcspih_nkeys;
 	    naxis = 0;
 	    BEGIN(ERROR);
 	  } else {
-	    BEGIN(FLUSH);
+	    yyless(0);
+	    BEGIN(DISCARD);
 	  }
 	}
 
 ^WCSAXES{ALT}="  "*{INTEGER} {
+	  /* Rule 002. */
 	  if (pass == 1) {
 	    sscanf(yytext, "WCSAXES%c= %d", &alt, &i);
 	    wcspih_naxes(naxis, i, 0, alt, alts, 0);
@@ -196,18 +187,21 @@ int  wcspih_nkeys;
 	}
 
 ^WCSNAME {
+	  /* Rule 003. */
 	  if (*wcs) vptr = (*wcs)->wcsname;
 	  type = STRING;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^CRPIX	{
+	  /* Rule 004. */
 	  if (*wcs) vptr = &((*wcs)->crpix);
 	  type = FLOAT;
 	  BEGIN(CCCCCia);
 	}
 
 ^PC	{
+	  /* Rule 005. */
 	  if (*wcs) {
 	    vptr = &((*wcs)->pc);
 	    altlin = 1;
@@ -217,6 +211,7 @@ int  wcspih_nkeys;
 	}
 
 ^CD	{
+	  /* Rule 006. */
 	  if (*wcs) {
 	    vptr = &((*wcs)->cd);
 	    altlin = 2;
@@ -226,12 +221,14 @@ int  wcspih_nkeys;
 	}
 
 ^CDELT	{
+	  /* Rule 007. */
 	  if (*wcs) vptr = &((*wcs)->cdelt);
 	  type = FLOAT;
 	  BEGIN(CCCCCia);
 	}
 
 ^CROTA	{
+	  /* Rule 008. */
 	  if (*wcs) {
 	    vptr = &((*wcs)->crota);
 	    altlin = 4;
@@ -241,42 +238,49 @@ int  wcspih_nkeys;
 	}
 
 ^CUNIT	{
+	  /* Rule 009. */
 	  if (*wcs) vptr = &((*wcs)->cunit);
 	  type = STRING;
 	  BEGIN(CCCCCia);
 	}
 
 ^CTYPE	{
+	  /* Rule 010. */
 	  if (*wcs) vptr = &((*wcs)->ctype);
 	  type = STRING;
 	  BEGIN(CCCCCia);
 	}
 
 ^CRVAL	{
+	  /* Rule 011. */
 	  if (*wcs) vptr = &((*wcs)->crval);
 	  type = FLOAT;
 	  BEGIN(CCCCCia);
 	}
 
 ^CNAME	{
+	  /* Rule 012. */
 	  if (*wcs) vptr = &((*wcs)->cname);
 	  type = STRING;
 	  BEGIN(CCCCCia);
 	}
 
 ^CRDER	{
+	  /* Rule 013. */
 	  if (*wcs) vptr = &((*wcs)->crder);
 	  type = FLOAT;
 	  BEGIN(CCCCCia);
 	}
 
 ^CSYER	{
+	  /* Rule 014. */
 	  if (*wcs) vptr = &((*wcs)->csyer);
 	  type = FLOAT;
 	  BEGIN(CCCCCia);
 	}
 
 ^PV	{
+	  /* Rule 015. */
 	  npptr = npv;
 	  if (*wcs) vptr = &((*wcs)->pv);
 	  type = FLOAT;
@@ -284,6 +288,7 @@ int  wcspih_nkeys;
 	}
 
 ^PROJP	{
+	  /* Rule 016. */
 	  npptr = npv;
 	  if (*wcs) vptr = &((*wcs)->pv);
 	  type = FLOAT;
@@ -291,6 +296,7 @@ int  wcspih_nkeys;
 	}
 
 ^PS	{
+	  /* Rule 017. */
 	  npptr = nps;
 	  if (*wcs) vptr = &((*wcs)->ps);
 	  type = STRING;
@@ -298,18 +304,21 @@ int  wcspih_nkeys;
 	}
 
 ^LONPOLE {
+	  /* Rule 018. */
 	  if (*wcs) vptr = &((*wcs)->lonpole);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^LATPOLE {
+	  /* Rule 019. */
 	  if (*wcs) vptr = &((*wcs)->latpole);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^RADECSYS {
+	  /* Rule 020. */
 	  unput(' ');
 	  if (*wcs) vptr = (*wcs)->radesys;
 	  type = STRING;
@@ -317,18 +326,21 @@ int  wcspih_nkeys;
 	}
 
 ^RADESYS {
+	  /* Rule 021. */
 	  if (*wcs) vptr = (*wcs)->radesys;
 	  type = STRING;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^EQUINOX {
+	  /* Rule 022. */
 	  if (*wcs) vptr = &((*wcs)->equinox);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^EPOCH{ALT}"  " {
+	  /* Rule 023. */
 	  sscanf(yytext, "EPOCH%c", &alt);
 
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_EPOCHa)) {
@@ -354,6 +366,7 @@ int  wcspih_nkeys;
 	}
 
 ^RESTFREQ {
+	  /* Rule 024. */
 	  unput(' ');
 	  if (*wcs) vptr = &((*wcs)->restfrq);
 	  type = FLOAT;
@@ -361,30 +374,35 @@ int  wcspih_nkeys;
 	}
 
 ^RESTFRQ {
+	  /* Rule 025. */
 	  if (*wcs) vptr = &((*wcs)->restfrq);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^RESTWAV {
+	  /* Rule 026. */
 	  if (*wcs) vptr = &((*wcs)->restwav);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^SPECSYS {
+	  /* Rule 027. */
 	  if (*wcs) vptr = (*wcs)->specsys;
 	  type = STRING;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^SSYSOBS {
+	  /* Rule 028. */
 	  if (*wcs) vptr = (*wcs)->ssysobs;
 	  type = STRING;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^VELREF{ALT}" " {
+	  /* Rule 029. */
 	  sscanf(yytext, "VELREF%c", &alt);
 
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_VELREFa)) {
@@ -410,18 +428,21 @@ int  wcspih_nkeys;
 	}
 
 ^VELOSYS {
+	  /* Rule 030. */
 	  if (*wcs) vptr = &((*wcs)->velosys);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^SSYSSRC {
+	  /* Rule 031. */
 	  if (*wcs) vptr = (*wcs)->ssyssrc;
 	  type = STRING;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^VSOURCE{ALT} {
+	  /* Rule 032. */
 	  sscanf(yytext, "VSOURCE%c", &alt);
 
 	  if (relax & (WCSHDR_all | WCSHDR_VSOURCEa)) {
@@ -437,7 +458,7 @@ int  wcspih_nkeys;
 	    BEGIN(CCCCCCCa);
 
 	  } else if (relax & WCSHDR_reject) {
-            sprintf(errmsg, "Deprecated VSOURCEa keyword rejected");
+	    sprintf(errmsg, "Deprecated VSOURCEa keyword rejected");
 	    BEGIN(ERROR);
 
 	  } else {
@@ -446,60 +467,74 @@ int  wcspih_nkeys;
 	}
 
 ^ZSOURCE {
+	  /* Rule 033. */
 	  if (*wcs) vptr = &((*wcs)->zsource);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCa);
 	}
 
 ^OBSGEO-X {
+	  /* Rule 034. */
 	  if (*wcs) vptr = (*wcs)->obsgeo;
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^OBSGEO-Y {
+	  /* Rule 035. */
 	  if (*wcs) vptr = (*wcs)->obsgeo + 1;
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^OBSGEO-Z {
+	  /* Rule 036. */
 	  if (*wcs) vptr = (*wcs)->obsgeo + 2;
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^DATE-OBS {
+	  /* Rule 037. */
 	  if (*wcs) vptr = (*wcs)->dateobs;
 	  type = STRING;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^MJD-OBS" " {
+	  /* Rule 038. */
 	  if (*wcs) vptr = &((*wcs)->mjdobs);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^MJD-AVG" " {
+	  /* Rule 039. */
 	  if (*wcs) vptr = &((*wcs)->mjdavg);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^END" "{77} {
-	  if (wcspih_nkeys) {
+	  /* Rule 040. */
+	  yyless(0);
+	  if (wcspih_ncards) {
 	    sprintf(errmsg, "Illegal cards following END card");
 	    BEGIN(ERROR);
 	  } else {
-	    BEGIN(FLUSH);
+	    BEGIN(DISCARD);
 	  }
 	}
 
-^.	BEGIN(DISCARD);
+^.	{
+	  /* Rule 041. */
+	  yyless(0);
+	  BEGIN(DISCARD);
+	}
 
 <CROTAi>{I1}{ALT}" " |
 <CROTAi>{I2}{ALT} {
+	  /* Rules 042-043. */
 	  sscanf(yytext, "%d%c", &i, &alt);
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_CROTAia)) {
 	    ndx = i - 1;
@@ -516,6 +551,7 @@ int  wcspih_nkeys;
 	}
 
 <CROTAi>{I3} {
+	  /* Rule 044. */
 	  sscanf(yytext, "%d", &i);
 	  alt = ' ';
 	  ndx = i - 1;
@@ -523,10 +559,12 @@ int  wcspih_nkeys;
 	}
 
 <CROTAi>. {
+	  /* Rule 045. */
 	  BEGIN(DISCARD);
 	}
 
 <PROJPn>{I0}"  " {
+	  /* Rule 046. */
 	  if (relax & (WCSHDR_all | WCSHDR_PROJPn)) {
 	    sscanf(yytext, "%d", &m);
 	    i = 0;
@@ -544,17 +582,20 @@ int  wcspih_nkeys;
 	}
 
 <PROJPn>. {
+	  /* Rule 047. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCia>{I1}{ALT}" " |
 <CCCCCia>{I2}{ALT} {
+	  /* Rules 048-049. */
 	  sscanf(yytext, "%d%c", &i, &alt);
 	  ndx = i - 1;
 	  BEGIN(VALUE);
 	}
 
 <CCCCCia>{I3} {
+	  /* Rule 050. */
 	  sscanf(yytext, "%3d", &i);
 	  alt = ' ';
 	  ndx = i - 1;
@@ -562,6 +603,7 @@ int  wcspih_nkeys;
 	}
 
 <CCCCCia>. {
+	  /* Rule 051. */
 	  BEGIN(DISCARD);
 	}
 
@@ -571,6 +613,7 @@ int  wcspih_nkeys;
 <CCi_ja>{I1}_{I3}{ALT} |
 <CCi_ja>{I2}_{I2}{ALT} |
 <CCi_ja>{I3}_{I1}{ALT} {
+	  /* Rules 052-057. */
 	  sscanf(yytext, "%d_%d%c", &i, &j, &alt);
 	  if (*wcs) {
 	    wcsp = *wcs;
@@ -587,6 +630,7 @@ int  wcspih_nkeys;
 <CCi_ja>{I2}_{I3} |
 <CCi_ja>{I3}_{I2} |
 <CCi_ja>{I4}_{I1} {
+	  /* Rules 058-061. */
 	  sscanf(yytext, "%d_%d", &i, &j);
 	  alt = ' ';
 	  if (*wcs) {
@@ -596,7 +640,7 @@ int  wcspih_nkeys;
 	}
 
 <CCi_ja>{I0}{6} {
-	  /* This covers the defunct forms CD00i00j and PC00i00j. */
+	  /* Rule 062: This covers the defunct forms CD00i00j and PC00i00j. */
 	  if ((relax & WCSHDR_all) ||
 	      (relax & WCSHDR_PC00i00j) && altlin == 1 ||
 	      (relax & WCSHDR_CD00i00j) && altlin == 2) {
@@ -618,6 +662,7 @@ int  wcspih_nkeys;
 	}
 
 <CCi_ja>. {
+	  /* Rule 063. */
 	  BEGIN(DISCARD);
 	}
 
@@ -627,6 +672,7 @@ int  wcspih_nkeys;
 <CCi_ma>{I1}_{I3}{ALT} |
 <CCi_ma>{I2}_{I2}{ALT} |
 <CCi_ma>{I3}_{I1}{ALT} {
+	  /* Rules 064-069. */
 	  sscanf(yytext, "%d_%d%c", &i, &m, &alt);
 	  ndx = -1;
 	  BEGIN(VALUE);
@@ -636,6 +682,7 @@ int  wcspih_nkeys;
 <CCi_ma>{I2}_{I3} |
 <CCi_ma>{I3}_{I2} |
 <CCi_ma>{I4}_{I1} {
+	  /* Rules 070-073. */
 	  sscanf(yytext, "%d_%d", &i, &m);
 	  alt = ' ';
 	  ndx = -1;
@@ -643,20 +690,24 @@ int  wcspih_nkeys;
 	}
 
 <CCi_ma>. {
+	  /* Rule 074. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCCCa>{ALT} {
+	  /* Rule 075. */
 	  ndx = -1;
 	  sscanf(yytext, "%c", &alt);
 	  BEGIN(VALUE);
 	}
 
 <CCCCCCCa>. {
+	  /* Rule 076. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCCCC>. {
+	  /* Rule 077. */
 	  unput(yytext[0]);
 	  ndx = -1;
 	  alt = 0;
@@ -664,6 +715,7 @@ int  wcspih_nkeys;
 	}
 
 <VALUE>=" "+ {
+	  /* Rule 078. */
 	  if (type == INTEGER) {
 	    BEGIN(INTEGER_VAL);
 	  } else if (type == FLOAT) {
@@ -677,11 +729,13 @@ int  wcspih_nkeys;
 	}
 
 <VALUE>. {
+	  /* Rule 079. */
 	  sprintf(errmsg, "Invalid KEYWORD = VALUE syntax");
 	  BEGIN(ERROR);
 	}
 
 <INTEGER_VAL>{INTEGER} {
+	  /* Rule 080. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -723,11 +777,13 @@ int  wcspih_nkeys;
 	}
 
 <INTEGER_VAL>. {
+	  /* Rule 081. */
 	  sprintf(errmsg, "An integer value was expected");
 	  BEGIN(ERROR);
 	}
 
 <FLOAT_VAL>{FLOAT} {
+	  /* Rule 082. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -781,11 +837,13 @@ int  wcspih_nkeys;
 	}
 
 <FLOAT_VAL>. {
+	  /* Rule 083. */
 	  sprintf(errmsg, "A floating-point value was expected");
 	  BEGIN(ERROR);
 	}
 
 <STRING_VAL>{STRING} {
+	  /* Rule 084. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -851,37 +909,62 @@ int  wcspih_nkeys;
 	}
 
 <STRING_VAL>. {
+	  /* Rule 085. */
 	  sprintf(errmsg, "A string value was expected");
 	  BEGIN(ERROR);
 	}
 
 <COMMENT>" "*\/.* |
 <COMMENT>" "* {
+	  /* Rules 086-087. */
 	  BEGIN(FLUSH);
 	}
 
 <COMMENT>. {
+	  /* Rule 088. */
 	  sprintf(errmsg, "Malformed inline comment");
 	  BEGIN(ERROR);
 	}
 
 <DISCARD>.* {
-	  if (pass == 2 && errlvl > 2) {
-	    fprintf(stderr, "%.80s\n  Discarded.\n", wcspih_hdr-80);
+	  /* Rule 089. */
+	  if (pass == 2) {
+	    if (ctrl < 0) {
+	      /* Preserve discards. */
+	      if (hptr < wcspih_hdr-80) {
+	        strncpy(hptr, wcspih_hdr-80, 80);
+	      }
+	      hptr += 80;
+
+	    } else if (ctrl > 2) {
+	      fprintf(stderr, "%.80s\n  Discarded.\n", wcspih_hdr-80);
+	    }
 	  }
 	  BEGIN(FLUSH);
 	}
 
 <ERROR>.* {
+	  /* Rule 090. */
 	  (*nreject)++;
-	  if (pass == 2 && errlvl > 1) {
-	    fprintf(stderr, "%.80s\n%4d: %s.\n", wcspih_hdr-80, *nreject,
-	      errmsg);
+	  if (pass == 2) {
+	    if (ctrl == -1) {
+	      if (hptr < wcspih_hdr-80) {
+	        /* Preserve rejects. */
+	        strncpy(hptr, wcspih_hdr-80, 80);
+	      }
+	      hptr += 80;
+	    }
+
+	    if (abs(ctrl) > 1) {
+	      fprintf(stderr, "%.80s\n%4d: %s.\n", wcspih_hdr-80, *nreject,
+	        errmsg);
+	    }
 	  }
 	  BEGIN(FLUSH);
 	}
 
 <FLUSH>.*\n {
+	  /* Rule 091. */
 	  i = j = m = 0;
 	  alt = ' ';
 	  type = -1;
@@ -891,13 +974,16 @@ int  wcspih_nkeys;
 	}
 
 <<EOF>> {
+	  /* Rule 092. Reset for the next call to wcspih(). */
+	  BEGIN(INITIAL);
+
 	  if (pass == 1) {
 	    if (status = wcspih_inits(alts, npv, nps, nwcs, wcs) ||
 	        *nwcs == 0) {
 	      return status;
 	    }
 
-	    if (errlvl > 2) {
+	    if (abs(ctrl) > 2) {
 	      if (*nwcs == 1) {
 	        fprintf(stderr, "Found one coordinate representation.\n");
 	      } else {
@@ -907,7 +993,7 @@ int  wcspih_nkeys;
 	    }
 
 	    wcspih_hdr = header;
-	    wcspih_nkeys = nkeys;
+	    wcspih_ncards = ncards;
 	    *nreject = 0;
 
 	    pass = 2;
@@ -918,7 +1004,9 @@ int  wcspih_nkeys;
 	    yyrestart(yyin);
 
 	  } else {
-	    if (errlvl == 1) {
+	    if (ctrl < 0) {
+	      *hptr = '\0';
+	    } else if (ctrl == 1) {
 	      fprintf(stderr, "%d WCS cards were rejected.\n", *nreject);
 	    }
 
@@ -937,11 +1025,7 @@ int  wcspih_nkeys;
 *   cards in each representation.
 *---------------------------------------------------------------------------*/
 
-void wcspih_naxes(naxis, i, j, alt, alts, npptr)
-
-int naxis, i, j;
-char alt;
-int alts[], *npptr;
+void wcspih_naxes(int naxis, int i, int j, char alt, int alts[], int *npptr)
 
 {
   /* On the first pass alts[] is used to determine the number of axes */
@@ -979,10 +1063,12 @@ int alts[], *npptr;
 *   initialize each of them.
 *---------------------------------------------------------------------------*/
 
-int wcspih_inits(alts, npv, nps, nwcs, wcs)
-
-int alts[], npv[], nps[], *nwcs;
-struct wcsprm **wcs;
+int wcspih_inits(
+  int alts[],
+  int npv[],
+  int nps[],
+  int *nwcs,
+  struct wcsprm **wcs)
 
 {
   int a, status;
@@ -1033,14 +1119,13 @@ struct wcsprm **wcs;
 *   Interpret any VELREF cards encountered for each coordinate representation.
 *---------------------------------------------------------------------------*/
 
-int wcspih_final(alts, epoch, velref, vsource, nwcs, wcs)
-
-int alts[];
-double epoch[];
-int velref[];
-double vsource[];
-int *nwcs;
-struct wcsprm **wcs;
+int wcspih_final(
+  int alts[],
+  double epoch[],
+  int velref[],
+  double vsource[],
+  int *nwcs,
+  struct wcsprm **wcs)
 
 {
   static char *specsys[] = {"LSRK", "BARYCENT", "TOPOCENT",

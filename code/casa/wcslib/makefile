@@ -111,6 +111,8 @@ $(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/spx.h
 $(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/wcs.h
 
+$(WCSLIB).$(SFXSTAT)(fitshdr.o) : $(CODEDIR)/fitshdr.h
+
 $(WCSLIB).$(SFXSTAT)(lin.o) : $(CODEDIR)/lin.h
 
 $(WCSLIB).$(SFXSTAT)(log.o) : $(CODEDIR)/log.h
