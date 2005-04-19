@@ -109,7 +109,17 @@ tTableGram 'select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5
 
 tTableGram 'select ab from $1;tTableGram_tmp.tab'
 
+tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad]'
+tTableGram 'select ab from tTableGram_tmp.tab where anycone([ab,ab],[2rad,2rad],1rad)'
+tTableGram 'select ab from tTableGram_tmp.tab where cones([ab,ab],[4rad,4rad,1rad])'
+tTableGram 'select ab from tTableGram_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))'
+tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]'
+tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
+tTableGram 'calc from a.b  calc findcone([ab,ab],[select from a.b giving [ab,ab]],[1rad,2rad])'
+echo ""
+
 tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
+tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab,ac,ab:ac]])'
 tTableGram 'calc from $1 calc sum([select ab from $1]);tTableGram_tmp.tab'
 tTableGram 'calc from tTableGram_tmp.tab calc ab'
 tTableGram 'calc from tTableGram_tmp.tab calc arr1[2,1,1]'
