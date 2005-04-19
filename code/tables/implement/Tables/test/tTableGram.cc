@@ -201,7 +201,7 @@ void showExpr(const TableExprNode& expr)
     cout << endl;
   } else {
     for (uInt i=0; i<expr.nrow(); i++) {
-      cout << "  row " << i << ":" << endl;
+      cout << "  row " << i << ":  ";
       switch (expr.dataType()) {
       case TpBool:
 	{
@@ -234,6 +234,7 @@ void showExpr(const TableExprNode& expr)
       default:
 	cout << "Unknown expression array type " << expr.dataType();
       }
+      cout << endl;
     }
   }
 }
