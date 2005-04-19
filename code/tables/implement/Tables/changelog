@@ -419,3 +419,22 @@ As can be seen in the example the TaQL expression is passed to the constructor a
 Care has to be taken not to delete a column used in such an expression. The system is not robust enough (yet) to cope with that.
  </description>
 </change>
+
+<change id=0167>
+ <author> Ger van Diepen </author>
+ <date> 2005/04/19 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added cone searching to TaQL
+ </summary>
+ <description>
+TaQL got an operator INCONE and a few new functions to make it possible to find sources contained in a cone.
+It is possible to do catalogue matching using these new functions.
+ </description>
+</change>
