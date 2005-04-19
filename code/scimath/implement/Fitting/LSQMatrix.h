@@ -1,5 +1,5 @@
 //# LSQMatrix.h: Support class for the LSQ package
-//# Copyright (C) 2004
+//# Copyright (C) 2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <algorithm>
+#include <casa/Utilities/RecordTransformable.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -57,6 +58,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The basic operations provided are referencing and indexing of cells,
 // rows, columns and diagonal of the triangular matrix.
 // The class is a private structure, with explicit friends.
+//
+// The contents can be saved in a record (<src>toRecord<src>), 
+// and an object can be created from a record (<src>fromRecord</src>).
+// The record identifier is 'tmat'.
 // </synopsis>
 //
 // <example>
@@ -73,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //         diagonal
 // </todo>
 
-class LSQMatrix {
+class LSQMatrix : public RecordTransformable {
   //# Friends
   friend class LSQFit;
  private:
@@ -101,6 +106,7 @@ class LSQMatrix {
   Double &operator[](uInt index) { return (trian_p[index]); };
   const Double operator[](uInt index) const { return (trian_p[index]); };
   // </group>
+
   //# General Member Functions
   // Reset all data to zero
   void reset() { clear(); };
@@ -136,6 +142,18 @@ class LSQMatrix {
   void doDiagonal(uInt n);
   // Multiply n-length of diagonal with <src>1+fac</src>
   void mulDiagonal(uInt n, Double fac);
+  // Create a Matrix from a record. An error message is generated, and False
+  // returned if an invalid record is given. A valid record will return True.
+  // Error messages are postfixed to error.
+  // <group>
+  virtual Bool fromRecord(String &error, const RecordInterface &in);
+  // </group>
+  // Create a record from an LSQMatrix. The return will be False and an error
+  // message generated only if the object does not contain a valid Matrix.
+  // Error messages are postfixed to error.
+  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  // Get identification of record
+  virtual const String &ident() const;
   
   //# Data
   // Matrix size (linear size)
