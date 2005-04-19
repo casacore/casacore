@@ -11,11 +11,27 @@
 \title{NOTE 199 --
 Table Query Language}
 \author {Ger van Diepen, ASTRON Dwingeloo}
-\date {2004 November 9}
+\date {2005 April 19}
 \maketitle
+\begin{abstract}
+The Table Query Language (TaQL) is an SQL-like high level language to
+do operations like selection, sort and update on a table. It is a very
+versatile language with full support for table columns containing
+array data. It has a very rich set of functions (like cone search and
+array reduction) making it very suitable for astronomical
+applications. It also has full support of nested queries.
+An operation that can be expressed in a single function is the
+matching of two sky catalogues.
+\\A binding in C++ and Glish is available. A Python binding is
+expected before fall 2005.
+\end{abstract}
 %%---------------------------------------------------------------------------
 \begin{htmlonly}
-\htmladdnormallink{A (gzipped) postscript version of this note is available (125kB).}{../199.ps.gz}
+\htmladdnormallink{A (gzipped) postscript version of this note is available (130kB).}{../199.ps.gz}
 \end{htmlonly}
+
+
+\tableofcontents 
+\newpage
 \input{taql}
 \end{document}
