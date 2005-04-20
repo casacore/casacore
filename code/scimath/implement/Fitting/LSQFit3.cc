@@ -60,9 +60,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     out.define(RecordFieldId(state),     static_cast<Int>(state_p));
     out.define(RecordFieldId(nun),       static_cast<Int>(nun_p));
     out.define(RecordFieldId(ncon),      static_cast<Int>(ncon_p));
-    out.define(RecordFieldId(prec),      ncon_p);
-    out.define(RecordFieldId(startnon),  ncon_p);
-    out.define(RecordFieldId(nonlin),    ncon_p);
+    out.define(RecordFieldId(prec),      prec_p);
+    out.define(RecordFieldId(startnon),  startnon_p);
+    out.define(RecordFieldId(nonlin),    nonlin_p);
     out.define(RecordFieldId(rank),      static_cast<Int>(r_p));
     out.define(RecordFieldId(nnc),       static_cast<Int>(nnc_p));
     if (!norm_p->toRecord(error, out)) return False;
@@ -119,15 +119,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       };
       uInt rnun;
       uInt rncon;
-      in.get(RecordFieldId(nun), rnun);
-      in.get(RecordFieldId(ncon), rncon);
+      in.get(RecordFieldId(nun), static_cast<Int>(rnun));
+      in.get(RecordFieldId(ncon), static_cast<Int>(rncon));
       set(rnun, rncon);
       in.get(RecordFieldId(prec), prec_p);
       in.get(RecordFieldId(startnon), startnon_p);
       in.get(RecordFieldId(nonlin), nonlin_p);
-      in.get(RecordFieldId(rank), r_p);
-      in.get(RecordFieldId(state), state_p);
-      in.get(RecordFieldId(nnc), nnc_p);
+      in.get(RecordFieldId(rank), static_cast<Int>(r_p));
+      in.get(RecordFieldId(state), static_cast<Int>(state_p));
+      in.get(RecordFieldId(nnc), static_cast<Int>(nnc_p));
       if (!norm_p->fromRecord(error, in)) return False;
       uInt lInt;
       if (in.isDefined(piv) &&
