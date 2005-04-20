@@ -146,15 +146,33 @@ class LSQMatrix : public RecordTransformable {
   // returned if an invalid record is given. A valid record will return True.
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
+  Bool fromRecord(String &error, const RecordInterface &in);
   // </group>
   // Create a record from an LSQMatrix. The return will be False and an error
   // message generated only if the object does not contain a valid Matrix.
   // Error messages are postfixed to error.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  Bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
-  virtual const String &ident() const;
-  
+  const String &ident() const;
+    // Convert a <src>carray</src> to/from a record. Field only written if 
+  // non-zero length. No carray created if field does not exist on input.
+  // False returned if unexpectedly no data available for non-zero length
+  // (put), or a field has zero length vector(get).
+  // <group>
+  static Bool putCArray(String &error, RecordInterface &out,
+			const String &fname,
+			uInt len, const Double * const in);
+  static Bool getCArray(String &error, const RecordInterface &in,
+			const String &fname,
+			uInt &len, Double *&out);
+  static Bool putCArray(String &error, RecordInterface &out,
+			const String &fname,
+			uInt len, const uInt * const in);
+  static Bool getCArray(String &error, const RecordInterface &in,
+			const String &fname,
+			uInt &len, uInt *&out);
+  // </group>
+
   //# Data
   // Matrix size (linear size)
   uInt n_p;
@@ -171,7 +189,11 @@ class LSQMatrix : public RecordTransformable {
   // </group>
   // Matrix (triangular n_p * n_p)
   Double *trian_p;
-
+  // Record field names
+  static const String tmatsiz;
+  static const String tmatdat;
+  // <group>
+  // </group>
   //
 };
 

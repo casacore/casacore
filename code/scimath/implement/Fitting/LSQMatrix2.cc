@@ -34,53 +34,118 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+  // Constants
+  const String LSQMatrix::tmatsiz = String("tmatsiz");
+  const String LSQMatrix::tmatdat = String("tmatdat");
+
   Bool LSQMatrix::fromRecord(String &error, const RecordInterface &in) {
     set(0);
     Int vlen;
-    if (in.isDefined(String("tmatsiz")) &&
-	in.type(in.idToNumber(RecordFieldId("tmatsiz"))) == TpInt) {
-      in.get(RecordFieldId("tmatsiz"), vlen);
+    if (in.isDefined(tmatsiz) &&
+	in.type(in.idToNumber(RecordFieldId(tmatsiz))) == TpInt) {
+      in.get(RecordFieldId(tmatsiz), vlen);
     } else {
       error += String("No triangular matrix length present");
       return False;
     };
     set(vlen);
-    if (vlen && in.isDefined(String("tmatdat")) &&
-	in.type(in.idToNumber(RecordFieldId("tmatdat"))) == TpArrayDouble) {
-      Vector<Double> vt;
-      in.get(RecordFieldId("tmatdat"), vt);
-      if (len_p != vt.nelements()) {
-	error += String("Inconsistency between lengths in "
-			"triangular matrix record");
-	set(0);
-	return False;
-      };
-      std::copy(vt.data(), vt.data()+len_p, trian_p); 
-    } else {
-      error += String("No triangular data present in non-empty matrix");
-      return False;
-    };
-    return True;
+    return getCArray(error, in, tmatdat, len_p, trian_p);
   }
   
   Bool LSQMatrix::toRecord(String &error, RecordInterface &out) const {
-    out.define(RecordFieldId("tmatsiz"), static_cast<Int>(n_p));
-    if (n_p) {
-      if (trian_p) {
-	const IPosition vlen(1, len_p);
-	Vector<Double> vt(vlen, trian_p, COPY);
-	out.define(RecordFieldId("tmatdat"), vt);
-      } else {
-	error += String("No triangular fitting data for non-empty matrix");
-	return False;
-      };
-    };
+    out.define(RecordFieldId(tmatsiz), static_cast<Int>(n_p));
+    if (n_p) return putCArray(error, out, tmatdat, len_p, trian_p);
     return True;
   }
   
   const String &LSQMatrix::ident() const {
     static String myid = "tmat";
     return myid;
+  }
+
+  Bool LSQMatrix::putCArray(String &error, RecordInterface &out,
+			 const String &fname,
+			 uInt len, const Double * const in) {
+    if (len) {
+      if (in) {
+	const IPosition vlen(1, len);
+	Vector<Double> vt(vlen, in);
+	out.define(RecordFieldId(fname), vt);
+      } else {
+	error += String("No data for non-empty ") + fname + "vector";
+	return False;
+      };
+    };
+    return True;
+  }
+
+  Bool LSQMatrix::getCArray(String &error, const RecordInterface &in,
+			 const String &fname,
+			 uInt &len, Double *&out) {
+    if (in.isDefined(fname) &&
+	in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
+      Vector<Double> vt;
+      in.get(RecordFieldId(fname), vt);
+      uInt vlen = vt.nelements();
+      if (!out) {
+	if (vlen) out = new Double[vlen];
+	len = vlen;
+      };
+      if (vlen != len) {
+	error += String("Inconsistency between lengths in " + fname +
+			"field in record");
+	return False;
+      };
+      if (out && !vlen) {
+	error += String("Unexpected empty vector ") + fname + " encountered";
+	return False;
+      };
+      std::copy(vt.data(), vt.data()+len, out); 
+    };
+    return True;
+  }
+
+  Bool LSQMatrix::putCArray(String &error, RecordInterface &out,
+			 const String &fname,
+			 uInt len, const uInt * const in) {
+    if (len) {
+      if (in) {
+	const IPosition vlen(1, len);
+	Vector<Int> vt(vlen);
+	std::copy(in, in+len, vt.data()); 
+	out.define(RecordFieldId(fname), vt);
+      } else {
+	error += String("No data for non-empty ") + fname + "vector";
+	return False;
+      };
+    };
+    return True;
+  }
+
+  Bool LSQMatrix::getCArray(String &error, const RecordInterface &in,
+			 const String &fname,
+			 uInt &len, uInt *&out) {
+    if (in.isDefined(fname) &&
+	in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayInt) {
+      Vector<Int> vt;
+      in.get(RecordFieldId(fname), vt);
+      uInt vlen = vt.nelements();
+      if (!out) {
+	if (vlen) out = new uInt[vlen];
+	len = vlen;
+      };
+      if (vlen != len) {
+	error += String("Inconsistency between lengths in " + fname +
+			"field in record");
+	return False;
+      };
+      if (out && !vlen) {
+	error += String("Unexpected empty vector ") + fname + " encountered";
+	return False;
+      };
+      std::copy(vt.data(), vt.data()+len, out); 
+    };
+    return True;
   }
 
 } //# NAMESPACE CASA - END
