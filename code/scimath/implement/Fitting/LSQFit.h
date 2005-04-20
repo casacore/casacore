@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/Utilities/RecordTransformable.h>
 #include <scimath/Fitting/LSQMatrix.h>
 #include <scimath/Fitting/LSQTraits.h>
 #include <complex>
@@ -161,6 +162,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <linkto class=LinearFit>LinearFit</linkto> and
 // <linkto class=NonLinearFitLM>NonLinearFit</linkto> classes.
 // </note>
+//
+// The contents can be saved in a record (<src>toRecord<src>), 
+// and an object can be created from a record (<src>fromRecord</src>).
+// The record identifier is 'lfit'.
 // </synopsis>
 //
 // <example>
@@ -622,7 +627,21 @@ class LSQFit {
 	       uInt *&piv, Double *&sEq, Double *&sol,
 	       Double &prec, Double &nonlin) const;
   //
-  
+  // Create an LSQFit object from a record.
+  // An error message is generated, and False
+  // returned if an invalid record is given. A valid record will return True.
+  // Error messages are postfixed to error.
+  // <group>
+  Bool fromRecord(String &error, const RecordInterface &in);
+  // </group>
+  // Create a record from an LSQFit object.
+  // The return will be False and an error
+  // message generated only if the object does not contain a valid object.
+  // Error messages are postfixed to error.
+  Bool toRecord(String &error, RecordInterface &out) const;
+  // Get identification of record
+  const String &ident() const;
+  // 
  protected:
   //# enum
   // Offset of fields in error_p data area.
@@ -649,7 +668,29 @@ class LSQFit {
     // Filler for cxx2html
     N_StateBit
   };
-  
+
+  // Record field names
+  // <group>
+  static const String recid;
+  static const String state;
+  static const String nun;
+  static const String ncon;
+  static const String prec;
+  static const String startnon;
+  static const String nonlin;
+  static const String rank;
+  static const String nnc;
+  static const String piv;
+  static const String constr;
+  static const String known;
+  static const String errors;
+  static const String sol;
+  static const String lar;
+  static const String wsol;
+  static const String wcov;
+  static const String nar;
+  // </group>  
+
   //# Data
   // Bits set to indicate state
   uInt state_p;
