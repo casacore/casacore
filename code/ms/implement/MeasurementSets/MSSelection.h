@@ -60,10 +60,109 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // This class is used in translating MS selections represented as
 // selection items in the user interface, and for converting between
 // MS selection and pure TaQL selection.
+//
+// The purpose of this class is to provides a simple expression based
+// selection mechanism to both the end-user and developer wishing to
+// perform query operations over a measurement set.  This is accomplished
+// by abstracting the TaQL interface through an adapter/translation
+// interface which converts STaQL (Simple Table Query Language)
+// expressions into the equivalent table expression form, reducing
+// the knowledge necessary to perform powerful query operations directly
+// in TaQL.
+//
+// The subexpressions available for performing a selection are as follows
+// (a detailed syntax for each expression is also given below):
+//    antenna - Antenna STaQL expression
+//      antenna=ANTENNA.INDEX
+//      antenna='ANTENNA.NAME'
+//      antenna='ANTENNA.STATION'
+//      antenna=ANTENNA.INDEX : POL
+//      antenna=ANTENNA.INDEX : FEED POL
+//      antenna=ANTENNA.INDEX & ANTENNA.INDEX
+//      antenna=( ANTENNA.INDEX , ANTENNA.INDEX )
+//      antenna=( ANTENNA.INDEX - ANTENNA.INDEX )
+//      antenna=ANTENNA.INDEX & ANTENNA.INDEX : POL
+//      antenna=ANTENNA.INDEX : POL & ANTENNA.INDEX
+//      antenna=ANTENNA.INDEX : POL & ANTENNA.INDEX : POL
+//      antenna=( ANTENNA.INDEX , ANTENNA.INDEX ) : POL
+//      antenna=( ANTENNA.INDEX - ANTENNA.INDEX ) : POL
+//      antenna=ANTENNA.INDEX & *
+//      antenna=ANTENNA.NAME & *
+//      antenna=ANTENNA.NAME *
+//      antenna=[antennaexpr], [...]
+//    corr    - Correlator STaQL expression
+//      corr='RR'
+//      corr='RL'
+//      corr='LR'
+//      corr='LL'
+//      corr='XX'
+//      corr='XY'
+//      corr='YX'
+//      corr='YY'
+//      corr='I'
+//      corr='Q'
+//      corr='U'
+//      corr='V'
+//      corr='P'
+//      corr='Q'
+//      corr=[correxpr], [...]
+//    field   - Field STaQL expression
+//      field=FIELD.INDEX
+//      field='FIELD.NAME'
+//      field='FIELD.CODE'
+//      field='SOURCE.NAME'
+//      field='SOURCE.CODE'
+//      field=< FIELD.INDEX
+//      field=> FIELD.INDEX
+//      field=FIELD.INDEX - FIELD.INDEX
+//      field=FIELD.NAME *
+//      field=* FIELD.NAME
+//      field=[fieldexpr], [...]
+//    spw     - SPW STaQL expression
+//      spw=SPW.INDEX
+//      spw=SPW.NAME
+//      spw=SPW.INDEX : VALUE / VALUE / VALUE / VALUE
+//      spw=SPW.INDEX : VALUE - VALUE
+//      spw=SPW.INDEX : VALUE - VALUE UNIT
+//      spw=SPW.INDEX : ( VALUE , VALUE , ... )
+//      spw=SPW.INDEX : ( VALUE , VALUE , ... ) UNIT
+//      spw=[spwexpr], [...]
+//    time    - Time STaQL expression
+//      time=TIME.SCAN
+//      time='YYYY/MM/DD/HH:MM:SS.sss'
+//      time='ddd/HH:MM:SS.sss'
+//      time='< YYYY/MM/DD/HH:MM:SS.sss'
+//      time='> YYYY/MM/DD/HH:MM:SS.sss'
+//      time='YYYY/MM/DD/HH:MM:SS.sss - YYYY/MM/DD/HH:MM:SS.sss'
+//      time=TIME.SCAN - TIME.SCAN
+//      time='YYYY[/MM][/DD][/HH][:MM][:SS][.sss]'
+//      time='ddd[/HH][:MM][:SS][.sss]'
+//      time=[timeexpr], [...]
+//    uvdist  - UV Distribution STaQL expression
+//      uvdist=< VALUE UNIT
+//      uvdist=> VALUE UNIT
+//      uvdist=VALUE - VALUE UNIT
+//      uvdist=VALUE UNIT : PERCENTAGE %
+//      uvdist=[uvdistexpr], [range]
+//
+// For a complete list of the STaQL interface refer to:
+//    <a href="http://almasw.hq.eso.org/almasw/bin/view/OFFLINE/DataSelection">Data Selection</a>
 // </etymology>
 //
 // <example>
 // <srcblock>
+// // Create a MS and a MS selection
+// MeasurementSet ms(msName);
+// MSSelection select;
+// // Setup any subexpressions of interest directly
+// // (or optionally send this information through a Record)
+// select.setFieldExpr("0,1");
+// select.setSpwExpr(">0");
+// // Create a table expression over a MS representing the selection
+// TableExprNode node = select.toTableExprNode(&ms);
+// // Optionally create a table and new MS based on this node
+// Table tablesel(ms.tableName(), Table::Update);
+// MeasurementSet mssel(tablesel(node, node.nrow()));
 // </srcblock>
 // </example>
 //
