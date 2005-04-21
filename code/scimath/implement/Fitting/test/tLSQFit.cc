@@ -319,7 +319,7 @@ int main() {
       LSQFit lsq6;
       cout << "From record: " << lsq6.fromRecord(error, lrec1);
       cout << ", Error: " << error << endl;
-      /*cout << "Invert = " << lsq6.invert(nr1);
+      cout << "Invert = " << lsq6.invert(nr1);
       cout << ", rank=" << nr1 << endl;
       lsq6.solve(sol1);
       sd1 = lsq6.getSD();
@@ -328,7 +328,16 @@ int main() {
 	cout << "Sol" << i << ": " <<
 	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
 	  Y(mu1, 1e-5) << endl;
-	  };*/
+      };
+      cout << "From record: " << lsq6.fromRecord(error, lrec1);
+      cout << ", Error: " << error << endl;
+      sd1 = lsq6.getSD();
+      mu1 = lsq6.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      };
     }
     cout << "---------------------------------------------------" << endl;
 
