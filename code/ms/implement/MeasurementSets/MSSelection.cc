@@ -33,6 +33,7 @@
 #include <ms/MeasurementSets/MSSpwGram.h>
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
+#include <tables/Tables/TableGram.h>
 
 #include <ms/MeasurementSets/MSMainColumns.h>
 #include <measures/Measures/MeasureHolder.h>
@@ -51,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 MSSelection::MSSelection() : 
   antennaExpr_p(""), corrExpr_p(""), fieldExpr_p(""),
   spwExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
-  exprOrder_p(MAX_EXPR, NO_EXPR)
+  taqlExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR)
 {
 // Default null constructor 
 // Output to private data:
@@ -61,6 +62,7 @@ MSSelection::MSSelection() :
 //    spwExpr_p                 String   SPW STaQL expression
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
+//    taqlExpr_p                String   TaQL expression
 //
 }
 
@@ -76,7 +78,8 @@ MSSelection::~MSSelection()
 
 MSSelection::MSSelection(const Record& selectionItem) : 
   antennaExpr_p(""), corrExpr_p(""), fieldExpr_p(""),
-  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p("")
+  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
+  taqlExpr_p("")
 {
 // Construct from a record representing a selection item
 // Output to private data:
@@ -86,6 +89,7 @@ MSSelection::MSSelection(const Record& selectionItem) :
 //    spwExpr_p                 String   SPW STaQL expression
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
+//    taqlExpr_p                String   TaQL expression
 //
   // Extract fields from the selection item record
   fromSelectionItem(selectionItem);
@@ -107,6 +111,7 @@ MSSelection::MSSelection (const MSSelection& other)
     this->spwExpr_p     = other.spwExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
+    this->taqlExpr_p    = other.taqlExpr_p;
     this->exprOrder_p   = other.exprOrder_p;
   }
 }
@@ -127,6 +132,7 @@ MSSelection& MSSelection::operator= (const MSSelection& other)
     this->spwExpr_p     = other.spwExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
+    this->taqlExpr_p    = other.taqlExpr_p;
     this->exprOrder_p   = other.exprOrder_p;
   }
 
@@ -222,6 +228,11 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
            msUvDistGramParseCommand(ms, uvDistExpr_p) == 0)
           node = msUvDistGramParseNode();
         break;
+      case TAQL_EXPR:
+        if(taqlExpr_p != "" &&
+           tableGramParseCommand(taqlExpr_p) == 0)
+//          node = msTableGramParseNode();
+        break;
       case NO_EXPR:
       default:
         break;
@@ -247,6 +258,7 @@ void MSSelection::clear(void)
   spwExpr_p     = "";
   timeExpr_p    = "";
   uvDistExpr_p  = "";
+  taqlExpr_p    = "";
 
   exprOrder_p = Vector<Int>(MAX_EXPR, NO_EXPR);
 }
@@ -375,6 +387,25 @@ Bool MSSelection::setUvDistExpr(const String& uvDistExpr)
   if(setOrder(UVDIST_EXPR))
   {
     uvDistExpr_p = uvDistExpr;
+    return True;
+  }
+
+  return False;
+}
+
+//----------------------------------------------------------------------------
+
+Bool MSSelection::setTaQLExpr(const String& taqlExpr)
+{
+// Set the TaQL expression
+// Input:
+//    taqlExpr        const String&  Supplementary taql expression
+// Output to private data:
+//    taqlExpr_p      String         Supplementary taql expression
+//
+  if(setOrder(TAQL_EXPR))
+  {
+    taqlExpr_p = taqlExpr;
     return True;
   }
 

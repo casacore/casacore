@@ -144,6 +144,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      uvdist=VALUE - VALUE UNIT
 //      uvdist=VALUE UNIT : PERCENTAGE %
 //      uvdist=[uvdistexpr], [range]
+//    taql    - TaQL expression
+//      taql=[taqlexpr]
+//
+// The subexpressions are interpreted in the order which they were set,
+// with an AND between the results of each subexpression.
 //
 // For a complete list of the STaQL interface refer to:
 //    <a href="http://almasw.hq.eso.org/almasw/bin/view/OFFLINE/DataSelection">Data Selection</a>
@@ -170,7 +175,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // This class is used by the MS access classes.
 // </motivation>
 //
-// <todo asof="01/03/01">
+// <todo asof="04/20/05">
+// Complete TaQL expression implementation (get tableExprNode)
+// Complete time expression (complete time conversion helper methods)
 // </todo>
 
 class MSSelection
@@ -183,7 +190,8 @@ class MSSelection
                     SPW_EXPR,
                     TIME_EXPR,
                     UVDIST_EXPR,
-                    MAX_EXPR = UVDIST_EXPR};
+                    TAQL_EXPR,
+                    MAX_EXPR = TAQL_EXPR};
 
    // Default null constructor, and destructor
    MSSelection();
@@ -212,6 +220,7 @@ class MSSelection
    Bool setSpwExpr(const String& spwExpr);
    Bool setTimeExpr(const String& timeExpr);
    Bool setUvDistExpr(const String& uvDistExpr);
+   Bool setTaQLExpr(const String& taqlExpr);
 
    // Clear all subexpression and reset priority
    void clear(void);
@@ -240,6 +249,7 @@ class MSSelection
    String spwExpr_p;
    String timeExpr_p;
    String uvDistExpr_p;
+   String taqlExpr_p;
 
    // Priority
    Vector<Int> exprOrder_p;
