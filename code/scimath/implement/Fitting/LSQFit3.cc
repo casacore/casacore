@@ -129,27 +129,26 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       in.get(RecordFieldId(state), static_cast<Int>(state_p));
       in.get(RecordFieldId(nnc), static_cast<Int>(nnc_p));
       if (!norm_p->fromRecord(error, in)) return False;
-      uInt lInt;
       if (in.isDefined(piv) &&
 	  !LSQMatrix::getCArray(error, in, piv, n_p, piv_p)) return False;
       if (in.isDefined(constr) &&
-	  !LSQMatrix::getCArray(error, in, constr, lInt,
+	  !LSQMatrix::getCArray(error, in, constr, 0,
 				constr_p)) return False;
       if (in.isDefined(known) &&
 	  !LSQMatrix::getCArray(error, in, known, n_p,
 				known_p)) return False;
       if (in.isDefined(errors) &&
-	  !LSQMatrix::getCArray(error, in, errors, lInt,
+	  !LSQMatrix::getCArray(error, in, errors, N_ErrorField,
 				error_p)) return False;
       if (in.isDefined(sol) &&
 	  !LSQMatrix::getCArray(error, in, sol, n_p, sol_p)) return False;
       if (in.isDefined(lar) &&
-	  !LSQMatrix::getCArray(error, in, lar, lInt,
+	  !LSQMatrix::getCArray(error, in, lar, 0,
 				lar_p)) return False;
       if (in.isDefined(wsol) &&
 	  !LSQMatrix::getCArray(error, in, wsol, n_p, wsol_p)) return False;
       if (in.isDefined(wcov) &&
-	  !LSQMatrix::getCArray(error, in, wcov, lInt,
+	  !LSQMatrix::getCArray(error, in, wcov, 0,
 				wcov_p)) return False;
       if (in.isDefined(nar)) {
 	nar_p = new LSQFit;

@@ -164,13 +164,13 @@ class LSQMatrix : public RecordTransformable {
 			uInt len, const Double * const in);
   static Bool getCArray(String &error, const RecordInterface &in,
 			const String &fname,
-			uInt &len, Double *&out);
+			uInt len, Double *&out);
   static Bool putCArray(String &error, RecordInterface &out,
 			const String &fname,
 			uInt len, const uInt * const in);
   static Bool getCArray(String &error, const RecordInterface &in,
 			const String &fname,
-			uInt &len, uInt *&out);
+			uInt len, uInt *&out);
   // </group>
 
   //# Data

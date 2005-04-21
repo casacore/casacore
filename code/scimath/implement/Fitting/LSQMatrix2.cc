@@ -68,50 +68,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 			 uInt len, const Double * const in) {
     if (len) {
       if (in) {
-	const IPosition vlen(1, len);
-	Vector<Double> vt(vlen, in);
-	out.define(RecordFieldId(fname), vt);
-      } else {
-	error += String("No data for non-empty ") + fname + "vector";
-	return False;
-      };
-    };
-    return True;
-  }
-
-  Bool LSQMatrix::getCArray(String &error, const RecordInterface &in,
-			 const String &fname,
-			 uInt &len, Double *&out) {
-    if (in.isDefined(fname) &&
-	in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
-      Vector<Double> vt;
-      in.get(RecordFieldId(fname), vt);
-      uInt vlen = vt.nelements();
-      if (!out) {
-	if (vlen) out = new Double[vlen];
-	len = vlen;
-      };
-      if (vlen != len) {
-	error += String("Inconsistency between lengths in " + fname +
-			"field in record");
-	return False;
-      };
-      if (out && !vlen) {
-	error += String("Unexpected empty vector ") + fname + " encountered";
-	return False;
-      };
-      std::copy(vt.data(), vt.data()+len, out); 
-    };
-    return True;
-  }
-
-  Bool LSQMatrix::putCArray(String &error, RecordInterface &out,
-			 const String &fname,
-			 uInt len, const uInt * const in) {
-    if (len) {
-      if (in) {
-	const IPosition vlen(1, len);
-	Vector<Int> vt(vlen);
+	Vector<Double> vt(len);
 	std::copy(in, in+len, vt.data()); 
 	out.define(RecordFieldId(fname), vt);
       } else {
@@ -124,23 +81,51 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   Bool LSQMatrix::getCArray(String &error, const RecordInterface &in,
 			 const String &fname,
-			 uInt &len, uInt *&out) {
+			 uInt len, Double *&out) {
+    if (in.isDefined(fname) &&
+	in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayDouble) {
+      Vector<Double> vt;
+      in.get(RecordFieldId(fname), vt);
+      uInt vlen = vt.nelements();
+      if (!out) out = new Double[vlen];
+      if (len && vlen != len) {
+	error += String("Inconsistency between lengths in " + fname +
+			"field in record");
+	return False;
+      };
+      std::copy(vt.data(), vt.data()+len, out); 
+    };
+    return True;
+  }
+
+  Bool LSQMatrix::putCArray(String &error, RecordInterface &out,
+			 const String &fname,
+			 uInt len, const uInt * const in) {
+    if (len) {
+      if (in) {
+	Vector<Int> vt(len);
+	std::copy(in, in+len, vt.data()); 
+	out.define(RecordFieldId(fname), vt);
+      } else {
+	error += String("No data for non-empty ") + fname + "vector";
+	return False;
+      };
+    };
+    return True;
+  }
+
+  Bool LSQMatrix::getCArray(String &error, const RecordInterface &in,
+			 const String &fname,
+			 uInt len, uInt *&out) {
     if (in.isDefined(fname) &&
 	in.type(in.idToNumber(RecordFieldId(fname))) == TpArrayInt) {
       Vector<Int> vt;
       in.get(RecordFieldId(fname), vt);
       uInt vlen = vt.nelements();
-      if (!out) {
-	if (vlen) out = new uInt[vlen];
-	len = vlen;
-      };
-      if (vlen != len) {
+      if (!out) out = new uInt[vlen];
+      if (len && vlen != len) {
 	error += String("Inconsistency between lengths in " + fname +
 			"field in record");
-	return False;
-      };
-      if (out && !vlen) {
-	error += String("Unexpected empty vector ") + fname + " encountered";
 	return False;
       };
       std::copy(vt.data(), vt.data()+len, out); 
