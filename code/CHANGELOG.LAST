@@ -100,3 +100,19 @@ change id: 0167
  summary:  Added cone searching to TaQL
 TaQL got an operator INCONE and a few new functions to make it possible to find sources contained in a cone.
 It is possible to do catalogue matching using these new functions.
+
+change id: 0168
+ author:   Wim Brouw
+ date:     2005/04/21
+ avers:    1.9
+ area:     Library
+ package:  scimath
+ module:   Fitting
+ type:     Code Documentation Test
+ category: New
+ summary:  Enable use of Fitting classes in distributed way
+The basic fitting class (LSQFit and its derived LSQaips) has been enhanced with:
+- merge(): a full and sparse version. Merge will merge normal equations produced separately (e.g. on separate compute nodes)
+- toRecord/fromRecord: to enable transport of fitting information (normal equations e.g.) between different processing nodes the Fitting objecst can be converted to/from generic Records.
+
+Examples of the use of these facilities are in tLSQFit.
