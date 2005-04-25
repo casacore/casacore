@@ -463,7 +463,7 @@ select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad
 calc from tTableGram_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])
     has been executed
 [2, 1, 1, 2, 3, 3, 2, 2, 1, 1]
-calc from a.b  calc findcone([ab,ab],[select from a.b giving [ab,ab]],[1rad,2rad])
+calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])
     has been executed
 [1, 2, 2, 1, 2, 2, 1, 1, 2, 1]
 

@@ -115,7 +115,7 @@ tTableGram 'select ab from tTableGram_tmp.tab where cones([ab,ab],[4rad,4rad,1ra
 tTableGram 'select ab from tTableGram_tmp.tab where any(cones([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),1rad))'
 tTableGram 'select ab from tTableGram_tmp.tab where [ab,ab] incone [2rad,2rad,1rad,4rad,4rad,1rad]'
 tTableGram 'calc from tTableGram_tmp.tab calc findcone([ab,ab],array([2rad,2rad,4rad,4rad],[2,2]),[1rad,2rad])'
-tTableGram 'calc from a.b  calc findcone([ab,ab],[select from a.b giving [ab,ab]],[1rad,2rad])'
+tTableGram 'calc from tTableGram_tmp.tab  calc findcone([ab,ab],[select from tTableGram_tmp.tab giving [ab,ab]],[1rad,2rad])'
 echo ""
 
 tTableGram 'calc sum([select from tTableGram_tmp.tab giving [ab+1]])'
