@@ -61,34 +61,194 @@ const char *wcsfix_errmsg[] = {
 
 /*--------------------------------------------------------------------------*/
 
-int wcsfix(const int naxis[], struct wcsprm *wcs)
+int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
 
 {
-   int any, status;
-
-   if ((status = celfix(wcs)) > 0) {
-      return status;
-   }
-   any = !status;
-
-   if ((status = spcfix(wcs)) > 0) {
-      return status;
-   }
-   any = any || !status;
-
-   if ((status = datfix(wcs)) > 0) {
-      return status;
-   }
-   any = any || !status;
+   int status = 0;
 
    if (naxis) {
-      if ((status = cylfix(naxis, wcs))> 0) {
-         return status;
+      if ((stat[CDELTFIX] = cdeltfix(naxis, wcs)) > 0) {
+         status = 1;
       }
-      any = any || !status;
+   } else {
+      stat[CDELTFIX] = -2;
    }
 
-   return any ? 0 : -1;
+   if ((stat[DATFIX] = datfix(wcs)) > 0) {
+      status = 1;
+   }
+
+   if ((stat[CELFIX] = celfix(wcs)) > 0) {
+      status = 1;
+   }
+
+   if ((stat[SPCFIX] = spcfix(wcs)) > 0) {
+      status = 1;
+   }
+
+   if (naxis) {
+      if ((stat[CYLFIX] = cylfix(naxis, wcs)) > 0) {
+         status = 1;
+      }
+   } else {
+      stat[CYLFIX] = -2;
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cdeltfix(const int naxis[], struct wcsprm *wcs)
+
+{
+   int i, status = -1;
+
+   if (wcs == 0) return 1;
+
+   for (i = 0; i < wcs->naxis; i++) {
+      if (wcs->cdelt[i] == 0.0) {
+         if (naxis[i] > 1) {
+            return 5;
+	 } else {
+	    wcs->cdelt[i] = 1.0;
+	    status = 0;
+	 }
+      }
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int datfix(struct wcsprm *wcs)
+
+{
+   char *dateobs;
+   int  day, dd, hour = 0, jd, minute = 0, month, msec, n4, year;
+   double mjdobs, sec = 0.0, t;
+
+   if (wcs == 0) return 1;
+
+   dateobs = wcs->dateobs;
+   if (dateobs[0] == '\0') {
+      if (undefined(wcs->mjdobs)) {
+         /* No date information was provided. */
+         return -1;
+
+      } else {
+         /* Calendar date from MJD. */
+         jd = 2400001 + (int)wcs->mjdobs;
+
+         n4 =  4*(jd + ((2*((4*jd - 17918)/146097)*3)/4 + 1)/2 - 37);
+         dd = 10*(((n4-237)%1461)/4) + 5;
+
+         year  = n4/1461 - 4712;
+         month = (2 + dd/306)%12 + 1;
+         day   = (dd%306)/10 + 1;
+         sprintf(dateobs, "%.4d-%.2d-%.2d", year, month, day);
+
+         /* Write time part only if non-zero. */
+         if ((t = wcs->mjdobs - (int)wcs->mjdobs) > 0.0) {
+            t *= 24.0;
+            hour = (int)t;
+            t = 60.0 * (t - hour);
+            minute = (int)t;
+            sec    = 60.0 * (t - minute);
+
+            /* Round to 1ms. */
+            dd = 60000*(60*hour + minute) + (int)(1000*(sec+0.0005));
+            hour = dd / 3600000;
+            dd -= 3600000 * hour;
+            minute = dd / 60000;
+            msec = dd - 60000 * minute;
+            sprintf(dateobs+10, "T%.2d:%.2d:%.2d", hour, minute, msec/1000);
+
+            /* Write fractions of a second only if non-zero. */
+            if (msec%1000) {
+               sprintf(dateobs+19, ".%.3d", msec%1000);
+            }
+         }
+
+         return 0;
+      }
+
+   } else {
+      if (strlen(dateobs) < 8) {
+         return 5;
+      }
+
+      /* Identify the date format. */
+      if (dateobs[4] == '-' && dateobs[7] == '-') {
+         /* Standard year-2000 form: CCYY-MM-DD[Thh:mm:ss[.sss...]] */
+         if (sscanf(dateobs, "%4d-%2d-%2d", &year, &month, &day) < 3) {
+            return 5;
+         }
+
+         if (dateobs[10] == 'T') {
+            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
+               return 5;
+            }
+         }
+
+      } else if (dateobs[4] == '/' && dateobs[7] == '/') {
+         /* Also allow CCYY/MM/DD[Thh:mm:ss[.sss...]] */
+         if (sscanf(dateobs, "%4d/%2d/%2d", &year, &month, &day) < 3) {
+            return 5;
+         }
+
+         if (dateobs[10] == 'T') {
+            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
+               return 5;
+            }
+         }
+
+         /* Looks ok, fix it up. */
+         dateobs[4] = '-';
+         dateobs[7] = '-';
+
+      } else {
+         if (dateobs[2] == '/' && dateobs[5] == '/') {
+            /* Old format date: DD/MM/YY, also allowing DD/MM/CCYY. */
+            if (sscanf(dateobs, "%2d/%2d/%4d", &day, &month, &year) < 3) {
+               return 5;
+            }
+
+         } else if (dateobs[2] == '-' && dateobs[5] == '-') {
+            /* Also recognize DD-MM-YY and DD-MM-CCYY */
+            if (sscanf(dateobs, "%2d-%2d-%4d", &day, &month, &year) < 3) {
+               return 5;
+            }
+
+         } else {
+            /* Not a valid date format. */
+            return 5;
+         }
+
+         if (year < 100) year += 1900;
+
+         sprintf(dateobs, "%.4d-%.2d-%.2d", year, month, day);
+      }
+
+      /* Compute MJD. */
+      mjdobs = (double)((1461*(year - (12-month)/10 + 4712))/4
+               + (306*((month+9)%12) + 5)/10
+               - (3*((year - (12-month)/10 + 4900)/100))/4
+               + day - 2399904)
+               + (hour + (minute + sec / 60.0) / 60.0) / 24.0;
+
+      if (undefined(wcs->mjdobs)) {
+         wcs->mjdobs = mjdobs;
+      } else {
+         /* Check for consistency. */
+         if (fabs(mjdobs - wcs->mjdobs) > 0.5) {
+            return 5;
+         }
+      }
+   }
+
+   return 0;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -205,135 +365,6 @@ int spcfix(struct wcsprm *wcs)
 
    if (strcmp(wcs->ctype[j], "FELO") == 0) {
       strcpy(wcs->ctype[j], "VOPT-F2W");
-   }
-
-   return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int datfix(struct wcsprm *wcs)
-
-{
-   char *dateobs;
-   int  day, dd, hour = 0, jd, minute = 0, month, msec, n4, year;
-   double mjdobs, sec = 0.0, t;
-
-   if (wcs == 0) return 1;
-   dateobs = wcs->dateobs;
-
-   if (dateobs[0] == '\0') {
-      if (undefined(wcs->mjdobs)) {
-         /* No date information was provided. */
-         return -1;
-
-      } else {
-         /* Calendar date from MJD. */
-         jd = 2400001 + (int)wcs->mjdobs;
-
-         n4 =  4*(jd + ((2*((4*jd - 17918)/146097)*3)/4 + 1)/2 - 37);
-         dd = 10*(((n4-237)%1461)/4) + 5;
-
-         year  = n4/1461 - 4712;
-         month = (2 + dd/306)%12 + 1;
-         day   = (dd%306)/10 + 1;
-         sprintf(dateobs, "%.4d-%.2d-%.2d", year, month, day);
-
-         if ((t = wcs->mjdobs - (int)wcs->mjdobs) > 0.0) {
-            t *= 24.0;
-            hour = (int)t;
-            t = 60.0 * (t - hour);
-            minute = (int)t;
-            sec    = 60.0 * (t - minute);
-
-            /* Round to 1ms. */
-            dd = 60000*(60*hour + minute) + (int)(1000*(sec+0.0005));
-            hour = dd / 3600000;
-            dd -= 3600000 * hour;
-            minute = dd / 60000;
-            msec = dd - 60000 * minute;
-            sprintf(dateobs+10, "T%.2d:%.2d:%.2d", hour, minute, msec/1000);
-
-            if (msec%1000) {
-               sprintf(dateobs+19, ".%.3d", msec%1000);
-            }
-         }
-
-         return 0;
-      }
-
-   } else {
-      if (strlen(dateobs) < 8) {
-         return 5;
-      }
-
-      /* Identify the date format. */
-      if (dateobs[4] == '-' && dateobs[7] == '-') {
-         /* Standard year-2000 form: CCYY-MM-DD[Thh:mm:ss[.sss...]] */
-         if (sscanf(dateobs, "%4d-%2d-%2d", &year, &month, &day) < 3) {
-            return 5;
-         }
-
-         if (dateobs[10] == 'T') {
-            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
-               return 5;
-            }
-         }
-
-      } else if (dateobs[4] == '/' && dateobs[7] == '/') {
-         /* Also allow CCYY/MM/DD[Thh:mm:ss[.sss...]] */
-         if (sscanf(dateobs, "%4d/%2d/%2d", &year, &month, &day) < 3) {
-            return 5;
-         }
-
-         if (dateobs[10] == 'T') {
-            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
-               return 5;
-            }
-         }
-
-         /* Looks ok, fix it up. */
-         dateobs[4] = '-';
-         dateobs[7] = '-';
-
-      } else {
-         if (dateobs[2] == '/' && dateobs[5] == '/') {
-            /* Old format date: DD/MM/YY, also allowing DD/MM/CCYY. */
-            if (sscanf(dateobs, "%2d/%2d/%4d", &day, &month, &year) < 3) {
-               return 5;
-            }
-
-         } else if (dateobs[2] == '-' && dateobs[5] == '-') {
-            /* Also recognize DD-MM-YY and DD-MM-CCYY */
-            if (sscanf(dateobs, "%2d-%2d-%4d", &day, &month, &year) < 3) {
-               return 5;
-            }
-
-         } else {
-            /* Not a valid date format. */
-            return 5;
-         }
-
-         if (year < 100) year += 1900;
-
-         sprintf(dateobs, "%.4d-%.2d-%.2d", year, month, day);
-      }
-
-      /* Compute MJD. */
-      mjdobs = (double)((1461*(year - (12-month)/10 + 4712))/4
-               + (306*((month+9)%12) + 5)/10
-               - (3*((year - (12-month)/10 + 4900)/100))/4
-               + day - 2399904)
-               + (hour + (minute + sec / 60.0) / 60.0) / 24.0;
-
-      if (undefined(wcs->mjdobs)) {
-         wcs->mjdobs = mjdobs;
-      } else {
-         /* Check for consistency. */
-         if (fabs(mjdobs - wcs->mjdobs) > 0.5) {
-            return 5;
-         }
-      }
    }
 
    return 0;

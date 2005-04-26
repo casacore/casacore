@@ -86,16 +86,20 @@
 *   wcsfix() applies all of the corrections handled by the following specific
 *   functions which may also be invoked separately:
 *
-*      celfix(): translate AIPS-convention celestial projection types, -NCP
-*                and -GLS, in ctype[] as set from CTYPEia.
-*
-*      spcfix(): translate AIPS-convention spectral types, FREQ-LSR, FELO-HEL,
-*                etc., in ctype[] as set from CTYPEia.
+*      cdeltfix(): Check that CDELTia is non-zero for all non-degenerate axes.
+*                If CDELTia is zero for a degenerate axis, set it to the
+*                default value, 1.0.
 *
 *      datfix(): recast the older DATE-OBS date format in dateobs to year-2000
 *                standard form, and derive mjdobs from it if not already set.
 *                Alternatively, if dateobs isn't set and mjdobs is, then
 *                derive dateobs from it.
+*
+*      celfix(): translate AIPS-convention celestial projection types, -NCP
+*                and -GLS, in ctype[] as set from CTYPEia.
+*
+*      spcfix(): translate AIPS-convention spectral types, FREQ-LSR, FELO-HEL,
+*                etc., in ctype[] as set from CTYPEia.
 *
 *      cylfix(): fixes WCS FITS header cards for malformed cylindrical
 *                projections that suffer from the problem described in
@@ -104,13 +108,44 @@
 *
 *   Translate a non-standard WCS struct
 *   -----------------------------------
-*   wcsfix() applies all of the corrections handled separately by celfix(),
-*   spcfix(), datfix(), and cylfix().
+*   wcsfix() applies all of the corrections handled separately by cdeltfix(),
+*   datfix(), celfix(), spcfix() and cylfix().
 *
 *   Given:
 *      naxis    const int []
 *                        Image axis lengths.  If this array pointer is set to
-*                        zero then cylfix() will not be invoked.
+*                        zero then neither cdeltfix nor cylfix() will be
+*                        invoked.
+*
+*   Given and returned:
+*      wcs      struct wcsprm*
+*                        Coordinate transformation parameters (refer to the
+*                        prologue of wcs.h).
+*
+*   Returned:
+*      stat     int [NWCSFIX]
+*                        Status returns from each of the functions.  Use the
+*                        preprocessor macros defined below (NWCSFIX, CDELTFIX,
+*                        DATFIX, CELFIX, SPCFIX and CYLFIX) to dimension this
+*                        vector and access its elements.  A status value of -2
+*                        is set for functions that were not invoked.
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*                           1: One or more of the translation functions
+*                              returned an error.
+*
+*
+*   Check and if possible fix zero-valued CDELTia 
+*   ---------------------------------------------
+*   cdeltfix() checks that CDELTia is non-zero for all non-degenerate axes.
+*   Status 5 is returned if CDELTia is zero for a non-degenerate axis.  If
+*   zero for a degenerate axis (NAXISi == 1) set it to the default value, 1.0.
+*
+*   Given:
+*      naxis    const int []
+*                        Image axis lengths.
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -122,25 +157,36 @@
 *                          -1: No change required (not an error).
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*                           2: Memory allocation failed.
-*                           3: Linear transformation matrix is singular.
-*                           4: Inconsistent or unrecognized coordinate axis
-*                              types.
 *                           5: Invalid parameter value.
-*                           6: Invalid coordinate transformation parameters.
-*                           7: Ill-conditioned coordinate transformation
-*                              parameters.
-*                           8: All of the corner pixel coordinates are
-*                              invalid.
-*                           9: Could not determine reference pixel coordinate.
-*                          10: Could not determine reference pixel value.
+*
+*
+*   Translate DATE-OBS and derive MJD-OBS or vice versa
+*   ---------------------------------------------------
+*   datfix() translates the old DATE-OBS date format set in the dateobs member
+*   of the wcsprm struct to year-2000 standard form (yyyy-mm-ddThh:mm:ss) and
+*   derives MJD-OBS from it if not already set.  Alternatively, if mjdobs is
+*   set and dateobs isn't, then datfix() derives dateobs from it.  If both are
+*   set but disagree by more than half a day then status 5 is returned.  The
+*   dateobs and/or mjdobs members of the wcsprm struct may be changed.
+*
+*   Given and returned:
+*      wcs      struct wcsprm*
+*                        Coordinate transformation parameters (refer to the
+*                        prologue of wcs.h).
+*
+*   Function return value:
+*               int      Status return value:
+*                          -1: No change required (not an error).
+*                           0: Success.
+*                           1: Null wcsprm pointer passed.
+*                           5: Invalid parameter value.
 *
 *
 *   Translate AIPS-convention celestial projection types
 *   ----------------------------------------------------
 *   celfix() translates AIPS-convention celestial projection types, -NCP
-*   and -GLS, set in the ctype[] member of the wcsprm struct.  The ctype[] and
-*   pv[] members of the wcsprm struct may be changed.
+*   and -GLS, set in the ctype[] member of the wcsprm struct.  The ctype[]
+*   and/or pv[] members of the wcsprm struct may be changed.
 *
 *   Two additional pv[] cards are created when translating -NCP.  If the pv[]
 *   array was initially allocated by wcsini() then the array will be expanded
@@ -164,8 +210,8 @@
 *   ----------------------------------------
 *   spcfix() translates AIPS-convention spectral coordinate types,
 *   {FREQ,VELO,FELO}-{OBS,HEL,LSR} (e.g. FREQ-LSR, VELO-OBS, FELO-HEL) set in
-*   the ctype[] member of the wcsprm struct.  The ctype[] and specsys members
-*   of the wcsprm struct may be changed.
+*   the ctype[] member of the wcsprm struct.  The ctype[] and/or specsys
+*   members of the wcsprm struct may be changed.
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -177,28 +223,6 @@
 *                          -1: No change required (not an error).
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
-*
-*
-*   Translate DATE-OBS and derive MJD-OBS or vice versa
-*   ---------------------------------------------------
-*   datfix() translates the old DATE-OBS date format set in the dateobs member
-*   of the wcsprm struct to year-2000 standard form (yyyy-mm-ddThh:mm:ss) and
-*   derives MJD-OBS from it if not already set.  Alternatively, if mjdobs is
-*   set and dateobs isn't, then derive dateobs from it.  If both are set but
-*   disagree by more than half a day then error 5 is returned.  The dateobs
-*   and mjdobs members of the wcsprm struct may be changed.
-*
-*   Given and returned:
-*      wcs      struct wcsprm*
-*                        Coordinate transformation parameters (refer to the
-*                        prologue of wcs.h).
-*
-*   Function return value:
-*               int      Status return value:
-*                          -1: No change required (not an error).
-*                           0: Success.
-*                           1: Null wcsprm pointer passed.
-*                           5: Invalid parameter value.
 *
 *
 *   Fix malformed cylindrical projections
@@ -257,14 +281,22 @@
 extern "C" {
 #endif
 
+#define CDELTFIX 0
+#define DATFIX   1
+#define CELFIX   2
+#define SPCFIX   3
+#define CYLFIX   4
+#define NWCSFIX  5
+
 extern const char *wcsfix_errmsg[];
 #define cylfix_errmsg wcsfix_errmsg
 
 
-int wcsfix (const int [], struct wcsprm *);
+int wcsfix (const int [], struct wcsprm *, int []);
+int cdeltfix (const int [], struct wcsprm *);
+int datfix (struct wcsprm *);
 int celfix (struct wcsprm *);
 int spcfix (struct wcsprm *);
-int datfix (struct wcsprm *);
 int cylfix (const int [], struct wcsprm *);
 
 #ifdef __cplusplus
