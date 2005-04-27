@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
     MeasurementSet ms(MSName, Table::Old);
     MSSummary mss(ms);
     //mss.list(os, verbose);
-    mss.listHistory(os, verbose);
+    mss.listHistory(os);
   } catch (AipsError x) {
     cout << x.getMesg() << endl;
   } 
