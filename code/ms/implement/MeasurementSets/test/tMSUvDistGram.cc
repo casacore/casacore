@@ -30,7 +30,6 @@
 
 #include <casa/Utilities/Assert.h>
 #include <casa/Inputs.h>
-#include <ms/MeasurementSets/MSFitsInput.h>
 
 #include <casa/namespace.h>
 
