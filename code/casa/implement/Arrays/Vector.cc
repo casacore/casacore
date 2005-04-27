@@ -118,7 +118,7 @@ template<class T> Vector<T>::Vector(const Array<T> &other)
 {
     // If not 1 dimension, adjust shape if possible.
     if (this->ndim() != 1) {
-        checkVectorShape();
+        this->checkVectorShape();
     }
     DebugAssert(ok(), ArrayError);
 }
