@@ -546,7 +546,8 @@ Bool LSQFit::invertRect() {
 }
 
 Bool LSQFit::merge(const LSQFit &other) {
-  if (other.nun_p != nun_p || state_p || other.state_p) return False;
+  if (other.nun_p != nun_p || 
+      (state_p & ~NONLIN) != (other.state_p & ~NONLIN)) return False;
   // Copy normal equations
   Double *i2 = norm_p->row(0);
   Double *i3 = other.norm_p->row(0);
@@ -568,7 +569,8 @@ Bool LSQFit::merge(const LSQFit &other) {
 }
 
 Bool LSQFit::merge(const LSQFit &other, uInt nIndex, uInt *nEqIndex) {
-  if (other.nun_p != nIndex || state_p || other.state_p) return False;
+  ///  if (other.nun_p != nIndex || state_p || other.state_p) return False;
+  if (other.nun_p != nIndex) return False;
   // Copy normal equations
   for (uInt i=0; i<nIndex; ++i) {
     if (nEqIndex[i] >= 0 && nEqIndex[i]<nun_p) {
