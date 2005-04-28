@@ -1,5 +1,5 @@
 //# BlockIO.h: Functions to perform IO for the Block class
-//# Copyright (C) 1993,1994,1995,1999,2000,2001
+//# Copyright (C) 1993-1995,1999-2001,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -30,13 +30,13 @@
 
 #include <casa/aips.h>
 
+//# Forward declarations
+#include <casa/iosfwd.h>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//# Forward declarations.
 template<class T> class Block;
 class AipsIO;
-
-#include <casa/iosfwd.h>
 
 // <summary>IO functions for Block</summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
