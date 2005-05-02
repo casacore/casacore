@@ -29,9 +29,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
-#include <fstream.h>
-#include <math.h>
+#include <casa/iostream.h>
+#include <casa/fstream.h>
+#include <casa/math.h>
 
 #include <casa/Exceptions.h>
 #include <casa/OS/Timer.h>

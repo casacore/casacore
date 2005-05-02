@@ -33,8 +33,6 @@
 #include <tables/Tables/TableIter.h>
 #include <tables/Tables/TableError.h>
 
-#include <casa/namespace.h>
-
 #include <tables/TablePlot/BasePlot.h>
 #include <tables/TablePlot/TPPlotter.h>
 
@@ -204,6 +202,8 @@
 // </todo>
 
 
+namespace casa { //# NAMESPACE CASA - BEGIN
+
 template<class T> class TablePlot 
 {
 	public:
@@ -347,5 +347,6 @@ template<class T> class TablePlot
 		
 };
 
-#endif
+} //# NAMESPACE CASA - END 
 
+#endif

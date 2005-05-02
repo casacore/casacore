@@ -31,8 +31,6 @@
 
 //# Includes
 
-#include <casa/namespace.h>
-
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
@@ -111,6 +109,8 @@
 
 #define TP_PGPLOT
 //#define TP_PLPLOT
+
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class TPPlotter 
 {
@@ -257,5 +257,6 @@ template<class T> class TPPlotter
 		Int ddbg,adbg;
 };
 
-#endif
+} //# NAMESPACE CASA - END 
 
+#endif

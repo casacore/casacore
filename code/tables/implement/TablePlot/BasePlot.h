@@ -32,7 +32,7 @@
 //# Includes
 
 #include <casa/aips.h>
-#include <iostream.h>
+#include <casa/iostream.h>
 #include <casa/OS/Timer.h>
 
 #include <casa/Arrays/Vector.h>
@@ -47,7 +47,7 @@
 
 #include <tables/Tables/ExprNode.h>
 
-#include <casa/namespace.h>
+namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <summary>
 // Basic table access class for the TablePlot (tableplot) tool
@@ -254,5 +254,6 @@ template<class T> class BasePlot
 
 };
 
-#endif
+} //# NAMESPACE CASA - END 
 
+#endif
