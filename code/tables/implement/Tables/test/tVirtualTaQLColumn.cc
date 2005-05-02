@@ -146,8 +146,8 @@ void a (const TableDesc& td)
 	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
-    tab.addColumn (ScalarColumnDesc<Float>("acalc4"),
-			     VirtualTaQLColumn("acalc+acalc3+mean(arrcalc)"));
+    VirtualTaQLColumn vtcm("acalc+acalc3+mean(arrcalc)");
+    tab.addColumn (ScalarColumnDesc<Float>("acalc4"), vtcm);
 }
 
 void check(const Table& tab)
