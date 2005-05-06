@@ -1,5 +1,5 @@
 //# RecordRep.h: The representation of a Record
-//# Copyright (C) 1996,1997,2000,2001
+//# Copyright (C) 1996,1997,2000,2001,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -32,6 +32,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <casa/Containers/Block.h>
 #include <casa/Containers/RecordDesc.h>
 #include <casa/Containers/RecordInterface.h>
 

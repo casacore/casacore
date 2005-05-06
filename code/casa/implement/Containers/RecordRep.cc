@@ -1,5 +1,5 @@
 //# RecordRep.cc: A hierarchical collection of named fields of various types
-//# Copyright (C) 1996,1997,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1999,2000,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@
 //# $Id$
 
 #include <casa/Containers/RecordRep.h>
+#include <casa/Containers/BlockIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/ArrayError.h>
