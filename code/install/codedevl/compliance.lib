@@ -1,44 +1,44 @@
-Dependancies for casa
+Dependencies for casa
   Library:
     libcasa => libcasa
 
-Dependancies for scimath
+Dependencies for scimath
   Library:
     libscimath => libcasa
     libscimath => libscimath
 
-Dependancies for tables
+Dependencies for tables
   Library:
     libtables => libcasa
     libtables => libtables
 
-Dependancies for measures
+Dependencies for measures
   Library:
     libmeasures => libcasa
     libmeasures => libscimath
     libmeasures => libtables
     libmeasures => libmeasures
 
-Dependancies for fits
+Dependencies for fits
   Library:
     libfits => libcasa
     libfits => libtables
     libfits => libmeasures
     libfits => libfits
 
-Dependancies for graphics
+Dependencies for graphics
   Library:
     libgraphics => libcasa
     libgraphics => libgraphics
 
-Dependancies for lattices
+Dependencies for lattices
   Library:
     liblattices => libcasa
     liblattices => libscimath
     liblattices => libtables
     liblattices => liblattices
 
-Dependancies for coordinates
+Dependencies for coordinates
   Library:
     libcoordinates => libcasa
     libcoordinates => libscimath
@@ -46,7 +46,7 @@ Dependancies for coordinates
     libcoordinates => libfits
     libcoordinates => libcoordinates
 
-Dependancies for components
+Dependencies for components
   Library:
     libcomponents => libcasa
     libcomponents => libscimath
@@ -55,7 +55,7 @@ Dependancies for components
     libcomponents => libcoordinates
     libcomponents => libcomponents
 
-Dependancies for images
+Dependencies for images
   Library:
     libimages => libcasa
     libimages => libscimath
@@ -67,7 +67,7 @@ Dependancies for images
     libimages => libcomponents
     libimages => libimages
 
-Dependancies for ms
+Dependencies for ms
   Library:
     libms => libcasa
     libms => libscimath
@@ -76,7 +76,7 @@ Dependancies for ms
     libms => libfits
     libms => libms
 
-Dependancies for msvis
+Dependencies for msvis
   Library:
     libmsvis => libcasa
     libmsvis => libscimath
@@ -85,7 +85,7 @@ Dependancies for msvis
     libmsvis => libms
     libmsvis => libmsvis
 
-Dependancies for calibration
+Dependencies for calibration
   Library:
     libcalibration => libcasa
     libcalibration => libtables
@@ -94,7 +94,7 @@ Dependancies for calibration
     libcalibration => libmsvis
     libcalibration => libcalibration
 
-Dependancies for ionosphere
+Dependencies for ionosphere
   Library:
     libionosphere => libcasa
     libionosphere => libscimath
@@ -102,7 +102,7 @@ Dependancies for ionosphere
     libionosphere => libmeasures
     libionosphere => libionosphere
 
-Dependancies for flagging
+Dependencies for flagging
   Library:
     libflagging => libcasa
     libflagging => libscimath
@@ -113,7 +113,7 @@ Dependancies for flagging
     libflagging => libmsvis
     libflagging => libflagging
 
-Dependancies for dish
+Dependencies for dish
   Library:
     libdish => libcasa
     libdish => libtables
@@ -124,7 +124,7 @@ Dependancies for dish
     libdish => libms
     libdish => libdish
 
-Dependancies for simulators
+Dependencies for simulators
   Library:
     libsimulators => libcasa
     libsimulators => libtables
@@ -132,7 +132,7 @@ Dependancies for simulators
     libsimulators => libms
     libsimulators => libsimulators
 
-Dependancies for synthesis
+Dependencies for synthesis
   Library:
     libsynthesis => libcasa
     libsynthesis => libscimath
@@ -147,7 +147,7 @@ Dependancies for synthesis
     libsynthesis => libcalibration
     libsynthesis => libsynthesis
 
-Dependancies for tasking
+Dependencies for tasking
   Library:
     libtasking => libcasa
     libtasking => libscimath
@@ -160,13 +160,13 @@ Dependancies for tasking
     libtasking => libmsvis
     libtasking => libtasking
 
-Dependancies for display
+Dependencies for display
   Library:
     libdisplay => libcasa
     libdisplay => libgraphics
     libdisplay => libdisplay
 
-Dependancies for trialdisplay
+Dependencies for trialdisplay
   Library:
     libtrialdisplay => libcasa
     libtrialdisplay => libscimath
@@ -182,7 +182,7 @@ Dependancies for trialdisplay
     libtrialdisplay => libdisplay
     libtrialdisplay => libtrialdisplay
 
-Dependancies for bima
+Dependencies for bima
   Library:
     libbima => libcasa
     libbima => libscimath
@@ -193,12 +193,12 @@ Dependancies for bima
     libbima => libtasking
     libbima => libbima
 
-Dependancies for nral
+Dependencies for nral
   Library:
     libnral => libcasa
     libnral => libnral
 
-Dependancies for nrao
+Dependencies for nrao
   Library:
     libnrao => libcasa
     libnrao => libscimath
@@ -208,7 +208,7 @@ Dependancies for nrao
     libnrao => libms
     libnrao => libnrao
 
-Dependancies for alma
+Dependencies for alma
   Library:
     libalma => libcasa
     libalma => libtables
@@ -218,10 +218,10 @@ Dependancies for alma
     libalma => libmsvis
     libalma => libalma
 
-Dependancies for appsglish
+Dependencies for appsglish
   Library:
 
-Dependancies for hia
+Dependencies for hia
   Library:
     libhia => libcasa
     libhia => libtables
@@ -230,10 +230,10 @@ Dependancies for hia
     libhia => libtasking
     libhia => libhia
 
-Dependancies for jive
+Dependencies for jive
   Library:
 
-Dependancies for nfra
+Dependencies for nfra
   Library:
     libnfra => libcasa
     libnfra => libscimath
@@ -242,10 +242,10 @@ Dependancies for nfra
     libnfra => libms
     libnfra => libnfra
 
-Dependancies for vlbi
+Dependencies for vlbi
   Library:
 
-Dependancies for atnf
+Dependencies for atnf
   Library:
     libatnf => libcasa
     libatnf => libtables
@@ -254,16 +254,16 @@ Dependancies for atnf
     libatnf => libtasking
     libatnf => libatnf
 
-Dependancies for contrib
+Dependencies for contrib
   Library:
 
-Dependancies for npoi
+Dependencies for npoi
   Library:
     libnpoi => libcasa
     libnpoi => libscimath
     libnpoi => libtasking
     libnpoi => libnpoi
 
-Dependancies for vo
+Dependencies for vo
   Library:
 

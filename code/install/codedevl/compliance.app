@@ -1,64 +1,64 @@
-Dependancies for casa
+Dependencies for casa
   Application:
 
-Dependancies for scimath
+Dependencies for scimath
   Application:
 
-Dependancies for tables
+Dependencies for tables
   Application:
 
-Dependancies for measures
+Dependencies for measures
   Application:
 
-Dependancies for fits
+Dependencies for fits
   Application:
 
-Dependancies for graphics
+Dependencies for graphics
   Application:
 
-Dependancies for lattices
+Dependencies for lattices
   Application:
 
-Dependancies for coordinates
+Dependencies for coordinates
   Application:
 
-Dependancies for components
+Dependencies for components
   Application:
 
-Dependancies for images
+Dependencies for images
   Application:
 
-Dependancies for ms
+Dependencies for ms
   Application:
 
-Dependancies for msvis
+Dependencies for msvis
   Application:
 
-Dependancies for calibration
+Dependencies for calibration
   Application:
 
-Dependancies for ionosphere
+Dependencies for ionosphere
   Application:
 
-Dependancies for flagging
+Dependencies for flagging
   Application:
 
-Dependancies for dish
+Dependencies for dish
   Application:
 
-Dependancies for simulators
+Dependencies for simulators
   Application:
 
-Dependancies for synthesis
+Dependencies for synthesis
   Application:
 
-Dependancies for tasking
+Dependencies for tasking
   Application:
 
-Dependancies for display
+Dependencies for display
   Application:
 
-Dependancies for trialdisplay
+Dependencies for trialdisplay
   Application:
     apptrialdisplay => libcasa
     apptrialdisplay => libgraphics
@@ -67,7 +67,7 @@ Dependancies for trialdisplay
     apptrialdisplay => libdisplay
     apptrialdisplay => libtrialdisplay
 
-Dependancies for bima
+Dependencies for bima
   Application:
     appbima => libcasa
     appbima => libtables
@@ -76,10 +76,10 @@ Dependancies for bima
     appbima => libtasking
     appbima => libbima
 
-Dependancies for nral
+Dependencies for nral
   Application:
 
-Dependancies for nrao
+Dependencies for nrao
   Application:
     appnrao => libcasa
     appnrao => libtables
@@ -88,13 +88,13 @@ Dependancies for nrao
     appnrao => libtasking
     appnrao => libnrao
 
-Dependancies for alma
+Dependencies for alma
   Application:
     appalma => libcasa
     appalma => libtasking
     appalma => libalma
 
-Dependancies for appsglish
+Dependencies for appsglish
   Application:
     appappsglish => libcasa
     appappsglish => libscimath
@@ -113,16 +113,16 @@ Dependancies for appsglish
     appappsglish => libsynthesis
     appappsglish => libtasking
 
-Dependancies for hia
+Dependencies for hia
   Application:
     apphia => libcasa
     apphia => libtasking
     apphia => libhia
 
-Dependancies for jive
+Dependencies for jive
   Application:
 
-Dependancies for nfra
+Dependencies for nfra
   Application:
     appnfra => libcasa
     appnfra => libscimath
@@ -134,10 +134,10 @@ Dependancies for nfra
     appnfra => libtasking
     appnfra => libnfra
 
-Dependancies for vlbi
+Dependencies for vlbi
   Application:
 
-Dependancies for atnf
+Dependencies for atnf
   Application:
     appatnf => libcasa
     appatnf => libscimath
@@ -150,16 +150,16 @@ Dependancies for atnf
     appatnf => libtasking
     appatnf => libatnf
 
-Dependancies for contrib
+Dependencies for contrib
   Application:
 
-Dependancies for npoi
+Dependencies for npoi
   Application:
     appnpoi => libcasa
     appnpoi => libtasking
     appnpoi => libnpoi
 
-Dependancies for vo
+Dependencies for vo
   Application:
     appvo => libcasa
     appvo => libtables

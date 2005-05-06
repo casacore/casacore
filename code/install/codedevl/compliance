@@ -4,7 +4,7 @@ path=`echo $AIPSPATH | awk '{ print $1; }'`/code
 
 function depend
 {
-   if test $1 == "lib"
+   if test $1 = "lib"
       then
          subdir="implement"
          echo "  Library:" >> compliance.log
@@ -38,7 +38,7 @@ function usage
 {
    if test $1 
       then
-         if test $1 == "all" -o $1 == "lib" -o $1 == "app"
+         if test $1 = "all" -o $1 = "lib" -o $1 = "app"
             then
                return
          fi
@@ -68,11 +68,11 @@ function compliance
    for diff in `diff compliance.$1 compliance.log`
    do
 
-      if test $diff == ">"
+      if test $diff = ">"
          then
             echo
             echo "A new dependency has been introduced:"
-      elif test $diff == "<"
+      elif test $diff = "<"
          then
             echo
             echo "An old dependency has been removed:"
@@ -93,9 +93,9 @@ rm -rf compliance.log
 for dir in `cat compliance.dat`
 do
    echo "Processing $dir..."
-   echo "Dependancies for $dir" >> compliance.log
+   echo "Dependencies for $dir" >> compliance.log
 
-   if test $1 == "all"
+   if test $1 = "all"
       then
          depend "lib" $dir
          depend "app" $dir
