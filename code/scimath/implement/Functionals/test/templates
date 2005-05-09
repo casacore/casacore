@@ -44,8 +44,21 @@
      template class Functional<Vector<Double>, DComplex> 
      = casa/Arrays/Array.h 
      template class Functional<Vector<Float>, Array<Float> > 
-1000 casa/Containers/Block.h casa/Arrays/Array.h 
-     template class Block<Array<Float> > 
+1000 casa/Utilities/BinarySearch.cc casa/Containers/Block.h 
+     template Int binarySearchBrackets(Bool &, Block<Int> const &, Int const &, uInt, Int) 
+1000 casa/Utilities/Copy.cc casa/Arrays/Array.h 
+     template void objcopy(Array<Float> *, Array<Float> const *, uInt, uInt, uInt) 
+     template void objset(Array<Float> *, Array<Float>, uInt, uInt) 
+1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = casa/Arrays/Array.h 
+     template class CountedConstPtr<Block<Array<Float> > > 
+     template class CountedPtr<Block<Array<Float> > > 
+     template class PtrRep<Block<Array<Float> > > 
+     template class SimpleCountedConstPtr<Block<Array<Float> > > 
+     template class SimpleCountedPtr<Block<Array<Float> > > 
+1000 casa/Utilities/GenSort.cc casa/Arrays/Vector.h 
+     = casa/Containers/Block.h 
+     template uInt genSort(Vector<uInt> &, Block<Float> const &) 
 1000 scimath/Functionals/ArraySampledFunctional.cc 
      = casa/Arrays/Array.h 
      template class ArraySampledFunctional<Array<Complex> > 
@@ -78,11 +91,20 @@
      template Bool FunctionOrder<Double>::fromRecord(String &, RecordInterface const &) 
 1000 scimath/Functionals/FunctionParam.cc 
      template class FunctionParam<Int> 
+1000 scimath/Functionals/Gaussian3D.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian3D<AutoDiffA<Double> > 
+1000 scimath/Functionals/Gaussian3DParam.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class Gaussian3DParam<AutoDiffA<Double> > 
 1000 scimath/Functionals/GaussianND.cc 
      template class GaussianND<Float> 
 1000 scimath/Functionals/GaussianNDParam.cc 
      template class GaussianNDParam<Float> 
-1000 scimath/Functionals/Interpolate1D.cc casa/Arrays/Array.h 
+1000 scimath/Functionals/Interpolate1D.cc 
+     = casa/Arrays/Array.h 
      template class Interpolate1D<Float, Array<Float> > 
 1010 scimath/Functionals/Interpolate1D.cc 
      template class Interpolate1D<Float, Double> 
@@ -105,33 +127,12 @@
      = casa/BasicSL/Complex.h 
      template class ScalarSampledFunctional<Int> 
      template class ScalarSampledFunctional<DComplex> 
-1000 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
+1000 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
      = casa/Arrays/Vector.h 
      template void CholeskyDecomp(Matrix<Float> &, Vector<Float> &) 
      template void CholeskySolve(Matrix<Float> &, Vector<Float> &, Vector<Float> &, Vector<Float> &) 
-1010 scimath/Mathematics/MatrixMathLA.cc casa/Arrays/Matrix.h 
+1010 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
      template Matrix<Float> invertSymPosDef(Matrix<Float> const &) 
      template void invertSymPosDef(Matrix<Float> &, Float &, Matrix<Float> const &) 
-1000 casa/Utilities/BinarySearch.cc casa/Containers/Block.h 
-     template Int binarySearchBrackets(Bool &, Block<Int> const &, Int const &, uInt, Int) 
-1000 casa/Utilities/Copy.cc casa/Arrays/Array.h 
-     template void objcopy(Array<Float> *, Array<Float> const *, uInt, uInt, uInt) 
-     template void objset(Array<Float> *, Array<Float>, uInt, uInt) 
-1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
-     = casa/Arrays/Array.h 
-     template class CountedConstPtr<Block<Array<Float> > > 
-     template class CountedPtr<Block<Array<Float> > > 
-     template class PtrRep<Block<Array<Float> > > 
-     template class SimpleCountedConstPtr<Block<Array<Float> > > 
-     template class SimpleCountedPtr<Block<Array<Float> > > 
-1000 casa/Utilities/GenSort.cc casa/Arrays/Vector.h 
-     = casa/Containers/Block.h 
-     template uInt genSort(Vector<uInt> &, Block<Float> const &) 
-1000 scimath/Functionals/Gaussian3D.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian3D<AutoDiffA<Double> > 
-1000 scimath/Functionals/Gaussian3DParam.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class Gaussian3DParam<AutoDiffA<Double> > 
