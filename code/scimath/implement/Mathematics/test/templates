@@ -25,16 +25,6 @@
      template class MaskedArray<AutoDiff<AutoDiff<Double> > > 
 1000 casa/Arrays/Vector.cc scimath/Mathematics/AutoDiff.h 
      template class Vector<AutoDiff<AutoDiff<Double> > > 
-1000 casa/Containers/Block.h 
-     = scimath/Mathematics/AutoDiff.h 
-     template <class T> class AutoDiffRep 
-     template class PtrBlock<AutoDiffRep<AutoDiff<Double> > *> 
-1010 casa/Containers/Block.h casa/Arrays/Vector.h 
-     template class Block<Vector<Float> *> 
-1020 casa/Containers/Block.h scimath/Mathematics/AutoDiff.h 
-     template class Block<AutoDiff<AutoDiff<Double> > > 
-1030 casa/Containers/Block.h 
-     template class PtrBlock<Block<Double> *> 
 1000 casa/Containers/ObjectPool.cc scimath/Mathematics/AutoDiffRep.h 
      = scimath/Mathematics/AutoDiff.h 
      template class ObjectPool<AutoDiffRep<AutoDiff<Double> >, uInt> 
