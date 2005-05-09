@@ -1,5 +1,5 @@
 //# ISMIndex.h: The Index of the Incremental Storage Manager
-//# Copyright (C) 1996,1997,1999
+//# Copyright (C) 1996,1997,1999,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -36,6 +36,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward declarations
 class ISMBase;
+class AipsIO;
 
 
 // <summary>
