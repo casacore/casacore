@@ -1,5 +1,5 @@
 //# TableSyncData.cc: Class to hold table synchronization data
-//# Copyright (C) 1997,1999,2001
+//# Copyright (C) 1997,1999,2001,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -28,7 +28,7 @@
 
 //# Includes
 #include <tables/Tables/TableSyncData.h>
-
+#include <casa/Containers/BlockIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

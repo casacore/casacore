@@ -1,5 +1,5 @@
 //# SSMIndex.cc: The bucket index for a group of columns in the SSM
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -27,6 +27,7 @@
 #include <tables/Tables/SSMIndex.h>
 #include <tables/Tables/SSMBase.h>
 #include <tables/Tables/Table.h>
+#include <casa/Containers/BlockIO.h>
 #include <casa/Containers/SimOrdMapIO.h>
 #include <casa/IO/AipsIO.h>
 #include <casa/Utilities/BinarySearch.h>

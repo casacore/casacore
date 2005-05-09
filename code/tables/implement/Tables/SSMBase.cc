@@ -1,5 +1,5 @@
 //# SSMBase.cc: Base class of the Standard Storage Manager
-//# Copyright (C) 2000,2001,2002
+//# Copyright (C) 2000,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,6 +34,7 @@
 #include <tables/Tables/SSMStringHandler.h>
 #include <tables/Tables/StArrayFile.h>
 #include <tables/Tables/Table.h>
+#include <casa/Containers/BlockIO.h>
 #include <casa/Containers/Record.h>
 #include <casa/Utilities/ValType.h>
 #include <casa/Utilities/Assert.h>
