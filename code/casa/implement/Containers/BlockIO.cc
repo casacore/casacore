@@ -1,5 +1,5 @@
 //# BlockIO.cc: Functions to perform IO for the Block class
-//# Copyright (C) 1993,1994,1995,1999,2001
+//# Copyright (C) 1993,1994,1995,1999,2001,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#include <casa/Containers/Block.h>
 #include <casa/Containers/BlockIO.h>
+#include <casa/Containers/Block.h>
 #include <casa/IO/AipsIOCarray.h>
 #include <casa/iostream.h>
 
