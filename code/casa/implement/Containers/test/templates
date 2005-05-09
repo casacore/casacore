@@ -2,12 +2,6 @@
      template Bool allEQ(Array<Complex> const &, Complex const &) 
      template Bool allEQ(Array<DComplex> const &, DComplex const &) 
      template Bool allEQ(Array<Short> const &, Short const &) 
-1000 casa/Containers/Block.h casa/Containers/List.h 
-     = casa/Containers/OrderedPair.h 
-     template class PtrBlock<List<OrderedPair<String, Int> > *> 
-1010 casa/Containers/Block.h casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h 
-     template class PtrBlock<OrderedPair<String, OrderedPair<String, uInt> > *> 
 1000 casa/Containers/Dlink.cc 
      template class Dlink<Int> 
 1000 casa/Containers/Dlist.cc 
