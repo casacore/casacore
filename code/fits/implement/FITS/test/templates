@@ -1,6 +1,3 @@
-1000 casa/Containers/Block.h casa/Containers/OrderedPair.h 
-     = casa/BasicSL/String.h 
-     template class PtrBlock<OrderedPair<String, Double> *> 
 1000 casa/Containers/OrderedMap.cc casa/BasicSL/String.h 
      template class OrderedMap<String, Double> 
      template class OrderedMapRep<String, Double> 
