@@ -29,9 +29,6 @@
      template class LatticeApply<Complex> 
      template class LineCollapser<Complex> 
      template class TiledCollapser<Complex> 
-1000 lattices/Lattices/LatticeCache.cc casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
-     template class Block<Array<Float> > 
 1000 lattices/Lattices/LatticeStatistics.cc 
      = casa/BasicSL/Complex.h 
      = lattices/Lattices/LatticeApply.cc 
@@ -42,7 +39,10 @@
      template class TiledCollapser<Complex, DComplex> 
 ######################################################################
 # Needed for tExtendLattice
-1010 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
+1000 lattices/Lattices/LatticeUtilities.cc 
+     = casa/Arrays/MaskedArray.cc 
+     template void LatticeUtilities::bin<Float>(MaskedArray<Float> &, MaskedArray<Float> const &, uInt, uInt) 
+1000 lattices/Lattices/TempLattice.cc casa/BasicSL/Complex.h 
      = casa/Utilities/CountedPtr.cc 
      = lattices/Lattices/Lattice.h 
      template class TempLattice<DComplex> 
@@ -53,6 +53,3 @@
      template class SimpleCountedPtr<Lattice<DComplex> > 
 ################################################################################
 # Needed for tLatticeUtilities.cc
-1000 lattices/Lattices/LatticeUtilities.cc
-     = casa/Arrays/MaskedArray.cc 
-     template void LatticeUtilities::bin<Float>(MaskedArray<Float> &, MaskedArray<Float> const &, uInt, uInt)
