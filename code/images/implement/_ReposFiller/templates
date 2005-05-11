@@ -1,25 +1,7 @@
-1000 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     = images/Images/ImageInterface.h 
-     template class PtrBlock<ImageInterface<Complex> *> 
-     template class PtrBlock<ImageInterface<Float> *> 
-1010 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     = images/Images/PagedImage.h 
-     template class PtrBlock<PagedImage<Complex> *> 
-     template class PtrBlock<PagedImage<Float> *> 
-1020 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     = images/Images/SubImage.h 
-     template class Block<SubImage<Complex> *> 
-     template class Block<SubImage<Float> *> 
-     template class PtrBlock<SubImage<Complex> *> 
-     template class PtrBlock<SubImage<Float> *> 
-1030 casa/Containers/Block.h images/Images/TempImage.h 
-     = casa/BasicSL/Complex.h 
-     template class PtrBlock<TempImage<Float> *> 
-     template class PtrBlock<TempImage<Complex> *> 
-1000 casa/Containers/SimOrdMap.cc casa/Containers/OrderedPair.cc
-     = casa/Exceptions/Error.cc
-     = images/Images/ImageOpener.h
-     template class SimpleOrderedMap<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*>
+1000 casa/Containers/SimOrdMap.cc casa/Containers/OrderedPair.cc 
+     = casa/Exceptions/Error.cc 
+     = images/Images/ImageOpener.h 
+     template class SimpleOrderedMap<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*> 
      template class OrderedPair<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*> 
      template class indexError<ImageOpener::ImageTypes> 
 1000 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
@@ -102,7 +84,8 @@
      template class ImageExpr<Complex> 
 1010 images/Images/ImageExpr.cc 
      template class ImageExpr<Bool> 
-1000 images/Images/ImageFITSConverter.cc fits/FITS/hdu.h 
+1000 images/Images/ImageFITSConverter.cc 
+     = fits/FITS/hdu.h 
      template class ImageFITSConverterImpl<PrimaryArray<Float> > 
 1010 images/Images/ImageFITSConverter.cc 
      template class ImageFITSConverterImpl<ImageExtension<Double> > 

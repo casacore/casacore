@@ -1196,352 +1196,6 @@
      template class Functional<uInt, Double> 
 1140 casa/BasicMath/Functional.cc 
      template class Functional<uInt, Float> 
-1000 casa/Containers/Block.h 
-     #ifdef AIPS_DEBUG 
-       template <> class Table 
-       template class PtrBlock<Table *> 
-       template class PtrBlock<Table const *> 
-     #endif 
-1010 casa/Containers/Block.h 
-     #ifdef AIPS_DEBUG 
-       template <> class TableRow 
-       template class PtrBlock<TableRow *> 
-     #endif 
-1020 casa/Containers/Block.h 
-     #ifdef AIPS_DEBUG 
-       template class PtrBlock<Bool *> 
-       template class PtrBlock<Bool const *> 
-       template class PtrBlock<Float *> 
-       template class PtrBlock<Float const *> 
-     #endif 
-1030 casa/Containers/Block.h 
-     = casa/Arrays/Vector.h 
-     = casa/BasicSL/String.h 
-     template class Block<Vector<String> > 
-1040 casa/Containers/Block.h 
-     = casa/Arrays/Vector.h 
-     template class Block<Vector<Double> > 
-1050 casa/Containers/Block.h 
-     = casa/BasicSL/Complex.h casa/BasicSL/String.h 
-     template <class T> class ArrayColumn 
-     template class PtrBlock<ArrayColumn<Complex> *> 
-     template class PtrBlock<ArrayColumn<DComplex> *> 
-     template class PtrBlock<ArrayColumn<String> *> 
-     template class PtrBlock<ArrayColumn<Bool> *> 
-     template class PtrBlock<ArrayColumn<Double> *> 
-     template class PtrBlock<ArrayColumn<Float> *> 
-     template class PtrBlock<ArrayColumn<Int> *> 
-     template class PtrBlock<ArrayColumn<Short> *> 
-     template class PtrBlock<ArrayColumn<uChar> *> 
-1060 casa/Containers/Block.h 
-     = casa/BasicSL/Complex.h casa/BasicSL/String.h 
-     template <class T> class ScalarColumn 
-     template <class T> class ROScalarColumn 
-     template class PtrBlock<ROScalarColumn<Int> *> 
-     template class PtrBlock<ScalarColumn<Complex> *> 
-     template class PtrBlock<ScalarColumn<DComplex> *> 
-     template class PtrBlock<ScalarColumn<String> *> 
-     template class PtrBlock<ScalarColumn<Bool> *> 
-     template class PtrBlock<ScalarColumn<Double> *> 
-     template class PtrBlock<ScalarColumn<Float> *> 
-     template class PtrBlock<ScalarColumn<Int> *> 
-     template class PtrBlock<ScalarColumn<Short> *> 
-     template class PtrBlock<ScalarColumn<uChar> *> 
-1070 casa/Containers/Block.h 
-     = casa/Containers/OrderedPair.h 
-     = casa/Arrays/IPosition.h 
-     = casa/BasicSL/String.h 
-     template class PtrBlock<OrderedPair<String, Block<IPosition> > *> 
-     template class PtrBlock<OrderedPair<String, Int> *> 
-     template class PtrBlock<void *> 
-1080 casa/Containers/Block.h 
-     = casa/Quanta/MVPosition.h 
-     template class Block<MVPosition> 
-1090 casa/Containers/Block.h 
-     = casa/Quanta/MVTime.h 
-     template class Block<MVTime> 
-1100 casa/Containers/Block.h 
-     = casa/Quanta/QuantumHolder.h 
-     template class Block<QuantumHolder> 
-1110 casa/Containers/Block.h 
-     = casa/Quanta/Unit.h 
-     template class Block<Unit> 
-1120 casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
-     template <> class MeasValue 
-     template void objcopy(MeasValue **, MeasValue * const *, uInt) 
-1130 casa/Containers/Block.h casa/Arrays/Array.h 
-     = casa/BasicSL/Complex.h 
-     template <class T> class Array 
-     template class PtrBlock<Array<Complex> *> 
-     template class PtrBlock<Array<DComplex> *> 
-     template class PtrBlock<Array<String> *> 
-     template class Block<Array<Double> > 
-     template class PtrBlock<Array<Bool> *> 
-     template class PtrBlock<Array<Char> *> 
-     template class PtrBlock<Array<Double> *> 
-     template class PtrBlock<Array<Float> *> 
-     template class PtrBlock<Array<Int> *> 
-     template class PtrBlock<Array<Short> *> 
-     template class PtrBlock<Array<uChar> *> 
-     template class PtrBlock<Array<uInt> *> 
-     template class PtrBlock<Array<uShort> *> 
-1140 casa/Containers/Block.h casa/Arrays/Array.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<Array<Complex> > 
-1150 casa/Containers/Block.h casa/Arrays/IPosition.h 
-     template class Block<IPosition> 
-1160 casa/Containers/Block.h casa/Arrays/Matrix.h 
-     template <class T> class Matrix 
-     template class PtrBlock<Matrix<Float> *> 
-1170 casa/Containers/Block.h casa/Arrays/Vector.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<Vector<Complex> > 
-1180 casa/Containers/Block.h casa/Arrays/Vector.h 
-     = casa/Utilities/Copy.cc 
-     template class Block<Vector<Bool> > 
-     template void objcopy(Vector<Bool> *, Vector<Bool> const *, uInt) 
-     template void objmove(Vector<Bool> *, Vector<Bool> const *, uInt) 
-     template void objset(Vector<Bool> *, Vector<Bool>, uInt) 
-1190 casa/Containers/Block.h casa/Arrays/Vector.h 
-     template <class T> class Vector 
-     template class PtrBlock<Vector<Double> *> 
-     template class PtrBlock<Vector<Float> *> 
-     template class PtrBlock<Vector<Bool> *> 
-1200 casa/Containers/Block.h casa/Arrays/Vector.h 
-     template class Block<Vector<Float> > 
-1210 casa/Containers/Block.h casa/Arrays/Vector.h 
-     template class Block<Vector<Int> > 
-1220 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     #ifdef AIPS_DEBUG 
-       template <class T> class ROArrayColumn 
-       template class PtrBlock<ROArrayColumn<Complex> *> 
-     #endif 
-1230 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     #ifdef AIPS_DEBUG 
-       template class PtrBlock<Complex *> 
-       template class PtrBlock<Complex const *> 
-     #endif 
-1240 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     = casa/Utilities/Copy.cc 
-     template <class T> class TempLattice 
-     template class PtrBlock<TempLattice<Float> *> 
-     template class PtrBlock<TempLattice<Complex> *> 
-     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
-     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt, uInt, uInt) 
-     template void objmove(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
-     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt) 
-     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt, uInt) 
-     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
-     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt, uInt, uInt) 
-     template void objmove(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
-     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt) 
-     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt, uInt) 
-1250 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     template class Block<Complex> 
-1260 casa/Containers/Block.h casa/BasicSL/Complex.h 
-     template class Block<DComplex> 
-1270 casa/Containers/Block.h casa/BasicSL/String.h 
-     template class Block<String> 
-1280 casa/Containers/Block.h casa/Containers/OrderedPair.h 
-     #ifdef AIPS_DEBUG 
-       template class Block<OrderedPair<uInt, uInt> > 
-     #endif 
-1290 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/Arrays/Array.h casa/BasicSL/Complex.h 
-     template class Block<RORecordFieldPtr<Array<Complex> > > 
-     template class Block<RORecordFieldPtr<Array<DComplex> > > 
-     template class Block<RecordFieldPtr<Array<Complex> > > 
-     template class Block<RecordFieldPtr<Array<DComplex> > > 
-     template class Block<RORecordFieldPtr<Array<String> > > 
-     template class Block<RecordFieldPtr<Array<String> > > 
-     template class Block<RORecordFieldPtr<Array<Bool> > > 
-     template class Block<RORecordFieldPtr<Array<Char> > > 
-     template class Block<RORecordFieldPtr<Array<Double> > > 
-     template class Block<RORecordFieldPtr<Array<Float> > > 
-     template class Block<RORecordFieldPtr<Array<Int> > > 
-     template class Block<RORecordFieldPtr<Array<Short> > > 
-     template class Block<RORecordFieldPtr<Array<uChar> > > 
-     template class Block<RORecordFieldPtr<Array<uInt> > > 
-     template class Block<RecordFieldPtr<Array<Bool> > > 
-     template class Block<RecordFieldPtr<Array<Char> > > 
-     template class Block<RecordFieldPtr<Array<Double> > > 
-     template class Block<RecordFieldPtr<Array<Float> > > 
-     template class Block<RecordFieldPtr<Array<Int> > > 
-     template class Block<RecordFieldPtr<Array<Short> > > 
-     template class Block<RecordFieldPtr<Array<uChar> > > 
-     template class Block<RecordFieldPtr<Array<uInt> > > 
-1300 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<RORecordFieldPtr<Complex> > 
-1310 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<RORecordFieldPtr<DComplex> > 
-1320 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<RecordFieldPtr<Complex> > 
-1330 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<RecordFieldPtr<DComplex> > 
-1340 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/String.h 
-     template class Block<RORecordFieldPtr<String> > 
-1350 casa/Containers/Block.h casa/Containers/RecordField.h 
-     = casa/BasicSL/String.h 
-     template class Block<RecordFieldPtr<String> > 
-1360 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<Bool> > 
-1370 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<Double> > 
-1380 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<Float> > 
-1390 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<Int> > 
-1400 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<Short> > 
-1410 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<uChar> > 
-1420 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RORecordFieldPtr<uInt> > 
-1430 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<Bool> > 
-1440 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<Double> > 
-1450 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<Float> > 
-1460 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<Int> > 
-1470 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<Short> > 
-1480 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class Block<RecordFieldPtr<uChar> > 
-1490 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class PtrBlock<RecordFieldPtr<Double> *> 
-1500 casa/Containers/Block.h casa/Containers/RecordField.h 
-     template class PtrBlock<RecordFieldPtr<String> *> 
-1510 casa/Containers/Block.h casa/Quanta/Quantum.h 
-     template class Block<Quantum<Double> > 
-1520 casa/Containers/Block.h casa/Quanta/Quantum.h 
-     template class Block<Quantum<Float> > 
-1530 casa/Containers/Block.h casa/Utilities/Copy.cc 
-     = casa/System/ObjectID.h 
-     template class Block<ObjectID> 
-     template void objcopy(ObjectID *, ObjectID const *, uInt) 
-     template void objmove(ObjectID *, ObjectID const *, uInt) 
-     template void objset(ObjectID *, ObjectID, uInt) 
-1540 casa/Containers/Block.h casa/Utilities/Copy.cc 
-     template class Block<Int64> 
-     template void objcopy(Int64 *, Int64 const *, uInt) 
-     template void objmove(Int64 *, Int64 const *, uInt) 
-     template void objset(Int64 *, Int64, uInt) 
-1550 casa/Containers/Block.h 
-     template <> class Coordinate 
-     template class PtrBlock<Coordinate *> 
-1560 casa/Containers/Block.h 
-     template <> class CopyRecordToTable 
-     template class PtrBlock<CopyRecordToTable *> 
-     template <> class FITSFieldCopier 
-     template class PtrBlock<FITSFieldCopier *> 
-     template <> class FITSMultiTable 
-     template class PtrBlock<FITSMultiTable *> 
-     template <> class FITSTabular 
-     template class PtrBlock<FITSTabular *> 
-     template <> class FITSTimedTable 
-     template class PtrBlock<FITSTimedTable *> 
-1570 casa/Containers/Block.h 
-     template <> class ForwardColumn 
-     template <> class ISMColumn 
-     template <> class StManColumnAipsIO 
-     template <> class TSMColumn 
-     template <> class TSMCube 
-     template <> class TSMDataColumn 
-     template <> class TSMFile 
-     template <> class ROTableColumn 
-     template <> class TableColumn 
-     template <> class TableIterator 
-     template class PtrBlock<ForwardColumn *> 
-     template class PtrBlock<ISMColumn *> 
-     template class PtrBlock<StManColumnAipsIO *> 
-     template class PtrBlock<TSMColumn *> 
-     template class PtrBlock<TSMCube *> 
-     template class PtrBlock<TSMDataColumn *> 
-     template class PtrBlock<TSMFile *> 
-     template class PtrBlock<ROTableColumn *> 
-     template class PtrBlock<TableColumn *> 
-     template class PtrBlock<TableIterator *> 
-1580 casa/Containers/Block.h 
-     template <> class LCRegion 
-     template class PtrBlock<LCRegion const *> 
-1590 casa/Containers/Block.h 
-     template <> class ObjectDispatcher 
-     template class PtrBlock<ObjectDispatcher *> 
-1600 casa/Containers/Block.h 
-     template <> class ParameterSet 
-     template class PtrBlock<ParameterSet *> 
-1610 casa/Containers/Block.h 
-     template <> class Record 
-     template <> class RecordDesc 
-     template class PtrBlock<Record *> 
-     template class PtrBlock<RecordDesc *> 
-1620 casa/Containers/Block.h 
-     template <> class RecordFieldWriter 
-     template class PtrBlock<RecordFieldWriter *> 
-1630 casa/Containers/Block.h 
-     template <> class WCRegion 
-     template <> class ImageRegion 
-     template class PtrBlock<ImageRegion const *> 
-     template class PtrBlock<WCRegion const *> 
-1640 casa/Containers/Block.h 
-     template <class T, class U> class OrderedPair 
-     template <class T> class Array 
-     template <class T> class Vector 
-     template class PtrBlock<OrderedPair<Int, Array<Float> > *> 
-     template class PtrBlock<OrderedPair<Int, Vector<Float> > *> 
-     template class PtrBlock<OrderedPair<Int, Int> *> 
-1650 casa/Containers/Block.h 
-     template <class T> class AutoDiffRep 
-     template class PtrBlock<AutoDiffRep<Double> *> 
-1660 casa/Containers/Block.h 
-     template <class T> class AutoDiffRep 
-     template class PtrBlock<AutoDiffRep<Float> *> 
-1670 casa/Containers/Block.h 
-     template <class T> class Lattice 
-     template class PtrBlock<Lattice<Float> *> 
-1680 casa/Containers/Block.h 
-     template class Block<Bool> 
-1690 casa/Containers/Block.h 
-     template class Block<Char> 
-1700 casa/Containers/Block.h 
-     template class Block<Double> 
-1710 casa/Containers/Block.h 
-     template class Block<Float *> 
-1720 casa/Containers/Block.h 
-     template class Block<Float> 
-1730 casa/Containers/Block.h 
-     template class Block<Int> 
-1740 casa/Containers/Block.h 
-     template class Block<Long> 
-1750 casa/Containers/Block.h 
-     template class Block<Short> 
-1760 casa/Containers/Block.h 
-     template class Block<uChar> 
-1770 casa/Containers/Block.h 
-     template class Block<uInt> 
-1780 casa/Containers/Block.h 
-     template class Block<uLong> 
-1790 casa/Containers/Block.h 
-     template class Block<uShort> 
-1800 casa/Containers/Block.h 
-     template class Block<void *> 
-1810 casa/Containers/Block.h 
-     template class PtrBlock<Block<Float> *> 
-     template class PtrBlock<Block<Int> *> 
-     template class PtrBlock<Block<uInt> *> 
-     template class PtrBlock<Char *> 
-1820 casa/Containers/Block.h 
-     template class PtrBlock<Int(*)(void const *, void const *)> 
-1830 casa/Containers/Block.h 
-     template class PtrBlock<void const *> 
 1000 casa/Containers/BlockIO.cc casa/BasicSL/String.h 
      template AipsIO & operator>>(AipsIO &, Block<String> &) 
 1010 casa/Containers/BlockIO.cc casa/BasicSL/String.h 
@@ -2455,89 +2109,117 @@
      template void objset(Unit *, Unit, uInt) 
      template void objset(Unit *, Unit, uInt, uInt) 
      template void objmove(Unit *, Unit const *, uInt) 
-1460 casa/Utilities/Copy.cc casa/Arrays/Array.h 
+1460 casa/Utilities/Copy.cc 
+     = casa/System/ObjectID.h 
+     template void objcopy(ObjectID *, ObjectID const *, uInt) 
+     template void objmove(ObjectID *, ObjectID const *, uInt) 
+     template void objset(ObjectID *, ObjectID, uInt) 
+1470 casa/Utilities/Copy.cc casa/Arrays/Array.h 
      template void objcopy(Array<Double> *, Array<Double> const *, uInt) 
      template void objcopy(Array<Double> *, Array<Double> const *, uInt, uInt, uInt) 
      template void objmove(Array<Double> *, Array<Double> const *, uInt) 
      template void objset(Array<Double> *, Array<Double>, uInt) 
      template void objset(Array<Double> *, Array<Double>, uInt, uInt) 
-1470 casa/Utilities/Copy.cc casa/Arrays/Vector.h 
+1480 casa/Utilities/Copy.cc casa/Arrays/Vector.h 
+     template void objcopy(Vector<Bool> *, Vector<Bool> const *, uInt) 
+     template void objmove(Vector<Bool> *, Vector<Bool> const *, uInt) 
+     template void objset(Vector<Bool> *, Vector<Bool>, uInt) 
+1490 casa/Utilities/Copy.cc casa/Arrays/Vector.h 
      template void objcopy(Vector<Float> **, Vector<Float> * const *, uInt) 
      template void objcopy(Vector<Float> **, Vector<Float> * const *, uInt, uInt, uInt) 
      template void objmove(Vector<Float> **, Vector<Float> * const *, uInt) 
      template void objset(Vector<Float> **, Vector<Float> *, uInt) 
      template void objset(Vector<Float> **, Vector<Float> *, uInt, uInt) 
-1480 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
+1500 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
+     template <class T> class TempLattice 
+     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
+     template void objcopy(TempLattice<Float> **, TempLattice<Float> * const *, uInt, uInt, uInt) 
+     template void objmove(TempLattice<Float> **, TempLattice<Float> * const *, uInt) 
+     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt) 
+     template void objset(TempLattice<Float> **, TempLattice<Float> *, uInt, uInt) 
+     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
+     template void objcopy(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt, uInt, uInt) 
+     template void objmove(TempLattice<Complex> **, TempLattice<Complex> * const *, uInt) 
+     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt) 
+     template void objset(TempLattice<Complex> **, TempLattice<Complex> *, uInt, uInt) 
+1510 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
      template void objcopy(DComplex *, DComplex const *, uInt, uInt, uInt) 
      template void objset(DComplex *, DComplex, uInt) 
      template void objset(DComplex *, DComplex, uInt, uInt) 
-1490 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
+1520 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h casa/Arrays/Matrix.h 
      template void objcopy(Matrix<CountedPtr<Random> >*, Matrix<CountedPtr<Random> > const *, uInt, uInt, uInt) 
      template void objcopy(Matrix<CountedPtr<Random> >*, Matrix<CountedPtr<Random> > const *, uInt) 
      template void objset(Matrix<CountedPtr<Random> > *, Matrix<CountedPtr<Random> >, uInt) 
      template void objset(Matrix<CountedPtr<Random> > *, Matrix<CountedPtr<Random> >, uInt, uInt) 
-1500 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
+1530 casa/Utilities/Copy.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      template void objcopy(CountedPtr<Random> *, CountedPtr<Random> const *, uInt, uInt, uInt) 
      template void objcopy(CountedPtr<Random> *, CountedPtr<Random> const *, uInt) 
      template void objset(CountedPtr<Random> *, CountedPtr<Random>, uInt) 
      template void objset(CountedPtr<Random> *, CountedPtr<Random>, uInt, uInt) 
-1510 casa/Utilities/Copy.cc 
+1540 casa/Utilities/Copy.cc 
+     template <> class MeasValue 
+     template void objcopy(MeasValue **, MeasValue * const *, uInt) 
+1550 casa/Utilities/Copy.cc 
      template void objcopy(Bool *, Bool const *, uInt, uInt, uInt) 
      template void objset(Bool *, Bool, uInt) 
      template void objset(Bool *, Bool, uInt, uInt) 
-1520 casa/Utilities/Copy.cc 
+1560 casa/Utilities/Copy.cc 
      template void objcopy(Char *, Char const *, uInt, uInt, uInt) 
      template void objset(Char *, Char, uInt) 
      template void objset(Char *, Char, uInt, uInt) 
-1530 casa/Utilities/Copy.cc 
+1570 casa/Utilities/Copy.cc 
      template void objcopy(Double *, Double const *, uInt, uInt, uInt) 
      template void objset(Double *, Double, uInt) 
      template void objset(Double *, Double, uInt, uInt) 
-1540 casa/Utilities/Copy.cc 
+1580 casa/Utilities/Copy.cc 
      template void objcopy(Float **, Float * const *, uInt) 
      template void objcopy(Float **, Float * const *, uInt, uInt, uInt) 
      template void objmove(Float **, Float * const *, uInt) 
      template void objset(Float **, Float *, uInt) 
      template void objset(Float **, Float *, uInt, uInt) 
-1550 casa/Utilities/Copy.cc 
+1590 casa/Utilities/Copy.cc 
      template void objcopy(Float *, Float const *, uInt, uInt, uInt) 
      template void objset(Float *, Float, uInt) 
      template void objset(Float *, Float, uInt, uInt) 
-1560 casa/Utilities/Copy.cc 
+1600 casa/Utilities/Copy.cc 
      template void objcopy(Int *, Int const *, uInt, uInt, uInt) 
      template void objset(Int *, Int, uInt) 
      template void objset(Int *, Int, uInt, uInt) 
-1570 casa/Utilities/Copy.cc 
+1610 casa/Utilities/Copy.cc 
+     template void objcopy(Int64 *, Int64 const *, uInt) 
+     template void objmove(Int64 *, Int64 const *, uInt) 
+     template void objset(Int64 *, Int64, uInt) 
+1620 casa/Utilities/Copy.cc 
      template void objcopy(Long *, Long const *, uInt) 
      template void objcopy(Long *, Long const *, uInt, uInt, uInt) 
      template void objmove(Long *, Long const *, uInt) 
      template void objset(Long *, Long, uInt) 
      template void objset(Long *, Long, uInt, uInt) 
-1580 casa/Utilities/Copy.cc 
+1630 casa/Utilities/Copy.cc 
      template void objcopy(Short *, Short const *, uInt, uInt, uInt) 
      template void objset(Short *, Short, uInt) 
      template void objset(Short *, Short, uInt, uInt) 
-1590 casa/Utilities/Copy.cc 
+1640 casa/Utilities/Copy.cc 
      template void objcopy(uChar *, uChar const *, uInt, uInt, uInt) 
      template void objset(uChar *, uChar, uInt) 
      template void objset(uChar *, uChar, uInt, uInt) 
-1600 casa/Utilities/Copy.cc 
+1650 casa/Utilities/Copy.cc 
      template void objcopy(uInt *, uInt const *, uInt, uInt, uInt) 
      template void objset(uInt *, uInt, uInt) 
      template void objset(uInt *, uInt, uInt, uInt) 
-1610 casa/Utilities/Copy.cc 
+1660 casa/Utilities/Copy.cc 
      template void objcopy(uShort *, uShort const *, uInt, uInt, uInt) 
      template void objset(uShort *, uShort, uInt) 
      template void objset(uShort *, uShort, uInt, uInt) 
-1620 casa/Utilities/Copy.cc 
+1670 casa/Utilities/Copy.cc 
      template void objmove(uLong *, uLong const *, uInt) 
      template void objcopy(uLong *, uLong const *, uInt) 
      template void objcopy(uLong *, uLong const *, uInt, uInt, uInt) 
      template void objset(uLong *, uLong, uInt) 
      template void objset(uLong *, uLong, uInt, uInt) 
-1630 casa/Utilities/Copy.cc 
+1680 casa/Utilities/Copy.cc 
      template void objset(void **, void *, uInt) 
      template void objcopy(void **, void * const *, uInt) 
      template void objmove(void **, void * const *, uInt) 
@@ -3006,56 +2688,56 @@
      template uInt Register(MVPosition const *) 
 1290 casa/Utilities/Register.cc casa/Quanta/MVRadialVelocity.h 
      template uInt Register(MVRadialVelocity const *) 
-1295 casa/Utilities/Register.cc casa/Quanta/MVuvw.h 
+1300 casa/Utilities/Register.cc casa/Quanta/MVuvw.h 
      template uInt Register(MVuvw const *) 
-1300 casa/Utilities/Register.cc 
-     template <class Qtype> class Quantum 
-     template <class T> class Array 
-     template uInt Register(Quantum<Array<Double> > const *) 
 1310 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Array 
-     template uInt Register(Quantum<Array<Float> > const *) 
+     template uInt Register(Quantum<Array<Double> > const *) 
 1320 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Array 
-     template uInt Register(Quantum<Array<Int> > const *) 
+     template uInt Register(Quantum<Array<Float> > const *) 
 1330 casa/Utilities/Register.cc 
+     template <class Qtype> class Quantum 
+     template <class T> class Array 
+     template uInt Register(Quantum<Array<Int> > const *) 
+1340 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Matrix 
      template uInt Register(Quantum<Matrix<Double> > const *) 
-1340 casa/Utilities/Register.cc 
-     template <class Qtype> class Quantum 
-     template <class T> class Vector 
-     template uInt Register(Quantum<Vector<Double> > const *) 
 1350 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Vector 
-     template uInt Register(Quantum<Vector<Float> > const *) 
+     template uInt Register(Quantum<Vector<Double> > const *) 
 1360 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
      template <class T> class Vector 
-     template uInt Register(Quantum<Vector<Int> > const *) 
+     template uInt Register(Quantum<Vector<Float> > const *) 
 1370 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
-     template uInt Register(Quantum<Double> const *) 
+     template <class T> class Vector 
+     template uInt Register(Quantum<Vector<Int> > const *) 
 1380 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
-     template uInt Register(Quantum<Float> const *) 
+     template uInt Register(Quantum<Double> const *) 
 1390 casa/Utilities/Register.cc 
      template <class Qtype> class Quantum 
-     template uInt Register(Quantum<Int> const *) 
+     template uInt Register(Quantum<Float> const *) 
 1400 casa/Utilities/Register.cc 
-     template uInt Register(Double const *) 
+     template <class Qtype> class Quantum 
+     template uInt Register(Quantum<Int> const *) 
 1410 casa/Utilities/Register.cc 
-     template uInt Register(Float const *) 
+     template uInt Register(Double const *) 
 1420 casa/Utilities/Register.cc 
-     template uInt Register(Int const *) 
+     template uInt Register(Float const *) 
 1430 casa/Utilities/Register.cc 
-     template uInt Register(Long const *) 
+     template uInt Register(Int const *) 
 1440 casa/Utilities/Register.cc 
-     template uInt Register(lDouble const *) 
+     template uInt Register(Long const *) 
 1450 casa/Utilities/Register.cc 
+     template uInt Register(lDouble const *) 
+1460 casa/Utilities/Register.cc 
      template uInt Register(uInt const *) 
 1000 casa/Utilities/Sequence.cc 
      template class Sequence<uInt> 

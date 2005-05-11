@@ -1,8 +1,3 @@
-1000 casa/Containers/Block.h casa/Utilities/Copy.cc 
-     = flagging/Flagging/RedFlagger.h 
-     = flagging/Flagging/RFASelector.h 
-     template class Block<RFABase *> 
-     template class Block<RFASelector::ClipInfo> 
 1000 casa/Utilities/Copy.cc 
      = flagging/Flagging/RFASpectralRej.h 
      template void objcopy(RFASpectralRej::Segment *, RFASpectralRej::Segment const *, uInt) 
@@ -23,6 +18,3 @@
      = flagging/Flagging/RFChunkStats.h 
      template class RFCubeLattice<uInt> 
      template class RFCubeLatticeIterator<uInt> 
-
-
-

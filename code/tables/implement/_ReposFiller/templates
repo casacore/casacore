@@ -1,34 +1,78 @@
 1000 casa/Arrays/Array.cc 
+     = casa/Arrays/IPosition.h 
+     template class Array<IPosition> 
+1010 casa/Arrays/Array.cc 
+     = casa/Arrays/Slicer.h 
+     template class Array<Slicer> 
+1020 casa/Arrays/Array.cc 
+     = casa/Arrays/Vector.h 
+     template class Array<Vector<Float> > 
+1030 casa/Arrays/Array.cc 
+     = tables/TablePlot/BasePlot.h 
+     template class Array<BasePlot<Float> > 
+1040 casa/Arrays/Array.cc 
+     = tables/Tables/ExprNode.h 
+     template class Array<TableExprNode> 
+1050 casa/Arrays/Array.cc 
+     = tables/Tables/Table.h 
+     template class Array<Table> 
+1060 casa/Arrays/Array.cc 
+     = tables/Tables/TableIter.h 
+     template class Array<TableIterator> 
+1070 casa/Arrays/Array.cc 
      = tables/Tables/TableRecord.h 
      template class Array<TableRecord> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<TableRecord>::ConstIteratorSTL 
      #endif 
 1000 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/IPosition.h 
+     template class MaskedArray<IPosition> 
+1010 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Slicer.h 
+     template class MaskedArray<Slicer> 
+1020 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.h 
+     template class MaskedArray<Vector<Float> > 
+1030 casa/Arrays/MaskedArray.cc 
+     = tables/TablePlot/BasePlot.h 
+     template class MaskedArray<BasePlot<Float> > 
+1040 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/ExprNode.h 
+     template class MaskedArray<TableExprNode> 
+1050 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/Table.h 
+     template class MaskedArray<Table> 
+1060 casa/Arrays/MaskedArray.cc 
+     = tables/Tables/TableIter.h 
+     template class MaskedArray<TableIterator> 
+1070 casa/Arrays/MaskedArray.cc 
      = tables/Tables/TableRecord.h 
      template class MaskedArray<TableRecord> 
 1000 casa/Arrays/Vector.cc 
+     = casa/Arrays/IPosition.h 
+     template class Vector<IPosition> 
+1010 casa/Arrays/Vector.cc 
+     = casa/Arrays/Slicer.h 
+     template class Vector<Slicer> 
+1020 casa/Arrays/Vector.cc 
+     = casa/Arrays/Vector.h 
+     template class Vector<Vector<Float> > 
+1030 casa/Arrays/Vector.cc 
+     = tables/TablePlot/BasePlot.h 
+     template class Vector<BasePlot<Float> > 
+1040 casa/Arrays/Vector.cc 
+     = tables/Tables/ExprNode.h 
+     template class Vector<TableExprNode> 
+1050 casa/Arrays/Vector.cc 
+     = tables/Tables/Table.h 
+     template class Vector<Table> 
+1060 casa/Arrays/Vector.cc 
+     = tables/Tables/TableIter.h 
+     template class Vector<TableIterator> 
+1070 casa/Arrays/Vector.cc 
      = tables/Tables/TableRecord.h 
      template class Vector<TableRecord> 
-1000 casa/Containers/Block.h 
-     = tables/Tables/TableRecord.h 
-     template class Block<TableRecord> 
-1010 casa/Containers/Block.h tables/Tables/BaseColumn.h 
-     template <> class BaseColumn 
-     template class PtrBlock<BaseColumn *> 
-1020 casa/Containers/Block.h tables/Tables/ExprNode.h 
-     = tables/Tables/ExprRange.h 
-     template <> class TableExprNodeRep 
-     template class Block<TableExprNode> 
-     template class Block<TableExprRange> 
-     template class PtrBlock<TableExprNodeRep *> 
-1030 casa/Containers/Block.h tables/Tables/TableParse.h 
-     template <> class TableParseSelect 
-     template <> class TableParseSort 
-     template <> class TableExprNodeSetElem 
-     template class PtrBlock<TableParseSelect *> 
-     template class PtrBlock<TableParseSort *> 
-     template class PtrBlock<TableExprNodeSetElem *> 
 1000 casa/Containers/Link.cc tables/Tables/TableParse.h 
      template class Link<TableParse> 
 1000 casa/Containers/List.cc tables/Tables/TableParse.h 
@@ -61,6 +105,180 @@
      template class SimpleOrderedMap<String, ColumnDesc> 
      template class SimpleOrderedMap<String, DataManager *(*)(String const &, Record const &)> 
      template class SimpleOrderedMap<String, RefColumn *> 
+1000 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Double> const &, Double const &, uInt, Int) 
+1010 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
+     template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
+1000 casa/Utilities/COWPtr.cc tables/Tables/TableRecordRep.h 
+     template class COWPtr<TableRecordRep> 
+1000 casa/Utilities/Copy.cc 
+     = casa/Arrays/IPosition.h 
+     template void objcopy(IPosition *, IPosition const *, uInt) 
+     template void objcopy(IPosition *, IPosition const *, uInt, uInt, uInt) 
+     template void objmove(IPosition *, IPosition const *, uInt) 
+     template void objset(IPosition *, IPosition, uInt) 
+     template void objset(IPosition *, IPosition, uInt, uInt) 
+1010 casa/Utilities/Copy.cc 
+     = casa/Arrays/Slicer.h 
+     template void objcopy(Slicer *, Slicer const *, uInt) 
+     template void objcopy(Slicer *, Slicer const *, uInt, uInt, uInt) 
+     template void objmove(Slicer *, Slicer const *, uInt) 
+     template void objset(Slicer *, Slicer, uInt) 
+     template void objset(Slicer *, Slicer, uInt, uInt) 
+1020 casa/Utilities/Copy.cc 
+     = casa/Arrays/Vector.h 
+     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt) 
+     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt, uInt, uInt) 
+     template void objmove(Vector<Float> *, Vector<Float> const *, uInt) 
+     template void objset(Vector<Float> *, Vector<Float>, uInt) 
+     template void objset(Vector<Float> *, Vector<Float>, uInt, uInt) 
+1030 casa/Utilities/Copy.cc 
+     = tables/TablePlot/BasePlot.h 
+     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
+     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt, uInt, uInt) 
+     template void objmove(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
+     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt) 
+     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt, uInt) 
+1040 casa/Utilities/Copy.cc 
+     = tables/Tables/ExprNode.h 
+     template void objcopy(TableExprNode *, TableExprNode const *, uInt) 
+     template void objmove(TableExprNode *, TableExprNode const *, uInt) 
+     template void objset(TableExprNode *, TableExprNode, uInt) 
+1050 casa/Utilities/Copy.cc 
+     = tables/Tables/ExprNode.h 
+     template void objcopy(TableExprNode *, TableExprNode const *, uInt, uInt, uInt) 
+     template void objset(TableExprNode *, TableExprNode, uInt, uInt) 
+1060 casa/Utilities/Copy.cc 
+     = tables/Tables/ExprRange.h 
+     template void objcopy(TableExprRange *, TableExprRange const *, uInt) 
+     template void objmove(TableExprRange *, TableExprRange const *, uInt) 
+     template void objset(TableExprRange *, TableExprRange, uInt) 
+1070 casa/Utilities/Copy.cc 
+     = tables/Tables/Table.h 
+     template void objcopy(Table *, Table const *, uInt) 
+     template void objcopy(Table *, Table const *, uInt, uInt, uInt) 
+     template void objmove(Table *, Table const *, uInt) 
+     template void objset(Table *, Table, uInt) 
+     template void objset(Table *, Table, uInt, uInt) 
+1080 casa/Utilities/Copy.cc 
+     = tables/Tables/TableIter.h 
+     template void objcopy(TableIterator *, TableIterator const *, uInt) 
+     template void objcopy(TableIterator *, TableIterator const *, uInt, uInt, uInt) 
+     template void objmove(TableIterator *, TableIterator const *, uInt) 
+     template void objset(TableIterator *, TableIterator, uInt) 
+     template void objset(TableIterator *, TableIterator, uInt, uInt) 
+1090 casa/Utilities/Copy.cc 
+     = tables/Tables/TableRecord.h 
+     template void objcopy(TableRecord *, TableRecord const *, uInt) 
+     template void objcopy(TableRecord *, TableRecord const *, uInt, uInt, uInt) 
+     template void objmove(TableRecord *, TableRecord const *, uInt) 
+     template void objset(TableRecord *, TableRecord, uInt) 
+     template void objset(TableRecord *, TableRecord, uInt, uInt) 
+1100 casa/Utilities/Copy.cc 
+     = tables/Tables/TableRow.h 
+     template void objcopy(ROTableRow **, ROTableRow * const *, uInt) 
+     template void objcopy(ROTableRow *, ROTableRow const *, uInt) 
+1000 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = casa/Arrays/IPosition.h 
+     template class CountedConstPtr<Block<IPosition> > 
+     template class CountedPtr<Block<IPosition> > 
+     template class PtrRep<Block<IPosition> > 
+     template class SimpleCountedConstPtr<Block<IPosition> > 
+     template class SimpleCountedPtr<Block<IPosition> > 
+1010 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = casa/Arrays/Slicer.h 
+     template class CountedConstPtr<Block<Slicer> > 
+     template class CountedPtr<Block<Slicer> > 
+     template class PtrRep<Block<Slicer> > 
+     template class SimpleCountedConstPtr<Block<Slicer> > 
+     template class SimpleCountedPtr<Block<Slicer> > 
+1020 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = casa/Arrays/Vector.h 
+     template class CountedConstPtr<Block<Vector<Float> > > 
+     template class CountedPtr<Block<Vector<Float> > > 
+     template class PtrRep<Block<Vector<Float> > > 
+     template class SimpleCountedConstPtr<Block<Vector<Float> > > 
+     template class SimpleCountedPtr<Block<Vector<Float> > > 
+1030 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/TablePlot/BasePlot.h 
+     template class CountedConstPtr<Block<BasePlot<Float> > > 
+     template class CountedPtr<Block<BasePlot<Float> > > 
+     template class PtrRep<Block<BasePlot<Float> > > 
+     template class SimpleCountedConstPtr<Block<BasePlot<Float> > > 
+     template class SimpleCountedPtr<Block<BasePlot<Float> > > 
+1040 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/ExprNode.h 
+     template class CountedConstPtr<Block<TableExprNode> > 
+     template class CountedPtr<Block<TableExprNode> > 
+     template class PtrRep<Block<TableExprNode> > 
+     template class SimpleCountedConstPtr<Block<TableExprNode> > 
+     template class SimpleCountedPtr<Block<TableExprNode> > 
+1050 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/Table.h 
+     template class CountedConstPtr<Block<Table> > 
+     template class CountedPtr<Block<Table> > 
+     template class PtrRep<Block<Table> > 
+     template class SimpleCountedConstPtr<Block<Table> > 
+     template class SimpleCountedPtr<Block<Table> > 
+1060 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/TableIter.h 
+     template class CountedConstPtr<Block<TableIterator> > 
+     template class CountedPtr<Block<TableIterator> > 
+     template class PtrRep<Block<TableIterator> > 
+     template class SimpleCountedConstPtr<Block<TableIterator> > 
+     template class SimpleCountedPtr<Block<TableIterator> > 
+1070 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
+     = tables/Tables/TableRecord.h 
+     template class CountedConstPtr<Block<TableRecord> > 
+     template class CountedPtr<Block<TableRecord> > 
+     template class PtrRep<Block<TableRecord> > 
+     template class SimpleCountedConstPtr<Block<TableRecord> > 
+     template class SimpleCountedPtr<Block<TableRecord> > 
+1080 casa/Utilities/CountedPtr.cc 
+     = tables/Tables/TiledFileAccess.h 
+     template class CountedConstPtr<TiledFileAccess> 
+     template class CountedPtr<TiledFileAccess> 
+     template class PtrRep<TiledFileAccess> 
+     template class SimpleCountedConstPtr<TiledFileAccess> 
+     template class SimpleCountedPtr<TiledFileAccess> 
+1090 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
+     template class PtrRep<TableDesc> 
+     template class SimpleCountedConstPtr<TableDesc> 
+1100 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
+     template class CountedConstPtr<TableRecordRep> 
+     template class CountedPtr<TableRecordRep> 
+     template class PtrRep<TableRecordRep> 
+     template class SimpleCountedConstPtr<TableRecordRep> 
+     template class SimpleCountedPtr<TableRecordRep> 
+1000 casa/Utilities/Register.cc casa/Containers/List.h 
+     = tables/Tables/TableParse.h 
+     template uInt Register(ListNotice<TableParse> const *) 
+1000 tables/LogTables/LoggerHolder.h 
+     = casa/Utilities/CountedPtr.cc casa/Utilities/Copy.cc 
+     template class PtrRep<LoggerHolderRep> 
+     template class CountedPtr<LoggerHolderRep> 
+     template class CountedConstPtr<LoggerHolderRep> 
+     template class SimpleCountedPtr<LoggerHolderRep> 
+     template class SimpleCountedConstPtr<LoggerHolderRep> 
+     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt) 
+     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt, uInt, uInt) 
+     template void objset(LoggerHolder*, LoggerHolder, uInt) 
+     template void objset(LoggerHolder*, LoggerHolder, uInt, uInt) 
+     template void objmove(LoggerHolder*, LoggerHolder const *, uInt) 
+1000 tables/TablePlot/BasePlot.cc 
+     template class BasePlot<Float> 
+1000 tables/TablePlot/TPPlotter.cc 
+     template class TPPlotter<Float> 
+1000 tables/TablePlot/TablePlot.cc 
+     template class TablePlot<Float> 
 1000 tables/Tables/ArrColData.cc casa/BasicSL/Complex.h 
      = casa/BasicSL/String.h 
      template class ArrayColumnData<Bool> 
@@ -200,276 +418,3 @@
      template class VirtualArrayColumn<Complex> 
 1000 tables/Tables/VirtScaCol.cc 
      template class VirtualScalarColumn<Float> 
-1000 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
-     template Int binarySearch(Bool &, ROScalarColumn<Double> const &, Double const &, uInt, Int) 
-1010 casa/Utilities/BinarySearch.cc tables/Tables/ScalarColumn.h 
-     template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
-1000 casa/Utilities/COWPtr.cc tables/Tables/TableRecordRep.h 
-     template class COWPtr<TableRecordRep> 
-1000 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprNode.h 
-     template void objcopy(TableExprNode *, TableExprNode const *, uInt) 
-     template void objmove(TableExprNode *, TableExprNode const *, uInt) 
-     template void objset(TableExprNode *, TableExprNode, uInt) 
-1010 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprRange.h 
-     template void objcopy(TableExprRange *, TableExprRange const *, uInt) 
-     template void objmove(TableExprRange *, TableExprRange const *, uInt) 
-     template void objset(TableExprRange *, TableExprRange, uInt) 
-1020 casa/Utilities/Copy.cc 
-     = tables/Tables/TableRecord.h 
-     template void objcopy(TableRecord *, TableRecord const *, uInt) 
-     template void objcopy(TableRecord *, TableRecord const *, uInt, uInt, uInt) 
-     template void objmove(TableRecord *, TableRecord const *, uInt) 
-     template void objset(TableRecord *, TableRecord, uInt) 
-     template void objset(TableRecord *, TableRecord, uInt, uInt) 
-1030 casa/Utilities/Copy.cc 
-     = tables/Tables/TableRow.h 
-     template void objcopy(ROTableRow **, ROTableRow * const *, uInt) 
-     template void objcopy(ROTableRow *, ROTableRow const *, uInt) 
-1000 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/Tables/TableRecord.h 
-     template class CountedConstPtr<Block<TableRecord> > 
-     template class CountedPtr<Block<TableRecord> > 
-     template class PtrRep<Block<TableRecord> > 
-     template class SimpleCountedConstPtr<Block<TableRecord> > 
-     template class SimpleCountedPtr<Block<TableRecord> > 
-1010 casa/Utilities/CountedPtr.cc 
-     = tables/Tables/TiledFileAccess.h 
-     template class CountedConstPtr<TiledFileAccess> 
-     template class CountedPtr<TiledFileAccess> 
-     template class PtrRep<TiledFileAccess> 
-     template class SimpleCountedConstPtr<TiledFileAccess> 
-     template class SimpleCountedPtr<TiledFileAccess> 
-1020 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
-     template class PtrRep<TableDesc> 
-     template class SimpleCountedConstPtr<TableDesc> 
-1030 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
-     template class CountedConstPtr<TableRecordRep> 
-     template class CountedPtr<TableRecordRep> 
-     template class PtrRep<TableRecordRep> 
-     template class SimpleCountedConstPtr<TableRecordRep> 
-     template class SimpleCountedPtr<TableRecordRep> 
-1000 casa/Utilities/Register.cc casa/Containers/List.h 
-     = tables/Tables/TableParse.h 
-     template uInt Register(ListNotice<TableParse> const *) 
-1000 tables/LogTables/LoggerHolder.h casa/Containers/Block.h 
-     = casa/Utilities/CountedPtr.cc casa/Utilities/Copy.cc 
-     template class PtrRep<LoggerHolderRep> 
-     template class CountedPtr<LoggerHolderRep> 
-     template class CountedConstPtr<LoggerHolderRep> 
-     template class SimpleCountedPtr<LoggerHolderRep> 
-     template class SimpleCountedConstPtr<LoggerHolderRep> 
-     template class Block<LoggerHolder> 
-     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt) 
-     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt, uInt, uInt) 
-     template void objset(LoggerHolder*, LoggerHolder, uInt) 
-     template void objset(LoggerHolder*, LoggerHolder, uInt, uInt) 
-     template void objmove(LoggerHolder*, LoggerHolder const *, uInt) 
-
-
-
-
-
-
-1001 tables/TablePlot/BasePlot.cc
-     template class BasePlot<Float> 
-1002 casa/Arrays/Vector.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class Vector<BasePlot<Float> > 
-1003 casa/Arrays/Array.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class Array<BasePlot<Float> > 
-1004 casa/Utilities/Copy.cc 
-     = tables/TablePlot/BasePlot.h 
-     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
-     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt, uInt, uInt) 
-     template void objmove(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
-     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt) 
-     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt, uInt) 
-1005 casa/Containers/Block.h 
-     = tables/TablePlot/BasePlot.h 
-     template class Block<BasePlot<Float> > 
-1006 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/TablePlot/BasePlot.h 
-     template class CountedConstPtr<Block<BasePlot<Float> > > 
-     template class CountedPtr<Block<BasePlot<Float> > > 
-     template class PtrRep<Block<BasePlot<Float> > > 
-     template class SimpleCountedConstPtr<Block<BasePlot<Float> > > 
-     template class SimpleCountedPtr<Block<BasePlot<Float> > > 
-1007 casa/Arrays/MaskedArray.cc 
-     = tables/TablePlot/BasePlot.h 
-     template class MaskedArray<BasePlot<Float> > 
-
-
-1031 casa/Arrays/Vector.cc 
-     = tables/Tables/ExprNode.h 
-     template class Vector<TableExprNode> 
-1032 casa/Arrays/Array.cc 
-     = tables/Tables/ExprNode.h 
-     template class Array<TableExprNode> 
-1033 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprNode.h
-     template void objcopy(TableExprNode *, TableExprNode const *, uInt, uInt, uInt) 
-     template void objset(TableExprNode *, TableExprNode, uInt, uInt) 
-1034 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/Tables/ExprNode.h 
-     template class CountedConstPtr<Block<TableExprNode > > 
-     template class CountedPtr<Block<TableExprNode > > 
-     template class PtrRep<Block<TableExprNode > > 
-     template class SimpleCountedConstPtr<Block<TableExprNode > > 
-     template class SimpleCountedPtr<Block<TableExprNode > > 
-1035 casa/Arrays/MaskedArray.cc 
-     = tables/Tables/ExprNode.h 
-     template class MaskedArray<TableExprNode > 
-
-
-1042 casa/Arrays/Vector.cc 
-     = casa/Arrays/Slicer.h 
-     template class Vector<Slicer > 
-1043 casa/Arrays/Array.cc 
-     = casa/Arrays/Slicer.h 
-     template class Array<Slicer > 
-1044 casa/Utilities/Copy.cc 
-     = casa/Arrays/Slicer.h 
-     template void objcopy(Slicer *, Slicer const *, uInt) 
-     template void objcopy(Slicer *, Slicer const *, uInt, uInt, uInt) 
-     template void objmove(Slicer *, Slicer const *, uInt) 
-     template void objset(Slicer *, Slicer , uInt) 
-     template void objset(Slicer *, Slicer , uInt, uInt) 
-1045 casa/Containers/Block.h 
-     = casa/Arrays/Slicer.h 
-     template class Block<Slicer > 
-1046 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = casa/Arrays/Slicer.h 
-     template class CountedConstPtr<Block<Slicer > > 
-     template class CountedPtr<Block<Slicer > > 
-     template class PtrRep<Block<Slicer > > 
-     template class SimpleCountedConstPtr<Block<Slicer > > 
-     template class SimpleCountedPtr<Block<Slicer > > 
-1047 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/Slicer.h 
-     template class MaskedArray<Slicer > 
-
-1052 casa/Arrays/Vector.cc 
-     = casa/Arrays/Vector.h 
-     template class Vector<Vector<Float> > 
-1053 casa/Arrays/Array.cc 
-     = casa/Arrays/Vector.h 
-     template class Array<Vector<Float> > 
-1054 casa/Utilities/Copy.cc 
-     = casa/Arrays/Vector.h 
-     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt) 
-     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt, uInt, uInt) 
-     template void objmove(Vector<Float> *, Vector<Float> const *, uInt) 
-     template void objset(Vector<Float> *, Vector<Float> , uInt) 
-     template void objset(Vector<Float> *, Vector<Float> , uInt, uInt) 
-1055 casa/Containers/Block.h 
-     = casa/Arrays/Vector.h 
-     template class Block<Vector<Float> > 
-1056 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = casa/Arrays/Vector.h 
-     template class CountedConstPtr<Block<Vector<Float> > > 
-     template class CountedPtr<Block<Vector<Float> > > 
-     template class PtrRep<Block<Vector<Float> > > 
-     template class SimpleCountedConstPtr<Block<Vector<Float> > > 
-     template class SimpleCountedPtr<Block<Vector<Float> > > 
-1057 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/Vector.h 
-     template class MaskedArray<Vector<Float> > 
-
-1062 casa/Arrays/Vector.cc 
-     = tables/Tables/Table.h 
-     template class Vector<Table > 
-1063 casa/Arrays/Array.cc 
-     = tables/Tables/Table.h 
-     template class Array<Table > 
-1064 casa/Utilities/Copy.cc 
-     = tables/Tables/Table.h 
-     template void objcopy(Table *, Table const *, uInt) 
-     template void objcopy(Table *, Table const *, uInt, uInt, uInt) 
-     template void objmove(Table *, Table const *, uInt) 
-     template void objset(Table *, Table , uInt) 
-     template void objset(Table *, Table , uInt, uInt) 
-1065 casa/Containers/Block.h 
-     = tables/Tables/Table.h 
-     template class Block<Table > 
-1066 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/Tables/Table.h 
-     template class CountedConstPtr<Block<Table > > 
-     template class CountedPtr<Block<Table > > 
-     template class PtrRep<Block<Table > > 
-     template class SimpleCountedConstPtr<Block<Table > > 
-     template class SimpleCountedPtr<Block<Table > > 
-1067 casa/Arrays/MaskedArray.cc 
-     = tables/Tables/Table.h 
-     template class MaskedArray<Table > 
-
-1072 casa/Arrays/Vector.cc 
-     = tables/Tables/TableIter.h 
-     template class Vector<TableIterator > 
-1073 casa/Arrays/Array.cc 
-     = tables/Tables/TableIter.h 
-     template class Array<TableIterator > 
-1074 casa/Utilities/Copy.cc 
-     = tables/Tables/TableIter.h 
-     template void objcopy(TableIterator *, TableIterator const *, uInt) 
-     template void objcopy(TableIterator *, TableIterator const *, uInt, uInt, uInt) 
-     template void objmove(TableIterator *, TableIterator const *, uInt) 
-     template void objset(TableIterator *, TableIterator , uInt) 
-     template void objset(TableIterator *, TableIterator , uInt, uInt) 
-1075 casa/Containers/Block.h 
-     = tables/Tables/TableIter.h 
-     template class Block<TableIterator > 
-1076 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = tables/Tables/TableIter.h 
-     template class CountedConstPtr<Block<TableIterator > > 
-     template class CountedPtr<Block<TableIterator > > 
-     template class PtrRep<Block<TableIterator > > 
-     template class SimpleCountedConstPtr<Block<TableIterator > > 
-     template class SimpleCountedPtr<Block<TableIterator > > 
-1077 casa/Arrays/MaskedArray.cc 
-     = tables/Tables/TableIter.h 
-     template class MaskedArray<TableIterator > 
-
-1082 casa/Arrays/Vector.cc 
-     = casa/Arrays/IPosition.h 
-     template class Vector<IPosition > 
-1083 casa/Arrays/Array.cc 
-     = casa/Arrays/IPosition.h 
-     template class Array<IPosition > 
-1084 casa/Utilities/Copy.cc 
-     = casa/Arrays/IPosition.h 
-     template void objcopy(IPosition *, IPosition const *, uInt) 
-     template void objcopy(IPosition *, IPosition const *, uInt, uInt, uInt) 
-     template void objmove(IPosition *, IPosition const *, uInt) 
-     template void objset(IPosition *, IPosition , uInt) 
-     template void objset(IPosition *, IPosition , uInt, uInt) 
-1085 casa/Containers/Block.h 
-     = casa/Arrays/IPosition.h 
-     template class Block<IPosition > 
-1086 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = casa/Arrays/IPosition.h 
-     template class CountedConstPtr<Block<IPosition > > 
-     template class CountedPtr<Block<IPosition > > 
-     template class PtrRep<Block<IPosition > > 
-     template class SimpleCountedConstPtr<Block<IPosition > > 
-     template class SimpleCountedPtr<Block<IPosition > > 
-1087 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/IPosition.h 
-     template class MaskedArray<IPosition > 
-
-1091 tables/TablePlot/TPPlotter.cc
-     template class TPPlotter<Float> 
-1092 tables/TablePlot/TablePlot.cc
-     template class TablePlot<Float> 
-
-

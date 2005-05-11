@@ -1,123 +1,8 @@
-1000 casa/Containers/Block.h 
-     = lattices/Lattices/Lattice.h 
-     template class PtrBlock<Lattice<Int> *> 
-1010 casa/Containers/Block.h 
-     = lattices/Lattices/MaskedLattice.h 
-     template class PtrBlock<MaskedLattice<Int> *> 
-     template class PtrBlock<MaskedLattice<Float> *> 
-     template class PtrBlock<MaskedLattice<Double> *> 
-     template class PtrBlock<MaskedLattice<Complex> *> 
-     template class PtrBlock<MaskedLattice<DComplex> *> 
-     template class PtrBlock<MaskedLattice<Bool> *> 
-1020 casa/Containers/Block.h casa/Utilities/Copy.cc 
+1000 casa/Utilities/Copy.cc 
      = lattices/Lattices/LatticeExprNode.h 
-     template class Block<LatticeExprNode> 
      template void objcopy(LatticeExprNode *, LatticeExprNode const *, uInt) 
      template void objmove(LatticeExprNode *, LatticeExprNode const *, uInt) 
      template void objset(LatticeExprNode *, LatticeExprNode, uInt) 
-1000 lattices/Lattices/ArrayLattice.cc casa/BasicSL/Complex.h 
-     template class ArrayLattice<Complex> 
-     template class ArrayLattice<DComplex> 
-1010 lattices/Lattices/ArrayLattice.cc 
-     template class ArrayLattice<Bool> 
-1020 lattices/Lattices/ArrayLattice.cc 
-     template class ArrayLattice<Float> 
-     template class ArrayLattice<Double> 
-1030 lattices/Lattices/ArrayLattice.cc 
-     template class ArrayLattice<Int> 
-1040 lattices/Lattices/ArrayLattice.cc 
-     template class ArrayLattice<uInt> 
-1000 lattices/Lattices/Lattice.cc casa/BasicSL/Complex.h 
-     template class Lattice<Complex> 
-     template class Lattice<DComplex> 
-1010 lattices/Lattices/Lattice.cc 
-     template class Lattice<Bool> 
-1020 lattices/Lattices/Lattice.cc 
-     template class Lattice<Double> 
-1030 lattices/Lattices/Lattice.cc 
-     template class Lattice<Float> 
-1040 lattices/Lattices/Lattice.cc 
-     template class Lattice<Int> 
-1050 lattices/Lattices/Lattice.cc 
-     template class Lattice<uInt> 
-1000 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     = casa/BasicSL/Complex.h 
-     template class LatticeIterator<Complex> 
-     template class RO_LatticeIterator<Complex> 
-     template class LatticeIterInterface<Complex> 
-     template class LatticeIterator<DComplex> 
-     template class RO_LatticeIterator<DComplex> 
-     template class LatticeIterInterface<DComplex> 
-1010 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     template class LatticeIterator<Bool> 
-     template class RO_LatticeIterator<Bool> 
-     template class LatticeIterInterface<Bool> 
-1020 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     template class LatticeIterator<Double> 
-     template class RO_LatticeIterator<Double> 
-     template class LatticeIterInterface<Double> 
-1030 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     template class LatticeIterator<Float> 
-     template class RO_LatticeIterator<Float> 
-     template class LatticeIterInterface<Float> 
-1040 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     template class LatticeIterator<Int> 
-     template class RO_LatticeIterator<Int> 
-     template class LatticeIterInterface<Int> 
-1050 lattices/Lattices/LatticeIterator.cc lattices/Lattices/LatticeIterInterface.cc 
-     template class LatticeIterator<uInt> 
-     template class RO_LatticeIterator<uInt> 
-     template class LatticeIterInterface<uInt> 
-1000 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     = casa/BasicSL/Complex.h 
-     template class PagedArray<Complex> 
-     template class PagedArrIter<Complex> 
-1010 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     = casa/BasicSL/Complex.h 
-     template class PagedArray<DComplex> 
-     template class PagedArrIter<DComplex> 
-1020 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     template class PagedArray<Bool> 
-     template class PagedArrIter<Bool> 
-1030 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     template class PagedArray<Double> 
-     template class PagedArrIter<Double> 
-1040 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     template class PagedArray<Float> 
-     template class PagedArrIter<Float> 
-1050 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     template class PagedArray<Int> 
-     template class PagedArrIter<Int> 
-1060 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
-     template class PagedArray<uInt> 
-     template class PagedArrIter<uInt> 
-1000 lattices/Lattices/TempLattice.cc 
-     = casa/BasicSL/Complex.h 
-     template class TempLattice<Complex> 
-1010 lattices/Lattices/TempLattice.cc 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<Bool> 
-     template class CountedConstPtr<Lattice<Bool> > 
-     template class CountedPtr<Lattice<Bool> > 
-     template class PtrRep<Lattice<Bool> > 
-     template class SimpleCountedConstPtr<Lattice<Bool> > 
-     template class SimpleCountedPtr<Lattice<Bool> > 
-1020 lattices/Lattices/TempLattice.cc 
-     = casa/Utilities/CountedPtr.cc 
-     = lattices/Lattices/Lattice.h 
-     template class TempLattice<Double> 
-     template class CountedConstPtr<Lattice<Double> > 
-     template class CountedPtr<Lattice<Double> > 
-     template class PtrRep<Lattice<Double> > 
-     template class SimpleCountedConstPtr<Lattice<Double> > 
-     template class SimpleCountedPtr<Lattice<Double> > 
-1030 lattices/Lattices/TempLattice.cc 
-     template class TempLattice<Float> 
-1040 lattices/Lattices/TempLattice.cc 
-     template class TempLattice<Int> 
-1050 lattices/Lattices/TempLattice.cc 
-     template class TempLattice<uInt> 
 1000 casa/Utilities/CountedPtr.cc 
      = casa/BasicSL/Complex.h 
      = lattices/Lattices/Lattice.h 
@@ -154,81 +39,7 @@
      template class PtrRep<MaskedLattice<Bool> > 
      template class SimpleCountedConstPtr<MaskedLattice<Bool> > 
      template class SimpleCountedPtr<MaskedLattice<Bool> > 
-1020 casa/Utilities/CountedPtr.cc lattices/Lattices/LELLattCoordBase.h 
-     template class CountedConstPtr<LELLattCoordBase> 
-     template class CountedPtr<LELLattCoordBase> 
-     template class PtrRep<LELLattCoordBase> 
-     template class SimpleCountedConstPtr<LELLattCoordBase> 
-     template class SimpleCountedPtr<LELLattCoordBase> 
-1030 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
-     template class CountedPtr<Lattice<Float> > 
-     template class CountedConstPtr<Lattice<Float> > 
-     template class SimpleCountedPtr<Lattice<Float> > 
-     template class SimpleCountedConstPtr<Lattice<Float> > 
-     template class PtrRep<Lattice<Float> > 
-1040 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
-     template class CountedPtr<Lattice<Int> > 
-     template class CountedConstPtr<Lattice<Int> > 
-     template class SimpleCountedPtr<Lattice<Int> > 
-     template class SimpleCountedConstPtr<Lattice<Int> > 
-     template class PtrRep<Lattice<Int> > 
-1050 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
-     template class CountedPtr<Lattice<uInt> > 
-     template class CountedConstPtr<Lattice<uInt> > 
-     template class SimpleCountedPtr<Lattice<uInt> > 
-     template class SimpleCountedConstPtr<Lattice<uInt> > 
-     template class PtrRep<Lattice<uInt> > 
-1060 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     = casa/BasicSL/Complex.h 
-     template class CountedPtr<LatticeIterInterface<Complex> > 
-     template class CountedConstPtr<LatticeIterInterface<Complex> > 
-     template class SimpleCountedPtr<LatticeIterInterface<Complex> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<Complex> > 
-     template class PtrRep<LatticeIterInterface<Complex> > 
-1070 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     = casa/BasicSL/Complex.h 
-     template class CountedPtr<LatticeIterInterface<DComplex> > 
-     template class CountedConstPtr<LatticeIterInterface<DComplex> > 
-     template class SimpleCountedPtr<LatticeIterInterface<DComplex> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<DComplex> > 
-     template class PtrRep<LatticeIterInterface<DComplex> > 
-1080 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     template class CountedPtr<LatticeIterInterface<Bool> > 
-     template class CountedConstPtr<LatticeIterInterface<Bool> > 
-     template class SimpleCountedPtr<LatticeIterInterface<Bool> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<Bool> > 
-     template class PtrRep<LatticeIterInterface<Bool> > 
-1090 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     template class CountedPtr<LatticeIterInterface<Double> > 
-     template class CountedConstPtr<LatticeIterInterface<Double> > 
-     template class SimpleCountedPtr<LatticeIterInterface<Double> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<Double> > 
-     template class PtrRep<LatticeIterInterface<Double> > 
-1100 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     template class CountedPtr<LatticeIterInterface<Float> > 
-     template class CountedConstPtr<LatticeIterInterface<Float> > 
-     template class SimpleCountedPtr<LatticeIterInterface<Float> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<Float> > 
-     template class PtrRep<LatticeIterInterface<Float> > 
-1110 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     template class CountedPtr<LatticeIterInterface<Int> > 
-     template class CountedConstPtr<LatticeIterInterface<Int> > 
-     template class SimpleCountedPtr<LatticeIterInterface<Int> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<Int> > 
-     template class PtrRep<LatticeIterInterface<Int> > 
-1120 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
-     template class CountedPtr<LatticeIterInterface<uInt> > 
-     template class CountedConstPtr<LatticeIterInterface<uInt> > 
-     template class SimpleCountedPtr<LatticeIterInterface<uInt> > 
-     template class SimpleCountedConstPtr<LatticeIterInterface<uInt> > 
-     template class PtrRep<LatticeIterInterface<uInt> > 
-1130 casa/Utilities/CountedPtr.cc lattices/Lattices/TempLattice.h 
-     template class CountedPtr<TempLattice<Float> > 
-     template class CountedConstPtr<TempLattice<Float> > 
-     template class SimpleCountedPtr<TempLattice<Float> > 
-     template class SimpleCountedConstPtr<TempLattice<Float> > 
-     template class PtrRep<TempLattice<Float> > 
-1140 casa/Utilities/CountedPtr.cc lattices/Lattices/LELInterface.h 
+1020 casa/Utilities/CountedPtr.cc lattices/Lattices/LELInterface.h 
      template class CountedConstPtr<LELInterface<Float> > 
      template class CountedPtr<LELInterface<Float> > 
      template class PtrRep<LELInterface<Float> > 
@@ -254,15 +65,101 @@
      template class PtrRep<LELInterface<Bool> > 
      template class SimpleCountedConstPtr<LELInterface<Bool> > 
      template class SimpleCountedPtr<LELInterface<Bool> > 
+1030 casa/Utilities/CountedPtr.cc lattices/Lattices/LELLattCoordBase.h 
+     template class CountedConstPtr<LELLattCoordBase> 
+     template class CountedPtr<LELLattCoordBase> 
+     template class PtrRep<LELLattCoordBase> 
+     template class SimpleCountedConstPtr<LELLattCoordBase> 
+     template class SimpleCountedPtr<LELLattCoordBase> 
+1040 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<Float> > 
+     template class CountedConstPtr<Lattice<Float> > 
+     template class SimpleCountedPtr<Lattice<Float> > 
+     template class SimpleCountedConstPtr<Lattice<Float> > 
+     template class PtrRep<Lattice<Float> > 
+1050 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<Int> > 
+     template class CountedConstPtr<Lattice<Int> > 
+     template class SimpleCountedPtr<Lattice<Int> > 
+     template class SimpleCountedConstPtr<Lattice<Int> > 
+     template class PtrRep<Lattice<Int> > 
+1060 casa/Utilities/CountedPtr.cc lattices/Lattices/Lattice.h 
+     template class CountedPtr<Lattice<uInt> > 
+     template class CountedConstPtr<Lattice<uInt> > 
+     template class SimpleCountedPtr<Lattice<uInt> > 
+     template class SimpleCountedConstPtr<Lattice<uInt> > 
+     template class PtrRep<Lattice<uInt> > 
+1070 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     = casa/BasicSL/Complex.h 
+     template class CountedPtr<LatticeIterInterface<Complex> > 
+     template class CountedConstPtr<LatticeIterInterface<Complex> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Complex> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Complex> > 
+     template class PtrRep<LatticeIterInterface<Complex> > 
+1080 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     = casa/BasicSL/Complex.h 
+     template class CountedPtr<LatticeIterInterface<DComplex> > 
+     template class CountedConstPtr<LatticeIterInterface<DComplex> > 
+     template class SimpleCountedPtr<LatticeIterInterface<DComplex> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<DComplex> > 
+     template class PtrRep<LatticeIterInterface<DComplex> > 
+1090 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Bool> > 
+     template class CountedConstPtr<LatticeIterInterface<Bool> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Bool> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Bool> > 
+     template class PtrRep<LatticeIterInterface<Bool> > 
+1100 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Double> > 
+     template class CountedConstPtr<LatticeIterInterface<Double> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Double> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Double> > 
+     template class PtrRep<LatticeIterInterface<Double> > 
+1110 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Float> > 
+     template class CountedConstPtr<LatticeIterInterface<Float> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Float> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Float> > 
+     template class PtrRep<LatticeIterInterface<Float> > 
+1120 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<Int> > 
+     template class CountedConstPtr<LatticeIterInterface<Int> > 
+     template class SimpleCountedPtr<LatticeIterInterface<Int> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<Int> > 
+     template class PtrRep<LatticeIterInterface<Int> > 
+1130 casa/Utilities/CountedPtr.cc lattices/Lattices/LatticeIterInterface.h 
+     template class CountedPtr<LatticeIterInterface<uInt> > 
+     template class CountedConstPtr<LatticeIterInterface<uInt> > 
+     template class SimpleCountedPtr<LatticeIterInterface<uInt> > 
+     template class SimpleCountedConstPtr<LatticeIterInterface<uInt> > 
+     template class PtrRep<LatticeIterInterface<uInt> > 
+1140 casa/Utilities/CountedPtr.cc lattices/Lattices/TempLattice.h 
+     template class CountedPtr<TempLattice<Float> > 
+     template class CountedConstPtr<TempLattice<Float> > 
+     template class SimpleCountedPtr<TempLattice<Float> > 
+     template class SimpleCountedConstPtr<TempLattice<Float> > 
+     template class PtrRep<TempLattice<Float> > 
 1000 casa/Utilities/PtrHolder.cc 
-     = lattices/Lattices/LatticeIterator.h 
-     template class PtrHolder<LatticeIterator<Bool> > 
-1010 casa/Utilities/PtrHolder.cc 
-     = lattices/Lattices/LatticeIterator.h 
-     template class PtrHolder<LatticeIterator<Float> > 
-1020 casa/Utilities/PtrHolder.cc 
      = lattices/Lattices/LCRegionSingle.h 
      template class PtrHolder<LCRegionSingle> 
+1010 casa/Utilities/PtrHolder.cc 
+     = lattices/Lattices/LatticeIterator.h 
+     template class PtrHolder<LatticeIterator<Bool> > 
+1020 casa/Utilities/PtrHolder.cc 
+     = lattices/Lattices/LatticeIterator.h 
+     template class PtrHolder<LatticeIterator<Float> > 
+1000 lattices/Lattices/ArrayLattice.cc casa/BasicSL/Complex.h 
+     template class ArrayLattice<Complex> 
+     template class ArrayLattice<DComplex> 
+1010 lattices/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Bool> 
+1020 lattices/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Float> 
+     template class ArrayLattice<Double> 
+1030 lattices/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<Int> 
+1040 lattices/Lattices/ArrayLattice.cc 
+     template class ArrayLattice<uInt> 
 1000 lattices/Lattices/ExtendLattice.cc 
      = casa/BasicSL/Complex.h 
      template class ExtendLattice<Float> 
@@ -347,6 +244,19 @@
      template class LELUnary<Double> 
      template class LELUnary<Complex> 
      template class LELUnary<DComplex> 
+1000 lattices/Lattices/Lattice.cc casa/BasicSL/Complex.h 
+     template class Lattice<Complex> 
+     template class Lattice<DComplex> 
+1010 lattices/Lattices/Lattice.cc 
+     template class Lattice<Bool> 
+1020 lattices/Lattices/Lattice.cc 
+     template class Lattice<Double> 
+1030 lattices/Lattices/Lattice.cc 
+     template class Lattice<Float> 
+1040 lattices/Lattices/Lattice.cc 
+     template class Lattice<Int> 
+1050 lattices/Lattices/Lattice.cc 
+     template class Lattice<uInt> 
 1000 lattices/Lattices/LatticeApply.cc 
      = lattices/Lattices/LineCollapser.cc 
      = lattices/Lattices/TiledCollapser.cc 
@@ -360,7 +270,8 @@
      template class LatticeCache<Complex> 
 1010 lattices/Lattices/LatticeCache.cc 
      template class LatticeCache<Float> 
-1000 lattices/Lattices/LatticeCleaner.cc casa/BasicSL/Complex.h 
+1000 lattices/Lattices/LatticeCleaner.cc 
+     = casa/BasicSL/Complex.h 
      template class LatticeCleaner<Float> 
 1000 lattices/Lattices/LatticeConcat.cc 
      template class LatticeConcat<Float> 
@@ -379,6 +290,40 @@
 1000 lattices/Lattices/LatticeHistograms.cc 
      template class LatticeHistograms<Float> 
      template class HistTiledCollapser<Float> 
+1000 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     = casa/BasicSL/Complex.h 
+     template class LatticeIterator<Complex> 
+     template class RO_LatticeIterator<Complex> 
+     template class LatticeIterInterface<Complex> 
+     template class LatticeIterator<DComplex> 
+     template class RO_LatticeIterator<DComplex> 
+     template class LatticeIterInterface<DComplex> 
+1010 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Bool> 
+     template class RO_LatticeIterator<Bool> 
+     template class LatticeIterInterface<Bool> 
+1020 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Double> 
+     template class RO_LatticeIterator<Double> 
+     template class LatticeIterInterface<Double> 
+1030 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Float> 
+     template class RO_LatticeIterator<Float> 
+     template class LatticeIterInterface<Float> 
+1040 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<Int> 
+     template class RO_LatticeIterator<Int> 
+     template class LatticeIterInterface<Int> 
+1050 lattices/Lattices/LatticeIterator.cc 
+     = lattices/Lattices/LatticeIterInterface.cc 
+     template class LatticeIterator<uInt> 
+     template class RO_LatticeIterator<uInt> 
+     template class LatticeIterInterface<uInt> 
 1000 lattices/Lattices/LatticeSlice1D.cc 
      template class LatticeSlice1D<Float> 
 1000 lattices/Lattices/LatticeStatistics.cc 
@@ -421,6 +366,29 @@
      template class RO_MaskedLatticeIterator<Complex> 
      template class RO_MaskedLatticeIterator<DComplex> 
      template class RO_MaskedLatticeIterator<Bool> 
+1000 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     = casa/BasicSL/Complex.h 
+     template class PagedArray<Complex> 
+     template class PagedArrIter<Complex> 
+1010 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     = casa/BasicSL/Complex.h 
+     template class PagedArray<DComplex> 
+     template class PagedArrIter<DComplex> 
+1020 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     template class PagedArray<Bool> 
+     template class PagedArrIter<Bool> 
+1030 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     template class PagedArray<Double> 
+     template class PagedArrIter<Double> 
+1040 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     template class PagedArray<Float> 
+     template class PagedArrIter<Float> 
+1050 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     template class PagedArray<Int> 
+     template class PagedArrIter<Int> 
+1060 lattices/Lattices/PagedArray.cc lattices/Lattices/PagedArrIter.cc 
+     template class PagedArray<uInt> 
+     template class PagedArrIter<uInt> 
 1000 lattices/Lattices/RebinLattice.cc 
      = casa/BasicSL/Complex.h 
      template class RebinLattice<Float> 
@@ -436,3 +404,30 @@
      template class SubLattice<Complex> 
      template class SubLattice<DComplex> 
      template class SubLattice<Bool> 
+1000 lattices/Lattices/TempLattice.cc 
+     = casa/BasicSL/Complex.h 
+     template class TempLattice<Complex> 
+1010 lattices/Lattices/TempLattice.cc 
+     = casa/Utilities/CountedPtr.cc 
+     = lattices/Lattices/Lattice.h 
+     template class TempLattice<Bool> 
+     template class CountedConstPtr<Lattice<Bool> > 
+     template class CountedPtr<Lattice<Bool> > 
+     template class PtrRep<Lattice<Bool> > 
+     template class SimpleCountedConstPtr<Lattice<Bool> > 
+     template class SimpleCountedPtr<Lattice<Bool> > 
+1020 lattices/Lattices/TempLattice.cc 
+     = casa/Utilities/CountedPtr.cc 
+     = lattices/Lattices/Lattice.h 
+     template class TempLattice<Double> 
+     template class CountedConstPtr<Lattice<Double> > 
+     template class CountedPtr<Lattice<Double> > 
+     template class PtrRep<Lattice<Double> > 
+     template class SimpleCountedConstPtr<Lattice<Double> > 
+     template class SimpleCountedPtr<Lattice<Double> > 
+1030 lattices/Lattices/TempLattice.cc 
+     template class TempLattice<Float> 
+1040 lattices/Lattices/TempLattice.cc 
+     template class TempLattice<Int> 
+1050 lattices/Lattices/TempLattice.cc 
+     template class TempLattice<uInt> 

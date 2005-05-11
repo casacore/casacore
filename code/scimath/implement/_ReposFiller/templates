@@ -282,43 +282,6 @@
      template class Functional<Vector<AutoDiffA<Double> >, AutoDiffA<Double> > 
 1180 casa/BasicMath/Functional.cc scimath/Mathematics/AutoDiffA.h 
      template class Functional<Vector<AutoDiffA<Float> >, AutoDiffA<Float> > 
-1000 casa/Containers/Block.h casa/Arrays/Vector.h 
-     = scimath/Mathematics/SquareMatrix.h 
-     template class Block<Vector<SquareMatrix<Complex, 2> > > 
-1010 casa/Containers/Block.h casa/Arrays/Vector.h 
-     = scimath/Mathematics/SquareMatrix.h 
-     template class Block<Vector<SquareMatrix<Complex, 4> > > 
-1020 casa/Containers/Block.h casa/Arrays/Vector.h 
-     = scimath/Mathematics/SquareMatrix.h 
-     template class Block<Vector<SquareMatrix<Float, 2> > > 
-1030 casa/Containers/Block.h scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<AutoDiff<Complex> > 
-1040 casa/Containers/Block.h scimath/Mathematics/AutoDiff.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<AutoDiff<DComplex> > 
-1050 casa/Containers/Block.h scimath/Mathematics/AutoDiff.h 
-     template class Block<AutoDiff<Double> > 
-1060 casa/Containers/Block.h scimath/Mathematics/AutoDiff.h 
-     template class Block<AutoDiff<Float> > 
-1070 casa/Containers/Block.h scimath/Mathematics/AutoDiffA.h 
-     template class Block<AutoDiffA<Double> > 
-1080 casa/Containers/Block.h scimath/Mathematics/AutoDiffA.h 
-     template class Block<AutoDiffA<Float> > 
-1090 casa/Containers/Block.h scimath/Mathematics/RigidVector.h 
-     template class Block<RigidVector<Double, 3> > 
-1100 casa/Containers/Block.h scimath/Mathematics/SquareMatrix.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<SquareMatrix<Complex, 2> > 
-1110 casa/Containers/Block.h scimath/Mathematics/SquareMatrix.h 
-     = casa/BasicSL/Complex.h 
-     template class Block<SquareMatrix<Complex, 4> > 
-1120 casa/Containers/Block.h scimath/Mathematics/SquareMatrix.h 
-     template class Block<SquareMatrix<Float, 2> > 
-1130 casa/Containers/Block.h scimath/Mathematics/SquareMatrix.h 
-     template class Block<SquareMatrix<Float, 4> > 
-1140 casa/Containers/Block.h scimath/Mathematics/StatAcc.h 
-     template class Block<StatAcc<Double> > 
 1000 casa/Containers/Link.cc casa/Containers/OrderedPair.h 
      = casa/BasicSL/String.h scimath/Functionals/AbstractFunctionFactory.h 
      template class Link<OrderedPair<String, OrderedPair<FunctionFactory<Double>*, Bool> > > 
@@ -549,60 +512,60 @@
 1380 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
      template void objcopy(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt, uInt, uInt) 
 1390 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
-     template void objset(RigidVector<Double, 3> *, RigidVector<Double, 3>, uInt) 
+     template void objmove(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
 1400 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
+     template void objset(RigidVector<Double, 3> *, RigidVector<Double, 3>, uInt) 
+1410 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h 
      template void objset(RigidVector<Double, 3> *, RigidVector<Double, 3>, uInt, uInt) 
-1410 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     = casa/BasicSL/Complex.h 
-     template void objcopy(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
 1420 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objcopy(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt, uInt, uInt) 
+     template void objcopy(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
 1430 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objcopy(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4> const *, uInt) 
+     template void objcopy(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt, uInt, uInt) 
 1440 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objcopy(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4> const *, uInt, uInt, uInt) 
+     template void objcopy(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4> const *, uInt) 
 1450 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objset(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2>, uInt) 
+     template void objcopy(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4> const *, uInt, uInt, uInt) 
 1460 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objset(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2>, uInt, uInt) 
+     template void objmove(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
 1470 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objset(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4>, uInt) 
+     template void objset(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2>, uInt) 
 1480 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
-     template void objset(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4>, uInt, uInt) 
+     template void objset(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2>, uInt, uInt) 
 1490 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objcopy(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2> const *, uInt) 
-1500 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objcopy(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2> const *, uInt, uInt, uInt) 
-1510 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objcopy(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4> const *, uInt) 
-1520 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objcopy(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4> const *, uInt, uInt, uInt) 
-1530 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objset(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2>, uInt) 
-1540 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objset(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2>, uInt, uInt) 
-1550 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objset(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4>, uInt) 
-1560 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
-     template void objset(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4>, uInt, uInt) 
-1570 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
-     template void objcopy(StatAcc<Double> *, StatAcc<Double> const *, uInt) 
-1580 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
-     template void objmove(StatAcc<Double> *, StatAcc<Double> const *, uInt) 
-1590 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
-     template void objset(StatAcc<Double> *, StatAcc<Double>, uInt) 
-1600 casa/Utilities/Copy.cc scimath/Mathematics/RigidVector.h
-     template void objmove(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
-1610 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h
      = casa/BasicSL/Complex.h 
-     template void objmove(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
+     template void objset(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4>, uInt) 
+1500 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     = casa/BasicSL/Complex.h 
+     template void objset(SquareMatrix<Complex, 4> *, SquareMatrix<Complex, 4>, uInt, uInt) 
+1510 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objcopy(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2> const *, uInt) 
+1520 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objcopy(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2> const *, uInt, uInt, uInt) 
+1530 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objcopy(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4> const *, uInt) 
+1540 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objcopy(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4> const *, uInt, uInt, uInt) 
+1550 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objset(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2>, uInt) 
+1560 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objset(SquareMatrix<Float, 2> *, SquareMatrix<Float, 2>, uInt, uInt) 
+1570 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objset(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4>, uInt) 
+1580 casa/Utilities/Copy.cc scimath/Mathematics/SquareMatrix.h 
+     template void objset(SquareMatrix<Float, 4> *, SquareMatrix<Float, 4>, uInt, uInt) 
+1590 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
+     template void objcopy(StatAcc<Double> *, StatAcc<Double> const *, uInt) 
+1600 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
+     template void objmove(StatAcc<Double> *, StatAcc<Double> const *, uInt) 
+1610 casa/Utilities/Copy.cc scimath/Mathematics/StatAcc.h 
+     template void objset(StatAcc<Double> *, StatAcc<Double>, uInt) 
 1000 casa/Utilities/CountedPtr.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/Containers/Block.h 
@@ -868,8 +831,8 @@
 1000 scimath/Fitting/LSQFit2.cc 
      = algorithm 
      #namespace
-     #ifndef AIPS_INTELCC
-     template casa::Double *swap_ranges<casa::Double *, casa::Double *>(casa::Double *, casa::Double *, casa::Double *) 
+     #ifndef AIPS_INTELCC 
+       template casa::Double *swap_ranges<casa::Double *, casa::Double *>(casa::Double *, casa::Double *, casa::Double *) 
      #endif 
 1010 scimath/Fitting/LSQFit2.cc 
      = casa/Arrays/VectorSTLIterator.h 
@@ -1315,15 +1278,15 @@
      template class CompiledFunction<AutoDiff<Double> > 
      template class CompiledFunction<AutoDiff<Float> > 
 1030 scimath/Functionals/CompiledFunction.cc 
-     = scimath/Mathematics/AutoDiffA.h 
-     = scimath/Mathematics/AutoDiffMath.h 
-     template class CompiledFunction<AutoDiffA<Double> > 
-     template class CompiledFunction<AutoDiffA<Float> > 
-1040 scimath/Functionals/CompiledFunction.cc 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template class CompiledFunction<Double> 
      template class CompiledFunction<Float> 
+1040 scimath/Functionals/CompiledFunction.cc 
+     = scimath/Mathematics/AutoDiffA.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class CompiledFunction<AutoDiffA<Double> > 
+     template class CompiledFunction<AutoDiffA<Float> > 
 1000 scimath/Functionals/CompiledParam.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 

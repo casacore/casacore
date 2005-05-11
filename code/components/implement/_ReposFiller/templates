@@ -19,20 +19,17 @@
 1010 casa/Arrays/Vector.cc 
      = components/ComponentModels/SkyComponent.h 
      template class Vector<SkyComponent> 
-1000 casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
-     = components/ComponentModels/SkyComponent.h 
-     template void objcopy(SkyComponent *, SkyComponent const *, uInt, uInt, uInt) 
-     template void objset(SkyComponent *, SkyComponent, uInt, uInt) 
-1010 casa/Containers/Block.h components/ComponentModels/SkyComponent.h 
-     template class Block<SkyComponent> 
 1000 casa/Utilities/Copy.cc 
      = components/ComponentModels/Flux.h 
      template void objcopy(Flux<Double> *, Flux<Double> const *, uInt) 
      template void objcopy(Flux<Double> *, Flux<Double> const *, uInt, uInt, uInt) 
      template void objset(Flux<Double> *, Flux<Double>, uInt) 
      template void objset(Flux<Double> *, Flux<Double>, uInt, uInt) 
-1010 casa/Utilities/Copy.cc components/ComponentModels/SkyComponent.h 
+1010 casa/Utilities/Copy.cc 
+     = components/ComponentModels/SkyComponent.h 
+     template void objcopy(SkyComponent *, SkyComponent const *, uInt, uInt, uInt) 
+     template void objset(SkyComponent *, SkyComponent, uInt, uInt) 
+1020 casa/Utilities/Copy.cc components/ComponentModels/SkyComponent.h 
      template void objcopy(SkyComponent *, SkyComponent const *, uInt) 
      template void objmove(SkyComponent *, SkyComponent const *, uInt) 
      template void objset(SkyComponent *, SkyComponent, uInt) 
