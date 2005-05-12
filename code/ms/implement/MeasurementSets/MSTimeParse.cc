@@ -118,15 +118,11 @@ const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
 {
     static const MEpoch *daytime = 0x0;
 
-    uInt year = 0, month = 0;
-
-    Vector<Quantity> t(6);
-    t[0] = Quantity(year, "year"); 
-    t[1] = Quantity(month, "month"); 
-    t[2] = Quantity(day, "day"); 
-    t[3] = Quantity(hour, "hour"); 
-    t[4] = Quantity(minute, "minute"); 
-    t[5] = Quantity(second+(millisec*0.001), "second"); 
+    Vector<Quantity> t(4);
+    t[0] = Quantity(day, "day"); 
+    t[1] = Quantity(hour, "hour"); 
+    t[2] = Quantity(minute, "minute"); 
+    t[3] = Quantity(second+(millisec*0.001), "second"); 
 
     return (daytime = new MEpoch(MVEpoch(t)));
 }
