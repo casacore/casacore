@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 
 // <summary>
-// Class to hold values from UV dist grammar parser
+// Class to hold values from time grammar parser
 // </summary>
 
 // <use visibility=local>
@@ -50,7 +50,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <etymology>
-// MSTimeParse is the class used to parse a UV dist command.
+// MSTimeParse is the class used to parse a time command.
 // </etymology>
 
 // <synopsis>
