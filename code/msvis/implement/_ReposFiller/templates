@@ -10,30 +10,6 @@
      template class Vector<CStokesVector> 
 1010 casa/Arrays/Vector.cc msvis/MSVis/StokesVector.h 
      template class Vector<StokesVector> 
-1000 casa/Utilities/Copy.cc 
-     = msvis/MSVis/StokesVector.h 
-     = scimath/Mathematics/RigidVector.h 
-     template void objmove(StokesVector *, StokesVector const *, uInt) 
-     template void objmove(CStokesVector *, CStokesVector const *, uInt) 
-     template void objmove(RigidVector<Double, 3> *, RigidVector<Double, 3> const *, uInt) 
-     template void objmove(SquareMatrix<Complex, 2> *, SquareMatrix<Complex, 2> const *, uInt) 
-1010 casa/Utilities/Copy.cc 
-     = msvis/MSVis/VisBuffer.h 
-     template void objset(VisBuffer *, VisBuffer, uInt) 
-     template void objcopy(VisBuffer *, VisBuffer const *, uInt) 
-     template void objmove(VisBuffer *, VisBuffer const *, uInt) 
-1020 casa/Utilities/Copy.cc msvis/MSVis/StokesVector.h 
-     template void objcopy(StokesVector *, StokesVector const *, uInt) 
-     template void objcopy(CStokesVector *, CStokesVector const *, uInt) 
-1030 casa/Utilities/Copy.cc msvis/MSVis/StokesVector.h 
-     template void objcopy(StokesVector *, StokesVector const *, uInt, uInt, uInt) 
-     template void objcopy(CStokesVector *, CStokesVector const *, uInt, uInt, uInt) 
-1040 casa/Utilities/Copy.cc msvis/MSVis/StokesVector.h 
-     template void objset(StokesVector *, StokesVector, uInt) 
-     template void objset(CStokesVector *, CStokesVector, uInt) 
-1050 casa/Utilities/Copy.cc msvis/MSVis/StokesVector.h 
-     template void objset(StokesVector *, StokesVector, uInt, uInt) 
-     template void objset(CStokesVector *, CStokesVector, uInt, uInt) 
 1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = msvis/MSVis/StokesVector.h 
      template class CountedPtr<Block<CStokesVector> > 
