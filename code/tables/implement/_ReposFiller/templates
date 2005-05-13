@@ -31,9 +31,6 @@
 1010 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Slicer.h 
      template class MaskedArray<Slicer> 
-1020 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/Vector.h 
-     template class MaskedArray<Vector<Float> > 
 1030 casa/Arrays/MaskedArray.cc 
      = tables/TablePlot/BasePlot.h 
      template class MaskedArray<BasePlot<Float> > 
@@ -55,9 +52,6 @@
 1010 casa/Arrays/Vector.cc 
      = casa/Arrays/Slicer.h 
      template class Vector<Slicer> 
-1020 casa/Arrays/Vector.cc 
-     = casa/Arrays/Vector.h 
-     template class Vector<Vector<Float> > 
 1030 casa/Arrays/Vector.cc 
      = tables/TablePlot/BasePlot.h 
      template class Vector<BasePlot<Float> > 
@@ -111,73 +105,6 @@
      template Int binarySearch(Bool &, ROScalarColumn<Int> const &, Int const &, uInt, Int) 
 1000 casa/Utilities/COWPtr.cc tables/Tables/TableRecordRep.h 
      template class COWPtr<TableRecordRep> 
-1000 casa/Utilities/Copy.cc 
-     = casa/Arrays/IPosition.h 
-     template void objcopy(IPosition *, IPosition const *, uInt) 
-     template void objcopy(IPosition *, IPosition const *, uInt, uInt, uInt) 
-     template void objmove(IPosition *, IPosition const *, uInt) 
-     template void objset(IPosition *, IPosition, uInt) 
-     template void objset(IPosition *, IPosition, uInt, uInt) 
-1010 casa/Utilities/Copy.cc 
-     = casa/Arrays/Slicer.h 
-     template void objcopy(Slicer *, Slicer const *, uInt) 
-     template void objcopy(Slicer *, Slicer const *, uInt, uInt, uInt) 
-     template void objmove(Slicer *, Slicer const *, uInt) 
-     template void objset(Slicer *, Slicer, uInt) 
-     template void objset(Slicer *, Slicer, uInt, uInt) 
-1020 casa/Utilities/Copy.cc 
-     = casa/Arrays/Vector.h 
-     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt) 
-     template void objcopy(Vector<Float> *, Vector<Float> const *, uInt, uInt, uInt) 
-     template void objmove(Vector<Float> *, Vector<Float> const *, uInt) 
-     template void objset(Vector<Float> *, Vector<Float>, uInt) 
-     template void objset(Vector<Float> *, Vector<Float>, uInt, uInt) 
-1030 casa/Utilities/Copy.cc 
-     = tables/TablePlot/BasePlot.h 
-     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
-     template void objcopy(BasePlot<Float> *, BasePlot<Float> const *, uInt, uInt, uInt) 
-     template void objmove(BasePlot<Float> *, BasePlot<Float> const *, uInt) 
-     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt) 
-     template void objset(BasePlot<Float>*, BasePlot<Float>, uInt, uInt) 
-1040 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprNode.h 
-     template void objcopy(TableExprNode *, TableExprNode const *, uInt) 
-     template void objmove(TableExprNode *, TableExprNode const *, uInt) 
-     template void objset(TableExprNode *, TableExprNode, uInt) 
-1050 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprNode.h 
-     template void objcopy(TableExprNode *, TableExprNode const *, uInt, uInt, uInt) 
-     template void objset(TableExprNode *, TableExprNode, uInt, uInt) 
-1060 casa/Utilities/Copy.cc 
-     = tables/Tables/ExprRange.h 
-     template void objcopy(TableExprRange *, TableExprRange const *, uInt) 
-     template void objmove(TableExprRange *, TableExprRange const *, uInt) 
-     template void objset(TableExprRange *, TableExprRange, uInt) 
-1070 casa/Utilities/Copy.cc 
-     = tables/Tables/Table.h 
-     template void objcopy(Table *, Table const *, uInt) 
-     template void objcopy(Table *, Table const *, uInt, uInt, uInt) 
-     template void objmove(Table *, Table const *, uInt) 
-     template void objset(Table *, Table, uInt) 
-     template void objset(Table *, Table, uInt, uInt) 
-1080 casa/Utilities/Copy.cc 
-     = tables/Tables/TableIter.h 
-     template void objcopy(TableIterator *, TableIterator const *, uInt) 
-     template void objcopy(TableIterator *, TableIterator const *, uInt, uInt, uInt) 
-     template void objmove(TableIterator *, TableIterator const *, uInt) 
-     template void objset(TableIterator *, TableIterator, uInt) 
-     template void objset(TableIterator *, TableIterator, uInt, uInt) 
-1090 casa/Utilities/Copy.cc 
-     = tables/Tables/TableRecord.h 
-     template void objcopy(TableRecord *, TableRecord const *, uInt) 
-     template void objcopy(TableRecord *, TableRecord const *, uInt, uInt, uInt) 
-     template void objmove(TableRecord *, TableRecord const *, uInt) 
-     template void objset(TableRecord *, TableRecord, uInt) 
-     template void objset(TableRecord *, TableRecord, uInt, uInt) 
-1100 casa/Utilities/Copy.cc 
-     = tables/Tables/TableRow.h 
-     template void objcopy(ROTableRow **, ROTableRow * const *, uInt) 
-     template void objcopy(ROTableRow *, ROTableRow const *, uInt) 
 1000 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = casa/Arrays/IPosition.h 
@@ -194,14 +121,6 @@
      template class PtrRep<Block<Slicer> > 
      template class SimpleCountedConstPtr<Block<Slicer> > 
      template class SimpleCountedPtr<Block<Slicer> > 
-1020 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
-     = casa/Arrays/Vector.h 
-     template class CountedConstPtr<Block<Vector<Float> > > 
-     template class CountedPtr<Block<Vector<Float> > > 
-     template class PtrRep<Block<Vector<Float> > > 
-     template class SimpleCountedConstPtr<Block<Vector<Float> > > 
-     template class SimpleCountedPtr<Block<Vector<Float> > > 
 1030 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/TablePlot/BasePlot.h 
@@ -262,17 +181,12 @@
      = tables/Tables/TableParse.h 
      template uInt Register(ListNotice<TableParse> const *) 
 1000 tables/LogTables/LoggerHolder.h 
-     = casa/Utilities/CountedPtr.cc casa/Utilities/Copy.cc 
+     = casa/Utilities/CountedPtr.cc 
      template class PtrRep<LoggerHolderRep> 
      template class CountedPtr<LoggerHolderRep> 
      template class CountedConstPtr<LoggerHolderRep> 
      template class SimpleCountedPtr<LoggerHolderRep> 
      template class SimpleCountedConstPtr<LoggerHolderRep> 
-     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt) 
-     template void objcopy(LoggerHolder*, LoggerHolder const *, uInt, uInt, uInt) 
-     template void objset(LoggerHolder*, LoggerHolder, uInt) 
-     template void objset(LoggerHolder*, LoggerHolder, uInt, uInt) 
-     template void objmove(LoggerHolder*, LoggerHolder const *, uInt) 
 1000 tables/TablePlot/BasePlot.cc 
      template class BasePlot<Float> 
 1000 tables/TablePlot/TPPlotter.cc 
