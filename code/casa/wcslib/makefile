@@ -117,6 +117,14 @@ $(WCSLIB).$(SFXSTAT)(lin.o) : $(CODEDIR)/lin.h
 
 $(WCSLIB).$(SFXSTAT)(log.o) : $(CODEDIR)/log.h
 
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/prj.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/spc.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/wcs.h
+
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/wcstrig.h
@@ -165,10 +173,4 @@ $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcshdr.h
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
 
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/cel.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/lin.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/prj.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/spc.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/sph.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/spx.h
-$(WCSLIB).$(SFXSTAT)(pgwcsl.o)  : $(CODEDIR)/wcs.h
+$(WCSLIB).$(SFXSTAT)(wcsunits.o) : $(CODEDIR)/wcsunits.h
