@@ -9,22 +9,6 @@
      = casa/BasicSL/String.h 
      template uInt Register(OrderedMapNotice<String, Double> const *) 
 1000 fits/FITS/hdu.cc 
-     template class ImageExtension<FitsLong> 
-1010 fits/FITS/hdu.cc 
-     template class PrimaryArray<Double> 
-1020 fits/FITS/hdu.cc 
-     template class PrimaryArray<FitsLong> 
-1030 fits/FITS/hdu.cc 
-     template class PrimaryArray<Float> 
-1040 fits/FITS/hdu.cc 
-     template class PrimaryArray<Short> 
-1050 fits/FITS/hdu.cc 
-     template class PrimaryArray<uChar> 
-1060 fits/FITS/hdu.cc 
      template class PrimaryGroup<Double> 
-1070 fits/FITS/hdu.cc 
-     template class PrimaryGroup<FitsLong> 
-1080 fits/FITS/hdu.cc 
-     template class PrimaryGroup<Float> 
-1090 fits/FITS/hdu.cc 
+1010 fits/FITS/hdu.cc 
      template class PrimaryGroup<uChar> 
