@@ -651,32 +651,32 @@ int spctyp(
    /* Validate the S-type spectral variable. */
    if (strncmp(ctype, "FREQ", 4) == 0) {
       strcpy(sname_t, "Frequency");
-      strcpy(units_t, "(Hz)");
+      strcpy(units_t, "Hz");
       ptype_t = 'F';
    } else if (strncmp(ctype, "AFRQ", 4) == 0) {
       strcpy(sname_t, "Angular frequency");
-      strcpy(units_t, "(deg/s)");
+      strcpy(units_t, "deg/s");
       ptype_t = 'F';
    } else if (strncmp(ctype, "ENER", 4) == 0) {
       strcpy(sname_t, "Photon energy");
-      strcpy(units_t, "(J)");
+      strcpy(units_t, "J");
       ptype_t = 'F';
    } else if (strncmp(ctype, "WAVN", 4) == 0) {
       strcpy(sname_t, "Wavenumber");
-      strcpy(units_t, "(1/m)");
+      strcpy(units_t, "1/m");
       ptype_t = 'F';
    } else if (strncmp(ctype, "VRAD", 4) == 0) {
       strcpy(sname_t, "Radio velocity");
-      strcpy(units_t, "(m/s)");
+      strcpy(units_t, "m/s");
       ptype_t = 'F';
       restreq_t = 1;
    } else if (strncmp(ctype, "WAVE", 4) == 0) {
       strcpy(sname_t, "Vacuum wavelength");
-      strcpy(units_t, "(m)");
+      strcpy(units_t, "m");
       ptype_t = 'W';
    } else if (strncmp(ctype, "VOPT", 4) == 0) {
       strcpy(sname_t, "Optical velocity");
-      strcpy(units_t, "(m/s)");
+      strcpy(units_t, "m/s");
       ptype_t = 'W';
       restreq_t = 1;
    } else if (strncmp(ctype, "ZOPT", 4) == 0) {
@@ -686,11 +686,11 @@ int spctyp(
       restreq_t = 1;
    } else if (strncmp(ctype, "AWAV", 4) == 0) {
       strcpy(sname_t, "Air wavelength");
-      strcpy(units_t, "(m)");
+      strcpy(units_t, "m");
       ptype_t = 'A';
    } else if (strncmp(ctype, "VELO", 4) == 0) {
       strcpy(sname_t, "Relativistic velocity");
-      strcpy(units_t, "(m/s)");
+      strcpy(units_t, "m/s");
       ptype_t = 'V';
    } else if (strncmp(ctype, "BETA", 4) == 0) {
       strcpy(sname_t, "Velocity ratio (v/c)");

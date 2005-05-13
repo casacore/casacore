@@ -61,7 +61,7 @@
 *
 *   A setup routine, wcsset(), computes intermediate values in the wcsprm
 *   struct from parameters in it that were supplied by the caller.  The
-*   struct always needs to be set up by wcsset() but it need not be called
+*   struct always needs to be set up by wcsset() but this need not be called
 *   explicitly - see the explanation of wcs.flag below.
 *
 *   wcsp2s() and wcss2p() implement the WCS world coordinate transformations.
@@ -73,7 +73,8 @@
 *   pixel coordinate a hybrid routine, wcsmix(), iteratively solves for the
 *   unknown elements.
 *
-*   wcssptr()
+*   wcssptr() translates the spectral axis in a wcsprm struct.  For example, a
+*   'FREQ' axis may be translated into 'ZOPT-F2W' and vice versa.
 *
 *
 *   Default constructor for the wcsprm struct; wcsini()
@@ -581,6 +582,9 @@
 *   invoke wcsset(), either directly or indirectly, to set the derived members
 *   of the wcsprm struct.
 *
+*   wcsset() strips off trailing blanks in all string members and null-fills
+*   the character array.
+*
 *      int flag
 *         This flag must be set to zero whenever any of the following members
 *         of the wcsprm struct are set or modified.  This signals the setup
@@ -1014,14 +1018,14 @@ extern const char *wcs_errmsg[];
 #define wcss2p_errmsg wcs_errmsg
 #define wcsmix_errmsg wcs_errmsg
 
-                                /* Struct used for storing PVi_ma cards.    */
+				/* Struct used for storing PVi_ma cards.    */
 struct pvcard {
    int i;			/* Axis number, as in PVi_ma (1-relative).  */
    int m;			/* Parameter number, ditto  (0-relative).   */
    double value;		/* Parameter value.                         */
 };
 
-                                /* Struct used for storing PSi_ma cards.    */
+				/* Struct used for storing PSi_ma cards.    */
 struct pscard {
    int i;			/* Axis number, as in PSi_ma (1-relative).  */
    int m;			/* Parameter number, ditto  (0-relative).   */
@@ -1140,10 +1144,6 @@ int wcsmix(struct wcsprm *, int, int, const double[], double, int,
            double[], double[], double[], double[], double[]);
 
 int wcssptr(struct wcsprm *, int *, char [9]);
-
-int wcs_allEq(int, int, const double *);
-void wcs_setAll(int, int, double *);
-void wcs_setAli(int, int, int *);
 
 #define wcscopy(alloc, wcssrc, wcsdst) wcssub(alloc, wcssrc, 0, 0, wcsdst)
 

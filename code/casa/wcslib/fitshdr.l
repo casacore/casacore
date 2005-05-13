@@ -68,9 +68,7 @@ STRING	'([^']|'')*'
 UNITSTR \[[-+*/^(). 0-9a-zA-Z]+\]
 
 /* Exclusive start states. */
-%x VALUE
-%x INLINE UNITS COMMENT
-%x ERROR FLUSH
+%x VALUE INLINE UNITS COMMENT ERROR FLUSH
 
 %{
 #include <math.h>
@@ -96,8 +94,10 @@ UNITSTR \[[-+*/^(). 0-9a-zA-Z]+\]
 	  } \
 	}
 
-/* Uncomment the next line to print text as it is matched. */
-/* #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext); */
+#ifdef DEBUG
+  /* Print text as it is matched. */
+  #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext);
+#endif
 
 extern char *yytext;
 
@@ -116,28 +116,27 @@ void fitshdr_nullfill(char cptr[], int len);
 %}
 
 %%
-
 	char *cptr;
 	int  blank, end, j, k, keyno;
 	struct fitskey *kptr;
 	struct fitskeyid *iptr;
-
+	
 	fitshdr_hdr = header;
 	fitshdr_ncards = ncards;
-
+	
 	*nreject = 0;
 	keyno = 0;
-
+	
 	if (keys == 0) {
 	  return 1;
 	}
-
+	
 	/* Allocate memory for the required number of fitskey structs. */
 	/* Note that calloc() initializes allocated memory to zero.    */
 	if (!(kptr = *keys = calloc(ncards, sizeof(struct fitskey)))) {
 	  return 2;
 	}
-
+	
 	/* Initialize keyids[]. */
 	iptr = keyids;
 	for (j = 0; j < nkeyids; j++, iptr++) {
@@ -145,9 +144,11 @@ void fitshdr_nullfill(char cptr[], int len);
 	  iptr->idx[0] = -1;
 	  iptr->idx[1] = -1;
 	}
-
+	
 	blank = 0;
 	end = 0;
+	
+	BEGIN(INITIAL);
 
 ^" "{80} {
 	  /* Rule 001: A completely blank card. */
@@ -229,7 +230,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
 	  }
-
+	
 	  BEGIN(INLINE);
 	}
 
@@ -240,7 +241,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
 	  }
-
+	
 	  BEGIN(INLINE);
 	}
 
@@ -252,7 +253,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
 	  }
-
+	
 	  BEGIN(INLINE);
 	}
 
@@ -264,7 +265,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
 	  }
-
+	
 	  BEGIN(INLINE);
 	}
 
@@ -273,31 +274,31 @@ void fitshdr_nullfill(char cptr[], int len);
 	  kptr->type = 6;
 	  cptr = kptr->keyvalue.s;
 	  strcpy(cptr, yytext+1);
-
+	
 	  /* Squeeze out repeated quotes. */
 	  k = 0;
 	  for (j = 0; j < 68; j++) {
 	    if (k < j) {
 	      cptr[k] = cptr[j];
 	    }
-
+	
 	    if (cptr[j] == '\0') {
 	      if (k) cptr[k-1] = '\0';
 	      break;
 	    } else if (cptr[j] == '\'' && cptr[j+1] == '\'') {
 	      j++;
 	    }
-
+	
 	    k++;
 	  }
-
+	
 	  if (*cptr) {
 	    /* Retain the initial blank in all-blank strings. */
 	    fitshdr_nullfill(cptr+1, 67);
 	  } else {
 	    fitshdr_nullfill(cptr, 68);
 	  }
-
+	
 	  BEGIN(INLINE);
 	}
 
@@ -358,16 +359,16 @@ void fitshdr_nullfill(char cptr[], int len);
 <ERROR>.* {
 	  /* Rule 026. */
 	  kptr->type = -abs(kptr->type);
-
+	
 	  sprintf(kptr->comment, "%.80s", fitshdr_hdr-80);
-
+	
 	  BEGIN(FLUSH);
 	}
 
 <FLUSH>.*\n {
 	  /* Rule 027: Discard the rest of the input line. */
 	  kptr->keyno = ++keyno;
-
+	
 	  /* Do indexing. */
 	  iptr = keyids;
 	  for (j = 0; j < nkeyids; j++, iptr++) {
@@ -375,7 +376,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	    for (k = 0; k < 8; k++, cptr++) {
 	      if (*cptr != '.' && *cptr != kptr->keyword[k]) break;
 	    }
-
+	
 	    if (k == 8) {
 	      /* Found a match. */
 	      iptr->count++;
@@ -384,33 +385,31 @@ void fitshdr_nullfill(char cptr[], int len);
 	      } else {
 	        iptr->idx[1] = keyno-1;
 	      }
-
+	
 	      kptr->keyno = -abs(kptr->keyno);
 	    }
 	  }
-
+	
 	  /* Null-fill the keyword. */
 	  fitshdr_nullfill(kptr->keyword, 8);
-
+	
 	  if (end && (end++ > 1) && !blank) {
 	     kptr->status |= FITSHDR_TRAILER;
 	  }
 	  if (kptr->status) (*nreject)++;
-
+	
 	  kptr++;
 	  blank = 0;
-
+	
 	  BEGIN(INITIAL);
 	}
 
 <<EOF>> {
-	  /* Rule 028: Reset for the next call to fitshdr(). */
-	  BEGIN(INITIAL);
+	  /* Rule unnumbered: End-of-input. */
 	  return 0;
 	}
 
 %%
-
 
 /*--------------------------------------------------------------------------*/
 

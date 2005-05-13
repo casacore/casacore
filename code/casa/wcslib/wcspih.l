@@ -108,8 +108,10 @@ STRING	'([^']|'')*'
 	  } \
 	}
 
-/* Uncomment the next line to print text as it is matched. */
-/* #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext); */
+#ifdef DEBUG
+  /* Print text as it is matched. */
+  #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext);
+#endif
 
 extern char *yytext;
 
@@ -133,7 +135,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	double epoch[27], vsource[27];
 	void *vptr, *wptr;
 	struct wcsprm *wcsp;
-
+	
 	naxis = 0;
 	for (a = 0; a < 27; a++) {
 	  alts[a] = 0;
@@ -143,15 +145,15 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  velref[a]  = 0;
 	  vsource[a] = UNDEFINED;
 	}
-
+	
 	wcspih_hdr = header;
 	wcspih_ncards = ncards;
-
+	
 	hptr = header;
 	*nreject = 0;
 	*nwcs = 0;
 	*wcs  = 0;
-
+	
 	pass = 1;
 	i = j = m = 0;
 	alt = ' ';
@@ -160,13 +162,16 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	altlin = 0;
 	npptr = 0;
 	vptr  = 0;
+	
+	BEGIN(INITIAL);
+
 
 ^NAXIS"   "="  "*{INTEGER} {
 	  /* Rule 001. */
 	  if (pass == 1) {
 	    sscanf(yytext, "NAXIS   = %d", &naxis);
 	  }
-
+	
 	  if (naxis < 0) {
 	    sprintf(errmsg, "Negative value of NAXIS ignored: %d", naxis);
 	    naxis = 0;
@@ -342,7 +347,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 ^EPOCH{ALT}"  " {
 	  /* Rule 023. */
 	  sscanf(yytext, "EPOCH%c", &alt);
-
+	
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_EPOCHa)) {
 	    if (*wcs) {
 	      vptr = epoch;
@@ -350,16 +355,16 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
-
+	
 	    unput(' ');
 	    type = FLOAT;
 	    BEGIN(CCCCCCCa);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "EPOCH keyword may not have an alternate "
 	                    "version code");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -404,7 +409,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 ^VELREF{ALT}" " {
 	  /* Rule 029. */
 	  sscanf(yytext, "VELREF%c", &alt);
-
+	
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_VELREFa)) {
 	    if (*wcs) {
 	      vptr = velref;
@@ -412,16 +417,16 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        vptr = (void *)((int *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
-
+	
 	    unput(' ');
 	    type = INTEGER;
 	    BEGIN(CCCCCCCa);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "VELREF keyword may not have an alternate "
 	                    "version code");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -444,7 +449,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 ^VSOURCE{ALT} {
 	  /* Rule 032. */
 	  sscanf(yytext, "VSOURCE%c", &alt);
-
+	
 	  if (relax & (WCSHDR_all | WCSHDR_VSOURCEa)) {
 	    if (*wcs) {
 	      vptr = vsource;
@@ -452,15 +457,15 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        vptr = (void *)((double *)vptr + alts[alt-'A'+1]);
 	      }
 	    }
-
+	
 	    unput(' ');
 	    type = FLOAT;
 	    BEGIN(CCCCCCCa);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "Deprecated VSOURCEa keyword rejected");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -539,12 +544,12 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_CROTAia)) {
 	    ndx = i - 1;
 	    BEGIN(VALUE);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "CROTAn keyword may not have an alternate "
 	                    "version code");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -571,11 +576,11 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	    alt = ' ';
 	    ndx = -1;
 	    BEGIN(VALUE);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "Defunct PROJPn keyword rejected");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -620,7 +625,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	    if (alt != ' ') {
 	      wcsp += alts[alt-'A'+1];
 	    }
-
+	
 	    ndx = (i-1)*(wcsp->naxis) + j - 1;
 	  }
 	  BEGIN(VALUE);
@@ -650,12 +655,12 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	      ndx = (i-1)*((*wcs)->naxis) + j - 1;
 	    }
 	    BEGIN(VALUE);
-
+	
 	  } else if (relax & WCSHDR_reject) {
 	    sprintf(errmsg, "Defunct form of %si_ja keyword",
 	                     (altlin==1) ? "PC" : "CD");
 	    BEGIN(ERROR);
-
+	
 	  } else {
 	    BEGIN(DISCARD);
 	  }
@@ -739,7 +744,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
-
+	
 	  } else {
 	    if (vptr) {
 	      /* Determine the coordinate representation. */
@@ -749,26 +754,26 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        if (alt >= 'A') {
 	          a = alts[alt-'A'+1];
 	        }
-
+	
 	        wptr = vptr;
 	        if (a) {
 	          voff = (char *)(*wcs+a) - (char *)(*wcs);
 	          wptr = (void *)((char *)vptr + voff);
 	        }
-
+	
 	        /* Apply keyword parameterization. */
 	        if (ndx >= 0) {
 	          wptr = *((int **)wptr) + ndx;
 	        }
-
+	
 	        /* Read the keyvalue. */
 	        sscanf(yytext, "%d", (int *)wptr);
-
+	
 	        if (alt) break;
 	      }
-
+	
 	      BEGIN(COMMENT);
-
+	
 	    } else {
 	      sprintf(errmsg, "Internal parser ERROR, null int pointer");
 	      BEGIN(ERROR);
@@ -787,7 +792,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
-
+	
 	  } else {
 	    if (vptr) {
 	      /* Determine the coordinate representation. */
@@ -797,38 +802,38 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        if (alt >= 'A') {
 	          a = alts[alt-'A'+1];
 	        }
-
+	
 	        wptr = vptr;
 	        if (a) {
 	          voff = (char *)(*wcs+a) - (char *)(*wcs);
 	          wptr = (void *)((char *)vptr + voff);
 	        }
-
+	
 	        /* Apply keyword parameterization. */
 	        if (ndx >= 0) {
 	          wptr = *((double **)wptr) + ndx;
-
+	
 	        } else if (npptr == npv) {
 	          k = (*wcs+a)->npv++;
 	          (*wcs+a)->pv[k].i = i;
 	          (*wcs+a)->pv[k].m = m;
 	          wptr = &((*wcs+a)->pv[k].value);
 	        }
-
+	
 	        /* Read the keyvalue. */
 	        sscanf(yytext, "%lf", (double *)wptr);
-
+	
 	        /* Flag the presence of PCi_ja, or CDi_ja and/or CROTAia. */
 	        if (altlin) {
 	          (*wcs+a)->altlin |= altlin;
 	          altlin = 0;
 	        }
-
+	
 	        if (alt) break;
 	      }
-
+	
 	      BEGIN(COMMENT);
-
+	
 	    } else {
 	      sprintf(errmsg, "Internal parser ERROR, null float pointer");
 	      BEGIN(ERROR);
@@ -847,7 +852,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
-
+	
 	  } else {
 	    if (vptr) {
 	      /* Determine the coordinate representation. */
@@ -857,50 +862,50 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        if (alt >= 'A') {
 	          a = alts[alt-'A'+1];
 	        }
-
+	
 	        wptr = vptr;
 	        if (a) {
 	          voff = (char *)(*wcs+a) - (char *)(*wcs);
 	          wptr = (void *)((char *)vptr + voff);
 	        }
-
+	
 	        /* Apply keyword parameterization. */
 	        if (ndx >= 0) {
 	          wptr = *((char (**)[72])wptr) + ndx;
-
+	
 	        } else if (npptr == nps) {
 	          k = (*wcs+a)->nps++;
 	          (*wcs+a)->ps[k].i = i;
 	          (*wcs+a)->ps[k].m = m;
 	          wptr = &((*wcs+a)->ps[k].value);
 	        }
-
+	
 	        /* Read the keyvalue. */
 	        cptr = (char *)wptr;
 	        strcpy(cptr, yytext+1);
-
+	
 	        /* Squeeze out repeated quotes. */
 	        k = 0;
 	        for (j = 0; j < 72; j++) {
 	          if (k < j) {
 	            cptr[k] = cptr[j];
 	          }
-
+	
 	          if (cptr[j] == '\0') {
 	            if (k) cptr[k-1] = '\0';
 	            break;
 	          } else if (cptr[j] == '\'' && cptr[j+1] == '\'') {
 	            j++;
 	          }
-
+	
 	          k++;
 	        }
-
+	
 	        if (alt) break;
 	      }
-
+	
 	      BEGIN(COMMENT);
-
+	
 	    } else {
 	      sprintf(errmsg, "Internal parser ERROR, null string pointer");
 	      BEGIN(ERROR);
@@ -935,7 +940,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	        strncpy(hptr, wcspih_hdr-80, 80);
 	      }
 	      hptr += 80;
-
+	
 	    } else if (ctrl > 2) {
 	      fprintf(stderr, "%.80s\n  Discarded.\n", wcspih_hdr-80);
 	    }
@@ -954,7 +959,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	      }
 	      hptr += 80;
 	    }
-
+	
 	    if (abs(ctrl) > 1) {
 	      fprintf(stderr, "%.80s\n%4d: %s.\n", wcspih_hdr-80, *nreject,
 	        errmsg);
@@ -974,15 +979,13 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <<EOF>> {
-	  /* Rule 092. Reset for the next call to wcspih(). */
-	  BEGIN(INITIAL);
-
+	  /* Rule unnumbered: End-of-input. */
 	  if (pass == 1) {
 	    if (status = wcspih_inits(alts, npv, nps, nwcs, wcs) ||
 	        *nwcs == 0) {
 	      return status;
 	    }
-
+	
 	    if (abs(ctrl) > 2) {
 	      if (*nwcs == 1) {
 	        fprintf(stderr, "Found one coordinate representation.\n");
@@ -991,33 +994,32 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	          *nwcs);
 	      }
 	    }
-
+	
 	    wcspih_hdr = header;
 	    wcspih_ncards = ncards;
 	    *nreject = 0;
-
+	
 	    pass = 2;
 	    i = j = m = 0;
 	    alt = ' ';
 	    type = -1;
-
+	
 	    yyrestart(yyin);
-
+	
 	  } else {
 	    if (ctrl < 0) {
 	      *hptr = '\0';
 	    } else if (ctrl == 1) {
 	      fprintf(stderr, "%d WCS cards were rejected.\n", *nreject);
 	    }
-
+	
 	    wcspih_final(alts, epoch, velref, vsource, nwcs, wcs);
-
+	
 	    return 0;
 	  }
 	}
 
 %%
-
 
 /*----------------------------------------------------------------------------
 *   Determine the number of coordinate representations (up to 27), the number

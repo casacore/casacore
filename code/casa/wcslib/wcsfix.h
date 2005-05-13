@@ -86,10 +86,6 @@
 *   wcsfix() applies all of the corrections handled by the following specific
 *   functions which may also be invoked separately:
 *
-*      cdeltfix(): Check that CDELTia is non-zero for all non-degenerate axes.
-*                If CDELTia is zero for a degenerate axis, set it to the
-*                default value, 1.0.
-*
 *      datfix(): recast the older DATE-OBS date format in dateobs to year-2000
 *                standard form, and derive mjdobs from it if not already set.
 *                Alternatively, if dateobs isn't set and mjdobs is, then
@@ -108,14 +104,13 @@
 *
 *   Translate a non-standard WCS struct
 *   -----------------------------------
-*   wcsfix() applies all of the corrections handled separately by cdeltfix(),
-*   datfix(), celfix(), spcfix() and cylfix().
+*   wcsfix() applies all of the corrections handled separately by datfix(),
+*   celfix(), spcfix() and cylfix().
 *
 *   Given:
 *      naxis    const int []
 *                        Image axis lengths.  If this array pointer is set to
-*                        zero then neither cdeltfix nor cylfix() will be
-*                        invoked.
+*                        zero then cylfix() will not be invoked.
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -125,39 +120,16 @@
 *   Returned:
 *      stat     int [NWCSFIX]
 *                        Status returns from each of the functions.  Use the
-*                        preprocessor macros defined below (NWCSFIX, CDELTFIX,
-*                        DATFIX, CELFIX, SPCFIX and CYLFIX) to dimension this
-*                        vector and access its elements.  A status value of -2
-*                        is set for functions that were not invoked.
+*                        preprocessor macros defined below (NWCSFIX, DATFIX,
+*                        CELFIX, SPCFIX and CYLFIX) to dimension this vector
+*                        and access its elements.  A status value of -2 is set
+*                        for functions that were not invoked.
 *
 *   Function return value:
 *               int      Status return value:
 *                           0: Success.
 *                           1: One or more of the translation functions
 *                              returned an error.
-*
-*
-*   Check and if possible fix zero-valued CDELTia 
-*   ---------------------------------------------
-*   cdeltfix() checks that CDELTia is non-zero for all non-degenerate axes.
-*   Status 5 is returned if CDELTia is zero for a non-degenerate axis.  If
-*   zero for a degenerate axis (NAXISi == 1) set it to the default value, 1.0.
-*
-*   Given:
-*      naxis    const int []
-*                        Image axis lengths.
-*
-*   Given and returned:
-*      wcs      struct wcsprm*
-*                        Coordinate transformation parameters (refer to the
-*                        prologue of wcs.h).
-*
-*   Function return value:
-*               int      Status return value:
-*                          -1: No change required (not an error).
-*                           0: Success.
-*                           1: Null wcsprm pointer passed.
-*                           5: Invalid parameter value.
 *
 *
 *   Translate DATE-OBS and derive MJD-OBS or vice versa
@@ -204,6 +176,13 @@
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *                           2: Memory allocation failed.
+*                           3: Linear transformation matrix is singular.
+*                           4: Inconsistent or unrecognized coordinate axis
+*                              types.
+*                           5: Invalid parameter value.
+*                           6: Invalid coordinate transformation parameters.
+*                           7: Ill-conditioned coordinate transformation
+*                              parameters.
 *
 *
 *   Translate AIPS-convention spectral types
@@ -223,6 +202,14 @@
 *                          -1: No change required (not an error).
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
+*                           2: Memory allocation failed.
+*                           3: Linear transformation matrix is singular.
+*                           4: Inconsistent or unrecognized coordinate axis
+*                              types.
+*                           5: Invalid parameter value.
+*                           6: Invalid coordinate transformation parameters.
+*                           7: Ill-conditioned coordinate transformation
+*                              parameters.
 *
 *
 *   Fix malformed cylindrical projections
@@ -281,19 +268,17 @@
 extern "C" {
 #endif
 
-#define CDELTFIX 0
-#define DATFIX   1
-#define CELFIX   2
-#define SPCFIX   3
-#define CYLFIX   4
-#define NWCSFIX  5
+#define DATFIX   0
+#define CELFIX   1
+#define SPCFIX   2
+#define CYLFIX   3
+#define NWCSFIX  4
 
 extern const char *wcsfix_errmsg[];
 #define cylfix_errmsg wcsfix_errmsg
 
 
 int wcsfix (const int [], struct wcsprm *, int []);
-int cdeltfix (const int [], struct wcsprm *);
 int datfix (struct wcsprm *);
 int celfix (struct wcsprm *);
 int spcfix (struct wcsprm *);

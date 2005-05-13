@@ -37,6 +37,7 @@
 
 #include "wcsmath.h"
 #include "wcstrig.h"
+#include "wcsunits.h"
 #include "sph.h"
 #include "wcs.h"
 
@@ -64,6 +65,15 @@ const char *wcs_errmsg[] = {
    "Non-separable subimage coordinate system"};
 
 #define signbit(X) ((X) < 0.0 ? 1 : 0)
+
+/* Internal helper functions, not intended for general use. */
+int  wcs_types(struct wcsprm *);
+int  wcs_units(struct wcsprm *);
+void wcs_nullfill(char [], int);
+
+int  wcs_allEq(int, int, const double *);
+void wcs_setAll(int, int, double *);
+void wcs_setAli(int, int, int *);
 
 /*--------------------------------------------------------------------------*/
 
@@ -1202,11 +1212,8 @@ int wcsprt(const struct wcsprm *wcs)
 int wcsset(struct wcsprm *wcs)
 
 {
-   const int  nalias = 2;
-   const char aliases [2][4] = {"NCP", "GLS"};
-
-   char ctypei[72], pcode[4], requir[9], scode[4], stype[5];
-   int i, j, k, m, naxis, *ndx = 0, status, tables;
+   char scode[4], stype[5];
+   int i, j, k, m, naxis, status, tables;
    double lambda, rho;
    double *cd, *pc;
    struct celprm *wcscel = &(wcs->cel);
@@ -1214,10 +1221,207 @@ int wcsset(struct wcsprm *wcs)
    struct spcprm *wcsspc = &(wcs->spc);
 
 
+   /* Determine axis types from CTYPEia. */
+   if (wcs == 0) return 1;
+   if (status = wcs_types(wcs)) {
+      return status;
+   }
+
+   /* Convert to canonical units. */
+   if (status = wcs_units(wcs)) {
+      return status;
+   }
+
+
+   /* Non-linear celestial axes present? */
+   if (wcs->lng >= 0) {
+      celini(wcscel);
+
+      /* CRVALia, LONPOLEa, and LATPOLEa cards. */
+      wcscel->ref[0] = wcs->crval[wcs->lng];
+      wcscel->ref[1] = wcs->crval[wcs->lat];
+      wcscel->ref[2] = wcs->lonpole;
+      wcscel->ref[3] = wcs->latpole;
+
+      /* PVi_ma cards. */
+      for (k = 0; k < wcs->npv; k++) {
+         i = wcs->pv[k].i - 1;
+         m = wcs->pv[k].m;
+
+         if (i == 0) {
+            /* From a PROJPn card. */
+            i = wcs->lat;
+         }
+
+         if (i == wcs->lat) {
+            /* PVi_ma associated with latitude axis. */
+            if (m < 30) {
+               wcsprj->pv[m] = wcs->pv[k].value;
+            }
+
+         } else if (i == wcs->lng) {
+            /* PVi_ma associated with longitude axis. */
+            switch (m) {
+            case 0:
+               wcscel->offset = (wcs->pv[k].value != 0.0);
+               break;
+            case 1:
+               wcscel->phi0   = wcs->pv[k].value;
+               break;
+            case 2:
+               wcscel->theta0 = wcs->pv[k].value;
+               break;
+            case 3:
+               /* If present, overrides the LONPOLEa card. */
+               wcscel->ref[2] = wcs->pv[k].value;
+               break;
+            case 4:
+               /* If present, overrides the LATPOLEa card. */
+               wcscel->ref[3] = wcs->pv[k].value;
+               break;
+            default:
+               return 6;
+               break;
+            }
+         }
+      }
+
+      /* Do simple alias translations. */
+      if (strncmp(wcs->ctype[wcs->lng]+5, "GLS", 3) == 0) {
+         strcpy(wcsprj->code, "SFL");
+
+      } else if (strcmp(wcs->ctype[wcs->lng]+5, "NCP") == 0) {
+         /* Convert NCP to SIN. */
+         if (wcscel->ref[1] == 0.0) {
+            return 5;
+         }
+
+         strcpy(wcsprj->code, "SIN");
+         wcsprj->pv[1] = 0.0;
+         wcsprj->pv[2] = cosd(wcscel->ref[1])/sind(wcscel->ref[1]);
+
+      } else {
+         strcpy(wcsprj->code, wcs->ctype[wcs->lng]+5);
+      }
+
+      /* Initialize the celestial transformation routines. */
+      wcsprj->r0 = 0.0;
+      if (status = celset(wcscel)) {
+         return status + 3;
+      }
+   }
+
+
+   /* Non-linear spectral axis present? */
+   if (wcs->spec >= 0) {
+      spcini(wcsspc);
+      spctyp(wcs->ctype[wcs->spec], stype, scode, 0, 0, 0, 0, 0);
+      strcpy(wcsspc->type, stype);
+      strcpy(wcsspc->code, scode);
+
+      /* CRVALia, RESTFRQa, and RESTWAVa cards. */
+      wcsspc->crval = wcs->crval[wcs->spec];
+      wcsspc->restfrq = wcs->restfrq;
+      wcsspc->restwav = wcs->restwav;
+
+      /* PVi_ma cards. */
+      for (k = 0; k < wcs->npv; k++) {
+         i = wcs->pv[k].i - 1;
+         m = wcs->pv[k].m;
+
+         if (i == wcs->spec) {
+            /* PVi_ma associated with grism axis. */
+            if (m < 7) {
+               wcsspc->pv[m] = wcs->pv[k].value;
+            }
+         }
+      }
+
+      /* Initialize the spectral transformation routines. */
+      if (status = spcset(wcsspc)) {
+         return status + 3;
+      }
+   }
+
+
+   /* Tabular axes present? */
+   if (tables) {
+
+   }
+
+
+   /* Initialize the linear transformation. */
+   naxis = wcs->naxis;
+   wcs->altlin &= 7;
+   if (wcs->altlin > 1 && !(wcs->altlin & 1)) {
+      pc = wcs->pc;
+
+      if (wcs->altlin & 2) {
+         /* Copy CDi_ja to PCi_ja and reset CDELTia. */
+         cd = wcs->cd;
+         for (i = 0; i < naxis; i++) {
+            for (j = 0; j < naxis; j++) {
+               *(pc++) = *(cd++);
+            }
+            wcs->cdelt[i] = 1.0;
+         }
+
+      } else if (wcs->altlin & 4) {
+         /* Construct PCi_ja from CROTAia. */
+         if ((i = wcs->lng) >= 0 && (j = wcs->lat) >= 0) {
+            rho = wcs->crota[j];
+
+            if (wcs->cdelt[i] == 0.0) return 3;
+            lambda = wcs->cdelt[j]/wcs->cdelt[i];
+
+            *(pc + i*naxis + i) = *(pc + j*naxis + j) = cosd(rho);
+            *(pc + i*naxis + j) = *(pc + j*naxis + i) = sind(rho);
+            *(pc + i*naxis + j) *= -lambda;
+            *(pc + j*naxis + i) /=  lambda;
+         }
+      }
+   }
+
+   wcs->lin.crpix  = wcs->crpix;
+   wcs->lin.pc     = wcs->pc;
+   wcs->lin.cdelt  = wcs->cdelt;
+   if (status = linset(&(wcs->lin))) {
+      return status;
+   }
+
+
+   /* Strip off trailing blanks and null-fill auxiliary string members. */
+   wcs_nullfill(wcs->alt, 4);
+   wcs_nullfill(wcs->wcsname, 72);
+   for (i = 0; i < naxis; i++) {
+      wcs_nullfill(wcs->cname[i], 72);
+   }
+   wcs_nullfill(wcs->radesys, 72);
+   wcs_nullfill(wcs->specsys, 72);
+   wcs_nullfill(wcs->ssysobs, 72);
+   wcs_nullfill(wcs->ssyssrc, 72);
+   wcs_nullfill(wcs->dateobs, 72);
+
+   wcs->flag = WCSSET;
+
+   return 0;
+}
+
+
+int wcs_types(struct wcsprm *wcs)
+
+{
+   const int  nalias = 2;
+   const char aliases [2][4] = {"NCP", "GLS"};
+
+   char *ctypei, pcode[4], requir[9], scode[4];
+   int i, k, naxis, *ndx = 0;
+
+
    if (wcs == 0) return 1;
 
    /* Parse the CTYPEia cards. */
-   pcode[0] = '\0';
+   pcode[0]  = '\0';
    requir[0] = '\0';
    wcs->lng  = -1;
    wcs->lat  = -1;
@@ -1230,24 +1434,9 @@ int wcsset(struct wcsprm *wcs)
    wcs->types = calloc(naxis, sizeof(int));
 
    for (i = 0; i < naxis; i++) {
-      strncpy(ctypei, wcs->ctype[i], 72);
-
       /* Null fill. */
-      ctypei[71] = '\0';
-      for (j = 0; j < 72; j++) {
-         if (ctypei[j] == '\0') {
-            for (k = j+1; k < 72; k++) {
-               ctypei[k] = '\0';
-            }
-            break;
-         }
-      }
-
-      /* Ignore trailing blanks. */
-      for (k = j-1; k >= 0; k--) {
-         if (ctypei[k] != ' ') break;
-         ctypei[k] = '\0';
-      }
+      ctypei = wcs->ctype[i];
+      wcs_nullfill(ctypei, 72);
 
 
       /* Logarithmic or tabular axis? */
@@ -1266,7 +1455,7 @@ int wcsset(struct wcsprm *wcs)
 
       /* Is CTYPEia in "4-3" form? */
       if (ctypei[4] != '-' || ctypei[8] != '\0') {
-         /* Identify Stokes, celestial and spectral types. */
+         /* No; identify Stokes, celestial and spectral types. */
          if (strcmp(ctypei, "STOKES") == 0) {
             /* STOKES axis. */
             wcs->types[i] = 1100;
@@ -1293,7 +1482,7 @@ int wcsset(struct wcsprm *wcs)
                return 4;
             }
 
-         } else if (spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0) == 0) {
+         } else if (spctyp(ctypei, 0, 0, 0, 0, 0, 0, 0) == 0) {
             /* Spectral axis. */
             wcs->types[i] += 3000;
          }
@@ -1303,7 +1492,7 @@ int wcsset(struct wcsprm *wcs)
 
 
       /* CTYPEia is in "4-3" form; is it a recognized spectral type? */
-      if (spctyp(ctypei, stype, scode, 0, 0, 0, 0, 0) == 0) {
+      if (spctyp(ctypei, 0, scode, 0, 0, 0, 0, 0) == 0) {
          /* Spectral axis found (possibly linear, e.g. FREQ-LSR). */
          wcs->types[i] = 3000;
 
@@ -1418,164 +1607,79 @@ int wcsset(struct wcsprm *wcs)
       return 4;
    }
 
+   return 0;
+}
 
-   /* Non-linear celestial axes present? */
-   if (wcs->lng >= 0) {
-      celini(wcscel);
 
-      /* CRVALia, LONPOLEa, and LATPOLEa cards. */
-      wcscel->ref[0] = wcs->crval[wcs->lng];
-      wcscel->ref[1] = wcs->crval[wcs->lat];
-      wcscel->ref[2] = wcs->lonpole;
-      wcscel->ref[3] = wcs->latpole;
+int wcs_units(struct wcsprm *wcs)
 
-      /* PVi_ma cards. */
-      for (k = 0; k < wcs->npv; k++) {
-         i = wcs->pv[k].i - 1;
-         m = wcs->pv[k].m;
+{
+   char ctype[9], units[16];
+   int  i;
+   double scale, offset, power;
 
-         if (i == 0) {
-            /* From a PROJPn card. */
-            i = wcs->lat;
-         }
+   /* Initialize if required. */
+   if (wcs == 0) return 1;
 
-         if (i == wcs->lat) {
-            /* PVi_ma associated with latitude axis. */
-            if (m < 30) {
-               wcsprj->pv[m] = wcs->pv[k].value;
-            }
+   for (i = 0; i < wcs->naxis; i++) {
+      /* Use types set by wcs_types(). */
+      switch (wcs->types[i]/1000) {
+      case 2:
+         /* Celestial axis. */
+         strcpy(units, "deg");
+         break;
 
-         } else if (i == wcs->lng) {
-            /* PVi_ma associated with longitude axis. */
-            switch (m) {
-            case 0:
-               wcscel->offset = (wcs->pv[k].value != 0.0);
-               break;
-            case 1:
-               wcscel->phi0   = wcs->pv[k].value;
-               break;
-            case 2:
-               wcscel->theta0 = wcs->pv[k].value;
-               break;
-            case 3:
-               /* If present, overrides the LONPOLEa card. */
-               wcscel->ref[2] = wcs->pv[k].value;
-               break;
-            case 4:
-               /* If present, overrides the LATPOLEa card. */
-               wcscel->ref[3] = wcs->pv[k].value;
-               break;
-            default:
-               return 6;
-               break;
-            }
-         }
+      case 3:
+         /* Spectral axis. */
+         strncpy(ctype, wcs->ctype[i], 8);
+         ctype[8] = '\0';
+         spctyp(ctype, 0, 0, 0, units, 0, 0, 0);
+         break;
+
+      default:
+         continue;
       }
 
-      /* Do simple alias translations. */
-      if (strncmp(pcode, "GLS", 3) == 0) {
-         strcpy(wcsprj->code, "SFL");
-
-      } else if (strcmp(pcode, "NCP") == 0) {
-         /* Convert NCP to SIN. */
-         if (wcscel->ref[1] == 0.0) {
-            return 5;
+      wcs_nullfill(wcs->cunit[i], 72);
+      if (wcs->cunit[i][0]) {
+         if (wcsunits(wcs->cunit[i], units, &scale, &offset, &power)) {
+            return 6;
          }
 
-         strcpy(wcsprj->code, "SIN");
-         wcsprj->pv[1] = 0.0;
-         wcsprj->pv[2] = cosd(wcscel->ref[1])/sind(wcscel->ref[1]);
-
-      } else {
-         strcpy(wcsprj->code, pcode);
-      }
-
-      /* Initialize the celestial transformation routines. */
-      wcsprj->r0 = 0.0;
-      if (status = celset(wcscel)) {
-         return status + 3;
-      }
-   }
-
-
-   /* Non-linear spectral axis present? */
-   if (wcs->spec >= 0) {
-      spcini(wcsspc);
-
-      /* CRVALia, RESTFRQa, and RESTWAVa cards. */
-      strcpy(wcsspc->type, stype);
-      strcpy(wcsspc->code, scode);
-      wcsspc->crval = wcs->crval[wcs->spec];
-      wcsspc->restfrq = wcs->restfrq;
-      wcsspc->restwav = wcs->restwav;
-
-      /* PVi_ma cards. */
-      for (k = 0; k < wcs->npv; k++) {
-         i = wcs->pv[k].i - 1;
-         m = wcs->pv[k].m;
-
-         if (i == wcs->spec) {
-            /* PVi_ma associated with grism axis. */
-            if (m < 7) {
-               wcsspc->pv[m] = wcs->pv[k].value;
-            }
-         }
-      }
-
-      /* Initialize the spectral transformation routines. */
-      if (status = spcset(wcsspc)) {
-         return status + 3;
-      }
-   }
-
-
-   /* Tabular axes present? */
-   if (tables) {
-
-   }
-
-
-   /* Initialize the linear transformation. */
-   wcs->altlin &= 7;
-   if (wcs->altlin > 1 && !(wcs->altlin & 1)) {
-      pc = wcs->pc;
-
-      if (wcs->altlin & 2) {
-         /* Copy CDi_ja to PCi_ja and reset CDELTia. */
-         cd = wcs->cd;
-         for (i = 0; i < naxis; i++) {
-            for (j = 0; j < naxis; j++) {
-               *(pc++) = *(cd++);
-            }
-            wcs->cdelt[i] = 1.0;
-         }
-
-      } else if (wcs->altlin & 4) {
-         /* Construct PCi_ja from CROTAia. */
-         if ((i = wcs->lng) >= 0 && (j = wcs->lat) >= 0) {
-            rho = wcs->crota[j];
-
-            if (wcs->cdelt[i] == 0.0) return 3;
-            lambda = wcs->cdelt[j]/wcs->cdelt[i];
-
-            *(pc + i*naxis + i) = *(pc + j*naxis + j) = cosd(rho);
-            *(pc + i*naxis + j) = *(pc + j*naxis + i) = sind(rho);
-            *(pc + i*naxis + j) *= -lambda;
-            *(pc + j*naxis + i) /=  lambda;
+         if (scale != 1.0) {
+            wcs->cdelt[i] *= scale;
+            wcs->crval[i] *= scale;
+            strcpy(wcs->cunit[i], units);
          }
       }
    }
-
-   wcs->lin.crpix  = wcs->crpix;
-   wcs->lin.pc     = wcs->pc;
-   wcs->lin.cdelt  = wcs->cdelt;
-   if (status = linset(&(wcs->lin))) {
-      return status;
-   }
-
-   wcs->flag = WCSSET;
 
    return 0;
+}
+
+
+void wcs_nullfill(char cptr[], int len)
+
+{
+  int j, k;
+
+  /* Null-fill the string. */
+  *(cptr+len-1) = '\0';
+  for (j = 0; j < len; j++) {
+    if (cptr[j] == '\0') {
+      for (k = j+1; k < len; k++) {
+        cptr[k] = '\0';
+      }
+      break;
+    }
+  }
+
+  for (k = j-1; k > 0; k--) {
+    if (cptr[k] != ' ') break;
+    cptr[k] = '\0';
+  }
+
+  return;
 }
 
 /*--------------------------------------------------------------------------*/
@@ -2538,6 +2642,7 @@ int wcssptr(
    wcs->flag = 0;
    wcs->cdelt[j] = cdelt;
    wcs->crval[j] = crval;
+   spctyp(ctype, 0, 0, 0, wcs->cunit[j], 0, 0, 0);
 
    /* Extract the Doppler frame from AIPS-convention types. */
    code = wcs->ctype[j] + 4;

@@ -66,14 +66,6 @@ int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
 {
    int status = 0;
 
-   if (naxis) {
-      if ((stat[CDELTFIX] = cdeltfix(naxis, wcs)) > 0) {
-         status = 1;
-      }
-   } else {
-      stat[CDELTFIX] = -2;
-   }
-
    if ((stat[DATFIX] = datfix(wcs)) > 0) {
       status = 1;
    }
@@ -92,29 +84,6 @@ int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
       }
    } else {
       stat[CYLFIX] = -2;
-   }
-
-   return status;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int cdeltfix(const int naxis[], struct wcsprm *wcs)
-
-{
-   int i, status = -1;
-
-   if (wcs == 0) return 1;
-
-   for (i = 0; i < wcs->naxis; i++) {
-      if (wcs->cdelt[i] == 0.0) {
-         if (naxis[i] > 1) {
-            return 5;
-	 } else {
-	    wcs->cdelt[i] = 1.0;
-	    status = 0;
-	 }
-      }
    }
 
    return status;
@@ -267,7 +236,7 @@ int celfix(struct wcsprm *wcs)
    }
 
    /* Was an NCP or GLS projection code translated? */
-   if (wcs->lat > 0) {
+   if (wcs->lat >= 0) {
       /* Check ctype. */
       if (strcmp(wcs->ctype[wcs->lat]+5, "NCP") == 0) {
          strcpy(wcs->ctype[wcs->lng]+5, "SIN");
@@ -275,21 +244,21 @@ int celfix(struct wcsprm *wcs)
 
          if (wcs->npvmax < wcs->npv + 2) {
             /* Allocate space for two more PVi_ja cards. */
-            if (wcs->m_flag == WCSSET && wcs->m_pv && wcs->pv == wcs->m_pv) {
+            if (wcs->m_flag == WCSSET && wcs->pv == wcs->m_pv) {
                elsize = sizeof(struct pvcard);
                if (!(wcs->pv = calloc(wcs->npv+2, elsize))) {
                   wcs->pv = wcs->m_pv;
                   return 2;
                }
 
-               wcs->npvmax  = wcs->npv + 2;
-               wcs->m_flag  = WCSSET;
+               wcs->npvmax = wcs->npv + 2;
+               wcs->m_flag = WCSSET;
 
                for (k = 0; k < wcs->npv; k++) {
                   wcs->pv[k] = wcs->m_pv[k];
                }
 
-               free(wcs->m_pv);
+               if (wcs->m_pv) free(wcs->m_pv);
                wcs->m_pv = wcs->pv;
 
             } else {
@@ -326,7 +295,7 @@ int spcfix(struct wcsprm *wcs)
 
 {
    char *scode;
-   int  j, status;
+   int  i, status;
 
    /* Initialize if required. */
    if (wcs == 0) return 1;
@@ -334,22 +303,22 @@ int spcfix(struct wcsprm *wcs)
       if (status = wcsset(wcs)) return status;
    }
 
-   if ((j = wcs->spec) < 0) {
+   if ((i = wcs->spec) < 0) {
       /* Look for a linear spectral axis. */
-      for (j = 0; j < wcs->naxis; j++) {
-         if (wcs->types[j]/100 == 30) {
+      for (i = 0; i < wcs->naxis; i++) {
+         if (wcs->types[i]/100 == 30) {
             break;
          }
       }
 
-      if (j >= wcs->naxis) {
+      if (i >= wcs->naxis) {
          /* No spectral axis. */
          return -1;
       }
    }
 
    /* Was an AIPS-convention spectral type translated? */
-   scode = wcs->ctype[j] + 4;
+   scode = wcs->ctype[i] + 4;
 
    if (strcmp(scode, "-LSR") == 0) {
       strcpy(wcs->specsys, "LSRK");
@@ -363,8 +332,8 @@ int spcfix(struct wcsprm *wcs)
 
    strcpy(scode, "\0\0\0\0");
 
-   if (strcmp(wcs->ctype[j], "FELO") == 0) {
-      strcpy(wcs->ctype[j], "VOPT-F2W");
+   if (strcmp(wcs->ctype[i], "FELO") == 0) {
+      strcpy(wcs->ctype[i], "VOPT-F2W");
    }
 
    return 0;

@@ -67,7 +67,7 @@
 *   either that of a primary HDU or of an image extension.  All WCS keywords
 *   defined in Papers I, II, and III are recognized, and also those used by
 *   the AIPS convention and certain other keywords that existed in early
-*   drafts of the WCS papers (see note 3 below).
+*   drafts of the WCS papers (see note 4 below).
 *
 *   Given a character array containing a FITS header, wcspih() identifies and
 *   reads all WCS cards for the primary coordinate description and up to 26
@@ -86,7 +86,7 @@
 *                        noting that the cards are NOT null-terminated.
 *
 *                        For negative values of ctrl (see below), header[]
-*                        is modified so that WCS cards consumed by wcspih()
+*                        is modified so that WCS cards processed by wcspih()
 *                        are removed from it.
 *
 *   Given:
@@ -97,7 +97,7 @@
 *                           1: Admit all recognized informal extensions of the
 *                              WCS standard.
 *                        Fine-grained control of the degree of permissiveness
-*                        is also possible, see note 3 below.
+*                        is also possible, see note 4 below.
 *      ctrl  int         Error reporting and other control options for invalid
 *                        WCS and other header cards:
 *                           0: Do not report any rejected header cards.
@@ -128,7 +128,7 @@
 *   Returned:
 *      nreject  int*     Number of WCS cards rejected for syntax errors,
 *                        illegal values, etc.  Cards not recognized as WCS
-*                        cards are simply ignored (but see also note 3 below).
+*                        cards are simply ignored (but see also note 4 below).
 *      nwcs     int*     Number of coordinate representations found.
 *      wcs      struct wcsprm**
 *                        Pointer to an array of wcsprm structs containing up
@@ -198,17 +198,27 @@
 *
 *   Notes
 *   -----
-*    1) The parser enforces correct FITS "keyword = value" syntax with regard
+*    1) wcspih() determines the number of coordinate axes independently for
+*       each coordinate representation from the higher of
+*
+*         a) NAXIS,
+*         b) WCSAXESa,
+*         c) The highest axis number in any parameterized WCS card.
+*
+*       The number of axes, returned in each wcsprm struct, may differ for
+*       different coordinate representations of the same image.
+*
+*    2) wcspih() enforces correct FITS "keyword = value" syntax with regard
 *       to "= " occurring in columns 9 and 10.
 *
 *       However, it does recognize free-format character (NOST 100-2.0,
 *       Sect. 5.2.1), integer (Sect. 5.2.3), and floating-point values
 *       (Sect. 5.2.4) for all keywords.
 *
-*    2) Where CROTAn, CDi_ja, and PCi_ja occur together in one header the
-*       parser treats them as described in the prologue to wcs.h.
+*    3) Where CROTAn, CDi_ja, and PCi_ja occur together in one header wcspih()
+*       treats them as described in the prologue to wcs.h.
 *
-*    3) The parser interprets its "relax" argument as a vector of flag bits to
+*    4) wcspih() interprets its "relax" argument as a vector of flag bits to
 *       provide fine-grained control over what non-standard WCS cards to
 *       accept.  The flag bits are subject to change in future and should be
 *       set by using the preprocessor macros defined below for the purpose.
@@ -263,11 +273,11 @@
 *       A radio convention velocity is denoted by adding 256 to these,
 *       otherwise an optical velocity is indicated.
 *
-*       The parser does not currently recognize the AIPS-convention keywords
+*       wcspih() does not currently recognize the AIPS-convention keywords
 *       ALTRPIX or ALTRVAL which effectively define an alternative
 *       representation for a spectral axis.
 *
-*    4) The parser does not check for duplicated cards, it accepts the last
+*    5) wcspih() does not check for duplicated cards, it accepts the last
 *       encountered.
 *
 *
