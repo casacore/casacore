@@ -692,7 +692,7 @@ void Template::sortName(const Bool renumber) {
   };
 }
 
-void Template::writeOut(ostream &os) {
+void Template::writeOut(ostream &os, const Bool warn) {
   // Constants
   static const String sp = " ";
   const Int Nsplit = 2000;	// # of fields in one entry must fit in here
@@ -700,6 +700,7 @@ void Template::writeOut(ostream &os) {
   // Local data
   String spf[Nsplit];		// Fields in full line
   Int c1 = 0;			// Output line count
+  Bool cwarn = False;           // Do not give a compressed warning
   // Write initial comments
   for (uInt j=0; j<ccount_p; j++) {	// initial comments
     if (comptr_p[j] < 0) {
@@ -754,8 +755,10 @@ void Template::writeOut(ostream &os) {
 		  "at line " << c1 << endl;
 	      };
 	      if (v.contains(sretRE4)) {
-		cerr << "Warning: superfluous template argument given -- "
-		  "remove at line " << c1 << endl;
+		if (warn) {
+		  cerr << "Warning: superfluous template argument given -- "
+		    "remove at line " << c1 << endl;
+		} else cwarn = True;
 	      };
 	    };
 	  };
@@ -799,6 +802,10 @@ void Template::writeOut(ostream &os) {
       c1++;
       os << comout_p[j2] << endl;
     };
+  };
+  if (cwarn) {
+    cerr << "Warning: One or more possibly superfluous template arguments "
+      "given.\n         Run reident with the -v (verbose) switch to learn more" << endl;
   };
 }
 

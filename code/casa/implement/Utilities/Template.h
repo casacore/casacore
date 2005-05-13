@@ -123,8 +123,9 @@ class Template {
   // is True, renumber all template entries in sequence.
   void sortName(const Bool renumber=False);
   // Write the data formatted to the specified file. Notify errors and warnings
-  // by writing to <src>cerr</src>
-  void writeOut(ostream &os);
+  // by writing to <src>cerr</src>. If <src>warn</src> is False, some warnings will be
+  // compressed into a general warning.
+  void writeOut(ostream &os, const Bool warn=False);
   // Write the duplicate list; the userFile gets ***; isSys gives the system switch
   void writeDup(ostream &os, const String &userFile, Bool isSys=False);
 
