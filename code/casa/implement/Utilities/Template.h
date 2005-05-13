@@ -1,5 +1,5 @@
 //# Template.h: Canonicalise, format etc. aips++ template definitions
-//# Copyright (C) 2001,2002,2004
+//# Copyright (C) 2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -192,6 +192,7 @@ class Template {
   static const Regex fileRE;
   static const Regex typedefRE;
   static const Regex auxtemplRE;
+  static const Regex namespaceRE;
 
   // Simple pattern and replacements to make canonical templates files
   static const uInt Ncanon = 52;
@@ -228,6 +229,7 @@ class Template {
   static const Regex sretRE4;
   static const Regex stypedefRE;
   static const Regex sauxtemplRE;
+  static const Regex snamespaceRE;
 
   // Replacement patterns for ifs in saved line
   static const uInt Ninif = 5;

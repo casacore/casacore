@@ -1,5 +1,5 @@
 //# Template.cc: Canonicalise, format etc. aips++ template definitions
-//# Copyright (C) 2001,2002,2003,2004
+//# Copyright (C) 2001-2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,23 +39,24 @@
 #include <casa/Utilities/Sort.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Static constants
-// Patterns to analyse an input line
-const Regex Template::spaces	= String("^[[:space:]]*$");
-const Regex Template::comment 	= String("^[[:space:]]*#");
-const Regex Template::ifRE 	= String("^[[:space:]]*#if");
-const Regex Template::endifRE 	= String("^[[:space:]]*#endif[[:space:]]*$");
-const Regex Template::elseRE 	= String("^[[:space:]]*#else[[:space:]]*$");
-const Regex Template::templateRE= String("^[[:space:]]*template[[:space:]<]");
-const Regex Template::contRE 	= String("^[[:space:]]*=");
-const Regex Template::fileRE 	= String("^[[:space:]]*[[:digit:]]*"
-					 "[[:space:]]*"
-					 "[^.[:space:]]*[.](cc|h)");
-const Regex Template::typedefRE	= String("^[[:space:]]*typedef[[:space:]]");
-const Regex Template::auxtemplRE= String("^[[:space:]]*"
-					 "AIPS_[A-Z0-9]*_AUX_TEMPLATES"
-					 "[[:space:](]");
+  
+  //# Static constants
+  // Patterns to analyse an input line
+  const Regex Template::spaces	   = String("^[[:space:]]*$");
+  const Regex Template::comment    = String("^[[:space:]]*#");
+  const Regex Template::ifRE 	   = String("^[[:space:]]*#if");
+  const Regex Template::endifRE    = String("^[[:space:]]*#endif[[:space:]]*$");
+  const Regex Template::elseRE 	   = String("^[[:space:]]*#else[[:space:]]*$");
+  const Regex Template::templateRE = String("^[[:space:]]*template[[:space:]<]");
+  const Regex Template::contRE 	   = String("^[[:space:]]*=");
+  const Regex Template::fileRE 	   = String("^[[:space:]]*[[:digit:]]*"
+					    "[[:space:]]*"
+					    "[^.[:space:]]*[.](cc|h)");
+  const Regex Template::typedefRE  = String("^[[:space:]]*typedef[[:space:]]");
+  const Regex Template::auxtemplRE = String("^[[:space:]]*"
+					    "AIPS_[A-Z0-9]*_AUX_TEMPLATES"
+					    "[[:space:](]");
+  const Regex Template::namespaceRE= String("^[[:space:]]*#namespace");
 
 // Simple pattern and replacements to make canonical templates files
 const Regex Template::PATcanon[Ncanon] = {
@@ -255,6 +256,7 @@ const Regex Template::sretRE3("^template <");
 const Regex Template::sretRE4("[^t][^o][^r>]>[(]");
 const Regex Template::stypedefRE("^typedef");
 const Regex Template::sauxtemplRE("^AIPS_[A-Z0-9]*_AUX_TEMPLATES");
+const Regex Template::snamespaceRE("^#namespace");
 
 // Replacement patterns for ifs in saved line
 const String Template::PATinif[Ninif] = {
@@ -462,7 +464,8 @@ void Template::read(const String &filename) {
 	 extracted.contains(templateRE) ||
 	 extracted.contains(contRE) ||
 	 extracted.contains(typedefRE) ||
-	 extracted.contains(auxtemplRE)) && ok && !err) {
+	 extracted.contains(auxtemplRE) ||
+	 extracted.contains(namespaceRE)) && ok && !err) {
       // Replace a continuation include line with /=/ pattern  
       if (extracted.contains(contRE)) extracted.gsub(contRE, String("/=/"));
       combine += String(" ") + extracted; // make one line
@@ -720,7 +723,8 @@ void Template::writeOut(ostream &os) {
 	  spf[j] == "#else" || spf[j] == "/=/" ||
 	  spf[j].contains(sifRE) ||
 	  spf[j].contains(stypedefRE) ||
-	  spf[j].contains(sauxtemplRE)) {
+	  spf[j].contains(sauxtemplRE) ||
+	  spf[j].contains(snamespaceRE)) {
 	if (k != 0) {
 	  v = "";
 	  for (uInt m=p; m < p+k; m++) {	// all fields found till now
