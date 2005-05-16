@@ -31,6 +31,7 @@
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/MVTime.h>
+#include <casa/Logging/LogIO.h>
 #include <msvis/MSVis/VisibilityIterator.h>
 #include <msvis/MSVis/VisBuffer.h>
 #include <flagging/Flagging/RFASelector.h>
@@ -98,6 +99,7 @@ template Bool RFASelector::parseRange<String>( Matrix<String>&,const RecordInter
 // -----------------------------------------------------------------------
 Bool RFASelector::parseTimes ( Array<Double> &times,const RecordInterface &parm,const String &id,Bool secs )
 {
+  LogIO os(LogOrigin("RFASelector", "parseTimes()", WHERE));
   if( !isFieldSet(parm,id) )
     return False;
   if( fieldType(parm,id,TpString,TpArrayString) ) // String date/times
@@ -111,8 +113,9 @@ Bool RFASelector::parseTimes ( Array<Double> &times,const RecordInterface &parm,
     for( uInt i=0; i<tt.nelements(); i++ )
     {
       Quantity q;
-      if( !MVTime::read(q,ptt[i]) )
+      if( !MVTime::read(q,ptt[i]) ) {
         os<<"bad "<<id<<" specified: "<<ptt[i]<<endl<<LogIO::EXCEPTION;
+      }
       ptimes[i] = scale*(Double)MVTime(q);
     }
     tt.freeStorage(ptt,deltt);
@@ -340,7 +343,7 @@ RFASelector::RFASelector ( RFChunkStats &ch,const RecordInterface &parm ) :
   RFAFlagCubeBase(ch,parm)
 {
   char s[256];
-// parse input arguments: freq. range as array of strings
+
   if( fieldType(parm,RF_FREQS,TpArrayString) ) // frequency range[s], as measures
   {
     Matrix<String> sfq;
