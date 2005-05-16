@@ -34,7 +34,8 @@
 #include <casa/Quanta/QMath.h>
 #include <casa/Utilities/MUString.h>
 #include <casa/System/AppInfo.h>
-
+//
+#include <casa/Logging/LogIO.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 // MVAngle class
@@ -345,6 +346,7 @@ Bool MVAngle::read(Quantity &res, MUString &in) {
 };
 
 Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
+  LogIO os(LogOrigin("MVAngle", "read()", WHERE));
   res = Quantity(0.0, "rad");
   in.skipBlank();
   in.push();			// Save position
@@ -360,14 +362,16 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       r *= s;
       tp = 4;
     };
-  } else if (in.tSkipCharNC('d')) {
+  } else if (in.testChar('/')) {
+    cout << "Time expression format should be hh:mm:ss, result may be incorrect   " << endl;;
+    return False;
+  }else if (in.tSkipCharNC('d')) {
     tp = 1;
   } else if (in.tSkipCharNC('h')) {
     tp = 2;
   } else if (in.tSkipChar(':')) {
     tp = 3;
   };
-
   switch (tp) {
 
   case 1:
