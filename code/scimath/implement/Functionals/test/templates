@@ -46,9 +46,6 @@
      template class Functional<Vector<Float>, Array<Float> > 
 1000 casa/Utilities/BinarySearch.cc casa/Containers/Block.h 
      template Int binarySearchBrackets(Bool &, Block<Int> const &, Int const &, uInt, Int) 
-1000 casa/Utilities/Copy.cc casa/Arrays/Array.h 
-     template void objcopy(Array<Float> *, Array<Float> const *, uInt, uInt, uInt) 
-     template void objset(Array<Float> *, Array<Float>, uInt, uInt) 
 1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Arrays/Array.h 
      template class CountedConstPtr<Block<Array<Float> > > 

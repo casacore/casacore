@@ -99,7 +99,7 @@
      = tables/Tables/ScaColData.cc 
      = tables/Tables/ScaColDesc.cc tables/Tables/ScalarColumn.cc 
      = tables/Tables/VSCEngine.cc tables/Tables/VirtScaCol.cc 
-     = casa/Utilities/Compare.cc casa/Utilities/Copy.cc 
+     = casa/Utilities/Compare.cc 
      = casa/Utilities/CountedPtr.cc casa/Utilities/ValTypeId.h 
      template class Array<VSCExample> 
      template class MaskedArray<VSCExample> 
@@ -111,11 +111,6 @@
      template class VSCEngine<VSCExample> 
      template class VirtualScalarColumn<VSCExample> 
      template class ObjCompare<VSCExample> 
-     template void objcopy(VSCExample *, VSCExample const *, uInt) 
-     template void objcopy(VSCExample *, VSCExample const *, uInt, uInt, uInt) 
-     template void objset(VSCExample *, VSCExample, uInt) 
-     template void objset(VSCExample *, VSCExample, uInt, uInt) 
-     template void objmove(VSCExample *, VSCExample const *, uInt) 
      template class CountedConstPtr<Block<VSCExample> > 
      template class CountedPtr<Block<VSCExample> > 
      template class PtrRep<Block<VSCExample> > 
@@ -128,7 +123,7 @@
      = casa/Containers/Block.h 
      = tables/Tables/ArrColData.cc tables/Tables/ArrColDesc.cc 
      = tables/Tables/ScaColData.cc tables/Tables/ScaColDesc.cc 
-     = casa/Utilities/Compare.cc casa/Utilities/Copy.cc 
+     = casa/Utilities/Compare.cc 
      = casa/Utilities/CountedPtr.cc casa/Utilities/ValTypeId.h 
      template class Array<ExampleDesc> 
      template class ArrayIterator<ExampleDesc> 
@@ -140,11 +135,6 @@
      template class ScalarColumnData<ExampleDesc> 
      template class ScalarColumnDesc<ExampleDesc> 
      template class ObjCompare<ExampleDesc> 
-     template void objcopy(ExampleDesc *, ExampleDesc const *, uInt) 
-     template void objcopy(ExampleDesc *, ExampleDesc const *, uInt, uInt, uInt) 
-     template void objset(ExampleDesc *, ExampleDesc, uInt) 
-     template void objset(ExampleDesc *, ExampleDesc, uInt, uInt) 
-     template void objmove(ExampleDesc *, ExampleDesc const *, uInt) 
      template class CountedConstPtr<Block<ExampleDesc> > 
      template class CountedPtr<Block<ExampleDesc> > 
      template class PtrRep<Block<ExampleDesc> > 

@@ -9,18 +9,6 @@
 1000 casa/Utilities/BinarySearch.cc casa/Arrays/IPosition.h 
      template Int binarySearch(Bool &, IPosition const &, Int const &, uInt, Int) 
      template Int binarySearchBrackets(Bool &, Int * const &, Int const &, uInt, Int) 
-1000 casa/Utilities/Copy.cc 
-     = casa/Utilities/Regex.h 
-     template void objcopy(Regex *, Regex const *, uInt, uInt, uInt) 
-     template void objmove(Regex *, Regex const *, uInt) 
-     template void objset(Regex *, Regex, uInt, uInt) 
-     template void objcopy(Regex *, Regex const *, uInt) 
-     template void objset(Regex *, Regex, uInt) 
-1010 casa/Utilities/Copy.cc casa/Containers/Block.h 
-     template void objcopy(Block<Int> *, Block<Int> const *, uInt, uInt, uInt) 
-     template void objmove(Block<Int> *, Block<Int> const *, uInt, uInt, uInt) 
-     template void objset(Block<Int> *, Block<Int>, uInt, uInt) 
-     template void objmove(Int *, Int const *, uInt, uInt, uInt) 
 1000 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Utilities/Regex.h 
      template class CountedConstPtr<Block<Regex> > 

@@ -7,22 +7,6 @@
 1000 casa/Arrays/Vector.cc 
      = ms/MeasurementSets/MSSelection.h 
      template class Vector<MSSelection> 
-1000 casa/Utilities/Copy.cc 
-     = ms/MeasurementSets/MSSelection.h 
-     template void objset(MSSelection *, MSSelection, uInt) 
-     template void objset(MSSelection *, MSSelection, uInt, uInt) 
-     template void objcopy(MSSelection *, MSSelection const *, uInt) 
-     template void objcopy(MSSelection *, MSSelection const *, uInt, uInt, uInt) 
-     template void objmove(MSSelection *, MSSelection const *, uInt) 
-1010 casa/Utilities/Copy.cc 
-     = ms/MeasurementSets/MSTableIndex.h 
-     template void objcopy(MSTableIndex **, MSTableIndex * const *, uInt) 
-     template void objcopy(MSTableIndex *, MSTableIndex const *, uInt) 
-     template void objset(MSTableIndex **, MSTableIndex *, uInt) 
-1020 casa/Utilities/Copy.cc ms/MeasurementSets/MeasurementSet.h 
-     template void objcopy(MeasurementSet *, MeasurementSet const *, uInt) 
-     template void objmove(MeasurementSet *, MeasurementSet const *, uInt) 
-     template void objset(MeasurementSet *, MeasurementSet, uInt) 
 1000 casa/Utilities/CountedPtr.cc 
      = ms/MeasurementSets/MSSelection.h 
      = casa/Containers/Block.h 

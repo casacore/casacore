@@ -4,57 +4,6 @@
      template class SimpleOrderedMap<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*> 
      template class OrderedPair<ImageOpener::ImageTypes, ImageOpener::OpenImageFunction*> 
      template class indexError<ImageOpener::ImageTypes> 
-1000 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
-     = images/Images/ImageInterface.h 
-     template void objcopy(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt) 
-     template void objcopy(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt, uInt, uInt) 
-     template void objmove(ImageInterface<Complex> **, ImageInterface<Complex> * const *, uInt) 
-     template void objset(ImageInterface<Complex> **, ImageInterface<Complex> *, uInt) 
-     template void objset(ImageInterface<Complex> **, ImageInterface<Complex> *, uInt, uInt) 
-1010 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
-     = images/Images/PagedImage.h 
-     template void objcopy(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt) 
-     template void objcopy(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt, uInt, uInt) 
-     template void objmove(PagedImage<Complex> **, PagedImage<Complex> * const *, uInt) 
-     template void objset(PagedImage<Complex> **, PagedImage<Complex> *, uInt) 
-     template void objset(PagedImage<Complex> **, PagedImage<Complex> *, uInt, uInt) 
-1020 casa/Utilities/Copy.cc casa/BasicSL/Complex.h 
-     = images/Images/SubImage.h 
-     template void objcopy(SubImage<Complex> **, SubImage<Complex> * const *, uInt) 
-     template void objcopy(SubImage<Complex> **, SubImage<Complex> * const *, uInt, uInt, uInt) 
-     template void objmove(SubImage<Complex> **, SubImage<Complex> * const *, uInt) 
-     template void objset(SubImage<Complex> **, SubImage<Complex> *, uInt) 
-     template void objset(SubImage<Complex> **, SubImage<Complex> *, uInt, uInt) 
-1030 casa/Utilities/Copy.cc images/Images/ImageInterface.h 
-     template void objcopy(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt) 
-     template void objcopy(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt, uInt, uInt) 
-     template void objmove(ImageInterface<Float> **, ImageInterface<Float> * const *, uInt) 
-     template void objset(ImageInterface<Float> **, ImageInterface<Float> *, uInt) 
-     template void objset(ImageInterface<Float> **, ImageInterface<Float> *, uInt, uInt) 
-1040 casa/Utilities/Copy.cc images/Images/PagedImage.h 
-     template void objcopy(PagedImage<Float> **, PagedImage<Float> * const *, uInt) 
-     template void objcopy(PagedImage<Float> **, PagedImage<Float> * const *, uInt, uInt, uInt) 
-     template void objmove(PagedImage<Float> **, PagedImage<Float> * const *, uInt) 
-     template void objset(PagedImage<Float> **, PagedImage<Float> *, uInt) 
-     template void objset(PagedImage<Float> **, PagedImage<Float> *, uInt, uInt) 
-1050 casa/Utilities/Copy.cc images/Images/SubImage.h 
-     template void objcopy(SubImage<Float> **, SubImage<Float> * const *, uInt) 
-     template void objcopy(SubImage<Float> **, SubImage<Float> * const *, uInt, uInt, uInt) 
-     template void objmove(SubImage<Float> **, SubImage<Float> * const *, uInt) 
-     template void objset(SubImage<Float> **, SubImage<Float> *, uInt) 
-     template void objset(SubImage<Float> **, SubImage<Float> *, uInt, uInt) 
-1060 casa/Utilities/Copy.cc images/Images/TempImage.h 
-     = casa/BasicSL/Complex.h 
-     template void objcopy(TempImage<Float> **, TempImage<Float> * const *, uInt) 
-     template void objcopy(TempImage<Float> **, TempImage<Float> * const *, uInt, uInt, uInt) 
-     template void objmove(TempImage<Float> **, TempImage<Float> * const *, uInt) 
-     template void objset(TempImage<Float> **, TempImage<Float> *, uInt) 
-     template void objset(TempImage<Float> **, TempImage<Float> *, uInt, uInt) 
-     template void objcopy(TempImage<Complex> **, TempImage<Complex> * const *, uInt) 
-     template void objcopy(TempImage<Complex> **, TempImage<Complex> * const *, uInt, uInt, uInt) 
-     template void objmove(TempImage<Complex> **, TempImage<Complex> * const *, uInt) 
-     template void objset(TempImage<Complex> **, TempImage<Complex> *, uInt) 
-     template void objset(TempImage<Complex> **, TempImage<Complex> *, uInt, uInt) 
 1000 casa/Utilities/PtrHolder.cc 
      = images/Images/ImageConcat.h 
      template class PtrHolder<ImageConcat<Float> > 

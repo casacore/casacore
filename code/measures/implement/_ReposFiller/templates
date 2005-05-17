@@ -59,43 +59,6 @@
      template class Vector<MFrequency> 
 1040 casa/Arrays/Vector.cc measures/Measures/MPosition.h 
      template class Vector<MPosition> 
-1000 casa/Utilities/Copy.cc 
-     = measures/Measures/MDirection.h 
-     template void objcopy(MDirection *, MDirection const *, uInt) 
-     template void objcopy(MDirection *, MDirection const *, uInt, uInt, uInt) 
-     template void objset(MDirection *, MDirection, uInt) 
-     template void objset(MDirection *, MDirection, uInt, uInt) 
-     template void objmove(MDirection *, MDirection const *, uInt) 
-1010 casa/Utilities/Copy.cc 
-     = measures/Measures/MFrequency.h 
-     template void objcopy(MFrequency *, MFrequency const *, uInt) 
-     template void objcopy(MFrequency *, MFrequency const *, uInt, uInt, uInt) 
-     template void objset(MFrequency *, MFrequency, uInt) 
-     template void objset(MFrequency *, MFrequency, uInt, uInt) 
-     template void objmove(MFrequency *, MFrequency const *, uInt) 
-1020 casa/Utilities/Copy.cc 
-     = measures/Measures/MFrequency.h 
-     template void objcopy(MFrequency::Types *, MFrequency::Types const *, uInt) 
-1030 casa/Utilities/Copy.cc 
-     = measures/Measures/MPosition.h 
-     template void objcopy(MPosition *, MPosition const *, uInt) 
-     template void objcopy(MPosition *, MPosition const *, uInt, uInt, uInt) 
-     template void objset(MPosition *, MPosition, uInt) 
-     template void objset(MPosition *, MPosition, uInt, uInt) 
-     template void objmove(MPosition *, MPosition const *, uInt) 
-1040 casa/Utilities/Copy.cc 
-     = measures/Measures/MeasureHolder.h 
-     template void objcopy(MeasureHolder *, MeasureHolder const *, uInt) 
-     template void objcopy(MeasureHolder *, MeasureHolder const *, uInt, uInt, uInt) 
-     template void objmove(MeasureHolder *, MeasureHolder const *, uInt) 
-     template void objset(MeasureHolder *, MeasureHolder, uInt) 
-     template void objset(MeasureHolder *, MeasureHolder, uInt, uInt) 
-1050 casa/Utilities/Copy.cc 
-     = measures/Measures/Stokes.h 
-     template void objcopy(Stokes::StokesTypes *, Stokes::StokesTypes const *, uInt) 
-     template void objcopy(Stokes::StokesTypes *, Stokes::StokesTypes const *, uInt, uInt, uInt) 
-     template void objset(Stokes::StokesTypes *, Stokes::StokesTypes, uInt) 
-     template void objset(Stokes::StokesTypes *, Stokes::StokesTypes, uInt, uInt) 
 1000 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = measures/Measures/MeasureHolder.h 
@@ -168,7 +131,6 @@
      = casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Vector.cc 
      = casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
      = casa/Utilities/CountedPtr.cc 
      = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<MEpoch> > 
@@ -179,17 +141,11 @@
      template class Array<MEpoch> 
      template class Vector<MEpoch> 
      template class MaskedArray<MEpoch> 
-     template void objcopy(MEpoch *, MEpoch const *, uInt) 
-     template void objcopy(MEpoch *, MEpoch const *, uInt, uInt, uInt) 
-     template void objset(MEpoch *, MEpoch, uInt) 
-     template void objset(MEpoch *, MEpoch, uInt, uInt) 
-     template void objmove(MEpoch *, MEpoch const *, uInt) 
 1000 measures/Measures/MRadialVelocity.h 
      = casa/Arrays/Array.cc 
      = casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Vector.cc 
      = casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
      = casa/Utilities/CountedPtr.cc 
      = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<MRadialVelocity> > 
@@ -200,11 +156,6 @@
      template class Array<MRadialVelocity> 
      template class Vector<MRadialVelocity> 
      template class MaskedArray<MRadialVelocity> 
-     template void objcopy(MRadialVelocity *, MRadialVelocity const *, uInt) 
-     template void objcopy(MRadialVelocity *, MRadialVelocity const *, uInt, uInt, uInt) 
-     template void objset(MRadialVelocity *, MRadialVelocity, uInt) 
-     template void objset(MRadialVelocity *, MRadialVelocity, uInt, uInt) 
-     template void objmove(MRadialVelocity *, MRadialVelocity const *, uInt) 
 1000 measures/Measures/MeasBase.cc casa/Quanta/MVBaseline.h 
      = measures/Measures/MBaseline.h measures/Measures/MeasRef.h 
      template class MeasBase<MVBaseline, MeasRef<MBaseline> > 
@@ -282,7 +233,6 @@
      = casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Vector.cc 
      = casa/Containers/Block.h 
-     = casa/Utilities/Copy.cc 
      = casa/Utilities/CountedPtr.cc 
      = casa/Utilities/ValTypeId.h 
      template class CountedPtr<Block<Muvw> > 
@@ -293,11 +243,6 @@
      template class Array<Muvw> 
      template class Vector<Muvw> 
      template class MaskedArray<Muvw> 
-     template void objcopy(Muvw *, Muvw const *, uInt) 
-     template void objcopy(Muvw *, Muvw const *, uInt, uInt, uInt) 
-     template void objset(Muvw *, Muvw, uInt) 
-     template void objset(Muvw *, Muvw, uInt, uInt) 
-     template void objmove(Muvw *, Muvw const *, uInt) 
 1000 measures/TableMeasures/ArrayMeasColumn.cc 
      = measures/Measures/MDirection.h 
      = measures/Measures/MEpoch.h 
