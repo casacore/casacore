@@ -2,24 +2,21 @@
      = casa/Arrays/IPosition.h 
      template class Array<IPosition> 
 1010 casa/Arrays/Array.cc 
-     = casa/Arrays/Slicer.h 
-     template class Array<Slicer> 
-1020 casa/Arrays/Array.cc 
      = casa/Arrays/Vector.h 
      template class Array<Vector<Float> > 
-1030 casa/Arrays/Array.cc 
+1020 casa/Arrays/Array.cc 
      = tables/TablePlot/BasePlot.h 
      template class Array<BasePlot<Float> > 
-1040 casa/Arrays/Array.cc 
+1030 casa/Arrays/Array.cc 
      = tables/Tables/ExprNode.h 
      template class Array<TableExprNode> 
-1050 casa/Arrays/Array.cc 
+1040 casa/Arrays/Array.cc 
      = tables/Tables/Table.h 
      template class Array<Table> 
-1060 casa/Arrays/Array.cc 
+1050 casa/Arrays/Array.cc 
      = tables/Tables/TableIter.h 
      template class Array<TableIterator> 
-1070 casa/Arrays/Array.cc 
+1060 casa/Arrays/Array.cc 
      = tables/Tables/TableRecord.h 
      template class Array<TableRecord> 
      #ifdef AIPS_SUN_NATIVE 
@@ -29,42 +26,36 @@
      = casa/Arrays/IPosition.h 
      template class MaskedArray<IPosition> 
 1010 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/Slicer.h 
-     template class MaskedArray<Slicer> 
-1030 casa/Arrays/MaskedArray.cc 
      = tables/TablePlot/BasePlot.h 
      template class MaskedArray<BasePlot<Float> > 
-1040 casa/Arrays/MaskedArray.cc 
+1020 casa/Arrays/MaskedArray.cc 
      = tables/Tables/ExprNode.h 
      template class MaskedArray<TableExprNode> 
-1050 casa/Arrays/MaskedArray.cc 
+1030 casa/Arrays/MaskedArray.cc 
      = tables/Tables/Table.h 
      template class MaskedArray<Table> 
-1060 casa/Arrays/MaskedArray.cc 
+1040 casa/Arrays/MaskedArray.cc 
      = tables/Tables/TableIter.h 
      template class MaskedArray<TableIterator> 
-1070 casa/Arrays/MaskedArray.cc 
+1050 casa/Arrays/MaskedArray.cc 
      = tables/Tables/TableRecord.h 
      template class MaskedArray<TableRecord> 
 1000 casa/Arrays/Vector.cc 
      = casa/Arrays/IPosition.h 
      template class Vector<IPosition> 
 1010 casa/Arrays/Vector.cc 
-     = casa/Arrays/Slicer.h 
-     template class Vector<Slicer> 
-1030 casa/Arrays/Vector.cc 
      = tables/TablePlot/BasePlot.h 
      template class Vector<BasePlot<Float> > 
-1040 casa/Arrays/Vector.cc 
+1020 casa/Arrays/Vector.cc 
      = tables/Tables/ExprNode.h 
      template class Vector<TableExprNode> 
-1050 casa/Arrays/Vector.cc 
+1030 casa/Arrays/Vector.cc 
      = tables/Tables/Table.h 
      template class Vector<Table> 
-1060 casa/Arrays/Vector.cc 
+1040 casa/Arrays/Vector.cc 
      = tables/Tables/TableIter.h 
      template class Vector<TableIterator> 
-1070 casa/Arrays/Vector.cc 
+1050 casa/Arrays/Vector.cc 
      = tables/Tables/TableRecord.h 
      template class Vector<TableRecord> 
 1000 casa/Containers/Link.cc tables/Tables/TableParse.h 
@@ -115,21 +106,13 @@
      template class SimpleCountedPtr<Block<IPosition> > 
 1010 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
-     = casa/Arrays/Slicer.h 
-     template class CountedConstPtr<Block<Slicer> > 
-     template class CountedPtr<Block<Slicer> > 
-     template class PtrRep<Block<Slicer> > 
-     template class SimpleCountedConstPtr<Block<Slicer> > 
-     template class SimpleCountedPtr<Block<Slicer> > 
-1030 casa/Utilities/CountedPtr.cc 
-     = casa/Containers/Block.h 
      = tables/TablePlot/BasePlot.h 
      template class CountedConstPtr<Block<BasePlot<Float> > > 
      template class CountedPtr<Block<BasePlot<Float> > > 
      template class PtrRep<Block<BasePlot<Float> > > 
      template class SimpleCountedConstPtr<Block<BasePlot<Float> > > 
      template class SimpleCountedPtr<Block<BasePlot<Float> > > 
-1040 casa/Utilities/CountedPtr.cc 
+1020 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/Tables/ExprNode.h 
      template class CountedConstPtr<Block<TableExprNode> > 
@@ -137,7 +120,7 @@
      template class PtrRep<Block<TableExprNode> > 
      template class SimpleCountedConstPtr<Block<TableExprNode> > 
      template class SimpleCountedPtr<Block<TableExprNode> > 
-1050 casa/Utilities/CountedPtr.cc 
+1030 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/Tables/Table.h 
      template class CountedConstPtr<Block<Table> > 
@@ -145,7 +128,7 @@
      template class PtrRep<Block<Table> > 
      template class SimpleCountedConstPtr<Block<Table> > 
      template class SimpleCountedPtr<Block<Table> > 
-1060 casa/Utilities/CountedPtr.cc 
+1040 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/Tables/TableIter.h 
      template class CountedConstPtr<Block<TableIterator> > 
@@ -153,7 +136,7 @@
      template class PtrRep<Block<TableIterator> > 
      template class SimpleCountedConstPtr<Block<TableIterator> > 
      template class SimpleCountedPtr<Block<TableIterator> > 
-1070 casa/Utilities/CountedPtr.cc 
+1050 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = tables/Tables/TableRecord.h 
      template class CountedConstPtr<Block<TableRecord> > 
@@ -161,17 +144,17 @@
      template class PtrRep<Block<TableRecord> > 
      template class SimpleCountedConstPtr<Block<TableRecord> > 
      template class SimpleCountedPtr<Block<TableRecord> > 
-1080 casa/Utilities/CountedPtr.cc 
+1060 casa/Utilities/CountedPtr.cc 
      = tables/Tables/TiledFileAccess.h 
      template class CountedConstPtr<TiledFileAccess> 
      template class CountedPtr<TiledFileAccess> 
      template class PtrRep<TiledFileAccess> 
      template class SimpleCountedConstPtr<TiledFileAccess> 
      template class SimpleCountedPtr<TiledFileAccess> 
-1090 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
+1070 casa/Utilities/CountedPtr.cc tables/Tables/TableDesc.h 
      template class PtrRep<TableDesc> 
      template class SimpleCountedConstPtr<TableDesc> 
-1100 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
+1080 casa/Utilities/CountedPtr.cc tables/Tables/TableRecordRep.h 
      template class CountedConstPtr<TableRecordRep> 
      template class CountedPtr<TableRecordRep> 
      template class PtrRep<TableRecordRep> 
