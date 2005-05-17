@@ -397,47 +397,67 @@
      [ "$TIMER" ] && $TIMER 1>&2
      echo "Extracting dependencies (stage 1 analysis)..." 1>&2
 
-     expand $FILES | \
+     # 1) Firstly sed reformats the 'nm' output into entries of the form
+     #    "symbol D|U location", with 'D' or 'U' for defined or undefined
+     #    symbols, and the location of the form lib-module.o, e.g. wcs-prj.o.
+     # 2) The first 'sort' gathers symbols together, putting 'D' ahead of 'U'
+     #    for each.  It also removes any duplicates.
+     # 3) The first awk script scans the list remembering the location of a
+     #    defined symbol and associates it with each undefined occurrence that
+     #    follows in the list.
+     # 4) The second awk script simply appends size information gathered from
+     #    'ar tv', and the final sort puts this size information into the
+     #    correct sequence.
+     expand $FILES |
         sed -n \
            -e '/\.o\]:$/{s/.*lib\(.*\)\.a\[\(.*\)\]:/\1-\2/;h;d;}' \
            -e '/\.o:$/{s/.* //;s/.*\///;s/:$//;h;d;}' \
            -e '/ U *$/{s/ U *$//;G;s/\n/ U /;p;d;}' \
            -e '{s/ [A-Z] .*//;G;s/\n/ D /;p;d;}' \
            -e 'd' | \
-        sort -u | \
+        sort -u |
         awk \
-          'BEGIN { \
-              def = "" ; \
-              src = "" ; \
-           } \
-           $2 == "D" { \
-              def = $1 ; \
-              src = $3 ; \
-              if (more == 2) print $3 " " $1 " " $3 \
-           } \
-           $2 == "U" { \
-              if ($1 == def) { \
-                 if (more) { \
-                    if (rev) { \
-                       print src " " $1 " " $3 \
-                    } else { \
-                       print $3 " " $1 " " src \
-                    } \
-                 } else { \
-                    if (rev) { \
-                       print src " " $3 \
-                    } else { \
-                       print $3 " " src \
-                    } \
-                 } \
-              } else { \
-                 if (unres) print $3 " (" $1 ")" \
-              } \
-           }' more=$MORE unres=$UNRES rev=$REVERSE | \
+          'BEGIN {
+              def = ""
+              src = ""
+           }
+           $2 == "D" {
+              # Found a defined symbol.
+              if (more == 2) print $3 " " $1 " " $3
+              if ($1 == def) {
+                 # Multiply defined, prefer casa.
+                 if (src ~ /^casa/) next
+		 if ($3 !~ /^casa/) next
+              }
+              def = $1
+              src = $3
+           }
+           $2 == "U" {
+              # An undefined symbol.
+              if ($1 == def) {
+                 # It matches the previous defined symbol.
+                 if (more) {
+                    if (rev) {
+                       print src " " $1 " " $3
+                    } else {
+                       print $3 " " $1 " " src
+                    }
+                 } else {
+                    if (rev) {
+                       print src " " $3
+                    } else {
+                       print $3 " " src
+                    }
+                 }
+              } else {
+                 # This undefined symbol cannot be resolved.
+                 if (unres) print $3 " (" $1 ")"
+              }
+           }' more=$MORE unres=$UNRES rev=$REVERSE |
         {
            cat -
            [ "$ARTVS" ] && awk '{print $8 " " $3}' $ARTVS
-        } | \
+        } |
         sort -u > ldtmp0.$$
 
   else
@@ -471,7 +491,7 @@
      echo "Unpacking stage 1 analysis..." 1>&2
 
      [ -d ldtmp1.$$ ] || mkdir ldtmp1.$$
-     awk '{print $1 " " $NF}' ldtmp0.$$ | \
+     awk '{print $1 " " $NF}' ldtmp0.$$ |
      {
         while read OBJ SRC
         do
@@ -480,7 +500,7 @@
         done
      }
 
-     awk '{print $NF}' ldtmp0.$$ | grep "\.o$" | sort -u | \
+     awk '{print $NF}' ldtmp0.$$ | grep "\.o$" | sort -u |
      {
         while read SRC
         do
@@ -551,34 +571,34 @@
 #          Use unpacked results of stage 1 analysis.
            (cd ldtmp0.$$ && cat `cat ../ldtmp4.$$`) </dev/null 2>/dev/null |
               awk \
-                 'BEGIN {doprint = 0} \
+                 'BEGIN {doprint = 0}
                   $1 == "+" {
-                     if (doprint && obj) print indent obj ; \
-                     obj = $2 ; \
-                     doprint = 1 ; \
-                     next \
-                  } \
-                  /^[0-9][0-9]*$/ { \
-                     print indent obj " " $1 ; \
-                     doprint = 0 ; \
-                     print $1 >> ldtmp3 ; \
-                     next \
-                  } \
-                  { \
-                     print $NF >> ldtmp5 \
-                  } \
+                     if (doprint && obj) print indent obj
+                     obj = $2
+                     doprint = 1
+                     next
+                  }
+                  /^[0-9][0-9]*$/ {
+                     print indent obj " " $1
+                     doprint = 0
+                     print $1 >> ldtmp3
+                     next
+                  }
+                  {
+                     print $NF >> ldtmp5
+                  }
                   END {if (doprint && obj) print indent obj}' \
                   indent="$INDENT" ldtmp3=ldtmp3.$$ ldtmp5=ldtmp5.$$
         else
 #          Use packed results of stage 1 analysis.
            while read OBJ
            do
-              grep "^$OBJ " ldtmp0.$$ | \
+              grep "^$OBJ " ldtmp0.$$ |
                  awk \
-                    '/[0-9][0-9]*$/ {print indent $1 " " $2 ; \
-                                printed = 1 ; \
-                                print $2 >> ldtmp3} \
-                    !/[0-9][0-9]*$/ {print $NF >> ldtmp5} \
+                    '/[0-9][0-9]*$/ {print indent $1 " " $2
+                                printed = 1
+                                print $2 >> ldtmp3}
+                    !/[0-9][0-9]*$/ {print $NF >> ldtmp5}
                     END {if (! printed) print indent obj }' \
                     obj="$OBJ" indent="$INDENT" \
                     ldtmp3=ldtmp3.$$ ldtmp5=ldtmp5.$$
@@ -588,7 +608,7 @@
         grep -v '(.*)' ldtmp5.$$ | sort -u > ldtmp6.$$
         mv ldtmp6.$$ ldtmp5.$$
 
-        diff ldtmp2.$$ ldtmp5.$$ | \
+        diff ldtmp2.$$ ldtmp5.$$ |
         sed -n -e "s/^> //p" > ldtmp4.$$
 
         cp ldtmp5.$$ ldtmp2.$$
