@@ -28,18 +28,23 @@
 #ifndef CASA_STD_MATH_H
 #define CASA_STD_MATH_H
 
-#if defined(__APPLE__)
-#include <ostream>
-#include <math.h>
-#define isnan __isnan
-#endif
-
 // Define the C standard C++ include file. 
 // This is an interim solution to cater for the SGI non-existence of
 // them (e.g. <cstring>)
 
 // Make sure any special macros are set
 #include <casa/aips.h>
+
+#if defined(__APPLE__)
+#include <ostream>
+#if defined(AIPS_DARWIN8)
+#include <architecture/ppc/math.h>
+#define isnan __isnand
+#else
+#include <math.h>
+#define isnan __isnand
+#endif
+#endif
 
 #if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE) 
 # include <math.h>
@@ -50,7 +55,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     using std::abs;
 } //# NAMESPACE CASA - END
 # endif
-# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_INTELCC))
+# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_INTELCC) || defined(AIPS_DARWIN))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
