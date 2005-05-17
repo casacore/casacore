@@ -1,150 +1,153 @@
 1000 casa/Arrays/Array.cc 
+     = casa/Arrays/Slicer.h 
+     template class Array<Slicer> 
+1010 casa/Arrays/Array.cc 
      = casa/Arrays/Vector.h 
      = casa/BasicSL/Complex.h 
      template class Array<Vector<Complex> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Vector<Complex> >::ConstIteratorSTL 
      #endif 
-1010 casa/Arrays/Array.cc 
+1020 casa/Arrays/Array.cc 
      = casa/Arrays/Vector.h 
      template class Array<Vector<Double> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Vector<Double> >::ConstIteratorSTL 
      #endif 
-1020 casa/Arrays/Array.cc 
+1030 casa/Arrays/Array.cc 
      = casa/Arrays/Vector.h 
      template class Array<Vector<Float> > 
-1030 casa/Arrays/Array.cc 
+1040 casa/Arrays/Array.cc 
      = casa/BasicSL/Complex.h 
      template class Array<Complex> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Complex>::ConstIteratorSTL 
      #endif 
-1040 casa/Arrays/Array.cc 
+1050 casa/Arrays/Array.cc 
      = casa/BasicSL/Complex.h 
      template class Array<DComplex> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<DComplex>::ConstIteratorSTL 
      #endif 
-1050 casa/Arrays/Array.cc 
+1060 casa/Arrays/Array.cc 
      = casa/BasicSL/String.h 
      template class Array<String> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<String>::ConstIteratorSTL 
      #endif 
-1060 casa/Arrays/Array.cc 
+1070 casa/Arrays/Array.cc 
      = casa/Quanta/MVDirection.h 
      template class Array<MVDirection> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MVDirection>::ConstIteratorSTL 
      #endif 
-1070 casa/Arrays/Array.cc 
+1080 casa/Arrays/Array.cc 
      = casa/Quanta/MVFrequency.h 
      template class Array<MVFrequency> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MVFrequency>::ConstIteratorSTL 
      #endif 
-1080 casa/Arrays/Array.cc 
+1090 casa/Arrays/Array.cc 
      = casa/Quanta/MVPosition.h 
      template class Array<MVPosition> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MVPosition>::ConstIteratorSTL 
      #endif 
-1090 casa/Arrays/Array.cc 
+1100 casa/Arrays/Array.cc 
      = casa/Quanta/MVTime.h 
      template class Array<MVTime> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MVTime>::ConstIteratorSTL 
      #endif 
-1100 casa/Arrays/Array.cc 
+1110 casa/Arrays/Array.cc 
      = casa/Quanta/Quantum.h 
      template class Array<Quantum<Double> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Quantum<Double> >::ConstIteratorSTL 
      #endif 
-1110 casa/Arrays/Array.cc 
+1120 casa/Arrays/Array.cc 
      = casa/Quanta/Quantum.h 
      template class Array<Quantum<Float> > 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Quantum<Float> >::ConstIteratorSTL 
      #endif 
-1120 casa/Arrays/Array.cc 
+1130 casa/Arrays/Array.cc 
      = casa/Quanta/QuantumHolder.h 
      template class Array<QuantumHolder> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<QuantumHolder>::ConstIteratorSTL 
      #endif 
-1130 casa/Arrays/Array.cc 
+1140 casa/Arrays/Array.cc 
      = casa/Quanta/Unit.h 
      template class Array<Unit> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Unit>::ConstIteratorSTL 
      #endif 
-1140 casa/Arrays/Array.cc casa/Arrays/Matrix.h 
+1150 casa/Arrays/Array.cc casa/Arrays/Matrix.h 
      = casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      template class Array<Matrix<CountedPtr<Random> > > 
-1150 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
+1160 casa/Arrays/Array.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      template class Array<CountedPtr<Random> > 
-1160 casa/Arrays/Array.cc 
-     template class Array<Array<Double> > 
 1170 casa/Arrays/Array.cc 
+     template class Array<Array<Double> > 
+1180 casa/Arrays/Array.cc 
      template class Array<Bool> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Bool>::ConstIteratorSTL 
      #endif 
-1180 casa/Arrays/Array.cc 
+1190 casa/Arrays/Array.cc 
      template class Array<Char> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Char>::ConstIteratorSTL 
      #endif 
-1190 casa/Arrays/Array.cc 
+1200 casa/Arrays/Array.cc 
      template class Array<Double> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Double>::ConstIteratorSTL 
      #endif 
-1200 casa/Arrays/Array.cc 
+1210 casa/Arrays/Array.cc 
      template class Array<Float *> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Float *>::ConstIteratorSTL 
      #endif 
-1210 casa/Arrays/Array.cc 
+1220 casa/Arrays/Array.cc 
      template class Array<Float> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Float>::ConstIteratorSTL 
      #endif 
-1220 casa/Arrays/Array.cc 
+1230 casa/Arrays/Array.cc 
      template class Array<Int> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Int>::ConstIteratorSTL 
      #endif 
-1230 casa/Arrays/Array.cc 
+1240 casa/Arrays/Array.cc 
      template class Array<Long> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Long>::ConstIteratorSTL 
      #endif 
-1240 casa/Arrays/Array.cc 
+1250 casa/Arrays/Array.cc 
      template class Array<Short> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<Short>::ConstIteratorSTL 
      #endif 
-1250 casa/Arrays/Array.cc 
+1260 casa/Arrays/Array.cc 
      template class Array<uChar> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<uChar>::ConstIteratorSTL 
      #endif 
-1260 casa/Arrays/Array.cc 
+1270 casa/Arrays/Array.cc 
      template class Array<uInt> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<uInt>::ConstIteratorSTL 
      #endif 
-1270 casa/Arrays/Array.cc 
+1280 casa/Arrays/Array.cc 
      template class Array<uLong> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<uLong>::ConstIteratorSTL 
      #endif 
-1280 casa/Arrays/Array.cc 
+1290 casa/Arrays/Array.cc 
      template class Array<uShort> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<uShort>::ConstIteratorSTL 
@@ -952,16 +955,19 @@
      = casa/Arrays/Array.h 
      template class MaskedArray<Array<Double> > 
 1010 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Slicer.h 
+     template class MaskedArray<Slicer> 
+1020 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Vector.h 
      = casa/BasicSL/Complex.h 
      template class MaskedArray<Vector<Complex> > 
-1020 casa/Arrays/MaskedArray.cc 
-     = casa/Arrays/Vector.h 
-     template class MaskedArray<Vector<Double> > 
 1030 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/Vector.h 
-     template class MaskedArray<Vector<Float> > 
+     template class MaskedArray<Vector<Double> > 
 1040 casa/Arrays/MaskedArray.cc 
+     = casa/Arrays/Vector.h 
+     template class MaskedArray<Vector<Float> > 
+1050 casa/Arrays/MaskedArray.cc 
      = casa/BasicSL/Complex.h casa/BasicSL/String.h 
      template class MaskedArray<Bool> 
      template class MaskedArray<uChar> 
@@ -974,43 +980,43 @@
      template class MaskedArray<Complex> 
      template class MaskedArray<DComplex> 
      template class MaskedArray<String> 
-1050 casa/Arrays/MaskedArray.cc 
+1060 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVDirection.h 
      template class MaskedArray<MVDirection> 
-1060 casa/Arrays/MaskedArray.cc 
+1070 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVFrequency.h 
      template class MaskedArray<MVFrequency> 
-1070 casa/Arrays/MaskedArray.cc 
+1080 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVPosition.h 
      template class MaskedArray<MVPosition> 
-1080 casa/Arrays/MaskedArray.cc 
+1090 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVTime.h 
      template class MaskedArray<MVTime> 
-1090 casa/Arrays/MaskedArray.cc 
-     = casa/Quanta/Quantum.h 
-     template class MaskedArray<Quantum<Double> > 
 1100 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/Quantum.h 
-     template class MaskedArray<Quantum<Float> > 
+     template class MaskedArray<Quantum<Double> > 
 1110 casa/Arrays/MaskedArray.cc 
+     = casa/Quanta/Quantum.h 
+     template class MaskedArray<Quantum<Float> > 
+1120 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/QuantumHolder.h 
      template class MaskedArray<QuantumHolder> 
-1120 casa/Arrays/MaskedArray.cc 
+1130 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/Unit.h 
      template class MaskedArray<Unit> 
-1130 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
+1140 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h casa/Arrays/Matrix.h 
      template class MaskedArray<Matrix<CountedPtr<Random> > > 
-1140 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
+1150 casa/Arrays/MaskedArray.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      template class MaskedArray<CountedPtr<Random> > 
-1150 casa/Arrays/MaskedArray.cc 
-     template class MaskedArray<Char> 
 1160 casa/Arrays/MaskedArray.cc 
-     template class MaskedArray<Float *> 
+     template class MaskedArray<Char> 
 1170 casa/Arrays/MaskedArray.cc 
-     template class MaskedArray<Long> 
+     template class MaskedArray<Float *> 
 1180 casa/Arrays/MaskedArray.cc 
+     template class MaskedArray<Long> 
+1190 casa/Arrays/MaskedArray.cc 
      template class MaskedArray<uLong> 
 1000 casa/Arrays/Matrix.cc 
      = casa/BasicSL/Complex.h 
@@ -1077,29 +1083,32 @@
 1110 casa/Arrays/MatrixMath.cc 
      template Vector<Float> product(Matrix<Float> const &, Vector<Float> const &) 
 1000 casa/Arrays/Vector.cc 
+     = casa/Arrays/Slicer.h 
+     template class Vector<Slicer> 
+1010 casa/Arrays/Vector.cc 
      = casa/BasicSL/Complex.h 
      template class Vector<Vector<Complex> > 
-1010 casa/Arrays/Vector.cc 
+1020 casa/Arrays/Vector.cc 
      = casa/Quanta/MVDirection.h 
      template class Vector<MVDirection> 
-1020 casa/Arrays/Vector.cc 
+1030 casa/Arrays/Vector.cc 
      = casa/Quanta/MVFrequency.h 
      template class Vector<MVFrequency> 
-1030 casa/Arrays/Vector.cc 
+1040 casa/Arrays/Vector.cc 
      = casa/Quanta/MVPosition.h 
      template class Vector<MVPosition> 
-1040 casa/Arrays/Vector.cc 
+1050 casa/Arrays/Vector.cc 
      = casa/Quanta/MVTime.h 
      template class Vector<MVTime> 
-1050 casa/Arrays/Vector.cc 
+1060 casa/Arrays/Vector.cc 
      = casa/Quanta/QuantumHolder.h 
      template class Vector<QuantumHolder> 
-1060 casa/Arrays/Vector.cc 
+1070 casa/Arrays/Vector.cc 
      = casa/Quanta/Unit.h 
      template class Vector<Unit> 
-1070 casa/Arrays/Vector.cc casa/Arrays/Array.h 
+1080 casa/Arrays/Vector.cc casa/Arrays/Array.h 
      template class Vector<Array<Double> > 
-1080 casa/Arrays/Vector.cc casa/BasicSL/Complex.h 
+1090 casa/Arrays/Vector.cc casa/BasicSL/Complex.h 
      = casa/BasicSL/String.h 
      template class Vector<Bool> 
      template class Vector<uChar> 
@@ -1112,26 +1121,26 @@
      template class Vector<Complex> 
      template class Vector<DComplex> 
      template class Vector<String> 
-1090 casa/Arrays/Vector.cc casa/Quanta/Quantum.h 
+1100 casa/Arrays/Vector.cc casa/Quanta/Quantum.h 
      template class Vector<Quantum<Double> > 
-1100 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
+1110 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      = casa/Arrays/Matrix.h 
      template class Vector<Matrix<CountedPtr<Random> > > 
-1110 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
+1120 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
      = casa/BasicMath/Random.h 
      template class Vector<CountedPtr<Random> > 
-1120 casa/Arrays/Vector.cc 
-     template class Vector<Char> 
 1130 casa/Arrays/Vector.cc 
-     template class Vector<Float *> 
+     template class Vector<Char> 
 1140 casa/Arrays/Vector.cc 
-     template class Vector<Long> 
+     template class Vector<Float *> 
 1150 casa/Arrays/Vector.cc 
-     template class Vector<Vector<Double> > 
+     template class Vector<Long> 
 1160 casa/Arrays/Vector.cc 
-     template class Vector<Vector<Float> > 
+     template class Vector<Vector<Double> > 
 1170 casa/Arrays/Vector.cc 
+     template class Vector<Vector<Float> > 
+1180 casa/Arrays/Vector.cc 
      template class Vector<uLong> 
 1000 casa/Arrays/VectorIter.cc casa/BasicSL/Complex.h 
      template class ReadOnlyVectorIterator<Complex> 
@@ -2232,13 +2241,21 @@
      template class SimpleCountedPtr<Array<uInt> > 
 1010 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
+     = casa/Arrays/Slicer.h 
+     template class CountedConstPtr<Block<Slicer> > 
+     template class CountedPtr<Block<Slicer> > 
+     template class PtrRep<Block<Slicer> > 
+     template class SimpleCountedConstPtr<Block<Slicer> > 
+     template class SimpleCountedPtr<Block<Slicer> > 
+1020 casa/Utilities/CountedPtr.cc 
+     = casa/Containers/Block.h 
      = casa/Quanta/QuantumHolder.h 
      template class CountedConstPtr<Block<QuantumHolder> > 
      template class CountedPtr<Block<QuantumHolder> > 
      template class PtrRep<Block<QuantumHolder> > 
      template class SimpleCountedConstPtr<Block<QuantumHolder> > 
      template class SimpleCountedPtr<Block<QuantumHolder> > 
-1020 casa/Utilities/CountedPtr.cc 
+1030 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      = casa/Quanta/Unit.h 
      template class CountedPtr<Block<Unit> > 
@@ -2246,293 +2263,293 @@
      template class PtrRep<Block<Unit> > 
      template class SimpleCountedPtr<Block<Unit> > 
      template class SimpleCountedConstPtr<Block<Unit> > 
-1030 casa/Utilities/CountedPtr.cc 
+1040 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      template class CountedConstPtr<Block<Long> > 
      template class CountedPtr<Block<Long> > 
      template class PtrRep<Block<Long> > 
      template class SimpleCountedConstPtr<Block<Long> > 
      template class SimpleCountedPtr<Block<Long> > 
-1040 casa/Utilities/CountedPtr.cc 
+1050 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      template class CountedConstPtr<Block<uLong> > 
      template class CountedPtr<Block<uLong> > 
      template class PtrRep<Block<uLong> > 
      template class SimpleCountedConstPtr<Block<uLong> > 
      template class SimpleCountedPtr<Block<uLong> > 
-1050 casa/Utilities/CountedPtr.cc 
+1060 casa/Utilities/CountedPtr.cc 
      = casa/Containers/Block.h 
      template class CountedConstPtr<Block<void *> > 
      template class CountedPtr<Block<void *> > 
      template class PtrRep<Block<void *> > 
      template class SimpleCountedConstPtr<Block<void *> > 
      template class SimpleCountedPtr<Block<void *> > 
-1060 casa/Utilities/CountedPtr.cc 
+1070 casa/Utilities/CountedPtr.cc 
      = casa/System/PGPlotterInterface.h 
      template class CountedPtr<PGPlotterInterface> 
      template class CountedConstPtr<PGPlotterInterface> 
      template class SimpleCountedPtr<PGPlotterInterface> 
      template class SimpleCountedConstPtr<PGPlotterInterface> 
      template class PtrRep<PGPlotterInterface> 
-1070 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
+1080 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
      = casa/BasicSL/Complex.h 
      template class CountedPtr<Array<Complex> > 
      template class PtrRep<Array<Complex> > 
      template class SimpleCountedConstPtr<Array<Complex> > 
      template class CountedConstPtr<Array<Complex> > 
      template class SimpleCountedPtr<Array<Complex> > 
-1080 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
+1090 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
      template class CountedConstPtr<Array<Bool> > 
      template class CountedPtr<Array<Bool> > 
      template class PtrRep<Array<Bool> > 
      template class SimpleCountedConstPtr<Array<Bool> > 
      template class SimpleCountedPtr<Array<Bool> > 
-1090 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
+1100 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
      template class CountedConstPtr<Array<Double> > 
      template class CountedPtr<Array<Double> > 
      template class PtrRep<Array<Double> > 
      template class SimpleCountedConstPtr<Array<Double> > 
      template class SimpleCountedPtr<Array<Double> > 
-1100 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
+1110 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
      template class CountedConstPtr<Array<Float> > 
      template class CountedPtr<Array<Float> > 
      template class PtrRep<Array<Float> > 
      template class SimpleCountedConstPtr<Array<Float> > 
      template class SimpleCountedPtr<Array<Float> > 
-1110 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
+1120 casa/Utilities/CountedPtr.cc casa/Arrays/Array.h 
      template class CountedConstPtr<Array<Int> > 
      template class CountedPtr<Array<Int> > 
      template class PtrRep<Array<Int> > 
      template class SimpleCountedConstPtr<Array<Int> > 
      template class SimpleCountedPtr<Array<Int> > 
-1120 casa/Utilities/CountedPtr.cc casa/Arrays/Vector.h 
+1130 casa/Utilities/CountedPtr.cc casa/Arrays/Vector.h 
      = casa/Containers/Block.h 
      template class SimpleCountedConstPtr<Block<Vector<Float> > > 
      template class PtrRep<Block<Vector<Float> > > 
      template class CountedPtr<Block<Vector<Float> > > 
      template class CountedConstPtr<Block<Vector<Float> > > 
      template class SimpleCountedPtr<Block<Vector<Float> > > 
-1130 casa/Utilities/CountedPtr.cc casa/BasicMath/Random.h 
+1140 casa/Utilities/CountedPtr.cc casa/BasicMath/Random.h 
      = casa/Containers/Block.h 
      template class SimpleCountedConstPtr<Random> 
      template class SimpleCountedPtr<Random> 
      template class CountedConstPtr<Random> 
      template class CountedPtr<Random> 
      template class PtrRep<Random> 
-1140 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1150 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Arrays/Array.h 
      template class CountedConstPtr<Block<Array<Double> > > 
      template class CountedPtr<Block<Array<Double> > > 
      template class PtrRep<Block<Array<Double> > > 
      template class SimpleCountedConstPtr<Block<Array<Double> > > 
      template class SimpleCountedPtr<Block<Array<Double> > > 
-1150 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1160 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Arrays/Matrix.h casa/BasicMath/Random.h 
      template class CountedConstPtr<Block<Matrix<CountedPtr<Random> > > > 
      template class CountedPtr<Block<Matrix<CountedPtr<Random> > > > 
      template class SimpleCountedConstPtr<Block<Matrix<CountedPtr<Random> > > > 
      template class SimpleCountedPtr<Block<Matrix<CountedPtr<Random> > > > 
      template class PtrRep<Block<Matrix<CountedPtr<Random> > > > 
-1160 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1170 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Arrays/Vector.h casa/BasicSL/Complex.h 
      template class CountedConstPtr<Block<Vector<Complex> > > 
      template class CountedPtr<Block<Vector<Complex> > > 
      template class PtrRep<Block<Vector<Complex> > > 
      template class SimpleCountedConstPtr<Block<Vector<Complex> > > 
      template class SimpleCountedPtr<Block<Vector<Complex> > > 
-1170 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1180 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Arrays/Vector.h 
      template class CountedConstPtr<Block<Vector<Double> > > 
      template class CountedPtr<Block<Vector<Double> > > 
      template class PtrRep<Block<Vector<Double> > > 
      template class SimpleCountedConstPtr<Block<Vector<Double> > > 
      template class SimpleCountedPtr<Block<Vector<Double> > > 
-1180 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1190 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/BasicMath/Random.h 
      template class CountedConstPtr<Block<CountedPtr<Random> > > 
      template class CountedPtr<Block<CountedPtr<Random> > > 
      template class SimpleCountedConstPtr<Block<CountedPtr<Random> > > 
      template class SimpleCountedPtr<Block<CountedPtr<Random> > > 
      template class PtrRep<Block<CountedPtr<Random> > > 
-1190 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1200 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/BasicSL/Complex.h 
      template class CountedConstPtr<Block<Complex> > 
      template class CountedPtr<Block<Complex> > 
      template class PtrRep<Block<Complex> > 
      template class SimpleCountedConstPtr<Block<Complex> > 
      template class SimpleCountedPtr<Block<Complex> > 
-1200 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1210 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/BasicSL/Complex.h 
      template class CountedConstPtr<Block<DComplex> > 
      template class CountedPtr<Block<DComplex> > 
      template class PtrRep<Block<DComplex> > 
      template class SimpleCountedConstPtr<Block<DComplex> > 
      template class SimpleCountedPtr<Block<DComplex> > 
-1210 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1220 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/BasicSL/String.h casa/Utilities/Regex.h 
      template class SimpleCountedConstPtr<Regex> 
      template class CountedConstPtr<Regex> 
      template class CountedPtr<Regex> 
      template class PtrRep<Regex> 
      template class SimpleCountedPtr<Regex> 
-1220 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1230 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/BasicSL/String.h 
      template class CountedConstPtr<Block<String> > 
      template class CountedPtr<Block<String> > 
      template class PtrRep<Block<String> > 
      template class SimpleCountedConstPtr<Block<String> > 
      template class SimpleCountedPtr<Block<String> > 
-1230 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1240 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/MVDirection.h 
      template class CountedConstPtr<Block<MVDirection> > 
      template class CountedPtr<Block<MVDirection> > 
      template class PtrRep<Block<MVDirection> > 
      template class SimpleCountedConstPtr<Block<MVDirection> > 
      template class SimpleCountedPtr<Block<MVDirection> > 
-1240 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1250 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/MVFrequency.h 
      template class CountedConstPtr<Block<MVFrequency> > 
      template class CountedPtr<Block<MVFrequency> > 
      template class PtrRep<Block<MVFrequency> > 
      template class SimpleCountedConstPtr<Block<MVFrequency> > 
      template class SimpleCountedPtr<Block<MVFrequency> > 
-1250 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1260 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/MVPosition.h 
      template class CountedConstPtr<Block<MVPosition> > 
      template class CountedPtr<Block<MVPosition> > 
      template class PtrRep<Block<MVPosition> > 
      template class SimpleCountedConstPtr<Block<MVPosition> > 
      template class SimpleCountedPtr<Block<MVPosition> > 
-1260 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1270 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/MVTime.h 
      template class CountedPtr<Block<MVTime> > 
      template class SimpleCountedPtr<Block<MVTime> > 
      template class CountedConstPtr<Block<MVTime> > 
      template class SimpleCountedConstPtr<Block<MVTime> > 
      template class PtrRep<Block<MVTime> > 
-1270 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1280 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/Quantum.h 
      template class CountedConstPtr<Block<Quantum<Double> > > 
      template class CountedPtr<Block<Quantum<Double> > > 
      template class PtrRep<Block<Quantum<Double> > > 
      template class SimpleCountedConstPtr<Block<Quantum<Double> > > 
      template class SimpleCountedPtr<Block<Quantum<Double> > > 
-1280 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1290 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/Quantum.h 
      template class CountedPtr<Block<Quantum<Float> > > 
      template class CountedConstPtr<Block<Quantum<Float> > > 
      template class SimpleCountedPtr<Block<Quantum<Float> > > 
      template class SimpleCountedConstPtr<Block<Quantum<Float> > > 
      template class PtrRep<Block<Quantum<Float> > > 
-1290 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1300 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Bool> > 
      template class CountedPtr<Block<Bool> > 
      template class PtrRep<Block<Bool> > 
      template class SimpleCountedConstPtr<Block<Bool> > 
      template class SimpleCountedPtr<Block<Bool> > 
-1300 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1310 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Char> > 
      template class CountedPtr<Block<Char> > 
      template class PtrRep<Block<Char> > 
      template class SimpleCountedConstPtr<Block<Char> > 
      template class SimpleCountedPtr<Block<Char> > 
-1310 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1320 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Double> > 
      template class CountedPtr<Block<Double> > 
      template class PtrRep<Block<Double> > 
      template class SimpleCountedConstPtr<Block<Double> > 
      template class SimpleCountedPtr<Block<Double> > 
-1320 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1330 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Float> > 
      template class CountedPtr<Block<Float> > 
      template class PtrRep<Block<Float> > 
      template class SimpleCountedConstPtr<Block<Float> > 
      template class SimpleCountedPtr<Block<Float> > 
-1330 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1340 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Int> > 
      template class CountedPtr<Block<Int> > 
      template class PtrRep<Block<Int> > 
      template class SimpleCountedConstPtr<Block<Int> > 
      template class SimpleCountedPtr<Block<Int> > 
-1340 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1350 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<Short> > 
      template class CountedPtr<Block<Short> > 
      template class PtrRep<Block<Short> > 
      template class SimpleCountedConstPtr<Block<Short> > 
      template class SimpleCountedPtr<Block<Short> > 
-1350 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1360 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<uChar> > 
      template class CountedPtr<Block<uChar> > 
      template class PtrRep<Block<uChar> > 
      template class SimpleCountedConstPtr<Block<uChar> > 
      template class SimpleCountedPtr<Block<uChar> > 
-1360 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1370 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<uInt> > 
      template class CountedPtr<Block<uInt> > 
      template class PtrRep<Block<uInt> > 
      template class SimpleCountedConstPtr<Block<uInt> > 
      template class SimpleCountedPtr<Block<uInt> > 
-1370 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1380 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedConstPtr<Block<uShort> > 
      template class CountedPtr<Block<uShort> > 
      template class PtrRep<Block<uShort> > 
      template class SimpleCountedConstPtr<Block<uShort> > 
      template class SimpleCountedPtr<Block<uShort> > 
-1380 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+1390 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      template class CountedPtr<Block<Float *> > 
      template class SimpleCountedConstPtr<Block<Float *> > 
      template class CountedConstPtr<Block<Float *> > 
      template class PtrRep<Block<Float *> > 
      template class SimpleCountedPtr<Block<Float *> > 
-1390 casa/Utilities/CountedPtr.cc casa/Containers/RecordDescRep.h 
+1400 casa/Utilities/CountedPtr.cc casa/Containers/RecordDescRep.h 
      template class CountedConstPtr<RecordDescRep> 
      template class CountedPtr<RecordDescRep> 
      template class PtrRep<RecordDescRep> 
      template class SimpleCountedConstPtr<RecordDescRep> 
      template class SimpleCountedPtr<RecordDescRep> 
-1400 casa/Utilities/CountedPtr.cc casa/Containers/RecordRep.h 
+1410 casa/Utilities/CountedPtr.cc casa/Containers/RecordRep.h 
      template class CountedConstPtr<RecordRep> 
      template class CountedPtr<RecordRep> 
      template class PtrRep<RecordRep> 
      template class SimpleCountedConstPtr<RecordRep> 
      template class SimpleCountedPtr<RecordRep> 
-1410 casa/Utilities/CountedPtr.cc casa/IO/ByteIO.h 
+1420 casa/Utilities/CountedPtr.cc casa/IO/ByteIO.h 
      template class CountedPtr<ByteIO> 
      template class CountedConstPtr<ByteIO> 
      template class SimpleCountedPtr<ByteIO> 
      template class SimpleCountedConstPtr<ByteIO> 
      template class PtrRep<ByteIO> 
-1420 casa/Utilities/CountedPtr.cc casa/IO/TypeIO.h 
+1430 casa/Utilities/CountedPtr.cc casa/IO/TypeIO.h 
      template class CountedPtr<TypeIO> 
      template class CountedConstPtr<TypeIO> 
      template class SimpleCountedPtr<TypeIO> 
      template class SimpleCountedConstPtr<TypeIO> 
      template class PtrRep<TypeIO> 
-1430 casa/Utilities/CountedPtr.cc casa/Logging/LogSinkInterface.h 
+1440 casa/Utilities/CountedPtr.cc casa/Logging/LogSinkInterface.h 
      template class CountedConstPtr<LogSinkInterface> 
      template class CountedPtr<LogSinkInterface> 
      template class PtrRep<LogSinkInterface> 
      template class SimpleCountedConstPtr<LogSinkInterface> 
      template class SimpleCountedPtr<LogSinkInterface> 
-1440 casa/Utilities/CountedPtr.cc casa/OS/DataConversion.h 
+1450 casa/Utilities/CountedPtr.cc casa/OS/DataConversion.h 
      template class CountedPtr<DataConversion> 
      template class CountedConstPtr<DataConversion> 
      template class SimpleCountedPtr<DataConversion> 
      template class SimpleCountedConstPtr<DataConversion> 
      template class PtrRep<DataConversion> 
-1450 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
+1460 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
      template class CountedConstPtr<SysEventTarget> 
      template class CountedPtr<SysEventTarget> 
      template class PtrRep<SysEventTarget> 
      template class SimpleCountedConstPtr<SysEventTarget> 
      template class SimpleCountedPtr<SysEventTarget> 
-1460 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
+1470 casa/Utilities/CountedPtr.cc casa/OS/SysEvent.h 
      template class CountedConstPtr<SysEventTargetInfo> 
      template class CountedPtr<SysEventTargetInfo> 
      template class PtrRep<SysEventTargetInfo> 
      template class SimpleCountedConstPtr<SysEventTargetInfo> 
      template class SimpleCountedPtr<SysEventTargetInfo> 
-1470 casa/Utilities/CountedPtr.cc casa/fstream.h 
+1480 casa/Utilities/CountedPtr.cc casa/fstream.h 
      template class CountedConstPtr<fstream> 
      template class CountedPtr<fstream> 
      template class PtrRep<fstream> 
@@ -2745,31 +2762,31 @@
      = casa/BasicSL/String.h 
      = casa/Quanta/UnitName.h 
      = casa/Quanta/UnitVal.h 
-     #namespace
+     #namespace 
      template class std::map<casa::String, casa::UnitName> 
      AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitName) 
      template class std::map<casa::String, casa::UnitVal> 
      AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitVal) 
 1000 casa/vector.h 
-     = casa/BasicSL/Complex.h 
-     #namespace
-     template class std::vector<casa::Complex> 
-     AIPS_VECTOR_AUX_TEMPLATES(casa::Complex) 
-1010 casa/vector.h 
-     = casa/BasicSL/Complex.h 
-     #namespace
-     template class std::vector<casa::DComplex> 
-     AIPS_VECTOR_AUX_TEMPLATES(casa::DComplex) 
-1020 casa/vector.h casa/Arrays/Slice.h 
-     #namespace
-     template class std::vector<casa::Slice> 
-     AIPS_VECTOR_AUX_TEMPLATES(casa::Slice) 
-1030 casa/vector.h 
-     #namespace
+     #namespace 
      template class std::vector<casa::Double> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Double) 
-1040 casa/vector.h 
-     #namespace
+1010 casa/vector.h 
+     #namespace 
      template class std::vector<casa::Float> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Float) 
+1020 casa/vector.h 
+     = casa/BasicSL/Complex.h 
+     #namespace 
+     template class std::vector<casa::Complex> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Complex) 
+1030 casa/vector.h 
+     = casa/BasicSL/Complex.h 
+     #namespace 
+     template class std::vector<casa::DComplex> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::DComplex) 
+1040 casa/vector.h casa/Arrays/Slice.h 
+     #namespace 
+     template class std::vector<casa::Slice> 
+     AIPS_VECTOR_AUX_TEMPLATES(casa::Slice) 
 #
