@@ -22,6 +22,9 @@
      #ifdef AIPS_SUN_NATIVE 
        template class Array<TableRecord>::ConstIteratorSTL 
      #endif 
+1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+     template void convertArray(Array<Complex> &, Array<DComplex> const &) 
+     template void convertArray(Array<DComplex> &, Array<Complex> const &) 
 1000 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/IPosition.h 
      template class MaskedArray<IPosition> 
@@ -232,6 +235,11 @@
      = casa/BasicSL/Complex.h 
      template class BaseMappedArrayEngine<Complex, Int> 
      template class BaseMappedArrayEngine<Float, Short> 
+1000 tables/Tables/MappedArrayEngine.cc 
+     = tables/Tables/BaseMappedArrayEngine.cc 
+     = casa/BasicSL/Complex.h 
+     template class MappedArrayEngine<Complex, DComplex> 
+     template class BaseMappedArrayEngine<Complex, DComplex> 
 1000 tables/Tables/ScaColData.cc casa/BasicSL/Complex.h 
      = casa/BasicSL/String.h 
      template class ScalarColumnData<Bool> 
