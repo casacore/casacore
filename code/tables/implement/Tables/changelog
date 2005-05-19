@@ -438,3 +438,23 @@ TaQL got an operator INCONE and a few new functions to make it possible to find 
 It is possible to do catalogue matching using these new functions.
  </description>
 </change>
+
+<change id=0169>
+ <author> Ger van Diepen </author>
+ <date> 2005/05/19 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Added class MappedArrayEngine
+ </summary>
+ <description>
+The class MappedArrayEngine has been added.
+It makes it possible to map the data type of a column to another data type.
+For instance, for accuracy it is sometimes needed to store the residual data in an MS as double precision. The imager can only read single precision data, so using this engine the column containing the residual data can be mapped to a virtual column with single precision data.
+ </description>
+</change>
