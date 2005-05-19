@@ -38,6 +38,7 @@
 #include <tables/Tables/MemoryStMan.h>
 #include <tables/Tables/CompressFloat.h>
 #include <tables/Tables/CompressComplex.h>
+#include <tables/Tables/MappedArrayEngine.h>
 #include <tables/Tables/ForwardCol.h>
 #include <tables/Tables/VirtualTaQLColumn.h>
 #include <tables/Tables/SetupNewTab.h>
@@ -429,6 +430,7 @@ void DataManager::registerAllCtor ()
     CompressFloat::registerClass();
     CompressComplex::registerClass();
     CompressComplexSD::registerClass();
+    MappedArrayEngine<Complex,DComplex>::registerClass();
     ForwardColumnEngine::registerClass();
     VirtualTaQLColumn::registerClass();
 }
