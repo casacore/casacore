@@ -116,3 +116,17 @@ The basic fitting class (LSQFit and its derived LSQaips) has been enhanced with:
 - toRecord/fromRecord: to enable transport of fitting information (normal equations e.g.) between different processing nodes the Fitting objecst can be converted to/from generic Records.
 
 Examples of the use of these facilities are in tLSQFit.
+
+change id: 0169
+ author:   Ger van Diepen
+ date:     2005/05/19
+ avers:    1.9
+ area:     Library
+ package:  tables
+ module:   Tables
+ type:     Code
+ category: New
+ summary:  Added class MappedArrayEngine
+The class MappedArrayEngine has been added.
+It makes it possible to map the data type of a column to another data type.
+For instance, for accuracy it is sometimes needed to store the residual data in an MS as double precision. The imager can only read single precision data, so using this engine the column containing the residual data can be mapped to a virtual column with single precision data.
