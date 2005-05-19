@@ -53,6 +53,7 @@
 #include <tables/Tables/RetypedArrayEngine.h>
 #include <tables/Tables/RetypedArraySetGet.h>
 #include <tables/Tables/ScaledArrayEngine.h>
+#include <tables/Tables/MappedArrayEngine.h>
 #include <tables/Tables/ForwardCol.h>
 #include <tables/Tables/ForwardColRow.h>
 #include <tables/Tables/CompressComplex.h>
@@ -1259,6 +1260,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <linkto class="ScaledArrayEngine:description">ScaledArrayEngine</linkto>
 //   scales the data in an array from, for example,
 //   float to short before putting it.
+//  <li> The double templated class
+//   <linkto class="MappedArrayEngine:description">MappedArrayEngine</linkto>
+//   converts the data from one data type to another. Sometimes it might be
+//   needed to store the residual data in an MS in double precision.
+//   Because the imaging task can only handle single precision, this enigne
+//   can be used to map the data from double to single precision.
 //  <li> The double templated class
 //   <linkto class="RetypedArrayEngine:description">RetypedArrayEngine</linkto>
 //   converts the data from one data type to another with the possibility
