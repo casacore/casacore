@@ -484,6 +484,7 @@
         EXTLIST=`echo $EXTLIST | sed -e "{s/::/:/g;s/^://;s/:$//;}"`
 
         aips_ext=$AIPSEXT . $AIPSROOT/aipsinit.sh
+	ARCH=`echo $AIPSPATH | awk '{ print $2 }'`
 
         LOGFILE=`getrc -i sneeze.$HOST.$AIPSEXT.logfile 2> /dev/null`
         LOGMAIL=`getrc -i sneeze.$HOST.$AIPSEXT.logmail 2> /dev/null`
