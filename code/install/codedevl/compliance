@@ -1,6 +1,7 @@
 #!/bin/sh
 
-path=`echo $AIPSPATH | awk '{ print $1; }'`/code
+codetree=../..
+scriptpath=.
 
 function depend
 {
@@ -17,25 +18,25 @@ function depend
    do
       rm -rf $dep_compliance.log
 
-      grep ^\#include\ \<$dep\/ $path/$2/$subdir/*.h \
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*.h \
            >> $dep_compliance.log \
            2> /dev/null
-      grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/*.h \
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/*.h \
            >> $dep_compliance.log \
            2> /dev/null
-      grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/*.cc \
+      grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/*.cc \
            >> $dep_compliance.log \
            2> /dev/null
 
-      if test -d $path/$2/$subdir/src
+      if test -d $codetree/$2/$subdir/src
          then
-           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*.h \
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/src/*.h \
                 >> $dep_compliance.log \
                 2> /dev/null
-           grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/src/*.h \
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/src/*.h \
                 >> $dep_compliance.log \
                 2> /dev/null
-           grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/src/*.cc \
+           grep ^\#include\ \<$dep\/ $codetree/$2/$subdir/*/src/*.cc \
                 >> $dep_compliance.log \
                 2> /dev/null
       fi
@@ -81,20 +82,27 @@ function checkdir
 {
    for dir in `cat compliance.dat`
    do
-      if test -d $path/$dir
+      if test -d $codetree/$dir
          then
             continue
          else
-            echo "Missing $path/$dir"
+            echo "Missing $codetree/$dir"
             echo "The compliance script must be run from the root tree"
             exit 1
       fi
    done
+
+   if test -d $codetree/install/codedevl/src
+      then
+         scriptpath=$codetree/install/codedevl/src
+      else
+         scriptpath=$codetree/install/codedevl
+   fi
 }
 
 function compliance
 {
-   for diff in `diff compliance.$1 compliance.log`
+   for diff in `diff $scriptpath/compliance.$1 compliance.log`
    do
 
       if test $diff = ">"
