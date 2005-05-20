@@ -227,8 +227,9 @@ void TableCopy::copyRows (Table& out, const Table& in, uInt startout,
   if (startin + nrrow > in.nrow()) {
     throw TableError ("TableCopy: startin+nrrow exceed nr of input rows");
   }
-  // Get all stored columns in the output table.
-  TableRow outrow(out, True);
+  // Get all columns in the output table.
+  // If there are multiple columns, only take the stored ones.
+  TableRow outrow(out, out.tableDesc().ncolumn() > 1);
   Vector<String> columns = outrow.columnNames();
   const TableDesc& tdesc = in.tableDesc();
   // Only copy the columns that exist in the input table.
