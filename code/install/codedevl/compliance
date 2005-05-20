@@ -14,7 +14,7 @@ function depend
          echo "  Application:" >> compliance.log
    fi
 
-   for dep in `cat compliance.dat`
+   for dep in `cat $scriptpath/compliance.dat`
    do
       rm -rf $dep_compliance.log
 
@@ -80,7 +80,14 @@ function usage
 
 function checkdir
 {
-   for dir in `cat compliance.dat`
+   if test -d $codetree/install/codedevl/src
+      then
+         scriptpath=$codetree/install/codedevl/src
+      else
+         scriptpath=$codetree/install/codedevl
+   fi
+
+   for dir in `cat $scriptpath/compliance.dat`
    do
       if test -d $codetree/$dir
          then
@@ -91,13 +98,6 @@ function checkdir
             exit 1
       fi
    done
-
-   if test -d $codetree/install/codedevl/src
-      then
-         scriptpath=$codetree/install/codedevl/src
-      else
-         scriptpath=$codetree/install/codedevl
-   fi
 }
 
 function compliance
@@ -134,7 +134,7 @@ if test $2
       echo
       cat compliance.log
    else
-      for dir in `cat compliance.dat`
+      for dir in `cat $scriptpath/compliance.dat`
       do
          process $1 $dir
       done
