@@ -32,10 +32,10 @@ function depend
            grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*.h \
                 >> $dep_compliance.log \
                 2> /dev/null
-           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*/*.h \
+           grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/src/*.h \
                 >> $dep_compliance.log \
                 2> /dev/null
-           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*/*.cc \
+           grep ^\#include\ \<$dep\/ $path/$2/$subdir/*/src/*.cc \
                 >> $dep_compliance.log \
                 2> /dev/null
       fi
