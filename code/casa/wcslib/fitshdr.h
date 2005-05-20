@@ -143,7 +143,14 @@
 *          Sect. 5.2.1), integer (Sect. 5.2.3), and floating-point values
 *          (Sect. 5.2.4) for all keywords.
 *
-*       f) "END     " not followed by 72 blanks is not considered to be a
+*       f) Sect. 5.2.3 offers no comment on the size of an integer keyvalue
+*          except indirectly in limiting it to 70 digits.  The parser will
+*          translates an integer keyvalue to a 32-bit signed integer if it
+*          lies in the range -2147483648 to +2147483647, otherwise it
+*          interprets it as a 64-bit signed integer if possible, or else a
+*          "very long" integer as described below.
+*
+*       g) "END     " not followed by 72 blanks is not considered to be a
 *          legitimate end card.
 *
 *
@@ -183,22 +190,57 @@
 *         Keyvalue data type:
 *            0: No keyvalue.
 *            1: Logical, represented as int.
-*            2: Integer.
-*            3: Floating point (stored as double).
-*            4: Integer complex (stored as double[2]).
-*            5: Floating point complex (stored as double[2]).
-*            6: String.
+*            2: 32-bit signed integer.
+*            3: 64-bit signed integer (see below).
+*            4: Very long integer (see below).
+*            5: Floating point (stored as double).
+*            6: Integer complex (stored as double[2]).
+*            7: Floating point complex (stored as double[2]).
+*            8: String.
 *
 *         A negative type indicates that a syntax error was encountered when
 *         attempting to parse a keyvalue of the particular type.
 *
+*         A native 64-bit data type may be defined via preprocessor macro
+*         WCS_INT64, e.g. -DWCS_INT64='long long int'; this will be typedef'd
+*         to 'int64' here.  If WCS_INT64 is not set, then int64 is typedef'd
+*         to int[2] and the keyvalue is to be computed as
+*
+*            keyvalue.k[1] * 1000000000 + keyvalue.k[0],
+*
+*         and reported via
+*
+*            printf("%d%09d", keyvalue.k[1], abs(keyvalue.k[0]));
+*
+*         where keyvalue.k[0] ranges from -999999999 to +999999999.  The
+*         minimum and maximum values that may be represented are thus
+*         -2147483648999999999 and +2147483647999999999, compared to
+*         -9223372036854775808 and +9223372036854775807 for a true 64-bit int.
+*
+*         Very long integers, up to 70 decimal digits in length, are encoded
+*         in keyvalue.l as an array of int[8], each of which stores 9 decimal
+*         digits.  The keyvalue is to be computed as
+*
+*            (((((((keyvalue.k[7]) * 1000000000 +
+*                   keyvalue.k[6]) * 1000000000 +
+*                   keyvalue.k[5]) * 1000000000 +
+*                   keyvalue.k[4]) * 1000000000 +
+*                   keyvalue.k[3]) * 1000000000 +
+*                   keyvalue.k[2]) * 1000000000 +
+*                   keyvalue.k[1]) * 1000000000 +
+*                   keyvalue.k[0]
+*
 *      union keyvalue
 *         A union containing the keyword value:
-*            keyvalue.i (int):       Logical and integer (type == 1 || 2).
-*            keyvalue.f (double):    Floating point (type == 3).
+*            keyvalue.i (int):       Logical (type == 1), and
+*                                    32-bit signed integer (type == 2).
+*            keyvalue.k (int64):     64-bit signed integer (type == 3),
+*                                    see above.
+*            keyvalue.l (int[8]):    Very long integer (type == 4), see above.
+*            keyvalue.f (double):    Floating point (type == 5).
 *            keyvalue.c (double[2]): Integer and floating point complex
-*                                    (type == 4 || 5).
-*            keyvalue.s (char[68]):  String (type == 6), null-terminated.
+*                                    (type == 6 || 7).
+*            keyvalue.s (char[68]):  String (type == 8), null-terminated.
 *
 *      int ulen
 *         Where an inline comment contains a units string in the standard
@@ -238,6 +280,12 @@ extern "C" {
 
 extern const char *fitshdr_errmsg[];
 
+#ifdef WCS_INT64
+  typedef WCS_INT64 int64;
+#else
+  typedef int int64[2];
+#endif
+
 
 				/* Struct used for indexing the keywords.   */
 struct fitskeyid {
@@ -251,10 +299,12 @@ struct fitskey {
    int  keyno;			/* Header card sequence number (1-rel).     */
    int  status;			/* Header card status bit flags.            */
    char keyword[8];		/* Keyword name, null-filled (see above).   */
-   int  type;			/* Keyvalue type.                           */
+   int  type;			/* Keyvalue type (see above).               */
    union {
-      int    i;			/* Integer and logical values.              */
-      double f;			/* Float values.                            */
+      int    i;			/* 32-bit integer and logical values.       */
+      int64  k;			/* 64-bit integer values.                   */
+      int    l[8];		/* Very long singed integer values.         */
+      double f;			/* Floating point values.                   */
       double c[2];		/* Complex values.                          */
       char   s[68];		/* String values, null-terminated.          */
    } keyvalue;			/* Keyvalue.                                */

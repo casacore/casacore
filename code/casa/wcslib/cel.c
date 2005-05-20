@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -68,8 +68,8 @@ struct celprm *cel;
    cel->theta0 = UNDEFINED;
    cel->ref[0] =   0.0;
    cel->ref[1] =   0.0;
-   cel->ref[2] = 999.0;
-   cel->ref[3] = 999.0;
+   cel->ref[2] = UNDEFINED;
+   cel->ref[3] = +90.0;
 
    for (k = 0; k < 5; cel->euler[k++] = 0.0);
 
@@ -177,7 +177,7 @@ struct celprm *cel;
    latp = cel->ref[3];
 
    /* Set default for native longitude of the celestial pole? */
-   if (phip == 999.0) {
+   if (undefined(phip) || phip == 999.0) {
       phip = (lat0 < cel->theta0) ? 180.0 : 0.0;
       phip += cel->phi0;
 

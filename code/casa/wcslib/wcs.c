@@ -412,8 +412,8 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 
 
    /* Set defaults for the celestial transformation parameters. */
-   wcs->lonpole = 999.0;
-   wcs->latpole = 999.0;
+   wcs->lonpole = UNDEFINED;
+   wcs->latpole = +90.0;
 
    /* Set defaults for the spectral transformation parameters. */
    wcs->restfrq = 0.0;
@@ -1308,6 +1308,32 @@ int wcsset(struct wcsprm *wcs)
       wcsprj->r0 = 0.0;
       if (status = celset(wcscel)) {
          return status + 3;
+      }
+
+      /* Update LONPOLE, LATPOLE, and PVi_ma cards. */
+      wcs->lonpole = wcscel->ref[2];
+      wcs->latpole = wcscel->ref[3];
+
+      for (k = 0; k < wcs->npv; k++) {
+         i = wcs->pv[k].i - 1;
+         m = wcs->pv[k].m;
+
+         if (i == wcs->lng) {
+            switch (m) {
+            case 1:
+               wcs->pv[k].value = wcscel->phi0;
+               break;
+            case 2:
+               wcs->pv[k].value = wcscel->theta0;
+               break;
+            case 3:
+               wcs->pv[k].value = wcscel->ref[2];
+               break;
+            case 4:
+               wcs->pv[k].value = wcscel->ref[3];
+               break;
+            }
+         }
       }
    }
 

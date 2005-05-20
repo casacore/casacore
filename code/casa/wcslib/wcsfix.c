@@ -38,6 +38,7 @@
 #include "wcsmath.h"
 #include "sph.h"
 #include "wcs.h"
+#include "wcsunits.h"
 #include "wcsfix.h"
 
 /* Maximum number of coordinate axes that can be handled. */
@@ -67,6 +68,10 @@ int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
    int status = 0;
 
    if ((stat[DATFIX] = datfix(wcs)) > 0) {
+      status = 1;
+   }
+
+   if ((stat[UNITFIX] = unitfix(wcs)) > 0) {
       status = 1;
    }
 
@@ -218,6 +223,22 @@ int datfix(struct wcsprm *wcs)
    }
 
    return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int unitfix(struct wcsprm *wcs)
+
+{
+   int  i, status = -1;
+
+   if (wcs == 0) return 1;
+
+   for (i = 0; i < wcs->naxis; i++) {
+      if (wcsutrn(0, wcs->cunit[i]) == 0) status = 0;
+   }
+
+   return status;
 }
 
 /*--------------------------------------------------------------------------*/

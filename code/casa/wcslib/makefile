@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# GNU makefile for WCSLIB 4.x in AIPS++.
+# GNU makefile for WCSLIB 4.1 in AIPS++.
 #
 # $Id$
 #-----------------------------------------------------------------------------
@@ -101,15 +101,8 @@ show_local :
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/wcstrig.h
-
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/cel.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/lin.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/prj.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/spc.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/sph.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/spx.h
-$(WCSLIB).$(SFXSTAT)(cylfix.o) : $(CODEDIR)/wcs.h
 
 $(WCSLIB).$(SFXSTAT)(fitshdr.o) : $(CODEDIR)/fitshdr.h
 
@@ -123,6 +116,7 @@ $(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/spc.h
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/tab.h
 $(WCSLIB).$(SFXSTAT)(pgwcsl.o) : $(CODEDIR)/wcs.h
 
 $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/prj.h
@@ -131,6 +125,7 @@ $(WCSLIB).$(SFXSTAT)(prj.o) : $(CODEDIR)/wcstrig.h
 
 $(WCSLIB).$(SFXSTAT)(spc.o) : $(CODEDIR)/spc.h
 $(WCSLIB).$(SFXSTAT)(spc.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(spc.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(spc.o) : $(CODEDIR)/wcstrig.h
 
 $(WCSLIB).$(SFXSTAT)(sph.o) : $(CODEDIR)/sph.h
@@ -139,6 +134,7 @@ $(WCSLIB).$(SFXSTAT)(sph.o) : $(CODEDIR)/wcstrig.h
 $(WCSLIB).$(SFXSTAT)(spx.o) : $(CODEDIR)/spx.h
 
 $(WCSLIB).$(SFXSTAT)(tab.o) : $(CODEDIR)/tab.h
+$(WCSLIB).$(SFXSTAT)(tab.o) : $(CODEDIR)/wcsmath.h
 
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/lin.h
@@ -151,13 +147,26 @@ $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/tab.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcstrig.h
+$(WCSLIB).$(SFXSTAT)(wcs.o) : $(CODEDIR)/wcsunits.h
+
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/cel.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/lin.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/prj.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/spc.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/sph.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/tab.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/wcs.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/wcsfix.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(wcsfix.o) : $(CODEDIR)/wcsunits.h
 
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/lin.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/spc.h
-$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/tab.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcshdr.o) : $(CODEDIR)/wcshdr.h
 
@@ -165,12 +174,18 @@ $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/cel.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/lin.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/prj.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/spc.h
-$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/spx.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/tab.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcs.h
 $(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcshdr.h
+$(WCSLIB).$(SFXSTAT)(wcspih.o) : $(CODEDIR)/wcsmath.h
 
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(wcstrig.o) : $(CODEDIR)/wcstrig.h
 
+$(WCSLIB).$(SFXSTAT)(wcsulex.o)  : $(CODEDIR)/wcsmath.h
+$(WCSLIB).$(SFXSTAT)(wcsulex.o)  : $(CODEDIR)/wcsunits.h
+
 $(WCSLIB).$(SFXSTAT)(wcsunits.o) : $(CODEDIR)/wcsunits.h
+
+$(WCSLIB).$(SFXSTAT)(wcsutrn.o)  : $(CODEDIR)/wcsunits.h

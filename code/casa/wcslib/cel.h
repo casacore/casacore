@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.1 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -225,15 +225,16 @@
 *         fiducial point of the projection is greater than the native
 *         latitude, otherwise 180 degrees.  (This is the condition for the
 *         celestial latitude to increase in the same direction as the native
-*         latitude at the fiducial point.)  ref[2] may be set to 999.0 to
-*         indicate that the correct default should be substituted.
+*         latitude at the fiducial point.)  ref[2] may be set to UNDEFINED
+*         (from wcsmath.h) or 999.0 to indicate that the correct default
+*         should be substituted.
 *
 *         In some circumstances the celestial latitude of the native pole may
 *         be determined by the first three values only to within a sign and
 *         LATPOLEa is used to choose between the two solutions.  LATPOLEa is
 *         set in ref[3] and the solution closest to this value is used to
 *         reset ref[3].  It is therefore legitimate, for example, to set
-*         ref[3] to 999.0 to choose the more northerly solution - the default
+*         ref[3] to +90.0 to choose the more northerly solution - the default
 *         if the LATPOLEa card is omitted from the FITS header.  For the
 *         special case where the fiducial point of the projection is at native
 *         latitude zero, its celestial latitude is zero, and LONPOLEa = +/- 90

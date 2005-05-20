@@ -87,25 +87,28 @@
 *   functions which may also be invoked separately:
 *
 *      datfix(): recast the older DATE-OBS date format in dateobs to year-2000
-*                standard form, and derive mjdobs from it if not already set.
-*                Alternatively, if dateobs isn't set and mjdobs is, then
-*                derive dateobs from it.
+*         standard form, and derive mjdobs from it if not already set.
+*         Alternatively, if dateobs isn't set and mjdobs is, then derive
+*         dateobs from it.
+*
+*      unitfix(): fix some common errors made in specifying CUNITia keyvalues,
+*         e.g. 'DEG' -> 'deg'.
 *
 *      celfix(): translate AIPS-convention celestial projection types, -NCP
-*                and -GLS, in ctype[] as set from CTYPEia.
+*         and -GLS, in ctype[] as set from CTYPEia.
 *
 *      spcfix(): translate AIPS-convention spectral types, FREQ-LSR, FELO-HEL,
-*                etc., in ctype[] as set from CTYPEia.
+*         etc., in ctype[] as set from CTYPEia.
 *
 *      cylfix(): fixes WCS FITS header cards for malformed cylindrical
-*                projections that suffer from the problem described in
-*                Sect. 7.3.4 of Paper I.
+*         projections that suffer from the problem described in Sect. 7.3.4 of
+*         Paper I.
 *
 *
 *   Translate a non-standard WCS struct
 *   -----------------------------------
 *   wcsfix() applies all of the corrections handled separately by datfix(),
-*   celfix(), spcfix() and cylfix().
+*   unitfix(), celfix(), spcfix() and cylfix().
 *
 *   Given:
 *      naxis    const int []
@@ -121,9 +124,9 @@
 *      stat     int [NWCSFIX]
 *                        Status returns from each of the functions.  Use the
 *                        preprocessor macros defined below (NWCSFIX, DATFIX,
-*                        CELFIX, SPCFIX and CYLFIX) to dimension this vector
-*                        and access its elements.  A status value of -2 is set
-*                        for functions that were not invoked.
+*                        UNITFIX, CELFIX, SPCFIX and CYLFIX) to dimension this
+*                        vector and access its elements.  A status value of -2
+*                        is set for functions that were not invoked.
 *
 *   Function return value:
 *               int      Status return value:
@@ -152,6 +155,23 @@
 *                           0: Success.
 *                           1: Null wcsprm pointer passed.
 *                           5: Invalid parameter value.
+*
+*
+*   Correct aberrant CUNITia keyvalues
+*   ----------------------------------
+*   unitfix() applies wcsutrn() to translate non-standard CUNITia keyvalues,
+*   e.g. 'DEG' -> 'deg', also stripping off leading and trailing blanks.
+*
+*   Given and returned:
+*      wcs      struct wcsprm*
+*                        Coordinate transformation parameters (refer to the
+*                        prologue of wcs.h).
+*
+*   Function return value:
+*               int      Status return value:
+*                          -1: No change required (not an error).
+*                           0: Success.
+*                           1: Null wcsprm pointer passed.
 *
 *
 *   Translate AIPS-convention celestial projection types
@@ -269,10 +289,11 @@ extern "C" {
 #endif
 
 #define DATFIX   0
-#define CELFIX   1
-#define SPCFIX   2
-#define CYLFIX   3
-#define NWCSFIX  4
+#define UNITFIX  1
+#define CELFIX   2
+#define SPCFIX   3
+#define CYLFIX   4
+#define NWCSFIX  5
 
 extern const char *wcsfix_errmsg[];
 #define cylfix_errmsg wcsfix_errmsg
@@ -280,6 +301,7 @@ extern const char *wcsfix_errmsg[];
 
 int wcsfix (const int [], struct wcsprm *, int []);
 int datfix (struct wcsprm *);
+int unitfix (struct wcsprm *);
 int celfix (struct wcsprm *);
 int spcfix (struct wcsprm *);
 int cylfix (const int [], struct wcsprm *);

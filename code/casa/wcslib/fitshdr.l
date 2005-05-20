@@ -58,6 +58,9 @@ KEYWORD	({KW1}|{KW2}|{KW3}|{KW4}|{KW5}|{KW6}|{KW7}|{KW8})
 
 /* Keyvalue data types. */
 LOGICAL [TF]
+INT32	[+-]?[0-9]{1,9}
+INT64	[+-]?[0-9]{10,18}
+INTVL	[+-]?[0-9]{19,}
 INTEGER	[+-]?[0-9]+
 FLOAT	[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?
 ICOMPLX \(" "*{INTEGER}" "*," "*{INTEGER}" "*\)
@@ -72,6 +75,7 @@ UNITSTR \[[-+*/^(). 0-9a-zA-Z]+\]
 
 %{
 #include <math.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -99,8 +103,6 @@ UNITSTR \[[-+*/^(). 0-9a-zA-Z]+\]
   #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext);
 #endif
 
-extern char *yytext;
-
 /* These global variables are required by YY_INPUT. */
 const char *fitshdr_hdr;
 int  fitshdr_ncards;
@@ -118,8 +120,13 @@ void fitshdr_nullfill(char cptr[], int len);
 %%
 	char *cptr;
 	int  blank, end, j, k, keyno;
+	double dtmp;
 	struct fitskey *kptr;
 	struct fitskeyid *iptr;
+	
+	#ifndef WCS_INT64
+	  char fmt[16];
+	#endif
 	
 	fitshdr_hdr = header;
 	fitshdr_ncards = ncards;
@@ -223,8 +230,8 @@ void fitshdr_nullfill(char cptr[], int len);
 	  BEGIN(INLINE);
 	}
 
-<VALUE>{INTEGER} {
-	  /* Rule 012: Integer keyvalue. */
+<VALUE>{INT32} {
+	  /* Rule 012: 32-bit signed integer keyvalue. */
 	  kptr->type = 2;
 	  if (sscanf(yytext, "%d", &(kptr->keyvalue.i)) < 1) {
 	    kptr->status |= FITSHDR_KEYVALUE;
@@ -234,9 +241,54 @@ void fitshdr_nullfill(char cptr[], int len);
 	  BEGIN(INLINE);
 	}
 
+<VALUE>{INT64} {
+	  /* Rule 013: 64-bit signed integer keyvalue. */
+	  if (sscanf(yytext, "%lf", &dtmp) < 1) {
+	    kptr->status |= FITSHDR_KEYVALUE;
+	    BEGIN(ERROR);
+	
+	  } else if (INT_MIN <= dtmp && dtmp <= INT_MAX) {
+	    /* Can be accomodated as a 32-bit signed integer. */
+	    kptr->type = 2;
+	    if (sscanf(yytext, "%d", &(kptr->keyvalue.i)) < 1) {
+	      kptr->status |= FITSHDR_KEYVALUE;
+	      BEGIN(ERROR);
+	    }
+	
+	  } else {
+	    /* 64-bit signed integer. */
+	    kptr->type = 3;
+	    #ifdef WCS_INT64
+	      /* Native long long int is available. */
+	      if (sscanf(yytext, "%Ld", &(kptr->keyvalue.k)) < 1) {
+	        kptr->status |= FITSHDR_KEYVALUE;
+	        BEGIN(ERROR);
+	      }
+	    #else
+	      /* long long int implemented as int[2]. */
+	      sprintf(fmt, "%%%dd%%9d", yyleng-9);
+	      if (sscanf(yytext, fmt, kptr->keyvalue.k+1,
+	                 kptr->keyvalue.k) < 1) {
+	        kptr->status |= FITSHDR_KEYVALUE;
+	        BEGIN(ERROR);
+	      } else if (*yytext == '-') {
+	        kptr->keyvalue.k[0] *= -1;
+	      }
+	    #endif
+	  }
+	
+	  BEGIN(INLINE);
+	}
+
+<VALUE>{INTVL} {
+	  /* Rule 014: Very long integer keyvalue. */
+	  kptr->type = 4;
+	  /* ... */
+	}
+
 <VALUE>{FLOAT} {
-	  /* Rule 013: Float keyvalue. */
-	  kptr->type = 3;
+	  /* Rule 015: Float keyvalue. */
+	  kptr->type = 5;
 	  if (sscanf(yytext, "%lf", &(kptr->keyvalue.f)) < 1) {
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
@@ -246,8 +298,8 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{ICOMPLX} {
-	  /* Rule 014: Integer complex keyvalue. */
-	  kptr->type = 4;
+	  /* Rule 016: Integer complex keyvalue. */
+	  kptr->type = 6;
 	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
 	      kptr->keyvalue.c+1) < 2) {
 	    kptr->status |= FITSHDR_KEYVALUE;
@@ -258,8 +310,8 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{FCOMPLX} {
-	  /* Rule 015: Floating point complex keyvalue. */
-	  kptr->type = 5;
+	  /* Rule 017: Floating point complex keyvalue. */
+	  kptr->type = 7;
 	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
 	      kptr->keyvalue.c+1) < 2) {
 	    kptr->status |= FITSHDR_KEYVALUE;
@@ -270,8 +322,8 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{STRING} {
-	  /* Rule 016: String keyvalue. */
-	  kptr->type = 6;
+	  /* Rule 018: String keyvalue. */
+	  kptr->type = 8;
 	  cptr = kptr->keyvalue.s;
 	  strcpy(cptr, yytext+1);
 	
@@ -303,61 +355,61 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>. {
-	  /* Rule 017. */
+	  /* Rule 019. */
 	  kptr->status |= FITSHDR_KEYVALUE;
 	  BEGIN(ERROR);
 	}
 
 <INLINE>" "*$ {
-	  /* Rule 018. */
+	  /* Rule 020. */
 	  BEGIN(FLUSH);
 	}
 
 <INLINE>" "*\/" "*$ {
-	  /* Rule 019. */
+	  /* Rule 021. */
 	  BEGIN(FLUSH);
 	}
 
 <INLINE>" "*\/" "* {
-	  /* Rule 020. */
+	  /* Rule 022. */
 	  BEGIN(UNITS);
 	}
 
 <INLINE>" " {
-	  /* Rule 021. */
+	  /* Rule 023. */
 	  kptr->status |= FITSHDR_COMMENT;
 	  BEGIN(ERROR);
 	}
 
 <INLINE>. {
-	  /* Rule 022: Keyvalue parsing must now also be suspect. */
+	  /* Rule 024: Keyvalue parsing must now also be suspect. */
 	  kptr->status |= FITSHDR_COMMENT;
 	  kptr->type = 0;
 	  BEGIN(ERROR);
 	}
 
 <UNITS>{UNITSTR} {
-	  /* Rule 023. */
-	  kptr->ulen = strlen(yytext);
+	  /* Rule 025. */
+	  kptr->ulen = yyleng;
 	  yymore();
 	  BEGIN(COMMENT);
 	}
 
 <UNITS>. {
-	  /* Rule 024. */
+	  /* Rule 026. */
 	  yymore();
 	  BEGIN(COMMENT);
 	}
 
 <COMMENT>.* {
-	  /* Rule 025. */
+	  /* Rule 027. */
 	  strcpy(kptr->comment, yytext);
 	  fitshdr_nullfill(kptr->comment, 80);
 	  BEGIN(FLUSH);
 	}
 
 <ERROR>.* {
-	  /* Rule 026. */
+	  /* Rule 028. */
 	  kptr->type = -abs(kptr->type);
 	
 	  sprintf(kptr->comment, "%.80s", fitshdr_hdr-80);
@@ -366,7 +418,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <FLUSH>.*\n {
-	  /* Rule 027: Discard the rest of the input line. */
+	  /* Rule 029: Discard the rest of the input line. */
 	  kptr->keyno = ++keyno;
 	
 	  /* Do indexing. */

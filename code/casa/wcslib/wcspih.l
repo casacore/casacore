@@ -113,8 +113,6 @@ STRING	'([^']|'')*'
   #define YY_USER_ACTION printf("Rule %03d: \"%s\"\n", yy_act, yytext);
 #endif
 
-extern char *yytext;
-
 /* These global variables are required by YY_INPUT. */
 char *wcspih_hdr;
 int  wcspih_ncards;
