@@ -102,6 +102,10 @@ public:
   // Copy rows from the input to the output.
   // By default all rows will be copied starting at row 0 of the output.
   // Rows will be added to the output table as needed.
+  // <br> All columns in Table <src>out</src> will be filled from the
+  // column with the same name in table <src>in</src>. In principle only
+  // stored columns will be filled; however if the output table has only
+  // one column, it can also be a virtual one.
   // <group>
   static void copyRows (Table& out, const Table& in)
     { copyRows (out, in, 0, 0, in.nrow()); }
