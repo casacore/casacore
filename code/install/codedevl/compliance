@@ -27,11 +27,40 @@ function depend
            >> $dep_compliance.log \
            2> /dev/null
 
+      if test -d $path/$2/$subdir/src
+         then
+           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*.h \
+                >> $dep_compliance.log \
+                2> /dev/null
+           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*/*.h \
+                >> $dep_compliance.log \
+                2> /dev/null
+           grep ^\#include\ \<$dep\/ $path/$2/$subdir/src/*/*.cc \
+                >> $dep_compliance.log \
+                2> /dev/null
+      fi
+
       if test -s $dep_compliance.log
          then
             echo "    $1$2 => lib$dep" >> compliance.log
       fi
    done
+}
+
+function process
+{
+   echo "Processing $2..."
+   echo "Dependencies for $2" >> compliance.log
+
+   if test $1 = "all"
+      then
+         depend "lib" $2
+         depend "app" $2
+      else
+         depend $1 $2
+   fi
+
+   echo >> compliance.log
 }
 
 function usage
@@ -44,7 +73,7 @@ function usage
          fi
    fi
 
-   echo "usage: compliance [all|lib|app]"
+   echo "usage: compliance [all|lib|app] {dir}"
    exit 1
 }
 
@@ -90,27 +119,25 @@ checkdir
 
 rm -rf compliance.log
 
-for dir in `cat compliance.dat`
-do
-   echo "Processing $dir..."
-   echo "Dependencies for $dir" >> compliance.log
+if test $2
+   then
+      process $1 $2
 
-   if test $1 = "all"
-      then
-         depend "lib" $dir
-         depend "app" $dir
-      else
-         depend $1 $dir
+      echo
+      cat compliance.log
+   else
+      for dir in `cat compliance.dat`
+      do
+         process $1 $dir
+      done
+
+      echo
+      echo "Reporting compliance failures..."
+
+      compliance $1
    fi
-
-   echo >> compliance.log
-done
-
-echo
-echo "Reporting compliance failures..."
-
-compliance $1
 
 echo
 echo "Complete"
+echo
 
