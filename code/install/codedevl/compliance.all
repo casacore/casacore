@@ -83,8 +83,17 @@ Dependencies for ms
     libms => libscimath
     libms => libtables
     libms => libmeasures
-    libms => libfits
     libms => libms
+  Application:
+
+Dependencies for msfits
+  Library:
+    libmsfits => libcasa
+    libmsfits => libtables
+    libmsfits => libmeasures
+    libmsfits => libfits
+    libmsfits => libms
+    libmsfits => libmsfits
   Application:
 
 Dependencies for msvis
@@ -277,6 +286,7 @@ Dependencies for appsglish
     appappsglish => libcomponents
     appappsglish => libimages
     appappsglish => libms
+    appappsglish => libmsfits
     appappsglish => libmsvis
     appappsglish => libionosphere
     appappsglish => libflagging

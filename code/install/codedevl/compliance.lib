@@ -73,8 +73,16 @@ Dependencies for ms
     libms => libscimath
     libms => libtables
     libms => libmeasures
-    libms => libfits
     libms => libms
+
+Dependencies for msfits
+  Library:
+    libmsfits => libcasa
+    libmsfits => libtables
+    libmsfits => libmeasures
+    libmsfits => libfits
+    libmsfits => libms
+    libmsfits => libmsfits
 
 Dependencies for msvis
   Library:

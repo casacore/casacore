@@ -31,6 +31,9 @@ Dependencies for images
 Dependencies for ms
   Application:
 
+Dependencies for msfits
+  Application:
+
 Dependencies for msvis
   Application:
 
@@ -106,6 +109,7 @@ Dependencies for appsglish
     appappsglish => libcomponents
     appappsglish => libimages
     appappsglish => libms
+    appappsglish => libmsfits
     appappsglish => libmsvis
     appappsglish => libionosphere
     appappsglish => libflagging
