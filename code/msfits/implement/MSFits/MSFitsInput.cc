@@ -26,7 +26,7 @@
 //# $Id$
 //
 
-#include <ms/MeasurementSets/MSFitsInput.h>
+#include <msfits/MSFits/MSFitsInput.h>
 
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>

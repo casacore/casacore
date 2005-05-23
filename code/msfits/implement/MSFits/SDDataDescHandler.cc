@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDDataDescHandler.h>
+#include <msfits/MSFits/SDDataDescHandler.h>
 
 #include <tables/Tables/ColumnsIndex.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

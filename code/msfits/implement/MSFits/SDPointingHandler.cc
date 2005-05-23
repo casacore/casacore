@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDPointingHandler.h>
+#include <msfits/MSFits/SDPointingHandler.h>
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSPointingColumns.h>

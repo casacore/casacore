@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDPolarizationHandler.h>
+#include <msfits/MSFits/SDPolarizationHandler.h>
 
 #include <tables/Tables/ColumnsIndex.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

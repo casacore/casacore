@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDAntennaHandler.h>
+#include <msfits/MSFits/SDAntennaHandler.h>
 
 #include <tables/Tables/ColumnsIndex.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

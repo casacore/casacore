@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDWeatherHandler.h>
+#include <msfits/MSFits/SDWeatherHandler.h>
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSWeatherColumns.h>

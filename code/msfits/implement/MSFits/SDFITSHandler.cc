@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDFITSHandler.h>
+#include <msfits/MSFits/SDFITSHandler.h>
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <casa/Arrays/ArrayLogical.h>

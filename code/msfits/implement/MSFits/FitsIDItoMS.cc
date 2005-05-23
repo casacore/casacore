@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/FitsIDItoMS.h> //
+#include <msfits/MSFits/FitsIDItoMS.h> //
 #include <casa/Arrays/ArrayIO.h> //
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayMath.h>

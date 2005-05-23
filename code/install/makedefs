@@ -300,6 +300,7 @@ XLIBLIST_shared_coordinates := LAPACK F77
 XLIBLIST_shared_components  := LAPACK F77
 XLIBLIST_shared_images      := LAPACK F77
 XLIBLIST_shared_ms          := LAPACK F77
+XLIBLIST_shared_msfits      := LAPACK F77
 XLIBLIST_shared_msvis       := LAPACK F77
 XLIBLIST_shared_calibration := LAPACK F77
 XLIBLIST_shared_ionosphere  := LAPACK F77
@@ -472,6 +473,7 @@ LIBcoordinates := defeat static defeat defeat defeat defeat
 LIBcomponents  := defeat static defeat defeat defeat defeat
 LIBimages      := defeat static defeat defeat defeat defeat
 LIBms          := defeat static defeat defeat defeat defeat
+LIBmsfits      := defeat static defeat defeat defeat defeat
 LIBmsvis       := defeat static defeat defeat defeat defeat
 LIBcalibration := defeat static defeat defeat defeat defeat
 LIBionosphere  := defeat static defeat defeat defeat static
@@ -513,21 +515,22 @@ LINKlattices    := lattices tables scimath casa
 LINKcoordinates := coordinates fits measures tables scimath casa
 LINKcomponents  := components coordinates fits measures tables scimath casa
 LINKimages      := images components coordinates lattices fits measures tables scimath casa
-LINKms          := ms fits measures tables scimath casa
-LINKmsvis       := msvis ms fits measures tables scimath casa
-LINKcalibration := calibration msvis ms fits measures tables scimath casa
+LINKms          := ms measures tables scimath casa
+LINKms          := msfits ms fits measures tables scimath casa
+LINKmsvis       := msvis ms measures tables scimath casa
+LINKcalibration := calibration msvis ms measures tables scimath casa
 LINKionosphere  := ionosphere measures tables scimath casa
-LINKflagging    := flagging msvis ms lattices fits measures tables scimath casa
-LINKdish        := dish ms coordinates lattices fits measures tables scimath casa
-LINKsimulators  := simulators ms fits measures tables scimath casa
+LINKflagging    := flagging msvis ms lattices measures tables scimath casa
+LINKdish        := dish ms fits coordinates lattices measures tables scimath casa
+LINKsimulators  := simulators ms measures tables scimath casa
 LINKsynthesis   := synthesis calibration msvis ms images components coordinates lattices fits measures tables scimath casa
 LINKgraphics    := graphics casa
 LINKtasking     := tasking graphics msvis ms images components coordinates lattices fits measures tables scimath casa
 
 
-LINKdemo := graphics synthesis simulators dish flagging ionosphere calibration msvis ms images components coordinates lattices fits measures tables scimath casa
+LINKdemo := graphics synthesis simulators dish flagging ionosphere calibration msvis msfits ms images components coordinates lattices fits measures tables scimath casa
 
-LINKappsglish := tasking graphics synthesis simulators dish flagging ionosphere calibration msvis ms images components coordinates lattices fits measures tables scimath casa
+LINKappsglish := tasking graphics synthesis simulators dish flagging ionosphere calibration msvis msfits ms images components coordinates lattices fits measures tables scimath casa
 
 LINKdisplay   := display casa
 LINKvlbi      := vlbi synthesis casa
@@ -604,7 +607,7 @@ DOCSYS    := doc resolvedocs
 DOCEXTR   := docscan docextr changelogs
 
 # What standard packages to build (default is all including demo).
-PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msvis calibration ionosphere flagging dish simulators synthesis graphics demo
+PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
 
 # What auxiliary packages to build
 AUXILIARY := tasking display trialdisplay appsglish
@@ -1028,6 +1031,7 @@ export LIBcoordinates := $(LIBcoordinates)
 export LIBcomponents  := $(LIBcomponents)
 export LIBimages      := $(LIBimages)
 export LIBms          := $(LIBms)
+export LIBmsfits      := $(LIBmsfits)
 export LIBmsvis       := $(LIBmsvis)
 export LIBcalibration := $(LIBcalibration)
 export LIBionosphere  := $(LIBionosphere)

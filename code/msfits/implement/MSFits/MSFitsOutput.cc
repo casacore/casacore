@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <ms/MeasurementSets/MSFitsOutput.h>
+#include <msfits/MSFits/MSFitsOutput.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSColumns.h>
 #include <tables/Tables.h>

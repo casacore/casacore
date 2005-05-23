@@ -5,7 +5,7 @@
 
 #include <ms/MeasurementSets/MSConcat.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
-#include <ms/MeasurementSets/MSFitsInput.h>
+#include <msfits/MSFits/MSFitsInput.h>
 #include <tables/Tables/Table.h>
 #include <casa/Inputs.h>
 

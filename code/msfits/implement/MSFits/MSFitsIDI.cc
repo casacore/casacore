@@ -26,8 +26,8 @@
 //# $Id: 
 //----------------------------------------------------------------------------
 
-#include <ms/MeasurementSets/MSFitsIDI.h>
-#include <ms/MeasurementSets/FitsIDItoMS.h>
+#include <msfits/MSFits/MSFitsIDI.h>
+#include <msfits/MSFits/FitsIDItoMS.h>
 #include <fits/FITS/fits.h>
 #include <fits/FITS/fitsio.h>
 #include <casa/Utilities/Regex.h>

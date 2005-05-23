@@ -20,7 +20,7 @@
 #include <casa/Containers/RecordField.h>
 #include <tables/Tables/TableRecord.h>
 
-#include <ms/MeasurementSets/MSFitsInput.h>
+#include <msfits/MSFits/MSFitsInput.h>
 #include <tables/Tables/Table.h>
 #include <casa/Inputs.h>
 

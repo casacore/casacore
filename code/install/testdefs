@@ -185,7 +185,7 @@ define CheckLink
    shift ; \
    for PKG do \
       case $$PKG in \
-      casa | scimath | tables | measures | fits | lattices | coordinates | components | images | ms | msvis | calibration | ionosphere | flagging | dish | simulators | synthesis | graphics | tasking) \
+      casa | scimath | tables | measures | fits | lattices | coordinates | components | images | ms | msfits | msvis | calibration | ionosphere | flagging | dish | simulators | synthesis | graphics | tasking) \
          ;; \
       appsglish | contrib | vlbi | display | trialdisplay) \
          ;; \
@@ -629,6 +629,7 @@ system :
 	-@ echo "XLIBLIST_shared_components=$(XLIBLIST_shared_components)"
 	-@ echo "XLIBLIST_shared_images=$(XLIBLIST_shared_images)"
 	-@ echo "XLIBLIST_shared_ms=$(XLIBLIST_shared_ms)"
+	-@ echo "XLIBLIST_shared_msfits=$(XLIBLIST_shared_msfits)"
 	-@ echo "XLIBLIST_shared_msvis=$(XLIBLIST_shared_msvis)"
 	-@ echo "XLIBLIST_shared_calibration=$(XLIBLIST_shared_calibration)"
 	-@ echo "XLIBLIST_shared_ionosphere=$(XLIBLIST_shared_ionosphere)"
@@ -818,6 +819,10 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LIBms) ; $(CheckLCV)
     endif
+	-@ echo "LIBmsfits      =$(LIBmsfits)"
+    ifdef DO_TEST
+	-@ set WARNING $(LIBmsfits) ; $(CheckLCV)
+    endif
 	-@ echo "LIBmsvis       =$(LIBmsvis)"
     ifdef DO_TEST
 	-@ set WARNING $(LIBmsvis) ; $(CheckLCV)
@@ -950,6 +955,10 @@ system :
 	-@ echo "LINKms          =$(LINKms)"
     ifdef DO_TEST
 	-@ set WARNING $(LINKms) ; $(CheckLink)
+    endif
+	-@ echo "LINKmsfits      =$(LINKmsfits)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKmsfits) ; $(CheckLink)
     endif
 	-@ echo "LINKmsvis       =$(LINKmsvis)"
     ifdef DO_TEST

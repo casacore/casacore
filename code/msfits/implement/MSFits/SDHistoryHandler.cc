@@ -26,7 +26,7 @@
 //# $Id$
 
 //# Includes
-#include <ms/MeasurementSets/SDHistoryHandler.h>
+#include <msfits/MSFits/SDHistoryHandler.h>
 
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSHistoryColumns.h>
