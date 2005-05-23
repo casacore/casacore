@@ -512,15 +512,14 @@ void b (Bool doExcp)
     cout << expr2ab.getColumn() << endl;
 
     // Test persistency of reference tables.
-    // When RefTable::renameColumn is fine, the lines starting with ///
-    // should be outcommented and the lines ending with /// removed.
     {
         Table ex1tab = tab(tab.col("ab") > 5);
-///	ex1tab.renameColumn ("abnew", "ab");
-///	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
-	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("ab"));  ///
-///	ROScalarColumn<Int> abcol(ex1tab, "abnew");
-	ROScalarColumn<Int> abcol(ex1tab, "ab");                ///
+	ex1tab.renameColumn ("abnew", "ab");
+	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("abnew"));
+	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
+	AlwaysAssertExit (tab.tableDesc().isColumn ("ab"));
+	AlwaysAssertExit (! tab.tableDesc().isColumn ("abnew"));
+	ROScalarColumn<Int> abcol(ex1tab, "abnew");
 	cout << abcol.getColumn() << endl;
 	cout << ">>>" << endl;
 	ex1tab.rename ("tTable_tmp.ex1", Table::New);
@@ -528,16 +527,21 @@ void b (Bool doExcp)
     }
     {
         Table ex1tab ("tTable_tmp.ex1");
-///	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
-	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("ab"));  ///
-///	ROScalarColumn<Int> abcol(ex1tab, "abnew");
-	ROScalarColumn<Int> abcol(ex1tab, "ab");                ///
-///	Table ex2tab = ex1tab (ex1tab.col("abnew") > 6);
-	Table ex2tab = ex1tab (ex1tab.col("ab") > 6);
-///	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("ab"));
-	AlwaysAssertExit (ex2tab.tableDesc().isColumn ("ab"));  ///
-///	ROScalarColumn<Int> abcol2(ex2tab, "abnew");
-	ROScalarColumn<Int> abcol2(ex2tab, "ab");               ///
+	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
+	ROScalarColumn<Int> abcol(ex1tab, "abnew");
+	Table ex2tab = ex1tab (ex1tab.col("abnew") > 6);
+	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("ab"));
+	ROScalarColumn<Int> abcol2(ex2tab, "abnew");
+	ex1tab.renameColumn ("abnew1", "abnew");
+	ex2tab.renameColumn ("abnew2", "abnew");
+	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("abnew1"));
+	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("abnew"));
+	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("abnew2"));
+	AlwaysAssertExit (ex2tab.tableDesc().isColumn ("abnew2"));
+	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew"));
+	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew1"));
+	ROScalarColumn<Int> abcola(ex1tab, "abnew1");
+	ROScalarColumn<Int> abcol2a(ex2tab, "abnew2");
     }
 }
 
