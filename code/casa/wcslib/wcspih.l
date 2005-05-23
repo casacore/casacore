@@ -1071,7 +1071,7 @@ int wcspih_inits(
   struct wcsprm **wcs)
 
 {
-  int a, status;
+  int a, npsmax, npvmax, status = 0;
   struct wcsprm *wcsp;
 
   /* Find the number of coordinate descriptions. */
@@ -1086,6 +1086,10 @@ int wcspih_inits(
       return 2;
     }
 
+    /* Record the current values of NPVMAX and NPSMAX. */
+    npvmax = wcsnpv(-1);
+    npsmax = wcsnps(-1);
+
     /* Initialize each wcsprm struct. */
     wcsp = *wcs;
     *nwcs = 0;
@@ -1096,7 +1100,7 @@ int wcspih_inits(
         wcsnps(nps[a]);
         if (status = wcsini(1, alts[a], wcsp)) {
           wcsvfree(nwcs, wcs);
-          return status;
+          break;
         }
 
         if (a) {
@@ -1109,9 +1113,13 @@ int wcspih_inits(
         wcsp++;
       }
     }
+
+    /* Restore the original values of NPVMAX and NPSMAX. */
+    wcsnpv(npvmax);
+    wcsnps(npsmax);
   }
 
-  return 0;
+  return status;
 }
 
 

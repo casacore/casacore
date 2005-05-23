@@ -137,8 +137,8 @@
 *                        Memory for the array is allocated by wcspih() which
 *                        also invokes wcsini() for each struct to allocate
 *                        memory for internal arrays and initialize their
-*                        members to default values (but note that wcsset() is
-*                        not invoked on these structs).
+*                        members to default values (see note 6 below).  Note
+*                        that wcsset() is not invoked on these structs.
 *
 *                        This allocated memory must be freed by the caller,
 *                        first by invoking wcsfree() for each struct, and then
@@ -279,6 +279,11 @@
 *
 *    5) wcspih() does not check for duplicated cards, it accepts the last
 *       encountered.
+*
+*    6) wcspih() uses wcsnpv() and wcsnps() (refer to the prologue of wcs.h)
+*       to match the size of the pv[] and ps[] arrays in the wcsprm structs to
+*       the number in the header.  Consequently there are no unused elements
+*       in the pv[] and ps[] arrays, indeed they will often be of zero length.
 *
 *
 *   Status return values
