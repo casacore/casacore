@@ -239,7 +239,7 @@ public:
     // Remove columns.
     virtual void removeColumn (const Vector<String>& columnNames);
 
-    // Test if a column can be renamed (no).
+    // Test if a column can be renamed (yes).
     virtual Bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
@@ -317,12 +317,14 @@ private:
 			  Vector<String>& names);
 
     // Setup the main parts of the object.
-    // <br>Create the initial name map from the table description.
-    // This map maps a name to the name in the original table.
+    // <br>First create the name map (mapping column name in RefTable to
+    // the column in the original table).
+    // If the BaseTable is a RefTable, use its name map.
+    // Otherwise create the initial name map from the table description.
     // A rename might change the map.
     // <br>Create the RefColumn objects.
     // <br>Create the initial TableInfo as a copy of the original BaseTable.
-    void setup (BaseTable* btp);
+    void setup (BaseTable* btp, const Vector<String>& columnNames);
 
     // Create the RefColumn objects for all columns in the description.
     void makeRefCol();

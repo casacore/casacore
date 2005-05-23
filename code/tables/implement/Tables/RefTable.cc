@@ -72,7 +72,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, uInt nrall)
     rows_p = getStorage (rowStorage_p);
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
-    setup (btp);
+    setup (btp, Vector<String>());
     //# Get root table (will be parent if btp is an reference table).
     //# Link to root table (ie. increase its reference count).
     baseTabPtr_p->link();
@@ -89,7 +89,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<uInt>& rownrs)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
-    setup (btp);
+    setup (btp, Vector<String>());
     rowStorage_p = rownrs;
     rows_p = getStorage (rowStorage_p);
     //# Check if the row numbers do not exceed #rows.
@@ -116,7 +116,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
-    setup (btp);
+    setup (btp, Vector<String>());
     //# Store the rownr if the mask is set.
     uInt nr = min (mask.nelements(), btp->nrow());
     for (uInt i=0; i<nr; i++) {
@@ -147,7 +147,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     for (uInt i=0; i<columnNames.nelements(); i++) {
 	tdescPtr_p->addColumn (td.columnDesc (columnNames(i)));
     }
-    setup (btp);
+    setup (btp, columnNames);
     //# Get the row numbers from the input table.
     //# Copy them to this table.
     rowStorage_p = btp->rowNumbers();
@@ -405,11 +405,28 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
 //# Build the name map from the description.
 //# Old and new name are (initially) equal.
 //# Make RefColumn objects and initialize TableInfo.
-void RefTable::setup (BaseTable* btp)
+void RefTable::setup (BaseTable* btp, const Vector<String>& columnNames)
 {
-    for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
-	nameMap_p.define (tdescPtr_p->columnDesc(i).name(),
-			  tdescPtr_p->columnDesc(i).name());
+    RefTable* rtp = dynamic_cast<RefTable*>(btp);
+    if (rtp != 0) {
+        // The table is already a RefTable, so copy its nameMap.
+        if (columnNames.nelements() == 0) {
+	    nameMap_p = rtp->nameMap_p;
+	} else {
+	  // Some columns are selected, so copy those only.
+	  // Make the map const, so operator() throws an exception
+	  // if the key does not exist.
+	  const SimpleOrderedMap<String,String>& nm = rtp->nameMap_p;
+	    for (uInt i=0; i<columnNames.nelements(); i++) {
+	        nameMap_p.define (columnNames[i], nm(columnNames[i]));
+	    }
+	}
+    } else {
+        // Otherwise create it from the TableDesc.
+        for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
+	    nameMap_p.define (tdescPtr_p->columnDesc(i).name(),
+			      tdescPtr_p->columnDesc(i).name());
+	}
     }
     makeRefCol();
     //# The initial table info is a copy of the original.
@@ -591,8 +608,7 @@ Bool RefTable::canRemoveColumn (const Vector<String>& columnNames) const
     return checkRemoveColumn (columnNames, False);
 }
 Bool RefTable::canRenameColumn (const String& columnName) const
-  ///    { return tdescPtr_p->isColumn (columnName); }
-    { return False; }
+    { return tdescPtr_p->isColumn (columnName); }
 
 void RefTable::removeRow (uInt rownr)
 {
@@ -622,10 +638,6 @@ void RefTable::removeColumn (const Vector<String>& columnNames)
  
 void RefTable::renameColumn (const String& newName, const String& oldName)
 {
-  // renameColumn cannot be done until the problem is solved that
-  // nameMap_p is copied to a RefTable made from a RefTable.
-  // See the outcommented code in tTable for an example.
-    throw (TableInvOper ("RefTable::renameColumn not implemented yet"));
     tdescPtr_p->renameColumn (newName, oldName);
     colMap_p.rename (newName, oldName);
     nameMap_p.rename (newName, oldName);
