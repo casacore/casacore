@@ -62,7 +62,7 @@ const char *wcsfix_errmsg[] = {
 
 /*--------------------------------------------------------------------------*/
 
-int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
+int wcsfix(int ctrl, const int naxis[], struct wcsprm *wcs, int stat[])
 
 {
    int status = 0;
@@ -71,7 +71,7 @@ int wcsfix(const int naxis[], struct wcsprm *wcs, int stat[])
       status = 1;
    }
 
-   if ((stat[UNITFIX] = unitfix(wcs)) > 0) {
+   if ((stat[UNITFIX] = unitfix(ctrl, wcs)) > 0) {
       status = 1;
    }
 
@@ -210,7 +210,7 @@ int datfix(struct wcsprm *wcs)
                + (306*((month+9)%12) + 5)/10
                - (3*((year - (12-month)/10 + 4900)/100))/4
                + day - 2399904)
-               + (hour + (minute + sec / 60.0) / 60.0) / 24.0;
+               + (hour + (minute + sec/60.0)/60.0)/24.0;
 
       if (undefined(wcs->mjdobs)) {
          wcs->mjdobs = mjdobs;
@@ -227,7 +227,7 @@ int datfix(struct wcsprm *wcs)
 
 /*--------------------------------------------------------------------------*/
 
-int unitfix(struct wcsprm *wcs)
+int unitfix(int ctrl, struct wcsprm *wcs)
 
 {
    int  i, status = -1;
@@ -235,7 +235,7 @@ int unitfix(struct wcsprm *wcs)
    if (wcs == 0) return 1;
 
    for (i = 0; i < wcs->naxis; i++) {
-      if (wcsutrn(0, wcs->cunit[i]) == 0) status = 0;
+      if (wcsutrn(ctrl, wcs->cunit[i]) == 0) status = 0;
    }
 
    return status;

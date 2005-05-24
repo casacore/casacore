@@ -64,7 +64,7 @@
 %}
 
 %%
-	char orig[8], subs[8];
+	char orig[80], subs[80];
 	int bracket = 0;
 	int unsafe  = 0;
 	int status  = -1;
@@ -96,36 +96,50 @@
 	  }
 	}
 
-arcmins|ARCMIN|ARCMINS {
+angstrom {
 	  /* Rule 004. */
+	  strcpy(orig, yytext);
+	  strcpy(subs, "Angstrom");
+	  BEGIN(NEXT);
+	}
+
+arcmins|ARCMINS? {
+	  /* Rule 005. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "arcmin");
 	  BEGIN(NEXT);
 	}
 
-arcsecs|ARCSEC|ARCSECS {
-	  /* Rule 005. */
+arcsecs|ARCSECS? {
+	  /* Rule 006. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "arcsec");
 	  BEGIN(NEXT);
 	}
 
 BEAM {
-	  /* Rule 006. */
+	  /* Rule 007. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "beam");
 	  BEGIN(NEXT);
 	}
 
-day|days|DAY|DAYS {
-	  /* Rule 007. */
+Byte {
+	  /* Rule 008. */
+	  strcpy(orig, yytext);
+	  strcpy(subs, "byte");
+	  BEGIN(NEXT);
+	}
+
+days?|DAYS? {
+	  /* Rule 009. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "d");
 	  BEGIN(NEXT);
 	}
 
 D {
-	  /* Rule 008. */
+	  /* Rule 010. */
 	  unsafe = 1;
 	  strcpy(orig, yytext);
 	  strcpy(subs, (ctrl & 4) ? "d" : "D");
@@ -133,28 +147,28 @@ D {
 	}
 
 degree|degrees|DEG|DEGREE|DEGREES {
-	  /* Rule 009. */
+	  /* Rule 011. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "deg");
 	  BEGIN(NEXT);
 	}
 
 GHZ {
-	  /* Rule 010. */
+	  /* Rule 012. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "GHz");
 	  BEGIN(NEXT);
 	}
 
 hr|HR {
-	  /* Rule 011. */
+	  /* Rule 013. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "h");
 	  BEGIN(NEXT);
 	}
 
 H {
-	  /* Rule 012. */
+	  /* Rule 014. */
 	  unsafe = 1;
 	  strcpy(orig, yytext);
 	  strcpy(subs, (ctrl & 2) ? "h" : "H");
@@ -162,131 +176,138 @@ H {
 	}
 
 hz|HZ {
-	  /* Rule 013. */
+	  /* Rule 015. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "Hz");
 	  BEGIN(NEXT);
 	}
 
 KHZ {
-	  /* Rule 014. */
+	  /* Rule 016. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "kHz");
 	  BEGIN(NEXT);
 	}
 
 JY {
-	  /* Rule 015. */
+	  /* Rule 017. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "Jy");
 	  BEGIN(NEXT);
 	}
 
-kelvin|kelvins|Kelvin|Kelvins|KELVIN|KELVINS {
-	  /* Rule 016. */
+[kK]elvins?|KELVINS? {
+	  /* Rule 018. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "K");
 	  BEGIN(NEXT);
 	}
 
 KM {
-	  /* Rule 017. */
+	  /* Rule 019. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "km");
 	  BEGIN(NEXT);
 	}
 
-metre|meter|metres|meters|M|METRE|METER|METRES|METERS {
-	  /* Rule 018. */
+metres?|meters?|M|METRES?|METERS? {
+	  /* Rule 020. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "m");
 	  BEGIN(NEXT);
 	}
 
 MIN {
-	  /* Rule 019. */
+	  /* Rule 021. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "min");
 	  BEGIN(NEXT);
 	}
 
 MHZ {
-	  /* Rule 020. */
+	  /* Rule 022. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "MHz");
 	  BEGIN(NEXT);
 	}
 
-pascal|pascals|PASCAL|PASCALS {
-	  /* Rule 021. */
+Ohm {
+	  /* Rule 023. */
+	  strcpy(orig, yytext);
+	  strcpy(subs, "ohm");
+	  BEGIN(NEXT);
+	}
+
+[pP]ascals?|PASCALS? {
+	  /* Rule 024. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "Pa");
 	  BEGIN(NEXT);
 	}
 
-pixels|PIXEL|PIXELS {
-	  /* Rule 022. */
+pixels|PIXELS? {
+	  /* Rule 025. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "pixel");
 	  BEGIN(NEXT);
 	}
 
-radian|radians|RAD|RADIAN|RADIANS {
-	  /* Rule 023. */
+radians?|RAD|RADIANS? {
+	  /* Rule 026. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "rad");
 	  BEGIN(NEXT);
 	}
 
-sec|second|seconds|SEC|SECOND|SECONDS {
-	  /* Rule 024. */
+sec|seconds?|SEC|SECONDS? {
+	  /* Rule 027. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "s");
 	  BEGIN(NEXT);
 	}
 
 S {
-	  /* Rule 025. */
+	  /* Rule 028. */
 	  unsafe = 1;
 	  strcpy(orig, yytext);
 	  strcpy(subs, (ctrl & 1) ? "s" : "S");
 	  BEGIN(NEXT);
 	}
 
-volt|volts|VOLT|VOLTS {
-	  /* Rule 026. */
+[vV]olts?|VOLTS? {
+	  /* Rule 029. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "V");
 	  BEGIN(NEXT);
 	}
 
-year|years|YR|YEAR|YEARS {
-	  /* Rule 027. */
+years?|YR|YEARS? {
+	  /* Rule 030. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "yr");
 	  BEGIN(NEXT);
 	}
 
 [A-Za-z]+ {
-	  /* Rule 028: Not a recognized alias. */
+	  /* Rule 031: Not a recognized alias. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, orig);
 	  BEGIN(NEXT);
 	}
 
 <NEXT>[A-Za-z]+ {
-	  /* Rule 029: Reject the alias match. */
+	  /* Rule 032: Reject the alias match. */
 	  strcat(orig, yytext);
 	  strcpy(subs, orig);
 	}
 
 <NEXT>" "+[^A-Za-z] {
-	  /* Rule 030: Discard separating whitespace. */
+	  /* Rule 033: Discard separating whitespace. */
 	  unput(yytext[yyleng-1]);
 	}
 
 <NEXT>" "+[A-Za-z] {
-	  /* Rule 031: Compress separating whitespace. */
+	  /* Rule 034: Compress separating whitespace. */
 	  strcat(unitstr, subs);
 	  strcat(unitstr, " ");
 	  if (strcmp(orig, subs)) status = 0;
@@ -296,7 +317,7 @@ year|years|YR|YEAR|YEARS {
 	}
 
 <NEXT>. {
-	  /* Rule 032: Copy anything else unchanged. */
+	  /* Rule 035: Copy anything else unchanged. */
 	  strcat(unitstr, subs);
 	  if (strcmp(orig, subs)) status = 0;
 	  unput(*yytext);
@@ -305,7 +326,7 @@ year|years|YR|YEAR|YEARS {
 	}
 
 <FLUSH>.* {
-	  /* Rule 033: Copy out remaining input. */
+	  /* Rule 036: Copy out remaining input. */
 	  strcat(unitstr, yytext);
 	}
 

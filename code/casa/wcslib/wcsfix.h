@@ -91,8 +91,8 @@
 *         Alternatively, if dateobs isn't set and mjdobs is, then derive
 *         dateobs from it.
 *
-*      unitfix(): fix some common errors made in specifying CUNITia keyvalues,
-*         e.g. 'DEG' -> 'deg'.
+*      unitfix(): translate some commonly used but non-standard unit strings
+*         in the CUNITia keyvalues, e.g. 'DEG' -> 'deg'.
 *
 *      celfix(): translate AIPS-convention celestial projection types, -NCP
 *         and -GLS, in ctype[] as set from CTYPEia.
@@ -114,6 +114,10 @@
 *      naxis    const int []
 *                        Image axis lengths.  If this array pointer is set to
 *                        zero then cylfix() will not be invoked.
+*
+*      ctrl     int      Do potentially unsafe translations of non-standard
+*                        unit strings as described in the usage notes to
+*                        wcsutrn() (refer to the prologue of wcsunits.h).
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -160,7 +164,12 @@
 *   Correct aberrant CUNITia keyvalues
 *   ----------------------------------
 *   unitfix() applies wcsutrn() to translate non-standard CUNITia keyvalues,
-*   e.g. 'DEG' -> 'deg', also stripping off leading and trailing blanks.
+*   e.g. 'DEG' -> 'deg', also stripping off unnecessary whitespace.
+*
+*   Given:
+*      ctrl     int      Do potentially unsafe translations described in the
+*                        usage notes to wcsutrn() (refer to the prologue of
+*                        wcsunits.h).
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -299,12 +308,12 @@ extern const char *wcsfix_errmsg[];
 #define cylfix_errmsg wcsfix_errmsg
 
 
-int wcsfix (const int [], struct wcsprm *, int []);
-int datfix (struct wcsprm *);
-int unitfix (struct wcsprm *);
-int celfix (struct wcsprm *);
-int spcfix (struct wcsprm *);
-int cylfix (const int [], struct wcsprm *);
+int wcsfix(int, const int [], struct wcsprm *, int []);
+int datfix(struct wcsprm *);
+int unitfix(int, struct wcsprm *);
+int celfix(struct wcsprm *);
+int spcfix(struct wcsprm *);
+int cylfix(const int [], struct wcsprm *);
 
 #ifdef __cplusplus
 };

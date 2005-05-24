@@ -226,33 +226,36 @@
 *   unsafe translations of "D", "H", and "S", shown in parentheses, are
 *   optional.
 *
-*     Unit      Recognized aliases
-*     ----      -------------------------------------------------------------
-*      arcmin   arcmins, ARCMIN, ARCMINS
-*      arcsec   arcsecs, ARCSEC, ARCSECS
-*      beam     BEAM
-*      d        day, days, (D), DAY, DAYS
-*      deg      degree, degrees, DEG, DEGREE, DEGREES
-*      GHz      GHZ
-*      h        hr, (H), HR
-*      Hz       hz, HZ
-*      kHz      KHZ
-*      Jy       JY
-*      K        kelvin, kelvins, Kelvin, Kelvins, KELVIN, KELVINS
-*      km       KM
-*      m        metre, meter, metres, meters, M, METRE, METER, METRES, METERS
-*      min      MIN
-*      MHz      MHZ
-*      Pa       pascal, pascals, PASCAL, PASCALS
-*      pixel    pixels, PIXEL, PIXELS
-*      rad      radian, radians, RAD, RADIAN, RADIANS
-*      s        sec, second, seconds, (S), SEC, SECOND, SECONDS
-*      V        volt, volts, VOLT, VOLTS
-*      yr       year, years, YR, YEAR, YEARS
+*     Unit       Recognized aliases
+*     ----       -------------------------------------------------------------
+*      Angstrom  angstrom
+*      arcmin    arcmins, ARCMIN, ARCMINS
+*      arcsec    arcsecs, ARCSEC, ARCSECS
+*      beam      BEAM
+*      byte      Byte
+*      d         day, days, (D), DAY, DAYS
+*      deg       degree, degrees, DEG, DEGREE, DEGREES
+*      GHz       GHZ
+*      h         hr, (H), HR
+*      Hz        hz, HZ
+*      kHz       KHZ
+*      Jy        JY
+*      K         kelvin, kelvins, Kelvin, Kelvins, KELVIN, KELVINS
+*      km        KM
+*      m         metre, meter, metres, meters, M, METRE, METER, METRES, METERS
+*      min       MIN
+*      MHz       MHZ
+*      Ohm       ohm
+*      Pa        pascal, pascals, Pascal, Pascals, PASCAL, PASCALS
+*      pixel     pixels, PIXEL, PIXELS
+*      rad       radian, radians, RAD, RADIAN, RADIANS
+*      s         sec, second, seconds, (S), SEC, SECOND, SECONDS
+*      V         volt, volts, Volt, Volts, VOLT, VOLTS
+*      yr        year, years, YR, YEAR, YEARS
 *
 *   The aliases "angstrom", "ohm", and "Byte" for (Angstrom, Ohm, and byte)
 *   are recognized by wcsulex() itself as an unofficial extension of the
-*   standard (see above).
+*   standard (see above), but they are converted to the standard form here.
 *
 *
 *   Status return values

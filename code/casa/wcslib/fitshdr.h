@@ -221,14 +221,14 @@
 *         in keyvalue.l as an array of int[8], each of which stores 9 decimal
 *         digits.  The keyvalue is to be computed as
 *
-*            (((((((keyvalue.k[7]) * 1000000000 +
-*                   keyvalue.k[6]) * 1000000000 +
-*                   keyvalue.k[5]) * 1000000000 +
-*                   keyvalue.k[4]) * 1000000000 +
-*                   keyvalue.k[3]) * 1000000000 +
-*                   keyvalue.k[2]) * 1000000000 +
-*                   keyvalue.k[1]) * 1000000000 +
-*                   keyvalue.k[0]
+*            (((((((keyvalue.l[7]) * 1000000000 +
+*                   keyvalue.l[6]) * 1000000000 +
+*                   keyvalue.l[5]) * 1000000000 +
+*                   keyvalue.l[4]) * 1000000000 +
+*                   keyvalue.l[3]) * 1000000000 +
+*                   keyvalue.l[2]) * 1000000000 +
+*                   keyvalue.l[1]) * 1000000000 +
+*                   keyvalue.l[0]
 *
 *      union keyvalue
 *         A union containing the keyword value:
