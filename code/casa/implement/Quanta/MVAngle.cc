@@ -362,9 +362,6 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
       r *= s;
       tp = 4;
     };
-  } else if (in.testChar('/')) {
-    cout << "Time expression format should be hh:mm:ss, result may be incorrect   " << endl;;
-    return False;
   }else if (in.tSkipCharNC('d')) {
     tp = 1;
   } else if (in.tSkipCharNC('h')) {
