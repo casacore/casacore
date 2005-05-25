@@ -331,8 +331,13 @@ void TableDesc::renameColumn (const String& newname,
   col_p.rename (newname, oldname);
   // Now adjust the hypercolumn descriptions.
   SimpleOrderedMap<String,String> old2new("", 1);
+  // First fill the map with all columns and replace it for the new name.
+  for (uInt i=0; i<ncolumn(); i++) {
+    const String& nm = columnDesc(i).name();
+    old2new.define (nm, nm);
+  }
   old2new.define (oldname, newname);
-  adjustHypercolumns (old2new, True, True, True);
+  adjustHypercolumns (old2new);
 }
 
 void TableDesc::defineHypercolumn (const String& hypercolumnName,
