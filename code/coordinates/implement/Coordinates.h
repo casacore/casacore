@@ -37,6 +37,7 @@
 #include <coordinates/Coordinates/Projection.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <coordinates/Coordinates/StokesCoordinate.h>
+#include <coordinates/Coordinates/TabularCoordinate.h>
 #include <coordinates/Coordinates/CoordinateUtil.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
