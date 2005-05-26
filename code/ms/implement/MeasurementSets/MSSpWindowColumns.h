@@ -37,6 +37,9 @@
 #include <measures/TableMeasures/ArrayMeasColumn.h>
 #include <measures/TableMeasures/ArrayQuantColumn.h>
 #include <casa/BasicSL/String.h>
+#include <measures/Measures/MeasFrame.h>
+#include <ms/MeasurementSets/MSDopplerColumns.h>
+#include <ms/MeasurementSets/MSSourceColumns.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -147,6 +150,11 @@ public:
   Int matchSpw(const MFrequency& refFreq, uInt nChan, 
 	       const Quantum<Double>& bandwidth, Int ifChain,
 	       const Quantum<Double>& tolerance, Int tryRow=-1) const;
+  // Similar to above, but also pass in the frame info.			 
+  Int matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
+          const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
+	       const Quantum<Double>& bandwidth, Int ifChain,
+	       const Quantum<Double>& tolerance, Int tryRow=-1) const; 
   // This is to check that the channels are matched individually
   // and also if the spw is matched in reverse; 
 
@@ -163,6 +171,10 @@ public:
 	       const Quantum<Double>& bandwidth, Int ifChain,
 	       const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
 	       Bool& reversed) const;
+  // Set the refFrame, which is need when converting MFrequency to a different
+  // frame ( no, ScalarMeasColumn<M>put() will not accept this!
+  //void setFrame( MeasFrame refFrame ){ m_frame = &refFrame; }
+  //
 protected:
   //# default constructor creates a object that is not usable. Use the attach
   //# function correct this.
@@ -185,6 +197,8 @@ private:
   //<group>
   Bool matchRefFrequency(uInt row, MFrequency::Types refType, 
 			 Double refFreqInHz, Double tolInHz) const;
+  Bool matchRefFreqCnvtrd(uInt row, MFrequency refOrChanFreq, const Bool isRefFreq, const MeasFrame& measFrm,
+          const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, Double tolInHz) const;
   Bool matchChanFreq(uInt row, const Vector<Double>& chanFreqInHz,
 		     Double tolInHz) const;
   Bool matchIfConvChain(uInt row, Int ifChain) const;
@@ -228,6 +242,11 @@ private:
   ROScalarQuantColumn<Double> refFrequencyQuant_p;
   ROArrayQuantColumn<Double> resolutionQuant_p;
   ROScalarQuantColumn<Double> totalBandwidthQuant_p;
+  
+  	// m_frame will be set from VLAFiller before calling matchSpw(), which is need when 
+	// converting MFrequency to a different frame. ( This did not work out! )
+   // MeasFrame* m_frame;
+
 };
 
 // <summary>

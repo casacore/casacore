@@ -33,7 +33,22 @@
 #include <casa/BasicMath/Math.h>
 #include <ms/MeasurementSets/MSSpectralWindow.h>
 #include <measures/Measures/MeasRef.h>
+#include <measures/Measures/MFrequency.h>
+#include <measures/Measures/MeasConvert.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MRadialVelocity.h>
+
+//#include <measures/Measures/MDoppler.h>
+#include <measures/Measures/MEpoch.h>
+#include <measures/Measures/MPosition.h>
+#include <measures/Measures/MeasRef.h>
+//#include <measures/Measures/MeasTable.h>
 #include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/MVDirection.h>
+//#include <casa/Quanta/MVDoppler.h>
+#include <casa/Quanta/MVEpoch.h>
+#include <casa/Quanta/MVFrequency.h>
+#include <casa/Quanta/MVPosition.h>
 #include <casa/Quanta/Quantum.h>
 #include <casa/Quanta/UnitVal.h>
 #include <tables/Tables/ColDescSet.h>
@@ -104,7 +119,16 @@ Int ROMSSpWindowColumns::
 matchSpw(const MFrequency& refFreq, uInt nChan, 
 	 const Quantum<Double>& bandwidth, Int ifChain,
 	 const Quantum<Double>& tolerance, Int tryRow) const {
+  //
+  cout << "[ROMSSpWindowColumns::matchSpw()] refFreq = " << refFreq << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] nChan = " << nChan << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] bandwidth = " << bandwidth << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] ifChain = " << ifChain << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] tolerance = " << tolerance << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] tryRow = " << tryRow << endl;
+  //
   uInt r = nrow();
+  cout << "[ROMSSpWindowColumns::matchSpw()] Number of rows in table SPECTRAL_WINDOW = " << r << endl;
   if (r == 0) return -1;
   // Convert the reference frequency to Hz
   const MFrequency::Types refType = 
@@ -127,9 +151,10 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
     if (!flagRow()(tr) &&
 	matchNumChan(tr, nChan) &&
 	matchIfConvChain(tr, ifChain) &&
-	matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz) &&
+	matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/40) &&
  	matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
-      return tr;
+       cout << "[ROMSSpWindowColumns::matchSpw()] Found a matched spectral window." << endl;
+		 return tr;
     }
     if (tr == r-1) r--;
   }
@@ -138,11 +163,76 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
     if (!flagRow()(r) &&
 	matchNumChan(r, nChan) &&
 	matchIfConvChain(r, ifChain) &&
-	matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz) &&
+	matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/40) &&
  	matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
+	   cout << "[ROMSSpWindowColumns::matchSpw()] Found a matched spectral window." << endl;
       return r;
     }
   }
+  //cout << "[ROMSSpWindowColumns::matchSpw()] Did not find any matched spectral window." << endl;
+  return -1;
+}
+// this version has info of MeasFrame.
+Int ROMSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1, const MeasFrame& measFrm,
+    const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
+	 const Quantum<Double>& bandwidth, Int ifChain,
+	 const Quantum<Double>& tolerance, Int tryRow) const {
+  //
+  cout << "[ROMSSpWindowColumns::matchSpw()] refFreq = " << refFreq << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] nChan = " << nChan << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] bandwidth = " << bandwidth << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] ifChain = " << ifChain << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] tolerance = " << tolerance << endl;
+  cout << "[ROMSSpWindowColumns::matchSpw()] tryRow = " << tryRow << endl;
+  //
+  uInt r = nrow();
+  cout << "[ROMSSpWindowColumns::matchSpw()] Number of rows in table SPECTRAL_WINDOW = " << r << endl;
+  if (r == 0) return -1;
+  // Convert the reference frequency to Hz
+  //const MFrequency::Types refType = 
+  //  MFrequency::castType(refFreq.getRef().getType());
+  //const Double refFreqInHz = refFreq.getValue().getValue();
+  // Convert the totalBandwidth to Hz
+  const Unit Hz("Hz");
+  DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
+  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  // Convert the tolerance to Hz
+  DebugAssert(tolerance.check(Hz.getValue()), AipsError);
+  const Double tolInHz = tolerance.getValue(Hz);
+  // Main matching loop
+  if (tryRow >= 0) {
+    const uInt tr = tryRow;
+    if (tr >= r) {
+      throw(AipsError("ROMSSpWindowColumns::match(...) - "
+                      "the row you suggest is too big"));
+    }
+    if (!flagRow()(tr) &&
+	      matchNumChan(tr, nChan) &&
+	      matchIfConvChain(tr, ifChain) &&
+  	      matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/40) &&
+ 	      //matchRefFrequency(tr, refType, refFreqInHz, tolInHz)) {
+	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+	      matchRefFreqCnvtrd(tr, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+         cout << "[ROMSSpWindowColumns::matchSpw()] Found a matched spectral window." << endl;
+		   return tr;
+    }
+    if (tr == r-1) r--;
+  }
+  while (r > 0) {
+    r--;
+    if (!flagRow()(r) &&
+	      matchNumChan(r, nChan) &&
+	      matchIfConvChain(r, ifChain) &&
+	      matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/40) &&
+ 	      //matchRefFrequency(r, refType, refFreqInHz, tolInHz)) {
+	      ( /*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
+	        matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+	      cout << "[ROMSSpWindowColumns::matchSpw()] Found a matched spectral window." << endl;
+         return r;
+    }
+  }
+  //cout << "[ROMSSpWindowColumns::matchSpw()] Did not find any matched spectral window." << endl;
   return -1;
 }
 
@@ -172,8 +262,9 @@ allMatchedSpw(const MFrequency& refFreq, uInt nChan,
     if (!flagRow()(k) &&
 	matchNumChan(k, nChan) &&
 	matchIfConvChain(k, ifChain) &&
-	matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz) &&
+	matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/40) &&
  	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
+	//matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
       ++numMatch;
       matched.resize(numMatch, True);
       matched(numMatch-1)=k;
@@ -341,10 +432,300 @@ matchRefFrequency(uInt row, MFrequency::Types refType,
 		  Double refFreqInHz, Double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   const MFrequency rowFreq = refFrequencyMeas()(row);
+  cout<< "[ROMSSpWindowColumns::matchRefFrequency()] Row MEAS_FREQ_REF = " << rowFreq.getRef().getType() << endl;
+  cout<< "[ROMSSpWindowColumns::matchRefFrequency()] ref MEAS_FREQ_REF = " << refType << endl;
+  
   if (MFrequency::castType(rowFreq.getRef().getType()) != refType) {
     return False;
   }
   return nearAbs(rowFreq.getValue().getValue(), refFreqInHz, tolInHz);
+}
+Bool ROMSSpWindowColumns::
+matchRefFreqCnvtrd(uInt row, MFrequency refFreq, const Bool isRefFreq, const MeasFrame& measFrm,
+        const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, Double tolInHz) const {
+  // measFrm is the frame info for the current spw.
+  DebugAssert(row < nrow(), AipsError);
+  // Since sometimes when the channel frequency does not match, the reference frequency actually matches.
+  // So we check both and so we may receive either a refrence frequency or a channel frequency.
+  MFrequency rowFreq;
+  if( isRefFreq ) { 
+     rowFreq = refFrequencyMeas()(row);
+	  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] match reference frequency. "<< endl;
+  }else{
+     rowFreq = Vector<MFrequency>(chanFreqMeas()(row))(0);
+	  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] match first channel frequency. " << endl;
+  }
+  //const MFrequency refFreqCtrd;
+  const MFrequency::Types refType = MFrequency::castType(refFreq.getRef().getType());
+  const MFrequency::Types rowType = MFrequency::castType(rowFreq.getRef().getType());
+  cout.precision(8);
+  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] row number = " << row << endl;
+  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq.getRef() = " << refFreq.getRef() << endl;
+  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq.getRef() = " << rowFreq.getRef() << endl;  
+  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] ref MEAS_FREQ_REF = " << refType << endl;
+  cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] Row MEAS_FREQ_REF = " << rowType << endl;
+
+  const Double refFreqInHz = refFreq.getValue().getValue();
+  const Double rowFreqInHz = rowFreq.getValue().getValue();
+  
+  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq = " << refFreq << endl;
+  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq = " << rowFreq << endl;
+  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreqInHz = " << refFreqInHz << endl;
+  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreqInHz = " << rowFreqInHz << endl;
+
+  Double refFreqInHzCnvtrd = refFreqInHz;
+  Double rowFreqInHzCnvtrd = rowFreqInHz;
+  if (rowType != refType) {
+    MFrequency::Convert freqCnvtr;
+	 if( rowType == MFrequency::TOPO ){ // One match for NGC7538
+	    // reset time to the TOPO's time
+	    //measFrm.set( MEpoch( MVEpoch( 49856, 0.391493 )));
+	    //freqCnvtr.setModel( MFrequency(MVFrequency(), MFrequency::Ref( refType, measFrm)) );
+	    //freqCnvtr.setOut( rowType );
+       // refFreqInHzCnvtrd = freqCnvtr(refFreqInHz).getValue().getValue();
+		 //
+		 // step by step conversion
+		  MFrequency::Ref refFrom1( refType, measFrm );
+	     MeasFrame measFrmTo1 = MeasFrame();
+	     // the info for MEpoch and MDirection of the previous spw are not persisted. Hard coding it in for now.
+		  // first convert in the same type of frame, but to a different Epoch.
+	     measFrmTo1.set( *(measFrm.position()) );
+	     measFrmTo1.set( MEpoch( MVEpoch( 49856, 0.391493 )));
+	     measFrmTo1.set( *(measFrm.direction()));
+        MFrequency::Ref refTo1( refType, measFrmTo1 );
+	     Unit unit(String("Hz"));
+        MFrequency::Convert cnvtMachine1(unit, refFrom1, refTo1);
+		  MFrequency freqFromConverted1 = cnvtMachine1( refFreq );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] freqFromConverted1(LSRK) = " << freqFromConverted1 << endl;
+		  // now convert to a different type of frame, but with same Epoch, position and direction
+		  MFrequency::Ref refTo2( rowType, measFrmTo1 );
+		  MFrequency::Convert cnvtMachine2(unit, refTo1, refTo2 );
+		  MFrequency freqFromConverted2 = cnvtMachine2( freqFromConverted1 );
+
+	    cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq = " << refFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq = " << rowFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] freqFromConverted2(TOPO) = " << freqFromConverted2 << endl;
+ 	    // combined conversion
+		  MeasFrame measFrmFrom = MeasFrame( *(measFrm.epoch()), *(measFrm.position()), *(measFrm.direction()));
+		  //MRadialVelocity radialVelocity(MVRadialVelocity ( -59000.0 ), MRadialVelocity::Ref (MRadialVelocity::LSRK, measFrmFrom ));
+        //measFrmFrom.set ( radialVelocity);
+		  MFrequency::Ref refFrom( refType, measFrmFrom );
+	     MeasFrame measFrmTo = MeasFrame();
+	     // the info for MEpoch of the previous spw are not persisted. Hard coding it in for now.
+	     measFrmTo.set( *(measFrm.position()) );
+		  // get the epoch
+		  uInt doppler_id = dopplerId()( row );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] row = " << row << endl;
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] doppler_id = " << doppler_id << endl;
+		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
+		  // table. But for subtable DOPPLER, doppler_id is the same as row number. So we can use the
+		  // source_id directly in the call below.
+		  uInt source_id = msdopc.sourceId()(doppler_id );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] source_id = " << source_id << endl;
+		  //const ROScalarColumn<Int>& source_ids = mssrcc.sourceId();
+		  //int timeRow = -1;
+		  //for( uInt i = 0; i< mssrcc.nrow(); i++ ){
+		  //	  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] source_ids("<< i <<") = " << source_ids(i) << endl;
+		  //   if( source_ids( i ) == source_id ){
+		  //	     timeRow = i;
+				  //break;  
+		  //	  }
+		  // }
+		  //if( timeRow == -1 ){
+		  //   cerr << "[ROMSSpWindowColumns::matchRefFreqCnvtr()] Invlaid source_id!" << endl;
+		  //}
+		  //cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] timeRow = " << timeRow << endl;
+		  //
+		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
+		  // table. But for subtable SOURCE, source_id is the same as row number. So we can use the
+		  // source_id directly in the call below.
+		  MEpoch epochTo = mssrcc.timeMeas()( source_id );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] epochTo = " << epochTo << endl;
+		  // set the Epoch to that of rowFreq.
+	     // measFrmTo.set( MEpoch( MVEpoch( 49856, 0.391493 )));
+		  measFrmTo.set( epochTo );
+	     measFrmTo.set( *(measFrm.direction()));
+		  //measFrmTo.set( radialVelocity );
+        MFrequency::Ref refTo( rowType, measFrmTo );
+	     //Unit unit(String("Hz"));
+        MFrequency::Convert cnvtMachine(unit, refFrom, refTo);
+		  MFrequency freqFromConverted = cnvtMachine( refFreq );
+		  refFreqInHzCnvtrd = freqFromConverted.getValue().getValue();
+
+	    cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq = " << refFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq = " << rowFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreqInHzCnvtrd = " << freqFromConverted << endl;
+	 }else if ( refType == MFrequency::TOPO ){ // One match for G192
+	    // At present, there is no way to retrieve the frame info the already accepted spw.
+		 // For test purpose, hard code in one.
+		 //const MDirection::Types fieldDirRef = MDirection::Types(0);
+	    // MDirection fieldDir( MVDirection( 0.122947, 0.964434, 0.233988 ), fieldDirRef );
+		 //measFrm.resetDirection(fieldDir.getValue());
+		 //measFrm.set(fieldDir);
+	    //freqCnvtr.setModel( MFrequency(MVFrequency(), MFrequency::Ref(rowType, measFrm)) );
+	    //freqCnvtr.setOut( refType );
+       //rowFreqInHzCnvtrd = freqCnvtr(rowFreqInHz).getValue().getValue();
+		 //
+		 // step by step conversion
+		 // first convert in the same type of frame, but to a different Epoch.
+	     MeasFrame measFrmFrom1 = MeasFrame();
+	     measFrmFrom1.set( *(measFrm.position()) );
+	     measFrmFrom1.set( MEpoch( MVEpoch( 52754, 0.919184 )));
+		  const MDirection::Types fieldDirRef1 = MDirection::Types(0);
+		  MDirection fieldDir1( MVDirection( 0.122947, 0.964434, 0.233988 ), fieldDirRef1 );
+	     measFrmFrom1.set( fieldDir1 );
+        MFrequency::Ref refFrom1( rowType, measFrmFrom1 );
+		  //
+		  MeasFrame measFrmTo1 = MeasFrame();
+		  measFrmTo1.set( *(measFrmFrom1.position()) );
+		  measFrmTo1.set( *(measFrmFrom1.direction()));
+		  measFrmTo1.set( *(measFrm.epoch()) );
+		  MFrequency::Ref refTo1( rowType, measFrmTo1 );
+	     Unit unit1(String("Hz"));
+        MFrequency::Convert cnvtMachine1(unit1, refFrom1, refTo1);
+		  MFrequency freqFromConverted1 = cnvtMachine1( rowFreq );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] freqFromConverted1(LSRK) = " << freqFromConverted1 << endl;
+		  // now convert to a different type of frame, but with same Epoch, position and direction
+		  MeasFrame measFrmTo2 = MeasFrame();
+		  measFrmTo2.set( *(measFrm.position()) );
+		  measFrmTo2.set( fieldDir1 );
+		  measFrmTo2.set( *(measFrm.epoch()) );
+		  MFrequency::Ref refTo2( refType, measFrmTo2 );
+		  MFrequency::Convert cnvtMachine2(unit1, refTo1, refTo2 );
+		  MFrequency freqFromConverted2 = cnvtMachine2( freqFromConverted1 );
+
+	    cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq = " << refFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq = " << rowFreq << endl;
+       cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] freqFromConverted2(TOPO) = " << freqFromConverted2 << endl;
+        // combined conversion. Should produce the same results as the step by step conversion.
+	     MeasFrame measFrmFrom = MeasFrame();
+	     // the info for MEpoch and MDirection of the previous spw are not persisted. Hard coding it in for now.
+	     measFrmFrom.set( *(measFrm.position()) );
+		  // get the epoch
+		  uInt doppler_id = dopplerId()( row );
+		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
+		  // table. But for subtable SOURCE, source_id is the same as row number. So we can use the
+		  // source_id directly in the call below.
+		  uInt source_id = msdopc.sourceId()( doppler_id );
+		  MEpoch epochFrom = mssrcc.timeMeas()( source_id );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] epochFrom = " << epochFrom << endl;
+		  // get the field direction
+		  MDirection fieldDirFrom = mssrcc.directionMeas()(source_id);
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] fieldDirFrom = " << fieldDirFrom << endl;
+	     //measFrmFrom.set( MEpoch( MVEpoch( 52754, 0.919184 )));
+		  //const MDirection::Types fieldDirRef = MDirection::Types(0);
+		  //MDirection fieldDir( MVDirection( 0.122947, 0.964434, 0.233988 ), fieldDirRef );
+		  measFrmFrom.set( epochFrom );
+		  measFrmFrom.set( fieldDirFrom );
+	     //measFrmFrom.set( fieldDir );
+		  //MRadialVelocity radialVelocity(MVRadialVelocity ( 5700.0 ), MRadialVelocity::Ref (MRadialVelocity::LSRK, measFrmFrom ));
+        //measFrmFrom.set ( radialVelocity);
+		  
+        MFrequency::Ref refFrom( rowType, measFrmFrom );
+		  MeasFrame measFrmTo = MeasFrame();
+		  measFrmTo.set( *(measFrm.position()) );
+		  measFrmTo.set( fieldDirFrom );
+		  measFrmTo.set( *(measFrm.epoch()) );
+		  //measFrmTo.set( radialVelocity );
+		  // check the effects of epoch. Comment out the following line after test.
+		  // measFrm.set( *(measFrmFrom.epoch())); // This does not afftect the result or maybe the effects is small.
+		  MFrequency::Ref refTo( refType, measFrmTo );
+		  
+	     Unit unit(String("Hz"));
+        MFrequency::Convert cnvtMachine(unit, refFrom, refTo);
+		  // rowFreq does not have frame info in it. So add it in to see if it will affect anything.
+		  // did not see any effects of this.
+		  // MFrequency freqFrom = MFrequency( MVFrequency( Quantity( rowFreq.getValue().getValue(),"Hz" )),refFrom );
+		  // MFrequency freqFromConverted = cnvtMachine( freqFrom );
+		  MFrequency freqFromConverted = cnvtMachine( rowFreq );
+		  rowFreqInHzCnvtrd = freqFromConverted.getValue().getValue();
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreqInHzCnvtrd = " << freqFromConverted << endl;
+		  // simulate the measures tool:
+		  MFrequency::Convert freqCnvtr;
+		  freqCnvtr.setModel( MFrequency(MVFrequency(), MFrequency::Ref( rowType, measFrmTo)) );
+	     freqCnvtr.setOut( refType );
+        Double freqInHzCnvtrd = freqCnvtr(rowFreqInHz).getValue().getValue();
+	     cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] simulating measures tool, rowFreqInHzCnvtrd = " << freqInHzCnvtrd << endl;
+		  // Also add the correction related to doppler shift
+		  /*
+		  Double dopVel = msdopc.velDef()( doppler_id );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] doppler velocity = " << dopVel << endl;
+		  Double optVel = QC::c.getValue( "m/s" );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] speed of light = " << optVel << endl;
+		  //rowFreqInHzCnvtrd -= refFreqInHzCnvtrd*dopVel/optVel;
+		  //cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreqInHzCnvtrd after doppler shift correction = "
+		  //     << rowFreqInHzCnvtrd << endl;
+		  */
+		  // try the channel frequency
+		  /*
+		  MFrequency chanFreq( Quantity( 2.36925072e+10,"Hz" ), rowType );
+		  MFrequency chanFreqConverted = cnvtMachine( chanFreq );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] chanFreqConverted = " << chanFreqConverted << endl;
+		  */
+		  // what if we convert to the LSRK
+		  /*
+		  MeasFrame measFrmFromT = MeasFrame();
+	     measFrmFromT.set( *(measFrm.position()) );
+	     measFrmFromT.set( *(measFrm.epoch()));
+		  measFrmFromT.set( *(measFrm.direction()) );		  
+        MFrequency::Ref refFromT( refType, measFrmFromT );
+		  MeasFrame measFrmToL = MeasFrame();
+		  measFrmToL.set( *(measFrm.position()) );
+		  measFrmToL.set( *(measFrm.direction()) );
+		  // the info for MEpoch and MDirection of the previous spw are not persisted. Hard coding it in for now.
+		  //measFrmToL.set( MEpoch( MVEpoch( 52754, 0.919184 )) );
+		  //measFrmToL.set( *(measFrm.epoch()) ); // did not see the effects of epoch.
+		  measFrmToL.set( epochFrom );
+ 		  MFrequency::Ref refToL( rowType, measFrmToL );
+
+		  MFrequency::Convert cnvt2LSRK( unit, refFromT, refToL );
+		  MFrequency freqInLSRK = cnvt2LSRK( refFreq );
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] freqInLSRK = " << freqInLSRK << endl;
+		  // add the doppler correction
+		  Double freqInHzLSRK = freqInLSRK.getValue().getValue();
+		  freqInHzLSRK += freqInHzLSRK*dopVel/optVel;
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] after doppler correction, freqInHzLSRK = " << freqInHzLSRK << endl;
+        */
+		 //
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] measFrm.Position = " << *(measFrm.position()) << endl;
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] measFrm.Epoch = " << *(measFrm.epoch()) << endl;
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] measFrm.Epoch.Day = " << ((MVEpoch)(((MEpoch*)(measFrm.epoch()))->getValue())).getDay() << endl;
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] measFrm.Epoch.DayFraction = " << ((MVEpoch)(((MEpoch*)(measFrm.epoch()))->getValue())).getDayFraction() << endl;
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] measFrm.Field direction = " << *(measFrm.direction()) << endl;
+	    cout<< "[ROMSSpWindowColumns::matchRefFreqCnvtr()] Field measFrm.direction.getValue() = " << ((MDirection*)(measFrm.direction()))->getValue() << endl;
+     }else{ // none of the frequency is of type TOPO
+        cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] Neither of the two frequencies is of type TOPO. Convert refFreq to rowFreq's frame anyway. " << endl;
+	  	  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreq = " << refFreq << endl;
+        cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] rowFreq = " << rowFreq << endl;
+
+	     MFrequency::Ref refFrom( refType, measFrm );
+	     MeasFrame measFrmTo = MeasFrame();
+	     measFrmTo.set( *(measFrm.position()) );
+		  // get the epoch
+		  uInt doppler_id = dopplerId()( row );
+		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
+		  // table. But for subtable DOPPLER, doppler_id is the same as row number. So we can use the
+		  // source_id directly in the call below.
+		  uInt source_id = msdopc.sourceId()(doppler_id );
+		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
+		  // table. But for subtable SOURCE, source_id is the same as row number. So we can use the
+		  // source_id directly in the call below.
+		  MEpoch epochTo = mssrcc.timeMeas()( source_id );
+		  // set the Epoch to that of rowFreq.
+	     // measFrmTo.set( MEpoch( MVEpoch( 49856, 0.391493 )));
+		  measFrmTo.set( epochTo );
+	     measFrmTo.set( *(measFrm.direction()));
+		  //measFrmTo.set( radialVelocity );
+        MFrequency::Ref refTo( rowType, measFrmTo );
+	     Unit unit(String("Hz"));
+        MFrequency::Convert cnvtMachine(unit, refFrom, refTo);
+		  MFrequency freqFromConverted = cnvtMachine( refFreq );
+		  refFreqInHzCnvtrd = freqFromConverted.getValue().getValue();
+		  cout <<"[ROMSSpWindowColumns::matchRefFreqCnvtr()] refFreqFromConverted = " << refFreqInHzCnvtrd << endl;	 
+	 }
+  }
+
+  return nearAbs(rowFreqInHzCnvtrd, refFreqInHzCnvtrd, tolInHz);
 }
 
 Bool ROMSSpWindowColumns::
