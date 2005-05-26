@@ -67,11 +67,11 @@
 *                        first of which must be set by the user with the
 *                        remainder set by fitshdr():
 *
-*                           char name[8]  Name of the required keyword, blank-
-*                                         filled and NOT null-terminated.
-*                                         This is to be set by the caller; the
-*                                         '.' character may be used for
-*                                         wildcarding.
+*                           char name[12] Name of the required keyword.  This
+*                                         is to be set by the caller; the '.'
+*                                         character may be used for
+*                                         wildcarding.  Trailing blanks will
+*                                         be replaced with nulls.
 *
 *                           int count     The number of matches found for the
 *                                         keyword.
@@ -125,15 +125,17 @@
 *
 *       b) Sect. 5.1.2.2 defines the "value indicator" as the characters "= "
 *          occurring in columns 9 and 10.  If these are absent then the
-*          keyword has no value and columns 9-80 may contain any ASCII text.
-*          This is copied to the comment member of the fitskey struct.
+*          keyword has no value and columns 9-80 may contain any ASCII text
+*          (but see note 2 for CONTINUE cards).  This is copied to the comment
+*          member of the fitskey struct.
 *
 *       c) Sect. 5.1.2.3 states that a keyword may have a null (undefined)
 *          value if the value/comment field, columns 11-80, consists entirely
 *          of spaces, possibly followed by a comment.
 *
 *       d) Sect. 5.1.1 states that trailing blanks in a string keyvalue are
-*          not significant and the parser always removes them.
+*          not significant and the parser always removes them.  A string
+*          containing nothing but blanks will be replaced with a single blank.
 *
 *          Sect. 5.2.1 also states that a quote character (') in a string
 *          value is to be represented by two successive quote characters and
@@ -152,6 +154,37 @@
 *
 *       g) "END     " not followed by 72 blanks is not considered to be a
 *          legitimate end card.
+*
+*    2) The parser supports a generalization of the OGIP Long String Keyvalue
+*       Convention (v1.0) whereby strings may be continued onto successive
+*       header cards.  A card contains a segment of a continued string if and
+*       only if
+*          a) it contains the pseudo-keyword "CONTINUE",
+*          b) columns 9 and 10 are both blank,
+*          c) columns 11 to 80 contain what would be considered a valid string
+*             keyvalue, including optional inline comment, if column 9 had
+*             contained '=',
+*          d) the previous card contained either a valid string keyvalue or a
+*             valid CONTINUE card.
+*       If any of these conditions is violated, the card is considered in
+*       isolation.
+*
+*       Syntax errors in inline comments in a continued string are treated
+*       more permissively than usual; the '/' delimiter may be omitted
+*       provided that parsing of the string keyvalue is not compromised.
+*       However, the FITSHDR_COMMENT status bit will be set for the card (see
+*       below).
+*
+*       As for normal strings, trailing blanks in a continued string are not
+*       significant.
+*
+*       In the OGIP convention "the '&' character is used as the last non-
+*       blank character of the string to indicate that the string is
+*       (probably) continued on the following keyword".  This additional
+*       syntax is not required by fitshdr(), but if '&' does occur as the last
+*       non-blank character of a continued string keyvalue then it will be
+*       removed, along with any trailing blanks.  However, blanks that occur
+*       before the '&' will be preserved.
 *
 *
 *   Keyword/value information
@@ -177,10 +210,9 @@
 *
 *        The header card is syntactically correct if no bits are set.
 *
-*      char keyword[8]
-*         Keyword name.  This character array is null-filled for keywords of
-*         less than eight characters (trailing blanks replaced by nulls) but
-*         will NOT be null-terminated for eight-character keywords.
+*      char keyword[12]
+*         Keyword name, is null-filled for keywords of less than eight
+*         characters (trailing blanks replaced by nulls).
 *
 *         Use sprintf(dst, "%.8s", keyword) to copy it to a character array
 *         with null-termination, or sprintf(dst, "%8.8s", keyword) to blank-
@@ -197,38 +229,56 @@
 *            6: Integer complex (stored as double[2]).
 *            7: Floating point complex (stored as double[2]).
 *            8: String.
+*            8 + 10*n: Continued string (see note 2 and below).
 *
 *         A negative type indicates that a syntax error was encountered when
 *         attempting to parse a keyvalue of the particular type.
 *
-*         A native 64-bit data type may be defined via preprocessor macro
-*         WCS_INT64, e.g. -DWCS_INT64='long long int'; this will be typedef'd
-*         to 'int64' here.  If WCS_INT64 is not set, then int64 is typedef'd
-*         to int[2] and the keyvalue is to be computed as
+*         64-bit signed integer:
+*            64-bit signed integers lie in the range
+*               -9223372036854775808 <= int64 <  -2147483648
+*            or          +2147483647 <  int64 <= +9223372036854775807.
+*            A native 64-bit data type may be defined via preprocessor macro
+*            WCS_INT64, e.g. -DWCS_INT64='long long int'; this will be
+*            typedef'd to 'int64' here.  If WCS_INT64 is not set, then int64
+*            is typedef'd to int[3] instead and the keyvalue is to be computed
+*            as
 *
-*            keyvalue.k[1] * 1000000000 + keyvalue.k[0],
+*                    ((keyvalue.k[2]) * 1000000000 +
+*                      keyvalue.k[1]) * 1000000000 +
+*                      keyvalue.k[0]
 *
-*         and reported via
+*            and may reported via
 *
-*            printf("%d%09d", keyvalue.k[1], abs(keyvalue.k[0]));
+*               if (keyvalue.k[2]) {
+*                  printf("%d%09d%09d", keyvalue.k[2], abs(keyvalue.k[1]),
+*                                    abs(keyvalue.k[0]));
+*               } else {
+*                  printf("%d%09d", keyvalue.k[1], abs(keyvalue.k[0]));
+*               }
 *
-*         where keyvalue.k[0] ranges from -999999999 to +999999999.  The
-*         minimum and maximum values that may be represented are thus
-*         -2147483648999999999 and +2147483647999999999, compared to
-*         -9223372036854775808 and +9223372036854775807 for a true 64-bit int.
+*            where keyvalue.k[0] and keyvalue.k[1] range from -999999999 to
+*            +999999999.
 *
-*         Very long integers, up to 70 decimal digits in length, are encoded
-*         in keyvalue.l as an array of int[8], each of which stores 9 decimal
-*         digits.  The keyvalue is to be computed as
+*         Very long integers:
+*            Integers up to 70 decimal digits in length are encoded in
+*            keyvalue.l as an array of int[8], each of which stores 9 decimal
+*            digits.  The keyvalue is to be computed as
 *
-*            (((((((keyvalue.l[7]) * 1000000000 +
-*                   keyvalue.l[6]) * 1000000000 +
-*                   keyvalue.l[5]) * 1000000000 +
-*                   keyvalue.l[4]) * 1000000000 +
-*                   keyvalue.l[3]) * 1000000000 +
-*                   keyvalue.l[2]) * 1000000000 +
-*                   keyvalue.l[1]) * 1000000000 +
-*                   keyvalue.l[0]
+*               (((((((keyvalue.l[7]) * 1000000000 +
+*                      keyvalue.l[6]) * 1000000000 +
+*                      keyvalue.l[5]) * 1000000000 +
+*                      keyvalue.l[4]) * 1000000000 +
+*                      keyvalue.l[3]) * 1000000000 +
+*                      keyvalue.l[2]) * 1000000000 +
+*                      keyvalue.l[1]) * 1000000000 +
+*                      keyvalue.l[0]
+*
+*         Continued strings:
+*            Continued strings are not reconstructed, they remain split over
+*            successive fitskey structs in the keys[] array returned by
+*            fitshdr().  The keyvalue data type, 8 + 10n, indicates the
+*            segment number, n, in the continuation.
 *
 *      union keyvalue
 *         A union containing the keyword value:
@@ -240,16 +290,16 @@
 *            keyvalue.f (double):    Floating point (type == 5).
 *            keyvalue.c (double[2]): Integer and floating point complex
 *                                    (type == 6 || 7).
-*            keyvalue.s (char[68]):  String (type == 8), null-terminated.
+*            keyvalue.s (char[72]):  String (type == 8), null-terminated.
 *
 *      int ulen
 *         Where an inline comment contains a units string in the standard
 *         form, e.g. [m/s], the ulen member indicates its length, inclusive of
 *         square brackets.  Otherwise ulen is zero.
 *
-*      char comment[80]
+*      char comment[84]
 *         Comment associated with the keyword or, for cards rejected because
-*         of syntax errors, the compete card itself without null termination.
+*         of syntax errors, the compete card itself with null-termination.
 *
 *         Comments are null-terminated with trailing spaces removed.  Leading
 *         spaces are also removed from inline comments (i.e. those immediately
@@ -280,6 +330,9 @@ extern "C" {
 
 extern const char *fitshdr_errmsg[];
 
+/* ...this has to be set from a config.h type header file so that someone
+*  linking to WCSLIB will get the same definition as when it was compiled.
+*/
 #ifdef WCS_INT64
   typedef WCS_INT64 int64;
 #else
@@ -289,7 +342,7 @@ extern const char *fitshdr_errmsg[];
 
 				/* Struct used for indexing the keywords.   */
 struct fitskeyid {
-   char name[8];		/* Keyword name, NOT null-terminated.       */
+   char name[12];		/* Keyword name, null-terminated.           */
    int  count;			/* Number of occurrences of keyword.        */
    int  idx[2];			/* Indices into fitskey array.              */
 };
@@ -298,7 +351,7 @@ struct fitskeyid {
 struct fitskey {
    int  keyno;			/* Header card sequence number (1-rel).     */
    int  status;			/* Header card status bit flags.            */
-   char keyword[8];		/* Keyword name, null-filled (see above).   */
+   char keyword[12];		/* Keyword name, null-filled.               */
    int  type;			/* Keyvalue type (see above).               */
    union {
       int    i;			/* 32-bit integer and logical values.       */
@@ -306,10 +359,10 @@ struct fitskey {
       int    l[8];		/* Very long singed integer values.         */
       double f;			/* Floating point values.                   */
       double c[2];		/* Complex values.                          */
-      char   s[68];		/* String values, null-terminated.          */
+      char   s[72];		/* String values, null-terminated.          */
    } keyvalue;			/* Keyvalue.                                */
    int  ulen;			/* Length of units string.                  */
-   char comment[80];		/* Comment, null-terminated.                */
+   char comment[84];		/* Comment (or card), null-terminated.      */
 };
 
 int fitshdr(const char [], int, int, struct fitskeyid [], int *,

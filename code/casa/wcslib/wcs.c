@@ -970,7 +970,11 @@ int wcsprt(const struct wcsprm *wcs)
    printf("\n");
 
    /* Celestial and spectral transformation parameters. */
-   printf("    lonpole: %9f\n", wcs->lonpole);
+   if (undefined(wcs->lonpole)) {
+      printf("    lonpole: UNDEFINED\n");
+   } else {
+      printf("    lonpole: %9f\n", wcs->lonpole);
+   }
    printf("    latpole: %9f\n", wcs->latpole);
    printf("    restfrq: %f\n", wcs->restfrq);
    printf("    restwav: %f\n", wcs->restwav);
@@ -1470,12 +1474,12 @@ int wcs_types(struct wcsprm *wcs)
       if (strcmp(ctypei+5, "LOG") == 0) {
          /* Logarithmic axis. */
          wcs->types[i] = 400;
-	 ctypei[4] = '\0';
+         ctypei[4] = '\0';
 
       } else if (strcmp(ctypei+5, "TAB") == 0) {
          /* Tabular axis. */
          wcs->types[i] = 500;
-	 ctypei[4] = '\0';
+         ctypei[4] = '\0';
       }
 
 
@@ -1641,13 +1645,14 @@ int wcs_units(struct wcsprm *wcs)
 
 {
    char ctype[9], units[16];
-   int  i;
+   int  i, j, naxis;
    double scale, offset, power;
 
    /* Initialize if required. */
    if (wcs == 0) return 1;
 
-   for (i = 0; i < wcs->naxis; i++) {
+   naxis = wcs->naxis;
+   for (i = 0; i < naxis; i++) {
       /* Use types set by wcs_types(). */
       switch (wcs->types[i]/1000) {
       case 2:
@@ -1675,6 +1680,11 @@ int wcs_units(struct wcsprm *wcs)
          if (scale != 1.0) {
             wcs->cdelt[i] *= scale;
             wcs->crval[i] *= scale;
+
+            for (j = 0; j < naxis; j++) {
+               *(wcs->cd + i*naxis + j) *= scale;
+            }
+
             strcpy(wcs->cunit[i], units);
          }
       }

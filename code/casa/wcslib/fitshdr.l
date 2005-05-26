@@ -57,14 +57,14 @@ KW8	{KEYCHR}{8}
 KEYWORD	({KW1}|{KW2}|{KW3}|{KW4}|{KW5}|{KW6}|{KW7}|{KW8})
 
 /* Keyvalue data types. */
-LOGICAL [TF]
-INT32	[+-]?[0-9]{1,9}
-INT64	[+-]?[0-9]{10,18}
-INTVL	[+-]?[0-9]{19,}
+LOGICAL	[TF]
+INT32	[+-]?0*[0-9]{1,9}
+INT64	[+-]?0*[0-9]{10,18}
+INTVL	[+-]?0*[0-9]{19,}
 INTEGER	[+-]?[0-9]+
 FLOAT	[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)([eE][+-]?[0-9]+)?
-ICOMPLX \(" "*{INTEGER}" "*," "*{INTEGER}" "*\)
-FCOMPLX \(" "*{FLOAT}" "*," "*{FLOAT}" "*\)
+ICOMPLX	\(" "*{INTEGER}" "*," "*{INTEGER}" "*\)
+FCOMPLX	\(" "*{FLOAT}" "*," "*{FLOAT}" "*\)
 STRING	'([^']|'')*'
 
 /* Characters forming standard unit strings (jwBIQX are not used). */
@@ -118,15 +118,11 @@ void fitshdr_nullfill(char cptr[], int len);
 %}
 
 %%
-	char *cptr;
-	int  blank, end, j, k, keyno;
+	char *cptr, ctmp[72];
+	int  blank, continuation, end, j, k, keyno;
 	double dtmp;
 	struct fitskey *kptr;
 	struct fitskeyid *iptr;
-	
-	#ifndef WCS_INT64
-	  char fmt[16];
-	#endif
 	
 	fitshdr_hdr = header;
 	fitshdr_ncards = ncards;
@@ -153,6 +149,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 	
 	blank = 0;
+	continuation = 0;
 	end = 0;
 	
 	BEGIN(INITIAL);
@@ -198,40 +195,58 @@ void fitshdr_nullfill(char cptr[], int len);
 	  BEGIN(VALUE);
 	}
 
+^CONTINUE"  "+{STRING} {
+	  /* Rule 007: Continued string keyvalue. */
+	  strncpy(kptr->keyword, yytext, 8);
+
+	  if (keyno > 0 && (kptr-1)->type%10 == 8) {
+	    /* Put back the string keyvalue. */
+	    for (k = 10; yytext[k] != '\''; k++);
+	    yyless(k);
+	    continuation = 1;
+	    BEGIN(VALUE);
+
+	  } else {
+	    /* Not a valid continuation. */
+	    yyless(8);
+	    BEGIN(COMMENT);
+	  }
+	}
+
 ^{KEYWORD} {
-	  /* Rule 007. */
+	  /* Rule 008: Keyword without value. */
 	  strncpy(kptr->keyword, yytext, 8);
 	  BEGIN(COMMENT);
 	}
 
 ^.{8}=" "+ {
-	  /* Rule 008: Illegal keyword, carry on regardless. */
+	  /* Rule 009: Illegal keyword, carry on regardless. */
 	  strncpy(kptr->keyword, yytext, 8);
 	  kptr->status |= FITSHDR_KEYWORD;
 	  BEGIN(VALUE);
 	}
 
 ^.{8}	{
-	  /* Rule 009: Illegal keyword, carry on regardless. */
+	  /* Rule 010: Illegal keyword, carry on regardless. */
 	  strncpy(kptr->keyword, yytext, 8);
 	  kptr->status |= FITSHDR_KEYWORD;
 	  BEGIN(COMMENT);
 	}
 
 <VALUE>" "*/\/ {
-	  /* Rule 010: Null keyvalue. */
+	  /* Rule 011: Null keyvalue. */
 	  BEGIN(INLINE);
 	}
 
 <VALUE>{LOGICAL} {
-	  /* Rule 011: Logical keyvalue. */
+	  /* Rule 012: Logical keyvalue. */
 	  kptr->type = 1;
 	  kptr->keyvalue.i = (*yytext == 'T');
 	  BEGIN(INLINE);
 	}
 
 <VALUE>{INT32} {
-	  /* Rule 012: 32-bit signed integer keyvalue. */
+	  /* Rule 013: 32-bit signed integer keyvalue. */
 	  kptr->type = 2;
 	  if (sscanf(yytext, "%d", &(kptr->keyvalue.i)) < 1) {
 	    kptr->status |= FITSHDR_KEYVALUE;
@@ -242,7 +257,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{INT64} {
-	  /* Rule 013: 64-bit signed integer keyvalue. */
+	  /* Rule 014: 64-bit signed integer keyvalue (up to 18 digits). */
 	  if (sscanf(yytext, "%lf", &dtmp) < 1) {
 	    kptr->status |= FITSHDR_KEYVALUE;
 	    BEGIN(ERROR);
@@ -265,9 +280,11 @@ void fitshdr_nullfill(char cptr[], int len);
 	        BEGIN(ERROR);
 	      }
 	    #else
-	      /* long long int implemented as int[2]. */
-	      sprintf(fmt, "%%%dd%%9d", yyleng-9);
-	      if (sscanf(yytext, fmt, kptr->keyvalue.k+1,
+	      /* long long int implemented as int[3]. */
+	      kptr->keyvalue.k[2] = 0;
+	
+	      sprintf(ctmp, "%%%dd%%9d", yyleng-9);
+	      if (sscanf(yytext, ctmp, kptr->keyvalue.k+1,
 	                 kptr->keyvalue.k) < 1) {
 	        kptr->status |= FITSHDR_KEYVALUE;
 	        BEGIN(ERROR);
@@ -281,13 +298,46 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{INTVL} {
-	  /* Rule 014: Very long integer keyvalue. */
+	  /* Rule 015: Very long integer keyvalue. */
 	  kptr->type = 4;
-	  /* ... */
+	  strcpy(ctmp, yytext);
+	  k = yyleng;
+	  for (j = 0; j < 8; j++) {
+	    /* Read it backwards. */
+	    k -= 9;
+	    if (k < 0) k = 0;
+	    if (sscanf(ctmp+k, "%d", kptr->keyvalue.l+j) < 1) {
+	      kptr->status |= FITSHDR_KEYVALUE;
+	      BEGIN(ERROR);
+	    }
+	    if (*yytext == '-') kptr->keyvalue.l[j] *= -1;
+	
+	    if (k == 0) break;
+	    ctmp[k] = '\0';
+	  }
+	
+	  /* Can it be accomodated as a 64-bit signed integer? */
+	  if (j == 2 && abs(kptr->keyvalue.l[2]) <=  9 &&
+	                abs(kptr->keyvalue.l[1]) <=  223372036 &&
+	                    kptr->keyvalue.l[0]  <=  854775807 &&
+	                    kptr->keyvalue.l[0]  >= -854775808) {
+	    kptr->type = 3;
+	
+	    #ifdef WCS_INT64
+	      /* Native long long int is available. */
+	      kptr->keyvalue.l[2] = 0;
+	      if (sscanf(yytext, "%Ld", &(kptr->keyvalue.k)) < 1) {
+	        kptr->status |= FITSHDR_KEYVALUE;
+	        BEGIN(ERROR);
+	      }
+	    #endif
+	  }
+
+	  BEGIN(INLINE);
 	}
 
 <VALUE>{FLOAT} {
-	  /* Rule 015: Float keyvalue. */
+	  /* Rule 016: Float keyvalue. */
 	  kptr->type = 5;
 	  if (sscanf(yytext, "%lf", &(kptr->keyvalue.f)) < 1) {
 	    kptr->status |= FITSHDR_KEYVALUE;
@@ -298,7 +348,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{ICOMPLX} {
-	  /* Rule 016: Integer complex keyvalue. */
+	  /* Rule 017: Integer complex keyvalue. */
 	  kptr->type = 6;
 	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
 	      kptr->keyvalue.c+1) < 2) {
@@ -310,7 +360,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{FCOMPLX} {
-	  /* Rule 017: Floating point complex keyvalue. */
+	  /* Rule 018: Floating point complex keyvalue. */
 	  kptr->type = 7;
 	  if (sscanf(yytext, "(%lf,%lf)", kptr->keyvalue.c,
 	      kptr->keyvalue.c+1) < 2) {
@@ -322,14 +372,14 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{STRING} {
-	  /* Rule 018: String keyvalue. */
+	  /* Rule 019: String keyvalue. */
 	  kptr->type = 8;
 	  cptr = kptr->keyvalue.s;
 	  strcpy(cptr, yytext+1);
 	
 	  /* Squeeze out repeated quotes. */
 	  k = 0;
-	  for (j = 0; j < 68; j++) {
+	  for (j = 0; j < 72; j++) {
 	    if (k < j) {
 	      cptr[k] = cptr[j];
 	    }
@@ -346,85 +396,93 @@ void fitshdr_nullfill(char cptr[], int len);
 	
 	  if (*cptr) {
 	    /* Retain the initial blank in all-blank strings. */
-	    fitshdr_nullfill(cptr+1, 67);
+	    fitshdr_nullfill(cptr+1, 71);
 	  } else {
-	    fitshdr_nullfill(cptr, 68);
+	    fitshdr_nullfill(cptr, 72);
 	  }
 	
 	  BEGIN(INLINE);
 	}
 
 <VALUE>. {
-	  /* Rule 019. */
+	  /* Rule 020. */
 	  kptr->status |= FITSHDR_KEYVALUE;
 	  BEGIN(ERROR);
 	}
 
 <INLINE>" "*$ {
-	  /* Rule 020. */
-	  BEGIN(FLUSH);
-	}
-
-<INLINE>" "*\/" "*$ {
 	  /* Rule 021. */
 	  BEGIN(FLUSH);
 	}
 
-<INLINE>" "*\/" "* {
+<INLINE>" "*\/" "*$ {
 	  /* Rule 022. */
+	  BEGIN(FLUSH);
+	}
+
+<INLINE>" "*\/" "* {
+	  /* Rule 023. */
 	  BEGIN(UNITS);
 	}
 
 <INLINE>" " {
-	  /* Rule 023. */
+	  /* Rule 024. */
 	  kptr->status |= FITSHDR_COMMENT;
 	  BEGIN(ERROR);
 	}
 
 <INLINE>. {
-	  /* Rule 024: Keyvalue parsing must now also be suspect. */
+	  /* Rule 025: Keyvalue parsing must now also be suspect. */
 	  kptr->status |= FITSHDR_COMMENT;
 	  kptr->type = 0;
 	  BEGIN(ERROR);
 	}
 
 <UNITS>{UNITSTR} {
-	  /* Rule 025. */
+	  /* Rule 026. */
 	  kptr->ulen = yyleng;
 	  yymore();
 	  BEGIN(COMMENT);
 	}
 
 <UNITS>. {
-	  /* Rule 026. */
+	  /* Rule 027. */
 	  yymore();
 	  BEGIN(COMMENT);
 	}
 
 <COMMENT>.* {
-	  /* Rule 027. */
+	  /* Rule 028. */
 	  strcpy(kptr->comment, yytext);
-	  fitshdr_nullfill(kptr->comment, 80);
+	  fitshdr_nullfill(kptr->comment, 84);
 	  BEGIN(FLUSH);
 	}
 
 <ERROR>.* {
-	  /* Rule 028. */
-	  kptr->type = -abs(kptr->type);
+	  /* Rule 029. */
+	  if (!continuation) kptr->type = -abs(kptr->type);
 	
 	  sprintf(kptr->comment, "%.80s", fitshdr_hdr-80);
+	  kptr->comment[80] = '\0';
+	  fitshdr_nullfill(kptr->comment+80, 4);
 	
 	  BEGIN(FLUSH);
 	}
 
 <FLUSH>.*\n {
-	  /* Rule 029: Discard the rest of the input line. */
+	  /* Rule 030: Discard the rest of the input line. */
 	  kptr->keyno = ++keyno;
+	
+	  /* Null-fill the keyword. */
+	  kptr->keyword[8] = '\0';
+	  fitshdr_nullfill(kptr->keyword, 12);
 	
 	  /* Do indexing. */
 	  iptr = keyids;
 	  for (j = 0; j < nkeyids; j++, iptr++) {
 	    cptr = iptr->name;
+	    cptr[8] = '\0';
+	    fitshdr_nullfill(cptr, 12);
 	    for (k = 0; k < 8; k++, cptr++) {
 	      if (*cptr != '.' && *cptr != kptr->keyword[k]) break;
 	    }
@@ -442,16 +500,25 @@ void fitshdr_nullfill(char cptr[], int len);
 	    }
 	  }
 	
-	  /* Null-fill the keyword. */
-	  fitshdr_nullfill(kptr->keyword, 8);
+	  /* Deal with continued strings. */
+	  if (continuation) {
+	    /* Tidy up the previous string keyvalue. */
+	    if ((kptr-1)->type == 8) (kptr-1)->type += 10;
+	    cptr = (kptr-1)->keyvalue.s;
+	    if (cptr[strlen(cptr)-1] == '&') cptr[strlen(cptr)-1] = '\0';
+
+	    kptr->type = (kptr-1)->type + 10;
+	  }
 	
+	  /* Check for cards following the END card. */
 	  if (end && (end++ > 1) && !blank) {
-	     kptr->status |= FITSHDR_TRAILER;
+	    kptr->status |= FITSHDR_TRAILER;
 	  }
 	  if (kptr->status) (*nreject)++;
 	
 	  kptr++;
 	  blank = 0;
+	  continuation = 0;
 	
 	  BEGIN(INITIAL);
 	}
