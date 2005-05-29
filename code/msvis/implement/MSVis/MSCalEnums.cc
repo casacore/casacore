@@ -78,6 +78,8 @@ void MSCalEnums::initMaps ()
     theirFieldMap.define (MEAS_FREQ_REF, "MEAS_FREQ_REF");
     theirFieldMap.define (REF_DIRECTION, "REF_DIRECTION");
     theirFieldMap.define (MEAS_DIR_REF, "MEAS_DIR_REF");
+    theirFieldMap.define (POINTING_OFFSET, "POINTING_OFFSET");
+    theirFieldMap.define (MEAS_POINTING, "MEAS_POINTING");
     theirFieldMap.define (CAL_DESC_ID, "CAL_DESC_ID");
     theirFieldMap.define (CAL_HISTORY_ID, "CAL_HISTORY_ID");
     
