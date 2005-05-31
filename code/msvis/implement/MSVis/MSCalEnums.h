@@ -161,6 +161,10 @@ class MSCalEnums
   REF_DIRECTION = 206,
   // Reference direction frame
   MEAS_DIR_REF = 207,
+  // Antenna pointing offsets
+  POINTING_OFFSET = 208,
+  // Pointing offset frame
+  MEAS_POINTING = 209,
   // 
   // Calibration format descriptor
   CAL_DESC_ID = 300, 
