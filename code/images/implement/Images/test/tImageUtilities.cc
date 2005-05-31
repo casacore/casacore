@@ -1,3 +1,4 @@
+
 //# tImageUtilities.cc: Test program for the static ImageUtilities functions
 //# Copyright (C) 2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
@@ -34,11 +35,10 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <images/Images/ImageUtilities.h>
-#include <images/Images/ImageOpener.h>
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageFITSConverter.h>
 #include <images/Images/TempImage.h>
-#include <images/Images/FITSImage.h>
+#include <images/Images/ImageOpener.h>
 #include <lattices/Lattices/PagedArray.h>
 #include <lattices/Lattices/ArrayLattice.h>
 #include <lattices/Lattices/LatticeUtilities.h>
@@ -118,13 +118,13 @@ void doTypes()
     RegularFile rfile("tImageUtilities_tmp/mir.img/header");
     rfile.create();
   }
-  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/mir.img")
+  AlwaysAssertExit (ImageOpener::imageType("tImageUtilities_tmp/mir.img")
 		    == ImageOpener::MIRIAD);
   {
     RegularFile rfile("tImageUtilities_tmp/a.image");
     rfile.create();
   }
-  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+  AlwaysAssertExit (ImageOpener::imageType("tImageUtilities_tmp/a.image")
 		    == ImageOpener::UNKNOWN);
   char buf[2880];
   memset (buf, ' ', 2880);
@@ -141,7 +141,7 @@ void doTypes()
 			ByteIO::Update);
     file.write (2880, buf);
   }
-  AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/a.image")
+  AlwaysAssertExit (ImageOpener::imageType("tImageUtilities_tmp/a.image")
 		    == ImageOpener::FITS);
   {
     RegularFile rfile("tImageUtilities_tmp/a.descr");
@@ -346,6 +346,7 @@ void doFits()
    }
 //
    if (pResid) {
+      Float zero(0.0);
       Float one(1.0);
       for (uInt j=0; j<ny; j++) {
          pos2(1) = j;
@@ -363,7 +364,6 @@ void doFits()
 int main()
 {
   try {
-    FITSImage::registerOpenFunction();
     doFits();
     doBin();
     doTypes();
