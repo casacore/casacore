@@ -28,7 +28,7 @@
 #include <casa/aips.h>
 #include <casa/System/Aipsrc.h>
 #include <casa/Exceptions/Error.h>
-#include <fits/FITS/FITS.h>
+#include <fits/FITS/BasicFITS.h>
 #include <casa/Inputs/Input.h>
 #include <casa/OS/File.h>
 #include <casa/OS/Path.h>
