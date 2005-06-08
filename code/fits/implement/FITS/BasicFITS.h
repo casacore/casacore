@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#ifndef FITS_FITS_H
-#define FITS_FITS_H
+#ifndef FITS_BasicFITS_H
+#define FITS_BasicFITS_H
 
 #include <casa/aips.h>
 //# Would like to forward declare
