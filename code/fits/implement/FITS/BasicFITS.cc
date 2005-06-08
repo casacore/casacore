@@ -25,7 +25,7 @@
 //#
 //# $Id$
 
-#include <fits/FITS/FITS.h>
+#include <fits/FITS/BasicFITS.h>
 #include <fits/FITS/FITS2.h>
 #include <fits/FITS/fitsio.h>
 #include <fits/FITS/hdu.h>
