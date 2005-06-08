@@ -40,7 +40,7 @@
 #include <casa/Containers/MapIO.h>
 #include <casa/Containers/OrderedMap.h>
 #include <casa/Exceptions/Error.h>
-#include <fits/FITS/FITS.h>
+#include <fits/FITS/BasicFITS.h>
 #include <casa/Inputs/Input.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/BasicSL/Constants.h>
