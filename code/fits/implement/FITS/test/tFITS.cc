@@ -34,7 +34,7 @@
 #include <unistd.h>
 #include <casa/aips.h>
 #include <casa/Utilities/Assert.h>
-#include <fits/FITS/FITS.h>
+#include <fits/FITS/BasicFITS.h>
 #include <casa/Arrays/Array.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
