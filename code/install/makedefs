@@ -266,6 +266,21 @@ HDSINCD   = $(HDSROOT)/include
 HDSLIBD   = $(HDSROOT)/lib
 HDSLIB   := -lhds -lems -lchr -lcnf
 
+# QT - for graphics work
+QTROOT  := /usr/local/qt
+QTDEFS  := 
+QTINCD   = $(QTROOT)/include
+QTLIBD   = $(QTROOT)/lib
+QTLIB   := -lqt
+MOC     := $(QTROOT)/bin/moc
+
+# Boost
+BOOSTROOT  := /usr/local/boost
+BOOSTDEFS  := 
+BOOSTINCD   = $(BOOSTROOT)/include
+BOOSTLIBD   = $(BOOSTROOT)/lib
+BOOSTLIB   := -lboost_python
+
 #-----------------------------------------------------------------------------
 # Construct library lists and include paths:
 #
