@@ -222,7 +222,7 @@
                       fi
 	           ln -sf $myDir $newdir/src
 		   echo "linking $myDir $newdir/src"
-	           #cp -f $myDir/CVS/* $newdir/CVS
+		   cp -r $myDir/CVS $newdir
                    if [  "$CVSROOT" ]
                    then
                      chmod u+w $newdir/CVS/Root
