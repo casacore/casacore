@@ -68,7 +68,7 @@ class LogIO;
 // The Record used to contain models/fits is as follows.  Other fields
 // will be ignored.
 //
-// <src>
+// <srcBlock>
 // Field                     Type             Description
 //-----------------------------------------------------------
 // xabs                      Bool              Are the x-values absolute or 
@@ -89,7 +89,7 @@ class LogIO;
 //                                             This field is not used by SpectralElement.  If its
 //                                             not there, all parameters are fitted for.
 //
-// </src>
+// </srcBlock>
 // </synopsis> 
 // <example>
 // <srcblock>
