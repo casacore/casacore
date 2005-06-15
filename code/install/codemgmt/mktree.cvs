@@ -220,8 +220,10 @@
                       then
                           mkdir $newdir/CVS
                       fi
-	           ln -sf $myDir $newdir/src
-		   echo "linking $myDir $newdir/src"
+                   if [ -x src ] ; then
+		      echo "linking $myDir $newdir/src"
+	              ln -s $myDir src
+                   fi
 		   cp -r $myDir/CVS $newdir
                    if [  "$CVSROOT" ]
                    then
@@ -231,7 +233,6 @@
                    fi
 	  fi
   done
-
   DOINCLUDES="no"
   if [ "$LIMB" = . ]
   then
@@ -246,16 +247,20 @@
      fi
      cd include
      DOINCLUDES="yes"
+     MYINCDIR=`pwd`
      INCDIRS=`(cd $ROOTSTEM ; ls -d */implement)`
   fi
   if [ "$LIMB" = "include" ]
   then
+     pwd
+     echo $MYINCDIR
      DOINCLUDES="yes"
      INCDIRS=`(cd $ROOTSTEM/.. ; ls -d */implement)`
   fi
 #    Create the code/include symlinks.
   if [ "$DOINCLUDES" = "yes" ]
   then
+     cd $MYINCDIR
      for INCDIR in $INCDIRS
      do
         PACKAGE=`echo $INCDIR | awk -F/ '{ print $1 }'`
