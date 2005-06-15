@@ -324,11 +324,11 @@ XLIBLIST_shared_dish        := LAPACK F77
 XLIBLIST_shared_simulators  := LAPACK F77
 XLIBLIST_shared_synthesis   := LAPACK F77
 XLIBLIST_shared_tasking     := LAPACK F77
-XLIBLIST_shared_trialdisplay := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
-XLIBLIST_shared_alma  := $(XLIBLIST_shared_trialdisplay)
-XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_trialdisplay)
-XLIBLIST_shared_nfra  := $(XLIBLIST_shared_trialdisplay)
-XLIBLIST_shared_nrao  := $(XLIBLIST_shared_trialdisplay)
+XLIBLIST_shared_display := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
+XLIBLIST_shared_alma  := $(XLIBLIST_shared_display)
+XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_display)
+XLIBLIST_shared_nfra  := $(XLIBLIST_shared_display)
+XLIBLIST_shared_nrao  := $(XLIBLIST_shared_display)
 
 # The shared library list may be defined in the including makefile either
 # before or after makedefs is included.
@@ -500,11 +500,10 @@ LIBtasking     := defeat static defeat defeat defeat defeat
 #                                                          Demo programs
 LIBdemo        := defeat static defeat defeat defeat defeat
 #                                                          Standard
-LIBdisplay    = defeat static defeat defeat defeat defeat
 LIBvlbi       = defeat defeat defeat defeat defeat defeat
 #                                                          Auxiliary
 LIBcontrib    = defeat defeat defeat defeat defeat defeat
-LIBtrialdisplay = defeat static defeat defeat defeat defeat
+LIBdisplay    = defeat static defeat defeat defeat defeat
 #                                                          Consortia
 LIBalma       = defeat defeat defeat defeat defeat defeat
 LIBatnf       = defeat defeat defeat defeat defeat defeat
@@ -547,11 +546,10 @@ LINKdemo := graphics synthesis simulators dish flagging ionosphere calibration m
 
 LINKappsglish := tasking graphics synthesis simulators dish flagging ionosphere calibration msvis msfits ms images components coordinates lattices fits measures tables scimath casa
 
-LINKdisplay   := display casa
 LINKvlbi      := vlbi synthesis casa
 
 LINKcontrib   := contrib vlbi synthesis dish aips
-LINKtrialdisplay := trialdisplay display graphics $(LINKtasking)
+LINKdisplay   := display graphics casa $(LINKtasking)
 
 LINKalma      := alma $(LINKtasking)
 LINKatnf      := atnf $(LINKtasking)
@@ -625,7 +623,7 @@ DOCEXTR   := docscan docextr changelogs
 PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
 
 # What auxiliary packages to build
-AUXILIARY := tasking display trialdisplay appsglish
+AUXILIARY := tasking display appsglish
 
 # What consortium packages to build (atnf bima hia nfra nral nrao tifr).
 CONSORTIA :=
@@ -1056,7 +1054,6 @@ export LIBsimulators  := $(LIBsimulators)
 export LIBsynthesis   := $(LIBsynthesis)
 export LIBtasking     := $(LIBtasking)
 export LIBdisplay   := $(LIBdisplay)
-export LIBtrialdisplay := $(LIBtrialdisplay)
 export LIBvlbi      := $(LIBvlbi)
 export LIBcontrib   := $(LIBcontrib)
 export LIBalma      := $(LIBalma)
