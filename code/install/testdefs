@@ -187,7 +187,7 @@ define CheckLink
       case $$PKG in \
       casa | scimath | tables | measures | fits | lattices | coordinates | components | images | ms | msfits | msvis | calibration | ionosphere | flagging | dish | simulators | synthesis | graphics | tasking) \
          ;; \
-      appsglish | contrib | vlbi | display | trialdisplay) \
+      appsglish | contrib | vlbi | display) \
          ;; \
       alma | atnf | bima | hia | jive | nfra | npoi | nral | nrao | tifr) \
          ;; \
@@ -641,7 +641,6 @@ system :
 	-@ echo "XLIBLIST_shared_tasking=$(XLIBLIST_shared_tasking)"
 	-@ echo ""
 	-@ echo "XLIBLIST_shared_display=$(XLIBLIST_shared_display)"
-	-@ echo "XLIBLIST_shared_trialdisplay=$(XLIBLIST_shared_trialdisplay)"
 	-@ echo "XLIBLIST_shared_vlbi=$(XLIBLIST_shared_vlbi)"
 	-@ echo "XLIBLIST_shared_contrib=$(XLIBLIST_shared_contrib)"
 	-@ echo ""
@@ -871,10 +870,6 @@ system :
     ifdef DO_TEST
 	-@ set WARNING $(LIBdisplay) ; $(CheckLCV)
     endif
-	-@ echo "LIBtrialdisplay=$(LIBtrialdisplay)"
-    ifdef DO_TEST
-	-@ set WARNING $(LIBtrialdisplay) ; $(CheckLCV)
-    endif
 	-@ echo "LIBalma      =$(LIBalma)"
     ifdef DO_TEST
 	-@ set WARNING $(LIBalma) ; $(CheckLCV)
@@ -1011,10 +1006,6 @@ system :
 	-@ echo "LINKdisplay  =$(LINKdisplay)"
     ifdef DO_TEST
 	-@ set WARNING $(LINKdisplay) ; $(CheckLink)
-    endif
-	-@ echo "LINKtrialdisplay=$(LINKtrialdisplay)"
-    ifdef DO_TEST
-	-@ set WARNING $(LINKtrialdisplay) ; $(CheckLink)
     endif
 	-@ echo "LINKalma     =$(LINKalma)"
     ifdef DO_TEST
@@ -1197,7 +1188,7 @@ system :
 	-@ FAIL=0 ; \
 	   for i in "" $(AUXILIARY) ; do \
 	      case $$i in \
-	      "" | contrib | trialdisplay) \
+	      "" | contrib | display) \
 	         ;; \
 	      *) \
 	         echo "   ...WARNING, $$i is not an auxiliary package" ; \
