@@ -46,7 +46,7 @@
 #include <lattices/Lattices/LatticeExpr.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/System/PGPlotter.h>
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Arrays/ArrayIter.h>
@@ -114,7 +114,7 @@ LatticeCleaner<T>::LatticeCleaner(const Lattice<T> & psf,
 
   // Ah, but when we are doing a mosaic, its actually worse than this!
   // So, we pass it in
-  itsMemoryMB=Double(AppInfo::memoryInMB())/16.0;
+  itsMemoryMB=Double(HostInfo::memoryTotal()/1024)/16.0;
 
   itsDirty = new TempLattice<T>(dirty.shape(), itsMemoryMB);
   itsDirty->copyData(dirty);
@@ -721,7 +721,7 @@ Bool LatticeCleaner<T>::setscales(const Vector<Float>& scaleSizes)
   os << "Expect to use "  << nImages << " scratch images" << LogIO::POST;
 
   // Now we can update the size of memory allocated
-  itsMemoryMB=0.5*Double(AppInfo::memoryInMB())/Double(nImages);
+  itsMemoryMB=0.5*Double(HostInfo::memoryTotal()/1024)/Double(nImages);
   os << "Maximum memory allocated per image "  << itsMemoryMB << "MB" << LogIO::POST;
 
   itsScaleSizes.resize(itsNscales);

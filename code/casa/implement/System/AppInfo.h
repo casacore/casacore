@@ -70,28 +70,15 @@ template<class T> class Vector;
 // accrete with time.
 // </synopsis>
 //
-// <example>
-// <srcBlock>
-// if (AppInfo::nProcessors() > 1) {
-//    ... do something clever in parallel ...
-// } else {
-//   ... serial code ...
-// }
-// </srcBlock>
-// </example>
-//
 // <motivation>
 // Further encapsulate information which is usually in aipsrc variables.
 // </motivation>
 //
 // <thrown>
-//   <li> AipsError if nProcessors() <= 0
-//   <li> AipsError if memoryInMB() <= 0
 //   <li> AipsError if abs(timeZone()) > 0.625 
 // </thrown>
 //
 // <todo asof="1997/11/11">
-//   <li> Figure out the memory/num processors from the OS?
 // </todo>
 
 class AppInfo {
@@ -137,25 +124,6 @@ public:
     static String workFileName(uInt minimumFreeSpaceInMB=0,
 			       const String &filenamePrefix="aipstmp_");
     
-    // How much memory is available for this process? Note that this number
-    // can be less than zero if the process has overdrawn its account. This
-    // function returns:
-    // <srcBlock>
-    // AppInfo::memoryInMB() - Memory::allocatedMemoryInBytes()/1024/1024;
-    // </srcBlock>
-    // You should use this value when making determinations about whether to put
-    // something in memory or do I/O instead.
-    static Int availableMemoryInMB();
-
-    // Total memory in MB that the process may use.  Reports
-    // <src>system.resources.memory</src> if it is set, otherwise return 64
-    // (considered to be the base level for AIPS++).
-    static uInt memoryInMB();
-  
-    // Number of processors on the local host. Returns 
-    // <src>system.resources.numcpu</src> if it is set, otherwise 1.
-    static uInt nProcessors();
-  
     // Return the local time zone offset in day fractions. This value has to be
     // added to UTC to get local time. Generally the OS supplied value will be 
     // used, however it can be overridden with
@@ -164,8 +132,6 @@ public:
 private:
     //# Data
     static Bool need_init_p;
-    static uInt memory_r;
-    static uInt nproc_r;
     static uInt tz_r;
     //# Methods
     // Force an initialization of the AppInfo values.
@@ -174,10 +140,6 @@ private:
 
 //# Inlines
 
-inline uInt AppInfo::memoryInMB() {if (need_init_p) init(); 
-                          return (uInt) AipsrcValue<Int>::get(memory_r);};
-inline uInt AppInfo::nProcessors() {if (need_init_p) init();
-                          return (uInt) AipsrcValue<Int>::get(nproc_r);};
 inline Double AppInfo::timeZone() {if (need_init_p) init();
 	                  return AipsrcValue<Double>::get(tz_r);};
 

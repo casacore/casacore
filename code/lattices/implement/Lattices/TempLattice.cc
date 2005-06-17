@@ -33,6 +33,7 @@
 #include <tables/Tables/TableDesc.h>
 #include <casa/Arrays/IPosition.h>
 #include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -108,7 +109,7 @@ void TempLattice<T>::init (const TiledShape& shape, Double maxMemoryInMB)
   Double memoryAvail;
   // maxMemoryInMb = 0.0 forces disk.
   if (maxMemoryInMB < 0.0) {
-    memoryAvail = Double(AppInfo::availableMemoryInMB()) / 2.0;
+    memoryAvail = Double(HostInfo::memoryFree()/1024) / 2.0;
   } else {
     memoryAvail = maxMemoryInMB;
   }

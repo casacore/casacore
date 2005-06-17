@@ -41,7 +41,7 @@
 #include <lattices/Lattices/LatticeStepper.h>
 #include <lattices/Lattices/TempLattice.h>
 #include <lattices/Lattices/TiledLineStepper.h>
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/iostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -54,7 +54,7 @@ void LatticeFFT::cfft2d(Lattice<Complex>& cLattice, const Bool toFrequency) {
   IPosition slabShape = cLattice.niceCursorShape(maxPixels);
   const uInt nx = slabShape(0) = latticeShape(0);
   const uInt ny = slabShape(1) = latticeShape(1);
-  Int cacheSize=AppInfo::availableMemoryInMB()*1024*1024/(8); 
+  Int cacheSize=HostInfo::memoryFree()*1024/(8); 
 
   // For small transforms, we do everything in one plane
   if ((Int) slabShape.product() <= cacheSize) {

@@ -48,7 +48,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicMath/ConvertScalar.h>
 #include <casa/Quanta/QMath.h>
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/GenSort.h>
@@ -833,7 +833,7 @@ Bool LatticeStatistics<T>::generateStorageLattice()
 // Create storage lattice.  If lattice is > 10% of available memory,
 // put it on disk.
 
-    uInt memory = AppInfo::memoryInMB();
+    uInt memory = HostInfo::memoryTotal()/1024;
     Double useMemory = Double(memory)/10.0;
     if (forceDisk_p) useMemory = 0.0;
     if (haveLogger_p) {

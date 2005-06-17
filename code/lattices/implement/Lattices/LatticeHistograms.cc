@@ -47,7 +47,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Quanta/QMath.h>
 #include <tables/Tables/Table.h>
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/System/PGPlotter.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/DataType.h>
@@ -1094,7 +1094,7 @@ void LatticeHistograms<T>::makeHistograms()
 
 // Create storage lattice
 
-   uInt memory = AppInfo::memoryInMB();
+   uInt memory = HostInfo::memoryTotal()/1024;
    Double useMemory = Double(memory)/10.0;
    if (forceDisk_p) useMemory = 0.0;
    pStoreLattice_p = new TempLattice<T>(TiledShape(storeLatticeShape,

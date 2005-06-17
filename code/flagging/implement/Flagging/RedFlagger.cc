@@ -32,7 +32,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <measures/Measures/Stokes.h>
 #include <casa/Utilities/Regex.h>
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 #include <flagging/Flagging/RedFlagger.h>
 #include <flagging/Flagging/RFAMedianClip.h>
 #include <flagging/Flagging/RFASpectralRej.h>
@@ -864,7 +864,7 @@ void RedFlagger::run ( const RecordInterface &agents,const RecordInterface &opt,
     Int pm_update_freq = chunk.num(TIME)/200;
 // How much memory do we have?
     Int availmem = opt.isDefined("maxmem") ? 
-        opt.asInt("maxmem") : AppInfo::memoryInMB();
+        opt.asInt("maxmem") : HostInfo::memoryTotal()/1024;
     if( debug_level>0 )
       dprintf(os,"%d MB memory available\n",availmem);
 // see if a flag cube is being used, and tell it to use/not use memory

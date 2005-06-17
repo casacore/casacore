@@ -44,8 +44,6 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 Bool AppInfo::need_init_p = True;
-uInt AppInfo::memory_r = 0;
-uInt AppInfo::nproc_r = 0;
 uInt AppInfo::tz_r = 0;
 
 Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB)
@@ -124,28 +122,8 @@ String AppInfo::workFileName(uInt minimumFreeSpaceInMB,
     return File::newUniqueName(dir, filenamePrefix).originalName();
 }
 
-Int AppInfo::availableMemoryInMB()
-{
-  if (need_init_p) {
-    init();
-  }
-  Int  used = Memory::allocatedMemoryInBytes()/1024/1024;
-  Int allowed = memoryInMB();
-  return allowed - used;
-}
-
 void AppInfo::init() {
   need_init_p = False;
-  
-  // memory
-  Int size = 64; // Default
-  memory_r = AipsrcValue<Int>::registerRC("system.resources.memory", size);
-  size = AppInfo::memoryInMB();
-  
-  // # CPU's
-  Int numcpu = 1; // Default
-  nproc_r = AipsrcValue<Int>::registerRC("system.resources.numcpu", numcpu);
-  numcpu = AppInfo::nProcessors();
   
   // timezone
   Double tz;
@@ -156,8 +134,6 @@ void AppInfo::init() {
   
   // Do the asserts at the end so that all the variables are initialized as
   // well as possible before throwing an exception.
-  AlwaysAssert(size > 0, AipsError);
-  AlwaysAssert(numcpu > 0, AipsError);
   AlwaysAssert(tz >= -0.625 && tz <= 0.625, AipsError);
 }
 
