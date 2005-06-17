@@ -41,7 +41,7 @@
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 WHATEVER_VECTOR_FORWARD_DEC;
 #else
-#include <casa/vector.h>
+#include <casa/stdvector.h>
 #endif
 
 namespace casa { //#Begin casa namespace

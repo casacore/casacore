@@ -31,7 +31,7 @@
 # include <fits/FITS/fits.h>
 # include <fits/FITS/blockio.h>
 # include <fits/FITS/hdu.h>
-//# include <casa/vector.h>
+//# include <casa/stdvector.h>
 # include <casa/Arrays/Vector.h>
 
 //<category lib=aips module=FITS sect="FITS I/O">   

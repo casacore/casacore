@@ -34,7 +34,7 @@
 #include <casa/BasicSL/Complex.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/DataType.h>
-#include <casa/vector.h>
+#include <casa/stdvector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

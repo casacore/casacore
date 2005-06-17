@@ -33,7 +33,7 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <scimath/Functionals/FuncExprData.h>
-#include <casa/vector.h>
+#include <casa/stdvector.h>
 
 //# Forward Declarations
 #include <casa/iosfwd.h>

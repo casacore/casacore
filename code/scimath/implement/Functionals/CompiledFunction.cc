@@ -32,7 +32,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <scimath/Mathematics/NumericTraits.h>
 #include <casa/BasicSL/String.h>
-#include <casa/vector.h>
+#include <casa/stdvector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 

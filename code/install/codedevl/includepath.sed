@@ -780,7 +780,7 @@ s%aips/stdlib\.h%casa/stdlib.h%
 s%aips/stdmap\.h%casa/stdmap.h%
 s%aips/string\.h%casa/string.h%
 s%aips/typeinfo\.h%casa/typeinfo.h%
-s%aips/vector\.h%casa/vector.h%
+s%aips/vector\.h%casa/stdvector.h%
 s%aips/version\.h%casa/version.h%
 s%aips/aips\.cc%casa/aips.cc%
 s%aips/version2\.cc%casa/version2.cc%

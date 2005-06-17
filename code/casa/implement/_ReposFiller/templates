@@ -2324,25 +2324,25 @@
      AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitName) 
      template class std::map<casa::String, casa::UnitVal> 
      AIPS_MAP_AUX_TEMPLATES(casa::String, casa::UnitVal) 
-1000 casa/vector.h 
+1000 casa/stdvector.h 
      #namespace 
      template class std::vector<casa::Double> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Double) 
-1010 casa/vector.h 
+1010 casa/stdvector.h 
      #namespace 
      template class std::vector<casa::Float> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Float) 
-1020 casa/vector.h 
+1020 casa/stdvector.h 
      = casa/BasicSL/Complex.h 
      #namespace 
      template class std::vector<casa::Complex> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Complex) 
-1030 casa/vector.h 
+1030 casa/stdvector.h 
      = casa/BasicSL/Complex.h 
      #namespace 
      template class std::vector<casa::DComplex> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::DComplex) 
-1040 casa/vector.h casa/Arrays/Slice.h 
+1040 casa/stdvector.h casa/Arrays/Slice.h 
      #namespace 
      template class std::vector<casa::Slice> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::Slice) 

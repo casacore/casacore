@@ -556,7 +556,7 @@
      #namespace 
      template class std::map<casa::FuncExprData::opTypes, casa::FuncExprData::ExprOperator> 
      AIPS_MAP_AUX_TEMPLATES(casa::FuncExprData::opTypes, casa::FuncExprData::ExprOperator) 
-1000 casa/vector.h 
+1000 casa/stdvector.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
@@ -564,7 +564,7 @@
      #namespace 
      template class std::vector<casa::AutoDiff<casa::Complex> > 
      AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::Complex>) 
-1010 casa/vector.h 
+1010 casa/stdvector.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
@@ -572,19 +572,19 @@
      #namespace 
      template class std::vector<casa::AutoDiff<casa::DComplex> > 
      AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::DComplex>) 
-1020 casa/vector.h 
+1020 casa/stdvector.h 
      = scimath/Functionals/FuncExprData.h 
      #namespace 
      template class std::vector<casa::FuncExprData::ExprOperator> 
      AIPS_VECTOR_AUX_TEMPLATES(casa::FuncExprData::ExprOperator) 
-1030 casa/vector.h 
+1030 casa/stdvector.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
      #namespace 
      template class std::vector<casa::AutoDiff<casa::Double> > 
      AIPS_VECTOR_AUX_TEMPLATES(casa::AutoDiff<casa::Double>) 
-1040 casa/vector.h 
+1040 casa/stdvector.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = scimath/Mathematics/AutoDiffIO.h 
