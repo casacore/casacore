@@ -315,4 +315,8 @@ private:
 
 } //#End namespace casa
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/Vector.cc>
+#include <casa/Arrays/Vector2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

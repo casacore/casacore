@@ -215,6 +215,9 @@ inline void StatAcc<T>::put(const T v, const Float w) {
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Mathematics/StatAcc.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 
 

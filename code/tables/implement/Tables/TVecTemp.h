@@ -141,4 +141,7 @@ inline T& TabVecTemp<T>::operator() (uInt index)
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/Tables/TVecTemp.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

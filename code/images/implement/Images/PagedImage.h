@@ -477,4 +477,8 @@ inline const Table& PagedImage<T>::table() const
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <images/Images/PagedImage.cc>
+#include <images/Images/PagedImage2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

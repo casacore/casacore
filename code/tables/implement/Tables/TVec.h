@@ -213,4 +213,7 @@ inline TabVecTag TabVecRep<T>::getTag() const
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/Tables/TVec.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

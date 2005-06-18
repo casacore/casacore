@@ -190,5 +190,9 @@ Matrix<Double> adjoint (const Matrix<Double> &A);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/MatrixMath.cc>
+#include <casa/Arrays/Matrix2Math.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

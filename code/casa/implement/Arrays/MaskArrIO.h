@@ -99,4 +99,7 @@ template<class T> ostream & operator<< (ostream &, const MaskedArray<T> &);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/MaskArrIO.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -470,4 +470,7 @@ template<class T> Bool anyOR (const T &val, const MaskedArray<T> &array);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/MaskArrLogi.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

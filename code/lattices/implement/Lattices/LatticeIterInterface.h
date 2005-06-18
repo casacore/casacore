@@ -329,4 +329,7 @@ inline IPosition LatticeIterInterface<T>::cursorShape() const
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <lattices/Lattices/LatticeIterInterface.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

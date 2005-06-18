@@ -178,6 +178,9 @@ class LatticeUtilities
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <lattices/Lattices/LatticeUtilities.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 
 

@@ -860,4 +860,8 @@ private:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <lattices/Lattices/LELFunction.cc>
+#include <lattices/Lattices/LELFunction2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

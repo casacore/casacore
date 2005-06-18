@@ -221,4 +221,8 @@ public:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Functionals/CombiFunction.cc>
+#include <scimath/Functionals/Combi2Function.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

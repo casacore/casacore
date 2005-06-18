@@ -317,4 +317,7 @@ inline void RecordRep::renameField (const String& newName, Int whichField)
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/RecordRep.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -422,4 +422,7 @@ template<class T> Array<uInt> partialNFalse (const Array<T>& array,
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/ArrayLogical.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

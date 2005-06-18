@@ -54,6 +54,9 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/OrdMapIO.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 
 } //# NAMESPACE CASA - END

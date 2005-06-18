@@ -40,12 +40,16 @@ AIPSROOT := $(word 1, $(AIPSPATH))
 AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
 include $(AIPSARCH)/makedefs
 
+# Do not include template source files.
+#--------------------------------------
+CPPOPT += -DAIPS_NO_TEMPLATE_SRC
+CPPDBG += -DAIPS_NO_TEMPLATE_SRC
+
 MODULE   := $(subst test,,$(word 3,$(subst /,$(space),$(CODESUBD))))
 PCKGMOD  := $(PACKAGE)$(MODULE:%=-%)-test
 
 # Get architecture-specific, module-specific definitions.
 -include $(INSTARCH)/$(PCKGMOD).defs
-
 
 # Implement directory.
 #---------------------

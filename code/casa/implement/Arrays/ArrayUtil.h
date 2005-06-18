@@ -248,4 +248,8 @@ uInt reorderArrayHelper (IPosition& newShape, IPosition& incr,
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/ArrayUtil.cc>
+#include <casa/Arrays/ArrayUtil2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

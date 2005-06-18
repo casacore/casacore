@@ -402,4 +402,7 @@ protected:
 
 } //#End casa namespace
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/HashMapIter.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

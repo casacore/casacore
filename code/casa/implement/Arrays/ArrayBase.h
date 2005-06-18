@@ -235,4 +235,7 @@ uInt ArrayIndexOffset (uInt Ndim, const Int* Shape,
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/ArrayBase.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

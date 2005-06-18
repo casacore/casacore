@@ -427,4 +427,7 @@ void Lattice<Bool>::handleMathTo (Lattice<Bool>& to, int oper) const
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <lattices/Lattices/Lattice.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

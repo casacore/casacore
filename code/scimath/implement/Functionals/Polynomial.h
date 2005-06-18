@@ -211,4 +211,8 @@ public:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Functionals/Polynomial.cc>
+#include <scimath/Functionals/Polynomial2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

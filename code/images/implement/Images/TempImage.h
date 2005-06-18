@@ -314,4 +314,7 @@ protected:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <images/Images/TempImage.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -667,4 +667,7 @@ protected:
 };
 
 }//#End casa namespace
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/Array.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

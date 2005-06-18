@@ -62,4 +62,7 @@ template<class t> ostream &operator<<(ostream &, const ConstListIter<t> &);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/ListIO.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

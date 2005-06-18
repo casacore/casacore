@@ -146,4 +146,7 @@ template <class T> class AutoDiffRep {
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Mathematics/AutoDiffRep.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

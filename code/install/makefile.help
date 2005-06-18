@@ -38,6 +38,12 @@
 # Original: MRC 1992/06/24 by Mark Calabretta, ATNF
 # $Id$
 #============================
+
+# Do not include template source files.
+#--------------------------------------
+CPPOPT += -DAIPS_NO_TEMPLATE_SRC
+CPPDBG += -DAIPS_NO_TEMPLATE_SRC
+
 #
 # Only have these rules if we are in programmer mode!
 #

@@ -349,4 +349,7 @@ template<class T> class TablePlot
 
 } //# NAMESPACE CASA - END 
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/TablePlot/TablePlot.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -201,4 +201,7 @@ public:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Functionals/MarshallableChebyshev.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

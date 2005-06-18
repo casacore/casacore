@@ -256,4 +256,7 @@ template<class T> class BasePlot
 
 } //# NAMESPACE CASA - END 
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/TablePlot/BasePlot.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

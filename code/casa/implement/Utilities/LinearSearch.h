@@ -141,4 +141,7 @@ Int linearSearchBrackets (Bool& found, const Container& container,
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Utilities/LinearSearch.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

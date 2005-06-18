@@ -259,4 +259,7 @@ template<class T> class TPPlotter
 
 } //# NAMESPACE CASA - END 
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <tables/TablePlot/TPPlotter.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

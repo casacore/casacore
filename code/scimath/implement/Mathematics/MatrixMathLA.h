@@ -164,4 +164,7 @@ inline void getri(const int *m, DComplex *a, const int *lda, const int *ipiv,
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Mathematics/MatrixMathLA.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

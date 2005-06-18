@@ -429,4 +429,7 @@ template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/MaskArrMath.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

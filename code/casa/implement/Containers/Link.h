@@ -204,4 +204,7 @@ typedef Link<int> Link_int;
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/Link.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

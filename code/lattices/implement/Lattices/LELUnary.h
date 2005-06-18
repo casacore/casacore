@@ -320,4 +320,8 @@ private:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <lattices/Lattices/LELUnary.cc>
+#include <lattices/Lattices/LELUnary2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

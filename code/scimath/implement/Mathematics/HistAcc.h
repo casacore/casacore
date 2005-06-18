@@ -227,6 +227,9 @@ inline void HistAcc<T>::put(const T v) {
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Mathematics/HistAcc.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 
 

@@ -261,4 +261,8 @@ public:
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <images/Images/ImageFITSConverter.cc>
+#include <images/Images/ImageFITS2Converter.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

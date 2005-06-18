@@ -135,4 +135,7 @@ inline void showBlock (AipsIO&, const Block<void*>&, Int)
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/BlockIO.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

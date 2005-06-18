@@ -165,5 +165,8 @@ inline ostream &operator<<(ostream &os, const FunctionOrder<T> &par) {
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Functionals/FunctionOrder.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
 

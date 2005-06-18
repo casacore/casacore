@@ -214,4 +214,7 @@ Int findCorrType( Stokes::StokesTypes type,const Vector<Int> &corr );
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <flagging/Flagging/RFChunkStats.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

@@ -573,4 +573,7 @@ template<class T> class GenericL2Fit : public LSQaips {
 };
 
 } //# End namespace casa
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <scimath/Fitting/GenericL2Fit.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

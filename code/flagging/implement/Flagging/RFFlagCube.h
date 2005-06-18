@@ -346,4 +346,7 @@ inline LogIO & RFFlagCube::logSink ()
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <flagging/Flagging/RFFlagCube.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

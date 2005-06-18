@@ -748,4 +748,8 @@ private:
 enum {ConstListIterVersion = 1};
 
 } //#End casa namespace
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Containers/List.cc>
+#include <casa/Containers/List2.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

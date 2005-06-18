@@ -350,4 +350,7 @@ void writeAsciiVector (const Vector<T>& vec, const Char* fileName);
 
 } //# NAMESPACE CASA - END
 
+#ifndef AIPS_NO_TEMPLATE_SRC
+#include <casa/Arrays/ArrayIO.cc>
+#endif //# AIPS_NO_TEMPLATE_SRC
 #endif
