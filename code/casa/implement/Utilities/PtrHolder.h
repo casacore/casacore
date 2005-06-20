@@ -147,6 +147,115 @@ private:
 };
 
 
+
+// <summary>
+// Hold and delete pointers not deleted by object destructors
+// </summary>
+
+// <use visibility=export>
+// <reviewed reviewer="" date="" tests="tPtrHolder">
+// </reviewed>
+
+// <prerequisite>
+//   <li> module <linkto module=Exceptions>Exceptions</linkto>
+// </prerequisite>
+
+// <synopsis> 
+// <src>SPtrHolder</src>s hold allocated pointers to non-array objects
+// which should be deleted when an exception is thrown.
+// SPtrHolder is similar to PtrHolder, but easier to use and only valid
+// for pointer to a single object, thus not to a C-array of objects.
+// </synopsis> 
+
+// <example>
+// <srcblock>
+//    void func(Table *ptr); // some other function that takes a pointer
+//    // ...
+//    // True below means it's an array, False (the default) would mean
+//    // a singleton object.
+//    SPtrHolder<Int> iholder(new Table(...));
+//    func(iholder);                           // converts automatically to ptr
+//    Table* tab = iholder.transfer();         // transfer ownership
+// </srcblock>
+// If an exception is thrown in function <src>func</src>, the Table will be
+// deleted automatically. After the function call, the ownership is tranfered
+// back to the 'user' 
+// </example>
+
+// <motivation>
+// <src>std::autoptr</src> is harder to use and its future is unclear.
+// <br>
+// <src>PtrHolder</src> is not fully inlined and has C-array overhead.
+// Furthermore the automatic conversion to a T* is dangerous, because the
+// programmer may not be aware that the pointer is maybe taken over.
+// </motivation>
+
+
+template<class T> class SPtrHolder
+{
+public:
+  // Construct an <src>SPtrHolder</src> from a pointer which MUST have
+  // been allocated from <src>new</src>, since the destructor will
+  // After the pointer is placed into the holder, the user should
+  // not manually delete the pointer unless the transfer function is called.
+  // The pointer must also only be put into
+  // <em>one</em> holder to avoid double deletion.
+  explicit SPtrHolder (T* ptr = 0)
+    : itsPtr(ptr) {}
+
+  ~SPtrHolder()
+    { delete itsPtr; }
+
+  // Reset the pointer.
+  void reset (T* ptr)
+    { if (ptr != itsPtr) { delete itsPtr; itsPtr = ptr; }}
+
+  // Transfer ownership of the pointer.
+  // I.e. return the pointer and set it to 0 in the object.
+  T* transfer()
+    { T* ptr = itsPtr; itsPtr = 0; return ptr; }
+
+  // Release the pointer.
+  void release()
+    { itsPtr = 0; }
+
+  // Make it possible to dereference the pointer object.
+  // <group>
+  T& operator*()
+    { return *itsPtr; }
+  const T& operator*() const
+    { return *itsPtr; }
+  // </group>
+
+  // Make it possible to use -> on the pointer object.
+  // <group>
+  T* operator->()
+    { return itsPtr; }
+  const T* operator->() const
+    { return itsPtr; }
+  // </group>
+
+  // Get the pointer for use.
+  // <group>
+  T* ptr()
+    { return itsPtr; }
+  const T* ptr() const
+    { return itsPtr; }
+  // </group>
+
+private:
+  // SPrtHolder cannot be copied.
+  // <group>
+  SPtrHolder(const SPtrHolder<T> &other);
+  SPtrHolder<T> &operator=(const SPtrHolder<T> &other);
+  // </group>
+
+  //# The pointer itself.
+  T* itsPtr;
+};
+
+
+
 } //# NAMESPACE CASA - END
 
 #ifndef AIPS_NO_TEMPLATE_SRC
