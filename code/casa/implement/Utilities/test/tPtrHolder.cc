@@ -45,6 +45,33 @@ void do_nothing2(const Int *dummy)
     AlwaysAssertExit(dummy == 0);
 }
 
+void tSPtr()
+{
+    {
+	Int *ip = new Int;
+	SPtrHolder<Int> ph(ip);            // PtrHolder(T *, Bool=False)
+	AlwaysAssertExit(ph.ptr() == ip);
+	Int *ip2 = ph.transfer();
+	AlwaysAssertExit(ip2 == ip);
+	AlwaysAssertExit(ph.ptr() == 0);
+	do_nothing (ph.ptr());
+	do_nothing2 (ph.ptr());
+	delete ip2;
+    }
+    {
+	// Throw an exception to make sure nothing is leaked
+	Bool isCaught = False;
+	try {
+	    Int *ip = new Int;
+	    SPtrHolder<Int> ph(ip);
+	    throw(AipsError("testing..."));
+	} catch (AipsError x) {
+	    isCaught = True;
+	} 
+	AlwaysAssertExit(isCaught);
+    }
+}
+
 main()
 {
     {
@@ -94,6 +121,7 @@ main()
 	AlwaysAssertExit(isCaught);
     }
 
+    tSPtr();
     cout << "OK" << endl;
     return 0;
 }
