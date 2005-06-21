@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 #include <tables/Tables/TableGram.h>
+#include <tables/Tables/Table.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -97,6 +98,35 @@ inline String recordGramRemoveQuotes (const String& in)
 // </group>
 
 
+
+// <summary>
+// Helper class for values in RecordGram 
+// </summary>
+
+// <use visibility=local>
+
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// </reviewed>
+
+// <synopsis> 
+// A record selection command is lexically analyzed via flex.
+// An object of this class is used to hold a value (like a name
+// or a literal) for later use in the parser code.
+// </synopsis> 
+
+class RecordGramVal
+{
+public:
+    Int      type;          //# i=Int, f=Double, c=DComplex, s=String t=Table
+    String   str;           //# string literal; table name; field name
+    Int      ival;          //# integer literal
+    Double   dval[2];       //# Double/DComplex literal
+    Table    tab;           //# Table (from query in e.g. FROM clause)
+};
+
+
+
+
 // <summary>
 // Select-class for flex/bison scanner/parser for RecordGram
 // </summary>
@@ -146,6 +176,9 @@ public:
     //# the other functions.
     static TableExprNode parse (const Table& table,
 				const String& expression);
+
+    // Create a TableExprNode from a literal.
+    static TableExprNode handleLiteral (RecordGramVal*);
 
     // Find the field name and create a TableExprNode from it.
     static TableExprNode handleField (const String& name);

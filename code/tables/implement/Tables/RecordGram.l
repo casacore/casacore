@@ -155,7 +155,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
  /* Literals */
 {COMPLEX} {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 'c';
 	    sscanf (RecordGramtext, "%lf%*c", &(lvalp->val->dval[1]));
 	    lvalp->val->dval[0] = 0;
@@ -163,14 +163,14 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 {FLOAT}   {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 'f';
 	    lvalp->val->dval[0] = atof(RecordGramtext);
 	    return LITERAL;
 	  }
 {INT}     {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
             Int ival = atoi(RecordGramtext);
             Double dval = atof(RecordGramtext);
             if (ival < dval-0.1  ||  ival > dval+0.1) {
@@ -184,21 +184,21 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 {STRING}  {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveQuotes (RecordGramtext);
 	    return STRINGLITERAL;
 	  }
 {DATETIME} {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 'd';
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
 	  }
 {TIME}    {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 't';
 	    lvalp->val->str = RecordGramtext;
 	    return LITERAL;
@@ -215,7 +215,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
           }
 <REGEXstate>{REGEX} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
             BEGIN(EXPRstate);
@@ -223,7 +223,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 <REGEXstate>{PATT} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = String(RecordGramtext+2,yyleng-3);
             BEGIN(EXPRstate);
@@ -232,7 +232,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 
 {NAME}    {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveEscapes (RecordGramtext);
 	    return NAME;
@@ -240,7 +240,7 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 
 {NAMEFLD} {
             recordGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
+            lvalp->val = new RecordGramVal();
 	    lvalp->val->type = 's';
 	    lvalp->val->str = recordGramRemoveEscapes (RecordGramtext);
 	    return FLDNAME;

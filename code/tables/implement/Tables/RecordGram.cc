@@ -1,5 +1,5 @@
 //# RecordGram.cc: Grammar for record command lines
-//# Copyright (C) 2000,2001,2003
+//# Copyright (C) 2000,2001,2003,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -34,12 +34,15 @@
 
 
 #include <tables/Tables/ExprNode.h>
+#include <tables/Tables/ExprDerNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/RecordGram.h>
 #include <tables/Tables/RecordExpr.h>
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
-#include <tables/Tables/TableError.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/MVTime.h>
+#include <casa/Quanta/MVAngle.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
@@ -146,6 +149,59 @@ TableExprNode RecordGram::doParse (const String& expression)
     return node;
 }
 
+//# Convert a constant to a TableExprNode object.
+//# The leading and trailing " is removed from a string.
+TableExprNode RecordGram::handleLiteral (RecordGramVal* val)
+{
+    TableExprNodeRep* tsnp = 0;
+    switch (val->type) {
+    case 'i':
+	tsnp = new TableExprNodeConstDouble (Double (val->ival));
+	break;
+    case 'f':
+	tsnp = new TableExprNodeConstDouble (val->dval[0]);
+	break;
+    case 'c':
+	tsnp = new TableExprNodeConstDComplex
+	                   (DComplex (val->dval[0], val->dval[1]));
+	break;
+    case 'b':
+        tsnp = new TableExprNodeConstBool (val->dval[0]);
+	break;
+    case 's':
+    {
+	tsnp = new TableExprNodeConstString (val->str);
+	break;
+    }
+    case 'd':
+      {
+	MUString str (val->str);
+	Quantity res;
+	if (! MVTime::read (res, str)) {
+	    throw (TableInvExpr ("invalid date string " + val->str));
+	}
+	tsnp = new TableExprNodeConstDate (MVTime(res));
+      }
+	break;
+    case 't':
+      {
+	Quantity res;
+	//# Skip a possible leading / which acts as an escape character.
+	if (val->str.length() > 0  &&  val->str[0] == '/') {
+	    val->str = val->str.after(0);
+	}
+	if (! MVAngle::read (res, val->str)) {
+	    throw (TableInvExpr ("invalid time/pos string " + val->str));
+	}
+	tsnp = new TableExprNodeConstDouble (MVAngle(res).radian());
+      }
+	break;
+    default:
+	throw (TableInvExpr ("RecordGram: unhandled literal type"));
+    }
+    return tsnp;
+}
+
 TableExprNode RecordGram::handleField (const String& name)
 {
   if (theirTabPtr == 0) {
@@ -166,6 +222,7 @@ TableExprNode RecordGram::handleFunc (const String& name,
   return TableParseSelect::makeFuncNode (name, arguments,
 					 Vector<Int>(), *theirTabPtr);
 }
+
 
 } //# NAMESPACE CASA - END
 
