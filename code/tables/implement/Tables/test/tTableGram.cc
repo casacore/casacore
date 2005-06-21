@@ -255,7 +255,7 @@ void seltab (const String& str)
   } else {
     String strc(str);
     Table tab(strc.after(semipos));
-    PtrBlock<const Table*> tabblock(1, &tab);
+    std::vector<const Table*> tabblock(1, &tab);
     result = tableCommand (strc.before(semipos), tabblock, vecstr, cmd);
   }
   cout << "    has been executed" << endl;
