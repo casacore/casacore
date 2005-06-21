@@ -37,6 +37,7 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/StManAipsIO.h>
+#include <tables/Tables/TableParse.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/IPosition.h>
@@ -58,10 +59,12 @@
 TableDesc makeDesc();
 void a (const TableDesc&);
 void check(const Table& table);
+void testSelect();
 
 int main ()
 {
     try {
+      {
 	TableDesc td = makeDesc();
 	a (td);
 	Table table("tVirtualTaQLColumn_tmp.data0");
@@ -70,6 +73,8 @@ int main ()
 	check (Table("tVirtualTaQLColumn_tmp.data1"));
 	Table tab2 = table.copyToMemoryTable ("tVirtualTaQLColumn_tmp.data2");
 	check (tab2);
+      }
+      testSelect();
     } catch (AipsError x) {
 	cout << "Caught an exception: " << x.getMesg() << endl;
 	return 1;
@@ -85,7 +90,7 @@ TableDesc makeDesc()
 
     // Build the table description.
     TableDesc td("tTableDesc","1",TableDesc::Scratch);
-    td.comment() = "A test of class ForwardColumn";
+    td.comment() = "A test of class tVirtualTaQLColumn";
     td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
     td.addColumn (ScalarColumnDesc<Int>("ac"));
     td.addColumn (ScalarColumnDesc<uInt>("ad","comment for ad"));
@@ -315,4 +320,16 @@ void check(const Table& tab)
 	i++;
       }
     }
+}
+
+// Test if a tableCommand on a table containing a TaQL column works fine.
+// Note it requires recursive parsing.
+void testSelect()
+{
+  // Select all rows.
+  Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
+			      "where acalc > -1000");
+  cout << ">>>" << endl;
+  check (subset);
+  cout << "<<<" << endl;
 }
