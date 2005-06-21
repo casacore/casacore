@@ -175,7 +175,7 @@ TableVectorNonConform::~TableVectorNonConform () throw()
 
 
 TableParseError::TableParseError (const String& s,Category c)
-: TableError ("Parse error in table command: " + s,c)
+: TableError ("Error in TaQL command: " + s,c)
 {}
 TableParseError::~TableParseError () throw()
 {}
