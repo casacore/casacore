@@ -44,6 +44,7 @@
 #include <tables/Tables/TableError.h>
 #include <casa/Containers/Block.h>
 #include <casa/Utilities/DataType.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <tables/Tables/ExprNodeArray.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -1095,8 +1096,10 @@ TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
     }
     // Create new Index node and fill it.
     // Check the index bounds as far as possible.
-    TableExprNodeIndex* inode = new TableExprNodeIndex (indices, origin);
-    inode->checkIndexValues (arrayNode.node_p);
+    SPtrHolder<TableExprNodeIndex>
+                     inodep (new TableExprNodeIndex (indices, origin));
+    inodep->checkIndexValues (arrayNode.node_p);
+    TableExprNodeIndex* inode = inodep.transfer();
     TableExprNodeBinary* anode = new TableExprNodeArrayPart (arrayNode.node_p,
 							     inode);
     return TableExprNodeBinary::fillNode (anode, arrayNode.node_p,

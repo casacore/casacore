@@ -42,6 +42,7 @@
 #include <casa/Containers/Block.h>
 #include <casa/Containers/Record.h>
 #include <casa/Utilities/Sort.h>
+#include <casa/Utilities/PtrHolder.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/GenSort.h>
 #include <casa/IO/AipsIO.h>
@@ -640,21 +641,21 @@ BaseTable* BaseTable::select (const TableExprNode& node, uInt maxRow)
     //# Loop through all rows and add to reference table if true.
     //# Add the rownr of the root table (one may search a reference table).
     //# Adjust the row numbers to reflect row numbers in the root table.
-    RefTable* resultTable = makeRefTable (True, 0);
+    SPtrHolder<RefTable> resultTable (makeRefTable (True, 0));
     Bool val;
     uInt nrrow = nrow();
     for (uInt i=0; i<nrrow; i++) {
-	node.get (i, val);
-	if (val) {
-	    resultTable->addRownr (i);                  // add row
-	    // Stop if max #rows reached (note that maxRow==0 means no limit).
-	    if (resultTable->nrow() == maxRow) {
-	        break;
-	    }
+      node.get (i, val);
+      if (val) {
+	resultTable->addRownr (i);                  // add row
+	// Stop if max #rows reached (note that maxRow==0 means no limit).
+	if (resultTable->nrow() == maxRow) {
+	  break;
 	}
+      }
     }
     adjustRownrs (resultTable->nrow(), *(resultTable->rowStorage()), False);
-    return resultTable;
+    return resultTable.transfer();
 }
 
 BaseTable* BaseTable::select (const Vector<uInt>& rownrs)
