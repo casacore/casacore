@@ -33,11 +33,13 @@
 // in the AIPS++ command language.
 
 
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprNodeSet.h>
 #include <tables/Tables/TableGram.h>
-#include <tables/Tables/TableParse.h>       // routines used by bison actions
+#include <tables/Tables/TaQLNode.h>
+#include <tables/Tables/TaQLNodeDer.h>
 #include <tables/Tables/TableError.h>
+#include <casa/Utilities/MUString.h>
+#include <casa/Quanta/MVAngle.h>
+#include <stack>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
@@ -91,8 +93,9 @@ int tableGramInput (char* buf, int max_size)
 
 void TableGramerror (char*)
 {
-    throw (TableInvExpr ("Parse error at or near '" +
-			 String(TableGramtext) + "'"));
+    throw (TableError ("parse error at or near position " +
+		       String::toString(tableGramPosition()) + " '" +
+		       String(TableGramtext) + "'"));
 }
 
 String tableGramRemoveEscapes (const String& in)
@@ -120,8 +123,7 @@ String tableGramRemoveQuotes (const String& in)
 	//# Find next occurrence of leading ' or ""
 	int inx = str.index (str[pos], pos+1);
 	if (inx < 0) {
-	    throw (AipsError ("TableParse - Ill-formed quoted string: " +
-			      str));
+	    throw (TableError ("ill-formed quoted string: " + str));
 	}
 	out += str.at (pos+1, inx-pos-1);             // add substring
 	pos = inx+1;
@@ -129,5 +131,28 @@ String tableGramRemoveQuotes (const String& in)
     return out;
 }
 
-} //# NAMESPACE CASA - END
+Double tableGramParseTime (const String& in)
+{
+    Quantity res;
+    //# Skip a possible leading / which acts as an escape character.
+    String val(in);
+    if (val.length() > 0  &&  val[0] == '/') {
+        val = val.after(0);
+    }
+    if (! MVAngle::read (res, val)) {
+        throw (TableError ("invalid time/pos string " + val));
+    }
+    return MVAngle(res).radian();
+}
 
+MVTime tableGramParseDateTime (const String& in)
+{
+    MUString str (in);
+    Quantity res;
+    if (! MVTime::read (res, str)) {
+        throw (TableError ("invalid date string " + in));
+    }
+    return MVTime(res);
+}
+
+} //# NAMESPACE CASA - END

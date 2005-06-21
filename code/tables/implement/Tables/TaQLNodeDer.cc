@@ -1,0 +1,908 @@
+//# TaQLNodeDer.cc: Representation of entities in the TaQL parse tree
+//# Copyright (C) 2005
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
+//# Includes
+#include <tables/Tables/TaQLNodeDer.h>
+#include <tables/Tables/TaQLNodeVisitor.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/IO/AipsIO.h>
+#include <tables/Tables/TableError.h>
+#include <iomanip>
+
+namespace casa { //# NAMESPACE CASA - BEGIN
+
+
+TaQLConstNodeRep::~TaQLConstNodeRep()
+{}
+const String& TaQLConstNodeRep::getString() const
+{
+  AlwaysAssert (itsType == CTString, AipsError);
+  return itsSValue;
+}
+TaQLNodeResult TaQLConstNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitConstNode (*this);
+}
+void TaQLConstNodeRep::show (std::ostream& os) const
+{
+  switch (itsType) {
+  case CTBool:
+    if (itsBValue) {
+      os << 'T';
+    } else {
+      os << 'F';
+    }
+    break;
+  case CTInt:
+    if (itsIsTableName) {
+      os << '$';
+    }
+    os << itsIValue;
+    break;
+  case CTReal:
+    os << std::setprecision(20) << itsRValue;
+    break;
+  case CTComplex:
+    if (itsCValue.real() != 0) {
+      os << std::setprecision(20) << itsCValue.real() << '+';
+    }
+    os << std::setprecision(20) << itsCValue.imag() << 'i';
+    break;
+  case CTString:
+    if (itsIsTableName) {
+      /// NOTE: possible special characters in the string should be handled.
+      os << itsSValue;
+    } else {
+      /// NOTE: possible quotes in the string should be handled.
+      os << "'" << itsSValue << "'";
+    }
+    break;
+  case CTTime:
+    os << MVTime::YMD << std::setw(20) << itsTValue;
+    break;
+  }
+}
+void TaQLConstNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType) << itsIsTableName;
+  switch (itsType) {
+  case CTBool:
+    aio << itsBValue;
+    break;
+  case CTInt:
+    aio << itsIValue;
+    break;
+  case CTReal:
+    aio << itsRValue;
+    break;
+  case CTComplex:
+    aio << itsCValue;
+    break;
+  case CTString:
+    aio << itsSValue;
+    break;
+  case CTTime:
+    aio << (double)itsTValue;
+    break;
+  }
+}
+TaQLConstNodeRep* TaQLConstNodeRep::restore (AipsIO& aio)
+{
+  char type;
+  Bool isTableName;
+  aio >> type >> isTableName;
+  switch (type) {
+  case CTBool:
+    {
+      Bool value;
+      aio >> value;
+      return new TaQLConstNodeRep (value);
+    }
+  case CTInt:
+    {
+      Int value;
+      aio >> value;
+      return new TaQLConstNodeRep (value, isTableName);
+    }
+  case CTReal:
+    {
+      Double value;
+      aio >> value;
+      return new TaQLConstNodeRep (value);
+    }
+  case CTComplex:
+    {
+      DComplex value;
+      aio >> value;
+      return new TaQLConstNodeRep (value);
+    }
+  case CTString:
+    {
+      String value;
+      aio >> value;
+      return new TaQLConstNodeRep (value, isTableName);
+    }
+  case CTTime:
+    {
+      double v;
+      aio >> v;
+      return new TaQLConstNodeRep (MVTime(v));
+    }
+  }
+  return 0;
+}
+
+TaQLUnaryNodeRep::~TaQLUnaryNodeRep()
+{}
+TaQLNodeResult TaQLUnaryNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitUnaryNode (*this);
+}
+void TaQLUnaryNodeRep::show (std::ostream& os) const
+{
+  switch (itsType) {
+  case U_MINUS:
+    os << "-(";
+    itsChild.show(os);
+    os << ')';
+    break;
+  case U_NOT:
+    os << "NOT(";
+    itsChild.show(os);
+    os << ')';
+    break;
+  case U_EXISTS:
+    os << "EXISTS ";
+    itsChild.show(os);
+    break;
+  case U_NOTEXISTS:
+    os << "NOT EXISTS ";
+    itsChild.show(os);
+    break;
+  }
+}
+void TaQLUnaryNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType);
+  itsChild.saveNode (aio);
+}
+TaQLUnaryNodeRep* TaQLUnaryNodeRep::restore (AipsIO& aio)
+{
+  char ctype;
+  aio >> ctype;
+  TaQLUnaryNodeRep::Type type = (TaQLUnaryNodeRep::Type)ctype;
+  TaQLNode node = TaQLNode::restoreNode (aio);
+  return new TaQLUnaryNodeRep (type, node);
+}
+
+TaQLBinaryNodeRep::~TaQLBinaryNodeRep()
+{}
+TaQLNodeResult TaQLBinaryNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitBinaryNode (*this);
+}
+void TaQLBinaryNodeRep::show (std::ostream& os) const
+{
+  os << '(';
+  itsLeft.show (os);
+  os << ')';
+  switch (itsType) {
+  case B_PLUS:
+    os << '+';
+    break;
+  case B_MINUS:
+    os << '-';
+    break;
+  case B_TIMES:
+    os << '*';
+    break;
+  case B_DIVIDE:
+    os << '/';
+    break;
+  case B_MODULO:
+    os << '%';
+    break;
+  case B_POWER:
+    os << '^';
+    break;
+  case B_OR:
+    os << "||";
+    break;
+  case B_AND:
+    os << "&&";
+    break;
+  case B_EQ:
+    os << '=';
+    break;
+  case B_NE:
+    os << "<>";
+    break;
+  case B_GT:
+    os << '>';
+    break;
+  case B_GE:
+    os << ">=";
+    break;
+  case B_LT:
+    os << '<';
+    break;
+  case B_LE:
+    os << "<=";
+    break;
+  case B_IN:
+    os << " IN ";
+    break;
+  case B_INDEX:
+    break;
+  }
+  if (itsType == B_INDEX  ||  itsType == B_IN) {
+    itsRight.show (os);
+  } else {
+    os << '(';
+    itsRight.show (os);
+    os << ')';
+  }
+}
+void TaQLBinaryNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType);
+  itsLeft.saveNode (aio);
+  itsRight.saveNode (aio);
+}
+TaQLBinaryNodeRep* TaQLBinaryNodeRep::restore (AipsIO& aio)
+{
+  char ctype;
+  aio >> ctype;
+  TaQLBinaryNodeRep::Type type = (TaQLBinaryNodeRep::Type)ctype;
+  TaQLNode left = TaQLNode::restoreNode (aio);
+  TaQLNode right = TaQLNode::restoreNode (aio);
+  return new TaQLBinaryNodeRep (type, left, right);
+}
+
+TaQLMultiNodeRep::~TaQLMultiNodeRep()
+{}
+TaQLNodeResult TaQLMultiNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitMultiNode (*this);
+}
+void TaQLMultiNodeRep::show (std::ostream& os) const
+{
+  os << itsPrefix;
+  for (uInt i=0; i<itsNodes.size(); ++i) {
+    if (i != 0) {
+      os << ',';
+    }
+    itsNodes[i].show (os);
+  }
+  os << itsPostfix;
+}
+void TaQLMultiNodeRep::save (AipsIO& aio) const
+{
+  aio << itsIsSetOrArray << itsPrefix << itsPostfix;
+  aio << itsNodes.size();
+  for (uInt i=0; i<itsNodes.size(); ++i) {
+    itsNodes[i].saveNode (aio);
+  }
+}
+TaQLMultiNodeRep* TaQLMultiNodeRep::restore (AipsIO& aio)
+{
+  uInt size;
+  Bool isSetOrArray;
+  String prefix, postfix;
+  aio >> isSetOrArray >> prefix >> postfix;
+  aio >> size;
+  TaQLMultiNodeRep* node = new TaQLMultiNodeRep(prefix, postfix, isSetOrArray);
+  for (uInt i=0; i<size; ++i) {
+    node->add (TaQLNode::restoreNode (aio));
+  }
+  return node;
+}
+
+TaQLFuncNodeRep::~TaQLFuncNodeRep()
+{}
+TaQLNodeResult TaQLFuncNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitFuncNode (*this);
+}
+void TaQLFuncNodeRep::show (std::ostream& os) const
+{
+  os << itsName << '(';
+  itsArgs.show (os);
+  os << ')';
+}
+void TaQLFuncNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+  itsArgs.saveNode (aio);
+}
+TaQLFuncNodeRep* TaQLFuncNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  return new TaQLFuncNodeRep (name, TaQLNode::restoreMultiNode (aio));
+}
+
+TaQLRangeNodeRep::~TaQLRangeNodeRep()
+{}
+TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitRangeNode (*this);
+}
+void TaQLRangeNodeRep::show (std::ostream& os) const
+{
+  if (itsLeftClosed) {
+    os << '{';
+  } else {
+    os << '<';
+  }
+  itsStart.show (os);
+  os << ',';
+  itsEnd.show (os);
+  if (itsRightClosed) {
+    os << '}';
+  } else {
+    os << '>';
+  }
+}
+void TaQLRangeNodeRep::save (AipsIO& aio) const
+{
+  aio << itsLeftClosed << itsRightClosed;
+  itsStart.saveNode (aio);
+  itsEnd.saveNode (aio);
+}
+TaQLRangeNodeRep* TaQLRangeNodeRep::restore (AipsIO& aio)
+{
+  Bool leftClosed, rightClosed;
+  aio >> leftClosed >> rightClosed;
+  TaQLNode start = TaQLNode::restoreNode (aio);
+  TaQLNode end = TaQLNode::restoreNode (aio);
+  return new TaQLRangeNodeRep (leftClosed, start, end, rightClosed);
+}
+
+TaQLIndexNodeRep::~TaQLIndexNodeRep()
+{}
+TaQLNodeResult TaQLIndexNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitIndexNode (*this);
+}
+void TaQLIndexNodeRep::show (std::ostream& os) const
+{
+  itsStart.show (os);
+  if (itsEnd.isValid()) {
+    os << ':';
+    itsEnd.show (os);
+  } else if (itsIncr.isValid()) {
+    os << ':';
+  }
+  if (itsIncr.isValid()) {
+    os << ':';
+    itsIncr.show (os);
+  }    
+}
+void TaQLIndexNodeRep::save (AipsIO& aio) const
+{
+  itsStart.saveNode (aio);
+  itsEnd.saveNode (aio);
+  itsIncr.saveNode (aio);
+}
+TaQLIndexNodeRep* TaQLIndexNodeRep::restore (AipsIO& aio)
+{
+  TaQLNode start = TaQLNode::restoreNode (aio);
+  TaQLNode end = TaQLNode::restoreNode (aio);
+  TaQLNode incr = TaQLNode::restoreNode (aio);
+  return new TaQLIndexNodeRep (start, end, incr);
+}
+
+TaQLJoinNodeRep::~TaQLJoinNodeRep()
+{}
+TaQLNodeResult TaQLJoinNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitJoinNode (*this);
+}
+void TaQLJoinNodeRep::show (std::ostream& os) const
+{
+  os << "JOIN ";
+  if (itsTables.isValid()) {
+    itsTables.show (os);
+    os << ' ';
+  }
+  os << "ON CONDITION ";
+  itsCondition.show (os);
+}
+void TaQLJoinNodeRep::save (AipsIO& aio) const
+{
+  itsTables.saveNode (aio);
+  itsCondition.saveNode (aio);
+}
+TaQLJoinNodeRep* TaQLJoinNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLNode condition = TaQLNode::restoreNode (aio);
+  return new TaQLJoinNodeRep (tables, condition);
+}
+
+TaQLKeyColNodeRep::~TaQLKeyColNodeRep()
+{}
+TaQLNodeResult TaQLKeyColNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitKeyColNode (*this);
+}
+void TaQLKeyColNodeRep::show (std::ostream& os) const
+{
+  os << itsName;
+}
+void TaQLKeyColNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+}
+TaQLKeyColNodeRep* TaQLKeyColNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  return new TaQLKeyColNodeRep (name);
+}
+
+TaQLTableNodeRep::~TaQLTableNodeRep()
+{}
+TaQLNodeResult TaQLTableNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitTableNode (*this);
+}
+void TaQLTableNodeRep::show (std::ostream& os) const
+{
+  itsTable.show (os);
+  if (! itsAlias.empty()) {
+    os << " AS " << itsAlias;
+  }
+}
+void TaQLTableNodeRep::save (AipsIO& aio) const
+{
+  aio << itsAlias;
+  itsTable.saveNode (aio);
+}
+TaQLTableNodeRep* TaQLTableNodeRep::restore (AipsIO& aio)
+{
+  String alias;
+  aio >> alias;
+  return new TaQLTableNodeRep (TaQLNode::restoreNode(aio), alias);
+}
+
+TaQLColNodeRep::~TaQLColNodeRep()
+{}
+TaQLNodeResult TaQLColNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitColNode (*this);
+}
+void TaQLColNodeRep::show (std::ostream& os) const
+{
+  itsExpr.show (os);
+  if (! itsName.empty()) {
+    os << " AS " << itsName;
+  }
+}
+void TaQLColNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+  itsExpr.saveNode (aio);
+}
+TaQLColNodeRep* TaQLColNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  return new TaQLColNodeRep (TaQLNode::restoreNode(aio), name);
+}
+
+TaQLColumnsNodeRep::~TaQLColumnsNodeRep()
+{}
+TaQLNodeResult TaQLColumnsNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitColumnsNode (*this);
+}
+void TaQLColumnsNodeRep::show (std::ostream& os) const
+{
+  if (itsDistinct) {
+    os << " DISTINCT";
+  }
+  if (itsNodes.isValid()) {
+    os << ' ';
+    itsNodes.show (os);
+  }
+}
+void TaQLColumnsNodeRep::save (AipsIO& aio) const
+{
+  aio << itsDistinct;
+  itsNodes.saveNode (aio);
+}
+TaQLColumnsNodeRep* TaQLColumnsNodeRep::restore (AipsIO& aio)
+{
+  Bool distinct;
+  aio >> distinct;
+  return new TaQLColumnsNodeRep (distinct, TaQLNode::restoreMultiNode(aio));
+}
+
+TaQLSortKeyNodeRep::~TaQLSortKeyNodeRep()
+{}
+TaQLNodeResult TaQLSortKeyNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitSortKeyNode (*this);
+}
+void TaQLSortKeyNodeRep::show (std::ostream& os) const
+{
+  itsChild.show (os);
+  switch (itsType) {
+  case Ascending:
+    os << " ASC";
+    break;
+  case Descending:
+    os << " DESC";
+    break;
+  case None:
+    break;
+  }
+}
+void TaQLSortKeyNodeRep::save (AipsIO& aio) const
+{
+  aio << char(itsType);
+  itsChild.saveNode (aio);
+}
+TaQLSortKeyNodeRep* TaQLSortKeyNodeRep::restore (AipsIO& aio)
+{
+  char ctype;
+  aio >> ctype;
+  TaQLSortKeyNodeRep::Type type = (TaQLSortKeyNodeRep::Type)ctype;
+  return new TaQLSortKeyNodeRep (type, TaQLNode::restoreNode(aio));
+}
+
+TaQLSortNodeRep::~TaQLSortNodeRep()
+{}
+TaQLNodeResult TaQLSortNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitSortNode (*this);
+}
+void TaQLSortNodeRep::show (std::ostream& os) const
+{
+  os << " ORDERBY";
+  if (itsUnique) {
+    os << " UNIQUE";
+  }
+  if (itsType == Descending) {
+    os << " DESC";
+  }
+  os << ' ';
+  itsKeys.show (os);
+}
+void TaQLSortNodeRep::save (AipsIO& aio) const
+{
+  aio << itsUnique << char(itsType);
+  itsKeys.saveNode (aio);
+}
+TaQLSortNodeRep* TaQLSortNodeRep::restore (AipsIO& aio)
+{
+  Bool unique;
+  char ctype;
+  aio >> unique >> ctype;
+  TaQLSortNodeRep::Type type = (TaQLSortNodeRep::Type)ctype;
+  return new TaQLSortNodeRep (unique, type, TaQLNode::restoreMultiNode(aio));
+}
+
+TaQLLimitOffNodeRep::~TaQLLimitOffNodeRep()
+{}
+TaQLNodeResult TaQLLimitOffNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitLimitOffNode (*this);
+}
+void TaQLLimitOffNodeRep::show (std::ostream& os) const
+{
+  if (itsLimit.isValid()) {
+    os << " LIMIT ";
+    itsLimit.show (os);
+  }
+  if (itsOffset.isValid()) {
+    os << " OFFSET ";
+    itsOffset.show (os);
+  }
+}
+void TaQLLimitOffNodeRep::save (AipsIO& aio) const
+{
+  itsLimit.saveNode (aio);
+  itsOffset.saveNode (aio);
+}
+TaQLLimitOffNodeRep* TaQLLimitOffNodeRep::restore (AipsIO& aio)
+{
+  TaQLNode limit = TaQLNode::restoreNode (aio);
+  TaQLNode offset = TaQLNode::restoreNode (aio);
+  return new TaQLLimitOffNodeRep (limit, offset);
+}
+
+TaQLGivingNodeRep::~TaQLGivingNodeRep()
+{}
+TaQLNodeResult TaQLGivingNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitGivingNode (*this);
+}
+void TaQLGivingNodeRep::show (std::ostream& os) const
+{
+  os << " GIVING ";
+  if (itsExprList.isValid()) {
+    itsExprList.show (os);
+  } else {
+    os << itsName;
+  }
+}
+void TaQLGivingNodeRep::save (AipsIO& aio) const
+{
+  itsExprList.saveNode (aio);
+  if (! itsExprList.isValid()) {
+    aio << itsName;
+  }
+}
+TaQLGivingNodeRep* TaQLGivingNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode node = TaQLNode::restoreMultiNode(aio);
+  if (node.isValid()) {
+    return new TaQLGivingNodeRep (node);
+  }
+  String name;
+  aio >> name;
+  return new TaQLGivingNodeRep (name);
+}
+
+TaQLUpdExprNodeRep::~TaQLUpdExprNodeRep()
+{}
+TaQLNodeResult TaQLUpdExprNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitUpdExprNode (*this);
+}
+void TaQLUpdExprNodeRep::show (std::ostream& os) const
+{
+  os << itsName;
+  itsIndices.show (os);
+  os << '=';
+  itsExpr.show (os);
+}
+void TaQLUpdExprNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+  itsIndices.saveNode (aio);
+  itsExpr.saveNode (aio);
+}
+TaQLUpdExprNodeRep* TaQLUpdExprNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  TaQLMultiNode indices = TaQLNode::restoreMultiNode (aio);
+  TaQLNode expr = TaQLNode::restoreNode (aio);
+  return new TaQLUpdExprNodeRep (name, indices, expr);
+}
+
+TaQLSelectNodeRep::~TaQLSelectNodeRep()
+{}
+TaQLNodeResult TaQLSelectNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitSelectNode (*this);
+}
+void TaQLSelectNodeRep::show (std::ostream& os) const
+{
+  if (itsBrackets) {
+    os << '[';
+  }
+  os << "SELECT";
+  itsColumns.show (os);
+  os << " FROM ";
+  itsTables.show (os);
+  itsJoin.show (os);
+  if (itsWhere.isValid()) {
+    os << " WHERE ";
+    itsWhere.show (os);
+  }
+  if (itsGroupby.isValid()) {
+    os << " GROUPBY ";
+    itsGroupby.show (os);
+  }
+  if (itsHaving.isValid()) {
+    os << " HAVING ";
+    itsHaving.show (os);
+  }
+  itsSort.show (os);
+  itsLimitOff.show (os);
+  itsGiving.show (os);
+  if (itsBrackets) {
+    os << ']';
+  }
+}
+void TaQLSelectNodeRep::save (AipsIO& aio) const
+{
+  aio << itsBrackets << itsNoExecute << itsFromExecute;
+  itsColumns.saveNode (aio);
+  itsTables.saveNode (aio);
+  itsJoin.saveNode (aio);
+  itsWhere.saveNode (aio);
+  itsGroupby.saveNode (aio);
+  itsHaving.saveNode (aio);
+  itsSort.saveNode (aio);
+  itsLimitOff.saveNode (aio);
+  itsGiving.saveNode (aio);
+}
+TaQLSelectNodeRep* TaQLSelectNodeRep::restore (AipsIO& aio)
+{
+  Bool brackets, noExecute, fromExecute;
+  aio >> brackets >> noExecute >> fromExecute;
+  TaQLNode columns = TaQLNode::restoreNode (aio);
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLNode join = TaQLNode::restoreMultiNode (aio);
+  TaQLNode where = TaQLNode::restoreNode (aio);
+  TaQLNode groupby = TaQLNode::restoreMultiNode (aio);
+  TaQLNode having = TaQLNode::restoreMultiNode (aio);
+  TaQLNode sort = TaQLNode::restoreNode (aio);
+  TaQLNode limitoff = TaQLNode::restoreNode (aio);
+  TaQLNode giving = TaQLNode::restoreNode (aio);
+  TaQLSelectNodeRep* node = new TaQLSelectNodeRep (columns, tables, join,
+						   where, groupby, having,
+						   sort, limitoff, giving,
+						   brackets,
+						   noExecute, fromExecute);
+  return node;
+}
+
+TaQLUpdateNodeRep::~TaQLUpdateNodeRep()
+{}
+TaQLNodeResult TaQLUpdateNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitUpdateNode (*this);
+}
+void TaQLUpdateNodeRep::show (std::ostream& os) const
+{
+  os << "UPDATE ";
+  itsTables.show (os);
+  os << " SET ";
+  itsUpdate.show (os);
+  if (itsFrom.isValid()) {
+    os << " FROM ";
+    itsFrom.show (os);
+  }
+  if (itsWhere.isValid()) {
+    os << " WHERE ";
+    itsWhere.show (os);
+  }
+  itsSort.show (os);
+  itsLimitOff.show (os);
+}
+void TaQLUpdateNodeRep::save (AipsIO& aio) const
+{
+  itsTables.saveNode (aio);
+  itsUpdate.saveNode (aio);
+  itsFrom.saveNode (aio);
+  itsWhere.saveNode (aio);
+  itsSort.saveNode (aio);
+  itsLimitOff.saveNode (aio);
+}
+TaQLUpdateNodeRep* TaQLUpdateNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode update = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode from = TaQLNode::restoreMultiNode (aio);
+  TaQLNode where = TaQLNode::restoreNode (aio);
+  TaQLNode sort = TaQLNode::restoreNode (aio);
+  TaQLNode limitoff = TaQLNode::restoreNode (aio);
+  return new TaQLUpdateNodeRep (tables, update, from, where, sort, limitoff);
+}
+
+TaQLInsertNodeRep::~TaQLInsertNodeRep()
+{}
+TaQLNodeResult TaQLInsertNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitInsertNode (*this);
+}
+void TaQLInsertNodeRep::show (std::ostream& os) const
+{
+  os << "INSERT INTO ";
+  itsTables.show (os);
+  if (itsColumns.isValid()) {
+    os << " [";
+    itsColumns.show (os);
+    os << ']';
+  }
+  os << ' ';
+  itsValues.show (os);
+}
+void TaQLInsertNodeRep::save (AipsIO& aio) const
+{
+  itsTables.saveNode (aio);
+  itsColumns.saveNode (aio);
+  itsValues.saveNode (aio);
+}
+TaQLInsertNodeRep* TaQLInsertNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode columns = TaQLNode::restoreMultiNode (aio);
+  TaQLNode values = TaQLNode::restoreNode (aio);
+  return new TaQLInsertNodeRep (tables, columns, values);
+}
+
+TaQLDeleteNodeRep::~TaQLDeleteNodeRep()
+{}
+TaQLNodeResult TaQLDeleteNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitDeleteNode (*this);
+}
+void TaQLDeleteNodeRep::show (std::ostream& os) const
+{
+  os << "DELETE FROM ";
+  itsTables.show (os);
+  if (itsWhere.isValid()) {
+    os << " WHERE ";
+    itsWhere.show (os);
+  }
+  itsSort.show (os);
+  itsLimitOff.show (os);
+}
+void TaQLDeleteNodeRep::save (AipsIO& aio) const
+{
+  itsTables.saveNode (aio);
+  itsWhere.saveNode (aio);
+  itsSort.saveNode (aio);
+  itsLimitOff.saveNode (aio);
+}
+TaQLDeleteNodeRep* TaQLDeleteNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLNode where = TaQLNode::restoreNode (aio);
+  TaQLNode sort = TaQLNode::restoreNode (aio);
+  TaQLNode limitoff = TaQLNode::restoreNode (aio);
+  return new TaQLDeleteNodeRep (tables, where, sort, limitoff);
+}
+
+TaQLCalcNodeRep::~TaQLCalcNodeRep()
+{}
+TaQLNodeResult TaQLCalcNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitCalcNode (*this);
+}
+void TaQLCalcNodeRep::show (std::ostream& os) const
+{
+  os << "CALC ";
+  if (itsTables.isValid()) {
+    os << "FROM ";
+    itsTables.show (os);
+    os << " CALC ";
+  }
+  itsExpr.show (os);
+}
+void TaQLCalcNodeRep::save (AipsIO& aio) const
+{
+  itsTables.saveNode (aio);
+  itsExpr.saveNode (aio);
+}
+TaQLCalcNodeRep* TaQLCalcNodeRep::restore (AipsIO& aio)
+{
+  TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
+  TaQLNode expr = TaQLNode::restoreNode (aio);
+  return new TaQLCalcNodeRep (tables, expr);
+}
+
+
+} //# NAMESPACE CASA - END

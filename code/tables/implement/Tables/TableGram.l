@@ -339,66 +339,64 @@ PATT      {PATT1}|{PATT2}|{PATT3}
  /* Literals */
 {COMPLEX} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'c';
-	    sscanf (TableGramtext, "%lf%*c", &(lvalp->val->dval[1]));
-	    lvalp->val->dval[0] = 0;
+            double v;
+	    sscanf (TableGramtext, "%lf%*c", &v);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (DComplex(0, v)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 {FLOAT}   {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'f';
-	    lvalp->val->dval[0] = atof(TableGramtext);
+	    double v = atof(TableGramtext);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (v));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 {INT}     {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-            Int ival = atoi(TableGramtext);
-            Double dval = atof(TableGramtext);
+            int ival = atoi(TableGramtext);
+            double dval = atof(TableGramtext);
             if (ival < dval-0.1  ||  ival > dval+0.1) {
-                lvalp->val->type = 'f';
-                lvalp->val->dval[0] = dval;
+                lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (dval));
             } else {
-                lvalp->val->type = 'i';
-                lvalp->val->ival = ival;
+                lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
             }
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
 	  }
 {TRUE}    {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'b';
-	    lvalp->val->dval[0] = 1;
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (True));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 {FALSE}   {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'b';
-	    lvalp->val->dval[0] = 0;
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (False));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 {STRING}  {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = tableGramRemoveQuotes (TableGramtext);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveQuotes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return STRINGLITERAL;
 	  }
 {DATETIME} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'd';
-	    lvalp->val->str = TableGramtext;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramParseDateTime (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 <EXPRstate>{TIME} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 't';
-	    lvalp->val->str = TableGramtext;
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramParseTime (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return LITERAL;
 	  }
 
@@ -413,17 +411,17 @@ PATT      {PATT1}|{PATT2}|{PATT3}
           }
 <REGEXstate>{REGEX} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = String(TableGramtext+2,yyleng-3);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (String(TableGramtext+2,yyleng-3)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
             BEGIN(EXPRstate);
 	    return REGEX;
 	  }
 <REGEXstate>{PATT} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = String(TableGramtext+2,yyleng-3);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (String(TableGramtext+2,yyleng-3)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
             BEGIN(EXPRstate);
 	    return PATTERN;
 	  }
@@ -441,35 +439,35 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 	  }
 {NAME}    {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return NAME;
 	  }
  /* Field names can be used in the SELECT, FROM, WHERE, and ORDERBY clause */
 {NAMEFLD} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return FLDNAME;
 	  }
 
  /* A temporary table number can be given in the FROM clause */
 <FROMstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 'i';
-            lvalp->val->ival = atoi(TableGramtext+1);
+            int ival = atoi(TableGramtext+1);
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (ival));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;
 	  }
 
  /* A table file name can be given in the UPDATE, FROM or GIVING clause */
 <FROMstate,GIVINGstate>{NAMETAB} {
             tableGramPosition() += yyleng;
-            lvalp->val = TableParseVal::makeValue();
-	    lvalp->val->type = 's';
-	    lvalp->val->str = tableGramRemoveEscapes (TableGramtext);
+            lvalp->val = new TaQLConstNode(
+                new TaQLConstNodeRep (tableGramRemoveEscapes (TableGramtext)));
+            TaQLNode::theirNodesCreated.push_back (lvalp->val);
 	    return TABNAME;
 	  }
 

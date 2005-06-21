@@ -30,6 +30,7 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
+#include <casa/Quanta/MVTime.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -42,7 +43,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 // <use visibility=local>
 
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tTableGram">
 // </reviewed>
 
 // <prerequisite>
@@ -87,6 +88,13 @@ String tableGramRemoveEscapes (const String& in);
 
 // A function to remove quotes from a quoted string.
 String tableGramRemoveQuotes (const String& in);
+
+// A function to parse a date/time string.
+MVTime tableGramParseDateTime (const String& in);
+
+// A function to parse a time/position string.
+// The value is returned in radians.
+Double tableGramParseTime (const String& in);
 
 // </group>
 
