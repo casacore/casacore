@@ -35,7 +35,7 @@
 
 #include <images/Images/PagedImage.h>
 #include <images/Images/ImageFITSConverter.h>
-#include <casa/System/AppInfo.h>
+#include <casa/OS/HostInfo.h>
 
 #include <casa/iostream.h>
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     ImageInterface<Float>* pOutImage;
     Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile,
 					      fitsFile, 0,
-					      AppInfo::memoryInMB(),
+					      HostInfo::memoryTotal()/1024,
 					      overwrite, zero);
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
     if (!ok) {
