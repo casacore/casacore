@@ -36,8 +36,6 @@
 #include <casa/System/AipsrcVector.h>
 #include <casa/Utilities/Regex.h>
 
-#include <casa/OS/Memory.h>
-
 #include <casa/namespace.h>
 int main()
 {
