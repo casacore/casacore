@@ -155,9 +155,11 @@ void a (const TableDesc& td)
     tab.addColumn (ScalarColumnDesc<Float>("acalc4"), vtcm);
 }
 
-void check(const Table& tab)
+void check(const Table& tab, Bool shownoname=False)
 {
+    if (shownoname) cout << ">>>" << endl;
     cout << "Checking table " << tab.tableName() << endl;
+    if (shownoname) cout << "<<<" << endl;
     ROScalarColumn<Int> ab2(tab,"ab");
     ROScalarColumn<Int> ac (tab,"ac");
     ROScalarColumn<uInt> ad(tab,"ad");
@@ -329,7 +331,5 @@ void testSelect()
   // Select all rows.
   Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
 			      "where acalc > -1000");
-  cout << ">>>" << endl;
-  check (subset);
-  cout << "<<<" << endl;
+  check (subset, True);
 }
