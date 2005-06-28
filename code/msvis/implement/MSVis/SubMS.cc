@@ -388,7 +388,11 @@ Bool SubMS::fillDDTables(){
   ROScalarColumn<Int> polId(ddtable, 
 			    MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
 
-
+  //Fill in matching spw to datadesc in old ms 
+  {
+     ROMSDataDescColumns msOldDD(ddtable);
+     oldDDSpwMatch_p=msOldDD.spectralWindowId().getColumn();
+  }
   //POLARIZATION table 
 
 
@@ -432,6 +436,7 @@ Bool SubMS::fillDDTables(){
   for(uInt k=0; k < nPol; ++k){
     selectedPolId[k]=ddPolId[index[uniq[k]]];
   }
+
   Vector<Int> newPolId(spw_p.nelements());
   for(uInt k=0; k < spw_p.nelements(); ++k){
     for (uInt j=0; j < nPol; ++j){ 
@@ -439,6 +444,7 @@ Bool SubMS::fillDDTables(){
 	newPolId[k]=j;
     }
   }
+
   for(uInt k=0; k < newPolId.nelements(); ++k){
     msOut_p.polarization().addRow();
     msPol.numCorr().put(k,numCorr(polId(spw_p[k])));
@@ -511,6 +517,7 @@ Bool SubMS::fillDDTables(){
     msDD.polarizationId().put(k,newPolId[k]);
     msDD.spectralWindowId().put(k,k);
 
+
   }
 
  
@@ -577,9 +584,9 @@ Bool SubMS::fillMainTable(const String& whichCol){
   msc_p->feed1().putColumn(mscIn_p->feed1());
   msc_p->feed2().putColumn(mscIn_p->feed2());
   //  msc_p->flag().putColumn(mscIn_p->flag());
-  if(!(mscIn_p->flagCategory().isNull()))
-    if(mscIn_p->flagCategory().isDefined(0))
-      msc_p->flagCategory().putColumn(mscIn_p->flagCategory());
+  // if(!(mscIn_p->flagCategory().isNull()))
+  //  if(mscIn_p->flagCategory().isDefined(0))
+  //    msc_p->flagCategory().putColumn(mscIn_p->flagCategory());
   msc_p->flagRow().putColumn(mscIn_p->flagRow());
   msc_p->interval().putColumn(mscIn_p->interval());
   msc_p->observationId().putColumn(mscIn_p->observationId());
@@ -603,7 +610,7 @@ Bool SubMS::fillMainTable(const String& whichCol){
     Vector<Int> fieldId = mscIn_p->fieldId().getColumn();
     for (uInt k = 0; k < datDesc.nelements(); ++k){
       
-      datDesc[k]=spwRelabel_p[datDesc[k]];
+      datDesc[k]=spwRelabel_p[oldDDSpwMatch_p[datDesc[k]]];
       fieldId[k]=fieldRelabel_p[fieldId[k]];
       
       

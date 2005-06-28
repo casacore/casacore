@@ -129,6 +129,7 @@ class SubMS
   Vector<Int> fieldid_p;
   Bool averageChannel_p;
   Vector<Int> spwRelabel_p, fieldRelabel_p;
+  Vector<Int> oldDDSpwMatch_p;
   Bool doChanAver_p;
 
 };
