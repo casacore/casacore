@@ -72,6 +72,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // The subexpressions available for performing a selection are as follows
 // (a detailed syntax for each expression is also given below):
+// <src>
 //    antenna - Antenna STaQL expression
 //      antenna=ANTENNA.INDEX
 //      antenna='ANTENNA.NAME'
@@ -146,7 +147,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      uvdist=[uvdistexpr], [range]
 //    taql    - TaQL expression
 //      taql=[taqlexpr]
-//
+// </src>
 // The subexpressions are interpreted in the order which they were set,
 // with an AND between the results of each subexpression.
 //
