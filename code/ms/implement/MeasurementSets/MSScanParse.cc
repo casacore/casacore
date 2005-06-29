@@ -34,13 +34,13 @@ TableExprNode* MSScanParse::node_p = 0x0;
 
 //# Constructor
 MSScanParse::MSScanParse ()
-: MSParse(), colName(MS::columnName(MS::TIME))
+: MSParse(), colName(MS::columnName(MS::SCAN_NUMBER))
 {
 }
 
 //# Constructor with given ms name.
 MSScanParse::MSScanParse (const MeasurementSet* ms)
-: MSParse(ms, "Scan"), colName(MS::columnName(MS::TIME))
+: MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER))
 {
     if(node_p) delete node_p;
     node_p = new TableExprNode();
@@ -48,7 +48,7 @@ MSScanParse::MSScanParse (const MeasurementSet* ms)
 
 const TableExprNode *MSScanParse::selectScanIds(const Vector<Int> scanids)
 {
-    TableExprNode condition = TableExprNode();
+    TableExprNode condition = TableExprNode(ms()->col(colName).in(scanids));
 
     if(node_p->isNull())
         *node_p = condition;
