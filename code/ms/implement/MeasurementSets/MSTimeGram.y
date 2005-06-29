@@ -65,7 +65,6 @@ using namespace casa;
 %token RBRACE
 
 %type <node> timestatement
-%type <node> scanexpr
 %type <node> timeexpr
 %type <node> singletimeexpr
 %type <node> rangetimeexpr
@@ -91,22 +90,7 @@ int MSTimeGramlex (YYSTYPE*);
 timestatement: SQUOTE timeexpr SQUOTE {
                  $$ = $2;
                }
-             | scanexpr {
-                 $$ = $1;
-               }
              ;
-
-scanexpr: INDEX {
-            Vector<Int> scanids(1);
-            scanids[0] = $1;
-            $$ = MSTimeParse().selectScanIds(scanids);
-          }
-        | scanexpr COMMA INDEX {
-            Vector<Int> scanids(1);
-            scanids[0] = $3;
-            $$ = MSTimeParse().selectScanIds(scanids);
-          }
-        ;
 
 timeexpr: singletimeexpr {
             $$ = $1;

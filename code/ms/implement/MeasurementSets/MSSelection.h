@@ -128,22 +128,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //      spw=SPW.INDEX : ( VALUE , VALUE , ... )
 //      spw=SPW.INDEX : ( VALUE , VALUE , ... ) UNIT
 //      spw=[spwexpr], [...]
+//    scan    - Scan STaQL expression
+//      =SCAN.INDEX
+//      =SCAN.INDEX - SCAN.INDEX
+//      =[scanexpr], [...]
 //    time    - Time STaQL expression
-//      time=TIME.SCAN
 //      time='YYYY/MM/DD/HH:MM:SS.sss'
 //      time='ddd/HH:MM:SS.sss'
 //      time='< YYYY/MM/DD/HH:MM:SS.sss'
 //      time='> YYYY/MM/DD/HH:MM:SS.sss'
 //      time='YYYY/MM/DD/HH:MM:SS.sss - YYYY/MM/DD/HH:MM:SS.sss'
-//      time=TIME.SCAN - TIME.SCAN
 //      time='YYYY[/MM][/DD][/HH][:MM][:SS][.sss]'
 //      time='ddd[/HH][:MM][:SS][.sss]'
 //      time=[timeexpr], [...]
 //    uvdist  - UV Distribution STaQL expression
-//      uvdist=< VALUE UNIT
-//      uvdist=> VALUE UNIT
-//      uvdist=VALUE - VALUE UNIT
-//      uvdist=VALUE UNIT : PERCENTAGE %
+//      uvdist='< VALUE UNIT'
+//      uvdist='> VALUE UNIT'
+//      uvdist='VALUE - VALUE UNIT'
+//      uvdist='VALUE UNIT : PERCENTAGE %'
 //      uvdist=[uvdistexpr], [range]
 //    taql    - TaQL expression
 //      taql=[taqlexpr]
@@ -189,6 +191,7 @@ class MSSelection
                     CORR_EXPR,
                     FIELD_EXPR,
                     SPW_EXPR,
+                    SCAN_EXPR,
                     TIME_EXPR,
                     UVDIST_EXPR,
                     TAQL_EXPR,
@@ -219,6 +222,7 @@ class MSSelection
    Bool setCorrExpr(const String& corrExpr);
    Bool setFieldExpr(const String& fieldExpr);
    Bool setSpwExpr(const String& spwExpr);
+   Bool setScanExpr(const String& scanExpr);
    Bool setTimeExpr(const String& timeExpr);
    Bool setUvDistExpr(const String& uvDistExpr);
    Bool setTaQLExpr(const String& taqlExpr);
@@ -248,6 +252,7 @@ class MSSelection
    String corrExpr_p;
    String fieldExpr_p;
    String spwExpr_p;
+   String scanExpr_p;
    String timeExpr_p;
    String uvDistExpr_p;
    String taqlExpr_p;

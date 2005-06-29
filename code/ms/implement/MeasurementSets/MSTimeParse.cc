@@ -101,18 +101,6 @@ const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
     return node_p;
 }
 
-const TableExprNode *MSTimeParse::selectScanIds(const Vector<Int> scanids)
-{
-    TableExprNode condition = TableExprNode();
-
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
-
-    return node_p;
-}
-
 const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
                                           uInt second, uInt millisec)
 {

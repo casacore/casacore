@@ -31,6 +31,7 @@
 #include <ms/MeasurementSets/MSCorrGram.h>
 #include <ms/MeasurementSets/MSFieldGram.h>
 #include <ms/MeasurementSets/MSSpwGram.h>
+#include <ms/MeasurementSets/MSScanGram.h>
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
 #include <tables/Tables/TableGram.h>
@@ -60,6 +61,7 @@ MSSelection::MSSelection() :
 //    corrExpr_p                String   Correlator STaQL expression
 //    fieldExpr_p               String   Field STaQL expression
 //    spwExpr_p                 String   SPW STaQL expression
+//    scanExpr_p                String   Scan STaQL expression
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
 //    taqlExpr_p                String   TaQL expression
@@ -87,6 +89,7 @@ MSSelection::MSSelection(const Record& selectionItem) :
 //    corrExpr_p                String   Correlator STaQL expression
 //    fieldExpr_p               String   Field STaQL expression
 //    spwExpr_p                 String   SPW STaQL expression
+//    scanExpr_p                String   Scan STaQL expression
 //    timeExpr_p                String   Time STaQL expression
 //    uvDistExpr_p              String   UV Distribution STaQL expression
 //    taqlExpr_p                String   TaQL expression
@@ -217,6 +220,11 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
         if(spwExpr_p != "" &&
            msSpwGramParseCommand(ms, spwExpr_p) == 0)
           node = msSpwGramParseNode();
+        break;
+      case SCAN_EXPR:
+        if(scanExpr_p != "" &&
+           msScanGramParseCommand(ms, scanExpr_p) == 0)
+          node = msScanGramParseNode();
         break;
       case TIME_EXPR:
         if(timeExpr_p != "" &&
@@ -357,6 +365,25 @@ Bool MSSelection::setSpwExpr(const String& spwExpr)
 
 //----------------------------------------------------------------------------
 
+Bool MSSelection::setScanExpr(const String& scanExpr)
+{
+// Set the scan
+// Input:
+//    scanExpr          const String&  Supplementary scan expression
+// Output to private data:
+//    scanExpr_p        String         Supplementary scan expression
+//
+  if(setOrder(SCAN_EXPR))
+  {
+    scanExpr_p = scanExpr;
+    return True;
+  }
+
+  return False;
+}
+
+//----------------------------------------------------------------------------
+
 Bool MSSelection::setTimeExpr(const String& timeExpr)
 {
 // Set the time
@@ -437,7 +464,7 @@ void MSSelection::fromSelectionItem(const Record& selectionItem)
   //
   // Antenna expression
   if (definedAndSet(selectionItem,"antenna")) {
-    setTimeExpr(selectionItem.asString("antenna"));
+    setAntennaExpr(selectionItem.asString("antenna"));
     cout << timeExpr_p << ", antenna" << endl;
   }
 
@@ -457,6 +484,12 @@ void MSSelection::fromSelectionItem(const Record& selectionItem)
   if (definedAndSet(selectionItem,"spw")) {
     setSpwExpr(selectionItem.asString("spw"));
     cout << spwExpr_p << ", spw" << endl;
+  }
+
+  // Scan expression
+  if (definedAndSet(selectionItem,"scan")) {
+    setScanExpr(selectionItem.asString("scan"));
+    cout << scanExpr_p << ", scan" << endl;
   }
 
   // Time expression

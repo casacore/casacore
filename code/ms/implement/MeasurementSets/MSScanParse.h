@@ -1,4 +1,4 @@
-//# MSTimeParse.h: Classes to hold results from time grammar parser
+//# MSScanParse.h: Classes to hold results from scan grammar parser
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#ifndef MS_MSTIMEPARSE_H
-#define MS_MSTIMEPARSE_H
+#ifndef MS_MSSCANPARSE_H
+#define MS_MSSCANPARSE_H
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 
 // <summary>
-// Class to hold values from time grammar parser
+// Class to hold values from scan grammar parser
 // </summary>
 
 // <use visibility=local>
@@ -50,24 +50,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <etymology>
-// MSTimeParse is the class used to parse a time command.
+// MSScanParse is the class used to parse a scan command.
 // </etymology>
 
 // <synopsis>
-// MSTimeParse is used by the parser of time sub-expression statements.
-// The parser is written in Bison and Flex in files MSTimeGram.y and .l.
+// MSScanParse is used by the parser of scan sub-expression statements.
+// The parser is written in Bison and Flex in files MSScanGram.y and .l.
 // The statements in there use the routines in this file to act
 // upon a reduced rule.
 // Since multiple tables can be given (with a shorthand), the table
 // names are stored in a list. The variable names can be qualified
 // by the table name and will be looked up in the appropriate table.
 //
-// The class MSTimeParse only contains information about a table
+// The class MSScanParse only contains information about a table
 // used in the table command. Global variables (like a list and a vector)
-// are used in MSTimeParse.cc to hold further information.
+// are used in MSScanParse.cc to hold further information.
 //
 // Global functions are used to operate on the information.
-// The main function is the global function msTimeCommand.
+// The main function is the global function msScanCommand.
 // It executes the given STaQL command and returns the resulting ms.
 // This is, in fact, the only function to be used by a user.
 // </synopsis>
@@ -83,33 +83,17 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# </todo>
 
 
-class MSTimeParse : public MSParse
+class MSScanParse : public MSParse
 {
 
 public:
     // Default constructor
-    MSTimeParse ();
+    MSScanParse ();
 
     // Associate the ms and the shorthand.
-    MSTimeParse (const MeasurementSet* ms);
+    MSScanParse (const MeasurementSet* ms);
 
-    const TableExprNode *selectTime(const MEpoch& time,
-                                    bool daytime = false);
-    const TableExprNode *selectTimeGT(const MEpoch& lowboundTime,
-                                      bool daytime = false);
-    const TableExprNode *selectTimeLT(const MEpoch& upboundTime,
-                                      bool daytime = false);
-    const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
-                                         const MEpoch& upboundTime,
-                                         bool daytime = false);
-
-    static const MEpoch *dayTimeConvert(uInt day, uInt hour = 0,
-                                        uInt minute = 0, uInt second = 0,
-                                        uInt millisec = 0);
-
-    static const MEpoch *yearTimeConvert(uInt year, uInt month, uInt day,
-                                         uInt hour = 0, uInt minute = 0,
-                                         uInt second = 0, uInt millisec = 0);
+    const TableExprNode *selectScanIds(const Vector<Int> scanids);
 
     // Get table expression node object.
     static const TableExprNode* node();
