@@ -47,9 +47,7 @@ select ab,ac from tTaQLNode_tmp.tab where cos(2d0m) <= sin(-2d)*sin(-ab/180*pi()
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos(0.034906585039886591))<=(((sin(-(0.034906585039886591)))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-(0.034906585039886591)))*(cos(((-(ab))/(180))*(pi()))))*(cos((0.05235987755982989)-(((ac)/(180))*(pi()))))))
 
 select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
-SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(3300:00:00))+(year('31Dec60')))+(month(3300:00:00)))+(day(date(3312:14:33))))-(3910))
-Error: different parse result
-SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(3300:0:0))+(year('31Dec60')))+(month(3300:0:0)))+(day(date(3312:14:33))))-(3910))
+SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(1960/12/31/00:00:00.0000))+(year('31Dec60')))+(month(1990/05/12/00:00:00.0000)))+(day(date(1990/01/30/12:14:33.3000))))-(3910))
 
 select ab,ac,af from tTaQLNode_tmp.tab where ab>5 orderby af desc, ac
 SELECT ab,ac,af FROM tTaQLNode_tmp.tab WHERE (ab)>(5) ORDERBY af DESC,ac
@@ -250,4 +248,7 @@ INSERT INTO tTaQLNode_tmp.tab [ab,ac] VALUES [(1)+(2),((3)*(ab))+(sum([SELECT ab
 
 select ab,ac from tTaQLNode_tmp.tab
 SELECT ab,ac FROM tTaQLNode_tmp.tab
+
+create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]
+CREATE TABLE tTaQLNode_tmp.tab col1 I4,col2 R4 ndim=1,c3 R8 [ndim=2,shape=[3,4]] DMINFO [name='ISM1',type='IncrementalStMan'],[name='SSM1',type='StandardStMan',bucketsize=1000]
 

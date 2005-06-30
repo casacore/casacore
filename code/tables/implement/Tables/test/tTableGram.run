@@ -17,6 +17,8 @@
 
 tTableGram 'select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab'
 
+tTableGram 'select distinct ab+1,ac as ac2 from tTableGram_tmp.tab'
+
 tTableGram 'select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2'
 
 tTableGram 'select all ab,ac,ad,ae,af,ag from tTableGram_tmp.data2 orderby af'
@@ -146,8 +148,14 @@ tTableGram 'select ab from tTableGram_tmp.tab'
 tTableGram 'insert into tTableGram_tmp.tab select from tTableGram_tmp.tabc'
 tTableGram 'select ab from tTableGram_tmp.tab'
 
+tTableGram 'insert into tTableGram_tmp.tab (ab) select ab*2 as col1 i4 from tTableGram_tmp.tabc'
+tTableGram 'select ab from tTableGram_tmp.tab'
+
 tTableGram 'delete from tTableGram_tmp.tab where ab%2==0'
 tTableGram 'select ab from tTableGram_tmp.tab'
 
 tTableGram 'insert into tTableGram_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTableGram_tmp.tab]))'
 tTableGram 'select ab,ac from tTableGram_tmp.tab'
+
+tTableGram 'create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]'
+tTableGram 'select col1,col2 from tTableGram_tmp.tab2'

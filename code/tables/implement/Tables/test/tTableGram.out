@@ -7,6 +7,20 @@ select ab,ac,ad,ae,af,ag into tTableGram_tmp.data2 from tTableGram_tmp.tab sh wh
  5 6 7 8 V5 (7,0)
  4 5 6 7 V4 (6,0)
  3 4 5 6 V3 (5,0)
+select distinct ab+1,ac as ac2 from tTableGram_tmp.tab
+    has been executed
+    select of 10 rows
+2 selected columns:  Col_1 ac2
+ 1 1
+ 2 2
+ 3 3
+ 4 4
+ 5 5
+ 6 6
+ 7 7
+ 8 8
+ 9 9
+ 10 10
 select distinct ab,ac,ad,ae,af,ag from tTableGram_tmp.data2
     has been executed
     select of 5 rows
@@ -604,9 +618,47 @@ select ab from tTableGram_tmp.tab
  7
  8
  9
+insert into tTableGram_tmp.tab (ab) select ab*2 as col1 i4 from tTableGram_tmp.tabc
+    has been executed
+    insert of 10 rows
+1 selected columns:  ab
+ 0
+ 2
+ 4
+ 6
+ 8
+ 10
+ 12
+ 14
+ 16
+ 18
+select ab from tTableGram_tmp.tab
+    has been executed
+    select of 20 rows
+1 selected columns:  ab
+ 0
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+ 0
+ 2
+ 4
+ 6
+ 8
+ 10
+ 12
+ 14
+ 16
+ 18
 delete from tTableGram_tmp.tab where ab%2==0
     has been executed
-    delete of 5 rows
+    delete of 15 rows
 0 selected columns: 
 select ab from tTableGram_tmp.tab
     has been executed
@@ -632,3 +684,11 @@ select ab,ac from tTableGram_tmp.tab
  7 8
  9 10
  3 34
+create table tTableGram_tmp.tab2 (col1 i4 [shape=[2,3], dmtype="IncrementalStMan"], col2 B) dminfo [TYPE="IncrementalStMan",NAME="ISM1",SPEC=[BUCKETSIZE=16384],COLUMNS=["col1"]]
+    has been executed
+    cretab of 0 rows
+2 selected columns:  col1 col2
+select col1,col2 from tTableGram_tmp.tab2
+    has been executed
+    select of 0 rows
+2 selected columns:  col1 col2

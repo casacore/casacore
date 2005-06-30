@@ -142,3 +142,5 @@ tTaQLNode 'select ab from tTaQLNode_tmp.tab'
 
 tTaQLNode 'insert into tTaQLNode_tmp.tab (ab,ac) values (1+2,3*ab + sum([select ab from tTaQLNode_tmp.tab]))'
 tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab'
+
+tTaQLNode 'create table tTaQLNode_tmp.tab col1 i4, col2 r4 ndim=1, c3 r8 [ndim=2, shape=[3,4]] dminfo [name="ISM1",type="IncrementalStMan"], [name="SSM1",type="StandardStMan", bucketsize=1000]'
