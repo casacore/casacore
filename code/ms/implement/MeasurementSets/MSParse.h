@@ -30,21 +30,14 @@
 
 //# Includes
 #include <casa/aips.h>
-#include <tables/Tables/Table.h>
 #include <tables/Tables/ExprNode.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <casa/BasicSL/String.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/Containers/List.h>
-#include <casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
-class TableExprNodeSet;
-class TableExprNodeIndex;
 class AipsIO;
-template<class T> class Vector;
 
 
 // <summary>

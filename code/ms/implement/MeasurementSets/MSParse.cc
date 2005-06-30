@@ -26,32 +26,8 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSParse.h>
-#include <tables/Tables/ExprNode.h>
-#include <tables/Tables/ExprDerNode.h>
-#include <tables/Tables/ExprDerNodeArray.h>
-#include <tables/Tables/ExprNodeSet.h>
-#include <tables/Tables/ExprRange.h>
-#include <tables/Tables/TableColumn.h>
-#include <tables/Tables/ScalarColumn.h>
-#include <tables/Tables/ArrayColumn.h>
-#include <tables/Tables/TableRow.h>
-#include <tables/Tables/TableRecord.h>
-#include <tables/Tables/TableDesc.h>
-#include <tables/Tables/ColumnDesc.h>
-#include <tables/Tables/TableError.h>
-#include <casa/Utilities/MUString.h>
-#include <casa/Quanta/MVTime.h>
-#include <casa/Quanta/MVAngle.h>
-#include <casa/Arrays/Vector.h>
-#include <casa/Arrays/ArrayMath.h>
-#include <casa/Arrays/ArrayUtil.h>
-#include <casa/Arrays/ArrayIO.h>
-#include <casa/Utilities/Sort.h>
-#include <casa/Utilities/GenSort.h>
-#include <casa/Utilities/LinearSearch.h>
-#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 #include <casa/IO/AipsIO.h>
-#include <casa/OS/Timer.h>
 #include <casa/ostream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
