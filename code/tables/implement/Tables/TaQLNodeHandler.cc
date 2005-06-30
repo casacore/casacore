@@ -287,6 +287,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       hrval->setExpr (getHR(result).getExpr());
     }
     hrval->setAlias (node.itsName);
+    hrval->setDtype (node.itsDtype);
     return res;
   }
 
@@ -299,7 +300,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	TaQLNodeResult result = visitNode (nodes[i]);
 	const TaQLNodeHRValue& res = getHR(result);
 	topStack()->handleColumn (res.getString(), res.getExpr(),
-				  res.getAlias());
+				  res.getAlias(), res.getDtype());
       }
     }
     if (node.itsDistinct) {
@@ -503,6 +504,202 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return res;
   }
 
+  TaQLNodeResult TaQLNodeHandler::visitCreTabNode (const TaQLCreTabNodeRep& node)
+  {
+    TableParseSelect* curSel = pushStack (TableParseSelect::PCRETAB);
+    handleColSpec (node.itsColumns);
+    Record datamans = handleRecord (node.itsDataMans.getMultiRep());
+    curSel->handleCreTab (node.itsName, datamans);
+    TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
+    TaQLNodeResult res(hrval);
+    hrval->setTable (curSel->getTable());
+    hrval->setNames (new Vector<String>(curSel->getColumnNames()));
+    hrval->setString ("cretab");
+    popStack();
+    return res;
+  }
+
+  TaQLNodeResult TaQLNodeHandler::visitColSpecNode (const TaQLColSpecNodeRep& node)
+  {
+    Record spec = handleRecord (node.itsSpec.getMultiRep());
+    topStack()->handleColSpec (node.itsName, node.itsDtype, spec);
+    return TaQLNodeResult();
+  }
+
+  TaQLNodeResult TaQLNodeHandler::visitRecFldNode (const TaQLRecFldNodeRep& node)
+  {
+    // This function cannot be called, because handleRecord processes
+    // the fields.
+    throw TableInvExpr ("TaQLNodeHandler::visitRecFldNode "
+			"should not be called");
+    return TaQLNodeResult();
+  }
+
+  Record TaQLNodeHandler::handleRecord (const TaQLMultiNodeRep* node)
+  {
+    Record rec;
+    if (node) {
+      const std::vector<TaQLNode>& fields = node->itsNodes;
+      for (uInt i=0; i<fields.size(); ++i) {
+	handleRecFld (fields[i], rec);
+      }
+    }
+    return rec;
+  }
+
+  void TaQLNodeHandler::handleRecFld (const TaQLNode& node, Record& rec)
+  {
+    AlwaysAssert (node.nodeType() == TaQLNode_RecFld, AipsError);
+    const TaQLRecFldNodeRep& fld = *(const TaQLRecFldNodeRep*)(node.getRep());
+    if (fld.itsValues.nodeType() == TaQLNode_Multi) {
+      // Value is a record or an array of values.
+      const TaQLMultiNodeRep* mnode =
+                     (const TaQLMultiNodeRep*)(fld.itsValues.getRep());
+      handleMultiRecFld (fld.itsName, mnode, rec);
+      return;
+    }
+    // Value is a single literal.
+    AlwaysAssert (fld.itsValues.nodeType() == TaQLNode_Const, AipsError);
+    const TaQLConstNodeRep& val =
+               *(const TaQLConstNodeRep*)(fld.itsValues.getRep());
+    switch (val.itsType) {
+    case TaQLConstNodeRep::CTBool:
+      rec.define (fld.itsName, val.itsBValue);
+      break;
+    case TaQLConstNodeRep::CTInt:
+      rec.define (fld.itsName, val.itsIValue);
+      break;
+    case TaQLConstNodeRep::CTReal:
+      rec.define (fld.itsName, val.itsRValue);
+      break;
+    case TaQLConstNodeRep::CTComplex:
+      rec.define (fld.itsName, val.itsCValue);
+      break;
+    case TaQLConstNodeRep::CTString:
+      rec.define (fld.itsName, val.itsSValue);
+      break;
+    default:
+      throw TableInvExpr ("TaQLNodeHandler::handleRecFld - "
+			  "unknown data type");
+    }
+  }
+
+  void TaQLNodeHandler::handleMultiRecFld (const String& fldName,
+					   const TaQLMultiNodeRep* node,
+					   Record& rec)
+  {
+    // No node means an empty record.
+    if (node == 0) {
+      rec.defineRecord (fldName, Record());
+      return;
+    }
+    const std::vector<TaQLNode>& vals = node->itsNodes;
+    if (vals.size() == 0) {
+      // No values means an empty vector (of say integers)
+      rec.define (fldName, Vector<Int>());
+      return;
+    }
+    int nodeType = vals[0].nodeType();
+    // Assert all values have the same node type.
+    for (uInt i=1; i<vals.size(); ++i) {
+      AlwaysAssert (vals[i].nodeType() == nodeType, AipsError);
+    }
+    if (nodeType == TaQLNode_RecFld) {
+      rec.defineRecord (fldName, handleRecord(node));
+      return;
+    }
+    // There is a vector of values.
+    AlwaysAssert (nodeType == TaQLNode_Const, AipsError);
+    // Check if all data types are equal or can be made equal.
+    int dtype;
+    for (uInt i=0; i<vals.size(); ++i) {
+      TaQLConstNodeRep* val = (TaQLConstNodeRep*)(vals[i].getRep());
+      if (i == 0) {
+	dtype = val->itsType;
+      } else {
+	dtype = checkConstDtype (dtype, val->itsType);
+      }
+    }
+    switch (dtype) {
+    case TaQLConstNodeRep::CTBool:
+      {
+	Vector<Bool> v(vals.size());
+	for (uInt i=0; i<vals.size(); ++i) {
+	  v[i] = ((TaQLConstNodeRep*)(vals[i].getRep()))->itsBValue;
+	}
+	rec.define (fldName, v);
+	break;
+      }
+    case TaQLConstNodeRep::CTInt:
+      {
+	Vector<Int> v(vals.size());
+	for (uInt i=0; i<vals.size(); ++i) {
+	  v[i] = ((TaQLConstNodeRep*)(vals[i].getRep()))->itsIValue;
+	}
+	rec.define (fldName, v);
+	break;
+      }
+    case TaQLConstNodeRep::CTReal:
+      {
+	Vector<Double> v(vals.size());
+	for (uInt i=0; i<vals.size(); ++i) {
+	  v[i] = ((TaQLConstNodeRep*)(vals[i].getRep()))->itsRValue;
+	}
+	rec.define (fldName, v);
+	break;
+      }
+    case TaQLConstNodeRep::CTComplex:
+      {
+	Vector<DComplex> v(vals.size());
+	for (uInt i=0; i<vals.size(); ++i) {
+	  v[i] = ((TaQLConstNodeRep*)(vals[i].getRep()))->itsCValue;
+	}
+	rec.define (fldName, v);
+	break;
+      }
+    case TaQLConstNodeRep::CTString:
+      {
+	Vector<String> v(vals.size());
+	for (uInt i=0; i<vals.size(); ++i) {
+	  v[i] = ((TaQLConstNodeRep*)(vals[i].getRep()))->itsSValue;
+	}
+	rec.define (fldName, v);
+	break;
+      }
+    default:
+      throw TableInvExpr ("TaQLNodeHandler::handleMultiRecFld - "
+			  "unknown data type");
+    }
+  }
+
+  int TaQLNodeHandler::checkConstDtype (int dt1, int dt2)
+  {
+    if (dt1 == TaQLConstNodeRep::CTTime) {
+      dt1 = TaQLConstNodeRep::CTReal;
+    }
+    if (dt2 == TaQLConstNodeRep::CTTime) {
+      dt2 = TaQLConstNodeRep::CTReal;
+    }
+    if (dt1 == dt2) {
+      return dt1;
+    }
+    if (dt1 == TaQLConstNodeRep::CTBool
+    ||  dt2 == TaQLConstNodeRep::CTBool
+    ||  dt1 == TaQLConstNodeRep::CTString
+    ||  dt2 == TaQLConstNodeRep::CTString) {
+      throw TableInvExpr ("Mixed data data types in record value");
+    }
+    if (dt1 == TaQLConstNodeRep::CTComplex
+    ||  dt2 == TaQLConstNodeRep::CTComplex) {
+      return TaQLConstNodeRep::CTComplex;
+    }
+    if (dt1 == TaQLConstNodeRep::CTReal
+    ||  dt2 == TaQLConstNodeRep::CTReal) {
+      return TaQLConstNodeRep::CTReal;
+    }
+    return TaQLConstNodeRep::CTInt;
+  }
+
   void TaQLNodeHandler::handleTables (const TaQLMultiNode& node)
   {
     if (! node.isValid()) {
@@ -549,7 +746,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       // Handle each column name.
       AlwaysAssert (nodes[i].nodeType() == TaQLNode_KeyCol, AipsError);
       TaQLKeyColNodeRep* colNode = (TaQLKeyColNodeRep*)(nodes[i].getRep());
-      topStack()->handleColumn (colNode->itsName, TableExprNode(), "");
+      topStack()->handleColumn (colNode->itsName, TableExprNode(), "", "");
     }
   }
 
@@ -563,6 +760,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       TaQLNodeResult eres = visitNode (nodes[i]);
       TableExprNode expr = getHR(eres).getExpr();
       topStack()->addUpdate (new TableParseUpdate("", expr));
+    }
+  }
+
+  void TaQLNodeHandler::handleColSpec (const TaQLMultiNode& node)
+  {
+    if (! node.isValid()) {
+      return;
+    }
+    const TaQLMultiNodeRep& cols = *(node.getMultiRep());
+    const std::vector<TaQLNode>& nodes = cols.itsNodes;
+    for (uInt i=0; i<nodes.size(); ++i) {
+      // Handle each column name.
+      AlwaysAssert (nodes[i].nodeType() == TaQLNode_ColSpec, AipsError);
+      visitNode (nodes[i]);
     }
   }
 

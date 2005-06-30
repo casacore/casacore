@@ -96,6 +96,9 @@ public:
   virtual TaQLNodeResult visitInsertNode   (const TaQLInsertNodeRep& node) = 0;
   virtual TaQLNodeResult visitDeleteNode   (const TaQLDeleteNodeRep& node) = 0;
   virtual TaQLNodeResult visitCalcNode     (const TaQLCalcNodeRep& node) = 0;
+  virtual TaQLNodeResult visitCreTabNode   (const TaQLCreTabNodeRep& node) = 0;
+  virtual TaQLNodeResult visitColSpecNode  (const TaQLColSpecNodeRep& node) = 0;
+  virtual TaQLNodeResult visitRecFldNode   (const TaQLRecFldNodeRep& node) = 0;
   // </group>
 
 protected:

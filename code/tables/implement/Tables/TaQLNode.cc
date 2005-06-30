@@ -146,6 +146,12 @@ TaQLNode TaQLNode::restoreNode (AipsIO& aio)
     return TaQLDeleteNodeRep::restore (aio);
   case TaQLNode_Calc:
     return TaQLCalcNodeRep::restore (aio);
+  case TaQLNode_CreTab:
+    return TaQLCreTabNodeRep::restore (aio);
+  case TaQLNode_ColSpec:
+    return TaQLColSpecNodeRep::restore (aio);
+  case TaQLNode_RecFld:
+    return TaQLRecFldNodeRep::restore (aio);
   default:
     throw AipsError ("TaQLNode::restoreNode - unknown node type");
   }
@@ -164,7 +170,6 @@ TaQLMultiNode TaQLNode::restoreMultiNode (AipsIO& aio)
     throw AipsError ("TaQLNode::restoreMultiNode - unknown node type");
   }
 }
-
 
 
 TaQLConstNode::TaQLConstNode (TaQLConstNodeRep* rep)

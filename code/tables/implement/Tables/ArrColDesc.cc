@@ -120,7 +120,8 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
 				     const String& dataManName,
 				     const String& dataManGroup,
 				     const IPosition& shp,
-				     int opt)
+				     int opt,
+				     int ndim)
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
 		  ValType::getType(static_cast<T*>(0)),
 		  valDataTypeId(static_cast<T*>(0)),
@@ -130,8 +131,15 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const String& name,
     if (nrdim_p == 0) {
 	nrdim_p = -1;
     }
+    if (ndim > 0) {
+        if (nrdim_p > 0  &&  ndim != nrdim_p) {
+	    throw (TableInvColumnDesc (name, "Shape length mismatches ndim"));
+	} else {
+	    nrdim_p = ndim;
+	}
+    }
 }
-  
+
 //# Register the makeDesc function.
 template<class T>
 ArrayColumnDesc<T>::ArrayColumnDesc (

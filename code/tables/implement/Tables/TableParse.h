@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
+#include <tables/Tables/TableDesc.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/TaQLResult.h>
 #include <casa/BasicSL/String.h>
@@ -325,7 +326,8 @@ public:
     PUPDATE,
     PINSERT,
     PDELETE,
-    PCALC
+    PCALC,
+    PCRETAB
   };
 
   // Construct.
@@ -371,10 +373,17 @@ public:
   // Keep the selection expression.
   void handleSelect (const TableExprNode&);
 
-  // Keep the expression of an calculate command.
+  // Keep the expression of a calculate command.
   void handleCalcComm (const TableExprNode&);
 
-  // Add an update object..
+  // Keep the create table command.
+  void handleCreTab (const String& tableName, const Record& dmInfo);
+
+  // Keep the column specification in a create table command.
+  void handleColSpec (const String& columnName, const String& dataType,
+		      const Record& spec);
+
+  // Add an update object.
   void addUpdate (TableParseUpdate* upd);
 
   // Keep the update expressions.
@@ -432,7 +441,7 @@ public:
 
   // Add a column to the list of column names.
   void handleColumn (const String& name, const TableExprNode& expr,
-		     const String& newName);
+		     const String& newName, const String& newDtype);
 
   // Handle the name given in a GIVING clause.
   void handleGiving (const String& name);
@@ -449,13 +458,24 @@ public:
 
 private:
   // Do the update step.
-  void doUpdate (Table& table);
+  void doUpdate (Table& updTable, const Table& inTable);
 
   // Do the insert step and return a selection containing the new rows.
   Table doInsert (Table& table);
 
   // Do the delete step.
   void doDelete (Table& table, const Table& sel);
+
+  // Do the projection step returning a table containing the projection.
+  Table doProject (const Table&);
+
+  // Do the projection containing column expressions.
+  Table doProjectExpr (const Table&);
+
+  // Make a data type from the string.
+  // It checks if it is compatible with the given (expression) data type.
+  DataType makeDataType (DataType dtype, const String& dtstr,
+			 const String& colName);
 
   // Do the sort step.
   Table doSort (const Table& table);
@@ -494,6 +514,14 @@ private:
   // If not found, a null Table object is returned.
   Table findTable (const String& shorthand) const;
 
+  // Add the description of a column to the table description.
+  // ndim < 0 means a scalar column.
+  void addColumnDesc (TableDesc& td, DataType dtype,
+		      const String& colName, Int options,
+		      Int ndim, const IPosition& shape,
+		      const String& dmType, const String& dmGroup,
+		      const String& comment);
+
   // Find the names of all stored columns in a table.
   Block<String> getStoredColumns (const Table& tab) const;
 
@@ -513,12 +541,22 @@ private:
 
   //# Command type.
   CommandType commandType_p;
+  //# Table description for a series of column descriptions.
+  TableDesc tableDesc_p;
   //# Vector of TableParse objects.
   //# This is needed for the functions above, otherwise they have no
   //# way to communicate.
   vector<TableParse> fromTables_p;
-  //# Block of selected column names.
+  //# Block of selected column names (new name in case of select).
   Block<String> columnNames_p;
+  //# Block of selected column expressions.
+  Block<TableExprNode> columnExpr_p;
+  //# The old name for a selected column.
+  Block<String> columnOldNames_p;
+  //# The new data type for a column.
+  Block<String> columnDtypes_p;
+  //# Number of expressions used in selected columns.
+  uInt nrSelExprUsed_p;
   //# Distinct values in output?
   Bool distinct_p;
   //# Name of the resulting table (from GIVING part).

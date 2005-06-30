@@ -34,6 +34,7 @@
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
+#include <casa/Containers/Record.h>
 #include <vector>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -120,6 +121,9 @@ public:
   virtual TaQLNodeResult visitInsertNode   (const TaQLInsertNodeRep& node);
   virtual TaQLNodeResult visitDeleteNode   (const TaQLDeleteNodeRep& node);
   virtual TaQLNodeResult visitCalcNode     (const TaQLCalcNodeRep& node);
+  virtual TaQLNodeResult visitCreTabNode   (const TaQLCreTabNodeRep& node);
+  virtual TaQLNodeResult visitColSpecNode  (const TaQLColSpecNodeRep& node);
+  virtual TaQLNodeResult visitRecFldNode   (const TaQLRecFldNodeRep& node);
   // </group>
 
   // Get the actual result object from the result.
@@ -156,6 +160,24 @@ private:
 
   // Handle the INSERT values.
   void handleInsVal (const TaQLNode&);
+
+  // Handle a column specification in a create table.
+  void handleColSpec (const TaQLMultiNode&);
+
+  // Handle a record specification.
+  Record handleRecord (const TaQLMultiNodeRep*);
+
+  // Handle a record field and add it to the Record.
+  void handleRecFld (const TaQLNode&, Record&);
+
+  // Handle a record field with multiple values and add it to the Record.
+  // The field can be a record or a vector of values.
+  void handleMultiRecFld (const String& fldName,
+			  const TaQLMultiNodeRep* node,
+			  Record& rec);
+
+  // Determine 'highest' constant data type and check if they match.
+  int checkConstDtype (int dt1, int dt2);
 
 
   //# Use vector instead of stack because it has random access
@@ -212,6 +234,10 @@ public:
     { return itsString; }
   const String& getAlias() const
     { return itsAlias; }
+  const String& getDtype() const
+    { return itsDtype; }
+  const Record& getRecord() const
+    { return itsRecord; }
   const Table& getTable() const
     { return itsTable; }
   const TableExprNode& getExpr() const
@@ -233,6 +259,10 @@ public:
     { itsString = str; }
   void setAlias (const String& alias)
     { itsAlias = alias; }
+  void setDtype (const String& dtype)
+    { itsDtype = dtype; }
+  void setRecord (const Record& record)
+    { itsRecord = record; }
   void setTable (const Table& table)
     { itsTable = table; }
   void setExpr (const TableExprNode& expr)
@@ -249,6 +279,8 @@ private:
   Int    itsInt;
   String itsString;
   String itsAlias;
+  String itsDtype;
+  Record itsRecord;
   Table  itsTable;
   TableExprNode         itsExpr;
   TableExprNodeSetElem* itsElem;

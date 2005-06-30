@@ -237,9 +237,11 @@ public:
     // The possible options are defined in ColumnDesc.h.
     // This constructor can only be used for FixedShape arrays, because the
     // shape of other arrays can only be set per row.
+    // If both ndim and shape are given as > 0, ndim should match the length
+    // of shape.
     ArrayColumnDesc (const String& name, const String& comment,
 		     const String& dataManName, const String& dataManGroup,
-		     const IPosition& shape, int options = 0);
+		     const IPosition& shape, int options = 0, int ndim=-1);
 
     // Copy constructor (copy semantics);
     ArrayColumnDesc (const ArrayColumnDesc<T>&);

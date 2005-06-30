@@ -42,6 +42,10 @@
 #include <tables/Tables/TableRecord.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/ColumnDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+#include <tables/Tables/ArrColDesc.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/StandardStMan.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
@@ -129,14 +133,15 @@ TableParseSort::~TableParseSort()
 
 
 TableParseSelect::TableParseSelect (CommandType commandType)
-  : commandType_p (commandType),
-    distinct_p    (False),
-    resultSet_p   (0),
-    limit_p       (0),
-    offset_p      (0),
-    insSel_p      (0),
-    noDupl_p      (False),
-    order_p       (Sort::Ascending)
+  : commandType_p   (commandType),
+    nrSelExprUsed_p (0),
+    distinct_p      (False),
+    resultSet_p     (0),
+    limit_p         (0),
+    offset_p        (0),
+    insSel_p        (0),
+    noDupl_p        (False),
+    order_p         (Sort::Ascending)
 {}
 
 TableParseSelect::~TableParseSelect()
@@ -758,21 +763,93 @@ TableExprNode TableParseSelect::makeFuncNode
 //# this will not be too expensive.
 void TableParseSelect::handleColumn (const String& name,
 				     const TableExprNode& expr,
-				     const String&)
+				     const String& newName,
+				     const String& newDtype)
 {
-  if (! expr.isNull()) {
-    throw TableInvExpr ("Currently no expressions can be given "
-			"in the select column list");
-  }
-  String str = name;
-  Int i = str.index('.');
-  Int j = columnNames_p.nelements();
-  columnNames_p.resize (j+1);
-  if (i < 0) {
-    columnNames_p[j] = str;
+  Int nrcol = columnNames_p.nelements();
+  columnNames_p.resize (nrcol+1);
+  columnExpr_p.resize (nrcol+1);
+  columnOldNames_p.resize (nrcol+1);
+  columnDtypes_p.resize (nrcol+1);
+  // No expression means that a column name is given.
+  if (expr.isNull()) {
+    String oldName;
+    String str = name;
+    Int i = str.index('.');
+    if (i < 0) {
+      oldName = str;
+    } else {
+      oldName = str.after(i);
+    }
+    // Make an expression of the column name.
+    // If a data type is given, the column must be handled as an expression.
+    columnExpr_p[nrcol] = handleKeyCol (oldName);
+    if (newDtype.empty()) {
+      columnOldNames_p[nrcol] = oldName;
+    } else {
+      nrSelExprUsed_p++;
+    }
   } else {
-    columnNames_p[j] = str.after(i);
+    // An expression is given.
+    columnExpr_p[nrcol] = expr;
+    nrSelExprUsed_p++;
   }
+  columnDtypes_p[nrcol] = newDtype;
+  columnNames_p[nrcol]  = newName;
+  if (newName.empty()) {
+    columnNames_p[nrcol] = columnOldNames_p[nrcol];
+  }
+}
+
+//# Add a column specification.
+void TableParseSelect::handleColSpec (const String& colName,
+				      const String& dtstr,
+				      const Record& spec)
+{
+  // Check if specific column info is given.
+  Int options = 0;
+  Int ndim = -1;
+  IPosition shape;
+  String dmType;
+  String dmGroup;
+  String comment;
+  for (uInt i=0; i<spec.nfields(); i++) {
+    String name = spec.name(i);
+    name.upcase();
+    if (name == "NDIM") {
+      ndim = spec.asInt(i);
+    } else if (name == "SHAPE") {
+      shape = IPosition(Vector<Int>(spec.asArrayInt(i)));
+      if (ndim < 0) {
+	ndim = 0;
+      }
+    } else if (name == "DMTYPE") {
+      dmType = spec.asString(i);
+    } else if (name == "DMGROUP") {
+      dmGroup = spec.asString(i);
+    } else if (name == "COMMENT") {
+      comment = spec.asString(i);
+    } else {
+      throw TableError ("TableParseSelect::handleColSpec - "
+			"column specification field name " + name +
+			" is unknown");
+    }
+  }
+  // Now add the scalar or array column description.
+  DataType dtype = makeDataType (TpOther, dtstr, colName);
+  addColumnDesc (tableDesc_p, dtype, colName, options, ndim, shape,
+		 dmType, dmGroup, comment);
+  Int nrcol = columnNames_p.nelements();
+  columnNames_p.resize (nrcol+1);
+  columnNames_p[nrcol] = colName;
+}
+
+void TableParseSelect::handleCreTab (const String& tableName,
+				     const Record& dmInfo)
+{
+  SetupNewTable newtab(tableName, tableDesc_p, Table::New);
+  newtab.bindCreate (dmInfo);
+  table_p = Table(newtab);
 }
 
 void TableParseSelect::handleSelect (const TableExprNode& node)
@@ -990,20 +1067,21 @@ void TableParseSelect::handleInsert (TableParseSelect* sel)
 }
 
 //# Execute the updates.
-void TableParseSelect::doUpdate (Table& table)
+void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
 {
+  AlwaysAssert (updTable.nrow() == inTable.nrow(), AipsError);
   //# If the table is empty, return immediately.
   //# (the code below will fail for empty tables)
-  if (table.nrow() == 0) {
+  if (inTable.nrow() == 0) {
     return;
   }
   // Reopen the table for write.
-  table.reopenRW();
-  if (! table.isWritable()) {
-    throw TableInvExpr ("Table " + table.tableName() + " is not writable");
+  updTable.reopenRW();
+  if (! updTable.isWritable()) {
+    throw TableInvExpr ("Table " + updTable.tableName() + " is not writable");
   }
   //# First check if the update columns and values are correct.
-  const TableDesc& tabdesc = table.tableDesc();
+  const TableDesc& tabdesc = updTable.tableDesc();
   uInt nrkey = update_p.size();
   Block<TableColumn> cols(nrkey);
   Block<Int> dtypeCol(nrkey);
@@ -1013,12 +1091,12 @@ void TableParseSelect::doUpdate (Table& table)
     const String& colName = key.columnName();
     //# Check if the correct table is used in the update and index expression.
     //# A constant expression can be given.
-    if (! key.node().checkReplaceTable (table, True)) {
+    if (! key.node().checkReplaceTable (inTable, True)) {
       throw TableInvExpr ("Incorrect table used in the UPDATE expr "
 			  "of column " + colName);
     }
     if (key.indexPtr() != 0) {
-      if (! key.indexNode().checkReplaceTable (table, True)) {
+      if (! key.indexNode().checkReplaceTable (inTable, True)) {
       	throw TableInvExpr ("Incorrect table used in the index expr "
       			    "in UPDATE of column " + colName);
       }
@@ -1029,12 +1107,12 @@ void TableParseSelect::doUpdate (Table& table)
     if (! tabdesc.isColumn (colName)) {
       throw TableInvExpr ("Update column " + colName +
 			  " does not exist in table " +
-			  table.tableName());
+			  updTable.tableName());
     }
-    if (! table.isColumnWritable (colName)) {
+    if (! updTable.isColumnWritable (colName)) {
       throw TableInvExpr ("Update column " + colName +
 			  " is not writable in table " +
-			  table.tableName());
+			  updTable.tableName());
     }
     //# An index expression can only be given for an array column.
     const ColumnDesc& coldesc = tabdesc[colName];
@@ -1054,16 +1132,16 @@ void TableParseSelect::doUpdate (Table& table)
       throw TableInvExpr ("An array value cannot be used in UPDATE of "
 			  " scalar element of column " +
 			  colName + " in table " +
-			  table.tableName());
+			  updTable.tableName());
     }
-    cols[i].attach (table, colName);
+    cols[i].attach (updTable, colName);
     dtypeCol[i] = coldesc.dataType();
   }
   // IPosition objects in case slicer.inferShapeFromSource has to be used.
   IPosition trc,blc,inc;
   // Loop through all rows in the table and update each row.
   TableExprId rowid(0);
-  for (uInt row=0; row<table.nrow(); row++) {
+  for (uInt row=0; row<inTable.nrow(); row++) {
     rowid.setRownr (row);
     for (uInt i=0; i<nrkey; i++) {
       TableColumn& col = cols[i];
@@ -1607,7 +1685,7 @@ Table TableParseSelect::doInsert (Table& table)
     rowvec(0) = table.nrow();
     table.addRow();
     Table sel = table(rowvec);
-    doUpdate (sel);
+    doUpdate (sel, sel);
     return sel;
   }
   // Handle the inserts from another selection.
@@ -1873,49 +1951,295 @@ Table TableParseSelect::doSort (const Table& table)
 
 Table TableParseSelect::doLimOff (const Table& table)
 {
-    Vector<uInt> rownrs;
-    if (table.nrow() > offset_p) {
-        uInt nrleft = table.nrow() - offset_p;
-	if (limit_p > 0  &&  limit_p < nrleft) {
-	    nrleft = limit_p;
-	}
-	rownrs.resize (nrleft);
-	indgen (rownrs, offset_p);
+  Vector<uInt> rownrs;
+  if (table.nrow() > offset_p) {
+    uInt nrleft = table.nrow() - offset_p;
+    if (limit_p > 0  &&  limit_p < nrleft) {
+      nrleft = limit_p;
     }
-    return table(rownrs);
+    rownrs.resize (nrleft);
+    indgen (rownrs, offset_p);
+  }
+  return table(rownrs);
 }
 
 
+Table TableParseSelect::doProject (const Table& table)
+{
+  Table tabp;
+  if (nrSelExprUsed_p > 0) {
+    // Expressions used, so make a plain table.
+    tabp = doProjectExpr (table);
+  } else {
+    // Only column names used, so make a reference table.
+    tabp = table.project (columnOldNames_p);
+    for (uInt i=0; i<columnNames_p.nelements(); i++) {
+      // Rename column if new name is given to a column.
+      if (columnNames_p[i] != columnOldNames_p[i]) {
+	tabp.renameColumn (columnNames_p[i], columnOldNames_p[i]);
+      }
+    }
+  }
+  if (distinct_p) {
+    tabp = doDistinct (tabp);
+  }
+  return tabp;
+}
+
+Table TableParseSelect::doProjectExpr (const Table& inTable)
+{
+  // Make a column description for all expressions.
+  TableDesc td;
+  for (uInt i=0; i<columnExpr_p.nelements(); i++) {
+    // If no new name is given, make one (unique).
+    String newName = columnNames_p[i];
+    if (newName.empty()) {
+      String nm = "Col_" + String::toString(i+1);
+      Int seqnr = 0;
+      newName = nm;
+      Bool unique = False;
+      while (!unique) {
+	unique = True;
+	for (uInt i=0; i<columnNames_p.nelements(); i++) {
+	  if (newName == columnNames_p[i]) {
+	    unique = False;
+	    seqnr++;
+	    newName = nm + "_" + String::toString(seqnr);
+	    break;
+	  }
+	}
+      }
+      columnNames_p[i] = newName;
+    }
+    DataType dtype = makeDataType (columnExpr_p[i].dataType(),
+				   columnDtypes_p[i], columnNames_p[i]);
+    addColumnDesc (td, dtype, newName, 0,
+		   columnExpr_p[i].isScalar() ? -1:0,    //ndim
+		   IPosition(), "", "", "");
+  }
+  // Create the table.
+  SetupNewTable newtab("", td, Table::Scratch);
+  Table tabp(newtab, inTable.nrow());
+  // Turn the expressions into update objects.
+  for (uInt i=0; i<columnExpr_p.nelements(); i++) {
+    if (! columnExpr_p[i].isNull()) {
+      addUpdate (new TableParseUpdate (columnNames_p[i], columnExpr_p[i]));
+    }
+  }
+  // Fill the columns in the table.
+  doUpdate (tabp, inTable);
+  return tabp;
+}
+
+DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
+					 const String& colName)
+{
+  if (! dtstr.empty()) {
+    if (dtstr == "B") {
+      if (dtype != TpOther  &&  dtype != TpBool) {
+	throw TableInvExpr ("Expression of column " + colName +
+			    " does not have data type Bool");
+      }
+      return TpBool;
+    }
+    if (dtstr == "S") {
+      if (dtype != TpOther  &&  dtype != TpString) {
+	throw TableInvExpr ("Expression of column " + colName +
+			    " does not have data type String");
+      }
+      return TpString;
+    }
+    if (dtype == TpBool  ||  dtype == TpString) {
+      throw TableInvExpr ("Expression of column " + colName +
+			  " does not have a numeric data type");
+    }
+    // Any numeric data type can be converted to Complex.
+    if (dtstr == "C4") {
+      return TpComplex;
+    } else if (dtstr == "C8") {
+      return TpDComplex;
+    }
+    // Real numeric data types cannot have a complex value.
+    if (dtype == TpComplex  ||  dtype == TpDComplex) {
+      throw TableInvExpr ("Expression of column " + colName +
+			  " does not have a real numeric data type");
+    }
+    if (dtstr == "U1") {
+      return TpUChar;
+    } else if (dtstr == "I2") {
+      return TpShort;
+    } else if (dtstr == "U2") {
+      return TpUShort;
+    } else if (dtstr == "I4") {
+      return TpInt;
+    } else if (dtstr == "U4") {
+      return TpUInt;
+    } else if (dtstr == "R4") {
+      return TpFloat;
+    } else if (dtstr == "R8") {
+      return TpDouble;
+    }
+    throw TableInvExpr ("Datatype " + dtstr + " of column " + colName +
+			" is invalid");
+  }
+  return dtype;
+}
+
+void TableParseSelect::addColumnDesc (TableDesc& td,
+				      DataType dtype,
+				      const String& colName,
+				      Int options,
+				      Int ndim, const IPosition& shape,
+				      const String& dmType,
+				      const String& dmGroup,
+				      const String& comment)
+{
+  if (ndim < 0) {
+    switch (dtype) {
+    case TpBool:
+      td.addColumn (ScalarColumnDesc<Bool> (colName, comment,
+					    dmType, dmGroup, options));
+      break;
+    case TpUChar:
+      td.addColumn (ScalarColumnDesc<uChar> (colName, comment,
+					     dmType, dmGroup, 0, options));
+      break;
+    case TpShort:
+      td.addColumn (ScalarColumnDesc<Short> (colName, comment,
+					     dmType, dmGroup, 0, options));
+      break;
+    case TpUShort:
+      td.addColumn (ScalarColumnDesc<uShort> (colName, comment,
+					      dmType, dmGroup, 0, options));
+      break;
+    case TpInt:
+      td.addColumn (ScalarColumnDesc<Int> (colName, comment,
+					   dmType, dmGroup, 0, options));
+      break;
+    case TpUInt:
+      td.addColumn (ScalarColumnDesc<uInt> (colName, comment,
+					    dmType, dmGroup, 0, options));
+      break;
+    case TpFloat:
+      td.addColumn (ScalarColumnDesc<Float> (colName, comment,
+					     dmType, dmGroup, options));
+      break;
+    case TpDouble:
+      td.addColumn (ScalarColumnDesc<Double> (colName, comment,
+					      dmType, dmGroup, options));
+      break;
+    case TpComplex:
+      td.addColumn (ScalarColumnDesc<Complex> (colName, comment,
+					       dmType, dmGroup, options));
+      break;
+    case TpDComplex:
+      td.addColumn (ScalarColumnDesc<DComplex> (colName, comment,
+						dmType, dmGroup, options));
+      break;
+    case TpString:
+      td.addColumn (ScalarColumnDesc<String> (colName, comment,
+					      dmType, dmGroup, options));
+      break;
+    default:
+      AlwaysAssert (False, AipsError);
+    }
+  } else {
+    // Giving a shape means fixed shape arrays.
+    if (shape.nelements() > 0) {
+      options |= ColumnDesc::FixedShape;
+    }
+    switch (dtype) {
+    case TpBool:
+      td.addColumn (ArrayColumnDesc<Bool> (colName, comment,
+					   dmType, dmGroup,
+					   shape, options, ndim));
+      break;
+    case TpUChar:
+      td.addColumn (ArrayColumnDesc<uChar> (colName, comment,
+					    dmType, dmGroup,
+					    shape, options, ndim));
+      break;
+    case TpShort:
+      td.addColumn (ArrayColumnDesc<Short> (colName, comment,
+					    dmType, dmGroup,
+					    shape, options, ndim));
+      break;
+    case TpUShort:
+      td.addColumn (ArrayColumnDesc<uShort> (colName, comment,
+					     dmType, dmGroup,
+					     shape, options, ndim));
+      break;
+    case TpInt:
+      td.addColumn (ArrayColumnDesc<Int> (colName, comment,
+					  dmType, dmGroup,
+					  shape, options, ndim));
+      break;
+    case TpUInt:
+      td.addColumn (ArrayColumnDesc<uInt> (colName, comment,
+					   dmType, dmGroup,
+					   shape, options, ndim));
+      break;
+    case TpFloat:
+      td.addColumn (ArrayColumnDesc<Float> (colName, comment,
+					    dmType, dmGroup,
+					    shape, options, ndim));
+      break;
+    case TpDouble:
+      td.addColumn (ArrayColumnDesc<Double> (colName, comment,
+					     dmType, dmGroup,
+					     shape, options, ndim));
+      break;
+    case TpComplex:
+      td.addColumn (ArrayColumnDesc<Complex> (colName, comment,
+					      dmType, dmGroup,
+					      shape, options, ndim));
+      break;
+    case TpDComplex:
+      td.addColumn (ArrayColumnDesc<DComplex> (colName, comment,
+					       dmType, dmGroup,
+					       shape, options, ndim));
+      break;
+    case TpString:
+      td.addColumn (ArrayColumnDesc<String> (colName, comment,
+					     dmType, dmGroup,
+					     shape, options, ndim));
+      break;
+    default:
+      AlwaysAssert (False, AipsError);
+    }
+  }
+}
+
 Table TableParseSelect::doDistinct (const Table& table)
 {
-    Vector<uInt> rownrs;
-    {
-        // Sort the table uniquely on all columns.
-        // Exit immediately if already unique.
-	Table tabs = table.sort (columnNames_p, Sort::Ascending,
-				 Sort::QuickSort|Sort::NoDuplicates);
-	if (tabs.nrow() == table.nrow()) {
-	    return table;
-	}
-	// Get the rownumbers.
-	Vector<uInt> rows(tabs.rowNumbers(table));
-	rownrs.reference (rows);
+  Vector<uInt> rownrs;
+  {
+    // Sort the table uniquely on all columns.
+    // Exit immediately if already unique.
+    Table tabs = table.sort (columnNames_p, Sort::Ascending,
+			     Sort::QuickSort|Sort::NoDuplicates);
+    if (tabs.nrow() == table.nrow()) {
+      return table;
     }
-    // Put the rownumbers in the original order.
-    GenSort<uInt>::sort (rownrs);
-    return table(rownrs);
+    // Get the rownumbers.
+    Vector<uInt> rows(tabs.rowNumbers(table));
+    rownrs.reference (rows);
+  }
+  // Put the rownumbers in the original order.
+  GenSort<uInt>::sort (rownrs);
+  return table(rownrs);
 }
 
 
 //# Keep the name of the resulting table.
 void TableParseSelect::handleGiving (const String& name)
 {
-    resultName_p = name;
+  resultName_p = name;
 }
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 {
-    resultSet_p = new TableExprNodeSet (set);
+  resultSet_p = new TableExprNodeSet (set);
 }
 
 
@@ -1923,43 +2247,49 @@ void TableParseSelect::handleGiving (const TableExprNodeSet& set)
 void TableParseSelect::execute (Bool setInGiving,
 				Bool mustSelect, uInt maxRow)
 {
-    //# Set limit if not given.
-    if (limit_p == 0) {
-        limit_p = maxRow;
+  //# Set limit if not given.
+  if (limit_p == 0) {
+    limit_p = maxRow;
+  }
+  //# Give an error if no command part has been given.
+  if (mustSelect  &&  commandType_p == PSELECT
+  &&  node_p.isNull()  &&  sort_p.size() == 0
+  &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
+  &&  limit_p <= 0  &&  offset_p <= 0) {
+    throw (TableError
+	   ("TableParse error: no projection, selection, sorting, "
+	    "limit, offset, or giving-set given in SELECT command"));
+  }
+  // Test if a "giving set" is possible.
+  if (resultSet_p != 0  &&  !setInGiving) {
+    throw TableInvExpr ("A query in a FROM can only have "
+			"'GIVING tablename'");
+  }
+  //# The first table in the list is the source table.
+  Table table = fromTables_p[0].table();
+  //# Check if all selected columns exist.
+  for (uInt i=0; i<columnNames_p.nelements(); i++) {
+    String nm = columnNames_p[i];        // name in update,insert
+    if (columnOldNames_p.nelements() > 0) {
+      nm = columnOldNames_p[i];          // possible name in select
     }
-    //# Give an error if no command part has been given.
-    if (mustSelect  &&  commandType_p == PSELECT
-    &&  node_p.isNull()  &&  sort_p.size() == 0
-    &&  columnNames_p.nelements() == 0  &&  resultSet_p == 0
-    &&  limit_p <= 0  &&  offset_p <= 0) {
-	throw (TableError
-	    ("TableParse error: no projection, selection, sorting, "
-	     "limit, offset, or giving-set given in SELECT command"));
+    if (! nm.empty()) {
+      if (! table.tableDesc().isColumn (nm)) {
+	throw (TableError ("TableParse: projected column " +
+			   nm +
+			   " does not exist in table " +
+			   table.tableName()));
+      }
     }
-    // Test if a "giving set" is possible.
-    if (resultSet_p != 0  &&  !setInGiving) {
-	throw TableInvExpr ("A query in a FROM can only have "
-			    "'GIVING tablename'");
-    }
-    //# The first table in the list is the source table.
-    Table table = fromTables_p[0].table();
-    //# Check if all projected columns exist.
-    for (uInt i=0; i<columnNames_p.nelements(); i++) {
-	if (! table.tableDesc().isColumn (columnNames_p[i])) {
-	    throw (TableError ("TableParse: projected column " +
-			       columnNames_p[i] +
-			       " does not exist in table " +
-			       table.tableName()));
-	}
-    }
-    //# Determine if we can pre-empt the selection loop.
-    //# That is possible if a limit is given without sorting.
-    uInt nrmax=0;
-    if (sort_p.size() == 0  &&  limit_p > 0) {
-	nrmax = limit_p + offset_p;
-    }
-    //# First do the select.
-    if (! node_p.isNull()) {
+  }
+  //# Determine if we can pre-empt the selection loop.
+  //# That is possible if a limit is given without sorting.
+  uInt nrmax=0;
+  if (sort_p.size() == 0  &&  limit_p > 0) {
+    nrmax = limit_p + offset_p;
+  }
+  //# First do the select.
+  if (! node_p.isNull()) {
 //#//	cout << "Showing TableExprRange values ..." << endl;
 //#//	Block<TableExprRange> rang;
 //#//	node_p->ranges(rang);
@@ -1967,91 +2297,88 @@ void TableParseSelect::execute (Bool setInGiving,
 //#//	    cout << rang[i].getColumn().columnDesc().name() << rang[i].start()
 //#//		 << rang[i].end() << endl;
 //#//	}
-	table = table(node_p, nrmax);
+    table = table(node_p, nrmax);
+  }
+  //# Then do the sort and the limit/offset.
+  if (sort_p.size() > 0) {
+    table = doSort (table);
+  }
+  if (offset_p > 0  ||  limit_p > 0) {
+    table = doLimOff (table);
+  }
+  //# Then do the update, delete, insert, or projection and so.
+  if (commandType_p == PUPDATE) {
+    doUpdate (table, table);
+    table.flush();
+  } else if (commandType_p == PINSERT) {
+    Table tabNewRows = doInsert (table);
+    table.flush();
+    table = tabNewRows;
+  } else if (commandType_p == PDELETE) {
+    Table origTab = fromTables_p[0].table();
+    doDelete (origTab, table);
+    origTab.flush();
+  } else {
+    //# Then do the projection.
+    if (columnNames_p.nelements() > 0) {
+      table = doProject (table);
     }
-    //# Then do the sort and the limit/offset.
-    if (sort_p.size() > 0) {
-        table = doSort (table);
+    //# Finally give it the given name (and flush it).
+    if (! resultName_p.empty()) {
+      table.rename (resultName_p, Table::New);
+      table.flush();
     }
-    if (offset_p > 0  ||  limit_p > 0) {
-        table = doLimOff (table);
-    }
-    //# Then do the update, delete, insert, or projection and so.
-    if (commandType_p == PUPDATE) {
-        doUpdate (table);
-	table.flush();
-    } else if (commandType_p == PINSERT) {
-        Table tabNewRows = doInsert (table);
-	table.flush();
-	table = tabNewRows;
-    } else if (commandType_p == PDELETE) {
-        Table origTab = fromTables_p[0].table();
-        doDelete (origTab, table);
-	origTab.flush();
-    } else {
-	//# Then do the projection.
-	if (columnNames_p.nelements() > 0) {
-	    table = table.project (columnNames_p);
-	    if (distinct_p) {
-	        table = doDistinct (table);
-	    }
-	}
-	//# Finally give it the given name (and flush it).
-	if (! resultName_p.empty()) {
-	    table.rename (resultName_p, Table::New);
-	    table.flush();
-	}
-    }
-    //# Keep the table for later.
-    table_p = table;
+  }
+  //# Keep the table for later.
+  table_p = table;
 }    
 
 void TableParseSelect::show (ostream& os) const
 {
-    if (! node_p.isNull()) {
-	node_p.show (os);
-    }
+  if (! node_p.isNull()) {
+    node_p.show (os);
+  }
 }
 
 
 //# Simplified forms of general tableCommand function.
 TaQLResult tableCommand (const String& str)
 {
-    Vector<String> cols;
-    return tableCommand (str, cols);
+  Vector<String> cols;
+  return tableCommand (str, cols);
 }
 TaQLResult tableCommand (const String& str, const Table& tempTable)
 {
-    std::vector<const Table*> tmp(1);
-    tmp[0] = &tempTable;
-    return tableCommand (str, tmp);
+  std::vector<const Table*> tmp(1);
+  tmp[0] = &tempTable;
+  return tableCommand (str, tmp);
 }
 TaQLResult tableCommand (const String& str,
 			 const std::vector<const Table*>& tempTables)
 {
-    Vector<String> cols;
-    return tableCommand (str, tempTables, cols);
+  Vector<String> cols;
+  return tableCommand (str, tempTables, cols);
 }
 TaQLResult tableCommand (const String& str, Vector<String>& cols)
 {
-    std::vector<const Table*> tmp;
-    return tableCommand (str, tmp, cols);
+  std::vector<const Table*> tmp;
+  return tableCommand (str, tmp, cols);
 }
 
 TaQLResult tableCommand (const String& str,
 			 Vector<String>& cols,
 			 String& commandType)
 {
-    std::vector<const Table*> tmp;
-    return tableCommand (str, tmp, cols, commandType);
+  std::vector<const Table*> tmp;
+  return tableCommand (str, tmp, cols, commandType);
 }
 
 TaQLResult tableCommand (const String& str,
 			 const std::vector<const Table*>& tempTables,
 			 Vector<String>& cols)
 {
-    String commandType;
-    return tableCommand (str, tempTables, cols, commandType);
+  String commandType;
+  return tableCommand (str, tempTables, cols, commandType);
 }
 
 //# Do the actual parsing of a command and execute it.

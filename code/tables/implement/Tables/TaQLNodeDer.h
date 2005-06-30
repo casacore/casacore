@@ -72,10 +72,12 @@ public:
       itsType(CTBool), itsIsTableName(False), itsBValue(value) {}
   explicit TaQLConstNodeRep (Int value, Bool isTableName=False)
     : TaQLNodeRep (TaQLNode_Const),
-      itsType(CTInt), itsIsTableName(isTableName), itsIValue(value) {}
+      itsType(CTInt), itsIsTableName(isTableName), itsIValue(value),
+      itsRValue(value), itsCValue(value,0.) {}
   explicit TaQLConstNodeRep (Double value)
     : TaQLNodeRep (TaQLNode_Const),
-      itsType(CTReal), itsIsTableName(False), itsRValue(value) {}
+      itsType(CTReal), itsIsTableName(False), itsRValue(value),
+      itsCValue(value,0.) {}
   explicit TaQLConstNodeRep (DComplex value)
     : TaQLNodeRep (TaQLNode_Const),
       itsType(CTComplex), itsIsTableName(False), itsCValue(value) {}
@@ -84,7 +86,8 @@ public:
       itsType(CTString), itsIsTableName(isTableName), itsSValue(value) {}
   explicit TaQLConstNodeRep (const MVTime& value)
     : TaQLNodeRep (TaQLNode_Const),
-      itsType(CTTime), itsIsTableName(False), itsTValue(value) {}
+      itsType(CTTime), itsIsTableName(False),
+      itsRValue(value), itsCValue(value,0.), itsTValue(value) {}
   virtual ~TaQLConstNodeRep();
   void setIsTableName()
     { itsIsTableName = True; }
@@ -464,9 +467,10 @@ public:
 class TaQLColNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLColNodeRep (const TaQLNode& expr, const String& name)
+  TaQLColNodeRep (const TaQLNode& expr, const String& name,
+		  const String& dtype)
     : TaQLNodeRep (TaQLNode_Col),
-      itsExpr(expr), itsName(name) {}
+      itsExpr(expr), itsName(name), itsDtype(checkDataType(dtype)) {}
   virtual ~TaQLColNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;
@@ -475,6 +479,7 @@ public:
 
   TaQLNode itsExpr;
   String   itsName;
+  String   itsDtype;
 };
 
 
@@ -884,6 +889,104 @@ public:
 
   TaQLMultiNode itsTables;
   TaQLNode      itsExpr;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a create table command.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the parts of the create table command.
+// </synopsis> 
+
+class TaQLCreTabNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLCreTabNodeRep (const String& name, const TaQLMultiNode& cols,
+		     const TaQLMultiNode& dataMans)
+    : TaQLNodeRep (TaQLNode_CreTab),
+      itsName(name), itsColumns(cols), itsDataMans(dataMans) {}
+  virtual ~TaQLCreTabNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLCreTabNodeRep* restore (AipsIO& aio);
+
+  String        itsName;
+  TaQLMultiNode itsColumns;
+  TaQLMultiNode itsDataMans;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a create column specification.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the parts of a column specification
+// in the create table command.
+// </synopsis> 
+
+class TaQLColSpecNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLColSpecNodeRep (const String& name, const String& dtype,
+		      const TaQLMultiNode& spec)
+    : TaQLNodeRep (TaQLNode_ColSpec),
+      itsName(name), itsDtype(checkDataType(dtype)), itsSpec(spec) {}
+  virtual ~TaQLColSpecNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLColSpecNodeRep* restore (AipsIO& aio);
+
+  String        itsName;
+  String        itsDtype;
+  TaQLMultiNode itsSpec;
+};
+
+
+// <summary>
+// Raw TaQL parse tree node defining a record field.
+// </summary>
+// <use visibility=local>
+// <reviewed reviewer="" date="" tests="tTaQLNode">
+// </reviewed>
+// <prerequisite>
+//# Classes you should understand before using this one.
+//   <li> <linkto class=TaQLNodeRep>TaQLNodeRep</linkto>
+// </prerequisite>
+// <synopsis> 
+// This class is a TaQLNodeRep holding the parts of a record field.
+// </synopsis> 
+
+class TaQLRecFldNodeRep: public TaQLNodeRep
+{
+public:
+  TaQLRecFldNodeRep (const String& name, const TaQLNode& values)
+    : TaQLNodeRep (TaQLNode_RecFld),
+      itsName(name), itsValues(values) {}
+  virtual ~TaQLRecFldNodeRep();
+  virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
+  virtual void show (std::ostream& os) const;
+  virtual void save (AipsIO& aio) const;
+  static TaQLRecFldNodeRep* restore (AipsIO& aio);
+
+  String   itsName;
+  TaQLNode itsValues;
 };
 
 

@@ -95,6 +95,8 @@ UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
 CALC      [Cc][Aa][Ll][Cc]
+CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]
+DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
 SET       [Ss][Ee][Tt]
 VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]
 FROM      [Ff][Rr][Oo][Mm]
@@ -202,6 +204,14 @@ PATT      {PATT1}|{PATT2}|{PATT3}
             tableGramPosition() += yyleng;
 	    BEGIN(EXPRstate);
 	    return CALC;
+	  }
+{CREATETAB} {
+            tableGramPosition() += yyleng;
+	    return CREATETAB;
+	  }
+{DMINFO}  {
+            tableGramPosition() += yyleng;
+	    return DMINFO;
 	  }
 {FROM}    {
             tableGramPosition() += yyleng;

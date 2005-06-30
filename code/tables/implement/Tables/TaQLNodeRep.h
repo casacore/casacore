@@ -100,6 +100,9 @@ public:
   #define TaQLNode_Insert   char(20)
   #define TaQLNode_Delete   char(21)
   #define TaQLNode_Calc     char(22)
+  #define TaQLNode_CreTab   char(23)
+  #define TaQLNode_ColSpec  char(24)
+  #define TaQLNode_RecFld   char(25)
   // </group>
 
   // Constructor for derived classes specifying the type.
@@ -134,6 +137,9 @@ public:
 
   // Save the object.
   virtual void save (AipsIO& aio) const = 0;
+
+  // Check the data type string and return its standard form.
+  static String checkDataType (const String&);
 
 private:
   // Letter objects cannot be copied.

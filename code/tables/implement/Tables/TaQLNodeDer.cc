@@ -82,7 +82,8 @@ void TaQLConstNodeRep::show (std::ostream& os) const
     }
     break;
   case CTTime:
-    os << MVTime::YMD << std::setw(20) << itsTValue;
+    // 10 digits precision in the time
+    os << MVTime::Format(MVTime::YMD, 10) << itsTValue;
     break;
   }
 }
@@ -502,18 +503,22 @@ void TaQLColNodeRep::show (std::ostream& os) const
   itsExpr.show (os);
   if (! itsName.empty()) {
     os << " AS " << itsName;
+    if (! itsDtype.empty()) {
+      os << ' ' << itsDtype;
+    }
   }
 }
 void TaQLColNodeRep::save (AipsIO& aio) const
 {
   aio << itsName;
+  aio << itsDtype;
   itsExpr.saveNode (aio);
 }
 TaQLColNodeRep* TaQLColNodeRep::restore (AipsIO& aio)
 {
-  String name;
-  aio >> name;
-  return new TaQLColNodeRep (TaQLNode::restoreNode(aio), name);
+  String name, dtype;
+  aio >> name >> dtype;
+  return new TaQLColNodeRep (TaQLNode::restoreNode(aio), name, dtype);
 }
 
 TaQLColumnsNodeRep::~TaQLColumnsNodeRep()
@@ -902,6 +907,92 @@ TaQLCalcNodeRep* TaQLCalcNodeRep::restore (AipsIO& aio)
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
   TaQLNode expr = TaQLNode::restoreNode (aio);
   return new TaQLCalcNodeRep (tables, expr);
+}
+
+TaQLCreTabNodeRep::~TaQLCreTabNodeRep()
+{}
+TaQLNodeResult TaQLCreTabNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitCreTabNode (*this);
+}
+void TaQLCreTabNodeRep::show (std::ostream& os) const
+{
+  os << "CREATE TABLE " << itsName << ' ';
+  itsColumns.show (os);
+  if (itsDataMans.isValid()) {
+    os << " DMINFO ";
+    itsDataMans.show (os);
+  }
+}
+void TaQLCreTabNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+  itsColumns.saveNode (aio);
+  itsDataMans.saveNode (aio);
+}
+TaQLCreTabNodeRep* TaQLCreTabNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  TaQLMultiNode columns = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode datamans = TaQLNode::restoreMultiNode (aio);
+  return new TaQLCreTabNodeRep (name, columns, datamans);
+}
+
+TaQLColSpecNodeRep::~TaQLColSpecNodeRep()
+{}
+TaQLNodeResult TaQLColSpecNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitColSpecNode (*this);
+}
+void TaQLColSpecNodeRep::show (std::ostream& os) const
+{
+  os << itsName;
+  if (! itsDtype.empty()) {
+    os << ' ' << itsDtype;
+  }
+  if (itsSpec.isValid()) {
+    os << ' ';
+    itsSpec.show (os);
+  }
+}
+void TaQLColSpecNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName << itsDtype;
+  itsSpec.saveNode (aio);
+}
+TaQLColSpecNodeRep* TaQLColSpecNodeRep::restore (AipsIO& aio)
+{
+  String name, dtype;
+  aio >> name >> dtype;
+  TaQLMultiNode spec = TaQLNode::restoreMultiNode (aio);
+  return new TaQLColSpecNodeRep (name, dtype, spec);
+}
+
+TaQLRecFldNodeRep::~TaQLRecFldNodeRep()
+{}
+TaQLNodeResult TaQLRecFldNodeRep::visit (TaQLNodeVisitor& visitor) const
+{
+  return visitor.visitRecFldNode (*this);
+}
+void TaQLRecFldNodeRep::show (std::ostream& os) const
+{
+  if (! itsName.empty()) {
+    os << itsName << '=';
+  }
+  itsValues.show (os);
+}
+void TaQLRecFldNodeRep::save (AipsIO& aio) const
+{
+  aio << itsName;
+  itsValues.saveNode (aio);
+}
+TaQLRecFldNodeRep* TaQLRecFldNodeRep::restore (AipsIO& aio)
+{
+  String name;
+  aio >> name;
+  TaQLNode values = TaQLNode::restoreNode (aio);
+  return new TaQLRecFldNodeRep (name, values);
 }
 
 

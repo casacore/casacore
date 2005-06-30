@@ -26,10 +26,49 @@
 //# $Id$
 
 #include <tables/Tables/TaQLNodeRep.h>
+#include <tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TaQLNodeRep::~TaQLNodeRep()
 {}
+
+String TaQLNodeRep::checkDataType (const String& dtype)
+{
+  String dtstr(dtype);
+  if (! dtstr.empty()) {
+    dtstr.upcase();
+    if (dtstr == "B"  ||  dtstr == "BOOL"  ||  dtstr == "BOOLEAN") {
+      dtstr = "B";
+    } else if (dtstr == "U1"  ||  dtstr == "UC"
+           ||  dtstr == "UCHAR"  ||  dtstr == "BYTE") {
+      dtstr = "U1";
+    } else if (dtstr == "I2"  ||  dtstr == "SHORT"  ||  dtstr == "SMALLINT") {
+      dtstr = "I2";
+    } else if (dtstr == "U2"  ||  dtstr == "UI2"
+	   ||  dtstr == "USHORT"  ||  dtstr == "USMALLINT") {
+      dtstr = "U2";
+    } else if (dtstr == "I4"  ||  dtstr == "INT"  ||  dtstr == "INTEGER") {
+      dtstr = "I4";
+    } else if (dtstr == "U4" ||  dtstr == "UI4"
+	   ||  dtstr == "UINT"  ||  dtstr == "UINTEGER") {
+      dtstr = "U4";
+    } else if (dtstr == "FLT"  ||  dtstr == "R4"  ||  dtstr == "FLOAT") {
+      dtstr = "R4";
+    } else if (dtstr == "DBL"  ||  dtstr == "R8"  ||  dtstr == "DOUBLE") {
+      dtstr = "R8";
+    } else if (dtstr == "FC"  ||  dtstr == "C4"
+           ||  dtstr == "FCOMPLEX"  ||  dtstr == "COMPLEX") {
+      dtstr = "C4";
+    } else if (dtstr == "DC"  ||  dtstr == "C8"  ||  dtstr == "DCOMPLEX") {
+      dtstr = "C8";
+    } else if (dtstr == "S"  ||  dtstr == "STRING") {
+      dtstr = "S";
+    } else {
+      throw TableError ("Datatype '" + dtype + "' is invalid");
+    }
+  }
+  return dtstr;
+}
 
 } //# NAMESPACE CASA - END
