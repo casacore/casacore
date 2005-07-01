@@ -1999,7 +1999,8 @@ used in the nested query which has a FROM clause itself.
 
   \item[] \texttt{ create table mytab colarr R4 shape=[4,128] }
 	  \texttt{   dminfo [TYPE='TiledColumnStMan', NAME='TCSM', }
-          \texttt{           SPEC=[TILESHAPE=[4,32,64]], COLUMNS=['colarr']]}
+          \texttt{           SPEC=[DEFAULTTILESHAPE=[4,32,64]], }
+          \texttt{           COLUMNS=['colarr']]}
       \\creates a table of 1 array column with the given shape.
         The column is stored with the TiledColumnStMan storage manager
         using the given settings.
