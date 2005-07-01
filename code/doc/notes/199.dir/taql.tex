@@ -2,38 +2,52 @@
 \externallabels{../../user/Refman}{../../user/Refman/labels.pl}
 
 \section{Introduction}
-The Table Query Language (TaQL, rhymes with bagel) makes
-it possible to select
+The Table Query Language (TaQL, rhymes with bagel (though many people
+pronounce it as tackle)) makes it possible to select
 rows from an arbitrary table based on the contents of its
 columns and keywords. It supports arbitrary complex
-expressions including regular expressions and many functions.
+expressions including extended regular expressions and many functions.
 TaQL also makes sorting and column selection possible.
-Furthermore TaQL has commands to modify data in a subset of a table.
+Furthermore TaQL has commands to create a table and to modify data
+in a table.
 
 TaQL is modeled after SQL and contains most of SQL's functionality.
-The main features lacking are joins and GROUPBY/HAVING. On the other
-hand does TaQL have full support for arrays and an advanced way of
-specifying intervals.
+The most important features of TaQL different from SQL are:
+\begin{itemize}
+\item The result of a SELECT is not ASCII output. Instead it always
+creates another table (either temporary or persistent). Usually this
+is a so-called reference table, but if the select column list contains
+expressions, it is a plain table.
+A reference table is a table that can be used as any other table,
+but it does not contain data. Instead it contains references to the
+rows and columns in the original table. Thus modifying data in a
+reference table means that effectively the data in the original
+table is modified.
+\item Any operand can be a scalar or an N-dimensional array.
+Many reduction functions can be used with arrays.
+\item A very rich set of mathematical functions.
+\item Support of various regular expressions.
+\item Specific operators and functions for cone searching
+(i.e. spatial searching with a search radius).
+\item An advanced way of specifying intervals.
+\item No support of indices, thus always a linear search is done.
+This is, however, very fast, even for very large tables.
+\item Joins are not supported yet.
+\item In the SELECT command GROUPBY and HAVING are not supported yet.
+\item The CALC command exists to
+calculate an arbitrary expression (including subqueries) on a
+table. This can be useful to derive values from a table (e.g. the
+number of flags set in a measurement set). It can even be used as a
+desk calculator.
+\end{itemize}
 
 The first sections of this document explain the syntax and show the options.
 The last sections show the interface to TaQL using Glish or C++.
 The Glish interface makes it possible to embed Glish
 variables and expressions in a TaQL command.
 
-The result of a TaQL selection is a so-called reference table.
-It is a table that can be used as any other table, but it does not
-contain data. Instead it contains references to the rows and columns
-in the original table. Thus modifying data in a reference table means
-that effectively the data in the original table is modified.
-
-Apart from the aforementioned abilities, TaQL can
-calculate an arbitrary expression (including subqueries) on a
-table. This can be useful to derive values from a table (e.g. the
-number of flags set in a measurement set). It could even be used as a
-desk calculator.
-
-\section{Syntax}
-TaQL contains five commands.
+\section{TaQL Commands}
+TaQL contains six commands.
 In the commands shown below the square brackets are not part of the
 syntax, but indicate the optional parts of the commands.
 
@@ -79,261 +93,321 @@ in the table list.
 It can be used to calculate an expression, in which columns
 in a table can be used.
 
+\item table creation
+\begin{verbatim}
+  CREATE TABLE table [column_spec p] [DMINFO datamanager_list]
+\end{verbatim}
+It can be used to create a new table with the given columns.
+in a table can be used.
+
 \end{itemize}
 The commands and verbs in the commands are
 case-insensitive, but case is important in string values and
 in names of columns and keywords. Whitespace (blanks and tabs) can
 be used at will.
 \\\htmlref{A later section (Modifying a table)}{TAQL:MODIFYING} explains the
-UPDATE, INSERT, and DELETE command in more detail.
+UPDATE, INSERT, and DELETE command in more detail. The CREATE TABLE is
+explained in \htmlref{section (Creating a table)}{TAQL:CREATETABLE}.
 \\\htmlref{Another section (Calculations on a table)}{TAQL:CALCULATING}
 explains the CALC command in more detail.
-\\Hereafter the
-various parts of the SELECT command are explained.
 
-\begin{description}
-  \item[column\_list ]
-       is a comma-separated list with names of columns that have to be selected
-       from the primary table in the table\_list (see below).
-       If * or no column\_list is given, all columns will be selected.
-       \\In the future it may be possible to use expressions to create
-       a new column based on the contents of other columns.
-       Note that for subqueries the GIVING clause offers an
-       alternative way of specifying the result making it
-       possible to use expressions.
-       \\If a column\_list is given and if all columns are scalars, the
-       column\_list can be preceeded by the word DISTINCT.
-       It means that the result is made unique by removing the rows
-       with duplicate values in the columns of the column\_list.
-       Instead of DISTINCT the synonym NODUPLICATES or UNIQUE can also
-       be used.
-       To find duplicate values, some temporary sorting is done,
-       but the original order of the remaining rows is not changed.
-       \\Note that support of this keyword is mainly done for SQL
-       compliance. The same (and more) can be achieved with the
-       DISTINCT keyword in the \htmlref{ORDERBY}{TAQL:ORDERBY} clause
-       with the difference that ORDERBY DISTINCT will change the order.
-       \\For full SQL compliance it is also possible to give the word
-       ALL which is the opposite of DISTINCT, thus all values are
-       returned. This is the default.
-  \item[\label{TAQL:INTO}INTO table ]
-       indicates that the ultimate result of the SELECT command should be
-       written to a table (with the given name). This table is a
-       so-called reference table.
-       \\The standard TaQL way to define the output table is the
-       \htmlref{GIVING}{TAQL::GIVING} clause. INTO is available
-       for SQL compliance.
-  \item[\label{TAQL:TABLE_LIST}FROM table\_list ]
-       is a comma-separated list of table names which can contain
-       path specification and environment variables or the UNIX
-       \verb+~+ notation.
-       It indicates which tables are used in
-       the SELECT command. The first table in the list is the primary
-       table and is used for all columns in the other clauses.
-       Usually only one table is used in which case the list consists
-       of only one table name. E.g.
-       \begin{verbatim}
-       SELECT col1,col2 FROM mytable
-           WHERE col1>col2
-           ORDERBY col1
-       \end{verbatim}
-       In this example columns \texttt{col1} and \texttt{col2}
-       are taken from \texttt{mytable}.
-       \\However, it is possible to specify more tables in the table\_list.
-       In the WHERE clause these secondary tables can be used to take
-       keywords from. E.g.
-       \begin{verbatim}
-       SELECT FROM mytable,othertable
-           WHERE col1>othertable.key
-       \end{verbatim}
-       As shown in the example above a qualifying name (\verb+othertable.+)
-       can be used in the WHERE
-       clause to specify from which table a keyword has to be taken.
-       If no qualifying name is given, the keyword (or column) is taken
-       from the primary table (i.e., the first table in the table\_list).
-       This means that qualifying names are only needed in special cases.
-       The qualifying name can not contain special characters like a slash.
-       Therefore a table\_name needs an explicit shorthand alias
-       if it contains special characters.
-       \\The full table\_list syntax is:
-       \\
-       \texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
-       \\The shorthand defaults to the table\_name.
-       In the following example shorthand \texttt{my} is not really needed.
-       Shorthand \texttt{other} is needed though.
-       \begin{verbatim}
-       SELECT FROM mytable my, ~user/othertable other
-           WHERE my.col1>other.key
-       \end{verbatim}
-       Similar to SQL and OQL the shorthand can also be given using
-       \texttt{AS} or \texttt{IN}. E.g.
-       \begin{verbatim}
-       SELECT FROM mytable AS my, other IN ~user/othertable
-       \end{verbatim}
-       Note that if using \texttt{IN}, the shorthand has to preceed
-       the table name. It can be seen as an iterator variable.
+\section{Selection from a table}
+The SELECT is the main TaQL command. It can be used to select a subset
+of rows and/or columns from a table or to generate new columns based
+on expressions.
 
-       There are three special ways to specify a table:
-       \begin{enumerate}
-       
-       \item
-       A table name can also be taken from a keyword in a previously
-       specified table. This can be useful in a
-       \htmlref{subquery}{TAQL:SUBQUERIES}. The syntax for this is
-       the same as that for specifying \htmlref{keywords}{TAQL:KEYWORDS}
-       in an expression. E.g.
-       \begin{verbatim}
-       SELECT FROM mytable tab
-           WHERE col1 IN [SELECT subcol FROM tab.col2::key]
-       \end{verbatim}
-       In this example \texttt{key} is a table keyword of column
-       \texttt{col2} in table \texttt{mytable} (note that \texttt{tab}
-       is the shorthand for \texttt{mytable} and could be left out).
-       \\It can also be used for another table in the main query. E.g.
-       \begin{verbatim}
-       SELECT FROM mytable, ::key subtab
-           WHERE col1 > subtab.key1
-       \end{verbatim}
-       In this example the keyword \texttt{key1} is taken from the
-       subtable given by the table keyword \texttt{key} in the main
-       table.
-       \\If a keyword is used as the table name, the keyword is
-       searched
-       in one of the tables previously given. The search starts at
-       the current query level and proceeds outwards (i.e., up to the
-       main query level). If a shorthand is given, only tables with
-       that shorthand are taken into account. If no shorthand is
-       given, only primary tables are taken into account.
+As explained above, the result of a selection is usually a reference
+table. This table can be used as any other table, thus it is possible
+to do another selection on it or to update it (which updates the
+underlying original table). It is, however, not possible to insert
+rows in a reference table or to delete rows from it.
 
-       \item
-       Like in OQL it is possible to use a
-       \htmlref{nested query}{TAQL:SUBQUERIES}
-       command in the FROM clause. This is a normal query command
-       enclosed in square brackets or parentheses.
-       It results in a temporary table
-       which can thereafter be used as a table in the rest of the
-       query command. A shorthand has to be defined for it in order
-       to be able to refer to that table.
-       \\Use of a query in the FROM command can be useful to avoid
-       multiple equal subqueries. E.g.
-       \begin{verbatim}
-  select from MS,
-   [select from MS where sumsqr(UVW[1:2]) < 625]
-    as TIMESEL
-   where TIME in [select distinct TIME from TIMESEL]
-    &&  any([ANTENNA1,ANTENNA2] in
-             [select from TIMESEL giving
-              [iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])
-       \end{verbatim}
-       is a command to find shadowed antennas for the VLA.
-       Without the query in the FROM command the subqueries in the
-       remainder of the command would have been more complex.
-       Furthermore, it would have been necessary to execute that
-       select twice.
-       \\The command is quite complex and cannot be fully understood
-       before reading the rest of this note.
-       Note, however, that the command uses the shorthand \texttt{TIMESEL}
-       to be able to use the temporary table in the subqueries.
+If the select column list contains expressions, it is not possible to
+generate a reference table. Instead a normal plain table is generated
+(which can take some time if it contains large data arrays).
+It should be clear that updating such a table does not update the
+original table.
 
-       \item
-       Normally only persistent tables (i.e. tables on disk) can
-       be used. However, it is also possible to use transient tables
-       in a TaQL command given in \htmlref{Glish or C++}{TAQL:GLISHC}.
-       This is done by passing one or more table objects to the
-       function executing the TaQL command. In the TaQL command a
-       \$-sign followed by a sequence number has to be given to
-       indicate the correct object containing the transient table.
-       E.g. if two
-       table objects are passed \$1 indicates the first table, while \$2
-       indicates the second one.
-     \end{enumerate}
-
-  \item[WHERE expression ]
-       defines the selection expression which must have a boolean
-       scalar result. A row in the primary table
-       is selected if the expression is true for the values in that row.
-       The syntax of the expression is explained
-       in a \htmlref{later section}{TAQL:EXPRESSIONS}.
-  \item[\label{TAQL:ORDERBY}ORDERBY sort\_list ]
-       defines the order in which the result of the WHERE clause
-       has to be sorted. The sort\_list is a comma separated list of
-       expressions.
-       \\The sort\_list can be preceeded by the word \texttt{ASC} or
-       \texttt{DESC} indicating if the given expressions are by
-       default sorted in ascending or descending order (default is ASC).
-       Each expression in the sort\_list can optionally be
-       followed by \texttt{ASC} or \texttt{DESC} to override the
-       default order for that particular column
-       \\To be compliant with SQL whitespace can be used between the
-       words ORDER and BY.
-       \\The word ORDERBY can optionally be followed by DISTINCT
-       which means that only the first row of multiple rows with
-       equal sort keys is kept in the result. To be compliant with
-       SQL dialects the word UNIQUE or NODUPLICATES can be used
-       instead of DISTINCT.
-       \\An expression can be a scalar column or a single element from
-       an array column. In these cases some optimization is performed
-       by reading the entire column directly.
-       \\It can also be an arbitrarily complex expression
-       with exactly the same syntax rules as the expressions in the
-       \htmlref{WHERE}{TAQL:EXPRESSIONS} clause.
-       The resulting data type of the expression must
-       be a standard scalar one, thus it cannot be a Regex or
-       DateTime (see \htmlref{below}{TAQL:DATATYPES} for a discussion
-       of the available data types).
-       E.g.
-       \begin{verbatim}
-       ORDERBY col1, col2, col3
-       ORDERBY DESC col1, col2 ASC, col3
-       ORDERBY NODUPLICATES uvw[1] DESC
-       ORDERBY square(uvw[1]) + square(uvw[2])
-       ORDERBY datetime(col)             incorrect data type
-       ORDERBY mjd(datetime(col))        is correct
-       \end{verbatim}
-  \item[LIMIT expression ]
-       indicates that up to N rows have to be selected, where N is
-       the result of the expression. 
-       \\\texttt{LIMIT} is applied after \texttt{ORDERBY}, so it is
-       particularly useful in combination with
-       \texttt{ORDERBY} to select, for example, the highest 10 values.
-  \item[OFFSET expression ]
-       indicates that the first N rows of the selection have to be 
-       skipped. As \texttt{LIMIT} it is particularly useful in
-       combination with \texttt{ORDERBY}.
-  \item[\label{TAQL:GIVING}GIVING table$|$set ]
-       indicates that the ultimate result of the SELECT command should be
-       written to a table (with the given name). This table is a
-       so-called reference table.
-       It does not contain data of its own, but only references the
-       proper rows in the original table. It can be used
-       as any other table, thus it can also be used as an input table in
-       another SELECT command. A reference table resulting from
-       a selection (or sort) on another reference table references the
-       original table again. Thus no (expensive) cascade of reference
-       tables is created.
-       \\Another (more SQL compliant) way to define the output table
-       is the \htmlref{INTO}{TAQL:INTO} clause.
-
-       It is also possible to specify a set in the GIVING clause
-       instead of a table name. This can be useful if the result of a
-       \htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
-       Such a \htmlref{set}{TAQL:SETS} can contain multiple elements
-       Each element can be a single value, range and/or interval as
-       long as all elements have the same data type.
-       The parts of each element have to be expressions resulting in a scalar.
-
-       In the main query and in a query in the FROM command the
-       GIVING clause can only result in a table and not in a set.
-       \\To be compliant with SQL dialects, the word SAVETO can be
-       used instead of GIVING. Whitespace can be given between SAVE and TO.
- 
-\end{description}
-Although the clauses column\_list, WHERE, ORDERBY, LIMIT, and OFFSET
+The various parts of the SELECT command are explained in the following
+sections.
+\\Although the clauses column\_list, WHERE, ORDERBY, LIMIT, and OFFSET
 are optional,
 at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
 Also the GIVING clause with a value set is seen as an operation.
 
+\subsection{\label{TAQL:COLUMNLIST}SELECT column\_list}
+Columns to be selected can be given as
+a comma-separated list with names of columns that have to be
+selected from the primary table in the table\_list (see below).
+If * or no column\_list is given, all columns will be selected.
+It results in a so-called reference table. Optionally the
+selected column can be given another name in the reference
+table using \texttt{AS name} (where AS is optional).
+For example:
+\begin{verbatim}
+  select TIME,ANTENNA1,ANTENNA2,DATA from 3C343.MS
+  select TIME,ANTENNA1,ANTENNA2,MODEL_DATA AS DATA from 3C343.MS
+\end{verbatim}
+It is possible to change the data type of a column by specifying a
+data type (see below) after the new column name. Giving a data type
+(even if the same as the existing one) counts as an expression,
+thus results in the generation of a plain table.
+For example:
+\begin{verbatim}
+  select MODEL_DATA AS DATA FCOMPLEX from 3C343.MS
+\end{verbatim}
+
+It is possible to use expressions in the column list to create
+new columns based on the contents of other columns. When doing this,
+the resulting table is a normal table (because a reference table
+cannot contain expressions). The new column can be given a name
+by giving \texttt{AS name} after the expression (where AS is
+optional). If no name is given, a unique name like
+\texttt{Col\_1} is constructed.
+After the name a \htmlref{data type string}{TAQL_DATATYPESTRING} can
+be given for the new column. If no data type is given, the expression
+data type is used.
+\begin{verbatim}
+  select max(ANTENNA1,ANTENNA2) AS ANTENNA INT from 3C343
+  select means(DATA,1) from 3C343
+\end{verbatim}
+Note that for subqueries the GIVING clause offers a
+better (faster) way of specifying a result expression. It also makes it
+possible to use intervals.
+
+If a column\_list is given and if all columns are scalars, the
+column\_list can be preceeded by the word DISTINCT.
+It means that the result is made unique by removing the rows
+with duplicate values in the columns of the column\_list.
+Instead of DISTINCT the synonym NODUPLICATES or UNIQUE can also
+be used.
+To find duplicate values, some temporary sorting is done,
+but the original order of the remaining rows is not changed.
+\\Note that support of this keyword is mainly done for SQL
+compliance. The same (and more) can be achieved with the
+DISTINCT keyword in the \htmlref{ORDERBY}{TAQL:ORDERBY} clause
+with the difference that ORDERBY DISTINCT will change the order.
+\\For full SQL compliance it is also possible to give the keyword
+ALL which is the opposite of DISTINCT, thus all values are
+returned. This is the default. Because there is an ambiguity between
+the keyword ALL and function ALL, the first element of the column
+list cannot be an expression if the keyword ALL is used.
+
+\subsection{\label{TAQL:INTO}INTO table}
+This indicates that the ultimate result of the SELECT command should be
+written to a table (with the given name). This table is a
+reference table or a plain table (depending on the column list).
+\\The standard TaQL way to define the output table is the
+\htmlref{GIVING}{TAQL::GIVING} clause. INTO is available
+for SQL compliance.
+
+\subsection{\label{TAQL:TABLE_LIST}FROM table\_list}
+The FROM part defines which tables are used in the selection.
+It is a comma-separated list of table names which can contain
+path specification and environment variables or the UNIX
+\verb+~+ notation.
+The first table in the list is the primary
+table and is used for all columns in the other clauses.
+Usually only one table is used in which case the list consists
+of only one table name. E.g.
+\begin{verbatim}
+SELECT col1,col2 FROM mytable
+    WHERE col1>col2
+    ORDERBY col1
+\end{verbatim}
+In this example columns \texttt{col1} and \texttt{col2}
+are taken from \texttt{mytable}.
+
+However, it is possible to specify more tables in the table\_list.
+In the WHERE clause these secondary tables can be used to take
+keywords from. E.g.
+\begin{verbatim}
+SELECT FROM mytable,othertable
+    WHERE col1>othertable.key
+\end{verbatim}
+As shown in the example above a qualifying name (\verb+othertable.+)
+can be used in the WHERE
+clause to specify from which table a keyword has to be taken.
+If no qualifying name is given, the keyword (or column) is taken
+from the primary table (i.e., the first table in the table\_list).
+This means that qualifying names are only needed in special cases.
+The qualifying name can not contain special characters like a slash.
+Therefore a table\_name needs an explicit shorthand alias
+if it contains special characters.
+
+The full table\_list syntax is:
+\\
+\texttt{table\_name1 [shorthand1], table\_name2 [shorthand2], etc.}
+\\The shorthand defaults to the table\_name. A shorthand is needed if
+the table name contains non-alphanumeric characters.
+In the following example shorthand \texttt{my} is not really needed.
+Shorthand \texttt{other} is needed though.
+\begin{verbatim}
+SELECT FROM mytable my, ~user/othertable other
+    WHERE my.col1>other.key
+\end{verbatim}
+Similar to SQL and OQL the shorthand can also be given using
+\texttt{AS} or \texttt{IN}. E.g.
+\begin{verbatim}
+SELECT FROM mytable AS my, other IN ~user/othertable
+\end{verbatim}
+Note that if using \texttt{IN}, the shorthand has to preceed
+the table name. It can be seen as an iterator variable.
+
+There are three special ways to specify a table:
+\begin{enumerate}
+
+\item
+A table name can also be taken from a keyword in a previously
+specified table. This can be useful in a
+\htmlref{subquery}{TAQL:SUBQUERIES}. The syntax for this is
+the same as that for specifying \htmlref{keywords}{TAQL:KEYWORDS}
+in an expression. E.g.
+\begin{verbatim}
+SELECT FROM mytable tab
+    WHERE col1 IN [SELECT subcol FROM tab.col2::key]
+\end{verbatim}
+In this example \texttt{key} is a table keyword of column
+\texttt{col2} in table \texttt{mytable} (note that \texttt{tab}
+is the shorthand for \texttt{mytable} and could be left out).
+\\It can also be used for another table in the main query. E.g.
+\begin{verbatim}
+SELECT FROM mytable, ::key subtab
+    WHERE col1 > subtab.key1
+\end{verbatim}
+In this example the keyword \texttt{key1} is taken from the
+subtable given by the table keyword \texttt{key} in the main
+table.
+\\If a keyword is used as the table name, the keyword is
+searched
+in one of the tables previously given. The search starts at
+the current query level and proceeds outwards (i.e., up to the
+main query level). If a shorthand is given, only tables with
+that shorthand are taken into account. If no shorthand is
+given, only primary tables are taken into account.
+
+\item
+Like in OQL it is possible to use a
+\htmlref{nested query}{TAQL:SUBQUERIES}
+command in the FROM clause. This is a normal query command
+enclosed in square brackets or parentheses.
+It results in a temporary table
+which can thereafter be used as a table in the rest of the
+query command. A shorthand has to be defined for it in order
+to be able to refer to that table.
+\\Use of a query in the FROM command can be useful to avoid
+multiple equal subqueries. E.g.
+\begin{verbatim}
+  select from MS,
+   [select from MS where sumsqr(UVW[1:2]) < 625]
+    as TIMESEL
+   where TIME in [select distinct TIME from TIMESEL]
+    &&  any([ANTENNA1,ANTENNA2] in
+      [select from TIMESEL giving
+[iif(UVW[3] < 0, ANTENNA1, ANTENNA2)]])
+\end{verbatim}
+is a command to find shadowed antennas for the VLA.
+Without the query in the FROM command the subqueries in the
+remainder of the command would have been more complex.
+Furthermore, it would have been necessary to execute that
+select twice.
+\\The command is quite complex and cannot be fully understood
+before reading the rest of this note.
+Note, however, that the command uses the shorthand \texttt{TIMESEL}
+to be able to use the temporary table in the subqueries.
+
+\item
+Normally only persistent tables (i.e. tables on disk) can
+be used. However, it is also possible to use transient tables
+in a TaQL command given in \htmlref{Glish or C++}{TAQL:GLISHC}.
+This is done by passing one or more table objects to the
+function executing the TaQL command. In the TaQL command a
+\$-sign followed by a sequence number has to be given to
+indicate the correct object containing the transient table.
+E.g. if two
+table objects are passed \$1 indicates the first table, while \$2
+indicates the second one.
+\end{enumerate}
+
+\subsection{\label{TAQL:WHERE}WHERE expression}
+It defines the selection expression which must have a boolean
+scalar result. A row in the primary table
+is selected if the expression is true for the values in that row.
+The syntax of the expression is explained
+in a \htmlref{later section}{TAQL:EXPRESSIONS}.
+
+\subsection{\label{TAQL:ORDERBY}ORDERBY sort\_list}
+It defines the order in which the result of the selection
+has to be sorted. The sort\_list is a comma separated list of
+expressions.
+\\The sort\_list can be preceeded by the word \texttt{ASC} or
+\texttt{DESC} indicating if the given expressions are by
+default sorted in ascending or descending order (default is ASC).
+Each expression in the sort\_list can optionally be
+followed by \texttt{ASC} or \texttt{DESC} to override the
+default order for that particular sort key.
+\\To be compliant with SQL whitespace can be used between the
+words ORDER and BY.
+
+The word ORDERBY can optionally be followed by DISTINCT
+which means that only the first row of multiple rows with
+equal sort keys is kept in the result. To be compliant with
+SQL dialects the word UNIQUE or NODUPLICATES can be used
+instead of DISTINCT.
+
+An expression can be a scalar column or a single element from
+an array column. In these cases some optimization is performed
+by reading the entire column directly.
+\\It can also be an arbitrarily complex expression
+with exactly the same syntax rules as the expressions in the
+\htmlref{WHERE}{TAQL:EXPRESSIONS} clause.
+The resulting data type of the expression must
+be a standard scalar one, thus it cannot be a Regex or
+DateTime (see \htmlref{below}{TAQL:DATATYPES} for a discussion
+of the available data types).
+E.g.
+\begin{verbatim}
+ORDERBY col1, col2, col3
+ORDERBY DESC col1, col2 ASC, col3
+ORDERBY NODUPLICATES uvw[1] DESC
+ORDERBY square(uvw[1]) + square(uvw[2])
+ORDERBY datetime(col)      incorrect data type
+ORDERBY mjd(datetime(col)) is correct
+\end{verbatim}
+
+\subsection{LIMIT expression}
+It indicates that up to N rows have to be selected, where N is
+the result of the expression. 
+\\\texttt{LIMIT} is applied after \texttt{ORDERBY}, so it is
+particularly useful in combination with
+\texttt{ORDERBY} to select, for example, the highest 10 values.
+
+\subsection{OFFSET expression}
+It indicates that the first N rows of the selection have to be 
+skipped. As \texttt{LIMIT} it is particularly useful in
+combination with \texttt{ORDERBY}.
+
+\subsection{\label{TAQL:GIVING}GIVING table$|$set}
+It indicates that the ultimate result of the SELECT command should be
+written to a table (with the given name). This table is a
+reference table or a plain table (depending on the selected column list).
+\\Another (more SQL compliant) way to define the output table
+is the \htmlref{INTO}{TAQL:INTO} clause.
+
+It is also possible to specify a set in the GIVING clause
+instead of a table name. This is very useful if the result of a
+\htmlref{subquery}{TAQL:SUBQUERIES} is used in the main query.
+Such a \htmlref{set}{TAQL:SETS} can contain multiple elements
+Each element can be a single value, range and/or interval as
+long as all elements have the same data type.
+The parts of each element have to be expressions resulting in a scalar.
+
+In the main query and in a query in the FROM command the
+GIVING clause can only result in a table and not in a set.
+\\To be compliant with SQL dialects, the word SAVETO can be
+used instead of GIVING. Whitespace can be given between SAVE and TO.
+ 
 
 \section{\label{TAQL:EXPRESSIONS}Expressions}
 An arbitrary expression can be used in the WHERE clause, as a sort
@@ -365,8 +439,8 @@ single element or a subsection from an array expression.
 \end{verbatim}
 The last example shows a \htmlref{set}{TAQL:SETS} with a continuous interval.
 
-\label{TAQL:DATATYPES}
-TaQL knows the following data types:
+\subsection{\label{TAQL:DATATYPES}Data Types}
+Internally TaQL uses the following data types:
 \begin{description}
   \item[Bool ]
   \item[Double ] which includes integers and times/positions
@@ -385,6 +459,24 @@ is used, TaQL can do the following automatic conversions:
 \\- from Double to Complex
 \\- from String to DateTime
 
+Externally TaQL supports any possible data type of a table column or
+keyword. In some commands (\htmlref{column list}{TAQL:COLUMNLIST} and
+\htmlref{CREATE TABLE}{TAQL:CREATETABLE}) it is possible to specify
+the data type of a column. There are several synonyms.
+The possible types and values are:
+\begin{verbatim}
+   B          BOOL       BOOLEAN
+   U1         UCHAR      BYTE
+   I2         SHORT      SMALLINT
+   U2   UI2   USHORT     USMALLINT
+   I4         INT        INTEGER
+   U4   UI4   UINT       UINTEGER
+   R4   FLT   FLOAT
+   R8   DBL   DOUBLE
+   C4   FC    FCOMPLEX   COMPLEX
+   C8   DC    DCOMPLEX
+   S          STRING
+\end{verbatim}
 
 \subsection{\label{TAQL:CONSTANTS}Constants}
 Scalar constants of the various data types can be formed as follows
@@ -1102,9 +1194,10 @@ character of the column name. E.g. \verb+\+\texttt{1stDay}.
 Because several words are used in the language, they cannot
 be used directly as column names. The reserved words are:
 \begin{verbatim}
- ALL AND AS ASC BETWEEN DELETE DESC DISTINCT EXISTS EXCEPT
- FROM GIVING GROUPBY HAVING IN INCONE INSERT INTERSECT INTO
- LIKE LIMIT MINUS NODUPLICATES NOT OFFSET OR ORDERBY
+ ALL AND AS ASC BETWEEN CREATETABLE DELETE DESC DISTINCT
+ EXISTS EXCEPT FROM GIVING GROUPBY HAVING
+ IN INCONE INSERT INTERSECT INTO JOIN LIKE LIMIT
+ MINUS NODUPLICATES NOT OFFSET ON OR ORDERBY
  SAVETO SELECT SET UNION UNIQUE UPDATE VALUES WHERE
 \end{verbatim}
 They can, however, be used as a column name by escaping
@@ -1632,6 +1725,63 @@ deletes the rows matching the WHERE expression.
 be able to use, for example, keywords from other tables.
 Rows will be deleted from the first table mentioned in the FROM part.
 
+\section{\label{TAQL:CREATETABLE}Creating a new table}
+TaQL can be used to create a new table. The data managers to be used
+can be given in full detail.
+
+The syntax is:
+\begin{verbatim}
+  CREATE TABLE tablename colspec DMINFO datamans
+\end{verbatim}
+The columns are defined in the \texttt{colspec} part. If not given, an
+empty table is created.
+\\Data managers can be defined in the \texttt{datamans} part.
+
+The \texttt{colspec} part can optionally be enclosed in square
+brackets or parentheses (for SQL compatibility).
+It is a comma separated list of column specifications.
+Each specification looks like:
+\begin{verbatim}
+  columnname datatype [NDIM=n, SHAPE=[d1,d2,...],
+                       DMTYPE='s',DMGROUP='s',COMMENT='s']
+\end{verbatim}
+The possible data type strings are given in
+\htmlref{section Data Types}{TAQL:DATATYPESTRING}.
+The part enclosed in square brackets is optional. Zero or more of
+these keywords can be used. It makes it possible
+to define array columns and/or default data manager to be used.
+The square brackets are optional if only one such keyword is used.
+\\\texttt{NDIM=n} defines if the column contains scalars or arrays.
+A negative value means a scalar (unless shape is also given).
+A value 0 means an array of any dimensionality. A positive value means
+an array with the given dimensionality.
+\\\texttt{SHAPE=[d1,d2,...]} makes it possible to define the exact
+array shape. If given and if NDIM is positive, they should be consistent.
+\\\texttt{DMTYPE, DMGROUP, COMMENT} have string values, thus quotes
+have to be used. DMTYPE and DMGROUP are rather specific and are for the expert user.
+
+The \texttt{dataman} part makes it possible for the expert user to
+define the data managers to be used by columns. It is a comma separated
+list of data manager specifications looking like the output of the
+\texttt{table.getdminfo} command in glish.
+Each specification has to be enclosed in square brackets.
+For example:
+\begin{verbatim}
+  dminfo [NAME="ISM1",TYPE="IncrementalStMan",COLUMNS=["col1"]],
+         [NAME="SSM1",TYPE="StandardStMan",
+          SPEC=[BUCKETSIZE=1000],COLUMNS=["col2","col3"]]
+\end{verbatim}
+The case of the keyword names used (e.g. NAME) is important.
+They have to be given in uppercase. The following keywords can be
+given:
+\\\texttt{NAME} defines the unique name of the data manager.
+\\\texttt{TYPE} defines the type of data manager.
+\\\texttt{SPEC} is a list of keywords giving the characteristics of the
+data manager. This is highly data manager type specific.
+\\\texttt{COLUMNS} is a list of column names defining all columns that
+have to be bound to the data manager.
+
+
 \section{\label{TAQL:CALCULATING}Calculations on a table}
 TaQL can be used to get derived values from a table by means of an
 expression. The expression can result in any data type and value type.
@@ -1667,6 +1817,8 @@ clause, because it does not use a column itself. Columns are only
 used in the nested query which has a FROM clause itself.
 
 \section{Examples}
+\subsection{Selection examples}
+\subsubsection{Reference table results}
 \begin{description}
   \item[] \texttt{ SELECT FROM mytable WHERE column1 $>$ 0 }
     \\selects the rows in which the value of column1 $>$ 0
@@ -1779,6 +1931,31 @@ used in the nested query which has a FROM clause itself.
       data-desc-id. Hence two nested subqueries are needed.
 \end{description}
 
+\subsubsection{Plain table results}
+\begin{description}
+  \item[] \texttt{ SELECT column0+column1 FROM mytable }
+    \\creates a table of 1 column with name Col\_1. Its data type
+      is on the expression data type.
+
+  \item[] \texttt{ SELECT column0+column1 Res I4 FROM mytable }
+    \\creates a table of 1 column with name \texttt{Res}.
+      Its data type is 4 byte signed integer.
+
+  \item[] \texttt{ SELECT colx colx R4 FROM mytable }
+    \\creates a table of 1 column with name \texttt{colx}.
+      The sole purpose of this selection is to convert the data type
+      of the column.
+
+  \item[] \texttt{ SELECT means(DATA,2) AS DATA\_MEAN C4 FROM my.ms }
+    \\creates a table of 1 column with name \texttt{DATA\_MEAN}.
+      Column DATA in a AIPS++ MeasurementSet is a 2-dimensional array
+      with axes polarization and frequency. This command calculates
+      and stores the mean in each polarization.
+      If no data type was given, the means would have been stored
+      as double precision complex (which is the expression data type).
+
+\end{description}
+
 \subsection{Modification examples}
 \begin{description}
   \item[] \texttt{ update MY.MS set VIDEO\_POINT=MEANS(DATA,2)
@@ -1803,10 +1980,41 @@ used in the nested query which has a FROM clause itself.
                    
 \end{description}
 
+\subsection{Table creation examples}
+\begin{description}
+  \item[] \texttt{ create table mytab (col1 I4, col2 I4, col3 R8) }
+      \\creates table \texttt{mytab} of 3 scalar columns.
+
+  \item[] \texttt{ create table mytab }
+      \\creates an empty table.
+
+  \item[] \texttt{ create table mytab colarr R4 ndim=0 }
+      \\creates a table of 1 array column with arbitrarily dimensionality.
+
+  \item[] \texttt{ create table mytab colarr R4 [shape=[4,128], }
+	  \texttt{                   dmtype='TiledColumnStMan'] }
+      \\creates a table of 1 array column with the given shape.
+        The column is stored with the TiledColumnStMan storage manager
+        using its default settings.
+
+  \item[] \texttt{ create table mytab colarr R4 shape=[4,128] }
+	  \texttt{   dminfo [TYPE='TiledColumnStMan', NAME='TCSM', }
+          \texttt{           SPEC=[TILESHAPE=[4,32,64]], COLUMNS=['colarr']]}
+      \\creates a table of 1 array column with the given shape.
+        The column is stored with the TiledColumnStMan storage manager
+        using the given settings.
+\end{description}
+
 \subsection{Calculation examples}
 \begin{description}
   \item[] \texttt{ calc 1+2 }
       \\uses TaQL as a desktop calculator.
+
+  \item[] \texttt{ calc 7-Apr-2007 - 20-Nov-1979 }
+      \\calculates the number of days between these dates.
+
+  \item[] \texttt{ calc (1-1-2006 - 1-1-1950)\%365 }
+      \\calculates the number of leap days in this time span.
 
   \item[] \texttt{ calc sum([select from MY.MS giving [ntrue(FLAG)]]) }
       \\determines the total number of flags set in the measurement set.
