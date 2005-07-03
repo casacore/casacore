@@ -36,14 +36,12 @@
 #include <casa/aips.h>
 
 #if defined(__APPLE__)
-#include <ostream>
-#if defined(AIPS_DARWIN8)
-#include <architecture/ppc/math.h>
-#define isnan __isnand
-#else
 #include <math.h>
-#define isnan __isnand
-#endif
+#include <ostream>
+#include <cmath>
+namespace casa { //# NAMESPACE CASA - BEGIN
+    using std::isnan;
+} //# NAMESPACE CASA - END
 #endif
 
 #if defined(AIPS_SGI) || defined(AIPS_SUN_NATIVE) 
