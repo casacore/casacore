@@ -58,7 +58,7 @@
 
 TableDesc makeDesc();
 void a (const TableDesc&);
-void check(const Table& table);
+void check(const Table& table, Bool showname);
 void testSelect();
 
 int main ()
@@ -68,11 +68,11 @@ int main ()
 	TableDesc td = makeDesc();
 	a (td);
 	Table table("tVirtualTaQLColumn_tmp.data0");
-	check(table);
+	check(table, True);
 	table.deepCopy ("tVirtualTaQLColumn_tmp.data1", Table::New, True);
-	check (Table("tVirtualTaQLColumn_tmp.data1"));
+	check (Table("tVirtualTaQLColumn_tmp.data1"), True);
 	Table tab2 = table.copyToMemoryTable ("tVirtualTaQLColumn_tmp.data2");
-	check (tab2);
+	check (tab2, True);
       }
       testSelect();
     } catch (AipsError x) {
@@ -155,11 +155,11 @@ void a (const TableDesc& td)
     tab.addColumn (ScalarColumnDesc<Float>("acalc4"), vtcm);
 }
 
-void check(const Table& tab, Bool shownoname=False)
+void check(const Table& tab, Bool showname)
 {
-    if (shownoname) cout << ">>>" << endl;
+    if (!showname) cout << ">>>" << endl;
     cout << "Checking table " << tab.tableName() << endl;
-    if (shownoname) cout << "<<<" << endl;
+    if (!showname) cout << "<<<" << endl;
     ROScalarColumn<Int> ab2(tab,"ab");
     ROScalarColumn<Int> ac (tab,"ac");
     ROScalarColumn<uInt> ad(tab,"ad");
@@ -331,5 +331,5 @@ void testSelect()
   // Select all rows.
   Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
 			      "where acalc > -1000");
-  check (subset, True);
+  check (subset, False);
 }
