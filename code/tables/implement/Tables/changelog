@@ -458,3 +458,24 @@ It makes it possible to map the data type of a column to another data type.
 For instance, for accuracy it is sometimes needed to store the residual data in an MS as double precision. The imager can only read single precision data, so using this engine the column containing the residual data can be mapped to a virtual column with single precision data.
  </description>
 </change>
+
+<change id=0170>
+ <author> Ger van Diepen </author>
+ <date> 2005/07/04 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> New </category>
+ <defects>  </defects>
+ <summary>
+Extended TaQL with select column expressions and create table
+ </summary>
+ <description>
+TaQL has been extended in two ways.
+1. It is now possible to specify an expression in the selection column list. If an expression is given, the resulting table is a plain table instead of a reference table. Optionally a data type can be given as well.
+2. The CREATE TABLE command has been added to create a new table with 0 or more columns. Optionally specific data manager info can be given.
+See note 199 for more info.
+ </description>
+</change>
