@@ -250,6 +250,7 @@ class TableExprNode
     // However, the cone positions and radii are specified separately
     // and (virtually) a larger array containing every combination of
     // position/radius is formed.
+    // <group>
     friend TableExprNode cones (const TableExprNode& sourcePos,
 				const TableExprNode& conePos,
 				const TableExprNode& radii);

@@ -79,7 +79,6 @@ public:
 
   // Return the result as a Table.
   // It throws an exception if it is not a Table.
-  // <group>
   Table table() const;
 
   // Make it possible to convert automatically to a Table

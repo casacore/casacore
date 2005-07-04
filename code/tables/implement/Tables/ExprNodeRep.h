@@ -514,7 +514,6 @@ public:
     virtual void replaceTablePtr (const Table&);
 
     // Get the child nodes.
-    // <group>
     const PtrBlock<TableExprNodeRep*>& getChildren() const
       { return operands_p; }
 
