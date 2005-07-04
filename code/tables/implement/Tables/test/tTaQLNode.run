@@ -32,7 +32,7 @@ tTaQLNode 'select * from tTaQLNode_tmp.tab where arr1[1,1,1]>=10 && arr2[1,1,1]<
 
 tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc'
 
-tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where cos(2d0m) <= sin(-2d)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d - ac/180*pi())'
+tTaQLNode 'select ab,ac from tTaQLNode_tmp.tab where cos(0.01rad) <= sin(-0.02rad)*sin(-ab/180*pi()) + cos(-0.5rad)*cos(-ab/180*pi())*cos(0.02rad - ac/180*pi())'
 
 tTaQLNode 'select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910'
 

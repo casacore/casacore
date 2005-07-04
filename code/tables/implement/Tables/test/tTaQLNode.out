@@ -43,8 +43,8 @@ SELECT FROM tTaQLNode_tmp.tab WHERE (((arr1)[1,1,1])>=(10))&&(((arr2)[1,1,1])<(1
 select ab,ac from tTaQLNode_tmp.tab where arr1[1,1,1+ab%1]>=192 orderby ad desc
 SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE ((arr1)[1,1,(1)+((ab)%(1))])>=(192) ORDERBY ad DESC
 
-select ab,ac from tTaQLNode_tmp.tab where cos(2d0m) <= sin(-2d)*sin(-ab/180*pi()) + cos(-2deg)*cos(-ab/180*pi())*cos(3d - ac/180*pi())
-SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos(0.034906585039886591))<=(((sin(-(0.034906585039886591)))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-(0.034906585039886591)))*(cos(((-(ab))/(180))*(pi()))))*(cos((0.05235987755982989)-(((ac)/(180))*(pi()))))))
+select ab,ac from tTaQLNode_tmp.tab where cos(0.01rad) <= sin(-0.02rad)*sin(-ab/180*pi()) + cos(-0.5rad)*cos(-ab/180*pi())*cos(0.02rad - ac/180*pi())
+SELECT ab,ac FROM tTaQLNode_tmp.tab WHERE (cos(0.01))<=(((sin(-(0.02)))*(sin(((-(ab))/(180))*(pi()))))+(((cos(-(0.5)))*(cos(((-(ab))/(180))*(pi()))))*(cos((0.02)-(((ac)/(180))*(pi()))))))
 
 select ab,ac,ad,ae,af,ag from tTaQLNode_tmp.tab where ab+ac+ad+ae+real(ag) >= year(31-12-60) + year("31Dec60") + month(1990/5/12) + day(date(1990/1/30/12h14m33.3)) - 3910
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab WHERE (((((ab)+(ac))+(ad))+(ae))+(real(ag)))>=(((((year(1960/12/31/00:00:00.0000))+(year('31Dec60')))+(month(1990/05/12/00:00:00.0000)))+(day(date(1990/01/30/12:14:33.3000))))-(3910))
