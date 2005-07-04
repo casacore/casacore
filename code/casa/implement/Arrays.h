@@ -121,8 +121,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Arrays and MaskedArrays.
 //
 // <li>
-// Orthogonal n-space descriptors - useful when a shape of a Lattice is
-// needed or when a sub-region within a Lattice is required.
+// Orthogonal n-space descriptors - useful when a shape of an Array is
+// needed or when a sub-region within an Array is required.
 // <ul>
 //   <li> The <linkto class="IPosition">IPosition</linkto> class name is a
 //   concatenation of "Integer Position."  IPosition objects are normally
