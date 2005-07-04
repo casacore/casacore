@@ -40,7 +40,7 @@
 // of the aips++ complex classes could suffice (cf the system's iosfwd).
 // </synopsis>
 
-// <group name=declare>
+// <group name=Complexfwd>
 
 namespace std {
   template<class T> class complex;

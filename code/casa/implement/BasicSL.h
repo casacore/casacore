@@ -52,18 +52,19 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // The following functionality is available:
 // <ul>
-//  <li> Forward declarations <linkto group="declare":description>
-//       ComplexFwd</linkto>
+//  <li> Forward declarations
+//       <linkto group="Complexfwd.h#Complexfwd":description>
+//       Complexfwd</linkto>
 //       for complex numbers.
-//  <li> Class <linkto class=Complex:description>
+//  <li> Class <linkto group="Complex.h#Complex_desc":description>
 //       Complex</linkto>
 //       to offer single and double precision complex numbers.
+//  <li> Class <linkto class=IComplex:description>
+//       IComplex</linkto>
+//       for integer complex numbers.
 //  <li> Value <linkto class=Dummy_Constants_class:description>
 //       Constants</linkto>
 //       to offer mathematical and numerical constants.
-//  <li> Class <linkto class=IComplex:description>
-//       IComplex</linkto>
-//       for interger complex numbers.
 //  <li> Class <linkto class=RegexBase:description>
 //       RegexBase</linkto>
 //       to offer abstract interface to regular expressions for

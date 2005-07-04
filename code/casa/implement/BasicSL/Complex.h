@@ -154,6 +154,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# <todo asof="2000/11/27">
 //# </todo>
 
+// <group name="Complex_desc">
+// </group>
+
+// <summary>Complex NaN </summary>
+// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
+// </reviewed>
 // <group name="Complex NaN">
 Bool isNaN (const Complex& val);
 void setNaN(Complex& val);
@@ -177,18 +183,9 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // </group>
 
 
-// <summary>
-// Double precision complex numbers
-// </summary>
+// <summary>DComplex NaN </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-
-// <synopsis>
-// The class <src>DComplex</src> is a straight typedef as the 
-// standard library <src>complex<double></src>.
-// It is defined in a similar way as <src>Complex</src>.
-// </synopsis>
-
 // <group name="DComplex NaN">
 Bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
@@ -323,7 +320,6 @@ Complex erf(const Complex &in);
 DComplex erfc(const DComplex &in);
 Complex erfc(const Complex &in);
 // </group>
-
 
 } //# NAMESPACE CASA - END
 
