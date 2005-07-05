@@ -918,6 +918,7 @@ void NewMSSimulator::observe(const String& sourceName,
     os << "Creating new hypercube " << hyperCubeID_p+1 << LogIO::POST;
     addHyperCubes(hyperCubeID_p, nBaselines, nChan, nCorr);
     dataWritten_p=0;
+    lastSpWID_p=baseSpWID;
   }
   // ... Next extend the table
   os << "Adding " << nNewRows << " rows" << LogIO::POST;
