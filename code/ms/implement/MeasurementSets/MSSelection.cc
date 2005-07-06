@@ -34,7 +34,7 @@
 #include <ms/MeasurementSets/MSScanGram.h>
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
-#include <tables/Tables/TableGram.h>
+#include <tables/Tables/TableParse.h>
 
 #include <ms/MeasurementSets/MSMainColumns.h>
 #include <measures/Measures/MeasureHolder.h>
@@ -200,6 +200,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
   for(uInt i=0; i<exprOrder_p.nelements(); i++)
   {
     const TableExprNode *node = 0x0;
+    TableExprNode taql;
 
     switch(exprOrder_p[i])
     {
@@ -239,9 +240,11 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
           node = msUvDistGramParseNode();
         break;
       case TAQL_EXPR:
-        if(taqlExpr_p != "" &&
-           tableGramParseCommand(taqlExpr_p) == 0)
-//          node = msTableGramParseNode();
+        if(taqlExpr_p != "")
+        {
+           taql = tableCommand(taqlExpr_p).node();
+           node = &taql;
+        }
         break;
       case NO_EXPR:
       default:
