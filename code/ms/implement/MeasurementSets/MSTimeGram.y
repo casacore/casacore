@@ -34,11 +34,11 @@ using namespace casa;
 %pure_parser                /* make parser re-entrant */
 
 %union {
-  const MEpoch *tval;
   const TableExprNode* node;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
+  const MEpoch* tval;
   Int ival;
   Double dval[2];
 }
@@ -107,39 +107,36 @@ timeexpr: singletimeexpr {
         ;
 
 singletimeexpr: daytimeexpr {
-                  $$ = MSTimeParse().selectTime($1, true);
+                  $$ = MSTimeParse().selectTime(*($1), true);
                 }
               | yeartimeexpr {
-                  $$ = MSTimeParse().selectTime($1, false);
+                  $$ = MSTimeParse().selectTime(*($1), false);
                 }
               ;
 
 rangetimeexpr: daytimeexpr DASH daytimeexpr {
-                 $$ = MSTimeParse().selectTimeRange($1, $3, true);
+                 $$ = MSTimeParse().selectTimeRange(*($1), *($3), true);
                }
              | yeartimeexpr DASH yeartimeexpr {
-                 $$ = MSTimeParse().selectTimeRange($1, $3, false);
+                 $$ = MSTimeParse().selectTimeRange(*($1), *($3), false);
                }
-             | upboundtimeexpr COMMA lowboundtimeexpr {
-                 $$ = $3;
-               } 
              ;
 
 lowboundtimeexpr: GT daytimeexpr {
-                    $$ = MSTimeParse().selectTimeGT($2, true);
+                    $$ = MSTimeParse().selectTimeGT(*($2), true);
                   }
                 |
                   GT yeartimeexpr {
-                    $$ = MSTimeParse().selectTimeGT($2, false);
+                    $$ = MSTimeParse().selectTimeGT(*($2), false);
                   }
                 ;
 
 upboundtimeexpr: LT daytimeexpr {
-                   $$ = MSTimeParse().selectTimeLT($2, true);
+                   $$ = MSTimeParse().selectTimeLT(*($2), true);
                  }
                |
                  LT yeartimeexpr {
-                   $$ = MSTimeParse().selectTimeLT($2, false);
+                   $$ = MSTimeParse().selectTimeLT(*($2), false);
                  }
                ;
 
