@@ -52,7 +52,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 MSSelection::MSSelection() : 
   antennaExpr_p(""), corrExpr_p(""), fieldExpr_p(""),
-  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
+  spwExpr_p(""), scanExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
   taqlExpr_p(""), exprOrder_p(MAX_EXPR, NO_EXPR)
 {
 // Default null constructor 
@@ -80,7 +80,7 @@ MSSelection::~MSSelection()
 
 MSSelection::MSSelection(const Record& selectionItem) : 
   antennaExpr_p(""), corrExpr_p(""), fieldExpr_p(""),
-  spwExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
+  spwExpr_p(""), scanExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
   taqlExpr_p("")
 {
 // Construct from a record representing a selection item
@@ -112,6 +112,7 @@ MSSelection::MSSelection (const MSSelection& other)
     this->corrExpr_p    = other.corrExpr_p;
     this->fieldExpr_p   = other.fieldExpr_p;
     this->spwExpr_p     = other.spwExpr_p;
+    this->scanExpr_p    = other.scanExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
     this->taqlExpr_p    = other.taqlExpr_p;
@@ -133,6 +134,7 @@ MSSelection& MSSelection::operator= (const MSSelection& other)
     this->corrExpr_p    = other.corrExpr_p;
     this->fieldExpr_p   = other.fieldExpr_p;
     this->spwExpr_p     = other.spwExpr_p;
+    this->scanExpr_p    = other.scanExpr_p;
     this->timeExpr_p    = other.timeExpr_p;
     this->uvDistExpr_p  = other.uvDistExpr_p;
     this->taqlExpr_p    = other.taqlExpr_p;
@@ -264,6 +266,7 @@ void MSSelection::clear(void)
   corrExpr_p    = "";
   fieldExpr_p   = "";
   spwExpr_p     = "";
+  scanExpr_p    = "";
   timeExpr_p    = "";
   uvDistExpr_p  = "";
   taqlExpr_p    = "";
@@ -465,7 +468,7 @@ void MSSelection::fromSelectionItem(const Record& selectionItem)
   // Antenna expression
   if (definedAndSet(selectionItem,"antenna")) {
     setAntennaExpr(selectionItem.asString("antenna"));
-    cout << timeExpr_p << ", antenna" << endl;
+    cout << antennaExpr_p << ", antenna" << endl;
   }
 
   // Correlator expression
