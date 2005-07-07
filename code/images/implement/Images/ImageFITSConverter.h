@@ -36,6 +36,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class PagedImage;
 template<class T> class ImageInterface;
+template<class T> class Vector;
 class IPosition;
 class String;
 class File;
@@ -143,6 +144,9 @@ public:
     //        otherwise a PagedImage on disk.
     //   <li> <src>fitsName</src> must already exist (and have an image at the
     //        indicated HDU).
+    //   <li> <src>whichRep</src> Zero-relative coordinate representation
+    //        (Starting with wcs FITS multiple coordinate representations
+    //         can be stored in a FITS file)
     //   <li> <src>whichHDU</src> Zero-relative hdu. The default is correct for
     //        a primary array, set it for an image extension. Only zero has been
     //        tested.
@@ -155,6 +159,17 @@ public:
     //         to zero rather than NaN
     // </ul>
     static Bool FITSToImage(ImageInterface<Float>*& newImage,
+			    String &error,
+			    const String &imageName,
+			    const String &fitsName, 
+			    uInt whichRep = 0,
+			    uInt whichHDU = 0,
+			    uInt memoryInMB = 64,
+			    Bool allowOverwrite=False,
+                            Bool zeroBlanks=False);
+
+// Old version
+    static Bool FITSToImageOld(ImageInterface<Float>*& newImage,
 			    String &error,
 			    const String &imageName,
 			    const String &fitsName, 
@@ -213,19 +228,34 @@ public:
 				     uInt memoryInMB);
 
 // Recover CoordinateSystem from header.  Used keywords are removed from header
-// Degenerate axes may be added to shape if needed
-    static CoordinateSystem getCoordinateSystem (Int& imageType, RecordInterface& header,
+// and the unused one returned in a Record for ease of use.  Degenerate axes 
+// may be added to shape if needed
+    static CoordinateSystem getCoordinateSystem (Int& imageType, RecordInterface& headerRec,
+                                                 const Vector<String>& header,
+                                                 LogIO& os, uInt whichRep,
+                                                 IPosition& shape, Bool dropStokes);
+
+// Old version
+    static CoordinateSystem getCoordinateSystemOld (Int& imageType, RecordInterface& header,
                                                  LogIO& os, IPosition& shape, Bool dropStokes);
 
 // Recover ImageInfo from header. Used keywords are removed from header
     static ImageInfo getImageInfo (RecordInterface& header);
 
+//Old version
+    static ImageInfo getImageInfoOld (RecordInterface& header);
+
 // Recover brightness unit from header. Used keywords are removed from header
     static Unit getBrightnessUnit (RecordInterface& header, LogIO& os);
+// Old version
+    static Unit getBrightnessUnitOld (RecordInterface& header, LogIO& os);
 
 // Recover history from FITS file keywrod list into logger
    static void restoreHistory (LoggerHolder& logger,
                                ConstFitsKeywordList& kw);
+			       
+// Parse header record and set MiscInfo
+   static Bool extractMiscInfo (RecordInterface& miscInfo, const RecordInterface& header);
 
 private:
    static Bool removeFile (String& error, const File& outFile,
@@ -251,6 +281,16 @@ public:
     static void FITSToImage(ImageInterface<Float> *&newImage,
 			    String &error,
 			    const String &imageName,
+			    uInt whichRep,
+			    HDUType &fitsImage,
+			    uInt memoryInMB = 64,
+                            Bool zeroBlanks=False);
+
+
+// Old version
+    static void FITSToImageOld(ImageInterface<Float> *&newImage,
+			    String &error,
+			    const String &imageName,
 			    HDUType &fitsImage,
 			    uInt memoryInMB = 64,
                             Bool zeroBlanks=False);
@@ -261,8 +301,4 @@ public:
 
 } //# NAMESPACE CASA - END
 
-#ifndef AIPS_NO_TEMPLATE_SRC
-#include <images/Images/ImageFITSConverter.cc>
-#include <images/Images/ImageFITS2Converter.cc>
-#endif //# AIPS_NO_TEMPLATE_SRC
 #endif

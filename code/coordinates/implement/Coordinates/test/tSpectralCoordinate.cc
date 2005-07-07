@@ -48,8 +48,8 @@
 #include <casa/Utilities/Assert.h>
 
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
                                         Double& crval,
                                         Double& cdelt,
@@ -406,16 +406,15 @@ int main()
                makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
             Vector<Double> pixelValues = lc2.pixelValues();
             Vector<Double> worldValues = lc2.worldValues();
-            if (!allNear(worldValues, freqs, 1e-6)) {
+            if (!casa::allNear(worldValues, freqs, 1e-6)) {
                throw(AipsError("Failed non-linear worldValues function test"));
             }
             Vector<Double> pixels2(freqs.nelements());
             for (uInt i=0; i<pixels2.nelements(); i++) pixels2(i) = Double(i);
-            if (!allNear(pixelValues, pixels2, 1e-6)) {
+            if (!casa::allNear(pixelValues, pixels2, 1e-6)) {
                throw(AipsError("Failed non-linear pixelValues function test"));
             }
          }
-
       }
 
 //
@@ -432,10 +431,9 @@ int main()
          shape(0) = 128;
             
 // All axes
-               
+
          {   
             Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
-//
             Vector<String> units2 = pC->worldAxisUnits();
             Vector<String> names2 = pC->worldAxisNames();
             Vector<Double> crval2 = pC->referenceValue();
@@ -446,7 +444,7 @@ int main()
             if (names2(0)!=String("Time")) {
                throw(AipsError("makeFourierCoordinate (1) failed names test"));
             }
-            if (!allNear(crval2,0.0,1e-13)) {
+            if (!casa::allNear(crval2,0.0,1e-13)) {
                throw(AipsError("makeFourierCoordinate (1) failed crval test"));
             }
             for (uInt i=0; i<pC->nPixelAxes(); i++) {
@@ -461,36 +459,25 @@ int main()
 
          {
             axes.set(False);
-            Bool failed = False;
-            Coordinate* pC = 0;
-            try {
-               pC = lc.makeFourierCoordinate (axes, shape);
-            } catch (AipsError x) {
-               failed = True;
-            } 
-            if (!failed) {
+            Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+            if (pC) {
+               delete pC;
                throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
             }
-            delete pC;
          }
 
 // Non linear
 
          {
             axes.set(True);
-            Bool failed = False;
-            Coordinate* pC = 0;
-            try {
-               pC = lc2.makeFourierCoordinate (axes, shape);
-            } catch (AipsError x) {
-               failed = True;
-            } 
-            if (!failed) {
+            Coordinate* pC = lc2.makeFourierCoordinate (axes, shape);
+            if (pC) {
+               delete pC;
                throw(AipsError("Failed to induce forced error (2) in makeFourierCoordinate"));
             }
-            delete pC;
          }
       }
+
      
 // Test conversion
 
@@ -506,7 +493,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2, pixel, 1e-6)) {
+         if (!casa::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
          Double pix, wrld;
@@ -519,7 +506,7 @@ int main()
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pix2, pix, 1e-6)) {
+         if (!casa::allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
      }
@@ -536,7 +523,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2, pixel, 1e-6)) {
+         if (!casa::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -554,7 +541,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2, pixel, 1e-6)) {
+         if (!casa::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
          Double pix, wrld;
@@ -567,7 +554,7 @@ int main()
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pix2, pix, 1e-6)) {
+         if (!casa::allNear(pix2, pix, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -592,7 +579,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2, pixel, 1e-6)) {
+         if (!casa::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -617,7 +604,7 @@ int main()
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
-         if (!allNear(pixel2, pixel, 1e-6)) {
+         if (!casa::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
       }
@@ -814,11 +801,32 @@ int main()
          lc.setRestFrequencies(rf, 0, False);
          Record rec;
          if (!lc.save(rec, "linear")) {
-            throw(AipsError("Coordinate saving to Record failed"));  
+            throw(AipsError("Linear SpectralCoordinate saving to Record failed"));  
          }  
          SpectralCoordinate* plc = SpectralCoordinate::restore(rec, "linear");
+         if (!plc) {
+            throw(AipsError("Failed to restore Linear SpectralCoordinate"));  
+         }
          if (!plc->near(lc, 1e-6)) {
-            throw(AipsError("Coordinate reflection through record interface failed"));  
+            throw(AipsError("Linear SpectralCoordinate reflection through record interface failed"));  
+         }
+         delete plc;
+      }
+      {
+         SpectralCoordinate lc = makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
+         Vector<Double> rf(2);
+         rf(0) = 1.0e9; rf(1) = 2.0e9;
+         lc.setRestFrequencies(rf, 0, False);
+         Record rec;
+         if (!lc.save(rec, "nonlinear")) {
+            throw(AipsError("Non-linear SpectralCoordinate saving to Record failed"));  
+         }  
+         SpectralCoordinate* plc = SpectralCoordinate::restore(rec, "nonlinear");
+         if (!plc) {
+            throw(AipsError("Failed to restore non-linear SpectralCoordinate"));  
+         }
+         if (!plc->near(lc, 1e-6)) {
+            throw(AipsError("Non-linear SpectralCoordinate reflection through record interface failed"));  
          }
          delete plc;
       }
@@ -838,17 +846,15 @@ int main()
 //
 /*
       {
-         LogOrigin or("tSpectralCoordinate", "main()", WHERE);
-         LogIO os(or);
-//
+         LogIO os(LogOrigin("tSpectralCoordinate", "main()", WHERE));
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
          Record rec;
-//         lc.toFITS(rec, 0, os, False, True);
+         lc.toFITS(rec, 0, os, False, True);
 //
          SpectralCoordinate lc2;
          String errMsg;
-         if (!SpectralCoordinate::fromFITS(lc2, errMsg, rec, 0, os,  True)) {
-            throw(AipsError(String("fromFITS function failed because") + errMsg));  
+         if (!SpectralCoordinate::fromFITSOld(lc2, errMsg, rec, 0, os,  True)) {
+            throw(AipsError(String("fromFITSOld function failed because") + errMsg));  
          }
          if (!lc.near(lc2, 1e-6)) {
             throw(AipsError("FITS reflection failed"));  
@@ -945,7 +951,7 @@ void refConv ()
       throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
    }
 //
-   if (!allNear(pixel2, pixel, 1e-6)) {
+   if (!casa::allNear(pixel2, pixel, 1e-6)) {
       throw(AipsError("Coordinate + reference conversion reflection 1 failed"));
    }                                       
 //
@@ -957,6 +963,6 @@ void refConv ()
 //
    AlwaysAssert(type2==MFrequency::BARY, AipsError);
    AlwaysAssert(near(epoch.getValue().get(), epoch2.getValue().get()), AipsError);
-   AlwaysAssert(allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
-   AlwaysAssert(allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
+   AlwaysAssert(casa::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
+   AlwaysAssert(casa::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
 }

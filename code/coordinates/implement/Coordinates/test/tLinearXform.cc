@@ -36,9 +36,9 @@
 #include <casa/Exceptions/Error.h>
 
 #include <casa/iostream.h>
-
-
 #include <casa/namespace.h>
+
+
 int main()
 {
    try {
@@ -169,43 +169,46 @@ int main()
          Vector<Double> scale(2);
          crpix2(0) = 1.0; crpix2(1) = 2.0;
          scale(0) = 5.0; scale(1) = 2.0;
+         String errMsg;
 //
          {
-            LinearXform lxf2 = lxf.fourierInvert(axes, crpix2, scale);
-            if (!allNear(crpix2, lxf2.crpix(),1e-13)) {
+            LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
+            if (!casa::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (1) crpix test failed"));         
             }
             Vector<Double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
-            if (!allNear(tmp, lxf2.cdelt(),1e-13)) {
+            if (!casa::allNear(tmp, lxf2->cdelt(),1e-13)) {
                throw(AipsError("fourierInvert (1) cdelt test failed"));         
             }
-            if (!near(1.0/diag(0),lxf2.pc()(0,0)) || !near(1.0/diag(1),lxf2.pc()(1,1)) ||
-                !near(0.0,lxf2.pc()(0,1)) || !near(0.0,lxf2.pc()(1,0))) {
+            if (!near(1.0/diag(0),lxf2->pc()(0,0)) || !near(1.0/diag(1),lxf2->pc()(1,1)) ||
+                !near(0.0,lxf2->pc()(0,1)) || !near(0.0,lxf2->pc()(1,0))) {
                throw(AipsError("fourierInvert (1) pc test failed"));         
             }
+            delete lxf2;
          }
 
 // Not all axes
 
          {
             axes(1) = False;
-            LinearXform lxf2 = lxf.fourierInvert(axes, crpix2, scale);
-            if (!near(crpix2(0), lxf2.crpix()(0),1e-13) ||
-                !near(lxf.crpix()(1), lxf2.crpix()(1),1e-13)) {
+            LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
+            if (!near(crpix2(0), lxf2->crpix()(0),1e-13) ||
+                !near(lxf.crpix()(1), lxf2->crpix()(1),1e-13)) {
                throw(AipsError("fourierInvert (2) crpix test failed"));         
             }
             Vector<Double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
-            if (!near(tmp(0), lxf2.cdelt()(0),1e-13) ||
-                !near(cdelt(1), lxf2.cdelt()(1),1e-13)) {
+            if (!near(tmp(0), lxf2->cdelt()(0),1e-13) ||
+                !near(cdelt(1), lxf2->cdelt()(1),1e-13)) {
                throw(AipsError("fourierInvert (2) cdelt test failed"));         
             }
-            if (!near(1.0/diag(0),lxf2.pc()(0,0)) || !near(diag(1),lxf2.pc()(1,1)) ||
-                !near(0.0,lxf2.pc()(0,1)) || !near(0.0,lxf2.pc()(1,0))) {
+            if (!near(1.0/diag(0),lxf2->pc()(0,0)) || !near(diag(1),lxf2->pc()(1,1)) ||
+                !near(0.0,lxf2->pc()(0,1)) || !near(0.0,lxf2->pc()(1,0))) {
                throw(AipsError("fourierInvert (2) pc test failed"));         
             }
+            delete lxf2;
          }
 
 // Non-diagonal pc matrix all axes
@@ -215,19 +218,20 @@ int main()
             pc(1,0) = 2.0;
             pc(0,1) = 2.0;
             lxf.pc(pc);
-            LinearXform lxf2 = lxf.fourierInvert(axes, crpix2, scale);
-            if (!allNear(crpix2, lxf2.crpix(),1e-13)) {
+            LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
+            if (!casa::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (3) crpix test failed"));         
             }
             Vector<Double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
-            if (!allNear(tmp, lxf2.cdelt(),1e-13)) {
+            if (!casa::allNear(tmp, lxf2->cdelt(),1e-13)) {
                throw(AipsError("fourierInvert (3) cdelt test failed"));         
             }
-            if (!allNear(invert(pc), lxf2.pc(), 1e-13)) {
+            if (!casa::allNear(invert(pc), lxf2->pc(), 1e-13)) {
                throw(AipsError("fourierInvert (3) pc test failed"));         
             }
+            delete lxf2;
          }
 
 
@@ -239,13 +243,9 @@ int main()
             pc(1,0) = 2.0;
             pc(0,1) = 2.0;
             lxf.pc(pc);
-            Bool failed = False;
-            try {
-               LinearXform lxf2 = lxf.fourierInvert(axes, crpix2, scale);
-            } catch (AipsError x) {
-               failed = True;
-            } 
-            if (!failed) {
+            LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
+            if (lxf2) {
+               delete lxf2;
                throw(AipsError("Failed to induce forced fourierInvert error"));
             }
          }
@@ -284,7 +284,7 @@ int main()
          }
          Vector<Double> world2;
          ok = lxf.reverse(world2, pixel, error);
-         if (!allNear(world, world2, 1e-6)) {
+         if (!casa::allNear(world, world2, 1e-6)) {
             throw(AipsError("Conversion reflection failed"));
          }
       }

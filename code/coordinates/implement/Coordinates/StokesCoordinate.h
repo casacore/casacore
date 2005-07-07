@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_STOKESCOORDINATE_H
 #define COORDINATES_STOKESCOORDINATE_H
 
@@ -35,8 +36,9 @@
 #include <casa/Containers/Block.h>
 #include <casa/Arrays/Vector.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+
 
 // <summary>
 // Interconvert between pixel and Stokes value.
@@ -217,8 +219,6 @@ public:
     // <group>
     virtual Bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
-    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
-    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
     //</group>
 
     // Format a StokesCoordinate world value with the common format 
@@ -285,13 +285,13 @@ private:
     String name_p;
     String unit_p;
     Int nValues_p;
-    Vector<Double> worldMin_p, worldMax_p;
 
     // Undefined and inaccessible
     StokesCoordinate();
 };
 
-
 } //# NAMESPACE CASA - END
 
+
 #endif
+

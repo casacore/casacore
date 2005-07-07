@@ -36,9 +36,10 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/LinearSearch.h>
-#include <wcslib/lin.h>
 #include <casa/stdlib.h>
 #include <casa/sstream.h>
+
+#include <wcslib/lin.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -97,7 +98,7 @@ LinearXform::LinearXform(const Vector<Double>& crpixIn,
 // Is pc is diagonal?  Done purely for use in the Fourier
 // inversion stuff.  Urk.
 
-            if (i != j && !::casa::near(pcIn(j,i),zero,tol)) {
+            if (i != j && !casa::near(pcIn(j,i),zero,tol)) {
                 isPCDiagonal_p = False;
             }
             linprm_p.pc[ij++] = pcIn(j,i);
@@ -293,7 +294,7 @@ Bool LinearXform::near(const LinearXform& other,
        if (d1.nelements() != d2.nelements()) return False;
        for (uInt i = 0; i < d1.nelements(); i++) {
            if (!exclude[i]) {
-               if (!::casa::near(d1(i),d2(i),tol)) return False;
+               if (!casa::near(d1(i),d2(i),tol)) return False;
            }
        }
     }
@@ -304,7 +305,7 @@ Bool LinearXform::near(const LinearXform& other,
        if (d1.nelements() != d2.nelements()) return False;
        for (uInt i = 0; i < d1.nelements(); i++) {
            if (!exclude(i)) {
-               if (!::casa::near(d1[i],d2[i],tol)) return False;
+               if (!casa::near(d1[i],d2[i],tol)) return False;
            }
        }
     }
@@ -326,7 +327,7 @@ Bool LinearXform::near(const LinearXform& other,
         if (!exclude(j)) {
             for (uInt i = 0; i < row1.nelements(); i++) {
                 if (!exclude(i)) {
-                    if (!::casa::near(row1(i),row2(i),tol)) return False;
+                    if (!casa::near(row1(i),row2(i),tol)) return False;
                 }
             }
         }

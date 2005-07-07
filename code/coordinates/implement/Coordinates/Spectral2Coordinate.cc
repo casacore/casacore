@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 
 #include <casa/Arrays/ArrayMath.h>
@@ -45,40 +46,8 @@
 #include <casa/BasicSL/String.h>
 
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-SpectralCoordinate::SpectralCoordinate(MFrequency::Types freqType,
-                                       MDoppler::Types velType,
-                                       const Vector<Double>& velocities,
-                                       const String& velUnit,
-                                       Double restFrequency )
-: Coordinate(),
-  type_p(freqType),
-  conversionType_p(type_p),
-  restfreqs_p(0),
-  restfreqIdx_p(0),
-  pConversionMachineTo_p(0),
-  pConversionMachineFrom_p(0),
-  pVelocityMachine_p(0),
-  velType_p(MDoppler::RADIO),
-  unit_p("Hz")
-{
-   restfreqs_p.resize(1);
-   restfreqs_p(0) = restFrequency;
-
-// Convert to frequency 
-
-   makeVelocityMachine (velUnit, velType, String("Hz"), freqType, restFrequency);
-   Quantum<Vector<Double> > frequencies = pVelocityMachine_p->makeFrequency(velocities);
-  
-// Construct
-
-   Vector<Double> channels(velocities.nelements());
-   indgen(channels);
-   worker_p = TabularCoordinate(channels, frequencies.getValue(), "Hz", "Frequency");
-}                                      
- 
 
 Bool SpectralCoordinate::toWorld(MFrequency& world, 
 				 Double pixel) const
@@ -152,7 +121,7 @@ Bool SpectralCoordinate::pixelToVelocity (Vector<Double>& velocity, const Vector
    return True;
 }
 
-Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double frequency)  const
+Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double frequency) const
 {
    velocity = pVelocityMachine_p->makeVelocity(frequency);
    MVFrequency mvf(frequency);
@@ -161,7 +130,7 @@ Bool SpectralCoordinate::frequencyToVelocity (Quantum<Double>& velocity, Double 
 }
 
 
-Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency) const 
+Bool SpectralCoordinate::frequencyToVelocity (Double& velocity, Double frequency) const
 {
    static Quantum<Double> t;
    t = pVelocityMachine_p->makeVelocity(frequency);
@@ -228,13 +197,12 @@ Bool SpectralCoordinate::velocityToFrequency (Vector<Double>& frequency,
 
 void SpectralCoordinate::makeVelocityMachine (const String& velUnit, 
                                               MDoppler::Types velType,
-                                              const String& freqUnit, 
+                                              const Unit& freqUnit, 
                                               MFrequency::Types freqType,
                                               Double restFreq)
 {
-   Unit fU(freqUnit);
-   Quantum<Double> rF(restFreq, fU);
-   pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(freqType), fU,
+   Quantum<Double> rF(restFreq, freqUnit);
+   pVelocityMachine_p = new VelocityMachine(MFrequency::Ref(freqType), freqUnit,
                                             MVFrequency(rF), MDoppler::Ref(velType), 
                                             Unit(velUnit));
 }
@@ -319,18 +287,6 @@ void SpectralCoordinate::convertTo (Vector<Double>& world) const
    }
 }
 
-void SpectralCoordinate::convertToMany (Matrix<Double>& world) const
-{
-   if (!pConversionMachineTo_p) return;
-//
-// Because the SC only has one axis we can take a short cut in the iteration
-//
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
-    for (jWorld.reset(); jWorld!=jWorld.end(); jWorld++) {
-       *jWorld  = (*pConversionMachineTo_p)(*jWorld).get(unit_p).getValue();
-    }
-}
-
 void SpectralCoordinate::convertFrom (Vector<Double>& world) const
 {
 
@@ -339,19 +295,6 @@ void SpectralCoordinate::convertFrom (Vector<Double>& world) const
    if (pConversionMachineFrom_p) {
       world[0] = (*pConversionMachineFrom_p)(world[0]).get(unit_p).getValue();
    }
-}
-
-
-void SpectralCoordinate::convertFromMany (Matrix<Double>& world) const
-{
-   if (!pConversionMachineFrom_p) return;
-//
-// Because the SC only has one axis we can take a short cut in the iteration
-//
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
-    for (jWorld.reset(); jWorld!=jWorld.end(); jWorld++) {
-       *jWorld  = (*pConversionMachineFrom_p)(*jWorld).get(unit_p).getValue();
-    }
 }
 
 } //# NAMESPACE CASA - END

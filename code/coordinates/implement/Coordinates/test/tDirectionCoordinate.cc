@@ -41,14 +41,13 @@
 #include <coordinates/Coordinates/Projection.h>
 #include <casa/Exceptions/Error.h>
 #include <tables/Tables/TableRecord.h>
-
-
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <casa/Logging/LogIO.h>
 
+#include <wcslib/wcs.h>
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
 DirectionCoordinate makeCoordinate(MDirection::Types type,
                                    Projection& proj,
                                    Vector<Double>& crval,
@@ -160,6 +159,41 @@ int main()
            throw(AipsError(String("Quantum interface constructor failed consistency test")));
         }
       }
+
+// Test WCS constructor (only partial test)
+
+      {
+         ::wcsprm wcs;
+         wcs.flag = -1;
+         int iret = wcsini(1, 2, &wcs);
+         if (iret!=0) {
+           throw(AipsError(String("Failed to make wcs structure")));
+         }
+//
+         String ctype0("RA---SIN");
+         String ctype1("DEC--SIN");
+//
+         strncpy (wcs.ctype[0], ctype0.chars(), 9);
+         strncpy (wcs.ctype[1], ctype1.chars(), 9);
+//
+         iret = wcsset(&wcs);
+         if (iret!=0) {
+           throw(AipsError(String("Failed to init wcs structure")));
+         }
+//
+         DirectionCoordinate dc3 (MDirection::J2000, wcs);
+//
+         DirectionCoordinate dc4(dc3);
+         if (!dc3.near(dc4)) {
+            throw(AipsError(String("wcs interface constructor failed consistency test 1")));
+         }
+         DirectionCoordinate dc5;
+         dc5 = dc3;
+         if (!dc5.near(dc3)) {
+            throw(AipsError(String("wcs interface constructor failed consistency test 2")));
+         }
+      }  
+
 
 // Test the rest
 
@@ -850,14 +884,9 @@ void doit5 (DirectionCoordinate& dC)
    {
       axes.set(True);
       axes(1) = False;
-      Bool failed = False;
-      Coordinate* pC = 0;
-      try {
-         pC = dC.makeFourierCoordinate (axes, shape);
-      } catch (AipsError x) {
-         failed = True;
-      } 
-      if (!failed) {
+      Coordinate* pC = dC.makeFourierCoordinate (axes, shape);
+      if (pC) {
+         delete pC;
          throw(AipsError("Failed to induce forced error in makeFourierCoordinate (2)"));
       }
       delete pC;
@@ -974,11 +1003,14 @@ void doit8 ()
    Projection proj;
    Vector<Double> crval, crpix, cdelt;
    Matrix<Double> xform;
-//
-   DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
+
+// No frame conversion
+
+   {
+      DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
                                            proj, crval, crpix,
                                            cdelt, xform);
-   {
+//
       Vector<Bool> failures, failures2;
       const Int nCoord = 1000;
       Matrix<Double> pixel(2, nCoord), pixel2;
@@ -1012,6 +1044,50 @@ void doit8 ()
          }
       }    
    }
+
+// With frame conversion
+
+   {
+      DirectionCoordinate lc = makeCoordinate(MDirection::J2000,
+                                           proj, crval, crpix,
+                                           cdelt, xform);
+      lc.setReferenceConversion (MDirection::GALACTIC);
+//
+      Vector<Bool> failures, failures2;
+      const Int nCoord = 1000;
+      Matrix<Double> pixel(2, nCoord), pixel2;
+      Matrix<Double> world(2, nCoord);
+//
+      Double incr = 1001.0 / nCoord;             // Make sure pixel!=0 so dont have problems with 'near' function
+      Double pix = -500.0;
+      for (Int i=0; i<nCoord; i++) {   
+        pixel.column(i) = pix;
+        pix += incr;
+      }
+//
+      if (!lc.toWorldMany(world, pixel, failures)) {
+         throw(AipsError(String("toWorldMany conversion failed because ") + lc.errorMessage())); 
+      }
+      if (!lc.toPixelMany(pixel2, world, failures2)) {
+         throw(AipsError(String("toPixelMany conversion failed because ") + lc.errorMessage())); 
+      }
+//
+      if (!allNear(pixel, pixel2, 0.1)) {
+         throw(AipsError("to{World,Pixel}Many reflection failed"));
+      }
+//
+      Vector<Double> world2;
+      for (Int i=0; i<nCoord; i++) {
+         if (!lc.toWorld(world2, pixel.column(i))) {
+            throw(AipsError(String("toWorld failed because ") + lc.errorMessage())); 
+         }
+         if (!allNear(world2, world.column(i), 1e-5)) {
+            throw(AipsError("World conversions gave wrong results in toWorldMany"));
+         }
+      }    
+   }
+
+
 }
 
 void doit9 ()

@@ -32,7 +32,6 @@
 #include <casa/aips.h>
 #include <wcslib/lin.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 template<class T> class Vector;
@@ -170,7 +169,9 @@ public:
     // </group>
 
     // Invert the LinearXform ready for use in a Fourier Transformed Coordinate.
-    LinearXform fourierInvert (const Vector<Bool>& axes,
+    // It is the callers responsibility to delete the pointer. If it fails
+    // the pointer is 0 and an error message is provided
+    LinearXform* fourierInvert (String& errMsg, const Vector<Bool>& axes,
                                const Vector<Double>& crpix,
                                const Vector<Double>& scale) const;
 
@@ -190,13 +191,9 @@ private:
     mutable linprm linprm_p;
 
     Bool isPCDiagonal_p;
-
     void set_linprm();
 };
-
 
 } //# NAMESPACE CASA - END
 
 #endif
-
-

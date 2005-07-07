@@ -32,8 +32,8 @@
 #include <casa/Exceptions/Error.h>
 
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
 void testSin();
 
 int main()
@@ -78,7 +78,20 @@ int main()
          if (!ok) {
            throw(AipsError("isZenithal fails"));
          }
+
+// Test second FITS constructor
+
+         {
+            String p(proj.name());
+            String ctypeLong("RA---");
+            String ctypeLat("DEC--");
+//
+            Projection proj2(ctypeLong.append(p), 
+                             ctypeLat.append(p), pars);
+         }
+
       }
+
       
 // Test near function
 

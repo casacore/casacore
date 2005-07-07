@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_TABULARCOORDINATE_H
 #define COORDINATES_TABULARCOORDINATE_H
 
@@ -244,22 +245,6 @@ public:
     // checks or adjustment.
     Bool overwriteWorldAxisUnits(const Vector<String> &units);
 
-    // Set the world min and max ranges, for use in function <src>toMix</src>,
-    // for  a lattice of the given shape (for this coordinate).
-    // The implementation here gives world coordinates dangling 25% off the
-    // edges of the image.       
-    // The output vectors are resized.  Returns False if fails (and
-    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
-    // with a reason in <src>errorMessage()</src>.
-    // The <src>setDefaultWorldMixRanges</src> function
-    // gives you [-1e99->1e99]. 
-    // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);
-    virtual void setDefaultWorldMixRanges ();
-    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
-    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
-    //</group>
-
     // Get the table, i.e. the pixel and world values. The length of these
     // Vectors will be zero if this axis is pure linear.
     // <group>
@@ -283,7 +268,8 @@ public:
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
     // associated with all the axes of the Coordinate.   Currently the
-    // output reference pixel is always shape/2.
+    // output reference pixel is always shape/2. If the pointer returned is 0, 
+    // it failed with a message in <src>errorMessage</src>
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
@@ -306,7 +292,6 @@ private:
     Double matrix_p;
     String unit_p;
     String name_p;
-    Vector<Double> worldMin_p, worldMax_p;
 
     // Channel_True = channel_corrections_p(Channel_average).
     // <group>
@@ -324,8 +309,7 @@ private:
                                         const Vector<Double> &worldValues);
 };
 
-
-
 } //# NAMESPACE CASA - END
+
 
 #endif

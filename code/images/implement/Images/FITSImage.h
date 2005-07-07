@@ -107,10 +107,10 @@ class FITSImage: public ImageInterface<Float>
 {
 public: 
   // Construct a FITSImage from the disk FITS file name and apply mask.
-  explicit FITSImage(const String& name);
+  explicit FITSImage(const String& name, Bool oldParser=False, uInt whichRep=0);
 
   // Construct a FITSImage from the disk FITS file name and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier&);
+  FITSImage(const String& name, const MaskSpecifier& mask, Bool oldParser=False, uInt whichRep=0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -121,7 +121,7 @@ public:
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);
 
-  // Function to open a FITS image.
+  // Function to open a FITS image (new parser)
   static LatticeBase* openFITSImage (const String& name,
 				     const MaskSpecifier&);
 
@@ -255,6 +255,8 @@ private:
   DataType       dataType_p;
   Int64          fileOffset_p;
   Bool           isClosed_p;
+  Bool           oldParser_p;
+  uInt           whichRep_p;
 
 // Reopen the image if needed.
    void reopenIfNeeded() const
@@ -273,11 +275,20 @@ private:
                             Int& recsize, Int& recno,
 			    FITS::ValueType& dataType, 
                             Float& scale, Float& offset, Short& shortMagic, 
-                            Int& longMagic, Bool& hasBlanks, const String& name);
+                            Int& longMagic, Bool& hasBlanks, const String& name,
+                            Bool oldParser, uInt whichRep);
 
 // Crack the header
    template <typename T>
    void crackHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
+                     Unit& brightnessUnit, RecordInterface& miscInfo,
+                     Float& scale, Float& offset, Short& magicShort,
+                     Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
+                     uInt whichRep);
+		     
+// Old version
+   template <typename T>
+   void crackHeaderOld (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                      Unit& brightnessUnit, RecordInterface& miscInfo,
                      Float& scale, Float& offset, Short& magicShort,
                      Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile);
@@ -288,3 +299,5 @@ private:
 } //# NAMESPACE CASA - END
 
 #endif
+
+

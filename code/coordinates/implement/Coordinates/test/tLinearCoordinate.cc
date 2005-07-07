@@ -38,8 +38,8 @@
 #include <tables/Tables/TableRecord.h>
 
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
 LinearCoordinate makeCoordinate(Vector<String>& names,
                                 Vector<String>& units,
                                 Vector<Double>& crpix,
@@ -441,19 +441,12 @@ int main()
 //
             axes.set(True);
             axes(1) = False;
-            Bool failed = False;
-            Coordinate* pC = 0;
-            try {
-               pC = lc2.makeFourierCoordinate (axes, shape);
-            } catch (AipsError x) {
-               failed = True;
-            } 
-            if (!failed) {
+            Coordinate* pC = lc2.makeFourierCoordinate (axes, shape);
+            if (pC) {
+               delete pC;
                throw(AipsError("Failed to induce forced error in makeFourierCoordinate (3)"));
             }
-            delete pC;
          }
-
      }
 
 //

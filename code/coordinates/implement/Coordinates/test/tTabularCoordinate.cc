@@ -39,8 +39,8 @@
 #include <casa/Quanta/Quantum.h>
 
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,
                                        Double& crval,
@@ -445,17 +445,11 @@ void doitLinear (const Double refVal,
           
       {
          axes.set(False);
-         Bool failed = False;
-         Coordinate* pC = 0;
-         try {
-            pC = lc.makeFourierCoordinate (axes, shape);
-         } catch (AipsError x) {
-            failed = True;
-         } 
-         if (!failed) {
+         Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+         if (pC) {
+            delete pC;
             throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
          }
-         delete pC;
       }
    }
 }
@@ -528,17 +522,11 @@ void doitNonLinear (const Vector<Double>& pixelValues,
    {
       Vector<Bool> axes(lc.nPixelAxes(), True);      
       Vector<Int> shape(lc.nPixelAxes(), 10);
-      Bool failed = False;
-      Coordinate* pC = 0;
-      try {
-         pC = lc.makeFourierCoordinate (axes, shape);
-      } catch (AipsError x) {
-         failed = True;
-      } 
-      if (!failed) {
+      Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
+      if (pC) {
+         delete pC;
          throw(AipsError("Failed to induce forced error (1) in makeFourierCoordinate"));
       }
-      delete pC;
    }
 }
 

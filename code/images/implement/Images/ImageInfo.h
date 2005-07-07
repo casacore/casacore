@@ -184,6 +184,10 @@ public:
     Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
 // </group>
 
+// Old version
+    Bool fromFITSOld(Vector<String>& error, const RecordInterface & inRecord);
+
+
 
 // This function takes an unofficial fitsValue found on the Stokes axis
 // and returns the appropriate ImageType.  The idea is that you 

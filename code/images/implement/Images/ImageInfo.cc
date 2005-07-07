@@ -408,6 +408,89 @@ Bool ImageInfo::toFITS(String & error, RecordInterface & outRecord) const
 
 
 Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
+//
+// keyname
+//   value          - required
+//   unit           - optional
+//   comment        - optional
+//
+{
+   error.resize(2);
+   Bool ok = True;
+   ImageInfo tmp;
+   (*this) = tmp; // Make sure we are "empty" first;
+//
+   if (header.isDefined("bmaj") && header.isDefined("bmin") &&
+       header.isDefined("bpa")) {
+//
+      Record subMaj = header.asRecord("bmaj");
+      Record subMin = header.asRecord("bmin");
+      Record subBPA = header.asRecord("bpa");
+//
+      DataType typeMaj = subMaj.dataType("value");
+      DataType typeMin = subMin.dataType("value");
+      DataType typePA = subBPA.dataType("value");
+//
+      Bool ok = (typeMaj==TpDouble || typeMaj==TpFloat) &&
+                (typeMin==TpDouble || typeMin==TpFloat) &&
+                (typePA==TpDouble || typePA==TpFloat);
+//
+      if (ok) {
+         Double bmaj = subMaj.asDouble("value");
+         Double bmin = subMin.asDouble("value");
+         Double bpa = subBPA.asDouble("value");
+//   
+         Unit unit(String("deg"));
+         if (subMaj.isDefined("unit")) unit = Unit(subMaj.asString("unit"));
+         Quantum<Double> bmajq(max(bmaj,bmin), unit);
+//
+         if (subMin.isDefined("unit")) unit = Unit(subMin.asString("unit"));
+         Quantum<Double> bminq(min(bmaj,bmin), unit);
+//
+         if (subBPA.isDefined("unit")) unit = Unit(subBPA.asString("unit"));
+         Quantum<Double> bpaq(bpa, unit);
+//
+         bmajq.convert(Unit("arcsec"));
+         bminq.convert(Unit("arcsec"));
+         bpaq.convert(Unit("deg"));
+//
+         setRestoringBeam(bmajq, bminq, bpaq);
+      } else {
+         error[0] = "BMAJ, BMIN, BPA fields are not of type Double or Float";
+      }
+   }
+//
+   if (header.isDefined("btype")) {
+      Record subRec = header.asRecord("btype");
+      if (subRec.dataType("value")==TpString) {
+         String type = subRec.asString("value");
+
+// We are going to cope with aips++ values and Miriad values
+// For Miriad there are a few extra ones (which we put on the Stokes
+// axis in aips++ - e.g. position angle).  For the ones that are common
+// the Miriad ones have underscores and the aips++ ones have spaces
+
+         ImageInfo::ImageTypes imageType = ImageInfo::imageType(type);
+         if (imageType != ImageInfo::Undefined) {
+            setImageType(imageType);
+         } else {
+            imageType = MiriadImageType (type);
+            if (imageType != ImageInfo::Undefined) {
+               setImageType(imageType);
+            }
+         }
+      }  else {
+         error(1) = "BTYPE field is not of type String";
+         ok = False;
+      }
+   }
+//
+   if (ok) error.resize(0);
+   return ok;
+}
+
+
+Bool ImageInfo::fromFITSOld(Vector<String>& error, const RecordInterface& header)
 {
    error.resize(2);
    Bool ok = True;
@@ -429,7 +512,7 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
          Double bmaj = header.asDouble("bmaj");
          Double bmin = header.asDouble("bmin");
          Double bpa = header.asDouble("bpa");
-//   
+//
          Quantum<Double> bmajq(max(bmaj,bmin), "deg");
          Quantum<Double> bminq(min(bmaj,bmin), "deg");
          bmajq.convert(Unit("arcsec"));
@@ -467,6 +550,7 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
    if (ok) error.resize(0);
    return ok;
 }
+
 
 
 ostream &operator<<(ostream &os, const ImageInfo &info)

@@ -1,4 +1,4 @@
-//# Projection.cc: this defines Projection which wraps up wcs projections
+//# Projection.cc: this defines Projection which wraps up wcs projection
 //# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -29,8 +29,12 @@
 #include <coordinates/Coordinates/Projection.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Exceptions/Error.h>
+#include <casa/Utilities/Regex.h>
+#include <casa/BasicSL/String.h>
+
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
 
 Projection::Projection(Projection::Type which) 
 : which_p(which), parameters_p(0)
@@ -44,8 +48,25 @@ Projection::Projection(Projection::Type which, const Vector<Double> &parameters)
     validate();
 }
 
+Projection::Projection(const String& ctypeLon,
+                       const String& ctypeLat,
+                       const Vector<Double>& parameters)
+{
+   String t1(ctypeLon);
+   String t2(ctypeLat);
+   which_p = type(t1, t2);
+   if (which_p==N_PROJ) {
+      throw(AipsError("No celestial projection found in CTYPE keywords"));
+   }
+   parameters_p = parameters;
+//
+   validate();
+}
+
+
 Projection::Projection(const Projection &other)
-    : which_p(other.which_p), parameters_p(other.parameters_p.copy())
+ : which_p(other.which_p), 
+   parameters_p(other.parameters_p.copy())
 {
     validate();
 }
@@ -211,7 +232,7 @@ Bool Projection::near(const Projection &other, Double tol) const
    if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
    
    for (uInt i=0; i<parameters_p.nelements(); i++) {
-     if (!::casa::near(parameters_p(i),other.parameters_p(i),tol)) return False;
+     if (!casa::near(parameters_p(i),other.parameters_p(i),tol)) return False;
    }
    
    return True;
@@ -242,6 +263,43 @@ void Projection::validate()
 }
 
 
+Projection::Type Projection::type (String& ctypeLong,
+                                   String& ctypeLat) const
+{
+// Strip trailing spaces
+
+   Int i1 = ctypeLong.index(RXwhite,0);
+   if (i1>=0) ctypeLong = String(ctypeLong.before(i1));
+//
+   i1 = ctypeLat.index(RXwhite,0);
+   if (i1>=0) ctypeLat = String(ctypeLat.before(i1));
+
+   Int l1 = ctypeLong.length();
+   Int l2 = ctypeLat.length();
+   Int n = 4;
+   String proj1(ctypeLong.at(n, l1-4));
+   String proj2(ctypeLat.at(n, l2-4));
+        
+// Get rid of leading -'s
+              
+   proj1.gsub(Regex("^-*"), String(""));
+   proj2.gsub(Regex("^-*"), String(""));
+                
+// Get rid of spaces
+            
+   proj1.gsub(Regex(" *"), String(""));
+   proj2.gsub(String(" "), String(""));
+//
+   if (proj1 != proj2) {
+      throw (AipsError("Projection codes must be identical"));
+   }
+//
+   if (proj1==String("")) {
+      throw (AipsError("No projection code given in direction axes"));
+   }
+//
+   return type(proj1);
+}
 
 } //# NAMESPACE CASA - END
 

@@ -26,17 +26,20 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_COORDINATE_H
 #define COORDINATES_COORDINATE_H
 
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Arrays/Vector.h>
+#include <wcslib/wcs.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+
 template<class T> class Quantum;
 template<class T> class Matrix;
-template<class T> class Vector;
 class IPosition;
 class RecordInterface;
 class Projection;
@@ -167,7 +170,7 @@ public:
        // STL formatting routines.  May not be available for all Coordinate
        // types.
        MIXED,
-       // HHH:MM:SS.SSS style formatting 
+       // HHH:MM:SS.SSS style formatting
        TIME };
 
     // Destructor.  Needs to be public so the user can delete Coordinate* objects
@@ -246,18 +249,17 @@ public:
                        const Vector<Double>& worldMax) const;
 
     // Set the world min and max ranges, for use in function <src>toMix</src>, for 
-    // a lattice of the given shape for this coordinate. 
+    // a lattice of the given shape for this coordinate. The default implementation
+    // here sets the range for pixels dangling 25% off the image.
     // Returns False if fails with a reason  in <src>errorMessage()</src>.
-    // If it fails, the function <src>setDefaultMixRanges</src>
-    // supplies the values.   The <src>setDefaultMixRanges</src> function 
-    // is meant to be used if you don't have a shape, and then for each coordinate
-    // type it gives you a full range possible.  The ranges are held internally
-    // in each Coordinate and recovered via <src>worldMixMin, worldMixMax</src>
+    // setDefaultWorldMixRanges sets the range for each axis to +/-1e99
+    // The ranges remain zero length vectors until you explicitly
+    // initialize them.
     // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape) = 0;
-    virtual void setDefaultWorldMixRanges () = 0;
-    virtual Vector<Double> worldMixMin () const = 0;
-    virtual Vector<Double> worldMixMax () const = 0;
+    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual void setDefaultWorldMixRanges ();
+    Vector<Double> worldMixMin () const {return worldMin_p;};
+    Vector<Double> worldMixMax () const {return worldMax_p;};
     //</group>
 
 
@@ -279,9 +281,8 @@ public:
                              Vector<Bool>& failures) const;
     // </group>
 
-
     // Make absolute coordinates relative and vice-versa (with
-    // respect to the referencfe value).
+    // respect to the reference value).
     // Vectors must be length <src>nPixelAxes()</src> or
     // <src>nWorldAxes()</src> or memory access errors will occur
     // <group>
@@ -482,10 +483,6 @@ protected:
 			   const Vector<String> &units, 
 			   const Vector<String> &oldUnits);
 
-    //
-    Vector<String> make_Direction_FITS_ctype (Bool& isNCP, const Projection& proj,
-                                              const Vector<String>& axisNames,
-                                              Double refLat, Bool printError) const;
 
     // Tries to find a canonical unit for input unit (e.g.  GHz -> Hz), and
     // tells you the output name and unit for the Fourier coordinate 
@@ -495,17 +492,53 @@ protected:
                        const String& unitIn, 
                        const String& nameIn) const;
 
-   // Default toMix ranges using toWorld.  Called by most derived coordinates
-   // If the shape is negative, that indicates that the shape is unknown
-   // for that axis.  The default range is used for that axis.  This situation
-   // arises in a CoordinateSystem for which a pixel, but not a world axis
-   // has been removed.
-   Bool setWorldMixRanges (Vector<Double>& worldMin,
-                           Vector<Double>& worldMax,
-                           const IPosition& shape) const;
-   //
-   void setDefaultWorldMixRanges (Vector<Double>& worldMin,
-                                  Vector<Double>& worldMax) const;
+   // Functions to interconvert pixel<->world via wcs.  These functions are called 
+   // explicitly by the to{world,Pixel} functions in the appropriate wcs-based derived
+   // classes. 
+   // <group>
+   Bool toWorldWCS (Vector<Double> &world, const Vector<Double> &pixel, wcsprm& wcs) const;
+   Bool toPixelWCS(Vector<Double> &pixel,  const Vector<Double> &world, wcsprm& wcs) const;
+   Bool toWorldManyWCS (Matrix<Double>& world, const Matrix<Double>& pixel,
+                        Vector<Bool>& failures, wcsprm& wcs) const;
+   Bool toPixelManyWCS (Matrix<Double>& pixel, const Matrix<Double>& world,
+                        Vector<Bool>& failures, wcsprm& wcs) const;
+
+   // Functions for handling conversion between the current units and
+   // the wcs units. These are called explicitly by the appropriate 
+   // derived class.
+   // <src>convertFrom</src>
+   // <group>
+   void toCurrentMany (Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const;
+   void fromCurrentMany(Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const;
+   // </group>
+
+
+   // Functions for handling conversion between the current reference frame 
+   // and the native one. The default implementations do nothing.  They
+   // should be over-ridden in the derived classes.
+   // <group>
+   virtual void convertTo (Vector<Double>& world) const {;};
+   virtual void convertFrom (Vector<Double>& world) const {;};
+   // </group>
+
+   // Functions for handling conversion between the current reference frame 
+   // and the native one for many conversions.  These functions just
+   // call the virtual functions for single conversions.
+   // <group>
+   void convertToMany (Matrix<Double>& world) const;
+   void convertFromMany (Matrix<Double>& world) const;
+   // </group>
+
+   // Interconvert between wcs PC cards and Matrix xForm format 
+   void pcToXform (Matrix<Double>& xForm, const wcsprm& wcs) const;
+   void xFormToPC (wcsprm& wcs, const Matrix<Double>& xForm) const;
+   // </group>
+
+   // Call wcsset on the wcs structure
+   void set_wcs (wcsprm& wcs);
+
+    // toMix ranges.  Should be set by derived class.
+    Vector<Double> worldMin_p, worldMax_p;
 
 private:
     mutable String error_p;
@@ -526,7 +559,6 @@ inline const String& Coordinate::errorMessage() const
 {
     return error_p;
 }
-
 
 } //# NAMESPACE CASA - END
 

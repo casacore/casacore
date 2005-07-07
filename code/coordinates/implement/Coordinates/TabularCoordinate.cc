@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #include <coordinates/Coordinates/TabularCoordinate.h>
 
 #include <casa/Arrays/Vector.h>
@@ -45,8 +46,8 @@
 
 #include <casa/sstream.h>
 
-
 namespace casa { //# NAMESPACE CASA - BEGIN
+
 
 TabularCoordinate::TabularCoordinate()
 : Coordinate(),
@@ -97,7 +98,7 @@ TabularCoordinate::TabularCoordinate(const Quantum<Double>& refval,
 
       cdelt_p = inc.getValue(Unit(unit_p));
    } else {
-       throw (AipsError("Units of reference value and increment inconsistent"));
+      throw (AipsError("Units of reference value and increment inconsistent"));
    }
 //
    setDefaultWorldMixRanges();
@@ -152,31 +153,6 @@ void TabularCoordinate::clear_self()
     channel_corrector_p = channel_corrector_rev_p = 0;
 }
 
-void TabularCoordinate::copy(const TabularCoordinate &other)
-{
-    if (this == &other) {
-	return; // short circuit
-    }
-
-    clear_self();
-    Coordinate::operator=(other);
-    crval_p = other.crval_p;
-    cdelt_p = other.cdelt_p;
-    crpix_p = other.crpix_p;
-    unit_p = other.unit_p;    
-    name_p = other.name_p;
-    matrix_p = other.matrix_p;
-    if (other.channel_corrector_p != 0) {
-	channel_corrector_p = 
-	    new Interpolate1D<Double,Double>(*other.channel_corrector_p);
-	channel_corrector_rev_p = 
-	    new Interpolate1D<Double,Double>(*other.channel_corrector_rev_p);
-	AlwaysAssert(channel_corrector_p != 0 &&
-		     channel_corrector_rev_p != 0, AipsError);
-    }
-    worldMin_p = other.worldMin_p;
-    worldMax_p = other.worldMax_p;
-}
 
 TabularCoordinate::TabularCoordinate(const TabularCoordinate &other)
 : crval_p(0.0), 
@@ -198,6 +174,27 @@ TabularCoordinate &TabularCoordinate::operator=(const TabularCoordinate &other)
     }
     return *this;
 }
+
+void TabularCoordinate::copy(const TabularCoordinate &other)
+{
+    clear_self();
+    Coordinate::operator=(other);
+    crval_p = other.crval_p;
+    cdelt_p = other.cdelt_p;
+    crpix_p = other.crpix_p;
+    unit_p = other.unit_p;    
+    name_p = other.name_p;
+    matrix_p = other.matrix_p;
+    if (other.channel_corrector_p != 0) {
+	channel_corrector_p = 
+	    new Interpolate1D<Double,Double>(*other.channel_corrector_p);
+	channel_corrector_rev_p = 
+	    new Interpolate1D<Double,Double>(*other.channel_corrector_rev_p);
+	AlwaysAssert(channel_corrector_p != 0 &&
+		     channel_corrector_rev_p != 0, AipsError);
+    }
+}
+
 
 TabularCoordinate::~TabularCoordinate()
 {
@@ -516,19 +513,19 @@ Bool TabularCoordinate::near(const Coordinate& other,
 // than working through the table so check them anyway.
 
    const TabularCoordinate& tCoord = dynamic_cast<const TabularCoordinate&>(other);
-   if (!::casa::near(crval_p,tCoord.crval_p,tol)) {
+   if (!casa::near(crval_p,tCoord.crval_p,tol)) {
       set_error("The TabularCoordinates have differing average reference values");
       return False;
    }
-   if (!::casa::near(crpix_p,tCoord.crpix_p,tol)) {
+   if (!casa::near(crpix_p,tCoord.crpix_p,tol)) {
       set_error("The TabularCoordinates have differing average reference pixels");
       return False;
    }
-   if (!::casa::near(cdelt_p,tCoord.cdelt_p,tol)) {
+   if (!casa::near(cdelt_p,tCoord.cdelt_p,tol)) {
       set_error("The TabularCoordinates have differing average increments");
       return False;
    }
-   if (!::casa::near(matrix_p,tCoord.matrix_p,tol)) {
+   if (!casa::near(matrix_p,tCoord.matrix_p,tol)) {
 
 // It's really just one component of the matrix
 
@@ -548,7 +545,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
    }
    uInt i;
    for (i=0; i<data1.nelements(); i++) {
-      if (!::casa::near(data1(i),data2(i),tol)) {
+      if (!casa::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing pixel value tables");
          return False;
       }
@@ -561,7 +558,7 @@ Bool TabularCoordinate::near(const Coordinate& other,
       return False;
    }
    for (i=0; i<data1.nelements(); i++) {
-      if (!::casa::near(data1(i),data2(i),tol)) {
+      if (!casa::near(data1(i),data2(i),tol)) {
          set_error("The TabularCoordinates have differing world value tables");
          return False;
       }
@@ -598,8 +595,8 @@ Bool TabularCoordinate::save(RecordInterface &container,
     return ok;
 }
 
-TabularCoordinate *TabularCoordinate::restore(const RecordInterface &container,
-			   const String &fieldName)
+TabularCoordinate* TabularCoordinate::restore(const RecordInterface &container,
+                                              const String &fieldName)
 {
     if (! container.isDefined(fieldName)) {
 	return 0;
@@ -678,20 +675,24 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 //
 {   
    if (channel_corrector_p) {
-      throw (AipsError("Cannot Fourier Transform a non-linear TabularCoordinate"));
+      set_error("Cannot Fourier Transform a non-linear TabularCoordinate");
+      return 0;
    }
 //
    if (axes.nelements() != nPixelAxes()) {
-      throw (AipsError("Invalid number of specified axes"));
+      set_error ("Invalid number of specified axes");
+      return 0;
    }
    uInt nT = 0;
    for (uInt i=0; i<nPixelAxes(); i++) if (axes(i)) nT++;
    if (nT==0) {
-      throw (AipsError("You have not specified any axes to transform"));
+      set_error ("You have not specified any axes to transform");
+      return 0;
    }
 //
    if (shape.nelements() != nPixelAxes()) {
-      throw (AipsError("Invalid number of elements in shape"));
+      set_error ("Invalid number of elements in shape");
+      return 0;
    }
 //
    const Vector<String>& units = worldAxisUnits();
@@ -713,7 +714,8 @@ Coordinate* TabularCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 
     TabularCoordinate tc = *this;
     if (!tc.setWorldAxisUnits(unitsCanon)) {
-      throw(AipsError("Could not set world axis units"));
+      set_error("Could not set world axis units");
+      return 0;
     }
 
 // Set the Fourier coordinate parameters.  
@@ -795,18 +797,6 @@ void TabularCoordinate::makeNonLinearTabularCoordinate(const Vector<Double> &pix
     channel_corrector_p->setMethod(Interpolate1D<Double,Double>::linear);
     channel_corrector_rev_p->setMethod(Interpolate1D<Double,Double>::linear);
 }
-
-Bool TabularCoordinate::setWorldMixRanges (const IPosition& shape)
-{
-   return Coordinate::setWorldMixRanges (worldMin_p, worldMax_p, shape);
-}  
-
-
-void TabularCoordinate::setDefaultWorldMixRanges ()
-{
-   Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
-}
-
 
 
 } //# NAMESPACE CASA - END

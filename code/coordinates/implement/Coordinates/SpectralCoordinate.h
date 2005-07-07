@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_SPECTRALCOORDINATE_H
 #define COORDINATES_SPECTRALCOORDINATE_H
 
@@ -33,7 +34,6 @@
 #include <casa/Arrays/Vector.h>
 #include <coordinates/Coordinates/Coordinate.h>
 #include <coordinates/Coordinates/ObsInfo.h>
-#include <coordinates/Coordinates/TabularCoordinate.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDoppler.h>
 #include <measures/Measures/MDirection.h>
@@ -41,8 +41,13 @@
 #include <measures/Measures/MEpoch.h>
 #include <casa/Quanta/Quantum.h>
 
+#include <wcslib/wcs.h>
+
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+
+class TabularCoordinate;
 class LogIO;
 class MVFrequency;
 class VelocityMachine;
@@ -68,6 +73,10 @@ template<class T> class Quantum;
 //
 // <synopsis>
 // This class performs the mapping from pixel to frequency. 
+// This can be done via a Tabular lookup or via an algorithmic
+// implementation which may be linear or non-linear.  The latter
+// is implemented via the WCS library.
+// 
 // </synopsis>
 //
 
@@ -186,6 +195,12 @@ public:
     SpectralCoordinate(MFrequency::Types freqType, MDoppler::Types velType, 
                        const Vector<Double>& velocities,  const String& velUnit,
                        Double restFrequency = 0.0);
+
+    // Construct from wcs structure.  Must hold only a spectral wcs structure
+    // Specify whether the absolute pixel coordinates in the wcs structure
+    // are 0- or 1-relative.  The coordinate is always constructed with 0-relative
+    // pixel coordinates
+    SpectralCoordinate(MFrequency::Types freqType, const ::wcsprm& wcs, Bool oneRel=True);
     
     // Copy constructor (copy semantics).
     SpectralCoordinate(const SpectralCoordinate &other);
@@ -232,10 +247,8 @@ public:
     void getReferenceConversion (MFrequency::Types& type,
                                  MEpoch& epoch, MPosition& position,
                                  MDirection& direction) const
-       {type = conversionType_p; 
-         epoch=epoch_p; 
-         position=position_p;
-         direction=direction_p;};
+       {type = conversionType_p; epoch=epoch_p; 
+        position=position_p; direction=direction_p;};
     // </group>
 
     // Convert a pixel to a world coordinate or vice versa. Returns True
@@ -280,21 +293,7 @@ public:
                              Vector<Bool>& failures) const;
     // </group>
 
-
-    // Make absolute coordinates relative and vice-versa (with
-    // respect to the reference value).
-    // Vectors must be length <src>nPixelAxes()</src> or
-    // <src>nWorldAxes()</src> or memory access errors will occur
-    // <group>
-    virtual void makePixelRelative (Vector<Double>& pixel) const {worker_p.makePixelRelative(pixel);};
-    virtual void makePixelAbsolute (Vector<Double>& pixel) const {worker_p.makePixelAbsolute(pixel);};
-    virtual void makeWorldRelative (Vector<Double>& world) const {worker_p.makeWorldRelative(world);};
-    virtual void makeWorldAbsolute (Vector<Double>& world) const {worker_p.makeWorldAbsolute(world);};
-    // </group>
-
-
     // Set the state that is used for conversions from pixel and frequency to velocity.
-    // If the unit String is empty, then no change to the velocity unit is made.
     // The SpectralCoordinate is constructed  with 
     // <src>MDoppler::RADIO</src> and <src>km/s</src> as the velocity conversion state.
     // The functions in this class which use this state are those that convert
@@ -304,10 +303,10 @@ public:
     // <group>
     Bool setVelocity (const String& velUnit=String("km/s"),
                       MDoppler::Types velType=MDoppler::RADIO);
+
     MDoppler::Types velocityDoppler () const {return velType_p;};
     String velocityUnit () const {return velUnit_p;};
     // </group>
-
     // Functions to convert to velocity (uses the current active
     // rest frequency).  There is no reference frame
     // change but you can specify the velocity Doppler and the output
@@ -318,7 +317,7 @@ public:
     // Note that the extra conversion layer (see function <src>setReferenceConversion</src>)
     // is active in the <src>pixelToVelocity</src> functions (because internally
     // the use <src>toWorld</src>) but not in the <src>frequencyToVelocity</src> functions.
-    // <group>
+    // <group>  
     Bool pixelToVelocity (Quantum<Double>& velocity, Double pixel) const;
     Bool pixelToVelocity (Double& velocity, Double pixel) const;
     Bool pixelToVelocity (Vector<Double>& velocity, const Vector<Double>& pixel) const;
@@ -347,7 +346,6 @@ public:
     Bool velocityToFrequency (Double& frequency, Double velocity) const;
     Bool velocityToFrequency (Vector<Double>& frequency, const Vector<Double>& velocity) const;
     // </group>
-
 
     // The SpectralCoordinate can maintain a list of rest frequencies
     // (e.g. multiple lines within a band).  However, only
@@ -432,26 +430,6 @@ public:
     virtual Vector<String> worldAxisUnits() const;
     //</group>
 
-    // Set the world min and max ranges, for use in function <src>toMix</src>,
-    // for  a lattice of the given shape (for this coordinate).
-    // The implementation here gives world coordinates dangling 25% off the
-    // edges of the image.       
-    // The output vectors are resized.  Returns False if fails (and
-    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
-    // with a reason in <src>errorMessage()</src>.
-    // The <src>setDefaultWorldMixRanges</src> function
-    // gives you [-1e99->1e99]. 
-    //<group>
-    virtual Bool setWorldMixRanges (const IPosition& shape)
-      {return worker_p.setWorldMixRanges(shape);};
-    virtual void setDefaultWorldMixRanges ()
-      {worker_p.setDefaultWorldMixRanges();};
-    virtual Vector<Double> worldMixMin () const 
-      {return worker_p.worldMixMin();};
-    virtual Vector<Double> worldMixMax () const 
-      {return worker_p.worldMixMax();};
-    //</group>
-
     // Comparison function. Any private Double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // axes in the Coordinate.  If the comparison returns False, 
@@ -469,7 +447,9 @@ public:
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
     // associated with all the axes of the Coordinate.   Currently the
-    // output reference pixel is always shape/2.
+    // output reference pixel is always shape/2.  Cannot transform tabular
+    // coordinates.  If the pointer returned is 0, it failed with a message
+    // in <src>errorMessage</src>
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
@@ -508,7 +488,6 @@ public:
     Bool setFormatUnit (const String& unit);
     // </group>
 
-
     // Convert to and from a FITS header record.  When writing the FITS record,
     // the fields "ctype, crval, crpix", and "cdelt" must already be created. Other header
     // words are created as needed.  Use <src>oneRelative=True</src> to
@@ -521,8 +500,10 @@ public:
     void toFITS(RecordInterface &header, uInt whichAxis, 
 		LogIO &logger, Bool oneRelative=True,
 		Bool preferVelocity=True, Bool opticalVelDef=True) const;
-    static Bool fromFITS(SpectralCoordinate &out, String &error,
-			 const RecordInterface &header, 
+
+// Old interface.  Handled by wcs in new interface in FITSCoordinateUtil.cc
+    static Bool fromFITSOld(SpectralCoordinate &out, String &error,
+   			 const RecordInterface &header, 
 			 uInt whichAxis,
 			 LogIO &logger, Bool oneRelative=True);
     //</group>
@@ -539,33 +520,50 @@ public:
 
     // Make a copy of the SpectralCoordinate using new. The caller is responsible for calling
     // delete.
-    virtual Coordinate *clone() const;
+    virtual Coordinate* clone() const;
 
 private:
-    MFrequency::Types type_p, conversionType_p; 
-    Vector<Double> restfreqs_p;            // Lists of possible rest frequencies
-    uInt restfreqIdx_p;                    // Current active rest frequency index
-    TabularCoordinate worker_p;
 
-    // Conversion machines.
-    // These are for pixel<->world conversions only.
-    // "To"   handles type_p -> conversionType_p 
-    // "From" handles conversionType_p -> type_p;
-    mutable MFrequency::Convert* pConversionMachineTo_p;  
-    mutable MFrequency::Convert* pConversionMachineFrom_p;
-
-    // The velocity machine does all conversions between
-    // something and velocity.
-    VelocityMachine* pVelocityMachine_p;
-    MDoppler::Types velType_p;            // Velocity Doppler
-    String velUnit_p;                     // Velocity unit
+    TabularCoordinate* pTabular_p;                     // Tabular coordinate OR
+    mutable ::wcsprm wcs_p;                              // wcs structure is used 
+    Double to_hz_p;                                    // Convert from current world units to Hz
 //
-    Unit unit_p;                       // A Unit version of the Unit String
-    String formatUnit_p;               // The default unit for the format function
+    MFrequency::Types type_p, conversionType_p;        // Frequency system and conversion system
+    Vector<Double> restfreqs_p;                        // List of possible rest frequencies
+    uInt restfreqIdx_p;                                // Current active rest frequency index
+
+                                                               // Conversion machines; for pixel<->world conversions only.
+    mutable MFrequency::Convert* pConversionMachineTo_p;       // For type_p -> conversionType_p
+    mutable MFrequency::Convert* pConversionMachineFrom_p;     // For conversionType_p -> type_p
+
+    VelocityMachine* pVelocityMachine_p;           // The velocity machine does all conversions between world & velocity.
+    MDoppler::Types velType_p;                     // Velocity Doppler
+    String velUnit_p;                              // Velocity unit
+//
+    Unit unit_p;                                   // World axis unit
+    String axisName_p;                             // The axis name
+    String formatUnit_p;                           // The default unit for the format function
 // 
-    MDirection direction_p;                // These are a part of the frame set
-    MPosition position_p;                  // for the reference conversions machines
+    MDirection direction_p;                // These are a part of the frame set for
+    MPosition position_p;                  // the reference conversions machines
     MEpoch epoch_p;                        // They are only private so we can save their state
+
+// Format checker
+    void checkFormat(Coordinate::formatType& format,
+                     const Bool ) const;
+
+// Copy private data
+   void copy (const SpectralCoordinate& other);
+
+// Convert to and from conversion reference type
+    virtual void convertTo (Vector<Double>& world) const;
+    virtual void convertFrom (Vector<Double>& world) const;
+
+// Deletes and sets pointer to 0
+    void deleteVelocityMachine ();
+
+// Deletes and sets pointers to 0
+    void deleteConversionMachines ();
 
 // Set up pixel<->world conversion machines
 // Returns: 3 (machines were noOPs, machines deleted)
@@ -580,32 +578,52 @@ private:
 // Create velocity<->frequency machine 
     void makeVelocityMachine (const String& velUnit,                  
                               MDoppler::Types velType,
-                              const String& freqUnit,
-                               MFrequency::Types freqType,
+                              const Unit& freqUnit,
+                              MFrequency::Types freqType,
                               Double restFreq);
 
-// Deletes and sets pointer to 0
-    void deleteVelocityMachine ();
+// Make spectral wcs structure (items in Hz)
+   static void makeWCS(wcsprm& wcs, const String& ctype, Double refPix, Double refVal, 
+                       Double inc, Double pc, Double restFreq);
 
-// Deletes and sets pointers to 0
-    void deleteConversionMachines ();
+// Record restoration handling
+// <group>
+   static SpectralCoordinate* restoreVersion1 (const RecordInterface& container);
+   static SpectralCoordinate* restoreVersion2 (const RecordInterface& container);
+   static void restoreVelocity (SpectralCoordinate*& pSpectral,
+                                const RecordInterface& subrec);
+   static void restoreRestFrequencies (SpectralCoordinate*& pSpectral,
+                                       const RecordInterface& subrec,
+                                       Double restFreq);
+   static void restoreConversion (SpectralCoordinate*& pSpectral,
+                                  const RecordInterface& subrec);
 
-// Format checker
-    void checkFormat(Coordinate::formatType& format,
-                     const Bool ) const;
+// </group>
 
-// Convert to and from conversion type
-    void convertTo (Vector<Double>& world) const;
-    void convertFrom (Vector<Double>& world) const;
-    void convertToMany (Matrix<Double>& world) const;
-    void convertFromMany (Matrix<Double>& world) const;
+// Interconvert between the current units and wcs units (Hz)
+// <group>
+    void toCurrent(Vector<Double>& value) const;
+    void fromCurrent(Vector<Double>& value) const;
+// </group>
+
+// Return unit conversion vector for converting to current units
+   const Vector<Double> toCurrentFactors () const;
 
 // Update Velocity Machine
    void updateVelocityMachine (const String& velUnit, 
                                MDoppler::Types velType);
+// Restore wcs stuff from Record
+   static Bool wcsRestore (Double& crval, Double& crpix, Double& cdelt,
+                           Double& pc, String& ctype,
+                           const RecordInterface& rec);
+
+// Save wcs stuff into Record
+   Bool wcsSave (RecordInterface& rec, const wcsprm& wcs,
+                 const String& fieldName) const;
+
 };
 
-
 } //# NAMESPACE CASA - END
+
 
 #endif

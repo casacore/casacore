@@ -35,6 +35,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 class DirectionCoordinate;
+class wcsprm;
 
 // <summary>
 //  Geometric parameters needed for a sky projection to a plane
@@ -158,6 +159,10 @@ public:
     // it can be created with 0 or 2 parameters.
     Projection(Projection::Type which=CAR);
 
+    // Construct a projection from FITS CTYPE keywords
+    Projection(const String& ctypeLin, const String& ctypeLat,
+               const Vector<Double>& parameters);
+
     // Construct a projection which needs parameters. The parameter vector must be
     // the length of the required number of parameters.
     Projection(Projection::Type which, const Vector<Double> &parameters);
@@ -180,7 +185,7 @@ public:
     static String name(Projection::Type proj);
     // </group>
 
-    // Turn a projection type name into a Type. Used during I/O primarily.
+    // Turn a projection type name into a Type. 
     // Returns N_PROJ if the projection is not known.
     static Projection::Type type(const String &name);
 
@@ -201,13 +206,14 @@ private:
     Vector<Double> parameters_p;
 
     void validate();
+    Projection::Type type (String& ctypeLong, String& ctypeLat) const;
 };
 
 //#---------- Inlines --------------------------------------------------------------
 inline Projection::Type Projection::type() const {return which_p;}
 inline const Vector<Double> & Projection::parameters() const {return parameters_p;}
 
-
 } //# NAMESPACE CASA - END
 
 #endif
+

@@ -26,13 +26,14 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_LINEARCOORDINATE_H
 #define COORDINATES_LINEARCOORDINATE_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>
-#include <coordinates/Coordinates/LinearXform.h>
 #include <casa/Arrays/Vector.h>
+#include <wcslib/wcs.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -142,6 +143,12 @@ public:
                      const Matrix<Double> &pc,
                      const Vector<Double> &refPix);
 
+    // Constructor from WCS structure; must hold ONLY a linear wcs structure
+    // Specify whether the absolute pixel coordinates in the wcs structure
+    // are 0- or 1-relative.  The coordinate is always constructed with 0-relative    
+    // pixel coordinates
+    LinearCoordinate(const wcsprm& wcs, Bool oneRel=True);
+
     // Copy constructor (copy semantics).
     LinearCoordinate(const LinearCoordinate &other);
 
@@ -175,6 +182,7 @@ public:
 			 const Vector<Double> &world) const;
     // </group>
 
+
     // Return the requested attribute
     // <group>
     virtual Vector<String> worldAxisNames() const;
@@ -204,23 +212,6 @@ public:
     // checks or adjustment.
     Bool overwriteWorldAxisUnits(const Vector<String> &units);
 
-    // Set the world min and max ranges, for use in function <src>toMix</src>, 
-    // for  a lattice of the given shape (for this coordinate).   
-    // The implementation here gives world coordinates dangling 25% off the
-    // edges of the image.  
-    // The output vectors are resized.  Returns False if fails (and
-    // then <src>setDefaultWorldMixRanges</src> generates the ranges)
-    // with a reason in <src>errorMessage()</src>.
-    // The <src>setDefaultWorldMixRanges</src> function
-    // gives you [-1e99->1e99]. 
-    // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);
-    virtual void setDefaultWorldMixRanges ();
-    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
-    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
-    //</group>
-
-
     // Comparison function. Any private Double data members are compared    
     // with the specified fractional tolerance.  Don't 
     // compare on the specified     
@@ -238,7 +229,8 @@ public:
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
     // associated with all the axes of the Coordinate.   Currently the
-    // output reference pixel is always shape/2.
+    // output reference pixel is always shape/2.  If the pointer returned is 0, 
+    // it failed with a message in <src>errorMessage</src>
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
@@ -257,21 +249,24 @@ public:
     virtual Coordinate *clone() const;
 
 private:
-    // An interface to the WCSLIB linear transformation routines.
-    LinearXform transform_p;
 
-    // Names and units.
-    // <group>
-    Vector<String> names_p;
-    Vector<String> units_p;
-    Vector<Double> worldMin_p, worldMax_p;
-    // </group>
+// An interface to the WCSLIB linear transformation routines.
+    mutable ::wcsprm wcs_p;
 
-    // The reference value.
-    Block<Double> crval_p;
+// Copy private data
+   void copy (const LinearCoordinate& other);
+
+// Make wcs structure
+   void makeWCS (wcsprm& wcs, uInt naxis, const Vector<Double>& refPix,
+                 const Vector<Double>& refVal,
+                 const Vector<Double>& incr,  
+                 const Matrix<Double>& pc,  
+                 const Vector<String>& units,
+                 const Vector<String>& names);
 };
-
 
 } //# NAMESPACE CASA - END
 
+
 #endif
+

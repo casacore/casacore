@@ -27,6 +27,7 @@
 //# $Id$
 
 #include <coordinates/Coordinates/LinearCoordinate.h>
+#include <coordinates/Coordinates/LinearXform.h>
 
 #include <casa/Exceptions/Error.h>
 #include <casa/Utilities/Assert.h>
@@ -34,22 +35,41 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Vector.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
 #include <casa/BasicMath/Math.h>
 #include <casa/Quanta/Quantum.h>
+#include <casa/Quanta/UnitMap.h>
+#include <casa/Quanta/Unit.h>
 
 #include <casa/sstream.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+
 LinearCoordinate::LinearCoordinate(uInt naxis)
-: Coordinate(),
-  transform_p(naxis), 
-  names_p(naxis), 
-  units_p(naxis), 
-  crval_p(naxis)
-{
-    crval_p.set(0.0);
+: Coordinate()
+{ 
+    Vector<Double> refVal(naxis), refPix(naxis), incr(naxis);
+    Matrix<Double> pc(naxis,naxis);
+    Vector<String> names(naxis), units(naxis);
+//
+    pc = 0.0;
+    for (uInt i=0; i<naxis; i++) {
+       refVal[i] = 0.0;
+       refPix[i] = 0.0;
+       incr[i] = 1.0;
+       pc(i,i) = 1.0;
+       units[i] = String("m");
+//
+       ostringstream oss;       
+       oss << "Axis" << i;
+       names[i] = String(oss);
+    }
+//
+    makeWCS (wcs_p, naxis, refPix, refVal, incr, pc, units, names);
+//
     setDefaultWorldMixRanges();
 }
 
@@ -59,24 +79,10 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 				   const Vector<Double>& inc,
 				   const Matrix<Double>& pc,
 				   const Vector<Double>& refPix)
-: Coordinate(),
-  transform_p(refPix, inc, pc), 
-  names_p(names.nelements()),
-  units_p(names.nelements()), 
-  crval_p(names.nelements())
+: Coordinate()
 {
     uInt naxis = names.nelements();
-    names_p = names;
-    units_p = units;
-    AlwaysAssert(units.nelements() == naxis &&
-		 refVal.nelements() == naxis &&
-		 inc.nelements() == naxis &&
-		 pc.nrow() == naxis &&
-		 pc.ncolumn() == naxis &&
-		 refPix.nelements() == naxis, AipsError);
-    for (uInt i=0; i<naxis; i++) {
-	crval_p[i] = refVal[i];
-    }
+    makeWCS (wcs_p, naxis, refPix, refVal, inc, pc, units, names);
 //
     setDefaultWorldMixRanges();
 }
@@ -87,11 +93,9 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
                                    const Vector<Quantum<Double> >& inc,   
                                    const Matrix<Double>& pc,
                                    const Vector<Double>& refPix)
-: Coordinate(),
-  names_p(names.nelements()),
-  units_p(names.nelements()), 
-  crval_p(names.nelements())
+: Coordinate()
 {
+
 // Check dimensions
 
     const uInt n = names.nelements();
@@ -101,63 +105,87 @@ LinearCoordinate::LinearCoordinate(const Vector<String>& names,
 		 pc.ncolumn() == n &&
 		 refPix.nelements() == n, AipsError);
 //
-    Vector<Double> cdelt(n);
+    Vector<Double> cdelt(n), crval(n);
+    Vector<String> units(n);
     for (uInt i=0; i<n; i++) {
-       if (refVal(i).isConform(inc(i))) {
+       if (refVal[i].isConform(inc[i])) {
 
 // Assign 
 
-          names_p(i) = names(i);
-          units_p(i) = refVal(i).getUnit();
-  	  crval_p[i] = refVal(i).getValue();
+          units[i] = refVal[i].getUnit();
+  	  crval[i] = refVal[i].getValue();
 
 // Convert inc to units of refVal
 
-          cdelt(i) = inc(i).getValue(Unit(units_p(i)));
+          cdelt[i] = inc[i].getValue(Unit(units[i]));
        } else {
           throw (AipsError("Units of reference value and increment inconsistent"));
        }
     }
 //
-    transform_p = LinearXform(refPix, cdelt, pc);
+    makeWCS (wcs_p, n, refPix, crval, cdelt, pc, units, names);
 //
     setDefaultWorldMixRanges();
 }
 
-LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
-: Coordinate(other),
-  transform_p(other.transform_p), 
-  names_p(other.names_p.copy()),
-  units_p(other.units_p.copy()), 
-  worldMin_p(other.worldMin_p.copy()),
-  worldMax_p(other.worldMax_p.copy()),
-  crval_p(other.crval_p)
+
+LinearCoordinate::LinearCoordinate(const ::wcsprm& wcs, Bool oneRel)
+: Coordinate()
 {
-    // Nothing
+
+// Test only holds linear wcs structure
+
+// Copy WCS structure.  Flag 1 means allocate memory 
+
+   wcs_p.flag = -1;
+   int err = wcscopy (1, &(wcs), &wcs_p);
+   if (err != 0) {
+      String errmsg = "wcs wcscopy_error: ";
+      errmsg += wcscopy_errmsg[err];
+      throw(AipsError(errmsg));
+   }
+   set_wcs(wcs_p);
+//
+   for (Int i=0; i<wcs_p.naxis; i++) {
+
+// Make 0-rel
+
+      if (oneRel) wcs_p.crpix[i] -= 1.0;
+
+// Fix up FITS units case
+
+      String name(wcs.cunit[i]);
+      Unit u(name);
+      Unit u2 = UnitMap::fromFITS(u);
+      strncpy (wcs_p.cunit[0], u2.getName().chars(), 9);
+   }
+//
+    setDefaultWorldMixRanges();
+}
+
+
+LinearCoordinate::LinearCoordinate(const LinearCoordinate &other)
+: Coordinate(other)
+{
+   wcs_p.flag = -1;    // Indicates not initialized
+   copy(other);
 }
 
 LinearCoordinate &LinearCoordinate::operator=(const LinearCoordinate &other)
 {
     if (this != &other) {
         Coordinate::operator=(other);
-//
-	uInt naxis = other.nWorldAxes();
-	names_p.resize(naxis); 
-        names_p = other.names_p;
-	units_p.resize(naxis); 
-        units_p = other.units_p;
-	crval_p = other.crval_p;
-	transform_p = other.transform_p;
-        worldMin_p.resize(naxis);
-        worldMin_p = other.worldMin_p;
-        worldMax_p.resize(naxis);
-        worldMax_p = other.worldMax_p;
+        copy(other);
     }
     return *this;
 }
 
 LinearCoordinate::~LinearCoordinate()
-{}
+{
+   if (wcs_p.flag != -1) {
+      wcsfree(&wcs_p);
+   }
+}
 
 
 
@@ -173,7 +201,7 @@ String LinearCoordinate::showType() const
 
 uInt LinearCoordinate::nPixelAxes() const
 {
-    return names_p.nelements();
+    return wcs_p.naxis;
 }
 
 uInt LinearCoordinate::nWorldAxes() const
@@ -184,70 +212,71 @@ uInt LinearCoordinate::nWorldAxes() const
 Bool LinearCoordinate::toWorld(Vector<Double> &world, 
 			       const Vector<Double> &pixel) const
 {
-   static String errorMsg;
-   uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
-   AlwaysAssert(pixel.nelements()==n, AipsError);
-   world.resize(n);
-//
-   if (!transform_p.reverse(world, pixel, errorMsg)) {
-      set_error(errorMsg);
-      return False;
-   } else {
-      for (uInt i=0; i<n; i++) {
-         world(i) += crval_p[i];
-      }
-   }
-   return True;
+   return toWorldWCS (world, pixel, wcs_p);
 }
 
 Bool LinearCoordinate::toPixel(Vector<Double> &pixel, 
 			       const Vector<Double> &world) const
 {
-   static String errorMsg;
-   static Vector<Double> offset;
-   uInt n = nPixelAxes();             // nWorldAxes == nPixelAxes 
-   AlwaysAssert(world.nelements()==n, AipsError);
-   pixel.resize(n);
-//
-   offset.resize(n);
-   for (uInt i=0; i<n; i++) {
-      offset(i) = world(i) - crval_p[i];
-   }
-   if (!transform_p.forward(pixel, offset, errorMsg)) {
-      set_error(errorMsg);
-      return False;
-   }
-   return True;
+   return toPixelWCS (pixel, world, wcs_p);
 }
+
 
 Vector<String> LinearCoordinate::worldAxisNames() const
 {
-    return names_p;
+    const uInt n = nPixelAxes();
+    Vector<String> tmp(n);
+    for (uInt i=0; i<n; i++) {
+       tmp[i] = String(wcs_p.ctype[i]);
+    }
+    return tmp;
 }
 
 Vector<String> LinearCoordinate::worldAxisUnits() const
 {
-    return units_p;
+    const uInt n = nWorldAxes();
+    Vector<String> tmp(n);
+    for (uInt i=0; i<n; i++) {
+       tmp[i] = String(wcs_p.cunit[i]);
+    }
+    return tmp;
 }
 
 Vector<Double> LinearCoordinate::referenceValue() const
 {
-    return Vector<Double>(crval_p);
+    const uInt n = nWorldAxes();
+    Vector<Double> tmp(n);
+    for (uInt i=0; i<n; i++) {
+       tmp[i] = wcs_p.crval[i];
+    }
+    return tmp;
 }
 
 Vector<Double> LinearCoordinate::increment() const
 {
-    return transform_p.cdelt();
+    const uInt n = nWorldAxes();
+    Vector<Double> tmp(n);
+    for (uInt i=0; i<n; i++) {
+       tmp[i] = wcs_p.cdelt[i];
+    }
+    return tmp;
 }
 
 Matrix<Double> LinearCoordinate::linearTransform() const
 {
-    return transform_p.pc();
+   Matrix<Double> tmp;
+   pcToXform (tmp, wcs_p);
+   return tmp;
 }
 
 Vector<Double> LinearCoordinate::referencePixel() const
 {
-    return transform_p.crpix();
+    const uInt n = nPixelAxes();
+    Vector<Double> tmp(n);
+    for (uInt i=0; i<n; i++) {
+       tmp[i] = wcs_p.crpix[i];
+    }
+    return tmp;
 }
 
 Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
@@ -256,9 +285,11 @@ Bool LinearCoordinate::setWorldAxisNames(const Vector<String> &names)
     if (!ok) {
        set_error("names vector has the wrong size");
     } else {
-       names_p = names;
+       for (uInt i=0; i<nWorldAxes(); i++) {
+          strcpy (wcs_p.ctype[i], names[i].chars());
+       }
     }
-
+//
     return ok;
 }
 
@@ -267,16 +298,13 @@ Bool LinearCoordinate::setWorldAxisUnits(const Vector<String> &units)
     Vector<Double> d1 = increment();
     Bool ok = Coordinate::setWorldAxisUnits(units);
     if (ok) {
-	ok = (units.nelements() == nWorldAxes());
-	if (ok) {
-	    units_p = units;
+       for (uInt i=0; i<nWorldAxes(); i++) {
+          strcpy (wcs_p.cunit[i], units[i].chars());
+       }
 
-// The factor is hidden in Coordinate...
-           
-            Vector<Double> d2 = increment();
-            worldMin_p *= d2 / d1;
-            worldMax_p *= d2 / d1;
-	}
+// Presently wcs does not actually do anything with units
+
+       set_wcs(wcs_p);
     }
     return ok;
 }
@@ -286,7 +314,9 @@ Bool LinearCoordinate::overwriteWorldAxisUnits(const Vector<String> &units)
 {
    Bool ok = units.nelements() == nWorldAxes();
    if (ok) {
-      units_p = units;
+      for (uInt i=0; i<nWorldAxes(); i++) {
+         strcpy (wcs_p.cunit[i], units[i].chars());
+      }
    } else {
       set_error ("units vector has the wrong size");
    }
@@ -299,9 +329,11 @@ Bool LinearCoordinate::setReferencePixel(const Vector<Double> &refPix)
     if (! ok) {
 	set_error("reference pixel vector has the wrong size");
     } else {
-	transform_p.crpix(refPix);
+      for (uInt i=0; i<nWorldAxes(); i++) {
+         wcs_p.crpix[i] = refPix[i];
+      }
+      set_wcs(wcs_p);
     }
-
     return ok;
 }
 
@@ -309,12 +341,13 @@ Bool LinearCoordinate::setLinearTransform(const Matrix<Double> &pc)
 {
     Bool ok = (pc.nrow() == nWorldAxes() && 
 		     pc.ncolumn() == nWorldAxes() );
-    if (! ok) {
-	set_error("Transform matrix has the wrong size");
+    if (!ok) {
+       set_error("Transform matrix has the wrong size");
     } else {
-	transform_p.pc(pc);
+       xFormToPC(wcs_p, pc);
+       set_wcs(wcs_p);
     }
-
+//
     return ok;
 }
 
@@ -324,7 +357,10 @@ Bool LinearCoordinate::setIncrement(const Vector<Double> &inc)
     if (! ok) {
 	set_error("increment vector has the wrong size");
     } else {
-	transform_p.cdelt(inc);
+       for (uInt i=0; i<nWorldAxes(); i++) {
+          wcs_p.cdelt[i] = inc[i];
+       }
+       set_wcs(wcs_p);
     }
 
     return ok;
@@ -336,9 +372,12 @@ Bool LinearCoordinate::setReferenceValue(const Vector<Double> &refval)
     if (! ok) {
 	set_error("reference value vector has the wrong size");
     } else {
-	refval.toBlock(crval_p);
+       for (uInt i=0; i<nWorldAxes(); i++) {
+          wcs_p.crval[i] = refval[i];
+       }
+       set_wcs(wcs_p);
     }
-
+//
     return ok;
 }
 
@@ -362,22 +401,39 @@ Bool LinearCoordinate::near(const Coordinate& other,
 
    const LinearCoordinate& lCoord = dynamic_cast<const LinearCoordinate&>(other);
 
-
 // Check descriptor vector lengths
 
-   if (names_p.nelements() != lCoord.names_p.nelements()) {
+   Vector<String> names1(worldAxisNames());
+   Vector<String> names2(lCoord.worldAxisNames());
+   Vector<String> units1(worldAxisUnits());
+   Vector<String> units2(lCoord.worldAxisUnits());
+   Vector<Double> crval1(referenceValue());
+   Vector<Double> crval2(lCoord.referenceValue());
+   Vector<Double> cdelt1(increment());
+   Vector<Double> cdelt2(lCoord.increment());
+   Vector<Double> crpix1(referencePixel());
+   Vector<Double> crpix2(lCoord.referencePixel());
+//
+   if (names1.nelements() != names2.nelements()) {
       set_error("The LinearCoordinates have differing numbers of world axis names");
       return False;
    }
-   if (units_p.nelements() != lCoord.units_p.nelements()) {
+   if (units1.nelements() != units2.nelements()) {
       set_error("The LinearCoordinates have differing numbers of axis units");
       return False;
    }
-   if (crval_p.nelements() != lCoord.crval_p.nelements()) {
+   if (crval1.nelements() != crval2.nelements()) {
       set_error("The LinearCoordinates have differing numbers of reference values");
       return False;
    }
-
+   if (cdelt1.nelements() != cdelt2.nelements()) {
+      set_error("The LinearCoordinates have differing numbers of increments");
+      return False;
+   }
+   if (crpix1.nelements() != crpix2.nelements()) {
+      set_error("The LinearCoordinates have differing numbers of reference pixels");
+      return False;
+   }
 
 // Number of pixel and world axes is the same for a LinearCoordinate
 // Add an assertion check should this change.  Other code in LC has 
@@ -398,18 +454,18 @@ Bool LinearCoordinate::near(const Coordinate& other,
 // Check the descriptors
 
    ostringstream oss;
-   for (i=0; i<names_p.nelements(); i++) {
+   for (i=0; i<names1.nelements(); i++) {
       if (!exclude(i)) {
 //
 // the to/from FITS header conversion will convert linear axis
 // names to upper case.  So to prevent that reflection failing,
 // test on upper case only.  Also we need to strip off
-// trialing white space (FITS length will be 8 chars)
+// trailing white space (FITS length will be 8 chars)
 //
          {
-           String x1 = names_p(i);
+           String x1 = names1(i);
            x1.upcase();
-           String x2 = lCoord.names_p(i);
+           String x2 = names2(i);
            x2.upcase();
 //
            Int i1 = x1.index(RXwhite,0);
@@ -429,7 +485,7 @@ Bool LinearCoordinate::near(const Coordinate& other,
         }
       }
    }
-   for (i=0; i<units_p.nelements(); i++) {
+   for (i=0; i<units1.nelements(); i++) {
       if (!exclude(i)) {
 
 // This is bad.  After reading from FITS, the units are upper case.  
@@ -437,9 +493,9 @@ Bool LinearCoordinate::near(const Coordinate& other,
 // but case different if its been throgh FITS...
 
          {
-           String x1 = units_p(i);
+           String x1 = units1(i);
            x1.upcase();
-           String x2 = lCoord.units_p(i);
+           String x2 = units2(i);
            x2.upcase();
 //
            Int i1 = x1.index(RXwhite,0);
@@ -458,9 +514,21 @@ Bool LinearCoordinate::near(const Coordinate& other,
         }
       }
    }
-   for (i=0; i<crval_p.nelements(); i++) {
+   for (i=0; i<crval1.nelements(); i++) {
       if (!exclude(i)) {
-         if (!::casa::near(crval_p[i],lCoord.crval_p[i],tol)) {
+         if (!casa::near(crval1[i],crval2[i],tol)) {
+            oss << "The LinearCoordinates have differing reference values for axis "
+                << i;
+            set_error(String(oss));
+            return False;
+         }
+         if (!casa::near(cdelt1[i],cdelt2[i],tol)) {
+            oss << "The LinearCoordinates have differing increments for axis "
+                << i;
+            set_error(String(oss));
+            return False;
+         }
+         if (!casa::near(crpix1[i],crpix2[i],tol)) {
             oss << "The LinearCoordinates have differing reference values for axis "
                 << i;
             set_error(String(oss));
@@ -468,15 +536,39 @@ Bool LinearCoordinate::near(const Coordinate& other,
          }
       }
    }
-
-
-// Check the linear transform
-
-   if (!transform_p.near(lCoord.transform_p,excludeAxes,tol)) {
-      set_error("The LinearCoordinates have differing linear transformation matrices");
-      return False;
-   }
-
+//
+// Check the matrix.
+     
+    Matrix<Double> pc1 = linearTransform();
+    Matrix<Double> pc2 = lCoord.linearTransform();
+    if (pc1.nrow()    != pc2.nrow()) {
+       set_error(String("The LinearCoordinates have different PC matrix shapes"));
+       return False;
+    }
+    if (pc1.ncolumn() != pc2.ncolumn()) {
+       set_error(String("The LinearCoordinates have different PC matrix shapes"));
+       return False;
+    }
+     
+// Compare row by row.  An axis will turn up in the PC matrix in any row
+// or column with that number.  E.g., values pertaining to axis "i" will
+// be found in all entries of row "i" and all entries of column "i".
+        
+    for (uInt j=0; j<pc1.nrow(); j++) {
+        Vector<Double> row1 = pc1.row(j);
+        Vector<Double> row2 = pc2.row(j);
+        if (!exclude(j)) {
+            for (uInt i=0; i<row1.nelements(); i++) {
+                if (!exclude(i)) {
+                    if (!casa::near(row1(i),row2(i),tol)) {
+                       set_error(String("The LinearCoordinates have different PC matrices"));
+                       return False;
+                    }
+                }
+            }
+        }
+    }
+//
    return True;
 }
 
@@ -505,51 +597,49 @@ LinearCoordinate *LinearCoordinate::restore(const RecordInterface &container,
     if (! container.isDefined(fieldName)) {
 	return 0;
     }
-
+//
     Record subrec(container.asRecord(fieldName));
     
-    // We should probably do more type-checking as well as checking
-    // for existence of the fields.
+// We should probably do more type-checking as well as checking
+// for existence of the fields.
+
     Vector<Double> crval;
     subrec.get("crval", crval);
-
+//
     if (!subrec.isDefined("crpix")) {
 	return 0;
     }
     Vector<Double> crpix;
     subrec.get("crpix", crpix);
-
+//
     if (!subrec.isDefined("cdelt")) {
 	return 0;
     }
     Vector<Double> cdelt;
     subrec.get("cdelt", cdelt);
-
+//
     if (!subrec.isDefined("pc")) {
 	return 0;
     }
     Matrix<Double> pc;
     subrec.get("pc", pc);
-
-    
+//
     if (!subrec.isDefined("axes")) {
 	return 0;
     }
     Vector<String> axes;
     subrec.get("axes", axes);
-
-    
+//
     if (!subrec.isDefined("units")) {
 	return 0;
     }
     Vector<String> units;
     subrec.get("units", units);
-
-    LinearCoordinate *retval = 
-	new LinearCoordinate(axes, units, crval, cdelt, pc, crpix);
-    AlwaysAssert(retval, AipsError);
 //
-    return retval;
+    LinearCoordinate* pLinear = new LinearCoordinate(axes, units, crval, 
+                                                     cdelt, pc, crpix);
+    AlwaysAssert(pLinear, AipsError);
+    return pLinear;
 }
 
 
@@ -570,16 +660,19 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 //
 {
    if (axes.nelements() != nPixelAxes()) {
-      throw (AipsError("Invalid number of specified axes"));
+      set_error ("Invalid number of specified axes");
+      return 0;
    }
    uInt nT = 0;
    for (uInt i=0; i<nPixelAxes(); i++) if (axes[i]) nT++;
    if (nT==0) {
-      throw (AipsError("You have not specified any axes to transform"));
+      set_error("You have not specified any axes to transform");
+      return 0;
    }
 //
    if (shape.nelements() != nPixelAxes()) {
-      throw (AipsError("Invalid number of elements in shape"));
+      set_error("Invalid number of elements in shape");
+      return 0;
    }
 
 // Find the canonical input units that we should convert to.
@@ -611,34 +704,86 @@ Coordinate* LinearCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 
    LinearCoordinate lc = *this;
    if (!lc.setWorldAxisUnits(unitsCanon)) {
-      throw(AipsError("Could not set world axis units"));
+      set_error ("Could not set world axis units");
+      return 0;
    }
 
 // Now create the new LinearCoordinate, using the LinearXform class
 // to invert the coordinate matrices
 
-   const LinearXform& linear = lc.transform_p;
-   const LinearXform linear2 = linear.fourierInvert(axes, crpix, scale);
+   LinearXform linear(referencePixel(), increment(), linearTransform());
 //
-   const Vector<Double>& cdelt2 = linear2.cdelt();
-   const Vector<Double>& crpix2 = linear2.crpix();
-   const Matrix<Double>& pc2 = linear2.pc();
-
-   return new LinearCoordinate(namesOut, unitsOut, crval2, cdelt2,
-                               pc2, crpix2);
+   String errMsg;
+   LinearXform* pLinearF = linear.fourierInvert(errMsg, axes, crpix, scale);
+   if (pLinearF==0) {
+      set_error(errMsg);
+      return 0;
+   }
+//
+   LinearCoordinate* pLinear = new LinearCoordinate(namesOut, unitsOut, crval2, 
+                                                    pLinearF->cdelt(),
+                                                    pLinearF->pc(),
+                                                    pLinearF->crpix());
+   delete pLinearF;
+   return pLinear;
 }
 
-Bool LinearCoordinate::setWorldMixRanges (const IPosition& shape)
+
+void LinearCoordinate::makeWCS (::wcsprm& wcs, 
+                                uInt naxis, const Vector<Double>& refPix,
+                                const Vector<Double>& refVal, 
+                                const Vector<Double>& incr, 
+                                const Matrix<Double>& pc,
+                                const Vector<String>& units,
+                                const Vector<String>& names)
 {
-   return Coordinate::setWorldMixRanges (worldMin_p, worldMax_p, shape);
+   AlwaysAssert(refPix.nelements() == naxis && refVal.nelements() == naxis &&
+                incr.nelements() == naxis && pc.nrow() == naxis &&
+                pc.ncolumn() == naxis && units.nelements()==naxis &&
+                names.nelements()==naxis, AipsError);
+
+// Set up wcs structure internals
+
+    wcs.flag = -1;
+    int iret = wcsini(1, naxis, &wcs);
+    if (iret != 0) {
+        String errmsg = "wcs wcsini_error: ";
+        errmsg += wcsini_errmsg[iret];
+        throw(AipsError(errmsg));
+    }
+
+// Assign values
+
+    for (uInt i=0; i<naxis; i++) {
+       wcs.crpix[i] = refPix[i];
+       wcs.crval[i] = refVal[i];
+       wcs.cdelt[i] = incr[i];
+       strcpy (wcs.ctype[i], names[i].chars());
+       strcpy (wcs.cunit[i], units[i].chars());
+    }
+    xFormToPC (wcs, pc);
+
+// Set the rest of the wcs structure
+       
+    set_wcs (wcs);
 }
 
-
-void LinearCoordinate::setDefaultWorldMixRanges ()
+void LinearCoordinate::copy(const LinearCoordinate &other)
 {
-   Coordinate::setDefaultWorldMixRanges (worldMin_p, worldMax_p);
-}
 
+// Copy WCS structure.  Flag 1 means allocate memory 
+
+   if (wcs_p.flag != -1) {
+      wcsfree(&wcs_p);        
+   }
+   int err = wcscopy (1, &(other.wcs_p), &wcs_p);
+   if (err != 0) {
+      String errmsg = "wcs wcscopy_error: ";
+      errmsg += wcscopy_errmsg[err];
+      throw(AipsError(errmsg));
+   }
+   set_wcs(wcs_p);
+}
 
 } //# NAMESPACE CASA - END
 

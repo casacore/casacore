@@ -61,7 +61,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-FITSImage::FITSImage (const String& name)
+FITSImage::FITSImage (const String& name, Bool oldParser, uInt whichRep)
 : ImageInterface<Float>(),
   name_p      (name),
   pTiledFile_p(0),
@@ -73,12 +73,15 @@ FITSImage::FITSImage (const String& name)
   hasBlanks_p (False),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True)
+  isClosed_p  (True),
+  oldParser_p(oldParser),
+  whichRep_p(whichRep)
 {
    setup();
 }
 
-FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec)
+FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, Bool oldParser,
+                      uInt whichRep)
 : ImageInterface<Float>(),
   name_p      (name),
   maskSpec_p  (maskSpec),
@@ -91,7 +94,9 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec)
   hasBlanks_p (False),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True)
+  isClosed_p  (True),
+  oldParser_p(oldParser),
+  whichRep_p(whichRep)
 {
    setup();
 }
@@ -110,7 +115,9 @@ FITSImage::FITSImage (const FITSImage& other)
   hasBlanks_p (other.hasBlanks_p),
   dataType_p  (other.dataType_p),
   fileOffset_p(other.fileOffset_p),
-  isClosed_p  (other.isClosed_p)
+  isClosed_p  (other.isClosed_p),
+  oldParser_p(other.oldParser_p),
+  whichRep_p(other.whichRep_p)
 {
    if (other.pPixelMask_p != 0) {
       pPixelMask_p = other.pPixelMask_p->clone();
@@ -144,6 +151,8 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
       dataType_p  = other.dataType_p;
       fileOffset_p= other.fileOffset_p;
       isClosed_p  = other.isClosed_p;
+      oldParser_p = other.oldParser_p;
+      whichRep_p = other.whichRep_p;
    }
    return *this;
 } 
@@ -157,7 +166,8 @@ FITSImage::~FITSImage()
 LatticeBase* FITSImage::openFITSImage (const String& name,
 				       const MaskSpecifier& spec)
 {
-  return new FITSImage (name, spec);
+  Bool oldParser = False;
+  return new FITSImage (name, spec, oldParser);
 }
 
 void FITSImage::registerOpenFunction()
@@ -399,7 +409,7 @@ void FITSImage::setup()
 
    getImageAttributes(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                       recsize, recno, dataType, scale_p, offset_p, shortMagic_p,
-                      longMagic_p, hasBlanks_p, fullName);
+                      longMagic_p, hasBlanks_p, fullName, oldParser_p, whichRep_p);
    setMiscInfoMember (miscInfo);
 
 // set ImageInterface data
@@ -497,7 +507,8 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     Int& recordsize, Int& recordnumber, 
                                     FITS::ValueType& dataType, 
                                     Float& scale, Float& offset, Short& shortMagic,
-                                    Int& longMagic, Bool& hasBlanks, const String& name)
+                                    Int& longMagic, Bool& hasBlanks, const String& name,
+                                    Bool oldParser, uInt whichRep)
 {
 // Open sesame
 
@@ -558,31 +569,46 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
 // Crack header
 
-    if (dataType==FITS::FLOAT) {
-       crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                          scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-    } else if (dataType==FITS::DOUBLE) {
-       crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+    if (oldParser) {
+       if (dataType==FITS::FLOAT) {
+          crackHeaderOld<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+                                scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
+       } else if (dataType==FITS::DOUBLE) {
+          crackHeaderOld<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+                              scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
+       } else if (dataType==FITS::LONG) {
+          crackHeaderOld<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
                            scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-    } else if (dataType==FITS::LONG) {
-       crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                        scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-    } if (dataType==FITS::SHORT) {
-       crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
-                          scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
-    }
+       } if (dataType==FITS::SHORT) {
+          crackHeaderOld<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, 
+                             scale, offset, shortMagic, longMagic, hasBlanks, os, infile);
+       }
 
+// Fix any DirectionCoordinate for cylindrical coordinates mess
+
+       String errorMessage;
+       if (!CoordinateUtil::cylindricalFix (cSys, errorMessage, shape)) {
+          throw (AipsError(errorMessage));
+       }
+    } else {
+       if (dataType==FITS::FLOAT) {
+          crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+                             offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+       } else if (dataType==FITS::DOUBLE) {
+          crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+                              offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+       } else if (dataType==FITS::LONG) {
+          crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+                           offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+       } if (dataType==FITS::SHORT) {
+          crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+                             offset, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
+       }
+    }
 
 // Get recordnumber 
    
     recordnumber = infile.recno();
-
-// Fix any DirectionCoordinate for cylindrical coordinates mess
-
-    String errorMessage;
-    if (!CoordinateUtil::cylindricalFix (cSys, errorMessage, shape)) {
-       throw (AipsError(errorMessage));
-    }
 }
 
 } //# NAMESPACE CASA - END

@@ -26,6 +26,7 @@
 //#
 //# $Id$
 
+
 #include <coordinates/Coordinates/StokesCoordinate.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Arrays/Matrix.h>
@@ -38,7 +39,9 @@
 
 #include <casa/sstream.h>
 
+
 namespace casa { //# NAMESPACE CASA - BEGIN
+
 
 StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
 : Coordinate(),
@@ -54,6 +57,7 @@ StokesCoordinate::StokesCoordinate(const Vector<Int> &whichStokes)
     nValues_p = values_p.nelements();
     setDefaultWorldMixRanges();
 }
+
 
 StokesCoordinate::StokesCoordinate(const StokesCoordinate &other)
 : Coordinate(other),
@@ -81,8 +85,6 @@ StokesCoordinate &StokesCoordinate::operator=(const StokesCoordinate &other)
 	name_p = other.name_p;
 	unit_p = other.unit_p;
         nValues_p = other.nValues_p;
-        worldMin_p = other.worldMin_p;
-        worldMax_p = other.worldMax_p;
     }
 
     return *this;
@@ -588,7 +590,7 @@ Bool StokesCoordinate::toPixel(Double& pixel,  const Double world) const
     Bool found = False;
     Int index;
     for (index=0; index<nValues_p; index++) {
-	found = ::casa::near(world, Double(values_p[index]));
+	found = casa::near(world, Double(values_p[index]));
 	if (found) break;
     }
     if (!found) {
@@ -619,6 +621,7 @@ void StokesCoordinate::setDefaultWorldMixRanges ()
    pixel(0) = nValues_p - 1;
    toWorld(worldMax_p, pixel);
 }
+
 
 } //# NAMESPACE CASA - END
 

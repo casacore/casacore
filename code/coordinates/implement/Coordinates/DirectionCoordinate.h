@@ -24,7 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //#
-//# $Id: DirectionCoordinate.h,v 18.0 2002/06/07 21:18:59 aips2adm Exp nkilleen
+//# $Id: 
 
 
 #ifndef COORDINATES_DIRECTIONCOORDINATE_H
@@ -39,12 +39,12 @@
 #include <casa/Quanta/RotMatrix.h>
 #include <wcslib/wcs.h>
 
-class wcsprm;
+class ::celprm;
+class ::prjprm;
+class ::wcsprm;
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-class celprm;
-class prjprm;
 class MVDirection;
 class MVAngle;
 class LogIO;
@@ -86,15 +86,10 @@ template<class T> class Quantum;
 // </prerequisite>
 //
 // <synopsis>
-// This class implements pixel to world coordinate conversions. It is important
-// to understand that this class implements only the geometric conversions
-// (e.g. SIN projection). Astronomical conversions (RA/DEC <--> l,b)
-// are the responsibility of the <linkto module=Measures>Measures</linkto> module.
-// Of course the <linkto class=MDirection>MDirection</linkto> object you can
-// obtain from this class would be the prime input for that conversion.
-//
-// The actual computations converting pixel to world are carried out 
-// with the WCS library.
+// This class implements pixel to world coordinate conversions. This class
+// implements geometric conversions (e.g. SIN projection) via the WCS library
+// and also provides an interface to astronomical conversions (RA/DEC <--> l,b)
+// via the <linkto module=Measures>Measures</linkto> module.
 // </synopsis>
 //
 //
@@ -275,6 +270,13 @@ public:
                         const Quantum<Double>& longPole=Quantum<Double>(999.0,Unit("rad")),
                         const Quantum<Double>& latPole=Quantum<Double>(999.0,Unit("rad")));
 
+    // Constructor from WCS structure; must hold ONLY a celestial wcs structure
+    // Specify whether the absolute pixel coordinates in the wcs structure
+    // are 0- or 1-relative.  The coordinate is always constructed with 0-relative
+    // pixel coordinates
+    DirectionCoordinate(MDirection::Types directionType,
+                        const ::wcsprm& wcs, Bool oneRel=True);
+
     // Copy constructor (copy semantics)
     DirectionCoordinate(const DirectionCoordinate &other);
 
@@ -397,8 +399,6 @@ public:
     // <group>
     virtual Bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
-    virtual Vector<Double> worldMixMin () const {return worldMin_p;};
-    virtual Vector<Double> worldMixMax () const {return worldMax_p;};
     // </group>
 
     // Non-virtual function.  When <src>which</src> is T, use the 
@@ -547,7 +547,8 @@ public:
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
     // you wish to transform.   Shape specifies the shape of the image
     // associated with all the axes of the Coordinate.   Currently the
-    // output reference pixel is always shape/2.
+    // output reference pixel is always shape/2. If the pointer returned is 0, 
+    // it failed with a message in <src>errorMessage</src>
     virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
                                                const Vector<Int>& shape) const;
 
@@ -570,7 +571,6 @@ public:
     Vector<Double> longLatPoles() const;
 
 private:
-
     // Direction type
     MDirection::Types type_p, conversionType_p;
 
@@ -585,17 +585,14 @@ private:
 
     // WCS computes in degrees - use this to convert back and forth between
     // current DirectionCoordinate units and degrees or radians
-    Vector<Double> to_degrees_p;
-    Vector<Double> to_radians_p;
+    Vector<Double> to_degrees_p;           // From current units to degrees
+    Vector<Double> to_radians_p;           // From current units to radians
 
     // Axis names.
     Vector<String> names_p;
 
     // Current units.
     Vector<String> units_p;
-
-    // toMix ranges
-    Vector<Double> worldMin_p, worldMax_p;
 
     // Rotation matrix used to handle relative coordinates
     RotMatrix rot_p;
@@ -606,10 +603,10 @@ private:
     mutable MDirection::Convert* pConversionMachineTo_p;
     mutable MDirection::Convert* pConversionMachineFrom_p;
 
-    // Interconvert between degrees and the current angular unit.
+    // Interconvert between the current units and wcs units (degrees)
     // <group>
-    void toDegrees(Vector<Double> &other) const;
-    void toOther(Vector<Double> &degrees) const;
+    void toCurrent(Vector<Double>& degrees) const;
+    void fromCurrent(Vector<Double>& current) const;
     // </group>
 
     // Check formatting types.
@@ -636,26 +633,25 @@ private:
                 const Vector<Double>& minWorld, const Vector<Double>& maxWorld,
                 Bool longIsWorld) const;
 
+    // Initialize unit conversion vectors and units
+    void initializeFactors ();
+
     // Helper functions interfacing to WCS.
     // <group>
-    void makeDirectionCoordinate(Double refLong, Double refLat,
+    void makeDirectionCoordinate(MDirection::Types directionType,
+                                 const Projection& proj, Double refLong, Double refLat,
                                  Double incLong, Double incLat,
                                  const Matrix<Double> &xform,
                                  Double refX, Double refY, 
                                  Double longPole, Double latPole);
 //
-    void makeWCS(wcsprm& wcs,  const Matrix<Double>& xform,
+    void makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
                  const Projection& proj, MDirection::Types directionType,
                  Double refPixLong, Double refPixLat,
                  Double refLong, Double refLat,
                  Double incLong, Double incLat,
                  Double longPole, Double latPole);
-//
-    // Convert PC cards to xform format (required by DC and LinearXform constructors)
-    void pcToXform (Matrix<Double>& xForm, const wcsprm& wcs) const;
-    void xFormToPC (wcsprm& wcs, const Matrix<Double>& xForm) const;
     // </group>
-
 
    Double putLongInPiRange (Double lon, const String& unit) const;
 
@@ -664,15 +660,12 @@ private:
 
    // Convert from type_p -> conversionType_p
    // <group>
-   void convertTo (Vector<Double>& world) const;
-   void convertToMany (Matrix<Double>& world) const;
+   virtual void convertTo (Vector<Double>& world) const;
+   virtual void convertFrom (Vector<Double>& world) const;
    // </group>
 
-   // Convert from conversionType_p -> type_p
-   // <group>
-   void convertFrom (Vector<Double>& world) const;
-   void convertFromMany (Matrix<Double>& world) const;
-   // </group>
+   // Copy private data
+   void copy (const DirectionCoordinate& other);
 
    // Set up the offset coordinate rotation matrix.  Units
    // of long and lat are current world units
@@ -680,9 +673,13 @@ private:
    void setRotationMatrix ();
    void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
    // </group>
-};
 
+   // Return unit conversion vector for converting to current units
+   const Vector<Double> toCurrentFactors () const;
+};
 
 } //# NAMESPACE CASA - END
 
+
 #endif
+

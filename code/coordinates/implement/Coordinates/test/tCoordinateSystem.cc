@@ -49,8 +49,9 @@
 #include <casa/Exceptions/Error.h>
 
 #include <casa/iostream.h>
-
 #include <casa/namespace.h>
+
+
 DirectionCoordinate makeDirectionCoordinate(Bool unitsAreDegrees=True,
                                             MDirection::Types type=MDirection::J2000);
 SpectralCoordinate makeSpectralCoordinate ();
@@ -676,10 +677,17 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
    {
       CoordinateSystem cSys3;
+      Vector<String> header;
       Record rec;
       IPosition shape;
       Int stokesFITSValue = -1;
-      if (CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, shape, True, 'c')) {
+//
+      if (CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, header,
+                                           shape, 0)) {
+         throw(AipsError("Unexpectedly did not fail fromFITSHeader (0)"));
+      }
+      if (CoordinateSystem::fromFITSHeaderOld(stokesFITSValue, cSys3, rec, 
+                                           shape, True, 'c')) {
          throw(AipsError("Unexpectedly did not fail fromFITSHeader (1)"));
       }
    }
@@ -706,7 +714,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 
       CoordinateSystem cSys3 = CoordinateUtil::defaultCoords2D();
       Int stokesFITSValue = -1;
-      if (!CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, shape, True, 'c')) {
+      if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header (1)"));
       }
       if (!cSys2.near(cSys3)) {
@@ -741,7 +749,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
       CoordinateSystem cSys3;
       Int stokesFITSValue = -1;
-      if (!CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, shape, True, 'c')) {
+      if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header (2)"));
       }
       if (!cSys2.near(cSys3)) {
@@ -772,7 +780,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
       CoordinateSystem cSys3;
       Int stokesFITSValue = -1;
-      if (!CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, shape, True, 'c')) {
+      if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header (3)"));
       }
       if (!cSys2.near(cSys3)) {
@@ -803,7 +811,7 @@ void doit (CoordinateSystem& cSys, uInt nCoords, const Vector<Int>& types,
 //
       CoordinateSystem cSys3;
       Int stokesFITSValue = -1;
-      if (!CoordinateSystem::fromFITSHeader(stokesFITSValue, cSys3, rec, shape, True, 'c')) {
+      if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys3, rec, shape, True, 'c')) {
          throw(AipsError("Failed to convert from FITS header (4)"));
       }
       if (!cSys2.near(cSys3)) {

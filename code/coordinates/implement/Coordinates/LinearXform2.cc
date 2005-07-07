@@ -1,4 +1,4 @@
-//# <ClassFileName.h>: this defines <ClassName>, which ...
+//# LinearXform2.cc: 
 //# Copyright (C) 1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -36,18 +36,21 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes, 
-                                        const Vector<Double>& crpix, 
-                                        const Vector<Double>& scale) const
+LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axes, 
+                                         const Vector<Double>& crpix, 
+                                         const Vector<Double>& scale) const
 {
    if (axes.nelements() != nWorldAxes()) {
-      throw (AipsError("axes length is invalid"));
+      errMsg = "axes length is invalid";
+      return 0;
    }
    if (crpix.nelements() != nWorldAxes()) {
-      throw (AipsError("crpix length is invalid"));
+      errMsg = "crpix length is invalid";
+      return 0;
    }
    if (scale.nelements() != nWorldAxes()) {
-      throw (AipsError("scale length is invalid"));
+      errMsg = "scale length is invalid";
+      return 0;
    }
 //
    Matrix<Double> pc0;
@@ -56,28 +59,30 @@ LinearXform LinearXform::fourierInvert (const Vector<Bool>& axes,
 // Short cut which enables us to separate out axes
 
       pc0 = pc();
-      Vector<Double> d = pc0.diagonal().copy();
+      Vector<Double> d(pc0.diagonal().copy());
       for (uInt i=0; i<nWorldAxes(); i++) {
          if (axes[i]) d[i] = 1.0 / d[i];
       }
       pc0.diagonal() = d;
    } else {
       if (!allEQ(axes, True)) {
-         throw(AipsError("Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some axes not being transformed"));
+         errMsg = "Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some axes not being transformed";
+         return 0;
       }
 //
       pc0 = invert(pc());
    }
 //
-   Vector<Double> cdelt0 = cdelt().copy();
-   Vector<Double> crpix0 = LinearXform::crpix().copy();
+   Vector<Double> cdelt0(cdelt().copy());
+   Vector<Double> crpix0(LinearXform::crpix().copy());
    for (uInt i=0; i<nWorldAxes(); i++) {
       if (axes[i]) {
          cdelt0[i] = scale[i] / cdelt0[i];
          crpix0[i] = crpix[i];
       }
    }
-   return LinearXform(crpix0, cdelt0, pc0);
+//
+   return new LinearXform(crpix0, cdelt0, pc0);
 }
 
 } //# NAMESPACE CASA - END

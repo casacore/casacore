@@ -73,6 +73,148 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
 				     String &error,
 				     const String &imageName,
 				     const String &fitsName, 
+				     uInt whichRep,
+				     uInt whichHDU,
+				     uInt memoryInMB,
+				     Bool allowOverwrite,
+				     Bool zeroBlanks)
+{
+    newImage = 0;
+    error = "";
+    AlwaysAssert(whichRep>=0,AipsError);
+
+// First make sure that imageName is writable and does not already
+// exist.  Optionally remove it if it does.  If imageName is empty,
+// great.  That means we are going to make a TempImage
+
+    if (!imageName.empty()) {
+       File imfile(imageName);
+       if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return False;
+//
+       Directory imdir = imfile.path().dirName();
+       if (!imdir.exists() || !imdir.isWritable()) {
+          error = String("Directory ") + imdir.path().originalName() + 
+                  " does not exist or is not writable";
+          return False;
+       }
+   }
+//
+    File fitsfile(fitsName);
+    if (!fitsfile.exists() || !fitsfile.isReadable() || 
+	!fitsfile.isRegular()) {
+        error = fitsName + " does not exist or is not readable";
+	return False;
+    }
+//
+// OK, now see if we can attach the FITS reading classes
+//
+    FitsInput infile(fitsfile.path().expandedName().chars(), FITS::Disk);
+    if (infile.err()) {
+        error = String("Cannot open file (or other I/O error): ") + fitsName;
+	return False;
+    }
+//
+// Advance to the right HDU
+//
+    for (uInt i=0; i<whichHDU; i++) {
+	infile.skip_hdu();
+	if (infile.err()) {
+	    error = "Error advancing to image in file: " + fitsName;
+	    return False;
+	}
+    }
+//
+// Make sure the current spot in the FITS file is an image
+//
+    if (infile.rectype() != FITS::HDURecord ||
+	(infile.hdutype() != FITS::PrimaryArrayHDU &&
+         infile.hdutype() != FITS::ImageExtensionHDU)) {
+	error = "No image at specified location in file " + fitsName;
+        return False;
+    }
+//    
+// The rest has to be done in a type dependent way - hand over to template
+// functions.
+//
+    switch(infile.datatype()) {
+    case FITS::BYTE:
+        {
+	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<unsigned char> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    } else {
+		ImageExtension<unsigned char> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    }
+        }
+    break;
+    case FITS::SHORT:
+        {
+	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<short> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    } else {
+		ImageExtension<short> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<short> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    }
+        }
+        break;
+    case FITS::LONG:
+        {
+	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<FitsLong> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    } else {
+		ImageExtension<FitsLong> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    }
+        }
+        break;
+    case FITS::FLOAT:
+        {
+	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<Float> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    } else {
+		ImageExtension<Float> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    }
+        }
+        break;
+    case FITS::DOUBLE:
+        {
+	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
+		PrimaryArray<Double> fitsdata(infile);
+		ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    } else {
+		ImageExtension<Double> fitsdata(infile);
+		ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage(
+		       newImage, error, imageName, whichRep, fitsdata, memoryInMB, zeroBlanks);
+	    }
+        }
+        break;
+    default:
+        error = "Unknown datatype  - no data returned";
+	return False;
+    }
+    return True;
+
+}
+
+
+Bool ImageFITSConverter::FITSToImageOld(ImageInterface<Float> *&newImage,
+				     String &error,
+				     const String &imageName,
+				     const String &fitsName, 
 				     uInt whichHDU,
 				     uInt memoryInMB,
 				     Bool allowOverwrite,
@@ -139,11 +281,11 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<unsigned char> fitsdata(infile);
-		ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImage(
+		ImageFITSConverterImpl<PrimaryArray<unsigned char> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<unsigned char> fitsdata(infile);
-		ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImage(
+		ImageFITSConverterImpl<ImageExtension<unsigned char> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
@@ -152,11 +294,11 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<short> fitsdata(infile);
-		ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImage(
+		ImageFITSConverterImpl<PrimaryArray<short> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<short> fitsdata(infile);
-		ImageFITSConverterImpl<ImageExtension<short> >::FITSToImage(
+		ImageFITSConverterImpl<ImageExtension<short> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
@@ -165,11 +307,11 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<FitsLong> fitsdata(infile);
-		ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImage(
+		ImageFITSConverterImpl<PrimaryArray<FitsLong> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<FitsLong> fitsdata(infile);
-		ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImage(
+		ImageFITSConverterImpl<ImageExtension<FitsLong> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
@@ -178,11 +320,11 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<Float> fitsdata(infile);
-		ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage(
+		ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<Float> fitsdata(infile);
-		ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage(
+		ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
@@ -191,11 +333,11 @@ Bool ImageFITSConverter::FITSToImage(ImageInterface<Float> *&newImage,
         {
 	    if (infile.hdutype() == FITS::PrimaryArrayHDU) {
 		PrimaryArray<Double> fitsdata(infile);
-		ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage(
+		ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    } else {
 		ImageExtension<Double> fitsdata(infile);
-		ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage(
+		ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImageOld(
 		       newImage, error, imageName, fitsdata, memoryInMB, zeroBlanks);
 	    }
         }
@@ -982,14 +1124,19 @@ Bool ImageFITSConverter::removeFile (String& error, const File& outFile,
 
 
 CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue, 
-                                                          RecordInterface& header,
+                                                          RecordInterface& headerRec,
+                                                          const Vector<String>& header,
                                                           LogIO& os,
+                                                          uInt whichRep,
                                                           IPosition& shape,
                                                           Bool dropStokes)
 {
+
+// Get CS and return un-used cards in a Record for further use
+
     CoordinateSystem cSys;
-    Char prefix = 'c';
-    if (!CoordinateSystem::fromFITSHeader (stokesFITSValue, cSys, header, shape, True, prefix)) {
+    if (!CoordinateSystem::fromFITSHeader (stokesFITSValue, cSys, headerRec, header, 
+                                          shape, whichRep)) {
         os << LogIO::WARN <<
           "Cannot create the coordinate system from FITS keywords.\n"
           "I will use a dummy linear coordinate along each axis instead.\n"
@@ -1058,11 +1205,101 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
        }
     }
 
+// Remove unwanted left-over Coordinate-related keywords
+
+    Vector<String> ignore(4);
+    ignore(0) = "^date-map$";
+    ignore(1) = "date";
+    ignore(2) = "^naxis";
+    ignore(3) = "^naxis$";
+    FITSKeywordUtil::removeKeywords(headerRec, ignore);
+//
+    return cSys;
+}
+
+
+CoordinateSystem ImageFITSConverter::getCoordinateSystemOld (Int& stokesFITSValue,
+                                                          RecordInterface& header,
+                                                          LogIO& os,
+                                                          IPosition& shape,
+                                                          Bool dropStokes)
+{
+    CoordinateSystem cSys;
+    Char prefix = 'c';
+    if (!CoordinateSystem::fromFITSHeaderOld (stokesFITSValue, cSys, header, shape, True, prefix)) {
+        os << LogIO::WARN <<
+          "Cannot create the coordinate system from FITS keywords.\n"
+          "I will use a dummy linear coordinate along each axis instead.\n"
+          "If you your FITS file actually does contain a coordinate system\n"
+          "please submit a bug report."  << LogIO::POST;
+//
+        CoordinateSystem cSys2;
+        Vector<String> names(shape.nelements());
+        for (uInt i=0; i<names.nelements(); i++) {
+           ostringstream oss;
+           oss << i;
+           names(i) = String("linear") + String(oss);
+        }
+        CoordinateUtil::addLinearAxes(cSys2, names, shape);
+        cSys = cSys2;
+    }
+
+// Check shape and CS consistency.  Add dummy axis to shape if possible
+
+    if (shape.nelements() != cSys.nPixelAxes()) {
+       IPosition shape2;
+       if (cSys.nPixelAxes() > shape.nelements()) {
+          Int nDeg = cSys.nPixelAxes() - shape.nelements();
+          shape2.resize(cSys.nPixelAxes());
+          shape2 = 1;
+          for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);
+          shape.resize(0);
+          shape = shape2;
+//
+          os << LogIO::WARN << "Image dimension appears to be less than number of pixel axes in CoordinateSystem" << endl;
+          os << "Adding " << nDeg << " degenerate trailing axes" << LogIO::POST;
+       } else {
+          os << "Image contains more dimensions than the CoordinateSystem defines" << LogIO::EXCEPTION;
+       }
+    }
+
+// Drop Stokes axis IF it's of length 1 AND there is an unoffical
+// pseudo-STokes value (e.g. optical dpeth) on it.  This is stored
+// in ImageInfo instead.
+
+    Int after = -1;
+    Int c = cSys.findCoordinate(Coordinate::STOKES, after);
+    if (dropStokes && c >= 0 && stokesFITSValue >= 0) {
+       uInt nS = cSys.stokesCoordinate(c).stokes().nelements();
+       if (nS==1) {
+          CoordinateSystem cSys2;
+          for (uInt i=0; i<cSys.nCoordinates(); i++) {
+             if (cSys.type(i) != Coordinate::STOKES) {
+                cSys2.addCoordinate(cSys.coordinate(i));
+             }
+          }
+//
+          uInt dropAxis = cSys.pixelAxes(c)(0);
+          cSys = cSys2;
+          IPosition shape2(cSys.nPixelAxes());
+          uInt j = 0;
+          for (uInt i=0; i<shape.nelements(); i++) {
+             if (i!=dropAxis) {
+                shape2(j) = shape(i);
+                j++;
+             }
+          }
+//
+          shape.resize(0);
+          shape = shape2;
+       }
+    }
+
 // Remove keywords
 
-    Vector<String> ignore(14); 
+    Vector<String> ignore(14);
     ignore(0) = "^date-map$";
-    ignore(1) = "^simple$";   
+    ignore(1) = "^simple$";
     ignore(2) = "^naxis";
     ignore(3) = "^projp$";
     ignore(4) = "^pc$";
@@ -1072,13 +1309,13 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
     ignore(8) = "crpix";
     ignore(9) = "crval";
     ignore(10) = "crota";
-    ignore(11) = "cdelt"; 
+    ignore(11) = "cdelt";
     ignore(12) = "bscale";
     ignore(13) = "bzero";
     FITSKeywordUtil::removeKeywords(header, ignore);
 
 // Remove any ObsInfo keywords
-    
+
     FITSKeywordUtil::removeKeywords(header, ObsInfo::keywordNamesFITS());
 //
     after = -1;
@@ -1093,11 +1330,12 @@ CoordinateSystem ImageFITSConverter::getCoordinateSystem (Int& stokesFITSValue,
 
     String errMsg;
     if (!CoordinateUtil::cylindricalFix (cSys, errMsg, shape)) {
-       os << errMsg << LogIO::EXCEPTION;  
-    }   
+       os << errMsg << LogIO::EXCEPTION;
+    }
 //
     return cSys;
 }
+
 
 ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
 {
@@ -1115,7 +1353,50 @@ ImageInfo ImageFITSConverter::getImageInfo (RecordInterface& header)
 }
 
 
+ImageInfo ImageFITSConverter::getImageInfoOld (RecordInterface& header)
+{
+   ImageInfo ii;
+   Vector<String> errors;
+   Bool ok = ii.fromFITSOld (errors, header);
+   if (!ok) {
+      LogIO log(LogOrigin("ImageFITSConverter::getImageInfoOld", "ImageToFITS", WHERE));
+      log << errors << endl;
+   }
+//
+   FITSKeywordUtil::removeKeywords(header, ImageInfo::keywordNamesFITS());
+//
+   return ii;
+}
+
+
 Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
+{
+   Unit u;
+   if (header.isDefined("bunit")) {
+      Record subRec = header.asRecord("bunit");
+      if (subRec.dataType("value") == TpString) {
+         String unitString;
+         subRec.get("value", unitString);
+//
+         UnitMap::addFITS();
+         if (UnitVal::check(unitString)) {
+            
+// Translate units from FITS units to true aips++ units
+// There is no scale factor in this translation.
+                
+             u = UnitMap::fromFITS(Unit(unitString));
+         } else {
+             os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
+                << LogIO::POST;
+         }
+      }
+      header.removeField("bunit");
+   }       
+   return u;
+}
+
+
+Unit ImageFITSConverter::getBrightnessUnitOld (RecordInterface& header, LogIO& os)
 {
    Unit u;
    if (header.isDefined("bunit") && header.dataType("bunit") == TpString) {
@@ -1124,10 +1405,10 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
       header.removeField("bunit");
       UnitMap::addFITS();
       if (UnitVal::check(unitString)) {
-            
+
 // Translate units from FITS units to true aips++ units
 // There is no scale factor in this translation.
-                
+
           u = UnitMap::fromFITS(Unit(unitString));
       } else {
           os << "FITS unit " << unitString << " unknown to AIPS++ - ignoring."
@@ -1136,6 +1417,49 @@ Unit ImageFITSConverter::getBrightnessUnit (RecordInterface& header, LogIO& os)
    }
    return u;
 }
+
+Bool ImageFITSConverter::extractMiscInfo (RecordInterface& miscInfo, const RecordInterface& header)
+//
+// The new FITS parsing stuff puts the cards into a Record with structure
+//     name
+//        "value"
+//        "comment"
+//
+// However the old MiscInfo structure is just a name-value pair
+// and the new structure wouldn't reflect through the FITS interface
+// So just discard the comment line and preserve the old structure
+//
+{
+   Bool ok = True;
+   const uInt n = header.nfields();
+   for (uInt i=0; i<n; i++) {
+      String name = header.name(i);
+      if (header.type(i) == TpRecord) {
+         Record subRec  = header.asRecord(i);
+         if (subRec.isDefined("value")) {
+	    DataType type = subRec.dataType("value");
+            if (type==TpString) {
+               miscInfo.define(name, subRec.asString("value"));
+            } else if (type==TpFloat) {
+               miscInfo.define(name, subRec.asFloat("value"));
+            } else if (type==TpInt) {
+               miscInfo.define(name, subRec.asInt("value"));
+            } else if (type==TpBool) {
+               miscInfo.define(name, subRec.asBool("value"));
+            } else if (type==TpComplex) {
+               miscInfo.define(name, subRec.asComplex("value"));
+            } else {
+               cerr << "Unknown data type " << type << " in parsing MiscInfo remnants" << endl;
+            }
+         }
+      } else {
+         cerr << "Unexpected non-record in parsing MiscInfo remnant" << endl;
+      }
+   }
+//
+   return ok;
+}
+
 
 void ImageFITSConverter::restoreHistory (LoggerHolder& logger,
                                          ConstFitsKeywordList& kw) 

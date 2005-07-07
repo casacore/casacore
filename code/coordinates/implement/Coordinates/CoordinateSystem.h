@@ -26,13 +26,15 @@
 //#
 //# $Id$
 
+
 #ifndef COORDINATES_COORDINATESYSTEM_H
 #define COORDINATES_COORDINATESYSTEM_H
 
 #include <casa/aips.h>
 #include <coordinates/Coordinates/Coordinate.h>
+#include <measures/Measures/MDirection.h>
+#include <measures/Measures/MFrequency.h>
 #include <coordinates/Coordinates/ObsInfo.h>
-
 #include <casa/Containers/Block.h>
 #include <measures/Measures/MDoppler.h>
 
@@ -541,7 +543,6 @@ public:
                                        const Vector<Double>& refVal) const;
     //</group>
 
-
     // Batch up a lot of absolute/relative transformations. 
     // Parameters as above  for 
     // <src>toWorldMany</src> and <src>toPixelMany</src>
@@ -739,10 +740,18 @@ public:
     //# cf comment in toFITS.
     static Bool fromFITSHeader(Int& stokesFITSValue, 
                                CoordinateSystem &coordsys, 
+			       RecordInterface& recHeader,
+			       const Vector<String>& header,
+                               const IPosition& shape,
+                               uInt which=0);
+// Old version
+    static Bool fromFITSHeaderOld(Int& stokesFITSValue, 
+                               CoordinateSystem &coordsys, 
 			       const RecordInterface &header,
                                const IPosition& shape,
 			       Bool oneRelative,
 			       Char prefix = 'c');
+			       
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
@@ -822,14 +831,6 @@ private:
    // Delete temporary maps
    void deleteTemps (const uInt which);
 
-    // Decode CD cards from FITS file header
-    static Bool getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header);
-
-    // Decode PC matrix from FITS header
-    static void getPCFromHeader(LogIO& os, Int& rotationAxis, Matrix<Double>& pc,
-                                uInt n, const RecordInterface& header,
-                                const String& sprefix);
-
     // Many abs/rel conversions
     // <group>
     void makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const;
@@ -842,31 +843,6 @@ private:
 
     // Strip out coordinates with all world and pixel axes removed
     CoordinateSystem stripRemovedAxes (const CoordinateSystem& cSys) const;
-
-    // Generate FITS keywords
-    Bool toFITSHeaderGenerateKeywords (LogIO& os, Bool& isNCP,
-                                       Double& longPole, Double& latPole,
-                                       Vector<Double>& crval,
-                                       Vector<Double>& crpix,
-                                       Vector<Double>& cdelt,
-                                       Vector<Double>& crota,
-                                       Vector<Double>& projp,
-                                       Vector<String>& ctype,
-                                       Vector<String>& cunit,
-                                       Matrix<Double>& pc,
-                                       const CoordinateSystem& coordsys,
-                                       Int skyCoord, Int longAxis, Int latAxis,
-                                       Int specAxis, Int stokesAxis, 
-                                       Bool writeWCS, Double offset,
-                                       const String& sprefix) const;
-
-    // special Stokes processing  for conversion to FITS header
-    Bool toFITSHeaderStokes(Vector<Double>& crval,
-                            Vector<Double>& crpix,
-                            Vector<Double>& cdelt,
-                            LogIO& os,
-                            const CoordinateSystem& coordsys,
-                            Int stokesAxis, Int stokesCoord) const;
 
     //  All these functions are in support of the <src>list</src> function
     // <group>
@@ -909,7 +885,7 @@ private:
     // </group>
 };
 
-
 } //# NAMESPACE CASA - END
 
 #endif
+
