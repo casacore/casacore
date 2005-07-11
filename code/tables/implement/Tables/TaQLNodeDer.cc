@@ -304,7 +304,7 @@ void TaQLMultiNodeRep::show (std::ostream& os) const
 void TaQLMultiNodeRep::save (AipsIO& aio) const
 {
   aio << itsIsSetOrArray << itsPrefix << itsPostfix;
-  aio << itsNodes.size();
+  aio << uInt(itsNodes.size());
   for (uInt i=0; i<itsNodes.size(); ++i) {
     itsNodes[i].saveNode (aio);
   }
