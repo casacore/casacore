@@ -107,12 +107,15 @@ const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
     static const MEpoch *daytime = 0x0;
 
     Vector<Quantity> t(4);
-    t[0] = Quantity(day, "day"); 
-    t[1] = Quantity(hour, "hour"); 
-    t[2] = Quantity(minute, "minute"); 
-    t[3] = Quantity(second+(millisec*0.001), "second"); 
+    t[0] = Quantity(day, "d"); 
+    t[1] = Quantity(hour, "h"); 
+    t[2] = Quantity(minute, "min"); 
+    t[3] = Quantity(second+(millisec*0.001), "s"); 
 
-    return (daytime = new MEpoch(MVEpoch(t)));
+    MVEpoch mv;
+    mv.putValue(t);
+
+    return (daytime = new MEpoch(mv));
 }
 
 const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
@@ -124,14 +127,17 @@ const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
     if(yeartime) delete yeartime;
 
     Vector<Quantity> t(6);
-    t[0] = Quantity(year, "year"); 
-    t[1] = Quantity(month, "month"); 
-    t[2] = Quantity(day, "day"); 
-    t[3] = Quantity(hour, "hour"); 
-    t[4] = Quantity(minute, "minute"); 
-    t[5] = Quantity(second+(millisec*0.001), "second"); 
+    t[0] = Quantity(year, "yr"); 
+    t[1] = Quantity(month, "m"); 
+    t[2] = Quantity(day, "d"); 
+    t[3] = Quantity(hour, "h"); 
+    t[4] = Quantity(minute, "min"); 
+    t[5] = Quantity(second+(millisec*0.001), "s"); 
 
-    return (yeartime = new MEpoch(MVEpoch(t)));
+    MVEpoch mv;
+    mv.putValue(t);
+
+    return (yeartime = new MEpoch(mv));
 }
 
 const TableExprNode* MSTimeParse::node()

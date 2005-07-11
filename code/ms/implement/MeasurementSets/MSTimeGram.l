@@ -39,7 +39,7 @@ WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FNUMBER   {INT}"."{DIGIT}*
+NUMBER    {INT}
 TRUE      T
 FALSE     F
 
@@ -125,6 +125,10 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
           }
 
  /* Literals */
+{NUMBER}        { msTimeGramPosition() += yyleng;
+                  lvalp->dval = atof(MSTimeGramtext);
+                  return NUMBER;
+                }
 
 %%
 
