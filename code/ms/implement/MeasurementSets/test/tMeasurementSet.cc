@@ -41,11 +41,11 @@
 #include <measures/Measures/MEpoch.h>
 #include <measures/Measures/MPosition.h>
 #include <measures/Measures/MFrequency.h>
-
+#include <casa/Utilities/Assert.h>
 #include <casa/iostream.h>
 
-
 #include <casa/namespace.h>
+
 // test functions, all return the number of errors unless otherwise stated
 // test PredefinedColumns static functions in MeasurementSet
 
