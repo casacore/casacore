@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    if(msTimeGramParseCommand(&ms, "'13:05'")==0) {
+    if(msTimeGramParseCommand(&ms, "'2005/06/10/13:05:00.000'")==0) {
       const TableExprNode *node = msTimeGramParseNode();
       cout << "TableExprNode has rows = " << node->nrow() << endl;
       Table tablesel(ms.tableName(), Table::Update);
