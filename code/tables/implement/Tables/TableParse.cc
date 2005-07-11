@@ -1054,7 +1054,7 @@ void TableParseSelect::handleInsert()
 			String::toString(columnNames_p.nelements()) +
 			") mismatches "
 			"number of VALUES expressions (=" +
-			String::toString(update_p.size()) + ")");
+			String::toString(Int(update_p.size())) + ")");
   }
   for (uInt i=0; i<update_p.size(); i++) {
     update_p[i]->setColumnName (columnNames_p[i]);
