@@ -127,9 +127,9 @@ public:
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).
     // <group>
-    void resize(uInt nx, uInt ny, uInt nz);
+    void resize(uInt nx, uInt ny, uInt nz, Bool copyValues=False);
     virtual void resize();
-    virtual void resize(const IPosition &);
+    virtual void resize(const IPosition &newShape, Bool copyValues=False);
     // </group>
 
     // Copy the values from other to this cube. If this cube has zero

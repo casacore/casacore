@@ -98,22 +98,23 @@ template<class T> void Cube<T>::resize()
 {
     resize (IPosition(3,0));
 }
-template<class T> void Cube<T>::resize(const IPosition &len)
+template<class T> void Cube<T>::resize(const IPosition &len, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     if (len.nelements() != 3)
 	throw(ArrayConformanceError("Cube<T>::resize() - attempt to form "
 				    "non-Cube"));
-    Array<T>::resize(len);
+    Array<T>::resize(len, copyValues);
     makeIndexingConstants();
 }
 
-template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz)
+template<class T> void Cube<T>::resize(uInt nx, uInt ny, uInt nz,
+				       Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(3);
     l(0) = nx; l(1) = ny; l(2) = nz;
-    Cube<T>::resize(l);
+    Cube<T>::resize(l, copyValues);
 }
 
 // <thrown>

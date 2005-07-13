@@ -101,22 +101,22 @@ template<class T> void Matrix<T>::resize()
 {
     resize (IPosition(2,0));
 }
-template<class T> void Matrix<T>::resize(const IPosition &l)
+template<class T> void Matrix<T>::resize(const IPosition &l, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     if (l.nelements() != 2)
 	throw(ArrayConformanceError("Matrix<T>::resize() - attempt to form "
 				    "non-Matrix"));
-    Array<T>::resize(l);
+    Array<T>::resize(l, copyValues);
     makeIndexingConstants();
 }
 
-template<class T> void Matrix<T>::resize(uInt nx, uInt ny)
+template<class T> void Matrix<T>::resize(uInt nx, uInt ny, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     IPosition l(2);
     l(0) = nx; l(1) = ny;
-    Matrix<T>::resize(l);
+    Matrix<T>::resize(l, copyValues);
 }
 
 // <thrown>

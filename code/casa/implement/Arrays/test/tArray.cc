@@ -707,6 +707,30 @@ void seeIfWeMakeMemoryLeak()
     throw(ArrayError("Just trying to check memory leak"));
 }
 
+void testResizeCopy()
+{
+  cout << "Testing resize with copy" << endl;
+  Array<Int> arr1(IPosition(3,4,5,6));
+  indgen (arr1);
+  Array<Int> arr2;
+  arr2 = arr1;
+  arr1.resize (IPosition(3,4,5,8), True);
+  AlwaysAssertExit (allEQ (arr2, arr1(IPosition(3,0), IPosition(3,3,4,5))));
+  arr1.resize (IPosition(3,6,4,2), True);
+  AlwaysAssertExit (allEQ (arr2(IPosition(3,0), IPosition(3,3,3,1)),
+			   arr1(IPosition(3,0), IPosition(3,3,3,1))));
+  arr1.resize();
+  arr1 = arr2;
+  arr1.resize (IPosition(2,6,4), True);
+  Array<Int> arr1ca = arr1.reform(IPosition(3,6,4,1));
+  AlwaysAssertExit (allEQ (arr2(IPosition(3,0), IPosition(3,3,3,0)),
+			   arr1ca(IPosition(3,0), IPosition(3,3,3,0))));
+  arr1.resize (IPosition(4,8,3,2,4), True);
+  Array<Int> arr1cb = arr1.reform(IPosition(3,8,3,8));
+  AlwaysAssertExit (allEQ (arr2(IPosition(3,0), IPosition(3,3,2,0)),
+			   arr1cb(IPosition(3,0), IPosition(3,3,2,0))));
+}
+
 
 int main()
 {
@@ -907,6 +931,8 @@ int main()
 	}
 	// Test some special Vector things.
 	testVector();
+	// Test the resize with copy.
+	testResizeCopy();
     } catch (AipsError x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
 	return 1;

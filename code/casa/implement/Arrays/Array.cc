@@ -535,16 +535,51 @@ template<class T> void Array<T>::resize()
 {
     resize (IPosition());
 }
-template<class T> void Array<T>::resize(const IPosition &len)
+template<class T> void Array<T>::resize(const IPosition &len, Bool copyValues)
 {
     DebugAssert(ok(), ArrayError);
     // Maybe we don't need to resize; let's see if we can short circuit
     if (len.isEqual (shape())) {
       return;
     }
-    // OK we differ, so we really have to resize ourselves
+    // OK we differ, so we really have to resize ourselves.
     Array<T> tmp(len);
+    // Copy the contents if needed.
+    if (copyValues) {
+      tmp.copyMatchingPart (*this);
+    }
     this->reference(tmp);
+}
+
+template<class T> void Array<T>::copyMatchingPart (const Array<T> &from)
+{
+  if (nelements() > 0  &&  from.nelements() > 0) {
+    // Create IPositions of the correct length.
+    IPosition endto (ndim(), 0);
+    IPosition endfr (from.ndim(), 0);
+    // Put the minimum length in each axis.
+    uInt nd = from.ndim();
+    if (ndim() < nd) {
+      nd = ndim();
+    }
+    const IPosition& lento = shape();
+    const IPosition& lenfr = from.shape();
+    for (uInt i=0; i<nd; i++) {
+      Int sz = std::min(lento[i], lenfr[i]);
+      endto[i] = sz-1;
+      endfr[i] = sz-1;
+    }
+    // Get the subsection of to and from array.
+    Array<T> subto = (*this)(IPosition(ndim(), 0), endto);
+    Array<T> fromc(from);    // make non-const
+    Array<T> subfr = fromc(IPosition(from.ndim(), 0), endfr);
+    // Reform to if the dimensionalities differ.
+    if (subto.ndim() != subfr.ndim()) {
+      Array<T> tmp = subto.reform (endfr+1);
+      subto.reference (tmp);
+    }
+    subto = subfr;
+  }    
 }
 
 template<class T> T &Array<T>::operator()(const IPosition &index)

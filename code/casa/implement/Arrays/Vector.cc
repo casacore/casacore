@@ -148,10 +148,6 @@ template<class T> void Vector<T>::resize()
 {
     resize (IPosition(1,0), False);
 }
-template<class T> void Vector<T>::resize(const IPosition &l)
-{
-    resize (l, False);
-}
 
 // <thrown>
 //    <item> ArrayConformanceError

@@ -284,6 +284,14 @@ public:
     // be deprecated and removed?)
     Array<T> copy() const;                         // Make a copy of this
 
+    // This function copies the matching part of from array to this array.
+    // The matching part is the part with the minimum size for each axis.
+    // E.g. if this array has shape [4,5,6] and from array has shape [7,3],
+    // the matching part has shape [4,3].
+    // <br>Note it is used by the resize function if
+    // <src>copyValues==True</src>.
+    void copyMatchingPart (const Array<T> &from);
+
     // This ensures that this array does not reference any other storage.
     // <note role=tip>
     //        When a section is taken of an array with non-unity strides,
@@ -366,9 +374,11 @@ public:
     const Array<T> addDegenerate(uInt numAxes) const;
     // </group>
 
-    // Make this array a different shape. Presently the old values are not
-    // copied over to the new array.
-    // Resize without argument is equal to resize(IPosition()).
+    // Make this array a different shape. If <src>copyValues==True</src>
+    // the old values are copied over to the new array.
+    // Copying is done on a per axis basis, thus a subsection with the
+    // minimum of the old and new shape is copied.
+    // <br>Resize without argument is equal to resize(IPosition()).
     // <br>It is important to note that if multiple Array objects
     // reference the same data storage, this Array object still references
     // the same data storage as the other Array objects if the shape does
@@ -380,7 +390,7 @@ public:
     // be called first.
     // <group>
     virtual void resize();
-    virtual void resize(const IPosition &newShape);
+    virtual void resize(const IPosition &newShape, Bool copyValues=False);
     // </group>
 
     // Access a single element of the array. This is relatively
