@@ -76,7 +76,8 @@ public:
 			    const Quantity& noise,
 			    const Double robust, const Int nx, const Int ny,
 			    const Quantity& cellx, const Quantity& celly,
-			    Double& sumwt);
+			    Double& sumwt,
+			    const Int uBox=0, const Int vBox=0);
   
   // Radial weighting (as uv distance)
   static void WeightRadial(VisSet& vs, Double& sumwt);
