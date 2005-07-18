@@ -131,7 +131,7 @@ public:
     //<group>
     Bool fromFITSHeader(Int& stokesFITSValue, 
                         CoordinateSystem& coordsys, 
-			RecordInterface& header,
+			RecordInterface& recHeader,
                         const Vector<String>& header,
                         const IPosition& shape,
                         uInt which=0) const;
