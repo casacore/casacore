@@ -55,10 +55,12 @@ int main(int argc, char **argv)
     inp.create("overwrite", "True", "Allow output to be overwritten?",
                 "Bool");
     inp.create("zero", "False", "Zero blanks?", "Bool");
+    inp.create("old", "False", "Old FITS parser?", "Bool");
     inp.readArguments(argc, argv);
 
     Bool overwrite=inp.getBool("overwrite");
-    Bool zero =inp.getBool("zero");
+    Bool zeroBlanks =inp.getBool("zero");
+    Bool oldParser =inp.getBool("old");
     String fitsFile = inp.getString("in");
     String outFile = inp.getString("out");
     if(outFile.empty() ) {
@@ -68,10 +70,21 @@ int main(int argc, char **argv)
 
     String error;
     ImageInterface<Float>* pOutImage;
-    Bool ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile,
-					      fitsFile, 0,
-					      HostInfo::memoryTotal()/1024,
-					      overwrite, zero);
+    Bool ok=False;
+    uInt whichRep = 0;
+    uInt whichHDU = 0;
+    if (oldParser) {
+       ok = ImageFITSConverter::FITSToImageOld(pOutImage, error, outFile,
+                                              fitsFile, whichHDU,
+                                              HostInfo::memoryFree()/1024,
+                                              overwrite, zeroBlanks);
+    } else {
+       ok = ImageFITSConverter::FITSToImage(pOutImage, error, outFile,
+                                            fitsFile, whichRep, whichHDU, 
+                                            HostInfo::memoryFree()/1024,
+                                            overwrite, zeroBlanks);
+    }
+//
     LogIO os(LogOrigin("fits2image", "main()", WHERE));
     if (!ok) {
         os << LogIO::SEVERE << error << LogIO::EXCEPTION;
