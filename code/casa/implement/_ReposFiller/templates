@@ -1121,6 +1121,19 @@
      template class Vector<Complex> 
      template class Vector<DComplex> 
      template class Vector<String> 
+1094 casa/Arrays/Vector2.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     AIPS_VECTOR2_AUX_TEMPLATES(Int) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Bool) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uChar) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Short) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uShort) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uInt) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Float) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Double) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Complex) 
+     AIPS_VECTOR2_AUX_TEMPLATES(DComplex) 
+     AIPS_VECTOR2_AUX_TEMPLATES(String) 
 1100 casa/Arrays/Vector.cc casa/Quanta/Quantum.h 
      template class Vector<Quantum<Double> > 
 1110 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
