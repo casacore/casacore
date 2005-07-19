@@ -186,7 +186,14 @@ public:
   Bool moreChunks() const
   { return msIter_p.more();}
 
-  // Advance to the next Chunk of data
+  // Check if ms has change since last iteration
+  Bool newMS() const
+    { return msIter_p.more();}
+
+  Int msId() const
+    { return msIter_p.msId();}
+
+ // Advance to the next Chunk of data
   ROVisibilityIterator& nextChunk();
 
   // Return antenna1
@@ -365,6 +372,14 @@ public:
   ROVisibilityIterator& selectChannel(Int nGroup=1, Int start=0, Int width=0, 
 				      Int increment=0, Int spectralWindow=-1);
 
+  //Same as above except when multiple ms's are to be accessed
+
+  ROVisibilityIterator& selectChannel(Block< Vector<Int> >& blockNGroup,
+				      Block< Vector<Int> >& blockStart,
+				      Block< Vector<Int> >& blockWidth,
+				      Block< Vector<Int> >& blockIncr,
+				      Block< Vector<Int> >& blockSpw);
+
   // Attach a VisBuffer object.
   // Note that while more than one VisBuffer may be attached, only the
   // last one is actively updated. A Stack is kept internally, so after 
@@ -410,6 +425,9 @@ protected:
 		     Cube<Complex>& data) const;
   void getDataColumn(DataColumn whichOne, Cube<Complex>& data) const;
 
+  //Re-Do the channel selection in multi ms case 
+  void doChannelSelection();
+
   ROVisibilityIterator* This;
   MSIter msIter_p;
   Table selTable_p; // currently selected set of rows from curTable
@@ -422,6 +440,11 @@ protected:
   Block<Int> numChanGroup_p, chanStart_p, chanWidth_p, chanInc_p,
     preselectedChanStart_p,preselectednChan_p;
   
+  Bool isMultiMS_p;
+  Block< Vector<Int> >blockNumChanGroup_p, blockChanStart_p;
+  Block< Vector<Int> > blockChanWidth_p, blockChanInc_p;
+  Block<Vector<Int> > blockSpw_p;
+  Int msCounter_p;
   // Stack of VisBuffer objects
   Stack<void*> vbStack_p;
 
@@ -555,6 +578,11 @@ public:
   VisibilityIterator();
   VisibilityIterator(MeasurementSet & ms, const Block<Int>& sortColumns, 
        Double timeInterval=0);
+  // Same as previous constructor, but with multiple MSs to iterate over.
+  VisibilityIterator(Block<MeasurementSet>& mss,
+		       const Block<Int>& sortColumns, 
+		       Double timeInterval=0);
+
   VisibilityIterator(const VisibilityIterator & MSI);
 
   VisibilityIterator & operator=(const VisibilityIterator &MSI);

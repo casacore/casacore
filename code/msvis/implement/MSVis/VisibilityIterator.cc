@@ -66,6 +66,8 @@ msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
 floatDataFound_p(False),lastfeedpaUT_p(0),lastazelUT_p(0),velSelection_p(False)
 {
   This = (ROVisibilityIterator*)this; 
+  msCounter_p=0;
+  isMultiMS_p=True;
 }
 
 ROVisibilityIterator::ROVisibilityIterator(const ROVisibilityIterator& other)
@@ -226,6 +228,10 @@ ROVisibilityIterator& ROVisibilityIterator::nextChunk()
 {
   if (msIter_p.more()) {
     msIter_p++;
+    if(msIter_p.newMS()){
+      ++msCounter_p;
+      doChannelSelection();
+    }
     msIterAtOrigin_p=False;
     stateOk_p=False;
   }
@@ -950,7 +956,7 @@ ROVisibilityIterator::selectVelocity
 }
 
 
-ROVisibilityIterator& 
+ROVisibilityIterator&  
 ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width, 
 				    Int increment, Int spectralWindow)
 {
@@ -986,6 +992,74 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   //  originChunks();
   return *this;
 }
+
+ROVisibilityIterator&  
+ROVisibilityIterator::selectChannel(Block<Vector<Int> >& blockNGroup, 
+				    Block<Vector<Int> >& blockStart, 
+				    Block<Vector<Int> >& blockWidth, 
+				    Block<Vector<Int> >& blockIncr,
+				    Block<Vector<Int> >& blockSpw)
+{
+
+  if(!isMultiMS_p){
+    //Programmer error ...so should not reach here
+    cout << "Cannot use this function if Visiter was not constructed with multi-ms" 
+	 << endl;
+  }
+
+
+  blockNumChanGroup_p=blockNGroup;
+  blockChanStart_p=blockStart;
+  blockChanWidth_p=blockWidth;
+  blockChanInc_p=blockIncr;
+  blockSpw_p=blockSpw;
+
+  if (!initialized_p) {
+    // initialize the base iterator only (avoid recursive call to originChunks)
+    if (!msIterAtOrigin_p) {
+      msIter_p.origin();
+      msIterAtOrigin_p=True;
+      stateOk_p=False;
+    }
+  }    
+
+  numChanGroup_p.resize(0);
+  msCounter_p=0;
+
+  doChannelSelection();
+  // have to reset the iterator so all caches get filled & slicer sizes
+  // get updated
+  //  originChunks();
+  return *this;
+}
+
+
+void  ROVisibilityIterator::doChannelSelection()
+{
+
+  for (Int k=0; k < blockSpw_p[msCounter_p].nelements(); ++k){
+    Int spw=blockSpw_p[msCounter_p][k];
+    if (spw<0) spw = msIter_p.spectralWindowId();
+    Int n = numChanGroup_p.nelements();
+    if (spw >= n) {
+      // we need to resize the blocks
+      Int newn = max(2,max(2*n,spw+1));
+      numChanGroup_p.resize(newn);
+      chanStart_p.resize(newn);
+      chanWidth_p.resize(newn);
+      chanInc_p.resize(newn);
+      for (Int i = n; i<newn; i++) numChanGroup_p[i] = 0;
+    }
+    chanStart_p[spw] = blockChanStart_p[msCounter_p][k];
+    chanWidth_p[spw] = blockChanWidth_p[msCounter_p][k];
+    channelGroupSize_p = blockChanWidth_p[msCounter_p][k];
+    chanInc_p[spw] = blockChanInc_p[msCounter_p][k];
+    numChanGroup_p[spw] = blockNumChanGroup_p[msCounter_p][k];
+    curNumChanGroup_p = blockNumChanGroup_p[msCounter_p][k];
+  }
+
+}
+
 
 
 void ROVisibilityIterator::allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan){
@@ -1084,6 +1158,14 @@ VisibilityIterator::VisibilityIterator(MeasurementSet &MS,
 :ROVisibilityIterator(MS, sortColumns, timeInterval)
 {
 }
+
+VisibilityIterator::VisibilityIterator(Block<MeasurementSet>& mss, 
+				       const Block<Int>& sortColumns, 
+				       Double timeInterval)
+:ROVisibilityIterator(mss, sortColumns, timeInterval)
+{
+}
+
 
 VisibilityIterator::VisibilityIterator(const VisibilityIterator & other)
 {
@@ -1393,6 +1475,8 @@ void VisibilityIterator::putDataColumn(DataColumn whichOne,
     break;
   };
 };  
+
+
 
 
 
