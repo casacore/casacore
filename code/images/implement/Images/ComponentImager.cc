@@ -93,7 +93,11 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   DebugAssert(dirCoord.nPixelAxes() == 2, AipsError);
   DebugAssert(dirCoord.nWorldAxes() == 2, AipsError);
   dirCoord.setWorldAxisUnits(Vector<String>(2, "rad"));
-  const MeasRef<MDirection> dirRef(dirCoord.directionType());
+//
+  MDirection::Types dirFrame;
+  dirCoord.getReferenceConversion(dirFrame);
+  const MeasRef<MDirection> dirRef(dirFrame);
+
   MVAngle pixelLatSize, pixelLongSize;
   {
     const Vector<Double> inc = dirCoord.increment();
@@ -123,6 +127,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   // Check if there is a frequency axis and if so get the all the frequencies
   // as a Vector<MVFrequency>. Otherwise assume the reference frequency is the
   // same as the reference frequency of the first component in the list.
+
   MeasRef<MFrequency> freqRef;
   uInt nFreqs = 1;
   Vector<MVFrequency> freqValues(nFreqs);
@@ -133,7 +138,24 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     SpectralCoordinate specCoord = 
       coords.spectralCoordinate(coords.findCoordinate(Coordinate::SPECTRAL));
     specCoord.setWorldAxisUnits(Vector<String>(1, "Hz"));
-    freqRef = MeasRef<MFrequency>(specCoord.frequencySystem());
+
+// Create Frequency MeasFrame.  To handle coversions between spectral frames
+// the extra information (pos/dir/epoch) needs to be in the frame.
+// Need to think about this with some care before implementing !
+
+    MFrequency::Types specConv;
+    {
+       MEpoch epochConv;
+       MPosition posConv;
+       MDirection dirConv;
+       specCoord.getReferenceConversion(specConv,  epochConv, posConv, dirConv);
+/*
+       MeasFrame measFrame(epochConv, posConv, dirConv);
+       freqRef.set(measFrame);
+*/
+    }
+    freqRef = MeasRef<MFrequency>(specConv);
+//
     Double thisFreq;
     for (uInt f = 0; f < nFreqs; f++) {
       if (!specCoord.toWorld(thisFreq, static_cast<Double>(f))) {
@@ -156,6 +178,7 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   // 'beam' unit defined. If the units are not defined or are not one of the
   // above they are assumed to be Jy/pixel and a warning message is sent to the
   // logger.
+
   Unit fluxUnits;
   {
     Unit imageUnit = image.units();
@@ -267,11 +290,10 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
     }
 
     // Sample model
-
     list.sample(pixelVals, fluxUnits, dirVals, dirRef, pixelLatSize, 
    		pixelLongSize, freqValues, freqRef);
-    // Modify data by model for this chunk of data
 
+    // Modify data by model for this chunk of data
     Array<Float>& imageChunk = chunkIter.rwCursor();
 
     // Get input mask values if available
