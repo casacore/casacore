@@ -124,6 +124,15 @@ public:
 	 const Matrix<Int>& chanSelection, Double timeInterval=0,
 	 Bool compress=False);
 
+  // This is a constructor for multiple MS...but everything is same as the one 
+  // above
+
+  VisSet(Block<MeasurementSet>& mss, const Block<Int>& columns, 
+	 const Block< Matrix<Int> >& chanSelections, Double timeInterval=0, 
+	 Bool compress=False);
+
+
+
 
 
   // This is a no frills constructor, no re-sorting, the default order is used,
@@ -159,10 +168,10 @@ public:
 		     Int spectralWindow);
 
   // number of antennas
-  Int numberAnt() const;
+  Int numberAnt();
 
   // number of spectral windows
-  Int numberSpw() const;
+  Int numberSpw();
 
   // number of channels in each spectral window
   Vector<Int> numberChan() const;
@@ -181,6 +190,10 @@ public:
   String msName() {return ms_p.tableName();};
   
 private:
+
+  //Add the scratch columns
+  void addScratchCols(MeasurementSet& ms, Bool compress=False);
+
   // Add a calibration set (comprising a set of CORRECTED_DATA, MODEL_DATA
   // and IMAGING_WEIGHT columns) to the MeasurementSet (MS). Optionally
   // compress these columns using the CompressComplex column engine.
@@ -194,6 +207,8 @@ private:
   MeasurementSet ms_p;
   VisIter* iter_p;
   Matrix<Int> selection_p;
+  Block<MeasurementSet> *blockOfMS_p;
+
 };
 
 

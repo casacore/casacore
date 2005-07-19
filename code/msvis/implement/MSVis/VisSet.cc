@@ -57,15 +57,16 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns, 
-	       const Matrix<Int>& chanSelection, Double timeInterval,
-	       Bool compress)
-:ms_p(ms)
-{
+  VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns, 
+		 const Matrix<Int>& chanSelection, Double timeInterval,
+		 Bool compress)
+    :ms_p(ms)
+  {
     LogSink logSink;
     LogMessage message(LogOrigin("VisSet","VisSet"));
-
-
+    
+    blockOfMS_p->resize(1);
+    (*blockOfMS_p)[0]=ms_p;
     // sort out the channel selection
     Int nSpw=ms_p.spectralWindow().nrow();
     MSSpWindowColumns msSpW(ms_p.spectralWindow());
@@ -95,35 +96,101 @@ VisSet::VisSet(MeasurementSet& ms,const Block<Int>& columns,
 	} 
       }
     }
-
+    
     // Add scratch columns
     if (init) {
       message.message("Adding MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns");
       logSink.post(message);
-
+      
       removeCalSet(ms);
       addCalSet(ms, compress);
       
       ArrayColumn<Complex> mcd(ms,"MODEL_DATA");
       mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
-
+      
       // Force re-sort (in VisIter ctor below) by deleting current sort info 
       if (ms.keywordSet().isDefined("SORT_COLUMNS")) 
 	ms.rwKeywordSet().removeField("SORT_COLUMNS");
       if (ms.keywordSet().isDefined("SORTED_TABLE")) 
-	  ms.rwKeywordSet().removeField("SORTED_TABLE");
+	ms.rwKeywordSet().removeField("SORTED_TABLE");
     }
-
-
+    
+    
     iter_p=new VisIter(ms_p,columns,timeInterval);
     for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
       iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
     }
-
+    
     // Initialize MODEL_DATA and CORRECTED_DATA
     if (init) initCalSet(0);
+    
+  }
+  
+  VisSet::VisSet(Block<MeasurementSet>& mss,const Block<Int>& columns, 
+		 const Block< Matrix<Int> >& chanSelection, 
+		 Double timeInterval,
+		 Bool compress)
+  {
+    
+    
+    blockOfMS_p = &mss;
+    Int numMS=mss.nelements();
+    ms_p=mss[0];
+    
+    for (Int k=0; k < numMS ; ++k){
+      addScratchCols(mss[k], compress);
+    }
+    
+    
+    Block<Vector<Int> > blockNGroup(numMS);
+    Block<Vector<Int> > blockStart(numMS);
+    Block<Vector<Int> > blockWidth(numMS);
+    Block<Vector<Int> > blockIncr(numMS);
+    Block<Vector<Int> > blockSpw(numMS);
+    
+    for (Int k=0; k < numMS; ++k){
+      // sort out the channel selection
+      Int nSpw=mss[k].spectralWindow().nrow();
+      blockNGroup[k]=Vector<Int> (nSpw,1);
+      blockIncr[k]=Vector<Int> (nSpw,1);
+      // At this stage select all spw
+      blockSpw[k].resize(nSpw);
+      indgen(blockSpw[k]);
+      if(chanSelection[k].nelements()!=0){
+	blockStart[k]=chanSelection[k].row(0);
+	blockWidth[k]=chanSelection[k].row(1);
+      }
+      MSSpWindowColumns msSpW(mss[k].spectralWindow());
+      
+      //Drat...need to figure this one out....
+      // fill in default selection
+      selection_p.row(0)=0; //start
+      selection_p.row(1)=msSpW.numChan().getColumn(); 
+      blockStart[k].resize(selection_p.row(0).nelements());
+      blockStart[k]=selection_p.row(0);
+      blockWidth[k].resize(selection_p.row(1).nelements());
+      blockWidth[k]=selection_p.row(1);
+      for (uInt i=0; i<chanSelection[k].ncolumn(); i++) {
+	Int spw=chanSelection[k](2,i);
+	if (spw>=0 && spw<nSpw && chanSelection[k](0,i)>=0 && 
+	    chanSelection[k](0,i)+chanSelection[k](1,i)<=selection_p(1,spw)) {
+	  // looks like a valid selection, implement it
+	  selection_p(0,spw)=chanSelection[k](0,i);
+	  selection_p(1,spw)=chanSelection[k](1,i);
+	  blockStart[k][spw]=chanSelection[k](0,i);
+	  blockWidth[k][spw]=chanSelection[k](1,i);
+	}
+      }
+    }
+    iter_p=new VisIter(mss,columns,timeInterval);
+    
+    iter_p->selectChannel(blockNGroup, blockStart, blockWidth, blockIncr,
+			  blockSpw);
+    
+    
+  }
 
-}
+
 
 
 
@@ -134,6 +201,8 @@ VisSet::VisSet(MeasurementSet& ms, const Matrix<Int>& chanSelection,
     LogSink logSink;
     LogMessage message(LogOrigin("VisSet","VisSet"));
 
+    blockOfMS_p->resize(1);
+    (*blockOfMS_p)[0]=ms_p;
 
     // sort out the channel selection
     Int nSpw=ms_p.spectralWindow().nrow();
@@ -168,6 +237,8 @@ VisSet::VisSet(const VisSet& vs,const Block<Int>& columns,
 	       Double timeInterval)
 {
     ms_p=vs.ms_p;
+    blockOfMS_p->resize(1);
+    (*blockOfMS_p)[0]=ms_p;
     selection_p.resize(vs.selection_p.shape());
     selection_p=vs.selection_p;
 
@@ -181,6 +252,11 @@ VisSet& VisSet::operator=(const VisSet& other)
 {
     if (this == &other) return *this;
     ms_p=other.ms_p;
+
+    blockOfMS_p->resize(other.blockOfMS_p->nelements());
+    for (uInt k=0; k < blockOfMS_p->nelements() ; ++k)
+      (*blockOfMS_p)[k]= (*(other.blockOfMS_p))[k];
+
     selection_p.resize(other.selection_p.shape());
     selection_p=other.selection_p;
     *iter_p=*(other.iter_p);
@@ -233,6 +309,9 @@ void VisSet::initCalSet(Int calSet)
 }
 
 void VisSet::flush() {
+  if(iter_p->newMS()){
+    ms_p=(*blockOfMS_p)[iter_p->msId()];
+  }
   ms_p.flush();
 };
 
@@ -249,16 +328,25 @@ void VisSet::selectChannel(Int nGroup,Int start, Int width, Int increment,
   selection_p(1,spectralWindow) = width;
 
 }
-Int VisSet::numberAnt() const 
-{
+Int VisSet::numberAnt()  
+{  
+  if(iter_p->newMS()){
+    ms_p=(*blockOfMS_p)[iter_p->msId()];
+  }
+  
   return ((MeasurementSet&)ms_p).antenna().nrow(); // for single (sub)array only..
 }
-Int VisSet::numberSpw() const 
+Int VisSet::numberSpw()  
 {
+
+  if(iter_p->newMS()){
+    ms_p=(*blockOfMS_p)[iter_p->msId()];
+  }
   return ((MeasurementSet&)ms_p).spectralWindow().nrow(); 
 }
 Vector<Int> VisSet::startChan() const
 {
+
   return selection_p.row(0);
 }
 Vector<Int> VisSet::numberChan() const 
@@ -267,7 +355,12 @@ Vector<Int> VisSet::numberChan() const
 }
 Int VisSet::numberCoh() const 
 {
-  return ms_p.nrow();
+
+  Int numcoh=0;
+  for (uInt k=0; k < blockOfMS_p->nelements(); ++k){
+    numcoh+=(*blockOfMS_p)[k].nrow();
+  }
+  return numcoh;
 }
 
 void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
@@ -462,6 +555,53 @@ void VisSet::removeCalSet(MeasurementSet& ms) {
     };
   };
 }
+
+
+void VisSet::addScratchCols(MeasurementSet& ms, Bool compress){
+
+  LogSink logSink;
+  LogMessage message(LogOrigin("VisSet","VisSet"));
+
+  //function to add scratchy column
+  Bool init=True;
+  if (ms.tableDesc().isColumn("MODEL_DATA")) {
+    TableColumn col(ms,"MODEL_DATA");
+    if (col.keywordSet().isDefined("CHANNEL_SELECTION")) {
+      Matrix<Int> storedSelection;
+      col.keywordSet().get("CHANNEL_SELECTION",storedSelection);
+      if (selection_p.shape()==storedSelection.shape() && 
+	  allEQ(selection_p,storedSelection)) {
+	init=False;
+      } 
+    }
+  }
+
+  // Add scratch columns
+  if (init) {
+    message.message("Adding MODEL_DATA, CORRECTED_DATA and IMAGING_WEIGHT columns");
+    logSink.post(message);
+    
+    removeCalSet(ms);
+    addCalSet(ms, compress);
+      
+    ArrayColumn<Complex> mcd(ms,"MODEL_DATA");
+    mcd.rwKeywordSet().define("CHANNEL_SELECTION",selection_p);
+
+    // Force re-sort if it was sorted 
+    if (ms.keywordSet().isDefined("SORT_COLUMNS")) 
+      ms.rwKeywordSet().removeField("SORT_COLUMNS");
+    if (ms.keywordSet().isDefined("SORTED_TABLE")) 
+      ms.rwKeywordSet().removeField("SORTED_TABLE");
+  }
+
+  
+  // Initialize MODEL_DATA and CORRECTED_DATA
+  if (init) initCalSet(0);
+
+
+
+}
+
 
 
 } //# NAMESPACE CASA - END
