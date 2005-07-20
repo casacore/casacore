@@ -65,6 +65,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     LogSink logSink;
     LogMessage message(LogOrigin("VisSet","VisSet"));
     
+    blockOfMS_p= new Block<MeasurementSet> ();
     blockOfMS_p->resize(1);
     (*blockOfMS_p)[0]=ms_p;
     // sort out the channel selection
@@ -201,6 +202,7 @@ VisSet::VisSet(MeasurementSet& ms, const Matrix<Int>& chanSelection,
     LogSink logSink;
     LogMessage message(LogOrigin("VisSet","VisSet"));
 
+    blockOfMS_p= new Block<MeasurementSet> ();
     blockOfMS_p->resize(1);
     (*blockOfMS_p)[0]=ms_p;
 
@@ -237,6 +239,7 @@ VisSet::VisSet(const VisSet& vs,const Block<Int>& columns,
 	       Double timeInterval)
 {
     ms_p=vs.ms_p;
+    blockOfMS_p=new Block<MeasurementSet>();
     blockOfMS_p->resize(1);
     (*blockOfMS_p)[0]=ms_p;
     selection_p.resize(vs.selection_p.shape());
@@ -253,6 +256,7 @@ VisSet& VisSet::operator=(const VisSet& other)
     if (this == &other) return *this;
     ms_p=other.ms_p;
 
+    blockOfMS_p= new Block<MeasurementSet> ();
     blockOfMS_p->resize(other.blockOfMS_p->nelements());
     for (uInt k=0; k < blockOfMS_p->nelements() ; ++k)
       (*blockOfMS_p)[k]= (*(other.blockOfMS_p))[k];
