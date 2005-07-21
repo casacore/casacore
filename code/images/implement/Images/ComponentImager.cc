@@ -93,7 +93,9 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
   DebugAssert(dirCoord.nPixelAxes() == 2, AipsError);
   DebugAssert(dirCoord.nWorldAxes() == 2, AipsError);
   dirCoord.setWorldAxisUnits(Vector<String>(2, "rad"));
-//
+
+// Make sure get conversion frame, not just the native one
+
   MDirection::Types dirFrame;
   dirCoord.getReferenceConversion(dirFrame);
   const MeasRef<MDirection> dirRef(dirFrame);
@@ -139,26 +141,22 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
       coords.spectralCoordinate(coords.findCoordinate(Coordinate::SPECTRAL));
     specCoord.setWorldAxisUnits(Vector<String>(1, "Hz"));
 
-// Create Frequency MeasFrame.  To handle coversions between spectral frames
-// the extra information (pos/dir/epoch) needs to be in the frame.
-// Need to think about this with some care before implementing !
+// Create Frequency MeasFrame; this will enable conversions between
+// spectral frames (e.g. the CS frame might be TOPO and the CL
+// frame LSRK)
 
     MFrequency::Types specConv;
-    {
-       MEpoch epochConv;
-       MPosition posConv;
-       MDirection dirConv;
-       specCoord.getReferenceConversion(specConv,  epochConv, posConv, dirConv);
-/*
-       MeasFrame measFrame(epochConv, posConv, dirConv);
-       freqRef.set(measFrame);
-*/
-    }
-    freqRef = MeasRef<MFrequency>(specConv);
+    MEpoch epochConv;
+    MPosition posConv;
+    MDirection dirConv;
+    specCoord.getReferenceConversion(specConv,  epochConv, posConv, dirConv);
+    MeasFrame measFrame(epochConv, posConv, dirConv);
+//
+    freqRef = MeasRef<MFrequency>(specConv, measFrame);
 //
     Double thisFreq;
     for (uInt f = 0; f < nFreqs; f++) {
-      if (!specCoord.toWorld(thisFreq, static_cast<Double>(f))) {
+      if (!specCoord.toWorld(thisFreq, static_cast<Double>(f))) {   // Includes any frame conversion
 	throw(AipsError("ComponentImager::project(...) - "
 			"cannot convert a frequency value"));
       }
@@ -289,7 +287,8 @@ void ComponentImager::project(ImageInterface<Float>& image, const ComponentList&
       pixelDir(1)++;
     }
 
-    // Sample model
+    // Sample model, converting the values in the components
+    // to the specified direction and spectral frames
     list.sample(pixelVals, fluxUnits, dirVals, dirRef, pixelLatSize, 
    		pixelLongSize, freqValues, freqRef);
 
