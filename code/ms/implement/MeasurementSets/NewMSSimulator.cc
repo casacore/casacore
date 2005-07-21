@@ -551,6 +551,7 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   // fallibles.
   Matrix<Int> corrProduct(uInt(2),uInt(nCorr));
   Fallible<Int> fi;
+  stokesTypes.resize(nCorr, True);
   for (Int j=0; j< nCorr; j++) {
     fi=Stokes::receptor1(Stokes::type(stokesTypes(j)));
     corrProduct(0,j)=(fi.isValid() ? fi.value() : 0);
