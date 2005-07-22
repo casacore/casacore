@@ -195,6 +195,7 @@ void ROVisibilityIterator::originChunks()
     msIter_p.origin();
     msIterAtOrigin_p=True;
     stateOk_p=False;
+    msCounter_p=msId();
   }
   setState();
   origin();
@@ -226,10 +227,11 @@ void ROVisibilityIterator::advance()
 
 ROVisibilityIterator& ROVisibilityIterator::nextChunk()
 {
+
   if (msIter_p.more()) {
     msIter_p++;
     if(msIter_p.newMS()){
-      ++msCounter_p;
+      msCounter_p=msId();
       doChannelSelection();
     }
     msIterAtOrigin_p=False;
@@ -349,6 +351,10 @@ void ROVisibilityIterator::setState()
 
 void ROVisibilityIterator::updateSlicer()
 {
+  if(isMultiMS_p){
+    numChanGroup_p.resize(0);
+    doChannelSelection();
+  }
   // set the Slicer to get the selected part of spectrum out of the table
   Int spw=msIter_p.spectralWindowId();
   Int start=chanStart_p[spw]+curChanGroup_p*chanInc_p[spw];
@@ -1037,7 +1043,7 @@ ROVisibilityIterator::selectChannel(Block<Vector<Int> >& blockNGroup,
 void  ROVisibilityIterator::doChannelSelection()
 {
 
-  for (Int k=0; k < blockSpw_p[msCounter_p].nelements(); ++k){
+  for (uInt k=0; k < blockSpw_p[msCounter_p].nelements(); ++k){
     Int spw=blockSpw_p[msCounter_p][k];
     if (spw<0) spw = msIter_p.spectralWindowId();
     Int n = numChanGroup_p.nelements();

@@ -188,7 +188,7 @@ public:
 
   // Check if ms has change since last iteration
   Bool newMS() const
-    { return msIter_p.more();}
+    { return msIter_p.newMS();}
 
   Int msId() const
     { return msIter_p.msId();}
