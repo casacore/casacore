@@ -308,6 +308,15 @@ public:
 
   void allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan) const { This->allSelectedSpectralWindows(spws, nvischan);}
 
+  // Return the actual msid, useful if using multiple ms to monitor which 
+  // ms in the  list is being dealt with
+  Int msId() const
+    { return visIter_p->msId();}
+
+  //checked if the ms has changed since the last chunk processed
+  Bool newMS() const
+    { return visIter_p->newMS();}
+
   //
 
 private:
