@@ -568,6 +568,13 @@ void VisSet::addScratchCols(MeasurementSet& ms, Bool compress){
 
   //function to add scratchy column
   Bool init=True;
+
+  Int nSpw=ms.spectralWindow().nrow();
+  MSSpWindowColumns msSpW(ms.spectralWindow());
+  selection_p.resize(2,nSpw);
+  // fill in default selection
+  selection_p.row(0)=0; //start
+  selection_p.row(1)=msSpW.numChan().getColumn(); 
   if (ms.tableDesc().isColumn("MODEL_DATA")) {
     TableColumn col(ms,"MODEL_DATA");
     if (col.keywordSet().isDefined("CHANNEL_SELECTION")) {
