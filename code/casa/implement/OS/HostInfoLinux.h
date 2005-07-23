@@ -154,21 +154,24 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
     }
 
     /* get system total memory */
+    /* See the sprintf() statements of the file
+       fs/proc/proc_misc.c in the kernel source tree */
     {
 	fd = open(MEMINFO, O_RDONLY);
 	len = read(fd, buffer, sizeof(buffer)-1);
 	close(fd);
 	buffer[len] = '\0';
 
-	/* be prepared for extra columns to appear be seeking
-	   to ends of lines */
-
-	p = strchr(buffer, '\n');
-	p = skip_token(p);			/* "Mem:" */
-	memory_total = bytetok(strtoul(p, &p, 10));
-	p = strchr(p, '\n');
-	p = skip_token(p);			/* "Swap:" */
-	swap_total = bytetok(strtoul(p, &p, 10));
+	int ret;
+	unsigned long mem_total, swp_total;
+	p = strstr(buffer, "MemTotal:");
+	if ((ret = sscanf (p, "MemTotal: %lu kB\n", &mem_total)) != 1)
+	  cerr << "Error parsing MemTotal in /proc/meminfo\n";
+	memory_total = mem_total*1024;
+	p = strstr(buffer, "SwapTotal:");
+	if ((ret = sscanf (p, "SwapTotal: %lu kB\n", &swp_total)) != 1)
+	  cerr << "Error parsing SwapTotal in /proc/meminfo\n";
+	swap_total = swp_total*1024;
     }
 }
 
@@ -176,31 +179,34 @@ void HostMachineInfo::update_info( )
 {
     char buffer[4096+1];
     int fd, len;
-    char *p;
 
     /* get system wide memory usage */
     {
 	char *p;
+	int ret;
+	unsigned long mem_total, mem_free, swp_total, swp_free;
 
 	fd = open(MEMINFO, O_RDONLY);
 	len = read(fd, buffer, sizeof(buffer)-1);
 	close(fd);
 	buffer[len] = '\0';
 
-	/* be prepared for extra columns to appear be seeking
-	   to ends of lines */
+	p = strstr(buffer, "MemTotal:");
+	if ((ret = sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
+			   &mem_total, &mem_free)) != 2)
+	  cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
+	memory_total = mem_total * 1024;
+	memory_free = mem_free * 1024;
+	memory_used = memory_total - memory_free;
 
-	p = strchr(buffer, '\n');
-	p = skip_token(p);			/* "Mem:" */
-	p = skip_token(p);			/* total memory */
-	memory_used = bytetok(strtoul(p, &p, 10));
-        memory_free = bytetok(strtoul(p, &p, 10));
+	p = strstr (buffer, "SwapTotal:");
+	if ((ret = sscanf (p, "SwapTotal: %lu kB\nSwapFree: %lu kB\n",
+			   &swp_total, &swp_free)) != 2)
+	  cerr << "Error parsing SwapTotal and SwapFree in /proc/meminfo\n";
 
-	p = strchr(p, '\n');
-	p = skip_token(p);			/* "Swap:" */
-	swap_total = bytetok(strtoul(p, &p, 10));
-	swap_used = bytetok(strtoul(p, &p, 10));
-	swap_free = bytetok(strtoul(p, &p, 10));
+	swap_total = swp_total * 1024;
+	swap_free = swp_free * 1024;
+	swap_used = swap_total-swap_free;
     }
 }
 
