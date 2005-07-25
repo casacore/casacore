@@ -136,12 +136,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     blockOfMS_p = &mss;
     Int numMS=mss.nelements();
-    ms_p=mss[0];
+    ms_p=mss[numMS-1];
     
-    for (Int k=0; k < numMS ; ++k){
-      addScratchCols(mss[k], compress);
-    }
-    
+  
+
     
     Block<Vector<Int> > blockNGroup(numMS);
     Block<Vector<Int> > blockStart(numMS);
@@ -162,7 +160,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	blockWidth[k]=chanSelection[k].row(1);
       }
       MSSpWindowColumns msSpW(mss[k].spectralWindow());
-      
+      selection_p.resize(2,nSpw);
       //Drat...need to figure this one out....
       // fill in default selection
       selection_p.row(0)=0; //start
@@ -187,6 +185,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     
     iter_p->selectChannel(blockNGroup, blockStart, blockWidth, blockIncr,
 			  blockSpw);
+
+
+    for (Int k=0; k < numMS ; ++k){
+      addScratchCols(mss[k], compress);
+    }
+    
     
     
   }

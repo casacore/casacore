@@ -54,7 +54,8 @@ curChanGroup_p(0),nChan_p(0),nRowBlocking_p(0),initialized_p(False),
 msIterAtOrigin_p(False),stateOk_p(False),freqCacheOK_p(False),
 floatDataFound_p(False),lastfeedpaUT_p(0),lastazelUT_p(0),velSelection_p(False)
 {
-  This = (ROVisibilityIterator*)this; 
+  This = (ROVisibilityIterator*)this;
+  isMultiMS_p=False;
 }
 
 ROVisibilityIterator::ROVisibilityIterator(const Block<MeasurementSet> &mss,
@@ -105,7 +106,8 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   chanInc_p=other.chanInc_p;
   preselectedChanStart_p=other.preselectedChanStart_p;
   preselectednChan_p=other.preselectednChan_p;
-  
+  isMultiMS_p=other.isMultiMS_p;
+
   slicer_p=other.slicer_p;
   weightSlicer_p=other.weightSlicer_p;
   useSlicer_p=other.useSlicer_p;
@@ -140,6 +142,7 @@ ROVisibilityIterator::operator=(const ROVisibilityIterator& other)
   cFromBETA_p=other.cFromBETA_p;
   selFreq_p.resize(other.selFreq_p.nelements()); selFreq_p=other.selFreq_p;
   lsrFreq_p.resize(other.lsrFreq_p.nelements()); lsrFreq_p=other.lsrFreq_p;
+  
 
   // column access functions
   colAntenna1.reference(other.colAntenna1);
