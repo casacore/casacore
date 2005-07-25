@@ -167,11 +167,11 @@ HostMachineInfo::HostMachineInfo( ) : valid(1)
 	p = strstr(buffer, "MemTotal:");
 	if ((ret = sscanf (p, "MemTotal: %lu kB\n", &mem_total)) != 1)
 	  cerr << "Error parsing MemTotal in /proc/meminfo\n";
-	memory_total = mem_total*1024;
+	memory_total = mem_total;
 	p = strstr(buffer, "SwapTotal:");
 	if ((ret = sscanf (p, "SwapTotal: %lu kB\n", &swp_total)) != 1)
 	  cerr << "Error parsing SwapTotal in /proc/meminfo\n";
-	swap_total = swp_total*1024;
+	swap_total = swp_total;
     }
 }
 
@@ -195,8 +195,8 @@ void HostMachineInfo::update_info( )
 	if ((ret = sscanf (p,"MemTotal: %lu kB\nMemFree: %lu kB\n",
 			   &mem_total, &mem_free)) != 2)
 	  cerr << "Error parsing MemTotal and MemFree in /proc/meminfo\n";
-	memory_total = mem_total * 1024;
-	memory_free = mem_free * 1024;
+	memory_total = mem_total;
+	memory_free = mem_free;
 	memory_used = memory_total - memory_free;
 
 	p = strstr (buffer, "SwapTotal:");
@@ -204,8 +204,8 @@ void HostMachineInfo::update_info( )
 			   &swp_total, &swp_free)) != 2)
 	  cerr << "Error parsing SwapTotal and SwapFree in /proc/meminfo\n";
 
-	swap_total = swp_total * 1024;
-	swap_free = swp_free * 1024;
+	swap_total = swp_total;
+	swap_free = swp_free;
 	swap_used = swap_total-swap_free;
     }
 }
