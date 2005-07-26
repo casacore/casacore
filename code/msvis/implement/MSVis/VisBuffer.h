@@ -314,8 +314,7 @@ public:
     { return visIter_p->msId();}
 
   //checked if the ms has changed since the last chunk processed
-  Bool newMS() const
-    { return visIter_p->newMS();}
+  Bool newMS() ;
 
   //
 
@@ -393,6 +392,7 @@ private:
   Cube<Bool> flagCube_p;
   Cube<Complex> visCube_p, modelVisCube_p, correctedVisCube_p;
   Matrix<Float> weightMat_p;
+  Int oldMSId_p;
 
 };
 

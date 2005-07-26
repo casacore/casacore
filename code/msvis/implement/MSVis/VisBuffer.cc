@@ -39,12 +39,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 VisBuffer::VisBuffer():visIter_p(static_cast<ROVisibilityIterator*>(0)),
 twoWayConnection_p(False),This(this),nChannel_p(0),nRow_p(0)
-{validate();}
+{validate(); oldMSId_p=-1;}
 
 VisBuffer::VisBuffer(ROVisibilityIterator& iter):visIter_p(&iter),This(this)
 { 
   iter.attachVisBuffer(*this); 
   twoWayConnection_p=True;
+  oldMSId_p=-1;
 }
 
 VisBuffer::VisBuffer(const VisBuffer& vb):visIter_p(static_cast<ROVisibilityIterator*>(0)),
@@ -57,6 +58,7 @@ VisBuffer& VisBuffer::operator=(const VisBuffer& other)
 {
   if (this!=&other) {
     assign(other);
+    oldMSId_p=-1;
   }
   return *this;
 }
@@ -659,6 +661,17 @@ Vector<Int> VisBuffer::unique(const Vector<Int>& indices) const
   };
   return uniqIndices;
 };
+
+Bool VisBuffer::newMS() {
+
+  if(oldMSId_p != visIter_p->msId()){
+    oldMSId_p = visIter_p->msId();
+    return True;
+  }
+  return False;
+
+}
+
 
 } //# NAMESPACE CASA - END
 
