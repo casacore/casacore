@@ -64,7 +64,7 @@ LinearCoordinate::LinearCoordinate(uInt naxis)
        units[i] = String("m");
 //
        ostringstream oss;       
-       oss << "Axis" << i;
+       oss << "Axis " << i+1;
        names[i] = String(oss);
     }
 //
