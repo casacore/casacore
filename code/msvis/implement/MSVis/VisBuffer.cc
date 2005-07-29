@@ -69,6 +69,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
     if (visIter_p!=static_cast<ROVisibilityIterator*>(0) && twoWayConnection_p) 
       visIter_p->detachVisBuffer(*this);
     visIter_p=other.visIter_p;
+    oldMSId_p=other.oldMSId_p;
     twoWayConnection_p=False;
     if (visIter_p == static_cast<ROVisibilityIterator*>(0)) {
       validate();
@@ -105,6 +106,7 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       correctedVisCubeOK_p=other.correctedVisCubeOK_p;
       weightOK_p=other.weightOK_p;
       weightMatOK_p=other.weightMatOK_p;
+      msOK_p=other.msOK_p;
     } else {
       invalidate();
     }
@@ -265,7 +267,7 @@ void VisBuffer::invalidate()
     arrayIdOK_p=cjonesOK_p=fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=
     lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
-  flagCubeOK_p=visCubeOK_p=weightMatOK_p=False;
+  flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
 }
 
@@ -275,7 +277,7 @@ void VisBuffer::validate()
     arrayIdOK_p=cjonesOK_p=fieldIdOK_p=flagOK_p=flagRowOK_p=scanOK_p=freqOK_p=
     lsrFreqOK_p=phaseCenterOK_p=polFrameOK_p=sigmaOK_p=spwOK_p=timeOK_p=
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
-  flagCubeOK_p=visCubeOK_p=weightMatOK_p=True;  
+  flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
 }
 
@@ -455,6 +457,7 @@ void VisBuffer::updateCoordInfo()
   time();
   frequency();
   nRow();
+  checkMSId();
 }
 
 void VisBuffer::setVisCube(Complex c)
@@ -662,11 +665,23 @@ Vector<Int> VisBuffer::unique(const Vector<Int>& indices) const
   return uniqIndices;
 };
 
-Bool VisBuffer::newMS() {
-
-  if(oldMSId_p != visIter_p->msId()){
-    oldMSId_p = visIter_p->msId();
-    return True;
+Bool VisBuffer::checkMSId() {
+  //if this is not a new iteration then don't even check;
+  //Let the state be
+  if(msOK_p)
+    return False;
+  if( visIter_p!=static_cast<ROVisibilityIterator*>(0)){ 
+    if(oldMSId_p != visIter_p->msId()){
+      oldMSId_p = visIter_p->msId();
+      newMS_p=True;
+   
+    }   
+    else{
+      newMS_p=False;
+    }
+    msOK_p=True;
+    return newMS_p;
+    
   }
   return False;
 

@@ -311,10 +311,11 @@ public:
   // Return the actual msid, useful if using multiple ms to monitor which 
   // ms in the  list is being dealt with
   Int msId() const
-    { return visIter_p->msId();}
+    { This->checkMSId(); return oldMSId_p; };
 
   //checked if the ms has changed since the last chunk processed
-  Bool newMS() ;
+  Bool newMS() const 
+    { This->checkMSId(); return newMS_p;};
 
   //
 
@@ -352,6 +353,7 @@ private:
   Cube<Complex>& fillVisCube(VisibilityIterator::DataColumn whichOne);
   Vector<Float>& fillWeight();
   Matrix<Float>& fillImagingWeight();
+  Bool checkMSId();
 
   // Filter index arrays for unique elements
   Vector<Int> unique(const Vector<Int>& indices) const;
@@ -368,6 +370,7 @@ private:
     timeOK_p, timeIntervalOK_p, uvwOK_p, visOK_p, weightOK_p;
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
+  Bool msOK_p, newMS_p;
 
   // cached variables
   Int nChannel_p, nRow_p;
