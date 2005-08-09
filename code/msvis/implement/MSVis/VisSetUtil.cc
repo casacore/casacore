@@ -153,7 +153,7 @@ void VisSetUtil::WeightUniform(VisSet& vs,
 	    Int vcell=Int(vscale*v+vorigin);
 	    if(((ucell-uBox)>0)&&((ucell+uBox)<nx)&&((vcell-vBox)>0)&&((vcell+vBox)<ny)) {
 	      for (Int iv=-vBox;iv<=vBox;iv++) {
-		for (Int iu=-uBox;iu<-uBox;iu++) {
+		for (Int iu=-uBox;iu<=uBox;iu++) {
 		  gwt(ucell+iu,vcell+iv)+=vb.weight()(row);
 		  sumwt+=vb.weight()(row);
 		}
