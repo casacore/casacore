@@ -61,11 +61,8 @@ LinearCoordinate::LinearCoordinate(uInt naxis)
        refPix[i] = 0.0;
        incr[i] = 1.0;
        pc(i,i) = 1.0;
-       units[i] = String("m");
-//
-       ostringstream oss;       
-       oss << "Axis " << i+1;
-       names[i] = String(oss);
+       units[i] = String("");
+       names[i] = String("");
     }
 //
     makeWCS (wcs_p, naxis, refPix, refVal, incr, pc, units, names);
