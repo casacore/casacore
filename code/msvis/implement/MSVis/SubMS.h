@@ -118,6 +118,7 @@ class SubMS
   Bool fillMainTable(const String& which);
   Bool copyAntenna();
   Bool copyFeed();
+  Bool copySource();
   Bool copyObservation();
   Bool writeDiffSpwShape(String& columnName);
   Bool writeSimilarSpwShape(String& columnName);

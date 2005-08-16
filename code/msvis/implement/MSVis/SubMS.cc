@@ -204,6 +204,7 @@ namespace casa {
       
     }
     fillFieldTable();
+    copySource();
     copyAntenna();
     copyFeed();
     copyObservation();
@@ -744,6 +745,26 @@ Bool SubMS::copyFeed(){
   Table newFeed(msOut_p.feedTableName(), option);
   TableCopy::copyRows(newFeed, oldFeed);
 
+
+  return True;
+
+}
+
+
+Bool SubMS::copySource(){
+  //Source is an optinal table..so it may not exist
+  if(Table::isReadable(mssel_p.sourceTableName())){
+    Table oldSource(mssel_p.sourceTableName(), Table::Old);
+    
+    Table::TableOption option;
+    if(Table::isReadable(msOut_p.sourceTableName()))
+      option=Table::Update;
+    else
+      option=Table::New;
+    
+    Table newSource(msOut_p.sourceTableName(), option);
+    TableCopy::copyRows(newSource, oldSource);
+  }
 
   return True;
 
