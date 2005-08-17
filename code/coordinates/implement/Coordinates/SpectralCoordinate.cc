@@ -649,30 +649,43 @@ Bool SpectralCoordinate::setWorldAxisNames(const Vector<String>& names)
 }
 
 
-
 Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String>& units)
 {  
-    Double incOld = increment()(0);
+    if (!(units.nelements()==1)) {
+       set_error("units vector must be of length 1");
+       return False;
+    }
 
-// Set units
+// Find scale factor to convert old to new
 
-    Bool ok = Coordinate::setWorldAxisUnits(units);
+    String error;
+    Vector<Double> factor;
+    Bool ok = find_scale_factor(error, factor, units, worldAxisUnits());
     if (ok) {
-       unit_p = Unit(units(0));
 
-// Get the to Hz factor right
+// Set new unit 
 
-       Double incNew = increment()(0);
-       restfreqs_p *= incNew / incOld;
-       to_hz_p *= incNew / incOld;
+      unit_p = Unit(units[0]);
+
+// The increment and reference value are *always* stored
+// in the wcs struct in Hz.  All we have to do is indicate
+// that the conversion from current units to Hz has changed
+
+      to_hz_p /= factor[0];
+
+// Scale rest frequencies
+
+      restfreqs_p *= factor[0];
 
 // Update Velocity machines
 
-       pVelocityMachine_p->set(unit_p);
-       if (pConversionMachineTo_p && pConversionMachineTo_p) {
-          pConversionMachineTo_p->set(unit_p);
-          pConversionMachineFrom_p->set(unit_p);
-       }
+      pVelocityMachine_p->set(unit_p);
+      if (pConversionMachineTo_p && pConversionMachineTo_p) {
+         pConversionMachineTo_p->set(unit_p);
+         pConversionMachineFrom_p->set(unit_p);
+      }
+    } else {
+      set_error(error);
     }
 //
     return ok;
