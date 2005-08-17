@@ -667,8 +667,8 @@ Bool SpectralCoordinate::setWorldAxisUnits(const Vector<String>& units)
 
       unit_p = Unit(units[0]);
 
-// The increment and reference value are *always* stored
-// in the wcs struct in Hz.  All we have to do is indicate
+// The increment and reference value are *always* stored in the
+// wcs struct (or TabCoord) in Hz.  All we have to do is indicate
 // that the conversion from current units to Hz has changed
 
       to_hz_p /= factor[0];
