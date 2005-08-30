@@ -64,13 +64,13 @@ void TaQLConstNodeRep::show (std::ostream& os) const
     os << itsIValue;
     break;
   case CTReal:
-    os << std::setprecision(20) << itsRValue;
+    os << std::setprecision(16) << itsRValue;
     break;
   case CTComplex:
     if (itsCValue.real() != 0) {
-      os << std::setprecision(20) << itsCValue.real() << '+';
+      os << std::setprecision(16) << itsCValue.real() << '+';
     }
-    os << std::setprecision(20) << itsCValue.imag() << 'i';
+    os << std::setprecision(16) << itsCValue.imag() << 'i';
     break;
   case CTString:
     if (itsIsTableName) {
