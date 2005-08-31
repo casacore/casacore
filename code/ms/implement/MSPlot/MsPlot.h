@@ -253,7 +253,8 @@
 #include <tables/TablePlot/TablePlot.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSelection.h>
-#include <tasking/Glish/GlishRecord.h>
+// tasking is supposed to be used only in appsglish directory
+//#include <tasking/Glish/GlishRecord.h>
 //
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -405,7 +406,7 @@ Bool setData( const Vector<String>& antennaNames, const Vector<Int>& antennaInde
             );
 // set the plotting axes ( X and Y )
 Bool setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr );
-Bool setLabels( TPPlotter<T> &TPLP, const GlishRecord &poption, Vector<String> &labels );
+Bool setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String> &labels );
 // Plot the data
 Int plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel );
 
@@ -427,10 +428,10 @@ private:
 	 // PtrBlock<BasePlot<T>* > m_BPS;
 	 //TPPlotter<T> m_TPLP;
 	 //Bool m_firstPlot;
-	 Record m_plotOption;
+	 //Record m_plotOption;
 	 // number of panels
-	 Int m_nPanels;
-	 Int m_nXPanels, m_nYPanels;
+	 //Int m_nPanels;
+	 //Int m_nXPanels, m_nYPanels;
 	 Bool m_dbg; 
 //#! Data Members
 	 MSSelection m_select;

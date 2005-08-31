@@ -188,9 +188,10 @@ Bool MsPlot<T>::setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr 
 		return True;		
 	}// end of setAxes
 template<class T>
-Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, const GlishRecord &poption, Vector<String> &labels )
+//Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, const GlishRecord &poption, Vector<String> &labels )
+Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String> &labels )
    {
-		poption.toRecord(m_plotOption);
+	/*	poption.toRecord(m_plotOption);
 		m_nXPanels=1; m_nYPanels=1;
  	   m_nPanels= m_nXPanels*m_nYPanels;
 
@@ -207,7 +208,9 @@ Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, const GlishRecord &poption, Vecto
 		m_nPanels = m_nXPanels*m_nYPanels;
 		if( m_dbg ) cout << "[ MsPlot<T>::setLabels() ] m_nPanels = " << m_nPanels << endl;
 		if( m_dbg ) cout << "[ MsPlot<T>::setLabels() ] labels = " << labels << endl;
-		setPlotParameters( TPLP,m_plotOption,labels);
+		*/
+		//setPlotParameters( TPLP,m_plotOption,labels);
+		setPlotParameters( TPLP, plotOption ,labels);
 		return True;
    }
 template<class T>
