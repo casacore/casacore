@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 4.1 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2005, Mark Calabretta
 *
 *   PGSBOX is free software; you can redistribute it and/or modify it under

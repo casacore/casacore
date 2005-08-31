@@ -1,6 +1,6 @@
 *=======================================================================
 *
-*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 4.1 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2005, Mark Calabretta
 *
 *   PGSBOX is free software; you can redistribute it and/or modify it under
@@ -503,9 +503,11 @@
      :            2,  3,  4,  5,  7, 10/
 
 *     These are to stop compiler messages about uninitialized variables.
-      DATA LABLOK, PREVIN /2 * .FALSE./
-      DATA W1X0, W1PREV, W2X0, W2PREV /4 * 0.0/
       DATA IW0 /0/
+      DATA LABLOK, PREVIN /2 * .FALSE./
+      DATA G0 /2 * 0D0/
+      DATA W1X0, W1PREV, W2X0, W2PREV /4 * 0D0/
+      DATA WORLD, XY /9 * 0D0, 9 * 0D0/
 *-----------------------------------------------------------------------
 *  Initialize.
       DOLBOX = .FALSE.
@@ -566,6 +568,16 @@
       CALL PGSWIN (BLC(1)-XSCL*XVP1, TRC(1)+XSCL*(1.0-XVP2),
      :             BLC(2)-YSCL*YVP1, TRC(2)+YSCL*(1.0-YVP2))
 
+*     Determine initial colour and set colour indices.
+      CALL PGQCI (CI0)
+      DO 20 J = 1, 7
+         IF (CI(J).GE.0) THEN
+            CJ(J) = CI(J)
+         ELSE
+            CJ(J) = CI0
+         END IF
+ 20   CONTINUE
+
 *     Labels only?
       IF (LABCTL.GE.10000) GO TO 130
 
@@ -613,7 +625,7 @@
 
          K = 0
          IYPREV = -1
-         DO 30 IY = 0, NY
+         DO 40 IY = 0, NY
             XY(2) = BLC(2) + IY*DY
 
 *           Sample the edges only?
@@ -622,7 +634,7 @@
                IF (IY.NE.0 .AND. IY.NE.NY) KX = NX
             END IF
 
-            DO 20 IX = 0, NX, KX
+            DO 30 IX = 0, NX, KX
                XY(1) = BLC(1) + IX*DX
 
                IF (DOLBOX) THEN
@@ -707,8 +719,8 @@
                      IF (WORLD(2).GT.VMAX(2,2)) VMAX(2,2) = WORLD(2)
                   END IF
                END IF
- 20         CONTINUE
- 30      CONTINUE
+ 30         CONTINUE
+ 40      CONTINUE
 
          IF (K.EQ.0) THEN
 *           No valid coordinates found within the frame.
@@ -717,7 +729,7 @@
          END IF
 
 *        Check for cycles in angle.
-         DO 40 J = 1, 2
+         DO 50 J = 1, 2
             IF (ISANGL(J)) THEN
                IF (WMAX(J)-WMIN(J).LT.360D0 .AND.
      :             WMAX(J)-WMIN(J).GT.VMAX(J,1)-VMIN(J,1)+TOL) THEN
@@ -753,7 +765,7 @@
                   END IF
                END IF
             END IF
- 40      CONTINUE
+ 50      CONTINUE
 
 *        Cache extrema for subsequent calls.
          CACHE(1,0) = WMIN(1)
@@ -784,9 +796,10 @@
          DENS(2) = DENS0
       END IF
 
-      G0(1) = GRID1(0)
-      G0(2) = GRID2(0)
-      DO 50 J = 1, 2
+      IF (NG1.EQ.0) G0(1) = GRID1(0)
+      IF (NG2.EQ.0) G0(2) = GRID2(0)
+
+      DO 60 J = 1, 2
          IF (J.EQ.1) THEN
             K = 2
          ELSE
@@ -1033,7 +1046,7 @@
 
             GSTEP(J) = STEP
          END IF
- 50   CONTINUE
+ 60   CONTINUE
 
 *     Equal grid spacing?
       IF (DOEQ .AND. NG(1).EQ.0 .AND. NG(2).EQ.0) THEN
@@ -1048,7 +1061,7 @@
       END IF
 
 *     Fine tune the end points.
-      DO 60 J = 1, 2
+      DO 70 J = 1, 2
          IF (FTYPE(J).EQ.'L') THEN
             WMIN(J) = AINT(WMIN(J)-1D0)
             WMAX(J) = AINT(WMAX(J)+1D0)
@@ -1092,7 +1105,7 @@
             SW(J) = GSTEP(J)
          END IF
          NSTEP(J) = ANINT(DW(J)/SW(J))
- 60   CONTINUE
+ 70   CONTINUE
 
 
 *  Draw the grid.
@@ -1102,7 +1115,7 @@
       YSCL = (Y2-Y1)/(TRC(2)-BLC(2))
 
 *     Decode tick mark control.
-      DO 70 J = 1, 2
+      DO 80 J = 1, 2
          IF (GCODE(J).EQ.2) THEN
             TCODE(J,1) = -1
             TCODE(J,2) = -1
@@ -1124,16 +1137,6 @@
             TCODE(J,2) = 0
             TCODE(J,3) = 0
             TCODE(J,4) = 0
-         END IF
- 70   CONTINUE
-
-*     Determine initial colour.
-      CALL PGQCI (CI0)
-      DO 80 J = 1, 7
-         IF (CI(J).GE.0) THEN
-            CJ(J) = CI(J)
-         ELSE
-            CJ(J) = CI0
          END IF
  80   CONTINUE
 
