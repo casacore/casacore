@@ -68,11 +68,12 @@
 	int bracket = 0;
 	int unsafe  = 0;
 	int status  = -1;
+	YY_BUFFER_STATE inbuff;
 	
 	*orig = '\0';
 	*subs = '\0';
 	
-	yy_scan_string(unitstr);
+	inbuff = yy_scan_string(unitstr);
 	*unitstr = '\0';
 	BEGIN(INITIAL);
 	
@@ -336,6 +337,9 @@ years?|YR|YEARS? {
 	    strcat(unitstr, subs);
 	    if (strcmp(orig, subs)) status = 0;
 	  }
+
+	  yy_delete_buffer(inbuff);
+
 	  return unsafe ? 12 : status;
 	}
 

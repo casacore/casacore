@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under

@@ -197,6 +197,10 @@
 *         This will be negated if the keyword matched any specified in the
 *         keyids[] index.
 *
+*      int keyid
+*         Index into the first entry in keyids[] with which the card matches,
+*         else -1.
+*
 *      int status
 *         Status flag bit-vector for the header card employing the following
 *         bit masks defined as preprocessor macros:
@@ -336,7 +340,7 @@ extern const char *fitshdr_errmsg[];
 #ifdef WCS_INT64
   typedef WCS_INT64 int64;
 #else
-  typedef int int64[2];
+  typedef int int64[3];
 #endif
 
 
@@ -350,13 +354,15 @@ struct fitskeyid {
 				/* Struct used for storing FITS keywords.   */
 struct fitskey {
    int  keyno;			/* Header card sequence number (1-rel).     */
+   int  keyid;			/* Index into fitskeyid[].                  */
    int  status;			/* Header card status bit flags.            */
    char keyword[12];		/* Keyword name, null-filled.               */
    int  type;			/* Keyvalue type (see above).               */
+   int  dummy;			/* (Dummy for alignment.)                   */
    union {
       int    i;			/* 32-bit integer and logical values.       */
       int64  k;			/* 64-bit integer values.                   */
-      int    l[8];		/* Very long singed integer values.         */
+      int    l[8];		/* Very long signed integer values.         */
       double f;			/* Floating point values.                   */
       double c[2];		/* Complex values.                          */
       char   s[72];		/* String values, null-terminated.          */

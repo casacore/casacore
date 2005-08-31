@@ -34,14 +34,14 @@
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
-*      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (paper I)
+*      Greisen, E.W., & Calabretta, M.R. 2002, A&A, 395, 1061 (Paper I)
 *
 *      "Representations of celestial coordinates in FITS",
-*      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (paper II)
+*      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (Paper II)
 *
 *      "Representations of spectral coordinates in FITS",
 *      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
-*      (paper III, in preparation)
+*      (Paper III, in preparation)
 *
 *
 *   Summary of routines
@@ -86,9 +86,9 @@
 *   wcsfix() applies all of the corrections handled by the following specific
 *   functions which may also be invoked separately:
 *
-*      datfix(): recast the older DATE-OBS date format in dateobs to year-2000
-*         standard form, and derive mjdobs from it if not already set.
-*         Alternatively, if dateobs isn't set and mjdobs is, then derive
+*      datfix(): recast an older DATE-OBS date format in dateobs to year-2000
+*         standard form and derive mjdobs from it if not already set.
+*         Alternatively, if mjdobs is set and dateobs isn't, then derive
 *         dateobs from it.
 *
 *      unitfix(): translate some commonly used but non-standard unit strings
@@ -111,13 +111,13 @@
 *   unitfix(), celfix(), spcfix() and cylfix().
 *
 *   Given:
-*      naxis    const int []
-*                        Image axis lengths.  If this array pointer is set to
-*                        zero then cylfix() will not be invoked.
-*
 *      ctrl     int      Do potentially unsafe translations of non-standard
 *                        unit strings as described in the usage notes to
 *                        wcsutrn() (refer to the prologue of wcsunits.h).
+*
+*      naxis    const int []
+*                        Image axis lengths.  If this array pointer is set to
+*                        zero then cylfix() will not be invoked.
 *
 *   Given and returned:
 *      wcs      struct wcsprm*
@@ -291,7 +291,7 @@
 #ifndef WCSLIB_WCSFIX
 #define WCSLIB_WCSFIX
 
-#include "wcs.h"
+#include <wcs.h>
 
 #ifdef __cplusplus
 extern "C" {

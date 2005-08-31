@@ -35,7 +35,7 @@
 
 /* Map status return value to message. */
 const char *wcsunits_errmsg[] = {
-   0,
+   "Success",
    "Invalid numeric multiplier",
    "Dangling binary operator",
    "Invalid symbol in INITIAL context",

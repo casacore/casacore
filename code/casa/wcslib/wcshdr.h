@@ -46,8 +46,42 @@
 *
 *   Summary of routines
 *   -------------------
+*   Routines in this suite are aimed at extracting WCS information from a FITS
+*   file.  They provide the high-level interface between the FITS file and the
+*   WCS coordinate transformation routines.  In brief, anticipated sequence of
+*   operations is as follows:
+*
+*      1: Open FITS file and read image header, e.g. using CFITSIO routine
+*         fits_hdr2str().
+*
+*      2: Parse the header using wcspih(); this will interpret -TAB header
+*         cards using wcstab().
+*
+*      3: Allocate memory for, and read -TAB arrays from the binary table
+*         extension, e.g. using CFITSIO routine fits_read_wcstab() - refer to
+*         the prologue of getwcstab.h.  wcsset() will automatically take
+*         control of this allocated memory, in particular causing it to be
+*         free'd by wcsfree().
+*
+*      4: Translate non-standard WCS usage using wcsfix(), see wcsfix.h.
+*
+*      5: Initialize wcsprm struct(s) using wcsset() and calculate coordinates
+*         using wcsp2s() and/or wcss2p().  Refer to the prologue of wcs.h for
+*         a description of these and other high-level WCS coordinate
+*         transformation routines.
+*
+*      6: Clean up by freeing memory with wcsvfree().
+*
+*   In detail:
+*
 *   wcspih() is a high-level FITS WCS routine that parses an image header.  It
-*   returns an array of up to 27 wcsprm structs.
+*   returns an array of up to 27 wcsprm structs on each of which it invokes
+*   wcstab().
+*
+*   wcstab() helps the user to fill in members of the wcsprm struct associated
+*   with coordinate lookup tables (-TAB).  These are based on arrays stored in
+*   a FITS binary table (BINTABLE) extension that are located by PVi_ma cards
+*   in the image header.
 *
 *   wcsidx() is a utility routine that returns the index for a specified
 *   alternate coordinate descriptor in the array of wcsprm structs returned
@@ -55,10 +89,6 @@
 *
 *   wcsvfree() deallocates memory for an array of wcsprm structs, such as
 *   returned by wcspih().
-*
-*   Refer to the prologue of wcs.h for a description of the high level driver
-*   routines for the WCS linear, celestial, and spectral transformation
-*   routines.
 *
 *
 *   FITS WCS parser routine; wcspih()
@@ -73,6 +103,8 @@
 *   reads all WCS cards for the primary coordinate description and up to 26
 *   alternate descriptions.  It returns this information as an array of wcsprm
 *   structs.
+*
+*   wcspih() invokes wcstab() on each of the wcsprm structs that it returns.
 *
 *   Given and returned:
 *      header   char[]   Character array containing the (entire) FITS header
@@ -123,7 +155,7 @@
 *                        null-terminated (NUL not being a legal FITS header
 *                        character), otherwise it will contain its original
 *                        complement of ncards cards and possibly not be null-
-*                        terminated.  
+*                        terminated.
 *
 *   Returned:
 *      nreject  int*     Number of WCS cards rejected for syntax errors,
@@ -142,8 +174,8 @@
 *
 *                        This allocated memory must be freed by the caller,
 *                        first by invoking wcsfree() for each struct, and then
-*                        by freeing the array itself.  A service routine,
-*                        wcsvfree(), is provided to do this (see below).
+*                        by freeing the array itself.  A routine, wcsvfree(),
+*                        is provided to do this (see below).
 *
 *   Function return value:
 *               int      Status return value:
@@ -152,8 +184,50 @@
 *                           2: Memory allocation failed.
 *
 *
-*   Utility routine for indexing alternate coordinate descriptions; wcsidx()
-*   ------------------------------------------------------------------------
+*   Tabular construction routine; wcstab()
+*   --------------------------------------
+*   wcstab() assists in filling in the information in the wcsprm struct
+*   relating to coordinate lookup tables.
+*
+*   Tabular coordinates (-TAB) present certain difficulties in that the main
+*   components of the lookup table - the multidimensional coordinate array
+*   plus an index vector for each dimension - are stored in a FITS binary
+*   table (BINTABLE) extension.  Information required to locate these arrays
+*   is stored in PVi_ma and PSi_ma cards in the image header.
+*
+*   wcstab() parses the PVi_ma and PSi_ma cards associated with each -TAB axis
+*   and allocates memory in the wcsprm struct for the required number of
+*   tabprm structs.  It sets as much of the tabprm struct as can be gleaned
+*   from the image header, and also sets up an array of wtbarr structs
+*   (described in the prologue of wcs.h) to assist in extracting the required
+*   arrays from the BINTABLE extension(s).
+*
+*   It is then up to the user to allocate memory for, and copy arrays from the
+*   BINTABLE extension(s) into the tabprm structs.  A CFITSIO routine,
+*   fits_read_wcstab(), has been provided for this purpose, see getwcstab.h.
+*   wcsset() will automatically take control of this allocated memory, in
+*   particular causing it to be free'd by wcsfree(); the user must not attempt
+*   to free it after wcsset() has been called.
+*
+*   Note that wcspih() automatically invokes wcstab() on each of the wcsprm
+*   structs that it returns.
+*
+*   Given and returned:
+*      wcs      struct wcsprm*
+*                        Coordinate transformation parameters (see below).
+*
+*                        wcstab() sets ntab, tab, nwtb and wtb, allocating
+*                        memory for the tab and wtb arrays.  This allocated
+*                        memory will be free'd automatically by wcsfree().
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*                           1: Null wcsprm pointer passed.
+*
+*
+*   Index alternate coordinate descriptions; wcsidx()
+*   -------------------------------------------------
 *   wcsidx() returns an array of 27 indices for the alternate coordinate
 *   descriptions in the array of wcsprm structs returned by wcspih().
 *
@@ -178,8 +252,8 @@
 *                           1: Null wcsprm pointer passed.
 *
 *
-*   Service routine for the array of wcsprm structs; wcsvfree()
-*   -----------------------------------------------------------
+*   Free the array of wcsprm structs; wcsvfree()
+*   --------------------------------------------
 *   wcsvfree() frees the memory allocated by wcspih() for the array of wcsprm
 *   structs, first invoking wcsfree() on each of the array members.
 *
@@ -289,19 +363,18 @@
 *   Status return values
 *   --------------------
 *   Error messages to match the status value returned from each function are
-*   encoded in the wcs_errmsg character array.
+*   encoded in the wcshdr_errmsg character array.
 *
 *===========================================================================*/
 
 #ifndef WCSLIB_WCSHDR
 #define WCSLIB_WCSHDR
 
-#include "wcs.h"
+#include <wcs.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 #define WCSHDR_all      0x001
 #define WCSHDR_reject   0x002
@@ -313,8 +386,11 @@ extern "C" {
 #define WCSHDR_PROJPn   0x080
 #define WCSHDR_VSOURCEa 0x100
 
+extern const char *wcshdr_errmsg[];
+
 
 int wcspih(char *, int, int, int, int *, int *, struct wcsprm **);
+int wcstab(struct wcsprm *);
 int wcsidx(int, struct wcsprm **, int [27]);
 int wcsvfree(int *, struct wcsprm **);
 

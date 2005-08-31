@@ -81,7 +81,7 @@
 *   Returned:
 *      scale    double*  Convert units using (scale*value + offset)^power.
 *      offset   double*  Normally offset == 0.0 except for log() or ln()
-*      power    double   conversions, e.g. log(MHz) to ln(Hz).  Likewise,
+*      power    double*  conversions, e.g. log(MHz) to ln(Hz).  Likewise,
 *                        power == 1.0 except for exp() conversions, e.g.
 *                        exp(ms) to exp(/Hz).
 *

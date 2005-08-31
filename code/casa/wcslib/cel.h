@@ -52,8 +52,8 @@
 *   and others that are maintained by these routines, somewhat like a C++
 *   class but with no encapsulation.
 *
-*   A service routine, celini(), is provided to initialize the celprm struct
-*   with default values, and another, celprt(), to print its contents.
+*   Routine celini() is provided to initialize the celprm struct with default
+*   values, and another, celprt(), to print its contents.
 *
 *   A setup routine, celset(), computes intermediate values in the celprm
 *   struct from parameters in it that were supplied by the caller.  The
@@ -68,7 +68,8 @@
 *
 *   Default constructor for the celprm struct; celini()
 *   ---------------------------------------------------
-*   celini() sets all members of a celprm struct to default values.
+*   celini() sets all members of a celprm struct to default values.  It should
+*   be used to initialize every celprm struct.
 *
 *   Returned:
 *      cel      struct celprm*
@@ -213,13 +214,13 @@
 *
 *      double ref[4]
 *         The first pair of values should be set to the celestial longitude
-*         and latitude (usually right ascension and declination) of the
+*         and latitude (typically right ascension and declination) of the
 *         fiducial point.  These are given by the CRVALia keywords in FITS.
 *
-*         The second pair of values are the native longitude and latitude of
-*         the celestial pole (the latter is the same as the celestial latitude
-*         of the native pole) and correspond to the FITS keywords LONPOLEa and
-*         LATPOLEa.
+*         The second pair of values are the native longitude (phi_p) and
+*         latitude (theta_p) of the celestial pole (the latter is the same as
+*         the celestial latitude of the native pole, delta_p) and these are
+*         given by the FITS keywords LONPOLEa and LATPOLEa.
 *
 *         LONPOLEa defaults to 0 degrees if the celestial latitude of the
 *         fiducial point of the projection is greater than the native
@@ -229,9 +230,11 @@
 *         (from wcsmath.h) or 999.0 to indicate that the correct default
 *         should be substituted.
 *
-*         In some circumstances the celestial latitude of the native pole may
-*         be determined by the first three values only to within a sign and
-*         LATPOLEa is used to choose between the two solutions.  LATPOLEa is
+*         theta_p, the native and latitude of the celestial pole (or equally
+*         the celestial latitude of the native pole) is often determined
+*         uniquely by CRVALia and LONPOLEa in which case LATPOLEa is ignored.
+*         However, in some circumstances there are two valid solutions for
+*         theta_p and LATPOLEa is used to choose between them.  LATPOLEa is
 *         set in ref[3] and the solution closest to this value is used to
 *         reset ref[3].  It is therefore legitimate, for example, to set
 *         ref[3] to +90.0 to choose the more northerly solution - the default
@@ -240,7 +243,8 @@
 *         latitude zero, its celestial latitude is zero, and LONPOLEa = +/- 90
 *         then the celestial latitude of the native pole is not determined by
 *         the first three reference values and LATPOLEa specifies it
-*         completely.
+*         completely.  The latpreq member of the celprm struct (see below)
+*         specifies how LATPOLEa was actually used.
 *
 *      struct prjprm prj
 *         Projection parameters described in the prologue to prj.h.
@@ -253,6 +257,14 @@
 *         coordinate reference values.  The first three values are the Z-, X-,
 *         and Z'-Euler angles, and the remaining two are the cosine and sine
 *         of the X-Euler angle.
+*
+*      int latpreq
+*         For informational purposes, this indicates how the LATPOLEa card was
+*         used
+*            0: Not required, theta_p (== delta_p) was determined uniquely by
+*               the CRVALia and LONPOLEa keywords.
+*            1: Required to select between two valid solutions of theta_p.
+*            2: theta_p was specified solely by LATPOLEa.
 *
 *      int isolat
 *         True if the spherical rotation preserves the magnitude of the
@@ -340,7 +352,7 @@
 #ifndef WCSLIB_CEL
 #define WCSLIB_CEL
 
-#include "prj.h"
+#include <prj.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -373,8 +385,8 @@ struct celprm {
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
    double euler[5];		/* Euler angles and functions thereof.      */
+   int    latpreq;		/* LATPOLEa requirement.                    */
    int    isolat;		/* True if |latitude| is preserved.         */
-   int    padding;		/* (Dummy inserted for alignment purposes.) */
 };
 
 #define CELLEN (sizeof(struct celprm)/sizeof(int))

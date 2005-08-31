@@ -63,7 +63,7 @@
 
 /* Map status return value to message. */
 const char *spc_errmsg[] = {
-   0,
+   "Success",
    "Null spcprm pointer passed",
    "Invalid spectral parameters",
    "One or more of x coordinates were invalid",
@@ -79,7 +79,7 @@ int spcini(struct spcprm *spc)
 {
    register int k;
 
-   if (spc == 0) return 1;
+   if (spc == 0x0) return 1;
 
    spc->flag = 0;
 
@@ -87,18 +87,23 @@ int spcini(struct spcprm *spc)
    strcpy(spc->code, "   ");
 
    spc->crval = UNDEFINED;
-   spc->restfrq = 0.0;
-   spc->restwav = 0.0;
+   spc->restfrq =  0.0;
+   spc->restwav =  0.0;
 
    for (k = 0; k < 7; k++) {
       spc->pv[k] = UNDEFINED;
    }
 
-   spc->isGrism = 0;
-
    for (k = 0; k < 6; k++) {
      spc->w[k] = 0.0;
    }
+
+   spc->isGrism = 0;
+
+   spc->spxX2P = 0x0;
+   spc->spxP2S = 0x0;
+   spc->spxS2P = 0x0;
+   spc->spxP2X = 0x0;
 
    return 0;
 }
@@ -110,7 +115,7 @@ int spcprt(const struct spcprm *spc)
 {
    int i;
 
-   if (spc == 0) return 1;
+   if (spc == 0x0) return 1;
 
    printf("       flag: %d\n", spc->flag);
    printf("       type: \"%s\"\n", spc->type);
@@ -179,7 +184,7 @@ int spcset(struct spcprm *spc)
    double alpha, beta_r, crvalX, dn_r, dXdS, epsilon, G, m, lambda_r, n_r,
           t, restfrq, restwav, theta;
 
-   if (spc == 0) return 1;
+   if (spc == 0x0) return 1;
 
    if (undefined(spc->crval)) {
       return 2;
@@ -236,8 +241,8 @@ int spcset(struct spcprm *spc)
       if (strcmp(spc->type, "FREQ") == 0) {
          /* Frequency. */
          spc->flag = FREQ;
-         spc->spxP2S = 0;
-         spc->spxS2P = 0;
+         spc->spxP2S = 0x0;
+         spc->spxS2P = 0x0;
 
       } else if (strcmp(spc->type, "AFRQ") == 0) {
          /* Angular frequency. */
@@ -268,8 +273,8 @@ int spcset(struct spcprm *spc)
       if (strcmp(spc->type, "WAVE") == 0) {
          /* Vacuum wavelengths. */
          spc->flag = WAVE;
-         spc->spxP2S = 0;
-         spc->spxS2P = 0;
+         spc->spxP2S = 0x0;
+         spc->spxS2P = 0x0;
 
       } else if (strcmp(spc->type, "VOPT") == 0) {
          /* Optical velocity. */
@@ -288,16 +293,16 @@ int spcset(struct spcprm *spc)
       if (strcmp(spc->type, "AWAV") == 0) {
          /* Air wavelengths. */
          spc->flag = AWAV;
-         spc->spxP2S = 0;
-         spc->spxS2P = 0;
+         spc->spxP2S = 0x0;
+         spc->spxS2P = 0x0;
       }
 
    } else if (ptype == 'V') {
       if (strcmp(spc->type, "VELO") == 0) {
          /* Relativistic velocity. */
          spc->flag = VELO;
-         spc->spxP2S = 0;
-         spc->spxS2P = 0;
+         spc->spxP2S = 0x0;
+         spc->spxS2P = 0x0;
 
       } else if (strcmp(spc->type, "BETA") == 0) {
          /* Velocity ratio (v/c). */
@@ -314,8 +319,8 @@ int spcset(struct spcprm *spc)
    if (xtype == 'F') {
       /* Axis is linear in frequency. */
       if (ptype == 'F') {
-         spc->spxX2P = 0;
-         spc->spxP2X = 0;
+         spc->spxX2P = 0x0;
+         spc->spxP2X = 0x0;
 
       } else if (ptype == 'W') {
          spc->spxX2P = freqwave;
@@ -339,8 +344,8 @@ int spcset(struct spcprm *spc)
          spc->spxP2X = freqwave;
 
       } else if (ptype == 'W') {
-         spc->spxX2P = 0;
-         spc->spxP2X = 0;
+         spc->spxX2P = 0x0;
+         spc->spxP2X = 0x0;
 
       } else if (ptype == 'A') {
          spc->spxX2P = waveawav;
@@ -370,8 +375,8 @@ int spcset(struct spcprm *spc)
          spc->spxP2X = waveawav;
 
       } else if (ptype == 'A') {
-         spc->spxX2P = 0;
-         spc->spxP2X = 0;
+         spc->spxX2P = 0x0;
+         spc->spxP2X = 0x0;
 
       } else if (ptype == 'V') {
          spc->spxX2P = awavvelo;
@@ -401,13 +406,13 @@ int spcset(struct spcprm *spc)
          spc->spxP2X = awavvelo;
 
       } else if (ptype == 'V') {
-         spc->spxX2P = 0;
-         spc->spxP2X = 0;
+         spc->spxX2P = 0x0;
+         spc->spxP2X = 0x0;
       }
 
       spc->flag += V2S;
    }
-   
+
 
    /* Check for grism axes. */
    if (spc->isGrism) {
@@ -469,7 +474,7 @@ int spcx2s(
 
 
    /* Initialize. */
-   if (spc == 0) return 1;
+   if (spc == 0x0) return 1;
    if (spc->flag == 0) {
       if (spcset(spc)) return 2;
    }
@@ -494,7 +499,7 @@ int spcx2s(
 
    /* Apply the non-linear step of the algorithm chain to convert the    */
    /* X-type spectral variable to P-type intermediate spectral variable. */
-   if (spc->spxX2P != 0) {
+   if (spc->spxX2P) {
       if (statX2P = spc->spxX2P(spc->w[0], nx, sspec, sspec, spec, spec,
                                 stat)) {
          if (statX2P == 4) {
@@ -507,7 +512,7 @@ int spcx2s(
 
    /* Apply the linear step of the algorithm chain to convert P-type  */
    /* intermediate spectral variable to the required S-type variable. */
-   if (spc->spxP2S != 0) {
+   if (spc->spxP2S) {
       if (statP2S = spc->spxP2S(spc->w[0], nx, sspec, sspec, spec, spec,
                                 stat)) {
          if (statP2S == 4) {
@@ -542,14 +547,14 @@ int spcs2x(
 
 
    /* Initialize. */
-   if (spc == 0) return 1;
+   if (spc == 0x0) return 1;
    if (spc->flag == 0) {
       if (spcset(spc)) return 2;
    }
 
    /* Apply the linear step of the algorithm chain to convert the S-type */
    /* spectral variable to P-type intermediate spectral variable.        */
-   if (spc->spxS2P != 0) {
+   if (spc->spxS2P) {
       if (statS2P = spc->spxS2P(spc->w[0], nspec, sspec, sx, spec, x, stat)) {
          if (statS2P == 4) {
             status = 4;
@@ -572,7 +577,7 @@ int spcs2x(
 
    /* Apply the non-linear step of the algorithm chain to convert P-type */
    /* intermediate spectral variable to X-type spectral variable. */
-   if (spc->spxP2X != 0) {
+   if (spc->spxP2X) {
       if (statP2X = spc->spxP2X(spc->w[0], nspec, sx, sx, x, x, stat)) {
          if (statP2X == 4) {
             status = 4;
@@ -713,6 +718,9 @@ int spctyp(
    } else if (ctype[4] != '-') {
       return 2;
 
+   } else if (strcmp(ctype+5, "LOG") == 0 || strcmp(ctype+5, "TAB") == 0) {
+      /* Logarithmic or tabular axis, not linear in any spectral type. */
+
    } else if (xtype_t == 'G') {
       /* Validate the algorithm code. */
       if (ctype[6] != 'R') {
@@ -745,15 +753,15 @@ int spctyp(
 
 
    /* Rest freq/wavelength required for transformation between P and X? */
-   if (strchr("FWAwa", xtype_t)) {
+   if (strchr("FWAwa", (int)xtype_t)) {
       if (ptype_t == 'V') {
          restreq_t += 2;
       }
    } else if (xtype_t == 'V') {
-      if (strchr("FWAwa", ptype_t)) {
+      if (strchr("FWAwa", (int)ptype_t)) {
          restreq_t += 2;
       }
-   } else {
+   } else if (strchr("LT", (int)xtype_t) == 0) {
       /* Invalid X-type variable code. */
       return 2;
    }
@@ -796,6 +804,11 @@ int spcspx(
 
    /* Analyse the spectral axis code. */
    if (spctyp(ctypeS, stype, scode, 0, 0, ptype, xtype, restreq)) {
+      return 2;
+   }
+
+   if (strstr("LT", xtype)) {
+      /* Can't handle logarithmic or tabular coordinates. */
       return 2;
    }
 
@@ -931,6 +944,11 @@ int spcxps(
 
    /* Analyse the spectral axis type. */
    if (spctyp(ctypeS, stype, scode, 0, 0, ptype, xtype, restreq)) {
+      return 2;
+   }
+
+   if (strstr("LT", xtype)) {
+      /* Can't handle logarithmic or tabular coordinates. */
       return 2;
    }
 

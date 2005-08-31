@@ -150,7 +150,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	hptr = header;
 	*nreject = 0;
 	*nwcs = 0;
-	*wcs  = 0;
+	*wcs  = 0x0;
 	
 	pass = 1;
 	i = j = m = 0;
@@ -158,8 +158,8 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	ndx  = -1;
 	type = -1;
 	altlin = 0;
-	npptr = 0;
-	vptr  = 0;
+	npptr = 0x0;
+	vptr  = 0x0;
 	
 	BEGIN(INITIAL);
 
@@ -504,22 +504,29 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	  BEGIN(CCCCCCCC);
 	}
 
-^MJD-OBS" " {
+^DATE-AVG {
 	  /* Rule 038. */
+	  if (*wcs) vptr = (*wcs)->dateavg;
+	  type = STRING;
+	  BEGIN(CCCCCCCC);
+	}
+
+^MJD-OBS" " {
+	  /* Rule 039. */
 	  if (*wcs) vptr = &((*wcs)->mjdobs);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^MJD-AVG" " {
-	  /* Rule 039. */
+	  /* Rule 040 */
 	  if (*wcs) vptr = &((*wcs)->mjdavg);
 	  type = FLOAT;
 	  BEGIN(CCCCCCCC);
 	}
 
 ^END" "{77} {
-	  /* Rule 040. */
+	  /* Rule 041. */
 	  yyless(0);
 	  if (wcspih_ncards) {
 	    sprintf(errmsg, "Illegal cards following END card");
@@ -530,14 +537,14 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 ^.	{
-	  /* Rule 041. */
+	  /* Rule 042. */
 	  yyless(0);
 	  BEGIN(DISCARD);
 	}
 
 <CROTAi>{I1}{ALT}" " |
 <CROTAi>{I2}{ALT} {
-	  /* Rules 042-043. */
+	  /* Rules 043-044. */
 	  sscanf(yytext, "%d%c", &i, &alt);
 	  if (alt == ' ' || relax & (WCSHDR_all | WCSHDR_CROTAia)) {
 	    ndx = i - 1;
@@ -554,7 +561,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CROTAi>{I3} {
-	  /* Rule 044. */
+	  /* Rule 045. */
 	  sscanf(yytext, "%d", &i);
 	  alt = ' ';
 	  ndx = i - 1;
@@ -562,12 +569,12 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CROTAi>. {
-	  /* Rule 045. */
+	  /* Rule 046. */
 	  BEGIN(DISCARD);
 	}
 
 <PROJPn>{I0}"  " {
-	  /* Rule 046. */
+	  /* Rule 047. */
 	  if (relax & (WCSHDR_all | WCSHDR_PROJPn)) {
 	    sscanf(yytext, "%d", &m);
 	    i = 0;
@@ -585,20 +592,20 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <PROJPn>. {
-	  /* Rule 047. */
+	  /* Rule 048. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCia>{I1}{ALT}" " |
 <CCCCCia>{I2}{ALT} {
-	  /* Rules 048-049. */
+	  /* Rules 049-050. */
 	  sscanf(yytext, "%d%c", &i, &alt);
 	  ndx = i - 1;
 	  BEGIN(VALUE);
 	}
 
 <CCCCCia>{I3} {
-	  /* Rule 050. */
+	  /* Rule 051. */
 	  sscanf(yytext, "%3d", &i);
 	  alt = ' ';
 	  ndx = i - 1;
@@ -606,7 +613,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CCCCCia>. {
-	  /* Rule 051. */
+	  /* Rule 052. */
 	  BEGIN(DISCARD);
 	}
 
@@ -616,7 +623,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 <CCi_ja>{I1}_{I3}{ALT} |
 <CCi_ja>{I2}_{I2}{ALT} |
 <CCi_ja>{I3}_{I1}{ALT} {
-	  /* Rules 052-057. */
+	  /* Rules 053-058. */
 	  sscanf(yytext, "%d_%d%c", &i, &j, &alt);
 	  if (*wcs) {
 	    wcsp = *wcs;
@@ -633,7 +640,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 <CCi_ja>{I2}_{I3} |
 <CCi_ja>{I3}_{I2} |
 <CCi_ja>{I4}_{I1} {
-	  /* Rules 058-061. */
+	  /* Rules 059-062. */
 	  sscanf(yytext, "%d_%d", &i, &j);
 	  alt = ' ';
 	  if (*wcs) {
@@ -643,7 +650,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CCi_ja>{I0}{6} {
-	  /* Rule 062: This covers the defunct forms CD00i00j and PC00i00j. */
+	  /* Rule 063: This covers the defunct forms CD00i00j and PC00i00j. */
 	  if ((relax & WCSHDR_all) ||
 	      (relax & WCSHDR_PC00i00j) && altlin == 1 ||
 	      (relax & WCSHDR_CD00i00j) && altlin == 2) {
@@ -665,7 +672,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CCi_ja>. {
-	  /* Rule 063. */
+	  /* Rule 064. */
 	  BEGIN(DISCARD);
 	}
 
@@ -675,7 +682,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 <CCi_ma>{I1}_{I3}{ALT} |
 <CCi_ma>{I2}_{I2}{ALT} |
 <CCi_ma>{I3}_{I1}{ALT} {
-	  /* Rules 064-069. */
+	  /* Rules 065-070. */
 	  sscanf(yytext, "%d_%d%c", &i, &m, &alt);
 	  ndx = -1;
 	  BEGIN(VALUE);
@@ -685,7 +692,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 <CCi_ma>{I2}_{I3} |
 <CCi_ma>{I3}_{I2} |
 <CCi_ma>{I4}_{I1} {
-	  /* Rules 070-073. */
+	  /* Rules 071-074. */
 	  sscanf(yytext, "%d_%d", &i, &m);
 	  alt = ' ';
 	  ndx = -1;
@@ -693,24 +700,24 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <CCi_ma>. {
-	  /* Rule 074. */
+	  /* Rule 075. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCCCa>{ALT} {
-	  /* Rule 075. */
+	  /* Rule 076. */
 	  ndx = -1;
 	  sscanf(yytext, "%c", &alt);
 	  BEGIN(VALUE);
 	}
 
 <CCCCCCCa>. {
-	  /* Rule 076. */
+	  /* Rule 077. */
 	  BEGIN(DISCARD);
 	}
 
 <CCCCCCCC>. {
-	  /* Rule 077. */
+	  /* Rule 078. */
 	  unput(yytext[0]);
 	  ndx = -1;
 	  alt = 0;
@@ -718,7 +725,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <VALUE>=" "+ {
-	  /* Rule 078. */
+	  /* Rule 079. */
 	  if (type == INTEGER) {
 	    BEGIN(INTEGER_VAL);
 	  } else if (type == FLOAT) {
@@ -732,13 +739,13 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <VALUE>. {
-	  /* Rule 079. */
+	  /* Rule 080. */
 	  sprintf(errmsg, "Invalid KEYWORD = VALUE syntax");
 	  BEGIN(ERROR);
 	}
 
 <INTEGER_VAL>{INTEGER} {
-	  /* Rule 080. */
+	  /* Rule 081. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -780,13 +787,13 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <INTEGER_VAL>. {
-	  /* Rule 081. */
+	  /* Rule 082. */
 	  sprintf(errmsg, "An integer value was expected");
 	  BEGIN(ERROR);
 	}
 
 <FLOAT_VAL>{FLOAT} {
-	  /* Rule 082. */
+	  /* Rule 083. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -840,13 +847,13 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <FLOAT_VAL>. {
-	  /* Rule 083. */
+	  /* Rule 084. */
 	  sprintf(errmsg, "A floating-point value was expected");
 	  BEGIN(ERROR);
 	}
 
 <STRING_VAL>{STRING} {
-	  /* Rule 084. */
+	  /* Rule 085. */
 	  if (pass == 1) {
 	    wcspih_naxes(naxis, i, j, alt, alts, npptr);
 	    BEGIN(FLUSH);
@@ -912,25 +919,25 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <STRING_VAL>. {
-	  /* Rule 085. */
+	  /* Rule 086. */
 	  sprintf(errmsg, "A string value was expected");
 	  BEGIN(ERROR);
 	}
 
 <COMMENT>" "*\/.* |
 <COMMENT>" "* {
-	  /* Rules 086-087. */
+	  /* Rules 087-088. */
 	  BEGIN(FLUSH);
 	}
 
 <COMMENT>. {
-	  /* Rule 088. */
+	  /* Rule 089. */
 	  sprintf(errmsg, "Malformed inline comment");
 	  BEGIN(ERROR);
 	}
 
 <DISCARD>.* {
-	  /* Rule 089. */
+	  /* Rule 090. */
 	  if (pass == 2) {
 	    if (ctrl < 0) {
 	      /* Preserve discards. */
@@ -947,7 +954,7 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <ERROR>.* {
-	  /* Rule 090. */
+	  /* Rule 091. */
 	  (*nreject)++;
 	  if (pass == 2) {
 	    if (ctrl == -1) {
@@ -967,12 +974,12 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	}
 
 <FLUSH>.*\n {
-	  /* Rule 091. */
+	  /* Rule 092. */
 	  i = j = m = 0;
 	  alt = ' ';
 	  type = -1;
 	  altlin = 0;
-	  npptr = 0;
+	  npptr = 0x0;
 	  BEGIN(INITIAL);
 	}
 
@@ -1011,7 +1018,10 @@ int  wcspih_final(int alts[], double epoch[], int velref[], double vsource[],
 	      fprintf(stderr, "%d WCS cards were rejected.\n", *nreject);
 	    }
 	
-	    wcspih_final(alts, epoch, velref, vsource, nwcs, wcs);
+	    if (status = wcspih_final(alts, epoch, velref, vsource, nwcs,
+	        wcs)) {
+	      return status;
+	    }
 	
 	    return 0;
 	  }
@@ -1138,7 +1148,7 @@ int wcspih_final(
 {
   static char *specsys[] = {"LSRK", "BARYCENT", "TOPOCENT",
                             "LSRD", "GEOCENTR", "SOURCE", "GALACTOC"};
-  int a, i;
+  int a, i, status;
   double beta, c = 299792458.0;
 
   for (a = 0; a < *nwcs; a++) {
@@ -1164,6 +1174,12 @@ int wcspih_final(
       /* Convert relativistic Doppler velocity to redshift. */
       beta = vsource[a]/c;
       (*wcs+a)->zsource = (1.0+beta)/sqrt(1.0 - beta*beta) - 1.0;
+    }
+
+    /* Interpret -TAB header cards. */
+    if (status = wcstab(*wcs+a)) {
+       wcsvfree(nwcs, wcs);
+       return status;
     }
   }
 

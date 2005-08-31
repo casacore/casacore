@@ -39,7 +39,7 @@
 
 /* Map status return value to message. */
 const char *spx_errmsg[] = {
-   0,
+   "Success",
    "Null spxprm pointer passed",
    "Invalid spectral parameters",
    "Invalid spectral variable",
@@ -66,7 +66,7 @@ struct spxprm *spx;
    int haverest;
    double beta, dwaveawav, gamma, n, s, t, u;
 
-   if (spx == 0) return 1;
+   if (spx == 0x0) return 1;
 
    haverest = 1;
    if (restfrq == 0.0) {

@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement tabular coordinate systems as
+*   WCSLIB 4.1 - C routines that implement tabular coordinate systems as
 *   defined by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -53,8 +53,8 @@
 *   caller, and others that are maintained by these routines, somewhat like a
 *   C++ class but with no encapsulation.
 *
-*   Three service routines, tabini(), tabcpy(), and tabfree() are provided to
-*   manage the tabprm struct, and another, tabprt(), to print its contents.
+*   tabini(), tabmem(), tabcpy(), and tabfree() are provided to manage the
+*   tabprm struct, and another, tabprt(), to print its contents.
 *
 *   A setup routine, tabset(), computes intermediate values in the tabprm
 *   struct from parameters in it that were supplied by the caller.  The
@@ -70,15 +70,22 @@
 *   tabini() allocates memory for arrays in a tabprm struct and sets all
 *   members of the struct to default values.
 *
+*   N.B. every tabprm struct should be initialized by tabini(), possibly
+*   repeatedly.  On the first invokation, and only the first invokation, the
+*   flag member of the tabprm struct must be set to -1 to initialize memory
+*   management, regardless of whether tabini() will actually be used to
+*   allocate memory.
+*
 *   Given:
-*      alloc    int      If true, allocate memory for arrays in the tabprm
-*                        struct (see "Memory allocation and deallocation
-*                        below").  Otherwise, it is assumed that pointers to
-*                        these arrays have been set by the caller except if
-*                        they are null pointers in which case memory will be
-*                        allocated for them regardless.  (In other words,
-*                        setting alloc true saves having to initalize these
-*                        pointers to zero.)
+*      alloc    int      If true, allocate memory unconditionally for arrays
+*                        in the tabprm struct (see "Memory allocation and
+*                        deallocation below").
+*
+*                        If false, it is assumed that pointers to these arrays
+*                        have been set by the caller except if they are null
+*                        pointers in which case memory will be allocated for
+*                        them regardless.  (In other words, setting alloc true
+*                        saves having to initalize these pointers to zero.)
 *
 *      M        int      The number of tabular coordinate axes.
 *      K        const int[]
@@ -87,7 +94,16 @@
 *                        array and of each indexing vector.  M and K[] are
 *                        used to determine the length of the various tabprm
 *                        arrays and therefore the amount of memory to allocate
-*                        for them.
+*                        for them.  Their values are copied into the tabprm
+*                        struct.
+*
+*                        It is permissible to set K (i.e. the address of the
+*                        array) to zero which has the same effect as setting
+*                        each element of K[] to zero.  In this case no memory
+*                        will be allocated for the index vectors or coordinate
+*                        array in the tabprm struct.  These together with the
+*                        K vector must be set separately before calling
+*                        tabset().
 *
 *   Given and returned:
 *      tab      struct tabprm*
@@ -105,6 +121,21 @@
 *                           3: Invalid tabular parameters.
 *
 *
+*   Acquire tabular memory; tabmem()
+*   --------------------------------
+*   tabmem() takes control of memory allocated by the user for arrays in the
+*   tabprm struct.
+*
+*   Given and returned:
+*      tab      struct tabprm*
+*                        Tabular transformation parameters (see below).
+*
+*   Function return value:
+*               int      Status return value:
+*                           0: Success.
+*                           1: Null tabprm pointer passed.
+*
+*
 *   Copy routine for the tabprm struct; tabcpy()
 *   --------------------------------------------
 *   tabcpy() does a deep copy of one tabprm struct to another, using tabini()
@@ -113,11 +144,16 @@
 *   to set up the remainder.
 *
 *   Given:
-*      alloc    int      If true, allocate memory for the crpix, pc, and cdelt
-*                        arrays in the destination.  Otherwise, it is assumed
-*                        that pointers to these arrays have been set by the
-*                        caller except if they are null pointers in which case
-*                        memory will be allocated for them regardless.
+*      alloc    int      If true, allocate memory unconditionally for arrays
+*                        in the tabprm struct (see "Memory allocation and
+*                        deallocation below").
+*
+*                        If false, it is assumed that pointers to these arrays
+*                        have been set by the caller except if they are null
+*                        pointers in which case memory will be allocated for
+*                        them regardless.  (In other words, setting alloc true
+*                        saves having to initalize these pointers to zero.)
+*
 *      tabsrc   const struct tabprm*
 *                        Struct to copy from.
 *
@@ -139,6 +175,9 @@
 *   tabfree() frees memory allocated for the tabprm arrays by tabini().
 *   tabini() records the memory it allocates and tabfree() will only attempt
 *   to free this.
+*
+*   N.B. tabfree() must not be invoked on a tabprm struct that was not
+*   initialized by tabini().
 *
 *   Returned:
 *      tab      struct tabprm*
@@ -258,6 +297,11 @@
 *         structure members are set or changed.  This signals the
 *         initialization routine, tabset(), to recompute intermediaries.
 *
+*         flag should be set to -1 when tabini() is called for the first time
+*         for a tabprm struct in order to initialize memory management.  It
+*         must ONLY be used on the first initialization otherwise memory leaks
+*         may result.
+*
 *      int M
 *         Number of tabular coordinate axes.
 *
@@ -295,6 +339,10 @@
 *         Pointer to the first element of a vector of length M of pointers to
 *         vectors of lengths (K_1, K_2,... K_M) of 0-relative indexes.
 *
+*         The address of any or all of these index vectors may be set to zero,
+*         i.e. index[m] == 0; this is interpreted as default indexing -
+*         index[m][k] = k.
+*
 *      double *coord
 *         Pointer to the first element of the tabular coordinate array,
 *         treated as though it were defined as
@@ -328,9 +376,12 @@
 *
 *            double extrema[K_M]...[K_2][2][M]
 *
-*         The minimum is recorded in the first element of the compressed K_1 
+*         The minimum is recorded in the first element of the compressed K_1
 *         dimension, then the maximum.  This array is used by the inverse
 *         table lookup function, tabs2x(), to speed up table searches.
+*
+*      The remaining elements of the tabprm struct are used for memory
+*      management by tabini(), tabmem(), and tabfree().
 *
 *
 *   Vector arguments
@@ -347,12 +398,13 @@
 *
 *   Memory allocation and deallocation
 *   ----------------------------------
-*   tabini() allocates memory for the K, map, crval, index, and coord arrays
-*   (including the arrays referenced by index[]) in the tabprm struct.  It is
-*   provided as a service routine; usage is optional, and the caller is at
-*   liberty to set these pointers independently.
+*   tabini() optionally allocates memory for the K, map, crval, index, and
+*   coord arrays (including the arrays referenced by index[]) in the tabprm
+*   struct as described in the usage notes above.  tabmem() takes control of
+*   any of these arrays that may have been allocated by the user, specifically
+*   in that tabfree() will free it.
 *
-*   tabset() also allocates memory for the minmax, sense, p0, and delta
+*   tabset() also allocates memory for the sense, p0, delta and extrema
 *   arrays.  The caller must not modify these.
 *
 *   tabini() maintains a record of memory it has allocated and this is used
@@ -362,12 +414,12 @@
 *   the same tabprm struct.  Likewise, tabset() deallocates memory that it
 *   may have allocated in the same tabprm struct on a previous invokation.
 *
-*   However, a memory leak will result if a tabprm struct goes out of scope
-*   before the memory has been free'd, either by tabfree() or otherwise.
-*   Likewise, if the tabprm struct itself has been malloc'd and the allocated
-*   memory is not free'd when the memory for the struct is free'd.  A leak may
-*   also arise if the caller interferes with the array pointers in the
-*   "private" part of the tabprm struct.
+*   A memory leak will result if a tabprm struct goes out of scope before the
+*   memory has been free'd, either by tabfree() or otherwise.  Likewise, if
+*   the tabprm struct itself has been malloc'd and the allocated memory is not
+*   free'd when the memory for the struct is free'd.  A leak may also arise if
+*   the caller interferes with the array pointers in the "private" part of the
+*   tabprm struct.
 *
 *   Beware of making a shallow copy of a tabprm struct by assignment; any
 *   changes made to allocated memory in one would be reflected in the other,
@@ -433,19 +485,19 @@ struct tabprm {
 
    /* Information derived from the parameters supplied.                     */
    /*-----------------------------------------------------------------------*/
-   int    nc;			/* Number of coordinate vectors in the      */
-	   			/* coordinate array.                        */
+   int    nc;			/* Number of coordinate vectors (of length  */
+				/* M) in the coordinate array.              */
    int    *sense;		/* Vector of M flags that indicate whether  */
 				/* the Mth indexing vector is monotonic     */
 				/* increasing, or else decreasing.          */
-   int    *p0;		        /* Vector of M indices.                     */
+   int    *p0;			/* Vector of M indices.                     */
    double *delta;		/* Vector of M increments.                  */
    double *extrema;		/* (1+M)-dimensional array of coordinate    */
 				/* extrema.                                 */
 
    int    m_flag, m_M, m_N;	/* The remainder are for memory management. */
    int    *m_K, *m_map;
-   double *m_crval, **m_index, *m_coord;
+   double *m_crval, **m_index, **m_indxs, *m_coord;
    int    set_M;
 };
 
@@ -453,6 +505,7 @@ struct tabprm {
 
 
 int tabini(int, int, const int[], struct tabprm *);
+int tabmem(struct tabprm *);
 int tabcpy(int, const struct tabprm *, struct tabprm *);
 int tabfree(struct tabprm *);
 int tabprt(const struct tabprm *);

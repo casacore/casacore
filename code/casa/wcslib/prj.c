@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -92,7 +92,7 @@ const int HPX = 801;
 
 /* Map status return value to message. */
 const char *prj_errmsg[] = {
-   0,
+   "Success",
    "Null prjprm pointer passed",
    "Invalid projection parameters",
    "One or more of the (x,y) coordinates were invalid",
@@ -129,7 +129,7 @@ struct prjprm *prj;
 {
    register int k;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = 0;
 
@@ -171,7 +171,7 @@ const struct prjprm *prj;
 {
    int i, n;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    printf("       flag: %d\n",  prj->flag);
    printf("       code: \"%s\"\n",  prj->code);
@@ -183,7 +183,7 @@ const struct prjprm *prj;
       if (prj->pvrange/100) {
          printf(" (0)");
       } else {
-         printf(" %- 11.4g", prj->pv[0]);
+         printf(" %- 11.5g", prj->pv[0]);
          n--;
       }
 
@@ -195,7 +195,7 @@ const struct prjprm *prj;
          if (undefined(prj->pv[i])) {
             printf("  UNDEFINED   ");
          } else {
-            printf("  %- 11.4g", prj->pv[i]);
+            printf("  %- 11.5g", prj->pv[i]);
          }
       }
       printf("\n");
@@ -228,11 +228,11 @@ const struct prjprm *prj;
    printf("         y0: %f\n", prj->y0);
    printf("        w[]:");
    for (i = 0; i < 5; i++) {
-      printf("  %- 11.4g", prj->w[i]);
+      printf("  %- 11.5g", prj->w[i]);
    }
    printf("\n            ");
    for (i = 5; i < 10; i++) {
-      printf("  %- 11.4g", prj->w[i]);
+      printf("  %- 11.5g", prj->w[i]);
    }
    printf("\n");
    printf("          n: %d\n", prj->n);
@@ -250,7 +250,7 @@ int prjset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    /* Invoke the relevant initialization routine. */
    prj->code[3] = '\0';
@@ -328,7 +328,7 @@ int stat[];
 
 {
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag == 0) {
       if (prjset(prj)) return 2;
    }
@@ -348,7 +348,7 @@ int stat[];
 
 {
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag == 0) {
       if (prjset(prj)) return 2;
    }
@@ -369,7 +369,7 @@ const double phi0, theta0;
 {
    int    stat;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    if (undefined(prj->phi0) || undefined(prj->theta0)) {
       /* Set both to the projection-specific default if either undefined. */
@@ -423,7 +423,7 @@ int azpset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = AZP;
    strcpy(prj->code, "AZP");
@@ -490,7 +490,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AZP) {
       if (azpset(prj)) return 2;
    }
@@ -598,7 +598,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AZP) {
       if (azpset(prj)) return 2;
    }
@@ -734,7 +734,7 @@ int szpset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = SZP;
    strcpy(prj->code, "SZP");
@@ -799,7 +799,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SZP) {
       if (szpset(prj)) return 2;
    }
@@ -927,7 +927,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SZP) {
       if (szpset(prj)) return 2;
    }
@@ -1050,7 +1050,7 @@ int tanset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = TAN;
    strcpy(prj->code, "TAN");
@@ -1091,7 +1091,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != TAN) {
       if (tanset(prj)) return 2;
    }
@@ -1167,7 +1167,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != TAN) {
       if (tanset(prj)) return 2;
    }
@@ -1262,7 +1262,7 @@ int stgset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = STG;
    strcpy(prj->code, "STG");
@@ -1310,7 +1310,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != STG) {
       if (stgset(prj)) return 2;
    }
@@ -1386,7 +1386,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != STG) {
       if (stgset(prj)) return 2;
    }
@@ -1480,7 +1480,7 @@ int sinset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = SIN;
    strcpy(prj->code, "SIN");
@@ -1530,7 +1530,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SIN) {
       if (sinset(prj)) return 2;
    }
@@ -1687,7 +1687,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SIN) {
       if (sinset(prj)) return 2;
    }
@@ -1807,7 +1807,7 @@ int arcset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = ARC;
    strcpy(prj->code, "ARC");
@@ -1855,7 +1855,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ARC) {
       if (arcset(prj)) return 2;
    }
@@ -1932,7 +1932,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ARC) {
       if (arcset(prj)) return 2;
    }
@@ -2016,7 +2016,7 @@ struct prjprm *prj;
    double d, d1, d2, r, zd, zd1, zd2;
    const double tol = 1.0e-13;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    strcpy(prj->code, "ZPN");
    prj->flag = ZPN;
@@ -2126,7 +2126,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ZPN) {
       if (zpnset(prj)) return 2;
    }
@@ -2304,7 +2304,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ZPN) {
       if (zpnset(prj)) return 2;
    }
@@ -2394,7 +2394,7 @@ int zeaset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = ZEA;
    strcpy(prj->code, "ZEA");
@@ -2443,7 +2443,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ZEA) {
       if (zeaset(prj)) return 2;
    }
@@ -2534,7 +2534,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != ZEA) {
       if (zeaset(prj)) return 2;
    }
@@ -2623,7 +2623,7 @@ struct prjprm *prj;
    const double tol = 1.0e-4;
    double cosxi;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = AIR;
    strcpy(prj->code, "AIR");
@@ -2683,7 +2683,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AIR) {
       if (airset(prj)) return 2;
    }
@@ -2819,7 +2819,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AIR) {
       if (airset(prj)) return 2;
    }
@@ -2922,7 +2922,7 @@ int cypset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = CYP;
    strcpy(prj->code, "CYP");
@@ -2996,7 +2996,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CYP) {
       if (cypset(prj)) return 2;
    }
@@ -3062,7 +3062,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CYP) {
       if (cypset(prj)) return 2;
    }
@@ -3150,7 +3150,7 @@ int ceaset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = CEA;
    strcpy(prj->code, "CEA");
@@ -3211,7 +3211,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CEA) {
       if (ceaset(prj)) return 2;
    }
@@ -3291,7 +3291,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CEA) {
       if (ceaset(prj)) return 2;
    }
@@ -3361,7 +3361,7 @@ int carset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = CAR;
    strcpy(prj->code, "CAR");
@@ -3409,7 +3409,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CAR) {
       if (carset(prj)) return 2;
    }
@@ -3474,7 +3474,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CAR) {
       if (carset(prj)) return 2;
    }
@@ -3544,7 +3544,7 @@ int merset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = MER;
    strcpy(prj->code, "MER");
@@ -3592,7 +3592,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != MER) {
       if (merset(prj)) return 2;
    }
@@ -3657,7 +3657,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != MER) {
       if (merset(prj)) return 2;
    }
@@ -3737,7 +3737,7 @@ int sflset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = SFL;
    strcpy(prj->code, "SFL");
@@ -3785,7 +3785,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SFL) {
       if (sflset(prj)) return 2;
    }
@@ -3863,7 +3863,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != SFL) {
       if (sflset(prj)) return 2;
    }
@@ -3938,7 +3938,7 @@ int parset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = PAR;
    strcpy(prj->code, "PAR");
@@ -3991,7 +3991,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != PAR) {
       if (parset(prj)) return 2;
    }
@@ -4092,7 +4092,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != PAR) {
       if (parset(prj)) return 2;
    }
@@ -4168,7 +4168,7 @@ int molset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = MOL;
    strcpy(prj->code, "MOL");
@@ -4216,7 +4216,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != MOL) {
       if (molset(prj)) return 2;
    }
@@ -4344,7 +4344,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != MOL) {
       if (molset(prj)) return 2;
    }
@@ -4445,7 +4445,7 @@ int aitset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = AIT;
    strcpy(prj->code, "AIT");
@@ -4492,7 +4492,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AIT) {
       if (aitset(prj)) return 2;
    }
@@ -4599,7 +4599,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != AIT) {
       if (aitset(prj)) return 2;
    }
@@ -4687,7 +4687,7 @@ int copset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = COP;
    strcpy(prj->code, "COP");
@@ -4748,7 +4748,7 @@ int stat[];
    register double *phip, *thetap;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COP) {
       if (copset(prj)) return 2;
    }
@@ -4826,7 +4826,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COP) {
       if (copset(prj)) return 2;
    }
@@ -4936,7 +4936,7 @@ struct prjprm *prj;
 {
    double theta1, theta2;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = COE;
    strcpy(prj->code, "COE");
@@ -5000,7 +5000,7 @@ int stat[];
    register double *phip, *thetap;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COE) {
       if (coeset(prj)) return 2;
    }
@@ -5100,7 +5100,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COE) {
       if (coeset(prj)) return 2;
    }
@@ -5189,7 +5189,7 @@ int codset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = COD;
    strcpy(prj->code, "COD");
@@ -5247,7 +5247,7 @@ int stat[];
    register double *phip, *thetap;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COD) {
       if (codset(prj)) return 2;
    }
@@ -5325,7 +5325,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COD) {
       if (codset(prj)) return 2;
    }
@@ -5415,7 +5415,7 @@ struct prjprm *prj;
 {
    double cos1, cos2, tan1, tan2, theta1, theta2;
 
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = COO;
    strcpy(prj->code, "COO");
@@ -5485,7 +5485,7 @@ int stat[];
    register double *phip, *thetap;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COO) {
       if (cooset(prj)) return 2;
    }
@@ -5578,7 +5578,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != COO) {
       if (cooset(prj)) return 2;
    }
@@ -5671,7 +5671,7 @@ int bonset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = BON;
    strcpy(prj->code, "BON");
@@ -5729,7 +5729,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->pv[1] == 0.0) {
       /* Sanson-Flamsteed. */
       return sflx2s(prj, nx, ny, sxy, spt, x, y, phi, theta, stat);
@@ -5820,7 +5820,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->pv[1] == 0.0) {
       /* Sanson-Flamsteed. */
       return sfls2x(prj, nphi, ntheta, spt, sxy, phi, theta, x, y, stat);
@@ -5902,7 +5902,7 @@ int pcoset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = PCO;
    strcpy(prj->code, "PCO");
@@ -5954,7 +5954,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != PCO) {
       if (pcoset(prj)) return 2;
    }
@@ -6088,7 +6088,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != PCO) {
       if (pcoset(prj)) return 2;
    }
@@ -6168,7 +6168,7 @@ int tscset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = TSC;
    strcpy(prj->code, "TSC");
@@ -6216,7 +6216,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != TSC) {
       if (tscset(prj)) return 2;
    }
@@ -6352,7 +6352,7 @@ int stat[];
    register double *xp, *yp;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != TSC) {
       if (tscset(prj)) return 2;
    }
@@ -6514,7 +6514,7 @@ int cscset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = CSC;
    strcpy(prj->code, "CSC");
@@ -6591,7 +6591,7 @@ int stat[];
    const float p06 =  0.14381585;
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CSC) {
       if (cscset(prj)) return 2;
    }
@@ -6785,7 +6785,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != CSC) {
       if (cscset(prj)) return 2;
    }
@@ -6968,7 +6968,7 @@ int qscset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = QSC;
    strcpy(prj->code, "QSC");
@@ -7017,7 +7017,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != QSC) {
       if (qscset(prj)) return 2;
    }
@@ -7258,7 +7258,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != QSC) {
       if (qscset(prj)) return 2;
    }
@@ -7503,7 +7503,7 @@ int hpxset(prj)
 struct prjprm *prj;
 
 {
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
 
    prj->flag = HPX;
    strcpy(prj->code, "HPX");
@@ -7569,7 +7569,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != HPX) {
       if (hpxset(prj)) return 2;
    }
@@ -7685,7 +7685,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (prj == 0) return 1;
+   if (prj == 0x0) return 1;
    if (prj->flag != HPX) {
       if (hpxset(prj)) return 2;
    }

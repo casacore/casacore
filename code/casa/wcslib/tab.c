@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -33,6 +33,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "wcsmath.h"
 #include "tab.h"
@@ -41,7 +42,7 @@ const int TABSET = 137;
 
 /* Map status return value to message. */
 const char *tab_errmsg[] = {
-   0,
+   "Success",
    "Null tabprm pointer passed",
    "Memory allocation failed",
    "Invalid tabular parameters",
@@ -50,30 +51,33 @@ const char *tab_errmsg[] = {
 
 /*--------------------------------------------------------------------------*/
 
-int tabini(alloc, M, K, tab)
-
-int alloc, M;
-const int K[];
-struct tabprm *tab;
+int tabini(int alloc, int M, const int K[], struct tabprm *tab)
 
 {
-   int k, l, m, N;
+   int k, m, N;
    double *dp;
 
-   if (tab == 0) return 1;
+   if (tab == 0x0) return 1;
 
-   if (M <= 0 || K == 0) {
+   if (M <= 0) {
       return 3;
    }
 
    /* Determine the total number of elements in the coordinate array. */
-   N = M;
-   for (m = 0; m < M; m++) {
-      N *= K[m];
-   }
+   if (K) {
+      N = M;
 
-   if (N <= 0) {
-      return 3;
+      for (m = 0; m < M; m++) {
+         if (K[m] < 0) {
+            return 3;
+         }
+
+         N *= K[m];
+      }
+
+   } else {
+      /* Axis lengths as yet unknown. */
+      N = 0;
    }
 
 
@@ -82,20 +86,38 @@ struct tabprm *tab;
       tab->m_flag  = 0;
       tab->m_M     = 0;
       tab->m_N     = 0;
-      tab->m_K     = 0;
-      tab->m_map   = 0;
-      tab->m_crval = 0;
-      tab->m_index = 0;
-      tab->m_coord = 0;
+      tab->m_K     = 0x0;
+      tab->m_map   = 0x0;
+      tab->m_crval = 0x0;
+      tab->m_index = 0x0;
+      tab->m_indxs = 0x0;
+      tab->m_coord = 0x0;
+
+   } else {
+      /* Clear any outstanding signals set by wcstab(). */
+      for (m = 0; m < tab->m_M; m++) {
+         if (tab->m_indxs[m] == (double *)0x1) tab->m_indxs[m] = 0x0;
+      }
+
+      if (tab->m_coord == (double *)0x1) tab->m_coord = 0x0;
    }
+
+   if (tab->flag == -1) {
+      tab->sense   = 0x0;
+      tab->p0      = 0x0;
+      tab->delta   = 0x0;
+      tab->extrema = 0x0;
+      tab->set_M   = 0;
+   }
+
 
    /* Allocate memory for arrays if required. */
    if (alloc ||
-       tab->K == 0 ||
-       tab->map == 0 ||
-       tab->crval == 0 ||
-       tab->index == 0 ||
-       tab->coord == 0) {
+       tab->K == 0x0 ||
+       tab->map == 0x0 ||
+       tab->crval == 0x0 ||
+       tab->index == 0x0 ||
+       tab->coord == 0x0) {
 
       /* Was sufficient allocated previously? */
       if (tab->m_flag == TABSET && (tab->m_M < M || tab->m_N < N)) {
@@ -103,7 +125,7 @@ struct tabprm *tab;
          tabfree(tab);
       }
 
-      if (alloc || tab->K == 0) {
+      if (alloc || tab->K == 0x0) {
          if (tab->m_K) {
             /* In case the caller fiddled with it. */
             tab->K = tab->m_K;
@@ -115,12 +137,11 @@ struct tabprm *tab;
 
             tab->m_flag = TABSET;
             tab->m_M = M;
-            tab->m_N = N;
             tab->m_K = tab->K;
          }
       }
 
-      if (alloc || tab->map == 0) {
+      if (alloc || tab->map == 0x0) {
          if (tab->m_map) {
             /* In case the caller fiddled with it. */
             tab->map = tab->m_map;
@@ -132,12 +153,11 @@ struct tabprm *tab;
 
             tab->m_flag = TABSET;
             tab->m_M = M;
-            tab->m_N = N;
             tab->m_map = tab->map;
          }
       }
 
-      if (alloc || tab->crval == 0) {
+      if (alloc || tab->crval == 0x0) {
          if (tab->m_crval) {
             /* In case the caller fiddled with it. */
             tab->crval = tab->m_crval;
@@ -149,12 +169,11 @@ struct tabprm *tab;
 
             tab->m_flag = TABSET;
             tab->m_M = M;
-            tab->m_N = N;
             tab->m_crval = tab->crval;
          }
       }
 
-      if (alloc || tab->index == 0) {
+      if (alloc || tab->index == 0x0) {
          if (tab->m_index) {
             /* In case the caller fiddled with it. */
             tab->index = tab->m_index;
@@ -164,34 +183,36 @@ struct tabprm *tab;
                return 2;
             }
 
-            l = 0;
-            for (m = 0; m < M; m++) {
-               l += K[m];
-            }
-
-            if (!(tab->index[0] = calloc(l, sizeof(double)))) {
-               return 2;
-            }
-
-            for (m = 0; m < M; m++) {
-               if (m) {
-                  tab->index[m] = tab->index[m-1] + K[m-1];
-               }
-            }
-
             tab->m_flag = TABSET;
             tab->m_M = M;
             tab->m_N = N;
             tab->m_index = tab->index;
+
+            if (!(tab->m_indxs = calloc(M, sizeof(double *)))) {
+               return 2;
+            }
+
+            /* Recall that calloc() initializes these pointers to zero. */
+            if (K) {
+               for (m = 0; m < M; m++) {
+                  if (K[m]) {
+                     if (!(tab->index[m] = calloc(K[m], sizeof(double)))) {
+                        return 2;
+                     }
+
+                     tab->m_indxs[m] = tab->index[m];
+                  }
+               }
+            }
          }
       }
 
-      if (alloc || tab->coord == 0) {
+      if (alloc || tab->coord == 0x0) {
          if (tab->m_coord) {
             /* In case the caller fiddled with it. */
             tab->coord = tab->m_coord;
 
-         } else {
+         } else if (N) {
             if (!(tab->coord = calloc(N, sizeof(double)))) {
                return 2;
             }
@@ -204,35 +225,23 @@ struct tabprm *tab;
       }
    }
 
-   /* Free memory allocated by tabset(). */
-   if (tab->flag == TABSET) {
-      if (tab->sense)   free(tab->sense);
-      if (tab->p0)      free(tab->p0);
-      if (tab->delta)   free(tab->delta);
-      if (tab->extrema) free(tab->extrema);
-   }
-
-   tab->sense   = 0;
-   tab->p0      = 0;
-   tab->delta   = 0;
-   tab->extrema = 0;
-   tab->set_M   = 0;
-
    tab->flag = 0;
    tab->M = M;
 
-   /* Copy K[] and initialize map[] and crval[]. */
+   /* Set defaults. */
    for (m = 0; m < M; m++) {
-      tab->K[m] = K[m];
       tab->map[m] = -1;
       tab->crval[m] = 0.0;
-   }
 
-   /* Initialize the index vectors. */
-   for (m = 0; m < M; m++) {
-      dp = tab->index[m];
-      for (k = 0; k < K[m]; k++) {
-         *(dp++) = k;
+      if (K) {
+         tab->K[m] = K[m];
+         if (dp = tab->index[m]) {
+            for (k = 0; k < K[m]; k++) {
+               *(dp++) = k;
+            }
+         }
+      } else {
+         tab->K[m] = 0;
       }
    }
 
@@ -246,17 +255,95 @@ struct tabprm *tab;
 
 /*--------------------------------------------------------------------------*/
 
-int tabcpy(alloc, tabsrc, tabdst)
+int tabmem(struct tabprm *tab)
 
-int alloc;
-const struct tabprm *tabsrc;
-struct tabprm *tabdst;
+{
+   int m, M, N;
+
+   if (tab == 0x0) return 1;
+
+   if (tab->M == 0 || tab->K == 0x0) {
+      /* Should have been set by this time. */
+      return 2;
+   }
+
+
+   N = M = tab->M;
+   for (m = 0; m < M; m++) {
+      if (tab->K[m] < 0) {
+         return 3;
+      }
+
+      N *= tab->K[m];
+   }
+
+
+   if (tab->m_M == 0) {
+      tab->m_M = M;
+   } else if (tab->m_M < M) {
+      /* Only possible if the user changed M. */
+      return 2;
+   }
+
+   if (tab->m_N == 0) {
+      tab->m_N = N;
+   } else if (tab->m_N < N) {
+      /* Only possible if the user changed K[]. */
+      return 2;
+   }
+
+   if (tab->m_K == 0x0) {
+      if (tab->m_K = tab->K) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   if (tab->m_map == 0x0) {
+      if (tab->m_map = tab->map) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   if (tab->m_crval == 0x0) {
+      if (tab->m_crval = tab->crval) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   if (tab->m_index == 0x0) {
+      if (tab->m_index = tab->index) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   for (m = 0; m < tab->m_M; m++) {
+      if (tab->m_indxs[m] == 0x0 || tab->m_indxs[m] == (double *)0x1) {
+         if (tab->m_indxs[m] = tab->index[m]) {
+            tab->m_flag = TABSET;
+         }
+      }
+   }
+
+   if (tab->m_coord == 0x0 || tab->m_coord == (double *)0x1) {
+      if (tab->m_coord = tab->coord) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   tab->flag = 0;
+
+   return 0;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int tabcpy(int alloc, const struct tabprm *tabsrc, struct tabprm *tabdst)
 
 {
    int k, m, M, n, N, status;
    double *dstp, *srcp;
 
-   if (tabsrc == 0) return 1;
+   if (tabsrc == 0x0) return 1;
 
    M = tabsrc->M;
    if (M <= 0) {
@@ -275,11 +362,11 @@ struct tabprm *tabdst;
    }
 
    for (m = 0; m < M; m++) {
-      srcp = tabsrc->index[m];
-      dstp = tabdst->index[m];
-
-      for (k = 0; k < tabsrc->K[m]; k++) {
-         *(dstp++) = *(srcp++);
+      if (srcp = tabsrc->index[m]) {
+         dstp = tabdst->index[m];
+         for (k = 0; k < tabsrc->K[m]; k++) {
+            *(dstp++) = *(srcp++);
+         }
       }
    }
 
@@ -294,55 +381,65 @@ struct tabprm *tabdst;
 
 /*--------------------------------------------------------------------------*/
 
-int tabfree(tab)
-
-struct tabprm *tab;
+int tabfree(struct tabprm *tab)
 
 {
-   if (tab == 0) return 1;
+   int m;
+
+   if (tab == 0x0) return 1;
 
    if (tab->flag != -1) {
+      /* Clear any outstanding signals set by wcstab(). */
+      for (m = 0; m < tab->m_M; m++) {
+         if (tab->m_indxs[m] == (double *)0x1) tab->m_indxs[m] = 0x0;
+      }
+
+      if (tab->m_coord == (double *)0x1) tab->m_coord = 0x0;
+
       /* Free memory allocated by tabini(). */
       if (tab->m_flag == TABSET) {
-         if (tab->K     == tab->m_K)     tab->K = 0;
-         if (tab->map   == tab->m_map)   tab->map = 0;
-         if (tab->crval == tab->m_crval) tab->crval = 0;
-         if (tab->index == tab->m_index) tab->index = 0;
-         if (tab->coord == tab->m_coord) tab->coord = 0;
+         if (tab->K     == tab->m_K)     tab->K = 0x0;
+         if (tab->map   == tab->m_map)   tab->map = 0x0;
+         if (tab->crval == tab->m_crval) tab->crval = 0x0;
+         if (tab->index == tab->m_index) tab->index = 0x0;
+         if (tab->coord == tab->m_coord) tab->coord = 0x0;
 
          if (tab->m_K)     free(tab->m_K);
          if (tab->m_map)   free(tab->m_map);
          if (tab->m_crval) free(tab->m_crval);
+
          if (tab->m_index) {
-            free(tab->m_index[0]);
+            for (m = 0; m < tab->m_M; m++) {
+               if (tab->m_indxs[m]) free(tab->m_indxs[m]);
+            }
             free(tab->m_index);
+            free(tab->m_indxs);
          }
+
          if (tab->m_coord) free(tab->m_coord);
       }
-   }
 
-   tab->m_flag  = 0;
-   tab->m_M     = 0;
-   tab->m_N     = 0;
-   tab->m_K     = 0;
-   tab->m_map   = 0;
-   tab->m_crval = 0;
-   tab->m_index = 0;
-   tab->m_coord = 0;
-
-
-   /* Free memory allocated by tabset(). */
-   if (tab->flag == TABSET) {
+      /* Free memory allocated by tabset(). */
       if (tab->sense)   free(tab->sense);
       if (tab->p0)      free(tab->p0);
       if (tab->delta)   free(tab->delta);
       if (tab->extrema) free(tab->extrema);
    }
 
-   tab->sense   = 0;
-   tab->p0      = 0;
-   tab->delta   = 0;
-   tab->extrema = 0;
+   tab->m_flag  = 0;
+   tab->m_M     = 0;
+   tab->m_N     = 0;
+   tab->m_K     = 0x0;
+   tab->m_map   = 0x0;
+   tab->m_crval = 0x0;
+   tab->m_index = 0x0;
+   tab->m_indxs = 0x0;
+   tab->m_coord = 0x0;
+
+   tab->sense   = 0x0;
+   tab->p0      = 0x0;
+   tab->delta   = 0x0;
+   tab->extrema = 0x0;
    tab->set_M   = 0;
 
    tab->flag = 0;
@@ -352,15 +449,14 @@ struct tabprm *tab;
 
 /*--------------------------------------------------------------------------*/
 
-int tabprt(tab)
-
-const struct tabprm *tab;
+int tabprt(const struct tabprm *tab)
 
 {
-   int k, m, n, N;
+   char   *cp, text[128];
+   int    j, k, m, n, nd;
    double *dp;
 
-   if (tab == 0) return 1;
+   if (tab == 0x0) return 1;
 
    if (tab->flag != TABSET) {
       printf("The tabprm struct is UNINITIALIZED.\n");
@@ -390,7 +486,7 @@ const struct tabprm *tab;
    printf("      crval: 0x%x\n", (int)tab->crval);
    printf("            ");
    for (m = 0; m < tab->M; m++) {
-      printf("  %- 11.4g", tab->crval[m]);
+      printf("  %- 11.5g", tab->crval[m]);
    }
    printf("\n");
 
@@ -398,33 +494,41 @@ const struct tabprm *tab;
    printf("      index: 0x%x\n", (int)tab->index);
    for (m = 0; m < tab->M; m++) {
       printf("   index[%d]: 0x%x", m, (int)tab->index[m]);
-      for (k = 0; k < tab->K[m]; k++) {
-         if (k%5 == 0) {
-            printf("\n            ");
+      if (tab->index[m]) {
+         for (k = 0; k < tab->K[m]; k++) {
+            if (k%5 == 0) {
+               printf("\n            ");
+            }
+            printf("  %- 11.5g", tab->index[m][k]);
          }
-         printf("  %- 11.4g", tab->index[m][k]);
+         printf("\n");
       }
    }
 
    /* Coordinate array. */
-   N = tab->M * tab->nc;
-
    printf("      coord: 0x%x\n", (int)tab->coord);
-   printf("            ");
    dp = tab->coord;
-   for (n = 0; n < N;) {
-/* Should print the array index. */
-      printf("             (%d)", n);
-      for (m = 0; m < tab->M; m++, n++) {
-         printf("  %- 11.4g", *(dp++));
+   for (n = 0; n < tab->nc; n++) {
+      /* Array index. */
+      j = n;
+      cp = text;
+      for (m = 0; m < tab->M; m++) {
+         nd = (tab->K[m] < 10) ? 1 : 2;
+         sprintf(cp, ",%*d", nd, j % tab->K[m] + 1);
+         j /= tab->K[m];
+         cp += strlen(cp);
+      }
+
+      printf("             (*%s)", text);
+      for (m = 0; m < tab->M; m++) {
+         printf("  %- 11.5g", *(dp++));
       }
       printf("\n");
    }
-   printf("\n");
 
    printf("         nc: %d\n", tab->nc);
 
-   if (tab->sense == 0) {
+   if (tab->sense == 0x0) {
       printf("      sense: (null)\n");
    } else {
       printf("      sense: 0x%x\n", (int)tab->sense);
@@ -435,7 +539,7 @@ const struct tabprm *tab;
       printf("\n");
    }
 
-   if (tab->p0 == 0) {
+   if (tab->p0 == 0x0) {
       printf("         p0: (null)\n");
    } else {
       printf("         p0: 0x%x\n", (int)tab->p0);
@@ -446,47 +550,65 @@ const struct tabprm *tab;
       printf("\n");
    }
 
-   if (tab->delta == 0) {
+   if (tab->delta == 0x0) {
       printf("      delta: (null)\n");
    } else {
       printf("      delta: 0x%x\n", (int)tab->delta);
       printf("            ");
       for (m = 0; m < tab->M; m++) {
-         printf("  %- 11.4g", tab->delta[m]);
+         printf("  %- 11.5g", tab->delta[m]);
       }
       printf("\n");
    }
 
-   N *= 2/tab->K[0];
    printf("    extrema: 0x%x\n", (int)tab->extrema);
-   printf("            ");
    dp = tab->extrema;
-   for (n = 0; n < N;) {
-/* Should print the array index. */
-      printf("             (%d)", n);
-      for (m = 0; m < tab->M; m++, n++) {
-         printf("  %- 11.4g", *(dp++));
+   for (n = 0; n < tab->nc/tab->K[0]; n++) {
+      /* Array index. */
+      j = n;
+      cp = text;
+      *cp = '\0';
+      for (m = 1; m < tab->M; m++) {
+         nd = (tab->K[m] < 10) ? 1 : 2;
+         sprintf(cp, ",%*d", nd, j % tab->K[m] + 1);
+         j /= tab->K[m];
+         cp += strlen(cp);
+      }
+
+      printf("             (*,*%s)", text);
+      for (m = 0; m < 2*tab->M; m++) {
+         if (m == tab->M) printf("->  ");
+         printf("  %- 11.5g", *(dp++));
       }
       printf("\n");
    }
-   printf("\n");
 
    /* Memory management. */
    printf("     m_flag: %d\n", tab->m_flag);
    printf("        m_M: %d\n", tab->m_M);
    printf("        m_N: %d\n", tab->m_N);
+
    printf("        m_K: 0x%x", (int)tab->m_K);
    if (tab->m_K == tab->K) printf("  (= K)");
    printf("\n");
+
    printf("      m_map: 0x%x", (int)tab->m_map);
    if (tab->m_map == tab->map) printf("  (= map)");
    printf("\n");
+
    printf("    m_crval: 0x%x", (int)tab->m_crval);
    if (tab->m_crval == tab->crval) printf("  (= crval)");
    printf("\n");
+
    printf("    m_index: 0x%x", (int)tab->m_index);
    if (tab->m_index == tab->index) printf("  (= index)");
    printf("\n");
+   for (m = 0; m < tab->M; m++) {
+      printf(" m_indxs[%d]: 0x%x", m, (int)tab->m_indxs[m]);
+      if (tab->m_indxs[m] == tab->index[m]) printf("  (= index[%d])", m);
+      printf("\n");
+   }
+
    printf("    m_coord: 0x%x", (int)tab->m_coord);
    if (tab->m_coord == tab->coord) printf("  (= coord)");
    printf("\n");
@@ -496,24 +618,24 @@ const struct tabprm *tab;
 
 /*--------------------------------------------------------------------------*/
 
-int tabset(tab)
-
-struct tabprm *tab;
+int tabset(struct tabprm *tab)
 
 {
    int i, ic, k, *Km, m, M, ne;
    double *dcrd, *dmax, *dmin, *Psi;
 
-   if (tab == 0) return 1;
-
-   M = tab->M;
+   if (tab == 0x0) return 1;
 
    /* Check the number of tabular coordinate axes. */
-   if (M < 1) {
+   if ((M = tab->M) < 1) {
       return 3;
    }
 
    /* Check the axis lengths. */
+   if (!tab->K) {
+      return 2;
+   }
+
    tab->nc = 1;
    for (m = 0; m < M; m++) {
       if (tab->K[m] < 1) {
@@ -525,6 +647,10 @@ struct tabprm *tab;
    }
 
    /* Check that the map vector is sensible. */
+   if (!tab->map) {
+      return 2;
+   }
+
    for (m = 0; m < M; m++) {
       i = tab->map[m];
       if (i < 0) {
@@ -532,15 +658,32 @@ struct tabprm *tab;
       }
    }
 
+   /* Check memory allocation for the remaining vectors. */
+   if (!tab->crval || !tab->index || !tab->coord) {
+      return 2;
+   }
+
+   /* Take memory if signalled to by wcstab(). */
+   for (m = 0; m < tab->m_M; m++) {
+      if (tab->m_indxs[m] == (double *)0x1 &&
+         (tab->m_indxs[m] = tab->index[m])) {
+         tab->m_flag = TABSET;
+      }
+   }
+
+   if (tab->m_coord == (double *)0x1 &&
+      (tab->m_coord = tab->coord)) {
+      tab->m_flag = TABSET;
+   }
+
+
    /* Allocate memory for work vectors. */
    if (tab->flag != TABSET || tab->set_M < M) {
-      if (tab->flag == TABSET) {
-         /* Free memory that may have been allocated previously. */
-         if (tab->sense)   free(tab->sense);
-         if (tab->p0)      free(tab->p0);
-         if (tab->delta)   free(tab->delta);
-         if (tab->extrema) free(tab->extrema);
-      }
+      /* Free memory that may have been allocated previously. */
+      if (tab->sense)   free(tab->sense);
+      if (tab->p0)      free(tab->p0);
+      if (tab->delta)   free(tab->delta);
+      if (tab->extrema) free(tab->extrema);
 
       /* Allocate memory for internal arrays. */
       if (!(tab->sense = calloc(M, sizeof(int)))) {
@@ -575,36 +718,44 @@ struct tabprm *tab;
       tab->sense[m] = 0;
 
       if (*Km > 1) {
-         Psi = tab->index[m];
+         if ((Psi = tab->index[m]) == 0) {
+            /* Default indexing. */
+            tab->sense[m] = 1;
 
-         for (k = 0; k < *Km-1; k++) {
-            if (tab->sense[m] == 0) {
-               if (Psi[k] < Psi[k+1]) {
-                  /* Monotonic increasing. */
-                  tab->sense[m] = 1;
-               } else if (Psi[k] > Psi[k+1]) {
-                  /* Monotonic decreasing. */
-                  tab->sense[m] = -1;
-               }
-            }
+         } else {
+            for (k = 0; k < *Km-1; k++) {
+               switch (tab->sense[m]) {
+               case 0:
+                  if (Psi[k] < Psi[k+1]) {
+                     /* Monotonic increasing. */
+                     tab->sense[m] = 1;
+                  } else if (Psi[k] > Psi[k+1]) {
+                     /* Monotonic decreasing. */
+                     tab->sense[m] = -1;
+                  }
+                  break;
 
-            if (tab->sense[m] == 1) {
-               if (Psi[k] > Psi[k+1]) {
-                  /* Should be monotonic increasing. */
-                  free(tab->sense);
-                  free(tab->p0);
-                  free(tab->delta);
-                  free(tab->extrema);
-                  return 3;
-               }
-            } else if (tab->sense[m] == -1) {
-               if (Psi[k] < Psi[k+1]) {
-                  /* Should be monotonic decreasing. */
-                  free(tab->sense);
-                  free(tab->p0);
-                  free(tab->delta);
-                  free(tab->extrema);
-                  return 3;
+               case 1:
+                  if (Psi[k] > Psi[k+1]) {
+                     /* Should be monotonic increasing. */
+                     free(tab->sense);
+                     free(tab->p0);
+                     free(tab->delta);
+                     free(tab->extrema);
+                     return 3;
+                  }
+                  break;
+
+               case -1:
+                  if (Psi[k] < Psi[k+1]) {
+                     /* Should be monotonic decreasing. */
+                     free(tab->sense);
+                     free(tab->p0);
+                     free(tab->delta);
+                     free(tab->extrema);
+                     return 3;
+                  }
+                  break;
                }
             }
          }
@@ -646,13 +797,13 @@ struct tabprm *tab;
 
 /*--------------------------------------------------------------------------*/
 
-int tabx2s(tab, ncoord, nelem, x, world, stat)
-
-struct tabprm *tab;
-int ncoord, nelem;
-const double x[];
-double world[];
-int stat[];
+int tabx2s(
+   struct tabprm *tab,
+   int ncoord,
+   int nelem,
+   const double x[],
+   double world[],
+   int stat[])
 
 {
    int i, iv, k, *Km, m, M, n, nv, offset, p0, status;
@@ -662,7 +813,7 @@ int stat[];
    register double *wp;
 
    /* Initialize if required. */
-   if (tab == 0) return 1;
+   if (tab == 0x0) return 1;
    if (tab->flag != TABSET) {
       if (status = tabset(tab)) return status;
    }
@@ -676,72 +827,77 @@ int stat[];
    statp = stat;
    for (n = 0; n < ncoord; n++) {
       /* Determine the indexes. */
-      Km  = tab->K;
+      Km = tab->K;
       for (m = 0; m < M; m++, Km++) {
          i = tab->map[m];
          psi_m = *(xp+i) + tab->crval[i];
 
-         Psi = tab->index[m];
-         if (*Km == 1) {
-            /* Index vector is degenerate. */
-            if (psi_m == Psi[0]) {
-               upsilon = Psi[0];
-            } else {
-               *statp = 1;
-               status = 4;
-               goto next;
-            }
+         if ((Psi = tab->index[m]) == 0) {
+            /* Default indexing is simple. */
+            upsilon = psi_m;
 
          } else {
-            /* Interpolate in the indexing vector. */
-            if (tab->sense[m] == 1) {
-               /* Monotonic increasing index values. */
-               if (psi_m < Psi[0] || psi_m > Psi[*Km-1]) {
-                  /* Index is out of range. */
+            if (*Km == 1) {
+               /* Index vector is degenerate. */
+               if (psi_m == Psi[0]) {
+                  upsilon = Psi[0];
+               } else {
                   *statp = 1;
                   status = 4;
                   goto next;
-               }
-
-               for (k = 0; k < *Km-1; k++) {
-                  if (psi_m < Psi[k]) {
-                     continue;
-                  }
-                  if (Psi[k] == psi_m && psi_m < Psi[k+1]) {
-                     break;
-                  }
-                  if (Psi[k] < psi_m && psi_m <= Psi[k+1]) {
-                     break;
-                  }
                }
 
             } else {
-               /* Monotonic decreasing index values. */
-               if (psi_m > Psi[0] || psi_m < Psi[*Km-1]) {
-                  /* Index is out of range. */
-                  *statp = 1;
-                  status = 4;
-                  goto next;
+               /* Interpolate in the indexing vector. */
+               if (tab->sense[m] == 1) {
+                  /* Monotonic increasing index values. */
+                  if (psi_m < Psi[0] || psi_m > Psi[*Km-1]) {
+                     /* Index is out of range. */
+                     *statp = 1;
+                     status = 4;
+                     goto next;
+                  }
+
+                  for (k = 0; k < *Km-1; k++) {
+                     if (psi_m < Psi[k]) {
+                        continue;
+                     }
+                     if (Psi[k] == psi_m && psi_m < Psi[k+1]) {
+                        break;
+                     }
+                     if (Psi[k] < psi_m && psi_m <= Psi[k+1]) {
+                        break;
+                     }
+                  }
+
+               } else {
+                  /* Monotonic decreasing index values. */
+                  if (psi_m > Psi[0] || psi_m < Psi[*Km-1]) {
+                     /* Index is out of range. */
+                     *statp = 1;
+                     status = 4;
+                     goto next;
+                  }
+
+                  for (k = 0; k < *Km-1; k++) {
+                     if (psi_m > Psi[k]) {
+                        continue;
+                     }
+                     if (Psi[k] == psi_m && psi_m > Psi[k+1]) {
+                        break;
+                     }
+                     if (Psi[k] > psi_m && psi_m >= Psi[k+1]) {
+                        break;
+                     }
+                  }
                }
 
-               for (k = 0; k < *Km-1; k++) {
-                  if (psi_m > Psi[k]) {
-                     continue;
-                  }
-                  if (Psi[k] == psi_m && psi_m > Psi[k+1]) {
-                     break;
-                  }
-                  if (Psi[k] > psi_m && psi_m >= Psi[k+1]) {
-                     break;
-                  }
-               }
+               upsilon = k + (psi_m - Psi[k]) / (Psi[k+1] - Psi[k]);
             }
-
-            upsilon = k + (psi_m - Psi[k]) / (Psi[k+1] - Psi[k]);
          }
 
          if (upsilon < 0.0 || upsilon > (double)(*Km-1)) {
-            /* Index out of range (shouldn't be possible). */
+            /* Index out of range. */
             *statp = 1;
             status = 4;
             goto next;
@@ -808,13 +964,13 @@ next:
 
 /*--------------------------------------------------------------------------*/
 
-int tabs2x(tab, ncoord, nelem, world, x, stat)
-
-struct tabprm* tab;
-int ncoord, nelem;
-const double world[];
-double x[];
-int stat[];
+int tabs2x(
+   struct tabprm* tab,
+   int ncoord,
+   int nelem,
+   const double world[],
+   double x[],
+   int stat[])
 
 {
    int tabedge(struct tabprm *);
@@ -828,7 +984,7 @@ int stat[];
    register double *xp;
 
    /* Initialize if required. */
-   if (tab == 0) return 1;
+   if (tab == 0x0) return 1;
    if (tab->flag != TABSET) {
       if (status = tabset(tab)) return status;
    }
@@ -870,7 +1026,8 @@ int stat[];
             } else if (ic < tab->nc - 1) {
                if (((tab->coord[ic] <= *wp && *wp <= tab->coord[ic+1]) ||
                     (tab->coord[ic] >= *wp && *wp >= tab->coord[ic+1])) &&
-                     tab->index[0][ic] != tab->index[0][ic+1]) {
+                    (tab->index[0] == 0 ||
+                     tab->index[0][ic] != tab->index[0][ic+1])) {
                   tab->p0[0] = ic;
                   tab->delta[0] = (*wp - tab->coord[ic]) /
                                   (tab->coord[ic+1] - tab->coord[ic]);
@@ -908,17 +1065,25 @@ int stat[];
 
             } else {
                /* Do inverse lookup of the index vector. */
-               Psi = tab->index[m];
-               if (*Km == 1) {
-                  /* Degenerate index vector. */
-                  psi_m = Psi[0];
-               } else {
-                  k = (int)upsilon;
-                  psi_m = Psi[k] + (upsilon - k) * (Psi[k+1] - Psi[k]);
-               }
+               if ((Psi = tab->index[m]) == 0) {
+                  /* Default indexing. */
+                  psi_m = upsilon;
 
-               i = tab->map[m];
-               xp[i] = psi_m - tab->crval[i];
+               } else {
+                  if (*Km == 1) {
+                     /* Degenerate index vector. */
+                     psi_m = Psi[0];
+                  } else {
+                     k = (int)upsilon;
+                     psi_m = Psi[k];
+                     if (k < *Km-1) {
+                       psi_m += (upsilon - k) * (Psi[k+1] - Psi[k]);
+                     }
+                  }
+
+                  i = tab->map[m];
+                  xp[i] = psi_m - tab->crval[i];
+               }
             }
          }
          *statp = 0;
@@ -929,7 +1094,7 @@ int stat[];
       statp++;
    }
 
-   return 0;
+   return status;
 }
 
 /*--------------------------------------------------------------------------*/

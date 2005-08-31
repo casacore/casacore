@@ -52,8 +52,8 @@
 *   members that must be set by the caller, and others that are maintained by
 *   these routines, somewhat like a C++ class but with no encapsulation.
 *
-*   A service routine, spcini(), is provided to initialize the spcprm struct
-*   with default values, and another, spcprt(), to print its contents.
+*   Routine spcini() is provided to initialize the spcprm struct with default
+*   values, and another, spcprt(), to print its contents.
 *
 *   A setup routine, spcset(), computes intermediate values in the spcprm
 *   struct from parameters in it that were supplied by the caller.  The
@@ -83,7 +83,8 @@
 *
 *   Default constructor for the spcprm struct; spcini()
 *   ---------------------------------------------------
-*   spcini() sets all members of a spcprm struct to default values.
+*   spcini() sets all members of a spcprm struct to default values.  It should
+*   be used to initialize every spcprm struct.
 *
 *   Given and returned:
 *      spc      struct spcprm*
@@ -213,9 +214,10 @@
 *                        pointer is given, the array must accomodate a null-
 *                        terminated string of length 5.
 *      scode    char[]   The three-letter spectral algorithm code copied or
-*                        translated from ctype.  If a non-zero pointer is
-*                        given, the array must accomodate a null-terminated
-*                        string of length 4.
+*                        translated from ctype.  Logarithmic (LOG) and tabular
+*                        (TAB) codes are also recognized.  If a non-zero
+*                        pointer is given, the array must accomodate a null-
+*                        terminated string of length 4.
 *      sname    char[]   Descriptive name of the S-type spectral variable.
 *                        If a non-zero pointer is given, the array must
 *                        accomodate a null-terminated string of length 22.
@@ -227,7 +229,8 @@
 *      xtype    char*    Character code for the X-type spectral variable
 *                        derived from ctype, one of 'F', 'W', 'A', or 'V'.
 *                        Also, 'w' and 'a' are synonymous to 'W' and 'A' for
-*                        grisms in vacuo and air respectively.
+*                        grisms in vacuo and air respectively.  Set to 'L' or
+*                        'T' for logarithmic (LOG) and tabular (TAB) axes.
 *      restreq  int*     Multivalued flag that indicates whether rest
 *                        frequency or wavelength is required to compute
 *                        spectral variables for this CTYPEia:
@@ -505,10 +508,9 @@
 *
 *      double restfrq, restwav
 *         Rest frequency (Hz) and rest wavelength in vacuo (m), only one of
-*                        which need be given, the other should be set to zero.
-*                        Neither are required if the X and S spectral
-*                        variables are both wave-characteristic, or both
-*                        velocity-characteristic, types.
+*         which need be given, the other should be set to zero.  Neither are
+*         required if the X and S spectral variables are both wave-
+*         characteristic, or both velocity-characteristic, types.
 *
 *      double pv[7]
 *         Grism parameters for "-GRI" and "-GRA" algorithm codes:
@@ -597,7 +599,7 @@
 #ifndef WCSLIB_SPC
 #define WCSLIB_SPC
 
-#include "spx.h"
+#include <spx.h>
 
 #ifdef __cplusplus
 extern "C" {

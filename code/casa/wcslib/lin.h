@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.1 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -46,8 +46,8 @@
 *   that are maintained by these routines, somewhat like a C++ class but with
 *   no encapsulation.
 *
-*   Three service routines, linini(), lincpy(), and linfree() are provided to
-*   manage the linprm struct, and another, linprt(), prints its contents.
+*   Three routines, linini(), lincpy(), and linfree() are provided to manage
+*   the linprm struct, and another, linprt(), prints its contents.
 *
 *   A setup routine, linset(), computes intermediate values in the linprm
 *   struct from parameters in it that were supplied by the caller.  The struct
@@ -62,18 +62,25 @@
 *
 *   Default constructor for the linprm struct; linini()
 *   ---------------------------------------------------
-*   linini() allocates memory for arrays in a tabprm struct and sets all
+*   linini() allocates memory for arrays in a linprm struct and sets all
 *   members of the struct to default values.
 *
+*   N.B. every linprm struct should be initialized by linini(), possibly
+*   repeatedly.  On the first invokation, and only the first invokation, the
+*   flag member of the linprm struct must be set to -1 to initialize memory
+*   management, regardless of whether linini() will actually be used to
+*   allocate memory.
+*
 *   Given:
-*      alloc    int      If true, allocate memory for arrays in the tabprm
-*                        struct (see "Memory allocation and deallocation
-*                        below").  Otherwise, it is assumed that pointers to
-*                        these arrays have been set by the caller except if
-*                        they are null pointers in which case memory will be
-*                        allocated for them regardless.  (In other words,
-*                        setting alloc true saves having to initalize these
-*                        pointers to zero.)
+*      alloc    int      If true, allocate memory unconditionally for arrays
+*                        in the linprm struct (see "Memory allocation and
+*                        deallocation below").
+*
+*                        If false, it is assumed that pointers to these arrays
+*                        have been set by the caller except if they are null
+*                        pointers in which case memory will be allocated for
+*                        them regardless.  (In other words, setting alloc true
+*                        saves having to initalize these pointers to zero.)
 *
 *      naxis    int      The number of world coordinate axes, used to
 *                        determine array sizes.
@@ -127,6 +134,9 @@
 *   linfree() frees memory allocated for the linprm arrays by linini() and/or
 *   linset().  linini() keeps a record of the memory it allocates and
 *   linfree() will only attempt to free this.
+*
+*   N.B. linfree() must not be invoked on a linprm struct that was not
+*   initialized by linini().
 *
 *   Given:
 *      lin      struct linprm*
@@ -291,9 +301,8 @@
 *      double *imgpix
 *         Pointer to the first element of the inverse of the piximg matrix.
 *
-*      int m_flag, m_naxis
-*      double *m_crpix, *m_pc, *m_cdelt
-*         These are used for memory management by linini() and linfree().
+*      The remaining members of the linprm struct are used for memory
+*      management by linini() and linfree().
 *
 *
 *   Vector arguments
@@ -312,9 +321,8 @@
 *
 *   Memory allocation and deallocation
 *   ----------------------------------
-*   linini() allocates memory for the crpix, pc, and cdelt arrays in the
-*   linprm struct.  It is provided as a service routine; usage is optional,
-*   and the caller is at liberty to set these pointers independently.
+*   linini() optionally allocates memory for the crpix, pc, and cdelt arrays
+*   in the linprm struct as described in the usage notes above.
 *
 *   If the pc matrix is not unity, linset() also allocates memory for the
 *   piximg and imgpix arrays.  The caller must not modify these.
@@ -325,12 +333,12 @@
 *   caller to invoke linfree() separately.  Likewise, linset() deallocates
 *   memory that it may have allocated on a previous invokation.
 *
-*   However, a memory leak will result if a linprm struct goes out of scope
-*   before the memory has been free'd, either by linfree() or otherwise.
-*   Likewise, if the linprm struct itself has been malloc'd and the allocated
-*   memory is not free'd when the memory for the struct is free'd.  A leak may
-*   also arise if the caller interferes with the array pointers in the
-*   "private" part of the linprm struct.
+*   A memory leak will result if a linprm struct goes out of scope before the
+*   memory has been free'd, either by linfree() or otherwise.  Likewise, if
+*   the linprm struct itself has been malloc'd and the allocated memory is not
+*   free'd when the memory for the struct is free'd.  A leak may also arise if
+*   the caller interferes with the array pointers in the "private" part of the
+*   linprm struct.
 *
 *   Beware of making a shallow copy of a linprm struct by assignment; any
 *   changes made to allocated memory in one would be reflected in the other,
@@ -387,7 +395,6 @@ struct linprm {
 };
 
 #define LINLEN (sizeof(struct linprm)/sizeof(int))
-
 
 int linini(int, int, struct linprm *);
 

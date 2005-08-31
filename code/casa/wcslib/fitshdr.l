@@ -109,7 +109,7 @@ int  fitshdr_ncards;
 
 /* Map status return value to message. */
 const char *fitshdr_errmsg[] = {
-   0,
+   "Success",
    "Null fitskey pointer-pointer passed",
    "Memory allocation failed"};
 
@@ -130,7 +130,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	*nreject = 0;
 	keyno = 0;
 	
-	if (keys == 0) {
+	if (keys == 0x0) {
 	  return 1;
 	}
 	
@@ -280,7 +280,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	        BEGIN(ERROR);
 	      }
 	    #else
-	      /* long long int implemented as int[3]. */
+	      /* long long int (up to 18 digits) implemented as int[3]. */
 	      kptr->keyvalue.k[2] = 0;
 	
 	      sprintf(ctmp, "%%%dd%%9d", yyleng-9);
@@ -298,7 +298,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	}
 
 <VALUE>{INTVL} {
-	  /* Rule 015: Very long integer keyvalue. */
+	  /* Rule 015: Very long integer keyvalue (and 19-digit int64). */
 	  kptr->type = 4;
 	  strcpy(ctmp, yytext);
 	  k = yyleng;
@@ -310,7 +310,9 @@ void fitshdr_nullfill(char cptr[], int len);
 	      kptr->status |= FITSHDR_KEYVALUE;
 	      BEGIN(ERROR);
 	    }
-	    if (*yytext == '-') kptr->keyvalue.l[j] *= -1;
+	    if (*yytext == '-') {
+	      kptr->keyvalue.l[j] = -abs(kptr->keyvalue.l[j]);
+	    }
 	
 	    if (k == 0) break;
 	    ctmp[k] = '\0';
@@ -479,6 +481,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	
 	  /* Do indexing. */
 	  iptr = keyids;
+	  kptr->keyid = -1;
 	  for (j = 0; j < nkeyids; j++, iptr++) {
 	    cptr = iptr->name;
 	    cptr[8] = '\0';
@@ -497,6 +500,7 @@ void fitshdr_nullfill(char cptr[], int len);
 	      }
 	
 	      kptr->keyno = -abs(kptr->keyno);
+	      if (kptr->keyid < 0) kptr->keyid = j;
 	    }
 	  }
 	

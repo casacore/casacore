@@ -36,10 +36,10 @@
 
 /* Map status return value to message. */
 const char *log_errmsg[] = {
-   0,
-   0,
+   "Success",
+   "",
    "Invalid log-coordinate reference value",
-   "One or more of x coordinates were invalid"};
+   "One or more of the x coordinates were invalid"};
 
 
 /*--------------------------------------------------------------------------*/

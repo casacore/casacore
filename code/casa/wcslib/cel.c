@@ -42,7 +42,7 @@ const int CELSET = 137;
 
 /* Map status return value to message. */
 const char *cel_errmsg[] = {
-   0,
+   "Success",
    "Null celprm pointer passed",
    "Invalid projection parameters",
    "Invalid coordinate transformation parameters",
@@ -59,7 +59,7 @@ struct celprm *cel;
 {
    register int k;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    cel->flag = 0;
 
@@ -72,6 +72,7 @@ struct celprm *cel;
    cel->ref[3] = +90.0;
 
    for (k = 0; k < 5; cel->euler[k++] = 0.0);
+   cel->latpreq = -1;
 
    return prjini(&(cel->prj));
 }
@@ -85,7 +86,7 @@ const struct celprm *cel;
 {
    int i;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    printf("       flag: %d\n",  cel->flag);
    printf("     offset: %d\n",  cel->offset);
@@ -101,15 +102,26 @@ const struct celprm *cel;
    }
    printf("        ref:");
    for (i = 0; i < 4; i++) {
-      printf("  %- 11.4g", cel->ref[i]);
+      printf("  %- 11.5g", cel->ref[i]);
    }
    printf("\n");
    printf("        prj: (see below)\n");
+
    printf("      euler:");
    for (i = 0; i < 5; i++) {
-      printf("  %- 11.4g", cel->euler[i]);
+      printf("  %- 11.5g", cel->euler[i]);
    }
    printf("\n");
+   printf("    latpreq: %d", cel->latpreq);
+   if (cel->latpreq == 0) {
+      printf(" (not required)\n");
+   } else if (cel->latpreq == 1) {
+      printf(" (disambiguation)\n");
+   } else if (cel->latpreq == 2) {
+      printf(" (specification)\n");
+   } else {
+      printf(" (UNDEFINED)\n");
+   }
    printf("     isolat: %d\n", cel->isolat);
 
    printf("\n");
@@ -133,7 +145,7 @@ struct celprm *cel;
    double u, v, x, y, z;
    struct prjprm *celprj;
 
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
 
    /* Initialize the projection driver routines. */
    celprj = &(cel->prj);
@@ -192,6 +204,7 @@ struct celprm *cel;
 
 
    /* Compute celestial coordinates of the native pole. */
+   cel->latpreq = 0;
    if (cel->theta0 == 90.0) {
       /* Fiducial point at the native pole. */
       lngp = lng0;
@@ -214,7 +227,8 @@ struct celprm *cel;
             return 3;
          }
 
-         /* latp determined by LATPOLEa in this case. */
+         /* latp determined solely by LATPOLEa in this case. */
+         cel->latpreq = 2;
          if (latp > 90.0) {
             latp = 90.0;
          } else if (latp < -90.0) {
@@ -241,6 +255,12 @@ struct celprm *cel;
             latp2 -= 360.0;
          } else if (latp2 < -180.0) {
             latp2 += 360.0;
+         }
+
+         if (fabs(latp1) < 90.0+tol &&
+             fabs(latp2) < 90.0+tol) {
+            /* There are two valid solutions for latp. */
+            cel->latpreq = 1;
          }
 
          if (fabs(latp-latp1) < fabs(latp-latp2)) {
@@ -345,7 +365,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
    if (cel->flag != CELSET) {
       if (status = celset(cel)) return status;
    }
@@ -386,7 +406,7 @@ int stat[];
 
 
    /* Initialize. */
-   if (cel == 0) return 1;
+   if (cel == 0x0) return 1;
    if (cel->flag != CELSET) {
       if (status = celset(cel)) return status;
    }

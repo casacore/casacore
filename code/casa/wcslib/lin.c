@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -39,7 +39,7 @@ const int LINSET = 137;
 
 /* Map status return value to message. */
 const char *lin_errmsg[] = {
-   0,
+   "Success",
    "Null linprm pointer passed",
    "Memory allocation failed",
    "PCi_ja matrix is singular"};
@@ -56,25 +56,25 @@ struct linprm *lin;
    int i, j;
    double *pc;
 
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
    if (naxis <= 0) {
       return 2;
    }
 
    if (lin->flag == -1 || lin->m_flag != LINSET) {
       lin->m_flag  = 0;
-      lin->m_naxis = 0;
-      lin->m_crpix = 0;
-      lin->m_pc    = 0;
-      lin->m_cdelt = 0;
+      lin->m_naxis = 0x0;
+      lin->m_crpix = 0x0;
+      lin->m_pc    = 0x0;
+      lin->m_cdelt = 0x0;
    }
 
 
    /* Allocate memory for arrays if required. */
    if (alloc ||
-       lin->crpix == 0 ||
-       lin->pc    == 0 ||
-       lin->cdelt == 0) {
+       lin->crpix == 0x0 ||
+       lin->pc    == 0x0 ||
+       lin->cdelt == 0x0) {
 
       /* Was sufficient allocated previously? */
       if (lin->m_flag == LINSET && lin->m_naxis < naxis) {
@@ -82,7 +82,7 @@ struct linprm *lin;
          linfree(lin);
       }
 
-      if (alloc || lin->crpix == 0) {
+      if (alloc || lin->crpix == 0x0) {
          if (lin->m_crpix) {
             /* In case the caller fiddled with it. */
             lin->crpix = lin->m_crpix;
@@ -98,7 +98,7 @@ struct linprm *lin;
          }
       }
 
-      if (alloc || lin->pc == 0) {
+      if (alloc || lin->pc == 0x0) {
          if (lin->m_pc) {
             /* In case the caller fiddled with it. */
             lin->pc = lin->m_pc;
@@ -115,7 +115,7 @@ struct linprm *lin;
          }
       }
 
-      if (alloc || lin->cdelt == 0) {
+      if (alloc || lin->cdelt == 0x0) {
          if (lin->m_cdelt) {
             /* In case the caller fiddled with it. */
             lin->cdelt = lin->m_cdelt;
@@ -139,9 +139,9 @@ struct linprm *lin;
       if (lin->imgpix) free(lin->imgpix);
    }
 
-   lin->piximg = 0;
-   lin->imgpix = 0;
-   lin->i_naxis = 0;
+   lin->piximg = 0x0;
+   lin->imgpix = 0x0;
+   lin->i_naxis = 0x0;
 
 
    lin->flag  = 0;
@@ -190,7 +190,7 @@ struct linprm *lindst;
    const double *srcp;
    double *dstp;
 
-   if (linsrc == 0) return 1;
+   if (linsrc == 0x0) return 1;
 
    naxis = linsrc->naxis;
    if (naxis <= 0) {
@@ -231,14 +231,14 @@ int linfree(lin)
 struct linprm *lin;
 
 {
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
 
    if (lin->flag != -1) {
       /* Free memory allocated by linini(). */
       if (lin->m_flag == LINSET) {
-         if (lin->crpix == lin->m_crpix) lin->crpix = 0;
-         if (lin->pc    == lin->m_pc)    lin->pc    = 0;
-         if (lin->cdelt == lin->m_cdelt) lin->cdelt = 0;
+         if (lin->crpix == lin->m_crpix) lin->crpix = 0x0;
+         if (lin->pc    == lin->m_pc)    lin->pc    = 0x0;
+         if (lin->cdelt == lin->m_cdelt) lin->cdelt = 0x0;
 
          if (lin->m_crpix) free(lin->m_crpix);
          if (lin->m_pc)    free(lin->m_pc);
@@ -248,9 +248,9 @@ struct linprm *lin;
 
    lin->m_flag  = 0;
    lin->m_naxis = 0;
-   lin->m_crpix = 0;
-   lin->m_pc    = 0;
-   lin->m_cdelt = 0;
+   lin->m_crpix = 0x0;
+   lin->m_pc    = 0x0;
+   lin->m_cdelt = 0x0;
 
 
    /* Free memory allocated by linset(). */
@@ -259,8 +259,8 @@ struct linprm *lin;
       if (lin->imgpix) free(lin->imgpix);
    }
 
-   lin->piximg = 0;
-   lin->imgpix = 0;
+   lin->piximg = 0x0;
+   lin->imgpix = 0x0;
    lin->i_naxis = 0;
 
    lin->flag = 0;
@@ -277,7 +277,7 @@ const struct linprm *lin;
 {
    int i, j, k;
 
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
 
    if (lin->flag != LINSET) {
       printf("The linprm struct is UNINITIALIZED.\n");
@@ -289,7 +289,7 @@ const struct linprm *lin;
    printf("      crpix: 0x%x\n", (int)lin->crpix);
    printf("            ");
    for (i = 0; i < lin->naxis; i++) {
-      printf("  %- 11.4g", lin->crpix[i]);
+      printf("  %- 11.5g", lin->crpix[i]);
    }
    printf("\n");
 
@@ -298,7 +298,7 @@ const struct linprm *lin;
    for (i = 0; i < lin->naxis; i++) {
       printf("    pc[%d][]:", i);
       for (j = 0; j < lin->naxis; j++) {
-         printf("  %- 11.4g", lin->pc[k++]);
+         printf("  %- 11.5g", lin->pc[k++]);
       }
       printf("\n");
    }
@@ -306,33 +306,33 @@ const struct linprm *lin;
    printf("      cdelt: 0x%x\n", (int)lin->cdelt);
    printf("            ");
    for (i = 0; i < lin->naxis; i++) {
-      printf("  %- 11.4g", lin->cdelt[i]);
+      printf("  %- 11.5g", lin->cdelt[i]);
    }
    printf("\n");
 
    printf("      unity: %d\n", lin->unity);
 
-   if (lin->piximg == 0) {
+   if (lin->piximg == 0x0) {
       printf("     piximg: (null)\n");
    } else {
       k = 0;
       for (i = 0; i < lin->naxis; i++) {
          printf("piximg[%d][]:", i);
          for (j = 0; j < lin->naxis; j++) {
-            printf("  %- 11.4g", lin->piximg[k++]);
+            printf("  %- 11.5g", lin->piximg[k++]);
          }
          printf("\n");
       }
    }
 
-   if (lin->imgpix == 0) {
+   if (lin->imgpix == 0x0) {
       printf("     imgpix: (null)\n");
    } else {
       k = 0;
       for (i = 0; i < lin->naxis; i++) {
          printf("imgpix[%d][]:", i);
          for (j = 0; j < lin->naxis; j++) {
-            printf("  %- 11.4g", lin->imgpix[k++]);
+            printf("  %- 11.5g", lin->imgpix[k++]);
          }
          printf("\n");
       }
@@ -363,7 +363,7 @@ struct linprm *lin;
    int i, j, n, status;
    double *pc, *piximg;
 
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
 
    n = lin->naxis;
 
@@ -394,8 +394,8 @@ struct linprm *lin;
          if (lin->imgpix) free(lin->imgpix);
       }
 
-      lin->piximg = 0;
-      lin->imgpix = 0;
+      lin->piximg = 0x0;
+      lin->imgpix = 0x0;
       lin->i_naxis = 0;
 
    } else {
@@ -457,7 +457,7 @@ double imgcrd[];
 
 
    /* Initialize. */
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
    if (lin->flag != LINSET) {
       if (status = linset(lin)) return status;
    }
@@ -519,7 +519,7 @@ double pixcrd[];
 
 
    /* Initialize. */
-   if (lin == 0) return 1;
+   if (lin == 0x0) return 1;
    if (lin->flag != LINSET) {
       if (status = linset(lin)) return status;
    }

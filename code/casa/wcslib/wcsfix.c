@@ -41,14 +41,14 @@
 #include "wcsunits.h"
 #include "wcsfix.h"
 
+extern const int WCSSET;
+
 /* Maximum number of coordinate axes that can be handled. */
 #define NMAX 16
 
-#define WCSSET 137
-
 /* Map status return value to message. */
 const char *wcsfix_errmsg[] = {
-   0,
+   "Success",
    "Null wcsprm pointer passed",
    "Memory allocation failed",
    "Linear transformation matrix is singular",
@@ -103,7 +103,7 @@ int datfix(struct wcsprm *wcs)
    int  day, dd, hour = 0, jd, minute = 0, month, msec, n4, year;
    double mjdobs, sec = 0.0, t;
 
-   if (wcs == 0) return 1;
+   if (wcs == 0x0) return 1;
 
    dateobs = wcs->dateobs;
    if (dateobs[0] == '\0') {
@@ -150,6 +150,7 @@ int datfix(struct wcsprm *wcs)
 
    } else {
       if (strlen(dateobs) < 8) {
+         /* Can't be a valid date. */
          return 5;
       }
 
@@ -164,6 +165,14 @@ int datfix(struct wcsprm *wcs)
             if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
                return 5;
             }
+         } else if (dateobs[10] == ' ') {
+            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) == 3) {
+               dateobs[10] = 'T';
+            } else {
+               hour = 0;
+               minute = 0;
+               sec = 0.0;
+            }
          }
 
       } else if (dateobs[4] == '/' && dateobs[7] == '/') {
@@ -176,11 +185,19 @@ int datfix(struct wcsprm *wcs)
             if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) < 3) {
                return 5;
             }
+         } else if (dateobs[10] == ' ') {
+            if (sscanf(dateobs+11, "%2d:%2d:%lf", &hour, &minute, &sec) == 3) {
+               dateobs[10] = 'T';
+            } else {
+               hour = 0;
+               minute = 0;
+               sec = 0.0;
+            }
          }
 
          /* Looks ok, fix it up. */
-         dateobs[4] = '-';
-         dateobs[7] = '-';
+         dateobs[4]  = '-';
+         dateobs[7]  = '-';
 
       } else {
          if (dateobs[2] == '/' && dateobs[5] == '/') {
@@ -202,6 +219,7 @@ int datfix(struct wcsprm *wcs)
 
          if (year < 100) year += 1900;
 
+         /* Doesn't have a time. */
          sprintf(dateobs, "%.4d-%.2d-%.2d", year, month, day);
       }
 
@@ -232,7 +250,7 @@ int unitfix(int ctrl, struct wcsprm *wcs)
 {
    int  i, status = -1;
 
-   if (wcs == 0) return 1;
+   if (wcs == 0x0) return 1;
 
    for (i = 0; i < wcs->naxis; i++) {
       if (wcsutrn(ctrl, wcs->cunit[i]) == 0) status = 0;
@@ -251,7 +269,7 @@ int celfix(struct wcsprm *wcs)
    struct prjprm *wcsprj = &(wcscel->prj);
 
    /* Initialize if required. */
-   if (wcs == 0) return 1;
+   if (wcs == 0x0) return 1;
    if (wcs->flag != WCSSET) {
       if (status = wcsset(wcs)) return status;
    }
@@ -319,7 +337,7 @@ int spcfix(struct wcsprm *wcs)
    int  i, status;
 
    /* Initialize if required. */
-   if (wcs == 0) return 1;
+   if (wcs == 0x0) return 1;
    if (wcs->flag != WCSSET) {
       if (status = wcsset(wcs)) return status;
    }
@@ -371,7 +389,7 @@ int cylfix(const int naxis[], struct wcsprm *wcs)
           *pixj, theta[4], theta0, world[4][NMAX], x, y;
 
    /* Initialize if required. */
-   if (wcs == 0) return 1;
+   if (wcs == 0x0) return 1;
    if (wcs->flag != WCSSET) {
       if (status = wcsset(wcs)) return status;
    }

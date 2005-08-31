@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.0 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.0 - C routines that implement the spherical map projections
+*   WCSLIB 4.1 - C routines that implement the spherical map projections
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -49,8 +49,8 @@
 *   that are maintained by these routines, somewhat like a C++ class but with
 *   no encapsulation.
 *
-*   A service routine, prjini(), is provided to initialize the prjprm struct
-*   with default values, and another, prjprt(), to print its contents.
+*   Routine prjini() is provided to initialize the prjprm struct with default
+*   values, and another, prjprt(), to print its contents.
 *
 *   Setup routines for each projection with names of the form ???set(), where
 *   "???" is the three-letter projection code, compute intermediate values in
@@ -69,7 +69,7 @@
 *   In summary, the routines are:
 *
 *      prjini                 Initialization routine for the prjprm struct.
-*      prjprt                 Service routine to print the prjprm struct.
+*      prjprt                 Routine to print the prjprm struct.
 *
 *      prjset prjx2s prjs2x   Generic driver routines (see below).
 *
@@ -104,7 +104,8 @@
 *
 *   Default constructor for the prjprm struct; prjini()
 *   ---------------------------------------------------
-*   prjini() sets all members of a prjprm struct to default values.
+*   prjini() sets all members of a prjprm struct to default values.  It should
+*   be used to initialize every prjprm struct.
 *
 *   Returned:
 *      prj      struct prjprm*
