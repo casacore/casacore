@@ -119,8 +119,8 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
             maxval=0.0
             px=1
             py=1
-            do iy=1,ny
-               do ix=1,nx
+            do iy=ybeg,yend
+               do ix=xbeg,xend
                   if((domask.eq.0).or.(lmask(ix,iy).GT.0.5)) then
                      val = abs(limagestep(ix,iy,pol))
                      if(val.GT.maxval) then
