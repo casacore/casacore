@@ -53,6 +53,12 @@
      #ifdef AIPS_SUN_NATIVE 
        template class Array<MVPosition>::ConstIteratorSTL 
      #endif 
+1095 casa/Arrays/Array.cc 
+     = casa/Quanta/MVRadialVelocity.h 
+     template class Array<MVRadialVelocity> 
+     #ifdef AIPS_SUN_NATIVE 
+       template class Array<MVRadialVelocity>::ConstIteratorSTL 
+     #endif 
 1100 casa/Arrays/Array.cc 
      = casa/Quanta/MVTime.h 
      template class Array<MVTime> 
@@ -989,6 +995,9 @@
 1080 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVPosition.h 
      template class MaskedArray<MVPosition> 
+1085 casa/Arrays/MaskedArray.cc 
+     = casa/Quanta/MVRadialVelocity.h 
+     template class MaskedArray<MVRadialVelocity> 
 1090 casa/Arrays/MaskedArray.cc 
      = casa/Quanta/MVTime.h 
      template class MaskedArray<MVTime> 
@@ -1097,6 +1106,9 @@
 1040 casa/Arrays/Vector.cc 
      = casa/Quanta/MVPosition.h 
      template class Vector<MVPosition> 
+1045 casa/Arrays/Vector.cc 
+     = casa/Quanta/MVRadialVelocity.h 
+     template class Vector<MVRadialVelocity> 
 1050 casa/Arrays/Vector.cc 
      = casa/Quanta/MVTime.h 
      template class Vector<MVTime> 
@@ -1121,19 +1133,6 @@
      template class Vector<Complex> 
      template class Vector<DComplex> 
      template class Vector<String> 
-1094 casa/Arrays/Vector2.cc casa/BasicSL/Complex.h 
-     = casa/BasicSL/String.h 
-     AIPS_VECTOR2_AUX_TEMPLATES(Int) 
-     AIPS_VECTOR2_AUX_TEMPLATES(Bool) 
-     AIPS_VECTOR2_AUX_TEMPLATES(uChar) 
-     AIPS_VECTOR2_AUX_TEMPLATES(Short) 
-     AIPS_VECTOR2_AUX_TEMPLATES(uShort) 
-     AIPS_VECTOR2_AUX_TEMPLATES(uInt) 
-     AIPS_VECTOR2_AUX_TEMPLATES(Float) 
-     AIPS_VECTOR2_AUX_TEMPLATES(Double) 
-     AIPS_VECTOR2_AUX_TEMPLATES(Complex) 
-     AIPS_VECTOR2_AUX_TEMPLATES(DComplex) 
-     AIPS_VECTOR2_AUX_TEMPLATES(String) 
 1100 casa/Arrays/Vector.cc casa/Quanta/Quantum.h 
      template class Vector<Quantum<Double> > 
 1110 casa/Arrays/Vector.cc casa/Utilities/CountedPtr.h 
@@ -1155,6 +1154,19 @@
      template class Vector<Vector<Float> > 
 1180 casa/Arrays/Vector.cc 
      template class Vector<uLong> 
+1094 casa/Arrays/Vector2.cc casa/BasicSL/Complex.h 
+     = casa/BasicSL/String.h 
+     AIPS_VECTOR2_AUX_TEMPLATES(Int) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Bool) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uChar) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Short) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uShort) 
+     AIPS_VECTOR2_AUX_TEMPLATES(uInt) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Float) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Double) 
+     AIPS_VECTOR2_AUX_TEMPLATES(Complex) 
+     AIPS_VECTOR2_AUX_TEMPLATES(DComplex) 
+     AIPS_VECTOR2_AUX_TEMPLATES(String) 
 1000 casa/Arrays/VectorIter.cc casa/BasicSL/Complex.h 
      template class ReadOnlyVectorIterator<Complex> 
      template class VectorIterator<Complex> 
@@ -1990,6 +2002,13 @@
      template class PtrRep<Block<MVPosition> > 
      template class SimpleCountedConstPtr<Block<MVPosition> > 
      template class SimpleCountedPtr<Block<MVPosition> > 
+1265 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
+     = casa/Quanta/MVRadialVelocity.h 
+     template class CountedConstPtr<Block<MVRadialVelocity> > 
+     template class CountedPtr<Block<MVRadialVelocity> > 
+     template class PtrRep<Block<MVRadialVelocity> > 
+     template class SimpleCountedConstPtr<Block<MVRadialVelocity> > 
+     template class SimpleCountedPtr<Block<MVRadialVelocity> > 
 1270 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = casa/Quanta/MVTime.h 
      template class CountedPtr<Block<MVTime> > 
