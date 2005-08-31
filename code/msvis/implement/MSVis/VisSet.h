@@ -153,6 +153,9 @@ public:
   // referencing assignment operator
   VisSet& operator=(const VisSet& other);
 
+  // Re-initialize the VisibilityIterator (cf copy ctor)
+  void resetVisIter(const Block<Int>& columns, Double timeInterval=0);
+
   // Initializes scratch columns
   void initCalSet(Int calSet=0);
 

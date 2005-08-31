@@ -277,6 +277,22 @@ VisSet::~VisSet() {
 };
 
 
+void VisSet::resetVisIter(const Block<Int>& columns, Double timeInterval) 
+{
+
+  // Delete existing VisIter:
+  if (iter_p) delete iter_p;
+
+  // Make new VisIter with existing ms_p, and new sort/interval
+  iter_p=new VisIter(ms_p,columns,timeInterval);
+
+  // Inform new VisIter of channel selection
+  for (uInt spw=0; spw<selection_p.ncolumn(); spw++) {
+    iter_p->selectChannel(1,selection_p(0,spw),selection_p(1,spw),0,spw);
+  }
+
+}
+
 void VisSet::initCalSet(Int calSet)
 {
 
