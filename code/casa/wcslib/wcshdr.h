@@ -370,7 +370,7 @@
 #ifndef WCSLIB_WCSHDR
 #define WCSLIB_WCSHDR
 
-#include <wcs.h>
+#include "wcs.h"
 
 #ifdef __cplusplus
 extern "C" {

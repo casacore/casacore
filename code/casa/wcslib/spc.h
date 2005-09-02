@@ -599,7 +599,7 @@
 #ifndef WCSLIB_SPC
 #define WCSLIB_SPC
 
-#include <spx.h>
+#include "spx.h"
 
 #ifdef __cplusplus
 extern "C" {

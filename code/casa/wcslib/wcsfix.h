@@ -291,7 +291,7 @@
 #ifndef WCSLIB_WCSFIX
 #define WCSLIB_WCSFIX
 
-#include <wcs.h>
+#include "wcs.h"
 
 #ifdef __cplusplus
 extern "C" {

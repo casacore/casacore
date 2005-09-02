@@ -1080,10 +1080,10 @@
 #ifndef WCSLIB_WCS
 #define WCSLIB_WCS
 
-#include <lin.h>
-#include <cel.h>
-#include <spc.h>
-#include <tab.h>
+#include "lin.h"
+#include "cel.h"
+#include "spc.h"
+#include "tab.h"
 
 #ifdef __cplusplus
 extern "C" {

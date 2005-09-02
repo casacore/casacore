@@ -41,7 +41,7 @@ extern "C" {
 #ifdef WCSTRIG_MACRO
 
 /* Macro implementation of the trigd functions. */
-#include <wcsmath.h>
+#include "wcsmath.h"
 
 #define cosd(X) cos((X)*D2R)
 #define sind(X) sin((X)*D2R)

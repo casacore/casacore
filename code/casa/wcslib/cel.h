@@ -352,7 +352,7 @@
 #ifndef WCSLIB_CEL
 #define WCSLIB_CEL
 
-#include <prj.h>
+#include "prj.h"
 
 #ifdef __cplusplus
 extern "C" {
