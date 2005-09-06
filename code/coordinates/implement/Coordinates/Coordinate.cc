@@ -1168,6 +1168,13 @@ void Coordinate::xFormToPC (::wcsprm& wcs, const Matrix<Double>& xform) const
         count++;
      }
    }
+
+// Now, having hacked away at the PC cards, we must set a bit in
+// wcs telling it that they are active.  This is because of the
+// ungodly mess of allowing PC*CDELT and CD cards.  If we don't
+// set this bit, wcsset (when called) will reset the wcsprm.pc cards
+
+   wcs.altlin |= 1;
 }
 
 
