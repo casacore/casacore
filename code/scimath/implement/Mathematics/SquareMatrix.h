@@ -213,10 +213,10 @@ public:
     SquareMatrix<T,n>& conj();
     // Tranpose and conjugate the matrix in place(!).
     SquareMatrix<T,n>& adjoint(); 
-    // Conjugate the matrix
-    SquareMatrix<T,n> conj(const SquareMatrix<T,n>&);
-    // Tranpose and conjugate the matrix
-    SquareMatrix<T,n> adjoint(const SquareMatrix<T,n>&);
+    // Conjugate the matrix, return it in result (and by ref)
+    SquareMatrix<T,n>& conj(SquareMatrix<T,n>& result);
+    // Tranpose and conjugate the matrix, return it in result (and by ref)
+    SquareMatrix<T,n>& adjoint(SquareMatrix<T,n>& result);
     // Compute the inverse of the matrix and return it in result (also
     // returns result by reference).
     SquareMatrix<T,n>& inverse(SquareMatrix<T,n>& result) const;

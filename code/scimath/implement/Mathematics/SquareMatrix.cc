@@ -380,15 +380,17 @@ SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint() {
 }
 
 template <class T, Int n> 
-SquareMatrix<T,n> SquareMatrix<T,n>::conj(const SquareMatrix<T,n>& other) {
-  SquareMatrix<T,n> result(other);
-  return conj(result);
+SquareMatrix<T,n>& SquareMatrix<T,n>::conj(SquareMatrix<T,n>& result) {
+  result = *this;
+  result.conj();
+  return result;
 }
 
 template <class T, Int n> 
-SquareMatrix<T,n> SquareMatrix<T,n>::adjoint(const SquareMatrix<T,n>& other) {
-  SquareMatrix<T,n> result(other);
-  return adjoint(result);
+SquareMatrix<T,n>& SquareMatrix<T,n>::adjoint(SquareMatrix<T,n>& result) {
+  result = *this;
+  result.adjoint();
+  return result;
 }
 
 template <class T, Int n> 
