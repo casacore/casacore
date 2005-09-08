@@ -32,6 +32,8 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNode* MSTimeParse::node_p = 0x0;
+const MEpoch* MSTimeParse::yeartime = 0x0;
+const MEpoch* MSTimeParse::daytime = 0x0;
 
 //# Constructor
 MSTimeParse::MSTimeParse ()
@@ -104,8 +106,6 @@ const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
 const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
                                           uInt second, uInt millisec)
 {
-    static const MEpoch *daytime = 0x0;
-
     Vector<Quantity> t(4);
     t[0] = Quantity(day, "d"); 
     t[1] = Quantity(hour, "h"); 
@@ -122,8 +122,6 @@ const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
                                            uInt hour, uInt minute,
                                            uInt second, uInt millisec)
 {
-    static const MEpoch *yeartime = 0x0;
-
     if(yeartime) delete yeartime;
 
     Vector<Quantity> t(6);
