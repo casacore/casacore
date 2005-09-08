@@ -132,7 +132,7 @@ indexcombexpr  : IDENTIFIER {
                  }
 
                | idandcp
-	       | idandcp AMPERSAND idandcp {
+	       | indexcombexpr AMPERSAND idandcp {
                    $$ = new TableExprNode ($1 || $3); 
    	         }
 	       ;
