@@ -50,7 +50,7 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
-CORRTYPE  [IQUV]+|[RL]{2}|[XY]{2}
+CORRTYPE  [IQUV]{1}|[RL]{2}|[XY]{2}
 
 REGEX1    m"/"[^/]+"/"
 REGEX2    m%[^%]+%
