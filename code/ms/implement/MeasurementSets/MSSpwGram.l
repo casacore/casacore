@@ -52,8 +52,7 @@ USTRING   ({UQSTRING}|{UASTRING})+
 
 FREQUENCYUNIT    [Mm][Hh][Zz]
 VELOCITYUNIT     [Kk][Mm]"/"[Ss]
-SPWNAME    [A-Za-z]([A-Za-z0-9])*
-
+SPWNAME    [A-Za-z0-9]*[+]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
   /* rules */
 
 %%
