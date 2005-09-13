@@ -1,12 +1,5 @@
-1000 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
-     template Bool allEQ(Array<Complex> const &, Complex const &) 
-     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
-     template Bool allEQ(Array<Short> const &, Short const &) 
-     template Bool allEQ(Array<uShort> const &, Array<uShort> const &) 
-     template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
-     template LogicalArray operator<(Array<Double> const &, Double const &) 
 1010 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
-     = casa/BasicSL/String.h
+     = casa/BasicSL/String.h 
      template LogicalArray operator<(Array<Double> const &, Array<Double> const &) 
      template LogicalArray operator<(Double const &, Array<Double> const &) 
      template LogicalArray operator<=(Array<Double> const &, Array<Double> const &) 
@@ -24,8 +17,15 @@
      template LogicalArray operator<=(Array<String> const &, String const &) 
      template LogicalArray operator<=(String const &, Array<String> const &) 
      template Bool allNear(Array<DComplex> const &, Array<DComplex> const &, Double) 
+1000 casa/Arrays/ArrayLogical.cc casa/BasicSL/Complex.h 
+     template Bool allEQ(Array<Complex> const &, Complex const &) 
+     template Bool allEQ(Array<DComplex> const &, DComplex const &) 
+     template Bool allEQ(Array<Short> const &, Short const &) 
+     template Bool allEQ(Array<uShort> const &, Array<uShort> const &) 
+     template Bool allNear(Array<Complex> const &, Array<Complex> const &, Double) 
+     template LogicalArray operator<(Array<Double> const &, Double const &) 
 1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
-     = casa/BasicSL/String.h
+     = casa/BasicSL/String.h 
      template void indgen(Array<Complex> &) 
      template void indgen(Array<Complex> &, Complex, Complex) 
      template void operator+=(Array<uChar> &, uChar const &) 
@@ -37,9 +37,8 @@
 1010 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template void indgen(Array<DComplex> &) 
      template void indgen(Array<DComplex> &, DComplex, DComplex) 
-1020 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+1020 casa/Arrays/ArrayMath.cc 
      template void convertArray(Array<uShort> &, Array<Float> const &) 
-     template void convertArray(Array<Float> &, Array<uShort> const &) 
 1000 casa/Arrays/Cube.cc 
      template class Cube<uChar> 
      template class Cube<uShort> 
@@ -54,7 +53,6 @@
 1000 casa/Utilities/GenSort.cc casa/Arrays/Vector.h 
      = casa/Containers/Block.h 
      template uInt genSort(Vector<uInt> &, Block<uInt> const &) 
-
 1000 tables/Tables/BaseMappedArrayEngine.cc 
      = tables/Tables/ScaledArrayEngine.cc 
      template class BaseMappedArrayEngine<Double, Int> 
