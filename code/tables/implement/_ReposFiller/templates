@@ -2,29 +2,23 @@
      = casa/Arrays/IPosition.h 
      template class Array<IPosition> 
 1010 casa/Arrays/Array.cc 
-     = casa/Arrays/Vector.h 
-     template class Array<Vector<Float> > 
-1020 casa/Arrays/Array.cc 
      = tables/TablePlot/BasePlot.h 
      template class Array<BasePlot<Float> > 
-1030 casa/Arrays/Array.cc 
+1020 casa/Arrays/Array.cc 
      = tables/Tables/ExprNode.h 
      template class Array<TableExprNode> 
-1040 casa/Arrays/Array.cc 
+1030 casa/Arrays/Array.cc 
      = tables/Tables/Table.h 
      template class Array<Table> 
-1050 casa/Arrays/Array.cc 
+1040 casa/Arrays/Array.cc 
      = tables/Tables/TableIter.h 
      template class Array<TableIterator> 
-1060 casa/Arrays/Array.cc 
+1050 casa/Arrays/Array.cc 
      = tables/Tables/TableRecord.h 
      template class Array<TableRecord> 
      #ifdef AIPS_SUN_NATIVE 
        template class Array<TableRecord>::ConstIteratorSTL 
      #endif 
-1000 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
-     template void convertArray(Array<Complex> &, Array<DComplex> const &) 
-     template void convertArray(Array<DComplex> &, Array<Complex> const &) 
 1000 casa/Arrays/MaskedArray.cc 
      = casa/Arrays/IPosition.h 
      template class MaskedArray<IPosition> 
