@@ -81,10 +81,12 @@ class ProgressMeter;
 //  but the output CoordinateSystem order is preserved in the output
 //  image.
 //
-//  Any DirectionCoordinate is regridded with a coupled 2D 
-//  interpolation scheme.  All other axes are regridded with
-//  a 1D interpolation scheme.    StokesCoordinates cannot be
-//  regridded.
+//  Any DirectionCoordinate or LinearCoordinate holding exactly two axes
+//  is regridded in one pass with a 2-D interpolation scheme.
+//  All other axes are regridded in separate passes with a 1D interpolation 
+//  scheme.    This means that a LinearCoordinate holding say 3 axes
+//  where some of them are coupled will not be correctly regridded.
+//  StokesCoordinates cannot be  regridded.
 //
 //  Multiple passes are made through the data, and the output of 
 //  each pass is the input of the next pass.  The intermediate 
@@ -226,8 +228,9 @@ public:
 
   // Find scale factor to conserve flux 
    Double findScaleFactor(const Unit& units, 
-                          const DirectionCoordinate& dirIn, 
-                          const DirectionCoordinate& dirOut,
+                          const CoordinateSystem& inCoords, 
+                          const CoordinateSystem& outCoords, 
+                          Int inCoordinate, Int outCoordinate,
                           LogIO& os) const;
 
   // Regrid one Coordinate
@@ -246,31 +249,30 @@ public:
                              Bool forceRegrid, 
                              typename Interpolate2D::Method method);
 
-  // Regrid, via coordinates, 2 coupled axes
-  void regrid2D (MaskedLattice<T>& outLattice,
-                 const MaskedLattice<T>& inLattice,   
-                 const DirectionCoordinate& inCoord,
-                 const DirectionCoordinate& outCoord,
-                 const Vector<Int> inPixelAxes, 
-                 const Vector<Int> outPixelAxes,
-                 const Vector<Int> pixelAxisMap1,
-                 const Vector<Int> pixelAxisMap2,
-                 typename Interpolate2D::Method method,
-                 MDirection::Convert& machine, 
-                 Bool replicate, uInt decimate,
-                 Bool useMachine, 
-                 Bool showProgress, 
-                 Double scale);
+  // Regrid  DirectionCoordinate or 2-axis LinearCoordinate
+   void regridTwoAxisCoordinate  (LogIO& os, MaskedLattice<T>& outLattice,
+                         const MaskedLattice<T>& inLattice,
+                         const Unit& imageUnit, 
+                         const CoordinateSystem& inCoords,
+                         const CoordinateSystem& outCoords,
+                         Int inCoordinate, Int outCoordinate,
+                         const Vector<Int> inPixelAxes,
+                         const Vector<Int> outPixelAxes,
+                         const Vector<Int> pixelAxisMap1,  
+                         const Vector<Int> pixelAxisMap2,
+                         typename Interpolate2D::Method method,
+                         Bool replicate, uInt decimate,
+                         Bool showProgress);
 
   // Make regridding coordinate grid for this cursor.
-  void make2DCoordinateGrid (Bool& allFail, Bool&missedIt,
+  void make2DCoordinateGrid (LogIO& os, Bool& allFail, Bool&missedIt,
                              Double& minInX, Double& minInY, 
                              Double& maxInX, Double& maxInY,
                              Cube<Double>& in2DPos,
                              Matrix<Bool>& succeed,
-                             MDirection::Convert& machine, 
-                             const DirectionCoordinate& inCoord,
-                             const DirectionCoordinate& outCoord,
+                             const CoordinateSystem& inCoords,
+                             const CoordinateSystem& outCoords,
+                             Int inCoordinate, Int outCoordinate,
                              uInt xInAxis, uInt yInAxis,
                              uInt xOutAxis, uInt yOutAxis,
                              const IPosition& inPixelAxes,
@@ -278,7 +280,7 @@ public:
                              const IPosition& inShape,
                              const IPosition& outPos,
                              const IPosition& cursorShape,
-                             Bool useMachine, uInt decimate=0);
+                             uInt decimate=0);
 
   // Make replication coordinate grid for this cursor
    void make2DCoordinateGrid (Cube<Double>& in2DPos,

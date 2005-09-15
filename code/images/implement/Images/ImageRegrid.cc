@@ -38,6 +38,7 @@
 #include <coordinates/Coordinates/CoordinateUtil.h>
 #include <coordinates/Coordinates/CoordinateSystem.h>
 #include <coordinates/Coordinates/DirectionCoordinate.h>
+#include <coordinates/Coordinates/LinearCoordinate.h>
 #include <coordinates/Coordinates/SpectralCoordinate.h>
 #include <coordinates/Coordinates/ObsInfo.h>
 #include <images/Images/TempImage.h>
@@ -188,9 +189,9 @@ void ImageRegrid<T>::regrid(ImageInterface<T>& outImage,
         }
 
 // Regrid one Coordinate, pertaining to this axis. If the axis
-// belongs to a DirectionCoordinate, it will also regrid the 
-// other axis.  After the first pass, the output image is in the
-// final order.  
+// belongs to a DirectionCoordinate or 2-axis LinearCoordinate, 
+// it will also regrid the other axis.  After the first pass, 
+// the output image is in the final order.  
 
          regridOneCoordinate (os, outShape2, doneOutPixelAxes,
                               finalOutPtr,
@@ -288,20 +289,23 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
     }
 
    // Where are the input and output pixel axes for this  coordinate ?
-   //  Some coordinates,
-   // (apart from DirectionCoordinate), e.g. LinearCoordinate may have more
-   // than one pixel axis. But we will do them in multiple passes;
-   // only DirectionCoordinate is coupled
+   // DIrectionCoordinates and LinearCoordinates (holding two axes) are
+   // done in one pass.  Others are done axis by axis which is flawed
+   // when those axes are coupled (e.g. other axes of LC)
 
     Vector<Int> outPixelAxes = outCoords.pixelAxes(outCoordinate);
     Vector<Int>  inPixelAxes = inCoords.pixelAxes(inCoordinate);
     Int maxMemoryInMB = 0;
 
-// Now we need to break the polymorphic nature  of coordinates.  
+// Work out if we can do a 2-D regrid. Either a DC or a 2-axis LC
+// (maybe extend to two axes of N-axis LC in the future)
 
-    if (type==Coordinate::DIRECTION) {
+    if ( (type==Coordinate::DIRECTION) ||
+         (type==Coordinate::LINEAR &&
+          outPixelAxes.nelements()==2 &&
+          inPixelAxes.nelements()==2) ) {
 
-// Note that we will do two pixel axes in this pass
+// We will do two pixel axes in this pass
 
        doneOutPixelAxes(outPixelAxes[0]) = True;
        doneOutPixelAxes(outPixelAxes[1]) = True;
@@ -311,7 +315,7 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        outShape2(outPixelAxes[0]) = outShape(outPixelAxes[0]);
        outShape2(outPixelAxes[1]) = outShape(outPixelAxes[1]);
        if (outShape2(outPixelAxes[0])==1 && outShape2(outPixelAxes[1])==1) {
-	 os << "You cannot regrid the DirectionCoordinate as it is "
+	 os << "You cannot regrid the Coordinate as it is "
 	   "of shape [1,1]" << LogIO::EXCEPTION;
        }
        const IPosition inShape = inPtr->shape();
@@ -319,20 +323,13 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
 	 (outShape2(outPixelAxes[0]) != inShape(inPixelAxes(0))) ||
 	 (outShape2(outPixelAxes[1]) != inShape(inPixelAxes(1)));
 
-// Get DirectionCoordinates for input and output
+// See if we really need to regrid this axis. If the coordinates and shape are the 
+// same there is nothing to do apart from swap in and out pointers
+// or copy on last pass
 
-       Vector<String> units(2);
-       units.set("deg");
-       DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
-       DirectionCoordinate outDir =
-	 outCoords.directionCoordinate(outCoordinate);
-
-       // See if we really need to regrid this axis.
-       //  If the coordinates and shape are the 
-       // same there is nothing to do apart from swap in and out pointers
-       // or copy on last pass
-
-       Bool regridIt = shapeDiff || forceRegrid || !(inDir.near(outDir));
+       const Coordinate& cIn = inCoords.coordinate(inCoordinate);
+       const Coordinate& cOut = outCoords.coordinate(outCoordinate);
+       Bool regridIt = shapeDiff || forceRegrid || !(cIn.near(cOut));
        Bool lastPass = allEQ(doneOutPixelAxes, True);
 //
        if (!regridIt) {
@@ -363,47 +360,12 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
              tmpPtr->makeMask(maskName, True, True, False);
           }
        }
-
-// Set units
-
-       if (!inDir.setWorldAxisUnits(units)) {
-          os << "Failed to set input DirectionCoordinate units to degrees" <<
-	    LogIO::EXCEPTION;
-       }
-       if (!outDir.setWorldAxisUnits(units)) {
-          os << "Failed to set output DirectionCoordinate units to degrees" <<
-	    LogIO::EXCEPTION;
-       }
-
-
-       // Possibly make Direction reference conversion machine.
-       //  We could use the internal
-       // machine layer inside the DirectionCoordinate, but making
-       // the machine explicitly
-       // this way is more general because it allows the ObsInfo to be
-       // different.
-
-       MDirection::Convert machine;
-       Bool madeIt = False;
-       if (!itsDisableConversions) {
-          madeIt =
-	    CoordinateUtil::makeDirectionMachine(os, machine, inDir, outDir, 
-						 inCoords.obsInfo(),
-						 outCoords.obsInfo());
-       }
-
-// Get scaling factor to conserve flux in Jy/pixel
-
-       Double scale = findScaleFactor(inImage.units(), inDir, outDir, os);
-
-// Regrid 
-
-       if (itsShowLevel>0) {
-          cerr << "usemachine=" << madeIt << endl;
-       }
-       regrid2D (*outPtr, *inPtr, inDir, outDir, inPixelAxes,
-                 outPixelAxes, pixelAxisMap1, pixelAxisMap2, method,
-                 machine, replicate, decimate, madeIt, showProgress, scale);
+//
+       regridTwoAxisCoordinate  (os, *outPtr, *inPtr, inImage.units(),
+                                 inCoords, outCoords, inCoordinate,
+                                 outCoordinate, inPixelAxes, outPixelAxes, 
+                                 pixelAxisMap1, pixelAxisMap2, method,
+                                 replicate, decimate, showProgress);
     } else {
 
 // Note that will do one pixel axis in this pass
@@ -505,7 +467,6 @@ void ImageRegrid<T>::regridOneCoordinate (LogIO& os, IPosition& outShape2,
        cerr << "   Function regridOneCoordinate took " << s0 << endl;
     }
 }
-
 
 
 template<class T>
@@ -695,33 +656,33 @@ ImageRegrid<T>::makeCoordinateSystem(LogIO& os,
 }
 
 
-
 template<class T>
-void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
-                               const MaskedLattice<T>& inLattice,
-                               const DirectionCoordinate& inCoord,
-                               const DirectionCoordinate& outCoord,
-                               const Vector<Int> inPixelAxes,
-                               const Vector<Int> outPixelAxes,
-                               const Vector<Int> pixelAxisMap1,
-                               const Vector<Int> pixelAxisMap2,
-                               typename Interpolate2D::Method method,
-                               MDirection::Convert& machine,
-                               Bool replicate, uInt decimate,
-                               Bool useMachine, Bool showProgress, Double scale)
+void ImageRegrid<T>::regridTwoAxisCoordinate (LogIO& os, MaskedLattice<T>& outLattice,
+                                              const MaskedLattice<T>& inLattice,
+                                              const Unit& imageUnit, 
+                                              const CoordinateSystem& inCoords,
+                                              const CoordinateSystem& outCoords,
+                                              Int inCoordinate, Int outCoordinate,    
+                                              const Vector<Int> inPixelAxes,
+                                              const Vector<Int> outPixelAxes,
+                                              const Vector<Int> pixelAxisMap1,
+                                              const Vector<Int> pixelAxisMap2,
+                                              typename Interpolate2D::Method method,
+                                              Bool replicate, uInt decimate,
+                                              Bool showProgress)
+{
+
 //
 // Compute output coordinate, find region around this coordinate
 // in input, interpolate. Any output mask is overwritten
 //
-{
-   LogIO os(LogOrigin("ImageRegrid", "regrid2D(...)", WHERE));
+
    Timer t0, t1, t2, t3, t4;
    Double s0 = 0.0;
    Double s1 = 0.0;
    Double s2 = 0.0;
    Double s3 = 0.0;
    Double s4 = 0.0;
-//
 //
    AlwaysAssert(inPixelAxes.nelements()==2, AipsError);
    AlwaysAssert(outPixelAxes.nelements()==2, AipsError);
@@ -928,14 +889,14 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
          allFailed = False;
          its2DCoordinateGridMask.set(True);
       } else {
-	make2DCoordinateGrid (allFailed, missedIt, minInX, minInY, maxInX,
+	make2DCoordinateGrid (os, allFailed, missedIt, minInX, minInY, maxInX,
 			      maxInY,
 			      its2DCoordinateGrid, its2DCoordinateGridMask,
-			      machine, 
-			      inCoord, outCoord, xInAxis, yInAxis, xOutAxis,
+			      inCoords, outCoords, inCoordinate, outCoordinate,
+                              xInAxis, yInAxis, xOutAxis,
 			      yOutAxis,
 			      inPixelAxes, outPixelAxes, inShape, outPosFull, 
-			      outShape, useMachine, decimate);
+			      outShape, decimate);
       }
    }
    s1 += t1.all();
@@ -960,6 +921,12 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
                                         True, 
                                         max(1,Int(nMax/20)));
    }
+
+
+// Find scale factor for Jy/pixel images
+
+   Double scale = findScaleFactor(imageUnit, inCoords, outCoords,
+                                  inCoordinate, outCoordinate, os);
 
 // Iterate through output image
 
@@ -1100,14 +1067,14 @@ void ImageRegrid<T>::regrid2D (MaskedLattice<T>& outLattice,
 
 
 template<class T>
-void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
+void ImageRegrid<T>::make2DCoordinateGrid(LogIO& os, Bool& allFailed, Bool&missedIt,
 					  Double& minInX, Double& minInY, 
 					  Double& maxInX, Double& maxInY,  
 					  Cube<Double>& in2DPos,
 					  Matrix<Bool>& succeed,
-					  MDirection::Convert& machine,
-					  const DirectionCoordinate& inCoord,
-					  const DirectionCoordinate& outCoord,
+					  const CoordinateSystem& inCoords,
+					  const CoordinateSystem& outCoords,
+                                          Int inCoordinate, Int outCoordinate,
 					  uInt xInAxis, uInt yInAxis,
 					  uInt xOutAxis, uInt yOutAxis,
 					  const IPosition& inPixelAxes,
@@ -1115,10 +1082,10 @@ void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
 					  const IPosition& inShape,
 					  const IPosition& outPos,
 					  const IPosition& outCursorShape,
-					  Bool useMachine, uInt decimate) {
-  //
-  // in2DPos says where the output pixel (i,j) is located in the input image
-  //
+					  uInt decimate) {
+//
+// in2DPos says where the output pixel (i,j) is located in the input image
+//
   Vector<Double> world(2), inPixel(2), outPixel(2);
   minInX =  100000000.0;
   minInY =  100000000.0;
@@ -1127,29 +1094,29 @@ void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
   allFailed = True;
   Bool ok1=False, ok2=False;
   MVDirection inMVD, outMVD;
-  //
+//
   uInt ni = outCursorShape(xOutAxis);
   uInt nj = outCursorShape(yOutAxis);
   
-  // Where in the Direction Coordinates are X and Y ?
-  // pixelAxes(0) says where Lon is in DirectionCoordinate
-  // pixelAxes(1) says where Lat is in DirectionCoordinate
-  // The X axis is always the direction axis that appears first in the image
-  //
+// Where in the Direction Coordinates are X and Y ?
+// pixelAxes(0) says where Lon is in DirectionCoordinate
+// pixelAxes(1) says where Lat is in DirectionCoordinate
+// The X axis is always the direction axis that appears first in the image
+//
   uInt inXIdx = 0;         // [x,y] = [lon,lat]
   uInt inYIdx = 1;
   if (inPixelAxes(0)==Int(yInAxis)) {
     inXIdx = 1;            // [x,y] = [lat,lon]
     inYIdx = 0;
   };
-  //
+//
   uInt outXIdx = 0;         
   uInt outYIdx = 1;
   if (outPixelAxes(0)==Int(yOutAxis)) {
     outXIdx = 1;         
     outYIdx = 0;
   };
-  //
+//
   Matrix<Bool> doneIt(ni,nj);
   doneIt = False;
   //
@@ -1157,7 +1124,7 @@ void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
     cerr << "inXIdx, inYIdx = " << inXIdx << ", " << inYIdx << endl;
     cerr << "outXIdx, outYIdx = " << outXIdx << ", " << outYIdx << endl;
   }
-  //
+//
   uInt nOutI = 0;
   uInt nOutJ = 0;
   uInt iInc = 1;
@@ -1197,19 +1164,68 @@ void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
       cerr << "decimate, nOutI, nOutJ = " << decimate << ", " << nOutI <<
 	", " << nOutJ << endl;
       cerr << "iInc, jInc = " << iInc << ", " << jInc << endl;
-    };
-  };
-  //
+    }
+  }
+//
   Matrix<Double> iInPos2D(nOutI,nOutJ);
   Matrix<Double> jInPos2D(nOutI,nOutJ);
   Matrix<Bool> ijInMask2D(nOutI,nOutJ);
-  
-  // If decimating, compute a sparse grid of coordinates and then
-  // interpolate the others.
-  // Otherwise, compute all coordinates (very expensive)
-  // This approach is going to cause pixels along the right and top edges
-  // to be masked as the coarse grid is unlikely to finish exactly
-  // on the lattice edge
+
+// Are we dealing with a DirectionCoordinate or LinearCoordinate ?
+
+  Bool isDir = inCoords.type(inCoordinate)==Coordinate::DIRECTION && 
+                outCoords.type(outCoordinate)==Coordinate::DIRECTION;
+  DirectionCoordinate inDir, outDir;
+  LinearCoordinate inLin, outLin;
+  Bool useMachine = False;
+  MDirection::Convert machine;
+  if (isDir) {
+      inDir = inCoords.directionCoordinate(inCoordinate);
+      outDir = outCoords.directionCoordinate(outCoordinate);
+
+// Set units to degrees
+
+      Vector<String> units(2);
+      units.set("deg");
+      if (!inDir.setWorldAxisUnits(units)) {
+         os << "Failed to set input DirectionCoordinate units to degrees" << LogIO::EXCEPTION;
+      }
+      if (!outDir.setWorldAxisUnits(units)) {
+         os << "Failed to set output DirectionCoordinate units to degrees" <<  LogIO::EXCEPTION;
+      }
+
+// Possibly make Direction reference conversion machine.  We could use the internal
+// machine layer inside the DirectionCoordinate, but making the machine explicitly
+// this way is more general because it allows the ObsInfo to be different.
+
+      if (!itsDisableConversions) {
+         useMachine = CoordinateUtil::makeDirectionMachine(os, machine, inDir, outDir, 
+                                                           inCoords.obsInfo(),
+                                                           outCoords.obsInfo());
+      }
+  } else {
+     inLin = inCoords.linearCoordinate(inCoordinate);
+     outLin = outCoords.linearCoordinate(outCoordinate);
+
+// Set units to same thing
+
+      const Vector<String>& units = inLin.worldAxisUnits().copy();
+      if (!outLin.setWorldAxisUnits(units)) {
+         os << "Failed to set output and input LinearCoordinate axis units the same" <<  LogIO::EXCEPTION;
+      }
+  }
+//
+  if (itsShowLevel>0) {
+     cerr << "usemachine=" << useMachine << endl;
+  }
+
+// If decimating, compute a sparse grid of coordinates and then
+// interpolate the others.
+// Otherwise, compute all coordinates (very expensive)
+// This approach is going to cause pixels along the right and top edges
+// to be masked as the coarse grid is unlikely to finish exactly
+// on the lattice edge
+
   Timer t0;
   uInt ii = 0;
   uInt jj = 0;
@@ -1219,19 +1235,26 @@ void ImageRegrid<T>::make2DCoordinateGrid(Bool& allFailed, Bool&missedIt,
       outPixel(outXIdx) = i + outPos[xOutAxis];
       outPixel(outYIdx) = j + outPos[yOutAxis];
       
-      // Do coordinate conversions (outpixel to world to inpixel)
-      // for the axes of interest
-      if (useMachine) {            
-	ok1 = outCoord.toWorld(outMVD, outPixel);            
+// Do coordinate conversions (outpixel to world to inpixel)
+// for the axes of interest
+
+      if (useMachine) {                             // must be Direction
+	ok1 = outDir.toWorld(outMVD, outPixel);            
 	ok2 = False;
 	if (ok1) {
 	  inMVD = machine(outMVD).getValue();
-	  ok2 = inCoord.toPixel(inPixel, inMVD);
+	  ok2 = inDir.toPixel(inPixel, inMVD);
 	};
       } else {
-	ok1 = outCoord.toWorld(world, outPixel);
-	ok2 = False;
-	if (ok1) ok2 = inCoord.toPixel(inPixel, world);
+        if (isDir) {
+           ok1 = outDir.toWorld(world, outPixel);
+           ok2 = False;
+           if (ok1) ok2 = inDir.toPixel(inPixel, world);
+        } else {
+           ok1 = outLin.toWorld(world, outPixel);
+           ok2 = False;
+           if (ok1) ok2 = inLin.toPixel(inPixel, world);
+        }
       };
       //
       if (!ok1 || !ok2) {
@@ -2113,23 +2136,50 @@ void ImageRegrid<T>::findMaps (uInt nDim,
 
 template<class T>
 Double ImageRegrid<T>::findScaleFactor(const Unit& units, 
-                                       const DirectionCoordinate& dirIn,
-                                       const DirectionCoordinate& dirOut,
+                                       const CoordinateSystem& inCoords, 
+                                       const CoordinateSystem& outCoords,
+                                       Int inCoordinate, Int outCoordinate,
                                        LogIO& os) const
-//
-// Direction coordinates have been set to same axis units
-//
 {
    Double fac = 1.0;
    String t = units.getName();
    t.upcase();
    if (t==String("JY/PIXEL")) {
-      Vector<Double> incIn = dirIn.increment();
-      Vector<Double> incOut = dirOut.increment();
+
+// Set units to the same thing
+
+      if (inCoords.type(inCoordinate)==Coordinate::DIRECTION) {
+         DirectionCoordinate inDir = inCoords.directionCoordinate(inCoordinate);
+         DirectionCoordinate outDir = outCoords.directionCoordinate(outCoordinate);
 //
-      fac = abs(incOut(0)*incOut(1) / incIn(0) / incIn(1));
-      os << "Applying Jy/pixel scale factor of " << fac << endl;
+         Vector<String> units(2);
+         units.set("deg");
+//
+         inDir.setWorldAxisUnits(units);
+         outDir.setWorldAxisUnits(units);
+//
+         const Vector<Double>& incIn = inDir.increment();
+         const Vector<Double>& incOut = outDir.increment();
+//
+         fac = abs(incOut(0)*incOut(1) / incIn(0) / incIn(1));
+         os << "Applying Jy/pixel scale factor of " << fac << endl;
+      } else if (inCoords.type(inCoordinate)==Coordinate::LINEAR) {
+         LinearCoordinate inLin = inCoords.linearCoordinate(inCoordinate);
+         LinearCoordinate outLin = outCoords.linearCoordinate(outCoordinate);
+//
+         const Vector<String>& units = inLin.worldAxisUnits().copy();
+         if (!outLin.setWorldAxisUnits(units)) {
+            os << "Failed to set output and input LinearCoordinate axis units the same" <<  LogIO::EXCEPTION;
+         }
+//
+         const Vector<Double>& incIn = inLin.increment();
+         const Vector<Double>& incOut = outLin.increment();
+//
+         fac = abs(incOut(0)*incOut(1) / incIn(0) / incIn(1));
+         os << "Applying Jy/pixel scale factor of " << fac << endl;
+     }
    }
+//
    return fac;
 }
 
