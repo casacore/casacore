@@ -946,6 +946,10 @@ Bool LatticeCleaner<T>::destroyScales()
     if(itsScales[scale]) delete itsScales[scale];
     itsScales[scale]=0;
   }
+  for(uInt scale=0; scale<itsScaleXfrs.nelements();scale++) {
+    if(itsScaleXfrs[scale]) delete itsScaleXfrs[scale];
+    itsScaleXfrs[scale]=0;
+  }
   for(uInt scale=0; scale<itsDirtyConvScales.nelements();scale++) {
     if(itsDirtyConvScales[scale]) delete itsDirtyConvScales[scale];
     itsDirtyConvScales[scale]=0;
