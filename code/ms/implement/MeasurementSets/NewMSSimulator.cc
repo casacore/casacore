@@ -580,11 +580,23 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
 
 }
 
+void NewMSSimulator::initFeeds(const String& mode) {
+  LogIO os(LogOrigin("MSsimulator", "initFeeds()", WHERE));
+  if(mode=="list") {
+    os << "Mode list not supported without x,y,pol set" << LogIO::EXCEPTION;
+  }
+
+  Vector<Double> x;
+  Vector<Double> y;
+  Vector<String> pol;
+  initFeeds(mode, x, y, pol);
+}
 
 // NOTE:  initAnt and initSpWindows must be called before this one!
-// This method is currently brain dead, we will have to revive it
-// at a later date -- we can ONLY make perfect R L or X Y feeds
-void NewMSSimulator::initFeeds(const String& mode)
+void NewMSSimulator::initFeeds(const String& mode,
+			       const Vector<Double>& x,
+			       const Vector<Double>& y,
+			       const Vector<String>& pol)
 {
   LogIO os(LogOrigin("MSsimulator", "initFeeds()", WHERE));
   
@@ -596,79 +608,108 @@ void NewMSSimulator::initFeeds(const String& mode)
     os <<  LogIO::SEVERE << "NewMSSimulator::initFeeds: must call initAnt() first" << LogIO::POST;
   }
   
-  Int antId = -1;  // ie, apply this info to ALL antennas
-  // use same feed parameters for all antennas
-  Int nFeed=nAnt;
+  Int nFeed=x.nelements();
   
-  // mode == "perfect R L" OR "perfect X Y"
   String feedPol0="R", feedPol1="L";
-  if (mode.contains("X", 0)) {
-    feedPol0 = "X";
-    feedPol1 = "Y";
-  }    
-  
-  Vector<Int> feedAntId(nFeed);
-  Vector<Int> feedId(nFeed); 
-  Vector<Int> feedSpWId(nFeed);
-  Vector<Int> feedBeamId(nFeed);
-  
-  Vector<Int> feedNumRec(nFeed);
-  Cube<Double> beamOffset(2,2,nFeed);
-  
-  Matrix<String> feedPol(2,nFeed);
-  Matrix<Double> feedXYZ(3,nFeed);
-  
-  Matrix<Double> feedAngle(2,nFeed);
-  Cube<Complex> polResp(2,2,nFeed);
-  feedAntId(0)=antId;
-  
-  feedAntId(0)=0;
-  feedId(0) = 0;
-  feedSpWId(0) = -1;
-  feedBeamId(0) = 0;
-  feedNumRec(0) = 2;
-  for (Int j=0; j<feedNumRec(0); j++) {
-    beamOffset(0,j,0) = 0.0;
-    beamOffset(1,j,0) = 0.0;
+  Bool isList=False;
+  if(nFeed>0) {
+    isList=True;
+    if(x.nelements()!=y.nelements()) {
+      os << "Feed x and y must be the same length" << LogIO::EXCEPTION;
+    }
+    if(pol.nelements()!=x.nelements()) {
+      os << "Feed polarization list must be same length as the number of positions" << LogIO::EXCEPTION;
+    }
+    os <<  "Constructing FEED table from list" << LogIO::POST;
+  }
+  else {
+    nFeed=1;
+    // mode == "perfect R L" OR "perfect X Y"
+    if (mode.contains("X", 0)) {
+      feedPol0 = "X";
+      feedPol1 = "Y";
+    }
   }
   
-  feedPol(0, 0) = feedPol0;
-  feedPol(1, 0) = feedPol1;
+  Int nRow=nFeed*nAnt;
+  Vector<Int> feedAntId(nRow);
+  Vector<Int> feedId(nRow); 
+  Vector<Int> feedSpWId(nRow);
+  Vector<Int> feedBeamId(nRow);
   
-  feedXYZ(0,0) = 0.0;
-  feedXYZ(1,0) = 0.0;
-  feedXYZ(2,0) = 0.0;
+  Vector<Int> feedNumRec(nRow);
+  Cube<Double> beamOffset(2,2,nRow);
   
-  feedAngle(0,0) = 0.0;
-  feedAngle(1,0) = 0.0;
+  Matrix<String> feedPol(2,nRow);
+  Matrix<Double> feedXYZ(3,nRow);
+  Matrix<Double> feedAngle(2,nRow);
+  Cube<Complex> polResp(2,2,nRow);
   
-  //# polResp(0,0)=Complex(axr,axi);
-  //# polResp(1,0)=Complex(ayr,ayi);
-  //# polResp(0,1)=Complex(bxr,bxi);
-  //# polResp(1,1)=Complex(byr,byi);
-  polResp=Complex(0.0,0.0); //# skip this for now
-  polResp(0,0,0)=polResp(1,1,0)=Complex(1.0,0.0);
-
-  // copy entries for first antenna to all others (except for spWindow)
-  for (Int i=1; i<nAnt; i++) {
-    feedAntId(i)=i;
-    feedId(i)=feedId(0);
-    feedSpWId(i)= -1;              //  HEY!  Watch out for this when we get real
-    feedBeamId(i)=feedBeamId(0);
-    feedNumRec(i)=feedNumRec(0);
-    beamOffset.xyPlane(i)=beamOffset.xyPlane(0);
-    feedPol.column(i)=feedPol.column(0);
-    feedXYZ.column(i)=feedXYZ.column(0);
-    feedAngle.column(i)=feedAngle.column(0);
-    polResp.xyPlane(i)=polResp.xyPlane(0);
+  Int iRow=0;
+  if(isList) {
+    polResp=Complex(0.0,0.0);
+    for (Int i=0; i<nAnt; i++) {
+      for (Int j=0; j<nFeed; j++) {
+	feedAntId(iRow)=i;
+	feedId(iRow) = j;
+	feedSpWId(iRow) = -1;
+	feedBeamId(iRow) = 0;
+	feedNumRec(iRow) = 2;
+	beamOffset(0,0,iRow) = x(j);
+	beamOffset(1,0,iRow) = y(j);
+	beamOffset(0,1,iRow) = x(j);
+	beamOffset(1,1,iRow) = y(j);
+	feedXYZ(0,iRow) = 0.0;
+	feedXYZ(1,iRow) = 0.0;
+	feedXYZ(2,iRow) = 0.0;
+	feedAngle(0,iRow) = 0.0;
+	feedAngle(1,iRow) = 0.0;
+	if (pol(j).contains("X", 0)) {
+	  feedPol(0, iRow) = "X";
+	  feedPol(1, iRow) = "Y";
+	}
+	else {
+	  feedPol(0, iRow) = "L";
+	  feedPol(1, iRow) = "R";
+	}
+	polResp(0,0,iRow)=polResp(1,1,iRow)=Complex(1.0,0.0);
+	os << "Row " << iRow+1 << " : Feed " << j+1 << " on antenna "
+	   << i+1 << " "
+	   << x(j) << " " << y(j) << " " << pol(j) << LogIO::POST;
+	iRow++;
+      }
+    }
   }
-
+  else {
+    polResp=Complex(0.0,0.0);
+    for (Int i=0; i<nAnt; i++) {
+      feedAntId(iRow)=i;
+      feedId(iRow) = 0;
+      feedSpWId(iRow) = -1;
+      feedBeamId(iRow) = 0;
+      feedNumRec(iRow) = 2;
+      beamOffset(0,0,iRow) = 0.0;
+      beamOffset(1,0,iRow) = 0.0;
+      beamOffset(0,1,iRow) = 0.0;
+      beamOffset(1,1,iRow) = 0.0;
+      feedXYZ(0,iRow) = 0.0;
+      feedXYZ(1,iRow) = 0.0;
+      feedXYZ(2,iRow) = 0.0;
+      feedAngle(0,iRow) = 0.0;
+      feedAngle(1,iRow) = 0.0;
+      feedPol(0, iRow) = feedPol0;
+      feedPol(1, iRow) = feedPol1;
+      polResp(0,0,iRow)=polResp(1,1,iRow)=Complex(1.0,0.0);
+      iRow++;
+    }
+  }
+  
   // fill Feed table - don't check to see if any of the positions match
   MSFeedColumns& feedc=msc.feed();
   Int numFeeds=feedc.nrow();
-  Slicer feedSlice(IPosition(1,numFeeds),IPosition(1, nFeed+numFeeds-1),
+  Slicer feedSlice(IPosition(1,numFeeds),IPosition(1, nRow+numFeeds-1),
 		   IPosition(1,1), Slicer::endIsLast);
-  ms_p->feed().addRow(nFeed);
+  ms_p->feed().addRow(nRow);
   feedc.antennaId().putColumnRange(feedSlice,feedAntId);
   feedc.feedId().putColumnRange(feedSlice,feedId);
   feedc.spectralWindowId().putColumnRange(feedSlice,feedSpWId);
@@ -676,7 +717,7 @@ void NewMSSimulator::initFeeds(const String& mode)
   feedc.numReceptors().putColumnRange(feedSlice, feedNumRec);
   feedc.position().putColumnRange(feedSlice, feedXYZ);
   const double forever=1.e30;
-  for (Int i=numFeeds; i<(nFeed+numFeeds); i++) {
+  for (Int i=numFeeds; i<(nRow+numFeeds); i++) {
     feedc.beamOffset().put(i,beamOffset.xyPlane(i-numFeeds));
     feedc.polarizationType().put(i,feedPol.column(i-numFeeds));
     feedc.polResponse().put(i,polResp.xyPlane(i-numFeeds));
@@ -738,6 +779,13 @@ void NewMSSimulator::observe(const String& sourceName,
   
   MSDerivedValues msd;
   msd.setAntennas(msc.antenna());
+  
+  // Do we have feed information?
+  MSFeedColumns& feedc=msc.feed();
+  if(feedc.nrow()==0) {
+    os << "Feed information not yet defined" << LogIO::EXCEPTION;
+  }
+  Int nFeed=feedc.nrow()/nAnt;
   
   // Spectral window
   MSSpWindowColumns& spwc=msc.spectralWindow();
@@ -894,7 +942,7 @@ void NewMSSimulator::observe(const String& sourceName,
   else {
     nBaselines =nAnt*(nAnt-1)/2;
   }
-  Int nNewRows=nBaselines;
+  Int nNewRows=nBaselines*nFeed;
   Int nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
   nNewRows*=nIntegrations;
 
@@ -992,8 +1040,6 @@ void NewMSSimulator::observe(const String& sourceName,
     msc.arrayId().put(row+1,maxArrayId+1);
     msc.processorId().put(row+1,0);
     msc.exposure().put(row+1,Tint);
-    msc.feed1().put(row+1,0);
-    msc.feed2().put(row+1,0);
     msc.interval().put(row+1,Tint);
     msc.observationId().put(row+1,maxObsId+1);
     msc.stateId().put(row+1,-1);
@@ -1005,56 +1051,60 @@ void NewMSSimulator::observe(const String& sourceName,
       antUVW.column(ant1)=product(trans,antXYZ.column(ant1));
     }
 
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
-      Int startAnt2=ant1+1;
-      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
-	row++; 
-
-	msc.antenna1().put(row,ant1);
-	msc.antenna2().put(row,ant2);
-	
-	Double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
-	uvwvec(0) = x2-x1;
-	uvwvec(1) = y2-y1;
-	uvwvec(2) = z2-z1;
-	msc.uvw().put(row,uvwvec);
-	
-	data.set(Complex(0.,0.));
-	msc.data().put(row,data);		  
-	msc.data().put(row,data);		  
-	msc.flag().put(row,flag);
-	msc.flagRow().put(row,False);
-	
-	msc.correctedData().setShape(row, data.shape());
-	msc.correctedData().put(row,data);
-	msc.modelData().setShape(row,data.shape());
-	msc.modelData().put(row, data);
-	msc.imagingWeight().setShape(row, data.shape().getLast(1));
-	msc.imagingWeight().put(row, imagingWeight);
-
-	if (ant1 != ant2) {
-	  blockage(fractionBlocked1, fractionBlocked2,
-		   uvwvec, antDiam(ant1), antDiam(ant2) );
-	  if (fractionBlocked1 > fractionBlockageLimit_p) {
-	    isShadowed(ant1) = True;
+    for (Int feed=0; feed<nFeed; feed++) {
+      for (Int ant1=0; ant1<nAnt; ant1++) {
+	Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
+	Int startAnt2=ant1+1;
+	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	  row++; 
+	  
+	  msc.antenna1().put(row,ant1);
+	  msc.antenna2().put(row,ant2);
+	  msc.feed1().put(row,feed);
+	  msc.feed2().put(row,feed);
+	  
+	  Double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
+	  uvwvec(0) = x2-x1;
+	  uvwvec(1) = y2-y1;
+	  uvwvec(2) = z2-z1;
+	  msc.uvw().put(row,uvwvec);
+	  
+	  data.set(Complex(0.,0.));
+	  msc.data().put(row,data);		  
+	  msc.data().put(row,data);		  
+	  msc.flag().put(row,flag);
+	  msc.flagRow().put(row,False);
+	  
+	  msc.correctedData().setShape(row, data.shape());
+	  msc.correctedData().put(row,data);
+	  msc.modelData().setShape(row,data.shape());
+	  msc.modelData().put(row, data);
+	  msc.imagingWeight().setShape(row, data.shape().getLast(1));
+	  msc.imagingWeight().put(row, imagingWeight);
+	  
+	  if (ant1 != ant2) {
+	    blockage(fractionBlocked1, fractionBlocked2,
+		     uvwvec, antDiam(ant1), antDiam(ant2) );
+	    if (fractionBlocked1 > fractionBlockageLimit_p) {
+	      isShadowed(ant1) = True;
+	    }
+	    if (fractionBlocked2 > fractionBlockageLimit_p) {
+	      isShadowed(ant2) = True;
+	    }
 	  }
-	  if (fractionBlocked2 > fractionBlockageLimit_p) {
-	    isShadowed(ant2) = True;
-	  }
+	  
+	  // Deal with differing diameter case
+	  Float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
+	  Float wt = 1/square(sigma1);
+	  if  (ant1 == ant2 ) {
+	    wt *= autoCorrelationWt_p;
+	  }		  
+	  Vector<Float> tmp(nCorr); tmp=wt;
+	  msc.weight().put(row, tmp);
+	  tmp=sigma1;
+	  msc.sigma().put(row,tmp);
 	}
-	
-	// Deal with differing diameter case
-	Float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
-	Float wt = 1/square(sigma1);
-	if  (ant1 == ant2 ) {
-	  wt *= autoCorrelationWt_p;
-	}		  
-	Vector<Float> tmp(nCorr); tmp=wt;
-	msc.weight().put(row, tmp);
-	tmp=sigma1;
-	msc.sigma().put(row,tmp);
       }
     }
     
@@ -1065,15 +1115,17 @@ void NewMSSimulator::observe(const String& sourceName,
     trueFlag=True;
 
     Int reRow = startingRow;
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      Int startAnt2=ant1+1;
-      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
-	reRow++; 
-	if ( isShadowed(ant1) || isShadowed(ant2) ) {
-	  msc.flag().put(reRow,trueFlag);
-	  msc.flagRow().put(reRow, True);
-	  nShadowed++;
+    for (Int feed=0; feed<nFeed; feed++) {
+      for (Int ant1=0; ant1<nAnt; ant1++) {
+	Int startAnt2=ant1+1;
+	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	  reRow++; 
+	  if ( isShadowed(ant1) || isShadowed(ant2) ) {
+	    msc.flag().put(reRow,trueFlag);
+	    msc.flagRow().put(reRow, True);
+	    nShadowed++;
+	  }
 	}
       }
     }
@@ -1085,38 +1137,42 @@ void NewMSSimulator::observe(const String& sourceName,
     
     // Find antennas pointing below the elevation limit
     Vector<Double> azel(2);
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      
-      // We want to find elevation for each antenna separately (for VLBI)
-      msd.setAntenna(ant1);
-      azel=msd.azel().getAngle("rad").getValue("rad");      
-
-      if (azel(1) < elevationLimit_p.getValue("rad")) {
-	isTooLow(ant1) = True;
-      }
-      if (firstTime) {
-	firstTime = False;
-	Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
-	os << "Starting conditions for antenna 1: " << LogIO::POST;
-	os << "     time = " << formatTime(Time) << LogIO::POST;
-	os << "     scan = " << scan+1 << LogIO::POST;
-	os << "     az   = " << azel(0) *  180.0/C::pi << " deg" << LogIO::POST;
-	os << "     el   = " << azel(1) *  180.0/C::pi<< " deg" << LogIO::POST;
-	os << "     ha   = " << ha1 << " hours" << LogIO::POST;
+    for (Int feed=0; feed<nFeed; feed++) {
+      for (Int ant1=0; ant1<nAnt; ant1++) {
+	
+	// We want to find elevation for each antenna separately (for VLBI)
+	msd.setAntenna(ant1);
+	azel=msd.azel().getAngle("rad").getValue("rad");      
+	
+	if (azel(1) < elevationLimit_p.getValue("rad")) {
+	  isTooLow(ant1) = True;
+	}
+	if (firstTime) {
+	  firstTime = False;
+	  Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
+	  os << "Starting conditions for antenna 1: " << LogIO::POST;
+	  os << "     time = " << formatTime(Time) << LogIO::POST;
+	  os << "     scan = " << scan+1 << LogIO::POST;
+	  os << "     az   = " << azel(0) *  180.0/C::pi << " deg" << LogIO::POST;
+	  os << "     el   = " << azel(1) *  180.0/C::pi<< " deg" << LogIO::POST;
+	  os << "     ha   = " << ha1 << " hours" << LogIO::POST;
+	}
       }
     }
 
     // Now flag all antennas pointing below the elevation limit
     reRow = startingRow;
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      Int startAnt2=ant1+1;
-      if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-      for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
-	reRow++; 
-	if ( isTooLow(ant1) || isTooLow(ant2) ) {
-	  msc.flag().put(reRow,trueFlag);
-	  msc.flagRow().put(reRow, True);
-	  nSubElevation++;
+    for (Int feed=0; feed<nFeed; feed++) {
+      for (Int ant1=0; ant1<nAnt; ant1++) {
+	Int startAnt2=ant1+1;
+	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
+	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	  reRow++; 
+	  if ( isTooLow(ant1) || isTooLow(ant2) ) {
+	    msc.flag().put(reRow,trueFlag);
+	    msc.flagRow().put(reRow, True);
+	    nSubElevation++;
+	  }
 	}
       }
     }

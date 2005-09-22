@@ -129,6 +129,12 @@ public:
   // set the Feeds;  brain dead version
   void initFeeds(const String& mode);
 
+  // set the Feeds;  Smart version
+  void initFeeds(const String& mode,
+		 const Vector<Double>& x,
+		 const Vector<Double>& y,
+		 const Vector<String>& pol);
+
   // set the spectral windows information
   void initSpWindows(const String& spWindowName,
 		     const Int& nChan,
