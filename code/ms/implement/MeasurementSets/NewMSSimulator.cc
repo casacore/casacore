@@ -906,7 +906,7 @@ void NewMSSimulator::observe(const String& sourceName,
   
   Int row=ms_p->nrow()-1;
   Int maxObsId=-1;
-  Int maxArrayId=-1;
+  Int maxArrayId=0;
   {
     Vector<Int> tmpids(row+1);
     tmpids=msc.observationId().getColumn();
