@@ -352,9 +352,6 @@ namespace casa {
   // add the optional Source sub table to allow for 
   // specification of the rest frequency
   TableDesc sourceTD=MSSource::requiredTableDesc();
-  MSSource::addColumnToDesc(sourceTD, MSSource::REST_FREQUENCY);
-  MSSource::addColumnToDesc(sourceTD, MSSource::SYSVEL);
-  MSSource::addColumnToDesc(sourceTD, MSSource::TRANSITION);
   SetupNewTable sourceSetup(ms->sourceTableName(),sourceTD,option);
   ms->rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
                                 Table(sourceSetup,0));
@@ -762,11 +759,37 @@ Bool SubMS::copySource(){
     else
       option=Table::New;
     
-    Table newSource(msOut_p.sourceTableName(), option);
-    TableCopy::copyRows(newSource, oldSource);
-  }
 
-  return True;
+    Table newSource(msOut_p.sourceTableName(), option);
+
+    if(newSource.actualTableDesc().ncolumn() != 
+       oldSource.actualTableDesc().ncolumn()){      
+      Vector<String> oldColumnNames=oldSource.actualTableDesc().columnNames();
+      Vector<String> optionalCols(5);
+      // for some reason POSITION, although being an optional column, is 
+      // built in as a default column with SOURCE table...
+      //      optionalCols[5]="POSITION";
+      optionalCols[0]="TRANSITION";
+      optionalCols[1]="REST_FREQUENCY";
+      optionalCols[2]="SYSVEL";
+      optionalCols[3]="SOURCE_MODEL";
+      optionalCols[4]="PULSAR_ID";
+      for (uInt k=0; k< oldSource.actualTableDesc().ncolumn(); ++k){
+	for (uInt j=0; j < optionalCols.nelements(); ++j){
+	  if(oldColumnNames[k].contains(optionalCols[j])){
+	    TableDesc tabDesc;
+	    MSSource::addColumnToDesc(tabDesc, MSSource::columnType(optionalCols[j]));
+	    newSource.addColumn(tabDesc[0]);
+	  }
+	}
+      }
+    }
+    TableCopy::copyRows(newSource, oldSource);
+    return True;
+  }
+  
+ 
+  return False;
 
 }
 
