@@ -314,6 +314,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
  	delta = freqs(1) - freqs(0);
       } else {
  	delta = totalbw(0);
+	if (doWsrt && (delta > 0)) delta = - delta;
       }
       // If first time, set the various values.
       if (numcorr0 == 0) {
@@ -378,7 +379,7 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   } else {
     refFreq = f0 + (f0RefPix-1) * bw0;
   }
-  if(f0RefPix==0) {
+  if(f0RefPix==0 && !doWsrt) {
     f0RefPix=1;
     refFreq=f0 + bw0/2.0 -delta/2.0;
   }
@@ -518,7 +519,11 @@ FitsOutput *MSFitsOutput::writeMain(Int& refPixelFreq, Double& refFreq,
   ek.define("crval4", refFreq);
   ek.define("cdelt4", bw0);
   if (doWsrt) {
-    ek.define("crpix4", Double(1+refPixelFreq));
+    if (refPixelFreq != 1){
+      ek.define("crpix4", Double(1+refPixelFreq));
+    } else {
+      ek.define("crpix4", Double(refPixelFreq));
+    }
   } else {
     ek.define("crpix4", Double(refPixelFreq));
   }
