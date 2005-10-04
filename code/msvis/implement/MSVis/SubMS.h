@@ -91,6 +91,10 @@ class SubMS
   // Select source or field
   void selectSource(Vector<Int> fieldid);
   
+
+  // Select Antennas to split out  
+  void selectAntenna(Vector<Int>& antennaids, Vector<String>& antennaSel);
+
   //void selectSource(Vector<String> sourceid);
 
   //Method to set if a phase Center rotation is needed
@@ -132,6 +136,10 @@ class SubMS
   Vector<Int> spwRelabel_p, fieldRelabel_p;
   Vector<Int> oldDDSpwMatch_p;
   Bool doChanAver_p;
+  Bool antennaSel_p;
+  Vector<String> antennaSelStr_p;
+  Vector<Int> antennaId_p;
+
 
 };
 

@@ -71,6 +71,7 @@ namespace casa {
     ms_p=MeasurementSet(theMS, Table::Update);
     mssel_p=ms_p;
     doChanAver_p=False;
+    antennaSel_p=False;
   }
   
   SubMS::SubMS(MeasurementSet& ms){
@@ -79,6 +80,7 @@ namespace casa {
     ms_p=ms;
     mssel_p=ms_p;
     doChanAver_p=False;
+    antennaSel_p=False;
   }
 
   SubMS::~SubMS(){
@@ -156,6 +158,22 @@ namespace casa {
 
   }
   
+ 
+  void SubMS::selectAntenna(Vector<Int>& antennaids, Vector<String>& antennaSel){
+    if((antennaids.nelements()==1) && (antennaids[0]=-1) && antennaSel[0]==""){
+      antennaSel_p=False;
+      return;
+    }
+
+    antennaSel_p=True;
+    if((antennaids.nelements()==1) && (antennaids[0]=-1))
+      antennaId_p.resize();
+    else
+      antennaId_p=antennaids;
+    antennaSelStr_p=antennaSel;
+
+  }
+ 
   
   Bool SubMS::makeSubMS(String& msname, String& colname){
     
@@ -237,6 +255,18 @@ namespace casa {
       thisSelection.setFieldExpr(MSSelection::indexExprStr(fieldid_p));
     if(spw_p.nelements() > 0)
       thisSelection.setSpwExpr(MSSelection::indexExprStr(spw_p));
+    if(antennaSel_p){
+      if(antennaId_p.nelements() >0){
+	thisSelection.setAntennaExpr( "'"+MSSelection::indexExprStr( antennaId_p )+"'" );
+      }
+      if(antennaSelStr_p[0] != ""){
+        thisSelection.setAntennaExpr(MSSelection::nameExprStr( antennaSelStr_p));
+
+
+      }
+
+
+    }
     
     TableExprNode exprNode=thisSelection.toTableExprNode(&sorted);
     
