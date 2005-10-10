@@ -112,7 +112,10 @@ try {
    Bool xAbs = True;
    String xUnit ("pix");
    String doppler("RADIO");
-   fitter.fit (True, rec, xAbs, xUnit, doppler, pOutFit, pOutResid);
+   // For the time being use fillRecord=False, otherwise an exception is
+   // thrown by ImageProfileFit::getElements that it cannot handle polynomials.
+   ////   fitter.fit (True, rec, xAbs, xUnit, doppler, pOutFit, pOutResid, 2);
+   fitter.fit (False, rec, xAbs, xUnit, doppler, pOutFit, pOutResid, 2);
 //
    delete pOutFit;
    delete pOutResid;
