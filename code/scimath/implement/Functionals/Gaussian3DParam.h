@@ -29,14 +29,15 @@
 #ifndef SCIMATH_GAUSSIAN3DPARAM_H
 #define SCIMATH_GAUSSIAN3DPARAM_H
 
-template<class Type> class Vector;
-
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <scimath/Functionals/Function.h>
 #include <scimath/Mathematics/AutoDiff.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+  //# Forward Declarations.
+  template<class T> class Vector;
+
 
 // <summary> Parameter handling for 3 dimensional Gaussian class
 // </summary>

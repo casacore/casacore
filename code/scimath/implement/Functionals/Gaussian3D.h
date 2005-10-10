@@ -28,8 +28,6 @@
 #ifndef SCIMATH_GAUSSIAN3D_H
 #define SCIMATH_GAUSSIAN3D_H
 
-template<class T> class Vector;
-
 #include <casa/aips.h>
 #include <scimath/Functionals/Gaussian3DParam.h>
 #include <scimath/Functionals/Function.h>
@@ -37,6 +35,9 @@ template<class T> class Vector;
 #include <scimath/Mathematics/AutoDiffMath.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+  //# Forward Declarations.
+  template<class T> class Vector;
+
 
 // <summary> A three dimensional Gaussian class.</summary>
 
