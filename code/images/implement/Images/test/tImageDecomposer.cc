@@ -45,12 +45,12 @@
 #include <casa/namespace.h>
 typedef Double imagetype;
 
-TempImage<imagetype>& createtestimage(const casa::Matrix<imagetype>& components,
-                                   const casa::Vector<imagetype>& originworldcoord,
-                                   imagetype inc, const casa::IPosition& imageshape);
-void printGaussianComponents(const casa::Matrix<imagetype>& components);
-Bool compareParameters(const casa::Matrix<imagetype>& given, 
-                       const casa::Matrix<imagetype>& calculated);
+TempImage<imagetype> createtestimage(const Matrix<imagetype>& components,
+				     const Vector<imagetype>& originworldcoord,
+				     imagetype inc, const IPosition& imageshape);
+void printGaussianComponents(const Matrix<imagetype>& components);
+Bool compareParameters(const Matrix<imagetype>& given, 
+                       const Matrix<imagetype>& calculated);
 
 
 //////////////////////////////////////////
@@ -62,9 +62,9 @@ int main(int argc, char** argv)
   try
   {
     TempImage<imagetype> image;
-    casa::Matrix<imagetype> givenpars;
+    Matrix<imagetype> givenpars;
     IPosition imageshape;
-    casa::Vector<imagetype> origincoord;
+    Vector<imagetype> origincoord;
     Timer timer; 
 
 
@@ -236,30 +236,30 @@ int main(int argc, char** argv)
 
 ////////////////////////////
 
-TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
-                                   const casa::Vector<Double>& originworldcoord,
-                                   Double inc, const casa::IPosition& imageshape)
+TempImage<Double> createtestimage(const Matrix<Double>& components,
+				  const Vector<Double>& originworldcoord,
+				  Double inc,
+				  const IPosition& imageshape)
 {
   //forms test image out of a composite gaussian function
   
-  TempImage<Double> *image;
+  TempImage<Double> image;
 
   uInt dim = imageshape.nelements();
 
   if (dim == 2)
   {
-    image = new TempImage<Double>(TiledShape(imageshape),
-                                  CoordinateUtil::defaultCoords2D(), 1);
+    image = TempImage<Double>(TiledShape(imageshape),
+			      CoordinateUtil::defaultCoords2D(), 1);
   }
   else if (dim == 3)
   {
-    image = new TempImage<Double>(TiledShape(imageshape),
-                                  CoordinateUtil::defaultCoords3D(), 1);
+    image = TempImage<Double>(TiledShape(imageshape),
+			      CoordinateUtil::defaultCoords3D(), 1);
   }
   else 
   {
-    image = new TempImage<Double>; 
-    return *image;  //return empty image
+    return TempImage<Double>();      //return empty image
   }
 
 
@@ -274,13 +274,13 @@ TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
       if (dim==3) datagauss3d[g][p] = components(g,p);
     }
   
-  casa::Vector<Double> cdelt(1);     cdelt = inc;
-  casa::Matrix<Double> pc(1,1);      pc = 1.0;
-  casa::Vector<Double> crpix(1);     crpix = 0.0;
-  casa::Vector<String> emptystrv(1); emptystrv = "";
-  casa::Vector<Double> xminv(1);     xminv = originworldcoord(0);
-  casa::Vector<Double> yminv(1);     yminv = originworldcoord(1);
-  casa::Vector<Double> zminv(1);     if (dim == 3) zminv = originworldcoord(2);
+  Vector<Double> cdelt(1);     cdelt = inc;
+  Matrix<Double> pc(1,1);      pc = 1.0;
+  Vector<Double> crpix(1);     crpix = 0.0;
+  Vector<String> emptystrv(1); emptystrv = "";
+  Vector<Double> xminv(1);     xminv = originworldcoord(0);
+  Vector<Double> yminv(1);     yminv = originworldcoord(1);
+  Vector<Double> zminv(1);     if (dim == 3) zminv = originworldcoord(2);
 
   IPosition pos(dim);
   Double x = originworldcoord(0);
@@ -294,7 +294,7 @@ TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
         Double f = 0;
         for (uInt g = 0; g < components.nrow(); g++)
           f += datagauss2d[g](x,y);
-        image->putAt(f, IPosition(2,xi,yi));
+        image.putAt(f, IPosition(2,xi,yi));
       }
       else
       {
@@ -304,7 +304,7 @@ TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
           Double f = 0;
           for (uInt g = 0; g < components.nrow(); g++)
             f += datagauss3d[g](x,y,z);
-          image->putAt(f, IPosition(3,xi,yi,zi));
+          image.putAt(f, IPosition(3,xi,yi,zi));
           z+= inc;
         }
       }      
@@ -320,9 +320,9 @@ TempImage<Double>& createtestimage(const casa::Matrix<Double>& components,
   csystem.addCoordinate(xcoord);
   csystem.addCoordinate(ycoord);
   if (dim == 3) csystem.addCoordinate(zcoord);
-  image->setCoordinateInfo(csystem);  
+  image.setCoordinateInfo(csystem);  
 
-  return *image;
+  return image;
 }
 
 
@@ -365,7 +365,7 @@ void printGaussianComponents(const Matrix<imagetype>& components)
 Bool compareParameters(const Matrix<imagetype>& given, 
                        const Matrix<imagetype>& calculated)
 {
-  imagetype error;
+  imagetype error=0;
   uInt dim = given.ncolumn() / 3;
 
   if (given.nrow() != calculated.nrow())
