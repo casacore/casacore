@@ -131,6 +131,20 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
       << " to " << itsMS.tableName() << endl;
 
   Bool doCorrectedData=False, doImagingWeight=False, doModelData=False;
+  Bool doFloatData=False;
+  if (itsMS.tableDesc().isColumn("FLOAT_DATA") && 
+      otherMS.tableDesc().isColumn("FLOAT_DATA"))
+    doFloatData=True;
+  else if (itsMS.tableDesc().isColumn("FLOAT_DATA") && 
+	   !otherMS.tableDesc().isColumn("FLOAT_DATA")){
+    log << itsMS.tableName() 
+	<< " has FLOAT_DATA column but not " << otherMS.tableName()
+  	<< LogIO::EXCEPTION;
+    log << "Cannot concatenate these MSs yet...you may split the corrected column of the SD as a work around." 
+       	<< LogIO::EXCEPTION;
+
+  }
+
   if (itsMS.tableDesc().isColumn("MODEL_DATA") && 
       otherMS.tableDesc().isColumn("MODEL_DATA"))
     doModelData=True;
@@ -255,8 +269,20 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
   ScalarColumn<Int>& thisStateId = stateId();
   const ROArrayColumn<Double>& otherUvw = otherMainCols.uvw();
   ArrayColumn<Double>& thisUvw = uvw();
-  const ROArrayColumn<Complex>& otherData = otherMainCols.data();
-  ArrayColumn<Complex>& thisData = data();
+  //  const ROArrayColumn<Complex>& otherData = otherMainCols.data();
+  ROArrayColumn<Complex> otherData;
+  ArrayColumn<Complex> thisData;
+  ROArrayColumn<Float> otherFloatData;
+  ArrayColumn<Float> thisFloatData;
+  if(doFloatData){
+    thisFloatData.reference(floatData());
+    otherFloatData.reference(otherMainCols.floatData());
+  }
+  else{
+    thisData.reference(data());
+    otherData.reference(otherMainCols.data());
+  }
+  // ArrayColumn<Complex>& thisData = data();
   const ROArrayColumn<Float>& otherSigma = otherMainCols.sigma();
   ArrayColumn<Float>& thisSigma = sigma();
   const ROArrayColumn<Float>& otherWeight = otherMainCols.weight();
@@ -302,14 +328,29 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
     thisStateId.put(curRow, otherStateId, r);
     thisUvw.put(curRow, otherUvw, r);
     if(itsChanReversed[otherDDId(r)]){
-      Vector<Int> datShape=otherData.shape(r).asVector();
-      Matrix<Complex> reversedData(datShape[0], datShape[1]);
+      Vector<Int> datShape;
+      Matrix<Complex> reversedData;
+      Matrix<Float> reversedFloatData;
+      if(doFloatData){
+	datShape=otherFloatData.shape(r).asVector();
+	reversedFloatData.resize(datShape[0], datShape[1]);
+      }
+      else{
+	datShape=otherData.shape(r).asVector();
+	reversedData.resize(datShape[0], datShape[1]);
+      }
       Matrix<Complex> reversedCorrData(datShape[0], datShape[1]);
       Matrix<Complex> reversedModData(datShape[0], datShape[1]);
       for (Int k1=0; k1 < datShape[0]; ++k1){
 	for(Int k2=0; k2 < datShape[1]; ++k2){
-	  reversedData(k1,k2)=(Matrix<Complex>(otherData(r)))(k1,
+	  if(doFloatData){
+	    reversedFloatData(k1,k2)=(Matrix<Float>(otherFloatData(r)))(k1,
 							    datShape[1]-1-k2);
+	  }
+	  else{
+	    reversedData(k1,k2)=(Matrix<Complex>(otherData(r)))(k1,
+								datShape[1]-1-k2);
+	  }
 	  if(doModelData){
 	    reversedModData(k1,k2)=(Matrix<Complex>(otherModelData(r)))(k1,
 							     datShape[1]-1-k2);
@@ -321,7 +362,12 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
  
 	}
       } 
-      thisData.put(curRow, reversedData);
+      if(doFloatData){
+	thisFloatData.put(curRow, reversedFloatData);
+      }
+      else{
+	thisData.put(curRow, reversedData);
+      }
       if(doCorrectedData){
 	thisCorrectedData.put(curRow, reversedCorrData);
       }
@@ -330,7 +376,12 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
       }
     }
     else{
-      thisData.put(curRow, otherData, r);
+      if(doFloatData){
+	thisFloatData.put(curRow, otherFloatData, r);
+      }
+      else{
+	thisData.put(curRow, otherData, r);
+      }
       if(doModelData)
 	thisModelData.put(curRow, otherModelData, r);
       if(doCorrectedData)
