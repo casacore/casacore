@@ -34,8 +34,6 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-class DirectionCoordinate;
-class wcsprm;
 
 // <summary>
 //  Geometric parameters needed for a sky projection to a plane
