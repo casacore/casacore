@@ -253,6 +253,8 @@
 #include <tables/TablePlot/TablePlot.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSelection.h>
+//
+#include <measures/Measures/MPosition.h>
 // tasking is supposed to be used only in appsglish directory
 //#include <tasking/Glish/GlishRecord.h>
 //
@@ -377,6 +379,7 @@ public:
 
 //#! Constructors
 // Constructor
+   MsPlot();
    MsPlot( const MeasurementSet& ms );
 
 //#! Destructor
@@ -406,10 +409,26 @@ Bool setData( const Vector<String>& antennaNames, const Vector<Int>& antennaInde
             );
 // set the plotting axes ( X and Y )
 Bool setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr );
+// set the plot labels and plot attributes
 Bool setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String> &labels );
+// Convert the antenna coordinates into local frame and put the antenna positions into a MemoryTable.
+Bool antennaPositions( Table& ants );
 // Plot the data
 Int plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel );
-
+// help function to transform the coordinates from the global geocentric frame( e.g ITRF ) to
+// the local topocentric frame ( origin: observatory=center of antenna array; x-axis: local east;
+// y-axis: local north; z-axis: local radial direction. ). Here we are not worrying about the effect
+// of the earth's ellipticity even though did use latitude instead of the angle between the earth
+// pole and the local radial direction. The error stemed from this is about 1/300.
+// Parameter:  
+// obervatroy: observatory position in the geocentric frame. It is the origin of the local frame;
+// posGeo: MPositions in geocentric frame
+// xTopo, yTopo, zTopo: x,y z components of posGet after converting into local topocentric frame.
+void global2local( const MPosition& observatory,
+                             const Vector<MPosition>& posGeo,
+			                     Vector<Double>& xTopo,
+			                     Vector<Double>& yTopo,
+			                     Vector<Double>& zTopo ); 
 
 protected:
 

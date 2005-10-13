@@ -27,9 +27,26 @@
 
 //# Includes
 #include <ms/MSPlot/MsPlot.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <measures/Measures/MeasTable.h>
+//
+#include <tables/Tables/ScalarColumn.h>
+//#include <tables/Tables/ArrayColumn.h>
+#include <tables/Tables/SetupNewTab.h>
+#include <tables/Tables/TableDesc.h>
+#include <tables/Tables/ScaColDesc.h>
+
+// MeasConvert.h must be directly included here!?( if including it in the MsPlot.h
+// file instead of here, it would not work).
+#include <measures/Measures/MeasConvert.h>
 //#include <tables/Tables/ExprNode.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
-//
+// default constructor. In case for some reason, one need to pass a Table object, not
+// a MeasurementSet to TABS_P, he can use this constructor.
+template <class T> MsPlot<T>::MsPlot()
+   :TablePlot<T>(), m_dataIsSet( False ){
+	    m_dbg = True;
+   }
 template <class T> MsPlot<T>::MsPlot( const MeasurementSet &ms )
    :TablePlot<T>(), m_dataIsSet( False ), m_ms( ms ){
 	    m_dbg = True;
@@ -213,6 +230,105 @@ Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String
 		setPlotParameters( TPLP, plotOption ,labels);
 		return True;
    }
+// Convert the antenna coordinates into local frame and put the antenna positions into a MemoryTable.
+template<class T>
+Bool MsPlot<T>::antennaPositions( Table& ants ){
+   ROMSColumns msc( m_ms );
+	const ROMSAntennaColumns & antCols  = msc.antenna();
+	const ROScalarMeasColumn<MPosition> & antPositions = antCols.positionMeas();
+	uInt nAnt= antCols.position().nrow();
+	Vector<MPosition> antPoses( nAnt );
+	Vector<Double> xTopo( nAnt ), yTopo( nAnt ), zTopo( nAnt );
+
+	for( uInt i=0; i< nAnt; i++) antPoses( i ) = antPositions( i );
+	// find the array center
+	String telescope = msc.observation().telescopeName()(0);
+	MPosition obs;
+	if( MeasTable::Observatory( obs, telescope )){
+	   if( obs.type()!= MPosition::ITRF ){
+		    MPosition::Convert toItrf( obs, MPosition::ITRF );
+			 obs = toItrf( obs );
+		}
+		// convert the coordinats from the geocentric frame to the topocentric frame
+		global2local( obs, antPoses, xTopo, yTopo, zTopo );
+		// prepare to create a MemoryTable
+		TableDesc td("AntXY","1", TableDesc::New );
+		td.comment()="A MemoryTable for antenna local XY plane";
+		td.rwKeywordSet().define("XYPlane", "tangential" );
+		td.addColumn(ScalarColumnDesc<float>("XEAST", "Towards east" ));
+		td.addColumn(ScalarColumnDesc<float>("YNORTH", "Towards north" ));
+		SetupNewTable antMaker( "ANTXY", td, Table::New );
+		Table antXY( antMaker, Table::Memory, nAnt, False );
+		ScalarColumn<float> xCol( antXY, "XEAST" );
+		ScalarColumn<float> yCol( antXY, "YNORTH" );
+		for( uInt i=0; i<nAnt; i++ ){
+		   if( m_dbg ){
+			  cout << "[MsPlot<T>::antennaPositions()] X("<<i<<") = " << xTopo(i) << endl;
+			  cout << "[MsPlot<T>::antennaPositions()] Y("<<i<<") = " << yTopo(i) << endl;
+			}
+		   xCol.put( i, xTopo(i) );
+			yCol.put( i, yTopo(i) );
+		}
+		ants = antXY;
+		// we do not try to pass antXY to the TablePlot::TABS_P here because then we will need to
+		// copy the subMS object to another variable to keep it in memory( a reference will not
+		// work because then if we assign antXY to subMS, the reference to subMS will also be 
+		// changed.). That means at a time subMS and a copy of it exist simultaneously. This
+		// will take too much memory.
+		return True;
+	}else{
+	   cout<<"[ MsPlot::plotArray()] MeasTable::Observatory() failed." << endl;
+		return False;
+	}
+}
+/*
+// Convert the antenna coordinates into local frame and put the antenna positions into a MemoryTable.
+template<class T>
+Bool MsPlot<T>::antennaPositions( MemoryTable& ants ){
+   MSColumns msc( m_ms );
+	ROMSAntennaColumns & antCols  = msc.antenna();
+	ScalarMeasColumn<MPosition> & antPositions = antCols.positionMeas();
+	Int nAnt= antCols.position().nrow();
+	Vector<MPosition> antPoses( nAnt );
+	Vector<Double> xTopo( nAnt ), yTopo( nAnt ), zTopo( nAnt );
+
+	for( uInt i=0; i< nAnt; i++) antPoses( i ) = antPositions( i );
+	// find the array center
+	String telescope = msc.observation().telescopeName()(0);
+	MPosition obs;
+	if( MeasTable::Observatory( obs, telescope )){
+	   if( obs.type()!= MPosition::ITRF ){
+		    MPosition::Convert toItrf( obs, MPosition::ITRF );
+			 obs = toItrf( obs );
+		}
+		// convert the coordinats from the geocentric frame to the topocentric frame
+		global2local( obs, antPoses, xTopo, yTopo, zTopo );
+		// prepare to create a MemoryTable
+		TableDesc td("AntXY","1", TableDesc::New );
+		td.comment()="A MemoryTable for antenna local XY plane";
+		td.rwKeywordSet().define("XYPlane", "tangential" );
+		td.addColumn(ScalarColumnDesc<float>("X-EAST", "Towards east" ));
+		td.addColumn(ScalarColumnDesc<float>("Y-NORTH", "Towards north" ));
+		SetupNewTable antMaker( td.tableName(), td, Table::New );
+		MemoryTable antXY( antMaker, nAnt, False );
+		ScalarColumn<float> xCol( antXY, "X-EAST" );
+		ScalarColumn<float> yCol( antXY, "Y-NORTH" );
+		for( uInt i=0; i<nAnt; i++ ){
+		   xCol.put( i, xTopo(i) );
+			yCol.put( i, yTopo(i) );
+		}
+		ants = antXY;
+		// we do not try to pass antXY to the TablePlot::TABS_P here because then we will need to
+		// copy the subMS object to another variable to keep it in memory( a reference will not
+		// work because then if we assign antXY to subMS, the reference to subMS will also be 
+		// changed.). That means at a time subMS and a copy of it exist simultaneously. This
+		// will take too much memory.
+	}else{
+	   cout<<"[ MsPlot::plotArray()] MeasTable::Observatory() failed." << endl;
+	}
+	
+}
+*/
 template<class T>
 Int MsPlot<T>::plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel )
    {
@@ -227,6 +343,80 @@ Int MsPlot<T>::plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel
 		 // call the plot method inheritated from TablePlot.
 		 plotData( BPS, TPLP, panel );
 	    return 0;
-	}	
+	}
+// help function to transform the coordinates from the global geocentric frame( e.g ITRF ) to
+// the local topocentric frame ( origin: observatory=center of antenna array; x-axis: local east;
+// y-axis: local north; z-axis: local radial direction. ). Here we are not worrying about the effect
+// of the earth's ellipticity even though did use latitude instead of the angle between the earth
+// pole and the local radial direction. The error stemed from this is about 1/300.
+// Parameter:  
+// obervatroy: observatory position in the geocentric frame. It is the origin of the local frame;
+// posGeo: MPositions in geocentric frame
+// xTopo, yTopo, zTopo: x,y z components of posGet after converting into local topocentric frame.
+template<class T>
+void MsPlot<T>::global2local( const MPosition& observatory,
+                             const Vector<MPosition>& posGeo,
+			                     Vector<Double>& xTopo,
+			                     Vector<Double>& yTopo,
+			                     Vector<Double>& zTopo ) 
+{
+  uInt ne = posGeo.nelements();
+  // store the the (X,Y,Z) after translation, but before rotation.
+  Vector<Double> xTrans(ne), yTrans(ne), zTrans(ne);
+  Vector<MPosition> posGeoItrf( ne );
+  xTopo.resize(ne);
+  yTopo.resize(ne);
+  zTopo.resize(ne);
+  // convert all the MPosition object into ITRF
+  //MPosition obsItrf = MPosition( observatory );
+  //if( observatory.type()!= MPosition::ITRF ){
+  //   MPosition::Convert toItrf( observatory, MPosition::ITRF);
+  //   obsItrf = toItrf( observatory );
+  //}
+  //Vector<Double> XYZ0 = obsItrf.get("m").getValue();
+  Vector<Double> XYZ0 = observatory.get("m").getValue();
+  Vector<Double> XYZ(3);
+  for( uInt i = 0; i< ne; i++ ){
+     //if( posGeo(i).type()!= MPosition::ITRF ){
+	  if( posGeo(i).type()!= observatory.type() ){
+	     // convert MPosition object into the frame type of obervatory if it is not.
+	     //posGeoItrf(i) = MPosition::Convert( posGeo(i), MPosition::ITRF )();
+		  posGeoItrf(i) = MPosition::Convert( posGeo(i), (MPosition::Types)observatory.type() )();
+	  }else{
+	     posGeoItrf(i) = posGeo(i);
+	  }
+     XYZ = posGeoItrf(i).get("m").getValue();
+	  // translate the global coordinates compenents to local components without rotating
+	  xTrans(i) = XYZ(0) - XYZ0(0);
+	  yTrans(i) = XYZ(1) - XYZ0(1);
+	  zTrans(i) = XYZ(2) - XYZ0(2);
+	  if( m_dbg ){
+		cout << "[MsPlot<T>::global2local()] X("<<i<<") = " << xTrans(i) << endl;
+		cout << "[MsPlot<T>::global2local()] Y("<<i<<") = " << yTrans(i) << endl;
+		cout << "[MsPlot<T>::global2local()] Z("<<i<<") = " << zTrans(i) << endl;
+ 	 }
+
+  }
+  // now rotate the tranlated frame to coincide with the local frame axes
+  Vector<Double> angles = observatory.getAngle("rad").getValue();
+  Double dLong, dLat;
+  dLong = angles(0);
+  dLat = angles(1);
+  Double cosLong = cos(dLong);
+  Double sinLong = sin(dLong);
+  Double cosLat = cos(dLat);
+  Double sinLat = sin(dLat);
+
+  for (uInt i=0; i< ne; i++) {
+    xTopo(i) = -sinLong * xTrans(i) + cosLong * yTrans(i);
+    yTopo(i) = -sinLat * cosLong * xTrans(i) - sinLat * sinLong * yTrans(i)  + cosLat * zTrans(i);
+    zTopo(i) =  cosLat * cosLong * xTrans(i) + cosLat * sinLong * yTrans(i)  + sinLat * zTrans(i);
+	 if( m_dbg ){
+		cout << "[MsPlot<T>::global2local()] X("<<i<<") = " << xTopo(i) << endl;
+		cout << "[MsPlot<T>::global2local()] Y("<<i<<") = " << yTopo(i) << endl;
+ 	 }
+  }// end of for loop
+}; // end of global2local
+ 	
 } //# NAMESPACE CASA - END
 // end of file
