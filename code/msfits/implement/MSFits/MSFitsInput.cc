@@ -243,13 +243,18 @@ void MSFitsInput::readFitsFile(Int obsType)
   
 
   Int totMem=HostInfo::memoryTotal();
+
   // 8 bytes per complex number and the other data like flag, weight is 
   // is 1/2 of the total 
   Int estMem= priGroup_p.gcount()*max(1, nIF_p)/1024*nPixel_p(getIndex(coordType_p,"STOKES"))*nPixel_p(getIndex(coordType_p,"FREQ"))*8*2;
-
   
+  // In reality it can be twice that number  
+  // We can remove the estMem limit of 1 Gbyte, below, 
+  // if we are fully in 64 bits world  
+  // 
+
   // fill the main table
-  if(estMem < totMem){
+  if((estMem < totMem) && (estMem < 1000000) ){
     //fill column wise and keep columns in memory
     fillMSMainTableColWise(nField, nSpW);
   }
