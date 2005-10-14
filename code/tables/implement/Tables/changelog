@@ -479,3 +479,22 @@ TaQL has been extended in two ways.
 See note 199 for more info.
  </description>
 </change>
+
+<change id=0171>
+ <author> Ger van Diepen </author>
+ <date> 2005/10/14 </date>
+ <avers> 1.9 </avers>
+ <area> Library </area>
+ <package> tables </package>
+ <module> Tables </module>
+ <type> Code </type>
+ <category> Change </category>
+ <defects>  </defects>
+ <summary>
+Default endian format of table is now local
+ </summary>
+ <description>
+The default endian format of a table has been changed from big to local.
+It means that on big-endian machines (e.g. SUN) the default endian format of a table is big, while on a little endian machine (e.g. Intel) it is little.
+ </description>
+</change>
