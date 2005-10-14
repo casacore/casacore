@@ -24,6 +24,7 @@
 
   find . -name "*.h" >> dofiles
   find . -name "*.cc" >> dofiles
+  find . -name "*.tcc" >> dofiles
   find . -name "templates" >> dofiles
 
   cat dofiles | xargs -n1 dosed_one "$FIL"
