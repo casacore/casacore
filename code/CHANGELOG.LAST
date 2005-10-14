@@ -145,3 +145,16 @@ TaQL has been extended in two ways.
 1. It is now possible to specify an expression in the selection column list. If an expression is given, the resulting table is a plain table instead of a reference table. Optionally a data type can be given as well.
 2. The CREATE TABLE command has been added to create a new table with 0 or more columns. Optionally specific data manager info can be given.
 See note 199 for more info.
+
+change id: 0171
+ author:   Ger van Diepen
+ date:     2005/10/14
+ avers:    1.9
+ area:     Library
+ package:  tables
+ module:   Tables
+ type:     Code
+ category: Change
+ summary:  Default endian format of table is now local
+The default endian format of a table has been changed from big to local.
+It means that on big-endian machines (e.g. SUN) the default endian format of a table is big, while on a little endian machine (e.g. Intel) it is little.
