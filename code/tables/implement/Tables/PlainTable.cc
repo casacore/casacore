@@ -713,9 +713,9 @@ void PlainTable::setEndian (int endianFormat)
     int endOpt = endianFormat;
     if (endOpt == Table::AipsrcEndian) {
         String opt;
-	// Use default "local" from AIPS++ version 1.9 on.
-	////	AipsrcValue<String>::find (opt, "table.endianformat", "local");
-	AipsrcValue<String>::find (opt, "table.endianformat", "big");
+	// Default "big" was used until AIPS++ version 10.1203.00.
+	////AipsrcValue<String>::find (opt, "table.endianformat", "big");
+	AipsrcValue<String>::find (opt, "table.endianformat", "local");
 	opt.downcase();
 	if (opt == "big") {
 	    endOpt = Table::BigEndian;
