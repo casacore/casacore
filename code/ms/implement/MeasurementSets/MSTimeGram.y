@@ -98,36 +98,38 @@ timeexpr: singletimeexpr
         ;
 
 singletimeexpr: daytimeexpr {
-                  $$ = MSTimeParse().selectTime(*($1), true);
+                  $$ = MSTimeParse().selectTime(MEpoch(*($1)), true);
                 }
               | yeartimeexpr {
-                  $$ = MSTimeParse().selectTime(*($1), false);
+                  $$ = MSTimeParse().selectTime(MEpoch(*($1)), false);
                 }
               ;
 
 rangetimeexpr: daytimeexpr DASH daytimeexpr {
-                 $$ = MSTimeParse().selectTimeRange(*($1), *($3), true);
+                 $$ = MSTimeParse().selectTimeRange(MEpoch(*($1)),
+                                                    MEpoch(*($3)), true);
                }
              | yeartimeexpr DASH yeartimeexpr {
-                 $$ = MSTimeParse().selectTimeRange(*($1), *($3), false);
+                 $$ = MSTimeParse().selectTimeRange(MEpoch(*($1)),
+                                                    MEpoch(*($3)), false);
                }
              ;
 
 lowboundtimeexpr: GT daytimeexpr {
-                    $$ = MSTimeParse().selectTimeGT(*($2), true);
+                    $$ = MSTimeParse().selectTimeGT(MEpoch(*($2)), true);
                   }
                 |
                   GT yeartimeexpr {
-                    $$ = MSTimeParse().selectTimeGT(*($2), false);
+                    $$ = MSTimeParse().selectTimeGT(MEpoch(*($2)), false);
                   }
                 ;
 
 upboundtimeexpr: LT daytimeexpr {
-                   $$ = MSTimeParse().selectTimeLT(*($2), true);
+                   $$ = MSTimeParse().selectTimeLT(MEpoch(*($2)), true);
                  }
                |
                  LT yeartimeexpr {
-                   $$ = MSTimeParse().selectTimeLT(*($2), false);
+                   $$ = MSTimeParse().selectTimeLT(MEpoch(*($2)), false);
                  }
                ;
 
