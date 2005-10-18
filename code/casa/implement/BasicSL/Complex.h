@@ -323,6 +323,12 @@ Complex erfc(const Complex &in);
 
 } //# NAMESPACE CASA - END
 
+// Define complex conjugation for non-complex types
+namespace std { 
+  inline float conj(float x) { return x; };
+  inline double conj(double x) { return x; };
+}
+
 #ifndef AIPS_NO_TEMPLATE_SRC
 #include <casa/BasicSL/Complex.cc>
 #endif //# AIPS_NO_TEMPLATE_SRC
