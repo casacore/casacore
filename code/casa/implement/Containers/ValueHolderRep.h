@@ -52,18 +52,13 @@ class RecordFieldId;
 // </reviewed>
 
 // <synopsis>
-// Class ValueHolder is meant to be used for holding a single AIPS++ value.
-// The value can be  scalar or an array of any basic type (including complex
-// and string). Also a Record value is possible.
-// In this way varying typed data (e.g. the result of getCell in the table DO)
-// can be packed in a strongly typed variable.
-// <br>All integer type values (signed, unsigned, 8, 16, 32 bit) are saved as
-// signed 32-bit integers with data type TpInt.
+// Class ValueHolderRep is the letter class for the envelope class ValueHolder.
+// See <linkto class=ValueHolder>that class</linkto> for more information.
 // </synopsis>
 
 // <motivation>
-// This class comes handy in passing arbitrary values from a DO to
-// its environment.
+// Copying ValueHolders should be as cheap as possible, so a counted
+// referenced letter class is used.
 // </motivation>
 
 class ValueHolderRep

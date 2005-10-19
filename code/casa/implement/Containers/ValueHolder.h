@@ -1,4 +1,4 @@
-//# ValueHolder.h: A holder object for the standard AIPS++ data
+//# ValueHolder.h: A holder object for the standard AIPS++ data types
 //# Copyright (C) 2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -38,7 +38,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 
 // <summary>
-// A holder for a value of any basic type.
+// A holder for a value of any basic AIPS++ data type.
 // </summary>
 
 // <use visibility=export>
@@ -51,8 +51,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // and string). Also a Record value is possible.
 // In this way varying typed data (e.g. the result of getCell in the table DO)
 // can be packed in a strongly typed variable.
-// <br>All integer type values (signed, unsigned, 8, 16, 32 bit) are saved as
-// signed 32-bit integers with data type TpInt.
+// <br>All unsigned integer type values are kept as signed 32-bit integers
+// because scripting languages usually only support those types.
+//
+// ValueHolder is an envelope class that holds a counted-referenced letter
+// object <linkto class=ValueHolderRep>ValueHolderRep</linkto>.
 // </synopsis>
 
 // <motivation>
