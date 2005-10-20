@@ -104,11 +104,61 @@ TableProxy::TableProxy (const String& tableName,
     throw TableError (tableName + " failed: " + message);
   }
   // Try to create the table.
-  Table table;
   SetupNewTable newtab(tableName, tabdesc, Table::New);
   // Apply a possible dminfo object.
   newtab.bindCreate (dmInfo);
-  table = Table (newtab, type, lockOptions, nrow, False, endOpt);
+  table_p = Table (newtab, type, lockOptions, nrow, False, endOpt);
+}
+
+TableProxy::TableProxy (const String& command,
+			const std::vector<const TableProxy*>& tables,
+			Record& result)
+{
+  std::vector<const Table*> tabs(tables.size());
+  for (uInt i=0; i<tabs.size(); i++) {
+    tabs[i] = &(tables[i]->table());
+  }
+  // Try to execute the command.
+  TaQLResult taqlResult;
+  taqlResult = tableCommand (command, tabs);
+  Record rec;
+  // Command succeeded.
+  // Add table if result is a table.
+  if (taqlResult.isTable()) {
+    table_p = taqlResult.table();
+  } else {
+    // Result is a calculation. Return the resulting values.
+    calcValues (rec, taqlResult.node());
+  }
+  result = rec;
+}
+
+TableProxy::TableProxy (const String& fileName,
+			const String& headerName,
+			const String& tableName,
+			Bool autoHeader,
+			const IPosition& autoShape,
+			const String& separator,
+			const String& commentMarker,
+			Int firstLine,
+			Int lastLine,
+			String& result)
+{
+  if (separator.length() != 1) {
+    throw AipsError ("tablefromascii : separator must be 1 char");
+  }
+  Char sep = separator[0];
+  // Create the table
+  String inputFormat;
+  if (headerName.empty()) {
+    result = readAsciiTable(fileName, "", tableName, autoHeader, sep,
+			    commentMarker, firstLine, lastLine,
+			    IPosition(autoShape));
+  } else {
+    result = readAsciiTable(headerName, fileName, "", tableName, sep,
+			    commentMarker, firstLine, lastLine);
+  }
+  table_p = Table(tableName);
 }
 
 TableProxy::TableProxy (const TableProxy& that)
@@ -262,33 +312,6 @@ void TableProxy::deleteTable (Bool checkSubTables)
   table_p.markForDelete();
 }
 
-String TableProxy::readAscii (const String& fileName,
-			      const String& headerName,
-			      const String& tableName,
-			      Bool autoHeader,
-			      const IPosition& autoShape,
-			      const String& separator,
-			      const String& commentMarker,
-			      Int firstLine,
-			      Int lastLine)
-{
-  if (separator.length() != 1) {
-    throw AipsError ("tablefromascii : separator must be 1 char");
-  }
-  Char sep = separator[0];
-  // Create the table
-  String inputFormat;
-  if (headerName.empty()) {
-    inputFormat = readAsciiTable(fileName, "", tableName, autoHeader, sep,
-				 commentMarker, firstLine, lastLine,
-				 IPosition(autoShape));
-  } else {
-    inputFormat = readAsciiTable(headerName, fileName, "", tableName, sep,
-				 commentMarker, firstLine, lastLine);
-  }
-  return inputFormat;
-}
-
 TableProxy TableProxy::selectRows (const Vector<Int>& rownrs,
 				   const String& outName)
 {
@@ -308,31 +331,6 @@ TableProxy TableProxy::selectRows (const Vector<Int>& rownrs,
   }
   // Command succeeded.
   return ntable;
-}
-
-TableProxy TableProxy::command (const String& command,
-				const std::vector<const TableProxy*>& tables,
-				Record& result)
-{
-  std::vector<const Table*> tabs(tables.size());
-  for (uInt i=0; i<tabs.size(); i++) {
-    tabs[i] = &(tables[i]->table());
-  }
-  // Try to execute the command.
-  TaQLResult taqlResult;
-  taqlResult = tableCommand (command, tabs);
-  Table tab;
-  Record rec;
-  // Command succeeded.
-  // Add table if result is a table.
-  if (taqlResult.isTable()) {
-    tab = taqlResult.table();
-  } else {
-    // Result is a calculation. Return the resulting values.
-    calcValues (rec, taqlResult.node());
-  }
-  result = rec;
-  return tab;
 }
 
 void TableProxy::calcValues (Record& rec, const TableExprNode& expr)
@@ -622,9 +620,7 @@ Record TableProxy::getVarColumn (const String& columnName,
     // Add the result to the record with field name formed from 1-based rownr.
     sprintf (namebuf, "r%i", row+1);
     if (tabcol.isDefined(row)) {
-      rec.defineRecord (namebuf,
-			getValueFromTable(columnName,
-					  row, 1, 1, False).toRecord());
+      getValueFromTable(columnName, row, 1, 1, False).toRecord (rec, namebuf);
     } else {
       ////      rec.add (namebuf, GlishValue::getUnset());
       rec.define (namebuf, False);
@@ -850,12 +846,7 @@ Record TableProxy::getKeywordSet (const String& columnName)
     ROTableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.keywordSet());
   }
-  Record rec;
-  uInt nr = keySet->nfields();
-  for (uInt i=0; i<nr; i++) {
-    rec.defineRecord (i, getKeyValue(*keySet, i).toRecord());
-  }
-  return rec;
+  return getKeyValues (*keySet);
 }
 
 void TableProxy::putKeyword (const String& columnName,
@@ -2277,6 +2268,16 @@ void TableProxy::findKeyId (RecordFieldId& fieldid,
   }
 }
 
+Record TableProxy::getKeyValues (const TableRecord& keySet)
+{
+  Record rec;
+  uInt nr = keySet.nfields();
+  for (uInt i=0; i<nr; i++) {
+    getKeyValue(keySet, i).toRecord (rec, keySet.name(i));
+  }
+  return rec;
+}
+
 ValueHolder TableProxy::getKeyValue (const TableRecord& keySet, 
 				     const RecordFieldId& fieldId)
 {
@@ -2345,7 +2346,7 @@ ValueHolder TableProxy::getKeyValue (const TableRecord& keySet,
     return ValueHolder ("Table: "+keySet.tableAttributes(fieldId).name());
     break;
   case TpRecord:
-    return ValueHolder (keySet.subRecord(fieldId));
+    return ValueHolder (getKeyValues(keySet.subRecord(fieldId)));
     break;
   default:
     throw (AipsError ("TableProxy::getKeyword: unknown data type"));

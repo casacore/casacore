@@ -57,16 +57,15 @@ class TableProxy;
 // </prerequisite>
 
 // <synopsis> 
-// A TableIndexProxy object holds a ColumnsIndex or ColumnsIndexArray
-// object for the table glish client. It is in fact similar to class
-// <linkto class=GlishTableHolder>GlishTableHolder</linkto>.
-// It is used by <linkto class=GlishTableProxy>GlishTableProxy</linkto>
-// to keep track of all table indices used in the glish client.
+// TableIndexProxy gives access to indexed access to tables, both for
+// scalar columns and array columns.
+// It is primarily meant to be used in classes that wrap access to it
+// from scripting languages (like Glish and Python).
+// However, it can also be used directly from other C++ code.
+//
+// A TableIndexProxy object is usually created by class
+// <linkto class=TableProxy>TableProxy</linkto>.
 // </synopsis>
-
-// <example>
-// The index functions in class GlishTableProxy show clearly how
-// TableIndexProxy is used.
 
 class TableIndexProxy
 {

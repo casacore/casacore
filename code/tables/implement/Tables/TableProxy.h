@@ -1,5 +1,5 @@
 //# TableProxy.h: High-level interface to tables
-//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -73,51 +73,36 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </etymology>
 
 // <synopsis> 
-// The Glish client "gtable.cc" and its companion glish script "gtable.g"
-// provide convenient access to tables from within the Glish environment.
-// The client uses class GlishTableHolder to execute the various
-// glish events operating on tables. Furthermore it keeps track of the
-// tables, table iterators, and table row objects in use.
-// <p>
-// The functions in class GlishTable allow gtable.cc to be
-// a simple program; it decodes glish events and forwards them to the
-// appropriate function.
-// The return value of the functions indicate success or failure.
-// In case of failure they fill the message argument, which will be
-// posted as a table_error event by gtable.cc. In case of success,
-// the function will post the table_result event with the appropriate
-// value (which will be caught by the glish script gtable.g).
-// <p>
-// The functions use an object of type
-// Block&lt;GlishTableHolder&gt; to keep track of the currently open tables.
-// The index in this block is used by the glish script as the table id.
-// The <linkto class=GlishTableHolder>GlishTableHolder</linkto>
-// object also maintains a mapping between
-// a Table object and the table name for all tables used by gtable.cc.
-// The same table can be opened only once, unless it has been closed before.
-// <p>
-// Each time a new table is opened, a GlishTableHolder object is created
-// and added to the tableBlock. When a table gets closed permanently,
-// that GlishTable object is rendered invalid. In this way it can be
-// detected if an old (and now invalid) table id is used in the glish script.
+// TableProxy gives access to most of the functionality in the Table System.
+// It is primarily meant to be used in classes that wrap access to it
+// from scripting languages (like Glish and Python).
+// However, it can also be used directly from other C++ code.
 //
-// <note>
-// All functions have a message string as the last argument.
-// In case of errors a message is put in this argument and the functions
-// returns with an invalid status (usually False).
-// </note>
+// It has functions to open, create, read, write, and query tables.
+// Accompying proxy classes give access to other functionality. They are:
+// <ul>
+//  <li> <linkto class=TableIterProxy>TableIterProxy</linkto> for iteration
+//       through a table using class
+//       <linkto class=TableIterator>TableIterator</linkto>.
+//  <li> <linkto class=TableRowProxy>TableRowProxy</linkto> for access to
+//       table rows using class <linkto class=TableRow>TableRow</linkto>.
+//  <li> <linkto class=TableIndexProxy>TableIterProxy</linkto> for faster
+//       indexed access to using classes
+//       <linkto class=ColumnsIndex>ColumnsIndex</linkto> and
+//       <linkto class=ColumnsIndexArray>ColumnsIndexArray</linkto>.
+// </ul>
 // </synopsis>
 
 // <motivation>
 // TableProxy is the Tasking-independent high-level table interface.
-// Different front-ends (e.g. GlishTableHolder) can be put on top of it.
+// Different front-ends (e.g. GlishTableProxy) can be put on top of it.
 // </motivation>
 
 class TableProxy
 {
 public:
   // Default constructor initializes to not open.
-  // This constructor is only needed for the Block container.
+  // This constructor is only needed for containers.
   TableProxy();
 
   // Create the object from an existing table (used by some methods).
@@ -130,8 +115,6 @@ public:
 	      const Table::TableOption option);
 
   // Create a table with given name and description, etc..
-  // It returns the table-id.
-  // In case of errors -1 is returned.
   TableProxy (const String& tableName,
 	      const TableLock& lockOptions,
 	      const String& endianFormat,
@@ -139,6 +122,31 @@ public:
 	      Int nrow,
 	      const Record& tableDesc,
 	      const Record& dmInfo);
+
+  // Creeate a table object from a table command (as defined in TableGram).
+  // <br>If a CALC command was given, the resulting values are stored in
+  // the record and a null TableProxy object is returned.
+  // <note>
+  // If the command string contains no GIVING part, the resulting
+  // table is temporary and its name is blank.
+  // </note>
+  TableProxy (const String& command,
+	      const std::vector<const TableProxy*>& tables,
+	      Record& result);
+
+  // Create a table from an Ascii file.
+  // It fills result with a string containing the names and types
+  // of the columns (in the form COL1=R, COL2=D, ...).
+  TableProxy (const String& fileName,
+	      const String& headerName,
+	      const String& tableName,
+	      Bool autoHeader,
+	      const IPosition& autoShape,
+	      const String& separator,
+	      const String& commentMarker,
+	      Int firstLine,
+	      Int lastLine,
+	      String& result);
 
   // Copy constructor.
   TableProxy (const TableProxy&);
@@ -151,23 +159,8 @@ public:
 
   // Select the given rows from the table and create a new (reference) table.
   // If outName is not empty, the new table is made persistent with that name.
-  // It returns the id of the new table.
-  // In case of errors -1 is returned.
   TableProxy selectRows (const Vector<Int>& rownrs,
 			 const String& outName);
-
-  // Execute a table command (as defined in TableGram).
-  // On success it adds the table to the tableBlock and fills the result
-  // with the fields tableId, tableName and values.
-  // <br>If a CALC command was given, the fields tableId and tableName are
-  // set to False and values is filled in.
-  // <note>
-  // If the command string contains no GIVING part, the resulting
-  // table is temporary and its name is blank.
-  // </note>
-  static TableProxy command (const String& command,
-			     const std::vector<const TableProxy*>& tables,
-			     Record& result);
 
   // Reopen the table for read/write.
   void reopenRW();
@@ -222,19 +215,6 @@ public:
 
   // Close and delete the table.
   void deleteTable (Bool checkSubTables);
-
-  // Create a table from an Ascii file.
-  // It fills result with a string containing the names and types
-  // of the columns (in the form COL1=R, COL2=D, ...).
-  static String readAscii (const String& fileName,
-			   const String& headerName,
-			   const String& tableName,
-			   Bool autoHeader,
-			   const IPosition& autoShape,
-			   const String& separator,
-			   const String& commentMarker,
-			   Int firstLine,
-			   Int lastLine);
 
   // Get the table info of the table.
   Record tableInfo();
@@ -331,8 +311,8 @@ public:
 
   // Tests if the contents of a cell are defined.
   // Only a column with variable shaped arrays can have an empty cell.
-  Bool cellContentsDefined ( const String& columnName,
-			     Int rownr);
+  Bool cellContentsDefined (const String& columnName,
+			    Int rownr);
 
   // Get a value from a column in a table with a given id.
   ValueHolder getCell (const String& columnName,
@@ -531,6 +511,9 @@ private:
 		  const String& column,
 		  Bool mustExist, Bool change, Bool makeSubRecord);
   // </group>
+
+  // Get the values of all keywords.
+  Record getKeyValues (const TableRecord& keySet);
 
   // Get the value of a keyword.
   ValueHolder getKeyValue (const TableRecord& keySet,

@@ -59,35 +59,26 @@ class TableProxy;
 // </etymology>
 
 // <synopsis> 
-// A GlishTable object holds a TableIterator object for the table
-// glish client. It is in fact similar to class
-// <linkto class=GlishTable>GlishTable</linkto>.
-// It is used by <linkto class=GlishTableProxy>GlishTableProxy</linkto>
-// to keep track of all table iterators used in the glish client.
-// <p>
-// TableIterProxy also holds the id of the GlishTable
-// object which is used by GlishTableProxy to hold the result of the
-// last iterator step.
+// TableIterProxy gives access to the table iterator functionality.
+// It is primarily meant to be used in classes that wrap access to it
+// from scripting languages (like Glish and Python).
+// However, it can also be used directly from other C++ code.
+//
+// A TableIterProxy object is usually created by class
+// <linkto class=TableProxy>TableProxy</linkto>.
 // </synopsis>
 
 // <example>
-// The iterator functions in class GlishTableProxy show clearly how
-// TableIterProxy is used.
-// For completeness, an example follows.
 // <srcblock>
-//    // Get a tableId for the subtables.
-//    GlishTableProxy proxy;
-//    Table table;
-//    tableId = proxy.addTable (table);
-//    // Construct a TableIterProxy object.
-//    Table mainTable ("table.name");
-//    TableIterator iter (table, "columnX");
-//    TableIterProxy tgi (iter, tableId);
-//    // Do a step.
-//    Table subTable;
-//    Bool pastEnd = tgi.next (subTable);
-//    // Get the table id for the subtable resulting from the iteration step.
-//    Int tableId = tgi.tableId();
+//    // Get a table proxy.
+//    TableProxy proxy("sometable");
+//    Vector<String> columns(1, "SOMECOL");
+//    TableIterProxy tgi (proxy, columns, "a", "q");
+//    TableProxy subTable;
+//    // Iterate through the table.
+//    while (tgi.next (subTable)) {
+//       ..use Table object subTable.table()
+//    }
 // </srcblock>
 // </example>
 
@@ -102,7 +93,7 @@ public:
   // Order and sortType are case-insentive strings and only the first
   // character in it is important.
   // order[0]=a means ascending; d means descending.
-  // sortType[0]=q means quikxsort, i means insertion sort,
+  // sortType[0]=q means quicksort, i means insertion sort,
   //             n means nosort, otherwise heapsort.
   TableIterProxy (TableProxy& tab, const Vector<String>& columns,
 		  const String& order, const String& sortType);

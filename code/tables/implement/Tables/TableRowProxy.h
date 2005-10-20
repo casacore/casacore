@@ -60,16 +60,14 @@ class TableRecord;
 // </etymology>
 
 // <synopsis> 
-// A GlishTableHolder object holds a TableRow object for the table
-// glish client. It is in fact similar to class
-// <linkto class=GlishTableHolder>GlishTableHolder</linkto>.
-// It is used by <linkto class=GlishTableProxy>GlishTableProxy</linkto>
-// to keep track of all table rows used in the glish client.
+// TableRowProxy gives access to row-based table accessor functions.
+// It is primarily meant to be used in classes that wrap access to it
+// from scripting languages (like Glish and Python).
+// However, it can also be used directly from other C++ code.
+//
+// A TableRowProxy object is usually created by class
+// <linkto class=TableProxy>TableProxy</linkto>.
 // </synopsis>
-
-// <example>
-// The row functions in class GlishTableProxy show clearly how
-// TableRowProxy is used.
 
 class TableRowProxy
 {
