@@ -377,71 +377,69 @@ const Record& ValueHolderRep::asRecord() const
 }
 
 
-Record ValueHolderRep::toRecord() const
+void ValueHolderRep::toRecord (Record& rec, const RecordFieldId& id) const
 {
-  Record rec;
   switch (itsType) {
   case TpBool:
-    rec.define (0, itsBool);
+    rec.define (id, itsBool);
     break;
   case TpUChar:
-    rec.define (0, itsUChar);
+    rec.define (id, itsUChar);
     break;
   case TpShort:
-    rec.define (0, itsShort);
+    rec.define (id, itsShort);
     break;
   case TpInt:
-    rec.define (0, itsInt);
+    rec.define (id, itsInt);
     break;
   case TpFloat:
-    rec.define (0, itsFloat);
+    rec.define (id, itsFloat);
     break;
   case TpDouble:
-    rec.define (0, itsDouble);
+    rec.define (id, itsDouble);
     break;
   case TpComplex:
-    rec.define (0, *static_cast<Complex*>(itsPtr));
+    rec.define (id, *static_cast<Complex*>(itsPtr));
     break;
   case TpDComplex:
-    rec.define (0, *static_cast<DComplex*>(itsPtr));
+    rec.define (id, *static_cast<DComplex*>(itsPtr));
     break;
   case TpString:
-    rec.define (0, *static_cast<String*>(itsPtr));
+    rec.define (id, *static_cast<String*>(itsPtr));
     break;
   case TpArrayBool:
-    rec.define (0, *static_cast<Array<Bool>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Bool>*>(itsPtr));
     break;
   case TpArrayUChar:
-    rec.define (0, *static_cast<Array<uChar>*>(itsPtr));
+    rec.define (id, *static_cast<Array<uChar>*>(itsPtr));
     break;
   case TpArrayShort:
-    rec.define (0, *static_cast<Array<Short>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Short>*>(itsPtr));
     break;
   case TpArrayInt:
-    rec.define (0, *static_cast<Array<Int>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Int>*>(itsPtr));
     break;
   case TpArrayFloat:
-    rec.define (0, *static_cast<Array<Float>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Float>*>(itsPtr));
     break;
   case TpArrayDouble:
-    rec.define (0, *static_cast<Array<Double>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Double>*>(itsPtr));
     break;
   case TpArrayComplex:
-    rec.define (0, *static_cast<Array<Complex>*>(itsPtr));
+    rec.define (id, *static_cast<Array<Complex>*>(itsPtr));
     break;
   case TpArrayDComplex:
-    rec.define (0, *static_cast<Array<DComplex>*>(itsPtr));
+    rec.define (id, *static_cast<Array<DComplex>*>(itsPtr));
     break;
   case TpArrayString:
-    rec.define (0, *static_cast<Array<String>*>(itsPtr));
+    rec.define (id, *static_cast<Array<String>*>(itsPtr));
     break;
   case TpRecord:
-    rec.defineRecord (0, *static_cast<Record*>(itsPtr));
+    rec.defineRecord (id, *static_cast<Record*>(itsPtr));
     break;
   default:
     break;
   }
-  return rec;
 }
 
   // Construct the object from the value in a record.

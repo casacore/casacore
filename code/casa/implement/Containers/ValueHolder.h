@@ -151,10 +151,10 @@ public:
   // </group>
 
   // Put the value as a field in a record.
-  Record toRecord() const;
+  void toRecord (Record&, const RecordFieldId&) const;
 
   // Construct the object from the value in a record.
-  static ValueHolder fromRecord (const Record& rec, const RecordFieldId&);
+  static ValueHolder fromRecord (const Record&, const RecordFieldId&);
 
   //# Write the ValueHolder to an output stream.
   //# friend AipsIO& operator<< (AipsIO& os, const ValueHolder& vh);
@@ -169,10 +169,10 @@ private:
 
 inline DataType ValueHolder::dataType() const
   { return itsRep->dataType(); }
-inline Record ValueHolder::toRecord() const
-  { return itsRep->toRecord(); }
-inline ValueHolder ValueHolder::fromRecord(const Record& rec,
-					   const RecordFieldId& id)
+inline void ValueHolder::toRecord (Record& rec, const RecordFieldId& id) const
+  { return itsRep->toRecord (rec, id); }
+inline ValueHolder ValueHolder::fromRecord (const Record& rec,
+					    const RecordFieldId& id)
   { return ValueHolder (ValueHolderRep::fromRecord (rec, id)); }
 inline Bool ValueHolder::asBool() const
   { return itsRep->asBool(); }

@@ -133,7 +133,7 @@ public:
   // </group>
 
   // Put the value as a field in a record.
-  Record toRecord() const;
+  void toRecord (Record&, const RecordFieldId&) const;
 
   // Construct the object from the value in a record.
   static ValueHolderRep* fromRecord (const Record& rec, const RecordFieldId&);
