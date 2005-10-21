@@ -882,10 +882,7 @@ void TableProxy::putKeywordSet (const String& columnName,
     TableColumn tabColumn (table_p, columnName);
     keySet = &(tabColumn.rwKeywordSet());
   }
-  for (uInt i=0; i<valueSet.nfields(); i++) {
-    putKeyValue (*keySet, valueSet.name(i),
-		 ValueHolder::fromRecord(valueSet, i));
-  }
+  putKeyValues (*keySet, valueSet);
 }
 
 void TableProxy::removeKeyword (const String& columnName,
@@ -1522,7 +1519,8 @@ ValueHolder TableProxy::getValueFromTable (const String& colName,
       {
 	ROScalarColumn<TableRecord> ac(table_p,colName); 
 	if (isCell) {
-	  return ValueHolder (ac(rownr));
+	  // Transform a TableRecord into a Record.
+	  return ValueHolder (getKeyValues(ac(rownr)));
 	} else {
 	  throw TableError ("TableProxy::getColumn not possible for a column"
 	                    " containing records");
@@ -1931,7 +1929,10 @@ void TableProxy::putValueInTable (const String& colName,
       {
 	ScalarColumn<TableRecord> col(table_p, colName);
 	if (isCell) {
-	  col.put (rownr, value.asRecord());
+	  // Transform a Record into a TableRecord.
+	  TableRecord rec;
+	  putKeyValues (rec, value.asRecord());
+	  col.put (rownr, rec);
 	} else {
 	  throw TableError ("TableProxy::putColumn not possible for a column"
 			    " containing records");
@@ -2353,6 +2354,14 @@ ValueHolder TableProxy::getKeyValue (const TableRecord& keySet,
   }
 }
 
+void TableProxy::putKeyValues (TableRecord& keySet, const Record& valueSet)
+{
+  for (uInt i=0; i<valueSet.nfields(); i++) {
+    putKeyValue (keySet, valueSet.name(i),
+		 ValueHolder::fromRecord(valueSet, i));
+  }
+}
+
 void TableProxy::putKeyValue (TableRecord& keySet, 
 			      const RecordFieldId& fieldId,
 			      const ValueHolder& value)
@@ -2427,7 +2436,7 @@ void TableProxy::putKeyValue (TableRecord& keySet,
     keySet.define (fieldId, value.asArrayString());
     break;
   case TpRecord:
-    keySet.defineRecord (fieldId, value.asRecord());
+    putKeyValues (keySet.rwSubRecord(fieldId), value.asRecord());
     break;
   default:
     throw (AipsError ("TableProxy::putKeyValue - "

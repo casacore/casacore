@@ -91,6 +91,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //       <linkto class=ColumnsIndex>ColumnsIndex</linkto> and
 //       <linkto class=ColumnsIndexArray>ColumnsIndexArray</linkto>.
 // </ul>
+//
+// TableProxy does not have the TableRecord type in its interface, because
+// such a type cannot be handled by e.g. Glish or Python. Instead it
+// converts TableRecords to/from Records. If a TableRecord contains a field
+// with a Table object, it is represented in the Record as a string
+// with the value "Table: NAME" where NAME is the table name.
 // </synopsis>
 
 // <motivation>
@@ -247,18 +253,16 @@ public:
   // Remove one or more columns from the table.
   void removeColumns (const Vector<String>& columnNames);
 
-  // Add rows to a table with the given id.
+  // Add rows to the table.
   void addRow (Int nrow);
 
-  // Remove rows from a table with the given id.
+  // Remove rows from the table.
   void removeRow (const Vector<Int> rownrs);
 
-  // Get some or all values from a column in a table with a given id.
+  // Get some or all values from a column in the table.
   // row is the starting row number (0-relative).
   // nrow=-1 means until the end of the table.
   // incr is the step in row number.
-  // The given callback function is called to store the values.
-  // For example, GlishTableHolder can store them in a GlishRecord object.
   // <group>
   ValueHolder getColumn (const String& columnName,
 			 Int row,
@@ -270,7 +274,7 @@ public:
 		       Int incr);
   // </group>
 
-  // Get some or all value slices from a column in a table with a given id.
+  // Get some or all value slices from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   ValueHolder getColumnSlice (const String& columnName,
 			      Int row,
@@ -280,12 +284,10 @@ public:
 			      const Vector<Int>& trc,
 			      const Vector<Int>& inc);
 
-  // Put some or all values into a column in a table with a given id.
+  // Put some or all values into a column in the table.
   // row is the starting row number (0-relative).
   // nrow=-1 means until the end of the table.
   // incr is the step in row number.
-  // The given callback function is called to fetch the values.
-  // For example, GlishTableHolder can get them from a GlishRecord object.
   // <group>
   void putColumn (const String& columnName,
 		  Int row,
@@ -299,7 +301,7 @@ public:
 		     const Record& values);
   // </group>
 
-  // Put some or all value slices into a column in a table with a given id.
+  // Put some or all value slices into a column in the table.
   void putColumnSlice (const String& columnName,
 		       Int row,
 		       Int nrow,
@@ -314,11 +316,11 @@ public:
   Bool cellContentsDefined (const String& columnName,
 			    Int rownr);
 
-  // Get a value from a column in a table with a given id.
+  // Get a value from a column in the table.
   ValueHolder getCell (const String& columnName,
 		       Int row);
 
-  // Get a value slice from a column in a table with a given id.
+  // Get a value slice from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   ValueHolder getCellSlice (const String& columnName,
 			    Int row,
@@ -326,12 +328,12 @@ public:
 			    const Vector<Int>& trc,
 			    const Vector<Int>& inc);
 
-  // Put a value into a column in a table with a given id.
+  // Put a value into a column in the table.
   void putCell (const String& columnName,
 		const Vector<Int>& rownrs,
 		const ValueHolder&);
 
-  // Put a value slice into a column in a table with a given id.
+  // Put a value slice into a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   void putCellSlice (const String& columnName,
 		     Int row,
@@ -342,24 +344,24 @@ public:
 
   // Get the shape of one or more cells in a column as a vector of Strings
   // containing the shapes as [a,b,c].
-  // When the shape is fixed, a single String is returned.
+  // If the shape is fixed, a single String is returned.
   Vector<String> getColumnShapeString (const String& columnName,
 				       Int rownr,
 				       Int nrow,
 				       Int incr);
 
-  // Get a table or column keyword value in a table with a given id.
+  // Get a table or column keyword value in the table.
   // If the columnName is empty, a given keyword is a table keyword.
   // The keyword can be given as a name or a 0-based index.
   ValueHolder getKeyword (const String& columnName,
 			  const String& keywordName,
 			  Int keywordIndex);
 
-  // Get the table or column keyword values in a table with a given id.
-  // If the columnName is empty, a table keyword values are returned.
+  // Get the table or column keyword values in the table.
+  // If the columnName is empty, the table keyword values are returned.
   Record getKeywordSet (const String& columnName);
 
-  // Define a table or column keyword in a table with a given id.
+  // Define a table or column keyword in the table.
   // If the column name is empty, a table keyword is defined.
   // The keyword can be given as a name or a 0-based number.
   // The value should be a record containing the value of the keyword.
@@ -370,7 +372,7 @@ public:
 		   Bool makeSubRecord,
 		   const ValueHolder&);
 
-  // Define multiple table or column keywords in a table with a given id.
+  // Define multiple table or column keywords in the table.
   // If the column name is empty, a table keywords are defined.
   // The value should be a record containing the values of the keywords.
   // The values can be any type (including a record).
@@ -378,13 +380,13 @@ public:
   void putKeywordSet (const String& columnName,
 		      const Record& valueSet);
 
-  // Remove a table or column keyword from a table with a given id.
+  // Remove a table or column keyword from the table.
   // If the column name is empty, a table keyword is removed.
   void removeKeyword (const String& columnName,
 		      const String& keywordName,
 		      Int keywordIndex);
 
-  // Get the names of all field in a record in a table with a given id.
+  // Get the names of all field in a record in the table.
   // If the column name is empty, the table keywords are used.
   // If the keyword name is empty, the names of all keywords are returned.
   // Otherwise the names of all fields in the keyword value are returned.
@@ -393,27 +395,24 @@ public:
 				const String& keywordName,
 				Int keywordIndex);
 
-  // Get the shape (#columns, #rows) of the table with a given id.
-  // The shape is stored in the result vector.
+  // Get the shape (#columns, #rows) of the table.
   Vector<Int> shape();
 
-  // Get the row numbers of the table with a given id.
-  // The row numbers (0-relative) are stored in the result vector.
+  // Get the row numbers of the table.
   Vector<Int> rowNumbers (TableProxy& other);
 
-  // Get all column names in a table with a given id.
-  // The names are stored in the result vector.
+  // Get all column names in the table.
   Vector<String> columnNames();
 
   // Return in result if the column contains scalars.
   Bool isScalarColumn (const String& columnName);
 
-  // Return in result the data type of the column as:
+  // Return the data type of the column as:
   //  Bool, UChar, Short, UShort, Int, UInt, 
   //  Float, Double, Complex, DComplex, String, Table, or unknown.
   String columnDataType (const String& columnName);
 
-  // Return in result the type of array in the column as:
+  // Return the type of array in the column as:
   //    Direct
   //    Undefined
   //    FixedShape
@@ -425,15 +424,14 @@ public:
   String columnArrayType (const String& columnName);
 
   // Get the data manager info of the table with the given id.
-  // The info is put into result.
   Record getDataManagerInfo();
 
   // Get the table description of the table with the given id.
-  // It fills result with a record containing the description.
+  // It returns a record containing the description.
   Record getTableDescription (Bool actual);       //# use actual description?
 
   // Get the column description of a column in the table with the given id.
-  // It fills result with a record containing the description.
+  // It returns a record containing the description.
   Record getColumnDescription (const String& columnName,
 			       Bool actual);      //# use actual description?
 
@@ -442,7 +440,7 @@ public:
   static TableLock makeLockOptions (const Record& options);
 
   // Turn the string into the endian format option.
-  //An exception is thrown if the string is invalid.
+  // An exception is thrown if the string is invalid.
   static Table::EndianFormat makeEndianFormat (const String& endianFormat);
 
   // Return the table object.
@@ -460,34 +458,32 @@ private:
 		      String& message);
 
   // Check if the column name and row numbers are valid.
-  // In case of errors, the message is filled.
   // Return the recalculated nrow so that it does not exceed #rows.
   Int checkRowColumn (Table& table,
 		      const String& colName,
 		      Int rownr, Int nrow, Int incr,
 		      const Char* caller);
 
-  // Get values from the column and let ValueHandler handle them.
+  // Get values from the column.
   // Nrow<0 means till the end of the column.
-  // In case of errors, message gets filled.
   ValueHolder getValueFromTable (const String& colName, 
 				 Int rownr, Int nrow, Int incr,
 				 Bool isCell);
 
-  // Get value slices from the column and let ValueHandler handle them.
+  // Get value slices from the column.
   // Nrow<0 means till the end of the column.
   ValueHolder getValueSliceFromTable(const String& colName, 
 				     const Slicer& slicer,
 				     Int rownr, Int nrow, Int incr,
 				     Bool isCell);
 
-  // Put values (from the ValueHandler) into the column.
+  // Put values into the column.
   // Nrow<0 means till the end of the column.
   void putValueInTable (const String& colName,
 			Int rownr, Int nrow, Int incr,
 			Bool isCell, const ValueHolder&);
 
-  // Put value slices (from the ValueHandler) into the column.
+  // Put value slices into the column.
   // Nrow<0 means till the end of the column.
   void putValueSliceInTable (const String& colName,
 			     const Slicer& slicer,
@@ -519,14 +515,16 @@ private:
   ValueHolder getKeyValue (const TableRecord& keySet,
 			   const RecordFieldId& fieldId);
 
+  // Put all keyword values in valueSet.
+  void putKeyValues (TableRecord& keySet, const Record& valueSet);
+
   // Put the value of a keyword.
   void putKeyValue (TableRecord& keySet,
 		    const RecordFieldId& fieldId,
 		    const ValueHolder& value);
 
   // Make a real table description from a table description in a record.
-  // When the record table description is invalid, the message buffer
-  // gets filled and a False return status is returned.
+  // An exception is thrown if the record table description is invalid.
   // A record table description is a Record object as returned by
   // getDesc.
   static Bool makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
