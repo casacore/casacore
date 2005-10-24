@@ -36,7 +36,6 @@ class String;
 class SkyCompRep;
 class ComponentShape;
 class SpectralModel;
-class componentlist;
 
 // <summary>Enumerators common to the ComponentsModels module</summary>
 
@@ -58,7 +57,7 @@ class componentlist;
 // <li> static functions which construct the appropriate derived object given
 //      an enumerator. Note that these functions are only accessible by the
 //      friend classes <linkto class=SkyCompRep>SkyCompRep</linkto> and
-//      <linkto class=componentlist>componentlist</linkto> and should be
+//      <linkto class=ComponentList>ComponentList</linkto> and should be
 //      considered an implementation detail.
 // </ul>
 // The first element in the enumerator must be represented by zero and every
@@ -83,7 +82,6 @@ public:
   // enumerators to objects. The private construct functions can only be
   // accessed by functions in the friend classes specified below.
   friend class SkyCompRep;
-  friend class componentlist;
 
   // The shapes of all the components
   enum Shape {
