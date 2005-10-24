@@ -206,6 +206,9 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   T sum;
 
   n = A.nrow();
+
+  // Ensure solution vector has same length as input vector
+  x.resize(b.shape());
         
   // solve by forward and backward substitution.  
   // L*y = b
