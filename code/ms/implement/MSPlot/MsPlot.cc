@@ -26,8 +26,17 @@
 //# $Id$
 
 //# Includes
+#include <casa/BasicSL/String.h>
+#include <casa/string.h>
+
 #include <ms/MSPlot/MsPlot.h>
+//
+#include <ms/MeasurementSets/MSDataDescIndex.h>
+#include <ms/MeasurementSets/MSDataDescColumns.h>
+#include <ms/MeasurementSets/MSDataDescription.h>
 #include <ms/MeasurementSets/MSColumns.h>
+#include <measures/Measures/Stokes.h>
+//
 #include <measures/Measures/MeasTable.h>
 //
 #include <tables/Tables/ScalarColumn.h>
@@ -76,7 +85,7 @@ Bool MsPlot<T>::antennaSelection( const Vector<String>& antennaNames, const Vect
 template <class T>
 Bool MsPlot<T>::spwSelection( const Vector<String>& spwNames, const Vector<Int>& spwIndex )
 	{
-		 if(spwNames[0].compare(String("")) ){ 
+		 if(spwNames[0].compare(String("")) ){  
 			 if(!(m_select.setSpwExpr( MSSelection::nameExprStr( spwNames)))) return False;
 			 if( m_dbg ) cout << "[ MsPlot<T>::spwSelection() ] spwNames set. " << endl;
 		 }
@@ -123,12 +132,12 @@ Bool MsPlot<T>::timeSelection( const Vector<String>& times )
 		return True;	
    }
 template<class T>
-Bool MsPlot<T>::corrSelection( const Vector<String>& correlations )
-   {
-		if( correlations[0].compare(String("")) ){ 
+Bool MsPlot<T>::corrSelection( const String& correlations )
+   {/*
+		if( correlations.compare(String("")) ){ 
 		   if(!(m_select.setCorrExpr( MSSelection::nameExprStr( correlations )))) return False;
 			if( m_dbg ) cout << "[ MsPlot<T>::corrSelection() ] correlations set. " << endl;
-	   } 	
+	   } */	
 		return True;	
    }
 template<class T>
@@ -137,7 +146,7 @@ Bool MsPlot<T>::setData( const Vector<String>& antennaNames, const Vector<Int>& 
 				  const Vector<String>& fieldNames,  const Vector<Int>& fieldIndex,
 				  const Vector<String>& uvDists,
 				  const Vector<String>& times,
-				  const Vector<String>& correlations 
+				  const String& correlations 
             )
 	{
 	// set selection expression first.
@@ -147,7 +156,20 @@ Bool MsPlot<T>::setData( const Vector<String>& antennaNames, const Vector<Int>& 
 		}
 		if( spwNames[0].compare(String("")) || spwIndex!=-1 ) {
 		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling spwSelection()..." << endl;
-		   if(!spwSelection( spwNames, spwIndex )) return False;
+			// parse the spwNames[0]
+			Vector<Int> spwIndex(1), chanIndex(1);
+			Vector<String> spwNms(1);
+			spwNms[0] = String("");
+			String chanRange = String("");
+			spwParser( spwNames[0], spwIndex, chanIndex, chanRange );
+			if( m_dbg ){
+			   cout<<"[MsPlot::setData] spwName[0] = "<< spwNames[0] << endl;
+				cout<<"[MsPlot::setData] spwIndex = " << spwIndex << endl;
+				cout<<"[MsPlot::setData] chanIndex = " << chanIndex << endl;
+				cout<<"[MsPlot::setData] chanRange = " << chanRange << endl;
+			}
+		   //if(!spwSelection( spwNames, spwIndex )) return False;
+			if(!spwSelection( spwNms, spwIndex )) return False;
 		}
 		if( fieldNames[0].compare(String("")) || fieldIndex!=-1 ){
 		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling fieldSelection()..." << endl;
@@ -161,9 +183,10 @@ Bool MsPlot<T>::setData( const Vector<String>& antennaNames, const Vector<Int>& 
 		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling timesSelection()..." << endl;
 		   if(!timeSelection( times )) return False;
 		}
-		if( correlations[0].compare(String("")) ) {
+		if( correlations.compare(String("")) ) {
 		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling correlationsSelection()..." << endl;
-		   if(!corrSelection( correlations )) return False;
+		   //if(!corrSelection( correlations )) return False;
+			m_corrExpr = correlations;
 		}
 			
 		// generate node from this expression
@@ -230,7 +253,7 @@ Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String
 		setPlotParameters( TPLP, plotOption ,labels);
 		return True;
    }
-// Convert the antenna coordinates into local frame and put the antenna positions into a MemoryTable.
+// Convert the antenna coordinates into local frame and put the antenna positions into a Table in memory
 template<class T>
 Bool MsPlot<T>::antennaPositions( Table& ants ){
    ROMSColumns msc( m_ms );
@@ -249,9 +272,9 @@ Bool MsPlot<T>::antennaPositions( Table& ants ){
 		    MPosition::Convert toItrf( obs, MPosition::ITRF );
 			 obs = toItrf( obs );
 		}
-		// convert the coordinats from the geocentric frame to the topocentric frame
+		// convert the coordinates from the geocentric frame to the topocentric frame
 		global2local( obs, antPoses, xTopo, yTopo, zTopo );
-		// prepare to create a MemoryTable
+		// prepare to create a Table in memory
 		TableDesc td("AntXY","1", TableDesc::New );
 		td.comment()="A MemoryTable for antenna local XY plane";
 		td.rwKeywordSet().define("XYPlane", "tangential" );
@@ -329,6 +352,40 @@ Bool MsPlot<T>::antennaPositions( MemoryTable& ants ){
 	
 }
 */
+// get polarization indices from spw and Stokes type( RR, RL, LR, LL, etc) for
+// the first index of DATA[ , ], MODEL[ , ], CORRECTED_DATA[ , ] etc. to 
+// plot quantities ( amplitude, phase, or both ) versus uv distance.
+// Input: spwIDs;( Stokes Types are obtained within this method from parsing the input corrExpr. 
+// Output:: polarIndices
+template<class T>
+Bool MsPlot<T>::polarIndices( const Vector<Int> spwIDs, /*const Vector<String> polarTypes,*/Vector<Vector<Int> >& polarsIndices  ){
+   MSDataDescIndex msDDI( m_ms.dataDescription());
+	// get DATA_DESC_IDs from the SPECTRAL_WINDOW_IDs
+	Vector<Int> descIDs = msDDI.matchSpwId( spwIDs );
+	// get the POLARIZATION_IDs from the DATA_DESC_IDs
+	ROMSDataDescColumns msddc( m_ms.dataDescription());
+	uInt ndesc = descIDs.nelements();
+	Vector<Int> polarIDs( ndesc );
+	for (uInt i=0; i< ndesc; i++ ){
+	   // Note,ArrayColumn takes row number as its index. This row number, however, counts from
+		// 0 to totalRow - 1. So it is actually the subtable ID already. That is why we do not need
+		// to add 1 to the descIDs[i].
+	   polarIDs[i] = msddc.polarizationId()( descIDs[i] ); 
+	}	
+	// get the the indices for the first index of DATA[ , ], CORRECTED[ , ]. MODEL[ , ], etc
+	// from the POLARIZATION_IDs->the CORR_TYPES and the Stokes types.
+	ROMSPolarizationColumns polc( m_ms.polarization());
+	Vector<String> stokesNames;
+	corrParser( m_corrExpr, stokesNames );
+	Vector<Int> polIndices;	
+	for( uInt i=0; i< ndesc; i++ ){
+	  const Vector<Int> corrType = polc.corrType()( polarIDs[i] );// see above comment.
+	  if( containStokes( corrType, stokesNames, polIndices )){
+	    polarsIndices[ i ] = polIndices;
+	  }else{ return False; }
+	}
+   return True;
+}
 template<class T>
 Int MsPlot<T>::plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel )
    {
@@ -344,7 +401,7 @@ Int MsPlot<T>::plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel
 		 plotData( BPS, TPLP, panel );
 	    return 0;
 	}
-// help function to transform the coordinates from the global geocentric frame( e.g ITRF ) to
+// helper function to transform the coordinates from the global geocentric frame( e.g ITRF ) to
 // the local topocentric frame ( origin: observatory=center of antenna array; x-axis: local east;
 // y-axis: local north; z-axis: local radial direction. ). Here we are not worrying about the effect
 // of the earth's ellipticity even though did use latitude instead of the angle between the earth
@@ -367,13 +424,7 @@ void MsPlot<T>::global2local( const MPosition& observatory,
   xTopo.resize(ne);
   yTopo.resize(ne);
   zTopo.resize(ne);
-  // convert all the MPosition object into ITRF
-  //MPosition obsItrf = MPosition( observatory );
-  //if( observatory.type()!= MPosition::ITRF ){
-  //   MPosition::Convert toItrf( observatory, MPosition::ITRF);
-  //   obsItrf = toItrf( observatory );
-  //}
-  //Vector<Double> XYZ0 = obsItrf.get("m").getValue();
+
   Vector<Double> XYZ0 = observatory.get("m").getValue();
   Vector<Double> XYZ(3);
   for( uInt i = 0; i< ne; i++ ){
@@ -386,7 +437,7 @@ void MsPlot<T>::global2local( const MPosition& observatory,
 	     posGeoItrf(i) = posGeo(i);
 	  }
      XYZ = posGeoItrf(i).get("m").getValue();
-	  // translate the global coordinates compenents to local components without rotating
+	  // translate the global coordinates components to local components without rotating
 	  xTrans(i) = XYZ(0) - XYZ0(0);
 	  yTrans(i) = XYZ(1) - XYZ0(1);
 	  zTrans(i) = XYZ(2) - XYZ0(2);
@@ -417,6 +468,133 @@ void MsPlot<T>::global2local( const MPosition& observatory,
  	 }
   }// end of for loop
 }; // end of global2local
- 	
+// parse the input String for spw. At present we handle the following four formats:
+// spw='(spw1, spw2, ...):(ch1, ch2, ...)' = 'spw1-spw2:ch1-ch2'
+//    ='(spw1, spw2, ...):(ch1-ch2)' = '(spw1-spw2):(ch1, ch2, ...)' 
+template<class T>
+void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<Int>& chanIndices, String& chanRange ){
+     const String::size_type len = spwExpr.length();
+	  uInt nmaxSpw = 60, nmaxChan = 600;
+	  String spwArray[nmaxSpw], chanArray[nmaxChan];
+     String spws = String("");
+	  String channels = String("");
+
+	  // split the input string into the polarisation part and the channel part 
+     if( spwExpr.contains(':')){ 
+	     const String::size_type coluPos = spwExpr.find(':');
+	     spws = spwExpr.substr( 0, coluPos-1 );
+	     channels = spwExpr.substr( coluPos+1, len-1 );
+	  }else{
+	     spws = spwExpr;
+	  }
+	  // split and convert spws into integers
+	  if( !spws.compare(String("") )){
+	     spwIndex.resize(1);
+		  spwIndex(0) = -1;
+	  }else{ 
+	  	  // peel off the braces 
+		  uInt startPos = 0, endPos = spws.length() - 1;
+		  if( (spws.chars())[0] == '(' || (spws.chars())[0]=='[' ) startPos = 1;
+		  if( (spws.chars())[endPos] == '(' || (spws.chars())[endPos] == ']' ) endPos = spws.length()-2;			     
+
+		  String spwPure = spws.substr( startPos, endPos );
+		  // extract every single spw
+		  if( spws.contains('-') ){
+		     uInt dashPos = spwPure.find('-');
+		     String startSpw = spwPure.substr( 0, dashPos-1 );
+			  String endSpw = spwPure.substr( dashPos+1, spwPure.length()-1 );
+			  // convert the range of spw into Vector<uInt>.
+			  uInt startSpwN = atoi( startSpw.chars() );
+			  uInt endSpwN = atoi( endSpw.chars() );
+			  spwIndex.resize( endSpwN-startSpwN+1 );
+			  spwIndex( 0 ) = startSpwN;
+			  for( uInt i=1; i< endSpwN-startSpwN+1; i++ ) spwIndex(i) = spwIndex(0) + i;
+			  if( m_dbg ) {
+			      cout << "[MsPlot::spwParser()] spwIndex( endSpwN - startSpwN ) = " << spwIndex( endSpwN-startSpwN ) << endl;
+					cout << "[MsPlot::spwParser()] endSpwN =? spwIndex( endSpwN - startSpwN -1 ) =" << endSpwN << endl;
+				} 			  
+		  }else{
+		     uInt totalSpwN = split( spwPure, spwArray, nmaxSpw, ',' );
+			  // convert spwArray into Vector<uInt>
+			  for( uInt i=0; i< totalSpwN; i++ ) spwIndex( i ) = atoi( spwArray[i].chars());
+		  }
+ 	  }	  
+	  // split and convert channel into integers
+	  if( !channels.compare(String("") )){
+	     chanIndices.resize(1);
+		  chanIndices(0) = -1;
+	  }else{ 
+	  	  // peel off the braces 
+		  uInt startPos = 0, endPos = channels.length() - 1;
+		  if( (channels.chars())[0] == '(' || (channels.chars())[0]=='[' ) startPos = 1;
+		  if( (channels.chars())[endPos] == '(' || (channels.chars())[endPos] == ']' ) endPos = channels.length()-2;			     
+
+		  String chanPure = channels.substr( startPos, endPos );
+		  // extract every single spw
+		  if( chanPure.contains('-') ){
+		    /* uInt dashPos = chanPure.find('-');
+		     String startChan = chanPure.substr( 0, dashPos-1 );
+			  String endChan = chanPure.substr( dashPos+1, chanPure.length()-1 );
+			  // convert the range of spw into Vector<uInt>.
+			  uInt startChanN = atoi( startChan.chars() );
+			  uInt endChanN = atoi( endChan.chars() );
+			  chanIndices.resize( endChanN-startChanN+1 );
+			  chanIndices( 0 ) = startChanN;
+			  for( uInt i=1; i< endChanN-startChanN+1; i++ ) chanIndices(i) = chanIndices(0) + i;
+			  */
+			  chanRange = chanPure;
+			  chanIndices.resize(1);
+			  chanIndices[0] = -1;
+			  if( m_dbg ) {
+			      cout << "[MsPlot::spwParser()] chanRange = " << chanRange << endl;
+				} 			  
+		  }else{
+		     uInt totalChanN = split( chanPure, chanArray, nmaxChan, "," );
+			  // convert spwArray into Vector<uInt>
+			  for( uInt i=0; i< totalChanN; i++ ) chanIndices( i ) = atoi( chanArray[i].chars());
+			  chanRange = String("");
+		  }// end of channel split	
+		}// end of split channels			   
+   } // end of spwParser.
+// corrParser parses the input String of corr parameter in the setData(...) method into Stokes type names defined
+// in the Stokes class. The input is in the format "RR LL RL", or "[RR LL RL]" or "(RR LL RL)" different types of
+// polarizations is separated by space.
+template<class T>
+void MsPlot<T>::corrParser( const String& corrExpr, Vector<String>& stokesNames ){
+		uInt startPos = 0, endPos = corrExpr.length() - 1;
+		if( (corrExpr.chars())[0] == '(' || (corrExpr.chars())[0]=='[' ) startPos = 1;
+		if( (corrExpr.chars())[endPos] == '(' || (corrExpr.chars())[endPos] == ']' ) endPos = corrExpr.length()-2;
+		String corrExprPure = corrExpr.substr( startPos, endPos );
+		Int nmax = (uInt)Stokes::NumberOfTypes;
+		String stokesNm[ nmax ];			
+      uInt totalStokes = split( corrExprPure, stokesNm, nmax, " " );
+		stokesNames.resize( totalStokes );
+		for( uInt i=0; i<totalStokes; i++ ) stokesNames[ i ] = stokesNm[i];
+}// end of corrParser	
+// check if the corrType vector contains the Stokes types related to the given stokes names. If yes, return true. 
+// If not, return False. Also return False if invalid Stokes types is inputted. If the corrType contains all the
+// given stokes names, the correponding polarIndices in the corrTypes vector are returned as polarIndices.	
+template<class T>
+Bool MsPlot<T>::containStokes( const Vector<Int> corrType, const Vector<String>& stokesNames, Vector<Int>& polarIndices ){
+     //const String name = stokesName;
+	uInt nsn = stokesNames.nelements();
+	Vector<Int> polIndices( nsn, -1 );
+   for( uInt k=0; k<nsn; k++ ){
+     Stokes::StokesTypes thisType = Stokes::type( stokesNames[k] );
+	  if( thisType == 0 ){
+	    cout<<"MsPlot<T>::containStokes()] Invalid Stokes type entered!" << endl;
+		 return False;
+	  }
+	  for( Int i=1; i<(Int)corrType.nelements()+1; i++ ){
+	     if( corrType[i-1] == thisType ){
+		    polIndices[ k ] = i;
+			 break;
+		  }
+	  }
+	  if( polIndices[k] == -1 ) return False;
+	}
+	polarIndices = polIndices;
+	return True;
+}// end of containStokes
 } //# NAMESPACE CASA - END
 // end of file
