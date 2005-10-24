@@ -250,6 +250,9 @@
 #define AIPS_MSPLOT_H
 
 //#! Includes go here
+#include <casa/BasicSL/String.h>
+#include <casa/string.h>
+//
 #include <tables/TablePlot/TablePlot.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSSelection.h>
@@ -398,14 +401,14 @@ Bool fieldSelection( const Vector<String>& fieldNames, const Vector<Int>& fieldI
 Bool uvDistSelection( const Vector<String>& uvDists );
 // Bool scanSelection( Vector<LString> scans );
 Bool timeSelection( const Vector<String>& times );
-Bool corrSelection( const Vector<String>& correlations );
+Bool corrSelection( const String& correlations );
 //#! Select a subset of the data (MeasurementSet )
 Bool setData( const Vector<String>& antennaNames, const Vector<Int>& antennaIndex,
               const Vector<String>& spwNames, const Vector<Int>& spwIndex,
 				  const Vector<String>& fieldNames,  const Vector<Int>& fieldIndex,
 				  const Vector<String>& uvDists,
 				  const Vector<String>& times,
-				  const Vector<String>& correlations 
+				  const String& correlations 
             );
 // set the plotting axes ( X and Y )
 Bool setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr );
@@ -429,6 +432,10 @@ void global2local( const MPosition& observatory,
 			                     Vector<Double>& xTopo,
 			                     Vector<Double>& yTopo,
 			                     Vector<Double>& zTopo ); 
+void spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<Int>& chanIndex, String& chanRange );
+void corrParser( const String& corrExpr, Vector<String>& stokesNames );
+Bool polarIndices( const Vector<Int> spwIDs, Vector<Vector<Int> >& polarsIndices );
+Bool containStokes( const Vector<Int> corrType, const Vector<String>& stokesNames, Vector<Int>& polarIndices );
 
 protected:
 
@@ -454,6 +461,7 @@ private:
 	 Bool m_dbg; 
 //#! Data Members
 	 MSSelection m_select;
+	 String m_corrExpr;
 //#! Constructors
 // We do not provide copy constructor and assignment operator. So declare them as private.
     MsPlot( const MsPlot &other );
