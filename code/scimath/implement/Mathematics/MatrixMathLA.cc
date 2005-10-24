@@ -124,6 +124,9 @@ template<class T> Matrix<T> invertSymPosDef(const Matrix<T> &in)
 template<class T> void invertSymPosDef(Matrix<T> & out, T& determinate, 
 				       const Matrix<T> &in)
 {
+  // Resize out to match in
+  out.resize(in.shape());
+
   Int i, j, k, n;
   n = in.nrow();
 
@@ -140,6 +143,8 @@ template<class T> void invertSymPosDef(Matrix<T> & out, T& determinate,
   // Cholesky decomposition: A = L*trans(L)
   CholeskyDecomp(tmp, diag);
   
+
+  // Is the following correct?
   determinate = diag(0)*diag(0);
   for(k = 1; k < n; k++) determinate = determinate*diag(k)*diag(k);
 
@@ -172,13 +177,13 @@ template<class T> void CholeskyDecomp(Matrix<T> &A, Vector<T> &diag)
   // Cholesky decompose A = L*trans(L)
   for(i = 0; i < n; i++) {
     for(j = i; j < n; j++) {
-      sum = A(i,j);
+      sum = std::conj(A(i,j));
       for(k = i-1; k >=0; k--) {
-	sum = sum - A(i,k)*A(j,k);
+	sum = sum - A(i,k)*std::conj(A(j,k));
       }
       if(i == j) {
 	if(sum <= T(0.0)) {
-	  throw(AipsError("invertSymPosDef(const Matrix<T> &in): Matrix is"
+	  throw(AipsError("CholeskyDecomp: Matrix is"
 			  "not positive definite"));
 	}
 	diag(i) = sqrt(sum);
@@ -215,7 +220,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   for(i = n-1; i >= 0; i--) {
     sum = x(i);
     for(k = i+1; k < n; k++) {
-	sum = sum - A(k,i)*x(k);
+	sum = sum - std::conj(A(k,i))*x(k);
       }
     x(i) = sum/diag(i);
   }
