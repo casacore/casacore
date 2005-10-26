@@ -36,6 +36,7 @@ class String;
 class SkyCompRep;
 class ComponentShape;
 class SpectralModel;
+class componentlist;
 
 // <summary>Enumerators common to the ComponentsModels module</summary>
 
@@ -82,6 +83,7 @@ public:
   // enumerators to objects. The private construct functions can only be
   // accessed by functions in the friend classes specified below.
   friend class SkyCompRep;
+  friend class componentlist;
 
   // The shapes of all the components
   enum Shape {
