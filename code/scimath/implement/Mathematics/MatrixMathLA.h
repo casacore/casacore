@@ -113,6 +113,10 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
 #define dgetri dgetri_
 #define cgetri cgetri_
 #define zgetri zgetri_
+#define sposv sposv_
+#define dposv dposv_
+#define cposv cposv_
+#define zposv zposv_
 #endif
 
 extern "C" {
@@ -132,6 +136,17 @@ extern "C" {
 		  Complex *work, const int *lwork, int *info);
       void zgetri(const int *m, DComplex *a, const int *lda, const int *ipiv,
 		  DComplex *work, const int *lwork, int *info);
+
+
+      void sposv(const char *uplo, const int *n, const int* nrhs, float *a, 
+		 const int *lda, float *b, const int *ldb, int *info);
+      void dposv(const char *uplo, const int *n, const int* nrhs, double *a, 
+		 const int *lda, double *b, const int *ldb, int *info);
+      void cposv(const char *uplo, const int *n, const int* nrhs, Complex *a, 
+		 const int *lda, Complex *b, const int *ldb, int *info);
+      void zposv(const char *uplo, const int *n, const int* nrhs, DComplex *a, 
+		 const int *lda, DComplex *b, const int *ldb, int *info);
+
 };
 
 //# Overloaded versions of the above to make templating work more easily
@@ -159,6 +174,19 @@ inline void getri(const int *m, Complex *a, const int *lda, const int *ipiv,
 inline void getri(const int *m, DComplex *a, const int *lda, const int *ipiv,
 		  DComplex *work, const int *lwork, int *info)
    { zgetri(m, a, lda, ipiv, work, lwork, info); }
+
+inline void posv(const char *uplo, const int *n, const int* nrhs, float *a, 
+		 const int *lda, float *b, const int *ldb, int *info)
+   { sposv(uplo, n, nrhs, a, lda, b, ldb, info); }  
+inline void posv(const char *uplo, const int *n, const int* nrhs, double *a, 
+		 const int *lda, double *b, const int *ldb, int *info)
+   { dposv(uplo, n, nrhs, a, lda, b, ldb, info); }  
+inline void posv(const char *uplo, const int *n, const int* nrhs, Complex *a, 
+		 const int *lda, Complex *b, const int *ldb, int *info)
+   { cposv(uplo, n, nrhs, a, lda, b, ldb, info); }  
+inline void posv(const char *uplo, const int *n, const int* nrhs, DComplex *a, 
+		 const int *lda, DComplex *b, const int *ldb, int *info)
+   { zposv(uplo, n, nrhs, a, lda, b, ldb, info); }  
 
 
 
