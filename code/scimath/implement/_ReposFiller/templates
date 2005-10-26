@@ -1524,35 +1524,35 @@
      template class Gaussian3DParam<Double> 
 1050 scimath/Functionals/Gaussian3DParam.cc 
      template class Gaussian3DParam<Float> 
-#1000 scimath/Functionals/GaussianND.cc 
-#     = casa/BasicSL/Complex.h 
-#     = scimath/Mathematics/AutoDiff.h 
-#     = scimath/Mathematics/AutoDiffMath.h 
-#     template class GaussianND<AutoDiff<DComplex> > 
-#     template class GaussianND<AutoDiff<Complex> > 
+1000 scimath/Functionals/GaussianND.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianND<AutoDiff<DComplex> > 
+     template class GaussianND<AutoDiff<Complex> > 
 1010 scimath/Functionals/GaussianND.cc 
      = casa/BasicSL/Complex.h 
      template class GaussianND<DComplex> 
      template class GaussianND<Complex> 
-#1020 scimath/Functionals/GaussianND.cc scimath/Mathematics/AutoDiff.h 
-#     = scimath/Mathematics/AutoDiffMath.h 
-#     template class GaussianND<AutoDiff<Double> > 
+1020 scimath/Functionals/GaussianND.cc scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianND<AutoDiff<Double> > 
 1030 scimath/Functionals/GaussianND.cc 
      template class GaussianND<Double> 
-#1000 scimath/Functionals/GaussianNDParam.cc 
-#     = casa/BasicSL/Complex.h 
-#     = scimath/Mathematics/AutoDiff.h 
-#     = scimath/Mathematics/AutoDiffMath.h 
-#     template class GaussianNDParam<AutoDiff<DComplex> > 
-#     template class GaussianNDParam<AutoDiff<Complex> > 
+1000 scimath/Functionals/GaussianNDParam.cc 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianNDParam<AutoDiff<DComplex> > 
+     template class GaussianNDParam<AutoDiff<Complex> > 
 1010 scimath/Functionals/GaussianNDParam.cc 
      = casa/BasicSL/Complex.h 
      template class GaussianNDParam<DComplex> 
      template class GaussianNDParam<Complex> 
-#1020 scimath/Functionals/GaussianNDParam.cc 
-#     = scimath/Mathematics/AutoDiff.h 
-#     = scimath/Mathematics/AutoDiffMath.h 
-#     template class GaussianNDParam<AutoDiff<Double> > 
+1020 scimath/Functionals/GaussianNDParam.cc 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template class GaussianNDParam<AutoDiff<Double> > 
 1030 scimath/Functionals/GaussianNDParam.cc 
      template class GaussianNDParam<Double> 
 1000 scimath/Functionals/HyperPlane.cc 
@@ -2393,9 +2393,25 @@
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &, Vector<AutoDiff<Complex> > &) 
+1020 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &, Vector<AutoDiff<DComplex> > &) 
+1030 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
      template void CholeskyDecomp(Matrix<Complex> &, Vector<Complex> &) 
      template void CholeskySolve(Matrix<Complex> &, Vector<Complex> &, Vector<Complex> &, Vector<Complex> &) 
-1020 scimath/Mathematics/MatrixMathLA.cc 
+1040 scimath/Mathematics/MatrixMathLA.cc 
      = casa/Arrays/Matrix.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
@@ -2403,37 +2419,77 @@
      = casa/Arrays/Vector.h 
      template void CholeskyDecomp(Matrix<DComplex> &, Vector<DComplex> &) 
      template void CholeskySolve(Matrix<DComplex> &, Vector<DComplex> &, Vector<DComplex> &, Vector<DComplex> &) 
-1030 scimath/Mathematics/MatrixMathLA.cc 
+1050 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Complex> > invertSymPosDef(Matrix<AutoDiff<Complex> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Complex> > &, AutoDiff<Complex> &, Matrix<AutoDiff<Complex> > const &) 
+1060 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = casa/BasicSL/Complex.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<DComplex> > invertSymPosDef(Matrix<AutoDiff<DComplex> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<DComplex> > &, AutoDiff<DComplex> &, Matrix<AutoDiff<DComplex> > const &) 
+1070 scimath/Mathematics/MatrixMathLA.cc 
      = casa/Arrays/Matrix.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template Matrix<Complex> invertSymPosDef(Matrix<Complex> const &) 
      template void invertSymPosDef(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
-1040 scimath/Mathematics/MatrixMathLA.cc 
+1080 scimath/Mathematics/MatrixMathLA.cc 
      = casa/Arrays/Matrix.h 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
      = scimath/Mathematics/AutoDiffMath.h 
      template Matrix<DComplex> invertSymPosDef(Matrix<DComplex> const &) 
      template void invertSymPosDef(Matrix<DComplex> &, DComplex &, Matrix<DComplex> const &) 
-1050 scimath/Mathematics/MatrixMathLA.cc 
+1090 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &, Vector<AutoDiff<Double> > &) 
+1100 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     = casa/Arrays/Vector.h 
+     template void CholeskyDecomp(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
+     template void CholeskySolve(Matrix<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &, Vector<AutoDiff<Float> > &) 
+1110 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Double> > invertSymPosDef(Matrix<AutoDiff<Double> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Double> > &, AutoDiff<Double> &, Matrix<AutoDiff<Double> > const &) 
+1120 scimath/Mathematics/MatrixMathLA.cc 
+     = casa/Arrays/Matrix.h 
+     = scimath/Mathematics/AutoDiff.h 
+     = scimath/Mathematics/AutoDiffMath.h 
+     template Matrix<AutoDiff<Float> > invertSymPosDef(Matrix<AutoDiff<Float> > const &) 
+     template void invertSymPosDef(Matrix<AutoDiff<Float> > &, AutoDiff<Float> &, Matrix<AutoDiff<Float> > const &) 
+1130 scimath/Mathematics/MatrixMathLA.cc 
      = casa/Arrays/Matrix.h 
      template Matrix<Double> invertSymPosDef(Matrix<Double> const &) 
      template void invertSymPosDef(Matrix<Double> &, Double &, Matrix<Double> const &) 
-1060 scimath/Mathematics/MatrixMathLA.cc 
+1140 scimath/Mathematics/MatrixMathLA.cc 
      = casa/BasicSL/Complex.h 
      template Matrix<Complex> invert(Matrix<Complex> const &) 
-1070 scimath/Mathematics/MatrixMathLA.cc 
+1150 scimath/Mathematics/MatrixMathLA.cc 
      = casa/BasicSL/Complex.h 
      template void invert(Matrix<Complex> &, Complex &, Matrix<Complex> const &) 
-1080 scimath/Mathematics/MatrixMathLA.cc 
+1160 scimath/Mathematics/MatrixMathLA.cc 
      template Matrix<Double> invert(Matrix<Double> const &) 
-1090 scimath/Mathematics/MatrixMathLA.cc 
+1170 scimath/Mathematics/MatrixMathLA.cc 
      template Matrix<Float> invert(Matrix<Float> const &) 
-1100 scimath/Mathematics/MatrixMathLA.cc 
+1180 scimath/Mathematics/MatrixMathLA.cc 
      template void invert(Matrix<Double> &, Double &, Matrix<Double> const &) 
-1110 scimath/Mathematics/MatrixMathLA.cc 
+1190 scimath/Mathematics/MatrixMathLA.cc 
      template void invert(Matrix<Float> &, Float &, Matrix<Float> const &) 
 1000 scimath/Mathematics/RigidVector.cc casa/BasicSL/Complex.h 
      template class RigidVector<Complex, 2> 
