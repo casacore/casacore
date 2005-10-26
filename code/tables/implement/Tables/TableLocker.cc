@@ -1,5 +1,5 @@
 //# TableLocker.cc: Class to hold a (user) lock on a table
-//# Copyright (C) 1998,2000
+//# Copyright (C) 1998,2000,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -39,13 +39,19 @@ TableLocker::TableLocker (Table& table,
   itsHadLock (table.hasLock(type))
 {
   if (!itsHadLock) {
-    if (! itsTable.lock (type, nattempts)) {
-      String str = "write";
-      if (type == FileLocker::Read) {
-	str = "read";
+    if (type == FileLocker::Read  &&  !table.lockOptions().readLocking()) {
+      // Read lock not needed if NoReadLocking.
+      itsHadLock = True;
+    } else {
+      // Acquire the lock.
+      if (! itsTable.lock (type, nattempts)) {
+	String str = "write";
+	if (type == FileLocker::Read) {
+	  str = "read";
+	}
+	throw (TableError ("No " + str + " lock could be acquired on table " +
+			   itsTable.tableName()));
       }
-      throw (TableError ("No " + str + " lock could be acquired on table " +
-			 itsTable.tableName()));
     }
   }
 }
@@ -58,4 +64,3 @@ TableLocker::~TableLocker()
 }
 
 } //# NAMESPACE CASA - END
-
