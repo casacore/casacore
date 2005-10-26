@@ -177,9 +177,9 @@ template<class T> void CholeskyDecomp(Matrix<T> &A, Vector<T> &diag)
   // Cholesky decompose A = L*trans(L)
   for(i = 0; i < n; i++) {
     for(j = i; j < n; j++) {
-      sum = std::conj(A(i,j));
+      sum = A(i,j);
       for(k = i-1; k >=0; k--) {
-	sum = sum - A(i,k)*std::conj(A(j,k));
+	sum = sum - A(i,k)*A(j,k);
       }
       if(i == j) {
 	if(sum <= T(0.0)) {
@@ -223,7 +223,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   for(i = n-1; i >= 0; i--) {
     sum = x(i);
     for(k = i+1; k < n; k++) {
-	sum = sum - std::conj(A(k,i))*x(k);
+	sum = sum - A(k,i)*x(k);
       }
     x(i) = sum/diag(i);
   }
