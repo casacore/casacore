@@ -113,18 +113,57 @@ template<class T> Int TablePlot<T>::setTableT(Int ntabs, Table &inTabObj)
 
 /*********************************************************************************/
 
+// send in a choice for type of BasePlot obj to use.
+
 /* Create the BasePlot objects */
-template<class T> Int TablePlot<T>::createBP(PtrBlock<BasePlot<T>* > &BPS)
+template<class T> Int TablePlot<T>::createBP(PtrBlock<BasePlot<T>* > &BPS, String pType)
 {
 	if(adbg)cout << "TablePlot :: Create BP" << endl;
+	Int key = XYPLOT;
 	
+	if(pType.contains("cross") || pType.contains("CROSS") ) key = CROSSPLOT;
+	if(pType.contains("hist") || pType.contains("HIST") ) key = HISTPLOT;
+
+	if(adbg)cout << "string : " << pType << " and correct key : " << key << endl;
+
+	// if switching from normal to cross plot, cleanup BPS, and remake.
+	Int change = 0;
+	if((Int)BPS.nelements() > 0)
+	{
+		if(adbg) cout << "Type : " << BPS[0]->getPlotType() << "  key : " << key << endl;
+		if(BPS[0]->getPlotType() != key) 
+		{
+			for(Int i=0;i<(Int)BPS.nelements();i++) delete BPS[i];
+			BPS.resize(0,Bool(1));
+			if(adbg)cout << "Number of BPSs - should be zero !! : " << BPS.nelements() << endl;
+		}
+		
+		if(adbg)cout << "Number of BPSs : " << BPS.nelements() << endl;
+	}
+	
+	// if BPS is of zero size, then make according to chosen pType.
 	if((Int)BPS.nelements()==0) 
 	{
 		BPS.resize(nTabs_p);
-		for(Int i=0;i<nTabs_p;i++) BPS[i] = new BasePlot<T>();
+		switch (key)
+		{
+			case XYPLOT:
+				for(Int i=0;i<nTabs_p;i++) BPS[i] = new BasePlot<T>();
+			        break;
+			case CROSSPLOT:
+				for(Int i=0;i<nTabs_p;i++) BPS[i] = new CrossPlot<T>();
+				break;
+			//case HISTPLOT:
+			//	for(Int i=0;i<nTabs_p;i++) BPS[i] = new HistPlot<T>();
+			//	break;
+			      
+		}
+		change = 1;
 	}
 	
-	return 0;
+	return change;
+	// if this is 1 ==> need to call upDateBP
+	// if this is 0 ==> no need to call upDateBP (but no harm if called)
 }
 
 /*********************************************************************************/
@@ -273,7 +312,7 @@ template<class T> Int TablePlot<T>::iterMultiPlotStart(PtrBlock<PtrBlock<BasePlo
 	for(Int i=0;i<NPanels_p;i++) 
 	{
 		ATBPS[i] = new PtrBlock<BasePlot<T>* >();
-		createBP(*ATBPS[i]);
+		createBP(*ATBPS[i],datastr[0]);
 	}
 	
 	

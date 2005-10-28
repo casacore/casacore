@@ -65,6 +65,10 @@ template<class T> TPPlotter<T>::TPPlotter()
 	XLabel_p="XLabel"; YLabel_p="YLabel"; Title_p="Title";
 	nxmin_p=0;nxmax_p=0;nymin_p=0;nymax_p=0;expan_p=0.02;
 	nxpanel_p=1; nypanel_p=1; NPanels_p=1;
+
+	timeplot_p = 1;
+	plotrange_p.resize();
+	pr_p = IPosition(1,0);
 }
 
 /*********************************************************************************/
@@ -131,7 +135,7 @@ template<class T> Int TPPlotter<T>::setPlotRange(PtrBlock<BasePlot<T>* > &PBP,In
 	T xmin=0,xmax=0,ymin=0,ymax=0;
 	for(Int i=0;i<nRanges_p;i++) 
 	{
-		PBP[i]->setPlotRange(xmin,xmax,ymin,ymax);
+		PBP[i]->setPlotRange(xmin,xmax,ymin,ymax,useflags_p);
 		Xmin_p = MIN(Xmin_p,xmin);
 		Xmax_p = MAX(Xmax_p,xmax);
 		Ymin_p = MIN(Ymin_p,ymin);
@@ -164,7 +168,10 @@ template<class T> Int TPPlotter<T>::setPlotRange(PtrBlock<BasePlot<T>* > &PBP,In
 		(panelZrange_p[panel-1])[1] = nxmax_p;
 		(panelZrange_p[panel-1])[2] = nymin_p;
 		(panelZrange_p[panel-1])[3] = nymax_p;
+
 	}
+		
+	adjustPlotRange(panel);		
 	
 	if(adbg)cout << "EnvRanges : " << panel << " :: " << nxmin_p << " " << nxmax_p << " "  << nymin_p << " " << nymax_p << endl;
 	
@@ -180,23 +187,36 @@ template<class T> Int TPPlotter<T>::setPlotRange(PtrBlock<BasePlot<T>* > &PBP,In
 template<class T> Int TPPlotter<T>::plotData(PtrBlock<BasePlot<T>* > &PBP,Int &panel)
 {
 	if(adbg)cout << "TPPlotter :: Plot the Data" << endl;
-	Matrix<Int> Pind;
 	Int colourcount=2;
-	if(plotcolour_p > 1 && plotcolour_p < 10) colourcount = plotcolour_p;
-	
-	/* Query the BasePlots for a mapping of plot index to [x,y]data matrix indices
-	   Call 'thePlot' for all tables within each BasePlot in the list.*/
+	Int colourinc = 0;
+	if(plotcolour_p > 1 && plotcolour_p < 10) 
+	{
+		colourcount = plotcolour_p;
+		colourinc = 0;
+	}
+	else if(plotcolour_p > 9 ) 
+	{
+		colourinc = plotcolour_p%10;
+		colourcount = (plotcolour_p - colourinc)/10;
+	}
+
+	/* Call 'thePlot' for all tables within each BasePlot in the list.*/
 	for(Int i=0;i<nRanges_p;i++)
 	{
-		Pind.resize();
-		Pind = PBP[i]->getPlotMap();
-		for(Int tt=0;tt<PBP[i]->NPlots_p;tt++)
+		for(Int tt=0;tt<PBP[i]->getNumPlots();tt++)
 		{
-			thePlot(*PBP[i],i,Pind(tt,0),Pind(tt,1),colourcount,0,panel);
-			colourcount++;
-		}
+			if(useflags_p > 0) thePlot(*PBP[i],i,tt,12,0,panel,1); // plot flags in purple!
 
+			if(useflags_p != 1) thePlot(*PBP[i],i,tt,colourcount,0,panel,0);
+			colourcount+=colourinc;
+			colourcount = colourcount%10;
+			if(colourcount==0) colourcount=10;
+		}
+		colourcount++;
+		colourcount = colourcount%10;
+		if(colourcount==0) colourcount=10;
 	}
+
 
 	return 0;
 }
@@ -240,7 +260,7 @@ template<class T> Int TPPlotter<T>::markFlags(Int panel)
 template<class T> Int TPPlotter<T>::markZoom(Int panel,Int direction)
 {
 	if(adbg)cout << "TPPlotter :: markZoom " << endl;
-	Int cpanel=0;
+	//Int cpanel=0;
 	T x1=0,x2=0,y1=0,y2=0;
 
 	if(direction)
@@ -249,16 +269,18 @@ template<class T> Int TPPlotter<T>::markZoom(Int panel,Int direction)
 		
 		gotoPanel(panel);
 		if(markRegion(panel,x1,x2,y1,y2)==-1) return -1;
-		cpanel=panel;
+		//cpanel=panel;//// get rid of one variable 
 
 		/* Set ZoomRange to chosen region. */
-		panelZflag_p[cpanel-1] = 1;
-		(panelZrange_p[cpanel-1])[0] = x1;
-		(panelZrange_p[cpanel-1])[1] = x2;
-		(panelZrange_p[cpanel-1])[2] = y1;
-		(panelZrange_p[cpanel-1])[3] = y2;
+		panelZflag_p[panel-1] = 1;
+		(panelZrange_p[panel-1])[0] = x1;
+		(panelZrange_p[panel-1])[1] = x2;
+		(panelZrange_p[panel-1])[2] = y1;
+		(panelZrange_p[panel-1])[3] = y2;
 		
-		return (cpanel);
+		adjustPlotRange(panel);
+		
+		return (panel);
 	}
 	else
 	{
@@ -269,10 +291,39 @@ template<class T> Int TPPlotter<T>::markZoom(Int panel,Int direction)
 		panelZflag_p[panel-1]=0;
 		for(Int j=0;j<4;j++) (panelZrange_p[panel-1])[j] = (panelPrange_p[panel-1])[j];
 		
+		adjustPlotRange(panel);
+		
 		return(0);
 	}
 }
 
+/*********************************************************************************/
+
+/* Adjust plot ranges */
+template<class T> Int TPPlotter<T>::adjustPlotRange(Int panel)
+{
+	if( (panelZrange_p[panel-1])[0] == (panelZrange_p[panel-1])[1] )
+	{
+		(panelZrange_p[panel-1])[0] -= 0.1;
+		(panelZrange_p[panel-1])[1] += 0.1;
+	}
+	
+	if( (panelZrange_p[panel-1])[2] == (panelZrange_p[panel-1])[3] )
+	{
+		(panelZrange_p[panel-1])[2] -= 0.1;
+		(panelZrange_p[panel-1])[3] += 0.1;
+	}
+
+	pr_p[0]=0;panelZrange_p[panel-1][0] = MAX(panelZrange_p[panel-1][0],plotrange_p(pr_p));
+	pr_p[0]=1;panelZrange_p[panel-1][1] = MIN(panelZrange_p[panel-1][1],plotrange_p(pr_p));
+	pr_p[0]=2;panelZrange_p[panel-1][2] = MAX(panelZrange_p[panel-1][2],plotrange_p(pr_p));
+	pr_p[0]=3;panelZrange_p[panel-1][3] = MIN(panelZrange_p[panel-1][3],plotrange_p(pr_p));
+
+	
+	if(adbg) cout << "range for panel " << panel << ": " << panelZrange_p[panel-1][0] << " , " << panelZrange_p[panel-1][1] << " , " << panelZrange_p[panel-1][2] << " , " << panelZrange_p[panel-1][0] << endl;
+	
+	return 0;
+}
 /*********************************************************************************/
 
 /* Send flag region list to all BasePlots */
@@ -335,14 +386,55 @@ template<class T> Int TPPlotter<T>::setPlotOptions(Record &plotoptions)
 	{
 		RecordFieldId ridcol("plotcolour");
 		plotoptions.get(ridcol,plotcolour_p);
-	}else plotcolour_p = 2;
+	}else plotcolour_p = 1;
 
 	if(plotoptions.isDefined("fontsize"))
 	{
 		RecordFieldId ridfont("fontsize");
 		plotoptions.get(ridfont,fontsize_p);
 	}else fontsize_p = 2.0 * nxpanel_p*nypanel_p;
+	
+	if(plotoptions.isDefined("linewidth"))
+	{
+		RecordFieldId ridfont("linewidth");
+		plotoptions.get(ridfont,linewidth_p);
+	}else linewidth_p = 2;
 
+	if(plotoptions.isDefined("timeplot"))
+	{
+		RecordFieldId ridfont("timeplot");
+		plotoptions.get(ridfont,timeplot_p);
+	}else timeplot_p = 0;
+
+	if(plotoptions.isDefined("plotsymbol"))
+	{
+		RecordFieldId ridfont("plotsymbol");
+		plotoptions.get(ridfont,plotsymbol_p);
+	}else plotsymbol_p = 1;
+
+	if(plotoptions.isDefined("plotrange"))
+	{
+		RecordFieldId ridfont("plotrange");
+		//cout << "DATATYPE : " << plotoptions.dataType(ridfont) << endl;
+		plotoptions.get(ridfont,plotrange_p);
+	}else 
+	{
+		plotrange_p.resize(IPosition(1,4));
+		pr_p[0] = 0;	plotrange_p(pr_p) = -1e+30;
+		pr_p[0] = 1;	plotrange_p(pr_p) = +1e+30;
+		pr_p[0] = 2;	plotrange_p(pr_p) = -1e+30;
+		pr_p[0] = 3;	plotrange_p(pr_p) = +1e+30;
+	}
+	if(ddbg)cout << " Plotrange : " << plotrange_p << endl;
+
+	if(plotoptions.isDefined("useflags"))
+	{
+		RecordFieldId ridfont("useflags");
+		plotoptions.get(ridfont,useflags_p);
+	}else useflags_p = 0;
+	// 0 : plot only unflagged data
+	// 1 : plot only flagged data
+	// 2 : plot flagged and unflagged data (diff colours)
 
 	
 #ifdef TP_PLPLOT
@@ -387,7 +479,7 @@ template<class T> Int TPPlotter<T>::setPlotOptions(Record &plotoptions)
 	}
 	
 	/* Set Plotting options */
-	setOptions(nxpanel_p, nypanel_p, windowsize_p, aspectratio_p, plotstyle_p, plotcolour_p, fontsize_p);
+	setOptions(nxpanel_p, nypanel_p, windowsize_p, aspectratio_p, plotstyle_p, plotcolour_p, fontsize_p, linewidth_p);
 		
 	return 0;
 }
@@ -410,26 +502,27 @@ template<class T> Int TPPlotter<T>::setLabels(Vector<String> &labels)
 /*********************************************************************************/
 
 /* Read data from BasePlots, apply flags and do the actual plotting */
-template<class T> Int TPPlotter<T>::thePlot(BasePlot<T> &BP,Int ibp, Int XRow, Int YRow, Int colour, Int ptype, Int panel)
+template<class T> Int TPPlotter<T>::thePlot(BasePlot<T> &BP,Int ibp, Int Pnum, Int colour, Int ptype, Int panel, Int flagged)
 {
 	T xval,yval;
-	Int NRows = BP.NRows_p;
+	Int NRows = BP.getNumRows();
 
-	if(ddbg) cout << "About to allocate the PLFLT arrays of size : " << NRows << endl;
+	if(ddbg)cout << "About to allocate the PLFLT arrays of size : " << NRows << endl;
 	
 	allocPlotArrays(NRows);
-	
-	if(ddbg)cout << "Plotting BP " << ibp << " with XRow = " << XRow << " and YRow = " << YRow << endl;
+
+	// 'flagged' = 1 --> plot flagged data
+	// 'flagged' = 0 --> plot unflagged data
 	
 	/* Fill up the Plot Arrays with data-to-be-plotted. */
 	pcnt_p=0;
 	for(Int rc=0;rc<NRows;rc++)
 	{
-		if(!BP.theflags_p(YRow,rc)) /* pick only unflagged data */
+		if(BP.getYFlags(Pnum,rc) == Bool(flagged)) 
 		{
-			xval = BP.xplotdata_p(XRow,rc);
-			yval = BP.yplotdata_p(YRow,rc);
-			
+			xval = BP.getXVal(Pnum,rc);
+			yval = BP.getYVal(Pnum,rc);
+		
 			if(xval>(panelZrange_p[panel-1])[0] && xval<=(panelZrange_p[panel-1])[1] && 
 			yval > (panelZrange_p[panel-1])[2] && yval <= (panelZrange_p[panel-1])[3])
 			{
@@ -442,25 +535,27 @@ template<class T> Int TPPlotter<T>::thePlot(BasePlot<T> &BP,Int ibp, Int XRow, I
 
 #ifdef TP_PGPLOT
 	x_p.resize(pcnt_p,True);
-	x_p.resize(pcnt_p,True);
+	y_p.resize(pcnt_p,True);
 #endif
 
 	if(adbg)cout << "Plotting : " << pcnt_p << " points ...." << endl;
 	setPlotLabels();
+	
 
 	/* Plot */
 	switch(ptype)
 	{
 		case 0: /* points */
-			plotXY(colour,1);
+			plotXY(colour,flagged?1:plotsymbol_p);
 			break;
 		case 1: /* lines */
-			plotXY(colour,1);
+			plotXY(colour,flagged?1:plotsymbol_p);
 			break;
 		case 2: /* histogram */
 			break;
 	}
 
+	
 	return 0;
 }
 
@@ -481,7 +576,8 @@ template<class T> Int TPPlotter<T>::setWinEnv(Int panel)
 	
 	pgp_p->svp(0.1,0.9,0.2,0.8);
 	pgp_p->swin((panelZrange_p[panel-1])[0],(panelZrange_p[panel-1])[1],(panelZrange_p[panel-1])[2],(panelZrange_p[panel-1])[3]);
-	pgp_p->box("BCNST",0.0,0,"BCNST",0.0,0);
+	if(timeplot_p)pgp_p->tbox("BCNST",0.0,0,"BCNST",0.0,0);
+	else pgp_p->box("BCNST",0.0,0,"BCNST",0.0,0);
 
 	
 #endif
@@ -673,7 +769,8 @@ template<class T> Int TPPlotter<T>::gotoPanel(Int panel)
 	pgp_p->sci(1);
 	pgp_p->svp(0.1,0.9,0.2,0.8);
 	pgp_p->swin((panelZrange_p[panel-1])[0],(panelZrange_p[panel-1])[1],(panelZrange_p[panel-1])[2],(panelZrange_p[panel-1])[3]);
-	pgp_p->box("BCNST",0.0,0,"BCNST",0.0,0);
+	if(timeplot_p)pgp_p->tbox("BCNST",0.0,0,"BCNST",0.0,0);
+	else pgp_p->box("BCNST",0.0,0,"BCNST",0.0,0);
 	
 #endif
 	
@@ -685,11 +782,12 @@ template<class T> Int TPPlotter<T>::gotoPanel(Int panel)
 }
 /*********************************************************************************/
 
-template<class T> Int TPPlotter<T>::setOptions(Int nxpanels, Int nypanels, Float windowsize, Float aspectratio, Int plotstyle, Int plotcolour, Float fontsize)
+template<class T> Int TPPlotter<T>::setOptions(Int nxpanels, Int nypanels, Float windowsize, Float aspectratio, Int plotstyle, Int plotcolour, Float fontsize, Int linewidth)
 {
 #ifdef TP_PGPLOT	
 	pgp_p->pap(windowsize,aspectratio);
 	pgp_p->sch(fontsize);
+	pgp_p->slw(linewidth);
 	pgp_p->subp(nxpanels,nypanels);
 #endif
 	
@@ -775,7 +873,7 @@ template<class T> Int TPPlotter<T>::plotXY(Int col,Int ch)
 {
 #ifdef TP_PGPLOT	
 	pgp_p->sci(col);
-	pgp_p->pt(x_p,y_p,1);
+	pgp_p->pt(x_p,y_p,ch);
 #endif
 #ifdef TP_PLPLOT	
 	pls->col0(col);

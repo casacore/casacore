@@ -81,7 +81,10 @@ template<class T> BasePlot<T>::BasePlot()
 	xprange_p.resize(0,0); yprange_p.resize(0,0);
 	FlagColName_p = "FLAG"; fcol_p = False;
 	FlagRowName_p = "FLAG_ROW"; frcol_p = False;
+	xptr_p=0;yptr_p=0;
+	newflags_p=False;
 	
+	pType_p=XYPLOT; 
 }
 
 /*********************************************************************************/
@@ -130,6 +133,8 @@ template<class T> Int BasePlot<T>::init(Table &tab)
 
 /*********************************************************************************/
 
+/*********************************************************************************/
+
 /* Create TableExprNodes from TaQL strings and obtain TaQL indices/column names */
 template<class T> Int BasePlot<T>::createTENS(Vector<String> &datastr)
 {
@@ -144,31 +149,15 @@ template<class T> Int BasePlot<T>::createTENS(Vector<String> &datastr)
 	
 	nTens_p = nTStr_p/2; 
 
-	xtens_p.resize(nTens_p);
-	ytens_p.resize(nTens_p);
 	IndCnt_p.resize(nTens_p);
 	colnames_p.resize(0);
 	ipslice_p.resize(0);
 	nip_p=0;
 	
-	/* Create TENS and traverse parse trees */
 	try
 	{
-	for(Int i=0;i<nTens_p;i++) 
-	{
-		xtens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2]);
-		ytens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2+1]);
-		
-		if( (xtens_p[i].dataType() != TpDouble) || (ytens_p[i].dataType() != TpDouble) ) 
-		{
-			cout << "DataType of TaQL expression is not plottable... "<< endl;
-			return -1;
-		}
-		
-		getIndices(xtens_p[i]);
-		IndCnt_p[i] = nip_p;/* since flags pertain only to y data */
-		getIndices(ytens_p[i]);
-	}
+		createXTENS(datastr);
+		createYTENS(datastr);
 	}
 	catch(AipsError &x)
 	{
@@ -203,7 +192,6 @@ template<class T> Int BasePlot<T>::createTENS(Vector<String> &datastr)
 }
 
 /*********************************************************************************/
-
 /* Extract data from the table */
 template<class T> Int BasePlot<T>::getData()
 {
@@ -211,77 +199,26 @@ template<class T> Int BasePlot<T>::getData()
 	cout << "BasePlot :: Get Data into storage arrays" << endl;
 
 	NRows_p = (SelTab_p).nrow();
+	Tsize_p.resize(nTens_p,2);
 
 	/************************ Extract Data from Table ***************/
 	if(ddbg) cout << "Extracting data using TEN ... " << endl;
 	if(ddbg)tmr.mark();
 
-	TableExprId tid(0);
-	Double xytemp;
-	Array<Double> xtemp;
-	Array<Double> ytemp;
-	Array<Bool> arrflag;
-
-	NPlots_p=0; 
-
 	/* Get data from first row, to figure out the total number of plots
 	   Resize xplotdata_p, yplotdata_p and Pind_p accordingly
 	   Fill in the numbers for Pind_p */
 
-	Int xptr=0,yptr=0;
-	tid.setRownr(0);
-	TableExprNode tten;
-	Tsize_p.resize(nTens_p,2);
 
-	xshp_p.resize(0);
-	yshp_p.resize(0);
-	flagitshp_p.resize(0);
-	
-	try{
-	for(int z=0;z<nTens_p;z++)
+	TableExprId tid(0);
+	xptr_p=0, yptr_p=0;
+
+	try
 	{
-		if(nTStr_p>0)
-		{
-		tten = xtens_p[z];
+		tid.setRownr(0);
+		getYData(tid);
+		getXData(tid);
 		
-		if(tten.isScalar())
-		{
-			tten.get(0,xytemp);
-			Tsize_p(z,0) = 1;
-		}
-		else
-		{
-			tten.get(0,xtemp);
-			xshp_p = xtemp.shape();
-			if(ddbg)cout << "Shape of Xaxis data : " << xshp_p << endl;
-			Tsize_p(z,0) = xshp_p.product(); 
-		}
-		xptr+= Tsize_p(z,0); 
-		NPlots_p = xptr; 
-		}
-		tten = ytens_p[z];
-		
-		if(tten.isScalar())
-		{
-			if(ddbg) cout << "before scalar get" << endl;
-			tten.get(0,xytemp);
-			Tsize_p(z,1) = 1;
-			yshp_p = IPosition(2,1,1);
-		}
-		else
-		{
-			if(ddbg) cout << "before vector get" << endl;
-			tten.get(0,ytemp);
-			yshp_p = ytemp.shape();
-			if(ddbg)cout << "Shape of Yaxis data : " << yshp_p << endl;
-			if(ddbg) cout << "ytemp : " << ytemp << endl;
-			Tsize_p(z,1) = yshp_p.product(); 
-		}
-		yptr+=Tsize_p(z,1); 
-		NPlots_p = yptr; 
-		
-		flagitshp_p = yshp_p;
-	}
 	}
 	catch(ArraySlicerError &x){
 		cout << "Error in TaQL indices... : " << x.getMesg()<< endl;
@@ -292,20 +229,18 @@ template<class T> Int BasePlot<T>::getData()
 		return -1;
 	}
 
-	xplotdata_p.resize(xptr,NRows_p);	xplotdata_p.set((T)0);
-	yplotdata_p.resize(yptr,NRows_p);	yplotdata_p.set((T)0);
-	theflags_p.resize(yptr,NRows_p);	theflags_p.set(False);
-
-	Pind_p.resize(NPlots_p,2);
-	
 	/* Fill up Pind_p */
-	xptr=0; yptr=0;
-	for(Int m=0;m<nTStr_p/2;m++)
+	
+	Pind_p.resize(NPlots_p,2);
+
+	Int xptr=0,yptr=0;
+
+	for(Int m=0;m<nTens_p;m++)
 	{
-		if(Tsize_p(m,0)==1 && Tsize_p(m,1) > 1) /* one to many */
+		if(Tsize_p(m,0)<2 && Tsize_p(m,1) > 1) /* one to many */
 		{
 			for(Int ii=0;ii<Tsize_p(m,1);ii++)
-			{ Pind_p(xptr+ii,0)= xptr;  Pind_p(xptr+ii,1) = yptr + ii;}
+			{ Pind_p(yptr+ii,0)= xptr;  Pind_p(yptr+ii,1) = yptr + ii;}
 		}
 		else 
 		{
@@ -313,13 +248,13 @@ template<class T> Int BasePlot<T>::getData()
 			if (Tsize_p(m,0) == Tsize_p(m,1))
 			{
 				for(Int ii=0;ii<Tsize_p(m,1);ii++)
-				{ Pind_p(xptr+ii,0)= xptr+ii; Pind_p(xptr+ii,1) = yptr + ii;}
+				{ Pind_p(yptr+ii,0)= xptr+ii; Pind_p(yptr+ii,1) = yptr + ii;}
 			}
 			else 
 			{
 				cout << " Only first set of X values is used" << endl;
 				for(Int ii=0;ii<Tsize_p(m,1);ii++)
-				{ Pind_p(xptr+ii,0)= xptr;  Pind_p(xptr+ii,1) = yptr + ii;}
+				{ Pind_p(yptr+ii,0)= xptr;  Pind_p(yptr+ii,1) = yptr + ii;}
 				
 			}
 		}
@@ -330,57 +265,22 @@ template<class T> Int BasePlot<T>::getData()
 
 	if(ddbg) cout << "Num x rows : " << xptr << "   Num y rows : " << yptr << endl;
 
+	if(xptr != xptr_p) {cout << "Indexing error !! " << endl; return -1;}
+	if(yptr != yptr_p) {cout << "Indexing error !! " << endl; return -1;}
+
 
 	/* read the rest of the data */
 	
-	Int xp=0, yp=0, fyp=0;
-	
-#if 1
 	try
 	{
-	for(int rc=0;rc<NRows_p;rc++)
-	{
-		tid.setRownr(rc);
-		
-		xp=0; yp=0; fyp=0;
-		for(int z=0;z<nTens_p;z++) // nTens_p : number of TEN pairs
+		for(Int rc=0;rc<NRows_p;rc++)
 		{
-			tten = xtens_p[z];
-			if(tten.isScalar())
-			{
-				tten.get(tid,xytemp);
-				xplotdata_p(xp++,rc) = (T)xytemp;
-			}
-			else
-			{
-				tten.get(tid,xtemp);
-				xshp_p = xtemp.shape();
-				for (Array<Double>::iterator iter=xtemp.begin(); iter!=xtemp.end(); iter++)
-					xplotdata_p(xp++,rc) = (T)(*iter);
-			}
+			tid.setRownr(rc);
 			
-			tten = ytens_p[z];
-			if(tten.isScalar())
-			{
-				tten.get(tid,xytemp);
-				yplotdata_p(yp++,rc) = (T)xytemp;
-
-			}
-			else
-			{
-				tten.get(tid,ytemp);
-				yshp_p = ytemp.shape();
-				for (Array<Double>::iterator iter=ytemp.begin(); iter!=ytemp.end(); iter++)
-					yplotdata_p(yp++,rc) = (T)(*iter);
-						
-
+			getXData(tid);
+			getYData(tid);
 				
-			}
-			
-			getFlags(rc);
-			
-		}// end of for z
-	}//end of for rc
+		}//end of for rc
 	}
 	catch(AipsError &x)
 	{
@@ -388,7 +288,6 @@ template<class T> Int BasePlot<T>::getData()
 		return -1;
 	}
 	
-#endif	
 	if(ddbg)cout << "************** Time to extract data using TEN : " << TMR(tmr) << endl;
 	
 	if(ddbg)cout << "Shape of xplotdata_p : " << xplotdata_p.shape() << endl;
@@ -398,60 +297,10 @@ template<class T> Int BasePlot<T>::getData()
 	return 0;
 }
 
+
+
 /*********************************************************************************/
 
-/* Compute the combined plot range */
-template<class T> Int BasePlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax)
-{
-	if(adbg)cout << "BasePlot :: Set Plot Range for this table " << endl;
-	xprange_p.resize(NPlots_p,2);
-	yprange_p.resize(NPlots_p,2);
-	
-	/* compute min and max for each Plot */
-	for(int i=0;i<NPlots_p;i++)
-	{
-		xprange_p(i,0) = 1e+30;
-		xprange_p(i,1) = -1e+30;
-		yprange_p(i,0) = 1e+30;
-		yprange_p(i,1) = -1e+30;
-		
-		for(int rc=0;rc<NRows_p;rc++)
-		{
-			if(!theflags_p(Pind_p(i,1),rc)) 
-			{
-				if(xplotdata_p(Pind_p(i,0),rc) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),rc);
-				if(xplotdata_p(Pind_p(i,0),rc) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),rc);
-				
-				if(yplotdata_p(Pind_p(i,1),rc) < yprange_p(i,0)) yprange_p(i,0) = yplotdata_p(Pind_p(i,1),rc);
-				if(yplotdata_p(Pind_p(i,1),rc) >= yprange_p(i,1)) yprange_p(i,1) = yplotdata_p(Pind_p(i,1),rc);
-			}
-		}
-	}
-	
-	xmin=0;xmax=0;ymin=0;ymax=0;
-	xmin = xprange_p(0,0);
-	xmax = xprange_p(0,1);
-	ymin = yprange_p(0,0);
-	ymax = yprange_p(0,1);
-	
-	if(ddbg) 
-	cout << " initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
-
-	/* get a comnined min,max */
-
-	for(int qq=1;qq<NPlots_p;qq++)
-	{
-		xmin = MIN(xmin,xprange_p(qq,0));
-		xmax = MAX(xmax,xprange_p(qq,1));
-	}
-	for(int qq=1;qq<NPlots_p;qq++)
-	{
-		ymin = MIN(ymin,yprange_p(qq,0));
-		ymax = MAX(ymax,yprange_p(qq,1));
-	}
-
-	return 0;
-}
 
 /*********************************************************************************/
 
@@ -483,28 +332,34 @@ template<class T> Int BasePlot<T>::flagData(Int diskwrite, Int rowflag)
 	
 	if(nflagmarks_p>0)
 	{
-	for(Int nf=0;nf<nflagmarks_p;nf++)
-	{
-		if(ddbg)cout << "*******" << endl;
-		if(ddbg)cout << (locflagmarks_p[nf])[0] << "," << (locflagmarks_p[nf])[1] << "," << (locflagmarks_p[nf])[2] << "," << (locflagmarks_p[nf])[3] << endl;
-	}
-	
-	for(int nr=0;nr<NRows_p;nr++)
-	{
-		for(int np=0;np<NPlots_p;np++)
+		for(Int nf=0;nf<nflagmarks_p;nf++)
 		{
-			for(int nf=0;nf<nflagmarks_p;nf++)
-				if(xplotdata_p(Pind_p(np,0),nr)>(locflagmarks_p[nf])[0] &&
-				   xplotdata_p(Pind_p(np,0),nr)<=(locflagmarks_p[nf])[1] && 
-				   yplotdata_p(Pind_p(np,1),nr)>(locflagmarks_p[nf])[2] && 
-				   yplotdata_p(Pind_p(np,1),nr)<=(locflagmarks_p[nf])[3]) 
-					{
-						theflags_p(Pind_p(np,1),nr) = True;
-					}
+			if(ddbg)cout << "*******" << endl;
+			if(ddbg)cout << (locflagmarks_p[nf])[0] << "," << (locflagmarks_p[nf])[1] << "," << (locflagmarks_p[nf])[2] << "," << (locflagmarks_p[nf])[3] << endl;
 		}
+		
+		for(int nr=0;nr<NRows_p;nr++)
+		{
+			for(int np=0;np<NPlots_p;np++)
+			{
+				for(int nf=0;nf<nflagmarks_p;nf++)
+					if(xplotdata_p(Pind_p(np,0),nr)>(locflagmarks_p[nf])[0] &&
+					   xplotdata_p(Pind_p(np,0),nr)<=(locflagmarks_p[nf])[1] && 
+					   yplotdata_p(Pind_p(np,1),nr)>(locflagmarks_p[nf])[2] && 
+					   yplotdata_p(Pind_p(np,1),nr)<=(locflagmarks_p[nf])[3]) 
+						{
+							theflags_p(Pind_p(np,1),nr) = True;
+							newflags_p = True;
+						}
+			}
+		}
+	
 	}
 	
-	if(diskwrite) setFlags(rowflag);
+	if(diskwrite && newflags_p) 
+	{
+		setFlags(rowflag);
+		newflags_p = False;
 	}
 
 	return 0;
@@ -557,17 +412,296 @@ template<class T> Int BasePlot<T>::clearFlags()
 }
 
 /*********************************************************************************/
+/*                     TPPlotter interaction functions                           */
+/*********************************************************************************/
 
-template<class T> Matrix<Int> BasePlot<T>::getPlotMap()
+/* Compute the combined plot range */
+template<class T> Int BasePlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags)
 {
-	if(adbg)cout << "BasePlot :: Get Plot Map" << endl;
-	return Pind_p;
+	if(adbg)cout << "BasePlot :: Set Plot Range for this table " << endl;
+	xprange_p.resize(NPlots_p,2);
+	yprange_p.resize(NPlots_p,2);
+	Bool abc = False;
+	abc = (useflags==2)?True:False;
+	
+	/* compute min and max for each Plot */
+	for(int i=0;i<NPlots_p;i++)
+	{
+		xprange_p(i,0) = 1e+30;
+		xprange_p(i,1) = -1e+30;
+		yprange_p(i,0) = 1e+30;
+		yprange_p(i,1) = -1e+30;
+		
+		for(int rc=0;rc<NRows_p;rc++)
+		{
+			if((theflags_p(Pind_p(i,1),rc)==(Bool)useflags) || abc) 
+			{
+				if(xplotdata_p(Pind_p(i,0),rc) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),rc);
+				if(xplotdata_p(Pind_p(i,0),rc) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),rc);
+				if(yplotdata_p(Pind_p(i,1),rc) < yprange_p(i,0)) yprange_p(i,0) = yplotdata_p(Pind_p(i,1),rc);
+				if(yplotdata_p(Pind_p(i,1),rc) >= yprange_p(i,1)) yprange_p(i,1) = yplotdata_p(Pind_p(i,1),rc);
+			}
+		}
+
+	}
+	
+	xmin=0;xmax=0;ymin=0;ymax=0;
+	xmin = xprange_p(0,0);
+	xmax = xprange_p(0,1);
+	ymin = yprange_p(0,0);
+	ymax = yprange_p(0,1);
+	
+	if(ddbg) 
+	cout << " initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
+
+	/* get a comnined min,max */
+
+	for(int qq=1;qq<NPlots_p;qq++)
+	{
+		xmin = MIN(xmin,xprange_p(qq,0));
+		xmax = MAX(xmax,xprange_p(qq,1));
+	}
+	for(int qq=1;qq<NPlots_p;qq++)
+	{
+		ymin = MIN(ymin,yprange_p(qq,0));
+		ymax = MAX(ymax,yprange_p(qq,1));
+	}
+
+	return 0;
+}
+
+/*********************************************************************************/
+template<class T> T BasePlot<T>::getXVal(Int pnum, Int col)
+{
+	if(adbg)cout << "BasePlot :: Get Xval" << endl;
+	return xplotdata_p(Pind_p(pnum,0),col);
+}
+
+/*********************************************************************************/
+
+template<class T> T BasePlot<T>::getYVal(Int pnum, Int col)
+{
+	if(adbg)cout << "BasePlot :: Get Yval" << endl;
+	return yplotdata_p(Pind_p(pnum,1),col);
+}
+
+/*********************************************************************************/
+
+template<class T> Bool BasePlot<T>::getYFlags(Int pnum, Int col)
+{
+	if(adbg)cout << "BasePlot :: Get YFlags" << endl;
+	return theflags_p(Pind_p(pnum,1),col);
+}
+
+/*********************************************************************************/
+
+template<class T> Int BasePlot<T>::getNumPlots()
+{
+	if(adbg)cout << "BasePlot :: Get Num Plots" << endl;
+	return NPlots_p;
+}
+
+/*********************************************************************************/
+
+template<class T> Int BasePlot<T>::getNumRows()
+{
+	if(adbg)cout << "BasePlot :: Get Num Rows" << endl;
+	return NRows_p;
+}
+
+/*********************************************************************************/
+
+template<class T> Int BasePlot<T>::getPlotType()
+{
+	if(adbg)cout << "Get PlotType" << endl;
+	return pType_p;
+}
+
+/*********************************************************************************/
+/********************** Private(protected) Functions *****************************/
+/*********************************************************************************/
+template<class T> Int BasePlot<T>::createXTENS(Vector<String> &datastr)
+{
+	if(adbg)cout << "BasePlot : createXTENS" << endl;
+	xtens_p.resize(nTens_p);
+
+	/* Create TENS and traverse parse trees */
+	for(Int i=0;i<nTens_p;i++) 
+	{
+		xtens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2]);
+		
+		if( (xtens_p[i].dataType() != TpDouble)  ) 
+		{
+			cout << "DataType of TaQL expression is not plottable... "<< endl;
+			return -1;
+		}
+		
+	}
+	return 0;
+}
+/*********************************************************************************/
+template<class T> Int BasePlot<T>::createYTENS(Vector<String> &datastr)
+{
+	if(adbg)cout << "BasePlot : createYTENS" << endl;
+	ytens_p.resize(nTens_p);
+	/* Create TENS and traverse parse trees */
+	for(Int i=0;i<nTens_p;i++) 
+	{
+		ytens_p[i] = RecordGram::parse(SelTab_p,datastr[i*2+1]);
+		
+		if( (ytens_p[i].dataType() != TpDouble) ) 
+		{
+			cout << "DataType of TaQL expression is not plottable... "<< endl;
+			return -1;
+		}
+		
+		IndCnt_p[i] = nip_p;/* since flags pertain only to y data */
+		getIndices(ytens_p[i]);
+	}
+
+	return 0;
+}
+
+/*********************************************************************************/
+
+/* Extract X data from the table */
+template<class T> Int BasePlot<T>::getXData(TableExprId &tid)
+{
+	Double xytemp;
+	Array<Double> xtemp;
+	TableExprNode tten;
+	Int xp=0, rc=0;
+
+	rc = tid.rownr();
+	
+	if(rc==0)
+	{
+		xptr_p=0;
+		//xshp_p.resize(0);
+	
+		for(int z=0;z<nTens_p;z++)
+		{
+			tten = xtens_p[z];
+			
+			if(tten.isScalar())
+			{
+				tten.get(0,xytemp);
+				Tsize_p(z,0) = 1;
+			}
+			else
+			{
+				tten.get(0,xtemp);
+				//xshp_p = xtemp.shape();
+				if(ddbg)cout << "Shape of Xaxis data : " << xtemp.shape() << endl;
+				Tsize_p(z,0) = (xtemp.shape()).product(); 
+			}
+			xptr_p+= Tsize_p(z,0); 
+			//NPlots_p = xptr_p; 
+		}
+	
+		xplotdata_p.resize(xptr_p,NRows_p);	xplotdata_p.set((T)0);
+		xpd_p = xplotdata_p.shape();
+	
+	}
+	xp=0;
+	for(int z=0;z<nTens_p;z++) // nTens_p : number of TEN pairs
+	{
+		tten = xtens_p[z];
+		if(tten.isScalar())
+		{
+			tten.get(tid,xytemp);
+			xplotdata_p(xp++,rc) = (T)xytemp;
+		}
+		else
+		{
+			tten.get(tid,xtemp);
+			//xshp_p = xtemp.shape();
+			for (Array<Double>::iterator iter=xtemp.begin(); iter!=xtemp.end(); iter++)
+				xplotdata_p(xp++,rc) = (T)(*iter);
+		}
+	}// end of for z
+
+
+	return 0;
+}
+
+/*********************************************************************************/
+
+/* Extract Y data from the table */
+template<class T> Int BasePlot<T>::getYData(TableExprId &tid)
+{
+	Double xytemp;
+	Array<Double> ytemp;
+	TableExprNode tten;
+	Int yp=0, rc=0;
+	
+	rc = tid.rownr();
+	
+	if(rc==0)
+	{
+		yptr_p=0;
+		NPlots_p=0; 
+		yshp_p.resize(0);
+		flagitshp_p.resize(0);
+	
+		for(int z=0;z<nTens_p;z++)
+		{
+			tten = ytens_p[z];
+			
+			if(tten.isScalar())
+			{
+				if(ddbg) cout << "before scalar get" << endl;
+				tten.get(0,xytemp);
+				Tsize_p(z,1) = 1;
+				yshp_p = IPosition(2,1,1);
+			}
+			else
+			{
+				if(ddbg) cout << "before vector get" << endl;
+				tten.get(0,ytemp);
+				yshp_p = ytemp.shape();
+				if(ddbg)cout << "Shape of Yaxis data : " << yshp_p << endl;
+				if(ddbg) cout << "ytemp : " << ytemp << endl;
+				Tsize_p(z,1) = yshp_p.product(); 
+			}
+			yptr_p+=Tsize_p(z,1); 
+			NPlots_p = yptr_p; 
+			
+			flagitshp_p = yshp_p;
+		}
+
+		yplotdata_p.resize(yptr_p,NRows_p);	yplotdata_p.set((T)0);
+		theflags_p.resize(yptr_p,NRows_p);	theflags_p.set(False);
+		ypd_p = yplotdata_p.shape();
+	
+	}
+	yp=0; 
+	for(int z=0;z<nTens_p;z++) // nTens_p : number of TEN pairs
+	{
+		tten = ytens_p[z];
+		if(tten.isScalar())
+		{
+			tten.get(tid,xytemp);
+			yplotdata_p(yp++,rc) = (T)xytemp;
+		}
+		else
+		{
+			tten.get(tid,ytemp);
+			yshp_p = ytemp.shape();
+			for (Array<Double>::iterator iter=ytemp.begin(); iter!=ytemp.end(); iter++)
+				yplotdata_p(yp++,rc) = (T)(*iter);
+		}
+		
+		getFlags(rc);
+		
+	}// end of for z
+
+	return 0;
 }
 
 
 /*********************************************************************************/
-/********************** Private Functions *****************************/
-/*********************************************************************************/
+
 
 /* Clean Up bookkeeping arrays */
 template<class T> Int BasePlot<T>::cleanUp()

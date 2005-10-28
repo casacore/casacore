@@ -195,7 +195,7 @@ template<class T> class TPPlotter
 		// separate plot arrays before calling the plot draw routines. This
 		// would be trivial if the plotting package draw routines could work
 		// with a (Bool) mask.)
-		Int thePlot(BasePlot<T> &BP,Int ibp, Int XRow, Int YRow, Int colour, Int ptype, Int panel);
+		Int thePlot(BasePlot<T> &BP,Int ibp, Int Pnum, Int colour, Int ptype, Int panel, Int flagged);
 
 		// Set plot environment parameters for a panel.
 		// Sets up the viewport and window (world) coordinates from SetFlagRegions
@@ -212,7 +212,7 @@ template<class T> class TPPlotter
 		Int initPlot();
 		
 		// Set number of panels, windowsize, aspectratio, plot style/colour, fontsize.
-		Int setOptions(Int nxpanels, Int nypanels, Float windowsize, Float aspectratio, Int plotstyle, Int plotcolour, Float fontsize);
+		Int setOptions(Int nxpanels, Int nypanels, Float windowsize, Float aspectratio, Int plotstyle, Int plotcolour, Float fontsize, Int linewidth);
 		
 		//Set Plot labels from internally stored Vector of label strings.
 		Int setPlotLabels();
@@ -228,12 +228,16 @@ template<class T> class TPPlotter
 		// Call the plotting function draw routines.
 		Int plotXY(Int col, Int ch);
 
+		// Adjust the plot range
+		Int adjustPlotRange(Int panel);
+
 	#ifdef TP_PLPLOT	
 		plstream *pls;
 		PLFLT *x,*y;
 	#endif
 	#ifdef TP_PGPLOT	
 		Vector<T> x_p,y_p;
+		//Vector<T> xf_p,yf_p;
 		PGPlotter *pgp_p;
 	#endif
 		
@@ -245,7 +249,10 @@ template<class T> class TPPlotter
 		Int nxpanel_p,nypanel_p;
 		Int NPanels_p;
 		Float windowsize_p,aspectratio_p,fontsize_p;
-		Int plotstyle_p,plotcolour_p;
+		Int plotstyle_p,plotcolour_p,linewidth_p,timeplot_p;
+		Int plotsymbol_p, useflags_p;
+		Array<Double> plotrange_p;
+		IPosition pr_p;
 		
 		Int nflagmarks_p;
 		PtrBlock<Vector<Vector<T > >* > flaglist_p;

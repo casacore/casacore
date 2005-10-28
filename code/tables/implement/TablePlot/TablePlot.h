@@ -34,6 +34,7 @@
 #include <tables/Tables/TableError.h>
 
 #include <tables/TablePlot/BasePlot.h>
+#include <tables/TablePlot/CrossPlot.h>
 #include <tables/TablePlot/TPPlotter.h>
 
 // <summary>
@@ -118,12 +119,12 @@
 // // 'labels' is a Vector of 3 strings (title,xlabel,ylabel).
 // // This call can be omitted - default settings will be used.
 // TP.setPlotParameters(TPLP,PlotOption,labels);
-// // Create the BP objects - should to be done only once.
-// TP.createBP(BPS);
+// // 'datastr' is a Vector of TaQL strings.
+// // Create the BP objects - first string is used to decide type of plot.
+// TP.createBP(BPS,datastr[0]);
 // // Attach the tables to the BP objects
 // TP.upDateBP(BPS);
 // // Get data and plot it.
-// // 'datastr' is a Vector of TaQL strings.
 // TP.GetData(BPS,datastr);
 // TP.PlotData(BPS,TPLP,1);
 // </srcblock>
@@ -204,6 +205,8 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+//enum { XYPLOT, CROSSPLOT, HISTPLOT };
+	
 template<class T> class TablePlot 
 {
 	public:
@@ -226,9 +229,14 @@ template<class T> class TablePlot
 		// passed in for plotting.
 		Int setTableT(Int ntabs, Table &inTabObj);    
 		
-		// Instantiate a BasePlot object for each table.
-		// To be used in conjunction with upDataBP().
-		Int createBP(PtrBlock<BasePlot<T>* > &BPS);     
+		// Instantiate a BasePlot/CrossPlot object for each table.
+		// To be used in conjunction with upDateBP(). The second argument
+		// should contain 'CROSS' for a CrossPlot object to be instantiated.
+		// Otherwise (or left as default), BasePlot objects will be created.
+		// One way to use this is to have the incoming TAQL pair have its 'X' TaQL
+		// contain 'CROSS', since for CrossPlots, the x-axis corresponds to
+		// column indices of the array column selected by the Y-TaQL.
+		Int createBP(PtrBlock<BasePlot<T>* > &BPS, String pType = String("XYPLOT")); 
 		
 		// Attach each table in the list to a BasePlot object. The first time this
 		// function is called, it must be preceded by createBP(). Successive calls
@@ -248,9 +256,20 @@ template<class T> class TablePlot
                 // <li> windowsize = nxpanels * 5.0 (inches)
                 // <li> aspectratio = nypanels/nxpanels
                 // <li> plotstyle = 1 (points)
-                // <li> plotcolour = 2 (start with red and change for each overlay plot)
+                // <li> plotcolour = 2 ( if single digit, that is the colour of all overlay
+		//      plots. If double digit, the first digit is the colour of the first plot
+		//      and the second digit is an increment for the colour index that is used
+		//      to determine the colour for each successive overlay. )
                 // <li> fontsize = 2.0 * nxpanels * nypanels (font size needs to increase
                 //            for multiple panel plots.
+                // <li> linewidth = 2 
+		// <li> timeplot = 0 (timeplot=1 uses pgplot->tbox to label the x-axis
+		//			values using HH::MM::SS (currently not functional))
+		// <li> plotsymbol = 1 (dots)
+		// <li> plotrange = [xmin,xmax,ymin,ymax] (vector). This overrides the
+		//                  data ranges if they lie within it.
+		// <li> useflags = 0 (0:plot only unflagged data, 1:plot only flagged data
+		//		       2:plot both flagged and unflagged data in diff colours)
 		//
 		// The 'labels' parameter is a vector of strings with any of or all
 		// three of the strings 'title','xlabel','ylabel' in this order.
@@ -287,6 +306,10 @@ template<class T> class TablePlot
 		// The xdata,ydata and flags are then read into storage arrays, ready 
 		// to be plotted. With multi-panel plots, this function must be called
 		// once per panel.
+		//
+		// For 'cross' plots, only the Y-TaQL is used to read out the data.
+		// The x-values are the indices of the array column selected by the
+		// Y-TaQL.
 		Int getData(PtrBlock<BasePlot<T>* > &BPS,Vector<String> &datastr);      
 		
 		// Read the data from the storage arrays filled in via getData(), and 

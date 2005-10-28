@@ -116,6 +116,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   <li> Provide the option to flag all channels (or a range) for a chosen range of stokes, or to flag all (or range of) stokes for the chosen channel range.
 // </todo>
 
+enum { XYPLOT, CROSSPLOT, HISTPLOT };
 
 template<class T> class BasePlot 
 {
@@ -124,7 +125,7 @@ template<class T> class BasePlot
 		BasePlot();  
 
 		// Destructor
-		~BasePlot();
+		virtual ~BasePlot();
 
 		// Operator=
 		// Equate by reference.
@@ -175,7 +176,7 @@ template<class T> class BasePlot
 		// This can get expensive for large number of data points. It is
 		// assumed that for such a large number of data points, plotting
 		// could broken down into chunks using an iteration axis.
-		Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax); 
+		virtual Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags); 
 		
 		// This function is called from TPPlotter::setFlagRegions().
 		// The list of regions that have been marked for flagging
@@ -191,23 +192,45 @@ template<class T> class BasePlot
 		// be applied to plots that use the current instance of BasePlot.
 		// If rowflag=1, a the FLAG_ROW column is set (if it exists) in
 		// addition to the individual flags in the FLAG column (if it exists).
-		Int flagData(Int diskwrite, Int rowflag);     
+		virtual Int flagData(Int diskwrite, Int rowflag);     
 		
 		// Clear all flags (FLAG and FLAG_ROW) from the current
 		// table/subtable.
 		Int clearFlags();   
 		
-		// This function is called from TPPlotter::thePlot()
-		// to identify the plotdata arrays corresponding to data to be plotted
-		// on the x and y axes , and corresponding sizes.
-		Matrix<Int> getPlotMap();   
+		// Query the internal structures for X data values
+		virtual T getXVal(Int pnum, Int col);
+		
+		// Query the internal structures for Y data values
+		virtual T getYVal(Int pnum, Int col);
 
-		Int NRows_p,NPlots_p; 
+		// Query the internal structures for flags
+		virtual Bool getYFlags(Int pnum, Int col);
+
+		// Query for the number of points per plot
+		virtual Int getNumRows();
+
+		// Query for the number of plots
+		virtual Int getNumPlots();
+
+		// Query for the type of plot (BASEPLOT)
+		Int getPlotType();
+
+	protected:
+
 		Matrix<T> xplotdata_p,yplotdata_p;
 		Matrix<Bool> theflags_p;
+		IPosition xpd_p, ypd_p;
+		Int NRows_p,NPlots_p; 
 		
+		// Create TableExprNodes from input TAQL strings
+		virtual Int createXTENS(Vector<String> &datastr);   
+		Int createYTENS(Vector<String> &datastr);   
+		
+		// Read X and Y data from the table.
+		virtual Int getXData(TableExprId &tid);
+		Int getYData(TableExprId &tid);
 
-	private:
 		// Get TaQL incides
 		Int getIndices(TableExprNode &ten);
 		
@@ -233,6 +256,8 @@ template<class T> class BasePlot
 		Matrix<T> xprange_p, yprange_p; // plot range
 		IPosition xshp_p,yshp_p,flagitshp_p;
 
+		Int xptr_p,yptr_p;
+
 		Vector<String> colnames_p; // accessed column names
 		Vector<Slicer> ipslice_p; // accessed column slices
 		Vector<IPosition> colshapes_p; // shapes of accessed cols
@@ -247,11 +272,13 @@ template<class T> class BasePlot
 		
 		Vector<Vector<T> > locflagmarks_p; // list of flag regions
 		Int nflagmarks_p; // # flag regions
+		Bool newflags_p;
 
 		Int dbg,ddbg,adbg;
 		Timer tmr;
 		Int zflg,fflg;
 
+		Int pType_p;
 };
 
 } //# NAMESPACE CASA - END 
