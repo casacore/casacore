@@ -169,6 +169,8 @@
      template class SimpleCountedConstPtr<LoggerHolderRep> 
 1000 tables/TablePlot/BasePlot.cc 
      template class BasePlot<Float> 
+1000 tables/TablePlot/CrossPlot.cc 
+     template class CrossPlot<Float> 
 1000 tables/TablePlot/TPPlotter.cc 
      template class TPPlotter<Float> 
 1000 tables/TablePlot/TablePlot.cc 
