@@ -75,7 +75,7 @@ USTRING   ({UQSTRING}|{UASTRING})+
 
  /* Literals */
 {NUMBER}        { msTimeGramPosition() += yyleng;
-                  lvalp->dval = atof(MSTimeGramtext);
+                  lvalp->ival = atoi(MSTimeGramtext);
                   return NUMBER;
                 }
 

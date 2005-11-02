@@ -74,7 +74,7 @@ using namespace casa;
 
 %left OR
 %left AND
-%nonassoc EQ EQASS GT GE LT LE NE
+%nonassoc EQ EQASS GT GE LT LE NE COLON SLASH
 %left PLUS MINUS
 %left TIMES DIVIDE MODULO
 %nonassoc UNARY
