@@ -53,8 +53,8 @@ MSAntennaParse::MSAntennaParse (const MeasurementSet* ms)
 
 const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds)
 {
-  //  LogIO os(LogOrigin("MSSpwParse", "selectAntennaIds()", WHERE));
-  TableExprNode condition = ms()->col(colName1).in(antennaIds) ||
+  TableExprNode condition =
+    ms()->col(colName1).in(antennaIds) ||
     ms()->col(colName2).in(antennaIds);
   
   if(node_p->isNull())
@@ -65,10 +65,38 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
   return node();
 }
 
-const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antennaNames)
+const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds1,
+                                                      const Vector<Int>& antennaIds2)
+{
+  TableExprNode condition;
+
+  if(antennaIds2.size())
+    condition =
+      ms()->col(colName1).in(antennaIds1) &&
+      ms()->col(colName2).in(antennaIds2);
+  else
+    condition =
+      ms()->col(colName1).in(antennaIds1) &&
+      ms()->col(colName2).in(antennaIds1);
+  
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node();
+}
+
+const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna)
 {
   MSAntennaIndex msAI(ms()->antenna());
-  TableExprNode condition = ms()->col(colName1).in(msAI.matchAntennaName(antennaNames)) || ms()->col(colName2).in(msAI.matchAntennaName(antennaNames));
+
+  TableExprNode condition =
+    ms()->col(colName1).in(msAI.matchAntennaName(antenna)) ||
+    ms()->col(colName2).in(msAI.matchAntennaName(antenna)) ||
+    ms()->col(colName1).in(msAI.matchAntennaStation(antenna)) ||
+    ms()->col(colName2).in(msAI.matchAntennaStation(antenna));
+
   if(node_p->isNull())
     *node_p = condition;
   else {
@@ -77,38 +105,27 @@ const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& a
   return node();
 }
 
-const TableExprNode* MSAntennaParse::selectNameOrStation(const String& identifier)
+const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
+                                                         const String& antenna2)
 {
-  Vector<Int> antennaIdsFromStation ;
-  //  Bool searchStation = True;
-  TableExprNode condition;
   MSAntennaIndex msAI(ms()->antenna());
-  antennaIdsFromStation = msAI.matchAntennaStation(identifier);
-  //select from stations
-  if(antennaIdsFromStation.nelements() > 0) {
-    condition = ms()->col(colName1).in(antennaIdsFromStation) ||
-      ms()->col(colName2).in(antennaIdsFromStation);
-    //    searchStation = False;
-  } else {
-    //select from names
-    condition = ms()->col(colName1).in(msAI.matchAntennaName(identifier)) ||
-      ms()->col(colName2).in(msAI.matchAntennaName(identifier));
-  }
-  
+
+  TableExprNode condition =
+    (ms()->col(colName1) >= antenna1 && ms()->col(colName2) <= antenna2) ||
+    (ms()->col(colName2) >= antenna1 && ms()->col(colName1) <= antenna2);
+
   if(node_p->isNull())
     *node_p = condition;
   else {
     *node_p = *node_p || condition;
   }
-  
   return node();
 }
 
 const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int index, const String& cp)
 {
-  LogIO os(LogOrigin("MSSpwParse", "selectFromIdsAndCPs()", WHERE));
-  os << " selectFromIdsAndCPs is not available "  <<LogIO::POST;
-  return NULL;
+  LogIO os(LogOrigin("MSAntennaParse", "selectFromIdsAndCPs()", WHERE));
+  os << " selectFromIdsAndCPs is not available "  << LogIO::POST;
   
   TableExprNode condition;
   
@@ -122,8 +139,9 @@ const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int index, const 
 
 const TableExprNode* MSAntennaParse::selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, const Int secondIndex, const String& secondcp)
 {
-  LogIO os(LogOrigin("MSSpwParse", "selectFromIdsAndCPs()", WHERE));
-  os << " selectFromIdsAndCPs is not available "  <<LogIO::POST;
+  LogIO os(LogOrigin("MSAntennaParse", "selectFromIdsAndCPs()", WHERE));
+  os << " selectFromIdsAndCPs is not available "  << LogIO::POST;
+
   TableExprNode condition;
  
   if(node_p->isNull())
