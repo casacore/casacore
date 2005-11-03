@@ -34,3 +34,11 @@
      template class MSTable<MSStateEnums::PredefinedColumns, MSStateEnums::PredefinedKeywords> 
      template class MSTable<MSSysCalEnums::PredefinedColumns, MSSysCalEnums::PredefinedKeywords> 
      template class MSTable<MSWeatherEnums::PredefinedColumns, MSWeatherEnums::PredefinedKeywords> 
+1000 tables/TablePlot/BasePlot.cc 
+     template class BasePlot<Float> 
+1000 tables/TablePlot/TPPlotter.cc 
+     template class TPPlotter<Float> 
+1000 tables/TablePlot/TablePlot.cc 
+     template class TablePlot<Float> 
+1000 ms/MSPlot/MsPlot.cc 
+     template class MsPlot<Float> 
