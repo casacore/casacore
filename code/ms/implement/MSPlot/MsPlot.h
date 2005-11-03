@@ -432,10 +432,11 @@ void global2local( const MPosition& observatory,
 			                     Vector<Double>& xTopo,
 			                     Vector<Double>& yTopo,
 			                     Vector<Double>& zTopo ); 
-void spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<Int>& chanIndex, String& chanRange );
+void spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<Int>& chanIndex, Vector<String>& chanRange );
 void corrParser( const String& corrExpr, Vector<String>& stokesNames );
-Bool polarIndices( const Vector<Int> spwIDs, Vector<Vector<Int> >& polarsIndices );
+Bool polarIndices( const Vector<Int> spwIDs, PtrBlock<Vector<Int>* >& polarsIndices );
 Bool containStokes( const Vector<Int> corrType, const Vector<String>& stokesNames, Vector<Int>& polarIndices );
+Bool polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<Int>& chanIndices, Vector<String>& chanRange );
 
 protected:
 
@@ -461,6 +462,7 @@ private:
 	 Bool m_dbg; 
 //#! Data Members
 	 MSSelection m_select;
+	 String m_spwExpr;
 	 String m_corrExpr;
 //#! Constructors
 // We do not provide copy constructor and assignment operator. So declare them as private.

@@ -53,11 +53,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // default constructor. In case for some reason, one need to pass a Table object, not
 // a MeasurementSet to TABS_P, he can use this constructor.
 template <class T> MsPlot<T>::MsPlot()
-   :TablePlot<T>(), m_dataIsSet( False ){
+   :TablePlot<T>(), m_dataIsSet( False ), m_spwExpr( String("")), m_corrExpr( String("")){
 	    m_dbg = True;
    }
 template <class T> MsPlot<T>::MsPlot( const MeasurementSet &ms )
-   :TablePlot<T>(), m_dataIsSet( False ), m_ms( ms ){
+   :TablePlot<T>(), m_dataIsSet( False ), m_ms( ms ), m_spwExpr( String("")), m_corrExpr( String("")){
 	    m_dbg = True;
 		 //m_ms = ms;
 		 //m_dataIsSet = False;
@@ -155,21 +155,24 @@ Bool MsPlot<T>::setData( const Vector<String>& antennaNames, const Vector<Int>& 
 		   if(!antennaSelection( antennaNames, antennaIndex )) return False;
 		}
 		if( spwNames[0].compare(String("")) || spwIndex!=-1 ) {
-		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling spwSelection()..." << endl;
+		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] found spw input..." << endl;
 			// parse the spwNames[0]
-			Vector<Int> spwIndex(1), chanIndex(1);
+			Vector<Int> spwIndices, chanIndices;
 			Vector<String> spwNms(1);
 			spwNms[0] = String("");
-			String chanRange = String("");
-			spwParser( spwNames[0], spwIndex, chanIndex, chanRange );
+			Vector<String> chanRange;
+			m_spwExpr = spwNames[0];
+			if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling spwParser()..." << endl;
+			spwParser( spwNames[0], spwIndices, chanIndices, chanRange );
+		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] after calling spwParser()..." << endl;
 			if( m_dbg ){
 			   cout<<"[MsPlot::setData] spwName[0] = "<< spwNames[0] << endl;
 				cout<<"[MsPlot::setData] spwIndex = " << spwIndex << endl;
-				cout<<"[MsPlot::setData] chanIndex = " << chanIndex << endl;
+				cout<<"[MsPlot::setData] chanIndices = " << chanIndices << endl;
 				cout<<"[MsPlot::setData] chanRange = " << chanRange << endl;
 			}
 		   //if(!spwSelection( spwNames, spwIndex )) return False;
-			if(!spwSelection( spwNms, spwIndex )) return False;
+			if(!spwSelection( spwNms, spwIndices )) return False;
 		}
 		if( fieldNames[0].compare(String("")) || fieldIndex!=-1 ){
 		   if( m_dbg ) cout << "[ MsPlot<T>::setData() ] calling fieldSelection()..." << endl;
@@ -297,7 +300,7 @@ Bool MsPlot<T>::antennaPositions( Table& ants ){
 		// copy the subMS object to another variable to keep it in memory( a reference will not
 		// work because then if we assign antXY to subMS, the reference to subMS will also be 
 		// changed.). That means at a time subMS and a copy of it exist simultaneously. This
-		// will take too much memory.
+		// will take more memory.
 		return True;
 	}else{
 	   cout<<"[ MsPlot::plotArray()] MeasTable::Observatory() failed." << endl;
@@ -358,10 +361,20 @@ Bool MsPlot<T>::antennaPositions( MemoryTable& ants ){
 // Input: spwIDs;( Stokes Types are obtained within this method from parsing the input corrExpr. 
 // Output:: polarIndices
 template<class T>
-Bool MsPlot<T>::polarIndices( const Vector<Int> spwIDs, /*const Vector<String> polarTypes,*/Vector<Vector<Int> >& polarsIndices  ){
-   MSDataDescIndex msDDI( m_ms.dataDescription());
+Bool MsPlot<T>::polarIndices( const Vector<Int> spwIDs, /*const Vector<String> polarTypes,*/PtrBlock<Vector<Int>* >& polarsIndices  ){
+   Vector<String> stokesNames;
+	if( m_corrExpr.compare( String("") )){
+	   corrParser( m_corrExpr, stokesNames );
+		if( m_dbg ) cout<<"[ MsPlot::polarIndices()] skokesNames = " << stokesNames << endl;
+	}else{ // no correlation parameter is inputted. So return a empty poloarsIndices vector
+	    polarsIndices.resize(0);
+		 return False;
+   }
+	MSDataDescIndex msDDI( m_ms.dataDescription());
 	// get DATA_DESC_IDs from the SPECTRAL_WINDOW_IDs
+	if( m_dbg ) cout<<"[MsPlot::polarIndices()] spwIDs = " << spwIDs << endl;
 	Vector<Int> descIDs = msDDI.matchSpwId( spwIDs );
+	if( m_dbg ) cout<<"[MsPlot::polarIndices()] descIDs = " << descIDs << endl;
 	// get the POLARIZATION_IDs from the DATA_DESC_IDs
 	ROMSDataDescColumns msddc( m_ms.dataDescription());
 	uInt ndesc = descIDs.nelements();
@@ -370,21 +383,58 @@ Bool MsPlot<T>::polarIndices( const Vector<Int> spwIDs, /*const Vector<String> p
 	   // Note,ArrayColumn takes row number as its index. This row number, however, counts from
 		// 0 to totalRow - 1. So it is actually the subtable ID already. That is why we do not need
 		// to add 1 to the descIDs[i].
-	   polarIDs[i] = msddc.polarizationId()( descIDs[i] ); 
+	   polarIDs[i] = msddc.polarizationId()( descIDs[i] );
+		if( m_dbg ) cout<<"[MsPlot::polarIndices()] polarIDs[i] = " << polarIDs[i] << endl; 
 	}	
 	// get the the indices for the first index of DATA[ , ], CORRECTED[ , ]. MODEL[ , ], etc
 	// from the POLARIZATION_IDs->the CORR_TYPES and the Stokes types.
 	ROMSPolarizationColumns polc( m_ms.polarization());
-	Vector<String> stokesNames;
-	corrParser( m_corrExpr, stokesNames );
-	Vector<Int> polIndices;	
+	polarsIndices.resize( ndesc );
+	if( m_dbg ) cout<<"[MsPlot::polarIndices()] polarsIndices.nelements() = " << polarsIndices.nelements() << endl;
+	Vector<Int> polIndices;
+	Bool anyData = False;
+	//	
 	for( uInt i=0; i< ndesc; i++ ){
 	  const Vector<Int> corrType = polc.corrType()( polarIDs[i] );// see above comment.
+	  if( m_dbg ) cout<<"[MsPlot::polarIndices()] corrType = " << corrType << endl;
+	  // check if corrType contains the given Stokes names
 	  if( containStokes( corrType, stokesNames, polIndices )){
-	    polarsIndices[ i ] = polIndices;
-	  }else{ return False; }
+	    if( m_dbg ) cout<<"[MsPlot::polarIndices()] polIndices.nelements() = " << polIndices.nelements() << endl;
+	    //polarsIndices[ i ].resize( (uInt)polIndices.nelements() );
+		 if( m_dbg ) cout<<"[MsPLot::polarIndices()] polIndices = " << polIndices << endl;
+	    polarsIndices[ i ] = new Vector<Int>(polIndices);
+		 anyData = True;
+		 if( m_dbg ) cout<<"[MsPLot::polarIndices()] *polarsIndices[i] = " << *polarsIndices[i] << endl;
+	  }else{
+	    polarsIndices[ i ] = NULL; // null length.
+		 if( m_dbg ) cout<<"[MsPLot::polarIndices()] This corrType does not include the given Stokes names!" << endl;
+	  }
 	}
+	if( !anyData ){
+	   cout<<"[MsPLot::polarIndices()] No data match the given spws and Stokes parameters!" << endl;
+		cout<<" So, the correlation selection criteria will be ignored!" << endl;
+	   return False;
+	}
+	if( m_dbg ) cout<<"[MsPLot::polarIndices()] end of this method." << endl;
    return True;
+}
+// this method provides the data which are needed by msplot::uvdist()
+template<class T>
+Bool MsPlot<T>::polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<Int>& chanIndices, Vector<String>& chanRange ){
+   Vector<Int> spwIndices;
+		if( m_spwExpr.compare( String(""))){ 
+				spwParser( m_spwExpr, spwIndices, chanIndices, chanRange );
+	   }
+		// if user does not input spw and channels, use all the spws of the present MS.
+		// if user inputted only channels, but no spws. Use all the spws of the MS
+		if( !m_spwExpr.compare( String("")) || spwIndices.nelements() == 0){
+		   ROMSSpWindowColumns spwc(m_ms.spectralWindow());
+	   	uInt nspw = spwc.nrow();
+		   spwIndices.resize( nspw );
+		   for( uInt i=1; i< nspw+1; i++) spwIndices[i-1] = i; 			
+		}
+		if( !polarIndices( spwIndices, polarsIndices  ) && chanIndices.nelements() == 0 && chanRange.nelements() == 0 ) return False;
+		return True;
 }
 template<class T>
 Int MsPlot<T>::plot( PtrBlock<BasePlot<T>* > &BPS, TPPlotter<T> &TPLP, Int panel )
@@ -471,8 +521,10 @@ void MsPlot<T>::global2local( const MPosition& observatory,
 // parse the input String for spw. At present we handle the following four formats:
 // spw='(spw1, spw2, ...):(ch1, ch2, ...)' = 'spw1-spw2:ch1-ch2'
 //    ='(spw1, spw2, ...):(ch1-ch2)' = '(spw1-spw2):(ch1, ch2, ...)' 
+//    ='[spw1, spw2, ...]:(ch1-ch2)' = '(spw1-spw2):[ch1, ch2, ...]'
+//    ='(spw1, spw2, ...):[ch1-ch2]' = '(spw1-spw2:ch1, ch2, ...)'
 template<class T>
-void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<Int>& chanIndices, String& chanRange ){
+void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndices, Vector<Int>& chanIndices, Vector<String>& chanRange ){
      const String::size_type len = spwExpr.length();
 	  uInt nmaxSpw = 60, nmaxChan = 600;
 	  String spwArray[nmaxSpw], chanArray[nmaxChan];
@@ -481,55 +533,84 @@ void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<
 
 	  // split the input string into the polarisation part and the channel part 
      if( spwExpr.contains(':')){ 
+	     if( m_dbg ) cout <<"[MsPlot::spwParser()] spwExpr = " << spwExpr << endl;
 	     const String::size_type coluPos = spwExpr.find(':');
-	     spws = spwExpr.substr( 0, coluPos-1 );
-	     channels = spwExpr.substr( coluPos+1, len-1 );
+	     spws = spwExpr.substr( 0, coluPos );
+	     channels = spwExpr.substr( coluPos+1, len-coluPos-1 );
+		  if( m_dbg ){
+		     cout<< "[MsPlot::spwParser()] spws = " << spws << endl;
+		     cout<< "[MsPlot::spwParser()] channels = " << channels << endl;
+		  }
 	  }else{
 	     spws = spwExpr;
+		  if( m_dbg ) cout<< "[MsPlot::spwParser()] spws = " << spws << endl;
 	  }
 	  // split and convert spws into integers
 	  if( !spws.compare(String("") )){
-	     spwIndex.resize(1);
-		  spwIndex(0) = -1;
+	     spwIndices.resize(0);
+		  //spwIndex(0) = -1;
 	  }else{ 
 	  	  // peel off the braces 
-		  uInt startPos = 0, endPos = spws.length() - 1;
-		  if( (spws.chars())[0] == '(' || (spws.chars())[0]=='[' ) startPos = 1;
-		  if( (spws.chars())[endPos] == '(' || (spws.chars())[endPos] == ']' ) endPos = spws.length()-2;			     
+		  uInt startPos = 0, endPos = spws.length()-1;
+		  uInt subLen = endPos + 1;
+		  if( (spws.chars())[0] == '(' || (spws.chars())[0]=='[' ){
+		     startPos = 1;
+			  subLen = subLen - 1;
+		  }
+		  if( (spws.chars())[endPos] == ')' || (spws.chars())[endPos] == ']' ) subLen = subLen-1;			     
 
-		  String spwPure = spws.substr( startPos, endPos );
+		  String spwPure = spws.substr( startPos, subLen );
+		  if( m_dbg ) cout<< "[MsPlot::spwParser()] spwPure = " << spwPure << endl;
 		  // extract every single spw
 		  if( spws.contains('-') ){
 		     uInt dashPos = spwPure.find('-');
-		     String startSpw = spwPure.substr( 0, dashPos-1 );
-			  String endSpw = spwPure.substr( dashPos+1, spwPure.length()-1 );
+		     String startSpw = spwPure.substr( 0, dashPos );
+			  String endSpw = spwPure.substr( dashPos+1, spwPure.length()-dashPos-1 );
 			  // convert the range of spw into Vector<uInt>.
 			  uInt startSpwN = atoi( startSpw.chars() );
 			  uInt endSpwN = atoi( endSpw.chars() );
-			  spwIndex.resize( endSpwN-startSpwN+1 );
-			  spwIndex( 0 ) = startSpwN;
-			  for( uInt i=1; i< endSpwN-startSpwN+1; i++ ) spwIndex(i) = spwIndex(0) + i;
+			  spwIndices.resize( endSpwN-startSpwN+1 );
+			  spwIndices( 0 ) = startSpwN;
+			  for( uInt i=1; i< endSpwN-startSpwN+1; i++ ) spwIndices(i) = spwIndices(0) + i;
 			  if( m_dbg ) {
-			      cout << "[MsPlot::spwParser()] spwIndex( endSpwN - startSpwN ) = " << spwIndex( endSpwN-startSpwN ) << endl;
-					cout << "[MsPlot::spwParser()] endSpwN =? spwIndex( endSpwN - startSpwN -1 ) =" << endSpwN << endl;
+			      cout << "[MsPlot::spwParser()] spwIndex( endSpwN - startSpwN ) = " << spwIndices( endSpwN-startSpwN ) << endl;
+					cout << "[MsPlot::spwParser()] endSpwN =? spwIndices( endSpwN - startSpwN -1 ) =" << endSpwN << endl;
 				} 			  
 		  }else{
-		     uInt totalSpwN = split( spwPure, spwArray, nmaxSpw, ',' );
-			  // convert spwArray into Vector<uInt>
-			  for( uInt i=0; i< totalSpwN; i++ ) spwIndex( i ) = atoi( spwArray[i].chars());
+		     if( !spwPure.contains(',') ){
+			      spwIndices.resize(1);
+					spwIndices[0] = atoi( spwPure.chars());
+					if( m_dbg ) cout<<"[MsPlot::spwParser()] spwIndices = " << spwIndices[0] << endl;
+			  
+		     }else{
+			     uInt totalSpwN = split( spwPure, spwArray, nmaxSpw, ',' );
+			     // convert spwArray into Vector<uInt>
+				  spwIndices.resize( totalSpwN );
+			     for( uInt i=0; i< totalSpwN; i++ ){
+				    if( m_dbg ) cout<< "[MsPlot::spwParser()] spwArray[i] = " << spwArray[i] << endl;
+				    spwIndices( i ) = atoi( spwArray[i].chars());
+					 if( m_dbg ) cout<< "[MsPlot::spwParser()] spwIndices[i] = " << spwIndices(i) << endl;
+				  }
+			  }
 		  }
  	  }	  
 	  // split and convert channel into integers
 	  if( !channels.compare(String("") )){
-	     chanIndices.resize(1);
-		  chanIndices(0) = -1;
+	     chanIndices.resize(0);
+		  chanRange.resize(0);
+		  //chanIndices(0) = -1;
 	  }else{ 
 	  	  // peel off the braces 
-		  uInt startPos = 0, endPos = channels.length() - 1;
-		  if( (channels.chars())[0] == '(' || (channels.chars())[0]=='[' ) startPos = 1;
-		  if( (channels.chars())[endPos] == '(' || (channels.chars())[endPos] == ']' ) endPos = channels.length()-2;			     
+		  uInt startPos = 0, endPos = channels.length()-1;
+		  uInt subLen = endPos + 1;
+		  if( (channels.chars())[0] == '(' || (channels.chars())[0]=='[' ){
+		     startPos = 1;
+			  subLen = subLen - 1;
+		  }
+		  if( (channels.chars())[endPos] == ')' || (channels.chars())[endPos] == ']' ) subLen = subLen-1;			     
 
-		  String chanPure = channels.substr( startPos, endPos );
+		  String chanPure = channels.substr( startPos, subLen );
+		  if( m_dbg ) cout<< "[MsPlot::spwParser()] chanPure = " << chanPure << endl;
 		  // extract every single spw
 		  if( chanPure.contains('-') ){
 		    /* uInt dashPos = chanPure.find('-');
@@ -542,17 +623,32 @@ void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<
 			  chanIndices( 0 ) = startChanN;
 			  for( uInt i=1; i< endChanN-startChanN+1; i++ ) chanIndices(i) = chanIndices(0) + i;
 			  */
-			  chanRange = chanPure;
-			  chanIndices.resize(1);
-			  chanIndices[0] = -1;
+			  uInt dashPos = chanPure.find('-');
+			  chanRange.resize(2);
+			  chanRange[0] = chanPure.substr(0, dashPos ); // start channel number.
+			  chanRange[1] = chanPure.substr(dashPos+1, chanPure.length()-dashPos-1); // end channel number.
+			  chanIndices.resize(0);
+			  //chanIndices[0] = -1;
 			  if( m_dbg ) {
 			      cout << "[MsPlot::spwParser()] chanRange = " << chanRange << endl;
 				} 			  
 		  }else{
-		     uInt totalChanN = split( chanPure, chanArray, nmaxChan, "," );
-			  // convert spwArray into Vector<uInt>
-			  for( uInt i=0; i< totalChanN; i++ ) chanIndices( i ) = atoi( chanArray[i].chars());
-			  chanRange = String("");
+		     if( !chanPure.contains(',') ){
+			     chanIndices.resize(1);
+				  chanIndices[0] = atoi( chanPure.chars() );			  
+			  }else{
+		        uInt totalChanN = split( chanPure, chanArray, nmaxChan, "," );
+			     if( m_dbg ) cout<< "[MsPlot::spwParser()] chanArray[0] = " << chanArray[0] << endl;
+			     // convert spwArray into Vector<uInt>
+				  chanIndices.resize( totalChanN );
+			     for( uInt i=0; i< totalChanN; i++ ){
+				  	 if( m_dbg ) cout<< "[MsPlot::spwParser()] chanArray[i] = " << chanArray[i] << endl;
+				    chanIndices( i ) = atoi( chanArray[i].chars());
+					 if( m_dbg ) cout<< "[MsPlot::spwParser()] chanIndices[i] = " << chanIndices[i] << endl;
+				  }
+			 }
+			  //chanRange = String("");
+			  chanRange.resize(0);
 		  }// end of channel split	
 		}// end of split channels			   
    } // end of spwParser.
@@ -561,15 +657,24 @@ void MsPlot<T>::spwParser( const String& spwExpr, Vector<Int>& spwIndex, Vector<
 // polarizations is separated by space.
 template<class T>
 void MsPlot<T>::corrParser( const String& corrExpr, Vector<String>& stokesNames ){
+	if( m_dbg ) cout<<"[MsPlot::corrParser()] corrExpr = " << corrExpr << endl;
 		uInt startPos = 0, endPos = corrExpr.length() - 1;
-		if( (corrExpr.chars())[0] == '(' || (corrExpr.chars())[0]=='[' ) startPos = 1;
-		if( (corrExpr.chars())[endPos] == '(' || (corrExpr.chars())[endPos] == ']' ) endPos = corrExpr.length()-2;
-		String corrExprPure = corrExpr.substr( startPos, endPos );
+		uInt sbLen = endPos + 1;
+		if( (corrExpr.chars())[0] == '(' || (corrExpr.chars())[0]=='[' ){		 
+		   startPos = 1;
+			sbLen = sbLen - 1;
+		}
+		if( (corrExpr.chars())[endPos] == ')' || (corrExpr.chars())[endPos] == ']' ) sbLen = sbLen-1;
+		String corrExprPure = corrExpr.substr( startPos, sbLen );
+		if( m_dbg ) cout<<"[MsPlot::corrParser()] corrExprPure = " << corrExprPure << endl;
 		Int nmax = (uInt)Stokes::NumberOfTypes;
 		String stokesNm[ nmax ];			
       uInt totalStokes = split( corrExprPure, stokesNm, nmax, " " );
 		stokesNames.resize( totalStokes );
-		for( uInt i=0; i<totalStokes; i++ ) stokesNames[ i ] = stokesNm[i];
+		for( uInt i=0; i<totalStokes; i++ ){
+		   stokesNames[ i ] = stokesNm[i];
+			if( m_dbg ) cout<<"[MsPlot::corrParser()] stokesNames[i] = " << stokesNames[i] << endl;
+		}
 }// end of corrParser	
 // check if the corrType vector contains the Stokes types related to the given stokes names. If yes, return true. 
 // If not, return False. Also return False if invalid Stokes types is inputted. If the corrType contains all the
@@ -581,18 +686,26 @@ Bool MsPlot<T>::containStokes( const Vector<Int> corrType, const Vector<String>&
 	Vector<Int> polIndices( nsn, -1 );
    for( uInt k=0; k<nsn; k++ ){
      Stokes::StokesTypes thisType = Stokes::type( stokesNames[k] );
+	  if( m_dbg ) cout<<"[MsPlot::containStokes()] thisType = " << thisType << endl;
 	  if( thisType == 0 ){
 	    cout<<"MsPlot<T>::containStokes()] Invalid Stokes type entered!" << endl;
 		 return False;
 	  }
-	  for( Int i=1; i<(Int)corrType.nelements()+1; i++ ){
-	     if( corrType[i-1] == thisType ){
+	  uInt ncorr = corrType.nelements();
+	  if( m_dbg ) cout<<"[MsPlot::containStokes()] ncorr = " << ncorr << endl;
+	  for( uInt i=1; i< ncorr+1; i++ ){
+	     if( m_dbg ) cout<<"[MsPlot::containStokes()] corrType[i-1] = " << corrType[i-1]<< endl;
+	     if( (uInt)corrType[i-1] == (uInt)thisType ){
+		    if( m_dbg ) cout<<"[MsPlot::containStokes()] polIndices[ k ] = " << polIndices[ k ] << endl;
 		    polIndices[ k ] = i;
+			 if( m_dbg ) cout<<"[MsPlot::containStokes()] polIndices[ k ] = " << polIndices[ k ] << endl;
 			 break;
 		  }
 	  }
+	  if( m_dbg ) cout<<"[MsPlot::containStokes()] polIndices[ k ] = " << polIndices[ k ] << endl;
 	  if( polIndices[k] == -1 ) return False;
 	}
+	polarIndices.resize( nsn );
 	polarIndices = polIndices;
 	return True;
 }// end of containStokes
