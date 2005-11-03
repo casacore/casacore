@@ -58,7 +58,7 @@ int main (int argc)
 {
     try {
 	doit (argc<2);
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << "\nCaught an exception: " << x.getMesg() << endl;
         return 1;
     } 
@@ -355,7 +355,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     if (doExcp) {
 	try {
 	    io >> len;                            // read beyond object
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -363,7 +363,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     if (doExcp) {
 	try {
 	    io.getstart ("aa");                   // read-error (past EOF)
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -374,7 +374,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     if (doExcp) {
 	try {
 	    io.getstart ("aa");                   // no magic number
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -382,7 +382,7 @@ void doIO (Bool doExcp, Bool out, AipsIO& io)
     if (doExcp) {
 	try {
 	    io.getstart ("aa");                   // invalid object type
-	} catch (AipsError x) {
+	} catch (AipsError& x) {
 	    cout << x.getMesg() << endl;
 	} 
     }
@@ -394,7 +394,7 @@ void doTry (AipsIO& io)
     cout << "TryErrOpen" << endl;
     try {
 	io.open ("tAipsIO_tmp.aa");                   // still open
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
     io.close ();                                 // now close the file
@@ -405,14 +405,14 @@ void doTry (AipsIO& io)
     try {
 	io.open ("tAipsIO_tmp.aa", ByteIO::Delete);
 	io.close ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
     } 
     
     cout << "TryErrIn" << endl;
     try {
 	io.open ("tAipsIO_tmp.aa");
 	io.close ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -424,7 +424,7 @@ void doTry (AipsIO& io)
     try {
 	io.open ("tAipsIO_tmp.aa", ByteIO::Delete);
 	io.close ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -444,7 +444,7 @@ void doTry (AipsIO& io)
     try {
 	io.open ("tAipsIO_tmp.aa", ByteIO::NewNoReplace);
 	io.close ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
@@ -456,7 +456,7 @@ void doTry (AipsIO& io)
     try {
 	io.open ("tAipsIO_tmp.aa", ByteIO::Update);
 	io.close ();
-    } catch (AipsError x) {
+    } catch (AipsError& x) {
 	cout << x.getMesg() << endl;
     } 
 
