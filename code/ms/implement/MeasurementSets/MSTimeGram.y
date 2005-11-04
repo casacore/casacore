@@ -133,37 +133,37 @@ upboundtimeexpr: LT daytimeexpr {
                  }
                ;
 
-daytimeexpr: NUMBER SLASH NUMBER {
-               $$ = MSTimeParse::dayTimeConvert($1, $3);
-             }
-           | NUMBER SLASH NUMBER COLON NUMBER {
-               $$ = MSTimeParse::dayTimeConvert($1, $3, $5);
+daytimeexpr: NUMBER SLASH NUMBER COLON NUMBER COLON NUMBER DOT NUMBER {
+               $$ = MSTimeParse::dayTimeConvert($1, $3, $5, $7, $9);
              }
            | NUMBER SLASH NUMBER COLON NUMBER COLON NUMBER {
                $$ = MSTimeParse::dayTimeConvert($1, $3, $5, $7);
              }
-           | NUMBER SLASH NUMBER COLON NUMBER COLON NUMBER DOT NUMBER {
-               $$ = MSTimeParse::dayTimeConvert($1, $3, $5, $7, $9);
+           | NUMBER SLASH NUMBER COLON NUMBER {
+               $$ = MSTimeParse::dayTimeConvert($1, $3, $5);
+             }
+           | NUMBER SLASH NUMBER {
+               $$ = MSTimeParse::dayTimeConvert($1, $3);
              }
            ;
 
-yeartimeexpr: NUMBER SLASH NUMBER SLASH NUMBER {
-                $$ = MSTimeParse::yearTimeConvert($1, $3, $5);
-              }
-            | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER {
-                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7);
-              }
-            | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
-              COLON NUMBER {
-                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7, $9);
+yeartimeexpr: NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
+              COLON NUMBER COLON NUMBER DOT NUMBER {
+                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7, $9, $11, $13);
               }
             | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
               COLON NUMBER COLON NUMBER {
                 $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7, $9, $11);
               }
             | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
-              COLON NUMBER COLON NUMBER DOT NUMBER {
-                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7, $9, $11, $13);
+              COLON NUMBER {
+                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7, $9);
+              }
+            | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER {
+                $$ = MSTimeParse::yearTimeConvert($1, $3, $5, $7);
+              }
+            | NUMBER SLASH NUMBER SLASH NUMBER {
+                $$ = MSTimeParse::yearTimeConvert($1, $3, $5);
               }
             ;
 

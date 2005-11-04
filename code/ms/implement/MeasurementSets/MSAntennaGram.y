@@ -41,6 +41,8 @@ using namespace casa;
   Int ival[2];
   char * str;
   Double dval;
+  Vector<Int>* iv;
+  Vector<String>* is;
 }
 
 
@@ -56,7 +58,6 @@ using namespace casa;
 %token LBRACE
 %token RBRACE
 
-%token STAR
 %token COLON
 %token SEMICOLON
 
@@ -66,6 +67,8 @@ using namespace casa;
 %type <node> combnameorstation
 %type <node> namesorstations
 %type <node> indexcombexpr
+%type <is> namelist
+%type <iv> indexlist
 
 %left OR AND
 %nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
@@ -99,46 +102,67 @@ subantennaexpr: combnameorstation
 
 combnameorstation: namesorstations 
                  | LPAREN namesorstations RPAREN {
-		     $$ = $2;}
+		     $$ = $2;
+                   }
                  ;
-namesorstations: IDENTIFIER {
-                   $$ = MSAntennaParse().selectNameOrStation(String($1));
+namesorstations: namelist {
+                   $$ = MSAntennaParse().selectNameOrStation(*($1));
                  }
-               | namesorstations COMMA IDENTIFIER {
-		   $$ = MSAntennaParse().selectNameOrStation(String($3));
-	         }
                | IDENTIFIER DASH IDENTIFIER {
                    $$ = MSAntennaParse().selectNameOrStation(String($1), String($3));
 	         }
-               | STAR {
-                   $$ = MSAntennaParse().selectNameOrStation(String("*"));
-                 }
-               ;
-		  
-indexcombexpr  : IDENTIFIER {
-                   Vector<Int> ind(1);
-                   ind[0] = atoi($1);
-                   $$ = MSAntennaParse().selectAntennaIds(ind);
-                 }
-               | IDENTIFIER DASH IDENTIFIER {
-		   Int start = atoi($1);
-                   Int end   = atoi($3);
-		   Int len = end - start + 1;
-		   Vector<Int> antennaids(len);
-		   for(Int i = 0; i < len; i++) {
-		     antennaids[i] = start + i;
-		   }
-		   free($1);
-		   free($3);
-		   $$ = MSAntennaParse().selectAntennaIds(antennaids);	   
+               | namelist AMPERSAND namelist {
+                 $$ = MSAntennaParse().selectNameOrStation(*($1),*($3));
 	         }
-               | IDENTIFIER COLON IDENTIFIER {
+               | namelist AMPERSAND {
+                 $$ = MSAntennaParse().selectNameOrStation(*($1),*($1));
+	         }
+               ;
+
+namelist : IDENTIFIER {
+             Vector<String> antennanms(1);
+             antennanms[0] = String($1);
+             $$ = new Vector<String>(antennanms);
+           }
+         | namelist COMMA IDENTIFIER {
+             Vector<String> antennanms(*($1));
+             antennanms = String($3);
+             $$ = new Vector<String>(antennanms);
+           }
+         ;
+
+indexcombexpr  : IDENTIFIER COLON IDENTIFIER {
                    $$ = MSAntennaParse().selectFromIdsAndCPs(atoi($1), String($3));
 	         }
-	       | indexcombexpr AMPERSAND IDENTIFIER {
-                   $$ = new TableExprNode ($1 || $3); 
+	       | indexlist AMPERSAND indexlist {
+                   $$ = MSAntennaParse().selectAntennaIds(*($1), *($3));
+                 } 
+               | indexlist AMPERSAND {
+                   $$ = MSAntennaParse().selectAntennaIds(*($1), *($1));
    	         }
 	       ;
+
+indexlist : IDENTIFIER {
+              Vector<Int> antennaids(1);
+              antennaids[0] = Int($1);
+              $$ = new Vector<Int>(antennaids);
+            }
+          | indexlist COMMA IDENTIFIER {
+              Vector<Int> antennaids(*($1));
+              antennaids = Int($3);
+              $$ = new Vector<Int>(antennaids);
+            }
+          | IDENTIFIER DASH IDENTIFIER {
+              Int start = atoi($1);
+              Int end   = atoi($3);
+              Int len = end - start + 1;
+              Vector<Int> antennaids(len);
+              for(Int i = 0; i < len; i++) {
+                antennaids[i] = start + i;
+              }
+              $$ = new Vector<Int>(antennaids);	   
+            }
+	  ;
 
 %%
 

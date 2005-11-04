@@ -96,7 +96,9 @@ public:
     const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
                                           const Vector<Int>& antennaIds2);
 
-    const TableExprNode* selectNameOrStation(const String& antenna);
+    const TableExprNode* selectNameOrStation(const Vector<String>& antenna);
+    const TableExprNode* selectNameOrStation(const Vector<String>& antenna1,
+                                             const Vector<String>& antenna2);
     const TableExprNode* selectNameOrStation(const String& antenna1,
                                              const String& antenna2);
 

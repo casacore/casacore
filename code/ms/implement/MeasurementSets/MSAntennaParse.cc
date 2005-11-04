@@ -72,8 +72,10 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
 
   if(antennaIds2.size())
     condition =
-      ms()->col(colName1).in(antennaIds1) &&
-      ms()->col(colName2).in(antennaIds2);
+      (ms()->col(colName1).in(antennaIds1) &&
+       ms()->col(colName2).in(antennaIds2)) ||
+      (ms()->col(colName1).in(antennaIds1) &&
+       ms()->col(colName2).in(antennaIds2));
   else
     condition =
       ms()->col(colName1).in(antennaIds1) &&
@@ -87,15 +89,32 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
   return node();
 }
 
-const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna)
+const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna)
 {
   MSAntennaIndex msAI(ms()->antenna());
 
   TableExprNode condition =
     ms()->col(colName1).in(msAI.matchAntennaName(antenna)) ||
-    ms()->col(colName2).in(msAI.matchAntennaName(antenna)) ||
-    ms()->col(colName1).in(msAI.matchAntennaStation(antenna)) ||
-    ms()->col(colName2).in(msAI.matchAntennaStation(antenna));
+    ms()->col(colName2).in(msAI.matchAntennaName(antenna));
+
+  if(node_p->isNull())
+    *node_p = condition;
+  else {
+    *node_p = *node_p || condition;
+  }
+  return node();
+}
+
+const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna1,
+                                                         const Vector<String>& antenna2)
+{
+  MSAntennaIndex msAI(ms()->antenna());
+
+  TableExprNode condition =
+    (ms()->col(colName1).in(msAI.matchAntennaName(antenna1)) &&
+     ms()->col(colName2).in(msAI.matchAntennaName(antenna2))) ||
+    (ms()->col(colName1).in(msAI.matchAntennaName(antenna2)) &&
+     ms()->col(colName2).in(msAI.matchAntennaName(antenna1)));
 
   if(node_p->isNull())
     *node_p = condition;

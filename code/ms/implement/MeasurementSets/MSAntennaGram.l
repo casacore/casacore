@@ -102,8 +102,6 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
             return NOT; }
 "^"       { msAntennaGramPosition() += yyleng;
             return POWER; }
-"*"       { msAntennaGramPosition() += yyleng;
-            return STAR; }
 "/"       { msAntennaGramPosition() += yyleng;
             return DIVIDE; }
 "%"       { msAntennaGramPosition() += yyleng;
