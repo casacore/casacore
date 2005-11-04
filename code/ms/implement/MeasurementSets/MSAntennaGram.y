@@ -100,10 +100,7 @@ subantennaexpr: namesorstations
                 }
               ;
 
-namesorstations: namelist {
-                   $$ = MSAntennaParse().selectNameOrStation(*($1));
-                 }
-               | IDENTIFIER DASH IDENTIFIER {
+namesorstations: IDENTIFIER DASH IDENTIFIER {
                    $$ = MSAntennaParse().selectNameOrStation(String($1), String($3));
 	         }
                | namelist AMPERSAND namelist {
@@ -112,6 +109,9 @@ namesorstations: namelist {
                | namelist AMPERSAND {
                  $$ = MSAntennaParse().selectNameOrStation(*($1),*($1));
 	         }
+               | namelist {
+                   $$ = MSAntennaParse().selectNameOrStation(*($1));
+                 }
                ;
 
 namelist : IDENTIFIER {
@@ -135,6 +135,9 @@ indexcombexpr  : IDENTIFIER COLON IDENTIFIER {
                | indexlist AMPERSAND {
                    $$ = MSAntennaParse().selectAntennaIds(*($1), *($1));
    	         }
+               | indexlist {
+                   $$ = MSAntennaParse().selectAntennaIds(*($1));
+                 }
 	       ;
 
 indexlist : IDENTIFIER {
