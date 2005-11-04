@@ -64,7 +64,6 @@ using namespace casa;
 %type <node> antennastatement
 %type <node> antennaexpr
 %type <node> subantennaexpr
-%type <node> combnameorstation
 %type <node> namesorstations
 %type <node> indexcombexpr
 %type <is> namelist
@@ -95,16 +94,12 @@ antennaexpr: subantennaexpr
              }
            ;
 
-subantennaexpr: combnameorstation 
-              | combnameorstation AMPERSAND combnameorstation {
-                  $$ = new TableExprNode ($1 || $3) ;}
+subantennaexpr: namesorstations 
+              | LPAREN namesorstations RPAREN {
+		  $$ = $2;
+                }
               ;
 
-combnameorstation: namesorstations 
-                 | LPAREN namesorstations RPAREN {
-		     $$ = $2;
-                   }
-                 ;
 namesorstations: namelist {
                    $$ = MSAntennaParse().selectNameOrStation(*($1));
                  }
