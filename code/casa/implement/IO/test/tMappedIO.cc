@@ -94,7 +94,7 @@ int main (int argc, char** argv)
 	// Add the difference to the nr of bytes to map.
 	Int64 nrBytes = size + offset-pageStartOffset;
 	// Do mmap
-	int protect= PROT_WRITE;
+	int protect= PROT_READ | PROT_WRITE;
 	void* pageStart = ::mmap (0, nrBytes, protect, MAP_SHARED, fd,
 				  pageStartOffset);
 	if (pageStart == MAP_FAILED) {
@@ -108,7 +108,7 @@ int main (int argc, char** argv)
 	  memcpy (ptr, buf, tleng);
 	  ptr += tleng;
 	}
-	::munmap (pageStart, nrBytes);
+	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     write");
     }
@@ -140,7 +140,7 @@ int main (int argc, char** argv)
 	  }
 	  ptr += tleng;
 	}
-	::munmap (pageStart, nrBytes);
+	::munmap ((char*)pageStart, nrBytes);
       }
       timer.show ("Mapped IO     read ");
     }
