@@ -33,6 +33,7 @@
 #include <casa/sstream.h>
 #include <unistd.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 #include <casa/namespace.h>
 
