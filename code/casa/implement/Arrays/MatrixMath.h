@@ -42,6 +42,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </summary>
 //
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tLinAlgebra">
+//</reviewed>
 //
 // <linkfrom anchor="Linear Algebra" classes="Vector Matrix">
 //    <here>Linear Algebra</here> -- Linear algebra functions
