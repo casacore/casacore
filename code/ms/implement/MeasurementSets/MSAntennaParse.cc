@@ -74,8 +74,8 @@ const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antenna
     condition =
       (ms()->col(colName1).in(antennaIds1) &&
        ms()->col(colName2).in(antennaIds2)) ||
-      (ms()->col(colName1).in(antennaIds1) &&
-       ms()->col(colName2).in(antennaIds2));
+      (ms()->col(colName1).in(antennaIds2) &&
+       ms()->col(colName2).in(antennaIds1));
   else
     condition =
       ms()->col(colName1).in(antennaIds1) &&
