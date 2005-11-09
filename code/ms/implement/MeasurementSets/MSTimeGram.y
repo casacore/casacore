@@ -95,6 +95,9 @@ timeexpr: singletimeexpr
         | rangetimeexpr
         | lowboundtimeexpr
         | upboundtimeexpr
+        | timeexpr COMMA timeexpr {
+            $$ = new TableExprNode($1 || $3);
+          }
         ;
 
 singletimeexpr: daytimeexpr {
@@ -118,8 +121,7 @@ rangetimeexpr: daytimeexpr DASH daytimeexpr {
 lowboundtimeexpr: GT daytimeexpr {
                     $$ = MSTimeParse().selectTimeGT(MEpoch(*($2)), true);
                   }
-                |
-                  GT yeartimeexpr {
+                | GT yeartimeexpr {
                     $$ = MSTimeParse().selectTimeGT(MEpoch(*($2)), false);
                   }
                 ;
@@ -127,8 +129,7 @@ lowboundtimeexpr: GT daytimeexpr {
 upboundtimeexpr: LT daytimeexpr {
                    $$ = MSTimeParse().selectTimeLT(MEpoch(*($2)), true);
                  }
-               |
-                 LT yeartimeexpr {
+               | LT yeartimeexpr {
                    $$ = MSTimeParse().selectTimeLT(MEpoch(*($2)), false);
                  }
                ;

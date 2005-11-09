@@ -46,6 +46,8 @@
 #include <casa/Utilities/DataType.h>
 #include <casa/iostream.h>
 
+#include <casa/Logging/LogIO.h>
+
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //----------------------------------------------------------------------------
@@ -202,55 +204,66 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
     const TableExprNode *node = 0x0;
     TableExprNode taql;
 
-    switch(exprOrder_p[i])
+    try
     {
-      case ANTENNA_EXPR:
-        if(antennaExpr_p != "" &&
-           msAntennaGramParseCommand(ms, antennaExpr_p) == 0)
-          node = msAntennaGramParseNode();
-        break;
-      case CORR_EXPR:
-        if(corrExpr_p != "" &&
-           msCorrGramParseCommand(ms, corrExpr_p) == 0)
-          node = msCorrGramParseNode();
-        break;
-      case FIELD_EXPR:
-        if(fieldExpr_p != "" &&
-           msFieldGramParseCommand(ms, fieldExpr_p) == 0)
-          node = msFieldGramParseNode();
-        break;
-      case SPW_EXPR:
-        if(spwExpr_p != "" &&
-           msSpwGramParseCommand(ms, spwExpr_p) == 0)
-          node = msSpwGramParseNode();
-        break;
-      case SCAN_EXPR:
-        if(scanExpr_p != "" &&
-           msScanGramParseCommand(ms, scanExpr_p) == 0)
-          node = msScanGramParseNode();
-        break;
-      case TIME_EXPR:
-        if(timeExpr_p != "" &&
-           msTimeGramParseCommand(ms, timeExpr_p) == 0)
-          node = msTimeGramParseNode();
-        break;
-      case UVDIST_EXPR:
-        if(uvDistExpr_p != "" &&
-           msUvDistGramParseCommand(ms, uvDistExpr_p) == 0)
-          node = msUvDistGramParseNode();
-        break;
-      case TAQL_EXPR:
-        if(taqlExpr_p != "")
-        {
-           taql = tableCommand(taqlExpr_p).node();
-           node = &taql;
-        }
-        break;
-      case NO_EXPR:
-      default:
-        break;
+      switch(exprOrder_p[i])
+      {
+        case ANTENNA_EXPR:
+          if(antennaExpr_p != "" &&
+             msAntennaGramParseCommand(ms, antennaExpr_p) == 0)
+            node = msAntennaGramParseNode();
+          break;
+        case CORR_EXPR:
+          if(corrExpr_p != "" &&
+             msCorrGramParseCommand(ms, corrExpr_p) == 0)
+            node = msCorrGramParseNode();
+          break;
+        case FIELD_EXPR:
+          if(fieldExpr_p != "" &&
+             msFieldGramParseCommand(ms, fieldExpr_p) == 0)
+            node = msFieldGramParseNode();
+          break;
+        case SPW_EXPR:
+          if(spwExpr_p != "" &&
+             msSpwGramParseCommand(ms, spwExpr_p) == 0)
+            node = msSpwGramParseNode();
+          break;
+        case SCAN_EXPR:
+          if(scanExpr_p != "" &&
+             msScanGramParseCommand(ms, scanExpr_p) == 0)
+            node = msScanGramParseNode();
+          break;
+        case TIME_EXPR:
+          if(timeExpr_p != "" &&
+             msTimeGramParseCommand(ms, timeExpr_p) == 0)
+            node = msTimeGramParseNode();
+          break;
+        case UVDIST_EXPR:
+          if(uvDistExpr_p != "" &&
+             msUvDistGramParseCommand(ms, uvDistExpr_p) == 0)
+            node = msUvDistGramParseNode();
+          break;
+        case TAQL_EXPR:
+          if(taqlExpr_p != "")
+          {
+             taql = tableCommand(taqlExpr_p).node();
+             node = &taql;
+          }
+          break;
+        case NO_EXPR:
+        default:
+          break;
+      }
     }
+    catch (AipsError x)
+    {
+      LogIO os(LogOrigin("MSSelection",
+                         "toTableExprNode(const MeasurementSet* ms)", WHERE));
+      os << "ERROR: " << x.getMesg() << LogIO::POST;
 
+      return condition;
+    }
+ 
     if(node && node->isNull() == False)
       if(condition.isNull() == True)
         condition = *node;
