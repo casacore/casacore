@@ -399,6 +399,7 @@
      template Bool allGE(Array<Int> const &, Int const &) 
      template Bool allLT(Array<Int> const &, Int const &) 
      template Bool anyEQ(Array<Int> const &, Int const &) 
+     template Bool anyGE(Array<Int> const &, Int const &) 
      template Bool anyGT(Array<Int> const &, Int const &) 
      template Bool anyLE(Array<Int> const &, Int const &) 
      template Bool anyLT(Array<Int> const &, Int const &) 
