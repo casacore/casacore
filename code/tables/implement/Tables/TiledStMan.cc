@@ -298,6 +298,7 @@ Record TiledStMan::dataManagerSpec() const
 	}
     }
     rec.defineRecord ("HYPERCUBES", subrec);
+    rec.define ("SEQNR", sequenceNr());
     return rec;
 }
 

@@ -103,6 +103,7 @@ Record TiledColumnStMan::dataManagerSpec() const
     if (cubeSet_p.nelements() > 0) {
         rec.define ("TILESHAPE", cubeSet_p[0]->tileShape().asVector());
     }
+    rec.define ("SEQNR", sequenceNr());
     return rec;
 }
 
