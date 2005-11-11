@@ -495,7 +495,7 @@ LIBionosphere  := defeat static defeat defeat defeat static
 LIBflagging    := defeat static defeat defeat defeat defeat
 LIBdish        := defeat static defeat defeat defeat defeat
 LIBsimulators  := defeat static defeat defeat defeat defeat
-LIBsynthesis   := defeat static defeat defeat defeat defeat
+LIBsynthesis   := defeat static defeat defeat defeat static
 LIBtasking     := defeat static defeat defeat defeat defeat
 #                                                          Demo programs
 LIBdemo        := defeat static defeat defeat defeat defeat
