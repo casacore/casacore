@@ -421,6 +421,8 @@ Bool MsPlot<T>::polarIndices( const Vector<Int> spwIDs, /*const Vector<String> p
 // this method provides the data which are needed by msplot::uvdist()
 template<class T>
 Bool MsPlot<T>::polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<Int>& chanIndices, Vector<String>& chanRange ){
+   // if the user does not input any spws:channels and correlations, use all the spws:channels and corrlations.
+   if( !m_spwExpr.compare("") && !m_corrExpr.compare("") ) return False;
    Vector<Int> spwIndices;
 		if( m_spwExpr.compare( String(""))){ 
 				spwParser( m_spwExpr, spwIndices, chanIndices, chanRange );
@@ -431,7 +433,11 @@ Bool MsPlot<T>::polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<In
 		   ROMSSpWindowColumns spwc(m_ms.spectralWindow());
 	   	uInt nspw = spwc.nrow();
 		   spwIndices.resize( nspw );
-		   for( uInt i=1; i< nspw+1; i++) spwIndices[i-1] = i; 			
+		   for( uInt i=1; i< nspw+1; i++) spwIndices[i-1] = i;
+			if( !m_spwExpr.compare( String("")) ){
+			   chanIndices.resize(0);
+				chanRange.resize(0);
+			} 			
 		}
 		if( !polarIndices( spwIndices, polarsIndices  ) && chanIndices.nelements() == 0 && chanRange.nelements() == 0 ) return False;
 		return True;
