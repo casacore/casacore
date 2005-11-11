@@ -47,6 +47,7 @@
 #include <casa/iostream.h>
 
 #include <casa/Logging/LogIO.h>
+#include <casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
