@@ -42,7 +42,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# All FITS code seems to assume longs are 4 bytes. To take care of machines 
 //# for which this isn't true use FitsLong instead of Long in the FITS code
 //# where it matters.
-# if (defined(__alpha) || defined(__sgi))
+# if (defined(__alpha) || defined(__sgi) || defined(__x86_64__))
     typedef Int FitsLong;
 # else
     typedef Long FitsLong;
