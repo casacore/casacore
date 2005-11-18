@@ -126,5 +126,14 @@ directProduct(SquareMatrix<Complex,4>& result,
     return result;
 }
 
+SquareMatrix<Complex,2> conj(const SquareMatrix<Complex,2>& m) {
+  SquareMatrix<Complex,2> result = m;
+  result.conj();
+  return result;
+}
+
+
+
+
 } //# NAMESPACE CASA - END
 
