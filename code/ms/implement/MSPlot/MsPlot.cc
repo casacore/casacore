@@ -28,6 +28,7 @@
 //# Includes
 #include <casa/BasicSL/String.h>
 #include <casa/string.h>
+#include <casa/Quanta/Quantum.h>
 
 #include <ms/MSPlot/MsPlot.h>
 //
@@ -35,8 +36,11 @@
 #include <ms/MeasurementSets/MSDataDescColumns.h>
 #include <ms/MeasurementSets/MSDataDescription.h>
 #include <ms/MeasurementSets/MSColumns.h>
-#include <measures/Measures/Stokes.h>
+#include <ms/MeasurementSets/MSDerivedValues.h>
 //
+#include <measures/Measures/Stokes.h>
+#include <measures/Measures/MEpoch.h>
+//#include <measures/Measures/MCEpoch.h>
 #include <measures/Measures/MeasTable.h>
 //
 #include <tables/Tables/ScalarColumn.h>
@@ -48,6 +52,7 @@
 // MeasConvert.h must be directly included here!?( if including it in the MsPlot.h
 // file instead of here, it would not work).
 #include <measures/Measures/MeasConvert.h>
+
 //#include <tables/Tables/ExprNode.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 // default constructor. In case for some reason, one need to pass a Table object, not
@@ -72,11 +77,15 @@ Bool MsPlot<T>::antennaSelection( const Vector<String>& antennaNames, const Vect
 	{
 		  if( antennaNames[0].compare(String("")) ){ 
 		     if(!(m_select.setAntennaExpr( MSSelection::nameExprStr( antennaNames)))) return False;
+			  m_antennaNames.resize( antennaNames.nelements() );
+			  m_antennaNames = antennaNames;
 			  if( m_dbg ){ cout << "[ MsPlot<T>::antennaSelection() ] antennaNames are: " 
 			      << MSSelection::nameExprStr( antennaNames) << endl;  }
 		  }
 		  if( antennaIndex != -1 ){ 
 		     if(!(m_select.setAntennaExpr( "'"+MSSelection::indexExprStr( antennaIndex )+"'" ))) return False;
+			  m_antennaIndex.resize( antennaIndex.nelements() );
+			  m_antennaIndex = antennaIndex;
 			  if( m_dbg ){ cout << "[ MsPlot<T>::antennaSelection() ] antennaIndex converted to String::"
 			     << MSSelection::indexExprStr( antennaIndex ) << endl;  } 
 		  }		
@@ -307,54 +316,6 @@ Bool MsPlot<T>::antennaPositions( Table& ants ){
 		return False;
 	}
 }
-/*
-// Convert the antenna coordinates into local frame and put the antenna positions into a MemoryTable.
-template<class T>
-Bool MsPlot<T>::antennaPositions( MemoryTable& ants ){
-   MSColumns msc( m_ms );
-	ROMSAntennaColumns & antCols  = msc.antenna();
-	ScalarMeasColumn<MPosition> & antPositions = antCols.positionMeas();
-	Int nAnt= antCols.position().nrow();
-	Vector<MPosition> antPoses( nAnt );
-	Vector<Double> xTopo( nAnt ), yTopo( nAnt ), zTopo( nAnt );
-
-	for( uInt i=0; i< nAnt; i++) antPoses( i ) = antPositions( i );
-	// find the array center
-	String telescope = msc.observation().telescopeName()(0);
-	MPosition obs;
-	if( MeasTable::Observatory( obs, telescope )){
-	   if( obs.type()!= MPosition::ITRF ){
-		    MPosition::Convert toItrf( obs, MPosition::ITRF );
-			 obs = toItrf( obs );
-		}
-		// convert the coordinats from the geocentric frame to the topocentric frame
-		global2local( obs, antPoses, xTopo, yTopo, zTopo );
-		// prepare to create a MemoryTable
-		TableDesc td("AntXY","1", TableDesc::New );
-		td.comment()="A MemoryTable for antenna local XY plane";
-		td.rwKeywordSet().define("XYPlane", "tangential" );
-		td.addColumn(ScalarColumnDesc<float>("X-EAST", "Towards east" ));
-		td.addColumn(ScalarColumnDesc<float>("Y-NORTH", "Towards north" ));
-		SetupNewTable antMaker( td.tableName(), td, Table::New );
-		MemoryTable antXY( antMaker, nAnt, False );
-		ScalarColumn<float> xCol( antXY, "X-EAST" );
-		ScalarColumn<float> yCol( antXY, "Y-NORTH" );
-		for( uInt i=0; i<nAnt; i++ ){
-		   xCol.put( i, xTopo(i) );
-			yCol.put( i, yTopo(i) );
-		}
-		ants = antXY;
-		// we do not try to pass antXY to the TablePlot::TABS_P here because then we will need to
-		// copy the subMS object to another variable to keep it in memory( a reference will not
-		// work because then if we assign antXY to subMS, the reference to subMS will also be 
-		// changed.). That means at a time subMS and a copy of it exist simultaneously. This
-		// will take too much memory.
-	}else{
-	   cout<<"[ MsPlot::plotArray()] MeasTable::Observatory() failed." << endl;
-	}
-	
-}
-*/
 // get polarization indices from spw and Stokes type( RR, RL, LR, LL, etc) for
 // the first index of DATA[ , ], MODEL[ , ], CORRECTED_DATA[ , ] etc. to 
 // plot quantities ( amplitude, phase, or both ) versus uv distance.
@@ -715,5 +676,92 @@ Bool MsPlot<T>::containStokes( const Vector<Int> corrType, const Vector<String>&
 	polarIndices = polIndices;
 	return True;
 }// end of containStokes
+// This method calculated derived quantities, such as hour angle, azimuth, elevation,
+// paralactic angle, etc.
+template<class T>
+Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& derivedQuan, const String& quanType ){
+   // TIME from MAIN table of MS is in seconds.
+   MSDerivedValues msd;
+   //ROMSColumns msc( m_ms );
+	//const ROMSAntennaColumns & antCols  = msc.antenna();
+	//const ROScalarMeasColumn<MPosition> & antPositions = antCols.positionMeas();
+   //uInt nAnt= antCols.position().nrow();
+	//Vector<MPosition> antPoses( nAnt );
+	//Vector<Double> xTopo( nAnt ), yTopo( nAnt ), zTopo( nAnt );
+	//for( uInt i=0; i< nAnt; i++) antPoses( i ) = antPositions( i );
+
+   // If the user wants to use the selected antennas
+   if( m_antennaNames.nelements() || m_antennaIndex.nelements() ){
+	   cout<<"[MsPlot::hourAngle()] To be implemented. " << endl;
+	}else{ // if the user did not select antennas, use all the antennas
+  	   ROMSColumns msc( m_ms );
+		const ROMSAntennaColumns & antCols  = msc.antenna();
+		msd.setAntennas( antCols );
+		
+      // the following block is needed by parAngle()
+		Int nAnt=antCols.nrow();
+      Vector<String> mount(nAnt);
+      for (Int ant=0; ant<nAnt; ant++) {
+        mount( ant) = antCols.mount()(ant);
+      }
+		msd.setAntennaMount( mount );
+	}
+	
+	//if( m_fieldNames.nelements() || m_fieldIndex.nelements() ){
+	//   cout<<"[MsPlot::hourAngle()] To be implemented. " << endl;
+	//}else{ // if the user did not select antennas, use all the antennas
+  	   ROMSColumns* msc;
+		//const MSField msfield;
+		if( m_dataIsSet ){
+	 	  msc = new ROMSColumns( m_subMS );
+		}else{
+		  msc = new ROMSColumns( m_ms );
+		}
+		Vector<Int> fieldId = msc->fieldId().getColumn();
+	 //}
+	 Vector<Double> l_times = msc->time().getColumn();
+	 //times.resize( l_times.nelements() );
+	 //times = l_times; 
+	 //uInt nt = times.nelements();
+	  uInt nt = l_times.nelements();
+	 uInt curFieldId = 0; 
+	 uInt lastFieldId = 0;
+	 for ( uInt k=0; k<nt; k++) {
+	   curFieldId = fieldId( k );
+	   if (curFieldId!=lastFieldId) {
+		   if (msc->field().numPoly()(curFieldId)==0)
+		   {  msd.setFieldCenter( msc->field().phaseDirMeas(curFieldId));  }
+	      if (msc->field().numPoly()(curFieldId)>0)
+	      {  msd.setFieldCenter( msc->field().phaseDirMeas(curFieldId,times(k)));  }
+		}
+		// TIME from MAIN table of MS is in seconds.
+		// Quantity qt(times(k)/C::day, "day");
+		// Quantity qt( l_times(k)/C::day, "day" );
+		Quantity qt( l_times(k), "s" );
+		MEpoch mep( qt );
+      msd.setEpoch( mep );
+		derivedQuan.resize( nt );
+	   if( !quanType.compare( "hourAngle" )){
+	      //derivedQuan( k ) = msd.hourAngle()/C::_2pi*C::day;
+			derivedQuan( k ) = msd.hourAngle()*180.0/C::_2pi; // converted to degree
+			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] hour angle = " << derivedQuan(k) << endl;
+	   }else if( !quanType.compare( "azimuth" ) ){
+			derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(0);
+			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] azimuth = " << derivedQuan(k) << endl;
+		}else if( !quanType.compare( "elevation" )){
+		   derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(1);
+			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] elevation = " << derivedQuan(k) << endl;
+		}else if( !quanType.compare( "parallaticAngle" )){
+		   // derivedQuan( k ) = msd.parAngle()/C::_2pi*C::day;
+			derivedQuan( k ) = msd.parAngle()*180.0/C::_2pi; // converted to degree
+			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] parallactic angle = " << derivedQuan(k) << endl;
+		}else{
+		   cout<<"[ MsPlot::derivedValues() ] Invalid quanType inputted. " << endl;
+		}
+		lastFieldId=curFieldId;
+	 }// end of for loop
+	 delete msc;
+	 return True;
+  }// end of hourAngles()
 } //# NAMESPACE CASA - END
 // end of file
