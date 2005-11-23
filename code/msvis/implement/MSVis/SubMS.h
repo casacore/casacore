@@ -95,6 +95,10 @@ class SubMS
   // Select Antennas to split out  
   void selectAntenna(Vector<Int>& antennaids, Vector<String>& antennaSel);
 
+
+  //select time parameters
+  void selectTime(Double timeBin=-1.0, String timerng="");
+
   //void selectSource(Vector<String> sourceid);
 
   //Method to set if a phase Center rotation is needed
@@ -108,24 +112,37 @@ class SubMS
 
   // This setup a default new ms
   // Can be called directly as its not dependent on any private variable
-  MeasurementSet* setupMS(String msname, Int nchan, Int npol, String telescop, Int obstype=0);
+  static MeasurementSet* setupMS(String msname, Int nchan, Int npol, String telescop, Int obstype=0);
   
- 
+  
   
 
  private:
-
   //method that returns the selected ms
   Bool makeSelection();
   Bool fillDDTables();
   Bool fillFieldTable();
   Bool fillMainTable(const String& which);
+  Bool fillAverMainTable(const String& which);
   Bool copyAntenna();
   Bool copyFeed();
   Bool copySource();
   Bool copyObservation();
   Bool writeDiffSpwShape(String& columnName);
   Bool writeSimilarSpwShape(String& columnName);
+  // return the number of unique antennas selected
+  Int numOfBaselines(Vector<Int>& ant1, Vector<Int>& ant2, 
+		    Bool includeAutoCorr=False);
+  // Number of time bins to average into from selected data
+  Int numOfTimeBins(const Double& timeBin);
+  Bool fillAverAntTime(Vector<Int>& ant1, Vector<Int>& ant2, 
+		       const Double& timeBin, 
+		       const Int& numOfTimeBins);
+  Bool fillTimeAverData(Vector<Int>& ant1, Vector<Int>& ant2, 
+			const Double& timeBin, 
+			const String& ColumnName);
+  void checkSpwShape();
+
   MSColumns * msc_p;
   MSColumns * mscIn_p;
 
@@ -139,8 +156,9 @@ class SubMS
   Bool antennaSel_p;
   Vector<String> antennaSelStr_p;
   Vector<Int> antennaId_p;
-
-
+  Double timeBin_p;
+  Bool sameShape_p;
+  String timeRange_p;
 };
 
 

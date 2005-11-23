@@ -39,6 +39,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
+#include <casa/Utilities/GenSort.h>
 #include <msvis/MSVis/VisSet.h>
 #include <msvis/MSVis/VisBuffer.h>
 #include <msvis/MSVis/VisibilityIterator.h>
@@ -72,6 +73,8 @@ namespace casa {
     mssel_p=ms_p;
     doChanAver_p=False;
     antennaSel_p=False;
+    sameShape_p=True;
+    timeBin_p=-1.0;
   }
   
   SubMS::SubMS(MeasurementSet& ms){
@@ -81,6 +84,8 @@ namespace casa {
     mssel_p=ms_p;
     doChanAver_p=False;
     antennaSel_p=False;
+    sameShape_p=True;
+    timeBin_p=-1.0;
   }
 
   SubMS::~SubMS(){
@@ -174,12 +179,18 @@ namespace casa {
 
   }
  
-  
+  void SubMS::selectTime(Double timeBin, String timerng){
+
+    timeBin_p=timeBin;
+    timeRange_p=timerng;
+  }
+
+
   Bool SubMS::makeSubMS(String& msname, String& colname){
     
     LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
     
-    if(max(fieldid_p) >= ms_p.field().nrow()){
+    if(max(fieldid_p) >= Int(ms_p.field().nrow())){
       os << LogIO::SEVERE 
 	 << "Field selection contains elements that do not exist in "
 	 << "this MS"
@@ -189,7 +200,7 @@ namespace casa {
       
       
     }
-    if(max(spw_p) >= ms_p.spectralWindow().nrow()){
+    if(max(spw_p) >= Int(ms_p.spectralWindow().nrow())){
       os << LogIO::SEVERE 
 	 << "SpectralWindow selection contains elements that do not exist in "
 	 << "this MS"
@@ -226,8 +237,29 @@ namespace casa {
     copyAntenna();
     copyFeed();
     copyObservation();
-    fillMainTable(colname);
     
+    //check the spw shapes
+    checkSpwShape();
+
+    if(timeBin_p <= 0.0){
+      fillMainTable(colname);
+    }
+    else{
+      if(!sameShape_p){
+	delete outpointer;
+	os << LogIO::WARN 
+	   << "Time averaging of varying spw shapes is not handled yet"
+	   << LogIO::POST;
+	os << LogIO::WARN
+	   << "Work around: split-average different shape spw seperately and then concatenate " << LogIO::POST;
+	return False;
+      }      
+      else{
+	fillAverMainTable(colname);
+
+      }
+    }
+
     //  msOut_p.relinquishAutoLocks (True);
     //  msOut_p.unlock();
     //Detaching the selected part
@@ -371,62 +403,62 @@ namespace casa {
     newtab.bindColumn(MS::columnName(MS::WEIGHT),tiledStMan4);
     newtab.bindColumn(MS::columnName(MS::SIGMA),tiledStMan5);
 
-  // avoid lock overheads by locking the table permanently
+    // avoid lock overheads by locking the table permanently
     TableLock lock(TableLock::PermanentLocking);
     MeasurementSet *ms = new MeasurementSet (newtab,lock);
 
-  // Set up the subtables for the UVFITS MS
-  // we make new tables with 0 rows
+    // Set up the subtables for the UVFITS MS
+    // we make new tables with 0 rows
     Table::TableOption option=Table::New;
     ms->createDefaultSubtables(option); 
-  // add the optional Source sub table to allow for 
-  // specification of the rest frequency
-  TableDesc sourceTD=MSSource::requiredTableDesc();
-  SetupNewTable sourceSetup(ms->sourceTableName(),sourceTD,option);
-  ms->rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
-                                Table(sourceSetup,0));
-  // update the references to the subtable keywords
-  ms->initRefs();
- 
-  { // Set the TableInfo
-    TableInfo& info(ms->tableInfo());
-    info.setType(TableInfo::type(TableInfo::MEASUREMENTSET));
-    info.setSubType(String("UVFITS"));
-    info.readmeAddLine
-      ("This is a measurement set Table holding astronomical observations");
+    // add the optional Source sub table to allow for 
+    // specification of the rest frequency
+    TableDesc sourceTD=MSSource::requiredTableDesc();
+    SetupNewTable sourceSetup(ms->sourceTableName(),sourceTD,option);
+    ms->rwKeywordSet().defineTable(MS::keywordName(MS::SOURCE),
+				   Table(sourceSetup,0));
+    // update the references to the subtable keywords
+    ms->initRefs();
+    
+    { // Set the TableInfo
+      TableInfo& info(ms->tableInfo());
+      info.setType(TableInfo::type(TableInfo::MEASUREMENTSET));
+      info.setSubType(String("UVFITS"));
+      info.readmeAddLine
+	("This is a measurement set Table holding astronomical observations");
+    }
+    
+    
+    return ms;
   }
 
 
-  return ms;
-}
-
-
-Bool SubMS::fillDDTables(){
-
-  LogIO os(LogOrigin("SubMS", "fillDDTables()", WHERE));
-
-  MSSpWindowColumns& msSpW(msc_p->spectralWindow());
-  MSDataDescColumns& msDD(msc_p->dataDescription());
-  MSPolarizationColumns& msPol(msc_p->polarization());
-
+  Bool SubMS::fillDDTables(){
+    
+    LogIO os(LogOrigin("SubMS", "fillDDTables()", WHERE));
+    
+    MSSpWindowColumns& msSpW(msc_p->spectralWindow());
+    MSDataDescColumns& msDD(msc_p->dataDescription());
+    MSPolarizationColumns& msPol(msc_p->polarization());
+    
 
 
   //DD table
-  MSDataDescription ddtable= mssel_p.dataDescription();
-  ROScalarColumn<Int> polId(ddtable, 
-			    MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
-
-  //Fill in matching spw to datadesc in old ms 
+    MSDataDescription ddtable= mssel_p.dataDescription();
+    ROScalarColumn<Int> polId(ddtable, 
+			      MSDataDescription::columnName(MSDataDescription::POLARIZATION_ID));
+    
+    //Fill in matching spw to datadesc in old ms 
   {
-     ROMSDataDescColumns msOldDD(ddtable);
-     oldDDSpwMatch_p=msOldDD.spectralWindowId().getColumn();
+    ROMSDataDescColumns msOldDD(ddtable);
+    oldDDSpwMatch_p=msOldDD.spectralWindowId().getColumn();
   }
   //POLARIZATION table 
-
-
+  
+  
   MSPolarization poltable= mssel_p.polarization();
   ROScalarColumn<Int> numCorr (poltable, 
-    MSPolarization::columnName(MSPolarization::NUM_CORR));
+			       MSPolarization::columnName(MSPolarization::NUM_CORR));
   ROArrayColumn<Int> corrType(poltable, 
 			  MSPolarization::columnName(MSPolarization::CORR_TYPE));
   ROArrayColumn<Int> corrProd(poltable, MSPolarization::columnName(MSPolarization::CORR_PRODUCT));
@@ -436,7 +468,7 @@ Bool SubMS::fillDDTables(){
   MSSpectralWindow spwtable=mssel_p.spectralWindow();
   spwRelabel_p.resize(mscIn_p->spectralWindow().nrow());
   spwRelabel_p.set(-1);
-
+  
   ROArrayColumn<Double> chanFreq(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::CHAN_FREQ));
   ROArrayColumn<Double> chanWidth(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::CHAN_WIDTH));
   ROArrayColumn<Double> effBW(spwtable, MSSpectralWindow::columnName(MSSpectralWindow::EFFECTIVE_BW));
@@ -464,7 +496,7 @@ Bool SubMS::fillDDTables(){
   for(uInt k=0; k < nPol; ++k){
     selectedPolId[k]=ddPolId[index[uniq[k]]];
   }
-
+  
   Vector<Int> newPolId(spw_p.nelements());
   for(uInt k=0; k < spw_p.nelements(); ++k){
     for (uInt j=0; j < nPol; ++j){ 
@@ -472,7 +504,7 @@ Bool SubMS::fillDDTables(){
 	newPolId[k]=j;
     }
   }
-
+  
   for(uInt k=0; k < newPolId.nelements(); ++k){
     msOut_p.polarization().addRow();
     msPol.numCorr().put(k,numCorr(polId(spw_p[k])));
@@ -501,14 +533,14 @@ Bool SubMS::fillDDTables(){
       for(Int j=0; j < nchan_p[k]; ++j){
 	if(averageChannel_p){
 	  chanFreqOut[j]=(chanFreqIn[chanStart_p[k]+j*chanStep_p[k]]+
-	    chanFreqIn[chanStart_p[k]+(j+1)*chanStep_p[k]-1])/2;
+			  chanFreqIn[chanStart_p[k]+(j+1)*chanStep_p[k]-1])/2;
 	  spwResolOut[j]= spwResolIn[chanStart_p[k]+ 
-				    j*chanStep_p[k]]*chanStep_p[k];
+				     j*chanStep_p[k]]*chanStep_p[k];
 	}
 	else{
 	  chanFreqOut[j]=chanFreqIn[chanStart_p[k]+j*chanStep_p[k]];
 	  spwResolOut[j]=spwResolIn[chanStart_p[k]+ 
-				   j*chanStep_p[k]];
+				    j*chanStep_p[k]];
 	}
       }
       Double totalBW=chanFreqOut[nchan_p[k]-1]-chanFreqOut[0]+spwResolOut[0];
@@ -519,8 +551,8 @@ Bool SubMS::fillDDTables(){
       msSpW.effectiveBW().put(k, spwResolOut);
       msSpW.refFrequency().put(k,chanFreqOut[0]);
       msSpW.totalBandwidth().put(k, totalBW);
-
-  
+      
+      
     }
     else{
       msSpW.chanFreq().put(k, chanFreq(spw_p[k]));
@@ -531,7 +563,7 @@ Bool SubMS::fillDDTables(){
       msSpW.refFrequency().put(k, refFreq(spw_p[k]));
       msSpW.totalBandwidth().put(k, totBW(spw_p[k]));
     }
-
+    
     msSpW.flagRow().put(k,spwFlagRow(spw_p[k]));
     msSpW.freqGroup().put(k, freqGroup(spw_p[k]));
     msSpW.freqGroupName().put(k, freqGroupName(spw_p[k]));
@@ -539,22 +571,22 @@ Bool SubMS::fillDDTables(){
     msSpW.measFreqRef().put(k, measFreqRef(spw_p[k]));
     msSpW.name().put(k, spwName(spw_p[k]));
     msSpW.netSideband().put(k, netSideband(spw_p[k]));
-
-
+    
+    
     msDD.flagRow().put(k, False);
     msDD.polarizationId().put(k,newPolId[k]);
     msDD.spectralWindowId().put(k,k);
-
-
-  }
-
- 
     
+    
+  }
+  
+ 
+  
   return True;
-
-}
-
-
+  
+  }
+  
+  
 Bool SubMS::fillFieldTable() {
 
 
@@ -702,20 +734,9 @@ Bool SubMS::fillMainTable(const String& whichCol){
   else{
 
 
-    Bool sameShape=True;
-    if(inNumChan_p.nelements() > 1){
-      for (uInt k=1; k < inNumChan_p.nelements(); ++k){
-	sameShape= sameShape && (inNumChan_p[k] == inNumChan_p[k-1]);      
-      }
-    }
     
-    if(nchan_p.nelements() > 1){
-      for (uInt k=1; k < nchan_p.nelements(); ++k){
-	sameShape= sameShape && (nchan_p[k] == nchan_p[k-1]);      
-      }
-    }
 
-    if(sameShape){
+    if(sameShape_p){
       //Checking to make sure we have in memory capability else 
       // use visbuffer
       
@@ -723,12 +744,12 @@ Bool SubMS::fillMainTable(const String& whichCol){
       Double memAvail= Double (HostInfo::memoryTotal())*(1024);
       //Factoring in 30% for flags and other stuff
       if ((datavol*1.3) >  memAvail)
-	sameShape = False;
+	sameShape_p = False;
 
 
     }
 
-    if(sameShape){
+    if(sameShape_p){
       writeSimilarSpwShape(columnName);
     }
     else{
@@ -741,6 +762,49 @@ Bool SubMS::fillMainTable(const String& whichCol){
 
 
 }
+
+Bool SubMS::fillAverMainTable(const String& whichCol){
+
+  LogIO os(LogOrigin("SubMS", "fillAverMainTable()", WHERE));
+
+  Double timeBin=timeBin_p;
+  Vector<Int> ant1(0);
+  Vector<Int> ant2(0);
+  Int numBaselines=numOfBaselines(ant1, ant2, False);
+  Int numTimeBins=numOfTimeBins(timeBin);
+  if(numTimeBins < 1){
+    os << LogIO::SEVERE << "Number of time bins is less than 1...Time averaging bin size may be  too large"
+       << LogIO::POST;
+  }
+  msOut_p.addRow(numBaselines*numTimeBins, True);
+
+  // fill time and timecentroid and antennas
+  // fillAverTime(); 
+  if(!fillAverAntTime(ant1, ant2, timeBin, numTimeBins))
+    return False;
+
+
+  //Fill array id with first value of input ms for now.
+  msc_p->arrayId().fillColumn(mscIn_p->arrayId()(0));
+  msc_p->exposure().fillColumn(timeBin);
+  // Will have to reconsider multi-feeds later
+  msc_p->feed1().fillColumn(mscIn_p->feed1()(0));
+  msc_p->feed2().fillColumn(mscIn_p->feed2()(0));
+  msc_p->interval().fillColumn(timeBin);
+  msc_p->observationId().fillColumn(mscIn_p->observationId()(0));
+  msc_p->exposure().fillColumn(timeBin);
+  msc_p->processorId().fillColumn(mscIn_p->processorId()(0));
+  msc_p->stateId().fillColumn(mscIn_p->stateId()(0));
+  
+  //things to be taken care in averData... (1) flagRow, (2) ScanNumber 
+  //(3) uvw (4) weight (5) sigma
+  if(!fillTimeAverData(ant1, ant2, timeBin, whichCol))
+    return False;
+
+  return True;
+
+}
+
 
 
 Bool SubMS::copyAntenna(){
@@ -982,98 +1046,306 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     //   const Float *owptr = outwgtspectmp.getStorage(deleteOWptr);
     
 
+  Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
+  if(doSpWeight)
+    doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
+
+
+  Cube<Complex> outdata(npol_p[0], nchan_p[0], nrow);
+  Cube<Bool> outflag(npol_p[0], nchan_p[0], nrow);
+  Cube<Float> outspweight ;
+  if(doSpWeight){ 
+    outspweight.resize(npol_p[0], nchan_p[0], nrow);
+    wgtSpec.reference(mscIn_p->weightSpectrum());
+  }
+    
+  for (Int row=0; row < nrow; ++row){
+
+    data.get(row, indatatmp);
+    flag.get(row, inflagtmp);
+    if(doSpWeight)  wgtSpec.get(row, inwgtspectmp);
+    Int ck=0;
+    Int chancounter=0;
+    Vector<Int> avcounter(npol_p[0]);
+    outdatatmp.set(0); outwgtspectmp.set(0);
+    avcounter.set(0);
+      
+    for (Int k=chanStart_p[0]; k< (nchan_p[0]*chanStep_p[0]+chanStart_p[0]);
+	 ++k) {
+      
+      if(chancounter == chanStep_p[0]){
+	outdatatmp.set(0); outwgtspectmp.set(0);
+	chancounter=0;
+	avcounter.set(0);
+      }
+      ++chancounter;
+      for (Int j=0; j< npol_p[0]; ++j){
+	Int offset= j + k*npol_p[0];
+	if(!iflg[offset]){
+	  if(doSpWeight){
+	    outdatatmp[j] += iptr[offset]*inwptr[offset];
+	    outwgtspectmp[j] += inwptr[offset];
+	  }
+	  else{
+	    outdatatmp[j] += iptr[offset];	   
+	      
+	  }
+	  
+	  ++avcounter[j];
+	}
+
+
+	if(chancounter==chanStep_p[0]){
+	  if(avcounter[j] !=0){
+	    if(doSpWeight){
+	      outdata(j,ck,row)=outdatatmp[j]/outwgtspectmp[j];	 
+	      outspweight(j,ck,row)=outwgtspectmp[j];
+	    }
+	    else{
+	      outdata(j,ck,row)=outdatatmp[j]/avcounter[j];	    
+	    }
+	    outflag(j,ck,row)=False;
+	  } 
+	  else{
+	    
+	    outdata(j,ck,row)=0;
+	    outflag(j,ck,row)=True;
+	    if(doSpWeight)outspweight(j,ck,row)=0;
+	  }
+	  
+	}
+
+	  
+      }
+	
+
+      if(chancounter==chanStep_p[0]){
+	++ck;
+	
+ 
+      }
+
+
+    }
+
+    
+  }
+
+  msc_p->data().putColumn(outdata);
+  msc_p->flag().putColumn(outflag);
+  if(doSpWeight)msc_p->weightSpectrum().putColumn(outspweight);
+
+
+  return True;
+
+}
+
+
+  Int SubMS::numOfBaselines(Vector<Int>& ant1, Vector<Int>& ant2, 
+		    Bool includeAutoCorr){
+    Int numRows=mssel_p.nrow();
+    Vector<Int> selAnt1(numRows);
+    Vector<Int> selAnt2(numRows);
+    selAnt1=mscIn_p->antenna1().getColumn();
+    selAnt2=mscIn_p->antenna2().getColumn();
+    Int numAnt1=GenSort<Int>::sort(selAnt1,Sort::Ascending,
+				   Sort::NoDuplicates);
+    Int numAnt2=GenSort<Int>::sort(selAnt2,Sort::Ascending,
+				   Sort::NoDuplicates);
+ 
+    ant1.resize();
+    ant1=selAnt1;
+    ant2.resize();
+    ant2=selAnt2;
+    
+    return numAnt1*numAnt2;
+   
+  }
+
+  Int SubMS::numOfTimeBins(const Double& timeBin){
+
+    if (timeBin > 0.0){
+      Int numrows=mssel_p.nrow();
+      Double timeStart=mscIn_p->time()(0);
+      Double timeEnd=mscIn_p->time()(numrows-1);
+      Int numBin= Int( (timeEnd-timeStart)/timeBin );
+      return numBin;
+    }
+    
+    return -1;
+  }
+
+
+
+  Bool SubMS::fillAverAntTime(Vector<Int>& ant1, Vector<Int>& ant2, 
+			      const Double& timeBin, 
+			      const Int& numOfTimeBins){
+
+    uInt nrows=msOut_p.nrow();
+    Vector<Int> antenna1(nrows);
+    Vector<Int> antenna2(nrows);
+    Vector<Double> rowTime(nrows);
+    //Will need to do the weighted averaging of time in the future.
+    uInt k=0;
+    Double timeStart=mscIn_p->time()(0)+0.5*timeBin;
+    for (Int t=0; t < numOfTimeBins; ++t){
+      for (uInt ant1Index=0; ant1Index < ant1.nelements(); ++ant1Index){
+	for (uInt ant2Index=0; ant2Index < ant2.nelements(); ++ant2Index){ 
+	  antenna1[k]=antenna1[ant1Index];
+	  antenna2[k]=antenna2[ant2Index];
+	  rowTime[k]=timeStart + t*timeBin;
+	  ++k;
+
+	}
+      }
+    }
+
+    msc_p->antenna1().putColumn(antenna1);
+    msc_p->antenna2().putColumn(antenna2);
+    msc_p->time().putColumn(rowTime);
+    msc_p->timeCentroid().putColumn(rowTime);
+
+    return True;
+
+  }
+
+  Bool SubMS::fillTimeAverData(Vector<Int>& ant1, Vector<Int>& ant2, 
+			   const Double& timeBin, 
+			   const String& columnName){
+
+    //Need to deal with uvw too
+    Vector<Int> ant1Index(max(ant1)+1);
+    ant1Index=-1;
+    Vector<Int> ant2Index(max(ant2)+1);
+    ant2Index=-1;
+    Int numAnt2=ant2.nelements();
+    for (Int j=0; Int(j< Int(ant1.nelements())); ++j){
+      ant1Index[ant1[j]]=j;
+    }
+    for (Int j=0; j< Int(ant2.nelements()); ++j){
+      ant2Index[ant2[j]]=j;
+    }
+    Int numbas=ant1.nelements()*ant2.nelements();
+    Int inNrow=mssel_p.nrow();
+    Int outNrow=msOut_p.nrow();
+    ROArrayColumn<Complex> data;
+    Vector<Int> antenna1=mscIn_p->antenna1().getColumn();
+    Vector<Int> antenna2=mscIn_p->antenna2().getColumn();
+    Vector<Double> time= mscIn_p->time().getColumn();
+    Vector<Double> outTime= msc_p->time().getColumn();
+    Vector<Double> nearestTime(outNrow);
+    nearestTime.set(1.0e9);
+    ROArrayColumn<Float> wgtSpec;
+    
+    ROArrayColumn<Bool> flag(mscIn_p->flag());
+    ROScalarColumn<Bool> rowFlag(mscIn_p->flag());
+    ROScalarColumn<Int> scanNum(mscIn_p->scanNumber());
+    ROArrayColumn<Double> inUVW(mscIn_p->uvw());
+    if(columnName== MS::columnName(MS::DATA))
+      data.reference(mscIn_p->data());
+    else if(columnName == "MODEL_DATA" )
+      data.reference(mscIn_p->modelData());
+    else
+      data.reference(mscIn_p->correctedData());
+ 
     Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
     if(doSpWeight)
       doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
 
 
-    Cube<Complex> outdata(npol_p[0], nchan_p[0], nrow);
-    Cube<Bool> outflag(npol_p[0], nchan_p[0], nrow);
-    Cube<Float> outspweight ;
+    Cube<Complex> outData(npol_p[0], nchan_p[0], outNrow);
+    outData.set(0.0);
+    Matrix<Float> outRowWeight(npol_p[0], outNrow);
+    outRowWeight.set(0.0);
+    Cube<Bool> outFlag(npol_p[0], nchan_p[0], outNrow);
+    outFlag.set(True);
+    Vector<Bool> outRowFlag(outNrow);
+    outRowFlag.set(True);
+    Vector<Int> outScanNum(outNrow);
+    outScanNum.set(0);
+    Cube<Float> outSpWeight ;
+    Matrix<Double> outUVW(3,outNrow);
+    outUVW.set(0.0);
     if(doSpWeight){ 
-      outspweight.resize(npol_p[0], nchan_p[0], nrow);
+      outSpWeight.resize(npol_p[0], nchan_p[0], outNrow);
+      outSpWeight.set(0.0);
       wgtSpec.reference(mscIn_p->weightSpectrum());
     }
-    
-    for (Int row=0; row < nrow; ++row){
+    ROScalarColumn<Float> inRowWeight(mscIn_p->weight());
 
-      data.get(row, indatatmp);
-      flag.get(row, inflagtmp);
-      if(doSpWeight)  wgtSpec.get(row, inwgtspectmp);
-      Int ck=0;
-      Int chancounter=0;
-      Vector<Int> avcounter(npol_p[0]);
-      outdatatmp.set(0); outwgtspectmp.set(0);
-      avcounter.set(0);
+    Double beginTime=msc_p->time()(0);
+    Int timeChunk=0;
+    Int baselineNum=0;
+
+    if(!doChanAver_p){
+      for (Int k = 0; k < inNrow; ++k){
+	timeChunk=Int((time[k]-beginTime)/timeBin);
+	baselineNum=ant1Index[ant1[k]]*numAnt2+ant2Index[ant2[k]];
+        Int row=timeChunk*numbas+baselineNum;
+	if(!rowFlag(k)){
+	  Double timeDiff=abs(time[k]-outTime[row]);
+	  if(nearestTime[row] > timeDiff){
+	    nearestTime[row]=timeDiff;
+	    outUVW.row(row)=inUVW(k);
+	    outScanNum[row]=scanNum(k);
+	  }
+	  outRowWeight.row(row) = outRowWeight.row(row) + inRowWeight(k);
+	  outFlag.xyPlane(row) = outFlag.xyPlane(row)* flag(k);
+	  outData.xyPlane(row) = outData.xyPlane(row) + data(k);
+
+
+	  outRowFlag(row) = True;
+	}
+	
+      }
       
-     for (Int k=chanStart_p[0]; k< (nchan_p[0]*chanStep_p[0]+chanStart_p[0]);
-	   ++k) {
-
-	if(chancounter == chanStep_p[0]){
-	  outdatatmp.set(0); outwgtspectmp.set(0);
-	  chancounter=0;
-	  avcounter.set(0);
-	}
-	++chancounter;
-	for (Int j=0; j< npol_p[0]; ++j){
-	  Int offset= j + k*npol_p[0];
-	  if(!iflg[offset]){
-	    if(doSpWeight){
-	      outdatatmp[j] += iptr[offset]*inwptr[offset];
-	      outwgtspectmp[j] += inwptr[offset];
-	    }
-	    else{
-	      outdatatmp[j] += iptr[offset];	   
-	      
-	    }
-
-	    ++avcounter[j];
+      msc_p->data().putColumn(outData);
+      msc_p->flag().putColumn(outFlag);
+      msc_p->uvw().putColumn(outUVW);
+      msc_p->scanNumber().putColumn(outScanNum);
+      // Free some memory
+      outData.resize();
+      outFlag.resize();
+      outUVW.resize();
+      Matrix<Float> outSigma(npol_p[0], outNrow);
+      outSigma.set(0.0);
+      for (Int k=0; k  < outNrow; ++k){
+	if(product(outRowWeight.row(k)) > 0.0){
+	  for (Int j = 0; j< npol_p[0]; ++j){
+	    outSigma(j,k)=1/sqrt(outRowWeight(j,k));
 	  }
-
-
-	  if(chancounter==chanStep_p[0]){
-	    if(avcounter[j] !=0){
-	      if(doSpWeight){
-		outdata(j,ck,row)=outdatatmp[j]/outwgtspectmp[j];	 
-		outspweight(j,ck,row)=outwgtspectmp[j];
-	      }
-	      else{
-		outdata(j,ck,row)=outdatatmp[j]/avcounter[j];	    
-	      }
-	      outflag(j,ck,row)=False;
-	    } 
-	    else{
-	      
-	    outdata(j,ck,row)=0;
-	    outflag(j,ck,row)=True;
-	    if(doSpWeight)outspweight(j,ck,row)=0;
-	    }
-	    
-	  }
-
-	  
 	}
-	
-
-	if(chancounter==chanStep_p[0]){
-	  ++ck;
-	
- 
-	}
-
-
       }
 
-      
+      msc_p->weight().putColumn(outRowWeight);
+      msc_p->sigma().putColumn(outSigma);
     }
-
-    msc_p->data().putColumn(outdata);
-    msc_p->flag().putColumn(outflag);
-    if(doSpWeight)msc_p->weightSpectrum().putColumn(outspweight);
-
+    
 
     return True;
 
-}
+
+  }
+
+
+  void SubMS::checkSpwShape(){
+
+    sameShape_p=True;
+    if(inNumChan_p.nelements() > 1){
+      for (uInt k=1; k < inNumChan_p.nelements(); ++k){
+	sameShape_p= sameShape_p && (inNumChan_p[k] == inNumChan_p[k-1]);      
+      }
+    }
+    
+    if(nchan_p.nelements() > 1){
+      for (uInt k=1; k < nchan_p.nelements(); ++k){
+	sameShape_p= sameShape_p && (nchan_p[k] == nchan_p[k-1]);      
+      }
+    }
+
+
+  }
+
+
 
 } //#End casa namespace
