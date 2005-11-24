@@ -27,6 +27,7 @@
 
 //# Includes
 #include <scimath/Fitting/LSQMatrix.h>
+#include <casa/BasicMath/Math.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -126,11 +127,21 @@ void LSQMatrix::doDiagonal(uInt n) {
     if (*j == 0.0) *j = 1.0;
   };
 }
-
+  
 void LSQMatrix::mulDiagonal(uInt n, Double fac) {
   fac += 1.0;
   for (uInt i=0; i<n; ++i) *diag(i) *= fac;
 }
+
+  void LSQMatrix::addDiagonal(uInt n, Double fac) {
+    for (uInt i=0; i<n; ++i) *diag(i) += fac;
+  }
+
+  Double LSQMatrix::maxDiagonal(uInt n) {
+    Double x=0;
+    for (uInt i=0; i<n; ++i) x = std::max(x, std::abs(*diag(i)));
+    return x;
+  }
 
 } //# NAMESPACE CASA - END
 

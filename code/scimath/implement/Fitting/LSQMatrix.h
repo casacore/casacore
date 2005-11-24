@@ -142,6 +142,10 @@ class LSQMatrix : public RecordTransformable {
   void doDiagonal(uInt n);
   // Multiply n-length of diagonal with <src>1+fac</src>
   void mulDiagonal(uInt n, Double fac);
+  // Add <src>fac</src> to n-length of diagonal
+  void addDiagonal(uInt n, Double fac);
+  // Determine max of abs values of n-length of diagonal
+  Double maxDiagonal(uInt n);
   // Create a Matrix from a record. An error message is generated, and False
   // returned if an invalid record is given. A valid record will return True.
   // Error messages are postfixed to error.
