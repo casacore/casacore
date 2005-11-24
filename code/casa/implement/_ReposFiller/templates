@@ -580,6 +580,10 @@
      template DComplex median(Array<DComplex> const &, Bool, Bool, Bool) 
 1050 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      = casa/BasicSL/Complex.h 
+     template Float product(Array<Float> const &); 
+     template Array<Bool> operator*(Array<Bool> const &, Array<Bool> const &) 
+1060 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+     = casa/BasicSL/Complex.h 
      template void convertArray(Array<Complex> &, Array<DComplex> const &) 
      template void convertArray(Array<Complex> &, Array<Double> const &) 
      template void convertArray(Array<Complex> &, Array<Float> const &) 
@@ -596,12 +600,12 @@
      template void convertArray(Array<DComplex> &, Array<uChar> const &) 
      template void convertArray(Array<DComplex> &, Array<uInt> const &) 
      template void convertArray(Array<uInt> &, Array<Bool> const &) 
-1060 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1070 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      = casa/BasicSL/String.h 
      template Array<String> operator+(String const &, Array<String> const &) 
      template void operator+=(Array<String> &, Array<String> const &) 
      template void operator+=(Array<String> &, String const &) 
-1070 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1080 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Array<Double> abs(Array<Double> const &) 
      template Array<Double> acos(Array<Double> const &) 
      template Array<Double> asin(Array<Double> const &) 
@@ -674,7 +678,7 @@
      template void operator-=(Array<Double> &, Double const &) 
      template void operator/=(Array<Double> &, Array<Double> const &) 
      template void operator/=(Array<Double> &, Double const &) 
-1080 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1090 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Array<Float> abs(Array<Float> const &) 
      template Array<Float> acos(Array<Float> const &) 
      template Array<Float> asin(Array<Float> const &) 
@@ -738,7 +742,7 @@
      template void operator-=(Array<Float> &, Float const &) 
      template void operator/=(Array<Float> &, Array<Float> const &) 
      template void operator/=(Array<Float> &, Float const &) 
-1090 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1100 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Array<Int> abs(Array<Int> const &) 
      template Array<Int> max(Array<Int> const &, Array<Int> const &) 
      template Array<Int> min(Array<Int> const &, Array<Int> const &) 
@@ -767,7 +771,7 @@
      template void operator-=(Array<Int> &, Int const &) 
      template void operator/=(Array<Int> &, Array<Int> const &) 
      template void operator/=(Array<Int> &, Int const &) 
-1100 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1110 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Array<uChar> min<uChar>(Array<uChar> const &, Array<uChar> const &) 
      template void min<uChar>(Array<uChar> &, Array<uChar> const &, Array<uChar> const &) 
      template uChar max(Array<uChar> const &) 
@@ -775,7 +779,7 @@
      template void indgen(Array<uChar> &) 
      template void indgen(Array<uChar> &, uChar, uChar) 
      template void minMax(uChar &, uChar &, Array<uChar> const &) 
-1110 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1120 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Array<uInt> operator*(Array<uInt> const &, uInt const &) 
      template Array<uInt> operator-(Array<uInt> const &, uInt const &) 
      template Array<uInt> operator/(Array<uInt> const &, uInt const &) 
@@ -790,19 +794,19 @@
      template void operator+=(Array<uInt> &, uInt const &) 
      template void operator-=(Array<uInt> &, uInt const &) 
      template void operator/=(Array<uInt> &, uInt const &) 
-1120 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1130 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Char max(Array<Char> const &) 
      template Char min(Array<Char> const &) 
      template void indgen(Array<Char> &) 
      template void indgen(Array<Char> &, Char, Char) 
      template void minMax(Char &, Char &, Array<Char> const &) 
-1130 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1140 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Long max(Array<Long> const &) 
      template Long min(Array<Long> const &) 
      template void indgen(Array<Long> &) 
      template void indgen(Array<Long> &, Long, Long) 
      template void minMax(Long &, Long &, Array<Long> const &) 
-1140 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1150 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template Short max(Array<Short> const &) 
      template Short min(Array<Short> const &) 
      template void indgen(Array<Short> &) 
@@ -810,19 +814,19 @@
      template void minMax(Short &, Short &, Array<Short> const &) 
      template void operator+=(Array<Short> &, Short const &) 
      template void operator-=(Array<Short> &, Short const &) 
-1150 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1160 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template uLong max(Array<uLong> const &) 
      template uLong min(Array<uLong> const &) 
      template void indgen(Array<uLong> &) 
      template void indgen(Array<uLong> &, uLong, uLong) 
      template void minMax(uLong &, uLong &, Array<uLong> const &) 
-1160 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1170 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template uShort max(Array<uShort> const &) 
      template uShort min(Array<uShort> const &) 
      template void indgen(Array<uShort> &) 
      template void indgen(Array<uShort> &, uShort, uShort) 
      template void minMax(uShort &, uShort &, Array<uShort> const &) 
-1170 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1180 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template void convertArray(Array<Double> &, Array<Double> const &) 
      template void convertArray(Array<Double> &, Array<Float> const &) 
      template void convertArray(Array<Double> &, Array<Int> const &) 
@@ -860,15 +864,15 @@
      template void convertArray(Array<uInt> &, Array<Double> const &) 
      template void convertArray(Array<uShort> &, Array<Int> const &) 
      template void convertArray(Array<uShort> &, Array<Double> const &) 
-1180 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1190 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template void operator*=(Array<Bool> &, Array<Bool> const &) 
      template Bool sum(Array<Bool> const &) 
-1190 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
+1200 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template void operator*=(Array<uInt> &, Array<uInt> const &) 
      template void operator+=(Array<uInt> &, Array<uInt> const &) 
      template void operator-=(Array<uInt> &, Array<uInt> const &) 
      template void operator/=(Array<uInt> &, Array<uInt> const &) 
-1200 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
+1210 casa/Arrays/ArrayMath.cc casa/BasicSL/Complex.h 
      template Array<Double> partialMins(Array<Double> const &, IPosition const &) 
      template Array<Double> partialMaxs(Array<Double> const &, IPosition const &) 
      template Array<Double> partialSums(Array<Double> const &, IPosition const &) 
