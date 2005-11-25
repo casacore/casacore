@@ -1,5 +1,5 @@
 //# tNonLinearFitLM.cc: Test nonlinear least squares classes
-//# Copyright (C) 1995,1996,1999,2000,2001,2002,2004
+//# Copyright (C) 1995,1996,1999,2000,2001,2002,2004,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
