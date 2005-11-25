@@ -572,6 +572,10 @@ class LSQFit {
   // Set new factors (collinearity <src>factor</src>, and Levenberg-Marquardt
   // <src>LMFactor</src>)
   void set(Double factor=1e-8, Double LMFactor=1e-3);
+  // Set new value solution test
+  void setEpsValue(Double epsval=1e-6) {epsval_p = epsval; };
+  // Set new derivative test
+  void setEpsDerivative(Double epsder=1e-6) {epsder_p = epsder; };
   // Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
@@ -708,6 +712,12 @@ class LSQFit {
   Double startnon_p;
   // Levenberg current factor
   Double nonlin_p;
+  // Levenberg step factor
+  Double stepfactor_p;
+  // Test value for [incremental] solution // add explanation
+  Double epsval_p;
+  // Test value for known factor /// add explanation
+  Double epsder_p; 
   // Pivot table (n_p)
   uInt *piv_p;
   // Normal equations (triangular nun_p * nun_p)
