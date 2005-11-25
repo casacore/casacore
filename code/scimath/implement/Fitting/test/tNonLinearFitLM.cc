@@ -359,7 +359,7 @@ int main() {
   gauss2d[Gaussian2D<AutoDiff<Double> >::RATIO] =
     AutoDiff<Double>(0.5,6,Gaussian2D<AutoDiff<Double> >::RATIO);
   gauss2d.setPA(
-    AutoDiff<Double>(0.05,6,Gaussian2D<AutoDiff<Double> >::PANGLE));
+    AutoDiff<Double>(0.5,6,Gaussian2D<AutoDiff<Double> >::PANGLE));
   gauss2d.setCenter(V2);
 
   // Note: For circular Gaussian fitting, the axial ratio should be set to one
