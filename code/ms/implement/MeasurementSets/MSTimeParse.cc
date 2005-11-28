@@ -106,6 +106,8 @@ const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
 const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
                                           uInt second, uInt millisec)
 {
+    if(daytime) delete daytime;
+
     Vector<Quantity> t(4);
     t[0] = Quantity(day, "d"); 
     t[1] = Quantity(hour, "h"); 
