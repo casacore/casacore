@@ -116,8 +116,8 @@ public:
 
 private:
     static TableExprNode* node_p;
-    static const MEpoch* yeartime;
-    static const MEpoch* daytime;
+    static MEpoch* yeartime;
+    static MEpoch* daytime;
 
     const String colName;
 };

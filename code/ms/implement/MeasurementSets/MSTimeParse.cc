@@ -32,8 +32,8 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNode* MSTimeParse::node_p = 0x0;
-const MEpoch* MSTimeParse::yeartime = 0x0;
-const MEpoch* MSTimeParse::daytime = 0x0;
+MEpoch* MSTimeParse::yeartime = 0x0;
+MEpoch* MSTimeParse::daytime = 0x0;
 
 //# Constructor
 MSTimeParse::MSTimeParse ()
