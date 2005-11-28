@@ -38,7 +38,7 @@ using namespace casa;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  const MEpoch* tval;
+  MEpoch* tval;
   Int ival;
   Double dval;
 }
