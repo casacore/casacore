@@ -103,11 +103,11 @@ public:
                                          const MEpoch& upboundTime,
                                          bool daytime = false);
 
-    static MEpoch *dayTimeConvert(uInt day, uInt hour = 0,
+    static const MEpoch *dayTimeConvert(uInt day, uInt hour = 0,
                                         uInt minute = 0, uInt second = 0,
                                         uInt millisec = 0);
 
-    static MEpoch *yearTimeConvert(uInt year, uInt month, uInt day,
+    static const MEpoch *yearTimeConvert(uInt year, uInt month, uInt day,
                                          uInt hour = 0, uInt minute = 0,
                                          uInt second = 0, uInt millisec = 0);
 

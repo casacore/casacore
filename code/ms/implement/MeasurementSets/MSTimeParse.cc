@@ -103,7 +103,7 @@ const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
     return node_p;
 }
 
-MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
+const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
                                           uInt second, uInt millisec)
 {
     if(daytime) delete daytime;
@@ -120,7 +120,7 @@ MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
     return (daytime = new MEpoch(mv));
 }
 
-MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
+const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
                                            uInt hour, uInt minute,
                                            uInt second, uInt millisec)
 {
