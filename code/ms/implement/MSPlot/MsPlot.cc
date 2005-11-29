@@ -209,7 +209,7 @@ Bool MsPlot<T>::setData( const Vector<String>& antennaNames, const Vector<Int>& 
 		Int nTabs = 1;
 		// set the subset of MS to TABS_P for plotting. In the case when the user wants to plot the
 		// original table, we set it in plot() method.
-		setTableT( nTabs, m_subMS );
+		this->setTableT( nTabs, m_subMS );
 		if( m_dbg ) cout << "[ MsPlot<T>::setData() ] setTableT() called." << endl;
 		// now the data for plotting has been set, so set the member m_dataIsSet to true.
 		m_dataIsSet = True;
