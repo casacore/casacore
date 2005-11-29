@@ -60,7 +60,7 @@ const TableExprNode *MSTimeParse::selectTimeGT(const MEpoch& lowboundTime,
 {
     MVTime mvLow(lowboundTime.getValue());
 
-    TableExprNode condition = (ms()->col(colName) >= mvLow);
+    TableExprNode condition = (ms()->col(colName) >= Double(mvLow));
 
     if(node_p->isNull())
         *node_p = condition;
@@ -75,7 +75,7 @@ const TableExprNode *MSTimeParse::selectTimeLT(const MEpoch& upboundTime,
 {
     MVTime mvUp(upboundTime.getValue());
  
-    TableExprNode condition = (ms()->col(colName) <= mvUp);
+    TableExprNode condition = (ms()->col(colName) <= Double(mvUp));
 
     if(node_p->isNull())
         *node_p = condition;
