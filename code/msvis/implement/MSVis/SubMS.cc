@@ -32,6 +32,7 @@
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/Cube.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/OS/File.h>
@@ -776,10 +777,10 @@ Bool SubMS::fillAverMainTable(const String& whichCol){
     os << LogIO::SEVERE << "Number of time bins is less than 1...Time averaging bin size may be  too large"
        << LogIO::POST;
   }
+
   msOut_p.addRow(numBaselines*numTimeBins, True);
 
   // fill time and timecentroid and antennas
-  // fillAverTime(); 
   if(!fillAverAntTime(ant1, ant2, timeBin, numTimeBins))
     return False;
 
@@ -798,7 +799,7 @@ Bool SubMS::fillAverMainTable(const String& whichCol){
   
   //things to be taken care in averData... (1) flagRow, (2) ScanNumber 
   //(3) uvw (4) weight (5) sigma
-  if(!fillTimeAverData(ant1, ant2, timeBin, whichCol))
+  if(!fillTimeAverData(ant1, ant2, timeBin, numBaselines, whichCol))
     return False;
 
   return True;
@@ -1153,22 +1154,71 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     Int numAnt2=GenSort<Int>::sort(selAnt2,Sort::Ascending,
 				   Sort::NoDuplicates);
  
+
     ant1.resize();
+    selAnt1.resize(numAnt1, True);
     ant1=selAnt1;
     ant2.resize();
+    selAnt2.resize(numAnt2, True);
     ant2=selAnt2;
-    
-    return numAnt1*numAnt2;
+    Int numBasl=0;
+    Bool hasAuto=False;
+    if(numAnt1==numAnt2){
+      if(allEQ(ant1, ant2)){
+	hasAuto=True;
+      }
+      
+    }
+      
+    if((numAnt2/2)*2 !=  numAnt2){
+      if(!hasAuto)
+	numBasl=(numAnt2+1)/2*numAnt1;
+      else
+	numBasl=(numAnt2-1)/2*numAnt1;
+    }
+    else if((numAnt1/2)*2 !=  numAnt1){
+      if(!hasAuto)
+        numBasl=(numAnt1+1)/2*numAnt2;
+      else
+        numBasl=(numAnt1-1)/2*numAnt2;
+    }
+    else{
+      if(!hasAuto)
+	numBasl=numAnt1*numAnt2/2;
+      else
+	numBasl=(numAnt1-1)*numAnt2/2;
+    }
+
+    return numBasl;
    
   }
 
   Int SubMS::numOfTimeBins(const Double& timeBin){
+    Int numBin=0;
 
     if (timeBin > 0.0){
       Int numrows=mssel_p.nrow();
-      Double timeStart=mscIn_p->time()(0);
-      Double timeEnd=mscIn_p->time()(numrows-1);
-      Int numBin= Int( (timeEnd-timeStart)/timeBin );
+      Vector<Double> timeRows=mscIn_p->time().getColumn();
+      Vector<uInt> tOI; //timeOrderIndex
+      GenSortIndirect<Double>::sort(tOI, timeRows);
+      timeBinIndex_p.resize(numrows);
+      newTimeVal_p.resize(numrows);
+      numBin=1;
+      timeBinIndex_p[tOI[0]]=0;
+      newTimeVal_p[0]=timeRows[tOI[0]]+timeBin/2.0;
+      for (uInt k =1 ; k < uInt(numrows); ++k){
+	if(timeRows[tOI[k]] > (newTimeVal_p[numBin-1]+0.5*timeBin)){
+	  if(timeRows[tOI[k]] > newTimeVal_p[numBin-1]+timeBin){
+	    newTimeVal_p[numBin]=timeRows[tOI[k]]+0.5*timeBin;
+	  }
+	  else{
+	    newTimeVal_p[numBin]=newTimeVal_p[numBin-1]+timeBin;
+	  }
+	  ++numBin;
+	}
+	timeBinIndex_p[tOI[k]]=numBin-1;
+      }
+      newTimeVal_p.resize(numBin, True);
       return numBin;
     }
     
@@ -1185,17 +1235,29 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     Vector<Int> antenna1(nrows);
     Vector<Int> antenna2(nrows);
     Vector<Double> rowTime(nrows);
+
+    Vector<Int> ant2Index(max(ant2)+1);
+    ant2Index=-1;
+    for (Int j=0; j< Int(ant2.nelements()); ++j){
+      ant2Index[ant2[j]]=j;
+    }
     //Will need to do the weighted averaging of time in the future.
     uInt k=0;
-    Double timeStart=mscIn_p->time()(0)+0.5*timeBin;
+    //Double timeStart=mscIn_p->time()(0)+0.5*timeBin;
     for (Int t=0; t < numOfTimeBins; ++t){
       for (uInt ant1Index=0; ant1Index < ant1.nelements(); ++ant1Index){
-	for (uInt ant2Index=0; ant2Index < ant2.nelements(); ++ant2Index){ 
-	  antenna1[k]=antenna1[ant1Index];
-	  antenna2[k]=antenna2[ant2Index];
-	  rowTime[k]=timeStart + t*timeBin;
-	  ++k;
+	// be careful as selection may have ant1 which is bigger than max
+	// ant2
+	if(ant1[ant1Index] < max(ant2)){
+	  uInt startAnt2Ind=ant2Index[ant1[ant1Index]]+1;
+	  for (uInt ant2Index=startAnt2Ind; ant2Index < ant2.nelements(); 
+	       ++ant2Index){ 
+	    antenna1[k]=ant1[ant1Index];
+	    antenna2[k]=ant2[ant2Index];
+	    rowTime[k]=newTimeVal_p[t];
+	    ++k;
 
+	  }
 	}
       }
     }
@@ -1210,8 +1272,14 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
   }
 
   Bool SubMS::fillTimeAverData(Vector<Int>& ant1, Vector<Int>& ant2, 
-			   const Double& timeBin, 
+			       const Double& timeBin, const Int& numbas,
 			   const String& columnName){
+
+
+    LogIO os(LogOrigin("SubMS", "fillAverMainTable()", WHERE));
+
+
+
 
     //Need to deal with uvw too
     Vector<Int> ant1Index(max(ant1)+1);
@@ -1219,13 +1287,12 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     Vector<Int> ant2Index(max(ant2)+1);
     ant2Index=-1;
     Int numAnt2=ant2.nelements();
-    for (Int j=0; Int(j< Int(ant1.nelements())); ++j){
+    for (Int j=0; j< Int(ant1.nelements()); ++j){
       ant1Index[ant1[j]]=j;
     }
     for (Int j=0; j< Int(ant2.nelements()); ++j){
       ant2Index[ant2[j]]=j;
     }
-    Int numbas=ant1.nelements()*ant2.nelements();
     Int inNrow=mssel_p.nrow();
     Int outNrow=msOut_p.nrow();
     ROArrayColumn<Complex> data;
@@ -1238,9 +1305,13 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     ROArrayColumn<Float> wgtSpec;
     
     ROArrayColumn<Bool> flag(mscIn_p->flag());
-    ROScalarColumn<Bool> rowFlag(mscIn_p->flag());
+    ROScalarColumn<Bool> rowFlag(mscIn_p->flagRow());
     ROScalarColumn<Int> scanNum(mscIn_p->scanNumber());
+    ROScalarColumn<Int> dataDescIn(mscIn_p->dataDescId());
     ROArrayColumn<Double> inUVW(mscIn_p->uvw());
+ 
+
+
     if(columnName== MS::columnName(MS::DATA))
       data.reference(mscIn_p->data());
     else if(columnName == "MODEL_DATA" )
@@ -1248,6 +1319,10 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     else
       data.reference(mscIn_p->correctedData());
  
+    os << LogIO::NORMAL << "Writing time averaged data of column " 
+       << columnName << " in " << newTimeVal_p.nelements() << " time slots"
+       << LogIO::POST;
+
     Bool doSpWeight=!(mscIn_p->weightSpectrum().isNull());
     if(doSpWeight)
       doSpWeight= doSpWeight && mscIn_p->weightSpectrum().isDefined(0);
@@ -1262,6 +1337,8 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     Vector<Bool> outRowFlag(outNrow);
     outRowFlag.set(True);
     Vector<Int> outScanNum(outNrow);
+    Vector<Int> dataDesc(outNrow);
+    dataDesc.set(-1);
     outScanNum.set(0);
     Cube<Float> outSpWeight ;
     Matrix<Double> outUVW(3,outNrow);
@@ -1271,52 +1348,62 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
       outSpWeight.set(0.0);
       wgtSpec.reference(mscIn_p->weightSpectrum());
     }
-    ROScalarColumn<Float> inRowWeight(mscIn_p->weight());
+    ROArrayColumn<Float> inRowWeight(mscIn_p->weight());
 
-    Double beginTime=msc_p->time()(0);
     Int timeChunk=0;
     Int baselineNum=0;
 
     if(!doChanAver_p){
       for (Int k = 0; k < inNrow; ++k){
-	timeChunk=Int((time[k]-beginTime)/timeBin);
-	baselineNum=ant1Index[ant1[k]]*numAnt2+ant2Index[ant2[k]];
+	timeChunk=timeBinIndex_p[k];
+	Int a1=ant1Index[antenna1[k]];
+	Int a2=ant2Index[antenna2[k]];
+	baselineNum=a1*numAnt2-(a1*(a1+3))/2 + a2 ;
         Int row=timeChunk*numbas+baselineNum;
-	if(!rowFlag(k)){
+	if(dataDesc(row)==-1){
+	  dataDesc(row)=dataDescIn(k);
+	}
+	// Will need to take care of multi datadescription in one time bin.
+	if(!rowFlag(k) && dataDesc(row)==dataDescIn(k)){
 	  Double timeDiff=abs(time[k]-outTime[row]);
 	  if(nearestTime[row] > timeDiff){
 	    nearestTime[row]=timeDiff;
-	    outUVW.row(row)=inUVW(k);
+	    outUVW.column(row)=inUVW(k);
 	    outScanNum[row]=scanNum(k);
 	  }
-	  outRowWeight.row(row) = outRowWeight.row(row) + inRowWeight(k);
+	  outRowWeight.column(row) = outRowWeight.column(row) + inRowWeight(k);
 	  outFlag.xyPlane(row) = outFlag.xyPlane(row)* flag(k);
-	  outData.xyPlane(row) = outData.xyPlane(row) + data(k);
+	  outData.xyPlane(row) = outData.xyPlane(row) + data(k)*max(inRowWeight(k));
 
 
-	  outRowFlag(row) = True;
+	  outRowFlag(row) = False;
 	}
 	
       }
-      
+
+      Matrix<Float> outSigma(npol_p[0], outNrow);
+      outSigma.set(0.0);
+      //Drat le Rat...the ms tool hate to have dataDesc -1
+      for (Int k=0; k < outNrow; ++k){
+	if(outRowFlag(k))
+	  dataDesc[k]=0;
+	if(product(outRowWeight.column(k)) > 0.0){
+	  outData.xyPlane(k) = outData.xyPlane(k)/max(outRowWeight.column(k));
+	  for (Int j = 0; j< npol_p[0]; ++j){
+	    outSigma(j,k)=1/sqrt(outRowWeight(j,k));
+	  }
+	}	
+      }
       msc_p->data().putColumn(outData);
       msc_p->flag().putColumn(outFlag);
+      msc_p->flagRow().putColumn(outRowFlag);
       msc_p->uvw().putColumn(outUVW);
       msc_p->scanNumber().putColumn(outScanNum);
+      msc_p->dataDescId().putColumn(dataDesc);
       // Free some memory
       outData.resize();
       outFlag.resize();
       outUVW.resize();
-      Matrix<Float> outSigma(npol_p[0], outNrow);
-      outSigma.set(0.0);
-      for (Int k=0; k  < outNrow; ++k){
-	if(product(outRowWeight.row(k)) > 0.0){
-	  for (Int j = 0; j< npol_p[0]; ++j){
-	    outSigma(j,k)=1/sqrt(outRowWeight(j,k));
-	  }
-	}
-      }
-
       msc_p->weight().putColumn(outRowWeight);
       msc_p->sigma().putColumn(outSigma);
     }

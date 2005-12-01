@@ -139,7 +139,7 @@ class SubMS
 		       const Double& timeBin, 
 		       const Int& numOfTimeBins);
   Bool fillTimeAverData(Vector<Int>& ant1, Vector<Int>& ant2, 
-			const Double& timeBin, 
+			const Double& timeBin, const Int& numbas, 
 			const String& ColumnName);
   void checkSpwShape();
 
@@ -159,6 +159,8 @@ class SubMS
   Double timeBin_p;
   Bool sameShape_p;
   String timeRange_p;
+  Vector<Double> newTimeVal_p;
+  Vector<Int> timeBinIndex_p;
 };
 
 
