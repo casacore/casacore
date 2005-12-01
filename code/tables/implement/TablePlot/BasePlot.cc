@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+
 //# Includes
 
 #include <cmath>
@@ -516,6 +517,54 @@ template<class T> Int BasePlot<T>::getPlotType()
 	if(adbg)cout << "Get PlotType" << endl;
 	return pType_p;
 }
+
+/*********************************************************************************/
+
+
+template<class T> Int BasePlot<T>::readXD(Matrix<T> &xdat)
+{
+	if(adbg)cout << "read XD" << endl;
+	xdat.resize(0,0);
+	// Don't return a pointer here, because bounds must be not be crossed while writing.
+	xdat = xplotdata_p; 
+	return 0;
+}
+
+/*********************************************************************************/
+
+template<class T> Int BasePlot<T>::writeXD(Matrix<T> &xdat)
+{
+	if(adbg)cout << "write XD" << endl;
+	if(xdat.shape() != xplotdata_p.shape()) {cout << "wrong shape !" << endl; return -1;}
+	// Application user has to use this at his/her own risk. Whatever is sent in
+	// will be plotted !
+	xplotdata_p = xdat; 
+	return 0;
+}
+/*********************************************************************************/
+template<class T> Int BasePlot<T>::readYD(Matrix<T> &ydat)
+{
+	if(adbg)cout << "read YD" << endl;
+	ydat.resize(0,0);
+	// Don't return a pointer here, because bounds must be not be crossed while writing.
+	ydat = yplotdata_p; 
+	return 0;
+}
+
+/*********************************************************************************/
+
+template<class T> Int BasePlot<T>::writeYD(Matrix<T> &ydat)
+{
+	if(adbg)cout << "write YD" << endl;
+	if(ydat.shape() != yplotdata_p.shape()) {cout << "wrong shape !" << endl; return -1;}
+	// Application user has to use this at his/her own risk. Whatever is sent in
+	// will be plotted !
+	yplotdata_p = ydat; 
+	return 0;
+}
+/*********************************************************************************/
+
+
 
 /*********************************************************************************/
 /********************** Private(protected) Functions *****************************/

@@ -26,6 +26,7 @@
 //# $Id$
 
 
+
 #ifndef BASEPLOT_H
 #define BASEPLOT_H
 
@@ -215,6 +216,18 @@ template<class T> class BasePlot
 
 		// Query for the type of plot (BASEPLOT)
 		Int getPlotType();
+
+		// Read X data
+		Int readXD(Matrix<T> &xdat);
+
+		// Write X data
+		Int writeXD(Matrix<T> &xdat);
+
+		// Read Y data
+		Int readYD(Matrix<T> &ydat);
+
+		// Write Y data
+		Int writeYD(Matrix<T> &ydat);
 
 	protected:
 

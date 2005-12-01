@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+
 #ifndef TABLEPLOT_H
 #define TABLEPLOT_H
 
@@ -246,6 +247,9 @@ template<class T> class TablePlot
 		// fixed vector of BasePlot objects.
 		Int upDateBP(PtrBlock<BasePlot<T>* > &BPS); 
 
+		// Clean Up BasePlot objects and resize list to zero.
+		Int cleanUpBP(PtrBlock<BasePlot<T>* > &BPS); 
+		
 		// Send in plotting options and plot labels. Plotting options are given as an
 		// input record with the following fields. If this function is omitted, default
 		// input parameters are used. 
@@ -276,7 +280,8 @@ template<class T> class TablePlot
                 // In multiple panel plots, the same labels are applied to
                 // all panels. (This will be improved to provide more options).
 		// Default labels are blank strings.
-		Int setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions,Vector<String> &labels);
+		Int setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions);
+		Int setPlotLabels(TPPlotter<T> &TPLP,Vector<String> &labels);
 		
 		// Read the data from the tables.
 		// Input TaQL strings via 'datastr' are used to create TableExprNode objects. 
@@ -351,6 +356,13 @@ template<class T> class TablePlot
 		// reached. It can also be called before the iterations end, to cleanly terminate the
 		// iterations when desired.
 		Int iterMultiPlotStop(PtrBlock<PtrBlock<BasePlot<T>* >* > &ATBPS, TPPlotter<T> &TPLP);
+
+		// Allow the user app to access and modify the current values in the 
+		// xplotdata and yplotdata arrays of the BasePlot objects.
+		Int readXData(BasePlot<T>* &BP, Matrix<T> &xdat);
+		Int writeXData(BasePlot<T>* &BP, Matrix<T> &xdat);
+		Int readYData(BasePlot<T>* &BP, Matrix<T> &ydat);
+		Int writeYData(BasePlot<T>* &BP, Matrix<T> &ydat);
 
 		// Number of simultaneously accessed Tables - sizeof(TABS)
 		// To be set at the application level.

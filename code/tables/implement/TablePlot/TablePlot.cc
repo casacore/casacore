@@ -25,6 +25,7 @@
 //#
 //# $Id$
 
+
 //# Includes
 
 #include <stdio.h>
@@ -184,11 +185,31 @@ template<class T> Int TablePlot<T>::upDateBP(PtrBlock<BasePlot<T>* > &BPS)
 }
 
 /*********************************************************************************/
+/* CleanUp BasePlots */
+template<class T> Int TablePlot<T>::cleanUpBP(PtrBlock<BasePlot<T>* > &BPS)
+{
+	if(BPS.nelements()>0)
+	{
+		for(Int i=0;i<(Int)BPS.nelements();i++) delete BPS[i];
+		BPS.resize(0,(Bool)1);
+	}
+	return 0;
+}
+
+/*********************************************************************************/
 
 /* Set plot options */
-template<class T> Int TablePlot<T>::setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions,Vector<String> &labels)
+template<class T> Int TablePlot<T>::setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions)
 {
 	TPLP.setPlotOptions(plotoptions);
+
+	return 0;
+}
+/*********************************************************************************/
+
+/* Set plot options */
+template<class T> Int TablePlot<T>::setPlotLabels(TPPlotter<T> &TPLP,Vector<String> &labels)
+{
 	TPLP.setLabels(labels);
 
 	return 0;
@@ -214,6 +235,47 @@ template<class T> Int TablePlot<T>::getData(PtrBlock<BasePlot<T>* > &BPS,Vector<
 			return -1;
 	}
 	
+	return 0;
+}
+
+
+/*********************************************************************************/
+
+/* Read Data - to be called after any 'getdata' and before any plotdata */
+template<class T> Int TablePlot<T>::readXData(BasePlot<T>* &BP, Matrix<T> &xdat)
+{
+	if(adbg)cout << "TablePlot :: Read XData" << endl; 
+	if(BP->readXD(xdat) == -1) return -1;
+	return 0;
+}
+
+/*********************************************************************************/
+
+/* Write Data - to be called after any 'getdata' and before any plotdata */
+template<class T> Int TablePlot<T>::writeXData(BasePlot<T>* &BP, Matrix<T> &xdat)
+{
+	if(adbg)cout << "TablePlot :: Write XData" << endl; 
+	if(BP->writeXD(xdat) == -1) return -1; // if shapes/types don't match.
+	return 0;
+}
+
+/*********************************************************************************/
+
+/* Read Data - to be called after any 'getdata' and before any plotdata */
+template<class T> Int TablePlot<T>::readYData(BasePlot<T>* &BP, Matrix<T> &ydat)
+{
+	if(adbg)cout << "TablePlot :: Read YData" << endl; 
+	if(BP->readYD(ydat) == -1) return -1;
+	return 0;
+}
+
+/*********************************************************************************/
+
+/* Write Data - to be called after any 'getdata' and before any plotdata */
+template<class T> Int TablePlot<T>::writeYData(BasePlot<T>* &BP, Matrix<T> &ydat)
+{
+	if(adbg)cout << "TablePlot :: Write YData" << endl; 
+	if(BP->writeYD(ydat) == -1) return -1; // if shapes/types don't match.
 	return 0;
 }
 
