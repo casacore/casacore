@@ -204,15 +204,19 @@ template<class T> class BasePlot
 		
 		// Query the internal structures for Y data values
 		virtual T getYVal(Int pnum, Int col);
+		//T getYVal(Int pnum, Int col);
 
 		// Query the internal structures for flags
 		virtual Bool getYFlags(Int pnum, Int col);
+		//Bool getYFlags(Int pnum, Int col);
 
 		// Query for the number of points per plot
 		virtual Int getNumRows();
+		//Int getNumRows();
 
 		// Query for the number of plots
 		virtual Int getNumPlots();
+		//Int getNumPlots();
 
 		// Query for the type of plot (BASEPLOT)
 		Int getPlotType();

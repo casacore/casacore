@@ -142,18 +142,6 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		// Query the internal structures for X data values
 		T getXVal(Int pnum, Int col);
 		
-		// Query the internal structures for Y data values
-		T getYVal(Int pnum, Int col);
-		
-		// Query the internal structures for flag values
-		Bool getYFlags(Int pnum, Int col);
-		
-		// Query for the number of points per plot
-		Int getNumRows();
-
-		// Query for the number of plots
-		Int getNumPlots();
-
 	private:
 		
 		// Read X data from the table. For CrossPlots this corresponds

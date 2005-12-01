@@ -168,13 +168,6 @@ template<class T> Int CrossPlot<T>::getXData(TableExprId &tid)
 
 /*********************************************************************************/
 
-
-/*********************************************************************************/
-
-/** somehow do not let this become large for cross-plots. Use the same layout, but
-  only return the correct numbers back.... **/
-// Since NRows is diff for X and Y data - loop separately. Maybe then can merge this fn too...
-
 /* Compute the combined plot range */
 template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags)
 {
@@ -275,56 +268,16 @@ template<class T> Int CrossPlot<T>::flagData(Int diskwrite, Int rowflag)
 #endif
 
 /*********************************************************************************/
-
-
-
-/*********************************************************************************/
 /** Make this return a flipped value for crossplot **/
 
 template<class T> T CrossPlot<T>::getXVal(Int pnum, Int col)
 {
 	if(adbg)cout << "CrossPlot :: Get Xval" << endl;
-	//cout << "Accessing [ " <<Pind_p(col,0) << " , " << Pind_p(col,1)<< " ] " << endl;
-	return xplotdata_p(Pind_p(col,0),Pind_p(col,1));
+	return xplotdata_p(Pind_p(pnum,0),Pind_p(pnum,1));
 }
 
 /*********************************************************************************/
 
-template<class T> T CrossPlot<T>::getYVal(Int pnum, Int col)
-{
-	if(adbg)cout << "CrossPlot :: Get Yval" << endl;
-	return yplotdata_p(Pind_p(col,1),pnum);
-}
-
-/*********************************************************************************/
-
-template<class T> Bool CrossPlot<T>::getYFlags(Int pnum, Int col)
-{
-	if(adbg)cout << "CrossPlot :: Get YFlags" << endl;
-	return theflags_p(Pind_p(col,1),pnum);
-}
-
-/*********************************************************************************/
-
-template<class T> Int CrossPlot<T>::getNumPlots()
-{
-	if(adbg)cout << "CrossPlot :: Get Num Plots" << endl;
-	return NRows_p;
-}
-
-/*********************************************************************************/
-
-template<class T> Int CrossPlot<T>::getNumRows()
-{
-	if(adbg)cout << "CrossPlot :: Get Num Rows" << endl;
-	return NPlots_p;
-}
-
-
-/*********************************************************************************/
-/********************** Private Functions *****************************/
-/*********************************************************************************/
-	
 /*********************************************************************************/
 /*********************************************************************************/
 
