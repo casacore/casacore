@@ -297,10 +297,15 @@ namespace casa {
 
 
       }
-
-
+      
     }
-    
+    if(timeRange_p != ""){
+      Vector<String> timrng(1);
+      timrng[0]=timeRange_p;
+      thisSelection.setTimeExpr(MSSelection::nameExprStr(timrng));
+    }
+
+
     TableExprNode exprNode=thisSelection.toTableExprNode(&sorted);
     
     {
@@ -324,7 +329,12 @@ namespace casa {
     if(mssel_p.nrow()==0){
       return False;
     }
-
+    if(mssel_p.nrow() < ms_p.nrow()){
+      os << LogIO::NORMAL
+	 << mssel_p.nrow() << " rows are going to be considered out of " 
+	 << ms_p.nrow() << " rows due to the selection criteria " 
+	 << LogIO::POST;
+    }
     return True;
     
   }
