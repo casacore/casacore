@@ -294,6 +294,9 @@ public:
   void setModelVisCube(const Cube<Complex>& vis);
   void setCorrectedVisCube(const Cube<Complex>& vis);
 
+  // Reference external model visibilities
+  void refModelVis(const Matrix<CStokesVector>& mvis);
+
   // Remove scratch cols data from vb
   void VisBuffer::removeScratchCols(); 
 

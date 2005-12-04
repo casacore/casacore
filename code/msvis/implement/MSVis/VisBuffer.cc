@@ -497,6 +497,13 @@ void VisBuffer::setCorrectedVisCube(const Cube<Complex>& vis)
   correctedVisCubeOK_p=True;
 }
 
+void VisBuffer::refModelVis(const Matrix<CStokesVector>& mvis)
+{
+  modelVisibility_p.resize();
+  modelVisibility_p.reference(mvis);
+  modelVisOK_p=True;
+}
+
 void VisBuffer::removeScratchCols() 
 {
   // removes scratch data from the vb
