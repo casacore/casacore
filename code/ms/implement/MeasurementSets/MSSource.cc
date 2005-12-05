@@ -193,10 +193,8 @@ void MSSource::init()
 	
 	// all required columns 
 	// First define the columns with fixed size arrays
-	IPosition shape(1,3);
+	IPosition shape(1,2);
 	ColumnDesc::Option option=ColumnDesc::Direct;
-	addColumnToDesc(requiredTD, POSITION, shape, option);
-	shape(0)=2;
 	addColumnToDesc(requiredTD, DIRECTION, shape, option);
 	addColumnToDesc(requiredTD, PROPER_MOTION, shape, option);
 	// Now define all other columns (duplicates are skipped)
