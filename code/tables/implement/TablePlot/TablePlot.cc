@@ -63,6 +63,7 @@ template<class T> TablePlot<T>::TablePlot()
 	TABS_p.resize(0);
 	nTabs_p=0; iTabs_p=0; 
 	NPanels_p=1;
+	cout << " TABLEPLOT CONSTRUCTOR !!" << endl;
 }
 
 /*********************************************************************************/
