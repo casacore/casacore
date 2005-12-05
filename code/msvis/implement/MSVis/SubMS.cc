@@ -870,15 +870,13 @@ Bool SubMS::copySource(){
     if(newSource.actualTableDesc().ncolumn() != 
        oldSource.actualTableDesc().ncolumn()){      
       Vector<String> oldColumnNames=oldSource.actualTableDesc().columnNames();
-      Vector<String> optionalCols(5);
-      // for some reason POSITION, although being an optional column, is 
-      // built in as a default column with SOURCE table...
-      //      optionalCols[5]="POSITION";
+      Vector<String> optionalCols(6);
       optionalCols[0]="TRANSITION";
       optionalCols[1]="REST_FREQUENCY";
       optionalCols[2]="SYSVEL";
       optionalCols[3]="SOURCE_MODEL";
       optionalCols[4]="PULSAR_ID";
+      optionalCols[5]="POSITION";
       for (uInt k=0; k< oldSource.actualTableDesc().ncolumn(); ++k){
 	for (uInt j=0; j < optionalCols.nelements(); ++j){
 	  if(oldColumnNames[k].contains(optionalCols[j])){
