@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS convention.
+*   WCSLIB 4.3 - an implementation of the FITS WCS convention.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -72,4 +72,58 @@ void wcsutil_null_fill(int n, char c[])
   }
 
    return;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int wcsutil_allEq(int ncoord, int nelem, const double *first)
+
+{
+   double v0;
+   const double *vp;
+
+   v0 = *first;
+   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
+     if (*vp != v0) return 0;
+   }
+
+   return 1;
+}
+
+/*--------------------------------------------------------------------------*/
+
+void wcsutil_setAll(int ncoord, int nelem, double *first)
+
+{
+   double v0, *vp;
+
+   v0 = *first;
+   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
+     *vp = v0;
+   }
+}
+
+/*--------------------------------------------------------------------------*/
+
+void wcsutil_setAli(int ncoord, int nelem, int *first)
+
+{
+   int v0, *vp;
+
+   v0 = *first;
+   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
+     *vp = v0;
+   }
+}
+
+/*--------------------------------------------------------------------------*/
+
+void wcsutil_setBit(int ncoord, int *sel, int bits, int *stat)
+
+{
+   int *selp, *statp;
+
+   for (selp = sel, statp = stat; selp < sel + ncoord; selp++, statp++) {
+     if (*selp) *statp |= bits;
+   }
 }

@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -34,8 +34,8 @@
 *
 *===========================================================================*/
 
-#ifndef WCSLIB_MATH
-#define WCSLIB_MATH
+#ifndef WCSLIB_WCSMATH
+#define WCSLIB_WCSMATH
 
 #ifdef PI
 #undef PI
@@ -70,4 +70,4 @@
 #define UNDEFINED 987654321.0e99
 #define undefined(value) (value == UNDEFINED)
 
-#endif /* WCSLIB_MATH */
+#endif /* WCSLIB_WCSMATH */

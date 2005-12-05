@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -67,6 +67,10 @@ int wcsfix(int ctrl, const int naxis[], struct wcsprm *wcs, int stat[])
 {
    int status = 0;
 
+   if ((stat[CDFIX] = cdfix(wcs)) > 0) {
+      status = 1;
+   }
+
    if ((stat[DATFIX] = datfix(wcs)) > 0) {
       status = 1;
    }
@@ -89,6 +93,46 @@ int wcsfix(int ctrl, const int naxis[], struct wcsprm *wcs, int stat[])
       }
    } else {
       stat[CYLFIX] = -2;
+   }
+
+   return status;
+}
+
+/*--------------------------------------------------------------------------*/
+
+int cdfix(struct wcsprm *wcs)
+
+{
+   int  i, k, naxis, status = -1;
+   double *cd;
+
+   if (wcs == 0x0) return 1;
+
+   if (wcs->altlin & 1 || wcs->altlin & 2 == 0) {
+      /* Either we have PCi_ja or there are no CDi_ja. */
+      return -1;
+   }
+
+   naxis = wcs->naxis;
+   status = -1;
+   for (i = 0; i < naxis; i++) {
+      /* Row of zeros? */
+      cd = wcs->cd + i * naxis;
+      for (k = 0; k < naxis; k++, cd++) {
+         if (*cd != 0.0) goto next;
+      }
+
+      /* Column of zeros? */
+      cd = wcs->cd + i;
+      for (k = 0; k < naxis; k++, cd += naxis) {
+         if (*cd != 0.0) goto next;
+      }
+
+      cd = wcs->cd + i * (naxis + 1);
+      *cd = 1.0;
+      status = 0;
+
+next: ;
    }
 
    return status;
@@ -264,7 +308,7 @@ int unitfix(int ctrl, struct wcsprm *wcs)
 int celfix(struct wcsprm *wcs)
 
 {
-   int elsize, k, status;
+   int k, status;
    struct celprm *wcscel = &(wcs->cel);
    struct prjprm *wcsprj = &(wcscel->prj);
 
@@ -284,8 +328,7 @@ int celfix(struct wcsprm *wcs)
          if (wcs->npvmax < wcs->npv + 2) {
             /* Allocate space for two more PVi_ja cards. */
             if (wcs->m_flag == WCSSET && wcs->pv == wcs->m_pv) {
-               elsize = sizeof(struct pvcard);
-               if (!(wcs->pv = calloc(wcs->npv+2, elsize))) {
+               if (!(wcs->pv = calloc(wcs->npv+2, sizeof(struct pvcard)))) {
                   wcs->pv = wcs->m_pv;
                   return 2;
                }

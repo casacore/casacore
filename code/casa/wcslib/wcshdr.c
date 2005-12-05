@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -307,7 +307,6 @@ int wcstab(struct wcsprm *wcs)
             wtbp->extlev = PVi_2a[itabax];
             strcpy(wtbp->ttype, PSi_2a[itabax]);
             wtbp->row    = 1L;
-            wtbp->kind   = 0;
             wtbp->ndim   = 1;
             wtbp->dimlen = wcs->tab[itab].K + m;
             wtbp->arrayp = wcs->tab[itab].index + m;

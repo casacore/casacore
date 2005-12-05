@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -50,7 +50,6 @@
 %{
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "wcsunits.h"
 
@@ -147,7 +146,7 @@ D {
 	  BEGIN(NEXT);
 	}
 
-degree|degrees|DEG|DEGREE|DEGREES {
+degrees?|DEG|DEGREES? {
 	  /* Rule 011. */
 	  strcpy(orig, yytext);
 	  strcpy(subs, "deg");

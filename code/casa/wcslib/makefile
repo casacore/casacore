@@ -104,6 +104,7 @@ $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/sph.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/wcsmath.h
 $(WCSLIB).$(SFXSTAT)(cel.o) : $(CODEDIR)/wcstrig.h
 
+$(WCSLIB).$(SFXSTAT)(fitshdr.o) : $(CODEDIR)/config.h
 $(WCSLIB).$(SFXSTAT)(fitshdr.o) : $(CODEDIR)/fitshdr.h
 
 $(WCSLIB).$(SFXSTAT)(lin.o) : $(CODEDIR)/lin.h

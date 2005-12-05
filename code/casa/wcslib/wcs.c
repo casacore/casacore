@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -72,15 +72,13 @@ const char *wcs_errmsg[] = {
    "Invalid subimage specification",
    "Non-separable subimage coordinate system"};
 
+#ifndef signbit
 #define signbit(X) ((X) < 0.0 ? 1 : 0)
+#endif
 
 /* Internal helper functions, not intended for general use. */
 int  wcs_types(struct wcsprm *);
 int  wcs_units(struct wcsprm *);
-
-int  wcs_allEq(int, int, const double *);
-void wcs_setAll(int, int, double *);
-void wcs_setAli(int, int, int *);
 
 /*--------------------------------------------------------------------------*/
 
@@ -94,7 +92,6 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 {
    int i, j, k, status;
    double *cd;
-   size_t elsize;
 
    if (wcs == 0x0) return 1;
 
@@ -229,8 +226,7 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
             wcs->cunit = wcs->m_cunit;
 
          } else {
-            elsize = sizeof(char [72]);
-            if (!(wcs->cunit = (char (*)[72])calloc(naxis, elsize))) {
+            if (!(wcs->cunit = calloc(naxis, sizeof(char [72])))) {
                wcsfree(wcs);
                return 2;
             }
@@ -247,8 +243,7 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
             wcs->ctype = wcs->m_ctype;
 
          } else {
-            elsize = sizeof(char [72]);
-            if (!(wcs->ctype = (char (*)[72])calloc(naxis, elsize))) {
+            if (!(wcs->ctype = calloc(naxis, sizeof(char [72])))) {
                wcsfree(wcs);
                return 2;
             }
@@ -266,8 +261,7 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 
          } else {
             if (NPVMAX) {
-               elsize = sizeof(struct pvcard);
-               if (!(wcs->pv = (struct pvcard *)calloc(NPVMAX, elsize))) {
+               if (!(wcs->pv = calloc(NPVMAX, sizeof(struct pvcard)))) {
                   wcsfree(wcs);
                   return 2;
                }
@@ -290,8 +284,7 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
 
          } else {
             if (NPSMAX) {
-              elsize = sizeof(struct pscard);
-              if (!(wcs->ps = (struct pscard *)calloc(NPSMAX, elsize))) {
+              if (!(wcs->ps = calloc(NPSMAX, sizeof(struct pscard)))) {
                  wcsfree(wcs);
                  return 2;
               }
@@ -347,8 +340,7 @@ int wcsini(int alloc, int naxis, struct wcsprm *wcs)
             wcs->cname = wcs->m_cname;
 
          } else {
-            elsize = sizeof(char [72]);
-            if (!(wcs->cname = (char (*)[72])calloc(naxis, elsize))) {
+            if (!(wcs->cname = calloc(naxis, sizeof(char [72])))) {
                wcsfree(wcs);
                return 2;
             }
@@ -993,6 +985,7 @@ int wcsprt(const struct wcsprm *wcs)
 
 {
    int i, j, k;
+   struct wtbarr *wtbp;
 
    if (wcs == 0x0) return 1;
 
@@ -1225,7 +1218,9 @@ int wcsprt(const struct wcsprm *wcs)
    if (wcs->tab != 0x0) printf("  (see below)");
    printf("\n");
    printf("       nwtb: %d\n", wcs->nwtb);
-   printf("        wtb: 0x%x\n", (int)wcs->wtb);
+   printf("        wtb: 0x%x", (int)wcs->wtb);
+   if (wcs->wtb != 0x0) printf("  (see below)");
+   printf("\n");
 
    /* Derived values. */
    printf("      types: 0x%x\n           ", (int)wcs->types);
@@ -1295,6 +1290,25 @@ int wcsprt(const struct wcsprm *wcs)
    printf("\n");
 
    /* Tabular transformation parameters. */
+   if (wtbp = wcs->wtb) {
+      for (j = 0; j < wcs->nwtb; j++, wtbp++) {
+         printf("\n");
+         printf("wtb[%d].*\n", j);
+         printf("          i: %d\n", wtbp->i);
+         printf("          m: %d\n", wtbp->m);
+         printf("       kind: %c\n", wtbp->kind);
+         printf("     extnam: %s\n", wtbp->extnam);
+         printf("     extver: %d\n", wtbp->extver);
+         printf("     extlev: %d\n", wtbp->extlev);
+         printf("      ttype: %s\n", wtbp->ttype);
+         printf("        row: %ld\n", wtbp->row);
+         printf("       ndim: %d\n", wtbp->ndim);
+         printf("     dimlen: 0x%x\n", (int)wtbp->dimlen);
+         printf("     arrayp: 0x%x -> 0x%x\n", (int)wtbp->arrayp,
+                                               (int)(*(wtbp->arrayp)));
+      }
+   }
+
    if (wcs->tab) {
       for (j = 0; j < wcs->ntab; j++) {
          printf("\n");
@@ -1810,6 +1824,11 @@ int wcs_units(struct wcsprm *wcs)
          continue;
       }
 
+      /* Tabular axis, CDELTia and CRVALia relate to indices. */
+      if ((wcs->types[i]/100)%10 == 5) {
+         continue;
+      }
+
       wcsutil_null_fill(72, wcs->cunit[i]);
       if (wcs->cunit[i][0]) {
          if (wcsunits(wcs->cunit[i], units, &scale, &offset, &power)) {
@@ -1846,7 +1865,8 @@ int wcsp2s(
    int stat[])
 
 {
-   int    face, i, iso_x, iso_y, istat, itab, k, nx, ny, *statp, status, type;
+   int    bits, face, i, iso_x, iso_y, istat, *istatp, itab, k, m, nx, ny,
+          *statp, status, type;
    double crvali, offset;
    register double *img, *wrl;
    struct celprm *wcscel = &(wcs->cel);
@@ -1866,6 +1886,14 @@ int wcsp2s(
    if (status = linp2x(&(wcs->lin), ncoord, nelem, pixcrd, imgcrd)) {
       return status;
    }
+
+   /* Initialize status vectors. */
+   if (!(istatp = calloc(ncoord, sizeof(int)))) {
+      return 2;
+   }
+
+   stat[0] = 0;
+   wcsutil_setAli(ncoord, 1, stat);
 
 
    /* Convert intermediate world coordinates to world coordinates. */
@@ -1897,12 +1925,16 @@ int wcsp2s(
             /* Lay out faces in a plane. */
             img = imgcrd;
             statp = stat;
+            bits = (1 << i) | (1 << wcs->lat);
             for (k = 0; k < ncoord; k++, statp++) {
                face = (int)(*(img+wcs->cubeface) + 0.5);
                if (fabs(*(img+wcs->cubeface) - face) > 1e-10) {
-                  *statp = 1;
+                  *statp |= bits;
                   status = 8;
+
                } else {
+                  *statp = 0;
+
                   switch (face) {
                   case 0:
                      *(img+wcs->lat) += offset;
@@ -1922,7 +1954,7 @@ int wcsp2s(
                      *(img+wcs->lat) -= offset;
                      break;
                   default:
-                     *statp = 1;
+                     *statp |= bits;
                      status = 8;
                   }
                }
@@ -1935,38 +1967,44 @@ int wcsp2s(
          nx = ncoord;
          ny = 0;
 
-         if (iso_x = wcs_allEq(ncoord, nelem, imgcrd+i)) {
+         if (iso_x = wcsutil_allEq(ncoord, nelem, imgcrd+i)) {
             nx = 1;
             ny = ncoord;
          }
-         if (iso_y = wcs_allEq(ncoord, nelem, imgcrd+wcs->lat)) {
+         if (iso_y = wcsutil_allEq(ncoord, nelem, imgcrd+wcs->lat)) {
             ny = 1;
          }
 
          /* Transform projection plane coordinates to celestial coordinates. */
          if (istat = celx2s(wcscel, nx, ny, nelem, nelem, imgcrd+i,
                             imgcrd+wcs->lat, phi, theta, world+i,
-                            world+wcs->lat, stat)) {
+                            world+wcs->lat, istatp)) {
             if (istat == 5) {
                status = 8;
             } else {
-               return istat + 3;
+               status = istat + 3;
+               goto cleanup;
             }
          }
 
          /* If x and y were both constant, replicate values. */
          if (iso_x && iso_y) {
-            wcs_setAll(ncoord, nelem, world+i);
-            wcs_setAll(ncoord, nelem, world+wcs->lat);
-            wcs_setAll(ncoord, 1, phi);
-            wcs_setAll(ncoord, 1, theta);
-            wcs_setAli(ncoord, 1, stat);
+            wcsutil_setAll(ncoord, nelem, world+i);
+            wcsutil_setAll(ncoord, nelem, world+wcs->lat);
+            wcsutil_setAll(ncoord, 1, phi);
+            wcsutil_setAll(ncoord, 1, theta);
+            wcsutil_setAli(ncoord, 1, istatp);
+         }
+
+         if (istat == 5) {
+            bits = (1 << i) | (1 << wcs->lat);
+            wcsutil_setBit(ncoord, istatp, bits, stat);
          }
 
       } else if (type == 3 || type == 4) {
          /* Check for constant x. */
          nx = ncoord;
-         if (iso_x = wcs_allEq(ncoord, nelem, imgcrd+i)) {
+         if (iso_x = wcsutil_allEq(ncoord, nelem, imgcrd+i)) {
             nx = 1;
          }
 
@@ -1974,26 +2012,31 @@ int wcsp2s(
          if (wcs->types[i] == 3300) {
             /* Spectral coordinates. */
             istat = spcx2s(&(wcs->spc), nx, nelem, nelem, imgcrd+i, world+i,
-                           stat);
+                           istatp);
 
          } else if (type == 4) {
             /* Logarithmic coordinates. */
             istat = logx2s(wcs->crval[i], nx, nelem, nelem, imgcrd+i, world+i,
-                           stat);
+                           istatp);
          }
 
          if (istat) {
             if (istat == 3) {
                status = 8;
             } else {
-               return istat + 3;
+               status = istat + 3;
+               goto cleanup;
             }
          }
 
          /* If x was constant, replicate values. */
          if (iso_x) {
-            wcs_setAll(ncoord, nelem, world+i);
-            wcs_setAli(ncoord, 1, stat);
+            wcsutil_setAll(ncoord, nelem, world+i);
+            wcsutil_setAli(ncoord, 1, istatp);
+         }
+
+         if (istat == 3) {
+            wcsutil_setBit(ncoord, istatp, 1 << i, stat);
          }
       }
    }
@@ -2001,12 +2044,20 @@ int wcsp2s(
 
    /* Do tabular coordinates. */
    for (itab = 0; itab < wcs->ntab; itab++) {
-      istat = tabx2s(wcs->tab + itab, ncoord, nelem, imgcrd, world, stat);
+      istat = tabx2s(wcs->tab + itab, ncoord, nelem, imgcrd, world, istatp);
 
       if (istat == 4) {
          status = 8;
-      } else {
-         return (istat == 3) ? 5 : istat;
+
+         bits = 0;
+         for (m = 0; m < wcs->tab[itab].M; m++) {
+            bits |= 1 << wcs->tab[itab].map[m];
+         }
+         wcsutil_setBit(ncoord, istatp, bits, stat);
+
+      } else if (istat) {
+         status = (istat == 3) ? 5 : istat;
+         goto cleanup;
       }
    }
 
@@ -2014,9 +2065,11 @@ int wcsp2s(
    /* Zero the unused world coordinate elements. */
    for (i = wcs->naxis; i < nelem; i++) {
       world[i] = 0.0;
-      wcs_setAll(ncoord, nelem, world+i);
+      wcsutil_setAll(ncoord, nelem, world+i);
    }
 
+cleanup:
+   free(istatp);
    return status;
 }
 
@@ -2034,8 +2087,8 @@ int wcss2p(
    int stat[])
 
 {
-   int    i, isolat, isolng, isospec, istat, itab, k, nlat, nlng, nwrld,
-          status, type;
+   int    bits, i, isolat, isolng, isospec, istat, *istatp, itab, k, m, nlat,
+          nlng, nwrld, status, type;
    double crvali, offset;
    register const double *wrl;
    register double *img;
@@ -2052,6 +2105,14 @@ int wcss2p(
 
    /* Sanity check. */
    if (ncoord < 1 || (ncoord > 1 && nelem < wcs->naxis)) return 4;
+
+   /* Initialize status vectors. */
+   if (!(istatp = calloc(ncoord, sizeof(int)))) {
+      return 2;
+   }
+
+   stat[0] = 0;
+   wcsutil_setAli(ncoord, 1, stat);
 
 
    /* Convert world coordinates to intermediate world coordinates. */
@@ -2075,32 +2136,38 @@ int wcss2p(
          nlng = ncoord;
          nlat = 0;
 
-         if (isolng = wcs_allEq(ncoord, nelem, world+i)) {
+         if (isolng = wcsutil_allEq(ncoord, nelem, world+i)) {
             nlng = 1;
             nlat = ncoord;
          }
-         if (isolat = wcs_allEq(ncoord, nelem, world+wcs->lat)) {
+         if (isolat = wcsutil_allEq(ncoord, nelem, world+wcs->lat)) {
             nlat = 1;
          }
 
          /* Transform celestial coordinates to projection plane coordinates. */
          if (istat = cels2x(wcscel, nlng, nlat, nelem, nelem, world+i,
                             world+wcs->lat, phi, theta, imgcrd+i,
-                            imgcrd+wcs->lat, stat)) {
+                            imgcrd+wcs->lat, istatp)) {
             if (istat == 6) {
                status = 9;
             } else {
-               return istat + 3;
+               status = istat + 3;
+               goto cleanup;
             }
          }
 
          /* If lng and lat were both constant, replicate values. */
          if (isolng && isolat) {
-            wcs_setAll(ncoord, nelem, imgcrd+i);
-            wcs_setAll(ncoord, nelem, imgcrd+wcs->lat);
-            wcs_setAll(ncoord, 1, phi);
-            wcs_setAll(ncoord, 1, theta);
-            wcs_setAli(ncoord, 1, stat);
+            wcsutil_setAll(ncoord, nelem, imgcrd+i);
+            wcsutil_setAll(ncoord, nelem, imgcrd+wcs->lat);
+            wcsutil_setAll(ncoord, 1, phi);
+            wcsutil_setAll(ncoord, 1, theta);
+            wcsutil_setAli(ncoord, 1, istatp);
+         }
+
+         if (istat == 6) {
+            bits = (1 << i) | (1 << wcs->lat);
+            wcsutil_setBit(ncoord, istatp, bits, stat);
          }
 
          /* Do we have a CUBEFACE axis? */
@@ -2141,7 +2208,7 @@ int wcss2p(
       } else if (type == 3 || type == 4) {
          /* Check for constancy. */
          nwrld = ncoord;
-         if (isospec = wcs_allEq(ncoord, nelem, world+i)) {
+         if (isospec = wcsutil_allEq(ncoord, nelem, world+i)) {
             nwrld = 1;
          }
 
@@ -2149,26 +2216,31 @@ int wcss2p(
          if (wcs->types[i] == 3300) {
             /* Spectral coordinates. */
             istat = spcs2x(&(wcs->spc), nwrld, nelem, nelem, world+i,
-                           imgcrd+i, stat);
+                           imgcrd+i, istatp);
 
          } else if (type == 4) {
             /* Logarithmic coordinates. */
             istat = logs2x(wcs->crval[i], nwrld, nelem, nelem, world+i,
-                           imgcrd+i, stat);
+                           imgcrd+i, istatp);
          }
 
          if (istat) {
             if (istat == 4) {
                status = 9;
             } else {
-               return istat + 3;
+               status = istat + 3;
+               goto cleanup;
             }
          }
 
          /* If constant, replicate values. */
          if (isospec) {
-            wcs_setAll(ncoord, nelem, imgcrd+i);
-            wcs_setAli(ncoord, 1, stat);
+            wcsutil_setAll(ncoord, nelem, imgcrd+i);
+            wcsutil_setAli(ncoord, 1, istatp);
+         }
+
+         if (istat == 4) {
+            wcsutil_setBit(ncoord, istatp, 1 << i, stat);
          }
       }
    }
@@ -2176,12 +2248,20 @@ int wcss2p(
 
    /* Do tabular coordinates. */
    for (itab = 0; itab < wcs->ntab; itab++) {
-      istat = tabs2x(wcs->tab + itab, ncoord, nelem, world, imgcrd, stat);
+      istat = tabs2x(wcs->tab + itab, ncoord, nelem, world, imgcrd, istatp);
 
       if (istat == 5) {
          status = 9;
-      } else {
-         return (istat == 3) ? 5 : istat;
+
+         bits = 0;
+         for (m = 0; m < wcs->tab[itab].M; m++) {
+            bits |= 1 << wcs->tab[itab].map[m];
+         }
+         wcsutil_setBit(ncoord, istatp, bits, stat);
+
+      } else if (istat) {
+         status = (istat == 3) ? 5 : istat;
+         goto cleanup;
       }
    }
 
@@ -2189,15 +2269,18 @@ int wcss2p(
    /* Zero the unused intermediate world coordinate elements. */
    for (i = wcs->naxis; i < nelem; i++) {
       imgcrd[i] = 0.0;
-      wcs_setAll(ncoord, nelem, imgcrd+i);
+      wcsutil_setAll(ncoord, nelem, imgcrd+i);
    }
 
 
    /* Apply world-to-pixel linear transformation. */
    if (istat = linx2p(&(wcs->lin), ncoord, nelem, imgcrd, pixcrd)) {
-      return istat;
+      status = istat;
+      goto cleanup;
    }
 
+cleanup:
+   free(istatp);
    return status;
 }
 
@@ -2846,46 +2929,4 @@ int wcssptr(
    spcini(&(wcs->spc));
 
    return 0;
-}
-
-/*--------------------------------------------------------------------------*/
-
-int wcs_allEq(int ncoord, int nelem, const double *first)
-
-{
-   double v0;
-   const double *vp;
-
-   v0 = *first;
-   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
-     if (*vp != v0) return 0;
-   }
-
-   return 1;
-}
-
-/*--------------------------------------------------------------------------*/
-
-void wcs_setAll(int ncoord, int nelem, double *first)
-
-{
-   double v0, *vp;
-
-   v0 = *first;
-   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
-     *vp = v0;
-   }
-}
-
-/*--------------------------------------------------------------------------*/
-
-void wcs_setAli(int ncoord, int nelem, int *first)
-
-{
-   int v0, *vp;
-
-   v0 = *first;
-   for (vp = first+nelem; vp < first + ncoord*nelem; vp += nelem) {
-     *vp = v0;
-   }
 }

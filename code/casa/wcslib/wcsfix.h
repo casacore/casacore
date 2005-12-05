@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.1 - C routines that implement the FITS World Coordinate System
+*   WCSLIB 4.3 - C routines that implement the FITS World Coordinate System
 *   (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",
@@ -86,6 +86,9 @@
 *   wcsfix() applies all of the corrections handled by the following specific
 *   functions which may also be invoked separately:
 *
+*      cdfix(): Sets the diagonal element of the CDi_ja matrix 1.0 if all
+*         CDi_ja cards associated with a particular axis are omitted.
+*
 *      datfix(): recast an older DATE-OBS date format in dateobs to year-2000
 *         standard form and derive mjdobs from it if not already set.
 *         Alternatively, if mjdobs is set and dateobs isn't, then derive
@@ -137,6 +140,15 @@
 *                           0: Success.
 *                           1: One or more of the translation functions
 *                              returned an error.
+*
+*
+*   Fix erroneously omitted CDi_ja cards
+*   ------------------------------------
+*   cdfix() sets the diagonal element of the CDi_ja matrix to 1.0 if all
+*   CDi_ja cards associated with a given axis were omitted.  According to
+*   Paper I, if any CDi_ja cards are given then those not given default to
+*   0.0.  This results in a singular matrix with an intersecting row and
+*   column of zeros.
 *
 *
 *   Translate DATE-OBS and derive MJD-OBS or vice versa
@@ -298,17 +310,19 @@ extern "C" {
 #endif
 
 #define DATFIX   0
-#define UNITFIX  1
-#define CELFIX   2
-#define SPCFIX   3
-#define CYLFIX   4
-#define NWCSFIX  5
+#define CDFIX    1
+#define UNITFIX  2
+#define CELFIX   3
+#define SPCFIX   4
+#define CYLFIX   5
+#define NWCSFIX  6
 
 extern const char *wcsfix_errmsg[];
 #define cylfix_errmsg wcsfix_errmsg
 
 
 int wcsfix(int, const int [], struct wcsprm *, int []);
+int cdfix(struct wcsprm *);
 int datfix(struct wcsprm *);
 int unitfix(int, struct wcsprm *);
 int celfix(struct wcsprm *);

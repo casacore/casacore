@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -830,7 +830,7 @@ int tabx2s(
       Km = tab->K;
       for (m = 0; m < M; m++, Km++) {
          i = tab->map[m];
-         psi_m = *(xp+i) + tab->crval[i];
+         psi_m = *(xp+i) + tab->crval[m];
 
          if ((Psi = tab->index[m]) == 0) {
             /* Default indexing is simple. */
@@ -839,8 +839,8 @@ int tabx2s(
          } else {
             if (*Km == 1) {
                /* Index vector is degenerate. */
-               if (psi_m == Psi[0]) {
-                  upsilon = Psi[0];
+               if (Psi[0]-0.5 <= psi_m && psi_m <= Psi[0]+0.5) {
+                  upsilon = psi_m;
                } else {
                   *statp = 1;
                   status = 4;
@@ -851,43 +851,81 @@ int tabx2s(
                /* Interpolate in the indexing vector. */
                if (tab->sense[m] == 1) {
                   /* Monotonic increasing index values. */
-                  if (psi_m < Psi[0] || psi_m > Psi[*Km-1]) {
-                     /* Index is out of range. */
-                     *statp = 1;
-                     status = 4;
-                     goto next;
-                  }
+                  if (psi_m < Psi[0]) {
+                     if (Psi[0] - 0.5*(Psi[1]-Psi[0]) <= psi_m) {
+                        /* Allow minor extrapolation. */
+                        k = 0;
 
-                  for (k = 0; k < *Km-1; k++) {
-                     if (psi_m < Psi[k]) {
-                        continue;
+                     } else {
+                        /* Index is out of range. */
+                        *statp = 1;
+                        status = 4;
+                        goto next;
                      }
-                     if (Psi[k] == psi_m && psi_m < Psi[k+1]) {
-                        break;
+
+                  } else if (Psi[*Km-1] < psi_m) {
+                     if (psi_m <= Psi[*Km-1] + 0.5*(Psi[*Km-1]-Psi[*Km-2])) {
+                        /* Allow minor extrapolation. */
+                        k = *Km - 2;
+
+                     } else {
+                        /* Index is out of range. */
+                        *statp = 1;
+                        status = 4;
+                        goto next;
                      }
-                     if (Psi[k] < psi_m && psi_m <= Psi[k+1]) {
-                        break;
+
+                  } else {
+                     for (k = 0; k < *Km-1; k++) {
+                        if (psi_m < Psi[k]) {
+                           continue;
+                        }
+                        if (Psi[k] == psi_m && psi_m < Psi[k+1]) {
+                           break;
+                        }
+                        if (Psi[k] < psi_m && psi_m <= Psi[k+1]) {
+                           break;
+                        }
                      }
                   }
 
                } else {
                   /* Monotonic decreasing index values. */
-                  if (psi_m > Psi[0] || psi_m < Psi[*Km-1]) {
-                     /* Index is out of range. */
-                     *statp = 1;
-                     status = 4;
-                     goto next;
-                  }
+                  if (psi_m > Psi[0]) {
+                     if (Psi[0] + 0.5*(Psi[0]-Psi[1]) >= psi_m) {
+                        /* Allow minor extrapolation. */
+                        k = 0;
 
-                  for (k = 0; k < *Km-1; k++) {
-                     if (psi_m > Psi[k]) {
-                        continue;
+                     } else {
+                        /* Index is out of range. */
+                        *statp = 1;
+                        status = 4;
+                        goto next;
                      }
-                     if (Psi[k] == psi_m && psi_m > Psi[k+1]) {
-                        break;
+
+                  } else if (psi_m < Psi[*Km-1]) {
+                     if (Psi[*Km-1] - 0.5*(Psi[*Km-2]-Psi[*Km-1]) <= psi_m) {
+                        /* Allow minor extrapolation. */
+                        k = *Km - 2;
+
+                     } else {
+                        /* Index is out of range. */
+                        *statp = 1;
+                        status = 4;
+                        goto next;
                      }
-                     if (Psi[k] > psi_m && psi_m >= Psi[k+1]) {
-                        break;
+
+                  } else {
+                     for (k = 0; k < *Km-1; k++) {
+                        if (psi_m > Psi[k]) {
+                           continue;
+                        }
+                        if (Psi[k] == psi_m && psi_m > Psi[k+1]) {
+                           break;
+                        }
+                        if (Psi[k] > psi_m && psi_m >= Psi[k+1]) {
+                           break;
+                        }
                      }
                   }
                }
@@ -896,7 +934,7 @@ int tabx2s(
             }
          }
 
-         if (upsilon < 0.0 || upsilon > (double)(*Km-1)) {
+         if (upsilon < -0.5 || upsilon > *Km - 0.5) {
             /* Index out of range. */
             *statp = 1;
             status = 4;
@@ -908,9 +946,12 @@ int tabx2s(
          tab->p0[m] = p0;
          tab->delta[m] = upsilon - p0;
 
-         if (p0 == *Km-1 && *Km > 1) {
+         if (p0 == -1) {
+           tab->p0[m] += 1;
+           tab->delta[m] -= 1.0;
+         } else if (p0 == *Km-1 && *Km > 1) {
            tab->p0[m] -= 1;
-           tab->delta[m] = 1.0;
+           tab->delta[m] += 1.0;
          }
       }
 
@@ -1058,7 +1099,7 @@ int tabs2x(
          Km = tab->K;
          for (m = 0; m < M; m++, Km++) {
             upsilon = tab->p0[m] + tab->delta[m];
-            if (upsilon < 0.0 || upsilon > (double)(*Km-1)) {
+            if (upsilon < -0.5 || upsilon > *Km - 0.5) {
                /* Index out of range. */
                *statp = 1;
                status = 5;
@@ -1080,10 +1121,10 @@ int tabs2x(
                        psi_m += (upsilon - k) * (Psi[k+1] - Psi[k]);
                      }
                   }
-
-                  i = tab->map[m];
-                  xp[i] = psi_m - tab->crval[i];
                }
+
+               i = tab->map[m];
+               xp[i] = psi_m - tab->crval[m];
             }
          }
          *statp = 0;

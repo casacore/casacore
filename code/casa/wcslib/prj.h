@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,7 +30,7 @@
 *   $Id$
 *=============================================================================
 *
-*   WCSLIB 4.1 - C routines that implement the spherical map projections
+*   WCSLIB 4.3 - C routines that implement the spherical map projections
 *   recognized by the FITS World Coordinate System (WCS) standard.  Refer to
 *
 *      "Representations of world coordinates in FITS",

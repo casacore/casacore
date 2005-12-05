@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 4.3 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2005, Mark Calabretta
 *
 *   PGSBOX is free software; you can redistribute it and/or modify it under
@@ -53,10 +53,12 @@ int *ierr;
    double dp, imgcrd[9], lat, lng, ph, phi, sdummy, th, theta;
    static double wrld[9];
    struct wcsprm *wcsp;
+   struct celprm *wcscel;
 
    *ierr = 0;
 
    wcsp = (struct wcsprm *)wcs;
+   wcscel = &(wcsp->cel);
 
    if (*opcode == 2) {
       /* Compute pixel coordinates from world coordinates. */
@@ -64,7 +66,7 @@ int *ierr;
          /* Simple linear coordinates. */
          if (wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd, pixel, &stat)) {
             *ierr = 1;
-	 }
+         }
          return;
       }
 
@@ -108,7 +110,7 @@ int *ierr;
             }
 
             /* Iterate once to refine the value of theta. */
-            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, &lng, &lat);
+            sphx2s(wcscel->euler, 1, 1, 1, 1, &ph, &th, &lng, &lat);
             if (wrld[wcsp->lng] == contxt[0]) {
                /* We are following a meridian of longitude. */
                lng = wrld[wcsp->lng];
@@ -116,7 +118,7 @@ int *ierr;
                /* We are following a parallel of latitude. */
                lat = wrld[wcsp->lat];
             }
-            sphs2x(wcsp->cel.euler, 1, 1, 1, 1, &lng, &lat, &sdummy, &th);
+            sphs2x(wcscel->euler, 1, 1, 1, 1, &lng, &lat, &sdummy, &th);
 
             contxt[0] = wrld[wcsp->lng];
             contxt[1] = wrld[wcsp->lat];
@@ -124,7 +126,7 @@ int *ierr;
             contxt[3] = theta;
 
             /* Pixel coordinates crossing into the discontinuity. */
-            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
+            sphx2s(wcscel->euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
                wrld+wcsp->lat);
             if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, pixel,
                &stat)) {
@@ -135,7 +137,7 @@ int *ierr;
 
             /* Pixel coordinates crossing out of the discontinuity. */
             ph *= -1.0;
-            sphx2s(wcsp->cel.euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
+            sphx2s(wcscel->euler, 1, 1, 1, 1, &ph, &th, wrld+wcsp->lng,
                wrld+wcsp->lat);
             if (wcss2p(wcsp, 1, 0, wrld, &phi, &theta, imgcrd, contxt+6,
                &stat)) {
@@ -174,7 +176,7 @@ int *ierr;
          /* Simple linear coordinates. */
          if (wcss2p(wcsp, 1, 0, world, &phi, &theta, imgcrd, pixel, &stat)) {
             *ierr = 1;
-	 }
+         }
          return;
       }
 

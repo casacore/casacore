@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -30,8 +30,8 @@
 *   $Id$
 *===========================================================================*/
 
-#ifndef WCSLIB_TRIG
-#define WCSLIB_TRIG
+#ifndef WCSLIB_WCSTRIG
+#define WCSLIB_WCSTRIG
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,4 +73,4 @@ double atan2d(double, double);
 };
 #endif
 
-#endif /* WCSLIB_TRIG */
+#endif /* WCSLIB_WCSTRIG */

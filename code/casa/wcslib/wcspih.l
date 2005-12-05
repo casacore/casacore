@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -1092,7 +1092,7 @@ int wcspih_inits(
 
   if (*nwcs) {
     /* Allocate memory for the required number of wcsprm structs. */
-    if (!(*wcs = (struct wcsprm *)calloc(*nwcs, sizeof(struct wcsprm)))) {
+    if (!(*wcs = calloc(*nwcs, sizeof(struct wcsprm)))) {
       return 2;
     }
 

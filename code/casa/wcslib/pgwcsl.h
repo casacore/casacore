@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   PGSBOX 4.0 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 4.3 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2005, Mark Calabretta
 *
 *   PGSBOX is free software; you can redistribute it and/or modify it under
@@ -115,10 +115,10 @@
 *
 *
 *===========================================================================*/
-#ifndef pgwcsl_h
-#define pgwcsl_h
+#ifndef PGSBOX_PGWCSL
+#define PGSBOX_PGWCSL
 
-#include <cpgsbox.h>
+#include "cpgsbox.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -130,4 +130,4 @@ nlfunc_t pgwcsl_;
 }
 #endif
 
-#endif
+#endif /* PGSBOX_PGWCSL */

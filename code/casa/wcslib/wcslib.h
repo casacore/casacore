@@ -30,19 +30,35 @@
 *   $Id$
 *=============================================================================
 *
-*   Simple utility functions used by WCSLIB.
+*   WCSLIB 4.3 - C routines that implement the FITS World Coordinate System
+*   (WCS) standard.  Refer to
+*
+*   This header file includes all WCSLIB headers.
 *
 *===========================================================================*/
 
-#ifndef WCSLIB_WCSUTIL
-#define WCSLIB_WCSUTIL
+#ifndef WCSLIB_WCSLIB
+#define WCSLIB_WCSLIB
 
-void wcsutil_blank_fill(int, char []);
-void wcsutil_null_fill(int, char []);
+#include "cel.h"
+#include "fitshdr.h"
+#include "lin.h"
+#include "log.h"
+#include "prj.h"
+#include "spc.h"
+#include "sph.h"
+#include "spx.h"
+#include "tab.h"
+#include "wcs.h"
+#include "wcsfix.h"
+#include "wcshdr.h"
+#include "wcsmath.h"
+#include "wcstrig.h"
+#include "wcsunits.h"
+#include "wcsutil.h"
 
-int  wcsutil_allEq(int, int, const double *);
-void wcsutil_setAll(int, int, double *);
-void wcsutil_setAli(int, int, int *);
-void wcsutil_setBit(int, int*, int, int *);
+#ifdef __cplusplus
+};
+#endif
 
-#endif /* WCSLIB_WCSUTIL */
+#endif /* WCSLIB_WCSLIB */

@@ -1,6 +1,6 @@
 /*============================================================================
 *
-*   WCSLIB 4.1 - an implementation of the FITS WCS standard.
+*   WCSLIB 4.3 - an implementation of the FITS WCS standard.
 *   Copyright (C) 1995-2005, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
@@ -243,10 +243,10 @@
 *               -9223372036854775808 <= int64 <  -2147483648
 *            or          +2147483647 <  int64 <= +9223372036854775807.
 *            A native 64-bit data type may be defined via preprocessor macro
-*            WCS_INT64, e.g. -DWCS_INT64='long long int'; this will be
-*            typedef'd to 'int64' here.  If WCS_INT64 is not set, then int64
-*            is typedef'd to int[3] instead and the keyvalue is to be computed
-*            as
+*            WCS_INT64 defined in config.h, e.g. as 'long long int'; this will
+*            be typedef'd to 'int64' here.  If WCS_INT64 is not set, then
+*            int64 is typedef'd to int[3] instead and the keyvalue is to be
+*            computed as
 *
 *                    ((keyvalue.k[2]) * 1000000000 +
 *                      keyvalue.k[1]) * 1000000000 +
@@ -321,6 +321,8 @@
 #ifndef WCSLIB_FITSHDR
 #define WCSLIB_FITSHDR
 
+#include "config.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -334,13 +336,10 @@ extern "C" {
 
 extern const char *fitshdr_errmsg[];
 
-/* ...this has to be set from a config.h type header file so that someone
-*  linking to WCSLIB will get the same definition as when it was compiled.
-*/
 #ifdef WCS_INT64
-  typedef WCS_INT64 int64;
+   typedef WCS_INT64 int64;
 #else
-  typedef int int64[3];
+   typedef int int64[3];
 #endif
 
 
