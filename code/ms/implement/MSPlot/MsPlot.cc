@@ -262,7 +262,9 @@ Bool MsPlot<T>::setLabels( TPPlotter<T> &TPLP, Record &plotOption, Vector<String
 		if( m_dbg ) cout << "[ MsPlot<T>::setLabels() ] labels = " << labels << endl;
 		*/
 		//setPlotParameters( TPLP,m_plotOption,labels);
-		setPlotParameters( TPLP, plotOption ,labels);
+		// setPlotParameters( TPLP, plotOption ,labels);
+		this->setPlotParameters( TPLP, plotOption );
+		this->setPlotLabels( TPLP,labels );
 		return True;
    }
 // Convert the antenna coordinates into local frame and put the antenna positions into a Table in memory
@@ -726,6 +728,7 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 	  uInt nt = l_times.nelements();
 	 uInt curFieldId = 0; 
 	 uInt lastFieldId = 0;
+	 derivedQuan.resize( nt );
 	 for ( uInt k=0; k<nt; k++) {
 	   curFieldId = fieldId( k );
 	   if (curFieldId!=lastFieldId) {
@@ -740,10 +743,9 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 		Quantity qt( l_times(k), "s" );
 		MEpoch mep( qt );
       msd.setEpoch( mep );
-		derivedQuan.resize( nt );
 	   if( !quanType.compare( "hourAngle" )){
 	      //derivedQuan( k ) = msd.hourAngle()/C::_2pi*C::day;
-			derivedQuan( k ) = msd.hourAngle()*180.0/C::_2pi; // converted to degree
+			derivedQuan( k ) = msd.hourAngle()*360.0/C::_2pi; // converted to degree
 			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] hour angle = " << derivedQuan(k) << endl;
 	   }else if( !quanType.compare( "azimuth" ) ){
 			derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(0);
@@ -753,7 +755,7 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] elevation = " << derivedQuan(k) << endl;
 		}else if( !quanType.compare( "parallaticAngle" )){
 		   // derivedQuan( k ) = msd.parAngle()/C::_2pi*C::day;
-			derivedQuan( k ) = msd.parAngle()*180.0/C::_2pi; // converted to degree
+			derivedQuan( k ) = msd.parAngle()*360.0/C::_2pi; // converted to degree
 			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] parallactic angle = " << derivedQuan(k) << endl;
 		}else{
 		   cout<<"[ MsPlot::derivedValues() ] Invalid quanType inputted. " << endl;
@@ -762,6 +764,14 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 	 }// end of for loop
 	 delete msc;
 	 return True;
-  }// end of hourAngles()
+  }// end of derivedValues()
+  // returns the total number of antennas.
+  template<class T>
+  Int MsPlot<T>::toltalAntenna(){
+     ROMSColumns msc( m_ms );
+	  const ROMSAntennaColumns & antCols  = msc.antenna();
+	  uInt nAnt= antCols.nrow();
+	  return nAnt;
+   }
 } //# NAMESPACE CASA - END
 // end of file
