@@ -1,6 +1,6 @@
 *=======================================================================
 *
-*   PGSBOX 4.1 - a non-linear coordinate axis plotter for PGPLOT.
+*   PGSBOX 4.3 - a non-linear coordinate axis plotter for PGPLOT.
 *   Copyright (C) 1997-2005, Mark Calabretta
 *
 *   PGSBOX is free software; you can redistribute it and/or modify it under
@@ -659,7 +659,7 @@
 *                    Iron out jumps.
                      WJUMP = WORLD(1) - W1PREV
                      IF (ABS(WJUMP).GT.180D0) THEN
-                        WJUMP = WJUMP + SIGN(WJUMP,180D0)
+                        WJUMP = WJUMP + SIGN(180D0,WJUMP)
                         WJUMP = 360D0*INT(WJUMP/360D0)
                         WORLD(1) = WORLD(1) - WJUMP
                      END IF
@@ -679,7 +679,7 @@
 *                    Iron out jumps.
                      WJUMP = WORLD(2) - W2PREV
                      IF (ABS(WJUMP).GT.180D0) THEN
-                        WJUMP = WJUMP + SIGN(WJUMP,180D0)
+                        WJUMP = WJUMP + SIGN(180D0,WJUMP)
                         WJUMP = 360D0*INT(WJUMP/360D0)
                         WORLD(2) = WORLD(2) - WJUMP
                      END IF
