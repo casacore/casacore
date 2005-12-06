@@ -32,7 +32,7 @@
 #include <casa/Arrays/MaskArrMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/Slice.h>
-#include <casa/System/PGPlotterInterface.h>
+#include <graphics/Graphics/PGPlotterInterface.h>
 #include <scimath/Mathematics/MedianSlider.h>
 #include <casa/stdio.h>
     

@@ -30,7 +30,7 @@
 #define CASA_PGPLOTTER_H
 
 #include <casa/aips.h>
-#include <casa/System/PGPlotterInterface.h>
+#include <graphics/Graphics/PGPlotterInterface.h>
 #include <casa/Utilities/CountedPtr.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -32,7 +32,7 @@
 #include <flagging/Flagging/RFFlagCube.h> 
 #include <flagging/Flagging/RFRowClipper.h> 
 #include <flagging/Flagging/RFDebugPlot.h> 
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <scimath/Mathematics/MedianSlider.h> 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

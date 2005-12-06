@@ -47,7 +47,7 @@
 #include <measures/Measures/MFrequency.h>
 #include <casa/Quanta/QC.h>
 #include <casa/System/Aipsrc.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/BasicSL/String.h>
 
 #include <casa/iostream.h>

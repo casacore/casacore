@@ -35,7 +35,7 @@
 #include <casa/Quanta/MVTime.h>
 #include <stdio.h>
 
-#include <casa/System/PGPlotterInterface.h>
+#include <graphics/Graphics/PGPlotterInterface.h>
         
 namespace casa { //# NAMESPACE CASA - BEGIN
 

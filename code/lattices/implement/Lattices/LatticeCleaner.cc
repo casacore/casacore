@@ -47,7 +47,7 @@
 #include <lattices/Lattices/LatticeExprNode.h>
 
 #include <casa/OS/HostInfo.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Arrays/ArrayError.h>
 #include <casa/Arrays/ArrayIter.h>
 #include <casa/Arrays/VectorIter.h>

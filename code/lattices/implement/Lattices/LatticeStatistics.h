@@ -39,7 +39,7 @@
 #include <lattices/Lattices/TiledCollapser.h>
 #include <lattices/Lattices/LatticeExprNode.h>
 #include <scimath/Mathematics/NumericTraits.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Logging/LogIO.h>

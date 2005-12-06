@@ -48,7 +48,7 @@
 #include <casa/Quanta/QMath.h>
 #include <tables/Tables/Table.h>
 #include <casa/OS/HostInfo.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/Utilities/ValType.h>

@@ -28,7 +28,7 @@
 #define FLAGGING_REDFLAGGER_H
 
 #include <flagging/Flagging/RFChunkStats.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/Record.h>
 #include <ms/MeasurementSets/MeasurementSet.h>

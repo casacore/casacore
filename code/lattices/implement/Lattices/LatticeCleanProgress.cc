@@ -28,7 +28,7 @@
 
 //# Includes
 #include <lattices/Lattices/LatticeCleanProgress.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Matrix.h>
 #include <casa/Arrays/ArrayMath.h>

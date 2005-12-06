@@ -34,7 +34,7 @@
 #include <casa/Quanta/QMath.h>
 #include <casa/Quanta/Quantum.h>
 #include <measures/Measures/MDoppler.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/Arrays/Vector.h>
 

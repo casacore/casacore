@@ -28,7 +28,7 @@
 #include <flagging/Flagging/RFANewMedianClip.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <msvis/MSVis/VisBuffer.h>
-#include <casa/System/PGPlotterInterface.h>
+#include <graphics/Graphics/PGPlotterInterface.h>
 
 #include <casa/stdio.h>    
 namespace casa { //# NAMESPACE CASA - BEGIN

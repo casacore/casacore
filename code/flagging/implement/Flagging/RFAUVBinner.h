@@ -33,7 +33,7 @@
 #include <flagging/Flagging/RFRowClipper.h> 
 #include <flagging/Flagging/RFDebugPlot.h> 
 #include <scimath/Mathematics/RigidVector.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
     
 namespace casa { //# NAMESPACE CASA - BEGIN
 

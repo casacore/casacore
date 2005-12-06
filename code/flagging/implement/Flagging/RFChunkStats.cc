@@ -32,7 +32,7 @@
 #include <msvis/MSVis/VisBuffer.h>
 #include <stdio.h>
 #include <casa/sstream.h>
-#include <casa/System/PGPlotter.h>
+#include <graphics/Graphics/PGPlotter.h>
     
 namespace casa { //# NAMESPACE CASA - BEGIN
 
