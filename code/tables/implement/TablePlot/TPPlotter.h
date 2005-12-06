@@ -35,7 +35,7 @@
 #include <casa/aips.h>
 #include <casa/BasicSL/String.h>
 #include <casa/Containers/Record.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 
 #include <tables/TablePlot/BasePlot.h>
 

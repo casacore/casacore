@@ -109,7 +109,7 @@
 #include <images/Images/ImageHistograms.h>
 #include <lattices/Lattices/LCSlicer.h>
 #include <lattices/Lattices/LCBox.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 
 #include <casa/iostream.h>
 

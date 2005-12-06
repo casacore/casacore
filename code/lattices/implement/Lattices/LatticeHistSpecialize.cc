@@ -39,7 +39,7 @@
 #include <lattices/Lattices/LatticeStatsBase.h>
 
 #include <casa/System/ProgressMeter.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN

@@ -26,7 +26,7 @@
 //#
 //# $Id$
 
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <graphics/Graphics/PGPlotterLocal.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/Arrays/Vector.h>

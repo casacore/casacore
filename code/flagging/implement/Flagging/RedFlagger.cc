@@ -40,7 +40,7 @@
 #include <flagging/Flagging/RFAUVBinner.h>
 #include <msvis/MSVis/VisibilityIterator.h>
 #include <msvis/MSVis/VisBuffer.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <casa/System/ProgressMeter.h>
 #include <casa/stdio.h>
 #include <casa/math.h>

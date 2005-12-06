@@ -35,7 +35,7 @@
 #include <lattices/Lattices/LineCollapser.h>
 #include <scimath/Functionals/Gaussian1D.h>
 #include <scimath/Mathematics/NumericTraits.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <casa/Arrays/Vector.h>
 #include <casa/Logging/LogIO.h>
 

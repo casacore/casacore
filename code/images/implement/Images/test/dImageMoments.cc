@@ -174,7 +174,7 @@
 #include <images/Images/PagedImage.h>
 #include <images/Images/SubImage.h>
 #include <images/Images/ImageRegion.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <lattices/Lattices/LCSlicer.h>
 #include <lattices/Lattices/LCBox.h>
 #include <scimath/Mathematics/VectorKernel.h>

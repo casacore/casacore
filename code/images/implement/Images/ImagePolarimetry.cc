@@ -62,7 +62,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicSL/Constants.h>
 #include <scimath/Mathematics/NumericTraits.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <casa/System/ProgressMeter.h>
 #include <casa/Quanta/QC.h>
 #include <casa/Quanta/MVAngle.h>

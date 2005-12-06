@@ -25,7 +25,7 @@
 //#
 //# $Id$
 #include <flagging/Flagging/RFDebugPlot.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <casa/stdio.h>
         
 namespace casa { //# NAMESPACE CASA - BEGIN

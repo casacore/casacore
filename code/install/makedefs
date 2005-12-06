@@ -522,22 +522,22 @@ LIBtifr       = defeat defeat defeat defeat defeat defeat
 # packages and should not need to be redefined in the site makedefs.
 LINKcasa        := casa
 LINKscimath     := scimath casa
-LINKtables      := tables graphics casa
+LINKtables      := tables casa
 LINKmeasures    := measures tables scimath casa
 LINKfits        := fits measures tables scimath casa
-LINKlattices    := lattices tables graphics scimath casa
+LINKlattices    := lattices tables scimath casa
 LINKcoordinates := coordinates fits measures tables scimath casa
 LINKcomponents  := components coordinates fits measures tables scimath casa
-LINKimages      := images components coordinates lattices fits measures tables graphics scimath casa
+LINKimages      := images components coordinates lattices fits measures tables scimath casa
 LINKms          := ms measures tables scimath casa
 LINKmsfits      := msfits ms fits measures tables scimath casa
 LINKmsvis       := msvis ms measures tables scimath casa
 LINKcalibration := calibration msvis ms measures tables scimath casa
 LINKionosphere  := ionosphere measures tables scimath casa
-LINKflagging    := flagging msvis ms lattices measures tables graphics scimath casa
+LINKflagging    := flagging msvis ms lattices measures tables scimath casa
 LINKdish        := dish ms fits coordinates lattices measures tables scimath casa
 LINKsimulators  := simulators ms measures tables scimath casa
-LINKsynthesis   := synthesis calibration msvis ms images components coordinates lattices fits measures tables graphics scimath casa
+LINKsynthesis   := synthesis calibration msvis ms images components coordinates lattices fits measures tables scimath casa
 LINKgraphics    := graphics casa
 LINKtasking     := tasking graphics msvis ms images components coordinates lattices fits measures tables scimath casa
 

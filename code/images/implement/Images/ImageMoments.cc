@@ -78,7 +78,7 @@
 #include <lattices/Lattices/LatticeStatsBase.h>
 #include <lattices/Lattices/LCPagedMask.h>
 #include <lattices/Lattices/TiledLineStepper.h>
-#include <graphics/Graphics/PGPlotter.h>
+#include <casa/System/PGPlotter.h>
 #include <tables/LogTables/NewFile.h>
 
 #include <casa/sstream.h>
