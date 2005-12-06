@@ -263,15 +263,6 @@
 *                           2: Invalid coordinate system
 *                           3: Cache overflow (see note 3).
 *
-*                        The following status returns are recognized for
-*                        opcodes +2 and +1
-*                          -1: Accept the returned (x,y) coordinates but
-*                              do not consider this as one end of a
-*                              crossing segment for labelling world
-*                              coordinate 1.
-*                          -2: Ditto for world coordinate 2.
-*                          -3: Ditto for world coordinates 1 and 2.
-*
 *   Notes on PGSBOX
 *   ---------------
 *
@@ -419,6 +410,15 @@
 *                           1: Invalid parameters.
 *                           2: Invalid world coordinate.
 *                           3: Invalid Cartesian coordinate.
+*
+*                        The following status returns are recognized for
+*                        opcodes +2 and +1
+*                          -1: Accept the returned (x,y) coordinates but
+*                              do not consider this as one end of a
+*                              crossing segment for labelling world
+*                              coordinate 1.
+*                          -2: Ditto for world coordinate 2.
+*                          -3: Ditto for world coordinates 1 and 2.
 *
 *   PGSBOX passes its NLCPRM, NLIPRM, and NLDPRM adjustable size array
 *   arguments of length NLC, NLI, and NLD to NLFUNC without
@@ -1266,8 +1266,10 @@
 
                   IF (IERR.GT.0) THEN
 *                    Flush buffer.
-                     IF (NP.GT.0) CALL PGLINE(NP, XR, YR)
-                     GO TO 110
+                     IF (NP.GT.1) CALL PGLINE(NP, XR, YR)
+                     NP = 0
+                     GETEND = .TRUE.
+                     GO TO 100
                   END IF
 
                   IF (NP.EQ.BUFSIZ) THEN
@@ -1365,8 +1367,6 @@
 
                               IF (TCODE(J,FSEG).GT.0) THEN
 *                                Just want tick marks.
-*                                 X1 = XR(NP)
-*                                 Y1 = YR(NP)
                                  S = (XSCL*(X2-X1))**2 +
      :                               (YSCL*(Y2-Y1))**2
                                  S = SQRT(S)/TCODE(J,FSEG)
