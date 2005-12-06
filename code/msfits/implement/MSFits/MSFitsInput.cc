@@ -597,6 +597,7 @@ void MSFitsInput::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   // add the optional Source sub table to allow for 
   // specification of the rest frequency
   TableDesc sourceTD=MSSource::requiredTableDesc();
+  MSSource::addColumnToDesc(sourceTD, MSSource::POSITION);
   MSSource::addColumnToDesc(sourceTD, MSSource::REST_FREQUENCY);
   MSSource::addColumnToDesc(sourceTD, MSSource::SYSVEL);
   MSSource::addColumnToDesc(sourceTD, MSSource::TRANSITION);
