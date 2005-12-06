@@ -35,7 +35,6 @@
 #include <casa/System/AppInfo.h>
 #include <casa/System/Choice.h>
 #include <casa/System/ObjectID.h>
-#include <casa/System/PGPlotter.h>
 #include <casa/System/PGPlotterInterface.h>
 #include <casa/System/ProgressMeter.h>
 
@@ -73,11 +72,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //  <li> Class <linkto class=ObjectID:description>
 //       ObjectID</linkto>
 //       to hold a unique identifier for distributed and other objects.
-//  <li> Class <linkto class=PGPlotter:description>
-//       PGPlotter</linkto>
-//       to offer a standard plotting object for application programmers.
-//       using <linkto class=PGPlotterInterface:description>
-//       PGPlotterInterface</linkto> as its abstract base class.
 //  <li> Class <linkto class=ProgressMeter:description>
 //       ProgressMeter</linkto>
 //       to offer visual indication of a tasks progress.
