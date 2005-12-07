@@ -236,7 +236,7 @@ Bool MsPlot<T>::setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr 
 		// data to use, such as hourAngle(), elvation(), etc.
 		// m_BPS = &BPS;  // not needed for now.	
 		if( m_dbg ) cout << "[MsPlot<T>::setAxes()] dataStr = " << dataStr << endl;
-		if( getData( BPS,dataStr) == -1){
+		if( this->getData( BPS,dataStr) == -1){
 		   cout<< "[MsPlot<T>::setAxes()] failed!" << endl;
 		   return False;
 		}
@@ -742,17 +742,17 @@ Bool MsPlot<T>::derivedValues( Vector<Double>& derivedQuan, const String& quanTy
 	   if( !quanType.compare( "hourAngle" )){
 	      //derivedQuan( k ) = msd.hourAngle()/C::_2pi*C::day;
 			derivedQuan( k ) = msd.hourAngle()*360.0/C::_2pi; // converted to degree
-			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] hour angle = " << derivedQuan(k) << endl;
+			//if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] hour angle = " << derivedQuan(k) << endl;
 	   }else if( !quanType.compare( "azimuth" ) ){
 			derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(0);
-			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] azimuth = " << derivedQuan(k) << endl;
+			//if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] azimuth = " << derivedQuan(k) << endl;
 		}else if( !quanType.compare( "elevation" )){
 		   derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(1);
-			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] elevation = " << derivedQuan(k) << endl;
+			//if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] elevation = " << derivedQuan(k) << endl;
 		}else if( !quanType.compare( "parallacticAngle" )){
 		   // derivedQuan( k ) = msd.parAngle()/C::_2pi*C::day;
 			derivedQuan( k ) = msd.parAngle()*360.0/C::_2pi; // converted to degree
-			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] parallactic angle = " << derivedQuan(k) << endl;
+			//if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] parallactic angle = " << derivedQuan(k) << endl;
 		}else{
 		   cout<<"[ MsPlot::derivedValues() ] Invalid quanType inputted. " << endl;
 		}
