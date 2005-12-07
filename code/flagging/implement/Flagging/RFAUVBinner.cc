@@ -32,7 +32,7 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/Slice.h>
 #include <msvis/MSVis/VisBuffer.h>
-#include <graphics/Graphics/PGPlotterInterface.h>
+#include <casa/System/PGPlotterInterface.h>
     
 #include <casa/stdio.h>
 #include <casa/stdlib.h>
