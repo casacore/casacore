@@ -437,7 +437,7 @@ void corrParser( const String& corrExpr, Vector<String>& stokesNames );
 Bool polarIndices( const Vector<Int> spwIDs, PtrBlock<Vector<Int>* >& polarsIndices );
 Bool containStokes( const Vector<Int> corrType, const Vector<String>& stokesNames, Vector<Int>& polarIndices );
 Bool polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<Int>& chanIndices, Vector<String>& chanRange );
-Bool derivedValues( const Vector<Double>& times, Vector<Double>& derivedQuan, const String& quanType );
+Bool derivedValues( Vector<Double>& derivedQuan, const String& quanType );
 Int MsPlot<T>::toltalAntenna();
 protected:
 
@@ -467,6 +467,7 @@ private:
 	 String m_corrExpr;
 	 Vector<String> m_antennaNames;
 	 Vector<Int> m_antennaIndex;
+	 PtrBlock<BasePlot<T>* > *m_BPS;
 //#! Constructors
 // We do not provide copy constructor and assignment operator. So declare them as private.
     MsPlot( const MsPlot &other );

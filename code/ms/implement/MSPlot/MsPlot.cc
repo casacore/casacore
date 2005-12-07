@@ -230,7 +230,11 @@ Bool MsPlot<T>::setAxes( PtrBlock<BasePlot<T>* > &BPS, Vector<String> & dataStr 
 			  setTableS( nTabs, msName );
 		     // now the data for plotting has been set, so set the member m_dataIsSet to true.
 	        m_dataIsSet = True; 
-		 }*/	
+		 }*/
+		//
+		// store the PtrBlock<BasePlot<T>* > object for the method that needs to change the plotting
+		// data to use, such as hourAngle(), elvation(), etc.
+		// m_BPS = &BPS;  // not needed for now.	
 		if( m_dbg ) cout << "[MsPlot<T>::setAxes()] dataStr = " << dataStr << endl;
 		if( getData( BPS,dataStr) == -1){
 		   cout<< "[MsPlot<T>::setAxes()] failed!" << endl;
@@ -681,24 +685,16 @@ Bool MsPlot<T>::containStokes( const Vector<Int> corrType, const Vector<String>&
 // This method calculated derived quantities, such as hour angle, azimuth, elevation,
 // paralactic angle, etc.
 template<class T>
-Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& derivedQuan, const String& quanType ){
+Bool MsPlot<T>::derivedValues( Vector<Double>& derivedQuan, const String& quanType ){
    // TIME from MAIN table of MS is in seconds.
    MSDerivedValues msd;
-   //ROMSColumns msc( m_ms );
-	//const ROMSAntennaColumns & antCols  = msc.antenna();
-	//const ROScalarMeasColumn<MPosition> & antPositions = antCols.positionMeas();
-   //uInt nAnt= antCols.position().nrow();
-	//Vector<MPosition> antPoses( nAnt );
-	//Vector<Double> xTopo( nAnt ), yTopo( nAnt ), zTopo( nAnt );
-	//for( uInt i=0; i< nAnt; i++) antPoses( i ) = antPositions( i );
-
    // If the user wants to use the selected antennas
    if( m_antennaNames.nelements() || m_antennaIndex.nelements() ){
 	   cout<<"[MsPlot::hourAngle()] To be implemented. " << endl;
 	}else{ // if the user did not select antennas, use all the antennas
   	   ROMSColumns msc( m_ms );
 		const ROMSAntennaColumns & antCols  = msc.antenna();
-		msd.setAntennas( antCols );
+		msd.setAntennas( antCols ); // this is the average of all antennas. Use observatory position instead?
 		
       // the following block is needed by parAngle()
 		Int nAnt=antCols.nrow();
@@ -735,7 +731,7 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 		   if (msc->field().numPoly()(curFieldId)==0)
 		   {  msd.setFieldCenter( msc->field().phaseDirMeas(curFieldId));  }
 	      if (msc->field().numPoly()(curFieldId)>0)
-	      {  msd.setFieldCenter( msc->field().phaseDirMeas(curFieldId,times(k)));  }
+	      {  msd.setFieldCenter( msc->field().phaseDirMeas(curFieldId, l_times(k)));  }
 		}
 		// TIME from MAIN table of MS is in seconds.
 		// Quantity qt(times(k)/C::day, "day");
@@ -753,7 +749,7 @@ Bool MsPlot<T>::derivedValues( const Vector<Double>& times, Vector<Double>& deri
 		}else if( !quanType.compare( "elevation" )){
 		   derivedQuan( k ) = msd.azel().getAngle("deg").getValue("deg")(1);
 			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] elevation = " << derivedQuan(k) << endl;
-		}else if( !quanType.compare( "parallaticAngle" )){
+		}else if( !quanType.compare( "parallacticAngle" )){
 		   // derivedQuan( k ) = msd.parAngle()/C::_2pi*C::day;
 			derivedQuan( k ) = msd.parAngle()*360.0/C::_2pi; // converted to degree
 			if( m_dbg ) cout<<"[ MsPlot::derivedValues() ] parallactic angle = " << derivedQuan(k) << endl;
