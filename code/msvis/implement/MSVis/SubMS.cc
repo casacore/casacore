@@ -601,19 +601,36 @@ namespace casa {
 Bool SubMS::fillFieldTable() {
 
 
-MSFieldColumns& msField(msc_p->field());
+  MSFieldColumns& msField(msc_p->field());
+ 
+  //MSField fieldtable= mssel_p.field();
+  ROMSFieldColumns & fieldIn= mscIn_p->field(); 
+  
+  String dirref;
+  // Need to define the direction measures right
+  fieldIn.delayDir().keywordSet().asRecord("MEASINFO").
+                 get("Ref", dirref);
+  msField.delayDir().rwKeywordSet().asrwRecord("MEASINFO").
+                 define("Ref", dirref);
+  fieldIn.phaseDir().keywordSet().asRecord("MEASINFO").
+    get("Ref", dirref);
+  msField.phaseDir().rwKeywordSet().asrwRecord("MEASINFO").
+                 define("Ref", dirref);
+  fieldIn.referenceDir().keywordSet().asRecord("MEASINFO").
+                 get("Ref", dirref);
+  msField.referenceDir().rwKeywordSet().asrwRecord("MEASINFO").
+                 define("Ref", dirref);
 
-MSField fieldtable= mssel_p.field();
 
- ROScalarColumn<String> code(fieldtable, MSField::columnName(MSField::CODE));
- ROArrayColumn<Double> delayDir(fieldtable, MSField::columnName(MSField::DELAY_DIR));
- ROScalarColumn<Bool> flagRow(fieldtable, MSField::columnName(MSField::FLAG_ROW));
- ROScalarColumn<String> name(fieldtable, MSField::columnName(MSField::NAME));
- ROScalarColumn<Int> numPoly(fieldtable, MSField::columnName(MSField::NUM_POLY));
- ROArrayColumn<Double> phaseDir(fieldtable, MSField::columnName(MSField::PHASE_DIR));
- ROArrayColumn<Double> refDir(fieldtable, MSField::columnName(MSField::REFERENCE_DIR));
- ROScalarColumn<Int> sourceId(fieldtable, MSField::columnName(MSField::SOURCE_ID));
- ROScalarColumn<Double> time(fieldtable, MSField::columnName(MSField::TIME));
+ ROScalarColumn<String> code(fieldIn.code());
+ ROArrayMeasColumn<MDirection> delayDir(fieldIn.delayDirMeasCol());
+ ROScalarColumn<Bool> flagRow(fieldIn.flagRow());
+ ROScalarColumn<String> name(fieldIn.name());
+ ROScalarColumn<Int> numPoly(fieldIn.numPoly());
+ ROArrayMeasColumn<MDirection> phaseDir(fieldIn.phaseDirMeasCol());
+ ROArrayMeasColumn<MDirection> refDir(fieldIn.referenceDirMeasCol());
+ ROScalarColumn<Int> sourceId(fieldIn.sourceId());
+ ROScalarColumn<Double> time(fieldIn.time());
  
 
  fieldRelabel_p.resize(mscIn_p->field().nrow());
@@ -625,12 +642,12 @@ MSField fieldtable= mssel_p.field();
    msOut_p.field().addRow();
    
    msField.code().put(k,code(fieldid_p[k]));
-   msField.delayDir().put(k,delayDir(fieldid_p[k]));
+   msField.delayDirMeasCol().put(k,delayDir(fieldid_p[k]));
    msField.flagRow().put(k, flagRow(fieldid_p[k]));
    msField.name().put(k, name(fieldid_p[k]));
    msField.numPoly().put(k, numPoly(fieldid_p[k]));
-   msField.phaseDir().put(k, phaseDir(fieldid_p[k]));
-   msField.referenceDir().put(k, refDir(fieldid_p[k]));
+   msField.phaseDirMeasCol().put(k, phaseDir(fieldid_p[k]));
+   msField.referenceDirMeasCol().put(k, refDir(fieldid_p[k]));
    msField.sourceId().put(k, sourceId(fieldid_p[k]));
    
 
