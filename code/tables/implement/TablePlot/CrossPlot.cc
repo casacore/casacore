@@ -86,6 +86,9 @@ template<class T> CrossPlot<T>::CrossPlot() : BasePlot<T>()
 	//FlagColName_p = "FLAG"; fcol_p = False;
 	//FlagRowName_p = "FLAG_ROW"; frcol_p = False;
 	xptr_p=0; yptr_p=0;
+	NCross1_p=1; NCross2_p=1;
+	xpd1_p.resize(); xpd2_p.resize();
+	crossdir_p=0;
 
 	pType_p = CROSSPLOT; 
 }
@@ -118,12 +121,13 @@ template<class T> Int CrossPlot<T>::getXData(TableExprId &tid)
 	Int  rc=0;
 	
 	Slicer tsl;
-	Int cc=0;
+	Int cc=0,dd=0;
 	
 	rc = tid.rownr();
 	
 	if(rc==0)
 	{
+		if(adbg) cout << "CrossPlot : getXData " << endl;
 		xptr_p=0;
 
 		for(Int z=0;z<nTens_p;z++)
@@ -132,28 +136,45 @@ template<class T> Int CrossPlot<T>::getXData(TableExprId &tid)
 			//xptr_p+= Tsize_p(z,0); 
 		}
 
-		xplotdata_p.resize(1,yptr_p);	xplotdata_p.set((T)0);
-		xpd_p = xplotdata_p.shape();
+		xpd1_p.resize(1,NCross1_p); 
+		xpd2_p.resize(1,NCross2_p); 
 
 		// fill in the correct numbers here - from ipslice..
 		
-		cc=0;
+		if(adbg) cout << "filling in xpd1 and xpd2 " << endl;
+		if(adbg) cout << "NCross12_p Shapes : " << NCross1_p << "," << NCross2_p << endl;
+		if(adbg) cout << "xpd12_p Shapes : " << xpd1_p.shape() << "," << xpd2_p.shape() << endl;
+			
+		cc=0;dd=0;
 		for(Int z=0;z<nTens_p;z++)
 		{
 			tsl = ipslice_p(z);
 			
 			for(Int j=(tsl.start())[1];j<=(tsl.end())[1];j+=(tsl.stride())[1]) 
 			{
-				xplotdata_p(0,cc++) = j+1;
+				//xplotdata_p(0,cc++) = j+1;
+				xpd1_p(0,cc++) = j+1;
+				if(ddbg)cout << " " << j+1 << " " ;
+			}
+			
+			for(Int j=(tsl.start())[0];j<=(tsl.end())[0];j+=(tsl.stride())[0]) 
+			{
+				xpd2_p(0,dd++) = j+1;
 				if(ddbg)cout << " " << j+1 << " " ;
 			}
 		}
+		if(adbg) cout << "filled in xpd1 and xpd2 " << endl;
 		if(ddbg)cout << endl;
-		if(cc != yptr_p) cout << "AAAaah : filled xplotdata_p upto size " << cc << " but yptr is " << yptr_p << endl;
+		if(cc != NCross1_p && dd != NCross2_p) cout << "Ah : wrong xpd1_p and xpd2_p sizes !" << endl;
 		
+/*
+ // NEED to assign xplotdata_p before readXData is called !!
 
+		xplotdata_p.resize(1,yptr_p);
+		xplotdata_p.set((T)0);
+		xpd_p = xplotdata_p.shape();
 		if(ddbg) cout << "xplotdata_p has shape : " << xpd_p << endl;
-
+*/
 		
 	}
 	else
@@ -169,12 +190,31 @@ template<class T> Int CrossPlot<T>::getXData(TableExprId &tid)
 /*********************************************************************************/
 
 /* Compute the combined plot range */
-template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags)
+template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags, Int crossdir)
 {
 	if(adbg)cout << "CrossPlot :: Set Plot Range for this table " << endl;
 	xprange_p.resize(NPlots_p,2);
 	yprange_p.resize(NPlots_p,2);
 
+	crossdir_p = crossdir;
+	if(crossdir_p==0) 
+	{
+		if(xplotdata_p.shape() != xpd1_p.shape()) 
+		{
+			xplotdata_p.resize();
+			xplotdata_p = xpd1_p;
+		}
+	}
+	else 
+	{
+		if(xplotdata_p.shape() != xpd2_p.shape()) 
+		{
+			xplotdata_p.resize();
+			xplotdata_p = xpd2_p;
+		}
+	}
+	if(adbg) cout << "xplotdata_p has shape : " << xplotdata_p.shape() << endl;
+	
 	Bool abc = False;
 	abc = (useflags==2)?True:False;
 	
@@ -192,8 +232,17 @@ template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &y
 		{
 			if((theflags_p(Pind_p(i,1),rc)==(Bool)useflags) || abc) 
 			{
-				if(xplotdata_p(Pind_p(i,0),Pind_p(i,1)) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),Pind_p(i,1));
-				if(xplotdata_p(Pind_p(i,0),Pind_p(i,1)) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),Pind_p(i,1));
+				if(crossdir_p==0)
+				{
+					if(xplotdata_p(Pind_p(i,0),Pind_p(i,1)%NCross1_p) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),Pind_p(i,1)%NCross1_p);
+					if(xplotdata_p(Pind_p(i,0),Pind_p(i,1)%NCross1_p) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),Pind_p(i,1)%NCross1_p);
+				}
+				else
+				{
+					if(xplotdata_p(Pind_p(i,0),(Int)(Pind_p(i,1)/NCross1_p)) < xprange_p(i,0)) xprange_p(i,0) = xplotdata_p(Pind_p(i,0),(Int)(Pind_p(i,1)/NCross1_p));
+					if(xplotdata_p(Pind_p(i,0),(Int)(Pind_p(i,1)/NCross1_p)) >= xprange_p(i,1)) xprange_p(i,1) = xplotdata_p(Pind_p(i,0),(Int)(Pind_p(i,1)/NCross1_p));
+				}
+
 				if(yplotdata_p(Pind_p(i,1),rc) < yprange_p(i,0)) yprange_p(i,0) = yplotdata_p(Pind_p(i,1),rc);
 				if(yplotdata_p(Pind_p(i,1),rc) >= yprange_p(i,1)) yprange_p(i,1) = yplotdata_p(Pind_p(i,1),rc);
 			}
@@ -207,7 +256,7 @@ template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &y
 	ymin = yprange_p(0,0);
 	ymax = yprange_p(0,1);
 	
-	if(ddbg) cout << " initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
+	if(ddbg)cout << " initial Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
 
 	/* get a comnined min,max */
 
@@ -224,8 +273,6 @@ template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &y
 	
 	if(ddbg) cout << " Final Ranges : [" << xmin << "," << xmax << "] [" << ymin << "," << ymax << "]" << endl;
 
-	//cout << Pind_p << endl;
-
 	return 0;
 }
 
@@ -233,7 +280,7 @@ template<class T> Int CrossPlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &y
 #if 1
 
 /* Fill up 'theflags_p' array and optionally write flags to disk */
-template<class T> Int CrossPlot<T>::flagData(Int diskwrite, Int rowflag)
+template<class T> Int CrossPlot<T>::flagData(Int diskwrite, Int rowflag, Int direction)
 {
 	if(adbg) cout << "CrossPlot :: Flag Data and optionally write to disk" << endl;
 	
@@ -255,7 +302,8 @@ template<class T> Int CrossPlot<T>::flagData(Int diskwrite, Int rowflag)
 				   yplotdata_p(Pind_p(np,1),nr)>(locflagmarks_p[nf])[2] && 
 				   yplotdata_p(Pind_p(np,1),nr)<=(locflagmarks_p[nf])[3]) 
 					{
-						theflags_p(Pind_p(np,1),nr) = True;
+						if(direction==0)theflags_p(Pind_p(np,1),nr) = True;
+						else theflags_p(Pind_p(np,1),nr) = False;
 					}
 		}
 	}
@@ -273,10 +321,29 @@ template<class T> Int CrossPlot<T>::flagData(Int diskwrite, Int rowflag)
 template<class T> T CrossPlot<T>::getXVal(Int pnum, Int col)
 {
 	if(adbg)cout << "CrossPlot :: Get Xval" << endl;
-	return xplotdata_p(Pind_p(pnum,0),Pind_p(pnum,1));
+	//return xplotdata_p(Pind_p(pnum,0),Pind_p(pnum,1));
+	if(crossdir_p==0)
+		return xplotdata_p(Pind_p(pnum,0),Pind_p(pnum,1)%NCross1_p);
+	else
+		return xplotdata_p(Pind_p(pnum,0),(Int)(Pind_p(pnum,1)/NCross1_p));
 }
 
 /*********************************************************************************/
+template<class T> Int CrossPlot<T>::readXD(Matrix<T> &xdat, Int crossdir)
+{
+	if(adbg)cout << "read XD" << endl;
+	xdat.resize(0,0);
+	// Don't return a pointer here, because bounds must be not be crossed while writing.
+
+	xplotdata_p.resize();
+	if(crossdir==0) xplotdata_p = xpd1_p;
+	else xplotdata_p = xpd2_p;
+	if(adbg) cout << "xplotdata_p has shape : " << xplotdata_p.shape() << endl;
+	
+	xdat = xplotdata_p; 
+	return 0;
+
+}
 
 /*********************************************************************************/
 /*********************************************************************************/

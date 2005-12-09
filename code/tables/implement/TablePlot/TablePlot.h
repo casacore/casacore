@@ -206,7 +206,7 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
-//enum { XYPLOT, CROSSPLOT, HISTPLOT };
+enum { FLAG=0, UNFLAG=1 };
 	
 template<class T> class TablePlot 
 {
@@ -335,7 +335,7 @@ template<class T> class TablePlot
 		// column exists flags will be set for the entire row of data in addition
 		// to the individual data flags in the FLAG column. If these columns do not
 		// exist, then this option is ignored.
-		Int flagData(PtrBlock<BasePlot<T>* > &BPS,TPPlotter<T> &TPLP,Int panel, Int diskwrite, Int rowflag);     
+		Int flagData(PtrBlock<BasePlot<T>* > &BPS,TPPlotter<T> &TPLP,Int panel, Int diskwrite, Int rowflag, Int direction);     
 		
 		// Clear all flags from all the tables attached to the vector of BasePlots
 		// (will be modified to provide a flag-history and do selective unflagging.)
@@ -359,7 +359,7 @@ template<class T> class TablePlot
 
 		// Allow the user app to access and modify the current values in the 
 		// xplotdata and yplotdata arrays of the BasePlot objects.
-		Int readXData(BasePlot<T>* &BP, Matrix<T> &xdat);
+		Int readXData(BasePlot<T>* &BP, Matrix<T> &xdat,Int crossdir);
 		Int writeXData(BasePlot<T>* &BP, Matrix<T> &xdat);
 		Int readYData(BasePlot<T>* &BP, Matrix<T> &ydat);
 		Int writeYData(BasePlot<T>* &BP, Matrix<T> &ydat);

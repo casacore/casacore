@@ -178,7 +178,7 @@ template<class T> class BasePlot
 		// This can get expensive for large number of data points. It is
 		// assumed that for such a large number of data points, plotting
 		// could broken down into chunks using an iteration axis.
-		virtual Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags); 
+		virtual Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags, Int crossdir); 
 		
 		// This function is called from TPPlotter::setFlagRegions().
 		// The list of regions that have been marked for flagging
@@ -194,7 +194,7 @@ template<class T> class BasePlot
 		// be applied to plots that use the current instance of BasePlot.
 		// If rowflag=1, a the FLAG_ROW column is set (if it exists) in
 		// addition to the individual flags in the FLAG column (if it exists).
-		virtual Int flagData(Int diskwrite, Int rowflag);     
+		virtual Int flagData(Int diskwrite, Int rowflag, Int direction);     
 		
 		// Clear all flags (FLAG and FLAG_ROW) from the current
 		// table/subtable.
@@ -204,26 +204,26 @@ template<class T> class BasePlot
 		virtual T getXVal(Int pnum, Int col);
 		
 		// Query the internal structures for Y data values
-		virtual T getYVal(Int pnum, Int col);
-		//T getYVal(Int pnum, Int col);
+		//virtual T getYVal(Int pnum, Int col);
+		T getYVal(Int pnum, Int col);
 
 		// Query the internal structures for flags
-		virtual Bool getYFlags(Int pnum, Int col);
-		//Bool getYFlags(Int pnum, Int col);
+		//virtual Bool getYFlags(Int pnum, Int col);
+		Bool getYFlags(Int pnum, Int col);
 
 		// Query for the number of points per plot
-		virtual Int getNumRows();
-		//Int getNumRows();
+		//virtual Int getNumRows();
+		Int getNumRows();
 
 		// Query for the number of plots
-		virtual Int getNumPlots();
-		//Int getNumPlots();
+		//virtual Int getNumPlots();
+		Int getNumPlots();
 
 		// Query for the type of plot (BASEPLOT)
 		Int getPlotType();
 
 		// Read X data
-		Int readXD(Matrix<T> &xdat);
+		virtual Int readXD(Matrix<T> &xdat,Int crossdir=0);
 
 		// Write X data
 		Int writeXD(Matrix<T> &xdat);
@@ -281,6 +281,7 @@ template<class T> class BasePlot
 		Vector<IPosition> colshapes_p; // shapes of accessed cols
 		Int nip_p; // number of pairs of colnames and indices.
 		Vector<Int> IndCnt_p; // mapping from yplotdata index to colnames_p indices.
+		Int NCross1_p,NCross2_p;
 		
 		ArrayColumn<Bool> Flags_p;
 		ScalarColumn<Bool> RowFlags_p;

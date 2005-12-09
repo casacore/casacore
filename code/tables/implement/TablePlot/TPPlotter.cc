@@ -26,6 +26,7 @@
 //# $Id$
 
 
+
 //# Includes
 
 #include <cmath>
@@ -136,7 +137,7 @@ template<class T> Int TPPlotter<T>::setPlotRange(PtrBlock<BasePlot<T>* > &PBP,In
 	T xmin=0,xmax=0,ymin=0,ymax=0;
 	for(Int i=0;i<nRanges_p;i++) 
 	{
-		PBP[i]->setPlotRange(xmin,xmax,ymin,ymax,useflags_p);
+		PBP[i]->setPlotRange(xmin,xmax,ymin,ymax,useflags_p,crossdirection_p);
 		Xmin_p = MIN(Xmin_p,xmin);
 		Xmax_p = MAX(Xmax_p,xmax);
 		Ymin_p = MIN(Ymin_p,ymin);
@@ -437,6 +438,13 @@ template<class T> Int TPPlotter<T>::setPlotOptions(Record &plotoptions)
 	// 1 : plot only flagged data
 	// 2 : plot flagged and unflagged data (diff colours)
 
+	if(plotoptions.isDefined("crossdirection"))
+	{
+		RecordFieldId ridfont("crossdirection");
+		plotoptions.get(ridfont,crossdirection_p);
+	}else crossdirection_p = 0;
+	// 0 : plot column of each cell on the x axis (ms : chan)
+	// !=0 : plot row of each cell on the x axis (ms : pol)
 	
 #ifdef TP_PLPLOT
 	if(pls==NULL) 

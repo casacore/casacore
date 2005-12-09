@@ -85,6 +85,7 @@ template<class T> BasePlot<T>::BasePlot()
 	FlagRowName_p = "FLAG_ROW"; frcol_p = False;
 	xptr_p=0;yptr_p=0;
 	newflags_p=False;
+	NCross1_p=1;NCross2_p=1;
 	
 	pType_p=XYPLOT; 
 }
@@ -328,7 +329,7 @@ template<class T> Int BasePlot<T>::convertCoords(Vector<Vector<T> > &flagmarks)
 /*********************************************************************************/
 
 /* Fill up 'theflags_p' array and optionally write flags to disk */
-template<class T> Int BasePlot<T>::flagData(Int diskwrite, Int rowflag)
+template<class T> Int BasePlot<T>::flagData(Int diskwrite, Int rowflag, Int direction)
 {
 	if(adbg)cout << "BasePlot :: Flag Data and optionally write to disk" << endl;
 	
@@ -350,7 +351,8 @@ template<class T> Int BasePlot<T>::flagData(Int diskwrite, Int rowflag)
 					   yplotdata_p(Pind_p(np,1),nr)>(locflagmarks_p[nf])[2] && 
 					   yplotdata_p(Pind_p(np,1),nr)<=(locflagmarks_p[nf])[3]) 
 						{
-							theflags_p(Pind_p(np,1),nr) = True;
+							if(direction==0)theflags_p(Pind_p(np,1),nr) = True;
+							else theflags_p(Pind_p(np,1),nr) = False;
 							newflags_p = True;
 						}
 			}
@@ -418,7 +420,7 @@ template<class T> Int BasePlot<T>::clearFlags()
 /*********************************************************************************/
 
 /* Compute the combined plot range */
-template<class T> Int BasePlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags)
+template<class T> Int BasePlot<T>::setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags, Int crossdir)
 {
 	if(adbg)cout << "BasePlot :: Set Plot Range for this table " << endl;
 	xprange_p.resize(NPlots_p,2);
@@ -522,7 +524,7 @@ template<class T> Int BasePlot<T>::getPlotType()
 /*********************************************************************************/
 
 
-template<class T> Int BasePlot<T>::readXD(Matrix<T> &xdat)
+template<class T> Int BasePlot<T>::readXD(Matrix<T> &xdat,Int crossdir)
 {
 	if(adbg)cout << "read XD" << endl;
 	xdat.resize(0,0);
@@ -704,6 +706,7 @@ template<class T> Int BasePlot<T>::getYData(TableExprId &tid)
 				tten.get(0,xytemp);
 				Tsize_p(z,1) = 1;
 				yshp_p = IPosition(2,1,1);
+				NCross1_p = 1; NCross2_p = 1;
 			}
 			else
 			{
@@ -713,7 +716,12 @@ template<class T> Int BasePlot<T>::getYData(TableExprId &tid)
 				if(ddbg)cout << "Shape of Yaxis data : " << yshp_p << endl;
 				if(ddbg) cout << "ytemp : " << ytemp << endl;
 				Tsize_p(z,1) = yshp_p.product(); 
+				// assuming only arraycolumns with 2D cells...
+				NCross1_p = yshp_p[1]; NCross2_p = yshp_p[0];
 			}
+
+			if(adbg) cout << "NCross1_p = " << NCross1_p << "  NCross2_p = " << NCross2_p << endl;
+			
 			yptr_p+=Tsize_p(z,1); 
 			NPlots_p = yptr_p; 
 			

@@ -56,6 +56,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 /* Default Constructor */
+
 template<class T> TablePlot<T>::TablePlot()
 {
 	adbg=0;
@@ -63,7 +64,7 @@ template<class T> TablePlot<T>::TablePlot()
 	TABS_p.resize(0);
 	nTabs_p=0; iTabs_p=0; 
 	NPanels_p=1;
-	cout << " TABLEPLOT CONSTRUCTOR !!" << endl;
+
 }
 
 /*********************************************************************************/
@@ -203,7 +204,6 @@ template<class T> Int TablePlot<T>::cleanUpBP(PtrBlock<BasePlot<T>* > &BPS)
 template<class T> Int TablePlot<T>::setPlotParameters(TPPlotter<T> &TPLP,Record &plotoptions)
 {
 	TPLP.setPlotOptions(plotoptions);
-
 	return 0;
 }
 /*********************************************************************************/
@@ -243,10 +243,10 @@ template<class T> Int TablePlot<T>::getData(PtrBlock<BasePlot<T>* > &BPS,Vector<
 /*********************************************************************************/
 
 /* Read Data - to be called after any 'getdata' and before any plotdata */
-template<class T> Int TablePlot<T>::readXData(BasePlot<T>* &BP, Matrix<T> &xdat)
+template<class T> Int TablePlot<T>::readXData(BasePlot<T>* &BP, Matrix<T> &xdat,Int crossdir)
 {
 	if(adbg)cout << "TablePlot :: Read XData" << endl; 
-	if(BP->readXD(xdat) == -1) return -1;
+	if(BP->readXD(xdat,crossdir) == -1) return -1;
 	return 0;
 }
 
@@ -334,13 +334,13 @@ template<class T> Int TablePlot<T>::markZoom(Int panel, TPPlotter<T> &TPLP, Int 
 
 /* Flag data for each table in the list of BasePlots */
 template<class T> Int TablePlot<T>::flagData(PtrBlock<BasePlot<T>* > &BPS,
-			TPPlotter<T> &TPLP, Int panel, Int diskwrite, Int rowflag)
+			TPPlotter<T> &TPLP, Int panel, Int diskwrite, Int rowflag, Int direction)
 {
 	if(adbg)cout << "TablePlot :: Flag Data" << endl;
 
 	TPLP.setFlagRegions(BPS,panel); 
 	if(adbg)cout << "nTabs_p : " << nTabs_p << endl;
-	for(Int i=0;i<nTabs_p;i++) BPS[i]->flagData(diskwrite,rowflag);
+	for(Int i=0;i<nTabs_p;i++) BPS[i]->flagData(diskwrite,rowflag,direction);
 		
 	TPLP.setPlotRange(BPS,panel);
 	TPLP.plotData(BPS,panel); 

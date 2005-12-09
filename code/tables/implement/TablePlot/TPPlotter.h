@@ -254,6 +254,7 @@ template<class T> class TPPlotter
 		Int plotsymbol_p, useflags_p;
 		Array<Double> plotrange_p;
 		IPosition pr_p;
+		Int crossdirection_p;
 		
 		Int nflagmarks_p;
 		PtrBlock<Vector<Vector<T > >* > flaglist_p;

@@ -124,7 +124,7 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		// This can get expensive for large number of data points. It is
 		// assumed that for such a large number of data points, plotting
 		// could broken down into chunks using an iteration axis.
-		Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags); 
+		Int setPlotRange(T &xmin, T &xmax, T &ymin, T &ymax, Int useflags, Int crossdir); 
 		
 		// Fill in flags in the storage arrays.
 		// The data storage arrays are traversed and flags for all
@@ -134,7 +134,7 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		// be applied to plots that use the current instance of BasePlot.
 		// If rowflag=1, a the FLAG_ROW column is set (if it exists) in
 		// addition to the individual flags in the FLAG column (if it exists).
-		Int flagData(Int diskwrite, Int rowflag);     
+		Int flagData(Int diskwrite, Int rowflag, Int direction);     
 		
 		// Create TableExprNodes from input TAQL strings.
 		Int createXTENS(Vector<String> &datastr);   
@@ -142,6 +142,9 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		// Query the internal structures for X data values
 		T getXVal(Int pnum, Int col);
 		
+		// Read X data
+		Int readXD(Matrix<T> &xdat, Int crossdir=0);
+
 	private:
 		
 		// Read X data from the table. For CrossPlots this corresponds
@@ -154,6 +157,12 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		// which reads a value from each row in the table.
 		Int getXData(TableExprId &tid);
 
+		Matrix<T> xpd1_p,xpd2_p;
+		Int crossdir_p;
+
+		using BasePlot<T>::NCross1_p;
+		using BasePlot<T>::NCross2_p;
+		
 		using BasePlot<T>::dbg;
 		using BasePlot<T>::ddbg;
 		using BasePlot<T>::adbg;
