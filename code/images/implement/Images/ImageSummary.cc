@@ -378,6 +378,7 @@ Vector<String> ImageSummary<T>::list (LogIO& os, const MDoppler::Types velocityT
 // List random things
 
    os << "Image name       : " << name() << endl;
+   os << "Object name      : " << imageInfo_p.objectName() << endl;
    os << "Image type       : " << imageType() << endl;
    os << "Image quantity   : " << ImageInfo::imageType(imageInfo_p.imageType()) << endl;
 //
