@@ -57,7 +57,8 @@ void equal (const ImageInfo& ii1, const ImageInfo& ii2)
     const Vector<Quantum<Double> >& b2 = ii2.restoringBeam();
     equalBeams(b1, b2);
 //
-    AlwaysAssertExit(ii1.imageType()==ii2.imageType());
+    AlwaysAssertExit(ii1.imageType()==ii2.imageType());    
+    AlwaysAssertExit(ii1.objectName()==ii2.objectName());  
 }
 
 
@@ -109,10 +110,19 @@ try {
        }
     }
 //
+// ObjectName
+//
+    {
+      String objectName("PKS133-33");
+      mii.setObjectName(objectName);
+      AlwaysAssertExit(objectName==mii.objectName());
+   }
+//
 // Copy constructor and assignemnt
 //
     mii.setRestoringBeam(beam(0), beam(1), beam(2));
     mii.setImageType(ImageInfo::SpectralIndex);
+    mii.setObjectName(String("IC4296"));
     ImageInfo mii2(mii);
     equal(mii2, mii);
 //
@@ -122,6 +132,7 @@ try {
     beam2(2) = Quantum<Double>(-90.0, "deg");
     mii2.setRestoringBeam(beam2);
     mii2.setImageType(ImageInfo::OpticalDepth);
+    mii.setObjectName(String("NGC1399"));
     mii = mii2;
     equal(mii2, mii);
 //
@@ -135,7 +146,6 @@ try {
     Bool ok = mii3.fromRecord(error, rec);
     if (!ok) cout << "Error = " << error << endl;
     equal(mii3, mii);
-    AlwaysAssertExit(mii3.imageType()==mii.imageType());
 //
 // FITS
 //
@@ -145,7 +155,6 @@ try {
     Vector<String> error2;
     AlwaysAssertExit(mii4.fromFITSOld(error2, header));
     equal(mii4, mii3);
-    AlwaysAssertExit(mii4.imageType()==mii3.imageType());
 //
 // output stream
 //
