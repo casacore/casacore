@@ -46,7 +46,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 ImageInfo::ImageInfo()
 : itsRestoringBeam(defaultRestoringBeam()),
-  itsImageType(defaultImageType())
+  itsImageType(defaultImageType()),
+  itsObjectName(defaultObjectName())
 {}
 
 ImageInfo::~ImageInfo()
@@ -59,6 +60,8 @@ void ImageInfo::copy_other(const ImageInfo &other)
        itsRestoringBeam = other.itsRestoringBeam.copy();
 //   
        itsImageType = other.itsImageType;
+//
+       itsObjectName = other.itsObjectName;
     }
 }
 
@@ -83,6 +86,12 @@ Vector<Quantum<Double> > ImageInfo::defaultRestoringBeam()
 ImageInfo::ImageTypes ImageInfo::defaultImageType()
 {
     return ImageInfo::Intensity;
+}
+
+String ImageInfo::defaultObjectName()
+{
+   String tmp;
+   return tmp;
 }
 
 Vector<Quantum<Double> > ImageInfo::restoringBeam() const
@@ -220,7 +229,7 @@ String ImageInfo::imageType(ImageInfo::ImageTypes type)
         typeOut = String("Kinetic Temperature"); 
         break;
       case ImageInfo::MagneticField:
-        typeOut = String("Magneti Field"); 
+        typeOut = String("Magnetic Field"); 
         break;
       case ImageInfo::OpticalDepth:
         typeOut = String("Optical Depth"); 
@@ -276,6 +285,19 @@ ImageInfo::ImageTypes ImageInfo::imageTypeFromFITS (Int value)
 
 
 
+String ImageInfo::objectName () const
+{
+    return itsObjectName;
+}
+
+ImageInfo& ImageInfo::setObjectName (const String& objectName)
+{
+    itsObjectName = objectName;
+//
+    return *this;
+}
+
+
 Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
 {
     error = "";
@@ -302,6 +324,11 @@ Bool ImageInfo::toRecord(String & error, RecordInterface & outRecord) const
        String type = ImageInfo::imageType(itsImageType);
        outRecord.define("imagetype", type);
     }
+//
+    {
+       outRecord.define("objectname", itsObjectName);
+    }
+
 //
     return ok;
 }
@@ -363,6 +390,11 @@ Bool ImageInfo::fromRecord(String & error, const RecordInterface & inRecord)
       setImageType (ImageInfo::imageType(type));
    }
 //
+   if (inRecord.isDefined("objectname")) {
+      String objectName = inRecord.asString("objectname");
+      setObjectName (objectName);
+   }
+//
    return ok;
 }
 
@@ -402,6 +434,10 @@ Bool ImageInfo::toFITS(String & error, RecordInterface & outRecord) const
        }
     }
 //
+    {
+       outRecord.define("object", itsObjectName);
+    }
+
     return True;
 }
 
@@ -485,6 +521,17 @@ Bool ImageInfo::fromFITS(Vector<String>& error, const RecordInterface& header)
       }
    }
 //
+   if (header.isDefined("object")) {
+      Record subRec = header.asRecord("object");
+      if (subRec.dataType("value")==TpString) {
+         String objectName = subRec.asString("value");
+         setObjectName(objectName);
+      }  else {
+         error(1) = "OBJECT field is not of type String";
+         ok = False;
+      }
+   }
+//
    if (ok) error.resize(0);
    return ok;
 }
@@ -547,6 +594,16 @@ Bool ImageInfo::fromFITSOld(Vector<String>& error, const RecordInterface& header
       }
    }
 //
+   if (header.isDefined("object")) {
+      if (header.dataType("object")==TpString) {
+         String objectName = header.asString("object");
+         setObjectName(objectName);
+      }  else {
+         error(1) = "OBJECT field is not of type String";
+         ok = False;
+      }
+   }
+//
    if (ok) error.resize(0);
    return ok;
 }
@@ -558,7 +615,8 @@ ostream &operator<<(ostream &os, const ImageInfo &info)
     if (info.restoringBeam().nelements()>0) {
        os << "Restoring beam : " << info.restoringBeam()(0) << ", " 
           << info.restoringBeam()(1) << ", " << info.restoringBeam()(2) << endl;
-       os << "Image Type = " << info.imageType(info.imageType()) << endl;
+       os << "Image Type  = " << info.imageType(info.imageType()) << endl;
+       os << "Object Name = " << info.objectName() << endl;
     }
     return os;
 }
@@ -566,11 +624,12 @@ ostream &operator<<(ostream &os, const ImageInfo &info)
 
 Vector<String> ImageInfo::keywordNamesFITS()
 {
-    Vector<String> vs(4);
+    Vector<String> vs(5);
     vs(0) = "bmaj";
     vs(1) = "bmin";
     vs(2) = "bpa";
     vs(3) = "btype";              // Miriad convention
+    vs(4) = "object";
     return vs;
 }  
 

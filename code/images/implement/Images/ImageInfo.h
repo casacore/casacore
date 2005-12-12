@@ -61,6 +61,7 @@ class LoggerHolder;
 // <ol>
 //    <li> The restoring beam
 //    <li> A parameter describing what quantity the image holds.
+//    <li> The image object name.
 // </ol>
 // This list can easily be extended if necessary.
 //
@@ -149,13 +150,19 @@ public:
     static ImageInfo::ImageTypes imageType(String type);
 // </group>
 
+// Set and get the Image object name
+// <group>
+    String objectName () const;
+    ImageInfo& setObjectName (const String& object);
+// </group>
+
 // Functions to interconvert between an ImageInfo and a record. These 
 // functions are inherited from class
 // <linkto class=RecordTransformable>RecordTransformable</linkto>. As new
 // fields get added to ImageInfo these functions should be augmented. Missing
 // fields should not generate an error to in fromRecord to allow for 
 // backwards compatibility - null values should be supplied instead.
-// The record field names are: "restoringbeam".
+// The record field names are: "restoringbeam, imagetype, objectname".
 // <group>
     virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
     virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
@@ -167,6 +174,7 @@ public:
 // <group>
     static Vector<Quantum<Double> > defaultRestoringBeam();
     static ImageTypes defaultImageType();
+    static String defaultObjectName();
 // </group>
 
 // Functions to interconvert between an ImageInfo and FITS keywords
@@ -211,6 +219,7 @@ public:
 private:
     Vector<Quantum<Double> > itsRestoringBeam;
     ImageInfo::ImageTypes itsImageType;
+    String itsObjectName;
 
 // Common copy ctor/assignment operator code.
     void copy_other(const ImageInfo &other);
