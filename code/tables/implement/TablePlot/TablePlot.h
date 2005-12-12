@@ -359,7 +359,7 @@ template<class T> class TablePlot
 
 		// Allow the user app to access and modify the current values in the 
 		// xplotdata and yplotdata arrays of the BasePlot objects.
-		Int readXData(BasePlot<T>* &BP, Matrix<T> &xdat,Int crossdir);
+		Int readXData(BasePlot<T>* &BP, Matrix<T> &xdat,Int crossdir=0);
 		Int writeXData(BasePlot<T>* &BP, Matrix<T> &xdat);
 		Int readYData(BasePlot<T>* &BP, Matrix<T> &ydat);
 		Int writeYData(BasePlot<T>* &BP, Matrix<T> &ydat);
