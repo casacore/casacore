@@ -67,6 +67,7 @@ template<class T> TPPlotter<T>::TPPlotter()
 	XLabel_p="XLabel"; YLabel_p="YLabel"; Title_p="Title";
 	nxmin_p=0;nxmax_p=0;nymin_p=0;nymax_p=0;expan_p=0.02;
 	nxpanel_p=1; nypanel_p=1; NPanels_p=1;
+	useplotrange_p = False;
 
 	timeplot_p = 1;
 	plotrange_p.resize();
@@ -316,11 +317,13 @@ template<class T> Int TPPlotter<T>::adjustPlotRange(Int panel)
 		(panelZrange_p[panel-1])[3] += 0.1;
 	}
 
-	pr_p[0]=0;panelZrange_p[panel-1][0] = MAX(panelZrange_p[panel-1][0],plotrange_p(pr_p));
-	pr_p[0]=1;panelZrange_p[panel-1][1] = MIN(panelZrange_p[panel-1][1],plotrange_p(pr_p));
-	pr_p[0]=2;panelZrange_p[panel-1][2] = MAX(panelZrange_p[panel-1][2],plotrange_p(pr_p));
-	pr_p[0]=3;panelZrange_p[panel-1][3] = MIN(panelZrange_p[panel-1][3],plotrange_p(pr_p));
-
+	if(useplotrange_p)
+	{
+		pr_p[0]=0;panelZrange_p[panel-1][0] = MAX(panelZrange_p[panel-1][0],plotrange_p(pr_p));
+		pr_p[0]=1;panelZrange_p[panel-1][1] = MIN(panelZrange_p[panel-1][1],plotrange_p(pr_p));
+		pr_p[0]=2;panelZrange_p[panel-1][2] = MAX(panelZrange_p[panel-1][2],plotrange_p(pr_p));
+		pr_p[0]=3;panelZrange_p[panel-1][3] = MIN(panelZrange_p[panel-1][3],plotrange_p(pr_p));
+	}
 	
 	if(adbg) cout << "range for panel " << panel << ": " << panelZrange_p[panel-1][0] << " , " << panelZrange_p[panel-1][1] << " , " << panelZrange_p[panel-1][2] << " , " << panelZrange_p[panel-1][0] << endl;
 	
@@ -352,6 +355,7 @@ template<class T> Int TPPlotter<T>::setFlagRegions(PtrBlock<BasePlot<T>* > &PBP,
 template<class T> Int TPPlotter<T>::setPlotOptions(Record &plotoptions)
 {
 	if(adbg)cout << "TPPlotter :: setPlotOptions" << endl;
+	DataType type;
 	
 	/* Parse the input record and set options. defaults are provided.*/
 	if(plotoptions.isDefined("nxpanels"))
@@ -418,16 +422,29 @@ template<class T> Int TPPlotter<T>::setPlotOptions(Record &plotoptions)
 	{
 		RecordFieldId ridfont("plotrange");
 		//cout << "DATATYPE : " << plotoptions.dataType(ridfont) << endl;
-		plotoptions.get(ridfont,plotrange_p);
+		type = plotoptions.dataType(ridfont);
+		switch(type)
+		{
+			case TpArrayDouble:
+				useplotrange_p = True;
+				plotoptions.get(ridfont,plotrange_p);
+				//cout << "shape : " << plotrange_p.shape() << endl;
+				if(plotrange_p.shape() != IPosition(1,4)) 
+				{
+					cout << "plotrange field needs 4 values. Using data ranges" << endl;
+					useplotrange_p = False;
+				}
+				break;
+			default:
+				useplotrange_p = False;
+		}
 	}else 
 	{
-		plotrange_p.resize(IPosition(1,4));
-		pr_p[0] = 0;	plotrange_p(pr_p) = -1e+30;
-		pr_p[0] = 1;	plotrange_p(pr_p) = +1e+30;
-		pr_p[0] = 2;	plotrange_p(pr_p) = -1e+30;
-		pr_p[0] = 3;	plotrange_p(pr_p) = +1e+30;
+		useplotrange_p = False;
 	}
 	if(ddbg)cout << " Plotrange : " << plotrange_p << endl;
+	// Plotrange must be of type "float", and to reset to data ranges,
+	// must be removed from the plotoptions list.
 
 	if(plotoptions.isDefined("useflags"))
 	{

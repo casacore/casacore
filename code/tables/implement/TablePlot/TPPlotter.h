@@ -26,7 +26,6 @@
 //# $Id$
 
 
-
 #ifndef TPPLOTTER_H
 #define TPPLOTTER_H
 
@@ -255,6 +254,7 @@ template<class T> class TPPlotter
 		Array<Double> plotrange_p;
 		IPosition pr_p;
 		Int crossdirection_p;
+		Bool useplotrange_p;
 		
 		Int nflagmarks_p;
 		PtrBlock<Vector<Vector<T > >* > flaglist_p;
