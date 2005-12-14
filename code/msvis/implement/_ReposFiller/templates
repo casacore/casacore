@@ -4,6 +4,8 @@
 1000 casa/Arrays/MaskedArray.cc msvis/MSVis/StokesVector.h 
      template class MaskedArray<StokesVector> 
      template class MaskedArray<CStokesVector> 
+1000 casa/Arrays/Cube.cc msvis/MSVis/StokesVector.h 
+     template class Cube<CStokesVector> 
 1000 casa/Arrays/Matrix.cc msvis/MSVis/StokesVector.h 
      template class Matrix<CStokesVector> 
 1000 casa/Arrays/Vector.cc msvis/MSVis/StokesVector.h 
