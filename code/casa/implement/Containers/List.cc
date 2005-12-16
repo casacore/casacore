@@ -71,6 +71,7 @@ template<class t> List<t>::List(const List<t> &other) : head(0), tail(0), length
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    length = other.len();
 }
 
 template<class t> List<t>::List(const List<t> *other) : head(0), tail(0), length(0) {
@@ -84,6 +85,7 @@ template<class t> List<t>::List(const List<t> *other) : head(0), tail(0), length
     for (; !iter.atEnd(); iter++ )
 	cur = new Link<t>(iter.getRight(),cur);
     tail = cur;
+    length = other->len();
 }
 
 template<class t> List<t> &List<t>::operator=(const List<t> &other) {
