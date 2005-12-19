@@ -238,6 +238,8 @@ namespace casa {
     copyAntenna();
     copyFeed();
     copyObservation();
+    copyPointing();
+
     
     //check the spw shapes
     checkSpwShape();
@@ -929,6 +931,27 @@ Bool SubMS::copyObservation(){
   return True;
 
 }
+
+Bool SubMS::copyPointing(){
+  //Pointing is allowed to not exist
+  Bool pointExists=Table::isReadable(mssel_p.pointingTableName());
+  if(pointExists){
+    Table oldPoint(mssel_p.pointingTableName(), Table::Old);
+    if(oldPoint.nrow() > 0){
+      Table::TableOption option;
+      if(Table::isReadable(msOut_p.pointingTableName()))
+	option=Table::Update;
+      else
+	option=Table::New;
+      Table newPoint(msOut_p.pointingTableName(), option);
+      TableCopy::copyRows(newPoint, oldPoint);
+    }
+  }
+  return True;
+
+}
+
+
 
 Bool SubMS::writeDiffSpwShape(String& columnName){
 

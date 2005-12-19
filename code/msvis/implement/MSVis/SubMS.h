@@ -128,6 +128,7 @@ class SubMS
   Bool copyFeed();
   Bool copySource();
   Bool copyObservation();
+  Bool copyPointing();
   Bool writeDiffSpwShape(String& columnName);
   Bool writeSimilarSpwShape(String& columnName);
   // return the number of unique antennas selected
