@@ -108,14 +108,9 @@ const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
 {
     if(daytime) delete daytime;
 
-    Vector<Quantity> t(4);
-    t[0] = Quantity(day, "d"); 
-    t[1] = Quantity(hour, "h"); 
-    t[2] = Quantity(minute, "min"); 
-    t[3] = Quantity(second+(millisec*0.001), "s"); 
-
-    MVEpoch mv;
-    mv.putValue(t);
+    Time t(0, 0, day, hour, minute, second+(millisec*0.001));
+    MVTime mt(t);
+    MVEpoch mv(mt);
 
     return (daytime = new MEpoch(mv));
 }
@@ -126,16 +121,9 @@ const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
 {
     if(yeartime) delete yeartime;
 
-    Vector<Quantity> t(6);
-    t[0] = Quantity(year, "yr"); 
-    t[1] = Quantity(month, "m"); 
-    t[2] = Quantity(day, "d"); 
-    t[3] = Quantity(hour, "h"); 
-    t[4] = Quantity(minute, "min"); 
-    t[5] = Quantity(second+(millisec*0.001), "s"); 
-
-    MVEpoch mv;
-    mv.putValue(t);
+    Time t(year, month, day, hour, minute, second+(millisec*0.001));
+    MVTime mt(t);
+    MVEpoch mv(mt);
 
     return (yeartime = new MEpoch(mv));
 }
