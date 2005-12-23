@@ -395,9 +395,10 @@ public:
   const ROMSColumns& msColumns() const
     { return msIter_p.msColumns();}
 
-  // get back the selected spectral windows 
+  // get back the selected spectral windows and spectral channels for
+  // current ms 
 
-  void allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan);
+  void allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan);
 
   // Convert the frequency from the observe frame to lsr frame.
   // Returns True in convert if given spw was not observed 

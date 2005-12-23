@@ -981,6 +981,16 @@ ROVisibilityIterator::selectChannel(Int nGroup, Int start, Int width,
   Int spw=spectralWindow;
   if (spw<0) spw = msIter_p.spectralWindowId();
   Int n = numChanGroup_p.nelements();
+  if(n==0){
+    blockSpw_p.resize(1);
+    blockSpw_p[0].resize(1);
+    blockSpw_p[0][0]=spw;
+  }
+  else{
+    Int nspw=blockSpw_p[0].nelements()+1;
+    blockSpw_p[0].resize(nspw, True);
+    blockSpw_p[0][nspw-1]=spw;      
+  }
   if (spw >= n) {
     // we need to resize the blocks
     Int newn = max(2,max(2*n,spw+1));
@@ -1017,10 +1027,15 @@ ROVisibilityIterator::selectChannel(Block<Vector<Int> >& blockNGroup,
   }
 
 
+  blockNumChanGroup_p.resize(0, True, False);
   blockNumChanGroup_p=blockNGroup;
+  blockChanStart_p.resize(0, True, False);
   blockChanStart_p=blockStart;
+  blockChanWidth_p.resize(0, True, False);
   blockChanWidth_p=blockWidth;
+  blockChanInc_p.resize(0, True, False);
   blockChanInc_p=blockIncr;
+  blockSpw_p.resize(0, True, False);
   blockSpw_p=blockSpw;
 
   if (!initialized_p) {
@@ -1071,8 +1086,10 @@ void  ROVisibilityIterator::doChannelSelection()
 
 
 
-void ROVisibilityIterator::allSelectedSpectralWindows(const Vector<Int>& spws, Vector<Int>& nvischan){
+void ROVisibilityIterator::allSelectedSpectralWindows(Vector<Int>& spws, Vector<Int>& nvischan){
 
+  spws.resize();
+  spws=blockSpw_p[msId()];
   nvischan.resize(max(spws)+1);
   nvischan.set(-1);
   Int kounter=0;
