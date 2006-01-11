@@ -32,6 +32,9 @@
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
+//# Forward Declaration
+class NoticeTarget;
+
 // <summary>abstract base class for notices</summary> 
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/16" tests="" demos="">

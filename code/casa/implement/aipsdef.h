@@ -93,7 +93,7 @@ namespace std {};
 #define WHATEVER_SUN_EXCEPTSPEC(X)
 #endif
 
-#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC3)
+#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC3) || defined(AIPS_GCC4)
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 #undef WHATEVER_VECTOR_FORWARD_DEC
 #endif

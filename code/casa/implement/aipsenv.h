@@ -54,12 +54,18 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_GCC295
 #endif
 
-// Coming soon as gnu fixes the bugs
 #if defined(AIPS_GCC3)
 #undef AIPS_GCC3
 #endif
-#if defined(AIPS_GCC) && __GNUC__ == 3
+#if (defined(AIPS_GCC) && __GNUC__ == 3)
 #define AIPS_GCC3
+#endif
+
+#if defined(AIPS_GCC4)
+#undef AIPS_GCC4
+#endif
+#if (defined(AIPS_GCC) && __GNUC__ == 4)
+#define AIPS_GCC4
 #endif
 
 // Alternate project compiler 
