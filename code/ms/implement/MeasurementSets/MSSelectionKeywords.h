@@ -241,7 +241,7 @@ public:
   static Field field(const String& keyword);
 
   // convert an enum value to the corresponding keyword string
-  static const String& keyword(MSS::Field field);
+  static const String& keyword(Field field);
 
 protected:
   // This class is purely static, no instances are allowed.
