@@ -211,10 +211,8 @@ private:
     Bool getType(String &error, Function<U> *&fn, const RecordInterface &in);  
   template <class U>
     Bool getType(String &error, Function<U> *&fn);
-  void FunctionHolder<T>::setParameters(Function<T> *&fn,
-					const Vector<T> &params);
-  void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
-					const Vector<T> &params);
+  void setParameters(Function<T> *&fn, const Vector<T> &params);
+  void setParameters(Function<AutoDiff<T> > *&fn, const Vector<T> &params);
   // </group>
 };
 
