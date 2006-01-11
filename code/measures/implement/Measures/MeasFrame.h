@@ -43,6 +43,7 @@ class MVDirection;
 class MVRadialVelocity;
 class MeasComet;
 class FrameRep;
+class MCFrame;
 template <class T> class Vector;
 template <class Qtype> class Quantum;
 
