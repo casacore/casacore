@@ -31,6 +31,7 @@
 
 //# Includes
 #include <casa/aips.h>
+#include <coordinates/Coordinates/CoordinateSystem.h>
 #include <casa/Quanta/QMath.h>
 #include <casa/Quanta/Quantum.h>
 #include <measures/Measures/MDoppler.h>
@@ -48,7 +49,6 @@ template <class T> class ImageInterface;
 template <class T> class MaskedLattice;
 template <class T> class Lattice;
 template <class T> class PtrHolder;
-class CoordinateSystem;
 class IPosition;
 class String;
 class Unit;

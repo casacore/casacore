@@ -309,7 +309,7 @@ private:
 // by setting all pixel values in the componentmap set to that region to
 // zero.  Zero-oriented; there is an offset of one between the index in
 // killRegion and the actual region in the componentmap.
-  void ImageDecomposer<T>::destroyRegions(const Vector<Bool>& killRegion);
+  void destroyRegions(const Vector<Bool>& killRegion);
 
 // Eliminates regions with no cells by replacing them with higher-numbered 
 // regions.
