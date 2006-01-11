@@ -39,6 +39,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class String;
+class ROTableColumn;
 
 
 // <summary>

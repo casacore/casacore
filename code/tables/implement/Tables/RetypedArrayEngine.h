@@ -447,6 +447,7 @@ protected:
   using BaseMappedArrayEngine<VirtualType,StoredType>::table;
   using BaseMappedArrayEngine<VirtualType,StoredType>::roColumn;
   using BaseMappedArrayEngine<VirtualType,StoredType>::rwColumn;
+  using BaseMappedArrayEngine<VirtualType,StoredType>::setNames;
 
 public:
 
