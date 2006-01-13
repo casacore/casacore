@@ -1060,7 +1060,7 @@ Bool LatticeCleaner<T>::makeScaleMasks()
     LEN = sum( *itsScaleMasks[scale] );
     Float mysum = LEN.getFloat();
     if (mysum <= 0.1) {
-      os << "Warning: ignoring scale " << scale << 
+      os << LogIO::WARN << "Ignoring scale " << scale+1 << 
 	" since it is too large to fit within the mask" << LogIO::POST;
     }
     
