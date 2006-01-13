@@ -150,6 +150,10 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
       // Subtract offset to avoid roundoff problems with float weights
       avBuf_p.time()(outrow) += (vb.time()(row)-tStart_p) * wt;
       avBuf_p.weight()(outrow) += wt;
+      // UVW (vector average, is this right?)
+      avBuf_p.uvw()(outrow) += vb.uvw()(row) * wt;
+
+
 
       // Compute the pre-normalization (if requested)
       CStokesVector preNormFact = Complex(0,0);
@@ -225,6 +229,7 @@ void VisTimeAverager::initialize()
   }
 
   avBuf_p.time().resize(nRow, True); 
+  avBuf_p.uvw().resize(nRow, True); 
   Matrix<CStokesVector> tmpVis = avBuf_p.visibility();
   avBuf_p.visibility().resize(nChan_p, nRow);
   Int chn;
@@ -245,6 +250,7 @@ void VisTimeAverager::initialize()
 
   for (row = avrow_p; row < nRow; row++) {
     avBuf_p.time()(row) = 0.0;
+    avBuf_p.uvw()(row) = 0.0;
     for (Int chn = 0; chn < nChan_p; chn++) {
       avBuf_p.visibility()(chn,row) = CStokesVector();
       avBuf_p.flag()(chn,row) = True;
@@ -268,6 +274,7 @@ void VisTimeAverager::normalize()
     if (!avBuf_p.flagRow()(row)) {
       avBuf_p.time()(row)/=wt;
       avBuf_p.time()(row)+=tStart_p;
+      avBuf_p.uvw()(row)*=1.0f/wt;
       for (Int chn=0; chn<avBuf_p.nChannel(); chn++) {
 	if (!avBuf_p.flag()(chn,row)) {
 	  avBuf_p.visibility()(chn,row)*=1.0f/wt;
