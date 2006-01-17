@@ -151,8 +151,10 @@ void VisTimeAverager::accumulate (const VisBuffer& vb)
       avBuf_p.time()(outrow) += (vb.time()(row)-tStart_p) * wt;
       avBuf_p.weight()(outrow) += wt;
       // UVW (vector average, is this right?)
-      avBuf_p.uvw()(outrow) += vb.uvw()(row) * wt;
-
+      // gcc-3.2 needs the multiplication on a separate line; gcc-3.4 can do
+      // it as: avBuf_p.uvw()(outrow) += vb.uvw()(row) * Double(wt);
+      RigidVector<Double,3> wtuvw = vb.uvw()(row) * Double(wt);
+      avBuf_p.uvw()(outrow) += wtuvw;
 
 
       // Compute the pre-normalization (if requested)
