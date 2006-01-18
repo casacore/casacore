@@ -41,6 +41,7 @@
 #include <casa/BasicSL/String.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/GenSort.h>
+#include <casa/System/AppInfo.h>
 #include <msvis/MSVis/VisSet.h>
 #include <msvis/MSVis/VisBuffer.h>
 #include <msvis/MSVis/VisibilityIterator.h>
@@ -214,7 +215,7 @@ namespace casa {
     
     if(!makeSelection()){
       os << LogIO::SEVERE 
-	 << "Failed on selection: combination of spw and field chosen may be"
+	 << "Failed on selection: combination of spw and/or field and/or time chosen may be"
 	 << " invalid" 
 	 << LogIO::POST;
       ms_p=MeasurementSet();
@@ -223,13 +224,103 @@ namespace casa {
     mscIn_p=new MSColumns(mssel_p);
     MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
 				       mscIn_p->observation().telescopeName()(0));
+
     msOut_p= *outpointer;
     msc_p=new MSColumns(msOut_p);
+
+    if(!fillAllTables(colname)){
+      delete outpointer;
+      ms_p=MeasurementSet();
+      return False;
+
+    }
+
+
+    //  msOut_p.relinquishAutoLocks (True);
+    //  msOut_p.unlock();
+    //Detaching the selected part
+    ms_p=MeasurementSet();
+    delete outpointer;
+    return True;
+    
+  }
+
+
+  MeasurementSet* SubMS::makeScratchSubMS(String& colname, Bool forceInMemory){
+    
+    LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
+    
+    if(max(fieldid_p) >= Int(ms_p.field().nrow())){
+      os << LogIO::SEVERE 
+	 << "Field selection contains elements that do not exist in "
+	 << "this MS"
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+      
+      
+    }
+    if(max(spw_p) >= Int(ms_p.spectralWindow().nrow())){
+      os << LogIO::SEVERE 
+	 << "SpectralWindow selection contains elements that do not exist in "
+	 << "this MS"
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+      
+      
+    }
+    
+    if(!makeSelection()){
+      os << LogIO::SEVERE 
+	 << "Failed on selection: combination of spw and/or field and/or time chosen may be"
+	 << " invalid" 
+	 << LogIO::POST;
+      ms_p=MeasurementSet();
+      return False;
+    }
+    mscIn_p=new MSColumns(mssel_p);
+    Double sizeInMB= 1.5*mssel_p.nrow()*nchan_p[0]*npol_p[0]*sizeof(Complex)/1024.0/1024.0;
+    String msname=AppInfo::workFileName(uInt(sizeInMB), "TempSubMS");
+
+    MeasurementSet* outpointer=setupMS(msname, nchan_p[0], npol_p[0],  
+				       mscIn_p->observation().telescopeName()(0));
+
+    outpointer->markForDelete();
+    //Hmmmmmm....memory...... 
+    if(sizeInMB <  (Double)(HostInfo::memoryTotal())/(2048.0) 
+       || forceInMemory){
+      MeasurementSet* a = outpointer;
+      outpointer= new MeasurementSet(a->copyToMemoryTable("TmpMemoryMS"));
+      outpointer->initRefs();
+      delete a;
+    }
+
+    msOut_p= *outpointer;
+    msc_p=new MSColumns(msOut_p);
+
+    if(!fillAllTables(colname)){
+      delete outpointer;
+      outpointer=0;
+      ms_p=MeasurementSet();
+      return False;
+
+    }
+
+    //Detaching the selected part
+    ms_p=MeasurementSet();
+    return outpointer;
+    
+  }
+
+
+
+  Bool SubMS::fillAllTables(const String& colname){
+
+    LogIO os(LogOrigin("SubMS", "makeSubMS()", WHERE));
+
     // fill or update
     if(!fillDDTables()){
-      delete outpointer;
-      //Detaching the selected part
-      ms_p=MeasurementSet();
       return False;
       
     }
@@ -249,7 +340,6 @@ namespace casa {
     }
     else{
       if(!sameShape_p){
-	delete outpointer;
 	os << LogIO::WARN 
 	   << "Time averaging of varying spw shapes is not handled yet"
 	   << LogIO::POST;
@@ -263,13 +353,8 @@ namespace casa {
       }
     }
 
-    //  msOut_p.relinquishAutoLocks (True);
-    //  msOut_p.unlock();
-    //Detaching the selected part
-    ms_p=MeasurementSet();
-    delete outpointer;
     return True;
-    
+
   }
   
   
@@ -841,15 +926,10 @@ Bool SubMS::fillAverMainTable(const String& whichCol){
 Bool SubMS::copyAntenna(){
 
   Table oldAnt(mssel_p.antennaTableName(), Table::Old);
-  Table::TableOption option;
-  if(Table::isReadable(msOut_p.antennaTableName()))
-    option=Table::Update;
-  else
-    option=Table::New;
-  Table newAnt(msOut_p.antennaTableName(), option);
+
+  Table& newAnt = msOut_p.antenna();
   TableCopy::copyRows(newAnt, oldAnt);
-
-
+  
   return True;
 
 }
@@ -857,14 +937,7 @@ Bool SubMS::copyAntenna(){
 Bool SubMS::copyFeed(){
 
   Table oldFeed(mssel_p.feedTableName(), Table::Old);
-
-  Table::TableOption option;
-  if(Table::isReadable(msOut_p.feedTableName()))
-    option=Table::Update;
-  else
-    option=Table::New;
-
-  Table newFeed(msOut_p.feedTableName(), option);
+  Table& newFeed = msOut_p.feed();
   TableCopy::copyRows(newFeed, oldFeed);
 
 
@@ -877,15 +950,7 @@ Bool SubMS::copySource(){
   //Source is an optinal table..so it may not exist
   if(Table::isReadable(mssel_p.sourceTableName())){
     Table oldSource(mssel_p.sourceTableName(), Table::Old);
-    
-    Table::TableOption option;
-    if(Table::isReadable(msOut_p.sourceTableName()))
-      option=Table::Update;
-    else
-      option=Table::New;
-    
-
-    Table newSource(msOut_p.sourceTableName(), option);
+    Table& newSource=msOut_p.source();
 
     if(newSource.actualTableDesc().ncolumn() != 
        oldSource.actualTableDesc().ncolumn()){      
@@ -919,12 +984,7 @@ Bool SubMS::copySource(){
 Bool SubMS::copyObservation(){
 
   Table oldObs(mssel_p.observationTableName(), Table::Old);
-  Table::TableOption option;
-  if(Table::isReadable(msOut_p.observationTableName()))
-    option=Table::Update;
-  else
-    option=Table::New;
-  Table newObs(msOut_p.observationTableName(), option);
+  Table& newObs=msOut_p.observation();
   TableCopy::copyRows(newObs, oldObs);
 
 
@@ -938,12 +998,7 @@ Bool SubMS::copyPointing(){
   if(pointExists){
     Table oldPoint(mssel_p.pointingTableName(), Table::Old);
     if(oldPoint.nrow() > 0){
-      Table::TableOption option;
-      if(Table::isReadable(msOut_p.pointingTableName()))
-	option=Table::Update;
-      else
-	option=Table::New;
-      Table newPoint(msOut_p.pointingTableName(), option);
+      Table& newPoint=msOut_p.pointing();
       TableCopy::copyRows(newPoint, oldPoint);
     }
   }

@@ -110,6 +110,13 @@ class SubMS
 
   Bool makeSubMS(String& submsname, String& whichDataCol);
 
+  //Method to make a scratch  subMS and even in memory if posssible
+  //Useful if temporary subselection/averaging is necessary
+  // It'll be in memory if the basic output ms is less than half of 
+  // memory reported by HostInfo unless forced to by user...
+  MeasurementSet* makeScratchSubMS(String& whichDataCol, 
+				   Bool forceInMemory=False);
+
   // This setup a default new ms
   // Can be called directly as its not dependent on any private variable
   static MeasurementSet* setupMS(String msname, Int nchan, Int npol, String telescop, Int obstype=0);
@@ -120,6 +127,7 @@ class SubMS
  private:
   //method that returns the selected ms
   Bool makeSelection();
+  Bool fillAllTables(const String& colname);
   Bool fillDDTables();
   Bool fillFieldTable();
   Bool fillMainTable(const String& which);
