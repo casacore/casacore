@@ -83,7 +83,7 @@ main ()
     {
         IPosition latticeShape(2, 4, 8);
         Array<Bool> arr(latticeShape);
-        arr.set(False);
+        arr.set(True);
         arr(IPosition(2,0,0)) = False;
         LCPixelSet mask(arr, LCBox(IPosition(2,0),
 				   latticeShape-1, latticeShape));
