@@ -1,38 +1,41 @@
-#!/bin/sh
-#   Copyright (C) 2001
-#   Associated Universities, Inc. Washington DC, USA.
+#! /bin/sh
 #
-#   This program is free software; you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the Free
-#   Software Foundation; either version 2 of the License, or (at your option)
-#   any later version.
+# This script checks if two files containing floating point numbers
+# are approximately equal.
+# All non-numeric characters are ignored.
+# The differences are written to stdout.
 #
-#   This program is distributed in the hope that it will be useful, but WITHOUT
-#   ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-#   FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-#   more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program; if not, write to the Free Software Foundation, Inc.,
-#   675 Massachusetts Ave, Cambridge, MA 02139, USA.
-#
-#   Correspondence concerning AIPS++ should be addressed as follows:
-#          Internet email: aips2-request@nrao.edu.
-#          Postal address: AIPS++ Project Office
-#                          National Radio Astronomy Observatory
-#                          520 Edgemont Road
-#                          Charlottesville, VA 22903-2475 USA
-#
-#   $Id$
-#
-# This shell script is a front-end for running the glish floatchecking script
-# from the command line.
-#
-AIPSARCH=`echo $AIPSPATH | awk '{printf("%s/%s",$1,$2)}'`
-echo \#\!$AIPSARCH/bin/glish > assay.script
-echo include \"floatcheck.g\" >> assay.script
-echo print floatcheck\(\'$1\', \'$2\'\) >> assay.script
-echo exit >> assay.script
-chmod u+x assay.script
-./assay.script
-rm ./assay.script
+# run as:    floatcheck.sh file1 file2 [precision]
+#                          default precision is 1e-5
+
+  if test $# -lt 2; then
+    echo "usage: floatcheck.sh file1 file2 [precision]"
+    exit 1
+  fi
+  PREC=$3
+  if test $# -lt 3; then
+    PREC=1e-5
+  fi
+ 
+  pid=$$
+
+# Check if all numbers are approximately equal.
+# First replace all non-numeric characters and single e.+- by a blank.
+# Insert a blank if a - or + is preceeded by a digit.
+# Replace blanks by a newline.
+  sed -e 's/[^-+.e0-9]/ /g' $1 | sed -e 's/\(^\| \)[e.+-]\+\( \|$\)//g' | sed -e 's/^ \+//' -e 's/ \+$//' -e 's/\([0-9.]\)\([+-]\)/\1 \2/g' -e 's/ \+/\n/g' > /tmp/$pid.floatcheck_tmp.1
+  sed -e 's/[^-+.e0-9]/ /g' $2 | sed -e 's/\(^\| \)[e.+-]\+\( \|$\)//g' | sed -e 's/^ \+//' -e 's/ \+$//' -e 's/\([0-9.]\)\([+-]\)/\1 \2/g' -e 's/ \+/\n/g' > /tmp/$pid.floatcheck_tmp.2
+
+# Show the differences column-wise.
+  diff -y --suppress-common-lines /tmp/$pid.floatcheck_tmp.1 /tmp/$pid.floatcheck_tmp.2 > /tmp/$pid.floatcheck_tmp.diff
+
+# Now loop through all differences and see if almost equal.
+  awk '{ a1=$1; if (a1<0) a1=-a1; a2=$3; if (a2<0) a2=-a2; if (a1>1e-20 || a2>1e-20) if ((a1>a2 && a1-a2> '"$PREC"'*a1) || (a2>a1 && a2-a1> '"$PREC"'*a2)) print "float diff>'"$PREC"':",$1,$3 }' /tmp/$pid.floatcheck_tmp.diff > /tmp/$pid.floatcheck_tmp.res
+  STATUS=0;
+  if [ -s /tmp/$pid.floatcheck_tmp.res ]
+  then
+    cat /tmp/$pid.floatcheck_tmp.res
+    STATUS=2
+  fi
+  \rm -f /tmp/$pid.floatcheck_tmp.*
+  exit $STATUS

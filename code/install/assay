@@ -189,30 +189,30 @@
   mv -f ${1}_tmp.out2 ${1}_tmp.out
 
 # Compare with the expected output.
-  if cat "$CAT" | sed -e '/^>>>/,/^<<</d' | diff ${1}_tmp.out -
+  cat "$CAT" | sed -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
+  if diff ${1}_tmp.out ${1}_tmpo.out
   then
      echo "PASS (output verified): $*"
      STATUS=0
      exit
-  else
-     cat "$CAT" | sed -e '/^>>>/,/^<<</d' > ${1}_tmpo.out
-     diff -e ${1}_tmpo.out ${1}_tmp.out > ${1}_atmp.ed
-     diff -e ${1}_tmp.out ${1}_tmpo.out > ${1}_btmp.ed
-     fchk=`floatcheck.sh ${1}_atmp.ed ${1}_btmp.ed`
-     if [ "$fchk" = "-1" ]
-     then
-        echo "FAIL (output not verified): $*"
-        STATUS=2
-     else
-        if [ "$fchk" = "0" ]
-        then
-           echo "PASS (output verified): $*"
-           STATUS=0
-        else
-           echo "WARNING (floating point discrepancy RMS = $fchk): $*"
-           STATUS=4
-        fi
-     fi
-     rm ${1}_atmp.ed ${1}_btmp.ed
+  fi
+  # Not fully equal, check if equal except for numbers.
+  # Replace for this purpose all numbers by x.
+  sed -e 's/[+-]\?\(\(\([0-9]\+\)\|\([0-9]*\.\?[0-9]*\)\)\(e[+-]\?[0-9]\+\)\?\)/x/g' ${1}_tmp.out > ${1}_tmp.out2
+  sed -e 's/[+-]\?\(\(\([0-9]\+\)\|\([0-9]*\.\?[0-9]*\)\)\(e[+-]\?[0-9]\+\)\?\)/x/g' ${1}_tmpo.out > ${1}_tmpo.out2
+  diff ${1}_tmp.out2 ${1}_tmpo.out2 > /dev/null 2>&1
+  if [ $? != 0 ]
+  then
+     echo "FAIL (output not verified): $1"
+     STATUS=2
      exit
   fi
+  if floatcheck.sh ${1}_tmp.out ${1}_tmpo.out 1e-5
+  then
+     echo "PASS (floating point discrepancies <= 1e-5): $1"
+     STATUS=0
+     exit
+  fi
+  echo "FAIL (floating point discrepancies > 1e-5): $1"
+  STATUS=2
+  exit
