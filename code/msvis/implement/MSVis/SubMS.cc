@@ -256,7 +256,7 @@ namespace casa {
 	 << "this MS"
 	 << LogIO::POST;
       ms_p=MeasurementSet();
-      return False;
+      return 0;
       
       
     }
@@ -266,7 +266,7 @@ namespace casa {
 	 << "this MS"
 	 << LogIO::POST;
       ms_p=MeasurementSet();
-      return False;
+      return 0;
       
       
     }
@@ -277,7 +277,7 @@ namespace casa {
 	 << " invalid" 
 	 << LogIO::POST;
       ms_p=MeasurementSet();
-      return False;
+      return 0;
     }
     mscIn_p=new MSColumns(mssel_p);
     Double sizeInMB= 1.5*mssel_p.nrow()*nchan_p[0]*npol_p[0]*sizeof(Complex)/1024.0/1024.0;
@@ -303,7 +303,7 @@ namespace casa {
       delete outpointer;
       outpointer=0;
       ms_p=MeasurementSet();
-      return False;
+      return 0;
 
     }
 
