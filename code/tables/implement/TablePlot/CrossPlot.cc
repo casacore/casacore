@@ -148,18 +148,25 @@ template<class T> Int CrossPlot<T>::getXData(TableExprId &tid)
 		cc=0;dd=0;
 		for(Int z=0;z<nTens_p;z++)
 		{
+		  if(cc==NCross1_p) {
+		    ++rc;
+		    xpd1_p.resize(rc+1, NCross1_p, True);
+		    xpd2_p.resize(rc+1, NCross2_p, True);
+		    cc=0;
+		    dd=0;
+		  }
 			tsl = ipslice_p(z);
 			
 			for(Int j=(tsl.start())[1];j<=(tsl.end())[1];j+=(tsl.stride())[1]) 
 			{
 				//xplotdata_p(0,cc++) = j+1;
-				xpd1_p(0,cc++) = j+1;
+				xpd1_p(rc,cc++) = j+1;
 				if(ddbg)cout << " " << j+1 << " " ;
 			}
 			
 			for(Int j=(tsl.start())[0];j<=(tsl.end())[0];j+=(tsl.stride())[0]) 
 			{
-				xpd2_p(0,dd++) = j+1;
+				xpd2_p(rc,dd++) = j+1;
 				if(ddbg)cout << " " << j+1 << " " ;
 			}
 		}
