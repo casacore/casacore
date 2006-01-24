@@ -108,11 +108,12 @@ const MEpoch *MSTimeParse::dayTimeConvert(uInt day, uInt hour, uInt minute,
 {
     if(daytime) delete daytime;
 
-    Time t(0, 0, day, hour, minute, second+(millisec*0.001));
-    MVTime mt(t);
-    MVEpoch mv(mt);
+    Double s = Double(second) + Double(millisec)/1000.0;
+    Time t(0, 0, day, hour, minute, s);
 
-    return (daytime = new MEpoch(mv));
+    MVEpoch mv(t.modifiedJulianDay());
+
+    return (daytime = new MEpoch(mv, MEpoch::UTC));
 }
 
 const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
@@ -121,11 +122,12 @@ const MEpoch *MSTimeParse::yearTimeConvert(uInt year, uInt month, uInt day,
 {
     if(yeartime) delete yeartime;
 
-    Time t(year, month, day, hour, minute, second+(millisec*0.001));
-    MVTime mt(t);
-    MVEpoch mv(mt);
+    Double s = Double(second) + Double(millisec)/1000.0;
+    Time t(year, month, day, hour, minute, s);
 
-    return (yeartime = new MEpoch(mv));
+    MVEpoch mv(t.modifiedJulianDay());
+
+    return (yeartime = new MEpoch(mv, MEpoch::UTC));
 }
 
 const TableExprNode* MSTimeParse::node()
