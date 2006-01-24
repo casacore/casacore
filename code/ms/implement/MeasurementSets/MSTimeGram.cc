@@ -44,6 +44,7 @@
 //# (before the flex/bison files).
 #include <casa/stdlib.h>
 #include <MSTimeGram.ycc>                  // flex output
+#define yy_scan_chars yy_scan_chars_MSTimeGram
 #include <MSTimeGram.lcc>                  // bison output
 
 // Define the yywrap function for flex.
@@ -99,7 +100,7 @@ int msTimeGramInput (char* buf, int max_size)
 void MSTimeGramerror (char*)
 {
     throw (AipsError ("Time Expression: Parse error at or near '" +
-		      String(MSTimeGramtext) + "'"));
+		      String((const casa::Char*) MSTimeGramtext) + "'"));
 }
 
 String msTimeGramRemoveEscapes (const String& in)

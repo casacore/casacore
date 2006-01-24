@@ -29,7 +29,7 @@
 
 %{
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=msTimeGramInput(buf,max_size)
+#define YY_INPUT(buf,result,max_size) result=msTimeGramInput((char*) buf,max_size)
 
 #undef YY_DECL
 #define YY_DECL int MSTimeGramlex (YYSTYPE* lvalp)
@@ -44,6 +44,7 @@ TRUE      T
 FALSE     F
 
 
+
 QSTRING   \"[^\"\n]*\"
 ASTRING   \'[^\'\n]*\'
 UQSTRING   \"[^\"\n]*\n
@@ -51,22 +52,72 @@ UASTRING   \'[^\'\n]*\n
 STRING    ({QSTRING}|{ASTRING})+
 USTRING   ({UQSTRING}|{UASTRING})+
 
+DISTANCEUNIT [Kk][Mm]
+ML           [Mm][Ll]
+KL           [Kk][Ll]
+L            [Ll]
+WAVELENTHUNIT {ML}|{KL}|{L}
+
+REGEX1    m"/"[^/]+"/"
+REGEX2    m%[^%]+%
+REGEX3    m#[^#]+#
+REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+
   /* rules */
 
 %%
 
+"["       { msTimeGramPosition() += yyleng;
+            return LBRACKET;
+          }
+"("       { msTimeGramPosition() += yyleng;
+            return LPAREN;
+          }
+"]"       { msTimeGramPosition() += yyleng;
+            return RBRACKET;
+          }
+")"       { msTimeGramPosition() += yyleng;
+            return RPAREN;
+          }
+
 ":"       { msTimeGramPosition() += yyleng;
             return COLON; }
+"=="      { msTimeGramPosition() += yyleng;
+            return EQ; }
+"="       { msTimeGramPosition() += yyleng;
+            return EQASS; }
+"!="      { msTimeGramPosition() += yyleng;
+            return NE; }
+"<>"      { msTimeGramPosition() += yyleng;
+            return NE; }
+">="      { msTimeGramPosition() += yyleng;
+            return GE; }
 ">"       { msTimeGramPosition() += yyleng;
             return GT; }
+"<="      { msTimeGramPosition() += yyleng;
+            return LE; }
 "<"       { msTimeGramPosition() += yyleng;
             return LT; }
+"&&"      { msTimeGramPosition() += yyleng;
+            return AND; }
+"||"      { msTimeGramPosition() += yyleng;
+            return OR; }
+"!"       { msTimeGramPosition() += yyleng;
+            return NOT; }
 "."       { msTimeGramPosition() += yyleng;
             return DOT; }
 "/"       { msTimeGramPosition() += yyleng;
             return SLASH; }
+"%"       { msTimeGramPosition() += yyleng;
+            return PERCENT; }
+"+"       { msTimeGramPosition() += yyleng;
+            return PLUS; }
 "-"       { msTimeGramPosition() += yyleng;
             return DASH; }
+"{"       { msTimeGramPosition() += yyleng;
+            return LBRACE; }
+"}"       { msTimeGramPosition() += yyleng;
+            return RBRACE; }
 "'"       { msTimeGramPosition() += yyleng;
             return SQUOTE; }
 ","       { msTimeGramPosition() += yyleng;
@@ -75,7 +126,7 @@ USTRING   ({UQSTRING}|{UASTRING})+
 
  /* Literals */
 {NUMBER}        { msTimeGramPosition() += yyleng;
-                  lvalp->ival = atoi(MSTimeGramtext);
+                  lvalp->dval = atof((const char *) MSTimeGramtext);
                   return NUMBER;
                 }
 
