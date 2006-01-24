@@ -30,7 +30,7 @@
   diff -y --suppress-common-lines /tmp/$pid.floatcheck_tmp.1 /tmp/$pid.floatcheck_tmp.2 > /tmp/$pid.floatcheck_tmp.diff
 
 # Now loop through all differences and see if almost equal.
-  awk '{ a1=$1; if (a1<0) a1=-a1; a2=$3; if (a2<0) a2=-a2; if (a1>1e-20 || a2>1e-20) if ((a1>a2 && a1-a2> '"$PREC"'*a1) || (a2>a1 && a2-a1> '"$PREC"'*a2)) print "float diff>'"$PREC"':",$1,$3 }' /tmp/$pid.floatcheck_tmp.diff > /tmp/$pid.floatcheck_tmp.res
+  awk '{ a1=$1; if (a1<0) a1=-a1; a2=$3; if (a2<0) a2=-a2; if (2*a1>'"$PREC"' && 2*a2>'"$PREC"') if ((a1>a2 && a1-a2>'"$PREC"'*a1) || (a2>a1 && a2-a1>'"$PREC"'*a2)) print "float diff>'"$PREC"':",$1,$3 }' /tmp/$pid.floatcheck_tmp.diff > /tmp/$pid.floatcheck_tmp.res
   STATUS=0;
   if [ -s /tmp/$pid.floatcheck_tmp.res ]
   then
