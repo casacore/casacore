@@ -221,10 +221,13 @@ void RefTable::unlock()
 
 void RefTable::flush (Bool sync)
 {
-    if (openedForWrite()) {
-	writeRefTable (sync);
-	baseTabPtr_p->flush (sync);
+    if (!isMarkedForDelete()) {
+        if (openedForWrite()) {
+	    writeRefTable (sync);
+	}
     }
+    // Flush the underlying table (if needed).
+    baseTabPtr_p->flush (sync);
 }
 
 void RefTable::resync()
