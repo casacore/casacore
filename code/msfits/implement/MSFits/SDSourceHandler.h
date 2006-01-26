@@ -131,7 +131,7 @@ private:
     RORecordFieldPtr<String> transiti_p, molecule_p, object_p, obsmode_p;
 
     // which optional colums exist
-    Bool hasTransition_p, hasRestFreq_p, hasSysVel_p;
+    Bool hasTransition_p, hasRestFreq_p, hasSysVel_p, hasPosition_p;
 
     // fields which might come from a pre-existin MS
     RORecordFieldPtr<Int> calibrationGroupField_p, pulsarIdField_p;

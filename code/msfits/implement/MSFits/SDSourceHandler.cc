@@ -44,14 +44,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 SDSourceHandler::SDSourceHandler() 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
       nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
-      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False),
+      hasPosition_p(False)
 {;}
 
 SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
       nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
-      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False),
+      hasPosition_p(False)
 {
     initAll(ms, handledCols, row);
 }
@@ -59,7 +61,8 @@ SDSourceHandler::SDSourceHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
 SDSourceHandler::SDSourceHandler(const SDSourceHandler &other) 
     : index_p(0), msSource_p(0), msSourceCols_p(0), sourceId_p(-1),
       nextSourceId_p(0), restfreq_p(-1), vframe_p(-1),
-      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False)
+      hasTransition_p(False), hasRestFreq_p(False), hasSysVel_p(False),
+      hasPosition_p(False)
 {
     *this = other;
 }
@@ -94,6 +97,7 @@ SDSourceHandler &SDSourceHandler::operator=(const SDSourceHandler &other)
 	hasTransition_p = other.hasTransition_p;
 	hasRestFreq_p = other.hasRestFreq_p;
 	hasSysVel_p = other.hasSysVel_p;
+        hasPosition_p = other.hasPosition_p;
 
 	calibrationGroupField_p = other.calibrationGroupField_p;
 	pulsarIdField_p = other.pulsarIdField_p;
@@ -172,14 +176,38 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		if (rowFound && directionField_p.isAttached()) {
 		    rowFound = allEQ(msSourceCols_p->direction()(rownr),*directionField_p);
 		}
-		if (rowFound && positionField_p.isAttached()) {
-		    rowFound = allEQ(msSourceCols_p->position()(rownr),*positionField_p);
-		}
 		if (rowFound && properMotionField_p.isAttached()) {
 		    rowFound = allEQ(msSourceCols_p->properMotion()(rownr),*properMotionField_p);
 		}
 		if (rowFound && hasSysVel_p) {
 		    rowFound = allEQ(msSourceCols_p->sysvel()(rownr), sysvel);
+		}
+                if (rowFound && hasPosition_p) {
+                    rowFound = allEQ(msSourceCols_p->position()(rownr), *positionField_p);
+                }
+		if (rowFound && pulsarIdField_p.isAttached()) {
+		    if (msSourceCols_p->pulsarId().isNull()) rowFound = !(*pulsarIdField_p>=0);
+		    else rowFound = msSourceCols_p->pulsarId()(rownr) == *pulsarIdField_p;
+		}
+		// if we're here, the source ID is probably okay
+		if (rowFound) {
+		    sourceFound = True;
+		    sourceId_p = msSourceCols_p->sourceId()(rownr);
+		    // we still might not have the right row, though
+		    rowFound = spectralWindowId == msSourceCols_p->spectralWindowId()(foundRows(whichOne));
+		    if (rowFound && hasTransition_p) {
+			rowFound = allEQ(msSourceCols_p->transition()(rownr), transition);
+		    }
+		    if (rowFound && hasRestFreq_p) {
+			rowFound = allEQ(msSourceCols_p->restFrequency()(rownr), restfreq);
+		    }
+		}
+		if (!rowFound) whichOne++;
+		if (rowFound && hasSysVel_p) {
+		    rowFound = allEQ(msSourceCols_p->sysvel()(rownr), sysvel);
+		}
+		if (rowFound && hasPosition_p) {
+		    rowFound = allEQ(msSourceCols_p->position()(rownr), *positionField_p);
 		}
 		if (rowFound && pulsarIdField_p.isAttached()) {
 		    if (msSourceCols_p->pulsarId().isNull()) rowFound = !(*pulsarIdField_p>=0);
@@ -233,6 +261,9 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 	    if (hasSysVel_p) {
 		msSourceCols_p->sysvel().put(rownr,Vector<Double>(1,sysvel));
 	    }
+            if (hasPosition_p) {
+		msSourceCols_p->position().put(rownr,*positionField_p);
+            }
 	    String name = "";
 	    if (object_p.isAttached()) name = *object_p;
 	    msSourceCols_p->name().put(rownr,name);
@@ -248,11 +279,6 @@ void SDSourceHandler::fill(const Record &row, Int spectralWindowId)
 		msSourceCols_p->direction().put(rownr,*directionField_p);
 	    } else {
 		msSourceCols_p->direction().put(rownr,Vector<Double>(2,0.0));
-	    }
-	    if (positionField_p.isAttached()) {
-		msSourceCols_p->position().put(rownr,*positionField_p);
-	    } else {
-		msSourceCols_p->position().put(rownr,Vector<Double>(3,0.0));
 	    }
 	    if (properMotionField_p.isAttached()) {
 		msSourceCols_p->properMotion().put(rownr,*properMotionField_p);
@@ -308,7 +334,7 @@ void SDSourceHandler::clearRow()
     object_p.detach();
     obsmode_p.detach();
     restfreq_p = vframe_p = -1;
-    hasTransition_p = hasRestFreq_p = hasSysVel_p = False;
+    hasTransition_p = hasRestFreq_p = hasSysVel_p = hasPosition_p = False;
     calibrationGroupField_p.detach();
     pulsarIdField_p.detach();
     timeField_p.detach();
@@ -339,6 +365,10 @@ void SDSourceHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols,
     if (transiti_p.isAttached() || molecule_p.isAttached()) {
 	MSSource::addColumnToDesc(td, MSSource::TRANSITION);
 	hasTransition_p = True;
+    }
+    if (positionField_p.isAttached()) {
+        MSSource::addColumnToDesc(td,MSSource::POSITION);
+        hasPosition_p = True;
     }
     // and add these columns in, if there any
     for (uInt i=0;i<td.ncolumn();i++) {
