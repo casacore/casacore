@@ -170,6 +170,8 @@ class SubMS
   String timeRange_p;
   Vector<Double> newTimeVal_p;
   Vector<Int> timeBinIndex_p;
+  Vector<Int> antNewIndex_p;
+  Vector<Int> feedNewIndex_p;
 };
 
 

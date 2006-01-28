@@ -34,6 +34,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Arrays/Slice.h>
 #include <casa/Logging/LogIO.h>
 #include <casa/OS/File.h>
 #include <casa/OS/HostInfo.h>
@@ -327,7 +328,7 @@ namespace casa {
     fillFieldTable();
     copySource();
     copyAntenna();
-    copyFeed();
+    copyFeed();    // Feed table writing has to be after antenna 
     copyObservation();
     copyPointing();
 
@@ -753,12 +754,31 @@ Bool SubMS::fillMainTable(const String& whichCol){
 
   msOut_p.addRow(mssel_p.nrow(), True);
   
-  msc_p->antenna1().putColumn(mscIn_p->antenna1());
-  msc_p->antenna2().putColumn(mscIn_p->antenna2());
+  if(!antennaSel_p){
+    msc_p->antenna1().putColumn(mscIn_p->antenna1());
+    msc_p->antenna2().putColumn(mscIn_p->antenna2());
+    msc_p->feed1().putColumn(mscIn_p->feed1());
+    msc_p->feed2().putColumn(mscIn_p->feed2());
+  }
+  else{
+    Vector<Int> ant1=mscIn_p->antenna1().getColumn();
+    Vector<Int> ant2=mscIn_p->antenna2().getColumn();
+    Vector<Int> feed1=mscIn_p->feed1().getColumn();
+    Vector<Int> feed2=mscIn_p->feed2().getColumn();
+
+    for (uInt k=0; k < ant1.nelements(); ++k){
+      ant1[k]=antNewIndex_p[ant1[k]];
+      ant2[k]=antNewIndex_p[ant2[k]];
+      feed1[k]=feedNewIndex_p[feed1[k]];
+      feed2[k]=feedNewIndex_p[feed2[k]];
+    }
+    msc_p->antenna1().putColumn(ant1);
+    msc_p->antenna2().putColumn(ant2);
+    msc_p->feed1().putColumn(feed1);
+    msc_p->feed2().putColumn(feed2);
+  }
   msc_p->arrayId().putColumn(mscIn_p->arrayId());
   msc_p->exposure().putColumn(mscIn_p->exposure());
-  msc_p->feed1().putColumn(mscIn_p->feed1());
-  msc_p->feed2().putColumn(mscIn_p->feed2());
   //  msc_p->flag().putColumn(mscIn_p->flag());
   // if(!(mscIn_p->flagCategory().isNull()))
   //  if(mscIn_p->flagCategory().isDefined(0))
@@ -903,9 +923,7 @@ Bool SubMS::fillAverMainTable(const String& whichCol){
   //Fill array id with first value of input ms for now.
   msc_p->arrayId().fillColumn(mscIn_p->arrayId()(0));
   msc_p->exposure().fillColumn(timeBin);
-  // Will have to reconsider multi-feeds later
-  msc_p->feed1().fillColumn(mscIn_p->feed1()(0));
-  msc_p->feed2().fillColumn(mscIn_p->feed2()(0));
+
   msc_p->interval().fillColumn(timeBin);
   msc_p->observationId().fillColumn(mscIn_p->observationId()(0));
   msc_p->exposure().fillColumn(timeBin);
@@ -924,13 +942,40 @@ Bool SubMS::fillAverMainTable(const String& whichCol){
 
 
 Bool SubMS::copyAntenna(){
-
   Table oldAnt(mssel_p.antennaTableName(), Table::Old);
-
   Table& newAnt = msOut_p.antenna();
-  TableCopy::copyRows(newAnt, oldAnt);
-  
-  return True;
+
+  if(!antennaSel_p){
+    
+   
+    TableCopy::copyRows(newAnt, oldAnt);
+    return True;
+  }
+  else{
+    //Now we try to re-index the antenna list;
+    Vector<Int> ant1 = mscIn_p->antenna1().getColumn();
+    Int nAnt1=GenSort<Int>::sort(ant1,Sort::Ascending,
+				   Sort::NoDuplicates);
+    ant1.resize(nAnt1, True);
+    Vector<Int> ant2 = mscIn_p->antenna2().getColumn();
+    Int nAnt2=GenSort<Int>::sort(ant2,Sort::Ascending,
+				 Sort::NoDuplicates);
+    ant2.resize(nAnt2, True);
+    ant1.resize(nAnt2+nAnt1, True);
+    ant1(Slice(nAnt1,nAnt2))=ant2;
+    nAnt1=GenSort<Int>::sort(ant1,Sort::Ascending,
+			      Sort::NoDuplicates);
+    ant1.resize(nAnt1, True);
+    antNewIndex_p.resize(oldAnt.nrow());
+    antNewIndex_p.set(-1); //So if you see -1 in the main table or feed fix it
+    for (Int k=0; k < nAnt1; ++k){
+      antNewIndex_p[ant1[k]]=k;
+      TableCopy::copyRows(newAnt, oldAnt, k, ant1[k], 1);
+    }
+
+    return True;
+  }
+  return False;
 
 }
 
@@ -938,8 +983,40 @@ Bool SubMS::copyFeed(){
 
   Table oldFeed(mssel_p.feedTableName(), Table::Old);
   Table& newFeed = msOut_p.feed();
-  TableCopy::copyRows(newFeed, oldFeed);
+  if(!antennaSel_p){
+    TableCopy::copyRows(newFeed, oldFeed);
+    return True;
+  }
+  else{
+    Vector<Bool> feedRowSel(oldFeed.nrow());
+    feedRowSel.set(False);
+    Vector<Int> antIds=ROScalarColumn<Int> (oldFeed, "ANTENNA_ID").getColumn();
+    Vector<Int> feedIds=ROScalarColumn<Int> (oldFeed, "FEED_ID").getColumn();
+    feedNewIndex_p.resize(max(feedIds)+1);
+    feedNewIndex_p.set(-1);
+    uInt feedSelected=0;
+    for (uInt k=0; k < antIds.nelements(); ++k){
+      if(antNewIndex_p[antIds[k]] > -1){
+	feedRowSel[k]=True;
+	feedNewIndex_p[feedIds[k]]=feedSelected;
+	TableCopy::copyRows(newFeed, oldFeed, feedSelected, k, 1);
+	++feedSelected;
+      }
+    }
+    ScalarColumn<Int> antCol(newFeed, "ANTENNA_ID");
+    ScalarColumn<Int> feedCol(newFeed, "FEED_ID");
+    Vector<Int> newAntIds=antCol.getColumn();
+    Vector<Int> newFeedIds=feedCol.getColumn();
+    for (uInt k=0; k< feedSelected; ++k){
+      newAntIds[k]=antNewIndex_p[newAntIds[k]];
+      newFeedIds[k]=feedNewIndex_p[newFeedIds[k]];
+    } 
+    antCol.putColumn(newAntIds);
+    feedCol.putColumn(newFeedIds);
 
+    return True;
+
+  }
 
   return True;
 
@@ -1338,12 +1415,13 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
     uInt nrows=msOut_p.nrow();
     Vector<Int> antenna1(nrows);
     Vector<Int> antenna2(nrows);
+    
     Vector<Double> rowTime(nrows);
 
-    Vector<Int> ant2Index(max(ant2)+1);
-    ant2Index=-1;
+    Vector<Int> ant2Indexer(max(ant2)+1);
+    ant2Indexer=-1;
     for (Int j=0; j< Int(ant2.nelements()); ++j){
-      ant2Index[ant2[j]]=j;
+      ant2Indexer[ant2[j]]=j;
     }
     //Will need to do the weighted averaging of time in the future.
     uInt k=0;
@@ -1353,11 +1431,17 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 	// be careful as selection may have ant1 which is bigger than max
 	// ant2
 	if(ant1[ant1Index] < max(ant2)){
-	  uInt startAnt2Ind=ant2Index[ant1[ant1Index]]+1;
+	  uInt startAnt2Ind=ant2Indexer[ant1[ant1Index]]+1;
 	  for (uInt ant2Index=startAnt2Ind; ant2Index < ant2.nelements(); 
 	       ++ant2Index){ 
-	    antenna1[k]=ant1[ant1Index];
-	    antenna2[k]=ant2[ant2Index];
+	    if(!antennaSel_p){
+	      antenna1[k]=ant1[ant1Index];
+	      antenna2[k]=ant2[ant2Index];
+	    }
+	    else{
+	     antenna1[k]=antNewIndex_p[ant1[ant1Index]];
+	     antenna2[k]=antNewIndex_p[ant2[ant2Index]]; 
+	    }
 	    rowTime[k]=newTimeVal_p[t];
 	    ++k;
 
@@ -1368,6 +1452,12 @@ Bool SubMS::writeSimilarSpwShape(String& columnName){
 
     msc_p->antenna1().putColumn(antenna1);
     msc_p->antenna2().putColumn(antenna2);
+    // Feed Ids are not being handled properly...
+    // Will work for arrays with one feed setting for all antennas
+    // but will need to be fixed for multi feed setting in one array/ms
+    //Multi-feed antennas and/or multi-feed setting will be messed up
+    msc_p->feed1().fillColumn(mscIn_p->feed1()(0));
+    msc_p->feed2().fillColumn(mscIn_p->feed2()(0)); 
     msc_p->time().putColumn(rowTime);
     msc_p->timeCentroid().putColumn(rowTime);
 
