@@ -59,29 +59,41 @@ int main(int argc, char **argv) {
 //    VisIter vi(ms,sort);
     VisBuffer vb(vi);
 
-    Int iRow=0, iTime=-1, iIter=0, iChunk=0;
+    Int iRow=0, iTime=-1, iIter=0, iChunk=0,iAnt1=-1,iAnt2=-1;
     Double oldTime=-1., time0; Vector<Double> curTime;
     Complex xxx;
     Int row, chn, pol;
-    Bool newTime, newAnt;
-    Vector<Int> ant1, ant2;   Int a1, a2, oldAnt=-1;
+    Bool newTime;
+    Vector<Int> ant1, ant2;   Int a1, a2, oldAnt1=-1,oldAnt2=-1,fd1,fd2;
+    Vector<Int> feed1,feed2;  Int oldFeed1=-1,oldFeed2=-1,iFeed1=-1,iFeed2=-1;
 
     timer.show(" setup: "); timer.mark();
 
     for (vi.originChunks();vi.moreChunks();vi.nextChunk()) {
       for (vi.origin();vi.more();vi++) {
-	if(oldTime==-1) time0=vi.time(curTime)(0);
-        newTime=(oldTime!=vi.time(curTime)(0));
-	if(newTime) {oldTime=curTime(0); iTime++; }
-        a1=vi.antenna1(ant1)(0); a2=vi.antenna2(ant2)(0);
-	if(newAnt=(oldAnt!=a2)) oldAnt=a2;
+	vi.time(curTime);
+	vi.antenna1(ant1);
+	vi.antenna2(ant2);
+	vi.feed1(feed1);
+	vi.feed2(feed2);
 
 //	Cube<Complex>& vc= vb.visCube();   //forces actual data retreival
 
 	Int nRow=vb.nRow();
+//	cout<<"chunk="<<iChunk<<" nRow="<<nRow<<endl;
 	Int nChan=vb.nChannel();
         Int nPol=vi.visibilityShape()(0);
 	for (row=0; row<nRow; row++) {
+	     if(oldTime==-1) time0=curTime(row);
+             newTime=(oldTime!=curTime(row));
+	     if(newTime) {oldTime=curTime(row); iTime++; }
+             a1=ant1(row); a2=ant2(row);
+	     if (oldAnt1!=a1) {oldAnt1=a1; iAnt1++;}
+	     if (oldAnt2!=a2) {oldAnt2=a2; iAnt2++;}
+	     fd1=feed1(row); fd2=feed2(row);
+	     if (oldFeed1!=fd1) {oldFeed1=fd1; iFeed1++;}
+	     if (oldFeed2!=fd2) {oldFeed2=fd2; iFeed2++;}
+
 //	  if (iRow % 1000 == 0) {
 //	  if (newTime && row==0) {
 	  if (newTime && (iTime%100)==0 && row==0) {
@@ -93,6 +105,8 @@ int main(int argc, char **argv) {
 		   "  Field "<<vi.fieldId()<<"("<<vi.fieldName()<< 
 		   ")  SpWwin: "<< vi.spectralWindow()<<endl;
 
+            cout<<vi.feed_pa(curTime(0)).nelements()<<endl;
+	    cout<<vb.feed1_pa().nelements()<<endl;
 //	    cout<< "  vis ("<<nPol<<" polzn x "<<nChan<<" chan):";
 // 	    for (chn=0; chn<nChan; chn++) {
 //	      for (pol=0; pol<nPol; pol++) {
@@ -109,9 +123,11 @@ int main(int argc, char **argv) {
           iRow++;  }
         iIter++;  }
       iChunk++;  }
-    iTime++;
+
+    // 0 changes means the same value for the whole dataset
     cout<<endl<<"TOTALS: Chunks: "<<iChunk<<"  Time chgs: "<<iTime<<"  Iters: "<<iIter<<
-	  "  Rows: "<<iRow<<endl;
+	  "  Rows: "<<iRow<<" Ant1 chgs: "<<iAnt1<<" Ant2 chgs: "<<iAnt2<<
+	  "  Feed1 chgs: "<<iFeed1<<" Feed2 chgs: "<<iFeed2<<endl;
   } 
   catch (const AipsError &x) {
     cerr << "***Exception:" << endl;

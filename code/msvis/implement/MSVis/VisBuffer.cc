@@ -81,6 +81,8 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       ant2OK_p=other.ant2OK_p;
       feed1OK_p=other.feed1OK_p;
       feed2OK_p=other.feed2OK_p;
+      feed1_paOK_p=other.feed1_paOK_p;
+      feed2_paOK_p=other.feed2_paOK_p;
       arrayIdOK_p=other.arrayIdOK_p;
       corrTypeOK_p=other.corrTypeOK_p;
       cjonesOK_p=other.cjonesOK_p;
@@ -132,6 +134,14 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       if (feed2OK_p) {
 	feed2_p.resize(other.feed2_p.nelements());
 	feed2_p=other.feed2_p;
+      }
+      if (feed1_paOK_p) {
+        feed1_pa_p.resize(other.feed1_pa_p.nelements());
+	feed1_pa_p=other.feed1_pa_p;
+      }
+      if (feed2_paOK_p) {
+        feed2_pa_p.resize(other.feed2_pa_p.nelements());
+	feed2_pa_p=other.feed2_pa_p;
       }
       if (corrTypeOK_p) {
 	corrType_p.resize(other.corrType_p.nelements()); 
@@ -269,6 +279,7 @@ void VisBuffer::invalidate()
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
+  feed1_paOK_p=feed2_paOK_p=False;
 }
 
 void VisBuffer::validate()
@@ -279,6 +290,7 @@ void VisBuffer::validate()
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
+  feed1_paOK_p=feed2_paOK_p=True;
 }
 
 void VisBuffer::freqAverage() 
@@ -543,6 +555,54 @@ Vector<SquareMatrix<Complex,2> >& VisBuffer::fillCjones()
 { cjonesOK_p=True; return visIter_p->CJones(cjones_p); }
 Vector<Int>& VisBuffer::fillCorrType()
 { corrTypeOK_p=True; return visIter_p->corrType(corrType_p); }
+
+// calling fillFeed1_pa or fillFeed2_pa will fill antenna, feed
+// and time caches automatically
+Vector<Float>& VisBuffer::fillFeed1_pa()
+{
+  // fill feed, antenna and time caches, if not filled before
+  feed1(); antenna1(); time();
+  feed1_paOK_p=True;
+  feed1_pa_p.resize(antenna1_p.nelements()); // could also use nRow()
+
+  // now actual calculations  
+  for (uInt row=0; row<feed1_pa_p.nelements(); ++row) {
+       const Vector<Float>& ant_pa=feed_pa(time_p(row)); // caching inside
+           // ROVisibilityIterator, if the time doesn't change. Otherwise
+	   // we should probably fill both buffers for feed1 and feed2
+	   // simultaneously to speed up things.
+       DebugAssert((uInt(antenna1_p(row))<ant_pa.nelements()),AipsError);
+       DebugAssert(antenna1_p(row)>=0,AipsError);	   
+       feed1_pa_p(row)=ant_pa(antenna1_p(row));
+       // no code for the multi-feed case so far (feed1_p is unused).
+       // Need an interface change in MSIter and ROVisibilityIterator to
+       // implement this. 
+  }
+  return feed1_pa_p;
+}
+
+Vector<Float>& VisBuffer::fillFeed2_pa()
+{
+  // fill feed, antenna and time caches, if not filled before
+  feed2(); antenna2(); time();
+  feed2_paOK_p=True;
+  feed2_pa_p.resize(antenna2_p.nelements()); // could also use nRow()
+
+  // now actual calculations  
+  for (uInt row=0; row<feed2_pa_p.nelements(); ++row) {
+       const Vector<Float>& ant_pa=feed_pa(time_p(row)); // caching inside
+           // ROVisibilityIterator, if the time doesn't change. Otherwise
+	   // we should probably fill both buffers for feed1 and feed2
+	   // simultaneously to speed up things.
+       DebugAssert((uInt(antenna2_p(row))<ant_pa.nelements()),AipsError);
+       DebugAssert(antenna2_p(row)>=0,AipsError);	   
+       feed2_pa_p(row)=ant_pa(antenna2_p(row));
+       // no code for the multi-feed case so far (feed2_p is unused).
+       // Need an interface change in MSIter and ROVisibilityIterator to
+       // implement this. 
+  }
+  return feed2_pa_p;
+}
 
 Int& VisBuffer::fillFieldId()
 { 

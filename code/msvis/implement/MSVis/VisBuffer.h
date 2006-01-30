@@ -136,6 +136,17 @@ public:
   Vector<Int>& feed2() {return feed2OK_p ? feed2_p : fillFeed2();}
   const Vector<Int>& feed2() const {return This->feed2();}
 
+  // feed1_pa() and feed2_pa() return an array of parallactic angles
+  // (each corresponds to the first receptor of the feed) one for each
+  // row in the current buffer. In contrast, feed_pa() calculates
+  // the angles for each antenna. These methods are implemented for
+  // VisBuffer only to benefit from caching of the feed and antenna IDs.
+  Vector<Float>& feed1_pa() {return feed1_paOK_p ? feed1_pa_p : fillFeed1_pa();}
+  const Vector<Float>& feed1_pa() const {return This->feed1_pa();}
+
+  Vector<Float>& feed2_pa() {return feed2_paOK_p ? feed2_pa_p : fillFeed2_pa();}
+  const Vector<Float>& feed2_pa() const {return This->feed2_pa();}
+  
   Vector<SquareMatrix<Complex,2> >& CJones()
   { return cjonesOK_p ? cjones_p : fillCjones();}
   const Vector<SquareMatrix<Complex,2> >& CJones() const 
@@ -335,6 +346,11 @@ private:
   Vector<Int>& fillAnt2();
   Vector<Int>& fillFeed1();
   Vector<Int>& fillFeed2();
+  // calling fillFeed1_pa or fillFeed2_pa will fill antenna, feed
+  // and time caches automatically
+  Vector<Float>& fillFeed1_pa();
+  Vector<Float>& fillFeed2_pa();
+  
   Vector<SquareMatrix<Complex,2> >& fillCjones();
   Int& fillFieldId();
   Int& fillArrayId();
@@ -374,10 +390,12 @@ private:
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
   Bool msOK_p, newMS_p;
+  Bool feed1_paOK_p,feed2_paOK_p;
 
   // cached variables
   Int nChannel_p, nRow_p;
   Vector<Int> channel_p, antenna1_p, antenna2_p, feed1_p, feed2_p;
+  Vector<Float> feed1_pa_p, feed2_pa_p; 
   Vector<SquareMatrix<Complex,2> > cjones_p;
   Int fieldId_p;
   Int arrayId_p;
