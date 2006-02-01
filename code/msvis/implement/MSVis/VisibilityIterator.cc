@@ -321,7 +321,7 @@ void ROVisibilityIterator::setState()
   setSelTable();
   // If this is a new MeasurementSet then set up the antenna locations
   if (msIter_p.newMS()) {
-    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna()) + 1;
+    This->nAnt_p = msd_p.setAntennas(msIter_p.msColumns().antenna());
     This->pa_p.resize(nAnt_p);
     This->pa_p.set(0);
     This->azel_p.resize(nAnt_p);
