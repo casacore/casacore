@@ -190,7 +190,7 @@ public:
   void unlock() {ms_p.unlock();};
 
   // Return the associated MS name
-  String msName() {return ms_p.tableName();};
+  String msName();
   
 private:
 
