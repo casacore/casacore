@@ -130,6 +130,9 @@ template<class T> class Vector;
 //     someArrayInt = *col3;
 // }
 // </srcblock>
+// Please note that the TableRecord& returned by the get() function is the
+// same as returned by the record() function. Therefore the RORecordField
+// objects can be created in advance.
 // </example>
 
 class ROTableRow
@@ -200,6 +203,8 @@ public:
     // Get the values of all columns used from the given row.
     // When the given row number equals the current one, nothing
     // will be read unless the alwaysRead flag is set to True.
+    // <br>The TableRecord& returned is the same one as returned by the
+    // record() function. So one can ignore the return value of get().
     const TableRecord& get (uInt rownr, Bool alwaysRead = False) const;
 
 protected:
