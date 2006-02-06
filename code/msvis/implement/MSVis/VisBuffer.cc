@@ -574,9 +574,15 @@ Vector<Float>& VisBuffer::fillFeed1_pa()
        DebugAssert((uInt(antenna1_p(row))<ant_pa.nelements()),AipsError);
        DebugAssert(antenna1_p(row)>=0,AipsError);	   
        feed1_pa_p(row)=ant_pa(antenna1_p(row));
-       // no code for the multi-feed case so far (feed1_p is unused).
-       // Need an interface change in MSIter and ROVisibilityIterator to
-       // implement this. 
+       // currently feed_pa returns only the first feed position angle
+       // we need to add an offset if this row correspods to a
+       // different feed
+       if (feed1_p(row))  // an if-statement to avoid unnecessary operations
+                          // in the single feed case, everything would
+			  // work without it.
+           feed1_pa_p(row)+=visIter_p->receptorAngles()(0,
+	                             antenna1_p(row),feed1_p(row))-
+			    visIter_p->receptorAngles()(0,antenna1_p(row),0);
   }
   return feed1_pa_p;
 }
@@ -597,9 +603,15 @@ Vector<Float>& VisBuffer::fillFeed2_pa()
        DebugAssert((uInt(antenna2_p(row))<ant_pa.nelements()),AipsError);
        DebugAssert(antenna2_p(row)>=0,AipsError);	   
        feed2_pa_p(row)=ant_pa(antenna2_p(row));
-       // no code for the multi-feed case so far (feed2_p is unused).
-       // Need an interface change in MSIter and ROVisibilityIterator to
-       // implement this. 
+       // currently feed_pa returns only the first feed position angle
+       // we need to add an offset if this row correspods to a
+       // different feed
+       if (feed2_p(row))  // an if-statement to avoid unnecessary operations
+                          // in the single feed case, everything would
+			  // work without it.
+           feed2_pa_p(row)+=visIter_p->receptorAngles()(0,
+	                             antenna2_p(row),feed2_p(row))-
+			    visIter_p->receptorAngles()(0,antenna2_p(row),0);
   }
   return feed2_pa_p;
 }

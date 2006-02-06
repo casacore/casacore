@@ -217,6 +217,14 @@ public:
   Vector<SquareMatrix<Complex,2> >& 
   CJones(Vector<SquareMatrix<Complex,2> >& cjones) const;
 
+  // Return receptor angles for all antennae and feeds
+  // First axis of the cube is a receptor number,
+  // 2nd is antennaId, 3rd is feedId
+  // Note: the method is intended to provide an access to MSIter::receptorAngles
+  // for VisBuffer in the multi-feed case. It may be worth to change the
+  // interface of feed_pa to return the information for all feeds.
+  const Cube<Double>& receptorAngles() const;
+
   // Return feed parallactic angles Vector(nant) (1 feed/ant)
   const Vector<Float>& feed_pa(Double time) const;
 
@@ -506,6 +514,8 @@ inline Bool ROVisibilityIterator::more() const { return more_p;}
 inline Vector<SquareMatrix<Complex,2> >& 
 ROVisibilityIterator::CJones(Vector<SquareMatrix<Complex,2> >& cjones) const 
 {cjones.resize(msIter_p.CJones().nelements());return cjones=msIter_p.CJones();}
+inline const Cube<Double>& ROVisibilityIterator::receptorAngles() const
+{return msIter_p.receptorAngles();}
 inline Int ROVisibilityIterator::channelGroupSize() const
 { return velSelection_p ? nVelChan_p : chanWidth_p[msIter_p.spectralWindowId()]; }
 inline Int ROVisibilityIterator::channelIndex() const
