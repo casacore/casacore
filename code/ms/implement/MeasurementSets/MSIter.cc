@@ -310,6 +310,7 @@ MSIter::operator=(const MSIter& other)
 
 void MSIter::setInterval(Double timeInterval)
 {
+  interval_p=timeInterval;
   MSInterval::setInterval(interval_p);
 }
 
@@ -476,10 +477,34 @@ void MSIter::setArrayInfo()
 
 void MSIter::setFeedInfo()
 { 
+  // Setup CJones and the receptor angle
+  
+  // Time-dependent feed tables are not yet supported due to a lack of
+  // real application. The values for the last time range will be used
+  // if such a table is encountered.
+  //
+  // A reasonable way (plan) to implement the code for time-dependent feed
+  // tables is outlined below
+  //  1. Move the detection of the time dependent table into a separate
+  //     method and call it each time the measurement set is changed 
+  //  2. In this method build a vector of critical times when the feed
+  //     information is changed
+  //  3. Add a set method for MSIterval to be able to access this vector
+  //     (using a pointer or reference to avoid unnecessary copying)
+  //     and ensure that critical times are known to MSInterval before
+  //     tabIter_p[curMS_p]->next() in MSIter::advance
+  //  4. Change MSInterval::compare to break iteration (i.e. return -1 or +1)
+  //     if any critical time lies in between  *obj1 and *obj2.
+  //     A sorted vector of critical time can speed up the search.
+  //  5. Add an additional condition to
+  //      if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p))
+  //     and to
+  //      if ((spwDepFeed_p && newSpectralWindow_p) || first)
+  //     in the code below.
+  //     A flag newTime_p similar to newSpectralWindow_p is needed for a
+  //     better performance
 
-  // Setup CJones and the receptor angle: feed 0 on each antenna
-  // is the feed used to get the information.
-  // Check for time dependence
+  // Check for time dependence.
   Bool first=False;
   if (checkFeed_p) {
     Vector<Double> feedTimes=msc_p->feed().time().getColumn();
@@ -491,10 +516,12 @@ void MSIter::setFeedInfo()
     if (allLE(interval,0.0)||allGE(interval,1.e10)) timeDepFeed_p=False;
     else { 
       // check if any antennas appear more than once
-      // check for each spectral window in turn..
-      String col=MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
+      // check for each spectral window and feed in turn..
+      Block<String> cols(2); 
+      cols[0]=MSFeed::columnName(MSFeed::SPECTRAL_WINDOW_ID);
+      cols[1]=MSFeed::columnName(MSFeed::FEED_ID);      
       Bool unique = True;
-      for (TableIterator tabIter(msc_p->feed().time().table(),col);
+      for (TableIterator tabIter(msc_p->feed().time().table(),cols);
 	   !tabIter.pastEnd(); tabIter.next()) {
 	ROMSFeedColumns msfc(MSFeed(tabIter.table()));
 	// check if any antennas appear more than once
@@ -522,25 +549,35 @@ void MSIter::setFeedInfo()
   if ((spwDepFeed_p && newSpectralWindow_p) || first) {
     Vector<Int> antennaId=msc_p->feed().antennaId().getColumn();
     Vector<Int> feedId=msc_p->feed().feedId().getColumn();
-    Int maxAnt=max(antennaId);
-    CJones_p.resize(maxAnt+1);
+    Int maxAntId=max(antennaId);
+    Int maxFeedId=max(feedId);
+    AlwaysAssert((maxAntId>=0 && maxFeedId>=0),AipsError);    
+    CJones_p.resize(maxAntId+1,maxFeedId+1);
     Int maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
-    receptorAngle_p.resize(maxNumReceptors,maxAnt+1);
+    if (maxNumReceptors>2)
+        throw AipsError("Can't handle more than 2 receptors");    
+    receptorAngles_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
     for (uInt i=0; i<spwId.nelements(); i++) {
-      if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)
-	  &&(feedId(i)==0)) {
+      if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)) {
 	Int iAnt=antennaId(i);
+	Int iFeed=feedId(i);
 	if (maxNumReceptors==1) {
-	  CJones_p(iAnt)=SquareMatrix<Complex,2>
+	  CJones_p(iAnt,iFeed)=SquareMatrix<Complex,2>
 	    ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
 	} else {
-	  CJones_p(iAnt)=Matrix<Complex>(msc_p->feed().polResponse()(i));
+	  CJones_p(iAnt,iFeed)=Matrix<Complex>(msc_p->feed().polResponse()(i));
 	}
-	receptorAngle_p.column(iAnt)=
-	  Vector<Double>(msc_p->feed().receptorAngle()(i));
+	receptorAngles_p.xyPlane(iFeed).column(iAnt)=
+	   Vector<Double>(msc_p->feed().receptorAngle()(i));
       }
     }
+
+    // a bit ugly construction
+    // to preserve the old interface (feed=0 only)
+    receptorAnglesFeed0_p=receptorAngles_p.xyPlane(0); 
+    CJonesFeed0_p=CJones_p.column(0);
+    //
   }
 }
 

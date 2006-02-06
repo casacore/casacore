@@ -30,6 +30,7 @@
 
 #include <casa/aips.h>
 #include <casa/Arrays/Matrix.h>
+#include <casa/Arrays/Cube.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <measures/Measures/MFrequency.h>
 #include <measures/Measures/MDirection.h>
@@ -286,11 +287,24 @@ public:
   const MPosition& telescopePosition() const;
 
   // Return the feed configuration/leakage matrix for feed 0 on each antenna
+  // TODO: CJonesAll can be used instead of this method in all instances
   const Vector<SquareMatrix<Complex,2> >& CJones() const;
+
+  // Return the feed configuration/leakage matrix for all feeds and antennae
+  // First axis is antennaId, 2nd axis is feedId. Result of CJones() is
+  // a reference to the first column of the matrix returned by this method
+  const Matrix<SquareMatrix<Complex,2> >& CJonesAll() const;
 
   // Return the receptor angle for feed 0 on each antenna.
   // First axis is receptor number, 2nd axis is antennaId.
+  // TODO: receptorAngles() can be used instead of this method
   const Matrix<Double>& receptorAngle() const;
+
+  // Return the receptor angles for all feeds and antennae
+  // First axis is a receptor number, 2nd axis is antennaId,
+  // 3rd axis is feedId. Result of receptorAngle() is just a reference
+  // to the first plane of the cube returned by this method
+  const Cube<Double>& receptorAngles() const;
 
   // Return the channel number of the first channel in the DATA.
   // (non-zero for reference MS created by VisSet with channel selection)
@@ -340,8 +354,14 @@ protected:
 
   //cache for access functions
   MDirection phaseCenter_p;
-  Matrix<Double> receptorAngle_p;
-  Vector<SquareMatrix<Complex,2> > CJones_p;
+  Matrix<Double> receptorAnglesFeed0_p; // former receptorAngle_p,
+                                   // temporary retained for compatibility
+                                   // contain actually a reference to the
+				   // first plane of receptorAngles_p
+  Cube<Double> receptorAngles_p;
+  Vector<SquareMatrix<Complex,2> > CJonesFeed0_p; // a temporary reference
+                                   // similar to receptorAngle_p
+  Matrix<SquareMatrix<Complex,2> > CJones_p;
   PolFrame polFrame_p;
   Bool freqCacheOK_p;
   Vector<Double> frequency_p;
@@ -376,9 +396,13 @@ inline const MDirection& MSIter::phaseCenter() const
 inline const MPosition& MSIter::telescopePosition() const
 { return telescopePosition_p;}
 inline const Vector<SquareMatrix<Complex,2> >& MSIter::CJones() const  
+{ return CJonesFeed0_p;}
+inline const Matrix<SquareMatrix<Complex,2> >& MSIter::CJonesAll() const
 { return CJones_p;}
 inline const Matrix<Double>& MSIter::receptorAngle() const 
-{return receptorAngle_p;}
+{return receptorAnglesFeed0_p;}
+inline const Cube<Double>& MSIter::receptorAngles() const
+{return receptorAngles_p;}
 inline Int MSIter::startChan() const {return startChan_p;}
 
 } //# NAMESPACE CASA - END
