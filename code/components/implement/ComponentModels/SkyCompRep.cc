@@ -255,9 +255,9 @@ Flux<Double> SkyCompRep::visibility(const Vector<Double>& uvw,
   DebugAssert(ok(), AipsError);
   Flux<Double> flux = itsFlux.copy();
   Double scale = itsShapePtr->visibility(uvw, frequency).real();
+  MFrequency freq(Quantity(frequency, "Hz"));
+  scale *= itsSpectrumPtr->sample(freq);
   flux.scaleValue(scale, scale, scale, scale);
-  // I should scale by the frequency here also but I need to consult with Tim
-  // first.
   return flux;
 }
 
@@ -278,14 +278,26 @@ void SkyCompRep::visibility(Cube<DComplex>& visibilities,
   for (uInt p = 0; p < 4; p++) {
     flux[p] = itsFlux.value(p);
   }
+
+  Vector<Double> fscale(frequencies.nelements());
+  Vector<MVFrequency> mvFreq(frequencies.nelements());
+  for (uInt f = 0; f < nFreq; f++) {
+    mvFreq(f)=MVFrequency(frequencies(f));
+  }
+  
+  // It's not clear how we would get the right information down here.
+  // In any event, it's probably not a pressing concern for most cases.
+  MeasRef<MFrequency> measRef;
+
   for (uInt v = 0; v < nVis; v++) {
     for (uInt u = 0; u < 3; u++) {
       uvw(u) = uvws(u, v);
     }
+    // Scale by the specified frequency behaviour
+    itsSpectrumPtr->sample(fscale, mvFreq, measRef);
     for (uInt f = 0; f < nFreq; f++) {
-      const Double scale = itsShapePtr->visibility(uvw, frequencies(f)).real();
-      // I should scale by the frequency here also but I need to consult with
-      // Tim first.
+      Double scale = itsShapePtr->visibility(uvw, frequencies(f)).real();
+      scale *= fscale[f];
       for (uInt p = 0; p < 4; p++) {
 	visibilities(p, f, v) = flux[p] * scale;
       }
