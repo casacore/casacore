@@ -207,6 +207,9 @@ public:
 			   const Record& dataManagerInfo,
 			   int tableOption, Bool, int endianFormat) const;
 
+    // It returns the type of the parent table.
+    virtual int tableType() const;
+
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const;
 

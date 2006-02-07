@@ -486,6 +486,11 @@ void RefTable::deepCopy (const String& newName,
     trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat);
 }
 
+int RefTable::tableType() const
+{
+    return baseTabPtr_p->tableType();
+}
+
 TableDesc RefTable::actualTableDesc() const
 {
     // Get the table description of reftable.
