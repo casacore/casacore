@@ -278,6 +278,14 @@
            fi
         fi
      done
+# Get the appsglish symbolic link too
+     rm -f appsglish
+     if `ln -s ../appsglish/apps appsglish`
+     then
+         echo "Created symlink   ./appslish"
+     else
+         echo "Failed to create symlink   ./appsglish"
+     fi
   fi
 
  
