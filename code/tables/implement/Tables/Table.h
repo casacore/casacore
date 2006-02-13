@@ -311,6 +311,9 @@ public:
     static void deleteTable (const String& tableName,
 			     Bool checkSubTables=False);
 
+    // Close all open subtables.
+    void closeSubTables() const;
+
     // Try to reopen the table for read/write access.
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.

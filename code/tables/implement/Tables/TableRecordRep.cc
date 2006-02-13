@@ -345,6 +345,16 @@ void TableRecordRep::renameTables (const String& newParentName,
 }
 
 
+void TableRecordRep::closeTables() const
+{
+    for (uInt i=0; i<nused_p; i++) {
+	if (desc_p.type(i) == TpTable) {
+	    static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->close();
+	}
+    }
+}
+
+
 Bool TableRecordRep::areTablesMultiUsed() const
 {
     for (uInt i=0; i<nused_p; i++) {

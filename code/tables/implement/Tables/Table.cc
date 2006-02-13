@@ -228,6 +228,11 @@ Table& Table::operator= (const Table& that)
 }
 
 
+void Table::closeSubTables() const
+{
+  return keywordSet().closeTables();
+}
+
 Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
 {
     String message;

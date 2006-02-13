@@ -169,6 +169,11 @@ public:
     // This can be useful to save memory usage.
     void closeTable (Int whichField) const;
 
+    // Close all open tables.
+    // When accessed again, it will be opened automatically.
+    // This can be useful to save memory usage.
+    void closeTables() const;
+
     // Rename the subtables with a path containing the old parent table name.
     void renameTables (const String& newParentName,
 		       const String& oldParentName);

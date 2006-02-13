@@ -366,6 +366,11 @@ public:
     // This can be useful to save memory usage.
     void closeTable (const RecordFieldId&) const;
 
+    // Close all open tables.
+    // When accessed again, it will be opened automatically.
+    // This can be useful to save memory usage.
+    void closeTables() const;
+
     // Rename the subtables with a path containing the old parent table name.
     void renameTables (const String& newParentName,
 		       const String& oldParentName);
@@ -491,6 +496,11 @@ inline void TableRecord::getData (AipsIO& os, uInt version,
 inline void TableRecord::reopenRW()
 {
     rwRef().reopenRW();
+}
+
+inline void TableRecord::closeTables() const
+{
+    ref().closeTables();
 }
 
 inline void TableRecord::renameTables (const String& newParentName,
