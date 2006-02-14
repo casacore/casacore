@@ -47,8 +47,10 @@ TableKeyword::TableKeyword (const Table& table, const String& tableDescName)
   tableDescName_p (tableDescName)
 {}
 
+// Do not copy an open table. In this way the copy of a keywordset in
+// a TableDesc, does not create open Tables.
 TableKeyword::TableKeyword (const TableKeyword& that)
-: table_p         (new Table(*that.table_p)),
+: table_p         (new Table),
   attr_p          (that.attr_p),
   tableDescName_p (that.tableDescName_p)
 {}
