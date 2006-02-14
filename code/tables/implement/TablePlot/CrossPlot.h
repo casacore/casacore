@@ -1,5 +1,5 @@
 //# CrossPlot.h: Basic table access class for the TablePlot (tableplot) tool
-//#              to plot across rows for an arrya-column.
+//#              to plot across rows for an array-column.
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -27,8 +27,8 @@
 //# $Id$
 
 
-#ifndef CROSSPLOT_H
-#define CROSSPLOT_H
+#ifndef TABLEPLOT_CROSSPLOT_H
+#define TABLEPLOT_CROSSPLOT_H
 
 //# Includes
 
@@ -178,7 +178,6 @@ template<class T> class CrossPlot : public BasePlot<T> {
 		using BasePlot<T>::NRows_p;
 		using BasePlot<T>::tmr;
 		using BasePlot<T>::NPlots_p;
-		using BasePlot<T>::nTens_p;
 		using BasePlot<T>::xplotdata_p;
 		using BasePlot<T>::yplotdata_p;
 		using BasePlot<T>::theflags_p;
