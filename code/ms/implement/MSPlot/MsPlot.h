@@ -531,7 +531,7 @@ private:
 //#!  // <group name=ostream)
 //#!  ostream &operator<< (ostream &, const Slicer &);
 //#!  // <group>
-template class MsPlot<Float>;
+
 } //# NAMESPACE CASA - END
 #ifndef AIPS_NO_TEMPLATE_SRC
 #include <ms/MSPlot/MsPlot.cc>
