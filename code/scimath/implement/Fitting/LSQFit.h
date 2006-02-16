@@ -1,5 +1,5 @@
 //# LSQFit.h: Basic class for least squares fitting
-//# Copyright (C) 1999,2000,2001,2004,2005
+//# Copyright (C) 1999-2001,2004-2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -296,6 +296,16 @@ class LSQFit {
   static AsReal    ASREAL;
   static Conjugate CONJUGATE;
 
+  //# Public enums
+  // State of the non-linear solution
+  enum ReadyCode {
+    NONREADY=0,
+    SOLINCREMENT,
+    DERIVLEVEL,
+    MAXITER,
+    NOREDUCTION,
+    SINGULAR
+  };
   //# Constructors
   // Construct an object with the number of unknowns and
   // constraints, using the default collinearity factor and the
@@ -576,10 +586,16 @@ class LSQFit {
   void setEpsValue(Double epsval=1e-6) {epsval_p = epsval; };
   // Set new derivative test
   void setEpsDerivative(Double epsder=1e-6) {epsder_p = epsder; };
+  // Set maximum number of iterations
+  void setMaxIter(uInt maxiter=0) { maxiter_p = 0; };
+  // Set the expected form of the normal equations
+  void setBalanced(Bool balanced=False) { balanced_p = balanced; };
+  // Ask the state of the non-linear solutions
+  LSQFit::ReadyCode isReady() { return ready_p; };
   // Get the covariance matrix (of size <src>nUnknowns * nUnknowns</src>)
   // <group>
   template <class U>
-    Bool getCovariance(U *covar);
+  Bool getCovariance(U *covar);
   template <class U>
     Bool getCovariance(std::complex<U> *covar);
   // </group>
@@ -717,7 +733,16 @@ class LSQFit {
   // Test value for [incremental] solution // add explanation
   Double epsval_p;
   // Test value for known factor /// add explanation
-  Double epsder_p; 
+  Double epsder_p;
+  // Indicator for a well balanced normal equation
+  Bool balanced_p; /// add explanation
+  // Maximum number of iterations for non-linear solution
+  uInt maxiter_p; /// add expl
+  // Iteration count for non-linear solution
+  uInt niter_p; /// add expl
+  // Indicate the non-linear state
+  ReadyCode ready_p; /// add expl
+ 
   // Pivot table (n_p)
   uInt *piv_p;
   // Normal equations (triangular nun_p * nun_p)
@@ -780,6 +805,10 @@ class LSQFit {
   void solveMR(uInt nin);
   // Invert rectangular matrix (i.e. when constraints present)
   Bool invertRect();
+  // Get the norm of the current solution vector
+  Double normSolution(const Double *sol) const;
+  // Get the infinite norm of the known vector
+  Double normInfKnown(const Double *known) const;
   // Save current status (or part)
   void save(Bool all=True);
   // Restore current status
