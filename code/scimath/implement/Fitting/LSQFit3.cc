@@ -32,6 +32,7 @@
 #include <casa/Containers/Record.h>
 #include <casa/Containers/RecordFieldId.h>
 #include <casa/Containers/RecordInterface.h>
+#include <casa/IO/AipsIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -53,6 +54,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   const String LSQFit::lar       = String("lar");
   const String LSQFit::wsol      = String("wsol");
   const String LSQFit::wcov      = String("wcov");
+  const String LSQFit::nceq      = String("nceq");
   const String LSQFit::nar       = String("nar");
 
   Bool LSQFit::toRecord(String &error, RecordInterface &out) const {
@@ -74,7 +76,6 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 					  known_p)) return False;
     if (error_p  && !LSQMatrix::putCArray(error, out, errors, N_ErrorField,
 					  error_p)) return False; 
-    if (nceq_p   && !nceq_p->toRecord(error, out)) return False;
     if (sol_p    && !LSQMatrix::putCArray(error, out, sol, n_p,
 					  sol_p)) return False; 
     if (lar_p    && !LSQMatrix::putCArray(error, out, lar, n_p*n_p,
@@ -83,10 +84,15 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 					  wsol_p)) return False; 
     if (wcov_p   && !LSQMatrix::putCArray(error, out, wcov, n_p*n_p,
 					  wcov_p)) return False;
+    if (nceq_p) {
+      Record rnceq;
+      if (!nceq_p->toRecord(error, rnceq)) return False;
+      out.defineRecord(RecordFieldId(nceq), rnceq);
+    }
     if (nar_p) {
       Record rnar;
       if (!nar_p->toRecord(error, rnar)) return False;
-      out.defineRecord(RecordFieldId("nar"), rnar);
+      out.defineRecord(RecordFieldId(nar), rnar);
     };
     return True;
   }
@@ -154,8 +160,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       if (in.isDefined(wcov) &&
 	  !LSQMatrix::getCArray(error, in, wcov, 0,
 				wcov_p)) return False;
+      if (in.isDefined(nceq)) {
+	if (!nceq_p) nceq_p = new LSQMatrix;
+	if (!nceq_p->fromRecord(error, in.asRecord(RecordFieldId(nceq)))) {
+	  return False;
+	};
+      };
       if (in.isDefined(nar)) {
-	nar_p = new LSQFit;
+	if (!nar_p) nar_p = new LSQFit;
 	if (!nar_p->fromRecord(error, in.asRecord(RecordFieldId(nar)))) {
 	  return False;
 	};
@@ -173,5 +185,75 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return myid;
   }
 
+
+  void LSQFit::toAipsIO (AipsIO& out) const
+  {
+    out.putstart (ident(), 1);
+    out << state_p << nun_p << ncon_p;
+    out << prec_p << startnon_p	<< nonlin_p << r_p << nnc_p;
+    if (norm_p) {
+      out << True;
+      norm_p->toAipsIO (out);
+    } else {
+      out << False;
+    }
+    LSQMatrix::putCArray (out, n_p, piv_p);
+    LSQMatrix::putCArray (out, n_p*ncon_p, constr_p);
+    LSQMatrix::putCArray (out, n_p, known_p);
+    LSQMatrix::putCArray (out, N_ErrorField, error_p);
+    LSQMatrix::putCArray (out, n_p, sol_p);
+    LSQMatrix::putCArray (out, n_p*n_p, lar_p);
+    LSQMatrix::putCArray (out, n_p, wsol_p);
+    LSQMatrix::putCArray (out, n_p*n_p, wcov_p);
+    LSQMatrix::putCArray (out, n_p, piv_p);
+    if (nceq_p) {
+      out << True;
+      nceq_p->toAipsIO (out);
+    } else {
+      out << False;
+    }
+    if (nar_p) {
+      out << True;
+      nar_p->toAipsIO (out);
+    } else {
+      out << False;
+    }
+    out.putend();
+  }
+  
+  void LSQFit::fromAipsIO (AipsIO& in)
+  {
+    bool flag;
+    in.getstart (ident());
+    in >> state_p >> nun_p >> ncon_p;
+    set (nun_p, ncon_p);
+    in >> prec_p >> startnon_p >> nonlin_p >> r_p >> nnc_p;
+    in >> flag;
+    if (flag) {
+      if (!norm_p) norm_p = new LSQMatrix;
+      norm_p->fromAipsIO (in);
+    }
+    LSQMatrix::getCArray (in, n_p, piv_p);
+    LSQMatrix::getCArray (in, n_p*ncon_p, constr_p);
+    LSQMatrix::getCArray (in, n_p, known_p);
+    LSQMatrix::getCArray (in, N_ErrorField, error_p);
+    LSQMatrix::getCArray (in, n_p, sol_p);
+    LSQMatrix::getCArray (in, n_p*n_p, lar_p);
+    LSQMatrix::getCArray (in, n_p, wsol_p);
+    LSQMatrix::getCArray (in, n_p*n_p, wcov_p);
+    LSQMatrix::getCArray (in, n_p, piv_p);
+    in >> flag;
+    if (flag) {
+      if (!nceq_p) nceq_p = new LSQMatrix;
+      nceq_p->fromAipsIO (in);
+    }
+    in >> flag;
+    if (flag) {
+      if (!nar_p) nar_p = new LSQFit;
+      nar_p->fromAipsIO (in);
+    }
+    in.getend();
+  }
+ 
 } //# NAMESPACE CASA - END
 

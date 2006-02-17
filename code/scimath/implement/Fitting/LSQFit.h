@@ -166,6 +166,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The contents can be saved in a record (<src>toRecord<src>), 
 // and an object can be created from a record (<src>fromRecord</src>).
 // The record identifier is 'lfit'.
+// <br>The object can also be saved or restored using AipsIO.
 // </synopsis>
 //
 // <example>
@@ -661,7 +662,13 @@ class LSQFit {
   Bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   const String &ident() const;
-  // 
+  //
+  // Save or restore using AipsIO.
+  // <group>
+  void toAipsIO (AipsIO&) const;
+  void fromAipsIO (AipsIO&);
+  // </group>
+  //
  protected:
   //# enum
   // Offset of fields in error_p data area.
@@ -708,6 +715,7 @@ class LSQFit {
   static const String lar;
   static const String wsol;
   static const String wcov;
+  static const String nceq;
   static const String nar;
   // </group>  
 

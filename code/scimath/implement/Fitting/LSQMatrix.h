@@ -36,6 +36,7 @@
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
+class AipsIO;
 
 // <summary> Support class for the LSQ package </summary>
 // <reviewed reviewer="Wim Brouw" date="2004/03/20" tests="tLSQFit"
@@ -176,6 +177,14 @@ class LSQMatrix : public RecordTransformable {
 			const String &fname,
 			uInt len, uInt *&out);
   // </group>
+
+  // Save or restore using AipsIO.
+  void fromAipsIO (AipsIO& in);
+  void toAipsIO (AipsIO& out) const;
+  static void putCArray (AipsIO& out, uInt len, const Double* const in);
+  static void getCArray (AipsIO& in, uInt len, Double*& out);
+  static void putCArray (AipsIO& out, uInt len, const uInt* const in);
+  static void getCArray (AipsIO& in, uInt len, uInt*& out);
 
   //# Data
   // Matrix size (linear size)

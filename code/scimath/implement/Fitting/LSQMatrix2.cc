@@ -31,6 +31,9 @@
 #include <casa/Arrays/Vector.h>
 #include <casa/Containers/RecordInterface.h>
 #include <casa/Containers/RecordFieldId.h>
+#include <casa/IO/AipsIO.h>
+#include <casa/Utilities/Assert.h>
+#include <casa/Exceptions/Error.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -131,6 +134,72 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       std::copy(vt.data(), vt.data()+len, out); 
     };
     return True;
+  }
+
+
+  void LSQMatrix::toAipsIO (AipsIO& out) const
+  {
+    out << n_p;
+    if (n_p) putCArray(out, len_p, trian_p);
+  }
+
+  void LSQMatrix::fromAipsIO (AipsIO& in)
+  {
+    set(0);
+    uInt n;
+    in >> n;
+    set(n);
+    if (n > 0) getCArray (in, len_p, trian_p);
+  }
+
+  void LSQMatrix::putCArray (AipsIO& out, uInt len, const Double* const in)
+  {
+    if (in) {
+      out << True;
+      out.put (len, in);
+    } else {
+      out << False;
+    }
+  }
+
+  void LSQMatrix::getCArray (AipsIO& in, uInt len, Double*& out)
+  {
+    Bool flag;
+    in >> flag;
+    if (flag) {
+      uInt vlen;
+      in >> vlen;
+      if (vlen > 0) {
+	if (!out) out = new Double[vlen];
+	AlwaysAssert (vlen == len, AipsError);
+	in.get (len, out);
+      }
+    }
+  }
+
+  void LSQMatrix::putCArray (AipsIO& out, uInt len, const uInt* const in)
+  {
+    if (in) {
+      out << True;
+      out.put (len, in);
+    } else {
+      out << False;
+    }
+  }
+
+  void LSQMatrix::getCArray (AipsIO& in, uInt len, uInt*& out)
+  {
+    Bool flag;
+    in >> flag;
+    if (flag) {
+      uInt vlen;
+      in >> vlen;
+      if (vlen > 0) {
+	if (!out) out = new uInt[vlen];
+	AlwaysAssert (vlen == len, AipsError);
+	in.get (len, out);
+      }
+    }
   }
 
 } //# NAMESPACE CASA - END
