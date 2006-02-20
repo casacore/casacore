@@ -42,15 +42,20 @@ TableKeyword::TableKeyword (const String& tableDescName)
 {}
 
 TableKeyword::TableKeyword (const Table& table, const String& tableDescName)
-: table_p         (new Table(table)),
+: table_p         (new Table),
   attr_p          (table),
   tableDescName_p (tableDescName)
-{}
+{
+    // Only keep the Table object if not persistent.
+    if (table.isMarkedForDelete()) {
+        *table_p = table;
+    } else {
+        *table_p = Table();
+    }
+}
 
-// Do not copy an open table. In this way the copy of a keywordset in
-// a TableDesc, does not create open Tables.
 TableKeyword::TableKeyword (const TableKeyword& that)
-: table_p         (new Table),
+: table_p         (new Table(*that.table_p)),
   attr_p          (that.attr_p),
   tableDescName_p (that.tableDescName_p)
 {}
@@ -58,7 +63,9 @@ TableKeyword::TableKeyword (const TableKeyword& that)
 TableKeyword& TableKeyword::operator= (const TableKeyword& that)
 {
     if (this != &that) {
-	operator= (that.table());
+        *table_p = *that.table_p;
+	attr_p = that.attr_p;
+	tableDescName_p = that.tableDescName_p;
     }
     return *this;
 }
@@ -68,8 +75,13 @@ TableKeyword& TableKeyword::operator= (const Table& table)
     if (!conform (table)) {
 	throw (TableError ("TableKeyword::operator=; non-conforming table"));
     }
-    *table_p = table;
     attr_p.set (table);
+    // Only keep the Table object is not persistent.
+    if (table.isMarkedForDelete()) {
+        *table_p = table;
+    } else {
+        *table_p = Table();
+    }
     return *this;
 }
 
@@ -129,26 +141,35 @@ String TableKeyword::tableName (const String& parentName) const
     return Path::stripDirectory (attr_p.name(), parentName);
 }
 
-const Table& TableKeyword::table() const
+Table TableKeyword::table() const
 {
-    // Open the table when not opened yet.
-    // Open for write when needed and possible.
-    if (table_p->isNull()) {
-	Table::TableOption option = Table::Old;
-	if (attr_p.openWritable()  &&  Table::isWritable (attr_p.name())) {
-	    option = Table::Update;
-	}
-
-	//// Backed out of it again as there seems to be a bug
-       	*table_p = Table(attr_p.name(), attr_p.lockOptions(), option);
-	////*table_p = Table(attr_p.name(), option);
+    // Return the table object if already open.
+    if (! table_p->isNull()) {
+      return *table_p;
     }
-    return *table_p;
+    // Open for write when needed and possible.
+    Table::TableOption option = Table::Old;
+    if (attr_p.openWritable()  &&  Table::isWritable (attr_p.name())) {
+      option = Table::Update;
+    }
+    // Note that the opened table is not kept to avoid possible leaks
+    // if a table keyword refers to the table itself (like the SORTED_TABLE
+    // in an MS).
+    return Table(attr_p.name(), attr_p.lockOptions(), option);
 }
 
 void TableKeyword::close() const
 {
     *table_p = Table();
+}
+
+Bool TableKeyword::conform (const TableKeyword& that) const
+{
+    // Only check for conformance if a description is fixed.
+    if (isFixed()) {
+        return conform (that.table());
+    }
+    return True;
 }
 
 Bool TableKeyword::conform (const Table& that) const

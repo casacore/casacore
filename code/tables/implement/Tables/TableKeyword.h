@@ -172,7 +172,7 @@ public:
 
     // Get the table.
     // It will be opened when necessary.
-    const Table& table() const;
+    Table table() const;
 
     // Get the table attributes.
     const TableAttr& tableAttributes() const
@@ -218,12 +218,6 @@ inline Bool TableKeyword::isFixed() const
 {
     return  (! tableDescName_p.empty());
 }
-
-inline Bool TableKeyword::conform (const TableKeyword& that) const
-{
-    return conform (that.table());
-}
-
 
 
 } //# NAMESPACE CASA - END
