@@ -201,43 +201,6 @@ MeasurementSet::MeasurementSet(const MeasurementSet &other)
 
 MeasurementSet::~MeasurementSet()
 {
-
-    // MS keyword sets (which are TableRecords) may be holding a Table open
-    // for SORTED_TABLE (a counted 'link' to a RefTable); in that case, the
-    // RefTable links to and/or holds a copy of this very keyword set.  The
-    // following breaks the ensuing 'deadlock' by releasing the keywordSets'
-    // link[s], so that the BaseTable(s) can reach a ref count of 0 and
-    // delete when appropriate.
-    //
-    // A Table's keywordSet was not really designed to hold sub-Tables that
-    // reference the original Table, as SORTED_TABLE does.  The need for
-    // such code as this is one example of the kind of problems that can
-    // occur.  This particular leak was unbelievably difficult to analyse....
-    //
-    // When an MS object refers to a RefTable, tableDesc().keywordSet() 
-    // and keywordSet() are not the same object(!) -- the former is stored
-    // (indirectly, via TableDesc) under the immediate RefTable, the latter
-    // under the 'root' BaseTable.  This code cleans up _both_ of these
-    // keyword sets, so that they do not keep (possibly self-referent)
-    // counted links open to a SORTED_TABLE RefTable, in turn preventing
-    // the base MS from being deleted.
-    //
-    // I'm not sure the second 'closeTable' call is absolutely necessary
-    // to avoid these leaks; the first one definitely is.
-    //
-    // (dk 2-06)
-    
-    Int srtFldNumber = tableDesc().keywordSet().fieldNumber("SORTED_TABLE");
-    if (srtFldNumber>=0 && 
-        tableDesc().keywordSet().type(srtFldNumber)==TpTable) {
-      tableDesc().keywordSet().closeTable("SORTED_TABLE");  }
-    
-    srtFldNumber = keywordSet().fieldNumber("SORTED_TABLE");
-    if(srtFldNumber>=0 && keywordSet().type(srtFldNumber)==TpTable) {
-      keywordSet().closeTable("SORTED_TABLE");  }
-
-
-      
 // check to make sure that this MS is still valid
     if (!hasBeenDestroyed_p &&  !validate()) {
 	hasBeenDestroyed_p = True;
