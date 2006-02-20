@@ -366,6 +366,8 @@ void MSIter::setState()
   colArray_p.attach(curTable_p,MS::columnName(MS::ARRAY_ID));
   colDataDesc_p.attach(curTable_p,MS::columnName(MS::DATA_DESC_ID));
   colField_p.attach(curTable_p,MS::columnName(MS::FIELD_ID));
+  // msc_p is already defined here (it is set in setMSInfo)
+  msc_p->antenna().mount().getColumn(antennaMounts_p,True);
   setDataDescInfo();
   setArrayInfo();
   setFeedInfo();

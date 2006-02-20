@@ -310,6 +310,9 @@ public:
   // (non-zero for reference MS created by VisSet with channel selection)
   Int startChan() const;
 
+  // Return a string mount identifier for each antenna
+  const Vector<String>& antennaMounts() const;
+
 protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
@@ -362,6 +365,8 @@ protected:
   Vector<SquareMatrix<Complex,2> > CJonesFeed0_p; // a temporary reference
                                    // similar to receptorAngle_p
   Matrix<SquareMatrix<Complex,2> > CJones_p;
+  Vector<String>  antennaMounts_p; // a string mount identifier for each
+                                   // antenna (e.g. EQUATORIAL, ALT-AZ,...)
   PolFrame polFrame_p;
   Bool freqCacheOK_p;
   Vector<Double> frequency_p;
@@ -403,6 +408,8 @@ inline const Matrix<Double>& MSIter::receptorAngle() const
 {return receptorAnglesFeed0_p;}
 inline const Cube<Double>& MSIter::receptorAngles() const
 {return receptorAngles_p;}
+inline const Vector<String>& MSIter::antennaMounts() const
+{return antennaMounts_p;}
 inline Int MSIter::startChan() const {return startChan_p;}
 
 } //# NAMESPACE CASA - END
