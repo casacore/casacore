@@ -85,6 +85,9 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, uInt nrrow, Bool initialize)
   //# incorrect number of rows (similar behaviour as in function addRow).
   nrrowToAdd_p = 0;
   nrrow_p = nrrow;
+  // The table is transient, thus deleted when destructed.
+  // It is set, so Table::isMarkedForDelete() returns True.
+  markForDelete (False, "");
 }
 
 MemoryTable::~MemoryTable()
