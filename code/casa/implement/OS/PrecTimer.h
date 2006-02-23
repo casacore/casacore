@@ -43,7 +43,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 class String;
 
 
-// <summary> Precision timer to measure elapsed times in a cumulative way
+// <summary>
+// Precision timer to measure elapsed times in a cumulative way
+// </summary>
 
 // <use visibility=export>
 
@@ -79,7 +81,6 @@ class String;
 // Here's how to create a timer, start it (the 'mark' member function)
 // and display a breakdown.
 // <srcblock>
-// 
 //  PrecTimer ttimer;   // the timer is reset at construction time
 //  PrecTimer ctimer;
 //  ttimer.reset();     // if you want to reset the timer (not needed here)
