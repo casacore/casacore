@@ -1,5 +1,5 @@
 //# VisSet.cc: Implementation of VisSet
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002
+//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2005
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -401,8 +401,10 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
 
   // Check if the data column is tiled and, if so, the
   // smallest tile shape used.
-  String dataManType = data->columnDesc().dataManagerType();
-  String dataManGroup = data->columnDesc().dataManagerGroup();
+  TableDesc td = ms.actualTableDesc();
+  const ColumnDesc& cdesc = td[data->columnDesc().name()];
+  String dataManType = cdesc.dataManagerType();
+  String dataManGroup = cdesc.dataManagerGroup();
   IPosition dataTileShape;
   Bool tiled = (dataManType.contains("Tiled"));
   Bool simpleTiling = False;
@@ -438,7 +440,6 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
   };
   
   // Add the MODEL_DATA column
-  Vector<String> coordColNames(0), idColNames(0);
   TableDesc tdModel, tdModelComp, tdModelScale;
   CompressComplex* ccModel=NULL;
   String colModel=MS::columnName(MS::MODEL_DATA);
@@ -448,9 +449,6 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
   if (compress) {
     tdModelComp.addColumn(ArrayColumnDesc<Int>(colModel+"_COMPRESSED",
 					       "model data compressed",2));
-    tdModelComp.defineHypercolumn("TiledShape-ModelComp",3,
-				  stringToVector(colModel+"_COMPRESSED"),
-				  coordColNames,idColNames);
     tdModelScale.addColumn(ScalarColumnDesc<Float>(colModel+"_SCALE"));
     tdModelScale.addColumn(ScalarColumnDesc<Float>(colModel+"_OFFSET"));
     ccModel = new CompressComplex(colModel, colModel+"_COMPRESSED",
@@ -459,15 +457,12 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
     StandardStMan modelScaleStMan("ModelScaleOffset");
     ms.addColumn(tdModelScale, modelScaleStMan);
 
-    TiledShapeStMan modelCompStMan("TiledShape-ModelComp", modelTileShape);
+    TiledShapeStMan modelCompStMan("", modelTileShape);
     ms.addColumn(tdModelComp, modelCompStMan);
     ms.addColumn(tdModel, *ccModel);
 
   } else {
-    tdModel.defineHypercolumn("TiledShape-Model",3,
-			      stringToVector(colModel), coordColNames,
-			      idColNames);
-    TiledShapeStMan modelStMan("TiledShape-Model", modelTileShape);
+    TiledShapeStMan modelStMan("", modelTileShape);
     ms.addColumn(tdModel, modelStMan);
   };
 
@@ -481,9 +476,6 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
   if (compress) {
     tdCorrComp.addColumn(ArrayColumnDesc<Int>(colCorr+"_COMPRESSED",
 					      "corrected data compressed",2));
-    tdCorrComp.defineHypercolumn("TiledShape-CorrComp",3,
-				 stringToVector(colCorr+"_COMPRESSED"),
-				 coordColNames,idColNames);
     tdCorrScale.addColumn(ScalarColumnDesc<Float>(colCorr+"_SCALE"));
     tdCorrScale.addColumn(ScalarColumnDesc<Float>(colCorr+"_OFFSET"));
     ccCorr = new CompressComplex(colCorr, colCorr+"_COMPRESSED",
@@ -492,15 +484,12 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
     StandardStMan corrScaleStMan("CorrScaleOffset");
     ms.addColumn(tdCorrScale, corrScaleStMan);
 
-    TiledShapeStMan corrCompStMan("TiledShape-CorrComp", corrTileShape);
+    TiledShapeStMan corrCompStMan("", corrTileShape);
     ms.addColumn(tdCorrComp, corrCompStMan);
     ms.addColumn(tdCorr, *ccCorr);
 
   } else {
-    tdCorr.defineHypercolumn("TiledShape-Corr",3,
-			     stringToVector(colCorr), coordColNames,
-			     idColNames);
-    TiledShapeStMan corrStMan("TiledShape-Corr", corrTileShape);
+    TiledShapeStMan corrStMan("", corrTileShape);
     ms.addColumn(tdCorr, corrStMan);
   };
 
@@ -515,9 +504,6 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
     tdImWgtComp.addColumn(ArrayColumnDesc<Short>(colImWgt+"_COMPRESSED",
 						 "imaging weight compressed",
 						 1));
-    tdImWgtComp.defineHypercolumn("TiledShape-ImWgtComp",2,
-				  stringToVector(colImWgt+"_COMPRESSED"),
-				  coordColNames,idColNames);
     tdImWgtScale.addColumn(ScalarColumnDesc<Float>(colImWgt+"_SCALE"));
     tdImWgtScale.addColumn(ScalarColumnDesc<Float>(colImWgt+"_OFFSET"));
     ccImWgt = new CompressFloat(colImWgt, colImWgt+"_COMPRESSED",
@@ -526,15 +512,12 @@ void VisSet::addCalSet(MeasurementSet& ms, Bool compress) {
     StandardStMan imwgtScaleStMan("ImWgtScaleOffset");
     ms.addColumn(tdImWgtScale, imwgtScaleStMan);
 
-    TiledShapeStMan imwgtCompStMan("TiledShape-ImWgtComp", imwgtTileShape);
+    TiledShapeStMan imwgtCompStMan("", imwgtTileShape);
     ms.addColumn(tdImWgtComp, imwgtCompStMan);
     ms.addColumn(tdImWgt, *ccImWgt);
 
   } else {
-    tdImWgt.defineHypercolumn("TiledShape-ImWgt",2,
-			      stringToVector(colImWgt), coordColNames,
-			      idColNames);
-    TiledShapeStMan imwgtStMan("TiledShape-ImWgt", imwgtTileShape);
+    TiledShapeStMan imwgtStMan("", imwgtTileShape);
     ms.addColumn(tdImWgt, imwgtStMan);
   };
 
@@ -579,7 +562,6 @@ void VisSet::removeCalSet(MeasurementSet& ms) {
     };
   };
 }
-
 
 void VisSet::addScratchCols(MeasurementSet& ms, Bool compress){
 
