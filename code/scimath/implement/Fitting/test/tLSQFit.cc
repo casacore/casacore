@@ -34,6 +34,8 @@
 #include <casa/Containers/Record.h>
 #include <casa/OS/Timer.h>
 #include <casa/BasicMath/Random.h>
+#include <casa/IO/MemoryIO.h>
+#include <casa/IO/AipsIO.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
@@ -331,6 +333,48 @@ int main() {
       };
       cout << "From record: " << lsq6.fromRecord(error, lrec1);
       cout << ", Error: " << error << endl;
+      sd1 = lsq6.getSD();
+      mu1 = lsq6.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      };
+    }
+    cout << "---------------------------------------------------" << endl;
+
+    cout << "Real -- 6 unknowns --- float ---  aipsio ----" << endl;
+    {
+      LSQFit lsq5(6);
+      for (Int j0=0; j0<511; j0++) {
+	val1f[0] = 1;
+	for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*j0;
+	lsq5.makeNorm(val1f, 1.0f, val12f[j0]);
+      };
+      val1f[0] = 1;
+      for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
+      lsq5.makeNorm(val1f, 1.0f, val12f[511]);
+      MemoryIO memio;
+      AipsIO aio(&memio);
+      lsq5.toAipsIO (aio);
+      LSQFit lsq6;
+      aio.setpos (0);
+      lsq6.fromAipsIO (aio);
+      cout << "Invert = " << lsq6.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq6.solve(sol1);
+      sd1 = lsq6.getSD();
+      mu1 = lsq6.getWeightedSD();
+      for (uInt i=0; i<6; i++) { 
+	cout << "Sol" << i << ": " <<
+	  Y(sol1[i],1e-12) << ", " << Y(sd1, 1e-5) << ", " <<
+	  Y(mu1, 1e-5) << endl;
+      };
+      aio.setpos (0);
+      lsq6.fromAipsIO (aio);
+      cout << "Invert = " << lsq6.invert(nr1);
+      cout << ", rank=" << nr1 << endl;
+      lsq6.solve(sol1);
       sd1 = lsq6.getSD();
       mu1 = lsq6.getWeightedSD();
       for (uInt i=0; i<6; i++) { 

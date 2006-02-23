@@ -66,6 +66,22 @@ Sol3: 0, 0, 0
 Sol4: 0, 0, 0
 Sol5: 0, 0, 0
 ---------------------------------------------------
+Real -- 6 unknowns --- float ---  aipsio ----
+Invert = 1, rank=6
+Sol0: 1, 0, 0
+Sol1: 2, 0, 0
+Sol2: 0, 0, 0
+Sol3: 0, 0, 0
+Sol4: 0, 0, 0
+Sol5: 0, 0, 0
+Invert = 1, rank=6
+Sol0: 1, 0, 0
+Sol1: 2, 0, 0
+Sol2: 0, 0, 0
+Sol3: 0, 0, 0
+Sol4: 0, 0, 0
+Sol5: 0, 0, 0
+---------------------------------------------------
 Real -- 6 unknowns --- float --- merged ---
 Merge = 1, Invert = 1, rank=6
 Sol0: 1, 0, 0
