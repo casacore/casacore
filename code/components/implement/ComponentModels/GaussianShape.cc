@@ -217,7 +217,7 @@ DComplex GaussianShape::visibility(const Vector<Double>& uvw,
   DebugAssert(frequency > 0, AipsError);
   DebugAssert(ok(), AipsError);
   const Double wavenumber = frequency/C::c;
-  return DComplex(itsFT(uvw(0)*wavenumber, uvw(1)*wavenumber), 0.0);
+  return DComplex(itsFT(-uvw(0)*wavenumber, uvw(1)*wavenumber), 0.0);
 }
 
 void GaussianShape::visibility(Vector<DComplex>& scale,
