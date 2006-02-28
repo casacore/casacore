@@ -118,14 +118,16 @@ template <class T, Int n> class SquareMatrix {
 	directProduct(SquareMatrix<Complex,4>& result,
 		      const SquareMatrix<Complex,2>& left, 
 		      const SquareMatrix<Complex,2>& right);
+public:
     // Enum used internally to optimize operations.
     enum {General, Diagonal, ScalarId};
-public:
     // Destructor
     ~SquareMatrix() {};
     // Default constructor - creates a unity matrix at present, this may not
     // be what we want (non-intuitive?)
     SquareMatrix() : type_p(ScalarId) {a_p[0][0]=T(1);}
+    // Create a matrix of a given type, no initialization
+    SquareMatrix(int itype) : type_p(itype) {}
     // Copy construct a SquareMatrix, a true copy is made.
     SquareMatrix(const SquareMatrix<T,n>& m) {operator=(m);}
     // Construct from c-style matrix (by copying elements).
