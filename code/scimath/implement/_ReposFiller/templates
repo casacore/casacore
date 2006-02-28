@@ -70,6 +70,7 @@
      #endif 
 1140 casa/Arrays/Array.cc scimath/Mathematics/RigidVector.h 
      template class Array<RigidVector<Double, 3> > 
+     template class Array<RigidVector<Double, 2> > 
 1150 casa/Arrays/Array.cc scimath/Mathematics/SquareMatrix.h 
      = casa/BasicSL/Complex.h 
      template class Array<SquareMatrix<Complex, 2> > 
@@ -97,6 +98,8 @@
      template class Cube<OrderedMap<Double, SquareMatrix<Complex, 2>*>*> 
 1050 casa/Arrays/Cube.cc scimath/Mathematics/SquareMatrix.h 
      template class Cube<SquareMatrix<Float, 4> > 
+1060 casa/Arrays/Cube.cc scimath/Mathematics/RigidVector.h
+     template class Cube<RigidVector<Double, 2> >
 1000 casa/Arrays/MaskedArray.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/BasicSL/Complex.h 
@@ -146,6 +149,7 @@
      template class MaskedArray<AutoDiffA<Float> > 
 1160 casa/Arrays/MaskedArray.cc scimath/Mathematics/RigidVector.h 
      template class MaskedArray<RigidVector<Double, 3> > 
+     template class MaskedArray<RigidVector<Double, 2> > 
 1170 casa/Arrays/MaskedArray.cc scimath/Mathematics/SquareMatrix.h 
      template class MaskedArray<SquareMatrix<Float, 2> > 
 1180 casa/Arrays/MaskedArray.cc scimath/Mathematics/SquareMatrix.h 
@@ -186,6 +190,8 @@
      template class Matrix<SquareMatrix<Float, 2> > 
 1130 casa/Arrays/Matrix.cc scimath/Mathematics/SquareMatrix.h 
      template class Matrix<SquareMatrix<Float, 4> > 
+1140 casa/Arrays/Matrix.cc scimath/Mathematics/RigidVector.h
+     template class Matrix<RigidVector<Double, 2> >
 1000 casa/Arrays/Vector.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/BasicSL/Complex.h 
@@ -228,6 +234,7 @@
      template class Vector<AutoDiffA<Float> > 
 1140 casa/Arrays/Vector.cc scimath/Mathematics/RigidVector.h 
      template class Vector<RigidVector<Double, 3> > 
+     template class Vector<RigidVector<Double, 2> > 
 1150 casa/Arrays/Vector.cc scimath/Mathematics/SquareMatrix.h 
      template class Vector<SquareMatrix<Float, 2> > 
 1160 casa/Arrays/Vector.cc scimath/Mathematics/SquareMatrix.h 
@@ -427,6 +434,11 @@
      template class SimpleCountedPtr<Block<RigidVector<Double, 3> > > 
      template class SimpleCountedConstPtr<Block<RigidVector<Double, 3> > > 
      template class PtrRep<Block<RigidVector<Double, 3> > > 
+     template class CountedPtr<Block<RigidVector<Double, 2> > > 
+     template class CountedConstPtr<Block<RigidVector<Double, 2> > > 
+     template class SimpleCountedPtr<Block<RigidVector<Double, 2> > > 
+     template class SimpleCountedConstPtr<Block<RigidVector<Double, 2> > > 
+     template class PtrRep<Block<RigidVector<Double, 2> > > 
 1080 casa/Utilities/CountedPtr.cc casa/Containers/Block.h 
      = scimath/Mathematics/SquareMatrix.h casa/BasicSL/Complex.h 
      template class CountedPtr<Block<SquareMatrix<Complex, 2> > > 
@@ -2497,6 +2509,7 @@
      template class RigidVector<Complex, 4> 
 1020 scimath/Mathematics/RigidVector.cc 
      template class RigidVector<Double, 3> 
+     template class RigidVector<Double, 2> 
 1030 scimath/Mathematics/RigidVector.cc 
      template class RigidVector<Float, 4> 
 1000 scimath/Mathematics/SquareMatrix.cc 
@@ -2507,6 +2520,7 @@
      template class SquareMatrix<Complex, 4> 
 1020 scimath/Mathematics/SquareMatrix.cc 
      template class SquareMatrix<Float, 2> 
+     template class SquareMatrix<Double, 2> 
 1030 scimath/Mathematics/SquareMatrix.cc 
      template class SquareMatrix<Float, 4> 
 1000 scimath/Mathematics/StatAcc.cc 
