@@ -83,6 +83,8 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       feed2OK_p=other.feed2OK_p;
       feed1_paOK_p=other.feed1_paOK_p;
       feed2_paOK_p=other.feed2_paOK_p;
+      direction1OK_p=other.direction1OK_p;
+      direction2OK_p=other.direction2OK_p;
       arrayIdOK_p=other.arrayIdOK_p;
       corrTypeOK_p=other.corrTypeOK_p;
       cjonesOK_p=other.cjonesOK_p;
@@ -142,6 +144,14 @@ VisBuffer& VisBuffer::assign(const VisBuffer& other, Bool copy)
       if (feed2_paOK_p) {
         feed2_pa_p.resize(other.feed2_pa_p.nelements());
 	feed2_pa_p=other.feed2_pa_p;
+      }
+      if (direction1OK_p) {
+	  direction1_p.resize(other.direction1_p.nelements());
+	  direction1_p=other.direction1_p;
+      }
+      if (direction2OK_p) {
+	  direction2_p.resize(other.direction2_p.nelements());
+	  direction2_p=other.direction2_p;
       }
       if (corrTypeOK_p) {
 	corrType_p.resize(other.corrType_p.nelements()); 
@@ -279,7 +289,7 @@ void VisBuffer::invalidate()
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    False;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=False;
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=False;
-  feed1_paOK_p=feed2_paOK_p=False;
+  feed1_paOK_p=feed2_paOK_p=direction1OK_p=direction2OK_p=False;
 }
 
 void VisBuffer::validate()
@@ -290,7 +300,7 @@ void VisBuffer::validate()
     timeIntervalOK_p=uvwOK_p=visOK_p=weightOK_p=corrTypeOK_p=    True;
   flagCubeOK_p=visCubeOK_p=weightMatOK_p=msOK_p=True;  
   modelVisOK_p=correctedVisOK_p=modelVisCubeOK_p=correctedVisCubeOK_p=True;
-  feed1_paOK_p=feed2_paOK_p=True;
+  feed1_paOK_p=feed2_paOK_p=direction1OK_p=direction2OK_p=True;
 }
 
 void VisBuffer::freqAverage() 
@@ -614,6 +624,78 @@ Vector<Float>& VisBuffer::fillFeed2_pa()
 			    visIter_p->receptorAngles()(0,antenna2_p(row),0);
   }
   return feed2_pa_p;
+}
+
+Vector<MDirection>& VisBuffer::fillDirection1()
+{
+  // fill feed1_pa cache, antenna, feed and time will be filled automatically 
+  feed1_pa();
+  direction1OK_p=True;
+  direction1_p.resize(antenna1_p.nelements()); // could also use nRow()
+  if (visIter_p->allBeamOffsetsZero()) {
+      direction1_p.set(phaseCenter());
+      return direction1_p;
+  }
+  for (uInt row=0; row<antenna1_p.nelements(); ++row) {
+       DebugAssert(antenna1_p(row)>=0,AipsError);	   
+       DebugAssert(feed1_p(row)>=0,AipsError);	   
+       RigidVector<Double, 2> beamOffset = 
+	       visIter_p->getBeamOffsets()(0,antenna1_p(row),feed1_p(row));
+       if (visIter_p->antennaMounts()(antenna1_p(row))=="ALT-AZ" ||
+           visIter_p->antennaMounts()(antenna1_p(row))=="alt-az") {
+           SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
+	          // SquareMatrix' default constructor is a bit strange. 
+		  // We will probably need to change it in the future
+           Double cpa=cos(feed1_pa_p(row));
+	   Double spa=sin(feed1_pa_p(row));
+           xform(0,0)=cpa;
+	   xform(1,1)=cpa;
+	   xform(0,1)=-spa;
+	   xform(1,0)=spa;
+           beamOffset*=xform; // parallactic angle rotation
+       }
+       direction1_p(row)=phaseCenter(); 
+       // x direction is flipped to convert az-el type frame to ra-dec
+       direction1_p(row).shift(-beamOffset(0),beamOffset(1), True);
+  }
+	 
+  return direction1_p; 
+}
+
+Vector<MDirection>& VisBuffer::fillDirection2()
+{
+  // fill feed2_pa cache, antenna, feed and time will be filled automatically 
+  feed2_pa();
+  direction2OK_p=True;
+  direction2_p.resize(antenna2_p.nelements()); // could also use nRow()
+  if (visIter_p->allBeamOffsetsZero()) {
+      direction2_p.set(phaseCenter());
+      return direction2_p;
+  }
+  for (uInt row=0; row<antenna2_p.nelements(); ++row) {
+       DebugAssert(antenna2_p(row)>=0,AipsError);	   
+       DebugAssert(feed2_p(row)>=0,AipsError);	   
+       RigidVector<Double, 2> beamOffset = 
+	       visIter_p->getBeamOffsets()(0,antenna2_p(row),feed2_p(row));
+       if (visIter_p->antennaMounts()(antenna2_p(row))=="ALT-AZ" ||
+	   visIter_p->antennaMounts()(antenna2_p(row))=="alt-az") {
+           SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
+	          // SquareMatrix' default constructor is a bit strange. 
+		  // We will probably need to change it in the future
+           Double cpa=cos(feed2_pa_p(row));
+	   Double spa=sin(feed2_pa_p(row)); 
+           xform(0,0)=cpa;
+	   xform(1,1)=cpa;
+	   xform(0,1)=-spa;
+	   xform(1,0)=spa;
+           beamOffset*=xform; // parallactic angle rotation
+       }
+       direction2_p(row)=phaseCenter(); 
+       // x direction is flipped to convert az-el type frame to ra-dec
+       direction2_p(row).shift(-beamOffset(0),beamOffset(1), True);
+  }
+	 
+  return direction2_p; 
 }
 
 Int& VisBuffer::fillFieldId()

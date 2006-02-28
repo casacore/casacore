@@ -42,6 +42,8 @@
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
+#include <scimath/Mathematics/SquareMatrix.h>
+#include <scimath/Mathematics/RigidVector.h>
 
 #include <ms/MeasurementSets/MSDerivedValues.h>
 #include <msvis/MSVis/StokesVector.h>
@@ -224,6 +226,18 @@ public:
   // for VisBuffer in the multi-feed case. It may be worth to change the
   // interface of feed_pa to return the information for all feeds.
   const Cube<Double>& receptorAngles() const;
+
+  // return a string mount identifier for each antenna
+  const Vector<String>& antennaMounts() const;
+
+  // Return a cube containing pairs of coordinate offsets for each
+  // receptor of each feed (values are in radians, coordinate system is fixed
+  // with antenna and is the same one as used to define the BEAM_OFFSET 
+  // parameter in the feed table). The cube axes are receptor, antenna, feed.
+  const Cube<RigidVector<Double, 2> >& getBeamOffsets() const;
+
+  // True if all elements of the cube returned by getBeamOffsets are zero
+  Bool allBeamOffsetsZero() const;
 
   // Return feed parallactic angles Vector(nant) (1 feed/ant)
   const Vector<Float>& feed_pa(Double time) const;
@@ -511,11 +525,24 @@ protected:
 };
 
 inline Bool ROVisibilityIterator::more() const { return more_p;}
+
 inline Vector<SquareMatrix<Complex,2> >& 
 ROVisibilityIterator::CJones(Vector<SquareMatrix<Complex,2> >& cjones) const 
 {cjones.resize(msIter_p.CJones().nelements());return cjones=msIter_p.CJones();}
+
 inline const Cube<Double>& ROVisibilityIterator::receptorAngles() const
 {return msIter_p.receptorAngles();}
+
+inline const Vector<String>& ROVisibilityIterator::antennaMounts() const
+{return msIter_p.antennaMounts();}
+
+inline const Cube<RigidVector<Double, 2> >& 
+       ROVisibilityIterator::getBeamOffsets() const
+{return msIter_p.getBeamOffsets();}
+
+inline Bool ROVisibilityIterator::allBeamOffsetsZero() const
+{return msIter_p.allBeamOffsetsZero();}
+
 inline Int ROVisibilityIterator::channelGroupSize() const
 { return velSelection_p ? nVelChan_p : chanWidth_p[msIter_p.spectralWindowId()]; }
 inline Int ROVisibilityIterator::channelIndex() const

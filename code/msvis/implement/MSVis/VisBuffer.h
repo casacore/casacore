@@ -155,6 +155,17 @@ public:
   // Note that feed_pa is a function instead of a cached value
   const Vector<Float>& feed_pa(Double time) const; 
 
+  // direction1() and direction2() return arrays of directions where
+  // the first and the second antenna/feed are pointed to. One value for
+  // each row in the current buffer.
+  Vector<MDirection>& direction1() {return direction1OK_p ? direction1_p :
+	    fillDirection1();}
+  const Vector<MDirection>& direction1()  const {return This->direction1();}
+
+  Vector<MDirection>& direction2() {return direction2OK_p ? direction2_p :
+	    fillDirection2();}
+  const Vector<MDirection>& direction2()  const {return This->direction2();}
+
   // Note that azel is a function instead of a cached value
   const Vector<MDirection>& azel(Double time) const; 
 
@@ -350,6 +361,11 @@ private:
   // and time caches automatically
   Vector<Float>& fillFeed1_pa();
   Vector<Float>& fillFeed2_pa();
+
+  // calling direction1 or direction2 will fill antenna,feed, time and pa 
+  // caches automatically
+  Vector<MDirection>& fillDirection1();
+  Vector<MDirection>& fillDirection2();
   
   Vector<SquareMatrix<Complex,2> >& fillCjones();
   Int& fillFieldId();
@@ -390,13 +406,15 @@ private:
   Bool corrTypeOK_p, flagCubeOK_p, visCubeOK_p, weightMatOK_p,
     modelVisOK_p, correctedVisOK_p, modelVisCubeOK_p, correctedVisCubeOK_p;
   Bool msOK_p, newMS_p;
-  Bool feed1_paOK_p,feed2_paOK_p;
+  Bool feed1_paOK_p,feed2_paOK_p,direction1OK_p,direction2OK_p;
 
   // cached variables
   Int nChannel_p, nRow_p;
   Vector<Int> channel_p, antenna1_p, antenna2_p, feed1_p, feed2_p;
   Vector<Float> feed1_pa_p, feed2_pa_p; 
   Vector<SquareMatrix<Complex,2> > cjones_p;
+  Vector<MDirection> direction1_p; //where the first antenna/feed is pointed to
+  Vector<MDirection> direction2_p; //where the second antenna/feed is pointed to
   Int fieldId_p;
   Int arrayId_p;
   Matrix<Bool> flag_p;
