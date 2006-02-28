@@ -38,6 +38,7 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <casa/BasicSL/String.h>
 #include <scimath/Mathematics/SquareMatrix.h>
+#include <scimath/Mathematics/RigidVector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -313,6 +314,15 @@ public:
   // Return a string mount identifier for each antenna
   const Vector<String>& antennaMounts() const;
 
+  // Return a cube containing pairs of coordinate offset for each receptor
+  // of each feed (values are in radians, coordinate system is fixed with 
+  // antenna and is the same as used to define the BEAM_OFFSET parameter 
+  // in the feed table). The cube axes are receptor, antenna, feed. 
+  const Cube<RigidVector<Double, 2> >& getBeamOffsets() const;
+
+  // True if all elements of the cube returned by getBeamOffsets are zero
+  Bool allBeamOffsetsZero() const;
+
 protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
@@ -367,6 +377,13 @@ protected:
   Matrix<SquareMatrix<Complex,2> > CJones_p;
   Vector<String>  antennaMounts_p; // a string mount identifier for each
                                    // antenna (e.g. EQUATORIAL, ALT-AZ,...)
+  Cube<RigidVector<Double, 2> > beamOffsets_p;// angular offsets (two values for
+                                   // each element of the cube in radians) 
+				   // in the antenna coordinate system. 
+				   // Cube axes are: receptor, antenna, feed.
+  Bool allBeamOffsetsZero_p;       // True if all elements of beamOffsets_p
+                                   // are zero (to speed things up in a 
+				   // single beam case)
   PolFrame polFrame_p;
   Bool freqCacheOK_p;
   Vector<Double> frequency_p;
@@ -410,7 +427,10 @@ inline const Cube<Double>& MSIter::receptorAngles() const
 {return receptorAngles_p;}
 inline const Vector<String>& MSIter::antennaMounts() const
 {return antennaMounts_p;}
+inline const Cube<RigidVector<Double, 2> >& MSIter::getBeamOffsets() const
+{return beamOffsets_p;}
 inline Int MSIter::startChan() const {return startChan_p;}
+inline Bool MSIter::allBeamOffsetsZero() const {return allBeamOffsetsZero_p;}
 
 } //# NAMESPACE CASA - END
 

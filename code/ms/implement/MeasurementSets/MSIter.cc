@@ -62,13 +62,14 @@ Int MSInterval::compare(const void * obj1, const void * obj2)
 }
  
 
-MSIter::MSIter():nMS_p(0),msc_p(0) {}
+MSIter::MSIter():nMS_p(0),msc_p(0),allBeamOffsetsZero_p(True) {}
 
 MSIter::MSIter(const MeasurementSet& ms,
 	       const Block<Int>& sortColumns,
 	       Double timeInterval,
 	       Bool addDefaultSortColumns)
-: msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval)
+: msc_p(0),curMS_p(0),lastMS_p(-1),interval_p(timeInterval),
+  allBeamOffsetsZero_p(True)
 {
   interval_p=0.999999*interval_p;
   bms_p.resize(1); 
@@ -493,11 +494,11 @@ void MSIter::setFeedInfo()
   //     information is changed
   //  3. Add a set method for MSIterval to be able to access this vector
   //     (using a pointer or reference to avoid unnecessary copying)
-  //     and ensure that critical times are known to MSInterval before
+  //     and make sure that critical times are known to MSInterval before
   //     tabIter_p[curMS_p]->next() in MSIter::advance
   //  4. Change MSInterval::compare to break iteration (i.e. return -1 or +1)
   //     if any critical time lies in between  *obj1 and *obj2.
-  //     A sorted vector of critical time can speed up the search.
+  //     A sorted vector of critical times can speed up the search.
   //  5. Add an additional condition to
   //      if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p))
   //     and to
@@ -555,23 +556,40 @@ void MSIter::setFeedInfo()
     Int maxFeedId=max(feedId);
     AlwaysAssert((maxAntId>=0 && maxFeedId>=0),AipsError);    
     CJones_p.resize(maxAntId+1,maxFeedId+1);
-    Int maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
+    uInt maxNumReceptors=max(msc_p->feed().numReceptors().getColumn());
     if (maxNumReceptors>2)
         throw AipsError("Can't handle more than 2 receptors");    
     receptorAngles_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
+    beamOffsets_p.resize(maxNumReceptors,maxAntId+1,maxFeedId+1);
+    allBeamOffsetsZero_p=True; 
     Vector<Int> spwId=msc_p->feed().spectralWindowId().getColumn();
+    const ROArrayColumn<Double>& beamOffsetColumn=
+	               msc_p->feed().beamOffset();
+    DebugAssert(beamOffsetColumn.nrow()==spwId.nelements(),AipsError);
+    
     for (uInt i=0; i<spwId.nelements(); i++) {
       if (((!spwDepFeed_p) || spwId(i)==curSpectralWindow_p)) {
 	Int iAnt=antennaId(i);
 	Int iFeed=feedId(i);
-	if (maxNumReceptors==1) {
+	if (maxNumReceptors==1) 
 	  CJones_p(iAnt,iFeed)=SquareMatrix<Complex,2>
 	    ((Matrix<Complex>(msc_p->feed().polResponse()(i)))(0,0));
-	} else {
+        else 
 	  CJones_p(iAnt,iFeed)=Matrix<Complex>(msc_p->feed().polResponse()(i));
-	}
+	
 	receptorAngles_p.xyPlane(iFeed).column(iAnt)=
 	   Vector<Double>(msc_p->feed().receptorAngle()(i));
+	for (uInt rcpt=0;rcpt<maxNumReceptors;++rcpt)
+	     for (uInt j=0;j<2;++j) {
+		  // do an explicit iteration because these matrices are
+		  // small and an element by element iteration will be
+		  // required anyway to check for non-zero elements
+                  Double beamOffsetBuf=
+			    beamOffsetColumn(i)(IPosition(2,j,rcpt));
+		  if (fabs(beamOffsetBuf)>1e-10) 
+	              allBeamOffsetsZero_p=False;
+	          beamOffsets_p(rcpt,iAnt,iFeed)(j)=beamOffsetBuf;
+             }
       }
     }
 
