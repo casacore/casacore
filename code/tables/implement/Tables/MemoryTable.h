@@ -122,7 +122,7 @@ public:
   virtual void unlock();
 
   // Flushing the table is a no-op.
-  virtual void flush (Bool sync);
+  virtual void flush (Bool fsync, Bool recursive);
 
   // Resyncing the Table is a no-op.
   virtual void resync();
@@ -139,7 +139,8 @@ public:
   virtual void copy (const String& newName, int tableOption) const;
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
-			 int tableOption, Bool, int endianFormat) const;
+			 int tableOption, Bool, int endianFormat,
+			 Bool noRows) const;
   // </group>
 
   // Rename the table. The tableOption is ignored.

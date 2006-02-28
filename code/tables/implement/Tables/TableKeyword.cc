@@ -29,6 +29,7 @@
 //# Includes
 #include <tables/Tables/TableKeyword.h>
 #include <tables/Tables/Table.h>
+#include <tables/Tables/PlainTable.h>
 #include <tables/Tables/TableAttr.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableError.h>
@@ -161,6 +162,22 @@ Table TableKeyword::table() const
 void TableKeyword::close() const
 {
     *table_p = Table();
+}
+
+void TableKeyword::flush (Bool fsync) const
+{
+    if (attr_p.openWritable()) {
+        if (!table_p->isNull()) {
+	    table_p->flush (fsync, True);
+	} else {
+	    // The table is not open here, but might be open elsewhere.
+	    // So only flush if open elsewhere, thus in the TableCache.
+	    PlainTable* ptab = PlainTable::tableCache (attr_p.name());
+	    if (ptab) {
+	        ptab->flush (fsync, True);
+	    }
+	}
+    }
 }
 
 Bool TableKeyword::conform (const TableKeyword& that) const

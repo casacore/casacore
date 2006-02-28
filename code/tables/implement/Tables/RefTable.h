@@ -186,7 +186,7 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    virtual void flush (Bool sync);
+    virtual void flush (Bool fsync, Bool recursive);
 
     // Resync the Table object with the table file.
     virtual void resync();
@@ -205,7 +205,8 @@ public:
     // It copies the contents of each row to get a real copy.
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
-			   int tableOption, Bool, int endianFormat) const;
+			   int tableOption, Bool, int endianFormat,
+			   Bool noRows) const;
 
     // It returns the type of the parent table.
     virtual int tableType() const;
@@ -333,7 +334,7 @@ private:
     void makeRefCol();
 
     // Write a reference table.
-    void writeRefTable (Bool sync);
+    void writeRefTable (Bool fsync);
 };
 
 

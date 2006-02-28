@@ -381,9 +381,12 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    void flush (Bool sync=False);
+    // <br>If <src>fsync=True</src> the file contents are fsync-ed to disk,
+    // thus ensured that the system buffers are actually written to disk.
+    // <br>If <src>recursive=True</src> all subtables are flushed too.
+    void flush (Bool fsync=False, Bool recursive=False);
 
-    // Resynchronize the Table object ith the table file.
+    // Resynchronize the Table object with the table file.
     // This function is only useful if no read-locking is used, ie.
     // if the table lock option is UserNoReadLocking or AutoNoReadLocking.
     // In that cases the table system does not acquire a read-lock, thus
@@ -533,7 +536,8 @@ public:
     // <br>For PlainTables <src>deepCopy</src> is the same as <src>copy</src>
     // unless <src>valueCopy==True</src> is given. In that case the values
     // are copied which takes longer, but reorganizes the data files to get
-    // rid of gaps in the data.
+    // rid of gaps in the data. Also if specific DataManager info is given
+    // or if no rows have to be copied, a deep copy is made.
     // <br>The following options can be given:
     // <dl>
     // <dt> Table::New
@@ -550,18 +554,23 @@ public:
     // <br>When making a deep copy, it is possible to specify the data managers
     // using the <src>dataManagerInfo</src> argument.
     // See <src>getDataManagerInfo</src> for more info about that record.
-    void copy (const String& newName, TableOption) const;
+    // <br>If <src/noRows=True</src> no rows are copied. Also no rows are
+    // copied in all subtables. It is useful if one wants to make a copy
+    // of only the Table structure.
+    void copy (const String& newName, TableOption, Bool noRows=False) const;
     void deepCopy (const String& newName,
 		   TableOption, Bool valueCopy=False,
-		   EndianFormat=AipsrcEndian) const;
+		   EndianFormat=AipsrcEndian,
+		   Bool noRows=False) const;
     void deepCopy (const String& newName, const Record& dataManagerInfo,
 		   TableOption, Bool valueCopy=False,
-		   EndianFormat=AipsrcEndian) const;
+		   EndianFormat=AipsrcEndian,
+		   Bool noRows=False) const;
     // </group>
 
     // Make a copy of a table to a MemoryTable object.
     // Use the given name for the memory table.
-    Table copyToMemoryTable (const String& name) const;
+    Table copyToMemoryTable (const String& name, Bool noRows=False) const;
 
     // Get the table type.
     TableType tableType() const;
@@ -925,8 +934,8 @@ inline Bool Table::isSameRoot (const Table& other) const
 
 inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
-inline void Table::flush (Bool sync)
-    { baseTabPtr_p->flush (sync); }
+inline void Table::flush (Bool fsync, Bool recursive)
+    { baseTabPtr_p->flush (fsync, recursive); }
 inline void Table::resync()
     { baseTabPtr_p->resync(); }
 
@@ -967,15 +976,14 @@ inline Bool Table::isColumnStored (uInt columnIndex) const
 
 inline void Table::rename (const String& newName, TableOption option)
     { baseTabPtr_p->rename (newName, option); }
-inline void Table::copy (const String& newName, TableOption option) const
-    { baseTabPtr_p->copy (newName, option); }
 inline void Table::deepCopy (const String& newName,
 			     const Record& dataManagerInfo,
 			     TableOption option,
 			     Bool valueCopy,
-			     EndianFormat endianFormat) const
+			     EndianFormat endianFormat,
+			     Bool noRows) const
     { baseTabPtr_p->deepCopy (newName, dataManagerInfo, option, valueCopy,
-			      endianFormat); }
+			      endianFormat, noRows); }
 inline void Table::markForDelete()
     { baseTabPtr_p->markForDelete (True, ""); }
 inline void Table::unmarkForDelete()

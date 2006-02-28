@@ -118,7 +118,8 @@ public:
 
   // Copy all subtables (in table and column keywords) from input to
   // output table.
-  static void copySubTables (Table& out, const Table& in);
+  // Optionally the row contents are not copied.
+  static void copySubTables (Table& out, const Table& in, Bool noRows=False);
 
   // Copy the subtables in the given keywordset to the output keywordset
   // in the table with the given name.
@@ -126,7 +127,8 @@ public:
 			     const TableRecord& inKeys,
 			     const String& outName,
 			     Table::TableType outType,
-			     const Table& in);
+			     const Table& in,
+			     Bool noRows=False);
 
   // Replace TiledDataStMan by TiledShapeStMan in the DataManagerInfo record.
   // Since TiledShapeStMan does not support ID columns, they are

@@ -94,7 +94,7 @@ void NullTable::unlock()
   throwError ("unlock");
 }
 
-void NullTable::flush (Bool)
+void NullTable::flush (Bool, Bool)
 {
   throwError ("flush");
 }
@@ -116,7 +116,8 @@ Bool NullTable::isWritable() const
   return False;
 }
 
-void NullTable::deepCopy (const String&, const Record&, int, Bool, int) const
+void NullTable::deepCopy (const String&, const Record&, int, Bool,
+			  int, Bool) const
 {
   throwError ("deepCopy");
 }

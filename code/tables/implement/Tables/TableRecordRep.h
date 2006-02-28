@@ -174,6 +174,9 @@ public:
     // This can be useful to save memory usage.
     void closeTables() const;
 
+    // Flush all open subtables.
+    void flushTables (Bool fsync) const;
+
     // Rename the subtables with a path containing the old parent table name.
     void renameTables (const String& newParentName,
 		       const String& oldParentName);

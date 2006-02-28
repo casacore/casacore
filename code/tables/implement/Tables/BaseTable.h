@@ -143,7 +143,7 @@ public:
     virtual void unlock() = 0;
 
     // Flush the table, i.e. write it to disk.
-    virtual void flush (Bool sync) = 0;
+    virtual void flush (Bool fsync, Bool recursive) = 0;
 
     // Resync the Table object with the table file.
     virtual void resync() = 0;
@@ -219,7 +219,8 @@ public:
 			   const Record& dataManagerInfo,
 			   int tableOption,
 			   Bool valueCopy,
-			   int endianFormat) const;
+			   int endianFormat,
+			   Bool noRows) const;
     // </group>
 
     // Get the table type.
@@ -466,7 +467,8 @@ protected:
     void trueDeepCopy (const String& newName,
 		       const Record& dataManagerInfo,
 		       int tableOption,
-		       int endianFormat) const;
+		       int endianFormat,
+		       Bool noRows) const;
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it

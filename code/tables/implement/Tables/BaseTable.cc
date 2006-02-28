@@ -377,10 +377,12 @@ void BaseTable::deepCopy (const String& newName,
 			  const Record& dataManagerInfo,
 			  int tableOption,
 			  Bool valueCopy,
-			  int endianFormat) const
+			  int endianFormat,
+			  Bool noRows) const
 {
-    if (valueCopy  ||  dataManagerInfo.nfields() > 0) {
-        trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat);
+    if (valueCopy  ||  dataManagerInfo.nfields() > 0  ||  noRows) {
+        trueDeepCopy (newName, dataManagerInfo, tableOption,
+		      endianFormat, noRows);
     } else {
         copy (newName, tableOption);
     }
@@ -389,26 +391,30 @@ void BaseTable::deepCopy (const String& newName,
 void BaseTable::trueDeepCopy (const String& newName,
 			      const Record& dataManagerInfo,
 			      int tableOption,
-			      int endianFormat) const
+			      int endianFormat,
+			      Bool noRows) const
 {
     // Throw exception if new name is same as old one.
     if (newName == name_p) {
         throw TableError
 	       ("Table::deepCopy: new name equal to old name " + name_p);
     }
-    //# Flush the data (cast is necesaary to bypass non-constness).
+    //# Flush the data and sutables.
+    //# (cast is necessary to bypass non-constness).
     BaseTable* ncThis = const_cast<BaseTable*>(this);
-    ncThis->flush (True);
+    ncThis->flush (True, True);
     //# Prepare the copy (do some extra checks).
     prepareCopyRename (newName, tableOption);
     // Create the new table and copy everything.
     Table oldtab(ncThis);
     Table newtab = TableCopy::makeEmptyTable
                         (newName, dataManagerInfo, oldtab, Table::New,
-			 Table::EndianFormat(endianFormat));
-    TableCopy::copyRows (newtab, oldtab);
+			 Table::EndianFormat(endianFormat), True, noRows);
+    if (!noRows) {
+      TableCopy::copyRows (newtab, oldtab);
+    }
     TableCopy::copyInfo (newtab, oldtab);
-    TableCopy::copySubTables (newtab, oldtab);
+    TableCopy::copySubTables (newtab, oldtab, noRows);
 }
 
 void BaseTable::copy (const String& newName, int tableOption) const
@@ -421,8 +427,9 @@ void BaseTable::copy (const String& newName, int tableOption) const
 	    throw (TableError
 		   ("BaseTable::copy: no input table files exist"));
 	}
-	//# Flush the data (cast is necesaary to bypass non-constness).
-	((BaseTable*)this)->flush (True);
+	//# Flush the data and subtables.
+	//# (cast is necesaary to bypass non-constness).
+	((BaseTable*)this)->flush (True, True);
 	//# Copy the files (thus recursively the entire directory).
 	//# Set user write permission after the copy.
 	prepareCopyRename (newName, tableOption);

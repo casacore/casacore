@@ -257,20 +257,22 @@ TableProxy TableProxy::copy (const String& newTableName,
 			     Bool deepCopy,
 			     Bool valueCopy,
 			     const String& endianFormat,
-			     const Record& dminfo)
+			     const Record& dminfo,
+			     Bool noRows)
 {
   Table::EndianFormat endOpt = makeEndianFormat (endianFormat);
-  // Always copy if dminfo is not empty.
-  if (dminfo.nfields() > 0) {
+  // Always deepcopy if dminfo is not empty or if no rows are copied.
+  if (dminfo.nfields() > 0  ||  noRows) {
     deepCopy = True;
     valueCopy = True;
   }
   Table outtab;
   if (toMemory) {
-    outtab = table_p.copyToMemoryTable (newTableName);
+    outtab = table_p.copyToMemoryTable (newTableName, noRows);
   } else {
     if (deepCopy) {
-      table_p.deepCopy (newTableName, dminfo, Table::New, valueCopy, endOpt);
+      table_p.deepCopy (newTableName, dminfo, Table::New, valueCopy,
+			endOpt, noRows);
     } else {
       table_p.copy (newTableName, Table::New);
     }
@@ -770,7 +772,7 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
   // Check that the row number is within the table bounds.
-  // However, accept a row number equal to nrrow when no rows are needed.
+  // However, accept a row number equal to nrow when no rows are needed.
   Int tabnrow = table_p.nrow();
   if (rownr < 0  ||  rownr > tabnrow  ||  (rownr==tabnrow && nrow>0)) {
     throw TableError("TableProxy::getColumnShapeString: no such row");
@@ -939,9 +941,9 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
   return result;
 }
 
-void TableProxy::flush()
+void TableProxy::flush (Bool recursive)
 {
-  table_p.flush();
+  table_p.flush (False, recursive);
 }
 
 void TableProxy::reopenRW()
@@ -1371,7 +1373,7 @@ Int TableProxy::checkRowColumn (Table& table,
 				const Char* caller)
 {
   // Check that the row number is within the table bounds.
-  // However, accept a row number equal to nrrow when no rows are needed.
+  // However, accept a row number equal to nrow when no rows are needed.
   Int tabnrow = table.nrow();
   if (rownr < 0  ||  rownr > tabnrow  ||  (rownr==tabnrow && nrow>0)) {
     throw TableError (String(caller) + ": no such row");

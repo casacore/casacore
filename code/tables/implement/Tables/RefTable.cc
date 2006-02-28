@@ -219,15 +219,15 @@ void RefTable::unlock()
     baseTabPtr_p->unlock();
 }
 
-void RefTable::flush (Bool sync)
+void RefTable::flush (Bool fsync, Bool recursive)
 {
     if (!isMarkedForDelete()) {
         if (openedForWrite()) {
-	    writeRefTable (sync);
+	    writeRefTable (fsync);
 	}
     }
-    // Flush the underlying table (if needed).
-    baseTabPtr_p->flush (sync);
+    // Flush the underlying table.
+    baseTabPtr_p->flush (fsync, recursive);
 }
 
 void RefTable::resync()
@@ -263,7 +263,7 @@ Bool RefTable::adjustRownrs (uInt nr, Vector<uInt>& rowStorage,
 
 
 //# Write a reference table into a file.
-void RefTable::writeRefTable (Bool sync)
+void RefTable::writeRefTable (Bool fsync)
 {
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.
@@ -291,8 +291,6 @@ void RefTable::writeRefTable (Bool sync)
     }
     //# Write the TableInfo.
     flushTableInfo();
-    //# Write the data in the referred table.
-    baseTabPtr_p->flush (sync);
 }
 
 //# Read a reference table from a file and read the associated table.
@@ -481,9 +479,11 @@ Bool RefTable::isWritable() const
 
 void RefTable::deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
-			 int tableOption, Bool, int endianFormat) const
+			 int tableOption, Bool, int endianFormat,
+			 Bool noRows) const
 {
-    trueDeepCopy (newName, dataManagerInfo, tableOption, endianFormat);
+    trueDeepCopy (newName, dataManagerInfo, tableOption,
+		  endianFormat, noRows);
 }
 
 int RefTable::tableType() const

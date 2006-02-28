@@ -431,10 +431,14 @@ uInt PlainTable::getModifyCounter() const
 }
 
 
-void PlainTable::flush (Bool)
+void PlainTable::flush (Bool fsync, Bool recursive)
 {
     if (openedForWrite()) {
 	putFile (False);
+	// Flush subtables if wanted.
+	if (recursive) {
+	    keywordSet().flushTables (fsync);
+	}
     }
 }
 

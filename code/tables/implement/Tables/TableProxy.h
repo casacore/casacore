@@ -174,8 +174,8 @@ public:
   // Resync the table.
   void resync();
 
-  // Flush the table.
-  void flush();
+  // Flush the table and optionally all its subtables.
+  void flush (Bool recursive);
 
   // Get the endian format of the table.
   // It fills the result with value "big" or "little".
@@ -205,12 +205,14 @@ public:
   void rename (const String& newTableName);
 
   // Copy the table (possibly a deep copy).
+  // A maximum of nrows is copied (<0 means all rows).
   TableProxy copy (const String& newTableName,
 		   Bool toMemoryTable,
 		   Bool deepCopy,
 		   Bool valueCopy,
 		   const String& endianFormat,
-		   const Record& dminfo);
+		   const Record& dminfo,
+		   Bool noRows);
 
   // Copy rows from one table to another.
   // If startOut<0, it is set to the end of the output table.

@@ -153,7 +153,7 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    virtual void flush (Bool fsync);
+    virtual void flush (Bool fsync, Bool recursive);
 
     // Resync the Table object with the table file.
     virtual void resync();

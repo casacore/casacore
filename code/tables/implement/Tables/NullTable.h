@@ -85,7 +85,7 @@ public:
   virtual Bool hasLock (FileLocker::LockType) const;
   virtual Bool lock (FileLocker::LockType, uInt nattempts);
   virtual void unlock();
-  virtual void flush (Bool sync);
+  virtual void flush (Bool fsync, Bool recursive);
   virtual void resync();
   virtual uInt getModifyCounter() const;
   virtual Bool isWritable() const;
@@ -93,7 +93,8 @@ public:
 			 const Record& dataManagerInfo,
 			 int tableOption,
 			 Bool valueCopy,
-			 int endianFormat) const;
+			 int endianFormat,
+			 Bool noRows) const;
   virtual TableDesc actualTableDesc() const;
   virtual Record dataManagerInfo() const;
   virtual TableRecord& keywordSet();

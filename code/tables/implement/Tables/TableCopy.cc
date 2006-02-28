@@ -259,10 +259,10 @@ void TableCopy::copyInfo (Table& out, const Table& in)
   out.flushTableInfo();
 }
 
-void TableCopy::copySubTables (Table& out, const Table& in)
+void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows)
 {
   copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(),
-		 out.tableType(), in);
+		 out.tableType(), in, noRows);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
   for (uInt i=0; i<outDesc.ncolumn(); i++) {
@@ -273,7 +273,7 @@ void TableCopy::copySubTables (Table& out, const Table& in)
 	TableColumn outCol(out, name);
 	ROTableColumn inCol(in, name);
 	copySubTables (outCol.rwKeywordSet(), inCol.keywordSet(),
-		       out.tableName(), out.tableType(), in);
+		       out.tableName(), out.tableType(), in, noRows);
       }
     }
   }
@@ -284,7 +284,8 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 			       const TableRecord& inKeys,
 			       const String& outName,
 			       Table::TableType outType,
-			       const Table& in)
+			       const Table& in,
+			       Bool noRows)
 {
   for (uInt i=0; i<inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
@@ -304,9 +305,10 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 	String newName = outName + '/' + Path(inTab.tableName()).baseName();
 	Table outTab;
 	if (outType == Table::Memory) {
-	  outTab = inTab.copyToMemoryTable (newName);
+	  outTab = inTab.copyToMemoryTable (newName, noRows);
 	} else {
-	  inTab.deepCopy (newName, Table::New);
+	  inTab.deepCopy (newName, Table::New, False,
+			  Table::AipsrcEndian, noRows);
 	  outTab = Table(newName);
 	}
 	outKeys.defineTable (inKeys.name(i), outTab);

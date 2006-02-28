@@ -185,6 +185,9 @@ public:
     // Close the table.
     void close() const;
 
+    // Flush and optionally fsync the table.
+    void flush (Bool fsync) const;
+
     // Rename the table if its path contains the old parent table name.
     void renameTable (const String& newParentName,
 		      const String& oldParentName);

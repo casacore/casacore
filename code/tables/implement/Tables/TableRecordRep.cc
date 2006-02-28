@@ -355,6 +355,16 @@ void TableRecordRep::closeTables() const
 }
 
 
+void TableRecordRep::flushTables (Bool fsync) const
+{
+    for (uInt i=0; i<nused_p; i++) {
+	if (desc_p.type(i) == TpTable) {
+	    static_cast<TableKeyword*>(const_cast<void*>(data_p[i]))->flush(fsync);
+	}
+    }
+}
+
+
 Bool TableRecordRep::areTablesMultiUsed() const
 {
     for (uInt i=0; i<nused_p; i++) {
