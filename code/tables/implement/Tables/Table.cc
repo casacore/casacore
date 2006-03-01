@@ -328,17 +328,23 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
     return nrow;
 }
 
+void Table::copy (const String& newName,
+                TableOption  tableOption,
+                Bool noRows) const
+{ baseTabPtr_p->copy(newName, tableOption); }
+
 
 void Table::deepCopy (const String& newName,
 		      TableOption option,
 		      Bool valueCopy,
-		      EndianFormat endianFormat) const
+		      EndianFormat endianFormat,
+                      Bool noRow) const
 {
     baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy,
-			    endianFormat);
+			    endianFormat, noRow);
 }
 
-Table Table::copyToMemoryTable (const String& newName) const
+Table Table::copyToMemoryTable (const String& newName, Bool noRow) const
 {
   Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this);
   TableCopy::copyRows (newtab, *this);
