@@ -117,6 +117,10 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
 #define dposv dposv_
 #define cposv cposv_
 #define zposv zposv_
+#define spotri spotri_
+#define dpotri dpotri_
+#define cpotri cpotri_
+#define zpotri zpotri_
 #endif
 
 extern "C" {
@@ -146,6 +150,16 @@ extern "C" {
 		 const int *lda, Complex *b, const int *ldb, int *info);
       void zposv(const char *uplo, const int *n, const int* nrhs, DComplex *a, 
 		 const int *lda, DComplex *b, const int *ldb, int *info);
+
+
+      void spotri(const char *uplo, const int *n, float *a, 
+		  const int *lda, int *info);
+      void dpotri(const char *uplo, const int *n, double *a, 
+ 		  const int *lda, int *info);
+      void cpotri(const char *uplo, const int *n, Complex *a, 
+		  const int *lda, int *info);
+      void zpotri(const char *uplo, const int *n, DComplex *a, 
+		  const int *lda, int *info);
 
 };
 
@@ -187,6 +201,19 @@ inline void posv(const char *uplo, const int *n, const int* nrhs, Complex *a,
 inline void posv(const char *uplo, const int *n, const int* nrhs, DComplex *a, 
 		 const int *lda, DComplex *b, const int *ldb, int *info)
    { zposv(uplo, n, nrhs, a, lda, b, ldb, info); }  
+
+inline void potri(const char *uplo, const int *n, float *a, 
+		  const int *lda, int *info)
+   { spotri(uplo, n, a, lda, info); }  
+inline void potri(const char *uplo, const int *n, double *a, 
+		  const int *lda, int *info)
+   { dpotri(uplo, n, a, lda, info); }  
+inline void potri(const char *uplo, const int *n, Complex *a, 
+		  const int *lda, int *info)
+   { cpotri(uplo, n, a, lda, info); }  
+inline void potri(const char *uplo, const int *n, DComplex *a, 
+		  const int *lda, int *info)
+   { zpotri(uplo, n, a, lda, info); }  
 
 
 
