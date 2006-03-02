@@ -328,28 +328,36 @@ uInt Table::getLayout (TableDesc& desc, const String& tableName)
     return nrow;
 }
 
-void Table::copy (const String& newName,
-                TableOption  tableOption,
-                Bool noRows) const
-{ baseTabPtr_p->copy(newName, tableOption); }
 
+void Table::copy (const String& newName, TableOption option,
+		  Bool noRows) const
+{
+    if (noRows) {
+        baseTabPtr_p->deepCopy (newName, Record(), option, False,
+				AipsrcEndian, noRows);
+    } else {
+        baseTabPtr_p->copy (newName, option);
+    }
+}
 
 void Table::deepCopy (const String& newName,
 		      TableOption option,
 		      Bool valueCopy,
 		      EndianFormat endianFormat,
-                      Bool noRow) const
+		      Bool noRows) const
 {
     baseTabPtr_p->deepCopy (newName, Record(), option, valueCopy,
-			    endianFormat, noRow);
+			    endianFormat, noRows);
 }
 
-Table Table::copyToMemoryTable (const String& newName, Bool noRow) const
+Table Table::copyToMemoryTable (const String& newName, Bool noRows) const
 {
   Table newtab = TableCopy::makeEmptyMemoryTable (newName, *this);
-  TableCopy::copyRows (newtab, *this);
+  if (!noRows) {
+    TableCopy::copyRows (newtab, *this);
+  }
   TableCopy::copyInfo (newtab, *this);
-  TableCopy::copySubTables (newtab, *this);
+  TableCopy::copySubTables (newtab, *this, noRows);
   return newtab;
 }
 
@@ -807,4 +815,3 @@ ostream& operator<< (ostream& ios, const Table& tab)
 }
 
 } //# NAMESPACE CASA - END
-
