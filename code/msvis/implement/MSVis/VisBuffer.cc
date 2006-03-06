@@ -34,6 +34,7 @@
 #include <casa/Arrays/ArrayUtil.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/GenSort.h>
+#include <ms/MeasurementSets/MSColumns.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -632,33 +633,45 @@ Vector<MDirection>& VisBuffer::fillDirection1()
   feed1_pa();
   direction1OK_p=True;
   direction1_p.resize(antenna1_p.nelements()); // could also use nRow()
-  if (visIter_p->allBeamOffsetsZero()) {
-      direction1_p.set(phaseCenter());
-      return direction1_p;
+  const ROMSPointingColumns& mspc=msColumns().pointing();
+  
+  if (visIter_p->allBeamOffsetsZero() && mspc.pointingIndex(antenna1()(0),
+      time()(0))<0) {
+        // if no true pointing information is found
+        // just return the phase center from the field table
+        direction1_p.set(phaseCenter());
+        return direction1_p;
   }
   for (uInt row=0; row<antenna1_p.nelements(); ++row) {
        DebugAssert(antenna1_p(row)>=0,AipsError);	   
-       DebugAssert(feed1_p(row)>=0,AipsError);	   
-       RigidVector<Double, 2> beamOffset = 
-	       visIter_p->getBeamOffsets()(0,antenna1_p(row),feed1_p(row));
-       if (visIter_p->antennaMounts()(antenna1_p(row))=="ALT-AZ" ||
-           visIter_p->antennaMounts()(antenna1_p(row))=="alt-az") {
-           SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
+       DebugAssert(feed1_p(row)>=0,AipsError);
+       Int pointIndex1 = mspc.pointingIndex(antenna1()(row),time()(row));
+       // if no true pointing information is found
+       // use the phase center from the field table       
+       if (pointIndex1>=0)
+           direction1_p(row)=mspc.directionMeas(pointIndex1,time()(row));
+       else
+           direction1_p(row)=phaseCenter();
+       if (!visIter_p->allBeamOffsetsZero()) { 
+           RigidVector<Double, 2> beamOffset = 
+	        visIter_p->getBeamOffsets()(0,antenna1_p(row),feed1_p(row));
+           if (visIter_p->antennaMounts()(antenna1_p(row))=="ALT-AZ" ||
+               visIter_p->antennaMounts()(antenna1_p(row))=="alt-az") {
+               SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
 	          // SquareMatrix' default constructor is a bit strange. 
 		  // We will probably need to change it in the future
-           Double cpa=cos(feed1_pa_p(row));
-	   Double spa=sin(feed1_pa_p(row));
-           xform(0,0)=cpa;
-	   xform(1,1)=cpa;
-	   xform(0,1)=-spa;
-	   xform(1,0)=spa;
-           beamOffset*=xform; // parallactic angle rotation
-       }
-       direction1_p(row)=phaseCenter(); 
-       // x direction is flipped to convert az-el type frame to ra-dec
-       direction1_p(row).shift(-beamOffset(0),beamOffset(1), True);
-  }
-	 
+               Double cpa=cos(feed1_pa_p(row));
+	       Double spa=sin(feed1_pa_p(row));
+               xform(0,0)=cpa;
+	       xform(1,1)=cpa;
+	       xform(0,1)=-spa;
+	       xform(1,0)=spa;
+               beamOffset*=xform; // parallactic angle rotation
+           }       
+           // x direction is flipped to convert az-el type frame to ra-dec
+           direction1_p(row).shift(-beamOffset(0),beamOffset(1), True);
+      }
+  }	 
   return direction1_p; 
 }
 
@@ -668,33 +681,45 @@ Vector<MDirection>& VisBuffer::fillDirection2()
   feed2_pa();
   direction2OK_p=True;
   direction2_p.resize(antenna2_p.nelements()); // could also use nRow()
-  if (visIter_p->allBeamOffsetsZero()) {
+  const ROMSPointingColumns& mspc=msColumns().pointing();
+  
+  if (visIter_p->allBeamOffsetsZero() && mspc.pointingIndex(antenna2()(0),
+      time()(0))<0) {
+        // if no true pointing information is found
+        // just return the phase center from the field table
       direction2_p.set(phaseCenter());
       return direction2_p;
   }
   for (uInt row=0; row<antenna2_p.nelements(); ++row) {
        DebugAssert(antenna2_p(row)>=0,AipsError);	   
        DebugAssert(feed2_p(row)>=0,AipsError);	   
-       RigidVector<Double, 2> beamOffset = 
-	       visIter_p->getBeamOffsets()(0,antenna2_p(row),feed2_p(row));
-       if (visIter_p->antennaMounts()(antenna2_p(row))=="ALT-AZ" ||
+       Int pointIndex2 = mspc.pointingIndex(antenna2()(row),time()(row));
+       // if no true pointing information is found
+       // use the phase center from the field table       
+       if (pointIndex2>=0)
+           direction2_p(row)=mspc.directionMeas(pointIndex2,time()(row));
+       else
+           direction2_p(row)=phaseCenter();
+       if (!visIter_p->allBeamOffsetsZero()) { 
+           RigidVector<Double, 2> beamOffset = 
+	        visIter_p->getBeamOffsets()(0,antenna2_p(row),feed2_p(row));
+           if (visIter_p->antennaMounts()(antenna2_p(row))=="ALT-AZ" ||
 	   visIter_p->antennaMounts()(antenna2_p(row))=="alt-az") {
-           SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
+               SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General); 
 	          // SquareMatrix' default constructor is a bit strange. 
 		  // We will probably need to change it in the future
-           Double cpa=cos(feed2_pa_p(row));
-	   Double spa=sin(feed2_pa_p(row)); 
-           xform(0,0)=cpa;
-	   xform(1,1)=cpa;
-	   xform(0,1)=-spa;
-	   xform(1,0)=spa;
-           beamOffset*=xform; // parallactic angle rotation
+               Double cpa=cos(feed2_pa_p(row));
+	       Double spa=sin(feed2_pa_p(row)); 
+               xform(0,0)=cpa;
+	       xform(1,1)=cpa;
+	       xform(0,1)=-spa;
+	       xform(1,0)=spa;
+               beamOffset*=xform; // parallactic angle rotation
+           }          
+           // x direction is flipped to convert az-el type frame to ra-dec
+           direction2_p(row).shift(-beamOffset(0),beamOffset(1), True);
        }
-       direction2_p(row)=phaseCenter(); 
-       // x direction is flipped to convert az-el type frame to ra-dec
-       direction2_p(row).shift(-beamOffset(0),beamOffset(1), True);
-  }
-	 
+  }	 
   return direction2_p; 
 }
 
