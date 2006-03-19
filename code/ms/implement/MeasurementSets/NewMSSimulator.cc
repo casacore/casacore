@@ -49,6 +49,7 @@
 #include <casa/BasicSL/Constants.h>
 #include <casa/BasicMath/Random.h>
 #include <casa/Arrays/ArrayMath.h>
+#include <casa/Arrays/Cube.h>
 #include <casa/Arrays/MatrixMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/Slice.h>
@@ -72,6 +73,12 @@
 #include <casa/fstream.h>
 #include <casa/sstream.h>
 #include <ms/MeasurementSets/MSTileLayout.h>
+#include <scimath/Mathematics/RigidVector.h>
+#include <scimath/Mathematics/SquareMatrix.h>
+
+// temporary to get access to beam_offsets
+#include <ms/MeasurementSets/MSIter.h>
+//
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -88,6 +95,33 @@ const String dataTileId = "DATA_HYPERCUBE_ID";
 const String scratchDataTileId = "SCRATCH_DATA_HYPERCUBE_ID";
 const String flagTileId = "FLAG_CATEGORY_HYPERCUBE_ID";
 const String imweightTileId = "IMAGING_WEIGHT_HYPERCUBE_ID";
+
+// a but ugly solution to use the feed table parser of MSIter
+// to extract antennaMounts and BeamOffsets.
+struct MSFeedParameterExtractor : protected MSIter {
+  
+  MSFeedParameterExtractor(const MeasurementSet &ms) {
+      msc_p=new ROMSColumns(ms);
+      msc_p->antenna().mount().getColumn(antennaMounts_p,True);
+      checkFeed_p=True;
+      setFeedInfo();
+  }
+  // Return a string mount identifier for each antenna
+  using MSIter::antennaMounts;
+
+  // Return a cube containing pairs of coordinate offset for each receptor
+  // of each feed (values are in radians, coordinate system is fixed with
+  // antenna and is the same as used to define the BEAM_OFFSET parameter
+  // in the feed table). The cube axes are receptor, antenna, feed.
+  using MSIter::getBeamOffsets;
+
+  // True if all elements of the cube returned by getBeamOffsets are zero
+  using MSIter::allBeamOffsetsZero;
+
+};
+//
+
+
 
 void NewMSSimulator::defaults() {
   fractionBlockageLimit_p=1e-6;
@@ -861,6 +895,18 @@ void NewMSSimulator::observe(const String& sourceName,
     os << "Observing source : "<<sourceName<<endl
        << "     direction : " << formatDirection(fieldCenter)<<LogIO::POST;
   }
+
+  // A bit ugly solution to extract the information about beam offsets
+  Cube<RigidVector<Double, 2> > beam_offsets;
+  Vector<String> antenna_mounts;
+  { // to close MSIter, when the job is done
+    MSFeedParameterExtractor msfpe_tmp(*ms_p);
+    beam_offsets=msfpe_tmp.getBeamOffsets();
+    antenna_mounts=msfpe_tmp.antennaMounts();
+  }
+  if (beam_offsets.nplane()!=(uInt)nFeed || beam_offsets.ncolumn()!=(uInt)nAnt)
+      os<< "Feed table format is incompatible with existing code of NewMSSimulator::observe"<<LogIO::EXCEPTION;
+  //
   
   // Now we know where we are and where we are pointing, we can do the time calculations
   Double Tstart, Tend, Tint;
@@ -1010,28 +1056,26 @@ void NewMSSimulator::observe(const String& sourceName,
     MEpoch::Convert epGMST1(epUT1, refGMST1);
     Double gmst = epGMST1().get("d").getValue("d");
     gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
+
+    MEpoch ep(Quantity((Time + Tint/2), "s"));
+    msd.setEpoch(ep);
     
-    Double ra, dec; // current phase center
+    // current phase center for a beam without offset
+    // For each individual beam pointing center always coincides
+    // with the phase center
     
+    // ???? May be we can use fcs defined earlier instead of fc ????
     MDirection fc = msc.field().phaseDirMeas(baseFieldID);
-    ra = fc.getAngle().getValue()(0);
-    dec = fc.getAngle().getValue()(1);
-    
-    Vector<Double> uvwvec(3);
+    msd.setFieldCenter(fc);
+    msd.setAntenna(0); // assume for now that all par. angles are the same 
+            
     Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
     Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
     Double fractionBlocked1=0.0, fractionBlocked2=0.0;
     Int startingRow = row;
     Double diamMax2 = square( max(antDiam) );
     
-    
-    // Transformation from antenna position difference (ant2-ant1) to uvw
-    Double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
-    Matrix<Double> trans(3,3,0);
-    trans(0,0) = -sH0;    trans(0,1) = -cH0;
-    trans(1,0) =  sd*cH0; trans(1,1) = -sd*sH0; trans(1,2) = -cd;
-    trans(2,0) = -cd*cH0; trans(2,1) = cd*sH0;  trans(2,2) = -sd; 
-    
+      
     // Do the first row outside the loop
     msc.scanNumber().put(row+1,scan);
     msc.fieldId().put(row+1,baseFieldID);
@@ -1044,14 +1088,51 @@ void NewMSSimulator::observe(const String& sourceName,
     msc.observationId().put(row+1,maxObsId+1);
     msc.stateId().put(row+1,-1);
 
-    // Rotate antennas to correct frame
-    Matrix<Double> antUVW(3,nAnt);	
-    Vector<Double> antvec(3);
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-      antUVW.column(ant1)=product(trans,antXYZ.column(ant1));
-    }
-
     for (Int feed=0; feed<nFeed; feed++) {
+      // fringe stopping center could be different for different feeds
+      MDirection feed_phc=fc;
+      
+      // for now assume that all feeds have the same offsets w.r.t.
+      // antenna frame for all antennas
+      RigidVector<Double, 2> beamOffset=beam_offsets(0,0,feed);
+
+      // assume also that all mounts are the same and posit. angle is the same
+      if (antenna_mounts[0]=="ALT-AZ" || antenna_mounts[0]=="alt-az") {
+          // parallactic angle rotation is necessary
+          SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General);
+          // SquareMatrix' default constructor is a bit strange, we probably
+          // need to change it in the future
+
+	  
+	  const Double pa=msd.parAngle();  
+	  const Double cpa=cos(pa);
+	  const Double spa=sin(pa);
+          xform(0,0)=cpa;
+          xform(1,1)=cpa;
+          xform(0,1)=-spa;
+          xform(1,0)=spa;
+	  beamOffset*=xform;
+      }
+      // x direction is flipped to convert az-el type frame to ra-dec
+      feed_phc.shift(-beamOffset(0),beamOffset(1),True);
+      
+      Double ra, dec; // current phase center
+      ra = feed_phc.getAngle().getValue()(0);
+      dec = feed_phc.getAngle().getValue()(1);
+
+      // Transformation from antenna position difference (ant2-ant1) to uvw
+      Double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
+      Matrix<Double> trans(3,3,0);
+      trans(0,0) = -sH0;    trans(0,1) = -cH0;
+      trans(1,0) =  sd*cH0; trans(1,1) = -sd*sH0; trans(1,2) = -cd;
+      trans(2,0) = -cd*cH0; trans(2,1) = cd*sH0;  trans(2,2) = -sd; 
+ 
+      // Rotate antennas to correct frame
+      Matrix<Double> antUVW(3,nAnt);	      
+      for (Int ant1=0; ant1<nAnt; ant1++)
+           antUVW.column(ant1)=product(trans,antXYZ.column(ant1));
+      
+      
       for (Int ant1=0; ant1<nAnt; ant1++) {
 	Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
 	Int startAnt2=ant1+1;
@@ -1065,6 +1146,7 @@ void NewMSSimulator::observe(const String& sourceName,
 	  msc.feed2().put(row,feed);
 	  
 	  Double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
+	  Vector<Double> uvwvec(3);
 	  uvwvec(0) = x2-x1;
 	  uvwvec(1) = y2-y1;
 	  uvwvec(2) = z2-z1;
@@ -1129,11 +1211,7 @@ void NewMSSimulator::observe(const String& sourceName,
 	}
       }
     }
-    
-    MEpoch ep(Quantity((Time + Tint/2), "s"));
-    msd.setEpoch(ep);
-    
-    msd.setFieldCenter(fc);
+        
     
     // Find antennas pointing below the elevation limit
     Vector<Double> azel(2);
