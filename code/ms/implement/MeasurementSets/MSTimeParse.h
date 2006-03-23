@@ -115,6 +115,7 @@ public:
     static const TableExprNode* node();
 
 private:
+  static const Double toTAIInSec(const MEpoch& time);
     static TableExprNode* node_p;
     static MEpoch* yeartime;
     static MEpoch* daytime;
