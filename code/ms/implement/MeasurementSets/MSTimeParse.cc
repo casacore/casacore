@@ -28,7 +28,8 @@
 #include <ms/MeasurementSets/MSTimeParse.h>
 #include <ms/MeasurementSets/MSMainColumns.h>
 #include <casa/Quanta/MVTime.h>
-
+#include <measures/Measures.h>
+#include <measures/Measures/MEpoch.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNode* MSTimeParse::node_p = 0x0;
@@ -55,45 +56,50 @@ const TableExprNode *MSTimeParse::selectTime(const MEpoch& time,
     return selectTimeRange(time, time);
 }
 
+const Double MSTimeParse::toTAIInSec(const MEpoch& whatEver)
+{
+  MEpoch tai=MEpoch::Convert(whatEver,MEpoch::Ref(MEpoch::TAI))();
+  return Double(MVTime(tai.getValue())*86400);
+}
 const TableExprNode *MSTimeParse::selectTimeGT(const MEpoch& lowboundTime,
                                                bool daytime)
 {
-    MVTime mvLow(lowboundTime.getValue());
+  Double timeInSec = toTAIInSec(lowboundTime);
+  TableExprNode condition = (ms()->col(colName) >= timeInSec);
 
-    TableExprNode condition = (ms()->col(colName) >= Double(mvLow));
 
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
 
-    return node_p;
+  return node_p;
 }
 
 const TableExprNode *MSTimeParse::selectTimeLT(const MEpoch& upboundTime,
                                                bool daytime)
 {
-    MVTime mvUp(upboundTime.getValue());
- 
-    TableExprNode condition = (ms()->col(colName) <= Double(mvUp));
-
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
-
-    return node_p;
+  Double timeInSec = toTAIInSec(upboundTime);
+  TableExprNode condition = (ms()->col(colName) <= timeInSec);
+  if(node_p->isNull())
+    *node_p = condition;
+  else
+    *node_p = *node_p || condition;
+  
+  return node_p;
 }
 
 const TableExprNode *MSTimeParse::selectTimeRange(const MEpoch& lowboundTime,
                                                   const MEpoch& upboundTime,
                                                   bool daytime)
 {
-    MVTime mvLow(lowboundTime.getValue());
-    MVTime mvUp(upboundTime.getValue());
+  Double upperBound = toTAIInSec(upboundTime);
+  Double lowerBound = toTAIInSec(lowboundTime);
+//     MVTime mvLow(lowboundTime.getValue());
+//     MVTime mvUp(upboundTime.getValue());
 
-    TableExprNode condition = (ms()->col(colName) >= Double(mvLow)) &&
-                              (ms()->col(colName) <= Double(mvUp));
+     TableExprNode condition = (ms()->col(colName) >= lowerBound &&
+				(ms()->col(colName) <= upperBound));
 
     if(node_p->isNull())
         *node_p = condition;
