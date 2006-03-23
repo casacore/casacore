@@ -126,7 +126,7 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
  /* Literals */
 {NUMBER}        { msTimeGramPosition() += yyleng;
-                  lvalp->dval = atof((const char *) MSTimeGramtext);
+                  lvalp->ival = atoi((const char *) MSTimeGramtext);
                   return NUMBER;
                 }
 
