@@ -92,8 +92,8 @@ namespace casa {
   }
 
   SubMS::~SubMS(){
-    
-    msOut_p.flush();
+    if(!msOut_p.isNull())
+      msOut_p.flush();
     
   }
 
@@ -112,10 +112,28 @@ namespace casa {
 	spw_p[k]=k;
       
       }
-    }
+      //no may be we have to redo the chan selection
 
-    //Check size of start, step, nchan
-    
+      if (nchan.nelements() != spw_p.nelements()){
+	nchan.resize(spw_p.nelements(), True);
+	for(uInt k=1; k < spw_p.nelements(); ++k){
+	  nchan[k]=nchan[0];
+	}
+      }
+      if (start.nelements() != spw_p.nelements()){
+	start.resize(spw_p.nelements(), True);
+	for(uInt k=1; k < spw_p.nelements(); ++k){
+	  start[k]=start[0];
+	}
+      }
+      if (step.nelements() != spw_p.nelements()){
+	step.resize(spw_p.nelements(), True);
+	for(uInt k=1; k < spw_p.nelements(); ++k){
+	  step[k]=step[0];
+	}
+      }
+    }
+ 
     
     nchan_p.resize();
     nchan_p=nchan;
