@@ -31,6 +31,12 @@
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
 #include <measures/Measures/MEpoch.h>
+// #include <synthesis/MeasurementComponents/Utils.h>
+// #include <msvis/MSVis/VisibilityIterator.h>
+// #include <msvis/MSVis/VisBuffer.h>
+// #include <msvis/MSVis/VisSet.h>
+#include <ms/MeasurementSets/MSTimeDefinitions.h>
+#include <casa/Containers/Block.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -87,40 +93,58 @@ class MSTimeParse : public MSParse
 {
 
 public:
-    // Default constructor
-    MSTimeParse ();
+  // Default constructor
+  MSTimeParse ();
 
-    // Associate the ms and the shorthand.
-    MSTimeParse (const MeasurementSet* ms);
+  // Associate the ms and the shorthand.
+  MSTimeParse (const MeasurementSet* ms);
 
-    const TableExprNode *selectTime(const MEpoch& time,
-                                    bool daytime = false);
-    const TableExprNode *selectTimeGT(const MEpoch& lowboundTime,
-                                      bool daytime = false);
-    const TableExprNode *selectTimeLT(const MEpoch& upboundTime,
-                                      bool daytime = false);
-    const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
-                                         const MEpoch& upboundTime,
-                                         bool daytime = false);
+  const TableExprNode *selectTime(const MEpoch& time,
+				  bool daytime = false);
+  const TableExprNode *selectTimeGT(const MEpoch& lowboundTime,
+				    bool daytime = false);
+  const TableExprNode *selectTimeLT(const MEpoch& upboundTime,
+				    bool daytime = false);
+  const TableExprNode *selectTimeRange(const MEpoch& lowboundTime, 
+				       const MEpoch& upboundTime,
+				       bool daytime = false);
+  const TableExprNode *addCondition(TableExprNode& condition);
 
-    static const MEpoch *dayTimeConvert(uInt day, uInt hour = 0,
-                                        uInt minute = 0, uInt second = 0,
-                                        uInt millisec = 0);
+  /*
+  static const MEpoch *dayTimeConvert(Int day=-1, Int hour = -1,
+				      Int minute = -1, Int second = -1,
+				      Int millisec = -1);
+  */
 
-    static const MEpoch *yearTimeConvert(uInt year, uInt month, uInt day,
-                                         uInt hour = 0, uInt minute = 0,
-                                         uInt second = 0, uInt millisec = 0);
+  static void setDefaults(TimeFields& tf, Bool dataOrigin=True);
+  static void copyDefaults(TimeFields& target, TimeFields& source);
+  static const MEpoch *yearTimeConvert(Int year=-1, Int month=-1, Int day=-1,
+				       Int hour = -1, Int minute = -1,
+				       Int second = -1, Int millisec = -1);
+  static const MEpoch *yearTimeConvert(const TimeFields& tf);
 
-    // Get table expression node object.
-    static const TableExprNode* node();
+  // Get table expression node object.
+  static const TableExprNode* node();
+  const Int year0() {return defaultYear;};
+  const Int month0() {return defaultMonth;};
+  const Int day0() {return defaultDay;};
+  const Int hour0() {return defaultHour;};
+  const Int minute0() {return defaultMinute;};
+  const Int second0() {return defaultSeconds;};
+  const Int fractionalsec0() {return defaultFractionalSec;};
+  const Double defaultInteg() {return defaultExposure;};
 
+  static const void validate(const TimeFields& tf);
 private:
   static const Double toTAIInSec(const MEpoch& time);
-    static TableExprNode* node_p;
-    static MEpoch* yeartime;
-    static MEpoch* daytime;
+  static TableExprNode* node_p;
+  static MEpoch* yeartime;
+  static MEpoch* daytime;
+  Int defaultYear, defaultMonth, defaultDay,
+    defaultHour, defaultMinute, defaultSeconds, defaultFractionalSec;
+  Double defaultExposure;
+  const String colName;
 
-    const String colName;
 };
 
 } //# NAMESPACE CASA - END
