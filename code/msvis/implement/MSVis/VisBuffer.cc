@@ -481,6 +481,10 @@ void VisBuffer::updateCoordInfo()
   frequency();
   nRow();
   checkMSId();
+  feed1();
+  feed2();
+  feed1_pa();
+  feed2_pa();
 }
 
 void VisBuffer::setVisCube(Complex c)
