@@ -39,6 +39,8 @@ WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
+POINT     \.
+FNUMBER    ({INT}|{INT}{POINT}|{POINT}{INT}|{INT}{POINT}{INT})
 NUMBER    {INT}
 TRUE      T
 FALSE     F
@@ -67,19 +69,19 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
 %%
 
+{WHITE}   {;} /* Just eat the white spaces */
 "["       { msTimeGramPosition() += yyleng;
             return LBRACKET;
           }
 "("       { msTimeGramPosition() += yyleng;
             return LPAREN;
-          }
+          }          
 "]"       { msTimeGramPosition() += yyleng;
             return RBRACKET;
           }
 ")"       { msTimeGramPosition() += yyleng;
             return RPAREN;
           }
-
 ":"       { msTimeGramPosition() += yyleng;
             return COLON; }
 "=="      { msTimeGramPosition() += yyleng;
@@ -129,6 +131,9 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
                   lvalp->ival = atoi((const char *) MSTimeGramtext);
                   return NUMBER;
                 }
-
+{FNUMBER}        { msTimeGramPosition() += yyleng;
+                  lvalp->dval = atof((const char *) MSTimeGramtext);
+                  return FNUMBER;
+                }
+. {return UNKNOWN;}
 %%
-
