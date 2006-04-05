@@ -115,7 +115,7 @@ public:
     String& shorthand();
 
     // Get ms object.
-    static const MeasurementSet* ms();
+    const MeasurementSet* ms();
 
 private:
     String shorthand_p;
