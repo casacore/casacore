@@ -31,7 +31,7 @@
 
 //# Includes
 #include <casa/BasicSL/String.h>
-
+#include <ms/MeasurementSets/MSTimeDefinitions.h>
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
@@ -66,7 +66,6 @@ class TableExprNode;
 //# A List of bugs, limitations, extensions or planned refinements.
 // </todo>
 
-
 // <group name=MSTimeGramFunctions>
 
 // Declare the bison parser (is implemented by bison command).
@@ -92,6 +91,10 @@ String msTimeGramRemoveEscapes (const String& in);
 // A function to remove quotes from a quoted string.
 String msTimeGramRemoveQuotes (const String& in);
 
+// A function to set the fields of the TimeFields structure
+void msTimeGramSetTimeFields (struct TimeFields& tf, 
+			      Int year, Int month, Int day,
+			      Int hour, Int minute, Int sec, Int fsec);
 // </group>
 
 } //# NAMESPACE CASA - END
