@@ -38,7 +38,7 @@
 #include <ms/MeasurementSets/MSTimeGram.h>
 #include <ms/MeasurementSets/MSTimeParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
-#include <tables/Tables/TableError.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
@@ -50,74 +50,87 @@
 // Define the yywrap function for flex.
 int MSTimeGramwrap()
 {
-    return 1;
+  return 1;
 }
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSTimeGram = 0;
-static Int                   posMSTimeGram = 0;
-
-
-//# Parse the command.
-//# Do a yyrestart(yyin) first to make the flex scanner reentrant.
-int msTimeGramParseCommand (const MeasurementSet* ms, const String& command) 
-{
-    MSTimeGramrestart (MSTimeGramin);
-    yy_start = 1;
-    strpMSTimeGram = command.chars();     // get pointer to command string
-    posMSTimeGram  = 0;                   // initialize string position
-    MSTimeParse parser(ms);               // setup measurement set
-    return MSTimeGramparse();             // parse command string
-}
-
-//# Give the table expression node
-const TableExprNode* msTimeGramParseNode()
-{
+  
+  //# Declare a file global pointer to a char* for the input string.
+  static const char*           strpMSTimeGram = 0;
+  static Int                   posMSTimeGram = 0;
+  extern MSTimeParse *thisMSTParser;
+  
+  //# Parse the command.
+  //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  int msTimeGramParseCommand (const MeasurementSet* ms, const String& command) 
+  {
+    Int ret;
+    try
+      {
+	MSTimeGramrestart (MSTimeGramin);
+	yy_start = 1;
+	strpMSTimeGram = command.chars();     // get pointer to command string
+	posMSTimeGram  = 0;                   // initialize string position
+	MSTimeParse parser(ms);               // setup the parser and
+					      // global pointer to it
+	thisMSTParser = &parser;
+	ret=MSTimeGramparse();                // parse command string
+      } 
+    catch (MSSelectionTimeError &x)
+      {
+	String newMesg=String(" in string \"") +  command + String("\"");
+	x.addMessage(newMesg);
+	throw;
+      }
+    return ret;
+  }
+  
+  //# Give the table expression node
+  const TableExprNode* msTimeGramParseNode()
+  {
     return MSTimeParse::node();
-}
-
-//# Give the string position.
-Int& msTimeGramPosition()
-{
+  }
+  
+  //# Give the string position.
+  Int& msTimeGramPosition()
+  {
     return posMSTimeGram;
-}
-
-//# Get the next input characters for flex.
-int msTimeGramInput (char* buf, int max_size)
-{
+  }
+  
+  //# Get the next input characters for flex.
+  int msTimeGramInput (char* buf, int max_size)
+  {
     int nr=0;
     while (*strpMSTimeGram != 0) {
-	if (nr >= max_size) {
-	    break;                         // get max. max_size char.
-	}
-	buf[nr++] = *strpMSTimeGram++;
+      if (nr >= max_size) {
+	break;                         // get max. max_size char.
+      }
+      buf[nr++] = *strpMSTimeGram++;
     }
     return nr;
-}
-
-void MSTimeGramerror (char*)
-{
-    throw (AipsError ("Time Expression: Parse error at or near '" +
-		      String((const casa::Char*) MSTimeGramtext) + "'"));
-}
-
-String msTimeGramRemoveEscapes (const String& in)
-{
+  }
+  
+  void MSTimeGramerror (char*)
+  {
+    throw(MSSelectionTimeParseError("MSSelection time error: Parse error at or near token '" +
+			       String((const casa::Char*) MSTimeGramtext) + "'"));
+  }
+  
+  String msTimeGramRemoveEscapes (const String& in)
+  {
     String out;
     int leng = in.length();
     for (int i=0; i<leng; i++) {
-	if (in[i] == '\\') {
-	    i++;
-	}
-	out += in[i];
+      if (in[i] == '\\') {
+	i++;
+      }
+      out += in[i];
     }
     return out;
-}
-
-String msTimeGramRemoveQuotes (const String& in)
-{
+  }
+  
+  String msTimeGramRemoveQuotes (const String& in)
+  {
     //# A string is formed as "..."'...''...' etc.
     //# All ... parts will be extracted and concatenated into an output string.
     String out;
@@ -125,16 +138,29 @@ String msTimeGramRemoveQuotes (const String& in)
     int leng = str.length();
     int pos = 0;
     while (pos < leng) {
-	//# Find next occurrence of leading ' or ""
-	int inx = str.index (str[pos], pos+1);
-	if (inx < 0) {
-	    throw (AipsError ("MSTimeParse - Ill-formed quoted string: " +
-			      str));
-	}
-	out += str.at (pos+1, inx-pos-1);             // add substring
-	pos = inx+1;
+      //# Find next occurrence of leading ' or ""
+      int inx = str.index (str[pos], pos+1);
+      if (inx < 0) {
+	throw (AipsError ("MSTimeParse - Ill-formed quoted string: " +
+			  str));
+      }
+      out += str.at (pos+1, inx-pos-1);             // add substring
+      pos = inx+1;
     }
     return out;
-}
-
+  }
+  
+  void msTimeGramSetTimeFields (struct TimeFields& tf, 
+				Int year, Int month, Int day,
+				Int hour, Int minute, Int sec, Int fsec)
+  {
+    tf.year = year;
+    tf.month = month;
+    tf.day = day;
+    tf.hour = hour;
+    tf.minute = minute;
+    tf.sec = sec;
+    tf.fsec = fsec;
+  }
+  
 } //# NAMESPACE CASA - END
