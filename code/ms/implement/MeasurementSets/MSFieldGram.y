@@ -134,6 +134,7 @@ singlerange:  INDEX DASH INDEX {
            ;
 
 lowindexboundexpr: GT INDEX {
+/*
 		     ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
 		     Int startID = $2;
 		     Int len = msFieldCols_p.nrow();
@@ -147,6 +148,7 @@ lowindexboundexpr: GT INDEX {
 		       }
 		       $$ = MSFieldParse().selectFieldIds(fieldids);
 		     }
+*/
                    }
                  ;
 
