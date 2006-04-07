@@ -125,6 +125,7 @@ public:
 
   // Get table expression node object.
   static const TableExprNode* node();
+
   const Int year0() {return defaultYear;};
   const Int month0() {return defaultMonth;};
   const Int day0() {return defaultDay;};
@@ -135,9 +136,9 @@ public:
   const Double defaultInteg() {return defaultExposure;};
 
   static const void validate(const TimeFields& tf);
-private:
-  static const Double toTAIInSec(const MEpoch& time);
   static TableExprNode* node_p;
+  //private:
+  static const Double toTAIInSec(const MEpoch& time);
   static MEpoch* yeartime;
   static MEpoch* daytime;
   Int defaultYear, defaultMonth, defaultDay,
