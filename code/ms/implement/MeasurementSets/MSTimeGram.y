@@ -57,6 +57,7 @@ using namespace casa;
 %token SLASH
 %token DOT
 %token PERCENT
+%token STAR
 
 %token LBRACKET
 %token LPAREN
@@ -74,6 +75,7 @@ using namespace casa;
 %type <node> lowboundtimeexpr
 %type <timeFields> yeartimeexpr
 %type <dval> FLOAT
+%type <ival> WNUMBER
 
 %left OR
 %left AND
@@ -96,9 +98,7 @@ using namespace casa;
 %}
 
 %%
-timestatement: timeexpr {
-                 $$ = $1;
-               }
+timestatement: timeexpr {$$ = $1;}
              ;
 
 timeexpr: singletimeexpr
@@ -107,26 +107,32 @@ timeexpr: singletimeexpr
         | upboundtimeexpr
         | timeexpr COMMA timeexpr 
            {
-	     cout << $1->isNull() << " " << $3->isNull() << endl;
-	     cout << $1->nrow() << " " << $3->nrow() << endl;
-	     TableExprNode tt = *($1) || *($3);
-	     $$ = new TableExprNode(tt);
-	     //	     $$ = new TableExprNode(*($1) || *($3));
+	     //
+	     // The various MSTimeParse::select* methods return the
+	     // static member node_p.  Each visit to these methods
+	     // produces a TEN which is ORed with the existing node_p.
+	     // Effectively node_p is a global store of the TENs tree
+	     // generated during parsing. Hence here $1 and $3 both
+	     // refer to the same TEN tree (node_p) which anyway has
+	     // all the ORed TENs.  So just return either $1 or $2;
+	     // 
+	     $$=$1;
 	   }
         ;
 
-FLOAT: NUMBER {$$ = $1;}
-      | FNUMBER {$$ = $1;}
-        ;
+WNUMBER: STAR {$$ = -1}
+          | NUMBER {$$ = $1;}
+          ;
+FLOAT: WNUMBER {$$ = $1;}
+        | FNUMBER {$$ = $1;}
+          ;
 
 singletimeexpr: yeartimeexpr 
                   {
-		    //		    MSTimeParse().setDefaults($1);
 		    thisMSTParser->setDefaults($1);
 		    const MEpoch *t0=MSTimeParse::yearTimeConvert($1);
-		    
-		    $$ = MSTimeParse().selectTime(t0, false);
-		    //$$ = thisMSTParser->selectTime(t0, false);
+		    $$ = MSTimeParse().selectTime(t0, false); 
+
 		    MSTGgarbageCollector(t0);
 		  }
               ;
@@ -182,46 +188,46 @@ upboundtimeexpr: LT yeartimeexpr
 		     MSTGgarbageCollector(t0);
 		   }
                ;
-yeartimeexpr: NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
-              COLON NUMBER COLON FLOAT
+yeartimeexpr: WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
+              COLON WNUMBER COLON FLOAT
                 {
 		  // YY/MM/DD/HH:MM:SS.FF
 		  Int sec,milliSec;
 		  splitSec($11,sec,milliSec);
 		  msTimeGramSetTimeFields($$,$1,$3,$5,$7,$9,sec,milliSec);
 		}
-              | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
-                COLON NUMBER 
+              | WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
+                COLON WNUMBER 
                 {
 		  // YY/MM/DD/HH:MM
 		  msTimeGramSetTimeFields($$,$1,$3,$5,$7,$9,-1,-1);
 		}
-              | NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER 
+              | WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER 
                 {
 		  // YY/MM/DD/HH
 		  msTimeGramSetTimeFields($$,$1,$3,$5,$7,-1,-1,-1);
 		}
-              | NUMBER SLASH NUMBER SLASH NUMBER 
+              | WNUMBER SLASH WNUMBER SLASH WNUMBER 
                 {
 		  // YY/MM/DD
 		  msTimeGramSetTimeFields($$,$1,$3,$5,-1,-1,-1,-1);
 		}
-              | NUMBER SLASH NUMBER SLASH NUMBER 
-                COLON NUMBER COLON FLOAT
+              | WNUMBER SLASH WNUMBER SLASH WNUMBER 
+                COLON WNUMBER COLON FLOAT
                 {
 		  // MM/DD/HH:MM:SS.FF
 		  Int sec,milliSec;
 		  splitSec($9,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,$1,$3,$5,$7,sec,milliSec);
 		}
-              | NUMBER COLON NUMBER COLON FLOAT
+              | WNUMBER COLON WNUMBER COLON FLOAT
                 {
 		  // HH:MM:SS.FF
 		  Int sec,milliSec;
 		  splitSec($5,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,-1,-1,$1,$3,sec,milliSec);
 		}
-              | NUMBER COLON FLOAT
+              | WNUMBER COLON FLOAT
                 {
 		  // MM:SS.FF
 		  Int sec,milliSec;
@@ -234,44 +240,44 @@ yeartimeexpr: NUMBER SLASH NUMBER SLASH NUMBER SLASH NUMBER
 		  splitSec($1,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,-1,-1,-1,-1,sec,milliSec);
 		}
-             | NUMBER SLASH NUMBER COLON NUMBER COLON FLOAT 
+             | WNUMBER SLASH WNUMBER COLON WNUMBER COLON FLOAT 
                {
 		 // DD/HH:MM:SS
 		 Int sec,milliSec;
 		 splitSec($7,sec,milliSec);
 		 msTimeGramSetTimeFields($$,-1,-1,$1,$3,$5,sec,milliSec);
 	       }
-             | NUMBER SLASH NUMBER COLON NUMBER 
+             | WNUMBER SLASH WNUMBER COLON WNUMBER 
                {
 		 // DD/HH:MM
 		 msTimeGramSetTimeFields($$,-1,-1,$1,$3,$5,-1,-1);
 	       }
-             | NUMBER SLASH NUMBER 
+             | WNUMBER SLASH WNUMBER 
                {
 		 // DD/HH
 		  msTimeGramSetTimeFields($$,$1,$3,-1,-1,-1,-1,-1);
 	       }            ;
 %%
 /*
-daytimeexpr: NUMBER SLASH NUMBER COLON NUMBER COLON NUMBER DOT NUMBER 
+daytimeexpr: WNUMBER SLASH WNUMBER COLON WNUMBER COLON WNUMBER DOT WNUMBER 
                {
 		 // DD/HH:MM:SS.FF
 		  msTimeGramSetTimeFields($$,$1,$3,$5,$7,$9,-1,-1);
 		  //                 $$ = MSTimeParse::dayTimeConvert($1, $3, $5, $7, $9);
 	       }
-             | NUMBER SLASH NUMBER COLON NUMBER COLON NUMBER 
+             | WNUMBER SLASH WNUMBER COLON WNUMBER COLON WNUMBER 
                {
 		 // DD/HH:MM:SS
 		 msTimeGramSetTimeFields($$,-1,-1,$1,$3,$5,$7,-1);
 		  //	         $$ = MSTimeParse::dayTimeConvert($1, $3, $5, $7, 0);
 	       }
-             | NUMBER SLASH NUMBER COLON NUMBER 
+             | WNUMBER SLASH WNUMBER COLON WNUMBER 
                {
 		 // DD/HH:MM
 		 msTimeGramSetTimeFields($$,-1,-1,$1,$3,$5,-1,-1);
 		  //	         $$ = MSTimeParse::dayTimeConvert($1, $3, $5, 0, 0);
 	       }
-             | NUMBER SLASH NUMBER 
+             | WNUMBER SLASH WNUMBER 
                {
 		 // DD/HH
 		  msTimeGramSetTimeFields($$,$1,$3,-1,-1,-1,-1,-1);
