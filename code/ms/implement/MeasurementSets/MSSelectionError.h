@@ -46,7 +46,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   // </reviewed>
 
   // <synopsis> 
-  // The top-leveln generic MSSelection exception class.  All
+  // The top-level generic MSSelection exception class.  All
   // exceptions thrown by the MSSelection and related classes are
   // derived from this.  Catching this class will catch only MSSelection
   // exceptions (but all exceptions from the MSSelection line of
