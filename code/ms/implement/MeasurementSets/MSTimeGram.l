@@ -125,6 +125,9 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 ","       { msTimeGramPosition() += yyleng;
             return COMMA;
           }
+"*"       { msTimeGramPosition() += yyleng;
+            return STAR;
+          }
 
  /* Literals */
 {NUMBER}        { msTimeGramPosition() += yyleng;
