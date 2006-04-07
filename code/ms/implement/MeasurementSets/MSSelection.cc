@@ -205,7 +205,7 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
     const TableExprNode *node = 0x0;
     TableExprNode taql;
 
-    try
+    //    try
     {
       switch(exprOrder_p[i])
       {
@@ -256,15 +256,24 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
           break;
       }
     }
-    catch (AipsError x)
-    {
-      LogIO os(LogOrigin("MSSelection",
-                         "toTableExprNode(const MeasurementSet* ms)", WHERE));
-      os << "ERROR: " << x.getMesg() << LogIO::POST;
+    //
+    // Nasty! Catching an exception in a library and return a valid
+    // object.  The only way the client (software) will know that an
+    // error occured is by sending the isNull() signal to the returned
+    // TEN.
+    // 
+    // Now not cathing the exception since the following code does not
+    // really represent resolution of the exception.  - Sanjay
+    //
+//     catch (AipsError x)
+//     {
+//       LogIO os(LogOrigin("MSSelection",
+//                          "toTableExprNode(const MeasurementSet* ms)", WHERE));
+//       os << "ERROR: " << x.getMesg() << LogIO::POST;
 
-      return condition;
-    }
- 
+//       return condition;
+//     }
+
     if(node && node->isNull() == False)
       if(condition.isNull() == True)
         condition = *node;
