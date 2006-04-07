@@ -62,6 +62,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   
   //# Parse the command.
   //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
+  //----------------------------------------------------------------------------
+
   int msTimeGramParseCommand (const MeasurementSet* ms, const String& command) 
   {
     Int ret;
@@ -78,26 +80,32 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       } 
     catch (MSSelectionTimeError &x)
       {
-	String newMesg=String(" in string \"") +  command + String("\"");
-	x.addMessage(newMesg);
+	String newMesgs;
+	ostringstream newMesg;
+	newMesg << "(" << msTimeGramPosition()+1 << ") in string \"" << command << "\"";
+	newMesgs = String(newMesg.str().c_str());
+	x.addMessage(newMesgs);
 	throw;
       }
     return ret;
   }
   
   //# Give the table expression node
+  //----------------------------------------------------------------------------
   const TableExprNode* msTimeGramParseNode()
   {
     return MSTimeParse::node();
   }
   
   //# Give the string position.
+  //----------------------------------------------------------------------------
   Int& msTimeGramPosition()
   {
     return posMSTimeGram;
   }
   
   //# Get the next input characters for flex.
+  //----------------------------------------------------------------------------
   int msTimeGramInput (char* buf, int max_size)
   {
     int nr=0;
@@ -110,6 +118,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return nr;
   }
   
+  //----------------------------------------------------------------------------
   void MSTimeGramerror (char*)
   {
     throw(MSSelectionTimeParseError("MSSelection time error: Parse error at or near token '" +
@@ -129,6 +138,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return out;
   }
   
+  //----------------------------------------------------------------------------
   String msTimeGramRemoveQuotes (const String& in)
   {
     //# A string is formed as "..."'...''...' etc.
@@ -150,6 +160,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     return out;
   }
   
+  //----------------------------------------------------------------------------
   void msTimeGramSetTimeFields (struct TimeFields& tf, 
 				Int year, Int month, Int day,
 				Int hour, Int minute, Int sec, Int fsec)
