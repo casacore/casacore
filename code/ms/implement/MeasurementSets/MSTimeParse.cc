@@ -103,10 +103,11 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   //  
   const TableExprNode *MSTimeParse::selectTime(const MEpoch& time,bool daytime)
   {
-    Double timeInSec= toTAIInSec(time);
-    defaultExposure = MSTimeParse(ms()).defaultInteg()/2.0;
-    TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= defaultExposure);
 
+    Double timeInSec= toTAIInSec(time);
+    Double dT= thisMSTParser->defaultExposure/2.0;
+
+    TableExprNode condition = (abs(ms()->col(colName) - timeInSec) <= dT);
     return addCondition(condition);
   }
   //
@@ -252,6 +253,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 	// from one of the time related classes.
 	//  MJDref = Wed Nov 17 00:00:00 1858
 	Time time00(2400000.5);
+
 	if (tf.year == -1)     tf.year=time00.year();//1858;
 	if (tf.month == -1)    tf.month=time00.month();//11;
 	if (tf.day == -1)      tf.day=time00.dayOfMonth();//17;
