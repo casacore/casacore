@@ -1,5 +1,5 @@
 //# SubMS.cc 
-//# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
+//# Copyright (C) 1996-2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify
@@ -406,9 +406,7 @@ namespace casa {
       
     }
     if(timeRange_p != ""){
-      Vector<String> timrng(1);
-      timrng[0]=timeRange_p;
-      thisSelection.setTimeExpr(MSSelection::nameExprStr(timrng));
+      thisSelection.setTimeExpr(timeRange_p);
     }
 
 
