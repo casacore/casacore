@@ -58,16 +58,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <synopsis>
 // The LSQFit class contains the basic functions to do all the fitting
 // described in the <a href="../../../notes/224">Note</a> about fitting.
-// It handles real, and complex equations; linear and non-linear solutions;
+// It handles real, and complex equations;<br>
+// linear and non-linear (Levenberg-Marquardt) solutions;<br>
 // regular (with optional constraints) or Singular Value Decomposition
 // (<src>SVD</src>).<br>
 // In essence they are a set of routines to generate normal equations
 // (<src>makeNorm()</src>) in triangular form from a set of condition
-// equations; to do a Cholesky-type decomposition of the normal
+// equations;<br>
+// to do a Cholesky-type decomposition of the normal
 // equations (either regular or <src>SVD</src>) and test its rank
-// (<src>invert()</src>);
-// do a quasi inversion of the decomposed equations (<src>solve()</src>) to
-// obtain the solution and/or the errors. All calculations are done in place.
+// (<src>invert()</src>);<br>
+// to do a quasi inversion of the decomposed equations (<src>solve()</src>) to
+// obtain the solution and/or the errors.
+//
+// All calculations are done in place.
 // Methods to obtain additional information about the fitting process are
 // available.
 //
@@ -78,9 +82,10 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // The interface to the methods have standard data or standard STL iterator
 // arguments only. They can be used with any container having an STL
 // random-access iterator interface. Especially they can be used with
-// carrays (necessary templates provided), aips++ Vectors (necessary templates
-// provided), standard random access STL containers (like std::vector)
-// (templates not provided but just a matter of replacing names).
+// <src>carrays</src> (necessary templates provided),
+// aips++ Vectors (necessary templates
+// provided in <src>LSQaips</src>),
+// standard random access STL containers (like <src>std::vector</src>).
 //
 // The normal operation of the class consists of the following steps:
 // <ul> 
@@ -89,9 +94,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // either directly, or indirectly using the <src>set()</src> commands, is
 // (see <a href="../../../notes/224">Note 224</a>):
 // <ul>
-//  <li> The number of unknowns that have to be solved (mandatory)
+//  <li> The number of unknowns that have to be solved for (mandatory)
 //  <li> The number of constraint equations you want to use explicitly
-//		(defaults to 0)
+//		(defaults to 0, but can be changed on-the-fly)
 // </ul>
 // Separately settable are:
 // <ul>
@@ -109,30 +114,64 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <li>Create the normal equations used in solving the set of condition
 // equations of the user, by using the <src>makeNorm()</src> methods.
-// Separate <src>makenorm()</src> methods are provided for scarce condition
-// equations (like data for 3 antennas are provided, rather than 64)
+// Separate <src>makenorm()</src> methods are provided for sparse condition
+// equations (e.g. if data for 3 antennas are provided, rather than for all 64)
 //
-// <li>If there are user provided constraints, they can be added to the normal
+// <li>If there are user provided constraints, either limiting constraints like
+// the sum of the angles in a triangle is 180 degrees, or constraints to add
+// missing information if e.g. only differences between parameters have been
+// measured, they can be added to the normal
 // equations with the <src>setConstraint()</src> or
-// the <src>addConstraint()</src> methods.
+// the <src>addConstraint()</src> methods. Lagrange multipliers will be used to
+// solve the extended normal equations.
 //
-// <li>The normal equations are decomposed (using the collinearity factor as a
-// check) in either SVD or standard mode with the <src>invert()</src> method.
+// <li>The normal equations are triangu;arised (using the collinearity factor
+// as a check for solvability) with the <src>invert()</src> method. If the
+// normal equations are non-solvable an error is returned, or a switch to
+// an SVD solution is made if indicated in the <src>invert</src> call.
 //
 // <li>The solutions and adjustment errors are obtained with the
 // <src>solve()</src> method.
 // A non-linear loop in a Levenberg-Marquardt adjustment can be obtained
 // (together with convergence information), with the <src>solveLoop()</src>
-// method.
+// method (see below) replacing the combination of
+// <src>invert</src> and <src>solve</src>.
+//
+// <li>Non-linear loops are done by looping through the data using
+// <src>makeNorm()</src> calls, and upgrade the solution with the
+// <src>solveLoop()</src> method.
+// The normal equations are upgraded by changing LM factors. Upgrade depends
+// on the 'balanced' factor. The LM factor is either added in some way to all
+// diagonal elements (if balanced) or all diagonal elements are multiplied by
+// <src>(1+factor)</src> After each loop convergence can be tested
+// by the <src>isReady()</src> call; which will return <src>False</src> or
+// a non-zero code indicating the ready reason. Reasons for stopping can be:
+// <ul>
+// <li> SOLINCREMENT: the relative change in the norm of the parameter
+// solutions is less than 
+// (a settable, <src>setEpsValue()</src>, default 1e-8) value.
+// <li> DERIVLEVEL: the inf-norm of the known vector of the equations to be
+// solved is less than the settable, <src>setEpsDerivative()</src>, default
+// 1e-8, value.
+// <li> MAXITER: maximum number of iterations reached (only possible if a
+// number is explicitly set)
+// <li> NOREDUCTION: if the Levenberg-Marquardt correction factor goes towards
+// infinity. I.e. if no Chi2 improvement seems possible. Have to redo the
+// solution with a different start condition for the unknowns.
+// <li> SINGULAR: can only happen due to numeric rounding, since the LM
+// equations are always positive-definite. Best solution is to indicate SVD
+// needed in the <src>solveLoop</src> call, which is cost-free
+// </ul> 
 //
 // <li>Covariance information in various forms can be obtained with the 
 // <src>getCovariance(), getErrors()</src>, <src>getChi()</src> 
 // (or <src>getChi2</src>), <src>getSD</src> and <src>getWeightedSD</src>
-// methods (of course, when necessary only).
+// methods after a <src>solve()</src> or after the final loop in a non-linear
+// solution (of course, when necessary only).
 // </ul>
 //
-// A class can be re-used by issuing the <src>reset()</src> command, or
-// <src>set()</src> of new
+// An LSQFit object can be re-used by issuing the <src>reset()</src> command,
+// or <src>set()</src> of new
 // values. If an unknown has not been used in the condition equations at all,
 // the <src>doDiagonal()</src> will make sure a proper solution is obtained,
 // with missing unknowns zeroed.
@@ -148,19 +187,21 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // It is suggested to add any possible constraint equations after the merge.
 // </note>
 //
-// A <src>debugIt(</src>) method provides access to all internal
+// A <src>debugIt()</src> method provides read access to all internal
 // information.
 //
-// The member definitions are split over two files. The second
+// The member definitions are split over three files. The second
 // one contains the templated member function definitions, to bypass the
 // problem of duplicate definitions of non-templated members when 
-// pre-compiling them. 
+// pre-compiling them. The third contains methods for saving objects as
+// Records or through AipsIO.
 //
 // <note role=warning> No boundary checks on input and output containers
 // is done for faster execution. In general these tests should be done at
 // the higher level routines, like the
 // <linkto class=LinearFit>LinearFit</linkto> and
-// <linkto class=NonLinearFitLM>NonLinearFit</linkto> classes.
+// <linkto class=NonLinearFitLM>NonLinearFit</linkto> classes which should be
+// checked for usage of LSQFit.
 // </note>
 //
 // The contents can be saved in a record (<src>toRecord<src>), 
@@ -171,6 +212,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //
 // <example>
 // See the tLSQFit.cc and tLSQaips.cc program for extensive examples.
+//
 // The following example will first create 2 condition equations for 
 // 3 unknowns (the third is degenerate). It will first create normal equations
 // for a 2 unknown solution and solve; then it will create normal equations
@@ -178,7 +220,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // set to 0. The last one will use SVD and one condition equation.r 
 // <srcblock>
 //   #include <casa/aips.h>
-//   #include <scimath/Fitting/LSQ.h>
+//   #include <scimath/Fitting/LSQFit.h>
 //   #include <iostream>
 //   
 //   int main() {
@@ -191,8 +233,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //     uInt rank;
 //     Bool ok;
 //   
-//     // LSQ area
-//     LSQ fit(2);
+//     // LSQ object
+//     LSQFit fit(2);
 //   
 //     // Make normal equation
 //     for (uInt i=0; i<2; i++) fit.makeNorm(ce[i], 1.0, m[i]);
@@ -275,10 +317,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // solutions in a simple and fast way.
 // </motivation>
 //
-// <todo asof="2004/04/02">
-//   <li> a thorogh check if all loops are optimal in the makeNorm() methods
-//   <li> method to load normal equations (and other information) directly
-//        from external source.
+// <todo asof="2006/04/02">
+//   <li> a thorough check if all loops are optimal in the makeNorm() methods
 //   <li> input of condition equations with cross covariance
 // </todo>
 
@@ -376,7 +416,10 @@ class LSQFit {
   template <class U>
     void solve(U &sol);
   // </group>
-  // Solve a loop in a non-linear set. The <src>fit</src> argument returns
+  // Solve a loop in a non-linear set.
+  // The methods with the  <src>fit</src> argument are deprecated. Use
+  // the combination without the 'fit' parameter, and the <src>isReady()</src>
+  // call. The 'fit' parameter returns
   // for each loop a goodness
   // of fit indicator. If it is >0; more loops are necessary.
   // If it is negative,
@@ -385,6 +428,18 @@ class LSQFit {
   // Other arguments are as for <src>solve()</src> and <src>invert()</src>.
   // The <src>sol</src> is used for both input (parameter guess) and output.
   // <group>
+  template <class U>
+    Bool solveLoop(uInt &nRank,
+		   U *sol,
+		   Bool doSVD=False);
+  template <class U>
+    Bool solveLoop(uInt &nRank,
+		   std::complex<U> *sol,
+		   Bool doSVD=False);
+  template <class U>
+    Bool solveLoop(uInt &nRank,
+		   U &sol,
+		   Bool doSVD=False);
   template <class U>
     Bool solveLoop(Double &fit, uInt &nRank,
 		   U *sol,
@@ -582,13 +637,13 @@ class LSQFit {
   // </group>
   // Set new factors (collinearity <src>factor</src>, and Levenberg-Marquardt
   // <src>LMFactor</src>)
-  void set(Double factor=1e-8, Double LMFactor=1e-3);
+  void set(Double factor=1e-6, Double LMFactor=1e-3);
   // Set new value solution test
-  void setEpsValue(Double epsval=1e-6) {epsval_p = epsval; };
+  void setEpsValue(Double epsval=1e-8) {epsval_p = epsval; };
   // Set new derivative test
-  void setEpsDerivative(Double epsder=1e-6) {epsder_p = epsder; };
+  void setEpsDerivative(Double epsder=1e-8) {epsder_p = epsder; };
   // Set maximum number of iterations
-  void setMaxIter(uInt maxiter=0) { maxiter_p = 0; };
+  void setMaxIter(uInt maxiter=0) { maxiter_p = maxiter; };
   // Set the expected form of the normal equations
   void setBalanced(Bool balanced=False) { balanced_p = balanced; };
   // Ask the state of the non-linear solutions
@@ -738,18 +793,24 @@ class LSQFit {
   Double nonlin_p;
   // Levenberg step factor
   Double stepfactor_p;
-  // Test value for [incremental] solution // add explanation
+  // Test value for [incremental] solution in non-linear loop.
+  // The <src>||sol increment||/||sol||</src> is tested
   Double epsval_p;
-  // Test value for known factor /// add explanation
+  // Test value for known vector in non-linear loop.
+  // ||known||<sub>inf</sub> is tested
   Double epsder_p;
-  // Indicator for a well balanced normal equation
-  Bool balanced_p; /// add explanation
-  // Maximum number of iterations for non-linear solution
-  uInt maxiter_p; /// add expl
+  // Indicator for a well balanced normal equation. A balanced equation is
+  // one with similar values in the main diagonal.
+  Bool balanced_p;
+  // Maximum number of iterations for non-linear solution. If a non-zero 
+  // maximum number of iterations is set, the value is tested in non-linear
+  // loops
+  uInt maxiter_p;
   // Iteration count for non-linear solution
-  uInt niter_p; /// add expl
-  // Indicate the non-linear state
-  ReadyCode ready_p; /// add expl
+  uInt niter_p; 
+  // Indicate the non-linear state. A non-zero code indicates that non-linear
+  // looping is ready.
+  ReadyCode ready_p; 
  
   // Pivot table (n_p)
   uInt *piv_p;

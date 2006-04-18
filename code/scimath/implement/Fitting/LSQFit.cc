@@ -42,7 +42,7 @@ LSQFit::Conjugate LSQFit::CONJUGATE = LSQFit::Conjugate();
 LSQFit::LSQFit(uInt nUnknowns, uInt nConstraints)
   : state_p(0),
     nun_p(nUnknowns),  ncon_p(nConstraints), n_p(0), r_p(0),
-    prec_p(1e-8), startnon_p(1e-3), nonlin_p(1),
+    prec_p(1e-12), startnon_p(1e-3), nonlin_p(1),
     stepfactor_p(10), epsval_p(1e-6), epsder_p(1e-6),
     balanced_p(False), maxiter_p(0), niter_p(0), ready_p(NONREADY),
     piv_p(0), norm_p(0), nnc_p(0), nceq_p(0),
@@ -58,7 +58,7 @@ LSQFit::LSQFit(uInt nUnknowns,  const LSQReal &,
 	       uInt nConstraints)
   : state_p(0),
     nun_p(nUnknowns), ncon_p(nConstraints), n_p(0), r_p(0),
-    prec_p(1e-8), startnon_p(1e-3), nonlin_p(1),
+    prec_p(1e-12), startnon_p(1e-3), nonlin_p(1),
     stepfactor_p(10), epsval_p(1e-6), epsder_p(1e-6),
     balanced_p(False), maxiter_p(0), niter_p(0), ready_p(NONREADY),
     piv_p(0), norm_p(0), nnc_p(0), nceq_p(0),
@@ -74,7 +74,7 @@ LSQFit::LSQFit(uInt nUnknowns, const LSQComplex &,
 	       uInt nConstraints)
   : state_p(0), nun_p(2*nUnknowns), ncon_p(2*nConstraints),
     n_p(0), r_p(0),
-    prec_p(1e-8), startnon_p(1e-3), nonlin_p(1), epsval_p(1e-6), epsder_p(1e-6),
+    prec_p(1e-12), startnon_p(1e-3), nonlin_p(1), epsval_p(1e-8), epsder_p(1e-8),
     balanced_p(False), maxiter_p(0), niter_p(0), ready_p(NONREADY),
     piv_p(0), norm_p(0), nnc_p(0), nceq_p(0),
     known_p(0), error_p(0), constr_p(0),
@@ -88,8 +88,8 @@ LSQFit::LSQFit(uInt nUnknowns, const LSQComplex &,
 LSQFit::LSQFit()
   : state_p(0), nun_p(0), ncon_p(0),
     n_p(0), r_p(0),
-    prec_p(1e-8), startnon_p(1e-3), nonlin_p(1), 
-    stepfactor_p(10), epsval_p(1e-6), epsder_p(1e-6),
+    prec_p(1e-12), startnon_p(1e-3), nonlin_p(1), 
+    stepfactor_p(10), epsval_p(1e-8), epsder_p(1e-8),
     balanced_p(False), maxiter_p(0), niter_p(0), ready_p(NONREADY),
     piv_p(0), norm_p(0), nnc_p(0), nceq_p(0),
     known_p(0), error_p(0), constr_p(0),
@@ -360,45 +360,70 @@ Bool LSQFit::solveItLoop(Double &fit, uInt &nRank, Bool doSVD) {
     nonlin_p = startnon_p;
     if (balanced_p) startnon_p *= norm_p->maxDiagonal(nun_p); // start factor
     stepfactor_p = 2;
+    niter_p = maxiter_p;
     fit = 1.0;					// loop more
+    ready_p = LSQFit::NONREADY;
+    if (normInfKnown(known_p) <= epsder_p) ready_p = DERIVLEVEL; // known small
     createNCEQ();;;
     save(False);				// save current information
     state_p |= NONLIN;				// non-first loop
   } else {
     Double d0((error_p[SUMLL] + nar_p->error_p[SUMLL])/2.0);
-    // Get fitting goodness
+    // Get fitting goodness (interim)
     if (d0>0) fit = (error_p[SUMLL] - nar_p->error_p[SUMLL])/d0;
     else fit = -1e-10;    			// dummy
-    if (fit<0) {				// found a better fit
+    // Get expected improvement
+    d0 = 0;
+    if (balanced_p)
+      for (uInt i=0; i<nun_p; ++i)
+	d0 += nar_p->sol_p[i]*(nonlin_p*nar_p->sol_p[i]+known_p[i]);
+    else
+      for (uInt i=0; i<nun_p; ++i)
+	d0 += nar_p->sol_p[i]*(nonlin_p*nar_p->sol_p[i]*(*norm_p->diag(i))+known_p[i]);  
+    d0 *= 0.5;
+    Double f = 0.5*(nar_p->error_p[SUMLL] - error_p[SUMLL]); 
+    if (d0>0 && f>0) {
       if (balanced_p) {
-	nonlin_p *= 0.3;	       	// new factor ///
-	stepfactor_p = 2;
-      } else {
-	nonlin_p *= 0.1;
-	stepfactor_p = 10;
-      };
-      save(False);				// save info
+	Double t0(2.0*f/d0-1.0), t1(1.0/3.0);
+	t0 *= -t0*t0;
+	t0 += 1.0;
+	nonlin_p *= (t0>t1 ? t0 : t1);           // new factor
+      } else nonlin_p *= 0.3; 
+      stepfactor_p = 2;
+      save(False);
+      if (normInfKnown(known_p) <= epsder_p) ready_p = DERIVLEVEL; // known
     } else {
-      nonlin_p *= stepfactor_p;	       		// new factor
-      if (balanced_p) stepfactor_p *= 2;        /// to change
-      for (Double *i=wsol_p, *i1=nar_p->sol_p; i!=wsol_p+nun_p; ++i,++i1) {
+      nonlin_p *= stepfactor_p;
+      stepfactor_p *= 2;
+      if (stepfactor_p > 1e10) ready_p = NOREDUCTION; /// make it a constant
+      for (Double *i=wsol_p, *i1=nar_p->sol_p; i!=wsol_p+nun_p; ++i,++i1)
 	*i-=*i1; // new solution
-      };
       restore(False);				// restore info
     };
   };
-  norm_p->mulDiagonal(nun_p, nonlin_p);		// apply +factor;
-  // solve
-  if (!invert(nRank, doSVD)) return False;	// decompose
-  std::copy(wsol_p, wsol_p+nun_p, nar_p->sol_p);// save current solution
-  solveIt();			                // solve
-  std::swap_ranges(wsol_p, wsol_p+nun_p, nar_p->sol_p); // restore current sol
-  for (Double *i=wsol_p, *i1=nar_p->sol_p; i!=wsol_p+nun_p; ++i,++i1) *i+=*i1;
-  nar_p->error_p[CHI2] = error_p[CHI2];;;
-  nar_p->error_p[NC] = error_p[NC];;;
-  nar_p->error_p[SUMWEIGHT] = error_p[SUMWEIGHT];;;
-  clear();					// clear for next part
-  state_p |= NONLIN;				// set in non-linear loop
+  if (!ready_p && (maxiter_p==0 || niter_p>0)) {
+    if (maxiter_p>0) --niter_p;
+    if (balanced_p)  norm_p->addDiagonal(nun_p, nonlin_p);  // apply factor
+    else  norm_p->mulDiagonal(nun_p, nonlin_p);
+    if (!invert(nRank, doSVD)) {
+      ready_p = SINGULAR;
+      return False;	                        // decompose
+    };
+    std::copy(wsol_p, wsol_p+nun_p, nar_p->sol_p);// save current solution
+    solveIt();			                // solve
+    if (normSolution(wsol_p) <= epsval_p*(normSolution(nar_p->sol_p)+epsval_p))
+      ready_p = SOLINCREMENT;
+    std::swap_ranges(wsol_p, wsol_p+nun_p, nar_p->sol_p); // restore sol
+    for (Double *i=wsol_p, *i1=nar_p->sol_p; i!=wsol_p+nun_p; ++i,++i1)
+      *i+=*i1;
+    nar_p->error_p[CHI2] = error_p[CHI2];;;
+    nar_p->error_p[NC] = error_p[NC];;;
+    nar_p->error_p[SUMWEIGHT] = error_p[SUMWEIGHT];;;
+    clear();				      // clear for next part
+    state_p |= NONLIN;			      // set in non-linear loop 
+  } else if (!ready_p) ready_p = MAXITER;
+  if (ready_p) fit = -1e-10;                  // force fit (old system)
+  else fit = 1.0;
   return True;
 }
 
@@ -703,7 +728,7 @@ void  LSQFit::set(uInt nUnknowns, const LSQComplex &, uInt nConstraints) {
 }
 
 void  LSQFit::set(Double factor, Double LMFactor) {
-  prec_p = factor;
+  prec_p = factor*factor;
   startnon_p = LMFactor;
 }
 
@@ -748,7 +773,8 @@ Double LSQFit::getWeightedSD() const {
 
   Double LSQFit::normInfKnown(const Double *known) const {
     Double tmp(0), ret(0);
-    for (const Double *i=known; i!=known+nun_p; ++i) if (ret < (tmp=std::abs(*i))) ret=tmp;
+    for (const Double *i=known; i!=known+nun_p; ++i)
+      if (ret < (tmp=std::abs(*i))) ret=tmp;
     return ret;
    }
  
@@ -769,7 +795,7 @@ void LSQFit::debugIt(uInt &nun, uInt &np, uInt &ncon, uInt &ner, uInt &rank,
   piv    = piv_p;
   sEq    = (nceq_p ? nceq_p->trian_p : 0);
   sol    = wsol_p;
-  prec   = prec_p;
+  prec   = sqrt(prec_p);
   nonlin = nonlin_p;
 }
 
