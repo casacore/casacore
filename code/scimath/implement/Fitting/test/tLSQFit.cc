@@ -1,5 +1,5 @@
 //# tLSQFit.cc -- test LSQFit
-//# Copyright (C) 1999,2000,2001,2002,2004,2005
+//# Copyright (C) 1999-2002,2004-2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This program is free software; you can redistribute it and/or modify it
@@ -921,12 +921,11 @@ int main() {
       DComplex *un = una;
       DComplex kn[1];
       const Int Niter = 30;
-      Int iter=Niter;
-      Double fit = 1.0;
+      lnl.setMaxIter(Niter);
       uInt nr;
       Timer tim1;
       tim1.mark();
-      while (iter>0 && (fit>0 || fit < -0.001)) {
+      while (!lnl.isReady()) {
 	for (uInt i=0; i<n; i++) {
 	  DComplex A = sol[0]*exp(-(((x[i]-sol[1])/sol[2])*
 				  ((x[i]-sol[1])/sol[2])));
@@ -937,22 +936,19 @@ int main() {
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(un, 1.0, kn[0], LSQFit::COMPLEX);
 	};
-	if (!lnl.solveLoop(fit, nr, sol)) {
+	if (!lnl.solveLoop(nr, sol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
-	iter--;
       };
       mu = lnl.getSD();
       me = lnl.getWeightedSD();
-      if (Niter-iter == 24 || Niter-iter == 25) {
-	cout << "Niter:     " << "24 or 25" << endl;
-      } else cout << "Niter:     " << Niter-iter << endl;
-      cout << "Fit:       " << fit << endl;
-      cout << "Sol:       " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
+      cout << "Iterations: " << lnl.nIterations() << endl;
+      cout << "Ready:      " << lnl.readyText() << endl;
+      cout << "Sol:        " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
 	endl;
-      cout << "me:        " << mu << ", " << me << endl;
-      cerr << "User time: " << tim1.user() << endl;
+      cout << "me:         " << mu << ", " << me << endl;
+      cerr << "User time:  " << tim1.user() << endl;
     }
     cout << "---------------------------------------------------" << endl;
 
@@ -972,12 +968,11 @@ int main() {
       Complex kn[1];
       Float mu, me;
       const Int Niter = 30;
-      Int iter=Niter;
-      Double fit = 1.0;
+      lnl.setMaxIter(Niter);
       uInt nr;
       Timer tim1;
       tim1.mark();
-      while (iter>0 && (fit>0 || fit < -0.001)) {
+      while (!lnl.isReady()) {
 	for (uInt i=0; i<n; i++) {
 	  Complex A = sol[0]*exp(-(((x[i]-sol[1])/sol[2])*
 				  ((x[i]-sol[1])/sol[2])));
@@ -988,22 +983,15 @@ int main() {
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(un, 1.0f, kn[0], LSQFit::COMPLEX);
 	};
-	if (!lnl.solveLoop(fit, nr, sol)) {
+	if (!lnl.solveLoop(nr, sol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
-	iter--;
       };
       mu = lnl.getSD();
       me = lnl.getWeightedSD();
-      if (Niter-iter == 24 || Niter-iter == 25) {
-	cout << "Niter:     " << "24 or 25" << endl;
-      } else cout << "Niter:     " << Niter-iter << endl;
-      if (fit > -1e-9 && fit <= 0) {
-	cout << "Fit:       " << "ok" << endl;
-      } else {
-	cout << "Fit:       " << fit << endl;
-      };
+      cout << "Iterations: " << lnl.nIterations() << endl;
+      cout << "Ready:      " << lnl.readyText() << endl;
       cout << "Sol:       " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
 	endl;
       if (mu == me && mu < 1e-7) {
@@ -1193,12 +1181,11 @@ int main() {
       
       Double kn[1];
       const Int Niter = 30;
-      Int iter=Niter;
-      Double fit = 1.0;
+      lnl.setMaxIter(Niter);
       uInt nr;
       Timer tim1;
       tim1.mark();
-      while (iter>0 && (fit>0 || fit < -0.001)) {
+      while (!lnl.isReady()) {
 	for (uInt i=0; i<n; i++) {
 	  Double A = sol[0]*exp(-(((x[i]-sol[1])/sol[2])*
 				  ((x[i]-sol[1])/sol[2])));
@@ -1209,22 +1196,15 @@ int main() {
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(un, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, sol)) {
+	if (!lnl.solveLoop(nr, sol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
-	iter--;
       };
       mu = lnl.getSD();
       me = lnl.getWeightedSD();
-      if (Niter-iter == 24 || Niter-iter == 25) {
-	cout << "Niter:     " << "24 or 25" << endl;
-      } else cout << "Niter:     " << Niter-iter << endl;
-      if (fit > -1e-9 && fit <= 0) {
-	cout << "Fit:       " << "ok" << endl;
-      } else {
-	cout << "Fit:       " << fit << endl;
-      };
+      cout << "Iterations: " << lnl.nIterations() << endl;
+      cout << "Ready:      " << lnl.readyText() << endl;
       cout << "Sol:       " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
 	endl;
       if (mu == me && mu < 1e-15) {
@@ -1233,21 +1213,32 @@ int main() {
       };
       cout << "me:        " << mu << ", " << me << endl;
       cerr << "User time: " << tim1.user() << endl;
-
+    }
+    {
       cout << "Non-linear with 1.0 (5% of max) noise ------------" << endl;
+      LSQFit lnl(3);
+      const uInt n=100;
+      Double x[n];
+      Double y[n];
+      for (uInt i=0; i<n; i++) {
+	x[i] = i*0.5;
+	y[i] = 20*exp(-(((x[i]-25)/4)*((x[i]-25)/4)));
+      };
       MLCG genit;
       Normal noise(&genit, 0.0, 1.0);
       for (uInt i=0; i<n; i++) {
 	y[i] += noise();
       };
-      iter = 2*Niter;
-      lnl.reset();
-      sol[0] = 10;
-      sol[1] = 20;
-      sol[2] = 2;
-      fit = 1;
+      Double sol[3] = {10, 20, 2};
+      Double *un = new Double[3];
+      
+      Double kn[1];
+      const Int Niter = 30;
+      lnl.setMaxIter(2*Niter);
+      uInt nr;
+      Timer tim1;
       tim1.mark();
-      while (iter>0 && (fit>0 || fit < -0.001)) {
+      while (!lnl.isReady()) {
 	for (uInt i=0; i<n; i++) {
 	  Double A = sol[0]*exp(-(((x[i]-sol[1])/sol[2])*
 				  ((x[i]-sol[1])/sol[2])));
@@ -1258,16 +1249,15 @@ int main() {
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(un, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, sol)) {
+	if (!lnl.solveLoop(nr, sol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
-	iter--;
       };
       mu = lnl.getSD();
       me = lnl.getWeightedSD();
-      cout << "Niter:     " << 2*Niter-iter << endl;
-      cout << "Fit:       " << fit << endl;
+      cout << "Iterations: " << lnl.nIterations() << endl;
+      cout << "Ready:      " << lnl.readyText() << endl;
       cout << "Sol:       " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
 	endl;
       cout << "me:        " << mu << ", " << me << endl;
@@ -1317,12 +1307,11 @@ int main() {
       Double *un = una;
       Double kn[1];
       const Int Niter = 30;
-      Int iter=Niter;
-      Double fit = 1.0;
+      lnl.setMaxIter(Niter);
       uInt nr;
       Timer tim1;
       tim1.mark();
-      while (iter>0 && (fit>0 || fit < -0.001)) {
+      while (!lnl.isReady()) {
 	for (uInt i=0; i<n; i++) {
 	  Double A = sol[0]*exp(-(((x[i]-sol[1])/sol[2])*
 				  ((x[i]-sol[1])/sol[2])));
@@ -1333,22 +1322,14 @@ int main() {
 	  kn[0] = y[i]-A;
 	  lnl.makeNorm(un, 1.0, kn[0]);
 	};
-	if (!lnl.solveLoop(fit, nr, sol)) {
+	if (!lnl.solveLoop(nr, sol)) {
 	  cout << "Error in loop: " << nr << endl;
 	  break;
 	};
-	iter--;
       };
       muf = lnl.getSD();
-      mef = lnl.getWeightedSD();
-      if (Niter-iter == 24 || Niter-iter == 25) {
-	cout << "Niter:     " << "24 or 25" << endl;
-      } else cout << "Niter:     " << Niter-iter << endl;
-      if (fit > -1e-9 && fit <= 0) {
-	cout << "Fit:       " << "ok" << endl;
-      } else {
-	cout << "Fit:       " << fit << endl;
-      };
+      cout << "Iterations: " << lnl.nIterations() << endl;
+      cout << "Ready:      " << lnl.readyText() << endl;
       cout << "Sol:       " << sol[0] << ", " << sol[1] << ", " << sol[2] << 
 	endl;
       if (muf == mef && muf < 1e-15) {
