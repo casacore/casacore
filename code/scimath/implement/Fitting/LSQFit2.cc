@@ -1,5 +1,5 @@
 //# LSQFit2.cc: Basic class for least squares fitting: templated methods
-//# Copyright (C) 1999,2000,2002,2004,2005
+//# Copyright (C) 1999,2000,2002,2004-2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -125,6 +125,27 @@ void LSQFit::solve(U &sol) {
   copy(wsol_p, wsol_p+nun_p, sol,
        typename LSQTraits
        <typename std::iterator_traits<U>::value_type>::num_type());
+}
+
+template <class U>
+Bool LSQFit::solveLoop(uInt &nRank,
+		       U *sol, Bool doSVD) {
+  Double fit;
+  return solveLoop(fit, nRank, sol, doSVD);
+}
+
+template <class U>
+Bool LSQFit::solveLoop(uInt &nRank,
+		       std::complex<U> *sol, Bool doSVD) {
+  Double fit;
+  return solveLoop(fit, nRank, sol, doSVD);
+}
+
+template <class U>
+Bool LSQFit::solveLoop(uInt &nRank,
+		       U &sol, Bool doSVD) {
+  Double fit;
+  return solveLoop(fit, nRank, sol, doSVD);
 }
 
 template <class U>
