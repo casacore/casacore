@@ -107,29 +107,29 @@ public:
   // Get the value.
   // It throws an exception if the data type is incorrect.
   // <group>
-  Bool                   asBool    () const;
-  uChar                  asuChar   () const;
-  Short                  asShort   () const;
-  uShort                 asuShort  () const;
-  Int                    asInt     () const;
-  uInt                   asuInt    () const;
-  Float                  asFloat   () const;
-  Double                 asDouble  () const;
-  const Complex&         asComplex () const;
-  const DComplex&        asDComplex() const;
-  const String&          asString  () const;
-  const Array<Bool>&     asArrayBool    () const;
-  const Array<uChar>&    asArrayuChar   () const;
-  const Array<Short>&    asArrayShort   () const;
-  const Array<uShort>    asArrayuShort  () const;
-  const Array<Int>&      asArrayInt     () const;
-  const Array<uInt>      asArrayuInt    () const;
-  const Array<Float>&    asArrayFloat   () const;
-  const Array<Double>&   asArrayDouble  () const;
-  const Array<Complex>&  asArrayComplex () const; 
-  const Array<DComplex>& asArrayDComplex() const;
-  const Array<String>&   asArrayString  () const;
-  const Record&          asRecord       () const;
+  Bool                  asBool    () const;
+  uChar                 asuChar   () const;
+  Short                 asShort   () const;
+  uShort                asuShort  () const;
+  Int                   asInt     () const;
+  uInt                  asuInt    () const;
+  Float                 asFloat   () const;
+  Double                asDouble  () const;
+  Complex               asComplex () const;
+  DComplex              asDComplex() const;
+  const String&         asString  () const;
+  const Array<Bool>     asArrayBool    () const;
+  const Array<uChar>    asArrayuChar   () const;
+  const Array<Short>    asArrayShort   () const;
+  const Array<uShort>   asArrayuShort  () const;
+  const Array<Int>      asArrayInt     () const;
+  const Array<uInt>     asArrayuInt    () const;
+  const Array<Float>    asArrayFloat   () const;
+  const Array<Double>   asArrayDouble  () const;
+  const Array<Complex>  asArrayComplex () const; 
+  const Array<DComplex> asArrayDComplex() const;
+  const Array<String>   asArrayString  () const;
+  const Record&         asRecord       () const;
   // </group>
 
   // Put the value as a field in a record.

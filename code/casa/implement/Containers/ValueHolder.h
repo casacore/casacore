@@ -125,29 +125,29 @@ public:
   // Get the value.
   // It throws an exception if the data type is incorrect.
   // <group>
-  Bool                   asBool    () const;
-  uChar                  asuChar   () const;
-  Short                  asShort   () const;
-  uShort                 asuShort  () const;
-  Int                    asInt     () const;
-  uInt                   asuInt    () const;
-  Float                  asFloat   () const;
-  Double                 asDouble  () const;
-  const Complex&         asComplex () const;
-  const DComplex&        asDComplex() const;
-  const String&          asString  () const;
-  const Array<Bool>&     asArrayBool    () const;
-  const Array<uChar>&    asArrayuChar   () const;
-  const Array<Short>&    asArrayShort   () const;
-  const Array<uShort>    asArrayuShort  () const;
-  const Array<Int>&      asArrayInt     () const;
-  const Array<uInt>      asArrayuInt    () const;
-  const Array<Float>&    asArrayFloat   () const;
-  const Array<Double>&   asArrayDouble  () const;
-  const Array<Complex>&  asArrayComplex () const; 
-  const Array<DComplex>& asArrayDComplex() const;
-  const Array<String>&   asArrayString  () const;
-  const Record&          asRecord       () const;
+  Bool                  asBool    () const;
+  uChar                 asuChar   () const;
+  Short                 asShort   () const;
+  uShort                asuShort  () const;
+  Int                   asInt     () const;
+  uInt                  asuInt    () const;
+  Float                 asFloat   () const;
+  Double                asDouble  () const;
+  Complex               asComplex () const;
+  DComplex              asDComplex() const;
+  const String&         asString  () const;
+  const Array<Bool>     asArrayBool    () const;
+  const Array<uChar>    asArrayuChar   () const;
+  const Array<Short>    asArrayShort   () const;
+  const Array<uShort>   asArrayuShort  () const;
+  const Array<Int>      asArrayInt     () const;
+  const Array<uInt>     asArrayuInt    () const;
+  const Array<Float>    asArrayFloat   () const;
+  const Array<Double>   asArrayDouble  () const;
+  const Array<Complex>  asArrayComplex () const; 
+  const Array<DComplex> asArrayDComplex() const;
+  const Array<String>   asArrayString  () const;
+  const Record&         asRecord       () const;
   // </group>
 
   // Put the value as a field in a record.
@@ -190,33 +190,33 @@ inline Float ValueHolder::asFloat() const
   { return itsRep->asFloat(); }
 inline Double ValueHolder::asDouble() const
   { return itsRep->asDouble(); }
-inline const Complex& ValueHolder::asComplex() const
+inline Complex ValueHolder::asComplex() const
   { return itsRep->asComplex(); }
-inline const DComplex& ValueHolder::asDComplex() const
+inline DComplex ValueHolder::asDComplex() const
   { return itsRep->asDComplex(); }
 inline const String& ValueHolder::asString() const
   { return itsRep->asString(); }
-inline const Array<Bool>& ValueHolder::asArrayBool() const
+inline const Array<Bool> ValueHolder::asArrayBool() const
   { return itsRep->asArrayBool(); }
-inline const Array<uChar>& ValueHolder::asArrayuChar() const
+inline const Array<uChar> ValueHolder::asArrayuChar() const
   { return itsRep->asArrayuChar(); }
-inline const Array<Short>& ValueHolder::asArrayShort() const
+inline const Array<Short> ValueHolder::asArrayShort() const
   { return itsRep->asArrayShort(); }
 inline const Array<uShort> ValueHolder::asArrayuShort() const
   { return itsRep->asArrayuShort(); }
-inline const Array<Int>& ValueHolder::asArrayInt() const
+inline const Array<Int> ValueHolder::asArrayInt() const
   { return itsRep->asArrayInt(); }
 inline const Array<uInt> ValueHolder::asArrayuInt() const
   { return itsRep->asArrayuInt(); }
-inline const Array<Float>& ValueHolder::asArrayFloat() const
+inline const Array<Float> ValueHolder::asArrayFloat() const
   { return itsRep->asArrayFloat(); }
-inline const Array<Double>& ValueHolder::asArrayDouble() const
+inline const Array<Double> ValueHolder::asArrayDouble() const
   { return itsRep->asArrayDouble(); }
-inline const Array<Complex>& ValueHolder::asArrayComplex() const
+inline const Array<Complex> ValueHolder::asArrayComplex() const
   { return itsRep->asArrayComplex(); }
-inline const Array<DComplex>& ValueHolder::asArrayDComplex() const
+inline const Array<DComplex> ValueHolder::asArrayDComplex() const
   { return itsRep->asArrayDComplex(); }
-inline const Array<String>& ValueHolder::asArrayString() const
+inline const Array<String> ValueHolder::asArrayString() const
   { return itsRep->asArrayString(); }
 inline const Record& ValueHolder::asRecord() const
   { return itsRep->asRecord(); }

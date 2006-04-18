@@ -29,7 +29,7 @@
 
 #include <casa/Containers/ValueHolderRep.h>
 #include <casa/Containers/Record.h>
-#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
@@ -232,148 +232,706 @@ ValueHolderRep::~ValueHolderRep()
   }
 }
 
+
 Bool ValueHolderRep::asBool() const
 {
-  AlwaysAssert (itsType == TpBool, AipsError);
-  return itsBool;
+  switch (itsType) {
+  case TpBool:
+    return itsBool;
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asBool - invalid data type");
 }
 
 uChar ValueHolderRep::asuChar() const
 {
-  AlwaysAssert (itsType == TpUChar, AipsError);
-  return itsUChar;
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    AlwaysAssert (itsShort >= 0  &&  itsShort < 256, AipsError);
+    return itsShort;
+  case TpInt:
+    AlwaysAssert (itsInt >= 0  &&  itsInt < 256, AipsError);
+    return itsInt;
+  case TpFloat:
+    AlwaysAssert (itsFloat >= 0  &&  itsFloat < 256, AipsError);
+    return uChar(itsFloat);
+  case TpDouble:
+    AlwaysAssert (itsDouble >= 0  &&  itsDouble < 256, AipsError);
+    return uChar(itsDouble);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asuChar - invalid data type");
 }
 
 Short ValueHolderRep::asShort() const
 {
-  AlwaysAssert (itsType == TpShort, AipsError);
-  return itsShort;
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    AlwaysAssert (itsInt >= -32768  &&  itsInt < 32768, AipsError);
+    return itsInt;
+  case TpFloat:
+    AlwaysAssert (itsFloat >= -32768  &&  itsFloat < 32768, AipsError);
+    return Short(itsFloat);
+  case TpDouble:
+    AlwaysAssert (itsDouble >= -32768  &&  itsDouble < 32768, AipsError);
+    return Short(itsDouble);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asShort - invalid data type");
 }
 
 uShort ValueHolderRep::asuShort() const
 {
-  AlwaysAssert (itsType == TpInt, AipsError);
-  return uShort(itsInt);
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    AlwaysAssert (itsShort >= 0, AipsError);
+    return itsShort;
+  case TpInt:
+    AlwaysAssert (itsInt >= 0  &&  itsInt < 65536, AipsError);
+    return itsInt;
+  case TpFloat:
+    AlwaysAssert (itsFloat >= 0  &&  itsFloat < 65536, AipsError);
+    return uShort(itsFloat);
+  case TpDouble:
+    AlwaysAssert (itsDouble >= 0  &&  itsDouble < 65536, AipsError);
+    return uShort(itsDouble);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asuShort - invalid data type");
 }
 
 Int ValueHolderRep::asInt() const
 {
-  AlwaysAssert (itsType == TpInt, AipsError);
-  return itsInt;
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return Int(itsFloat);
+  case TpDouble:
+    return Int(itsDouble);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asInt - invalid data type");
 }
 
 uInt ValueHolderRep::asuInt() const
 {
-  AlwaysAssert (itsType == TpInt, AipsError);
-  return uInt(itsInt);
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    AlwaysAssert (itsShort >= 0, AipsError);
+    return itsShort;
+  case TpInt:
+    AlwaysAssert (itsInt >= 0, AipsError);
+    return itsInt;
+  case TpFloat:
+    AlwaysAssert (itsFloat >= 0, AipsError);
+    return uInt(itsFloat);
+  case TpDouble:
+    AlwaysAssert (itsDouble >= 0, AipsError);
+    return uInt(itsDouble);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asuInt - invalid data type");
 }
 
 Float ValueHolderRep::asFloat() const
 {
-  AlwaysAssert (itsType == TpFloat, AipsError);
-  return itsFloat;
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return itsFloat;
+  case TpDouble:
+    return itsDouble;
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asFloat - invalid data type");
 }
 
 Double ValueHolderRep::asDouble() const
 {
-  AlwaysAssert (itsType == TpDouble, AipsError);
-  return itsDouble;
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return itsFloat;
+  case TpDouble:
+    return itsDouble;
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asDouble - invalid data type");
 }
 
-const Complex& ValueHolderRep::asComplex() const
+Complex ValueHolderRep::asComplex() const
 {
-  AlwaysAssert (itsType == TpComplex, AipsError);
-  return *static_cast<Complex*>(itsPtr);
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return itsFloat;
+  case TpDouble:
+    return itsDouble;
+  case TpComplex:
+    return *static_cast<Complex*>(itsPtr);
+  case TpDComplex:
+    return Complex (static_cast<DComplex*>(itsPtr)->real(),
+		    static_cast<DComplex*>(itsPtr)->imag());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asComplex - invalid data type");
 }
 
-const DComplex& ValueHolderRep::asDComplex() const
+DComplex ValueHolderRep::asDComplex() const
 {
-  AlwaysAssert (itsType == TpDComplex, AipsError);
-  return *static_cast<DComplex*>(itsPtr);
+  switch (itsType) {
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return itsFloat;
+  case TpDouble:
+    return itsDouble;
+  case TpComplex:
+    return *static_cast<Complex*>(itsPtr);
+  case TpDComplex:
+    return *static_cast<DComplex*>(itsPtr);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asDComplex - invalid data type");
 }
 
 const String& ValueHolderRep::asString() const
 {
-  AlwaysAssert (itsType == TpString, AipsError);
-  return *static_cast<String*>(itsPtr);
+  switch (itsType) {
+  case TpString:
+    return *static_cast<String*>(itsPtr);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asString - invalid data type");
 }
 
-const Array<Bool>& ValueHolderRep::asArrayBool() const
+const Array<Bool> ValueHolderRep::asArrayBool() const
 {
-  AlwaysAssert (itsType == TpArrayBool, AipsError);
-  return *static_cast<Array<Bool>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayBool:
+    return *static_cast<Array<Bool>*>(itsPtr);
+  case TpBool:
+    return Vector<Bool> (1, itsBool);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayBool - invalid data type");
 }
 
-const Array<uChar>& ValueHolderRep::asArrayuChar() const
+const Array<uChar> ValueHolderRep::asArrayuChar() const
 {
-  AlwaysAssert (itsType == TpArrayUChar, AipsError);
-  return *static_cast<Array<uChar>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    return *static_cast<Array<uChar>*>(itsPtr);
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<uChar> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<uChar> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<uChar> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<uChar> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<uChar> (1, asuChar());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayuChar - invalid data type");
 }
 
-const Array<Short>& ValueHolderRep::asArrayShort() const
+const Array<Short> ValueHolderRep::asArrayShort() const
 {
-  AlwaysAssert (itsType == TpArrayShort, AipsError);
-  return *static_cast<Array<Short>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Short> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    return *static_cast<Array<Short>*>(itsPtr);
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<Short> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<Short> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<Short> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<Short> (1, asShort());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayShort - invalid data type");
 }
 
 const Array<uShort> ValueHolderRep::asArrayuShort() const
 {
-  AlwaysAssert (itsType == TpArrayInt, AipsError);
-  const Array<Int>* in = static_cast<Array<Int>*>(itsPtr);
-  Array<uShort> out(in->shape());
-  convertArray (out, *in);
-  return out;
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<uShort> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<uShort> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<uShort> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<uShort> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<uShort> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<uShort> (1, asuShort());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayuShort - invalid data type");
 }
 
-const Array<Int>& ValueHolderRep::asArrayInt() const
+const Array<Int> ValueHolderRep::asArrayInt() const
 {
-  AlwaysAssert (itsType == TpArrayInt, AipsError);
-  return *static_cast<Array<Int>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Int> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<Int> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    return *static_cast<Array<Int>*>(itsPtr);
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<Int> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<Int> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<Int> (1, asInt());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayInt - invalid data type");
 }
 
 const Array<uInt> ValueHolderRep::asArrayuInt() const
 {
-  AlwaysAssert (itsType == TpArrayInt, AipsError);
-  const Array<Int>* in = static_cast<Array<Int>*>(itsPtr);
-  Array<uInt> out(in->shape());
-  convertArray (out, *in);
-  return out;
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<uInt> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<uInt> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<uInt> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<uInt> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<uInt> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<uInt> (1, asuInt());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayuInt - invalid data type");
 }
 
-const Array<Float>& ValueHolderRep::asArrayFloat() const
+const Array<Float> ValueHolderRep::asArrayFloat() const
 {
-  AlwaysAssert (itsType == TpArrayFloat, AipsError);
-  return *static_cast<Array<Float>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<Float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<Float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    return *static_cast<Array<Float>*>(itsPtr);
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<Float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<Float> (1, asFloat());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayFloat - invalid data type");
 }
 
-const Array<Double>& ValueHolderRep::asArrayDouble() const
+const Array<Double> ValueHolderRep::asArrayDouble() const
 {
-  AlwaysAssert (itsType == TpArrayDouble, AipsError);
-  return *static_cast<Array<Double>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<Double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<Double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<Double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    return *static_cast<Array<Double>*>(itsPtr);
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<Double> (1, asDouble());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayDouble - invalid data type");
 }
 
-const Array<Complex>& ValueHolderRep::asArrayComplex() const
+const Array<Complex> ValueHolderRep::asArrayComplex() const
 {
-  AlwaysAssert (itsType == TpArrayComplex, AipsError);
-  return *static_cast<Array<Complex>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayComplex:
+    return *static_cast<Array<Complex>*>(itsPtr);
+  case TpArrayDComplex:
+    {
+      const Array<DComplex>& from = *static_cast<Array<DComplex>*>(itsPtr);
+      Array<Complex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+  case TpComplex:
+  case TpDComplex:
+    return Vector<Complex> (1, asComplex());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayComplex - invalid data type");
 }
 
-const Array<DComplex>& ValueHolderRep::asArrayDComplex() const
+const Array<DComplex> ValueHolderRep::asArrayDComplex() const
 {
-  AlwaysAssert (itsType == TpArrayDComplex, AipsError);
-  return *static_cast<Array<DComplex>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayComplex:
+    {
+      const Array<Complex>& from = *static_cast<Array<Complex>*>(itsPtr);
+      Array<DComplex> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDComplex:
+    return *static_cast<Array<DComplex>*>(itsPtr);
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+  case TpComplex:
+  case TpDComplex:
+    return Vector<DComplex> (1, asDComplex());
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayDComplex - invalid data type");
 }
 
-const Array<String>& ValueHolderRep::asArrayString() const
+const Array<String> ValueHolderRep::asArrayString() const
 {
-  AlwaysAssert (itsType == TpArrayString, AipsError);
-  return *static_cast<Array<String>*>(itsPtr);
+  switch (itsType) {
+  case TpArrayString:
+    return *static_cast<Array<String>*>(itsPtr);
+  case TpString:
+    return Vector<String>(1, *static_cast<String*>(itsPtr));
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asArrayString - invalid data type");
 }
 
 const Record& ValueHolderRep::asRecord() const
 {
-  AlwaysAssert (itsType == TpRecord, AipsError);
-  return *static_cast<Record*>(itsPtr);
+  switch (itsType) {
+  case TpRecord:
+    return *static_cast<Record*>(itsPtr);
+  default:
+    ;
+  }
+  throw AipsError ("ValueHolderRep::asRecord - invalid data type");
 }
 
 
