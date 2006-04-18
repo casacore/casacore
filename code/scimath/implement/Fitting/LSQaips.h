@@ -1,5 +1,5 @@
 //# LSQaips.h: Interface for aips++ Vectors in least squares fitting
-//# Copyright (C) 1999,2000,2001,2004
+//# Copyright (C) 1999,2000,2001,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -131,6 +131,21 @@ class LSQaips : public LSQFit {
   // Solve a Levenberg-Marquardt loop. Note that the solution <src>sol</src>
   // is used both and input and output. No check on the size is done.
   // <group>
+  template <class U>
+  Bool solveLoop(uInt &nRank,
+		 U *sol, Bool doSVD=False) {
+    return LSQFit::solveLoop(nRank, sol, doSVD); };
+  template <class U>
+  Bool solveLoop(uInt &nRank,
+		 std::complex<U> *sol, Bool doSVD=False) {
+    return LSQFit::solveLoop(nRank, sol, doSVD); };
+  template <class U>
+  Bool solveLoop(uInt &nRank,
+		 U &sol, Bool doSVD=False) {
+    return LSQFit::solveLoop(nRank, sol, doSVD); };
+  template <class U>
+  Bool solveLoop(uInt &nRank,
+		 Vector<U> &sol, Bool doSVD=False);
   template <class U>
   Bool solveLoop(Double &fit, uInt &nRank,
 		 U *sol, Bool doSVD=False) {

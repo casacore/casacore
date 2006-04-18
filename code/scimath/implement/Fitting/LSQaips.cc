@@ -1,5 +1,5 @@
 //# LSQaips.cc: Interface for aips++ Vectors in least squares fitting
-//# Copyright (C) 1998,1999,2000,2001,2004
+//# Copyright (C) 1998,1999,2000,2001,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -52,6 +52,13 @@ Bool LSQaips::solveLoop(Double &fit, uInt &nRank,
 			Vector<U> &sol, Bool doSVD) {
   VectorSTLIterator<U> solit(sol);
   return LSQFit::solveLoop(fit, nRank, solit, doSVD);
+}
+
+template <class U>
+Bool LSQaips::solveLoop(uInt &nRank,
+			Vector<U> &sol, Bool doSVD) {
+  VectorSTLIterator<U> solit(sol);
+  return LSQFit::solveLoop(nRank, solit, doSVD);
 }
 
 
