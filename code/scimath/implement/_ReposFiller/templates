@@ -96,10 +96,10 @@
 1040 casa/Arrays/Cube.cc casa/Containers/OrderedMap.h 
      = scimath/Mathematics/SquareMatrix.h 
      template class Cube<OrderedMap<Double, SquareMatrix<Complex, 2>*>*> 
-1050 casa/Arrays/Cube.cc scimath/Mathematics/SquareMatrix.h 
+1050 casa/Arrays/Cube.cc scimath/Mathematics/RigidVector.h 
+     template class Cube<RigidVector<Double, 2> > 
+1060 casa/Arrays/Cube.cc scimath/Mathematics/SquareMatrix.h 
      template class Cube<SquareMatrix<Float, 4> > 
-1060 casa/Arrays/Cube.cc scimath/Mathematics/RigidVector.h
-     template class Cube<RigidVector<Double, 2> >
 1000 casa/Arrays/MaskedArray.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/BasicSL/Complex.h 
@@ -186,12 +186,12 @@
      template class Matrix<AutoDiffA<Double> > 
 1110 casa/Arrays/Matrix.cc scimath/Mathematics/AutoDiffA.h 
      template class Matrix<AutoDiffA<Float> > 
-1120 casa/Arrays/Matrix.cc scimath/Mathematics/SquareMatrix.h 
-     template class Matrix<SquareMatrix<Float, 2> > 
+1120 casa/Arrays/Matrix.cc scimath/Mathematics/RigidVector.h 
+     template class Matrix<RigidVector<Double, 2> > 
 1130 casa/Arrays/Matrix.cc scimath/Mathematics/SquareMatrix.h 
+     template class Matrix<SquareMatrix<Float, 2> > 
+1140 casa/Arrays/Matrix.cc scimath/Mathematics/SquareMatrix.h 
      template class Matrix<SquareMatrix<Float, 4> > 
-1140 casa/Arrays/Matrix.cc scimath/Mathematics/RigidVector.h
-     template class Matrix<RigidVector<Double, 2> >
 1000 casa/Arrays/Vector.cc 
      = scimath/Mathematics/AutoDiffA.h 
      = casa/BasicSL/Complex.h 
@@ -658,6 +658,7 @@
      template Bool LSQFit::getConstraint<VectorSTLIterator<Double> >(uInt, VectorSTLIterator<Double> &) const 
      template void LSQFit::solve<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &) 
      template Bool LSQFit::solveLoop<VectorSTLIterator<Double> >(Double &, uInt &, VectorSTLIterator<Double> &, Bool) 
+     template Bool LSQFit::solveLoop<VectorSTLIterator<Double> >(uInt &, VectorSTLIterator<Double> &, Bool) 
      template void LSQFit::copy<VectorSTLIterator<Double> >(Double const *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
      template void LSQFit::uncopy<VectorSTLIterator<Double> >(Double *, Double const *, VectorSTLIterator<Double> &, LSQReal) 
      template void LSQFit::copyDiagonal<VectorSTLIterator<Double> >(VectorSTLIterator<Double> &, LSQReal) 
@@ -675,6 +676,7 @@
      template Bool LSQFit::getConstraint<VectorSTLIterator<Float> >(uInt, VectorSTLIterator<Float> &) const 
      template void LSQFit::solve<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &) 
      template Bool LSQFit::solveLoop<VectorSTLIterator<Float> >(Double &, uInt &, VectorSTLIterator<Float> &, Bool) 
+     template Bool LSQFit::solveLoop<VectorSTLIterator<Float> >(uInt &, VectorSTLIterator<Float> &, Bool) 
      template void LSQFit::copy<VectorSTLIterator<Float> >(Double const *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
      template void LSQFit::uncopy<VectorSTLIterator<Float> >(Double *, Double const *, VectorSTLIterator<Float> &, LSQReal) 
      template void LSQFit::copyDiagonal<VectorSTLIterator<Float> >(VectorSTLIterator<Float> &, LSQReal) 
@@ -700,6 +702,7 @@
      template Bool LSQFit::getConstraint<It1>(uInt, It1 &) const 
      template void LSQFit::solve<It1>(It1 &) 
      template Bool LSQFit::solveLoop<It1>(Double &, uInt &, It1 &, Bool) 
+     template Bool LSQFit::solveLoop<It1>(uInt &, It1 &, Bool) 
      template void LSQFit::copy<It1>(Double const *, Double const *, It1 &, LSQComplex) 
      template void LSQFit::uncopy<It1>(Double *, Double const *, It1 &, LSQComplex) 
      template void LSQFit::copyDiagonal<It1>(It1 &, LSQComplex) 
@@ -725,6 +728,7 @@
      template Bool LSQFit::getConstraint<It2>(uInt, It2 &) const 
      template void LSQFit::solve<It2>(It2 &) 
      template Bool LSQFit::solveLoop<It2>(Double &, uInt &, It2 &, Bool) 
+     template Bool LSQFit::solveLoop<It2>(uInt &, It2 &, Bool) 
      template void LSQFit::copy<It2>(Double const *, Double const *, It2 &, LSQComplex) 
      template void LSQFit::uncopy<It2>(Double *, Double const *, It2 &, LSQComplex) 
      template void LSQFit::copyDiagonal<It2>(It2 &, LSQComplex) 
@@ -750,6 +754,7 @@
      template Bool LSQFit::getConstraint<Double>(uInt, std::complex<Double> *) const 
      template void LSQFit::solve<Double>(std::complex<Double> *) 
      template Bool LSQFit::solveLoop<Double>(Double &, uInt &, std::complex<Double> *, Bool) 
+     template Bool LSQFit::solveLoop<Double>(uInt &, std::complex<Double> *, Bool) 
      template void LSQFit::copy<std::complex<Double> >(Double const *, Double const *, std::complex<Double> *, LSQComplex) 
      template void LSQFit::uncopy<std::complex<Double> >(Double *, Double const *, std::complex<Double> *, LSQComplex) 
      template Bool LSQFit::getErrors<Double>(std::complex<Double> *) 
@@ -775,6 +780,7 @@
      template Bool LSQFit::getConstraint<Float>(uInt, std::complex<Float> *) const 
      template void LSQFit::solve<Float>(std::complex<Float> *) 
      template Bool LSQFit::solveLoop<Float>(Double &, uInt &, std::complex<Float> *, Bool) 
+     template Bool LSQFit::solveLoop<Float>(uInt &, std::complex<Float> *, Bool) 
      template void LSQFit::copy<std::complex<Float> >(Double const *, Double const *, std::complex<Float> *, LSQComplex) 
      template void LSQFit::uncopy<std::complex<Float> >(Double *, Double const *, std::complex<Float> *, LSQComplex) 
      template Bool LSQFit::getErrors<Float>(std::complex<Float> *) 
@@ -793,6 +799,7 @@
      template Bool LSQFit::getConstraint<Double>(uInt, Double *) const 
      template void LSQFit::solve<Double>(Double *) 
      template Bool LSQFit::solveLoop<Double>(Double &, uInt &, Double *, Bool) 
+     template Bool LSQFit::solveLoop<Double>(uInt &, Double *, Bool) 
      template void LSQFit::copy<Double>(Double const *, Double const *, Double *, LSQReal) 
      template void LSQFit::uncopy<Double>(Double *, Double const *, Double *, LSQReal) 
      template Bool LSQFit::getErrors<Double>(Double *) 
@@ -811,6 +818,7 @@
      template Bool LSQFit::getConstraint<Float>(uInt, Float *) const 
      template void LSQFit::solve<Float>(Float *) 
      template Bool LSQFit::solveLoop<Float>(Double &, uInt &, Float *, Bool) 
+     template Bool LSQFit::solveLoop<Float>(uInt &, Float *, Bool) 
      template void LSQFit::copy<Float>(Double const *, Double const *, Float *, LSQReal) 
      template void LSQFit::uncopy<Float>(Double *, Double const *, Float *, LSQReal) 
      template Bool LSQFit::getErrors<Float>(Float *) 
@@ -831,21 +839,25 @@
      = casa/Arrays/Vector.h 
      template Bool LSQaips::getCovariance<Double>(Array<Double> &) 
      template Bool LSQaips::solveLoop<Double>(Double &, uInt &, Vector<Double> &, Bool doSVD) 
+     template Bool LSQaips::solveLoop<Double>(uInt &, Vector<Double> &, Bool doSVD) 
 1010 scimath/Fitting/LSQaips.cc 
      = casa/Arrays/Array.h 
      = casa/Arrays/Vector.h 
      template Bool LSQaips::getCovariance<Float>(Array<Float> &) 
      template Bool LSQaips::solveLoop<Float>(Double &, uInt &, Vector<Float> &, Bool doSVD) 
+     template Bool LSQaips::solveLoop<Float>(uInt &, Vector<Float> &, Bool doSVD) 
 1020 scimath/Fitting/LSQaips.cc 
      = casa/Arrays/Array.h 
      = casa/Arrays/Vector.h 
      template Bool LSQaips::getCovariance<std::complex<Double> >(Array<std::complex<Double> > &) 
      template Bool LSQaips::solveLoop<std::complex<Double> >(Double &, uInt &, Vector<std::complex<Double> > &, Bool doSVD) 
+     template Bool LSQaips::solveLoop<std::complex<Double> >(uInt &, Vector<std::complex<Double> > &, Bool doSVD) 
 1030 scimath/Fitting/LSQaips.cc 
      = casa/Arrays/Array.h 
      = casa/Arrays/Vector.h 
      template Bool LSQaips::getCovariance<std::complex<Float> >(Array<std::complex<Float> > &) 
      template Bool LSQaips::solveLoop<std::complex<Float> >(Double &, uInt &, Vector<std::complex<Float> > &, Bool doSVD) 
+     template Bool LSQaips::solveLoop<std::complex<Float> >(uInt &, Vector<std::complex<Float> > &, Bool doSVD) 
 1000 scimath/Fitting/LinearFit.cc 
      = casa/BasicSL/Complex.h 
      = scimath/Mathematics/AutoDiff.h 
