@@ -732,6 +732,17 @@ void  LSQFit::set(Double factor, Double LMFactor) {
   startnon_p = LMFactor;
 }
 
+const std::string &LSQFit::readyText() {
+  static std::string txt[LSQFit::N_ReadyCode] =
+    { "Not ready",
+      "Incremental solution too small",
+      "Residual vector too small",
+      "Maximum number iterations reached",
+      "No minimum CHI2 can be found",
+      "Normal equations are singular" };
+  return txt[ready_p];
+}
+
 void LSQFit::save(Bool all) {
   if (!nar_p) {
     nar_p = new LSQFit(*this);
