@@ -1,5 +1,5 @@
 //# NonLinearFitLM.cc: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999,2000,2001,2002,2004
+//# Copyright (C) 1995,1999-2002,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -66,7 +66,6 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
   // Initialise loops
   curiter_p = maxiter_p;
   converge_p = False;
-  Double fitit_p = 1.0;
   // Initialise fitter
   sol.resize(pCount_p);
   for (uInt i=0, k=0; i<pCount_p; ++i) {
@@ -74,7 +73,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   };
   // And loop
-  while (curiter_p > 0 && (fitit_p > 0 || fitit_p < -0.001)) {
+  while (curiter_p > 0 && (!isReady() || curiter_p == maxiter_p)) {
     setMaskedParameterValues(sol_p);
     // Build normal equations
     buildMatrix(x, y, sigma, mask);
@@ -82,7 +81,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     buildConstraint();
     // Do an LM loop
     VectorSTLIterator<typename FunctionTraits<T>::BaseType> csolit(sol_p);
-    if (!solveLoop(fitit_p, nr_p, csolit)) {
+    if (!solveLoop(nr_p, csolit)) {
       throw(AipsError("NonLinearFitLM: error in loop solution"));
     };
     curiter_p--;
