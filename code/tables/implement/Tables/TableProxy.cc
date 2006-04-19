@@ -1940,6 +1940,7 @@ void TableProxy::putValueInTable (const String& colName,
 			    " containing records");
 	}
       }
+      break;
     default:
       throw TableError ("TableProxy::put: unknown scalar data type");
     }
@@ -2287,70 +2288,48 @@ ValueHolder TableProxy::getKeyValue (const TableRecord& keySet,
   switch (keySet.dataType(fieldId)) {
   case TpBool:
     return ValueHolder (keySet.asBool(fieldId));
-    break;
   case TpUChar:
     return ValueHolder (keySet.asuChar(fieldId));
-    break;
   case TpShort:
     return ValueHolder (keySet.asShort(fieldId));
-    break;
   case TpInt:
     return ValueHolder (keySet.asInt(fieldId));
-    break;
   case TpUInt:
     return ValueHolder (keySet.asuInt(fieldId));
-    break;
   case TpFloat:
     return ValueHolder (keySet.asFloat(fieldId));
-    break;
   case TpDouble:
     return ValueHolder (keySet.asDouble(fieldId));
-    break;
   case TpComplex:
     return ValueHolder (keySet.asComplex(fieldId));
-    break;
   case TpDComplex:
     return ValueHolder (keySet.asDComplex(fieldId));
-    break;
   case TpString:
     return ValueHolder (keySet.asString(fieldId));
-    break;
   case TpArrayBool:
     return ValueHolder (keySet.asArrayBool(fieldId));
-    break;
   case TpArrayUChar:
     return ValueHolder (keySet.asArrayuChar(fieldId));
-    break;
   case TpArrayShort:
     return ValueHolder (keySet.asArrayShort(fieldId));
-    break;
   case TpArrayInt:
     return ValueHolder (keySet.asArrayInt(fieldId));
-    break;
   case TpArrayUInt:
     return ValueHolder (keySet.asArrayuInt(fieldId));
-    break;
   case TpArrayFloat:
     return ValueHolder (keySet.asArrayFloat(fieldId));
-    break;
   case TpArrayDouble:
     return ValueHolder (keySet.asArrayDouble(fieldId));
-    break;
   case TpArrayComplex:
     return ValueHolder (keySet.asArrayComplex(fieldId));
-    break;
   case TpArrayDComplex:
     return ValueHolder (keySet.asArrayDComplex(fieldId));
-    break;
   case TpArrayString:
     return ValueHolder (keySet.asArrayString(fieldId));
-    break;
   case TpTable:
     return ValueHolder ("Table: "+keySet.tableAttributes(fieldId).name());
-    break;
   case TpRecord:
     return ValueHolder (getKeyValues(keySet.subRecord(fieldId)));
-    break;
   default:
     throw (AipsError ("TableProxy::getKeyword: unknown data type"));
   }
