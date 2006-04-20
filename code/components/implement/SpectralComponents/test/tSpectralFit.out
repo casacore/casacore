@@ -154,35 +154,35 @@ GAUSSIAN element:
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.918402, 0.310425
-  Center:    1402.5, 0.0034832
-  Sigma:     0.00881809, 0.00343807
-Parameters: [0.918402, 1402.5, 0.00881809]
-Errors:     [0.310425, 0.0034832, 0.00343807]
+  Amplitude: 0.917797, 0.310674
+  Center:    1402.5, 0.00347673
+  Sigma:     0.00882989, 0.00343021
+Parameters: [0.917797, 1402.5, 0.00882989]
+Errors:     [0.310674, 0.00347673, 0.00343021]
 
 GAUSSIAN element: 
-  Amplitude: 2.76117, 0.238197
-  Center:    1405, 0.00151174
-  Sigma:     0.0151761, 0.00151174
+  Amplitude: 2.76117, 0.238196
+  Center:    1405, 0.00151172
+  Sigma:     0.0151761, 0.00151172
 Parameters: [2.76117, 1405, 0.0151761]
-Errors:     [0.238197, 0.00151174, 0.00151174]
+Errors:     [0.238196, 0.00151172, 0.00151172]
 
 GAUSSIAN element: 
-  Amplitude: 0.602535, 0.178909
-  Center:    1407.48, 0.0096871
-  Sigma:     0.0244648, 0.0096871
-Parameters: [0.602535, 1407.48, 0.0244648]
-Errors:     [0.178909, 0.0096871, 0.0096871]
+  Amplitude: 0.612907, 0.18968
+  Center:    1407.48, 0.0085527
+  Sigma:     0.0239303, 0.0085527
+Parameters: [0.612907, 1407.48, 0.0239303]
+Errors:     [0.18968, 0.0085527, 0.0085527]
 
 GAUSSIAN element: 
-  Amplitude: 5.24752, 0.272236
-  Center:    1403, 0.00069599
-  Sigma:     0.0116179, 0.000695958
+  Amplitude: 5.24752, 0.272235
+  Center:    1403, 0.000695977
+  Sigma:     0.0116179, 0.000695945
 Parameters: [5.24752, 1403, 0.0116179]
-Errors:     [0.272236, 0.00069599, 0.000695958]
+Errors:     [0.272235, 0.000695977, 0.000695945]
 
 >>>
-Number of iterations: 13
+Number of iterations: 29
 <<<
 ---------------------------------------------------
 GAUSSIAN element: 
@@ -209,35 +209,35 @@ GAUSSIAN element:
 Execute the fitter again with a fixed ampl, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.918402, 0.310404
-  Center:    1402.5, 0.00348297
-  Sigma:     0.00881809, 0.00343784
-Parameters: [0.918402, 1402.5, 0.00881809]
-Errors:     [0.310404, 0.00348297, 0.00343784]
+  Amplitude: 0.917772, 0.310662
+  Center:    1402.5, 0.00347618
+  Sigma:     0.00883038, 0.00342961
+Parameters: [0.917772, 1402.5, 0.00883038]
+Errors:     [0.310662, 0.00347618, 0.00342961]
 
 GAUSSIAN element: 
-  Amplitude: 2.76117, 0.238181
-  Center:    1405, 0.00151164
-  Sigma:     0.0151761, 0.00151164
+  Amplitude: 2.76117, 0.23818
+  Center:    1405, 0.00151162
+  Sigma:     0.0151761, 0.00151162
 Parameters: [2.76117, 1405, 0.0151761]
-Errors:     [0.238181, 0.00151164, 0.00151164]
+Errors:     [0.23818, 0.00151162, 0.00151162]
 
 GAUSSIAN element: 
-  Amplitude: 0.602535, 0.178896
-  Center:    1407.48, 0.00968644
-  Sigma:     0.0244648, 0.00968644
-Parameters: [0.602535, 1407.48, 0.0244648]
-Errors:     [0.178896, 0.00968644, 0.00968644]
+  Amplitude: 0.61293, 0.18968
+  Center:    1407.48, 0.00855088
+  Sigma:     0.0239286, 0.00855088
+Parameters: [0.61293, 1407.48, 0.0239286]
+Errors:     [0.18968, 0.00855088, 0.00855088]
 
 GAUSSIAN element: 
   Amplitude: 5, 0 (fixed)
-  Center:    1403, 0.000741394
-  Sigma:     0.0119707, 0.000605336
+  Center:    1403, 0.000741387
+  Sigma:     0.0119707, 0.00060533
 Parameters: [5, 1403, 0.0119707]
-Errors:     [0, 0.000741394, 0.000605336]
+Errors:     [0, 0.000741387, 0.00060533]
 
 >>>
-Number of iterations: 13
+Number of iterations: 26
 <<<
 ---------------------------------------------------
 Different start values: 
@@ -264,31 +264,31 @@ GAUSSIAN element:
 Execute the fitter, can do (1:Y): 1
 The results: 
 GAUSSIAN element: 
-  Amplitude: 0.915329, 0.311423
-  Center:    1402.5, 0.00345717
-  Sigma:     0.00887656, 0.00340439
+  Amplitude: 0.917785, 0.310679
+  Center:    1402.5, 0.00347653
+  Sigma:     0.00883013, 0.00342999
 
 GAUSSIAN element: 
-  Amplitude: 2.76116, 0.238208
+  Amplitude: 2.76117, 0.238196
   Center:    1405, 0.00151172
   Sigma:     0.0151761, 0.00151172
 
 GAUSSIAN element: 
-  Amplitude: 0.590133, 0.178593
-  Center:    1407.48, 0.00985607
-  Sigma:     0.0255433, 0.00985607
+  Amplitude: 0.61293, 0.189693
+  Center:    1407.48, 0.00855143
+  Sigma:     0.0239285, 0.00855143
 
 GAUSSIAN element: 
-  Amplitude: 5.24751, 0.272244
-  Center:    1403, 0.000695996
-  Sigma:     0.0116179, 0.000695964
+  Amplitude: 5.24752, 0.272235
+  Center:    1403, 0.000695977
+  Sigma:     0.0116179, 0.000695945
 
 >>>
-Number of iterations: 12
+Number of iterations: 32
 <<<
 ---------------------------------------------------
 Differences: 
-Min difference: -1.09994, max: 1.01271, average: 0.00967598, sigma: 0.0100326
+Min difference: -1.09994, max: 1.01271, average: 0.00978336, sigma: 0.0100325
 ---------------------------------------------------
 ---------------------------------------------------
 Estimates: 
