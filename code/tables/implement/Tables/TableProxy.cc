@@ -2417,7 +2417,11 @@ void TableProxy::putKeyValue (TableRecord& keySet,
     keySet.define (fieldId, value.asArrayString());
     break;
   case TpRecord:
-    putKeyValues (keySet.rwSubRecord(fieldId), value.asRecord());
+    {
+      TableRecord trec;
+      putKeyValues (trec, value.asRecord());
+      keySet.defineRecord (fieldId, trec);
+    }
     break;
   default:
     throw (AipsError ("TableProxy::putKeyValue - "
