@@ -1,5 +1,5 @@
 //# NonLinearFitLM.h: Solve non-linear fit using Levenberg-Marquardt method.
-//# Copyright (C) 1995,1999,2000,2001,2002,2004
+//# Copyright (C) 1995,1999-2002,2004,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -140,7 +140,7 @@ protected:
   using NonLinearFit<T>::buildConstraint;
   using NonLinearFit<T>::setMaskedParameterValues;
   using NonLinearFit<T>::fillSVDConstraints;
-
+  using LSQFit::isReady;
 };
 
 } //# End namespace casa
