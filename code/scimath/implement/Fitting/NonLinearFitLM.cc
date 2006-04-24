@@ -73,7 +73,7 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   };
   // And loop
-  while (curiter_p > 0 && (!isReady() || curiter_p == maxiter_p)) {
+  while (curiter_p > 0 && (!this->isReady() || curiter_p == maxiter_p)) {
     setMaskedParameterValues(sol_p);
     // Build normal equations
     buildMatrix(x, y, sigma, mask);
