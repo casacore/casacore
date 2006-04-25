@@ -107,7 +107,7 @@
 
 # Define exit and interrupt handler.
   trap 'rm -rf $CLEANUP core ${1}_tmp* ; \
-        trap 0 ; \
+        trap - 0 ; \
         exit $STATUS' 0 1 2 3 15
 
 # Check if command is a glish script.
