@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -40,8 +40,8 @@
 *      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (Paper II)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L. 2005, A&A,
-*      (Paper III, in preparation)
+*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L.
+*      2006, A&A, 446, 747 (Paper III)
 *
 *
 *   Summary of routines
@@ -881,6 +881,11 @@
 *   to the usage notes for wcspih() and wcstab() in wcshdr.h, and also the
 *   prologue to tab.h.
 *
+*   For C++ usage, because of a name space conflict with the wtbarr typedef
+*   defined in CFITSIO header fitsio.h, the wtbarr struct is renamed to
+*   wtbarr_s by preprocessor macro substitution with scope limited to wcs.h
+*   itself.
+*
 *      int ntab
 *      struct tabprm *tab
 *         Address of the first element of an array of ntab tabprm structs used
@@ -1123,6 +1128,9 @@ struct pscard {
 };
 
 				/* For extracting wcstab arrays.            */
+#ifdef __cplusplus
+#define wtbarr wtbarr_s		/* See prologue above.			    */
+#endif
 struct wtbarr {
    int  i;			/* Image axis number.                       */
    int  m;			/* Array axis number for index vectors.     */
@@ -1255,6 +1263,7 @@ int wcssptr(struct wcsprm *, int *, char [9]);
 
 
 #ifdef __cplusplus
+#undef wtbarr_s
 };
 #endif
 
