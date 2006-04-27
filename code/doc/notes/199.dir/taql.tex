@@ -54,7 +54,7 @@ syntax, but indicate the optional parts of the commands.
 \begin{itemize}
 \item selection
 \begin{verbatim}
-  SELECT [[DISTINCT] column_list] [INTO table]
+  SELECT [[DISTINCT] column_list] [INTO table [AS type]]
     FROM table_list [WHERE expression]
     [ORDERBY [DISTINCT] sort_list]
     [LIMIT expression] [OFFSET expression] [GIVING table|set]
@@ -194,10 +194,23 @@ returned. This is the default. Because there is an ambiguity between
 the keyword ALL and function ALL, the first element of the column
 list cannot be an expression if the keyword ALL is used.
 
-\subsection{\label{TAQL:INTO}INTO table}
+\subsection{\label{TAQL:INTO}INTO table [AS type]}
 This indicates that the ultimate result of the SELECT command should be
-written to a table (with the given name). This table is a
-reference table or a plain table (depending on the column list).
+written to a table (with the given name). This table can be a
+reference table, a plain table, or a memory table.
+
+The type argument is optional and can be one of several values:
+\begin{description}
+  \item[MEMORY ]to store the result in a memory table.
+  \item[PLAIN ]to store the result in a plain table. Its endian format
+is determined by the aipsrc definition.
+  \item[PLAIN\_BIG ]to store the result in a plain table in big-endian format.
+  \item[PLAIN\_LITTLE ]to store the result in a plain table in little-endian format.
+  \item[PLAIN\_LOCAL ]to store the result in a plain table in native endian format.
+\end{description}
+If type is not given, the result will be written in a reference table.
+However, if expressions are given in the column list of a projection,
+the result is written in a plain table.
 \\The standard TaQL way to define the output table is the
 \htmlref{GIVING}{TAQL::GIVING} clause. INTO is available
 for SQL compliance.
@@ -390,10 +403,11 @@ combination with \texttt{ORDERBY}.
 
 \subsection{\label{TAQL:GIVING}GIVING table$|$set}
 It indicates that the ultimate result of the SELECT command should be
-written to a table (with the given name). This table is a
-reference table or a plain table (depending on the selected column list).
+written to a table (with the given name). One can also give an option
+using \texttt{AS option}.
 \\Another (more SQL compliant) way to define the output table
-is the \htmlref{INTO}{TAQL:INTO} clause.
+is the \htmlref{INTO}{TAQL:INTO} clause. See \htmlref{INTO}{TAQL:INTO}
+for a more detailed description including the possible options.
 
 It is also possible to specify a set in the GIVING clause
 instead of a table name. This is very useful if the result of a
