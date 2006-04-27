@@ -454,7 +454,17 @@ given:     {          /* no result */
 	   }
          | GIVING tabname {
 	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($2->getString()));
+                    new TaQLGivingNodeRep ($2->getString(), ""));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GIVING tabname AS NAME {
+	       $$ = new TaQLNode(
+                    new TaQLGivingNodeRep ($2->getString(), $4->getString()));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GIVING AS NAME {
+	       $$ = new TaQLNode(
+                    new TaQLGivingNodeRep ("", $3->getString()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          | GIVING LBRACKET elems RBRACKET {
@@ -466,7 +476,17 @@ given:     {          /* no result */
 
 into:      INTO tabname {
 	       $$ = new TaQLNode(
-                    new TaQLGivingNodeRep ($2->getString()));
+                    new TaQLGivingNodeRep ($2->getString(), ""));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | INTO tabname AS NAME {
+	       $$ = new TaQLNode(
+                    new TaQLGivingNodeRep ($2->getString(), $4->getString()));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | INTO AS NAME {
+	       $$ = new TaQLNode(
+                    new TaQLGivingNodeRep ("", $3->getString()));
 	       TaQLNode::theirNodesCreated.push_back ($$);
 	   }
          ;

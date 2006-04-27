@@ -367,12 +367,12 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitGivingNode (const TaQLGivingNodeRep& node)
   {
-    if (node.itsExprList.isValid()) {
+    if (node.itsType < 0) {
       TaQLNodeResult result = visitNode (node.itsExprList);
       const TaQLNodeHRValue& res = getHR(result);
       topStack()->handleGiving (res.getExprSet());
     } else {
-      topStack()->handleGiving (node.itsName);
+      topStack()->handleGiving (node.itsName, node.itsType);
     }
     return TaQLNodeResult();
   }

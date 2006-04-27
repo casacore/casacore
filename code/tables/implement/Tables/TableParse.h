@@ -443,8 +443,8 @@ public:
   void handleColumn (const String& name, const TableExprNode& expr,
 		     const String& newName, const String& newDtype);
 
-  // Handle the name given in a GIVING clause.
-  void handleGiving (const String& name);
+  // Handle the name and type given in a GIVING clause.
+  void handleGiving (const String& name, Int type);
 
   // Handle the set given in a GIVING clause.
   void handleGiving (const TableExprNodeSet&);
@@ -472,11 +472,6 @@ private:
   // Do the projection containing column expressions.
   Table doProjectExpr (const Table&);
 
-  // Make a data type from the string.
-  // It checks if it is compatible with the given (expression) data type.
-  DataType makeDataType (DataType dtype, const String& dtstr,
-			 const String& colName);
-
   // Do the sort step.
   Table doSort (const Table& table);
 
@@ -485,6 +480,14 @@ private:
 
   // Do the 'select distinct' step.
   Table doDistinct (const Table& table);
+
+  // Finish the table (rename, copy, and/or flush).
+  Table doFinish (Table& table);
+
+  // Make a data type from the string.
+  // It checks if it is compatible with the given (expression) data type.
+  DataType makeDataType (DataType dtype, const String& dtstr,
+			 const String& colName);
 
   // Get the order for this key. Use the default order_p if not
   // explicitly given with the key.
@@ -559,8 +562,9 @@ private:
   uInt nrSelExprUsed_p;
   //# Distinct values in output?
   Bool distinct_p;
-  //# Name of the resulting table (from GIVING part).
+  //# Name and type of the resulting table (from GIVING part).
   String resultName_p;
+  Int    resultType_p;
   //# Resulting set (from GIVING part).
   TableExprNodeSet* resultSet_p;
   //# The WHERE expression tree.

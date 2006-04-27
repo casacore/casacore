@@ -1968,7 +1968,7 @@ Table TableParseSelect::doProject (const Table& table)
 {
   Table tabp;
   if (nrSelExprUsed_p > 0) {
-    // Expressions used, so make a plain table.
+    // Expressions used, so make a real table.
     tabp = doProjectExpr (table);
   } else {
     // Only column names used, so make a reference table.
@@ -2018,8 +2018,20 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
 		   IPosition(), "", "", "");
   }
   // Create the table.
-  SetupNewTable newtab("", td, Table::Scratch);
-  Table tabp(newtab, inTable.nrow());
+  // The types are defined in class TaQLGivingNodeRep.
+  Table::TableType    ttype = Table::Plain;
+  Table::EndianFormat tendf = Table::AipsrcEndian;
+  if (resultType_p == 1) {
+    ttype = Table::Memory;
+  } else if (resultType_p == 3) {
+    tendf = Table::BigEndian;
+  } else if (resultType_p == 4) {
+    tendf = Table::LittleEndian;
+  } else if (resultType_p == 5) {
+    tendf = Table::LocalEndian;
+  }
+  SetupNewTable newtab(resultName_p, td, Table::New);
+  Table tabp(newtab, ttype, inTable.nrow(), False, tendf);
   // Turn the expressions into update objects.
   for (uInt i=0; i<columnExpr_p.nelements(); i++) {
     if (! columnExpr_p[i].isNull()) {
@@ -2028,7 +2040,32 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
   }
   // Fill the columns in the table.
   doUpdate (tabp, inTable);
+  tabp.flush();
+  // Indicate that no table needs to be created anymore.
+  resultName_p = "";
   return tabp;
+}
+
+Table TableParseSelect::doFinish (Table& table)
+{
+  if (resultType_p == 1) {
+    return table.copyToMemoryTable (resultName_p);
+  } else if (resultType_p > 0){
+    Table::EndianFormat tendf = Table::AipsrcEndian;
+    if (resultType_p == 3) {
+      tendf = Table::BigEndian;
+    } else if (resultType_p == 4) {
+      tendf = Table::LittleEndian;
+    } else if (resultType_p == 5) {
+      tendf = Table::LocalEndian;
+    }
+    table.deepCopy (resultName_p, Table::New, True, tendf);
+    return Table (resultName_p);
+  }
+  // Normal reference table.
+  table.rename (resultName_p, Table::New);
+  table.flush();
+  return table;
 }
 
 DataType TableParseSelect::makeDataType (DataType dtype, const String& dtstr,
@@ -2232,9 +2269,10 @@ Table TableParseSelect::doDistinct (const Table& table)
 
 
 //# Keep the name of the resulting table.
-void TableParseSelect::handleGiving (const String& name)
+void TableParseSelect::handleGiving (const String& name, Int type)
 {
   resultName_p = name;
+  resultType_p = type;
 }
 //# Keep the resulting set expression.
 void TableParseSelect::handleGiving (const TableExprNodeSet& set)
@@ -2323,10 +2361,9 @@ void TableParseSelect::execute (Bool setInGiving,
     if (columnNames_p.nelements() > 0) {
       table = doProject (table);
     }
-    //# Finally give it the given name (and flush it).
+    //# Finally rename or copy using the given name (and flush it).
     if (! resultName_p.empty()) {
-      table.rename (resultName_p, Table::New);
-      table.flush();
+      table = doFinish (table);
     }
   }
   //# Keep the table for later.

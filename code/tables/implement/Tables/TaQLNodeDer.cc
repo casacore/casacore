@@ -643,6 +643,35 @@ TaQLLimitOffNodeRep* TaQLLimitOffNodeRep::restore (AipsIO& aio)
   return new TaQLLimitOffNodeRep (limit, offset);
 }
 
+TaQLGivingNodeRep::TaQLGivingNodeRep (const String& name, const String& type)
+  : TaQLNodeRep (TaQLNode_Giving),
+    itsName     (name),
+    itsType     (0)
+{
+  if (!type.empty()) {
+    String typel(type);
+    typel.downcase();
+    if (type == "memory") {
+      itsType = 1;
+    } else if (type == "plain") {
+      itsType = 2;
+    } else if (type == "plain_big") {
+      itsType = 3;
+    } else if (type == "plain_little") {
+      itsType = 4;
+    } else if (type == "plain_local") {
+      itsType = 5;
+    } else {
+      throw TableParseError ("AS " + type + " in GIVING table " + name +
+			     " is invalid; "
+			     "use MEMORY or PLAIN[_BIG,LITTLE,LOCAL]");
+    }
+  }
+  if (itsType != 1  &&  itsName.empty()) {
+    throw TableParseError ("table name in GIVING can only be omitted if "
+			   "AS MEMORY is given");
+  }
+}
 TaQLGivingNodeRep::~TaQLGivingNodeRep()
 {}
 TaQLNodeResult TaQLGivingNodeRep::visit (TaQLNodeVisitor& visitor) const
@@ -652,17 +681,17 @@ TaQLNodeResult TaQLGivingNodeRep::visit (TaQLNodeVisitor& visitor) const
 void TaQLGivingNodeRep::show (std::ostream& os) const
 {
   os << " GIVING ";
-  if (itsExprList.isValid()) {
+  if (itsType < 0) {
     itsExprList.show (os);
   } else {
-    os << itsName;
+    os << itsName << ' ' << itsType;
   }
 }
 void TaQLGivingNodeRep::save (AipsIO& aio) const
 {
   itsExprList.saveNode (aio);
-  if (! itsExprList.isValid()) {
-    aio << itsName;
+  if (itsType >= 0) {
+    aio << itsName << itsType;
   }
 }
 TaQLGivingNodeRep* TaQLGivingNodeRep::restore (AipsIO& aio)
@@ -673,7 +702,9 @@ TaQLGivingNodeRep* TaQLGivingNodeRep::restore (AipsIO& aio)
   }
   String name;
   aio >> name;
-  return new TaQLGivingNodeRep (name);
+  Int type;
+  aio >> type;
+  return new TaQLGivingNodeRep (name, type);
 }
 
 TaQLUpdExprNodeRep::~TaQLUpdExprNodeRep()

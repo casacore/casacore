@@ -637,19 +637,25 @@ public:
 class TaQLGivingNodeRep: public TaQLNodeRep
 {
 public:
-  explicit TaQLGivingNodeRep (const String& name)
-    : TaQLNodeRep (TaQLNode_Giving),
-      itsName(name) {}
+  explicit TaQLGivingNodeRep (const String& name, const String& type);
   explicit TaQLGivingNodeRep (const TaQLMultiNode& exprlist)
     : TaQLNodeRep (TaQLNode_Giving),
-      itsExprList(exprlist) {}
+      itsType     (-1),
+      itsExprList (exprlist) {}
   virtual ~TaQLGivingNodeRep();
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const;
   virtual void show (std::ostream& os) const;
   virtual void save (AipsIO& aio) const;
   static TaQLGivingNodeRep* restore (AipsIO& aio);
+  // Constructor for restore.
+  TaQLGivingNodeRep (const String& name, Int type)
+    : TaQLNodeRep (TaQLNode_Giving),
+      itsName     (name),
+      itsType     (type) {}
 
   String        itsName;
+  Int           itsType;    // -1=exprlist 0=undefined, 1=memory, 2=plain
+                            //  3=plain_big, 4=plain_little, 5=plain_local
   TaQLMultiNode itsExprList;
 };
 
