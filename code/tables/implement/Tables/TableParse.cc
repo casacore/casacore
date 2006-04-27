@@ -1644,13 +1644,11 @@ void TableParseSelect::doUpdate (Table& updTable, const Table& inTable)
 	    break;
 	  case TpDComplex:
 	    {
-	      Array<DComplex> avalue;
-	      convertArray (avalue, value);
 	      ArrayColumn<DComplex> acol(col);
 	      if (slicerPtr == 0) {
-		acol.put (row, avalue);
+		acol.put (row, value);
 	      } else {
-		acol.putSlice (row, *slicerPtr, avalue);
+		acol.putSlice (row, *slicerPtr, value);
 	      }
 	    }
 	    break;
