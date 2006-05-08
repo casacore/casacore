@@ -651,15 +651,15 @@ TaQLGivingNodeRep::TaQLGivingNodeRep (const String& name, const String& type)
   if (!type.empty()) {
     String typel(type);
     typel.downcase();
-    if (type == "memory") {
+    if (typel == "memory") {
       itsType = 1;
-    } else if (type == "plain") {
+    } else if (typel == "plain") {
       itsType = 2;
-    } else if (type == "plain_big") {
+    } else if (typel == "plain_big") {
       itsType = 3;
-    } else if (type == "plain_little") {
+    } else if (typel == "plain_little") {
       itsType = 4;
-    } else if (type == "plain_local") {
+    } else if (typel == "plain_local") {
       itsType = 5;
     } else {
       throw TableParseError ("AS " + type + " in GIVING table " + name +
@@ -684,7 +684,30 @@ void TaQLGivingNodeRep::show (std::ostream& os) const
   if (itsType < 0) {
     itsExprList.show (os);
   } else {
-    os << itsName << ' ' << itsType;
+    os << itsName;
+    if (itsType > 0) {
+      os << " AS ";
+      switch (itsType) {
+      case 1:
+	os << "memory";
+	break;
+      case 2:
+	os << "plain";
+	break;
+      case 3:
+	os << "plain_big";
+	break;
+      case 4:
+	os << "plain_little";
+	break;
+      case 5:
+	os << "plain_local";
+	break;
+      default:
+	os << "UNKNOWN";
+	break;
+      }
+    }
   }
 }
 void TaQLGivingNodeRep::save (AipsIO& aio) const
