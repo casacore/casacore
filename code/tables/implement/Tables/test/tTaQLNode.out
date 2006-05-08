@@ -1,6 +1,9 @@
 select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
 SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2
 
+select ab,ac,ad,ae,af,ag into tTaQLNode_tmp.data2 as PLAIN_LOCAL from tTaQLNode_tmp.tab sh where all(ab>2) && (ae<10 || ae>11.0) && ag!= 10 + 1i orderby ac desc,ab
+SELECT ab,ac,ad,ae,af,ag FROM tTaQLNode_tmp.tab AS sh WHERE ((ALL((ab)>(2)))&&(((ae)<(10))||((ae)>(11))))&&((ag)<>((10)+(1i))) ORDERBY ac DESC,ab GIVING tTaQLNode_tmp.data2 AS plain_local
+
 select distinct ab+1 as ab1,ac,ad,ae,af,ag from tTaQLNode_tmp.data2
 SELECT DISTINCT (ab)+(1) AS ab1,ac,ad,ae,af,ag FROM tTaQLNode_tmp.data2
 
