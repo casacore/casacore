@@ -48,6 +48,8 @@ using namespace casa;
 %token CREATETAB
 %token FROM
 %token WHERE
+%token GROUPBY
+%token HAVING
 %token ORDERBY
 %token NODUPL
 %token GIVING
@@ -106,6 +108,9 @@ using namespace casa;
 %type <node> selcol
 %type <nodelist> tables
 %type <node> whexpr
+%type <node> groupby
+%type <nodelist> exprlist
+%type <node> having
 %type <node> order
 %type <node> limitoff
 %type <node> given
@@ -209,14 +214,16 @@ selcomm:   SELECT selrow {
            }
          ;
 
-selrow:    selcol FROM tables whexpr order limitoff given {
+selrow:    selcol FROM tables whexpr groupby having order limitoff given {
                $$ = new TaQLSelectNode(
-                    new TaQLSelectNodeRep (*$1, *$3, 0, *$4, 0, 0, *$5, *$6, *$7));
+                    new TaQLSelectNodeRep (*$1, *$3, 0, *$4, *$5, *$6,
+					   *$7, *$8, *$9));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | selcol into FROM tables whexpr order limitoff {
+         | selcol into FROM tables whexpr groupby having order limitoff {
                $$ = new TaQLSelectNode(
-		    new TaQLSelectNodeRep (*$1, *$4, 0, *$5, 0, 0, *$6, *$7, *$2));
+		    new TaQLSelectNodeRep (*$1, *$4, 0, *$5, *$6, *$7,
+					   *$8, *$9, *$2));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          ;
@@ -374,6 +381,35 @@ dminfo:    {      /* no datamans */
          | DMINFO reclist {
                $$ = $2;
            }
+         ;
+
+groupby:   {          /* no groupby */
+	       $$ = new TaQLNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | GROUPBY exprlist {
+	       $$ = $2;
+	   }
+         ;
+
+exprlist:  exprlist COMMA orexpr {
+               $$ = $1;
+	       $$->add (*$3);
+           }
+         | orexpr {
+               $$ = new TaQLMultiNode(False);
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	       $$->add (*$1);
+           }
+         ;
+
+having:    {          /* no having */
+	       $$ = new TaQLNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+	   }
+         | HAVING orexpr {
+               $$ = $2;
+	   }
          ;
 
 order:     {          /* no sort */
