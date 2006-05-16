@@ -412,10 +412,12 @@ PATT      {PATT1}|{PATT2}|{PATT3}
 
  /* regular expression and pattern handling */
 <EXPRstate>"~" {
+            tableGramPosition() += yyleng;
             BEGIN(REGEXstate);
             return EQREGEX;
           }
 <EXPRstate>"!~" {
+            tableGramPosition() += yyleng;
             BEGIN(REGEXstate);
             return NEREGEX;
           }
