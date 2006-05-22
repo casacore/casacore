@@ -1,5 +1,5 @@
 //# HostInfo.h: Information about the host that this process is running on.
-//# Copyright (C) 1997,1999,2002
+//# Copyright (C) 1997-2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -26,8 +26,8 @@
 //#
 //# $Id$
 
-#include "HostInfo.h"
 #include <casa/BasicSL/String.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/Utilities/Assert.h>
 
 #include <unistd.h>
