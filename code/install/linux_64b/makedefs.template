@@ -127,7 +127,7 @@ PGPLOTROOT := /usr
 C++ROOT := /usr/local64
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_64 -DAIPS_STDLIB -D_GLIBCPP_DEPRECATED
+CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_64 -DAIPS_STDLIB -D_GLIBCPP_DEPRECATED -DAIPS_AUTO_STL
 
 
 # C compiler flags for system debug/optimized compilations.
@@ -137,7 +137,7 @@ COPTLVL := -O2 -fno-strength-reduce
 
 # C++ compiler flags for system debug/optimized compilations.
 C++       := $(C++ROOT)/bin/g++ -Wno-deprecated
-C++STD    += -gdwarf-2 -mb-step -pipe -fno-implicit-templates -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align -Wno-comments
+C++STD    += -gdwarf-2 -mb-step -pipe -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align -Wno-comments
 
 GLISH_CONFIGFLAGS += --enable-shared --enable-os-malloc --host=i686-unknown-linux
 

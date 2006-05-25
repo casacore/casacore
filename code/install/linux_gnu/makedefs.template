@@ -131,7 +131,7 @@ FFTWLIB := -lfftw -lrfftw
 C++ROOT := /usr/local/gcc
 
 # Preprocessor flags for system debug/optimized compilations.
-CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_STDLIB -DAIPS_NO_LEA_MALLOC  -D_GLIBCPP_DEPRECATED
+CPPSTD   += -DAIPS_LINUX -DAIPS_LITTLE_ENDIAN -DAIPS_STDLIB -DAIPS_NO_LEA_MALLOC  -D_GLIBCPP_DEPRECATED -DAIPS_AUTO_STL
 
 # C compiler flags for system debug/optimized compilations.
 CC      := $(C++ROOT)/bin/gcc
@@ -140,7 +140,7 @@ COPTLVL := -O2 -fno-strength-reduce
 
 # C++ compiler flags for system debug/optimized compilations.
 C++       := $(C++ROOT)/bin/g++ -Wno-deprecated
-C++STD    += -pipe -fno-implicit-templates -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align -Wno-comment -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+C++STD    += -pipe -Wall -Wno-non-template-friend -Woverloaded-virtual -Wmissing-prototypes -Wcast-align -Wno-comment -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
 
 
 # FORTRAN compiler - using gcc (g77)
