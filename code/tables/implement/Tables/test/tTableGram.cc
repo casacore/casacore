@@ -249,8 +249,8 @@ void seltab (const String& str)
   String cmd;
   cout << str << endl;
   TaQLResult result;
-  string::size_type semipos = str.find(';');
-  if (semipos == string::npos) {
+  String::size_type semipos = str.find(';');
+  if (semipos == String::npos) {
     result = tableCommand (str, vecstr, cmd);
   } else {
     String strc(str);
