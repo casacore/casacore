@@ -58,20 +58,31 @@ int main () {
   return 0;                           // exit with success status
 }
 
+// Make sure the return value for a non-match is the same
+// for 32 and 64 bit machines.
+String::size_type doMatch (const Regex& exp, const char* str, uInt pos)
+{
+  String::size_type k = exp.match (str, pos);
+  if (k == String::npos) {
+    return 4294967295;
+  }
+  return k;
+}
+
 // First do some simple Regex things.
 void a() {
     Regex exp("a?bcd(bcdcdd)?");
-    cout << exp.match("bdc",3) << " ";
-    cout << exp.match("abcd",3) << " ";
-    cout << exp.match("abcd",4) << " ";
-    cout << exp.match("abcdbcdcdd",10) << endl;;
+    cout << doMatch (exp, "bdc",3) << " ";
+    cout << doMatch (exp, "abcd",3) << " ";
+    cout << doMatch (exp, "abcd",4) << " ";
+    cout << doMatch (exp, "abcdbcdcdd",10) << endl;;
 
-    cout << RXalpha.match("bcd",0) << " ";
-    cout << RXalpha.match("bcd",1) << " ";
-    cout << RXalpha.match("bcd",2) << " ";
-    cout << RXalpha.match("bcd",3) << " ";
-    cout << RXalpha.match("bcd",4) << " ";
-    cout << RXalpha.match("bcd",100) << endl;;
+    cout << doMatch (RXalpha, "bcd",0) << " ";
+    cout << doMatch (RXalpha, "bcd",1) << " ";
+    cout << doMatch (RXalpha, "bcd",2) << " ";
+    cout << doMatch (RXalpha, "bcd",3) << " ";
+    cout << doMatch (RXalpha, "bcd",4) << " ";
+    cout << doMatch (RXalpha, "bcd",100) << endl;;
 
     cout << String("1").matches(RXdouble) << " ";
     cout << String("-1").matches(RXdouble) << " ";
@@ -86,7 +97,7 @@ void a() {
     cout << endl;
 
     Regex exp2(exp);
-    cout << exp2.match("abcdbcdcdd",10) << endl;
+    cout << doMatch(exp2, "abcdbcdcdd",10) << endl;
     cout << String("abcdbcdcdd").matches(exp2) << " ";
     cout << String("abcdb").matches(exp2) << " ";
     cout << String("abcd").matches(exp2) << " ";
@@ -94,13 +105,13 @@ void a() {
     cout << exp2.regexp() << endl;
 
     Regex exp5(".+");
-    cout << exp5.match("",0) << " ";
-    cout << exp5.match("",1) << " ";
-    cout << exp5.match("",2) << " ";
-    cout << exp5.match("",10) << " ";
-    cout << exp5.match("a",1) << " ";
-    cout << exp5.match("a",2) << " ";
-    cout << exp5.match("\0\0",2) << endl;
+    cout << doMatch (exp5, "",0) << " ";
+    cout << doMatch (exp5, "",1) << " ";
+    cout << doMatch (exp5, "",2) << " ";
+    cout << doMatch (exp5, "",10) << " ";
+    cout << doMatch (exp5, "a",1) << " ";
+    cout << doMatch (exp5, "a",2) << " ";
+    cout << doMatch (exp5, "\0\0",2) << endl;
 
     Vector<Regex> vec(3);
     vec(0) = exp;
@@ -112,7 +123,7 @@ void a() {
     cout << veci << endl;
 
     exp5 = exp2;
-    cout << exp5.match("abcdbcdcdd",10) << endl;
+    cout << doMatch (exp5, "abcdbcdcdd",10) << endl;
     cout << String("abcdbcdcdd").matches(exp5) << " ";
     cout << String("abcdb").matches(exp5) << " ";
     cout << String("abcd").matches(exp5) << "   ";
@@ -136,7 +147,7 @@ void b() {
     cout << vec << endl;
     cout << veci << endl;
 
-    cout << exp5.match("abcdbcdcdd",10) << endl;
+    cout << doMatch (exp5, "abcdbcdcdd",10) << endl;
     cout << String("abcdbcdcdd").matches(exp5) << " ";
     cout << String("abcdb").matches(exp5) << " ";
     cout << String("abcd").matches(exp5) << "   ";
