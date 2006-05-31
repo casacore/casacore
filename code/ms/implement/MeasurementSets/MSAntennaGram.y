@@ -142,12 +142,12 @@ indexcombexpr  : IDENTIFIER COLON IDENTIFIER {
 
 indexlist : IDENTIFIER {
               Vector<Int> antennaids(1);
-              antennaids[0] = Int($1);
+              antennaids[0] = atoi($1);
               $$ = new Vector<Int>(antennaids);
             }
           | indexlist COMMA IDENTIFIER {
               Vector<Int> antennaids(*($1));
-              antennaids = Int($3);
+              antennaids = atoi($3);
               $$ = new Vector<Int>(antennaids);
             }
           | IDENTIFIER DASH IDENTIFIER {
