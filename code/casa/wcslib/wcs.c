@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -996,7 +996,7 @@ int wcsprt(const struct wcsprm *wcs)
 
    printf("       flag: %d\n", wcs->flag);
    printf("      naxis: %d\n", wcs->naxis);
-   printf("      crpix: 0x%x\n", (int)wcs->crpix);
+   printf("      crpix: %p\n", wcs->crpix);
    printf("            ");
    for (i = 0; i < wcs->naxis; i++) {
       printf("  %- 11.5g", wcs->crpix[i]);
@@ -1005,7 +1005,7 @@ int wcsprt(const struct wcsprm *wcs)
 
    /* Linear transformation. */
    k = 0;
-   printf("         pc: 0x%x\n", (int)wcs->pc);
+   printf("         pc: %p\n", wcs->pc);
    for (i = 0; i < wcs->naxis; i++) {
       printf("    pc[%d][]:", i);
       for (j = 0; j < wcs->naxis; j++) {
@@ -1014,7 +1014,7 @@ int wcsprt(const struct wcsprm *wcs)
       printf("\n");
    }
 
-   printf("      cdelt: 0x%x\n", (int)wcs->cdelt);
+   printf("      cdelt: %p\n", wcs->cdelt);
    printf("            ");
    for (i = 0; i < wcs->naxis; i++) {
       printf("  %- 11.5g", wcs->cdelt[i]);
@@ -1022,7 +1022,7 @@ int wcsprt(const struct wcsprm *wcs)
    printf("\n");
 
    /* Coordinate reference value. */
-   printf("      crval: 0x%x\n", (int)wcs->crval);
+   printf("      crval: %p\n", wcs->crval);
    printf("            ");
    for (i = 0; i < wcs->naxis; i++) {
       printf("  %- 11.5g", wcs->crval[i]);
@@ -1030,12 +1030,12 @@ int wcsprt(const struct wcsprm *wcs)
    printf("\n");
 
    /* Coordinate units and type. */
-   printf("      cunit: 0x%x\n", (int)wcs->cunit);
+   printf("      cunit: %p\n", wcs->cunit);
    for (i = 0; i < wcs->naxis; i++) {
       printf("             \"%s\"\n", wcs->cunit[i]);
    }
 
-   printf("      ctype: 0x%x\n", (int)wcs->ctype);
+   printf("      ctype: %p\n", wcs->ctype);
    for (i = 0; i < wcs->naxis; i++) {
       printf("             \"%s\"\n", wcs->ctype[i]);
    }
@@ -1053,14 +1053,14 @@ int wcsprt(const struct wcsprm *wcs)
    /* Parameter values. */
    printf("        npv: %d\n",  wcs->npv);
    printf("     npvmax: %d\n",  wcs->npvmax);
-   printf("         pv: 0x%x\n", (int)wcs->pv);
+   printf("         pv: %p\n", wcs->pv);
    for (i = 0; i < wcs->npv; i++) {
       printf("             %3d%4d  %- 11.5g\n", (wcs->pv[i]).i,
          (wcs->pv[i]).m, (wcs->pv[i]).value);
    }
    printf("        nps: %d\n",  wcs->nps);
    printf("     npsmax: %d\n",  wcs->npsmax);
-   printf("         ps: 0x%x\n", (int)wcs->ps);
+   printf("         ps: %p\n", wcs->ps);
    for (i = 0; i < wcs->nps; i++) {
       printf("             %3d%4d  %s\n", (wcs->ps[i]).i,
          (wcs->ps[i]).m, (wcs->ps[i]).value);
@@ -1070,7 +1070,7 @@ int wcsprt(const struct wcsprm *wcs)
    printf("     altlin: %d\n", wcs->altlin);
 
    k = 0;
-   printf("         cd: 0x%x\n", (int)wcs->cd);
+   printf("         cd: %p\n", wcs->cd);
    if (wcs->cd) {
       for (i = 0; i < wcs->naxis; i++) {
          printf("    cd[%d][]:", i);
@@ -1081,7 +1081,7 @@ int wcsprt(const struct wcsprm *wcs)
       }
    }
 
-   printf("      crota: 0x%x\n", (int)wcs->crota);
+   printf("      crota: %p\n", wcs->crota);
    if (wcs->crota) {
       printf("            ");
       for (i = 0; i < wcs->naxis; i++) {
@@ -1100,7 +1100,7 @@ int wcsprt(const struct wcsprm *wcs)
       printf("    wcsname: \"%s\"\n", wcs->wcsname);
    }
 
-   printf("      cname: 0x%x\n", (int)wcs->cname);
+   printf("      cname: %p\n", wcs->cname);
    if (wcs->cname) {
       for (i = 0; i < wcs->naxis; i++) {
          if (wcs->cname[i][0] == '\0') {
@@ -1111,7 +1111,7 @@ int wcsprt(const struct wcsprm *wcs)
       }
    }
 
-   printf("      crder: 0x%x\n", (int)wcs->crder);
+   printf("      crder: %p\n", wcs->crder);
    if (wcs->crder) {
       printf("           ");
       for (i = 0; i < wcs->naxis; i++) {
@@ -1124,7 +1124,7 @@ int wcsprt(const struct wcsprm *wcs)
       printf("\n");
    }
 
-   printf("      csyer: 0x%x\n", (int)wcs->csyer);
+   printf("      csyer: %p\n", wcs->csyer);
    if (wcs->csyer) {
       printf("           ");
       for (i = 0; i < wcs->naxis; i++) {
@@ -1214,16 +1214,16 @@ int wcsprt(const struct wcsprm *wcs)
    }
 
    printf("       ntab: %d\n", wcs->ntab);
-   printf("        tab: 0x%x", (int)wcs->tab);
+   printf("        tab: %p", wcs->tab);
    if (wcs->tab != 0x0) printf("  (see below)");
    printf("\n");
    printf("       nwtb: %d\n", wcs->nwtb);
-   printf("        wtb: 0x%x", (int)wcs->wtb);
+   printf("        wtb: %p", wcs->wtb);
    if (wcs->wtb != 0x0) printf("  (see below)");
    printf("\n");
 
    /* Derived values. */
-   printf("      types: 0x%x\n           ", (int)wcs->types);
+   printf("      types: %p\n           ", wcs->types);
    for (i = 0; i < wcs->naxis; i++) {
       printf("%5d", wcs->types[i]);
    }
@@ -1243,49 +1243,49 @@ int wcsprt(const struct wcsprm *wcs)
    /* Memory management. */
    printf("     m_flag: %d\n", wcs->m_flag);
    printf("    m_naxis: %d\n", wcs->m_naxis);
-   printf("    m_crpix: 0x%x", (int)wcs->m_crpix);
+   printf("    m_crpix: %p", wcs->m_crpix);
    if (wcs->m_crpix == wcs->crpix) printf("  (= crpix)");
    printf("\n");
-   printf("       m_pc: 0x%x", (int)wcs->m_pc);
+   printf("       m_pc: %p", wcs->m_pc);
    if (wcs->m_pc == wcs->pc) printf("  (= pc)");
    printf("\n");
-   printf("    m_cdelt: 0x%x", (int)wcs->m_cdelt);
+   printf("    m_cdelt: %p", wcs->m_cdelt);
    if (wcs->m_cdelt == wcs->cdelt) printf("  (= cdelt)");
    printf("\n");
-   printf("    m_crval: 0x%x", (int)wcs->m_crval);
+   printf("    m_crval: %p", wcs->m_crval);
    if (wcs->m_crval == wcs->crval) printf("  (= crval)");
    printf("\n");
-   printf("    m_cunit: 0x%x", (int)wcs->m_cunit);
+   printf("    m_cunit: %p", wcs->m_cunit);
    if (wcs->m_cunit == wcs->cunit) printf("  (= cunit)");
    printf("\n");
-   printf("    m_ctype: 0x%x", (int)wcs->m_ctype);
+   printf("    m_ctype: %p", wcs->m_ctype);
    if (wcs->m_ctype == wcs->ctype) printf("  (= ctype)");
    printf("\n");
-   printf("       m_pv: 0x%x", (int)wcs->m_pv);
+   printf("       m_pv: %p", wcs->m_pv);
    if (wcs->m_pv == wcs->pv) printf("  (= pv)");
    printf("\n");
-   printf("       m_ps: 0x%x", (int)wcs->m_ps);
+   printf("       m_ps: %p", wcs->m_ps);
    if (wcs->m_ps == wcs->ps) printf("  (= ps)");
    printf("\n");
-   printf("       m_cd: 0x%x", (int)wcs->m_cd);
+   printf("       m_cd: %p", wcs->m_cd);
    if (wcs->m_cd == wcs->cd) printf("  (= cd)");
    printf("\n");
-   printf("    m_crota: 0x%x", (int)wcs->m_crota);
+   printf("    m_crota: %p", wcs->m_crota);
    if (wcs->m_crota == wcs->crota) printf("  (= crota)");
    printf("\n");
-   printf("    m_cname: 0x%x", (int)wcs->m_cname);
+   printf("    m_cname: %p", wcs->m_cname);
    if (wcs->m_cname == wcs->cname) printf("  (= cname)");
    printf("\n");
-   printf("    m_crder: 0x%x", (int)wcs->m_crder);
+   printf("    m_crder: %p", wcs->m_crder);
    if (wcs->m_crder == wcs->crder) printf("  (= crder)");
    printf("\n");
-   printf("    m_csyer: 0x%x", (int)wcs->m_csyer);
+   printf("    m_csyer: %p", wcs->m_csyer);
    if (wcs->m_csyer == wcs->csyer) printf("  (= csyer)");
    printf("\n");
-   printf("      m_tab: 0x%x", (int)wcs->m_tab);
+   printf("      m_tab: %p", wcs->m_tab);
    if (wcs->m_tab == wcs->tab) printf("  (= tab)");
    printf("\n");
-   printf("      m_wtb: 0x%x", (int)wcs->m_wtb);
+   printf("      m_wtb: %p", wcs->m_wtb);
    if (wcs->m_wtb == wcs->wtb) printf("  (= wtb)");
    printf("\n");
 
@@ -1303,9 +1303,8 @@ int wcsprt(const struct wcsprm *wcs)
          printf("      ttype: %s\n", wtbp->ttype);
          printf("        row: %ld\n", wtbp->row);
          printf("       ndim: %d\n", wtbp->ndim);
-         printf("     dimlen: 0x%x\n", (int)wtbp->dimlen);
-         printf("     arrayp: 0x%x -> 0x%x\n", (int)wtbp->arrayp,
-                                               (int)(*(wtbp->arrayp)));
+         printf("     dimlen: %p\n", wtbp->dimlen);
+         printf("     arrayp: %p -> %p\n", wtbp->arrayp, (*(wtbp->arrayp)));
       }
    }
 

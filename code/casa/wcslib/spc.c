@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -166,10 +166,10 @@ int spcprt(const struct spcprm *spc)
    }
 
    printf("    isGrism: %d\n", spc->isGrism);
-   printf("     spxX2P: 0x%x\n", (int)spc->spxX2P);
-   printf("     spxP2S: 0x%x\n", (int)spc->spxP2S);
-   printf("     spxS2P: 0x%x\n", (int)spc->spxS2P);
-   printf("     spxP2X: 0x%x\n", (int)spc->spxP2X);
+   printf("     spxX2P: %p\n", spc->spxX2P);
+   printf("     spxP2S: %p\n", spc->spxP2S);
+   printf("     spxS2P: %p\n", spc->spxS2P);
+   printf("     spxP2X: %p\n", spc->spxP2X);
 
    return 0;
 }

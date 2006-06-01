@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -236,9 +236,9 @@ const struct prjprm *prj;
    }
    printf("\n");
    printf("          n: %d\n", prj->n);
-   printf("     prjx2s: 0x%x\n", (int)prj->prjx2s);
-   printf("     prjs2x: 0x%x\n", (int)prj->prjs2x);
-   printf("          p: 0x%x  (= pv)\n", (int)prj->p);
+   printf("     prjx2s: %p\n", prj->prjx2s);
+   printf("     prjs2x: %p\n", prj->prjs2x);
+   printf("          p: %p  (= pv)\n", prj->p);
 
    return 0;
 }

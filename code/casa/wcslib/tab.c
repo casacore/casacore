@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -467,7 +467,7 @@ int tabprt(const struct tabprm *tab)
    printf("          M: %d\n", tab->M);
 
    /* Array dimensions. */
-   printf("          K: 0x%x\n", (int)tab->K);
+   printf("          K: %p\n", tab->K);
    printf("            ");
    for (m = 0; m < tab->M; m++) {
       printf("%6d", tab->K[m]);
@@ -475,7 +475,7 @@ int tabprt(const struct tabprm *tab)
    printf("\n");
 
    /* Map vector. */
-   printf("        map: 0x%x\n", (int)tab->map);
+   printf("        map: %p\n", tab->map);
    printf("            ");
    for (m = 0; m < tab->M; m++) {
       printf("%6d", tab->map[m]);
@@ -483,7 +483,7 @@ int tabprt(const struct tabprm *tab)
    printf("\n");
 
    /* Reference index value. */
-   printf("      crval: 0x%x\n", (int)tab->crval);
+   printf("      crval: %p\n", tab->crval);
    printf("            ");
    for (m = 0; m < tab->M; m++) {
       printf("  %- 11.5g", tab->crval[m]);
@@ -491,9 +491,9 @@ int tabprt(const struct tabprm *tab)
    printf("\n");
 
    /* Index vectors. */
-   printf("      index: 0x%x\n", (int)tab->index);
+   printf("      index: %p\n", tab->index);
    for (m = 0; m < tab->M; m++) {
-      printf("   index[%d]: 0x%x", m, (int)tab->index[m]);
+      printf("   index[%d]: %p", m, tab->index[m]);
       if (tab->index[m]) {
          for (k = 0; k < tab->K[m]; k++) {
             if (k%5 == 0) {
@@ -506,7 +506,7 @@ int tabprt(const struct tabprm *tab)
    }
 
    /* Coordinate array. */
-   printf("      coord: 0x%x\n", (int)tab->coord);
+   printf("      coord: %p\n", tab->coord);
    dp = tab->coord;
    for (n = 0; n < tab->nc; n++) {
       /* Array index. */
@@ -529,9 +529,9 @@ int tabprt(const struct tabprm *tab)
    printf("         nc: %d\n", tab->nc);
 
    if (tab->sense == 0x0) {
-      printf("      sense: (null)\n");
+      printf("      sense: (nil)\n");
    } else {
-      printf("      sense: 0x%x\n", (int)tab->sense);
+      printf("      sense: %p\n", tab->sense);
       printf("            ");
       for (m = 0; m < tab->M; m++) {
          printf("%6d", tab->sense[m]);
@@ -540,9 +540,9 @@ int tabprt(const struct tabprm *tab)
    }
 
    if (tab->p0 == 0x0) {
-      printf("         p0: (null)\n");
+      printf("         p0: (nil)\n");
    } else {
-      printf("         p0: 0x%x\n", (int)tab->p0);
+      printf("         p0: %p\n", tab->p0);
       printf("            ");
       for (m = 0; m < tab->M; m++) {
          printf("%6d", tab->p0[m]);
@@ -551,9 +551,9 @@ int tabprt(const struct tabprm *tab)
    }
 
    if (tab->delta == 0x0) {
-      printf("      delta: (null)\n");
+      printf("      delta: (nil)\n");
    } else {
-      printf("      delta: 0x%x\n", (int)tab->delta);
+      printf("      delta: %p\n", tab->delta);
       printf("            ");
       for (m = 0; m < tab->M; m++) {
          printf("  %- 11.5g", tab->delta[m]);
@@ -561,7 +561,7 @@ int tabprt(const struct tabprm *tab)
       printf("\n");
    }
 
-   printf("    extrema: 0x%x\n", (int)tab->extrema);
+   printf("    extrema: %p\n", tab->extrema);
    dp = tab->extrema;
    for (n = 0; n < tab->nc/tab->K[0]; n++) {
       /* Array index. */
@@ -588,28 +588,28 @@ int tabprt(const struct tabprm *tab)
    printf("        m_M: %d\n", tab->m_M);
    printf("        m_N: %d\n", tab->m_N);
 
-   printf("        m_K: 0x%x", (int)tab->m_K);
+   printf("        m_K: %p", tab->m_K);
    if (tab->m_K == tab->K) printf("  (= K)");
    printf("\n");
 
-   printf("      m_map: 0x%x", (int)tab->m_map);
+   printf("      m_map: %p", tab->m_map);
    if (tab->m_map == tab->map) printf("  (= map)");
    printf("\n");
 
-   printf("    m_crval: 0x%x", (int)tab->m_crval);
+   printf("    m_crval: %p", tab->m_crval);
    if (tab->m_crval == tab->crval) printf("  (= crval)");
    printf("\n");
 
-   printf("    m_index: 0x%x", (int)tab->m_index);
+   printf("    m_index: %p", tab->m_index);
    if (tab->m_index == tab->index) printf("  (= index)");
    printf("\n");
    for (m = 0; m < tab->M; m++) {
-      printf(" m_indxs[%d]: 0x%x", m, (int)tab->m_indxs[m]);
+      printf(" m_indxs[%d]: %p", m, tab->m_indxs[m]);
       if (tab->m_indxs[m] == tab->index[m]) printf("  (= index[%d])", m);
       printf("\n");
    }
 
-   printf("    m_coord: 0x%x", (int)tab->m_coord);
+   printf("    m_coord: %p", tab->m_coord);
    if (tab->m_coord == tab->coord) printf("  (= coord)");
    printf("\n");
 

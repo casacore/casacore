@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -286,7 +286,7 @@ const struct linprm *lin;
 
    printf("       flag: %d\n", lin->flag);
    printf("      naxis: %d\n", lin->naxis);
-   printf("      crpix: 0x%x\n", (int)lin->crpix);
+   printf("      crpix: %p\n", lin->crpix);
    printf("            ");
    for (i = 0; i < lin->naxis; i++) {
       printf("  %- 11.5g", lin->crpix[i]);
@@ -294,7 +294,7 @@ const struct linprm *lin;
    printf("\n");
 
    k = 0;
-   printf("         pc: 0x%x\n", (int)lin->pc);
+   printf("         pc: %p\n", lin->pc);
    for (i = 0; i < lin->naxis; i++) {
       printf("    pc[%d][]:", i);
       for (j = 0; j < lin->naxis; j++) {
@@ -303,7 +303,7 @@ const struct linprm *lin;
       printf("\n");
    }
 
-   printf("      cdelt: 0x%x\n", (int)lin->cdelt);
+   printf("      cdelt: %p\n", lin->cdelt);
    printf("            ");
    for (i = 0; i < lin->naxis; i++) {
       printf("  %- 11.5g", lin->cdelt[i]);
@@ -313,7 +313,7 @@ const struct linprm *lin;
    printf("      unity: %d\n", lin->unity);
 
    if (lin->piximg == 0x0) {
-      printf("     piximg: (null)\n");
+      printf("     piximg: (nil)\n");
    } else {
       k = 0;
       for (i = 0; i < lin->naxis; i++) {
@@ -326,7 +326,7 @@ const struct linprm *lin;
    }
 
    if (lin->imgpix == 0x0) {
-      printf("     imgpix: (null)\n");
+      printf("     imgpix: (nil)\n");
    } else {
       k = 0;
       for (i = 0; i < lin->naxis; i++) {
@@ -340,13 +340,13 @@ const struct linprm *lin;
 
    printf("     m_flag: %d\n", lin->m_flag);
    printf("    m_naxis: %d\n", lin->m_naxis);
-   printf("    m_crpix: 0x%x", (int)lin->m_crpix);
+   printf("    m_crpix: %p", lin->m_crpix);
    if (lin->m_crpix == lin->crpix) printf("  (= crpix)");
    printf("\n");
-   printf("       m_pc: 0x%x", (int)lin->m_pc);
+   printf("       m_pc: %p", lin->m_pc);
    if (lin->m_pc == lin->pc) printf("  (= pc)");
    printf("\n");
-   printf("    m_cdelt: 0x%x", (int)lin->m_cdelt);
+   printf("    m_cdelt: %p", lin->m_cdelt);
    if (lin->m_cdelt == lin->cdelt) printf("  (= cdelt)");
    printf("\n");
 
