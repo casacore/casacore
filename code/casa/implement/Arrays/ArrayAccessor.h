@@ -171,7 +171,7 @@ template <class T> class ArrayBaseAccessor {
   // Current access pointer
   T *ptr_p;
   // The increment to go from one point along an axis, to the next.
-  uInt step_p;
+  Int step_p;
   // The start element of array
   const T *begin_p;
   // The one element beyond last on line
