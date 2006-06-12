@@ -1,3 +1,4 @@
+ifndef SKIP_MAKEDEFS
 #-----------------------------------------------------------------------------
 # makedefs: Default values of variables required by AIPS++ makefiles
 #-----------------------------------------------------------------------------
@@ -273,6 +274,15 @@ QTINCD   = $(QTROOT)/include
 QTLIBD   = $(QTROOT)/lib
 QTLIB   := -lqt
 MOC     := $(QTROOT)/bin/moc
+
+QT4ROOT := /usr/local/qt
+QT4DEFS := 
+QT4INCD  = $(QT4ROOT)/include $(QT4ROOT)/include/QtCore $(QT4ROOT)/include/QtGui $(QT4ROOT)/include/QtXml
+QT4LIBD  = $(QT4ROOT)/lib
+QT4LIB  := -lQtCore
+MOC4     = $(QT4ROOT)/bin/moc
+UIC4     = $(QT4ROOT)/bin/uic
+RCC4     = $(QT4ROOT)/bin/rcc
 
 # Boost
 BOOSTROOT  := /usr/local/boost
@@ -979,6 +989,16 @@ ifdef AIPSRCS
 else
    SUBDIRS  := $(wildcard $(CODEDIR)/*/makefile)
    SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
+
+   ifneq "$(wildcard $(QT4ROOT)/*)" ""
+   QTUIS     := $(wildcard $(CODEDIR)/*/*.ui)
+   QTUIS     := $(patsubst %.ui,%.ui.h,$(QTUIS))
+   QTMOCS    := $(wildcard $(CODEDIR)/*/*.qo.h)
+   QTMOCS    := $(patsubst %.qo.h,%.moc.cc,$(QTMOCS))
+   QTQRCS    := $(wildcard $(CODEDIR)/*/*.qrc)
+   QTQRCS    := $(patsubst %.qrc,%.qrc.cc,$(QTQRCS))
+   endif
+
 endif
 
 ifeq "$(MAKEMODE)" "programmer"
@@ -1183,7 +1203,24 @@ endif
 # Rules for processing subdirectories.
 #-------------------------------------
 ifdef SUBDIRS
-   $(CODESUBS) : FORCE
+
+   ifneq "$(QTUIS)" ""
+   %.ui.h : %.ui
+	$(UIC4) -o $@ $(patsubst %.ui.h,%.ui,$@)
+   endif
+
+   ifneq "$(QTMOCS)" ""
+   %.moc.cc : %.qo.h
+	$(MOC4) -p $(PACKAGE)/$(word $(words $(subst /, ,$(dir $(dir $@)))),$(subst /, ,$(dir $(dir $@)))) \
+	        -o $@ $(patsubst %.moc.cc,%.qo.h,$@)
+   endif
+
+   ifneq "$(QTQRCS)" ""
+   %.qrc.cc : %.qrc
+	$(RCC4) -name $(word $(words $(subst /, ,$(dir $(dir $@)))),$(subst /, ,$(dir $(dir $@)))) -o $@ $<
+   endif
+
+   $(CODESUBS) : $(QTUIS) $(QTMOCS) $(QTQRCS) FORCE
 	 @ if [ ! -d $@ ] ; then \
 	      mkdir $@ ; \
 	      chmod ug=rwx,g+s,o=rx $@ ; \
@@ -1466,3 +1503,5 @@ help ::
 	-@ echo "  show_vars: print variables specified by VARS."
 	-@ echo "       help: print this."
 	-@ echo "   versions: print version of installed utilities."
+
+endif
