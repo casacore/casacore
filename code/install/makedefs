@@ -998,7 +998,7 @@ else
    QTQRCS    := $(wildcard $(CODEDIR)/*/*.qrc)
    QTQRCS    := $(patsubst %.qrc,%.qrc.cc,$(QTQRCS))
    C++       += -DHAVE_QT4
-   LDSTD     += -Wl,-rpath -Wl,$(QTLIBD)
+   LDSTD     += -Wl,-rpath -Wl,$(QT4LIBD)
    endif
 
 endif
