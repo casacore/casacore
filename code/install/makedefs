@@ -997,6 +997,7 @@ else
    QTMOCS    := $(patsubst %.qo.h,%.moc.cc,$(QTMOCS))
    QTQRCS    := $(wildcard $(CODEDIR)/*/*.qrc)
    QTQRCS    := $(patsubst %.qrc,%.qrc.cc,$(QTQRCS))
+   C++       += -DHAVE_QT4
    endif
 
 endif
