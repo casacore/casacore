@@ -51,26 +51,29 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/BasicSL/String.h>
 #include <casa/iostream.h>
-
+#include <casa/Containers/Record.h>
 #include <casa/namespace.h>
 int main() {
   try {
     {
       // Test all the constructors and ways of putting data into the lists.
-      ComponentList model;
+      ComponentList mymodel;
       SkyComponent defaultGauss(ComponentType::GAUSSIAN);
-      model.add(defaultGauss);
+      mymodel.add(defaultGauss);
       {
  	SkyComponent otherPoint(ComponentType::POINT);
 	otherPoint.flux() = Flux<Double>(2.0, 0.0, 0.1, 0.01);
 	otherPoint.shape().setRefDirection(MDirection(Quantity(10, "deg"),
 						      Quantity(87,"deg"),
 						      MDirection::J2000));
- 	model.add(otherPoint);
+ 	mymodel.add(otherPoint);
       }
+
+     
+
       {
  	SkyComponent SkyCompGauss(ComponentType::GAUSSIAN);
- 	model.add(SkyCompGauss);
+ 	mymodel.add(SkyCompGauss);
  	{
  	  Flux<Double> flux(4.0, 2.0, 0.1, 0.1);
  	  SkyCompGauss.flux() = flux;
@@ -89,7 +92,7 @@ int main() {
  	}
       }
       {
- 	model.add(SkyComponent());
+ 	mymodel.add(SkyComponent());
       }
       // reset the flux of the first component. Reference semantics means
       // this changes the value in the list also.
@@ -97,6 +100,17 @@ int main() {
  	Flux<Double> flux(5.0, 1.0, 0.1, 0.05);
  	defaultGauss.flux() = flux;
       }
+
+
+      String error;
+      Record myrecord;
+      Bool ok=mymodel.toRecord(error, myrecord);
+      ComponentList model;
+      ok= ok && model.fromRecord(error, myrecord);
+      if(ok)
+	cout << "Passed the toRecord and fromRecord test "<<  endl;
+
+
       // So the list should now contain 4 elements with I fluxes of
       // 5, 2, 4, 1
       AlwaysAssert(model.nelements() == 4, AipsError);
