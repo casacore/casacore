@@ -1008,7 +1008,7 @@ Bool ComponentList::toRecord(String& error, RecordInterface& outRec){
   outRec.define("nelements", itsNelements);
   for (uInt k=0; k < itsNelements; ++k){ 
     Record componentContainer;
-    retval= (retval || component(k).toRecord(error, componentContainer));
+    retval= (retval && component(k).toRecord(error, componentContainer));
     String componentId=String("component")+String::toString(k);
     outRec.defineRecord(componentId, componentContainer);
 
@@ -1036,7 +1036,7 @@ Bool ComponentList::fromRecord(String& error, const RecordInterface& inRec){
       String componentId=String("component")+String::toString(k);
       Record componentRecord=inRec.asRecord(componentId);
       SkyComponent  tempComponent;
-      retval=(retval || tempComponent.fromRecord(error, componentRecord));
+      retval=(retval && tempComponent.fromRecord(error, componentRecord));
       if(retval){
 	add(tempComponent);
       }
