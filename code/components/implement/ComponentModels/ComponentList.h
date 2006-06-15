@@ -411,6 +411,11 @@ public:
   // values. Returns True if everything is fine otherwise returns False.
   Bool ok() const;
 
+  // methods to store itself as a Record and recover from a Record its state
+
+  Bool fromRecord(String& error, const RecordInterface& inRec);
+  Bool toRecord(String& error, RecordInterface& outRec);
+
 private:
   // Privarte function to create the Table which will hold the components
   void createTable(const Path& fileName, const Table::TableOption option);
