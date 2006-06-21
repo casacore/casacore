@@ -40,7 +40,7 @@
 *      Calabretta, M.R., & Greisen, E.W. 2002, A&A, 395, 1077 (Paper II)
 *
 *      "Representations of spectral coordinates in FITS",
-*      Greisen, E.W., Valdes, F.G., Calabretta, M.R., & Allen, S.L.
+*      Greisen, E.W., Calabretta, M.R., Valdes, F.G., & Allen, S.L.
 *      2006, A&A, 446, 747 (Paper III)
 *
 *
@@ -1263,7 +1263,7 @@ int wcssptr(struct wcsprm *, int *, char [9]);
 
 
 #ifdef __cplusplus
-#undef wtbarr_s
+#undef wtbarr
 };
 #endif
 
