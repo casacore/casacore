@@ -32,15 +32,8 @@
 
 // Make sure that cfitsio does not declare the wcs headers.
 extern "C"{
-#ifdef WCSLIB_GETWCSTAB
-# include <fitsio.h>  // header file from cfitsio
-# include <fitsio2.h> // using core functions of cfitsio
-#else
-# define WCSLIB_GETWCSTAB
-# include <fitsio.h>  // header file from cfitsio
-# include <fitsio2.h> // using core functions of cfitsio
-# undef WCSLIB_GETWCSTAB
-#endif
+#include <fitsio.h>  // header file from cfitsio
+#include <fitsio2.h> // using core functions of cfitsio
 }
 
 #include <stdlib.h>
