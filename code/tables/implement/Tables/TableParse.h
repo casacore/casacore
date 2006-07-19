@@ -101,33 +101,6 @@ template<class T> class Vector;
 
 class TableParse
 {
-// Parse and execute the given command.
-// It will open (and close) all tables needed.
-// It returns the resulting table. 
-// The command type (select or update) and the selected or updated
-// column names can be returned.
-// Zero or more temporary tables can be used in the command
-// using the $nnn syntax.
-// <group>
-friend TaQLResult tableCommand (const String& command);
-
-friend TaQLResult tableCommand (const String& command,
-				const Table& tempTable);
-friend TaQLResult tableCommand (const String& command,
-				const std::vector<const Table*>& tempTables);
-friend TaQLResult tableCommand (const String& command,
-				Vector<String>& columnNames);
-friend TaQLResult tableCommand (const String& command,
-				Vector<String>& columnNames,
-				String& commandType);
-friend TaQLResult tableCommand (const String& command,
-				const std::vector<const Table*>& tempTables,
-				Vector<String>& columnNames);
-friend TaQLResult tableCommand (const String& command,
-				const std::vector<const Table*>& tempTables,
-				Vector<String>& columnNames,
-				String& commandType);
-// </group>
 
 public:
   // Default constructor for container class.
@@ -155,6 +128,38 @@ private:
   String  shorthand_p;
   Table   table_p;
 };
+
+
+
+// <synopsis>
+// Parse and execute the given command.
+// It will open (and close) all tables needed.
+// It returns the resulting table. 
+// The command type (select or update) and the selected or updated
+// column names can be returned.
+// Zero or more temporary tables can be used in the command
+// using the $nnn syntax.
+// </synopsis>
+// <group name=tableCommand>
+TaQLResult tableCommand (const String& command);
+
+TaQLResult tableCommand (const String& command,
+			 const Table& tempTable);
+TaQLResult tableCommand (const String& command,
+			 const std::vector<const Table*>& tempTables);
+TaQLResult tableCommand (const String& command,
+			 Vector<String>& columnNames);
+TaQLResult tableCommand (const String& command,
+			 Vector<String>& columnNames,
+			 String& commandType);
+TaQLResult tableCommand (const String& command,
+			 const std::vector<const Table*>& tempTables,
+			 Vector<String>& columnNames);
+TaQLResult tableCommand (const String& command,
+			 const std::vector<const Table*>& tempTables,
+			 Vector<String>& columnNames,
+			 String& commandType);
+// </group>
 
 
 
@@ -633,8 +638,6 @@ inline void TableParseSelect::addUpdate (TableParseUpdate* upd)
 
 inline Sort::Order TableParseSelect::getOrder (const TableParseSort& key) const
   { return (key.orderGiven()  ?  key.order() : order_p); }
-
-
 
 
 } //# NAMESPACE CASA - END
