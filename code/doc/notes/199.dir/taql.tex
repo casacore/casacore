@@ -22,11 +22,11 @@ A reference table is a table that can be used as any other table,
 but it does not contain data. Instead it contains references to the
 rows and columns in the original table. Thus modifying data in a
 reference table means that effectively the data in the original
-table is modified.
+table are modified.
 \item Any operand can be a scalar or an N-dimensional array.
-Many reduction functions can be used with arrays.
+Many reduction functions can be applied to arrays.
 \item A very rich set of mathematical functions.
-\item Support of various regular expressions.
+\item Support of various types of patterns/regular expressions.
 \item Specific operators and functions for cone searching
 (i.e. spatial searching with a search radius).
 \item An advanced way of specifying intervals.
@@ -95,7 +95,7 @@ in a table can be used.
 
 \item table creation
 \begin{verbatim}
-  CREATE TABLE table [column_spec p] [DMINFO datamanager_list]
+  CREATE TABLE table [column_spec] [DMINFO datamanager_list]
 \end{verbatim}
 It can be used to create a new table with the given columns.
 in a table can be used.
@@ -134,14 +134,15 @@ sections.
 are optional,
 at least one of them has to be used. Otherwise no operation is
 performed on the primary table (which makes no sense).
-Also the GIVING clause with a value set is seen as an operation.
+Note that the GIVING clause with a value set is seen as an operation
+as well.
 
 \subsection{\label{TAQL:COLUMNLIST}SELECT column\_list}
 Columns to be selected can be given as
 a comma-separated list with names of columns that have to be
 selected from the primary table in the table\_list (see below).
 If * or no column\_list is given, all columns will be selected.
-It results in a so-called reference table. Optionally the
+It results in a so-called reference table. Optionally a
 selected column can be given another name in the reference
 table using \texttt{AS name} (where AS is optional).
 For example:
@@ -272,7 +273,7 @@ There are three special ways to specify a table:
 \begin{enumerate}
 
 \item
-A table name can also be taken from a keyword in a previously
+A table name can be taken from a keyword in a previously
 specified table. This can be useful in a
 \htmlref{subquery}{TAQL:SUBQUERIES}. The syntax for this is
 the same as that for specifying \htmlref{keywords}{TAQL:KEYWORDS}
@@ -2003,7 +2004,7 @@ used in the nested query which has a FROM clause itself.
       \\creates an empty table.
 
   \item[] \texttt{ create table mytab colarr R4 ndim=0 }
-      \\creates a table of 1 array column with arbitrarily dimensionality.
+      \\creates a table of 1 array column with arbitrary dimensionality.
 
   \item[] \texttt{ create table mytab colarr R4 [shape=[4,128], }
 	  \texttt{                   dmtype='TiledColumnStMan'] }
