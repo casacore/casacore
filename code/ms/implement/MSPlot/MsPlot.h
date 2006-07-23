@@ -438,7 +438,7 @@ Bool polarIndices( const Vector<Int> spwIDs, PtrBlock<Vector<Int>* >& polarsIndi
 Bool containStokes( const Vector<Int> corrType, const Vector<String>& stokesNames, Vector<Int>& polarIndices );
 Bool polarNchannel( PtrBlock<Vector<Int>* >& polarsIndices, Vector<Int>& chanIndices, Vector<String>& chanRange );
 Bool derivedValues( Vector<Double>& derivedQuan, const String& quanType );
-Int MsPlot<T>::toltalAntenna();
+Int toltalAntenna();
 protected:
 
 //#! Data Members
