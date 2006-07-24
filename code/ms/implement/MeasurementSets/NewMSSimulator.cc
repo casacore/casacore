@@ -1049,52 +1049,53 @@ void NewMSSimulator::observe(const String& sourceName,
 
   os << "Calculating uvw coordinates for " << nIntegrations << " integrations" << LogIO::POST;
 
-  for (Int integration=0; integration<nIntegrations; integration++) {
-    
-    MEpoch epUT1 (Quantity(Time/C::day, "d"), MEpoch::UT1);
-    MEpoch::Ref refGMST1(MEpoch::GMST1);
-    MEpoch::Convert epGMST1(epUT1, refGMST1);
-    Double gmst = epGMST1().get("d").getValue("d");
-    gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
+  for(Int feed=0; feed<nFeed; feed++) {
+    if (nFeed) 
+       os << "Processing feed "<<feed<< LogIO::POST;
+    // for now assume that all feeds have the same offsets w.r.t.
+    // antenna frame for all antennas
+    RigidVector<Double, 2> beamOffset=beam_offsets(0,0,feed);
 
-    MEpoch ep(Quantity((Time + Tint/2), "s"));
-    msd.setEpoch(ep);
+    for(Int integration=0; integration<nIntegrations; integration++) {
     
-    // current phase center for a beam without offset
-    // For each individual beam pointing center always coincides
-    // with the phase center
+      MEpoch epUT1 (Quantity(Time/C::day, "d"), MEpoch::UT1);
+      MEpoch::Ref refGMST1(MEpoch::GMST1);
+      MEpoch::Convert epGMST1(epUT1, refGMST1);
+      Double gmst = epGMST1().get("d").getValue("d");
+      gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
     
-    // ???? May be we can use fcs defined earlier instead of fc ????
-    MDirection fc = msc.field().phaseDirMeas(baseFieldID);
-    msd.setFieldCenter(fc);
-    msd.setAntenna(0); // assume for now that all par. angles are the same 
-            
-    Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
-    Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
-    Double fractionBlocked1=0.0, fractionBlocked2=0.0;
-    Int startingRow = row;
-    Double diamMax2 = square( max(antDiam) );
-    
+      MEpoch ep(Quantity((Time + Tint/2), "s"));
+      msd.setEpoch(ep);
       
-    // Do the first row outside the loop
-    msc.scanNumber().put(row+1,scan);
-    msc.fieldId().put(row+1,baseFieldID);
-    msc.dataDescId().put(row+1,baseSpWID);
-    msc.time().put(row+1,Time+Tint/2);
-    msc.arrayId().put(row+1,maxArrayId);
-    msc.processorId().put(row+1,0);
-    msc.exposure().put(row+1,Tint);
-    msc.interval().put(row+1,Tint);
-    msc.observationId().put(row+1,maxObsId+1);
-    msc.stateId().put(row+1,-1);
+      // current phase center for a beam without offset
+      // For each individual beam pointing center always coincides
+      // with the phase center
+      
+      // ???? May be we can use fcs defined earlier instead of fc ????
+      MDirection fc = msc.field().phaseDirMeas(baseFieldID);
+      msd.setFieldCenter(fc);
+      msd.setAntenna(0); // assume for now that all par. angles are the same 
+            
+      Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
+      Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
+      Double fractionBlocked1=0.0, fractionBlocked2=0.0;
+      Int startingRow = row;
+      Double diamMax2 = square( max(antDiam) );
 
-    for (Int feed=0; feed<nFeed; feed++) {
       // fringe stopping center could be different for different feeds
       MDirection feed_phc=fc;
-      
-      // for now assume that all feeds have the same offsets w.r.t.
-      // antenna frame for all antennas
-      RigidVector<Double, 2> beamOffset=beam_offsets(0,0,feed);
+    
+      // Do the first row outside the loop
+      msc.scanNumber().put(row+1,scan);
+      msc.fieldId().put(row+1,baseFieldID);
+      msc.dataDescId().put(row+1,baseSpWID);
+      msc.time().put(row+1,Time+Tint/2);
+      msc.arrayId().put(row+1,maxArrayId);
+      msc.processorId().put(row+1,0);
+      msc.exposure().put(row+1,Tint);
+      msc.interval().put(row+1,Tint);
+      msc.observationId().put(row+1,maxObsId+1);
+      msc.stateId().put(row+1,-1);
 
       // assume also that all mounts are the same and posit. angle is the same
       if (antenna_mounts[0]=="ALT-AZ" || antenna_mounts[0]=="alt-az") {
@@ -1103,19 +1104,19 @@ void NewMSSimulator::observe(const String& sourceName,
           // SquareMatrix' default constructor is a bit strange, we probably
           // need to change it in the future
 
-	  
-	  const Double pa=msd.parAngle();  
-	  const Double cpa=cos(pa);
-	  const Double spa=sin(pa);
+      
+          const Double pa=msd.parAngle();  
+          const Double cpa=cos(pa);
+          const Double spa=sin(pa);
           xform(0,0)=cpa;
           xform(1,1)=cpa;
           xform(0,1)=-spa;
           xform(1,0)=spa;
-	  beamOffset*=xform;
+          beamOffset*=xform;
       }
       // x direction is flipped to convert az-el type frame to ra-dec
       feed_phc.shift(-beamOffset(0),beamOffset(1),True);
-      
+    
       Double ra, dec; // current phase center
       ra = feed_phc.getAngle().getValue()(0);
       dec = feed_phc.getAngle().getValue()(1);
@@ -1131,9 +1132,9 @@ void NewMSSimulator::observe(const String& sourceName,
       Matrix<Double> antUVW(3,nAnt);	      
       for (Int ant1=0; ant1<nAnt; ant1++)
            antUVW.column(ant1)=product(trans,antXYZ.column(ant1));
-      
-      
-      for (Int ant1=0; ant1<nAnt; ant1++) {
+    
+    
+      for(Int ant1=0; ant1<nAnt; ant1++) {
 	Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
 	Int startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
@@ -1188,7 +1189,7 @@ void NewMSSimulator::observe(const String& sourceName,
 	  msc.sigma().put(row,tmp);
 	}
       }
-    }
+    
     
     // go back and flag weights based on shadowing
     // Future option: we could increase sigma based on
@@ -1197,8 +1198,7 @@ void NewMSSimulator::observe(const String& sourceName,
     trueFlag=True;
 
     Int reRow = startingRow;
-    for (Int feed=0; feed<nFeed; feed++) {
-      for (Int ant1=0; ant1<nAnt; ant1++) {
+    for (Int ant1=0; ant1<nAnt; ant1++) {
 	Int startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
 	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
@@ -1209,14 +1209,13 @@ void NewMSSimulator::observe(const String& sourceName,
 	    nShadowed++;
 	  }
 	}
-      }
     }
+    
         
     
     // Find antennas pointing below the elevation limit
     Vector<Double> azel(2);
-    for (Int feed=0; feed<nFeed; feed++) {
-      for (Int ant1=0; ant1<nAnt; ant1++) {
+    for (Int ant1=0; ant1<nAnt; ant1++) {
 	
 	// We want to find elevation for each antenna separately (for VLBI)
 	msd.setAntenna(ant1);
@@ -1235,13 +1234,11 @@ void NewMSSimulator::observe(const String& sourceName,
 	  os << "     el   = " << azel(1) *  180.0/C::pi<< " deg" << LogIO::POST;
 	  os << "     ha   = " << ha1 << " hours" << LogIO::POST;
 	}
-      }
-    }
+    }    
 
     // Now flag all antennas pointing below the elevation limit
-    reRow = startingRow;
-    for (Int feed=0; feed<nFeed; feed++) {
-      for (Int ant1=0; ant1<nAnt; ant1++) {
+    reRow = startingRow;    
+    for (Int ant1=0; ant1<nAnt; ant1++) {
 	Int startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
 	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
@@ -1252,8 +1249,7 @@ void NewMSSimulator::observe(const String& sourceName,
 	    nSubElevation++;
 	  }
 	}
-      }
-    }
+    }    
     
     Int numpointrows=nAnt;
     MSPointingColumns& pointingc=msc.pointing();
@@ -1275,7 +1271,8 @@ void NewMSSimulator::observe(const String& sourceName,
       pointingc.targetMeasCol().put(m,direction);             
     }
     Time+=Tint; 
-  }
+  }  // time ranges
+} // feeds
   
   {
     msd.setAntenna(0);
