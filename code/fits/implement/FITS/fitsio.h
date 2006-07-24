@@ -197,8 +197,8 @@ class FitsInput : public FitsIO {
 	virtual void errmsg(FitsErrs, char *);
 	void init();
 	void read_header_rec();
-	bool FitsInput::current_hdu_type( FITS::HDUType &);
-	bool FitsInput::get_data_type( FITS::ValueType &);
+	bool current_hdu_type( FITS::HDUType &);
+	bool get_data_type( FITS::ValueType &);
 
 	//# check if this comes out ok in cxx2html
         // Special interface to class HeaderDataUnit
@@ -232,7 +232,7 @@ class FitsOutput : public FitsIO {
 	~FitsOutput();
 	//</group>
    // used by PrimaryArray, BinaryTabelExtention etc to work with the constructor without keyword list.
-	void FitsOutput::set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is);
+	void set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is);
 	// write a special record. For this the record type must also
 	// be to set to FITS::SpecialRecord
 	int write_sp(char *rec);

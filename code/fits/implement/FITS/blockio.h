@@ -89,7 +89,7 @@ class BlockIO {
 	// fits_close_file() does not work for reasons that the file pointer does not have the 
 	// knowledge of chdu which were written with write_hdr() not write_***_hdr(). So create
 	// our own close_file() method.
-   int BlockIO::close_file( fitsfile *fptr, int *status);
+        int close_file( fitsfile *fptr, int *status);
 	// file descriptor associated with I/O stream, if applicable
 	int fdes() const { return m_fd; }
 	// get the fitsfile pointer
@@ -190,7 +190,7 @@ class BlockOutput : public BlockIO {
 	BlockOutput(int,          int, int = 1,
 		    FITSErrorHandler errhandler = FITSError::defaultHandler);
 	virtual ~BlockOutput();
-	void BlockOutput::flush_buffer();
+        void flush_buffer();
 	//</group>
 
 	// write the next logical record. The input must point

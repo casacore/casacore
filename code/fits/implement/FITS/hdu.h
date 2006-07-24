@@ -1113,7 +1113,7 @@ class AsciiTableExtension : public BinaryTableExtension {
 	// ascii string that represents the NULL value
 	char *tnull(int n) 	{ return tnulla_x[n]; }
 	// write the required keywords for ASCIITableExtension
-	int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &, long,
+	int write_ascTbl_hdr( FitsOutput &, long,
            long, int, char **, long *, char **, char **, char *e);   
 
     protected:
