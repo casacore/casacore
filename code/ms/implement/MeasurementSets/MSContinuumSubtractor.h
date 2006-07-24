@@ -87,8 +87,7 @@ public:
    MSContinuumSubtractor (MeasurementSet& ms);
 
 // Assignment (only copies reference to MS, need to reset selection etc)
-  MSContinuumSubtractor& MSContinuumSubtractor::operator=(MSContinuumSubtractor&
-      other);
+  MSContinuumSubtractor& operator=(MSContinuumSubtractor& other);
 
 // Destructor
   ~MSContinuumSubtractor();
