@@ -287,7 +287,7 @@ private:
                                   Bool oneRelOut);
 
 // 
-   SpectralList ImageProfileFit::filterList (const SpectralList& listIn) const;
+   SpectralList filterList (const SpectralList& listIn) const;
 
 //
    Bool getElements (RecordInterface& rec,

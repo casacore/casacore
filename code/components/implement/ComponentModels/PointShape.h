@@ -257,7 +257,7 @@ public:
 private:
 
 // FInd out if a direction is located within a pixel 
-   Double PointShape::dirIsInPixel (Double longSize, Double latSize, Double nearSize,
+   Double dirIsInPixel (Double longSize, Double latSize, Double nearSize,
                                     const MDirection::MVType& dirValue,
                                     const MDirection::MVType* compDirValue) const;
 };
