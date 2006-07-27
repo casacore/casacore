@@ -987,14 +987,14 @@ ifdef AIPSRCS
    SUBDIRS  := $(wildcard $(RCSDIR)/*/makefile,v)
    SUBDIRS  := $(notdir $(patsubst %/makefile$(comma)v,%,$(SUBDIRS)))
 
-   SUBDIRS  := $(wildcard $(RCSDIR)/glish/GNUmakefile,v)
-   SUBDIRS  := $(notdir $(patsubst %/GNUmakefile$(comma)v,%,$(SUBDIRS)))
+   SUBDIRS +:= $(wildcard $(RCSDIR)/glish/GNUmakefile,v)
+   SUBDIRS +:= $(notdir $(patsubst %/GNUmakefile$(comma)v,%,$(SUBDIRS)))
 else
    SUBDIRS  := $(wildcard $(CODEDIR)/*/makefile)
    SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
 
-   SUBDIRS  := $(wildcard $(CODEDIR)/glish/GNUmakefile)
-   SUBDIRS  := $(notdir $(patsubst %/GNUmakefile,%,$(SUBDIRS)))
+   SUBDIRS +:= $(wildcard $(CODEDIR)/glish/GNUmakefile)
+   SUBDIRS +:= $(notdir $(patsubst %/GNUmakefile,%,$(SUBDIRS)))
 
    ifneq "$(wildcard $(QT4ROOT)/*)" ""
      QTUIS  := $(wildcard $(CODEDIR)/*/*.ui)
