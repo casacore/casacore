@@ -269,14 +269,14 @@ HDSLIB   := -lhds -lems -lchr -lcnf
 
 # QT - for graphics work
 QTROOT  := /usr/local/qt
-QTDEFS  := 
+QTDEFS  :=
 QTINCD   = $(QTROOT)/include
 QTLIBD   = $(QTROOT)/lib
 QTLIB   := -lqt
 MOC     := $(QTROOT)/bin/moc
 
 QT4ROOT := /usr/local/qt
-QT4DEFS := 
+QT4DEFS :=
 QT4INCD  = $(QT4ROOT)/include $(QT4ROOT)/include/QtCore $(QT4ROOT)/include/QtGui $(QT4ROOT)/include/QtXml
 QT4LIBD  = $(QT4ROOT)/lib
 QT4LIB  := -lQtCore -lQtGui -lQtXml
@@ -286,7 +286,7 @@ RCC4     = $(QT4ROOT)/bin/rcc
 
 # Boost
 BOOSTROOT  := /usr/local/boost
-BOOSTDEFS  := 
+BOOSTDEFS  :=
 BOOSTINCD   = $(BOOSTROOT)/include
 BOOSTLIBD   = $(BOOSTROOT)/lib
 BOOSTLIB   := -lboost_python
@@ -456,11 +456,11 @@ UPDBATCH := 2000
 # $(LDOPTS) are the flags needed for a given OS/compiler.
 #
 # The default values for $(MKSO) and $(LDOPTS) are for GNU/EGCS C++ compilers.
-# Sites which use non-GNU/EGCS compilers must override these switches in the
+# Sites that use non-GNU/EGCS compilers must override these switches in the
 # local makedefs.
 
 LD       := ld
-MKSO	  = $(C++)
+MKSO      = $(C++)
 LDSOPTS  := -shared -fPIC
 
 # Suffixes for static and shared libraries.
@@ -613,7 +613,7 @@ MFINPUTS   = $(TEXROOT)/metafont:$(TEXROOT)/fonts/source//
 MFPOOL     = $(TEXROOT)/web2c
 
 
-# Variables which tell the makefiles what to do and how to do it
+# Variables that tell the makefiles what to do and how to do it
 #-----------------------------------------------------------------------------
 # Internally set command line options.
 INTRA_MAKEFLAGS := --no-print-directory -i
@@ -775,7 +775,7 @@ endif
 # These variables must specify an absolute pathname, or be blank.  If blank,
 # binaries will be left in the programmer source code directories.  Note that
 # this facility uses the "-o" compiler option for object modules so PGMRLIBD
-# must not be set for compilers which do not support it.
+# must not be set for compilers that do not support it.
 #
 # The site makedefs may wish to redefine these variables so that the binaries
 # are put in the same place.  The default is to put debug and optimized
@@ -932,8 +932,8 @@ ifeq "$(PERL5)" ""
 endif
 
 
-# Static variables which can be changed on the command line only.
-#----------------------------------------------------------------
+# Static variables that can be changed on the command line only.
+#---------------------------------------------------------------
 # Source code directory definitions.
 AIPSMSTR := $(AIPSROOT)/master
 AIPSLAVE := $(AIPSROOT)/slave
@@ -982,29 +982,34 @@ else
    CHKDIR   :=
 endif
 
-# Subdirectories which contain a makefile.
+# Subdirectories that contain a makefile.
 ifdef AIPSRCS
    SUBDIRS  := $(wildcard $(RCSDIR)/*/makefile,v)
    SUBDIRS  := $(notdir $(patsubst %/makefile$(comma)v,%,$(SUBDIRS)))
+
+   SUBDIRS  := $(wildcard $(RCSDIR)/glish/GNUmakefile,v)
+   SUBDIRS  := $(notdir $(patsubst %/GNUmakefile$(comma)v,%,$(SUBDIRS)))
 else
    SUBDIRS  := $(wildcard $(CODEDIR)/*/makefile)
    SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
 
-   ifneq "$(wildcard $(QT4ROOT)/*)" ""
-   QTUIS     := $(wildcard $(CODEDIR)/*/*.ui)
-   QTUIS     := $(patsubst %.ui,%.ui.h,$(QTUIS))
-   QTMOCS    := $(wildcard $(CODEDIR)/*/*.qo.h)
-   QTMOCS    := $(patsubst %.qo.h,%.moc.cc,$(QTMOCS))
-   QTQRCS    := $(wildcard $(CODEDIR)/*/*.qrc)
-   QTQRCS    := $(patsubst %.qrc,%.qrc.cc,$(QTQRCS))
-   C++       += -DHAVE_QT4
-   LDSTD     += -Wl,-rpath -Wl,$(QT4LIBD)
-   endif
+   SUBDIRS  := $(wildcard $(CODEDIR)/glish/GNUmakefile)
+   SUBDIRS  := $(notdir $(patsubst %/GNUmakefile,%,$(SUBDIRS)))
 
+   ifneq "$(wildcard $(QT4ROOT)/*)" ""
+     QTUIS  := $(wildcard $(CODEDIR)/*/*.ui)
+     QTUIS  := $(patsubst %.ui,%.ui.h,$(QTUIS))
+     QTMOCS := $(wildcard $(CODEDIR)/*/*.qo.h)
+     QTMOCS := $(patsubst %.qo.h,%.moc.cc,$(QTMOCS))
+     QTQRCS := $(wildcard $(CODEDIR)/*/*.qrc)
+     QTQRCS := $(patsubst %.qrc,%.qrc.cc,$(QTQRCS))
+     C++    += -DHAVE_QT4
+     LDSTD  += -Wl,-rpath -Wl,$(QT4LIBD)
+   endif
 endif
 
 ifeq "$(MAKEMODE)" "programmer"
-   # Programmer directories which have not been checked in.
+   # Programmer directories that have not been checked in.
    PGMRDIR  := $(patsubst %/,%,$(PGMRCODE)/$(CODESUBD))
    PGMRSUBS := $(filter-out $(SUBDIRS), \
                   $(notdir  $(patsubst %/makefile,%, \
@@ -1466,7 +1471,7 @@ help ::
 	-@ echo "    sysdirs: create all system directories."
 	-@ echo "  (SYSDIRS): create a system directory."
 	-@ echo "  cleancode: recursively delete files from the code"
-	-@ echo "             directories which shouldn't be there."
+	-@ echo "             directories that shouldn't be there."
 	-@ echo "   cleansys: recursively purge selected files from the"
 	-@ echo "             system directories, usually in preparation for"
 	-@ echo "             a complete rebuild."
