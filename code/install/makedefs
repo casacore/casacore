@@ -987,14 +987,14 @@ ifdef AIPSRCS
    SUBDIRS  := $(wildcard $(RCSDIR)/*/makefile,v)
    SUBDIRS  := $(notdir $(patsubst %/makefile$(comma)v,%,$(SUBDIRS)))
 
-   SUBDIRS +:= $(wildcard $(RCSDIR)/glish/GNUmakefile,v)
-   SUBDIRS +:= $(notdir $(patsubst %/GNUmakefile$(comma)v,%,$(SUBDIRS)))
+   SUBDIRS  += $(notdir $(patsubst %/GNUmakefile$(comma)v,%, \
+                 $(wildcard $(RCSDIR)/glish/GNUmakefile,v)))
 else
    SUBDIRS  := $(wildcard $(CODEDIR)/*/makefile)
    SUBDIRS  := $(notdir $(patsubst %/makefile,%,$(SUBDIRS)))
 
-   SUBDIRS +:= $(wildcard $(CODEDIR)/glish/GNUmakefile)
-   SUBDIRS +:= $(notdir $(patsubst %/GNUmakefile,%,$(SUBDIRS)))
+   SUBDIRS  += $(notdir $(patsubst %/GNUmakefile,%, \
+                 $(wildcard $(CODEDIR)/glish/GNUmakefile)))
 
    ifneq "$(wildcard $(QT4ROOT)/*)" ""
      QTUIS  := $(wildcard $(CODEDIR)/*/*.ui)
@@ -1012,8 +1012,8 @@ ifeq "$(MAKEMODE)" "programmer"
    # Programmer directories that have not been checked in.
    PGMRDIR  := $(patsubst %/,%,$(PGMRCODE)/$(CODESUBD))
    PGMRSUBS := $(filter-out $(SUBDIRS), \
-                  $(notdir  $(patsubst %/makefile,%, \
-                     $(wildcard  $(PGMRDIR)/*/makefile))))
+                  $(notdir $(patsubst %/makefile,%, \
+                     $(wildcard $(PGMRDIR)/*/makefile))))
 endif
 
 CODESUBS := $(addprefix $(CODEDIR)/,$(SUBDIRS))
