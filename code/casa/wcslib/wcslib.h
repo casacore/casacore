@@ -58,7 +58,7 @@
 #include "wcsutil.h"
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif /* WCSLIB_WCSLIB */

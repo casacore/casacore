@@ -325,10 +325,10 @@ Complex erfc(const Complex &in);
 
 // Define real & complex conjugation for non-complex types
 namespace std { 
-  inline float conj(float x) { return x; };
-  inline double conj(double x) { return x; };
-  inline float real(float x) { return x; };
-  inline double real(double x) { return x; };
+  inline float conj(float x) { return x; }
+  inline double conj(double x) { return x; }
+  inline float real(float x) { return x; }
+  inline double real(double x) { return x; }
 }
 
 #ifndef AIPS_NO_TEMPLATE_SRC
