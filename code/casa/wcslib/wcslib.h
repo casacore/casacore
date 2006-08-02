@@ -1,7 +1,7 @@
 /*============================================================================
 *
 *   WCSLIB 4.3 - an implementation of the FITS WCS standard.
-*   Copyright (C) 1995-2005, Mark Calabretta
+*   Copyright (C) 1995-2006, Mark Calabretta
 *
 *   WCSLIB is free software; you can redistribute it and/or modify it under
 *   the terms of the GNU General Public License as published by the Free
@@ -56,9 +56,5 @@
 #include "wcstrig.h"
 #include "wcsunits.h"
 #include "wcsutil.h"
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* WCSLIB_WCSLIB */
