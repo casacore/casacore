@@ -134,30 +134,30 @@ class LSQaips : public LSQFit {
   template <class U>
   Bool solveLoop(uInt &nRank,
 		 U *sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(nRank, sol, doSVD); };
+    return LSQFit::solveLoop(nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(uInt &nRank,
 		 std::complex<U> *sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(nRank, sol, doSVD); };
+    return LSQFit::solveLoop(nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(uInt &nRank,
 		 U &sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(nRank, sol, doSVD); };
+    return LSQFit::solveLoop(nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(uInt &nRank,
 		 Vector<U> &sol, Bool doSVD=False);
   template <class U>
   Bool solveLoop(Double &fit, uInt &nRank,
 		 U *sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
+    return LSQFit::solveLoop(fit, nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(Double &fit, uInt &nRank,
 		 std::complex<U> *sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
+    return LSQFit::solveLoop(fit, nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(Double &fit, uInt &nRank,
 		 U &sol, Bool doSVD=False) {
-    return LSQFit::solveLoop(fit, nRank, sol, doSVD); };
+    return LSQFit::solveLoop(fit, nRank, sol, doSVD); }
   template <class U>
   Bool solveLoop(Double &fit, uInt &nRank,
 		 Vector<U> &sol, Bool doSVD=False);
