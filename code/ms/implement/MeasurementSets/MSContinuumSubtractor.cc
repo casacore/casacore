@@ -41,6 +41,7 @@
 //#include <casa/Arrays/MaskedArray.h>
 //#include <casa/Arrays/MaskArrMath.h>
 #include <casa/Containers/Record.h>
+#include <casa/Exceptions/Error.h>
 #include <casa/Logging/LogIO.h>
 #include <tables/Tables/TableParse.h>
 //#include <casa/iomanip.h>
@@ -156,12 +157,19 @@ void MSContinuumSubtractor::subtract()
           corrType()(msc.dataDescription().polarizationId()(ddIDs(0)));
     // default to all channels
     Vector<Bool> chanMask(nChan,True);
-    if (itsChannels.nelements()>0 && allLT(itsChannels,nChan)) {
-      chanMask=False;
-      for (uInt j=0; j<itsChannels.nelements(); j++) {
-        chanMask(itsChannels(j))=True;
+
+    // Handle non-trivial channel selection:
+    if (itsChannels.nelements()>0) {
+      if (allLT(itsChannels,nChan)) {
+	chanMask=False;
+	for (uInt j=0; j<itsChannels.nelements(); j++) {
+	  chanMask(itsChannels(j))=True;
+	}
+      }   
+      else {
+	throw(AipsError("Bad channel selection."));
       }
-    }    
+    }
     // select parallel hand polarizations
     Vector<String> polSel(corrTypes.nelements()); 
     Int nPol = 0;
