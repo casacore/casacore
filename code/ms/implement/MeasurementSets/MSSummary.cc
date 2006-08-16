@@ -239,6 +239,10 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
       ROMSFieldColumns field(pMS->field());
       Vector<String> fieldnames(field.name().getColumn());
 
+      // Spw Ids
+      ROMSDataDescColumns dd(pMS->dataDescription());
+      Vector<Int> specwindids(dd.spectralWindowId().getColumn());
+
       // Field widths for printing:
       Int widthLead  =  2;
       Int widthScan  =  4;
@@ -269,7 +273,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os << endl << "   ObservationID = " << obsid+1;
 	os << "         ArrayID = " << arrid+1 << endl;
 	os << "  Date        Timerange                ";
-	os << "Scan  FldId FieldName      DataDescIds" << endl;
+	os << "Scan  FldId FieldName      SpwIds" << endl;
 
 	// Setup iteration over timestamps within this iteration:
 	Block<String> jcols(2);
@@ -283,6 +287,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	Vector<Int> lastddids; 
 	Vector<Int> fldids(1,0);
 	Vector<Int> ddids(1,0);
+	Vector<Int> spwids;
 	Int nfld(1);
 	Int nddi(1);
 	Double btime(0.0), etime(0.0);
@@ -324,13 +329,6 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      fldids(nfld-1)=fldcol(i);
 	    }
 	    
-
-	    //	    Bool newddi(True);
-	    //	    for (Int j=0; j < nddi; j++) {
-	    //	      if (ddicol(i)==ddids(j)) {
-	    //		newddi=False;
-	    //	      }
-	    //	    }
 	    if ( !anyEQ(ddids,ddicol(i)) ) {
 	      nddi++;
 	      ddids.resize(nddi,True);
@@ -359,6 +357,11 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      // this MJD
 	      day=floor(MVTime(btime/C::day).day());
 
+	      // Spws
+	      spwids.resize(nddi);
+	      for (Int iddi=0; iddi<nddi;++iddi) 
+		spwids(iddi)=specwindids(lastddids(iddi))+1;
+	    
 	      // Print out last scan's times, fields, ddis
 	      os.output().setf(ios::right, ios::adjustfield);
 	      os.output().width(widthLead); os << "  ";
@@ -380,7 +383,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	      os.output().setf(ios::left, ios::adjustfield);
 	      os.output().width(widthField); os << fieldnames(lastfldids(0));
 	      os.output().width(widthLead); os << "  ";
-	      os << lastddids+1;
+	      os << spwids;
 	      os << endl;
 
 	      // new btime:
@@ -412,6 +415,11 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	// this MJD
 	day=floor(MVTime(btime/C::day).day());
 
+	// Spws
+	spwids.resize(nddi);
+	for (Int iddi=0; iddi<nddi;++iddi) 
+	  spwids(iddi)=specwindids(lastddids(iddi))+1;
+	    
 	// Print out final scan's times, fields, ddis
 	os.output().setf(ios::right, ios::adjustfield);
 	os.output().width(widthLead); os << "  ";
@@ -433,7 +441,7 @@ void MSSummary::listMain (LogIO& os, Bool verbose) const
 	os.output().setf(ios::left, ios::adjustfield);
 	os.output().width(widthField); os << fieldnames(lastfldids(0));
 	os.output().width(widthLead);  os << "  ";
-	os << lastddids+1;
+	os << spwids;
 	os << endl;
 	
 	// post to logger
@@ -977,13 +985,13 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
   Int nPol=GenSort<Int>::sort (polIds, order, option);
 
   if (ddId.nelements()>0) {
-    os << "Data descriptions: "<< ddId.nelements();
-    os << " ("<<nSpw<<" spectral windows and " << nPol;
-    os << " polarization setups)"<<endl;
+    os << "Spectral Windows: ";
+    os << " ("<<nSpw<<" unique spectral windows and ";
+    os << nPol << " unique polarization setups)"<<endl;
 
     // Define the column widths
     Int widthLead	=  2;
-    Int widthDDId       =  4;
+    Int widthSpwId       =  7;
     Int widthFrame      =  6;
     Int widthFreq	= 12;
     Int widthFrqNum	= 12;
@@ -994,7 +1002,7 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
     // Write the column headers
     os.output().setf(ios::left, ios::adjustfield);
     os.output().width(widthLead);	os << "  ";
-    os.output().width(widthDDId);	os << "ID  ";
+    os.output().width(widthSpwId);	os << "SpwID  ";
     os.output().setf(ios::right, ios::adjustfield);
     os.output().width(widthNumChan);	os << "#Chans" << " ";
     os.output().setf(ios::left, ios::adjustfield);
@@ -1015,8 +1023,8 @@ void MSSummary::listSpectralAndPolInfo (LogIO& os, Bool verbose) const
       Int pol = msDDC.polarizationId()(dd);
       os.output().setf(ios::left, ios::adjustfield);
       os.output().width(widthLead);		os << "  ";
-      // 1th column: Data description Id
-      os.output().width(widthDDId); os << (dd+1);
+      // 1th column: Spectral Window Id
+      os.output().width(widthSpwId); os << (spw+1);
       // 3rd column: number of channels in the spectral window
       os.output().setf(ios::right, ios::adjustfield);
       os.output().width(widthNumChan);		os << msSWC.numChan()(spw) << " ";
