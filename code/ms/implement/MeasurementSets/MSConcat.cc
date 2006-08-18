@@ -64,13 +64,13 @@ namespace casa {
 MSConcat::MSConcat(MeasurementSet& ms):
   MSColumns(ms),
   itsMS(ms),
-  itsFixedShape(isFixedShape(ms.tableDesc()))
+  itsFixedShape(isFixedShape(ms.tableDesc())), newSourceIndex_p(-1)
 {
 
 
   itsDirTol=Quantum<Double>(1.0, "mas");
   itsFreqTol=Quantum<Double>(1.0, "Hz");
-  
+  doSource_p=False;
   // if (ms.tableInfo().subType() != "UVFITS") {
   // throw(AipsError("MSConcat::MSConcat(..) - Measurement set was not created"
   //		    " from a UVFITS file."));
@@ -199,6 +199,9 @@ void MSConcat::concatenate(const MeasurementSet& otherMS)
 	<< " rows and matched " << matchedRows 
 	<< " from the antenna subtable" << endl;
   }
+  //See if there is a source table a concatenate and reindex that before
+  //the field. 
+  copySource(otherMS);
   oldRows = itsMS.field().nrow();
   const Block<uInt> newFldIndices = copyField(otherMS.field());
   {
@@ -609,6 +612,11 @@ Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
   MDirection refDir, delayDir, phaseDir;
   MSField& fld = itsMS.field();
   const ROTableRow otherFldRow(otherFld);
+  RecordFieldId sourceIdId(MSSource::columnName(MSSource::SOURCE_ID));
+  Vector<Int> origSourceIndex;
+  if(doSource_p){
+    origSourceIndex=otherFieldCols.sourceId().getColumn();
+  }
   TableRow fldRow(fld);
   for (uInt f = 0; f < nFlds; f++) {
     delayDir = otherFieldCols.delayDirMeas(f);
@@ -637,10 +645,70 @@ Block<uInt>  MSConcat::copyField(const MSField& otherFld) {
  	vdir(0) = phaseDir;
  	fieldCols.phaseDirMeasCol().put(fldMap[f], vdir);
       }
+      //source table has been concatenated; use new index reference
+      if(doSource_p){
+	Int oldIndex=fieldCols.sourceId()(fldMap[f]);
+	if(newSourceIndex_p.isDefined(oldIndex)){
+	  fieldCols.sourceId().put(fldMap[f], newSourceIndex_p(oldIndex));
+	}
+      }
+
+ 
     }
   }
   return fldMap;
 }
+
+
+Bool MSConcat::copySource(const MeasurementSet& otherms){
+  doSource_p=False;
+  if(Table::isReadable(itsMS.sourceTableName())){
+    MSSource& newSource=itsMS.source();
+    MSSourceColumns& sourceCol=source();
+ 
+    Int maxSrcId=max(sourceCol.sourceId().getColumn());
+    if(newSource.nrow() > 0){
+      if(!Table::isReadable(otherms.sourceTableName())){
+	return False;
+      }
+      const MSSource& otherSource=otherms.source();
+      if(otherSource.nrow()==0){
+	return False;
+      }
+      TableRecord sourceRecord;
+      newSourceIndex_p.clear();
+      Int numrows=otherSource.nrow();
+      Int destRow=newSource.nrow();
+      ROMSSourceColumns otherSourceCol(otherms.source());
+      Vector<Int> otherId=otherSourceCol.sourceId().getColumn();
+      newSource.addRow(numrows);
+      const ROTableRow otherSourceRow(otherSource);
+      TableRow sourceRow(newSource);
+      RecordFieldId sourceIdId(MSSource::columnName(MSSource::SOURCE_ID));
+      for (Int k =0 ; k < numrows ; ++k){
+	sourceRecord = otherSourceRow.get(k);
+	newSourceIndex_p.define(otherId(k), maxSrcId+1+otherId(k)); 
+	//define a new source id
+
+	sourceRecord.define(sourceIdId, maxSrcId+1+otherId(k));
+	sourceRow.putMatchingFields(destRow, sourceRecord);
+
+	++destRow;
+      }
+
+      doSource_p=True;
+     }
+
+      
+
+
+  }
+
+  return doSource_p;
+
+
+}
+
 
 Block<uInt> MSConcat::copySpwAndPol(const MSSpectralWindow& otherSpw,
 				    const MSPolarization& otherPol,

@@ -114,6 +114,8 @@ private:
   Block<uInt> copySpwAndPol(const MSSpectralWindow& otherSpw,
 			    const MSPolarization& otherPol,
 			    const MSDataDescription& otherDD);
+  Bool copySource(const MeasurementSet& otherms);
+
   void updateModelDataKeywords();
 
   MeasurementSet itsMS;
@@ -121,6 +123,8 @@ private:
   Quantum<Double> itsFreqTol;
   Quantum<Double> itsDirTol;
   Vector<Bool> itsChanReversed;
+  SimpleOrderedMap <Int, Int> newSourceIndex_p;
+  Bool doSource_p;
 };
 
 } //# NAMESPACE CASA - END
