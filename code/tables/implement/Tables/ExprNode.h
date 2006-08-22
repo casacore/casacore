@@ -47,6 +47,338 @@ class TableRecord;
 class TableExprNodeSet;
 template<class T> class Block;
 template<class T> class Array;
+class TableExprNode;
+
+
+// Define all global functions operating on a TableExprNode.
+// <group name=GlobalTableExprNode>
+
+  //# Define the operations we allow.
+  //# Note that the arguments are defined as const. This is necessary
+  //# because the compiler generates temporaries when converting a constant
+  //# to a TableExprNode using the constructors. Temporaries has to be const.
+  //# However, we have to delete created nodes, so lnode_p and rnode_p
+  //# cannot be const. The const arguments are casted to a non-const in
+  //# the function fill which calls the non-const function simplify.
+
+  // Arithmetic operators for numeric TableExprNode's.
+  // <group>
+    // + is also defined for strings (means concatenation).
+    TableExprNode operator+ (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator- (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator* (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator/ (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator% (const TableExprNode& left,
+			     const TableExprNode& right);
+    TableExprNode operator^ (const TableExprNode& left,
+			     const TableExprNode& right);
+  // </group>
+
+  // Comparison operators.
+  // <group>
+    TableExprNode operator== (const TableExprNode& left,
+			      const TableExprNode& right);
+    TableExprNode operator!= (const TableExprNode& left,
+			      const TableExprNode& right);
+    // Not defined for Bool.
+    // <group>
+    TableExprNode operator>= (const TableExprNode& left,
+			      const TableExprNode& right);
+    TableExprNode operator>  (const TableExprNode& left,
+			      const TableExprNode& right);
+    TableExprNode operator<= (const TableExprNode& left, 
+			      const TableExprNode& right);
+    TableExprNode operator<  (const TableExprNode& left,
+			      const TableExprNode& right);
+    // </group>
+  // </group>
+
+  // Logical operators to combine boolean TableExprNode's.
+  // <group>
+    TableExprNode operator&& (const TableExprNode& left,
+			      const TableExprNode& right);
+    TableExprNode operator|| (const TableExprNode& left,
+			      const TableExprNode& right);
+  // </group>
+
+  // Functions to return whether a value is "relatively" near another.
+  // Returns <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>. 
+  // If tol <= 0, returns val1 == val2. If either val is 0.0, takes
+  // care of area around the minimum number that can be represented.
+  // <br>The nearAbs functions return whether a value is "absolutely" near
+  // another. Returns <src> tol > abs(val2 - val1)</src>.
+  // Default tolerance is 1.0e-13.
+  // They operate on scalars and arrays.
+  // <group>
+    TableExprNode near    (const TableExprNode& left,
+			   const TableExprNode& right);
+    TableExprNode near    (const TableExprNode& left,
+			   const TableExprNode& right,
+			   const TableExprNode& tolerance);
+    TableExprNode nearAbs (const TableExprNode& left,
+			   const TableExprNode& right);
+    TableExprNode nearAbs (const TableExprNode& left,
+			   const TableExprNode& right,
+			   const TableExprNode& tolerance);
+  // </group>
+
+  // Cone search; test if the position of a source is inside a cone.
+  // <br>Argument <src>sourcePos</src> must be a double array
+  // containing two values (ra and dec of source) in radians.
+  // <br>Argument <src>cones</src> must be a double array
+  // specifying the position of the cone centers and radii in radians.
+  // So the array must contain three values (ra,dec,radius)
+  // or a multiple of it.
+  // <group>
+    // The result is a bool array telling for each cone if it contains the
+    // source. If there is only one cone, the result is a scalar.
+    TableExprNode cones (const TableExprNode& sourcePos,
+			 const TableExprNode& cones);
+    // The result is always a Bool scalar telling if any cone contains
+    // the source.
+    TableExprNode anyCone (const TableExprNode& sourcePos,
+			   const TableExprNode& cones);
+    // The sourcePos can contain multiple sources.
+    // The result is a double array giving the index of the first
+    // cone containing the corresponding source.
+    // If there is one source, the result is a double scalar.
+    TableExprNode findCone (const TableExprNode& sourcePos,
+			    const TableExprNode& cones);
+  // </group>
+
+  // Cone search as above.
+  // However, the cone positions and radii are specified separately
+  // and (virtually) a larger array containing every combination of
+  // position/radius is formed.
+  // <group>
+    TableExprNode cones (const TableExprNode& sourcePos,
+			 const TableExprNode& conePos,
+			 const TableExprNode& radii);
+    TableExprNode anyCone (const TableExprNode& sourcePos,
+			   const TableExprNode& conePos,
+			   const TableExprNode& radii);
+    TableExprNode findCone (const TableExprNode& sourcePos,
+			    const TableExprNode& conePos,
+			    const TableExprNode& radii);
+  // </group>
+
+  // Transcendental functions that can be applied to essentially all numeric
+  // nodes containing scalars or arrays.
+  // <group>
+    TableExprNode sin    (const TableExprNode& node);
+    TableExprNode sinh   (const TableExprNode& node);
+    TableExprNode cos    (const TableExprNode& node);
+    TableExprNode cosh   (const TableExprNode& node);
+    TableExprNode exp    (const TableExprNode& node);
+    TableExprNode log    (const TableExprNode& node);
+    TableExprNode log10  (const TableExprNode& node);
+    TableExprNode pow    (const TableExprNode& x,
+			  const TableExprNode& y);
+    TableExprNode square (const TableExprNode& node);
+    TableExprNode sqrt   (const TableExprNode& node);
+    TableExprNode norm   (const TableExprNode& node);
+  // </group>
+
+  // Transcendental functions applied to to nodes containing scalars or
+  // arrays with double values.
+  // They are invalid for Complex nodes.
+  // <group>
+    TableExprNode asin  (const TableExprNode& node);
+    TableExprNode acos  (const TableExprNode& node);
+    TableExprNode atan  (const TableExprNode& node);
+    TableExprNode atan2 (const TableExprNode& y,
+			 const TableExprNode& x);
+    TableExprNode tan   (const TableExprNode& node);
+    TableExprNode tanh  (const TableExprNode& node);
+    TableExprNode sign  (const TableExprNode& node);
+    TableExprNode round (const TableExprNode& node);
+    TableExprNode ceil  (const TableExprNode& node);
+    TableExprNode abs   (const TableExprNode& node);
+    TableExprNode floor (const TableExprNode& node);
+    TableExprNode fmod  (const TableExprNode& x,
+			 const TableExprNode& y);
+  // </group>
+
+  // String functions on scalars or arrays.
+  // <group>
+    TableExprNode strlength (const TableExprNode& node);
+    TableExprNode upcase    (const TableExprNode& node);
+    TableExprNode downcase  (const TableExprNode& node);
+    TableExprNode trim      (const TableExprNode& node);
+  // </group>
+
+  // Functions for regular expression matching and 
+  // pattern matching. Defined for scalars and arrays.
+  // <br><src>pattern</src> is for a file name like pattern.
+  // <br><src>sqlpattern</src> is for an SQL like pattern.
+  // <group>
+    TableExprNode regex      (const TableExprNode& node);
+    TableExprNode pattern    (const TableExprNode& node);
+    TableExprNode sqlpattern (const TableExprNode& node);
+  // </group>
+
+  // Functions for date-values. Defined for scalars and arrays.
+  // <group>
+    TableExprNode datetime  (const TableExprNode& node);
+    TableExprNode mjdtodate (const TableExprNode& node);
+    TableExprNode mjd       (const TableExprNode& node);
+    TableExprNode date      (const TableExprNode& node);
+    TableExprNode year      (const TableExprNode& node);
+    TableExprNode month     (const TableExprNode& node);
+    TableExprNode day       (const TableExprNode& node);
+    TableExprNode cmonth    (const TableExprNode& node);
+    TableExprNode weekday   (const TableExprNode& node);
+    TableExprNode cdow      (const TableExprNode& node);
+    TableExprNode week	    (const TableExprNode& node);
+    TableExprNode time      (const TableExprNode& node);
+  // </group>
+
+  // Function to test if a scalar or array is NaN (not-a-number).
+  // It results in a Bool scalar or array.
+    TableExprNode isNaN (const TableExprNode& node);
+
+  // Minimum or maximum of 2 nodes.
+  // Makes sense for numeric and String values. For Complex values
+  // the norm is compared.
+  // One or both arguments can be scalar or array.
+  // <group>
+    TableExprNode min (const TableExprNode& a, const TableExprNode& b);
+    TableExprNode max (const TableExprNode& a, const TableExprNode& b);
+  // </group>
+
+  // The complex conjugate of a complex node.
+  // Defined for scalars and arrays.
+    TableExprNode conj (const TableExprNode& node);
+
+  // The real part of a complex node.
+  // Defined for scalars and arrays.
+    TableExprNode real (const TableExprNode& node);
+
+  // The imaginary part of a complex node.
+  // Defined for scalars and arrays.
+    TableExprNode imag (const TableExprNode& node);
+
+  // The amplitude (i.e. sqrt(re*re + im*im)) of a complex node.
+  // This is a synonym for function abs.
+  // Defined for scalars and arrays.
+    TableExprNode amplitude (const TableExprNode& node);
+
+  // The phase (i.e. atan2(im, re)) of a complex node.
+  // This is a synonym for function arg.
+  // Defined for scalars and arrays.
+    TableExprNode phase (const TableExprNode& node);
+
+  // The arg (i.e. atan2(im, re)) of a complex node.
+  // Defined for scalars and arrays.
+    TableExprNode arg (const TableExprNode& node);
+
+  // Form a complex number from two Doubles.
+  // One or both arguments can be scalar or array.
+    TableExprNode formComplex (const TableExprNode& real,
+			       const TableExprNode& imag);
+
+  // Functions operating on a Double or Complex scalar or array resulting in
+  // a scalar with the same data type.
+  // <group>
+    TableExprNode sum (const TableExprNode& array);
+    TableExprNode product (const TableExprNode& array);
+    TableExprNode sumSquare (const TableExprNode& array);
+  // </group>
+
+  // Functions operating on a Double scalar or array resulting in
+  // a Double scalar.
+  // <group>
+    TableExprNode min (const TableExprNode& array);
+    TableExprNode max (const TableExprNode& array);
+    TableExprNode mean (const TableExprNode& array);
+    TableExprNode variance (const TableExprNode& array);
+    TableExprNode stddev (const TableExprNode& array);
+    TableExprNode avdev (const TableExprNode& array);
+    TableExprNode median (const TableExprNode& array);
+    TableExprNode fractile (const TableExprNode& array,
+			    const TableExprNode& fraction);
+  // </group>
+
+  // <group>
+    TableExprNode any (const TableExprNode& array);
+    TableExprNode all (const TableExprNode& array);
+    TableExprNode ntrue (const TableExprNode& array);
+    TableExprNode nfalse (const TableExprNode& array);
+  // </group>
+
+  // The partial version of the functions above.
+  // They are applied to the array subsets defined by the axes in the set
+  // using the partialXXX functions in ArrayMath.
+  // The axes must be 0-relative.
+  // <group>
+    TableExprNode sums (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
+    TableExprNode products (const TableExprNode& array,
+			    const TableExprNodeSet& collapseAxes);
+    TableExprNode sumSquares (const TableExprNode& array,
+			      const TableExprNodeSet& collapseAxes);
+    TableExprNode mins (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
+    TableExprNode maxs (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
+    TableExprNode means (const TableExprNode& array,
+			 const TableExprNodeSet& collapseAxes);
+    TableExprNode variances (const TableExprNode& array,
+			     const TableExprNodeSet& collapseAxes);
+    TableExprNode stddevs (const TableExprNode& array,
+			   const TableExprNodeSet& collapseAxes);
+    TableExprNode avdevs (const TableExprNode& array,
+			  const TableExprNodeSet& collapseAxes);
+    TableExprNode medians (const TableExprNode& array,
+			   const TableExprNodeSet& collapseAxes);
+    TableExprNode fractiles (const TableExprNode& array,
+			     const TableExprNode& fraction,
+			     const TableExprNodeSet& collapseAxes);
+    TableExprNode anys (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
+    TableExprNode alls (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
+    TableExprNode ntrues (const TableExprNode& array,
+			  const TableExprNodeSet& collapseAxes);
+    TableExprNode nfalses (const TableExprNode& array,
+			   const TableExprNodeSet& collapseAxes);
+  // </group>
+
+  // Create an array of the given shape and fill it with the values.
+  // The <src>values</src> array is rewound as needed.
+    TableExprNode array (const TableExprNode& values,
+			 const TableExprNodeSet& shape);
+
+  // Function operating on a field resulting in a bool scalar.
+  // It can be used to test if a column has an array in the current row.
+  // It can also be used to test if a record contains a field.
+    TableExprNode isdefined (const TableExprNode& array);
+
+  // Functions operating on any scalar or array resulting in a Double scalar.
+  // A scalar has 1 element and dimensionality 1.
+  // <group>
+    TableExprNode nelements (const TableExprNode& array);
+    TableExprNode ndim (const TableExprNode& array);
+  // </group>
+
+  // Function operating on any scalar or array resulting in a Double array
+  // containing the shape. A scalar has shape [1].
+    TableExprNode shape (const TableExprNode& array);
+
+  // Function resembling the ternary <src>?:</src> construct in C++.
+  // The argument "condition" has to be a Bool value.
+  // If an element in "condition" is True, the corresponding element from
+  // "arg1" is taken, otherwise it is taken from "arg2".
+  // The arguments can be scalars or array or any combination.
+    TableExprNode iif (const TableExprNode& condition,
+		       const TableExprNode& arg1,
+		       const TableExprNode& arg2);
+// </group>
+
 
 
 // <summary>
@@ -157,9 +489,8 @@ class TableExprNode
     //# cannot be const. The const arguments are casted to a non-const in
     //# the function fill which calls the non-const function simplify.
 
-    // Arithmetic operators for numeric TableExprNode's.
+    // Define all global functions as friends.
     // <group>
-    // + is also defined for strings (means concatenation).
     friend TableExprNode operator+ (const TableExprNode& left,
 				    const TableExprNode& right);
     friend TableExprNode operator- (const TableExprNode& left,
@@ -172,16 +503,10 @@ class TableExprNode
 				    const TableExprNode& right);
     friend TableExprNode operator^ (const TableExprNode& left,
 				    const TableExprNode& right);
-    // </group>
-
-    // Comparison operators.
-    // <group>
     friend TableExprNode operator== (const TableExprNode& left,
 				     const TableExprNode& right);
     friend TableExprNode operator!= (const TableExprNode& left,
 				     const TableExprNode& right);
-    // Not defined for Bool.
-    // <group>
     friend TableExprNode operator>= (const TableExprNode& left,
 				     const TableExprNode& right);
     friend TableExprNode operator>  (const TableExprNode& left,
@@ -190,26 +515,10 @@ class TableExprNode
 				     const TableExprNode& right);
     friend TableExprNode operator<  (const TableExprNode& left,
 				     const TableExprNode& right);
-    // </group>
-    // </group>
-
-    // Logical operators to combine boolean TableExprNode's.
-    // <group>
     friend TableExprNode operator&& (const TableExprNode& left,
 				     const TableExprNode& right);
     friend TableExprNode operator|| (const TableExprNode& left,
 				     const TableExprNode& right);
-    // </group>
-
-    // Functions to return whether a value is "relatively" near another.
-    // Returns <src> tol > abs(val2 - val1)/max(abs(val1),(val2))</src>. 
-    // If tol <= 0, returns val1 == val2. If either val is 0.0, takes
-    // care of area around the minimum number that can be represented.
-    // <br>The nearAbs functions return whether a value is "absolutely" near
-    // another. Returns <src> tol > abs(val2 - val1)</src>.
-    // Default tolerance is 1.0e-13.
-    // They operate on scalars and arrays.
-    // <group>
     friend TableExprNode near    (const TableExprNode& left,
 				  const TableExprNode& right);
     friend TableExprNode near    (const TableExprNode& left,
@@ -220,37 +529,12 @@ class TableExprNode
     friend TableExprNode nearAbs (const TableExprNode& left,
 				  const TableExprNode& right,
 				  const TableExprNode& tolerance);
-    // </group>
-
-    // Cone search; test if the position of a source is inside a cone.
-    // <br>Argument <src>sourcePos</src> must be a double array
-    // containing two values (ra and dec of source) in radians.
-    // <br>Argument <src>cones</src> must be a double array
-    // specifying the position of the cone centers and radii in radians.
-    // So the array must contain three values (ra,dec,radius)
-    // or a multiple of it.
-    // <group>
-    // The result is a bool array telling for each cone if it contains the
-    // source. If there is only one cone, the result is a scalar.
     friend TableExprNode cones (const TableExprNode& sourcePos,
 				const TableExprNode& cones);
-    // The result is always a Bool scalar telling if any cone contains
-    // the source.
     friend TableExprNode anyCone (const TableExprNode& sourcePos,
 				  const TableExprNode& cones);
-    // The sourcePos can contain multiple sources.
-    // The result is a double array giving the index of the first
-    // cone containing the corresponding source.
-    // If there is one source, the result is a double scalar.
     friend TableExprNode findCone (const TableExprNode& sourcePos,
 				   const TableExprNode& cones);
-    // </group>
-
-    // Cone search as above.
-    // However, the cone positions and radii are specified separately
-    // and (virtually) a larger array containing every combination of
-    // position/radius is formed.
-    // <group>
     friend TableExprNode cones (const TableExprNode& sourcePos,
 				const TableExprNode& conePos,
 				const TableExprNode& radii);
@@ -260,11 +544,6 @@ class TableExprNode
     friend TableExprNode findCone (const TableExprNode& sourcePos,
 				   const TableExprNode& conePos,
 				   const TableExprNode& radii);
-    // </group>
-
-    // Transcendental functions that can be applied to essentially all numeric
-    // nodes containing scalars or arrays.
-    // <group>
     friend TableExprNode sin    (const TableExprNode& node);
     friend TableExprNode sinh   (const TableExprNode& node);
     friend TableExprNode cos    (const TableExprNode& node);
@@ -277,12 +556,6 @@ class TableExprNode
     friend TableExprNode square (const TableExprNode& node);
     friend TableExprNode sqrt   (const TableExprNode& node);
     friend TableExprNode norm   (const TableExprNode& node);
-    // </group>
-
-    // Transcendental functions applied to to nodes containing scalars or
-    // arrays with double values.
-    // They are invalid for Complex nodes.
-    // <group>
     friend TableExprNode asin  (const TableExprNode& node);
     friend TableExprNode acos  (const TableExprNode& node);
     friend TableExprNode atan  (const TableExprNode& node);
@@ -297,28 +570,13 @@ class TableExprNode
     friend TableExprNode floor (const TableExprNode& node);
     friend TableExprNode fmod  (const TableExprNode& x,
 				const TableExprNode& y);
-    // </group>
-
-    // String functions on scalars or arrays.
-    // <group>
     friend TableExprNode strlength (const TableExprNode& node);
     friend TableExprNode upcase    (const TableExprNode& node);
     friend TableExprNode downcase  (const TableExprNode& node);
     friend TableExprNode trim      (const TableExprNode& node);
-    // </group>
-
-    // Functions for regular expression matching and 
-    // pattern matching. Defined for scalars and arrays.
-    // <br><src>pattern</src> is for a file name like pattern.
-    // <br><src>sqlpattern</src> is for an SQL like pattern.
-    // <group>
     friend TableExprNode regex      (const TableExprNode& node);
     friend TableExprNode pattern    (const TableExprNode& node);
     friend TableExprNode sqlpattern (const TableExprNode& node);
-    // </group>
-
-    // Functions for date-values. Defined for scalars and arrays.
-    // <group>
     friend TableExprNode datetime  (const TableExprNode& node);
     friend TableExprNode mjdtodate (const TableExprNode& node);
     friend TableExprNode mjd       (const TableExprNode& node);
@@ -331,63 +589,20 @@ class TableExprNode
     friend TableExprNode cdow      (const TableExprNode& node);
     friend TableExprNode week	   (const TableExprNode& node);
     friend TableExprNode time      (const TableExprNode& node);
-    // </group>
-
-    // Function to test if a scalar or array is NaN (not-a-number).
-    // It results in a Bool scalar or array.
     friend TableExprNode isNaN (const TableExprNode& node);
-
-    // Minimum or maximum of 2 nodes.
-    // Makes sense for numeric and String values. For Complex values
-    // the norm is compared.
-    // One or both arguments can be scalar or array.
-    // <group>
     friend TableExprNode min (const TableExprNode& a, const TableExprNode& b);
     friend TableExprNode max (const TableExprNode& a, const TableExprNode& b);
-    // </group>
-
-    // The complex conjugate of a complex node.
-    // Defined for scalars and arrays.
     friend TableExprNode conj (const TableExprNode& node);
-
-    // The real part of a complex node.
-    // Defined for scalars and arrays.
     friend TableExprNode real (const TableExprNode& node);
-
-    // The imaginary part of a complex node.
-    // Defined for scalars and arrays.
     friend TableExprNode imag (const TableExprNode& node);
-
-    // The amplitude (i.e. sqrt(re*re + im*im)) of a complex node.
-    // This is a synonym for function abs.
-    // Defined for scalars and arrays.
     friend TableExprNode amplitude (const TableExprNode& node);
-
-    // The phase (i.e. atan2(im, re)) of a complex node.
-    // This is a synonym for function arg.
-    // Defined for scalars and arrays.
     friend TableExprNode phase (const TableExprNode& node);
-
-    // The arg (i.e. atan2(im, re)) of a complex node.
-    // Defined for scalars and arrays.
     friend TableExprNode arg (const TableExprNode& node);
-
-    // Form a complex number from two Doubles.
-    // One or both arguments can be scalar or array.
     friend TableExprNode formComplex (const TableExprNode& real,
 				      const TableExprNode& imag);
-
-    // Functions operating on a Double or Complex scalar or array resulting in
-    // a scalar with the same data type.
-    // <group>
     friend TableExprNode sum (const TableExprNode& array);
     friend TableExprNode product (const TableExprNode& array);
     friend TableExprNode sumSquare (const TableExprNode& array);
-    // </group>
-
-    // Functions operating on a Double scalar or array resulting in
-    // a Double scalar.
-    // <group>
     friend TableExprNode min (const TableExprNode& array);
     friend TableExprNode max (const TableExprNode& array);
     friend TableExprNode mean (const TableExprNode& array);
@@ -397,20 +612,10 @@ class TableExprNode
     friend TableExprNode median (const TableExprNode& array);
     friend TableExprNode fractile (const TableExprNode& array,
 				   const TableExprNode& fraction);
-    // </group>
-
-    // <group>
     friend TableExprNode any (const TableExprNode& array);
     friend TableExprNode all (const TableExprNode& array);
     friend TableExprNode ntrue (const TableExprNode& array);
     friend TableExprNode nfalse (const TableExprNode& array);
-    // </group>
-
-    // The partial version of the functions above.
-    // They are applied to the array subsets defined by the axes in the set
-    // using the partialXXX functions in ArrayMath.
-    // The axes must be 0-relative.
-    // <group>
     friend TableExprNode sums (const TableExprNode& array,
 			       const TableExprNodeSet& collapseAxes);
     friend TableExprNode products (const TableExprNode& array,
@@ -442,38 +647,16 @@ class TableExprNode
 				 const TableExprNodeSet& collapseAxes);
     friend TableExprNode nfalses (const TableExprNode& array,
 				  const TableExprNodeSet& collapseAxes);
-    // </group>
-
-    // Create an array of the given shape and fill it with the values.
-    // The <src>values</src> array is rewound as needed.
     friend TableExprNode array (const TableExprNode& values,
 				const TableExprNodeSet& shape);
-
-    // Function operating on a field resulting in a bool scalar.
-    // It can be used to test if a column has an array in the current row.
-    // It can also be used to test if a record contains a field.
     friend TableExprNode isdefined (const TableExprNode& array);
-
-    // Functions operating on any scalar or array resulting in a Double scalar.
-    // A scalar has 1 element and dimensionality 1.
-    // <group>
     friend TableExprNode nelements (const TableExprNode& array);
     friend TableExprNode ndim (const TableExprNode& array);
-    // </group>
-
-    // Function operating on any scalar or array resulting in a Double array
-    // containing the shape. A scalar has shape [1].
     friend TableExprNode shape (const TableExprNode& array);
-
-    // Function resembling the ternary <src>?:</src> construct in C++.
-    // The argument "condition" has to be a Bool value.
-    // If an element in "condition" is True, the corresponding element from
-    // "arg1" is taken, otherwise it is taken from "arg2".
-    // The arguments can be scalars or array or any combination.
     friend TableExprNode iif (const TableExprNode& condition,
 			      const TableExprNode& arg1,
 			      const TableExprNode& arg2);
-
+    // </group>
 
 public:
     TableExprNode ();
