@@ -50,6 +50,248 @@ template <class T> class Block;
 class LCRegion;
 class Slicer;
 class LattRegionHolder;
+class LatticeExprNode;
+
+// Global functions operating on a LatticeExprNode.
+// <group name=GlobalLatticeExprNode>
+  // Unary functions.
+  // <group>
+   LatticeExprNode operator+ (const LatticeExprNode& expr);
+   LatticeExprNode operator- (const LatticeExprNode& expr);
+   LatticeExprNode operator! (const LatticeExprNode& expr);
+  // </group>
+
+  // Numerical binary operators
+  // <group>
+   LatticeExprNode operator+ (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+   LatticeExprNode operator- (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+   LatticeExprNode operator* (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+   LatticeExprNode operator/ (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+   LatticeExprNode operator% (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+   LatticeExprNode operator^ (const LatticeExprNode& left,
+			      const LatticeExprNode& right);
+  // </group>
+
+  // Relational binary operators
+  // <group>
+   LatticeExprNode operator== (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator>  (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator>= (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator<  (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator<= (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator!= (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+  // </group>
+
+  // Logical binary operators
+  // <group>
+   LatticeExprNode operator&& (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+   LatticeExprNode operator|| (const LatticeExprNode& left,
+			       const LatticeExprNode& right);
+  // </group>
+
+  // Numerical 1-argument functions
+  // <group>
+   LatticeExprNode sin  (const LatticeExprNode& expr);
+   LatticeExprNode sinh (const LatticeExprNode& expr);
+   LatticeExprNode asin (const LatticeExprNode& expr);
+   LatticeExprNode cos  (const LatticeExprNode& expr);
+   LatticeExprNode cosh (const LatticeExprNode& expr);
+   LatticeExprNode acos (const LatticeExprNode& expr);
+   LatticeExprNode tan  (const LatticeExprNode& expr);
+   LatticeExprNode tanh (const LatticeExprNode& expr);
+   LatticeExprNode atan (const LatticeExprNode& expr);
+   LatticeExprNode exp  (const LatticeExprNode& expr);
+   LatticeExprNode log  (const LatticeExprNode& expr);
+   LatticeExprNode log10(const LatticeExprNode& expr);
+   LatticeExprNode sqrt (const LatticeExprNode& expr);
+   LatticeExprNode sign (const LatticeExprNode& expr);
+   LatticeExprNode round(const LatticeExprNode& expr);
+   LatticeExprNode ceil (const LatticeExprNode& expr);
+   LatticeExprNode floor(const LatticeExprNode& expr);
+   LatticeExprNode conj (const LatticeExprNode& expr);
+  // </group>
+
+  // Numerical 2-argument functions
+  // <group>
+   LatticeExprNode atan2 (const LatticeExprNode& left,
+			  const LatticeExprNode& right);
+   LatticeExprNode pow  (const LatticeExprNode& left,
+			 const LatticeExprNode& right);
+   LatticeExprNode fmod (const LatticeExprNode& left,
+			 const LatticeExprNode& right);
+   LatticeExprNode min  (const LatticeExprNode& left,
+			 const LatticeExprNode& right);
+   LatticeExprNode max  (const LatticeExprNode& left,
+			 const LatticeExprNode& right);
+  // </group>
+
+  // Form a complex number from two real numbers.
+   LatticeExprNode formComplex (const LatticeExprNode& left,
+				const LatticeExprNode& right);
+
+  // Numerical 1-argument functions which result in a real number
+  // regardless of input expression type
+  // <group>
+   LatticeExprNode abs  (const LatticeExprNode& expr);
+   LatticeExprNode arg  (const LatticeExprNode& expr);
+   LatticeExprNode real (const LatticeExprNode& expr);
+   LatticeExprNode imag (const LatticeExprNode& expr);
+  // </group>
+
+  // 1-argument functions operating on a numeric expression resulting 
+  // in a scalar
+  // <group>
+   LatticeExprNode min      (const LatticeExprNode& expr);
+   LatticeExprNode max      (const LatticeExprNode& expr);
+   LatticeExprNode sum      (const LatticeExprNode& expr);
+   LatticeExprNode median   (const LatticeExprNode& expr);
+   LatticeExprNode mean     (const LatticeExprNode& expr);
+   LatticeExprNode variance (const LatticeExprNode& expr);
+   LatticeExprNode stddev   (const LatticeExprNode& expr);
+   LatticeExprNode avdev    (const LatticeExprNode& expr);
+  // </group>
+
+  // Determine the value of the element at the part <src>fraction</src>
+  // from the beginning of the given lattice.
+  // Thus <src>fraction=0.5</src> is equal to the median.
+   LatticeExprNode fractile (const LatticeExprNode& expr,
+			     const LatticeExprNode& fraction);
+
+  // Determine the value range of the elements at the part <src>fraction1</src>
+  // and fraction2 from the beginning of the given lattice. Both fractions
+  // must be >=0 and <=1 and fraction1 must be <= fraction2.
+  // By default <fraction2</src> is equal to <src>1-fraction1</src>.
+  // Thus <src>fraction=0.25</src> gives the quartile range of the lattice.
+  // <group>
+   LatticeExprNode fractileRange (const LatticeExprNode& expr,
+				  const LatticeExprNode& fraction1,
+				  const LatticeExprNode& fraction2);
+   LatticeExprNode fractileRange (const LatticeExprNode& expr,
+				  const LatticeExprNode& fraction);
+  // </group>
+
+  // 1-argument function to get the number of elements in a lattice.
+  // If the lattice is masked, only the True elements are counted.
+  // Results in a scalar Double.
+   LatticeExprNode nelements (const LatticeExprNode& expr);
+
+  // 1-argument function to get the dimensionality of a lattice.
+  // 0 is returned if it is a scalar.
+  // Results in a scalar Float.
+   LatticeExprNode ndim (const LatticeExprNode& expr);
+
+  // 2-argument function to get the length of an axis.
+  // Results in a scalar Float.
+  // The 2nd expression (giving the axis number) has to be a real scalar.
+  // <note role=caution>
+  // Axes start counting at 1.
+  // If the axis is a number < 1, an exception is thrown.
+  // If the axis is a number exceeding the dimensionality, 1 is returned.
+  // </note>
+   LatticeExprNode length (const LatticeExprNode& expr,
+			   const LatticeExprNode& axis);
+
+  // 2-argument function telling per pixel if its index on the given axis
+  // is contained in the 2nd argument. The 2nd argument should be a boolean
+  // vector where True means that the index is contained.
+  // For indices >= vector_length, the 2nd argument defaults to False.
+  // Results in a Bool array.
+  // <note role=caution>
+  // Axes start counting at 1.
+  // If the axis is a number < 1 or > ndim, an exception is thrown.
+  // </note>
+   LatticeExprNode indexin (const LatticeExprNode& axis,
+			    const LatticeExprNode& indexFlags);
+
+  // 2-argument function rebinning Lattice by given factors. The 2nd argument
+  // should be a vector (preferably Float - really Int but Int not well
+  // supported in LEL yet).  Results in a T array.
+   LatticeExprNode rebin (const LatticeExprNode& expr,
+			  const LatticeExprNode& bin);
+
+// Test if a value is a NaN.
+   LatticeExprNode isNaN (const LatticeExprNode& expr);
+
+  // Functions operating on a logical expression resulting in a scalar;
+  // Functions "any" (are any pixels "True") and "all" (are all pixels
+  // "True") result in a Bool; functions "ntrue" and "nfalse" result 
+  // in a Double.
+  // <group>
+   LatticeExprNode any   (const LatticeExprNode& expr);
+   LatticeExprNode all   (const LatticeExprNode& expr);
+   LatticeExprNode ntrue (const LatticeExprNode& expr);
+   LatticeExprNode nfalse(const LatticeExprNode& expr);
+  // </group>
+
+  // This function returns the mask of the given expression.
+  // If it has no mask, the result is an array with all True values.
+   LatticeExprNode mask (const LatticeExprNode& expr);
+
+  // This function returns the value of the expression without a mask.
+   LatticeExprNode value (const LatticeExprNode& expr);
+
+  // This function finds <src>sqrt(left^2+right^2)</src>.  This
+  // could be used to find the (biased) polarized intensity if
+  // left and right are images of Stokes Q and U.
+   LatticeExprNode amp (const LatticeExprNode& left,
+			const LatticeExprNode& right);
+
+  // This function finds <src>180/pi*atan2(left,right)/2</src>.  This could be 
+  // used to find the position of linear polarization if left 
+  // and right are images of Stokes U and Q, respectively.
+   LatticeExprNode pa (const LatticeExprNode& left,
+		       const LatticeExprNode& right);
+
+  // This function finds the spectral index
+  // <src>alpha = log(s1/s2) / log(f1/f2)</src>.
+   LatticeExprNode spectralindex (const LatticeExprNode& left,
+				  const LatticeExprNode& right);
+
+  // Function resembling the ternary <src>?:</src> construct in C++.
+  // The argument "condition" has to be a Bool scalar or lattice.
+  // If an element in "condition" is True, the corresponding element from
+  // "arg1" is taken, otherwise it is taken from "arg2".
+   LatticeExprNode iif (const LatticeExprNode& condition,
+			const LatticeExprNode& arg1,
+			const LatticeExprNode& arg2);
+
+  // This function replaces every masked-off element in the first argument
+  // with the corresponding element from the second argument.
+  // The first argument has to be a lattice (expression), the second can
+  // be a scalar or lattice. The mask of the first argument is not changed.
+  // If the first argument does not have a mask, this function does nothing.
+   LatticeExprNode replace (const LatticeExprNode& arg1,
+			    const LatticeExprNode& arg2);
+
+  // Functions to convert to the given data type.  These are mostly 
+  // meaningful for down-conversions (e.g. double to float),
+  // since up-conversions are automatically done to get matching data types
+  // when needed.  Note that some conversions are not supported, such
+  // as Complex to Double or Float.
+  // <br>The conversion to Bool is useful to convert a region to a
+  // boolean lattice, which is only possible if the region is given
+  // in world coordinates. Otherwise an exception is thrown.
+  // <group>
+   LatticeExprNode toFloat   (const LatticeExprNode& expr);
+   LatticeExprNode toDouble  (const LatticeExprNode& expr);
+   LatticeExprNode toComplex (const LatticeExprNode& expr);
+   LatticeExprNode toDComplex(const LatticeExprNode& expr);
+   LatticeExprNode toBool    (const LatticeExprNode& expr);
+  // </group>
+// </group>
+
 
 
 // <summary>
@@ -190,15 +432,11 @@ class LattRegionHolder;
 
 class LatticeExprNode
 {
-// Unary operators
+// All global functions need to be declared as friends.
 // <group>
-   friend LatticeExprNode operator+(const LatticeExprNode& expr);
-   friend LatticeExprNode operator-(const LatticeExprNode& expr);
-   friend LatticeExprNode operator!(const LatticeExprNode& expr);
-// </group>
-
-// Numerical binary operators
-// <group>
+   friend LatticeExprNode operator+ (const LatticeExprNode& expr);
+   friend LatticeExprNode operator- (const LatticeExprNode& expr);
+   friend LatticeExprNode operator! (const LatticeExprNode& expr);
    friend LatticeExprNode operator+ (const LatticeExprNode& left,
 				     const LatticeExprNode& right);
    friend LatticeExprNode operator- (const LatticeExprNode& left,
@@ -208,15 +446,9 @@ class LatticeExprNode
    friend LatticeExprNode operator/ (const LatticeExprNode& left,
                                      const LatticeExprNode& right);
    friend LatticeExprNode operator% (const LatticeExprNode& left,
-                                     const LatticeExprNode& right)
-    { return fmod (left, right); }
+                                     const LatticeExprNode& right);
    friend LatticeExprNode operator^ (const LatticeExprNode& left,
-                                     const LatticeExprNode& right)
-    { return pow (left, right); }
-// </group>
-
-// Relational binary operators
-// <group>
+                                     const LatticeExprNode& right);
    friend LatticeExprNode operator== (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
    friend LatticeExprNode operator>  (const LatticeExprNode& left,
@@ -229,18 +461,10 @@ class LatticeExprNode
 				      const LatticeExprNode& right);
    friend LatticeExprNode operator!= (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
-// </group>
-
-// Logical binary operators
-// <group>
    friend LatticeExprNode operator&& (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
    friend LatticeExprNode operator|| (const LatticeExprNode& left,
 				      const LatticeExprNode& right);
-// </group>
-
-// Numerical 1-argument functions
-// <group>
    friend LatticeExprNode sin  (const LatticeExprNode& expr);
    friend LatticeExprNode sinh (const LatticeExprNode& expr);
    friend LatticeExprNode asin (const LatticeExprNode& expr);
@@ -259,10 +483,6 @@ class LatticeExprNode
    friend LatticeExprNode ceil (const LatticeExprNode& expr);
    friend LatticeExprNode floor(const LatticeExprNode& expr);
    friend LatticeExprNode conj (const LatticeExprNode& expr);
-// </group>
-
-// Numerical 2-argument functions
-// <group>
    friend LatticeExprNode atan2 (const LatticeExprNode& left,
 				 const LatticeExprNode& right);
    friend LatticeExprNode pow  (const LatticeExprNode& left,
@@ -273,24 +493,12 @@ class LatticeExprNode
 				const LatticeExprNode& right);
    friend LatticeExprNode max  (const LatticeExprNode& left,
 				const LatticeExprNode& right);
-// </group>
-
-// Form a complex number from two real numbers.
    friend LatticeExprNode formComplex (const LatticeExprNode& left,
 				       const LatticeExprNode& right);
-
-// Numerical 1-argument functions which result in a real number
-// regardless of input expression type
-// <group>
    friend LatticeExprNode abs  (const LatticeExprNode& expr);
    friend LatticeExprNode arg  (const LatticeExprNode& expr);
    friend LatticeExprNode real (const LatticeExprNode& expr);
    friend LatticeExprNode imag (const LatticeExprNode& expr);
-// </group>
-
-// 1-argument functions operating on a numeric expression resulting 
-// in a scalar
-// <group>
    friend LatticeExprNode min      (const LatticeExprNode& expr);
    friend LatticeExprNode max      (const LatticeExprNode& expr);
    friend LatticeExprNode sum      (const LatticeExprNode& expr);
@@ -299,133 +507,39 @@ class LatticeExprNode
    friend LatticeExprNode variance (const LatticeExprNode& expr);
    friend LatticeExprNode stddev   (const LatticeExprNode& expr);
    friend LatticeExprNode avdev    (const LatticeExprNode& expr);
-// </group>
-
-// Determine the value of the element at the part <src>fraction</src>
-// from the beginning of the given lattice.
-// Thus <src>fraction=0.5</src> is equal to the median.
    friend LatticeExprNode fractile (const LatticeExprNode& expr,
 				    const LatticeExprNode& fraction);
-
-// Determine the value range of the elements at the part <src>fraction1</src>
-// and fraction2 from the beginning of the given lattice. Both fractions
-// must be >=0 and <=1 and fraction1 must be <= fraction2.
-// By default <fraction2</src> is equal to <src>1-fraction1</src>.
-// Thus <src>fraction=0.25</src> gives the quartile range of the lattice.
-// <group>
    friend LatticeExprNode fractileRange (const LatticeExprNode& expr,
 					 const LatticeExprNode& fraction1,
 					 const LatticeExprNode& fraction2);
    friend LatticeExprNode fractileRange (const LatticeExprNode& expr,
 					 const LatticeExprNode& fraction);
-// </group>
-
-// 1-argument function to get the number of elements in a lattice.
-// If the lattice is masked, only the True elements are counted.
-// Results in a scalar Double.
    friend LatticeExprNode nelements (const LatticeExprNode& expr);
-
-// 1-argument function to get the dimensionality of a lattice.
-// 0 is returned if it is a scalar.
-// Results in a scalar Float.
    friend LatticeExprNode ndim (const LatticeExprNode& expr);
-
-// 2-argument function to get the length of an axis.
-// Results in a scalar Float.
-// The 2nd expression (giving the axis number) has to be a real scalar.
-// <note role=caution>
-// Axes start counting at 1.
-// If the axis is a number < 1, an exception is thrown.
-// If the axis is a number exceeding the dimensionality, 1 is returned.
-// </note>
    friend LatticeExprNode length (const LatticeExprNode& expr,
 				  const LatticeExprNode& axis);
-
-// 2-argument function telling per pixel if its index on the given axis
-// is contained in the 2nd argument. The 2nd argument should be a boolean
-// vector where True means that the index is contained.
-// For indices >= vector_length, the 2nd argument defaults to False.
-// Results in a Bool array.
-// <note role=caution>
-// Axes start counting at 1.
-// If the axis is a number < 1 or > ndim, an exception is thrown.
-// </note>
-// <group>
    friend LatticeExprNode indexin (const LatticeExprNode& axis,
 				   const LatticeExprNode& indexFlags);
-// </group>
-
-// 2-argument function rebinning Lattice by given factors. The 2nd argument
-// should be a vector (preferably Float - really Int but Int not well
-// supported in LEL yet).  Results in a T array.
-// <group>
    friend LatticeExprNode rebin (const LatticeExprNode& expr,
                                  const LatticeExprNode& bin);
-// </group>
-
-// Test if a value is a NaN.
    friend LatticeExprNode isNaN (const LatticeExprNode& expr);
-
-// Functions operating on a logical expression resulting in a scalar;
-// Functions "any" (are any pixels "True") and "all" (are all pixels
-// "True") result in a Bool; functions "ntrue" and "nfalse" result 
-// in a Double.
-// <group>
    friend LatticeExprNode any   (const LatticeExprNode& expr);
    friend LatticeExprNode all   (const LatticeExprNode& expr);
    friend LatticeExprNode ntrue (const LatticeExprNode& expr);
    friend LatticeExprNode nfalse(const LatticeExprNode& expr);
-// </group>
-
-// This functions returns the mask of the given expression.
-// If it has no mask, the result is an array with all True values.
    friend LatticeExprNode mask (const LatticeExprNode& expr);
-
-// This functions returns the value of the expression without a mask.
    friend LatticeExprNode value (const LatticeExprNode& expr);
-
-// This function finds <src>sqrt(left^2+right^2)</src>.  This
-// could be used to find the (biased) polarized intensity if
-// left and right are images of Stokes Q and U.
    friend LatticeExprNode amp (const LatticeExprNode& left,
                                const LatticeExprNode& right);
-
-// This function finds <src>180/pi*atan2(left,right)/2</src>.  This could be 
-// used to find the position of linear polarization if left 
-// and right are images of Stokes U and Q, respectively.
    friend LatticeExprNode pa (const LatticeExprNode& left,
                               const LatticeExprNode& right);
-
-// This function finds the spectral index
-// <src>alpha = log(s1/s2) / log(f1/f2)</src>.
    friend LatticeExprNode spectralindex (const LatticeExprNode& left,
 					 const LatticeExprNode& right);
-
-// Function resembling the ternary <src>?:</src> construct in C++.
-// The argument "condition" has to be a Bool scalar or lattice.
-// If an element in "condition" is True, the corresponding element from
-// "arg1" is taken, otherwise it is taken from "arg2".
    friend LatticeExprNode iif (const LatticeExprNode& condition,
 			       const LatticeExprNode& arg1,
 			       const LatticeExprNode& arg2);
-
-// This function replaces every masked-off element in the first argument
-// with the corresponding element from the second argument.
-// The first argument has to be a lattice (expression), the second can
-// be a scalar or lattice. The mask of the first argument is not changed.
-// If the first argument does not have a mask, this function does nothing.
    friend LatticeExprNode replace (const LatticeExprNode& arg1,
 			           const LatticeExprNode& arg2);
-
-// Functions to convert to the given data type.  These are mostly 
-// meaningful for down-conversions (e.g. double to float),
-// since up-conversions are automatically done to get matching data types
-// when needed.  Note that some conversions are not supported, such
-// as Complex to Double or Float.
-// <br>The conversion to Bool is useful to convert a region to a
-// boolean lattice, which is only possible if the region is given
-// in world coordinates. Otherwise an exception is thrown.
-// <group>
    friend LatticeExprNode toFloat   (const LatticeExprNode& expr);
    friend LatticeExprNode toDouble  (const LatticeExprNode& expr);
    friend LatticeExprNode toComplex (const LatticeExprNode& expr);
@@ -707,6 +821,14 @@ private:
    CountedPtr<LELInterface<Bool> >     pExprBool_p;
 };
 
+
+
+inline LatticeExprNode operator% (const LatticeExprNode& left,
+				  const LatticeExprNode& right)
+  { return fmod (left, right); }
+inline LatticeExprNode operator^ (const LatticeExprNode& left,
+				  const LatticeExprNode& right)
+  { return pow (left, right); }
 
 
 } //# NAMESPACE CASA - END
