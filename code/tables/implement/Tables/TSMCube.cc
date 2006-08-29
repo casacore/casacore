@@ -41,6 +41,7 @@
 #include <casa/IO/BucketCache.h>
 #include <casa/IO/AipsIO.h>
 #include <casa/OS/Conversion.h>
+#include <casa/OS/HostInfo.h>
 #include <casa/string.h>                           // for memcpy
 #include <casa/iostream.h>
 
@@ -761,9 +762,17 @@ void TSMCube::setCacheSize (const IPosition& sliceShape,
                             const IPosition& axisPath,
 			    Bool forceSmaller, Bool userSet)
 {
-    setCacheSize (calcCacheSize (sliceShape, windowStart,
-				 windowLength, axisPath),
-		  forceSmaller, userSet);
+    uInt cacheSize = calcCacheSize (sliceShape, windowStart,
+				    windowLength, axisPath);
+    // If not userset and if the entire cube needs to be cached,
+    // do not cache if more than 20% of the memory is needed.
+    if (!userSet  &&  cacheSize >= nrTiles_p) {
+      uInt maxSize = uInt(HostInfo::memoryTotal() * 1024.*0.2 / bucketSize_p);
+      if (cacheSize > maxSize) {
+	cacheSize = 1;
+      }
+    }
+    setCacheSize (cacheSize, forceSmaller, userSet);
 }
 
 // Calculate the cache size for the given slice and access path.
