@@ -2018,6 +2018,10 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
   // Create the table.
   // The types are defined in class TaQLGivingNodeRep.
   Table::TableType    ttype = Table::Plain;
+  Table::TableOption  topt  = Table::New;
+  if (resultName_p.empty()) {
+    topt = Table::Scratch;
+  }
   Table::EndianFormat tendf = Table::AipsrcEndian;
   if (resultType_p == 1) {
     ttype = Table::Memory;
@@ -2028,7 +2032,7 @@ Table TableParseSelect::doProjectExpr (const Table& inTable)
   } else if (resultType_p == 5) {
     tendf = Table::LocalEndian;
   }
-  SetupNewTable newtab(resultName_p, td, Table::New);
+  SetupNewTable newtab(resultName_p, td, topt);
   Table tabp(newtab, ttype, inTable.nrow(), False, tendf);
   // Turn the expressions into update objects.
   for (uInt i=0; i<columnExpr_p.nelements(); i++) {
