@@ -379,11 +379,11 @@ TableVector<T> pow (const ROTableVector<T>& tv, const double& exp)
 
 
 template<class T> inline
-T sum (const ROTableVector<T>& l, const ROTableVector<T>& r)
-    { return tabVecRepsum (l.tabVec(), r.tabVec()); }
+T sum (const ROTableVector<T>& tv)
+    { return tabVecRepsum (tv.tabVec()); }
 template<class T> inline
-T product (const ROTableVector<T>& l, const ROTableVector<T>& r)
-    { return tabVecRepproduct (l.tabVec(), r.tabVec()); }
+T product (const ROTableVector<T>& tv)
+    { return tabVecRepproduct (tv.tabVec()); }
 
 
 template<class T> inline
