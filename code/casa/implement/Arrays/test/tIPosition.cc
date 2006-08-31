@@ -47,6 +47,11 @@ int main()
 {
     IPosition ip(3, 0, 1, 2);
     
+    Int nrit = 0;
+    for (IPosition::const_iterator iter=ip.begin(); iter!=ip.end(); iter++) {
+      assert(*iter == ip[nrit++]);
+    }
+    
     assert(ip.nelements() == 3);
     assert(ip(0) == 0 && ip(1) == 1 && ip(2) == 2);
     assert(ip[0] == 0 && ip[1] == 1 && ip[2] == 2);
@@ -54,7 +59,7 @@ int main()
     assert(ip(2) == 21);
     ip(2) = 22;
     assert(ip(2) == 22);
-    
+
     IPosition ip2;
     assert(ip2.nelements() == 0);
 
@@ -88,6 +93,11 @@ int main()
 
     IPosition ip3(5,0,1,2,3,4);
 
+    nrit = 0;
+    for (IPosition::const_iterator iter=ip3.begin(); iter!=ip3.end(); iter++) {
+      assert(*iter == ip3[nrit++]);
+    }
+    
     AipsIO io("tIPosition_tmp.data", ByteIO::New);
     io << ip3;
     io.close();
