@@ -289,11 +289,11 @@ template<class T> class TablePlot
 		// x-y pairs of data to be plotted. 
 		// 
 		// Valid TaQL strings must satisfy the following conditions.
-		// Each TaQL string must result in a Double scalar or array.\\
-		// <li> 'AMPLITUDE(DATA[1,1])' results in a Double scalar (valid). \\
-		// <li> 'AMPLITUDE(DATA[1:2,1])' results in a Double array (valid).\\
-		// <li> 'MEAN(AMPLITUDE(DATA[1:2,1]))' results in a Double scalar (valid).\\
-		// <li> 'DATA[1,1]' results in a Complex scalar (NOT valid).\\
+		// Each TaQL string must result in a Double scalar or array.
+		// <li> 'AMPLITUDE(DATA[1,1])' results in a Double scalar (valid).
+		// <li> 'AMPLITUDE(DATA[1:2,1])' results in a Double array (valid).
+		// <li> 'MEAN(AMPLITUDE(DATA[1:2,1]))' results in a Double scalar (valid).
+		// <li> 'DATA[1,1]' results in a Complex scalar (NOT valid).
 		// <li> 'AMPLITUDE(DATA[1,1])<10' results in a Bool scalar (NOT valid).
                 //
 		// All TaQL functions resulting in Double Scalars/Arrays are allowed,
@@ -301,9 +301,9 @@ template<class T> class TablePlot
 		// Note that these functions are different from mean,sum,etc.. which are supported.
                 //
 		// TaQL strings must be provided as pairs of strings, with the
-		// X-TaQL first, followed by the Y-TaQL. There are 3 cases.\\
-		// <li> X-TaQL - Scalar, Y-TaQL - Scalar (one-to-one single plot)\\
-		// <li> X-TaQL - Scalar, Y-TaQL - Array (one-to-many overlay plot)\\
+		// X-TaQL first, followed by the Y-TaQL. There are 3 cases.
+		// <li> X-TaQL - Scalar, Y-TaQL - Scalar (one-to-one single plot)
+		// <li> X-TaQL - Scalar, Y-TaQL - Array (one-to-many overlay plot)
 		// <li> X-TaQL - Array, Y-TaQL - Array (if the shapes are
 		// the same, then a one-to-one mapping is done, otherwise only the first 
 		// X-TaQL result is used for a one-to-many mapping with the Y-TaQL Array.)
