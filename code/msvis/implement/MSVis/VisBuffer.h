@@ -320,7 +320,7 @@ public:
   void refModelVis(const Matrix<CStokesVector>& mvis);
 
   // Remove scratch cols data from vb
-  void VisBuffer::removeScratchCols(); 
+  void removeScratchCols(); 
 
   // Access the current ROMSColumns object via VisIter
   const ROMSColumns& msColumns() const
