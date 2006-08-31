@@ -286,6 +286,33 @@ public:
     // Is this IPosition consistent?
     Bool ok() const;
 
+    // Define the STL-style iterators.
+    // It makes it possible to iterate through all data elements.
+    // <srcblock>
+    //  IPosition shp(2,0);
+    //  for (IPosition::iterator iter=shp.begin(); iter!=shp.end(); iter++) {
+    //    *iter += 1;
+    //  }
+    // </srcblock>
+    // <group name=STL-iterator>
+    // STL-style typedefs.
+    // <group>
+    typedef Int value_type;
+    typedef Int* iterator;
+    typedef const Int* const_iterator;
+    // </group>
+    // Get the begin iterator object for any array.
+    // <group>
+    iterator begin()
+      { return data_p; }
+    const_iterator begin() const
+      { return data_p; }
+    const_iterator end() const
+      { return data_p + size_p; }
+    // </group>
+
+    // </group>
+
 private:
     // Allocate a buffer with length size_p.
     void allocateBuffer();
