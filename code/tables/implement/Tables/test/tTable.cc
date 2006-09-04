@@ -65,9 +65,19 @@
 // Define the callback for handling (scratch) tables.
 void cbFunc (const String& name, Bool isScratch, const String& oldname)
 {
-    cout << "ScratchCallBack:  name=" << name
+    String nm1 = name.empty() ? name : Path(name).baseName();
+    String nm2 = oldname.empty() ? oldname : Path(oldname).baseName();
+    cout << "ScratchCallBack:  name=" << nm1
 	 << "  isScratch=" << isScratch
-	 << "  oldName=" << oldname << endl;
+	 << "  oldName=" << nm2 << endl;
+}
+
+// Remove the dirname from the table name in an error message.
+String removeDir (const String& msg)
+{
+  String s = msg;
+  s.gsub (Regex("/.*/t"), "t");
+  return s;
 }
 
 // Define the endian format.
@@ -245,7 +255,7 @@ void b (Bool doExcp)
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // does not exist
+	    cout << x.getMesg() << endl;             // table not writable
 	} 
     }
     ROScalarColumn<Int> ab2(tab,"ab");
@@ -585,22 +595,22 @@ void c (Bool doExcp)
 	    file.create();
 	    tab.rename ("tTable_tmp.file", Table::NewNoReplace);
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // exists as file
+	    cout << removeDir(x.getMesg()) << endl;        // exists as file
 	} 
 	try {
 	    tab.rename ("tTable_tmp.data", Table::NewNoReplace);
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // already exists
+	    cout << removeDir(x.getMesg()) << endl;        // already exists
 	} 
 	try {
 	    tab.rename ("tTable.datx", Table::Update);
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // does not exist
+	    cout << removeDir(x.getMesg()) << endl;        // does not exist
 	} 
 	try {
 	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;             // does not exist
+	    cout << x.getMesg() << endl;             // column already exists
 	} 
     }
 
@@ -677,7 +687,7 @@ void c (Bool doExcp)
 	try {
 	    tab.removeRow (7);
 	} catch (AipsError x) {
-	    cout << x.getMesg() << endl;
+	    cout << removeDir(x.getMesg()) << endl;   // row does not exist
 	} 
     }
     cout << ab2.getColumn() << endl;

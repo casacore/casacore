@@ -267,6 +267,27 @@ void getCube (Bool trav, Bool ask)
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
+    if (nrdim == 3) {
+	Table table("tTiledCellStM_1_tmp.data2");
+	ROTiledStManAccessor accessor(table, "TSMExample");
+	ROArrayColumn<Float> data (table, "Data");
+	cubeShape = data.shape (0);
+	tileShape = accessor.tileShape (0);
+	nrdim = cubeShape.nelements();
+	Array<Float> result;
+	timer.mark();
+	IPosition blc(nrdim, 0);
+	IPosition len = cubeShape;
+	len[1] = 1;
+	sizeMb *= len.product();
+	sizeMb /= 1024*1024;
+	data.getSlice (0, Slicer(blc,len), result);
+	realtime = timer.real();
+	timer.show ("get slice");
+	cout << "Throughput " << sizeMb/realtime << " Mb/sec" << endl;
+	accessor.showCacheStatistics (cout);
+	accessor.clearCaches();
+    }
     {
 	Table table("tTiledCellStM_1_tmp.data");
 	ROTiledStManAccessor accessor(table, "TSMExample");

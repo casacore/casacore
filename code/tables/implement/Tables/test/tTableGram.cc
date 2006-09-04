@@ -243,8 +243,9 @@ void showExpr(const TableExprNode& expr)
 // Sort and select data.
 void seltab (const String& str)
 {
+  Table* tabp = 0;
+  {
   uInt i;
-  Table tab;
   Vector<String> vecstr;
   String cmd;
   cout << str << endl;
@@ -260,8 +261,8 @@ void seltab (const String& str)
   }
   cout << "    has been executed" << endl;
   if (result.isTable()) {
-    tab = result.table();
-    cout << "    " << cmd << " of " << tab.nrow() << " rows" << endl;
+    tabp = new Table(result.table());
+    cout << "    " << cmd << " of " << tabp->nrow() << " rows" << endl;
     // Show the selected column names.
     cout << vecstr.nelements() << " selected columns: ";
     for (i=0; i<vecstr.nelements(); i++) {
@@ -271,9 +272,11 @@ void seltab (const String& str)
 
     // Show the contents of the columns.
     if (vecstr.nelements() > 0) {
-      showtab (tab, vecstr);
+      showtab (*tabp, vecstr);
     }
   } else {
     showExpr (result.node());
   }
+  }
+  delete tabp;
 }

@@ -42,6 +42,7 @@
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Containers/Record.h>
+#include <casa/OS/Path.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
 #include <casa/iostream.h>
@@ -606,12 +607,12 @@ void copyTable (const Table& aTable)
 {
   cout << "Try to rename and copy the table" << endl;
   Table tab(aTable);
-  cout << "old name = " << tab.tableName();
+  cout << "old name = " << Path(tab.tableName()).baseName();
   tab.rename ("mt_newname", Table::Scratch);
-  cout << "     new name = " << tab.tableName() << endl;
+  cout << "     new name = " << Path(tab.tableName()).baseName() << endl;
   aTable.copy ("tMemoryTable_tmp.tabcp", Table::New);
   Table tabc("tMemoryTable_tmp.tabcp");
-  cout << "copy name = " << tabc.tableName() << endl;
+  cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
   info(tabc);
 }
 
@@ -619,9 +620,9 @@ void copyMemoryTable (const Table& aTable)
 {
   cout << "Try to copy the table to a MemoryTable" << endl;
   Table tab(aTable);
-  cout << "name = " << tab.tableName() << endl;
+  cout << "name = " << Path(tab.tableName()).baseName() << endl;
   Table tabc = tab.copyToMemoryTable ("tMemoryTable.dat");
-  cout << "copy name = " << tabc.tableName() << endl;
+  cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
   info(tabc);
 }
 
@@ -630,6 +631,6 @@ void copyMemoryTableSubSet (const Table& aTable)
   cout << "Try to copy a table subset to a MemoryTable" << endl;
   Table tab = aTable(aTable.col("Col-3"));
   Table tabc = tab.copyToMemoryTable ("tMemoryTable.subdat");
-  cout << "copy name = " << tabc.tableName() << endl;
+  cout << "copy name = " << Path(tabc.tableName()).baseName() << endl;
   info(tabc);
 }

@@ -54,6 +54,14 @@
 // </summary>
 
 
+// Remove the dirname from the table name in an error message.
+String removeDir (const String& msg)
+{
+  String s = msg;
+  s.gsub (Regex("/.*/t"), "t");
+  return s;
+}
+
 // First build a description.
 TableDesc makeDesc (Bool ask)
 {
@@ -296,7 +304,7 @@ void doTable (Bool ask, const TableDesc& td)
 	break;
       }
     } catch (AipsError x) {
-      cout << x.getMesg() << endl;
+      cout << removeDir(x.getMesg()) << endl;
     }
   }
 }

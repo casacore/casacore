@@ -31,6 +31,14 @@
 using namespace casa;
 using namespace std;
 
+// Remove the dirname from the table name in an error message.
+String removeDir (const String& msg)
+{
+  String s = msg;
+  s.gsub (Regex("/.*/t"), "t");
+  return s;
+}
+
 int main (int argc, char* argv[])
 {
   Table::TableType ttyp = Table::Plain;
@@ -60,10 +68,11 @@ int main (int argc, char* argv[])
     tabl.copy("tTableCopy_tmp.newtbl", Table::New, noRows);
     Table t("tTableCopy_tmp.newtbl");
 
-    cout << tabl.tableName() << endl;
-    cout << tabl.keywordSet().asTable("SUBTABLE").tableName() << endl;
-    cout << t.tableName() << endl;
-    cout << t.keywordSet().asTable("SUBTABLE").tableName() << endl;
+    cout << removeDir(tabl.tableName()) << endl;
+    cout << removeDir(tabl.keywordSet().asTable("SUBTABLE").tableName())
+	 << endl;
+    cout << removeDir(t.tableName()) << endl;
+    cout << removeDir(t.keywordSet().asTable("SUBTABLE").tableName()) << endl;
     cout << tabl.nrow() << ' ' << stabl.nrow() << ' '
 	 << t.nrow() << ' ' << t.keywordSet().asTable("SUBTABLE").nrow() << ' '
 	 << tabl.tableType() << ' ' << t.tableType()
