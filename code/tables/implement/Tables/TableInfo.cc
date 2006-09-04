@@ -43,11 +43,11 @@ TableInfo::TableInfo()
 TableInfo::TableInfo (const String& fileName)
 : writeIt_p (True)
 {
-    File file (fileName);
+    File file (Path(fileName).absoluteName());
     if (! file.exists()) {
 	return;
     }
-    ifstream os(file.path().expandedName().chars(), ios::in);
+    ifstream os(file.path().absoluteName().chars(), ios::in);
     char buf[1025];
     int  len;
     if (! os.getline (buf, 1024)) {              // Type = string
@@ -118,7 +118,7 @@ TableInfo::~TableInfo()
 void TableInfo::flush (const String& fileName)
 {
     if (writeIt_p) {
-	ofstream os(Path(fileName).expandedName().chars(), ios::out);
+	ofstream os(Path(fileName).absoluteName().chars(), ios::out);
 	os << "Type = " << type_p << endl;
 	os << "SubType = " << subType_p << endl;
 	os << endl;

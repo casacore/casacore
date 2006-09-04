@@ -35,6 +35,7 @@
 #include <tables/Tables/DataManError.h>
 #include <tables/Tables/TableRecord.h>
 #include <casa/Containers/Record.h>
+#include <casa/OS/Path.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -284,8 +285,10 @@ void ForwardColumn::fillTableName (const Table& thisTable,
     if (refCol_p.keywordSet().isDefined ("_ForwardColumn_TableName")) {
 	name = refCol_p.keywordSet().asString("_ForwardColumn_TableName");
     }else{
-	name = refTable.tableName();
+        name = refTable.tableName();
     }
+    // Make relative to parent table.
+    name = Path::stripDirectory (name, thisTable.tableName());
     // Define the keyword containing the original table name.
     thisCol.rwKeywordSet().define ("_ForwardColumn_TableName" +
 				   enginePtr_p->suffix(), name);
@@ -304,6 +307,7 @@ void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
     // original table file is writable.
     String name = thisCol.keywordSet().asString
 	                 ("_ForwardColumn_TableName" + enginePtr_p->suffix());
+    name = Path::addDirectory (name, thisTable.tableName());
     writable_p = writable;
     if (writable_p) {
 	if (!(thisTable.isWritable()  &&  Table::isWritable(name))) {

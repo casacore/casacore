@@ -26,7 +26,6 @@
 //# $Id$
 
 #include <tables/Tables/TableCache.h>
-#include <casa/OS/Path.h>
 
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -40,9 +39,7 @@ TableCache::~TableCache()
 
 PlainTable* TableCache::operator() (const String& tableName) const
 {
-    // Make name absolute and remove possible . and ..
-    String name (Path(tableName).absoluteName());
-    PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (name));
+    PlainTable** ptr = (PlainTable**)(tableMap_p.isDefined (tableName));
     if (ptr) {
 	return *ptr;
     }
@@ -62,9 +59,7 @@ uInt TableCache::ntable() const
 
 void TableCache::define (const String& tableName, PlainTable* tab)
 {
-    // Make name absolute and remove possible . and ..
-    String name (Path(tableName).absoluteName());
-    tableMap_p.define (name, tab);
+    tableMap_p.define (tableName, tab);
 }
 
 void TableCache::remove (const String& tableName)
@@ -74,19 +69,14 @@ void TableCache::remove (const String& tableName)
     // Therefore do not delete if the map is already empty
     // (otherwise an exception is thrown).
     if (tableMap_p.ndefined() > 0) {
-        // Make name absolute and remove possible . and ..
-        String name (Path(tableName).absoluteName());
-	tableMap_p.remove (name);
+	tableMap_p.remove (tableName);
     }
 }
 
 void TableCache::rename (const String& newName, const String& oldName)
 {
-  // Make names absolute and remove possible . and ..
-    String oldnm (Path(oldName).absoluteName());
-    if (tableMap_p.isDefined (oldnm)) {
-        String newnm (Path(newName).absoluteName());
-	tableMap_p.rename (newnm, oldnm);
+    if (tableMap_p.isDefined (oldName)) {
+	tableMap_p.rename (newName, oldName);
     }
 }
 

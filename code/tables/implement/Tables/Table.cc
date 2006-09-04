@@ -241,15 +241,16 @@ Bool Table::canDeleteTable (const String& tableName, Bool checkSubTables)
 Bool Table::canDeleteTable (String& message, const String& tableName,
 			    Bool checkSubTables)
 {
-    if (! isWritable (tableName)) {
+    String tabName = Path(tableName).absoluteName();
+    if (! isWritable (tabName)) {
 	message = "table is not writable";
 	return False;
     }
-    if (isOpened (tableName)) {
+    if (isOpened (tabName)) {
 	message = "table is still open in this process";
 	return False;
     }
-    Table table(tableName);
+    Table table(tabName);
     if (table.isMultiUsed()) {
 	message = "table is still open in another process";
 	return False;
@@ -264,24 +265,26 @@ Bool Table::canDeleteTable (String& message, const String& tableName,
 
 void Table::deleteTable (const String& tableName, Bool checkSubTables)
 {
+    String tabName = Path(tableName).absoluteName();
     String message;
-    if (! canDeleteTable (message, tableName, checkSubTables)) {
-	throw (TableError ("Table " + tableName + " cannot be deleted: " +
+    if (! canDeleteTable (message, tabName, checkSubTables)) {
+	throw (TableError ("Table " + tabName + " cannot be deleted: " +
 			   message));
     }
-    Table table(tableName, Table::Delete);
+    Table table(tabName, Table::Delete);
 }
 
 
 Vector<String> Table::nonWritableFiles (const String& tableName)
 {
-    if (! isReadable (tableName)) {
-	throw (TableError ("Table::nonWritableFiles: Table " + tableName +
+    String tabName = Path(tableName).absoluteName();
+    if (! isReadable (tabName)) {
+	throw (TableError ("Table::nonWritableFiles: Table " + tabName +
 			   " does not exist"));
     }
     uInt n=0;
     Vector<String> names;
-    DirectoryIterator iter(tableName);
+    DirectoryIterator iter(tabName);
     while (! iter.pastEnd()) {
 	if (! iter.file().isWritable()) {
 	    names.resize (n+1, True);
@@ -307,9 +310,10 @@ Bool Table::isNativeDataType (DataType dtype)
 //# The logic is similar to that in open.
 uInt Table::getLayout (TableDesc& desc, const String& tableName)
 {
+    String tabName = Path(tableName).absoluteName();
     uInt nrow, format;
     String tp;
-    AipsIO ios (Table::fileName(tableName));
+    AipsIO ios (Table::fileName(tabName));
     ios.getstart ("Table");
     ios >> nrow;
     ios >> format;
@@ -373,18 +377,20 @@ void Table::open (const String& name, const String& type, int tableOption,
 	tableOption = Table::Old;
 	deleteOpt = True;
     }
+    // Make name absolute in case a chdir is done in e.g. Python.
+    String absName = Path(name).absoluteName();
     //# Look if the table is already in the cache.
     //# If so, link to it.
-    BaseTable* btp = lookCache (name, tableOption, lockOptions);
+    BaseTable* btp = lookCache (absName, tableOption, lockOptions);
     if (btp != 0) {
 	baseTabPtr_p = btp;
     }else{
 	//# Check if the table exists.
-	if (! Table::isReadable (name)) {
-	    throw (TableNoFile (name));
+	if (! Table::isReadable (absName)) {
+	    throw (TableNoFile (absName));
 	}
 	// Create the BaseTable object and add a PlainTable to the cache.
-	baseTabPtr_p = makeBaseTable (name, type, tableOption,
+	baseTabPtr_p = makeBaseTable (absName, type, tableOption,
 				      lockOptions, True, 0);
 	if (baseTabPtr_p == 0) {
 	    throw (AllocError("Table::open",1));
@@ -471,7 +477,7 @@ void Table::throwIfNull() const
 
 Bool Table::isOpened (const String& tableName)
 {
-    return  (PlainTable::tableCache (tableName) != 0);
+    return  (PlainTable::tableCache (Path(tableName).absoluteName()) != 0);
 }
 
 
@@ -723,14 +729,15 @@ Table Table::operator! () const
 //# Test if table exists and is readable.
 Bool Table::isReadable (const String& tableName)
 {
+    String tabName = Path(tableName).absoluteName();
     //# Test if the table file exists.
-    File file (Table::fileName(tableName));
+    File file (Table::fileName(tabName));
     if (!file.exists()) {
 	return False;
     }
     //# Open the table file and get its type.
     //# An exception may be thrown, but chances are very low.
-    AipsIO ios (Table::fileName(tableName));
+    AipsIO ios (Table::fileName(tabName));
     Bool valid = True;
     try {
 	if (ios.getNextType() != "Table") {
@@ -744,10 +751,11 @@ Bool Table::isReadable (const String& tableName)
 //# Test if table exists and is writable.
 Bool Table::isWritable (const String& tableName)
 {
-    if (! isReadable (tableName)) {
+    String tabName = Path(tableName).absoluteName();
+    if (! isReadable (tabName)) {
 	return False;
     }
-    File file (Table::fileName(tableName));
+    File file (Table::fileName(tabName));
     return file.isWritable();
 }
 

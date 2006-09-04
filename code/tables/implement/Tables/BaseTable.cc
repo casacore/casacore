@@ -70,6 +70,8 @@ BaseTable::BaseTable (const String& name, int option, uInt nrrow)
     if (name_p.empty()) {
 	name_p = File::newUniqueName ("", "tab").originalName();
     }
+    // Make name absolute in case a chdir is done in e.g. Python.
+    name_p = Path(name_p).absoluteName();
     if (option_p == Table::Scratch) {
 	option_p = Table::New;
     }
@@ -304,7 +306,7 @@ void BaseTable::prepareCopyRename (const String& newName,
 	throw (TableInvOpt ("BaseTable::rename",
 		      "must be Table::New, NewNoReplace, Scratch or Update"));
     }
-    // Do not do anything when the new name is the same as the old name.
+    // Do not do anything if the new name is the same as the old name.
     if (newName == name_p) {
 	return;
     }
@@ -334,6 +336,8 @@ void BaseTable::prepareCopyRename (const String& newName,
 void BaseTable::rename (const String& newName, int tableOption)
 {
     AlwaysAssert (!isNull(), AipsError);
+    // Make the name absolute.
+    String absNewName = Path(newName).absoluteName();
     // The table can be renamed if:
     // - it is not created yet
     // - it exists and its file is writable
@@ -346,21 +350,21 @@ void BaseTable::rename (const String& newName, int tableOption)
     }
     String oldName = name_p;
     // Do not rename physically when the new name is the same as the old name.
-    if (newName != oldName) {
-	prepareCopyRename (newName, tableOption);
+    if (absNewName != oldName) {
+	prepareCopyRename (absNewName, tableOption);
 	//# Do the actual renaming when the table exists.
 	//# It is possible that the files do not exist yet if rename
 	//# is used very early.
 	if (madeDir_p) {
 	    Directory fileOld(oldName);
-	    fileOld.move (newName);
+	    fileOld.move (absNewName);
 	}
 	//# Rename the names of the subtables in the keywords.
-	renameSubTables (newName, oldName);
+	renameSubTables (absNewName, oldName);
 	//# Okay, the table file has been renamed.
 	//# Now rename in the cache (if there) and internally.
-	PlainTable::tableCache.rename (newName, oldName);
-	name_p = newName;
+	PlainTable::tableCache.rename (absNewName, oldName);
+	name_p = absNewName;
     }
     //# (Un)mark for delete when necessary.
     if (tableOption == Table::Scratch) {
@@ -394,8 +398,11 @@ void BaseTable::trueDeepCopy (const String& newName,
 			      int endianFormat,
 			      Bool noRows) const
 {
+    AlwaysAssert (!isNull(), AipsError);
+    // Make the name absolute.
+    String absNewName = Path(newName).absoluteName();
     // Throw exception if new name is same as old one.
-    if (newName == name_p) {
+    if (absNewName == name_p) {
         throw TableError
 	       ("Table::deepCopy: new name equal to old name " + name_p);
     }
@@ -404,11 +411,11 @@ void BaseTable::trueDeepCopy (const String& newName,
     BaseTable* ncThis = const_cast<BaseTable*>(this);
     ncThis->flush (True, True);
     //# Prepare the copy (do some extra checks).
-    prepareCopyRename (newName, tableOption);
+    prepareCopyRename (absNewName, tableOption);
     // Create the new table and copy everything.
     Table oldtab(ncThis);
     Table newtab = TableCopy::makeEmptyTable
-                        (newName, dataManagerInfo, oldtab, Table::New,
+                        (absNewName, dataManagerInfo, oldtab, Table::New,
 			 Table::EndianFormat(endianFormat), True, noRows);
     if (!noRows) {
       TableCopy::copyRows (newtab, oldtab);
@@ -420,8 +427,10 @@ void BaseTable::trueDeepCopy (const String& newName,
 void BaseTable::copy (const String& newName, int tableOption) const
 {
     AlwaysAssert (!isNull(), AipsError);
+    // Make the name absolute.
+    String absNewName = Path(newName).absoluteName();
     // Do not copy when the new name is the same as the old name.
-    if (newName != name_p) {
+    if (absNewName != name_p) {
 	//# Throw an exception when directories do not exist yet.
 	if (!madeDir_p) {
 	    throw (TableError
@@ -432,14 +441,14 @@ void BaseTable::copy (const String& newName, int tableOption) const
 	((BaseTable*)this)->flush (True, True);
 	//# Copy the files (thus recursively the entire directory).
 	//# Set user write permission after the copy.
-	prepareCopyRename (newName, tableOption);
+	prepareCopyRename (absNewName, tableOption);
 	Directory fileOld(name_p);
-//#//	fileOld.copy (newName, True, True);
-	fileOld.copy (newName);
+//#//	fileOld.copy (absNewName, True, True);
+	fileOld.copy (absNewName);
 	//# Okay, the table file have been copied.
 	//# Now rename the subtables in its keywords (where needed).
-	Table tab(newName, Table::Update);
-	tab.baseTablePtr()->renameSubTables (newName, name_p);
+	Table tab(absNewName, Table::Update);
+	tab.baseTablePtr()->renameSubTables (absNewName, name_p);
     }
 }
 
