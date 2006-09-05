@@ -243,7 +243,7 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
     if (!getLine (jFile, lineNumber, string1, lineSize,
 		  testComment, commentMarker,
 		  firstLine, lastLine)) {
-      throw (AipsError ("No .endkey line in " + fileName));
+      throw AipsError ("ReadAsciiTable: no .endkey line in " + fileName);
     }
 
 // If we are at END of KEYWORDS read the next line to get NAMES OF COLUMNS
@@ -263,9 +263,9 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
     Int done3 = getNext (string1, lineSize, first, at3, ' '); 
     Int done4 = getNext (string1, lineSize, second, at3, ' '); 
     if (done3<=0 || done4<=0) {
-      throw (AipsError ("No keyword name or type in line " +
-			String::toString(lineNumber)
-			+ " of " + fileName));
+      throw AipsError ("ReadAsciiTable: no keyword name or type in line " +
+		       String::toString(lineNumber)
+		       + " of " + fileName);
     }
     String keyName = String(first);
     String keyType = String(second);
@@ -418,11 +418,12 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   // It should have a type before the first digit.
   uInt pos = vec(0).find (Regex("[0-9]"));
   if (pos == 0) {
-    throw AipsError ("No type info in type string '" + typestr + "'");
+    throw AipsError ("ReadAsciiTable: no type info in type string '" +
+		     typestr + "'");
   }
   // Get type without shape info.
-  // Note: need to convert pos to an Int because some compilers are more picky about
-  // type safety, i.e. the native compilers for SGI and SUN
+  // Note: need to convert pos to an Int because some compilers are more picky
+  // about type safety, i.e. the native compilers for SGI and SUN.
   String tp = vec(0).before (Int(pos));
   if (pos >= vec(0).length()) {
     vec(0) = String();
@@ -440,15 +441,15 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   // One variable shaped axis is possible.
   for (uInt i=0; i<vec.nelements(); i++) {
     if (! vec(i).matches (num)) {
-      throw AipsError ("Invalid shape value '" + vec(i) +
+      throw AipsError ("ReadAsciiTable: invalid shape value '" + vec(i) +
 		       "' in type string '" + typestr + "'");
     }
     istringstream istr(vec(i));
     istr >> shape(i);
     if (shape(i) <= 0) {
       if (varAxis >= 0) {
-	throw AipsError ("Multiple variable axes in type string '"
-			 + typestr + "'");
+	throw AipsError ("ReadAsciiTable: multiple variable axes in "
+			 "type string '" + typestr + "'");
       }
       varAxis = i;
       shape(i) = 1;
@@ -475,7 +476,7 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   } else if (tp == "DZ") {
     type = RATDComZ;
   } else {
-    throw AipsError ("Invalid type specifier '" + tp + "'");
+    throw AipsError ("ReadAsciiTable: invalid type specifier '" + tp + "'");
   }
   return varAxis;
 }
@@ -1015,7 +1016,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
     String hdrName = headerPath.expandedName();
     jFile.open(hdrName.chars(), ios::in);
     if (! jFile) {
-        throw (AipsError ("Cannot open header file " + hdrName));
+        throw AipsError ("ReadAsciiTable: file " + hdrName +
+			 " not found or unreadable" );
     }
 
 // Read the first line. It will be KEYWORDS or NAMES OF COLUMNS
@@ -1024,7 +1026,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
     if (!getLine (jFile, lineNumber, string1, lineSize,
 		  testComment, commentMarker,
 		  firstHeaderLine, lastHeaderLine)) {
-	throw (AipsError ("Cannot read first header line of " + headerfile));
+	throw AipsError ("ReadAsciiTable: cannot read first header line of " +
+			 headerfile);
     }
 
 // If the first line shows that we have KEYWORDS read until the
@@ -1047,12 +1050,14 @@ Table ReadAsciiTable::makeTab (String& formatString,
 // Previous line should be NAMES OF COLUMNS; now get TYPE OF COLUMNS line
     if (!autoHeader) {
         if (string1[0] == '\0') {
-	    throw (AipsError("No COLUMN NAMES line in " + headerfile));
+	    throw AipsError ("ReadAsciiTable: no COLUMN NAMES line in " +
+			     headerfile);
 	}
 	if (!getLine (jFile, lineNumber, string2, lineSize,
 		      testComment, commentMarker,
 		      firstHeaderLine, lastHeaderLine)) {
-	    throw (AipsError("No COLUMN TYPES line in " + headerfile));
+	    throw AipsError ("ReadAsciiTable: no COLUMN TYPES line in " +
+			     headerfile);
 	}
     }
 
@@ -1065,7 +1070,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
 	String fileName = filePath.expandedName();
 	jFile.open(fileName.chars(), ios::in);
 	if (! jFile) {
-	    throw (AipsError ("Cannot open input file " + fileName));
+	    throw AipsError ("ReadAsciiTable: input file " + fileName +
+			     " not found or unreadable");
 	}
 	lineNumber = 0;
 	if (autoHeader) {
@@ -1109,8 +1115,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
 	    formStr += nameOfColumn[nrcol] + "=" + tstrOfColumn[nrcol];
 	    nrcol++;
 	} else if (done1>=0 || done2>=0) {
-	    throw (AipsError ("Mismatching COLUMN NAMES and TYPES lines in "
-			      + headerfile));
+	    throw AipsError ("ReadAsciiTable: mismatching COLUMN NAMES "
+			     "and TYPES lines in " + headerfile);
 	}
     }
 
@@ -1125,7 +1131,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
 				shapeOfColumn[i5],
 				typeOfColumn[i5]);
 	if (varAxis >= 0  &&  i5 != nrcol-1) {
-	  throw AipsError ("Only last column can have variable shaped arrays");
+	  throw AipsError ("ReadAsciiTable: "
+			   "only last column can have variable shaped arrays");
 	}
 	if (shapeOfColumn[i5].nelements() > 0) {
 	  IPosition shape;
@@ -1230,7 +1237,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
 
     TableColumn* tabcol = new TableColumn[nrcol];
     if (tabcol == 0) {
-	throw (AllocError ("readAsciiTable", nrcol));
+	throw AllocError ("readAsciiTable", nrcol);
     }
     for (Int i=0; i<nrcol; i++) {
 	tabcol[i].reference (TableColumn (tab, nameOfColumn[i]));
