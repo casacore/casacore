@@ -223,7 +223,10 @@ public:
     // The number of elements in this IPosition. Since IPosition
     // objects use zero-based indexing, the maximum available index is
     // nelements() - 1.
+    // <group>
     uInt nelements() const;
+    uInt size() const;
+    // </group>
 
     // conform returns true if nelements() == other.nelements().
     Bool conform(const IPosition& other) const;
@@ -464,6 +467,10 @@ inline IPosition IPosition::makeAxisPath (uInt nrdim)
 }
 
 inline uInt IPosition::nelements() const
+{
+    return size_p;
+}
+inline uInt IPosition::size() const
 {
     return size_p;
 }
