@@ -65,16 +65,6 @@ void SerialHelper::checkFuncType(const String& ftype) const
 					     ftype + ", found " + thistype);
 }
 
-//
-// Definition needs to go into casa/aipsdef.h but Ger has it locked right now.
-//
-
-#if defined(AIPS_SUN_NATIVE)
-#define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
-#else
-#define WHATEVER_SUN_EXCEPTSPEC(X)
-#endif
-
 template <> void getArrayVal<Bool>(Bool& val,     Int gtype, const Record& gr, 
 			                  const String& name, uInt index)WHATEVER_SUN_EXCEPTSPEC(InvalidSerializationError)
 {
