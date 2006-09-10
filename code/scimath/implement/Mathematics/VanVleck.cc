@@ -466,7 +466,8 @@ Double VanVleck::invErfc(Double x)
   Double result;
   if (x>=2.0) {
     result = -C::dbl_max;
-  } if (x>=0.0625 && x<2.0) {
+  }
+  if (x>=0.0625 && x<2.0) {
     // just use invErf(1-x)
     result = invErf(1.0-x);
   } else if (x>=1e-100) {
@@ -484,7 +485,7 @@ Double VanVleck::invErfc(Double x)
     q2 = 1.385228141995;
     q3 = 1.0;
     result = (p1/t+p2+t*(p3+t*(p4+t*(p5+t*p6)))) / (q1+t*(q2+t*q3));
-  } else if (x>=1e-1000) {
+  } else if (x>0) {
     // from table 70 of Blair et al
     // maximum relative error of 2.45e-8
     Double t = 1.0/sqrt(-log(x));
