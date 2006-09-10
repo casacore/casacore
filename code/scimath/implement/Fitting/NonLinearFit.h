@@ -242,6 +242,7 @@ protected:
   using GenericL2Fit<T>::set;
   using GenericL2Fit<T>::buildConstraint;
   using GenericL2Fit<T>::fillSVDConstraints;
+  using GenericL2Fit<T>::isReady;
 };
 
 } //# End namespace casa

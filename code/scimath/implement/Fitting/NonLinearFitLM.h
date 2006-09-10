@@ -140,7 +140,7 @@ protected:
   using NonLinearFit<T>::buildConstraint;
   using NonLinearFit<T>::setMaskedParameterValues;
   using NonLinearFit<T>::fillSVDConstraints;
-  using LSQFit::isReady;
+  using NonLinearFit<T>::isReady;
 };
 
 } //# End namespace casa
