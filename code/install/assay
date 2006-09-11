@@ -112,10 +112,12 @@
 
 # Check if command is a glish script.
   COMMAND="$@"
+  SCRIPTUSED=0
   set $@
   case $1 in
   *.g)
      COMMAND="glish $COMMAND"
+     SCRIPTUSED=1
      ;;
   esac
 
@@ -123,10 +125,12 @@
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"
+     SCRIPTUSED=1
   else
      if [ -f "src/$1.run" ]
      then
         COMMAND="sh $1.run"
+	SCRIPTUSED=1
         CLEANUP="$CLEANUP $1.run"
         cp src/$1.run .
      fi
@@ -160,27 +164,71 @@
      fi
   done
 
-  if eval "$COMMAND" > ${1}_tmp.out
+  # If running on a Cray cluster, we have to use qsub and yod.
+  QSUBP= `which qsub` | sed -e 's%^[^/].*%%'
+  YODP=`which yod` | sed -e 's%^[^/].*%%'
+  if [ "$QSUBP" != ""  -a  "$YODP" != "" ]
   then
-     if [ -f $1.out ]
-     then
-        CAT="$1.out"
-     elif [ -f src/$1.out ]
-     then
-        CAT="src/$1.out"
-     else
-        echo "PASS (execution succeeded): $*"
-        STATUS=0
-        exit
-     fi
+    # .run files are not supported yet.
+    if [ -f "$1.run" ]
+    then
+      echo "UNTESTED: $*"
+      exit 3
+    fi
+    # Create a batch job which will use a single processor.
+    # Copy the AIPSPATH definition.
+    # Because the job does not wait, we do that by using a wait file.
+    # Note that yod does wait.
+    rm -f $1_tmp.wait
+    cat > $1_tmp.qsub <<EOF
+#PBS -l size=1
+#PBS -N $1_tmp_job
+#PBS -j oe
+#PBS -v AIPSPATH
+cd \$PBS_O_WORKDIR
+yod -sz 1 ./$1 > $1_tmp.out
+touch $1_tmp.wait
+EOF
+    # Submit the job and wait for it to be finished.
+    # Do not wait longer than 10 minutes.
+    qsub $1_tmp.qsub
+    NRTIMES=0
+    while [ ! -f $1_tmp.wait]
+    do
+      if test $NRTIMES -gt 600
+      then
+        # Keep job file.
+        mv $1_tmp_job  $1_job
+        echo "FAIL (execution killed): $*"
+        exit 1
+      fi
+      sleep 1
+      NRTIMES=`expr $NRTIMES + 1`
+    done
+
   else
-     STATUS=$?
-     if [ $STATUS = 3 ]
-     then
+    if ! eval "$COMMAND" > ${1}_tmp.out
+    then
+      STATUS=$?
+      if [ $STATUS = 3 ]
+      then
         echo "UNTESTED: $*"
-     else
+      else
         echo "FAIL (execution failure): $*"
-     fi
+      fi
+      exit
+    fi
+  fi
+
+  if [ -f $1.out ]
+  then
+     CAT="$1.out"
+  elif [ -f src/$1.out ]
+  then
+     CAT="src/$1.out"
+  else
+     echo "PASS (execution succeeded): $*"
+     STATUS=0
      exit
   fi
 
