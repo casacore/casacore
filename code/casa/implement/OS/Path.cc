@@ -304,6 +304,11 @@ String Path::expandName (const String& inString) const
 		String temp (tempString.before(Int(cursor)));
 		// The password file is used to get the home directory 
 		// of "~name"
+		// This cannot be done on the CRAY XT3 CATAMOUNT as it
+		// does not support sockets.
+#ifdef AIPS_CRAY_CATAMOUNT
+		tempString.prepend ("~");
+#else
 		passwd* passWd = getpwnam(temp.chars());
 		if (passWd != 0) {
 		    tempString.del (tempString.before (Int(cursor)));
@@ -312,6 +317,7 @@ String Path::expandName (const String& inString) const
 		}else{
 		    tempString.prepend ("~");
 		}
+#endif
 	    }
 	}
 	cursor = 0;
