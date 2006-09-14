@@ -97,6 +97,7 @@ public:
     // Construct it from a field name.
     // <group>
     RecordFieldId (const String& name);
+    RecordFieldId (const std::string& name);
     RecordFieldId (const Char* name);
     // </group>
 
@@ -123,6 +124,12 @@ inline RecordFieldId::RecordFieldId (Int fieldNumber)
 {}
 
 inline RecordFieldId::RecordFieldId (const String& fieldName)
+: byName_p (True),
+  number_p (-1),
+  name_p   (fieldName)
+{}
+
+inline RecordFieldId::RecordFieldId (const std::string& fieldName)
 : byName_p (True),
   number_p (-1),
   name_p   (fieldName)
