@@ -32,7 +32,7 @@
 
 //# Includes
 #include <casa/Containers/ValueHolderRep.h>
-#include <casa/Containers/Record.h>
+#include <casa/Arrays/Array.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
