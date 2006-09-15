@@ -68,7 +68,7 @@ AIPSIMPS := $(filter-out $(THISAPP).cc,$(filter %.cc,$(AIPSSRCS)))
 PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
 
 # Python scripts.
-LIBPYTHS := $(filter %.py %.pyc, $(AIPSSRCS))
+LIBPYTHS := $(filter %.py, $(AIPSSRCS))
 
 # Glish scripts.
 LIBEXECS := $(filter %.g %.gp %.gm, $(AIPSSRCS))
@@ -301,14 +301,11 @@ $(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
 
 $(TMPPCKGD)/%.ycc : ;
 
-
-$(LIBEXECD)/python/$(THISAPP)/% : $(LIBEXECD)/python/$(THISAPP) $(CODEDIR)/%
+$(LIBEXECD)/python/$(THISAPP)/% : $(CODEDIR)/%
+	@ amkdir -p u=rwx,og=rx -v -s $@
 	@ $(RM) $@
 	  cp $< $@
 	@ chmod 664 $@
-
-$(LIBEXECD)/python/$(THISAPP) : $(LIBEXECD)/python
-	amkdir -p ugo=rx -v $(LIBEXECD)/python/$(THISAPP)
 
 $(LIBEXECD)/% : $(CODEDIR)/%
 	@ $(RM) $@
@@ -435,9 +432,9 @@ allsys : $(BIN)
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
 
-bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBPYTHS) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
+#bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBPYTHS) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
 
-bindbg : $(TMPPCKGD) $(BINDBGD)/$(THISAPP) ;
+#bindbg : $(TMPPCKGD) $(BINDBGD)/$(THISAPP) ;
 
 $(TMPPCKGD) :
 	@ if [ ! -d "$@" ] ; then \

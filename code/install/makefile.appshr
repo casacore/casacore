@@ -42,52 +42,58 @@ include $(word 1, $(AIPSPATH))/code/install/makefile.app_c
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
-   .PRECIOUS : $(PGMRLIBD)/lib%.$(SFXSHAR) $(PGMRBIND)/%.o $(PGMRBIND)/%.i
+   .PRECIOUS : $(PGMRLIBD)/_%.$(SFXSHAR) $(PGMRBIND)/%.o $(PGMRBIND)/%.i
 
-   lib%.$(SFXSHAR) : $(PGMRLIBD)/lib%.$(SFXSHAR) ;
-   %               : lib%.$(SFXSHAR) ;
+   _%.$(SFXSHAR) : $(PGMRLIBD)/_%.$(SFXSHAR) ;
+   %             : _%.$(SFXSHAR) ;
 
-   $(PGMRLIBD)/lib%.$(SFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
+   $(PGMRLIBD)/_%.$(SFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
 	-@ echo ""
 	-@ $(RM) $@
 	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 endif
 
-$(LIBDBGD)/lib%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
+$(LIBDBGD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking $* (dbg) because of $(?F)"
+	-@ echo "Remaking _$*.$(SFXSHAR) (dbg) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++DBG) \
+	   $(MKSO) $(LDSOPTS) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) \
+	      $(AIPSINCL) $(C++DBG) \
 	      $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) \
 	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) \
-	      $(patsubst $(LIBDBGD)/lib%.$(SFXSHAR), -l%, $(DBGLIBS)) \
+	      $(patsubst $(LIBDBGD)/_%.$(SFXSHAR), -l%, $(DBGLIBS)) \
 	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
 	         $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 
-$(LIBOPTD)/lib%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
+$(LIBOPTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking $* (opt) because of $(?F)"
+	-@ echo "Remaking _$*.$(SFXSHAR) (opt) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(C++) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) $(AIPSINCL) $(C++OPT) \
+	   $(MKSO) $(LDSOPTS) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) \
+	      $(AIPSINCL) $(C++OPT) \
 	      $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) \
 	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTVERSO) \
-	      $(patsubst $(LIBOPTD)/lib%.$(SFXSHAR), -l%, $(OPTLIBS)) \
+	      $(patsubst $(LIBOPTD)/_%.$(SFXSHAR), -l%, $(OPTLIBS)) \
 	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
 	         $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 
-$(LIBDBGD)/lib%.$(SFXSTAT) : ;
+$(LIBDBGD)/_%.$(SFXSTAT) : ;
 $(BINDBGD)/% : ;
-$(LIBOPTD)/lib%.$(SFXSTAT) : ;
+$(LIBOPTD)/_%.$(SFXSTAT) : ;
 $(BINOPTD)/% : ;
+
+bin    : $(TMPPCKGD) $(LIBOPTD)/_$(THISAPP).$(SFXSHAR) $(LIBPYTHS) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
+
+bindbg : $(TMPPCKGD) $(LIBDBGD)/_$(THISAPP).$(SFXSHAR) ;
