@@ -71,15 +71,15 @@ TableProxy::TableProxy()
 {}
 
 TableProxy::TableProxy (const String& tableName,
-			const TableLock& lockOptions,
-			const Table::TableOption option)
+			const Record& lockOptions,
+			int option)
 {
-  table_p = Table (tableName, lockOptions, option);
+  table_p = Table (tableName, makeLockOptions(lockOptions),
+		   Table::TableOption(option));
 }
 
-
 TableProxy::TableProxy (const String& tableName,
-			const TableLock& lockOptions,
+			const Record& lockOptions,
 			const String& endianFormat,
 			const String& memType,
 			Int nrow,
@@ -107,30 +107,28 @@ TableProxy::TableProxy (const String& tableName,
   SetupNewTable newtab(tableName, tabdesc, Table::New);
   // Apply a possible dminfo object.
   newtab.bindCreate (dmInfo);
-  table_p = Table (newtab, type, lockOptions, nrow, False, endOpt);
+  table_p = Table (newtab, type, makeLockOptions(lockOptions),
+		   nrow, False, endOpt);
 }
 
 TableProxy::TableProxy (const String& command,
-			const std::vector<const TableProxy*>& tables,
-			Record& result)
+			const std::vector<TableProxy>& tables)
 {
   std::vector<const Table*> tabs(tables.size());
   for (uInt i=0; i<tabs.size(); i++) {
-    tabs[i] = &(tables[i]->table());
+    tabs[i] = &(tables[i].table());
   }
   // Try to execute the command.
   TaQLResult taqlResult;
   taqlResult = tableCommand (command, tabs);
-  Record rec;
   // Command succeeded.
   // Add table if result is a table.
   if (taqlResult.isTable()) {
     table_p = taqlResult.table();
   } else {
     // Result is a calculation. Return the resulting values.
-    calcValues (rec, taqlResult.node());
+    calcValues (calcResult_p, taqlResult.node());
   }
-  result = rec;
 }
 
 TableProxy::TableProxy (const String& fileName,
@@ -141,8 +139,7 @@ TableProxy::TableProxy (const String& fileName,
 			const String& separator,
 			const String& commentMarker,
 			Int firstLine,
-			Int lastLine,
-			String& result)
+			Int lastLine)
 {
   if (separator.length() != 1) {
     throw AipsError ("tablefromascii : separator must be 1 char");
@@ -151,13 +148,14 @@ TableProxy::TableProxy (const String& fileName,
   // Create the table
   String inputFormat;
   if (headerName.empty()) {
-    result = readAsciiTable(fileName, "", tableName, autoHeader, sep,
-			    commentMarker, firstLine, lastLine,
-			    IPosition(autoShape));
+    asciiFormat_p = readAsciiTable(fileName, "", tableName, autoHeader, sep,
+				   commentMarker, firstLine, lastLine,
+				   IPosition(autoShape));
   } else {
-    result = readAsciiTable(headerName, fileName, "", tableName, sep,
-			    commentMarker, firstLine, lastLine);
+    asciiFormat_p = readAsciiTable(headerName, fileName, "", tableName, sep,
+				   commentMarker, firstLine, lastLine);
   }
+  // Open the table.
   table_p = Table(tableName);
 }
 
@@ -464,6 +462,33 @@ Record TableProxy::getColumnDescription (const String& columnName,
   return recordColumnDesc (columnDescription);
 }
 
+String TableProxy::tableName()
+{
+  return table_p.tableName();
+}
+
+String TableProxy::getAsciiFormat() const
+{
+  return asciiFormat_p;
+}
+
+Record TableProxy::getCalcResult() const
+{
+  return calcResult_p;
+}
+
+Int TableProxy::nrows()
+{
+  // If needed synchronize table to get up-to-date number of rows.
+  syncTable (table_p);
+  return table_p.nrow();
+}
+
+Int TableProxy::ncolumns()
+{
+  return table_p.tableDesc().ncolumn();
+}
+
 Vector<Int> TableProxy::shape()
 {
   // If needed synchronize table to get up-to-date number of rows.
@@ -633,12 +658,12 @@ Record TableProxy::getVarColumn (const String& columnName,
 }
 
 ValueHolder TableProxy::getColumnSlice (const String& columnName,
-					Int row,
-					Int nrow,
-					Int incr,
 					const Vector<Int>& blc,
 					const Vector<Int>& trc,
-					const Vector<Int>& inc)
+					const Vector<Int>& inc,
+					Int row,
+					Int nrow,
+					Int incr)
 {
   Vector<Int> cblc, ctrc;
   cblc = blc;
@@ -660,10 +685,10 @@ ValueHolder TableProxy::getColumnSlice (const String& columnName,
 }
 
 void TableProxy::putColumn (const String& columnName,
+			    const ValueHolder& value,
 			    Int row,
 			    Int nrow,
-			    Int incr,
-			    const ValueHolder& value)
+			    Int incr)
 {
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
@@ -674,10 +699,10 @@ void TableProxy::putColumn (const String& columnName,
 }
 
 void TableProxy::putVarColumn (const String& columnName,
+			       const Record& values,
 			       Int row,
 			       Int nrow,
-			       Int incr,
-			       const Record& values)
+			       Int incr)
 {
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
@@ -696,13 +721,13 @@ void TableProxy::putVarColumn (const String& columnName,
 }
 
 void TableProxy::putColumnSlice (const String& columnName,
-				 Int row,
-				 Int nrow,
-				 Int incr,
+				 const ValueHolder& value,
 				 const Vector<Int>& blc,
 				 const Vector<Int>& trc,
 				 const Vector<Int>& inc,
-				 const ValueHolder& value)
+				 Int row,
+				 Int nrow,
+				 Int incr)
 {
   Vector<Int> cblc, ctrc;
   cblc = blc;
@@ -740,10 +765,10 @@ void TableProxy::putCell (const String& columnName,
 
 void TableProxy::putCellSlice (const String& columnName,
 			       Int row,
+			       const ValueHolder& value,
 			       const Vector<Int>& blc,
 			       const Vector<Int>& trc,
-			       const Vector<Int>& inc,
-			       const ValueHolder& value)
+			       const Vector<Int>& inc)
 {
   Vector<Int> cblc, ctrc;
   cblc = blc;
@@ -930,7 +955,7 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
     desc = &(keySet->description());
   } else {
     if (keySet->dataType (fieldid) != TpRecord) {
-      throw TableError("Keyword does not contain a record-value");
+      throw TableError("Keyword does not contain a subrecord");
     }
     desc = &(keySet->subRecord(fieldid).description());
   }
@@ -1047,7 +1072,7 @@ void TableProxy::addRow (Int nrow)
   table_p.addRow (nrow);
 }
 
-void TableProxy::removeRow (const Vector<Int> rownrs)
+void TableProxy::removeRow (const Vector<Int>& rownrs)
 {
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
@@ -2448,6 +2473,9 @@ void TableProxy::setDefaultForSlicer (Vector<Int>& vec) const
 
 TableLock TableProxy::makeLockOptions (const Record& options)
 {
+  if (options.nfields() == 0) {
+    return TableLock();
+  }
   if (! options.isDefined("option")) {
     throw TableError ("lockOptions must contain field 'option'");
   }

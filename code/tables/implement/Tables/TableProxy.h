@@ -32,6 +32,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
+#include <casa/Containers/Record.h>
 #include <vector>
 
 #include <casa/namespace.h>
@@ -39,7 +40,6 @@
 //# Forward Declarations
 namespace casa { //# NAMESPACE CASA - BEGIN
   class ValueHolder;
-  class Record;
   class RecordFieldId;
   class Table;
   class TableLock;
@@ -117,32 +117,33 @@ public:
 
   // Open the table with a given name.
   TableProxy (const String& tableName,
-	      const TableLock& lockOptions,
-	      const Table::TableOption option);
+	      const Record& lockOptions,
+	      int option);
 
   // Create a table with given name and description, etc..
   TableProxy (const String& tableName,
-	      const TableLock& lockOptions,
+	      const Record& lockOptions,
 	      const String& endianFormat,
 	      const String& memType,
-	      Int nrow,
-	      const Record& tableDesc,
-	      const Record& dmInfo);
+	      int nrow,
+  	      const Record& tableDesc,
+  	      const Record& dmInfo);
 
   // Creeate a table object from a table command (as defined in TableGram).
   // <br>If a CALC command was given, the resulting values are stored in
-  // the record and a null TableProxy object is returned.
+  // the a record and a null TableProxy object is returned.
+  // The result can be obtained using getCalcResult.
   // <note>
   // If the command string contains no GIVING part, the resulting
   // table is temporary and its name is blank.
   // </note>
   TableProxy (const String& command,
-	      const std::vector<const TableProxy*>& tables,
-	      Record& result);
+	      const std::vector<TableProxy>& tables);
 
   // Create a table from an Ascii file.
-  // It fills result with a string containing the names and types
+  // It fills a string containing the names and types
   // of the columns (in the form COL1=R, COL2=D, ...).
+  // The string can be obtained using getAsciiFormat.
   TableProxy (const String& fileName,
 	      const String& headerName,
 	      const String& tableName,
@@ -151,8 +152,7 @@ public:
 	      const String& separator,
 	      const String& commentMarker,
 	      Int firstLine,
-	      Int lastLine,
-	      String& result);
+	      Int lastLine);
 
   // Copy constructor.
   TableProxy (const TableProxy&);
@@ -205,7 +205,7 @@ public:
   void rename (const String& newTableName);
 
   // Copy the table (possibly a deep copy).
-  // A maximum of nrows is copied (<0 means all rows).
+  // If noRows=True, an empty table is created.
   TableProxy copy (const String& newTableName,
 		   Bool toMemoryTable,
 		   Bool deepCopy,
@@ -259,7 +259,7 @@ public:
   void addRow (Int nrow);
 
   // Remove rows from the table.
-  void removeRow (const Vector<Int> rownrs);
+  void removeRow (const Vector<Int>& rownrs);
 
   // Get some or all values from a column in the table.
   // row is the starting row number (0-relative).
@@ -279,12 +279,12 @@ public:
   // Get some or all value slices from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
   ValueHolder getColumnSlice (const String& columnName,
-			      Int row,
-			      Int nrow,
-			      Int incr,
 			      const Vector<Int>& blc,
 			      const Vector<Int>& trc,
-			      const Vector<Int>& inc);
+			      const Vector<Int>& inc,
+			      Int row,
+			      Int nrow,
+			      Int incr);
 
   // Put some or all values into a column in the table.
   // row is the starting row number (0-relative).
@@ -292,26 +292,26 @@ public:
   // incr is the step in row number.
   // <group>
   void putColumn (const String& columnName,
+		  const ValueHolder&,
 		  Int row,
 		  Int nrow,
-		  Int incr,
-		  const ValueHolder&);
+		  Int incr);
   void putVarColumn (const String& columnName,
+		     const Record& values,
 		     Int row,
 		     Int nrow,
-		     Int incr,
-		     const Record& values);
+		     Int incr);
   // </group>
 
   // Put some or all value slices into a column in the table.
   void putColumnSlice (const String& columnName,
-		       Int row,
-		       Int nrow,
-		       Int incr,
+		       const ValueHolder&,
 		       const Vector<Int>& blc,
 		       const Vector<Int>& trc,
 		       const Vector<Int>& inc,
-		       const ValueHolder&);
+		       Int row,
+		       Int nrow,
+		       Int incr);
 
   // Tests if the contents of a cell are defined.
   // Only a column with variable shaped arrays can have an empty cell.
@@ -339,10 +339,10 @@ public:
   // If the inc vector is empty, it defaults to all 1.
   void putCellSlice (const String& columnName,
 		     Int row,
+		     const ValueHolder&,
 		     const Vector<Int>& blc,
 		     const Vector<Int>& trc,
-		     const Vector<Int>& inc,
-		     const ValueHolder&);
+		     const Vector<Int>& inc);
 
   // Get the shape of one or more cells in a column as a vector of Strings
   // containing the shapes as [a,b,c].
@@ -397,6 +397,15 @@ public:
 				const String& keywordName,
 				Int keywordIndex);
 
+  // Get table name.
+  String tableName();
+
+  // Get #columns of the table.
+  Int ncolumns();
+
+  // Get #rows of the table.
+  Int nrows();
+
   // Get the shape (#columns, #rows) of the table.
   Vector<Int> shape();
 
@@ -437,13 +446,11 @@ public:
   Record getColumnDescription (const String& columnName,
 			       Bool actual);      //# use actual description?
 
-  // Get the lock options from the fields in the record.
-  // If the record or lockoption is invalid, an exception is thrown.
-  static TableLock makeLockOptions (const Record& options);
+  // Get ascii format string.
+  String getAsciiFormat() const;
 
-  // Turn the string into the endian format option.
-  // An exception is thrown if the string is invalid.
-  static Table::EndianFormat makeEndianFormat (const String& endianFormat);
+  // Get result of possible CALC statement.
+  Record getCalcResult() const;
 
   // Return the table object.
   // <group>
@@ -455,6 +462,14 @@ public:
 
 
 private:
+  // Get the lock options from the fields in the record.
+  // If the record or lockoption is invalid, an exception is thrown.
+  static TableLock makeLockOptions (const Record& options);
+
+  // Turn the string into the endian format option.
+  // An exception is thrown if the string is invalid.
+  static Table::EndianFormat makeEndianFormat (const String& endianFormat);
+
   // Make hypercolumn definitions for the given hypercolumns.
   static Bool makeHC (const Record& gdesc, TableDesc& tabdesc,
 		      String& message);
@@ -569,7 +584,9 @@ private:
 
 
   //# The data members.
-  Table table_p;
+  Table  table_p;
+  String asciiFormat_p;
+  Record calcResult_p;
 };
 
 } //# NAMESPACE CASA - END
