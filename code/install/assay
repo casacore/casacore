@@ -165,8 +165,9 @@
   done
 
   # If running on a Cray cluster, we have to use qsub and yod.
-  QSUBP= `which qsub` | sed -e 's%^[^/].*%%'
-  YODP=`which yod` | sed -e 's%^[^/].*%%'
+  # If found, the result is a path, thus starts with a slash.
+  QSUBP=`which qsub | sed -e 's%^[^/].*%%'`
+  YODP=`which yod | sed -e 's%^[^/].*%%'`
   if [ "$QSUBP" != ""  -a  "$YODP" != "" ]
   then
     # .run files are not supported yet.
