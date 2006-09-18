@@ -187,7 +187,7 @@ define CheckLink
       case $$PKG in \
       casa | scimath | tables | measures | fits | lattices | coordinates | components | images | ms | msfits | msvis | calibration | ionosphere | flagging | dish | simulators | synthesis | graphics | tasking) \
          ;; \
-      appsglish | contrib | vlbi | display) \
+      appsglish | appspython | contrib | vlbi | display) \
          ;; \
       alma | atnf | bima | hia | jive | nfra | npoi | nral | nrao | tifr) \
          ;; \
@@ -562,6 +562,45 @@ system :
     ifdef DO_TEST
 	-@ set ADVISORY $(RPFITSLIBD)/ $(RPFITSLIB) ; $(CheckLibs)
     endif
+
+	-@ echo ""
+	-@ echo "BOOSTROOT=$(BOOSTROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(BOOSTROOT) ; $(CheckDir)
+    endif
+	-@ echo "BOOSTDEFS=$(BOOSTDEFS)"
+	-@ echo "BOOSTINCD=$(BOOSTINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(BOOSTINCD) ; $(CheckDir)
+    endif
+	-@ echo "BOOSTLIBD=$(BOOSTLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(BOOSTLIBD) ; $(CheckDir)
+    endif
+	-@ echo "BOOSTLIB =$(BOOSTLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(BOOSTLIBD)/ $(BOOSTLIB) ; $(CheckLibs)
+    endif
+
+	-@ echo ""
+	-@ echo "PYTHONROOT=$(PYTHONROOT)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PYTHONROOT) ; $(CheckDir)
+    endif
+	-@ echo "PYTHONDEFS=$(PYTHONDEFS)"
+	-@ echo "PYTHONINCD=$(PYTHONINCD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PYTHONINCD) ; $(CheckDir)
+    endif
+	-@ echo "PYTHONLIBD=$(PYTHONLIBD)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PYTHONLIBD) ; $(CheckDir)
+    endif
+	-@ echo "PYTHONLIB =$(PYTHONLIB)"
+    ifdef DO_TEST
+	-@ set ADVISORY $(PYTHONLIBD)/ $(PYTHONLIB) ; $(CheckLibs)
+    endif
+
 	-@ echo ""
 	-@ echo "MIRLIBROOT=$(MIRLIBROOT)"
     ifdef DO_TEST
@@ -994,6 +1033,10 @@ system :
 	-@ echo "LINKappsglish  =$(LINKappsglish)"
     ifdef DO_TEST
 	-@ set WARNING $(LINKappsglish) ; $(CheckLink)
+    endif
+	-@ echo "LINKappspython  =$(LINKappspython)"
+    ifdef DO_TEST
+	-@ set WARNING $(LINKappspython) ; $(CheckLink)
     endif
 	-@ echo "LINKvlbi     =$(LINKvlbi)"
     ifdef DO_TEST

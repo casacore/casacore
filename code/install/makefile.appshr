@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# makefile.apppy: Generic AIPS++ makefile for (Python) shared lib
+# makefile.appshr: Generic AIPS++ makefile for (Python) shared lib
 #-----------------------------------------------------------------------------
 #
 #   Copyright (C) 1992-2004
@@ -38,7 +38,6 @@
 #---------------------
 include $(word 1, $(AIPSPATH))/code/install/makefile.app_c
 
-#override PGMRBIND := PGMRLIBD
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
@@ -52,6 +51,8 @@ ifeq "$(MAKEMODE)" "programmer"
 	-@ $(RM) $@
 	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 endif
+
+override LIBOPTD = $(LIBEXECD)/python/$(THISAPP)
 
 $(LIBDBGD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
@@ -76,7 +77,8 @@ $(LIBOPTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking _$*.$(SFXSHAR) (opt) because of $(?F)"
+	-@ echo "Remaking $@ (opt) because of $(?F)"
+	-@ amkdir -p u=rwx,og=rx -v -s $@
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
 	   $(MKSO) $(LDSOPTS) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) \
