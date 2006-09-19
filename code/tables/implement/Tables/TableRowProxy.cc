@@ -29,6 +29,7 @@
 #include <tables/Tables/TableRowProxy.h>
 #include <tables/Tables/TableProxy.h>
 #include <tables/Tables/TableRecord.h>
+#include <casa/Containers/Record.h>
 #include <tables/Tables/TableError.h>
 #include <casa/Arrays/Vector.h>
 
@@ -81,21 +82,23 @@ Bool TableRowProxy::isNull() const
   return (rorow_p.isAttached()  ?  False : True);
 }
 
-const TableRecord& TableRowProxy::get (uInt rownr) const
+Record TableRowProxy::get (uInt rownr) const
 {
-  return rorow_p.get (rownr, True);
+  return TableProxy::getKeyValues (rorow_p.get (rownr, True));
 }
 
-void TableRowProxy::put (uInt rownr, const TableRecord& record,
+void TableRowProxy::put (uInt rownr, const Record& record,
 			 Bool matchingFields)
 {
   if (!isWritable_p) {
     throw TableError ("TableRowProxy: the given TableRow is not writable");
   }
+  TableRecord trec;
+  TableProxy::putKeyValues (trec, record);
   if (matchingFields) {
-    rwrow_p.putMatchingFields (rownr, record);
+    rwrow_p.putMatchingFields (rownr, trec);
   } else {
-    rwrow_p.put (rownr, record);
+    rwrow_p.put (rownr, trec);
   }
 }
 

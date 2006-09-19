@@ -460,6 +460,15 @@ public:
     { return table_p; }
   // </group>
 
+  // Get or put the values of all keywords.
+  // Thus convert from TableRecord to/from Record.
+  // Keywords containing a table are converted to a string containing
+  // the table name preceeded by 'Table: '.
+  // <group>
+  static Record getKeyValues (const TableRecord& keySet);
+  static void putKeyValues (TableRecord& keySet, const Record& valueSet);
+  // </group>
+
 
 private:
   // Get the lock options from the fields in the record.
@@ -525,20 +534,14 @@ private:
 		  Bool mustExist, Bool change, Bool makeSubRecord);
   // </group>
 
-  // Get the values of all keywords.
-  Record getKeyValues (const TableRecord& keySet);
-
   // Get the value of a keyword.
-  ValueHolder getKeyValue (const TableRecord& keySet,
-			   const RecordFieldId& fieldId);
-
-  // Put all keyword values in valueSet.
-  void putKeyValues (TableRecord& keySet, const Record& valueSet);
+  static ValueHolder getKeyValue (const TableRecord& keySet,
+				  const RecordFieldId& fieldId);
 
   // Put the value of a keyword.
-  void putKeyValue (TableRecord& keySet,
-		    const RecordFieldId& fieldId,
-		    const ValueHolder& value);
+  static void putKeyValue (TableRecord& keySet,
+			   const RecordFieldId& fieldId,
+			   const ValueHolder& value);
 
   // Make a real table description from a table description in a record.
   // An exception is thrown if the record table description is invalid.

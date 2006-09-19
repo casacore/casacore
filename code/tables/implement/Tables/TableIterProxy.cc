@@ -27,6 +27,7 @@
 
 #include <tables/Tables/TableIterProxy.h>
 #include <tables/Tables/TableProxy.h>
+#include <casa/Containers/IterError.h>
 #include <casa/Arrays/Vector.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -35,7 +36,8 @@ TableIterProxy::TableIterProxy()
 : firstTime_p (True)
 {}
 
-TableIterProxy::TableIterProxy (TableProxy& tab, const Vector<String>& columns,
+TableIterProxy::TableIterProxy (const TableProxy& tab,
+				const Vector<String>& columns,
 				const String& order, const String& sortType)
 : firstTime_p (True)
 {
@@ -85,12 +87,12 @@ TableIterProxy& TableIterProxy::operator= (const TableIterProxy& that)
   return *this;
 }
 
-Bool TableIterProxy::next (TableProxy& table)
+Bool TableIterProxy::nextPart (TableProxy& table)
 {
   // The first iteration is already done by the TableIterator constructor.
   if (firstTime_p) {
     firstTime_p = False;
-  }else{
+  } else {
     iter_p.next();
   }
   // Exit when no more subtables.
@@ -100,5 +102,22 @@ Bool TableIterProxy::next (TableProxy& table)
   table = TableProxy (iter_p.table());
   return True;
 }
+
+TableProxy TableIterProxy::next()
+{
+  TableProxy tp;
+  Bool ok = nextPart (tp);
+  if (ok) {
+    return tp;
+  }
+  throw IterError();
+}
+
+void TableIterProxy::reset()
+{
+  iter_p.reset();
+  firstTime_p = True;
+}
+
 
 } //# NAMESPACE CASA - END

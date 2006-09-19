@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#ifndef TABLES_TBALEROWPROXY_H
-#define TABLES_TBALEROWPROXY_H
+#ifndef TABLES_TABLEROWPROXY_H
+#define TABLES_TABLEROWPROXY_H
 
 
 //# Includes
@@ -37,7 +37,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 class TableProxy;
-class TableRecord;
+class Record;
 
 
 // <summary>
@@ -94,11 +94,11 @@ public:
   Bool isWritable() const;
 
   // Get values for the given row.
-  const TableRecord& get (uInt rownr) const;
+  Record get (uInt rownr) const;
 
   // Put values for the given row.
   // The given record has to conform the fields in the table row.
-  void put (uInt rownr, const TableRecord& values, Bool matchingFields);
+  void put (uInt rownr, const Record& values, Bool matchingFields);
 
 private:
   Bool       isWritable_p;

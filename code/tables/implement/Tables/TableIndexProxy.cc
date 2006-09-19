@@ -48,6 +48,18 @@ TableIndexProxy::TableIndexProxy (const TableProxy& tablep,
   scaIndex_p = new ColumnsIndex (tablep.table(), columnNames, 0, noSort);
 }
 
+TableIndexProxy::TableIndexProxy (const TableIndexProxy& that)
+: scaIndex_p (0),
+  arrIndex_p (0)
+{
+  if (that.scaIndex_p != 0) {
+    scaIndex_p = new ColumnsIndex (*that.scaIndex_p);
+  }
+  if (that.arrIndex_p != 0) {
+    arrIndex_p = new ColumnsIndexArray (*that.arrIndex_p);
+  }
+}
+
 TableIndexProxy::~TableIndexProxy()
 {
   delete scaIndex_p;
@@ -91,8 +103,9 @@ void TableIndexProxy::setChanged (const Vector<String>& columnNames)
   }
 }
 
-Int TableIndexProxy::getRowNumber (Bool& found, const Record& key)
+Int TableIndexProxy::getRowNumber (const Record& key)
 {
+  Bool found;
   Int rownr;
   if (scaIndex_p != 0) {
     rownr = scaIndex_p->getRowNumber (found, key);
@@ -118,10 +131,10 @@ Vector<Int> TableIndexProxy::getRowNumbers (const Record& key)
   return rownrs;
 }
 
-Vector<Int> TableIndexProxy::getRowNumbers (const Record& lower,
-					    const Record& upper,
-					    Bool lowerInclusive,
-					    Bool upperInclusive)
+Vector<Int> TableIndexProxy::getRowNumbersRange (const Record& lower,
+						 const Record& upper,
+						 Bool lowerInclusive,
+						 Bool upperInclusive)
 {
   Vector<uInt> rows;
   if (scaIndex_p != 0) {

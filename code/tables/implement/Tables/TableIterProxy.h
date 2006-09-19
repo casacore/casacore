@@ -95,7 +95,7 @@ public:
   // order[0]=a means ascending; d means descending.
   // sortType[0]=q means quicksort, i means insertion sort,
   //             n means nosort, otherwise heapsort.
-  TableIterProxy (TableProxy& tab, const Vector<String>& columns,
+  TableIterProxy (const TableProxy& tab, const Vector<String>& columns,
 		  const String& order, const String& sortType);
 
   // Copy constructor (copy semantics).
@@ -116,7 +116,15 @@ public:
 
   // Get the next subtable and return it in the TableProxy argument.
   // When no more subtables are available, it returns False.
-  Bool next (TableProxy& table);
+  Bool nextPart (TableProxy& table);
+
+  // Iterate to the next part (for Python use).
+  // An IterError exception is thrown at the end of the loop.
+  TableProxy next();
+
+  // Reset the iterator (for Python use).
+  void reset();
+
 
 private:
   TableIterator iter_p;
