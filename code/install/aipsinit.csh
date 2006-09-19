@@ -56,6 +56,9 @@
 #    LD_LIBRARY_PATH   If defined, it will be modified for AIPS++ in the same
 #              manner as for PATH except using the "aips_lib" keyword.
 #
+#    PYTHONPATH   If defined, it will be modified for AIPS++ in the same
+#              manner as for PATH except using the "aips_py" keyword.
+#
 #    MANPATH   If defined, MANPATH will be modified for AIPS++ in the same
 #              manner as for PATH except using the "aips_doc" keyword.
 #
@@ -140,11 +143,14 @@
   endif
 
   if ("$a_arch" == NONE) then
-#    Remove aips_bin, aips_lib, and aips_doc from PATH, LD_LIBRARY_PATH,
-#    and MANPATH.
+#    Remove aips_bin, aips_lib, aips_py, and aips_doc from
+#    PATH, LD_LIBRARY_PATH, PYTHONPATH, and MANPATH.
      setenv PATH `/bin/echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
      if ($?LD_LIBRARY_PATH) then
         setenv LD_LIBRARY_PATH `/bin/echo ":${LD_LIBRARY_PATH}:" | sed -e '{s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
+     endif
+     if ($?PYTHONPATH) then
+        setenv PYTHONPATH `/bin/echo ":${PYTHONPATH}:" | sed -e '{s#:aips_py:#:#g;s#^:##;s#:$##;}'`
      endif
      if ($?MANPATH) then
         setenv MANPATH `/bin/echo ":${MANPATH}:" | sed -e '{s#:aips_doc:#:#g;s#^:##;s#:$##;}'`
@@ -297,7 +303,6 @@
      set a_new = `/bin/echo $a_new | sed -e 's# #:#g'`
      if ("$a_new" != "") setenv PATH "$a_new"
 
-
 #    Reset LD_LIBRARY_PATH.
      if ("$?LD_LIBRARY_PATH") then
         set a_new = `/bin/echo " $LD_LIBRARY_PATH " | sed -e 's#::*# #g' -e "s# $a_old/lib # aips_lib #g" -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
@@ -311,6 +316,22 @@
         if ("$a_new" != "") setenv LD_LIBRARY_PATH "$a_new"
      else
         setenv LD_LIBRARY_PATH "$a_root/$a_arch/lib"
+     endif
+
+
+#    Reset PYTHONPATH.
+     if ("$?PYTHONPATH") then
+        set a_new = `/bin/echo " $PYTHONPATH " | sed -e 's#::*# #g' -e "s# $a_old/libexec/python # aips_py #g" -e "s# aips_py # $a_root_t/$a_arch_t/libexec/python #g"`
+
+#       Ensure that some AIPS++ libexec/python area got into PYTHONPATH.
+        /bin/echo " $a_new " | grep " $a_root/$a_arch/libexec/python " >& /dev/null
+        if ("$status" != 0) set a_new = "$a_root/$a_arch/libexec/python $a_new"
+
+#       Reset it, with sanity check!
+        set a_new = `/bin/echo $a_new | sed -e 's# #:#g'`
+        if ("$a_new" != "") setenv PYTHONPATH "$a_new"
+     else
+        setenv PYTHONPATH "$a_root/$a_arch/libexec/python"
      endif
 
 

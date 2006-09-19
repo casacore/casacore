@@ -53,6 +53,12 @@
 #              directory will be added to the start of PATH, following
 #              "." if it comes first.
 #
+#    LD_LIBRARY_PATH   If defined, it will be modified for AIPS++ in the same
+#              manner as for PATH except using the "aips_lib" keyword.
+#
+#    PYTHONPATH   If defined, it will be modified for AIPS++ in the same
+#              manner as for PATH except using the "aips_py" keyword.
+#
 #    MANPATH   If defined, MANPATH will be modified for AIPS++ in the same
 #              manner as for PATH except using the "aips_doc" keyword.
 #
@@ -137,8 +143,8 @@
 
   if [ "$a_arch" = NONE ]
   then
-#    Remove aips_bin, aips_lib, and aips_doc from PATH, LD_LIBRARY_PATH,
-#    and MANPATH.
+#    Remove aips_bin, aips_lib, aips_py, and aips_doc from
+#    PATH, LD_LIBRARY_PATH, PYTHONPATH, and MANPATH.
      PATH=`/bin/echo ":${PATH}:" | sed -e '{s#:aips_bin:#:#g;s#^:##;s#:$##;}'`
      export PATH
 
@@ -147,6 +153,12 @@
         LD_LIBRARY_PATH=`/bin/echo ":${LD_LIBRARY_PATH}:" | sed -e {'s#:aips_lib:#:#g;s#^:##;s#:$##;}'`
      fi
      export LD_LIBRARY_PATH
+
+     if [ "${PYTHONPATH-}" != "" ]
+     then
+        PYTHONPATH=`/bin/echo ":${PYTHONPATH}:" | sed -e {'s#:aips_py:#:#g;s#^:##;s#:$##;}'`
+     fi
+     export PYTHONPATH
 
      if [ "${MANPATH-}" != "" ]
      then
@@ -314,7 +326,7 @@
      export PATH
 
 #    Ensure that some AIPS++ bin area got into PATH.
-     /bin/echo $a_new | grep " $a_root/$a_arch/bin " > /dev/null 2>&1
+     /bin/echo "$a_new" | grep " $a_root/$a_arch/bin " > /dev/null 2>&1
      if [ "$?" != 0 ]
      then
 #       Leave "." first, and put the AIPS++ areas next.
@@ -341,7 +353,7 @@
                -e "s# aips_lib # $a_root_t/$a_arch_t/lib #g"`
 
 #       Ensure that some AIPS++ lib area got into LD_LIBRARY_PATH.
-        /bin/echo $a_new | grep " $a_root/$a_arch/lib " > /dev/null 2>&1
+        /bin/echo "$a_new" | grep " $a_root/$a_arch/lib " > /dev/null 2>&1
         [ "$?" != 0 ] && a_new="$a_root/$a_arch/lib $a_new"
 
 #       Reset it, with sanity check!
@@ -353,6 +365,27 @@
      export LD_LIBRARY_PATH
 
 
+#    Reset PYTHONPATH.
+     if [ "${PYTHONPATH-}" != "" ]
+     then
+        a_new=`/bin/echo " $PYTHONPATH " | \
+           sed -e 's#::*# #g' \
+               -e "s# $a_old/libexec/python # aips_py #g" \
+               -e "s# aips_py # $a_root_t/$a_arch_t/libexec/python #g"`
+
+#       Ensure that some AIPS++ libexec/python area got into PYTHONPATH.
+        /bin/echo "$a_new" | grep " $a_root/$a_arch/libexec/python " > /dev/null 2>&1
+        [ "$?" != 0 ] && a_new="$a_root/$a_arch/libexec/python $a_new"
+
+#       Reset it, with sanity check!
+        a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
+        [ "$a_new" != "" ] && PYTHONPATH="$a_new"
+     else
+        PYTHONPATH="$a_root/$a_arch/libexec/python"
+     fi
+     export PYTHONPATH
+
+
 #    Reset MANPATH.
      if [ "${MANPATH-}" != "" ]
      then
@@ -362,7 +395,7 @@
                -e "s# aips_doc # $a_root_t/$a_arch_t/doc #g"`
 
 #       Ensure that some AIPS++ man area got into MANPATH.
-        /bin/echo $a_new | grep " $a_root/$a_arch/doc " > /dev/null 2>&1
+        /bin/echo "$a_new" | grep " $a_root/$a_arch/doc " > /dev/null 2>&1
         [ "$?" != 0 ] && a_new="$a_root/$a_arch/doc $a_new"
 
 #       Reset it, with sanity check!
