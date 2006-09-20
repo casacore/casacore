@@ -40,6 +40,7 @@
 #
 # assay recognizes Glish test scripts via their .g suffix and invokes glish
 # on them.
+# Similarly Python test scripts are recognized via their .py suffix.
 #
 # It is permissable for a .exec to invoke assay (presubably with arguments for
 # the test executable) - the potential infinite recursion is trapped.
@@ -110,13 +111,17 @@
         trap - 0 ; \
         exit $STATUS' 0 1 2 3 15
 
-# Check if command is a glish script.
+# Check if command is a glish or python script.
   COMMAND="$@"
   SCRIPTUSED=0
   set $@
   case $1 in
   *.g)
      COMMAND="glish $COMMAND"
+     SCRIPTUSED=1
+     ;;
+  *.py)
+     COMMAND="python $COMMAND"
      SCRIPTUSED=1
      ;;
   esac
