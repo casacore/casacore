@@ -69,7 +69,7 @@ AIPSIMPS := $(filter-out $(THISAPP).cc,$(filter %.cc,$(AIPSSRCS)))
 PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
 
 # Python scripts.
-LIBPYTHS := $(filter %.py %.pyc, $(AIPSSRCS))
+LIBPYTHS := $(filter %.py, $(AIPSSRCS))
 
 # Glish scripts.
 LIBEXECS := $(filter %.g %.gp %.gm, $(AIPSSRCS))
