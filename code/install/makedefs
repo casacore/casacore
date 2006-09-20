@@ -289,7 +289,9 @@ PYVERSION  := 2.3
 PYTHONROOT := /usr/local/python
 PYTHONINCD  = $(PYTHONROOT)/include/python$(PYVERSION)
 PYTHONLIBD  = $(PYTHONROOT)/lib
-PYTHONLIB  := -lpython$(PYVERSION)
+PYTHONLIB   = -lpython$(PYVERSION)
+PYTHONBIND  = $(PYTHONROOT)/bin
+PYTHONBIN   = $(PYTHONBIND)/python
 
 # Boost
 BOOSTROOT  := /usr/local/boost
@@ -341,8 +343,8 @@ XLIBLIST_shared_dish        := LAPACK F77
 XLIBLIST_shared_simulators  := LAPACK F77
 XLIBLIST_shared_synthesis   := LAPACK F77
 XLIBLIST_shared_tasking     := LAPACK F77
-XLIBLIST_shared_display := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
 XLIBLIST_shared_appspython  := LAPACK F77
+XLIBLIST_shared_display := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
 XLIBLIST_shared_alma  := $(XLIBLIST_shared_display)
 XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_display)
 XLIBLIST_shared_nfra  := $(XLIBLIST_shared_display)

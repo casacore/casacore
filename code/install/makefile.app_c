@@ -39,6 +39,7 @@
 AIPSROOT := $(word 1, $(AIPSPATH))
 AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
 include $(AIPSARCH)/makedefs
+BOOSTROOT := /usr
 
 # Do not include template source files.
 #--------------------------------------
@@ -68,7 +69,7 @@ AIPSIMPS := $(filter-out $(THISAPP).cc,$(filter %.cc,$(AIPSSRCS)))
 PGMRIMPS := $(filter-out $(THISAPP).cc,$(sort $(AIPSIMPS) $(wildcard *.cc)))
 
 # Python scripts.
-LIBPYTHS := $(filter %.py, $(AIPSSRCS))
+LIBPYTHS := $(filter %.py %.pyc, $(AIPSSRCS))
 
 # Glish scripts.
 LIBEXECS := $(filter %.g %.gp %.gm, $(AIPSSRCS))
@@ -302,7 +303,7 @@ $(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
 $(TMPPCKGD)/%.ycc : ;
 
 $(LIBEXECD)/python/$(THISAPP)/% : $(CODEDIR)/%
-	@ amkdir -p u=rwx,og=rx -v -s $@
+	@ amkdir -p u=rwx,og=rx -v $(LIBEXECD)/python/$(THISAPP)
 	@ $(RM) $@
 	  cp $< $@
 	@ chmod 664 $@
@@ -450,8 +451,10 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 	-@ echo ""
 	 @ cd $@ && mkinst -q $<
 
-# Included python scripts.
+# Included python scripts are compiled.
 $(LIBPYTHS) : % : $(LIBEXECD)/python/$(THISAPP)/% ;
+	   $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBEXECD)/python/$(THISAPP)
+	   $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBEXECD)/python/$(THISAPP)
 
 # Included scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;
