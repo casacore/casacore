@@ -302,8 +302,8 @@ $(TMPPCKGD)/%.ycc : $(CODEDIR)/%.y
 
 $(TMPPCKGD)/%.ycc : ;
 
-$(LIBEXECD)/python/$(THISAPP)/% : $(CODEDIR)/%
-	@ amkdir -p u=rwx,og=rx -v $(LIBEXECD)/python/$(THISAPP)
+$(LIBPYTHD)/$(THISAPP)/% : $(CODEDIR)/%
+	@ amkdir -p u=rwx,og=rx -v $(LIBPYTHD)/$(THISAPP)
 	@ $(RM) $@
 	  cp $< $@
 	@ chmod 664 $@
@@ -425,17 +425,13 @@ endif
 #---------------------------------
 .PRECIOUS : $(DBGLIBS) $(OPTLIBS) $(LIBDBGD)/version.o $(LIBOPTD)/version.o
 
-.PHONY : bin bindbg exorcise instsys
+.PHONY : bin bindbg pyopyc exorcise instsys
 
 allsys : $(BIN)
 
 .cleancode ::
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
-
-#bin    : $(TMPPCKGD) $(BINOPTD)/$(THISAPP) $(LIBPYTHS) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
-
-#bindbg : $(TMPPCKGD) $(BINDBGD)/$(THISAPP) ;
 
 $(TMPPCKGD) :
 	@ if [ ! -d "$@" ] ; then \
@@ -451,10 +447,13 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 	-@ echo ""
 	 @ cd $@ && mkinst -q $<
 
-# Included python scripts are compiled.
-$(LIBPYTHS) : % : $(LIBEXECD)/python/$(THISAPP)/% ;
-	   $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBEXECD)/python/$(THISAPP)
-	   $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBEXECD)/python/$(THISAPP)
+# Python scripts are compiled.
+pyopyc : $(LIBPYTHS)
+	   $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP)
+	   $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP)
+
+# Included python scripts
+$(LIBPYTHS) : % : $(LIBPYTHD)/$(THISAPP)/% ;
 
 # Included scripts.
 $(LIBEXECS) : % : $(LIBEXECD)/% ;

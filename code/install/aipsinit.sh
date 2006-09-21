@@ -366,24 +366,33 @@
 
 
 #    Reset PYTHONPATH.
-     if [ "${PYTHONPATH-}" != "" ]
+#    Only do it if Python is available.
+#    If available, result should start with /.
+     a_temp=`which python 2>&1 | sed -e 's%^[^/].*%%'`
+     if [ "$a_temp" != "" ]
      then
-        a_new=`/bin/echo " $PYTHONPATH " | \
-           sed -e 's#::*# #g' \
-               -e "s# $a_old/libexec/python # aips_py #g" \
-               -e "s# aips_py # $a_root_t/$a_arch_t/libexec/python #g"`
+#       Get Python version (first 2 digits)
+        a_temp=`python -V 2>&1 | sed -e 's%.* %%' | awk -F. '{print $1"."$2}'`
+	a_temp=$a_root_t/$a_arch_t/python$a_temp
+        if [ "${PYTHONPATH-}" != "" ]
+        then
+           a_new=`/bin/echo " $PYTHONPATH " | \
+              sed -e 's#::*# #g' \
+                  -e "s# $a_old/python[0-9.]* # aips_py #g" \
+                  -e "s# aips_py # $a_temp #g"`
 
-#       Ensure that some AIPS++ libexec/python area got into PYTHONPATH.
-        /bin/echo "$a_new" | grep " $a_root/$a_arch/libexec/python " > /dev/null 2>&1
-        [ "$?" != 0 ] && a_new="$a_root/$a_arch/libexec/python $a_new"
+#          Ensure that some AIPS++ python area got into PYTHONPATH.
+           /bin/echo "$a_new" | grep " $a_temp " > /dev/null 2>&1
+           [ "$?" != 0 ] && a_new="$a_temp $a_new"
 
-#       Reset it, with sanity check!
-        a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
-        [ "$a_new" != "" ] && PYTHONPATH="$a_new"
-     else
-        PYTHONPATH="$a_root/$a_arch/libexec/python"
+#          Reset it, with sanity check!
+           a_new=`/bin/echo $a_new | sed -e 's# #:#g'`
+           [ "$a_new" != "" ] && PYTHONPATH="$a_new"
+        else
+           PYTHONPATH="$a_temp"
+        fi
+        export PYTHONPATH
      fi
-     export PYTHONPATH
 
 
 #    Reset MANPATH.

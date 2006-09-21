@@ -52,7 +52,7 @@ ifeq "$(MAKEMODE)" "programmer"
 	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 endif
 
-override LIBOPTD = $(LIBEXECD)/python/$(THISAPP)
+override LIBOPTD = $(LIBPYTHD)/$(THISAPP)
 
 $(LIBDBGD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
@@ -96,6 +96,6 @@ $(BINDBGD)/% : ;
 $(LIBOPTD)/_%.$(SFXSTAT) : ;
 $(BINOPTD)/% : ;
 
-bin    : $(TMPPCKGD) $(LIBOPTD)/_$(THISAPP).$(SFXSHAR) $(LIBPYTHS) $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
+bin    : $(TMPPCKGD) $(LIBOPTD)/_$(THISAPP).$(SFXSHAR) pyopyc $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
 
 bindbg : $(TMPPCKGD) $(LIBDBGD)/_$(THISAPP).$(SFXSHAR) ;
