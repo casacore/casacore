@@ -422,6 +422,7 @@ endif
 
 
 # Static and static pattern rules.
+# The rules for bin and bindbg need to be defined in higher level makefile.
 #---------------------------------
 .PRECIOUS : $(DBGLIBS) $(OPTLIBS) $(LIBDBGD)/version.o $(LIBOPTD)/version.o
 
