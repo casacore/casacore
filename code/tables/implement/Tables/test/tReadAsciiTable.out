@@ -634,16 +634,16 @@ Axis Lengths: [2, 5]  (NB: Matrix in Row/Column order)
 [s, R, X, z, A
  i, d, dx, DZ, B]
 
-Mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
-Mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
-Invalid type specifier 'F'
-Only last column can have variable shaped arrays
-Multiple variable axes in type string 'I0,0'
-Invalid shape value '' in type string 'I,1'
-Invalid shape value '' in type string 'I1,'
-Invalid shape value '1.' in type string 'I1.'
-No type info in type string '1'
-Cannot read first header line of tReadAsciiTable_tmp.header
-No COLUMN TYPES line in tReadAsciiTable_tmp.header
-No .endkey line in tReadAsciiTable_tmp.header
-No keyword name or type in line 2 of tReadAsciiTable_tmp.header
+ReadAsciiTable: mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
+ReadAsciiTable: mismatching COLUMN NAMES and TYPES lines in tReadAsciiTable_tmp.header
+ReadAsciiTable: invalid type specifier 'F'
+ReadAsciiTable: only last column can have variable shaped arrays
+ReadAsciiTable: multiple variable axes in type string 'I0,0'
+ReadAsciiTable: invalid shape value '' in type string 'I,1'
+ReadAsciiTable: invalid shape value '' in type string 'I1,'
+ReadAsciiTable: invalid shape value '1.' in type string 'I1.'
+ReadAsciiTable: no type info in type string '1'
+ReadAsciiTable: cannot read first header line of tReadAsciiTable_tmp.header
+ReadAsciiTable: no COLUMN TYPES line in tReadAsciiTable_tmp.header
+ReadAsciiTable: no .endkey line in tReadAsciiTable_tmp.header
+ReadAsciiTable: no keyword name or type in line 2 of tReadAsciiTable_tmp.header
