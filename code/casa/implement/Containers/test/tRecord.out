@@ -14,7 +14,7 @@ Record cannot be changed (fixed structure)
 >>> Instance-specific assertion error message:
 (Record.cc : 106) Failed AlwaysAssertExit conform (other)
 <<<
-RecordInterface: invalid data type
+RecordInterface::asComplex - invalid data type
 >>> Instance-specific assertion error message:
 (Record.cc : 106) Failed AlwaysAssertExit conform (other)
 <<<
