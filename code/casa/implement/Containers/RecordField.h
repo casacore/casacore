@@ -176,6 +176,10 @@ public:
     Int fieldNumber() const
 	{return fieldNumber_p;}
 
+    // Return the name of the field.
+    String name() const
+        {return parent_p->name (fieldNumber_p);}
+
     // Is this field pointer attached to a valid record? Operations which
     // might cause it to become detached are:
     // <ol>
