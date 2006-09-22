@@ -27,6 +27,7 @@
 
 //# Includes
 #include <tables/Tables/ColumnsIndexArray.h>
+#include <tables/Tables/ColumnsIndex.h>
 #include <tables/Tables/TableDesc.h>
 #include <tables/Tables/TableLocker.h>
 #include <tables/Tables/ColumnDesc.h>
@@ -364,7 +365,7 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
  
 uInt ColumnsIndexArray::getRowNumber (Bool& found, const Record& key)
 {
-  *itsLowerKeyPtr = key;
+  ColumnsIndex::copyKeyField (itsLowerField, itsDataType, key);
   return getRowNumber (found);
 }
 
@@ -386,7 +387,7 @@ uInt ColumnsIndexArray::getRowNumber (Bool& found)
 Vector<uInt> ColumnsIndexArray::getRowNumbers (const Record& key,
 					       Bool unique)
 {
-  *itsLowerKeyPtr = key;
+  ColumnsIndex::copyKeyField (itsLowerField, itsDataType, key);
   return getRowNumbers (unique);
 }
 
@@ -409,8 +410,8 @@ Vector<uInt> ColumnsIndexArray::getRowNumbers (const Record& lowerKey,
 					       Bool upperInclusive,
 					       Bool unique)
 {
-  *itsLowerKeyPtr = lowerKey;
-  *itsUpperKeyPtr = upperKey;
+  ColumnsIndex::copyKeyField (itsLowerField, itsDataType, lowerKey);
+  ColumnsIndex::copyKeyField (itsUpperField, itsDataType, upperKey);
   return getRowNumbers (lowerInclusive, upperInclusive, unique);
 }
 

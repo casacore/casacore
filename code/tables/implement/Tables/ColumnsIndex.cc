@@ -593,7 +593,7 @@ Int ColumnsIndex::compare (const Block<void*>& fieldPtrs,
  
 uInt ColumnsIndex::getRowNumber (Bool& found, const Record& key)
 {
-  *itsLowerKeyPtr = key;
+  copyKey (itsLowerFields, key);
   return getRowNumber (found);
 }
 
@@ -614,7 +614,7 @@ uInt ColumnsIndex::getRowNumber (Bool& found)
 
 Vector<uInt> ColumnsIndex::getRowNumbers (const Record& key)
 {
-  *itsLowerKeyPtr = key;
+  copyKey (itsLowerFields, key);
   return getRowNumbers();
 }
 
@@ -636,8 +636,8 @@ Vector<uInt> ColumnsIndex::getRowNumbers (const Record& lowerKey,
 					  Bool lowerInclusive,
 					  Bool upperInclusive)
 {
-  *itsLowerKeyPtr = lowerKey;
-  *itsUpperKeyPtr = upperKey;
+  copyKey (itsLowerFields, lowerKey);
+  copyKey (itsUpperFields, upperKey);
   return getRowNumbers (lowerInclusive, upperInclusive);
 }
 
@@ -704,5 +704,49 @@ void ColumnsIndex::setChanged (const String& columnName)
   }
 }
 
-} //# NAMESPACE CASA - END
+void ColumnsIndex::copyKeyField (void* fieldPtr, int dtype, const Record& key)
+{
+  switch (dtype) {
+    case TpBool:
+      copyKeyField(*(RecordFieldPtr<Bool>*)(fieldPtr), key);
+      break;
+    case TpUChar:
+      copyKeyField(*(RecordFieldPtr<uChar>*)(fieldPtr), key);
+      break;
+    case TpShort:
+      copyKeyField(*(RecordFieldPtr<Short>*)(fieldPtr), key);
+      break;
+    case TpInt:
+      copyKeyField(*(RecordFieldPtr<Int>*)(fieldPtr), key);
+      break;
+    case TpUInt:
+      copyKeyField(*(RecordFieldPtr<uInt>*)(fieldPtr), key);
+      break;
+    case TpFloat:
+      copyKeyField(*(RecordFieldPtr<Float>*)(fieldPtr), key);
+      break;
+    case TpDouble:
+      copyKeyField(*(RecordFieldPtr<Double>*)(fieldPtr), key);
+      break;
+    case TpComplex:
+      copyKeyField(*(RecordFieldPtr<Complex>*)(fieldPtr), key);
+      break;
+    case TpDComplex:
+      copyKeyField(*(RecordFieldPtr<DComplex>*)(fieldPtr), key);
+      break;
+    case TpString:
+      copyKeyField(*(RecordFieldPtr<String>*)(fieldPtr), key);
+      break;
+    default:
+      throw (TableError ("ColumnsIndex: unknown data type"));
+    }
+}
 
+void ColumnsIndex::copyKey (Block<void*> fields, const Record& key)
+{
+  for (uInt i=0; i<fields.nelements(); i++) {
+    copyKeyField (fields[i], itsDataTypes[i], key);
+  }
+}
+
+} //# NAMESPACE CASA - END

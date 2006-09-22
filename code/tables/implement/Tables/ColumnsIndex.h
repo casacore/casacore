@@ -40,7 +40,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //# Forward Declarations
 class String;
 class ROTableColumn;
-
+template<typename T> class RecordFieldPtr;
 
 // <summary>
 // Index to one or more columns in a table.
@@ -334,6 +334,10 @@ public:
 				Bool lowerInclusive, Bool upperInclusive);
     // </group>
 
+    // Fill the internal key field from the corresponding external key.
+    // The data type may differ.
+    static void copyKeyField (void* field, int dtype, const Record& key);
+
 protected:
     // Copy that object to this.
     void copy (const ColumnsIndex& that);
@@ -376,6 +380,17 @@ protected:
     void fillRowNumbers (Vector<uInt>& rows, uInt start, uInt end) const;
 
 private:
+    // Fill the internal key fields from the corresponding external key.
+    void copyKey (Block<void*> fields, const Record& key);
+
+    // Fill the internal key field from the corresponding external key.
+    // The data type may differ.
+    template <typename T>
+    static void copyKeyField (RecordFieldPtr<T>& field, const Record& key)
+    {
+      key.get (field.name(), *field);
+    }
+
     Table  itsTable;
     uInt   itsNrrow;
     Record* itsLowerKeyPtr;
@@ -419,7 +434,6 @@ inline Record& ColumnsIndex::accessUpperKey()
 {
     return *itsUpperKeyPtr;
 }
-
 
 
 } //# NAMESPACE CASA - END
