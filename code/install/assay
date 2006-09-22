@@ -60,6 +60,7 @@
 #       If an environment variable called ASSAYBIN exists then ".:$ASSAYBIN"
 #       is added to the start of PATH.  The AIPS++ system bintest directory is
 #       always appended to PATH.
+#       If an environment variable ASSAYPY exists, it is added to PYTHONPATH.
 #
 # Original: 1995/11/01 by Mark Calabretta, ATNF
 # $Id$
@@ -76,6 +77,15 @@
   PATH="${PATH}:${BINTESTD}"
   [ "$ASSAYBIN" != "" ] && PATH=".:${ASSAYBIN}:${PATH}"
   export PATH
+# Also set PYTHONPATH.
+  if [ "$PYTHONPATH" = "" ]
+  then
+     PYTHONPATH=.
+  else
+     PYTHONPATH=".:$PYTHONPATH"
+  fi
+  [ "$ASSAYPY" != "" ] && PYTHONPATH="${ASSAYPY}:${PYTHONPATH}"
+  export PYTHONPATH
 
 # If there is a .exec file then use it.
   CLEANUP=
@@ -120,13 +130,27 @@
      COMMAND="glish $COMMAND"
      SCRIPTUSED=1
      ;;
-  *.py)
-     COMMAND="python $COMMAND"
-     SCRIPTUSED=1
-     ;;
   esac
 
+# If there is a .py file then use it.
+  if [ -f "$1.py" ]
+  then
+     COMMAND="python $1.py"
+     SCRIPTUSED=1
+  else
+     if [ -f "src/$1.py" ]
+     then
+        COMMAND="python $1.py"
+	SCRIPTUSED=1
+        CLEANUP="$CLEANUP $1.py"
+        cp src/$1.py .
+     fi
+  fi
+
 # If there is a .run file then use it.
+# Note that in this way the run file is used if there is a .run and .py file.
+# Still the .py file is copied and removed as needed, so the .run file
+# can use the .py file.
   if [ -f "$1.run" ]
   then
      COMMAND="sh $1.run"
@@ -173,9 +197,23 @@
   # If found, the result is a path, thus starts with a slash.
   QSUBP=`which qsub | sed -e 's%^[^/].*%%'`
   YODP=`which yod | sed -e 's%^[^/].*%%'`
-  if [ "$QSUBP" != ""  -a  "$YODP" != "" ]
+  if [ "$QSUBP" = ""  -o  "$YODP" = "" ]
   then
-    # .run files are not supported yet.
+    # No Cray.
+    eval "$COMMAND" > ${1}_tmp.out
+    STATUS=$?
+    if [ ! $STATUS ]
+    then
+      if [ $STATUS = 3 ]
+      then
+        echo "UNTESTED: $*"
+      else
+        echo "FAIL (execution failure): $*"
+      fi
+      exit
+    fi
+  else
+    # .run files are not supported yet on the Cray.
     if [ -f "$1.run" ]
     then
       echo "UNTESTED: $*"
@@ -211,19 +249,6 @@ EOF
       sleep 1
       NRTIMES=`expr $NRTIMES + 1`
     done
-
-  else
-    if ! eval "$COMMAND" > ${1}_tmp.out
-    then
-      STATUS=$?
-      if [ $STATUS = 3 ]
-      then
-        echo "UNTESTED: $*"
-      else
-        echo "FAIL (execution failure): $*"
-      fi
-      exit
-    fi
   fi
 
   if [ -f $1.out ]
