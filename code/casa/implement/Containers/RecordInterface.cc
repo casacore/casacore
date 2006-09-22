@@ -413,13 +413,6 @@ void RecordInterface::get (const RecordFieldId& id, Array<String>& value) const
 Bool RecordInterface::asBool (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    DataType dataType = type (whichField);
-    switch (dataType) {
-    case TpBool:
-	break;
-    default:
-	throw (AipsError ("RecordInterface: invalid data type"));
-    }
     return *(const Bool*)get_pointer (whichField, TpBool);
 }
 uChar RecordInterface::asuChar (const RecordFieldId& id) const
@@ -429,8 +422,14 @@ uChar RecordInterface::asuChar (const RecordFieldId& id) const
     switch (dataType) {
     case TpUChar:
 	break;
+    case TpShort:
+	return *(const Short*)get_pointer (whichField, TpShort);
+    case TpInt:
+	return *(const Int*)get_pointer (whichField, TpInt);
+    case TpUInt:
+	return *(const uInt*)get_pointer (whichField, TpUInt);
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asuChar - invalid data type"));
     }
     return *(const uChar*)get_pointer (whichField, TpUChar);
 }
@@ -443,8 +442,12 @@ Short RecordInterface::asShort (const RecordFieldId& id) const
 	return *(const uChar*)get_pointer (whichField, TpUChar);
     case TpShort:
 	break;
+    case TpInt:
+	return *(const Int*)get_pointer (whichField, TpInt);
+    case TpUInt:
+	return *(const uInt*)get_pointer (whichField, TpUInt);
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asShort - invalid data type"));
     }
     return *(const Short*)get_pointer (whichField, TpShort);
 }
@@ -458,9 +461,11 @@ Int RecordInterface::asInt (const RecordFieldId& id) const
     case TpShort:
 	return *(const Short*)get_pointer (whichField, TpShort);
     case TpInt:
-	break;
+        break;
+    case TpUInt:
+	return *(const uInt*)get_pointer (whichField, TpUInt);
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asInt - invalid data type"));
     }
     return *(const Int*)get_pointer (whichField, TpInt);
 }
@@ -473,10 +478,12 @@ uInt RecordInterface::asuInt (const RecordFieldId& id) const
 	return *(const uChar*)get_pointer (whichField, TpUChar);
     case TpShort:
 	return *(const Short*)get_pointer (whichField, TpShort);
+    case TpInt:
+	return *(const Int*)get_pointer (whichField, TpInt);
     case TpUInt:
 	break;
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asuInt - invalid data type"));
     }
     return *(const uInt*)get_pointer (whichField, TpUInt);
 }
@@ -498,7 +505,7 @@ float RecordInterface::asFloat (const RecordFieldId& id) const
     case TpDouble:
 	return *(const double*)get_pointer (whichField, TpDouble);
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asFloat - invalid data type"));
     }
     return *(const float*)get_pointer (whichField, TpFloat);
 }
@@ -520,7 +527,7 @@ double RecordInterface::asDouble (const RecordFieldId& id) const
     case TpDouble:
 	break;
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asDouble - invalid data type"));
     }
     return *(const double*)get_pointer (whichField, TpDouble);
 }
@@ -549,7 +556,7 @@ Complex RecordInterface::asComplex (const RecordFieldId& id) const
 	return Complex(dc.real(), dc.imag());
       }
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asComplex - invalid data type"));
     }
     return *(const Complex*)get_pointer (whichField, TpComplex);
 }
@@ -579,7 +586,7 @@ DComplex RecordInterface::asDComplex (const RecordFieldId& id) const
     case TpDComplex:
 	break;
     default:
-	throw (AipsError ("RecordInterface: invalid data type"));
+	throw (AipsError ("RecordInterface::asDComplex - invalid data type"));
     }
     return *(const DComplex*)get_pointer (whichField, TpDComplex);
 }
