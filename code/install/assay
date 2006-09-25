@@ -195,14 +195,14 @@
 
   # If running on a Cray cluster, we have to use qsub and yod.
   # If found, the result is a path, thus starts with a slash.
-  QSUBP=`which qsub | sed -e 's%^[^/].*%%'`
-  YODP=`which yod | sed -e 's%^[^/].*%%'`
+  QSUBP=`which qsub 2>&1 | sed -e 's%^[^/].*%%'`
+  YODP=`which yod 2>&1 | sed -e 's%^[^/].*%%'`
   if [ "$QSUBP" = ""  -o  "$YODP" = "" ]
   then
     # No Cray.
     eval "$COMMAND" > ${1}_tmp.out
     STATUS=$?
-    if [ ! $STATUS ]
+    if [ $STATUS != 0 ]
     then
       if [ $STATUS = 3 ]
       then
