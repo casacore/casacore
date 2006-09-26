@@ -372,7 +372,7 @@
      if [ "$a_temp" != "" ]
      then
 #       Get Python version (first 2 digits)
-        a_temp=`python -V 2>&1 | sed -e 's%.* %%' | awk -F. '{print $1"."$2}'`
+        a_temp=`python -V 2>&1 | grep "^Python [0-9]" | sed -e 's%.* %%' | awk -F. '{print $1"."$2}'`
 	a_temp=$a_root_t/$a_arch_t/python$a_temp
         if [ "${PYTHONPATH-}" != "" ]
         then

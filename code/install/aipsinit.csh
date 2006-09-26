@@ -325,7 +325,7 @@
      set a_temp = `which python |& sed -e 's%^[^/].*%%'`
      if ("$a_temp" != "") then
 #       Get Python version (first 2 digits)
-        set a_temp = `python -V |& sed -e 's%.* %%' | awk -F. '{print $1"."$2}'`
+        set a_temp = `python -V |& grep "^Python [0-9]" | sed -e 's%.* %%' | awk -F. '{print $1"."$2}'`
 	set a_temp = $a_root_t/$a_arch_t/python$a_temp
         if ("$?PYTHONPATH") then
            set a_new = `/bin/echo " $PYTHONPATH " | sed -e 's#::*# #g' -e "s# $a_old/python[0-9.]* # aips_py #g" -e "s# aips_py # $a_temp #g"`
