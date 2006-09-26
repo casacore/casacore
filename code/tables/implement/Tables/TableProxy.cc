@@ -426,7 +426,7 @@ Record TableProxy::getDataManagerInfo()
   return table_p.dataManagerInfo();
 }
 
-Record TableProxy::getTableDescription (Bool actual)
+Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
 {
   // Get the table description.
   TableDesc* tableDescPtr;
@@ -440,7 +440,7 @@ Record TableProxy::getTableDescription (Bool actual)
   for (uInt i=0; i<tableDescPtr->ncolumn(); i++) {
     const ColumnDesc& columnDescription = tableDescPtr->columnDesc(i);
     rec.defineRecord (columnDescription.name(), 
-		      recordColumnDesc (columnDescription));
+		      recordColumnDesc (columnDescription, cOrder));
   }
   rec.defineRecord ("_define_hypercolumn_", recordHCDesc (*tableDescPtr));
   delete tableDescPtr;
@@ -448,7 +448,7 @@ Record TableProxy::getTableDescription (Bool actual)
 }
 
 Record TableProxy::getColumnDescription (const String& columnName,
-					 Bool actual)
+					 Bool actual, Bool cOrder)
 {
   // Get the table description.
   TableDesc* tableDescPtr;
@@ -459,7 +459,7 @@ Record TableProxy::getColumnDescription (const String& columnName,
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];
-  return recordColumnDesc (columnDescription);
+  return recordColumnDesc (columnDescription, cOrder);
 }
 
 String TableProxy::tableName()
@@ -792,7 +792,8 @@ void TableProxy::putCellSlice (const String& columnName,
 Vector<String> TableProxy::getColumnShapeString (const String& columnName,
 						 Int rownr,
 						 Int nrow,
-						 Int incr)
+						 Int incr,
+						 Bool cOrder)
 {
   // If needed synchronize table to get up-to-date number of rows.
   syncTable (table_p);
@@ -819,16 +820,15 @@ Vector<String> TableProxy::getColumnShapeString (const String& columnName,
   if (shape.nelements() > 0) {
     //# This is a fixed shape, so return immediately.
     ostringstream os;
-    os << shape;
+    os << fillAxes (shape, cOrder);
     result.resize(1);
     result(0) = os.str();
   } else {
     result.resize (nrow);
     Int lastRow(nrow+rownr);
     for (Int i=0; i<nrow && rownr<lastRow; i++) {
-      IPosition shape = col.shape (rownr);
       ostringstream os;
-      os << shape;
+      os << fillAxes (col.shape (rownr), cOrder);
       result(i) = os.str();
       rownr += incr;
     }
@@ -1156,11 +1156,13 @@ Bool TableProxy::makeTableDesc (const Record& gdesc, TableDesc& tabdesc,
 	if (cold.isDefined("shape")) {
 	  shape = cold.asArrayInt ("shape");
 	}
-      }
-      if (isArray) {
+	Bool cOrder = False;
+	if (cold.isDefined("_c_order")) {
+	  cOrder = cold.asBool ("_c_order");
+	}
 	if (! addArrayColumnDesc (tabdesc, valtype, name, comment,
 				  dmtype, dmgrp, option,
-				  ndim, shape, message)) {
+				  ndim, shape, cOrder, message)) {
 	  return False;
 	}
       }else{
@@ -1218,6 +1220,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
 				     const String& dmtype, const String& dmgrp,
 				     int option,
 				     Int ndim, const Vector<Int>& shape,
+				     Bool cOrder,
 				     String& message)
 {
   if (ndim <= 0  &&  shape.nelements() > 0) {
@@ -1235,7 +1238,7 @@ Bool TableProxy::addArrayColumnDesc (TableDesc& tabdesc,
       message = "arrayColumnDesc: shape < 0";
       return False;
     }
-    shp = shape;
+    shp = fillAxes (IPosition(shape), cOrder);
     option |= ColumnDesc::FixedShape;
   }
   if (valtype == "boolean"  ||  valtype == "bool") {
@@ -1349,7 +1352,7 @@ String TableProxy::getTypeStr (DataType dtype)
   return "integer";
 }
 
-Record TableProxy::recordColumnDesc (const ColumnDesc& cold)
+Record TableProxy::recordColumnDesc (const ColumnDesc& cold, Bool cOrder)
 {
   Record cdesc;
   cdesc.define ("valueType", getTypeStr(cold.dataType()));
@@ -1360,13 +1363,16 @@ Record TableProxy::recordColumnDesc (const ColumnDesc& cold)
   cdesc.define ("comment", cold.comment());
   if (cold.isArray()) {
     cdesc.define ("ndim", Int(cold.ndim()));
-    IPosition shape = cold.shape();
+    IPosition shape = fillAxes (cold.shape(), cOrder);
     if (shape.nelements() > 0) {
       Vector<Int> vec(shape.nelements());
       for (uInt i=0; i<shape.nelements(); i++) {
 	vec(i) = shape(i);
       }
       cdesc.define ("shape", vec);
+    }
+    if (cOrder) {
+      cdesc.define ("_c_order", cOrder);
     }
   }
   return cdesc;
@@ -2536,6 +2542,18 @@ Table::EndianFormat TableProxy::makeEndianFormat (const String& endianFormat)
     }
   }
   return endOpt;
+}
+
+IPosition TableProxy::fillAxes (const IPosition& ipos, Bool cOrder)
+{
+  IPosition s(ipos);
+  Int nd = s.size();
+  if (cOrder  &&  nd > 1) {
+    for (Int i=0; i<nd; i++) {
+      s[i] = ipos[nd-i-1];
+    }
+  }
+  return s;
 }
 
 } //# NAMESPACE CASA - END

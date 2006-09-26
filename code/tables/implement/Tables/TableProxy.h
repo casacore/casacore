@@ -350,7 +350,8 @@ public:
   Vector<String> getColumnShapeString (const String& columnName,
 				       Int rownr,
 				       Int nrow,
-				       Int incr);
+				       Int incr,
+				       Bool cOrder = False);
 
   // Get a table or column keyword value in the table.
   // If the columnName is empty, a given keyword is a table keyword.
@@ -439,12 +440,14 @@ public:
 
   // Get the table description of the table with the given id.
   // It returns a record containing the description.
-  Record getTableDescription (Bool actual);       //# use actual description?
+  Record getTableDescription (Bool actual,         //# use actual description?
+			      Bool cOrder=False);
 
   // Get the column description of a column in the table with the given id.
   // It returns a record containing the description.
   Record getColumnDescription (const String& columnName,
-			       Bool actual);      //# use actual description?
+			       Bool actual,        //# use actual description?
+			       Bool cOrder=False);
 
   // Get ascii format string.
   String getAsciiFormat() const;
@@ -560,10 +563,11 @@ private:
 				  const String& dataManagerGroup,
 				  int options,
 				  Int ndim, const Vector<Int>& shape,
+				  Bool cOrder,
 				  String& message);
 
   // Make a record containing the column description.
-  static Record recordColumnDesc (const ColumnDesc&);
+  static Record recordColumnDesc (const ColumnDesc&, Bool cOrder);
 
   // Make a record containing the description of all hypercolumns.
   static Record recordHCDesc (const TableDesc& tableDesc);
@@ -584,6 +588,9 @@ private:
 
   // Get the type string as used externally (in e.g. glish).
   static String getTypeStr (DataType);
+
+  // Optionally reverse the axes.
+  static IPosition fillAxes (const IPosition&, Bool cOrder);
 
 
   //# The data members.
