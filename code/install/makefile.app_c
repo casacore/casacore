@@ -305,7 +305,7 @@ $(TMPPCKGD)/%.ycc : ;
 $(LIBPYTHD)/$(THISAPP)/% : $(CODEDIR)/%
 	@ amkdir -p u=rwx,og=rx -v $(LIBPYTHD)/$(THISAPP)
 	@ $(RM) $@
-	  cp $< $@
+	  cp $< $@;
 	@ chmod 664 $@
 
 $(LIBEXECD)/% : $(CODEDIR)/%
@@ -434,6 +434,9 @@ allsys : $(BIN)
 	-$Q cd $(CODEDIR) && $(RM) *.i *.o *.cdb *.cyi
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
 
+.cleansys ::
+	-$Q $(RM) -r $(LIBPYTHD)/$(THISAPP)
+
 $(TMPPCKGD) :
 	@ if [ ! -d "$@" ] ; then \
 	      echo "" ; \
@@ -450,8 +453,11 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 
 # Python scripts are compiled.
 pyopyc : $(LIBPYTHS)
-	   $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP)
-	   $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP)
+	 @ if [ -d $(LIBPYTHD)/$(THISAPP) ]; then \
+	      echo "Compiling $(THISAPP) Python scripts"; \
+	      $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP); \
+	      $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP); \
+	   fi
 
 # Included python scripts
 $(LIBPYTHS) : % : $(LIBPYTHD)/$(THISAPP)/% ;

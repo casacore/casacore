@@ -470,7 +470,7 @@ allsys : $(GLISHEXECS) $(AIPSINST) $(BINTEST)
 	-$Q $(RM) -r $(CODEDIR)/tmplinst
 
 .cleansys ::
-	-$Q cd $(BINTESTD) && $(RM) $(AIPSEXES)
+	-$Q cd $(BINTESTD) && $(RM) $(AIPSEXES) _*.$(SFXSHAR)
 	-$Q cd $(BINTESTD) && $(RM) runtests.* *.report
 	-$Q $(RM) $(INSTLIBR)
 
@@ -538,6 +538,7 @@ ifeq "$(MAKEMODE)" "programmer"
 	- $(RM) $(PRGAPLIB)
 	- $(RM) -r tmplinst
 	- cd $(PGMRBIND) && $(RM) $(ALLEXES)
+	- cd $(PGMRLIBD) && $(RM) _*.$(SFXSHAR)
 
    depend : $(PGMREXES:%=$(PGMRTIME)(%)) ;
 
@@ -707,6 +708,7 @@ help ::
 	-@ echo "      mylib: instantiate diy templates."
 	-@ echo "update_mylib: insert template object modules into a private"
 	-@ echo "             library and ranlib it (if necessary)."
+	-@ echo "      check: build, run, and check all test programs."
 
 
 # Programmer dependency list.

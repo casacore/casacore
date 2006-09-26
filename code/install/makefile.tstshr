@@ -46,9 +46,22 @@ ifeq "$(MAKEMODE)" "programmer"
    $(PGMRLIBD)/_%.$(SFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
 	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 
-      % : $(PGMRLIBD)/_%.$(SFXSHAR) ;
-endif
+   % : $(PGMRLIBD)/_%.$(SFXSHAR) ;
 
+   check : $(ALLEXES)
+	@ for PROG in $(ALLEXES); do \
+	    if [ "$(PGMRLIBD)" != "." ]; \
+	    then \
+	      $(RM) _$$PROG.$(SFXSHAR); \
+	      ln -s $(PGMRLIBD)/_$$PROG.$(SFXSHAR); \
+	    fi; \
+	    assay $$PROG; \
+	    if [ "$(PGMRLIBD)" != "." ]; \
+	    then \
+	      $(RM) _$$PROG.$(SFXSHAR); \
+	    fi; \
+	  done
+endif
 
 
 $(BINTESTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)

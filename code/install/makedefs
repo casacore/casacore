@@ -1323,6 +1323,8 @@ cleansys : .cleansys
 	done
 
 ifeq "$(MAKEMODE)" "programmer"
+   check :
+
    clean : .clean
 	-$(RM) *~ *% a.out core
 

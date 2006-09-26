@@ -80,6 +80,26 @@ docscan docextr runtests :
 	   fi
 	 @ $(MAKE) -C implement NODEP=1 $@ 
 
+# Programmer-oriented pattern rules.
+ifeq "$(MAKEMODE)" "programmer"
+   check :
+	@ for i in $$SUBDIRS ; do \
+	     copied=0; \
+	     if [ ! -f $$i/makefile ]; then \
+	        if [ -f $$i/src/makefile ]; then \
+		   cp $$i/src/makefile $$i; \
+		   copied=1; \
+		fi; \
+	     fi; \
+	     if [ -f $$i/makefile ]; then \
+	        echo "$(MAKE) -C $(CODESUBD)/$$i $@" ; \
+	        $(MAKE) -C $$i $@ ; \
+		if [ $copied = 1 ]; then \
+		   $(RM) makefile; \
+	     fi; \
+	  done
+endif
+
 show_local :
 	-@ echo ""
 	-@ echo "Variables defined in the package makefile"
@@ -111,3 +131,7 @@ help ::
 	-@ echo "    docscan: scan C++ sources for class information."
 	-@ echo "    docextr: extract documentation from the C++ sources."
 	-@ echo "   runtests: run all test programs."
+	-@ echo ""
+	-@ echo "Programmer"
+	-@ echo "----------"
+	-@ echo "      check: build, run, and check all test programs."

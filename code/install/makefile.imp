@@ -560,7 +560,7 @@ ifeq "$(MAKEMODE)" "programmer"
                $(PGMRINCD)/%.lcc $(PGMRINCD)/%.ycc
 
    .PHONY : %.d depend dependencies inst mylib mylibs update_mylib \
-            update_mylibs mocs
+            update_mylibs mocs check
 
    all : $(PGMRINST) $(PGMRIMPS:%.cc=$(PGMRLIBR)(%.o)) update_mylib
 
@@ -679,6 +679,23 @@ ifeq "$(MAKEMODE)" "programmer"
 	     $(RM) $$PGMROBJS ; \
 	     $(RANLIB) $(PGMRLIBR) ; \
 	  fi
+
+   check : all
+	@ for i in $$SUBDIRS ; do \
+	     copied=0; \
+	     if [ ! -f $$i/makefile ]; then \
+	        if [ -f $$i/src/makefile ]; then \
+		   cp $$i/src/makefile $$i; \
+		   copied=1; \
+		fi; \
+	     fi; \
+	     if [ -f $$i/makefile ]; then \
+	        echo "$(MAKE) -C $(CODESUBD)/$$i $@" ; \
+	        $(MAKE) -C $$i $@ ; \
+		if [ $copied = 1 ]; then \
+		   $(RM) makefile; \
+	     fi; \
+	  done
 endif
 
 show_local :
@@ -778,6 +795,7 @@ help ::
 	-@ echo "             subdirectories."
 	-@ echo "update_mylib: insert all object modules into a private"
 	-@ echo "             library and ranlib it (if necessary)."
+	-@ echo "      check: build, run, and check all test programs."
 
 
 # System dependency list.
