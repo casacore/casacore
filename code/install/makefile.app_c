@@ -39,7 +39,6 @@
 AIPSROOT := $(word 1, $(AIPSPATH))
 AIPSARCH := $(AIPSROOT)/$(word 2, $(AIPSPATH))
 include $(AIPSARCH)/makedefs
-BOOSTROOT := /usr
 
 # Do not include template source files.
 #--------------------------------------
