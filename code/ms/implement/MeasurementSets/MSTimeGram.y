@@ -120,7 +120,7 @@ timeexpr: singletimeexpr
 	   }
         ;
 
-WNUMBER: STAR {$$ = -1;}
+WNUMBER: STAR {$$ = -1}
           | NUMBER {$$ = $1;}
           ;
 FLOAT: WNUMBER {$$ = $1;}

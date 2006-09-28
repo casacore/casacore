@@ -69,7 +69,7 @@ REGEX     {REGEX1}|{REGEX2}|{REGEX3}
 
 %%
 
-{WHITE}   {;} /* Just eat the white spaces */
+{WHITE}   {msTimeGramPosition() += yyleng;;} /* Just eat the white spaces */
 "["       { msTimeGramPosition() += yyleng;
             return LBRACKET;
           }

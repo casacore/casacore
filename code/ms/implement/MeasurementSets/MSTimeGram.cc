@@ -81,9 +81,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     catch (MSSelectionTimeError &x)
       {
 	String newMesgs;
-	ostringstream newMesg;
-	newMesg << "(" << msTimeGramPosition()+1 << ") in string \"" << command << "\"";
-	newMesgs = String(newMesg.str().c_str());
+	newMesgs = constructMessage(msTimeGramPosition()+1, command);
 	x.addMessage(newMesgs);
 	throw;
       }
