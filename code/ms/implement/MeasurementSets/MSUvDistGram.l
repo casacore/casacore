@@ -1,4 +1,4 @@
-/*
+/* -*- C -*-
     MSUvDistGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
@@ -39,103 +39,48 @@ WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FNUMBER   {INT}|{INT}"."{DIGIT}*
-TRUE      T
-FALSE     F
+NUMBER    {INT}|{INT}"."{DIGIT}*
+FNUMBER   {NUMBER}?{EXP}?
 
-
-QSTRING   \"[^\"\n]*\"
-ASTRING   \'[^\'\n]*\'
-UQSTRING   \"[^\"\n]*\n
-UASTRING   \'[^\'\n]*\n
-STRING    ({QSTRING}|{ASTRING})+
-USTRING   ({UQSTRING}|{UASTRING})+
-
-KM           [Kk][Mm]
-M            [Mm]
-ML           [Mm][Ll]
-KL           [Kk][Ll]
-L            [Ll]
-WAVELENGTHUNIT   {ML}|{KL}|{L}
-DISTANCEUNIT     {KM}|{M}
-UNIT      {DISTANCEUNIT}|{WAVELENGTHUNIT}
-
-REGEX1    m"/"[^/]+"/"
-REGEX2    m%[^%]+%
-REGEX3    m#[^#]+#
-REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+KILO       ([Kk]?)
+MEGA       (M?)
+METER      (m?)
+LAMBDA     ([Ll]?)
+WAVELENGTHUNIT   (({KILO}|{MEGA})?{LAMBDA})
+DISTANCEUNIT     (({KILO})?{METER})
+UNIT      ({DISTANCEUNIT}|{WAVELENGTHUNIT})
 
   /* rules */
-
 %%
 
-"["       { msUvDistGramPosition() += yyleng;
-            return LBRACKET;
-          }
-"("       { msUvDistGramPosition() += yyleng;
-            return LPAREN;
-          }
-"]"       { msUvDistGramPosition() += yyleng;
-            return RBRACKET;
-          }
-")"       { msUvDistGramPosition() += yyleng;
-            return RPAREN;
-          }
+{FNUMBER}       { msUvDistGramPosition() += yyleng;
+                  lvalp->dval = atof(MSUvDistGramtext);
 
-":"       { msUvDistGramPosition() += yyleng;
-            return COLON; }
-"=="      { msUvDistGramPosition() += yyleng;
-            return EQ; }
-"="       { msUvDistGramPosition() += yyleng;
-            return EQASS; }
-"!="      { msUvDistGramPosition() += yyleng;
-            return NE; }
-"<>"      { msUvDistGramPosition() += yyleng;
-            return NE; }
-">="      { msUvDistGramPosition() += yyleng;
-            return GE; }
-">"       { msUvDistGramPosition() += yyleng;
-            return GT; }
-"<="      { msUvDistGramPosition() += yyleng;
-            return LE; }
-"<"       { msUvDistGramPosition() += yyleng;
-            return LT; }
-"&&"      { msUvDistGramPosition() += yyleng;
-            return AND; }
-"||"      { msUvDistGramPosition() += yyleng;
-            return OR; }
-"!"       { msUvDistGramPosition() += yyleng;
-            return NOT; }
-"^"       { msUvDistGramPosition() += yyleng;
-            return POWER; }
-"*"       { msUvDistGramPosition() += yyleng;
-            return TIMES; }
-"/"       { msUvDistGramPosition() += yyleng;
-            return DIVIDE; }
-"%"       { msUvDistGramPosition() += yyleng;
-            return PERCENT; }
-"+"       { msUvDistGramPosition() += yyleng;
-            return PLUS; }
+                  return FNUMBER;
+                }
+
+ /* Literals */
+{UNIT}          { msUvDistGramPosition() += yyleng;
+                  lvalp->str = MSUvDistGramtext;
+
+                  return UNIT;
+                }
 "-"       { msUvDistGramPosition() += yyleng;
             return DASH; }
-"{"       { msUvDistGramPosition() += yyleng;
-            return LBRACE; }
-"}"       { msUvDistGramPosition() += yyleng;
-            return RBRACE; }
-"'"       { msUvDistGramPosition() += yyleng;
-            return SQUOTE; }
+":"       { msUvDistGramPosition() += yyleng;
+            return COLON; }
 ","       { msUvDistGramPosition() += yyleng;
             return COMMA;
           }
-
- /* Literals */
-{FNUMBER}       { msUvDistGramPosition() += yyleng;
-                  lvalp->dval = atof(MSUvDistGramtext);
-                  return FNUMBER;
-                }
-{UNIT}          { msUvDistGramPosition() += yyleng;
-                  lvalp->str = MSUvDistGramtext;
-                  return UNIT;
-                }
+">"       { msUvDistGramPosition() += yyleng;
+            return GT;
+          }
+"<"       { msUvDistGramPosition() += yyleng;
+            return LT;
+          }
+"%"       { msUvDistGramPosition() += yyleng;
+            return PERCENT;
+          }
+{WHITE}   { msUvDistGramPosition() += yyleng;} /* Eat white spaces */
+.         { msUvDistGramPosition() += yyleng;return MSUvDistGramtext[0];}
 %%
-

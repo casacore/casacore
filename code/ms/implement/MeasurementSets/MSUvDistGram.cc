@@ -37,6 +37,7 @@
 #include <ms/MeasurementSets/MeasurementSet.h>
 #include <ms/MeasurementSets/MSUvDistGram.h>
 #include <ms/MeasurementSets/MSUvDistParse.h> // routines used by bison actions
+#include <ms/MeasurementSets/MSSelectionError.h>
 
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
@@ -64,12 +65,25 @@ static Int                   posMSUvDistGram = 0;
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
-    MSUvDistGramrestart (MSUvDistGramin);
-    yy_start = 1;
-    strpMSUvDistGram = command.chars();     // get pointer to command string
-    posMSUvDistGram  = 0;                   // initialize string position
-    MSUvDistParse parser(ms);               // setup measurement set
-    return MSUvDistGramparse();             // parse command string
+  try 
+    {
+      Int ret;
+      MSUvDistGramrestart (MSUvDistGramin);
+      yy_start = 1;
+      strpMSUvDistGram = command.chars();     // get pointer to command string
+      posMSUvDistGram  = 0;                   // initialize string position
+      MSUvDistParse parser(ms);               // setup measurement set
+      MSUvDistParse::thisMSUParser = &parser; // The global pointer to the parser
+      ret=MSUvDistGramparse();                // parse command string
+      return ret;
+    }
+    catch (MSSelectionUvDistError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msUvDistGramPosition(),command);
+	x.addMessage(newMesgs);
+	throw;
+      }
 }
 
 //# Give the table expression node
@@ -99,8 +113,8 @@ int msUvDistGramInput (char* buf, int max_size)
 
 void MSUvDistGramerror (char*)
 {
-    throw (AipsError ("UV Distribution Expression: Parse error at or near '" +
-		      String(MSUvDistGramtext) + "'"));
+  throw (MSSelectionUvDistParseError("UV Distribution Expression: Parse error at or near '"+
+				     String(MSUvDistGramtext) + "'"));
 }
 
 String msUvDistGramRemoveEscapes (const String& in)

@@ -35,93 +35,80 @@ using namespace casa;
 
 %union {
   const TableExprNode* node;
-  Block<TableExprNode>* exprb;
-  TableExprNodeSetElem* elem;
-  TableExprNodeSet* settp;
-  Int ival;
   char * str;
   Double dval;
 }
 
 %token <str> UNIT
-%token EQASS
 %token <dval> FNUMBER
-%token SQUOTE
-%token DASH
-%token LT
-%token GT
 %token COLON
 %token COMMA
 %token PERCENT
 
-%token LBRACKET
-%token LPAREN
-%token RBRACKET
-%token RPAREN
-%token LBRACE
-%token RBRACE
-
-%type <node> uvdiststatement
-%type <node> uvdistexpr
-%type <node> rangeexprlist
-%type <node> rangeexpr
-%type <node> upuvbound
-%type <node> lowuvbound
-%type <node> uvdistwithfract
-
-%left OR
-%left AND 
+%type <dval> fnumwithunits
+%type <node> uvwdiststatement
+%type <node> uvwdistexprlist
+%type <node> uvwdistexpr
 %left UNIT
 %right PERCENT
-%nonassoc EQ EQASS GT GE LT LE NE COLON 
-%left PLUS MINUS
-%left TIMES DIVIDE MODULO
-%nonassoc UNARY
-%nonassoc NOT
-%right POWER
+%nonassoc EQ EQASS GT GE LT LE NE DASH COLON 
 
 %{
-int MSUvDistGramlex (YYSTYPE*);
+  #include <values.h>
+  int MSUvDistGramlex (YYSTYPE*);
+  String MSUvDistGramlexGlobalUnits="m"; // Its a global - make the name crazy to minimize
+                                         // namespace conflicts.
 %}
 
 %%
-uvdiststatement: SQUOTE uvdistexpr SQUOTE {
-                   $$ = $2 ;
+uvwdiststatement:uvwdistexprlist
+                 {
+                   $$ = $1;
                  }
                ;
 
-uvdistexpr: rangeexprlist
-          | upuvbound 
-          | lowuvbound 
-          | uvdistwithfract {
-              $$ = $1;}
-          ;
+uvwdistexprlist: uvwdistexpr 
+                 {
+		   $$ = $1;
+		 }
+               | uvwdistexprlist COMMA uvwdistexpr 
+                 {
+		   $$ = $3;
+		 }
+               ;
 
-rangeexprlist: rangeexpr {
-                 $$ = $1;}
-             | rangeexprlist COMMA rangeexpr {
-       	         $$ = $3;
-	       }
-             ;
+fnumwithunits:   FNUMBER
+                 {
+		   $$ = $1; // The default units are meters ("m")
+		 }
+               | FNUMBER UNIT
+                 {
+		   MSUvDistGramlexGlobalUnits = String($2);
+		   $$ = $1;
+		 }
 
-rangeexpr: FNUMBER DASH FNUMBER UNIT {
-             $$ = MSUvDistParse().selectUVRange($1, $3, String($4));
-           }
-         ;
-
-upuvbound: LT FNUMBER UNIT {
-             $$ = MSUvDistParse().selectUVRange(0, $2, String($3));
-           }
-         ;
-        
-lowuvbound: GT FNUMBER UNIT {
-              $$ = MSUvDistParse().selectUVRange($2, 1000000, String($3));
-            }
-          ;
-
-uvdistwithfract: FNUMBER UNIT COLON FNUMBER PERCENT {
-                   $$ = MSUvDistParse().selectUVRange($1-$4*0.01, $1+$4*0.01, String($2));
+uvwdistexpr:     fnumwithunits
+                 {
+		   $$ = MSUvDistParse().selectUVRange(0, $1, MSUvDistGramlexGlobalUnits);
+		 }
+               | FNUMBER DASH fnumwithunits
+                 {
+		   $$ = MSUvDistParse().selectUVRange($1, $3, MSUvDistGramlexGlobalUnits);
+		 }
+               | LT fnumwithunits
+                 {
+		   $$ = MSUvDistParse().selectUVRange(0, $2, MSUvDistGramlexGlobalUnits);
+		 }
+               | GT fnumwithunits
+                 {
+		   $$ = MSUvDistParse().selectUVRange($2, MAXFLOAT, 
+						      MSUvDistGramlexGlobalUnits);
+		 }
+               | fnumwithunits COLON FNUMBER PERCENT 
+                 {
+                   $$ = MSUvDistParse().selectUVRange($1*(1-$3*0.01), $1*(1+$3*0.01), 
+						      MSUvDistGramlexGlobalUnits);
                  }
                ;
+;
 %%
-
