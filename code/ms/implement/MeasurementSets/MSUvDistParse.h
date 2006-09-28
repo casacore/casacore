@@ -93,10 +93,13 @@ public:
     MSUvDistParse (const MeasurementSet* ms);
 
     const TableExprNode *selectUVRange(const Double& startUV,
-                                       const Double& endUV, const String& unit);
+                                       const Double& endUV, 
+				       const String& unit,
+				       Bool doSlow=False);
 
     // Get table expression node object.
     static const TableExprNode* node();
+    static MSUvDistParse* thisMSUParser;
 
 private:
     static TableExprNode* node_p;
