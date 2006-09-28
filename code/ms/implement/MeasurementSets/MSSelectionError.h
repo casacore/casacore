@@ -90,6 +90,105 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     ~MSSelectionTimeParseError () throw();
   };
 
+  // <summary>
+  // Error thrown by MSAntennaXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionAntennaError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionAntennaError (const String& message,Category c=GENERAL);
+    ~MSSelectionAntennaError () throw();
+  };
+  
+  class MSSelectionAntennaParseError: public MSSelectionAntennaError {
+  public:
+    MSSelectionAntennaParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionAntennaParseError () throw();
+  };
+
+  // <summary>
+  // Error thrown by MSFieldXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionFieldError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionFieldError (const String& message,Category c=GENERAL);
+    ~MSSelectionFieldError () throw();
+  };
+  
+  class MSSelectionFieldParseError: public MSSelectionFieldError {
+  public:
+    MSSelectionFieldParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionFieldParseError () throw();
+  };
+
+  // <summary>
+  // Error thrown by MSUvDistXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionUvDistError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionUvDistError (const String& message,Category c=GENERAL);
+    ~MSSelectionUvDistError () throw();
+  };
+  
+  class MSSelectionUvDistParseError: public MSSelectionUvDistError {
+  public:
+    MSSelectionUvDistParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionUvDistParseError () throw();
+  };
+
+  // <summary>
+  // Error thrown by MSSpwXXXX classes.
+  // </summary>
+  // <use visibility=export>
+  // <reviewed reviewer="UNKNOWN" date="" tests="">
+  // </reviewed>
+  
+  // <synopsis> 
+  // </synopsis> 
+  
+  class MSSelectionSpwError : public MSSelectionError {
+  public:
+    // Add given message to string "MSSelection time error: ".
+    MSSelectionSpwError (const String& message,Category c=GENERAL);
+    ~MSSelectionSpwError () throw();
+  };
+  
+  class MSSelectionSpwParseError: public MSSelectionSpwError {
+  public:
+    MSSelectionSpwParseError (const String& message,Category c=GENERAL);
+    ~MSSelectionSpwParseError () throw();
+  };
+
+  class MSSelectionSpwWarning: public MSSelectionSpwError {
+  public:
+    MSSelectionSpwWarning (const String& message,Category c=GENERAL);
+    ~MSSelectionSpwWarning () throw();
+  };
+
+  String constructMessage(const Int pos, const String& command);
 } //# NAMESPACE CASA - END
 
 #endif

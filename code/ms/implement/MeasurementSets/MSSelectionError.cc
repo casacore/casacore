@@ -47,7 +47,18 @@ void MSSelectionError::changeMessage(String& mesg)
 {
   message = mesg;
 }
-
+//
+//-----------------------------------------------------------------------------------
+//
+String constructMessage(const Int pos, const String& command)
+{
+  ostringstream newMesg;
+  newMesg << " (near char. " << pos << " in string \"" << command << "\")";
+  return String(newMesg.str().c_str());
+}
+//
+//-----------------------------------------------------------------------------------
+//
 MSSelectionTimeError::MSSelectionTimeError (const String& str,Category c)
 : MSSelectionError(str,c)
 {}
@@ -58,6 +69,69 @@ MSSelectionTimeParseError::MSSelectionTimeParseError (const String& str,Category
 : MSSelectionTimeError(str,c)
 {}
 MSSelectionTimeParseError::~MSSelectionTimeParseError () throw()
+{}
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionAntennaError::MSSelectionAntennaError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionAntennaError::~MSSelectionAntennaError () throw()
+{}
+
+MSSelectionAntennaParseError::MSSelectionAntennaParseError (const String& str,Category c)
+: MSSelectionAntennaError(str,c)
+{}
+MSSelectionAntennaParseError::~MSSelectionAntennaParseError () throw()
+{}
+
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionFieldError::MSSelectionFieldError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionFieldError::~MSSelectionFieldError () throw()
+{}
+
+MSSelectionFieldParseError::MSSelectionFieldParseError (const String& str,Category c)
+: MSSelectionFieldError(str,c)
+{}
+MSSelectionFieldParseError::~MSSelectionFieldParseError () throw()
+{}
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionUvDistError::MSSelectionUvDistError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionUvDistError::~MSSelectionUvDistError () throw()
+{}
+
+MSSelectionUvDistParseError::MSSelectionUvDistParseError (const String& str,Category c)
+: MSSelectionUvDistError(str,c)
+{}
+MSSelectionUvDistParseError::~MSSelectionUvDistParseError () throw()
+{}
+//
+//-----------------------------------------------------------------------------------
+//
+MSSelectionSpwError::MSSelectionSpwError (const String& str,Category c)
+: MSSelectionError(str,c)
+{}
+MSSelectionSpwError::~MSSelectionSpwError () throw()
+{}
+
+MSSelectionSpwParseError::MSSelectionSpwParseError (const String& str,Category c)
+: MSSelectionSpwError(str,c)
+{}
+MSSelectionSpwParseError::~MSSelectionSpwParseError () throw()
+{}
+
+MSSelectionSpwWarning::MSSelectionSpwWarning (const String& str,Category c)
+: MSSelectionSpwError(str,c)
+{}
+MSSelectionSpwWarning::~MSSelectionSpwWarning () throw()
 {}
 
 } //# NAMESPACE CASA - END
