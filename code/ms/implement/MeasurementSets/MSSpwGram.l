@@ -1,4 +1,4 @@
-/*
+/* -*- C -*-
     MSSpwGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
@@ -33,104 +33,118 @@
 
 #undef YY_DECL
 #define YY_DECL int MSSpwGramlex (YYSTYPE* lvalp)
+static string                qstr;
 %}
 
 WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
-FNUMBER   {INT}|({INT}"."{DIGIT}*)
-TRUE      T
-FALSE     F
+DOT       \.?
+NUMBER    ({INT}|{INT}?{DOT}{INT}*)
+FNUMBER   {NUMBER}?{EXP}?
+
+KILO       ([Kk]?)
+MEGA       (M?)
+GIGA       (G?)
+TERA       (T?)
+HERTZ      (([Hh][Zz])?)
+UNIT       (({KILO}|{MEGA}|{GIGA}|{TERA})?{HERTZ})
 
 QSTRING   \"[^\"\n]*\"
-ASTRING   \'[^\'\n]*\'
-UQSTRING   \"[^\"\n]*\n
-UASTRING   \'[^\'\n]*\n
-STRING    ({QSTRING}|{ASTRING})+
-USTRING   ({UQSTRING}|{UASTRING})+
+STRING    ({QSTRING})+
 
-FREQUENCYUNIT    [Mm][Hh][Zz]
-VELOCITYUNIT     [Kk][Mm]"/"[Ss]
-SPWNAME    [A-Za-z0-9]*[+]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
-  /* rules */
+QUOTE     (\")
+RQUOTE    (\/)
+NQ        [^\\\n\"]+
+NRQ       [^\\\n\/]+
 
+NAMES       ([a-zA-Z_{}]+[a-zA-Z0-9_{}]*)
+IDENTIFIER  ({NAMES}+|STRING)
+SIDENTIFIER  ({NAMES}+"*")
+
+%x QS RS
+/* rules */
 %%
-
-"["       { msSpwGramPosition() += yyleng;
-            return LBRACKET;
-          }
-"("       { msSpwGramPosition() += yyleng;
-            return LPAREN;
-          }
-"]"       { msSpwGramPosition() += yyleng;
-            return RBRACKET;
-          }
-")"       { msSpwGramPosition() += yyleng;
-            return RPAREN;
+{QUOTE}   { // Start of a quoted string
+            qstr.resize(0);
+            BEGIN(QS);
           }
 
-":"       { msSpwGramPosition() += yyleng;
-            return COLON; }
-"=="      { msSpwGramPosition() += yyleng;
-            return EQ; }
-"="       { msSpwGramPosition() += yyleng;
-            return EQASS; }
-"!="      { msSpwGramPosition() += yyleng;
-            return NE; }
-"<>"      { msSpwGramPosition() += yyleng;
-            return NE; }
-">="      { msSpwGramPosition() += yyleng;
-            return GE; }
-">"       { msSpwGramPosition() += yyleng;
-            return GT; }
-"<="      { msSpwGramPosition() += yyleng;
-            return LE; }
-"<"       { msSpwGramPosition() += yyleng;
-            return LT; }
-"||"      { msSpwGramPosition() += yyleng;
-            return OR; }
-"!"       { msSpwGramPosition() += yyleng;
-            return NOT; }
-"^"       { msSpwGramPosition() += yyleng;
-            return POWER; }
-"*"       { msSpwGramPosition() += yyleng;
-            return TIMES; }
-"/"       { msSpwGramPosition() += yyleng;
-            return SLASH; }
-"%"       { msSpwGramPosition() += yyleng;
-            return MODULO; }
-"+"       { msSpwGramPosition() += yyleng;
-            return PLUS; }
+<QS>{NQ}  { 
+            (qstr)+= MSSpwGramtext;
+          }
+
+<QS>{QUOTE} { /* saw closing quote - all done */
+               BEGIN(INITIAL);
+               lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
+               strcpy(lvalp->str,qstr.c_str());
+               qstr.resize(0);
+
+               return QSTRING;
+             }
+
+{RQUOTE}  { // Start of a regex string
+            qstr.resize(0);
+            BEGIN(RS);
+          }
+
+<RS>{NRQ} {
+            (qstr)+= MSSpwGramtext;
+          }
+
+<RS>{RQUOTE} { /* saw closing quote - all done */
+               BEGIN(INITIAL);
+               lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
+               strcpy(lvalp->str,qstr.c_str());
+               qstr.resize(0);
+
+               return REGEX;
+             }
+
+{FNUMBER} {msSpwGramPosition() += yyleng;
+            lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
+            strcpy(lvalp->str, MSSpwGramtext);
+
+            return FNUMBER;
+          } 
+{UNIT}    { msSpwGramPosition() += yyleng;
+            lvalp->str = MSSpwGramtext;
+
+            return UNIT;
+          }
 "-"       { msSpwGramPosition() += yyleng;
             return DASH; }
-"{"       { msSpwGramPosition() += yyleng;
-            return LBRACE; }
-"}"       { msSpwGramPosition() += yyleng;
-            return RBRACE; }
-"'"       { msSpwGramPosition() += yyleng;
-            return SQUOTE; }
 ","       { msSpwGramPosition() += yyleng;
             return COMMA;
           }
-
+"<"       { msSpwGramPosition() += yyleng;
+            return LT;
+          }
+">"       { msSpwGramPosition() += yyleng;
+            return GT;
+          }
+"&"       { msSpwGramPosition() += yyleng;
+            return AMPERSAND;
+          }
+"~"       { msSpwGramPosition() += yyleng;
+            return TILDA;
+          }
   /* Literals */
-{FREQUENCYUNIT}  { msSpwGramPosition() += yyleng;
-                   return FREQUENCYUNIT;
-                 }
-{VELOCITYUNIT}  { msSpwGramPosition() += yyleng;
-                  return VELOCITYUNIT;
-                }
 
-{FNUMBER} { msSpwGramPosition() += yyleng;
-            lvalp->dval = atof(MSSpwGramtext);
-            return NUMBER;
-	  }
+{IDENTIFIER} { msSpwGramPosition() += yyleng;
+               lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
+               strcpy(lvalp->str, MSSpwGramtext);
 
-{SPWNAME} { msSpwGramPosition() += yyleng;
-            lvalp->str = MSSpwGramtext;
-            return SPWNAME;
-	  }
-
+               return IDENTIFIER;
+             }
+{SIDENTIFIER} { msSpwGramPosition() += yyleng;
+                lvalp->str = (char *)malloc((strlen(MSSpwGramtext) + 1) * sizeof(char));
+                strcpy(lvalp->str, MSSpwGramtext);
+                return QSTRING;
+              }
+"("       { msSpwGramPosition() += yyleng; return LPAREN; }
+")"       { msSpwGramPosition() += yyleng; return RPAREN;}
+{WHITE}   { msSpwGramPosition() += yyleng;} /* Eat white spaces */
+.         { msSpwGramPosition() += yyleng;return MSSpwGramtext[0];}
 %%
-

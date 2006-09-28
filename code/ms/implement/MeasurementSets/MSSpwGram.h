@@ -1,4 +1,4 @@
-//# MSSpwGram.h: Grammar for ms spw sub-expressions
+//# MSSpwGram.h: Grammar for ms field sub-expressions
 //# Copyright (C) 1998
 //# Associated Universities, Inc. Washington DC, USA.
 //#

@@ -1,4 +1,4 @@
-//# MSSpwParse.cc: Classes to hold results from spw grammar parser
+//# MSSpwParse.cc: Classes to hold results from Spw grammar parser
 //# Copyright (C) 1994,1995,1997,1998,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -26,304 +26,162 @@
 //# $Id$
 
 #include <ms/MeasurementSets/MSSpwParse.h>
-#include <ms/MeasurementSets/MSDataDescIndex.h>
-#include <ms/MeasurementSets/MSSpWindowIndex.h>
-#include <ms/MeasurementSets/MSPolIndex.h>
-#include <ms/MeasurementSets/MSSourceColumns.h>
+#include <ms/MeasurementSets/MSSpwIndex.h>
+#include <ms/MeasurementSets/MSColumns.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
+#include <casa/BasicSL/String.h>
 #include <casa/Logging/LogIO.h>
-#include <casa/Arrays/Slicer.h>
-#include <casa/Arrays/IPosition.h>
-#include <tables/Tables/ArrColDesc.h>
-#include <tables/Tables/ArrayColumn.h>
-
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-TableExprNode* MSSpwParse::node_p = 0x0;
-
-//# Constructor
-MSSpwParse::MSSpwParse ()
-: MSParse()
-{
-}
-
-//# Constructor with given ms name.
-MSSpwParse::MSSpwParse (const MeasurementSet* ms)
-: MSParse(ms, "SPW")
-{
+  
+  MSSpwParse* MSSpwParse::thisMSSParser = 0x0; // Global pointer to the parser object
+  TableExprNode* MSSpwParse::node_p = 0x0;
+  
+  //# Constructor
+  MSSpwParse::MSSpwParse ()
+    : MSParse()
+  {
+  }
+  
+  //# Constructor with given ms name.
+  MSSpwParse::MSSpwParse (const MeasurementSet* ms)
+    : MSParse(ms, "Spw")
+  {
     if(node_p) delete node_p;
     node_p = new TableExprNode();
-}
-
-const TableExprNode *MSSpwParse::selectSpwIds(const Vector<Int>& spwIds)
-{
-  LogIO os(LogOrigin("MSSpwParse", "selectSpwIds()", WHERE));
-    // Look-up in DATA_DESC sub-table
-    MSDataDescIndex msDDI(ms()->dataDescription());
-    String colName = MS::columnName(MS::DATA_DESC_ID);
-
-   TableExprNode condition =
-       (ms()->col(colName).in(msDDI.matchSpwId(spwIds)));
-
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
-
-    return node_p;
-}
-
-const TableExprNode *MSSpwParse::selectChaninASpw(const Int spw, const Int channel) 
-{
-
-  LogIO os(LogOrigin("MSSpwParse", "selectChaninASpw()", WHERE)); 
-  /////////     work space        //////////////////
-  MeasurementSet selms= Table(ms()->tableName(), Table::Update);
-  if(!selms.isWritable()) {
-    os << "Table is not writable " << LogIO::POST;
-    return NULL;
-  } 
-
-  IPosition rowShape;
-  Slicer slicer;
-
-  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
-  TableDesc tdSel;
-  String colSel = "SELECTED_DATA";
-
-  if(selms.tableDesc().isColumn("SELECTED_DATA")) {
-    selms.removeColumn("SELECTED_DATA");
-  }
-
-  ColumnDesc & cdSel = tdSel.addColumn(ArrayColumnDesc<Complex>(colSel," selected data", 2));					
-  selms.addColumn(cdSel);
-  
-  ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
-
-  ROMSPolarizationColumns polc(selms.polarization());
-  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
-  IPosition ip = corrtypeArray.shape();
-
-  Vector<Int> nCorr(corrtypeArray);
-
-  for (uInt row=0; row < selms.nrow(); row++) {
-    rowShape=data.shape(row);
-    selData.setShape(row,IPosition(2, rowShape(0), 1) );
-  }
-
-  //  Vector<Int> corrtype(nCorr);
-  slicer = Slicer(IPosition(2, 0, channel-1), IPosition(2, nCorr.nelements()-1, channel-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
-
-  Array<Complex> datacol = data.getColumn(slicer);
-
-  selData.putColumn( Slicer(IPosition(2, 0, 0), IPosition(2, rowShape(0)-1, 0 ), IPosition(2, 1, 1), Slicer::endIsLast), datacol);
-  
-  // To tableExprNode
-  MSDataDescIndex msDDI(selms.dataDescription());
-  String colName = MS::columnName(MS::DATA_DESC_ID);
-
-  TableExprNode condition =
-    (ms()->col(colName).in(msDDI.matchSpwId(spw)));
-  ///////////////////////////////////////////////////////////////
-  if(node_p->isNull())
-    *node_p = condition;
-  else
-    *node_p = *node_p || condition;
-  
-  return node_p;
-}
-
-const TableExprNode *MSSpwParse::selectChanRangeinASpw(const Int spw, const Int startChan, const Int endChan) 
-{
-  LogIO os(LogOrigin("MSSpwParse", "selectChanRangeinASpw()", WHERE)); 
-  MeasurementSet selms= Table(ms()->tableName(), Table::Update);
-  if(!selms.isWritable()) {
-    os << "Table is not writable " << endl;
-    return NULL;
-  } 
-
-  IPosition rowShape;
-  Slicer slicer;
-
-  ROArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
-  TableDesc tdSel;
-  String colSel = "SELECTED_DATA";
-
-  if(selms.tableDesc().isColumn("SELECTED_DATA")) {
-    selms.removeColumn("SELECTED_DATA");
-  }
-
-  ColumnDesc & cdSel = tdSel.addColumn(ArrayColumnDesc<Complex>(colSel," selected data", 2));					
-  selms.addColumn(cdSel);
-  
-  ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
-
-  ROMSPolarizationColumns polc(selms.polarization());
-  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
-  IPosition ip = corrtypeArray.shape();
-
-  Vector<Int> nCorr(corrtypeArray);
-
-  for (uInt row=0; row < selms.nrow(); row++) {
-    rowShape=data.shape(row);
-    selData.setShape(row,IPosition(2, rowShape(0), endChan-startChan+1) );
-  }
-
-  //  Vector<Int> corrtype(nCorr);
-  slicer = Slicer(IPosition(2, 0, startChan-1), IPosition(2, nCorr.nelements()-1, endChan-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
-
-  Array<Complex> datacol = data.getColumn(slicer);
-
-  selData.putColumn( Slicer(IPosition(2, 0, 0), IPosition(2, rowShape(0)-1, endChan-startChan ), IPosition(2, 1, 1), Slicer::endIsLast), datacol);
-  
-  // To tableExprNode
-  MSDataDescIndex msDDI(selms.dataDescription());
-  String colName = MS::columnName(MS::DATA_DESC_ID);
-
-  TableExprNode condition =
-    (ms()->col(colName).in(msDDI.matchSpwId(spw)));
-
-  if(node_p->isNull())
-    *node_p = condition;
-  else
-    *node_p = *node_p || condition;
-  
-  return node_p;
-}
-
-const TableExprNode *MSSpwParse::selectVelRangeinASpw(const Int spw, const Double startVel, const Double endVel) 
-{
-  LogIO os(LogOrigin("MSSpwParse", "selectVelRangeinASpw()", WHERE)); 
-  Double factor = 1000000;
-  //---------------------------------------------------------------
-  if(!ms()->source().isReadable(ms()->source().tableName())){
-    os <<" Source table does not exist, No rest Frequency! " << LogIO::POST;
-    return NULL;
-  }
-  ROMSSourceColumns msSrcCol( ms()->source());
-  ROArrayColumn<Double> restFreqCol = msSrcCol.restFrequency();
-  if(restFreqCol.nrow()==0){
-    os <<" Source table is empty, No rest Frequency! " << LogIO::POST;
-    return NULL;
-  }
-  Array<Double> restFreqArray = restFreqCol.getColumn();
-  IPosition ip = restFreqArray.shape();
-  Vector<Double> restFreqVec(restFreqArray.nonDegenerate());
-  Double restFreq = restFreqVec(0);
-  // Note: Large velocity means small frequency
-  Double startFreq = restFreq / (1000 * endVel/C::c + 1) / factor;
-  Double endFreq = restFreq / (1000 * startVel/C::c + 1) / factor;
-  return selectFreRangeinASpw(spw, startFreq, endFreq);
-
-}
-
-const TableExprNode *MSSpwParse::selectFreRangeinASpw(const Int spw, const Double startFreq, const Double endFreq) 
-{
-  LogIO os(LogOrigin("MSSpwParse", "selectFreRangeinASpw()", WHERE)); 
-  //Convert between MHz and Hz
-  Double factor = 1000000;
-  long double adjStartFreq = 0;
-  long double adjEndFreq = 0;
-  Int startChan = 0;
-  Int endChan = 0;
-  ROMSSpWindowColumns msSpwCol( ms()->spectralWindow());
-  Array<Double> freqArray = msSpwCol.chanFreq().getColumn();
-  //ROArrayColumn<Double> freqArray = msSpwCol.chanFreq();
-  IPosition ips = freqArray.shape();
-
-  Array<Double> freq;
-  if(spw < ips(1)) {
-    freq = freqArray(Slicer(IPosition(2, 0, spw), IPosition(2, ips(0)-1, spw), IPosition(2, 1, 1), Slicer::endIsLast));
-    IPosition fps = freq.shape();
-  } else {
-    os <<" spw id is not in range " << LogIO::POST;
-    return NULL;
   }
   
-  Vector<Double> freqVec(freq.nonDegenerate());
-  Int numChan = freqVec.nelements();
+  const TableExprNode *MSSpwParse::selectSpwIdsFromIDList(const Vector<Int>& SpwIds)
+  {
+    ROMSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
+    ROMSDataDescColumns msDataDescSubTable(ms()->dataDescription());
 
-  if(startFreq <= freqVec(0)/factor){
-    adjStartFreq = freqVec(0)/factor;
-  } else {
-    adjStartFreq = startFreq;
-  }
-  if(endFreq >= freqVec(numChan - 1)/factor) {
-    adjEndFreq = freqVec(numChan - 1)/factor;
-  } else {
-    adjEndFreq = endFreq;
-  }
-
-  if(startFreq >= freqVec(numChan-1)/factor || endFreq <= freqVec(0)/factor){
-    os <<" Selection is not in the range! " <<LogIO::POST;
-    return NULL;
-  }
-  //  cout << " adj startFreq " << adjStartFreq << endl;
-  //  cout << " adj endFreq " << adjEndFreq << endl;
-  //Channel starts from 1
-  for (Int i = 0; i < numChan - 1 ; i++) {
-    if ( adjStartFreq == freqVec(i)/factor ) {
-      startChan= i + 1;
-      break;
-    } else if( freqVec(i)/factor < adjStartFreq && freqVec(i+1)/factor > adjStartFreq) {
-      startChan = i + 2;
-      break;
-    }
-  }
-  // Find end channel
-  for (Int i = numChan - 1; i > 1; i--) {
-    if ( freqVec(i)/factor == adjEndFreq) {
-      endChan= i+1;
-      break;
-    } else if ( freqVec(i)/factor > adjEndFreq && freqVec(i-1)/factor < adjEndFreq){
-      endChan = i;
-      break;
-    } 
-  }
-  
-  //  cout << " startChan  " << startChan << " endChan " << endChan << endl;
-  if(startChan > endChan ) {
-    os <<" Start is greater than End ! " <<LogIO::POST;
-    return NULL;
-  }
-  return selectChanRangeinASpw(spw, startChan, endChan);
-}
-
-const TableExprNode *MSSpwParse::selectSpwName(const String& name)
-{
-    const String colName = MS::columnName(MS::DATA_DESC_ID);
-    bool selectName;
-
-    ROMSSpWindowColumns msSWC(ms()->spectralWindow());
-    ROScalarColumn<String> names(msSWC.name());
-
-    for (uInt i = 0; i < names.getColumn().nelements(); i++)
-    {
-        if(strcmp(names(i).chars(), name.chars())==0)
-            selectName = True;
-    }
-
+    Vector<Int> mapDDID2SpwID, notFoundIDs;
+    Int nSpwRows, nDDIDRows;
+    Bool Found;
     TableExprNode condition;
-    if(selectName)
-    {
-        MSSpWindowIndex msSWI(ms()->spectralWindow());
-        condition = 0;
-    }
-    else
-        condition = 0;
+    const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID),
+      FLAG_COL = MS::columnName(MS::FLAG);
+    
+    nSpwRows = msSpwSubTable.nrow();
+    nDDIDRows = msDataDescSubTable.nrow();
+    mapDDID2SpwID.resize(nDDIDRows);
 
+    for(Int i=0;i<nDDIDRows;i++)
+      mapDDID2SpwID(i) = msDataDescSubTable.spectralWindowId()(i);
+
+    for(uInt n=0;n<SpwIds.nelements();n++)
+      {
+	Found = False;
+	for(Int i=0;i<nDDIDRows;i++)
+	  if ((SpwIds(n) == mapDDID2SpwID(i)) && 
+	      (!msDataDescSubTable.flagRow()(i)) && 
+	      (!msSpwSubTable.flagRow()(SpwIds(n)))
+	      )
+	    {
+	      if (condition.isNull())
+		condition = ((ms()->col(DATA_DESC_ID)==i));
+	      else
+		condition = condition || ((ms()->col(DATA_DESC_ID)==i));
+	      Found = True;
+	      break;
+	    }
+	if (!Found)
+	  {
+	    //
+	    // Darn!  We don't use standard stuff (STL!)
+	    //
+	    //notFoundIDs.push_back(SpwIds(n));
+	    notFoundIDs.resize(notFoundIDs.nelements()+1,True);
+	    notFoundIDs(notFoundIDs.nelements()-1) = SpwIds(n);
+	  }
+      }
+
+    if (condition.isNull()) 
+      {
+	ostringstream Mesg;
+	Mesg << "No Spw ID(s) matched specifications ";
+	throw(MSSelectionSpwError(Mesg.str()));
+      }
+    if(node_p->isNull())
+      *node_p = condition;
+    else
+      *node_p = *node_p || condition;
+    
+    return node_p;
+  }
+  //
+  //------------------------------------------------------------------
+  //
+  const TableExprNode *MSSpwParse::selectSpwIdsFromFreqList(const Vector<Float>& freq,
+							    const Float factor)
+  {
+    ROMSSpWindowColumns msSpwSubTable(ms()->spectralWindow());
+    ROMSDataDescColumns msDataDescSubTable(ms()->dataDescription());
+    Vector<Float> mapFreq2SpwID;
+    Vector<Int> mapDDID2SpwID;
+    Int nSpwRows, nDDIDRows;
+    Bool Found;
+    TableExprNode condition;
+    const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID);
+    
+    nSpwRows = msSpwSubTable.nrow();
+    nDDIDRows = msDataDescSubTable.nrow();
+    mapDDID2SpwID.resize(nDDIDRows);
+    mapFreq2SpwID.resize(nSpwRows);
+
+    for(Int i=0;i<nDDIDRows;i++)
+      mapDDID2SpwID(i) = msDataDescSubTable.spectralWindowId()(i);
+    for(Int i=0;i<nSpwRows;i++)
+      mapFreq2SpwID(i) = msSpwSubTable.refFrequency()(i);
+
+    for(uInt n=0;n<freq.nelements();n++)
+      {
+	Found = False;
+	//
+	// Given a freq. value, find the equivalent SpwID
+	//
+	Int spw;
+	for(spw=0;spw<nSpwRows;spw++)
+	  if ((freq(n) == mapFreq2SpwID(spw)*factor) &&
+	      (!msSpwSubTable.flagRow()(spw)))
+	    {
+	      Found = True;
+	      break;
+	    }
+	//
+	// Now, given the equivalent SpwID, find the equivalent DDID
+	//
+	if (Found)
+	  {
+	    for(Int ddid=0;ddid<nDDIDRows;ddid++)
+	      if (mapDDID2SpwID(ddid) == spw)
+		{
+		  if (condition.isNull())
+		    condition = ((ms()->col(DATA_DESC_ID)==ddid));
+		  else
+		    condition = condition || ((ms()->col(DATA_DESC_ID)==ddid));
+		  break;
+		}
+	  }
+	if (!Found)
+	  {
+	    ostringstream Mesg;
+	    Mesg << "Np Spw ID found";
+	    throw(MSSelectionSpwError(Mesg.str()));
+	  }
+      }
 
     if(node_p->isNull())
-        *node_p = condition;
+      *node_p = condition;
     else
-        *node_p = *node_p || condition;
-
+      *node_p = *node_p || condition;
+    
     return node_p;
-}
-
-const TableExprNode* MSSpwParse::node()
-{
+  }
+  
+  const TableExprNode* MSSpwParse::node()
+  {
     return node_p;
-}
-
+  }
 } //# NAMESPACE CASA - END

@@ -1,4 +1,4 @@
-//# MSSpwGram.cc: Grammar for spw expressions
+//# MSSpwGram.cc: Grammar for spectral window expressions
 //# Copyright (C) 1998,1999,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -25,18 +25,22 @@
 //#
 //# $Id$
 
-// MSSpwGram; grammar for spw command lines
+// MSSpwGram; grammar for field command lines
 
-// This file includes the output files of bison and flex for
-// parsing command lines operating on lattices.
-// This is a preliminary version; eventually it has to be incorporated
-// in the AIPS++ command language.
+// This file includes the output files of bison and flex for parsing
+// command lines operating on lattices.  This is a preliminary
+// version; eventually it has to be incorporated in the AIPS++ command
+// language.
 
 #include <tables/Tables/ExprNode.h>
 #include <tables/Tables/ExprNodeSet.h>
 #include <ms/MeasurementSets/MeasurementSet.h>
+//#include <ms/MeasurementSets/MSSpwColumns.h>
 #include <ms/MeasurementSets/MSSpwGram.h>
-#include <ms/MeasurementSets/MSSpwParse.h> // routines used by bison actions
+#include <ms/MeasurementSets/MSSpwParse.h>
+#include <ms/MeasurementSets/MSSpwIndex.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
+
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
@@ -58,17 +62,31 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 static const char*           strpMSSpwGram = 0;
 static Int                   posMSSpwGram = 0;
 
+  // MSSpwGramwrap out of namespace
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msSpwGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
-    MSSpwGramrestart (MSSpwGramin);
-    yy_start = 1;
-    strpMSSpwGram = command.chars();     // get pointer to command string
-    posMSSpwGram  = 0;                   // initialize string position
-    MSSpwParse parser(ms);               // setup measurement set
-    return MSSpwGramparse();             // parse command string
+  try 
+    {
+      Int ret;
+      MSSpwGramrestart (MSSpwGramin);
+      yy_start = 1;
+      strpMSSpwGram = command.chars();     // get pointer to command string
+      posMSSpwGram  = 0;                   // initialize string position
+      MSSpwParse parser(ms);               // setup measurement set
+      MSSpwParse::thisMSSParser = &parser; // The global pointer to the parser
+      ret=MSSpwGramparse();                // parse command string
+      return ret;
+    }
+  catch (MSSelectionSpwError &x)
+    {
+      String newMesgs;
+      newMesgs = constructMessage(msSpwGramPosition(), command);
+      x.addMessage(newMesgs);
+      throw;
+    }
 }
 
 //# Give the table expression node
@@ -98,7 +116,7 @@ int msSpwGramInput (char* buf, int max_size)
 
 void MSSpwGramerror (char*)
 {
-    throw (AipsError ("Spw Expression: Parse error at or near '" +
+    throw (AipsError ("Field Expression: Parse error at or near '" +
 		      String(MSSpwGramtext) + "'"));
 }
 

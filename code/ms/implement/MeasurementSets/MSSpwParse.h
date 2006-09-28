@@ -25,8 +25,8 @@
 //#
 //# $Id$
 
-#ifndef MS_MSSpwPARSE_H
-#define MS_MSSpwPARSE_H
+#ifndef MS_MSSPWPARSE_H
+#define MS_MSSPWPARSE_H
 
 //# Includes
 #include <ms/MeasurementSets/MSParse.h>
@@ -35,8 +35,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Forward Declarations
 
+
 // <summary>
-// Class to hold values from UV dist grammar parser
+// Class to hold values from field grammar parser
 // </summary>
 
 // <use visibility=local>
@@ -49,17 +50,16 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // </prerequisite>
 
 // <etymology>
-// MSSpwParse is the class used to parse a UV dist command.
+// MSSpwParse is the class used to parse a spectral window selection command.
 // </etymology>
 
-// <synopsis>
-// MSSpwParse is used by the parser of spw sub-expression statements.
-// The parser is written in Bison and Flex in files MSSpwGram.y and .l.
-// The statements in there use the routines in this file to act
-// upon a reduced rule.
-// Since multiple tables can be given (with a shorthand), the table
-// names are stored in a list. The variable names can be qualified
-// by the table name and will be looked up in the appropriate table.
+// <synopsis> MSSpwParse is used by the parser of spectral window
+// (Spw) sub-expression statements.  The parser is written in Bison
+// and Flex in files MSSpwGram.y and .l.  The statements in there use
+// the routines in this file to act upon a reduced rule.  Since
+// multiple tables can be given (with a shorthand), the table names
+// are stored in a list. The variable names can be qualified by the
+// table name and will be looked up in the appropriate table.
 //
 // The class MSSpwParse only contains information about a table
 // used in the table command. Global variables (like a list and a vector)
@@ -84,38 +84,24 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 class MSSpwParse : public MSParse
 {
-
 public:
-    // Default constructor
-    MSSpwParse ();
+  // Default constructor
+  MSSpwParse ();
 
-    // Associate the ms and the shorthand.
-    MSSpwParse (const MeasurementSet* ms);
+  // Associate the ms and the shorthand.
+  MSSpwParse (const MeasurementSet* ms);
 
-    const TableExprNode *selectSpwIds(const Vector<Int>& spwids);
-    // add various selections
-    // Single channel selection
-    const TableExprNode *selectChaninASpw(const Int spw, const Int channel);
-    // Channel Range
-    const TableExprNode *selectChanRangeinASpw(const Int spw, 
-					       const Int startChan, 
-					       const Int endChan);
-    // Velocity Range
-    const TableExprNode *selectVelRangeinASpw(const Int spw, 
-					      const Double startVel,
-					      const Double endVel); 
-    //Frequency Range
-    const TableExprNode *selectFreRangeinASpw(const Int spw, 
-					      const Double startFreq, 
-					      const Double endFreq); 
-    //Select by name
-    const TableExprNode *selectSpwName(const String& name);
+  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& fieldIds);
+  const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& fieldIds,
+						const Float factor);
+  //    const TableExprNode *selectSpwOrSource(const String& fieldName);
 
-    // Get table expression node object.
-    static const TableExprNode* node();
+  // Get table expression node object.
+  static const TableExprNode* node();
+  static MSSpwParse* thisMSSParser;
 
 private:
-    static TableExprNode* node_p;
+  static TableExprNode* node_p;
 };
 
 } //# NAMESPACE CASA - END
