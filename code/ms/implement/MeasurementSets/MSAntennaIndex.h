@@ -88,6 +88,8 @@ public:
   // Null destructor
   virtual ~MSAntennaIndex() {};
 
+  // Look up ANTENNA_ID's for a given a regular expression or pattern
+  Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const Bool regex=False);
   // Look up ANTENNA_ID's for a given antenna name, or set of antenna names
   Vector<Int> matchAntennaName(const String& name);
   Vector<Int> matchAntennaName(const Vector<String>& names);
@@ -100,9 +102,8 @@ public:
 					 const String& station);
 
 private:
-  // Disallow null constructor
+  // Default constructor
   MSAntennaIndex();
-
   // ANTENNA subtable column accessor
   ROMSAntennaColumns msAntennaCols_p;
 

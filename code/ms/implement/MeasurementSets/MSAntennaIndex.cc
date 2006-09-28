@@ -30,6 +30,7 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -54,6 +55,40 @@ MSAntennaIndex::MSAntennaIndex(const MSAntenna& antenna)
 
 //-------------------------------------------------------------------------
 
+Vector<Int> MSAntennaIndex::matchAntennaRegexOrPattern(const String& pattern,
+						       const Bool regex)
+{
+// Match a regular expression or pattern to a set of antenna id's
+// Input:
+//    pattern            const String&            Pattern/regular expression 
+//                                                for Antenna name to match
+// Output:
+//    matchAntennaName   Vector<Int>              Matching antenna id's
+//
+  Int pos=0;
+  Regex reg;
+  if (regex) reg=pattern;
+  else       reg=reg.fromPattern(pattern);
+
+  //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+  IPosition sh(msAntennaCols_p.name().getColumn().shape());
+  LogicalArray maskArray(sh,False);
+  IPosition i=sh;
+  for(i(0)=0;i(0)<sh(0);i(0)++)
+    {
+      //Int ret=(msAntennaCols_p.name().getColumn()(i).find(reg,pos));
+      Int ret=(msAntennaCols_p.name().getColumn()(i).matches(reg,pos));
+      //      cerr << i << " " << ret << endl;
+      maskArray(i) = ( (ret>0) &&
+		      !msAntennaCols_p.flagRow().getColumn()(i));
+    }
+  
+  MaskedArray<Int> maskAntennaID(antennaIds_p,maskArray);
+  return maskAntennaID.getCompressedArray();
+}; 
+
+//-------------------------------------------------------------------------
+
 Vector<Int> MSAntennaIndex::matchAntennaName(const String& name)
 {
 // Match a antenna name to a set of antenna id's
@@ -71,6 +106,7 @@ Vector<Int> MSAntennaIndex::matchAntennaName(const String& name)
     LogicalArray maskArray = (msAntennaCols_p.name().getColumn()==name &&
 			      !msAntennaCols_p.flagRow().getColumn());
     MaskedArray<Int> maskAntennaId(antennaIds_p, maskArray);
+
     return maskAntennaId.getCompressedArray();
   }
 }; 

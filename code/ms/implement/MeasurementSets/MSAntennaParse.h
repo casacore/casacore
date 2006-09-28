@@ -104,15 +104,18 @@ public:
 
     // selection from antenna and CP
     const TableExprNode* selectFromIdsAndCPs(const Int index, const String& cp);
-    const TableExprNode* selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, const Int secondIndex, const String& secondcp);
+    const TableExprNode* selectFromIdsAndCPs(const Int firstIndex, const String& firstcp, 
+					     const Int secondIndex, const String& secondcp);
 
     // Get table expression node object.
     static const TableExprNode* node();
-
+    static MSAntennaParse* thisMSAParser;
 private:
+
     static TableExprNode* node_p;
     const String colName1, colName2;
-};
+    void setTEN(TableExprNode&);
+ };
 
 } //# NAMESPACE CASA - END
 

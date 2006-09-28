@@ -39,6 +39,8 @@
 #include <ms/MeasurementSets/MSAntennaParse.h> // routines used by bison actions
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
+#include <ms/MeasurementSets/MSAntennaIndex.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
 
 //# stdlib.h is needed for bison 1.28 and needs to be included here
 //# (before the flex/bison files).
@@ -55,20 +57,32 @@ int MSAntennaGramwrap()
 namespace casa { //# NAMESPACE CASA - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
-static const char*           strpMSAntennaGram = 0;
-static Int                   posMSAntennaGram = 0;
-
+  static const char*           strpMSAntennaGram = 0;
+  static Int                   posMSAntennaGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msAntennaGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
-    MSAntennaGramrestart (MSAntennaGramin);
-    yy_start = 1;
-    strpMSAntennaGram = command.chars();     // get pointer to command string
-    posMSAntennaGram  = 0;                   // initialize string position
-    MSAntennaParse parser(ms);               // setup measurement set
-    return MSAntennaGramparse();             // parse command string
+  try 
+    {
+      Int ret;
+      MSAntennaGramrestart (MSAntennaGramin);
+      yy_start = 1;
+      strpMSAntennaGram = command.chars();     // get pointer to command string
+      posMSAntennaGram  = 0;                   // initialize string position
+      MSAntennaParse parser(ms);               // setup measurement set
+      MSAntennaParse::thisMSAParser = &parser; // The global pointer to the parser
+      ret=MSAntennaGramparse();                // parse command string
+      return ret;
+    }
+    catch (MSSelectionAntennaError &x)
+      {
+	String newMesgs;
+	newMesgs = constructMessage(msAntennaGramPosition(),command);
+	x.addMessage(newMesgs);
+	throw;
+      }
 }
 
 //# Give the table expression node
@@ -98,8 +112,8 @@ int msAntennaGramInput (char* buf, int max_size)
 
 void MSAntennaGramerror (char*)
 {
-    throw (AipsError ("Antenna Expression: Parse error at or near '" +
-		      String(MSAntennaGramtext) + "'"));
+    throw (MSSelectionAntennaParseError ("Antenna Expression: Parse error at or near '" +
+					 String(MSAntennaGramtext) + "'"));
 }
 
 String msAntennaGramRemoveEscapes (const String& in)
