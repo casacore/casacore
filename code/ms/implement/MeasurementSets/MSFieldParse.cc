@@ -31,105 +31,106 @@
 #include <casa/Logging/LogIO.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-TableExprNode* MSFieldParse::node_p = 0x0;
-
-//# Constructor
-MSFieldParse::MSFieldParse ()
-: MSParse(), colName(MS::columnName(MS::FIELD_ID))
-{
-}
-
-//# Constructor with given ms name.
-MSFieldParse::MSFieldParse (const MeasurementSet* ms)
-: MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
-{
+  
+  MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
+  TableExprNode* MSFieldParse::node_p = 0x0;
+  
+  //# Constructor
+  MSFieldParse::MSFieldParse ()
+    : MSParse(), colName(MS::columnName(MS::FIELD_ID))
+  {
+  }
+  
+  //# Constructor with given ms name.
+  MSFieldParse::MSFieldParse (const MeasurementSet* ms)
+    : MSParse(ms, "Field"), colName(MS::columnName(MS::FIELD_ID))
+  {
     if(node_p) delete node_p;
     node_p = new TableExprNode();
-}
-
-const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
-{
-    TableExprNode condition = (ms()->col(colName).in(fieldIds));
-
-    if(node_p->isNull())
-        *node_p = condition;
-    else
-        *node_p = *node_p || condition;
-
-    return node_p;
-}
-
-const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
-{
-  LogIO os(LogOrigin("MSFieldParse", "selectFieldOrSource", WHERE));
-  Vector<Int> SourceIdsFromSN ;
-  Vector<Int> SourceIdsFromSC ;
-  Vector<Int> FieldIdsFromFN ;
-  Vector<Int> FieldIdsFromFC ;
-
-  ROMSFieldColumns msFC(ms()->field());
-  MSFieldIndex msFI(ms()->field());
-  String colName = MS::columnName(MS::FIELD_ID);
-  TableExprNode condition = 0;
+  }
   
-  Bool searchField = False;
-
-
-  if( !ms()->source().isNull()) {
+  const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
+  {
+    TableExprNode condition = (ms()->col(colName).in(fieldIds));
+    
+    if(node_p->isNull())
+      *node_p = condition;
+    else
+      *node_p = *node_p || condition;
+    
+    return node_p;
+  }
+  
+  const TableExprNode* MSFieldParse::node()
+  {
+    return node_p;
+  }
+  /*
+    const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
+    {
+    LogIO os(LogOrigin("MSFieldParse", "selectFieldOrSource", WHERE));
+    Vector<Int> SourceIdsFromSN ;
+    Vector<Int> SourceIdsFromSC ;
+    Vector<Int> FieldIdsFromFN ;
+    Vector<Int> FieldIdsFromFC ;
+    
+    ROMSFieldColumns msFC(ms()->field());
+    MSFieldIndex msFI(ms()->field());
+    String colName = MS::columnName(MS::FIELD_ID);
+    TableExprNode condition = 0;
+    
+    Bool searchField = False;
+    
+    
+    if( !ms()->source().isNull()) {
     MSSourceIndex msSI(ms()->source());
     SourceIdsFromSN = msSI.matchSourceName(fieldName);
     SourceIdsFromSC = msSI.matchSourceCode(fieldName);;
     //Source name selection  
     if(SourceIdsFromSN.nelements() > 0) {
-      condition=(ms()->col(colName).in
-		 (msFI.matchSourceId(SourceIdsFromSN)));
+    condition=(ms()->col(colName).in
+    (msFI.matchSourceId(SourceIdsFromSN)));
     } else if (SourceIdsFromSC.nelements() > 0) {
-      //Source Code selection  
-      condition=(ms()->col(colName).in
-		 (msFI.matchSourceId(SourceIdsFromSC)));
+    //Source Code selection  
+    condition=(ms()->col(colName).in
+    (msFI.matchSourceId(SourceIdsFromSC)));
     } else {
-      os << " No Souce name(code) matched, search for field  " << LogIO::POST;
-      searchField = True;
+    os << " No Souce name(code) matched, search for field  " << LogIO::POST;
+    searchField = True;
     }
-  } 
-
-  if(ms()->source().isNull() ||searchField) {
+    } 
+    
+    if(ms()->source().isNull() ||searchField) {
     
     FieldIdsFromFN = msFI.matchFieldName(fieldName);
     FieldIdsFromFC = msFI.matchFieldCode(fieldName);
     
     if (FieldIdsFromFN.nelements() > 0) {
-      //Field name selection
-      condition =
-	(ms()->col(colName).in(FieldIdsFromFN));
+    //Field name selection
+    condition =
+    (ms()->col(colName).in(FieldIdsFromFN));
     } else if (FieldIdsFromFC.nelements() > 0) {
-      //Field code selection
-      condition =
-	(ms()->col(colName).in(FieldIdsFromFC));
+    //Field code selection
+    condition =
+    (ms()->col(colName).in(FieldIdsFromFC));
     } else {
-      os << " No exactly matched field name(code) found! " << LogIO::POST;
+    os << " No exactly matched field name(code) found! " << LogIO::POST;
     }
-  }
-
-  if(fieldName.contains('*')) {
+    }
+    
+    if(fieldName.contains('*')) {
     String subFieldName = fieldName.at(0, fieldName.length()-1);
     FieldIdsFromFN = msFI.matchSubFieldName(subFieldName);
     condition =
-      (ms()->col(colName).in(FieldIdsFromFN));
-  }
-  
-  if(node_p->isNull())
+    (ms()->col(colName).in(FieldIdsFromFN));
+    }
+    
+    if(node_p->isNull())
     *node_p = condition;
-  else
+    else
     *node_p = *node_p || condition;
-  
-  return node_p;
-}
-
-const TableExprNode* MSFieldParse::node()
-{
+    
     return node_p;
-}
-
+    }
+  */
 } //# NAMESPACE CASA - END

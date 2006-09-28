@@ -38,6 +38,9 @@
 #include <ms/MeasurementSets/MSFieldColumns.h>
 #include <ms/MeasurementSets/MSFieldGram.h>
 #include <ms/MeasurementSets/MSFieldParse.h>
+#include <ms/MeasurementSets/MSFieldIndex.h>
+#include <ms/MeasurementSets/MSSelectionError.h>
+
 #include <tables/Tables/TableParse.h>       // routines used by bison actions
 #include <tables/Tables/TableError.h>
 
@@ -65,12 +68,25 @@ static Int                   posMSFieldGram = 0;
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msFieldGramParseCommand (const MeasurementSet* ms, const String& command) 
 {
-    MSFieldGramrestart (MSFieldGramin);
-    yy_start = 1;
-    strpMSFieldGram = command.chars();     // get pointer to command string
-    posMSFieldGram  = 0;                   // initialize string position
-    MSFieldParse parser(ms);               // setup measurement set
-    return MSFieldGramparse();             // parse command string
+  try 
+    {
+      Int ret;
+      MSFieldGramrestart (MSFieldGramin);
+      yy_start = 1;
+      strpMSFieldGram = command.chars();     // get pointer to command string
+      posMSFieldGram  = 0;                   // initialize string position
+      MSFieldParse parser(ms);               // setup measurement set
+      MSFieldParse::thisMSFParser = &parser; // The global pointer to the parser
+      ret=MSFieldGramparse();                // parse command string
+      return ret;
+    }
+  catch (MSSelectionFieldError &x)
+    {
+      String newMesgs;
+      newMesgs = constructMessage(msFieldGramPosition(), command);
+      x.addMessage(newMesgs);
+      throw;
+    }
 }
 
 //# Give the table expression node

@@ -88,6 +88,8 @@ public:
   // Null destructor
   virtual ~MSFieldIndex() {};
 
+  // Look up a single name in FIELD.NAME or FIELD.CODE
+  Vector<Int> matchFieldNameOrCode(const String& name);
   // Look up FIELD_ID's for a given field name, or set of field names
   Vector<Int> matchFieldName(const String& name);
   Vector<Int> matchFieldName(const Vector<String>& names);
@@ -95,12 +97,23 @@ public:
   //ADD for file name wildcard selection
   Vector<Int> matchSubFieldName(const String& name);
 
+  // Look up FIELD_ID's for a given pattern/regex for source name/code
+  Vector<Int> matchFieldRegexOrPattern(const String& pattern,
+				       const Bool regex=False);
+  Vector<Int> matchFieldNameRegexOrPattern(const String& pattern,
+					   const Bool regex=False);
+  Vector<Int> matchFieldCodeRegexOrPattern(const String& pattern,
+					   const Bool regex=False);
   // Look up FIELD_ID's for a given source id
   Vector<Int> matchSourceId(const Int& sourceId);
   Vector<Int> matchSourceId(const Vector<Int>& sourceIds);
 
   // Add for field code selection
   Vector<Int> matchFieldCode(const String& code);
+
+  Vector<Int> matchFieldIDLT(const Int n);
+  Vector<Int> matchFieldIDGT(const Int n);
+  Vector<Int> matchFieldIDGTAndLT(const Int n0, const int n1);
 private:
   // Disallow null constructor
   MSFieldIndex();

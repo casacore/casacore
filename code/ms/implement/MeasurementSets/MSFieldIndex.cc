@@ -30,154 +30,266 @@
 #include <casa/Arrays/ArrayMath.h>
 #include <casa/Arrays/ArrayLogical.h>
 #include <casa/Arrays/ArrayUtil.h>
+#include <casa/Utilities/Regex.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
-
-//-------------------------------------------------------------------------
-
-MSFieldIndex::MSFieldIndex(const MSField& field)
-  : msFieldCols_p(field)
-{ 
-// Construct from an MS FIELD subtable
-// Input:
-//    field           const MSField&           Input MSField object
-// Output to private data:
-//    msFieldCols_p   ROMSFieldColumns         MSField columns accessor
-//    fieldIds_p      Vector<Int>              Field id's
-//    nrows_p         Int                      Number of rows
-//
-  // Generate an array of field id's, used in later queries
-  nrows_p = msFieldCols_p.nrow();
-  fieldIds_p.resize(nrows_p);
-  indgen(fieldIds_p);
-};
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchFieldName(const String& name)
-{
-// Match a field name to a set of field id's
-// Input:
-//    name             const String&            Field name to match
-// Output:
-//    matchFieldName   Vector<Int>              Matching field id's
-//
-  LogicalArray maskArray = (msFieldCols_p.name().getColumn()==name &&
-			    !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
-  return maskFieldId.getCompressedArray();
-}; 
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchSubFieldName(const String& name)
-{
-// Match a field name to a set of field id's
-// Input:
-//    name             const String&            Field name to match
-// Output:
-//    matchFieldName   Vector<Int>              Matching field id's
-//
-
-  Vector<String> fieldnames = msFieldCols_p.name().getColumn();
-  uInt len = fieldnames.nelements();
-  Vector<Bool> matchfieldnames(len, False);
-  for(uInt j = 0; j < len; j++) {
-    if(fieldnames[j].contains(name))
-      matchfieldnames(j) = True;
+  
+  //-------------------------------------------------------------------------
+  
+  MSFieldIndex::MSFieldIndex(const MSField& field)
+    : msFieldCols_p(field)
+  { 
+    // Construct from an MS FIELD subtable
+    // Input:
+    //    field           const MSField&           Input MSField object
+    // Output to private data:
+    //    msFieldCols_p   ROMSFieldColumns         MSField columns accessor
+    //    fieldIds_p      Vector<Int>              Field id's
+    //    nrows_p         Int                      Number of rows
+    //
+    // Generate an array of field id's, used in later queries
+    nrows_p = msFieldCols_p.nrow();
+    fieldIds_p.resize(nrows_p);
+    indgen(fieldIds_p);
+  };
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern,
+						     const Bool regex)
+  {
+    Vector<Int> IDs;
+    IDs = matchFieldNameRegexOrPattern(pattern,regex);
+    if (IDs.nelements()==0)
+      IDs = matchFieldCodeRegexOrPattern(pattern,regex);
+    return IDs;
   }
-  LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
-  return maskFieldId.getCompressedArray();
-}; 
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern,
+							 const Bool regex)
+  {
+    // Match a field name to a set of field id's
+    // Input:
+    //    name             const String&            Field name to match
+    // Output:
+    //    matchFieldName   Vector<Int>              Matching field id's
+    //
+    Int pos=0;
+    Regex reg;
+    if (regex) reg=pattern;
+    else       reg=reg.fromPattern(pattern);
+    
+    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    IPosition sh(msFieldCols_p.name().getColumn().shape());
+    LogicalArray maskArray(sh,False);
+    IPosition i=sh;
+    for(i(0)=0;i(0)<sh(0);i(0)++)
+      {
+	Int ret=(msFieldCols_p.name().getColumn()(i).matches(reg,pos));
+	maskArray(i) = ( (ret>0) &&
+			 !msFieldCols_p.flagRow().getColumn()(i));
+      }
+    
+    MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
+    return maskFieldID.getCompressedArray();
+  }; 
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern,
+							 const Bool regex)
+  {
+    // Match a field name to a set of field id's
+    // Input:
+    //    name             const String&            Field name to match
+    // Output:
+    //    matchFieldName   Vector<Int>              Matching field id's
+    //
+    Int pos=0;
+    Regex reg;
+    if (regex) reg=pattern;
+    else       reg=reg.fromPattern(pattern);
+    
+    //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
+    IPosition sh(msFieldCols_p.name().getColumn().shape());
+    LogicalArray maskArray(sh,False);
+    IPosition i=sh;
+    for(i(0)=0;i(0)<sh(0);i(0)++)
+      {
+	Int ret=(msFieldCols_p.code().getColumn()(i).matches(reg,pos));
+	maskArray(i) = ( (ret>0) &&
+			 !msFieldCols_p.flagRow().getColumn()(i));
+      }
+    
+    MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
+    return maskFieldID.getCompressedArray();
+  }; 
+  
+  //-------------------------------------------------------------------------
+  Vector<Int> MSFieldIndex::matchFieldNameOrCode(const String& name)
+  {
+    Vector<Int> IDs;
+    IDs = matchFieldName(name);
+    if (IDs.nelements() == 0) 
+      IDs = matchFieldCode(name);
+    return IDs;
+  }
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldName(const String& name)
+  {
+    // Match a field name to a set of field id's
+    // Input:
+    //    name             const String&            Field name to match
+    // Output:
+    //    matchFieldName   Vector<Int>              Matching field id's
+    //
+    LogicalArray maskArray = (msFieldCols_p.name().getColumn()==name &&
+			      !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
 
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchFieldCode(const String& code)
-{
-// Match a field code to a set of field id's
-// Input:
-//    code             const String&            Field code to match
-// Output:
-//    matchFieldCode   Vector<Int>              Matching field id's
-//
-  LogicalArray maskArray = (msFieldCols_p.code().getColumn()==code &&
-			    !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
-  return maskFieldId.getCompressedArray();
-}; 
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names)
-{
-// Match a set of field names to a set of field id's
-// Input:
-//    names            const Vector<String>&    Field names to match
-// Output:
-//    matchFieldNames  Vector<Int>              Matching field id's
-//
-  Vector<Int> matchedFieldIds;
-  // Match each field name individually
-  for (uInt fld=0; fld<names.nelements(); fld++) {
-    // Add to list of field id's
-    Vector<Int> currentMatch = matchFieldName(names(fld));
-    if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedFieldIds);
-      matchedFieldIds.resize(matchedFieldIds.nelements() +
-			     currentMatch.nelements(), True);
-      matchedFieldIds = concatenateArray(temp, currentMatch);
+    return maskFieldId.getCompressedArray();
+  }; 
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldCode(const String& code)
+  {
+    // Match a field code to a set of field id's
+    // Input:
+    //    code             const String&            Field code to match
+    // Output:
+    //    matchFieldCode   Vector<Int>              Matching field id's
+    //
+    LogicalArray maskArray = (msFieldCols_p.code().getColumn()==code &&
+			      !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  }; 
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchSubFieldName(const String& name)
+  {
+    // Match a field name to a set of field id's
+    // Input:
+    //    name             const String&            Field name to match
+    // Output:
+    //    matchFieldName   Vector<Int>              Matching field id's
+    //
+    
+    Vector<String> fieldnames = msFieldCols_p.name().getColumn();
+    uInt len = fieldnames.nelements();
+    Vector<Bool> matchfieldnames(len, False);
+    for(uInt j = 0; j < len; j++) {
+      if(fieldnames[j].contains(name))
+	matchfieldnames(j) = True;
+    }
+    LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  }; 
+  
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names)
+  {
+    // Match a set of field names to a set of field id's
+    // Input:
+    //    names            const Vector<String>&    Field names to match
+    // Output:
+    //    matchFieldNames  Vector<Int>              Matching field id's
+    //
+    Vector<Int> matchedFieldIds;
+    // Match each field name individually
+    for (uInt fld=0; fld<names.nelements(); fld++) {
+      // Add to list of field id's
+      Vector<Int> currentMatch = matchFieldName(names(fld));
+      if (currentMatch.nelements() > 0) {
+	Vector<Int> temp(matchedFieldIds);
+	matchedFieldIds.resize(matchedFieldIds.nelements() +
+			       currentMatch.nelements(), True);
+	matchedFieldIds = concatenateArray(temp, currentMatch);
+      };
     };
+    return matchedFieldIds;
   };
-  return matchedFieldIds;
-};
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchSourceId(const Int& sourceId)
-{
-// Match a source id to a set of field id's
-// Input:
-//    sourceId        const Int&               Source id to match
-// Output:
-//    matchSourceId   Vector<Int>              Matching field id's
-//
-  LogicalArray maskArray = 
-    (msFieldCols_p.sourceId().getColumn()==sourceId &&
-     !msFieldCols_p.flagRow().getColumn());
-  MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
-  return maskFieldId.getCompressedArray();
-}; 
-
-//-------------------------------------------------------------------------
-
-Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds)
-{
-// Match a set of source id's to a set of field id's
-// Input:
-//    sourceIds       const Vector<Int>&       Source id's to match
-// Output:
-//    matchSourceIds  Vector<Int>              Matching field id's
-//
-  Vector<Int> matchedFieldIds;
-  // Match each field name individually
-  for (uInt fld=0; fld<sourceIds.nelements(); fld++) {
-    // Add to list of field id's
-    Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
-    if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedFieldIds);
-      matchedFieldIds.resize(matchedFieldIds.nelements() +
-			     currentMatch.nelements(), True);
-      matchedFieldIds = concatenateArray(temp, currentMatch);
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchSourceId(const Int& sourceId)
+  {
+    // Match a source id to a set of field id's
+    // Input:
+    //    sourceId        const Int&               Source id to match
+    // Output:
+    //    matchSourceId   Vector<Int>              Matching field id's
+    //
+    LogicalArray maskArray = 
+      (msFieldCols_p.sourceId().getColumn()==sourceId &&
+       !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  }; 
+  
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds)
+  {
+    // Match a set of source id's to a set of field id's
+    // Input:
+    //    sourceIds       const Vector<Int>&       Source id's to match
+    // Output:
+    //    matchSourceIds  Vector<Int>              Matching field id's
+    //
+    Vector<Int> matchedFieldIds;
+    // Match each field name individually
+    for (uInt fld=0; fld<sourceIds.nelements(); fld++) {
+      // Add to list of field id's
+      Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
+      if (currentMatch.nelements() > 0) {
+	Vector<Int> temp(matchedFieldIds);
+	matchedFieldIds.resize(matchedFieldIds.nelements() +
+			       currentMatch.nelements(), True);
+	matchedFieldIds = concatenateArray(temp, currentMatch);
+      };
     };
+    return matchedFieldIds;
   };
-  return matchedFieldIds;
-};
+  
+  //-------------------------------------------------------------------------
+  Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n)
+  {
+    LogicalArray maskArray = 
+      (msFieldCols_p.sourceId().getColumn() <= n &&
+       !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  };
 
-//-------------------------------------------------------------------------
-
-
-
+  //-------------------------------------------------------------------------
+  Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n)
+  {
+    LogicalArray maskArray = 
+      (msFieldCols_p.sourceId().getColumn() >= n &&
+       !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  };
+  //-------------------------------------------------------------------------
+  
+  Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1)
+  {
+    LogicalArray maskArray = 
+      (msFieldCols_p.sourceId().getColumn() >= n0 &&
+       msFieldCols_p.sourceId().getColumn() <= n1 &&
+       !msFieldCols_p.flagRow().getColumn());
+    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    return maskFieldId.getCompressedArray();
+  };
+  //-------------------------------------------------------------------------
+  
 } //# NAMESPACE CASA - END
 

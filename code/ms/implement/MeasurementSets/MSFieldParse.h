@@ -94,10 +94,11 @@ public:
     MSFieldParse (const MeasurementSet* ms);
 
     const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
-    const TableExprNode *selectFieldOrSource(const String& fieldName);
+  //    const TableExprNode *selectFieldOrSource(const String& fieldName);
 
     // Get table expression node object.
     static const TableExprNode* node();
+    static MSFieldParse* thisMSFParser;
 
 private:
     static TableExprNode* node_p;

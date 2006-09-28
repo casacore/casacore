@@ -1,5 +1,5 @@
-/*
-    MSFieldGram.l: Lexical analyzer for ms commands
+/* -*- C -*-
+    MSFieldGram.l: Lexical analyzer for ms selection commands
     Copyright (C) 1994,1995,1996,1997,1998,2001,2003
     Associated Universities, Inc. Washington DC, USA.
 
@@ -33,107 +33,100 @@
 
 #undef YY_DECL
 #define YY_DECL int MSFieldGramlex (YYSTYPE* lvalp)
+static string                qstr;
 %}
-
 
 WHITE     [ \t\n]*
 DIGIT     [0-9]
 INT       {DIGIT}+
-EXP       [DdEe][+-]?{INT}
-FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
-FLINT     {FLOAT}|{INT}
-TRUE      T
-FALSE     F
 
 QSTRING   \"[^\"\n]*\"
-ASTRING   \'[^\'\n]*\'
-UQSTRING   \"[^\"\n]*\n
-UASTRING   \'[^\'\n]*\n
-STRING    ({QSTRING}|{ASTRING})+
-USTRING   ({UQSTRING}|{UASTRING})+
+STRING    ({QSTRING})+
 
-NAMEORCODE [A-Za-z0-9]*[+]*[A-Za-z_0-9]*|[A-Za-z0-9]*"*"
+QUOTE     (\")
+RQUOTE    (\/)
+NQ        [^\\\n\"]+
+NRQ       [^\\\n\/]+
 
-REGEX1    m"/"[^/]+"/"
-REGEX2    m%[^%]+%
-REGEX3    m#[^#]+#
-REGEX     {REGEX1}|{REGEX2}|{REGEX3}
+IDENTIFIER  ([A-Za-z:0-9_{}]+|STRING)
+SIDENTIFIER  ([A-Za-z:0-9_{}]+"*")
 
-  /* rules */
-
+%x QS RS
+/* rules */
 %%
+{QUOTE}   { // Start of a quoted string
+            qstr.resize(0);
+            BEGIN(QS);
+          }
 
-"["       { msFieldGramPosition() += yyleng;
-            return LBRACKET;
+<QS>{NQ}  { 
+            (qstr)+= MSFieldGramtext;
           }
-"("       { msFieldGramPosition() += yyleng;
-            return LPAREN;
+
+<QS>{QUOTE} { /* saw closing quote - all done */
+               BEGIN(INITIAL);
+               lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
+               strcpy(lvalp->str,qstr.c_str());
+               qstr.resize(0);
+
+               return QSTRING;
+             }
+
+{RQUOTE}  { // Start of a regex string
+            qstr.resize(0);
+            BEGIN(RS);
           }
-"]"       { msFieldGramPosition() += yyleng;
-            return RBRACKET;
+
+<RS>{NRQ} {
+            (qstr)+= MSFieldGramtext;
           }
-")"       { msFieldGramPosition() += yyleng;
-            return RPAREN;
+
+<RS>{RQUOTE} { /* saw closing quote - all done */
+               BEGIN(INITIAL);
+               lvalp->str = (char *)malloc((qstr.length() + 1)*sizeof(char));
+               strcpy(lvalp->str,qstr.c_str());
+               qstr.resize(0);
+
+               return REGEX;
+             }
+
+
+{INT}     { msFieldGramPosition() += yyleng;
+            lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
+            strcpy(lvalp->str, MSFieldGramtext);
+            
+            return INT;
           }
+
 "-"       { msFieldGramPosition() += yyleng;
-            return DASH; 
-          }
-":"       { msFieldGramPosition() += yyleng;
-            return COLON; }
-"=="      { msFieldGramPosition() += yyleng; 
-            return EQ; }
-"="       { msFieldGramPosition() += yyleng;
-            return EQASS; }
-"!="      { msFieldGramPosition() += yyleng;
-            return NE; }
-"<>"      { msFieldGramPosition() += yyleng;
-            return NE; }
-">="      { msFieldGramPosition() += yyleng;
-            return GE; }
-">"       { msFieldGramPosition() += yyleng;
-            return GT; }
-"<="      { msFieldGramPosition() += yyleng;
-            return LE; }
-"<"       { msFieldGramPosition() += yyleng;
-            return LT; }
-"&&"      { msFieldGramPosition() += yyleng;
-            return AND; }
-"||"      { msFieldGramPosition() += yyleng;
-            return OR; }
-"!"       { msFieldGramPosition() += yyleng;
-            return NOT; }
-"^"       { msFieldGramPosition() += yyleng;
-            return POWER; }
-"*"       { msFieldGramPosition() += yyleng;
-            return TIMES; }
-"/"       { msFieldGramPosition() += yyleng;
-            return DIVIDE; }
-"%"       { msFieldGramPosition() += yyleng;
-            return MODULO; }
-"+"       { msFieldGramPosition() += yyleng;
-            return PLUS; }
-"{"       { msFieldGramPosition() += yyleng;
-            return LBRACE; }
-"}"       { msFieldGramPosition() += yyleng;
-            return RBRACE; }
-"'"       { msFieldGramPosition() += yyleng;
-            return SQUOTE; }
+            return DASH; }
 ","       { msFieldGramPosition() += yyleng;
             return COMMA;
           }
+"<"       { msFieldGramPosition() += yyleng;
+            return LT;
+          }
+">"       { msFieldGramPosition() += yyleng;
+            return GT;
+          }
+"&"       { msFieldGramPosition() += yyleng;
+            return AMPERSAND;
+          }
+  /* Literals */
 
- /* Literals */
+{IDENTIFIER} { msFieldGramPosition() += yyleng;
+               lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
+               strcpy(lvalp->str, MSFieldGramtext);
 
-{INT}     {
-            msFieldGramPosition() += yyleng;
-            lvalp->ival = atoi(MSFieldGramtext);
-            return INDEX;
-	  }
-{NAMEORCODE}  {
-                msFieldGramPosition() += yyleng;
-                lvalp->str = MSFieldGramtext;
-	        return NAMEORCODE;
+               return IDENTIFIER;
+             }
+{SIDENTIFIER} { msFieldGramPosition() += yyleng;
+                lvalp->str = (char *)malloc((strlen(MSFieldGramtext) + 1) * sizeof(char));
+                strcpy(lvalp->str, MSFieldGramtext);
+                return QSTRING;
               }
-
+"("       { msFieldGramPosition() += yyleng; return LPAREN; }
+")"       { msFieldGramPosition() += yyleng; return RPAREN;}
+{WHITE}   { msFieldGramPosition() += yyleng;} /* Eat white spaces */
+.         { msFieldGramPosition() += yyleng;return MSFieldGramtext[0];}
 %%
-

@@ -1,6 +1,5 @@
-
 /*
-    MSFieldGram.y: Parser for Field expressions
+    MSFieldGram.y: Parser for field expressions
     Copyright (C) 2004
     Associated Universities, Inc. Washington DC, USA.
 
@@ -29,28 +28,28 @@
 */
 
 %{
-using namespace casa;
-#define YYDEBUG 1
-#include <stdio.h>
+  using namespace casa;
 %}
 
 %pure_parser                /* make parser re-entrant */
 
 %union {
-  const TableExprNode *node;
+  const TableExprNode* node;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  Int ival;
+  Int ival[2];
   char * str;
-  Double dval[2];
+  Double dval;
+  Vector<Int>* iv;
+  Vector<String>* is;
 }
 
-%token <str> NAMEORCODE
+
 %token EQASS
-%token <ival> INDEX
-%token <dval> FNUMBER
 %token SQUOTE
+%token <str> IDENTIFIER
+%token COMMA
 
 %token LBRACKET
 %token LPAREN
@@ -58,109 +57,211 @@ using namespace casa;
 %token RPAREN
 %token LBRACE
 %token RBRACE
+%token WHITE
+
+%token <str> INT
+%token <str> QSTRING
+%token <str> REGEX
+
 %token COLON
-%token COMMA
-%token DASH
+%token SEMICOLON
 
 %type <node> fieldstatement
-%type <node> fieldorsourceexpr
-%type <node> indexexpr
-%type <node> compoundexpr
-%type <node> singlerange
-%type <node> lowindexboundexpr
-%type <node> upindexboundexpr
+%type <node> indexcombexpr
+%type <iv> indexlist
+%type <iv> fieldidrange
+%type <iv> fieldidlist
+%type <iv> fieldid
+%type <iv> fieldidbounds
 
-%left OR
-%left AND
-%nonassoc EQ EQASS GT GE LT LE NE
-%left PLUS MINUS
-%left TIMES DIVIDE MODULO
-%nonassoc UNARY
-%nonassoc NOT
-%right POWER
+%nonassoc EQ EQASS GT GE LT LE NE COMMA DASH AMPERSAND
 
 %{
-int MSFieldGramlex (YYSTYPE*);
+  int MSFieldGramlex (YYSTYPE*);
+  void checkFieldError(Vector<Int>& list, ostringstream& msg)
+  {
+    if (list.nelements() == 0)
+      {
+	String errorMesg;
+	ostringstream Mesg;
+	Mesg << "Field Expression: " << msg.str().c_str();
+	
+	errorMesg = String(Mesg.str().c_str());
+	throw(MSSelectionFieldParseError(errorMesg));
+      }
+  }
 %}
 
 %%
-fieldstatement: indexexpr {
-                  $$ = $1 ;
-                }
-              | SQUOTE fieldorsourceexpr SQUOTE {
-                  $$ = $2 ;
-                }
-              ;
-
-fieldorsourceexpr: NAMEORCODE {
-                     String fieldname = String($1);		
-                     $$ = MSFieldParse().selectFieldOrSource(fieldname);
-                   }
-                 | fieldorsourceexpr COMMA NAMEORCODE {
-                     String fieldname = String($3);		
-                     $$ = MSFieldParse().selectFieldOrSource(fieldname);
-                   }
-                 ;
-            
-indexexpr: compoundexpr
-         | lowindexboundexpr
-         | upindexboundexpr
-         ;
-
-compoundexpr: INDEX {
-                Vector<Int> fieldids(1);
-                fieldids[0] = $1;
-                $$ = MSFieldParse().selectFieldIds(fieldids);
-              }
-            | singlerange {
-                $$ = $1;}
-            | compoundexpr COMMA INDEX {
-	        Vector<Int> fieldids(1);
-	        fieldids[0] = $3;
-	        $$ = MSFieldParse().selectFieldIds(fieldids);
-	      }
-            | compoundexpr COMMA singlerange {
-		  $$ = new TableExprNode ($1 || $3);}
-            ;
- 
-singlerange:  INDEX DASH INDEX {
-                  Int len = $<ival>3-$<ival>1+1;
-                  Vector<Int> fieldids(len);
-                  for(Int i = 0; i < len; i++) {
-                    fieldids[i] = $<ival>1 + i;
+fieldstatement: indexcombexpr 
+                  {
+                    $$ = $1;
                   }
-                  $$ = MSFieldParse().selectFieldIds(fieldids);
-              }
-           ;
-
-lowindexboundexpr: GT INDEX {
-/*
-		     ROMSFieldColumns msFieldCols_p(MSFieldParse::ms()->field());
-		     Int startID = $2;
-		     Int len = msFieldCols_p.nrow();
-		     if(len- startID -1 <= 0) {
-		       cout << "Your selection is out of range " << endl;
-		       return 0;
-		     } else {
-		       Vector<Int> fieldids(len- startID -1);
-		       for(Int i = 0; i < (Int)fieldids.nelements(); i++) {
-			 fieldids[i] = startID + i + 1;
-		       }
-		       $$ = MSFieldParse().selectFieldIds(fieldids);
-		     }
-*/
-                   }
-                 ;
-
-upindexboundexpr: LT INDEX {
-		    Int len = $2;
-		    Vector<Int> fieldids(len);
-                    for(Int i = 0; i < len; i++) {
-                      fieldids[i] = i;
-                    }
-                    $$ = MSFieldParse().selectFieldIds(fieldids);
-                  }
+                 | LPAREN indexcombexpr RPAREN //Parenthesis are not
+					       //syntactically useful
+					       //here
+                  {
+		    $$ = $2;
+		  }
                 ;
+indexcombexpr  : indexlist 
+                 {
+                   $$ = MSFieldParse().selectFieldIds(*($1));
+		   delete $1;
+                 }
+	       ;
+//
+// A single field name (this could be a regex and
+// hence produce a list inf indices)
+//
+fieldid: IDENTIFIER   
+          { //
+	    // Use the string as-is.  This cannot include patterns/regex
+	    // which has characters that are part of range or list
+	    // syntax (',', '-') (that's all I think).
+	    //
+	    // Convert name to index
+	    //
+	  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+	  if (!($$)) delete $$;
+	  $$=new Vector<Int>(myMSFI.matchFieldNameOrCode($1));
+	  //$$=new Vector<Int>(myMSAI.matchFieldRegexOrPattern($1));
 
+	  ostringstream m; m << "No match found for \"" << $1 << "\"";
+	  checkFieldError(*($$), m);
+
+	  free($1);
+	}
+       | QSTRING 
+        { //
+	  // Quoted string: This is a pattern which will be converted
+	  // to regex internally.  E.g. "VLA{20,21}*" becomes
+	  // "VLA((20)|(21)).*" regex.  This can include any character
+	  // string.
+	  //
+	  // Convert name to index
+	  //
+	  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+	  if (!$$) delete $$;
+	  $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1));
+
+	  ostringstream m; m << "No match found for \"" << $1 << "\"";
+	  checkFieldError(*($$), m);
+
+	  free($1);
+	}
+       | REGEX
+        { //
+	  // A string delimited by a pair of '/': This will be treated
+	  // as a regular expression internally.
+	  //
+	  // Convert name to index
+	  //
+	  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+	  if (!$$) delete $$;
+
+	  $$ = new Vector<Int>(myMSFI.matchFieldRegexOrPattern($1,True));
+
+	  ostringstream m; m << "No match found for \"" << $1 << "\"";
+	  checkFieldError(*($$), m);
+
+	  free($1);
+	}
+       ;
+
+fieldidrange: INT // A single field index
+            {
+	      if (!($$)) delete $$;
+	      $$ = new Vector<Int>(1);
+	      (*($$))(0) = atoi($1);
+	      free($1);
+	    }
+           | INT DASH INT // A range of integer field indices
+            {
+              Int start = atoi($1);
+              Int end   = atoi($3);
+              Int len = end - start + 1;
+              Vector<Int> fieldids(len);
+              for(Int i = 0; i < len; i++) {
+                fieldids[i] = start + i;
+              }
+	      if (!($$)) delete $$;
+              $$ = new Vector<Int>(fieldids);	   
+	      free($1); free($3);
+            }
+          ;
+
+fieldidbounds: LT INT // <ID
+                {
+		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+		  if (!($$)) delete $$;
+		  Int n=atoi($2);
+		  $$ = new Vector<Int>(myMSFI.matchFieldIDLT(n));
+
+		  ostringstream m; m << "No field ID found <=" << n;
+		  checkFieldError(*($$), m);
+
+		  free($2);
+		}
+              | GT INT // >ID
+                {
+		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+		  if (!($$)) delete $$;
+		  Int n=atoi($2);
+		  $$ = new Vector<Int>(myMSFI.matchFieldIDGT(n));
+
+		  ostringstream m; m << "No field ID found >= " << n;
+		  checkFieldError(*($$), m);
+
+		  free($2);
+		}
+              | GT INT AMPERSAND LT INT // >ID & <ID
+                {
+		  MSFieldIndex myMSFI(MSFieldParse::thisMSFParser->ms()->field());
+		  if (!($$)) delete $$;
+		  Int n0=atoi($2), n1=atoi($5);
+		  $$ = new Vector<Int>(myMSFI.matchFieldIDGTAndLT(n0,n1));
+
+		  ostringstream m; 
+		  m << "No field found in the range [" << n0 << "," << n1 << "]";
+		  checkFieldError(*($$), m);
+
+		  free($2); free($5);
+		}
+             ;
+fieldidlist: fieldid // A singe field ID
+            {
+	      $$ = $1;
+            }
+          | fieldidrange // ID range ( n0-n1 )
+            {
+	      $$ = $1;
+	    }
+          | fieldidbounds  // >ID, <ID, >ID & <ID
+            {
+	      $$ = $1;
+            }
+          ;
+indexlist : fieldidlist
+            {
+	      if (!($$)) delete $$;
+	      $$ = new Vector<Int>(*$1);
+	      delete $1;
+	    }
+          | indexlist COMMA fieldidlist  
+            {
+	      Int N0=(*($1)).nelements(), 
+		N1 = (*($3)).nelements();
+	      (*($$)).resize(N0+N1,True);  // Resize the existing list
+	      for(Int i=N0;i<N0+N1;i++)
+		(*($$))(i) = (*($3))(i-N0);
+	      delete $3;
+            }
+          | LPAREN indexlist RPAREN //Parenthesis are not
+				    //syntactically useful here
+            {
+	      $$ = $2;
+	    }
+          ;
 %%
 
