@@ -259,10 +259,10 @@ TableExprNode MSSelection::toTableExprNode(const MeasurementSet* ms)
     //
     // Nasty! Catching an exception in a library and return a valid
     // object.  The only way the client (software) will know that an
-    // error occured is by sending the isNull() signal to the returned
+    // error occurred is by sending the isNull() signal to the returned
     // TEN.
     // 
-    // Now not cathing the exception since the following code does not
+    // Now not catching the exception since the following code does not
     // really represent resolution of the exception.  - Sanjay
     //
 //     catch (AipsError x)
