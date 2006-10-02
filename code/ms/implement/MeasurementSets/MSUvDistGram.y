@@ -86,6 +86,7 @@ fnumwithunits:   FNUMBER
 		   MSUvDistGramlexGlobalUnits = String($2);
 		   $$ = $1;
 		 }
+               ;
 
 uvwdistexpr:     fnumwithunits
                  {
@@ -110,5 +111,5 @@ uvwdistexpr:     fnumwithunits
 						      MSUvDistGramlexGlobalUnits);
                  }
                ;
-;
+
 %%
