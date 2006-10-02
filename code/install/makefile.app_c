@@ -454,8 +454,8 @@ $(CODEDIR)/tmplinst : $(CODEDIR)/templates
 pyopyc : $(LIBPYTHS)
 	 @ if [ -d $(LIBPYTHD)/$(THISAPP) ]; then \
 	      echo "Compiling $(THISAPP) Python scripts"; \
-	      $(PYTHONBIN) -O $(PYTHONLIBD)/python$(PYTHONVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP); \
-	      $(PYTHONBIN)    $(PYTHONLIBD)/python$(PYTHONVERSION)/compileall.py -q $(LIBPYTHD)/$(THISAPP); \
+	      $(PYTHONBIN) -O $(PYTHONCMP) -q $(LIBPYTHD)/$(THISAPP); \
+	      $(PYTHONBIN)    $(PYTHONCMP) -q $(LIBPYTHD)/$(THISAPP); \
 	   fi
 
 # Included python scripts
