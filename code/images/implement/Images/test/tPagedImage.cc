@@ -49,12 +49,22 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/String.h>
-
+#include <casa/Utilities/Regex.h>
 
 #include <casa/stdlib.h>
 #include <casa/iostream.h>
 
 #include <casa/namespace.h>
+
+
+// Remove the dirname from the table name in an error message.
+String removeDir (const String& msg)
+{
+  String s = msg;
+  s.gsub (Regex("/.*/t"), "t");
+  return s;
+}
+
 Float const_arg_func(const Float& val)
 {
   return 3.0*val;
@@ -428,7 +438,7 @@ int main()
        pIm.set(1.0);
 //
        Table t = pIm.table();
-       AlwaysAssert(t.tableName() == String("tPagedImage_tmp.img11"),
+       AlwaysAssert(removeDir(t.tableName()) == String("tPagedImage_tmp.img11"),
                     AipsError);
 
    }
