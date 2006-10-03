@@ -43,10 +43,20 @@
 #include <casa/Utilities/Assert.h>
 #include <casa/Utilities/COWPtr.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Utilities/Regex.h>
 #include <casa/iostream.h>
 
-
 #include <casa/namespace.h>
+
+
+// Remove the dirname from the table name in an error message.
+String removeDir (const String& msg)
+{
+  String s = msg;
+  s.gsub (Regex("/.*/t"), "t");
+  return s;
+}
+
 void testTempClose()
 {
   PagedArray<Int> scratch(IPosition(3,64,64,257), "tPagedArray_tmp.scr");
@@ -116,7 +126,7 @@ int main() {
       AlwaysAssert(near(pa(IPosition(2,3,1)), 2.0f), AipsError);
       pa.putAt (99.0, IPosition(2,11));
       pa.putAt (98.0f, IPosition(2,11,10));
-      AlwaysAssert(pa.tableName() == "tPagedArray_tmp.table", AipsError);
+      AlwaysAssert(removeDir(pa.tableName()) == "tPagedArray_tmp.table", AipsError);
       AlwaysAssert(pa.name(True) == "tPagedArray_tmp.table", AipsError);
       AlwaysAssert(pa.isPersistent(), AipsError);
       AlwaysAssert(pa.isPaged(), AipsError);
