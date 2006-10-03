@@ -82,7 +82,8 @@
 %nonassoc GT GE LT LE NE COMMA DASH AMPERSAND
 %right TILDA
 %{
-  #include <values.h>
+  #include <limits.h>
+  #include <float.h>
   int MSSpwGramlex (YYSTYPE*);
   void checkSpwError(Vector<Int>& list, ostringstream& msg)
   {

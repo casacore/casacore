@@ -54,7 +54,8 @@ using namespace casa;
 %nonassoc EQ EQASS GT GE LT LE NE DASH COLON 
 
 %{
-  #include <values.h>
+  #include <float.h>
+  #include <limits.h>
   int MSUvDistGramlex (YYSTYPE*);
   String MSUvDistGramlexGlobalUnits="m"; // Its a global - make the name crazy to minimize
                                          // namespace conflicts.
