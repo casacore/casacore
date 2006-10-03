@@ -107,7 +107,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const ScalarColumnDesc<T>& that)
 template<class T>
 BaseColumnDesc* ScalarColumnDesc<T>::makeDesc (const String&)
 {
-    BaseColumnDesc* ptr = new ScalarColumnDesc<T>("");
+  BaseColumnDesc* ptr = new ScalarColumnDesc<T>(String());
     if (ptr == 0) {
 	throw (AllocError("ColumnDesc::makeDesc",1));
     }

@@ -38,9 +38,13 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // Initialize the static getting the result from the parser.
 TaQLNode TaQLNode::theirNode;
 std::vector<TaQLNode*> TaQLNode::theirNodesCreated;
+// Initialize the TaQL style.
+TaQLStyle TaQLNode::theirStyle;
 
 TaQLNode TaQLNode::parse (const String& command)
 {
+  // Reset to default TaQL style.
+  theirStyle.reset();
   // Add a newline if not present.
   String str(command);
   if (str.length() == 0  ||  str[str.length()-1] != '\n') {

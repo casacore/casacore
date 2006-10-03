@@ -38,6 +38,7 @@ using namespace casa;
 
 %pure_parser                /* make parser re-entrant */
 
+%token STYLE
 %token SELECT
 %token UPDATE
 %token UPDSET
@@ -185,6 +186,23 @@ int TableGramlex (YYSTYPE*);
 %}
 
 %%
+topcomm:   command
+         | stylecoms command
+         ;
+
+stylecoms: stylecoms stylecomm
+         | stylecomm
+         ;
+
+stylecomm: STYLE stylelist
+         ;
+
+stylelist: stylelist COMMA NAME
+             { TaQLNode::theirStyle.set ($3->getString()); }
+         | NAME
+             { TaQLNode::theirStyle.set ($1->getString()); }
+         ;
+
 command:   selcomm
              { TaQLNode::theirNode = *$1; }
          | updcomm

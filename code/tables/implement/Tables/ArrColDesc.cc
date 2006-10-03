@@ -163,7 +163,7 @@ ArrayColumnDesc<T>::ArrayColumnDesc (const ArrayColumnDesc<T>& that)
 template<class T>
 BaseColumnDesc* ArrayColumnDesc<T>::makeDesc(const String&)
 {
-    BaseColumnDesc* ptr = new ArrayColumnDesc<T>("");
+  BaseColumnDesc* ptr = new ArrayColumnDesc<T>(String());
     if (ptr == 0) {
 	throw (AllocError("ColumnDesc::makeDesc",1));
     }

@@ -30,6 +30,7 @@
 
 //# Includes
 #include <tables/Tables/TaQLNodeRep.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <vector>
 #include <iostream>
 
@@ -116,7 +117,8 @@ public:
   const TaQLNodeRep* getRep() const
     { return itsRep; }
 
-  // 
+  // Let the visitor visit the node.
+  // If no node, return an empty result.
   TaQLNodeResult visit (TaQLNodeVisitor& visitor) const
     { return (itsRep  ?  itsRep->visit (visitor) : TaQLNodeResult()); }
 
@@ -146,6 +148,8 @@ public:
   static TaQLNode theirNode;
   // A list of objects created by the parser and deleted at the end.
   static std::vector<TaQLNode*> theirNodesCreated;
+  // Keep the TaQL style to use.
+  static TaQLStyle theirStyle;
 };
 
 
