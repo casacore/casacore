@@ -89,6 +89,13 @@ using ::erfc;
      { return Float(pow(Double(f1), Double(f2))); };
 # endif
 
+// No float abs defined on the Cray.
+#if defined(AIPS_CRAY_PGI)
+   inline float abs(float v)
+     { return fabs(v); }
+#endif
+
+
 
 } //# NAMESPACE CASA - END
 
