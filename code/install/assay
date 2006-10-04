@@ -237,7 +237,7 @@ EOF
     # Do not wait longer than 10 minutes.
     qsub $1_tmp.qsub
     NRTIMES=0
-    while [ ! -f $1_tmp.wait]
+    while [ ! -f $1_tmp.wait ]
     do
       if test $NRTIMES -gt 600
       then
