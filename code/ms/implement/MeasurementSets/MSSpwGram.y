@@ -83,7 +83,6 @@
 %right TILDA
 %{
   #include <limits.h>
-  #include <float.h>
   int MSSpwGramlex (YYSTYPE*);
   void checkSpwError(Vector<Int>& list, ostringstream& msg)
   {
@@ -210,7 +209,7 @@ freq: FNUMBER UNIT
 	      f0=atof($1);
 	      f1 = -1;
 	      Vector<Float> Freq = myMSSI.convertToHz(f0,f1,unit);
-	      Freq(1) = -MAXFLOAT;
+	      Freq(1) = - std::numeric_limits<Float>::max();
 	      delete $1;delete $2;
 	      $$[0] = Freq(0);
 	      $$[1] = Freq(1);

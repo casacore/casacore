@@ -54,7 +54,6 @@ using namespace casa;
 %nonassoc EQ EQASS GT GE LT LE NE DASH COLON 
 
 %{
-  #include <float.h>
   #include <limits.h>
   int MSUvDistGramlex (YYSTYPE*);
   String MSUvDistGramlexGlobalUnits="m"; // Its a global - make the name crazy to minimize
@@ -103,7 +102,7 @@ uvwdistexpr:     fnumwithunits
 		 }
                | GT fnumwithunits
                  {
-		   $$ = MSUvDistParse().selectUVRange($2, MAXFLOAT, 
+		   $$ = MSUvDistParse().selectUVRange($2, std::numeric_limits<Float>::max(), 
 						      MSUvDistGramlexGlobalUnits);
 		 }
                | fnumwithunits COLON FNUMBER PERCENT 
