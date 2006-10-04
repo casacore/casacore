@@ -82,7 +82,8 @@ namespace std {};
 #endif
 #endif
 
-// SUN Native compiler has trouble with typedef inside class
+// SUN Native compiler has trouble with typedef inside class.
+// PGI compiler (QK_USER) on Cray XT3 needs throw specification in .cc file.
 #if defined(AIPS_SUN_NATIVE)
 #define WHATEVER_SUN_TYPEDEF(X) X::
 #define WHATEVER_TYPENAME
@@ -90,10 +91,14 @@ namespace std {};
 #else
 #define WHATEVER_SUN_TYPEDEF(X)
 #define WHATEVER_TYPENAME typename
+#if defined(AIPS_CRAY_PGI)
+#define WHATEVER_SUN_EXCEPTSPEC(X) throw(X)
+#else
 #define WHATEVER_SUN_EXCEPTSPEC(X)
 #endif
+#endif
 
-#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC3) || defined(AIPS_GCC4)
+#if defined(AIPS_USE_NEW_SGI) || defined(AIPS_GCC3) || defined(AIPS_GCC4) || defined(AIPS_CRAY_PGI)
 #if defined(WHATEVER_VECTOR_FORWARD_DEC)
 #undef WHATEVER_VECTOR_FORWARD_DEC
 #endif

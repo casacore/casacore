@@ -35,7 +35,9 @@
 #include <complex.h>
 #else
 #include <complex>
+#ifndef AIPS_CRAY_PGI
 #define NEEDS_LOG10_COMPLEX
+#endif
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN

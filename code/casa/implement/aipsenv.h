@@ -132,6 +132,20 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 #define AIPS_INTELCC
 #endif
 
+#if defined(AIPS_CRAY_PGI)
+#undef AIPS_CRAY_PGI
+#endif
+#if defined(__QK_USER__)
+#define AIPS_CRAY_PGI
+#endif
+
+#if defined(AIPS_CRAY_CATAMOUNT)
+#undef AIPS_CRAY_CATAMOUNT
+#endif
+#if defined(__LIB_CATAMOUNT__)
+#define AIPS_CRAY_CATAMOUNT
+#endif
+
 #if defined(__ia64)
 #define AIPS_64B
 #endif

@@ -53,7 +53,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     using std::abs;
 } //# NAMESPACE CASA - END
 # endif
-# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_GCC4) || defined(AIPS_INTELCC) || defined(AIPS_DARWIN))
+# if !(defined(AIPS_KAICC) || defined(AIPS_GCC3) || defined(AIPS_GCC4) || defined(AIPS_INTELCC) || defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI))
 #  define NEEDS_POWFLOATFLOAT
 # endif
 #endif
