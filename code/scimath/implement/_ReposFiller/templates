@@ -642,7 +642,7 @@
 1000 scimath/Fitting/LSQFit2.cc 
      = algorithm 
      #namespace 
-     #ifndef AIPS_INTELCC 
+     #if !defined(AIPS_INTELCC) && !defined(AIPS_CRAY_PGI)
        template casa::Double *swap_ranges<casa::Double *, casa::Double *>(casa::Double *, casa::Double *, casa::Double *) 
      #endif 
 1010 scimath/Fitting/LSQFit2.cc 
