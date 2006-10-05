@@ -34,10 +34,12 @@
 #include <fcntl.h>                // needed for ::open
 #include <errno.h>                // needed for errno
 #include <casa/string.h>          // needed for strerror
+#ifndef AIPS_CRAY_PGI
 #include <sys/mtio.h>             // needed for ioctl
 #if defined(AIPS_SOLARIS) || defined(AIPS_DARWIN)
 #include <sys/ioctl.h>            // needed for ioctl
 #include <sys/types.h>            // needed for ioctl
+#endif
 #endif
 
 namespace casa { //# NAMESPACE CASA - BEGIN
@@ -132,6 +134,7 @@ Int TapeIO::read(uInt size, void* buf, Bool throwException) {
 }
 
 void TapeIO::rewind() {
+#ifndef AIPS_CRAY_PGI
   struct mtop tapeCommand;
   tapeCommand.mt_op = MTREW;
   tapeCommand.mt_count = 1;
@@ -140,9 +143,11 @@ void TapeIO::rewind() {
     throw(AipsError(String("TapeIO::rewind - error returned by ioctl: ") 
 		    + strerror(errno)));
   }
+#endif
 }
 
 void TapeIO::skip(uInt howMany) {
+#ifndef AIPS_CRAY_PGI
   if (howMany > 0) {
     struct mtop tapeCommand;
     tapeCommand.mt_op = MTFSF;
@@ -153,9 +158,11 @@ void TapeIO::skip(uInt howMany) {
 		      + strerror(errno)));
     }
   }
+#endif
 }
 
 void TapeIO::mark(uInt howMany) {
+#ifndef AIPS_CRAY_PGI
   DebugAssert(isWritable(), AipsError);
   if (howMany > 0) {
     struct mtop tapeCommand;
@@ -167,6 +174,7 @@ void TapeIO::mark(uInt howMany) {
 		      + strerror(errno)));
     }
   }
+#endif
 }
 
 Bool TapeIO::fixedBlocks() const {
@@ -189,7 +197,7 @@ void TapeIO::setVariableBlockSize() {
 }
 
 void TapeIO::setBlockSize(uInt sizeInBytes) {
-#if defined(AIPS_SOLARIS) || defined(AIPS_LINUX)
+#if (defined(AIPS_SOLARIS) || defined(AIPS_LINUX)) && !defined(AIPS_CRAY_PGI)
   struct mtop tapeCommand;
 #if defined(AIPS_LINUX) 
   tapeCommand.mt_op = MTSETBLK;
@@ -207,7 +215,7 @@ void TapeIO::setBlockSize(uInt sizeInBytes) {
 }
 
 uInt TapeIO::getBlockSize() const {
-#if defined(AIPS_SOLARIS) || defined(AIPS_LINUX)
+#if (defined(AIPS_SOLARIS) || defined(AIPS_LINUX)) && !defined(AIPS_CRAY_PGI)
 #if defined(AIPS_LINUX) 
   struct mtget tapeInquiry;
   Int error = ::ioctl(itsDevice, MTIOCGET, &tapeInquiry);
@@ -331,9 +339,6 @@ void TapeIO::fillSeekable() {
   }
   itsSeekable = (seek (0, ByteIO::Current)  >= 0);
 }
-// Local Variables: 
-// compile-command: "gmake OPTLIB=1 TapeIO; cd test; gmake OPTLIB=1 tTapeIO"
-// End: 
 
 } //# NAMESPACE CASA - END
 

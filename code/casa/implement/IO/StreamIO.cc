@@ -30,11 +30,13 @@
 #include <casa/Utilities/Regex.h>
 #include <casa/Utilities/Copy.h>
 #include <casa/Exceptions/Error.h>
+#ifndef AIPS_CRAY_PGI
 #include <netinet/in.h>
 #include <arpa/inet.h>            // Definition of sockaddr_in
 #include <sys/socket.h>           // Definition of sockaddr & socket function
-#include <unistd.h>               // needed for ::close
 #include <netdb.h>
+#endif
+#include <unistd.h>               // needed for ::close
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -42,6 +44,9 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
   :ByteIO(),
    itsSockDesc(-1)
 {
+#ifdef AIPS_CRAY_PGI
+  throw AipsError("StreamIO is not supported on Cray XT3");
+#else
   // Do hostname lookup!
 
   struct sockaddr_in serverInfo;
@@ -71,6 +76,7 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
 		    String(" host ") + hostname + String(" on port ") +
 		    String::toString(portNumber)));
   }
+#endif
 }
 
 StreamIO::~StreamIO() {
