@@ -690,10 +690,11 @@ ifeq "$(MAKEMODE)" "programmer"
 		fi; \
 	     fi; \
 	     if [ -f $$i/makefile ]; then \
-	        echo "$(MAKE) -C $(CODESUBD)/$$i $@" ; \
+	        echo "$(MAKE) -C $$i $@" ; \
 	        $(MAKE) -C $$i $@ ; \
-		if [ $copied = 1 ]; then \
+		if [ $$copied = 1 ]; then \
 		   $(RM) makefile; \
+	        fi; \
 	     fi; \
 	  done
 endif
