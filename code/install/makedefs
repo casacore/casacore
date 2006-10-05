@@ -648,6 +648,9 @@ DOCEXTR   := docscan docextr changelogs
 # What standard packages to build (default is all including demo).
 PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
 
+# Unset this to defeat glish build.
+AIPSGLISH := aips
+
 # What auxiliary packages to build
 AUXILIARY := tasking display appsglish
 

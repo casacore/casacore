@@ -64,7 +64,7 @@ INCLINKS += include/appsglish
 
 # Subdirectories in which to invoke "allsys", in order.
 #------------------------------------------------------
-ALLSYSD  := install aips $(PACKAGES)
+ALLSYSD  := install $(AIPSGLISH) $(PACKAGES)
 
 # Should only exist in consortium installations.
 ALLSYSD  += admin
