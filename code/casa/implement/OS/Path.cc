@@ -306,7 +306,7 @@ String Path::expandName (const String& inString) const
 		// of "~name"
 		// This cannot be done on the CRAY XT3 CATAMOUNT as it
 		// does not support sockets.
-#ifdef AIPS_CRAY_CATAMOUNT
+#ifdef AIPS_CRAY_PGI
 		tempString.prepend ("~");
 #else
 		passwd* passWd = getpwnam(temp.chars());
