@@ -343,7 +343,7 @@
         LIBS="$LIBS $PCKGTMPD/$PCKGSHAR"
 
         case $ARCH in
-        linux* | sun4* | *_gnu | *_egcs)
+        linux* | sun4* | *_gnu | *_egcs | darwin*)
 #          Sharable libraries in SunOS 4.x and 5.x.
            rm -rf BLDSHR.*
            mkdir BLDSHR.$ID
@@ -357,9 +357,18 @@
 	      rm -f `cat "$AIPSARCH/lib$PCKGLANG.purge"`
 	   fi
 
+	   # darwin's loader does not support the -h and -rpath option.
+	   HOPT="-Wl,-h,$PCKGSHAR"
+           case $ARCH in
+           darwin*)
+              HOPT=
+              XTRNPATH=
+              ;;
+           esac
+
 	   SHRFAILD=""
-           echo $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
-           $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
+           echo $MKSO $LDSOPTS $HOPT $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
+           $MKSO $LDSOPTS $HOPT $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
 
            if [ "$?" != 0 ]
            then
