@@ -325,11 +325,11 @@ BOOSTLIB   := -lboost_python
 #-----------------------------------------------------------------------------
 
 # Default package-dependent link lists for shared library linking.
-XLIBLIST_shared_casa        := LAPACK F77
+XLIBLIST_shared_casa        := F77
 XLIBLIST_shared_scimath     := LAPACK F77
-XLIBLIST_shared_tables      := LAPACK F77
+XLIBLIST_shared_tables      := F77
 XLIBLIST_shared_measures    := LAPACK F77
-XLIBLIST_shared_fits        := LAPACK F77
+XLIBLIST_shared_fits        := F77
 XLIBLIST_shared_graphics    := LAPACK F77
 XLIBLIST_shared_lattices    := LAPACK F77
 XLIBLIST_shared_coordinates := LAPACK F77
@@ -345,7 +345,7 @@ XLIBLIST_shared_dish        := LAPACK F77
 XLIBLIST_shared_simulators  := LAPACK F77
 XLIBLIST_shared_synthesis   := LAPACK F77
 XLIBLIST_shared_tasking     := LAPACK F77
-XLIBLIST_shared_appspython  := LAPACK F77
+XLIBLIST_shared_appspython  := BOOST PYTHON
 XLIBLIST_shared_display := GLISH XmPGPLOT XPM Motif X11 MIRLIB WCSLIB LAPACK F77
 XLIBLIST_shared_alma  := $(XLIBLIST_shared_display)
 XLIBLIST_shared_atnf  := RPFITS $(XLIBLIST_shared_display)

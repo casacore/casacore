@@ -216,7 +216,7 @@
     # .run files are not supported yet on the Cray.
     if [ -f "$1.run" ]
     then
-      echo "UNTESTED: $*"
+      echo "UNTESTED (no .run support): $*"
       exit 3
     fi
     # Create a batch job which will use a single processor.
