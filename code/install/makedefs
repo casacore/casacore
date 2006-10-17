@@ -570,7 +570,7 @@ LINKdemo := graphics synthesis simulators dish flagging ionosphere calibration m
 
 LINKappsglish := tasking graphics synthesis simulators dish flagging ionosphere calibration msvis msfits ms images components coordinates lattices fits measures tables scimath casa
 
-LINKappspython := appspython graphics synthesis simulators dish flagging ionosphere calibration msvis msfits ms images components coordinates lattices fits measures tables scimath casa
+LINKappspython := appspython casa
 
 LINKvlbi      := vlbi synthesis casa
 
