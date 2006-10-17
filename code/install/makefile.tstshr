@@ -41,42 +41,42 @@ include $(word 1, $(AIPSPATH))/code/install/makefile.tst_c
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
-   .PRECIOUS : $(PGMRLIBD)/_%.$(SFXSHAR)
+   .PRECIOUS : $(PGMRLIBD)/_%.$(PYSFXSHAR)
 
-   $(PGMRLIBD)/_%.$(SFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
-	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
+   $(PGMRLIBD)/_%.$(PYSFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
+	   $(PYMKSO) $(PYLDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 
-   % : $(PGMRLIBD)/_%.$(SFXSHAR) ;
+   % : $(PGMRLIBD)/_%.$(PYSFXSHAR) ;
 
    check : $(ALLEXES)
 	@ for PROG in $(ALLEXES); do \
 	    if [ "$(PGMRLIBD)" != "." ]; \
 	    then \
-	      $(RM) _$$PROG.$(SFXSHAR); \
-	      ln -s $(PGMRLIBD)/_$$PROG.$(SFXSHAR); \
+	      $(RM) _$$PROG.$(PYSFXSHAR); \
+	      ln -s $(PGMRLIBD)/_$$PROG.$(PYSFXSHAR); \
 	    fi; \
 	    assay $$PROG; \
 	    if [ "$(PGMRLIBD)" != "." ]; \
 	    then \
-	      $(RM) _$$PROG.$(SFXSHAR); \
+	      $(RM) _$$PROG.$(PYSFXSHAR); \
 	    fi; \
 	  done
 endif
 
 
-$(BINTESTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
+$(BINTESTD)/_%.$(PYSFXSHAR) : $(CODEDIR)/%.cc $(INSTLIBR:%=$(CODEDIR)/templates) $(AIPSLIBS)
 	@ echo ""
 	@ $(TIMER)
 	@ echo "Remaking $@ ($(TESTOPT)) because of $?"
 	@ $(INSTLIBR:%=$(MAKE) %)
 	@ cd $(TMPPCKGD) && \
-	   $(MKSO) $(LDSOPTS) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) \
+	   $(PYMKSO) $(PYLDSOPTS) $(C++OPTS) -I$(CODEDIR) $(AIPSINCL) \
 	      $(LDOPT) -o $@ $< \
 	      $(INSTLIBR) $(AIPSLIBS) $(XTRNLIBS) $(INSTLIBR)
 	@ $(TIMER)
 	@ $(RM) $(TMPPCKGD)/$(<F:cc=o)
 
-$(BINTESTD)/% : $(BINTESTD)/_%.$(SFXSHAR)
+$(BINTESTD)/% : $(BINTESTD)/_%.$(PYSFXSHAR)
 	@ ln -s $< $@
 
 
