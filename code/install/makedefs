@@ -479,6 +479,12 @@ LDSOPTS  := -shared -fPIC
 SFXSTAT  := a
 SFXSHAR  := so
 
+# Define variables as well for building shared libraries for Python.
+# Normally they are the same as above, but for Darwin they are different.
+PYMKSO    = $(MKSO)
+PYLDSOPTS:= $(LDSOPTS)
+PYSFXSHAR:= $(SFXSHAR)
+
 # Control table for building AIPS++ libraries.  Four keywords are recognized:
 #
 #    defeat:  The library will not be built (and if an old version exists it

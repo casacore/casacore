@@ -41,38 +41,38 @@ include $(word 1, $(AIPSPATH))/code/install/makefile.app_c
 
 # Programmer-oriented pattern rules.
 ifeq "$(MAKEMODE)" "programmer"
-   .PRECIOUS : $(PGMRLIBD)/_%.$(SFXSHAR) $(PGMRBIND)/%.o $(PGMRBIND)/%.i
+   .PRECIOUS : $(PGMRLIBD)/_%.$(PYSFXSHAR) $(PGMRBIND)/%.o $(PGMRBIND)/%.i
 
-   _%.$(SFXSHAR) : $(PGMRLIBD)/_%.$(SFXSHAR) ;
-   %             : _%.$(SFXSHAR) ;
+   _%.$(PYSFXSHAR) : $(PGMRLIBD)/_%.$(PYSFXSHAR) ;
+   %             : _%.$(PYSFXSHAR) ;
 
-   $(PGMRLIBD)/_%.$(SFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
+   $(PGMRLIBD)/_%.$(PYSFXSHAR) : $(PGMRBIND)/%.o $(PGMRLIBR)
 	-@ echo ""
 	-@ $(RM) $@
-	   $(MKSO) $(LDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
+	   $(PYMKSO) $(PYLDSOPTS) -o $@ $< $(LDFLAGS) $(PGMRLIBS) 
 endif
 
 override LIBOPTD = $(LIBPYTHD)/$(THISAPP)
 
-$(LIBDBGD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
+$(LIBDBGD)/_%.$(PYSFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(DBGLIBS)
 	-@ echo ""
 	-@ $(TIMER)
-	-@ echo "Remaking _$*.$(SFXSHAR) (dbg) because of $(?F)"
+	-@ echo "Remaking _$*.$(PYSFXSHAR) (dbg) because of $(?F)"
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(MKSO) $(LDSOPTS) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) \
+	   $(PYMKSO) $(PYLDSOPTS) $(CPPDBG) -I$(TMPPCKGD) -I$(CODEDIR) \
 	      $(AIPSINCL) $(C++DBG) \
 	      $(LDDBG) -o $@ $< $(AIPSINST:%=%/*.cc) \
 	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) \
-	      $(patsubst $(LIBDBGD)/_%.$(SFXSHAR), -l%, $(DBGLIBS)) \
+	      $(patsubst $(LIBDBGD)/_%.$(PYSFXSHAR), -l%, $(DBGLIBS)) \
 	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
 	         $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC)))
 
-$(LIBOPTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
+$(LIBOPTD)/_%.$(PYSFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
    $(addprefix $(TMPPCKGD)/, $(addsuffix cc, $(LEXYACC))) \
    $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTLIBS)
 	-@ echo ""
@@ -81,11 +81,11 @@ $(LIBOPTD)/_%.$(SFXSHAR) : $(CODEDIR)/%.cc $(AIPSINST) \
 	-@ amkdir -p u=rwx,og=rx -v -s $@
 	-@ if [ -h $@ ]; then $(RM) $@; fi
 	 @ cd $(TMPPCKGD) && \
-	   $(MKSO) $(LDSOPTS) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) \
+	   $(PYMKSO) $(PYLDSOPTS) $(CPPOPT) -I$(TMPPCKGD) -I$(CODEDIR) \
 	      $(AIPSINCL) $(C++OPT) \
 	      $(LDOPT) -o $@ $< $(AIPSINST:%=%/*.cc) \
 	      $(addprefix $(CODEDIR)/,$(AIPSIMPS)) $(OPTVERSO) \
-	      $(patsubst $(LIBOPTD)/_%.$(SFXSHAR), -l%, $(OPTLIBS)) \
+	      $(patsubst $(LIBOPTD)/_%.$(PYSFXSHAR), -l%, $(OPTLIBS)) \
 	      $(MODULIBS) $(XTRNLIBS)
 	-@ $(TIMER)
 	-@ $(RM) $(patsubst %.cc,$(TMPPCKGD)/%.o,$(<F) $(AIPSIMPS)) \
@@ -96,6 +96,6 @@ $(BINDBGD)/% : ;
 $(LIBOPTD)/_%.$(SFXSTAT) : ;
 $(BINOPTD)/% : ;
 
-bin    : $(TMPPCKGD) $(LIBOPTD)/_$(THISAPP).$(SFXSHAR) pyopyc $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
+bin    : $(TMPPCKGD) $(LIBOPTD)/_$(THISAPP).$(PYSFXSHAR) pyopyc $(LIBEXECS) $(LIBICONS) $(BINEXECS) ;
 
-bindbg : $(TMPPCKGD) $(LIBDBGD)/_$(THISAPP).$(SFXSHAR) ;
+bindbg : $(TMPPCKGD) $(LIBDBGD)/_$(THISAPP).$(PYSFXSHAR) ;
