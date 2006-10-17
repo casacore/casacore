@@ -133,8 +133,19 @@
        "#$SFXSTAT#$SFXSHAR#$MKSO#$XTRNLIBS_shared#$XTRNLIBS_rpath#" | grep '##' > /dev/null 2>&1
   if [ "$?" = 0 ]
   then
-     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE MKSO XTRNLIBS_shared XTRNLIBS_rpath"
-     eval `gmake -f $AIPSARCH/makedefs VARS="$VARS" eval_vars`
+     VARS="AR ARFLAGS RANLIB CXXAR CXXARDBG CXXAROPT UPDBATCH LD LDSOPTS SFXSTAT SFXSHAR LIB$PACKAGE LINK$PACKAGE MKSO XTRNLIBS_shared XTRNLIBS_rpath"
+     GMAKE=`which gmake 2>&1 | sed -e 's%^[^/].*%%'`
+     [ "$GMAKE" = "" ] && GMAKE=make
+     eval `$GMAKE -f $AIPSARCH/makedefs VARS="$VARS" eval_vars`
+     LINKAPPS=`eval echo $\`echo LINK$PACKAGE\``
+     APPSLIBS=
+     for app in $LINKAPPS
+     do
+       if [ "$app" != "$PACKAGE" ]
+       then
+         APPSLIBS="$APPSLIBS -l$app"
+       fi
+     done
   fi
 
   PCKGLIBR=lib$PCKGLANG.$SFXSTAT
@@ -347,7 +358,8 @@
 	   fi
 
 	   SHRFAILD=""
-           $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * $XTRNLIBS_shared
+           echo $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
+           $MKSO $LDSOPTS -Wl,-h,$PCKGSHAR $XTRNPATH -o $PCKGSHAR * -L$ARCHLIBD $APPSLIBS $XTRNLIBS_shared
 
            if [ "$?" != 0 ]
            then
