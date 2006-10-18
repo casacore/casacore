@@ -278,13 +278,22 @@ public:
 
   // Get some or all value slices from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
+  // <group>
   ValueHolder getColumnSlice (const String& columnName,
-			      const Vector<Int>& blc,
-			      const Vector<Int>& trc,
-			      const Vector<Int>& inc,
 			      Int row,
 			      Int nrow,
-			      Int incr);
+			      Int incr,
+			      const Vector<Int>& blc,
+			      const Vector<Int>& trc,
+			      const Vector<Int>& inc);
+  ValueHolder getColumnSliceIP (const String& columnName,
+				const IPosition& blc,
+				const IPosition& trc,
+				const IPosition& inc,
+				Int row,
+				Int nrow,
+				Int incr);
+  // </group>
 
   // Put some or all values into a column in the table.
   // row is the starting row number (0-relative).
@@ -292,26 +301,36 @@ public:
   // incr is the step in row number.
   // <group>
   void putColumn (const String& columnName,
-		  const ValueHolder&,
 		  Int row,
 		  Int nrow,
-		  Int incr);
+		  Int incr,
+		  const ValueHolder&);
   void putVarColumn (const String& columnName,
-		     const Record& values,
 		     Int row,
 		     Int nrow,
-		     Int incr);
+		     Int incr,
+		     const Record& values);
   // </group>
 
   // Put some or all value slices into a column in the table.
+  // <group>
   void putColumnSlice (const String& columnName,
-		       const ValueHolder&,
+		       Int row,
+		       Int nrow,
+		       Int incr,
 		       const Vector<Int>& blc,
 		       const Vector<Int>& trc,
 		       const Vector<Int>& inc,
-		       Int row,
-		       Int nrow,
-		       Int incr);
+		       const ValueHolder&);
+  void putColumnSliceIP (const String& columnName,
+			 const ValueHolder&,
+			 const IPosition& blc,
+			 const IPosition& trc,
+			 const IPosition& inc,
+			 Int row,
+			 Int nrow,
+			 Int incr);
+  // </group>
 
   // Tests if the contents of a cell are defined.
   // Only a column with variable shaped arrays can have an empty cell.
@@ -324,11 +343,18 @@ public:
 
   // Get a value slice from a column in the table.
   // If the inc vector is empty, it defaults to all 1.
+  // <group>
   ValueHolder getCellSlice (const String& columnName,
 			    Int row,
 			    const Vector<Int>& blc,
 			    const Vector<Int>& trc,
 			    const Vector<Int>& inc);
+  ValueHolder getCellSliceIP (const String& columnName,
+			      Int row,
+			      const IPosition& blc,
+			      const IPosition& trc,
+			      const IPosition& inc);
+  // </group>
 
   // Put a value into a column in the table.
   void putCell (const String& columnName,
@@ -337,12 +363,20 @@ public:
 
   // Put a value slice into a column in the table.
   // If the inc vector is empty, it defaults to all 1.
+  // <group>
   void putCellSlice (const String& columnName,
 		     Int row,
-		     const ValueHolder&,
 		     const Vector<Int>& blc,
 		     const Vector<Int>& trc,
-		     const Vector<Int>& inc);
+		     const Vector<Int>& inc,
+		     const ValueHolder&);
+  void putCellSliceIP (const String& columnName,
+		       Int row,
+		       const ValueHolder&,
+		       const IPosition& blc,
+		       const IPosition& trc,
+		       const IPosition& inc);
+  // </group>
 
   // Get the shape of one or more cells in a column as a vector of Strings
   // containing the shapes as [a,b,c].
@@ -572,11 +606,9 @@ private:
   // Make a record containing the description of all hypercolumns.
   static Record recordHCDesc (const TableDesc& tableDesc);
 
-  // Replace the user-given default value by the default value
+  // Replace the user-given default value (<0) by the default value
   // used by Slicer (i.e. by Slicer::MimicSource).
-  // Note that the user is 1-relative, while this is 0-relative,
-  // so the user default value of -1 is here -2.
-  void setDefaultForSlicer (Vector<Int>& vec) const;
+  void setDefaultForSlicer (IPosition& vec) const;
 
   // Calculate the values of a CALC expression and store them in field
   // 'values' in rec.

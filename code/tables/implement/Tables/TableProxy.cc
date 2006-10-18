@@ -598,7 +598,16 @@ ValueHolder TableProxy::getCellSlice (const String& columnName,
 				      const Vector<Int>& trc,
 				      const Vector<Int>& inc)
 {
-  Vector<Int> cblc, ctrc;
+  return getCellSliceIP (columnName, row, blc, trc, inc);
+}
+
+ValueHolder TableProxy::getCellSliceIP (const String& columnName,
+					Int row,
+					const IPosition& blc,
+					const IPosition& trc,
+					const IPosition& inc)
+{
+  IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
   setDefaultForSlicer (cblc);
@@ -658,14 +667,25 @@ Record TableProxy::getVarColumn (const String& columnName,
 }
 
 ValueHolder TableProxy::getColumnSlice (const String& columnName,
-					const Vector<Int>& blc,
-					const Vector<Int>& trc,
-					const Vector<Int>& inc,
 					Int row,
 					Int nrow,
-					Int incr)
+					Int incr,
+					const Vector<Int>& blc,
+					const Vector<Int>& trc,
+					const Vector<Int>& inc)
 {
-  Vector<Int> cblc, ctrc;
+  return getColumnSliceIP (columnName, blc, trc, inc, row, nrow, incr);
+}
+
+ValueHolder TableProxy::getColumnSliceIP (const String& columnName,
+					  const IPosition& blc,
+					  const IPosition& trc,
+					  const IPosition& inc,
+					  Int row,
+					  Int nrow,
+					  Int incr)
+{
+  IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
   setDefaultForSlicer (cblc);
@@ -685,10 +705,10 @@ ValueHolder TableProxy::getColumnSlice (const String& columnName,
 }
 
 void TableProxy::putColumn (const String& columnName,
-			    const ValueHolder& value,
 			    Int row,
 			    Int nrow,
-			    Int incr)
+			    Int incr,
+			    const ValueHolder& value)
 {
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
@@ -699,10 +719,10 @@ void TableProxy::putColumn (const String& columnName,
 }
 
 void TableProxy::putVarColumn (const String& columnName,
-			       const Record& values,
 			       Int row,
 			       Int nrow,
-			       Int incr)
+			       Int incr,
+			       const Record& values)
 {
   // Synchronize table to get up-to-date #rows.
   // Check that the row number is within the table bounds.
@@ -721,15 +741,27 @@ void TableProxy::putVarColumn (const String& columnName,
 }
 
 void TableProxy::putColumnSlice (const String& columnName,
-				 const ValueHolder& value,
+				 Int row,
+				 Int nrow,
+				 Int incr,
 				 const Vector<Int>& blc,
 				 const Vector<Int>& trc,
 				 const Vector<Int>& inc,
-				 Int row,
-				 Int nrow,
-				 Int incr)
+				 const ValueHolder& value)
 {
-  Vector<Int> cblc, ctrc;
+  putColumnSliceIP (columnName, value, blc, trc, inc, row, nrow, incr);
+}
+
+void TableProxy::putColumnSliceIP (const String& columnName,
+				   const ValueHolder& value,
+				   const IPosition& blc,
+				   const IPosition& trc,
+				   const IPosition& inc,
+				   Int row,
+				   Int nrow,
+				   Int incr)
+{
+  IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
   setDefaultForSlicer (cblc);
@@ -765,12 +797,22 @@ void TableProxy::putCell (const String& columnName,
 
 void TableProxy::putCellSlice (const String& columnName,
 			       Int row,
-			       const ValueHolder& value,
 			       const Vector<Int>& blc,
 			       const Vector<Int>& trc,
-			       const Vector<Int>& inc)
+			       const Vector<Int>& inc,
+			       const ValueHolder& value)
 {
-  Vector<Int> cblc, ctrc;
+  putCellSliceIP (columnName, row, value, blc, trc, inc);
+}
+
+void TableProxy::putCellSliceIP (const String& columnName,
+				 Int row,
+				 const ValueHolder& value,
+				 const IPosition& blc,
+				 const IPosition& trc,
+				 const IPosition& inc)
+{
+  IPosition cblc, ctrc;
   cblc = blc;
   ctrc = trc;
   setDefaultForSlicer (cblc);
@@ -2468,10 +2510,10 @@ void TableProxy::syncTable (Table& table)
   }
 }
 
-void TableProxy::setDefaultForSlicer (Vector<Int>& vec) const
+void TableProxy::setDefaultForSlicer (IPosition& vec) const
 {
   for (uInt i=0; i<vec.nelements(); i++) {
-    if (vec(i) == -2) {
+    if (vec(i) < 0) {
       vec(i) = Slicer::MimicSource;
     }
   }
