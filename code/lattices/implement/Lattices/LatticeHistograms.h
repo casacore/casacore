@@ -318,7 +318,7 @@ private:
 
 
 // Convert a <T> to a <Float> for plotting
-   static Float convertT (const T value) {return Float(real(value));};   
+   static Float convertT (const T value) {return Float(std::real(value));};   
  
 // Convert a <Float> (from plotting) to a <T>
    static T convertF (const Float value) {return T(value);};

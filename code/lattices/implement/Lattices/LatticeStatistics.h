@@ -424,7 +424,7 @@ private:
                             Bool dropDeg);
 
 // Convert a <AccumType> to a <Float> for plotting
-   static Float convertATtoF (AccumType value) {return Float(real(value));};
+   static Float convertATtoF (AccumType value) {return Float(std::real(value));};
 
 // Find the next good or bad point in an array
    Bool findNextDatum     (uInt& iFound,
