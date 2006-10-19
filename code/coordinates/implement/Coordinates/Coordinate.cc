@@ -897,7 +897,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
                              ::wcsprm& wcs) const
 {
-    const uInt& nAxes = nPixelAxes();
+    const uInt nAxes = nPixelAxes();
     world.resize(nAxes);
 //
     DebugAssert(pixel.nelements() == nAxes, AipsError);
@@ -908,15 +908,15 @@ Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
     const double* pixelStore = pixel.getStorage(delPixel);
     double* worldStore = world.getStorage(delWorld);
 //
-    double imgCrd[nAxes];
+    Block<double> imgCrd(nAxes);
     double phi;
     double theta;
 
 // Convert from pixel to world with wcs units
 
     int stat;
-    int iret = wcsp2s (&wcs, 1, nAxes, pixelStore, imgCrd, &phi, &theta,
-                       worldStore, &stat);
+    int iret = wcsp2s (&wcs, 1, nAxes, pixelStore, imgCrd.storage(),
+		       &phi, &theta, worldStore, &stat);
     pixel.freeStorage(pixelStore, delPixel);
     world.putStorage(worldStore, delWorld);
 //
@@ -935,7 +935,7 @@ Bool Coordinate::toPixelWCS(Vector<Double> &pixel, const Vector<Double> &world,
                             ::wcsprm& wcs) const
 {
    pixel.resize(world.nelements());    
-   const uInt& nAxes = nWorldAxes();
+   const uInt nAxes = nWorldAxes();
    DebugAssert(world.nelements() == nAxes, AipsError);
 
 // Generate pointers and intermediaries for wcs
@@ -944,14 +944,15 @@ Bool Coordinate::toPixelWCS(Vector<Double> &pixel, const Vector<Double> &world,
    double* pixelStore = pixel.getStorage(delPixel);
    const double* worldStore = world.getStorage(delWorld);
 // 
-   double imgCrd[nAxes];
+   Block<double> imgCrd(nAxes);
    double phi;
    double theta;
     
 // Convert with world with wcs units to pixel
     
    int stat;
-   int iret = wcss2p (&wcs, 1, nAxes, worldStore, &phi, &theta, imgCrd, pixelStore, &stat);
+   int iret = wcss2p (&wcs, 1, nAxes, worldStore, &phi, &theta,
+		      imgCrd.storage(), pixelStore, &stat);
    pixel.putStorage(pixelStore, delPixel);
    world.freeStorage(worldStore, delWorld);
 //

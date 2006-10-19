@@ -1098,7 +1098,7 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
     Bool print(False);
     if (print) {
        cerr << "Header Cards " << endl;
-       for (uInt i=0; i<nkeys; i++) {
+       for (Int i=0; i<nkeys; i++) {
           uInt pt = i*80;
           char* pChar3 = &pChar2[pt];
           String s(pChar3,80);
@@ -1149,10 +1149,6 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
 //            that suffer from the problem described in  Sect. 7.3.4 of Paper I.
 //  unitifx:  fixes non-standard units
 
-   int ishape[shape.nelements()];                    // Shape needed for cylfix
-   for (uInt i=0; i<shape.nelements(); i++) {
-      ishape[i] = shape[i];
-   }
 //
    Vector<String> wcsNames(NWCSFIX);
    wcsNames(DATFIX) = String("datfix");
@@ -1163,7 +1159,7 @@ Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue,
 //
    int stat[NWCSFIX];
    ctrl = 7;                                             // Do all unsafe unit corrections
-   if (wcsfix(ctrl, ishape, &wcsPtr[which], stat) > 0) {
+   if (wcsfix(ctrl, shape.storage(), &wcsPtr[which], stat) > 0) {
       for (int i=0; i<NWCSFIX; i++) {
          int err = stat[i];
          if (err>0) {
@@ -1287,13 +1283,13 @@ Bool FITSCoordinateUtil::addDirectionCoordinate (CoordinateSystem& cSys,
 
    int alloc = 1;                    // Allocate memory for output structures
    int nsub = 2;
-   int axes[nsub];
+   Block<int> axes(nsub);
    axes[0] = WCSSUB_LONGITUDE;
    axes[1] = WCSSUB_LATITUDE;
 //
    ::wcsprm wcsDest;
    wcsDest.flag = -1;
-   int ierr = wcssub (alloc, &wcs, &nsub, axes, &wcsDest);
+   int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
    Bool ok = True;
    String errMsg;
@@ -1356,12 +1352,12 @@ Bool FITSCoordinateUtil::addLinearCoordinate (CoordinateSystem& cSys,
 
    int alloc = 1;                    // Allocate memory for output structures
    int nsub = 1;
-   int axes[wcs.naxis];
+   Block<int> axes(wcs.naxis);
    axes[0] = -(WCSSUB_LONGITUDE | WCSSUB_LATITUDE | WCSSUB_SPECTRAL | WCSSUB_STOKES);
 //
    ::wcsprm wcsDest;
    wcsDest.flag = -1;
-   int ierr = wcssub (alloc, &wcs, &nsub, axes, &wcsDest);
+   int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
    Bool ok = True;
    String errMsg;
@@ -1417,13 +1413,13 @@ Bool FITSCoordinateUtil::addStokesCoordinate (CoordinateSystem& cSys,
 // Extract wcs structure pertaining to Stokes Coordinate
 
    int nsub = 1;
-   int axes[nsub];
+   Block<int> axes(nsub);
    axes[0] = WCSSUB_STOKES;
 //
    ::wcsprm wcsDest;
    wcsDest.flag = -1;
    int alloc = 1;
-   int ierr = wcssub (alloc, &wcs, &nsub, axes, &wcsDest);
+   int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
    Bool ok = True;
    String errMsg;
@@ -1476,13 +1472,13 @@ Bool FITSCoordinateUtil::addSpectralCoordinate (CoordinateSystem& cSys,
 // Extract wcs structure pertaining to Spectral Coordinate
 
    int nsub = 1;
-   int axes[nsub];
+   Block<int> axes(nsub);
    axes[0] = WCSSUB_SPECTRAL;
 //
    ::wcsprm wcsDest;
    wcsDest.flag = -1;
    int alloc = 1;
-   int ierr = wcssub (alloc, &wcs, &nsub, axes, &wcsDest);
+   int ierr = wcssub (alloc, &wcs, &nsub, axes.storage(), &wcsDest);
 //
    Bool ok = True;
    String errMsg;
@@ -2125,7 +2121,7 @@ void FITSCoordinateUtil::cardsToRecord (LogIO& os, RecordInterface& rec, char* p
 
 // Specific keywords to be located 
 
-   uInt nKeyIds = 0;
+   const uInt nKeyIds = 0;
    ::fitskeyid keyids[nKeyIds];
 
 // Parse the header
@@ -2252,7 +2248,7 @@ void FITSCoordinateUtil::fixCoordinate (Coordinate& c, LogIO& os) const
       }  
    }
 //
-   Bool ok = c.setIncrement(cdelt);
+   c.setIncrement(cdelt);
 }
 
 } //# NAMESPACE CASA - END
