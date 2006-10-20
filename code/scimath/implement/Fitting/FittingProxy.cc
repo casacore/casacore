@@ -302,7 +302,7 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
-  out.define("value", returnval);
+  out.define("sol", returnval);
   return out;
 }
 
@@ -327,7 +327,6 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Linear fitter x and y lengths disagree"));
   };
-
   for (uInt i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
@@ -388,7 +387,7 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
-  out.define("value", returnval);
+  out.define("sol", returnval);
   return out;
 }
 
@@ -476,7 +475,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
-  out.define("value", returnval);
+  out.define("sol", returnval);
   return out;
 }
 
@@ -564,6 +563,6 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
-  out.define("value", returnval);
+  out.define("sol", returnval);
   return out;
 }
