@@ -298,7 +298,7 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   out.define("sd", sd);
   out.define("mu", mu);
   out.define("chi2", chi2);
-  out.define("constraint", constr);
+  out.define("constr", constr);
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
@@ -383,7 +383,7 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   out.define("sd", sd);
   out.define("mu", mu);
   out.define("chi2", chi2);
-  out.define("constraint", constr);
+  out.define("constr", constr);
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
@@ -471,7 +471,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   out.define("sd", sd);
   out.define("mu", mu);
   out.define("chi2", chi2);
-  out.define("constraint", constr);
+  out.define("constr", constr);
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
@@ -559,7 +559,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   out.define("sd", sd);
   out.define("mu", mu);
   out.define("chi2", chi2);
-  out.define("constraint", constr);
+  out.define("constr", constr);
   out.define("covar", covar);
   out.define("error", err);
   out.define("deficiency", deficiency);
