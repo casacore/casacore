@@ -46,7 +46,7 @@
    Similarly, an alphanumeric string must be recognized as NAME
    and not as NAMETAB or NAMEFLD.
    Complex values can be given as:   FLOATi
-          where i is the letter i (in lowercase only).
+          where i is the letter i or j (in lowercase only).
    In a NAME the backslash can be used to escape special characters like -.
    In that way a name like DATE-OBS can be given as DATE\-OBS.
 */
@@ -57,7 +57,7 @@ INT       {DIGIT}+
 EXP       [DdEe][+-]?{INT}
 FLOAT     {INT}{EXP}|{INT}"."{DIGIT}*({EXP})?|{DIGIT}*"."{INT}({EXP})?
 FLINT     {FLOAT}|{INT}
-COMPLEX   {FLINT}"i"
+COMPLEX   {FLINT}[ij]
 TRUE      T
 FALSE     F
 
