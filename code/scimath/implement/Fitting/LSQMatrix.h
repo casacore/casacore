@@ -99,7 +99,7 @@ class LSQMatrix : public RecordTransformable {
   void decRow_pub(Double *&row, uInt i) const { if (i>0) decRow(row,i); };
   // </group>
   // Get diagonal element pointer <src>[i][i]</src>
-  Double *diag_pub(uInt i) const { return (i<n_p) ? diag(i) : 0); };
+  Double *diag_pub(uInt i) const { return ((i<n_p) ? diag(i) : 0); };
   // Get length of triangular array
   uInt nelements_pub() const { return (len_p); };
   // Get number of rows
@@ -112,7 +112,7 @@ class LSQMatrix : public RecordTransformable {
   // Add <src>fac</src> to n-length of diagonal
   void addDiagonal_pub(uInt n, Double fac) { if (n<n_p) addDiagonal(n,fac); };
   // Determine max of abs values of n-length of diagonal
-  Double maxDiagonal_pub(uInt n){ if (n<n_p) maxDiagonal(n); };
+  Double maxDiagonal_pub(uInt n){ return ((n<n_p) ? maxDiagonal(n) : 0); };
   // </group>
 
  private:
