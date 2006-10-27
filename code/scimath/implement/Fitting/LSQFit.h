@@ -349,6 +349,19 @@ class LSQFit {
     SINGULAR,
     N_ReadyCode
   };
+  // Offset of fields in error_p data area.
+  enum ErrorField {
+    // Number of condition equations
+    NC,
+    // Sum weights of condition equations
+    SUMWEIGHT,
+    // Sum known terms squared
+    SUMLL,
+    // Calculated chi^2
+    CHI2,
+    // Number of error fields
+    N_ErrorField
+  };
   //# Constructors
   // Construct an object with the number of unknowns and
   // constraints, using the default collinearity factor and the
@@ -733,19 +746,6 @@ class LSQFit {
   //
  protected:
   //# enum
-  // Offset of fields in error_p data area.
-  enum ErrorField {
-    // Number of condition equations
-    NC,
-    // Sum weights of condition equations
-    SUMWEIGHT,
-    // Sum known terms squared
-    SUMLL,
-    // Calculated chi^2
-    CHI2,
-    // Number of error fields
-    N_ErrorField
-  };
   // Bits that can be set/referenced
   enum StateBit {
     // Inverted matrix present
