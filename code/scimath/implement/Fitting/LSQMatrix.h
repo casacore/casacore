@@ -1,5 +1,5 @@
 //# LSQMatrix.h: Support class for the LSQ package
-//# Copyright (C) 2004,2005
+//# Copyright (C) 2004,2005,2006
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -60,6 +60,9 @@ class AipsIO;
 // rows, columns and diagonal of the triangular matrix.
 // The class is a private structure, with explicit friends.
 //
+// The class contains a number of public methods (with _pub in name) that
+// can be used anywhere, and which perform index range checking.
+//
 // The contents can be saved in a record (<src>toRecord<src>), 
 // and an object can be created from a record (<src>fromRecord</src>).
 // The record identifier is 'tmat'.
@@ -82,6 +85,36 @@ class AipsIO;
 class LSQMatrix : public RecordTransformable {
   //# Friends
   friend class LSQFit;
+
+ public:
+  // A set of public interface functions. Checks for index ranges are made, 
+  // and zero or null returned if error.
+  // <group>
+  // Get row pointer in normal equation (points to element <src>[i][0]</src>)
+  Double *row_pub(uInt i) const { return (i<n_p) ? row(i) : 0; };
+  // Get next row or previous row pointer in normal equation if the pointer
+  // <src>row</src> is at row <src>i</src>.
+  // <group>
+  void incRow_pub(Double *&row, uInt i) const { if (i<n_p-1) incRow(row,i); };
+  void decRow_pub(Double *&row, uInt i) const { if (i>0) decRow(row,i); };
+  // </group>
+  // Get diagonal element pointer <src>[i][i]</src>
+  Double *diag_pub(uInt i) const { return (i<n_p) ? diag(i) : 0); };
+  // Get length of triangular array
+  uInt nelements_pub() const { return (len_p); };
+  // Get number of rows
+  uInt nrows_pub() const { return n_p; };
+  // Make diagonal element 1 if zero (Note that this is always called when
+  // <src>invert()</src> is called). Only n-length sub-matrix is done.
+  void doDiagonal_pub(uInt n) { if (n<n_p) doDiagonal(n); }
+  // Multiply n-length of diagonal with <src>1+fac</src>
+  void mulDiagonal_pub(uInt n, Double fac) { if (n<n_p) mulDiagonal(n,fac); };
+  // Add <src>fac</src> to n-length of diagonal
+  void addDiagonal_pub(uInt n, Double fac) { if (n<n_p) addDiagonal(n,fac); };
+  // Determine max of abs values of n-length of diagonal
+  Double maxDiagonal_pub(uInt n){ if (n<n_p) maxDiagonal(n); };
+  // </group>
+
  private:
   //# Constructors
   // Default constructor (empty, only usable after a <src>set(n)</src>)
@@ -159,7 +192,7 @@ class LSQMatrix : public RecordTransformable {
   Bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   const String &ident() const;
-    // Convert a <src>carray</src> to/from a record. Field only written if 
+  // Convert a <src>carray</src> to/from a record. Field only written if 
   // non-zero length. No carray created if field does not exist on input.
   // False returned if unexpectedly no data available for non-zero length
   // (put), or a field has zero length vector(get).
