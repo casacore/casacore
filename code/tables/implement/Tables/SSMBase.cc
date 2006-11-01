@@ -1098,8 +1098,14 @@ uInt SSMBase::setBucketSize()
     aTotalSize += itsPtrColumn[i]->getExternalSizeBytes();
   }
   // Get first guess for nr of rows per bucket.
+  if (itsBucketSize < 128) {
+    itsBucketSize = 128;
+  }
   uInt rowsPerBucket = advBucketRows;
   if (advBucketRows == 0) {
+    if (itsBucketSize < 128) {
+      itsBucketSize = 128;
+    }
     rowsPerBucket = itsBucketSize/aTotalSize;
   }
   // Now refine it by determining how big bucket is when using one more row.
@@ -1129,12 +1135,13 @@ uInt SSMBase::setBucketSize()
       rowsPerBucket++;
     }
   }
-  if (itsBucketSize < 128 || rowsPerBucket < 1) {
-    // The bucket size is too small to contain data.
-    throw (DataManError ("StandardStMan::init - bucketsize too small"));
+  if (rowsPerBucket < 1) {
+    // The bucket size is too small to contain all columns, so adjust it.
+    itsBucketSize = aTotalSize;
+    rowsPerBucket = 1;
   }
+  AlwaysAssert (itsBucketSize >= 128, AipsError);
   return rowsPerBucket;
 }
 
 } //# NAMESPACE CASA - END
-
