@@ -1095,12 +1095,18 @@ Table ReadAsciiTable::makeTab (String& formatString,
 // Break up the NAME OF COLUMNS line and the TYPE OF COLUMNS line
 // Place the results in the two arrays.
 // Also put in in a single string to be returned to the caller.
+// The separator in a header line is the given separator if found in it.
+// Otherwise it is a blank.
 
+    Char sep1 = separator;
+    Char sep2 = separator;
+    if (String(string1).find(separator) == String::npos) sep1 = ' ';
+    if (String(string2).find(separator) == String::npos) sep2 = ' ';
     String formStr;
     Int done1 = 0, done2 = 0, at1 = 0, at2 = 0, nrcol = 0;
     while (done1 >= 0) {
-	done1 = getNext (string1, lineSize, first, at1, ' ');
-	done2 = getNext (string2, lineSize, second, at2, ' ');
+	done1 = getNext (string1, lineSize, first, at1, sep1);
+	done2 = getNext (string2, lineSize, second, at2, sep2);
 	if (done1>0 && done2>0) {
 	    if (nrcol >= Int(nameOfColumn.nelements())) {
 	        nameOfColumn.resize (2*nrcol, True, True);
