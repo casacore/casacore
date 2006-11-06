@@ -535,7 +535,7 @@ LIBsimulators  := defeat static defeat defeat defeat defeat
 LIBsynthesis   := defeat static defeat defeat defeat static
 LIBtasking     := defeat static defeat defeat defeat defeat
 #                                                          Python bindings
-LIBappspython  := defeat defeat defeat defeat defeat defeat
+LIBappspython  := defeat shared defeat defeat defeat defeat
 #                                                          Demo programs
 LIBdemo        := defeat static defeat defeat defeat defeat
 #                                                          Standard
