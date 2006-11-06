@@ -285,7 +285,14 @@ UIC4     = $(QT4ROOT)/bin/uic
 RCC4     = $(QT4ROOT)/bin/rcc
 
 # PYTHON
-# By default support for numarray is done (not for numpy).
+# By default numarray support is done for appspython (no numpy).
+# The local makedefs have to be changed as follows for different supports.
+# To support both numarray and numpy do:
+# PYTHONDEFS += -DAIPS_USENUMPY
+# To only support numpy do:
+# PYTHONDEFS := -DAIPS_USENUMPY
+# In both cases you need to make the numpy include path known by adding it:
+# PYTHONINCD += <numpy_path>
 PYTHONVERSION := 2.3
 PYTHONROOT := /usr/local/python
 PYTHONDEFS := -DAIPS_USENUMARRAY
