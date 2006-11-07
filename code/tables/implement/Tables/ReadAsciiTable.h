@@ -212,6 +212,15 @@ String readAsciiTable (const String& filein, const String& tableDescName,
 		       Int firstLine = 1, Int lastLine = -1,
 		       const IPosition& autoShape = IPosition());
 
+// This form gets the header info in the given vectors.
+// Each element in the dataTypes vector has to be of the form as would
+// be given in a header line.
+String readAsciiTable (const String& filein, const String& tableproto,
+		       const String& tablename,
+		       const Vector<String>& columnNames,
+		       const Vector<String>& dataTypes,
+		       Char separator, const String& commentMarkerRegex,
+		       Int firstLine, Int lastLine);
 
 // This form reads TWO Ascii files. The first file may contain 
 // keywords and their values as well as the two lines described above for
@@ -263,6 +272,13 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 		      Int firstLine = 1, Int lastLine = -1,
 		      const IPosition& autoShape = IPosition());
 Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& filein, const String& tableproto,
+		      const String& tablename,
+		      const Vector<String>& columnNames,
+		      const Vector<String>& dataTypes,
+		      Char separator, const String& commentMarkerRegex,
+		      Int firstLine, Int lastLine);
+Table readAsciiTable (String& formatString, Table::TableType tableType,
 		      const String& headerFile, const String& dataFile, 
 		      const String& tableDescName, const String& tablename,
 		      Char separator = ' ',
@@ -300,6 +316,8 @@ public:
   static String run (const String& headerfile, const String& filein, 
 		     const String& tableproto, const String& tablename,
 		     Bool autoHeader, const IPosition& autoShape,
+		     const Vector<String>& columnNames,
+		     const Vector<String>& dataTypes,
 		     Char separator,
 		     const String& commentMarkerRegex,
 		     Int firstLine, Int lastLine);
@@ -307,6 +325,8 @@ public:
 		     const String& headerfile, const String& filein, 
 		     const String& tableproto, const String& tablename,
 		     Bool autoHeader, const IPosition& autoShape,
+		     const Vector<String>& columnNames,
+		     const Vector<String>& dataTypes,
 		     Char separator,
 		     const String& commentMarkerRegex,
 		     Int firstLine, Int lastLine);
@@ -321,6 +341,8 @@ private:
   static String doRun (const String& headerfile, const String& filein, 
 		       const String& tableproto, const String& tablename,
 		       Bool autoHeader, const IPosition& autoShape,
+		       const Vector<String>& columnNames,
+		       const Vector<String>& dataTypes,
 		       Char separator,
 		       Bool testComment, const Regex& commentMarker,
 		       Int firstLine, Int lastLine);
@@ -331,6 +353,8 @@ private:
 			const String& tableproto,
 			const String& tablename,
 			Bool autoHeader, const IPosition& autoShape,
+			const Vector<String>& columnNames,
+			const Vector<String>& dataTypes,
 			Char separator,
 			Bool testComment, const Regex& commentMarker,
 			Int firstLine, Int lastLine);

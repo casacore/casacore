@@ -50,6 +50,37 @@ Input format: [Column1=I, Column2=D, Column3=D, Column4=D, Column5=D, Column6=D,
 10 11 12 13 14 15 16 str2
 >>>
 <<<
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ1=R, COLZ2=D, COLS=A]
+
+3 rows, 7 columns
+1 1.1 1.11 (1.12,1.13) 1.14 1.15 
+11 11.1 12.1 (13.1,14.1) 15.1 16.1 str2a
+10 11 12 (13,14) 15 16 str2
+>>>
+<<<
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ1=R, COLZ2=D, COLS=A]
+
+2 rows, 7 columns
+11 11.1 12.1 (13.1,14.1) 15.1 16.1 str2a
+10 11 12 (13,14) 15 16 str2
+>>>
+<<<
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ1=R, COLZ2=D, COLS=A]
+
+2 rows, 7 columns
+1 1.1 1.11 (1.12,1.13) 1.14 1.15 
+11 11.1 12.1 (13.1,14.1) 15.1 16.1 str2a
+>>>
+<<<
+>>>
+<<<
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ1=R, COLZ2=D, COLS=A]
+
+2 rows, 7 columns
+11 11.1 12.1 (13.1,14.1) 15.1 16.1 str2a
+10 11 12 (13,14) 15 16 str2
+>>>
+<<<
 Input format: [COLS=S, COLI=I, COLF=R, COLD=D, COLX=X, COLDX=DX, COLZ=Z, COLDZ=DZ, COLA=A, COLB=B]
 
 

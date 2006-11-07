@@ -28,4 +28,4 @@ IKEYS   A "coldx ikey"
 DKEYS   A "coldx dkey"
 .endkeywords
 COLS COLI   COLF   COLD   COLX   COLDX   COLZ   COLDZ    COLA  COLB
-  s,   i,     R,     d,     X,     dx,     z,     DZ,      A,    B
+  s,   i,     R,     d,     X,     dx ,    z,    DZ  ,     A,    B

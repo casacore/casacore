@@ -31,7 +31,7 @@
 #include <tables/Tables/ScalarColumn.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <tables/Tables/TableRecord.h>
-#include <casa/Arrays/Array.h>
+#include <casa/Arrays/Vector.h>
 #include <casa/Arrays/ArrayIO.h>
 #include <casa/Utilities/Assert.h>
 #include <casa/Exceptions/Error.h>
@@ -51,6 +51,8 @@ void a (const String& dir);
 void aa (const String& dir);
 void ab (const String& dir);
 void a1 (const String& dir, const String& commentMarker,
+	 Int firstLine, Int lastLine);
+void a2 (const String& dir, const String& commentMarker,
 	 Int firstLine, Int lastLine);
 void b (const String& dir, const String& suffix, Char separator,
 	const String& commentMarker,
@@ -73,6 +75,10 @@ int main (int argc, char** argv) {
 	a1 (dir, "1 ", -1, -1);
 	a1 (dir, "", 1, 2);
 	a1 (dir, "", 2, -1);
+	a2 (dir, "", -1, -1);
+	a2 (dir, "1 ", -1, -1);
+	a2 (dir, "", 1, 2);
+	a2 (dir, "", 2, -1);
 	b (dir, "", ' ', " *#", 1, -1);
 	b (dir, "", ' ', " #", 2, 3);
 	b (dir, "c", ',', "", -1, -1);
@@ -193,6 +199,50 @@ void a1 (const String& dir, const String& commentMarker,
 	cout << col1(i) << " " << col2(i) << " " << col3(i) << " "
 	     << col4(i) << " " << col5(i) << " " << col6(i) << " "
 	     << col7(i) << " " << col8(i) << endl;
+    }
+}
+
+void a2 (const String& dir, const String& commentMarker,
+	 Int firstLine, Int lastLine)
+{
+    cout << ">>>" << endl;
+    Vector<String> names(7);
+    Vector<String> types(7);
+    names[0] = "COLI";
+    names[1] = "COLF";
+    names[2] = "COLD";
+    names[3] = "COLX";
+    names[4] = "COLZ1";
+    names[5] = "COLZ2";
+    names[6] = "COLS";
+    types[0] = "I";  
+    types[1] = "R";
+    types[2] = "D"; 
+    types[3] = "X"; 
+    types[4] = "R";
+    types[5] = "D";
+    types[6] = "A";
+    String formStr = readAsciiTable (dir + "tReadAsciiTable.in_tah", "",
+				     "tReadAsciiTable_tmp.data_tah",
+				     names, types,
+				     ' ', commentMarker, firstLine, lastLine);
+    cout << "<<<" << endl;
+    cout << "Input format: [" << formStr << ']' << endl;
+    Table tab("tReadAsciiTable_tmp.data_tah");
+    cout << endl;
+    cout << tab.nrow() << " rows, " << tab.tableDesc().ncolumn()
+	 << " columns" << endl;
+    ROScalarColumn<Int>     coli (tab,"COLI");
+    ROScalarColumn<float>   colf (tab,"COLF");
+    ROScalarColumn<double>  cold (tab,"COLD");
+    ROScalarColumn<Complex> colx (tab,"COLX");
+    ROScalarColumn<float>  colz1 (tab,"COLZ1");
+    ROScalarColumn<double> colz2 (tab,"COLZ2");
+    ROScalarColumn<String>  cols (tab,"COLS");
+    for (uInt i=0; i<tab.nrow(); i++) {
+	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
+	     << colx(i) << " " << colz1(i) << " " << colz2(i) << " "
+	     << cols(i) << endl;
     }
 }
 

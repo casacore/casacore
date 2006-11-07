@@ -142,7 +142,9 @@ Int ReadAsciiTable::getNext (const Char* string, Int strlen, Char* result,
 	    found = True;
 	}
 	if (found) {
-	    result[i++] = ihave; 
+	    if (!quoted  &&  ihave != ' ') {
+	        result[i++] = ihave; 
+	    }
 	}
     } 
     return -1;
@@ -983,6 +985,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
 			       const String& tableproto,
 			       const String& tablename,
 			       Bool autoHeader, const IPosition& autoShape,
+			       const Vector<String>& columnNames,
+			       const Vector<String>& dataTypes,
 			       Char separator,
 			       Bool testComment, const Regex& commentMarker,
 			       Int firstLine, Int lastLine)
@@ -994,6 +998,17 @@ Table ReadAsciiTable::makeTab (String& formatString,
     String  keyName;
 
     LogIO logger(LogOrigin("readAsciiTable", WHERE));
+
+// Determine if column names are already given.
+    Bool hdrGiven = False;
+    if (columnNames.nelements() > 0  ||  dataTypes.nelements() > 0) {
+        if (columnNames.nelements() != dataTypes.nelements()) {
+	    throw AipsError ("ReadAsciiTable: vector of columnNames and "
+			     "dataTypes should have equal length");
+	}
+	hdrGiven   = True;
+	autoHeader = False;
+    }
 
 // Determine if header and data are in one file.
     Bool oneFile = (headerfile == filein);
@@ -1010,7 +1025,6 @@ Table ReadAsciiTable::makeTab (String& formatString,
 
     TableDesc td (tableproto,
 		  (tableproto.empty() ? TableDesc::Scratch : TableDesc::New));
-
     ifstream jFile;
     Path headerPath(headerfile);
     String hdrName = headerPath.expandedName();
@@ -1026,12 +1040,12 @@ Table ReadAsciiTable::makeTab (String& formatString,
     if (!getLine (jFile, lineNumber, string1, lineSize,
 		  testComment, commentMarker,
 		  firstHeaderLine, lastHeaderLine)) {
-	throw AipsError ("ReadAsciiTable: cannot read first header line of " +
-			 headerfile);
+        throw AipsError
+	  ("ReadAsciiTable: cannot read first header line of " + headerfile);
     }
 
-// If the first line shows that we have KEYWORDS read until the
-// end of keywords while assembling the keywords.
+    // If the first line shows that we have KEYWORDS read until the
+    // end of keywords while assembling the keywords.
 
     TableRecord keysets;
     while (strncmp(string1, ".key", 4) == 0) {
@@ -1042,13 +1056,13 @@ Table ReadAsciiTable::makeTab (String& formatString,
 		      firstHeaderLine, lastHeaderLine);
     }
 
-// Okay, all keywords have been read.
-// string1 contains the next line (if any).
-// Read the column definition lines from header file (if needed).
-// Determine the types if autoheader is given.
+    // Okay, all keywords have been read.
+    // string1 contains the next line (if any).
+    // Read the column definition lines from header file (if needed).
+    // Determine the types if autoheader is given.
 
 // Previous line should be NAMES OF COLUMNS; now get TYPE OF COLUMNS line
-    if (!autoHeader) {
+    if (!autoHeader  &&  !hdrGiven) {
         if (string1[0] == '\0') {
 	    throw AipsError ("ReadAsciiTable: no COLUMN NAMES line in " +
 			     headerfile);
@@ -1090,6 +1104,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
         strcpy (stringsav, string1);
         getTypes (autoShape, string1, lineSize, string2, first, separator);
 	strcpy (string1, first);
+    } else if (hdrGiven) {
+        strcpy (stringsav, string1);
     }
 
 // Break up the NAME OF COLUMNS line and the TYPE OF COLUMNS line
@@ -1098,32 +1114,46 @@ Table ReadAsciiTable::makeTab (String& formatString,
 // The separator in a header line is the given separator if found in it.
 // Otherwise it is a blank.
 
-    Char sep1 = separator;
-    Char sep2 = separator;
-    if (String(string1).find(separator) == String::npos) sep1 = ' ';
-    if (String(string2).find(separator) == String::npos) sep2 = ' ';
-    String formStr;
-    Int done1 = 0, done2 = 0, at1 = 0, at2 = 0, nrcol = 0;
-    while (done1 >= 0) {
-	done1 = getNext (string1, lineSize, first, at1, sep1);
-	done2 = getNext (string2, lineSize, second, at2, sep2);
-	if (done1>0 && done2>0) {
-	    if (nrcol >= Int(nameOfColumn.nelements())) {
-	        nameOfColumn.resize (2*nrcol, True, True);
-	        tstrOfColumn.resize (2*nrcol, True, True);
-	    }
-	    nameOfColumn[nrcol] = String(first);
-	    tstrOfColumn[nrcol] = String(second);
-	    tstrOfColumn[nrcol].upcase();
-	    if (! formStr.empty()) {
-	        formStr += ", ";
-	    }
-	    formStr += nameOfColumn[nrcol] + "=" + tstrOfColumn[nrcol];
-	    nrcol++;
-	} else if (done1>=0 || done2>=0) {
-	    throw AipsError ("ReadAsciiTable: mismatching COLUMN NAMES "
-			     "and TYPES lines in " + headerfile);
+    int nrcol = 0;
+    if (hdrGiven) {
+        nrcol = columnNames.size();
+	nameOfColumn.resize (nrcol);
+	tstrOfColumn.resize (nrcol);
+	for (int i=0; i<nrcol; ++i) {
+	    nameOfColumn[i] = columnNames[i];
+	    tstrOfColumn[i] = dataTypes[i];
 	}
+    } else {
+        Char sep1 = separator;
+	Char sep2 = separator;
+	if (String(string1).find(separator) == String::npos) sep1 = ' ';
+	if (String(string2).find(separator) == String::npos) sep2 = ' ';
+	Int done1 = 0, done2 = 0, at1 = 0, at2 = 0;
+	while (done1 >= 0) {
+	    done1 = getNext (string1, lineSize, first, at1, sep1);
+	    done2 = getNext (string2, lineSize, second, at2, sep2);
+	    if (done1>0 && done2>0) {
+	        if (nrcol >= Int(nameOfColumn.nelements())) {
+		    nameOfColumn.resize (2*nrcol, True, True);
+		    tstrOfColumn.resize (2*nrcol, True, True);
+		}
+		nameOfColumn[nrcol] = String(first);
+		tstrOfColumn[nrcol] = String(second);
+		nrcol++;
+	    } else if (done1>=0 || done2>=0) {
+	        throw AipsError ("ReadAsciiTable: mismatching COLUMN NAMES "
+				 "and TYPES lines in " + headerfile);
+	    }
+	}
+    }
+    // Generate a format string.
+    String formStr;
+    for (int i=0; i<nrcol; ++i) {
+        tstrOfColumn[i].upcase();
+	if (! formStr.empty()) {
+	    formStr += ", ";
+	}
+	formStr += nameOfColumn[i] + "=" + tstrOfColumn[i];
     }
 
 // Create the TABLE Columns for these variables
@@ -1253,6 +1283,7 @@ Table ReadAsciiTable::makeTab (String& formatString,
 // OK, Now we have real data
 // stringsav may contain the first data line.
 
+    int at1=0;
     Bool cont = True;
     if (stringsav[0] == '\0') {
         cont = getLine (jFile, lineNumber, string1, lineSize,
@@ -1296,6 +1327,8 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
 			      const String& tableproto,
 			      const String& tablename,
 			      Bool autoHeader, const IPosition& autoShape,
+			      const Vector<String>& columnNames,
+			      const Vector<String>& dataTypes,
 			      Char separator,
 			      Bool testComment, const Regex& commentMarker,
 			      Int firstLine, Int lastLine)
@@ -1303,14 +1336,17 @@ String ReadAsciiTable::doRun (const String& headerfile, const String& filein,
   String formatString;
   Table tab = makeTab (formatString, Table::Plain,
 		       headerfile, filein, tableproto, tablename,
-		       autoHeader, autoShape, separator,
-		       testComment, commentMarker, firstLine, lastLine);
+		       autoHeader, autoShape, columnNames, dataTypes,
+		       separator, testComment, commentMarker,
+		       firstLine, lastLine);
   return formatString;
 }
 
 String ReadAsciiTable::run (const String& headerfile, const String& filein, 
 			    const String& tableproto, const String& tablename,
 			    Bool autoHeader, const IPosition& autoShape,
+			    const Vector<String>& columnNames,
+			    const Vector<String>& dataTypes,
 			    Char separator,
 			    const String& commentMarkerRegex,
 			    Int firstLine, Int lastLine)
@@ -1325,14 +1361,14 @@ String ReadAsciiTable::run (const String& headerfile, const String& filein,
   Regex regex;
   if (commentMarkerRegex.empty()) {
     return doRun (headerfile, filein, tableproto, tablename,
-		  autoHeader, autoShape, separator,
-		  False, regex,
+		  autoHeader, autoShape, columnNames, dataTypes,
+		  separator, False, regex,
 		  firstLine, lastLine);
   } else {
     regex = Regex(commentMarkerRegex);
     return doRun (headerfile, filein, tableproto, tablename,
-		  autoHeader, autoShape, separator,
-		  True, regex,
+		  autoHeader, autoShape, columnNames, dataTypes,
+		  separator, True, regex,
 		  firstLine, lastLine);
   }
 }
@@ -1341,6 +1377,8 @@ Table ReadAsciiTable::runt (String& formatString, Table::TableType tableType,
 			    const String& headerfile, const String& filein, 
 			    const String& tableproto, const String& tablename,
 			    Bool autoHeader, const IPosition& autoShape,
+			    const Vector<String>& columnNames,
+			    const Vector<String>& dataTypes,
 			    Char separator,
 			    const String& commentMarkerRegex,
 			    Int firstLine, Int lastLine)
@@ -1356,14 +1394,14 @@ Table ReadAsciiTable::runt (String& formatString, Table::TableType tableType,
   if (commentMarkerRegex.empty()) {
     return makeTab (formatString, tableType,
 		    headerfile, filein, tableproto, tablename,
-		    autoHeader, autoShape, separator,
+		    autoHeader, autoShape, columnNames, dataTypes, separator,
 		    False, regex,
 		    firstLine, lastLine);
   } else {
     regex = Regex(commentMarkerRegex);
     return makeTab (formatString, tableType,
 		    headerfile, filein, tableproto, tablename,
-		    autoHeader, autoShape, separator,
+		    autoHeader, autoShape, columnNames, dataTypes, separator,
 		    True, regex,
 		    firstLine, lastLine);
   }
@@ -1375,8 +1413,22 @@ String readAsciiTable (const String& filein, const String& tableproto,
 		       Int firstLine, Int lastLine,
 		       const IPosition& autoShape)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::run (filein, filein, tableproto, tablename,
-			      autoHeader, autoShape,
+			      autoHeader, autoShape, dumvec, dumvec,
+			      separator, commentMarkerRegex,
+			      firstLine, lastLine);
+}
+
+String readAsciiTable (const String& filein, const String& tableproto,
+		       const String& tablename,
+		       const Vector<String>& columnNames,
+		       const Vector<String>& dataTypes,
+		       Char separator, const String& commentMarkerRegex,
+		       Int firstLine, Int lastLine)
+{
+  return ReadAsciiTable::run (filein, filein, tableproto, tablename,
+			      False, IPosition(), columnNames, dataTypes,
 			      separator, commentMarkerRegex,
 			      firstLine, lastLine);
 }
@@ -1386,8 +1438,9 @@ String readAsciiTable (const String& headerfile, const String& filein,
 		       Char separator, const String& commentMarkerRegex,
 		       Int firstLine, Int lastLine)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::run (headerfile, filein, tableproto, tablename,
-			      False, IPosition(),
+			      False, IPosition(), dumvec, dumvec,
 			      separator, commentMarkerRegex,
 			      firstLine, lastLine);
 }
@@ -1397,9 +1450,10 @@ String readAsciiTable (const String& headerfile, const String& filein,
 		       Char separator, const String& commentMarkerRegex,
 		       Int firstLine, Int lastLine)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::run (headerfile, filein, tableproto,
 			      String(tablename),
-			      False, IPosition(),
+			      False, IPosition(), dumvec, dumvec,
 			      separator, commentMarkerRegex,
 			      firstLine, lastLine);
 }
@@ -1411,9 +1465,25 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 		      Int firstLine, Int lastLine,
 		      const IPosition& autoShape)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::runt (formatString, tableType,
 			       filein, filein, tableproto, tablename,
-			       autoHeader, autoShape,
+			       autoHeader, autoShape, dumvec, dumvec,
+			       separator, commentMarkerRegex,
+			       firstLine, lastLine);
+}
+
+Table readAsciiTable (String& formatString, Table::TableType tableType,
+		      const String& filein, const String& tableproto,
+		      const String& tablename,
+		      const Vector<String>& columnNames,
+		      const Vector<String>& dataTypes,
+		      Char separator, const String& commentMarkerRegex,
+		      Int firstLine, Int lastLine)
+{
+  return ReadAsciiTable::runt (formatString, tableType,
+			       filein, filein, tableproto, tablename,
+			       False, IPosition(), columnNames, dataTypes,
 			       separator, commentMarkerRegex,
 			       firstLine, lastLine);
 }
@@ -1424,9 +1494,10 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 		      Char separator, const String& commentMarkerRegex,
 		      Int firstLine, Int lastLine)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::runt (formatString, tableType,
 			       headerfile, filein, tableproto, tablename,
-			       False, IPosition(),
+			       False, IPosition(), dumvec, dumvec,
 			       separator, commentMarkerRegex,
 			       firstLine, lastLine);
 }
@@ -1437,10 +1508,11 @@ Table readAsciiTable (String& formatString, Table::TableType tableType,
 		      Char separator, const String& commentMarkerRegex,
 		      Int firstLine, Int lastLine)
 {
+  Vector<String> dumvec;
   return ReadAsciiTable::runt (formatString, tableType,
 			       headerfile, filein, tableproto,
 			       String(tablename),
-			       False, IPosition(),
+			       False, IPosition(), dumvec, dumvec,
 			       separator, commentMarkerRegex,
 			       firstLine, lastLine);
 }
