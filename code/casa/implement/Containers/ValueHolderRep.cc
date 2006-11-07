@@ -238,6 +238,16 @@ Bool ValueHolderRep::asBool() const
   switch (itsType) {
   case TpBool:
     return itsBool;
+  case TpUChar:
+    return itsUChar;
+  case TpShort:
+    return itsShort;
+  case TpInt:
+    return itsInt;
+  case TpFloat:
+    return itsFloat;
+  case TpDouble:
+    return itsDouble;
   default:
     ;
   }
@@ -455,8 +465,48 @@ const Array<Bool> ValueHolderRep::asArrayBool() const
   switch (itsType) {
   case TpArrayBool:
     return *static_cast<Array<Bool>*>(itsPtr);
+  case TpArrayUChar:
+    {
+      const Array<uChar>& from = *static_cast<Array<uChar>*>(itsPtr);
+      Array<Bool> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayShort:
+    {
+      const Array<Short>& from = *static_cast<Array<Short>*>(itsPtr);
+      Array<Bool> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      Array<Bool> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      Array<Bool> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      Array<Bool> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
   case TpBool:
-    return Vector<Bool> (1, itsBool);
+  case TpUChar:
+  case TpShort:
+  case TpInt:
+  case TpFloat:
+  case TpDouble:
+    return Vector<Bool> (1, asBool());
   default:
     ;
   }
@@ -915,6 +965,32 @@ const Array<String> ValueHolderRep::asArrayString() const
   switch (itsType) {
   case TpArrayString:
     return *static_cast<Array<String>*>(itsPtr);
+  // In Python an empty array is created as Int or Float.
+  // So allow such an empty array.
+  case TpArrayInt:
+    {
+      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      if (from.nelements() == 0) {
+	return Array<String>(from.shape());
+      }
+    }
+    break;
+  case TpArrayFloat:
+    {
+      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      if (from.nelements() == 0) {
+	return Array<String>(from.shape());
+      }
+    }
+    break;
+  case TpArrayDouble:
+    {
+      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      if (from.nelements() == 0) {
+	return Array<String>(from.shape());
+      }
+    }
+    break;
   case TpString:
     return Vector<String>(1, *static_cast<String*>(itsPtr));
   default:
