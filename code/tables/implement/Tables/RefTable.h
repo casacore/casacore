@@ -201,6 +201,10 @@ public:
     // The referenced table will also be created (if not stored in the cache).
     void getRef (AipsIO&, int option, const TableLock& lockOptions);
 
+    // This is doing a shallow copy.
+    // It gives an error if the RefTable has not been stored yet.
+    virtual void copy (const String& newName, int tableOption) const;
+
     // Copy the table and all its subtables.
     // It copies the contents of each row to get a real copy.
     virtual void deepCopy (const String& newName,
