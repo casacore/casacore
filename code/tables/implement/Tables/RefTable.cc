@@ -477,6 +477,16 @@ Bool RefTable::isWritable() const
     return baseTabPtr_p->isWritable();
 }
 
+void RefTable::copy (const String& newName, int tableOption) const
+{
+    if (!madeDir_p) {
+        throw TableError
+	  ("RefTable::copy: an unsaved table cannot be shallowly copied; "
+	   "make a deep copy or save the table first");
+    }
+    BaseTable::copy (newName, tableOption);
+}
+
 void RefTable::deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
 			 int tableOption, Bool, int endianFormat,
