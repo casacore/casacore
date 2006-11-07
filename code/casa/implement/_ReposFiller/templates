@@ -871,6 +871,11 @@
      template void convertArray(Array<uShort> &, Array<Int> const &) 
      template void convertArray(Array<uShort> &, Array<Float> const &) 
      template void convertArray(Array<uShort> &, Array<Double> const &) 
+     template void convertArray(Array<Bool> &, Array<uChar> const &) 
+     template void convertArray(Array<Bool> &, Array<Short> const &) 
+     template void convertArray(Array<Bool> &, Array<Int> const &) 
+     template void convertArray(Array<Bool> &, Array<Float> const &) 
+     template void convertArray(Array<Bool> &, Array<Double> const &) 
 1190 casa/Arrays/ArrayMath.cc casa/Arrays/Array.h 
      template void operator*=(Array<Bool> &, Array<Bool> const &) 
      template Bool sum(Array<Bool> const &) 
