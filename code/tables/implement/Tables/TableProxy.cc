@@ -139,7 +139,9 @@ TableProxy::TableProxy (const String& fileName,
 			const String& separator,
 			const String& commentMarker,
 			Int firstLine,
-			Int lastLine)
+			Int lastLine,
+			const Vector<String>& columnNames,
+			const Vector<String>& dataTypes)
 {
   if (separator.length() != 1) {
     throw AipsError ("tablefromascii : separator must be 1 char");
@@ -148,9 +150,15 @@ TableProxy::TableProxy (const String& fileName,
   // Create the table
   String inputFormat;
   if (headerName.empty()) {
-    asciiFormat_p = readAsciiTable(fileName, "", tableName, autoHeader, sep,
-				   commentMarker, firstLine, lastLine,
-				   IPosition(autoShape));
+    if (columnNames.size() == 0  &&  dataTypes.size() == 0) {
+      asciiFormat_p = readAsciiTable(fileName, "", tableName, autoHeader,
+				     sep, commentMarker, firstLine, lastLine,
+				     IPosition(autoShape));
+    } else {
+      asciiFormat_p = readAsciiTable(fileName, "", tableName,
+				     columnNames, dataTypes,
+				     sep, commentMarker, firstLine, lastLine);
+    }
   } else {
     asciiFormat_p = readAsciiTable(headerName, fileName, "", tableName, sep,
 				   commentMarker, firstLine, lastLine);
@@ -1011,6 +1019,11 @@ Vector<String> TableProxy::getFieldNames (const String& columnName,
 void TableProxy::flush (Bool recursive)
 {
   table_p.flush (False, recursive);
+}
+
+void TableProxy::close()
+{
+  table_p = Table();
 }
 
 void TableProxy::reopenRW()

@@ -33,6 +33,7 @@
 #include <casa/aips.h>
 #include <tables/Tables/Table.h>
 #include <casa/Containers/Record.h>
+#include <casa/Arrays/Vector.h>
 #include <vector>
 
 #include <casa/namespace.h>
@@ -152,7 +153,9 @@ public:
 	      const String& separator,
 	      const String& commentMarker,
 	      Int firstLine,
-	      Int lastLine);
+	      Int lastLine,
+	      const Vector<String>& columnNames = Vector<String>(),
+	      const Vector<String>& dataTypes = Vector<String>());
 
   // Copy constructor.
   TableProxy (const TableProxy&);
@@ -176,6 +179,9 @@ public:
 
   // Flush the table and optionally all its subtables.
   void flush (Bool recursive);
+
+  // Flush and close the table and all its subtables.
+  void close();
 
   // Get the endian format of the table.
   // It fills the result with value "big" or "little".
