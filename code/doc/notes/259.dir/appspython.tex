@@ -1,0 +1,270 @@
+
+\externallabels{../../user/Refman}{../../user/Refman/labels.pl}
+
+\section{Introduction}
+Since long glish bindings to the AIPS++ system have been in
+place. Quite recently Python bindings have been created in the general
+casapy framework using tools like CCMTools, Xerces, Xalan, and
+IDL. Albeit very flexible, it is quite complicated and it is not
+straightforward to build on other systems than RedHat and OS-X.
+
+Therefore an attempt has been made to make a simpler Python binding
+using \htmladdnormallink{Boost.Python}{http://www.boost.org/libs/python/doc}.
+This proved to be very easy and succesful.
+The binding consists of two parts:
+\begin{itemize}
+\item Converters to translate objects between Python and C++.
+\item Class wrappers to map a C++ class and its functions to Python.
+\end{itemize}
+The Python numarray and numpy (version 1.0 or higher) packages are
+supported. At build time one can choose which ones should be used.
+
+\section{Converters}
+Boost.Python offers a nice way to convert objects to and from Python.
+Ralf W. Grosse-Kunstleve <rwgk@yahoo.com> of
+\htmladdnormallink{Lawrence Berkeley National Laboratory}{http://www.lbl.gov}
+has built converters for standard STL containers. This has been
+extended to convert to/from other objects.
+\\The following C++ objects are currently supported:
+\begin{itemize}
+  \item scalars (bool, integer, real, complex)
+  \item \texttt{std::string}
+  \item \texttt{casa::String}
+  \item \texttt{std::vector<T>}
+  \item \texttt{casa::Vector<T>}
+  \item \texttt{casa::IPosition}
+  \item \texttt{casa::Record}
+  \item \texttt{casa::ValueHolder}
+  \item exceptions (\texttt{casa::IterError} and \texttt{std::exception})
+\end{itemize}
+These C++ objects can usually be created from several types of Python
+objects and are converted to a specific Python object.
+\begin{itemize}
+\item
+A vector or IPosition object is converted to a Python list.
+\\It can be constructed from the following Python objects:
+\begin{itemize}
+  \item scalar
+  \item list or tuple
+  \item numarray scalar or 1-dim array
+  \item numpy scalar or 1-dim array
+\end{itemize}
+Note that a list or tuple of arbitrary objects can be given. For
+example, it is possible to get a \texttt{Vector<TableProxy>} from Python.
+\item
+A casa::Record is mapped to a Python dict.
+\item
+Every C++ exception is mapped to a Python \texttt{RunTimeError}
+exception. However, \texttt{casa::IterError} is special and 
+is mapped to an end-of-iteration exception (IndexError) in Python.
+\item
+A casa::ValueHolder is a special AIPS++ object that can hold a record or
+a scalar value or n-dim array of many types (bool, numeric, string).
+It is meant to conceal the actual type which is useful in functions
+that can accept a variety of types (like \texttt{getcell}
+in the table binding).
+\\Converting a ValueHolder to Python creates the appropriate Python
+scalar, array, or dict object. When converting from
+Python to ValueHolder, the appropriate internal ValueHolder value
+is constructed; a list, tuple, and array object is converted to an array
+in the ValueHolder.
+\end{itemize}
+It means there is no direct Array conversion to/from Python. A
+ValueHolder object is always needed to do the conversion. Note that
+this is a cheap operation, as it uses Array reference semantics.
+ValueHolder has functions to convert between types, so one can get
+out an Array with the required type.
+
+\subsection{Array conversion}
+AIPS++ arrays are kept in Fortran-order, while Python arrays are kept
+in C-order. It was felt that the Python interface should be as 
+pythonic as possible. Therefore it was decided that the array axes are
+reversed when converting to/from Python.
+\\Note that although numarray and numpy have Fortran-array provisions
+by setting the appropriate internal strides,
+they do not really support them. When adding, for instance, the scalar
+value 0 to a Fortraon-array, the  result is a transposed version of the
+original (which can be quite expensive).
+The values in an IPosition object (describing shape or
+position) are also reversed when converting to/from Python.
+
+A binding could be such that shape information is passed via, say, a
+\texttt{vector<int>} and not via an \texttt{IPosition object}.
+In that case its values
+are not reversed automatically, so the programmer is
+responsible for doing it.
+
+An AIPS++ array is returned to Python as an array object
+containing a copy of the AIPS++ array data. If the Converters have
+been built with support for only one Python array package (numpy or numarray),
+it is clear which array type is returned. If support for both
+packages has been built in, by default an array of the imported
+package is returned. If both or no array packages has been imported, a numpy
+array is returned.
+\\Note that there is no support for the old Numeric package.
+\\An AIPS++ array constructed from a Python array is regarded as a
+temporary object. So if possible, the AIPS++ array refers to the
+Python array data to avoid a needless copy. This is not possible if
+the element size in Python differs from AIPS++. It is also not
+possible if the Python array is not contiguous (or not aligned or
+byte swapped). In those cases a copy is made.
+
+A few more numarray/numpy specific issues are dealt with:
+\begin{itemize}
+\item An empty N-dim AIPS++ array (i.e. an array containing no elements) is
+returned as an empty N-dim Python array. If the dimensionality is
+zero, it is returned as an empty 1-dim array, to prevent numarray/numpy
+from treating it as a scalar value.
+\item In numarray \texttt{array()} results in \texttt{Py\_None}. This
+is accepted by the converters as an empty 1-dim array.
+\item Empty arrays can be constructed in Python using empty lists. For
+example, \texttt{array([[]])} results in an empty 2-dim array. The
+converters accept such empty N-dim Python arrays. The type of an empty
+array is set to Int by numarray and to Double by numpy.
+\item Because the type of an empty Python array cannot easily be set,
+the converters can convert an empty Int or Float array to any type.
+\item The converters accept a numpy string array. However, it is
+returned to Python as the special \texttt{dict} object described above.
+\end{itemize}
+
+\section{Class wrappers}
+Usually a binding to an existing Proxy class is made, for example
+\texttt{TableProxy}, which should be the same class used in the
+glish-binding. 
+For a simple binding, only some simple C++ code has to be written in
+appspython/apps/pyxx/pyxx.cc, where XX is the name of the class.
+\begin{verbatim}
+// Include files for converters being used.
+#include <appspython/Converters/PycExcp.h>
+#include <appspython/Converters/PycBasicData.h>
+#include <appspython/Converters/PycRecord.h>
+// Include file for boost python.
+#include <boost/python.hpp>
+
+using namespace boost::python;
+
+namespace casa { namespace appspython {
+  void wrap_xx()
+  {
+    // Define the class; "xx" is the class name in Python.
+    class_<XX> ("xx")
+      // Define the constructor.
+      // Multiple constructors can be defined.
+      // They have to have different number of arguments.
+      .def (init<>())
+      // Add a .def line for each function to be wrapped.
+      // An arg line should be added for each argument giving
+      // its name and possibly default value.
+      .def ("func1", &XX::func1,
+ 	    (boost::python::arg("arg1"),
+ 	     boost::python::arg("arg2")=0))
+    ;
+  }
+}}
+
+BOOST_PYTHON_MODULE(_xx)
+{
+  // Register the conversion functions.
+  casa::appspython::register_convert_excp();
+  casa::appspython::register_convert_basicdata();
+  casa::appspython::register_convert_casa_record();
+  // Do the wrapping.
+  casa::appspython::wrap_xx();
+}
+\end{verbatim}
+Python requires for each package a file \_\_init\_\_.py, so such an empty
+file should be created as well.
+
+\subsection{More complicated wrappers}
+Sometimes a C++ function cannot be wrapped directly, because the argument
+order needs to be changed or because some extra Python checks are
+necessary.
+In such a case the class needs to be implemented in Python itself.
+\\The C++ wrapped class name needs to get a different name,
+usually by preceeding it with an underscore like:
+\begin{verbatim}
+    class_<XX> ("_xx")
+\end{verbatim}
+The Python class should be derived from it and implement the
+constructor by calling the constructor of \_xx.
+\begin{verbatim}
+class xx(_xx):
+    def __init__(self):
+        _xx.__init__(self)
+\end{verbatim}
+Now \texttt{xx} inherits all functions from \texttt{\_xx}.
+The required function can be written in Python like
+\begin{verbatim}
+    def func1 (self, arg1, arg2):
+        return _func1 (self, arg2, arg1);
+\end{verbatim}
+Note that in the wrapper the function name also needs to be
+preceeded by an underscore to make it different.
+
+\subsection{Combining multiple classes}
+Sometimes one wants to combine multiple classes in a package. A
+example is package \texttt{pycasatable} which contains the classes
+\texttt{table}, \texttt{tablecolumn}, \texttt{tablerow},
+\texttt{tableiter}, and \texttt{tableindex}. One is referred to the
+code of this package (in code/appspython/apps/pycasatable) to see how
+to do it.
+
+\section{Python specifics}
+Besides an array being in C-order, there are a few more Python
+specific issues.
+\begin{itemize}
+\item Indexing starts at 0 (vs. 1 in glish).
+\item The end value in a range like \texttt{[10:20]} is exclusive
+(vs. inclusive in glish). Furthermore Python supports a step and
+reversed ranges.
+\item Where useful, the functions \texttt{\_\_len\_\_},
+\texttt{\_\_getitem\_\_(index)}, and
+\texttt{\_\_setitem\_\_(index, value)} should
+be added to make it possible that a user indexes an object directly like
+\texttt{tabcol[i]} or \texttt{tabcol[start:stop:step]}.
+\item When these functions are added, Python supports iteration in an
+object. Explicit iteration can also be done by adding the functions
+\texttt{\_\_iter\_\_} and \texttt{next}. At the end \texttt{next}
+should raise the Python IndexError exception (or throw casa::IterError
+when implemented in C++) to stop the iteration.
+\end{itemize}
+
+\section{Building appspython}
+appspython is part of the AIPS++ source tree and can be built as part of
+the AIPS++ build. Work is underway to build it separately as a Python
+egg.
+\\To build it in AIPS++ the following has to be added to the local
+makedefs:
+\begin{itemize}
+\item Definitions for PYTHON telling the Python locations.
+\item Definitions for BOOST telling the Boost.Python locations.
+\item \texttt{AUXILIARY += appspython}
+\end{itemize}
+When doing it this way, appspython is built with support for
+numarray. In order to build it with support for numpy the following
+has to be added to the local makedefs:
+\begin{verbatim}
+PYTHONINCD += 'the path where numpy/arrayobject.h can be found'
+PYTHONDEFS += -DAIPS_USENUMPY
+\end{verbatim}
+If only numpy should be supported, the last line should be replaced by:
+\begin{verbatim}
+PYTHONDEFS := -DAIPS_USENUMPY
+\end{verbatim}
+The shared library \texttt{libappspython.so} will be built
+containing the various converters and associated AIPS++ code.
+
+A package \texttt{pyxx} is built as a shared library
+\texttt{\_pyxx.so} residing in directory 
+\$AIPSPATH/python\$PYTHONVERSION/pyxx. All .py files are also put in this
+directory and compiled to .pyo and .pyc files.
+
+On Mac OS-X Python libraries have to be built as bundles. For this the
+local makedefs need to set some make variables.
+\begin{verbatim}
+PYLDSOPTS  := -bundle
+PYSFXSHAR  := so
+SFXSHAR    := dylib
+LDSOPTS    := -dynamiclib -single_module
+PYTHONLIBS := -framework Python
+\end{verbatim}
