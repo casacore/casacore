@@ -175,12 +175,14 @@ protected:
   // Make the indexing step sizes.
   void baseMakeSteps();
 
+public:
   // Various helper functions.
   // <group>
   void validateConformance (const ArrayBase&) const;
   void validateIndex (const IPosition&) const;
   // </group>
 
+protected:
   // Number of elements in the array. Cached rather than computed.
   uInt nels_p;
   // Dimensionality of the array.
