@@ -986,7 +986,7 @@ TableExprNode TableExprNode::newFunctionNode
                                  (TableExprFuncNode::FunctionType ftype,
 				  const TableExprNodeSet& set,
 				  const Table& table,
-				  uInt origin)
+				  const TaQLStyle& style)
 {
     // Convert the set to a PtrBlock of the values in the set elements.
     // This requires that the set has single values.
@@ -1002,8 +1002,8 @@ TableExprNode TableExprNode::newFunctionNode
     // need their own objects and the table.
     if (ftype == TableExprFuncNode::rownrFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
-	return table.nodeRownr (1);           // first rownr is 1 in TaQL
-    }                                         // (in C++ first rownr is 0)
+	return table.nodeRownr (style.origin());     // first rownr is 0 or 1
+    }
     if (ftype == TableExprFuncNode::rowidFUNC) {
 	TableExprNodeMulti::checkNumOfArg (0, 0, par);
 	return newRowidNode (table);
@@ -1029,7 +1029,8 @@ TableExprNode TableExprNode::newFunctionNode
     } else {
         TableExprFuncNodeArray* fnode = new TableExprFuncNodeArray
                                                          (ftype, resDT,
-							  resVT, set, origin);
+							  resVT, set,
+							  style);
 	return TableExprFuncNodeArray::fillNode (fnode, par, dtypeOper);
     }
 }
@@ -1088,7 +1089,7 @@ TableExprNode TableExprNode::newConeNode
 
 TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
 					       const TableExprNodeSet& indices,
-					       uInt origin)
+					       const TaQLStyle& style)
 {
     // Check if the node is an array.
     if (arrayNode.node_p->valueType() != TableExprNodeRep::VTArray) {
@@ -1097,7 +1098,7 @@ TableExprNode TableExprNode::newArrayPartNode (const TableExprNode& arrayNode,
     // Create new Index node and fill it.
     // Check the index bounds as far as possible.
     SPtrHolder<TableExprNodeIndex>
-                     inodep (new TableExprNodeIndex (indices, origin));
+                     inodep (new TableExprNodeIndex (indices, style));
     inodep->checkIndexValues (arrayNode.node_p);
     TableExprNodeIndex* inode = inodep.transfer();
     TableExprNodeBinary* anode = new TableExprNodeArrayPart (arrayNode.node_p,

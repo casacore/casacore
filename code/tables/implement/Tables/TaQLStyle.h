@@ -56,10 +56,13 @@ class TaQLStyle
 {
 public:
   // Default style is Glish.
-  TaQLStyle()
-    { reset(); }
+  TaQLStyle (uInt origin=1)
+    : itsOrigin  (origin),
+      itsEndExcl (False),
+      itsCOrder  (False)
+    {}
 
-  // Reset the the default Glish style.
+  // Reset to the default Glish style.
   void reset()
     { set ("GLISH"); }
 
@@ -70,11 +73,11 @@ public:
 
   // Get the various style values.
   // <group>
-  uInt origin()
+  uInt origin() const
     { return itsOrigin; }
-  Bool isEndExcl()
+  Bool isEndExcl() const
     { return itsEndExcl; }
-  Bool isCOrder()
+  Bool isCOrder() const
     { return itsCOrder; }
   // </group>
 

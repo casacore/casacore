@@ -692,3 +692,72 @@ select col1,col2 from tTableGram_tmp.tab2
     has been executed
     select of 0 rows
 2 selected columns:  col1 col2
+using style python calc [3:6][1]
+    has been executed
+[4]
+using style glish  calc [3:6][3]
+    has been executed
+[5]
+using style base0  calc [3:6][3]
+    has been executed
+[6]
+using style base1  calc [3:6][3]
+    has been executed
+[5]
+using style python calc 6 in [3:6]
+    has been executed
+[0]
+using style glish  calc 6 in [3:6]
+    has been executed
+[1]
+using style python calc array([3:7],3,4)[0,3]
+    has been executed
+Index: [3, 0]
+[6]
+using style glish  calc array([3:7],3,4)[3,1]
+    has been executed
+Index: [2, 0]
+[5]
+using style python select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [4,3,2])
+    has been executed
+    select of 6 rows
+2 selected columns:  ab ac
+ 1 2
+ 3 4
+ 5 6
+ 7 8
+ 9 10
+ 3 34
+using style glish  select ab,ac from tTableGram_tmp.tab where all(shape(arr1) == [2,3,4])
+    has been executed
+    select of 6 rows
+2 selected columns:  ab ac
+ 1 2
+ 3 4
+ 5 6
+ 7 8
+ 9 10
+ 3 34
+using style python select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,2),5)==0,[0]))
+    has been executed
+    select of 2 rows
+1 selected columns:  ab
+ 3
+ 5
+using style glish  select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))
+    has been executed
+    select of 2 rows
+1 selected columns:  ab
+ 3
+ 5
+using style python select ab from tTableGram_tmp.tab where rownumber() < 2
+    has been executed
+    select of 2 rows
+1 selected columns:  ab
+ 1
+ 3
+using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2
+    has been executed
+    select of 1 rows
+1 selected columns:  ab
+ 1

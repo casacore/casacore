@@ -31,6 +31,7 @@
 //# Includes
 #include <casa/aips.h>
 #include <tables/Tables/TaQLNodeResult.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <casa/BasicSL/String.h>
 #include <iosfwd>
 
@@ -106,8 +107,7 @@ public:
   // </group>
 
   // Constructor for derived classes specifying the type.
-  explicit TaQLNodeRep (int nodeType)
-    :itsCount(0), itsNodeType(nodeType) {}
+  explicit TaQLNodeRep (int nodeType);
 
   virtual ~TaQLNodeRep();
 
@@ -129,6 +129,10 @@ public:
   char nodeType() const
     { return itsNodeType; }
 
+  // Get the TaQL style.
+  const TaQLStyle& style() const
+    { return itsStyle; }
+
   // Visit a node for tree traversal.
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const = 0;
 
@@ -148,8 +152,9 @@ private:
   TaQLNodeRep& operator= (const TaQLNodeRep&);
   // </group>
 
-  int  itsCount;
-  char itsNodeType;
+  int       itsCount;
+  char      itsNodeType;
+  TaQLStyle itsStyle;
 };
 
 

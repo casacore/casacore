@@ -1,4 +1,4 @@
-//# ExprNodeSet.cc: Classes representing an set in table select expression
+//# ExprNodeSet.cc: Classes representing a set in table select expression
 //# Copyright (C) 1997,1999,2000,2001,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -43,11 +43,14 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
 : TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table()),
-  itsStart (0),
-  itsEnd   (0),
-  itsIncr  (0),
-  itsDiscrete (True),
-  itsSingle   (True)
+  itsStart       (0),
+  itsEnd         (0),
+  itsIncr        (0),
+  itsMinusEnd    (0),
+  itsLeftClosed  (True),
+  itsRightClosed (True),
+  itsDiscrete    (True),
+  itsSingle      (True)
 {
     //# Note that the TableExprNode copy ctor is needed to get rid of const.
     TableExprNode tmp(value);
@@ -58,13 +61,17 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& value)
 
 TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
 					    const TableExprNode* end,
-					    const TableExprNode* incr)
+					    const TableExprNode* incr,
+					    Bool isEndExcl)
 : TableExprNodeRep (NTDouble, VTSetElem, OtUndef, Table()),
-  itsStart (0),
-  itsEnd   (0),
-  itsIncr  (0),
-  itsDiscrete (True),
-  itsSingle   (False)
+  itsStart       (0),
+  itsEnd         (0),
+  itsIncr        (0),
+  itsMinusEnd    (isEndExcl ? 1:0),
+  itsLeftClosed  (True),
+  itsRightClosed (True),
+  itsDiscrete    (True),
+  itsSingle      (False)
 {
     // Link to the nodes and determine the data types.
     //# Note that the TableExprNode copy ctor is needed to get rid of const.
@@ -123,6 +130,7 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNodeSetElem& that)
   itsStart         (that.itsStart),
   itsEnd           (that.itsEnd),
   itsIncr          (that.itsIncr),
+  itsMinusEnd      (that.itsMinusEnd),
   itsLeftClosed    (that.itsLeftClosed),
   itsRightClosed   (that.itsRightClosed),
   itsDiscrete      (that.itsDiscrete),
@@ -144,13 +152,14 @@ TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNodeSetElem& that,
 					    TableExprNodeRep* end,
 					    TableExprNodeRep* incr)
 : TableExprNodeRep (that.dataType(), VTSetElem, OtUndef, Table()),
-  itsStart       (start),
-  itsEnd         (end),
-  itsIncr        (incr),
-  itsLeftClosed  (that.itsLeftClosed),
-  itsRightClosed (that.itsRightClosed),
-  itsDiscrete    (that.itsDiscrete),
-  itsSingle      (that.itsSingle)
+  itsStart         (start),
+  itsEnd           (end),
+  itsIncr          (incr),
+  itsMinusEnd      (that.itsMinusEnd),
+  itsLeftClosed    (that.itsLeftClosed),
+  itsRightClosed   (that.itsRightClosed),
+  itsDiscrete      (that.itsDiscrete),
+  itsSingle        (that.itsSingle)
 {
     if (itsStart != 0) {
 	itsStart->link();
@@ -175,9 +184,10 @@ void TableExprNodeSetElem::setup (Bool isLeftClosed,
 				  const TableExprNode* end,
 				  Bool isRightClosed)
 {
-    itsStart = 0;
-    itsEnd   = 0;
-    itsIncr  = 0;
+    itsStart       = 0;
+    itsEnd         = 0;
+    itsIncr        = 0;
+    itsMinusEnd    = 0;
     itsLeftClosed  = isLeftClosed;
     itsRightClosed = isRightClosed;
     itsDiscrete    = False;
@@ -264,7 +274,8 @@ TableExprNodeSetElem* TableExprNodeSetElem::evaluate
 	    start = new TableExprNodeConstDouble (itsStart->getDouble (id));
 	}
 	if (itsEnd != 0) {
-	    end = new TableExprNodeConstDouble (itsEnd->getDouble (id));
+	    end = new TableExprNodeConstDouble (itsEnd->getDouble (id)
+						- itsMinusEnd);
 	}
 	if (itsIncr != 0) {
 	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (id));
@@ -289,7 +300,8 @@ TableExprNodeSetElem* TableExprNodeSetElem::evaluate
 	    start = new TableExprNodeConstDate (itsStart->getDate (id));
 	}
 	if (itsEnd != 0) {
-	    end = new TableExprNodeConstDate (itsEnd->getDate (id));
+	    end = new TableExprNodeConstDate (itsEnd->getDate (id)
+					      - itsMinusEnd);
 	}
 	if (itsIncr != 0) {
 	    incr = new TableExprNodeConstDouble (itsIncr->getDouble (id));
@@ -316,7 +328,7 @@ void TableExprNodeSetElem::fillVector (Vector<Double>& vec, uInt& cnt,
 {
     DebugAssert (itsDiscrete, AipsError);
     Double start = itsStart==0  ?  0 : itsStart->getDouble (id);
-    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id);
+    Double end   = itsEnd==0  ?  start : itsEnd->getDouble (id) - itsMinusEnd;
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
@@ -356,7 +368,8 @@ void TableExprNodeSetElem::fillVector (Vector<MVTime>& vec, uInt& cnt,
 {
     DebugAssert (itsDiscrete, AipsError);
     Double start = itsStart==0  ?  0 : Double(itsStart->getDate (id));
-    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id));
+    Double end   = itsEnd==0  ?  start : Double(itsEnd->getDate (id))
+                                         - itsMinusEnd;
     Double incr  = itsIncr==0  ?  1 : itsIncr->getDouble (id);
     if (start > end) {
 	return;
@@ -407,7 +420,7 @@ void TableExprNodeSetElem::matchDouble (Bool* match, const Double* value,
 	    match++;
 	}
     } else if (itsDiscrete) {
-	end -= start;
+	end -= start+itsMinusEnd;
 	while (match < lastVal) {
 	    Double tmp = *value - start;
 	    if (tmp >= 0  &&  (itsEnd == 0  ||  tmp <= end)) {
@@ -505,7 +518,7 @@ void TableExprNodeSetElem::matchDate (Bool* match, const MVTime* value,
 	    match++;
 	}
     } else if (itsDiscrete) {
-	end -= start;
+	end -= start+itsMinusEnd;
 	while (match < lastVal) {
 	    Double tmp = Double(*value) - start;
 	    if (tmp >= 0  &&  (itsEnd == 0  ||  tmp <= end)) {

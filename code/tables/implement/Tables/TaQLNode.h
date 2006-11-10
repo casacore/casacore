@@ -97,6 +97,10 @@ public:
     return *this;
     }
 
+  // Get the TaQL style.
+  const TaQLStyle& style() const
+    { return itsRep->style(); }
+
   // Destructor deletes the letter if no more references.
   ~TaQLNode()
     { TaQLNodeRep::unlink (itsRep); }

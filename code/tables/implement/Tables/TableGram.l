@@ -90,13 +90,13 @@ USTRING   ({UQSTRING}|{UASTRING})+
 UNION     [Uu][Nn][Ii][Oo][Nn]
 INTERSECT [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
 EXCEPT    ([Ee][Xx][Cc][Ee][Pp][Tt])|([Mm][Ii][Nn][Uu][Ss])
-STYLE     [Ss][Tt][Yy][Ll][Ee]
+STYLE     [Uu][Ss][Ii][Nn][Gg]{WHITE}[Ss][Tt][Yy][Ll][Ee]{WHITE1}
 SELECT    [Ss][Ee][Ll][Ee][Cc][Tt]
 UPDATE    [Uu][Pp][Dd][Aa][Tt][Ee]
 INSERT    [Ii][Nn][Ss][Ee][Rr][Tt]
 DELETE    [Dd][Ee][Ll][Ee][Tt][Ee]
 CALC      [Cc][Aa][Ll][Cc]
-CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]
+CREATETAB [Cc][Rr][Ee][Aa][Tt][Ee]{WHITE}[Tt][Aa][Bb][Ll][Ee]{WHITE1}
 DMINFO    [Dd][Mm][Ii][Nn][Ff][Oo]
 SET       [Ss][Ee][Tt]
 VALUES    [Vv][Aa][Ll][Uu][Ee][Ss]

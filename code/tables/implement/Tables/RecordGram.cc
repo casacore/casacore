@@ -217,10 +217,12 @@ TableExprNode RecordGram::handleFunc (const String& name,
   if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
     return TableParseSelect::makeFuncNode (name, arguments,
-					   ignoreFuncs, Table());
+					   ignoreFuncs, Table(),
+					   TaQLStyle());
   }
   return TableParseSelect::makeFuncNode (name, arguments,
-					 Vector<Int>(), *theirTabPtr);
+					 Vector<Int>(), *theirTabPtr,
+					 TaQLStyle());
 }
 
 

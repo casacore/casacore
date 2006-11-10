@@ -45,10 +45,11 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
                              (TableExprFuncNode::FunctionType ftype,
 			      NodeDataType dtype, ValueType vtype,
 			      const TableExprNodeSet& source,
-			      uInt origin)
+			      const TaQLStyle& style)
 : TableExprNodeArray (dtype, OtFunc),
   node_p      (ftype, dtype, vtype, source),
-  origin_p    (origin),
+  origin_p    (style.origin()),
+  isCOrder_p  (style.isCOrder()),
   constAxes_p (False)
 {
     table_p = source.table();
@@ -102,7 +103,7 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::ntruesFUNC:
     case TableExprFuncNode::nfalsesFUNC:
         if (operands()[axarg]->isConstant()) {
-	    ipos_p = getCollapseAxes (0, 1000000, axarg);
+	    ipos_p = getCollapseAxes (0, -1, axarg);
 	    constAxes_p = True;
 	}
         break;
@@ -121,7 +122,7 @@ void TableExprFuncNodeArray::tryToConst()
 const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
 							 Int ndim, uInt axarg)
 {
-  // Get the axes if not constant.
+  // Get the axes if not constant (or not known).
   if (!constAxes_p) {
     Array<Double> ax(operands()[axarg]->getArrayDouble(id));
     AlwaysAssert (ax.ndim() == 1, AipsError);
@@ -130,27 +131,35 @@ const IPosition& TableExprFuncNodeArray::getCollapseAxes(const TableExprId& id,
     for (uInt i=0; i<ax.nelements(); i++) {
       ipos_p(i) = Int(ax.data()[i]) - origin_p;
     }
+    iposN_p = ipos_p;
   }
   // Check if an axis exceeds the dimensionality.
   uInt nr = 0;
   for (uInt i=0; i<ipos_p.nelements(); i++) {
     if (ipos_p(i) < 0) {
-        throw TableInvExpr ("collapseAxis < 0 used in xxxP function");
+        throw TableInvExpr ("collapseAxis < 0 used in xxxs function");
     }
-    if (ipos_p(i) < ndim) {
+    if (ndim < 0) {
+      nr = ipos_p.nelements();
+    } else {
+      if (ipos_p(i) < ndim) {
+	// Correct for possible specification in C-order.
+	// Note that the collapse axes order is not important.
+	if (isCOrder_p) ipos_p(i) = ndim - iposN_p(i) - 1;
         nr++;
+      }
     }
   }
   if (nr == ipos_p.nelements()) {
-      return ipos_p;
+    return ipos_p;
   }
   // Remove axes exceeding dimensionality.
   corrCollAxes_p.resize(nr);
   uInt j=0;
   for (uInt i=0; i<ipos_p.nelements(); i++) {
-      if (ipos_p(i) < ndim) {
-	  corrCollAxes_p(j++) = ipos_p(i);
-      }
+    if (ipos_p(i) < ndim) {
+      corrCollAxes_p(j++) = ipos_p(i);
+    }
   }
   return corrCollAxes_p;
 }
@@ -163,9 +172,16 @@ const IPosition& TableExprFuncNodeArray::getArrayShape(const TableExprId& id,
     Array<Double> ax(operands()[axarg]->getArrayDouble(id));
     AlwaysAssert (ax.ndim() == 1, AipsError);
     AlwaysAssert (ax.contiguousStorage(), AipsError);
-    ipos_p.resize (ax.nelements());
-    for (uInt i=0; i<ax.nelements(); i++) {
-      ipos_p(i) = Int(ax.data()[i]);
+    uInt ndim = ax.nelements();
+    ipos_p.resize (ndim);
+    if (isCOrder_p) {
+      for (uInt i=0; i<ndim; i++) {
+	ipos_p(i) = Int(ax.data()[ndim-i-1]);
+      }
+    } else {
+      for (uInt i=0; i<ndim; i++) {
+	ipos_p(i) = Int(ax.data()[i]);
+      }
     }
   }
   return ipos_p;
@@ -565,9 +581,19 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 	return ceil     (operands()[0]->getArrayDouble(id));
     case TableExprFuncNode::shapeFUNC:
       {
-	Array<Int> shp = operands()[0]->shape(id).asVector();
-	Array<Double> result(shp.shape());
-	convertArray (result, shp);
+	IPosition shp = operands()[0]->shape(id);
+	Int n = shp.nelements();
+	Array<Double> result(IPosition(1,n));
+	Double* res = result.data();
+	if (isCOrder_p) {
+	    for (Int i=0; i<n; ++i) {
+	        res[i] = shp[n-i-1];
+	    }
+	} else {
+	    for (Int i=0; i<n; ++i) {
+	        res[i] = shp[i];
+	    }
+	}
 	return result;
       }
     case TableExprFuncNode::strlengthFUNC:

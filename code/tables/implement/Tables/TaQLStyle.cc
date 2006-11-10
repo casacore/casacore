@@ -33,25 +33,25 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 void TaQLStyle::set (const String& value)
 {
   String val = upcase(value);
-  if (value == "GLISH") {
+  if (val == "GLISH") {
     itsOrigin  = 1;
     itsEndExcl = False;
     itsCOrder  = False;
-  } else if (value == "PYTHON") {
+  } else if (val == "PYTHON") {
     itsOrigin  = 0;
     itsEndExcl = True;
     itsCOrder  = True;
-  } else if (value == "BASE1") {
+  } else if (val == "BASE1") {
     itsOrigin  = 1;
-  } else if (value == "BASE0") {
+  } else if (val == "BASE0") {
     itsOrigin  = 0;
-  } else if (value == "FORTRANORDER") {
+  } else if (val == "FORTRANORDER") {
     itsCOrder  = False;
-  } else if (value == "CORDER") {
+  } else if (val == "CORDER") {
     itsCOrder  = True;
-  } else if (value == "ENDINCL") {
+  } else if (val == "ENDINCL") {
     itsEndExcl = False;
-  } else if (value == "ENDEXCL") {
+  } else if (val == "ENDEXCL") {
     itsEndExcl = True;
   } else {
     throw TableError(value + " is an invalid TaQL STYLE value");

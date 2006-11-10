@@ -34,6 +34,7 @@
 #include <tables/Tables/ExprRange.h>
 #include <tables/Tables/ExprFuncNode.h>
 #include <tables/Tables/ExprConeNode.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <casa/Utilities/DataType.h>
 #include <casa/BasicSL/Complex.h>
 #include <casa/Utilities/Regex.h>
@@ -858,7 +859,7 @@ public:
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
 					  const TableExprNodeSet& set,
 					  const Table& table,
-					  uInt origin = 0);
+					  const TaQLStyle& = TaQLStyle(0));
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
 					  const TableExprNode& node);
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
@@ -907,7 +908,7 @@ public:
     // The origin is 0 for C++ and 1 for TaQL.
     static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
 					   const TableExprNodeSet& indices,
-					   uInt origin);
+					   const TaQLStyle& = TaQLStyle(0));
  
     // returns pointer to the representation-object of it
     const TableExprNodeRep* getNodeRep() const;

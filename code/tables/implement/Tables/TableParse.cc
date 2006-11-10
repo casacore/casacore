@@ -27,6 +27,7 @@
 
 #include <tables/Tables/TaQLNode.h>
 #include <tables/Tables/TaQLNodeHandler.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/TableParse.h>
 #include <tables/Tables/TableGram.h>
 #include <tables/Tables/TaQLResult.h>
@@ -97,13 +98,13 @@ TableParseUpdate::TableParseUpdate (const String& columnName,
 {}
 TableParseUpdate::TableParseUpdate (const String& columnName,
 				    const TableExprNodeSet& indices,
-				    const TableExprNode& node)
+				    const TableExprNode& node,
+				    const TaQLStyle& style)
   : columnName_p (columnName),
     indexPtr_p   (0),
     node_p       (node)
 {
-  // Make the index node from the 1-relative subscripts.
-  indexPtr_p  = new TableExprNodeIndex (indices, 1);
+  indexPtr_p  = new TableExprNodeIndex (indices, style);
   indexNode_p = TableExprNode(indexPtr_p);
 }
 TableParseUpdate::~TableParseUpdate()
@@ -411,10 +412,10 @@ TableExprNode TableParseSelect::handleKeyCol (const String& name)
 }
 
 TableExprNode TableParseSelect::handleSlice (const TableExprNode& array,
-					     const TableExprNodeSet& indices)
+					     const TableExprNodeSet& indices,
+					     const TaQLStyle& style)
 {
-  // TaQL indexing is 1-based.
-  return TableExprNode::newArrayPartNode (array, indices, 1);
+  return TableExprNode::newArrayPartNode (array, indices, style);
 }
  
 //# Parse the name of a function.
@@ -658,7 +659,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
 
 //# Parse the name of a function.
 TableExprNode TableParseSelect::handleFunc (const String& name,
-					    const TableExprNodeSet& arguments)
+					    const TableExprNodeSet& arguments,
+					    const TaQLStyle& style)
 {
   //# No functions have to be ignored.
   Vector<Int> ignoreFuncs;
@@ -668,9 +670,10 @@ TableExprNode TableParseSelect::handleFunc (const String& name,
     if (commandType_p != PCALC) {
       throw TableInvExpr("No table given");
     }
-    return makeFuncNode (name, arguments, ignoreFuncs, Table());
+    return makeFuncNode (name, arguments, ignoreFuncs, Table(), style);
   }
-  return makeFuncNode (name, arguments, ignoreFuncs, fromTables_p[0].table());
+  return makeFuncNode (name, arguments, ignoreFuncs,
+		       fromTables_p[0].table(), style);
 }
 
 //# Parse the name of a function.
@@ -678,7 +681,8 @@ TableExprNode TableParseSelect::makeFuncNode
                                          (const String& name,
 					  const TableExprNodeSet& arguments,
 					  const Vector<int>& ignoreFuncs,
-					  const Table& table)
+					  const Table& table,
+					  const TaQLStyle& style)
 {
   //# Determine the function type.
   TableExprFuncNode::FunctionType ftype = findFunc (name,
@@ -740,7 +744,7 @@ TableExprNode TableParseSelect::makeFuncNode
 	}
 	parms.add (TableExprNodeSetElem(axes.setOrArray()));
       }
-      return TableExprNode::newFunctionNode (ftype, parms, table, 1);
+      return TableExprNode::newFunctionNode (ftype, parms, table, style);
     }
     break;
   case TableExprFuncNode::conesFUNC:
@@ -749,11 +753,11 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::cones3FUNC:
   case TableExprFuncNode::anycone3FUNC:
   case TableExprFuncNode::findcone3FUNC:
-    return TableExprNode::newConeNode (ftype, arguments, 1);
+    return TableExprNode::newConeNode (ftype, arguments, style.origin());
   default:
     break;
   }
-  return TableExprNode::newFunctionNode (ftype, arguments, table);
+  return TableExprNode::newFunctionNode (ftype, arguments, table, style);
 }
 
 
@@ -804,7 +808,8 @@ void TableParseSelect::handleColumn (const String& name,
 //# Add a column specification.
 void TableParseSelect::handleColSpec (const String& colName,
 				      const String& dtstr,
-				      const Record& spec)
+				      const Record& spec,
+				      Bool isCOrder)
 {
   // Check if specific column info is given.
   Int options = 0;
@@ -819,7 +824,16 @@ void TableParseSelect::handleColSpec (const String& colName,
     if (name == "NDIM") {
       ndim = spec.asInt(i);
     } else if (name == "SHAPE") {
-      shape = IPosition(Vector<Int>(spec.asArrayInt(i)));
+      Vector<Int> ivec(spec.asArrayInt(i));
+      if (isCOrder) {
+	Int nd = ivec.nelements();
+	shape.resize (nd);
+	for (Int i=0; i<nd; ++i) {
+	  shape[i] = ivec[nd-i-1];
+	}
+      } else {
+	shape = IPosition(ivec);
+      }
       if (ndim < 0) {
 	ndim = 0;
       }

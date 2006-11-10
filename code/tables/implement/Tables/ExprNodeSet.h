@@ -1,4 +1,4 @@
-//# ExprNodeSet.h: Classes to hold multiple table expression nodes
+//# ExprNodeSet.h: Classes representing a set in table select expression
 //# Copyright (C) 1997,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -98,9 +98,12 @@ public:
     // Create the object for a discrete interval.
     // Each of the start, end, and incr pointers can be zero meaning
     // that they are not given (see the synopsis for an explanation).
+    // Optionally the end is inclusive (C++ and Glish style) or exclusive
+    // (Python style).
     TableExprNodeSetElem (const TableExprNode* start,
 			  const TableExprNode* end,
-			  const TableExprNode* incr);
+			  const TableExprNode* incr,
+			  Bool isEndExcl = False);
 
     // Create the object for a continuous bounded interval. It can be
     // open or closed on either side.
@@ -202,6 +205,7 @@ private:
     TableExprNodeRep* itsStart;
     TableExprNodeRep* itsEnd;
     TableExprNodeRep* itsIncr;
+    Int  itsMinusEnd;
     Bool itsLeftClosed;
     Bool itsRightClosed;
     Bool itsDiscrete;

@@ -261,7 +261,8 @@ public:
   // Construct from a column name, subscripts, and expression.
   TableParseUpdate (const String& columnName,
 		    const TableExprNodeSet& indices,
-		    const TableExprNode&);
+		    const TableExprNode&,
+		    const TaQLStyle&);
 
   ~TableParseUpdate();
 
@@ -386,7 +387,7 @@ public:
 
   // Keep the column specification in a create table command.
   void handleColSpec (const String& columnName, const String& dataType,
-		      const Record& spec);
+		      const Record& spec, Bool isCOrder=False);
 
   // Add an update object.
   void addUpdate (TableParseUpdate* upd);
@@ -424,18 +425,21 @@ public:
 
   // Handle a slice operator.
   static TableExprNode handleSlice (const TableExprNode& array,
-				    const TableExprNodeSet& indices);
+				    const TableExprNodeSet& indices,
+				    const TaQLStyle&);
 
   // Handle a function.
   TableExprNode handleFunc (const String& name,
-			    const TableExprNodeSet& arguments);
+			    const TableExprNodeSet& arguments,
+			    const TaQLStyle&);
 
   // Make a function object node for the given function name and arguments.
   // The ignoreFuncs vector contains invalid function codes.
   static TableExprNode makeFuncNode (const String& name,
 				     const TableExprNodeSet& arguments,
 				     const Vector<int>& ignoreFuncs,
-				     const Table& table);
+				     const Table& table,
+				     const TaQLStyle&);
 
   // Find the function code belonging to a function name.
   // Functions to be ignored can be given (as function type values).

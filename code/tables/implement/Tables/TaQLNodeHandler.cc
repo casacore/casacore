@@ -128,7 +128,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeResult resr = visitNode (node.itsRight);
     if (node.itsType == TaQLBinaryNodeRep::B_INDEX) {
       const TableExprNodeSet& right = getHR(resr).getExprSet();
-      return new TaQLNodeHRValue (TableParseSelect::handleSlice(left,right));
+      return new TaQLNodeHRValue
+	(TableParseSelect::handleSlice(left, right, node.itsRight.style()));
     }
     TableExprNode right = getHR(resr).getExpr();
     switch (node.itsType) {
@@ -200,7 +201,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     TaQLNodeHRValue* hrval = new TaQLNodeHRValue();
     TaQLNodeResult res(hrval);
     hrval->setExpr (topStack()->handleFunc (node.itsName,
-					    getHR(result).getExprSet()));
+					    getHR(result).getExprSet(),
+					    node.style()));
     return res;
   }
 
@@ -240,7 +242,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
     const TableExprNode* se = start.isValid() ? &(getHR(start).getExpr()) : 0;
     const TableExprNode* ee =   end.isValid() ? &(getHR(  end).getExpr()) : 0;
     const TableExprNode* ie =  incr.isValid() ? &(getHR( incr).getExpr()) : 0;
-    TableExprNodeSetElem* elem = new TableExprNodeSetElem (se, ee, ie);
+    TableExprNodeSetElem* elem = new TableExprNodeSetElem
+                                 (se, ee, ie, node.style().isEndExcl());
     hrval->setElem (elem);
     hrval->setExpr (TableExprNode(elem));  // Takes care of deleting elem
     return res;
@@ -385,7 +388,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
       TaQLNodeResult ires = visitNode (node.itsIndices);
       topStack()->addUpdate (new TableParseUpdate(node.itsName,
 						  getHR(ires).getExprSet(),
-						  expr));
+						  expr,
+						  node.itsIndices.style()));
     } else {
       topStack()->addUpdate (new TableParseUpdate(node.itsName, expr));
     }
@@ -522,7 +526,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
   TaQLNodeResult TaQLNodeHandler::visitColSpecNode (const TaQLColSpecNodeRep& node)
   {
     Record spec = handleRecord (node.itsSpec.getMultiRep());
-    topStack()->handleColSpec (node.itsName, node.itsDtype, spec);
+    topStack()->handleColSpec (node.itsName, node.itsDtype, spec,
+			       node.style().isCOrder());
     return TaQLNodeResult();
   }
 

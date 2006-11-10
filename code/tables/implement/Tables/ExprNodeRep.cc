@@ -124,7 +124,7 @@ uInt TableExprNodeRep::nrow() const
         return 1;
     }
     if (table_p.isNull()) {
-	return 0;
+      return 1;                  // for calc expressions
     }
     return table_p.nrow();
 }

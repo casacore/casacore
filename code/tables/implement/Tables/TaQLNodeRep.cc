@@ -26,9 +26,16 @@
 //# $Id$
 
 #include <tables/Tables/TaQLNodeRep.h>
+#include <tables/Tables/TaQLNode.h>
 #include <tables/Tables/TableError.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
+
+TaQLNodeRep::TaQLNodeRep (int nodeType)
+: itsCount    (0),
+  itsNodeType (nodeType),
+  itsStyle    (TaQLNode::theirStyle)
+{}
 
 TaQLNodeRep::~TaQLNodeRep()
 {}

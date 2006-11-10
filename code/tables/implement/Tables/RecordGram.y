@@ -276,7 +276,8 @@ arithexpr: inxexpr
 
 inxexpr:   simexpr
          | simexpr LBRACKET subscripts RBRACKET {
-	       $$ = new TableExprNode (TableParseSelect::handleSlice (*$1, *$3));
+               $$ = new TableExprNode (TableParseSelect::handleSlice
+				       (*$1, *$3, TaQLStyle()));
 	       delete $1;
 	       delete $3;
 	   }

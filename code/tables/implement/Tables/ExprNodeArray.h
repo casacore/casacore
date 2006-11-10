@@ -30,6 +30,7 @@
 
 //# Includes
 #include <tables/Tables/ExprNodeRep.h>
+#include <tables/Tables/TaQLStyle.h>
 #include <tables/Tables/Table.h>
 #include <tables/Tables/ArrayColumn.h>
 #include <casa/Arrays/Slicer.h>
@@ -649,7 +650,7 @@ protected:
 
 // <motivation>
 // All operands of TableExprNodeIndex must be Double,
-// therefore it is a derivation of TableExprNodeMulti
+// therefore it is a derivation of TableExprNodeMulti.
 // </motivation>
 
 // <todo asof="$DATE:$">
@@ -662,7 +663,7 @@ class TableExprNodeIndex : public TableExprNodeMulti
 public:
     // Constructor
     explicit TableExprNodeIndex (const TableExprNodeSet& indices,
-				 uInt origin = 0);
+				 const TaQLStyle& = TaQLStyle(0));
 
     // Destructor
     virtual ~TableExprNodeIndex();
@@ -685,7 +686,9 @@ public:
     Bool isSingle() const;
 
 protected:
-    Int         origin_p;        //# origin 0 for C++; 1 for TaQL
+    Int         origin_p;        //# origin 0 for C++/Python; 1 for Glish
+    Int         endMinus_p;      //# subtract from end (origin and endExcl)
+    Bool        isCOrder_p;      //# True for Python
     IPosition   start_p;         //# precalculated start values
     IPosition   end_p;           //# precalculated end values (<0 = till end)
     IPosition   incr_p;          //# precalculated increment values
@@ -698,6 +701,9 @@ protected:
 
     // Fill the slicer for this row.
     void fillSlicer (const TableExprId& id);
+
+    // Get the shape of the node involved. Reverse axes if needed.
+    IPosition getNodeShape (const TableExprNodeRep* arrayNode) const;
 };
 
 
@@ -767,7 +773,9 @@ public:
   const TableExprNodeIndex* getIndexNode() const;
 
 private:
-    TableExprNodeIndex* indexNode_p;
+    TableExprNodeIndex*       indexNode_p;
+    TableExprNodeArray*       arrNode_p;
+    TableExprNodeArrayColumn* colNode_p;   //# 0 if arrNode is no arraycolumn
 }; 
 
 
@@ -795,7 +803,9 @@ inline const ROTableColumn& TableExprNodeArrayColumn::getColumn() const
 }
 
 inline const TableExprNodeIndex* TableExprNodeArrayPart::getIndexNode() const
-    { return indexNode_p; }
+{ 
+    return indexNode_p;
+}
 
 
 

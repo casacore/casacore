@@ -73,7 +73,7 @@ public:
     TableExprFuncNodeArray (TableExprFuncNode::FunctionType,
 			    NodeDataType, ValueType,
 			    const TableExprNodeSet& source,
-			    uInt origin);
+			    const TaQLStyle&);
 
     // Destructor
     ~TableExprFuncNodeArray();
@@ -124,11 +124,14 @@ private:
     const IPosition& getArrayShape (const TableExprId& id, uInt axarg=1);
 
     TableExprFuncNode node_p;
-    Int               origin_p;        //# axes origin 0 for C++; 1 for TaQL
+    Int               origin_p;        //# axes origin
+    Bool              isCOrder_p;      //# axes order
     Bool              constAxes_p;     //# True = collapse axes are constant
     IPosition         ipos_p;          //# the (maybe constant) axes or shape
+    IPosition         iposN_p;         //# the non-reversed axes or shape
     IPosition         corrCollAxes_p;  //# the possibly corrected collapse axes
                                        //# (in case an axis exceeds ndim)
+    uInt              lastNdim_p;      //# last ndim used in getCollapseAxes
 };
 
 
