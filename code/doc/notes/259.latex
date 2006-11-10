@@ -7,7 +7,7 @@
 
 \title{NOTE 259: appspython binding to AIPS++}
 \author{Ger van Diepen, ASTRON Dwingeloo}
-\date{November 1, 2006}
+\date{November 10, 2006}
 \maketitle
 \begin{abstract}
 appspython is a Python binding to AIPS++ classes using Boost.Python.

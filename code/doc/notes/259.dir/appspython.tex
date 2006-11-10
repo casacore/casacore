@@ -56,7 +56,7 @@ A casa::Record is mapped to a Python dict.
 \item
 Every C++ exception is mapped to a Python \texttt{RunTimeError}
 exception. However, \texttt{casa::IterError} is special and 
-is mapped to an end-of-iteration exception (IndexError) in Python.
+is mapped to an end-of-iteration exception (\texttt{StopIteration}) in Python.
 \item
 A casa::ValueHolder is a special AIPS++ object that can hold a record or
 a scalar value or n-dim array of many types (bool, numeric, string).
@@ -66,8 +66,8 @@ in the table binding).
 \\Converting a ValueHolder to Python creates the appropriate Python
 scalar, array, or dict object. When converting from
 Python to ValueHolder, the appropriate internal ValueHolder value
-is constructed; a list, tuple, and array object is converted to an array
-in the ValueHolder.
+is constructed; a list, tuple, and array object are converted to an
+AIPS++ array in the ValueHolder.
 \end{itemize}
 It means there is no direct Array conversion to/from Python. A
 ValueHolder object is always needed to do the conversion. Note that
@@ -75,34 +75,35 @@ this is a cheap operation, as it uses Array reference semantics.
 ValueHolder has functions to convert between types, so one can get
 out an Array with the required type.
 
-\subsection{Array conversion}
+\subsection{Array conversion to/from numpy and numarray}
 AIPS++ arrays are kept in Fortran-order, while Python arrays are kept
 in C-order. It was felt that the Python interface should be as 
 pythonic as possible. Therefore it was decided that the array axes are
 reversed when converting to/from Python.
+The values in an IPosition object (describing shape or
+position) are also reversed when converting to/from Python.
 \\Note that although numarray and numpy have Fortran-array provisions
 by setting the appropriate internal strides,
 they do not really support them. When adding, for instance, the scalar
-value 0 to a Fortraon-array, the  result is a transposed version of the
-original (which can be quite expensive).
-The values in an IPosition object (describing shape or
-position) are also reversed when converting to/from Python.
+value 0 to a Fortran-array, the  result is a transposed version of the
+original (which can be a quite expensive operation).
 
-A binding could be such that shape information is passed via, say, a
-\texttt{vector<int>} and not via an \texttt{IPosition object}.
+A function binding could be such that shape information is passed via, say, a
+\texttt{Record} and not via an \texttt{IPosition} object.
 In that case its values
 are not reversed automatically, so the programmer is
 responsible for doing it.
 
 An AIPS++ array is returned to Python as an array object
-containing a copy of the AIPS++ array data. If the Converters have
+containing a copy of the AIPS++ array data. If appspython has
 been built with support for only one Python array package (numpy or numarray),
 it is clear which array type is returned. If support for both
 packages has been built in, by default an array of the imported
-package is returned. If both or no array packages has been imported, a numpy
+package is returned. If both or no array packages have been imported, a numpy
 array is returned.
 \\Note that there is no support for the old Numeric package.
-\\An AIPS++ array constructed from a Python array is regarded as a
+
+An AIPS++ array constructed from a Python array is regarded as a
 temporary object. So if possible, the AIPS++ array refers to the
 Python array data to avoid a needless copy. This is not possible if
 the element size in Python differs from AIPS++. It is also not
@@ -122,7 +123,7 @@ example, \texttt{array([[]])} results in an empty 2-dim array. The
 converters accept such empty N-dim Python arrays. The type of an empty
 array is set to Int by numarray and to Double by numpy.
 \item Because the type of an empty Python array cannot easily be set,
-the converters can convert an empty Int or Float array to any type.
+the converters can convert an empty integer or real array to any type.
 \item The converters accept a numpy string array. However, it is
 returned to Python as the special \texttt{dict} object described above.
 \end{itemize}
@@ -156,8 +157,8 @@ namespace casa { namespace appspython {
       // An arg line should be added for each argument giving
       // its name and possibly default value.
       .def ("func1", &XX::func1,
- 	    (boost::python::arg("arg1"),
- 	     boost::python::arg("arg2")=0))
+            (boost::python::arg("arg1"),
+             boost::python::arg("arg2")=0))
     ;
   }
 }}
@@ -168,12 +169,12 @@ BOOST_PYTHON_MODULE(_xx)
   casa::appspython::register_convert_excp();
   casa::appspython::register_convert_basicdata();
   casa::appspython::register_convert_casa_record();
-  // Do the wrapping.
+  // Initialize the wrapping.
   casa::appspython::wrap_xx();
 }
 \end{verbatim}
-Python requires for each package a file \_\_init\_\_.py, so such an empty
-file should be created as well.
+Python requires for each package a file \texttt{\_\_init\_\_.py},
+so such an empty file should be created as well.
 
 \subsection{More complicated wrappers}
 Sometimes a C++ function cannot be wrapped directly, because the argument
@@ -196,7 +197,7 @@ Now \texttt{xx} inherits all functions from \texttt{\_xx}.
 The required function can be written in Python like
 \begin{verbatim}
     def func1 (self, arg1, arg2):
-        return _func1 (self, arg2, arg1);
+        return self._func1 (arg2, arg1);
 \end{verbatim}
 Note that in the wrapper the function name also needs to be
 preceeded by an underscore to make it different.
@@ -217,15 +218,19 @@ specific issues.
 \item The end value in a range like \texttt{[10:20]} is exclusive
 (vs. inclusive in glish). Furthermore Python supports a step and
 reversed ranges.
+\item Where useful, the function \texttt{\_\_str\_\_} should be added
+  giving the name of the object. This function is used when printing
+  an object.
 \item Where useful, the functions \texttt{\_\_len\_\_},
-\texttt{\_\_getitem\_\_(index)}, and
-\texttt{\_\_setitem\_\_(index, value)} should
+\texttt{\_\_setitem\_\_(index, value)}, and 
+\texttt{\_\_getitem\_\_(index)} should
 be added to make it possible that a user indexes an object directly like
 \texttt{tabcol[i]} or \texttt{tabcol[start:stop:step]}.
 \item When these functions are added, Python supports iteration in an
 object. Explicit iteration can also be done by adding the functions
 \texttt{\_\_iter\_\_} and \texttt{next}. At the end \texttt{next}
-should raise the Python IndexError exception (or throw casa::IterError
+should raise the Python \texttt{StopIteration} exception
+(or throw \texttt{casa::IterError}
 when implemented in C++) to stop the iteration.
 \end{itemize}
 
@@ -241,7 +246,7 @@ makedefs:
 \item \texttt{AUXILIARY += appspython}
 \end{itemize}
 When doing it this way, appspython is built with support for
-numarray. In order to build it with support for numpy the following
+numarray. In order to build it with support for numpy as well, the following
 has to be added to the local makedefs:
 \begin{verbatim}
 PYTHONINCD += 'the path where numpy/arrayobject.h can be found'
@@ -251,8 +256,22 @@ If only numpy should be supported, the last line should be replaced by:
 \begin{verbatim}
 PYTHONDEFS := -DAIPS_USENUMPY
 \end{verbatim}
-The shared library \texttt{libappspython.so} will be built
-containing the various converters and associated AIPS++ code.
+When building appspython, it is by default built as the shared library
+\texttt{libappspython.so} 
+containing the various converters and associated AIPS++ code. It can
+be built as a static library by adding the appropriate
+\texttt{LIBappspython} line to the local makedefs. However, it is
+strongly advised to build it as a shared library because:
+\begin{itemize}
+\item If multiple python packages are used, each of them registers the
+  converters in Boost.Python. If the same converter is multiply
+  registered, Boost.Python gives a warning. To avoid these warnings
+  appspython keeps a map of registered converters. It is clear that
+  this map is only useful (i.e. shared between python packages)
+  if appspython is built as a shared library.
+\item Multiple python packages share the converter code, thus reducing the
+  memory footprint.
+\end{itemize}
 
 A package \texttt{pyxx} is built as a shared library
 \texttt{\_pyxx.so} residing in directory 
@@ -260,7 +279,7 @@ A package \texttt{pyxx} is built as a shared library
 directory and compiled to .pyo and .pyc files.
 
 On Mac OS-X Python libraries have to be built as bundles. For this the
-local makedefs need to set some make variables.
+local makedefs need to set some make variables:
 \begin{verbatim}
 PYLDSOPTS  := -bundle
 PYSFXSHAR  := so
