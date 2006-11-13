@@ -572,6 +572,11 @@ int main()
       cout << "  erronous" << endl;
       errFlag = True;
     }
+    cout << "Testing partialRmsss ..." << endl;
+    if (! doIt (&partialRmss, &rms, False)) {
+      cout << "  erronous" << endl;
+      errFlag = True;
+    }
     cout << "Testing partialMins ..." << endl;
     if (! doIt (&partialMins, &min, True)) {
       cout << "  erronous" << endl;
