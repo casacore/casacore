@@ -2076,70 +2076,57 @@ template<class T> Array<T> partialMedians (const Array<T>& array,
 					   Bool takeEvenMean,
 					   Bool inPlace)
 {
+  // Need to make shallow copy because operator() is non-const.
+  Array<T> arr = array;
   // Is there anything to collapse?
-  uInt ndimColl = collapseAxes.nelements();
-  if (ndimColl == 0) {
+  if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
   }
-  // Reorder the array such that the collapse axes are the first axes.
-  Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
-  // Find the shape of the result and the nr of elements to collapse.
-  const IPosition& newShape = newArr.shape();
-  IPosition resShape(1,1);
-  uInt ndimRes = newShape.nelements() - ndimColl;
-  if (ndimRes > 0) {
-    resShape.resize (ndimRes);
-    resShape = newShape.getLast (ndimRes);
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
   }
-  uInt nrcoll = newShape.getFirst(ndimColl).product();
-  Array<T> result(resShape);
-  Bool deleteData, deleteRes;
-  // Now determine the median for each slice.
-  // Note that the sorts are done in place, so we need a non-const pointer.
-  const T* arrData = newArr.getStorage (deleteData);
-  T* data = const_cast<T*>(arrData);
+  // Get the remaining axes.
+  // It also checks if axes are specified correctly.
+  IPosition resAxes = IPosition::otherAxes (ndim, collapseAxes);
+  uInt ndimRes = resAxes.nelements();
+  // Create the result shape.
+  // Create blc and trc to step through the input array.
+  IPosition resShape(ndimRes);
+  IPosition blc(ndim, 0);
+  IPosition trc(shape-1);
+  for (uInt i=0; i<ndimRes; ++i) {
+    resShape[i] = shape[resAxes[i]];
+    trc[resAxes[i]] = 0;
+  }
+  if (ndimRes == 0) {
+    resShape.resize(1);
+    resShape[0] = 1;
+  }
+  Array<T> result (resShape);
+  Bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;
-  // If the array is small, it is faster to fully sort it.
-  Bool nosort = (nrcoll > 50);
-  // Determine the middle element.
-  uInt n2 = (nrcoll - 1)/2;
-  //# Mean does not have to be taken for odd number of elements.
-  if (nrcoll%2 != 0) {
-    takeEvenMean = False;
-  }
-  // Loop through all data.
+  // Loop through all data and assemble as needed.
   IPosition pos(ndimRes, 0);
   while (True) {
-    // If needed take the mean for an even number of elements.
-    if (nosort) {
-      *res = GenSort<T>::kthLargest (data, nrcoll, n2);
-      if (takeEvenMean) {
-	*res = T(0.5 * (*res +
-			GenSort<T>::kthLargest (data, nrcoll, n2+1)));
-      }
-    } else {
-      GenSort<T>::sort (data, nrcoll);
-      if (takeEvenMean) {
-	*res = T(0.5 * (data[n2] + data[n2+1]));
-      } else {
-	*res = data[n2];
-      }
-    }
-    data += nrcoll;
-    res++;
+    *res++ = median(arr(blc,trc), False, takeEvenMean, inPlace);
     uInt ax;
     for (ax=0; ax<ndimRes; ax++) {
       if (++pos(ax) < resShape(ax)) {
+	blc[resAxes[ax]]++;
+	trc[resAxes[ax]]++;
 	break;
       }
       pos(ax) = 0;
+      blc[resAxes[ax]] = 0;
+      trc[resAxes[ax]] = 0;
     }
     if (ax == ndimRes) {
       break;
     }
   }
-  array.freeStorage (arrData, deleteData);
   result.putStorage (resData, deleteRes);
   return result;
 }
@@ -2152,57 +2139,57 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   if (fraction < 0  ||  fraction > 1) {
     throw(ArrayError("::fractile(const Array<T>&) - fraction <0 or >1 "));
   }    
+  // Need to make shallow copy because operator() is non-const.
+  Array<T> arr = array;
   // Is there anything to collapse?
-  uInt ndimColl = collapseAxes.nelements();
-  if (ndimColl == 0) {
+  if (collapseAxes.nelements() == 0) {
     return (inPlace  ?  array : array.copy());
   }
-  // Reorder the array such that the collapse axes are the first axes.
-  Array<T> newArr = reorderArray (array, collapseAxes, !inPlace);
-  // Find the shape of the result and the nr of elements to collapse.
-  const IPosition& newShape = newArr.shape();
-  IPosition resShape(1,1);
-  uInt ndimRes = newShape.nelements() - ndimColl;
-  if (ndimRes > 0) {
-    resShape.resize (ndimRes);
-    resShape = newShape.getLast (ndimRes);
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
   }
-  uInt nrcoll = newShape.getFirst(ndimColl).product();
-  Array<T> result(resShape);
-  Bool deleteData, deleteRes;
-  // Now determine the fractile for each slice.
-  // Note that the sorts are done in place, so we need a non-const pointer.
-  const T* arrData = newArr.getStorage (deleteData);
-  T* data = const_cast<T*>(arrData);
+  // Get the remaining axes.
+  // It also checks if axes are specified correctly.
+  IPosition resAxes = IPosition::otherAxes (ndim, collapseAxes);
+  uInt ndimRes = resAxes.nelements();
+  // Create the result shape.
+  // Create blc and trc to step through the input array.
+  IPosition resShape(ndimRes);
+  IPosition blc(ndim, 0);
+  IPosition trc(shape-1);
+  for (uInt i=0; i<ndimRes; ++i) {
+    resShape[i] = shape[resAxes[i]];
+    trc[resAxes[i]] = 0;
+  }
+  if (ndimRes == 0) {
+    resShape.resize(1);
+    resShape[0] = 1;
+  }
+  Array<T> result (resShape);
+  Bool deleteRes;
   T* resData = result.getStorage (deleteRes);
   T* res = resData;
-  // If the array is small, it is faster to fully sort it.
-  Bool nosort = (nrcoll > 50);
-  // Determine the fractile element.
-  uInt n2 = uInt((nrcoll - 1) * fraction);
-  // Loop through all data.
+  // Loop through all data and assemble as needed.
   IPosition pos(ndimRes, 0);
   while (True) {
-    if (nosort) {
-      *res = GenSort<T>::kthLargest (data, nrcoll, n2);
-    } else {
-      GenSort<T>::sort (data, nrcoll);
-      *res = data[n2];
-    }
-    data += nrcoll;
-    res++;
+    *res++ = fractile(arr(blc,trc), fraction, False, inPlace);
     uInt ax;
     for (ax=0; ax<ndimRes; ax++) {
       if (++pos(ax) < resShape(ax)) {
+	blc[resAxes[ax]]++;
+	trc[resAxes[ax]]++;
 	break;
       }
       pos(ax) = 0;
+      blc[resAxes[ax]] = 0;
+      trc[resAxes[ax]] = 0;
     }
     if (ax == ndimRes) {
       break;
     }
   }
-  array.freeStorage (arrData, deleteData);
   result.putStorage (resData, deleteRes);
   return result;
 }
