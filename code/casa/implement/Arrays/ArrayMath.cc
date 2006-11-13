@@ -1272,7 +1272,7 @@ template<class T> T product(const Array<T> &a)
 template<class T> T mean(const Array<T> &a)
 {
     if (a.nelements() == 0) {
-	throw(ArrayError("::sum(const Array<T> &) - 0 element array"));
+	throw(ArrayError("::mean(const Array<T> &) - 0 element array"));
     }
     return T(sum(a)/(1.0*a.nelements()));
 }
@@ -1286,9 +1286,16 @@ template<class T> T variance(const Array<T> &a, T mean)
 	throw(ArrayError("::variance(const Array<T> &,T) - Need at least 2 "
 			 "elements"));
     }
-    Array<T> deviations(a - mean);
-    deviations *= deviations;
-    return sum(deviations)/((1.0*a.nelements() - 1));
+    uInt ntotal = a.nelements();
+    Bool deleteIt;
+    const T* data = a.getStorage(deleteIt);
+    T sum = 0;
+    for (uInt i=0; i<ntotal; ++i) {
+        T tmp = data[i] - mean;
+        sum += tmp*tmp;
+    }
+    a.freeStorage(data, deleteIt);
+    return T(sum/(1.0*ntotal - 1));
 }
 
 // <thrown>
@@ -1348,8 +1355,35 @@ template<class T> T avdev(const Array<T> &a, T mean)
 	throw(ArrayError("::avdev(const Array<T> &,T) - Need at least 1 "
 			 "element"));
     }
-    Array<T> avdeviations(fabs(a - mean));
-    return sum(avdeviations)/(1.0*a.nelements());
+    uInt ntotal = a.nelements();
+    Bool deleteIt;
+    const T* data = a.getStorage(deleteIt);
+    T sum = 0;
+    for (uInt i=0; i<ntotal; ++i) {
+        sum += fabs(data[i] - mean);
+    }
+    a.freeStorage(data, deleteIt);
+    return T(sum/(1.0*ntotal));
+}
+
+// <thrown>
+//    </item> ArrayError
+// </thrown>
+template<class T> T rms(const Array<T> &a)
+{
+    if (a.nelements() < 1) {
+	throw(ArrayError("::rms(const Array<T> &) - Need at least 1 "
+			 "element"));
+    }
+    uInt ntotal = a.nelements();
+    Bool deleteIt;
+    const T* data = a.getStorage(deleteIt);
+    T sum = 0;
+    for (uInt i=0; i<ntotal; ++i) {
+	sum += data[i] * data[i];
+    }
+    a.freeStorage(data, deleteIt);
+    return sqrt(T(sum/(1.0*ntotal)));
 }
 
 // <thrown>
@@ -1958,6 +1992,81 @@ template<class T> Array<T> partialAvdevs (const Array<T>& array,
   }
   array.freeStorage (arrData, deleteData);
   means.freeStorage (meanData, deleteMean);
+  result.putStorage (resData, deleteRes);
+  return result;
+}
+
+template<class T> Array<T> partialRmss (const Array<T>& array,
+					const IPosition& collapseAxes)
+{
+  if (collapseAxes.nelements() == 0) {
+    return array.copy();
+  }
+  const IPosition& shape = array.shape();
+  uInt ndim = shape.nelements();
+  if (ndim == 0) {
+    return Array<T>();
+  }
+  IPosition resShape, incr;
+  Int nelemCont = 0;
+  uInt stax = partialFuncHelper (nelemCont, resShape, incr, shape,
+				 collapseAxes);
+  Array<T> result (resShape);
+  result = 0;
+  uInt nr = result.nelements();
+  uInt factor = array.nelements() / nr;
+  Bool deleteData, deleteRes;
+  const T* arrData = array.getStorage (deleteData);
+  const T* data = arrData;
+  T* resData = result.getStorage (deleteRes);
+  T* res = resData;
+  // Find out how contiguous the data is, i.e. if some contiguous data
+  // end up in the same output element.
+  // cont tells if any data are contiguous.
+  // stax gives the first non-contiguous axis.
+  // n0 gives the number of contiguous elements.
+  Bool cont = True;
+  uInt n0 = nelemCont;
+  Int incr0 = incr(0);
+  if (nelemCont <= 1) {
+    cont = False;
+    n0 = shape(0);
+    stax = 1;
+  }
+  // Loop through all data and assemble as needed.
+  IPosition pos(ndim, 0);
+  while (True) {
+    if (cont) {
+      T tmp = *res;
+      for (uInt i=0; i<n0; i++) {
+	tmp += *data * *data;
+	data++;
+      }
+      *res = tmp;
+    } else {
+      for (uInt i=0; i<n0; i++) {
+	*res += *data * *data;
+	data++;
+	res += incr0;
+      }
+    }
+    uInt ax;
+    for (ax=stax; ax<ndim; ax++) {
+      res += incr(ax);
+      if (++pos(ax) < shape(ax)) {
+	break;
+      }
+      pos(ax) = 0;
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  res = resData;
+  for (uInt i=0; i<nr; i++) {
+    res[i] = sqrt (res[i] / factor);
+  }
+  array.freeStorage (arrData, deleteData);
   result.putStorage (resData, deleteRes);
   return result;
 }

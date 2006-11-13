@@ -348,6 +348,10 @@ template<class T> T avdev(const Array<T> &a);
 // Rather than using a computed mean, use the supplied value.
 template<class T> T avdev(const Array<T> &a,T mean);
 
+//
+// The root-mean-square of "a" is the sqrt of sum(a*a)/N.
+template<class T> T rms(const Array<T> &a);
+
 
 // The median of "a" is a(n/2).
 // When a has an even number of elements and the switch takeEvenMean is set,
@@ -435,6 +439,8 @@ template<class T> inline Array<T> partialAvdevs (const Array<T>& array,
 template<class T> Array<T> partialAvdevs (const Array<T>& array,
 					  const IPosition& collapseAxes,
 					  const Array<T>& means);
+template<class T> Array<T> partialRmss (const Array<T>& array,
+					const IPosition& collapseAxes);
 template<class T> Array<T> partialMedians (const Array<T>& array,
 					   const IPosition& collapseAxes,
 					   Bool takeEvenMean=False,
