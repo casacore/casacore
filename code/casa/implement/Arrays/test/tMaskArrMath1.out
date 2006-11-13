@@ -107,6 +107,11 @@ Test avdev (MaskedArray<Double>)
  result = avdev (df ((df > 2.5) && (df < 6.5)));
 1
 
+Test rms (MaskedArray<Double>)
+
+ result = rms (df ((df > 2.5) && (df < 6.5)));
+4.63681
+
 Test even median (MaskedArray<Double>, True)
 
  result = median (df ((df > 2.5) && (df < 6.5)), True);

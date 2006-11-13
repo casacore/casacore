@@ -399,6 +399,10 @@ template<class T> T avdev(const MaskedArray<T> &a);
 template<class T> T avdev(const MaskedArray<T> &a,T mean);
 
 // 
+// The root-mean-square of "a" is the sqrt of sum(a*a)/N.
+template<class T> T rms(const MaskedArray<T> &a);
+
+// 
 // The median of "a" is a(n/2).
 // When a has an even number of elements and the switch takeEvenMean is set,
 // the median is 0.5*(a(n/2) + a((n+1)/2)).

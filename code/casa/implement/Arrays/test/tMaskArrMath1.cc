@@ -301,6 +301,18 @@ main()
 
             {
                 cout << endl
+                     << "Test rms (MaskedArray<Double>)"
+                     << endl;
+                Double result (-1.0);
+                result = rms (df ((df > 2.5) && (df < 6.5)));
+                cout << endl
+                     << " result = rms (df ((df > 2.5) && (df < 6.5)));"
+                     << endl;
+                cout << result << endl;
+            }
+
+            {
+                cout << endl
                      << "Test even median (MaskedArray<Double>, True)"
                      << endl;
                 Double result (-1.0);

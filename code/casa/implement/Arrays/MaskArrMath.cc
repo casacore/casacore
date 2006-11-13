@@ -1481,6 +1481,15 @@ template<class T> T avdev(const MaskedArray<T> &left, T mean)
     return sum(avdeviations)/left.nelementsValid();
 }
 
+template<class T> T rms(const MaskedArray<T> &left)
+{
+    if (left.nelementsValid() < 1) {
+        throw (ArrayError("T ::rms(const MaskedArray<T> &left) - "
+                          "MaskedArray must have at least 1 element"));
+    }
+    return T(sqrt(sumsquares(left)/(1.0*left.nelementsValid())));
+}
+
 template<class T> T median(const MaskedArray<T> &left, Bool sorted,
 			   Bool takeEvenMean)
 {

@@ -1383,7 +1383,7 @@ template<class T> T rms(const Array<T> &a)
 	sum += data[i] * data[i];
     }
     a.freeStorage(data, deleteIt);
-    return sqrt(T(sum/(1.0*ntotal)));
+    return T(sqrt(sum/(1.0*ntotal)));
 }
 
 // <thrown>
@@ -2064,7 +2064,7 @@ template<class T> Array<T> partialRmss (const Array<T>& array,
   }
   res = resData;
   for (uInt i=0; i<nr; i++) {
-    res[i] = sqrt (res[i] / factor);
+    res[i] = T(sqrt (res[i] / factor));
   }
   array.freeStorage (arrData, deleteData);
   result.putStorage (resData, deleteRes);
