@@ -1002,6 +1002,9 @@ They are meant for an array, but can also be used for a scalar.
   \item[] \texttt{double AVDEV(double)}\\
     Return average deviation. (the sum of
     \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
+  \item[] \texttt{double RMS(double)}\\
+    Return root-mean-squares. (the square root of the sum of
+    \\\texttt{(a(i)**2)/nelements(a)}.
   \item[] \texttt{double MEDIAN(double)}\\
     Return median (the middle element).
     If the array has an even number of elements, the mean of
@@ -1059,6 +1062,9 @@ They can only be used for arrays, thus not for scalars.
   \item[] \texttt{double AVDEVS(double)}\\
     Return average deviation. (the sum of 
     \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
+  \item[] \texttt{double RMSS(double)}\\
+    Return root-mean-squares. (the square root of the sum of
+    \\\texttt{(a(i)**2)/nelements(a)}.
   \item[] \texttt{double MEDIANS(double)}\\
     Return median (the middle element).
     If the array has an even number of elements, the mean of
