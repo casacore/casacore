@@ -349,7 +349,7 @@
            mkdir BLDSHR.$ID
            cd BLDSHR.$ID
            $AR x ../$PCKGLIBR
-           rm -f __.SYMDEF
+           rm -f __.SYMDEF*
 
 	   if [ -f "$AIPSARCH/lib$PCKGLANG.purge" ]; then
 	      echo ""
