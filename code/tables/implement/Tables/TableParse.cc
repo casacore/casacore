@@ -546,6 +546,10 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arravdevFUNC;
   } else if (funcName == "avdevs") {
     ftype = TableExprFuncNode::arravdevsFUNC;
+  } else if (funcName == "rms") {
+    ftype = TableExprFuncNode::arrrmsFUNC;
+  } else if (funcName == "rmss") {
+    ftype = TableExprFuncNode::arrrmssFUNC;
   } else if (funcName == "median") {
     ftype = TableExprFuncNode::arrmedianFUNC;
   } else if (funcName == "medians") {
@@ -703,6 +707,7 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::arrvariancesFUNC:
   case TableExprFuncNode::arrstddevsFUNC:
   case TableExprFuncNode::arravdevsFUNC:
+  case TableExprFuncNode::arrrmssFUNC:
   case TableExprFuncNode::arrmediansFUNC:
   case TableExprFuncNode::anysFUNC:
   case TableExprFuncNode::allsFUNC:

@@ -97,6 +97,7 @@ void TableExprFuncNodeArray::tryToConst()
     case TableExprFuncNode::arrvariancesFUNC:
     case TableExprFuncNode::arrstddevsFUNC:
     case TableExprFuncNode::arravdevsFUNC:
+    case TableExprFuncNode::arrrmssFUNC:
     case TableExprFuncNode::arrmediansFUNC:
     case TableExprFuncNode::anysFUNC:
     case TableExprFuncNode::allsFUNC:
@@ -773,6 +774,11 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
       {
 	Array<Double> arr (operands()[0]->getArrayDouble(id));
 	return partialAvdevs (arr, getCollapseAxes(id, arr.ndim()));
+      }
+    case TableExprFuncNode::arrrmssFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return partialRmss (arr, getCollapseAxes(id, arr.ndim()));
       }
     case TableExprFuncNode::arrmediansFUNC:
       {

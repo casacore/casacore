@@ -376,6 +376,11 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
 	    return avdev (operands_p[0]->getArrayDouble (id));
 	}
 	return 0;
+    case arrrmsFUNC:
+        if (operands_p[0]->valueType() == VTArray) {
+	    return rms (operands_p[0]->getArrayDouble (id));
+	}
+	return 0;
     case arrmedianFUNC:
         if (operands_p[0]->valueType() == VTArray) {
 	    return median (operands_p[0]->getArrayDouble (id));
@@ -632,6 +637,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrvarianceFUNC:
     case arrstddevFUNC:
     case arravdevFUNC:
+    case arrrmsFUNC:
     case arrmedianFUNC:
 	checkNumOfArg (1, 1, nodes);
 	return checkDT (dtypeOper, NTDouble, NTDouble, nodes);
@@ -682,6 +688,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case arrvariancesFUNC:
     case arrstddevsFUNC:
     case arravdevsFUNC:
+    case arrrmssFUNC:
     case arrmediansFUNC:
     case arrfractilesFUNC:
     case anysFUNC:

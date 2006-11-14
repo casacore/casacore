@@ -299,6 +299,7 @@ class TableExprNode;
     TableExprNode variance (const TableExprNode& array);
     TableExprNode stddev (const TableExprNode& array);
     TableExprNode avdev (const TableExprNode& array);
+    TableExprNode rms (const TableExprNode& array);
     TableExprNode median (const TableExprNode& array);
     TableExprNode fractile (const TableExprNode& array,
 			    const TableExprNode& fraction);
@@ -334,6 +335,8 @@ class TableExprNode;
 			   const TableExprNodeSet& collapseAxes);
     TableExprNode avdevs (const TableExprNode& array,
 			  const TableExprNodeSet& collapseAxes);
+    TableExprNode rmss (const TableExprNode& array,
+			const TableExprNodeSet& collapseAxes);
     TableExprNode medians (const TableExprNode& array,
 			   const TableExprNodeSet& collapseAxes);
     TableExprNode fractiles (const TableExprNode& array,
@@ -610,6 +613,7 @@ class TableExprNode
     friend TableExprNode variance (const TableExprNode& array);
     friend TableExprNode stddev (const TableExprNode& array);
     friend TableExprNode avdev (const TableExprNode& array);
+    friend TableExprNode rms (const TableExprNode& array);
     friend TableExprNode median (const TableExprNode& array);
     friend TableExprNode fractile (const TableExprNode& array,
 				   const TableExprNode& fraction);
@@ -635,6 +639,8 @@ class TableExprNode
 				  const TableExprNodeSet& collapseAxes);
     friend TableExprNode avdevs (const TableExprNode& array,
 				 const TableExprNodeSet& collapseAxes);
+    friend TableExprNode rmss (const TableExprNode& array,
+			       const TableExprNodeSet& collapseAxes);
     friend TableExprNode medians (const TableExprNode& array,
 				  const TableExprNodeSet& collapseAxes);
     friend TableExprNode fractiles (const TableExprNode& array,
@@ -1429,6 +1435,11 @@ inline TableExprNode avdev (const TableExprNode& node)
     return TableExprNode::newFunctionNode (TableExprFuncNode::arravdevFUNC,
 					   node);
 }
+inline TableExprNode rms (const TableExprNode& node)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrrmsFUNC,
+					   node);
+}
 inline TableExprNode median (const TableExprNode& node)
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::arrmedianFUNC,
@@ -1459,86 +1470,92 @@ inline TableExprNode nfalse (const TableExprNode& node)
 inline TableExprNode sums (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsFUNC,
 					   array, axes);
 }
 inline TableExprNode products (const TableExprNode& array,
 			       const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrproductsFUNC,
 					   array, axes);
 }
 inline TableExprNode sumSquares (const TableExprNode& array,
 				 const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrsumsqrsFUNC,
 					   array, axes);
 }
 inline TableExprNode mins (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrminsFUNC,
 					   array, axes);
 }
 inline TableExprNode maxs (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmaxsFUNC,
 					   array, axes);
 }
 inline TableExprNode means (const TableExprNode& array,
 			    const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmeansFUNC,
 					   array, axes);
 }
 inline TableExprNode variances (const TableExprNode& array,
 				const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrvariancesFUNC,
 					   array, axes);
 }
 inline TableExprNode stddevs (const TableExprNode& array,
 			      const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrstddevsFUNC,
 					   array, axes);
 }
 inline TableExprNode avdevs (const TableExprNode& array,
 			     const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arravdevsFUNC,
+					   array, axes);
+}
+inline TableExprNode rmss (const TableExprNode& array,
+			   const TableExprNodeSet& axes)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrrmssFUNC,
 					   array, axes);
 }
 inline TableExprNode medians (const TableExprNode& array,
 			      const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrmediansFUNC,
 					   array, axes);
 }
 inline TableExprNode fractiles (const TableExprNode& array,
 				const TableExprNode& fraction,
 				const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::arrfractilesFUNC,
 					   array, fraction, axes);
 }
 inline TableExprNode anys (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::anysFUNC,
 					   array, axes);
 }
 inline TableExprNode alls (const TableExprNode& array,
 			   const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::allsFUNC,
 					   array, axes);
 }
 inline TableExprNode ntrues (const TableExprNode& array,
 			     const TableExprNodeSet& axes)
 {
-    return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
+    return TableExprNode::newFunctionNode (TableExprFuncNode::ntruesFUNC,
 					   array, axes);
 }
 inline TableExprNode nfalses (const TableExprNode& array,

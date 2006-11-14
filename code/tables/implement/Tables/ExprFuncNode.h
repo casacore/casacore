@@ -138,6 +138,8 @@ public:
 	arrstddevsFUNC,
 	arravdevFUNC,
 	arravdevsFUNC,
+	arrrmsFUNC,
+	arrrmssFUNC,
 	arrmedianFUNC,
 	arrmediansFUNC,
 	arrfractileFUNC,
