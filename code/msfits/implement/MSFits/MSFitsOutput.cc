@@ -1372,7 +1372,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
   // Default them all, then we can gradually add more in the loop without
   // worrying about it.
   *idno = 0;
-  *source = "";
+  *source = "                ";
   *qual = 0;
   *calcode = "    ";
   *iflux = 0.0;
@@ -1416,7 +1416,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	if (rownrs.nelements() > 0) {
       	  uInt rownr = rownrs(0);
 	  // Name in SOURCE table overides name in FIELD table
-      	  *source = sourceColumns->name()(rownr);
+      	  *source = sourceColumns->name()(rownr) + "                ";;
 	  if(sourceColumns->sysvel().isDefined(rownr)) {
 	    Vector<Double> sv (sourceColumns->sysvel()(rownr));
 	    if (sv.nelements() > 0) {
@@ -1435,7 +1435,7 @@ Bool MSFitsOutput::writeSU(FitsOutput *output, const MeasurementSet &ms,
       	    *pmdec = pm(1);
       	  }
       	  *qual = sourceColumns->calibrationGroup()(rownr);
-      	  *calcode = sourceColumns->code()(rownr);
+      	  *calcode = sourceColumns->code()(rownr) + "    ";
       	  
       	  // Directions have to be converted from radians to degrees.
       	  if (sourceColumns->direction().isDefined(rownr)) {
