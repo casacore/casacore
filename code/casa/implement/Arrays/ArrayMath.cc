@@ -36,6 +36,7 @@
 #include <casa/BasicMath/Math.h>
 #include <casa/BasicMath/ConvertScalar.h>
 #include <casa/Utilities/GenSort.h>
+#include <casa/Utilities/Assert.h>
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -2194,5 +2195,70 @@ template<class T> Array<T> partialFractiles (const Array<T>& array,
   return result;
 }
 
-} //# NAMESPACE CASA - END
 
+template <typename T>
+Array<T> slidingArrayMath (const Array<T>& array, const IPosition& halfBoxSize,
+			   T (*reductionFunc) (const Array<T>&),
+			   Bool fillEdge)
+{
+  uInt ndim = array.ndim();
+  const IPosition& shape = array.shape();
+  // Set full box size (-1) and resize/fill as needed.
+  IPosition hboxsz (2*halfBoxSize);
+  if (hboxsz.size() != array.ndim()) {
+    uInt sz = hboxsz.size();
+    hboxsz.resize (array.ndim());
+    for (uInt i=sz; i<hboxsz.size(); ++i) {
+      hboxsz[i] = 0;
+    }
+  }
+  // Determine the output shape. See if anything has to be done.
+  IPosition resShape(ndim);
+  for (uInt i=0; i<ndim; ++i) {
+    resShape[i] = shape[i] - hboxsz[i];
+    if (resShape[i] <= 0) {
+      if (!fillEdge) {
+	return Array<T>();
+      }
+      Array<T> res(shape);
+      res = T();
+      return res;
+    }
+  }
+  // Need to make shallow copy because operator() is non-const.
+  Array<T> arr (array);
+  Array<T> result (resShape);
+  DebugAssert (result.contiguousStorage(), AipsError);
+  T* res = result.data();
+  // Loop through all data and assemble as needed.
+  IPosition blc(ndim, 0);
+  IPosition trc(hboxsz);
+  IPosition pos(ndim, 0);
+  while (True) {
+    *res++ = reductionFunc(arr(blc,trc));
+    uInt ax;
+    for (ax=0; ax<ndim; ax++) {
+      if (++pos[ax] < resShape[ax]) {
+	blc[ax]++;
+	trc[ax]++;
+	break;
+      }
+      pos(ax) = 0;
+      blc[ax] = 0;
+      trc[ax] = hboxsz[ax];
+    }
+    if (ax == ndim) {
+      break;
+    }
+  }
+  if (!fillEdge) {
+    return result;
+  }
+  Array<T> fullResult(shape);
+  fullResult = T();
+  hboxsz /= 2;
+  fullResult(hboxsz, resShape+hboxsz-1) = result;
+  return fullResult;
+}
+
+} //# NAMESPACE CASA - END

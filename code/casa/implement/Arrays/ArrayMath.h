@@ -369,7 +369,9 @@ template<class T> T rms(const Array<T> &a);
 // the data themselves will be sorted. That should only be used if the
 // data are used not thereafter.
 // <group>
-template<class T> inline T median(const Array<T> &a, Bool sorted = False)
+template<class T> inline T median(const Array<T> &a)
+    { return median (a, False, (a.nelements() <= 100), False); }
+template<class T> inline T median(const Array<T> &a, Bool sorted)
     { return median (a, sorted, (a.nelements() <= 100), False); }
 template<class T> inline T medianInPlace(const Array<T> &a,
 					 Bool sorted = False)
@@ -529,6 +531,36 @@ Array<DComplex> RealToComplex(const Array<Double> &rarray);
 void  RealToComplex(Array<Complex> &carray, const Array<Float> &rarray);
 void  RealToComplex(Array<DComplex> &carray, const Array<Double> &rarray);
 // </group>
+
+// Apply for each element in the array the given ArrayMath reduction function
+// to the box around that element. The full box is 2*halfBoxSize + 1.
+// It can be used for arrays and boxes of any dimensionality; missing
+// halfBoxSize values are set to 1.
+// <example>
+// Determine for each element in the array the median of a box
+// with size [51,51] around that element:
+// <verbatim>
+//    Array<Float> medians = boxedArrayMath(in, IPosition(2,25,25),
+//                                          casa::median);
+// </verbatim>
+// This is a potentially expensive operation. On a high-end PC it took
+// appr. 27 seconds to get the medians for an array of [1000,1000] using
+// a halfBoxSize of [50,50].
+// </example>
+// <br>The fillEdge argument determines how the edge is filled where
+// no full boxes can be made. True means it is set to zero; False means
+// that the edge is removed, thus the output array is smaller than the
+// input array.
+// <note> This brute-force method of determining the medians outperforms
+// all kinds of smart implementations. For a vector it is about as fast
+// as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
+// it is much, much faster.
+template <typename T>
+Array<T> slidingArrayMath (const Array<T>& array,
+			   const IPosition& halfBoxSize,
+			   T (*reductionFunc) (const Array<T>&),
+			   Bool fillEdge=True);
+
 
 // Make a copy of an array of a different type; for example make an array
 // of doubles from an array of floats. Arrays to and from must be conformant

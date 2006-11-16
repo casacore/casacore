@@ -415,7 +415,9 @@ template<class T> T rms(const MaskedArray<T> &a);
 // is used to find the median (kthLargest is about 6 times faster
 // than a full quicksort).
 // <group>
-template<class T> inline T median(const MaskedArray<T> &a, Bool sorted = False)
+template<class T> inline T median(const MaskedArray<T> &a)
+    { return median (a, False, (a.nelements() <= 100)); }
+template<class T> inline T median(const MaskedArray<T> &a, Bool sorted)
     { return median (a, sorted, (a.nelements() <= 100)); }
 template<class T> T median(const MaskedArray<T> &a, Bool sorted,
 			   Bool takeEvenMean);
@@ -429,6 +431,36 @@ template<class T> MaskedArray<T> square(const MaskedArray<T> &val);
 template<class T> MaskedArray<T> cube(const MaskedArray<T> &val);
 
 // </group>
+
+
+// Apply for each element in the array the given ArrayMath reduction function
+// to the box around that element. The full box is 2*halfBoxSize + 1.
+// It can be used for arrays and boxes of any dimensionality; missing
+// halfBoxSize values are set to 1.
+// <example>
+// Determine for each element in the array the median of a box
+// with size [51,51] around that element:
+// <verbatim>
+//    Array<Float> medians = boxedArrayMath(in, IPosition(2,25,25),
+//                                          casa::median);
+// </verbatim>
+// This is a potentially expensive operation. On a high-end PC it took
+// appr. 27 seconds to get the medians for an array of [1000,1000] using
+// a halfBoxSize of [50,50].
+// </example>
+// <br>The fillEdge argument determines how the edge is filled where
+// no full boxes can be made. True means it is set to zero; False means
+// that the edge is removed, thus the output array is smaller than the
+// input array.
+// <note> This brute-force method of determining the medians outperforms
+// all kinds of smart implementations. For a vector it is about as fast
+// as class <linkto class=MedianSlider>MedianSlider</linkto>, for a 2D array
+// it is much, much faster.
+template <typename T>
+Array<T> slidingArrayMath (const MaskedArray<T>& array,
+			   const IPosition& halfBoxSize,
+			   T (*reductionFunc) (const MaskedArray<T>&),
+			   Bool fillEdge=True);
 
 
 } //# NAMESPACE CASA - END
