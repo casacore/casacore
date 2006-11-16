@@ -453,7 +453,7 @@ public:
     // <group>
     T* data()
       { return begin_p; }
-    T* const data() const
+    const T* data() const
       { return begin_p; }
     // </group>
 
@@ -553,7 +553,7 @@ public:
       const T& operator*() const
         { return *itsPos; }
 
-      const T* const pos() const
+      const T* pos() const
         { return itsPos; }
 
       void setPos (T* const pos)
@@ -626,7 +626,7 @@ public:
         { return iterator (*this); }
     const_iterator begin() const
         { return const_iterator (*this); }
-    const T* const end() const
+    const T* end() const
         { return end_p; }
     // </group>
 
@@ -636,9 +636,9 @@ public:
         { return begin_p; }
     const_contiter cbegin() const
         { return begin_p; }
-    const contiter cend()
+    contiter cend()
         { return end_p; }
-    const const_contiter cend() const
+    const_contiter cend() const
         { return end_p; }
     // </group>
 
