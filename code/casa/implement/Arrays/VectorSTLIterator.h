@@ -81,8 +81,11 @@ class VectorSTLIterator
   // the same as if created from <src>Vector.begin()</src>. Copy
   // constructor and assignment can be the default ones.
   // <group>
-  explicit VectorSTLIterator(const Vector<T> &c) : start_p(c.data()), 
-    step_p(std::max(1,c.steps()(0))), iter_p(c.data()) {;}
+  explicit VectorSTLIterator(const Vector<T> &c) :
+    start_p(const_cast<T*>(c.data())), 
+    step_p(std::max(1,c.steps()(0))),
+    iter_p(const_cast<T*>(c.data()))
+ {;}
   VectorSTLIterator() : start_p(0), step_p(1), iter_p(0) {;}
   VectorSTLIterator(const typename Array<T>::IteratorSTL &c) : start_p(c.pos()), 
     step_p(std::max(1,c.steps()(0))), iter_p(start_p) {;}
