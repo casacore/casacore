@@ -992,7 +992,7 @@ They are meant for an array, but can also be used for a scalar.
     Return minimum of all array elements.
   \item[] \texttt{double MAX(double)}\\
     Return maximum of all array elements.
-  \item[] \texttt{double MEAN(double), double AVG(double)}\\
+  \item[] \texttt{double MEAN(double)}\\
     Return mean of all array elements.
   \item[] \texttt{double VARIANCE(double)}\\
     Return variance (the sum of
@@ -1052,7 +1052,7 @@ They can only be used for arrays, thus not for scalars.
     Return minimum of elements.
   \item[] \texttt{double MAXS(double)}\\
     Return maximum of elements.
-  \item[] \texttt{double MEANS(double), double AVG(double)}\\
+  \item[] \texttt{double MEANS(double)}\\
     Return mean of elements.
   \item[] \texttt{double VARIANCES(double)}\\
     Return variance (the sum of
@@ -1074,6 +1074,47 @@ They can only be used for arrays, thus not for scalars.
     Fraction 0.5 is the same as the median.
 \end{description}
 
+\subsubsection{Array functions operating in running windows}
+These functions transform an array into an array with the same shape
+by operating on a rectangular window around each array element.
+The most useful one is probably calculating the running median, but
+the other ones can be used similarly.
+The half-width of each window axis has to be given; the full width is
+\texttt{2*halfwidth + 1}. Missing axes default to 0.
+Similarly to the partial reduction functions described above, the axes
+can be given as scalars or as a set.
+\\For example,
+\texttt{RUNNINGMEDIAN(array,1,1)} calculates the median
+in a 3x3 box around each array element.
+\\In the result the edge elements (i.e. the elements where no full
+window can be applied) are set to 0 (or false).
+The functions can only be used for arrays, thus not for scalars.
+\begin{description}
+  \item[] \texttt{bool RUNNINGANY(bool)}\\
+    Is any element true?
+  \item[] \texttt{bool RUNNINGALL(bool)}\\
+    Are all elements true?
+  \item[] \texttt{double RUNNINGMIN(double)}\\
+    Return minimum of elements.
+  \item[] \texttt{double RUNNINGMAX(double)}\\
+    Return maximum of elements.
+  \item[] \texttt{double RUNNINGMEAN(double)}\\
+    Return mean of elements.
+  \item[] \texttt{double RUNNINGVARIANCE(double)}\\
+    Return variance (the sum of
+    \\\texttt{(a(i) - mean(a))**2/(nelements(a) - 1)}.
+  \item[] \texttt{double RUNNINGSTDDEV(double)}\\
+    Return standard deviation (the square root of the variance).
+  \item[] \texttt{double RUNNINGAVDEV(double)}\\
+    Return average deviation. (the sum of 
+    \\\texttt{abs(a(i) - mean(a))/nelements(a)}.
+  \item[] \texttt{double RUNNINGRMS(double)}\\
+    Return root-mean-squares. (the square root of the sum of
+    \\\texttt{(a(i)**2)/nelements(a)}.
+  \item[] \texttt{double RUNNINGMEDIAN(double)}\\
+    Return median (the middle element).
+\end{description}
+
 \subsubsection{Miscellaneous functions}
 \begin{description}
   \item[] \texttt{bool ISDEFINED(anytype)}\\
@@ -1088,7 +1129,8 @@ They can only be used for arrays, thus not for scalars.
   \item[] \texttt{doublearray SHAPE(anytype)}\\
     Return shape of an array (returns an empty array for a scalar).
   \item[] \texttt{double ROWNUMBER()}\\
-    Return the row number being tested (first row is row number 1).
+    Return the row number being tested (first row is row number 0 or 1
+    depending on the style used).
     \\In combination with function RAND it can, for instance,
     be used to select arbitrary rows from a table.
   \item[] \texttt{double ROWID()}\\
