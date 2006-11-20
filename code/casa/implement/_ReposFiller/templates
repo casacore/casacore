@@ -898,6 +898,9 @@
      template Array<Double> partialFractiles(Array<Double> const &, IPosition const &, Float, Bool) 
      template Array<DComplex> partialSums(Array<DComplex> const &, IPosition const &) 
      template Array<DComplex> partialProducts(Array<DComplex> const &, IPosition const &) 
+1220 casa/Arrays/ArrayMath.cc 
+     template Array<Bool> slidingArrayMath (const Array<Bool>&, const IPosition&, Bool (*) (const Array<Bool>&), Bool)
+     template Array<Double> slidingArrayMath (const Array<Double>&, const IPosition&, Double (*) (const Array<Double>&), Bool)
 1000 casa/Arrays/ArrayUtil.cc casa/BasicSL/Complex.h 
      = casa/BasicSL/String.h 
      template Array<Bool> concatenateArray(Array<Bool> const &, Array<Bool> const &) 
