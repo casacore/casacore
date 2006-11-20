@@ -174,3 +174,5 @@ tTableGram 'using style python select ab from tTableGram_tmp.tab where all(anys(
 tTableGram 'using style glish  select ab from tTableGram_tmp.tab where all(anys(fmod(sums(arr1,1),5)==0,[2:4]))'
 tTableGram 'using style python select ab from tTableGram_tmp.tab where rownumber() < 2'
 tTableGram 'using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2'
+
+tTableGram 'calc runningMedian(array([0:24],5,5),1,1)'

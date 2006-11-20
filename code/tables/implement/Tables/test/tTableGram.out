@@ -761,3 +761,12 @@ using style glish  select ab from tTableGram_tmp.tab where rownumber() < 2
     select of 1 rows
 1 selected columns:  ab
  1
+calc runningMedian(array([0:24],5,5),1,1)
+    has been executed
+  row 0:  Axis Lengths: [5, 5]  (NB: Matrix in Row/Column order)
+[0, 0, 0, 0, 0
+ 0, 6, 11, 16, 0
+ 0, 7, 12, 17, 0
+ 0, 8, 13, 18, 0
+ 0, 0, 0, 0, 0]
+
