@@ -386,6 +386,13 @@ template<class T> Bool anyOR (const T &val, const Array<T> &array);
 // </group>
 
 
+// Are all elements true?
+inline Bool allTrue (const Array<Bool>& array)
+  { return allEQ (array, True); }
+
+// Is any all element true?
+inline Bool anyTrue (const Array<Bool>& array)
+  { return anyEQ (array, True); }
 
 // 
 // Determine the number of true or false elements.
