@@ -1023,6 +1023,7 @@ void TableProxy::flush (Bool recursive)
 
 void TableProxy::close()
 {
+  flush(True);
   table_p = Table();
 }
 
