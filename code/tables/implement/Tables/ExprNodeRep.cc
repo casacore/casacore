@@ -854,7 +854,7 @@ uInt TableExprNodeMulti::checkNumOfArg
     if (nodes.nelements() < low) {
 	throw (TableInvExpr("too few function arguments"));
     } else if (nodes.nelements() > high) {
-	throw (TableInvExpr("", "too many function arguments"));
+	throw (TableInvExpr("too many function arguments"));
     }
     return nodes.nelements();
 }
