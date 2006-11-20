@@ -511,6 +511,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     }
   } else if (funcName == "mins") {
     ftype = TableExprFuncNode::arrminsFUNC;
+  } else if (funcName == "runningmin") {
+    ftype = TableExprFuncNode::runminFUNC;
   } else if (funcName == "max") {
     ftype = TableExprFuncNode::maxFUNC;
     if (narguments == 1) {
@@ -518,6 +520,8 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     }
   } else if (funcName == "maxs") {
     ftype = TableExprFuncNode::arrmaxsFUNC;
+  } else if (funcName == "runningmax") {
+    ftype = TableExprFuncNode::runmaxFUNC;
   } else if (funcName == "sum") {
     ftype = TableExprFuncNode::arrsumFUNC;
   } else if (funcName == "sums") {
@@ -534,26 +538,38 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::arrmeanFUNC;
   } else if (funcName == "means") {
     ftype = TableExprFuncNode::arrmeansFUNC;
+  } else if (funcName == "runningmean") {
+    ftype = TableExprFuncNode::runmeanFUNC;
   } else if (funcName == "variance") {
     ftype = TableExprFuncNode::arrvarianceFUNC;
   } else if (funcName == "variances") {
     ftype = TableExprFuncNode::arrvariancesFUNC;
+  } else if (funcName == "runningvariance") {
+    ftype = TableExprFuncNode::runvarianceFUNC;
   } else if (funcName == "stddev") {
     ftype = TableExprFuncNode::arrstddevFUNC;
   } else if (funcName == "stddevs") {
     ftype = TableExprFuncNode::arrstddevsFUNC;
+  } else if (funcName == "runningstddev") {
+    ftype = TableExprFuncNode::runstddevFUNC;
   } else if (funcName == "avdev") {
     ftype = TableExprFuncNode::arravdevFUNC;
   } else if (funcName == "avdevs") {
     ftype = TableExprFuncNode::arravdevsFUNC;
+  } else if (funcName == "runningavdev") {
+    ftype = TableExprFuncNode::runavdevFUNC;
   } else if (funcName == "rms") {
     ftype = TableExprFuncNode::arrrmsFUNC;
   } else if (funcName == "rmss") {
     ftype = TableExprFuncNode::arrrmssFUNC;
+  } else if (funcName == "runningrms") {
+    ftype = TableExprFuncNode::runrmsFUNC;
   } else if (funcName == "median") {
     ftype = TableExprFuncNode::arrmedianFUNC;
   } else if (funcName == "medians") {
     ftype = TableExprFuncNode::arrmediansFUNC;
+  } else if (funcName == "runningmedian") {
+    ftype = TableExprFuncNode::runmedianFUNC;
   } else if (funcName == "fractile") {
     ftype = TableExprFuncNode::arrfractileFUNC;
   } else if (funcName == "fractiles") {
@@ -562,10 +578,14 @@ TableExprFuncNode::FunctionType TableParseSelect::findFunc
     ftype = TableExprFuncNode::anyFUNC;
   } else if (funcName == "anys") {
     ftype = TableExprFuncNode::anysFUNC;
+  } else if (funcName == "runningany") {
+    ftype = TableExprFuncNode::runanyFUNC;
   } else if (funcName == "all") {
     ftype = TableExprFuncNode::allFUNC;
   } else if (funcName == "alls") {
     ftype = TableExprFuncNode::allsFUNC;
+  } else if (funcName == "runningall") {
+    ftype = TableExprFuncNode::runallFUNC;
   } else if (funcName == "ntrue") {
     ftype = TableExprFuncNode::ntrueFUNC;
   } else if (funcName == "ntrues") {
@@ -697,7 +717,7 @@ TableExprNode TableParseSelect::makeFuncNode
   uInt axarg = 1;
   switch (ftype) {
   case TableExprFuncNode::arrfractilesFUNC:
-    axarg = 2;
+    axarg = 2;    // fall through!!
   case TableExprFuncNode::arrsumsFUNC:
   case TableExprFuncNode::arrproductsFUNC:
   case TableExprFuncNode::arrsumsqrsFUNC:
@@ -713,6 +733,16 @@ TableExprNode TableParseSelect::makeFuncNode
   case TableExprFuncNode::allsFUNC:
   case TableExprFuncNode::ntruesFUNC:
   case TableExprFuncNode::nfalsesFUNC:
+  case TableExprFuncNode::runminFUNC:
+  case TableExprFuncNode::runmaxFUNC:
+  case TableExprFuncNode::runmeanFUNC:
+  case TableExprFuncNode::runvarianceFUNC:
+  case TableExprFuncNode::runstddevFUNC:
+  case TableExprFuncNode::runavdevFUNC:
+  case TableExprFuncNode::runrmsFUNC:
+  case TableExprFuncNode::runmedianFUNC:
+  case TableExprFuncNode::runanyFUNC:
+  case TableExprFuncNode::runallFUNC:
   case TableExprFuncNode::arrayFUNC:
     if (arguments.nelements() > axarg) {
       TableExprNodeSet parms;

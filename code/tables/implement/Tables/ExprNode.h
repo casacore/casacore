@@ -352,6 +352,31 @@ class TableExprNode;
 			   const TableExprNodeSet& collapseAxes);
   // </group>
 
+  // Functions operating for each element on a box around that element.
+  // The elements at the edges (where no full box can be made) are set to 0.
+  // <group>
+    TableExprNode runningMin (const TableExprNode& array,
+			      const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningMax (const TableExprNode& array,
+			      const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningMean (const TableExprNode& array,
+			       const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningVariance (const TableExprNode& array,
+				   const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningStddev (const TableExprNode& array,
+				 const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningAvdev (const TableExprNode& array,
+				const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningRms (const TableExprNode& array,
+			      const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningMedian (const TableExprNode& array,
+				 const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningAny (const TableExprNode& array,
+			      const TableExprNodeSet& halfBoxWidth);
+    TableExprNode runningAll (const TableExprNode& array,
+			      const TableExprNodeSet& halfBoxWidth);
+  // </group>
+
   // Create an array of the given shape and fill it with the values.
   // The <src>values</src> array is rewound as needed.
     TableExprNode array (const TableExprNode& values,
@@ -654,6 +679,16 @@ class TableExprNode
 				 const TableExprNodeSet& collapseAxes);
     friend TableExprNode nfalses (const TableExprNode& array,
 				  const TableExprNodeSet& collapseAxes);
+    friend TableExprNode runningMin (const TableExprNode& array);
+    friend TableExprNode runningMax (const TableExprNode& array);
+    friend TableExprNode runningMean (const TableExprNode& array);
+    friend TableExprNode runningVariance (const TableExprNode& array);
+    friend TableExprNode runningStddev (const TableExprNode& array);
+    friend TableExprNode runningAvdev (const TableExprNode& array);
+    friend TableExprNode runningRms (const TableExprNode& array);
+    friend TableExprNode runningMedian (const TableExprNode& array);
+    friend TableExprNode runningAny (const TableExprNode& array);
+    friend TableExprNode runningAll (const TableExprNode& array);
     friend TableExprNode array (const TableExprNode& values,
 				const TableExprNodeSet& shape);
     friend TableExprNode isdefined (const TableExprNode& array);
@@ -1563,6 +1598,66 @@ inline TableExprNode nfalses (const TableExprNode& array,
 {
     return TableExprNode::newFunctionNode (TableExprFuncNode::nfalsesFUNC,
 					   array, axes);
+}
+inline TableExprNode runningMin (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runminFUNC,
+					   node);
+}
+inline TableExprNode runningMax (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runmaxFUNC,
+					   node);
+}
+inline TableExprNode runningMean (const TableExprNode& node,
+				  const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runmeanFUNC,
+					   node);
+}
+inline TableExprNode runningVariance (const TableExprNode& node,
+				      const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runvarianceFUNC,
+					   node);
+}
+inline TableExprNode runningStddev (const TableExprNode& node,
+				    const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runstddevFUNC,
+					   node);
+}
+inline TableExprNode runningAvdev (const TableExprNode& node,
+				   const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runavdevFUNC,
+					   node);
+}
+inline TableExprNode runningRms (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runrmsFUNC,
+					   node);
+}
+inline TableExprNode runningMedian (const TableExprNode& node,
+				    const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runmedianFUNC,
+					   node);
+}
+inline TableExprNode runningAny (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runanyFUNC,
+					   node);
+}
+inline TableExprNode runningAll (const TableExprNode& node,
+				 const TableExprNodeSet& halfBoxWidth)
+{
+    return TableExprNode::newFunctionNode (TableExprFuncNode::runallFUNC,
+					   node);
 }
 inline TableExprNode array (const TableExprNode& values,
 			    const TableExprNodeSet& shape)

@@ -124,12 +124,12 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
     switch (funcType_p) {
     case anyFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return anyEQ (operands_p[0]->getArrayBool(id), True);
+	    return anyTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case allFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-	    return allEQ (operands_p[0]->getArrayBool(id), True);
+	    return allTrue (operands_p[0]->getArrayBool(id));
 	}
 	return operands_p[0]->getBool (id);
     case isnanFUNC:
@@ -695,6 +695,16 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case allsFUNC:
     case ntruesFUNC:
     case nfalsesFUNC:
+    case runminFUNC:
+    case runmaxFUNC:
+    case runmeanFUNC:
+    case runvarianceFUNC:
+    case runstddevFUNC:
+    case runavdevFUNC:
+    case runrmsFUNC:
+    case runmedianFUNC:
+    case runanyFUNC:
+    case runallFUNC:
     case arrayFUNC:
       {
         NodeDataType dtin = NTDouble;
@@ -711,6 +721,8 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	    break;
 	case anysFUNC:
 	case allsFUNC:
+	case runanyFUNC:
+	case runallFUNC:
 	    dtin = dtout = NTBool;
 	    break;
 	case ntruesFUNC:
@@ -730,7 +742,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	dtypeOper.resize(axarg+1);
 	dtypeOper = NTDouble;
 	PtrBlock<TableExprNodeRep*> nodeArr(1);
-	// Check for xxxS functions if first argument is an array.
+	// Check for XXXs and runXXX functions if first argument is an array.
 	nodeArr[0] = nodes[0];
 	if (fType != arrayFUNC) {
 	    if (nodes[0]->valueType() != VTArray) {
@@ -747,7 +759,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
 	  for (uInt i=1; i<axarg; i++) {
 	    if (nodes[i]->valueType() != VTScalar
 	    &&  nodes[i]->dataType() != NTDouble) {
-	      throw TableInvExpr ("2nd argument of xxxS "
+	      throw TableInvExpr ("2nd argument of runningXXX or XXXs "
 				  "function has to be a double scalar");
 	    }
 	  }

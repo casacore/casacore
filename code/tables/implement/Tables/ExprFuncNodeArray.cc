@@ -320,6 +320,16 @@ Array<Bool> TableExprFuncNodeArray::getArrayBool (const TableExprId& id)
 	Array<uInt> res (partialNFalse (arr, getCollapseAxes(id, arr.ndim())));
 	return res == 0u;
       }
+    case TableExprFuncNode::runallFUNC:
+      {
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::allTrue);
+      }
+    case TableExprFuncNode::runanyFUNC:
+      {
+	Array<Bool> arr (operands()[0]->getArrayBool(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::anyTrue);
+      }
     case TableExprFuncNode::arrayFUNC:
       {
 	Array<Bool> res(getArrayShape(id));
@@ -792,6 +802,46 @@ Array<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
 				 getCollapseAxes(id, arr.ndim(), 2),
 				 operands()[1]->getDouble(id));
       }
+    case TableExprFuncNode::runminFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::min);
+      }
+    case TableExprFuncNode::runmaxFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::max);
+      }
+    case TableExprFuncNode::runmeanFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::mean);
+      }
+    case TableExprFuncNode::runvarianceFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::variance);
+      }
+    case TableExprFuncNode::runstddevFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::stddev);
+      }
+    case TableExprFuncNode::runavdevFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::avdev);
+      }
+    case TableExprFuncNode::runrmsFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::rms);
+      }
+    case TableExprFuncNode::runmedianFUNC:
+      {
+	Array<Double> arr (operands()[0]->getArrayDouble(id));
+	return slidingArrayMath (arr, getArrayShape(id), casa::median);
+    }
     case TableExprFuncNode::ntruesFUNC:
       {
 	Array<Bool> arr (operands()[0]->getArrayBool(id));
