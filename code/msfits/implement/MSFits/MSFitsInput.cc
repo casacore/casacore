@@ -762,6 +762,11 @@ void MSFitsInput::fillMSMainTableColWise(Int& nField, Int& nSpW)
   Vector<Int> scanNumber(1);
   Vector<Int> lastFieldId(1), lastFreqId(1);
   scanNumber=0; lastFieldId=-1, lastFreqId=-1;
+  // nArray_p was uninitialized so could be HUGE ie causing std::bad_alloc
+  // to be thrown as it is used below for dimensioning, using the construction
+  //  nArray_p = max(nArray_p, arrayId+1). In order for this to work you'd better
+  // initialize nArray_p first...
+  nArray_p = -1;
 
   Bool lastRowFlag=False;
   Vector<Int> ant1(totRows);
@@ -1066,6 +1071,11 @@ void MSFitsInput::fillMSMainTable(Int& nField, Int& nSpW)
   Vector<Int> scanNumber(1);
   Vector<Int> lastFieldId(1), lastFreqId(1);
   scanNumber=0; lastFieldId=-1, lastFreqId=-1;
+  // nArray_p was uninitialized so could be HUGE ie causing std::bad_alloc
+  // to be thrown as it is used below for dimensioning, using the construction
+  //  nArray_p = max(nArray_p, arrayId+1). In order for this to work you'd better
+  // initialize nArray_p first...
+  nArray_p = -1;
 
   Bool lastRowFlag=False;
 
