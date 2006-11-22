@@ -1086,9 +1086,10 @@ can be given as scalars or as a set.
 \\For example,
 \texttt{RUNNINGMEDIAN(array,1,1)} calculates the median
 in a 3x3 box around each array element.
+See the \htmlref{TAQL:RUNEXAMPLES}{examples} how it is applied to an image.
 \\In the result the edge elements (i.e. the elements where no full
 window can be applied) are set to 0 (or false).
-The functions can only be used for arrays, thus not for scalars.
+\\The functions can only be used for arrays, thus not for scalars.
 \begin{description}
   \item[] \texttt{bool RUNNINGANY(bool)}\\
     Is any element true?
@@ -1138,7 +1139,7 @@ The functions can only be used for arrays, thus not for scalars.
     useful for returning the result of a selection of a subtable
     of an AIPS++ measurement set
     (see also sections \htmlref{Subqueries}{TAQL:SUBQUERIES}
-    and \htmlref{Examples}{TAQL:EXAMPLES}).
+    and \htmlref{Examples}{TAQL:SELEXAMPLES}).
   \item[] \texttt{double RAND()}\\
     Return (per table row) a uniformly distributed random number
     between 0 and 1 using a Multiplicative Linear Congruential Generator.
@@ -1930,7 +1931,7 @@ clause, because it does not use a column itself. Columns are only
 used in the nested query which has a FROM clause itself.
 
 \section{Examples}
-\subsection{Selection examples}
+\subsection{\label{TAQL:SELEXAMPLES}Selection examples}
 \subsubsection{Reference table results}
 \begin{description}
   \item[] \texttt{ SELECT FROM mytable WHERE column1 $>$ 0 }
@@ -2071,7 +2072,7 @@ used in the nested query which has a FROM clause itself.
 
 \end{description}
 
-\subsection{Modification examples}
+\subsection{\label{TAQL:MODEXAMPLES}Modification examples}
 \begin{description}
   \item[] \texttt{ update MY.MS set VIDEO\_POINT=MEANS(DATA,2)
                    where isdefined(DATA) }
@@ -2092,10 +2093,38 @@ used in the nested query which has a FROM clause itself.
           \\\texttt{(SPECTRAL\_WINDOW\_ID,POLARIZATION\_ID,FLAG\_ROW)}
           \\\texttt{values (1,0,F)}
       \\adds a row to the DATA\_DESCRIPTION subtable and initializes it.
-                   
+
 \end{description}
 
-\subsection{Table creation examples}
+\subsubsection{\label{TAQL:RUNEXAMPLES}Applying running median to an image}
+The following piece of glish code shows how a running median can 
+be applied to an AIPS++ image.
+\begin{verbatim}
+  im := imagecalc('my.imgd', 'my.img')
+  im.close()
+  t1 := tablecommand ('update my.imgd set map =
+                         map - runningmedian(map,25,25)')
+\end{verbatim}
+First the image is copied and thereafter the running medians are
+subtracted from the data in the copy. It uses a half window size 
+of 25x25, thus the full window is 51x51.
+\\When doing this, one should take care that in case of a spectral
+line cube the image is not too large, otherwise it won't fit in
+memory. If too large, it should be done in chunks like:
+\begin{verbatim}
+  t1 := tablecommand ('update my.imgd set map[,,sc:ec,] =
+                         map[,,sc:ec,] -
+                         runningmedian(map[,,sc:ec,],25,25)')
+\end{verbatim}
+where \texttt{sc} and \texttt{ec} are the start and end frequency
+channel.
+In this example it is assumed that the axes of the image are RA, DEC,
+freq, Stokes.
+\\Note that \texttt{imagecalc} is used to copy the image. It might
+also be done with table functions, but \texttt{imagecalc} has the
+great advantage that it also works on FITS and Miriad images.
+
+\subsection{\label{TAQL:CREAEXAMPLES}Table creation examples}
 \begin{description}
   \item[] \texttt{ create table mytab (col1 I4, col2 I4, col3 R8) }
       \\creates table \texttt{mytab} of 3 scalar columns.
@@ -2121,7 +2150,7 @@ used in the nested query which has a FROM clause itself.
         using the given settings.
 \end{description}
 
-\subsection{Calculation examples}
+\subsection{\label{TAQL:CALCEXAMPLES}Calculation examples}
 \begin{description}
   \item[] \texttt{ calc 1+2 }
       \\uses TaQL as a desktop calculator.
