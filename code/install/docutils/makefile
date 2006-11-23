@@ -43,7 +43,7 @@ include $(AIPSARCH)/makedefs
 # Source lists.
 #--------------
 SCRIPTS  := ac rac dox redoicons.sh dvips.sh mkpsfiles.sh
-PERL5EXE := cxx2html help2tex buildchangelog
+PERL5EXE := cxx2html help2tex buildchangelog doxygen_pp
 PERL5REQ := Class.pm Html.pm ScanCxx.pm Path.pm
 
 

@@ -1,0 +1,248 @@
+#!/usr/local/bin/perl5
+#
+#  doxygen_pp: Convert multiple C++ "slash-slash" style comment lines
+#              into one spanning C-style comment (/* ... */), ignoring
+#              lines that start with "slash-slash-hash style comments.
+#              Convert all cxx2html tags to doxygen or html tags.
+#
+#  Copyright (C) 2002
+#  ASTRON (Netherlands Foundation for Research in Astronomy)
+#  P.O.Box 2, 7990 AA Dwingeloo, The Netherlands, diepen@astron.nl
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#  $Id$
+
+$NON_COMMENT_BLOCK = 0;
+$COMMENT_BLOCK     = 1;
+
+# If the caller supplied precisely one command line argument, then this script
+# can proceed.
+$arguments = @ARGV;
+if ($arguments == 1)
+{
+  # The argument represents the name of the file to process.
+  $filename = $ARGV[0];
+
+  # Open the file.
+  $status = open(FILEHANDLE, $filename);
+
+  # If the file could be opened then read the contents.
+  if ($status)
+  {
+    # Read the contents of the file.
+    @text = <FILEHANDLE>;
+
+    # Close the file.
+    close(FILEHANDLE);
+
+    # Process the contents of the file.
+    change_comment_style(@text);
+  }
+
+  # Otherwise report an error condition.
+  else
+  {
+    print "ERROR: file \"$filename\" could not be opened.\n";
+  }
+}
+
+# Otherwise, display the proper invocation for this script.
+else
+{
+  print "usage: $0 filename\n";
+}
+
+sub change_comment_style
+{
+  $keephash = 1;
+  $state = $NON_COMMENT_BLOCK;
+  $newstate = $NON_COMMENT_BLOCK;
+  @spanning_comment = ();
+  $indent = "";
+  $comment = "";
+  $code = 0;
+
+  foreach $line (@_)
+  {
+    $newstate = $NON_COMMENT_BLOCK;
+    # slash-slash-hash is blanked if not at beginning of file..
+    if ($keephash == 0  &&  $line =~ /^\s*\/\/\#/)
+    {
+      $line = "\n";
+    }
+    $comment = $line;
+    # If this line contains only a slash-slash comment, then
+    # the comment block might need to be converted.
+    if ($line =~ /(^\s*)(\/\/)(.*)/)
+    {
+      # Keep track of how far the comment block is indented.
+      $indent = $1;
+      $comment = $3;
+      # slash-slash-slash/hash are kept as such (is doxygen already).
+      if ($comment !~ /^[\/#]/)
+      {
+        $keephash = 0;
+	$newstate = $COMMENT_BLOCK;
+
+	# Replace all cxx2html tags by doxygen or html ones.
+	$comment =~ s|<srcblock>| \\code |ig;
+	$comment =~ s|</srcblock>| \\endcode |ig;
+	$comment =~ s|<summary>| \\brief |ig;
+	$comment =~ s|</summary>||ig;
+	$comment =~ s|<group\s+name\s*=\s*(.*?)\s*>| \\name=$1 @\{|i;
+	$comment =~ s|<group>| \\name= @\{|i;
+	$comment =~ s|</group>|@\}|i;
+	$comment =~ s|<linkto\s+class\s*=\s*(.*?)\s*>| \\link $1 |i;
+	$comment =~ s|</linkto>([a-zA-Z0-9_])|\\endlink $1|i;
+	$comment =~ s|</linkto>| \\endlink|i;
+	$comment =~ s|<prerequisite>|<h3>Prerequisite</h3><ul>|ig;
+	$comment =~ s|</prerequisite>|</ul>|ig;
+	$comment =~ s|<motivation>|<h3>Motivation</h3>|ig;
+	$comment =~ s|</motivation>||ig;
+	$comment =~ s|<synopsis>|<h3>Synopsis</h3>|ig;
+	$comment =~ s|</synopsis>||ig;
+	$comment =~ s|<reviewed\s*(.*?)>|<h3>Review status: $1</h3> |ig;
+	$comment =~ s|</reviewed>||ig;
+	$comment =~ s|<example>|<h3>Example</h3>|ig;
+	$comment =~ s|</example>||ig;
+	$comment =~ s|<etymology>|<h3>Etymology</h3>|ig;
+	$comment =~ s|</etymology>||ig;
+	$comment =~ s|<motivation>|<h3>Motivation</h3>|ig;
+	$comment =~ s|</motivation>||ig;
+	$comment =~ s|<thrown>|<h3>Thrown Exceptions</h3><ul>|ig;
+	$comment =~ s|</thrown>|</ul>|ig;
+	if ( $comment =~ /<todo\s*(?:asof\s*=\s*["']?(.*?)['"]?.*?)?>/ )
+	{
+	  my $date = $1;
+	  if ( $date ) {
+	    $comment =~ s|<todo.*?>|<h3>To Do ($date)</h3><ul>|ig;
+	  } else {
+	    $comment =~ s|<todo.*?>|<h3>To Do</h3><ul>|ig;
+	  }
+	}
+	$comment =~ s|</todo>|</ul>|ig;
+	if ( $comment =~ /<templating\s*(?:arg\s*=\s*(\w+).*?)?>/ ||
+	     $comment =~ /<templating\s*(?:arg\s*=\s*["']([^'"]+)['"].*?)?>/ )
+	{
+	  my $arg = $1;
+	  if ( $arg ) {
+	    $comment =~ s|<templating.*?>|<h3>Template Type Argument Requirements ($arg)</h3><ul>|ig;
+	  } else {
+	    $comment =~ s|<templating.*?>|<h3>Template Type Argument Requirements</h3><ul>|ig;
+	  }
+	}
+	$comment =~ s|</templating>|</ul>|ig;
+	if ( $comment =~ /<use\s+visibility\s*=\s*(.*?)\s*>/ )
+	{
+	  my $arg = $1;
+	  if ( $arg =~ /export/i ) {
+	    $comment =~ s|<use.*?>|<h3>Global Use</h3>|ig;
+	  } elsif ( $arg =~ /local/i ) {
+	    $comment =~ s|<use.*?>|<h3>Local Use Only</h3>|ig;
+	  } else {
+	    $comment =~ s|<use.*?>|<h3>Use: $1</h3>|ig;
+	  }
+	}
+	$comment =~ s|</use>||ig;
+
+	my $outtype = "Note";
+	if ( $comment =~ /<note\s+role\s*=\s*['"]?(tip|caution|warning)["']?.*?>/i )
+	{
+	  my $type = lc $1;
+	  $outtype = ucfirst $type;
+	}
+	$comment =~ s|<note.*?>|<strong>$outtype:</strong><em> |i;
+	$comment =~ s|</note>|</em>|i;
+
+	# Replace <src>. Inside the block the special characters have to
+	# be replaced. Note that multiple <src> can be on a line.
+	if ( $code==1 ) {
+	  if ( $comment =~ m|(.*?)</src>(.*)|i ) {
+	    my $a = $1;
+	    my $b = $2;
+	    $a =~ s/&/&amp;/g;
+	    $a =~ s/"/&quot;/g;
+	    $a =~ s/</&lt;/g;
+	    $a =~ s/>/&gt;/g;
+	    $comment = "$a</tt>$b";
+	    $code = 0;
+	  } else {
+	    $comment =~ s/&/&amp;/g;
+	    $comment =~ s/"/&quot;/g;
+	    $comment =~ s/</&lt;/g;
+	    $comment =~ s/>/&gt;/g;
+	  }
+	}
+	while ( $code==0 && $comment =~ m|<src>|i ) {
+	  if ( $comment =~ m|(.*?)<src>(.*?)</src>(.*)|i ) {
+	    my $a = $1;
+	    my $b = $2;
+	    my $c = $3;
+	    $b =~ s/&/&amp;/g;
+	    $b =~ s/"/&quot;/g;
+	    $b =~ s/</&lt;/g;
+	    $b =~ s/>/&gt;/g;
+	    $comment = "$a<tt>$b</tt>$c";
+	  } elsif ( $comment =~ m|(.*?)<src>(.*)|i ) {
+	    my $a = $1;
+	    my $b = $2;
+	    $b =~ s/&/&amp;/g;
+	    $b =~ s/"/&quot;/g;
+	    $b =~ s/</&lt;/g;
+	    $b =~ s/>/&gt;/g;
+	    $comment = "$a<tt>$b";
+	    $code = 1;
+	  }
+	}
+      }
+    }
+    # A blank line does not change anything.
+    elsif ($line =~ /^\s*$/) {
+      $newstate = $state;
+      $comment = ""
+    } else {
+      $keephash = 0;
+    }
+
+    # Act depending on new and old state.
+    if ($newstate == $COMMENT_BLOCK) {
+      if ($state == $COMMENT_BLOCK) {
+	# Add comment to block.
+	push @spanning_comment, "\n$indent   $comment";
+      } else {
+	# Begin the spanning comment block with given indentation.
+	push @spanning_comment, "$indent\/**$comment";
+      }
+    } else {
+      if ($state == $COMMENT_BLOCK) {
+	# End comment block and write the block.
+	push @spanning_comment, " */\n";
+	print @spanning_comment;
+	@spanning_comment = ();
+      }
+      # Write the line.
+      print $line;
+    }
+    $state = $newstate;
+  }
+
+  # Output remaining comments if there.
+  if ($state == $COMMENT_BLOCK)
+  {
+    push @spanning_comment, " */\n";
+    print @spanning_comment;
+  }
+}

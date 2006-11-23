@@ -607,6 +607,10 @@ LINKtifr      := tifr $(LINKtasking)
 PERL4    :=
 PERL5    :=
 
+# Absolute pathnames of doxygen and dot executables (if available).
+DOXYGEN  :=
+DOXYDOT  :=
+
 # How to delete files.
 RM       := rm -f
 
@@ -656,9 +660,12 @@ TIMER     := adate -l
 # Unset this to defeat document compilation.
 DOCSYS    := doc resolvedocs
 
-# Unset this to defeat document extraction from C++ sources and building of
-# changelog files.
+# Unset this to defeat cxx2html document extraction from C++ headers
+# and building of changelog files.
 DOCEXTR   := docscan docextr changelogs
+
+# Unset this to defeat doxygen documentation generation from C++ sources.
+DOCDOXY   := docdoxy
 
 # What standard packages to build (default is all including demo).
 PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
@@ -964,6 +971,10 @@ MAKEINDENT := $(I$(MAKELEVEL))
 ifeq "$(PERL5)" ""
    DOCEXTR :=
 endif
+# Doxygen documentation generation requires doxygen.
+ifeq "$(DOXYGEN)" ""
+   DOCDOXY :=
+endif
 
 
 # Static variables that can be changed on the command line only.
@@ -1177,7 +1188,7 @@ endif
 # General phony targets.
 .PHONY : all allsys changelogs chkout clean cleaner cleanest \
     cleancode cleandocs cleanpure cleansys \
-    command dependsys diagnostics docextr docscan docsys eval_vars \
+    command dependsys diagnostics docextr docscan docsys docdoxy eval_vars \
     FORCE null printenv recurse runtests show_all show_aux show_global \
     show_local show_prg show_sys show_vars sysdirs test_all test_aux \
     test_global test_prg test_sys versions
@@ -1371,6 +1382,7 @@ endif
 docsys  : $(DOCEXTR)
 docextr :
 docscan :
+docdoxy :
 
 
 # Recursive rule for dependency analysis.

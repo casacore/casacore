@@ -560,7 +560,7 @@ ifeq "$(MAKEMODE)" "programmer"
                $(PGMRINCD)/%.lcc $(PGMRINCD)/%.ycc
 
    .PHONY : %.d depend dependencies inst mylib mylibs update_mylib \
-            update_mylibs mocs check
+            update_mylibs mocs check doc
 
    all : $(PGMRINST) $(PGMRIMPS:%.cc=$(PGMRLIBR)(%.o)) update_mylib
 
@@ -697,6 +697,23 @@ ifeq "$(MAKEMODE)" "programmer"
 	        fi; \
 	     fi; \
 	  done
+
+    doc :
+	 @ mkdir -p doc; \
+	   cp $(CODEINSD)/docutils/doxygen.cfg doc/doxygen.cfg; \
+	   if [ "$(DOXYDOT)" != "" ]; then \
+	     echo "HAVE_DOT         = YES" >> doc/doxygen.cfg; \
+	     echo "DOT_PATH         = $(DOXYDOT)" >> doc/doxygen.cfg; \
+	   fi; \
+	   echo "OUTPUT_DIRECTORY = ./doc" >> doc/doxygen.cfg; \
+	   echo "STRIP_FROM_PATH  = $(PGMRCODE)" >> doc/doxygen.cfg; \
+	   echo "INPUT            = ." >> doc/doxygen.cfg; \
+	   echo "IMAGE_PATH       = ." >> doc/doxygen.cfg; \
+	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> doc/doxygen.cfg; \
+	   echo "GENERATE_TAGFILE = doc/casa.tag" >> doc/doxygen.cfg; \
+           $(RM) doc/doxygen.log;
+	 $(DOXYGEN) doc/doxygen.cfg 2>&1 > doc/doxygen.log
+
 endif
 
 show_local :
@@ -767,7 +784,8 @@ help ::
 	-@ echo "             libraries and ranlib them."
 	-@ echo "     ranlib: ranlib the system libraries."
 	-@ echo "    docscan: scan C++ sources for class information."
-	-@ echo "    docextr: extract documentation from the C++ sources."
+	-@ echo "    docextr: extract cxx2html documentation from C++ headers."
+	-@ echo "    docdoxy: extract doxygen documentation from C++ headers."
 	-@ echo "  cleandocs: delete defunct files from \$$(DOCSAREA)."
 	-@ echo "   runtests: run all test programs."
 	-@ echo ""
@@ -797,6 +815,7 @@ help ::
 	-@ echo "update_mylib: insert all object modules into a private"
 	-@ echo "             library and ranlib it (if necessary)."
 	-@ echo "      check: build, run, and check all test programs."
+	-@ echo "        doc: build doxygen documentation in doc subdir."
 
 
 # System dependency list.
