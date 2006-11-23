@@ -60,7 +60,9 @@ ifeq "$(MAKEMODE)" "programmer"
    $(PGMRBIND)/% : $(PGMRBIND)/%.o $(PGMRLIBR)
 	$(C++) $(CPPFLAGS) $(PRGAPINC) $(PGMRINCL) $(C++FLAGS) $(LDFLAGS) -o $@ $< $(PGMRLIBS);
 
-   % : $(PGMRBIND)/% ;
+   ifneq "$(PGMRBIND)" "."
+     % : $(PGMRBIND)/% ;
+   endif
 
    check : $(ALLEXES)
 	@ for PROG in $(ALLEXES); do \
