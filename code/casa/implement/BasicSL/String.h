@@ -207,7 +207,7 @@ private:
 // Bool answer = allKeys.matches(finishIt, position);
 // // How many spaces are in our phrase?
 // Int spacesCount = allKeys.freq(" ");
-// </scrblock>
+// </srcblock>
 // </example>
 //
 // <motivation>

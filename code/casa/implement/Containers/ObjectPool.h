@@ -78,7 +78,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //   // Release the objects for re-use
 //   pool.release(el5, 5);
 //   pool.release(el10, 10); 
-// </srcblock
+// </srcblock>
 // </example>
 //
 // <motivation>
