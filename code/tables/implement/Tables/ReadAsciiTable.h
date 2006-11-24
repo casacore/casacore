@@ -73,16 +73,22 @@ class TableColumn;
 //   <li> The second line contains the data types of each column.
 //        Valid types are:
 //      <ul>
-//        <li>            S     for Short Integer data
-//        <li>            I     for Integer data
-//        <li>            R     for Real data
-//        <li>            D     for Double Precision data
-//        <li>            X     for Complex data (Real, Imaginary)
-//        <li>            DX    for Double Precision Complex data (R,I)
-//        <li>            Z     for Complex data (Amplitude, Phase)
-//        <li>            DZ    for Double Precision Complex data (A,P)
-//        <li>            A     for ASCII data (must be enclosed in double
-//                              quotes if it contains one or more blanks)
+//        <li>  S     for Short Integer data
+//        <li>  I     for Integer data
+//        <li>  R     for Real data
+//        <li>  D     for Double Precision data
+//        <li>  X     for Complex data (Real, Imaginary)
+//        <li>  DX    for Double Precision Complex data (R,I)
+//        <li>  Z     for Complex data (Amplitude, Phase)
+//        <li>  DZ    for Double Precision Complex data (A,P)
+//        <li>  A     for ASCII data (must be enclosed in double
+//                    quotes if it contains one or more blanks)
+//        <li>  DMS   for MVAngle-format position in DMS (converted to radians)
+//                    In this case a colon separated position is seen as
+//                    degrees and not as hours.
+//                    Blanks instead of : can be used as separator.
+//        <li>  HMS   for MVAngle-format position in HMS (converted to radians)
+//                    Blanks instead of : can be used as separator.
 //      </ul>
 //        The type can optionally be followed by one or more positive numbers
 //        (separated by commas without whitespace) indicating that the column
@@ -331,10 +337,16 @@ public:
 		     const String& commentMarkerRegex,
 		     Int firstLine, Int lastLine);
 
+  // Read a position using MVAngle.
+  // If isDMS is True, a position with : is treated as DMS instead of HMS.
+  // This function is a bit more relaxed than MVAngle::read.
+  // It allows whitespace. Furthermore it allows whitespace as separator :.
+  static double stringToPos (const String& pos, Bool isDMS);
+
 private:
   // Define types.
   enum RATType {RATBool, RATShort, RATInt, RATFloat, RATDouble, RATString,
-		RATComX, RATComZ, RATDComX, RATDComZ};
+		RATComX, RATComZ, RATDComX, RATDComZ, RATDMS, RATHMS};
 
 
   // Do the actual run.

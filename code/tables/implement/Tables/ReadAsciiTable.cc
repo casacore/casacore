@@ -39,6 +39,7 @@
 #include <casa/Containers/Block.h>
 #include <casa/OS/Path.h>
 #include <casa/BasicSL/String.h>
+#include <casa/Quanta/MVAngle.h>
 #include <casa/Utilities/Regex.h>
 #include <casa/Exceptions/Error.h>
 
@@ -342,6 +343,8 @@ void ReadAsciiTable::handleKeyset (Int lineSize, char* string1,
 	}
 	break;
       case RATDouble:
+      case RATDMS:
+      case RATHMS:
 	{
 	  Block<Double> values;
 	  IPosition shp = getArray (string1, lineSize, first, at3, separator,
@@ -467,6 +470,10 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
     type = RATFloat;
   } else if (tp == "D") {
     type = RATDouble;
+  } else if (tp == "DMS") {
+    type = RATDMS;
+  } else if (tp == "HMS") {
+    type = RATHMS;
   } else if (tp == "A") {
     type = RATString;
   } else if (tp == "X") {
@@ -483,6 +490,57 @@ Int ReadAsciiTable::getTypeShape (const String& typestr,
   return varAxis;
 }
 
+
+double ReadAsciiTable::stringToPos (const String& str, Bool isDMS)
+{
+  // This function is a bit more relaxed than MVAngle::read.
+  // It allows whitespace. Furthermore it allows whitespace as separator.
+  String strc(str);
+  strc.downcase();
+  // Remove blanks and insert : if only blanks.
+  // Insert 0 if nothing between separators.
+  String pos;
+  Bool foundBlanks = False;
+  Bool needSep = False;
+  Bool needNum = True;
+  pos.reserve (strc.size());
+  for (uInt i=0; i<strc.size(); ++i) {
+    char ch = strc[i];
+    if (ch == ' ') {
+      foundBlanks = True;
+    } else {
+      if (ch==':' || ch=='.' || ch=='h' || ch=='d' || ch=='m') {
+	if (needNum) {
+	  pos += '0';
+	}
+	needSep = False;
+	needNum = True;
+      } else if (! (ch=='-' || ch=='+')) {
+	if (needSep && foundBlanks) {
+	  pos += ':';
+	}
+	needSep = True;
+	needNum = False;
+	foundBlanks = False;
+      }
+      pos += ch;
+    }
+  }
+  Quantity res;
+  Bool ok = MVAngle::read (res, pos);
+  if (!ok) {
+    cerr << "ReadAsciiTable: " << pos
+	 << " is not a valid MVAngle position value" << endl;
+    return 0;
+  }
+  double val = res.getValue("rad");
+  // If the string contains :, it was treated as HMS.
+  // So divide by 15 if it is in fact DMS.
+  if (isDMS  &&  pos.find(':') != String::npos) {
+    val /= 15.;
+  }
+  return val;
+}
 
 Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
 			       Int& at1, Char separator,
@@ -533,6 +591,12 @@ Bool ReadAsciiTable::getValue (char* string1, Int lineSize, char* first,
     break;
   case RATString:
     *(String*)value = String(first, done1);
+    break;
+  case RATDMS:
+    *(Double*)value = stringToPos (String(first, done1), True);
+    break;
+  case RATHMS:
+    *(Double*)value = stringToPos (String(first, done1), False);
     break;
   case RATComX:
     if (done1 > 0) {
@@ -621,6 +685,8 @@ void ReadAsciiTable::handleScalar (char* string1, Int lineSize, char* first,
     }
     break;
   case RATDouble:
+  case RATDMS:
+  case RATHMS:
     {
       Double value = 0;
       getValue (string1, lineSize, first, at1, separator, type, &value);
@@ -776,6 +842,8 @@ IPosition ReadAsciiTable::getArray (char* string1, Int lineSize, char* first,
     }
     break;
   case RATDouble:
+  case RATDMS:
+  case RATHMS:
     {
       Block<Double>& data = *(Block<Double>*)valueBlock;
       data.resize (nelem);
@@ -938,6 +1006,8 @@ void ReadAsciiTable::handleArray (char* string1, Int lineSize, char* first,
     }
     break;
   case RATDouble:
+  case RATDMS:
+  case RATHMS:
     {
       Block<Double> data;
       IPosition shp = getArray (string1, lineSize, first, at1, separator,
@@ -1198,6 +1268,16 @@ Table ReadAsciiTable::makeTab (String& formatString,
 	    td.addColumn (ArrayColumnDesc<Double> (nameOfColumn[i5],
 						   shape, option));
 	    break;
+	  case RATDMS:
+	  case RATHMS:
+	    {
+	      td.addColumn (ArrayColumnDesc<Double> (nameOfColumn[i5],
+						     shape, option));
+	      ColumnDesc& cd = td.rwColumnDesc(nameOfColumn[i5]);
+	      cd.rwKeywordSet().define ("QuantumUnits",
+					Vector<String>(1, "rad"));
+	    }
+	    break;
 	  case RATString:
 	    td.addColumn (ArrayColumnDesc<String> (nameOfColumn[i5],
 						   shape, option));
@@ -1228,6 +1308,8 @@ Table ReadAsciiTable::makeTab (String& formatString,
 	    td.addColumn (ScalarColumnDesc<Float> (nameOfColumn[i5]));
 	    break;
 	  case RATDouble:
+	  case RATDMS:
+	  case RATHMS:
 	    td.addColumn (ScalarColumnDesc<Double> (nameOfColumn[i5]));
 	    break;
 	  case RATString:
