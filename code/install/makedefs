@@ -664,8 +664,9 @@ DOCSYS    := doc resolvedocs
 # and building of changelog files.
 DOCEXTR   := docscan docextr changelogs
 
-# Unset this to defeat doxygen documentation generation from C++ sources.
-DOCDOXY   := docdoxy
+# Set DOCEXTR to $(DOCDOXY) to build doxygen documentation.
+# Add docdoxy to DOCEXTR to build it all.
+DOCDOXY   := docdoxy changelogs
 
 # What standard packages to build (default is all including demo).
 PACKAGES  := casa scimath tables measures fits lattices coordinates components images ms msfits msvis calibration ionosphere flagging dish simulators synthesis graphics demo
@@ -1187,7 +1188,7 @@ endif
 #-----------------------------------------------------------------------------
 # General phony targets.
 .PHONY : all allsys changelogs chkout clean cleaner cleanest \
-    cleancode cleandocs cleanpure cleansys \
+    cleancode cleandocs cleanpure cleansys cleandoxy \
     command dependsys diagnostics docextr docscan docsys docdoxy eval_vars \
     FORCE null printenv recurse runtests show_all show_aux show_global \
     show_local show_prg show_sys show_vars sysdirs test_all test_aux \
@@ -1342,7 +1343,7 @@ cleancode : .cleancode
 	   $(MAKE) -C $$i $@ ; \
 	done
 
-cleansys : .cleansys
+cleansys : .cleansys cleandoxy
 	-@ for i in $$SUBDIRS ; do \
            if [ "$Q" != "@" -o "$(MAKELEVEL)" = 0 ] ; then \
 	      echo "" ; \
@@ -1352,6 +1353,11 @@ cleansys : .cleansys
 	   fi ; \
 	   $(MAKE) -C $$i $@ ; \
 	done
+
+cleandoxy : 
+	-$Q if [ -d $(DOCSAREA) ] ; then \
+	      $(RM) -r $(DOCSAREA)/doxygen ; \
+            fi
 
 ifeq "$(MAKEMODE)" "programmer"
    check :

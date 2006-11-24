@@ -698,21 +698,21 @@ ifeq "$(MAKEMODE)" "programmer"
 	     fi; \
 	  done
 
-    doc :
+    doxygen :
 	 @ mkdir -p doc; \
-	   cp $(CODEINSD)/docutils/doxygen.cfg doc/doxygen.cfg; \
+	   cp $(CODEINSD)/docutils/doxygen.cfg doxygen/doxygen.cfg; \
 	   if [ "$(DOXYDOT)" != "" ]; then \
-	     echo "HAVE_DOT         = YES" >> doc/doxygen.cfg; \
-	     echo "DOT_PATH         = $(DOXYDOT)" >> doc/doxygen.cfg; \
+	     echo "HAVE_DOT         = YES" >> doxygen/doxygen.cfg; \
+	     echo "DOT_PATH         = $(DOXYDOT)" >> doxygen/doxygen.cfg; \
 	   fi; \
-	   echo "OUTPUT_DIRECTORY = ./doc" >> doc/doxygen.cfg; \
-	   echo "STRIP_FROM_PATH  = $(PGMRCODE)" >> doc/doxygen.cfg; \
-	   echo "INPUT            = ." >> doc/doxygen.cfg; \
-	   echo "IMAGE_PATH       = ." >> doc/doxygen.cfg; \
-	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> doc/doxygen.cfg; \
-	   echo "GENERATE_TAGFILE = doc/casa.tag" >> doc/doxygen.cfg; \
-           $(RM) doc/doxygen.log;
-	 $(DOXYGEN) doc/doxygen.cfg 2>&1 > doc/doxygen.log
+	   echo "OUTPUT_DIRECTORY = ./doc" >> doxygen/doxygen.cfg; \
+	   echo "STRIP_FROM_PATH  = $(PGMRCODE)" >> doxygen/doxygen.cfg; \
+	   echo "INPUT            = ." >> doxygen/doxygen.cfg; \
+	   echo "IMAGE_PATH       = ." >> doxygen/doxygen.cfg; \
+	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> doxygen/doxygen.cfg; \
+	   echo "GENERATE_TAGFILE = doxygen/casa.tag" >> doxygen/doxygen.cfg; \
+           $(RM) doxygen/doxygen.log;
+	 $(DOXYGEN) doxygen/doxygen.cfg 2>&1 > doxygen/doxygen.log
 
 endif
 
@@ -815,7 +815,7 @@ help ::
 	-@ echo "update_mylib: insert all object modules into a private"
 	-@ echo "             library and ranlib it (if necessary)."
 	-@ echo "      check: build, run, and check all test programs."
-	-@ echo "        doc: build doxygen documentation in doc subdir."
+	-@ echo "    doxygen: build doxygen documentation in doxygen subdir."
 
 
 # System dependency list.
