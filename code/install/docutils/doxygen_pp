@@ -102,10 +102,15 @@ sub change_comment_style
 	$comment =~ s|</srcblock>| \\endcode |ig;
 	$comment =~ s|<summary>| \\brief |ig;
 	$comment =~ s|</summary>||ig;
+	$comment =~ s|^\+grp|<group>|;
+	$comment =~ s|^-grp|</group>|;
 	$comment =~ s|<group\s+name\s*=\s*(.*?)\s*>| \\name=$1 @\{|i;
 	$comment =~ s|<group>| \\name= @\{|i;
 	$comment =~ s|</group>|@\}|i;
-	$comment =~ s|<linkto\s+class\s*=\s*(.*?)\s*>| \\link $1 |i;
+	# Replace linkto by the class linked to; remove possible ':description'
+	$comment =~ s|<linkto\s+class\s*=\s*['"]?(.*?)(:description)?['"]?\s*>| \\link $1 |i;
+	# For the time being remove other linkto commands.
+	$comment =~ s|<linkto.*?>(.*?)</linkto>|$1|i;
 	$comment =~ s|</linkto>([a-zA-Z0-9_])|\\endlink $1|i;
 	$comment =~ s|</linkto>| \\endlink|i;
 	$comment =~ s|<prerequisite>|<h3>Prerequisite</h3><ul>|ig;
@@ -167,6 +172,8 @@ sub change_comment_style
 	$comment =~ s|<note.*?>|<strong>$outtype:</strong><em> |i;
 	$comment =~ s|</note>|</em>|i;
 
+	# Remove obsolete category tag (used in e.g. Map.h>.
+	$comment =~ s|<category.*?>||i;
 	# Replace <src>. Inside the block the special characters have to
 	# be replaced. Note that multiple <src> can be on a line.
 	if ( $code==1 ) {
@@ -207,6 +214,9 @@ sub change_comment_style
 	    $code = 1;
 	  }
 	}
+	# Remove this line because doxygen cannot handle a line in a <ul>
+	# before an <li>.
+	$comment =~ s|You should have at least a preliminary understanding of these classes:||
       }
     }
     # A blank line does not change anything.
