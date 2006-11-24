@@ -118,9 +118,12 @@ void a (const String& dir)
     ROScalarColumn<Complex> colx (tab,"COLX");
     ROScalarColumn<Complex> colz (tab,"COLZ");
     ROScalarColumn<String>  cols (tab,"COLS");
+    ROScalarColumn<Double>  colra (tab,"COLRA");
+    ROScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
-	     << colx(i) << " " << colz(i) << " " << cols(i) << endl;
+	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
+	     << colra(i) << " " << coldec(i) << endl;
     }
 }
 
@@ -143,9 +146,12 @@ void aa (const String& dir)
     ROScalarColumn<Complex> colx (tab,"COLX");
     ROScalarColumn<Complex> colz (tab,"COLZ");
     ROScalarColumn<String>  cols (tab,"COLS");
+    ROScalarColumn<Double>  colra (tab,"COLRA");
+    ROScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
-	     << colx(i) << " " << colz(i) << " " << cols(i) << endl;
+	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
+	     << colra(i) << " " << coldec(i) << endl;
     }
 }
 
@@ -168,9 +174,12 @@ void ab (const String& dir)
     ROScalarColumn<Complex> colx (tab,"COLX");
     ROScalarColumn<Complex> colz (tab,"COLZ");
     ROScalarColumn<String>  cols (tab,"COLS");
+    ROScalarColumn<Double>  colra (tab,"COLRA");
+    ROScalarColumn<Double>  coldec (tab,"COLDEC");
     for (uInt i=0; i<tab.nrow(); i++) {
 	cout << coli(i) << " " << colf(i) << " " << cold(i) << " "
-	     << colx(i) << " " << colz(i) << " " << cols(i) << endl;
+	     << colx(i) << " " << colz(i) << " " << cols(i) << " "
+	     << colra(i) << " " << coldec(i) << endl;
     }
 }
 

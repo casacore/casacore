@@ -1,24 +1,24 @@
 >>>
 <<<
-Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A]
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A, COLRA=HMS, COLDEC=DMS]
 
-2 rows, 6 columns
-1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1
-10 11 12 (13,14) (14.4189,4.13456) String17
+2 rows, 8 columns
+1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1 0.261799 0.261799
+10 11 12 (13,14) (14.4189,4.13456) String17 6.28319 6.28319
 >>>
 <<<
-Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A]
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A, COLRA=HMS, COLDEC=DMS]
 
-2 rows, 6 columns
-1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1
-10 11 12 (13,14) (14.4189,4.13456) String17
+2 rows, 8 columns
+1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1 0.261799 0.261799
+10 11 12 (13,14) (14.4189,4.13456) String17 6.28319 6.28319
 >>>
 <<<
-Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A]
+Input format: [COLI=I, COLF=R, COLD=D, COLX=X, COLZ=Z, COLS=A, COLRA=HMS, COLDEC=DMS]
 
-2 rows, 6 columns
-1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1
-10 11 12 (13,14) (14.4189,4.13456) String17
+2 rows, 8 columns
+1 1.1 1.11 (1.12,1.13) (1.13977,0.0228797) Str1 0.261799 0.261799
+10 11 12 (13,14) (14.4189,4.13456) String17 6.28319 6.28319
 >>>
 <<<
 Input format: [Column1=I, Column2=D, Column3=D, Column4=D, Column5=D, Column6=D, Column7=D, Column8=A]
