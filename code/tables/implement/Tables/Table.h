@@ -860,22 +860,22 @@ public:
     // </note>
     void renameColumn (const String& newName, const String& oldName);
 
-    // Write a table to AipsIO (for TypedKeywords<Table>).
+    // Write a table to AipsIO (for <src>TypedKeywords<Table></src>).
     // This will only write the table name.
     friend AipsIO& operator<< (AipsIO&, const Table&);
 
-    // Read a table from AipsIO (for TypedKeywords<Table>).
+    // Read a table from AipsIO (for <src>TypedKeywords<Table></src>).
     // This will read the table name and open the table as writable
     // if the table file is writable, otherwise as readonly.
     friend AipsIO& operator>> (AipsIO&, Table&);
 
-    // Read a table from AipsIO (for TableKeywords).
+    // Read a table from AipsIO (for <src>TableKeywords</src>).
     // This will read the table name and open the table as writable
     // if the switch is set and if the table file is writable.
     // otherwise it is opened as readonly.
     void getTableKeyword (AipsIO&, Bool openWritable);
 
-    // Write a table to ostream (for TypedKeywords<Table>).
+    // Write a table to ostream (for <src>TypedKeywords<Table></src>).
     // This only shows its name and number of columns and rows.
     friend ostream& operator<< (ostream&, const Table&);
 

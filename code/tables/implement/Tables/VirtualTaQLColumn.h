@@ -44,11 +44,11 @@ class TableExprNode;
 //
 // <prerequisite>
 //# Classes you should understand before using this one.
-// <list>
-//   <item> VirtualColumnColumn
-//   <item> VirtualScalarColumn
-//   <item> VirtualArrayColumn
-// </list>
+// <ul>
+//   <li> VirtualColumnColumn
+//   <li> VirtualScalarColumn
+//   <li> VirtualArrayColumn
+// </ul>
 // </prerequisite>
 //
 // <synopsis> 
