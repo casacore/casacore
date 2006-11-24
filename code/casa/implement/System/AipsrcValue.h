@@ -163,8 +163,8 @@ public:
   // A constructor (and destructor) have been provided to be able to generate
   // a (routine-level) static register list. This had to be done since
   // static data members are not yet implemented in the gcc compiler for
-  // templated classes. Once they are available the <em>tlist</em> and
-  // <em>ntlst</em> data can become static, constructor and desctructor and
+  // templated classes. Once they are available the <tt>tlist</tt> and
+  // <tt>ntlst</tt> data can become static, constructor and desctructor and
   // all references to the init() method can disappear.
   // </note>
   AipsrcValue();

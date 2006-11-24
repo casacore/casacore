@@ -136,7 +136,7 @@ class RegexBase {
   virtual ~RegexBase();
   //# Member functions
   // Search string <src>s</src> of length <src>len</src>, starting at position
-  // <src>pos</pos>. Returned is the address of the first character of
+  // <src>pos</src>. Returned is the address of the first character of
   // the substring found (or <src>String::npos</src> if not found). The
   // matched length is returned in <src>matchlen</src>
   virtual String::size_type find(const Char *s, String::size_type len,
@@ -155,7 +155,7 @@ class RegexBase {
 				  Int &matchlen,
 				  String::size_type pos=String::npos) const;
   // Search string <src>s</src> of length <src>len</src>, starting at position
-  // <src>pos</pos>. Returned is the address of the first character of
+  // <src>pos</src>. Returned is the address of the first character of
   // the substring found (or <src>String::npos</src> if not found). The
   // matched length is returned in <src>matchlen</src>. If <src>pos<0</src>
   // do a reverse find.

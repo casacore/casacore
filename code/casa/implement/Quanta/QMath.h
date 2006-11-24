@@ -82,7 +82,7 @@ template <class T> class Array;
 //   <li> <linkto file="QMath.h#arithmetic">Some useful arithmetic (linear) functions</linkto>
 //   <li> <linkto file="QMath.h#trigonometric">Trigonometric functions</linkto>
 //   <li> <linkto file="QMath.h#foreign">Functions to implement integer ceil/floor</linkto>
-// </ul
+// </ul>
 //
 // The operations/functions defined are:
 // <ul>

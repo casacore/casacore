@@ -84,14 +84,14 @@ class LogOrigin;
 // <srcblock>
 //    LogIO   os;
 // </srcblock>
-// Here, </src>os</src> is attached to the global log sink, and no origin
+// Here, <src>os</src> is attached to the global log sink, and no origin
 // information is set.
 //
 // <srcblock>
 //    TableLogSink tab(...);
 //    LogIO   os(tab);
 // </srcblock>
-// Here, </src>os</src> is attached to <src>tab</src> (and also to the global
+// Here, <src>os</src> is attached to <src>tab</src> (and also to the global
 // log sink since every sink's <src>post</src> also calls the global sink's
 // <src>post</src>).
 //
@@ -99,7 +99,7 @@ class LogOrigin;
 // <srcblock>
 //    LogIO   os(LogOrigin("class", "func(args)", WHERE));
 // </srcblock>
-// Here, </src>os</src> is attached to the global sink and the origin
+// Here, <src>os</src> is attached to the global sink and the origin
 // information is set to <src>class::func(args)</src> and the line number and
 // source file information is set (with <src>WHERE</src>).
 //

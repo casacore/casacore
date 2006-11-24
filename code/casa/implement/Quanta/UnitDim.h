@@ -45,7 +45,7 @@ class UnitMap;
 // describes a unit in basic SI unit dimensions
 // </summary>
 
-// <use visibilty=local>
+// <use visibility=local>
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tUnit">
 //

@@ -54,8 +54,8 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // }
 // </srcblock>
 //
-// <note role=tip> There are too many ArrayRelated classes. Some should be deleted.
-//
+//# There are too many Array related error classes. Some should be deleted.
+
 class ArrayError : public AipsError
 {
 public:

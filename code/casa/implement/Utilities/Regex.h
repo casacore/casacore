@@ -55,7 +55,7 @@ struct re_registers;
 // GNU library (see files cregex.h and cregex.cc).
 // <br>
 // cregex.cc supports many syntaxes. Regex supports
-// only one syntax, the extended regular expression with { and not \{
+// only one syntax, the extended regular expression with { and not \\{
 // as a special character. The special characters are:
 // <dl>
 //  <dt> ^

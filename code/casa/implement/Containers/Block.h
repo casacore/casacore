@@ -72,6 +72,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // <src>storage()</src>.
 // Resizing the array will also have this effect if the underlying storage
 // is actually affected.
+// </note>
 //
 // If index checking is turned on, an out-of-bounds index will
 // generate an <src>indexError<uInt></src> exception.

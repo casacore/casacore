@@ -49,8 +49,9 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // ArrayPositionIterator since it also has a position (the blc of the cursor)
 // which moves through the array volume.
 //
-// <note role=tip> The origin of the cursor, i.e. the subarray that moves through the
-//        larger array, is always zero.
+// <note role=tip> The origin of the cursor, i.e. the subarray that moves
+//   through the larger array, is always zero.
+// </note>
 //
 // <srcblock>
 // Array<Float> to, from;
@@ -150,6 +151,7 @@ private:
 //        it merely contains an ArrayIterator to which it forwards requests
 //        and returns (const) results. The iterator classes should be 
 //        rethought and reimplemented.
+// </note>
 //
 // <linkfrom anchor=ReadOnlyArrayIterator classes="Array Vector Matrix Cube">
 //    <here>ReadOnlyArrayIterator</here> -- Iterate a const Array cursor through

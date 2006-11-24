@@ -140,11 +140,11 @@ public:
     UnitName(const UnitName &other);
 
 // Construct from different parts
-// <grp>
+// <group>
     UnitName(const String &tag, const UnitVal &kind,
 	      const String &name = EmptyString);
     UnitName(const Unit &tag, const String &name = EmptyString);
-// </grp>
+// </group>
 
 
 // Destructor

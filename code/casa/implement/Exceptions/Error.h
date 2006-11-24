@@ -59,6 +59,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 //        <src>message.makePermanent()</src> call in the implementation of
 //        the constructors. This prevents the String from being cleaned up
 //        in the middle of an exception.
+//  </note>
 //
 // </synopsis>
 //

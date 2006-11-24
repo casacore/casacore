@@ -106,7 +106,7 @@ public:
     // will be set to the display the minimum and maximum values.
     //
     // Normally the progress bar will be updated with every call to
-    // </src>update()</src>. If however you will be sending many events
+    // <src>update()</src>. If however you will be sending many events
     // then you might want to update the GUI every <src>updateEvery</src>'th
     // event for efficiency. Generally there's no point updating more than
     // a couple of hundred times since the eye can't distinguish differences
@@ -126,10 +126,10 @@ public:
     void update(Double value, Bool force=False);
 
     // Display the min and max values of the progress meter.
-    // <src>
+    // <group>
     Double min() const;
     Double max() const;
-    // </src>
+    // </group>
 
     friend class ObjectController;
 private:

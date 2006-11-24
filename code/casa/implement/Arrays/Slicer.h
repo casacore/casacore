@@ -282,6 +282,7 @@ public:
     // will probably be used as an undefined value.
     // <note> This definition may not be portable. Instead a #define
     // or a static public data member could be used.
+    // </note>
     enum {MimicSource= -2147483646};
 
     // Define the possible interpretations of the end-value.

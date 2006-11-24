@@ -161,7 +161,7 @@ template<class Domain, class Range> class Functional;
 // likely become "private".
 // </note>
 //
-// <todo asof="1999/12/30"
+// <todo asof="1999/12/30">
 //   <li> Integrate into the Lattice hierarchy
 //   <li> Factor out the common functions (shape etc) into a type-independent
 //        base class.

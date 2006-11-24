@@ -208,12 +208,12 @@ class Unit {
     Unit& operator=(const Unit &other);
 // Comparisons. Comparisons are done on the basis of the inherent units. I.e.
 // <src>m/s</src> are identical to <src>AU/cy</src>.
-// <grp>
+// <group>
     Bool operator==(const Unit &other) const;
     Bool operator!=(const Unit &other) const;
 // Fast check for "" units
     Bool empty() const;
-// </grp>
+// </group>
 //# Member functions
 // Get the unit value
     const UnitVal &getValue() const;

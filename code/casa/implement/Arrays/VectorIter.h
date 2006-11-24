@@ -98,7 +98,8 @@ private:
 //
 // <note role=tip> Note that the R/O VectorIterator is not derived from R/O 
 //        ArrayIterator.
-//
+// </note>
+
 template<class T> class ReadOnlyVectorIterator 
 {
 public:
