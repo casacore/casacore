@@ -130,6 +130,7 @@ namespace casa { //# NAMESPACE CASA - BEGIN
 // a definition of the following functions.
 // <srcblock>
 // Int abs(Int x)             absolute value function
+// </srcblock>
 // </synopsis>
 
 // <group name="Math.h interface for AIPS++">
