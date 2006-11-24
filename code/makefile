@@ -54,12 +54,6 @@ else
    INCLINKS := $(patsubst $(AIPSCODE)/%/implement,include/%, \
                     $(wildcard $(AIPSCODE)/*/implement))
 endif
-#
-# This be a kludge so we can get access to the appsglish/apps *.h files
-# for the protopipe stuff that's using DOs
-#
-INCLINKS += include/appsglish
-
 
 
 # Subdirectories in which to invoke "allsys", in order.
@@ -100,16 +94,10 @@ $(SYMDIR) :
 	 mkdir $@
 	 chmod ug=rwx,g+s,o=rx $@
 
-#
-# this bit of skuldugery is so we can get appsglish stuff into
-# the include tree, it is a kludge but appears to work
-#
 $(INCLINKS) :
 	-@ rm -f $@
-	if [ -d $(@F)/implement ] ; then \
+	 if [ -d $(@F)/implement ] ; then \
 	   ln -s ../$(@F)/implement $@ ; \
-         else \
-	   ln -s ../$(@F)/apps $@ ; \
          fi
 
 docsys : $(DOCSYS)
@@ -139,6 +127,25 @@ changelogs :
 	-@ rm -rf $(AIPSROOT)/docs/project/releasenotes/changelogs
 	   mkdir $(AIPSROOT)/docs/project/releasenotes/changelogs
 	   buildchangelog -split module -dir $(AIPSROOT)/docs/project/releasenotes/changelogs $(AIPSROOT)/code
+
+docdoxy : $(AIPSDOCS)/doxygen 
+	 @ cp $(CODEINSD)/docutils/doxygen.cfg $</doxygen.cfg; \
+	   if [ "$(DOXYDOT)" != "" ]; then \
+	     echo "HAVE_DOT         = YES" >> $</doxygen.cfg; \
+	     echo "DOT_PATH         = $(DOXYDOT)" >> $</doxygen.cfg; \
+	   fi; \
+	   echo "OUTPUT_DIRECTORY = $<" >> $</doxygen.cfg; \
+	   echo "STRIP_FROM_PATH  = $(AIPSCODE)" >> $</doxygen.cfg; \
+	   echo "INPUT            = $(PACKAGES)" >> $</doxygen.cfg; \
+	   echo "IMAGE_PATH       = ." >> $</doxygen.cfg; \
+	   echo "INPUT_FILTER     = $(AIPSARCH)/bin/doxygen_pp" >> $</doxygen.cfg; \
+	   echo "GENERATE_TAGFILE = $</casa.tag" >> $</doxygen.cfg; \
+           $(RM) $</doxygen.log;
+	 $(DOXYGEN) $</doxygen.cfg 2>&1 > $</doxygen.log
+
+$(AIPSDOCS)/doxygen :
+	-@ echo ""
+	 @ amkdir -p ug=rwx,g+s,o=rx -v $@
 
 runtests :
 	 @ for i in $(ALLSYSD) ; do \
@@ -188,8 +195,9 @@ help ::
 	-@ echo "------"
 	-@ echo "   symlinks: create include file symlinks."
 	-@ echo "     docsys: compile all documentation."
-	-@ echo "    docscan: scan C++ sources for class information."
-	-@ echo "    docextr: extract documentation from the C++ sources."
+	-@ echo "    docscan: scan C++ sources for cxx2html class information."
+	-@ echo "    docextr: extract cxx2html documentation from C++ headers."
+	-@ echo "    docdoxy: extract doxygen documentation from C++ headers."
 	-@ echo " changelogs: build the changelog html files."
 	-@ echo "   runtests: run all test programs."
 	-@ echo ""
