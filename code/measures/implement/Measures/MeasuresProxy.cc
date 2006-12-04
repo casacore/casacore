@@ -1,3 +1,30 @@
+//# MeasuresProxy.cc: Proxy class object, to be used in language bindings
+//# Copyright (C) 2006
+//# Associated Universities, Inc. Washington DC, USA.
+//#
+//# This library is free software; you can redistribute it and/or modify it
+//# under the terms of the GNU Library General Public License as published by
+//# the Free Software Foundation; either version 2 of the License, or (at your
+//# option) any later version.
+//#
+//# This library is distributed in the hope that it will be useful, but WITHOUT
+//# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+//# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+//# License for more details.
+//#
+//# You should have received a copy of the GNU Library General Public License
+//# along with this library; if not, write to the Free Software Foundation,
+//# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
+//#
+//# Correspondence concerning AIPS++ should be addressed as follows:
+//#        Internet email: aips2-request@nrao.edu.
+//#        Postal address: AIPS++ Project Office
+//#                        National Radio Astronomy Observatory
+//#                        520 Edgemont Road
+//#                        Charlottesville, VA 22903-2475 USA
+//#
+//# $Id$
+
 #include <measures/Measures/MeasuresProxy.h>
 #include <measures/Measures.h>
 #include <measures/Measures/MCEpoch.h>
@@ -26,13 +53,14 @@ MeasuresProxy::~MeasuresProxy() {
 }
 
 String MeasuresProxy::getMeasureType(const Record &in) {
-  Bool b;
+  //Bool b;
   String out;
   if (in.isDefined("type")) {
-    out= "?";//b = GlishArray(in.get("type")).get(out);
+    out= "???";//b = GlishArray(in.get("type")).get(out);
   } else {
     out = "none";
   }
+  return out;
 }
 
 Bool MeasuresProxy::doFrame(const MeasureHolder &in) {
@@ -83,9 +111,8 @@ Bool MeasuresProxy::makeMeasure(String &error, MeasureHolder &out,
 				const MeasureHolder &in, const String &outref,
 				const Record &off) {
   MeasureHolder mo;
-  if (off.isDefined("offset")) {
-    Record rec(off.asRecord("offset"));
-    if (!mo.fromRecord(error, rec)) {
+  if (off.nfields() > 0) {
+    if (!mo.fromRecord(error, off)) {
       error += String("Non-measure type offset in measure conversion\n");
       return False;
     }
