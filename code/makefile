@@ -94,10 +94,13 @@ $(SYMDIR) :
 	 mkdir $@
 	 chmod ug=rwx,g+s,o=rx $@
 
+# appsglish/apps symlink is needed to compile the megaserver
 $(INCLINKS) :
 	-@ rm -f $@
 	 if [ -d $(@F)/implement ] ; then \
 	   ln -s ../$(@F)/implement $@ ; \
+	 else \
+	   ln -s ../$(@F)/apps $@ ; \
          fi
 
 docsys : $(DOCSYS)
