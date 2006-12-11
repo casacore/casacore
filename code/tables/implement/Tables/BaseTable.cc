@@ -173,28 +173,35 @@ Bool BaseTable::makeTableDir()
 	    throw (TableDuplFile(name_p,
 				 " (and is not a true table directory)"));
 	}
-	//# Check if file table.dat exist in it.
-	File mfile (Table::fileName(name_p));
-	if (! mfile.exists()) {
-	    throw (TableDuplFile(name_p,
-				 " (and is not a true table directory)"));
+	Directory tdir(file);
+	if (! tdir.isEmpty()) {
+	    //# Check if file table.dat exist in it.
+	    File mfile (Table::fileName(name_p));
+	    if (! mfile.exists()) {
+	        throw (TableDuplFile(name_p,
+				     " (and is not a true table directory)"));
+	    }
+	    if (option_p == Table::NewNoReplace) {
+	        throw (TableDuplFile(name_p));   // table file already exists
+	    }
+	    //# Remove the directory and possible files in it.
+	    //# In this way overwriting an existing table does not leave
+	    //# old files.
+	    //# Keep the directory, so existing properties (like placement on
+	    //# Lustre file system is kept.
+	    Directory dir(name_p);
+	    dir.removeRecursive (True);
 	}
-	if (option_p == Table::NewNoReplace) {
-	    throw (TableDuplFile(name_p));   // table file already exists
-	}
-	//# Remove the directory and possible files in it.
-	//# In this way overwriting an existing table does not leave
-	//# old files.
+    } else {
+	//# Create the table directory.
 	Directory dir(name_p);
-	dir.removeRecursive();
+	dir.create();
     }
-    //# Create the table directory and create table.dat in it.
+    //# Create table.dat.
     //# First do a scratch callback that a table is getting created.
-    //# If the directory creation fails, the user sees it as a scratch
+    //# If the file creation fails, the user sees it as a scratch
     //# table, so it can be deleted.
     scratchCallback (True, "");
-    Directory dir(name_p);
-    dir.create();
     RegularFile dfile (Table::fileName(name_p));
     dfile.create();
     madeDir_p = True;
