@@ -147,7 +147,9 @@ public:
 
     // Remove the directory and its contents (recursively in all
     // subdirectories).
-    void removeRecursive();
+    // If <src>keepDir==True</src>, the directory itself is kept
+    //(to keep properties like placement on Lustre).
+    void removeRecursive (Bool keepDir = False);
 
     // Copy the directory and its contents (recursively) to the target
     // path using the system command cp -r.

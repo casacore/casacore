@@ -198,12 +198,13 @@ void Directory::create (Bool overwrite)
 			      itsFile.path().expandedName() +
 			      " already exists"));
 	}
-	Directory(itsFile).removeRecursive();
-    }
-    if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
-	throw (AipsError ("Directory::create error on " +
-			  itsFile.path().expandedName() +
-			  ": " + strerror(errno)));
+	Directory(itsFile).removeRecursive(False);
+    } else {
+        if (mkdir (itsFile.path().expandedName().chars(), 0755) < 0) {
+	    throw (AipsError ("Directory::create error on " +
+			      itsFile.path().expandedName() +
+			      ": " + strerror(errno)));
+	}
     }
 }
 
@@ -232,7 +233,7 @@ void Directory::removeFiles()
     }
 }
 
-void Directory::removeRecursive()
+void Directory::removeRecursive (Bool keepDir)
 {
     DirectoryIterator iter(*this);
     while (! iter.pastEnd()) {
@@ -244,7 +245,9 @@ void Directory::removeRecursive()
 	}
 	iter++;
     }
-    remove();
+    if (!keepDir) {
+        remove();
+    }
 }
 
 void Directory::copy (const Path& target, Bool overwrite,
