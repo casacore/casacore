@@ -32,8 +32,7 @@
 
 #include <unistd.h>               // needed for unlink
 #include <errno.h>                // needed for errno
-#include <casa/string.h>               // needed for strerror
-#include <casa/stdlib.h>               // needed for system
+#include <casa/string.h>          // needed for strerror
 
 namespace casa { //# NAMESPACE CASA - BEGIN
 
@@ -141,9 +140,13 @@ void SymLink::move (const Path& target, Bool overwrite)
     Path targetName(target);
     checkTarget (targetName, overwrite);
     // This function uses the system function mv.	    
-    String call("mv ");
-    call += path().expandedName() + " " + targetName.expandedName();
-    system (call.chars());
+    File targetFile(targetName);
+    if (targetFile.isRegular (False)) {
+	RegularFile(targetFile).remove();
+    }
+    SymLink newLink(targetFile);
+    newLink.create (getSymLink());
+    remove();
 }
 
 String SymLink::getSymLink() const
